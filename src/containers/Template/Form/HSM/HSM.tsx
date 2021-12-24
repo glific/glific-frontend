@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { EditorState } from 'draft-js';
 import { useTranslation } from 'react-i18next';
-
+import Loading from 'components/UI/Layout/Loading/Loading';
 import { ReactComponent as TemplateIcon } from 'assets/images/icons/Template/UnselectedDark.svg';
 import { GET_HSM_CATEGORIES } from 'graphql/queries/Template';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
@@ -23,7 +23,6 @@ const defaultAttribute = {
 const templateIcon = <TemplateIcon className={styles.TemplateIcon} />;
 
 export const HSM: React.SFC<HSMProps> = ({ match }) => {
-  const [categoryOpns, setCategoryOpn] = useState([]);
   const [sampleMessages, setSampleMessages] = useState({
     type: 'TEXT',
     location: null,
@@ -32,21 +31,21 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
   });
   const [shortcode, setShortcode] = useState('');
   const [example, setExample] = useState(EditorState.createEmpty());
-  const [category, setCategory] = useState<any>();
+  const [category, setCategory] = useState<any>({});
   const { t } = useTranslation();
 
-  const { data: categoryList } = useQuery(GET_HSM_CATEGORIES);
+  const { data: categoryList, loading } = useQuery(GET_HSM_CATEGORIES);
 
-  useEffect(() => {
-    if (categoryList) {
-      const categoryOpn: any = [];
-      categoryList.whatsappHsmCategories.forEach((categories: any) => {
-        categoryOpn.push({ label: categories, id: categories });
-      });
+  if (loading) {
+    return <Loading />;
+  }
 
-      setCategoryOpn(categoryOpn);
-    }
-  }, [categoryList]);
+  const categoryOpn: any = [];
+  if (categoryList) {
+    categoryList.whatsappHsmCategories.forEach((categories: any, index: number) => {
+      categoryOpn.push({ label: categories, id: index });
+    });
+  }
 
   let sessionTemplates: any;
   const getSessionTemplates = (data: any) => {
@@ -134,7 +133,7 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
     {
       component: AutoComplete,
       name: 'category',
-      options: categoryOpns,
+      options: categoryOpn,
       optionLabel: 'label',
       multiple: false,
       textFieldProps: {
@@ -172,7 +171,8 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
         getUrlAttachmentAndType={getAttachmentUrl}
         getShortcode={shortcode}
         getExample={example}
-        getCategory={category}
+        setCategory={setCategory}
+        category={category}
         onExampleChange={addButtonsToSampleMessage}
       />
       <Simulator
