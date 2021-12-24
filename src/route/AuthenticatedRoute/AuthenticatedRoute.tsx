@@ -1,5 +1,5 @@
 import React, { lazy, useState } from 'react';
-import { Switch, Route, RouteComponentProps, Redirect, useLocation } from 'react-router-dom';
+import { Switch, Route, RouteComponentProps, Redirect } from 'react-router-dom';
 
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { Chat } from 'containers/Chat/Chat';
@@ -207,15 +207,6 @@ export const AuthenticatedRoute: React.SFC = () => {
   const [loading, setLoading] = useState(false);
   const toastMessage = useToast();
 
-  // get current route
-  const location = useLocation();
-  let addSubscription: boolean = false;
-
-  // add subscription only for chat and flow/configure routes
-  if (location.pathname.includes('/chat') || location.pathname.includes('/flow/configure')) {
-    addSubscription = true;
-  }
-
   let userRole: any[] = [];
   let route;
 
@@ -242,7 +233,7 @@ export const AuthenticatedRoute: React.SFC = () => {
   return (
     <div className={styles.App} data-testid="app">
       {toastMessage}
-      {userRole.length > 0 && addSubscription ? (
+      {userRole.length > 0 ? (
         <ChatSubscription setDataLoaded={setDataLoaded} setLoading={setLoading} />
       ) : (
         ''
