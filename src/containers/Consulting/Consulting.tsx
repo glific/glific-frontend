@@ -23,11 +23,12 @@ import styles from './Consulting.module.css';
 
 export interface ConsultingProps {
   match: any;
+  setOpenDialog: Function;
 }
 
 const isDurationValid = (value: any) => value % 15 === 0;
 
-export const Consulting: React.SFC<ConsultingProps> = ({ match }) => {
+export const Consulting: React.SFC<ConsultingProps> = ({ match, setOpenDialog }) => {
   const { t } = useTranslation();
   const [participants, setParticipants] = useState('');
   const [staff, setStaff] = useState('');
@@ -200,15 +201,25 @@ export const Consulting: React.SFC<ConsultingProps> = ({ match }) => {
         {...queries}
         title={t('Add consulting record')}
         listItem="consultingHour"
-        listItemName="consultingHour"
+        listItemName="Consulting hours"
         pageLink="consultingHour"
         match={match}
         refetchQueries={[
           {
             query: GET_CONSULTING_HOURS,
-            variables: setVariables(),
+            variables: {
+              filter: {},
+              opts: {
+                limit: 50,
+                offset: 0,
+                order: 'DESC',
+                orderWith: 'when',
+              },
+            },
           },
         ]}
+        afterSave={() => setOpenDialog(false)}
+        cancelAction={() => setOpenDialog(false)}
         states={states}
         setStates={setStates}
         setPayload={setPayload}

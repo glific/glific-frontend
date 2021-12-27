@@ -1,4 +1,5 @@
-import { act, fireEvent, render, screen, waitFor, cleanup } from '@testing-library/react';
+import { fireEvent, render, waitFor, cleanup, screen } from '@testing-library/react';
+import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 
 import {
@@ -11,37 +12,39 @@ import { setUserSession } from 'services/AuthService';
 import { Consulting } from './Consulting';
 
 afterEach(cleanup);
+const setOpenDialogMock = jest.fn();
 setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
+
 const mocks = [getOrganizationList, getConsultingHour, createConsultingHour, updateConsultingHour];
 const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>
-    <Consulting match={{ params: {} }} />
+    <Consulting match={{ params: {} }} setOpenDialog={setOpenDialogMock} />
   </MockedProvider>
 );
 
 test('Render component correctly with empty form', async () => {
-  const { container } = render(wrapper);
+  const { container, getByText, getAllByRole, getByTestId } = render(wrapper);
 
-  expect(screen.getByText('Loading...')).toBeInTheDocument();
-  await act(async () => {
-    await new Promise((resolve) => setTimeout(resolve, 0));
-  });
+  expect(getByText('Loading...')).toBeInTheDocument();
 
   expect(container).toBeInTheDocument();
-  expect(screen.getByText('Add consulting record')).toBeInTheDocument();
+
+  await waitFor(() => {
+    expect(getByText('Add consulting record')).toBeInTheDocument();
+  });
 
   // Get all input elements
-  const inputElements = screen.getAllByRole('textbox');
+  const inputElements = getAllByRole('textbox');
   // Get all radio buttons
-  const radioButtons = screen.getAllByRole('radio');
+  const radioButtons = getAllByRole('radio');
 
   // For selecting organization from dropdown
-  const autoComplete = screen.getByTestId('autocomplete-element');
+  const autoComplete = getByTestId('autocomplete-element');
   fireEvent.mouseDown(autoComplete);
 
   waitFor(() => {
+    expect(getByText('Glific')).toBeInTheDocument();
     const selectedOption = screen.getByText('Glific');
-    expect(selectedOption).toBeInTheDocument();
 
     fireEvent.click(selectedOption);
   });
@@ -62,12 +65,39 @@ test('Render component correctly with empty form', async () => {
   });
 });
 
-test('it renders consulting hours in edit mode', async () => {
-  render(
-    <MockedProvider mocks={mocks} addTypename={false}>
-      <Consulting match={{ params: { id: '1' } }} />
-    </MockedProvider>
-  );
+const consultingEditForm = (
+  <MockedProvider mocks={mocks} addTypename={false}>
+    <Router>
+      <Consulting match={{ params: { id: '1' } }} setOpenDialog={setOpenDialogMock} />
+    </Router>
+  </MockedProvider>
+);
 
-  await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 100)));
+test('it renders consulting hours in edit mode', async () => {
+  const { getByText, getByTestId } = render(consultingEditForm);
+
+  expect(getByText('Loading...')).toBeInTheDocument();
+  await waitFor(() => {
+    expect(getByTestId('AutocompleteInput').querySelector('input')?.value).toBe('Glific');
+  });
+});
+
+test('it renders consulting hours in edit mode', async () => {
+  const { getByText, getByTestId } = render(consultingEditForm);
+
+  expect(getByText('Loading...')).toBeInTheDocument();
+  await waitFor(() => {
+    expect(getByTestId('AutocompleteInput').querySelector('input')?.value).toBe('Glific');
+  });
+});
+
+test('Click in cancel button', async () => {
+  const { getByText } = render(consultingEditForm);
+
+  expect(getByText('Loading...')).toBeInTheDocument();
+  await waitFor(() => {
+    expect(getByText('Cancel')).toBeInTheDocument();
+    fireEvent.click(getByText('Cancel'));
+    expect(setOpenDialogMock).toHaveBeenCalledWith(false);
+  });
 });

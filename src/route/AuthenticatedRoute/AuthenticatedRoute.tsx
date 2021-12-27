@@ -171,16 +171,7 @@ const routeAdmin = (
     <Route path="/trigger" exact component={TriggerList} />
     <Route path="/organizations" exact component={OrganizationList} />
     <Route path="/consulting-hours/" exact component={ConsultingHourList} />
-    <Route
-      path="/consulting-hours/add"
-      exact
-      component={({ match }: any) => <ConsultingHourList openDialog match={match} />}
-    />
-    <Route
-      path="/consulting-hours/:id/edit"
-      exact
-      component={({ match }: any) => <ConsultingHourList openDialog match={match} />}
-    />
+
     <Route path="/contact-fields/" exact component={ContactFieldList} />
     <Route
       path="/contact-fields/add"
