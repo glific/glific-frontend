@@ -180,94 +180,94 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
   const [
     getSearchParameterQuery,
     { called: parameterCalled, data: parameterdata, loading: parameterLoading },
-  ] = useLazyQuery<any>(SEARCH_QUERY, {
-    onCompleted: (searchData) => {
-      if (searchData && searchData.search.length > 0) {
-        // get the conversations from cache
-        const conversations = getCachedConverations(client, queryVariables);
+  ] = useLazyQuery<any>(SEARCH_QUERY);
 
-        const conversationCopy = JSON.parse(JSON.stringify(searchData));
-        conversationCopy.search[0].messages
-          .sort((currentMessage: any, nextMessage: any) => currentMessage.id - nextMessage.id)
-          .reverse();
-        const conversationsCopy = JSON.parse(JSON.stringify(conversations));
+  const onSearchParameterCompleted = (searchData: any) => {
+    if (searchData && searchData.search.length > 0) {
+      // get the conversations from cache
+      const conversations = getCachedConverations(client, queryVariables);
 
-        conversationsCopy.search = conversationsCopy.search.map((conversation: any) => {
-          const conversationObj = conversation;
-          if (collectionId) {
-            // If the collection(group) is present in the cache
-            if (conversationObj.group?.id === collectionId.toString()) {
-              conversationObj.messages = conversationCopy.search[0].messages;
-            }
-            // If the contact is present in the cache
-          } else if (conversationObj.contact?.id === contactId?.toString()) {
+      const conversationCopy = JSON.parse(JSON.stringify(searchData));
+      conversationCopy.search[0].messages
+        .sort((currentMessage: any, nextMessage: any) => currentMessage.id - nextMessage.id)
+        .reverse();
+      const conversationsCopy = JSON.parse(JSON.stringify(conversations));
+
+      conversationsCopy.search = conversationsCopy.search.map((conversation: any) => {
+        const conversationObj = conversation;
+        if (collectionId) {
+          // If the collection(group) is present in the cache
+          if (conversationObj.group?.id === collectionId.toString()) {
             conversationObj.messages = conversationCopy.search[0].messages;
           }
-          return conversationObj;
-        });
-
-        // update the conversation cache
-        updateConversationsCache(conversationsCopy, client, queryVariables);
-
-        // need to display Load more messages button
-        setShowLoadMore(true);
-      }
-    },
-  });
-
-  const [getSearchQuery, { called, data, loading, error }] = useLazyQuery<any>(SEARCH_QUERY, {
-    onCompleted: (searchData) => {
-      if (searchData && searchData.search.length > 0) {
-        // get the conversations from cache
-        const conversations = getCachedConverations(client, queryVariables);
-
-        const conversationCopy = JSON.parse(JSON.stringify(searchData));
-        conversationCopy.search[0].messages
-          .sort((currentMessage: any, nextMessage: any) => currentMessage.id - nextMessage.id)
-          .reverse();
-
-        let conversationsCopy: any = { search: [] };
-        // check for the cache
-        if (JSON.parse(JSON.stringify(conversations))) {
-          conversationsCopy = JSON.parse(JSON.stringify(conversations));
-        }
-        let isContactCached = false;
-        conversationsCopy.search = conversationsCopy.search.map((conversation: any) => {
-          const conversationObj = conversation;
-          // If the collection(group) is present in the cache
-          if (collectionId) {
-            if (conversationObj.group?.id === collectionId.toString()) {
-              isContactCached = true;
-              conversationObj.messages = [
-                ...conversationObj.messages,
-                ...conversationCopy.search[0].messages,
-              ];
-            }
-          }
           // If the contact is present in the cache
-          else if (conversationObj.contact?.id === contactId?.toString()) {
+        } else if (conversationObj.contact?.id === contactId?.toString()) {
+          conversationObj.messages = conversationCopy.search[0].messages;
+        }
+        return conversationObj;
+      });
+
+      // update the conversation cache
+      updateConversationsCache(conversationsCopy, client, queryVariables);
+
+      // need to display Load more messages button
+      setShowLoadMore(true);
+    }
+  };
+
+  const [getSearchQuery, { called, data, loading, error }] = useLazyQuery<any>(SEARCH_QUERY);
+
+  const onSearchCompleted = (searchData: any) => {
+    if (searchData && searchData.search.length > 0) {
+      // get the conversations from cache
+      const conversations = getCachedConverations(client, queryVariables);
+
+      const conversationCopy = JSON.parse(JSON.stringify(searchData));
+      conversationCopy.search[0].messages
+        .sort((currentMessage: any, nextMessage: any) => currentMessage.id - nextMessage.id)
+        .reverse();
+
+      let conversationsCopy: any = { search: [] };
+      // check for the cache
+      if (JSON.parse(JSON.stringify(conversations))) {
+        conversationsCopy = JSON.parse(JSON.stringify(conversations));
+      }
+      let isContactCached = false;
+      conversationsCopy.search = conversationsCopy.search.map((conversation: any) => {
+        const conversationObj = conversation;
+        // If the collection(group) is present in the cache
+        if (collectionId) {
+          if (conversationObj.group?.id === collectionId.toString()) {
             isContactCached = true;
             conversationObj.messages = [
               ...conversationObj.messages,
               ...conversationCopy.search[0].messages,
             ];
           }
-          return conversationObj;
-        });
-
-        // If the contact is NOT present in the cache
-        if (!isContactCached) {
-          conversationsCopy.search = [...conversationsCopy.search, searchData.search[0]];
         }
-        // update the conversation cache
-        updateConversationsCache(conversationsCopy, client, queryVariables);
-
-        if (searchData.search[0].messages.length === 0) {
-          setShowLoadMore(false);
+        // If the contact is present in the cache
+        else if (conversationObj.contact?.id === contactId?.toString()) {
+          isContactCached = true;
+          conversationObj.messages = [
+            ...conversationObj.messages,
+            ...conversationCopy.search[0].messages,
+          ];
         }
+        return conversationObj;
+      });
+
+      // If the contact is NOT present in the cache
+      if (!isContactCached) {
+        conversationsCopy.search = [...conversationsCopy.search, searchData.search[0]];
       }
-    },
-  });
+      // update the conversation cache
+      updateConversationsCache(conversationsCopy, client, queryVariables);
+
+      if (searchData.search[0].messages.length === 0) {
+        setShowLoadMore(false);
+      }
+    }
+  };
 
   useEffect(() => {
     // scroll to the particular message after loading
@@ -422,6 +422,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
 
         getSearchQuery({
           variables,
+        }).then(({ data: searchData }) => {
+          onSearchCompleted(searchData);
         });
       }
       // lets not get from cache if parameter is present
@@ -443,6 +445,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
 
         getSearchParameterQuery({
           variables,
+        }).then(({ data: searchData }) => {
+          onSearchParameterCompleted(searchData);
         });
       }
     }
@@ -475,6 +479,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
 
         getSearchQuery({
           variables,
+        }).then(({ data: searchData }) => {
+          onSearchCompleted(searchData);
         });
       }
     }
@@ -573,6 +579,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
 
       getSearchQuery({
         variables,
+      }).then(({ data: searchData }) => {
+        onSearchCompleted(searchData);
       });
 
       scrollToMessage(messageNumber);
@@ -661,9 +669,10 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
     }
 
     addLogs(`load More Messages-${collectionId}`, variables);
-
     getSearchQuery({
       variables,
+    }).then(({ data: searchData }) => {
+      onSearchCompleted(searchData);
     });
 
     // keep scroll at last message
@@ -808,6 +817,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
 
       getSearchParameterQuery({
         variables,
+      }).then(({ data: searchData }) => {
+        onSearchParameterCompleted(searchData);
       });
     }
 

@@ -113,19 +113,8 @@ export const Simulator: React.FC<SimulatorProps> = ({
     }
   }, [simulatorSubscribe]);
 
-  const [getSimulator, { data }]: any = useLazyQuery(GET_SIMULATOR, {
+  const [getSimulator, { data }] = useLazyQuery(GET_SIMULATOR, {
     fetchPolicy: 'network-only',
-    onCompleted: (simulatorData) => {
-      if (simulatorData.simulatorGet) {
-        setSimulatorId(simulatorData.simulatorGet.id);
-      } else {
-        setNotification(
-          client,
-          'Sorry! Simulators are in use by other staff members right now. Please wait for it to be idle',
-          'warning'
-        );
-      }
-    },
   });
 
   const [releaseSimulator]: any = useLazyQuery(RELEASE_SIMULATOR, {
@@ -549,7 +538,17 @@ export const Simulator: React.FC<SimulatorProps> = ({
     if (getFlowKeyword) {
       getFlowKeyword();
     }
-    getSimulator();
+    getSimulator().then(({ data: { simulatorGet } }) => {
+      if (simulatorGet) {
+        setSimulatorId(simulatorGet.id);
+      } else {
+        setNotification(
+          client,
+          'Sorry! Simulators are in use by other staff members right now. Please wait for it to be idle',
+          'warning'
+        );
+      }
+    });
   };
   return (
     <>

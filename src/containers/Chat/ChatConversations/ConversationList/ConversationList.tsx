@@ -166,25 +166,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     },
   });
 
-  const [loadMoreConversations, { data: contactsData }] = useLazyQuery<any>(SEARCH_QUERY, {
-    onCompleted: (searchData) => {
-      if (searchData && searchData.search.length === 0) {
-        setShowLoadMore(false);
-      } else {
-        // Now if there is search string and tab is collection then load more will return appropriate data
-        const variables: any = queryVariables;
-        if (selectedCollectionId && searchVal) {
-          variables.filter.groupLabel = searchVal;
-        }
-        // save the conversation and update cache
-        updateConversations(searchData, client, variables);
-        setShowLoadMore(true);
-
-        setLoadingOffset(loadingOffset + DEFAULT_CONTACT_LOADMORE_LIMIT);
-      }
-      setShowLoading(false);
-    },
-  });
+  const [loadMoreConversations, { data: contactsData }] = useLazyQuery<any>(SEARCH_QUERY);
 
   useEffect(() => {
     if (contactsData) {
@@ -196,34 +178,11 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     useLazyQuery<any>(SEARCH_QUERY);
 
   // fetch data when typing for search
-  const [getFilterSearch] = useLazyQuery<any>(SEARCH_MULTI_QUERY, {
-    onCompleted: (multiSearch) => {
-      setSearchMultiData(multiSearch);
-    },
-  });
+  const [getFilterSearch] = useLazyQuery<any>(SEARCH_MULTI_QUERY);
 
   // load more messages for multi search load more
-  const [getLoadMoreFilterSearch, { loading: loadingSearch }] = useLazyQuery<any>(
-    SEARCH_MULTI_QUERY,
-    {
-      onCompleted: (multiSearch) => {
-        if (!searchMultiData) {
-          setSearchMultiData(multiSearch);
-        } else if (multiSearch && multiSearch.searchMulti.messages.length !== 0) {
-          const searchMultiDataCopy = JSON.parse(JSON.stringify(searchMultiData));
-          // append new messages to existing messages
-          searchMultiDataCopy.searchMulti.messages = [
-            ...searchMultiData.searchMulti.messages,
-            ...multiSearch.searchMulti.messages,
-          ];
-          setSearchMultiData(searchMultiDataCopy);
-        } else {
-          setShowLoadMore(false);
-        }
-        setShowLoading(false);
-      },
-    }
-  );
+  const [getLoadMoreFilterSearch, { loading: loadingSearch }] =
+    useLazyQuery<any>(SEARCH_MULTI_QUERY);
 
   useEffect(() => {
     // Use multi search when has search value and when there is no collection id
@@ -231,6 +190,8 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       addLogs(`Use multi search when has search value`, filterSearch());
       getFilterSearch({
         variables: filterSearch(),
+      }).then(({ data: multiSearch }) => {
+        setSearchMultiData(multiSearch);
       });
     } else {
       // This is used for filtering the searches, when you click on it, so only call it
@@ -426,6 +387,21 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
 
       getLoadMoreFilterSearch({
         variables,
+      }).then(({ data: multiSearch }) => {
+        if (!searchMultiData) {
+          setSearchMultiData(multiSearch);
+        } else if (multiSearch && multiSearch.searchMulti.messages.length !== 0) {
+          const searchMultiDataCopy = JSON.parse(JSON.stringify(searchMultiData));
+          // append new messages to existing messages
+          searchMultiDataCopy.searchMulti.messages = [
+            ...searchMultiData.searchMulti.messages,
+            ...multiSearch.searchMulti.messages,
+          ];
+          setSearchMultiData(searchMultiDataCopy);
+        } else {
+          setShowLoadMore(false);
+        }
+        setShowLoading(false);
       });
     } else {
       let filter: any = {};
@@ -460,6 +436,22 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
 
       loadMoreConversations({
         variables: conversationLoadMoreVariables,
+      }).then(({ data: loadMoreData }) => {
+        if (loadMoreData && loadMoreData.search.length === 0) {
+          setShowLoadMore(false);
+        } else {
+          // Now if there is search string and tab is collection then load more will return appropriate data
+          const variables: any = queryVariables;
+          if (selectedCollectionId && searchVal) {
+            variables.filter.groupLabel = searchVal;
+          }
+          // save the conversation and update cache
+          updateConversations(loadMoreData, client, variables);
+          setShowLoadMore(true);
+
+          setLoadingOffset(loadingOffset + DEFAULT_CONTACT_LOADMORE_LIMIT);
+        }
+        setShowLoading(false);
       });
     }
   };

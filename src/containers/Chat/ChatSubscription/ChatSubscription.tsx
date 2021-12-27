@@ -44,16 +44,15 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
   const [triggerRefetch, setTriggerRefetch] = useState(false);
   let subscriptionToRefetchSwitchHappened = false;
 
-  const [getContactQuery] = useLazyQuery(SEARCH_QUERY, {
-    onCompleted: (conversation) => {
-      if (conversation && conversation.search.length > 0) {
-        // save the conversation and update cache
+  const [getContactQuery] = useLazyQuery(SEARCH_QUERY);
+  const onGetContactQuery = (conversation: any) => {
+    if (conversation && conversation.search.length > 0) {
+      // save the conversation and update cache
 
-        // temporary fix for cache. need to check why query variables change
-        saveConversation(conversation, client, queryVariables);
-      }
-    },
-  });
+      // temporary fix for cache. need to check why query variables change
+      saveConversation(conversation, client, queryVariables);
+    }
+  };
 
   // function to determine if we should continue to use subscription or use refetch
   const switchSubscriptionToRefetch = () => {
@@ -245,6 +244,8 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
 
         getContactQuery({
           variables,
+        }).then(({ data }) => {
+          onGetContactQuery(data);
         });
 
         return cachedConversations;
@@ -305,27 +306,43 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
     useLazyQuery<any>(SEARCH_QUERY, {
       variables: COLLECTION_SEARCH_QUERY_VARIABLES,
       nextFetchPolicy: 'cache-only',
-      onCompleted: () => {
-        const subscriptionVariables = { organizationId: getUserSession('organizationId') };
-
-        if (collectionSubscribe) {
-          // collection sent subscription
-          collectionSubscribe({
-            document: COLLECTION_SENT_SUBSCRIPTION,
-            variables: subscriptionVariables,
-            updateQuery: (prev, { subscriptionData }) =>
-              updateConversations(prev, subscriptionData, 'COLLECTION'),
-          });
-        }
-      },
     });
+
+  const onLoadCollectionData = () => {
+    const subscriptionVariables = { organizationId: getUserSession('organizationId') };
+
+    if (collectionSubscribe) {
+      // collection sent subscription
+      collectionSubscribe({
+        document: COLLECTION_SENT_SUBSCRIPTION,
+        variables: subscriptionVariables,
+        updateQuery: (prev, { subscriptionData }) =>
+          updateConversations(prev, subscriptionData, 'COLLECTION'),
+      });
+    }
+  };
 
   const [loadData, { loading, error, subscribeToMore, data, refetch }] = useLazyQuery<any>(
     SEARCH_QUERY,
     {
       variables: queryVariables,
       nextFetchPolicy: 'cache-only',
-      onCompleted: () => {
+    }
+  );
+
+  useEffect(() => {
+    if (data && collectionData) {
+      setDataLoaded(true);
+    }
+  }, [data, collectionData]);
+
+  useEffect(() => {
+    setLoading(loading);
+  }, [loading]);
+
+  useEffect(() => {
+    if (!data) {
+      loadData().then(() => {
         const subscriptionVariables = { organizationId: getUserSession('organizationId') };
 
         if (subscribeToMore) {
@@ -370,24 +387,10 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
               updateConversations(prev, subscriptionData, 'TAG_DELETED'),
           });
         }
-      },
-    }
-  );
-
-  useEffect(() => {
-    if (data && collectionData) {
-      setDataLoaded(true);
-    }
-  }, [data, collectionData]);
-
-  useEffect(() => {
-    setLoading(loading);
-  }, [loading]);
-
-  useEffect(() => {
-    if (!data) {
-      loadData();
-      loadCollectionData();
+      });
+      loadCollectionData().then(() => {
+        onLoadCollectionData();
+      });
     }
   }, []);
 

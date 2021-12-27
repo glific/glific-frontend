@@ -94,10 +94,6 @@ export const FlowList: React.SFC<FlowListProps> = () => {
 
   const [exportFlowMutation] = useLazyQuery(EXPORT_FLOW, {
     fetchPolicy: 'network-only',
-    onCompleted: async ({ exportFlow }) => {
-      const { exportData } = exportFlow;
-      await exportFlowMethod(exportData, flowName);
-    },
   });
 
   const setDialog = (id: any) => {
@@ -106,7 +102,9 @@ export const FlowList: React.SFC<FlowListProps> = () => {
 
   const exportFlow = (id: any, item: any) => {
     setFlowName(item.name);
-    exportFlowMutation({ variables: { id } });
+    exportFlowMutation({ variables: { id } }).then(async ({ data: { exportData } }) => {
+      await exportFlowMethod(exportData, flowName);
+    });
   };
 
   const changeHandler = (event: any) => {

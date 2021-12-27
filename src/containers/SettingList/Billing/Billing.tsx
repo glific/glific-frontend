@@ -77,18 +77,10 @@ export const BillingForm: React.FC<BillingProps> = () => {
   });
 
   const [getCouponCode, { data: couponCode, loading: couponLoading, error: couponError }] =
-    useLazyQuery(GET_COUPON_CODE, {
-      onCompleted: ({ getCouponCode: couponCodeResult }) => {
-        if (couponCodeResult.code) {
-          setCouponApplied(true);
-        }
-      },
-    });
+    useLazyQuery(GET_COUPON_CODE);
+
   const [getCustomerPortal, { loading: portalLoading }] = useLazyQuery(GET_CUSTOMER_PORTAL, {
     fetchPolicy: 'network-only',
-    onCompleted: (customerPortal: any) => {
-      window.open(customerPortal.customerPortal.url, '_blank');
-    },
   });
 
   const formFieldItems = [
@@ -322,7 +314,9 @@ export const BillingForm: React.FC<BillingProps> = () => {
         className={styles.Portal}
         data-testid="customerPortalButton"
         onClick={() => {
-          getCustomerPortal();
+          getCustomerPortal().then(({ data: { customerPortal } }) => {
+            window.open(customerPortal.url, '_blank');
+          });
         }}
       >
         Visit Stripe portal <CallMadeIcon />
@@ -454,7 +448,13 @@ export const BillingForm: React.FC<BillingProps> = () => {
                               setFieldError('coupon', 'Please input coupon code');
                               setFieldTouched('coupon');
                             } else {
-                              getCouponCode({ variables: { code: values.coupon } });
+                              getCouponCode({ variables: { code: values.coupon } }).then(
+                                ({ data: { getCouponCode: couponCodeResult } }) => {
+                                  if (couponCodeResult.code) {
+                                    setCouponApplied(true);
+                                  }
+                                }
+                              );
                             }
                           }}
                         >

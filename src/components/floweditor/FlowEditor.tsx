@@ -2,19 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { useMutation, useLazyQuery, useQuery, useApolloClient } from '@apollo/client';
 import { Prompt, Redirect, useHistory } from 'react-router-dom';
 import { IconButton } from '@material-ui/core';
-import * as Manifest from '@glific/flow-editor/build/asset-manifest.json';
 
 import { ReactComponent as HelpIcon } from 'assets/images/icons/Help.svg';
 import { ReactComponent as FlowIcon } from 'assets/images/icons/Flow/Dark.svg';
 import { ReactComponent as WarningIcon } from 'assets/images/icons/Warning.svg';
 import { ReactComponent as ExportIcon } from 'assets/images/icons/Flow/Export.svg';
 import { Button } from 'components/UI/Form/Button/Button';
-import {
-  APP_NAME,
-  FLOW_EDITOR_CONFIGURE_LINK,
-  FLOW_EDITOR_API,
-  FLOWS_HELP_LINK,
-} from 'config/index';
+import { APP_NAME, FLOWS_HELP_LINK } from 'config/index';
 import { Simulator } from 'components/simulator/Simulator';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { setNotification } from 'common/notification';
@@ -25,147 +19,9 @@ import { GET_ORGANIZATION_SERVICES } from 'graphql/queries/Organization';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { exportFlowMethod } from 'common/utils';
 import styles from './FlowEditor.module.css';
-
-declare function showFlowEditor(node: any, config: any): void;
-
-// function to suppress the error for custom registery in floweditor
-const safeDecorator = (fn: any) =>
-  function (...args: any) {
-    try {
-      // @ts-ignore
-      return fn.apply(this, args);
-    } catch (error) {
-      if (
-        error instanceof DOMException &&
-        error.message.includes('has already been used with this registry')
-      ) {
-        return false;
-      }
-      throw error;
-    }
-  };
+import { safeDecorator, loadfiles, setConfig, checkServices } from './FlowEditor.helper';
 
 customElements.define = safeDecorator(customElements.define);
-
-const loadfiles = (startFlowEditor: any) => {
-  const files: Array<HTMLScriptElement | HTMLLinkElement> = [];
-  const filesToLoad: any = Manifest.files;
-  let index = 0;
-  Object.keys(filesToLoad).forEach((fileName) => {
-    if (filesToLoad[fileName].startsWith('/static')) {
-      if (filesToLoad[fileName].endsWith('.js')) {
-        index += 1;
-        const script = document.createElement('script');
-        if (index === 2) {
-          script.onload = () => {
-            startFlowEditor();
-          };
-        }
-        script.src = filesToLoad[fileName];
-        script.id = `flowEditorScript${index}`;
-        script.async = false;
-        files.push(script);
-      }
-
-      if (filesToLoad[fileName].endsWith('.css')) {
-        const link = document.createElement('link');
-        link.href = filesToLoad[fileName];
-        link.id = `flowEditorfile${index}`;
-        link.rel = 'stylesheet';
-        document.body.appendChild(link);
-      }
-    }
-  });
-
-  // loading the largest file first
-  document.body.appendChild(files[3]);
-  document.body.appendChild(files[0]);
-  document.body.appendChild(files[2]);
-  document.body.appendChild(files[1]);
-
-  return files;
-};
-
-const glificBase = FLOW_EDITOR_API;
-
-const setConfig = (uuid: any) => ({
-  flow: uuid,
-  flowType: 'messaging',
-  localStorage: true,
-  mutable: true,
-  attachmentsEnabled: false,
-  filters: ['whatsapp', 'classifier'],
-
-  excludeTypes: [
-    'add_contact_urn',
-    'send_email',
-    'set_run_result',
-    'call_resthook',
-    'start_session',
-    'open_ticket',
-    'transfer_airtime',
-    'split_by_contact_field',
-    'split_by_random',
-    'split_by_scheme',
-  ],
-
-  excludeOperators: [
-    'has_text',
-    'has_number_lt',
-    'has_number_lte',
-    'has_number_gte',
-    'has_number_gt',
-    'has_date',
-    'has_date_category',
-    'has_date_lt',
-    'has_number_lte',
-    'has_number_gte',
-    'has_number_gt',
-    'has_date',
-    'has_date_category',
-    'has_date_lt',
-    'has_date_eq',
-    'has_date_gt',
-    'has_time',
-    'has_group',
-    'has_category',
-    'has_state',
-    'has_state_category',
-    'has_district',
-    'has_ward',
-    'has_error',
-    'has_value',
-  ],
-  help: {
-    legacy_extra: 'help.html',
-    missing_dependency: 'help.html',
-    invalid_regex: 'help.html',
-  },
-  endpoints: {
-    simulateStart: false,
-    simulateResume: false,
-    globals: `${glificBase}globals`,
-    groups: `${glificBase}groups`,
-    fields: `${glificBase}fields`,
-    labels: `${glificBase}labels`,
-    channels: `${glificBase}channels`,
-    classifiers: `${glificBase}classifiers`,
-    ticketers: `${glificBase}ticketers`,
-    resthooks: `${glificBase}resthooks`,
-    templates: `${glificBase}templates`,
-    languages: `${glificBase}languages`,
-    attachments: `${glificBase}flow-attachment`,
-    environment: `${glificBase}environment`,
-    recipients: `${glificBase}recipients`,
-    completion: `${glificBase}completion`,
-    activity: `${glificBase}activity`,
-    flows: `${glificBase}flows`,
-    revisions: `${glificBase}revisions/${uuid}`,
-    editor: FLOW_EDITOR_CONFIGURE_LINK,
-    validateMedia: `${glificBase}validate-media`,
-    interactives: `${glificBase}interactive-templates`,
-  },
-});
 
 export interface FlowEditorProps {
   match: any;
@@ -198,38 +54,14 @@ export const FlowEditor = (props: FlowEditorProps) => {
 
   const [getOrganizationServices] = useLazyQuery(GET_ORGANIZATION_SERVICES, {
     fetchPolicy: 'network-only',
-    onCompleted: (services) => {
-      const { dialogflow, googleCloudStorage } = services.organizationServices;
-
-      if (googleCloudStorage) {
-        config.attachmentsEnabled = true;
-      }
-      if (!dialogflow) {
-        config.excludeTypes.push('split_by_intent');
-      }
-      showFlowEditor(document.getElementById('flow'), config);
-      setLoading(false);
-    },
   });
 
   const [getFreeFlow] = useLazyQuery(GET_FREE_FLOW, {
     fetchPolicy: 'network-only',
-    onCompleted: ({ flowGet }) => {
-      if (flowGet.flow) {
-        getOrganizationServices();
-      } else if (flowGet.errors && flowGet.errors.length) {
-        setDialogMessage(flowGet.errors[0].message);
-        setCurrentEditDialogBox(true);
-      }
-    },
   });
 
   const [exportFlowMutation] = useLazyQuery(EXPORT_FLOW, {
     fetchPolicy: 'network-only',
-    onCompleted: async ({ exportFlow }) => {
-      const { exportData } = exportFlow;
-      exportFlowMethod(exportData, flowTitle);
-    },
   });
 
   const [publishFlow] = useMutation(PUBLISH_FLOW, {
@@ -301,6 +133,23 @@ export const FlowEditor = (props: FlowEditorProps) => {
     flowId = flowName.flows[0].id;
   }
 
+  const checkFlowAvailable = () => {
+    console.log('winddsnc');
+    getFreeFlow({ variables: { id: flowId } }).then(({ data: { flowGet } }) => {
+      console.log(flowGet);
+      if (flowGet.flow) {
+        getOrganizationServices().then(({ data: { organizationServices } }) => {
+          console.log('ss');
+          checkServices(organizationServices, config);
+          setLoading(false);
+        });
+      } else if (flowGet.errors && flowGet.errors.length) {
+        setDialogMessage(flowGet.errors[0].message);
+        setCurrentEditDialogBox(true);
+      }
+    });
+  };
+
   useEffect(() => {
     if (flowName) {
       document.title = flowTitle;
@@ -314,12 +163,13 @@ export const FlowEditor = (props: FlowEditorProps) => {
     if (flowId) {
       const { fetch, xmlSend, xmlOpen } = setAuthHeaders();
       const files = loadfiles(() => {
-        getFreeFlow({ variables: { id: flowId } });
+        checkFlowAvailable();
       });
 
       // when switching tabs we need to check if the flow is still active for the user
       window.onfocus = () => {
-        getFreeFlow({ variables: { id: flowId } });
+        console.log('wodow focus');
+        checkFlowAvailable();
       };
 
       return () => {
@@ -479,7 +329,12 @@ export const FlowEditor = (props: FlowEditorProps) => {
 
         <div
           className={styles.ExportIcon}
-          onClick={() => exportFlowMutation({ variables: { id: flowId } })}
+          onClick={() =>
+            exportFlowMutation({ variables: { id: flowId } }).then(({ data: { exportFlow } }) => {
+              const { exportData } = exportFlow;
+              exportFlowMethod(exportData, flowTitle);
+            })
+          }
           aria-hidden="true"
         >
           <ExportIcon />
