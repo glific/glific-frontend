@@ -19,6 +19,7 @@ export const FILTER_TEMPLATES = gql`
       isActive
       updatedAt
       translations
+      numberParameters
       type
       language {
         id
