@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Redirect } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import * as Yup from 'yup';
 import { useLazyQuery } from '@apollo/client';
@@ -12,7 +12,6 @@ import { Input } from 'components/UI/Form/Input/Input';
 import {
   setAuthSession,
   clearAuthSession,
-  getAuthSession,
   setUserSession,
   clearUserSession,
 } from 'services/AuthService';
@@ -27,9 +26,9 @@ export interface LoginProps {}
 
 export const Login: React.SFC<LoginProps> = () => {
   const { setAuthenticated } = useContext(SessionContext);
-  const [sessionToken, setSessionToken] = useState('');
   const [authError, setAuthError] = useState('');
   const { i18n, t } = useTranslation();
+  const history = useHistory();
 
   // function to unauthorize access
   const accessDenied = () => {
@@ -55,8 +54,6 @@ export const Login: React.SFC<LoginProps> = () => {
       } else {
         // needed to redirect after login
         setAuthenticated(true);
-        const token: any = getAuthSession();
-        setSessionToken(token);
 
         // role & access permissions
         setUserRolePermissions();
@@ -65,25 +62,15 @@ export const Login: React.SFC<LoginProps> = () => {
         if (i18n.changeLanguage) {
           i18n.changeLanguage(userData.currentUser.user?.language.locale);
         }
+
+        // redirect to chat
+        history.push('/chat');
       }
     }
     if (userError) {
       accessDenied();
     }
   }, [userData, userError, setAuthenticated]);
-
-  if (sessionToken) {
-    return (
-      <Redirect
-        to={{
-          pathname: '/chat',
-          state: {
-            tokens: sessionToken,
-          },
-        }}
-      />
-    );
-  }
 
   const formFields = [
     {

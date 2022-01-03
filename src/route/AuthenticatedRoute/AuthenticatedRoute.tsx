@@ -197,6 +197,7 @@ export const AuthenticatedRoute: React.SFC = () => {
   const [dataLoaded, setDataLoaded] = useState(false);
   const [loading, setLoading] = useState(false);
   const toastMessage = useToast();
+
   let userRole: any[] = [];
   let route;
 
