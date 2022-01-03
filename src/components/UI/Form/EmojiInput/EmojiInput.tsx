@@ -16,6 +16,7 @@ export interface EmojiInputProps {
   form: any;
   label: string;
   placeholder: string;
+  disabled?: boolean;
   rows: number;
   handleChange?: any;
   handleBlur?: any;
@@ -154,6 +155,7 @@ export const EmojiInput: React.FC<EmojiInputProps> = ({
     component: Editor,
     editorState: value,
     open,
+    readOnly: props.disabled,
     suggestions,
     onOpenChange,
     onSearchChange,
