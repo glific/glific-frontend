@@ -134,12 +134,9 @@ export const FlowEditor = (props: FlowEditorProps) => {
   }
 
   const checkFlowAvailable = () => {
-    console.log('winddsnc');
     getFreeFlow({ variables: { id: flowId } }).then(({ data: { flowGet } }) => {
-      console.log(flowGet);
       if (flowGet.flow) {
         getOrganizationServices().then(({ data: { organizationServices } }) => {
-          console.log('ss');
           checkServices(organizationServices, config);
           setLoading(false);
         });
@@ -168,7 +165,6 @@ export const FlowEditor = (props: FlowEditorProps) => {
 
       // when switching tabs we need to check if the flow is still active for the user
       window.onfocus = () => {
-        console.log('wodow focus');
         checkFlowAvailable();
       };
 

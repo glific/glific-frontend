@@ -2,6 +2,7 @@ import * as Manifest from '@glific/flow-editor/build/asset-manifest.json';
 import { FLOW_EDITOR_CONFIGURE_LINK, FLOW_EDITOR_API } from 'config/index';
 
 const glificBase = FLOW_EDITOR_API;
+
 declare function showFlowEditor(node: any, config: any): void;
 // function to suppress the error for custom registery in floweditor
 export const safeDecorator = (fn: any) =>
@@ -32,7 +33,6 @@ export const loadfiles = (startFlowEditor: any) => {
         index += 1;
         script.onload = () => {
           counter += 1;
-          console.log(counter);
           if (counter === 4) {
             startFlowEditor();
           }
