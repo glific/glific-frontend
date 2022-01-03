@@ -90,8 +90,12 @@ test('it should have save as draft button', async () => {
 });
 
 test('click on preview button should open simulator', async () => {
-  const { getByTestId } = render(defaultWrapper);
-  fireEvent.click(getByTestId('previewButton'));
+  const { getByTestId, getByText } = render(defaultWrapper);
+  expect(getByText('Loading...')).toBeInTheDocument();
+  await waitFor(() => {
+    fireEvent.click(getByTestId('previewButton'));
+  });
+
   await waitFor(() => {
     expect(getByTestId('beneficiaryName')).toHaveTextContent('Beneficiary');
   });
@@ -115,7 +119,10 @@ test('check if someone else is using a flow', async () => {
   });
 
   await waitFor(() => {
+    scriptElements[0].onload();
     scriptElements[1].onload();
+    scriptElements[2].onload();
+    scriptElements[3].onload();
   });
 
   await waitFor(() => {
@@ -173,7 +180,11 @@ test('start with a keyword message if the simulator opens in floweditor screen',
   await waitFor(() => {
     expect(getByText('help workflow'));
   });
-  fireEvent.click(getByTestId('previewButton'));
+  expect(getByText('Loading...')).toBeInTheDocument();
+  await waitFor(() => {
+    fireEvent.click(getByTestId('previewButton'));
+  });
+
   await waitFor(() => {
     expect(getByTestId('beneficiaryName'));
   });
@@ -181,14 +192,16 @@ test('start with a keyword message if the simulator opens in floweditor screen',
   // need some assertion
 });
 
-test('if the flow the inactive', async () => {
+test('if the flow is inactive', async () => {
   axios.post.mockImplementation(() => Promise.resolve({ data: {} }));
   const { getByTestId, getByText } = render(wrapperFunction(inActiveFlowMocks));
 
   await waitFor(() => {
     expect(getByText('help workflow'));
   });
-  fireEvent.click(getByTestId('previewButton'));
+  await waitFor(() => {
+    fireEvent.click(getByTestId('previewButton'));
+  });
   await waitFor(() => {
     expect(getByTestId('beneficiaryName'));
   });
@@ -204,6 +217,7 @@ test('flow with no keywords', async () => {
     expect(getByText('help workflow'));
   });
   fireEvent.click(getByTestId('previewButton'));
+  await waitFor(() => {});
   await waitFor(() => {
     expect(getByTestId('beneficiaryName'));
   });
