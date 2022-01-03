@@ -5,6 +5,7 @@ import moment from 'moment';
 import { Redirect } from 'react-router-dom';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { useTranslation } from 'react-i18next';
+import setLogs from 'config/logs';
 
 import styles from './ChatMessages.module.css';
 // import { SearchDialogBox } from '../../../components/UI/SearchDialogBox/SearchDialogBox';
@@ -22,6 +23,7 @@ import {
   DEFAULT_MESSAGE_LOADMORE_LIMIT,
   SIMULATOR_NUMBER_START,
 } from '../../../common/constants';
+
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 import {
   CREATE_AND_SEND_MESSAGE_MUTATION,
@@ -737,17 +739,28 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
       </div>
     );
   }
+  let displayName = '';
+  let contactFields: any = {};
+  try {
+    contactFields = JSON.parse(conversationInfo.contact.fields);
+  } catch (er) {
+    setLogs(er, 'error');
+  }
+
+  if (contactFields.name) {
+    displayName = contactFields.name.value;
+  } else if (conversationInfo.contact.name) {
+    displayName = conversationInfo.contact.name;
+  } else {
+    displayName = conversationInfo.contact.maskedPhone;
+  }
 
   let topChatBar;
   let chatInputSection;
   if (contactId) {
     topChatBar = (
       <ContactBar
-        displayName={
-          conversationInfo.contact.name
-            ? conversationInfo.contact.name
-            : conversationInfo.contact.maskedPhone
-        }
+        displayName={displayName}
         isSimulator={conversationInfo.contact.phone.startsWith(SIMULATOR_NUMBER_START)}
         contactId={contactId.toString()}
         lastMessageTime={conversationInfo.contact.lastMessageAt}

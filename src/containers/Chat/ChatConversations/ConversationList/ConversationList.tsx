@@ -19,6 +19,7 @@ import {
 import { updateConversations } from 'services/ChatService';
 import { showMessages } from 'common/responsive';
 import { addLogs } from 'common/utils';
+import setLogs from 'config/logs';
 import ChatConversation from '../ChatConversation/ChatConversation';
 import styles from './ConversationList.module.css';
 
@@ -359,8 +360,17 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
         if (props.selectedContactId === conversation.contact.id) {
           selectedRecord = true;
         }
+        let contactFields: any = {};
+        try {
+          contactFields = JSON.parse(conversation.contact.fields);
+        } catch (er) {
+          setLogs(er, 'error');
+        }
+
         entityId = conversation.contact.id;
-        if (conversation.contact.name) {
+        if (contactFields.name) {
+          displayName = contactFields.name.value;
+        } else if (conversation.contact.name) {
           displayName = conversation.contact.name;
         } else {
           displayName = conversation.contact.maskedPhone;
@@ -376,6 +386,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
         entityId = conversation.group.id;
         displayName = conversation.group.label;
       }
+      console.log(displayName);
 
       return (
         <ChatConversation

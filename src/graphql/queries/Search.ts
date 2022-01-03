@@ -7,6 +7,7 @@ export const SEARCH_QUERY = gql`
         id
         name
         phone
+        fields
         maskedPhone
         lastMessageAt
         status
