@@ -119,10 +119,11 @@ test('check if someone else is using a flow', async () => {
   });
 
   await waitFor(() => {
-    scriptElements[0].onload();
-    scriptElements[1].onload();
-    scriptElements[2].onload();
-    scriptElements[3].onload();
+    // manually trigger onload
+    scriptElements.map((scriptElement: any) => {
+      scriptElement.onload();
+    });
+    
   });
 
   await waitFor(() => {
