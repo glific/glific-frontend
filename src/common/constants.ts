@@ -96,8 +96,6 @@ export const is24HourWindowOver = (time: any) =>
 // connection retry attempt configuration
 export const CONNECTION_RECONNECT_ATTEMPTS = 5;
 
-export const WEBSOCKET_RECONNECTION_ATTEMPTS = 7;
-
 export const MEDIA_MESSAGE_TYPES = ['IMAGE', 'AUDIO', 'VIDEO', 'DOCUMENT', 'STICKER'];
 
 export const setColumnToBackendTerms: any = (listName: string, columnName: string) => {
