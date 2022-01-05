@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider, CssBaseline } from '@material-ui/core';
 import Appsignal from '@appsignal/javascript';
 import { ErrorBoundary } from '@appsignal/react';
+import ReactErrorBoundary from 'components/errorboundary/ErrorBoundary';
 import * as WindowEvents from '@appsignal/plugin-window-events';
 import * as BreadcrumbsNetwork from '@appsignal/plugin-breadcrumbs-network';
 import * as PathDecorator from '@appsignal/plugin-path-decorator';
@@ -34,10 +35,12 @@ if (APPSIGNAL_API_KEY) {
 
 ReactDOM.render(
   <React.StrictMode>
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <BrowserRouter>{appComponent}</BrowserRouter>
-    </ThemeProvider>
+    <ReactErrorBoundary>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <BrowserRouter>{appComponent}</BrowserRouter>
+      </ThemeProvider>
+    </ReactErrorBoundary>
   </React.StrictMode>,
   document.getElementById('root')
 );
