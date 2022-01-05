@@ -134,7 +134,8 @@ export interface TemplateProps {
   getUrlAttachmentAndType?: any;
   getShortcode?: any;
   getExample?: any;
-  getCategory?: any;
+  setCategory?: any;
+  category?: any;
   onExampleChange?: any;
   languageStyle?: string;
 }
@@ -162,7 +163,8 @@ const Template: React.SFC<TemplateProps> = (props) => {
     getUrlAttachmentAndType,
     getShortcode,
     getExample,
-    getCategory,
+    setCategory,
+    category,
     onExampleChange = () => {},
     languageStyle = 'dropdown',
   } = props;
@@ -177,7 +179,6 @@ const Template: React.SFC<TemplateProps> = (props) => {
   const [translations, setTranslations] = useState<any>();
   const [attachmentURL, setAttachmentURL] = useState<any>();
   const [languageOptions, setLanguageOptions] = useState<any>([]);
-  const [category, setCategory] = useState<any>();
   const [isActive, setIsActive] = useState<boolean>(true);
   const [warning, setWarning] = useState<any>();
   const [isUrlValid, setIsUrlValid] = useState<any>();
@@ -247,6 +248,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
     if (exampleValue) {
       let exampleBody: any;
       if (hasButtons) {
+        setTemplateType(templateButtonType);
         const { buttons: buttonsVal, template } = getTemplateAndButtons(
           templateButtonType,
           exampleValue,
@@ -381,12 +383,6 @@ const Template: React.SFC<TemplateProps> = (props) => {
       setExample(getExample);
     }
   }, [getExample]);
-
-  useEffect(() => {
-    if (getCategory) {
-      setCategory(getCategory);
-    }
-  }, [getCategory]);
 
   const validateTitle = (value: any) => {
     let error;

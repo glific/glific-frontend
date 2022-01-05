@@ -233,16 +233,23 @@ export const whatsappHsmCategories = [
 const getTemplateData = {
   sessionTemplate: {
     sessionTemplate: {
-      id: 1,
+      id: '1',
       label: 'important',
       body: 'important template',
       example: 'important template',
-      category: 'ACCOUNT_UPDATE',
+      category: null,
       shortcode: 'important template',
       isActive: true,
+      translations: '{}',
+      type: 'TEXT',
       language: {
-        id: 1,
+        id: '1',
+        label: 'English',
       },
+      MessageMedia: null,
+      hasButtons: false,
+      buttons: null,
+      buttonType: null,
     },
   },
 };
