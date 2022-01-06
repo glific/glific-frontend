@@ -273,7 +273,7 @@ export const Organisation: React.SFC = () => {
       },
       disabled: IsDisabled,
       helperText: t(
-        'the selected flow will trigger when end-users aren’t in any flow, their message doesn’t match any keyword, and the time of their message is as defined above.'
+        'The selected flow will trigger when end-users aren’t in any flow, their message doesn’t match any keyword, and the time of their message is as defined above. Note that the default flow is executed only once a day.'
       ),
       validate: validateOutOfOfficeFlow,
     },
