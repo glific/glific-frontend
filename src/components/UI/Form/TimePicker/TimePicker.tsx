@@ -52,7 +52,7 @@ export const TimePicker: React.SFC<TimePickerProps> = ({
           data-testid="time-picker"
           mask="__:__ _M"
           value={dateValue}
-          onClick={() => setOpen(true)}
+          onClick={() => !disabled && setOpen(true)}
           onClose={() => setOpen(false)}
           disabled={disabled}
           onChange={(date) => handleDateChange(date)}
