@@ -98,7 +98,6 @@ const setConfig = (uuid: any) => ({
 
   excludeTypes: [
     'add_contact_urn',
-    'send_email',
     'set_run_result',
     'call_resthook',
     'start_session',
