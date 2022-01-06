@@ -28,6 +28,7 @@ export const TimePicker: React.SFC<TimePickerProps> = ({
 }) => {
   moment.defaultFormat = 'Thh:mm:ss';
   const dateValue = field.value ? moment(field.value, moment.defaultFormat).toDate() : null;
+  const [open, setOpen] = React.useState(false);
 
   const errorText = getIn(errors, field.name);
   const touchedVal = getIn(touched, field.name);
@@ -44,12 +45,15 @@ export const TimePicker: React.SFC<TimePickerProps> = ({
         <KeyboardTimePicker
           error={hasError}
           autoOk
+          open={open}
           variant={variant}
           inputVariant={inputVariant}
           label={placeholder}
           data-testid="time-picker"
           mask="__:__ _M"
           value={dateValue}
+          onClick={() => setOpen(true)}
+          onClose={() => setOpen(false)}
           disabled={disabled}
           onChange={(date) => handleDateChange(date)}
           keyboardIcon={<ScheduleIcon />}
