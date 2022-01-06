@@ -13,7 +13,6 @@ import { ChatMessage } from './ChatMessage/ChatMessage';
 import { ChatInput } from './ChatInput/ChatInput';
 import { setNotification, setErrorMessage } from '../../../common/notification';
 import {
-  TIME_FORMAT,
   SEARCH_QUERY_VARIABLES,
   // setVariables,
   COLLECTION_SEARCH_QUERY_VARIABLES,
@@ -620,12 +619,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
         //   setDialogbox('tag');
         // }}
         focus={index === 0}
-        showMessage={
-          index !== 0
-            ? moment(reverseConversation[index].insertedAt).format(TIME_FORMAT) !==
-              moment(reverseConversation[index - 1].insertedAt).format(TIME_FORMAT)
-            : true
-        }
         jumpToMessage={jumpToMessage}
         daySeparator={showDaySeparator(
           reverseConversation[index].insertedAt,
