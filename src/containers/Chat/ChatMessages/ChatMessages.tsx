@@ -21,7 +21,6 @@ import {
   DEFAULT_MESSAGE_LOADMORE_LIMIT,
   SIMULATOR_NUMBER_START,
 } from '../../../common/constants';
-
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 import {
   CREATE_AND_SEND_MESSAGE_MUTATION,

@@ -349,7 +349,6 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       const key = index;
 
       let entityId: any;
-
       let senderLastMessage = '';
       let displayName = '';
       let contactStatus = '';
