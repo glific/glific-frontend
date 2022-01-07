@@ -730,11 +730,11 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
       </div>
     );
   }
-  const displayName = getDisplayName(conversationInfo);
 
   let topChatBar;
   let chatInputSection;
   if (contactId) {
+    const displayName = getDisplayName(conversationInfo);
     topChatBar = (
       <ContactBar
         displayName={displayName}
