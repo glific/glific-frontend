@@ -77,7 +77,6 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     sender,
     contactId,
     // tags,
-    showMessage,
     insertedAt,
     onClick,
     type,
@@ -251,11 +250,9 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
 
   const sendByLabel = !isSender && sendBy;
   let messageFooter;
-  if (showMessage && sendByLabel) {
+  if (sendByLabel) {
     messageFooter = `${sendBy} | ${moment(insertedAt).format(TIME_FORMAT)}`;
-  } else if (sendByLabel) {
-    messageFooter = sendBy;
-  } else if (showMessage) {
+  } else {
     messageFooter = moment(insertedAt).format(TIME_FORMAT);
   }
 

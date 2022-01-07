@@ -275,7 +275,9 @@ export const List: React.SFC<ListProps> = ({
       onCompleted: () => {
         checkUserRole();
         refetchCount();
-        refetchValues(filterPayload());
+        if (refetchValues) {
+          refetchValues(filterPayload());
+        }
       },
     });
   }

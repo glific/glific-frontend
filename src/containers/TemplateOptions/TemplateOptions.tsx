@@ -111,6 +111,7 @@ export const TemplateOptions: React.SFC<TemplateOptionsProps> = ({
                         <Radio
                           color="primary"
                           disabled={
+                            disabled ||
                             (index === 0 &&
                               inputFields.length > 1 &&
                               inputFields[0].type !== 'phone_number') ||
@@ -128,6 +129,7 @@ export const TemplateOptions: React.SFC<TemplateOptionsProps> = ({
                         <Radio
                           color="primary"
                           disabled={
+                            disabled ||
                             (index === 0 &&
                               inputFields.length > 1 &&
                               inputFields[0].type !== 'url') ||
@@ -154,7 +156,9 @@ export const TemplateOptions: React.SFC<TemplateOptionsProps> = ({
             <div className={styles.TextFieldWrapper}>
               <FormControl fullWidth error={isError('title')} className={styles.FormControl}>
                 <TextField
+                  disabled={disabled}
                   title={title}
+                  defaultValue={value}
                   placeholder={buttonTitle}
                   variant="outlined"
                   label={buttonTitle}
@@ -173,6 +177,8 @@ export const TemplateOptions: React.SFC<TemplateOptionsProps> = ({
               <FormControl fullWidth error={isError('value')} className={styles.FormControl}>
                 <TextField
                   title={value}
+                  defaultValue={value}
+                  disabled={disabled}
                   placeholder={buttonValue}
                   variant="outlined"
                   label={buttonValue}
@@ -203,6 +209,8 @@ export const TemplateOptions: React.SFC<TemplateOptionsProps> = ({
           <div className={styles.QuickReplyWrapper}>
             <FormControl fullWidth error={isError('value')} className={styles.FormControl}>
               <TextField
+                disabled={disabled}
+                defaultValue={value}
                 title={title}
                 placeholder={`Quick reply ${index + 1} title`}
                 label={`Quick reply ${index + 1} title`}
@@ -211,14 +219,13 @@ export const TemplateOptions: React.SFC<TemplateOptionsProps> = ({
                 className={styles.TextField}
                 error={isError('value')}
                 InputProps={{
-                  endAdornment:
-                    inputFields.length > 1 ? (
-                      <CrossIcon
-                        className={styles.RemoveIcon}
-                        title="Remove"
-                        onClick={() => handleRemoveClick(arrayHelpers, index)}
-                      />
-                    ) : null,
+                  endAdornment: inputFields.length > 1 && !disabled && (
+                    <CrossIcon
+                      className={styles.RemoveIcon}
+                      title="Remove"
+                      onClick={() => handleRemoveClick(arrayHelpers, index)}
+                    />
+                  ),
                 }}
               />
               {errors.templateButtons &&
@@ -251,7 +258,7 @@ export const TemplateOptions: React.SFC<TemplateOptionsProps> = ({
         <div className={styles.RadioLabelWrapper}>
           <FormControlLabel
             value={CALL_TO_ACTION}
-            control={<Radio color="primary" />}
+            control={<Radio color="primary" disabled={disabled} />}
             label="Call to actions"
             classes={{ root: styles.RadioLabel }}
           />
@@ -262,7 +269,7 @@ export const TemplateOptions: React.SFC<TemplateOptionsProps> = ({
         <div className={styles.RadioLabelWrapper}>
           <FormControlLabel
             value={QUICK_REPLY}
-            control={<Radio color="primary" />}
+            control={<Radio color="primary" disabled={disabled} />}
             label="Quick replies"
             className={styles.RadioLabel}
           />
@@ -293,5 +300,5 @@ export const TemplateOptions: React.SFC<TemplateOptionsProps> = ({
     </div>
   );
 
-  return <div>{isAddButtonChecked && !disabled ? radioTemplateType : null}</div>;
+  return <div>{isAddButtonChecked && radioTemplateType}</div>;
 };

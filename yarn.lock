@@ -27,25 +27,7 @@
     core-js "2.6.0"
     zen-observable "0.8.11"
 
-"@apollo/client@3.5.6":
-  version "3.5.6"
-  resolved "https://registry.yarnpkg.com/@apollo/client/-/client-3.5.6.tgz#911929df073280689efd98e5603047b79e0c39a2"
-  integrity sha512-XHoouuEJ4L37mtfftcHHO1caCRrKKAofAwqRoq28UQIPMJk+e7n3X9OtRRNXKk/9tmhNkwelSary+EilfPwI7A==
-  dependencies:
-    "@graphql-typed-document-node/core" "^3.0.0"
-    "@wry/context" "^0.6.0"
-    "@wry/equality" "^0.5.0"
-    "@wry/trie" "^0.3.0"
-    graphql-tag "^2.12.3"
-    hoist-non-react-statics "^3.3.2"
-    optimism "^0.16.1"
-    prop-types "^15.7.2"
-    symbol-observable "^4.0.0"
-    ts-invariant "^0.9.4"
-    tslib "^2.3.0"
-    zen-observable-ts "^1.2.0"
-
-"@apollo/client@^3.0.0", "@apollo/client@^3.0.0-beta.23":
+"@apollo/client@3.4.17", "@apollo/client@^3.0.0", "@apollo/client@^3.0.0-beta.23":
   version "3.4.17"
   resolved "https://registry.yarnpkg.com/@apollo/client/-/client-3.4.17.tgz#4972e19a49809e16d17c5adc67f45623a6dac135"
   integrity sha512-MDt2rwMX1GqodiVEKJqmDmAz8xr0qJmq5PdWeIt0yDaT4GOkKYWZiWkyfhfv3raTk8PyJvbsNG9q2CqmUrlGfg==
@@ -1503,10 +1485,10 @@
   resolved "https://registry.yarnpkg.com/@gar/promisify/-/promisify-1.1.2.tgz#30aa825f11d438671d585bd44e7fd564535fc210"
   integrity sha512-82cpyJyKRoQoRi+14ibCeGPu0CwypgtBAdBhq1WfvagpCZNKqwXbKwXllYSMG91DhmG4jt9gN8eP6lGOtozuaw==
 
-"@glific/flow-editor@^1.14.0-4":
-  version "1.14.0-4"
-  resolved "https://registry.yarnpkg.com/@glific/flow-editor/-/flow-editor-1.14.0-4.tgz#5624fc73d2290bc12e3adbdcf423f02d084a6b9e"
-  integrity sha512-lsKXYn9AS7wV8Au2RUv40Yl49/keSY+ZHJ1FlWgWRvqfBfVlkptFwhLvI5DpuuplNbXlPzp3NSyORZFEEjzFkA==
+"@glific/flow-editor@^1.15.0-2":
+  version "1.15.0-2"
+  resolved "https://registry.yarnpkg.com/@glific/flow-editor/-/flow-editor-1.15.0-2.tgz#9b401ee3abde3a2ed6eb71edbd94c62f80d7b8b7"
+  integrity sha512-lvTL4BlE8YCzMdhkf/nvNlAmt4FL7rgh9wlaKy/GO8p/ML6YpahyVW6Xxnwtx9HG3EJbAVrNIjMqvezzF6E/sg==
   dependencies:
     react "^16.8.6"
     react-dom "^16.8.6"
@@ -13187,13 +13169,6 @@ ts-invariant@^0.9.0:
   dependencies:
     tslib "^2.1.0"
 
-ts-invariant@^0.9.4:
-  version "0.9.4"
-  resolved "https://registry.yarnpkg.com/ts-invariant/-/ts-invariant-0.9.4.tgz#42ac6c791aade267dd9dc65276549df5c5d71cac"
-  integrity sha512-63jtX/ZSwnUNi/WhXjnK8kz4cHHpYS60AnmA6ixz17l7E12a5puCWFlNpkne5Rl0J8TBPVHpGjsj4fxs8ObVLQ==
-  dependencies:
-    tslib "^2.1.0"
-
 ts-pnp@1.2.0, ts-pnp@^1.1.6:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/ts-pnp/-/ts-pnp-1.2.0.tgz#a500ad084b0798f1c3071af391e65912c86bca92"
@@ -14292,13 +14267,6 @@ zen-observable-ts@^0.8.12:
   dependencies:
     tslib "^1.9.3"
     zen-observable "^0.8.0"
-
-zen-observable-ts@^1.2.0:
-  version "1.2.3"
-  resolved "https://registry.yarnpkg.com/zen-observable-ts/-/zen-observable-ts-1.2.3.tgz#c2f5ccebe812faf0cfcde547e6004f65b1a6d769"
-  integrity sha512-hc/TGiPkAWpByykMwDcem3SdUgA4We+0Qb36bItSuJC9xD0XVBZoFHYoadAomDSNf64CG8Ydj0Qb8Od8BUWz5g==
-  dependencies:
-    zen-observable "0.8.15"
 
 zen-observable-ts@~1.1.0:
   version "1.1.0"
