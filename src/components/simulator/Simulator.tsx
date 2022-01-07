@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useApolloClient, useLazyQuery, useQuery, useSubscription } from '@apollo/client';
+import { useApolloClient, useLazyQuery, useSubscription } from '@apollo/client';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 import { Button, ClickAwayListener } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
@@ -22,11 +22,11 @@ import DefaultWhatsappImage from 'assets/images/whatsappDefault.jpg';
 import { ReactComponent as SimulatorIcon } from 'assets/images/icons/Simulator.svg';
 import { SEARCH_QUERY } from 'graphql/queries/Search';
 import {
-  SEARCH_QUERY_VARIABLES,
   TIME_FORMAT,
   SAMPLE_MEDIA_FOR_SIMULATOR,
   INTERACTIVE_LIST,
   INTERACTIVE_QUICK_REPLY,
+  DEFAULT_MESSAGE_LIMIT,
 } from 'common/constants';
 import { GUPSHUP_CALLBACK_URL } from 'config';
 import { ChatMessageType } from 'containers/Chat/ChatMessages/ChatMessage/ChatMessageType/ChatMessageType';
@@ -43,6 +43,10 @@ import {
   SimulatorTemplate,
   ListReplyTemplateDrawer,
 } from 'containers/Chat/ChatMessages/ListReplyTemplate/ListReplyTemplate';
+import {
+  MESSAGE_RECEIVED_SUBSCRIPTION,
+  MESSAGE_SENT_SUBSCRIPTION,
+} from 'graphql/subscriptions/Chat';
 import { QuickReplyTemplate } from 'containers/Chat/ChatMessages/QuickReplyTemplate/QuickReplyTemplate';
 import styles from './Simulator.module.css';
 
@@ -95,9 +99,96 @@ export const Simulator: React.FC<SimulatorProps> = ({
   // chat messages will be shown on simulator
   const isSimulatedMessage = true;
 
-  const { data: allConversations }: any = useQuery(SEARCH_QUERY, {
-    variables: SEARCH_QUERY_VARIABLES,
-    fetchPolicy: 'cache-only',
+  const updateConversations = (cachedConversations: any, subscriptionData: any, action: string) => {
+    // if there is no message data then return previous conversations
+    if (!subscriptionData.data) {
+      return cachedConversations;
+    }
+
+    // let's return early incase we don't have cached conversations
+    // TODO: Need to investigate why this happens
+    if (!cachedConversations) {
+      return null;
+    }
+
+    let newMessage: any;
+    let contactId: number = 0;
+
+    switch (action) {
+      case 'SENT':
+        // set the receiver contact id
+        newMessage = subscriptionData.data.sentMessage;
+        contactId = subscriptionData.data.sentMessage.receiver.id;
+        break;
+      case 'RECEIVED':
+        // set the sender contact id
+        newMessage = subscriptionData.data.receivedMessage;
+        contactId = subscriptionData.data.receivedMessage.sender.id;
+        break;
+
+      default:
+        break;
+    }
+
+    // loop through the cached conversations and find if contact exists
+    let conversationIndex = 0;
+
+    cachedConversations.search.map((conversation: any, index: any) => {
+      if (conversation.contact.id === contactId) {
+        conversationIndex = index;
+      }
+      return null;
+    });
+
+    // we need to handle 2 scenarios:
+    // 1. Add new message if message is sent or received
+    // 2. Add/Delete message tags for a message
+    // let's start by parsing existing conversations
+    const updatedConversations = JSON.parse(JSON.stringify(cachedConversations));
+    let updatedConversation = updatedConversations.search;
+
+    // get the conversation for the contact that needs to be updated
+    updatedConversation = updatedConversation.splice(conversationIndex, 1);
+
+    // update contact last message at when receiving a new Message
+    if (action === 'RECEIVED') {
+      updatedConversation[0].contact.lastMessageAt = newMessage.insertedAt;
+    }
+
+    // Add new message and move the conversation to the top
+    if (newMessage) {
+      updatedConversation[0].messages.unshift(newMessage);
+    }
+
+    // update the conversations
+    updatedConversations.search = [...updatedConversation, ...updatedConversations.search];
+
+    // return the updated object
+    const returnConversations = { ...cachedConversations, ...updatedConversations };
+    return returnConversations;
+  };
+
+  const [loadSimulator, { data: allConversations, subscribeToMore }] = useLazyQuery(SEARCH_QUERY, {
+    onCompleted: () => {
+      if (subscribeToMore) {
+        const subscriptionVariables = { organizationId: getUserSession('organizationId') };
+        // message received subscription
+        subscribeToMore({
+          document: MESSAGE_RECEIVED_SUBSCRIPTION,
+          variables: subscriptionVariables,
+          updateQuery: (prev, { subscriptionData }) =>
+            updateConversations(prev, subscriptionData, 'RECEIVED'),
+        });
+
+        // message sent subscription
+        subscribeToMore({
+          document: MESSAGE_SENT_SUBSCRIPTION,
+          variables: subscriptionVariables,
+          updateQuery: (prev, { subscriptionData }) =>
+            updateConversations(prev, subscriptionData, 'SENT'),
+        });
+      }
+    },
   });
 
   const { data: simulatorSubscribe }: any = useSubscription(SIMULATOR_RELEASE_SUBSCRIPTION, {
@@ -117,6 +208,17 @@ export const Simulator: React.FC<SimulatorProps> = ({
     fetchPolicy: 'network-only',
     onCompleted: (simulatorData) => {
       if (simulatorData.simulatorGet) {
+        loadSimulator({
+          variables: {
+            contactOpts: {
+              limit: 1,
+            },
+            filter: { id: simulatorData.simulatorGet.id },
+            messageOpts: {
+              limit: DEFAULT_MESSAGE_LIMIT,
+            },
+          },
+        });
         setSimulatorId(simulatorData.simulatorGet.id);
       } else {
         setNotification(

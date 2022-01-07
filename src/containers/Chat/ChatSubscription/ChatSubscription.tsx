@@ -30,13 +30,10 @@ import { Loading } from 'components/UI/Layout/Loading/Loading';
 
 export interface ChatSubscriptionProps {
   setDataLoaded: any;
-  setLoading: any;
+  setLoading?: any;
 }
 
-export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
-  setDataLoaded,
-  setLoading,
-}) => {
+export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({ setDataLoaded }) => {
   const queryVariables = SEARCH_QUERY_VARIABLES;
   const client = useApolloClient();
   let subscriptionRequests: any = [];
@@ -304,6 +301,7 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
   const [loadCollectionData, { subscribeToMore: collectionSubscribe, data: collectionData }] =
     useLazyQuery<any>(SEARCH_QUERY, {
       variables: COLLECTION_SEARCH_QUERY_VARIABLES,
+      fetchPolicy: 'network-only',
       nextFetchPolicy: 'cache-only',
       onCompleted: () => {
         const subscriptionVariables = { organizationId: getUserSession('organizationId') };
@@ -324,6 +322,7 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
     SEARCH_QUERY,
     {
       variables: queryVariables,
+      fetchPolicy: 'network-only',
       nextFetchPolicy: 'cache-only',
       onCompleted: () => {
         const subscriptionVariables = { organizationId: getUserSession('organizationId') };
@@ -380,15 +379,13 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
     }
   }, [data, collectionData]);
 
-  useEffect(() => {
-    setLoading(loading);
-  }, [loading]);
+  // useEffect(() => {
+  //   setLoading(loading);
+  // }, [loading]);
 
   useEffect(() => {
-    if (!data) {
-      loadData();
-      loadCollectionData();
-    }
+    loadData();
+    loadCollectionData();
   }, []);
 
   if (loading) return <Loading />;

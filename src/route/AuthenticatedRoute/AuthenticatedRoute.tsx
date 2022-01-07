@@ -1,7 +1,6 @@
-import React, { lazy, useState } from 'react';
+import React, { lazy } from 'react';
 import { Switch, Route, RouteComponentProps, Redirect } from 'react-router-dom';
 
-import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { Chat } from 'containers/Chat/Chat';
 import { getUserRole } from 'context/role';
 import { useToast } from 'services/ToastService';
@@ -12,7 +11,6 @@ const defaultRedirect = () => <Redirect to="/chat" />;
 // const TagList = lazy(() => import('containers/Tag/TagList/TagList'));
 // const Tag = lazy(() => import('containers/Tag/Tag'));
 const Layout = lazy(() => import('components/UI/Layout/Layout'));
-const ChatSubscription = lazy(() => import('containers/Chat/ChatSubscription/ChatSubscription'));
 const SpeedSendList = lazy(() => import('containers/Template/List/SpeedSendList/SpeedSendList'));
 const SpeedSend = lazy(() => import('containers/Template/Form/SpeedSend/SpeedSend'));
 const FlowList = lazy(() => import('containers/Flow/FlowList/FlowList'));
@@ -194,8 +192,6 @@ const routeAdmin = (
 );
 
 export const AuthenticatedRoute: React.SFC = () => {
-  const [dataLoaded, setDataLoaded] = useState(false);
-  const [loading, setLoading] = useState(false);
   const toastMessage = useToast();
 
   let userRole: any[] = [];
@@ -217,19 +213,13 @@ export const AuthenticatedRoute: React.SFC = () => {
     route = routeAdmin;
   }
 
-  const loadingSpinner = <Loading />;
-  route = dataLoaded ? route : null;
   // let's call chat subscriptions at this level so that we can listen to actions which are not performed
   // on chat screen, for eg: send message to collection
   return (
     <div className={styles.App} data-testid="app">
       {toastMessage}
-      {userRole.length > 0 ? (
-        <ChatSubscription setDataLoaded={setDataLoaded} setLoading={setLoading} />
-      ) : (
-        ''
-      )}
-      <Layout>{loading ? loadingSpinner : route}</Layout>
+
+      <Layout>{route}</Layout>
     </div>
   );
 };
