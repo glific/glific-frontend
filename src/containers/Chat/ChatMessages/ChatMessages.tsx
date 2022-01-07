@@ -5,7 +5,6 @@ import moment from 'moment';
 import { Redirect } from 'react-router-dom';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { useTranslation } from 'react-i18next';
-import setLogs from 'config/logs';
 
 import styles from './ChatMessages.module.css';
 // import { SearchDialogBox } from '../../../components/UI/SearchDialogBox/SearchDialogBox';
@@ -32,7 +31,7 @@ import {
 // import { FILTER_TAGS_NAME } from '../../../graphql/queries/Tag';
 // import { ReactComponent as TagIcon } from '../../../assets/images/icons/Tags/Selected.svg';
 import { getCachedConverations, updateConversationsCache } from '../../../services/ChatService';
-import { addLogs } from '../../../common/utils';
+import { addLogs, getDisplayName } from '../../../common/utils';
 import { CollectionInformation } from '../../Collection/CollectionInformation/CollectionInformation';
 
 export interface ChatMessagesProps {
@@ -732,21 +731,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
       </div>
     );
   }
-  let displayName = '';
-  let contactFields: any = {};
-  try {
-    contactFields = JSON.parse(conversationInfo.contact.fields);
-  } catch (er) {
-    setLogs(er, 'error');
-  }
-
-  if (contactFields.name) {
-    displayName = contactFields.name.value;
-  } else if (conversationInfo.contact.name) {
-    displayName = conversationInfo.contact.name;
-  } else {
-    displayName = conversationInfo.contact.maskedPhone;
-  }
+  const displayName = getDisplayName(conversationInfo);
 
   let topChatBar;
   let chatInputSection;

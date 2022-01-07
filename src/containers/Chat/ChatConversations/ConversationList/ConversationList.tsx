@@ -18,8 +18,7 @@ import {
 } from 'common/constants';
 import { updateConversations } from 'services/ChatService';
 import { showMessages } from 'common/responsive';
-import { addLogs } from 'common/utils';
-import setLogs from 'config/logs';
+import { addLogs, getDisplayName } from 'common/utils';
 import ChatConversation from '../ChatConversation/ChatConversation';
 import styles from './ConversationList.module.css';
 
@@ -350,8 +349,9 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       const key = index;
 
       let entityId: any;
-      let displayName = '';
+
       let senderLastMessage = '';
+      let displayName = '';
       let contactStatus = '';
       let contactBspStatus = '';
       let contactIsOrgRead = false;
@@ -360,21 +360,8 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
         if (props.selectedContactId === conversation.contact.id) {
           selectedRecord = true;
         }
-        let contactFields: any = {};
-        try {
-          contactFields = JSON.parse(conversation.contact.fields);
-        } catch (er) {
-          setLogs(er, 'error');
-        }
-
         entityId = conversation.contact.id;
-        if (contactFields.name) {
-          displayName = contactFields.name.value;
-        } else if (conversation.contact.name) {
-          displayName = conversation.contact.name;
-        } else {
-          displayName = conversation.contact.maskedPhone;
-        }
+        displayName = getDisplayName(conversation);
         senderLastMessage = conversation.contact.lastMessageAt;
         contactStatus = conversation.contact.status;
         contactBspStatus = conversation.contact.bspStatus;
@@ -386,7 +373,6 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
         entityId = conversation.group.id;
         displayName = conversation.group.label;
       }
-      console.log(displayName);
 
       return (
         <ChatConversation
