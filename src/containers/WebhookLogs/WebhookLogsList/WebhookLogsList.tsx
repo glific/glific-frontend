@@ -191,7 +191,7 @@ export const WebhookLogsList: React.SFC<WebhookLogsListProps> = () => {
         listItemName="webhookLog"
         pageLink="webhookLog"
         listIcon={webhookLogsIcon}
-        searchParameter={['contact_phone']}
+        searchParameter={['contact_phone', 'url']}
         button={{ show: false, label: '' }}
         {...queries}
         dialogMessage=""
