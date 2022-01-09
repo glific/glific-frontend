@@ -113,7 +113,7 @@ export const ContactHistory: React.FC<ContactHistoryProps> = ({ contactId }) => 
     return (
       <div className={styles.DetailBlock} key={key}>
         <div className={styles.LineItem}>{label}</div>
-        <div className={styles.LineItemDate}>{moment(insertedAt).format('D/MM/YYYY')}</div>
+        <div className={styles.LineItemDate}>{moment(insertedAt).format('h:mma, D/MM/YYYY')}</div>
       </div>
     );
   });
