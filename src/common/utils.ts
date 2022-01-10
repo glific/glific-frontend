@@ -103,4 +103,23 @@ export const getInteractiveMessageBody = (interactiveJSON: any) => {
   return messageBody;
 };
 
+export const getDisplayName = (conversation: any) => {
+  let displayName = '';
+  let contactFields: any = {};
+  try {
+    contactFields = JSON.parse(conversation.contact.fields);
+  } catch (er) {
+    setLogs(er, 'error');
+  }
+
+  if (contactFields.name) {
+    displayName = contactFields.name.value;
+  } else if (conversation.contact.name) {
+    displayName = conversation.contact.name;
+  } else {
+    displayName = conversation.contact.maskedPhone;
+  }
+  return displayName;
+};
+
 export default getObject;

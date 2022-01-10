@@ -30,7 +30,7 @@ import {
 // import { FILTER_TAGS_NAME } from '../../../graphql/queries/Tag';
 // import { ReactComponent as TagIcon } from '../../../assets/images/icons/Tags/Selected.svg';
 import { getCachedConverations, updateConversationsCache } from '../../../services/ChatService';
-import { addLogs } from '../../../common/utils';
+import { addLogs, getDisplayName } from '../../../common/utils';
 import { CollectionInformation } from '../../Collection/CollectionInformation/CollectionInformation';
 
 export interface ChatMessagesProps {
@@ -734,13 +734,10 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
   let topChatBar;
   let chatInputSection;
   if (contactId) {
+    const displayName = getDisplayName(conversationInfo);
     topChatBar = (
       <ContactBar
-        displayName={
-          conversationInfo.contact.name
-            ? conversationInfo.contact.name
-            : conversationInfo.contact.maskedPhone
-        }
+        displayName={displayName}
         isSimulator={conversationInfo.contact.phone.startsWith(SIMULATOR_NUMBER_START)}
         contactId={contactId.toString()}
         lastMessageTime={conversationInfo.contact.lastMessageAt}
