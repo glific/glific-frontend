@@ -21,11 +21,6 @@
   margin-bottom: 24px;
 }
 
-/* .organization > div:nth-of-type(7) {
-  display: inline-block !important;
-  width: 48% !important;
-  margin-right: 2% !important;
-} */
 .organization > div:nth-of-type(n + 10) {
   display: block;
 }
