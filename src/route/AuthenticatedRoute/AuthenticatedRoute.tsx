@@ -1,5 +1,5 @@
 import React, { lazy } from 'react';
-import { Switch, Route, RouteComponentProps, Redirect } from 'react-router-dom';
+import { Switch, Route, Redirect } from 'react-router-dom';
 
 import { Chat } from 'containers/Chat/Chat';
 import { getUserRole } from 'context/role';
@@ -62,30 +62,7 @@ const InteractiveMessage = lazy(() => import('containers/InteractiveMessage/Inte
 
 const routeStaff = (
   <Switch>
-    <Route path="/chat" exact component={Chat} />
-    <Route exact path="/chat/collection" component={() => <Chat collectionId={-1} />} />
-    <Route exact path="/chat/saved-searches/" component={() => <Chat savedSearches />} />
-    <Route
-      exact
-      path="/chat/saved-searches/:contactId"
-      component={({ match }: RouteComponentProps<{ contactId: any }>) => (
-        <Chat savedSearches contactId={match.params.contactId} />
-      )}
-    />
-    <Route
-      exact
-      path="/chat/:contactId"
-      component={({ match }: RouteComponentProps<{ contactId: any }>) => (
-        <Chat contactId={match.params.contactId} />
-      )}
-    />
-    <Route
-      exact
-      path="/chat/collection/:collectionId"
-      component={({ match }: RouteComponentProps<{ collectionId: any }>) => (
-        <Chat collectionId={match.params.collectionId} />
-      )}
-    />
+    <Route path="/chat" component={Chat} />
 
     <Route path="/collection" exact component={CollectionList} />
     <Route path="/collection/:id/contacts" exact component={CollectionContact} />
@@ -100,7 +77,7 @@ const routeStaff = (
 
 const routeAdmin = (
   <Switch>
-    <Route path="/chat" exact component={Chat} />
+    <Route path="/chat" component={Chat} />
     {/* <Route path="/tag" exact component={TagList} />
     <Route path="/tag/add" exact component={Tag} />
     <Route path="/tag/:id/edit" exact component={Tag} /> */}
@@ -143,29 +120,6 @@ const routeAdmin = (
     <Route path="/interactive-message" exact component={InteractiveMessageList} />
     <Route path="/interactive-message/add" exact component={InteractiveMessage} />
     <Route path="/interactive-message/:id/edit" exact component={InteractiveMessage} />
-    <Route exact path="/chat/collection" component={() => <Chat collectionId={-1} />} />
-    <Route exact path="/chat/saved-searches/" component={() => <Chat savedSearches />} />
-    <Route
-      exact
-      path="/chat/saved-searches/:contactId"
-      component={({ match }: RouteComponentProps<{ contactId: any }>) => (
-        <Chat savedSearches contactId={match.params.contactId} />
-      )}
-    />
-    <Route
-      exact
-      path="/chat/:contactId"
-      component={({ match }: RouteComponentProps<{ contactId: any }>) => (
-        <Chat contactId={match.params.contactId} />
-      )}
-    />
-    <Route
-      exact
-      path="/chat/collection/:collectionId"
-      component={({ match }: RouteComponentProps<{ collectionId: any }>) => (
-        <Chat collectionId={match.params.collectionId} />
-      )}
-    />
     <Route path="/trigger" exact component={TriggerList} />
     <Route path="/organizations" exact component={OrganizationList} />
     <Route path="/consulting-hours/" exact component={ConsultingHourList} />
