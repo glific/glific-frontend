@@ -18,38 +18,13 @@ const socketConnection = new PhoenixSocket.Socket(SOCKET, {
 
     return {};
   },
+  reconnectAfterMs: (tries: number) => tries * 1000,
 });
 
-// function to reconnect the web socket connection
-// const resetWSConnection = async (wsConnection: any) => {
-//   // let's renew the token
-//   const authToken = await renewAuthToken();
-//   if (authToken.data) {
-//     // update localstore
-//     setAuthSession(JSON.stringify(authToken.data.data));
-//     setLogs('Successful token renewal by websocket', 'info');
-
-//     // connect the socket again
-//     wsConnection.connect();
-//   }
-// };
-
-socketConnection.onError((error: any) => {
-  console.log('error socket connection', error);
+socketConnection.onError((error: any, ss: any) => {
   // add logs in logflare
-  setLogs(error, 'error');
+  setLogs('Socket connection error', 'error');
 });
-// socketConnection.onClose((error: any) => {
-//   console.log('closing socket connection', error);
-//   // add logs in logflare
-//   setLogs(error, 'error');
-
-//   console.log(socketConnection.connectionState());
-
-//   socketConnection.connect({ token: getAuthSession('access_token') });
-
-//   console.log('reached here');
-// });
 
 // wrap the Phoenix socket in an AbsintheSocket and export
 export default SocketApolloLink.createAbsintheSocketLink(AbsintheSocket.create(socketConnection));
