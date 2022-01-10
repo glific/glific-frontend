@@ -46,6 +46,7 @@ export const Organisation: React.SFC = () => {
   const [IsDisabled, setIsDisable] = useState(false);
   const [IsFlowDisabled, setIsFlowDisable] = useState(true);
   const [organizationId, setOrganizationId] = useState(null);
+  const [newcontactFlowId, setNewcontactFlowId] = useState(null);
   const [activeLanguages, setActiveLanguages] = useState([]);
   const [defaultLanguage, setDefaultLanguage] = useState<any>(null);
   const [signaturePhrase, setSignaturePhrase] = useState();
@@ -64,6 +65,7 @@ export const Organisation: React.SFC = () => {
     activeLanguages,
     defaultLanguage,
     signaturePhrase,
+    newcontactFlowId,
     phone,
   };
 
@@ -98,6 +100,7 @@ export const Organisation: React.SFC = () => {
     defaultLanguage: defaultLanguageValue,
     signaturePhrase: signaturePhraseValue,
     contact: contactValue,
+    newcontactFlowId: newcontactFlowIdValue,
   }: any) => {
     setName(nameValue);
     setHours(outOfOfficeValue.enabled);
@@ -108,6 +111,8 @@ export const Organisation: React.SFC = () => {
     if (outOfOfficeValue.defaultFlowId) {
       setDefaultFlowId(getFlow(outOfOfficeValue.defaultFlowId));
     }
+
+    setNewcontactFlowId(getFlow(newcontactFlowIdValue));
 
     // set the value only if out of office flow is not null
     if (outOfOfficeValue.flowId) {
@@ -254,6 +259,17 @@ export const Organisation: React.SFC = () => {
         </InputAdornment>
       ),
     },
+    {
+      component: AutoComplete,
+      name: 'newcontactFlowId',
+      options: flow.flows,
+      optionLabel: 'name',
+      multiple: false,
+      textFieldProps: {
+        variant: 'outlined',
+        label: t('Select new contact flow'),
+      },
+    },
 
     {
       component: Checkbox,
@@ -341,30 +357,26 @@ export const Organisation: React.SFC = () => {
   };
 
   const setPayload = (payload: any) => {
-    const payloadCopy = payload;
     let object: any = {};
     // set active Language Ids
-    const activeLanguageIds = payloadCopy.activeLanguages.map((language: any) => language.id);
+    const activeLanguageIds = payload.activeLanguages.map((language: any) => language.id);
 
-    // remove activeLanguages from the payload
-    delete payloadCopy.activeLanguages;
-    // set default Language Id
-    const defaultLanguageId = payloadCopy.defaultLanguage.id;
-    // remove defaultLanguage from the payload
-    delete payloadCopy.defaultLanguage;
+    const defaultLanguageId = payload.defaultLanguage.id;
+
     object = {
-      name: payloadCopy.name,
+      name: payload.name,
       outOfOffice: {
-        defaultFlowId: payloadCopy.defaultFlowId ? payloadCopy.defaultFlowId.id : null,
-        enabled: payloadCopy.hours,
-        enabledDays: assignDays(payloadCopy.enabledDays),
-        endTime: payloadCopy.endTime,
-        flowId: payloadCopy.flowId ? payloadCopy.flowId.id : null,
-        startTime: payloadCopy.startTime,
+        defaultFlowId: payload.defaultFlowId ? payload.defaultFlowId.id : null,
+        enabled: payload.hours,
+        enabledDays: assignDays(payload.enabledDays),
+        endTime: payload.endTime,
+        flowId: payload.flowId ? payload.flowId.id : null,
+        startTime: payload.startTime,
       },
 
       defaultLanguageId,
       activeLanguageIds,
+      newcontactFlowId: payload.newcontactFlowId.id,
       signaturePhrase: payload.signaturePhrase,
     };
     return object;
