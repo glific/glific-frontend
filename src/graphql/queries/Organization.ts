@@ -29,6 +29,7 @@ export const GET_ORGANIZATION = gql`
           label
         }
         signaturePhrase
+        newcontactFlowId
       }
     }
   }
