@@ -2,15 +2,36 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [v3.0.0](https://github.com/glific/glific-frontend/compare/v2.6.0...v3.0.0)
+
+> 10 January 2022
+
+- Changed name to contact field name [`#1831`](https://github.com/glific/glific-frontend/pull/1831)
+- Default flow message fix [`#1830`](https://github.com/glific/glific-frontend/pull/1830)
+- Added time and other details on all messages [`#1813`](https://github.com/glific/glific-frontend/pull/1813)
+- Added wait for result node [`#1825`](https://github.com/glific/glific-frontend/pull/1825)
+- Updated floweditor [`#1801`](https://github.com/glific/glific-frontend/pull/1801)
+- Apollo version downgraded due to issues in the latest version [`#1819`](https://github.com/glific/glific-frontend/pull/1819)
+- Fixed issues in edit template UI [`#1799`](https://github.com/glific/glific-frontend/pull/1799)
+- login cleanup [`#1791`](https://github.com/glific/glific-frontend/pull/1791)
+- Fixed number of parameters in HSM templates on chat screen [`#1794`](https://github.com/glific/glific-frontend/pull/1794)
+- [Snyk] Security upgrade node from 12.22.6-alpine to 12-alpine [`#1796`](https://github.com/glific/glific-frontend/pull/1796)
+- [Snyk] Upgrade react-string-replace from 0.4.4 to 0.5.0 [`#1800`](https://github.com/glific/glific-frontend/pull/1800)
+- Consulting screen issues fixed [`#1786`](https://github.com/glific/glific-frontend/pull/1786)
+- Fixed list delete functionality [`#1793`](https://github.com/glific/glific-frontend/pull/1793)
+- Netlify build preview configuration [`#1790`](https://github.com/glific/glific-frontend/pull/1790)
+- Package upgrades [`#1748`](https://github.com/glific/glific-frontend/pull/1748)
+
 #### [v2.6.0](https://github.com/glific/glific-frontend/compare/v2.5.0...v2.6.0)
+
+> 15 December 2021
 
 - Fixed unit test issue on node 16 [`#1782`](https://github.com/glific/glific-frontend/pull/1782)
 - Fixed template ui [`#1781`](https://github.com/glific/glific-frontend/pull/1781)
 - Created contact history section in contact profile [`#1774`](https://github.com/glific/glific-frontend/pull/1774)
 - Fixed bug for English to Hindi translations in some input fields [`#1772`](https://github.com/glific/glific-frontend/pull/1772)
 - Changed optin instructions on the registration page [`#1771`](https://github.com/glific/glific-frontend/pull/1771)
-- Test cases failing in node 16 so switched back to node 14  [`#1776`](https://github.com/glific/glific-frontend/pull/1776)
-
+- Test cases failing in node 16 so switched back to node 14 [`#1776`](https://github.com/glific/glific-frontend/pull/1776)
 
 #### [v2.5.0](https://github.com/glific/glific-frontend/compare/v2.4.1...v2.5.0)
 
@@ -21,7 +42,6 @@ All notable changes to this project will be documented in this file. Dates are d
 - Updated success message for starting a collection flow [`#1769`](https://github.com/glific/glific-frontend/pull/1769)
 - [Snyk] Upgrade @types/react-dom from 17.0.9 to 17.0.11 [`#1761`](https://github.com/glific/glific-frontend/pull/1761)
 - Fixed cypress CI not updating videos [`#1768`](https://github.com/glific/glific-frontend/pull/1768)
-
 
 #### [v2.4.1](https://github.com/glific/glific-frontend/compare/v2.4.0...v2.4.1)
 
@@ -58,7 +78,6 @@ All notable changes to this project will be documented in this file. Dates are d
 - Added team member in consulting hours [`#1724`](https://github.com/glific/glific-frontend/pull/1724)
 - Updated floweditor fonts [`#1722`](https://github.com/glific/glific-frontend/pull/1722)
 - Localization fixes [`#1703`](https://github.com/glific/glific-frontend/pull/1703)
-
 
 #### [v2.3.1](https://github.com/glific/glific-frontend/compare/v2.3.0...v2.3.1)
 
@@ -128,14 +147,12 @@ All notable changes to this project will be documented in this file. Dates are d
 - Language update [`#1638`](https://github.com/glific/glific-frontend/pull/1638)
 - Adding logs to check functionality of the latest version checker [`#1640`](https://github.com/glific/glific-frontend/pull/1640)
 
-
 #### [v2.1.4](https://github.com/glific/glific-frontend/compare/v2.1.3...v2.1.4)
 
 > 9 September 2021
 
 - Removed beta from triggers and updated translations [`#1637`](https://github.com/glific/glific-frontend/pull/1637)
 - Updated floweditor with the interactive message fix [`#1636`](https://github.com/glific/glific-frontend/pull/1636)
-
 
 #### [v2.1.3](https://github.com/glific/glific-frontend/compare/v2.1.2...v2.1.3)
 
@@ -152,7 +169,6 @@ All notable changes to this project will be documented in this file. Dates are d
 - Added validation for result variables in floweditor [`#1625`](https://github.com/glific/glific-frontend/pull/1625)
 - Date display [`#1621`](https://github.com/glific/glific-frontend/pull/1621)
 - Tooltip fixes for image viewer [`#1617`](https://github.com/glific/glific-frontend/pull/1617)
-
 
 #### [v2.1.1](https://github.com/glific/glific-frontend/compare/v2.1.0...v2.1.1)
 
@@ -172,7 +188,7 @@ All notable changes to this project will be documented in this file. Dates are d
 - Updated footer color [`#1598`](https://github.com/glific/glific-frontend/pull/1598)
 - Added name of the person who is updating flows in the dialog message description [`#1594`](https://github.com/glific/glific-frontend/pull/1594)
 - Added suspended account fee details on the billing details page [`#1592`](https://github.com/glific/glific-frontend/pull/1592)
-- Added functionality for Locking flows while editing  [`#1588`](https://github.com/glific/glific-frontend/pull/1588)
+- Added functionality for Locking flows while editing [`#1588`](https://github.com/glific/glific-frontend/pull/1588)
 - Log errors [`#1591`](https://github.com/glific/glific-frontend/pull/1591)
 - Test case cleanups [`#1589`](https://github.com/glific/glific-frontend/pull/1589)
 - Now chat message will show sendBy label for received message, fixed [`#1577`](https://github.com/glific/glific-frontend/pull/1577)

@@ -46,6 +46,8 @@ export const Organisation: React.SFC = () => {
   const [IsDisabled, setIsDisable] = useState(false);
   const [IsFlowDisabled, setIsFlowDisable] = useState(true);
   const [organizationId, setOrganizationId] = useState(null);
+  const [newcontactFlowId, setNewcontactFlowId] = useState(null);
+  const [newcontactFlowEnabled, setNewcontactFlowEnabled] = useState(false);
   const [activeLanguages, setActiveLanguages] = useState([]);
   const [defaultLanguage, setDefaultLanguage] = useState<any>(null);
   const [signaturePhrase, setSignaturePhrase] = useState();
@@ -62,8 +64,10 @@ export const Organisation: React.SFC = () => {
     defaultFlowId,
     flowId,
     activeLanguages,
+    newcontactFlowEnabled,
     defaultLanguage,
     signaturePhrase,
+    newcontactFlowId,
     phone,
   };
 
@@ -98,6 +102,7 @@ export const Organisation: React.SFC = () => {
     defaultLanguage: defaultLanguageValue,
     signaturePhrase: signaturePhraseValue,
     contact: contactValue,
+    newcontactFlowId: newcontactFlowIdValue,
   }: any) => {
     setName(nameValue);
     setHours(outOfOfficeValue.enabled);
@@ -107,6 +112,11 @@ export const Organisation: React.SFC = () => {
     // set the value only if default flow is not null
     if (outOfOfficeValue.defaultFlowId) {
       setDefaultFlowId(getFlow(outOfOfficeValue.defaultFlowId));
+    }
+
+    if (newcontactFlowIdValue) {
+      setNewcontactFlowEnabled(true);
+      setNewcontactFlowId(getFlow(newcontactFlowIdValue));
     }
 
     // set the value only if out of office flow is not null
@@ -197,6 +207,12 @@ export const Organisation: React.SFC = () => {
     endTime: Yup.string()
       .test('is-midnight', 'End time can not be 12 AM', (value) => value !== 'T00:00:00')
       .test('is-valid', 'Not a valid time', (value) => value !== 'Invalid time'),
+    newcontactFlowId: Yup.object()
+      .nullable()
+      .when('newcontactFlowEnabled', {
+        is: (val: string) => val,
+        then: Yup.object().nullable().required(t('New contact flow is required.')),
+      }),
   };
 
   const FormSchema = Yup.object().shape(validation);
@@ -265,6 +281,12 @@ export const Organisation: React.SFC = () => {
       handleChange,
     },
     {
+      component: Checkbox,
+      name: 'newcontactFlowEnabled',
+      title: <Typography className={styles.CheckboxLabel}>{t('New contact flow')}</Typography>,
+      handleChange: setNewcontactFlowEnabled,
+    },
+    {
       component: AutoComplete,
       name: 'defaultFlowId',
       options: flow.flows,
@@ -276,9 +298,22 @@ export const Organisation: React.SFC = () => {
       },
       disabled: IsDisabled,
       helperText: t(
-        'the selected flow will trigger when end-users aren’t in any flow, their message doesn’t match any keyword, and the time of their message is as defined above.'
+        'The selected flow will trigger when end-users aren’t in any flow, their message doesn’t match any keyword, and the time of their message is as defined above. Note that the default flow is executed only once a day.'
       ),
       validate: validateOutOfOfficeFlow,
+    },
+    {
+      component: AutoComplete,
+      name: 'newcontactFlowId',
+      options: flow.flows,
+      optionLabel: 'name',
+      multiple: false,
+      disabled: !newcontactFlowEnabled,
+      textFieldProps: {
+        variant: 'outlined',
+        label: t('Select flow'),
+      },
+      helperText: t('For new contacts messaging your chatbot for the first time'),
     },
     {
       component: AutoComplete,
@@ -344,30 +379,30 @@ export const Organisation: React.SFC = () => {
   };
 
   const setPayload = (payload: any) => {
-    const payloadCopy = payload;
     let object: any = {};
     // set active Language Ids
-    const activeLanguageIds = payloadCopy.activeLanguages.map((language: any) => language.id);
+    const activeLanguageIds = payload.activeLanguages.map((language: any) => language.id);
+    let newContactFlowId = null;
 
-    // remove activeLanguages from the payload
-    delete payloadCopy.activeLanguages;
-    // set default Language Id
-    const defaultLanguageId = payloadCopy.defaultLanguage.id;
-    // remove defaultLanguage from the payload
-    delete payloadCopy.defaultLanguage;
+    if (newcontactFlowEnabled) {
+      newContactFlowId = payload.newcontactFlowId.id;
+    }
+    const defaultLanguageId = payload.defaultLanguage.id;
+
     object = {
-      name: payloadCopy.name,
+      name: payload.name,
       outOfOffice: {
-        defaultFlowId: payloadCopy.defaultFlowId ? payloadCopy.defaultFlowId.id : null,
-        enabled: payloadCopy.hours,
-        enabledDays: assignDays(payloadCopy.enabledDays),
-        endTime: payloadCopy.endTime,
-        flowId: payloadCopy.flowId ? payloadCopy.flowId.id : null,
-        startTime: payloadCopy.startTime,
+        defaultFlowId: payload.defaultFlowId ? payload.defaultFlowId.id : null,
+        enabled: payload.hours,
+        enabledDays: assignDays(payload.enabledDays),
+        endTime: payload.endTime,
+        flowId: payload.flowId ? payload.flowId.id : null,
+        startTime: payload.startTime,
       },
 
       defaultLanguageId,
       activeLanguageIds,
+      newcontactFlowId: newContactFlowId,
       signaturePhrase: payload.signaturePhrase,
     };
     return object;

@@ -13,7 +13,6 @@ import { ChatMessage } from './ChatMessage/ChatMessage';
 import { ChatInput } from './ChatInput/ChatInput';
 import { setNotification, setErrorMessage } from '../../../common/notification';
 import {
-  TIME_FORMAT,
   SEARCH_QUERY_VARIABLES,
   // setVariables,
   COLLECTION_SEARCH_QUERY_VARIABLES,
@@ -31,7 +30,7 @@ import {
 // import { FILTER_TAGS_NAME } from '../../../graphql/queries/Tag';
 // import { ReactComponent as TagIcon } from '../../../assets/images/icons/Tags/Selected.svg';
 import { getCachedConverations, updateConversationsCache } from '../../../services/ChatService';
-import { addLogs } from '../../../common/utils';
+import { addLogs, getDisplayName } from '../../../common/utils';
 import { CollectionInformation } from '../../Collection/CollectionInformation/CollectionInformation';
 
 export interface ChatMessagesProps {
@@ -620,12 +619,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
         //   setDialogbox('tag');
         // }}
         focus={index === 0}
-        showMessage={
-          index !== 0
-            ? moment(reverseConversation[index].insertedAt).format(TIME_FORMAT) !==
-              moment(reverseConversation[index - 1].insertedAt).format(TIME_FORMAT)
-            : true
-        }
         jumpToMessage={jumpToMessage}
         daySeparator={showDaySeparator(
           reverseConversation[index].insertedAt,
@@ -741,13 +734,10 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
   let topChatBar;
   let chatInputSection;
   if (contactId) {
+    const displayName = getDisplayName(conversationInfo);
     topChatBar = (
       <ContactBar
-        displayName={
-          conversationInfo.contact.name
-            ? conversationInfo.contact.name
-            : conversationInfo.contact.maskedPhone
-        }
+        displayName={displayName}
         isSimulator={conversationInfo.contact.phone.startsWith(SIMULATOR_NUMBER_START)}
         contactId={contactId.toString()}
         lastMessageTime={conversationInfo.contact.lastMessageAt}

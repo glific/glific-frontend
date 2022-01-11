@@ -192,7 +192,7 @@ export const FlowList: React.SFC<FlowListProps> = () => {
         dialogMessage={dialogMessage}
         {...queries}
         {...columnAttributes}
-        searchParameter="nameOrKeyword"
+        searchParameter={['nameOrKeyword']}
         removeSortBy={['LAST PUBLISHED', 'LAST SAVED IN DRAFT']}
         additionalAction={additionalAction}
         button={{ show: true, label: t('+ Create Flow') }}
