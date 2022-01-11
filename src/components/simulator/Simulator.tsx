@@ -51,6 +51,7 @@ import {
   SIMULATOR_MESSAGE_RECEIVED_SUBSCRIPTION,
   SIMULATOR_MESSAGE_SENT_SUBSCRIPTION,
 } from 'graphql/subscriptions/Simulator';
+import { updateSimulatorConversations } from 'services/SubscriptionService';
 import styles from './Simulator.module.css';
 
 export interface SimulatorProps {
@@ -102,44 +103,6 @@ export const Simulator: React.FC<SimulatorProps> = ({
   // chat messages will be shown on simulator
   const isSimulatedMessage = true;
 
-  const updateConversations = (cachedConversations: any, subscriptionData: any, action: string) => {
-    // if there is no message data then return previous conversations
-    if (!subscriptionData.data) {
-      return cachedConversations;
-    }
-
-    if (!cachedConversations) {
-      return null;
-    }
-
-    let newMessage: any;
-    let contactId: number = 0;
-
-    switch (action) {
-      case 'SENT':
-        // set the receiver contact id
-        newMessage = subscriptionData.data.sentMessage;
-        contactId = subscriptionData.data.sentMessage.receiver.id;
-        break;
-      case 'RECEIVED':
-        // set the sender contact id
-        newMessage = subscriptionData.data.receivedMessage;
-        contactId = subscriptionData.data.receivedMessage.sender.id;
-        break;
-      default:
-        break;
-    }
-
-    const updatedConversations = JSON.parse(JSON.stringify(cachedConversations));
-    const updatedConversation = updatedConversations.search[0];
-
-    // Add new message and move the conversation to the top
-    if (newMessage && updatedConversation.contact.id === contactId) {
-      updatedConversation.messages.unshift(newMessage);
-    }
-    return updatedConversations;
-  };
-
   const [loadSimulator, { data: allConversations, subscribeToMore }] = useLazyQuery(
     SIMULATOR_SEARCH_QUERY,
     {
@@ -152,7 +115,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
             document: SIMULATOR_MESSAGE_RECEIVED_SUBSCRIPTION,
             variables: subscriptionVariables,
             updateQuery: (prev, { subscriptionData }) =>
-              updateConversations(prev, subscriptionData, 'RECEIVED'),
+              updateSimulatorConversations(prev, subscriptionData, 'RECEIVED'),
           });
 
           // message sent subscription
@@ -160,7 +123,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
             document: SIMULATOR_MESSAGE_SENT_SUBSCRIPTION,
             variables: subscriptionVariables,
             updateQuery: (prev, { subscriptionData }) =>
-              updateConversations(prev, subscriptionData, 'SENT'),
+              updateSimulatorConversations(prev, subscriptionData, 'SENT'),
           });
         }
       },
