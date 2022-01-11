@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import 'date-fns';
 import Grid from '@material-ui/core/Grid';
 import DateFnsUtils from '@date-io/date-fns';
@@ -28,7 +28,7 @@ export const TimePicker: React.SFC<TimePickerProps> = ({
 }) => {
   moment.defaultFormat = 'Thh:mm:ss';
   const dateValue = field.value ? moment(field.value, moment.defaultFormat).toDate() : null;
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   const errorText = getIn(errors, field.name);
   const touchedVal = getIn(touched, field.name);
