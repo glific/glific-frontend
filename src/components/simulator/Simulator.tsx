@@ -51,7 +51,6 @@ import {
   SIMULATOR_MESSAGE_RECEIVED_SUBSCRIPTION,
   SIMULATOR_MESSAGE_SENT_SUBSCRIPTION,
 } from 'graphql/subscriptions/Simulator';
-import Loading from 'components/UI/Layout/Loading/Loading';
 import styles from './Simulator.module.css';
 
 export interface SimulatorProps {
