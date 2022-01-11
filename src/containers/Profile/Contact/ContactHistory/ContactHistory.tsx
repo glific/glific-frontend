@@ -7,6 +7,7 @@ import { Button } from 'components/UI/Form/Button/Button';
 import Loading from 'components/UI/Layout/Loading/Loading';
 import { COUNT_CONTACT_HISTORY, GET_CONTACT_HISTORY } from 'graphql/queries/Contact';
 import setLogs from 'config/logs';
+import { DATE_TIME_FORMAT } from 'common/constants';
 import styles from './ContactHistory.module.css';
 
 export interface ContactHistoryProps {
@@ -113,7 +114,7 @@ export const ContactHistory: React.FC<ContactHistoryProps> = ({ contactId }) => 
     return (
       <div className={styles.DetailBlock} key={key}>
         <div className={styles.LineItem}>{label}</div>
-        <div className={styles.LineItemDate}>{moment(insertedAt).format('D/MM/YYYY')}</div>
+        <div className={styles.LineItemDate}>{moment(insertedAt).format(DATE_TIME_FORMAT)}</div>
       </div>
     );
   });
