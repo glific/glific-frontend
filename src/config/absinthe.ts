@@ -21,7 +21,7 @@ const socketConnection = new PhoenixSocket.Socket(SOCKET, {
   reconnectAfterMs: (tries: number) => tries * 1000,
 });
 
-socketConnection.onError((error: any, ss: any) => {
+socketConnection.onError(() => {
   // add logs in logflare
   setLogs('Socket connection error', 'error');
 });

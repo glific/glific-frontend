@@ -379,10 +379,6 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({ setDataLoad
     }
   }, [data, collectionData]);
 
-  // useEffect(() => {
-  //   setLoading(loading);
-  // }, [loading]);
-
   useEffect(() => {
     loadData();
     loadCollectionData();

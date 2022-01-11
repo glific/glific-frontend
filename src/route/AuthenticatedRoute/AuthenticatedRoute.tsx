@@ -1,9 +1,10 @@
 import React, { lazy } from 'react';
-import { Switch, Route, Redirect } from 'react-router-dom';
+import { Switch, Route, Redirect, RouteComponentProps } from 'react-router-dom';
 
 import { Chat } from 'containers/Chat/Chat';
 import { getUserRole } from 'context/role';
 import { useToast } from 'services/ToastService';
+import ChatInterface from 'containers/Chat/ChatInterface/ChatInterface';
 import styles from './AuthenticatedRoute.module.css';
 
 const defaultRedirect = () => <Redirect to="/chat" />;
@@ -142,6 +143,35 @@ const routeAdmin = (
     />
 
     <Route path="/" render={defaultRedirect} />
+  </Switch>
+);
+
+export const chatRoutes = (
+  <Switch>
+    <Route exact path="/chat/collection" component={() => <ChatInterface collectionId={-1} />} />
+    <Route exact path="/chat/saved-searches/" component={() => <ChatInterface savedSearches />} />
+    <Route
+      exact
+      path="/chat/saved-searches/:contactId"
+      component={({ match }: RouteComponentProps<{ contactId: any }>) => (
+        <ChatInterface savedSearches contactId={match.params.contactId} />
+      )}
+    />
+    <Route
+      exact
+      path="/chat/:contactId"
+      component={({ match }: RouteComponentProps<{ contactId: any }>) => (
+        <ChatInterface contactId={match.params.contactId} />
+      )}
+    />
+    <Route
+      exact
+      path="/chat/collection/:collectionId"
+      component={({ match }: RouteComponentProps<{ collectionId: any }>) => (
+        <ChatInterface collectionId={match.params.collectionId} />
+      )}
+    />
+    <Route exact path="/chat" component={() => <ChatInterface />} />
   </Switch>
 );
 

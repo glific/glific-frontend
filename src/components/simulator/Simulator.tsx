@@ -20,7 +20,6 @@ import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
 import { Button as FormButton } from 'components/UI/Form/Button/Button';
 import DefaultWhatsappImage from 'assets/images/whatsappDefault.jpg';
 import { ReactComponent as SimulatorIcon } from 'assets/images/icons/Simulator.svg';
-import { SEARCH_QUERY } from 'graphql/queries/Search';
 import {
   TIME_FORMAT,
   SAMPLE_MEDIA_FOR_SIMULATOR,
@@ -31,7 +30,11 @@ import {
 import { GUPSHUP_CALLBACK_URL } from 'config';
 import { ChatMessageType } from 'containers/Chat/ChatMessages/ChatMessage/ChatMessageType/ChatMessageType';
 import { TemplateButtons } from 'containers/Chat/ChatMessages/TemplateButtons/TemplateButtons';
-import { GET_SIMULATOR, RELEASE_SIMULATOR } from 'graphql/queries/Simulator';
+import {
+  GET_SIMULATOR,
+  RELEASE_SIMULATOR,
+  SIMULATOR_SEARCH_QUERY,
+} from 'graphql/queries/Simulator';
 import { SIMULATOR_RELEASE_SUBSCRIPTION } from 'graphql/subscriptions/PeriodicInfo';
 import { getUserSession } from 'services/AuthService';
 import { setNotification } from 'common/notification';
@@ -43,11 +46,11 @@ import {
   SimulatorTemplate,
   ListReplyTemplateDrawer,
 } from 'containers/Chat/ChatMessages/ListReplyTemplate/ListReplyTemplate';
-import {
-  MESSAGE_RECEIVED_SUBSCRIPTION,
-  MESSAGE_SENT_SUBSCRIPTION,
-} from 'graphql/subscriptions/Chat';
 import { QuickReplyTemplate } from 'containers/Chat/ChatMessages/QuickReplyTemplate/QuickReplyTemplate';
+import {
+  SIMULATOR_MESSAGE_RECEIVED_SUBSCRIPTION,
+  SIMULATOR_MESSAGE_SENT_SUBSCRIPTION,
+} from 'graphql/subscriptions/Simulator';
 import styles from './Simulator.module.css';
 
 export interface SimulatorProps {
@@ -105,8 +108,6 @@ export const Simulator: React.FC<SimulatorProps> = ({
       return cachedConversations;
     }
 
-    // let's return early incase we don't have cached conversations
-    // TODO: Need to investigate why this happens
     if (!cachedConversations) {
       return null;
     }
@@ -125,71 +126,46 @@ export const Simulator: React.FC<SimulatorProps> = ({
         newMessage = subscriptionData.data.receivedMessage;
         contactId = subscriptionData.data.receivedMessage.sender.id;
         break;
-
       default:
         break;
     }
 
-    // loop through the cached conversations and find if contact exists
-    let conversationIndex = 0;
-
-    cachedConversations.search.map((conversation: any, index: any) => {
-      if (conversation.contact.id === contactId) {
-        conversationIndex = index;
-      }
-      return null;
-    });
-
-    // we need to handle 2 scenarios:
-    // 1. Add new message if message is sent or received
-    // 2. Add/Delete message tags for a message
-    // let's start by parsing existing conversations
     const updatedConversations = JSON.parse(JSON.stringify(cachedConversations));
-    let updatedConversation = updatedConversations.search;
-
-    // get the conversation for the contact that needs to be updated
-    updatedConversation = updatedConversation.splice(conversationIndex, 1);
-
-    // update contact last message at when receiving a new Message
-    if (action === 'RECEIVED') {
-      updatedConversation[0].contact.lastMessageAt = newMessage.insertedAt;
-    }
+    const updatedConversation = updatedConversations.search[0];
 
     // Add new message and move the conversation to the top
-    if (newMessage) {
-      updatedConversation[0].messages.unshift(newMessage);
+    if (newMessage && updatedConversation.contact.id === contactId) {
+      updatedConversation.messages.unshift(newMessage);
     }
-
-    // update the conversations
-    updatedConversations.search = [...updatedConversation, ...updatedConversations.search];
-
-    // return the updated object
-    const returnConversations = { ...cachedConversations, ...updatedConversations };
-    return returnConversations;
+    return updatedConversations;
   };
 
-  const [loadSimulator, { data: allConversations, subscribeToMore }] = useLazyQuery(SEARCH_QUERY, {
-    onCompleted: () => {
-      if (subscribeToMore) {
-        const subscriptionVariables = { organizationId: getUserSession('organizationId') };
-        // message received subscription
-        subscribeToMore({
-          document: MESSAGE_RECEIVED_SUBSCRIPTION,
-          variables: subscriptionVariables,
-          updateQuery: (prev, { subscriptionData }) =>
-            updateConversations(prev, subscriptionData, 'RECEIVED'),
-        });
+  const [loadSimulator, { data: allConversations, subscribeToMore }] = useLazyQuery(
+    SIMULATOR_SEARCH_QUERY,
+    {
+      fetchPolicy: 'network-only',
+      onCompleted: () => {
+        if (subscribeToMore) {
+          const subscriptionVariables = { organizationId: getUserSession('organizationId') };
+          // message received subscription
+          subscribeToMore({
+            document: SIMULATOR_MESSAGE_RECEIVED_SUBSCRIPTION,
+            variables: subscriptionVariables,
+            updateQuery: (prev, { subscriptionData }) =>
+              updateConversations(prev, subscriptionData, 'RECEIVED'),
+          });
 
-        // message sent subscription
-        subscribeToMore({
-          document: MESSAGE_SENT_SUBSCRIPTION,
-          variables: subscriptionVariables,
-          updateQuery: (prev, { subscriptionData }) =>
-            updateConversations(prev, subscriptionData, 'SENT'),
-        });
-      }
-    },
-  });
+          // message sent subscription
+          subscribeToMore({
+            document: SIMULATOR_MESSAGE_SENT_SUBSCRIPTION,
+            variables: subscriptionVariables,
+            updateQuery: (prev, { subscriptionData }) =>
+              updateConversations(prev, subscriptionData, 'SENT'),
+          });
+        }
+      },
+    }
+  );
 
   const { data: simulatorSubscribe }: any = useSubscription(SIMULATOR_RELEASE_SUBSCRIPTION, {
     variables,
