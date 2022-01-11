@@ -126,7 +126,7 @@ export const BlockContactList: React.SFC<BlockContactListProps> = () => {
         pageLink="contacts"
         listIcon={blockIcon}
         additionalAction={additionalAction}
-        searchParameter="name"
+        searchParameter={['name']}
         filters={{ status: 'BLOCKED' }}
         button={{ show: false, label: '' }}
         dialogMessage={dialogMessage}

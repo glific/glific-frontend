@@ -95,7 +95,7 @@ export const TriggerList: React.SFC<TriggerListProps> = () => {
       dialogMessage={dialogMessage}
       {...queries}
       {...columnAttributes}
-      searchParameter="name"
+      searchParameter={['name']}
       additionalAction={additionalAction}
       removeSortBy={['COLLECTION']}
     />

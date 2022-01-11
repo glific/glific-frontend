@@ -182,7 +182,7 @@ export const OrganizationList: React.SFC<OrganizationListProps> = ({
         additionalAction={additionalActions}
         button={addNewButton}
         restrictedAction={restrictedAction}
-        searchParameter="name"
+        searchParameter={['name']}
         editSupport={false}
         {...queries}
         {...columnAttributes}

@@ -91,7 +91,7 @@ export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
         {...queries}
         {...columnAttributes}
         button={{ show: true, label: t('Collections'), link: '/collection' }}
-        searchParameter="name"
+        searchParameter={['name']}
         additionalAction={additionalAction}
         restrictedAction={getRestrictedAction}
       />
