@@ -51,7 +51,7 @@ export const SearchList: React.SFC<SearchListProps> = () => {
       dialogMessage={dialogMessage}
       {...queries}
       {...columnAttributes}
-      searchParameter="label"
+      searchParameter={['label']}
     />
   );
 };

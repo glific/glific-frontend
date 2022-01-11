@@ -228,7 +228,7 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
         listItemName="notification"
         pageLink="notifications"
         listIcon={notificationIcon}
-        searchParameter="message"
+        searchParameter={['message']}
         button={{ show: false }}
         dialogMessage=""
         {...queries}

@@ -137,7 +137,7 @@ const ConsultingList: React.SFC<ConsultingListProps> = () => {
           },
         }}
         restrictedAction={restrictedAction}
-        searchParameter="organizationName"
+        searchParameter={['organizationName']}
         dialogMessage={dialogMessage}
         dialogTitle={dialogTitle}
         noItemText="consulting record"

@@ -43,7 +43,7 @@ export interface ListProps {
     action?: Function;
   };
   showCheckbox?: boolean;
-  searchParameter?: string;
+  searchParameter?: Array<any>;
   filters?: Object | null;
   filterList?: any;
   listOrder?: 'asc' | 'desc';
@@ -109,7 +109,7 @@ export const List: React.SFC<ListProps> = ({
   showCheckbox,
   deleteModifier = { icon: 'normal', variables: null, label: 'Delete' },
   editSupport = true,
-  searchParameter = 'label',
+  searchParameter = ['label'],
   filters = null,
   displayListType = 'list',
   cardLink = null,
@@ -205,7 +205,9 @@ export const List: React.SFC<ListProps> = ({
   let filter: any = {};
 
   if (searchVal !== '') {
-    filter[searchParameter] = searchVal;
+    searchParameter.forEach((parameter: string) => {
+      filter[parameter] = searchVal;
+    });
   }
   filter = { ...filter, ...filters };
 
