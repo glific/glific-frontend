@@ -51,6 +51,7 @@ import {
   SIMULATOR_MESSAGE_RECEIVED_SUBSCRIPTION,
   SIMULATOR_MESSAGE_SENT_SUBSCRIPTION,
 } from 'graphql/subscriptions/Simulator';
+import Loading from 'components/UI/Layout/Loading/Loading';
 import styles from './Simulator.module.css';
 
 export interface SimulatorProps {
@@ -173,14 +174,18 @@ export const Simulator: React.FC<SimulatorProps> = ({
 
   useEffect(() => {
     if (simulatorSubscribe) {
-      const userId = JSON.parse(simulatorSubscribe.simulatorRelease).simulator_release.user_id;
-      if (userId.toString() === getUserSession('id')) {
-        setSimulatorId(0);
+      try {
+        const userId = JSON.parse(simulatorSubscribe.simulatorRelease).simulator_release.user_id;
+        if (userId.toString() === getUserSession('id')) {
+          setSimulatorId(0);
+        }
+      } catch (error) {
+        setLogs('simulator release error', 'error');
       }
     }
   }, [simulatorSubscribe]);
 
-  const [getSimulator, { data }]: any = useLazyQuery(GET_SIMULATOR, {
+  const [getSimulator, { data }] = useLazyQuery(GET_SIMULATOR, {
     fetchPolicy: 'network-only',
     onCompleted: (simulatorData) => {
       if (simulatorData.simulatorGet) {
@@ -547,7 +552,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
       <div className={styles.SimContainer}>
         <div>
           <div id="simulator" className={styles.Simulator}>
-            {!isPreviewMessage ? (
+            {!isPreviewMessage && (
               <ClearIcon
                 className={styles.ClearIcon}
                 onClick={() => {
@@ -555,7 +560,8 @@ export const Simulator: React.FC<SimulatorProps> = ({
                 }}
                 data-testid="clearIcon"
               />
-            ) : null}
+            )}
+
             <div className={styles.Screen}>
               <div className={styles.Header}>
                 <ArrowBackIcon />
@@ -631,8 +637,8 @@ export const Simulator: React.FC<SimulatorProps> = ({
   };
   return (
     <>
-      {showSimulator ? simulator : null}
-      {simulatorIcon ? (
+      {showSimulator && simulator}
+      {simulatorIcon && (
         <SimulatorIcon
           data-testid="simulatorIcon"
           className={showSimulator ? styles.SimulatorIconClicked : styles.SimulatorIconNormal}
@@ -644,9 +650,9 @@ export const Simulator: React.FC<SimulatorProps> = ({
             }
           }}
         />
-      ) : null}
+      )}
 
-      {flowSimulator ? (
+      {flowSimulator && (
         <div className={styles.PreviewButton}>
           <FormButton
             variant="outlined"
@@ -665,7 +671,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
             {showSimulator ? <CancelOutlinedIcon className={styles.CrossIcon} /> : null}
           </FormButton>
         </div>
-      ) : null}
+      )}
     </>
   );
 };
