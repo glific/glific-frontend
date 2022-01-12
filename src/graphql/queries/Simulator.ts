@@ -22,7 +22,6 @@ export const SIMULATOR_MESSAGE_FRAGMENT = `
     id
     body
     insertedAt
-    messageNumber
     receiver {
       id
     }
@@ -34,7 +33,6 @@ export const SIMULATOR_MESSAGE_FRAGMENT = `
       url
       caption
     }
-    errors
     interactiveContent
 `;
 

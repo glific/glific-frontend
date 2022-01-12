@@ -117,16 +117,20 @@ export const updateSimulatorConversations = (
   let contactId: number = 0;
 
   switch (action) {
-    case 'SENT':
+    case 'SENT': {
       // set the receiver contact id
-      newMessage = subscriptionData.data.sentMessage;
-      contactId = subscriptionData.data.sentMessage.receiver.id;
+      const { sentSimulatorMessage } = subscriptionData.data;
+      newMessage = sentSimulatorMessage;
+      contactId = sentSimulatorMessage.receiver.id;
       break;
-    case 'RECEIVED':
+    }
+    case 'RECEIVED': {
       // set the sender contact id
-      newMessage = subscriptionData.data.receivedMessage;
-      contactId = subscriptionData.data.receivedMessage.sender.id;
+      const { receivedSimulatorMessage } = subscriptionData.data;
+      newMessage = receivedSimulatorMessage;
+      contactId = receivedSimulatorMessage.sender.id;
       break;
+    }
     default:
       break;
   }
