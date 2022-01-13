@@ -101,7 +101,7 @@ export const Profile: React.SFC<ProfileProps> = ({
       component: Input,
       name: 'name',
       type: 'text',
-      disabled: true,
+      disabled: profileType === 'Contact',
       placeholder: t('Name'),
     },
     {
