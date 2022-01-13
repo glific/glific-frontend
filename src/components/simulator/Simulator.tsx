@@ -107,6 +107,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
     SIMULATOR_SEARCH_QUERY,
     {
       fetchPolicy: 'network-only',
+      nextFetchPolicy: 'cache-only',
       onCompleted: () => {
         if (subscribeToMore) {
           const subscriptionVariables = { organizationId: getUserSession('organizationId') };
