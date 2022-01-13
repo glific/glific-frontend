@@ -782,7 +782,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
 
         delete payloadCopy.language;
         if (payloadCopy.isHsm) {
-          payloadCopy.category = payloadCopy.category.id;
+          payloadCopy.category = payloadCopy.category.label;
           if (isAddButtonChecked && templateType) {
             const templateButtonData = getButtonTemplatePayload();
             Object.assign(payloadCopy, { ...templateButtonData });
@@ -837,7 +837,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
         payloadCopy.type = 'TEXT';
       }
       if (payloadCopy.isHsm) {
-        payloadCopy.category = payloadCopy.category.id;
+        payloadCopy.category = payloadCopy.category.label;
 
         if (isAddButtonChecked && templateType) {
           const templateButtonData = getButtonTemplatePayload();
