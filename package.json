@@ -33,7 +33,7 @@
     "@types/emoji-mart": "^3.0.8",
     "@types/jest": "^27.0.3",
     "@types/markdown-draft-js": "^2.2.1",
-    "@types/node": "^17.0.0",
+    "@types/node": "^17.0.4",
     "@types/pino": "^7.0.5",
     "@types/react": "^17.0.37",
     "@types/react-color": "^3.0.6",
