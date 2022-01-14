@@ -39,8 +39,8 @@ export const Organisation: React.SFC = () => {
   const [name, setName] = useState('');
   const [hours, setHours] = useState(true);
   const [enabledDays, setEnabledDays] = useState<any>([]);
-  const [startTime, setStartTime] = useState();
-  const [endTime, setEndTime] = useState();
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
   const [defaultFlowId, setDefaultFlowId] = useState<any>(null);
   const [flowId, setFlowId] = useState<any>(null);
   const [IsDisabled, setIsDisable] = useState(false);
@@ -48,6 +48,7 @@ export const Organisation: React.SFC = () => {
   const [organizationId, setOrganizationId] = useState(null);
   const [newcontactFlowId, setNewcontactFlowId] = useState(null);
   const [newcontactFlowEnabled, setNewcontactFlowEnabled] = useState(false);
+  const [allDayCheck, setAllDayCheck] = useState(false);
   const [activeLanguages, setActiveLanguages] = useState([]);
   const [defaultLanguage, setDefaultLanguage] = useState<any>(null);
   const [signaturePhrase, setSignaturePhrase] = useState();
@@ -68,6 +69,7 @@ export const Organisation: React.SFC = () => {
     defaultLanguage,
     signaturePhrase,
     newcontactFlowId,
+    allDayCheck,
     phone,
   };
 
@@ -109,8 +111,11 @@ export const Organisation: React.SFC = () => {
     setIsDisable(!outOfOfficeValue.enabled);
     setOutOfOffice(outOfOfficeValue);
 
-    // set the value only if default flow is not null
+    if (outOfOfficeValue.startTime === '00:00:00' && outOfOfficeValue.endData === '23:59:00') {
+      setAllDayCheck(true);
+    }
     if (outOfOfficeValue.defaultFlowId) {
+      // set the value only if default flow is not null
       setDefaultFlowId(getFlow(outOfOfficeValue.defaultFlowId));
     }
 
@@ -191,6 +196,14 @@ export const Organisation: React.SFC = () => {
     }
 
     return error;
+  };
+
+  const handleAllDayCheck = (addDayCheck: boolean) => {
+    if (!allDayCheck) {
+      setStartTime('00:00:00');
+      setEndTime('23:59:00');
+    }
+    setAllDayCheck(addDayCheck);
   };
 
   const handleChangeInDays = (value: any) => {
@@ -329,16 +342,27 @@ export const Organisation: React.SFC = () => {
       validate: validateDaysSelection,
     },
     {
+      component: Checkbox,
+      disabled: IsDisabled,
+      name: 'allDayCheck',
+      title: (
+        <Typography className={styles.AddDayLabel}>{t('Set default flow to run 24hrs')}</Typography>
+      ),
+      handleChange: handleAllDayCheck,
+    },
+
+    {
       component: TimePicker,
       name: 'startTime',
       placeholder: t('Start'),
-      disabled: IsDisabled,
+      disabled: IsDisabled || allDayCheck,
+      helperText: t('note: after 12AM, the next day begins.'),
     },
     {
       component: TimePicker,
       name: 'endTime',
       placeholder: t('Stop'),
-      disabled: IsDisabled,
+      disabled: IsDisabled || allDayCheck,
     },
   ];
   if (IsFlowDisabled === false) {
