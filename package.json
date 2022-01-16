@@ -29,7 +29,7 @@
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.4.1",
-    "@types/draft-js": "^0.11.7",
+    "@types/draft-js": "^0.11.8",
     "@types/emoji-mart": "^3.0.8",
     "@types/jest": "^27.0.3",
     "@types/markdown-draft-js": "^2.2.1",
