@@ -1,10 +1,10 @@
-import React, { lazy, useState } from 'react';
-import { Switch, Route, RouteComponentProps, Redirect } from 'react-router-dom';
+import React, { lazy } from 'react';
+import { Switch, Route, Redirect, RouteComponentProps } from 'react-router-dom';
 
-import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { Chat } from 'containers/Chat/Chat';
 import { getUserRole } from 'context/role';
 import { useToast } from 'services/ToastService';
+import ChatInterface from 'containers/Chat/ChatInterface/ChatInterface';
 import styles from './AuthenticatedRoute.module.css';
 
 const defaultRedirect = () => <Redirect to="/chat" />;
@@ -12,7 +12,6 @@ const defaultRedirect = () => <Redirect to="/chat" />;
 // const TagList = lazy(() => import('containers/Tag/TagList/TagList'));
 // const Tag = lazy(() => import('containers/Tag/Tag'));
 const Layout = lazy(() => import('components/UI/Layout/Layout'));
-const ChatSubscription = lazy(() => import('containers/Chat/ChatSubscription/ChatSubscription'));
 const SpeedSendList = lazy(() => import('containers/Template/List/SpeedSendList/SpeedSendList'));
 const SpeedSend = lazy(() => import('containers/Template/Form/SpeedSend/SpeedSend'));
 const FlowList = lazy(() => import('containers/Flow/FlowList/FlowList'));
@@ -64,30 +63,7 @@ const InteractiveMessage = lazy(() => import('containers/InteractiveMessage/Inte
 
 const routeStaff = (
   <Switch>
-    <Route path="/chat" exact component={Chat} />
-    <Route exact path="/chat/collection" component={() => <Chat collectionId={-1} />} />
-    <Route exact path="/chat/saved-searches/" component={() => <Chat savedSearches />} />
-    <Route
-      exact
-      path="/chat/saved-searches/:contactId"
-      component={({ match }: RouteComponentProps<{ contactId: any }>) => (
-        <Chat savedSearches contactId={match.params.contactId} />
-      )}
-    />
-    <Route
-      exact
-      path="/chat/:contactId"
-      component={({ match }: RouteComponentProps<{ contactId: any }>) => (
-        <Chat contactId={match.params.contactId} />
-      )}
-    />
-    <Route
-      exact
-      path="/chat/collection/:collectionId"
-      component={({ match }: RouteComponentProps<{ collectionId: any }>) => (
-        <Chat collectionId={match.params.collectionId} />
-      )}
-    />
+    <Route path="/chat" component={Chat} />
 
     <Route path="/collection" exact component={CollectionList} />
     <Route path="/collection/:id/contacts" exact component={CollectionContact} />
@@ -102,7 +78,7 @@ const routeStaff = (
 
 const routeAdmin = (
   <Switch>
-    <Route path="/chat" exact component={Chat} />
+    <Route path="/chat" component={Chat} />
     {/* <Route path="/tag" exact component={TagList} />
     <Route path="/tag/add" exact component={Tag} />
     <Route path="/tag/:id/edit" exact component={Tag} /> */}
@@ -145,29 +121,6 @@ const routeAdmin = (
     <Route path="/interactive-message" exact component={InteractiveMessageList} />
     <Route path="/interactive-message/add" exact component={InteractiveMessage} />
     <Route path="/interactive-message/:id/edit" exact component={InteractiveMessage} />
-    <Route exact path="/chat/collection" component={() => <Chat collectionId={-1} />} />
-    <Route exact path="/chat/saved-searches/" component={() => <Chat savedSearches />} />
-    <Route
-      exact
-      path="/chat/saved-searches/:contactId"
-      component={({ match }: RouteComponentProps<{ contactId: any }>) => (
-        <Chat savedSearches contactId={match.params.contactId} />
-      )}
-    />
-    <Route
-      exact
-      path="/chat/:contactId"
-      component={({ match }: RouteComponentProps<{ contactId: any }>) => (
-        <Chat contactId={match.params.contactId} />
-      )}
-    />
-    <Route
-      exact
-      path="/chat/collection/:collectionId"
-      component={({ match }: RouteComponentProps<{ collectionId: any }>) => (
-        <Chat collectionId={match.params.collectionId} />
-      )}
-    />
     <Route path="/trigger" exact component={TriggerList} />
     <Route path="/organizations" exact component={OrganizationList} />
     <Route path="/consulting-hours/" exact component={ConsultingHourList} />
@@ -193,9 +146,36 @@ const routeAdmin = (
   </Switch>
 );
 
+export const chatRoutes = (
+  <Switch>
+    <Route exact path="/chat/collection" component={() => <ChatInterface collectionId={-1} />} />
+    <Route exact path="/chat/saved-searches/" component={() => <ChatInterface savedSearches />} />
+    <Route
+      exact
+      path="/chat/saved-searches/:contactId"
+      component={({ match }: RouteComponentProps<{ contactId: any }>) => (
+        <ChatInterface savedSearches contactId={match.params.contactId} />
+      )}
+    />
+    <Route
+      exact
+      path="/chat/:contactId"
+      component={({ match }: RouteComponentProps<{ contactId: any }>) => (
+        <ChatInterface contactId={match.params.contactId} />
+      )}
+    />
+    <Route
+      exact
+      path="/chat/collection/:collectionId"
+      component={({ match }: RouteComponentProps<{ collectionId: any }>) => (
+        <ChatInterface collectionId={match.params.collectionId} />
+      )}
+    />
+    <Route exact path="/chat" component={() => <ChatInterface />} />
+  </Switch>
+);
+
 export const AuthenticatedRoute: React.SFC = () => {
-  const [dataLoaded, setDataLoaded] = useState(false);
-  const [loading, setLoading] = useState(false);
   const toastMessage = useToast();
 
   let userRole: any[] = [];
@@ -217,19 +197,13 @@ export const AuthenticatedRoute: React.SFC = () => {
     route = routeAdmin;
   }
 
-  const loadingSpinner = <Loading />;
-  route = dataLoaded ? route : null;
   // let's call chat subscriptions at this level so that we can listen to actions which are not performed
   // on chat screen, for eg: send message to collection
   return (
     <div className={styles.App} data-testid="app">
       {toastMessage}
-      {userRole.length > 0 ? (
-        <ChatSubscription setDataLoaded={setDataLoaded} setLoading={setLoading} />
-      ) : (
-        ''
-      )}
-      <Layout>{loading ? loadingSpinner : route}</Layout>
+
+      <Layout>{route}</Layout>
     </div>
   );
 };

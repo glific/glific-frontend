@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useApolloClient, useLazyQuery, useQuery, useSubscription } from '@apollo/client';
+import { useApolloClient, useLazyQuery, useSubscription } from '@apollo/client';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 import { Button, ClickAwayListener } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
@@ -20,18 +20,21 @@ import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
 import { Button as FormButton } from 'components/UI/Form/Button/Button';
 import DefaultWhatsappImage from 'assets/images/whatsappDefault.jpg';
 import { ReactComponent as SimulatorIcon } from 'assets/images/icons/Simulator.svg';
-import { SEARCH_QUERY } from 'graphql/queries/Search';
 import {
-  SEARCH_QUERY_VARIABLES,
   TIME_FORMAT,
   SAMPLE_MEDIA_FOR_SIMULATOR,
   INTERACTIVE_LIST,
   INTERACTIVE_QUICK_REPLY,
+  DEFAULT_MESSAGE_LIMIT,
 } from 'common/constants';
 import { GUPSHUP_CALLBACK_URL } from 'config';
 import { ChatMessageType } from 'containers/Chat/ChatMessages/ChatMessage/ChatMessageType/ChatMessageType';
 import { TemplateButtons } from 'containers/Chat/ChatMessages/TemplateButtons/TemplateButtons';
-import { GET_SIMULATOR, RELEASE_SIMULATOR } from 'graphql/queries/Simulator';
+import {
+  GET_SIMULATOR,
+  RELEASE_SIMULATOR,
+  SIMULATOR_SEARCH_QUERY,
+} from 'graphql/queries/Simulator';
 import { SIMULATOR_RELEASE_SUBSCRIPTION } from 'graphql/subscriptions/PeriodicInfo';
 import { getUserSession } from 'services/AuthService';
 import { setNotification } from 'common/notification';
@@ -44,6 +47,11 @@ import {
   ListReplyTemplateDrawer,
 } from 'containers/Chat/ChatMessages/ListReplyTemplate/ListReplyTemplate';
 import { QuickReplyTemplate } from 'containers/Chat/ChatMessages/QuickReplyTemplate/QuickReplyTemplate';
+import {
+  SIMULATOR_MESSAGE_RECEIVED_SUBSCRIPTION,
+  SIMULATOR_MESSAGE_SENT_SUBSCRIPTION,
+} from 'graphql/subscriptions/Simulator';
+import { updateSimulatorConversations } from 'services/SubscriptionService';
 import styles from './Simulator.module.css';
 
 export interface SimulatorProps {
@@ -95,10 +103,33 @@ export const Simulator: React.FC<SimulatorProps> = ({
   // chat messages will be shown on simulator
   const isSimulatedMessage = true;
 
-  const { data: allConversations }: any = useQuery(SEARCH_QUERY, {
-    variables: SEARCH_QUERY_VARIABLES,
-    fetchPolicy: 'cache-only',
-  });
+  const [loadSimulator, { data: allConversations, subscribeToMore }] = useLazyQuery(
+    SIMULATOR_SEARCH_QUERY,
+    {
+      fetchPolicy: 'network-only',
+      nextFetchPolicy: 'cache-only',
+      onCompleted: () => {
+        if (subscribeToMore) {
+          const subscriptionVariables = { organizationId: getUserSession('organizationId') };
+          // message received subscription
+          subscribeToMore({
+            document: SIMULATOR_MESSAGE_RECEIVED_SUBSCRIPTION,
+            variables: subscriptionVariables,
+            updateQuery: (prev, { subscriptionData }) =>
+              updateSimulatorConversations(prev, subscriptionData, 'RECEIVED'),
+          });
+
+          // message sent subscription
+          subscribeToMore({
+            document: SIMULATOR_MESSAGE_SENT_SUBSCRIPTION,
+            variables: subscriptionVariables,
+            updateQuery: (prev, { subscriptionData }) =>
+              updateSimulatorConversations(prev, subscriptionData, 'SENT'),
+          });
+        }
+      },
+    }
+  );
 
   const { data: simulatorSubscribe }: any = useSubscription(SIMULATOR_RELEASE_SUBSCRIPTION, {
     variables,
@@ -106,17 +137,32 @@ export const Simulator: React.FC<SimulatorProps> = ({
 
   useEffect(() => {
     if (simulatorSubscribe) {
-      const userId = JSON.parse(simulatorSubscribe.simulatorRelease).simulator_release.user_id;
-      if (userId.toString() === getUserSession('id')) {
-        setSimulatorId(0);
+      try {
+        const userId = JSON.parse(simulatorSubscribe.simulatorRelease).simulator_release.user_id;
+        if (userId.toString() === getUserSession('id')) {
+          setSimulatorId(0);
+        }
+      } catch (error) {
+        setLogs('simulator release error', 'error');
       }
     }
   }, [simulatorSubscribe]);
 
-  const [getSimulator, { data }]: any = useLazyQuery(GET_SIMULATOR, {
+  const [getSimulator, { data }] = useLazyQuery(GET_SIMULATOR, {
     fetchPolicy: 'network-only',
     onCompleted: (simulatorData) => {
       if (simulatorData.simulatorGet) {
+        loadSimulator({
+          variables: {
+            contactOpts: {
+              limit: 1,
+            },
+            filter: { id: simulatorData.simulatorGet.id },
+            messageOpts: {
+              limit: DEFAULT_MESSAGE_LIMIT,
+            },
+          },
+        });
         setSimulatorId(simulatorData.simulatorGet.id);
       } else {
         setNotification(
@@ -469,7 +515,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
       <div className={styles.SimContainer}>
         <div>
           <div id="simulator" className={styles.Simulator}>
-            {!isPreviewMessage ? (
+            {!isPreviewMessage && (
               <ClearIcon
                 className={styles.ClearIcon}
                 onClick={() => {
@@ -477,7 +523,8 @@ export const Simulator: React.FC<SimulatorProps> = ({
                 }}
                 data-testid="clearIcon"
               />
-            ) : null}
+            )}
+
             <div className={styles.Screen}>
               <div className={styles.Header}>
                 <ArrowBackIcon />
@@ -553,8 +600,8 @@ export const Simulator: React.FC<SimulatorProps> = ({
   };
   return (
     <>
-      {showSimulator ? simulator : null}
-      {simulatorIcon ? (
+      {showSimulator && simulator}
+      {simulatorIcon && (
         <SimulatorIcon
           data-testid="simulatorIcon"
           className={showSimulator ? styles.SimulatorIconClicked : styles.SimulatorIconNormal}
@@ -566,9 +613,9 @@ export const Simulator: React.FC<SimulatorProps> = ({
             }
           }}
         />
-      ) : null}
+      )}
 
-      {flowSimulator ? (
+      {flowSimulator && (
         <div className={styles.PreviewButton}>
           <FormButton
             variant="outlined"
@@ -587,7 +634,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
             {showSimulator ? <CancelOutlinedIcon className={styles.CrossIcon} /> : null}
           </FormButton>
         </div>
-      ) : null}
+      )}
     </>
   );
 };
