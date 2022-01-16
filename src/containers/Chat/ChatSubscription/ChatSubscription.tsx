@@ -8,8 +8,6 @@ import {
   REFETCH_RANDOM_TIME_MAX,
   REFETCH_RANDOM_TIME_MIN,
   SEARCH_QUERY_VARIABLES,
-  SUBSCRIPTION_ALLOWED_DURATION,
-  SUBSCRIPTION_ALLOWED_NUMBER,
 } from 'common/constants';
 import { setErrorMessage } from 'common/notification';
 import { randomIntFromInterval, addLogs } from 'common/utils';
@@ -27,19 +25,19 @@ import {
   DELETE_MESSAGE_TAG_SUBSCRIPTION,
 } from 'graphql/subscriptions/Tag';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
+import {
+  getSubscriptionDetails,
+  recordRequests,
+  switchSubscriptionToRefetch,
+} from 'services/SubscriptionService';
 
 export interface ChatSubscriptionProps {
   setDataLoaded: any;
-  setLoading: any;
 }
 
-export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
-  setDataLoaded,
-  setLoading,
-}) => {
+export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({ setDataLoaded }) => {
   const queryVariables = SEARCH_QUERY_VARIABLES;
   const client = useApolloClient();
-  let subscriptionRequests: any = [];
   let refetchTimer: any = null;
   const [triggerRefetch, setTriggerRefetch] = useState(false);
   let subscriptionToRefetchSwitchHappened = false;
@@ -54,47 +52,6 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
       }
     },
   });
-
-  // function to determine if we should continue to use subscription or use refetch
-  const switchSubscriptionToRefetch = () => {
-    let useRefetch = false;
-
-    const now = Date.now();
-    const allowedDuration = now - 1000 * SUBSCRIPTION_ALLOWED_DURATION;
-    let requestCount = 0;
-
-    // as recent requests are at the end of the array, search the array
-    // from back to front
-    for (let i = subscriptionRequests.length - 1; i >= 0; i -= 1) {
-      if (subscriptionRequests[i] >= allowedDuration) {
-        requestCount += 1;
-      } else {
-        break;
-      }
-    }
-
-    if (requestCount >= SUBSCRIPTION_ALLOWED_NUMBER) {
-      useRefetch = true;
-    }
-
-    return useRefetch;
-  };
-
-  // function to record the number of subscription calls
-  const recordRequests = () => {
-    const requestTrimThreshold = 5000;
-    const requestTrimSize = 4000;
-
-    subscriptionRequests.push(Date.now());
-
-    // now keep requests array from growing forever
-    if (subscriptionRequests.length > requestTrimThreshold) {
-      subscriptionRequests = subscriptionRequests.slice(
-        0,
-        subscriptionRequests.length - requestTrimSize
-      );
-    }
-  };
 
   const updateConversations = useCallback(
     (cachedConversations: any, subscriptionData: any, action: string) => {
@@ -149,70 +106,26 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
         }
       }
 
-      let newMessage: any;
-      let contactId: number = 0;
-      let collectionId: number = 0;
-      let tagData: any;
-      let messageStatusData: any;
-      switch (action) {
-        case 'SENT':
-          // set the receiver contact id
-          newMessage = subscriptionData.data.sentMessage;
-          contactId = subscriptionData.data.sentMessage.receiver.id;
-          break;
-        case 'RECEIVED':
-          // set the sender contact id
-          newMessage = subscriptionData.data.receivedMessage;
-          contactId = subscriptionData.data.receivedMessage.sender.id;
-          break;
-        case 'COLLECTION':
-          newMessage = subscriptionData.data.sentGroupMessage;
-          collectionId = subscriptionData.data.sentGroupMessage.groupId.toString();
-          break;
-        case 'STATUS':
-          // set the receiver contact id
-          messageStatusData = subscriptionData.data.updateMessageStatus;
-          contactId = subscriptionData.data.updateMessageStatus.receiver.id;
-          break;
-        case 'TAG_ADDED':
-        case 'TAG_DELETED':
-          if (action === 'TAG_ADDED') {
-            tagData = subscriptionData.data.createdMessageTag;
-          } else {
-            tagData = subscriptionData.data.deletedMessageTag;
-          }
-
-          if (tagData.message.flow === 'INBOUND') {
-            // we should use sender id to update the tag
-            contactId = tagData.message.sender.id;
-          } else {
-            // we should use receiver id to update the tag
-            contactId = tagData.message.receiver.id;
-          }
-          break;
-        default:
-          break;
-      }
+      const { newMessage, contactId, collectionId, tagData, messageStatusData } =
+        getSubscriptionDetails(action, subscriptionData);
 
       // loop through the cached conversations and find if contact exists
       let conversationIndex = 0;
       let conversationFound = false;
 
       if (action === 'COLLECTION') {
-        cachedConversations.search.map((conversation: any, index: any) => {
+        cachedConversations.search.forEach((conversation: any, index: any) => {
           if (conversation.group.id === collectionId) {
             conversationIndex = index;
             conversationFound = true;
           }
-          return null;
         });
       } else {
-        cachedConversations.search.map((conversation: any, index: any) => {
+        cachedConversations.search.forEach((conversation: any, index: any) => {
           if (conversation.contact.id === contactId) {
             conversationIndex = index;
             conversationFound = true;
           }
-          return null;
         });
       }
 
@@ -304,6 +217,7 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
   const [loadCollectionData, { subscribeToMore: collectionSubscribe, data: collectionData }] =
     useLazyQuery<any>(SEARCH_QUERY, {
       variables: COLLECTION_SEARCH_QUERY_VARIABLES,
+      fetchPolicy: 'network-only',
       nextFetchPolicy: 'cache-only',
       onCompleted: () => {
         const subscriptionVariables = { organizationId: getUserSession('organizationId') };
@@ -324,6 +238,7 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
     SEARCH_QUERY,
     {
       variables: queryVariables,
+      fetchPolicy: 'network-only',
       nextFetchPolicy: 'cache-only',
       onCompleted: () => {
         const subscriptionVariables = { organizationId: getUserSession('organizationId') };
@@ -381,14 +296,8 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
   }, [data, collectionData]);
 
   useEffect(() => {
-    setLoading(loading);
-  }, [loading]);
-
-  useEffect(() => {
-    if (!data) {
-      loadData();
-      loadCollectionData();
-    }
+    loadData();
+    loadCollectionData();
   }, []);
 
   if (loading) return <Loading />;
