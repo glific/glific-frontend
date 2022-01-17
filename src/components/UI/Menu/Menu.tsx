@@ -12,9 +12,7 @@ const Menu: React.SFC<MenuProps> = (props) => {
   const { menus, children } = props;
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
-  const handleClick = (
-    event: React.MouseEvent<HTMLDivElement> | React.KeyboardEvent<HTMLDivElement>
-  ) => {
+  const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -38,7 +36,7 @@ const Menu: React.SFC<MenuProps> = (props) => {
 
   return (
     <div data-testid="Menu">
-      <div onClick={handleClick} onKeyDown={handleClick} aria-hidden="true">
+      <div onMouseEnter={handleClick} aria-hidden="true">
         {children}
       </div>
       <MenuElement
