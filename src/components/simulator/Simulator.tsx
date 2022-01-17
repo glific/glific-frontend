@@ -20,12 +20,12 @@ import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
 import { Button as FormButton } from 'components/UI/Form/Button/Button';
 import DefaultWhatsappImage from 'assets/images/whatsappDefault.jpg';
 import { ReactComponent as SimulatorIcon } from 'assets/images/icons/Simulator.svg';
+import { ReactComponent as ResetIcon } from 'assets/images/icons/Reset/Dark.svg';
 import {
   TIME_FORMAT,
   SAMPLE_MEDIA_FOR_SIMULATOR,
   INTERACTIVE_LIST,
   INTERACTIVE_QUICK_REPLY,
-  DEFAULT_MESSAGE_LIMIT,
 } from 'common/constants';
 import { GUPSHUP_CALLBACK_URL } from 'config';
 import { ChatMessageType } from 'containers/Chat/ChatMessages/ChatMessage/ChatMessageType/ChatMessageType';
@@ -75,6 +75,16 @@ const TimeComponent = (direction: any, insertedAt: any) => (
     {direction === 'send' && <DoneAllIcon />}
   </>
 );
+
+const getSimulatorVariables = (id: any) => ({
+  contactOpts: {
+    limit: 1,
+  },
+  filter: { id },
+  messageOpts: {
+    limit: 2,
+  },
+});
 
 export const Simulator: React.FC<SimulatorProps> = ({
   showSimulator,
@@ -152,17 +162,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
     fetchPolicy: 'network-only',
     onCompleted: (simulatorData) => {
       if (simulatorData.simulatorGet) {
-        loadSimulator({
-          variables: {
-            contactOpts: {
-              limit: 1,
-            },
-            filter: { id: simulatorData.simulatorGet.id },
-            messageOpts: {
-              limit: DEFAULT_MESSAGE_LIMIT,
-            },
-          },
-        });
+        loadSimulator({ variables: getSimulatorVariables(simulatorData.simulatorGet.id) });
         setSimulatorId(simulatorData.simulatorGet.id);
       } else {
         setNotification(
@@ -516,13 +516,32 @@ export const Simulator: React.FC<SimulatorProps> = ({
         <div>
           <div id="simulator" className={styles.Simulator}>
             {!isPreviewMessage && (
-              <ClearIcon
-                className={styles.ClearIcon}
-                onClick={() => {
-                  releaseUserSimulator();
-                }}
-                data-testid="clearIcon"
-              />
+              <>
+                <ClearIcon
+                  className={styles.ClearIcon}
+                  onClick={() => {
+                    releaseUserSimulator();
+                  }}
+                  data-testid="clearIcon"
+                />
+                <ResetIcon
+                  className={styles.ResetIcon}
+                  onClick={() => {
+                    const search = JSON.parse(JSON.stringify(allConversations.search));
+
+                    search[0].messages = [];
+
+                    client.writeQuery({
+                      query: SIMULATOR_SEARCH_QUERY,
+                      variables: getSimulatorVariables(data.simulatorGet.id),
+                      data: { search },
+                    });
+                    if (getFlowKeyword) {
+                      getFlowKeyword();
+                    }
+                  }}
+                />
+              </>
             )}
 
             <div className={styles.Screen}>
@@ -631,7 +650,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
             }}
           >
             Preview
-            {showSimulator ? <CancelOutlinedIcon className={styles.CrossIcon} /> : null}
+            {showSimulator && <CancelOutlinedIcon className={styles.CrossIcon} />}
           </FormButton>
         </div>
       )}
