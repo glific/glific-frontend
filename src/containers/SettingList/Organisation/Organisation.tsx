@@ -206,7 +206,12 @@ export const Organisation: React.SFC = () => {
     signaturePhrase: Yup.string().nullable().required(t('Webhook signature is required.')),
     endTime: Yup.string()
       .test('is-midnight', 'End time can not be 12 AM', (value) => value !== 'T00:00:00')
-      .test('is-valid', 'Not a valid time', (value) => value !== 'Invalid time'),
+      .test('is-valid', 'Not a valid time', (value) => value !== 'Invalid date'),
+    startTime: Yup.string().test(
+      'is-valid',
+      'Not a valid time',
+      (value) => value !== 'Invalid date'
+    ),
     newcontactFlowId: Yup.object()
       .nullable()
       .when('newcontactFlowEnabled', {
