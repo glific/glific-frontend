@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Group 5</title>
+    <g id="Chat" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Desktop/Chat/Text-entered" transform="translate(-867.000000, -520.000000)">
+            <g id="Group-5" transform="translate(867.000000, 520.000000)">
+                <rect id="Rectangle-Copy-3" fill="#CACACA" x="0" y="0" width="16" height="16" rx="8"></rect>
+                <path d="M6,6.30901699 L6,9.69098301 C6,9.96712538 6.22385763,10.190983 6.5,10.190983 C6.57762255,10.190983 6.65417908,10.1729105 6.7236068,10.1381966 L10.1055728,8.4472136 C10.3525621,8.32371897 10.4526742,8.02338245 10.3291796,7.7763932 C10.2807978,7.6796295 10.2023365,7.60116826 10.1055728,7.5527864 L6.7236068,5.8618034 C6.47661755,5.73830877 6.17628103,5.83842095 6.0527864,6.0854102 C6.01807255,6.15483791 6,6.23139445 6,6.30901699 Z" id="Path-24" fill="#119656"></path>
+            </g>
+        </g>
+    </g>
+</svg>

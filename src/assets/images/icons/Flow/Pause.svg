@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Icon/Inactive</title>
+    <g id="Chat" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Desktop/Chat" transform="translate(-883.000000, -600.000000)">
+            <g id="Icon/Inactive" transform="translate(883.000000, 600.000000)">
+                <circle id="Oval" fill="#119656" cx="8" cy="8" r="8"></circle>
+                <line x1="6.5" y1="11" x2="6.5" y2="6" id="Path-22" stroke="#EAEDEC" stroke-width="1.77777778" stroke-linecap="round"></line>
+                <line x1="9.5" y1="11" x2="9.5" y2="6" id="Path-22-Copy" stroke="#EAEDEC" stroke-width="1.77777778" stroke-linecap="round"></line>
+            </g>
+        </g>
+    </g>
+</svg>

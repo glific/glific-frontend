@@ -100,3 +100,27 @@ export const IMPORT_FLOW = gql`
     }
   }
 `;
+
+export const PAUSE_FLOW = gql`
+  mutation pauseContactFlow($contactId: ID!) {
+    pauseContactFlow(contactId: $contactId) {
+      success
+      errors {
+        key
+        message
+      }
+    }
+  }
+`;
+
+export const RESUME_FLOW = gql`
+  mutation resumeContactFlow($contactId: ID!) {
+    resumeContactFlow(contactId: $contactId) {
+      success
+      errors {
+        key
+        message
+      }
+    }
+  }
+`;

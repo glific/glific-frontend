@@ -1,0 +1,33 @@
+.PauseSectionContainer {
+  display: flex;
+  justify-content: end;
+  color: #93a29b;
+  font-weight: 500;
+  margin-right: 30px;
+  align-content: center !important;
+  align-items: center !important;
+}
+
+.Thumb {
+  width: 15px !important;
+  background: url('./../../../../assets/images/icons/Flow/Resume.svg');
+  height: 15px !important;
+}
+.SwitchBase {
+  padding: 11px !important;
+  background-color: white;
+}
+
+.SwitchBase input:checked + .Thumb {
+  background: url('./../../../../assets/images/icons/Flow/Pause.svg');
+}
+
+.Track {
+  background: white !important;
+  opacity: 1 !important;
+  box-shadow: inset 1px 1px 6px 0px RGBA(0, 0, 0, 0.24) !important;
+}
+
+.Tooltip {
+  width: 143px;
+}

@@ -1,8 +1,6 @@
 .ChatInput {
-  padding-top: 15px;
   position: absolute;
   bottom: 15px;
-
   left: 0;
   right: 0;
   margin: auto;
@@ -186,7 +184,6 @@
 }
 
 .QuickSendButtons {
-  width: 100%;
   position: absolute;
   bottom: 0;
   height: 30px;

@@ -5,13 +5,11 @@ import moment from 'moment';
 import { Redirect } from 'react-router-dom';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { useTranslation } from 'react-i18next';
+import { addLogs, getDisplayName } from 'common/utils';
 
-import styles from './ChatMessages.module.css';
 // import { SearchDialogBox } from '../../../components/UI/SearchDialogBox/SearchDialogBox';
-import { ContactBar } from './ContactBar/ContactBar';
-import { ChatMessage } from './ChatMessage/ChatMessage';
-import { ChatInput } from './ChatInput/ChatInput';
-import { setNotification, setErrorMessage } from '../../../common/notification';
+
+import { setNotification, setErrorMessage } from 'common/notification';
 import {
   SEARCH_QUERY_VARIABLES,
   // setVariables,
@@ -20,18 +18,22 @@ import {
   DEFAULT_CONTACT_LIMIT,
   DEFAULT_MESSAGE_LOADMORE_LIMIT,
   SIMULATOR_NUMBER_START,
-} from '../../../common/constants';
-import { SEARCH_QUERY } from '../../../graphql/queries/Search';
+} from 'common/constants';
+import { SEARCH_QUERY } from 'graphql/queries/Search';
 import {
   CREATE_AND_SEND_MESSAGE_MUTATION,
   CREATE_AND_SEND_MESSAGE_TO_COLLECTION_MUTATION,
   // UPDATE_MESSAGE_TAGS,
-} from '../../../graphql/mutations/Chat';
+} from 'graphql/mutations/Chat';
 // import { FILTER_TAGS_NAME } from '../../../graphql/queries/Tag';
 // import { ReactComponent as TagIcon } from '../../../assets/images/icons/Tags/Selected.svg';
-import { getCachedConverations, updateConversationsCache } from '../../../services/ChatService';
-import { addLogs, getDisplayName } from '../../../common/utils';
+import { getCachedConverations, updateConversationsCache } from 'services/ChatService';
+import { ContactBar } from './ContactBar/ContactBar';
+import { ChatMessage } from './ChatMessage/ChatMessage';
+import { ChatInput } from './ChatInput/ChatInput';
 import { CollectionInformation } from '../../Collection/CollectionInformation/CollectionInformation';
+import styles from './ChatMessages.module.css';
+import { PauseFlow } from './PauseFlow/PauseFlow';
 
 export interface ChatMessagesProps {
   contactId?: number | string | null;
@@ -733,6 +735,9 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
 
   let topChatBar;
   let chatInputSection;
+
+  let pauseFlowSection;
+
   if (contactId) {
     const displayName = getDisplayName(conversationInfo);
     topChatBar = (
@@ -746,6 +751,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
         handleAction={() => handleChatClearedAction()}
       />
     );
+
+    pauseFlowSection = <PauseFlow contactId={contactId.toString()} />;
 
     chatInputSection = (
       <ChatInput
@@ -837,6 +844,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
       ) : null}
       {topChatBar}
       {messageListContainer}
+      {pauseFlowSection}
       {conversationInfo.messages.length && showJumpToLatest ? jumpToLatest : null}
       {chatInputSection}
     </Container>
