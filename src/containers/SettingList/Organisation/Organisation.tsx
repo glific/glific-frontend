@@ -204,6 +204,14 @@ export const Organisation: React.SFC = () => {
     activeLanguages: Yup.array().required(t('Supported Languages is required.')),
     defaultLanguage: Yup.object().nullable().required(t('Default Language is required.')),
     signaturePhrase: Yup.string().nullable().required(t('Webhook signature is required.')),
+    endTime: Yup.string()
+      .test('is-midnight', t('End time cannot be 12 AM'), (value) => value !== 'T00:00:00')
+      .test('is-valid', t('Not a valid time'), (value) => value !== 'Invalid date'),
+    startTime: Yup.string().test(
+      'is-valid',
+      t('Not a valid time'),
+      (value) => value !== 'Invalid date'
+    ),
     newcontactFlowId: Yup.object()
       .nullable()
       .when('newcontactFlowEnabled', {
