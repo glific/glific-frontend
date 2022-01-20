@@ -23,7 +23,7 @@ export const CREATE_INTERACTIVE = gql`
 `;
 
 export const UPDATE_INTERACTIVE = gql`
-  mutation updateInteractiveTemplate($id: ID!, $input: interactiveTemplateInput!) {
+  mutation updateInteractiveTemplate($id: ID!, $input: InteractiveTemplateInput!) {
     updateInteractiveTemplate(id: $id, input: $input) {
       interactiveTemplate {
         id

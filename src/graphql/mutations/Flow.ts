@@ -46,7 +46,7 @@ export const UPDATE_FLOW = gql`
 `;
 
 export const PUBLISH_FLOW = gql`
-  mutation publishFlow($uuid: UUID!) {
+  mutation publishFlow($uuid: UUID4!) {
     publishFlow(uuid: $uuid) {
       success
       errors {

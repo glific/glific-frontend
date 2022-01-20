@@ -271,7 +271,7 @@ export const SCROLL_HEIGHT = gql`
 `;
 
 export const SEARCH_LIST_QUERY = gql`
-  query savedSearches($filter: SavedSearchFilters!, $opts: SavedSearchOpts!) {
+  query savedSearches($filter: SavedSearchFilter!, $opts: Opts!) {
     savedSearches(filter: $filter, opts: $opts) {
       id
       shortcode
