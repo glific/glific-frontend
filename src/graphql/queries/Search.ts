@@ -289,7 +289,7 @@ export const SEARCH_QUERY_COUNT = gql`
 `;
 
 export const GET_SEARCH = gql`
-  query savedSearches($id: ID) {
+  query savedSearches($id: ID!) {
     savedSearch(id: $id) {
       savedSearch {
         id
