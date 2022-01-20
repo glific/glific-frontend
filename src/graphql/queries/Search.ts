@@ -79,7 +79,7 @@ export const SEARCH_QUERY = gql`
 `;
 
 export const SAVED_SEARCH_QUERY = gql`
-  query savedSearches($filter: SavedSearchFilters!, $opts: SavedSearchOpts!) {
+  query savedSearches($filter: SavedSearchFilter!, $opts: Opts) {
     savedSearches(filter: $filter, opts: $opts) {
       id
       shortcode
@@ -271,7 +271,7 @@ export const SCROLL_HEIGHT = gql`
 `;
 
 export const SEARCH_LIST_QUERY = gql`
-  query savedSearches($filter: SavedSearchFilters!, $opts: SavedSearchOpts!) {
+  query savedSearches($filter: SavedSearchFilter!, $opts: Opts!) {
     savedSearches(filter: $filter, opts: $opts) {
       id
       shortcode
@@ -289,7 +289,7 @@ export const SEARCH_QUERY_COUNT = gql`
 `;
 
 export const GET_SEARCH = gql`
-  query savedSearches($id: ID) {
+  query savedSearches($id: ID!) {
     savedSearch(id: $id) {
       savedSearch {
         id
