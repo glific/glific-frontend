@@ -79,7 +79,7 @@ export const SEARCH_QUERY = gql`
 `;
 
 export const SAVED_SEARCH_QUERY = gql`
-  query savedSearches($filter: SavedSearchFilters!, $opts: SavedSearchOpts!) {
+  query savedSearches($filter: SavedSearchFilter!, $opts: Opts) {
     savedSearches(filter: $filter, opts: $opts) {
       id
       shortcode

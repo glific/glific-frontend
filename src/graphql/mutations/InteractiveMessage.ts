@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 
 export const CREATE_INTERACTIVE = gql`
-  mutation createInteractiveTemplate($input: interactiveTemplateInput!) {
+  mutation createInteractiveTemplate($input: InteractiveTemplateInput!) {
     createInteractiveTemplate(input: $input) {
       interactiveTemplate {
         id
