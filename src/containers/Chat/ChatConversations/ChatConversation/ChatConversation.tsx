@@ -105,6 +105,7 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
     contactIsOrgRead,
     entityType,
     messageNumber,
+    onClick,
   } = props;
 
   const [markAsRead] = useMutation(MARK_AS_READ, {
@@ -160,8 +161,8 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
       component={Link}
       selected={selected}
       onClick={() => {
-        if (props.onClick) props.onClick(index);
-        setSearchOffset(client, props.messageNumber);
+        if (onClick) onClick(index);
+        setSearchOffset(client, messageNumber);
         if (entityType === 'contact') {
           markAsRead({
             variables: { contactId: contactId.toString() },

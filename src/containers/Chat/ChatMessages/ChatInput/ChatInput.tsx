@@ -45,6 +45,7 @@ export interface ChatInputProps {
 
 export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   const {
+    onSendMessage,
     contactBspStatus,
     contactStatus,
     additionalStyle,
@@ -91,7 +92,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   const [createMediaMessage] = useMutation(CREATE_MEDIA_MESSAGE, {
     onCompleted: (data: any) => {
       if (data) {
-        props.onSendMessage(
+        onSendMessage(
           '',
           data.createMessageMedia.messageMedia.id,
           attachmentType,
@@ -167,7 +168,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
       });
       // check if type is list or quick replies
     } else if (interactiveMessageContent && interactiveMessageContent.type) {
-      props.onSendMessage(
+      onSendMessage(
         null,
         null,
         interactiveMessageContent.type.toUpperCase(),
@@ -177,7 +178,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
       );
       // else the type will by default be text
     } else {
-      props.onSendMessage(message, null, 'TEXT', selectedTemplate, variableParam);
+      onSendMessage(message, null, 'TEXT', selectedTemplate, variableParam);
     }
     resetVariable();
 
