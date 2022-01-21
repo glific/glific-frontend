@@ -528,15 +528,6 @@ export const Simulator: React.FC<SimulatorProps> = ({
                 <ResetIcon
                   className={styles.ResetIcon}
                   onClick={() => {
-                    const search = JSON.parse(JSON.stringify(allConversations.search));
-
-                    search[0].messages = [];
-
-                    client.writeQuery({
-                      query: SIMULATOR_SEARCH_QUERY,
-                      variables: getSimulatorVariables(data.simulatorGet.id),
-                      data: { search },
-                    });
                     if (getFlowKeyword) {
                       getFlowKeyword();
                     }
