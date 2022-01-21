@@ -26,6 +26,7 @@ import {
   SAMPLE_MEDIA_FOR_SIMULATOR,
   INTERACTIVE_LIST,
   INTERACTIVE_QUICK_REPLY,
+  DEFAULT_MESSAGE_LIMIT,
 } from 'common/constants';
 import { GUPSHUP_CALLBACK_URL } from 'config';
 import { ChatMessageType } from 'containers/Chat/ChatMessages/ChatMessage/ChatMessageType/ChatMessageType';
@@ -82,7 +83,7 @@ const getSimulatorVariables = (id: any) => ({
   },
   filter: { id },
   messageOpts: {
-    limit: 2,
+    limit: DEFAULT_MESSAGE_LIMIT,
   },
 });
 
