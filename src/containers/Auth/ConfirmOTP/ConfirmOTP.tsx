@@ -67,9 +67,9 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
     axios
       .post(REACT_APP_GLIFIC_REGISTRATION_API, {
         user: {
-          name: props.location.state.name,
-          phone: props.location.state.phoneNumber,
-          password: props.location.state.password,
+          name: location.state.name,
+          phone: location.state.phoneNumber,
+          password: location.state.password,
           otp: values.OTP,
         },
       })
@@ -82,8 +82,8 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
         setLogs(
           `onSubmitOTP:${{
             user: {
-              name: props.location.state.name,
-              phone: props.location.state.phoneNumber,
+              name: location.state.name,
+              phone: location.state.phoneNumber,
               otp: values.OTP,
             },
           }} URL:${REACT_APP_GLIFIC_REGISTRATION_API}`,

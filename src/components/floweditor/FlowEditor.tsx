@@ -342,7 +342,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
   }, [flowId]);
 
   const handlePublishFlow = () => {
-    publishFlow({ variables: { uuid: props.match.params.uuid } });
+    publishFlow({ variables: { uuid: match.params.uuid } });
   };
 
   const handleCancelFlow = () => {
