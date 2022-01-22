@@ -3334,10 +3334,10 @@
   resolved "https://registry.yarnpkg.com/@types/stack-utils/-/stack-utils-2.0.1.tgz#20f18294f797f2209b5f65c8e3b5c8e8261d127c"
   integrity sha512-Hl219/BT5fLAaz6NDkSuhzasy49dwQS/DSdu4MdggFB8zcXv7vflBI3xp7FEmkmdDkBUI2bPUNeMttp2knYdxw==
 
-"@types/styled-components@^5.1.20":
-  version "5.1.20"
-  resolved "https://registry.yarnpkg.com/@types/styled-components/-/styled-components-5.1.20.tgz#83c545d1b793b846c231ff18e93019ccd2867972"
-  integrity sha512-TvpQceFwnxJJsAzR1aHsYpL5DxWMHRzM2/0EA6sGtRjV6DtJubmNxeoPMPiIPQzKEGNHccwObXO7Hug/iwm1Xw==
+"@types/styled-components@^5.1.21":
+  version "5.1.21"
+  resolved "https://registry.yarnpkg.com/@types/styled-components/-/styled-components-5.1.21.tgz#39f6bdc4103254d899531ef099dae5619b039cdb"
+  integrity sha512-lQzA0T6CaLXoeiOkSe2US2JfFgJV2/yJ8W1BaJubQQh2wdq7H+qScQQfbjURyLkgI1Ig+S/jRHCrWikfMHC6zA==
   dependencies:
     "@types/hoist-non-react-statics" "*"
     "@types/react" "*"
@@ -8020,10 +8020,10 @@ i18next@^21.2.0:
   dependencies:
     "@babel/runtime" "^7.12.0"
 
-i18next@^21.6.3:
-  version "21.6.6"
-  resolved "https://registry.yarnpkg.com/i18next/-/i18next-21.6.6.tgz#65db9a32e4746d145b3ab3f12c59fc02ad7b5101"
-  integrity sha512-K1Pw8K+nHVco56PO6UrqNq4K/ZVbb2eqBQwPqmzYDm4tGQYXBjdz8jrnvuNvV5STaE8oGpWKQMxHOvh2zhVE7Q==
+i18next@^21.6.7:
+  version "21.6.7"
+  resolved "https://registry.yarnpkg.com/i18next/-/i18next-21.6.7.tgz#062560decbabcdb691885e6401f2843ec25c3c10"
+  integrity sha512-26dTDa2gBz+vMk6WPf1pxTx3S5HIAptbyODmni/JsN6R1W2WNkGVFXBusUK7T6y1wLeJi5CIrqmQ2gl18vdh3A==
   dependencies:
     "@babel/runtime" "^7.12.0"
 
