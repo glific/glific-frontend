@@ -30,6 +30,7 @@ declare function showFlowEditor(node: any, config: any): void;
 
 // function to suppress the error for custom registery in floweditor
 const safeDecorator = (fn: any) =>
+  // eslint-disable-next-line
   function (...args: any) {
     try {
       // @ts-ignore
