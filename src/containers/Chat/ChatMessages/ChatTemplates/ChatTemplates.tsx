@@ -20,7 +20,7 @@ interface ChatTemplatesProps {
 
 export const ChatTemplates: React.SFC<ChatTemplatesProps> = (props) => {
   const { t } = useTranslation();
-  const { searchVal } = props;
+  const { searchVal, handleSelectText, isTemplate, isInteractiveMsg } = props;
 
   const filterVariables = () => setVariables({ term: searchVal });
   const { loading, error, data } = useQuery<any>(FILTER_TEMPLATES, {
@@ -40,11 +40,11 @@ export const ChatTemplates: React.SFC<ChatTemplatesProps> = (props) => {
   if (loading) return <div />;
   if (error || data.sessionTemplates === undefined) return <p>{t('Error :(')}</p>;
 
-  const getListItem = (obj: any, index: number, isInteractiveMsg: boolean = false) => {
+  const getListItem = (obj: any, index: number, interactiveMsg: boolean = false) => {
     const key = index;
     let tabListToShow;
 
-    if (!isInteractiveMsg) {
+    if (!interactiveMsg) {
       tabListToShow = obj.body;
     } else {
       const interactiveJSON = JSON.parse(obj.interactiveContent);
@@ -57,7 +57,7 @@ export const ChatTemplates: React.SFC<ChatTemplatesProps> = (props) => {
           data-testid="templateItem"
           button
           disableRipple
-          onClick={() => props.handleSelectText(obj, isInteractiveMsg)}
+          onClick={() => handleSelectText(obj, interactiveMsg)}
           className={styles.PopperListItem}
         >
           <p className={styles.Text}>
@@ -91,13 +91,13 @@ export const ChatTemplates: React.SFC<ChatTemplatesProps> = (props) => {
     const interactiveObj = interactives ? [...interactives.interactiveTemplates] : [];
     let text;
     let listItems;
-    if (props.isTemplate) text = 'templates';
-    else if (props.isInteractiveMsg) text = 'interactive msg';
+    if (isTemplate) text = 'templates';
+    else if (isInteractiveMsg) text = 'interactive msg';
     else text = 'speed sends';
 
-    if (!props.isInteractiveMsg) {
+    if (!isInteractiveMsg) {
       listItems = templateObj.map((obj: any, index: number) => {
-        if (obj.isHsm === props.isTemplate) {
+        if (obj.isHsm === isTemplate) {
           // True HSM === Template, False HSM === Speed send
           // Display only active & APPROVED template
           if (obj.isHsm && obj.isActive && obj.status === 'APPROVED') {
@@ -111,7 +111,7 @@ export const ChatTemplates: React.SFC<ChatTemplatesProps> = (props) => {
       });
     } else {
       listItems = interactiveObj.map((obj: any, index: number) =>
-        getListItem(obj, index, props.isInteractiveMsg)
+        getListItem(obj, index, isInteractiveMsg)
       );
     }
     listItems = listItems.filter((n) => n);

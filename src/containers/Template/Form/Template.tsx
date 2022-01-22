@@ -395,8 +395,8 @@ const Template: React.SFC<TemplateProps> = (props) => {
         }
         // need to check exact title
         found = sessionTemplates.sessionTemplates.filter((search: any) => search.label === value);
-        if (props.match.params.id && found.length > 0) {
-          found = found.filter((search: any) => search.id !== props.match.params.id);
+        if (match.params.id && found.length > 0) {
+          found = found.filter((search: any) => search.id !== match.params.id);
         }
       }
       if (found.length > 0) {

@@ -19,7 +19,7 @@ export interface SavedSearchToolbarProps {
 }
 
 export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) => {
-  const { searchMode, refetchData } = props;
+  const { searchMode, refetchData, savedSearchCriteriaCallback, onSelect } = props;
   const [selectedSavedSearch, setSelectedSavedSearch] = useState<number | null>(null);
   const [optionsSelected, setOptionsSelected] = useState(false);
   const [fixedSearches, setFixedSearches] = useState<any>([]);
@@ -73,7 +73,7 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
     savedSearchCriteria: string | null,
     savedSearchId: number | null
   ) => {
-    props.savedSearchCriteriaCallback(savedSearchCriteria, savedSearchId);
+    savedSearchCriteriaCallback(savedSearchCriteria, savedSearchId);
     setSelectedSavedSearch(savedSearchId);
   };
 
@@ -122,11 +122,11 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
         key={savedSearch.id}
         onClick={() => {
           handlerSavedSearchCriteria(savedSearch.args, savedSearch.id);
-          props.onSelect();
+          onSelect();
         }}
         onKeyDown={() => {
           handlerSavedSearchCriteria(savedSearch.args, savedSearch.id);
-          props.onSelect();
+          onSelect();
         }}
         aria-hidden="true"
       >
