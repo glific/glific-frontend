@@ -43,6 +43,7 @@ const Menu: React.SFC<MenuProps> = ({ menus, children, eventType = 'Click' }) =>
       <div
         onClick={eventType === 'Click' ? handleClick : undefined}
         onKeyDown={eventType === 'Click' ? handleClick : undefined}
+        onMouseEnter={eventType === 'MouseEnter' ? handleClick : undefined}
         aria-hidden="true"
       >
         {children}
