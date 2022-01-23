@@ -11978,13 +11978,6 @@ react-custom-scrollbars@^4.2.0:
     prop-types "^15.5.10"
     raf "^3.1.0"
 
-react-data-table-component@^7.4.6:
-  version "7.4.6"
-  resolved "https://registry.yarnpkg.com/react-data-table-component/-/react-data-table-component-7.4.6.tgz#c0219b591de828f1f1acf4b265545d2d62a4b0b9"
-  integrity sha512-3ES2Qq07x0IWBuYyzfl1qCq2WX4X/AqVhZwKDhOH6tuEU5kbxzpRfQOD5naKdFk6L4rtNDm8FBL0tfk0DLdMpA==
-  dependencies:
-    deepmerge "^4.2.2"
-
 react-dev-utils@^11.0.3:
   version "11.0.4"
   resolved "https://registry.yarnpkg.com/react-dev-utils/-/react-dev-utils-11.0.4.tgz#a7ccb60257a1ca2e0efe7a83e38e6700d17aa37a"
