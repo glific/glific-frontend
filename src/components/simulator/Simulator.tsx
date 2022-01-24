@@ -66,6 +66,7 @@ export interface SimulatorProps {
   getFlowKeyword?: Function;
   interactiveMessage?: any;
   showHeader?: boolean;
+  hasResetButton?: boolean;
 }
 
 const TimeComponent = (direction: any, insertedAt: any) => (
@@ -98,6 +99,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
   getFlowKeyword,
   interactiveMessage,
   showHeader = true,
+  hasResetButton = false,
 }: SimulatorProps) => {
   const [inputMessage, setInputMessage] = useState('');
   const [simulatedMessages, setSimulatedMessage] = useState<any>();
@@ -525,14 +527,17 @@ export const Simulator: React.FC<SimulatorProps> = ({
                   }}
                   data-testid="clearIcon"
                 />
-                <ResetIcon
-                  className={styles.ResetIcon}
-                  onClick={() => {
-                    if (getFlowKeyword) {
-                      getFlowKeyword();
-                    }
-                  }}
-                />
+                {hasResetButton && (
+                  <ResetIcon
+                    data-testid="resetIcon"
+                    className={styles.ResetIcon}
+                    onClick={() => {
+                      if (getFlowKeyword) {
+                        getFlowKeyword();
+                      }
+                    }}
+                  />
+                )}
               </>
             )}
 

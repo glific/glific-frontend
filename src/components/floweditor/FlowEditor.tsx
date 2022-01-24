@@ -511,6 +511,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
       <Simulator
         showSimulator={simulatorId > 0}
         setSimulatorId={setSimulatorId}
+        hasResetButton
         flowSimulator
         message={flowKeyword}
         resetMessage={resetMessage}
