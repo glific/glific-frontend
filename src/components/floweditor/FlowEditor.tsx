@@ -286,6 +286,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
   }
 
   const { data: flowName } = useQuery(GET_FLOW_DETAILS, {
+    fetchPolicy: 'network-only',
     variables: {
       filter: {
         uuid,
