@@ -30,6 +30,7 @@ declare function showFlowEditor(node: any, config: any): void;
 
 // function to suppress the error for custom registery in floweditor
 const safeDecorator = (fn: any) =>
+  // eslint-disable-next-line
   function (...args: any) {
     try {
       // @ts-ignore
@@ -342,7 +343,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
   }, [flowId]);
 
   const handlePublishFlow = () => {
-    publishFlow({ variables: { uuid: props.match.params.uuid } });
+    publishFlow({ variables: { uuid: match.params.uuid } });
   };
 
   const handleCancelFlow = () => {

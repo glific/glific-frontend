@@ -6,16 +6,18 @@ import MenuItem from './MenuItem/MenuItem';
 
 export interface MenuProps {
   menus: any;
+  eventType?: string | undefined;
 }
 
-const Menu: React.SFC<MenuProps> = (props) => {
-  const { menus, children } = props;
+const Menu: React.SFC<MenuProps> = ({ menus, children, eventType = 'Click' }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleClick = (
-    event: React.MouseEvent<HTMLDivElement> | React.KeyboardEvent<HTMLDivElement>
+    event: React.MouseEvent<HTMLDivElement> | React.KeyboardEvent<HTMLDivElement> | undefined
   ) => {
-    setAnchorEl(event.currentTarget);
+    if (event) {
+      setAnchorEl(event.currentTarget);
+    }
   };
 
   const handleClose = () => {
@@ -38,7 +40,12 @@ const Menu: React.SFC<MenuProps> = (props) => {
 
   return (
     <div data-testid="Menu">
-      <div onClick={handleClick} onKeyDown={handleClick} aria-hidden="true">
+      <div
+        onClick={eventType === 'Click' ? handleClick : undefined}
+        onKeyDown={eventType === 'Click' ? handleClick : undefined}
+        onMouseEnter={eventType === 'MouseEnter' ? handleClick : undefined}
+        aria-hidden="true"
+      >
         {children}
       </div>
       <MenuElement

@@ -37,12 +37,15 @@ interface ConversationListProps {
 
 export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   const {
-    selectedContactId,
     searchVal,
-    searchParam,
+    selectedContactId,
+    setSelectedContactId,
     savedSearchCriteria,
     savedSearchCriteriaId,
+    searchParam,
+    searchMode,
     selectedCollectionId,
+    setSelectedCollectionId,
     entityType = 'contact',
   } = props;
   const client = useApolloClient();
@@ -104,17 +107,17 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   });
 
   const filterVariables = () => {
-    if (props.savedSearchCriteria && Object.keys(props.searchParam).length === 0) {
-      const variables = JSON.parse(props.savedSearchCriteria);
-      if (props.searchVal) variables.filter.term = props.searchVal;
+    if (savedSearchCriteria && Object.keys(searchParam).length === 0) {
+      const variables = JSON.parse(savedSearchCriteria);
+      if (searchVal) variables.filter.term = searchVal;
       return variables;
     }
 
     const filter: any = {};
-    if (props.searchVal) {
-      filter.term = props.searchVal;
+    if (searchVal) {
+      filter.term = searchVal;
     }
-    const params = props.searchParam;
+    const params = searchParam;
     if (params) {
       // if (params.includeTags && params.includeTags.length > 0)
       //   filter.includeTags = params.includeTags.map((obj: any) => obj.id);
@@ -134,9 +137,9 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     // If tab is collection then add appropriate filter
     if (selectedCollectionId) {
       filter.searchGroup = true;
-      if (props.searchVal) {
+      if (searchVal) {
         delete filter.term;
-        filter.groupLabel = props.searchVal;
+        filter.groupLabel = searchVal;
       }
     }
 
@@ -157,7 +160,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       order: 'DESC',
     },
     searchFilter: {
-      term: props.searchVal,
+      term: searchVal,
     },
     messageOpts: {
       limit: DEFAULT_MESSAGE_LIMIT,
@@ -281,7 +284,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     }
 
     let selectedRecord = false;
-    if (props.selectedContactId === contact.id) {
+    if (selectedContactId === contact.id) {
       selectedRecord = true;
     }
 
@@ -293,8 +296,8 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
           selected={selectedRecord}
           onClick={() => {
             setSearchHeight();
-            if (entityType === 'contact' && props.setSelectedContactId) {
-              props.setSelectedContactId(contact.id);
+            if (entityType === 'contact' && setSelectedContactId) {
+              setSelectedContactId(contact.id);
             }
           }}
           entityType={entityType}
@@ -306,9 +309,9 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
           contactStatus={contact.status}
           contactBspStatus={contact.bspStatus}
           contactIsOrgRead={contact.isOrgRead}
-          highlightSearch={props.searchVal}
+          highlightSearch={searchVal}
           messageNumber={conversation.messageNumber}
-          searchMode={props.searchMode}
+          searchMode={searchMode}
         />
       </>
     );
@@ -356,7 +359,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       let contactIsOrgRead = false;
       let selectedRecord = false;
       if (conversation.contact) {
-        if (props.selectedContactId === conversation.contact.id) {
+        if (selectedContactId === conversation.contact.id) {
           selectedRecord = true;
         }
         entityId = conversation.contact.id;
@@ -366,7 +369,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
         contactBspStatus = conversation.contact.bspStatus;
         contactIsOrgRead = conversation.contact.isOrgRead;
       } else if (conversation.group) {
-        if (props.selectedCollectionId === conversation.group.id) {
+        if (selectedCollectionId === conversation.group.id) {
           selectedRecord = true;
         }
         entityId = conversation.group.id;
@@ -380,10 +383,10 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
           onClick={() => {
             setSearchHeight();
             showMessages();
-            if (entityType === 'contact' && props.setSelectedContactId) {
-              props.setSelectedContactId(conversation.contact.id);
-            } else if (entityType === 'collection' && props.setSelectedCollectionId) {
-              props.setSelectedCollectionId(conversation.group.id);
+            if (entityType === 'contact' && setSelectedContactId) {
+              setSelectedContactId(conversation.contact.id);
+            } else if (entityType === 'collection' && setSelectedCollectionId) {
+              setSelectedCollectionId(conversation.group.id);
             }
           }}
           index={index}

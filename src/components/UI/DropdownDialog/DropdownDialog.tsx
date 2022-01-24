@@ -19,12 +19,12 @@ export const DropdownDialog: React.FC<DropdownDialogProps> = (props: DropdownDia
     setSelectedValue(event.target.value);
   };
 
-  const { title, handleCancel, options, placeholder, description } = props;
+  const { title, handleCancel, options, placeholder, description, handleOk } = props;
 
   return (
     <DialogBox
       title={title}
-      handleOk={() => props.handleOk(selectedValue)}
+      handleOk={() => handleOk(selectedValue)}
       handleCancel={handleCancel}
       titleAlign="left"
       buttonOk="Start"
