@@ -14,7 +14,7 @@ export interface SideMenusProps {
   opened: boolean;
 }
 
-const SideMenus: React.SFC<SideMenusProps> = (props) => {
+const SideMenus: React.SFC<SideMenusProps> = ({ opened }) => {
   const location = useLocation();
   const { t } = useTranslation();
 
@@ -62,8 +62,8 @@ const SideMenus: React.SFC<SideMenusProps> = (props) => {
         disableRipple
         selected={isSelected}
         className={clsx({
-          [styles.OpenItem]: props.opened,
-          [styles.ClosedItem]: !props.opened,
+          [styles.OpenItem]: opened,
+          [styles.ClosedItem]: !opened,
         })}
         classes={{
           root: styles.IconItem,
@@ -81,7 +81,7 @@ const SideMenus: React.SFC<SideMenusProps> = (props) => {
             showBadge={menu.badge ? menu.badge : false}
           />
         </ListItemIcon>
-        {props.opened ? (
+        {opened ? (
           <ListItemText
             disableTypography
             data-testid="list-item"
