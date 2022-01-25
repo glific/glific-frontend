@@ -9,7 +9,8 @@ export const validator = (templateType: any, t: any) => {
   const validation: any = {
     title: Yup.string()
       .required(t('Title is required'))
-      .max(60, t('Title can be at most 60 characters')),
+      .max(60, t('Title can be at most 60 characters'))
+      .matches(/^[a-zA-Z0-9 ]*$/, t('Title can only contain alphanumeric characters and spaces')),
     body: Yup.string()
       .transform((current, original) => original.getCurrentContent().getPlainText())
       .required(t('Message content is required.')),
