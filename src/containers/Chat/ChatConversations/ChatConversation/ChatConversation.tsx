@@ -5,13 +5,12 @@ import { Link } from 'react-router-dom';
 import moment from 'moment';
 import { useApolloClient, useMutation } from '@apollo/client';
 
+import ChatMessageType from 'containers/Chat/ChatMessages/ChatMessage/ChatMessageType/ChatMessageType';
 import { DATE_FORMAT } from 'common/constants';
-import { WhatsAppToJsx } from 'common/RichEditor';
 import { Timer } from 'components/UI/Timer/Timer';
 import { MARK_AS_READ, CONTACT_FRAGMENT } from 'graphql/mutations/Chat';
 import { SEARCH_OFFSET } from 'graphql/queries/Search';
 import styles from './ChatConversation.module.css';
-import ChatMessageType from 'containers/Chat/ChatMessages/ChatMessage/ChatMessageType/ChatMessageType';
 
 export interface ChatConversationProps {
   contactId: number;
@@ -133,6 +132,7 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
   if (isTextType) {
     displayMSG = <ChatMessageType type={type} body={body} />;
   }
+
   // set offset to use that in chatting window to fetch that msg
   const setSearchOffset = (apolloClient: any, offset: number = 0) => {
     apolloClient.writeQuery({
@@ -191,8 +191,8 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
           {name}
         </div>
         <div className={styles.MessageContent} data-testid="content">
-          {isTextType && displayMSG[0]
-            ? BoldedText(displayMSG[0].props.body, highlightSearch)
+          {isTextType && displayMSG
+            ? BoldedText(displayMSG.props.body, highlightSearch)
             : displayMSG}
         </div>
         <div className={styles.MessageDate} data-testid="date">
