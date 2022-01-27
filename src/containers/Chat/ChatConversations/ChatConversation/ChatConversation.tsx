@@ -10,8 +10,8 @@ import { WhatsAppToJsx } from 'common/RichEditor';
 import { Timer } from 'components/UI/Timer/Timer';
 import { MARK_AS_READ, CONTACT_FRAGMENT } from 'graphql/mutations/Chat';
 import { SEARCH_OFFSET } from 'graphql/queries/Search';
-import { MessageType } from '../MessageType/MessageType';
 import styles from './ChatConversation.module.css';
+import ChatMessageType from 'containers/Chat/ChatMessages/ChatMessage/ChatMessageType/ChatMessageType';
 
 export interface ChatConversationProps {
   contactId: number;
@@ -128,12 +128,11 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
 
   const { type, body } = lastMessage;
   const isTextType = type === 'TEXT';
-  let displayMSG: any = <MessageType type={type} body={body} />;
 
+  let displayMSG;
   if (isTextType) {
-    displayMSG = WhatsAppToJsx(displayMSG);
+    displayMSG = <ChatMessageType type={type} body={body} />;
   }
-
   // set offset to use that in chatting window to fetch that msg
   const setSearchOffset = (apolloClient: any, offset: number = 0) => {
     apolloClient.writeQuery({
