@@ -5,11 +5,12 @@ import { Link } from 'react-router-dom';
 import moment from 'moment';
 import { useApolloClient, useMutation } from '@apollo/client';
 
-import ChatMessageType from 'containers/Chat/ChatMessages/ChatMessage/ChatMessageType/ChatMessageType';
 import { DATE_FORMAT } from 'common/constants';
 import { Timer } from 'components/UI/Timer/Timer';
 import { MARK_AS_READ, CONTACT_FRAGMENT } from 'graphql/mutations/Chat';
 import { SEARCH_OFFSET } from 'graphql/queries/Search';
+import { WhatsAppToJsx } from 'common/RichEditor';
+import { MessageType } from '../MessageType/MessageType';
 import styles from './ChatConversation.module.css';
 
 export interface ChatConversationProps {
@@ -35,7 +36,7 @@ export interface ChatConversationProps {
     }>;
   };
   messageNumber?: number;
-  highlightSearch?: string;
+  highlightSearch?: string | null;
   searchMode?: any;
 }
 const updateContactCache = (client: any, id: any) => {
@@ -128,9 +129,10 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
   const { type, body } = lastMessage;
   const isTextType = type === 'TEXT';
 
-  let displayMSG;
+  let displayMSG: any = <MessageType type={type} body={body} />;
+
   if (isTextType) {
-    displayMSG = <ChatMessageType type={type} body={body} />;
+    displayMSG = WhatsAppToJsx(body);
   }
 
   // set offset to use that in chatting window to fetch that msg
@@ -191,9 +193,7 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
           {name}
         </div>
         <div className={styles.MessageContent} data-testid="content">
-          {isTextType && displayMSG
-            ? BoldedText(displayMSG.props.body, highlightSearch)
-            : displayMSG}
+          {isTextType && highlightSearch ? BoldedText(displayMSG, highlightSearch) : displayMSG}
         </div>
         <div className={styles.MessageDate} data-testid="date">
           {moment(lastMessage.insertedAt).format(DATE_FORMAT)}
