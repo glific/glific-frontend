@@ -193,7 +193,7 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
           {name}
         </div>
         <div className={styles.MessageContent} data-testid="content">
-          {isTextType && highlightSearch ? BoldedText(displayMSG, highlightSearch) : displayMSG}
+          {isTextType && highlightSearch ? BoldedText(body, highlightSearch) : displayMSG}
         </div>
         <div className={styles.MessageDate} data-testid="date">
           {moment(lastMessage.insertedAt).format(DATE_FORMAT)}
