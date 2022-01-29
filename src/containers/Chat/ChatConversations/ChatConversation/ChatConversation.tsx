@@ -60,10 +60,15 @@ const updateContactCache = (client: any, id: any) => {
 };
 
 // display highlighted search message
-const BoldedText = (text: string, highlight: any) => {
+const BoldedText = (originalText: string, highlight: any) => {
   const texts = highlight || '';
-  // Split on highlight term and include term into strings, ignore case
+
+  // remove any formatting from the string
+  const regex = /(_|\*|~|`)/gm;
   // eslint-disable-next-line
+  const text = originalText.replace(regex, '');
+
+  // Split on highlight term and include term into strings, ignore case
   const strings = typeof text === 'string' ? text.split(new RegExp(`(${texts})`, 'gi')) : null;
 
   if (strings) {
