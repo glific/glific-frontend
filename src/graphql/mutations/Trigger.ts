@@ -26,6 +26,7 @@ export const CREATE_TRIGGER = gql`
         }
         id
         isActive
+        hours
         isRepeating
         name
         startAt
@@ -49,6 +50,7 @@ export const UPDATE_TRIGGER = gql`
         }
         id
         isActive
+        hours
         isRepeating
         name
         startAt

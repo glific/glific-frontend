@@ -7,7 +7,7 @@ import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { ReactComponent as TriggerIcon } from 'assets/images/icons/Trigger/Union.svg';
-import { dateList, dayList, FLOW_STATUS_PUBLISHED, setVariables } from 'common/constants';
+import { dateList, dayList, FLOW_STATUS_PUBLISHED, hourList, setVariables } from 'common/constants';
 import { FormLayout } from 'containers/Form/FormLayout';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
@@ -37,6 +37,75 @@ const checkDateTimeValidation = (startAtValue: string, startDateValue: string) =
   return true;
 };
 
+const setPayload = (payload: any) => {
+  const payloadCopy = payload;
+
+  const { startDate, startTime, isActive, flowId, frequencyValues, groupId, endDate, frequency } =
+    payloadCopy;
+  // covert the time to UTC
+  const startAt = moment(`
+    ${moment(startDate).format('yyyy-MM-DD')}${startTime}`).utc();
+  const updatedPayload = {
+    isActive,
+    isRepeating: true,
+    flowId: flowId.id,
+    days: [],
+    hours: [],
+    groupId: groupId.id,
+    startDate: moment(startAt).utc().format('yyyy-MM-DD'),
+    endDate: moment(endDate).utc().format('yyyy-MM-DD'),
+    startTime: moment(startAt).utc().format('THH:mm:ss'),
+    frequency: frequency.value,
+  };
+
+  switch (updatedPayload.frequency) {
+    case 'weekly':
+    case 'monthly':
+      updatedPayload.days = frequencyValues.map((value: any) => value.id);
+      break;
+    case 'hourly':
+      updatedPayload.hours = frequencyValues.map((value: any) => value.id);
+      break;
+    case 'daily':
+      updatedPayload.days = [];
+      updatedPayload.hours = [];
+      break;
+    default:
+      updatedPayload.days = [];
+      updatedPayload.hours = [];
+      updatedPayload.isRepeating = false;
+  }
+
+  return updatedPayload;
+};
+
+const getFrequencyDetails = (
+  frequencyValue: string,
+  daysValue: Array<any>,
+  hoursValue: Array<any>
+) => {
+  const frequencyDetails = {
+    values: [],
+    options: dayList,
+  };
+  switch (frequencyValue) {
+    case 'weekly':
+      frequencyDetails.values = dayList.filter((day: any) => daysValue.includes(day.id));
+      frequencyDetails.options = dayList;
+      break;
+    case 'monthly':
+      frequencyDetails.values = dateList.filter((day: any) => daysValue.includes(day.id));
+      frequencyDetails.options = dateList;
+      break;
+    case 'hourly':
+      frequencyDetails.values = hourList.filter((day: any) => hoursValue.includes(day.id));
+      frequencyDetails.options = hourList;
+      break;
+    default:
+  }
+
+  return frequencyDetails;
+};
 export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
   let isEditing = false;
   if (match.params.id) {
@@ -50,11 +119,12 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
   const [frequency, setfrequency] = useState<any>(null);
   const [endDate, setEndDate] = useState('');
   const [isRepeating, setIsRepeating] = useState('');
-  const [days, setDays] = useState([]);
+  const [frequencyValues, setFrequencyValues] = useState([]);
   const [daysDisabled, setDaysDisabled] = useState(true);
   const [groupId, setGroupId] = useState<any>(null);
   const [minDate, setMinDate] = useState<any>(new Date());
-  const [monthly, setMonthly] = useState(false);
+  const [frequencyPlaceholder, setFrequencyPlaceholder] = useState('Select days');
+  const [frequencyOptions, setFrequencyOptions] = useState(dayList);
 
   const location = useLocation();
   const { t } = useTranslation();
@@ -65,13 +135,14 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
     frequency,
     endDate,
     isRepeating,
-    days,
+    frequencyValues,
     groupId,
     isActive,
   };
 
   const triggerFrequencyOptions = [
     { label: t('Does not repeat'), value: 'none' },
+    { label: t('Hourly'), value: 'hourly' },
     { label: t('Daily'), value: 'daily' },
     { label: t('Weekly'), value: 'weekly' },
     { label: t('Monthly'), value: 'monthly' },
@@ -147,17 +218,26 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
     if (!triggerFrequency) return;
 
     const { value } = triggerFrequency;
-    if (value === 'weekly') {
-      setDaysDisabled(false);
-      setMonthly(false);
-    } else if (value === 'monthly') {
-      setDaysDisabled(false);
-      setMonthly(true);
-    } else {
-      setDaysDisabled(true);
-      setMonthly(false);
+
+    setDaysDisabled(false);
+    switch (value) {
+      case 'weekly':
+        setFrequencyPlaceholder(t('Select days'));
+        setFrequencyOptions(dayList);
+        break;
+      case 'monthly':
+        setFrequencyPlaceholder(t('Select dates'));
+        setFrequencyOptions(dateList);
+        break;
+      case 'hourly':
+        setFrequencyPlaceholder(t('Select hours'));
+        setFrequencyOptions(hourList);
+        break;
+      default:
+        setDaysDisabled(true);
     }
-    setDays([]);
+
+    setFrequencyValues([]);
   };
 
   const formFields = [
@@ -222,20 +302,21 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
     },
     {
       component: AutoComplete,
-      name: 'days',
-      placeholder: monthly ? t('Select date') : t('Select days'),
-      options: monthly ? dateList : dayList,
+      name: 'frequencyValues',
+      placeholder: frequencyPlaceholder,
+      options: frequencyOptions,
       disabled: isEditing || daysDisabled,
       optionLabel: 'label',
       textFieldProps: {
-        label: monthly ? t('Select dates') : t('Select days'),
+        label: frequencyPlaceholder,
         variant: 'outlined',
       },
-      helperText: monthly
-        ? t(
-            'If you are selecting end of the month dates, then for the ones not present i.e. 30, 31, the selection will default to the last day of that month.'
-          )
-        : null,
+      helperText:
+        frequency === 'monthly'
+          ? t(
+              'If you are selecting end of the month dates, then for the ones not present i.e. 30, 31, the selection will default to the last day of that month.'
+            )
+          : null,
     },
     {
       component: AutoComplete,
@@ -254,6 +335,7 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
 
   const setStates = ({
     days: daysValue,
+    hours: hoursValue,
     endDate: endDateValue,
     flow: flowValue,
     frequency: frequencyValue,
@@ -265,12 +347,10 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
     setIsRepeating(isRepeatingValue);
     setIsActive(isActiveValue);
     setEndDate(moment(endDateValue).format('yyyy-MM-DD'));
-    let savedDays = dayList.filter((day: any) => daysValue.includes(day.id));
-    if (frequencyValue === 'monthly') {
-      setMonthly(true);
-      savedDays = dateList.filter((day: any) => daysValue.includes(day.id));
-    }
-    setDays(savedDays);
+
+    const frequencyDetails = getFrequencyDetails(frequencyValue, daysValue, hoursValue);
+    setFrequencyValues(frequencyDetails.values);
+    setFrequencyOptions(frequencyDetails.options);
     setStartDate(moment(startAtValue).format('yyyy-MM-DD'));
     // If a user wants to update the trigger
     if (moment(new Date()).isAfter(startAtValue, 'days')) {
@@ -290,33 +370,6 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
     if (getcollectionId.length > 0) {
       setGroupId(getcollectionId[0]);
     }
-  };
-
-  const setPayload = (payload: any) => {
-    const payloadCopy = payload;
-
-    // covert the time to UTC
-    const startAt = moment(`
-      ${moment(payloadCopy.startDate).format('yyyy-MM-DD')}${payloadCopy.startTime}`).utc();
-    const newPayload = {
-      isActive: payloadCopy.isActive,
-      isRepeating: true,
-      flowId: payloadCopy.flowId.id,
-      days: payloadCopy.days.map((day: any) => day.id),
-      groupId: payloadCopy.groupId.id,
-      startDate: moment(startAt).utc().format('yyyy-MM-DD'),
-      endDate: moment(payloadCopy.endDate).utc().format('yyyy-MM-DD'),
-      startTime: moment(startAt).utc().format('THH:mm:ss'),
-      frequency: payloadCopy.frequency.value,
-    };
-
-    if (newPayload.frequency === 'none') {
-      newPayload.isRepeating = false;
-      newPayload.days = [];
-    } else if (newPayload.frequency === 'daily') {
-      newPayload.days = [];
-    }
-    return newPayload;
   };
 
   return (
