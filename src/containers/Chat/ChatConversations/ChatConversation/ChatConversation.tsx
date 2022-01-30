@@ -69,9 +69,9 @@ const BoldedText = (originalText: string, highlight: any) => {
   const text = originalText.replace(regex, '');
 
   // Split on highlight term and include term into strings, ignore case
-  const strings = typeof text === 'string' ? text.split(new RegExp(`(${texts})`, 'gi')) : null;
+  const strings = text.split(new RegExp(`(${texts})`, 'gi'));
 
-  if (strings) {
+  if (strings.length > 0) {
     return (
       <span>
         {strings.map((string, i) =>
