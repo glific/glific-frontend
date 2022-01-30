@@ -34,10 +34,18 @@ export const dateList: any = Array.from(Array(31), (_, i) => ({
   label: (i + 1).toString(),
 }));
 
-export const hourList: any = Array.from(Array(24), (_, i) => ({
-  id: i + 1,
-  label: (i + 1).toString(),
-}));
+export const hourList: any = Array.from(Array(24), (_, i) => {
+  let timeOfDay = 'AM';
+  let hour = i;
+  if (i > 11) {
+    timeOfDay = 'PM';
+    hour -= 12;
+  }
+  return {
+    id: i,
+    label: `${hour.toString()} ${timeOfDay}`,
+  };
+});
 
 export const dayList: any = [
   { id: 1, label: 'Monday' },
