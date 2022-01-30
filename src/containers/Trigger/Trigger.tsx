@@ -92,8 +92,6 @@ const getFrequencyDetails = (
   switch (frequencyValue) {
     case 'weekly':
       frequencyDetails.values = dayList.filter((day: any) => daysValue.includes(day.id));
-      frequencyDetails.options = dayList;
-      frequencyDetails.placeholder = 'Select days';
       break;
     case 'monthly':
       frequencyDetails.values = dateList.filter((day: any) => daysValue.includes(day.id));
@@ -220,10 +218,9 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
 
   const handleFrequencyChange = (triggerFrequency: any) => {
     if (!triggerFrequency) return;
-
     const { value } = triggerFrequency;
-
     setDaysDisabled(false);
+
     switch (value) {
       case 'weekly':
         setFrequencyPlaceholder(t('Select days'));
@@ -240,7 +237,6 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
       default:
         setDaysDisabled(true);
     }
-
     setFrequencyValues([]);
   };
 
@@ -352,10 +348,14 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
     setIsActive(isActiveValue);
     setEndDate(moment(endDateValue).format('yyyy-MM-DD'));
 
-    const frequencyDetails = getFrequencyDetails(frequencyValue, daysValue, hoursValue);
-    setFrequencyValues(frequencyDetails.values);
-    setFrequencyOptions(frequencyDetails.options);
-    setFrequencyPlaceholder(frequencyDetails.placeholder);
+    const { values, options, placeholder } = getFrequencyDetails(
+      frequencyValue,
+      daysValue,
+      hoursValue
+    );
+    setFrequencyValues(values);
+    setFrequencyOptions(options);
+    setFrequencyPlaceholder(placeholder);
     setStartDate(moment(startAtValue).format('yyyy-MM-DD'));
     // If a user wants to update the trigger
     if (moment(new Date()).isAfter(startAtValue, 'days')) {
