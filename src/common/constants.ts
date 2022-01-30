@@ -41,9 +41,15 @@ export const hourList: any = Array.from(Array(24), (_, i) => {
     timeOfDay = 'PM';
     hour -= 12;
   }
+
+  let hourLabel = hour.toString();
+  if (hour === 0) {
+    hourLabel = '12';
+  }
+
   return {
     id: i,
-    label: `${hour.toString()} ${timeOfDay}`,
+    label: `${hourLabel} ${timeOfDay}`,
   };
 });
 
