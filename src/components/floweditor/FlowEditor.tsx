@@ -105,7 +105,6 @@ const setConfig = (uuid: any) => ({
     'start_session',
     'open_ticket',
     'transfer_airtime',
-    'split_by_contact_field',
     'split_by_random',
     'split_by_scheme',
   ],
