@@ -457,6 +457,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       inputProp: {
         onBlur: (event: any) => setTitle(event.target.value),
       },
+      helperText: t('Only alphanumeric characters and spaces are allowed'),
     },
     // checkbox is not needed in media types
     {
