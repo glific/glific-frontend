@@ -25,6 +25,7 @@ export const triggerListQuery = {
           flow: { id: '1', name: 'Help Workflow' },
           group: { id: '1', label: 'Optin contacts' },
           endDate: '2021-03-13',
+          hours: [],
           isActive: true,
           isRepeating: true,
           startAt: '2020-12-30T13:15:19Z',
@@ -38,6 +39,7 @@ export const triggerListQuery = {
           group: { id: '1', label: 'Optin contacts' },
           endDate: '2021-03-13',
           isActive: false,
+          hours: [],
           isRepeating: true,
           startAt: '2020-12-30T13:15:19Z',
         },
@@ -78,6 +80,7 @@ export const getTriggerQuery = (frequency: any) => ({
             id: '1',
           },
           frequency,
+          hours: [],
           group: {
             id: '1',
           },
@@ -90,3 +93,12 @@ export const getTriggerQuery = (frequency: any) => ({
     },
   },
 });
+
+const hourlyTrigger = () => {
+  const hourlyTrigger: any = getTriggerQuery('hourly');
+  hourlyTrigger.result.data.trigger.trigger.days = [];
+  hourlyTrigger.result.data.trigger.trigger.hours = [1, 13];
+  return hourlyTrigger;
+};
+
+export { hourlyTrigger };
