@@ -134,10 +134,10 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
   const { type, body } = lastMessage;
   const isTextType = type === 'TEXT';
 
-  let displayMSG: any = <MessageType type={type} body={body} />;
+  let displayMSG: any = <MessageType type={type} body={body} compact />;
 
   if (isTextType) {
-    displayMSG = WhatsAppToJsx(body);
+    displayMSG = WhatsAppToJsx(displayMSG);
   }
 
   // set offset to use that in chatting window to fetch that msg
