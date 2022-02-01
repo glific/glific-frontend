@@ -134,10 +134,15 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
   const { type, body } = lastMessage;
   const isTextType = type === 'TEXT';
 
-  let displayMSG: any = <MessageType type={type} body={body} compact />;
+  let displayMSG: any = <MessageType type={type} body={body} />;
 
+  let originalText = body;
   if (isTextType) {
-    displayMSG = WhatsAppToJsx(displayMSG);
+    // let's shorten the text message to display correctly
+    if (originalText.length > 40) {
+      originalText = originalText.slice(0, 40).concat('...');
+    }
+    displayMSG = WhatsAppToJsx(originalText);
   }
 
   // set offset to use that in chatting window to fetch that msg

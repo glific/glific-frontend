@@ -16,14 +16,12 @@ export interface MessageTypeProps {
   type: string;
   body?: string;
   color?: 'dark' | 'light';
-  compact?: boolean;
 }
 
 export const MessageType: React.FC<MessageTypeProps> = ({
   type,
   body = '',
   color = 'light',
-  compact = false,
 }: MessageTypeProps) => {
   const isLight = color === 'light';
 
@@ -31,9 +29,6 @@ export const MessageType: React.FC<MessageTypeProps> = ({
   switch (type) {
     case 'TEXT':
       message = body;
-      if (compact && message.length > 40) {
-        message = message.slice(0, 40).concat('...');
-      }
       break;
     case 'IMAGE':
       message = (
