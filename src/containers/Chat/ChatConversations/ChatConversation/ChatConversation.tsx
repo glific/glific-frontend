@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import moment from 'moment';
 import { useApolloClient, useMutation } from '@apollo/client';
 
-import { DATE_FORMAT } from 'common/constants';
+import { COMPACT_MESSAGE_LENGTH, DATE_FORMAT } from 'common/constants';
 import { Timer } from 'components/UI/Timer/Timer';
 import { MARK_AS_READ, CONTACT_FRAGMENT } from 'graphql/mutations/Chat';
 import { SEARCH_OFFSET } from 'graphql/queries/Search';
@@ -72,9 +72,39 @@ const BoldedText = (originalText: string, highlight: any) => {
   const strings = text.split(new RegExp(`(${texts})`, 'gi'));
 
   if (strings.length > 0) {
+    // let's do some smart formatting as search keyword might be lost when message is long
+    // we know search keyword is always at odd index
+    // get the length of search keyword
+    const searchKeywordLength = texts.length;
+
+    const formattedStringArray: any = [];
+
+    // available character length
+    const availableCharacterLength = COMPACT_MESSAGE_LENGTH - searchKeywordLength;
+    strings.every((string, index) => {
+      if (index === 0) {
+        // we need calculate the length of the string before the search keyword
+        const beforeSearchKeywordLength = strings[index].length;
+        formattedStringArray[index] = string.substring(
+          beforeSearchKeywordLength - availableCharacterLength / 2
+        );
+      } else if (index % 2 !== 0) {
+        formattedStringArray[index] = string;
+      } else {
+        // calculate the length of strings that wil be displayed
+        formattedStringArray[index] = string;
+        const stringLength = formattedStringArray.join('');
+        if (stringLength.length > availableCharacterLength) {
+          formattedStringArray[index] = string.slice(0, availableCharacterLength / 2).concat('...');
+          return false;
+        }
+      }
+      return true;
+    });
+
     return (
       <span>
-        {strings.map((string, i) =>
+        {formattedStringArray.map((string: String, i: any) =>
           string.toLowerCase() === texts.toLowerCase() ? (
             // it is ok to use "i" as index as we are not altering sequence etc. and alphabets can repeat etc.
             // eslint-disable-next-line
@@ -139,8 +169,8 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
   let originalText = body;
   if (isTextType) {
     // let's shorten the text message to display correctly
-    if (originalText.length > 40) {
-      originalText = originalText.slice(0, 40).concat('...');
+    if (originalText.length > COMPACT_MESSAGE_LENGTH) {
+      originalText = originalText.slice(0, COMPACT_MESSAGE_LENGTH).concat('...');
     }
     displayMSG = WhatsAppToJsx(originalText);
   }
