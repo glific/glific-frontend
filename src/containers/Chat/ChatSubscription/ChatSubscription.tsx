@@ -24,7 +24,6 @@ import {
   ADD_MESSAGE_TAG_SUBSCRIPTION,
   DELETE_MESSAGE_TAG_SUBSCRIPTION,
 } from 'graphql/subscriptions/Tag';
-import { Loading } from 'components/UI/Layout/Loading/Loading';
 import {
   getSubscriptionDetails,
   recordRequests,
@@ -300,7 +299,9 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({ setDataLoad
     loadCollectionData();
   }, []);
 
-  if (loading) return <Loading />;
+  // lets return empty if we are still loading
+  if (loading) return <div />;
+
   if (error) {
     setErrorMessage(client, error);
     return null;
