@@ -300,7 +300,7 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({ setDataLoad
   }, []);
 
   // lets return empty if we are still loading
-  if (loading) return <span />;
+  if (loading) return <div />;
 
   if (error) {
     setErrorMessage(client, error);
