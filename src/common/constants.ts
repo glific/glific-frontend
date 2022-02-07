@@ -34,6 +34,25 @@ export const dateList: any = Array.from(Array(31), (_, i) => ({
   label: (i + 1).toString(),
 }));
 
+export const hourList: any = Array.from(Array(24), (_, i) => {
+  let timeOfDay = 'AM';
+  let hour = i;
+  if (i > 11) {
+    timeOfDay = 'PM';
+    hour -= 12;
+  }
+
+  let hourLabel = hour.toString();
+  if (hour === 0) {
+    hourLabel = '12';
+  }
+
+  return {
+    id: i,
+    label: `${hourLabel} ${timeOfDay}`,
+  };
+});
+
 export const dayList: any = [
   { id: 1, label: 'Monday' },
   { id: 2, label: 'Tuesday' },

@@ -20,6 +20,7 @@ import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
 import { Button as FormButton } from 'components/UI/Form/Button/Button';
 import DefaultWhatsappImage from 'assets/images/whatsappDefault.jpg';
 import { ReactComponent as SimulatorIcon } from 'assets/images/icons/Simulator.svg';
+import { ReactComponent as ResetIcon } from 'assets/images/icons/Reset/Dark.svg';
 import {
   TIME_FORMAT,
   SAMPLE_MEDIA_FOR_SIMULATOR,
@@ -65,6 +66,7 @@ export interface SimulatorProps {
   getFlowKeyword?: Function;
   interactiveMessage?: any;
   showHeader?: boolean;
+  hasResetButton?: boolean;
 }
 
 const TimeComponent = (direction: any, insertedAt: any) => (
@@ -75,6 +77,16 @@ const TimeComponent = (direction: any, insertedAt: any) => (
     {direction === 'send' && <DoneAllIcon />}
   </>
 );
+
+const getSimulatorVariables = (id: any) => ({
+  contactOpts: {
+    limit: 1,
+  },
+  filter: { id },
+  messageOpts: {
+    limit: DEFAULT_MESSAGE_LIMIT,
+  },
+});
 
 export const Simulator: React.FC<SimulatorProps> = ({
   showSimulator,
@@ -87,6 +99,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
   getFlowKeyword,
   interactiveMessage,
   showHeader = true,
+  hasResetButton = false,
 }: SimulatorProps) => {
   const [inputMessage, setInputMessage] = useState('');
   const [simulatedMessages, setSimulatedMessage] = useState<any>();
@@ -152,17 +165,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
     fetchPolicy: 'network-only',
     onCompleted: (simulatorData) => {
       if (simulatorData.simulatorGet) {
-        loadSimulator({
-          variables: {
-            contactOpts: {
-              limit: 1,
-            },
-            filter: { id: simulatorData.simulatorGet.id },
-            messageOpts: {
-              limit: DEFAULT_MESSAGE_LIMIT,
-            },
-          },
-        });
+        loadSimulator({ variables: getSimulatorVariables(simulatorData.simulatorGet.id) });
         setSimulatorId(simulatorData.simulatorGet.id);
       } else {
         setNotification(
@@ -516,13 +519,26 @@ export const Simulator: React.FC<SimulatorProps> = ({
         <div>
           <div id="simulator" className={styles.Simulator}>
             {!isPreviewMessage && (
-              <ClearIcon
-                className={styles.ClearIcon}
-                onClick={() => {
-                  releaseUserSimulator();
-                }}
-                data-testid="clearIcon"
-              />
+              <>
+                <ClearIcon
+                  className={styles.ClearIcon}
+                  onClick={() => {
+                    releaseUserSimulator();
+                  }}
+                  data-testid="clearIcon"
+                />
+                {hasResetButton && (
+                  <ResetIcon
+                    data-testid="resetIcon"
+                    className={styles.ResetIcon}
+                    onClick={() => {
+                      if (getFlowKeyword) {
+                        getFlowKeyword();
+                      }
+                    }}
+                  />
+                )}
+              </>
             )}
 
             <div className={styles.Screen}>
@@ -631,7 +647,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
             }}
           >
             Preview
-            {showSimulator ? <CancelOutlinedIcon className={styles.CrossIcon} /> : null}
+            {showSimulator && <CancelOutlinedIcon className={styles.CrossIcon} />}
           </FormButton>
         </div>
       )}

@@ -105,7 +105,6 @@ const setConfig = (uuid: any) => ({
     'start_session',
     'open_ticket',
     'transfer_airtime',
-    'split_by_contact_field',
     'split_by_random',
     'split_by_scheme',
   ],
@@ -286,6 +285,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
   }
 
   const { data: flowName } = useQuery(GET_FLOW_DETAILS, {
+    fetchPolicy: 'network-only',
     variables: {
       filter: {
         uuid,
@@ -512,6 +512,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
       <Simulator
         showSimulator={simulatorId > 0}
         setSimulatorId={setSimulatorId}
+        hasResetButton
         flowSimulator
         message={flowKeyword}
         resetMessage={resetMessage}

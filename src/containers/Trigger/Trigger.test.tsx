@@ -5,7 +5,7 @@ import { MemoryRouter } from 'react-router';
 import { LIST_ITEM_MOCKS } from 'containers/SettingList/SettingList.test.helper';
 import { LIST_ITEM_MOCKS as SearchMocks } from 'containers/Search/Search.test.helper';
 import * as AutoComplete from 'components/UI/Form/AutoComplete/AutoComplete';
-import { getTriggerQuery } from 'mocks/Trigger';
+import { getTriggerQuery, hourlyTrigger } from 'mocks/Trigger';
 import { Trigger } from './Trigger';
 
 describe('trigger with daily frequency', () => {
@@ -57,6 +57,34 @@ describe('trigger with no frequency', () => {
 
     fireEvent.click(getByText('Save'));
     await waitFor(() => {});
+  });
+});
+
+describe('trigger with hourly frequency', () => {
+  const mocks = [hourlyTrigger(), ...LIST_ITEM_MOCKS, ...SearchMocks];
+
+  const wrapper = (
+    <MockedProvider mocks={mocks} addTypename={false}>
+      <MemoryRouter>
+        <Trigger match={{ params: { id: '1' } }} />
+      </MemoryRouter>
+    </MockedProvider>
+  );
+
+  test('should load trigger edit form', async () => {
+    const { getByText, getByTestId } = render(wrapper);
+
+    // loading is show initially
+    expect(getByText('Loading...')).toBeInTheDocument();
+    await waitFor(() => {
+      const formLayout = getByTestId('formLayout');
+      expect(formLayout).toHaveTextContent('hours');
+    });
+
+    await waitFor(() => {
+      expect(getByText('1 AM')).toBeInTheDocument();
+      expect(getByText('1 PM')).toBeInTheDocument();
+    });
   });
 });
 
