@@ -23,6 +23,7 @@
 
 .organization > div:nth-of-type(n + 10) {
   display: block;
+  margin: 0px;
 }
 
 .organization > div:nth-of-type(12),
