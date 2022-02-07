@@ -111,7 +111,7 @@ export const Organisation: React.SFC = () => {
     setIsDisable(!outOfOfficeValue.enabled);
     setOutOfOffice(outOfOfficeValue);
 
-    if (outOfOfficeValue.startTime === '00:00:00' && outOfOfficeValue.endData === '23:59:00') {
+    if (outOfOfficeValue.startTime === '00:00:00' && outOfOfficeValue.endTime === '23:59:00') {
       setAllDayCheck(true);
     }
     if (outOfOfficeValue.defaultFlowId) {
