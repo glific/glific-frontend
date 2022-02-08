@@ -247,3 +247,5 @@ export const INTERACTIVE_QUICK_REPLY = 'QUICK_REPLY';
 export const INTERACTIVE_LIST = 'LIST';
 
 export const TERMS_OF_USE_LINK = 'https://tides.coloredcow.com/terms-of-use';
+
+export const COMPACT_MESSAGE_LENGTH = 35;
