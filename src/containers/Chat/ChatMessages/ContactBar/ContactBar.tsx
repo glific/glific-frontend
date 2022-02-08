@@ -51,6 +51,7 @@ import { CLEAR_MESSAGES } from '../../../../graphql/mutations/Chat';
 import { showChats } from '../../../../common/responsive';
 import { CollectionInformation } from '../../../Collection/CollectionInformation/CollectionInformation';
 import AddContactsToCollection from '../AddContactsToCollection/AddContactsToCollection';
+import { TerminateFlow } from './TerminateFlow/TerminateFlow';
 
 const status = ['SESSION', 'SESSION_AND_HSM', 'HSM'];
 
@@ -334,6 +335,8 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   }
 
   let flowButton: any;
+
+  let blockContactButton;
   if (collectionId) {
     flowButton = (
       <Button
@@ -353,6 +356,22 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     status.includes(contactBspStatus) &&
     !is24HourWindowOver(lastMessageTime)
   ) {
+    blockContactButton = (
+      <Button
+        data-testid="blockButton"
+        className={styles.ListButtonDanger}
+        color="secondary"
+        disabled={isSimulator}
+        onClick={() => setShowBlockDialog(true)}
+      >
+        {isSimulator ? (
+          <BlockDisabledIcon className={styles.Icon} />
+        ) : (
+          <BlockIcon className={styles.Icon} />
+        )}
+        Block Contact
+      </Button>
+    );
     flowButton = (
       <Button
         data-testid="flowButton"
@@ -398,6 +417,8 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
       </Tooltip>
     );
   }
+
+  const terminateFLows = <TerminateFlow contactId={contactId} />;
 
   const viewDetails = contactId ? (
     <Button
@@ -483,24 +504,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
             {viewDetails}
             {flowButton}
             {addMember}
-            {contactId ? (
-              <Button
-                data-testid="blockButton"
-                className={styles.ListButtonDanger}
-                color="secondary"
-                disabled={isSimulator}
-                onClick={() => setShowBlockDialog(true)}
-              >
-                {isSimulator ? (
-                  <BlockDisabledIcon className={styles.Icon} />
-                ) : (
-                  <BlockIcon className={styles.Icon} />
-                )}
-                Block Contact
-              </Button>
-            ) : (
-              ''
-            )}
+            {}
           </Paper>
         </Fade>
       )}
