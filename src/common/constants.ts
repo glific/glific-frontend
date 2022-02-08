@@ -241,6 +241,14 @@ export const SAMPLE_MEDIA_FOR_SIMULATOR = [
       url: 'http://www.buildquickbots.com/whatsapp/stickers/SampleSticker01.webp',
     },
   },
+  {
+    name: 'location',
+    id: 'LOCATION',
+    payload: {
+      latitude: '41.725556',
+      longitude: '-49.946944',
+    },
+  },
 ];
 
 export const INTERACTIVE_QUICK_REPLY = 'QUICK_REPLY';

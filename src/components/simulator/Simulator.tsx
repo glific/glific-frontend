@@ -505,7 +505,11 @@ export const Simulator: React.FC<SimulatorProps> = ({
     <ClickAwayListener onClickAway={() => setIsOpen(false)}>
       <div className={styles.Dropdown} id="media">
         {SAMPLE_MEDIA_FOR_SIMULATOR.map((media: any) => (
-          <Button onClick={() => handleAttachmentClick(media)} key={media.id}>
+          <Button
+            onClick={() => handleAttachmentClick(media)}
+            key={media.id}
+            className={styles.AttachmentOptions}
+          >
             <MessageType type={media.id} color="dark" />
           </Button>
         ))}

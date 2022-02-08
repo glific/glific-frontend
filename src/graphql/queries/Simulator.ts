@@ -33,6 +33,10 @@ export const SIMULATOR_MESSAGE_FRAGMENT = `
       url
       caption
     }
+    location {
+      latitude
+      longitude
+    }
     interactiveContent
 `;
 
