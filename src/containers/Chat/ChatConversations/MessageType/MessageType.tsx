@@ -61,7 +61,7 @@ export const MessageType: React.FC<MessageTypeProps> = ({
   const option = (
     <>
       {isLight ? lightIcons[type] : darkIcons[type]}
-      {message[type]}
+      {message[type] ? message[type] : type}
     </>
   );
 
