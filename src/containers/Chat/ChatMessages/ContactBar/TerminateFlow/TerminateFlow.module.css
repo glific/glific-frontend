@@ -1,0 +1,12 @@
+@value ListButtonPrimary, Icon from "../ContactBar.module.css";
+
+.Dialog {
+  max-width: 347px;
+  font-size: 16px;
+  text-align: center;
+  margin: 10px 0 20px 0;
+}
+
+.Title h2 {
+  font-size: 24px !important;
+}

@@ -13,9 +13,10 @@ import { useHistory } from 'react-router-dom';
 
 import { useMutation, useLazyQuery, useApolloClient } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
-
+import { ReactComponent as TerminateFlowIcon } from 'assets/images/icons/Automations/Terminate.svg';
 import styles from './ContactBar.module.css';
 import { SearchDialogBox } from '../../../../components/UI/SearchDialogBox/SearchDialogBox';
+import { TerminateFlow } from './TerminateFlow/TerminateFlow';
 
 import { ReactComponent as DropdownIcon } from '../../../../assets/images/icons/BrownDropdown.svg';
 import { ReactComponent as AddContactIcon } from '../../../../assets/images/icons/Contact/Light.svg';
@@ -29,6 +30,7 @@ import { ReactComponent as ClearConversation } from '../../../../assets/images/i
 import { ReactComponent as ChatIcon } from '../../../../assets/images/icons/Chat/UnselectedDark.svg';
 import { ReactComponent as CollectionIcon } from '../../../../assets/images/icons/Chat/SelectedCollection.svg';
 import { ReactComponent as SavedSearchIcon } from '../../../../assets/images/icons/Chat/SelectedSavedSearch.svg';
+
 import { GET_COLLECTIONS } from '../../../../graphql/queries/Collection';
 import { UPDATE_CONTACT_COLLECTIONS } from '../../../../graphql/mutations/Collection';
 import { GET_CONTACT_COLLECTIONS } from '../../../../graphql/queries/Contact';
@@ -51,7 +53,6 @@ import { CLEAR_MESSAGES } from '../../../../graphql/mutations/Chat';
 import { showChats } from '../../../../common/responsive';
 import { CollectionInformation } from '../../../Collection/CollectionInformation/CollectionInformation';
 import AddContactsToCollection from '../AddContactsToCollection/AddContactsToCollection';
-import { TerminateFlow } from './TerminateFlow/TerminateFlow';
 
 const status = ['SESSION', 'SESSION_AND_HSM', 'HSM'];
 
@@ -100,6 +101,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   const [showBlockDialog, setShowBlockDialog] = useState(false);
   const [showClearChatDialog, setClearChatDialog] = useState(false);
   const [addContactsDialogShow, setAddContactsDialogShow] = useState(false);
+  const [showTerminateDialog, setShowTerminateDialog] = useState(false);
   const { t } = useTranslation();
 
   // get collection list
@@ -334,9 +336,29 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     );
   }
 
+  if (showTerminateDialog) {
+    dialogBox = <TerminateFlow contactId={contactId} setDialog={setShowTerminateDialog} />;
+  }
+
   let flowButton: any;
 
-  let blockContactButton;
+  const blockContactButton = contactId ? (
+    <Button
+      data-testid="blockButton"
+      className={styles.ListButtonDanger}
+      color="secondary"
+      disabled={isSimulator}
+      onClick={() => setShowBlockDialog(true)}
+    >
+      {isSimulator ? (
+        <BlockDisabledIcon className={styles.Icon} />
+      ) : (
+        <BlockIcon className={styles.Icon} />
+      )}
+      Block Contact
+    </Button>
+  ) : null;
+
   if (collectionId) {
     flowButton = (
       <Button
@@ -356,22 +378,6 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     status.includes(contactBspStatus) &&
     !is24HourWindowOver(lastMessageTime)
   ) {
-    blockContactButton = (
-      <Button
-        data-testid="blockButton"
-        className={styles.ListButtonDanger}
-        color="secondary"
-        disabled={isSimulator}
-        onClick={() => setShowBlockDialog(true)}
-      >
-        {isSimulator ? (
-          <BlockDisabledIcon className={styles.Icon} />
-        ) : (
-          <BlockIcon className={styles.Icon} />
-        )}
-        Block Contact
-      </Button>
-    );
     flowButton = (
       <Button
         data-testid="flowButton"
@@ -418,7 +424,18 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     );
   }
 
-  const terminateFLows = <TerminateFlow contactId={contactId} />;
+  const terminateFLows = contactId ? (
+    <Button
+      data-testid="terminateButton"
+      className={styles.ListButtonPrimary}
+      onClick={() => {
+        setShowTerminateDialog(!showTerminateDialog);
+      }}
+    >
+      <TerminateFlowIcon className={styles.Icon} />
+      Terminate flows
+    </Button>
+  ) : null;
 
   const viewDetails = contactId ? (
     <Button
@@ -503,8 +520,10 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
           <Paper elevation={3} className={styles.Container}>
             {viewDetails}
             {flowButton}
+
             {addMember}
-            {}
+            {terminateFLows}
+            {blockContactButton}
           </Paper>
         </Fade>
       )}
@@ -543,7 +562,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
 
   // CONTACT: display session timer & Assigned to
   const IconComponent = getTitleAndIconForSmallScreen;
-  const sesssionAndCollectionAssignedTo = (
+  const sessionAndCollectionAssignedTo = (
     <>
       {contactId ? (
         <div className={styles.SessionTimerContainer}>
@@ -581,7 +600,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
 
   return (
     <Toolbar className={styles.ContactBar} color="primary">
-      <div className={styles.ContactBarWapper}>
+      <div className={styles.ContactBarWrapper}>
         <div className={styles.ContactInfoContainer}>
           <div className={styles.ContactInfoWrapper}>
             <div className={styles.InfoWrapperRight}>
@@ -609,7 +628,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
               {contactCollections}
             </div>
             {collectionStatus}
-            {sesssionAndCollectionAssignedTo}
+            {sessionAndCollectionAssignedTo}
           </div>
         </div>
       </div>
