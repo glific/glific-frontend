@@ -350,9 +350,7 @@ export const Organisation: React.SFC = () => {
       component: Checkbox,
       disabled: isDisabled,
       name: 'allDayCheck',
-      title: (
-        <Typography className={styles.AddDayLabel}>{t('Set default flow to run 24hrs')}</Typography>
-      ),
+      title: <Typography className={styles.AddDayLabel}>{t('All day')}</Typography>,
       handleChange: handleAllDayCheck,
     },
 
@@ -361,7 +359,7 @@ export const Organisation: React.SFC = () => {
       name: 'startTime',
       placeholder: t('Start'),
       disabled: isDisabled || allDayCheck,
-      helperText: t('note: after 12AM, the next day begins.'),
+      helperText: t('Note: The next day begins after 12AM.'),
     },
     {
       component: TimePicker,
