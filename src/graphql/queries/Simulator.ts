@@ -45,6 +45,8 @@ export const SIMULATOR_SEARCH_QUERY = gql`
     search(filter: $filter, contactOpts: $contactOpts, messageOpts: $messageOpts) {
       contact {
         id
+        name 
+        phone
       }
       messages {
         ${SIMULATOR_MESSAGE_FRAGMENT}
