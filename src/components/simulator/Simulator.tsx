@@ -113,15 +113,56 @@ export const Simulator: React.FC<SimulatorProps> = ({
   const client = useApolloClient();
   let messages: any[] = [];
   let simulatorId = '';
+  const sender = {
+    name: '',
+    phone: '',
+  };
   // chat messages will be shown on simulator
   const isSimulatedMessage = true;
+
+  const sendMessage = (senderDetails: any, quickReplyText?: string) => {
+    const sendMessageText = inputMessage === '' && message ? message : inputMessage;
+    // check if send message text is not empty
+
+    if (sendMessageText || quickReplyText) {
+      const payload: any = {
+        text: sendMessageText,
+      };
+
+      if (quickReplyText) payload.text = quickReplyText;
+
+      axios
+        .post(GUPSHUP_CALLBACK_URL, {
+          type: 'message',
+          payload: {
+            id: uuidv4(),
+            type: 'text',
+            payload,
+            sender: senderDetails,
+          },
+        })
+        .catch((error) => {
+          // add log's
+          setLogs(
+            `sendMessageText:${sendMessageText} GUPSHUP_CALLBACK_URL:${GUPSHUP_CALLBACK_URL}`,
+            'info'
+          );
+          setLogs(error, 'error');
+        });
+      setInputMessage('');
+      // reset the message from floweditor for the next time
+      if (resetMessage) {
+        resetMessage();
+      }
+    }
+  };
 
   const [loadSimulator, { data: allConversations, subscribeToMore }] = useLazyQuery(
     SIMULATOR_SEARCH_QUERY,
     {
       fetchPolicy: 'network-only',
       nextFetchPolicy: 'cache-only',
-      onCompleted: () => {
+      onCompleted: ({ search }) => {
         if (subscribeToMore) {
           const subscriptionVariables = { organizationId: getUserSession('organizationId') };
           // message received subscription
@@ -139,6 +180,10 @@ export const Simulator: React.FC<SimulatorProps> = ({
             updateQuery: (prev, { subscriptionData }) =>
               updateSimulatorConversations(prev, subscriptionData, 'SENT'),
           });
+
+          if (search.length > 0) {
+            sendMessage({ name: search[0].contact.name, phone: search[0].contact.phone });
+          }
         }
       },
     }
@@ -189,6 +234,8 @@ export const Simulator: React.FC<SimulatorProps> = ({
     if (simulatedContact.length > 0) {
       messages = simulatedContact[0].messages;
       simulatorId = simulatedContact[0].contact.id;
+      sender.name = simulatedContact[0].contact.name;
+      sender.phone = simulatedContact[0].contact.phone;
     }
   }
 
@@ -237,47 +284,6 @@ export const Simulator: React.FC<SimulatorProps> = ({
       });
   };
 
-  const sendMessage = (quickReplyText?: string) => {
-    const sendMessageText = inputMessage === '' && message ? message : inputMessage;
-    // check if send message text is not empty
-
-    if (sendMessageText || quickReplyText) {
-      const payload: any = {
-        text: sendMessageText,
-      };
-
-      if (quickReplyText) payload.text = quickReplyText;
-
-      axios
-        .post(GUPSHUP_CALLBACK_URL, {
-          type: 'message',
-          payload: {
-            id: uuidv4(),
-            type: 'text',
-            payload,
-            sender: {
-              // this number will be the simulated contact number
-              phone: data ? data.simulatorGet?.phone : '',
-              name: data ? data.simulatorGet?.name : '',
-            },
-          },
-        })
-        .catch((error) => {
-          // add log's
-          setLogs(
-            `sendMessageText:${sendMessageText} GUPSHUP_CALLBACK_URL:${GUPSHUP_CALLBACK_URL}`,
-            'info'
-          );
-          setLogs(error, 'error');
-        });
-      setInputMessage('');
-      // reset the message from floweditor for the next time
-      if (resetMessage) {
-        resetMessage();
-      }
-    }
-  };
-
   const renderMessage = (
     text: string,
     direction: string,
@@ -320,7 +326,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
             isSimulator
             showHeader={showHeader}
             disabled={disableButtons}
-            onQuickReplyClick={(value: string) => sendMessage(value)}
+            onQuickReplyClick={(value: string) => sendMessage(sender, value)}
           />
         );
       }
@@ -347,7 +353,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
         <div className={styles.TemplateButtons}>
           <TemplateButtons
             template={buttons}
-            callbackTemplateButtonClick={(value: string) => sendMessage(value)}
+            callbackTemplateButtonClick={(value: string) => sendMessage(sender, value)}
             isSimulator
           />
         </div>
@@ -449,9 +455,9 @@ export const Simulator: React.FC<SimulatorProps> = ({
   // for sending message to Gupshup
   useEffect(() => {
     if (!isPreviewMessage && message && data) {
-      sendMessage();
+      sendMessage(sender);
     }
-  }, [message, data]);
+  }, [message]);
 
   useEffect(() => {
     if (isPreviewMessage && interactiveMessage) {
@@ -497,7 +503,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
   };
 
   const handleListDrawerItemClick = (text: string) => {
-    sendMessage(text);
+    sendMessage(sender, text);
     handleListReplyDrawerClose();
   };
 
@@ -568,7 +574,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
                     data-testid="simulatorInput"
                     onKeyPress={(event: any) => {
                       if (event.key === 'Enter') {
-                        sendMessage();
+                        sendMessage(sender);
                       }
                     }}
                     value={inputMessage}
@@ -590,7 +596,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
                   color="primary"
                   className={styles.SendButton}
                   disabled={isPreviewMessage}
-                  onClick={() => sendMessage()}
+                  onClick={() => sendMessage(sender)}
                 >
                   <MicIcon />
                 </Button>
