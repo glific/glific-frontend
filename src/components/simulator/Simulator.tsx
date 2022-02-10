@@ -455,12 +455,9 @@ export const Simulator: React.FC<SimulatorProps> = ({
   // for sending message to Gupshup
   useEffect(() => {
     if (!isPreviewMessage && message && data) {
-      console.log(sender);
       sendMessage(sender);
     }
   }, [message]);
-
-  console.log(sender);
 
   useEffect(() => {
     if (isPreviewMessage && interactiveMessage) {
