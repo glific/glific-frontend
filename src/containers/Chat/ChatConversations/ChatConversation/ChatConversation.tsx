@@ -159,7 +159,7 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
     chatBubble = [styles.ChatBubble, styles.ChatBubbleUnread];
   }
 
-  const name = contactName.length > 20 ? `${contactName.slice(0, 20)}...` : contactName;
+  const name = contactName?.length > 20 ? `${contactName.slice(0, 20)}...` : contactName;
 
   const { type, body } = lastMessage;
   const isTextType = type === 'TEXT';

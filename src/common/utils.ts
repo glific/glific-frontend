@@ -108,7 +108,7 @@ export const getDisplayName = (conversation: any) => {
   // let's return early with default simulator name if we are looking at simulator contact
   const isSimulatorContact = conversation.contact.phone.startsWith(SIMULATOR_NUMBER_START);
   if (isSimulatorContact) {
-    return conversation.contact.name;
+    return conversation.contact.name || conversation.contact.maskedPhone;
   }
 
   let displayName = '';
