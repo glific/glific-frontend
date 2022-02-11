@@ -16,6 +16,7 @@ export interface TimePickerProps {
   form: { dirty: any; touched: any; errors: any; setFieldValue: any };
   placeholder: string;
   disabled?: boolean;
+  helperText?: string;
 }
 
 export const TimePicker: React.SFC<TimePickerProps> = ({
@@ -25,6 +26,7 @@ export const TimePicker: React.SFC<TimePickerProps> = ({
   form: { setFieldValue, touched, errors },
   placeholder,
   disabled = false,
+  helperText,
 }) => {
   moment.defaultFormat = 'Thh:mm:ss';
   const dateValue = field.value ? moment(field.value, moment.defaultFormat).toDate() : null;
@@ -60,6 +62,11 @@ export const TimePicker: React.SFC<TimePickerProps> = ({
           helperText={hasError ? errorText : ''}
           className={styles.picker}
         />
+        {helperText && (
+          <div id="helper-text" className={styles.HelperText}>
+            {helperText}
+          </div>
+        )}
       </Grid>
     </MuiPickersUtilsProvider>
   );

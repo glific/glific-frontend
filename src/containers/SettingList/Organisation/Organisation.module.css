@@ -23,10 +23,11 @@
 
 .organization > div:nth-of-type(n + 10) {
   display: block;
+  margin: 0px;
 }
 
-.organization > div:nth-of-type(11),
-.organization > div:nth-of-type(12) {
+.organization > div:nth-of-type(12),
+.organization > div:nth-of-type(13) {
   display: inline-block;
   width: 25% !important;
   margin: 0% !important;
@@ -41,4 +42,8 @@
   font-weight: 800;
   color: '#073f24';
   line-height: 1;
+}
+
+.AddDayLabel {
+  font-size: 16px;
 }

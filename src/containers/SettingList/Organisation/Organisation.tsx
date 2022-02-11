@@ -39,15 +39,16 @@ export const Organisation: React.SFC = () => {
   const [name, setName] = useState('');
   const [hours, setHours] = useState(true);
   const [enabledDays, setEnabledDays] = useState<any>([]);
-  const [startTime, setStartTime] = useState();
-  const [endTime, setEndTime] = useState();
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
   const [defaultFlowId, setDefaultFlowId] = useState<any>(null);
   const [flowId, setFlowId] = useState<any>(null);
-  const [IsDisabled, setIsDisable] = useState(false);
-  const [IsFlowDisabled, setIsFlowDisable] = useState(true);
+  const [isDisabled, setIsDisable] = useState(false);
+  const [isFlowDisabled, setIsFlowDisable] = useState(true);
   const [organizationId, setOrganizationId] = useState(null);
   const [newcontactFlowId, setNewcontactFlowId] = useState(null);
   const [newcontactFlowEnabled, setNewcontactFlowEnabled] = useState(false);
+  const [allDayCheck, setAllDayCheck] = useState(false);
   const [activeLanguages, setActiveLanguages] = useState([]);
   const [defaultLanguage, setDefaultLanguage] = useState<any>(null);
   const [signaturePhrase, setSignaturePhrase] = useState();
@@ -68,6 +69,7 @@ export const Organisation: React.SFC = () => {
     defaultLanguage,
     signaturePhrase,
     newcontactFlowId,
+    allDayCheck,
     phone,
   };
 
@@ -109,8 +111,11 @@ export const Organisation: React.SFC = () => {
     setIsDisable(!outOfOfficeValue.enabled);
     setOutOfOffice(outOfOfficeValue);
 
-    // set the value only if default flow is not null
+    if (outOfOfficeValue.startTime === '00:00:00' && outOfOfficeValue.endTime === '23:59:00') {
+      setAllDayCheck(true);
+    }
     if (outOfOfficeValue.defaultFlowId) {
+      // set the value only if default flow is not null
       setDefaultFlowId(getFlow(outOfOfficeValue.defaultFlowId));
     }
 
@@ -177,7 +182,7 @@ export const Organisation: React.SFC = () => {
 
   const validateOutOfOfficeFlow = (value: any) => {
     let error;
-    if (!IsDisabled && !value) {
+    if (!isDisabled && !value) {
       error = t('Please select default flow ');
     }
 
@@ -186,11 +191,19 @@ export const Organisation: React.SFC = () => {
 
   const validateDaysSelection = (value: any) => {
     let error;
-    if (!IsDisabled && value.length === 0) {
+    if (!isDisabled && value.length === 0) {
       error = t('Please select days');
     }
 
     return error;
+  };
+
+  const handleAllDayCheck = (addDayCheck: boolean) => {
+    if (!allDayCheck) {
+      setStartTime('00:00:00');
+      setEndTime('23:59:00');
+    }
+    setAllDayCheck(addDayCheck);
   };
 
   const handleChangeInDays = (value: any) => {
@@ -301,7 +314,7 @@ export const Organisation: React.SFC = () => {
         variant: 'outlined',
         label: t('Select flow'),
       },
-      disabled: IsDisabled,
+      disabled: isDisabled,
       helperText: t(
         'The selected flow will trigger when end-users aren’t in any flow, their message doesn’t match any keyword, and the time of their message is as defined above. Note that the default flow is executed only once a day.'
       ),
@@ -329,24 +342,33 @@ export const Organisation: React.SFC = () => {
         variant: 'outlined',
         label: t('Select days'),
       },
-      disabled: IsDisabled,
+      disabled: isDisabled,
       onChange: handleChangeInDays,
       validate: validateDaysSelection,
     },
     {
+      component: Checkbox,
+      disabled: isDisabled,
+      name: 'allDayCheck',
+      title: <Typography className={styles.AddDayLabel}>{t('All day')}</Typography>,
+      handleChange: handleAllDayCheck,
+    },
+
+    {
       component: TimePicker,
       name: 'startTime',
       placeholder: t('Start'),
-      disabled: IsDisabled,
+      disabled: isDisabled || allDayCheck,
+      helperText: t('Note: The next day begins after 12AM.'),
     },
     {
       component: TimePicker,
       name: 'endTime',
       placeholder: t('Stop'),
-      disabled: IsDisabled,
+      disabled: isDisabled || allDayCheck,
     },
   ];
-  if (IsFlowDisabled === false) {
+  if (isFlowDisabled === false) {
     formFields.push({
       component: AutoComplete,
       name: 'flowId',
@@ -357,7 +379,7 @@ export const Organisation: React.SFC = () => {
         variant: 'outlined',
         label: t('Select flow'),
       },
-      disabled: IsDisabled,
+      disabled: isDisabled,
       questionText: t('Would you like to trigger a flow for all the other days & times?'),
     });
   }
