@@ -48,7 +48,7 @@ export const Registration: React.SFC<RegistrationProps> = () => {
     <div className={styles.Instructions}>
       <AlertIcon />
       <div>
-        {t('Make sure to optin to your org chatbot number before creating your account. ')}
+        {t('Please optin to your org chatbot number before proceeding below. ')}
         <a
           href={REGISTRATION_HELP_LINK}
           rel="noreferrer"
