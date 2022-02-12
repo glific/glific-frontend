@@ -21,10 +21,18 @@ const socketConnection = new PhoenixSocket.Socket(SOCKET, {
   reconnectAfterMs: (tries: number) => tries * 1000,
 });
 
-socketConnection.onError((reason: any) => {
+socketConnection.onError(() => {
   // add logs in log flare
+
   setLogs('Socket connection error', 'error');
-  setLogs(reason.toString(), 'error');
+});
+
+socketConnection.onClose((reason: any) => {
+  // add logs in log flare
+
+  const reasonString = JSON.stringify(reason, ['reason', 'code', 'type']);
+  setLogs('Socket connection closed', 'error');
+  setLogs(reasonString, 'error');
 });
 
 // wrap the Phoenix socket in an AbsintheSocket and export
