@@ -122,6 +122,7 @@ export const Auth: React.SFC<AuthProps> = (props) => {
             {pageTitle}
           </Typography>
         </div>
+        {staffInstructions}
         <div className={styles.SubText}>{titleSubText}</div>
 
         <Formik
@@ -167,7 +168,6 @@ export const Auth: React.SFC<AuthProps> = (props) => {
                 <input className={styles.SubmitAction} type="submit" />
               </Form>
               {displayErrorMessage}
-              {staffInstructions}
             </div>
           )}
         </Formik>
