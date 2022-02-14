@@ -67,6 +67,17 @@ export const EXPORT_FLOW = gql`
   }
 `;
 
+export const TERMINATE_FLOW = gql`
+  mutation TerminateContactFlows($contactId: ID!) {
+    terminateContactFlows(contactId: $contactId) {
+      success
+      errors {
+        message
+      }
+    }
+  }
+`;
+
 export const GET_FREE_FLOW = gql`
   query flowGet($id: ID!) {
     flowGet(id: $id) {
