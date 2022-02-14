@@ -97,6 +97,21 @@ export const ContactHistory: React.FC<ContactHistoryProps> = ({ contactId }) => 
     return null;
   };
 
+  const contactFieldUpdate = (eventMeta: string) => {
+    try {
+      const eventMetaObject = JSON.parse(eventMeta);
+      return (
+        <div>
+          {eventMetaObject.field.label} is updated to {eventMetaObject.field.new_value} from{' '}
+          {eventMetaObject.field.old_value ? eventMetaObject.field.old_value.value : ' empty'}
+        </div>
+      );
+    } catch (error) {
+      setLogs(error, 'error');
+    }
+    return null;
+  };
+
   let items = data.contactHistory.map(({ eventLabel, eventType, insertedAt, eventMeta }: any) => {
     let label;
     switch (eventType) {
@@ -105,6 +120,9 @@ export const ContactHistory: React.FC<ContactHistoryProps> = ({ contactId }) => 
         break;
       case 'contact_flow_ended':
         label = flowEvents(eventLabel, eventMeta);
+        break;
+      case 'contact_fields_updated':
+        label = contactFieldUpdate(eventMeta);
         break;
       default:
         label = eventLabel;
