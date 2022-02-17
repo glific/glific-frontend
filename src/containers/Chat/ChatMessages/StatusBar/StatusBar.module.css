@@ -1,4 +1,9 @@
 .StatusMessage {
-  background-color: red;
-  color: #fff;
+  background-color: #dd1f1f;
+  color: #edf6f2;
+  padding: 12px 36px;
+}
+
+.StatusTitle {
+  font-weight: bold;
 }
