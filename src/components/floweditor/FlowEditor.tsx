@@ -160,10 +160,12 @@ const setConfig = (uuid: any) => ({
     completion: `${glificBase}completion`,
     activity: `${glificBase}activity`,
     flows: `${glificBase}flows`,
+    recents: `${glificBase}recents/`,
     revisions: `${glificBase}revisions/${uuid}`,
     editor: FLOW_EDITOR_CONFIGURE_LINK,
     validateMedia: `${glificBase}validate-media`,
     interactives: `${glificBase}interactive-templates`,
+    contact: `${window.location.origin}/chat/`,
   },
 });
 
