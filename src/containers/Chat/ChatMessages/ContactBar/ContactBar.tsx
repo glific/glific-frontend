@@ -165,7 +165,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
 
   const [addFlowToCollection] = useMutation(ADD_FLOW_TO_COLLECTION, {
     onCompleted: () => {
-      setNotification(client, t('Your flow will start at the scheduled time'));
+      setNotification(client, t('Your flow will start in a couple of minutes.'));
     },
   });
 
