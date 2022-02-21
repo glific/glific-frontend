@@ -31,13 +31,13 @@ export const StatusBar: React.FC<StatusBarProps> = () => {
       'All the outgoing messages have been suspended. Please note: on recharging, the messages that were stuck will not be sent.';
   }
 
-  // TODO: need to implement this once backend implements this feature
-  const limitReached = false;
+  // TODOS: need to implement this once backend implements this feature
+  // const limitReached = false;
 
-  if (limitReached) {
-    statusMessage =
-      'You have reached today’s rate limit for sending HSM templates to your users. Your rate limit will be refreshed tomorrow. Please check again later.';
-  }
+  // if (limitReached) {
+  //   statusMessage =
+  //     'You have reached today’s rate limit for sending HSM templates to your users. Your rate limit will be refreshed tomorrow. Please check again later.';
+  // }
 
   if (statusMessage) {
     return (
