@@ -19,6 +19,25 @@ import absinthe from './absinthe';
 
 const subscribe = require('@jumpn/utils-graphql');
 
+export const cache = new InMemoryCache({
+  typePolicies: {
+    Query: {
+      fields: {
+        contactHistory: {
+          keyArgs: false,
+
+          merge(existing, incoming, { args }: any) {
+            if (args.opts.offset === 0) {
+              return incoming;
+            }
+            return [...existing, ...incoming];
+          },
+        },
+      },
+    },
+  },
+});
+
 const gqlClient = (history: any) => {
   const refreshTokenLink: any = new TokenRefreshLink({
     accessTokenField: 'access_token',
@@ -123,24 +142,7 @@ const gqlClient = (history: any) => {
 
   return new ApolloClient({
     link,
-    cache: new InMemoryCache({
-      typePolicies: {
-        Query: {
-          fields: {
-            contactHistory: {
-              keyArgs: false,
-
-              merge(existing, incoming, { args }: any) {
-                if (args.opts.offset === 0) {
-                  return incoming;
-                }
-                return [...existing, ...incoming];
-              },
-            },
-          },
-        },
-      },
-    }),
+    cache,
   });
 };
 
