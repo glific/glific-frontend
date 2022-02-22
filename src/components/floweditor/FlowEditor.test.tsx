@@ -43,6 +43,12 @@ const wrapperFunction = (mocks: any) => (
   </MockedProvider>
 );
 
+jest.mock('config/absinthe', () => ({
+  socketConnection: {
+    conn: { close: jest.fn() },
+  },
+}));
+
 window.showFlowEditor = (node: any, config: any) => jest.fn();
 
 const defaultWrapper = wrapperFunction(activeFlowMocks);

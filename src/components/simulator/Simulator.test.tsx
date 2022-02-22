@@ -11,7 +11,14 @@ import {
 } from 'mocks/Simulator';
 import { Simulator } from './Simulator';
 import axios from 'axios';
+import { socketConnection } from 'config/absinthe';
 import { setUserSession } from 'services/AuthService';
+
+jest.mock('config/absinthe', () => ({
+  socketConnection: {
+    conn: { close: jest.fn() },
+  },
+}));
 
 jest.mock('axios');
 
