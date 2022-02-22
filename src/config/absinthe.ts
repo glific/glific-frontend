@@ -31,9 +31,10 @@ socketConnection.onClose((reason: any) => {
   // add logs in log flare
 
   const reasonString = JSON.stringify(reason, ['reason', 'code', 'type']);
-  setLogs('Socket connection closed', 'error');
-  setLogs(reasonString, 'error');
+  setLogs(`Socket connection closed: ${reasonString}`, 'error');
 });
+
+export { socketConnection };
 
 // wrap the Phoenix socket in an AbsintheSocket and export
 export default SocketApolloLink.createAbsintheSocketLink(AbsintheSocket.create(socketConnection));
