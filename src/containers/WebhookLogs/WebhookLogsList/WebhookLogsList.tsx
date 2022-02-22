@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Popover } from '@material-ui/core';
-import { useApolloClient } from '@apollo/client';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 
@@ -79,7 +78,6 @@ const queries = {
 const restrictedAction = () => ({ delete: false, edit: false });
 
 export const WebhookLogsList: React.SFC<WebhookLogsListProps> = () => {
-  const client = useApolloClient();
   const [anchorEl, setAnchorEl] = useState(null);
   const [open, setOpen] = useState(false);
   const [text, setText] = useState<any>();
@@ -104,7 +102,7 @@ export const WebhookLogsList: React.SFC<WebhookLogsListProps> = () => {
         title: t('Copy text'),
         icon: <img src={CopyIcon} alt="copy" />,
         onClick: () => {
-          copyToClipboard(client, croppedtext);
+          copyToClipboard(croppedtext);
         },
       },
       {
@@ -170,7 +168,7 @@ export const WebhookLogsList: React.SFC<WebhookLogsListProps> = () => {
       </div>
       <div className={styles.PopoverActions}>
         <span
-          onClick={() => copyToClipboard(client, text)}
+          onClick={() => copyToClipboard(text)}
           aria-hidden="true"
           data-testid="copyToClipboard"
         >

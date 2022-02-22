@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useLazyQuery, useMutation, useApolloClient } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 
 import { ReactComponent as CollectionIcon } from 'assets/images/icons/Collection/Dark.svg';
@@ -41,7 +41,6 @@ const columnAttributes = {
 };
 
 export const CollectionList: React.SFC<CollectionListProps> = () => {
-  const client = useApolloClient();
   const [addContactsDialogShow, setAddContactsDialogShow] = useState(false);
 
   const [contactSearchTerm, setContactSearchTerm] = useState('');
@@ -62,21 +61,14 @@ export const CollectionList: React.SFC<CollectionListProps> = () => {
       const numberAdded = groupContacts.length;
       if (numberDeleted > 0 && numberAdded > 0) {
         setNotification(
-          client,
           `${numberDeleted} contact${
             numberDeleted === 1 ? '' : 's  were'
           } removed and ${numberAdded} contact${numberAdded === 1 ? '' : 's  were'} added`
         );
       } else if (numberDeleted > 0) {
-        setNotification(
-          client,
-          `${numberDeleted} contact${numberDeleted === 1 ? '' : 's  were'} removed`
-        );
+        setNotification(`${numberDeleted} contact${numberDeleted === 1 ? '' : 's  were'} removed`);
       } else {
-        setNotification(
-          client,
-          `${numberAdded} contact${numberAdded === 1 ? '' : 's  were'} added`
-        );
+        setNotification(`${numberAdded} contact${numberAdded === 1 ? '' : 's  were'} added`);
       }
       setAddContactsDialogShow(false);
     },

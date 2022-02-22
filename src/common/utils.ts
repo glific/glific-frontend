@@ -49,14 +49,14 @@ export { validateMediaMethod as validateMedia };
 export const randomIntFromInterval = (min: number, max: number) =>
   Math.floor(Math.random() * (max - min + 1) + min);
 
-export const copyToClipboardMethod = (client: any, text: string) => {
+export const copyToClipboardMethod = (text: string) => {
   if (text) {
     try {
       navigator.clipboard.writeText(text).then(() => {
-        setNotification(client, 'Copied to clipboard');
+        setNotification('Copied to clipboard');
       });
     } catch (err) {
-      setNotification(client, 'Sorry, cannot copy content over insecure connection', 'warning');
+      setNotification('Sorry, cannot copy content over insecure connection', 'warning');
     }
   }
 };

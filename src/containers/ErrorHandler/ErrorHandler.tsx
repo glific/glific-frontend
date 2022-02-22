@@ -12,7 +12,7 @@ export interface ErrorHandlerProps {}
 
 export const ErrorHandler: React.SFC<ErrorHandlerProps> = () => {
   const { t } = useTranslation();
-  const { data, client } = useQuery(ERROR_MESSAGE);
+  const { data } = useQuery(ERROR_MESSAGE);
   let { message } = data ? data.errorMessage : '';
 
   if (!data) {
@@ -20,7 +20,7 @@ export const ErrorHandler: React.SFC<ErrorHandlerProps> = () => {
   }
 
   const handleErrorClose = () => {
-    setErrorMessage(client, '');
+    setErrorMessage('');
   };
 
   // return if error is cleared or not set

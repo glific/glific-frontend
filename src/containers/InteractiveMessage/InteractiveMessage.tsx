@@ -3,7 +3,7 @@ import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { EditorState } from 'draft-js';
 import { useLocation, useHistory } from 'react-router-dom';
-import { useApolloClient, useLazyQuery, useQuery } from '@apollo/client';
+import { useLazyQuery, useQuery } from '@apollo/client';
 import { setNotification } from 'common/notification';
 import { ReactComponent as InteractiveMessageIcon } from 'assets/images/icons/InteractiveMessage/Dark.svg';
 import {
@@ -71,8 +71,6 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
   const [previousState, setPreviousState] = useState<any>({});
   const [nextLanguage, setNextLanguage] = useState<any>('');
   const [warning, setWarning] = useState<any>();
-
-  const client = useApolloClient();
 
   const { data: languages } = useQuery(USER_LANGUAGES, {
     variables: { opts: { order: 'ASC' } },
@@ -422,7 +420,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     if (values.type?.label === 'TEXT') {
       if (values.title || values.body.getCurrentContent().getPlainText()) {
         if (errors) {
-          setNotification(client, t('Please check the errors'), 'warning');
+          setNotification(t('Please check the errors'), 'warning');
         }
       } else {
         handleLanguageChange(option);
@@ -430,7 +428,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     }
     if (values.body.getCurrentContent().getPlainText()) {
       if (Object.keys(errors).length !== 0) {
-        setNotification(client, t('Please check the errors'), 'warning');
+        setNotification(t('Please check the errors'), 'warning');
       }
     } else {
       handleLanguageChange(option);

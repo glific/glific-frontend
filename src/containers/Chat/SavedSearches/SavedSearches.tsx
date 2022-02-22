@@ -26,14 +26,14 @@ const SavedSearches: React.SFC<SavedSearchesProps> = () => {
   const [Open, setOpen] = useState(true);
   const { t } = useTranslation();
 
-  const { loading, error, data, client } = useQuery<any>(SAVED_SEARCH_QUERY, {
+  const { loading, error, data } = useQuery<any>(SAVED_SEARCH_QUERY, {
     variables: queryVariables,
   });
 
   if (loading) return <Loading />;
 
   if (error) {
-    setErrorMessage(client, error);
+    setErrorMessage(error);
     return <div>{t('Error :(')}</div>;
   }
 

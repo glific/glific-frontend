@@ -62,7 +62,7 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
     setSelectedSavedSearch(null);
   }
 
-  const { loading, error, client, refetch } = useQuery<any>(SAVED_SEARCH_QUERY, {
+  const { loading, error, refetch } = useQuery<any>(SAVED_SEARCH_QUERY, {
     variables: queryVariables,
     onCompleted: (data) => {
       setFixedSearches(data.savedSearches);
@@ -102,7 +102,7 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
 
   if (loading) return <Loading />;
   if (error) {
-    setErrorMessage(client, error);
+    setErrorMessage(error);
     return <div>error</div>;
   }
 
