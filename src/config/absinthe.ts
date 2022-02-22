@@ -1,9 +1,9 @@
 import { getAuthSession } from 'services/AuthService';
 import { setNotification } from 'common/notification';
+import { CONNECTION_RECONNECT_ATTEMPTS } from 'common/constants';
 import { cache } from './apolloclient';
 import setLogs from './logs';
 import { SOCKET } from '.';
-import { CONNECTION_RECONNECT_ATTEMPTS } from 'common/constants';
 
 const AbsintheSocket = require('@absinthe/socket');
 const SocketApolloLink = require('@absinthe/socket-apollo-link');
