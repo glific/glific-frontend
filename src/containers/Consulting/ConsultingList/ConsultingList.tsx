@@ -4,16 +4,17 @@ import { useTranslation } from 'react-i18next';
 import { Dialog, DialogContent } from '@material-ui/core';
 import { ReactComponent as EditIcon } from 'assets/images/icons/Edit.svg';
 import { List } from 'containers/List/List';
+
 import { GET_CONSULTING_HOURS, GET_CONSULTING_HOURS_COUNT } from 'graphql/queries/Consulting';
 import { ReactComponent as ConsultingIcon } from 'assets/images/icons/icon-consulting.svg';
 import { Consulting } from '../Consulting';
 import styles from './ConsultingList.module.css';
+import { ExportConsulting } from './ExportConsulting/ExportConsulting';
 
 interface ConsultingListProps {}
 
 const ConsultingList: React.SFC<ConsultingListProps> = () => {
   const { t } = useTranslation();
-
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedConsulting, setSelectedConsulting] = useState('');
 
@@ -118,6 +119,7 @@ const ConsultingList: React.SFC<ConsultingListProps> = () => {
 
   return (
     <>
+      <ExportConsulting />
       {dialog}
       <List
         defaultSortBy="DATE"

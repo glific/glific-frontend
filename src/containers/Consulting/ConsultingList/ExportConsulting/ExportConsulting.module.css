@@ -1,0 +1,40 @@
+.FilterContainer {
+  margin-top: 100px;
+
+  background-color: white;
+  margin-left: 24px;
+  margin-right: 24px;
+
+  border-radius: 12px;
+  background-color: white;
+  border-left: 12px solid #eaedec;
+  border-right: 12px solid #eaedec;
+  margin-bottom: 20px;
+}
+
+.FormContainer {
+  padding: 16px 24px;
+}
+
+.Form {
+  align-items: center;
+  display: flex;
+}
+
+.ExportIcon {
+  cursor: pointer;
+}
+
+.Buttons {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+}
+
+.Field {
+  width: 100px !important;
+}
+
+.Form > div:first-child {
+  width: 236px;
+}
