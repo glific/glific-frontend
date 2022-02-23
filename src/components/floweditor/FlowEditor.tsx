@@ -14,6 +14,7 @@ import {
   FLOW_EDITOR_CONFIGURE_LINK,
   FLOW_EDITOR_API,
   FLOWS_HELP_LINK,
+  CONTACT_CHAT_LINK,
 } from 'config/index';
 import { Simulator } from 'components/simulator/Simulator';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
@@ -165,7 +166,7 @@ const setConfig = (uuid: any) => ({
     editor: FLOW_EDITOR_CONFIGURE_LINK,
     validateMedia: `${glificBase}validate-media`,
     interactives: `${glificBase}interactive-templates`,
-    contact: `${window.location.origin}/chat/`,
+    contact: CONTACT_CHAT_LINK,
   },
 });
 
