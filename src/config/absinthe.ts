@@ -12,7 +12,7 @@ const PhoenixSocket = require('phoenix');
 const closingError = () => {
   setNotification(
     cache,
-    'Sorry! Unable to show live messages. Please refresh page.',
+    'Sorry! Unable to show live messages. Kindly, refresh the page.',
     'warning',
     null
   );
