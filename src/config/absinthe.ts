@@ -58,7 +58,5 @@ socketConnection.onClose((reason: any) => {
   setLogs(`Socket connection closed: ${reasonString}`, 'error');
 });
 
-export { socketConnection };
-
 // wrap the Phoenix socket in an AbsintheSocket and export
 export default SocketApolloLink.createAbsintheSocketLink(AbsintheSocket.create(socketConnection));

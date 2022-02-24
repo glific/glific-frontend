@@ -13,12 +13,6 @@ import { Simulator } from './Simulator';
 import axios from 'axios';
 import { setUserSession } from 'services/AuthService';
 
-jest.mock('config/absinthe', () => ({
-  socketConnection: {
-    conn: { close: jest.fn() },
-  },
-}));
-
 jest.mock('axios');
 
 setUserSession(JSON.stringify({ roles: ['Admin'], organization: { id: '1' } }));

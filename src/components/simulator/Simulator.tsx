@@ -16,7 +16,6 @@ import axios from 'axios';
 import moment from 'moment';
 import { v4 as uuidv4 } from 'uuid';
 import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
-import { socketConnection } from 'config/absinthe';
 
 import { Button as FormButton } from 'components/UI/Form/Button/Button';
 import DefaultWhatsappImage from 'assets/images/whatsappDefault.jpg';
@@ -619,9 +618,6 @@ export const Simulator: React.FC<SimulatorProps> = ({
   );
 
   const handleSimulator = () => {
-    // reconnect websocket every time it tries to preview
-    socketConnection.conn.close();
-
     // check for the flowkeyword from floweditor
     if (getFlowKeyword) {
       getFlowKeyword();
