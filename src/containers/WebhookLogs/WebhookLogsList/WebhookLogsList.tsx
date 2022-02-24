@@ -12,12 +12,13 @@ import Menu from 'components/UI/Menu/Menu';
 import { Button } from 'components/UI/Form/Button/Button';
 import { FILTER_WEBHOOK_LOGS, GET_WEBHOOK_LOGS_COUNT } from 'graphql/queries/WebhookLogs';
 import { copyToClipboard } from 'common/utils';
+import { DATE_TIME_FORMAT } from 'common/constants';
 import styles from './WebhookLogsList.module.css';
 
 export interface WebhookLogsListProps {}
 
 const getTime = (time: string) => (
-  <div className={styles.TableText}>{moment(time).format('DD-MM-YYYY hh:mm')}</div>
+  <div className={styles.TableText}>{moment(time).format(DATE_TIME_FORMAT)}</div>
 );
 
 /* istanbul ignore next */
