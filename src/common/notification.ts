@@ -3,11 +3,12 @@ import { NOTIFICATION, ERROR_MESSAGE } from 'graphql/queries/Notification';
 export const setNotification = (
   client: any,
   message: string | null,
-  severity: string | null = 'success'
+  severity: string | null = 'success',
+  hideDuration: number | null = 5000
 ) => {
   client.writeQuery({
     query: NOTIFICATION,
-    data: { message, severity },
+    data: { message, severity, hideDuration },
   });
 };
 
