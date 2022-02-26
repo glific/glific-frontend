@@ -76,6 +76,8 @@
 .LoadMore {
   display: flex;
   margin-top: -11.5px;
+  z-index: 1;
+  position: relative;
 }
 
 .LoadMoreButton {
