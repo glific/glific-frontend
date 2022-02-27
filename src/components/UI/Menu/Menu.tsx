@@ -55,7 +55,7 @@ const Menu: React.SFC<MenuProps> = ({ menus, children, eventType = 'Click' }) =>
         onClose={handleClose}
         TransitionComponent={Fade}
       >
-        {menuList}
+        <div onMouseLeave={eventType === 'MouseEnter' ? handleClose : undefined}>{menuList}</div>
       </MenuElement>
     </div>
   );
