@@ -111,7 +111,7 @@ export const ExportConsulting: React.FC<ExportConsultingPropTypes> = ({
           <div className={styles.FormContainer}>
             <Form className={styles.Form}>
               {formFields.map((field) => (
-                <Field className={styles.Field} {...field} />
+                <Field className={styles.Field} {...field} key={field.name} />
               ))}
 
               <div className={styles.Buttons}>
