@@ -6,6 +6,7 @@ import { FILTER_ORGANIZATIONS } from 'graphql/queries/Organization';
 import { setVariables } from 'common/constants';
 import { EXPORT_CONSULTING_HOURS } from 'graphql/queries/Consulting';
 import { Field, Form, Formik } from 'formik';
+import * as Yup from 'yup';
 
 import { ReactComponent as ExportIcon } from 'assets/images/icons/Export/export.svg';
 import { useTranslation } from 'react-i18next';
@@ -19,6 +20,8 @@ import styles from './ExportConsulting.module.css';
 export interface ExportConsultingPropTypes {
   setFilters: any;
 }
+
+const formatDate = (value: any) => moment(value).format('YYYY-MM-DD');
 
 export const ExportConsulting: React.FC<ExportConsultingPropTypes> = ({
   setFilters,
@@ -71,13 +74,40 @@ export const ExportConsulting: React.FC<ExportConsultingPropTypes> = ({
     },
   ];
 
+  const validationSchema = Yup.object().shape({
+    organization: Yup.object().test(
+      'organization',
+      'Organization is required',
+      (val) => val.name !== undefined
+    ),
+    dateFrom: Yup.string().nullable().required(t('Start date is required')),
+
+    dateTo: Yup.string()
+      .nullable()
+      .required(t('End date is required'))
+      .when('dateFrom', (startDateValue: any, schema: any) =>
+        schema.test({
+          test: (endDateValue: any) =>
+            startDateValue && moment(endDateValue).isAfter(startDateValue),
+          message: t('End date should be greater than the start date'),
+        })
+      ),
+  });
+
   return (
     <div className={styles.FilterContainer}>
       <Formik
         initialValues={{ organization: { name: '', id: '' }, dateFrom: '', dateTo: '' }}
-        onSubmit={() => {}}
+        onSubmit={(values) => {
+          setFilters({
+            organizationName: values.organization.name,
+            startDate: formatDate(values.dateFrom),
+            endDate: formatDate(values.dateTo),
+          });
+        }}
+        validationSchema={validationSchema}
       >
-        {({ values }) => (
+        {({ values, submitForm }) => (
           <div className={styles.FormContainer}>
             <Form className={styles.Form}>
               {formFields.map((field) => (
@@ -89,12 +119,7 @@ export const ExportConsulting: React.FC<ExportConsultingPropTypes> = ({
                   variant="outlined"
                   color="primary"
                   onClick={() => {
-                    console.log(values);
-                    setFilters({
-                      organizationName: values.organization.name,
-                      startDate: moment(values.dateFrom).format('YYYY-MM-DD'),
-                      endDate: moment(values.dateTo).format('YYYY-MM-DD'),
-                    });
+                    submitForm();
                   }}
                 >
                   Filter
@@ -106,8 +131,8 @@ export const ExportConsulting: React.FC<ExportConsultingPropTypes> = ({
                       variables: {
                         filter: {
                           clientId: values.organization.id,
-                          startDate: moment(values.dateFrom).format('YYYY-MM-DD'),
-                          endDate: moment(values.dateTo).format('YYYY-MM-DD'),
+                          startDate: formatDate(values.dateFrom),
+                          endDate: formatDate(values.dateTo),
                         },
                       },
                     });
