@@ -1,7 +1,6 @@
 import { getAuthSession } from 'services/AuthService';
 import { setNotification } from 'common/notification';
 import { CONNECTION_RECONNECT_ATTEMPTS } from 'common/constants';
-import { cache } from './apolloclient';
 import setLogs from './logs';
 import { SOCKET } from '.';
 
@@ -11,7 +10,6 @@ const PhoenixSocket = require('phoenix');
 
 const closingError = () => {
   setNotification(
-    cache,
     'Sorry! Unable to show live messages. Kindly, refresh the page.',
     'warning',
     null
