@@ -2,7 +2,6 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { BrowserRouter as Router } from 'react-router-dom';
 
-import { listingMock } from 'mocks/Consulting';
 import { setUserSession } from 'services/AuthService';
 import { ExportConsulting } from './ExportConsulting';
 import { getAllOrganizations } from 'mocks/Organization';
