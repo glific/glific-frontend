@@ -29,10 +29,14 @@ export { parseText as parseTextMethod };
 
 const validateMediaMethod = (URL: string, attachmentType: string) =>
   new Promise((resolve) => {
+    const encodedUrl = encodeURIComponent(URL);
     axios
-      .get(`${FLOW_EDITOR_API}validate-media?url=${URL}&type=${attachmentType.toLowerCase()}`, {
-        headers: { authorization: getAuthSession('access_token') },
-      })
+      .get(
+        `${FLOW_EDITOR_API}validate-media?url=${encodedUrl}&type=${attachmentType.toLowerCase()}`,
+        {
+          headers: { authorization: getAuthSession('access_token') },
+        }
+      )
       .then((response: any) => {
         resolve(response);
       })

@@ -1,0 +1,12 @@
+.StatusMessage {
+  background-color: #dd1f1f;
+  color: #edf6f2;
+  padding: 12px 36px;
+  position: absolute;
+  width: 100%;
+  z-index: 1;
+}
+
+.StatusTitle {
+  font-weight: bold;
+}

@@ -19,6 +19,7 @@ export function useToast() {
         message={message.data.message}
         severity={message.data.severity ? message.data.severity : ''}
         handleClose={closeToastMessage}
+        hideDuration={message.data.hideDuration}
       />
     );
   }

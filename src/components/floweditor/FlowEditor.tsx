@@ -14,6 +14,7 @@ import {
   FLOW_EDITOR_CONFIGURE_LINK,
   FLOW_EDITOR_API,
   FLOWS_HELP_LINK,
+  CONTACT_CHAT_LINK,
 } from 'config/index';
 import { Simulator } from 'components/simulator/Simulator';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
@@ -160,10 +161,12 @@ const setConfig = (uuid: any) => ({
     completion: `${glificBase}completion`,
     activity: `${glificBase}activity`,
     flows: `${glificBase}flows`,
+    recents: `${glificBase}recents/`,
     revisions: `${glificBase}revisions/${uuid}`,
     editor: FLOW_EDITOR_CONFIGURE_LINK,
     validateMedia: `${glificBase}validate-media`,
     interactives: `${glificBase}interactive-templates`,
+    contact: CONTACT_CHAT_LINK,
   },
 });
 

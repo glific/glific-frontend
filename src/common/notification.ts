@@ -1,10 +1,14 @@
 import { cache } from 'config/apolloclient';
 import { NOTIFICATION, ERROR_MESSAGE } from 'graphql/queries/Notification';
 
-export const setNotification = (message: string | null, severity: string | null = 'success') => {
+export const setNotification = (
+  message: string | null,
+  severity: string | null = 'success',
+  hideDuration: number | null = 5000
+) => {
   cache.writeQuery({
     query: NOTIFICATION,
-    data: { message, severity },
+    data: { message, severity, hideDuration },
   });
 };
 
