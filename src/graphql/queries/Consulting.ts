@@ -41,3 +41,9 @@ export const GET_CONSULTING_HOURS_COUNT = gql`
     countConsultingHours(filter: $filter)
   }
 `;
+
+export const EXPORT_CONSULTING_HOURS = gql`
+  query FetchConsultingHours($filter: FetchConsultingHours) {
+    fetchConsultingHours(filter: $filter)
+  }
+`;
