@@ -68,15 +68,20 @@ export const addLogsMethod = (event: string, logData: any) => {
   setLogs(logData, 'info');
 };
 
-export const exportFlowMethod = async (exportData: any, flowName: string) => {
-  const blob = new Blob([exportData], { type: 'application/json' });
-  const href = await URL.createObjectURL(blob);
+export const downloadFile = (url: string, filename: string) => {
   const link = document.createElement('a');
-  link.href = href;
-  link.download = `${flowName}.json`;
+  link.href = url;
+  link.target = '_blank';
+  link.download = filename;
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
+};
+
+export const exportFlowMethod = async (exportData: any, flowName: string) => {
+  const blob = new Blob([exportData], { type: 'application/json' });
+  const href = await URL.createObjectURL(blob);
+  downloadFile(href, `${flowName}.json`);
 };
 
 export { addLogsMethod as addLogs };

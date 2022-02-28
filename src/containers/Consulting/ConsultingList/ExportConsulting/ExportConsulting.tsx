@@ -12,7 +12,7 @@ import { ReactComponent as ExportIcon } from 'assets/images/icons/Export/export.
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
 import { Calendar } from 'components/UI/Form/Calendar/Calendar';
-
+import { downloadFile } from 'common/utils';
 import { Button } from 'components/UI/Form/Button/Button';
 
 import styles from './ExportConsulting.module.css';
@@ -35,14 +35,10 @@ export const ExportConsulting: React.FC<ExportConsultingPropTypes> = ({
   const [getConsultingDetails] = useLazyQuery(EXPORT_CONSULTING_HOURS, {
     fetchPolicy: 'network-only',
     onCompleted: ({ fetchConsultingHours }) => {
-      const link = document.createElement('a');
-      link.href = `data:attachment/csv,${encodeURIComponent(fetchConsultingHours)}`;
-      link.target = '_blank';
-      link.download = 'myFile.csv';
-
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      downloadFile(
+        `data:attachment/csv,${encodeURIComponent(fetchConsultingHours)}`,
+        'consulting-hours.csv'
+      );
     },
   });
 
