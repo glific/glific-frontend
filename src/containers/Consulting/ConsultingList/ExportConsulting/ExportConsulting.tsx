@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { useLazyQuery, useQuery } from '@apollo/client';
@@ -6,17 +6,23 @@ import { FILTER_ORGANIZATIONS } from 'graphql/queries/Organization';
 import { setVariables } from 'common/constants';
 import { EXPORT_CONSULTING_HOURS } from 'graphql/queries/Consulting';
 import { Field, Form, Formik } from 'formik';
+
 import { ReactComponent as ExportIcon } from 'assets/images/icons/Export/export.svg';
 import { useTranslation } from 'react-i18next';
-// import { TextField } from '@material-ui/core';
+import moment from 'moment';
+import { Calendar } from 'components/UI/Form/Calendar/Calendar';
+
 import { Button } from 'components/UI/Form/Button/Button';
-// import { DateRangePicker } from '@material-ui/pickers';
+
 import styles from './ExportConsulting.module.css';
 
-export interface ExportConsultingPropTypes {}
+export interface ExportConsultingPropTypes {
+  setFilters: any;
+}
 
-export const ExportConsulting: React.FC<ExportConsultingPropTypes> = () => {
-  const [organization] = useState({});
+export const ExportConsulting: React.FC<ExportConsultingPropTypes> = ({
+  setFilters,
+}: ExportConsultingPropTypes) => {
   const { data: organizationList } = useQuery(FILTER_ORGANIZATIONS, {
     variables: setVariables(),
   });
@@ -49,14 +55,29 @@ export const ExportConsulting: React.FC<ExportConsultingPropTypes> = () => {
         label: t('Select Organization'),
         variant: 'outlined',
       },
-      //   onChange: (val: any) => setOrganization(val),
+    },
+    {
+      component: Calendar,
+      name: 'dateFrom',
+      type: 'date',
+      placeholder: t('Date from'),
+      label: t('Date range'),
+    },
+    {
+      component: Calendar,
+      name: 'dateTo',
+      type: 'date',
+      placeholder: t('Date to'),
     },
   ];
 
   return (
     <div className={styles.FilterContainer}>
-      <Formik initialValues={{ organization }} onSubmit={() => {}}>
-        {() => (
+      <Formik
+        initialValues={{ organization: { name: '', id: '' }, dateFrom: '', dateTo: '' }}
+        onSubmit={() => {}}
+      >
+        {({ values }) => (
           <div className={styles.FormContainer}>
             <Form className={styles.Form}>
               {formFields.map((field) => (
@@ -64,7 +85,18 @@ export const ExportConsulting: React.FC<ExportConsultingPropTypes> = () => {
               ))}
 
               <div className={styles.Buttons}>
-                <Button variant="outlined" color="primary">
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={() => {
+                    console.log(values);
+                    setFilters({
+                      organizationName: values.organization.name,
+                      startDate: moment(values.dateFrom).format('YYYY-MM-DD'),
+                      endDate: moment(values.dateTo).format('YYYY-MM-DD'),
+                    });
+                  }}
+                >
                   Filter
                 </Button>
                 <ExportIcon
@@ -73,32 +105,15 @@ export const ExportConsulting: React.FC<ExportConsultingPropTypes> = () => {
                     getConsultingDetails({
                       variables: {
                         filter: {
-                          clientId: 1,
-                          endDate: '2022-12-31',
-                          startDate: '2021-12-31',
+                          clientId: values.organization.id,
+                          startDate: moment(values.dateFrom).format('YYYY-MM-DD'),
+                          endDate: moment(values.dateTo).format('YYYY-MM-DD'),
                         },
                       },
                     });
                   }}
                 />
               </div>
-
-              {/* <DateRangePicker
-                value={[new Date('2021-12-31'), new Date('2022-12-31')]}
-                onChange={() => {}}
-                renderInput={({ inputProps, ...startProps }: any, endProps: any) => {
-                  const some = inputProps;
-                  const startValue = inputProps.value;
-                  delete some.value;
-                  return (
-                    <TextField
-                      {...startProps}
-                      inputProps={some}
-                      value={`${startValue}-${endProps.inputProps.value}`}
-                    />
-                  );
-                }}
-              /> */}
             </Form>
           </div>
         )}

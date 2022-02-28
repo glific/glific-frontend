@@ -75,6 +75,7 @@ export interface ListProps {
   removeSortBy?: Array<any> | null;
   noItemText?: string | null;
   isDetailsPage?: boolean;
+  customStyles?: any;
 }
 
 interface TableVals {
@@ -121,6 +122,7 @@ export const List: React.SFC<ListProps> = ({
   defaultSortBy,
   noItemText = null,
   isDetailsPage = false,
+  customStyles,
 }: ListProps) => {
   const { t } = useTranslation();
   const client = useApolloClient();
@@ -666,7 +668,7 @@ export const List: React.SFC<ListProps> = ({
         </div>
       </div>
 
-      <div className={styles.Body}>
+      <div className={`${styles.Body} ${customStyles}`}>
         {backLink}
         {/* Rendering list of items */}
         {itemList.length > 0 ? displayList : noItemsText}

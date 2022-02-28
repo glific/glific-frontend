@@ -18,17 +18,19 @@
 
 .Form {
   align-items: center;
+  align-content: center;
   display: flex;
 }
 
 .ExportIcon {
   cursor: pointer;
+  margin-left: 18px;
 }
 
 .Buttons {
   display: flex;
   align-items: center;
-  margin-left: auto;
+  margin-left: 24px;
 }
 
 .Field {
@@ -36,5 +38,23 @@
 }
 
 .Form > div:first-child {
-  width: 236px;
+  width: 30% !important;
+}
+
+.Form > div:nth-child(2) > div {
+  width: 100% !important;
+}
+
+.Form > div:nth-child(2) {
+  width: 30% !important;
+  margin-left: 24px;
+}
+
+.Form > div:nth-child(3) {
+  width: 30% !important;
+  margin-left: 24px;
+}
+
+.Form > div:nth-child(3) > div {
+  width: 100% !important;
 }

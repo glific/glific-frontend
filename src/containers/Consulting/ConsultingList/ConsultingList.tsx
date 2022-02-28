@@ -17,6 +17,7 @@ const ConsultingList: React.SFC<ConsultingListProps> = () => {
   const { t } = useTranslation();
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedConsulting, setSelectedConsulting] = useState('');
+  const [filters, setFilters] = useState({});
 
   let dialog;
 
@@ -119,7 +120,7 @@ const ConsultingList: React.SFC<ConsultingListProps> = () => {
 
   return (
     <>
-      <ExportConsulting />
+      <ExportConsulting setFilters={setFilters} />
       {dialog}
       <List
         defaultSortBy="DATE"
@@ -138,11 +139,13 @@ const ConsultingList: React.SFC<ConsultingListProps> = () => {
             setSelectedConsulting('');
           },
         }}
+        filters={filters}
         restrictedAction={restrictedAction}
         searchParameter={['organizationName']}
         dialogMessage={dialogMessage}
         dialogTitle={dialogTitle}
         noItemText="consulting record"
+        customStyles={styles.Body}
         {...queries}
         {...columnAttributes}
       />
