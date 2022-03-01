@@ -141,7 +141,7 @@ export const Flow: React.SFC<FlowProps> = ({ match }) => {
     queries.updateItemQuery = UPDATE_FLOW;
   }
 
-  const customHandler = (client: any, data: any) => {
+  const customHandler = (data: any) => {
     let dataCopy = data;
     if (data[0].key === 'keywords') {
       const error: { message: any }[] = [];
@@ -151,7 +151,7 @@ export const Flow: React.SFC<FlowProps> = ({ match }) => {
       });
       dataCopy = error;
     }
-    setErrorMessage(client, { message: dataCopy }, t('Sorry! An error occurred!'));
+    setErrorMessage({ message: dataCopy }, t('Sorry! An error occurred!'));
   };
 
   return (

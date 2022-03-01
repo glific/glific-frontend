@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useApolloClient, useLazyQuery } from '@apollo/client';
+import { useLazyQuery } from '@apollo/client';
 
 import {
   COLLECTION_SEARCH_QUERY_VARIABLES,
@@ -36,7 +36,7 @@ export interface ChatSubscriptionProps {
 
 export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({ setDataLoaded }) => {
   const queryVariables = SEARCH_QUERY_VARIABLES;
-  const client = useApolloClient();
+
   let refetchTimer: any = null;
   const [triggerRefetch, setTriggerRefetch] = useState(false);
   let subscriptionToRefetchSwitchHappened = false;
@@ -47,7 +47,7 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({ setDataLoad
         // save the conversation and update cache
 
         // temporary fix for cache. need to check why query variables change
-        saveConversation(conversation, client, queryVariables);
+        saveConversation(conversation, queryVariables);
       }
     },
   });
@@ -303,7 +303,7 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({ setDataLoad
   if (loading) return <div />;
 
   if (error) {
-    setErrorMessage(client, error);
+    setErrorMessage(error);
     return null;
   }
 

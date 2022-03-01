@@ -3,7 +3,7 @@ import { EditorState, ContentState } from 'draft-js';
 import { Container, Button, ClickAwayListener, Fade, IconButton } from '@material-ui/core';
 import 'emoji-mart/css/emoji-mart.css';
 import clsx from 'clsx';
-import { useApolloClient, useMutation, useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 
 import { ReactComponent as AttachmentIcon } from 'assets/images/icons/Attachment/Unselected.svg';
@@ -75,7 +75,6 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   const templates = 'Templates';
   const interactiveMsg = 'Interactive msg';
   let uploadPermission = false;
-  const client = useApolloClient();
 
   let dialog;
 
@@ -126,7 +125,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
       }
     },
     onError: () => {
-      setNotification(client, t('Sorry, unable to upload audio.'), 'warning');
+      setNotification(t('Sorry, unable to upload audio.'), 'warning');
       setUploading(false);
     },
   });

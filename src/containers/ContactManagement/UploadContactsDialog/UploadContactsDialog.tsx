@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
-import { useApolloClient, useLazyQuery, useMutation } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client';
 
 import { useTranslation } from 'react-i18next';
 import { GET_ORGANIZATION_COLLECTIONS } from 'graphql/queries/Collection';
@@ -25,7 +25,6 @@ export const UploadContactsDialog: React.FC<UploadContactsDialogProps> = ({
   organizationDetails,
   setDialog,
 }) => {
-  const client = useApolloClient();
   const [error, setError] = useState<any>(false);
   const [csvContent, setCsvContent] = useState<String | null | ArrayBuffer>('');
   const [uploadingContacts, setUploadingContacts] = useState(false);
@@ -52,11 +51,11 @@ export const UploadContactsDialog: React.FC<UploadContactsDialogProps> = ({
   const [importContacts] = useMutation(IMPORT_CONTACTS, {
     onCompleted: (data: any) => {
       if (data.errors) {
-        setNotification(client, data.errors[0].message, 'warning');
+        setNotification(data.errors[0].message, 'warning');
       } else {
         setUploadingContacts(false);
         setDialog(false);
-        setNotification(client, t('Contacts have been uploaded'));
+        setNotification(t('Contacts have been uploaded'));
       }
     },
     onError: () => {

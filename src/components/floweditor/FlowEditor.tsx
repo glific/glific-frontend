@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useMutation, useLazyQuery, useQuery, useApolloClient } from '@apollo/client';
+import { useMutation, useLazyQuery, useQuery } from '@apollo/client';
 import { Prompt, Redirect, useHistory } from 'react-router-dom';
 import { IconButton } from '@material-ui/core';
 import * as Manifest from '@glific/flow-editor/build/asset-manifest.json';
@@ -176,7 +176,6 @@ export interface FlowEditorProps {
 
 export const FlowEditor = (props: FlowEditorProps) => {
   const { match } = props;
-  const client = useApolloClient();
   const history = useHistory();
   const { uuid } = match.params;
   const [publishDialog, setPublishDialog] = useState(false);
@@ -431,7 +430,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
   }
 
   if (published && !IsError) {
-    setNotification(client, 'The flow has been published');
+    setNotification('The flow has been published');
     if (!stayOnPublish) {
       return <Redirect to="/flow" />;
     }
@@ -495,7 +494,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
           data-testid="saveDraftButton"
           className={simulatorId === 0 ? styles.Draft : styles.SimulatorDraft}
           onClick={() => {
-            setNotification(client, 'The flow has been saved as draft');
+            setNotification('The flow has been saved as draft');
           }}
         >
           Save as draft

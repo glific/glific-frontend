@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useQuery, useMutation, DocumentNode, useLazyQuery, useApolloClient } from '@apollo/client';
+import { useQuery, useMutation, DocumentNode, useLazyQuery } from '@apollo/client';
 import { IconButton, TableFooter, TablePagination, TableRow, Typography } from '@material-ui/core';
 
 import { ListCard } from 'containers/List/ListCard/ListCard';
@@ -125,7 +125,7 @@ export const List: React.SFC<ListProps> = ({
   customStyles,
 }: ListProps) => {
   const { t } = useTranslation();
-  const client = useApolloClient();
+
   // DialogBox states
   const [deleteItemID, setDeleteItemID] = useState<number | null>(null);
   const [deleteItemName, setDeleteItemName] = useState<string>('');
@@ -298,7 +298,7 @@ export const List: React.SFC<ListProps> = ({
   const deleteHandler = (id: number) => {
     const variables = deleteModifier.variables ? deleteModifier.variables(id) : { id };
     deleteItem({ variables });
-    setNotification(client, `${capitalListItemName} deleted successfully`);
+    setNotification(`${capitalListItemName} deleted successfully`);
   };
 
   const handleDeleteItem = () => {
@@ -364,9 +364,9 @@ export const List: React.SFC<ListProps> = ({
   if (loading || l || loadingCollections) return <Loading />;
   if (error || e) {
     if (error) {
-      setErrorMessage(client, error);
+      setErrorMessage(error);
     } else if (e) {
-      setErrorMessage(client, e);
+      setErrorMessage(e);
     }
     return null;
   }
