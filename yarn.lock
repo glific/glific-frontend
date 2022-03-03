@@ -1344,10 +1344,10 @@
   resolved "https://registry.yarnpkg.com/@gar/promisify/-/promisify-1.1.3.tgz#555193ab2e3bb3b6adc3d551c9c030d9e860daf6"
   integrity sha512-k2Ty1JcVojjJFwrg/ThKi2ujJ7XNLYaFGNB/bWT9wGR+oSMJHMa5w+CUq6p/pVrKeNNgA7pCqEcjSnHVoqJQFw==
 
-"@glific/flow-editor@^1.17.0-1":
-  version "1.17.0-1"
-  resolved "https://registry.yarnpkg.com/@glific/flow-editor/-/flow-editor-1.17.0-1.tgz#cdb797aae6a4f4314dda0729291c378f8be8f784"
-  integrity sha512-rc5XjVQuwngQKSdtXfpkT0EovTlq5kPt87IQl5Wmyap+Rzs/Pf0uou/kRejJydp2hSN0DjPQg2sQ4qdml457dQ==
+"@glific/flow-editor@^1.17.0-2":
+  version "1.17.0-2"
+  resolved "https://registry.yarnpkg.com/@glific/flow-editor/-/flow-editor-1.17.0-2.tgz#bd1f973a1e7a11bd0834070301f2f0c769b6de2c"
+  integrity sha512-AihCGA2f9Ifjp5BlbeE1kTRQI4cPxPc3UKe8rEIlYx2MImEAAACXgThRX1DDQYbyvTgeTZvhISBEA8wdPZ2xwQ==
   dependencies:
     react "^16.8.6"
     react-dom "^16.8.6"
@@ -13387,8 +13387,10 @@ watchpack@^1.7.4:
   resolved "https://registry.yarnpkg.com/watchpack/-/watchpack-1.7.5.tgz#1267e6c55e0b9b5be44c2023aed5437a2c26c453"
   integrity sha512-9P3MWk6SrKjHsGkLT2KHXdQ/9SNkyoJbabxnKOoJepsvJjJG8uYTR3yTPxPQvNDI3w4Nz1xnE0TLHK4RIVe/MQ==
   dependencies:
+    chokidar "^3.4.1"
     graceful-fs "^4.1.2"
     neo-async "^2.5.0"
+    watchpack-chokidar2 "^2.0.1"
   optionalDependencies:
     chokidar "^3.4.1"
     watchpack-chokidar2 "^2.0.1"
