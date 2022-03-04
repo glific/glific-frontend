@@ -95,6 +95,7 @@ const setConfig = (uuid: any) => ({
   flowType: 'messaging',
   localStorage: true,
   mutable: true,
+  showNodeLabel: false,
   attachmentsEnabled: false,
   filters: ['whatsapp', 'classifier'],
 
@@ -201,13 +202,16 @@ export const FlowEditor = (props: FlowEditorProps) => {
   const [getOrganizationServices] = useLazyQuery(GET_ORGANIZATION_SERVICES, {
     fetchPolicy: 'network-only',
     onCompleted: (services) => {
-      const { dialogflow, googleCloudStorage } = services.organizationServices;
+      const { dialogflow, googleCloudStorage, flowUuidDisplay } = services.organizationServices;
 
       if (googleCloudStorage) {
         config.attachmentsEnabled = true;
       }
       if (!dialogflow) {
         config.excludeTypes.push('split_by_intent');
+      }
+      if (flowUuidDisplay) {
+        config.showNodeLabel = true;
       }
       showFlowEditor(document.getElementById('flow'), config);
       setLoading(false);
