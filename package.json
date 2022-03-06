@@ -49,7 +49,7 @@
     "ajv-keywords": "^5.1.0",
     "apollo-absinthe-upload-link": "^1.7.0",
     "apollo-link-token-refresh": "^0.4.0",
-    "axios": "^0.25.0",
+    "axios": "^0.26.0",
     "clsx": "^1.1.1",
     "date-fns": "^2.28.0",
     "draft-js": "^0.11.6",
