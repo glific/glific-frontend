@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useMutation, useLazyQuery, useQuery, useApolloClient } from '@apollo/client';
+import { useMutation, useLazyQuery, useQuery } from '@apollo/client';
 import { Prompt, Redirect, useHistory } from 'react-router-dom';
 import { IconButton } from '@material-ui/core';
 import * as Manifest from '@glific/flow-editor/build/asset-manifest.json';
@@ -95,6 +95,7 @@ const setConfig = (uuid: any) => ({
   flowType: 'messaging',
   localStorage: true,
   mutable: true,
+  showNodeLabel: false,
   attachmentsEnabled: false,
   filters: ['whatsapp', 'classifier'],
 
@@ -176,7 +177,6 @@ export interface FlowEditorProps {
 
 export const FlowEditor = (props: FlowEditorProps) => {
   const { match } = props;
-  const client = useApolloClient();
   const history = useHistory();
   const { uuid } = match.params;
   const [publishDialog, setPublishDialog] = useState(false);
@@ -202,13 +202,16 @@ export const FlowEditor = (props: FlowEditorProps) => {
   const [getOrganizationServices] = useLazyQuery(GET_ORGANIZATION_SERVICES, {
     fetchPolicy: 'network-only',
     onCompleted: (services) => {
-      const { dialogflow, googleCloudStorage } = services.organizationServices;
+      const { dialogflow, googleCloudStorage, flowUuidDisplay } = services.organizationServices;
 
       if (googleCloudStorage) {
         config.attachmentsEnabled = true;
       }
       if (!dialogflow) {
         config.excludeTypes.push('split_by_intent');
+      }
+      if (flowUuidDisplay) {
+        config.showNodeLabel = true;
       }
       showFlowEditor(document.getElementById('flow'), config);
       setLoading(false);
@@ -431,7 +434,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
   }
 
   if (published && !IsError) {
-    setNotification(client, 'The flow has been published');
+    setNotification('The flow has been published');
     if (!stayOnPublish) {
       return <Redirect to="/flow" />;
     }
@@ -495,7 +498,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
           data-testid="saveDraftButton"
           className={simulatorId === 0 ? styles.Draft : styles.SimulatorDraft}
           onClick={() => {
-            setNotification(client, 'The flow has been saved as draft');
+            setNotification('The flow has been saved as draft');
           }}
         >
           Save as draft

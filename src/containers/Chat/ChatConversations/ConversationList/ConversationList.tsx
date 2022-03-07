@@ -180,7 +180,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
           variables.filter.groupLabel = searchVal;
         }
         // save the conversation and update cache
-        updateConversations(searchData, client, variables);
+        updateConversations(searchData, variables);
         setShowLoadMore(true);
 
         setLoadingOffset(loadingOffset + DEFAULT_CONTACT_LOADMORE_LIMIT);
@@ -250,9 +250,9 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
 
   if ((called && error) || conversationError) {
     if (error) {
-      setErrorMessage(client, error);
+      setErrorMessage(error);
     } else if (conversationError) {
-      setErrorMessage(client, conversationError);
+      setErrorMessage(conversationError);
     }
 
     return null;

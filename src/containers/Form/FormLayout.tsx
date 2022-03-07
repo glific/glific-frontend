@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
-import { useApolloClient, DocumentNode, ApolloError, useQuery, useMutation } from '@apollo/client';
+import { DocumentNode, ApolloError, useQuery, useMutation } from '@apollo/client';
 import { Typography, IconButton } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 
@@ -112,8 +112,6 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   getQueryFetchPolicy = 'cache-first',
   saveOnPageChange = true,
 }: FormLayoutProps) => {
-  const client = useApolloClient();
-
   const [showDialog, setShowDialog] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [languageId, setLanguageId] = useState('');
@@ -134,7 +132,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
 
   const [deleteItem] = useMutation(deleteItemQuery, {
     onCompleted: () => {
-      setNotification(client, `${capitalListItemName} deleted successfully`);
+      setNotification(`${capitalListItemName} deleted successfully`);
       setDeleted(true);
     },
     awaitRefetchQueries: true,
@@ -186,9 +184,9 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
 
       if (errors) {
         if (customHandler) {
-          customHandler(client, errors);
+          customHandler(errors);
         } else {
-          setErrorMessage(client, errors[0]);
+          setErrorMessage(errors[0]);
         }
       } else if (updatedItem && typeof updatedItem.isValid === 'boolean' && !updatedItem.isValid) {
         if (customError) {
@@ -209,9 +207,9 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
           if (type === 'copy') {
             message = copyNotification;
           }
-          setNotification(client, message);
+          setNotification(message);
         } else {
-          setNotification(client, 'Your changes have been autosaved');
+          setNotification('Your changes have been autosaved');
         }
         // emit data after save
         if (afterSave) {
@@ -222,7 +220,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     },
     onError: (e: ApolloError) => {
       onSaveClick(false);
-      setErrorMessage(client, e);
+      setErrorMessage(e);
       return null;
     },
     refetchQueries: () => {
@@ -244,9 +242,9 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
       const { errors } = itemCreatedObject;
       if (errors) {
         if (customHandler) {
-          customHandler(client, errors);
+          customHandler(errors);
         } else {
-          setErrorMessage(client, errors[0]);
+          setErrorMessage(errors[0]);
         }
       } else if (itemCreated && typeof itemCreated.isValid === 'boolean' && !itemCreated.isValid) {
         if (customError) {
@@ -261,9 +259,9 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         if (saveOnPageChange || saveClick) {
           setFormSubmitted(true);
           // display successful message after create
-          setNotification(client, `${capitalListItemName} created successfully!`);
+          setNotification(`${capitalListItemName} created successfully!`);
         } else {
-          setNotification(client, 'Your changes have been autosaved');
+          setNotification('Your changes have been autosaved');
         }
         // emit data after save
         if (afterSave) {
@@ -284,14 +282,14 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     },
     onError: (e: ApolloError) => {
       onSaveClick(false);
-      setErrorMessage(client, e);
+      setErrorMessage(e);
       return null;
     },
   });
 
   if (loading) return <Loading />;
   if (error) {
-    setErrorMessage(client, error);
+    setErrorMessage(error);
     return null;
   }
   const performTask = (payload: any) => {
@@ -377,7 +375,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
           }
         })
         .catch((e: any) => {
-          setErrorMessage(client, e);
+          setErrorMessage(e);
         });
     } else {
       performTask(payload);

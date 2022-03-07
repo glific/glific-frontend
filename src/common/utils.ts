@@ -53,14 +53,14 @@ export { validateMediaMethod as validateMedia };
 export const randomIntFromInterval = (min: number, max: number) =>
   Math.floor(Math.random() * (max - min + 1) + min);
 
-export const copyToClipboardMethod = (client: any, text: string) => {
+export const copyToClipboardMethod = (text: string) => {
   if (text) {
     try {
       navigator.clipboard.writeText(text).then(() => {
-        setNotification(client, 'Copied to clipboard');
+        setNotification('Copied to clipboard');
       });
     } catch (err) {
-      setNotification(client, 'Sorry, cannot copy content over insecure connection', 'warning');
+      setNotification('Sorry, cannot copy content over insecure connection', 'warning');
     }
   }
 };
@@ -72,15 +72,20 @@ export const addLogsMethod = (event: string, logData: any) => {
   setLogs(logData, 'info');
 };
 
-export const exportFlowMethod = async (exportData: any, flowName: string) => {
-  const blob = new Blob([exportData], { type: 'application/json' });
-  const href = await URL.createObjectURL(blob);
+export const downloadFile = (url: string, filename: string) => {
   const link = document.createElement('a');
-  link.href = href;
-  link.download = `${flowName}.json`;
+  link.href = url;
+  link.target = '_blank';
+  link.download = filename;
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
+};
+
+export const exportFlowMethod = async (exportData: any, flowName: string) => {
+  const blob = new Blob([exportData], { type: 'application/json' });
+  const href = await URL.createObjectURL(blob);
+  downloadFile(href, `${flowName}.json`);
 };
 
 export { addLogsMethod as addLogs };

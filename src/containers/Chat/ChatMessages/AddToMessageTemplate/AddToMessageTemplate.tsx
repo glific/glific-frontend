@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useApolloClient, useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { FormControl, InputLabel, FormHelperText, OutlinedInput } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 
@@ -22,15 +22,13 @@ export const AddToMessageTemplate: React.SFC<AddToMessageTemplateProps> = ({
   message,
   changeDisplay,
 }) => {
-  const client = useApolloClient();
-
   const [messageTemplate, setMessageTemplate] = useState<string | null>('');
   const [required, setRequired] = useState(false);
   const { t } = useTranslation();
 
   const [saveTemplate] = useMutation(SAVE_MESSAGE_TEMPLATE_MUTATION, {
     onCompleted: () => {
-      setNotification(client, t('Message has been successfully added to speed sends.'));
+      setNotification(t('Message has been successfully added to speed sends.'));
     },
     refetchQueries: [
       {

@@ -283,7 +283,7 @@ export const Organisation: React.SFC = () => {
           <IconButton
             aria-label="phone number"
             data-testid="phoneNumber"
-            onClick={() => copyToClipboard(client, phone)}
+            onClick={() => copyToClipboard(phone)}
             edge="end"
           >
             <CopyIcon />

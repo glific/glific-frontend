@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useMutation, useApolloClient } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 
 import { ReactComponent as BlockIcon } from 'assets/images/icons/Block.svg';
@@ -42,7 +42,6 @@ const columnAttributes = {
 };
 
 export const BlockContactList: React.SFC<BlockContactListProps> = () => {
-  const client = useApolloClient();
   const [contactId, setContactId] = useState();
   const [unblockDialog, setUnblockDialog] = useState(false);
   const { t } = useTranslation();
@@ -62,7 +61,7 @@ export const BlockContactList: React.SFC<BlockContactListProps> = () => {
   const [unblockContact] = useMutation(UPDATE_CONTACT, {
     onCompleted: () => {
       setUnblockDialog(false);
-      setNotification(client, t('Contact unblocked successfully'));
+      setNotification(t('Contact unblocked successfully'));
     },
     refetchQueries: [
       { query: SEARCH_QUERY, variables: SEARCH_QUERY_VARIABLES },

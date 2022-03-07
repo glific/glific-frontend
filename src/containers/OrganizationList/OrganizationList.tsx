@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
 import { OutlinedInput } from '@material-ui/core';
-import { useMutation, useApolloClient } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 
 import { GET_ORGANIZATION_COUNT, FILTER_ORGANIZATIONS } from 'graphql/queries/Organization';
 import {
@@ -38,7 +38,7 @@ export const OrganizationList: React.SFC<OrganizationListProps> = ({
   openCustomerModal,
 }) => {
   const { t } = useTranslation();
-  const client = useApolloClient();
+
   const [orgName, setOrgName] = useState('');
   const history = useHistory();
 
@@ -56,7 +56,7 @@ export const OrganizationList: React.SFC<OrganizationListProps> = ({
 
   const [updateOrganizationStatus] = useMutation(UPDATE_ORGANIZATION_STATUS, {
     onCompleted: () => {
-      setNotification(client, 'Organization updated successfully');
+      setNotification('Organization updated successfully');
     },
   });
 
@@ -108,7 +108,7 @@ export const OrganizationList: React.SFC<OrganizationListProps> = ({
     deleteInActiveOrg({ variables: payload, refetchQueries: refetch });
     // Setting delete item id to null to prevent showing dialogue again
     setDeleteItemID(null);
-    setNotification(client, 'Organization deleted successfully');
+    setNotification('Organization deleted successfully');
   };
 
   const deleteDialogue = (id: any, name: any) => {

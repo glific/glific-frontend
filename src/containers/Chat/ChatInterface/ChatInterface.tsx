@@ -54,7 +54,7 @@ export const ChatInterface: React.SFC<ChatInterfaceProps> = ({
   }
 
   // fetch the conversations from cache
-  const { loading, error, data, client } = useQuery<any>(SEARCH_QUERY, {
+  const { loading, error, data } = useQuery<any>(SEARCH_QUERY, {
     variables: queryVariables,
     fetchPolicy: 'cache-only',
   });
@@ -67,7 +67,7 @@ export const ChatInterface: React.SFC<ChatInterfaceProps> = ({
 
   if (loading) return <Loading />;
   if (error) {
-    setErrorMessage(client, error);
+    setErrorMessage(error);
     return null;
   }
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useApolloClient, useLazyQuery, useSubscription } from '@apollo/client';
+import { useLazyQuery, useSubscription } from '@apollo/client';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 import { Button, ClickAwayListener } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
@@ -110,7 +110,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
   const [selectedListTemplate, setSelectedListTemplate] = useState<any>(null);
 
   const variables = { organizationId: getUserSession('organizationId') };
-  const client = useApolloClient();
+
   let messages: any[] = [];
   let simulatorId = '';
   const sender = {
@@ -214,7 +214,6 @@ export const Simulator: React.FC<SimulatorProps> = ({
         setSimulatorId(simulatorData.simulatorGet.id);
       } else {
         setNotification(
-          client,
           'Sorry! Simulators are in use by other staff members right now. Please wait for it to be idle',
           'warning'
         );
