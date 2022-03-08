@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Grow, MenuList, Paper, Popper } from '@material-ui/core';
+import { ClickAwayListener, Grow, MenuList, Paper, Popper } from '@material-ui/core';
 
 import MenuItem from './MenuItem/MenuItem';
 
@@ -12,11 +12,12 @@ const Menu: React.SFC<MenuProps> = ({ menus, children, eventType = 'Click' }) =>
   const [open, setOpen] = useState(false);
   const anchorRef = useRef<HTMLDivElement>(null);
 
-  const handleToggle = () => {
-    setOpen((prevOpen) => !prevOpen);
+  const handleOpen = () => {
+    setOpen(true);
   };
 
   const handleClose = () => {
+    console.log('handleClose');
     setOpen(false);
   };
 
@@ -29,9 +30,10 @@ const Menu: React.SFC<MenuProps> = ({ menus, children, eventType = 'Click' }) =>
   return (
     <div data-testid="Menu">
       <div
-        onClick={eventType === 'Click' ? handleToggle : undefined}
-        onKeyDown={eventType === 'Click' ? handleToggle : undefined}
-        onMouseEnter={eventType === 'MouseEnter' ? handleToggle : undefined}
+        onClick={eventType === 'Click' ? handleOpen : undefined}
+        onKeyDown={eventType === 'Click' ? handleOpen : undefined}
+        onMouseEnter={eventType === 'MouseEnter' ? handleOpen : undefined}
+        onMouseLeave={eventType === 'MouseEnter' ? handleClose : undefined}
         aria-hidden="true"
         ref={anchorRef}
         aria-controls={open ? 'menu-list-grow' : undefined}
@@ -40,20 +42,20 @@ const Menu: React.SFC<MenuProps> = ({ menus, children, eventType = 'Click' }) =>
         {children}
       </div>
 
-      <div onMouseLeave={eventType === 'MouseEnter' ? handleClose : undefined}>
-        <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
-          {({ TransitionProps, placement }) => (
-            <Grow
-              {...TransitionProps}
-              style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
-            >
-              <Paper>
+      <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
+        {({ TransitionProps, placement }) => (
+          <Grow
+            {...TransitionProps}
+            style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
+          >
+            <Paper onMouseLeave={eventType === 'MouseEnter' ? handleClose : undefined}>
+              <ClickAwayListener onClickAway={handleClose}>
                 <MenuList>{menuList}</MenuList>
-              </Paper>
-            </Grow>
-          )}
-        </Popper>
-      </div>
+              </ClickAwayListener>
+            </Paper>
+          </Grow>
+        )}
+      </Popper>
     </div>
   );
 };

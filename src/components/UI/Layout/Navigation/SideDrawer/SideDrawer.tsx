@@ -235,7 +235,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = ({ fullOpen, setFullOpen }
           <div data-testid="bottom-menu" aria-hidden="true">
             <Menu menus={getStaffManagementMenus()} eventType="MouseEnter">
               <IconButton data-testid="staffManagementMenu">
-                <Tooltip title={t('Staff Management')} placement="top">
+                <Tooltip title="" placement="top">
                   <img
                     src={
                       [
@@ -257,7 +257,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = ({ fullOpen, setFullOpen }
           <div>
             <Menu menus={getUserAccountMenus()} eventType="MouseEnter">
               <IconButton data-testid="profileMenu">
-                <Tooltip title={t('Profile')} placement="top">
+                <Tooltip title="" placement="top">
                   <img
                     src={location.pathname === '/user-profile' ? ActiveUserIcon : InactiveUserIcon}
                     className={styles.UserIcon}
