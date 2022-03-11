@@ -23,8 +23,8 @@ jobs:
 
     strategy:
       matrix: # build matrix for the job
-        elixir: [1.12.3]
-        otp: [24.1.4]
+        elixir: [1.13.3]
+        otp: [24.2.2]
         node-version: [16.13.0]
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
