@@ -908,7 +908,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
               .required('Required')
               .when('type', {
                 is: (val: any) => val === 'phone_number',
-                then: Yup.string().matches(/^\d{10}$|^\d{12}$/, 'Please enter valid phone number.'),
+                then: Yup.string().matches(/^\d{10,12}$/, 'Please enter valid phone number.'),
               })
               .when('type', {
                 is: (val: any) => val === 'url',
