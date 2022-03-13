@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button, TextField, FormHelperText, FormControl } from '@material-ui/core';
 import { FieldArray } from 'formik';
+import { v4 as uuidv4 } from 'uuid';
 
 import { ReactComponent as DeleteIcon } from 'assets/images/icons/Delete/Red.svg';
 import { ReactComponent as CrossIcon } from 'assets/images/icons/Cross.svg';
@@ -133,7 +134,7 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
             name={`templateButtons[${index}].options`}
             render={(arrayHelpers) =>
               options.map((itemRow: any, itemIndex: any) => (
-                <div key={itemIndex.toString()}>
+                <div key={uuidv4()}>
                   <div className={styles.ListReplyItemWrapper}>
                     <div className={styles.ListReplyItemContent}>
                       <div className={styles.TextFieldWrapper}>
