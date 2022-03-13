@@ -25,7 +25,16 @@ const Menu: React.SFC<MenuProps> = ({ menus, children, eventType = 'Click' }) =>
 
   const menuList = menus.map((menu: any) => (
     <div key={menu.title}>
-      <MenuItem onClickHandler={handleClose} {...menu} />
+      <MenuItem
+        onClickHandler={() => {
+          if (menu.onClick) {
+            menu.onClick();
+          } else {
+            setOpen(false);
+          }
+        }}
+        {...menu}
+      />
     </div>
   ));
 
