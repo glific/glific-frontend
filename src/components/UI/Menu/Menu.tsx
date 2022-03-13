@@ -50,7 +50,7 @@ const Menu: React.SFC<MenuProps> = ({ menus, children, eventType = 'Click' }) =>
             {...TransitionProps}
             style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
           >
-            <Paper onMouseLeave={eventType === 'MouseEnter' ? handleClose : undefined}>
+            <Paper>
               <ClickAwayListener onClickAway={handleClose}>
                 <MenuList autoFocusItem={open}>{menuList}</MenuList>
               </ClickAwayListener>
