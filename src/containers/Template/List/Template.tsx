@@ -6,7 +6,7 @@ import { Checkbox, FormControlLabel } from '@material-ui/core';
 import { List } from 'containers/List/List';
 import { useMutation, useQuery } from '@apollo/client';
 import { WhatsAppToJsx } from 'common/RichEditor';
-import { DATE_TIME_FORMAT } from 'common/constants';
+import { DATE_TIME_FORMAT, GUPSHUP_ENTERPRISE_SHORTCODE } from 'common/constants';
 import { GET_TEMPLATES_COUNT, FILTER_TEMPLATES } from 'graphql/queries/Template';
 import { DELETE_TEMPLATE, IMPORT_TEMPLATES } from 'graphql/mutations/Template';
 import { ReactComponent as DownArrow } from 'assets/images/icons/DownArrow.svg';
@@ -94,7 +94,10 @@ export const Template: React.SFC<TemplateProps> = (props) => {
 
   useEffect(() => {
     if (organizationProvider) {
-      if (organizationProvider.organization.organization.bsp.shortcode === 'gupshup_enterprise') {
+      if (
+        organizationProvider.organization.organization.bsp.shortcode ===
+        GUPSHUP_ENTERPRISE_SHORTCODE
+      ) {
         setIsEnterprise(true);
       }
     }
@@ -235,12 +238,20 @@ export const Template: React.SFC<TemplateProps> = (props) => {
   }
 
   const importTemplates = (event: any) => {
+    const media = event.target.files[0];
     const fileReader: any = new FileReader();
     fileReader.onload = function setImport() {
-      importTemplatesMutation({ variables: { data: fileReader.result } });
+      const mediaName = media.name;
+      const extension = mediaName.slice((Math.max(0, mediaName.lastIndexOf('.')) || Infinity) + 1);
+      if (extension !== 'csv') {
+        setNotification('Please upload a valid CSV file', 'warning');
+        setImporting(false);
+      } else {
+        importTemplatesMutation({ variables: { data: fileReader.result } });
+      }
     };
     setImporting(true);
-    fileReader.readAsText(event.target.files[0]);
+    fileReader.readAsText(media);
   };
 
   const importButton = (
