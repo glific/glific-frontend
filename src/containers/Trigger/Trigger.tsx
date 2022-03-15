@@ -150,16 +150,9 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
     { label: t('Monthly'), value: 'monthly' },
   ];
 
-  const FormSchema = Yup.object().shape({
+  const schemaShape: any = {
     flowId: Yup.object().nullable().required(t('Flow is required')),
-    startTime: Yup.string()
-      .required(t('Time is required.'))
-      .when('startDate', (startDateValue: any, schema: any) =>
-        schema.test({
-          test: (startAtValue: any) => checkDateTimeValidation(startAtValue, startDateValue),
-          message: t('Start time should be greater than current time'),
-        })
-      ),
+
     startDate: Yup.string().nullable().required(t('Start date is required')),
 
     endDate: Yup.string()
@@ -181,7 +174,20 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
       }),
     frequency: Yup.object().nullable().required(t('Repeat is required')),
     groupId: Yup.object().nullable().required(t('Collection is required')),
-  });
+  };
+
+  if (!isEditing) {
+    schemaShape.startTime = Yup.string()
+      .required(t('Time is required.'))
+      .when('startDate', (startDateValue: any, schema: any) =>
+        schema.test({
+          test: (startAtValue: any) => checkDateTimeValidation(startAtValue, startDateValue),
+          message: t('Start time should be greater than current time'),
+        })
+      );
+  }
+
+  const FormSchema = Yup.object().shape(schemaShape);
 
   const dialogMessage = t("You won't be able to use this for tagging messages.");
 
