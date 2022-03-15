@@ -6,6 +6,7 @@ import { setUserSession } from 'services/AuthService';
 import { TEMPLATE_MOCKS, HSM_LIST } from 'containers/Template/Template.test.helper';
 import { Template } from './Template';
 import { getOrganizationBSP } from 'mocks/Organization';
+import { importTemplateMutation } from 'mocks/Template';
 
 afterEach(cleanup);
 setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
@@ -56,7 +57,7 @@ const hsmProps: any = {
   buttonLabel: 'Create HSM Template',
 };
 
-const hsmMocks = [...HSM_LIST, ...HSM_LIST, getOrganizationBSP];
+const hsmMocks = [...HSM_LIST, ...HSM_LIST, getOrganizationBSP, importTemplateMutation];
 
 const hsmComponent = (
   <Router>
