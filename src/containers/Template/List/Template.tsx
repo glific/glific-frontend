@@ -86,7 +86,8 @@ export const Template: React.SFC<TemplateProps> = (props) => {
   const [importTemplatesMutation] = useMutation(IMPORT_TEMPLATES, {
     onCompleted: (data: any) => {
       setImporting(false);
-      if (data.importTemplates.errors.length > 0) {
+      const { errors } = data.importTemplates;
+      if (errors && errors.length > 0) {
         setNotification('Error importing templates', 'warning');
       }
     },
