@@ -1,15 +1,27 @@
 import { render, cleanup, screen, waitFor, fireEvent } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import axios from 'axios';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router, useLocation } from 'react-router-dom';
 
 import { setUserSession } from 'services/AuthService';
 import { mocks } from 'mocks/InteractiveMessage';
 import { InteractiveMessage } from './InteractiveMessage';
 
+const mockUseLocationValue: any = {
+  pathname: '/',
+  search: '',
+  hash: '',
+  state: null,
+};
+jest.mock('react-router-dom', () => ({
+  ...(jest.requireActual('react-router-dom') as {}),
+  useLocation: () => {
+    return mockUseLocationValue;
+  },
+}));
+
 const mockData = [...mocks, ...mocks];
 
-afterEach(cleanup);
 setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
 
 jest.mock('axios', () => {
@@ -18,7 +30,13 @@ jest.mock('axios', () => {
   };
 });
 
-jest.setTimeout(10000);
+const renderInteractiveMessage = (id: string) => (
+  <MockedProvider mocks={mockData} addTypename={false}>
+    <Router>
+      <InteractiveMessage match={{ params: { id } }} />
+    </Router>
+  </MockedProvider>
+);
 
 const responseMock1 = {
   results: [{ key: 'key 1' }, { key: 'key 2' }],
@@ -172,16 +190,10 @@ test('it renders empty interactive form', async () => {
 test('it renders interactive quick reply in edit mode', async () => {
   axiosApiCall();
 
-  const { container } = render(
-    <MockedProvider mocks={mockData} addTypename={false}>
-      <Router>
-        <InteractiveMessage match={{ params: { id: '1' } }} />
-      </Router>
-    </MockedProvider>
-  );
+  render(renderInteractiveMessage('1'));
 
-  jest.spyOn(axios, 'get').mockResolvedValueOnce(responseMock1);
   await whenStable();
+  jest.spyOn(axios, 'get').mockResolvedValueOnce(responseMock1);
 
   await waitFor(() => {
     // Changing language to marathi to see translations
@@ -205,13 +217,7 @@ test('it renders interactive quick reply in edit mode', async () => {
 test('it renders interactive list in edit mode', async () => {
   axiosApiCall();
 
-  render(
-    <MockedProvider mocks={mockData} addTypename={false}>
-      <Router>
-        <InteractiveMessage match={{ params: { id: '2' } }} />
-      </Router>
-    </MockedProvider>
-  );
+  render(renderInteractiveMessage('2'));
 
   jest.spyOn(axios, 'get').mockResolvedValueOnce(responseMock1);
   await whenStable();
@@ -226,14 +232,23 @@ test('it renders interactive list in edit mode', async () => {
 test('it renders interactive quick reply with media in edit mode', async () => {
   axiosApiCall();
 
-  render(
-    <MockedProvider mocks={mockData} addTypename={false}>
-      <Router>
-        <InteractiveMessage match={{ params: { id: '3' } }} />
-      </Router>
-    </MockedProvider>
-  );
+  render(renderInteractiveMessage('3'));
 
   jest.spyOn(axios, 'get').mockResolvedValueOnce(responseMock3);
   await whenStable();
+});
+
+describe('copy interactive message', () => {
+  test('it renders copy interactive quick reply message', async () => {
+    mockUseLocationValue.state = 'copy';
+    axiosApiCall();
+    
+    const { getByText, getAllByTestId } = render(renderInteractiveMessage('1'));
+    jest.spyOn(axios, 'get').mockResolvedValueOnce(responseMock1);
+
+    await waitFor(() => {
+      expect(getByText('Copy Interactive Message')).toBeInTheDocument();
+      expect(getAllByTestId('input').at(0)?.querySelector('input')).toHaveValue('Copy of Continue');
+    });
+  });
 });

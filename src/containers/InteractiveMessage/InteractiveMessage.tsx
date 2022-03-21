@@ -73,6 +73,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
   const [nextLanguage, setNextLanguage] = useState<any>('');
   const [warning, setWarning] = useState<any>();
   const { t } = useTranslation();
+
   // alter header & update/copy queries
   let header;
 
