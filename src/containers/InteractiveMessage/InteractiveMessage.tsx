@@ -201,10 +201,8 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     let titleText = data.title;
 
     if (location.state === 'copy') {
-      console.log(titleText);
       titleText = `Copy of ${data.title}`;
     }
-    console.log(location.state);
 
     setTitle(titleText);
     setBody(getEditorFromContent(data.body));

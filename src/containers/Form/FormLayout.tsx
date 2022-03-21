@@ -293,10 +293,8 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     return null;
   }
   const performTask = (payload: any) => {
-    console.log(itemId);
     if (itemId) {
       if (isLoadedData) {
-        console.log('here');
         let idKey = idType;
         let idVal = itemId;
 
