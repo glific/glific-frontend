@@ -1,7 +1,7 @@
-import { render, cleanup, screen, waitFor, fireEvent } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import axios from 'axios';
-import { BrowserRouter as Router, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
 
 import { setUserSession } from 'services/AuthService';
 import { mocks } from 'mocks/InteractiveMessage';
@@ -242,7 +242,7 @@ describe('copy interactive message', () => {
   test('it renders copy interactive quick reply message', async () => {
     mockUseLocationValue.state = 'copy';
     axiosApiCall();
-    
+
     const { getByText, getAllByTestId } = render(renderInteractiveMessage('1'));
     jest.spyOn(axios, 'get').mockResolvedValueOnce(responseMock1);
 
