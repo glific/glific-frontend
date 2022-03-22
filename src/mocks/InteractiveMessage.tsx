@@ -128,6 +128,7 @@ const quickReplyMock = {
 };
 
 const quickReplyMedia = {
+  sendWithTitle: true,
   interactiveContent:
     '{"type":"quick_reply","options":[{"type":"text","title":"Visual Arts"},{"type":"text","title":"Poetry"},{"type":"text","title":"Theatre"}],"content":{"url":"https://storage.glific.png","type":"image","text":"What activity would you like?\\n"}}',
 

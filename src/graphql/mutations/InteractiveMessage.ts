@@ -54,3 +54,24 @@ export const DELETE_INTERACTIVE = gql`
     }
   }
 `;
+
+export const COPY_INTERACTIVE = gql`
+  mutation CopyInteractiveTemplate($id: ID!, $input: InteractiveTemplateInput) {
+    copyInteractiveTemplate(id: $id, input: $input) {
+      errors {
+        message
+      }
+      interactiveTemplate {
+        interactiveContent
+        label
+        language {
+          id
+          label
+        }
+        sendWithTitle
+        translations
+        type
+      }
+    }
+  }
+`;
