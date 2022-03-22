@@ -145,7 +145,7 @@ export const ListReplyTemplateDrawer: React.SFC<ListTemplate> = (props) => {
     onItemClick(checkedItem);
   };
 
-  const list = items.map((item: any) => {
+  const list = items.map((item: any, index: number) => {
     const { options, title: sectionTitle } = item;
 
     if (!sectionTitle) {
@@ -158,12 +158,21 @@ export const ListReplyTemplateDrawer: React.SFC<ListTemplate> = (props) => {
         <div className={styles.Options}>
           {options
             .map((option: any) => {
+              const payloadObject = {
+                type: 'list_reply',
+                title: option.title,
+                id: '',
+                reply: `${option.title} ${index + 1} `,
+                postbackText: '',
+                description: option.description,
+              };
+
               if (option.title) {
                 return (
                   <Button
                     key={uuidv4()}
                     className={styles.ListItem}
-                    onClick={() => setCheckedItem(option.title)}
+                    onClick={() => setCheckedItem(payloadObject)}
                   >
                     <div>
                       <div>{option.title}</div>

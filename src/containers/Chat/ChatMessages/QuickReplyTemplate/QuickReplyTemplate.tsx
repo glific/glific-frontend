@@ -42,15 +42,21 @@ export const QuickReplyTemplate: React.SFC<QuickReplyTemplateProps> = (props) =>
   }
 
   const quickReplyButtons = options
-    .map((option: ButtonOption) => {
+    .map((option: ButtonOption, index: number) => {
       if (option.title) {
+        const payloadObject = {
+          type: 'button_reply',
+          title: option.title,
+          id: option.title,
+          reply: `${option.title} ${index + 1}`,
+        };
         return (
           <div className={styles.ButtonItem} key={uuidv4()}>
             <Button
               variant="contained"
               color="default"
               disabled={disabled}
-              onClick={() => onQuickReplyClick(option.title)}
+              onClick={() => onQuickReplyClick(payloadObject)}
               className={isSimulator ? styles.SimulatorButton : styles.ChatMessageButton}
             >
               {option.title}

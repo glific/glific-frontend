@@ -120,40 +120,53 @@ export const Simulator: React.FC<SimulatorProps> = ({
   // chat messages will be shown on simulator
   const isSimulatedMessage = true;
 
-  const sendMessage = (senderDetails: any, quickReplyText?: string) => {
+  const sendMessage = (senderDetails: any, interactivePayload?: any) => {
     const sendMessageText = inputMessage === '' && message ? message : inputMessage;
+    console.log(
+      !sendMessageText || !interactivePayload,
+      message,
+      inputMessage,
+      !sendMessageText,
+      sendMessageText
+    );
     // check if send message text is not empty
 
-    if (sendMessageText || quickReplyText) {
-      const payload: any = {
-        text: sendMessageText,
-      };
+    if (!sendMessageText && !interactivePayload) return;
 
-      if (quickReplyText) payload.text = quickReplyText;
+    let type = 'text';
 
-      axios
-        .post(GUPSHUP_CALLBACK_URL, {
-          type: 'message',
-          payload: {
-            id: uuidv4(),
-            type: 'text',
-            payload,
-            sender: senderDetails,
-          },
-        })
-        .catch((error) => {
-          // add log's
-          setLogs(
-            `sendMessageText:${sendMessageText} GUPSHUP_CALLBACK_URL:${GUPSHUP_CALLBACK_URL}`,
-            'info'
-          );
-          setLogs(error, 'error');
-        });
-      setInputMessage('');
-      // reset the message from floweditor for the next time
-      if (resetMessage) {
-        resetMessage();
-      }
+    let payload: any = {};
+
+    if (interactivePayload) {
+      type = interactivePayload.type;
+      payload = interactivePayload;
+      delete payload.type;
+    } else {
+      payload.text = sendMessageText;
+    }
+
+    axios
+      .post(GUPSHUP_CALLBACK_URL, {
+        type: 'message',
+        payload: {
+          id: uuidv4(),
+          type,
+          payload,
+          sender: senderDetails,
+        },
+      })
+      .catch((error) => {
+        // add log's
+        setLogs(
+          `sendMessageText:${sendMessageText} GUPSHUP_CALLBACK_URL:${GUPSHUP_CALLBACK_URL}`,
+          'info'
+        );
+        setLogs(error, 'error');
+      });
+    setInputMessage('');
+    // reset the message from floweditor for the next time
+    if (resetMessage) {
+      resetMessage();
     }
   };
 
@@ -325,7 +338,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
             isSimulator
             showHeader={showHeader}
             disabled={disableButtons}
-            onQuickReplyClick={(value: string) => sendMessage(sender, value)}
+            onQuickReplyClick={(value: any) => sendMessage(sender, value)}
           />
         );
       }
@@ -501,8 +514,8 @@ export const Simulator: React.FC<SimulatorProps> = ({
     setSelectedListTemplate(null);
   };
 
-  const handleListDrawerItemClick = (text: string) => {
-    sendMessage(sender, text);
+  const handleListDrawerItemClick = (payloadObject: any) => {
+    sendMessage(sender, payloadObject);
     handleListReplyDrawerClose();
   };
 
