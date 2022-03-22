@@ -122,15 +122,8 @@ export const Simulator: React.FC<SimulatorProps> = ({
 
   const sendMessage = (senderDetails: any, interactivePayload?: any) => {
     const sendMessageText = inputMessage === '' && message ? message : inputMessage;
-    console.log(
-      !sendMessageText || !interactivePayload,
-      message,
-      inputMessage,
-      !sendMessageText,
-      sendMessageText
-    );
-    // check if send message text is not empty
 
+    // check if send message text is not empty
     if (!sendMessageText && !interactivePayload) return;
 
     let type = 'text';
