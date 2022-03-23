@@ -191,7 +191,7 @@ export const ListReplyTemplateDrawer: React.SFC<ListTemplate> = (props) => {
                         value={option.title}
                         name="radio-list-item"
                         size="small"
-                        checked={checkedItem && option.title === checkedItem?.payload.title}
+                        checked={checkedItem && option.title === checkedItem.payload.title}
                         color="primary"
                       />
                     </div>
