@@ -47,7 +47,7 @@ export const QuickReplyTemplate: React.SFC<QuickReplyTemplateProps> = (props) =>
         const payloadObject = {
           type: 'button_reply',
           title: option.title,
-          id: option.title,
+          id: '',
           reply: `${option.title} ${index + 1}`,
         };
         return (
