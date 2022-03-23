@@ -302,17 +302,18 @@ export const Simulator: React.FC<SimulatorProps> = ({
     const { insertedAt, type, media, location, interactiveContent, bspMessageId, templateType } =
       messageObject;
 
+    const messageType = isInteractive ? templateType : type;
     const { body, buttons } = WhatsAppTemplateButton(isInteractive ? '' : messageObject.body);
 
     // Checking if interactive content is present then only parse to JSON
     const content = interactiveContent && JSON.parse(interactiveContent);
     let isInteractiveContentPresent = false;
-    let template = {};
+    let template;
 
     if (content) {
       isInteractiveContentPresent = !!Object.entries(content).length;
 
-      if (isInteractiveContentPresent && templateType === INTERACTIVE_LIST) {
+      if (isInteractiveContentPresent && messageType === INTERACTIVE_LIST) {
         template = (
           <>
             <ListReplyTemplate
@@ -327,7 +328,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
         );
       }
 
-      if (isInteractiveContentPresent && templateType === INTERACTIVE_QUICK_REPLY) {
+      if (isInteractiveContentPresent && messageType === INTERACTIVE_QUICK_REPLY) {
         template = (
           <QuickReplyTemplate
             {...content}
@@ -349,7 +350,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
           ) : (
             <>
               <ChatMessageType
-                type={type}
+                type={messageType}
                 media={media}
                 body={body}
                 location={location}
