@@ -130,10 +130,13 @@ export const Simulator: React.FC<SimulatorProps> = ({
 
     let payload: any = {};
 
+    let context: any = {};
+
     if (interactivePayload) {
-      type = interactivePayload.type;
-      payload = interactivePayload;
+      type = interactivePayload.payload.type;
+      payload = interactivePayload.payload;
       delete payload.type;
+      context = interactivePayload.context;
     } else {
       payload.text = sendMessageText;
     }
@@ -146,6 +149,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
           type,
           payload,
           sender: senderDetails,
+          context,
         },
       })
       .catch((error) => {
@@ -290,17 +294,14 @@ export const Simulator: React.FC<SimulatorProps> = ({
   };
 
   const renderMessage = (
-    text: string,
+    messageObject: any,
     direction: string,
     index: number,
-    insertedAt: string,
-    type: string,
-    media: any,
-    location: any,
-    interactiveContent: any,
-    disableButtons: boolean = false
+    isInteractive: boolean = false
   ) => {
-    const { body, buttons } = WhatsAppTemplateButton(text);
+    const { insertedAt, type, media, location, interactiveContent, bspMessageId } = messageObject;
+
+    const { body, buttons } = WhatsAppTemplateButton(isInteractive ? '' : messageObject.body);
 
     // Checking if interactive content is present then only parse to JSON
     const content = interactiveContent && JSON.parse(interactiveContent);
@@ -315,6 +316,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
           <>
             <ListReplyTemplate
               {...content}
+              bspMessageId={bspMessageId}
               showHeader={showHeader}
               component={SimulatorTemplate}
               onGlobalButtonClick={handleOpenListReplyDrawer}
@@ -330,7 +332,8 @@ export const Simulator: React.FC<SimulatorProps> = ({
             {...content}
             isSimulator
             showHeader={showHeader}
-            disabled={disableButtons}
+            disabled={isInteractive}
+            bspMessageId={bspMessageId}
             onQuickReplyClick={(value: any) => sendMessage(sender, value)}
           />
         );
@@ -369,29 +372,10 @@ export const Simulator: React.FC<SimulatorProps> = ({
   const getChatMessage = () => {
     const chatMessage = messages
       .map((simulatorMessage: any, index: number) => {
-        const { body, insertedAt, type, media, location, interactiveContent } = simulatorMessage;
         if (simulatorMessage.receiver.id === simulatorId) {
-          return renderMessage(
-            body,
-            'received',
-            index,
-            insertedAt,
-            type,
-            media,
-            location,
-            interactiveContent
-          );
+          return renderMessage(simulatorMessage, 'received', index);
         }
-        return renderMessage(
-          body,
-          'send',
-          index,
-          insertedAt,
-          type,
-          media,
-          location,
-          interactiveContent
-        );
+        return renderMessage(simulatorMessage, 'send', index);
       })
       .reverse();
     setSimulatedMessage(chatMessage);
@@ -399,17 +383,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
 
   const getPreviewMessage = () => {
     if (message && message.type) {
-      const { body, insertedAt, type, media, location, interactiveContent } = message;
-      const previewMessage = renderMessage(
-        body,
-        'received',
-        0,
-        insertedAt,
-        type,
-        media,
-        location,
-        interactiveContent
-      );
+      const previewMessage = renderMessage(message, 'received', 0);
       if (['STICKER', 'AUDIO'].includes(message.type)) {
         setSimulatedMessage(previewMessage);
       } else if (message.body || message.media?.caption) {
@@ -422,17 +396,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
 
     if (interactiveMessage) {
       const { templateType, interactiveContent } = interactiveMessage;
-      const previewMessage = renderMessage(
-        '',
-        'received',
-        0,
-        new Date().toISOString(),
-        templateType,
-        null,
-        null,
-        interactiveContent,
-        true
-      );
+      const previewMessage = renderMessage(interactiveMessage, 'received', 0, true);
       setSimulatedMessage(previewMessage);
       if (templateType === INTERACTIVE_LIST) {
         const { items } = JSON.parse(interactiveContent);

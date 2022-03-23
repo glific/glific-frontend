@@ -23,6 +23,7 @@ export interface QuickReplyTemplateProps {
   options: Array<ButtonOption>;
   disabled?: boolean;
   onQuickReplyClick: any;
+  bspMessageId?: string;
   isSimulator: boolean;
   showHeader?: boolean;
 }
@@ -35,6 +36,7 @@ export const QuickReplyTemplate: React.SFC<QuickReplyTemplateProps> = (props) =>
     onQuickReplyClick,
     isSimulator = false,
     showHeader = true,
+    bspMessageId,
   } = props;
 
   if (!content && !options) {
@@ -45,10 +47,16 @@ export const QuickReplyTemplate: React.SFC<QuickReplyTemplateProps> = (props) =>
     .map((option: ButtonOption, index: number) => {
       if (option.title) {
         const payloadObject = {
-          type: 'button_reply',
-          title: option.title,
-          id: '',
-          reply: `${option.title} ${index + 1}`,
+          payload: {
+            type: 'button_reply',
+            title: option.title,
+            id: '',
+            reply: `${option.title} ${index + 1}`,
+          },
+          context: {
+            id: '',
+            gsId: bspMessageId,
+          },
         };
         return (
           <div className={styles.ButtonItem} key={uuidv4()}>
