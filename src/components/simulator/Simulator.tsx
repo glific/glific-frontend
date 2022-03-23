@@ -299,7 +299,8 @@ export const Simulator: React.FC<SimulatorProps> = ({
     index: number,
     isInteractive: boolean = false
   ) => {
-    const { insertedAt, type, media, location, interactiveContent, bspMessageId } = messageObject;
+    const { insertedAt, type, media, location, interactiveContent, bspMessageId, templateType } =
+      messageObject;
 
     const { body, buttons } = WhatsAppTemplateButton(isInteractive ? '' : messageObject.body);
 
@@ -311,7 +312,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
     if (content) {
       isInteractiveContentPresent = !!Object.entries(content).length;
 
-      if (isInteractiveContentPresent && type === INTERACTIVE_LIST) {
+      if (isInteractiveContentPresent && templateType === INTERACTIVE_LIST) {
         template = (
           <>
             <ListReplyTemplate
@@ -326,7 +327,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
         );
       }
 
-      if (isInteractiveContentPresent && type === INTERACTIVE_QUICK_REPLY) {
+      if (isInteractiveContentPresent && templateType === INTERACTIVE_QUICK_REPLY) {
         template = (
           <QuickReplyTemplate
             {...content}
