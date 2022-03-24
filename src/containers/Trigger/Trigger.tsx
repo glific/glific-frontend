@@ -108,12 +108,17 @@ const getFrequencyDetails = (
 
   return frequencyDetails;
 };
-export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
-  let isEditing = false;
-  if (match.params.id) {
-    isEditing = true;
-  }
 
+const triggerIcon = <TriggerIcon className={styles.TriggerIcon} />;
+
+const queries = {
+  getItemQuery: GET_TRIGGER,
+  createItemQuery: CREATE_TRIGGER,
+  updateItemQuery: UPDATE_TRIGGER,
+  deleteItemQuery: DELETE_TRIGGER,
+};
+
+export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
   const [flowId, setFlowId] = useState(null);
   const [isActive, setIsActive] = useState(true);
   const [startTime, setStartTime] = useState('');
@@ -149,6 +154,23 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
     { label: t('Weekly'), value: 'weekly' },
     { label: t('Monthly'), value: 'monthly' },
   ];
+  const dialogMessage = t("You won't be able to use this for tagging messages.");
+
+  let isEditing = false;
+  let type;
+
+  const isCopyState = location.state === 'copy';
+
+  if (match.params.id && !isCopyState) {
+    isEditing = true;
+  }
+
+  if (isCopyState) {
+    queries.updateItemQuery = CREATE_TRIGGER;
+    type = 'copy';
+  } else {
+    queries.updateItemQuery = UPDATE_TRIGGER;
+  }
 
   const schemaShape: any = {
     flowId: Yup.object().nullable().required(t('Flow is required')),
@@ -188,26 +210,6 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
   }
 
   const FormSchema = Yup.object().shape(schemaShape);
-
-  const dialogMessage = t("You won't be able to use this for tagging messages.");
-
-  const triggerIcon = <TriggerIcon className={styles.TriggerIcon} />;
-
-  const queries = {
-    getItemQuery: GET_TRIGGER,
-    createItemQuery: CREATE_TRIGGER,
-    updateItemQuery: UPDATE_TRIGGER,
-    deleteItemQuery: DELETE_TRIGGER,
-  };
-
-  let type;
-
-  if (location.state === 'copy') {
-    queries.updateItemQuery = CREATE_TRIGGER;
-    type = 'copy';
-  } else {
-    queries.updateItemQuery = UPDATE_TRIGGER;
-  }
 
   const { data: flow } = useQuery(GET_FLOWS, {
     variables: setVariables({
