@@ -5,7 +5,7 @@ export const getWebhookLogsQuery = {
     query: FILTER_WEBHOOK_LOGS,
     variables: {
       filter: {},
-      opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'updated_at' },
+      opts: { limit: 50, offset: 0, order: 'DESC', orderWith: 'updated_at' },
     },
   },
   result: {
