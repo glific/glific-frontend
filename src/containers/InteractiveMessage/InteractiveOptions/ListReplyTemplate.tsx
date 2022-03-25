@@ -133,6 +133,7 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
             name={`templateButtons[${index}].options`}
             render={(arrayHelpers) =>
               options.map((itemRow: any, itemIndex: any) => (
+                // disabling eslint for this as we have no other unique way to define a key
                 // eslint-disable-next-line react/no-array-index-key
                 <div key={itemIndex}>
                   <div className={styles.ListReplyItemWrapper}>
