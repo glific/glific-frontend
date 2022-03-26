@@ -1,7 +1,6 @@
 import React from 'react';
 import { Button, TextField, FormHelperText, FormControl } from '@material-ui/core';
 import { FieldArray } from 'formik';
-import { v4 as uuidv4 } from 'uuid';
 
 import { ReactComponent as DeleteIcon } from 'assets/images/icons/Delete/Red.svg';
 import { ReactComponent as CrossIcon } from 'assets/images/icons/Cross.svg';
@@ -134,7 +133,9 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
             name={`templateButtons[${index}].options`}
             render={(arrayHelpers) =>
               options.map((itemRow: any, itemIndex: any) => (
-                <div key={uuidv4()}>
+                // disabling eslint for this as we have no other unique way to define a key
+                // eslint-disable-next-line react/no-array-index-key
+                <div key={itemIndex}>
                   <div className={styles.ListReplyItemWrapper}>
                     <div className={styles.ListReplyItemContent}>
                       <div className={styles.TextFieldWrapper}>

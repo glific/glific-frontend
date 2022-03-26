@@ -10,6 +10,7 @@ import {
   CREATE_INTERACTIVE,
   UPDATE_INTERACTIVE,
   DELETE_INTERACTIVE,
+  COPY_INTERACTIVE,
 } from 'graphql/mutations/InteractiveMessage';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { USER_LANGUAGES } from 'graphql/queries/Organization';
@@ -71,6 +72,17 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
   const [previousState, setPreviousState] = useState<any>({});
   const [nextLanguage, setNextLanguage] = useState<any>('');
   const [warning, setWarning] = useState<any>();
+  const { t } = useTranslation();
+
+  // alter header & update/copy queries
+  let header;
+
+  if (location.state === 'copy') {
+    queries.updateItemQuery = COPY_INTERACTIVE;
+    header = t('Copy Interactive Message');
+  } else {
+    queries.updateItemQuery = UPDATE_INTERACTIVE;
+  }
 
   const { data: languages } = useQuery(USER_LANGUAGES, {
     variables: { opts: { order: 'ASC' } },
@@ -101,8 +113,6 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       getInteractiveTemplateById({ variables: { id: match.params.id } });
     }
   }, [match.params]);
-
-  const { t } = useTranslation();
 
   const states = {
     language,
@@ -161,7 +171,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       if (
         Object.keys(translationsCopy).length > 0 &&
         translationsCopy[language.id || languageVal.id] &&
-        !location.state
+        !location.state?.language
       ) {
         content =
           JSON.parse(translationsVal)[language.id || languageVal.id] ||
@@ -175,7 +185,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     setDefaultLanguage(languageVal);
 
     if (languageOptions.length > 0 && languageVal) {
-      if (location.state) {
+      if (location.state?.language) {
         const selectedLangauge = languageOptions.find(
           (lang: any) => lang.label === location.state.language
         );
@@ -189,7 +199,13 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       }
     }
 
-    setTitle(data.title);
+    let titleText = data.title;
+
+    if (location.state === 'copy') {
+      titleText = `Copy of ${data.title}`;
+    }
+
+    setTitle(titleText);
     setBody(getEditorFromContent(data.body));
     setTemplateType(typeValue);
     setTimeout(() => setTemplateButtons(data.templateButtons), 100);
@@ -600,7 +616,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     const langIds = Object.keys(translationsCopy);
     const isPresent = isTranslationsPresentForEnglish(...langIds);
 
-    // Update label anyway if selected langauge is English
+    // Update label anyway if selected language is English
     if (selectedLanguage.label === 'English') {
       payloadData.label = titleVal;
     }
@@ -727,6 +743,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
         states={states}
         setStates={setStates}
         setPayload={setPayload}
+        title={header}
         validationSchema={validationScheme}
         listItem="interactiveTemplate"
         listItemName="interactive msg"

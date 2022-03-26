@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import { ReactComponent as InteractiveMessageIcon } from 'assets/images/icons/InteractiveMessage/Dark.svg';
 import { ReactComponent as DownArrow } from 'assets/images/icons/DownArrow.svg';
+import { ReactComponent as DuplicateIcon } from 'assets/images/icons/Flow/Duplicate.svg';
 import { List } from 'containers/List/List';
 import {
   FILTER_INTERACTIVE_MESSAGES,
@@ -11,6 +12,7 @@ import {
 import { DELETE_INTERACTIVE } from 'graphql/mutations/InteractiveMessage';
 import { getInteractiveMessageBody } from 'common/utils';
 import { QUICK_REPLY } from 'common/constants';
+import { useHistory } from 'react-router-dom';
 import styles from './InteractiveMessageList.module.css';
 
 export interface InteractiveMessageListProps {}
@@ -64,6 +66,7 @@ export const InteractiveMessageList: React.SFC<InteractiveMessageListProps> = ()
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState('');
+  const history = useHistory();
 
   const getColumns = ({ id, label, interactiveContent, type, language, translations }: any) => ({
     id,
@@ -91,12 +94,22 @@ export const InteractiveMessageList: React.SFC<InteractiveMessageListProps> = ()
     }
   };
 
+  const handleCopyInteractive = (id: string) => {
+    history.push({ pathname: `/interactive-message/${id}/edit`, state: 'copy' });
+  };
+
   const additionalAction = [
     {
       label: t('Show all languages'),
       icon: <DownArrow />,
       parameter: 'id',
       dialog: setDialog,
+    },
+    {
+      label: t('Make a copy'),
+      icon: <DuplicateIcon />,
+      parameter: 'id',
+      dialog: handleCopyInteractive,
     },
   ];
 

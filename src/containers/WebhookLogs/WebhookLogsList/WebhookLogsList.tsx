@@ -197,6 +197,7 @@ export const WebhookLogsList: React.SFC<WebhookLogsListProps> = () => {
         restrictedAction={restrictedAction}
         {...columnAttributes}
         removeSortBy={['STATUS']}
+        listOrder="desc"
       />
       {popover}
     </div>
