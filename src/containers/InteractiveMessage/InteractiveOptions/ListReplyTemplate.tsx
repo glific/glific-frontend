@@ -222,7 +222,7 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
                           onClick={onListAddClick}
                           startIcon={<AddIcon className={styles.AddIcon} />}
                         >
-                          t('Add another list')
+                          {t('Add another list')}
                         </Button>
                       )}
                     {isAddMoreOptionAllowed < 10 && options.length === itemIndex + 1 && (
@@ -232,7 +232,7 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
                         onClick={() => handleAddListItem(arrayHelpers)}
                         startIcon={<AddIcon className={styles.AddIcon} />}
                       >
-                        t('Add another list item')
+                        {t('Add another list item')}
                       </Button>
                     )}
                   </div>
