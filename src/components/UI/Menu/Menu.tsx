@@ -16,10 +16,7 @@ const Menu: React.SFC<MenuProps> = ({ menus, children, eventType = 'Click' }) =>
     setOpen(true);
   };
 
-  const handleClose = (event: React.MouseEvent<EventTarget>) => {
-    if (anchorRef.current && anchorRef.current === event.target) {
-      return;
-    }
+  const handleClose = () => {
     setOpen(false);
   };
 
@@ -30,7 +27,7 @@ const Menu: React.SFC<MenuProps> = ({ menus, children, eventType = 'Click' }) =>
           if (menu.onClick) {
             menu.onClick();
           } else {
-            setOpen(false);
+            handleClose();
           }
         }}
         {...menu}
@@ -61,7 +58,12 @@ const Menu: React.SFC<MenuProps> = ({ menus, children, eventType = 'Click' }) =>
           >
             <Paper>
               <ClickAwayListener onClickAway={handleClose}>
-                <MenuList autoFocusItem={open}>{menuList}</MenuList>
+                <div
+                  onMouseEnter={eventType === 'MouseEnter' ? handleOpen : undefined}
+                  onMouseLeave={eventType === 'MouseEnter' ? handleClose : undefined}
+                >
+                  <MenuList autoFocusItem={open}>{menuList}</MenuList>
+                </div>
               </ClickAwayListener>
             </Paper>
           </Grow>
