@@ -235,35 +235,31 @@ export const SideDrawer: React.SFC<SideDrawerProps> = ({ fullOpen, setFullOpen }
           <div data-testid="bottomMenu" aria-hidden="true">
             <Menu menus={getStaffManagementMenus()} eventType="MouseEnter">
               <IconButton data-testid="staffManagementMenu">
-                <Tooltip title="" placement="top">
-                  <img
-                    src={
-                      [
-                        '/collection',
-                        '/staff-management',
-                        '/blocked-contacts',
-                        '/consulting-hours',
-                      ].includes(location.pathname)
-                        ? ActiveStaffIcon
-                        : InactiveStaffIcon
-                    }
-                    className={styles.StaffIcon}
-                    alt="staff icon"
-                  />
-                </Tooltip>
+                <img
+                  src={
+                    [
+                      '/collection',
+                      '/staff-management',
+                      '/blocked-contacts',
+                      '/consulting-hours',
+                    ].includes(location.pathname)
+                      ? ActiveStaffIcon
+                      : InactiveStaffIcon
+                  }
+                  className={styles.StaffIcon}
+                  alt="staff icon"
+                />
               </IconButton>
             </Menu>
           </div>
           <div>
             <Menu menus={getUserAccountMenus()} eventType="MouseEnter">
               <IconButton data-testid="profileMenu">
-                <Tooltip title="" placement="top">
-                  <img
-                    src={location.pathname === '/user-profile' ? ActiveUserIcon : InactiveUserIcon}
-                    className={styles.UserIcon}
-                    alt="user icon"
-                  />
-                </Tooltip>
+                <img
+                  src={location.pathname === '/user-profile' ? ActiveUserIcon : InactiveUserIcon}
+                  className={styles.UserIcon}
+                  alt="user icon"
+                />
               </IconButton>
             </Menu>
           </div>
