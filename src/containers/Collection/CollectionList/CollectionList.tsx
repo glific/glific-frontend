@@ -16,13 +16,18 @@ import styles from './CollectionList.module.css';
 
 export interface CollectionListProps {}
 
-const getLabel = (label: string) => <p className={styles.LabelText}>{label}</p>;
+const getLabel = (label: string, usersCount: string) => (
+  <div>
+    <div className={styles.LabelText}>{label}</div>
+    <div className={styles.UserCount}>{usersCount} contacts</div>
+  </div>
+);
 
 const getDescription = (text: string) => <p className={styles.CollectionDescription}>{text}</p>;
 
-const getColumns = ({ id, label, description }: any) => ({
+const getColumns = ({ id, label, description, usersCount }: any) => ({
   id,
-  label: getLabel(label),
+  label: getLabel(label, usersCount),
   description: getDescription(description),
 });
 
