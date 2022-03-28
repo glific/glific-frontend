@@ -16,10 +16,12 @@ import styles from './CollectionList.module.css';
 
 export interface CollectionListProps {}
 
-const getLabel = (label: string, usersCount: string) => (
+const getLabel = (label: string, usersCount: number) => (
   <div>
     <div className={styles.LabelText}>{label}</div>
-    <div className={styles.UserCount}>{usersCount} contacts</div>
+    <div className={styles.UserCount}>
+      {usersCount} contact{usersCount === 1 ? '' : 's'}
+    </div>
   </div>
 );
 
