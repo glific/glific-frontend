@@ -449,7 +449,7 @@ export const getOrganizationLanguagesQuery = {
 export const getOrganizationLanguagesQueryByOrder = {
   request: {
     query: USER_LANGUAGES,
-    variables: { opts: { order: 'ASC' } },
+    variables: {},
   },
   result: {
     data: {
