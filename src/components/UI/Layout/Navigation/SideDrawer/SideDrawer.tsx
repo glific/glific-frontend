@@ -232,7 +232,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = ({ fullOpen, setFullOpen }
       >
         <div className={bottonMenuClasses.join(' ')}>
           {settingMenu}
-          <div aria-hidden="true">
+          <div>
             <Menu
               menus={getStaffManagementMenus()}
               eventType="MouseEnter"

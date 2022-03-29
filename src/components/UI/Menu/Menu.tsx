@@ -68,7 +68,7 @@ const Menu: React.SFC<MenuProps> = ({
         anchorEl={anchorRef.current}
         role={undefined}
         transition
-        disablePortal
+        disablePortal={placement === 'top'}
         placement={placement}
       >
         {({ TransitionProps }) => (
