@@ -29,6 +29,7 @@ export const FILTER_COLLECTIONS = gql`
       label
       description
       isRestricted
+      usersCount
     }
   }
 `;
