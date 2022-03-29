@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   Hidden,
   Drawer,
@@ -14,7 +14,7 @@ import clsx from 'clsx';
 import IconButton from '@material-ui/core/IconButton';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-
+import { SideDrawerContext } from 'context/session';
 import Menu from 'components/UI/Menu/Menu';
 import * as constants from 'common/constants';
 import InactiveStaffIcon from 'assets/images/icons/StaffManagement/Inactive.svg';
@@ -30,10 +30,7 @@ import { WalletBalance } from 'containers/WalletBalance/WalletBalance';
 import SideMenus from '../SideMenus/SideMenus';
 import styles from './SideDrawer.module.css';
 
-export interface SideDrawerProps {
-  fullOpen: boolean;
-  setFullOpen: any;
-}
+export interface SideDrawerProps {}
 
 const drawerWidth = constants.SIDE_DRAWER_WIDTH;
 
@@ -121,8 +118,9 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export const SideDrawer: React.SFC<SideDrawerProps> = ({ fullOpen, setFullOpen }) => {
+export const SideDrawer: React.SFC<SideDrawerProps> = () => {
   const location = useLocation();
+  const { drawerOpen, setDrawerOpen } = useContext(SideDrawerContext);
   const classes = useStyles();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { t } = useTranslation();
@@ -130,7 +128,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = ({ fullOpen, setFullOpen }
   const drawer = (
     <div>
       <Toolbar className={classes.anotherToolBar}>
-        {fullOpen ? (
+        {drawerOpen ? (
           <div className={classes.outerBox}>
             <ThemeProvider theme={themeUI}>
               <Typography variant="h6" className={classes.title}>
@@ -139,7 +137,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = ({ fullOpen, setFullOpen }
             </ThemeProvider>
             <IconButton
               className={classes.iconButton}
-              onClick={() => setFullOpen(false)}
+              onClick={() => setDrawerOpen(false)}
               data-testid="drawer-button"
             >
               <MenuIcon />
@@ -151,13 +149,13 @@ export const SideDrawer: React.SFC<SideDrawerProps> = ({ fullOpen, setFullOpen }
             aria-label="open drawer"
             data-testid="drawer-button-closed"
             style={{ margin: 'auto' }}
-            onClick={() => setFullOpen(true)}
+            onClick={() => setDrawerOpen(true)}
           >
             <MenuIcon />
           </IconButton>
         )}
       </Toolbar>
-      <SideMenus opened={fullOpen} />
+      <SideMenus opened={drawerOpen} />
     </div>
   );
 
@@ -185,15 +183,15 @@ export const SideDrawer: React.SFC<SideDrawerProps> = ({ fullOpen, setFullOpen }
 
   // set the appropriate classes to display bottom menus correctly
   const bottonMenuClasses = [classes.BottomMenus];
-  if (!fullOpen) {
+  if (!drawerOpen) {
     bottonMenuClasses.unshift(classes.BottomMenusVertical);
   }
 
   return (
     <nav
       className={clsx({
-        [classes.drawer]: fullOpen,
-        [classes.navClose]: !fullOpen,
+        [classes.drawer]: drawerOpen,
+        [classes.navClose]: !drawerOpen,
       })}
       aria-label="navigation menus"
       data-testid="navbar"
@@ -219,13 +217,13 @@ export const SideDrawer: React.SFC<SideDrawerProps> = ({ fullOpen, setFullOpen }
       </Hidden>
       <Drawer
         className={clsx(classes.drawer, {
-          [classes.drawerOpen]: fullOpen,
-          [classes.drawerClose]: !fullOpen,
+          [classes.drawerOpen]: drawerOpen,
+          [classes.drawerClose]: !drawerOpen,
         })}
         classes={{
           paper: clsx({
-            [classes.drawerOpen]: fullOpen,
-            [classes.drawerClose]: !fullOpen,
+            [classes.drawerOpen]: drawerOpen,
+            [classes.drawerClose]: !drawerOpen,
           }),
         }}
         variant="permanent"
@@ -269,7 +267,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = ({ fullOpen, setFullOpen }
           </div>
         </div>
         {drawer}
-        <WalletBalance fullOpen={fullOpen} />
+        <WalletBalance fullOpen={drawerOpen} />
       </Drawer>
     </nav>
   );

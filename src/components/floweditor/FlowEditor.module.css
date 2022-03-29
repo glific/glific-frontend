@@ -14,13 +14,18 @@
 }
 
 .FlowName {
-  position: absolute !important;
-  top: 10px;
-  left: 28px;
+  position: fixed !important;
+  top: 16px;
+  left: 270px;
   z-index: 1000;
   color: #073f24;
   font-weight: 500;
   font-size: 20px;
+}
+
+.FlowNameClosed {
+  composes: FlowName;
+  left: 90px;
 }
 
 :global(.Flow_empty_flow__roKNh) {
@@ -121,4 +126,26 @@
 
 .PublishDialogTitle {
   max-width: none !important;
+}
+
+.ResetFlow {
+  position: fixed !important;
+  bottom: 13px;
+  left: 270px;
+  z-index: 10000;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  color: #119656;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.ResetFlow svg {
+  margin-right: 6px;
+}
+
+.ResetClosedDrawer {
+  composes: ResetFlow;
+  left: 90px;
 }
