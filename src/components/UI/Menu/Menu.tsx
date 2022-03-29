@@ -1,14 +1,27 @@
 import React, { useRef, useState } from 'react';
-import { ClickAwayListener, Grow, MenuList, Paper, Popper } from '@material-ui/core';
+import {
+  ClickAwayListener,
+  Grow,
+  MenuList,
+  Paper,
+  Popper,
+  PopperPlacementType,
+} from '@material-ui/core';
 
 import MenuItem from './MenuItem/MenuItem';
 
 export interface MenuProps {
   menus: any;
   eventType?: string | undefined;
+  placement?: PopperPlacementType | undefined;
 }
 
-const Menu: React.SFC<MenuProps> = ({ menus, children, eventType = 'Click' }) => {
+const Menu: React.SFC<MenuProps> = ({
+  menus,
+  children,
+  eventType = 'Click',
+  placement = 'top',
+}) => {
   const [open, setOpen] = useState(false);
   const anchorRef = useRef<HTMLDivElement>(null);
 
@@ -50,12 +63,16 @@ const Menu: React.SFC<MenuProps> = ({ menus, children, eventType = 'Click' }) =>
         {children}
       </div>
 
-      <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
-        {({ TransitionProps, placement }) => (
-          <Grow
-            {...TransitionProps}
-            style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
-          >
+      <Popper
+        open={open}
+        anchorEl={anchorRef.current}
+        role={undefined}
+        transition
+        disablePortal
+        placement={placement}
+      >
+        {({ TransitionProps }) => (
+          <Grow {...TransitionProps}>
             <Paper>
               <ClickAwayListener onClickAway={handleClose}>
                 <div

@@ -33,8 +33,8 @@ describe('side drawer testing', () => {
     const { getAllByTestId } = render(component);
 
     await waitFor(() => {
-      const bottomMenu = screen.getByTestId('profileMenu');
-      fireEvent.mouseOver(bottomMenu);
+      const profileMenu = screen.getByTestId('profileMenu');
+      fireEvent.mouseOver(profileMenu);
 
       expect(getAllByTestId('MenuItem')[0]).toHaveTextContent('My Profile');
     });
