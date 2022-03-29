@@ -99,7 +99,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
     onCompleted: ({ resetFlowCount }) => {
       const { success } = resetFlowCount;
       if (success) {
-        setNotification('Flow count reset successfully', 'success');
+        setNotification('Flow counts have been reset', 'success');
         setShowResetFlowModal(false);
       }
     },

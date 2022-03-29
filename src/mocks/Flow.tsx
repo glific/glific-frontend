@@ -13,6 +13,7 @@ import {
   ADD_FLOW_TO_COLLECTION,
   PUBLISH_FLOW,
   IMPORT_FLOW,
+  RESET_FLOW_COUNT,
 } from 'graphql/mutations/Flow';
 import { GET_ORGANIZATION_SERVICES } from 'graphql/queries/Organization';
 import json from './ImportFlow.json';
@@ -317,6 +318,21 @@ export const getFreeFlow = {
             message: 'The flow is being edited by NGO Main Account',
           },
         ],
+      },
+    },
+  },
+};
+
+export const resetFlowCount = {
+  request: {
+    query: RESET_FLOW_COUNT,
+    variables: { flowId: '1' },
+  },
+  result: {
+    data: {
+      resetFlowCount: {
+        status: 'success',
+        errors: [],
       },
     },
   },
