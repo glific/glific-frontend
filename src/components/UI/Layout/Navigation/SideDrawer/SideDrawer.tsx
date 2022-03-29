@@ -121,6 +121,7 @@ const useStyles = makeStyles((theme: Theme) =>
 export const SideDrawer: React.SFC<SideDrawerProps> = () => {
   const location = useLocation();
   const { drawerOpen, setDrawerOpen } = useContext(SideDrawerContext);
+
   const classes = useStyles();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { t } = useTranslation();
