@@ -132,12 +132,11 @@
   position: fixed !important;
   bottom: 13px;
   left: 270px;
-  z-index: 10000;
+  z-index: 1000;
   font-weight: 500;
   display: flex;
   align-items: center;
-  color: #119656;
-  font-size: 16px;
+  background-color: white !important;
   cursor: pointer;
 }
 

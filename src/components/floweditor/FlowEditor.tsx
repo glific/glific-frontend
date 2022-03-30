@@ -101,6 +101,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
       if (success) {
         setNotification('Flow counts have been reset', 'success');
         setShowResetFlowModal(false);
+        window.location.reload();
       }
     },
   });
@@ -437,14 +438,16 @@ export const FlowEditor = (props: FlowEditorProps) => {
           )}
         </div>
 
-        <div
+        <Button
+          variant="outlined"
+          color="primary"
           className={drawerOpen ? styles.ResetFlow : styles.ResetClosedDrawer}
           data-testid="resetFlow"
           onClick={() => setShowResetFlowModal(true)}
           aria-hidden="true"
         >
           <ResetFlowIcon /> Reset flow counts
-        </div>
+        </Button>
         <div id="flow" />
         {loading && <Loading />}
       </div>
