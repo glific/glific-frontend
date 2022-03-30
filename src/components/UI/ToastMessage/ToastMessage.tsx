@@ -13,7 +13,7 @@ interface Props {
   severity?: Severity;
   message: String;
   handleClose: Function;
-  hideDuration?: number;
+  hideDuration?: number | null;
 }
 
 export const ToastMessage: React.SFC<Props> = ({

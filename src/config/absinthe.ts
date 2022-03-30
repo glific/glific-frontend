@@ -1,5 +1,6 @@
+import { getAuthSession } from 'services/AuthService';
+import { setNotification } from 'common/notification';
 import { CONNECTION_RECONNECT_ATTEMPTS } from 'common/constants';
-import { getAuthSession, renewAuthToken, setAuthSession } from 'services/AuthService';
 import setLogs from './logs';
 import { SOCKET } from '.';
 
@@ -7,6 +8,13 @@ const AbsintheSocket = require('@absinthe/socket');
 const SocketApolloLink = require('@absinthe/socket-apollo-link');
 const PhoenixSocket = require('phoenix');
 
+const closingError = () => {
+  setNotification(
+    'Sorry! Unable to show live messages. Kindly, refresh the page.',
+    'warning',
+    null
+  );
+};
 // token is used in the backend to identify the user and potentially the organization associated with the same.
 // this is more like an authentication header, which WS does not support. Hence, it is passed as params.
 // note that params are called as a function because we want to get the user token after authentication.
@@ -19,39 +27,33 @@ const socketConnection = new PhoenixSocket.Socket(SOCKET, {
 
     return {};
   },
+  reconnectAfterMs: (tries: number) => tries * 1000,
 });
 
-// function to reconnect the web socket connection
-const resetWSConnection = async (wsConnection: any) => {
-  // let's renew the token
-  const authToken = await renewAuthToken();
-  if (authToken.data) {
-    // update localstore
-    setAuthSession(JSON.stringify(authToken.data.data));
-    setLogs('Successful token renewal by websocket', 'info');
+let retryCounter = 0;
 
-    // connect the socket again
-    wsConnection.connect();
-  }
-};
+socketConnection.onError(() => {
+  // add logs in log flare
 
-// we should try to reconnect ws connection only finite (5) times and then abort and prevent
-// unnecessary load on the server
-// watch for websocket error event using onError
-let connectionFailureCounter = 0;
-socketConnection.onError(async (error: any) => {
-  // add logs in logflare
-  setLogs(error, 'error');
-
-  // increment the counter when error occurs
-  connectionFailureCounter += 1;
-  // let's disconnect the socket connection if there are 5 failures
-  if (connectionFailureCounter >= CONNECTION_RECONNECT_ATTEMPTS) {
+  retryCounter += 1;
+  if (retryCounter > CONNECTION_RECONNECT_ATTEMPTS) {
+    retryCounter = 0;
     socketConnection.disconnect();
-
-    // let's trigger the reconnect function after 5sec
-    setTimeout(() => resetWSConnection(socketConnection), 5000);
+    closingError();
   }
+  setLogs('Socket connection error', 'error');
+});
+
+socketConnection.onClose((reason: any) => {
+  // add logs in log flare
+
+  const reasonString = JSON.stringify(reason, ['reason', 'code', 'type']);
+
+  // this is normal closure. Not sure why this is happening
+  if (reason.code === 1000) {
+    closingError();
+  }
+  setLogs(`Socket connection closed: ${reasonString}`, 'error');
 });
 
 // wrap the Phoenix socket in an AbsintheSocket and export

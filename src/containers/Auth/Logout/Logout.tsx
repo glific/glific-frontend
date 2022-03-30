@@ -24,7 +24,7 @@ export interface LogoutProps {
   match?: any;
 }
 
-export const Logout: React.SFC<LogoutProps> = (props: any) => {
+export const Logout: React.SFC<LogoutProps> = ({ match }) => {
   const { setAuthenticated } = useContext(SessionContext);
   const [redirect, setRedirect] = useState(false);
   const client = useApolloClient();
@@ -62,7 +62,7 @@ export const Logout: React.SFC<LogoutProps> = (props: any) => {
 
   useEffect(() => {
     // if user click on logout menu
-    if (props.match.params.mode === 'user') {
+    if (match.params.mode === 'user') {
       handleLogout();
       setRedirect(true);
     }

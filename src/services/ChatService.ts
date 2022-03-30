@@ -1,11 +1,12 @@
 // This service includes all the actions related to conversations storing
 
+import { cache } from 'config/apolloclient';
 import { SEARCH_QUERY } from 'graphql/queries/Search';
 
 // read the conversation from cache
-export const getCachedConverations = (client: any, queryVariables: any) => {
+export const getCachedConverations = (queryVariables: any) => {
   // fetch conversations from the cache
-  const conversations = client.readQuery({
+  const conversations = cache.readQuery({
     query: SEARCH_QUERY,
     variables: queryVariables,
   });
@@ -14,9 +15,9 @@ export const getCachedConverations = (client: any, queryVariables: any) => {
 };
 
 // update the conversations cache
-export const updateConversationsCache = (conversations: any, client: any, queryVariables: any) => {
+export const updateConversationsCache = (conversations: any, queryVariables: any) => {
   // write the updated conversations to cached
-  client.writeQuery({
+  cache.writeQuery({
     query: SEARCH_QUERY,
     variables: queryVariables,
     data: conversations,
@@ -24,9 +25,9 @@ export const updateConversationsCache = (conversations: any, client: any, queryV
 };
 
 // write conversation to cache
-export const updateConversations = (conversation: any, client: any, queryVariables: any) => {
+export const updateConversations = (conversation: any, queryVariables: any) => {
   // get the current conversations from the cache
-  const conversations = getCachedConverations(client, queryVariables);
+  const conversations = getCachedConverations(queryVariables);
 
   // make a copy of current conversation
   const conversationCopy = JSON.parse(JSON.stringify(conversation));
@@ -38,10 +39,10 @@ export const updateConversations = (conversation: any, client: any, queryVariabl
   conversationsCopy.search = [...conversationsCopy.search, ...conversationCopy.search];
 
   // update conversations
-  updateConversationsCache(conversationsCopy, client, queryVariables);
+  updateConversationsCache(conversationsCopy, queryVariables);
 };
 
-export const saveConversation = (conversation: any, client: any, queryVariables: any) => {
+export const saveConversation = (conversation: any, queryVariables: any) => {
   // parse the conversation
   const conversationCopy = JSON.parse(JSON.stringify(conversation));
 
@@ -50,5 +51,5 @@ export const saveConversation = (conversation: any, client: any, queryVariables:
     .sort((currentMessage: any, nextMessage: any) => currentMessage.id - nextMessage.id)
     .reverse();
 
-  updateConversations(conversation, client, queryVariables);
+  updateConversations(conversation, queryVariables);
 };

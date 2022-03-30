@@ -7,6 +7,7 @@ import {
   BSPBALANCE,
   FILTER_ORGANIZATIONS,
   GET_ORGANIZATION_COUNT,
+  GET_ORGANIZATION_PROVIDER,
 } from 'graphql/queries/Organization';
 import { BSP_BALANCE_SUBSCRIPTION } from 'graphql/subscriptions/PeriodicInfo';
 
@@ -678,3 +679,18 @@ export const getAllOrganizations = [
     },
   },
 ];
+
+export const getOrganizationBSP = {
+  request: {
+    query: GET_ORGANIZATION_PROVIDER,
+  },
+  result: {
+    data: {
+      organization: {
+        organization: {
+          bsp: { shortcode: 'gupshup_enterprise' },
+        },
+      },
+    },
+  },
+};

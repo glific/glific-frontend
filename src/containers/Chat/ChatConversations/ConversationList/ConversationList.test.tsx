@@ -11,6 +11,7 @@ import {
   collectionWithLoadMore,
 } from 'containers/Chat/ChatMessages/ChatMessages.test';
 import { conversationCollectionQuery } from 'mocks/Chat';
+import { cache as collectionCache } from 'config/apolloclient';
 
 const contactCache = new InMemoryCache({ addTypename: false });
 contactCache.writeQuery(contact);
@@ -53,7 +54,7 @@ const props: any = {
   setSelectedCollectionId: jest.fn(),
   entityType: 'collection',
 };
-const collectionCache = new InMemoryCache({ addTypename: false });
+
 collectionCache.writeQuery(collection);
 collectionCache.writeQuery(collectionWithLoadMore);
 

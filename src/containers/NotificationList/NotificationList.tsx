@@ -113,7 +113,7 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
         title: t('Copy text'),
         icon: <img src={CopyIcon} alt="copy" />,
         onClick: () => {
-          copyToClipboard(client, croppedtext);
+          copyToClipboard(croppedtext);
         },
       },
       {
@@ -171,7 +171,7 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
       </div>
       <div className={styles.PopoverActions}>
         <span
-          onClick={() => copyToClipboard(client, text)}
+          onClick={() => copyToClipboard(text)}
           aria-hidden="true"
           data-testid="copyToClipboard"
         >
@@ -228,7 +228,7 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
         listItemName="notification"
         pageLink="notifications"
         listIcon={notificationIcon}
-        searchParameter="message"
+        searchParameter={['message']}
         button={{ show: false }}
         dialogMessage=""
         {...queries}

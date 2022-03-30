@@ -46,7 +46,7 @@ export const UPDATE_FLOW = gql`
 `;
 
 export const PUBLISH_FLOW = gql`
-  mutation publishFlow($uuid: UUID!) {
+  mutation publishFlow($uuid: UUID4!) {
     publishFlow(uuid: $uuid) {
       success
       errors {
@@ -90,7 +90,7 @@ export const CREATE_FLOW_COPY = gql`
 `;
 
 export const IMPORT_FLOW = gql`
-  mutation importFlow($flow: Json) {
+  mutation importFlow($flow: Json!) {
     importFlow(flow: $flow) {
       success
       errors {

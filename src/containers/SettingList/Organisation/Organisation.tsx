@@ -39,13 +39,16 @@ export const Organisation: React.SFC = () => {
   const [name, setName] = useState('');
   const [hours, setHours] = useState(true);
   const [enabledDays, setEnabledDays] = useState<any>([]);
-  const [startTime, setStartTime] = useState();
-  const [endTime, setEndTime] = useState();
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
   const [defaultFlowId, setDefaultFlowId] = useState<any>(null);
   const [flowId, setFlowId] = useState<any>(null);
-  const [IsDisabled, setIsDisable] = useState(false);
-  const [IsFlowDisabled, setIsFlowDisable] = useState(true);
+  const [isDisabled, setIsDisable] = useState(false);
+  const [isFlowDisabled, setIsFlowDisable] = useState(true);
   const [organizationId, setOrganizationId] = useState(null);
+  const [newcontactFlowId, setNewcontactFlowId] = useState(null);
+  const [newcontactFlowEnabled, setNewcontactFlowEnabled] = useState(false);
+  const [allDayCheck, setAllDayCheck] = useState(false);
   const [activeLanguages, setActiveLanguages] = useState([]);
   const [defaultLanguage, setDefaultLanguage] = useState<any>(null);
   const [signaturePhrase, setSignaturePhrase] = useState();
@@ -62,8 +65,11 @@ export const Organisation: React.SFC = () => {
     defaultFlowId,
     flowId,
     activeLanguages,
+    newcontactFlowEnabled,
     defaultLanguage,
     signaturePhrase,
+    newcontactFlowId,
+    allDayCheck,
     phone,
   };
 
@@ -98,15 +104,24 @@ export const Organisation: React.SFC = () => {
     defaultLanguage: defaultLanguageValue,
     signaturePhrase: signaturePhraseValue,
     contact: contactValue,
+    newcontactFlowId: newcontactFlowIdValue,
   }: any) => {
     setName(nameValue);
     setHours(outOfOfficeValue.enabled);
     setIsDisable(!outOfOfficeValue.enabled);
     setOutOfOffice(outOfOfficeValue);
 
-    // set the value only if default flow is not null
+    if (outOfOfficeValue.startTime === '00:00:00' && outOfOfficeValue.endTime === '23:59:00') {
+      setAllDayCheck(true);
+    }
     if (outOfOfficeValue.defaultFlowId) {
+      // set the value only if default flow is not null
       setDefaultFlowId(getFlow(outOfOfficeValue.defaultFlowId));
+    }
+
+    if (newcontactFlowIdValue) {
+      setNewcontactFlowEnabled(true);
+      setNewcontactFlowId(getFlow(newcontactFlowIdValue));
     }
 
     // set the value only if out of office flow is not null
@@ -167,7 +182,7 @@ export const Organisation: React.SFC = () => {
 
   const validateOutOfOfficeFlow = (value: any) => {
     let error;
-    if (!IsDisabled && !value) {
+    if (!isDisabled && !value) {
       error = t('Please select default flow ');
     }
 
@@ -176,11 +191,19 @@ export const Organisation: React.SFC = () => {
 
   const validateDaysSelection = (value: any) => {
     let error;
-    if (!IsDisabled && value.length === 0) {
+    if (!isDisabled && value.length === 0) {
       error = t('Please select days');
     }
 
     return error;
+  };
+
+  const handleAllDayCheck = (addDayCheck: boolean) => {
+    if (!allDayCheck) {
+      setStartTime('00:00:00');
+      setEndTime('23:59:00');
+    }
+    setAllDayCheck(addDayCheck);
   };
 
   const handleChangeInDays = (value: any) => {
@@ -194,6 +217,20 @@ export const Organisation: React.SFC = () => {
     activeLanguages: Yup.array().required(t('Supported Languages is required.')),
     defaultLanguage: Yup.object().nullable().required(t('Default Language is required.')),
     signaturePhrase: Yup.string().nullable().required(t('Webhook signature is required.')),
+    endTime: Yup.string()
+      .test('is-midnight', t('End time cannot be 12 AM'), (value) => value !== 'T00:00:00')
+      .test('is-valid', t('Not a valid time'), (value) => value !== 'Invalid date'),
+    startTime: Yup.string().test(
+      'is-valid',
+      t('Not a valid time'),
+      (value) => value !== 'Invalid date'
+    ),
+    newcontactFlowId: Yup.object()
+      .nullable()
+      .when('newcontactFlowEnabled', {
+        is: (val: string) => val,
+        then: Yup.object().nullable().required(t('New contact flow is required.')),
+      }),
   };
 
   const FormSchema = Yup.object().shape(validation);
@@ -246,7 +283,7 @@ export const Organisation: React.SFC = () => {
           <IconButton
             aria-label="phone number"
             data-testid="phoneNumber"
-            onClick={() => copyToClipboard(client, phone)}
+            onClick={() => copyToClipboard(phone)}
             edge="end"
           >
             <CopyIcon />
@@ -262,6 +299,12 @@ export const Organisation: React.SFC = () => {
       handleChange,
     },
     {
+      component: Checkbox,
+      name: 'newcontactFlowEnabled',
+      title: <Typography className={styles.CheckboxLabel}>{t('New contact flow')}</Typography>,
+      handleChange: setNewcontactFlowEnabled,
+    },
+    {
       component: AutoComplete,
       name: 'defaultFlowId',
       options: flow.flows,
@@ -271,11 +314,24 @@ export const Organisation: React.SFC = () => {
         variant: 'outlined',
         label: t('Select flow'),
       },
-      disabled: IsDisabled,
+      disabled: isDisabled,
       helperText: t(
-        'the selected flow will trigger when end-users aren’t in any flow, their message doesn’t match any keyword, and the time of their message is as defined above.'
+        'The selected flow will trigger when end-users aren’t in any flow, their message doesn’t match any keyword, and the time of their message is as defined above. Note that the default flow is executed only once a day.'
       ),
       validate: validateOutOfOfficeFlow,
+    },
+    {
+      component: AutoComplete,
+      name: 'newcontactFlowId',
+      options: flow.flows,
+      optionLabel: 'name',
+      multiple: false,
+      disabled: !newcontactFlowEnabled,
+      textFieldProps: {
+        variant: 'outlined',
+        label: t('Select flow'),
+      },
+      helperText: t('For new contacts messaging your chatbot for the first time'),
     },
     {
       component: AutoComplete,
@@ -286,24 +342,33 @@ export const Organisation: React.SFC = () => {
         variant: 'outlined',
         label: t('Select days'),
       },
-      disabled: IsDisabled,
+      disabled: isDisabled,
       onChange: handleChangeInDays,
       validate: validateDaysSelection,
     },
     {
+      component: Checkbox,
+      disabled: isDisabled,
+      name: 'allDayCheck',
+      title: <Typography className={styles.AddDayLabel}>{t('All day')}</Typography>,
+      handleChange: handleAllDayCheck,
+    },
+
+    {
       component: TimePicker,
       name: 'startTime',
       placeholder: t('Start'),
-      disabled: IsDisabled,
+      disabled: isDisabled || allDayCheck,
+      helperText: t('Note: The next day begins after 12AM.'),
     },
     {
       component: TimePicker,
       name: 'endTime',
       placeholder: t('Stop'),
-      disabled: IsDisabled,
+      disabled: isDisabled || allDayCheck,
     },
   ];
-  if (IsFlowDisabled === false) {
+  if (isFlowDisabled === false) {
     formFields.push({
       component: AutoComplete,
       name: 'flowId',
@@ -314,7 +379,7 @@ export const Organisation: React.SFC = () => {
         variant: 'outlined',
         label: t('Select flow'),
       },
-      disabled: IsDisabled,
+      disabled: isDisabled,
       questionText: t('Would you like to trigger a flow for all the other days & times?'),
     });
   }
@@ -341,30 +406,30 @@ export const Organisation: React.SFC = () => {
   };
 
   const setPayload = (payload: any) => {
-    const payloadCopy = payload;
     let object: any = {};
     // set active Language Ids
-    const activeLanguageIds = payloadCopy.activeLanguages.map((language: any) => language.id);
+    const activeLanguageIds = payload.activeLanguages.map((language: any) => language.id);
+    let newContactFlowId = null;
 
-    // remove activeLanguages from the payload
-    delete payloadCopy.activeLanguages;
-    // set default Language Id
-    const defaultLanguageId = payloadCopy.defaultLanguage.id;
-    // remove defaultLanguage from the payload
-    delete payloadCopy.defaultLanguage;
+    if (newcontactFlowEnabled) {
+      newContactFlowId = payload.newcontactFlowId.id;
+    }
+    const defaultLanguageId = payload.defaultLanguage.id;
+
     object = {
-      name: payloadCopy.name,
+      name: payload.name,
       outOfOffice: {
-        defaultFlowId: payloadCopy.defaultFlowId ? payloadCopy.defaultFlowId.id : null,
-        enabled: payloadCopy.hours,
-        enabledDays: assignDays(payloadCopy.enabledDays),
-        endTime: payloadCopy.endTime,
-        flowId: payloadCopy.flowId ? payloadCopy.flowId.id : null,
-        startTime: payloadCopy.startTime,
+        defaultFlowId: payload.defaultFlowId ? payload.defaultFlowId.id : null,
+        enabled: payload.hours,
+        enabledDays: assignDays(payload.enabledDays),
+        endTime: payload.endTime,
+        flowId: payload.flowId ? payload.flowId.id : null,
+        startTime: payload.startTime,
       },
 
       defaultLanguageId,
       activeLanguageIds,
+      newcontactFlowId: newContactFlowId,
       signaturePhrase: payload.signaturePhrase,
     };
     return object;

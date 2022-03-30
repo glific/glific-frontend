@@ -36,6 +36,7 @@ export const GET_TRIGGER = gql`
         group {
           id
         }
+        hours
         id
         isActive
         isRepeating

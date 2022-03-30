@@ -5,11 +5,11 @@ import { Link } from 'react-router-dom';
 import moment from 'moment';
 import { useApolloClient, useMutation } from '@apollo/client';
 
-import { DATE_FORMAT } from 'common/constants';
-import { WhatsAppToJsx } from 'common/RichEditor';
+import { COMPACT_MESSAGE_LENGTH, DATE_FORMAT } from 'common/constants';
 import { Timer } from 'components/UI/Timer/Timer';
 import { MARK_AS_READ, CONTACT_FRAGMENT } from 'graphql/mutations/Chat';
 import { SEARCH_OFFSET } from 'graphql/queries/Search';
+import { WhatsAppToJsx } from 'common/RichEditor';
 import { MessageType } from '../MessageType/MessageType';
 import styles from './ChatConversation.module.css';
 
@@ -36,7 +36,7 @@ export interface ChatConversationProps {
     }>;
   };
   messageNumber?: number;
-  highlightSearch?: string;
+  highlightSearch?: string | null;
   searchMode?: any;
 }
 const updateContactCache = (client: any, id: any) => {
@@ -60,16 +60,51 @@ const updateContactCache = (client: any, id: any) => {
 };
 
 // display highlighted search message
-const BoldedText = (text: string, highlight: any) => {
+const BoldedText = (originalText: string, highlight: any) => {
   const texts = highlight || '';
-  // Split on highlight term and include term into strings, ignore case
-  // eslint-disable-next-line
-  const strings = typeof text === 'string' ? text.split(new RegExp(`(${texts})`, 'gi')) : null;
 
-  if (strings) {
+  // remove any formatting from the string
+  const regex = /(_|\*|~|`)/gm;
+  // eslint-disable-next-line
+  const text = originalText.replace(regex, '');
+
+  // Split on highlight term and include term into strings, ignore case
+  const strings = text.split(new RegExp(`(${texts})`, 'gi'));
+
+  if (strings.length > 0) {
+    // let's do some smart formatting as search keyword might be lost when message is long
+    // we know search keyword is always at odd index
+    // get the length of search keyword
+    const searchKeywordLength = texts.length;
+
+    const formattedStringArray: any = [];
+
+    // available character length
+    const availableCharacterLength = COMPACT_MESSAGE_LENGTH - searchKeywordLength;
+    strings.every((string, index) => {
+      if (index === 0) {
+        // we need calculate the length of the string before the search keyword
+        const beforeSearchKeywordLength = strings[index].length;
+        formattedStringArray[index] = string.substring(
+          beforeSearchKeywordLength - availableCharacterLength / 2
+        );
+      } else if (index % 2 !== 0) {
+        formattedStringArray[index] = string;
+      } else {
+        // calculate the length of strings that wil be displayed
+        formattedStringArray[index] = string;
+        const stringLength = formattedStringArray.join('');
+        if (stringLength.length > availableCharacterLength) {
+          formattedStringArray[index] = string.slice(0, availableCharacterLength / 2).concat('...');
+          return false;
+        }
+      }
+      return true;
+    });
+
     return (
       <span>
-        {strings.map((string, i) =>
+        {formattedStringArray.map((string: String, i: any) =>
           string.toLowerCase() === texts.toLowerCase() ? (
             // it is ok to use "i" as index as we are not altering sequence etc. and alphabets can repeat etc.
             // eslint-disable-next-line
@@ -105,6 +140,7 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
     contactIsOrgRead,
     entityType,
     messageNumber,
+    onClick,
   } = props;
 
   const [markAsRead] = useMutation(MARK_AS_READ, {
@@ -123,14 +159,20 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
     chatBubble = [styles.ChatBubble, styles.ChatBubbleUnread];
   }
 
-  const name = contactName.length > 20 ? `${contactName.slice(0, 20)}...` : contactName;
+  const name = contactName?.length > 20 ? `${contactName.slice(0, 20)}...` : contactName;
 
   const { type, body } = lastMessage;
   const isTextType = type === 'TEXT';
+
   let displayMSG: any = <MessageType type={type} body={body} />;
 
+  let originalText = body;
   if (isTextType) {
-    displayMSG = WhatsAppToJsx(displayMSG);
+    // let's shorten the text message to display correctly
+    if (originalText.length > COMPACT_MESSAGE_LENGTH) {
+      originalText = originalText.slice(0, COMPACT_MESSAGE_LENGTH).concat('...');
+    }
+    displayMSG = WhatsAppToJsx(originalText);
   }
 
   // set offset to use that in chatting window to fetch that msg
@@ -160,8 +202,8 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
       component={Link}
       selected={selected}
       onClick={() => {
-        if (props.onClick) props.onClick(index);
-        setSearchOffset(client, props.messageNumber);
+        if (onClick) onClick(index);
+        setSearchOffset(client, messageNumber);
         if (entityType === 'contact') {
           markAsRead({
             variables: { contactId: contactId.toString() },
@@ -191,9 +233,7 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
           {name}
         </div>
         <div className={styles.MessageContent} data-testid="content">
-          {isTextType && displayMSG[0]
-            ? BoldedText(displayMSG[0].props.body, highlightSearch)
-            : displayMSG}
+          {isTextType && highlightSearch ? BoldedText(body, highlightSearch) : displayMSG}
         </div>
         <div className={styles.MessageDate} data-testid="date">
           {moment(lastMessage.insertedAt).format(DATE_FORMAT)}

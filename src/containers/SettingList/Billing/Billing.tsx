@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { CardElement, useStripe, useElements, Elements } from '@stripe/react-stripe-js';
-import { useApolloClient, useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { loadStripe } from '@stripe/stripe-js';
 import { Formik, Form, Field } from 'formik';
 import { Link } from 'react-router-dom';
@@ -46,7 +46,6 @@ export interface BillingProps {}
 export const BillingForm: React.FC<BillingProps> = () => {
   const stripe = useStripe();
   const elements = useElements();
-  const client = useApolloClient();
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -136,7 +135,7 @@ export const BillingForm: React.FC<BillingProps> = () => {
             })
             .then((securityResult: any) => {
               if (securityResult.error?.message) {
-                setNotification(client, securityResult.error?.message, 'warning');
+                setNotification(securityResult.error?.message, 'warning');
                 setLoading(false);
                 refetch().then(({ data: refetchedData }) => {
                   updateBilling({
@@ -154,7 +153,7 @@ export const BillingForm: React.FC<BillingProps> = () => {
               } else if (securityResult.setupIntent.status === 'succeeded') {
                 setDisable(true);
                 setLoading(false);
-                setNotification(client, 'Your billing account is setup successfully');
+                setNotification('Your billing account is setup successfully');
               }
             });
         }
@@ -163,12 +162,12 @@ export const BillingForm: React.FC<BillingProps> = () => {
         refetch();
         setDisable(true);
         setLoading(false);
-        setNotification(client, 'Your billing account is setup successfully');
+        setNotification('Your billing account is setup successfully');
       }
     },
     onError: (error) => {
       refetch();
-      setNotification(client, error.message, 'warning');
+      setNotification(error.message, 'warning');
       setLoading(false);
     },
   });
@@ -211,7 +210,7 @@ export const BillingForm: React.FC<BillingProps> = () => {
     if (error) {
       setLoading(false);
       refetch();
-      setNotification(client, error.message ? error.message : 'An error occurred', 'warning');
+      setNotification(error.message ? error.message : 'An error occurred', 'warning');
     } else if (paymentMethod) {
       setPaymentMethodId(paymentMethod.id);
 
@@ -252,7 +251,7 @@ export const BillingForm: React.FC<BillingProps> = () => {
               stripePayment();
             })
             .catch((error) => {
-              setNotification(client, error.message, 'warning');
+              setNotification(error.message, 'warning');
             });
         } else {
           stripePayment();
@@ -272,7 +271,7 @@ export const BillingForm: React.FC<BillingProps> = () => {
             stripePayment();
           })
           .catch((error) => {
-            setNotification(client, error.message, 'warning');
+            setNotification(error.message, 'warning');
           });
       }
     }

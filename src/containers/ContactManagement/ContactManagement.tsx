@@ -87,7 +87,7 @@ export const ContactManagement: React.SFC<ContactManagementProps> = () => {
         restrictedAction={restrictedAction}
         additionalAction={additionalActions}
         button={addNewButton}
-        searchParameter="name"
+        searchParameter={['name']}
         editSupport={false}
         {...queries}
         {...columnAttributes}

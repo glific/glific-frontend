@@ -74,3 +74,15 @@ export const UPDATE_TEMPLATE = gql`
     }
   }
 `;
+
+export const IMPORT_TEMPLATES = gql`
+  mutation ImportTemplates($data: String) {
+    importTemplates(data: $data) {
+      errors {
+        key
+        message
+      }
+      status
+    }
+  }
+`;

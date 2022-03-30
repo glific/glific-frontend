@@ -246,6 +246,7 @@ export const messageReceivedSubscription = {
         },
         tags: [],
         type: 'TEXT',
+        fields: '{}',
         media: {
           caption: null,
           url: 'https://filemanager.gupshup.io/fm/wamedia/demobot1/36623b99-5844-4195-b872-61ef34c9ce11',
@@ -301,6 +302,7 @@ export const collectionSendSubscription = {
         tags: [],
         groupId: '2',
         type: 'TEXT',
+        fields: '{}',
         media: {
           caption: null,
           url: 'https://filemanager.gupshup.io/fm/wamedia/demobot1/36623b99-5844-4195-b872-61ef34c9ce11',
@@ -349,6 +351,7 @@ const messageSubscriptionData = {
     },
     tags: [],
     type: 'TEXT',
+    fields: '{}',
     media: {
       caption: null,
       url: 'https://filemanager.gupshup.io/fm/wamedia/demobot1/36623b99-5844-4195-b872-61ef34c9ce11',
@@ -781,6 +784,7 @@ const conversation = {
         name: 'Effie Cormier',
         phone: '9044222334',
         maskedPhone: '9044222334',
+        fields: '{}',
         lastMessageAt: '2020-06-29T09:31:47Z',
         status: 'VALID',
         bspStatus: 'SESSION_AND_HSM',
@@ -832,6 +836,7 @@ const conversationWithMultipleMessages = {
         name: 'Effie Cormier',
         phone: '9044222334',
         maskedPhone: '9044222334',
+        fields: '{}',
         lastMessageAt: '2020-06-29T09:31:47Z',
         status: 'VALID',
         bspStatus: 'SESSION_AND_HSM',
@@ -917,6 +922,7 @@ const searchQueryResult = {
           name: 'Vaibhav',
           lastMessageAt: '2020-06-29T09:31:47Z',
           status: 'VALID',
+          fields: '{}',
           bspStatus: 'SESSION_AND_HSM',
           isOrgRead: true,
         },

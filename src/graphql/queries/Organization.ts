@@ -29,6 +29,7 @@ export const GET_ORGANIZATION = gql`
           label
         }
         signaturePhrase
+        newcontactFlowId
       }
     }
   }
@@ -114,6 +115,19 @@ export const GET_ORGANIZATION_SERVICES = gql`
     organizationServices {
       dialogflow
       googleCloudStorage
+      flowUuidDisplay
+    }
+  }
+`;
+
+export const GET_ORGANIZATION_PROVIDER = gql`
+  query provider {
+    organization {
+      organization {
+        bsp {
+          shortcode
+        }
+      }
     }
   }
 `;

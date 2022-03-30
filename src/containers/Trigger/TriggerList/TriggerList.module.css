@@ -55,3 +55,7 @@
 .Tooltip {
   width: 120px;
 }
+
+.Inactive {
+  color: #ccd4d0;
+}
