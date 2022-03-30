@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   Hidden,
   Drawer,
@@ -16,7 +16,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import Menu from 'components/UI/Menu/Menu';
-import * as constants from 'common/constants';
+import { SIDE_DRAWER_WIDTH, GUPSHUP_ENTERPRISE_SHORTCODE } from 'common/constants';
 import InactiveStaffIcon from 'assets/images/icons/StaffManagement/Inactive.svg';
 import ActiveStaffIcon from 'assets/images/icons/StaffManagement/Active.svg';
 import InactiveUserIcon from 'assets/images/icons/User/Inactive.svg';
@@ -28,6 +28,7 @@ import { getUserRolePermissions, getUserAccountMenus, getStaffManagementMenus } 
 import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import { WalletBalance } from 'containers/WalletBalance/WalletBalance';
 import SideMenus from '../SideMenus/SideMenus';
+import { ProviderContext } from 'context/session';
 import styles from './SideDrawer.module.css';
 
 export interface SideDrawerProps {
@@ -35,7 +36,7 @@ export interface SideDrawerProps {
   setFullOpen: any;
 }
 
-const drawerWidth = constants.SIDE_DRAWER_WIDTH;
+const drawerWidth = SIDE_DRAWER_WIDTH;
 
 const themeUI = createTheme({
   typography: {
@@ -115,6 +116,9 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       paddingLeft: '8px',
     },
+    BottomMenusWithoutWallet: {
+      bottom: '10px',
+    },
     BottomMenusVertical: {
       flexFlow: 'column',
     },
@@ -126,6 +130,8 @@ export const SideDrawer: React.SFC<SideDrawerProps> = ({ fullOpen, setFullOpen }
   const classes = useStyles();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { t } = useTranslation();
+
+  const { provider } = useContext(ProviderContext);
 
   const drawer = (
     <div>
@@ -185,6 +191,9 @@ export const SideDrawer: React.SFC<SideDrawerProps> = ({ fullOpen, setFullOpen }
 
   // set the appropriate classes to display bottom menus correctly
   const bottonMenuClasses = [classes.BottomMenus];
+  if (provider === GUPSHUP_ENTERPRISE_SHORTCODE) {
+    bottonMenuClasses.unshift(classes.BottomMenusWithoutWallet);
+  }
   if (!fullOpen) {
     bottonMenuClasses.unshift(classes.BottomMenusVertical);
   }

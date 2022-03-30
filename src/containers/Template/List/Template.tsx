@@ -1,10 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 import { Checkbox, FormControlLabel } from '@material-ui/core';
 
 import { List } from 'containers/List/List';
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { WhatsAppToJsx } from 'common/RichEditor';
 import { DATE_TIME_FORMAT, GUPSHUP_ENTERPRISE_SHORTCODE } from 'common/constants';
 import { GET_TEMPLATES_COUNT, FILTER_TEMPLATES } from 'graphql/queries/Template';
@@ -15,9 +15,9 @@ import { ReactComponent as ImportIcon } from 'assets/images/icons/Flow/Import.sv
 import { ReactComponent as RejectedIcon } from 'assets/images/icons/Template/Rejected.svg';
 import { ReactComponent as PendingIcon } from 'assets/images/icons/Template/Pending.svg';
 import { Button } from 'components/UI/Form/Button/Button';
+import { ProviderContext } from 'context/session';
 import Loading from 'components/UI/Layout/Loading/Loading';
 import { setNotification } from 'common/notification';
-import { GET_ORGANIZATION_PROVIDER } from 'graphql/queries/Organization';
 import styles from './Template.module.css';
 
 const getLabel = (label: string) => <div className={styles.LabelText}>{label}</div>;
@@ -74,12 +74,10 @@ export const Template: React.SFC<TemplateProps> = (props) => {
   const [Id, setId] = useState('');
   const { t } = useTranslation();
 
-  const [isEnterprise, setIsEnterprise] = useState(false);
+  const { provider } = useContext(ProviderContext);
 
   const [importing, setImporting] = useState(false);
   const inputRef = useRef<any>(null);
-
-  const { data: organizationProvider } = useQuery(GET_ORGANIZATION_PROVIDER);
 
   const [filters, setFilters] = useState<any>({ ...statusFilter, APPROVED: true });
 
@@ -93,16 +91,6 @@ export const Template: React.SFC<TemplateProps> = (props) => {
     },
   });
 
-  useEffect(() => {
-    if (organizationProvider) {
-      if (
-        organizationProvider.organization.organization.bsp.shortcode ===
-        GUPSHUP_ENTERPRISE_SHORTCODE
-      ) {
-        setIsEnterprise(true);
-      }
-    }
-  }, [organizationProvider]);
   const getStatus = (status: string) => {
     let statusValue;
     switch (status) {
@@ -285,7 +273,7 @@ export const Template: React.SFC<TemplateProps> = (props) => {
   const button = { show: true, label: buttonLabel };
   let secondaryButton = null;
 
-  if (isEnterprise) {
+  if (provider === GUPSHUP_ENTERPRISE_SHORTCODE) {
     button.show = false;
     secondaryButton = importButton;
   }
