@@ -28,8 +28,8 @@
 }
 
 .ClosedItem {
-  width: 60% !important;
-  padding: 12px !important;
+  width: unset !important;
+  margin: 0px 10px !important;
 }
 
 .SelectedText {
