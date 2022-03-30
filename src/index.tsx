@@ -4,7 +4,6 @@ import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider, CssBaseline } from '@material-ui/core';
 import Appsignal from '@appsignal/javascript';
 import { ErrorBoundary } from '@appsignal/react';
-
 import * as WindowEvents from '@appsignal/plugin-window-events';
 import * as BreadcrumbsNetwork from '@appsignal/plugin-breadcrumbs-network';
 import * as PathDecorator from '@appsignal/plugin-path-decorator';
