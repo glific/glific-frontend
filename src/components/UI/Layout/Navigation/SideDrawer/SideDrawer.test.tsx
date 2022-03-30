@@ -8,16 +8,19 @@ import { getMenus } from 'config/menu';
 import { getCurrentUserQuery } from 'mocks/User';
 import { setUserSession } from 'services/AuthService';
 import { walletBalanceQuery, walletBalanceSubscription } from 'mocks/Organization';
+import { SideDrawerContext } from 'context/session';
 
 const mocks = [getCurrentUserQuery, ...walletBalanceQuery, ...walletBalanceSubscription];
 
 describe('side drawer testing', () => {
   const component = (
-    <MockedProvider mocks={mocks}>
-      <Router>
-        <SideDrawer fullOpen={true} setFullOpen={jest.fn()} />
-      </Router>
-    </MockedProvider>
+    <SideDrawerContext.Provider value={{ drawerOpen: true, setDrawerOpen: jest.fn() }}>
+      <MockedProvider mocks={mocks}>
+        <Router>
+          <SideDrawer />
+        </Router>
+      </MockedProvider>
+    </SideDrawerContext.Provider>
   );
 
   it('it should be initialized properly', async () => {
@@ -52,7 +55,7 @@ describe('side drawer testing', () => {
     const { getByTestId } = render(
       <MockedProvider mocks={mocks}>
         <Router>
-          <SideDrawer fullOpen={false} setFullOpen={jest.fn()} />
+          <SideDrawer />
         </Router>
       </MockedProvider>
     );
