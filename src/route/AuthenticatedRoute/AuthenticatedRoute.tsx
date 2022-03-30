@@ -5,6 +5,7 @@ import { Chat } from 'containers/Chat/Chat';
 import { getUserRole } from 'context/role';
 import { useToast } from 'services/ToastService';
 import ChatInterface from 'containers/Chat/ChatInterface/ChatInterface';
+import ErrorBoundary from 'components/errorboundary/ErrorBoundary';
 import styles from './AuthenticatedRoute.module.css';
 
 const defaultRedirect = () => <Redirect to="/chat" />;
@@ -203,7 +204,9 @@ export const AuthenticatedRoute: React.SFC = () => {
     <div className={styles.App} data-testid="app">
       {toastMessage}
 
-      <Layout>{route}</Layout>
+      <Layout>
+        <ErrorBoundary>{route}</ErrorBoundary>
+      </Layout>
     </div>
   );
 };

@@ -1,6 +1,9 @@
 import { Container } from '@material-ui/core';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
+import setLogs from 'config/logs';
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
+import styles from './ErrorBoundary.module.css';
 
 class ErrorBoundary extends Component<any, any> {
   constructor(props: any) {
@@ -9,36 +12,45 @@ class ErrorBoundary extends Component<any, any> {
   }
 
   static getDerivedStateFromError(error: any) {
-    console.log(error);
+    const errorString = JSON.stringify(error);
+    setLogs(errorString, 'error');
+
     // Update state so the next render will show the fallback UI.
     return { hasError: true };
   }
 
   componentDidCatch(error: any, errorInfo: any) {
-    console.log(error, errorInfo);
+    const errorString = JSON.stringify(error);
+    setLogs(errorString, 'error');
+    setLogs(errorInfo, 'error');
     // You can also log the error to an error reporting service
     // logErrorToMyService(error, errorInfo);
   }
 
   render() {
     const { hasError } = this.state;
-    const { children } = this.props;
+    const { children, history } = this.props;
     if (hasError) {
       // You can render any custom fallback UI
       return (
         <Container>
           <div data-testid="errorMessage">
             <DialogBox
-              title="Error in rendering"
+              title="Error !"
               colorOk="secondary"
-              handleOk={() => {}}
+              handleOk={() => {
+                history.push('/logout/user');
+              }}
               handleCancel={() => {}}
               buttonOk="Ok"
               skipCancel
               alignButtons="center"
               contentAlign="center"
             >
-              An error has occurred!
+              <div className={styles.Dialog}>
+                Sorry, An error occurred!
+                <br /> Please contact the team for support.
+              </div>
             </DialogBox>
           </div>
         </Container>
@@ -49,4 +61,4 @@ class ErrorBoundary extends Component<any, any> {
   }
 }
 
-export default ErrorBoundary;
+export default withRouter(ErrorBoundary);
