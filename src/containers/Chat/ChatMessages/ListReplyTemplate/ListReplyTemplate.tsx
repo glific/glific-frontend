@@ -27,10 +27,11 @@ interface TemplateProps {
   onGlobalButtonClick: any;
   disabled?: boolean;
   showHeader?: boolean;
+  bspMessageId?: string;
 }
 
 interface ListTemplate {
-  items: Array<any>;
+  items: any;
   drawerTitle: string;
   disableSend?: boolean;
   onItemClick: any;
@@ -119,6 +120,7 @@ export const SimulatorTemplate: React.SFC<TemplateProps> = (props) => {
     onGlobalButtonClick,
     disabled,
     showHeader = true,
+    bspMessageId,
   } = props;
   return (
     <div className={styles.SimulatorContent}>
@@ -128,7 +130,7 @@ export const SimulatorTemplate: React.SFC<TemplateProps> = (props) => {
         color="default"
         disabled={disabled}
         startIcon={<FormatListBulletedIcon />}
-        onClick={() => onGlobalButtonClick(items)}
+        onClick={() => onGlobalButtonClick({ items, bspMessageId })}
         className={styles.SimulatorButton}
       >
         {globalButtonTitle}
@@ -145,7 +147,7 @@ export const ListReplyTemplateDrawer: React.SFC<ListTemplate> = (props) => {
     onItemClick(checkedItem);
   };
 
-  const list = items.map((item: any) => {
+  const list = items.items.map((item: any, index: number) => {
     const { options, title: sectionTitle } = item;
 
     if (!sectionTitle) {
@@ -158,12 +160,27 @@ export const ListReplyTemplateDrawer: React.SFC<ListTemplate> = (props) => {
         <div className={styles.Options}>
           {options
             .map((option: any) => {
+              const payloadObject = {
+                payload: {
+                  type: 'list_reply',
+                  title: option.title,
+                  id: '',
+                  reply: `${option.title} ${index + 1} `,
+                  postbackText: '',
+                  description: option.description,
+                },
+                context: {
+                  id: '',
+                  gsId: items.bspMessageId,
+                },
+              };
+
               if (option.title) {
                 return (
                   <Button
                     key={uuidv4()}
                     className={styles.ListItem}
-                    onClick={() => setCheckedItem(option.title)}
+                    onClick={() => setCheckedItem(payloadObject)}
                   >
                     <div>
                       <div>{option.title}</div>
@@ -174,7 +191,7 @@ export const ListReplyTemplateDrawer: React.SFC<ListTemplate> = (props) => {
                         value={option.title}
                         name="radio-list-item"
                         size="small"
-                        checked={option.title === checkedItem}
+                        checked={checkedItem && option.title === checkedItem.payload.title}
                         color="primary"
                       />
                     </div>

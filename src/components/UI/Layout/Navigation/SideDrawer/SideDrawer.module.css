@@ -27,22 +27,3 @@
   padding-top: 10px;
   width: 52px;
 }
-
-.HelpButton {
-  position: absolute;
-  bottom: 115px;
-  left: 15px;
-  color: #119656;
-  display: flex;
-  font-weight: 500;
-  box-shadow: 0 2px 4px 0px #00000026;
-  border-radius: 15px;
-  cursor: pointer;
-  font-size: 12px;
-  padding: 0 0 0 10px;
-  align-items: center;
-}
-
-.HelpButtonHide {
-  display: none;
-}

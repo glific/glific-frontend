@@ -99,7 +99,7 @@ test('it renders ListReplyTemplate on SimulatorScreen', async () => {
 });
 
 const listProps: any = {
-  items,
+  items: { items, context: { id: '', gsId: 'scscs' } },
   drawerTitle: 'Title',
   onItemClick: jest.fn(),
   onDrawerClose: jest.fn(),
