@@ -231,38 +231,42 @@ export const SideDrawer: React.SFC<SideDrawerProps> = () => {
       >
         <div className={bottonMenuClasses.join(' ')}>
           {settingMenu}
-          <div data-testid="bottom-menu" aria-hidden="true">
-            <Menu menus={getStaffManagementMenus()} eventType="MouseEnter">
+          <div>
+            <Menu
+              menus={getStaffManagementMenus()}
+              eventType="MouseEnter"
+              placement={fullOpen ? 'top' : 'right-end'}
+            >
               <IconButton data-testid="staffManagementMenu">
-                <Tooltip title={t('Staff Management')} placement="top">
-                  <img
-                    src={
-                      [
-                        '/collection',
-                        '/staff-management',
-                        '/blocked-contacts',
-                        '/consulting-hours',
-                      ].includes(location.pathname)
-                        ? ActiveStaffIcon
-                        : InactiveStaffIcon
-                    }
-                    className={styles.StaffIcon}
-                    alt="staff icon"
-                  />
-                </Tooltip>
+                <img
+                  src={
+                    [
+                      '/collection',
+                      '/staff-management',
+                      '/blocked-contacts',
+                      '/consulting-hours',
+                    ].includes(location.pathname)
+                      ? ActiveStaffIcon
+                      : InactiveStaffIcon
+                  }
+                  className={styles.StaffIcon}
+                  alt="staff icon"
+                />
               </IconButton>
             </Menu>
           </div>
           <div>
-            <Menu menus={getUserAccountMenus()} eventType="MouseEnter">
+            <Menu
+              menus={getUserAccountMenus()}
+              eventType="MouseEnter"
+              placement={fullOpen ? 'top' : 'right-end'}
+            >
               <IconButton data-testid="profileMenu">
-                <Tooltip title={t('Profile')} placement="top">
-                  <img
-                    src={location.pathname === '/user-profile' ? ActiveUserIcon : InactiveUserIcon}
-                    className={styles.UserIcon}
-                    alt="user icon"
-                  />
-                </Tooltip>
+                <img
+                  src={location.pathname === '/user-profile' ? ActiveUserIcon : InactiveUserIcon}
+                  className={styles.UserIcon}
+                  alt="user icon"
+                />
               </IconButton>
             </Menu>
           </div>
