@@ -235,7 +235,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = () => {
             <Menu
               menus={getStaffManagementMenus()}
               eventType="MouseEnter"
-              placement={fullOpen ? 'top' : 'right-end'}
+              placement={drawerOpen ? 'top' : 'right-end'}
             >
               <IconButton data-testid="staffManagementMenu">
                 <img
@@ -259,7 +259,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = () => {
             <Menu
               menus={getUserAccountMenus()}
               eventType="MouseEnter"
-              placement={fullOpen ? 'top' : 'right-end'}
+              placement={drawerOpen ? 'top' : 'right-end'}
             >
               <IconButton data-testid="profileMenu">
                 <img
