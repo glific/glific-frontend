@@ -120,40 +120,50 @@ export const Simulator: React.FC<SimulatorProps> = ({
   // chat messages will be shown on simulator
   const isSimulatedMessage = true;
 
-  const sendMessage = (senderDetails: any, quickReplyText?: string) => {
+  const sendMessage = (senderDetails: any, interactivePayload?: any) => {
     const sendMessageText = inputMessage === '' && message ? message : inputMessage;
+
     // check if send message text is not empty
+    if (!sendMessageText && !interactivePayload) return;
 
-    if (sendMessageText || quickReplyText) {
-      const payload: any = {
-        text: sendMessageText,
-      };
+    let type = 'text';
 
-      if (quickReplyText) payload.text = quickReplyText;
+    let payload: any = {};
 
-      axios
-        .post(GUPSHUP_CALLBACK_URL, {
-          type: 'message',
-          payload: {
-            id: uuidv4(),
-            type: 'text',
-            payload,
-            sender: senderDetails,
-          },
-        })
-        .catch((error) => {
-          // add log's
-          setLogs(
-            `sendMessageText:${sendMessageText} GUPSHUP_CALLBACK_URL:${GUPSHUP_CALLBACK_URL}`,
-            'info'
-          );
-          setLogs(error, 'error');
-        });
-      setInputMessage('');
-      // reset the message from floweditor for the next time
-      if (resetMessage) {
-        resetMessage();
-      }
+    let context: any = {};
+
+    if (interactivePayload) {
+      type = interactivePayload.payload.type;
+      payload = interactivePayload.payload;
+      delete payload.type;
+      context = interactivePayload.context;
+    } else {
+      payload.text = sendMessageText;
+    }
+
+    axios
+      .post(GUPSHUP_CALLBACK_URL, {
+        type: 'message',
+        payload: {
+          id: uuidv4(),
+          type,
+          payload,
+          sender: senderDetails,
+          context,
+        },
+      })
+      .catch((error) => {
+        // add log's
+        setLogs(
+          `sendMessageText:${sendMessageText} GUPSHUP_CALLBACK_URL:${GUPSHUP_CALLBACK_URL}`,
+          'info'
+        );
+        setLogs(error, 'error');
+      });
+    setInputMessage('');
+    // reset the message from floweditor for the next time
+    if (resetMessage) {
+      resetMessage();
     }
   };
 
@@ -284,31 +294,31 @@ export const Simulator: React.FC<SimulatorProps> = ({
   };
 
   const renderMessage = (
-    text: string,
+    messageObject: any,
     direction: string,
     index: number,
-    insertedAt: string,
-    type: string,
-    media: any,
-    location: any,
-    interactiveContent: any,
-    disableButtons: boolean = false
+    isInteractive: boolean = false
   ) => {
-    const { body, buttons } = WhatsAppTemplateButton(text);
+    const { insertedAt, type, media, location, interactiveContent, bspMessageId, templateType } =
+      messageObject;
+
+    const messageType = isInteractive ? templateType : type;
+    const { body, buttons } = WhatsAppTemplateButton(isInteractive ? '' : messageObject.body);
 
     // Checking if interactive content is present then only parse to JSON
     const content = interactiveContent && JSON.parse(interactiveContent);
     let isInteractiveContentPresent = false;
-    let template = {};
+    let template;
 
     if (content) {
       isInteractiveContentPresent = !!Object.entries(content).length;
 
-      if (isInteractiveContentPresent && type === INTERACTIVE_LIST) {
+      if (isInteractiveContentPresent && messageType === INTERACTIVE_LIST) {
         template = (
           <>
             <ListReplyTemplate
               {...content}
+              bspMessageId={bspMessageId}
               showHeader={showHeader}
               component={SimulatorTemplate}
               onGlobalButtonClick={handleOpenListReplyDrawer}
@@ -318,14 +328,15 @@ export const Simulator: React.FC<SimulatorProps> = ({
         );
       }
 
-      if (isInteractiveContentPresent && type === INTERACTIVE_QUICK_REPLY) {
+      if (isInteractiveContentPresent && messageType === INTERACTIVE_QUICK_REPLY) {
         template = (
           <QuickReplyTemplate
             {...content}
             isSimulator
             showHeader={showHeader}
-            disabled={disableButtons}
-            onQuickReplyClick={(value: string) => sendMessage(sender, value)}
+            disabled={isInteractive}
+            bspMessageId={bspMessageId}
+            onQuickReplyClick={(value: any) => sendMessage(sender, value)}
           />
         );
       }
@@ -339,7 +350,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
           ) : (
             <>
               <ChatMessageType
-                type={type}
+                type={messageType}
                 media={media}
                 body={body}
                 location={location}
@@ -363,29 +374,10 @@ export const Simulator: React.FC<SimulatorProps> = ({
   const getChatMessage = () => {
     const chatMessage = messages
       .map((simulatorMessage: any, index: number) => {
-        const { body, insertedAt, type, media, location, interactiveContent } = simulatorMessage;
         if (simulatorMessage.receiver.id === simulatorId) {
-          return renderMessage(
-            body,
-            'received',
-            index,
-            insertedAt,
-            type,
-            media,
-            location,
-            interactiveContent
-          );
+          return renderMessage(simulatorMessage, 'received', index);
         }
-        return renderMessage(
-          body,
-          'send',
-          index,
-          insertedAt,
-          type,
-          media,
-          location,
-          interactiveContent
-        );
+        return renderMessage(simulatorMessage, 'send', index);
       })
       .reverse();
     setSimulatedMessage(chatMessage);
@@ -393,17 +385,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
 
   const getPreviewMessage = () => {
     if (message && message.type) {
-      const { body, insertedAt, type, media, location, interactiveContent } = message;
-      const previewMessage = renderMessage(
-        body,
-        'received',
-        0,
-        insertedAt,
-        type,
-        media,
-        location,
-        interactiveContent
-      );
+      const previewMessage = renderMessage(message, 'received', 0);
       if (['STICKER', 'AUDIO'].includes(message.type)) {
         setSimulatedMessage(previewMessage);
       } else if (message.body || message.media?.caption) {
@@ -416,17 +398,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
 
     if (interactiveMessage) {
       const { templateType, interactiveContent } = interactiveMessage;
-      const previewMessage = renderMessage(
-        '',
-        'received',
-        0,
-        new Date().toISOString(),
-        templateType,
-        null,
-        null,
-        interactiveContent,
-        true
-      );
+      const previewMessage = renderMessage(interactiveMessage, 'received', 0, true);
       setSimulatedMessage(previewMessage);
       if (templateType === INTERACTIVE_LIST) {
         const { items } = JSON.parse(interactiveContent);
@@ -501,8 +473,8 @@ export const Simulator: React.FC<SimulatorProps> = ({
     setSelectedListTemplate(null);
   };
 
-  const handleListDrawerItemClick = (text: string) => {
-    sendMessage(sender, text);
+  const handleListDrawerItemClick = (payloadObject: any) => {
+    sendMessage(sender, payloadObject);
     handleListReplyDrawerClose();
   };
 

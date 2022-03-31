@@ -84,9 +84,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     queries.updateItemQuery = UPDATE_INTERACTIVE;
   }
 
-  const { data: languages } = useQuery(USER_LANGUAGES, {
-    variables: { opts: { order: 'ASC' } },
-  });
+  const { data: languages } = useQuery(USER_LANGUAGES);
 
   const [getInteractiveTemplateById, { data: template, loading: loadingTemplate }] =
     useLazyQuery<any>(GET_INTERACTIVE_MESSAGE);
@@ -99,7 +97,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     if (languages) {
       const lang = languages.currentUser.user.organization.activeLanguages.slice();
       // sort languages by their name
-      lang.sort((first: any, second: any) => (first.label > second.label ? 1 : -1));
+      lang.sort((first: any, second: any) => (first.id > second.id ? 1 : -1));
 
       setLanguageOptions(lang);
       if (!Object.prototype.hasOwnProperty.call(match.params, 'id')) {

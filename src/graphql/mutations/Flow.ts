@@ -100,3 +100,14 @@ export const IMPORT_FLOW = gql`
     }
   }
 `;
+
+export const RESET_FLOW_COUNT = gql`
+  mutation ResetFlowCount($flowId: ID!) {
+    resetFlowCount(flowId: $flowId) {
+      success
+      errors {
+        message
+      }
+    }
+  }
+`;

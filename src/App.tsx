@@ -6,7 +6,7 @@ import { ClearCacheProvider, useClearCacheCtx } from 'react-clear-cache';
 
 import 'assets/fonts/fonts.css';
 import gqlClient from 'config/apolloclient';
-import { SessionContext } from 'context/session';
+import { SessionContext, SideDrawerContext } from 'context/session';
 import { ErrorHandler } from 'containers/ErrorHandler/ErrorHandler';
 import { checkAuthStatusService, getUserSession } from 'services/AuthService';
 import { UnauthenticatedRoute } from 'route/UnauthenticatedRoute/UnauthenticatedRoute';
@@ -22,6 +22,7 @@ const App = () => {
   // by default, do not assign any value to assume login or logout
   // let's checkAuthStatusService allocate it on useEffect
   const [authenticated, setAuthenticated] = useState<any>();
+  const [drawerOpen, setDrawerOpen] = useState(window.innerWidth > 768);
 
   // if not the latest version empty cache
   if (!isLatestVersion && emptyCacheStorage) {
@@ -32,6 +33,16 @@ const App = () => {
   useEffect(() => {
     setAuthenticated(checkAuthStatusService());
   }, []);
+
+  const sideDraawerValues = useMemo(
+    () => ({
+      drawerOpen,
+      setDrawerOpen: (value: any) => {
+        setDrawerOpen(value);
+      },
+    }),
+    [drawerOpen]
+  );
 
   const values = useMemo(
     () => ({
@@ -65,9 +76,11 @@ const App = () => {
     <SessionContext.Provider value={values}>
       <ApolloProvider client={gqlClient(history)}>
         <ErrorHandler />
-        <ClearCacheProvider duration={CLEAR_CACHE_DURATION}>
-          <Suspense fallback={<Loading />}>{routes}</Suspense>
-        </ClearCacheProvider>
+        <SideDrawerContext.Provider value={sideDraawerValues}>
+          <ClearCacheProvider duration={CLEAR_CACHE_DURATION}>
+            <Suspense fallback={<Loading />}>{routes}</Suspense>
+          </ClearCacheProvider>
+        </SideDrawerContext.Provider>
       </ApolloProvider>
     </SessionContext.Provider>
   );
