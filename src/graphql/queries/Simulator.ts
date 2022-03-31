@@ -28,6 +28,7 @@ export const SIMULATOR_MESSAGE_FRAGMENT = `
     sender {
       id
     }
+    bspMessageId
     type
     media {
       url
