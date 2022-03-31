@@ -5,4 +5,9 @@ export const SessionContext = React.createContext({
   setAuthenticated: (value: any) => value,
 });
 
+export const SideDrawerContext = React.createContext({
+  drawerOpen: false,
+  setDrawerOpen: (value: any) => value,
+});
+
 export default SessionContext;

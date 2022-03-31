@@ -1,23 +1,25 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { render, fireEvent, screen } from '@testing-library/react';
-import { waitFor } from '@testing-library/react';
+import { render, fireEvent, screen, waitFor } from '@testing-library/react';
 
 import SideDrawer from './SideDrawer';
 import { getMenus } from 'config/menu';
 import { getCurrentUserQuery } from 'mocks/User';
 import { setUserSession } from 'services/AuthService';
 import { walletBalanceQuery, walletBalanceSubscription } from 'mocks/Organization';
+import { SideDrawerContext } from 'context/session';
 
 const mocks = [getCurrentUserQuery, ...walletBalanceQuery, ...walletBalanceSubscription];
 
 describe('side drawer testing', () => {
   const component = (
-    <MockedProvider mocks={mocks}>
-      <Router>
-        <SideDrawer fullOpen={true} setFullOpen={jest.fn()} />
-      </Router>
-    </MockedProvider>
+    <SideDrawerContext.Provider value={{ drawerOpen: true, setDrawerOpen: jest.fn() }}>
+      <MockedProvider mocks={mocks}>
+        <Router>
+          <SideDrawer />
+        </Router>
+      </MockedProvider>
+    </SideDrawerContext.Provider>
   );
 
   it('it should be initialized properly', async () => {
@@ -31,10 +33,14 @@ describe('side drawer testing', () => {
   });
 
   it('should open bottom menus', async () => {
-    const { getByTestId, getAllByTestId } = render(component);
-    fireEvent.click(getByTestId('bottom-menu'));
-    await waitFor(() => {});
-    expect(getAllByTestId('MenuItem')[0]).toHaveTextContent('My Profile');
+    const { getAllByTestId } = render(component);
+
+    await waitFor(() => {
+      const profileMenu = screen.getByTestId('profileMenu');
+      fireEvent.mouseOver(profileMenu);
+
+      expect(getAllByTestId('MenuItem')[0]).toHaveTextContent('My Profile');
+    });
   });
 
   it('correct menu items rendered', async () => {
@@ -52,7 +58,7 @@ describe('side drawer testing', () => {
     const { getByTestId } = render(
       <MockedProvider mocks={mocks}>
         <Router>
-          <SideDrawer fullOpen={false} setFullOpen={jest.fn()} />
+          <SideDrawer />
         </Router>
       </MockedProvider>
     );

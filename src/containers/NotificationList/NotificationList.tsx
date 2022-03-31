@@ -128,7 +128,12 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
 
     return (
       <Menu menus={Menus}>
-        <div className={styles.CroppedText} data-testid="menu" ref={menuRef} aria-hidden="true">
+        <div
+          className={styles.CroppedText}
+          data-testid="NotificationRowMenu"
+          ref={menuRef}
+          aria-hidden="true"
+        >
           {entityObj.name ? (
             <span>
               Contact: {entityObj.name}
