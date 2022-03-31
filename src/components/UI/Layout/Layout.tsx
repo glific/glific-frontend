@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
 import MenuIcon from '@material-ui/icons/Menu';
-
+import { SideDrawerContext } from 'context/session';
 import GlificLogo from 'assets/images/logo/Logo.svg';
 import { SideDrawer } from './Navigation/SideDrawer/SideDrawer';
 import styles from './Layout.module.css';
@@ -11,14 +11,14 @@ export interface LayoutProps {
 
 export const Layout: React.SFC<LayoutProps> = (props) => {
   const { children } = props;
-  const [fullOpen, setFullOpen] = useState(window.innerWidth > 768);
+  const { drawerOpen, setDrawerOpen } = useContext(SideDrawerContext);
   let mainStyle = styles.Main;
-  if (!fullOpen) {
+  if (!drawerOpen) {
     mainStyle = styles.MainFullWidth;
   }
   return (
     <>
-      <SideDrawer fullOpen={fullOpen} setFullOpen={setFullOpen} />
+      <SideDrawer />
       <main className={mainStyle} data-testid="layout">
         <div className={styles.MobileHeader}>
           <img src={GlificLogo} className={styles.GlificLogo} alt="Glific" />
@@ -26,7 +26,7 @@ export const Layout: React.SFC<LayoutProps> = (props) => {
             aria-hidden
             className={styles.MenuIcon}
             onClick={() => {
-              setFullOpen(true);
+              setDrawerOpen(true);
             }}
           >
             <MenuIcon />
