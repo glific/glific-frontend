@@ -5,7 +5,9 @@ import Menu from './Menu';
 const menuList = [
   {
     title: 'My Account',
-    path: '/collection',
+    path: '/myaccount',
+    type: 'userAccount',
+    roles: ['Staff', 'Manager', 'Admin'],
   },
 ];
 
@@ -23,8 +25,8 @@ describe('<Menu />', () => {
 
     const menuComponent = screen.getByTestId('Menu');
     expect(menuComponent).toBeInTheDocument();
-
-    const menuOption = queryByText('My Account');
+    const menuOption: any = queryByText('Menu Option');
     fireEvent.click(menuOption);
+    expect(screen.getByText('My Account')).toBeInTheDocument();
   });
 });

@@ -1,10 +1,13 @@
-import React, { lazy } from 'react';
+import React, { lazy, useEffect, useMemo, useState } from 'react';
 import { Switch, Route, Redirect, RouteComponentProps } from 'react-router-dom';
 
 import { Chat } from 'containers/Chat/Chat';
 import { getUserRole } from 'context/role';
 import { useToast } from 'services/ToastService';
 import ChatInterface from 'containers/Chat/ChatInterface/ChatInterface';
+import { ProviderContext } from 'context/session';
+import { useQuery } from '@apollo/client';
+import { GET_ORGANIZATION_PROVIDER } from 'graphql/queries/Organization';
 import styles from './AuthenticatedRoute.module.css';
 
 const defaultRedirect = () => <Redirect to="/chat" />;
@@ -178,6 +181,26 @@ export const chatRoutes = (
 export const AuthenticatedRoute: React.SFC = () => {
   const toastMessage = useToast();
 
+  const { data: organizationProvider } = useQuery(GET_ORGANIZATION_PROVIDER);
+
+  const [provider, setProvider] = useState<string>('');
+
+  useEffect(() => {
+    if (organizationProvider) {
+      setProvider(organizationProvider.organization.organization.bsp.shortcode);
+    }
+  }, [organizationProvider]);
+
+  const values = useMemo(
+    () => ({
+      provider,
+      setProvider: (value: any) => {
+        setProvider(value);
+      },
+    }),
+    [provider]
+  );
+
   let userRole: any[] = [];
   let route;
 
@@ -200,11 +223,13 @@ export const AuthenticatedRoute: React.SFC = () => {
   // let's call chat subscriptions at this level so that we can listen to actions which are not performed
   // on chat screen, for eg: send message to collection
   return (
-    <div className={styles.App} data-testid="app">
-      {toastMessage}
+    <ProviderContext.Provider value={values}>
+      <div className={styles.App} data-testid="app">
+        {toastMessage}
 
-      <Layout>{route}</Layout>
-    </div>
+        <Layout>{route}</Layout>
+      </div>
+    </ProviderContext.Provider>
   );
 };
 

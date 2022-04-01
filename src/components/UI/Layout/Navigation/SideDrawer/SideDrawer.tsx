@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   Hidden,
   Drawer,
@@ -14,9 +14,9 @@ import clsx from 'clsx';
 import IconButton from '@material-ui/core/IconButton';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-
+import { SideDrawerContext, ProviderContext } from 'context/session';
 import Menu from 'components/UI/Menu/Menu';
-import * as constants from 'common/constants';
+import { SIDE_DRAWER_WIDTH, GUPSHUP_ENTERPRISE_SHORTCODE } from 'common/constants';
 import InactiveStaffIcon from 'assets/images/icons/StaffManagement/Inactive.svg';
 import ActiveStaffIcon from 'assets/images/icons/StaffManagement/Active.svg';
 import InactiveUserIcon from 'assets/images/icons/User/Inactive.svg';
@@ -30,12 +30,9 @@ import { WalletBalance } from 'containers/WalletBalance/WalletBalance';
 import SideMenus from '../SideMenus/SideMenus';
 import styles from './SideDrawer.module.css';
 
-export interface SideDrawerProps {
-  fullOpen: boolean;
-  setFullOpen: any;
-}
+export interface SideDrawerProps {}
 
-const drawerWidth = constants.SIDE_DRAWER_WIDTH;
+const drawerWidth = SIDE_DRAWER_WIDTH;
 
 const themeUI = createTheme({
   typography: {
@@ -115,22 +112,29 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       paddingLeft: '8px',
     },
+    BottomMenusWithoutWallet: {
+      bottom: '10px',
+    },
     BottomMenusVertical: {
       flexFlow: 'column',
     },
   })
 );
 
-export const SideDrawer: React.SFC<SideDrawerProps> = ({ fullOpen, setFullOpen }) => {
+export const SideDrawer: React.SFC<SideDrawerProps> = () => {
   const location = useLocation();
+  const { drawerOpen, setDrawerOpen } = useContext(SideDrawerContext);
+
   const classes = useStyles();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { t } = useTranslation();
 
+  const { provider } = useContext(ProviderContext);
+
   const drawer = (
     <div>
       <Toolbar className={classes.anotherToolBar}>
-        {fullOpen ? (
+        {drawerOpen ? (
           <div className={classes.outerBox}>
             <ThemeProvider theme={themeUI}>
               <Typography variant="h6" className={classes.title}>
@@ -139,7 +143,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = ({ fullOpen, setFullOpen }
             </ThemeProvider>
             <IconButton
               className={classes.iconButton}
-              onClick={() => setFullOpen(false)}
+              onClick={() => setDrawerOpen(false)}
               data-testid="drawer-button"
             >
               <MenuIcon />
@@ -151,13 +155,13 @@ export const SideDrawer: React.SFC<SideDrawerProps> = ({ fullOpen, setFullOpen }
             aria-label="open drawer"
             data-testid="drawer-button-closed"
             style={{ margin: 'auto' }}
-            onClick={() => setFullOpen(true)}
+            onClick={() => setDrawerOpen(true)}
           >
             <MenuIcon />
           </IconButton>
         )}
       </Toolbar>
-      <SideMenus opened={fullOpen} />
+      <SideMenus opened={drawerOpen} />
     </div>
   );
 
@@ -185,15 +189,19 @@ export const SideDrawer: React.SFC<SideDrawerProps> = ({ fullOpen, setFullOpen }
 
   // set the appropriate classes to display bottom menus correctly
   const bottonMenuClasses = [classes.BottomMenus];
-  if (!fullOpen) {
+  if (provider === GUPSHUP_ENTERPRISE_SHORTCODE) {
+    bottonMenuClasses.unshift(classes.BottomMenusWithoutWallet);
+  }
+
+  if (!drawerOpen) {
     bottonMenuClasses.unshift(classes.BottomMenusVertical);
   }
 
   return (
     <nav
       className={clsx({
-        [classes.drawer]: fullOpen,
-        [classes.navClose]: !fullOpen,
+        [classes.drawer]: drawerOpen,
+        [classes.navClose]: !drawerOpen,
       })}
       aria-label="navigation menus"
       data-testid="navbar"
@@ -219,57 +227,61 @@ export const SideDrawer: React.SFC<SideDrawerProps> = ({ fullOpen, setFullOpen }
       </Hidden>
       <Drawer
         className={clsx(classes.drawer, {
-          [classes.drawerOpen]: fullOpen,
-          [classes.drawerClose]: !fullOpen,
+          [classes.drawerOpen]: drawerOpen,
+          [classes.drawerClose]: !drawerOpen,
         })}
         classes={{
           paper: clsx({
-            [classes.drawerOpen]: fullOpen,
-            [classes.drawerClose]: !fullOpen,
+            [classes.drawerOpen]: drawerOpen,
+            [classes.drawerClose]: !drawerOpen,
           }),
         }}
         variant="permanent"
       >
         <div className={bottonMenuClasses.join(' ')}>
           {settingMenu}
-          <div data-testid="bottom-menu" aria-hidden="true">
-            <Menu menus={getStaffManagementMenus()} eventType="MouseEnter">
+          <div>
+            <Menu
+              menus={getStaffManagementMenus()}
+              eventType="MouseEnter"
+              placement={drawerOpen ? 'top' : 'right-end'}
+            >
               <IconButton data-testid="staffManagementMenu">
-                <Tooltip title={t('Staff Management')} placement="top">
-                  <img
-                    src={
-                      [
-                        '/collection',
-                        '/staff-management',
-                        '/blocked-contacts',
-                        '/consulting-hours',
-                      ].includes(location.pathname)
-                        ? ActiveStaffIcon
-                        : InactiveStaffIcon
-                    }
-                    className={styles.StaffIcon}
-                    alt="staff icon"
-                  />
-                </Tooltip>
+                <img
+                  src={
+                    [
+                      '/collection',
+                      '/staff-management',
+                      '/blocked-contacts',
+                      '/consulting-hours',
+                    ].includes(location.pathname)
+                      ? ActiveStaffIcon
+                      : InactiveStaffIcon
+                  }
+                  className={styles.StaffIcon}
+                  alt="staff icon"
+                />
               </IconButton>
             </Menu>
           </div>
           <div>
-            <Menu menus={getUserAccountMenus()} eventType="MouseEnter">
+            <Menu
+              menus={getUserAccountMenus()}
+              eventType="MouseEnter"
+              placement={drawerOpen ? 'top' : 'right-end'}
+            >
               <IconButton data-testid="profileMenu">
-                <Tooltip title={t('Profile')} placement="top">
-                  <img
-                    src={location.pathname === '/user-profile' ? ActiveUserIcon : InactiveUserIcon}
-                    className={styles.UserIcon}
-                    alt="user icon"
-                  />
-                </Tooltip>
+                <img
+                  src={location.pathname === '/user-profile' ? ActiveUserIcon : InactiveUserIcon}
+                  className={styles.UserIcon}
+                  alt="user icon"
+                />
               </IconButton>
             </Menu>
           </div>
         </div>
         {drawer}
-        <WalletBalance fullOpen={fullOpen} />
+        <WalletBalance fullOpen={drawerOpen} />
       </Drawer>
     </nav>
   );

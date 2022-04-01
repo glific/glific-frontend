@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { CircularProgress } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
@@ -9,6 +9,8 @@ import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import { BSPBALANCE } from 'graphql/queries/Organization';
 import { BSP_BALANCE_SUBSCRIPTION } from 'graphql/subscriptions/PeriodicInfo';
 import { getUserSession } from 'services/AuthService';
+import { GUPSHUP_ENTERPRISE_SHORTCODE } from 'common/constants';
+import { ProviderContext } from 'context/session';
 import styles from './WalletBalance.module.css';
 
 export interface WalletBalanceProps {
@@ -20,6 +22,8 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({ fullOpen }) => {
   const [retried, setRetried] = useState(false);
   const [displayBalance, setDisplayBalance] = useState<any>(null);
   const { t } = useTranslation();
+  const { provider } = useContext(ProviderContext);
+
   const balanceOkayString = t('Wallet balance is okay');
   const balanceLowString = t('Wallet balance is low');
 
@@ -164,6 +168,10 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({ fullOpen }) => {
       {displayBalance !== null ? updateBody() : errorBody()}
     </div>
   );
+
+  if (provider === GUPSHUP_ENTERPRISE_SHORTCODE) {
+    return null;
+  }
 
   return updateBalance;
 };
