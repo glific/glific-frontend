@@ -7,6 +7,7 @@ import { TEMPLATE_MOCKS, HSM_LIST } from 'containers/Template/Template.test.help
 import { Template } from './Template';
 import { getOrganizationBSP } from 'mocks/Organization';
 import { importTemplateMutation } from 'mocks/Template';
+import { ProviderContext } from 'context/session';
 
 afterEach(cleanup);
 setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
@@ -60,11 +61,13 @@ const hsmProps: any = {
 const hsmMocks = [...HSM_LIST, ...HSM_LIST, getOrganizationBSP, importTemplateMutation];
 
 const hsmComponent = (
-  <Router>
-    <MockedProvider mocks={hsmMocks} addTypename={false}>
-      <Template {...hsmProps} />
-    </MockedProvider>
-  </Router>
+  <ProviderContext.Provider value={{ provider: 'gupshup_enterprise', setProvider: jest.fn() }}>
+    <Router>
+      <MockedProvider mocks={hsmMocks} addTypename={false}>
+        <Template {...hsmProps} />
+      </MockedProvider>
+    </Router>
+  </ProviderContext.Provider>
 );
 
 test('it renders hsm list component', async () => {
