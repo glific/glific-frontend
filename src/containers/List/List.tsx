@@ -416,6 +416,9 @@ export const List: React.SFC<ListProps> = ({
       return (
         <div className={styles.Icons}>
           {additionalAction.map((action: any, index: number) => {
+            if (allowedAction.restricted) {
+              return null;
+            }
             // check if we are dealing with nested element
             let additionalActionParameter: any;
             const params: any = additionalAction[index].parameter.split('.');
