@@ -184,7 +184,7 @@ export const importTemplateMutation = {
     data: {
       importTemplates: {
         errors: null,
-        success: true,
+        status: 'success',
       },
     },
   },
