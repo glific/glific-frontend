@@ -97,6 +97,7 @@ export const Organization: React.SFC<OrganizationProps> = (props) => {
            * and toggle loading on and off
            */
           saveHandler(item, captcha, setErrors, setLoading);
+          setCaptcha(null);
         }}
       >
         {({ submitForm }) => (
@@ -106,7 +107,7 @@ export const Organization: React.SFC<OrganizationProps> = (props) => {
                 const key = index;
                 return <Field className={styles.Form} key={key} {...field} />;
               })}
-              <Captcha onChange={handleCaptchaChange} onError={handleCaptchaError} />
+              {!loading && <Captcha onChange={handleCaptchaChange} onError={handleCaptchaError} />}
               <div className={styles.CenterButton}>
                 <Button
                   variant={buttonContainedVariant ? 'contained' : 'outlined'}
