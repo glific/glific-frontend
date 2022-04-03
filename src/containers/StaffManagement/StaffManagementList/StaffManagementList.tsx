@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-
+import { useQuery } from '@apollo/client';
+import { GET_ORGANIZATION_PHONE } from 'graphql/queries/Organization';
 import { USER_COUNT, FILTER_USERS } from 'graphql/queries/User';
 import { DELETE_USER } from 'graphql/mutations/User';
 import { ReactComponent as StaffIcon } from 'assets/images/icons/Collection/Dark.svg';
@@ -13,6 +14,8 @@ export interface StaffManagementProps {}
 
 export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
   const { t } = useTranslation();
+
+  const { data: organizationPhone } = useQuery(GET_ORGANIZATION_PHONE);
 
   const dialogMessage = t('Once deleted this action cannot be undone.');
   const chatIcon = <ChatIcon />;
@@ -62,6 +65,14 @@ export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
 
   const getRestrictedAction = (param: any) => {
     const action: any = { chat: true, edit: true, delete: true };
+
+    // we should not allow any actions to the organization number
+    if (param.phone === organizationPhone?.organization?.organization?.contact?.phone) {
+      action.edit = false;
+      action.delete = false;
+      action.restricted = true;
+    }
+
     // we should disable edit actions for admin and managers in case of users with Glific admin role
     if (
       (getUserRole().includes('Admin') || getUserRole().includes('Manager')) &&
@@ -76,6 +87,7 @@ export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
       action.edit = false;
       action.delete = false;
     }
+
     return action;
   };
 
