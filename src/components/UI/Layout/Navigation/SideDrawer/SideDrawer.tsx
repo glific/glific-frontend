@@ -106,6 +106,7 @@ const useStyles = makeStyles((theme: Theme) =>
       margin: '12px 12px 12px 15px',
     },
     BottomMenus: {
+      zIndex: 1,
       position: 'absolute',
       bottom: '50px',
       display: 'flex',
