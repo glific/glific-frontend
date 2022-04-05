@@ -69,13 +69,13 @@ test('click on forward arrrow', async () => {
 test('it should show copy text and view option on clicking entity ', async () => {
   const { getByTestId, getByText } = render(notifications);
   await waitFor(() => {
-    const entityMenu = screen.getAllByTestId('Menu');
+    const entityMenu = screen.getByTestId('NotificationRowMenu');
+    expect(entityMenu).toBeInTheDocument();
 
-    fireEvent.click(entityMenu[0]);
-
+    fireEvent.click(entityMenu);
     const viewButton = screen.getAllByTestId('MenuItem');
-    // copy text option
 
+    // copy text option
     expect(viewButton[0]).toBeInTheDocument();
     fireEvent.click(viewButton[0]);
 

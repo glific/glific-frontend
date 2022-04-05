@@ -3,7 +3,7 @@ import { EditorState, ContentState } from 'draft-js';
 import { Container, Button, ClickAwayListener, Fade, IconButton } from '@material-ui/core';
 import 'emoji-mart/css/emoji-mart.css';
 import clsx from 'clsx';
-import { useApolloClient, useMutation, useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 
 import { ReactComponent as AttachmentIcon } from 'assets/images/icons/Attachment/Unselected.svg';
@@ -45,6 +45,7 @@ export interface ChatInputProps {
 
 export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   const {
+    onSendMessage,
     contactBspStatus,
     contactStatus,
     additionalStyle,
@@ -74,7 +75,6 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   const templates = 'Templates';
   const interactiveMsg = 'Interactive msg';
   let uploadPermission = false;
-  const client = useApolloClient();
 
   let dialog;
 
@@ -91,7 +91,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   const [createMediaMessage] = useMutation(CREATE_MEDIA_MESSAGE, {
     onCompleted: (data: any) => {
       if (data) {
-        props.onSendMessage(
+        onSendMessage(
           '',
           data.createMessageMedia.messageMedia.id,
           attachmentType,
@@ -125,7 +125,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
       }
     },
     onError: () => {
-      setNotification(client, t('Sorry, unable to upload audio.'), 'warning');
+      setNotification(t('Sorry, unable to upload audio.'), 'warning');
       setUploading(false);
     },
   });
@@ -167,7 +167,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
       });
       // check if type is list or quick replies
     } else if (interactiveMessageContent && interactiveMessageContent.type) {
-      props.onSendMessage(
+      onSendMessage(
         null,
         null,
         interactiveMessageContent.type.toUpperCase(),
@@ -177,7 +177,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
       );
       // else the type will by default be text
     } else {
-      props.onSendMessage(message, null, 'TEXT', selectedTemplate, variableParam);
+      onSendMessage(message, null, 'TEXT', selectedTemplate, variableParam);
     }
     resetVariable();
 
@@ -213,6 +213,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
 
   const handleSelectText = (obj: any, isInteractiveMsg: boolean = false) => {
     resetVariable();
+
     // set selected template
 
     let messageBody = obj.body;
@@ -258,9 +259,8 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   };
 
   if (variable) {
-    const bodyText = selectedTemplate ? selectedTemplate.body : '';
     const dialogProps = {
-      bodyText,
+      template: selectedTemplate,
       setVariable,
       handleCancel,
       updateEditorState,

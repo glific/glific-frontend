@@ -1,17 +1,23 @@
-import React, { useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 import { Checkbox, FormControlLabel } from '@material-ui/core';
 
 import { List } from 'containers/List/List';
+import { useMutation } from '@apollo/client';
 import { WhatsAppToJsx } from 'common/RichEditor';
-import { DATE_TIME_FORMAT } from 'common/constants';
+import { DATE_TIME_FORMAT, GUPSHUP_ENTERPRISE_SHORTCODE } from 'common/constants';
 import { GET_TEMPLATES_COUNT, FILTER_TEMPLATES } from 'graphql/queries/Template';
-import { DELETE_TEMPLATE } from 'graphql/mutations/Template';
+import { DELETE_TEMPLATE, IMPORT_TEMPLATES } from 'graphql/mutations/Template';
 import { ReactComponent as DownArrow } from 'assets/images/icons/DownArrow.svg';
 import { ReactComponent as ApprovedIcon } from 'assets/images/icons/Template/Approved.svg';
+import { ReactComponent as ImportIcon } from 'assets/images/icons/Flow/Import.svg';
 import { ReactComponent as RejectedIcon } from 'assets/images/icons/Template/Rejected.svg';
 import { ReactComponent as PendingIcon } from 'assets/images/icons/Template/Pending.svg';
+import { Button } from 'components/UI/Form/Button/Button';
+import { ProviderContext } from 'context/session';
+import Loading from 'components/UI/Layout/Loading/Loading';
+import { setNotification } from 'common/notification';
 import styles from './Template.module.css';
 
 const getLabel = (label: string) => <div className={styles.LabelText}>{label}</div>;
@@ -67,7 +73,23 @@ export const Template: React.SFC<TemplateProps> = (props) => {
   const [open, setOpen] = useState(false);
   const [Id, setId] = useState('');
   const { t } = useTranslation();
+
+  const { provider } = useContext(ProviderContext);
+
+  const [importing, setImporting] = useState(false);
+  const inputRef = useRef<any>(null);
+
   const [filters, setFilters] = useState<any>({ ...statusFilter, APPROVED: true });
+
+  const [importTemplatesMutation] = useMutation(IMPORT_TEMPLATES, {
+    onCompleted: (data: any) => {
+      setImporting(false);
+      const { errors } = data.importTemplates;
+      if (errors && errors.length > 0) {
+        setNotification('Error importing templates', 'warning');
+      }
+    },
+  });
 
   const getStatus = (status: string) => {
     let statusValue;
@@ -204,8 +226,61 @@ export const Template: React.SFC<TemplateProps> = (props) => {
     appliedFilters = { ...templateFilters, status: filterValue };
   }
 
+  const importTemplates = (event: any) => {
+    const media = event.target.files[0];
+    const fileReader: any = new FileReader();
+    fileReader.onload = function setImport() {
+      const mediaName = media.name;
+      const extension = mediaName.slice((Math.max(0, mediaName.lastIndexOf('.')) || Infinity) + 1);
+      if (extension !== 'csv') {
+        setNotification('Please upload a valid CSV file', 'warning');
+        setImporting(false);
+      } else {
+        importTemplatesMutation({ variables: { data: fileReader.result } });
+      }
+    };
+    setImporting(true);
+    fileReader.readAsText(media);
+  };
+
+  const importButton = (
+    <div className={styles.Input}>
+      <input
+        type="file"
+        ref={inputRef}
+        hidden
+        name="file"
+        onChange={importTemplates}
+        data-testid="import"
+      />
+      <Button
+        onClick={() => {
+          if (inputRef.current) inputRef.current.click();
+        }}
+        variant="contained"
+        color="primary"
+      >
+        {t('Import templates')}
+        <ImportIcon />
+      </Button>
+    </div>
+  );
+
+  if (importing) {
+    return <Loading />;
+  }
+
+  const button = { show: true, label: buttonLabel };
+  let secondaryButton = null;
+
+  if (provider === GUPSHUP_ENTERPRISE_SHORTCODE) {
+    button.show = false;
+    secondaryButton = importButton;
+  }
+
   return (
     <List
+      secondaryButton={secondaryButton}
       title={title}
       listItem={listItem}
       listItemName={listItemName}
@@ -215,7 +290,7 @@ export const Template: React.SFC<TemplateProps> = (props) => {
       dialogMessage={dialogMessage}
       filters={appliedFilters}
       defaultSortBy={defaultSortBy}
-      button={{ show: true, label: buttonLabel }}
+      button={button}
       {...columnAttributes}
       {...queries}
       filterList={isHSM && filterTemplateStatus}

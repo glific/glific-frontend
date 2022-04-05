@@ -1,5 +1,10 @@
 import { GET_LANGUAGES } from 'graphql/queries/List';
-import { FILTER_TEMPLATES, GET_TEMPLATE, GET_HSM_CATEGORIES } from 'graphql/queries/Template';
+import {
+  FILTER_TEMPLATES,
+  GET_TEMPLATE,
+  GET_HSM_CATEGORIES,
+  GET_TEMPLATES_COUNT,
+} from 'graphql/queries/Template';
 import { DELETE_TEMPLATE, CREATE_TEMPLATE } from 'graphql/mutations/Template';
 import {
   getOrganizationLanguagesQuery,
@@ -29,6 +34,7 @@ const SpeedSendsSessionTemplates = [
     isReserved: false,
     isActive: false,
     updatedAt: '2020-12-01T18:00:28Z',
+    numberParameters: 0,
     translations:
       '{"2":{"status":"approved","languageId":{"localized":true,"locale":"hi","label":"Hindi","id":"2","__typename":"Language"},"label":"आप ग्लिफ़िक के लिए कितने उत्साहित हैं?","isHsm":false,"body":"यह संदेश है\\n","MessageMedia":null}}',
     type: 'TEXT',
@@ -93,6 +99,7 @@ const HSMSessionTemplates = [
     isReserved: false,
     translations: '{}',
     type: 'TEXT',
+    numberParameters: 2,
     language: {
       id: '1',
       label: 'Hindi',
@@ -233,16 +240,23 @@ export const whatsappHsmCategories = [
 const getTemplateData = {
   sessionTemplate: {
     sessionTemplate: {
-      id: 1,
+      id: '1',
       label: 'important',
       body: 'important template',
       example: 'important template',
-      category: 'ACCOUNT_UPDATE',
+      category: null,
       shortcode: 'important template',
       isActive: true,
+      translations: '{}',
+      type: 'TEXT',
       language: {
-        id: 1,
+        id: '1',
+        label: 'English',
       },
+      MessageMedia: null,
+      hasButtons: false,
+      buttons: null,
+      buttonType: null,
     },
   },
 };
@@ -387,11 +401,27 @@ const getHSMTemplate = (id: string, status: string) => ({
   translations:
     '{"2":{"number_parameters":1,"language_id":2,"body":" अब आप नीचे दिए विकल्पों में से एक का चयन करके {{1}} के साथ समाप्त होने वाले खाते के लिए अपना खाता शेष या मिनी स्टेटमेंट देख सकते हैं। | [अकाउंट बैलेंस देखें] | [देखें मिनी स्टेटमेंट]"}}',
   type: 'TEXT',
+  numberParameters: 2,
   updatedAt: '2021-07-28T08:00:24Z',
 });
 
 export const HSM_LIST = [
-  HSMTemplateCount,
+  {
+    request: {
+      query: GET_TEMPLATES_COUNT,
+      variables: {
+        filter: {
+          isHsm: true,
+          status: 'APPROVED',
+        },
+      },
+    },
+    result: {
+      data: {
+        countSessionTemplates: 3,
+      },
+    },
+  },
   {
     request: {
       query: FILTER_TEMPLATES,

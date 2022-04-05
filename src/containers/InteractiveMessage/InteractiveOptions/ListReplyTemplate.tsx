@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button, TextField, FormHelperText, FormControl } from '@material-ui/core';
 import { FieldArray } from 'formik';
+import { useTranslation } from 'react-i18next';
 
 import { ReactComponent as DeleteIcon } from 'assets/images/icons/Delete/Red.svg';
 import { ReactComponent as CrossIcon } from 'assets/images/icons/Cross.svg';
@@ -31,6 +32,8 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
     onInputChange,
     translation,
   } = props;
+
+  const { t } = useTranslation();
 
   const isError = (key: string, itemIdx: number) => {
     const error =
@@ -133,7 +136,9 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
             name={`templateButtons[${index}].options`}
             render={(arrayHelpers) =>
               options.map((itemRow: any, itemIndex: any) => (
-                <div key={itemIndex.toString()}>
+                // disabling eslint for this as we have no other unique way to define a key
+                // eslint-disable-next-line react/no-array-index-key
+                <div key={itemIndex}>
                   <div className={styles.ListReplyItemWrapper}>
                     <div className={styles.ListReplyItemContent}>
                       <div className={styles.TextFieldWrapper}>
@@ -155,6 +160,7 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
                             className={styles.TextField}
                             error={isError('title', itemIndex)}
                             value={itemRow.title}
+                            helperText={t('Only alphanumeric characters and spaces are allowed')}
                             InputProps={{
                               endAdornment: itemIndex !== 0 && showDeleteIcon && (
                                 <CrossIcon
@@ -216,7 +222,7 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
                           onClick={onListAddClick}
                           startIcon={<AddIcon className={styles.AddIcon} />}
                         >
-                          Add another list
+                          {t('Add another list')}
                         </Button>
                       )}
                     {isAddMoreOptionAllowed < 10 && options.length === itemIndex + 1 && (
@@ -226,7 +232,7 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
                         onClick={() => handleAddListItem(arrayHelpers)}
                         startIcon={<AddIcon className={styles.AddIcon} />}
                       >
-                        Add another list item
+                        {t('Add another list item')}
                       </Button>
                     )}
                   </div>

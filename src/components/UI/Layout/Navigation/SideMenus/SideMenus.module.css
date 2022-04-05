@@ -10,7 +10,6 @@
 
 .IconItem {
   border-radius: 12px !important;
-  /* padding: 7px !important; */
   margin: auto !important;
 }
 
@@ -28,8 +27,8 @@
 }
 
 .ClosedItem {
-  width: 60% !important;
-  padding: 12px !important;
+  width: unset !important;
+  margin: 0px 10px !important;
 }
 
 .SelectedText {

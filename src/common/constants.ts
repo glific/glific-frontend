@@ -9,6 +9,7 @@ export const SIMULATOR_CONTACT = '9876543210';
 export const FLOW_STATUS_PUBLISHED = 'published';
 export const SIMULATOR_NUMBER_START = '9876543210';
 export const CLEAR_CACHE_DURATION = 360000;
+export const GUPSHUP_ENTERPRISE_SHORTCODE = 'gupshup_enterprise';
 // to find variables in message
 export const pattern = /[^{}]+(?=})/g;
 
@@ -33,6 +34,25 @@ export const dateList: any = Array.from(Array(31), (_, i) => ({
   id: i + 1,
   label: (i + 1).toString(),
 }));
+
+export const hourList: any = Array.from(Array(24), (_, i) => {
+  let timeOfDay = 'AM';
+  let hour = i;
+  if (i > 11) {
+    timeOfDay = 'PM';
+    hour -= 12;
+  }
+
+  let hourLabel = hour.toString();
+  if (hour === 0) {
+    hourLabel = '12';
+  }
+
+  return {
+    id: i,
+    label: `${hourLabel} ${timeOfDay}`,
+  };
+});
 
 export const dayList: any = [
   { id: 1, label: 'Monday' },
@@ -222,9 +242,19 @@ export const SAMPLE_MEDIA_FOR_SIMULATOR = [
       url: 'http://www.buildquickbots.com/whatsapp/stickers/SampleSticker01.webp',
     },
   },
+  {
+    name: 'location',
+    id: 'LOCATION',
+    payload: {
+      latitude: '41.725556',
+      longitude: '-49.946944',
+    },
+  },
 ];
 
 export const INTERACTIVE_QUICK_REPLY = 'QUICK_REPLY';
 export const INTERACTIVE_LIST = 'LIST';
 
 export const TERMS_OF_USE_LINK = 'https://tides.coloredcow.com/terms-of-use';
+
+export const COMPACT_MESSAGE_LENGTH = 35;

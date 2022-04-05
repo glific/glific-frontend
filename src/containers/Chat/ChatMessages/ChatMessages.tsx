@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useEffect } from 'react';
-import { useQuery, useMutation, useLazyQuery, useApolloClient } from '@apollo/client';
+import { useQuery, useMutation, useLazyQuery } from '@apollo/client';
 import { CircularProgress, Container } from '@material-ui/core';
 import moment from 'moment';
 import { Redirect } from 'react-router-dom';
@@ -11,9 +11,9 @@ import styles from './ChatMessages.module.css';
 import { ContactBar } from './ContactBar/ContactBar';
 import { ChatMessage } from './ChatMessage/ChatMessage';
 import { ChatInput } from './ChatInput/ChatInput';
+import { StatusBar } from './StatusBar/StatusBar';
 import { setNotification, setErrorMessage } from '../../../common/notification';
 import {
-  TIME_FORMAT,
   SEARCH_QUERY_VARIABLES,
   // setVariables,
   COLLECTION_SEARCH_QUERY_VARIABLES,
@@ -31,7 +31,7 @@ import {
 // import { FILTER_TAGS_NAME } from '../../../graphql/queries/Tag';
 // import { ReactComponent as TagIcon } from '../../../assets/images/icons/Tags/Selected.svg';
 import { getCachedConverations, updateConversationsCache } from '../../../services/ChatService';
-import { addLogs } from '../../../common/utils';
+import { addLogs, getDisplayName } from '../../../common/utils';
 import { CollectionInformation } from '../../Collection/CollectionInformation/CollectionInformation';
 
 export interface ChatMessagesProps {
@@ -46,7 +46,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
   startingHeight,
 }) => {
   // create an instance of apollo client
-  const client = useApolloClient();
+
   // const [loadAllTags, allTags] = useLazyQuery(FILTER_TAGS_NAME, {
   //   variables: setVariables(),
   // });
@@ -127,7 +127,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
     onError: (error: any) => {
       const { message } = error;
       if (message) {
-        setNotification(client, message, 'warning');
+        setNotification(message, 'warning');
       }
       return null;
     },
@@ -185,7 +185,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
   const onSearchParameterCompleted = (searchData: any) => {
     if (searchData && searchData.search.length > 0) {
       // get the conversations from cache
-      const conversations = getCachedConverations(client, queryVariables);
+      const conversations = getCachedConverations(queryVariables);
 
       const conversationCopy = JSON.parse(JSON.stringify(searchData));
       conversationCopy.search[0].messages
@@ -208,7 +208,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
       });
 
       // update the conversation cache
-      updateConversationsCache(conversationsCopy, client, queryVariables);
+      updateConversationsCache(conversationsCopy, queryVariables);
 
       // need to display Load more messages button
       setShowLoadMore(true);
@@ -220,7 +220,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
   const onSearchCompleted = (searchData: any) => {
     if (searchData && searchData.search.length > 0) {
       // get the conversations from cache
-      const conversations = getCachedConverations(client, queryVariables);
+      const conversations = getCachedConverations(queryVariables);
 
       const conversationCopy = JSON.parse(JSON.stringify(searchData));
       conversationCopy.search[0].messages
@@ -261,7 +261,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
         conversationsCopy.search = [...conversationsCopy.search, searchData.search[0]];
       }
       // update the conversation cache
-      updateConversationsCache(conversationsCopy, client, queryVariables);
+      updateConversationsCache(conversationsCopy, queryVariables);
 
       if (searchData.search[0].messages.length === 0) {
         setShowLoadMore(false);
@@ -293,7 +293,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
     onError: (collectionError: any) => {
       const { message } = collectionError;
       if (message) {
-        setNotification(client, message, 'warning');
+        setNotification(message, 'warning');
       }
       return null;
     },
@@ -373,12 +373,12 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
   // Run through these cases to ensure data always exists
 
   if (called && error) {
-    setErrorMessage(client, error);
+    setErrorMessage(error);
     return null;
   }
 
   if (conversationError) {
-    setErrorMessage(client, conversationError);
+    setErrorMessage(conversationError);
     return null;
   }
 
@@ -628,12 +628,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
         //   setDialogbox('tag');
         // }}
         focus={index === 0}
-        showMessage={
-          index !== 0
-            ? moment(reverseConversation[index].insertedAt).format(TIME_FORMAT) !==
-              moment(reverseConversation[index - 1].insertedAt).format(TIME_FORMAT)
-            : true
-        }
         jumpToMessage={jumpToMessage}
         daySeparator={showDaySeparator(
           reverseConversation[index].insertedAt,
@@ -735,7 +729,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
     const index = conversationIndex === -1 ? 0 : conversationIndex;
     allConversationsCopy.search[index] = conversationInfoCopy;
     // update allConversations in the cache
-    updateConversationsCache(allConversationsCopy, client, queryVariables);
+    updateConversationsCache(allConversationsCopy, queryVariables);
   };
 
   // conversationInfo should not be empty
@@ -750,13 +744,10 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
   let topChatBar;
   let chatInputSection;
   if (contactId) {
+    const displayName = getDisplayName(conversationInfo);
     topChatBar = (
       <ContactBar
-        displayName={
-          conversationInfo.contact.name
-            ? conversationInfo.contact.name
-            : conversationInfo.contact.maskedPhone
-        }
+        displayName={displayName}
         isSimulator={conversationInfo.contact.phone.startsWith(SIMULATOR_NUMBER_START)}
         contactId={contactId.toString()}
         lastMessageTime={conversationInfo.contact.lastMessageAt}
@@ -857,6 +848,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
         />
       ) : null}
       {topChatBar}
+      <StatusBar />
       {messageListContainer}
       {conversationInfo.messages.length && showJumpToLatest ? jumpToLatest : null}
       {chatInputSection}

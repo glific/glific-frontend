@@ -1,25 +1,36 @@
-import React, { useState } from 'react';
-import { Menu as MenuElement } from '@material-ui/core';
-import Fade from '@material-ui/core/Fade';
+import React, { useRef, useState } from 'react';
+import {
+  ClickAwayListener,
+  Grow,
+  MenuList,
+  Paper,
+  Popper,
+  PopperPlacementType,
+} from '@material-ui/core';
 
 import MenuItem from './MenuItem/MenuItem';
 
 export interface MenuProps {
   menus: any;
+  eventType?: string | undefined;
+  placement?: PopperPlacementType | undefined;
 }
 
-const Menu: React.SFC<MenuProps> = (props) => {
-  const { menus, children } = props;
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+const Menu: React.SFC<MenuProps> = ({
+  menus,
+  children,
+  eventType = 'Click',
+  placement = 'top',
+}) => {
+  const [open, setOpen] = useState(false);
+  const anchorRef = useRef<HTMLDivElement>(null);
 
-  const handleClick = (
-    event: React.MouseEvent<HTMLDivElement> | React.KeyboardEvent<HTMLDivElement>
-  ) => {
-    setAnchorEl(event.currentTarget);
+  const handleOpen = () => {
+    setOpen(true);
   };
 
   const handleClose = () => {
-    setAnchorEl(null);
+    setOpen(false);
   };
 
   const menuList = menus.map((menu: any) => (
@@ -28,8 +39,9 @@ const Menu: React.SFC<MenuProps> = (props) => {
         onClickHandler={() => {
           if (menu.onClick) {
             menu.onClick();
+          } else {
+            handleClose();
           }
-          handleClose();
         }}
         {...menu}
       />
@@ -38,18 +50,42 @@ const Menu: React.SFC<MenuProps> = (props) => {
 
   return (
     <div data-testid="Menu">
-      <div onClick={handleClick} onKeyDown={handleClick} aria-hidden="true">
+      <div
+        onClick={eventType === 'Click' ? handleOpen : undefined}
+        onKeyDown={eventType === 'Click' ? handleOpen : undefined}
+        onMouseEnter={eventType === 'MouseEnter' ? handleOpen : undefined}
+        onMouseLeave={eventType === 'MouseEnter' ? handleClose : undefined}
+        aria-hidden="true"
+        ref={anchorRef}
+        aria-controls={open ? 'menu-list-grow' : undefined}
+        aria-haspopup="true"
+      >
         {children}
       </div>
-      <MenuElement
-        anchorEl={anchorEl}
-        keepMounted
-        open={Boolean(anchorEl)}
-        onClose={handleClose}
-        TransitionComponent={Fade}
+
+      <Popper
+        open={open}
+        anchorEl={anchorRef.current}
+        role={undefined}
+        transition
+        disablePortal={placement === 'top'}
+        placement={placement}
       >
-        {menuList}
-      </MenuElement>
+        {({ TransitionProps }) => (
+          <Grow {...TransitionProps}>
+            <Paper>
+              <ClickAwayListener onClickAway={handleClose}>
+                <div
+                  onMouseEnter={eventType === 'MouseEnter' ? handleOpen : undefined}
+                  onMouseLeave={eventType === 'MouseEnter' ? handleClose : undefined}
+                >
+                  <MenuList autoFocusItem={open}>{menuList}</MenuList>
+                </div>
+              </ClickAwayListener>
+            </Paper>
+          </Grow>
+        )}
+      </Popper>
     </div>
   );
 };

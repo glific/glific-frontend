@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { useMutation, useLazyQuery, useQuery, useApolloClient } from '@apollo/client';
+import React, { useContext, useEffect, useState } from 'react';
+import { useMutation, useLazyQuery, useQuery } from '@apollo/client';
 import { Prompt, Redirect, useHistory } from 'react-router-dom';
 import { IconButton } from '@material-ui/core';
 
@@ -7,14 +7,16 @@ import { ReactComponent as HelpIcon } from 'assets/images/icons/Help.svg';
 import { ReactComponent as FlowIcon } from 'assets/images/icons/Flow/Dark.svg';
 import { ReactComponent as WarningIcon } from 'assets/images/icons/Warning.svg';
 import { ReactComponent as ExportIcon } from 'assets/images/icons/Flow/Export.svg';
+import { ReactComponent as ResetFlowIcon } from 'assets/images/icons/Flow/ResetFlow.svg';
 import { Button } from 'components/UI/Form/Button/Button';
 import { APP_NAME, FLOWS_HELP_LINK } from 'config/index';
 import { Simulator } from 'components/simulator/Simulator';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { setNotification } from 'common/notification';
-import { PUBLISH_FLOW } from 'graphql/mutations/Flow';
+import { PUBLISH_FLOW, RESET_FLOW_COUNT } from 'graphql/mutations/Flow';
 import { EXPORT_FLOW, GET_FLOW_DETAILS, GET_FREE_FLOW } from 'graphql/queries/Flow';
 import { setAuthHeaders } from 'services/AuthService';
+import { SideDrawerContext } from 'context/session';
 import { GET_ORGANIZATION_SERVICES } from 'graphql/queries/Organization';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { exportFlowMethod } from 'common/utils';
@@ -29,7 +31,6 @@ export interface FlowEditorProps {
 
 export const FlowEditor = (props: FlowEditorProps) => {
   const { match } = props;
-  const client = useApolloClient();
   const history = useHistory();
   const { uuid } = match.params;
   const [publishDialog, setPublishDialog] = useState(false);
@@ -40,6 +41,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
   const [published, setPublished] = useState(false);
   const [stayOnPublish, setStayOnPublish] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [showResetFlowModal, setShowResetFlowModal] = useState(false);
   const [lastLocation, setLastLocation] = useState<Location | null>(null);
   const [confirmedNavigation, setConfirmedNavigation] = useState(false);
   const [flowValidation, setFlowValidation] = useState<any>();
@@ -47,6 +49,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
   const [flowKeyword, setFlowKeyword] = useState('');
   const [currentEditDialogBox, setCurrentEditDialogBox] = useState(false);
   const [dialogMessage, setDialogMessage] = useState('');
+  const { drawerOpen } = useContext(SideDrawerContext);
 
   let modal = null;
   let dialog = null;
@@ -63,6 +66,16 @@ export const FlowEditor = (props: FlowEditorProps) => {
   const [exportFlowMutation] = useLazyQuery(EXPORT_FLOW, {
     fetchPolicy: 'network-only',
   });
+  const [resetFlowCountMethod] = useMutation(RESET_FLOW_COUNT, {
+    onCompleted: ({ resetFlowCount }) => {
+      const { success } = resetFlowCount;
+      if (success) {
+        setNotification('Flow counts have been reset', 'success');
+        setShowResetFlowModal(false);
+        window.location.reload();
+      }
+    },
+  });
 
   const [publishFlow] = useMutation(PUBLISH_FLOW, {
     onCompleted: (data) => {
@@ -74,6 +87,24 @@ export const FlowEditor = (props: FlowEditorProps) => {
       }
     },
   });
+
+  const { data: flowName } = useQuery(GET_FLOW_DETAILS, {
+    fetchPolicy: 'network-only',
+    variables: {
+      filter: {
+        uuid,
+      },
+      opts: {},
+    },
+  });
+
+  let flowId: any;
+
+  // flowname can return an empty array if the uuid present is not correct
+  if (flowName && flowName.flows.length > 0) {
+    flowTitle = flowName.flows[0].name;
+    flowId = flowName.flows[0].id;
+  }
 
   const closeModal = () => {
     setModalVisible(false);
@@ -116,21 +147,29 @@ export const FlowEditor = (props: FlowEditorProps) => {
     );
   }
 
-  const { data: flowName } = useQuery(GET_FLOW_DETAILS, {
-    variables: {
-      filter: {
-        uuid,
-      },
-      opts: {},
-    },
-  });
+  const handleResetFlowCount = () => {
+    resetFlowCountMethod({ variables: { flowId } });
+  };
 
-  let flowId: any;
-
-  // flowname can return an empty array if the uuid present is not correct
-  if (flowName && flowName.flows.length > 0) {
-    flowTitle = flowName.flows[0].name;
-    flowId = flowName.flows[0].id;
+  if (showResetFlowModal) {
+    modal = (
+      <DialogBox
+        title="Warning!"
+        handleOk={handleResetFlowCount}
+        handleCancel={() => setShowResetFlowModal(false)}
+        colorOk="secondary"
+        buttonOk="Accept & reset"
+        buttonCancel="DON'T RESET YET"
+        alignButtons="center"
+        contentAlign="center"
+        additionalTitleStyles={styles.DialogTitle}
+      >
+        <div className={styles.DialogContent}>
+          Please be careful, this cannot be undone. Once you reset the flow counts you will lose
+          tracking of how many times a node was triggered for users.
+        </div>
+      </DialogBox>
+    );
   }
 
   const checkFlowAvailable = () => {
@@ -188,7 +227,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
   }, [flowId]);
 
   const handlePublishFlow = () => {
-    publishFlow({ variables: { uuid: props.match.params.uuid } });
+    publishFlow({ variables: { uuid: match.params.uuid } });
   };
 
   const handleCancelFlow = () => {
@@ -273,7 +312,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
   }
 
   if (published && !IsError) {
-    setNotification(client, 'The flow has been published');
+    setNotification('The flow has been published');
     if (!stayOnPublish) {
       return <Redirect to="/flow" />;
     }
@@ -298,6 +337,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
       }
     }
   };
+
   return (
     <>
       {dialog}
@@ -342,7 +382,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
           data-testid="saveDraftButton"
           className={simulatorId === 0 ? styles.Draft : styles.SimulatorDraft}
           onClick={() => {
-            setNotification(client, 'The flow has been saved as draft');
+            setNotification('The flow has been saved as draft');
           }}
         >
           Save as draft
@@ -362,6 +402,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
       <Simulator
         showSimulator={simulatorId > 0}
         setSimulatorId={setSimulatorId}
+        hasResetButton
         flowSimulator
         message={flowKeyword}
         resetMessage={resetMessage}
@@ -372,8 +413,11 @@ export const FlowEditor = (props: FlowEditorProps) => {
       <Prompt when message={handleBlockedNavigation} />
 
       <div className={styles.FlowContainer}>
-        <div className={styles.FlowName} data-testid="flowName">
-          {flowName ? (
+        <div
+          className={drawerOpen ? styles.FlowName : styles.FlowNameClosed}
+          data-testid="flowName"
+        >
+          {flowName && (
             <>
               <IconButton disabled className={styles.Icon}>
                 <FlowIcon />
@@ -381,8 +425,19 @@ export const FlowEditor = (props: FlowEditorProps) => {
 
               {flowTitle}
             </>
-          ) : null}
+          )}
         </div>
+
+        <Button
+          variant="outlined"
+          color="primary"
+          className={drawerOpen ? styles.ResetFlow : styles.ResetClosedDrawer}
+          data-testid="resetFlow"
+          onClick={() => setShowResetFlowModal(true)}
+          aria-hidden="true"
+        >
+          <ResetFlowIcon /> Reset flow counts
+        </Button>
         <div id="flow" />
         {loading && <Loading />}
       </div>

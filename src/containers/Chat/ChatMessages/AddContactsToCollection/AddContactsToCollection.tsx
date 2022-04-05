@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useApolloClient, useMutation, useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 
 import { setNotification } from 'common/notification';
@@ -17,7 +17,6 @@ export const AddContactsToCollection: React.SFC<AddContactsToCollectionProps> = 
   collectionId,
   setDialog,
 }) => {
-  const client = useApolloClient();
   const [contactSearchTerm, setContactSearchTerm] = useState('');
   const { t } = useTranslation();
 
@@ -35,21 +34,14 @@ export const AddContactsToCollection: React.SFC<AddContactsToCollectionProps> = 
       const numberAdded = groupContacts.length;
       if (numberDeleted > 0 && numberAdded > 0) {
         setNotification(
-          client,
           `${numberDeleted} contact${
             numberDeleted === 1 ? '' : 's  were'
           } removed and ${numberAdded} contact${numberAdded === 1 ? '' : 's  were'} added`
         );
       } else if (numberDeleted > 0) {
-        setNotification(
-          client,
-          `${numberDeleted} contact${numberDeleted === 1 ? '' : 's  were'} removed`
-        );
+        setNotification(`${numberDeleted} contact${numberDeleted === 1 ? '' : 's  were'} removed`);
       } else {
-        setNotification(
-          client,
-          `${numberAdded} contact${numberAdded === 1 ? '' : 's  were'} added`
-        );
+        setNotification(`${numberAdded} contact${numberAdded === 1 ? '' : 's  were'} added`);
       }
       setDialog(false);
     },

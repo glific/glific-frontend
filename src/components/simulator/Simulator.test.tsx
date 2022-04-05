@@ -11,9 +11,11 @@ import {
 } from 'mocks/Simulator';
 import { Simulator } from './Simulator';
 import axios from 'axios';
+import { setUserSession } from 'services/AuthService';
 
 jest.mock('axios');
 
+setUserSession(JSON.stringify({ roles: ['Admin'], organization: { id: '1' } }));
 const mockSetShowSimulator = jest.fn();
 
 const mocks = [
@@ -171,6 +173,7 @@ export const searchQuery = {
           id: '2',
           name: 'Effie Cormier',
           phone: '987654321',
+          fields: '{}',
           maskedPhone: '98****321',
           lastMessageAt: new Date(),
           status: 'VALID',
@@ -226,4 +229,27 @@ test('simulator should render template message', () => {
       <Simulator {...HSMProps} />
     </ApolloProvider>
   );
+});
+
+const getFlowKeywordMock = jest.fn();
+const props = {
+  showSimulator: true,
+  setSimulatorId: jest.fn(),
+  simulatorIcon: true,
+  isPreviewMessage: false,
+  flowSimulator: false,
+  getFlowKeyword: getFlowKeywordMock,
+  hasResetButton: true,
+};
+
+test('simulator should reset on clicking the reset button message', () => {
+  const { getByTestId } = render(
+    <MockedProvider mocks={mocks}>
+      <Simulator {...props} />
+    </MockedProvider>
+  );
+
+  const resetButton = getByTestId('resetIcon');
+  fireEvent.click(resetButton);
+  expect(getFlowKeywordMock).toBeCalled();
 });

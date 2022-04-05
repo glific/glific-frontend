@@ -1,4 +1,5 @@
 import { setVariables } from 'common/constants';
+import { IMPORT_TEMPLATES } from 'graphql/mutations/Template';
 import { FILTER_TEMPLATES, GET_TEMPLATES_COUNT } from 'graphql/queries/Template';
 
 export const filterTemplatesQuery = (term: any, data: any) => {
@@ -168,6 +169,23 @@ export const hsmTemplatesCountQuery = {
   result: {
     data: {
       countSessionTemplates: 2,
+    },
+  },
+};
+
+export const importTemplateMutation = {
+  request: {
+    query: IMPORT_TEMPLATES,
+    variables: {
+      data: '"Template Id","Template Name","Body","Type","Quality Rating","Language","Status","Created On"\n"6344689","common_otp","Your OTP for {{1}} is {{2}}. This is valid for {{3}}.","TEXT","Unknown","English","Enabled","2022-03-10"',
+    },
+  },
+  result: {
+    data: {
+      importTemplates: {
+        errors: null,
+        status: 'success',
+      },
     },
   },
 };

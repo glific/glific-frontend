@@ -15,15 +15,19 @@
   width: 48% !important;
   margin-right: 2% !important;
 }
-.organization > div:nth-of-type(6) {
-  margin: 32px 0 0 0 !important;
-}
-.organization > div:nth-of-type(n + 6) {
+
+.organization > div:nth-of-type(5) {
   display: block;
+  margin-bottom: 24px;
 }
 
-.organization > div:nth-of-type(9),
-.organization > div:nth-of-type(10) {
+.organization > div:nth-of-type(n + 10) {
+  display: block;
+  margin: 0px;
+}
+
+.organization > div:nth-of-type(12),
+.organization > div:nth-of-type(13) {
   display: inline-block;
   width: 25% !important;
   margin: 0% !important;
@@ -38,4 +42,8 @@
   font-weight: 800;
   color: '#073f24';
   line-height: 1;
+}
+
+.AddDayLabel {
+  font-size: 16px;
 }

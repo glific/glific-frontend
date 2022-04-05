@@ -2,6 +2,7 @@ import axios from 'axios';
 import { FLOW_EDITOR_API } from 'config';
 import setLogs from 'config/logs';
 import { getAuthSession } from 'services/AuthService';
+import { SIMULATOR_NUMBER_START } from './constants';
 import { setNotification } from './notification';
 
 export const getObject = (arr: any, data: any) => {
@@ -28,10 +29,14 @@ export { parseText as parseTextMethod };
 
 const validateMediaMethod = (URL: string, attachmentType: string) =>
   new Promise((resolve) => {
+    const encodedUrl = encodeURIComponent(URL);
     axios
-      .get(`${FLOW_EDITOR_API}validate-media?url=${URL}&type=${attachmentType.toLowerCase()}`, {
-        headers: { authorization: getAuthSession('access_token') },
-      })
+      .get(
+        `${FLOW_EDITOR_API}validate-media?url=${encodedUrl}&type=${attachmentType.toLowerCase()}`,
+        {
+          headers: { authorization: getAuthSession('access_token') },
+        }
+      )
       .then((response: any) => {
         resolve(response);
       })
@@ -48,14 +53,14 @@ export { validateMediaMethod as validateMedia };
 export const randomIntFromInterval = (min: number, max: number) =>
   Math.floor(Math.random() * (max - min + 1) + min);
 
-export const copyToClipboardMethod = (client: any, text: string) => {
+export const copyToClipboardMethod = (text: string) => {
   if (text) {
     try {
       navigator.clipboard.writeText(text).then(() => {
-        setNotification(client, 'Copied to clipboard');
+        setNotification('Copied to clipboard');
       });
     } catch (err) {
-      setNotification(client, 'Sorry, cannot copy content over insecure connection', 'warning');
+      setNotification('Sorry, cannot copy content over insecure connection', 'warning');
     }
   }
 };
@@ -67,15 +72,20 @@ export const addLogsMethod = (event: string, logData: any) => {
   setLogs(logData, 'info');
 };
 
-export const exportFlowMethod = async (exportData: any, flowName: string) => {
-  const blob = new Blob([exportData], { type: 'application/json' });
-  const href = await URL.createObjectURL(blob);
+export const downloadFile = (url: string, filename: string) => {
   const link = document.createElement('a');
-  link.href = href;
-  link.download = `${flowName}.json`;
+  link.href = url;
+  link.target = '_blank';
+  link.download = filename;
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
+};
+
+export const exportFlowMethod = async (exportData: any, flowName: string) => {
+  const blob = new Blob([exportData], { type: 'application/json' });
+  const href = await URL.createObjectURL(blob);
+  downloadFile(href, `${flowName}.json`);
 };
 
 export { addLogsMethod as addLogs };
@@ -101,6 +111,44 @@ export const getInteractiveMessageBody = (interactiveJSON: any) => {
   }
 
   return messageBody;
+};
+
+export const getDisplayName = (conversation: any) => {
+  // let's return early with default simulator name if we are looking at simulator contact
+  const isSimulatorContact = conversation.contact.phone.startsWith(SIMULATOR_NUMBER_START);
+  if (isSimulatorContact) {
+    return conversation.contact.name || conversation.contact.maskedPhone;
+  }
+
+  let displayName = '';
+  let contactFields: any = {};
+  try {
+    contactFields = JSON.parse(conversation.contact.fields);
+  } catch (er) {
+    setLogs(er, 'error');
+  }
+
+  if (contactFields?.name) {
+    displayName = contactFields.name.value;
+  } else if (conversation.contact.name) {
+    displayName = conversation.contact.name;
+  } else {
+    displayName = conversation.contact.maskedPhone;
+  }
+  return displayName;
+};
+
+export const numberToAbbreviation = (numberString: string) => {
+  const number = parseInt(numberString, 10);
+  let abbreviation = '';
+  if (number < 1000) {
+    abbreviation = number.toString();
+  } else if (number >= 10000 && number < 1000000) {
+    abbreviation = `${(number / 1000).toFixed(0)}k`;
+  } else if (number >= 1000000 && number < 1000000000) {
+    abbreviation = `${(number / 1000000).toFixed(0)}m`;
+  }
+  return abbreviation;
 };
 
 export default getObject;

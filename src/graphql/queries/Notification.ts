@@ -4,6 +4,7 @@ export const NOTIFICATION = gql`
   {
     message @client
     severity @client
+    hideDuration @client
   }
 `;
 

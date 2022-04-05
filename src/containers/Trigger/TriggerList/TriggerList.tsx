@@ -34,7 +34,9 @@ const getName = (flow: any, startAt: any, frequency: any, days: any, isActive: a
     <Tooltip title={getTooltip(frequency, days)} tooltipClass={styles.Tooltip} placement="right">
       <span className={styles.TriggerIcon}>{isActive ? <ClockIcon /> : <ClockInactiveIcon />}</span>
     </Tooltip>
-    {`${flow.name}_${moment(startAt).format('DD/MM/yyyy_hh:mmA')}`}
+    <span className={isActive ? '' : styles.Inactive}>{`${flow.name}_${moment(startAt).format(
+      'DD/MM/yyyy_hh:mmA'
+    )}`}</span>
   </p>
 );
 
@@ -95,7 +97,7 @@ export const TriggerList: React.SFC<TriggerListProps> = () => {
       dialogMessage={dialogMessage}
       {...queries}
       {...columnAttributes}
-      searchParameter="name"
+      searchParameter={['name']}
       additionalAction={additionalAction}
       removeSortBy={['COLLECTION']}
     />

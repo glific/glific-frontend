@@ -3,13 +3,14 @@ import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { EditorState } from 'draft-js';
 import { useLocation, useHistory } from 'react-router-dom';
-import { useApolloClient, useLazyQuery, useQuery } from '@apollo/client';
+import { useLazyQuery, useQuery } from '@apollo/client';
 import { setNotification } from 'common/notification';
 import { ReactComponent as InteractiveMessageIcon } from 'assets/images/icons/InteractiveMessage/Dark.svg';
 import {
   CREATE_INTERACTIVE,
   UPDATE_INTERACTIVE,
   DELETE_INTERACTIVE,
+  COPY_INTERACTIVE,
 } from 'graphql/mutations/InteractiveMessage';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { USER_LANGUAGES } from 'graphql/queries/Organization';
@@ -71,12 +72,19 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
   const [previousState, setPreviousState] = useState<any>({});
   const [nextLanguage, setNextLanguage] = useState<any>('');
   const [warning, setWarning] = useState<any>();
+  const { t } = useTranslation();
 
-  const client = useApolloClient();
+  // alter header & update/copy queries
+  let header;
 
-  const { data: languages } = useQuery(USER_LANGUAGES, {
-    variables: { opts: { order: 'ASC' } },
-  });
+  if (location.state === 'copy') {
+    queries.updateItemQuery = COPY_INTERACTIVE;
+    header = t('Copy Interactive Message');
+  } else {
+    queries.updateItemQuery = UPDATE_INTERACTIVE;
+  }
+
+  const { data: languages } = useQuery(USER_LANGUAGES);
 
   const [getInteractiveTemplateById, { data: template, loading: loadingTemplate }] =
     useLazyQuery<any>(GET_INTERACTIVE_MESSAGE);
@@ -89,7 +97,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     if (languages) {
       const lang = languages.currentUser.user.organization.activeLanguages.slice();
       // sort languages by their name
-      lang.sort((first: any, second: any) => (first.label > second.label ? 1 : -1));
+      lang.sort((first: any, second: any) => (first.id > second.id ? 1 : -1));
 
       setLanguageOptions(lang);
       if (!Object.prototype.hasOwnProperty.call(match.params, 'id')) {
@@ -103,8 +111,6 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       getInteractiveTemplateById({ variables: { id: match.params.id } });
     }
   }, [match.params]);
-
-  const { t } = useTranslation();
 
   const states = {
     language,
@@ -163,7 +169,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       if (
         Object.keys(translationsCopy).length > 0 &&
         translationsCopy[language.id || languageVal.id] &&
-        !location.state
+        !location.state?.language
       ) {
         content =
           JSON.parse(translationsVal)[language.id || languageVal.id] ||
@@ -177,7 +183,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     setDefaultLanguage(languageVal);
 
     if (languageOptions.length > 0 && languageVal) {
-      if (location.state) {
+      if (location.state?.language) {
         const selectedLangauge = languageOptions.find(
           (lang: any) => lang.label === location.state.language
         );
@@ -191,7 +197,13 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       }
     }
 
-    setTitle(data.title);
+    let titleText = data.title;
+
+    if (location.state === 'copy') {
+      titleText = `Copy of ${data.title}`;
+    }
+
+    setTitle(titleText);
     setBody(getEditorFromContent(data.body));
     setTemplateType(typeValue);
     setTimeout(() => setTemplateButtons(data.templateButtons), 100);
@@ -422,7 +434,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     if (values.type?.label === 'TEXT') {
       if (values.title || values.body.getCurrentContent().getPlainText()) {
         if (errors) {
-          setNotification(client, t('Please check the errors'), 'warning');
+          setNotification(t('Please check the errors'), 'warning');
         }
       } else {
         handleLanguageChange(option);
@@ -430,7 +442,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     }
     if (values.body.getCurrentContent().getPlainText()) {
       if (Object.keys(errors).length !== 0) {
-        setNotification(client, t('Please check the errors'), 'warning');
+        setNotification(t('Please check the errors'), 'warning');
       }
     } else {
       handleLanguageChange(option);
@@ -457,6 +469,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       inputProp: {
         onBlur: (event: any) => setTitle(event.target.value),
       },
+      helperText: t('Only alphanumeric characters and spaces are allowed'),
     },
     // checkbox is not needed in media types
     {
@@ -601,7 +614,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     const langIds = Object.keys(translationsCopy);
     const isPresent = isTranslationsPresentForEnglish(...langIds);
 
-    // Update label anyway if selected langauge is English
+    // Update label anyway if selected language is English
     if (selectedLanguage.label === 'English') {
       payloadData.label = titleVal;
     }
@@ -728,6 +741,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
         states={states}
         setStates={setStates}
         setPayload={setPayload}
+        title={header}
         validationSchema={validationScheme}
         listItem="interactiveTemplate"
         listItemName="interactive msg"

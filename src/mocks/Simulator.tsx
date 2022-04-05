@@ -14,11 +14,13 @@ export const simulatorReleaseSubscription = {
 export const simulatorReleaseQuery = {
   request: {
     query: RELEASE_SIMULATOR,
-    variables: {},
+    variables: { organizationId: '1' },
   },
   result: {
-    simulatorRelease: {
-      id: '1',
+    data: {
+      simulatorRelease: {
+        id: '1',
+      },
     },
   },
 };

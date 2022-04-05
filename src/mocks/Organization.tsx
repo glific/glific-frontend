@@ -7,6 +7,7 @@ import {
   BSPBALANCE,
   FILTER_ORGANIZATIONS,
   GET_ORGANIZATION_COUNT,
+  GET_ORGANIZATION_PROVIDER,
 } from 'graphql/queries/Organization';
 import { BSP_BALANCE_SUBSCRIPTION } from 'graphql/subscriptions/PeriodicInfo';
 
@@ -480,6 +481,41 @@ export const getOrganizationLanguagesQueryByOrder = {
   },
 };
 
+export const getOrganizationLanguagesWithoutOrder = {
+  request: {
+    query: USER_LANGUAGES,
+    variables: {},
+  },
+  result: {
+    data: {
+      currentUser: {
+        user: {
+          organization: {
+            activeLanguages: [
+              {
+                id: '1',
+                label: 'English',
+                localized: true,
+                locale: 'en',
+              },
+              {
+                id: '2',
+                label: 'Marathi',
+                localized: true,
+                locale: 'mr',
+              },
+            ],
+            defaultLanguage: {
+              id: '1',
+              label: 'English',
+            },
+          },
+        },
+      },
+    },
+  },
+};
+
 export const walletBalanceSubscription = [
   {
     request: {
@@ -678,3 +714,18 @@ export const getAllOrganizations = [
     },
   },
 ];
+
+export const getOrganizationBSP = {
+  request: {
+    query: GET_ORGANIZATION_PROVIDER,
+  },
+  result: {
+    data: {
+      organization: {
+        organization: {
+          bsp: { shortcode: 'gupshup_enterprise' },
+        },
+      },
+    },
+  },
+};

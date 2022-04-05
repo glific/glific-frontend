@@ -134,7 +134,8 @@ export interface TemplateProps {
   getUrlAttachmentAndType?: any;
   getShortcode?: any;
   getExample?: any;
-  getCategory?: any;
+  setCategory?: any;
+  category?: any;
   onExampleChange?: any;
   languageStyle?: string;
 }
@@ -162,7 +163,8 @@ const Template: React.SFC<TemplateProps> = (props) => {
     getUrlAttachmentAndType,
     getShortcode,
     getExample,
-    getCategory,
+    setCategory,
+    category,
     onExampleChange = () => {},
     languageStyle = 'dropdown',
   } = props;
@@ -177,7 +179,6 @@ const Template: React.SFC<TemplateProps> = (props) => {
   const [translations, setTranslations] = useState<any>();
   const [attachmentURL, setAttachmentURL] = useState<any>();
   const [languageOptions, setLanguageOptions] = useState<any>([]);
-  const [category, setCategory] = useState<any>();
   const [isActive, setIsActive] = useState<boolean>(true);
   const [warning, setWarning] = useState<any>();
   const [isUrlValid, setIsUrlValid] = useState<any>();
@@ -247,6 +248,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
     if (exampleValue) {
       let exampleBody: any;
       if (hasButtons) {
+        setTemplateType(templateButtonType);
         const { buttons: buttonsVal, template } = getTemplateAndButtons(
           templateButtonType,
           exampleValue,
@@ -382,12 +384,6 @@ const Template: React.SFC<TemplateProps> = (props) => {
     }
   }, [getExample]);
 
-  useEffect(() => {
-    if (getCategory) {
-      setCategory(getCategory);
-    }
-  }, [getCategory]);
-
   const validateTitle = (value: any) => {
     let error;
     if (value) {
@@ -399,8 +395,8 @@ const Template: React.SFC<TemplateProps> = (props) => {
         }
         // need to check exact title
         found = sessionTemplates.sessionTemplates.filter((search: any) => search.label === value);
-        if (props.match.params.id && found.length > 0) {
-          found = found.filter((search: any) => search.id !== props.match.params.id);
+        if (match.params.id && found.length > 0) {
+          found = found.filter((search: any) => search.id !== match.params.id);
         }
       }
       if (found.length > 0) {
@@ -786,7 +782,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
 
         delete payloadCopy.language;
         if (payloadCopy.isHsm) {
-          payloadCopy.category = payloadCopy.category.id;
+          payloadCopy.category = payloadCopy.category.label;
           if (isAddButtonChecked && templateType) {
             const templateButtonData = getButtonTemplatePayload();
             Object.assign(payloadCopy, { ...templateButtonData });
@@ -841,7 +837,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
         payloadCopy.type = 'TEXT';
       }
       if (payloadCopy.isHsm) {
-        payloadCopy.category = payloadCopy.category.id;
+        payloadCopy.category = payloadCopy.category.label;
 
         if (isAddButtonChecked && templateType) {
           const templateButtonData = getButtonTemplatePayload();
@@ -912,16 +908,13 @@ const Template: React.SFC<TemplateProps> = (props) => {
               .required('Required')
               .when('type', {
                 is: (val: any) => val === 'phone_number',
-                then: Yup.string().matches(
-                  /^(\+)\d{12}(\d{2})?$/gm,
-                  'Enter phone no is correct format'
-                ),
+                then: Yup.string().matches(/^\d{10,12}$/, 'Please enter valid phone number.'),
               })
               .when('type', {
                 is: (val: any) => val === 'url',
                 then: Yup.string().matches(
                   /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_+.~#?&/=]*)/gi,
-                  'Enter correct url'
+                  'Please enter valid url.'
                 ),
               }),
           })

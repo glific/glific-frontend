@@ -77,7 +77,7 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
         <img
           data-testid="stickerMessage"
           src={media.url}
-          className={styles.Image}
+          className={isSimulatedMessage ? styles.SimulatorSticker : styles.Image}
           aria-hidden="true"
           alt="sticker"
         />
@@ -122,7 +122,7 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
       messageBody = (
         <div data-testid="documentMessage" className={styles.Document}>
           <div>
-            <DocumentIconDark />
+            <DocumentIconDark className={styles.DocumentIcon} />
             {media.caption}
           </div>
           <a
@@ -141,12 +141,12 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
     case 'LOCATION':
       messageBody = (
         <a
-          href={`https://maps.google.com/?q=${location.latitude},${location.longitude}`}
+          href={`https://maps.google.com/?q=${location?.latitude},${location?.longitude}`}
           target="_blank"
           rel="noreferrer"
           data-testid="locationMessage"
         >
-          <MapIcon />
+          <MapIcon className={isSimulatedMessage ? styles.MapIcon : ''} />
         </a>
       );
       break;

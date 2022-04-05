@@ -9,6 +9,7 @@ import {
   getOrganisationServicesQuery,
   publishFlow,
   getFreeFlow,
+  resetFlowCount,
 } from 'mocks/Flow';
 import { conversationQuery } from 'mocks/Chat';
 import {
@@ -33,7 +34,7 @@ const mocks = [
 
 const activeFlowMocks = [...mocks, getActiveFlow];
 const inActiveFlowMocks = [...mocks, getInactiveFlow];
-const noKeywordMocks = [...mocks, getFlowWithoutKeyword];
+const noKeywordMocks = [...mocks, getFlowWithoutKeyword, resetFlowCount];
 
 const wrapperFunction = (mocks: any) => (
   <MockedProvider mocks={mocks} addTypename={false}>
@@ -224,4 +225,27 @@ test('flow with no keywords', async () => {
   });
 
   // need some assertion
+});
+
+test('reset flow counts', async () => {
+  axios.post.mockImplementation(() => Promise.resolve({ data: {} }));
+  const { getByTestId, getByText } = render(wrapperFunction(noKeywordMocks));
+
+  await waitFor(() => {
+    expect(getByText('help workflow'));
+  });
+  fireEvent.click(getByTestId('resetFlow'));
+  await waitFor(() => {
+    expect(
+      getByText(
+        'Please be careful, this cannot be undone. Once you reset the flow counts you will lose tracking of how many times a node was triggered for users.'
+      )
+    ).toBeInTheDocument();
+  });
+
+  fireEvent.click(getByTestId('ok-button'));
+
+  await waitFor(() => {
+    // need to have an assertion after the query ran
+  });
 });

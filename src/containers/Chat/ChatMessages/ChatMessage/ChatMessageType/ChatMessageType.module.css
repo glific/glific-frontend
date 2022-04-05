@@ -61,10 +61,6 @@
   display: flex;
 }
 
-.Document > div > svg {
-  margin-right: 8px;
-}
-
 .DocumentText {
   display: flex;
   align-items: center;
@@ -107,4 +103,18 @@
 .ContextMessageVideo {
   max-width: 95px !important;
   max-height: 77px !important;
+}
+
+.MapIcon {
+  width: 100px !important;
+  height: 60px !important;
+  position: relative !important;
+}
+
+.SimulatorSticker {
+  width: 100px !important;
+}
+
+.DocumentIcon {
+  margin-right: 8px;
 }

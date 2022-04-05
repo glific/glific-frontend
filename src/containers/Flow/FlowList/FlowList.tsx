@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
-import { useLazyQuery, useMutation, useApolloClient } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client';
 
 import { ReactComponent as FlowIcon } from 'assets/images/icons/Flow/Dark.svg';
 import { ReactComponent as DuplicateIcon } from 'assets/images/icons/Flow/Duplicate.svg';
@@ -60,7 +60,6 @@ const queries = {
 const configureIcon = <ConfigureIcon />;
 
 export const FlowList: React.SFC<FlowListProps> = () => {
-  const client = useApolloClient();
   const history = useHistory();
   const { t } = useTranslation();
   const inputRef = useRef<any>(null);
@@ -79,14 +78,13 @@ export const FlowList: React.SFC<FlowListProps> = () => {
       const { success } = result.importFlow;
       if (!success) {
         setNotification(
-          client,
           t(
             'Sorry! An error occurred! This could happen if the flow is already present or error in the import file.'
           ),
           'error'
         );
       } else {
-        setNotification(client, t('The flow has been imported successfully.'));
+        setNotification(t('The flow has been imported successfully.'));
       }
       setImporting(false);
     },
@@ -190,7 +188,7 @@ export const FlowList: React.SFC<FlowListProps> = () => {
         dialogMessage={dialogMessage}
         {...queries}
         {...columnAttributes}
-        searchParameter="nameOrKeyword"
+        searchParameter={['nameOrKeyword']}
         removeSortBy={['LAST PUBLISHED', 'LAST SAVED IN DRAFT']}
         additionalAction={additionalAction}
         button={{ show: true, label: t('+ Create Flow') }}

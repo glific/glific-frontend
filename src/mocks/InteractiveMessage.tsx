@@ -8,7 +8,7 @@ import {
   GET_INTERACTIVE_MESSAGES_COUNT,
   GET_INTERACTIVE_MESSAGE,
 } from 'graphql/queries/InteractiveMessage';
-import { getOrganizationLanguagesQueryByOrder } from './Organization';
+import { getOrganizationLanguagesWithoutOrder } from './Organization';
 
 const filterInteractiveFunction = (filter: any, opts: any) => ({
   request: {
@@ -128,6 +128,7 @@ const quickReplyMock = {
 };
 
 const quickReplyMedia = {
+  sendWithTitle: true,
   interactiveContent:
     '{"type":"quick_reply","options":[{"type":"text","title":"Visual Arts"},{"type":"text","title":"Poetry"},{"type":"text","title":"Theatre"}],"content":{"url":"https://storage.glific.png","type":"image","text":"What activity would you like?\\n"}}',
 
@@ -239,5 +240,5 @@ export const mocks: any = [
   getTemplateByType('2', listReplyMock),
   getTemplateByType('3', quickReplyMedia),
   deleteMock,
-  getOrganizationLanguagesQueryByOrder,
+  getOrganizationLanguagesWithoutOrder,
 ];

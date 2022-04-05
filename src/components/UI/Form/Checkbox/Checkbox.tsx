@@ -24,10 +24,14 @@ export const Checkbox: React.SFC<CheckboxProps> = (props) => {
     darkCheckbox,
     disabled = false,
     addLabelStyle = true,
+    form,
+    handleChange,
   } = props;
-  const handleChange = () => {
-    props.form.setFieldValue(props.field.name, !props.field.value);
-    if (props.handleChange) props.handleChange(!props.field.value);
+
+  const handleChangeCallback = () => {
+    const { name, value } = field;
+    form.setFieldValue(name, !value);
+    if (handleChange) handleChange(!value);
   };
 
   return (
@@ -40,7 +44,7 @@ export const Checkbox: React.SFC<CheckboxProps> = (props) => {
             {...field}
             color="primary"
             checked={field.value ? field.value : false}
-            onChange={handleChange}
+            onChange={handleChangeCallback}
             disabled={disabled}
           />
         }

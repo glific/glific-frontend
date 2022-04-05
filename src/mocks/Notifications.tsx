@@ -64,7 +64,7 @@ export const getUnFitleredNotificationCountQuery = {
   },
   result: {
     data: {
-      countNotifications: 2,
+      countNotifications: 1,
     },
   },
 };
@@ -77,7 +77,9 @@ export const getNotificationCountQuery = {
     },
   },
   result: {
-    data: { countNotifications: 1 },
+    data: {
+      countNotifications: 1,
+    },
   },
 };
 
@@ -92,7 +94,7 @@ export const getCountWithEmptyFilter = {
   },
   result: {
     data: {
-      countNotifications: 2,
+      countNotifications: 1,
     },
   },
 };

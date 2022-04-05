@@ -19,6 +19,25 @@ import absinthe from './absinthe';
 
 const subscribe = require('@jumpn/utils-graphql');
 
+export const cache = new InMemoryCache({
+  typePolicies: {
+    Query: {
+      fields: {
+        contactHistory: {
+          keyArgs: false,
+
+          merge(existing, incoming, { args }: any) {
+            if (args.opts.offset === 0) {
+              return incoming;
+            }
+            return [...existing, ...incoming];
+          },
+        },
+      },
+    },
+  },
+});
+
 const gqlClient = (history: any) => {
   const refreshTokenLink: any = new TokenRefreshLink({
     accessTokenField: 'access_token',
@@ -46,7 +65,9 @@ const gqlClient = (history: any) => {
       console.warn('Your refresh token is invalid. Try to relogin');
       console.error(err);
       // logged error in logflare
-      setLogs(err, 'error');
+
+      setLogs('Token fetch error', 'error');
+      setLogs(err.message, 'error');
       /* eslint-enable */
       // gracefully logout
       return Logout;
@@ -82,6 +103,7 @@ const gqlClient = (history: any) => {
       // @ts-ignore
       switch (networkError.statusCode) {
         case 401:
+          setLogs(`Error 401: logging user out`, 'error');
           history.push('/logout/session');
           break;
         default:
@@ -114,30 +136,13 @@ const gqlClient = (history: any) => {
 
   const link = retryLink.split(
     (operation) => subscribe.hasSubscription(operation.query),
-    absinthe,
+    refreshTokenLink.concat(errorLink.concat(absinthe)),
     refreshTokenLink.concat(errorLink.concat(authLink.concat(httpLink)))
   );
 
   return new ApolloClient({
     link,
-    cache: new InMemoryCache({
-      typePolicies: {
-        Query: {
-          fields: {
-            contactHistory: {
-              keyArgs: false,
-
-              merge(existing, incoming, { args }: any) {
-                if (args.opts.offset === 0) {
-                  return incoming;
-                }
-                return [...existing, ...incoming];
-              },
-            },
-          },
-        },
-      },
-    }),
+    cache,
   });
 };
 

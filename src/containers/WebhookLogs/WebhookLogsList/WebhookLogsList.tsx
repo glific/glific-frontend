@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Popover } from '@material-ui/core';
-import { useApolloClient } from '@apollo/client';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 
@@ -12,12 +11,13 @@ import Menu from 'components/UI/Menu/Menu';
 import { Button } from 'components/UI/Form/Button/Button';
 import { FILTER_WEBHOOK_LOGS, GET_WEBHOOK_LOGS_COUNT } from 'graphql/queries/WebhookLogs';
 import { copyToClipboard } from 'common/utils';
+import { DATE_TIME_FORMAT } from 'common/constants';
 import styles from './WebhookLogsList.module.css';
 
 export interface WebhookLogsListProps {}
 
 const getTime = (time: string) => (
-  <div className={styles.TableText}>{moment(time).format('DD-MM-YYYY hh:mm')}</div>
+  <div className={styles.TableText}>{moment(time).format(DATE_TIME_FORMAT)}</div>
 );
 
 /* istanbul ignore next */
@@ -79,7 +79,6 @@ const queries = {
 const restrictedAction = () => ({ delete: false, edit: false });
 
 export const WebhookLogsList: React.SFC<WebhookLogsListProps> = () => {
-  const client = useApolloClient();
   const [anchorEl, setAnchorEl] = useState(null);
   const [open, setOpen] = useState(false);
   const [text, setText] = useState<any>();
@@ -104,7 +103,7 @@ export const WebhookLogsList: React.SFC<WebhookLogsListProps> = () => {
         title: t('Copy text'),
         icon: <img src={CopyIcon} alt="copy" />,
         onClick: () => {
-          copyToClipboard(client, croppedtext);
+          copyToClipboard(croppedtext);
         },
       },
       {
@@ -170,7 +169,7 @@ export const WebhookLogsList: React.SFC<WebhookLogsListProps> = () => {
       </div>
       <div className={styles.PopoverActions}>
         <span
-          onClick={() => copyToClipboard(client, text)}
+          onClick={() => copyToClipboard(text)}
           aria-hidden="true"
           data-testid="copyToClipboard"
         >
@@ -191,13 +190,14 @@ export const WebhookLogsList: React.SFC<WebhookLogsListProps> = () => {
         listItemName="webhookLog"
         pageLink="webhookLog"
         listIcon={webhookLogsIcon}
-        searchParameter="url"
+        searchParameter={['contact_phone', 'url']}
         button={{ show: false, label: '' }}
         {...queries}
         dialogMessage=""
         restrictedAction={restrictedAction}
         {...columnAttributes}
         removeSortBy={['STATUS']}
+        listOrder="desc"
       />
       {popover}
     </div>

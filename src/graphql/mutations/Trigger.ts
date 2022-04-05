@@ -26,6 +26,7 @@ export const CREATE_TRIGGER = gql`
         }
         id
         isActive
+        hours
         isRepeating
         name
         startAt
@@ -35,7 +36,7 @@ export const CREATE_TRIGGER = gql`
 `;
 
 export const UPDATE_TRIGGER = gql`
-  mutation updateTrigger($id: ID!, $input: TriggerUpdateInput!) {
+  mutation updateTrigger($id: ID!, $input: TriggerInput!) {
     updateTrigger(id: $id, input: $input) {
       trigger {
         days
@@ -49,6 +50,7 @@ export const UPDATE_TRIGGER = gql`
         }
         id
         isActive
+        hours
         isRepeating
         name
         startAt

@@ -33,6 +33,12 @@ const theme = createTheme({
           backgroundColor: '#b5b5b5',
         },
       },
+      outlinedPrimary: {
+        border: '2px solid',
+        '&:hover': {
+          border: '2px solid',
+        },
+      },
     },
     MuiTablePagination: {
       caption: {

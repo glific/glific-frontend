@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useQuery, useMutation, DocumentNode, useLazyQuery, useApolloClient } from '@apollo/client';
+import { useQuery, useMutation, DocumentNode, useLazyQuery } from '@apollo/client';
 import { IconButton, TableFooter, TablePagination, TableRow, Typography } from '@material-ui/core';
 
 import { ListCard } from 'containers/List/ListCard/ListCard';
@@ -43,7 +43,7 @@ export interface ListProps {
     action?: Function;
   };
   showCheckbox?: boolean;
-  searchParameter?: string;
+  searchParameter?: Array<any>;
   filters?: Object | null;
   filterList?: any;
   listOrder?: 'asc' | 'desc';
@@ -75,6 +75,7 @@ export interface ListProps {
   removeSortBy?: Array<any> | null;
   noItemText?: string | null;
   isDetailsPage?: boolean;
+  customStyles?: any;
 }
 
 interface TableVals {
@@ -109,7 +110,7 @@ export const List: React.SFC<ListProps> = ({
   showCheckbox,
   deleteModifier = { icon: 'normal', variables: null, label: 'Delete' },
   editSupport = true,
-  searchParameter = 'label',
+  searchParameter = ['label'],
   filters = null,
   displayListType = 'list',
   cardLink = null,
@@ -121,9 +122,10 @@ export const List: React.SFC<ListProps> = ({
   defaultSortBy,
   noItemText = null,
   isDetailsPage = false,
+  customStyles,
 }: ListProps) => {
   const { t } = useTranslation();
-  const client = useApolloClient();
+
   // DialogBox states
   const [deleteItemID, setDeleteItemID] = useState<number | null>(null);
   const [deleteItemName, setDeleteItemName] = useState<string>('');
@@ -205,7 +207,9 @@ export const List: React.SFC<ListProps> = ({
   let filter: any = {};
 
   if (searchVal !== '') {
-    filter[searchParameter] = searchVal;
+    searchParameter.forEach((parameter: string) => {
+      filter[parameter] = searchVal;
+    });
   }
   filter = { ...filter, ...filters };
 
@@ -275,7 +279,9 @@ export const List: React.SFC<ListProps> = ({
       onCompleted: () => {
         checkUserRole();
         refetchCount();
-        refetchValues(filterPayload());
+        if (refetchValues) {
+          refetchValues(filterPayload());
+        }
       },
     });
   }
@@ -292,7 +298,7 @@ export const List: React.SFC<ListProps> = ({
   const deleteHandler = (id: number) => {
     const variables = deleteModifier.variables ? deleteModifier.variables(id) : { id };
     deleteItem({ variables });
-    setNotification(client, `${capitalListItemName} deleted successfully`);
+    setNotification(`${capitalListItemName} deleted successfully`);
   };
 
   const handleDeleteItem = () => {
@@ -358,9 +364,9 @@ export const List: React.SFC<ListProps> = ({
   if (loading || l || loadingCollections) return <Loading />;
   if (error || e) {
     if (error) {
-      setErrorMessage(client, error);
+      setErrorMessage(error);
     } else if (e) {
-      setErrorMessage(client, e);
+      setErrorMessage(e);
     }
     return null;
   }
@@ -410,6 +416,9 @@ export const List: React.SFC<ListProps> = ({
       return (
         <div className={styles.Icons}>
           {additionalAction.map((action: any, index: number) => {
+            if (allowedAction.restricted) {
+              return null;
+            }
             // check if we are dealing with nested element
             let additionalActionParameter: any;
             const params: any = additionalAction[index].parameter.split('.');
@@ -662,7 +671,7 @@ export const List: React.SFC<ListProps> = ({
         </div>
       </div>
 
-      <div className={styles.Body}>
+      <div className={`${styles.Body} ${customStyles}`}>
         {backLink}
         {/* Rendering list of items */}
         {itemList.length > 0 ? displayList : noItemsText}
