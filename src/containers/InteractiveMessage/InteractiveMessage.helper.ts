@@ -5,10 +5,11 @@ import { FLOW_EDITOR_API } from 'config';
 import { getAuthSession } from 'services/AuthService';
 import * as Yup from 'yup';
 
-Yup.addMethod(Yup.array, 'unique', function (message) {
-  // eslint-disable-next-line
-  return this.test('unique', message, function (list: any) {
+Yup.addMethod(Yup.array, 'unique', function uniqueMethod(message) {
+  return this.test('unique', message, function test(list: any) {
     if (!list) return true;
+    // create a title map
+    const titleMap: Array<string> = [];
 
     for (let listItem = 0; listItem < list.length; listItem += 1) {
       const { options } = list[listItem];
@@ -16,8 +17,6 @@ Yup.addMethod(Yup.array, 'unique', function (message) {
       if (!options) return true;
       const len = options.length;
 
-      // create a title map
-      const titleMap: Array<string> = [];
       for (let i = 0; i < len; i += 1) {
         // check if we have a duplicate
         if (titleMap.includes(options[i].title)) {
@@ -61,6 +60,7 @@ export const validator = (templateType: any, t: any) => {
           ),
         })
       )
+      // need to add this since adding a new method in yup does not add its type declarations
       // @ts-ignore
       .unique('Title is duplicate')
       .min(1);
