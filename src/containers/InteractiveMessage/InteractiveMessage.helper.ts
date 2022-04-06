@@ -14,7 +14,6 @@ export const validator = (templateType: any, t: any) => {
       .transform((_current, original) => original.getCurrentContent().getPlainText())
       .when('type', {
         is: (val: any) => {
-          console.log('s');
           return val && val.id && val.id === 'DOCUMENT';
         },
         then: Yup.string().nullable(),
