@@ -13,9 +13,7 @@ export const validator = (templateType: any, t: any) => {
     body: Yup.string()
       .transform((_current, original) => original.getCurrentContent().getPlainText())
       .when('type', {
-        is: (val: any) => {
-          return val && val.id && val.id === 'DOCUMENT';
-        },
+        is: (val: any) => val && val.id && val.id === 'DOCUMENT',
         then: Yup.string().nullable(),
         otherwise: Yup.string().required(t('Message content is required.')),
       }),
