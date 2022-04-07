@@ -74,3 +74,7 @@
   composes: Translation from 'App.module.css';
   margin-bottom: 8px;
 }
+
+.HelperText {
+  margin-left: 12px;
+}
