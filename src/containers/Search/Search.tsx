@@ -197,7 +197,7 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
       args.filter = Object.assign(args.filter, dateRange);
     }
 
-    if (props.searchParam.dateFromExpression && props.searchParam.dateFromExpression !== '') {
+    if (props.searchParam.dateFromExpression) {
       const dateExpression = {
         dateExpression: {
           toExpression: props.searchParam.dateToExpression,
@@ -399,7 +399,7 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
       args.filter = Object.assign(args.filter, dateRange);
     }
 
-    if (payload.dateFromExpression && payload.dateFromExpression !== '') {
+    if (payload.dateFromExpression) {
       const dateExpression = {
         dateExpression: {
           toExpression: payload.dateToExpression,
