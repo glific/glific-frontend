@@ -62,7 +62,7 @@ export const validator = (templateType: any, t: any) => {
       )
       // need to add this since adding a new method in yup does not add its type declarations
       // @ts-ignore
-      .unique('Title is duplicate')
+      .unique(t('Please enter unique title'))
       .min(1);
 
     validation.globalButton = Yup.string()
