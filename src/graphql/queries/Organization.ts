@@ -131,3 +131,15 @@ export const GET_ORGANIZATION_PROVIDER = gql`
     }
   }
 `;
+
+export const GET_ORGANIZATION_PHONE = gql`
+  query organizationPhone {
+    organization {
+      organization {
+        contact {
+          phone
+        }
+      }
+    }
+  }
+`;

@@ -8,7 +8,9 @@ import { SAVED_SEARCH_QUERY, SEARCHES_COUNT } from 'graphql/queries/Search';
 import { COLLECTION_COUNT_SUBSCRIPTION } from 'graphql/subscriptions/PeriodicInfo';
 import { setErrorMessage } from 'common/notification';
 import Loading from 'components/UI/Layout/Loading/Loading';
+import { numberToAbbreviation } from 'common/utils';
 import { getUserSession } from 'services/AuthService';
+import Tooltip from 'components/UI/Tooltip/Tooltip';
 import styles from './SavedSearchToolbar.module.css';
 
 export interface SavedSearchToolbarProps {
@@ -115,6 +117,7 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
       countClass.push(styles.SavedSearchSelectedCount);
     }
 
+    const count = searchesCount[savedSearch.shortcode] ? searchesCount[savedSearch.shortcode] : 0;
     return (
       <div
         data-testid="savedSearchDiv"
@@ -131,9 +134,9 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
         aria-hidden="true"
       >
         <div className={labelClass.join(' ')}>{savedSearch.shortcode}</div>
-        <div className={countClass.join(' ')}>
-          {searchesCount[savedSearch.shortcode] ? searchesCount[savedSearch.shortcode] : 0}
-        </div>
+        <Tooltip title={count} placement="right">
+          <div className={countClass.join(' ')}>{numberToAbbreviation(count)}</div>
+        </Tooltip>
       </div>
     );
   });
@@ -154,19 +157,20 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
       {({ TransitionProps }) => (
         <Fade {...TransitionProps} timeout={350}>
           <Paper elevation={3} className={styles.Popper}>
-            {fixedSearches.slice(3, 6).map((search: any) => (
-              <div
-                key={search.id}
-                className={styles.LabelContainer}
-                onClick={() => handleAdditionalSavedSearch(search)}
-                aria-hidden="true"
-              >
-                <span className={styles.Label}>{search.shortcode}</span>
-                <span className={styles.Count}>
-                  {searchesCount[search.shortcode] ? searchesCount[search.shortcode] : 0}
-                </span>
-              </div>
-            ))}
+            {fixedSearches.slice(3, 6).map((search: any) => {
+              const count = searchesCount[search.shortcode] ? searchesCount[search.shortcode] : 0;
+              return (
+                <div
+                  key={search.id}
+                  className={styles.LabelContainer}
+                  onClick={() => handleAdditionalSavedSearch(search)}
+                  aria-hidden="true"
+                >
+                  <span className={styles.Label}>{search.shortcode}</span>
+                  <span className={styles.Count}>{numberToAbbreviation(count)}</span>
+                </div>
+              );
+            })}
           </Paper>
         </Fade>
       )}

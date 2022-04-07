@@ -14,9 +14,9 @@ import clsx from 'clsx';
 import IconButton from '@material-ui/core/IconButton';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { SideDrawerContext } from 'context/session';
+import { SideDrawerContext, ProviderContext } from 'context/session';
 import Menu from 'components/UI/Menu/Menu';
-import * as constants from 'common/constants';
+import { SIDE_DRAWER_WIDTH, GUPSHUP_ENTERPRISE_SHORTCODE } from 'common/constants';
 import InactiveStaffIcon from 'assets/images/icons/StaffManagement/Inactive.svg';
 import ActiveStaffIcon from 'assets/images/icons/StaffManagement/Active.svg';
 import InactiveUserIcon from 'assets/images/icons/User/Inactive.svg';
@@ -32,7 +32,7 @@ import styles from './SideDrawer.module.css';
 
 export interface SideDrawerProps {}
 
-const drawerWidth = constants.SIDE_DRAWER_WIDTH;
+const drawerWidth = SIDE_DRAWER_WIDTH;
 
 const themeUI = createTheme({
   typography: {
@@ -106,11 +106,15 @@ const useStyles = makeStyles((theme: Theme) =>
       margin: '12px 12px 12px 15px',
     },
     BottomMenus: {
+      zIndex: 1,
       position: 'absolute',
       bottom: '50px',
       display: 'flex',
       width: '100%',
       paddingLeft: '8px',
+    },
+    BottomMenusWithoutWallet: {
+      bottom: '10px',
     },
     BottomMenusVertical: {
       flexFlow: 'column',
@@ -125,6 +129,8 @@ export const SideDrawer: React.SFC<SideDrawerProps> = () => {
   const classes = useStyles();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { t } = useTranslation();
+
+  const { provider } = useContext(ProviderContext);
 
   const drawer = (
     <div>
@@ -184,6 +190,10 @@ export const SideDrawer: React.SFC<SideDrawerProps> = () => {
 
   // set the appropriate classes to display bottom menus correctly
   const bottonMenuClasses = [classes.BottomMenus];
+  if (provider === GUPSHUP_ENTERPRISE_SHORTCODE) {
+    bottonMenuClasses.unshift(classes.BottomMenusWithoutWallet);
+  }
+
   if (!drawerOpen) {
     bottonMenuClasses.unshift(classes.BottomMenusVertical);
   }

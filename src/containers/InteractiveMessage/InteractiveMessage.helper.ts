@@ -5,14 +5,46 @@ import { FLOW_EDITOR_API } from 'config';
 import { getAuthSession } from 'services/AuthService';
 import * as Yup from 'yup';
 
+Yup.addMethod(Yup.array, 'unique', function uniqueMethod(message) {
+  return this.test('unique', message, function test(list: any) {
+    if (!list) return true;
+    // create a title map
+    const titleMap: Array<string> = [];
+
+    for (let listItem = 0; listItem < list.length; listItem += 1) {
+      const { options } = list[listItem];
+
+      if (!options) return true;
+      const len = options.length;
+
+      for (let i = 0; i < len; i += 1) {
+        // check if we have a duplicate
+        if (titleMap.includes(options[i].title)) {
+          return this.createError({
+            path: `templateButtons[${listItem}].options[${i}].title`,
+            message,
+          });
+        }
+        titleMap.push(options[i].title);
+      }
+    }
+
+    return true;
+  });
+});
+
 export const validator = (templateType: any, t: any) => {
   const validation: any = {
     title: Yup.string()
       .required(t('Title is required'))
       .max(60, t('Title can be at most 60 characters')),
     body: Yup.string()
-      .transform((current, original) => original.getCurrentContent().getPlainText())
-      .required(t('Message content is required.')),
+      .transform((_current, original) => original.getCurrentContent().getPlainText())
+      .when('type', {
+        is: (val: any) => val && val.id && val.id === 'DOCUMENT',
+        then: Yup.string().nullable(),
+        otherwise: Yup.string().required(t('Message content is required.')),
+      }),
   };
 
   if (templateType === LIST) {
@@ -32,6 +64,9 @@ export const validator = (templateType: any, t: any) => {
           ),
         })
       )
+      // need to add this since adding a new method in yup does not add its type declarations
+      // @ts-ignore
+      .unique(t('Please enter unique title'))
       .min(1);
 
     validation.globalButton = Yup.string()
@@ -87,6 +122,8 @@ export const convertJSONtoStateData = (JSONData: any, interactiveType: string, l
       case 'file':
         result.type = 'DOCUMENT';
         result.attachmentURL = url;
+        result.body = '';
+        result.title = label;
         break;
       default:
         result.type = null;
