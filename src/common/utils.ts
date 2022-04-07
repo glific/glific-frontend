@@ -143,7 +143,7 @@ export const numberToAbbreviation = (numberString: string) => {
   let abbreviation = '';
   if (number < 1000) {
     abbreviation = number.toString();
-  } else if (number >= 10000 && number < 1000000) {
+  } else if (number >= 1000 && number < 1000000) {
     abbreviation = `${(number / 1000).toFixed(0)}k`;
   } else if (number >= 1000000 && number < 1000000000) {
     abbreviation = `${(number / 1000000).toFixed(0)}m`;
