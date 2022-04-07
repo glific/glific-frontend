@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider, CssBaseline } from '@material-ui/core';
 import Appsignal from '@appsignal/javascript';
@@ -32,14 +32,16 @@ if (APPSIGNAL_API_KEY) {
   );
 }
 
-ReactDOM.render(
+const container: any = document.getElementById('root');
+const root = createRoot(container);
+
+root.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <BrowserRouter>{appComponent}</BrowserRouter>
     </ThemeProvider>
-  </React.StrictMode>,
-  document.getElementById('root')
+  </React.StrictMode>
 );
 
 // If you want your app to work offline and load faster, you can change
