@@ -19,6 +19,7 @@ import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Calendar } from 'components/UI/Form/Calendar/Calendar';
 import Loading from 'components/UI/Layout/Loading/Loading';
 import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT, setVariables } from 'common/constants';
+import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { getObject } from 'common/utils';
 import styles from './Search.module.css';
 
@@ -54,6 +55,9 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
   const [includeLabels, setIncludeLabels] = useState([]);
   const [dateFrom, setdateFrom] = useState(null);
   const [dateTo, setdateTo] = useState(null);
+  const [useDateExpression, setUseDateExpression] = useState(false);
+  const [dateFromExpression, setdateFromExpression] = useState(null);
+  const [dateToExpression, setdateToExpression] = useState(null);
   const [formFields, setFormFields] = useState<any>([]);
   const [button, setButton] = useState<string>('Save');
   const { t } = useTranslation();
@@ -75,6 +79,8 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
     includeLabels,
     dateFrom,
     dateTo,
+    dateFromExpression,
+    dateToExpression,
   };
 
   // const { data: dataT } = useQuery(FILTER_TAGS_NAME, {
@@ -120,6 +126,16 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
           if (Object.prototype.hasOwnProperty.call(filters.filter, 'dateRange')) {
             setdateFrom(filters.filter.dateRange.from);
             setdateTo(filters.filter.dateRange.to);
+            setdateFromExpression(filters.filter.dateRange.from);
+            setdateToExpression(filters.filter.dateRange.to);
+          }
+          break;
+
+        case 'dateExpression':
+          if (Object.prototype.hasOwnProperty.call(filters.filter, 'dateExpression')) {
+            setdateFromExpression(filters.filter.dateExpression.fromExpression);
+            setdateToExpression(filters.filter.dateExpression.toExpression);
+            setUseDateExpression(true);
           }
           break;
         case 'term':
@@ -179,6 +195,16 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
         },
       };
       args.filter = Object.assign(args.filter, dateRange);
+    }
+
+    if (props.searchParam.dateFromExpression && props.searchParam.dateFromExpression !== '') {
+      const dateExpression = {
+        dateExpression: {
+          toExpression: props.searchParam.dateToExpression,
+          fromExpression: props.searchParam.dateFromExpression,
+        },
+      };
+      args.filter = Object.assign(args.filter, dateExpression);
     }
     // For create new search then label & shortcode should be empty
     // For update search match.params.id should not empty
@@ -297,13 +323,42 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
       name: 'dateFrom',
       type: 'date',
       placeholder: t('Date from'),
+      disabled: useDateExpression,
       label: t('Date range'),
     },
     {
       component: Calendar,
       name: 'dateTo',
       type: 'date',
+      disabled: useDateExpression,
       placeholder: t('Date to'),
+    },
+
+    {
+      component: Checkbox,
+      name: 'useExpression',
+      value: useDateExpression,
+      title: t('Use expression'),
+      info: {
+        title: t('If activated, you can set dynamic dates using expression'),
+      },
+      darkCheckbox: true,
+      handleChange: (value: any) => setUseDateExpression(value),
+    },
+
+    {
+      component: Input,
+      name: 'dateFromExpression',
+      placeholder: t('Date from expression'),
+      type: 'text',
+      disabled: !useDateExpression,
+    },
+    {
+      component: Input,
+      type: 'text',
+      name: 'dateToExpression',
+      placeholder: t('Date to expression'),
+      disabled: !useDateExpression,
     },
   ];
 
@@ -342,6 +397,16 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
         },
       };
       args.filter = Object.assign(args.filter, dateRange);
+    }
+
+    if (payload.dateFromExpression && payload.dateFromExpression !== '') {
+      const dateExpression = {
+        dateExpression: {
+          toExpression: payload.dateToExpression,
+          fromExpression: payload.dateFromExpression,
+        },
+      };
+      args.filter = Object.assign(args.filter, dateExpression);
     }
 
     return {
@@ -425,6 +490,7 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
       languageSupport={false}
       advanceSearch={advanceSearch}
       button={button}
+      customStyles={styles.Search}
       type={type}
       afterSave={saveHandler}
     />

@@ -16,3 +16,10 @@
   height: 29px;
   width: 29px;
 }
+
+.Search > div:nth-of-type(10),
+div:nth-of-type(11) {
+  display: inline-block;
+  width: 49% !important;
+  margin: 0px 2px;
+}
