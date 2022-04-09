@@ -16,20 +16,20 @@ import styles from './CollectionList.module.css';
 
 export interface CollectionListProps {}
 
-const getLabel = (label: string, usersCount: number) => (
+const getLabel = (label: string, contactsCount: number) => (
   <div>
     <div className={styles.LabelText}>{label}</div>
     <div className={styles.UserCount}>
-      {usersCount} contact{usersCount === 1 ? '' : 's'}
+      {contactsCount} contact{contactsCount === 1 ? '' : 's'}
     </div>
   </div>
 );
 
 const getDescription = (text: string) => <p className={styles.CollectionDescription}>{text}</p>;
 
-const getColumns = ({ id, label, description, usersCount }: any) => ({
+const getColumns = ({ id, label, description, contactsCount }: any) => ({
   id,
-  label: getLabel(label, usersCount),
+  label: getLabel(label, contactsCount),
   description: getDescription(description),
 });
 

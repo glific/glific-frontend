@@ -39,8 +39,12 @@ export const validator = (templateType: any, t: any) => {
       .required(t('Title is required'))
       .max(60, t('Title can be at most 60 characters')),
     body: Yup.string()
-      .transform((current, original) => original.getCurrentContent().getPlainText())
-      .required(t('Message content is required.')),
+      .transform((_current, original) => original.getCurrentContent().getPlainText())
+      .when('type', {
+        is: (val: any) => val && val.id && val.id === 'DOCUMENT',
+        then: Yup.string().nullable(),
+        otherwise: Yup.string().required(t('Message content is required.')),
+      }),
   };
 
   if (templateType === LIST) {
@@ -118,6 +122,8 @@ export const convertJSONtoStateData = (JSONData: any, interactiveType: string, l
       case 'file':
         result.type = 'DOCUMENT';
         result.attachmentURL = url;
+        result.body = '';
+        result.title = label;
         break;
       default:
         result.type = null;
