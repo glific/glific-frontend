@@ -46,7 +46,6 @@
     "@types/styled-components": "^5.1.25",
     "@types/uuid": "^8.3.4",
     "@types/yup": "^0.29.11",
-    "ajv-keywords": "^5.1.0",
     "apollo-absinthe-upload-link": "^1.7.0",
     "apollo-link-token-refresh": "^0.4.0",
     "axios": "^0.26.0",
