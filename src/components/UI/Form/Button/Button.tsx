@@ -14,7 +14,7 @@ export interface ButtonProps {
   type?: any;
 }
 
-export const Button: React.SFC<ButtonProps> = ({
+export const Button: React.FC<ButtonProps> = ({
   type = 'button',
   loading = false,
   disabled = false,

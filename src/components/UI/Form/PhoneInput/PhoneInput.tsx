@@ -19,7 +19,7 @@ export interface InputProps {
   form: { errors: any; setFieldValue: any };
 }
 
-export const PhoneInput: React.SFC<InputProps> = ({
+export const PhoneInput: React.FC<InputProps> = ({
   enableSearch = true,
   form: { errors, setFieldValue },
   field,

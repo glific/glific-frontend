@@ -16,7 +16,7 @@ export interface CheckboxProps {
   addLabelStyle?: boolean;
 }
 
-export const Checkbox: React.SFC<CheckboxProps> = (props) => {
+export const Checkbox: React.FC<CheckboxProps> = (props) => {
   const {
     field,
     title,

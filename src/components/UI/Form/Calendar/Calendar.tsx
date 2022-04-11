@@ -18,7 +18,7 @@ export interface CalendarProps {
   minDate?: any;
 }
 
-export const Calendar: React.SFC<CalendarProps> = ({
+export const Calendar: React.FC<CalendarProps> = ({
   variant = 'inline',
   inputVariant = 'outlined',
   format = 'MM/dd/yyyy',

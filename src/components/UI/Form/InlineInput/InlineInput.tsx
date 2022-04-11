@@ -12,7 +12,7 @@ export interface InlineInputProps {
   error: string | null;
 }
 
-export const InlineInput: React.SFC<InlineInputProps> = ({
+export const InlineInput: React.FC<InlineInputProps> = ({
   value,
   closeModal,
   callback,

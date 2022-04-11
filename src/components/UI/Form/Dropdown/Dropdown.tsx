@@ -18,7 +18,7 @@ export interface DropdownProps {
   fieldValue?: any;
 }
 
-export const Dropdown: React.SFC<DropdownProps> = (props) => {
+export const Dropdown: React.FC<DropdownProps> = (props) => {
   const { options, placeholder, field, helperText, disabled, form, fieldValue, fieldChange } =
     props;
 

@@ -15,7 +15,7 @@ export interface Props {
   helperText: string;
 }
 
-export const ColorPicker: React.SFC<Props> = ({ ...props }) => {
+export const ColorPicker: React.FC<Props> = ({ ...props }) => {
   const [displayPicker, setDisplayPicker] = useState(false);
   const [colorHex, setColorHex] = useState('');
   const { t } = useTranslation();

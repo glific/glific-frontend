@@ -31,7 +31,7 @@ export const termsOfUse = (
   </div>
 );
 
-export const Organization: React.SFC<OrganizationProps> = (props) => {
+export const Organization: React.FC<OrganizationProps> = (props: any) => {
   const {
     pageTitle,
     buttonText,
@@ -103,7 +103,7 @@ export const Organization: React.SFC<OrganizationProps> = (props) => {
         {({ submitForm }) => (
           <div className={styles.CenterBox}>
             <Form className={styles.Form}>
-              {formFields.map((field, index) => {
+              {formFields.map((field: any, index: number) => {
                 const key = index;
                 return <Field className={styles.Form} key={key} {...field} />;
               })}

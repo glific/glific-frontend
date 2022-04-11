@@ -20,7 +20,7 @@ import styles from './MyAccount.module.css';
 
 export interface MyAccountProps {}
 
-export const MyAccount: React.SFC<MyAccountProps> = () => {
+export const MyAccount: React.FC<MyAccountProps> = () => {
   // set the validation / errors / success message
   const [toastMessageInfo, setToastMessageInfo] = useState({ message: '', severity: '' });
 

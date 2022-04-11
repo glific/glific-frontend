@@ -32,7 +32,7 @@ export interface DialogProps {
   buttonOkLoading?: boolean;
 }
 
-export const DialogBox: React.SFC<DialogProps> = ({
+export const DialogBox: React.FC<DialogProps> = ({
   open = true,
   title,
   handleOk = () => {},

@@ -41,7 +41,7 @@ export interface AutocompleteProps {
   valueElementName?: string;
 }
 
-export const AutoComplete: React.SFC<AutocompleteProps> = ({
+export const AutoComplete: React.FC<AutocompleteProps> = ({
   options,
   optionLabel,
   additionalOptionLabel,

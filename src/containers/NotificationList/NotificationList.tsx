@@ -43,7 +43,7 @@ const queries = {
 };
 const restrictedAction = () => ({ delete: false, edit: false });
 
-export const NotificationList: React.SFC<NotificationListProps> = () => {
+export const NotificationList: React.FC<NotificationListProps> = () => {
   const client = useApolloClient();
   const [open, setOpen] = useState(false);
   const [text, setText] = useState<any>();

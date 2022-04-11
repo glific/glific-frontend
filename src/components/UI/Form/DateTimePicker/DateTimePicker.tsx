@@ -19,7 +19,7 @@ export interface DateTimePickerProps {
   onChange?: any;
 }
 
-export const DateTimePicker: React.SFC<DateTimePickerProps> = ({
+export const DateTimePicker: React.FC<DateTimePickerProps> = ({
   variant = 'inline',
   inputVariant = 'outlined',
   format = 'dd/MM/yyyy hh:mm a',
