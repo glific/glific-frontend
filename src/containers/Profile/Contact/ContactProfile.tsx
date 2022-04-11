@@ -19,7 +19,7 @@ export interface ContactProfileProps {
   match: any;
 }
 
-export const ContactProfile: React.SFC<ContactProfileProps> = (props) => {
+export const ContactProfile: React.FC<ContactProfileProps> = (props) => {
   const { match } = props;
 
   const { loading, data } = useQuery(GET_CONTACT_DETAILS, { variables: { id: match.params.id } });

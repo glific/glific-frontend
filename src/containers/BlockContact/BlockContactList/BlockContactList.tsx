@@ -41,7 +41,7 @@ const columnAttributes = {
   columnStyles,
 };
 
-export const BlockContactList: React.SFC<BlockContactListProps> = () => {
+export const BlockContactList: React.FC<BlockContactListProps> = () => {
   const [contactId, setContactId] = useState();
   const [unblockDialog, setUnblockDialog] = useState(false);
   const { t } = useTranslation();

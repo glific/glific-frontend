@@ -18,7 +18,7 @@ const queries = {
   deleteItemQuery: null,
 };
 
-export const ContactManagement: React.SFC<ContactManagementProps> = () => {
+export const ContactManagement: React.FC<ContactManagementProps> = () => {
   const { t } = useTranslation();
 
   const [showUploadDialog, setShowUploadDialog] = useState(false);

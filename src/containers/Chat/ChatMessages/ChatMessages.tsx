@@ -40,7 +40,7 @@ export interface ChatMessagesProps {
   startingHeight?: string;
 }
 
-export const ChatMessages: React.SFC<ChatMessagesProps> = ({
+export const ChatMessages: React.FC<ChatMessagesProps> = ({
   contactId,
   collectionId,
   startingHeight,

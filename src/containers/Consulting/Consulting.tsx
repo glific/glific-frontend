@@ -28,7 +28,7 @@ export interface ConsultingProps {
 
 const isDurationValid = (value: any) => value % 15 === 0;
 
-export const Consulting: React.SFC<ConsultingProps> = ({ match, setOpenDialog }) => {
+export const Consulting: React.FC<ConsultingProps> = ({ match, setOpenDialog }) => {
   const { t } = useTranslation();
   const [participants, setParticipants] = useState('');
   const [staff, setStaff] = useState('');

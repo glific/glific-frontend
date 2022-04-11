@@ -26,7 +26,7 @@ const queries = {
   deleteItemQuery: DELETE_SEARCH,
 };
 
-export const SearchList: React.SFC<SearchListProps> = () => {
+export const SearchList: React.FC<SearchListProps> = () => {
   const { t } = useTranslation();
 
   const columnNames = ['TITLE', 'DESCRIPTION', 'ACTIONS'];

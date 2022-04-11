@@ -1,7 +1,7 @@
 import React, { lazy } from 'react';
 import { Route, Redirect, Switch } from 'react-router-dom';
 
-export const UnauthenticatedRoute: React.SFC = () => {
+export const UnauthenticatedRoute: React.FC = () => {
   const Login = lazy(() => import('containers/Auth/Login/Login'));
   const Registration = lazy(() => import('containers/Auth/Registration/Registration'));
   const ConfirmOTP = lazy(() => import('containers/Auth/ConfirmOTP/ConfirmOTP'));

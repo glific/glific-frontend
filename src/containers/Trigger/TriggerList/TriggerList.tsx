@@ -61,7 +61,7 @@ const queries = {
   deleteItemQuery: DELETE_TRIGGER,
 };
 
-export const TriggerList: React.SFC<TriggerListProps> = () => {
+export const TriggerList: React.FC<TriggerListProps> = () => {
   const history = useHistory();
   const { t } = useTranslation();
 

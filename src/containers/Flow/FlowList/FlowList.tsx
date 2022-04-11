@@ -59,7 +59,7 @@ const queries = {
 
 const configureIcon = <ConfigureIcon />;
 
-export const FlowList: React.SFC<FlowListProps> = () => {
+export const FlowList: React.FC<FlowListProps> = () => {
   const history = useHistory();
   const { t } = useTranslation();
   const inputRef = useRef<any>(null);

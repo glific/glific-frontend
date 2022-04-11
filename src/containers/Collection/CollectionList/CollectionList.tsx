@@ -47,7 +47,7 @@ const columnAttributes = {
   columnStyles,
 };
 
-export const CollectionList: React.SFC<CollectionListProps> = () => {
+export const CollectionList: React.FC<CollectionListProps> = () => {
   const [addContactsDialogShow, setAddContactsDialogShow] = useState(false);
 
   const [contactSearchTerm, setContactSearchTerm] = useState('');

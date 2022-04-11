@@ -24,7 +24,7 @@ const notApprovedMsg = 'Your account is not approved yet. Please contact your or
 
 export interface LoginProps {}
 
-export const Login: React.SFC<LoginProps> = () => {
+export const Login: React.FC<LoginProps> = () => {
   const { setAuthenticated } = useContext(SessionContext);
   const [authError, setAuthError] = useState('');
   const { i18n, t } = useTranslation();

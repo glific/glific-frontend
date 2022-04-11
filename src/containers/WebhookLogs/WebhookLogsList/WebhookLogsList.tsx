@@ -78,7 +78,7 @@ const queries = {
 
 const restrictedAction = () => ({ delete: false, edit: false });
 
-export const WebhookLogsList: React.SFC<WebhookLogsListProps> = () => {
+export const WebhookLogsList: React.FC<WebhookLogsListProps> = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [open, setOpen] = useState(false);
   const [text, setText] = useState<any>();

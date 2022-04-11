@@ -32,7 +32,7 @@ const queries = {
   deleteItemQuery: DELETE_INACTIVE_ORGANIZATIONS,
 };
 
-export const OrganizationList: React.SFC<OrganizationListProps> = ({
+export const OrganizationList: React.FC<OrganizationListProps> = ({
   match,
   openExtensionModal,
   openCustomerModal,

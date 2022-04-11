@@ -13,7 +13,7 @@ import { ExportConsulting } from './ExportConsulting/ExportConsulting';
 
 interface ConsultingListProps {}
 
-const ConsultingList: React.SFC<ConsultingListProps> = () => {
+const ConsultingList: React.FC<ConsultingListProps> = () => {
   const { t } = useTranslation();
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedConsulting, setSelectedConsulting] = useState('');

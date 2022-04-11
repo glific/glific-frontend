@@ -22,7 +22,7 @@ export interface ChatMessageTypeProps {
   isContextMessage?: boolean;
 }
 
-export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
+export const ChatMessageType: React.FC<ChatMessageTypeProps> = ({
   type,
   media,
   body,

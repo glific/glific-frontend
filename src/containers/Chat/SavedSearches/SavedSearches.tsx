@@ -21,7 +21,7 @@ const queryVariables = {
   opts: {},
 };
 
-const SavedSearches: React.SFC<SavedSearchesProps> = () => {
+const SavedSearches: React.FC<SavedSearchesProps> = () => {
   const [savedSearch, setSavedSearch] = useState({ id: 0, args: '{}' });
   const [Open, setOpen] = useState(true);
   const { t } = useTranslation();

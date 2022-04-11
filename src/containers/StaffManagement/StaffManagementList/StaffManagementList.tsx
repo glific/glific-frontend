@@ -12,7 +12,7 @@ import styles from './StaffManagementList.module.css';
 
 export interface StaffManagementProps {}
 
-export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
+export const StaffManagementList: React.FC<StaffManagementProps> = () => {
   const { t } = useTranslation();
 
   const { data: organizationPhone } = useQuery(GET_ORGANIZATION_PHONE);

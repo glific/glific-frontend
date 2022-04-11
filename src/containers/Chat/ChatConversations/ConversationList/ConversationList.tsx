@@ -35,7 +35,7 @@ interface ConversationListProps {
   entityType?: string;
 }
 
-export const ConversationList: React.SFC<ConversationListProps> = (props) => {
+export const ConversationList: React.FC<ConversationListProps> = (props) => {
   const {
     searchVal,
     selectedContactId,

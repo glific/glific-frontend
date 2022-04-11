@@ -17,7 +17,7 @@ interface AddToMessageTemplateProps {
   changeDisplay: Function;
 }
 
-export const AddToMessageTemplate: React.SFC<AddToMessageTemplateProps> = ({
+export const AddToMessageTemplate: React.FC<AddToMessageTemplateProps> = ({
   id,
   message,
   changeDisplay,

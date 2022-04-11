@@ -35,7 +35,7 @@ export interface ListIconProps {
   showBadge?: boolean;
 }
 
-export const ListIcon: React.SFC<ListIconProps> = (props) => {
+export const ListIcon: React.FC<ListIconProps> = (props) => {
   const { icon, count, showBadge } = props;
 
   const location = useLocation();

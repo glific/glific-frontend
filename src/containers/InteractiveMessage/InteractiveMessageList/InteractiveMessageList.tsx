@@ -62,7 +62,7 @@ const queries = {
   deleteItemQuery: DELETE_INTERACTIVE,
 };
 
-export const InteractiveMessageList: React.SFC<InteractiveMessageListProps> = () => {
+export const InteractiveMessageList: React.FC<InteractiveMessageListProps> = () => {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState('');

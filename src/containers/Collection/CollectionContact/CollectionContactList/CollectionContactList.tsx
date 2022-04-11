@@ -44,7 +44,7 @@ const columnAttributes = {
   columnStyles,
 };
 
-export const CollectionContactList: React.SFC<CollectionContactListProps> = (props) => {
+export const CollectionContactList: React.FC<CollectionContactListProps> = (props) => {
   const { t } = useTranslation();
 
   const { match, title } = props;

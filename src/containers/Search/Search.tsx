@@ -43,7 +43,7 @@ const queries = {
   deleteItemQuery: DELETE_SEARCH,
 };
 
-export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }) => {
+export const Search: React.FC<SearchProps> = ({ match, type, search, ...props }) => {
   const { searchParam } = props;
   const [shortcode, setShortcode] = useState('');
   const [label, setLabel] = useState('');

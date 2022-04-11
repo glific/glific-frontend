@@ -20,7 +20,7 @@ export interface SearchBarProps {
   searchMode: boolean;
 }
 
-export const SearchBar: React.SFC<SearchBarProps> = (props) => {
+export const SearchBar: React.FC<SearchBarProps> = (props) => {
   const {
     searchMode,
     searchVal,

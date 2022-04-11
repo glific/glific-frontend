@@ -49,7 +49,7 @@ const queries = {
   deleteItemQuery: DELETE_INTERACTIVE,
 };
 
-export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
+export const InteractiveMessage: React.FC<FlowProps> = ({ match }) => {
   const location: any = useLocation();
   const history = useHistory();
   const [title, setTitle] = useState('');

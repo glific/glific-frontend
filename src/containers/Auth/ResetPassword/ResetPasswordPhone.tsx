@@ -9,7 +9,7 @@ import { Auth } from '../Auth';
 
 export interface ResetPasswordPhoneProps {}
 
-export const ResetPasswordPhone: React.SFC<ResetPasswordPhoneProps> = () => {
+export const ResetPasswordPhone: React.FC<ResetPasswordPhoneProps> = () => {
   const [values, setValues] = useState({ phoneNumber: '' });
   const [redirect, setRedirect] = useState(false);
   const [authError, setAuthError] = useState('');

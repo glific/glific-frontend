@@ -18,7 +18,7 @@ interface ChatTemplatesProps {
   isInteractiveMsg: boolean;
 }
 
-export const ChatTemplates: React.SFC<ChatTemplatesProps> = (props) => {
+export const ChatTemplates: React.FC<ChatTemplatesProps> = (props) => {
   const { t } = useTranslation();
   const { searchVal, handleSelectText, isTemplate, isInteractiveMsg } = props;
 

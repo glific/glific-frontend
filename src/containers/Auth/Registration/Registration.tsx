@@ -12,7 +12,7 @@ import styles from './Registration.module.css';
 
 export interface RegistrationProps {}
 
-export const Registration: React.SFC<RegistrationProps> = () => {
+export const Registration: React.FC<RegistrationProps> = () => {
   const [redirect, setRedirect] = useState(false);
   const [user, setUser] = useState({ userName: '', phone: '', password: '' });
   const [authError, setAuthError] = useState('');

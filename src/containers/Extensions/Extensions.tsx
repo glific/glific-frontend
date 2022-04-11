@@ -23,7 +23,7 @@ const queries = {
   updateItemQuery: UPDATE_EXTENSION,
   deleteItemQuery: DELETE_EXTENSION,
 };
-export const Extensions: React.SFC<ExtensionProps> = ({ match, openDialog }) => {
+export const Extensions: React.FC<ExtensionProps> = ({ match, openDialog }) => {
   const [name, setName] = useState('');
   const [code, setCode] = useState('');
   const [isActive, setIsActive] = useState(false);

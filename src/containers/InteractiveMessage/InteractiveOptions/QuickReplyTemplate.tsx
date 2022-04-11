@@ -15,7 +15,7 @@ export interface QuickReplyTemplateProps {
   translation?: any;
 }
 
-export const QuickReplyTemplate: React.SFC<QuickReplyTemplateProps> = (props) => {
+export const QuickReplyTemplate: React.FC<QuickReplyTemplateProps> = (props) => {
   const {
     index,
     inputFields,

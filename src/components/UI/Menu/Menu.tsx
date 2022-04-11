@@ -16,12 +16,7 @@ export interface MenuProps {
   placement?: PopperPlacementType | undefined;
 }
 
-const Menu: React.SFC<MenuProps> = ({
-  menus,
-  children,
-  eventType = 'Click',
-  placement = 'top',
-}) => {
+const Menu: React.FC<MenuProps> = ({ menus, children, eventType = 'Click', placement = 'top' }) => {
   const [open, setOpen] = useState(false);
   const anchorRef = useRef<HTMLDivElement>(null);
 

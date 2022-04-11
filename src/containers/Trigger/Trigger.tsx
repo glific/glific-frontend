@@ -118,7 +118,7 @@ const queries = {
   deleteItemQuery: DELETE_TRIGGER,
 };
 
-export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
+export const Trigger: React.FC<TriggerProps> = ({ match }) => {
   const [flowId, setFlowId] = useState(null);
   const [isActive, setIsActive] = useState(true);
   const [startTime, setStartTime] = useState('');

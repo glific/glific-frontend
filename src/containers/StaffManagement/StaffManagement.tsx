@@ -32,7 +32,7 @@ const queries = {
   deleteItemQuery: DELETE_USER,
 };
 
-export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
+export const StaffManagement: React.FC<StaffManagementProps> = ({ match }) => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [roles, setRoles] = useState<any>(null);

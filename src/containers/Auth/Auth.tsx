@@ -31,7 +31,7 @@ export interface AuthProps {
   staffInstructions?: any;
 }
 
-export const Auth: React.SFC<AuthProps> = (props) => {
+export const Auth: React.FC<AuthProps> = (props) => {
   const {
     pageTitle,
     buttonText,

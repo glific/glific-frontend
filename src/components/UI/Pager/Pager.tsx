@@ -192,7 +192,7 @@ const pagination = (
   />
 );
 
-export const Pager: React.SFC<PagerProps> = (props) => {
+export const Pager: React.FC<PagerProps> = (props) => {
   const {
     data,
     columnStyles,

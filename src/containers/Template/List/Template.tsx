@@ -59,7 +59,7 @@ const statusFilter = {
   REJECTED: false,
 };
 
-export const Template: React.SFC<TemplateProps> = (props) => {
+export const Template: React.FC<TemplateProps> = (props) => {
   const {
     title,
     listItem,

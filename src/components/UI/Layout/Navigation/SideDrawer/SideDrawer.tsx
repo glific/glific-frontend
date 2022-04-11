@@ -122,7 +122,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export const SideDrawer: React.SFC<SideDrawerProps> = () => {
+export const SideDrawer: React.FC<SideDrawerProps> = () => {
   const location = useLocation();
   const { drawerOpen, setDrawerOpen } = useContext(SideDrawerContext);
 

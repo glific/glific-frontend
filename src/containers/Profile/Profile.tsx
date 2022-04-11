@@ -34,7 +34,7 @@ export interface ProfileProps {
   removePhoneField?: boolean;
 }
 
-export const Profile: React.SFC<ProfileProps> = ({
+export const Profile: React.FC<ProfileProps> = ({
   match,
   profileType,
   redirectionLink,

@@ -38,7 +38,7 @@ interface ListTemplate {
   onDrawerClose: any;
 }
 
-export const ChatTemplate: React.SFC<TemplateProps> = (props) => {
+export const ChatTemplate: React.FC<TemplateProps> = (props) => {
   const [showDialog, setShowDialog] = useState(false);
   const [checkedItem, setCheckedItem] = useState<any>(null);
   const { title, body, globalButtonTitle, items } = props;
@@ -111,7 +111,7 @@ export const ChatTemplate: React.SFC<TemplateProps> = (props) => {
   );
 };
 
-export const SimulatorTemplate: React.SFC<TemplateProps> = (props) => {
+export const SimulatorTemplate: React.FC<TemplateProps> = (props) => {
   const {
     title,
     body,
@@ -139,7 +139,7 @@ export const SimulatorTemplate: React.SFC<TemplateProps> = (props) => {
   );
 };
 
-export const ListReplyTemplateDrawer: React.SFC<ListTemplate> = (props) => {
+export const ListReplyTemplateDrawer: React.FC<ListTemplate> = (props) => {
   const { items, drawerTitle, onItemClick, onDrawerClose, disableSend = false } = props;
   const [checkedItem, setCheckedItem] = useState<any>(null);
 
@@ -227,7 +227,7 @@ export const ListReplyTemplateDrawer: React.SFC<ListTemplate> = (props) => {
   );
 };
 
-export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
+export const ListReplyTemplate: React.FC<ListReplyTemplateProps> = (props) => {
   const { globalButtons, component: TemplateComponent, ...rest } = props;
   const globalButtonTitle = globalButtons?.length ? globalButtons[0].title : '';
 

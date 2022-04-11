@@ -10,7 +10,7 @@ export interface SpeedSendProps {
 
 const speedSendIcon = <SpeedSendIcon className={styles.SpeedSendIcon} />;
 
-export const SpeedSend: React.SFC<SpeedSendProps> = ({ match }) => (
+export const SpeedSend: React.FC<SpeedSendProps> = ({ match }) => (
   <Template
     match={match}
     listItemName="Speed send"

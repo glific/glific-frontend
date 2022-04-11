@@ -31,7 +31,7 @@ export interface InteractiveOptionsProps {
   translation?: any;
   disabledType?: any;
 }
-export const InteractiveOptions: React.SFC<InteractiveOptionsProps> = ({
+export const InteractiveOptions: React.FC<InteractiveOptionsProps> = ({
   isAddButtonChecked,
   templateType,
   inputFields,

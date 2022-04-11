@@ -81,7 +81,7 @@ export interface ContactBarProps {
   isSimulator?: boolean;
 }
 
-export const ContactBar: React.SFC<ContactBarProps> = (props) => {
+export const ContactBar: React.FC<ContactBarProps> = (props) => {
   const {
     contactId,
     collectionId,

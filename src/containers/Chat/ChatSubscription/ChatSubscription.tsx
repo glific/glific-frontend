@@ -34,7 +34,7 @@ export interface ChatSubscriptionProps {
   setDataLoaded: any;
 }
 
-export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({ setDataLoaded }) => {
+export const ChatSubscription: React.FC<ChatSubscriptionProps> = ({ setDataLoaded }) => {
   const queryVariables = SEARCH_QUERY_VARIABLES;
 
   let refetchTimer: any = null;

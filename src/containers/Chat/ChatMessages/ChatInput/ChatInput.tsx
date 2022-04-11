@@ -43,7 +43,7 @@ export interface ChatInputProps {
   lastMessageTime?: any;
 }
 
-export const ChatInput: React.SFC<ChatInputProps> = (props) => {
+export const ChatInput: React.FC<ChatInputProps> = (props) => {
   const {
     onSendMessage,
     contactBspStatus,

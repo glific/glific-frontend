@@ -53,7 +53,7 @@ const queries = {
   deleteItemQuery: DELETE_TAG,
 };
 
-export const TagList: React.SFC<TagListProps> = () => {
+export const TagList: React.FC<TagListProps> = () => {
   const { t } = useTranslation();
 
   const columnNames = ['TITLE', 'DESCRIPTION', 'KEYWORDS', 'LAST MODIFIED', 'ACTIONS'];

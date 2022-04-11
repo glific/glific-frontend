@@ -28,7 +28,7 @@ export interface ChatInterfaceProps {
   savedSearches?: boolean;
 }
 
-export const ChatInterface: React.SFC<ChatInterfaceProps> = ({
+export const ChatInterface: React.FC<ChatInterfaceProps> = ({
   contactId,
   collectionId,
   savedSearches,

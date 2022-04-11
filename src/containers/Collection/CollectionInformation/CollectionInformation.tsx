@@ -14,7 +14,7 @@ export interface CollectionInformationProps {
   handleSendMessage?: any;
 }
 
-export const CollectionInformation: React.SFC<CollectionInformationProps> = ({
+export const CollectionInformation: React.FC<CollectionInformationProps> = ({
   collectionId,
   staff = true,
   displayPopup,

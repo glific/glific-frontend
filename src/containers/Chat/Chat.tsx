@@ -9,7 +9,7 @@ export interface ChatProps {
   savedSearches?: boolean;
 }
 
-export const Chat: React.SFC<ChatProps> = () => {
+export const Chat: React.FC<ChatProps> = () => {
   const [loaded, setDataLoaded] = useState(false);
 
   return (

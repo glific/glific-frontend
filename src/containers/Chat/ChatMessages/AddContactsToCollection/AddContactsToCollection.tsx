@@ -13,7 +13,7 @@ interface AddContactsToCollectionProps {
   setDialog: Function;
 }
 
-export const AddContactsToCollection: React.SFC<AddContactsToCollectionProps> = ({
+export const AddContactsToCollection: React.FC<AddContactsToCollectionProps> = ({
   collectionId,
   setDialog,
 }) => {

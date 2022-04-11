@@ -59,7 +59,7 @@ export interface ChatMessageProps {
   daySeparator: string | null;
 }
 
-export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
+export const ChatMessage: React.FC<ChatMessageProps> = (props) => {
   // const client = useApolloClient();
   const [showSaveMessageDialog, setShowSaveMessageDialog] = useState(false);
   const Ref = useRef(null);

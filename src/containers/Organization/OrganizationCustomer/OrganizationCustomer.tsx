@@ -15,7 +15,7 @@ export interface OrganizationCustomerProps {
   openDialog: boolean;
 }
 
-export const OrganizationCustomer: React.SFC<OrganizationCustomerProps> = ({
+export const OrganizationCustomer: React.FC<OrganizationCustomerProps> = ({
   match,
   openDialog,
 }) => {

@@ -9,7 +9,7 @@ interface TemplateButtonProps {
   isSimulator?: any;
 }
 
-export const TemplateButtons: React.SFC<TemplateButtonProps> = ({
+export const TemplateButtons: React.FC<TemplateButtonProps> = ({
   template,
   callbackTemplateButtonClick,
   isSimulator = false,

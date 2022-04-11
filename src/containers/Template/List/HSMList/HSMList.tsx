@@ -7,7 +7,7 @@ import { Template } from '../Template';
 
 export interface HSMListProps {}
 
-export const HSMList: React.SFC<HSMListProps> = () => {
+export const HSMList: React.FC<HSMListProps> = () => {
   const { t } = useTranslation();
   const templateIcon = <TemplateIcon className={styles.TemplateIcon} />;
 

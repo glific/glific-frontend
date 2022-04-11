@@ -121,7 +121,7 @@ const BoldedText = (originalText: string, highlight: any) => {
   return text;
 };
 
-const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
+const ChatConversation: React.FC<ChatConversationProps> = (props) => {
   // check if message is unread and style it differently
   const client = useApolloClient();
   let chatInfoClass = [styles.ChatInfo, styles.ChatInfoRead];

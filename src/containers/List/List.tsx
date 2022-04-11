@@ -85,7 +85,7 @@ interface TableVals {
   sortDirection: 'asc' | 'desc';
 }
 
-export const List: React.SFC<ListProps> = ({
+export const List: React.FC<ListProps> = ({
   columnNames = [],
   countQuery,
   listItem,

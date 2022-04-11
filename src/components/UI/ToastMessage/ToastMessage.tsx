@@ -16,7 +16,7 @@ interface Props {
   hideDuration?: number | null;
 }
 
-export const ToastMessage: React.SFC<Props> = ({
+export const ToastMessage: React.FC<Props> = ({
   open = true,
   severity = 'success',
   message,

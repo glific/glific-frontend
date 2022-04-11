@@ -11,7 +11,7 @@ export interface LanguageBarProps {
   onSubmit?: Function;
 }
 
-export const LanguageBar: React.SFC<LanguageBarProps> = ({
+export const LanguageBar: React.FC<LanguageBarProps> = ({
   options,
   selectedLangauge,
   onLanguageChange,

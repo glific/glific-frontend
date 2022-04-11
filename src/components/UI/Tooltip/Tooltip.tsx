@@ -12,7 +12,7 @@ interface TooltipProps {
   interactive?: boolean;
 }
 
-export const Tooltip: React.SFC<TooltipProps> = (props: TooltipProps) => {
+export const Tooltip: React.FC<TooltipProps> = (props: TooltipProps) => {
   const { tooltipClass, tooltipArrowClass, title, placement, children, interactive } = props;
   // set the default styling for main tooltip
   const toolTipStyling = [styles.Tooltip];

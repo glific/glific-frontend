@@ -4,7 +4,7 @@ import { Profile } from '../Profile';
 
 export interface UserProfileProps {}
 
-export const UserProfile: React.SFC<UserProfileProps> = () => (
+export const UserProfile: React.FC<UserProfileProps> = () => (
   <div data-testid="UserProfile">
     <Profile profileType="User" redirectionLink="chat/" />
   </div>

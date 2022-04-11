@@ -19,7 +19,7 @@ export interface TimePickerProps {
   helperText?: string;
 }
 
-export const TimePicker: React.SFC<TimePickerProps> = ({
+export const TimePicker: React.FC<TimePickerProps> = ({
   variant = 'inline',
   inputVariant = 'outlined',
   field,

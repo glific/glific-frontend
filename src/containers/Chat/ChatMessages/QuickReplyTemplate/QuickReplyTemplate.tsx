@@ -28,7 +28,7 @@ export interface QuickReplyTemplateProps {
   showHeader?: boolean;
 }
 
-export const QuickReplyTemplate: React.SFC<QuickReplyTemplateProps> = (props) => {
+export const QuickReplyTemplate: React.FC<QuickReplyTemplateProps> = (props) => {
   const {
     content,
     options,

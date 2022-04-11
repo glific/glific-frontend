@@ -20,7 +20,7 @@ export interface RadioInputProps {
   handleChange?: any;
 }
 
-export const RadioInput: React.SFC<RadioInputProps> = ({
+export const RadioInput: React.FC<RadioInputProps> = ({
   labelYes = 'Yes',
   labelNo = 'No',
   row = true,

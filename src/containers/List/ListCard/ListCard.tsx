@@ -10,7 +10,7 @@ interface ListCardProps {
   link: any;
 }
 
-export const ListCard: React.SFC<ListCardProps> = ({ ...props }) => {
+export const ListCard: React.FC<ListCardProps> = ({ ...props }) => {
   const { data } = props;
   const { t } = useTranslation();
 

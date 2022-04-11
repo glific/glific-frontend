@@ -9,7 +9,7 @@ export interface CollectionConversationsProps {
   collectionId?: number | null;
 }
 
-const CollectionConversations: React.SFC<CollectionConversationsProps> = (props) => {
+const CollectionConversations: React.FC<CollectionConversationsProps> = (props) => {
   const { collectionId } = props;
   const [selectedCollectionId, setSelectedCollectionId] = useState<any>(collectionId);
   const [searchVal, setSearchVal] = useState('');

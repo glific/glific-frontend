@@ -33,7 +33,7 @@ export interface TemplateOptionsProps {
   onTemplateTypeChange: any;
   disabled: any;
 }
-export const TemplateOptions: React.SFC<TemplateOptionsProps> = ({
+export const TemplateOptions: React.FC<TemplateOptionsProps> = ({
   isAddButtonChecked,
   templateType,
   inputFields,

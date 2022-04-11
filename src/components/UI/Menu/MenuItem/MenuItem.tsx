@@ -13,7 +13,7 @@ export interface MenuItemProps {
   className?: string;
 }
 
-const MenuItem: React.SFC<MenuItemProps> = (props) => {
+const MenuItem: React.FC<MenuItemProps> = (props) => {
   const { className, onClickHandler, path, icon, title } = props;
   const { t } = useTranslation();
 

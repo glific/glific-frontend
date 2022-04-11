@@ -19,7 +19,7 @@ export interface TagProps {
   match: any;
 }
 
-export const Tag: React.SFC<TagProps> = ({ match }) => {
+export const Tag: React.FC<TagProps> = ({ match }) => {
   const [label, setLabel] = useState('');
   const [description, setDescription] = useState('');
   const [keywords, setKeywords] = useState('');

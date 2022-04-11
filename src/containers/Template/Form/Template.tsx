@@ -150,7 +150,7 @@ interface QuickReplyTemplate {
   value: string;
 }
 
-const Template: React.SFC<TemplateProps> = (props) => {
+const Template: React.FC<TemplateProps> = (props) => {
   const {
     match,
     listItemName,

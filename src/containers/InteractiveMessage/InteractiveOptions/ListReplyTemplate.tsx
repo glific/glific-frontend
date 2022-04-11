@@ -20,7 +20,7 @@ export interface ListReplyTemplateProps {
   translation?: any;
 }
 
-export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
+export const ListReplyTemplate: React.FC<ListReplyTemplateProps> = (props) => {
   const {
     index,
     inputFields,

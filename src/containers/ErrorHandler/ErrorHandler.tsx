@@ -10,7 +10,7 @@ import setLogs from 'config/logs';
 
 export interface ErrorHandlerProps {}
 
-export const ErrorHandler: React.SFC<ErrorHandlerProps> = () => {
+export const ErrorHandler: React.FC<ErrorHandlerProps> = () => {
   const { t } = useTranslation();
   const { data } = useQuery(ERROR_MESSAGE);
   let { message } = data ? data.errorMessage : '';
