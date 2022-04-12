@@ -20,19 +20,17 @@ export interface ListReplyTemplateProps {
   translation?: any;
 }
 
-export const ListReplyTemplate: React.FC<ListReplyTemplateProps> = (props) => {
-  const {
-    index,
-    inputFields,
-    form: { touched, errors, values },
-    onListAddClick,
-    onListRemoveClick,
-    onListItemAddClick,
-    onListItemRemoveClick,
-    onInputChange,
-    translation,
-  } = props;
-
+export const ListReplyTemplate: React.FC<ListReplyTemplateProps> = ({
+  index,
+  inputFields,
+  form: { touched, errors, values },
+  onListAddClick,
+  onListRemoveClick,
+  onListItemAddClick,
+  onListItemRemoveClick,
+  onInputChange,
+  translation,
+}) => {
   const { t } = useTranslation();
 
   const isError = (key: string, itemIdx: number) => {

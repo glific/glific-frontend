@@ -59,7 +59,28 @@ export interface ChatMessageProps {
   daySeparator: string | null;
 }
 
-export const ChatMessage: React.FC<ChatMessageProps> = (props) => {
+export const ChatMessage: React.FC<ChatMessageProps> = ({
+  id,
+  popup,
+  focus,
+  sender,
+  contactId,
+  // tags,
+  insertedAt,
+  onClick,
+  type,
+  media,
+  body,
+  messageNumber,
+  location,
+  errors,
+  contextMessage,
+  jumpToMessage,
+  interactiveContent,
+  sendBy,
+  flowLabel,
+  daySeparator,
+}) => {
   // const client = useApolloClient();
   const [showSaveMessageDialog, setShowSaveMessageDialog] = useState(false);
   const Ref = useRef(null);
@@ -71,28 +92,6 @@ export const ChatMessage: React.FC<ChatMessageProps> = (props) => {
   const popperId = open ? 'simple-popper' : undefined;
   // let displayTag: any;
   // let deleteId: string | number;
-  const {
-    id,
-    popup,
-    focus,
-    sender,
-    contactId,
-    // tags,
-    insertedAt,
-    onClick,
-    type,
-    media,
-    body,
-    messageNumber,
-    location,
-    errors,
-    contextMessage,
-    jumpToMessage,
-    interactiveContent,
-    sendBy,
-    flowLabel,
-    daySeparator,
-  } = props;
 
   useEffect(() => {
     if (popup) {

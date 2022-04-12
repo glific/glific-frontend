@@ -81,18 +81,16 @@ export interface ContactBarProps {
   isSimulator?: boolean;
 }
 
-export const ContactBar: React.FC<ContactBarProps> = (props) => {
-  const {
-    contactId,
-    collectionId,
-    contactBspStatus,
-    lastMessageTime,
-    contactStatus,
-    displayName,
-    handleAction,
-    isSimulator,
-  } = props;
-
+export const ContactBar: React.FC<ContactBarProps> = ({
+  contactId,
+  collectionId,
+  contactBspStatus,
+  lastMessageTime,
+  contactStatus,
+  displayName,
+  handleAction,
+  isSimulator,
+}) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const history = useHistory();

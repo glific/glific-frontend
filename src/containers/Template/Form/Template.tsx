@@ -150,25 +150,23 @@ interface QuickReplyTemplate {
   value: string;
 }
 
-const Template: React.FC<TemplateProps> = (props) => {
-  const {
-    match,
-    listItemName,
-    redirectionLink,
-    icon,
-    defaultAttribute = { isHsm: false },
-    formField,
-    getSessionTemplatesCallBack,
-    customStyle,
-    getUrlAttachmentAndType,
-    getShortcode,
-    getExample,
-    setCategory,
-    category,
-    onExampleChange = () => {},
-    languageStyle = 'dropdown',
-  } = props;
-
+const Template: React.FC<TemplateProps> = ({
+  match,
+  listItemName,
+  redirectionLink,
+  icon,
+  defaultAttribute = { isHsm: false },
+  formField,
+  getSessionTemplatesCallBack,
+  customStyle,
+  getUrlAttachmentAndType,
+  getShortcode,
+  getExample,
+  setCategory,
+  category,
+  onExampleChange = () => {},
+  languageStyle = 'dropdown',
+}) => {
   const [label, setLabel] = useState('');
   const [body, setBody] = useState(EditorState.createEmpty());
   const [example, setExample] = useState(EditorState.createEmpty());

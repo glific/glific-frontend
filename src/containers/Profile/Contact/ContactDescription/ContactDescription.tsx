@@ -17,8 +17,13 @@ export interface ContactDescriptionProps {
   statusMessage: string;
 }
 
-export const ContactDescription: React.FC<ContactDescriptionProps> = (props) => {
-  const { phone, maskedPhone, collections, lastMessage, statusMessage } = props;
+export const ContactDescription: React.FC<ContactDescriptionProps> = ({
+  phone,
+  maskedPhone,
+  collections,
+  lastMessage,
+  statusMessage,
+}) => {
   let { fields, settings } = props;
 
   const [showPlainPhone, setShowPlainPhone] = useState(false);

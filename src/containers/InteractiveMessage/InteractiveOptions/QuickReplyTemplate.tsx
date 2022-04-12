@@ -15,17 +15,15 @@ export interface QuickReplyTemplateProps {
   translation?: any;
 }
 
-export const QuickReplyTemplate: React.FC<QuickReplyTemplateProps> = (props) => {
-  const {
-    index,
-    inputFields,
-    form: { touched, errors },
-    onAddClick,
-    onRemoveClick,
-    onInputChange,
-    translation,
-  } = props;
-
+export const QuickReplyTemplate: React.FC<QuickReplyTemplateProps> = ({
+  index,
+  inputFields,
+  form: { touched, errors },
+  onAddClick,
+  onRemoveClick,
+  onInputChange,
+  translation,
+}) => {
   const isError = (key: string) =>
     !!(
       errors.templateButtons &&

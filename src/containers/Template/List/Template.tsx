@@ -59,17 +59,16 @@ const statusFilter = {
   REJECTED: false,
 };
 
-export const Template: React.FC<TemplateProps> = (props) => {
-  const {
-    title,
-    listItem,
-    listItemName,
-    pageLink,
-    listIcon,
-    filters: templateFilters,
-    buttonLabel,
-    isHSM,
-  } = props;
+export const Template: React.FC<TemplateProps> = ({
+  title,
+  listItem,
+  listItemName,
+  pageLink,
+  listIcon,
+  filters: templateFilters,
+  buttonLabel,
+  isHSM,
+}) => {
   const [open, setOpen] = useState(false);
   const [Id, setId] = useState('');
   const { t } = useTranslation();

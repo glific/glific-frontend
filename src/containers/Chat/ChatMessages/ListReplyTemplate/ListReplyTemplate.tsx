@@ -38,10 +38,14 @@ interface ListTemplate {
   onDrawerClose: any;
 }
 
-export const ChatTemplate: React.FC<TemplateProps> = (props) => {
+export const ChatTemplate: React.FC<TemplateProps> = ({
+  title,
+  body,
+  globalButtonTitle,
+  items,
+}) => {
   const [showDialog, setShowDialog] = useState(false);
   const [checkedItem, setCheckedItem] = useState<any>(null);
-  const { title, body, globalButtonTitle, items } = props;
 
   let dialog;
 

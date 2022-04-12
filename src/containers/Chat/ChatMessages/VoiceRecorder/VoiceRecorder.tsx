@@ -17,8 +17,12 @@ export interface VoiceRecorderProps {
   isMicActive?: boolean;
 }
 
-export const VoiceRecorder: React.FC<VoiceRecorderProps> = (props) => {
-  const { handleAudioRecording, clearAudio, uploading, isMicActive } = props;
+export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({
+  handleAudioRecording,
+  clearAudio,
+  uploading,
+  isMicActive,
+}) => {
   const [showRecordCounter, setShowRecordCounter] = useState(false);
 
   const { t } = useTranslation();

@@ -9,8 +9,7 @@ export interface CollectionConversationsProps {
   collectionId?: number | null;
 }
 
-const CollectionConversations: React.FC<CollectionConversationsProps> = (props) => {
-  const { collectionId } = props;
+const CollectionConversations: React.FC<CollectionConversationsProps> = ({ collectionId }) => {
   const [selectedCollectionId, setSelectedCollectionId] = useState<any>(collectionId);
   const [searchVal, setSearchVal] = useState('');
 

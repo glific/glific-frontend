@@ -121,27 +121,26 @@ const BoldedText = (originalText: string, highlight: any) => {
   return text;
 };
 
-const ChatConversation: React.FC<ChatConversationProps> = (props) => {
+const ChatConversation: React.FC<ChatConversationProps> = ({
+  lastMessage,
+  selected,
+  contactId,
+  contactName,
+  index,
+  highlightSearch,
+  searchMode,
+  senderLastMessage,
+  contactStatus,
+  contactBspStatus,
+  contactIsOrgRead,
+  entityType,
+  messageNumber,
+  onClick,
+}) => {
   // check if message is unread and style it differently
   const client = useApolloClient();
   let chatInfoClass = [styles.ChatInfo, styles.ChatInfoRead];
   let chatBubble = [styles.ChatBubble, styles.ChatBubbleRead];
-  const {
-    lastMessage,
-    selected,
-    contactId,
-    contactName,
-    index,
-    highlightSearch,
-    searchMode,
-    senderLastMessage,
-    contactStatus,
-    contactBspStatus,
-    contactIsOrgRead,
-    entityType,
-    messageNumber,
-    onClick,
-  } = props;
 
   const [markAsRead] = useMutation(MARK_AS_READ, {
     onCompleted: (data) => {

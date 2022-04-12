@@ -18,9 +18,13 @@ interface ChatTemplatesProps {
   isInteractiveMsg: boolean;
 }
 
-export const ChatTemplates: React.FC<ChatTemplatesProps> = (props) => {
+export const ChatTemplates: React.FC<ChatTemplatesProps> = ({
+  searchVal,
+  handleSelectText,
+  isTemplate,
+  isInteractiveMsg,
+}) => {
   const { t } = useTranslation();
-  const { searchVal, handleSelectText, isTemplate, isInteractiveMsg } = props;
 
   const filterVariables = () => setVariables({ term: searchVal });
   const { loading, error, data } = useQuery<any>(FILTER_TEMPLATES, {
