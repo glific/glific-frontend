@@ -31,18 +31,16 @@ export const termsOfUse = (
   </div>
 );
 
-export const Organization: React.FC<OrganizationProps> = (props: any) => {
-  const {
-    pageTitle,
-    buttonText,
-    initialFormValues = null,
-    saveHandler,
-    formFields,
-    validationSchema,
-    titleSubText,
-    errorMessage,
-  } = props;
-
+export const Organization: React.FC<OrganizationProps> = ({
+  pageTitle,
+  buttonText,
+  initialFormValues = null,
+  saveHandler,
+  formFields,
+  validationSchema,
+  titleSubText,
+  errorMessage,
+}) => {
   const [loading, setLoading] = useState(false);
   const [captcha, setCaptcha] = useState(null);
   const boxClass = [styles.Box, styles.RegistrationBox];
