@@ -50,6 +50,7 @@ export const Calendar: React.SFC<CalendarProps> = ({
           variant={variant}
           inputVariant={inputVariant}
           format={format}
+          className={styles.CalendarInput}
           disabled={disabled}
           data-testid="date-picker-inline"
           label={placeholder}

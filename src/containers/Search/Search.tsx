@@ -55,7 +55,7 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
   const [includeLabels, setIncludeLabels] = useState([]);
   const [dateFrom, setdateFrom] = useState(null);
   const [dateTo, setdateTo] = useState(null);
-  const [useDateExpression, setUseDateExpression] = useState(false);
+  const [useExpression, setUseExpression] = useState(false);
   const [dateFromExpression, setdateFromExpression] = useState(null);
   const [dateToExpression, setdateToExpression] = useState(null);
   const [formFields, setFormFields] = useState<any>([]);
@@ -72,6 +72,7 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
   const states = {
     shortcode,
     label,
+    useExpression,
     term,
     // includeTags,
     includeGroups,
@@ -135,7 +136,7 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
           if (Object.prototype.hasOwnProperty.call(filters.filter, 'dateExpression')) {
             setdateFromExpression(filters.filter.dateExpression.fromExpression);
             setdateToExpression(filters.filter.dateExpression.toExpression);
-            setUseDateExpression(true);
+            setUseExpression(true);
           }
           break;
         case 'term':
@@ -318,49 +319,63 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
         variant: 'outlined',
       },
     },
+  ];
+
+  const formWithCheckbox =
+    type === 'search'
+      ? searchFields
+      : [
+          ...searchFields,
+          {
+            component: Checkbox,
+            name: 'useExpression',
+            title: t('Use expression'),
+            info: {
+              title: t('If activated, you can set dynamic dates using expression'),
+            },
+            darkCheckbox: true,
+            handleChange: (value: any) => setUseExpression(value),
+            label: <span className={styles.DateRangeLabel}> {t('Date range')}</span>,
+          },
+        ];
+
+  const formWithDate = [
+    ...formWithCheckbox,
     {
       component: Calendar,
       name: 'dateFrom',
       type: 'date',
       placeholder: t('Date from'),
-      disabled: useDateExpression,
-      label: t('Date range'),
+      disabled: useExpression,
     },
     {
       component: Calendar,
       name: 'dateTo',
       type: 'date',
-      disabled: useDateExpression,
+      disabled: useExpression,
       placeholder: t('Date to'),
     },
+  ];
 
-    {
-      component: Checkbox,
-      name: 'useExpression',
-      value: useDateExpression,
-      title: t('Use expression'),
-      info: {
-        title: t('If activated, you can set dynamic dates using expression'),
-      },
-      darkCheckbox: true,
-      handleChange: (value: any) => setUseDateExpression(value),
-    },
-
+  const formWithExpression = [
+    ...formWithCheckbox,
     {
       component: Input,
       name: 'dateFromExpression',
-      placeholder: t('Date from expression'),
+      placeholder: t('Date from'),
       type: 'text',
-      disabled: !useDateExpression,
+      disabled: !useExpression,
     },
     {
       component: Input,
       type: 'text',
       name: 'dateToExpression',
-      placeholder: t('Date to expression'),
-      disabled: !useDateExpression,
+      placeholder: t('Date to'),
+      disabled: !useExpression,
     },
   ];
+
+  const finalSearchFields = useExpression ? formWithExpression : formWithDate;
 
   const setPayload = (payload: any) => {
     if (search) search(payload);
@@ -451,7 +466,7 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
 
     if (formFields.length === 0) {
       if (type === 'search') {
-        setFormFields([...searchFields]);
+        setFormFields([...finalSearchFields]);
         setButton('Search');
       }
       if (type === 'saveSearch') setFormFields(DataFields);
@@ -463,7 +478,7 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
 
   const getFields = () => {
     addFieldsValidation(validation);
-    return [...DataFields, ...searchFields];
+    return [...DataFields, ...finalSearchFields];
   };
 
   const saveHandler = (saveData: any) => {
@@ -490,7 +505,7 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
       languageSupport={false}
       advanceSearch={advanceSearch}
       button={button}
-      customStyles={styles.Search}
+      customStyles={[styles.Form]}
       type={type}
       afterSave={saveHandler}
     />

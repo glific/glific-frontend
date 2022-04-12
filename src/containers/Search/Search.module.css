@@ -17,9 +17,18 @@
   width: 29px;
 }
 
-.Search > div:nth-of-type(10),
-div:nth-of-type(11) {
+.Form > h5:nth-of-type(4),
+.Form > div:nth-of-type(7) {
+  display: inline;
+}
+
+.Form > div:nth-of-type(8),
+.Form > div:nth-of-type(9) {
   display: inline-block;
-  width: 49% !important;
-  margin: 0px 2px;
+  width: 47%;
+  margin: 0 6px;
+}
+
+.DateRangeLabel {
+  margin-right: 12px;
 }
