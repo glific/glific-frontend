@@ -22,13 +22,32 @@
   display: inline;
 }
 
-.Form > div:nth-of-type(8),
+.Form > div:nth-of-type(7) {
+  font-weight: 400 !important;
+  margin-left: 195px;
+}
+
+.Form > div:nth-of-type(8) {
+  display: inline-block;
+  width: 49%;
+  margin-right: 8px;
+}
 .Form > div:nth-of-type(9) {
   display: inline-block;
-  width: 47%;
-  margin: 0 6px;
+  width: 49%;
 }
 
 .DateRangeLabel {
   margin-right: 12px;
+}
+
+.DialogTitleText {
+  color: #93a29b;
+}
+
+.DialogContent {
+  white-space: pre-line;
+  max-width: 347px;
+  font-size: 14px;
+  color: #073f24;
 }

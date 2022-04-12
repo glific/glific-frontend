@@ -17,6 +17,7 @@ import { FormLayout } from 'containers/Form/FormLayout';
 import { Input } from 'components/UI/Form/Input/Input';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Calendar } from 'components/UI/Form/Calendar/Calendar';
+import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import Loading from 'components/UI/Layout/Loading/Loading';
 import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT, setVariables } from 'common/constants';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
@@ -51,6 +52,7 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
   const [term, setTerm] = useState('');
   // const [includeTags, setIncludeTags] = useState([]);
   const [includeGroups, setIncludeGroups] = useState([]);
+  const [infoDialog, setInfoDialog] = useState(false);
   const [includeUsers, setIncludeUsers] = useState([]);
   const [includeLabels, setIncludeLabels] = useState([]);
   const [dateFrom, setdateFrom] = useState(null);
@@ -330,10 +332,10 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
             component: Checkbox,
             name: 'useExpression',
             title: t('Use expression'),
-            info: {
-              title: t('If activated, you can set dynamic dates using expression'),
-            },
-            darkCheckbox: true,
+            info: true,
+            addLabelStyle: false,
+            infoType: 'dialog',
+            handleInfoClick: () => setInfoDialog(true),
             handleChange: (value: any) => setUseExpression(value),
             label: <span className={styles.DateRangeLabel}> {t('Date range')}</span>,
           },
@@ -485,30 +487,64 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
     if (props.handleSave && saveData.updateSavedSearch)
       props.handleSave(saveData.updateSavedSearch);
   };
+  let dialog;
+
+  if (infoDialog) {
+    dialog = (
+      <DialogBox
+        titleAlign="left"
+        title={t('Use date expression')}
+        skipOk
+        buttonCancel={t('Close')}
+        handleCancel={() => setInfoDialog(false)}
+      >
+        <div className={styles.DialogContent}>
+          You can use date expression for dynamic dates like ‘Last 2 days’ instead two days between
+          two fixed dates. To get search results for ‘Last 2 days’ you need to use this function:
+          <br />
+          <br />
+          <div className={styles.DialogTitleText}>Date from expression:</div>
+          {`<%= Timex.shift(Timex.today("Asia/Kolkata"), -2) %>`}
+          <div className={styles.DialogTitleText}>Date to expression:</div>
+          {` <%= Timex.today("Asia/Kolkata") %>`}
+          <br />
+          <br />
+          For ‘Last 3 days’ change ‘-2’ to ‘-3’ in Date from expression.
+          <br />
+          <br />
+          <div className={styles.DialogTitleText}>For UTC timezone, use this function:</div>
+          {`<%= Timex.shift(DateTime.utc_now(), -2) %>`}
+        </div>
+      </DialogBox>
+    );
+  }
 
   return (
-    <FormLayout
-      {...queries}
-      match={match}
-      states={states}
-      setStates={setStates}
-      setPayload={setPayload}
-      validationSchema={FormSchema}
-      listItemName="Search"
-      dialogMessage={dialogMessage}
-      formFields={formFields.length > 0 ? formFields : getFields()}
-      redirectionLink="search"
-      cancelLink="search"
-      linkParameter="id"
-      listItem="savedSearch"
-      icon={searchIcon}
-      languageSupport={false}
-      advanceSearch={advanceSearch}
-      button={button}
-      customStyles={[styles.Form]}
-      type={type}
-      afterSave={saveHandler}
-    />
+    <>
+      {dialog}
+      <FormLayout
+        {...queries}
+        match={match}
+        states={states}
+        setStates={setStates}
+        setPayload={setPayload}
+        validationSchema={FormSchema}
+        listItemName="Search"
+        dialogMessage={dialogMessage}
+        formFields={formFields.length > 0 ? formFields : getFields()}
+        redirectionLink="search"
+        cancelLink="search"
+        linkParameter="id"
+        listItem="savedSearch"
+        icon={searchIcon}
+        languageSupport={false}
+        advanceSearch={advanceSearch}
+        button={button}
+        customStyles={[styles.Form]}
+        type={type}
+        afterSave={saveHandler}
+      />
+    </>
   );
 };
 
