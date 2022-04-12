@@ -147,64 +147,66 @@ export const ListReplyTemplateDrawer: React.SFC<ListTemplate> = (props) => {
     onItemClick(checkedItem);
   };
 
-  const list = items.items.map((item: any, index: number) => {
-    const { options, title: sectionTitle } = item;
+  const list =
+    items.items &&
+    items.items.map((item: any, index: number) => {
+      const { options, title: sectionTitle } = item;
 
-    if (!sectionTitle) {
-      return null;
-    }
+      if (!sectionTitle) {
+        return null;
+      }
 
-    return (
-      <div key={uuidv4()}>
-        <div className={styles.SectionTitle}>{sectionTitle}</div>
-        <div className={styles.Options}>
-          {options
-            .map((option: any) => {
-              const payloadObject = {
-                payload: {
-                  type: 'list_reply',
-                  title: option.title,
-                  id: '',
-                  reply: `${option.title} ${index + 1} `,
-                  postbackText: '',
-                  description: option.description,
-                },
-                context: {
-                  id: '',
-                  gsId: items.bspMessageId,
-                },
-              };
+      return (
+        <div key={uuidv4()}>
+          <div className={styles.SectionTitle}>{sectionTitle}</div>
+          <div className={styles.Options}>
+            {options
+              .map((option: any) => {
+                const payloadObject = {
+                  payload: {
+                    type: 'list_reply',
+                    title: option.title,
+                    id: '',
+                    reply: `${option.title} ${index + 1} `,
+                    postbackText: '',
+                    description: option.description,
+                  },
+                  context: {
+                    id: '',
+                    gsId: items.bspMessageId,
+                  },
+                };
 
-              if (option.title) {
-                return (
-                  <Button
-                    key={uuidv4()}
-                    className={styles.ListItem}
-                    onClick={() => setCheckedItem(payloadObject)}
-                  >
-                    <div>
-                      <div>{option.title}</div>
-                      <div>{option.description}</div>
-                    </div>
-                    <div>
-                      <Radio
-                        value={option.title}
-                        name="radio-list-item"
-                        size="small"
-                        checked={checkedItem && option.title === checkedItem.payload.title}
-                        color="primary"
-                      />
-                    </div>
-                  </Button>
-                );
-              }
-              return null;
-            })
-            .filter((a: any) => a)}
+                if (option.title) {
+                  return (
+                    <Button
+                      key={uuidv4()}
+                      className={styles.ListItem}
+                      onClick={() => setCheckedItem(payloadObject)}
+                    >
+                      <div>
+                        <div>{option.title}</div>
+                        <div>{option.description}</div>
+                      </div>
+                      <div>
+                        <Radio
+                          value={option.title}
+                          name="radio-list-item"
+                          size="small"
+                          checked={checkedItem && option.title === checkedItem.payload.title}
+                          color="primary"
+                        />
+                      </div>
+                    </Button>
+                  );
+                }
+                return null;
+              })
+              .filter((a: any) => a)}
+          </div>
         </div>
-      </div>
-    );
-  });
+      );
+    });
 
   return (
     <div className={styles.Drawer}>
