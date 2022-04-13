@@ -60,7 +60,7 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
     return !!error;
   })();
 
-  const sectionLabel = `Enter list ${index + 1} title`;
+  const sectionLabel = `Enter list ${index + 1} title*`;
 
   const { templateButtons } = values;
   const { options } = templateButtons[index];
@@ -74,8 +74,7 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
 
   const isAddMoreOptionAllowed = inputFields.reduce((result: number, field: any) => {
     const { options: optn } = field;
-    const sum = result + optn.length;
-    return sum;
+    return result + (optn ? optn.length : 0);
   }, 0);
 
   const handleAddListItem = (helper: any) => {
@@ -119,7 +118,7 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
         <FormControl fullWidth error={isListTitleError} className={styles.FormControl}>
           <TextField
             label={sectionLabel}
-            placeholder={sectionLabel}
+            placeholder={t(`List ${index + 1} title (Max 24 char.)`)}
             variant="outlined"
             onChange={(e: any) => handleInputChange(e, 'title')}
             className={styles.TextField}
@@ -153,14 +152,18 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
                           className={styles.FormControl}
                         >
                           <TextField
-                            placeholder={`Title ${itemIndex + 1}`}
+                            placeholder={`Title ${itemIndex + 1} (Max 24 char.)`}
                             variant="outlined"
-                            label={`Enter list item ${itemIndex + 1} title`}
+                            label={`Enter list item ${itemIndex + 1} title*`}
                             onChange={(e: any) => handleInputChange(e, 'title', itemIndex, true)}
                             className={styles.TextField}
                             error={isError('title', itemIndex)}
                             value={itemRow.title}
-                            helperText={t('Only alphanumeric characters and spaces are allowed')}
+                            helperText={
+                              isError('title', itemIndex)
+                                ? undefined
+                                : t('Alphanumeric characters and spaces are allowed')
+                            }
                             InputProps={{
                               endAdornment: itemIndex !== 0 && showDeleteIcon && (
                                 <CrossIcon
@@ -171,11 +174,11 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
                               ),
                             }}
                           />
-                          {isError('title', itemIndex) ? (
-                            <FormHelperText>
+                          {isError('title', itemIndex) && (
+                            <FormHelperText className={styles.HelperText}>
                               {errors.templateButtons[index].options[itemIndex].title}
                             </FormHelperText>
-                          ) : null}
+                          )}
                         </FormControl>
                       </div>
 
@@ -193,7 +196,7 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
                           className={styles.FormControl}
                         >
                           <TextField
-                            placeholder={`Description ${itemIndex + 1}`}
+                            placeholder={`Description ${itemIndex + 1} (Max 60 char.)`}
                             variant="outlined"
                             label={`Enter list item ${itemIndex + 1} description`}
                             onChange={(e: any) =>

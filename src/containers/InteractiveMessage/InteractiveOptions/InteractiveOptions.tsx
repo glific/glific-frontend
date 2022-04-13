@@ -153,7 +153,7 @@ export const InteractiveOptions: React.SFC<InteractiveOptionsProps> = ({
             <TextField
               placeholder="List header"
               variant="outlined"
-              label="List header"
+              label="List header*"
               className={styles.TextField}
               onChange={(e: any) => {
                 setFieldValue('globalButton', e.target.value);
