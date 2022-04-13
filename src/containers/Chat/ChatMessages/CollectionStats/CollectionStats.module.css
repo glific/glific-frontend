@@ -1,0 +1,29 @@
+.FailSend {
+  color: red !important;
+  text-align: left;
+}
+
+.TitleContainer {
+  display: flex;
+  line-height: 1.2;
+  border-bottom: 1px solid #cacaca;
+}
+
+.SuccessSend {
+  text-align: right;
+  margin-left: auto;
+}
+
+.Heading {
+  font-size: 14px;
+  font-weight: 400;
+}
+.FailureReason {
+  font-size: 16px;
+  color: #93a29b;
+}
+
+.ReasonHeading {
+  font-size: 16px;
+  color: #073f24;
+}

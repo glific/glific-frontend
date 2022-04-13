@@ -302,3 +302,14 @@
   border-radius: 8px;
   box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.12);
 }
+
+.Stats {
+  font-weight: 500;
+  font-size: 10px;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: #119656;
+  border-bottom: 1px dashed #119656;
+  margin-right: 12px;
+  cursor: pointer;
+}

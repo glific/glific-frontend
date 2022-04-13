@@ -28,6 +28,7 @@ import { ChatMessageType } from './ChatMessageType/ChatMessageType';
 import { ListReplyTemplate, ChatTemplate } from '../ListReplyTemplate/ListReplyTemplate';
 import { QuickReplyTemplate } from '../QuickReplyTemplate/QuickReplyTemplate';
 import styles from './ChatMessage.module.css';
+import CollectionStats from '../CollectionStats/CollectionStats';
 
 export interface ChatMessageProps {
   id: number;
@@ -62,6 +63,7 @@ export interface ChatMessageProps {
 export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   // const client = useApolloClient();
   const [showSaveMessageDialog, setShowSaveMessageDialog] = useState(false);
+  const [showStatsDialog, setShowStatsDialog] = useState(false);
   const Ref = useRef(null);
   const messageRef = useRef<null | HTMLDivElement>(null);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -115,20 +117,22 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   //   },
   // });
 
+  // let tagMargin: string | null = styles.TagMargin;
+  // let tagContainer: string | null = styles.TagContainerSender;
   let iconLeft = false;
   let placement: any = 'bottom-end';
   let additionalClass = styles.Mine;
   let mineColor: string | null = styles.MineColor;
   let iconPlacement = styles.ButtonLeft;
   let datePlacement: string | null = styles.DateLeft;
-  // let tagContainer: string | null = styles.TagContainerSender;
   let labelContainer: string | null = styles.LabelContainerSender;
-  // let tagMargin: string | null = styles.TagMargin;
   let labelMargin: string | null = styles.LabelMargin;
   let messageDetails = styles.MessageDetails;
-  const messageError = errors ? parseTextMethod(errors) : {};
   let messageErrorStatus: any = false;
   let tooltipTitle: any = moment(insertedAt).format(DATE_FORMAT);
+
+  const messageError = errors ? parseTextMethod(errors) : {};
+  const isSender = sender.id === contactId;
 
   // Check if the message has an error after sending the message.
   if (Object.prototype.hasOwnProperty.call(messageError, 'payload')) {
@@ -157,18 +161,16 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     );
   }
 
-  const isSender = sender.id === contactId;
-
   if (isSender) {
+    // tagContainer = null;
+    // tagMargin = null;
     additionalClass = styles.Other;
     mineColor = styles.OtherColor;
     iconLeft = true;
     placement = 'bottom-start';
     iconPlacement = styles.ButtonRight;
     datePlacement = null;
-    // tagContainer = null;
     labelContainer = null;
-    // tagMargin = null;
     labelMargin = null;
     messageDetails = styles.MessageDetailsSender;
   }
@@ -206,15 +208,19 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     }
   };
 
-  let saveTemplateMessage;
+  let dialog;
   if (showSaveMessageDialog) {
-    saveTemplateMessage = (
+    dialog = (
       <AddToMessageTemplate
         id={id}
         message={WhatsAppToJsx(body)}
         changeDisplay={saveMessageTemplate}
       />
     );
+  }
+
+  if (showStatsDialog) {
+    dialog = <CollectionStats setDialog={setShowStatsDialog} />;
   }
 
   // const deleteTagHandler = (event: any) => {
@@ -249,6 +255,9 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   //     </div>
   //   ));
 
+  const messageStats = true;
+  let viewStats;
+
   const sendByLabel = !isSender && sendBy;
   let messageFooter;
   if (sendByLabel) {
@@ -257,8 +266,23 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     messageFooter = moment(insertedAt).format(TIME_FORMAT);
   }
 
+  if (messageStats) {
+    viewStats = (
+      <div
+        onKeyDown={() => setShowStatsDialog(true)}
+        role="button"
+        className={styles.Stats}
+        onClick={() => setShowStatsDialog(true)}
+        tabIndex={0}
+      >
+        View stats
+      </div>
+    );
+  }
+
   const dateAndSendBy = messageFooter && (
     <div className={`${styles.Date} ${datePlacement}`} data-testid="date">
+      {viewStats}
       {messageFooter}
     </div>
   );
@@ -340,7 +364,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
         data-testid="message"
         id={`search${messageNumber}`}
       >
-        {contextMessage ? (
+        {contextMessage && (
           <Tooltip title={moment(contextMessage.insertedAt).format(DATE_FORMAT)} placement="right">
             <div
               className={styles.ReplyMessage}
@@ -367,10 +391,10 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
               </div>
             </div>
           </Tooltip>
-        ) : null}
+        )}
 
         <div className={styles.Inline}>
-          {iconLeft ? icon : null}
+          {iconLeft && icon}
           {ErrorIcon}
           <div className={chatMessageClasses.join(' ')}>
             <Tooltip title={tooltipTitle} placement={isSender ? 'right' : 'left'}>
@@ -445,7 +469,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
           {iconLeft ? null : icon}
         </div>
 
-        {saveTemplateMessage}
+        {dialog}
 
         <div className={messageDetails}>
           <div className={`${messageErrorStatus ? styles.TemplateButtonOnError : ''}`}>
@@ -455,9 +479,9 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
           {/* {displayTag ? (
           <div className={`${styles.TagContainer} ${tagContainer}`}>{displayTag}</div>
         ) : null} */}
-          {displayLabel ? (
+          {displayLabel && (
             <div className={`${styles.LabelContainer} ${labelContainer}`}>{displayLabel}</div>
-          ) : null}
+          )}
         </div>
       </div>
     </div>

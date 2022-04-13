@@ -10,7 +10,7 @@ import styles from './DialogBox.module.css';
 
 export interface DialogProps {
   open?: boolean;
-  title: string;
+  title: string | ReactNode;
   handleOk?: Function;
   handleCancel?: Function;
   handleMiddle?: Function;
@@ -130,9 +130,9 @@ export const DialogBox: React.SFC<DialogProps> = ({
         {title}
       </DialogTitle>
       <DialogContent className={contentStyle}>
-        {contentText ? (
+        {contentText && (
           <DialogContentText id="alert-dialog-description">{contentText}</DialogContentText>
-        ) : null}
+        )}
         {children}
       </DialogContent>
       <DialogActions className={dialogActionStyle}>
