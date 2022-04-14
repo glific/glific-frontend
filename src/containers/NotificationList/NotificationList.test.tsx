@@ -97,7 +97,9 @@ test('it should show copy text and view option on clicking entity ', async () =>
 
 test('it should show filter checkboxes', async () => {
   render(notifications);
-  await waitFor(() => {});
-  const checkboxInput = screen.getAllByRole('checkbox');
-  fireEvent.click(checkboxInput[0]);
+
+  await waitFor(() => {
+    const checkboxInput = screen.getAllByRole('checkbox');
+    fireEvent.click(checkboxInput[0]);
+  });
 });
