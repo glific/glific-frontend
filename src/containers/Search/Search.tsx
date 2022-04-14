@@ -365,7 +365,7 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
     {
       component: Input,
       name: 'dateFromExpression',
-      placeholder: t('Date from'),
+      placeholder: t('Date from expression'),
       type: 'text',
       disabled: !useExpression,
     },
@@ -373,7 +373,7 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
       component: Input,
       type: 'text',
       name: 'dateToExpression',
-      placeholder: t('Date to'),
+      placeholder: t('Date to expression'),
       disabled: !useExpression,
     },
   ];
