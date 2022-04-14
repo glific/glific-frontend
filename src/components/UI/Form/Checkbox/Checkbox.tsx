@@ -55,7 +55,7 @@ export const Checkbox: React.SFC<CheckboxProps> = (props) => {
         labelPlacement="end"
         label={title}
         classes={{
-          label: addLabelStyle ? styles.Label : '',
+          label: addLabelStyle ? styles.Label : styles.LabelNoStyle,
           root: styles.Root,
         }}
       />

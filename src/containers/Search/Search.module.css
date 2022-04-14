@@ -29,12 +29,12 @@
 
 .Form > div:nth-of-type(8) {
   display: inline-block;
-  width: 49%;
-  margin-right: 8px;
+  margin-right: 18px;
+  padding: 0px;
 }
 .Form > div:nth-of-type(9) {
   display: inline-block;
-  width: 49%;
+  padding: 0px;
 }
 
 .DateRangeLabel {
@@ -50,4 +50,8 @@
   max-width: 347px;
   font-size: 14px;
   color: #073f24;
+}
+
+.FormSearch > div:nth-of-type(5) {
+  margin-right: 18px;
 }

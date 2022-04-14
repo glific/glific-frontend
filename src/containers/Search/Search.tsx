@@ -349,6 +349,7 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
       type: 'date',
       placeholder: t('Date from'),
       disabled: useExpression,
+      label: type === 'search' ? t('Date range') : null,
     },
     {
       component: Calendar,
@@ -519,6 +520,8 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
     );
   }
 
+  const customStyles = type ? [styles.FormSearch] : [styles.Form];
+
   return (
     <>
       {dialog}
@@ -540,7 +543,7 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
         languageSupport={false}
         advanceSearch={advanceSearch}
         button={button}
-        customStyles={[styles.Form]}
+        customStyles={customStyles}
         type={type}
         afterSave={saveHandler}
       />
