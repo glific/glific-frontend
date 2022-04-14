@@ -30,6 +30,9 @@ const Search = lazy(() => import('containers/Search/Search'));
 const StaffManagementList = lazy(
   () => import('containers/StaffManagement/StaffManagementList/StaffManagementList')
 );
+const CollectionStatsList = lazy(
+  () => import('containers/CollectionStatsList/CollectionStatsList')
+);
 const ContactManagement = lazy(() => import('containers/ContactManagement/ContactManagement'));
 const StaffManagement = lazy(() => import('containers/StaffManagement/StaffManagement'));
 const ContactProfile = lazy(() => import('containers/Profile/Contact/ContactProfile'));
@@ -73,7 +76,7 @@ const routeStaff = (
     <Route path="/user-profile" exact component={UserProfile} />
     <Route path="/contact-profile/:id" exact component={ContactProfile} />
     <Route path="/blocked-contacts" exact component={BlockContactList} />
-
+    <Route path="/collection-stats" exact component={CollectionStatsList} />
     <Route path="/myaccount" exact component={MyAccount} />
     <Route path="/" render={defaultRedirect} />
   </Switch>
@@ -106,6 +109,7 @@ const routeAdmin = (
     <Route path="/trigger/:id/edit" exact component={Trigger} />
 
     <Route path="/staff-management" exact component={StaffManagementList} />
+    <Route path="/collection-stats" exact component={CollectionStatsList} />
     <Route path="/contact-management" exact component={ContactManagement} />
     <Route path="/staff-management/:id/edit" exact component={StaffManagement} />
     <Route path="/contact-profile/:id" exact component={ContactProfile} />
