@@ -1360,10 +1360,15 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@glific/flow-editor@^1.17.0-8":
-  version "1.17.0-8"
-  resolved "https://registry.yarnpkg.com/@glific/flow-editor/-/flow-editor-1.17.0-8.tgz#53b0734ff655e760cfa04a3b73807b2f1f548bc5"
-  integrity sha512-lDpqG9g4wwe750IDG4XP7hgPieZOYLMJ9TrLhXwfTfDrJzSORTyQB2lfq9qQGmHfLoxvW3+yEC6BXmFI8LtZsA==
+"@gar/promisify@^1.0.1":
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/@gar/promisify/-/promisify-1.1.3.tgz#555193ab2e3bb3b6adc3d551c9c030d9e860daf6"
+  integrity sha512-k2Ty1JcVojjJFwrg/ThKi2ujJ7XNLYaFGNB/bWT9wGR+oSMJHMa5w+CUq6p/pVrKeNNgA7pCqEcjSnHVoqJQFw==
+
+"@glific/flow-editor@^1.17.0-10":
+  version "1.17.0-10"
+  resolved "https://registry.yarnpkg.com/@glific/flow-editor/-/flow-editor-1.17.0-10.tgz#3a7cc77b155bdfe5ee946b852956992c02c4dbc5"
+  integrity sha512-4A269Oy+Dk5BYCpk5EI8GR1kxohKuq55BIaMElFr+utx0F03QB/qBmzky+bsFtTARsQHdwXau5hAtEF/DGoDPA==
   dependencies:
     react "^16.8.6"
     react-dom "^16.8.6"
