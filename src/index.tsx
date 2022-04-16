@@ -13,13 +13,14 @@ import { APPSIGNAL_API_KEY } from './config';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import { version } from '../package.json';
+import packageInfo from '../package.json';
 
+console.log('vewrsion', packageInfo.version);
 let appComponent = <App />;
 if (APPSIGNAL_API_KEY) {
   const appsignal = new Appsignal({
     key: APPSIGNAL_API_KEY,
-    revision: version,
+    revision: packageInfo.version,
   });
   appsignal.use(BreadcrumbsNetwork.plugin({ xhrEnabled: true }));
   appsignal.use(PathDecorator.plugin());
