@@ -34,6 +34,67 @@ export interface SearchProps {
   setState?: any;
 }
 
+const getPayload = (payload: any) => {
+  const {
+    label,
+    shortcode,
+    term,
+    includeTags,
+    includeGroups,
+    includeUsers,
+    includeLabels,
+    dateFrom,
+    dateTo,
+    dateToExpression,
+    dateFromExpression,
+    useExpression,
+  } = payload;
+
+  const args = {
+    contactOpts: {
+      offset: 0,
+      limit: DEFAULT_CONTACT_LIMIT,
+    },
+    filter: {
+      term,
+      includeTags: includeTags ? includeTags.map((option: any) => option.id) : [],
+      includeGroups: includeGroups ? includeGroups.map((option: any) => option.id) : [],
+      includeUsers: includeUsers ? includeUsers.map((option: any) => option.id) : [],
+      includeLabels: includeLabels ? includeLabels.map((option: any) => option.id) : [],
+    },
+    messageOpts: {
+      offset: 0,
+      limit: DEFAULT_MESSAGE_LIMIT,
+    },
+  };
+
+  if (!useExpression && dateFrom && dateFrom !== 'Invalid date') {
+    const dateRange = {
+      dateRange: {
+        to: moment(dateTo).format('yyyy-MM-DD'),
+        from: moment(dateFrom).format('yyyy-MM-DD'),
+      },
+    };
+    args.filter = Object.assign(args.filter, dateRange);
+  }
+
+  if (useExpression && dateFromExpression) {
+    const dateExpression = {
+      dateExpression: {
+        toExpression: dateToExpression,
+        fromExpression: dateFromExpression,
+      },
+    };
+    args.filter = Object.assign(args.filter, dateExpression);
+  }
+
+  return {
+    label,
+    shortcode,
+    args: JSON.stringify(args),
+  };
+};
+
 let FormSchema = Yup.object().shape({});
 
 const searchIcon = <SearchIcon className={styles.SearchIcon} />;
@@ -258,6 +319,11 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
       type: 'text',
       placeholder: t('Search Title'),
       validate: validateTitle,
+      inputProp: {
+        onChange: (event: any) => {
+          setShortcode(event.target.value);
+        },
+      },
     },
     {
       component: Input,
@@ -266,6 +332,11 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
       placeholder: t('Description'),
       rows: 3,
       textArea: true,
+      inputProp: {
+        onChange: (event: any) => {
+          setLabel(event.target.value);
+        },
+      },
     },
   ];
 
@@ -275,6 +346,11 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
       name: 'term',
       type: 'text',
       placeholder: t('Enter name, tag, keyword'),
+      inputProp: {
+        onChange: (event: any) => {
+          setTerm(event.target.value);
+        },
+      },
     },
     // {
     //   component: AutoComplete,
@@ -297,6 +373,7 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
         variant: 'outlined',
       },
       icon: <TagIcon stroke="#073f24" />,
+      onChange: (val: any) => setIncludeLabels(val),
     },
     {
       component: AutoComplete,
@@ -309,6 +386,7 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
       textFieldProps: {
         variant: 'outlined',
       },
+      onChange: (val: any) => setIncludeGroups(val),
     },
     {
       component: AutoComplete,
@@ -320,6 +398,7 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
       textFieldProps: {
         variant: 'outlined',
       },
+      onChange: (val: any) => setIncludeUsers(val),
     },
   ];
 
@@ -382,56 +461,7 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
 
   const setPayload = (payload: any) => {
     if (search) search(payload);
-
-    const args = {
-      contactOpts: {
-        offset: 0,
-        limit: DEFAULT_CONTACT_LIMIT,
-      },
-      filter: {
-        term: payload.term,
-        includeTags: payload.includeTags ? payload.includeTags.map((option: any) => option.id) : [],
-        includeGroups: payload.includeGroups
-          ? payload.includeGroups.map((option: any) => option.id)
-          : [],
-        includeUsers: payload.includeUsers
-          ? payload.includeUsers.map((option: any) => option.id)
-          : [],
-        includeLabels: payload.includeLabels
-          ? payload.includeLabels.map((option: any) => option.id)
-          : [],
-      },
-      messageOpts: {
-        offset: 0,
-        limit: DEFAULT_MESSAGE_LIMIT,
-      },
-    };
-
-    if (payload.dateFrom && payload.dateFrom !== 'Invalid date') {
-      const dateRange = {
-        dateRange: {
-          to: moment(payload.dateTo).format('yyyy-MM-DD'),
-          from: moment(payload.dateFrom).format('yyyy-MM-DD'),
-        },
-      };
-      args.filter = Object.assign(args.filter, dateRange);
-    }
-
-    if (payload.dateFromExpression) {
-      const dateExpression = {
-        dateExpression: {
-          toExpression: payload.dateToExpression,
-          fromExpression: payload.dateFromExpression,
-        },
-      };
-      args.filter = Object.assign(args.filter, dateExpression);
-    }
-
-    return {
-      label: payload.label,
-      shortcode: payload.shortcode,
-      args: JSON.stringify(args),
-    };
+    return getPayload(payload);
   };
 
   const addFieldsValidation = (object: any) => {
@@ -505,7 +535,7 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
           <br />
           <br />
           <div className={styles.DialogTitleText}>Date from expression:</div>
-          {`<%= Timex.shift(Timex.today("Asia/Kolkata"), -2) %>`}
+          {`<%= Timex.shift(Timex.today("Asia/Kolkata") , days: -2) %>`}
           <div className={styles.DialogTitleText}>Date to expression:</div>
           {` <%= Timex.today("Asia/Kolkata") %>`}
           <br />
@@ -514,7 +544,7 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
           <br />
           <br />
           <div className={styles.DialogTitleText}>For UTC timezone, use this function:</div>
-          {`<%= Timex.shift(DateTime.utc_now(), -2) %>`}
+          {`<%= Timex.shift(DateTime.utc_now() , days: -2) %>`}
         </div>
       </DialogBox>
     );
