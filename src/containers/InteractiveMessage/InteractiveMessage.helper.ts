@@ -57,6 +57,16 @@ export const validator = (templateType: any, t: any) => {
           options: Yup.array().of(
             Yup.object().shape({
               title: Yup.string()
+                .test('is-emoji', 'Sorry! Emojis are not allowed in title', (value) => {
+                  if (value) {
+                    const testEmoji =
+                      /(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/gi.test(
+                        value
+                      );
+                    return !testEmoji;
+                  }
+                  return true;
+                })
                 .required(t('Title is required'))
                 .max(24, t('Title can be at most 24 characters')),
               description: Yup.string().max(72, t('Description can be at most 72 characters')),
