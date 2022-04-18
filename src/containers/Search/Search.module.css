@@ -16,3 +16,44 @@
   height: 29px;
   width: 29px;
 }
+
+.Form > h5:nth-of-type(4),
+.Form > div:nth-of-type(7) {
+  display: inline;
+}
+
+.Form > div:nth-of-type(7) {
+  font-weight: 400 !important;
+  margin-left: 195px;
+}
+
+.Form > div:nth-of-type(8) {
+  display: inline-block;
+  margin-right: 18px;
+  width: 48%;
+  padding: 0px;
+}
+.Form > div:nth-of-type(9) {
+  display: inline-block;
+  width: 48%;
+  padding: 0px;
+}
+
+.DateRangeLabel {
+  margin-right: 12px;
+}
+
+.DialogTitleText {
+  color: #93a29b;
+}
+
+.DialogContent {
+  white-space: pre-line;
+  max-width: 347px;
+  font-size: 14px;
+  color: #073f24;
+}
+
+.FormSearch > div:nth-of-type(5) {
+  margin-right: 18px;
+}

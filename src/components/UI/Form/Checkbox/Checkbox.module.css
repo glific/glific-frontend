@@ -18,5 +18,17 @@
 }
 
 .Tooltip {
+  margin-top: 4px;
   max-width: 150px !important;
+}
+
+.InfoIcon {
+  margin-bottom: -4px;
+  cursor: pointer;
+  height: 16px;
+  width: 16px;
+}
+
+.LabelNoStyle {
+  color: #073f24;
 }

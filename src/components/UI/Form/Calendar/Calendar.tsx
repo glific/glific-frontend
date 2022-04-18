@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Grid from '@material-ui/core/Grid';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
@@ -32,6 +32,7 @@ export const Calendar: React.SFC<CalendarProps> = ({
   const touchedVal = getIn(touched, field.name);
   const hasError = touchedVal && errorText !== undefined;
   const dateValue = field.value ? field.value : null;
+  const [open, setOpen] = useState(false);
 
   const handleDateChange = (date: Date | null | string) => {
     if (date) {
@@ -47,13 +48,17 @@ export const Calendar: React.SFC<CalendarProps> = ({
         <KeyboardDatePicker
           error={hasError}
           autoOk
+          open={open}
           variant={variant}
           inputVariant={inputVariant}
           format={format}
+          className={styles.CalendarInput}
           disabled={disabled}
           data-testid="date-picker-inline"
           label={placeholder}
           value={dateValue}
+          onClick={() => !disabled && setOpen(true)}
+          onClose={() => setOpen(false)}
           onChange={handleDateChange}
           helperText={hasError ? errorText : ''}
           minDate={minDate}
