@@ -525,9 +525,9 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
       <DialogBox
         titleAlign="left"
         title={t('Use date expression')}
-        skipOk
-        buttonCancel={t('Close')}
-        handleCancel={() => setInfoDialog(false)}
+        skipCancel
+        buttonOk={t('Close')}
+        handleOk={() => setInfoDialog(false)}
       >
         <div className={styles.DialogContent}>
           You can use date expression for dynamic dates like ‘Last 2 days’ instead two days between
