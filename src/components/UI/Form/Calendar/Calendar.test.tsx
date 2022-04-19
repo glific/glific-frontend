@@ -1,5 +1,4 @@
-import { render, screen } from '@testing-library/react';
-import UserEvent from '@testing-library/user-event';
+import { render, screen, fireEvent } from '@testing-library/react';
 
 import { Calendar } from './Calendar';
 
@@ -35,7 +34,8 @@ describe('<Calendar />', () => {
   it('test date change event', async () => {
     render(wrapper);
     const input = screen.getByRole('textbox');
-    UserEvent.type(input, '09/03/2020');
+
+    fireEvent.change(input, { target: { value: '09/03/2020' } });
     expect(input).toHaveValue('09/03/2020');
   });
 });
