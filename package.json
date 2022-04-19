@@ -100,12 +100,12 @@
   },
   "scripts": {
     "setup": "yarn cache clean && yarn install --force && yarn run floweditor",
-    "start": "HTTPS=true SSL_CRT_FILE=../glific/priv/cert/glific.test+1.pem SSL_KEY_FILE=../glific/priv/cert/glific.test+1-key.pem react-scripts start",
-    "build": "yarn setup && react-scripts build",
-    "test": "react-scripts test",
-    "test:coverage": "react-scripts test --coverage --watchAll",
+    "start": "HTTPS=true SSL_CRT_FILE=../glific/priv/cert/glific.test+1.pem SSL_KEY_FILE=../glific/priv/cert/glific.test+1-key.pem react-app-rewired start",
+    "build": "yarn setup && react-app-rewired build",
+    "test": "react-app-rewired test",
+    "test:coverage": "react-app-rewired test --coverage --watchAll",
     "cy:run": "cypress run",
-    "eject": "react-scripts eject",
+    "eject": "react-app-rewired eject",
     "format": "prettier \"**/*.{ts,tsx,css,graphql}\" --write",
     "floweditor": "cp -r node_modules/@glific/flow-editor/build/static public && rm -rf public/sitestatic && cp -r node_modules/@glific/flow-editor/build/sitestatic public",
     "extract-translations": "i18next",
@@ -144,8 +144,11 @@
   },
   "devDependencies": {
     "@types/react-test-renderer": "^18.0.0",
+    "buffer": "^6.0.3",
     "i18next-parser": "^6.3.0",
     "prettier": "^2.6.2",
-    "react-test-renderer": "^18.0.0"
+    "react-app-rewired": "^2.2.1",
+    "react-test-renderer": "^18.0.0",
+    "stream-browserify": "^3.0.0"
   }
 }
