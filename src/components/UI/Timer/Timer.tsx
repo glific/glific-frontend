@@ -43,7 +43,7 @@ export const Timer: React.FC<TimerProps> = (props: TimerProps) => {
     return () => clearInterval(intervalID);
   }, []);
 
-  if ((contactStatus && contactStatus === 'INVALID') || contactBspStatus === 'NONE' || !time) {
+  if ((contactStatus && contactStatus === 'INVALID') || contactBspStatus === 'NONE') {
     return (
       <Tooltip
         tooltipClass={`${styles.Tooltip} ${styles.TimerEndTooltip}`}
