@@ -14,6 +14,8 @@ export interface CheckboxProps {
   darkCheckbox?: boolean;
   disabled?: boolean;
   addLabelStyle?: boolean;
+  infoType?: 'tooltip' | 'dialog';
+  handleInfoClick?: Function;
 }
 
 export const Checkbox: React.FC<CheckboxProps> = (props) => {
@@ -26,6 +28,8 @@ export const Checkbox: React.FC<CheckboxProps> = (props) => {
     addLabelStyle = true,
     form,
     handleChange,
+    infoType = 'tooltip',
+    handleInfoClick = () => {},
   } = props;
 
   const handleChangeCallback = () => {
@@ -51,15 +55,18 @@ export const Checkbox: React.FC<CheckboxProps> = (props) => {
         labelPlacement="end"
         label={title}
         classes={{
-          label: addLabelStyle ? styles.Label : '',
+          label: addLabelStyle ? styles.Label : styles.LabelNoStyle,
           root: styles.Root,
         }}
       />
-      {info ? (
+      {info && infoType === 'tooltip' && (
         <Tooltip tooltipClass={styles.Tooltip} title={info.title} placement="right">
           <InfoIcon />
         </Tooltip>
-      ) : null}
+      )}
+      {info && infoType === 'dialog' && (
+        <InfoIcon className={styles.InfoIcon} onClick={() => handleInfoClick()} />
+      )}
     </div>
   );
 };

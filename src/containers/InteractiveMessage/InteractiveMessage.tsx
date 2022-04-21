@@ -77,7 +77,9 @@ export const InteractiveMessage: React.FC<FlowProps> = ({ match }) => {
   // alter header & update/copy queries
   let header;
 
-  if (location.state === 'copy') {
+  const stateType = location.state;
+
+  if (stateType === 'copy') {
     queries.updateItemQuery = COPY_INTERACTIVE;
     header = t('Copy Interactive Message');
   } else {
@@ -742,6 +744,7 @@ export const InteractiveMessage: React.FC<FlowProps> = ({ match }) => {
         setStates={setStates}
         setPayload={setPayload}
         title={header}
+        type={stateType}
         validationSchema={validationScheme}
         listItem="interactiveTemplate"
         listItemName="interactive msg"

@@ -62,7 +62,7 @@ export interface FormLayoutProps {
   customHandler?: Function;
   copyNotification?: string;
   showPreviewButton?: boolean;
-  onPreivewClick?: Function;
+  onPreviewClick?: Function;
   getQueryFetchPolicy?: any;
   saveOnPageChange?: boolean;
 }
@@ -108,7 +108,7 @@ export const FormLayout: React.FC<FormLayoutProps> = ({
   customHandler,
   copyNotification = '',
   showPreviewButton = false,
-  onPreivewClick = () => {},
+  onPreviewClick = () => {},
   getQueryFetchPolicy = 'cache-first',
   saveOnPageChange = true,
 }: FormLayoutProps) => {
@@ -526,7 +526,7 @@ export const FormLayout: React.FC<FormLayoutProps> = ({
               <Button
                 variant="contained"
                 color="primary"
-                onClick={onPreivewClick}
+                onClick={onPreviewClick}
                 className={styles.Button}
                 data-testid="previewButton"
               >

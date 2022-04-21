@@ -3,6 +3,17 @@
   width: 100%;
 }
 
+.Triggers > div:nth-of-type(3) {
+  display: inline-block;
+  width: 49%;
+  margin-right: 8px;
+}
+
+.Triggers > div:nth-of-type(4) {
+  display: inline-block;
+  width: 49%;
+}
+
 .IsActive {
   color: #073f24;
 }
