@@ -105,7 +105,7 @@
     "test": "react-app-rewired test",
     "test:coverage": "react-app-rewired test --coverage --watchAll",
     "cy:run": "cypress run",
-    "eject": "react-app-rewired eject",
+    "eject": "react-scripts eject",
     "format": "prettier \"**/*.{ts,tsx,css,graphql}\" --write",
     "floweditor": "cp -r node_modules/@glific/flow-editor/build/static public && rm -rf public/sitestatic && cp -r node_modules/@glific/flow-editor/build/sitestatic public",
     "extract-translations": "i18next",

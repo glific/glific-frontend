@@ -3,5 +3,15 @@ module.exports = function override(config, env) {
     stream: require.resolve('stream-browserify'),
   });
 
+  config.module.rules = [
+    ...config.module.rules,
+    {
+      test: /\.m?js/,
+      resolve: {
+        fullySpecified: false,
+      },
+    },
+  ];
+
   return config;
 };
