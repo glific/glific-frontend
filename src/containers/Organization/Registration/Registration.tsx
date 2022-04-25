@@ -43,7 +43,7 @@ const HelperLink = (
 
 const FormSchema = Yup.object().shape({
   name: Yup.string().required('NGO name is required'),
-  phone: Yup.string().required('NGO whatsapp number is required'),
+  phone: Yup.string().required('Your chatbot number is required'),
   app_name: Yup.string().required('App name is required'),
   api_key: Yup.string()
     .test('len', 'Invalid API Key', (val) => val?.length === 32)
