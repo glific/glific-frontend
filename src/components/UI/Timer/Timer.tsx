@@ -62,8 +62,6 @@ export const Timer: React.FC<TimerProps> = (props: TimerProps) => {
   let timerStyle = styles.TimerNormal;
   let tooltipStyle = styles.TimerNormalTooltip;
 
-  console.log(time);
-
   let hours: string | number = 0;
   if (time) {
     const lastMessageTime = moment(time);
