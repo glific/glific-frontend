@@ -61,15 +61,20 @@ export const Timer: React.FC<TimerProps> = (props: TimerProps) => {
   let tooltip = createTooltip(t('Session window is open to message this contact.'));
   let timerStyle = styles.TimerNormal;
   let tooltipStyle = styles.TimerNormalTooltip;
-  const lastMessageTime = moment(time);
-  const duration = moment.duration(currentTime.diff(lastMessageTime));
-  let hours: string | number = Math.floor(duration.asHours());
+
+  console.log(time);
+
+  let hours: string | number = 0;
+  if (time) {
+    const lastMessageTime = moment(time);
+    const duration = moment.duration(currentTime.diff(lastMessageTime));
+    hours = Math.floor(duration.asHours());
+    hours = hours > 24 ? 0 : 24 - hours;
+  }
 
   if (hours < 0 || Number.isNaN(hours)) {
     hours = 0;
   }
-
-  hours = hours > 24 ? 0 : 24 - hours;
 
   if (hours === 0) {
     timerStyle = styles.TimerEnd;
@@ -86,6 +91,8 @@ export const Timer: React.FC<TimerProps> = (props: TimerProps) => {
   if (hours < 10 && hours > 0) {
     hours = `0${hours.toString()}`;
   }
+
+  console.log(hours);
 
   return (
     <Tooltip
