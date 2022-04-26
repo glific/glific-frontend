@@ -90,8 +90,6 @@ export const Timer: React.FC<TimerProps> = (props: TimerProps) => {
     hours = `0${hours.toString()}`;
   }
 
-  console.log(hours);
-
   return (
     <Tooltip
       tooltipClass={`${styles.Tooltip} ${tooltipStyle}`}
