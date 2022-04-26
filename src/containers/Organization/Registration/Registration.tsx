@@ -65,7 +65,7 @@ const initialFormValues = {
 
 export const Registration: React.SFC<RegistrationProps> = (props) => {
   const { title, buttonText, handleStep } = props;
-  const [registrationError, setRegistrationError] = useState('');
+  const [registrationError, setRegistrationError] = useState<any>('');
   const [code, setCode] = useState('shortcode');
   const [redirect, setRedirect] = useState(false);
 
@@ -126,19 +126,27 @@ export const Registration: React.SFC<RegistrationProps> = (props) => {
 
   const handleSubmit = (values: any, captcha: any, setErrors: any, setLoading: any) => {
     if (captcha) {
-      axios.post(ONBOARD_URL, values).then(({ data }: { data: any }) => {
-        if (data.is_valid) {
-          setRedirect(true);
-        } else {
-          setRegistrationError(data.messages?.global);
-          if (setErrors && setLoading) {
-            const errors = data.messages;
-            delete errors.global;
-            setErrors(errors);
-            setLoading(false);
+      axios
+        .post(ONBOARD_URL, values)
+        .then(({ data }: { data: any }) => {
+          if (data.is_valid) {
+            setRedirect(true);
+          } else {
+            setRegistrationError(data.messages?.global);
+            if (setErrors && setLoading) {
+              const errors = data.messages;
+              delete errors.global;
+              setErrors(errors);
+              setLoading(false);
+            }
           }
-        }
-      });
+        })
+        .catch(() => {
+          setRegistrationError({
+            global: 'Sorry! an error occured. Please contact the technical team for support',
+          });
+          setLoading(false);
+        });
     }
   };
 
