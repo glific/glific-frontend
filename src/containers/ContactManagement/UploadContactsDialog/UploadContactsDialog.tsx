@@ -54,11 +54,13 @@ export const UploadContactsDialog: React.FC<UploadContactsDialogProps> = ({
         setNotification(data.errors[0].message, 'warning');
       } else {
         setUploadingContacts(false);
-        setDialog(false);
         setNotification(t('Contacts have been uploaded'));
       }
+      setDialog(false);
     },
-    onError: () => {
+    onError: (errors) => {
+      setDialog(false);
+      setNotification(errors.message, 'warning');
       setUploadingContacts(false);
     },
   });
