@@ -535,16 +535,14 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
           <br />
           <br />
           <div className={styles.DialogTitleText}>Date from expression:</div>
-          {`<%= Timex.shift(Timex.today("Asia/Kolkata") , days: -2) %>`}
+          {`<%= Timex.shift(Timex.today() , days: -2) %>`}
           <div className={styles.DialogTitleText}>Date to expression:</div>
-          {` <%= Timex.today("Asia/Kolkata") %>`}
+          {` <%= Timex.today() %>`}
           <br />
           <br />
           For ‘Last 3 days’ change ‘-2’ to ‘-3’ in Date from expression.
           <br />
           <br />
-          <div className={styles.DialogTitleText}>For UTC timezone, use this function:</div>
-          {`<%= Timex.shift(DateTime.utc_now() , days: -2) %>`}
         </div>
       </DialogBox>
     );
