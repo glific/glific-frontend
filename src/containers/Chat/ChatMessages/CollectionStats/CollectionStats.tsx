@@ -7,6 +7,7 @@ import styles from './CollectionStats.module.css';
 
 interface CollectionStatsProps {
   setDialog: any;
+  broadcastId: string | null;
 }
 
 export const CollectionStats: React.SFC<CollectionStatsProps> = ({ setDialog }) => {

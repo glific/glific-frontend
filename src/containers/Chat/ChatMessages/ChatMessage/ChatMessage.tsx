@@ -58,6 +58,7 @@ export interface ChatMessageProps {
   sendBy: string;
   flowLabel: string | null;
   daySeparator: string | null;
+  flowBroadcastId: string | null;
 }
 
 export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
@@ -94,6 +95,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     sendBy,
     flowLabel,
     daySeparator,
+    flowBroadcastId,
   } = props;
 
   useEffect(() => {
@@ -220,7 +222,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   }
 
   if (showStatsDialog) {
-    dialog = <CollectionStats setDialog={setShowStatsDialog} />;
+    dialog = <CollectionStats setDialog={setShowStatsDialog} broadcastId={flowBroadcastId} />;
   }
 
   // const deleteTagHandler = (event: any) => {

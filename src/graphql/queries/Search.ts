@@ -71,6 +71,7 @@ export const SEARCH_QUERY = gql`
           }
         }
         interactiveContent
+        flowBroadcastId
         sendBy
         flowLabel
       }
