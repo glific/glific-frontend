@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useQuery, useApolloClient } from '@apollo/client';
 import Typography from '@material-ui/core/Typography';
 import * as Yup from 'yup';
@@ -38,10 +38,21 @@ export const Providers: React.SFC<ProvidersProps> = ({ match }) => {
   const { t } = useTranslation();
 
   const param = { params: { id: credentialId, shortcode: type } };
+  const [stateValues, setStateValues] = useState({});
+
+  const [formFields, setFormFields] = useState([]);
   const states: any = {};
-  let keys: any = {};
-  let secrets: any = {};
-  let formFields: any = [];
+
+  const [keys, setKeys] = useState({});
+  const [secrets, setSecrets] = useState({});
+
+  const { data: providerData } = useQuery(GET_PROVIDERS, {
+    variables: { filter: { shortcode: type } },
+  });
+  const { data: credential, loading } = useQuery(GET_CREDENTIAL, {
+    variables: { shortcode: type },
+    fetchPolicy: 'no-cache', // This is required to restore the data after save
+  });
 
   const setCredential = (item: any) => {
     const keysObj = JSON.parse(item.keys);
@@ -54,15 +65,8 @@ export const Providers: React.SFC<ProvidersProps> = ({ match }) => {
       states[key] = fields[key];
     });
     states.isActive = item.isActive;
+    setStateValues(states);
   };
-
-  const { data: providerData } = useQuery(GET_PROVIDERS, {
-    variables: { filter: { shortcode: type } },
-  });
-  const { data: credential, loading } = useQuery(GET_CREDENTIAL, {
-    variables: { shortcode: type },
-    fetchPolicy: 'no-cache', // This is required to restore the data after save
-  });
 
   if (credential && !credentialId) {
     const data = credential.credential.credential;
@@ -71,8 +75,6 @@ export const Providers: React.SFC<ProvidersProps> = ({ match }) => {
       setCredentialId(data.id);
     }
   }
-
-  if (!providerData || loading) return <Loading />;
 
   const setPayload = (payload: any) => {
     let object: any = {};
@@ -98,7 +100,7 @@ export const Providers: React.SFC<ProvidersProps> = ({ match }) => {
   };
 
   const handleChange = (value: any) => {
-    states.isActive = value;
+    setStateValues({ ...states, isActive: value });
   };
 
   const resetValidation = () => {
@@ -150,18 +152,24 @@ export const Providers: React.SFC<ProvidersProps> = ({ match }) => {
       // add dafault value for the field
       states[key] = fields[key].default;
     });
-    formFields = formField;
+    setStateValues(states);
+    setFormFields(formField);
   };
+  useEffect(() => {
+    if (providerData) {
+      providerData.providers.forEach((provider: any) => {
+        const providerKeys = JSON.parse(provider.keys);
+        const providerSecrets = JSON.parse(provider.secrets);
+        const fields: any = {};
+        Object.assign(fields, providerKeys);
+        Object.assign(fields, providerSecrets);
 
-  const title = providerData.providers[0].name;
-  providerData.providers.forEach((provider: any) => {
-    keys = JSON.parse(provider.keys);
-    secrets = JSON.parse(provider.secrets);
-    const fields = {};
-    Object.assign(fields, keys);
-    Object.assign(fields, secrets);
-    addField(fields);
-  });
+        addField(fields);
+        setKeys(providerKeys);
+        setSecrets(providerSecrets);
+      });
+    }
+  }, [providerData]);
 
   const saveHandler = (data: any) => {
     if (data)
@@ -173,13 +181,17 @@ export const Providers: React.SFC<ProvidersProps> = ({ match }) => {
       });
   };
 
+  if (!providerData || loading) return <Loading />;
+
+  const title = providerData.providers[0].name;
+
   return (
     <FormLayout
       backLinkButton={{ text: t('Back to settings'), link: '/settings' }}
       {...queries}
       title={title}
       match={param}
-      states={states}
+      states={stateValues}
       setStates={setCredential}
       validationSchema={FormSchema}
       setPayload={setPayload}

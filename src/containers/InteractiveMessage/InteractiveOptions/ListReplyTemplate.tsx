@@ -159,11 +159,6 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
                             className={styles.TextField}
                             error={isError('title', itemIndex)}
                             value={itemRow.title}
-                            helperText={
-                              isError('title', itemIndex)
-                                ? undefined
-                                : t('Alphanumeric characters and spaces are allowed')
-                            }
                             InputProps={{
                               endAdornment: itemIndex !== 0 && showDeleteIcon && (
                                 <CrossIcon
