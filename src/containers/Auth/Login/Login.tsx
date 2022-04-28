@@ -31,8 +31,6 @@ export const Login: React.SFC<LoginProps> = () => {
   const history = useHistory();
   const location: any = useLocation();
 
-  console.log(location);
-
   // function to unauthorize access
   const accessDenied = () => {
     setAuthError(notApprovedMsg);
