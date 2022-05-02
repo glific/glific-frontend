@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import * as Yup from 'yup';
 import { useLazyQuery } from '@apollo/client';
@@ -29,6 +29,7 @@ export const Login: React.FC<LoginProps> = () => {
   const [authError, setAuthError] = useState('');
   const { i18n, t } = useTranslation();
   const history = useHistory();
+  const location: any = useLocation();
 
   // function to unauthorize access
   const accessDenied = () => {
@@ -63,8 +64,12 @@ export const Login: React.FC<LoginProps> = () => {
           i18n.changeLanguage(userData.currentUser.user?.language.locale);
         }
 
-        // redirect to chat
-        history.push('/chat');
+        if (location.state) {
+          history.push(location.state);
+        } else {
+          // redirect to chat
+          history.push('/chat');
+        }
       }
     }
     if (userError) {

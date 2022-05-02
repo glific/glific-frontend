@@ -1,5 +1,5 @@
 import React, { lazy } from 'react';
-import { Route, Redirect, Switch } from 'react-router-dom';
+import { Route, Redirect, Switch, useLocation } from 'react-router-dom';
 
 export const UnauthenticatedRoute: React.FC = () => {
   const Login = lazy(() => import('containers/Auth/Login/Login'));
@@ -12,6 +12,8 @@ export const UnauthenticatedRoute: React.FC = () => {
 
   const OrganizationRegistration = lazy(() => import('containers/Organization/RouteSetupSteps'));
 
+  const location = useLocation();
+
   return (
     <Switch>
       <Route path="/login" exact component={Login} />
@@ -20,7 +22,10 @@ export const UnauthenticatedRoute: React.FC = () => {
       <Route path="/resetpassword-phone" exact component={ResetPasswordPhone} />
       <Route path="/resetpassword-confirmotp" exact component={ResetPasswordConfirmOTP} />
       <Route path="/organization-registration" exact component={OrganizationRegistration} />
-      <Route path="/" render={() => <Redirect to="/logout/user" />} />
+      <Route
+        path="/"
+        render={() => <Redirect to={{ pathname: '/logout/user', state: location.pathname }} />}
+      />
     </Switch>
   );
 };

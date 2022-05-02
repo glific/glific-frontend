@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState, CSSProperties } from 'react';
 import axios from 'axios';
-import { Redirect } from 'react-router-dom';
+import { Redirect, useLocation } from 'react-router-dom';
 import { useApolloClient } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 
@@ -29,6 +29,7 @@ export const Logout: React.FC<LogoutProps> = ({ match }) => {
   const [redirect, setRedirect] = useState(false);
   const client = useApolloClient();
   const { t } = useTranslation();
+  const location = useLocation();
 
   // let's notify the backend when user logs out
   const userLogout = () => {
@@ -64,7 +65,6 @@ export const Logout: React.FC<LogoutProps> = ({ match }) => {
     // if user click on logout menu
     if (match.params.mode === 'user') {
       handleLogout();
-      setRedirect(true);
     }
   }, []);
 
@@ -82,7 +82,7 @@ export const Logout: React.FC<LogoutProps> = ({ match }) => {
   );
 
   if (redirect) {
-    return <Redirect to="/login" />;
+    return <Redirect to={{ pathname: '/login', state: location.state }} />;
   }
 
   return dialog;
