@@ -8,8 +8,6 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import { Button } from 'components/UI/Form/Button/Button';
 import styles from './DialogBox.module.css';
 
-/* global DialogProps */
-/* eslint no-undef: "error" */
 export interface DialogProps {
   open?: boolean;
   title: string;

@@ -1,12 +1,24 @@
 {
-  "extends": ["airbnb", "prettier"],
-  "plugins": ["prettier"],
+  "extends": [
+    "airbnb",
+    "prettier"
+  ],
+  "plugins": [
+    "prettier"
+  ],
   "rules": {
-    "prettier/prettier": ["error"],
+    "prettier/prettier": [
+      "error"
+    ],
     "react/jsx-filename-extension": [
       1,
       {
-        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+        "extensions": [
+          ".js",
+          ".jsx",
+          ".ts",
+          ".tsx"
+        ]
       }
     ],
     "import/extensions": [
@@ -19,6 +31,11 @@
         "tsx": "never"
       }
     ],
+    "no-restricted-globals": [
+      "error",
+      "event",
+      "fdescribe"
+    ],
     "react/prop-types": "off",
     "react/jsx-curly-newline": "off",
     "react/jsx-props-no-spreading": "off",
@@ -28,7 +45,7 @@
     "react/no-arrow-function-lifecycle": "off",
     "react/no-invalid-html-attribute": "off",
     "react/no-unused-class-component-methods": "off",
-    "react/function-component-definition": "off"
+    "react/function-component-definition": "off",
   },
   "env": {
     "jest": true
@@ -36,8 +53,15 @@
   "settings": {
     "import/resolver": {
       "node": {
-        "paths": ["src"],
-        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+        "paths": [
+          "src"
+        ],
+        "extensions": [
+          ".js",
+          ".jsx",
+          ".ts",
+          ".tsx"
+        ]
       }
     }
   }
