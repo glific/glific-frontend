@@ -14,12 +14,12 @@ export interface ButtonProps {
   type?: any;
 }
 
-export const Button: React.FC<ButtonProps> = ({
+export const Button = ({
   type = 'button',
   loading = false,
   disabled = false,
   ...props
-}) => {
+}: ButtonProps) => {
   let buttonColor = null;
   const { variant, color, onClick, className, children, ...rest } = props;
 

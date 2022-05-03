@@ -41,7 +41,7 @@ export interface AutocompleteProps {
   valueElementName?: string;
 }
 
-export const AutoComplete: React.FC<AutocompleteProps> = ({
+export const AutoComplete = ({
   options,
   optionLabel,
   additionalOptionLabel,
@@ -72,7 +72,7 @@ export const AutoComplete: React.FC<AutocompleteProps> = ({
   selectTextAsOption = false,
   onInputChange = () => null,
   valueElementName = 'id',
-}) => {
+}: AutocompleteProps) => {
   const errorText = getIn(errors, field.name);
   const touchedVal = getIn(touched, field.name);
   const hasError = touchedVal && errorText !== undefined;

@@ -88,7 +88,7 @@ const getSimulatorVariables = (id: any) => ({
   },
 });
 
-export const Simulator: React.FC<SimulatorProps> = ({
+export const Simulator = ({
   showSimulator,
   setSimulatorId,
   simulatorIcon = true,

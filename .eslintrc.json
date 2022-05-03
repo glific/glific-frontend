@@ -45,7 +45,7 @@
     "react/no-arrow-function-lifecycle": "off",
     "react/no-invalid-html-attribute": "off",
     "react/no-unused-class-component-methods": "off",
-    "react/function-component-definition": "off",
+    "react/function-component-definition": "off"
   },
   "env": {
     "jest": true
