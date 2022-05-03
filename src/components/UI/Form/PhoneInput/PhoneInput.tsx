@@ -19,7 +19,7 @@ export interface InputProps {
   form: { errors: any; setFieldValue: any };
 }
 
-export const PhoneInput: React.FC<InputProps> = ({
+export const PhoneInput = ({
   enableSearch = true,
   form: { errors, setFieldValue },
   field,
@@ -28,10 +28,9 @@ export const PhoneInput: React.FC<InputProps> = ({
     required: true,
     autoFocus: false,
   },
-  ...props
-}) => {
+  placeholder
+}: InputProps) => {
   const errorText = getIn(errors, field.name);
-  const { placeholder } = props;
 
   return (
     <div className={styles.Input} data-testid="phoneInput">

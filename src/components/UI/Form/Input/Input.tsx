@@ -33,7 +33,7 @@ export interface InputProps {
   translation?: string;
 }
 
-export const Input: React.FC<InputProps> = ({ textArea = false, disabled = false, ...props }) => {
+export const Input = ({ textArea = false, disabled = false, ...props }: InputProps) => {
   const {
     field,
     form,

@@ -12,13 +12,13 @@ export interface InlineInputProps {
   error: string | null;
 }
 
-export const InlineInput: React.FC<InlineInputProps> = ({
+export const InlineInput = ({
   value,
   closeModal,
   callback,
   label = 'Input',
   error,
-}) => {
+}: InlineInputProps) => {
   const [inputVal, setInputVal] = useState(value);
   const containerRef: any = createRef();
 

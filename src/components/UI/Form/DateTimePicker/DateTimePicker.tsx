@@ -19,7 +19,7 @@ export interface DateTimePickerProps {
   onChange?: any;
 }
 
-export const DateTimePicker: React.FC<DateTimePickerProps> = ({
+export const DateTimePicker = ({
   variant = 'inline',
   inputVariant = 'outlined',
   format = 'dd/MM/yyyy hh:mm a',
@@ -28,7 +28,7 @@ export const DateTimePicker: React.FC<DateTimePickerProps> = ({
   placeholder,
   minDate,
   onChange,
-}) => {
+}: DateTimePickerProps) => {
   const errorText = getIn(errors, field.name);
   const touchedVal = getIn(touched, field.name);
   const hasError = touchedVal && errorText !== undefined;

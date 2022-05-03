@@ -77,7 +77,7 @@ const DraftField = (inputProps: any) => {
   );
 };
 
-export const EmojiInput: React.FC<EmojiInputProps> = ({
+export const EmojiInput = ({
   field: { value, name, onBlur },
   handleChange,
   getEditorValue,
