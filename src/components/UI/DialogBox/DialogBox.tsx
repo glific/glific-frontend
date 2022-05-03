@@ -8,6 +8,8 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import { Button } from 'components/UI/Form/Button/Button';
 import styles from './DialogBox.module.css';
 
+/* global DialogProps */
+/* eslint no-undef: "error" */
 export interface DialogProps {
   open?: boolean;
   title: string;
@@ -32,7 +34,7 @@ export interface DialogProps {
   buttonOkLoading?: boolean;
 }
 
-export const DialogBox: React.FC<DialogProps> = ({
+export const DialogBox = ({
   open = true,
   title,
   handleOk = () => {},
@@ -54,7 +56,7 @@ export const DialogBox: React.FC<DialogProps> = ({
   alwaysOntop = false,
   buttonMiddle,
   buttonOkLoading = false,
-}) => {
+}: DialogProps) => {
   let cancelButtonDisplay = null;
   if (!skipCancel) {
     cancelButtonDisplay = (
