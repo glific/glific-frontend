@@ -13,10 +13,10 @@ interface AddContactsToCollectionProps {
   setDialog: Function;
 }
 
-export const AddContactsToCollection: React.FC<AddContactsToCollectionProps> = ({
+export const AddContactsToCollection = ({
   collectionId,
   setDialog,
-}) => {
+}: AddContactsToCollectionProps) => {
   const [contactSearchTerm, setContactSearchTerm] = useState('');
   const { t } = useTranslation();
 

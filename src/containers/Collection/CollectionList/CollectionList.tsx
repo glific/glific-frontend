@@ -14,8 +14,6 @@ import { setNotification } from 'common/notification';
 import { setVariables } from 'common/constants';
 import styles from './CollectionList.module.css';
 
-export interface CollectionListProps {}
-
 const getLabel = (label: string, contactsCount: number) => (
   <div>
     <div className={styles.LabelText}>{label}</div>
@@ -47,7 +45,7 @@ const columnAttributes = {
   columnStyles,
 };
 
-export const CollectionList: React.FC<CollectionListProps> = () => {
+export const CollectionList = () => {
   const [addContactsDialogShow, setAddContactsDialogShow] = useState(false);
 
   const [contactSearchTerm, setContactSearchTerm] = useState('');

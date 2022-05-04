@@ -14,13 +14,13 @@ export interface CollectionInformationProps {
   handleSendMessage?: any;
 }
 
-export const CollectionInformation: React.FC<CollectionInformationProps> = ({
+export const CollectionInformation = ({
   collectionId,
   staff = true,
   displayPopup,
   setDisplayPopup,
   handleSendMessage,
-}) => {
+}: CollectionInformationProps) => {
   const { t } = useTranslation();
   const displayObj: any = { 'Session messages': 0, 'Only templates': 0, 'No messages': 0 };
   const [display, setDisplay] = useState(displayObj);

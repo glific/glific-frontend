@@ -39,7 +39,7 @@ const darkIcons: any = {
   LOCATION: <LocationIconDark />,
 };
 
-export const MessageType: React.FC<MessageTypeProps> = ({
+export const MessageType = ({
   type,
   body = '',
   color = 'light',

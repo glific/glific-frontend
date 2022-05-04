@@ -22,7 +22,7 @@ interface EditItemShape {
   column: string;
 }
 
-const ContactFieldList: React.FC<ContactFieldListProps> = ({ match, openDialog }: any) => {
+const ContactFieldList = ({ match, openDialog }: ContactFieldListProps) => {
   const { t } = useTranslation();
   const [itemToBeEdited, setItemToBeEdited] = useState<EditItemShape | any>(null);
   const [error, setError] = useState<any>(null);

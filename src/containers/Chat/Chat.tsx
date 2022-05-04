@@ -3,13 +3,7 @@ import Loading from 'components/UI/Layout/Loading/Loading';
 import { chatRoutes } from 'route/AuthenticatedRoute/AuthenticatedRoute';
 import ChatSubscription from './ChatSubscription/ChatSubscription';
 
-export interface ChatProps {
-  contactId?: number | string | null;
-  collectionId?: number | null;
-  savedSearches?: boolean;
-}
-
-export const Chat: React.FC<ChatProps> = () => {
+export const Chat = () => {
   const [loaded, setDataLoaded] = useState(false);
 
   return (

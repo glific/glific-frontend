@@ -10,9 +10,7 @@ import { ReactComponent as AlertIcon } from 'assets/images/icons/Alert/White.svg
 import { Auth } from '../Auth';
 import styles from './Registration.module.css';
 
-export interface RegistrationProps {}
-
-export const Registration: React.FC<RegistrationProps> = () => {
+export const Registration = () => {
   const [redirect, setRedirect] = useState(false);
   const [user, setUser] = useState({ userName: '', phone: '', password: '' });
   const [authError, setAuthError] = useState('');

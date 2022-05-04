@@ -17,11 +17,11 @@ interface AddToMessageTemplateProps {
   changeDisplay: Function;
 }
 
-export const AddToMessageTemplate: React.FC<AddToMessageTemplateProps> = ({
+export const AddToMessageTemplate = ({
   id,
   message,
   changeDisplay,
-}) => {
+}: AddToMessageTemplateProps) => {
   const [messageTemplate, setMessageTemplate] = useState<string | null>('');
   const [required, setRequired] = useState(false);
   const { t } = useTranslation();

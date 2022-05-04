@@ -33,7 +33,7 @@ export interface AddAttachmentPropTypes {
   uploadPermission: boolean;
 }
 
-export const AddAttachment: React.FC<AddAttachmentPropTypes> = ({
+export const AddAttachment = ({
   setAttachment,
   setAttachmentAdded,
   setAttachmentURL,

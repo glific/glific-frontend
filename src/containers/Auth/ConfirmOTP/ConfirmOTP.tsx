@@ -21,8 +21,7 @@ export interface ConfirmOTPProps {
   location: any;
 }
 
-export const ConfirmOTP: React.FC<ConfirmOTPProps> = (props) => {
-  const { location } = props;
+export const ConfirmOTP = ({ location }: ConfirmOTPProps) => {
   const [OTP, setOTP] = useState('');
   const [authSuccess, setAuthSuccess] = useState<any | string>('');
   const [authError, setAuthError] = useState('');

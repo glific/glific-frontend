@@ -59,7 +59,7 @@ export interface ChatMessageProps {
   daySeparator: string | null;
 }
 
-export const ChatMessage: React.FC<ChatMessageProps> = ({
+export const ChatMessage = ({
   id,
   popup,
   focus,
@@ -80,7 +80,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
   sendBy,
   flowLabel,
   daySeparator,
-}) => {
+}: ChatMessageProps) => {
   // const client = useApolloClient();
   const [showSaveMessageDialog, setShowSaveMessageDialog] = useState(false);
   const Ref = useRef(null);

@@ -11,9 +11,7 @@ import { Consulting } from '../Consulting';
 import styles from './ConsultingList.module.css';
 import { ExportConsulting } from './ExportConsulting/ExportConsulting';
 
-interface ConsultingListProps {}
-
-const ConsultingList: React.FC<ConsultingListProps> = () => {
+const ConsultingList = () => {
   const { t } = useTranslation();
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedConsulting, setSelectedConsulting] = useState('');

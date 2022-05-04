@@ -43,7 +43,7 @@ export interface ChatInputProps {
   lastMessageTime?: any;
 }
 
-export const ChatInput: React.FC<ChatInputProps> = ({
+export const ChatInput = ({
   onSendMessage,
   contactBspStatus,
   contactStatus,
@@ -51,7 +51,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
   handleHeightChange,
   isCollection,
   lastMessageTime,
-}) => {
+}: ChatInputProps) => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [selectedTab, setSelectedTab] = useState('');
   const [open, setOpen] = React.useState(false);

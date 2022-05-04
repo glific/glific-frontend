@@ -7,9 +7,7 @@ import { PhoneInput } from 'components/UI/Form/PhoneInput/PhoneInput';
 import { sendOTP } from 'services/AuthService';
 import { Auth } from '../Auth';
 
-export interface ResetPasswordPhoneProps {}
-
-export const ResetPasswordPhone: React.FC<ResetPasswordPhoneProps> = () => {
+export const ResetPasswordPhone = () => {
   const [values, setValues] = useState({ phoneNumber: '' });
   const [redirect, setRedirect] = useState(false);
   const [authError, setAuthError] = useState('');

@@ -35,7 +35,7 @@ interface ConversationListProps {
   entityType?: string;
 }
 
-export const ConversationList: React.FC<ConversationListProps> = ({
+export const ConversationList = ({
   searchVal,
   selectedContactId,
   setSelectedContactId,
@@ -46,7 +46,7 @@ export const ConversationList: React.FC<ConversationListProps> = ({
   selectedCollectionId,
   setSelectedCollectionId,
   entityType = 'contact',
-}) => {
+}: ConversationListProps) => {
   const client = useApolloClient();
   const [loadingOffset, setLoadingOffset] = useState(DEFAULT_CONTACT_LIMIT);
   const [showJumpToLatest, setShowJumpToLatest] = useState(false);

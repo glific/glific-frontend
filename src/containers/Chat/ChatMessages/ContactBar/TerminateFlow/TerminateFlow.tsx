@@ -10,7 +10,7 @@ export interface TerminateFlowProps {
   setDialog: any;
 }
 
-export const TerminateFlow: React.FC<TerminateFlowProps> = ({
+export const TerminateFlow = ({
   contactId,
   setDialog,
 }: TerminateFlowProps) => {

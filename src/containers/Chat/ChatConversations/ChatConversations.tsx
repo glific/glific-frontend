@@ -19,7 +19,7 @@ export interface ChatConversationsProps {
   contactId?: number | string;
 }
 
-export const ChatConversations: React.FC<ChatConversationsProps> = ({ contactId }) => {
+export const ChatConversations = ({ contactId }: ChatConversationsProps) => {
   // get the conversations stored from the cache
   const [searchVal, setSearchVal] = useState<any>();
   const [searchParam, setSearchParam] = useState<any>({});

@@ -44,10 +44,9 @@ const columnAttributes = {
   columnStyles,
 };
 
-export const CollectionContactList: React.FC<CollectionContactListProps> = (props) => {
+export const CollectionContactList = ({ match, title }: CollectionContactListProps) => {
   const { t } = useTranslation();
 
-  const { match, title } = props;
   const collectionId = match.params.id;
 
   const getDeleteQueryVariables = (id: any) => ({

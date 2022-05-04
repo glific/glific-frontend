@@ -15,8 +15,7 @@ export interface ResetPasswordConfirmOTPProps {
   location: any;
 }
 
-export const ResetPasswordConfirmOTP: React.FC<ResetPasswordConfirmOTPProps> = (props) => {
-  const { location } = props;
+export const ResetPasswordConfirmOTP = ({ location }: ResetPasswordConfirmOTPProps) => {
   const [redirect, setRedirect] = useState(false);
   const [authError, setAuthError] = useState('');
   const { t } = useTranslation();

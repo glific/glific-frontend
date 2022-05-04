@@ -30,7 +30,7 @@ interface TemplateProps {
   bspMessageId?: string;
 }
 
-interface ListTemplate {
+interface ListTemplateProps {
   items: any;
   drawerTitle: string;
   disableSend?: boolean;
@@ -38,12 +38,12 @@ interface ListTemplate {
   onDrawerClose: any;
 }
 
-export const ChatTemplate: React.FC<TemplateProps> = ({
+export const ChatTemplate = ({
   title,
   body,
   globalButtonTitle,
   items,
-}) => {
+}: TemplateProps) => {
   const [showDialog, setShowDialog] = useState(false);
   const [checkedItem, setCheckedItem] = useState<any>(null);
 
@@ -115,17 +115,16 @@ export const ChatTemplate: React.FC<TemplateProps> = ({
   );
 };
 
-export const SimulatorTemplate: React.FC<TemplateProps> = (props) => {
-  const {
-    title,
-    body,
-    globalButtonTitle,
-    items,
-    onGlobalButtonClick,
-    disabled,
-    showHeader = true,
-    bspMessageId,
-  } = props;
+export const SimulatorTemplate = ({
+  title,
+  body,
+  globalButtonTitle,
+  items,
+  onGlobalButtonClick,
+  disabled,
+  showHeader = true,
+  bspMessageId,
+}: TemplateProps) => {
   return (
     <div className={styles.SimulatorContent}>
       {showHeader && <p className={styles.ListHeader}>{title}</p>}
@@ -143,8 +142,7 @@ export const SimulatorTemplate: React.FC<TemplateProps> = (props) => {
   );
 };
 
-export const ListReplyTemplateDrawer: React.FC<ListTemplate> = (props) => {
-  const { items, drawerTitle, onItemClick, onDrawerClose, disableSend = false } = props;
+export const ListReplyTemplateDrawer = ({ items, drawerTitle, onItemClick, onDrawerClose, disableSend = false }: ListTemplateProps) => {
   const [checkedItem, setCheckedItem] = useState<any>(null);
 
   const handleItemClick = () => {
@@ -233,8 +231,7 @@ export const ListReplyTemplateDrawer: React.FC<ListTemplate> = (props) => {
   );
 };
 
-export const ListReplyTemplate: React.FC<ListReplyTemplateProps> = (props) => {
-  const { globalButtons, component: TemplateComponent, ...rest } = props;
+export const ListReplyTemplate = ({ globalButtons, component: TemplateComponent, ...rest }: ListReplyTemplateProps) => {
   const globalButtonTitle = globalButtons?.length ? globalButtons[0].title : '';
 
   return <TemplateComponent globalButtonTitle={globalButtonTitle} {...rest} />;

@@ -10,15 +10,13 @@ import { List } from 'containers/List/List';
 import styles from './ContactManagement.module.css';
 import UploadContactsDialog from './UploadContactsDialog/UploadContactsDialog';
 
-export interface ContactManagementProps {}
-
 const queries = {
   countQuery: GET_ORGANIZATION_COUNT,
   filterItemsQuery: FILTER_ORGANIZATIONS,
   deleteItemQuery: null,
 };
 
-export const ContactManagement: React.FC<ContactManagementProps> = () => {
+export const ContactManagement = () => {
   const { t } = useTranslation();
 
   const [showUploadDialog, setShowUploadDialog] = useState(false);

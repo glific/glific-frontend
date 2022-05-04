@@ -22,14 +22,14 @@ export interface ChatMessageTypeProps {
   isContextMessage?: boolean;
 }
 
-export const ChatMessageType: React.FC<ChatMessageTypeProps> = ({
+export const ChatMessageType = ({
   type,
   media,
   body,
   location,
   isSimulatedMessage,
   isContextMessage = false,
-}) => {
+}: ChatMessageTypeProps) => {
   const [showViewer, setShowViewer] = useState(false);
   let messageBody;
   // manage validation if there is no media

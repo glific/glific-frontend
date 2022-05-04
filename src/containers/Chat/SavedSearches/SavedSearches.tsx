@@ -11,17 +11,13 @@ import { SAVED_SEARCH_QUERY } from 'graphql/queries/Search';
 import ConversationList from 'containers/Chat/ChatConversations/ConversationList/ConversationList';
 import styles from './SavedSearches.module.css';
 
-export interface SavedSearchesProps {
-  collectionId?: number | null;
-}
-
 // default query variables
 const queryVariables = {
   filter: { isReserved: false },
   opts: {},
 };
 
-const SavedSearches: React.FC<SavedSearchesProps> = () => {
+const SavedSearches = () => {
   const [savedSearch, setSavedSearch] = useState({ id: 0, args: '{}' });
   const [Open, setOpen] = useState(true);
   const { t } = useTranslation();

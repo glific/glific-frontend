@@ -24,7 +24,7 @@ export interface LogoutProps {
   match?: any;
 }
 
-export const Logout: React.FC<LogoutProps> = ({ match }) => {
+export const Logout = ({ match }: LogoutProps) => {
   const { setAuthenticated } = useContext(SessionContext);
   const [redirect, setRedirect] = useState(false);
   const client = useApolloClient();

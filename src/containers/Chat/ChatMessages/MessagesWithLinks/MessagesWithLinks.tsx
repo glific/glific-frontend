@@ -10,10 +10,9 @@ export interface MessagesWithLinksProps {
   showPreview?: boolean;
 }
 
-export const MessagesWithLinks: React.FC<MessagesWithLinksProps> = (
-  props: MessagesWithLinksProps
+export const MessagesWithLinks = (
+  { message, showPreview = true }: MessagesWithLinksProps
 ) => {
-  const { message, showPreview = true } = props;
   let linkPreview = null;
   const messagebody: any = WhatsAppToJsx(message);
   const regexForLink =

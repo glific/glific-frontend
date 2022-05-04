@@ -18,7 +18,7 @@ export interface ConsultingProps {
   match: any;
 }
 
-export const ContactField: React.FC<ConsultingProps> = ({ match }) => {
+export const ContactField = ({ match }: ConsultingProps) => {
   const { t } = useTranslation();
   const [name, setName] = useState('');
   const [shortcode, setShortcode] = useState('');

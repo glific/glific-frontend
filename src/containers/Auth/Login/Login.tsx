@@ -22,9 +22,7 @@ import { Auth } from '../Auth';
 
 const notApprovedMsg = 'Your account is not approved yet. Please contact your organisation admin.';
 
-export interface LoginProps {}
-
-export const Login: React.FC<LoginProps> = () => {
+export const Login = () => {
   const { setAuthenticated } = useContext(SessionContext);
   const [authError, setAuthError] = useState('');
   const { i18n, t } = useTranslation();

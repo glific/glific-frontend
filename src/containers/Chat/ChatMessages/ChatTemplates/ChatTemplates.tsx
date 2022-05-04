@@ -18,12 +18,12 @@ interface ChatTemplatesProps {
   isInteractiveMsg: boolean;
 }
 
-export const ChatTemplates: React.FC<ChatTemplatesProps> = ({
+export const ChatTemplates = ({
   searchVal,
   handleSelectText,
   isTemplate,
   isInteractiveMsg,
-}) => {
+}: ChatTemplatesProps) => {
   const { t } = useTranslation();
 
   const filterVariables = () => setVariables({ term: searchVal });

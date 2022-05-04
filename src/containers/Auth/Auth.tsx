@@ -31,24 +31,23 @@ export interface AuthProps {
   staffInstructions?: any;
 }
 
-export const Auth: React.FC<AuthProps> = (props) => {
-  const {
-    pageTitle,
-    buttonText,
-    alternateLink,
-    alternateText,
-    mode,
-    initialFormValues = null,
-    saveHandler,
-    formFields,
-    validationSchema,
-    titleSubText,
-    linkText,
-    linkURL,
-    errorMessage,
-    successMessage,
-    staffInstructions,
-  } = props;
+export const Auth = ({
+  pageTitle,
+  buttonText,
+  alternateLink,
+  alternateText,
+  mode,
+  initialFormValues = null,
+  saveHandler,
+  formFields,
+  validationSchema,
+  titleSubText,
+  linkText,
+  linkURL,
+  errorMessage,
+  successMessage,
+  staffInstructions,
+}:AuthProps ) => {
   // handle visibility for the password field
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);

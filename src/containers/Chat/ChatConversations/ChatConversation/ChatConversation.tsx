@@ -121,7 +121,7 @@ const BoldedText = (originalText: string, highlight: any) => {
   return text;
 };
 
-const ChatConversation: React.FC<ChatConversationProps> = ({
+const ChatConversation = ({
   lastMessage,
   selected,
   contactId,
@@ -136,7 +136,7 @@ const ChatConversation: React.FC<ChatConversationProps> = ({
   entityType,
   messageNumber,
   onClick,
-}) => {
+}: ChatConversationProps) => {
   // check if message is unread and style it differently
   const client = useApolloClient();
   let chatInfoClass = [styles.ChatInfo, styles.ChatInfoRead];

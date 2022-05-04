@@ -24,7 +24,7 @@ export interface CollectionProps {
   match: any;
 }
 
-export const Collection: React.FC<CollectionProps> = ({ match }) => {
+export const Collection = ({ match }: CollectionProps) => {
   const [selectedUsers, { data: collectionUsers }] = useLazyQuery(GET_COLLECTION_USERS, {
     fetchPolicy: 'cache-and-network',
   });
