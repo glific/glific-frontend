@@ -17,8 +17,7 @@ interface WhatsAppEditorProps {
   readOnly?: boolean;
 }
 
-export const WhatsAppEditor: React.FC<WhatsAppEditorProps> = (props) => {
-  const { setEditorState, sendMessage, editorState, handleHeightChange, readOnly = false } = props;
+export const WhatsAppEditor = ({ setEditorState, sendMessage, editorState, handleHeightChange, readOnly = false }: WhatsAppEditorProps) => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const { t } = useTranslation();
 

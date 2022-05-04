@@ -11,13 +11,13 @@ export interface LanguageBarProps {
   onSubmit?: Function;
 }
 
-export const LanguageBar: React.FC<LanguageBarProps> = ({
+export const LanguageBar = ({
   options,
   selectedLangauge,
   onLanguageChange,
   onSubmit = () => {},
   form,
-}) => {
+}: LanguageBarProps) => {
   const isSelected = (option: string) => selectedLangauge && selectedLangauge === option;
 
   return (

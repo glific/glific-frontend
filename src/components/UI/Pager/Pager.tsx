@@ -192,7 +192,7 @@ const pagination = (
   />
 );
 
-export const Pager: React.FC<PagerProps> = ({
+export const Pager = ({
   data,
   columnStyles,
   showCheckbox,
@@ -204,7 +204,7 @@ export const Pager: React.FC<PagerProps> = ({
   collapseOpen,
   collapseRow,
   removeSortBy = [],
-}) => {
+}: PagerProps) => {
   const rows = createRows(data, columnStyles, showCheckbox, collapseRow, collapseOpen);
   const tableHead = tableHeadColumns(
     columnNames,

@@ -8,7 +8,7 @@ export interface LoadingProps {
   message?: string;
 }
 
-export const Loading: React.FC<LoadingProps> = ({ message }) => {
+export const Loading = ({ message }: LoadingProps) => {
   const { t } = useTranslation();
   const messageToDisplay = message || t('Loading...');
 

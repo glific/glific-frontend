@@ -20,17 +20,16 @@ export interface SearchBarProps {
   searchMode: boolean;
 }
 
-export const SearchBar: React.FC<SearchBarProps> = (props) => {
-  const {
-    searchMode,
-    searchVal,
-    onReset,
-    endAdornment,
-    handleClick,
-    handleSubmit,
-    handleChange,
-    className,
-  } = props;
+export const SearchBar = ({
+  searchMode,
+  searchVal,
+  onReset,
+  endAdornment,
+  handleClick,
+  handleSubmit,
+  handleChange,
+  className,
+}: SearchBarProps) => {
 
   const [localSearchValue, setLocalSearchValue] = useState(searchVal);
   const { t } = useTranslation();

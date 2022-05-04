@@ -8,7 +8,7 @@ import styles from './ToastMessage.module.css';
 // Since attribute severity can only have 5 values,
 type Severity = 'error' | 'success' | 'info' | 'warning' | undefined;
 
-interface Props {
+interface ToastMessageProps {
   open?: boolean;
   severity?: Severity;
   message: String;
@@ -16,13 +16,13 @@ interface Props {
   hideDuration?: number | null;
 }
 
-export const ToastMessage: React.FC<Props> = ({
+export const ToastMessage = ({
   open = true,
   severity = 'success',
   message,
   handleClose,
   hideDuration = 5000,
-}) => {
+}: ToastMessageProps) => {
   const handleCloseButton = () => {
     handleClose(false);
   };
