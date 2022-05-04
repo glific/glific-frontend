@@ -14,7 +14,7 @@ export interface ContactHistoryProps {
   contactId: string;
 }
 
-export const ContactHistory: React.FC<ContactHistoryProps> = ({ contactId }) => {
+export const ContactHistory = ({ contactId }: ContactHistoryProps) => {
   const { t } = useTranslation();
 
   const { data: countHistory, loading: countHistoryLoading } = useQuery(COUNT_CONTACT_HISTORY, {

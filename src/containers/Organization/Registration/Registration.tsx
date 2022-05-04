@@ -63,7 +63,7 @@ const initialFormValues = {
   shortcode: '',
 };
 
-export const Registration: React.FC<RegistrationProps> = ({ title, buttonText, handleStep }) => {
+export const Registration = ({ title, buttonText, handleStep }: RegistrationProps) => {
   const [registrationError, setRegistrationError] = useState<any>('');
   const [code, setCode] = useState('shortcode');
   const [redirect, setRedirect] = useState(false);

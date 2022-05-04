@@ -32,11 +32,11 @@ const queries = {
   deleteItemQuery: DELETE_INACTIVE_ORGANIZATIONS,
 };
 
-export const OrganizationList: React.FC<OrganizationListProps> = ({
+export const OrganizationList = ({
   match,
   openExtensionModal,
   openCustomerModal,
-}) => {
+}: OrganizationListProps) => {
   const { t } = useTranslation();
 
   const [orgName, setOrgName] = useState('');

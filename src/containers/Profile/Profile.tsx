@@ -34,7 +34,7 @@ export interface ProfileProps {
   removePhoneField?: boolean;
 }
 
-export const Profile: React.FC<ProfileProps> = ({
+export const Profile = ({
   match,
   profileType,
   redirectionLink,
@@ -44,7 +44,7 @@ export const Profile: React.FC<ProfileProps> = ({
   additionalQuery,
   afterDelete,
   removePhoneField = false,
-}) => {
+}: ProfileProps) => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [status, setStatus] = useState('');
