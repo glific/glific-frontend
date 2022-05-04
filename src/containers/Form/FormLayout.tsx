@@ -67,7 +67,7 @@ export interface FormLayoutProps {
   saveOnPageChange?: boolean;
 }
 
-export const FormLayout: React.FC<FormLayoutProps> = ({
+export const FormLayout = ({
   match,
   deleteItemQuery,
   states,

@@ -18,9 +18,7 @@ import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
 import { sendOTP } from 'services/AuthService';
 import styles from './MyAccount.module.css';
 
-export interface MyAccountProps {}
-
-export const MyAccount: React.FC<MyAccountProps> = () => {
+export const MyAccount = () => {
   // set the validation / errors / success message
   const [toastMessageInfo, setToastMessageInfo] = useState({ message: '', severity: '' });
 

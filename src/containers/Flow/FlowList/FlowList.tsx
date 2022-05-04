@@ -21,8 +21,6 @@ import { setNotification } from 'common/notification';
 import { Button } from 'components/UI/Form/Button/Button';
 import styles from './FlowList.module.css';
 
-export interface FlowListProps {}
-
 const getName = (text: string, keywordsList: any) => {
   const keywords = keywordsList.map((keyword: any) => keyword);
 
@@ -59,7 +57,7 @@ const queries = {
 
 const configureIcon = <ConfigureIcon />;
 
-export const FlowList: React.FC<FlowListProps> = () => {
+export const FlowList = () => {
   const history = useHistory();
   const { t } = useTranslation();
   const inputRef = useRef<any>(null);

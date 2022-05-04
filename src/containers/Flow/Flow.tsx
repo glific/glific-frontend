@@ -25,7 +25,7 @@ const queries = {
   deleteItemQuery: DELETE_FLOW,
 };
 
-export const Flow: React.FC<FlowProps> = ({ match }) => {
+export const Flow = ({ match }: FlowProps) => {
   const location = useLocation();
   const [name, setName] = useState('');
   const [keywords, setKeywords] = useState('');

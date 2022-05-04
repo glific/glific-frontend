@@ -10,14 +10,13 @@ interface ListCardProps {
   link: any;
 }
 
-export const ListCard: React.FC<ListCardProps> = ({ ...props }) => {
-  const { data } = props;
+export const ListCard = ({ data , link }: ListCardProps) => {
   const { t } = useTranslation();
 
-  const link = (id: any) => `/${props.link.start}/${id}/${props.link.end}`;
+  const linkPath = (id: any) => `/${link.start}/${id}/${link.end}`;
 
   const viewDetails = (id: any) => (
-    <Link to={link(id)} className={styles.Link}>
+    <Link to={linkPath(id)} className={styles.Link}>
       <p>{t('View Details')}</p>
     </Link>
   );

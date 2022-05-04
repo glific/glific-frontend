@@ -17,7 +17,6 @@ import { FILTER_NOTIFICATIONS, GET_NOTIFICATIONS_COUNT } from 'graphql/queries/N
 import MARK_NOTIFICATIONS_AS_READ from 'graphql/mutations/Notifications';
 import styles from './NotificationList.module.css';
 
-export interface NotificationListProps {}
 const getDot = (isRead: boolean) => <div>{!isRead ? <div className={styles.Dot} /> : null}</div>;
 
 const getTime = (time: string) => (
@@ -43,7 +42,7 @@ const queries = {
 };
 const restrictedAction = () => ({ delete: false, edit: false });
 
-export const NotificationList: React.FC<NotificationListProps> = () => {
+export const NotificationList = () => {
   const client = useApolloClient();
   const [open, setOpen] = useState(false);
   const [text, setText] = useState<any>();

@@ -15,8 +15,6 @@ import { QUICK_REPLY } from 'common/constants';
 import { useHistory } from 'react-router-dom';
 import styles from './InteractiveMessageList.module.css';
 
-export interface InteractiveMessageListProps {}
-
 const getLabel = (text: string) => <p className={styles.LabelText}>{text}</p>;
 
 const getType = (text: string) => {
@@ -62,7 +60,7 @@ const queries = {
   deleteItemQuery: DELETE_INTERACTIVE,
 };
 
-export const InteractiveMessageList: React.FC<InteractiveMessageListProps> = () => {
+export const InteractiveMessageList = () => {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState('');

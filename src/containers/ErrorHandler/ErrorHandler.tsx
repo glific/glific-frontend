@@ -8,9 +8,7 @@ import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { setErrorMessage } from 'common/notification';
 import setLogs from 'config/logs';
 
-export interface ErrorHandlerProps {}
-
-export const ErrorHandler: React.FC<ErrorHandlerProps> = () => {
+export const ErrorHandler = () => {
   const { t } = useTranslation();
   const { data } = useQuery(ERROR_MESSAGE);
   let { message } = data ? data.errorMessage : '';

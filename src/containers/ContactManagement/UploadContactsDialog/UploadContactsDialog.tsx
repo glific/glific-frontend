@@ -21,10 +21,10 @@ export interface UploadContactsDialogProps {
   setDialog: Function;
 }
 
-export const UploadContactsDialog: React.FC<UploadContactsDialogProps> = ({
+export const UploadContactsDialog = ({
   organizationDetails,
   setDialog,
-}) => {
+}: UploadContactsDialogProps) => {
   const [error, setError] = useState<any>(false);
   const [csvContent, setCsvContent] = useState<String | null | ArrayBuffer>('');
   const [uploadingContacts, setUploadingContacts] = useState(false);
