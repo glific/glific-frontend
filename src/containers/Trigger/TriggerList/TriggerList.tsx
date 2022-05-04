@@ -14,8 +14,6 @@ import { List } from 'containers/List/List';
 import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import styles from './TriggerList.module.css';
 
-export interface TriggerListProps {}
-
 const getTooltip = (frequency: any, days: any) => {
   const obj: any = [];
 
@@ -61,7 +59,7 @@ const queries = {
   deleteItemQuery: DELETE_TRIGGER,
 };
 
-export const TriggerList: React.FC<TriggerListProps> = () => {
+export const TriggerList = () => {
   const history = useHistory();
   const { t } = useTranslation();
 

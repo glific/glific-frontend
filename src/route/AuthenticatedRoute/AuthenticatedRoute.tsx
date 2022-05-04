@@ -178,7 +178,7 @@ export const chatRoutes = (
   </Switch>
 );
 
-export const AuthenticatedRoute: React.FC = () => {
+export const AuthenticatedRoute = () => {
   const toastMessage = useToast();
 
   const { data: organizationProvider } = useQuery(GET_ORGANIZATION_PROVIDER);

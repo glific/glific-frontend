@@ -5,9 +5,7 @@ import { ReactComponent as SpeedSendIcon } from 'assets/images/icons/SpeedSend/D
 import Template from '../Template';
 import styles from './SpeedSendList.module.css';
 
-export interface SpeedSendListProps {}
-
-export const SpeedSendList: React.FC<SpeedSendListProps> = () => {
+export const SpeedSendList = () => {
   const { t } = useTranslation();
   const speedSendIcon = <SpeedSendIcon className={styles.SpeedSendIcon} />;
 

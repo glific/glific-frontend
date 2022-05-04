@@ -22,7 +22,7 @@ const defaultAttribute = {
 
 const templateIcon = <TemplateIcon className={styles.TemplateIcon} />;
 
-export const HSM: React.FC<HSMProps> = ({ match }) => {
+export const HSM = ({ match }: HSMProps) => {
   const [sampleMessages, setSampleMessages] = useState({
     type: 'TEXT',
     location: null,

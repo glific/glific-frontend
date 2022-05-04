@@ -7,8 +7,6 @@ import { SEARCH_LIST_QUERY, SEARCH_QUERY_COUNT } from 'graphql/queries/Search';
 import { DELETE_SEARCH } from 'graphql/mutations/Search';
 import styles from './SearchList.module.css';
 
-export interface SearchListProps {}
-
 const getShortcode = (shortcode: string) => <p className={styles.LabelText}>{shortcode}</p>;
 const getLabel = (text: string) => <p className={styles.TableText}>{text}</p>;
 
@@ -26,7 +24,7 @@ const queries = {
   deleteItemQuery: DELETE_SEARCH,
 };
 
-export const SearchList: React.FC<SearchListProps> = () => {
+export const SearchList = () => {
   const { t } = useTranslation();
 
   const columnNames = ['TITLE', 'DESCRIPTION', 'ACTIONS'];

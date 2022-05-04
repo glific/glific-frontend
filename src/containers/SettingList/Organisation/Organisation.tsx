@@ -34,7 +34,7 @@ const queries = {
   deleteItemQuery: DELETE_ORGANIZATION,
 };
 
-export const Organisation: React.FC = () => {
+export const Organisation = () => {
   const client = useApolloClient();
   const [name, setName] = useState('');
   const [hours, setHours] = useState(true);

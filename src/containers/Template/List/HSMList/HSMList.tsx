@@ -5,9 +5,7 @@ import { ReactComponent as TemplateIcon } from 'assets/images/icons/Template/Uns
 import styles from './HSMList.module.css';
 import { Template } from '../Template';
 
-export interface HSMListProps {}
-
-export const HSMList: React.FC<HSMListProps> = () => {
+export const HSMList = () => {
   const { t } = useTranslation();
   const templateIcon = <TemplateIcon className={styles.TemplateIcon} />;
 

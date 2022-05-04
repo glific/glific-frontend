@@ -59,7 +59,7 @@ const statusFilter = {
   REJECTED: false,
 };
 
-export const Template: React.FC<TemplateProps> = ({
+export const Template = ({
   title,
   listItem,
   listItemName,
@@ -68,7 +68,7 @@ export const Template: React.FC<TemplateProps> = ({
   filters: templateFilters,
   buttonLabel,
   isHSM,
-}) => {
+}: TemplateProps) => {
   const [open, setOpen] = useState(false);
   const [Id, setId] = useState('');
   const { t } = useTranslation();

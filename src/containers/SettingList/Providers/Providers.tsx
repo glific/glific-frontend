@@ -31,7 +31,7 @@ const queries = {
   deleteItemQuery: DELETE_ORGANIZATION,
 };
 
-export const Providers: React.FC<ProvidersProps> = ({ match }) => {
+export const Providers = ({ match }: ProvidersProps) => {
   const type = match.params.type ? match.params.type : null;
   const [credentialId, setCredentialId] = useState(null);
   const client = useApolloClient();

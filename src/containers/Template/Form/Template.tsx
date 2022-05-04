@@ -150,7 +150,7 @@ interface QuickReplyTemplate {
   value: string;
 }
 
-const Template: React.FC<TemplateProps> = ({
+const Template = ({
   match,
   listItemName,
   redirectionLink,
@@ -166,7 +166,7 @@ const Template: React.FC<TemplateProps> = ({
   category,
   onExampleChange = () => {},
   languageStyle = 'dropdown',
-}) => {
+}: TemplateProps) => {
   const [label, setLabel] = useState('');
   const [body, setBody] = useState(EditorState.createEmpty());
   const [example, setExample] = useState(EditorState.createEmpty());

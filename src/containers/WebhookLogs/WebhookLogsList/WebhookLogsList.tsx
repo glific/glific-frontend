@@ -14,8 +14,6 @@ import { copyToClipboard } from 'common/utils';
 import { DATE_TIME_FORMAT } from 'common/constants';
 import styles from './WebhookLogsList.module.css';
 
-export interface WebhookLogsListProps {}
-
 const getTime = (time: string) => (
   <div className={styles.TableText}>{moment(time).format(DATE_TIME_FORMAT)}</div>
 );
@@ -78,7 +76,7 @@ const queries = {
 
 const restrictedAction = () => ({ delete: false, edit: false });
 
-export const WebhookLogsList: React.FC<WebhookLogsListProps> = () => {
+export const WebhookLogsList = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [open, setOpen] = useState(false);
   const [text, setText] = useState<any>();
