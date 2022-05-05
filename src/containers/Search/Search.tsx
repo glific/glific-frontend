@@ -17,8 +17,10 @@ import { FormLayout } from 'containers/Form/FormLayout';
 import { Input } from 'components/UI/Form/Input/Input';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Calendar } from 'components/UI/Form/Calendar/Calendar';
+import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import Loading from 'components/UI/Layout/Loading/Loading';
 import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT, setVariables } from 'common/constants';
+import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { getObject } from 'common/utils';
 import styles from './Search.module.css';
 
@@ -31,6 +33,67 @@ export interface SearchProps {
   searchParam?: any;
   setState?: any;
 }
+
+const getPayload = (payload: any) => {
+  const {
+    label,
+    shortcode,
+    term,
+    includeTags,
+    includeGroups,
+    includeUsers,
+    includeLabels,
+    dateFrom,
+    dateTo,
+    dateToExpression,
+    dateFromExpression,
+    useExpression,
+  } = payload;
+
+  const args = {
+    contactOpts: {
+      offset: 0,
+      limit: DEFAULT_CONTACT_LIMIT,
+    },
+    filter: {
+      term,
+      includeTags: includeTags ? includeTags.map((option: any) => option.id) : [],
+      includeGroups: includeGroups ? includeGroups.map((option: any) => option.id) : [],
+      includeUsers: includeUsers ? includeUsers.map((option: any) => option.id) : [],
+      includeLabels: includeLabels ? includeLabels.map((option: any) => option.id) : [],
+    },
+    messageOpts: {
+      offset: 0,
+      limit: DEFAULT_MESSAGE_LIMIT,
+    },
+  };
+
+  if (!useExpression && dateFrom && dateFrom !== 'Invalid date') {
+    const dateRange = {
+      dateRange: {
+        to: moment(dateTo).format('yyyy-MM-DD'),
+        from: moment(dateFrom).format('yyyy-MM-DD'),
+      },
+    };
+    args.filter = Object.assign(args.filter, dateRange);
+  }
+
+  if (useExpression && dateFromExpression) {
+    const dateExpression = {
+      dateExpression: {
+        toExpression: dateToExpression,
+        fromExpression: dateFromExpression,
+      },
+    };
+    args.filter = Object.assign(args.filter, dateExpression);
+  }
+
+  return {
+    label,
+    shortcode,
+    args: JSON.stringify(args),
+  };
+};
 
 let FormSchema = Yup.object().shape({});
 
@@ -50,10 +113,14 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
   const [term, setTerm] = useState('');
   // const [includeTags, setIncludeTags] = useState([]);
   const [includeGroups, setIncludeGroups] = useState([]);
+  const [infoDialog, setInfoDialog] = useState(false);
   const [includeUsers, setIncludeUsers] = useState([]);
   const [includeLabels, setIncludeLabels] = useState([]);
   const [dateFrom, setdateFrom] = useState(null);
   const [dateTo, setdateTo] = useState(null);
+  const [useExpression, setUseExpression] = useState(false);
+  const [dateFromExpression, setdateFromExpression] = useState(null);
+  const [dateToExpression, setdateToExpression] = useState(null);
   const [formFields, setFormFields] = useState<any>([]);
   const [button, setButton] = useState<string>('Save');
   const { t } = useTranslation();
@@ -68,6 +135,7 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
   const states = {
     shortcode,
     label,
+    useExpression,
     term,
     // includeTags,
     includeGroups,
@@ -75,6 +143,8 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
     includeLabels,
     dateFrom,
     dateTo,
+    dateFromExpression,
+    dateToExpression,
   };
 
   // const { data: dataT } = useQuery(FILTER_TAGS_NAME, {
@@ -120,6 +190,16 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
           if (Object.prototype.hasOwnProperty.call(filters.filter, 'dateRange')) {
             setdateFrom(filters.filter.dateRange.from);
             setdateTo(filters.filter.dateRange.to);
+            setdateFromExpression(filters.filter.dateRange.from);
+            setdateToExpression(filters.filter.dateRange.to);
+          }
+          break;
+
+        case 'dateExpression':
+          if (Object.prototype.hasOwnProperty.call(filters.filter, 'dateExpression')) {
+            setdateFromExpression(filters.filter.dateExpression.fromExpression);
+            setdateToExpression(filters.filter.dateExpression.toExpression);
+            setUseExpression(true);
           }
           break;
         case 'term':
@@ -180,6 +260,16 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
       };
       args.filter = Object.assign(args.filter, dateRange);
     }
+
+    if (props.searchParam.dateFromExpression) {
+      const dateExpression = {
+        dateExpression: {
+          toExpression: props.searchParam.dateToExpression,
+          fromExpression: props.searchParam.dateFromExpression,
+        },
+      };
+      args.filter = Object.assign(args.filter, dateExpression);
+    }
     // For create new search then label & shortcode should be empty
     // For update search match.params.id should not empty
     setStates({
@@ -229,6 +319,11 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
       type: 'text',
       placeholder: t('Search Title'),
       validate: validateTitle,
+      inputProp: {
+        onChange: (event: any) => {
+          setShortcode(event.target.value);
+        },
+      },
     },
     {
       component: Input,
@@ -237,6 +332,11 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
       placeholder: t('Description'),
       rows: 3,
       textArea: true,
+      inputProp: {
+        onChange: (event: any) => {
+          setLabel(event.target.value);
+        },
+      },
     },
   ];
 
@@ -246,6 +346,11 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
       name: 'term',
       type: 'text',
       placeholder: t('Enter name, tag, keyword'),
+      inputProp: {
+        onChange: (event: any) => {
+          setTerm(event.target.value);
+        },
+      },
     },
     // {
     //   component: AutoComplete,
@@ -268,6 +373,7 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
         variant: 'outlined',
       },
       icon: <TagIcon stroke="#073f24" />,
+      onChange: (val: any) => setIncludeLabels(val),
     },
     {
       component: AutoComplete,
@@ -280,6 +386,7 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
       textFieldProps: {
         variant: 'outlined',
       },
+      onChange: (val: any) => setIncludeGroups(val),
     },
     {
       component: AutoComplete,
@@ -291,64 +398,70 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
       textFieldProps: {
         variant: 'outlined',
       },
+      onChange: (val: any) => setIncludeUsers(val),
     },
+  ];
+
+  const formWithCheckbox =
+    type === 'search'
+      ? searchFields
+      : [
+          ...searchFields,
+          {
+            component: Checkbox,
+            name: 'useExpression',
+            title: t('Use expression'),
+            info: true,
+            addLabelStyle: false,
+            infoType: 'dialog',
+            handleInfoClick: () => setInfoDialog(true),
+            handleChange: (value: any) => setUseExpression(value),
+            label: <span className={styles.DateRangeLabel}> {t('Date range')}</span>,
+          },
+        ];
+
+  const formWithDate = [
+    ...formWithCheckbox,
     {
       component: Calendar,
       name: 'dateFrom',
       type: 'date',
       placeholder: t('Date from'),
-      label: t('Date range'),
+      disabled: useExpression,
+      label: type === 'search' ? t('Date range') : null,
     },
     {
       component: Calendar,
       name: 'dateTo',
       type: 'date',
+      disabled: useExpression,
       placeholder: t('Date to'),
     },
   ];
 
+  const formWithExpression = [
+    ...formWithCheckbox,
+    {
+      component: Input,
+      name: 'dateFromExpression',
+      placeholder: t('Date from expression'),
+      type: 'text',
+      disabled: !useExpression,
+    },
+    {
+      component: Input,
+      type: 'text',
+      name: 'dateToExpression',
+      placeholder: t('Date to expression'),
+      disabled: !useExpression,
+    },
+  ];
+
+  const finalSearchFields = useExpression ? formWithExpression : formWithDate;
+
   const setPayload = (payload: any) => {
     if (search) search(payload);
-
-    const args = {
-      contactOpts: {
-        offset: 0,
-        limit: DEFAULT_CONTACT_LIMIT,
-      },
-      filter: {
-        term: payload.term,
-        includeTags: payload.includeTags ? payload.includeTags.map((option: any) => option.id) : [],
-        includeGroups: payload.includeGroups
-          ? payload.includeGroups.map((option: any) => option.id)
-          : [],
-        includeUsers: payload.includeUsers
-          ? payload.includeUsers.map((option: any) => option.id)
-          : [],
-        includeLabels: payload.includeLabels
-          ? payload.includeLabels.map((option: any) => option.id)
-          : [],
-      },
-      messageOpts: {
-        offset: 0,
-        limit: DEFAULT_MESSAGE_LIMIT,
-      },
-    };
-
-    if (payload.dateFrom && payload.dateFrom !== 'Invalid date') {
-      const dateRange = {
-        dateRange: {
-          to: moment(payload.dateTo).format('yyyy-MM-DD'),
-          from: moment(payload.dateFrom).format('yyyy-MM-DD'),
-        },
-      };
-      args.filter = Object.assign(args.filter, dateRange);
-    }
-
-    return {
-      label: payload.label,
-      shortcode: payload.shortcode,
-      args: JSON.stringify(args),
-    };
+    return getPayload(payload);
   };
 
   const addFieldsValidation = (object: any) => {
@@ -386,7 +499,7 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
 
     if (formFields.length === 0) {
       if (type === 'search') {
-        setFormFields([...searchFields]);
+        setFormFields([...finalSearchFields]);
         setButton('Search');
       }
       if (type === 'saveSearch') setFormFields(DataFields);
@@ -398,36 +511,71 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
 
   const getFields = () => {
     addFieldsValidation(validation);
-    return [...DataFields, ...searchFields];
+    return [...DataFields, ...finalSearchFields];
   };
 
   const saveHandler = (saveData: any) => {
     if (props.handleSave && saveData.updateSavedSearch)
       props.handleSave(saveData.updateSavedSearch);
   };
+  let dialog;
+
+  if (infoDialog) {
+    dialog = (
+      <DialogBox
+        titleAlign="left"
+        title={t('Use date expression')}
+        skipCancel
+        buttonOk={t('Close')}
+        handleOk={() => setInfoDialog(false)}
+      >
+        <div className={styles.DialogContent}>
+          You can use date expression for dynamic dates like ‘Last 2 days’ instead two days between
+          two fixed dates. To get search results for ‘Last 2 days’ you need to use this function:
+          <br />
+          <br />
+          <div className={styles.DialogTitleText}>Date from expression:</div>
+          {`<%= Timex.shift(Timex.today() , days: -2) %>`}
+          <div className={styles.DialogTitleText}>Date to expression:</div>
+          {` <%= Timex.today() %>`}
+          <br />
+          <br />
+          For ‘Last 3 days’ change ‘-2’ to ‘-3’ in Date from expression.
+          <br />
+          <br />
+        </div>
+      </DialogBox>
+    );
+  }
+
+  const customStyles = type ? [styles.FormSearch] : [styles.Form];
 
   return (
-    <FormLayout
-      {...queries}
-      match={match}
-      states={states}
-      setStates={setStates}
-      setPayload={setPayload}
-      validationSchema={FormSchema}
-      listItemName="Search"
-      dialogMessage={dialogMessage}
-      formFields={formFields.length > 0 ? formFields : getFields()}
-      redirectionLink="search"
-      cancelLink="search"
-      linkParameter="id"
-      listItem="savedSearch"
-      icon={searchIcon}
-      languageSupport={false}
-      advanceSearch={advanceSearch}
-      button={button}
-      type={type}
-      afterSave={saveHandler}
-    />
+    <>
+      {dialog}
+      <FormLayout
+        {...queries}
+        match={match}
+        states={states}
+        setStates={setStates}
+        setPayload={setPayload}
+        validationSchema={FormSchema}
+        listItemName="Search"
+        dialogMessage={dialogMessage}
+        formFields={formFields.length > 0 ? formFields : getFields()}
+        redirectionLink="search"
+        cancelLink="search"
+        linkParameter="id"
+        listItem="savedSearch"
+        icon={searchIcon}
+        languageSupport={false}
+        advanceSearch={advanceSearch}
+        button={button}
+        customStyles={customStyles}
+        type={type}
+        afterSave={saveHandler}
+      />
+    </>
   );
 };
 
