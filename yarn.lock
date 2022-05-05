@@ -2049,9 +2049,9 @@
     redent "^3.0.0"
 
 "@testing-library/react@^13.1.1":
-  version "13.1.1"
-  resolved "https://registry.yarnpkg.com/@testing-library/react/-/react-13.1.1.tgz#6c1635e25acca8ca5be8ee3b19ad1391681c5846"
-  integrity sha512-8mirlAa0OKaUvnqnZF6MdAh2tReYA2KtWVw1PKvaF5EcCZqgK5pl8iF+3uW90JdG5Ua2c2c2E2wtLdaug3dsVg==
+  version "13.2.0"
+  resolved "https://registry.yarnpkg.com/@testing-library/react/-/react-13.2.0.tgz#2db00bc94d71c4e90e5c25582e90a650ae2925bf"
+  integrity sha512-Bprbz/SZVONCJy5f7hcihNCv313IJXdYiv0nSJklIs1SQCIHHNlnGNkosSXnGZTmesyGIcBGNppYhXcc11pb7g==
   dependencies:
     "@babel/runtime" "^7.12.5"
     "@testing-library/dom" "^8.5.0"
@@ -2259,10 +2259,18 @@
   dependencies:
     "@types/istanbul-lib-report" "*"
 
-"@types/jest@*", "@types/jest@^27.4.1":
+"@types/jest@*":
   version "27.4.1"
   resolved "https://registry.yarnpkg.com/@types/jest/-/jest-27.4.1.tgz#185cbe2926eaaf9662d340cc02e548ce9e11ab6d"
   integrity sha512-23iPJADSmicDVrWk+HT58LMJtzLAnB2AgIzplQuq/bSrGaxCrlvRFjGbXmamnnk/mAmCdLStiGqggu28ocUyiw==
+  dependencies:
+    jest-matcher-utils "^27.0.0"
+    pretty-format "^27.0.0"
+
+"@types/jest@^27.4.1":
+  version "27.5.0"
+  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-27.5.0.tgz#e04ed1824ca6b1dd0438997ba60f99a7405d4c7b"
+  integrity sha512-9RBFx7r4k+msyj/arpfaa0WOOEcaAZNmN+j80KFbFCoSqCJGHTz7YMAMGQW9Xmqm5w6l5c25vbSjMwlikJi5+g==
   dependencies:
     jest-matcher-utils "^27.0.0"
     pretty-format "^27.0.0"
@@ -9103,10 +9111,19 @@ react-google-recaptcha@^2.1.0:
     prop-types "^15.5.0"
     react-async-script "^1.1.1"
 
-react-i18next@*, react-i18next@^11.16.7:
+react-i18next@*:
   version "11.16.7"
   resolved "https://registry.yarnpkg.com/react-i18next/-/react-i18next-11.16.7.tgz#8d0680b7f4c8e43f59996336b7183ad576a28df7"
   integrity sha512-7yotILJLnKfvUfrl/nt9eK9vFpVFjZPLWAwBzWL6XppSZZEvlmlKk0GBGDCAPfLfs8oND7WAbry8wGzdoiW5Nw==
+  dependencies:
+    "@babel/runtime" "^7.14.5"
+    html-escaper "^2.0.2"
+    html-parse-stringify "^3.0.1"
+
+react-i18next@^11.16.7:
+  version "11.16.8"
+  resolved "https://registry.yarnpkg.com/react-i18next/-/react-i18next-11.16.8.tgz#e71621c16f8f77152e85795a88ba6a371e46687d"
+  integrity sha512-uuhSuwY0iMOPV9HUsN1OC4cGCrATPvzZ1O8UfvLR+imz/XjPmfDgZM1e4dPS0Suc2+aCQqJ0FmWP891lUkB2Cg==
   dependencies:
     "@babel/runtime" "^7.14.5"
     html-escaper "^2.0.2"
