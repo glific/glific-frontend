@@ -78,9 +78,10 @@ export const WhatsAppToJsx = (text: any) => {
   if (typeof text === 'string') {
     modifiedText = showLivePreview(modifiedText);
     // search for all the links in the message
+    return <Interweave content={modifiedText} matchers={[new UrlMatcher('url')]} />;
   }
 
-  return <Interweave content={modifiedText} matchers={[new UrlMatcher('url')]} />;
+  return text;
 };
 
 export const WhatsAppTemplateButton = (text: string) => {
