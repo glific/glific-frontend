@@ -44,6 +44,9 @@ const wrapperFunction = (mocks: any) => (
   </MockedProvider>
 );
 
+declare global {
+  interface Window { showFlowEditor: any; }
+}
 window.showFlowEditor = (node: any, config: any) => jest.fn();
 
 const defaultWrapper = wrapperFunction(activeFlowMocks);
@@ -102,7 +105,7 @@ test('check if someone else is using a flow', async () => {
   // onload is not defined for script element in jest so we need to trigger it manually
   const mockCreateElement = document.createElement.bind(document);
   let scriptElements: any = [];
-  document.createElement = function (tags: any, options) {
+  document.createElement = function (tags: any, options: any) {
     if (tags === 'script') {
       const mockScriptElement = mockCreateElement('script');
       scriptElements.push(mockScriptElement);
