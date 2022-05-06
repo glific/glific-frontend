@@ -1,44 +1,13 @@
 import React from 'react';
-import reactStringReplace from 'react-string-replace';
 import { EditorState, ContentState } from 'draft-js';
 import CallIcon from '@material-ui/icons/Call';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
+import { Interweave } from 'interweave';
+import { UrlMatcher } from 'interweave-autolink';
 
 // Indicates how to replace different parts of the text from WhatsApp to HTML.
 const regexForLink =
   /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_+.~#?&/=]*)/gi;
-export const TextReplacements: any = [
-  {
-    bold: {
-      char: '*',
-      tag: 'b',
-      replace: (text: string) => <b key={text}>{text.slice(1, text.length - 1)}</b>,
-    },
-  },
-  {
-    italics: {
-      char: '_',
-      tag: 'i',
-      replace: (text: string) => <i>{text.slice(1, text.length - 1)}</i>,
-    },
-  },
-  {
-    strikethrough: {
-      char: '~',
-      tag: 's',
-      replace: (text: string) => <s>{text.slice(1, text.length - 1)}</s>,
-    },
-  },
-  {
-    codeBlock: {
-      char: '`',
-      tag: 'code',
-      replace: (text: string) => <code>{text.slice(1, text.length - 1)}</code>,
-    },
-  },
-];
-
-// Finds double asterisks in text with a regular expression.
 
 // Convert Draft.js to WhatsApp message format.
 export const getPlainTextFromEditor = (editorState: any) =>
@@ -47,63 +16,71 @@ export const getPlainTextFromEditor = (editorState: any) =>
 export const getEditorFromContent = (text: string) =>
   EditorState.createWithContent(ContentState.createFromText(text));
 
-export const WhatsAppToJsx = (text: any) => {
-  const replacements = TextReplacements;
-  let modifiedText = text;
-  // regex for checking whatsapp formatting for both bold and italic
-  const complexFormatting = [/(_\*.*\*_)/, /(\*_.*_\*)/];
-  // regex for checking links in the message
+const isAlphanumeric = (c: any) => {
+  const x = c.charCodeAt();
+  return (x >= 65 && x <= 90) || (x >= 97 && x <= 122) || (x >= 48 && x <= 57);
+};
 
-  if (typeof text === 'string') {
-    // search for all the links in the message
-    const allLinks = [...modifiedText.matchAll(regexForLink)];
-
-    if (allLinks.length > 0) {
-      allLinks.forEach((link) => {
-        // add anchor tag for each link
-        modifiedText = reactStringReplace(modifiedText, link[0], (match: any, index: number) => {
-          const key = `messageLink-${index}`;
-          return (
-            <a
-              href={match}
-              data-testid="messageLink"
-              target="_blank"
-              rel="noopener noreferrer"
-              key={key}
-            >
-              {match}
-            </a>
-          );
-        });
-      });
+const whatsappStyles = (format: any, wildcard: any, opTag: any, clTag: any) => {
+  let formatObject = format;
+  const indices = [];
+  for (let i = 0; i < formatObject.length; i += 1) {
+    if (formatObject[i] === wildcard) {
+      if (indices.length % 2) {
+        if (formatObject[i - 1] !== ' ') {
+          if (typeof formatObject[i + 1] === 'undefined') {
+            indices.push(i);
+          } else if (!isAlphanumeric(formatObject[i + 1])) {
+            indices.push(i);
+          }
+        }
+      } else if (typeof formatObject[i + 1] !== 'undefined') {
+        if (formatObject[i + 1] !== ' ') {
+          if (typeof formatObject[i - 1] === 'undefined') {
+            indices.push(i);
+          } else if (!isAlphanumeric(formatObject[i - 1])) {
+            indices.push(i);
+          }
+        }
+      }
+    } else if (formatObject[i].charCodeAt() === 10 && indices.length % 2) {
+      indices.pop();
     }
   }
 
-  complexFormatting.forEach((expression) => {
-    modifiedText = reactStringReplace(modifiedText, expression, (match: any, i: number) => (
-      <b key={i}>
-        <i>{match.slice(2, match.length - 2)}</i>
-      </b>
-    ));
-  });
+  if (indices.length % 2) {
+    indices.pop();
+  }
 
-  replacements.forEach((replacement: any) => {
-    const type = Object.keys(replacement)[0];
-    const character: any = replacement[type].char;
-    const replaceFunc: any = replacement[type].replace;
-    const regexStr = `(\\${character}{${character.length}}[^${character}\\s][^${character}]*[^${character}\\s]\\${character}{${character.length}})`;
-    const regexforSingleCharacter = `(\\${character}{${character.length}}[^${character}]\\${character}{${character.length}})`;
-    modifiedText = reactStringReplace(modifiedText, new RegExp(regexStr, 'g'), (match: any) =>
-      replaceFunc(match)
-    );
-    modifiedText = reactStringReplace(
-      modifiedText,
-      new RegExp(regexforSingleCharacter, 'g'),
-      (match: any) => replaceFunc(match)
-    );
+  let e = 0;
+  indices.forEach((v, i) => {
+    const t = i % 2 ? clTag : opTag;
+    let indice = v;
+    indice += e;
+    formatObject = formatObject.substr(0, indice) + t + formatObject.substr(indice + 1);
+    e += t.length - 1;
   });
+  return formatObject;
+};
 
-  return modifiedText;
+const showLivePreview = (format: any) => {
+  let formatObject = format;
+  formatObject = whatsappStyles(formatObject, '_', '<i>', '</i>');
+  formatObject = whatsappStyles(formatObject, '*', '<b>', '</b>');
+  formatObject = whatsappStyles(formatObject, '~', '<s>', '</s>');
+  formatObject = formatObject.replace(/\n/gi, '<br>');
+  return formatObject;
+};
+
+export const WhatsAppToJsx = (text: any) => {
+  let modifiedText = text;
+
+  if (typeof text === 'string') {
+    modifiedText = showLivePreview(modifiedText);
+    // search for all the links in the message
+  }
+
+  return <Interweave content={modifiedText} matchers={[new UrlMatcher('url')]} />;
 };
 
 export const WhatsAppTemplateButton = (text: string) => {
