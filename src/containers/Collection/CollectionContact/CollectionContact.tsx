@@ -11,9 +11,7 @@ export interface CollectionContactProps {
   match: any;
 }
 
-export const CollectionContact = (
-  props: CollectionContactProps
-) => {
+export const CollectionContact = (props: CollectionContactProps) => {
   const { t } = useTranslation();
 
   const { match } = props;
