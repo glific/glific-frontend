@@ -11,8 +11,12 @@ export interface CollectionContactProps {
   match: any;
 }
 
-export const CollectionContact = ({ match }: CollectionContactProps) => {
+export const CollectionContact = (
+  props: CollectionContactProps
+) => {
   const { t } = useTranslation();
+
+  const { match } = props;
 
   const collectionId = match.params.id;
   const collection = useQuery(GET_COLLECTION, {
