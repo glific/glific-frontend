@@ -26,8 +26,8 @@ describe('SpeedSend', () => {
     );
 
     await waitFor(() => {
-      const { queryByText } = within(container.querySelector('form'));
-      const button = queryByText('Cancel');
+      const { queryByText } = within(container.querySelector('form') as HTMLElement);
+      const button = queryByText('Cancel') as HTMLButtonElement;
       fireEvent.click(button);
     });
 
@@ -49,20 +49,20 @@ describe('SpeedSend', () => {
     );
 
     await waitFor(() => {
-      fireEvent.change(container.querySelector('input[name="label"]'), {
+      fireEvent.change(container.querySelector('input[name="label"]') as HTMLInputElement, {
         target: { value: 'new Template' },
       });
     });
 
-    const { queryByText } = within(container.querySelector('form'));
+    const { queryByText } = within(container.querySelector('form') as HTMLElement);
     await waitFor(() => {
-      const button = queryByText('Save');
+      const button = queryByText('Save') as HTMLButtonElement;
       fireEvent.click(button);
     });
 
     await waitFor(() => {
       expect(queryByText('Message is required.')).toBeInTheDocument();
-      const { getByText } = within(container.querySelector('tbody'));
+      const { getByText } = within(container.querySelector('tbody') as HTMLElement);
       expect(getByText('Good message')).toBeInTheDocument();
     });
   });

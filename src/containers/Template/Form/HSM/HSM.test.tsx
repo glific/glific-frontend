@@ -33,7 +33,7 @@ test('check for validations for the HSM form', async () => {
     expect(getByText('Add a new HSM Template')).toBeInTheDocument();
   });
 
-  const { queryByText } = within(container.querySelector('form'));
+  const { queryByText } = within(container.querySelector('form') as HTMLElement);
   const button: any = queryByText('Submit for Approval');
   fireEvent.click(button);
   await waitFor(() => {
@@ -43,7 +43,7 @@ test('check for validations for the HSM form', async () => {
 
   // we should have 2 errors
 
-  fireEvent.change(container.querySelector('input[name="label"]'), {
+  fireEvent.change(container.querySelector('input[name="label"]') as HTMLInputElement, {
     target: {
       value: 'We are not allowing a really long title, and we should trigger validation for this.',
     },
