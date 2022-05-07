@@ -6,7 +6,8 @@ describe('<Input />', () => {
   const input = (
     <Input
       form={{ touched: false, errors: {} }}
-      field={{ name: 'input', value: 'default' }}
+      field={{ name: 'input', value: 'default', onBlur: jest.fn() }}
+      label="Title"
       placeholder="Title"
     />
   );

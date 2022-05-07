@@ -13,7 +13,9 @@ const wrapper = (
       setFieldValue: setFieldValueMock,
     }}
     field={{ name: 'input', value: EditorState.createEmpty(), onChange: jest.fn() }}
+    label="Title"
     placeholder="Title"
+    rows={10}
   />
 );
 it('renders <EmojiInput /> component', () => {
@@ -35,6 +37,6 @@ test('clicking on emoji picker should open a container to select emojis', () => 
 test('clicking on an emoji should call onChange function', () => {
   const { getByTestId, container } = render(wrapper);
   fireEvent.click(getByTestId('emoji-picker'));
-  fireEvent.click(container.querySelector('.emoji-mart-emoji'));
+  fireEvent.click(container.querySelector('.emoji-mart-emoji') as Element);
   expect(setFieldValueMock).toBeCalled();
 });

@@ -88,7 +88,7 @@ describe('<WhatsAppEditor/>', () => {
       />
     );
     fireEvent.click(getByTestId('emoji-picker'));
-    fireEvent.click(container.querySelector('.emoji-mart-emoji'));
+    fireEvent.click(container.querySelector('.emoji-mart-emoji') as Element);
     expect(setEditorState).toBeCalled();
   });
 });
