@@ -32,10 +32,10 @@ it('should support keywords in a separate language', async () => {
   const { container, getByText, findByText } = render(flow({ params: {} }));
 
   await waitFor(() => {});
-  fireEvent.change(container.querySelector('input[name="name"]'), {
+  fireEvent.change(container.querySelector('input[name="name"]') as HTMLInputElement, {
     target: { value: 'New Flow' },
   });
-  fireEvent.change(container.querySelector('input[name="keywords"]'), {
+  fireEvent.change(container.querySelector('input[name="keywords"]') as HTMLInputElement, {
     target: { value: 'मदद' },
   });
   const button = getByText('Save');
@@ -51,10 +51,10 @@ it('should not allow special characters in keywords', async () => {
   const { container, getByText } = render(flow({ params: {} }));
 
   await waitFor(() => {});
-  fireEvent.change(container.querySelector('input[name="name"]'), {
+  fireEvent.change(container.querySelector('input[name="name"]') as HTMLInputElement, {
     target: { value: 'New Flow' },
   });
-  fireEvent.change(container.querySelector('input[name="keywords"]'), {
+  fireEvent.change(container.querySelector('input[name="keywords"]') as HTMLInputElement, {
     target: { value: 'Hey&' },
   });
   const button = getByText('Save');
@@ -80,10 +80,11 @@ it('should create copy of flow', async () => {
 
   const { container, getByTestId } = render(copyFlow({ params: { id: 1 } }));
   await waitFor(() => {
-    expect(container.querySelector('input[name="name"]')?.value).toBe('Copy of Help');
+    const inputElement = container.querySelector('input[name="name"]') as HTMLInputElement;
+    expect(inputElement?.value).toBe('Copy of Help');
   });
 
-  fireEvent.change(container.querySelector('input[name="keywords"]'), {
+  fireEvent.change(container.querySelector('input[name="keywords"]') as HTMLInputElement, {
     target: { value: 'help, activity' },
   });
   const button = getByTestId('submitActionButton');

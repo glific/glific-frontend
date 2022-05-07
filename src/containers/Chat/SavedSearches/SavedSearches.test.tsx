@@ -48,7 +48,7 @@ describe('<SavedSearches />', () => {
     await waitFor(() => {
       const autocompleteInput = getByTestId('AutocompleteInput');
       fireEvent.click(autocompleteInput);
-      const input = container.querySelector('input[type="text"]');
+      const input = container.querySelector('input[type="text"]') as HTMLInputElement;
       UserEvent.type(input, 'hi');
     });
   });
