@@ -209,7 +209,7 @@ test('update billing details', async () => {
   });
 
   await waitFor(() => {
-    const name = container.querySelector('input[name="name"]');
+    const name = container.querySelector('input[name="name"]') as HTMLInputElement;
     fireEvent.change(name, { target: { value: 'Glific Admin 1' } });
   });
 
@@ -242,7 +242,7 @@ test('update billing details', async () => {
   });
 
   await waitFor(() => {
-    const coupon = container.querySelector('input[name="coupon"]');
+    const coupon = container.querySelector('input[name="coupon"]') as HTMLInputElement;
     fireEvent.change(coupon, { target: { value: 'PBXGFH' } });
   });
 

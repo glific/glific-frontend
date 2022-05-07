@@ -83,11 +83,11 @@ describe('<MyAccount />', () => {
     hindi.click();
 
     // enter otp
-    const input = container.querySelector('input[type="text"]');
+    const input = container.querySelector('input[type="text"]') as HTMLInputElement;
     UserEvent.type(input, '76554');
 
     // enter password
-    const password = container.querySelector('input[type="password"]');
+    const password = container.querySelector('input[type="password"]') as HTMLInputElement;
     UserEvent.type(password, 'pass123456');
 
     await waitFor(() => {
@@ -156,11 +156,11 @@ describe('<MyAccount />', () => {
     });
 
     // enter otp
-    const input = container.querySelector('input[type="text"]');
+    const input = container.querySelector('input[type="text"]') as HTMLInputElement;
     UserEvent.type(input, '1234');
 
     // enter password
-    const password = container.querySelector('input[type="password"]');
+    const password = container.querySelector('input[type="password"]') as HTMLInputElement;
     UserEvent.type(password, 'pass123456');
     await waitFor(() => {
       // click on save button
@@ -188,11 +188,11 @@ describe('<MyAccount />', () => {
     });
 
     // enter otp
-    const input = container.querySelector('input[type="text"]');
+    const input = container.querySelector('input[type="text"]') as HTMLInputElement;
     UserEvent.type(input, '4567');
 
     // enter password
-    const password = container.querySelector('input[type="password"]');
+    const password = container.querySelector('input[type="password"]') as HTMLInputElement;
     UserEvent.type(password, 'pass123456');
 
     await waitFor(() => {

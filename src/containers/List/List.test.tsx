@@ -58,7 +58,7 @@ describe('<List />', () => {
   test('list has proper headers', async () => {
     const { container } = render(list);
     await waitFor(() => {
-      const tableHead = container.querySelector('thead');
+      const tableHead = container.querySelector('thead') as HTMLTableSectionElement;
       const { getByText } = within(tableHead);
       expect(getByText('LABEL')).toBeInTheDocument();
       expect(getByText('DESCRIPTION')).toBeInTheDocument();
@@ -71,7 +71,7 @@ describe('<List />', () => {
     const { container } = render(list);
 
     await waitFor(() => {
-      const tableRow = container.querySelector('tbody tr');
+      const tableRow = container.querySelector('tbody tr') as HTMLTableRowElement;
       const { getByLabelText } = within(tableRow);
       expect(getByLabelText('Edit')).toBeInTheDocument();
       expect(getByLabelText('Delete')).toBeInTheDocument();
@@ -94,7 +94,9 @@ describe('<List /> actions', () => {
   test('add new Button contains a route to add new page', async () => {
     const { container } = render(listButtons);
     await waitFor(() => {
-      const button = container.querySelector('button.MuiButton-containedPrimary');
+      const button = container.querySelector(
+        'button.MuiButton-containedPrimary'
+      ) as HTMLButtonElement;
       fireEvent.click(button);
     });
 
@@ -107,8 +109,10 @@ describe('<List /> actions', () => {
     const { container } = render(list);
 
     await waitFor(() => {
-      const { queryByLabelText } = within(container.querySelector('tbody tr'));
-      const button = queryByLabelText('Delete');
+      const { queryByLabelText } = within(
+        container.querySelector('tbody tr') as HTMLTableRowElement
+      );
+      const button = queryByLabelText('Delete') as HTMLButtonElement;
       fireEvent.click(button);
     });
 
@@ -128,7 +132,7 @@ describe('<List /> actions', () => {
     await waitFor(() => {
       const agreeButton = screen
         .queryByRole('dialog')
-        ?.querySelector('button.MuiButton-containedSecondary');
+        ?.querySelector('button.MuiButton-containedSecondary') as HTMLButtonElement;
       fireEvent.click(agreeButton);
     });
   });
@@ -137,7 +141,7 @@ describe('<List /> actions', () => {
 test('list sorting', async () => {
   const { container } = render(list);
   await waitFor(() => {
-    const tableHead = container.querySelector('thead');
+    const tableHead = container.querySelector('thead') as HTMLTableSectionElement;
     const { getByText } = within(tableHead);
     fireEvent.click(getByText('KEYWORDS'));
   });
@@ -187,14 +191,15 @@ describe('DialogMessage tests', () => {
     const { container } = render(list);
 
     await waitFor(() => {
-      const { queryByLabelText } = within(container.querySelector('tbody tr'));
-      const button = queryByLabelText('Delete');
+      const { queryByLabelText } = within(
+        container.querySelector('tbody tr') as HTMLTableRowElement
+      );
+      const button = queryByLabelText('Delete') as HTMLButtonElement;
 
       fireEvent.click(button);
     });
   });
 });
-
 
 // Need to check and write cases for card type
 

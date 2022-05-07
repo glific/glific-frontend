@@ -61,7 +61,7 @@ describe('<FlowList />', () => {
     await waitFor(() => {
       // type "Help Workflow" in search box and enter
       expect(getByTestId('searchInput')).toBeInTheDocument();
-      const searchInput = queryByPlaceholderText('Search');
+      const searchInput = queryByPlaceholderText('Search') as HTMLInputElement;
       fireEvent.change(searchInput, { target: { value: 'Help Workflow' } });
       fireEvent.keyPress(searchInput, { key: 'enter', keyCode: 13 });
       expect(getByText('help, मदद')).toBeInTheDocument();
@@ -72,7 +72,7 @@ describe('<FlowList />', () => {
     const { container } = render(flowList);
     await waitFor(() => {
       expect(container.querySelector('#additionalButton-icon')).toBeInTheDocument();
-      fireEvent.click(container.querySelector('#additionalButton-icon'));
+      fireEvent.click(container.querySelector('#additionalButton-icon') as SVGAElement);
     });
   });
 
@@ -89,7 +89,8 @@ describe('<FlowList />', () => {
     );
     const { container } = render(copyFlow({ params: { id: 1 } }));
     await waitFor(() => {
-      expect(container.querySelector('input[name="name"]')?.value).toBe('Copy of Help');
+      const inputElement = container.querySelector('input[name="name"]') as HTMLInputElement;
+      expect(inputElement?.value).toBe('Copy of Help');
     });
   });
 
