@@ -48,10 +48,10 @@ describe('<Login />', () => {
 
   it('test the login form submission with correct creds', async () => {
     const { container } = render(wrapper);
-    const phone = container.querySelector('input[type="tel"]');
+    const phone = container.querySelector('input[type="tel"]') as HTMLInputElement;
     fireEvent.change(phone, { target: { value: '+919978776554' } });
 
-    const password = container.querySelector('input[type="password"]');
+    const password = container.querySelector('input[type="password"]') as HTMLInputElement;
     UserEvent.type(password, 'pass123456');
 
     // click on login
@@ -74,10 +74,10 @@ describe('<Login />', () => {
 
   it('test the login form submission with incorrect creds', async () => {
     const { container } = render(wrapper);
-    const phone = container.querySelector('input[type="tel"]');
+    const phone = container.querySelector('input[type="tel"]') as HTMLInputElement;
     fireEvent.change(phone, { target: { value: '+919978776554' } });
 
-    const password = container.querySelector('input[type="password"]');
+    const password = container.querySelector('input[type="password"]') as HTMLInputElement;
     UserEvent.type(password, 'pass123456');
 
     // click on login
@@ -104,10 +104,10 @@ describe('<Login />', () => {
         </MemoryRouter>
       </MockedProvider>
     );
-    const phone = container.querySelector('input[type="tel"]');
+    const phone = container.querySelector('input[type="tel"]') as HTMLInputElement;
     fireEvent.change(phone, { target: { value: '+919978776554' } });
 
-    const password = container.querySelector('input[type="password"]');
+    const password = container.querySelector('input[type="password"]') as HTMLInputElement;
     UserEvent.type(password, 'pass123456');
 
     // click on login
@@ -136,10 +136,10 @@ describe('<Login />', () => {
         </MemoryRouter>
       </MockedProvider>
     );
-    const phone = container.querySelector('input[type="tel"]');
+    const phone = container.querySelector('input[type="tel"]') as HTMLInputElement;
     fireEvent.change(phone, { target: { value: '+919978776554' } });
 
-    const password = container.querySelector('input[type="password"]');
+    const password = container.querySelector('input[type="password"]') as HTMLInputElement;
     UserEvent.type(password, 'pass123456');
 
     // click on login
@@ -168,10 +168,10 @@ describe('<Login />', () => {
         </MemoryRouter>
       </MockedProvider>
     );
-    const phone = container.querySelector('input[type="tel"]');
+    const phone = container.querySelector('input[type="tel"]') as HTMLInputElement;
     fireEvent.change(phone, { target: { value: '+919978776554' } });
 
-    const password = container.querySelector('input[type="password"]');
+    const password = container.querySelector('input[type="password"]') as HTMLInputElement;
     UserEvent.type(password, 'pass123456');
 
     // click on login

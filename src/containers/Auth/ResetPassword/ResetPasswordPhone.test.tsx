@@ -31,7 +31,7 @@ describe('<ResetPasswordPhone />', () => {
     const { container } = render(wrapper);
 
     // enter the phone
-    const phone = container.querySelector('input[type="tel"]');
+    const phone = container.querySelector('input[type="tel"]') as HTMLInputElement;
     fireEvent.change(phone, { target: { value: '+919978776554' } });
 
     // click on GENERATE button
@@ -54,7 +54,7 @@ describe('<ResetPasswordPhone />', () => {
     const { container } = render(wrapper);
 
     // enter the phone
-    const phone = container.querySelector('input[type="tel"]');
+    const phone = container.querySelector('input[type="tel"]') as HTMLInputElement;
     fireEvent.change(phone, { target: { value: '+919978776554' } });
 
     // click on continue

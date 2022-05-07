@@ -31,13 +31,13 @@ describe('<Registration />', () => {
   it('should submit the form correctly and give error', async () => {
     const { container } = render(wrapper);
 
-    const userName = await container.querySelector('input[name="userName"]');
+    const userName = (await container.querySelector('input[name="userName"]')) as HTMLInputElement;
     userEvent.type(userName, 'Jane Doe');
 
-    const phone = await container.querySelector('input[type="tel"]');
+    const phone = (await container.querySelector('input[type="tel"]')) as HTMLInputElement;
     userEvent.type(phone, '+919978776554');
 
-    const password = await container.querySelector('input[type="password"]');
+    const password = (await container.querySelector('input[type="password"]')) as HTMLInputElement;
     userEvent.type(password, 'pass123456');
 
     // set the mock error case while registration
@@ -61,13 +61,13 @@ describe('<Registration />', () => {
   it('should submit the form correctly', async () => {
     const { container } = render(wrapper);
 
-    const userName = await container.querySelector('input[name="userName"]');
+    const userName = (await container.querySelector('input[name="userName"]')) as HTMLInputElement;
     userEvent.type(userName, 'Jane Doe');
 
-    const phone = await container.querySelector('input[type="tel"]');
+    const phone = (await container.querySelector('input[type="tel"]')) as HTMLInputElement;
     userEvent.type(phone, '+919978776554');
 
-    const password = await container.querySelector('input[type="password"]');
+    const password = (await container.querySelector('input[type="password"]')) as HTMLInputElement;
     userEvent.type(password, 'pass123456');
 
     // let's mock successful registration submission

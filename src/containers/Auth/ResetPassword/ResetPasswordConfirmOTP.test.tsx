@@ -30,7 +30,7 @@ describe('<ResetPasswordConfirmOTP />', () => {
     const inputElements = screen.getAllByRole('textbox');
     UserEvent.type(inputElements[1], '76554');
 
-    const password = container.querySelector('input[type="password"]');
+    const password = container.querySelector('input[type="password"]') as HTMLInputElement;
     UserEvent.type(password, 'pass123456');
 
     // click on save button
