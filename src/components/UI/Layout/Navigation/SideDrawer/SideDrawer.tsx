@@ -4,6 +4,7 @@ import {
   Drawer,
   makeStyles,
   createStyles,
+  // eslint-disable-next-line no-unused-vars
   Theme,
   Toolbar,
   Typography,
@@ -29,8 +30,6 @@ import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import { WalletBalance } from 'containers/WalletBalance/WalletBalance';
 import SideMenus from '../SideMenus/SideMenus';
 import styles from './SideDrawer.module.css';
-
-export interface SideDrawerProps {}
 
 const drawerWidth = SIDE_DRAWER_WIDTH;
 

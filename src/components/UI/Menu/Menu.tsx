@@ -14,6 +14,7 @@ export interface MenuProps {
   menus: any;
   eventType?: string | undefined;
   placement?: PopperPlacementType | undefined;
+  children?: React.ReactNode;
 }
 
 const Menu = ({ menus, children, eventType = 'Click', placement = 'top' }: MenuProps) => {
