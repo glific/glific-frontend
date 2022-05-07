@@ -68,7 +68,7 @@ describe('Menu test', () => {
   beforeEach(async () => {
     render(component);
     await waitFor(() => {
-      fireEvent.click(screen.getByTestId('dropdownIcon')?.querySelector('svg'));
+      fireEvent.click(screen.getByTestId('dropdownIcon')?.querySelector('svg') as SVGElement);
     });
   });
 
@@ -182,7 +182,7 @@ describe('Menu test', () => {
     cleanup();
     const { getByTestId } = render(componentWithBspStatusNone);
     await waitFor(() => {
-      fireEvent.click(getByTestId('dropdownIcon')?.querySelector('svg'));
+      fireEvent.click(getByTestId('dropdownIcon')?.querySelector('svg') as SVGElement);
     });
     await waitFor(() => {
       expect(getByTestId('disabledFlowButton')).toBeInTheDocument();
@@ -223,7 +223,7 @@ describe('Collection test', () => {
   test('clicking on Start flow should open up a dialog box', async () => {
     render(component);
     await waitFor(() => {
-      fireEvent.click(screen.getByTestId('dropdownIcon')?.querySelector('svg'));
+      fireEvent.click(screen.getByTestId('dropdownIcon')?.querySelector('svg') as SVGElement);
     });
     fireEvent.click(screen.getByTestId('flowButton'));
 
