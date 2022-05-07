@@ -6,6 +6,7 @@ import { AddAttachment } from './AddAttachment';
 import axios from 'axios';
 
 jest.mock('axios');
+const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 const setAttachment = jest.fn();
 const setAttachmentURL = jest.fn();
@@ -35,7 +36,7 @@ const addAttachment = (attachmentType = '', attachmentURL = '') => {
 };
 
 beforeEach(() => {
-  axios.get.mockImplementation(() => Promise.resolve({ data: {} }));
+  mockedAxios.get.mockImplementation(() => Promise.resolve({ data: {} }));
 });
 
 test('it should render', () => {
@@ -60,7 +61,7 @@ test('uploading a file', async () => {
 //   const { getByTestId, getByText } = render(addAttachment('IMAGE', 'https://glific.com'));
 //   const responseData = { data: { is_valid: true } };
 //   act(() => {
-//     axios.get.mockImplementationOnce(() => Promise.resolve(responseData));
+//     mockedAxios.get.mockImplementationOnce(() => Promise.resolve(responseData));
 //   });
 //   fireEvent.click(getByTestId('ok-button'));
 
@@ -73,7 +74,7 @@ test('uploading a file', async () => {
 //   const { getByTestId, getByText } = render(addAttachment('IMAGE', 'https://glific.com'));
 //   const responseData = { data: { is_valid: false, message: 'Content type not valid' } };
 //   act(() => {
-//     axios.get.mockImplementationOnce(() => Promise.resolve(responseData));
+//     mockedAxios.get.mockImplementationOnce(() => Promise.resolve(responseData));
 //   });
 //   fireEvent.click(getByTestId('ok-button'));
 

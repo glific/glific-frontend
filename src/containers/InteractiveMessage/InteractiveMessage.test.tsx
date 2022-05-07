@@ -30,6 +30,8 @@ jest.mock('axios', () => {
   };
 });
 
+const mockedAxios = axios as jest.Mocked<typeof axios>;
+
 const renderInteractiveMessage = (id: string) => (
   <MockedProvider mocks={mockData} addTypename={false}>
     <Router>
@@ -53,9 +55,9 @@ const responseMock3 = {
 };
 
 const axiosApiCall = async () => {
-  axios.get.mockImplementationOnce(() => Promise.resolve({ data: responseMock1 }));
+  mockedAxios.get.mockImplementationOnce(() => Promise.resolve({ data: responseMock1 }));
 
-  axios.get.mockImplementationOnce(() => Promise.resolve({ data: responseMock2 }));
+  mockedAxios.get.mockImplementationOnce(() => Promise.resolve({ data: responseMock2 }));
 };
 
 const whenStable = async () => {

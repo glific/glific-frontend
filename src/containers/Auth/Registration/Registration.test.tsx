@@ -6,6 +6,7 @@ import axios from 'axios';
 import { Registration } from './Registration';
 
 jest.mock('axios');
+const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 const wrapper = (
   <MemoryRouter>
@@ -41,7 +42,7 @@ describe('<Registration />', () => {
 
     // set the mock error case while registration
     const errorMessage = 'Cannot register 919978776554';
-    axios.post.mockImplementationOnce(() => Promise.reject(new Error(errorMessage)));
+    mockedAxios.post.mockImplementationOnce(() => Promise.reject(new Error(errorMessage)));
 
     await waitFor(() => {
       // click on continue
@@ -73,7 +74,7 @@ describe('<Registration />', () => {
     const responseData = {
       values: { username: 'Jane Doe', phone: '+919978776554', password: 'pass123456' },
     };
-    axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+    mockedAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
 
     // click on continue
     await waitFor(() => {

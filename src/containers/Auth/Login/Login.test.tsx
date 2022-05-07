@@ -14,6 +14,8 @@ import { Login } from './Login';
 const mocks = [getCurrentUserQuery];
 
 jest.mock('axios');
+const mockedAxios = axios as jest.Mocked<typeof axios>;
+
 jest.mock('react-i18next', () => ({
   useTranslation: () => {
     return {
@@ -62,7 +64,7 @@ describe('<Login />', () => {
     const successPromise = jest.fn(() => Promise.resolve(responseData));
 
     act(() => {
-      axios.post.mockImplementationOnce(() => successPromise());
+      mockedAxios.post.mockImplementationOnce(() => successPromise());
     });
 
     await waitFor(() => {
@@ -86,7 +88,7 @@ describe('<Login />', () => {
     const rejectPromise = jest.fn(() => Promise.reject(errorMessage));
 
     act(() => {
-      axios.post.mockImplementationOnce(() => rejectPromise());
+      mockedAxios.post.mockImplementationOnce(() => rejectPromise());
     });
 
     await waitFor(() => {
@@ -118,7 +120,7 @@ describe('<Login />', () => {
     const successPromise = jest.fn(() => Promise.resolve(responseData));
 
     act(() => {
-      axios.post.mockImplementationOnce(() => successPromise());
+      mockedAxios.post.mockImplementationOnce(() => successPromise());
     });
 
     await waitFor(() => {
@@ -150,7 +152,7 @@ describe('<Login />', () => {
     const successPromise = jest.fn(() => Promise.resolve(responseData));
 
     act(() => {
-      axios.post.mockImplementationOnce(() => successPromise());
+      mockedAxios.post.mockImplementationOnce(() => successPromise());
     });
 
     await waitFor(() => {
@@ -182,7 +184,7 @@ describe('<Login />', () => {
     const successPromise = jest.fn(() => Promise.resolve(responseData));
 
     act(() => {
-      axios.post.mockImplementationOnce(() => successPromise());
+      mockedAxios.post.mockImplementationOnce(() => successPromise());
     });
 
     await waitFor(() => {

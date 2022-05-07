@@ -8,6 +8,7 @@ import { responseData, responseData1 } from 'mocks/AddVariables';
 import { AddVariables } from './AddVariables';
 
 jest.mock('axios');
+const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 const setVariableMock = jest.fn();
 
@@ -29,8 +30,8 @@ const wrapper = (
 );
 
 const axiosApiCall = async () => {
-  axios.get.mockImplementationOnce(() => Promise.resolve(responseData1));
-  axios.get.mockImplementationOnce(() => Promise.resolve(responseData));
+  mockedAxios.get.mockImplementationOnce(() => Promise.resolve(responseData1));
+  mockedAxios.get.mockImplementationOnce(() => Promise.resolve(responseData));
 };
 
 test('it should render variable options and save the form', async () => {

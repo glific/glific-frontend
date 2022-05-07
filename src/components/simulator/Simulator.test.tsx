@@ -14,6 +14,7 @@ import axios from 'axios';
 import { setUserSession } from 'services/AuthService';
 
 jest.mock('axios');
+const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 setUserSession(JSON.stringify({ roles: ['Admin'], organization: { id: '1' } }));
 const mockSetShowSimulator = jest.fn();
@@ -74,7 +75,7 @@ test('send a message/media from the simulator', async () => {
       <Simulator {...defaultProps} />
     </MockedProvider>
   );
-  axios.post.mockImplementation(() => Promise.resolve({ data: {} }));
+  mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
 
   const input = getByTestId('simulatorInput');
   fireEvent.change(input, { target: { value: 'something' } });

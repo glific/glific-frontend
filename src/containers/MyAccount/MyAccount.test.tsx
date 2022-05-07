@@ -17,6 +17,8 @@ const mocks = [
 ];
 
 jest.mock('axios');
+const mockedAxios = axios as jest.Mocked<typeof axios>;
+
 const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <MemoryRouter>
@@ -41,7 +43,7 @@ describe('<MyAccount />', () => {
 
     // let's mock successful sending of OTP
     const responseData = { data: { data: { data: {} } } };
-    axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+    mockedAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
 
     await waitFor(() => {
       // click on generate OTP
@@ -53,7 +55,7 @@ describe('<MyAccount />', () => {
     const resendPasswordResponse = {
       data: { message: 'OTP sent successfully to 919967665667', phone: '919967665667' },
     };
-    axios.post.mockImplementationOnce(() => Promise.resolve(resendPasswordResponse));
+    mockedAxios.post.mockImplementationOnce(() => Promise.resolve(resendPasswordResponse));
 
     await waitFor(() => {
       // click on resend button
@@ -109,7 +111,7 @@ describe('<MyAccount />', () => {
 
     // let's mock error case sending of OTP
     const errorMessage = 'Cannot register 919967665667';
-    axios.post.mockImplementationOnce(() => Promise.reject(new Error(errorMessage)));
+    mockedAxios.post.mockImplementationOnce(() => Promise.reject(new Error(errorMessage)));
 
     await waitFor(() => {
       // click on generate OTP
@@ -127,7 +129,7 @@ describe('<MyAccount />', () => {
 
     // let's mock successful sending of OTP
     const responseData = { data: { data: { data: {} } } };
-    axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+    mockedAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
 
     await waitFor(() => {
       // click on generate OTP
@@ -145,7 +147,7 @@ describe('<MyAccount />', () => {
 
     // let's mock successful sending of OTP
     const responseData = { data: { data: { data: {} } } };
-    axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+    mockedAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
 
     await waitFor(() => {
       // click on generate OTP
@@ -177,7 +179,7 @@ describe('<MyAccount />', () => {
 
     // let's mock successful sending of OTP
     const responseData = { data: { data: { data: {} } } };
-    axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+    mockedAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
 
     await waitFor(() => {
       // click on generate OTP
