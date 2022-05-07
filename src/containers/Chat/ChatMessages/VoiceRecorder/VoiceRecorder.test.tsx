@@ -2,6 +2,7 @@ import { VoiceRecorder } from './VoiceRecorder';
 import { fireEvent, render, waitFor } from '@testing-library/react';
 import * as useReactMediaRecorder from 'react-media-recorder/';
 import { useState } from 'react';
+import { ReactMediaRecorderRenderProps } from 'react-media-recorder/';
 
 const handleAudioRecordingMock = jest.fn();
 const defaultProps = {
@@ -19,7 +20,7 @@ test('it renders correctly', () => {
   mediaRecorder.mockImplementation((props: any) => {
     return {
       status: 'idle',
-    };
+    } as ReactMediaRecorderRenderProps;
   });
   const { getByTestId } = render(voiceRecorder);
   expect(getByTestId('recorder')).toBeInTheDocument();
