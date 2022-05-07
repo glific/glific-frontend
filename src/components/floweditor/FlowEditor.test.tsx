@@ -20,6 +20,7 @@ import {
 import axios from 'axios';
 
 jest.mock('axios');
+const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 const mocks = [
   conversationQuery,
@@ -171,7 +172,7 @@ test('publish flow which has error', async () => {
 // });
 
 test('start with a keyword message if the simulator opens in floweditor screen', async () => {
-  axios.post.mockImplementation(() => Promise.resolve({ data: {} }));
+  mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
   const { getByTestId, getByText } = render(defaultWrapper);
 
   await waitFor(() => {
@@ -186,7 +187,7 @@ test('start with a keyword message if the simulator opens in floweditor screen',
 });
 
 test('if the flow the inactive', async () => {
-  axios.post.mockImplementation(() => Promise.resolve({ data: {} }));
+  mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
   const { getByTestId, getByText } = render(wrapperFunction(inActiveFlowMocks));
 
   await waitFor(() => {
@@ -201,7 +202,7 @@ test('if the flow the inactive', async () => {
 });
 
 test('flow with no keywords', async () => {
-  axios.post.mockImplementation(() => Promise.resolve({ data: {} }));
+  mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
   const { getByTestId, getByText } = render(wrapperFunction(noKeywordMocks));
 
   await waitFor(() => {
@@ -216,7 +217,7 @@ test('flow with no keywords', async () => {
 });
 
 test('reset flow counts', async () => {
-  axios.post.mockImplementation(() => Promise.resolve({ data: {} }));
+  mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
   const { getByTestId, getByText } = render(wrapperFunction(noKeywordMocks));
 
   await waitFor(() => {
