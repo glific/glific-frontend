@@ -109,7 +109,9 @@ test('it should render <ChatConversations /> component correctly', async () => {
 test('it should filter contacts based on search', async () => {
   const { getByTestId } = render(chatConversation);
   await waitFor(() => {
-    fireEvent.change(getByTestId('searchInput').querySelector('input'), { target: { value: 'a' } });
+    fireEvent.change(getByTestId('searchInput').querySelector('input') as HTMLElement, {
+      target: { value: 'a' },
+    });
     fireEvent.submit(getByTestId('searchForm'));
   });
 });
@@ -117,7 +119,9 @@ test('it should filter contacts based on search', async () => {
 test('it should reset input on clicking cross icon', async () => {
   const { getByTestId } = render(chatConversation);
   await waitFor(() => {
-    fireEvent.change(getByTestId('searchInput').querySelector('input'), { target: { value: 'a' } });
+    fireEvent.change(getByTestId('searchInput').querySelector('input') as HTMLElement, {
+      target: { value: 'a' },
+    });
     const resetButton = getByTestId('resetButton');
     fireEvent.click(resetButton);
   });
