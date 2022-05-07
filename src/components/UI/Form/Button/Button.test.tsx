@@ -5,9 +5,10 @@ describe('<Button />', () => {
   const buttonCallback = jest.fn();
 
   const defaultProps = {
-    variant: 'contained',
-    color: 'primary',
     'data-testid': 'button',
+    children: 'Button',
+    variant: 'contained' as 'contained',
+    color: 'primary' as 'primary',
   };
 
   it('renders <Button /> component', () => {
