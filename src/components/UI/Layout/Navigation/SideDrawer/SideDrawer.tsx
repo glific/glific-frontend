@@ -197,6 +197,11 @@ export const SideDrawer = () => {
     bottonMenuClasses.unshift(classes.BottomMenusVertical);
   }
 
+  const HiddenProps = {
+    smUp: true,
+    implementation: 'css' as 'css',
+  };
+
   return (
     <nav
       className={clsx({
@@ -206,7 +211,7 @@ export const SideDrawer = () => {
       aria-label="navigation menus"
       data-testid="navbar"
     >
-      <Hidden smUp implementation="css">
+      <Hidden {...HiddenProps}>
         <Drawer
           container={container}
           variant="temporary"

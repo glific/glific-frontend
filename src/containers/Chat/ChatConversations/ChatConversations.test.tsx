@@ -86,14 +86,18 @@ const client = new ApolloClient({
 });
 
 afterEach(cleanup);
+
+const simulatorParams = {
+  contactId: 1,
+  simulatorId: 1,
+  setShowSimulator: jest.fn(),
+};
+
 const chatConversation = (
   <ApolloProvider client={client}>
     <MockedProvider mocks={ChatConversationMocks} addTypename={false}>
       <Router>
-        <ChatConversations
-          contactId={2}
-          simulator={{ simulatorId: '1', setShowSimulator: jest.fn() }}
-        />
+        <ChatConversations {...simulatorParams} />
       </Router>
     </MockedProvider>
   </ApolloProvider>
