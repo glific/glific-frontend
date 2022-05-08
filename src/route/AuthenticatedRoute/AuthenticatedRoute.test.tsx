@@ -29,12 +29,12 @@ describe('<AuthenticatedRoute />', () => {
     );
 
     const spy = jest.spyOn(Chat, 'Chat');
-    spy.mockImplementation((props: any) => {
+    spy.mockImplementation(() => {
       return <div data-testid="chat"></div>;
     });
 
     const spyOnSubscription = jest.spyOn(ChatSubscription, 'ChatSubscription');
-    spyOnSubscription.mockImplementation((props: any) => {
+    spyOnSubscription.mockImplementation(() => {
       return <div data-testid="chatSubscription"></div>;
     });
 

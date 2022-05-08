@@ -1,4 +1,5 @@
 import React, { lazy, useEffect, useMemo, useState } from 'react';
+// eslint-disable-next-line no-unused-vars
 import { Switch, Route, Redirect, RouteComponentProps } from 'react-router-dom';
 
 import { Chat } from 'containers/Chat/Chat';
@@ -225,9 +226,10 @@ export const AuthenticatedRoute = () => {
   return (
     <ProviderContext.Provider value={values}>
       <div className={styles.App} data-testid="app">
-        {toastMessage}
-
-        <Layout>{route}</Layout>
+        <Layout>
+          {toastMessage}
+          {route}
+        </Layout>
       </div>
     </ProviderContext.Provider>
   );
