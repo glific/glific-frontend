@@ -482,7 +482,7 @@ export const savedSearchQueryError = {
     variables: { filter: { isReserved: false }, opts: {} },
   },
   result: {
-    errors: [new Error('An error occurred')],
+    errors: [],
   },
 };
 

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
+// eslint-disable-next-line no-unused-vars
 import { DocumentNode, ApolloError, useQuery, useMutation } from '@apollo/client';
 import { Typography, IconButton } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
@@ -33,7 +34,7 @@ export interface FormLayoutProps {
   createItemQuery: DocumentNode;
   updateItemQuery: DocumentNode;
   defaultAttribute?: any;
-  icon: Object;
+  icon: React.ReactNode;
   idType?: string;
   additionalAction?: any;
   additionalQuery?: Function | null;

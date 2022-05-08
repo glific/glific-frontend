@@ -46,8 +46,10 @@ test('inputs should have mock values', async () => {
   const { container, unmount } = render(editItem);
 
   await waitFor(() => {
-    expect(container.querySelector('input[name="label"]')?.value).toBe('important');
-    expect(container.querySelector('input[name="languageId"]').getAttribute('value')).toBe('1');
+    const labelField = container.querySelector('input[name="label"]') as HTMLInputElement;
+    const languageField = container.querySelector('input[name="languageId"]') as HTMLInputElement;
+    expect(labelField?.value).toBe('important');
+    expect(languageField.getAttribute('value')).toBe('1');
   });
 });
 
@@ -70,8 +72,8 @@ test('cancel button should redirect to taglist page', async () => {
     </MockedProvider>
   );
   await waitFor(() => {
-    const { queryByText } = within(container.querySelector('form'));
-    const button = queryByText('Cancel');
+    const { queryByText } = within(container.querySelector('form') as HTMLElement);
+    const button = queryByText('Cancel') as HTMLButtonElement;
     fireEvent.click(button);
     expect(getByText('Loading...')).toBeInTheDocument();
   });

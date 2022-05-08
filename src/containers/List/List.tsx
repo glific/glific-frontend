@@ -32,7 +32,7 @@ export interface ListProps {
   dialogMessage?: string | any;
   pageLink: string;
   columns: Function;
-  listIcon: Object;
+  listIcon: React.ReactNode;
   columnStyles: Array<any>;
   secondaryButton?: any;
   title: string;
