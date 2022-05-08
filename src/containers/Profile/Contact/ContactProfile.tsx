@@ -114,7 +114,7 @@ export const ContactProfile = ({ match }: ContactProfileProps) => {
     <div className={styles.ContactProfile}>
       <div className={styles.ContactForm} data-testid="ContactProfile">
         <Profile
-          {...props}
+          match
           // additionalProfileStates={additonalStates}
           // additionalField={assignTags}
           // additionalState={setSelectedTags}

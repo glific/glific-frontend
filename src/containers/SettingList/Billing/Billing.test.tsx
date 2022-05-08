@@ -28,7 +28,7 @@ const mockElement = () => ({
 window.open = jest.fn();
 
 const mockElements = () => {
-  const elements = {};
+  const elements: any = {};
 
   return {
     create: jest.fn((type) => {
