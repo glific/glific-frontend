@@ -23,9 +23,9 @@ export const ContactDescription = ({
   collections,
   lastMessage,
   statusMessage,
+  fields,
+  settings,
 }: ContactDescriptionProps) => {
-  let { fields, settings } = props;
-
   const [showPlainPhone, setShowPlainPhone] = useState(false);
   const { t } = useTranslation();
 
@@ -57,12 +57,14 @@ export const ContactDescription = ({
     },
   ];
 
+  let settingsValue: any = '';
   if (typeof settings === 'string') {
-    settings = JSON.parse(settings);
+    settingsValue = JSON.parse(settings);
   }
 
+  let fieldsValue: any = '';
   if (typeof fields === 'string') {
-    fields = JSON.parse(fields);
+    fieldsValue = JSON.parse(fields);
   }
 
   const handlePhoneDisplay = () => {
@@ -135,26 +137,26 @@ export const ContactDescription = ({
           <div className={styles.DescriptionItem}>Status</div>
           <div className={styles.DescriptionItemValue}>{statusMessage}</div>
         </div>
-        {settings &&
-          typeof settings === 'object' &&
-          Object.keys(settings).map((key) => (
+        {settingsValue &&
+          typeof settingsValue === 'object' &&
+          Object.keys(settingsValue).map((key) => (
             <div key={key}>
               <div className={styles.DescriptionItem}>{key}</div>
               <div className={styles.DescriptionItemValue}>
-                {Object.keys(settings[key])
-                  .filter((settingKey) => settings[key][settingKey] === true)
+                {Object.keys(settingsValue[key])
+                  .filter((settingKey) => settingsValue[key][settingKey] === true)
                   .join(', ')}
               </div>
             </div>
           ))}
-        {fields &&
-          typeof fields === 'object' &&
-          Object.keys(fields).map((key) => (
+        {fieldsValue &&
+          typeof fieldsValue === 'object' &&
+          Object.keys(fieldsValue).map((key) => (
             <div key={key}>
               <div className={styles.DescriptionItem}>
-                {fields[key].label ? fields[key].label : key.replace('_', ' ')}
+                {fieldsValue[key].label ? fieldsValue[key].label : key.replace('_', ' ')}
               </div>
-              <div className={styles.DescriptionItemValue}>{fields[key].value}</div>
+              <div className={styles.DescriptionItemValue}>{fieldsValue[key].value}</div>
             </div>
           ))}
       </div>

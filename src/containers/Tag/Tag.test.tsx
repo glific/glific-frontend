@@ -34,15 +34,15 @@ test('should be able to submit the data on save', async () => {
     expect(formLayout).toHaveTextContent('Keywords');
   });
 
-  fireEvent.change(container.querySelector('input[name="label"]'), {
+  fireEvent.change(container.querySelector('input[name="label"]') as HTMLInputElement, {
     target: { value: 'new Tag' },
   });
 
-  fireEvent.change(container.querySelector('textarea[name="description"]'), {
+  fireEvent.change(container.querySelector('textarea[name="description"]') as HTMLTextAreaElement, {
     target: { innerHTML: 'new Tag description' },
   });
 
-  fireEvent.change(container.querySelector('input[name="languageId"]'), {
+  fireEvent.change(container.querySelector('input[name="languageId"]') as HTMLInputElement, {
     target: { value: 1 },
   });
 
