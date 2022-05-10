@@ -15,7 +15,6 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import packageInfo from '../package.json';
 
-console.log('vewrsion', packageInfo.version);
 let appComponent = <App />;
 if (APPSIGNAL_API_KEY) {
   const appsignal = new Appsignal({
@@ -33,8 +32,7 @@ if (APPSIGNAL_API_KEY) {
   );
 }
 
-const container: any = document.getElementById('root');
-const root = createRoot(container);
+const root = createRoot(document.getElementById('root')!);
 
 root.render(
   <React.StrictMode>
