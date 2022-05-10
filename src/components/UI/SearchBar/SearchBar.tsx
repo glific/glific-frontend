@@ -30,7 +30,6 @@ export const SearchBar = ({
   handleChange,
   className,
 }: SearchBarProps) => {
-
   const [localSearchValue, setLocalSearchValue] = useState(searchVal);
   const { t } = useTranslation();
 

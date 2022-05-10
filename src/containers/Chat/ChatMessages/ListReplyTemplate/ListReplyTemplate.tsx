@@ -38,12 +38,7 @@ interface ListTemplateProps {
   onDrawerClose: any;
 }
 
-export const ChatTemplate = ({
-  title,
-  body,
-  globalButtonTitle,
-  items,
-}: TemplateProps) => {
+export const ChatTemplate = ({ title, body, globalButtonTitle, items }: TemplateProps) => {
   const [showDialog, setShowDialog] = useState(false);
   const [checkedItem, setCheckedItem] = useState<any>(null);
 
@@ -142,7 +137,13 @@ export const SimulatorTemplate = ({
   );
 };
 
-export const ListReplyTemplateDrawer = ({ items, drawerTitle, onItemClick, onDrawerClose, disableSend = false }: ListTemplateProps) => {
+export const ListReplyTemplateDrawer = ({
+  items,
+  drawerTitle,
+  onItemClick,
+  onDrawerClose,
+  disableSend = false,
+}: ListTemplateProps) => {
   const [checkedItem, setCheckedItem] = useState<any>(null);
 
   const handleItemClick = () => {
@@ -231,7 +232,11 @@ export const ListReplyTemplateDrawer = ({ items, drawerTitle, onItemClick, onDra
   );
 };
 
-export const ListReplyTemplate = ({ globalButtons, component: TemplateComponent, ...rest }: ListReplyTemplateProps) => {
+export const ListReplyTemplate = ({
+  globalButtons,
+  component: TemplateComponent,
+  ...rest
+}: ListReplyTemplateProps) => {
   const globalButtonTitle = globalButtons?.length ? globalButtons[0].title : '';
 
   return <TemplateComponent globalButtonTitle={globalButtonTitle} {...rest} />;

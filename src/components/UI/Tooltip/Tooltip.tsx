@@ -12,7 +12,14 @@ interface TooltipProps {
   interactive?: boolean;
 }
 
-export const Tooltip = ({ tooltipClass, tooltipArrowClass, title, placement, children, interactive }: TooltipProps) => {
+export const Tooltip = ({
+  tooltipClass,
+  tooltipArrowClass,
+  title,
+  placement,
+  children,
+  interactive,
+}: TooltipProps) => {
   // set the default styling for main tooltip
   const toolTipStyling = [styles.Tooltip];
   // let's add the class passed in props so that we can override default properties.

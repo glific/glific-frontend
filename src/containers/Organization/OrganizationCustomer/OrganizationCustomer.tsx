@@ -15,10 +15,7 @@ export interface OrganizationCustomerProps {
   openDialog: boolean;
 }
 
-export const OrganizationCustomer = ({
-  match,
-  openDialog,
-}: OrganizationCustomerProps) => {
+export const OrganizationCustomer = ({ match, openDialog }: OrganizationCustomerProps) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [currency, setCurrency] = useState('');

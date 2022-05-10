@@ -30,7 +30,6 @@ export const Checkbox = ({
   infoType = 'tooltip',
   handleInfoClick = () => {},
 }: CheckboxProps) => {
-
   const handleChangeCallback = () => {
     const { name, value } = field;
     form.setFieldValue(name, !value);

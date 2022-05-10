@@ -17,7 +17,13 @@ interface WhatsAppEditorProps {
   readOnly?: boolean;
 }
 
-export const WhatsAppEditor = ({ setEditorState, sendMessage, editorState, handleHeightChange, readOnly = false }: WhatsAppEditorProps) => {
+export const WhatsAppEditor = ({
+  setEditorState,
+  sendMessage,
+  editorState,
+  handleHeightChange,
+  readOnly = false,
+}: WhatsAppEditorProps) => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const { t } = useTranslation();
 

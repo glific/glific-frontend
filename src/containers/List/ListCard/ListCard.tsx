@@ -10,7 +10,7 @@ interface ListCardProps {
   link: any;
 }
 
-export const ListCard = ({ data , link }: ListCardProps) => {
+export const ListCard = ({ data, link }: ListCardProps) => {
   const { t } = useTranslation();
 
   const linkPath = (id: any) => `/${link.start}/${id}/${link.end}`;

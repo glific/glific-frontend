@@ -23,9 +23,7 @@ export interface ExportConsultingPropTypes {
 
 const formatDate = (value: any) => moment(value).format('YYYY-MM-DD');
 
-export const ExportConsulting = ({
-  setFilters,
-}: ExportConsultingPropTypes) => {
+export const ExportConsulting = ({ setFilters }: ExportConsultingPropTypes) => {
   const { data: organizationList } = useQuery(FILTER_ORGANIZATIONS, {
     variables: setVariables(),
   });

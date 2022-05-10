@@ -18,7 +18,16 @@ export interface DropdownProps {
   fieldValue?: any;
 }
 
-export const Dropdown = ({ options, placeholder, field, helperText, disabled, form, fieldValue, fieldChange }: DropdownProps) => {
+export const Dropdown = ({
+  options,
+  placeholder,
+  field,
+  helperText,
+  disabled,
+  form,
+  fieldValue,
+  fieldChange,
+}: DropdownProps) => {
   const { onChange, value, ...rest } = field;
 
   let optionsList = null;

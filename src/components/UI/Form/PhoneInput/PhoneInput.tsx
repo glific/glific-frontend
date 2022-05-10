@@ -28,7 +28,7 @@ export const PhoneInput = ({
     required: true,
     autoFocus: false,
   },
-  placeholder
+  placeholder,
 }: InputProps) => {
   const errorText = getIn(errors, field.name);
 

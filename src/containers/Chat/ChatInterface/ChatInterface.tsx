@@ -28,11 +28,7 @@ export interface ChatInterfaceProps {
   savedSearches?: boolean;
 }
 
-export const ChatInterface = ({
-  contactId,
-  collectionId,
-  savedSearches,
-}: ChatInterfaceProps) => {
+export const ChatInterface = ({ contactId, collectionId, savedSearches }: ChatInterfaceProps) => {
   const [simulatorAccess, setSimulatorAccess] = useState(true);
   const [simulatorId, setSimulatorId] = useState(0);
   const { t } = useTranslation();

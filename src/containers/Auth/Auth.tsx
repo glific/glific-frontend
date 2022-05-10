@@ -47,7 +47,7 @@ export const Auth = ({
   errorMessage,
   successMessage,
   staffInstructions,
-}:AuthProps ) => {
+}: AuthProps) => {
   // handle visibility for the password field
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);

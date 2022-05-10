@@ -13,7 +13,14 @@ export interface DropdownDialogProps {
   description?: string;
 }
 
-export const DropdownDialog = ({ title, handleCancel, options, placeholder, description, handleOk }: DropdownDialogProps) => {
+export const DropdownDialog = ({
+  title,
+  handleCancel,
+  options,
+  placeholder,
+  description,
+  handleOk,
+}: DropdownDialogProps) => {
   const [selectedValue, setSelectedValue] = useState('');
 
   const handleChange = (event: any) => {

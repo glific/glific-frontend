@@ -39,11 +39,7 @@ const darkIcons: any = {
   LOCATION: <LocationIconDark />,
 };
 
-export const MessageType = ({
-  type,
-  body = '',
-  color = 'light',
-}: MessageTypeProps) => {
+export const MessageType = ({ type, body = '', color = 'light' }: MessageTypeProps) => {
   const isLight = color === 'light';
 
   const message: any = {

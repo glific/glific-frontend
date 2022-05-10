@@ -40,11 +40,7 @@ export interface ChatMessagesProps {
   startingHeight?: string;
 }
 
-export const ChatMessages = ({
-  contactId,
-  collectionId,
-  startingHeight,
-}: ChatMessagesProps) => {
+export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMessagesProps) => {
   // create an instance of apollo client
 
   // const [loadAllTags, allTags] = useLazyQuery(FILTER_TAGS_NAME, {
