@@ -148,7 +148,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       setGlobalButton(data.globalButton);
     }
 
-    if (typeValue === QUICK_REPLY && data.type && data.attachmentURL) {
+    if (typeValue === QUICK_REPLY && data.type && data.attachmentURL !== null) {
       setType({ id: data.type, label: data.type });
       setAttachmentURL(data.attachmentURL);
     }

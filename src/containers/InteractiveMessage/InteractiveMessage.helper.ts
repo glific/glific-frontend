@@ -168,7 +168,7 @@ export const getDefaultValuesByTemplate = (templateData: any) => {
     const { type, content, options } = data;
     const updatedOptions = options.map(() => ({ type: 'text', title: '' }));
     const updatedContent = Object.keys(content).reduce((res: any, key: string) => {
-      if (['type', 'url'].includes(key)) res[key] = content[key];
+      if (['type'].includes(key)) res[key] = content[key];
       else res[key] = '';
       return res;
     }, {});
