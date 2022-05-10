@@ -21,7 +21,7 @@ describe('<AuthenticatedRoute />', () => {
     const { getByTestId } = render(
       <MockedProvider mocks={mocks}>
         <BrowserRouter>
-          <Suspense fallback={Loading}>
+          <Suspense fallback={<Loading />}>
             <AuthenticatedRoute />
           </Suspense>
         </BrowserRouter>

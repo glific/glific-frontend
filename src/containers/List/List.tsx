@@ -309,7 +309,7 @@ export const List = ({
   };
 
   const useDelete = (message: string | any) => {
-    let component = {};
+    let component: any = {};
     const props = { disableOk: false, handleOk: handleDeleteItem };
     if (typeof message === 'string') {
       component = message;

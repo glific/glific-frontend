@@ -148,8 +148,6 @@ test('list sorting', async () => {
 });
 
 describe('DialogMessage tests', () => {
-  let props = { ...orgProps };
-
   test('dialogMessage with custom component for delete', async () => {
     const useCustomDialog = () => {
       const component = (
@@ -164,8 +162,7 @@ describe('DialogMessage tests', () => {
       };
     };
 
-    props.dialogMessage = useCustomDialog;
-    props.additionalAction = [
+    const additionalAction = [
       {
         icon: ApprovedIcon,
         parameter: 'id',
@@ -179,6 +176,8 @@ describe('DialogMessage tests', () => {
         button: () => <button onClick={() => jest.fn()}>Activate</button>,
       },
     ];
+
+    let props = { ...orgProps, dialogMessage: useCustomDialog, additionalAction };
 
     const list = (
       <MockedProvider mocks={ORG_LIST_MOCK} addTypename={false}>

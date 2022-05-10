@@ -215,7 +215,7 @@ export const LIST_MOCKS = [
 export const ORG_LIST_MOCK = [...getAllOrganizations];
 
 export const orgProps = {
-  columnNames: ['NAME', 'IS ACTIVE', 'IS APPROVED', 'ACTIONS'],
+  columnNames: ['NAME', 'STATUS', 'ACTIONS'],
   countQuery: GET_ORGANIZATION_COUNT,
   listItem: 'organizations',
   filterItemsQuery: FILTER_ORGANIZATIONS,
