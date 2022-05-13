@@ -15,7 +15,6 @@ import styles from './ChatMessageType.module.css';
 export interface ChatMessageTypeProps {
   type: string;
   media?: any;
-  insertedAt?: string;
   body: string;
   location?: any;
   isSimulatedMessage?: boolean;

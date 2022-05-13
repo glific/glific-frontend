@@ -357,7 +357,6 @@ export const ChatMessage = ({
                       type={contextMessage.type}
                       media={contextMessage.media}
                       body={contextMessage.body}
-                      insertedAt={contextMessage.insertedAt}
                       location={contextMessage.location}
                       isContextMessage
                     />
@@ -382,7 +381,6 @@ export const ChatMessage = ({
                       type={type}
                       media={media}
                       body={bodyText}
-                      insertedAt={insertedAt}
                       location={location}
                     />
                   )}
