@@ -8,7 +8,7 @@ import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { setErrorMessage } from 'common/notification';
 import setLogs from 'config/logs';
 
-export const ErrorHandler = () => {
+const ErrorHandler = () => {
   const { t } = useTranslation();
   const { data } = useQuery(ERROR_MESSAGE);
   let { message } = data ? data.errorMessage : '';
@@ -69,3 +69,5 @@ export const ErrorHandler = () => {
     </Container>
   );
 };
+
+export default ErrorHandler;

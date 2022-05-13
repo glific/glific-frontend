@@ -7,7 +7,7 @@ import { ClearCacheProvider, useClearCacheCtx } from 'react-clear-cache';
 import 'assets/fonts/fonts.css';
 import gqlClient from 'config/apolloclient';
 import { SessionContext, SideDrawerContext } from 'context/session';
-import { ErrorHandler } from 'containers/ErrorHandler/ErrorHandler';
+import ErrorHandler from 'containers/ErrorHandler/ErrorHandler';
 import { checkAuthStatusService, getUserSession } from 'services/AuthService';
 import { UnauthenticatedRoute } from 'route/UnauthenticatedRoute/UnauthenticatedRoute';
 import { AuthenticatedRoute } from 'route/AuthenticatedRoute/AuthenticatedRoute';

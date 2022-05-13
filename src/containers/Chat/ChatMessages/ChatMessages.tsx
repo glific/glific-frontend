@@ -11,7 +11,7 @@ import styles from './ChatMessages.module.css';
 import { ContactBar } from './ContactBar/ContactBar';
 import { ChatMessage } from './ChatMessage/ChatMessage';
 import { ChatInput } from './ChatInput/ChatInput';
-import { StatusBar } from './StatusBar/StatusBar';
+import StatusBar from './StatusBar/StatusBar';
 import { setNotification, setErrorMessage } from '../../../common/notification';
 import {
   SEARCH_QUERY_VARIABLES,
