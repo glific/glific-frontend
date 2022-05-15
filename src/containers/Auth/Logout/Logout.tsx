@@ -1,3 +1,4 @@
+// eslint-disable-next-line
 import React, { useContext, useEffect, useState, CSSProperties } from 'react';
 import axios from 'axios';
 import { Redirect, useLocation } from 'react-router-dom';

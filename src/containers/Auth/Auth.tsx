@@ -108,6 +108,7 @@ export const Auth = ({
   const handlePhone =
     () =>
     (value: string): void => {
+      // eslint-disable-next-line
       initialFormValues.phone = value;
     };
 
