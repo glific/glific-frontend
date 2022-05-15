@@ -8,8 +8,8 @@ import { ReactComponent as AdvancedSearch } from 'assets/images/icons/AdvancedSe
 import styles from './SearchBar.module.css';
 
 export interface SearchBarProps {
-  handleChange?: (event: any) => void;
-  handleSubmit?: (event: React.FormEvent<HTMLFormElement>) => void;
+  handleChange?: (e: any) => void;
+  handleSubmit?: (e: React.FormEvent<HTMLFormElement>) => void;
   onReset: () => void;
   // This is for whether or not the parent gets re-rendered on search. To checkout comparison of
   // different functionalities, look at `ChatConversations` for without, and `TagList` with.

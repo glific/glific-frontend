@@ -24,6 +24,13 @@ interface TemplateProps {
   body: string;
   globalButtonTitle: string;
   items: Array<any>;
+}
+
+interface SimulatorTemplateProps {
+  title: string;
+  body: string;
+  globalButtonTitle: string;
+  items: Array<any>;
   onGlobalButtonClick: any;
   disabled?: boolean;
   showHeader?: boolean;
@@ -119,22 +126,20 @@ export const SimulatorTemplate = ({
   disabled,
   showHeader = true,
   bspMessageId,
-}: TemplateProps) => {
-  return (
-    <div className={styles.SimulatorContent}>
-      {showHeader && <p className={styles.ListHeader}>{title}</p>}
-      <ChatMessageType type="TEXT" body={body} isSimulatedMessage />
-      <Button
-        color="default"
-        disabled={disabled}
-        startIcon={<FormatListBulletedIcon />}
-        onClick={() => onGlobalButtonClick({ items, bspMessageId })}
-        className={styles.SimulatorButton}
-      >
-        {globalButtonTitle}
-      </Button>
-    </div>
-  );
+}: SimulatorTemplateProps) => {
+  <div className={styles.SimulatorContent}>
+    {showHeader && <p className={styles.ListHeader}>{title}</p>}
+    <ChatMessageType type="TEXT" body={body} isSimulatedMessage />
+    <Button
+      color="default"
+      disabled={disabled}
+      startIcon={<FormatListBulletedIcon />}
+      onClick={() => onGlobalButtonClick({ items, bspMessageId })}
+      className={styles.SimulatorButton}
+    >
+      {globalButtonTitle}
+    </Button>
+  </div>;
 };
 
 export const ListReplyTemplateDrawer = ({
