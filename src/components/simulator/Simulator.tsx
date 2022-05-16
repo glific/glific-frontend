@@ -120,11 +120,11 @@ export const Simulator: React.FC<SimulatorProps> = ({
   // chat messages will be shown on simulator
   const isSimulatedMessage = true;
 
-  const sendMessage = (senderDetails: any, interactivePayload?: any) => {
+  const sendMessage = (senderDetails: any, interactivePayload?: any, templateValue?: any) => {
     const sendMessageText = inputMessage === '' && message ? message : inputMessage;
 
     // check if send message text is not empty
-    if (!sendMessageText && !interactivePayload) return;
+    if (!sendMessageText && !interactivePayload && !templateValue) return;
 
     let type = 'text';
 
@@ -137,6 +137,8 @@ export const Simulator: React.FC<SimulatorProps> = ({
       payload = interactivePayload.payload;
       delete payload.type;
       context = interactivePayload.context;
+    } else if (templateValue) {
+      payload.text = templateValue;
     } else {
       payload.text = sendMessageText;
     }
@@ -363,7 +365,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
         <div className={styles.TemplateButtons}>
           <TemplateButtons
             template={buttons}
-            callbackTemplateButtonClick={(value: string) => sendMessage(sender, value)}
+            callbackTemplateButtonClick={(value: string) => sendMessage(sender, null, value)}
             isSimulator
           />
         </div>
