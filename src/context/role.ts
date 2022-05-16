@@ -39,6 +39,13 @@ export const setUserRolePermissions = () => {
     // gettting menus for Manager as menus are same as in Admin
     sideDrawerMenu = getMenus('sideDrawer', 'Manager');
     staffManagementMenu = getMenus('staffManagement', 'Manager');
+    console.log(staffManagementMenu);
+
+    staffManagementMenu = staffManagementMenu.filter(
+      (menu: any) => menu.hasRoleManagementAccess === undefined || menu.hasRoleManagementAccess
+    );
+
+    console.log(staffManagementMenu);
 
     if (role.includes('Admin')) {
       accessSettings = true;

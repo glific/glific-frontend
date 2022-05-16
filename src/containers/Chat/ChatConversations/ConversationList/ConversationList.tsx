@@ -349,6 +349,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       if (conversation.messages.length > 0) {
         [lastMessage] = conversation.messages;
       }
+      console.log(lastMessage, conversation);
       const key = index;
 
       let entityId: any;

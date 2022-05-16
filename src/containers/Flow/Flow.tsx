@@ -159,6 +159,7 @@ export const Flow: React.SFC<FlowProps> = ({ match }) => {
       {...queries}
       match={match}
       states={states}
+      roleAccessSupport
       setStates={setStates}
       setPayload={setPayload}
       validationSchema={FormSchema}

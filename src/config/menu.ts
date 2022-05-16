@@ -1,3 +1,4 @@
+import { organizationHasDynamicRole } from 'common/utils';
 import { GLIFIC_DOCS_URL } from 'config';
 
 // define all the menus in the system
@@ -82,7 +83,14 @@ const menus = [
     roles: ['Staff', 'Manager', 'Admin'],
   },
   {
-    title: 'Staff Management',
+    title: 'Role Management',
+    path: '/role',
+    type: 'staffManagement',
+    roles: ['Manager', 'Admin'],
+    hasRoleManagementAccess: organizationHasDynamicRole(),
+  },
+  {
+    title: 'User Management',
     path: '/staff-management',
     type: 'staffManagement',
     roles: ['Manager', 'Admin'],

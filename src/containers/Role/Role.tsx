@@ -59,6 +59,7 @@ export const Role: React.SFC<RoleProps> = ({ match }) => {
 
   return (
     <FormLayout
+      title="Add a new role"
       {...queries}
       match={match}
       states={states}

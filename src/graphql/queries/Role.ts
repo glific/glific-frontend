@@ -12,6 +12,16 @@ export const FILTER_ROLES = gql`
   }
 `;
 
+export const GET_ROLE_NAMES = gql`
+  query AccessRoles($opts: Opts, $filter: AccessRoleFilter) {
+    accessRoles(opts: $opts, filter: $filter) {
+      id
+      isReserved
+      label
+    }
+  }
+`;
+
 export const COUNT_ROLES = gql`
   query CountAccessRoles($filter: AccessRoleFilter) {
     countAccessRoles(filter: $filter)

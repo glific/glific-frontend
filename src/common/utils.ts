@@ -151,4 +151,7 @@ export const numberToAbbreviation = (numberString: string) => {
   return abbreviation;
 };
 
+// need to check from backend if organization has dynamic role
+export const organizationHasDynamicRole = () => true;
+
 export default getObject;
