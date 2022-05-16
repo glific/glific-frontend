@@ -38,7 +38,5 @@ it('should give proper validation errors', async () => {
 
   await waitFor(() => {
     expect(getByText('Organization is required')).toBeInTheDocument();
-    expect(getByText('Start date is required')).toBeInTheDocument();
-    expect(getByText('End date is required')).toBeInTheDocument();
   });
 });
