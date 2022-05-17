@@ -99,10 +99,6 @@ export const Providers = ({ match }: ProvidersProps) => {
     return object;
   };
 
-  const handleChange = (value: any) => {
-    setStateValues({ ...states, isActive: value });
-  };
-
   const resetValidation = () => {
     validation = {};
     FormSchema = Yup.object().shape(validation);
@@ -131,7 +127,6 @@ export const Providers = ({ match }: ProvidersProps) => {
             {t('Is active?')}
           </Typography>
         ),
-        handleChange,
       },
     ];
     const defaultStates: any = {};
