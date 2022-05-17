@@ -1,4 +1,4 @@
-import React, { lazy, useEffect, useMemo, useState } from 'react';
+import React, { lazy, Suspense, useEffect, useMemo, useState } from 'react';
 // eslint-disable-next-line no-unused-vars
 import { Switch, Route, Redirect, RouteComponentProps } from 'react-router-dom';
 
@@ -6,6 +6,7 @@ import { Chat } from 'containers/Chat/Chat';
 import { getUserRole } from 'context/role';
 import { useToast } from 'services/ToastService';
 import ChatInterface from 'containers/Chat/ChatInterface/ChatInterface';
+import Loading from 'components/UI/Layout/Loading/Loading';
 import { ProviderContext } from 'context/session';
 import { useQuery } from '@apollo/client';
 import { GET_ORGANIZATION_PROVIDER } from 'graphql/queries/Organization';
@@ -66,117 +67,123 @@ const InteractiveMessageList = lazy(
 const InteractiveMessage = lazy(() => import('containers/InteractiveMessage/InteractiveMessage'));
 
 const routeStaff = (
-  <Switch>
-    <Route path="/chat" component={Chat} />
+  <Suspense fallback={<Loading />}>
+    <Switch>
+      <Route path="/chat" component={Chat} />
 
-    <Route path="/collection" exact component={CollectionList} />
-    <Route path="/collection/:id/contacts" exact component={CollectionContact} />
-    <Route path="/user-profile" exact component={UserProfile} />
-    <Route path="/contact-profile/:id" exact component={ContactProfile} />
-    <Route path="/blocked-contacts" exact component={BlockContactList} />
+      <Route path="/collection" exact component={CollectionList} />
+      <Route path="/collection/:id/contacts" exact component={CollectionContact} />
+      <Route path="/user-profile" exact component={UserProfile} />
+      <Route path="/contact-profile/:id" exact component={ContactProfile} />
+      <Route path="/blocked-contacts" exact component={BlockContactList} />
 
-    <Route path="/myaccount" exact component={MyAccount} />
-    <Route path="/" render={defaultRedirect} />
-  </Switch>
+      <Route path="/myaccount" exact component={MyAccount} />
+      <Route path="/" render={defaultRedirect} />
+    </Switch>
+  </Suspense>
 );
 
 const routeAdmin = (
-  <Switch>
-    <Route path="/chat" component={Chat} />
-    {/* <Route path="/tag" exact component={TagList} />
+  <Suspense fallback={<Loading />}>
+    <Switch>
+      <Route path="/chat" component={Chat} />
+      {/* <Route path="/tag" exact component={TagList} />
     <Route path="/tag/add" exact component={Tag} />
     <Route path="/tag/:id/edit" exact component={Tag} /> */}
-    <Route path="/speed-send" exact component={SpeedSendList} />
-    <Route path="/speed-send/add" exact component={SpeedSend} />
-    <Route path="/speed-send/:id/edit" exact component={SpeedSend} />
-    <Route path="/flow" exact component={FlowList} />
-    <Route path="/flow/add" exact component={Flow} />
-    <Route path="/flow/:id/edit" exact component={Flow} />
-    <Route path="/collection" exact component={CollectionList} />
-    <Route path="/collection/add" exact component={Collection} />
-    <Route path="/collection/:id/edit" exact component={Collection} />
-    <Route path="/collection/:id/contacts" exact component={CollectionContact} />
+      <Route path="/speed-send" exact component={SpeedSendList} />
+      <Route path="/speed-send/add" exact component={SpeedSend} />
+      <Route path="/speed-send/:id/edit" exact component={SpeedSend} />
+      <Route path="/flow" exact component={FlowList} />
+      <Route path="/flow/add" exact component={Flow} />
+      <Route path="/flow/:id/edit" exact component={Flow} />
+      <Route path="/collection" exact component={CollectionList} />
+      <Route path="/collection/add" exact component={Collection} />
+      <Route path="/collection/:id/edit" exact component={Collection} />
+      <Route path="/collection/:id/contacts" exact component={CollectionContact} />
 
-    <Route path="/flow/configure/:uuid" exact component={FlowEditor} />
+      <Route path="/flow/configure/:uuid" exact component={FlowEditor} />
 
-    <Route path="/search" exact component={SearchList} />
-    <Route path="/search/add" exact component={Search} />
-    <Route path="/search/:id/edit" exact component={Search} />
+      <Route path="/search" exact component={SearchList} />
+      <Route path="/search/add" exact component={Search} />
+      <Route path="/search/:id/edit" exact component={Search} />
 
-    <Route path="/trigger/add" exact component={Trigger} />
-    <Route path="/trigger/:id/edit" exact component={Trigger} />
+      <Route path="/trigger/add" exact component={Trigger} />
+      <Route path="/trigger/:id/edit" exact component={Trigger} />
 
-    <Route path="/staff-management" exact component={StaffManagementList} />
-    <Route path="/contact-management" exact component={ContactManagement} />
-    <Route path="/staff-management/:id/edit" exact component={StaffManagement} />
-    <Route path="/contact-profile/:id" exact component={ContactProfile} />
-    <Route path="/user-profile" exact component={UserProfile} />
-    <Route path="/myaccount" exact component={MyAccount} />
-    <Route path="/template" exact component={HSMList} />
-    <Route path="/template/add" exact component={HSM} />
-    <Route path="/template/:id/edit" exact component={HSM} />
-    <Route path="/settings" exact component={SettingList} />
-    <Route path="/settings/organization" exact component={Organisation} />
-    <Route path="/settings/billing" exact component={Billing} />
-    <Route path="/settings/:type" exact component={Providers} />
-    <Route path="/blocked-contacts" exact component={BlockContactList} />
-    <Route path="/webhook-logs" exact component={WebhookLogsList} />
-    <Route path="/notifications" exact component={NotificationList} />
-    <Route path="/interactive-message" exact component={InteractiveMessageList} />
-    <Route path="/interactive-message/add" exact component={InteractiveMessage} />
-    <Route path="/interactive-message/:id/edit" exact component={InteractiveMessage} />
-    <Route path="/trigger" exact component={TriggerList} />
-    <Route path="/organizations" exact component={OrganizationList} />
-    <Route path="/consulting-hours/" exact component={ConsultingHourList} />
+      <Route path="/staff-management" exact component={StaffManagementList} />
+      <Route path="/contact-management" exact component={ContactManagement} />
+      <Route path="/staff-management/:id/edit" exact component={StaffManagement} />
+      <Route path="/contact-profile/:id" exact component={ContactProfile} />
+      <Route path="/user-profile" exact component={UserProfile} />
+      <Route path="/myaccount" exact component={MyAccount} />
+      <Route path="/template" exact component={HSMList} />
+      <Route path="/template/add" exact component={HSM} />
+      <Route path="/template/:id/edit" exact component={HSM} />
+      <Route path="/settings" exact component={SettingList} />
+      <Route path="/settings/organization" exact component={Organisation} />
+      <Route path="/settings/billing" exact component={Billing} />
+      <Route path="/settings/:type" exact component={Providers} />
+      <Route path="/blocked-contacts" exact component={BlockContactList} />
+      <Route path="/webhook-logs" exact component={WebhookLogsList} />
+      <Route path="/notifications" exact component={NotificationList} />
+      <Route path="/interactive-message" exact component={InteractiveMessageList} />
+      <Route path="/interactive-message/add" exact component={InteractiveMessage} />
+      <Route path="/interactive-message/:id/edit" exact component={InteractiveMessage} />
+      <Route path="/trigger" exact component={TriggerList} />
+      <Route path="/organizations" exact component={OrganizationList} />
+      <Route path="/consulting-hours/" exact component={ConsultingHourList} />
 
-    <Route path="/contact-fields/" exact component={ContactFieldList} />
-    <Route
-      path="/contact-fields/add"
-      exact
-      component={({ match }: any) => <ContactFieldList openDialog match={match} />}
-    />
-    <Route
-      path="/organizations/:id/extensions"
-      exact
-      component={({ match }: any) => <OrganizationList openExtensionModal match={match} />}
-    />
-    <Route
-      path="/organizations/:id/customer"
-      exact
-      component={({ match }: any) => <OrganizationList openCustomerModal match={match} />}
-    />
+      <Route path="/contact-fields/" exact component={ContactFieldList} />
+      <Route
+        path="/contact-fields/add"
+        exact
+        component={({ match }: any) => <ContactFieldList openDialog match={match} />}
+      />
+      <Route
+        path="/organizations/:id/extensions"
+        exact
+        component={({ match }: any) => <OrganizationList openExtensionModal match={match} />}
+      />
+      <Route
+        path="/organizations/:id/customer"
+        exact
+        component={({ match }: any) => <OrganizationList openCustomerModal match={match} />}
+      />
 
-    <Route path="/" render={defaultRedirect} />
-  </Switch>
+      <Route path="/" render={defaultRedirect} />
+    </Switch>
+  </Suspense>
 );
 
 export const chatRoutes = (
-  <Switch>
-    <Route exact path="/chat/collection" component={() => <ChatInterface collectionId={-1} />} />
-    <Route exact path="/chat/saved-searches/" component={() => <ChatInterface savedSearches />} />
-    <Route
-      exact
-      path="/chat/saved-searches/:contactId"
-      component={({ match }: RouteComponentProps<{ contactId: any }>) => (
-        <ChatInterface savedSearches contactId={match.params.contactId} />
-      )}
-    />
-    <Route
-      exact
-      path="/chat/:contactId"
-      component={({ match }: RouteComponentProps<{ contactId: any }>) => (
-        <ChatInterface contactId={match.params.contactId} />
-      )}
-    />
-    <Route
-      exact
-      path="/chat/collection/:collectionId"
-      component={({ match }: RouteComponentProps<{ collectionId: any }>) => (
-        <ChatInterface collectionId={match.params.collectionId} />
-      )}
-    />
-    <Route exact path="/chat" component={() => <ChatInterface />} />
-  </Switch>
+  <Suspense fallback={<Loading />}>
+    <Switch>
+      <Route exact path="/chat/collection" component={() => <ChatInterface collectionId={-1} />} />
+      <Route exact path="/chat/saved-searches/" component={() => <ChatInterface savedSearches />} />
+      <Route
+        exact
+        path="/chat/saved-searches/:contactId"
+        component={({ match }: RouteComponentProps<{ contactId: any }>) => (
+          <ChatInterface savedSearches contactId={match.params.contactId} />
+        )}
+      />
+      <Route
+        exact
+        path="/chat/:contactId"
+        component={({ match }: RouteComponentProps<{ contactId: any }>) => (
+          <ChatInterface contactId={match.params.contactId} />
+        )}
+      />
+      <Route
+        exact
+        path="/chat/collection/:collectionId"
+        component={({ match }: RouteComponentProps<{ collectionId: any }>) => (
+          <ChatInterface collectionId={match.params.collectionId} />
+        )}
+      />
+      <Route exact path="/chat" component={() => <ChatInterface />} />
+    </Switch>
+  </Suspense>
 );
 
 export const AuthenticatedRoute = () => {
