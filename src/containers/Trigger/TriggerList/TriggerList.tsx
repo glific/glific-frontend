@@ -1,6 +1,6 @@
 import React from 'react';
 import moment from 'moment';
-import { useHistory } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { ReactComponent as TriggerIcon } from 'assets/images/icons/Trigger/Union.svg';
@@ -60,11 +60,13 @@ const queries = {
 };
 
 export const TriggerList = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
+  const location = useLocation();
   const { t } = useTranslation();
 
   const setDialog = (id: any) => {
-    history.push({ pathname: `/trigger/${id}/edit`, state: 'copy' });
+    location.state = 'copy';
+    navigate(`/trigger/${id}/edit`);
   };
 
   const additionalAction = [

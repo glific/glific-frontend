@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Checkbox, Popover, FormControlLabel } from '@material-ui/core';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import { useApolloClient, useMutation } from '@apollo/client';
@@ -47,7 +47,7 @@ export const NotificationList = () => {
   const [open, setOpen] = useState(false);
   const [text, setText] = useState<any>();
   const { t } = useTranslation();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [filters, setFilters] = useState<any>({
     Critical: true,
     Warning: false,
@@ -82,10 +82,10 @@ export const NotificationList = () => {
   const setDialog = (id: any, item: any) => {
     if (item.category === 'Message') {
       const chatID = JSON.parse(item.entity).id;
-      history.push({ pathname: `/chat/${chatID}` });
+      navigate(`/chat/${chatID}`);
     } else if (item.category === 'Flow') {
       const uuidFlow = JSON.parse(item.entity).flow_uuid;
-      history.push({ pathname: `/flow/configure/${uuidFlow}` });
+      navigate(`/flow/configure/${uuidFlow}`);
     } else {
       // this is item.category == Partner
       // need to figure out what should be done

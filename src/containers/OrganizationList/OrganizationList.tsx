@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
 import { OutlinedInput } from '@material-ui/core';
@@ -40,7 +40,7 @@ export const OrganizationList = ({
   const { t } = useTranslation();
 
   const [orgName, setOrgName] = useState('');
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const columnNames = ['NAME', 'STATUS', 'ACTIONS'];
 
@@ -139,11 +139,11 @@ export const OrganizationList = ({
   };
 
   const addExtension = (id: any) => {
-    history.push({ pathname: `/organizations/${id}/extensions` });
+    navigate(`/organizations/${id}/extensions`);
   };
 
   const addCustomer = (id: any) => {
-    history.push({ pathname: `/organizations/${id}/customer` });
+    navigate(`/organizations/${id}/customer`);
   };
 
   const dialogMessage = deleteDialogue;

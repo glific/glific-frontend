@@ -3,7 +3,7 @@ import * as Yup from 'yup';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { EditorState } from 'draft-js';
 import Typography from '@material-ui/core/Typography';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { FormLayout } from 'containers/Form/FormLayout';
@@ -187,7 +187,7 @@ const Template = ({
   const [isAddButtonChecked, setIsAddButtonChecked] = useState(false);
   const [nextLanguage, setNextLanguage] = useState<any>('');
   const { t } = useTranslation();
-  const history = useHistory();
+  const navigate = useNavigate();
   const location: any = useLocation();
 
   const states = {
@@ -224,7 +224,7 @@ const Template = ({
         const selectedLangauge = languageOptions.find(
           (lang: any) => lang.label === location.state.language
         );
-        history.replace(location.pathname, null);
+        navigate(location.pathname);
         setLanguageId(selectedLangauge);
       } else if (!language.id) {
         const selectedLangauge = languageOptions.find(
@@ -942,9 +942,8 @@ const Template = ({
       handleLanguageChange(nextLanguage);
     } else {
       const { sessionTemplate } = data.createSessionTemplate;
-      history.push(`/speed-send/${sessionTemplate.id}/edit`, {
-        language: nextLanguage,
-      });
+      location.language = nextLanguage;
+      navigate(`/speed-send/${sessionTemplate.id}/edit`);
     }
   };
 

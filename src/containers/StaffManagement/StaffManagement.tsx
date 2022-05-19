@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import { useQuery } from '@apollo/client';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { ReactComponent as StaffManagementIcon } from 'assets/images/icons/StaffManagement/Active.svg';
@@ -42,7 +42,7 @@ export const StaffManagement = ({ match }: StaffManagementProps) => {
   const [helpDialog, setHelpDialog] = useState(false);
   const [isAdmin] = useState(getUserRole().includes('Admin'));
   const [isManager] = useState(getUserRole().includes('Manager'));
-  const history = useHistory();
+  const navigate = useNavigate();
   const { t } = useTranslation();
 
   let dialog;
@@ -248,7 +248,7 @@ export const StaffManagement = ({ match }: StaffManagementProps) => {
   const checkAfterSave = (updatedUser: any) => {
     const { id, roles: userRoles } = updatedUser.updateUser.user;
     if (isAdmin && getUserSession('id') === id && !userRoles.includes('Admin')) {
-      history.push('/logout/user');
+      navigate('/logout/user');
     }
   };
 
