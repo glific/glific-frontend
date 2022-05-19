@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 import { useLazyQuery, useMutation } from '@apollo/client';
@@ -58,7 +58,8 @@ const queries = {
 const configureIcon = <ConfigureIcon />;
 
 export const FlowList = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
+  const location = useLocation();
   const { t } = useTranslation();
   const inputRef = useRef<any>(null);
 
@@ -97,7 +98,8 @@ export const FlowList = () => {
   });
 
   const setDialog = (id: any) => {
-    history.push({ pathname: `/flow/${id}/edit`, state: 'copy' });
+    location.state = 'copy';
+    navigate(`/flow/${id}/edit`);
   };
 
   const exportFlow = (id: any, item: any) => {

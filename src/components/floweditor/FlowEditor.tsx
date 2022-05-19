@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useMutation, useLazyQuery, useQuery } from '@apollo/client';
-import { Prompt, Redirect, useHistory } from 'react-router-dom';
+import { Prompt, Redirect, useNavigate } from 'react-router-dom';
 import { IconButton } from '@material-ui/core';
 
 import { ReactComponent as HelpIcon } from 'assets/images/icons/Help.svg';
@@ -33,7 +33,7 @@ export interface FlowEditorProps {
 
 export const FlowEditor = (props: FlowEditorProps) => {
   const { match } = props;
-  const history = useHistory();
+  const navigate = useNavigate();
   const { uuid } = match.params;
   const [publishDialog, setPublishDialog] = useState(false);
   const [simulatorId, setSimulatorId] = useState(0);
@@ -152,9 +152,9 @@ export const FlowEditor = (props: FlowEditorProps) => {
   };
   useEffect(() => {
     if (confirmedNavigation && lastLocation) {
-      history.push(lastLocation);
+      navigate(lastLocation);
     }
-  }, [confirmedNavigation, lastLocation, history]);
+  }, [confirmedNavigation, lastLocation, navigate]);
 
   if (modalVisible) {
     modal = (
@@ -274,7 +274,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
         buttonOk="Okay"
         handleOk={() => {
           setConfirmedNavigation(true);
-          history.push('/flow');
+          navigate('/flow');
         }}
       >
         <p className={styles.DialogDescription}>Please try again later or contact the user.</p>
@@ -372,7 +372,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
           color="default"
           className={styles.ContainedButton}
           onClick={() => {
-            history.push('/flow');
+            navigate('/flow');
           }}
         >
           Back

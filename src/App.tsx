@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Route, Switch, useHistory } from 'react-router-dom';
+import { Route, Switch, useNavigate } from 'react-router-dom';
 import { ApolloProvider } from '@apollo/client';
 import 'i18n/config';
 import { ClearCacheProvider, useClearCacheCtx } from 'react-clear-cache';
@@ -18,7 +18,7 @@ import setLogs from 'config/logs';
 
 const App = () => {
   const { isLatestVersion, emptyCacheStorage } = useClearCacheCtx();
-  const history = useHistory();
+  const navigate = useNavigate();
   // by default, do not assign any value to assume login or logout
   // let's checkAuthStatusService allocate it on useEffect
   const [authenticated, setAuthenticated] = useState<any>();
@@ -74,7 +74,7 @@ const App = () => {
 
   return (
     <SessionContext.Provider value={values}>
-      <ApolloProvider client={gqlClient(history)}>
+      <ApolloProvider client={gqlClient(navigate)}>
         <ErrorHandler />
         <SideDrawerContext.Provider value={sideDraawerValues}>
           <ClearCacheProvider duration={CLEAR_CACHE_DURATION}>{routes}</ClearCacheProvider>

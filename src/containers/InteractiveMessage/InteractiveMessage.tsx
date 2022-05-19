@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { EditorState } from 'draft-js';
-import { useLocation, useHistory } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useLazyQuery, useQuery } from '@apollo/client';
 import { setNotification } from 'common/notification';
 import { ReactComponent as InteractiveMessageIcon } from 'assets/images/icons/InteractiveMessage/Dark.svg';
@@ -51,7 +51,7 @@ const queries = {
 
 export const InteractiveMessage = ({ match }: FlowProps) => {
   const location: any = useLocation();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [title, setTitle] = useState('');
   const [body, setBody] = useState(EditorState.createEmpty());
   const [templateType, setTemplateType] = useState<string>(QUICK_REPLY);
@@ -189,7 +189,7 @@ export const InteractiveMessage = ({ match }: FlowProps) => {
         const selectedLangauge = languageOptions.find(
           (lang: any) => lang.label === location.state.language
         );
-        history.replace(location.pathname, null);
+        navigate(location.pathname);
         setLanguage(selectedLangauge);
       } else if (!language.id) {
         const selectedLangauge = languageOptions.find((lang: any) => lang.id === languageVal.id);
@@ -392,9 +392,8 @@ export const InteractiveMessage = ({ match }: FlowProps) => {
         handleLanguageChange(nextLanguage);
       } else {
         const { interactiveTemplate } = data.createInteractiveTemplate;
-        history.push(`/interactive-message/${interactiveTemplate.id}/edit`, {
-          language: nextLanguage,
-        });
+        location.state.language = nextLanguage;
+        navigate(`/interactive-message/${interactiveTemplate.id}/edit`);
       }
     }
   };
