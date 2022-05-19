@@ -19,12 +19,12 @@ export const UnauthenticatedRoute = () => {
   return (
     <Suspense fallback={<Loading />}>
       <Routes>
-        <Route path="/login" exact component={Login} />
-        <Route path="/registration" exact component={Registration} />
-        <Route path="/confirmotp" exact component={ConfirmOTP} />
-        <Route path="/resetpassword-phone" exact component={ResetPasswordPhone} />
-        <Route path="/resetpassword-confirmotp" exact component={ResetPasswordConfirmOTP} />
-        <Route path="/organization-registration" exact component={OrganizationRegistration} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/registration" element={<Registration />} />
+        <Route path="/confirmotp" element={<ConfirmOTP />} />
+        <Route path="/resetpassword-phone" element={<ResetPasswordPhone />} />
+        <Route path="/resetpassword-confirmotp" element={<ResetPasswordConfirmOTP />} />
+        <Route path="/organization-registration" element={<OrganizationRegistration />} />
         <Route
           path="/"
           render={() => <Navigate to={{ pathname: '/logout/user', state: location.pathname }} />}

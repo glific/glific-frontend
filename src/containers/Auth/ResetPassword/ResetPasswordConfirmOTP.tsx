@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
@@ -11,14 +11,11 @@ import { sendOTP } from 'services/AuthService';
 import setLogs from 'config/logs';
 import { Auth } from '../Auth';
 
-export interface ResetPasswordConfirmOTPProps {
-  location: any;
-}
-
-export const ResetPasswordConfirmOTP = ({ location }: ResetPasswordConfirmOTPProps) => {
+export const ResetPasswordConfirmOTP = () => {
   const [redirect, setRedirect] = useState(false);
   const [authError, setAuthError] = useState('');
   const { t } = useTranslation();
+  const location = useLocation();
 
   // Let's not allow direct navigation to this page
   if (location && location.state === undefined) {

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Redirect } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 
@@ -17,15 +17,13 @@ const successMessage = (
     approval. Click&nbsp;<a href="/login">here</a>&nbsp;for login.
   </div>
 );
-export interface ConfirmOTPProps {
-  location: any;
-}
 
-export const ConfirmOTP = ({ location }: ConfirmOTPProps) => {
+export const ConfirmOTP = () => {
   const [OTP, setOTP] = useState('');
   const [authSuccess, setAuthSuccess] = useState<any | string>('');
   const [authError, setAuthError] = useState('');
   const { t } = useTranslation();
+  const location = useLocation();
 
   const handleResend = () => {
     sendOTP(location.state.phoneNumber, 'true')
@@ -37,7 +35,7 @@ export const ConfirmOTP = ({ location }: ConfirmOTPProps) => {
 
   // Let's not allow direct navigation to this page
   if (location && location.state === undefined) {
-    return <Redirect to="/registration" />;
+    return <Navigate to="/registration" />;
   }
 
   const states = { OTP };
