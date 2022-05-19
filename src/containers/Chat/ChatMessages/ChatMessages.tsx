@@ -2,7 +2,7 @@ import React, { useCallback, useState, useEffect } from 'react';
 import { useQuery, useMutation, useLazyQuery } from '@apollo/client';
 import { CircularProgress, Container } from '@material-ui/core';
 import moment from 'moment';
-import { Redirect } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { useTranslation } from 'react-i18next';
 
@@ -504,7 +504,7 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
   // check if the search API results nothing for a particular contact ID and redirect to chat
   if (contactId && data) {
     if (data.search.length === 0 || data.search[0].contact.status === 'BLOCKED') {
-      return <Redirect to="/chat" />;
+      return <Navigate to="/chat" />;
     }
   }
 

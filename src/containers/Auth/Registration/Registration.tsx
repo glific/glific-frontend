@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Redirect } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { REGISTRATION_HELP_LINK } from 'config';
@@ -18,7 +18,7 @@ export const Registration = () => {
 
   if (redirect) {
     return (
-      <Redirect
+      <Navigate
         to={{
           pathname: '/confirmotp',
           state: {

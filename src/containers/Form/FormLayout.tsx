@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Redirect, Link } from 'react-router-dom';
+import { Navigate, Link } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
 // eslint-disable-next-line no-unused-vars
 import { DocumentNode, ApolloError, useQuery, useMutation } from '@apollo/client';
@@ -396,18 +396,18 @@ export const FormLayout = ({
   };
 
   if (formSubmitted && redirect) {
-    return <Redirect to={action ? `${additionalAction.link}/${link}` : `/${redirectionLink}`} />;
+    return <Navigate to={action ? `${additionalAction.link}/${link}` : `/${redirectionLink}`} />;
   }
 
   if (deleted) {
     if (afterDelete) {
-      return <Redirect to={afterDelete.link} />;
+      return <Navigate to={afterDelete.link} />;
     }
-    return <Redirect to={`/${redirectionLink}`} />;
+    return <Navigate to={`/${redirectionLink}`} />;
   }
 
   if (formCancelled) {
-    return <Redirect to={cancelLink ? `/${cancelLink}` : `/${redirectionLink}`} />;
+    return <Navigate to={cancelLink ? `/${cancelLink}` : `/${redirectionLink}`} />;
   }
   const validateLanguage = (value: any) => {
     if (value && getLanguageId) {

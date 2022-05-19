@@ -1,7 +1,7 @@
 // eslint-disable-next-line
 import React, { useContext, useEffect, useState, CSSProperties } from 'react';
 import axios from 'axios';
-import { Redirect, useLocation } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { useApolloClient } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 
@@ -83,7 +83,7 @@ export const Logout = ({ match }: LogoutProps) => {
   );
 
   if (redirect) {
-    return <Redirect to={{ pathname: '/login', state: location.state }} />;
+    return <Navigate to={{ pathname: '/login', state: location.state }} />;
   }
 
   return dialog;

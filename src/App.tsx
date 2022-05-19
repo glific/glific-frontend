@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Route, Switch, useNavigate } from 'react-router-dom';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 import { ApolloProvider } from '@apollo/client';
 import 'i18n/config';
 import { ClearCacheProvider, useClearCacheCtx } from 'react-clear-cache';
@@ -65,10 +65,10 @@ const App = () => {
 
     // For logout action, we don't need to check if the user is logged in or not. Hence, adding it at top level
     routes = (
-      <Switch>
+      <Routes>
         <Route path="/logout/:mode" component={Logout} />
         {routes}
-      </Switch>
+      </Routes>
     );
   }
 

@@ -1,7 +1,7 @@
 import { render, within, fireEvent, cleanup, waitFor } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
-import { Switch, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 
 import { SpeedSendList } from 'containers/Template/List/SpeedSendList/SpeedSendList';
 import { TEMPLATE_MOCKS } from 'containers/Template/Template.test.helper';
@@ -17,9 +17,9 @@ describe('SpeedSend', () => {
     const { container, getByText } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
         <Router>
-          <Switch>
+          <Routes>
             <Route path="/speed-send" exact component={SpeedSendList} />
-          </Switch>
+          </Routes>
           <SpeedSend match={{ params: { id: 1 } }} />
         </Router>
       </MockedProvider>
@@ -41,9 +41,9 @@ describe('SpeedSend', () => {
       <MockedProvider mocks={mocks} addTypename={false}>
         <Router>
           <SpeedSend match={{ params: { id: null } }} />
-          <Switch>
+          <Routes>
             <Route path="/speed-send" exact component={SpeedSendList} />
-          </Switch>
+          </Routes>
         </Router>
       </MockedProvider>
     );

@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useMutation, useLazyQuery, useQuery } from '@apollo/client';
-import { Prompt, Redirect, useNavigate } from 'react-router-dom';
+import { Prompt, Navigate, useNavigate } from 'react-router-dom';
 import { IconButton } from '@material-ui/core';
 
 import { ReactComponent as HelpIcon } from 'assets/images/icons/Help.svg';
@@ -329,7 +329,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
   if (published && !IsError) {
     setNotification('The flow has been published');
     if (!stayOnPublish) {
-      return <Redirect to="/flow" />;
+      return <Navigate to="/flow" />;
     }
     setPublishDialog(false);
     setPublished(false);

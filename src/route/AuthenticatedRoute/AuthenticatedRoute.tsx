@@ -1,6 +1,6 @@
 import React, { lazy, Suspense, useEffect, useMemo, useState } from 'react';
 // eslint-disable-next-line no-unused-vars
-import { Switch, Route, Redirect, RouteComponentProps } from 'react-router-dom';
+import { Routes, Route, Navigate, RouteComponentProps } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
 
 import { Chat } from 'containers/Chat/Chat';
@@ -12,7 +12,7 @@ import { ProviderContext } from 'context/session';
 import { GET_ORGANIZATION_PROVIDER } from 'graphql/queries/Organization';
 import styles from './AuthenticatedRoute.module.css';
 
-const defaultRedirect = () => <Redirect to="/chat" />;
+const defaultRedirect = () => <Navigate to="/chat" />;
 
 // const TagList = lazy(() => import('containers/Tag/TagList/TagList'));
 // const Tag = lazy(() => import('containers/Tag/Tag'));
@@ -67,7 +67,7 @@ const InteractiveMessageList = lazy(
 const InteractiveMessage = lazy(() => import('containers/InteractiveMessage/InteractiveMessage'));
 
 const routeStaff = (
-  <Switch>
+  <Routes>
     <Route path="/chat" component={Chat} />
 
     <Route path="/collection" exact component={CollectionList} />
@@ -78,11 +78,11 @@ const routeStaff = (
 
     <Route path="/myaccount" exact component={MyAccount} />
     <Route path="/" render={defaultRedirect} />
-  </Switch>
+  </Routes>
 );
 
 const routeAdmin = (
-  <Switch>
+  <Routes>
     <Route path="/chat" component={Chat} />
     {/* <Route path="/tag" exact component={TagList} />
     <Route path="/tag/add" exact component={Tag} />
@@ -148,11 +148,11 @@ const routeAdmin = (
     />
 
     <Route path="/" render={defaultRedirect} />
-  </Switch>
+  </Routes>
 );
 
 export const chatRoutes = (
-  <Switch>
+  <Routes>
     <Route exact path="/chat/collection" component={() => <ChatInterface collectionId={-1} />} />
     <Route exact path="/chat/saved-searches/" component={() => <ChatInterface savedSearches />} />
     <Route
@@ -177,7 +177,7 @@ export const chatRoutes = (
       )}
     />
     <Route exact path="/chat" component={() => <ChatInterface />} />
-  </Switch>
+  </Routes>
 );
 
 export const AuthenticatedRoute = () => {

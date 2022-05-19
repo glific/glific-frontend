@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Redirect, Link } from 'react-router-dom';
+import { Navigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useQuery, useMutation, DocumentNode, useLazyQuery } from '@apollo/client';
 import { IconButton, TableFooter, TablePagination, TableRow, Typography } from '@material-ui/core';
@@ -358,7 +358,7 @@ export const List = ({
   }
 
   if (newItem) {
-    return <Redirect to={`/${pageLink}/add`} />;
+    return <Navigate to={`/${pageLink}/add`} />;
   }
 
   if (loading || l || loadingCollections) return <Loading />;

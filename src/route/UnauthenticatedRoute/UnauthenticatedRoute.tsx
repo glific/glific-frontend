@@ -1,5 +1,5 @@
 import React, { lazy, Suspense } from 'react';
-import { Route, Redirect, Switch, useLocation } from 'react-router-dom';
+import { Route, Navigate, Routes, useLocation } from 'react-router-dom';
 
 import Loading from 'components/UI/Layout/Loading/Loading';
 
@@ -18,7 +18,7 @@ export const UnauthenticatedRoute = () => {
 
   return (
     <Suspense fallback={<Loading />}>
-      <Switch>
+      <Routes>
         <Route path="/login" exact component={Login} />
         <Route path="/registration" exact component={Registration} />
         <Route path="/confirmotp" exact component={ConfirmOTP} />
@@ -27,9 +27,9 @@ export const UnauthenticatedRoute = () => {
         <Route path="/organization-registration" exact component={OrganizationRegistration} />
         <Route
           path="/"
-          render={() => <Redirect to={{ pathname: '/logout/user', state: location.pathname }} />}
+          render={() => <Navigate to={{ pathname: '/logout/user', state: location.pathname }} />}
         />
-      </Switch>
+      </Routes>
     </Suspense>
   );
 };

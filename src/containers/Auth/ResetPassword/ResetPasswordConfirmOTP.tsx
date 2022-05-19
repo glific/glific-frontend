@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Redirect } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import axios from 'axios';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
@@ -22,11 +22,11 @@ export const ResetPasswordConfirmOTP = ({ location }: ResetPasswordConfirmOTPPro
 
   // Let's not allow direct navigation to this page
   if (location && location.state === undefined) {
-    return <Redirect to="/resetpassword-phone" />;
+    return <Navigate to="/resetpassword-phone" />;
   }
 
   if (redirect) {
-    return <Redirect to="/login" />;
+    return <Navigate to="/login" />;
   }
 
   const handleResend = () => {

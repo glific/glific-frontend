@@ -1,7 +1,7 @@
 import { render, screen, cleanup, waitFor } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
-import { Switch, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import { within, fireEvent } from '@testing-library/dom';
 
 import { Tag } from 'containers/Tag/Tag';
@@ -82,9 +82,9 @@ describe('<List />', () => {
 const listButtons = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <Router>
-      <Switch>
+      <Routes>
         <Route path="/tag/add" exact component={Tag} />
-      </Switch>
+      </Routes>
       <List {...defaultProps} />
     </Router>
   </MockedProvider>
