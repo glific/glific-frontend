@@ -5,6 +5,7 @@ import { Formik, Form, Field } from 'formik';
 import { DocumentNode, ApolloError, useQuery, useMutation } from '@apollo/client';
 import { Typography, IconButton } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router-dom';
 
 import { Button } from 'components/UI/Form/Button/Button';
 import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
@@ -20,7 +21,6 @@ import { ReactComponent as BackIcon } from 'assets/images/icons/Back.svg';
 import styles from './FormLayout.module.css';
 
 export interface FormLayoutProps {
-  match: any;
   deleteItemQuery: DocumentNode;
   states: Object;
   setStates: Function;
@@ -69,7 +69,6 @@ export interface FormLayoutProps {
 }
 
 export const FormLayout = ({
-  match,
   deleteItemQuery,
   states,
   setStates,
@@ -123,12 +122,13 @@ export const FormLayout = ({
   const [saveClick, onSaveClick] = useState(false);
   const [isLoadedData, setIsLoadedData] = useState(false);
   const [customError, setCustomError] = useState<any>(null);
+  const params = useParams();
 
   const { t } = useTranslation();
 
   const capitalListItemName = listItemName[0].toUpperCase() + listItemName.slice(1);
   let item: any = null;
-  const itemId = match.params.id ? match.params.id : false;
+  const itemId = params.id ? params.id : false;
   let variables: any = itemId ? { [idType]: itemId } : false;
 
   const [deleteItem] = useMutation(deleteItemQuery, {
@@ -155,7 +155,7 @@ export const FormLayout = ({
     },
   });
   if (listItem === 'credential') {
-    variables = match.params.shortcode ? { shortcode: match.params.shortcode } : false;
+    variables = params.shortcode ? { shortcode: params.shortcode } : false;
   }
 
   const { loading, error } = useQuery(getItemQuery, {
@@ -302,7 +302,7 @@ export const FormLayout = ({
         /**
          * When idType is organizationId
          * We are updating billing for given organization
-         * since match.params.id is orgId we want billing
+         * since params.id is orgId we want billing
          * id to update billing details
          */
         const payloadBody = { ...payload };

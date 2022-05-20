@@ -3,7 +3,7 @@ import * as Yup from 'yup';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { EditorState } from 'draft-js';
 import Typography from '@material-ui/core/Typography';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { FormLayout } from 'containers/Form/FormLayout';
@@ -123,7 +123,6 @@ const getTemplateAndButtons = (templateType: string, message: string, buttons: s
 };
 
 export interface TemplateProps {
-  match: any;
   listItemName: string;
   redirectionLink: string;
   icon: any;
@@ -151,7 +150,6 @@ interface QuickReplyTemplate {
 }
 
 const Template = ({
-  match,
   listItemName,
   redirectionLink,
   icon,
@@ -189,6 +187,7 @@ const Template = ({
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location: any = useLocation();
+  const params = useParams();
 
   const states = {
     language,
@@ -350,10 +349,10 @@ const Template = ({
   const [createMediaMessage] = useMutation(CREATE_MEDIA_MESSAGE);
 
   useEffect(() => {
-    if (Object.prototype.hasOwnProperty.call(match.params, 'id') && match.params.id) {
-      getSessionTemplate({ variables: { id: match.params.id } });
+    if (Object.prototype.hasOwnProperty.call(params, 'id') && params.id) {
+      getSessionTemplate({ variables: { id: params.id } });
     }
-  }, [match.params]);
+  }, [params]);
 
   useEffect(() => {
     if (languages) {
@@ -362,7 +361,7 @@ const Template = ({
       lang.sort((first: any, second: any) => (first.label > second.label ? 1 : -1));
 
       setLanguageOptions(lang);
-      if (!Object.prototype.hasOwnProperty.call(match.params, 'id')) setLanguageId(lang[0]);
+      if (!Object.prototype.hasOwnProperty.call(params, 'id')) setLanguageId(lang[0]);
     }
   }, [languages]);
 
@@ -393,8 +392,8 @@ const Template = ({
         }
         // need to check exact title
         found = sessionTemplates.sessionTemplates.filter((search: any) => search.label === value);
-        if (match.params.id && found.length > 0) {
-          found = found.filter((search: any) => search.id !== match.params.id);
+        if (params.id && found.length > 0) {
+          found = found.filter((search: any) => search.id !== params.id);
         }
       }
       if (found.length > 0) {
@@ -444,7 +443,7 @@ const Template = ({
     const selected = languageOptions.find(
       ({ label: languageLabel }: any) => languageLabel === value
     );
-    if (selected && Object.prototype.hasOwnProperty.call(match.params, 'id')) {
+    if (selected && Object.prototype.hasOwnProperty.call(params, 'id')) {
       updateTranslation(selected);
     } else if (selected) {
       setLanguageId(selected);
@@ -459,7 +458,7 @@ const Template = ({
     }
 
     // create translations only while updating
-    if (result && Object.prototype.hasOwnProperty.call(match.params, 'id')) {
+    if (result && Object.prototype.hasOwnProperty.call(params, 'id')) {
       updateTranslation(result);
     }
     if (result) setLanguageId(result);
@@ -575,7 +574,7 @@ const Template = ({
             variant: 'outlined',
             label: t('Language*'),
           },
-          disabled: !!(defaultAttribute.isHsm && match.params.id),
+          disabled: !!(defaultAttribute.isHsm && params.id),
           onChange: getLanguageId,
         }
       : {
@@ -592,7 +591,7 @@ const Template = ({
       name: 'label',
       placeholder: t('Title*'),
       validate: validateTitle,
-      disabled: !!(defaultAttribute.isHsm && match.params.id),
+      disabled: !!(defaultAttribute.isHsm && params.id),
       helperText: defaultAttribute.isHsm
         ? t('Define what use case does this template serve eg. OTP, optin, activity preference')
         : null,
@@ -607,7 +606,7 @@ const Template = ({
       rows: 5,
       convertToWhatsApp: true,
       textArea: true,
-      disabled: !!(defaultAttribute.isHsm && match.params.id),
+      disabled: !!(defaultAttribute.isHsm && params.id),
       helperText: defaultAttribute.isHsm
         ? 'You can also use variable and interactive actions. Variable format: {{1}}, Button format: [Button text,Value] Value can be a URL or a phone number.'
         : null,
@@ -702,7 +701,7 @@ const Template = ({
       component: Checkbox,
       title: <Typography variant="h6">Add buttons</Typography>,
       name: 'isAddButtonChecked',
-      disabled: !!(defaultAttribute.isHsm && match.params.id),
+      disabled: !!(defaultAttribute.isHsm && params.id),
       handleChange: (value: boolean) => setIsAddButtonChecked(value),
     },
     {
@@ -710,7 +709,7 @@ const Template = ({
       isAddButtonChecked,
       templateType,
       inputFields: templateButtons,
-      disabled: !!match.params.id,
+      disabled: !!params.id,
       onAddClick: addTemplateButtons,
       onRemoveClick: removeTemplateButtons,
       onInputChange: handeInputChange,
@@ -938,7 +937,7 @@ const Template = ({
     if (saveClick) {
       return;
     }
-    if (match.params?.id) {
+    if (params?.id) {
       handleLanguageChange(nextLanguage);
     } else {
       const { sessionTemplate } = data.createSessionTemplate;
@@ -954,7 +953,6 @@ const Template = ({
   return (
     <FormLayout
       {...queries}
-      match={match}
       states={states}
       setStates={setStates}
       setPayload={setPayload}

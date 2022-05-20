@@ -4,15 +4,10 @@ import { ReactComponent as SpeedSendIcon } from 'assets/images/icons/SpeedSend/S
 import Template from '../Template';
 import styles from './SpeedSend.module.css';
 
-export interface SpeedSendProps {
-  match: any;
-}
-
 const speedSendIcon = <SpeedSendIcon className={styles.SpeedSendIcon} />;
 
-export const SpeedSend = ({ match }: SpeedSendProps) => (
+export const SpeedSend = () => (
   <Template
-    match={match}
     listItemName="Speed send"
     redirectionLink="speed-send"
     icon={speedSendIcon}

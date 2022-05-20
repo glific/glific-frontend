@@ -1,22 +1,19 @@
 import React from 'react';
 import { useQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router-dom';
 
 import { GET_COLLECTION } from 'graphql/queries/Collection';
 import styles from './CollectionContact.module.css';
 import { CollectionContactList } from './CollectionContactList/CollectionContactList';
 import { CollectionDescription } from './CollectionDescription/CollectionDescription';
 
-export interface CollectionContactProps {
-  match: any;
-}
-
-export const CollectionContact = (props: CollectionContactProps) => {
+export const CollectionContact = () => {
   const { t } = useTranslation();
 
-  const { match } = props;
+  const params = useParams();
 
-  const collectionId = match.params.id;
+  const collectionId = params.id;
   const collection = useQuery(GET_COLLECTION, {
     variables: { id: collectionId },
     fetchPolicy: 'cache-and-network',

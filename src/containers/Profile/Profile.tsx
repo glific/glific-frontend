@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useQuery } from '@apollo/client';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router-dom';
 
 import { ReactComponent as ProfileIcon } from 'assets/images/icons/Contact/Profile.svg';
 import { CONTACT_STATUS, PROVIDER_STATUS } from 'common/constants';
@@ -23,7 +24,6 @@ const queries = {
 };
 
 export interface ProfileProps {
-  match?: any;
   profileType: string;
   redirectionLink: string;
   additionalField?: any;
@@ -35,7 +35,6 @@ export interface ProfileProps {
 }
 
 export const Profile = ({
-  match,
   profileType,
   redirectionLink,
   additionalField,
@@ -50,8 +49,8 @@ export const Profile = ({
   const [status, setStatus] = useState('');
   const [bspStatus, setBspStatus] = useState('');
   const { t } = useTranslation();
-
-  let param = match;
+  const params = useParams();
+  let param: any = params.id;
 
   const { data, loading } = useQuery(GET_CURRENT_USER);
   if (loading) return <Loading />;
@@ -60,12 +59,12 @@ export const Profile = ({
   const currentUserPhone = data.currentUser.user.phone;
 
   let currentContactId;
-  if (!match) {
+  if (!param) {
     // let's manually set the contact id in the match object in case of user profile
     param = { params: { id: loggedInUserContactId } };
     currentContactId = loggedInUserContactId;
   } else {
-    currentContactId = match.params.id;
+    currentContactId = param;
   }
 
   const states: any = { name, phone, status, bspStatus };

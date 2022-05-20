@@ -1,6 +1,7 @@
 import React from 'react';
 import { useQuery } from '@apollo/client';
 import moment from 'moment';
+import { useParams } from 'react-router-dom';
 // import { useTranslation } from 'react-i18next';
 
 import { DATE_TIME_FORMAT } from 'common/constants';
@@ -15,12 +16,9 @@ import { ContactHistory } from './ContactHistory/ContactHistory';
 // import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 // import { setVariables } from 'common/constants';
 
-export interface ContactProfileProps {
-  match: any;
-}
-
-export const ContactProfile = ({ match }: ContactProfileProps) => {
-  const { loading, data } = useQuery(GET_CONTACT_DETAILS, { variables: { id: match.params.id } });
+export const ContactProfile = () => {
+  const params = useParams();
+  const { loading, data } = useQuery(GET_CONTACT_DETAILS, { variables: { id: params.id } });
   // const { data: tagsData } = useQuery(FILTER_TAGS_NAME, {
   //   variables: setVariables(),
   // });
@@ -114,17 +112,16 @@ export const ContactProfile = ({ match }: ContactProfileProps) => {
     <div className={styles.ContactProfile}>
       <div className={styles.ContactForm} data-testid="ContactProfile">
         <Profile
-          match
           // additionalProfileStates={additonalStates}
           // additionalField={assignTags}
           // additionalState={setSelectedTags}
           // additionalQuery={updateTags}
           profileType="Contact"
-          redirectionLink={`chat/${match.params.id}`}
+          redirectionLink={`chat/${params.id}`}
           afterDelete={{ link: '/chat' }}
           removePhoneField
         />
-        <ContactHistory contactId={match.params.id} />
+        <ContactHistory contactId={params.id} />
       </div>
 
       <div className={styles.ContactDescription}>
