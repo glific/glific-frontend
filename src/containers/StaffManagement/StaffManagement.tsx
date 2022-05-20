@@ -19,10 +19,6 @@ import { setVariables } from 'common/constants';
 import { getUserSession } from 'services/AuthService';
 import styles from './StaffManagement.module.css';
 
-export interface StaffManagementProps {
-  match: any;
-}
-
 const staffManagementIcon = <StaffManagementIcon />;
 
 const queries = {
@@ -32,7 +28,7 @@ const queries = {
   deleteItemQuery: DELETE_USER,
 };
 
-export const StaffManagement = ({ match }: StaffManagementProps) => {
+export const StaffManagement = () => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [roles, setRoles] = useState<any>(null);
@@ -259,7 +255,6 @@ export const StaffManagement = ({ match }: StaffManagementProps) => {
       {dialog}
       <FormLayout
         {...queries}
-        match={match}
         afterSave={checkAfterSave}
         states={states}
         setStates={setStates}

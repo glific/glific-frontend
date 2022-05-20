@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useMutation, useLazyQuery, useQuery } from '@apollo/client';
-import { Prompt, Navigate, useNavigate } from 'react-router-dom';
+import { Prompt, Navigate, useNavigate, useParams } from 'react-router-dom';
 import { IconButton } from '@material-ui/core';
 
 import { ReactComponent as HelpIcon } from 'assets/images/icons/Help.svg';
@@ -27,14 +27,10 @@ declare function showFlowEditor(node: any, config: any): void;
 
 customElements.define = checkElementInRegistry(customElements.define);
 
-export interface FlowEditorProps {
-  match: any;
-}
-
-export const FlowEditor = (props: FlowEditorProps) => {
-  const { match } = props;
+export const FlowEditor = () => {
+  const params = useParams();
+  const { uuid } = params;
   const navigate = useNavigate();
-  const { uuid } = match.params;
   const [publishDialog, setPublishDialog] = useState(false);
   const [simulatorId, setSimulatorId] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -242,7 +238,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
   }, [flowId]);
 
   const handlePublishFlow = () => {
-    publishFlow({ variables: { uuid: match.params.uuid } });
+    publishFlow({ variables: { uuid: params.uuid } });
   };
 
   const handleCancelFlow = () => {

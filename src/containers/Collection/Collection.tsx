@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useQuery, useLazyQuery, useMutation } from '@apollo/client';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router-dom';
 
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Input } from 'components/UI/Form/Input/Input';
@@ -20,15 +21,12 @@ import { ReactComponent as ContactIcon } from 'assets/images/icons/Contact/View.
 import { COLLECTION_SEARCH_QUERY_VARIABLES, setVariables } from 'common/constants';
 import styles from './Collection.module.css';
 
-export interface CollectionProps {
-  match: any;
-}
-
-export const Collection = ({ match }: CollectionProps) => {
+export const Collection = () => {
   const [selectedUsers, { data: collectionUsers }] = useLazyQuery(GET_COLLECTION_USERS, {
     fetchPolicy: 'cache-and-network',
   });
-  const collectionId = match.params.id ? match.params.id : null;
+  const params = useParams();
+  const collectionId = params.id ? params.id : null;
   const [label, setLabel] = useState('');
   const [description, setDescription] = useState('');
   const [users, setUsers] = useState([]);
@@ -170,7 +168,6 @@ export const Collection = ({ match }: CollectionProps) => {
       refetchQueries={refetchQueries}
       additionalQuery={updateUsers}
       {...queries}
-      match={match}
       states={states}
       additionalState={additionalState}
       languageSupport={false}

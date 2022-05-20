@@ -12,10 +12,6 @@ import { GET_FLOW } from 'graphql/queries/Flow';
 import { setErrorMessage } from 'common/notification';
 import styles from './Flow.module.css';
 
-export interface FlowProps {
-  match: any;
-}
-
 const flowIcon = <FlowIcon className={styles.FlowIcon} />;
 
 const queries = {
@@ -25,7 +21,7 @@ const queries = {
   deleteItemQuery: DELETE_FLOW,
 };
 
-export const Flow = ({ match }: FlowProps) => {
+export const Flow = () => {
   const location = useLocation();
   const [name, setName] = useState('');
   const [keywords, setKeywords] = useState('');
@@ -157,7 +153,6 @@ export const Flow = ({ match }: FlowProps) => {
   return (
     <FormLayout
       {...queries}
-      match={match}
       states={states}
       setStates={setStates}
       setPayload={setPayload}
