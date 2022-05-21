@@ -21,7 +21,6 @@ import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
 import styles from './OrganizationList.module.css';
 
 export interface OrganizationListProps {
-  match: any;
   openExtensionModal?: boolean;
   openCustomerModal?: boolean;
 }
@@ -33,7 +32,6 @@ const queries = {
 };
 
 export const OrganizationList = ({
-  match,
   openExtensionModal,
   openCustomerModal,
 }: OrganizationListProps) => {
@@ -187,8 +185,8 @@ export const OrganizationList = ({
         {...queries}
         {...columnAttributes}
       />
-      <Extensions openDialog={!!openExtensionModal} match={match} />
-      <OrganizationCustomer openDialog={!!openCustomerModal} match={match} />
+      <Extensions openDialog={!!openExtensionModal} />
+      <OrganizationCustomer openDialog={!!openCustomerModal} />
     </>
   );
 };

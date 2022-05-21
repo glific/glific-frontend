@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { EditorState } from 'draft-js';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useLazyQuery, useQuery } from '@apollo/client';
 import { setNotification } from 'common/notification';
 import { ReactComponent as InteractiveMessageIcon } from 'assets/images/icons/InteractiveMessage/Dark.svg';
@@ -36,10 +36,6 @@ import {
   validator,
 } from './InteractiveMessage.helper';
 
-export interface FlowProps {
-  match: any;
-}
-
 const interactiveMessageIcon = <InteractiveMessageIcon className={styles.Icon} />;
 
 const queries = {
@@ -49,7 +45,7 @@ const queries = {
   deleteItemQuery: DELETE_INTERACTIVE,
 };
 
-export const InteractiveMessage = ({ match }: FlowProps) => {
+export const InteractiveMessage = () => {
   const location: any = useLocation();
   const navigate = useNavigate();
   const [title, setTitle] = useState('');
@@ -73,6 +69,7 @@ export const InteractiveMessage = ({ match }: FlowProps) => {
   const [nextLanguage, setNextLanguage] = useState<any>('');
   const [warning, setWarning] = useState<any>();
   const { t } = useTranslation();
+  const params = useParams();
 
   // alter header & update/copy queries
   let header;
@@ -102,17 +99,17 @@ export const InteractiveMessage = ({ match }: FlowProps) => {
       lang.sort((first: any, second: any) => (first.id > second.id ? 1 : -1));
 
       setLanguageOptions(lang);
-      if (!Object.prototype.hasOwnProperty.call(match.params, 'id')) {
+      if (!Object.prototype.hasOwnProperty.call(params, 'id')) {
         setLanguage(lang[0]);
       }
     }
   }, [languages]);
 
   useEffect(() => {
-    if (Object.prototype.hasOwnProperty.call(match.params, 'id') && match.params.id) {
-      getInteractiveTemplateById({ variables: { id: match.params.id } });
+    if (Object.prototype.hasOwnProperty.call(params, 'id') && params.id) {
+      getInteractiveTemplateById({ variables: { id: params.id } });
     }
-  }, [match.params]);
+  }, [params]);
 
   const states = {
     language,
@@ -379,7 +376,7 @@ export const InteractiveMessage = ({ match }: FlowProps) => {
 
   const handleLanguageChange = (value: any) => {
     const selected = languageOptions.find(({ label }: any) => label === value);
-    if (selected && Object.prototype.hasOwnProperty.call(match.params, 'id')) {
+    if (selected && Object.prototype.hasOwnProperty.call(params, 'id')) {
       updateTranslation(selected);
     } else if (selected) {
       setLanguage(selected);
@@ -388,7 +385,7 @@ export const InteractiveMessage = ({ match }: FlowProps) => {
 
   const afterSave = (data: any, saveClick: boolean) => {
     if (!saveClick) {
-      if (match.params.id) {
+      if (params.id) {
         handleLanguageChange(nextLanguage);
       } else {
         const { interactiveTemplate } = data.createInteractiveTemplate;
@@ -450,7 +447,7 @@ export const InteractiveMessage = ({ match }: FlowProps) => {
     }
   };
 
-  const hasTranslations = match.params?.id && defaultLanguage?.id !== language?.id;
+  const hasTranslations = params?.id && defaultLanguage?.id !== language?.id;
 
   const fields = [
     {
@@ -506,7 +503,7 @@ export const InteractiveMessage = ({ match }: FlowProps) => {
       templateType,
       inputFields: templateButtons,
       disabled: false,
-      disabledType: match.params.id !== undefined,
+      disabledType: params.id !== undefined,
       onAddClick: handleAddInteractiveTemplate,
       onRemoveClick: handleRemoveInteractiveTemplate,
       onInputChange: handleInputChange,
@@ -738,7 +735,6 @@ export const InteractiveMessage = ({ match }: FlowProps) => {
     <>
       <FormLayout
         {...queries}
-        match={match}
         states={states}
         setStates={setStates}
         setPayload={setPayload}
