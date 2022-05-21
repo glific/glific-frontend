@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Paper, Toolbar, Typography } from '@material-ui/core';
 import { useQuery } from '@apollo/client';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { Simulator } from 'components/simulator/Simulator';
@@ -23,21 +23,20 @@ import SavedSearches from '../SavedSearches/SavedSearches';
 import styles from './ChatInterface.module.css';
 
 export interface ChatInterfaceProps {
-  contactId?: number | string | null;
-  collectionId?: number | null;
   savedSearches?: boolean;
 }
 
-export const ChatInterface = ({ contactId, collectionId, savedSearches }: ChatInterfaceProps) => {
+export const ChatInterface = ({ savedSearches }: ChatInterfaceProps) => {
   const [simulatorAccess, setSimulatorAccess] = useState(true);
   const [simulatorId, setSimulatorId] = useState(0);
   const { t } = useTranslation();
   const [startingHeight] = useState(
     `${window.innerWidth < 768 ? window.innerHeight - 46 : window.innerHeight}px`
   );
+  const params = useParams();
 
-  let selectedContactId = contactId;
-  let selectedCollectionId = collectionId;
+  let selectedContactId = params.contactId;
+  let selectedCollectionId = params.collectionId;
 
   // default query variables
   let queryVariables = SEARCH_QUERY_VARIABLES;

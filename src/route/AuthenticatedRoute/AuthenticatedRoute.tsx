@@ -131,18 +131,9 @@ const routeAdmin = (
     <Route path="/consulting-hours/" element={<ConsultingHourList />} />
 
     <Route path="/contact-fields/" element={<ContactFieldList />} />
-    <Route
-      path="/contact-fields/add"
-      element={({ match }: any) => <ContactFieldList openDialog match={match} />}
-    />
-    <Route
-      path="/organizations/:id/extensions"
-      element={({ match }: any) => <OrganizationList openExtensionModal match={match} />}
-    />
-    <Route
-      path="/organizations/:id/customer"
-      element={({ match }: any) => <OrganizationList openCustomerModal match={match} />}
-    />
+    <Route path="/contact-fields/add" element={<ContactFieldList openDialog />} />
+    <Route path="/organizations/:id/extensions" element={<OrganizationList openExtensionModal />} />
+    <Route path="/organizations/:id/customer" element={<OrganizationList openCustomerModal />} />
 
     <Route path="/" render={defaultRedirect} />
   </Routes>
@@ -150,26 +141,11 @@ const routeAdmin = (
 
 export const chatRoutes = (
   <Routes>
-    <Route path="/chat/collection" element={() => <ChatInterface collectionId={-1} />} />
-    <Route path="/chat/saved-searches/" element={() => <ChatInterface savedSearches />} />
-    <Route
-      path="/chat/saved-searches/:contactId"
-      element={({ match }: RouteComponentProps<{ contactId: any }>) => (
-        <ChatInterface savedSearches contactId={match.params.contactId} />
-      )}
-    />
-    <Route
-      path="/chat/:contactId"
-      element={({ match }: RouteComponentProps<{ contactId: any }>) => (
-        <ChatInterface contactId={match.params.contactId} />
-      )}
-    />
-    <Route
-      path="/chat/collection/:collectionId"
-      element={({ match }: RouteComponentProps<{ collectionId: any }>) => (
-        <ChatInterface collectionId={match.params.collectionId} />
-      )}
-    />
+    <Route path="/chat/collection" element={<ChatInterface collectionId={-1} />} />
+    <Route path="/chat/saved-searches/" element={<ChatInterface savedSearches />} />
+    <Route path="/chat/saved-searches/:contactId" element={<ChatInterface savedSearches />} />
+    <Route path="/chat/:contactId" element={<ChatInterface />} />
+    <Route path="/chat/collection/:collectionId" element={<ChatInterface />} />
     <Route path="/chat" element={<ChatInterface />} />
   </Routes>
 );

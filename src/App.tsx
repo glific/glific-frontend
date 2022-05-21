@@ -66,7 +66,7 @@ const App = () => {
     // For logout action, we don't need to check if the user is logged in or not. Hence, adding it at top level
     routes = (
       <Routes>
-        <Route path="/logout/:mode" component={Logout} />
+        <Route path="/logout/:mode" element={<Logout />} />
         {routes}
       </Routes>
     );
