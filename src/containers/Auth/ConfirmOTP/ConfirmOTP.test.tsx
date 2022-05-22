@@ -12,7 +12,7 @@ const defaultProps = { location: { state: { name: '', phoneNumber: '', password:
 
 const wrapper = (
   <MemoryRouter>
-    <ConfirmOTP {...defaultProps} />
+    <ConfirmOTP />
   </MemoryRouter>
 );
 

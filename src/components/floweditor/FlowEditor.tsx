@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useMutation, useLazyQuery, useQuery } from '@apollo/client';
-import { Prompt, Navigate, useNavigate, useParams } from 'react-router-dom';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { IconButton } from '@material-ui/core';
 
 import { ReactComponent as HelpIcon } from 'assets/images/icons/Help.svg';
@@ -134,6 +134,7 @@ export const FlowEditor = () => {
   const closeModal = () => {
     setModalVisible(false);
   };
+  // eslint-disable-next-line no-unused-vars
   const handleBlockedNavigation = (nextLocation: any): boolean => {
     if (!confirmedNavigation) {
       setModalVisible(true);
@@ -404,7 +405,6 @@ export const FlowEditor = () => {
           Publish
         </Button>
       </div>
-
       <Simulator
         showSimulator={simulatorId > 0}
         setSimulatorId={setSimulatorId}
@@ -414,10 +414,9 @@ export const FlowEditor = () => {
         resetMessage={resetMessage}
         getFlowKeyword={getFlowKeyword}
       />
-
       {modal}
-      <Prompt when message={handleBlockedNavigation} />
-
+      {/* TODOS: need to add custom Prompt */}
+      {/* <Prompt when message={handleBlockedNavigation} /> */}
       <div className={styles.FlowContainer}>
         <div
           className={drawerOpen ? styles.FlowName : styles.FlowNameClosed}

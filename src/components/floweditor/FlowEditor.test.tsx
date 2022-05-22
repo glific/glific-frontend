@@ -40,13 +40,15 @@ const noKeywordMocks = [...mocks, getFlowWithoutKeyword, resetFlowCount];
 const wrapperFunction = (mocks: any) => (
   <MockedProvider mocks={mocks} addTypename={false}>
     <MemoryRouter>
-      <FlowEditor match={{ params: { uuid: 'b050c652-65b5-4ccf-b62b-1e8b3f328676' } }} />
+      <FlowEditor />
     </MemoryRouter>
   </MockedProvider>
 );
 
 declare global {
-  interface Window { showFlowEditor: any; }
+  interface Window {
+    showFlowEditor: any;
+  }
 }
 window.showFlowEditor = (node: any, config: any) => jest.fn();
 
