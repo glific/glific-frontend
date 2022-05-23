@@ -82,9 +82,7 @@ describe('<FlowList />', () => {
 
     const copyFlow = (match: any) => (
       <MockedProvider mocks={mocks} addTypename={false}>
-        <Router history={history}>
-          <Flow />
-        </Router>
+        <Flow />
       </MockedProvider>
     );
     const { container } = render(copyFlow({ params: { id: 1 } }));

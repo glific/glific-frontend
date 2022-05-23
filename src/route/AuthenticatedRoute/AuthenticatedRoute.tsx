@@ -1,6 +1,5 @@
 import React, { lazy, Suspense, useEffect, useMemo, useState } from 'react';
-// eslint-disable-next-line no-unused-vars
-import { Routes, Route, Navigate, RouteComponentProps } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
 
 import { Chat } from 'containers/Chat/Chat';
@@ -141,7 +140,9 @@ const routeAdmin = (
 
 export const chatRoutes = (
   <Routes>
-    <Route path="/chat/collection" element={<ChatInterface collectionId={-1} />} />
+    {/* // TODOS: need to fix this route  */}
+    {/* <Route path="/chat/collection" element={<ChatInterface collectionId={-1} />} /> */}
+    <Route path="/chat/collection" element={<ChatInterface />} />
     <Route path="/chat/saved-searches/" element={<ChatInterface savedSearches />} />
     <Route path="/chat/saved-searches/:contactId" element={<ChatInterface savedSearches />} />
     <Route path="/chat/:contactId" element={<ChatInterface />} />

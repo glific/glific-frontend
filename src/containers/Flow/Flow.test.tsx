@@ -72,9 +72,7 @@ it('should create copy of flow', async () => {
 
   const copyFlow = (match: any) => (
     <MockedProvider mocks={mocks} addTypename={false}>
-      <Router history={history}>
-        <Flow />
-      </Router>
+      <Flow />
     </MockedProvider>
   );
 
@@ -104,9 +102,7 @@ it('should edit the flow', async () => {
 
   const editFlow = (match: any) => (
     <MockedProvider mocks={mocks} addTypename={false}>
-      <Router history={history}>
-        <Flow />
-      </Router>
+      <Flow />
     </MockedProvider>
   );
   const { container, getByTestId } = render(editFlow({ params: { id: 1 } }));
