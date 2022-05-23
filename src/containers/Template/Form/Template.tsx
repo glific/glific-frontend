@@ -969,7 +969,7 @@ const Template = ({
       isAttachment
       getMediaId={getMediaId}
       getQueryFetchPolicy="cache-and-network"
-      button={defaultAttribute.isHsm && !match.params.id ? t('Submit for Approval') : t('Save')}
+      button={defaultAttribute.isHsm && !params.id ? t('Submit for Approval') : t('Save')}
       customStyles={customStyle}
       saveOnPageChange={false}
       afterSave={!defaultAttribute.isHsm ? afterSave : undefined}

@@ -8,7 +8,7 @@ const mocks = STAFF_MANAGEMENT_MOCKS;
 
 const staffManagement = (
   <MockedProvider mocks={mocks} addTypename={false}>
-    <StaffManagement match={{ params: { id: '1' } }} />
+    <StaffManagement />
   </MockedProvider>
 );
 

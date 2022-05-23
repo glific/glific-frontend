@@ -9,7 +9,7 @@ const mocks = LIST_ITEM_MOCKS;
 
 const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>
-    <Tag match={{ params: { id: 1 } }} />
+    <Tag />
   </MockedProvider>
 );
 

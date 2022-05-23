@@ -12,7 +12,7 @@ test('HSM form is loaded correctly in edit mode', async () => {
   const { getByText } = render(
     <MockedProvider mocks={mocks} addTypename={false}>
       <BrowserRouter>
-        <HSM match={{ params: { id: 1 } }} />
+        <HSM />
       </BrowserRouter>
     </MockedProvider>
   );
@@ -25,7 +25,7 @@ test('check for validations for the HSM form', async () => {
   const { getByText, container } = render(
     <MockedProvider mocks={mocks} addTypename={false}>
       <BrowserRouter>
-        <HSM match={{ params: { id: null } }} />
+        <HSM />
       </BrowserRouter>
     </MockedProvider>
   );

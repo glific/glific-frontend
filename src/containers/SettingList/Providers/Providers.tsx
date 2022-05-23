@@ -36,6 +36,7 @@ export const Providers = () => {
   const type = params.type ? params.type : null;
 
   // TODOS: below code needs to be fixed once all compile erros are fixed
+  // eslint-disable-next-line
   const param = { params: { id: credentialId, shortcode: type } };
   const [stateValues, setStateValues] = useState({});
 
@@ -184,7 +185,6 @@ export const Providers = () => {
       backLinkButton={{ text: t('Back to settings'), link: '/settings' }}
       {...queries}
       title={title}
-      match={param}
       states={stateValues}
       setStates={setCredential}
       validationSchema={FormSchema}

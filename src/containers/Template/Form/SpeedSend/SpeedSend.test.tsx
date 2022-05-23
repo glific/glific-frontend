@@ -18,9 +18,9 @@ describe('SpeedSend', () => {
       <MockedProvider mocks={mocks} addTypename={false}>
         <Router>
           <Routes>
-            <Route path="/speed-send" exact component={SpeedSendList} />
+            <Route path="/speed-send" element={<SpeedSendList />} />
           </Routes>
-          <SpeedSend match={{ params: { id: 1 } }} />
+          <SpeedSend />
         </Router>
       </MockedProvider>
     );
@@ -40,9 +40,9 @@ describe('SpeedSend', () => {
     const { container } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
         <Router>
-          <SpeedSend match={{ params: { id: null } }} />
+          <SpeedSend />
           <Routes>
-            <Route path="/speed-send" exact component={SpeedSendList} />
+            <Route path="/speed-send" element={<SpeedSendList />} />
           </Routes>
         </Router>
       </MockedProvider>

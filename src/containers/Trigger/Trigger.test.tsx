@@ -14,7 +14,7 @@ describe('trigger with daily frequency', () => {
   const frequencyDailyWrapper = (
     <MockedProvider mocks={frequencyDailyMocks} addTypename={false}>
       <MemoryRouter initialEntries={[{ state: 'copy' }]}>
-        <Trigger match={{ params: { id: '1' } }} />
+        <Trigger />
       </MemoryRouter>
     </MockedProvider>
   );
@@ -40,7 +40,7 @@ describe('trigger with no frequency', () => {
   const frequencyDailyWrapper = (
     <MockedProvider mocks={frequencyDailyMocks} addTypename={false}>
       <MemoryRouter>
-        <Trigger match={{ params: { id: '1' } }} />
+        <Trigger />
       </MemoryRouter>
     </MockedProvider>
   );
@@ -66,7 +66,7 @@ describe('trigger with hourly frequency', () => {
   const wrapper = (
     <MockedProvider mocks={mocks} addTypename={false}>
       <MemoryRouter>
-        <Trigger match={{ params: { id: '1' } }} />
+        <Trigger />
       </MemoryRouter>
     </MockedProvider>
   );
@@ -94,7 +94,7 @@ describe('trigger with weekly frequency', () => {
   const wrapper = (
     <MockedProvider mocks={mocks} addTypename={false}>
       <MemoryRouter>
-        <Trigger match={{ params: { id: '1' } }} />
+        <Trigger />
       </MemoryRouter>
     </MockedProvider>
   );
