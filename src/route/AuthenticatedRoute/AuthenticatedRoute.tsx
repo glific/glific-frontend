@@ -12,7 +12,7 @@ import { ProviderContext } from 'context/session';
 import { GET_ORGANIZATION_PROVIDER } from 'graphql/queries/Organization';
 import styles from './AuthenticatedRoute.module.css';
 
-const defaultRedirect = () => <Navigate to="/chat" />;
+const defaultRedirect = <Navigate to="/chat" />;
 
 // const TagList = lazy(() => import('containers/Tag/TagList/TagList'));
 // const Tag = lazy(() => import('containers/Tag/Tag'));
@@ -77,7 +77,7 @@ const routeStaff = (
     <Route path="/blocked-contacts" element={<BlockContactList />} />
 
     <Route path="/myaccount" element={<MyAccount />} />
-    <Route path="/" render={defaultRedirect} />
+    <Route path="/" element={defaultRedirect} />
   </Routes>
 );
 
@@ -135,7 +135,7 @@ const routeAdmin = (
     <Route path="/organizations/:id/extensions" element={<OrganizationList openExtensionModal />} />
     <Route path="/organizations/:id/customer" element={<OrganizationList openCustomerModal />} />
 
-    <Route path="/" render={defaultRedirect} />
+    <Route path="/" element={defaultRedirect} />
   </Routes>
 );
 

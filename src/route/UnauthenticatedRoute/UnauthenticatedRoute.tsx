@@ -1,5 +1,5 @@
 import React, { lazy, Suspense } from 'react';
-import { Route, Navigate, Routes, useLocation } from 'react-router-dom';
+import { Route, Navigate, Routes } from 'react-router-dom';
 
 import Loading from 'components/UI/Layout/Loading/Loading';
 
@@ -14,8 +14,6 @@ export const UnauthenticatedRoute = () => {
 
   const OrganizationRegistration = lazy(() => import('containers/Organization/RouteSetupSteps'));
 
-  const location = useLocation();
-
   return (
     <Suspense fallback={<Loading />}>
       <Routes>
@@ -25,10 +23,7 @@ export const UnauthenticatedRoute = () => {
         <Route path="/resetpassword-phone" element={<ResetPasswordPhone />} />
         <Route path="/resetpassword-confirmotp" element={<ResetPasswordConfirmOTP />} />
         <Route path="/organization-registration" element={<OrganizationRegistration />} />
-        <Route
-          path="/"
-          render={() => <Navigate to={{ pathname: '/logout/user', state: location.pathname }} />}
-        />
+        <Route path="/" element={<Navigate to="/logout/user" replace />} />
       </Routes>
     </Suspense>
   );
