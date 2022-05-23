@@ -36,7 +36,7 @@ export const ChatInterface = ({ savedSearches }: ChatInterfaceProps) => {
   const params = useParams();
 
   let selectedContactId = params.contactId;
-  let selectedCollectionId = params.collectionId;
+  let selectedCollectionId: any = params.collectionId;
 
   // default query variables
   let queryVariables = SEARCH_QUERY_VARIABLES;

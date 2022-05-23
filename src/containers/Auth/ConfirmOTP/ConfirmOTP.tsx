@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 import { REACT_APP_GLIFIC_REGISTRATION_API } from 'config';
 import { Input } from 'components/UI/Form/Input/Input';
+// eslint-disable-next-line no-unused-vars
 import { sendOTP } from 'services/AuthService';
 import setLogs from 'config/logs';
 import { Auth } from '../Auth';
@@ -26,11 +27,12 @@ export const ConfirmOTP = () => {
   const location = useLocation();
 
   const handleResend = () => {
-    sendOTP(location.state.phoneNumber, 'true')
-      .then((response) => response)
-      .catch(() => {
-        setAuthError(t('We are unable to generate an OTP, kindly contact your technical team.'));
-      });
+    // TODOS: fix resend OTP
+    // sendOTP(location.state.phoneNumber, 'true')
+    //   .then((response) => response)
+    //   .catch(() => {
+    //     setAuthError(t('We are unable to generate an OTP, kindly contact your technical team.'));
+    //   });
   };
 
   // Let's not allow direct navigation to this page
@@ -64,9 +66,9 @@ export const ConfirmOTP = () => {
     axios
       .post(REACT_APP_GLIFIC_REGISTRATION_API, {
         user: {
-          name: location.state.name,
-          phone: location.state.phoneNumber,
-          password: location.state.password,
+          // name: location.state.name,
+          // phone: location.state.phoneNumber,
+          // password: location.state.password,
           otp: values.OTP,
         },
       })
@@ -79,8 +81,8 @@ export const ConfirmOTP = () => {
         setLogs(
           `onSubmitOTP:${{
             user: {
-              name: location.state.name,
-              phone: location.state.phoneNumber,
+              // name: location.state.name,
+              // phone: location.state.phoneNumber,
               otp: values.OTP,
             },
           }} URL:${REACT_APP_GLIFIC_REGISTRATION_API}`,

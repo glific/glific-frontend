@@ -17,18 +17,8 @@ export const Registration = () => {
   const { t } = useTranslation();
 
   if (redirect) {
-    return (
-      <Navigate
-        to={{
-          pathname: '/confirmotp',
-          state: {
-            name: user.userName,
-            phoneNumber: user.phone,
-            password: user.password,
-          },
-        }}
-      />
-    );
+    const stateObject = { name: user.userName, phoneNumber: user.phone, password: user.password };
+    return <Navigate to="/confirmotp" replace state={stateObject} />;
   }
 
   const onSubmitRegistration = (values: any) => {

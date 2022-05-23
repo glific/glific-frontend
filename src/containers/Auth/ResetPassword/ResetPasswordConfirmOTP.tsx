@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { RESET_PASSWORD } from 'config';
 import { Input } from 'components/UI/Form/Input/Input';
 import { PhoneInput } from 'components/UI/Form/PhoneInput/PhoneInput';
+// eslint-disable-next-line no-unused-vars
 import { sendOTP } from 'services/AuthService';
 import setLogs from 'config/logs';
 import { Auth } from '../Auth';
@@ -27,7 +28,7 @@ export const ResetPasswordConfirmOTP = () => {
   }
 
   const handleResend = () => {
-    sendOTP(location.state.phoneNumber);
+    // sendOTP(location.state.phoneNumber);
   };
 
   const formFields = [
@@ -62,7 +63,9 @@ export const ResetPasswordConfirmOTP = () => {
   });
 
   const initialFormValues = {
-    phoneNumber: location.state.phoneNumber,
+    // TODOS: fix below
+    // phoneNumber: location.state.phoneNumber,
+    phoneNumber: '',
     OTP: '',
     password: '',
   };

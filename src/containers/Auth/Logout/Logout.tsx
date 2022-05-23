@@ -83,7 +83,7 @@ export const Logout = ({ match }: LogoutProps) => {
   );
 
   if (redirect) {
-    return <Navigate to={{ pathname: '/login', state: location.state }} />;
+    return <Navigate to="/login" replace state={location.state} />;
   }
 
   return dialog;

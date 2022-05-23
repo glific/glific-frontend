@@ -35,7 +35,7 @@ const mockedAxios = axios as jest.Mocked<typeof axios>;
 const renderInteractiveMessage = (id: string) => (
   <MockedProvider mocks={mockData} addTypename={false}>
     <Router>
-      <InteractiveMessage match={{ params: { id } }} />
+      <InteractiveMessage />
     </Router>
   </MockedProvider>
 );
@@ -72,7 +72,7 @@ test('it renders empty interactive form', async () => {
   render(
     <MockedProvider mocks={mockData} addTypename={false}>
       <Router>
-        <InteractiveMessage match={{ params: {} }} />
+        <InteractiveMessage />
       </Router>
     </MockedProvider>
   );

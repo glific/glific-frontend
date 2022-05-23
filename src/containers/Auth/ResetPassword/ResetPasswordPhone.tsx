@@ -14,16 +14,10 @@ export const ResetPasswordPhone = () => {
   const { t } = useTranslation();
 
   if (redirect) {
-    return (
-      <Navigate
-        to={{
-          pathname: '/resetpassword-confirmotp',
-          state: {
-            phoneNumber: values.phoneNumber,
-          },
-        }}
-      />
-    );
+    const stateObject = {
+      phoneNumber: values.phoneNumber,
+    };
+    return <Navigate to="/resetpassword-confirmotp" state={stateObject} />;
   }
 
   const onSubmitPhone = (data: any) => {

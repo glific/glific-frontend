@@ -31,7 +31,7 @@ export const CollectionContact = () => {
   return (
     <div className={styles.CollectionContactContainer}>
       <div className={styles.ContactList}>
-        <CollectionContactList {...props} title={title} />
+        <CollectionContactList title={title} />
       </div>
       <div className={styles.CollectionDescription}>
         <CollectionDescription

@@ -15,7 +15,7 @@ const defaultProps = listItemProps;
 const addItem = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <Router>
-      <FormLayout match={{ params: { id: null } }} {...defaultProps} />
+      <FormLayout {...defaultProps} />
     </Router>
   </MockedProvider>
 );
@@ -37,7 +37,7 @@ it('should have a form with inputs', async () => {
 const editItem = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <Router>
-      <FormLayout match={{ params: { id: 1 } }} {...defaultProps} />
+      <FormLayout {...defaultProps} />
     </Router>
   </MockedProvider>
 );
@@ -56,8 +56,8 @@ test('inputs should have mock values', async () => {
 const editItemRoute = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <Router>
-      <FormLayout match={{ params: { id: 1 } }} {...defaultProps} />
-      <Route path="/tag" exact component={TagList} />
+      <FormLayout {...defaultProps} />
+      <Route path="/tag" element={<TagList />} />
     </Router>
   </MockedProvider>
 );
@@ -66,8 +66,8 @@ test('cancel button should redirect to taglist page', async () => {
   const { container, getByText } = render(
     <MockedProvider mocks={mocks} addTypename={false}>
       <Router>
-        <FormLayout match={{ params: { id: 1 } }} {...defaultProps} />
-        <Route path="/tag" exact component={TagList} />
+        <FormLayout {...defaultProps} />
+        <Route path="/tag" element={<TagList />} />
       </Router>
     </MockedProvider>
   );

@@ -12,7 +12,7 @@ const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 const wrapper = (
   <MemoryRouter>
-    <ResetPasswordConfirmOTP {...defaultProps} />
+    <ResetPasswordConfirmOTP />
   </MemoryRouter>
 );
 

@@ -83,7 +83,7 @@ const listButtons = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <Router>
       <Routes>
-        <Route path="/tag/add" exact component={Tag} />
+        <Route path="/tag/add" element={<Tag />} />
       </Routes>
       <List {...defaultProps} />
     </Router>

@@ -28,7 +28,7 @@ jest.mock('react-i18next', () => ({
 
 const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>
-    <Collection match={{ params: { id: '1' } }} />
+    <Collection />
   </MockedProvider>
 );
 

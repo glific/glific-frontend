@@ -97,7 +97,7 @@ afterEach(cleanup);
 const wrapper = (
   <ApolloProvider client={client}>
     <MemoryRouter>
-      <ChatInterface {...defaultProps} />
+      <ChatInterface />
     </MemoryRouter>
   </ApolloProvider>
 );

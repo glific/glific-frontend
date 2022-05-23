@@ -16,7 +16,7 @@ const mocks = [
 const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <MemoryRouter>
-      <CollectionContact match={{ params: { id: 1 } }} />
+      <CollectionContact />
     </MemoryRouter>
   </MockedProvider>
 );
