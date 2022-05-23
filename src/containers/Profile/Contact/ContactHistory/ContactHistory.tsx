@@ -11,7 +11,7 @@ import { DATE_TIME_FORMAT } from 'common/constants';
 import styles from './ContactHistory.module.css';
 
 export interface ContactHistoryProps {
-  contactId: string;
+  contactId: string | undefined;
 }
 
 export const ContactHistory = ({ contactId }: ContactHistoryProps) => {

@@ -7,14 +7,10 @@ import { mocks as historyMock } from './ContactHistory/ContactHistory.test';
 
 const mocks = [...LOGGED_IN_USER_MOCK, ...historyMock];
 
-const defaultProps = {
-  match: { params: { id: '1' } },
-};
-
 test('contact profile should render', async () => {
   const { getByTestId } = render(
     <MockedProvider mocks={mocks} addTypename={false}>
-      <ContactProfile {...defaultProps} />
+      <ContactProfile />
     </MockedProvider>
   );
   await waitFor(() => {
@@ -25,7 +21,7 @@ test('contact profile should render', async () => {
 test('contact should have a name or number', async () => {
   const { getByTestId } = render(
     <MockedProvider mocks={mocks} addTypename={false}>
-      <ContactProfile {...defaultProps} />
+      <ContactProfile />
     </MockedProvider>
   );
   await waitFor(() => {
@@ -44,7 +40,7 @@ test('contact should have a name or number', async () => {
 test('it renders contact profile and update tags', async () => {
   const { getByRole } = render(
     <MockedProvider mocks={mocks} addTypename={false}>
-      <ContactProfile {...defaultProps} />
+      <ContactProfile />
     </MockedProvider>
   );
 

@@ -555,7 +555,6 @@ export const Search = ({ match, type, search, ...props }: SearchProps) => {
       {dialog}
       <FormLayout
         {...queries}
-        match={match}
         states={states}
         setStates={setStates}
         setPayload={setPayload}

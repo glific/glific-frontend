@@ -151,7 +151,6 @@ export const Profile = ({
   return (
     <FormLayout
       {...queries}
-      match={param}
       states={states}
       setStates={setStates}
       additionalState={additionalState}

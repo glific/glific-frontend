@@ -440,7 +440,6 @@ export const Organisation = () => {
       backLinkButton={{ text: t('Back to settings'), link: '/settings' }}
       {...queries}
       title="organization settings"
-      match={{ params: { id: organizationId } }}
       states={States}
       setStates={setStates}
       validationSchema={FormSchema}
