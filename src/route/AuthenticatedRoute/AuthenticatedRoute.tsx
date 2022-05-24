@@ -67,7 +67,7 @@ const InteractiveMessage = lazy(() => import('containers/InteractiveMessage/Inte
 
 const routeStaff = (
   <Routes>
-    <Route path="/chat" element={<Chat />} />
+    <Route path="/chat/*" element={<Chat />} />
 
     <Route path="/collection" element={<CollectionList />} />
     <Route path="/collection/:id/contacts" element={<CollectionContact />} />
@@ -76,13 +76,13 @@ const routeStaff = (
     <Route path="/blocked-contacts" element={<BlockContactList />} />
 
     <Route path="/myaccount" element={<MyAccount />} />
-    <Route path="/" element={defaultRedirect} />
+    <Route path="*" element={defaultRedirect} />
   </Routes>
 );
 
 const routeAdmin = (
   <Routes>
-    <Route path="/chat" element={<Chat />} />
+    <Route path="/chat/*" element={<Chat />} />
     {/* <Route path="/tag" element={TagList} />
     <Route path="/tag/add" element={Tag} />
     <Route path="/tag/:id/edit" element={Tag} /> */}
@@ -134,7 +134,7 @@ const routeAdmin = (
     <Route path="/organizations/:id/extensions" element={<OrganizationList openExtensionModal />} />
     <Route path="/organizations/:id/customer" element={<OrganizationList openCustomerModal />} />
 
-    <Route path="/" element={defaultRedirect} />
+    <Route path="*" element={defaultRedirect} />
   </Routes>
 );
 
@@ -147,7 +147,7 @@ export const chatRoutes = (
     <Route path="/chat/saved-searches/:contactId" element={<ChatInterface savedSearches />} />
     <Route path="/chat/:contactId" element={<ChatInterface />} />
     <Route path="/chat/collection/:collectionId" element={<ChatInterface />} />
-    <Route path="/chat" element={<ChatInterface />} />
+    <Route path="/chat/*" element={<ChatInterface />} />
   </Routes>
 );
 
