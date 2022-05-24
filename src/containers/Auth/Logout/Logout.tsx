@@ -1,7 +1,7 @@
 // eslint-disable-next-line
 import React, { useContext, useEffect, useState, CSSProperties } from 'react';
 import axios from 'axios';
-import { Navigate, useLocation } from 'react-router-dom';
+import { Navigate, useLocation, useParams } from 'react-router-dom';
 import { useApolloClient } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 
@@ -21,16 +21,14 @@ const divStyle: CSSProperties = {
   textAlign: 'center',
   color: '#073F24',
 };
-export interface LogoutProps {
-  match?: any;
-}
 
-export const Logout = ({ match }: LogoutProps) => {
+export const Logout = () => {
   const { setAuthenticated } = useContext(SessionContext);
   const [redirect, setRedirect] = useState(false);
   const client = useApolloClient();
   const { t } = useTranslation();
   const location = useLocation();
+  const params = useParams();
 
   // let's notify the backend when user logs out
   const userLogout = () => {
@@ -64,7 +62,7 @@ export const Logout = ({ match }: LogoutProps) => {
 
   useEffect(() => {
     // if user click on logout menu
-    if (match.params.mode === 'user') {
+    if (params.mode === 'user') {
       handleLogout();
     }
   }, []);
@@ -88,3 +86,5 @@ export const Logout = ({ match }: LogoutProps) => {
 
   return dialog;
 };
+
+export default Logout;
