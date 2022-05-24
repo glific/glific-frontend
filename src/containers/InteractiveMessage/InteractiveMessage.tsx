@@ -503,7 +503,7 @@ export const InteractiveMessage = () => {
       templateType,
       inputFields: templateButtons,
       disabled: false,
-      disabledType: params.id !== undefined,
+      disabledType: params?.id !== undefined,
       onAddClick: handleAddInteractiveTemplate,
       onRemoveClick: handleRemoveInteractiveTemplate,
       onInputChange: handleInputChange,

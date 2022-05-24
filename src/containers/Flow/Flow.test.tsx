@@ -1,6 +1,6 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { render, waitFor, fireEvent } from '@testing-library/react';
-import { MemoryRouter, Router } from 'react-router-dom';
+import { MemoryRouter } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 
 import { getOrganizationLanguagesQuery, getOrganizationQuery } from 'mocks/Organization';

@@ -86,10 +86,6 @@ const client = new ApolloClient({
   assumeImmutableResults: true,
 });
 
-const defaultProps = {
-  contactId: 2,
-};
-
 window.HTMLElement.prototype.scrollIntoView = function () {};
 
 afterEach(cleanup);

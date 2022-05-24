@@ -5,8 +5,6 @@ import axios from 'axios';
 
 import { ResetPasswordConfirmOTP } from './ResetPasswordConfirmOTP';
 
-const defaultProps = { location: { state: { phoneNumber: '918787654567' } } };
-
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 

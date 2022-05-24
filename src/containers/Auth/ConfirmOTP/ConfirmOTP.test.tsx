@@ -8,8 +8,6 @@ import { ConfirmOTP } from './ConfirmOTP';
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
-const defaultProps = { location: { state: { name: '', phoneNumber: '', password: '' } } };
-
 const wrapper = (
   <MemoryRouter>
     <ConfirmOTP />
