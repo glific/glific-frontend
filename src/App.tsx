@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, Suspense } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import { ApolloProvider } from '@apollo/client';
 import 'i18n/config';
@@ -12,10 +12,8 @@ import { checkAuthStatusService, getUserSession } from 'services/AuthService';
 import { UnauthenticatedRoute } from 'route/UnauthenticatedRoute/UnauthenticatedRoute';
 import { AuthenticatedRoute } from 'route/AuthenticatedRoute/AuthenticatedRoute';
 import { Logout } from 'containers/Auth/Logout/Logout';
-// import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { CLEAR_CACHE_DURATION } from 'common/constants';
 import setLogs from 'config/logs';
-import Loading from 'components/UI/Layout/Loading/Loading';
 
 const App = () => {
   const { isLatestVersion, emptyCacheStorage } = useClearCacheCtx();
@@ -68,7 +66,7 @@ const App = () => {
     routes = (
       <Routes>
         <Route path="/logout/:mode" element={<Logout />} />
-        <Route path="/" element={routes} />
+        <Route path="*" element={routes} />
       </Routes>
     );
   }
@@ -78,9 +76,7 @@ const App = () => {
       <ApolloProvider client={gqlClient(navigate)}>
         <ErrorHandler />
         <SideDrawerContext.Provider value={sideDraawerValues}>
-          <ClearCacheProvider duration={CLEAR_CACHE_DURATION}>
-            <Suspense fallback={<Loading />}>{routes}</Suspense>
-          </ClearCacheProvider>
+          <ClearCacheProvider duration={CLEAR_CACHE_DURATION}>{routes}</ClearCacheProvider>
         </SideDrawerContext.Provider>
       </ApolloProvider>
     </SessionContext.Provider>

@@ -1,9 +1,10 @@
-import React, { lazy, useEffect, useMemo, useState } from 'react';
+import React, { lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
 
 import { Chat } from 'containers/Chat/Chat';
 import ChatInterface from 'containers/Chat/ChatInterface/ChatInterface';
+import Loading from 'components/UI/Layout/Loading/Loading';
 import { getUserRole } from 'context/role';
 import { useToast } from 'services/ToastService';
 import { ProviderContext } from 'context/session';
@@ -199,7 +200,7 @@ export const AuthenticatedRoute = () => {
       <div className={styles.App} data-testid="app">
         <Layout>
           {toastMessage}
-          {route}
+          <Suspense fallback={<Loading />}>{route}</Suspense>
         </Layout>
       </div>
     </ProviderContext.Provider>

@@ -1,5 +1,7 @@
-import React, { lazy } from 'react';
+import React, { lazy, Suspense } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
+
+import Loading from 'components/UI/Layout/Loading/Loading';
 
 export const UnauthenticatedRoute = () => {
   const Login = lazy(() => import('containers/Auth/Login/Login'));
@@ -12,15 +14,17 @@ export const UnauthenticatedRoute = () => {
   const OrganizationRegistration = lazy(() => import('containers/Organization/RouteSetupSteps'));
 
   return (
-    <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route path="/registration" element={<Registration />} />
-      <Route path="/confirmotp" element={<ConfirmOTP />} />
-      <Route path="/resetpassword-phone" element={<ResetPasswordPhone />} />
-      <Route path="/resetpassword-confirmotp" element={<ResetPasswordConfirmOTP />} />
-      <Route path="/organization-registration" element={<OrganizationRegistration />} />
-      <Route path="*" element={<Navigate to="/logout/user" replace />} />
-    </Routes>
+    <Suspense fallback={<Loading />}>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/registration" element={<Registration />} />
+        <Route path="/confirmotp" element={<ConfirmOTP />} />
+        <Route path="/resetpassword-phone" element={<ResetPasswordPhone />} />
+        <Route path="/resetpassword-confirmotp" element={<ResetPasswordConfirmOTP />} />
+        <Route path="/organization-registration" element={<OrganizationRegistration />} />
+        <Route path="*" element={<Navigate to="/logout/user" replace />} />
+      </Routes>
+    </Suspense>
   );
 };
 
