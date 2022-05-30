@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 export const DELETE_ROLE = gql`
-  mutation DeleteRole($deleteRoleId: ID!) {
-    deleteAccessRole(id: $deleteRoleId) {
+  mutation DeleteRole($id: ID!) {
+    deleteAccessRole(id: $id) {
       accessRole {
         id
       }
