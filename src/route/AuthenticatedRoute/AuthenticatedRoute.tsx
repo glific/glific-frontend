@@ -113,10 +113,10 @@ const routeAdmin = (
     <Route path="/template" element={<HSMList />} />
     <Route path="/template/add" element={<HSM />} />
     <Route path="/template/:id/edit" element={<HSM />} />
-    <Route path="/settings" element={<SettingList />} />
-    <Route path="/settings/organization" element={<Organisation />} />
-    <Route path="/settings/billing" element={<Billing />} />
-    <Route path="/settings/:type" element={<Providers />} />
+    <Route path="settings" element={<SettingList />} />
+    <Route path="settings/organization" element={<Organisation />} />
+    <Route path="settings/billing" element={<Billing />} />
+    <Route path="settings/:type" element={<Providers />} />
     <Route path="/blocked-contacts" element={<BlockContactList />} />
     <Route path="/webhook-logs" element={<WebhookLogsList />} />
     <Route path="/notifications" element={<NotificationList />} />
