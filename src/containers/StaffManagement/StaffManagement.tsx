@@ -135,9 +135,9 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   const rolesList: any = [];
   roleData.accessRoles.forEach((role: any) => {
     if (hasDynamicRoles) {
-      rolesList.push({ id: role.label, label: role.label });
+      rolesList.push({ id: role.id, label: role.label });
     } else if (role.isReserved) {
-      rolesList.push({ id: role.label, label: role.label });
+      rolesList.push({ id: role.id, label: role.label });
     }
   });
 
@@ -251,14 +251,26 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
         ? payloadCopy.roles.map((role: any) => role.id)
         : [payloadCopy.roles.id];
 
+    const initialSelectedRoles = roles.map((role: any) => role.id);
+
+    if (hasDynamicRoles) {
+      payloadCopy.addRoleIds = roleIds.filter(
+        (selectedRoles: any) => !initialSelectedRoles.includes(selectedRoles)
+      );
+      payloadCopy.deleteRoleIds = [];
+      // payloadCopy.deleteRoleIds = initialSelectedRoles.filter(
+      //   (roleId: any) => !roleIds.includes(roleId)
+      // );
+    }
+
+    console.log(payloadCopy);
+
     // delete current roles from the payload
     delete payloadCopy.roles;
-
     // return modified payload
     return {
       ...payloadCopy,
       groupIds: collectionIds,
-      roles: roleIds,
     };
   };
 
