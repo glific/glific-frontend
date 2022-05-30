@@ -24,9 +24,10 @@ import styles from './ChatInterface.module.css';
 
 export interface ChatInterfaceProps {
   savedSearches?: boolean;
+  collectionType?: boolean;
 }
 
-export const ChatInterface = ({ savedSearches }: ChatInterfaceProps) => {
+export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfaceProps) => {
   const [simulatorAccess, setSimulatorAccess] = useState(true);
   const [simulatorId, setSimulatorId] = useState(0);
   const { t } = useTranslation();
@@ -43,7 +44,7 @@ export const ChatInterface = ({ savedSearches }: ChatInterfaceProps) => {
 
   // contact id === collection when the collection id is not passed in the url
   let selectedTab = 'contacts';
-  if (selectedCollectionId) {
+  if (selectedCollectionId || collectionType) {
     queryVariables = COLLECTION_SEARCH_QUERY_VARIABLES;
     selectedTab = 'collections';
   }
@@ -66,9 +67,9 @@ export const ChatInterface = ({ savedSearches }: ChatInterfaceProps) => {
     return null;
   }
 
-  // let's handle the case when collection id is -1 then we set the first collection
+  // let's handle the case when the type is collection  then we set the first collection
   // as the selected collection
-  if (!selectedContactId && selectedCollectionId === -1 && data && data.search.length !== 0) {
+  if (!selectedContactId && collectionType && data && data.search.length !== 0) {
     if (data.search[0].group) {
       selectedCollectionId = data.search[0].group.id;
       selectedContactId = '';

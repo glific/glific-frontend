@@ -67,46 +67,44 @@ const InteractiveMessage = lazy(() => import('containers/InteractiveMessage/Inte
 
 const routeStaff = (
   <Routes>
-    <Route path="/chat/*" element={<Chat />} />
-
-    <Route path="/collection" element={<CollectionList />} />
-    <Route path="/collection/:id/contacts" element={<CollectionContact />} />
-    <Route path="/user-profile" element={<UserProfile />} />
-    <Route path="/contact-profile/:id" element={<ContactProfile />} />
-    <Route path="/blocked-contacts" element={<BlockContactList />} />
-
-    <Route path="/myaccount" element={<MyAccount />} />
-    <Route path="*" element={defaultRedirect} />
+    <Route index element={defaultRedirect} />
+    <Route path="chat/*" element={<Chat />} />
+    <Route path="collection" element={<CollectionList />}>
+      <Route path=":id/contacts" element={<CollectionContact />} />
+    </Route>
+    <Route path="user-profile" element={<UserProfile />} />
+    <Route path="contact-profile/:id" element={<ContactProfile />} />
+    <Route path="blocked-contacts" element={<BlockContactList />} />
+    <Route path="myaccount" element={<MyAccount />} />
   </Routes>
 );
 
 const routeAdmin = (
   <Routes>
-    <Route path="/chat/*" element={<Chat />} />
     {/* <Route path="/tag" element={TagList} />
     <Route path="/tag/add" element={Tag} />
     <Route path="/tag/:id/edit" element={Tag} /> */}
-    <Route path="/speed-send" element={<SpeedSendList />} />
-    <Route path="/speed-send/add" element={<SpeedSend />} />
-    <Route path="/speed-send/:id/edit" element={<SpeedSend />} />
-    <Route path="/flow" element={<FlowList />} />
-    <Route path="/flow/add" element={<Flow />} />
-    <Route path="/flow/:id/edit" element={<Flow />} />
-    <Route path="/collection" element={<CollectionList />} />
-    <Route path="/collection/add" element={<Collection />} />
-    <Route path="/collection/:id/edit" element={<Collection />} />
-    <Route path="/collection/:id/contacts" element={<CollectionContact />} />
+    <Route path="speed-send" element={<SpeedSendList />} />
+    <Route path="speed-send/add" element={<SpeedSend />} />
+    <Route path="speed-send/:id/edit" element={<SpeedSend />} />
+    <Route path="flow" element={<FlowList />} />
+    <Route path="flow/add" element={<Flow />} />
+    <Route path="flow/:id/edit" element={<Flow />} />
+    <Route path="collection" element={<CollectionList />} />
+    <Route path="collection/add" element={<Collection />} />
+    <Route path="collection/:id/edit" element={<Collection />} />
+    <Route path="collection/:id/contacts" element={<CollectionContact />} />
 
-    <Route path="/flow/configure/:uuid" element={<FlowEditor />} />
+    <Route path="flow/configure/:uuid" element={<FlowEditor />} />
 
-    <Route path="/search" element={<SearchList />} />
-    <Route path="/search/add" element={<Search />} />
-    <Route path="/search/:id/edit" element={<Search />} />
+    <Route path="search" element={<SearchList />} />
+    <Route path="search/add" element={<Search />} />
+    <Route path="search/:id/edit" element={<Search />} />
 
-    <Route path="/trigger/add" element={<Trigger />} />
-    <Route path="/trigger/:id/edit" element={<Trigger />} />
+    <Route path="trigger/add" element={<Trigger />} />
+    <Route path="trigger/:id/edit" element={<Trigger />} />
 
-    <Route path="/staff-management" element={<StaffManagementList />} />
+    <Route path="staff-management" element={<StaffManagementList />} />
     <Route path="/contact-management" element={<ContactManagement />} />
     <Route path="/staff-management/:id/edit" element={<StaffManagement />} />
     <Route path="/contact-profile/:id" element={<ContactProfile />} />
@@ -134,20 +132,19 @@ const routeAdmin = (
     <Route path="/organizations/:id/extensions" element={<OrganizationList openExtensionModal />} />
     <Route path="/organizations/:id/customer" element={<OrganizationList openCustomerModal />} />
 
-    <Route path="*" element={defaultRedirect} />
+    <Route path="/*" element={<Chat />} />
   </Routes>
 );
 
 export const chatRoutes = (
   <Routes>
-    {/* // TODOS: need to fix this route  */}
-    {/* <Route path="/chat/collection" element={<ChatInterface collectionId={-1} />} /> */}
-    <Route path="/chat/collection" element={<ChatInterface />} />
-    <Route path="/chat/saved-searches/" element={<ChatInterface savedSearches />} />
-    <Route path="/chat/saved-searches/:contactId" element={<ChatInterface savedSearches />} />
-    <Route path="/chat/:contactId" element={<ChatInterface />} />
-    <Route path="/chat/collection/:collectionId" element={<ChatInterface />} />
-    <Route path="/chat/*" element={<ChatInterface />} />
+    <Route path="chat" element={<ChatInterface />} />
+    <Route path="chat/collection" element={<ChatInterface collectionType />} />
+    <Route path="chat/saved-searches" element={<ChatInterface savedSearches />} />
+    <Route path="saved-searches/:contactId" element={<ChatInterface savedSearches />} />
+    <Route path="chat/:contactId" element={<ChatInterface />} />
+    <Route path="chat/collection/:collectionId" element={<ChatInterface />} />
+    <Route path="/*" element={<ChatInterface />} />
   </Routes>
 );
 
