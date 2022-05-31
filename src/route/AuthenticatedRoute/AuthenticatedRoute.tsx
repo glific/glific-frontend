@@ -105,32 +105,32 @@ const routeAdmin = (
     <Route path="trigger/:id/edit" element={<Trigger />} />
 
     <Route path="staff-management" element={<StaffManagementList />} />
-    <Route path="/contact-management" element={<ContactManagement />} />
-    <Route path="/staff-management/:id/edit" element={<StaffManagement />} />
-    <Route path="/contact-profile/:id" element={<ContactProfile />} />
-    <Route path="/user-profile" element={<UserProfile />} />
-    <Route path="/myaccount" element={<MyAccount />} />
-    <Route path="/template" element={<HSMList />} />
-    <Route path="/template/add" element={<HSM />} />
-    <Route path="/template/:id/edit" element={<HSM />} />
+    <Route path="contact-management" element={<ContactManagement />} />
+    <Route path="staff-management/:id/edit" element={<StaffManagement />} />
+    <Route path="contact-profile/:id" element={<ContactProfile />} />
+    <Route path="user-profile" element={<UserProfile />} />
+    <Route path="myaccount" element={<MyAccount />} />
+    <Route path="template" element={<HSMList />} />
+    <Route path="template/add" element={<HSM />} />
+    <Route path="template/:id/edit" element={<HSM />} />
     <Route path="settings" element={<SettingList />} />
     <Route path="settings/organization" element={<Organisation />} />
     <Route path="settings/billing" element={<Billing />} />
     <Route path="settings/:type" element={<Providers />} />
-    <Route path="/blocked-contacts" element={<BlockContactList />} />
-    <Route path="/webhook-logs" element={<WebhookLogsList />} />
-    <Route path="/notifications" element={<NotificationList />} />
-    <Route path="/interactive-message" element={<InteractiveMessageList />} />
-    <Route path="/interactive-message/add" element={<InteractiveMessage />} />
-    <Route path="/interactive-message/:id/edit" element={<InteractiveMessage />} />
-    <Route path="/trigger" element={<TriggerList />} />
-    <Route path="/organizations" element={<OrganizationList />} />
-    <Route path="/consulting-hours/" element={<ConsultingHourList />} />
+    <Route path="blocked-contacts" element={<BlockContactList />} />
+    <Route path="webhook-logs" element={<WebhookLogsList />} />
+    <Route path="notifications" element={<NotificationList />} />
+    <Route path="interactive-message" element={<InteractiveMessageList />} />
+    <Route path="interactive-message/add" element={<InteractiveMessage />} />
+    <Route path="interactive-message/:id/edit" element={<InteractiveMessage />} />
+    <Route path="trigger" element={<TriggerList />} />
+    <Route path="organizations" element={<OrganizationList />} />
+    <Route path="consulting-hours/" element={<ConsultingHourList />} />
 
-    <Route path="/contact-fields/" element={<ContactFieldList />} />
-    <Route path="/contact-fields/add" element={<ContactFieldList openDialog />} />
-    <Route path="/organizations/:id/extensions" element={<OrganizationList openExtensionModal />} />
-    <Route path="/organizations/:id/customer" element={<OrganizationList openCustomerModal />} />
+    <Route path="contact-fields/" element={<ContactFieldList />} />
+    <Route path="contact-fields/add" element={<ContactFieldList openDialog />} />
+    <Route path="organizations/:id/extensions" element={<OrganizationList openExtensionModal />} />
+    <Route path="organizations/:id/customer" element={<OrganizationList openCustomerModal />} />
 
     <Route path="/*" element={<Chat />} />
   </Routes>
