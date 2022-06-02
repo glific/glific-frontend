@@ -1,4 +1,3 @@
-import { organizationHasDynamicRole } from 'common/utils';
 import { GLIFIC_DOCS_URL } from 'config';
 
 // define all the menus in the system
@@ -8,7 +7,7 @@ const menus = [
     path: '/chat',
     icon: 'chat',
     type: 'sideDrawer',
-    roles: ['Staff', 'Manager', 'Admin'],
+    roles: ['Staff', 'Manager', 'Admin', 'Dynamic'],
   },
   // {
   //   title: 'Tags',
@@ -22,42 +21,42 @@ const menus = [
     path: '/speed-send',
     icon: 'speed-send',
     type: 'sideDrawer',
-    roles: ['Manager', 'Admin'],
+    roles: ['Manager', 'Admin', 'Dynamic'],
   },
   {
     title: 'Flows',
     path: '/flow',
     icon: 'flow',
     type: 'sideDrawer',
-    roles: ['Manager', 'Admin'],
+    roles: ['Manager', 'Admin', 'Dynamic'],
   },
   {
     title: 'Triggers',
     path: '/trigger',
     icon: 'trigger',
     type: 'sideDrawer',
-    roles: ['Manager', 'Admin'],
+    roles: ['Manager', 'Admin', 'Dynamic'],
   },
   {
     title: 'Searches',
     path: '/search',
     icon: 'search',
     type: 'sideDrawer',
-    roles: ['Manager', 'Admin'],
+    roles: ['Manager', 'Admin', 'Dynamic'],
   },
   {
     title: 'Templates',
     path: '/template',
     icon: 'template',
     type: 'sideDrawer',
-    roles: ['Manager', 'Admin'],
+    roles: ['Manager', 'Admin', 'Dynamic'],
   },
   {
     title: 'Interactive msg',
     path: '/interactive-message',
     icon: 'interactive-message',
     type: 'sideDrawer',
-    roles: ['Manager', 'Admin'],
+    roles: ['Manager', 'Admin', 'Dynamic'],
   },
   {
     title: 'Notifications',
@@ -65,7 +64,7 @@ const menus = [
     icon: 'notification',
     type: 'sideDrawer',
     badge: true,
-    roles: ['Manager', 'Admin'],
+    roles: ['Manager', 'Admin', 'Dynamic'],
   },
   {
     title: 'Help',
@@ -73,21 +72,20 @@ const menus = [
     url: GLIFIC_DOCS_URL,
     icon: 'help',
     type: 'sideDrawer',
-    roles: ['Staff', 'Manager', 'Admin'],
+    roles: ['Staff', 'Manager', 'Admin', 'Dynamic'],
   },
 
   {
     title: 'Collections',
     path: '/collection',
     type: 'staffManagement',
-    roles: ['Staff', 'Manager', 'Admin'],
+    roles: ['Staff', 'Manager', 'Admin', 'Dynamic'],
   },
   {
     title: 'Role Management',
     path: '/role',
     type: 'staffManagement',
     roles: ['Manager', 'Admin'],
-    hasRoleManagementAccess: organizationHasDynamicRole(),
   },
   {
     title: 'User Management',
@@ -117,26 +115,26 @@ const menus = [
     title: 'Blocked Contacts',
     path: '/blocked-contacts',
     type: 'staffManagement',
-    roles: ['Staff', 'Manager', 'Admin'],
+    roles: ['Staff', 'Manager', 'Admin', 'Dynamic'],
   },
   {
     title: 'My Profile',
     path: '/user-profile',
     type: 'userAccount',
-    roles: ['Staff', 'Manager', 'Admin'],
+    roles: ['Staff', 'Manager', 'Admin', 'Dynamic'],
   },
   {
     title: 'My Account',
     path: '/myaccount',
     type: 'userAccount',
-    roles: ['Staff', 'Manager', 'Admin'],
+    roles: ['Staff', 'Manager', 'Admin', 'Dynamic'],
   },
   {
     title: 'Logout',
     path: '/logout/user',
     className: 'Danger',
     type: 'userAccount',
-    roles: ['Staff', 'Manager', 'Admin'],
+    roles: ['Staff', 'Manager', 'Admin', 'Dynamic'],
   },
 ];
 

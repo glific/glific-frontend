@@ -23,14 +23,16 @@ import styles from './FlowList.module.css';
 
 export interface FlowListProps {}
 
-const getName = (text: string, keywordsList: any) => {
+const getName = (text: string, keywordsList: any, roles: any) => {
   const keywords = keywordsList.map((keyword: any) => keyword);
+  const accessRoles = roles.map((role: any) => role.label);
 
   return (
     <p className={`${styles.TableText} ${styles.NameText}`}>
       {text}
       <br />
       <span className={styles.Keyword}>{keywords.join(', ')}</span>
+      <span className={styles.Roles}>{accessRoles.join(', ')} </span>
     </p>
   );
 };
@@ -160,8 +162,8 @@ export const FlowList: React.SFC<FlowListProps> = () => {
     },
   ];
 
-  const getColumns = ({ name, keywords, lastChangedAt, lastPublishedAt }: any) => ({
-    name: getName(name, keywords),
+  const getColumns = ({ name, keywords, lastChangedAt, lastPublishedAt, roles }: any) => ({
+    name: getName(name, keywords, roles),
     lastPublishedAt: getLastPublished(lastPublishedAt, t('Not published yet')),
     lastChangedAt: getDate(lastChangedAt, t('Nothing in draft')),
   });

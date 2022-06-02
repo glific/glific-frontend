@@ -93,20 +93,20 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   const setStates = ({
     name: nameValue,
     phone: phoneValue,
-    roles: rolesValue,
+    accessRoles: accessRolesValue,
     groups: groupsValue,
     isRestricted: isRestrictedValue,
   }: any) => {
     setName(nameValue);
     setPhone(phoneValue);
-
+    console.log(accessRolesValue, setRoles);
     // let' format the roles so that it is displayed correctly in the UI
-    if (rolesValue) {
+    if (accessRolesValue) {
       if (hasDynamicRoles) {
-        const userRoles = rolesValue.map((role: any) => ({ id: role, label: role }));
+        const userRoles = accessRolesValue.map((role: any) => ({ id: role.id, label: role.label }));
         setRoles(userRoles);
       } else {
-        setRoles({ id: rolesValue[0], label: rolesValue[0] });
+        setRoles({ id: accessRolesValue[0].id, label: accessRolesValue[0].label });
       }
     }
 
@@ -258,9 +258,9 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
         (selectedRoles: any) => !initialSelectedRoles.includes(selectedRoles)
       );
       payloadCopy.deleteRoleIds = [];
-      // payloadCopy.deleteRoleIds = initialSelectedRoles.filter(
-      //   (roleId: any) => !roleIds.includes(roleId)
-      // );
+      payloadCopy.deleteRoleIds = initialSelectedRoles.filter(
+        (roleId: any) => !roleIds.includes(roleId)
+      );
     }
 
     console.log(payloadCopy);

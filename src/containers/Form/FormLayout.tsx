@@ -18,6 +18,8 @@ import { GET_ROLE_NAMES } from 'graphql/queries/Role';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { ReactComponent as DeleteIcon } from 'assets/images/icons/Delete/White.svg';
 import { ReactComponent as BackIcon } from 'assets/images/icons/Back.svg';
+import { organizationHasDynamicRole } from 'common/utils';
+import { getUserRole } from 'context/role';
 import styles from './FormLayout.module.css';
 
 export interface FormLayoutProps {
@@ -441,7 +443,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     formFieldItems = [...formFields, language];
   }
 
-  if (roleAccessSupport) {
+  if (roleAccessSupport && organizationHasDynamicRole() && getUserRole().includes('Admin')) {
     const roleAccess = {
       component: AutoComplete,
       name: 'roles',

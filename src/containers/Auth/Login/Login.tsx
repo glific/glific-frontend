@@ -47,10 +47,15 @@ export const Login: React.SFC<LoginProps> = () => {
       setUserSession(JSON.stringify(userData.currentUser.user));
 
       // get the roles
-      const { roles } = userData.currentUser.user;
+      const { accessRoles } = userData.currentUser.user;
+
+      const userAccessRoles = accessRoles.map((role: any) => role.label);
 
       // check for user role none or empty
-      if ((roles.includes('None') && roles.length === 1) || roles.length === 0) {
+      if (
+        (userAccessRoles.includes('None') && userAccessRoles.length === 1) ||
+        userAccessRoles.length === 0
+      ) {
         accessDenied();
       } else {
         // needed to redirect after login

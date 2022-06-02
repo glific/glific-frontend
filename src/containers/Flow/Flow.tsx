@@ -10,6 +10,8 @@ import { ReactComponent as FlowIcon } from 'assets/images/icons/Flow/Selected.sv
 import { CREATE_FLOW, UPDATE_FLOW, DELETE_FLOW, CREATE_FLOW_COPY } from 'graphql/mutations/Flow';
 import { GET_FLOW } from 'graphql/queries/Flow';
 import { setErrorMessage } from 'common/notification';
+import { getUserSession } from 'services/AuthService';
+import { checkDynamicRole } from 'context/role';
 import styles from './Flow.module.css';
 
 export interface FlowProps {
@@ -130,12 +132,17 @@ export const Flow: React.SFC<FlowProps> = ({ match }) => {
     const initialSelectedRoles = roles.map((role: any) => role.id);
     const payloadRoleIds = payload.roles.map((role: any) => role.id);
 
-    const addRoleIds = payloadRoleIds.filter(
+    let addRoleIds = payloadRoleIds.filter(
       (selectedRoles: any) => !initialSelectedRoles.includes(selectedRoles)
     );
     const deleteRoleIds = initialSelectedRoles.filter(
       (roleId: any) => !payloadRoleIds.includes(roleId)
     );
+
+    if (checkDynamicRole()) {
+      const userRoles = getUserSession('roles').map((role: any) => role.id);
+      addRoleIds = [...addRoleIds, ...userRoles];
+    }
 
     const { roles: userRoles, ...rest } = payload;
 

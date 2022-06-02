@@ -108,3 +108,11 @@
   composes: LastPublished;
   color: #cd8888;
 }
+
+.Roles {
+  position: absolute;
+  right: 20px;
+  bottom: 10px;
+  font-size: 12px;
+  color: #93a29b !important;
+}

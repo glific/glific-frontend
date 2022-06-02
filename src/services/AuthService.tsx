@@ -114,6 +114,7 @@ export const clearUserSession = () => {
 // get the current user session
 export const getUserSession = (element?: string) => {
   const user = localStorage.getItem('glific_user');
+  console.log(user);
 
   // let's early if there is no user session on local
   if (!user) return null;
@@ -133,7 +134,7 @@ export const getUserSession = (element?: string) => {
       returnValue = JSON.parse(user).organization.id;
       break;
     case 'roles':
-      returnValue = JSON.parse(user).roles;
+      returnValue = JSON.parse(user).accessRoles;
       break;
     case 'language':
       returnValue = JSON.parse(user).language.locale;

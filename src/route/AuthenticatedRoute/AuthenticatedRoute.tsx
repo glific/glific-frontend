@@ -2,7 +2,7 @@ import React, { lazy, useEffect, useMemo, useState } from 'react';
 import { Switch, Route, Redirect, RouteComponentProps } from 'react-router-dom';
 
 import { Chat } from 'containers/Chat/Chat';
-import { getUserRole } from 'context/role';
+import { checkDynamicRole, getUserRole } from 'context/role';
 import { useToast } from 'services/ToastService';
 import ChatInterface from 'containers/Chat/ChatInterface/ChatInterface';
 import { ProviderContext } from 'context/session';
@@ -219,6 +219,7 @@ export const AuthenticatedRoute: React.SFC = () => {
   }
 
   if (
+    checkDynamicRole() ||
     userRole.includes('Manager') ||
     userRole.includes('Admin') ||
     userRole.includes('Glific_admin')
