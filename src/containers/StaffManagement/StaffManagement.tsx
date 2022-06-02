@@ -251,9 +251,11 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
         ? payloadCopy.roles.map((role: any) => role.id)
         : [payloadCopy.roles.id];
 
-    const initialSelectedRoles = roles.map((role: any) => role.id);
+    payloadCopy.addRoleIds = roleIds;
+    payloadCopy.deleteRoleIds = [roles.id];
 
     if (hasDynamicRoles) {
+      const initialSelectedRoles = roles.map((role: any) => role.id);
       payloadCopy.addRoleIds = roleIds.filter(
         (selectedRoles: any) => !initialSelectedRoles.includes(selectedRoles)
       );

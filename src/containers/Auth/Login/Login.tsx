@@ -18,6 +18,7 @@ import {
 import { GET_CURRENT_USER } from 'graphql/queries/User';
 import { setUserRolePermissions } from 'context/role';
 import setLogs from 'config/logs';
+import { GET_ORGANIZATION_SERVICES } from 'graphql/queries/Organization';
 import { Auth } from '../Auth';
 
 const notApprovedMsg = 'Your account is not approved yet. Please contact your organisation admin.';
@@ -40,11 +41,17 @@ export const Login: React.SFC<LoginProps> = () => {
 
   // get the information on current user
   const [getCurrentUser, { data: userData, error: userError }] = useLazyQuery(GET_CURRENT_USER);
+  const [getOrganizationServices, { data: organizationData }] =
+    useLazyQuery(GET_ORGANIZATION_SERVICES);
 
   useEffect(() => {
-    if (userData) {
+    if (userData && organizationData) {
       // set the current user object
       setUserSession(JSON.stringify(userData.currentUser.user));
+      localStorage.setItem(
+        'rolesPermission',
+        organizationData.organizationServices.rolesAndPermission
+      );
 
       // get the roles
       const { accessRoles } = userData.currentUser.user;
@@ -80,7 +87,7 @@ export const Login: React.SFC<LoginProps> = () => {
     if (userError) {
       accessDenied();
     }
-  }, [userData, userError, setAuthenticated]);
+  }, [userData, userError, setAuthenticated, organizationData]);
 
   const formFields = [
     {
@@ -117,6 +124,7 @@ export const Login: React.SFC<LoginProps> = () => {
       .then((response: any) => {
         const responseString = JSON.stringify(response.data.data);
         getCurrentUser();
+        getOrganizationServices();
         setAuthSession(responseString);
       })
       .catch((error) => {
