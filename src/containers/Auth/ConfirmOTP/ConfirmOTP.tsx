@@ -80,8 +80,8 @@ export const ConfirmOTP = () => {
         setLogs(
           `onSubmitOTP:${{
             user: {
-              // name: location.state.name,
-              // phone: location.state.phoneNumber,
+              name: location.state.name,
+              phone: location.state.phoneNumber,
               otp: values.OTP,
             },
           }} URL:${REACT_APP_GLIFIC_REGISTRATION_API}`,
