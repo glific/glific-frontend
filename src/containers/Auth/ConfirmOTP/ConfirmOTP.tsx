@@ -26,13 +26,12 @@ export const ConfirmOTP = () => {
   const { t } = useTranslation();
   const location = useLocation();
 
-  const handleResend = () => {
-    // TODOS: fix resend OTP
-    // sendOTP(location.state.phoneNumber, 'true')
-    //   .then((response) => response)
-    //   .catch(() => {
-    //     setAuthError(t('We are unable to generate an OTP, kindly contact your technical team.'));
-    //   });
+  const handleResend = (location: any) => {
+    sendOTP(location.state.phoneNumber, 'true')
+      .then((response) => response)
+      .catch(() => {
+        setAuthError(t('We are unable to generate an OTP, kindly contact your technical team.'));
+      });
   };
 
   // Let's not allow direct navigation to this page
@@ -62,13 +61,13 @@ export const ConfirmOTP = () => {
 
   const initialFormValues = { OTP: '' };
 
-  const onSubmitOTP = (values: any) => {
+  const onSubmitOTP = (values: any, location: any) => {
     axios
       .post(REACT_APP_GLIFIC_REGISTRATION_API, {
         user: {
-          // name: location.state.name,
-          // phone: location.state.phoneNumber,
-          // password: location.state.password,
+          name: location.state.name,
+          phone: location.state.phoneNumber,
+          password: location.state.password,
           otp: values.OTP,
         },
       })
