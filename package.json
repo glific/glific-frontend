@@ -99,9 +99,6 @@
     "winston-logflare": "^0.1.1",
     "yup": "^0.32.11"
   },
-  "resolutions": {
-    "react-error-overlay": "6.0.9"
-  },
   "scripts": {
     "setup": "yarn cache clean && yarn install --force && yarn run floweditor",
     "start": "HTTPS=true SSL_CRT_FILE=../glific/priv/cert/glific.test+1.pem SSL_KEY_FILE=../glific/priv/cert/glific.test+1-key.pem react-scripts start",
