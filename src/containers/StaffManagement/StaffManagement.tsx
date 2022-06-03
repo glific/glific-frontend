@@ -116,7 +116,9 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
     setIsRestricted(isRestrictedValue);
   };
 
-  const { loading: loadingRoles, data: roleData } = useQuery(GET_ROLE_NAMES);
+  const { loading: loadingRoles, data: roleData } = useQuery(GET_ROLE_NAMES, {
+    fetchPolicy: 'network-only',
+  });
 
   const { loading, data } = useQuery(GET_COLLECTIONS, {
     variables: setVariables(),

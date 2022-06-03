@@ -37,6 +37,7 @@ export const Role: React.SFC<RoleProps> = ({ match }) => {
 
   const FormSchema = Yup.object().shape({
     label: Yup.string().required(t('Name is required.')),
+    description: Yup.string().required(t('Description is required.')),
   });
 
   const dialogMessage = t("You won't be able to use this role again.");
