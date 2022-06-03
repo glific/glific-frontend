@@ -143,8 +143,6 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
     onClick,
   } = props;
 
-  console.log(contactId, lastMessage.insertedAt);
-
   const [markAsRead] = useMutation(MARK_AS_READ, {
     onCompleted: (data) => {
       if (data.markContactMessagesAsRead) {

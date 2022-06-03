@@ -99,7 +99,7 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   }: any) => {
     setName(nameValue);
     setPhone(phoneValue);
-    console.log(accessRolesValue, setRoles);
+    
     // let' format the roles so that it is displayed correctly in the UI
     if (accessRolesValue) {
       if (hasDynamicRoles) {
@@ -264,8 +264,6 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
         (roleId: any) => !roleIds.includes(roleId)
       );
     }
-
-    console.log(payloadCopy);
 
     // delete current roles from the payload
     delete payloadCopy.roles;

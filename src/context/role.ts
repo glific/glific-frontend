@@ -17,7 +17,7 @@ let manageCollections: boolean = false;
 export const getUserRole = (): Array<any> => {
   if (!role || role.length === 0) {
     const userRoles: any = getUserSession('roles');
-    console.log(userRoles);
+
     if (userRoles) {
       role = userRoles.map((userRole: any) => userRole.label);
     } else role = [];
@@ -46,8 +46,6 @@ export const setUserRolePermissions = () => {
   }
 
   const hasDynamicRole = checkDynamicRole();
-
-  console.log(hasDynamicRole);
 
   if (role && hasDynamicRole) {
     sideDrawerMenu = getMenus('sideDrawer', 'Dynamic');
