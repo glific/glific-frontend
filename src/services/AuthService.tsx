@@ -115,7 +115,6 @@ export const clearUserSession = () => {
 export const getUserSession = (element?: string) => {
   const user = localStorage.getItem('glific_user');
 
-
   // let's early if there is no user session on local
   if (!user) return null;
 

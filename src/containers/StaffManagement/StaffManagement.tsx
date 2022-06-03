@@ -38,7 +38,7 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   const hasDynamicRoles = organizationHasDynamicRole();
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
-  const [roles, setRoles] = useState<any>(hasDynamicRoles ? [] : null);
+  const [roles, setRoles] = useState<any>([]);
   const [groups, setGroups] = useState(null);
   const [isRestricted, setIsRestricted] = useState(false);
   const [staffRole, setStaffRole] = useState(false);
@@ -99,7 +99,7 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   }: any) => {
     setName(nameValue);
     setPhone(phoneValue);
-    
+
     // let' format the roles so that it is displayed correctly in the UI
     if (accessRolesValue) {
       if (hasDynamicRoles) {
@@ -123,7 +123,14 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   });
 
   useEffect(() => {
-    if (roles && roles.id === 'Staff') {
+    let hasStaffRole = false;
+    if (hasDynamicRoles) {
+      hasStaffRole = roles && roles.length === 1 && roles[0].label === 'Staff';
+    } else {
+      hasStaffRole = roles && roles.label === 'Staff';
+    }
+
+    if (hasStaffRole) {
       setStaffRole(true);
     }
   }, [roles]);
@@ -160,13 +167,21 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   let formFields: any = [];
 
   const handleRolesChange = (value: any) => {
-    if (value) {
-      const hasStaffRole = value.label === 'Staff';
-      if (hasStaffRole) {
-        setStaffRole(true);
-      } else {
-        setStaffRole(false);
-      }
+    if (!value) {
+      return;
+    }
+    let hasStaffRole = false;
+
+    if (hasDynamicRoles) {
+      hasStaffRole = value.length === 1 && value[0].label === 'Staff';
+    } else {
+      hasStaffRole = value.label === 'Staff';
+    }
+
+    if (hasStaffRole) {
+      setStaffRole(true);
+    } else {
+      setStaffRole(false);
     }
   };
 
