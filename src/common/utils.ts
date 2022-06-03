@@ -152,7 +152,7 @@ export const numberToAbbreviation = (numberString: string) => {
 };
 
 // need to check from backend if organization has dynamic role
-export const organizationHasDynamicRole = () => false;
-// JSON.parse(localStorage.getItem('rolesPermission') || '');
+export const organizationHasDynamicRole = () =>
+  JSON.parse(localStorage.getItem('rolesPermission') || '');
 
 export default getObject;

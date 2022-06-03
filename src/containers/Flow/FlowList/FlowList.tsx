@@ -16,7 +16,7 @@ import { DELETE_FLOW, IMPORT_FLOW } from 'graphql/mutations/Flow';
 import { List } from 'containers/List/List';
 import Loading from 'components/UI/Layout/Loading/Loading';
 import { DATE_TIME_FORMAT } from 'common/constants';
-import { exportFlowMethod } from 'common/utils';
+import { exportFlowMethod, organizationHasDynamicRole } from 'common/utils';
 import { setNotification } from 'common/notification';
 import { Button } from 'components/UI/Form/Button/Button';
 import styles from './FlowList.module.css';
@@ -26,13 +26,13 @@ export interface FlowListProps {}
 const getName = (text: string, keywordsList: any, roles: any) => {
   const keywords = keywordsList.map((keyword: any) => keyword);
   const accessRoles = roles.map((role: any) => role.label);
-
+  const hasDynamicRole = organizationHasDynamicRole();
   return (
     <p className={`${styles.TableText} ${styles.NameText}`}>
       {text}
       <br />
       <span className={styles.Keyword}>{keywords.join(', ')}</span>
-      <span className={styles.Roles}>{accessRoles.join(', ')} </span>
+      {hasDynamicRole && <span className={styles.Roles}>{accessRoles.join(', ')} </span>}
     </p>
   );
 };
