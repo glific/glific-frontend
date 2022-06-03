@@ -32,3 +32,9 @@
   line-height: 1.25;
   margin: 0;
 }
+
+.RoleIcon {
+  width: 29px;
+  height: 29px;
+  color: #073f24 !important;
+}

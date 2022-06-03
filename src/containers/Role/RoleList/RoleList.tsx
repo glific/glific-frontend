@@ -1,8 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { ReactComponent as FlowIcon } from 'assets/images/icons/Flow/Dark.svg';
 import { List } from 'containers/List/List';
-
+import { PermIdentity } from '@material-ui/icons';
 import { COUNT_ROLES, FILTER_ROLES } from 'graphql/queries/Role';
 import { DELETE_ROLE } from 'graphql/mutations/Roles';
 import styles from './RoleList.module.css';
@@ -18,7 +17,7 @@ const getDescription = (description: string) => (
 );
 
 const columnStyles = [styles.Label, styles.Description, styles.Actions];
-const flowIcon = <FlowIcon className={styles.FlowIcon} />;
+const RoleIcon = <PermIdentity className={styles.RoleIcon} />;
 
 const queries = {
   countQuery: COUNT_ROLES,
@@ -48,7 +47,7 @@ export const RoleList: React.SFC<RoleListProps> = () => {
       listItem="accessRoles"
       listItemName="role"
       pageLink="role"
-      listIcon={flowIcon}
+      listIcon={RoleIcon}
       {...queries}
       {...columnAttributes}
       button={{ show: true, label: t('+ Create Role') }}
