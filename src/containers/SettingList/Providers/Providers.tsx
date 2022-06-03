@@ -99,10 +99,6 @@ export const Providers: React.SFC<ProvidersProps> = ({ match }) => {
     return object;
   };
 
-  const handleChange = (value: any) => {
-    setStateValues({ ...states, isActive: value });
-  };
-
   const resetValidation = () => {
     validation = {};
     FormSchema = Yup.object().shape(validation);
@@ -131,7 +127,6 @@ export const Providers: React.SFC<ProvidersProps> = ({ match }) => {
             {t('Is active?')}
           </Typography>
         ),
-        handleChange,
       },
     ];
     const defaultStates: any = {};
