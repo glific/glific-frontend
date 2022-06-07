@@ -45,8 +45,6 @@ export const Organisation = () => {
   const [flowId, setFlowId] = useState<any>(null);
   const [isDisabled, setIsDisable] = useState(false);
   const [isFlowDisabled, setIsFlowDisable] = useState(true);
-  // TODOS: fixe organizationId or remove it if it's not needed
-  // eslint-disable-next-line no-unused-vars
   const [organizationId, setOrganizationId] = useState(null);
   const [newcontactFlowId, setNewcontactFlowId] = useState(null);
   const [newcontactFlowEnabled, setNewcontactFlowEnabled] = useState(false);
@@ -460,6 +458,7 @@ export const Organisation = () => {
       redirect
       afterSave={saveHandler}
       customStyles={styles.organization}
+      entityId={organizationId}
     />
   );
 };

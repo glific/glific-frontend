@@ -65,6 +65,7 @@ export interface FormLayoutProps {
   onPreviewClick?: Function;
   getQueryFetchPolicy?: any;
   saveOnPageChange?: boolean;
+  entityId?: any;
 }
 
 export const FormLayout = ({
@@ -110,6 +111,7 @@ export const FormLayout = ({
   onPreviewClick = () => {},
   getQueryFetchPolicy = 'cache-first',
   saveOnPageChange = true,
+  entityId = null,
 }: FormLayoutProps) => {
   const [showDialog, setShowDialog] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
@@ -127,7 +129,11 @@ export const FormLayout = ({
 
   const capitalListItemName = listItemName[0].toUpperCase() + listItemName.slice(1);
   let item: any = null;
-  const itemId = params.id ? params.id : false;
+  let itemId = params.id ? params.id : false;
+  if (!itemId && entityId) {
+    itemId = entityId;
+  }
+
   let variables: any = itemId ? { [idType]: itemId } : false;
 
   const [deleteItem] = useMutation(deleteItemQuery, {
