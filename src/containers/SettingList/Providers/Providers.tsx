@@ -32,19 +32,13 @@ export const Providers = () => {
   const [credentialId, setCredentialId] = useState(null);
   const client = useApolloClient();
   const { t } = useTranslation();
-  const params = useParams();
-  const type = params.type ? params.type : null;
-
-  // TODOS: below code needs to be fixed once all compile erros are fixed
-  // eslint-disable-next-line
-  const param = { params: { id: credentialId, shortcode: type } };
   const [stateValues, setStateValues] = useState({});
-
   const [formFields, setFormFields] = useState([]);
-  const states: any = {};
-
   const [keys, setKeys] = useState({});
   const [secrets, setSecrets] = useState({});
+  const params = useParams();
+  const type = params.type ? params.type : null;
+  const states: any = {};
 
   const { data: providerData } = useQuery(GET_PROVIDERS, {
     variables: { filter: { shortcode: type } },
@@ -201,6 +195,7 @@ export const Providers = () => {
       type="settings"
       redirect
       afterSave={saveHandler}
+      entityId={credentialId}
     />
   );
 };

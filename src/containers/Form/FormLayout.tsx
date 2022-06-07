@@ -160,7 +160,7 @@ export const FormLayout = ({
     },
   });
   if (listItem === 'credential') {
-    variables = params.shortcode ? { shortcode: params.shortcode } : false;
+    variables = params.type ? { shortcode: params.type } : false;
   }
 
   const { loading, error } = useQuery(getItemQuery, {
