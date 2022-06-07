@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import * as Yup from 'yup';
@@ -17,6 +17,14 @@ export const ResetPasswordConfirmOTP = () => {
   const [authError, setAuthError] = useState('');
   const { t } = useTranslation();
   const location = useLocation();
+  const [phoneNumber, setPhoneNumber] = useState('');
+
+  useEffect(() => {
+    const state = location.state as any;
+    if (state) {
+      setPhoneNumber(state.phoneNumber);
+    }
+  }, [location]);
 
   // Let's not allow direct navigation to this page
   if (location && location.state === undefined) {
@@ -28,7 +36,7 @@ export const ResetPasswordConfirmOTP = () => {
   }
 
   const handleResend = () => {
-    // sendOTP(location.state.phoneNumber);
+    sendOTP(phoneNumber);
   };
 
   const formFields = [
@@ -63,9 +71,7 @@ export const ResetPasswordConfirmOTP = () => {
   });
 
   const initialFormValues = {
-    // TODOS: fix below
-    // phoneNumber: location.state.phoneNumber,
-    phoneNumber: '',
+    phoneNumber,
     OTP: '',
     password: '',
   };
