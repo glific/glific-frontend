@@ -1,5 +1,6 @@
 import { render, fireEvent, waitFor, screen } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
+import { BrowserRouter as Router } from 'react-router-dom';
 
 import { StaffManagement } from './StaffManagement';
 import { STAFF_MANAGEMENT_MOCKS } from './StaffManagement.test.helper';
@@ -8,7 +9,9 @@ const mocks = STAFF_MANAGEMENT_MOCKS;
 
 const staffManagement = (
   <MockedProvider mocks={mocks} addTypename={false}>
-    <StaffManagement />
+    <Router>
+      <StaffManagement />
+    </Router>
   </MockedProvider>
 );
 
