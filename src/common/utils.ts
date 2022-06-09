@@ -153,6 +153,6 @@ export const numberToAbbreviation = (numberString: string) => {
 
 // need to check from backend if organization has dynamic role
 export const organizationHasDynamicRole = () =>
-  JSON.parse(localStorage.getItem('rolesPermission') || '');
+  JSON.parse(localStorage.getItem('rolesPermission') || 'false');
 
 export default getObject;

@@ -25,14 +25,16 @@ export interface FlowListProps {}
 
 const getName = (text: string, keywordsList: any, roles: any) => {
   const keywords = keywordsList.map((keyword: any) => keyword);
-  const accessRoles = roles.map((role: any) => role.label);
+  const accessRoles = roles && roles.map((role: any) => role.label);
   const hasDynamicRole = organizationHasDynamicRole();
   return (
     <p className={`${styles.TableText} ${styles.NameText}`}>
       {text}
       <br />
       <span className={styles.Keyword}>{keywords.join(', ')}</span>
-      {hasDynamicRole && <span className={styles.Roles}>{accessRoles.join(', ')} </span>}
+      {hasDynamicRole && (
+        <span className={styles.Roles}>{accessRoles && accessRoles.join(', ')} </span>
+      )}
     </p>
   );
 };

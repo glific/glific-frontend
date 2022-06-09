@@ -133,7 +133,7 @@ export const getUserSession = (element?: string) => {
       returnValue = JSON.parse(user).organization.id;
       break;
     case 'roles':
-      returnValue = JSON.parse(user).accessRoles;
+      returnValue = JSON.parse(user).roles;
       break;
     case 'language':
       returnValue = JSON.parse(user).language.locale;
