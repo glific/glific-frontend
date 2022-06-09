@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { FormLayout } from 'containers/Form/FormLayout';
 import { Input } from 'components/UI/Form/Input/Input';
-import { PermIdentity } from '@material-ui/icons';
+import { ReactComponent as RoleIcon } from 'assets/images/icons/Role/Role.svg';
 import { CREATE_ROLE, DELETE_ROLE, UPDATE_ROLE } from 'graphql/mutations/Roles';
 import { GET_ROLE } from 'graphql/queries/Role';
 import styles from './Role.module.css';
@@ -13,7 +13,7 @@ export interface RoleProps {
   match: any;
 }
 
-const roleIcon = <PermIdentity className={styles.Icon} />;
+const roleIcon = <RoleIcon className={styles.Icon} />;
 
 const queries = {
   getItemQuery: GET_ROLE,

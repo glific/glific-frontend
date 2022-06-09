@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20px" height="24px" viewBox="0 0 20 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Role management icon</title>
+    <g id="Staff-management" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Desktop/Role-management" transform="translate(-271.000000, -28.000000)" stroke="#073F24" stroke-width="2">
+            <g id="Icon/Staff" transform="translate(257.000000, 16.000000)">
+                <g id="Icon/User" transform="translate(14.000000, 12.000000)">
+                    <circle id="Oval" cx="9.10344828" cy="4.96551724" r="3.96551724"></circle>
+                    <path d="M9.51724138,11.7586207 C13.2439174,11.7586207 16.100802,12.6349502 18.0344828,14.4907941 L18.0344828,14.4907941 L18.0344828,16.3793103 L1,16.3793103 L1,14.4907941 C2.93368074,12.6349502 5.79056536,11.7586207 9.51724138,11.7586207 Z" id="Path-12"></path>
+                    <rect id="Rectangle" x="1" y="19.2068966" width="3.79310345" height="3.79310345"></rect>
+                    <rect id="Rectangle-Copy-2" x="7.62068966" y="19.2068966" width="3.79310345" height="3.79310345"></rect>
+                    <rect id="Rectangle-Copy-3" x="14.2413793" y="19.2068966" width="3.79310345" height="3.79310345"></rect>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

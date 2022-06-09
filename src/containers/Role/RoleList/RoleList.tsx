@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { List } from 'containers/List/List';
-import { PermIdentity } from '@material-ui/icons';
+import { ReactComponent as RoleIcon } from 'assets/images/icons/Role/Role.svg';
 import { COUNT_ROLES, FILTER_ROLES } from 'graphql/queries/Role';
 import { DELETE_ROLE } from 'graphql/mutations/Roles';
 import styles from './RoleList.module.css';
@@ -17,7 +17,7 @@ const getDescription = (description: string) => (
 );
 
 const columnStyles = [styles.Label, styles.Description, styles.Actions];
-const RoleIcon = <PermIdentity className={styles.RoleIcon} />;
+const roleIcon = <RoleIcon className={styles.RoleIcon} />;
 
 const queries = {
   countQuery: COUNT_ROLES,
@@ -43,11 +43,11 @@ export const RoleList: React.SFC<RoleListProps> = () => {
 
   return (
     <List
-      title={t('Roles')}
+      title={t('Role Management')}
       listItem="accessRoles"
       listItemName="role"
       pageLink="role"
-      listIcon={RoleIcon}
+      listIcon={roleIcon}
       {...queries}
       {...columnAttributes}
       button={{ show: true, label: t('+ Create Role') }}
