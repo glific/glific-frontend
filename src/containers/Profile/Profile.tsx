@@ -50,7 +50,6 @@ export const Profile = ({
   const [bspStatus, setBspStatus] = useState('');
   const { t } = useTranslation();
   const params = useParams();
-  let param: any = params.id;
 
   const { data, loading } = useQuery(GET_CURRENT_USER);
   if (loading) return <Loading />;
@@ -58,13 +57,9 @@ export const Profile = ({
   const loggedInUserContactId = data.currentUser.user.contact.id;
   const currentUserPhone = data.currentUser.user.phone;
 
-  let currentContactId;
-  if (!param) {
-    // let's manually set the contact id in the match object in case of user profile
-    param = { params: { id: loggedInUserContactId } };
-    currentContactId = loggedInUserContactId;
-  } else {
-    currentContactId = param;
+  let currentContactId = loggedInUserContactId;
+  if (params.id) {
+    currentContactId = params.id;
   }
 
   const states: any = { name, phone, status, bspStatus };
@@ -165,6 +160,7 @@ export const Profile = ({
       afterDelete={afterDelete}
       type={type}
       title={pageTitle}
+      entityId={currentContactId}
     />
   );
 };
