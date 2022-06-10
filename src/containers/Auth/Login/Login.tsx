@@ -14,6 +14,7 @@ import {
   clearAuthSession,
   setUserSession,
   clearUserSession,
+  setOrganizationServices,
 } from 'services/AuthService';
 import { GET_CURRENT_USER } from 'graphql/queries/User';
 import { setUserRolePermissions } from 'context/role';
@@ -52,10 +53,7 @@ export const Login: React.SFC<LoginProps> = () => {
       userCopy.roles = user.accessRoles;
       // set the current user object
       setUserSession(JSON.stringify(userCopy));
-      localStorage.setItem(
-        'rolesPermission',
-        organizationData.organizationServices.rolesAndPermission
-      );
+      setOrganizationServices(JSON.stringify(organizationData.organizationServices));
 
       // get the roles
       const { accessRoles } = userData.currentUser.user;

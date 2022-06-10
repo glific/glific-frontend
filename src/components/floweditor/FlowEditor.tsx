@@ -17,7 +17,6 @@ import { PUBLISH_FLOW, RESET_FLOW_COUNT } from 'graphql/mutations/Flow';
 import { EXPORT_FLOW, GET_FLOW_DETAILS, GET_FREE_FLOW } from 'graphql/queries/Flow';
 import { setAuthHeaders } from 'services/AuthService';
 import { SideDrawerContext } from 'context/session';
-import { GET_ORGANIZATION_SERVICES } from 'graphql/queries/Organization';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { exportFlowMethod } from 'common/utils';
 import styles from './FlowEditor.module.css';
@@ -57,30 +56,25 @@ export const FlowEditor = (props: FlowEditorProps) => {
   let dialog = null;
   let flowTitle: any;
 
-  const [getOrganizationServices] = useLazyQuery(GET_ORGANIZATION_SERVICES, {
-    fetchPolicy: 'network-only',
-    onCompleted: (services) => {
-      const { dialogflow, googleCloudStorage, flowUuidDisplay } = services.organizationServices;
-
-      if (googleCloudStorage) {
-        config.attachmentsEnabled = true;
-      }
-      if (!dialogflow) {
-        config.excludeTypes.push('split_by_intent');
-      }
-      if (flowUuidDisplay) {
-        config.showNodeLabel = true;
-      }
-      showFlowEditor(document.getElementById('flow'), config);
-      setLoading(false);
-    },
-  });
-
   const [getFreeFlow] = useLazyQuery(GET_FREE_FLOW, {
     fetchPolicy: 'network-only',
     onCompleted: ({ flowGet }) => {
       if (flowGet.flow) {
-        getOrganizationServices();
+        const { dialogflow, googleCloudStorage, flowUuidDisplay } = JSON.parse(
+          localStorage.getItem('organizationServices') || '{}'
+        );
+
+        if (googleCloudStorage) {
+          config.attachmentsEnabled = true;
+        }
+        if (!dialogflow) {
+          config.excludeTypes.push('split_by_intent');
+        }
+        if (flowUuidDisplay) {
+          config.showNodeLabel = true;
+        }
+        showFlowEditor(document.getElementById('flow'), config);
+        setLoading(false);
       } else if (flowGet.errors && flowGet.errors.length) {
         setDialogMessage(flowGet.errors[0].message);
         setCurrentEditDialogBox(true);

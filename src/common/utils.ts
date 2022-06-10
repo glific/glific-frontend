@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { FLOW_EDITOR_API } from 'config';
 import setLogs from 'config/logs';
-import { getAuthSession } from 'services/AuthService';
+import { getAuthSession, getOrganizationServices } from 'services/AuthService';
 import { SIMULATOR_NUMBER_START } from './constants';
 import { setNotification } from './notification';
 
@@ -152,7 +152,6 @@ export const numberToAbbreviation = (numberString: string) => {
 };
 
 // need to check from backend if organization has dynamic role
-export const organizationHasDynamicRole = () =>
-  JSON.parse(localStorage.getItem('rolesPermission') || 'false');
+export const organizationHasDynamicRole = () => getOrganizationServices('rolesAndPermission');
 
 export default getObject;
