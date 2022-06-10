@@ -68,6 +68,7 @@ jobs:
           echo done. go to dir.
           cd glific
           echo done. start dev.secret.exs config
+          git checkout roles_and_permissions
           cd priv
           mkdir cert
           cd cert
