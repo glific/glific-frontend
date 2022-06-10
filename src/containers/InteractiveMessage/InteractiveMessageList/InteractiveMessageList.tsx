@@ -12,7 +12,7 @@ import {
 import { DELETE_INTERACTIVE } from 'graphql/mutations/InteractiveMessage';
 import { getInteractiveMessageBody } from 'common/utils';
 import { QUICK_REPLY } from 'common/constants';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styles from './InteractiveMessageList.module.css';
 
 const getLabel = (text: string) => <p className={styles.LabelText}>{text}</p>;
@@ -65,7 +65,6 @@ export const InteractiveMessageList = () => {
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState('');
   const navigate = useNavigate();
-  const location = useLocation();
 
   const getColumns = ({ id, label, interactiveContent, type, language, translations }: any) => ({
     id,
@@ -94,8 +93,7 @@ export const InteractiveMessageList = () => {
   };
 
   const handleCopyInteractive = (id: string) => {
-    location.state = 'copy';
-    navigate(`/interactive-message/${id}/edit`);
+    navigate(`/interactive-message/${id}/edit`, { state: 'copy' });
   };
 
   const additionalAction = [
