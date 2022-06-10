@@ -1,4 +1,4 @@
-import {  render, waitFor } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 
@@ -29,5 +29,4 @@ describe('<Role List />', () => {
       expect(getByText('Role Management'));
     });
   });
-
-  
+});
