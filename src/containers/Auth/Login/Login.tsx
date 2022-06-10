@@ -62,8 +62,8 @@ export const Login = () => {
           i18n.changeLanguage(userData.currentUser.user?.language.locale);
         }
 
-        if (location.state) {
-          navigate(location.state);
+        if (location.state.to) {
+          navigate(location.state.to);
         } else {
           // redirect to chat
           navigate('/chat');

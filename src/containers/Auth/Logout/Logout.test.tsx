@@ -33,7 +33,7 @@ describe('<Logout />', () => {
     );
 
     await waitFor(() => {
-      const button = screen.getByText('Login');
+      const button = screen.getByTestId('ok-button');
       fireEvent.click(button);
     });
   });

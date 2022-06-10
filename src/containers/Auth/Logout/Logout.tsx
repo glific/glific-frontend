@@ -1,7 +1,7 @@
 // eslint-disable-next-line
-import React, { useContext, useEffect, useState, CSSProperties } from 'react';
+import React, { useContext, useEffect, CSSProperties } from 'react';
 import axios from 'axios';
-import { Navigate, useLocation, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useApolloClient } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 
@@ -24,11 +24,11 @@ const divStyle: CSSProperties = {
 
 export const Logout = () => {
   const { setAuthenticated } = useContext(SessionContext);
-  const [redirect, setRedirect] = useState(false);
   const client = useApolloClient();
   const { t } = useTranslation();
   const location = useLocation();
   const params = useParams();
+  const navigate = useNavigate();
 
   // let's notify the backend when user logs out
   const userLogout = () => {
@@ -57,7 +57,7 @@ export const Logout = () => {
     // clear apollo cache
     client.clearStore();
 
-    setRedirect(true);
+    navigate('/login', { replace: true, state: { to: location.state } });
   };
 
   useEffect(() => {
@@ -79,10 +79,6 @@ export const Logout = () => {
       <div style={divStyle}>{t('Please login again to continue.')}</div>
     </DialogBox>
   );
-
-  if (redirect) {
-    return <Navigate to="/login" replace state={location.state} />;
-  }
 
   return dialog;
 };
