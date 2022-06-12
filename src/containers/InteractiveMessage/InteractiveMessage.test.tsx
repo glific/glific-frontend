@@ -1,7 +1,7 @@
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import axios from 'axios';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { Route, MemoryRouter, Routes } from 'react-router-dom';
 
 import { setUserSession } from 'services/AuthService';
 import { mocks } from 'mocks/InteractiveMessage';
@@ -34,9 +34,11 @@ const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 const renderInteractiveMessage = (id: string) => (
   <MockedProvider mocks={mockData} addTypename={false}>
-    <Router>
-      <InteractiveMessage />
-    </Router>
+    <MemoryRouter initialEntries={[`/interactive-message/${id}/edit`]}>
+      <Routes>
+        <Route path="interactive-message/:id/edit" element={<InteractiveMessage />} />
+      </Routes>
+    </MemoryRouter>
   </MockedProvider>
 );
 
@@ -71,9 +73,9 @@ test('it renders empty interactive form', async () => {
 
   render(
     <MockedProvider mocks={mockData} addTypename={false}>
-      <Router>
+      <MemoryRouter>
         <InteractiveMessage />
-      </Router>
+      </MemoryRouter>
     </MockedProvider>
   );
 
