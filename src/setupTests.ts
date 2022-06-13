@@ -29,3 +29,5 @@ class ResizeObserver {
 }
 
 window.ResizeObserver = ResizeObserver;
+
+global.URL.createObjectURL = jest.fn('');

@@ -9405,7 +9405,7 @@ react-linkify@^1.0.0-alpha:
     linkify-it "^2.0.3"
     tlds "^1.199.0"
 
-react-media-recorder@^1.6.4:
+react-media-recorder@^1.6.6:
   version "1.6.6"
   resolved "https://registry.yarnpkg.com/react-media-recorder/-/react-media-recorder-1.6.6.tgz#4067c54e3f11c56f33a7df9daa1650a7aa4305f1"
   integrity sha512-VdC4bUINMWJyqOAHw1DaZ8HZhdCyVBK85zJ4cHMo9tsrekui3wq5ZxNtBmNe6nbAFQBTNj/pRnLEsiVrCW+TNQ==
