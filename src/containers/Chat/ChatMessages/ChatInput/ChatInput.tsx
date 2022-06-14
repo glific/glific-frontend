@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { EditorState, ContentState } from 'draft-js';
 import { Container, Button, ClickAwayListener, Fade, IconButton } from '@material-ui/core';
-import 'emoji-mart/css/emoji-mart.css';
 import clsx from 'clsx';
 import { useMutation, useQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';

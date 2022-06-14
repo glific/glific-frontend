@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Picker } from 'emoji-mart';
 import { RichUtils, getDefaultKeyBinding, Modifier, EditorState, Editor } from 'draft-js';
 import { IconButton, ClickAwayListener } from '@material-ui/core';
-import 'emoji-mart/css/emoji-mart.css';
 import ReactResizeDetector from 'react-resize-detector';
 import { useTranslation } from 'react-i18next';
 

@@ -4,7 +4,6 @@ import Editor from '@draft-js-plugins/editor';
 import createMentionPlugin from '@draft-js-plugins/mention';
 import { InputAdornment, IconButton, ClickAwayListener } from '@material-ui/core';
 import { Picker } from 'emoji-mart';
-import 'emoji-mart/css/emoji-mart.css';
 import { useTranslation } from 'react-i18next';
 
 import { getPlainTextFromEditor } from 'common/RichEditor';
