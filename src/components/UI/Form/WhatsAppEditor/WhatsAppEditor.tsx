@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { Picker } from 'emoji-mart';
 import { RichUtils, getDefaultKeyBinding, Modifier, EditorState, Editor } from 'draft-js';
 import { IconButton, ClickAwayListener } from '@material-ui/core';
 import ReactResizeDetector from 'react-resize-detector';
 import { useTranslation } from 'react-i18next';
 
 import { getPlainTextFromEditor } from 'common/RichEditor';
+import { EmojiPicker } from 'components/UI/EmojiPicker/EmojiPicker';
 import styles from './WhatsAppEditor.module.css';
 
 interface WhatsAppEditorProps {
@@ -134,12 +134,18 @@ export const WhatsAppEditor = ({
             </IconButton>
           </div>
           {showEmojiPicker ? (
-            <Picker
-              data-testid="emoji-popup"
+            // <Picker
+            //   data-testid="emoji-popup"
+            //   title={t('Pick your emoji…')}
+            //   emoji="point_up"
+            //   style={emojiStyles}
+            //   onSelect={(emoji) => updateValue(emoji, true)}
+            // />
+            <EmojiPicker
+              onEmojiSelect={(emoji: any) => updateValue(emoji, true)}
+              data-testid="emoji-container"
               title={t('Pick your emoji…')}
               emoji="point_up"
-              style={emojiStyles}
-              onSelect={(emoji) => updateValue(emoji, true)}
             />
           ) : null}
         </div>

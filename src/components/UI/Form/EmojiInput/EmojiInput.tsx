@@ -6,8 +6,9 @@ import { InputAdornment, IconButton, ClickAwayListener } from '@material-ui/core
 import { useTranslation } from 'react-i18next';
 
 import { getPlainTextFromEditor } from 'common/RichEditor';
+import { EmojiPicker } from 'components/UI/EmojiPicker/EmojiPicker';
 import { Input } from '../Input/Input';
-import { EmojiPicker } from '../../EmojiPicker/EmojiPicker';
+
 import Styles from './EmojiInput.module.css';
 
 export interface EmojiInputProps {
