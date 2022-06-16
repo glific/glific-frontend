@@ -73,9 +73,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
         config.showNodeLabel = true;
       }
 
-      console.log(contactProfileEnabled);
-
-      if (true) {
+      if (contactProfileEnabled) {
         config.filters.push('profile');
       }
 
