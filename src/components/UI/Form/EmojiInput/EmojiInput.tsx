@@ -178,18 +178,12 @@ export const EmojiInput = ({
   const editor = { inputComponent: DraftField, inputProps };
 
   const emojiPicker = showEmojiPicker ? (
-    // <Picker
-    //   data-testid="emoji-container"
-    //   title={t('Pick your emoji…')}
-    //   emoji="point_up"
-    //   style={{ position: 'absolute', top: '10px', right: '0px', zIndex: 2 }}
-    //   onSelect={(emojiValue) => updateValue(emojiValue, true)}
-    // />
     <EmojiPicker
       onEmojiSelect={(emojiValue: any) => updateValue(emojiValue, true)}
       data-testid="emoji-container"
       title={t('Pick your emoji…')}
       emoji="point_up"
+      style={{ position: 'absolute', top: '10px', right: '0px', zIndex: 2 }}
     />
   ) : (
     ''

@@ -134,18 +134,12 @@ export const WhatsAppEditor = ({
             </IconButton>
           </div>
           {showEmojiPicker ? (
-            // <Picker
-            //   data-testid="emoji-popup"
-            //   title={t('Pick your emoji…')}
-            //   emoji="point_up"
-            //   style={emojiStyles}
-            //   onSelect={(emoji) => updateValue(emoji, true)}
-            // />
             <EmojiPicker
               onEmojiSelect={(emoji: any) => updateValue(emoji, true)}
-              data-testid="emoji-container"
+              data-testid="emoji-popup"
               title={t('Pick your emoji…')}
               emoji="point_up"
+              style={emojiStyles}
             />
           ) : null}
         </div>
