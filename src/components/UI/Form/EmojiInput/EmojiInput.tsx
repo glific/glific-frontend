@@ -3,12 +3,10 @@ import { RichUtils, Modifier, EditorState, ContentState } from 'draft-js';
 import Editor from '@draft-js-plugins/editor';
 import createMentionPlugin from '@draft-js-plugins/mention';
 import { InputAdornment, IconButton, ClickAwayListener } from '@material-ui/core';
-import { useTranslation } from 'react-i18next';
 
 import { getPlainTextFromEditor } from 'common/RichEditor';
 import { EmojiPicker } from 'components/UI/EmojiPicker/EmojiPicker';
 import { Input } from '../Input/Input';
-
 import Styles from './EmojiInput.module.css';
 
 export interface EmojiInputProps {
@@ -85,7 +83,6 @@ export const EmojiInput = ({
   ...props
 }: EmojiInputProps) => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const { t } = useTranslation();
 
   const updateValue = (input: any, isEmoji = false) => {
     const editorContentState = value.getCurrentContent();
@@ -180,10 +177,7 @@ export const EmojiInput = ({
   const emojiPicker = showEmojiPicker ? (
     <EmojiPicker
       onEmojiSelect={(emojiValue: any) => updateValue(emojiValue, true)}
-      data-testid="emoji-container"
-      title={t('Pick your emoji…')}
-      emoji="point_up"
-      style={{ position: 'absolute', top: '10px', right: '0px', zIndex: 2 }}
+      displayStyle={{ position: 'absolute', top: '10px', right: '0px', zIndex: 2 }}
     />
   ) : (
     ''

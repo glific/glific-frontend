@@ -136,10 +136,7 @@ export const WhatsAppEditor = ({
           {showEmojiPicker ? (
             <EmojiPicker
               onEmojiSelect={(emoji: any) => updateValue(emoji, true)}
-              data-testid="emoji-popup"
-              title={t('Pick your emoji…')}
-              emoji="point_up"
-              style={emojiStyles}
+              displayStyle={emojiStyles}
             />
           ) : null}
         </div>
