@@ -26,7 +26,8 @@ describe('<Role List />', () => {
     const { getByText } = render(rolesList);
     expect(getByText('Loading...')).toBeInTheDocument();
     await waitFor(() => {
-      expect(getByText('Role Management'));
+      expect(getByText('Role Management')).toBeInTheDocument();
+      expect(getByText('Admin')).toBeInTheDocument();
     });
   });
 });

@@ -24,3 +24,11 @@ it('should render Role form page', async () => {
     expect(wrapper.container).toBeInTheDocument();
   });
 });
+
+it('should have fields for name and description', async () => {
+  const { getAllByTestId } = render(flow({ params: { id: '5' } }));
+  await waitFor(() => {
+    expect(getAllByTestId('inputLabel')[0]).toHaveTextContent('Label');
+    expect(getAllByTestId('inputLabel')[1]).toHaveTextContent('Description');
+  });
+});
