@@ -117,6 +117,7 @@ export const GET_ORGANIZATION_SERVICES = gql`
       googleCloudStorage
       flowUuidDisplay
       rolesAndPermission
+      contactProfileEnabled
     }
   }
 `;
