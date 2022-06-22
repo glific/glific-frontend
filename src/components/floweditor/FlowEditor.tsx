@@ -56,7 +56,8 @@ export const FlowEditor = () => {
   const [getOrganizationServices] = useLazyQuery(GET_ORGANIZATION_SERVICES, {
     fetchPolicy: 'network-only',
     onCompleted: (services) => {
-      const { dialogflow, googleCloudStorage, flowUuidDisplay } = services.organizationServices;
+      const { dialogflow, googleCloudStorage, flowUuidDisplay, contactProfileEnabled } =
+        services.organizationServices;
 
       if (googleCloudStorage) {
         config.attachmentsEnabled = true;
@@ -67,6 +68,11 @@ export const FlowEditor = () => {
       if (flowUuidDisplay) {
         config.showNodeLabel = true;
       }
+
+      if (contactProfileEnabled) {
+        config.filters.push('profile');
+      }
+
       showFlowEditor(document.getElementById('flow'), config);
       setLoading(false);
     },

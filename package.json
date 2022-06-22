@@ -1,6 +1,6 @@
 {
   "name": "glific-frontend",
-  "version": "3.7.4",
+  "version": "3.7.5",
   "private": true,
   "dependencies": {
     "@absinthe/socket": "^0.2.1",
@@ -18,7 +18,7 @@
     "@draft-js-plugins/editor": "^4.1.3",
     "@draft-js-plugins/mention": "^5.2.1",
     "@emoji-mart/data": "^1.0.2",
-    "@glific/flow-editor": "^1.17.0-11",
+    "@glific/flow-editor": "^1.17.1-2",
     "@jumpn/utils-graphql": "^0.6.0",
     "@material-ui/core": "^4.12.4",
     "@material-ui/icons": "^4.11.3",
