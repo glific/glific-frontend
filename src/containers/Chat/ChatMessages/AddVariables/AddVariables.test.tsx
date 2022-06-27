@@ -62,7 +62,7 @@ test('it should render variable options and save the form', async () => {
 
 test('cancel button clicked', async () => {
   axiosApiCall();
-  const { container, getByTestId, getByText } = render(wrapper);
+  const { getByTestId, getByText } = render(wrapper);
 
   await waitFor(() => {
     expect(getByTestId('variablesDialog')).toBeInTheDocument();
