@@ -730,7 +730,8 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
 
   let topChatBar;
   let chatInputSection;
-  if (contactId) {
+
+  if (contactId && conversationInfo.contact) {
     const displayName = getDisplayName(conversationInfo);
     topChatBar = (
       <ContactBar
@@ -753,7 +754,7 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
         contactBspStatus={conversationInfo.contact.bspStatus}
       />
     );
-  } else if (collectionId) {
+  } else if (collectionId && conversationInfo.group) {
     topChatBar = (
       <ContactBar
         collectionId={collectionId.toString()}
