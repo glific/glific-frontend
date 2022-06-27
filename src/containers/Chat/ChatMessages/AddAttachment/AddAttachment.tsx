@@ -73,7 +73,6 @@ export const AddAttachment = ({
           } else if (response.data.is_valid) {
             setVerifying(false);
             setAttachmentAdded(true);
-
             setErrors(null);
           }
         })

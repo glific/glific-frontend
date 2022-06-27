@@ -1,5 +1,5 @@
 import { MockedProvider } from '@apollo/client/testing';
-import { cleanup, fireEvent, render, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent, render, waitFor, screen } from '@testing-library/react';
 
 import { uploadMediaMock } from 'mocks/Attachment';
 import { AddAttachment } from './AddAttachment';
@@ -36,7 +36,9 @@ const addAttachment = (attachmentType = '', attachmentURL = '') => {
 };
 
 beforeEach(() => {
-  mockedAxios.get.mockImplementation(() => Promise.resolve({ data: {} }));
+  mockedAxios.get.mockImplementation(() =>
+    Promise.resolve({ data: { is_valid: false, message: 'This media URL is invalid' } })
+  );
 });
 
 test('it should render', () => {
@@ -100,18 +102,17 @@ test('should get error if the type is not present', async () => {
 test('cancel button', () => {
   const { getByTestId } = render(addAttachment());
   fireEvent.click(getByTestId('cancel-button'));
-
   expect(setAttachment).toHaveBeenCalled();
 });
 
-test('show warnings if attachment type is audio', async () => {
-  const { getByText } = render(addAttachment('AUDIO', 'https://glific.com'));
-  expect(getByText('Captions along with audio are not supported.')).toBeInTheDocument();
-  await waitFor(() => {});
+test('show warnings if attachment type is audio', () => {
+  render(addAttachment('AUDIO', 'https://glific.com'));
+  const helpText = screen.getByText('Captions along with audio are not supported.');
+  expect(helpText).toBeInTheDocument();
 });
 
-test('show warnings if attachment type is sticker', async () => {
-  const { getByText } = render(addAttachment('STICKER', 'https://glific.com'));
-  expect(getByText('Animated stickers are not supported.')).toBeInTheDocument();
-  await waitFor(() => {});
+test('show warnings if attachment type is sticker', () => {
+  render(addAttachment('STICKER', 'https://glific.com'));
+  const helpText = screen.getByText('Animated stickers are not supported.');
+  expect(helpText).toBeInTheDocument();
 });
