@@ -133,7 +133,9 @@
     "transform": {
       "^.+\\.ts?$": "ts-jest"
     },
-    "transformIgnorePatterns": ["node_modules/(?!@emoji-mart)/"],
+    "transformIgnorePatterns": [
+      "node_modules/(?!@emoji-mart)/"
+    ],
     "collectCoverageFrom": [
       "src/**/*.{ts,tsx}",
       "!src/config/*.{ts,tsx}",
@@ -152,6 +154,8 @@
     "@types/react-test-renderer": "^18.0.0",
     "buffer": "^6.0.3",
     "i18next-parser": "^6.5.0",
+    "jest": "^28.1.2",
+    "jest-environment-jsdom": "^28.1.2",
     "prettier": "^2.7.1",
     "process": "^0.11.10",
     "react-app-rewired": "^2.2.1",
