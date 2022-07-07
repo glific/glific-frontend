@@ -127,6 +127,27 @@
       "last 1 safari version"
     ]
   },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "transform": {
+      "^.+\\.ts?$": "ts-jest"
+    },
+    "transformIgnorePatterns": ["node_modules/(?!@emoji-mart)/"],
+    "collectCoverageFrom": [
+      "src/**/*.{ts,tsx}",
+      "!src/config/*.{ts,tsx}",
+      "!src/serviceWorker.ts",
+      "!src/react-app-env.d.ts",
+      "!src/index.tsx",
+      "!src/types/**/*.{ts,tsx}"
+    ],
+    "coverageReporters": [
+      "text",
+      "html",
+      "lcov"
+    ]
+  },
   "devDependencies": {
     "@types/react-test-renderer": "^18.0.0",
     "buffer": "^6.0.3",
