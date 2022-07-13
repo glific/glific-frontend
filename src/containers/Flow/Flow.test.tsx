@@ -1,6 +1,6 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { render, waitFor, fireEvent } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 
 import { getOrganizationLanguagesQuery, getOrganizationQuery } from 'mocks/Organization';
@@ -97,12 +97,13 @@ it('should create copy of flow', async () => {
 });
 
 it('should edit the flow', async () => {
-  const history: any = createBrowserHistory();
-  history.push({ pathname: `/flow/1/edit` });
-
   const editFlow = (match: any) => (
     <MockedProvider mocks={mocks} addTypename={false}>
-      <Flow />
+      <MemoryRouter initialEntries={[`/flow/1/edit`]}>
+        <Routes>
+          <Route path="flow/:id/edit" element={<Flow />} />
+        </Routes>
+      </MemoryRouter>
     </MockedProvider>
   );
   const { container, getByTestId } = render(editFlow({ params: { id: 1 } }));
