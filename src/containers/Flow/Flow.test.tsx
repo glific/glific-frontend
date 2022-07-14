@@ -13,7 +13,21 @@ const mocks = [
   filterFlowQuery,
   getOrganizationLanguagesQuery,
 ];
-const flow = (match: any) => (
+
+const mockUseLocationValue: any = {
+  pathname: '/',
+  search: '',
+  hash: '',
+  state: null,
+};
+jest.mock('react-router-dom', () => ({
+  ...(jest.requireActual('react-router-dom') as {}),
+  useLocation: () => {
+    return mockUseLocationValue;
+  },
+}));
+
+const flow = () => (
   <MockedProvider mocks={mocks} addTypename={false}>
     <MemoryRouter>
       <Flow />
@@ -22,14 +36,14 @@ const flow = (match: any) => (
 );
 
 it('should render Flow', async () => {
-  const wrapper = render(flow({ params: { id: 1 } }));
+  const wrapper = render(flow());
   await waitFor(() => {
     expect(wrapper.container).toBeInTheDocument();
   });
 });
 
 it('should support keywords in a separate language', async () => {
-  const { container, getByText, findByText } = render(flow({ params: {} }));
+  const { container, getByText, findByText } = render(flow());
 
   await waitFor(() => {});
   fireEvent.change(container.querySelector('input[name="name"]') as HTMLInputElement, {
@@ -48,7 +62,7 @@ it('should support keywords in a separate language', async () => {
 });
 
 it('should not allow special characters in keywords', async () => {
-  const { container, getByText } = render(flow({ params: {} }));
+  const { container, getByText } = render(flow());
 
   await waitFor(() => {});
   fireEvent.change(container.querySelector('input[name="name"]') as HTMLInputElement, {
@@ -69,14 +83,17 @@ it('should not allow special characters in keywords', async () => {
 it('should create copy of flow', async () => {
   const history: any = createBrowserHistory();
   history.push({ pathname: `/flow/1/edit`, state: 'copy' });
+  mockUseLocationValue.state = 'copy';
 
-  const copyFlow = (match: any) => (
-    <MockedProvider mocks={mocks} addTypename={false}>
-      <Flow />
-    </MockedProvider>
+  const copyFlow = () => (
+    <MemoryRouter initialEntries={[`/flow/1/edit`]}>
+      <Routes>
+        <Route path="flow/:id/edit" element={<Flow />} />
+      </Routes>
+    </MemoryRouter>
   );
 
-  const { container, getByTestId } = render(copyFlow({ params: { id: 1 } }));
+  const { container, getByTestId } = render(copyFlow());
   await waitFor(() => {
     const inputElement = container.querySelector('input[name="name"]') as HTMLInputElement;
     expect(inputElement?.value).toBe('Copy of Help');
@@ -97,7 +114,7 @@ it('should create copy of flow', async () => {
 });
 
 it('should edit the flow', async () => {
-  const editFlow = (match: any) => (
+  const editFlow = () => (
     <MockedProvider mocks={mocks} addTypename={false}>
       <MemoryRouter initialEntries={[`/flow/1/edit`]}>
         <Routes>
@@ -106,6 +123,6 @@ it('should edit the flow', async () => {
       </MemoryRouter>
     </MockedProvider>
   );
-  const { container, getByTestId } = render(editFlow({ params: { id: 1 } }));
+  const { container, getByTestId } = render(editFlow());
   await waitFor(() => {});
 });
