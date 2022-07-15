@@ -30,6 +30,7 @@ const SpeedSendsSessionTemplates = [
     label: 'Good message',
     shortcode: 'test',
     status: 'ACCEPTED',
+    reason: 'test reason',
     isHsm: false,
     isReserved: false,
     isActive: false,
@@ -398,6 +399,7 @@ const getHSMTemplate = (id: string, status: string) => ({
   language: { id: '1', label: 'English' },
   shortcode: 'account_balance',
   status,
+  reason: 'test reason',
   translations:
     '{"2":{"number_parameters":1,"language_id":2,"body":" अब आप नीचे दिए विकल्पों में से एक का चयन करके {{1}} के साथ समाप्त होने वाले खाते के लिए अपना खाता शेष या मिनी स्टेटमेंट देख सकते हैं। | [अकाउंट बैलेंस देखें] | [देखें मिनी स्टेटमेंट]"}}',
   type: 'TEXT',
@@ -452,10 +454,42 @@ export const HSM_LIST = [
       data: {
         sessionTemplates: [
           getHSMTemplate('1', 'APPROVED'),
-          getHSMTemplate('2', 'PENDING'),
-          getHSMTemplate('3', 'REJECTED'),
+          getHSMTemplate('2', 'APPROVED'),
+          getHSMTemplate('3', 'APPROVED'),
         ],
       },
     },
   },
+  {
+    request: {
+      query: GET_TEMPLATES_COUNT,
+      variables: {
+        filter: {
+          isHsm: true,
+          status: 'REJECTED',
+        },
+      },
+    },
+    result: {
+      data: {
+        countSessionTemplates: 1,
+      },
+    },
+  },
+  {
+    request: {
+      query: FILTER_TEMPLATES,
+      variables: {
+        filter: { isHsm: true, status: 'REJECTED' },
+        opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'status' },
+      },
+    },
+    result: {
+      data: {
+        sessionTemplates: [
+          getHSMTemplate('1', 'REJECTED')
+        ],
+      },
+    },
+  }
 ];

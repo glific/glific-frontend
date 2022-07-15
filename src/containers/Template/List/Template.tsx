@@ -137,7 +137,7 @@ export const Template: React.SFC<TemplateProps> = (props) => {
   let columnStyles: any = [styles.Label, styles.Body];
 
   columnStyles = isHSM
-    ? [...columnStyles, styles.Status, styles.Actions]
+    ? [...columnStyles, styles.Status, ...(filters.REJECTED ? [styles.Reason] : []), styles.Actions]
     : [...columnStyles, styles.LastModified, styles.Actions];
 
   const getColumns = ({
