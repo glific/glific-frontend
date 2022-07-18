@@ -288,7 +288,6 @@ export const FlowEditor = (props: FlowEditorProps) => {
           history.push('/flow');
         }}
       >
-        {/* <p className={styles.DialogDescription}>Please try again later or contact the user.</p> */}
         <p className={styles.DialogDescription}>
           You can either go back and edit it later or <br /> &lsquo;Take Over&rsquo; this flow to
           start editing now.
