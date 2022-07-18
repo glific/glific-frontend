@@ -55,22 +55,24 @@ export const FlowEditor = () => {
 
   const [getOrganizationServices] = useLazyQuery(GET_ORGANIZATION_SERVICES, {
     fetchPolicy: 'network-only',
-    onCompleted: (services) => {
-      const { dialogflow, googleCloudStorage, flowUuidDisplay, contactProfileEnabled } =
-        services.organizationServices;
+    onCompleted: ({ organizationServices }) => {
+      if (organizationServices) {
+        const { dialogflow, googleCloudStorage, flowUuidDisplay, contactProfileEnabled } =
+          organizationServices;
 
-      if (googleCloudStorage) {
-        config.attachmentsEnabled = true;
-      }
-      if (!dialogflow) {
-        config.excludeTypes.push('split_by_intent');
-      }
-      if (flowUuidDisplay) {
-        config.showNodeLabel = true;
-      }
+        if (googleCloudStorage) {
+          config.attachmentsEnabled = true;
+        }
+        if (!dialogflow) {
+          config.excludeTypes.push('split_by_intent');
+        }
+        if (flowUuidDisplay) {
+          config.showNodeLabel = true;
+        }
 
-      if (contactProfileEnabled) {
-        config.filters.push('profile');
+        if (contactProfileEnabled) {
+          config.filters.push('profile');
+        }
       }
 
       showFlowEditor(document.getElementById('flow'), config);
