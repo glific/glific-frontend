@@ -6,6 +6,22 @@
 import '@testing-library/jest-dom/extend-expect';
 process.env.REACT_APP_WEB_SOCKET = 'ws://localhost/socket';
 
+jest.mock('emoji-mart', () => {
+  return {
+    Picker: () => {
+      return null;
+    },
+  };
+});
+
+jest.mock('react-media-recorder', () => {
+  return {
+    useReactMediaRecorder: () => {
+      return null;
+    },
+  };
+});
+
 jest.mock('react-i18next', () => {
   const reactI18next = jest.requireActual('react-i18next');
   return {
