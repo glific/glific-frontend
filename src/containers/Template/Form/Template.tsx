@@ -169,6 +169,10 @@ const Template: React.SFC<TemplateProps> = (props) => {
     languageStyle = 'dropdown',
   } = props;
 
+  // "Audio" option is removed in case of HSM Template
+  const mediaTypes =
+    listItemName === 'HSM Template' ? options.filter(({ label }) => label !== 'AUDIO') : options;
+
   const [label, setLabel] = useState('');
   const [body, setBody] = useState(EditorState.createEmpty());
   const [example, setExample] = useState(EditorState.createEmpty());
@@ -520,7 +524,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
     {
       component: AutoComplete,
       name: 'type',
-      options,
+      options: mediaTypes,
       optionLabel: 'label',
       multiple: false,
       textFieldProps: {
