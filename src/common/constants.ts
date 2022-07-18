@@ -116,7 +116,7 @@ export const is24HourWindowOver = (time: any) =>
 // connection retry attempt configuration
 export const CONNECTION_RECONNECT_ATTEMPTS = 5;
 
-export const MEDIA_MESSAGE_TYPES = ['IMAGE', 'AUDIO', 'VIDEO', 'DOCUMENT', 'STICKER'];
+export const MEDIA_MESSAGE_TYPES = ['IMAGE', 'VIDEO', 'DOCUMENT', 'STICKER'];
 
 export const setColumnToBackendTerms: any = (listName: string, columnName: string) => {
   let backendTerms: any = {
@@ -185,7 +185,7 @@ export const REFETCH_RANDOM_TIME_MAX = 40;
 
 // pre-requisite link for facebook business manager verification in organization setup
 export const FB_MANAGER_VERIFICATION =
-  'https://glific.slab.com/public/posts/facebook-verification-process-for-wa-business-api-065jvy5a';
+  'https://glific.slab.com/public/posts/02-facebook-verification-process-for-wa-business-api-skxjzu85';
 
 // pre-requisite link for gupshup account creation in organization setup
 export const GUPSHUP_ACCOUNT_CREATION =
