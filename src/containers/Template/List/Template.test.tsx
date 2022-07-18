@@ -1,4 +1,11 @@
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  waitForElementToBeRemoved,
+} from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { BrowserRouter as Router } from 'react-router-dom';
 
@@ -58,7 +65,7 @@ const hsmProps: any = {
   buttonLabel: 'Create HSM Template',
 };
 
-const hsmMocks = [...HSM_LIST, ...HSM_LIST, getOrganizationBSP, importTemplateMutation];
+const hsmMocks = [...HSM_LIST, getOrganizationBSP, importTemplateMutation];
 
 const hsmComponent = (
   <ProviderContext.Provider value={{ provider: 'gupshup_enterprise', setProvider: jest.fn() }}>
@@ -72,7 +79,9 @@ const hsmComponent = (
 
 test('it renders hsm list component', async () => {
   render(hsmComponent);
-  await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 0)));
+  // List rendered with status as approved
+  const listOfTemplates = await screen.findAllByText('Account Balance');
+  expect(listOfTemplates.length).toBeGreaterThanOrEqual(1);
 });
 
 test('should import templates using csv file', async () => {
@@ -103,4 +112,17 @@ test('should import templates using csv file', async () => {
 
   await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 0)));
   await waitFor(() => {});
+});
+
+test('reason column should appear when rejected templates are fetched', async () => {
+  render(hsmComponent);
+
+  const rejectCheckbox = await screen.findByRole('checkbox', { name: 'Rejected' });
+  fireEvent.click(rejectCheckbox);
+  screen.getByText('Loading...');
+
+  const testLoadingRemoved = await waitForElementToBeRemoved(() => screen.getByText('Loading...'));
+
+  const rejectedSvgElement = await screen.findByText('test reason');
+  expect(rejectedSvgElement).toBeInTheDocument();
 });
