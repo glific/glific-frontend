@@ -81,16 +81,16 @@ it('should not allow special characters in keywords', async () => {
 });
 
 it('should create copy of flow', async () => {
-  const history: any = createBrowserHistory();
-  history.push({ pathname: `/flow/1/edit`, state: 'copy' });
   mockUseLocationValue.state = 'copy';
 
   const copyFlow = () => (
-    <MemoryRouter initialEntries={[`/flow/1/edit`]}>
-      <Routes>
-        <Route path="flow/:id/edit" element={<Flow />} />
-      </Routes>
-    </MemoryRouter>
+    <MockedProvider mocks={mocks} addTypename={false}>
+      <MemoryRouter initialEntries={[`/flow/1/edit`]}>
+        <Routes>
+          <Route path="flow/:id/edit" element={<Flow />} />
+        </Routes>
+      </MemoryRouter>
+    </MockedProvider>
   );
 
   const { container, getByTestId } = render(copyFlow());
