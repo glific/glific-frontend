@@ -308,7 +308,7 @@ export const TEMPLATE_MOCKS = [
     request: {
       query: GET_TEMPLATE,
       variables: {
-        id: 1,
+        id: '1',
       },
     },
     result: {
@@ -319,7 +319,7 @@ export const TEMPLATE_MOCKS = [
     request: {
       query: GET_TEMPLATE,
       variables: {
-        id: 1,
+        id: '1',
       },
     },
     result: {
@@ -486,10 +486,8 @@ export const HSM_LIST = [
     },
     result: {
       data: {
-        sessionTemplates: [
-          getHSMTemplate('1', 'REJECTED')
-        ],
+        sessionTemplates: [getHSMTemplate('1', 'REJECTED')],
       },
     },
-  }
+  },
 ];

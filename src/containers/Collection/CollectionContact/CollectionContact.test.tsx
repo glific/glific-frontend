@@ -6,6 +6,13 @@ import { countCollectionContactsQuery } from 'mocks/Contact';
 import { getCollectionQuery } from 'mocks/Collection';
 import { CollectionContact } from './CollectionContact';
 
+jest.mock('react-router-dom', () => {
+  return {
+    ...jest.requireActual('react-router-dom'),
+    useParams: () => ({ id: 1 }),
+  };
+});
+
 const mocks = [
   countCollectionContactsQuery,
   countCollectionContactsQuery,

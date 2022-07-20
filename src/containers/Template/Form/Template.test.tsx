@@ -6,6 +6,13 @@ import Template from './Template';
 import { TEMPLATE_MOCKS } from '../Template.test.helper';
 import { BrowserRouter } from 'react-router-dom';
 
+jest.mock('react-router-dom', () => {
+  return {
+    ...jest.requireActual('react-router-dom'),
+    useParams: () => ({ id: '1' }),
+  };
+});
+
 afterEach(cleanup);
 const mocks = [...TEMPLATE_MOCKS, ...TEMPLATE_MOCKS];
 

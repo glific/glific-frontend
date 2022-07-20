@@ -357,12 +357,12 @@ const Template = ({
     if (Object.prototype.hasOwnProperty.call(params, 'id') && params.id) {
       getSessionTemplate({ variables: { id: params.id } });
     }
-  }, [params]);
+  }, []);
 
   useEffect(() => {
     if (languages) {
       const lang = languages.currentUser.user.organization.activeLanguages.slice();
-      // sort languages by their name
+      // sort languages by thaeir name
       lang.sort((first: any, second: any) => (first.label > second.label ? 1 : -1));
 
       setLanguageOptions(lang);

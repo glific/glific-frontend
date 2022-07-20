@@ -252,7 +252,7 @@ describe('copy interactive message', () => {
 
     await waitFor(() => {
       expect(getByText('Copy Interactive Message')).toBeInTheDocument();
-      expect(getAllByTestId('input').at(0)?.querySelector('input')).toHaveValue('Copy of Continue');
+      expect(getAllByTestId('input')[0]?.querySelector('input')).toHaveValue('Copy of Continue');
     });
   });
 });

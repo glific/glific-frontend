@@ -6,7 +6,6 @@
 import '@testing-library/jest-dom/extend-expect';
 process.env.REACT_APP_WEB_SOCKET = 'ws://localhost/socket';
 
-
 // adding mocks for these libraries until we get support for webpack 5
 jest.mock('emoji-mart', () => {
   return {
@@ -19,7 +18,14 @@ jest.mock('emoji-mart', () => {
 jest.mock('react-media-recorder', () => {
   return {
     useReactMediaRecorder: () => {
-      return null;
+      return {
+        status: 'idle',
+        error: null,
+        startRecording: () => {},
+        stopRecording: () => {},
+        mediaBlobUrl: () => {},
+        clearBlobUrl: () => {},
+      };
     },
   };
 });
