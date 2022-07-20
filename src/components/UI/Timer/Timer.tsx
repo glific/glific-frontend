@@ -22,6 +22,10 @@ export const Timer = (props: TimerProps) => {
       target="_blank"
       rel="noreferrer"
       href="https://glific.org/session-window/"
+      onClick={(e) => {
+        e.preventDefault();
+        window.open('https://glific.org/session-window/', '_blank');
+      }}
     >
       {t('Learn more about the WhatsApp session window here.')}
     </a>
