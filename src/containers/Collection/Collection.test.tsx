@@ -26,6 +26,13 @@ jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
 }));
 
+jest.mock('react-router-dom', () => {
+  return {
+    ...jest.requireActual('react-router-dom'),
+    useParams: () => ({ id: '1' }),
+  };
+});
+
 const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <Collection />

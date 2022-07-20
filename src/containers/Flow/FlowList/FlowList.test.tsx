@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter, BrowserRouter as Router } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 import { MockedProvider } from '@apollo/client/testing';
 
@@ -45,6 +45,14 @@ jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
 }));
 
+jest.mock('react-router-dom', () => {
+  return {
+    ...jest.requireActual('react-router-dom'),
+    useLocation: () => ({ state: 'copy', pathname: '/flow/1/edit' }),
+    useParams: () => ({ id: 1 }),
+  };
+});
+
 setUserSession(JSON.stringify({ roles: ['Admin'] }));
 
 describe('<FlowList />', () => {
@@ -77,15 +85,17 @@ describe('<FlowList />', () => {
   });
 
   test('should redirect to make a copy', async () => {
-    const history: any = createBrowserHistory();
-    history.push({ pathname: `/flow/1/edit`, state: 'copy' });
+    // const history: any = createBrowserHistory();
+    // history.push({ pathname: `/flow/1/edit`, state: 'copy' });
 
-    const copyFlow = (match: any) => (
+    const copyFlow = () => (
       <MockedProvider mocks={mocks} addTypename={false}>
-        <Flow />
+        <MemoryRouter>
+          <Flow />
+        </MemoryRouter>
       </MockedProvider>
     );
-    const { container } = render(copyFlow({ params: { id: 1 } }));
+    const { container } = render(copyFlow());
     await waitFor(() => {
       const inputElement = container.querySelector('input[name="name"]') as HTMLInputElement;
       expect(inputElement?.value).toBe('Copy of Help');
