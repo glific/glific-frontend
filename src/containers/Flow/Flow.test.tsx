@@ -7,6 +7,8 @@ import { getOrganizationLanguagesQuery, getOrganizationQuery } from 'mocks/Organ
 import { getFlowQuery, filterFlowQuery } from 'mocks/Flow';
 import { Flow } from './Flow';
 
+import * as routerDom from 'react-router-dom';
+
 const mocks = [
   ...getOrganizationQuery,
   getFlowQuery,
@@ -25,6 +27,7 @@ jest.mock('react-router-dom', () => ({
   useLocation: () => {
     return mockUseLocationValue;
   },
+  useParams: () => ({ id: 1 }),
 }));
 
 const flow = () => (
@@ -45,13 +48,15 @@ it('should render Flow', async () => {
 it('should support keywords in a separate language', async () => {
   const { container, getByText, findByText } = render(flow());
 
-  await waitFor(() => {});
-  fireEvent.change(container.querySelector('input[name="name"]') as HTMLInputElement, {
-    target: { value: 'New Flow' },
+  await waitFor(() => {
+    fireEvent.change(container.querySelector('input[name="name"]') as HTMLInputElement, {
+      target: { value: 'New Flow' },
+    });
+    fireEvent.change(container.querySelector('input[name="keywords"]') as HTMLInputElement, {
+      target: { value: 'मदद' },
+    });
   });
-  fireEvent.change(container.querySelector('input[name="keywords"]') as HTMLInputElement, {
-    target: { value: 'मदद' },
-  });
+
   const button = getByText('Save');
   fireEvent.click(button);
 
@@ -64,13 +69,15 @@ it('should support keywords in a separate language', async () => {
 it('should not allow special characters in keywords', async () => {
   const { container, getByText } = render(flow());
 
-  await waitFor(() => {});
-  fireEvent.change(container.querySelector('input[name="name"]') as HTMLInputElement, {
-    target: { value: 'New Flow' },
+  await waitFor(() => {
+    fireEvent.change(container.querySelector('input[name="name"]') as HTMLInputElement, {
+      target: { value: 'New Flow' },
+    });
+    fireEvent.change(container.querySelector('input[name="keywords"]') as HTMLInputElement, {
+      target: { value: 'Hey&' },
+    });
   });
-  fireEvent.change(container.querySelector('input[name="keywords"]') as HTMLInputElement, {
-    target: { value: 'Hey&' },
-  });
+
   const button = getByText('Save');
   fireEvent.click(button);
 
@@ -81,16 +88,18 @@ it('should not allow special characters in keywords', async () => {
 });
 
 it('should create copy of flow', async () => {
-  const history: any = createBrowserHistory();
-  history.push({ pathname: `/flow/1/edit`, state: 'copy' });
   mockUseLocationValue.state = 'copy';
 
+  routerDom.useLocation = jest.fn(() => ({ state: 'copy', pathname: '/flow/1/edit' }));
+
   const copyFlow = () => (
-    <MemoryRouter initialEntries={[`/flow/1/edit`]}>
-      <Routes>
-        <Route path="flow/:id/edit" element={<Flow />} />
-      </Routes>
-    </MemoryRouter>
+    <MockedProvider mocks={mocks} addTypename={false}>
+      <MemoryRouter initialEntries={[`/flow/1/edit`]}>
+        <Routes>
+          <Route path="flow/:id/edit" element={<Flow />} />
+        </Routes>
+      </MemoryRouter>
+    </MockedProvider>
   );
 
   const { container, getByTestId } = render(copyFlow());
