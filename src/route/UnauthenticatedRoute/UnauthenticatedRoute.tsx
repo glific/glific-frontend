@@ -16,13 +16,14 @@ export const UnauthenticatedRoute = () => {
   return (
     <Suspense fallback={<Loading />}>
       <Routes>
+        <Route index element={<Navigate to="/logout/user" replace />} />
         <Route path="/login" element={<Login />} />
         <Route path="/registration" element={<Registration />} />
         <Route path="/confirmotp" element={<ConfirmOTP />} />
         <Route path="/resetpassword-phone" element={<ResetPasswordPhone />} />
         <Route path="/resetpassword-confirmotp" element={<ResetPasswordConfirmOTP />} />
         <Route path="/organization-registration" element={<OrganizationRegistration />} />
-        <Route path="*" element={<Navigate to="/logout/user" replace />} />
+        <Route path="/*" element={<Navigate to="/logout/user" replace />} />
       </Routes>
     </Suspense>
   );
