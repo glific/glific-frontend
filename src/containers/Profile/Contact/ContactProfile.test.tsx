@@ -5,6 +5,12 @@ import { LOGGED_IN_USER_MOCK } from 'mocks/Contact';
 import { ContactProfile } from './ContactProfile';
 import { mocks as historyMock } from './ContactHistory/ContactHistory.test';
 
+jest.mock('react-router-dom', () => {
+  return {
+    useParams: () => ({ id: '1' }),
+  };
+});
+
 const mocks = [...LOGGED_IN_USER_MOCK, ...historyMock];
 
 test('contact profile should render', async () => {
