@@ -1,13 +1,10 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { render, waitFor, fireEvent } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
-import { createBrowserHistory } from 'history';
 
 import { getOrganizationLanguagesQuery, getOrganizationQuery } from 'mocks/Organization';
 import { getFlowQuery, filterFlowQuery } from 'mocks/Flow';
 import { Flow } from './Flow';
-
-import * as routerDom from 'react-router-dom';
 
 const mocks = [
   ...getOrganizationQuery,
@@ -87,10 +84,25 @@ it('should not allow special characters in keywords', async () => {
   });
 });
 
+it('should edit the flow', async () => {
+  const editFlow = () => (
+    <MockedProvider mocks={mocks} addTypename={false}>
+      <MemoryRouter initialEntries={[`/flow/1/edit`]}>
+        <Routes>
+          <Route path="flow/:id/edit" element={<Flow />} />
+        </Routes>
+      </MemoryRouter>
+    </MockedProvider>
+  );
+  const { container } = render(editFlow());
+  await waitFor(() => {
+    const inputElement = container.querySelector('input[name="name"]') as HTMLInputElement;
+    expect(inputElement?.value).toBe('Help');
+  });
+});
+
 it('should create copy of flow', async () => {
   mockUseLocationValue.state = 'copy';
-
-  routerDom.useLocation = jest.fn(() => ({ state: 'copy', pathname: '/flow/1/edit' }));
 
   const copyFlow = () => (
     <MockedProvider mocks={mocks} addTypename={false}>
@@ -120,18 +132,4 @@ it('should create copy of flow', async () => {
     //   'The keyword `help` was already used in the `Help Workflow` Flow.'
     // );
   });
-});
-
-it('should edit the flow', async () => {
-  const editFlow = () => (
-    <MockedProvider mocks={mocks} addTypename={false}>
-      <MemoryRouter initialEntries={[`/flow/1/edit`]}>
-        <Routes>
-          <Route path="flow/:id/edit" element={<Flow />} />
-        </Routes>
-      </MemoryRouter>
-    </MockedProvider>
-  );
-  const { container, getByTestId } = render(editFlow());
-  await waitFor(() => {});
 });
