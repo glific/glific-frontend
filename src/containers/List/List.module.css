@@ -148,3 +148,27 @@
 .ButtonGroup {
   display: flex;
 }
+
+.PinIcon {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 15px;
+}
+
+.PinIcon svg {
+  cursor: pointer;
+  transform: scale(1.2);
+}
+
+.PinIcon g > g:hover {
+  fill: #119656
+}
+
+.Keyword {
+  font-size: 12px;
+  color: #93a29b !important;
+  text-align: right;
+  line-height: 1;
+  margin-right: 5px;
+}

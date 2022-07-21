@@ -15,6 +15,7 @@ import { ReactComponent as DeleteIcon } from 'assets/images/icons/Delete/Red.svg
 import { ReactComponent as EditIcon } from 'assets/images/icons/Edit.svg';
 import { ReactComponent as CrossIcon } from 'assets/images/icons/Cross.svg';
 import { ReactComponent as BackIcon } from 'assets/images/icons/Back.svg';
+import { ReactComponent as PinIcon } from 'assets/images/icons/Pin/Inactive.svg';
 import { GET_CURRENT_USER } from 'graphql/queries/User';
 import { getUserRole, getUserRolePermissions } from 'context/role';
 import { setNotification, setErrorMessage } from 'common/notification';
@@ -25,6 +26,7 @@ import styles from './List.module.css';
 export interface ListProps {
   columnNames?: Array<string>;
   countQuery: DocumentNode;
+  orgQuery?: DocumentNode | any;
   listItem: string;
   filterItemsQuery: DocumentNode;
   deleteItemQuery: DocumentNode | null;
@@ -88,6 +90,7 @@ interface TableVals {
 export const List: React.SFC<ListProps> = ({
   columnNames = [],
   countQuery,
+  orgQuery,
   listItem,
   listIcon,
   filterItemsQuery,
@@ -239,6 +242,9 @@ export const List: React.SFC<ListProps> = ({
     variables: { filter },
   });
 
+  // Get the newContactFlowId so that can be pinned
+  const { loading: orgDataLoading, error: orgDataError, data: orgData } = useQuery(orgQuery);
+
   // Get item data here
   const [fetchQuery, { loading, error, data, refetch: refetchValues }] = useLazyQuery(
     filterItemsQuery,
@@ -361,8 +367,8 @@ export const List: React.SFC<ListProps> = ({
     return <Redirect to={`/${pageLink}/add`} />;
   }
 
-  if (loading || l || loadingCollections) return <Loading />;
-  if (error || e) {
+  if (loading || l || loadingCollections || orgDataLoading) return <Loading />;
+  if (error || e || orgDataError) {
     if (error) {
       setErrorMessage(error);
     } else if (e) {
@@ -472,6 +478,16 @@ export const List: React.SFC<ListProps> = ({
               {editButton}
               {deleteButton(id, label)}
             </>
+          ) : null}
+          {orgData?.organization?.organization?.newcontactFlowId === item.id ? (
+            <div className={styles.PinIcon}>
+              <span className={styles.Keyword}>
+                New contact <br /> flow
+              </span>
+              <Link to="/settings/organization">
+                <PinIcon />
+              </Link>
+            </div>
           ) : null}
         </div>
       );
