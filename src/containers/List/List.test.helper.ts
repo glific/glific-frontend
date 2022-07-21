@@ -1,5 +1,5 @@
 import { GET_TAGS_COUNT, FILTER_TAGS, GET_TAGS } from 'graphql/queries/Tag';
-import { FILTER_ORGANIZATIONS, GET_ORGANIZATION_COUNT } from 'graphql/queries/Organization';
+import { FILTER_ORGANIZATIONS, GET_ORGANIZATION_COUNT, GET_ORGANIZATION } from 'graphql/queries/Organization';
 import { GET_LANGUAGES } from 'graphql/queries/List';
 import { DELETE_TAG } from 'graphql/mutations/Tag';
 import { DELETE_INACTIVE_ORGANIZATIONS } from 'graphql/mutations/Organization';
@@ -14,6 +14,7 @@ import { getCurrentUserQuery } from 'mocks/User';
 export const defaultProps = {
   columnNames: ['LABEL', 'DESCRIPTION', 'KEYWORDS', 'ACTIONS'],
   countQuery: GET_TAGS_COUNT,
+  orgQuery: GET_ORGANIZATION,
   listItem: 'tags',
   filterItemsQuery: FILTER_TAGS,
   deleteItemQuery: DELETE_TAG,
@@ -217,6 +218,7 @@ export const ORG_LIST_MOCK = [...getAllOrganizations];
 export const orgProps = {
   columnNames: ['NAME', 'IS ACTIVE', 'IS APPROVED', 'ACTIONS'],
   countQuery: GET_ORGANIZATION_COUNT,
+  orgQuery: GET_ORGANIZATION,
   listItem: 'organizations',
   filterItemsQuery: FILTER_ORGANIZATIONS,
   deleteItemQuery: DELETE_INACTIVE_ORGANIZATIONS,

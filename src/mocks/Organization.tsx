@@ -45,6 +45,7 @@ export const getOrganizationQuery = [
               startTime: '12:31:27',
             },
             name: 'Glific',
+            newcontactFlowId: '1',
             signaturePhrase: 'Sample text',
             contact: {
               phone: 911111111111,

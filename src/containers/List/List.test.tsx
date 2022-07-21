@@ -185,7 +185,6 @@ describe('DialogMessage tests', () => {
     );
 
     const { container } = render(list);
-
     await waitFor(() => {
       const { queryByLabelText } = within(container.querySelector('tbody tr'));
       const button = queryByLabelText('Delete');
@@ -194,7 +193,6 @@ describe('DialogMessage tests', () => {
     });
   });
 });
-
 
 // Need to check and write cases for card type
 
