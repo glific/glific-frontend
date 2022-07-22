@@ -52,6 +52,7 @@ export const TEMPLATE_MOCKS = [
       isHsm: false,
       isActive: true,
       status: null,
+      reason: 'test reason',
       updatedAt: '2020-12-01T18:00:32Z',
       numberParameters: 0,
       translations: '{}',
@@ -79,6 +80,7 @@ export const TEMPLATE_MOCKS = [
       status: 'APPROVED',
       reason: 'test reason',
       updatedAt: '2020-12-01T18:00:32Z',
+      numberParameters: 0,
       translations: '{}',
       type: 'TEXT',
       language: {
@@ -100,7 +102,9 @@ export const TEMPLATE_MOCKS = [
       isHsm: false,
       isActive: true,
       status: null,
+      reason: 'test reason',
       updatedAt: '2020-12-01T18:00:32Z',
+      numberParameters: 0,
       translations: '{}',
       type: 'TEXT',
       language: {
@@ -128,6 +132,7 @@ export const TEMPLATE_MOCKS = [
       status: 'APPROVED',
       reason: 'test reason',
       updatedAt: '2020-12-01T18:00:32Z',
+      numberParameters: 0,
       translations: '{}',
       type: 'TEXT',
       language: {
