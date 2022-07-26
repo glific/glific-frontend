@@ -13,7 +13,22 @@ import { List } from './List';
 
 const mocks = LIST_MOCKS;
 
-setUserSession(JSON.stringify({ roles: ['Admin'] }));
+const userObject = {
+  __typename: 'User',
+  id: '1',
+  name: 'NGO Main Account',
+  phone: '917834811114',
+  roles: ['Admin'],
+  contact: { __typename: 'Contact', id: '1' },
+  groups: [
+    { __typename: 'Group', id: '3', label: 'Default Group', description: null },
+    { __typename: 'Group', id: '4', label: 'Restricted Group', description: null },
+  ],
+  organization: { __typename: 'Organization', id: '1' },
+  language: { __typename: 'Language', id: '1', locale: 'en' },
+};
+
+setUserSession(JSON.stringify(userObject));
 
 const list = (
   <MockedProvider mocks={mocks} addTypename={false}>

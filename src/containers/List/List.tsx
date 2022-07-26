@@ -269,7 +269,7 @@ export const List = ({
       }
       fetchQuery();
     }
-  }, [userRole]);
+  }, []);
 
   let deleteItem: any;
 

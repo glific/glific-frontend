@@ -12,7 +12,7 @@ import { setVariables } from 'common/constants';
 import { getCurrentUserQuery } from 'mocks/User';
 
 export const defaultProps = {
-  columnNames: ['LABEL', 'DESCRIPTION', 'KEYWORDS', 'ACTIONS'],
+  columnNames: ['TITLE', 'DESCRIPTION', 'KEYWORDS', 'LAST MODIFIED', 'ACTIONS'],
   countQuery: GET_TAGS_COUNT,
   listItem: 'tags',
   filterItemsQuery: FILTER_TAGS,
@@ -25,6 +25,7 @@ export const defaultProps = {
   columnStyles: [],
   title: 'Tags',
   searchMode: true,
+  button: { show: true, label: '+ Create Tag' },
 };
 
 const count = {
