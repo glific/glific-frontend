@@ -8,6 +8,13 @@ import * as AutoComplete from 'components/UI/Form/AutoComplete/AutoComplete';
 import { getTriggerQuery, hourlyTrigger } from 'mocks/Trigger';
 import { Trigger } from './Trigger';
 
+jest.mock('react-router-dom', () => {
+  return {
+    ...jest.requireActual('react-router-dom'),
+    useParams: () => ({ id: '1' }),
+  };
+});
+
 describe('trigger with daily frequency', () => {
   const frequencyDailyMocks = [getTriggerQuery('daily'), ...LIST_ITEM_MOCKS, ...SearchMocks];
 
