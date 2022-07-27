@@ -138,11 +138,15 @@ describe('<MyAccount />', () => {
     });
 
     // click on CANCEL button
-    const cancelButton = screen.getByText('Cancel');
-    UserEvent.click(cancelButton);
+
+    await waitFor(() => {
+      const cancelButton = screen.getByText('Cancel');
+      UserEvent.click(cancelButton);
+    });
   });
 
   test('generate OTP error with incorrect OTP', async () => {
+    const user = UserEvent.setup();
     const { container } = render(wrapper);
 
     // let's mock successful sending of OTP
@@ -157,11 +161,14 @@ describe('<MyAccount />', () => {
 
     // enter otp
     const input = container.querySelector('input[type="text"]') as HTMLInputElement;
-    UserEvent.type(input, '1234');
+    user.click(input);
+    user.keyboard('1234');
 
     // enter password
     const password = container.querySelector('input[type="password"]') as HTMLInputElement;
-    UserEvent.type(password, 'pass123456');
+    user.click(password);
+    user.keyboard('pass123456');
+
     await waitFor(() => {
       // click on save button
       const saveButton = screen.getByText('Save');
@@ -175,6 +182,7 @@ describe('<MyAccount />', () => {
   });
 
   test('generate OTP error with too many attempts', async () => {
+    const user = UserEvent.setup();
     const { container } = render(wrapper);
 
     // let's mock successful sending of OTP
@@ -189,11 +197,13 @@ describe('<MyAccount />', () => {
 
     // enter otp
     const input = container.querySelector('input[type="text"]') as HTMLInputElement;
-    UserEvent.type(input, '4567');
+    user.click(input);
+    user.keyboard('4567');
 
     // enter password
     const password = container.querySelector('input[type="password"]') as HTMLInputElement;
-    UserEvent.type(password, 'pass123456');
+    user.click(password);
+    user.keyboard('pass123456');
 
     await waitFor(() => {
       // click on save button
