@@ -108,6 +108,7 @@ const listButtons = (
 describe('<List /> actions', () => {
   test('add new Button contains a route to add new page', async () => {
     const { container } = render(listButtons);
+    screen.debug();
     await waitFor(() => {
       const button = container.querySelector(
         'button.MuiButton-containedPrimary'

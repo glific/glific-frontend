@@ -11,9 +11,7 @@ const mocks = TEMPLATE_MOCKS;
 
 const speedSend = (
   <MockedProvider mocks={mocks} addTypename={false}>
-    <Router>
-      <SpeedSendList />
-    </Router>
+    <SpeedSendList />
   </MockedProvider>
 );
 

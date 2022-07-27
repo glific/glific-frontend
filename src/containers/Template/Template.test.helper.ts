@@ -41,7 +41,7 @@ const SpeedSendsSessionTemplates = [
     type: 'TEXT',
     language: {
       id: '1',
-      label: 'Hindi',
+      label: 'English',
     },
     MessageMedia: {
       id: 1,
