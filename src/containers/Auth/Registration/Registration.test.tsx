@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import axios from 'axios';
@@ -29,16 +29,20 @@ describe('<Registration />', () => {
   });
 
   it('should submit the form correctly and give error', async () => {
+    const user = userEvent.setup();
     const { container } = render(wrapper);
 
-    const userName = (await container.querySelector('input[name="userName"]')) as HTMLInputElement;
-    userEvent.type(userName, 'Jane Doe');
+    const userName = container.querySelector('input[name="userName"]') as HTMLInputElement;
+    await user.click(userName);
+    await user.keyboard('John doe');
 
-    const phone = (await container.querySelector('input[type="tel"]')) as HTMLInputElement;
-    userEvent.type(phone, '+919978776554');
+    const phone = container.querySelector('input[type="tel"]') as HTMLInputElement;
+    await user.click(phone);
+    await user.keyboard('+919978776554');
 
-    const password = (await container.querySelector('input[type="password"]')) as HTMLInputElement;
-    userEvent.type(password, 'pass123456');
+    const password = container.querySelector('input[type="password"]') as HTMLInputElement;
+    await user.click(password);
+    await user.keyboard('pass123456');
 
     // set the mock error case while registration
     const errorMessage = 'Cannot register 919978776554';
@@ -46,8 +50,8 @@ describe('<Registration />', () => {
 
     await waitFor(() => {
       // click on continue
-      const continueButton = screen.getByText('Continue');
-      userEvent.click(continueButton);
+      const continueButton = screen.getByTestId('SubmitButton');
+      fireEvent.click(continueButton);
     });
 
     await waitFor(() => {
