@@ -62,7 +62,7 @@ describe('<SavedSearches />', () => {
     const { getByText } = render(SavedSearch);
 
     await waitFor(() => {
-      getByText('Error :(');
+      getByText('No options available');
     });
   });
 });
