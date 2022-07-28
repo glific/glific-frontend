@@ -1,13 +1,20 @@
 import { render, waitFor, within, fireEvent } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
-import { Route } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 
 import { setUserSession } from 'services/AuthService';
 import { TagList } from 'containers/Tag/TagList/TagList';
 import { FormLayout } from './FormLayout';
 import { LIST_ITEM_MOCKS, listItemProps } from './FormLayout.test.helper';
 
+jest.mock('react-router-dom', () => {
+  return {
+    ...jest.requireActual('react-router-dom'),
+
+    useParams: () => ({ id: 1 }),
+  };
+});
 const mocks = LIST_ITEM_MOCKS;
 
 const defaultProps = listItemProps;
@@ -34,6 +41,32 @@ it('should have a form with inputs', async () => {
   });
 });
 
+test('save button should add a new tag', async () => {
+  const editItemRoute = (
+    <MockedProvider mocks={mocks} addTypename={false}>
+      <Router>
+        <Routes>
+          <Route path="/" element={<FormLayout {...defaultProps} />} />
+          <Route path="tag" element={<TagList />} />
+        </Routes>
+      </Router>
+    </MockedProvider>
+  );
+
+  const { container, getByText, getAllByTestId } = render(editItemRoute);
+
+  setUserSession(JSON.stringify({ roles: ['Admin'] }));
+
+  await waitFor(() => {
+    const button = getByText('Save');
+    fireEvent.click(button);
+  });
+
+  await waitFor(() => {
+    expect(container?.querySelector('input[name="label"]')).toHaveValue('important');
+  });
+});
+
 const editItem = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <Router>
@@ -53,21 +86,14 @@ test('inputs should have mock values', async () => {
   });
 });
 
-const editItemRoute = (
-  <MockedProvider mocks={mocks} addTypename={false}>
-    <Router>
-      <FormLayout {...defaultProps} />
-      <Route path="/tag" element={<TagList />} />
-    </Router>
-  </MockedProvider>
-);
-
 test('cancel button should redirect to taglist page', async () => {
-  const { container, getByText } = render(
+  const { container, getByText, unmount } = render(
     <MockedProvider mocks={mocks} addTypename={false}>
       <Router>
-        <FormLayout {...defaultProps} />
-        <Route path="/tag" element={<TagList />} />
+        <Routes>
+          <Route path="/" element={<FormLayout {...defaultProps} />} />
+          <Route path="tag" element={<TagList />} />
+        </Routes>
       </Router>
     </MockedProvider>
   );
@@ -80,20 +106,5 @@ test('cancel button should redirect to taglist page', async () => {
 
   await waitFor(() => {
     expect(getByText('Tags')).toBeInTheDocument();
-  });
-});
-
-test('save button should add a new tag', async () => {
-  const { container, getByText, getAllByTestId } = render(editItemRoute);
-
-  setUserSession(JSON.stringify({ roles: ['Admin'] }));
-
-  await waitFor(() => {
-    const button = getByText('Save');
-    fireEvent.click(button);
-  });
-
-  await waitFor(() => {
-    expect(getByText('Important')).toBeInTheDocument();
   });
 });
