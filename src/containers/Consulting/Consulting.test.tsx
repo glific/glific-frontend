@@ -18,7 +18,7 @@ setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
 const mocks = [getOrganizationList, getConsultingHour, createConsultingHour, updateConsultingHour];
 const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>
-    <Consulting match={{ params: {} }} setOpenDialog={setOpenDialogMock} />
+    <Consulting organizationId="" setOpenDialog={setOpenDialogMock} />
   </MockedProvider>
 );
 
@@ -68,7 +68,7 @@ test('Render component correctly with empty form', async () => {
 const consultingEditForm = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <Router>
-      <Consulting match={{ params: { id: '1' } }} setOpenDialog={setOpenDialogMock} />
+      <Consulting organizationId="1" setOpenDialog={setOpenDialogMock} />
     </Router>
   </MockedProvider>
 );

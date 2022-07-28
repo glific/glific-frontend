@@ -22,13 +22,13 @@ import { setVariables } from 'common/constants';
 import styles from './Consulting.module.css';
 
 export interface ConsultingProps {
-  match: any;
+  organizationId: String;
   setOpenDialog: Function;
 }
 
 const isDurationValid = (value: any) => value % 15 === 0;
 
-export const Consulting = ({ match, setOpenDialog }: ConsultingProps) => {
+export const Consulting = ({ organizationId, setOpenDialog }: ConsultingProps) => {
   const { t } = useTranslation();
   const [participants, setParticipants] = useState('');
   const [staff, setStaff] = useState('');
@@ -196,14 +196,13 @@ export const Consulting = ({ match, setOpenDialog }: ConsultingProps) => {
   const orgOptions = organizationList.organizations;
 
   return (
-    <div className={`${styles.Layout} ${match.params.id ? styles.Edit : ''}`}>
+    <div className={`${styles.Layout} ${organizationId ? styles.Edit : ''}`}>
       <FormLayout
         {...queries}
         title={t('Add consulting record')}
         listItem="consultingHour"
         listItemName="Consulting hours"
         pageLink="consultingHour"
-        match={match}
         refetchQueries={[
           {
             query: GET_CONSULTING_HOURS,
@@ -231,6 +230,7 @@ export const Consulting = ({ match, setOpenDialog }: ConsultingProps) => {
         languageSupport={false}
         customStyles={[styles.Form]}
         type="consultingHours"
+        entityId={organizationId}
       />
     </div>
   );

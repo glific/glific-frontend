@@ -28,10 +28,7 @@ const ConsultingList = () => {
         }}
       >
         <DialogContent classes={{ root: styles.DialogContent }}>
-          <Consulting
-            match={{ params: { id: selectedConsulting } }}
-            setOpenDialog={setOpenDialog}
-          />
+          <Consulting organizationId={selectedConsulting} setOpenDialog={setOpenDialog} />
         </DialogContent>
       </Dialog>
     );
