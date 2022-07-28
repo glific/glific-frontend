@@ -6,8 +6,6 @@ import { MockedProvider } from '@apollo/client/testing';
 import { walletBalanceQuery, walletBalanceSubscription } from 'mocks/Organization';
 import { setUserSession } from 'services/AuthService';
 import { CONVERSATION_MOCKS } from 'mocks/Chat';
-import * as Chat from 'containers/Chat/Chat';
-import * as ChatSubscription from 'containers/Chat/ChatSubscription/ChatSubscription';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import AuthenticatedRoute from './AuthenticatedRoute';
 
@@ -27,16 +25,6 @@ describe('<AuthenticatedRoute />', () => {
         </BrowserRouter>
       </MockedProvider>
     );
-
-    const spy = jest.spyOn(Chat, 'Chat');
-    spy.mockImplementation(() => {
-      return <div data-testid="chat"></div>;
-    });
-
-    const spyOnSubscription = jest.spyOn(ChatSubscription, 'ChatSubscription');
-    spyOnSubscription.mockImplementation(() => {
-      return <div data-testid="chatSubscription"></div>;
-    });
 
     await waitFor(() => {
       expect(getByTestId('app')).toBeInTheDocument();

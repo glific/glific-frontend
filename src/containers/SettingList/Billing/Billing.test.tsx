@@ -1,4 +1,5 @@
 import { fireEvent, render, waitFor } from '@testing-library/react';
+import UserEvent from '@testing-library/user-event';
 import { MockedProvider } from '@apollo/client/testing';
 import { BrowserRouter as Router } from 'react-router-dom';
 
@@ -137,6 +138,7 @@ test('subscription status is already in pending state', async () => {
 });
 
 test('complete a subscription', async () => {
+  const user = UserEvent.setup();
   const { getByText, getByTestId } = render(
     <MockedProvider
       mocks={[getBillingQueryWithoutsubscription, createBillingSubscriptionQuery]}
@@ -152,7 +154,7 @@ test('complete a subscription', async () => {
   await waitFor(() => {
     expect(getByText('Back to settings')).toBeInTheDocument();
   });
-  fireEvent.click(getByTestId('submitButton'));
+  user.click(getByTestId('submitButton'));
   await waitFor(() => {});
   await waitFor(() => {
     expect(getByText('You have an active subscription')).toBeInTheDocument();
@@ -160,6 +162,7 @@ test('complete a subscription', async () => {
 });
 
 test('open customer portal', async () => {
+  const user = UserEvent.setup();
   const { getByText, getByTestId } = render(
     <MockedProvider
       mocks={[
@@ -178,16 +181,17 @@ test('open customer portal', async () => {
   await waitFor(() => {
     expect(getByText('Back to settings')).toBeInTheDocument();
   });
-  fireEvent.click(getByTestId('submitButton'));
+  user.click(getByTestId('submitButton'));
   await waitFor(() => {
     expect(getByText('You have an active subscription')).toBeInTheDocument();
   });
 
-  fireEvent.click(getByTestId('customerPortalButton'));
+  user.click(getByTestId('customerPortalButton'));
   await waitFor(() => {});
 });
 
 test('update billing details', async () => {
+  const user = UserEvent.setup();
   const { getByText, getByTestId, container } = render(
     <MockedProvider
       mocks={[
@@ -213,7 +217,7 @@ test('update billing details', async () => {
     fireEvent.change(name, { target: { value: 'Glific Admin 1' } });
   });
 
-  fireEvent.click(getByTestId('submitButton'));
+  user.click(getByTestId('submitButton'));
 
   await waitFor(() => {
     expect(getByText('You have an active subscription')).toBeInTheDocument();
@@ -221,6 +225,7 @@ test('update billing details', async () => {
 });
 
 test('update billing details', async () => {
+  const user = UserEvent.setup();
   const { getByText, getByTestId, container } = render(
     <MockedProvider
       mocks={[
@@ -241,18 +246,17 @@ test('update billing details', async () => {
     expect(getByText('Back to settings')).toBeInTheDocument();
   });
 
-  await waitFor(() => {
-    const coupon = container.querySelector('input[name="coupon"]') as HTMLInputElement;
-    fireEvent.change(coupon, { target: { value: 'PBXGFH' } });
-  });
+  const coupon = container.querySelector('input[name="coupon"]') as HTMLInputElement;
+  await user.click(coupon);
+  await user.keyboard('PBXGFH');
 
-  fireEvent.click(getByText('APPLY'));
+  await user.click(getByText('APPLY'));
 
   await waitFor(() => {
     expect(getByText('Coupon Applied!')).toBeInTheDocument();
   });
 
-  fireEvent.click(getByTestId('submitButton'));
+  user.click(getByTestId('submitButton'));
 
   await waitFor(() => {
     expect(getByText('You have an active subscription')).toBeInTheDocument();
