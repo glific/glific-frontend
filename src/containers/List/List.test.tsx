@@ -5,6 +5,7 @@ import { Routes, Route } from 'react-router-dom';
 import { within, fireEvent } from '@testing-library/dom';
 
 import { Tag } from 'containers/Tag/Tag';
+import { OrganizationList } from 'containers/OrganizationList/OrganizationList';
 import { setUserSession } from 'services/AuthService';
 import { ReactComponent as ActivateIcon } from 'assets/images/icons/Activate.svg';
 import { ReactComponent as ApprovedIcon } from 'assets/images/icons/Template/Approved.svg';
@@ -13,22 +14,7 @@ import { List } from './List';
 
 const mocks = LIST_MOCKS;
 
-const userObject = {
-  __typename: 'User',
-  id: '1',
-  name: 'NGO Main Account',
-  phone: '917834811114',
-  roles: ['Admin'],
-  contact: { __typename: 'Contact', id: '1' },
-  groups: [
-    { __typename: 'Group', id: '3', label: 'Default Group', description: null },
-    { __typename: 'Group', id: '4', label: 'Restricted Group', description: null },
-  ],
-  organization: { __typename: 'Organization', id: '1' },
-  language: { __typename: 'Language', id: '1', locale: 'en' },
-};
-
-setUserSession(JSON.stringify(userObject));
+setUserSession(JSON.stringify({ roles: ['Admin'] }));
 
 const list = (
   <MockedProvider mocks={mocks} addTypename={false}>
@@ -75,7 +61,7 @@ describe('<List />', () => {
     await waitFor(() => {
       const tableHead = container.querySelector('thead') as HTMLTableSectionElement;
       const { getByText } = within(tableHead);
-      expect(getByText('LABEL')).toBeInTheDocument();
+      expect(getByText('TITLE')).toBeInTheDocument();
       expect(getByText('DESCRIPTION')).toBeInTheDocument();
       expect(getByText('KEYWORDS')).toBeInTheDocument();
       expect(getByText('ACTIONS')).toBeInTheDocument();
@@ -98,9 +84,9 @@ const listButtons = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <Router>
       <Routes>
-        <Route path="/tag/add" element={<Tag />} />
+        <Route path="/" element={<List {...defaultProps} />} />
+        <Route path="tag/add" element={<Tag />} />
       </Routes>
-      <List {...defaultProps} />
     </Router>
   </MockedProvider>
 );
@@ -108,7 +94,6 @@ const listButtons = (
 describe('<List /> actions', () => {
   test('add new Button contains a route to add new page', async () => {
     const { container } = render(listButtons);
-    screen.debug();
     await waitFor(() => {
       const button = container.querySelector(
         'button.MuiButton-containedPrimary'
@@ -198,7 +183,10 @@ describe('DialogMessage tests', () => {
     const list = (
       <MockedProvider mocks={ORG_LIST_MOCK} addTypename={false}>
         <Router>
-          <List {...props} />
+          <Routes>
+            <Route path="/" element={<List {...props} />} />
+            <Route path="organizations" element={<OrganizationList />} />
+          </Routes>
         </Router>
       </MockedProvider>
     );
@@ -206,6 +194,7 @@ describe('DialogMessage tests', () => {
     const { container } = render(list);
 
     await waitFor(() => {
+      screen.debug();
       const { queryByLabelText } = within(
         container.querySelector('tbody tr') as HTMLTableRowElement
       );

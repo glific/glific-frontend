@@ -81,9 +81,9 @@ const routeStaff = (
 
 const routeAdmin = (
   <Routes>
-    {/* <Route path="/tag" element={<TagList />} />
-    <Route path="/tag/add" element={<Tag />} />
-    <Route path="/tag/:id/edit" element={<Tag />} /> */}
+    {/* <Route path="tag" element={<TagList />} />
+    <Route path="tag/add" element={<Tag />} />
+    <Route path="tag/:id/edit" element={<Tag />} /> */}
     <Route path="speed-send" element={<SpeedSendList />} />
     <Route path="speed-send/add" element={<SpeedSend />} />
     <Route path="speed-send/:id/edit" element={<SpeedSend />} />
