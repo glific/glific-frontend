@@ -12,14 +12,15 @@ import { ReactComponent as ConfigureIcon } from 'assets/images/icons/Configure/U
 import { ReactComponent as ContactVariable } from 'assets/images/icons/ContactVariable.svg';
 import { ReactComponent as WebhookLogsIcon } from 'assets/images/icons/Webhook/WebhookLight.svg';
 import { FILTER_FLOW, GET_FLOW_COUNT, EXPORT_FLOW, RELEASE_FLOW } from 'graphql/queries/Flow';
-import { GET_ORGANIZATION } from 'graphql/queries/Organization';
 import { DELETE_FLOW, IMPORT_FLOW } from 'graphql/mutations/Flow';
 import { List } from 'containers/List/List';
+import { editIconLink, iconsSectionComponent } from 'containers/List/List.helper';
 import Loading from 'components/UI/Layout/Loading/Loading';
 import { DATE_TIME_FORMAT } from 'common/constants';
 import { exportFlowMethod } from 'common/utils';
 import { setNotification } from 'common/notification';
 import { Button } from 'components/UI/Form/Button/Button';
+import PinnedFlow from '../PinnedFlow/PinnedFlow';
 import styles from './FlowList.module.css';
 
 export interface FlowListProps {}
@@ -56,7 +57,6 @@ const queries = {
   countQuery: GET_FLOW_COUNT,
   filterItemsQuery: FILTER_FLOW,
   deleteItemQuery: DELETE_FLOW,
-  orgQuery: GET_ORGANIZATION,
 };
 
 const configureIcon = <ConfigureIcon />;
@@ -197,6 +197,15 @@ export const FlowList: React.SFC<FlowListProps> = () => {
         additionalAction={additionalAction}
         button={{ show: true, label: t('+ Create Flow') }}
         secondaryButton={importButton}
+        pinnedFlow={
+          <PinnedFlow
+            columnStyles={columnStyles}
+            removeSortBy={['LAST PUBLISHED', 'LAST SAVED IN DRAFT']}
+            columns={columnAttributes.columns}
+            editIconLink={editIconLink}
+            iconsSection={iconsSectionComponent}
+          />
+        }
       />
 
       <Link to="/webhook-logs" className={styles.Webhook}>

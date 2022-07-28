@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, ReactElement } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useQuery, useMutation, DocumentNode, useLazyQuery } from '@apollo/client';
 import { IconButton, TableFooter, TablePagination, TableRow, Typography } from '@material-ui/core';
 
 import { ListCard } from 'containers/List/ListCard/ListCard';
+import PinnedFlow from 'containers/Flow/PinnedFlow/PinnedFlow';
 import { Button } from 'components/UI/Form/Button/Button';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { Pager } from 'components/UI/Pager/Pager';
@@ -15,18 +16,23 @@ import { ReactComponent as DeleteIcon } from 'assets/images/icons/Delete/Red.svg
 import { ReactComponent as EditIcon } from 'assets/images/icons/Edit.svg';
 import { ReactComponent as CrossIcon } from 'assets/images/icons/Cross.svg';
 import { ReactComponent as BackIcon } from 'assets/images/icons/Back.svg';
-import { ReactComponent as PinIcon } from 'assets/images/icons/Pin/Inactive.svg';
 import { GET_CURRENT_USER } from 'graphql/queries/User';
 import { getUserRole, getUserRolePermissions } from 'context/role';
 import { setNotification, setErrorMessage } from 'common/notification';
 import { setColumnToBackendTerms } from 'common/constants';
 import { getUpdatedList, setListSession, getLastListSessionValues } from 'services/ListService';
+import {
+  actionDialogBtn,
+  additionalIconLink,
+  pinnedAreaSection,
+  // iconsSectionComponent,
+  formatList,
+} from './List.helper';
 import styles from './List.module.css';
 
 export interface ListProps {
   columnNames?: Array<string>;
   countQuery: DocumentNode;
-  orgQuery?: DocumentNode | any;
   listItem: string;
   filterItemsQuery: DocumentNode;
   deleteItemQuery: DocumentNode | null;
@@ -78,6 +84,7 @@ export interface ListProps {
   noItemText?: string | null;
   isDetailsPage?: boolean;
   customStyles?: any;
+  pinnedFlow?: ReactElement | null;
 }
 
 interface TableVals {
@@ -90,7 +97,6 @@ interface TableVals {
 export const List: React.SFC<ListProps> = ({
   columnNames = [],
   countQuery,
-  orgQuery,
   listItem,
   listIcon,
   filterItemsQuery,
@@ -214,7 +220,7 @@ export const List: React.SFC<ListProps> = ({
       filter[parameter] = searchVal;
     });
   }
-  filter = { ...filter, ...filters };
+  filter = { ...filter, ...filters, isPinned: false };
 
   const filterPayload = useCallback(() => {
     let order = 'ASC';
@@ -241,9 +247,6 @@ export const List: React.SFC<ListProps> = ({
   } = useQuery(countQuery, {
     variables: { filter },
   });
-
-  // Get the newContactFlowId so that can be pinned
-  const { loading: orgDataLoading, error: orgDataError, data: orgData } = useQuery(orgQuery);
 
   // Get item data here
   const [fetchQuery, { loading, error, data, refetch: refetchValues }] = useLazyQuery(
@@ -367,8 +370,8 @@ export const List: React.SFC<ListProps> = ({
     return <Redirect to={`/${pageLink}/add`} />;
   }
 
-  if (loading || l || loadingCollections || orgDataLoading) return <Loading />;
-  if (error || e || orgDataError) {
+  if (loading || l || loadingCollections) return <Loading />;
+  if (error || e) {
     if (error) {
       setErrorMessage(error);
     } else if (e) {
@@ -377,139 +380,76 @@ export const List: React.SFC<ListProps> = ({
     return null;
   }
 
-  // Reformat all items to be entered in table
-  function getIcons(
-    // id: number | undefined,
-    item: any,
-    label: string,
-    isReserved: boolean | null,
+  const editIconLink = (id: string) => (
+    <Link to={`/${pageLink}/${id}/edit`}>
+      <IconButton aria-label={t('Edit')} color="default" data-testid="EditIcon">
+        <Tooltip title={t('Edit')} placement="top">
+          <EditIcon />
+        </Tooltip>
+      </IconButton>
+    </Link>
+  );
+
+  const deleteIconLink = (Id: any, text: string) => (
+    <IconButton
+      aria-label={t('Delete')}
+      color="default"
+      data-testid="DeleteIcon"
+      onClick={() => showDialogHandler(Id, text)}
+    >
+      <Tooltip title={`${deleteModifier.label}`} placement="top">
+        {deleteModifier.icon === 'cross' ? <CrossIcon /> : <DeleteIcon />}
+      </Tooltip>
+    </IconButton>
+  );
+
+  const iconsSection = (
+    allowedAction: any | null,
     listItems: any,
-    allowedAction: any | null
-  ) {
-    // there might be a case when we might want to allow certain actions for reserved items
-    // currently we don't allow edit or delete for reserved items. hence return early
-    const { id } = item;
-    if (isReserved) {
-      return null;
-    }
-    let editButton = null;
-    if (editSupport) {
-      editButton = allowedAction.edit && (
-        <Link to={`/${pageLink}/${id}/edit`}>
-          <IconButton aria-label={t('Edit')} color="default" data-testid="EditIcon">
-            <Tooltip title={t('Edit')} placement="top">
-              <EditIcon />
-            </Tooltip>
-          </IconButton>
-        </Link>
-      );
-    }
+    item: any,
+    deleteButton: Function,
+    editButton: any | null,
+    label: string,
+    pinned: boolean
+  ) => (
+    <div className={styles.Icons}>
+      {additionalAction.map((action: any, index: number) => {
+        if (allowedAction.restricted) {
+          return null;
+        }
+        // check if we are dealing with nested element
+        let additionalActionParameter: any;
+        const params: any = additionalAction[index].parameter.split('.');
+        if (params.length > 1) {
+          additionalActionParameter = listItems[params[0]][params[1]];
+        } else {
+          additionalActionParameter = listItems[params[0]];
+        }
+        const key = index;
 
-    const deleteButton = (Id: any, text: string) =>
-      allowedAction.delete ? (
-        <IconButton
-          aria-label={t('Delete')}
-          color="default"
-          data-testid="DeleteIcon"
-          onClick={() => showDialogHandler(Id, text)}
-        >
-          <Tooltip title={`${deleteModifier.label}`} placement="top">
-            {deleteModifier.icon === 'cross' ? <CrossIcon /> : <DeleteIcon />}
-          </Tooltip>
-        </IconButton>
-      ) : null;
-    if (id) {
-      return (
-        <div className={styles.Icons}>
-          {additionalAction.map((action: any, index: number) => {
-            if (allowedAction.restricted) {
-              return null;
-            }
-            // check if we are dealing with nested element
-            let additionalActionParameter: any;
-            const params: any = additionalAction[index].parameter.split('.');
-            if (params.length > 1) {
-              additionalActionParameter = listItems[params[0]][params[1]];
-            } else {
-              additionalActionParameter = listItems[params[0]];
-            }
-            const key = index;
+        if (action.link) {
+          return additionalIconLink(action, additionalActionParameter, key);
+        }
 
-            if (action.link) {
-              return (
-                <Link to={`${action.link}/${additionalActionParameter}`} key={key}>
-                  <IconButton
-                    color="default"
-                    className={styles.additonalButton}
-                    data-testid="additionalButton"
-                  >
-                    <Tooltip title={`${action.label}`} placement="top">
-                      {action.icon}
-                    </Tooltip>
-                  </IconButton>
-                </Link>
-              );
-            }
-            if (action.dialog) {
-              return (
-                <IconButton
-                  color="default"
-                  data-testid="additionalButton"
-                  className={styles.additonalButton}
-                  id="additionalButton-icon"
-                  onClick={() => action.dialog(additionalActionParameter, item)}
-                  key={key}
-                >
-                  <Tooltip title={`${action.label}`} placement="top" key={key}>
-                    {action.icon}
-                  </Tooltip>
-                </IconButton>
-              );
-            }
-            if (action.button) {
-              return action.button(listItems, action, key, fetchQuery);
-            }
-            return null;
-          })}
+        if (action.dialog) {
+          return actionDialogBtn(action, additionalActionParameter, item, key);
+        }
+        if (action.button) {
+          return action.button(listItems, action, key, fetchQuery);
+        }
+        return null;
+      })}
 
-          {/* do not display edit & delete for staff role in collection */}
-          {userRolePermissions.manageCollections || listItems !== 'collections' ? (
-            <>
-              {editButton}
-              {deleteButton(id, label)}
-            </>
-          ) : null}
-          {orgData?.organization?.organization?.newcontactFlowId === item.id ? (
-            <div className={styles.PinIcon}>
-              <span className={styles.Keyword}>
-                New contact <br /> flow
-              </span>
-              <Link to="/settings/organization">
-                <PinIcon />
-              </Link>
-            </div>
-          ) : null}
-        </div>
-      );
-    }
-    return null;
-  }
-
-  function formatList(listItems: Array<any>) {
-    return listItems.map(({ ...listItemObj }) => {
-      const label = listItemObj.label ? listItemObj.label : listItemObj.name;
-      const isReserved = listItemObj.isReserved ? listItemObj.isReserved : null;
-      // display only actions allowed to the user
-      const allowedAction = restrictedAction
-        ? restrictedAction(listItemObj)
-        : { chat: true, edit: true, delete: true };
-      return {
-        ...columns(listItemObj),
-        operations: getIcons(listItemObj, label, isReserved, listItemObj, allowedAction),
-        recordId: listItemObj.id,
-      };
-    });
-  }
+      {/* do not display edit & delete for staff role in collection */}
+      {userRolePermissions.manageCollections || listItems !== 'collections' ? (
+        <>
+          {editButton}
+          {deleteButton(item.id, label)}
+        </>
+      ) : null}
+      {pinned ? pinnedAreaSection : null}
+    </div>
+  );
 
   const resetTableVals = () => {
     setTableVals({
@@ -530,12 +470,30 @@ export const List: React.SFC<ListProps> = ({
   // Get item data and total number of items.
   let itemList: any = [];
   if (data) {
-    itemList = formatList(data[listItem]);
+    itemList = formatList({
+      listItems: data[listItem],
+      restrictedAction,
+      columns,
+      pinned: false,
+      editSupport,
+      editIconLink,
+      deleteIconLink,
+      iconsSection,
+    });
   }
 
   if (userCollections) {
     if (listItem === 'collections') {
-      itemList = formatList(userCollections.currentUser.user.groups);
+      itemList = formatList({
+        listItems: userCollections.currentUser.user.groups,
+        restrictedAction,
+        columns,
+        pinned: false,
+        editSupport,
+        editIconLink,
+        deleteIconLink,
+        iconsSection,
+      });
     }
   }
 
@@ -689,6 +647,17 @@ export const List: React.SFC<ListProps> = ({
 
       <div className={`${styles.Body} ${customStyles}`}>
         {backLink}
+        {pageLink === 'flow' && (
+          <PinnedFlow
+            columnStyles={columnStyles}
+            removeSortBy={removeSortBy !== null ? removeSortBy : []}
+            columns={columns}
+            editIconLink={editIconLink}
+            deleteIconLink={deleteIconLink}
+            iconsSection={iconsSection}
+          />
+        )}
+        {/* {pinnedFlow} */}
         {/* Rendering list of items */}
         {itemList.length > 0 ? displayList : noItemsText}
       </div>
