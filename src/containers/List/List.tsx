@@ -220,7 +220,10 @@ export const List: React.SFC<ListProps> = ({
       filter[parameter] = searchVal;
     });
   }
-  filter = { ...filter, ...filters, isPinned: false };
+  filter = { ...filter, ...filters };
+  if (pageLink === 'flow') {
+    filter.isPinned = false;
+  }
 
   const filterPayload = useCallback(() => {
     let order = 'ASC';
