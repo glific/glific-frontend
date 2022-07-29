@@ -11,14 +11,16 @@ const mocks = TEMPLATE_MOCKS;
 
 const speedSend = (
   <MockedProvider mocks={mocks} addTypename={false}>
-    <SpeedSendList />
+    <Router>
+      <SpeedSendList />
+    </Router>
   </MockedProvider>
 );
 
+setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
+
 test('SpeedSendList has proper headers', async () => {
   const { getByText, container } = render(speedSend);
-
-  setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
 
   await waitFor(() => {
     expect(getByText('Speed sends')).toBeInTheDocument();

@@ -185,7 +185,7 @@ describe('DialogMessage tests', () => {
         <Router>
           <Routes>
             <Route path="/" element={<List {...props} />} />
-            <Route path="organizations" element={<OrganizationList />} />
+            <Route path="tag/add" element={<OrganizationList />} />
           </Routes>
         </Router>
       </MockedProvider>
@@ -194,7 +194,6 @@ describe('DialogMessage tests', () => {
     const { container } = render(list);
 
     await waitFor(() => {
-      screen.debug();
       const { queryByLabelText } = within(
         container.querySelector('tbody tr') as HTMLTableRowElement
       );

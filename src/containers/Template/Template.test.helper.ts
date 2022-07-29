@@ -206,6 +206,7 @@ const filterTemplateQuery = {
           isHsm: true,
           isReserved: false,
           updatedAt: '2020-12-01T18:00:32Z',
+          translations: '{}',
         },
       ],
     },

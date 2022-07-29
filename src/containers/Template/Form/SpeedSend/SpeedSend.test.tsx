@@ -1,27 +1,28 @@
 import { render, within, fireEvent, cleanup, waitFor } from '@testing-library/react';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { MemoryRouter } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 import { Routes, Route } from 'react-router-dom';
-
 import { SpeedSendList } from 'containers/Template/List/SpeedSendList/SpeedSendList';
 import { TEMPLATE_MOCKS } from 'containers/Template/Template.test.helper';
 import { setUserSession } from 'services/AuthService';
 import { SpeedSend } from './SpeedSend';
 
-afterEach(cleanup);
+beforeEach(() => {
+  cleanup();
+});
 const mocks = TEMPLATE_MOCKS;
 setUserSession(JSON.stringify({ roles: ['Admin'] }));
 
 describe('SpeedSend', () => {
   test('cancel button should redirect to SpeedSendlist page', async () => {
-    const { container, getByText, unmount } = render(
+    const { container, getByText } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
-        <Router>
+        <MemoryRouter>
           <Routes>
             <Route path="/" element={<SpeedSend />} />
             <Route path="/speed-send" element={<SpeedSendList />} />
           </Routes>
-        </Router>
+        </MemoryRouter>
       </MockedProvider>
     );
 
@@ -34,18 +35,17 @@ describe('SpeedSend', () => {
     await waitFor(() => {
       expect(getByText('Speed sends')).toBeInTheDocument();
     });
-    unmount();
   });
 
-  test('save button should add a new template', async () => {
+  test('should have correct validations ', async () => {
     const { container } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
-        <Router>
+        <MemoryRouter>
           <Routes>
             <Route path="/" element={<SpeedSend />} />
             <Route path="/speed-send" element={<SpeedSendList />} />
           </Routes>
-        </Router>
+        </MemoryRouter>
       </MockedProvider>
     );
 
@@ -63,8 +63,6 @@ describe('SpeedSend', () => {
 
     await waitFor(() => {
       expect(queryByText('Message is required.')).toBeInTheDocument();
-      const { getByText } = within(container.querySelector('tbody') as HTMLElement);
-      expect(getByText('Good message')).toBeInTheDocument();
     });
   });
 });
