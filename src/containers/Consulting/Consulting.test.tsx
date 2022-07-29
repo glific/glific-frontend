@@ -1,5 +1,5 @@
 import { fireEvent, render, waitFor, cleanup, screen } from '@testing-library/react';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 
 import {
@@ -18,7 +18,15 @@ setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
 const mocks = [getOrganizationList, getConsultingHour, createConsultingHour, updateConsultingHour];
 const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>
-    <Consulting organizationId="" setOpenDialog={setOpenDialogMock} />
+    <Router>
+      <Routes>
+        <Route
+          path="/"
+          element={<Consulting organizationId="" setOpenDialog={setOpenDialogMock} />}
+        />
+        <Route path="consulting-hours" element={<div />} />
+      </Routes>
+    </Router>
   </MockedProvider>
 );
 
@@ -68,7 +76,13 @@ test('Render component correctly with empty form', async () => {
 const consultingEditForm = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <Router>
-      <Consulting organizationId="1" setOpenDialog={setOpenDialogMock} />
+      <Routes>
+        <Route
+          path="/"
+          element={<Consulting organizationId="1" setOpenDialog={setOpenDialogMock} />}
+        />
+        <Route path="consulting-hours" element={<div />} />
+      </Routes>
     </Router>
   </MockedProvider>
 );

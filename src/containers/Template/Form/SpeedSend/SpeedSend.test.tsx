@@ -14,13 +14,13 @@ setUserSession(JSON.stringify({ roles: ['Admin'] }));
 
 describe('SpeedSend', () => {
   test('cancel button should redirect to SpeedSendlist page', async () => {
-    const { container, getByText } = render(
+    const { container, getByText, unmount } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
         <Router>
           <Routes>
+            <Route path="/" element={<SpeedSend />} />
             <Route path="/speed-send" element={<SpeedSendList />} />
           </Routes>
-          <SpeedSend />
         </Router>
       </MockedProvider>
     );
@@ -34,14 +34,15 @@ describe('SpeedSend', () => {
     await waitFor(() => {
       expect(getByText('Speed sends')).toBeInTheDocument();
     });
+    unmount();
   });
 
   test('save button should add a new template', async () => {
     const { container } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
         <Router>
-          <SpeedSend />
           <Routes>
+            <Route path="/" element={<SpeedSend />} />
             <Route path="/speed-send" element={<SpeedSendList />} />
           </Routes>
         </Router>
