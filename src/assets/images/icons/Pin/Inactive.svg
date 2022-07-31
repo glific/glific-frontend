@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Pin</title>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Pin" fill="#CACACA">
+            <polygon id="Path-5"
+                points="10.0742485 15.9455612 6.90800837 12.6885395 0 18 5.74266509 11.4897838 2.51027684 8.16471737 4.52730911 6.10753871 8.72032128 6.10753871 12.2408492 2.43457397 11.3691401 1.50239498 12.91373 2.21289115e-16 18 5.37886574 16.5761973 6.70695852 15.6694729 5.79544823 12.2408492 9.40199939 12.2408492 13.720765">
+            </polygon>
+        </g>
+    </g>
+</svg>

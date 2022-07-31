@@ -11,6 +11,7 @@ import { ReactComponent as ImportIcon } from 'assets/images/icons/Flow/Import.sv
 import { ReactComponent as ConfigureIcon } from 'assets/images/icons/Configure/UnselectedDark.svg';
 import { ReactComponent as ContactVariable } from 'assets/images/icons/ContactVariable.svg';
 import { ReactComponent as WebhookLogsIcon } from 'assets/images/icons/Webhook/WebhookLight.svg';
+import { ReactComponent as PinIcon } from 'assets/images/icons/Pin/Inactive.svg';
 import { FILTER_FLOW, GET_FLOW_COUNT, EXPORT_FLOW, RELEASE_FLOW } from 'graphql/queries/Flow';
 import { DELETE_FLOW, IMPORT_FLOW } from 'graphql/mutations/Flow';
 import { List } from 'containers/List/List';
@@ -50,7 +51,7 @@ const getLastPublished = (date: string, fallback: string = '') =>
 
 const displayPinned = (isPinned: boolean) => {
   if (isPinned) {
-    return 'Pinned';
+    return <PinIcon />;
   }
   return '';
 };
