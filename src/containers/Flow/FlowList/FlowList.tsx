@@ -48,7 +48,20 @@ const getLastPublished = (date: string, fallback: string = '') =>
     <div className={styles.LastPublishedFallback}>{fallback}</div>
   );
 
-const columnStyles = [styles.Name, styles.DateColumn, styles.DateColumn, styles.Actions];
+const displayPinned = (isPinned: boolean) => {
+  if (isPinned) {
+    return 'Pinned';
+  }
+  return '';
+};
+
+const columnStyles = [
+  styles.Pinned,
+  styles.Name,
+  styles.DateColumn,
+  styles.DateColumn,
+  styles.Actions,
+];
 const flowIcon = <FlowIcon className={styles.FlowIcon} />;
 
 const queries = {
@@ -160,13 +173,14 @@ export const FlowList: React.SFC<FlowListProps> = () => {
     },
   ];
 
-  const getColumns = ({ name, keywords, lastChangedAt, lastPublishedAt }: any) => ({
+  const getColumns = ({ name, keywords, lastChangedAt, lastPublishedAt, isPinned }: any) => ({
+    pin: displayPinned(isPinned),
     name: getName(name, keywords),
     lastPublishedAt: getLastPublished(lastPublishedAt, t('Not published yet')),
     lastChangedAt: getDate(lastChangedAt, t('Nothing in draft')),
   });
 
-  const columnNames = ['TITLE', 'LAST PUBLISHED', 'LAST SAVED IN DRAFT', 'ACTIONS'];
+  const columnNames = [' ', 'TITLE', 'LAST PUBLISHED', 'LAST SAVED IN DRAFT', 'ACTIONS'];
   const dialogMessage = t("You won't be able to use this flow.");
 
   const columnAttributes = {
@@ -195,6 +209,8 @@ export const FlowList: React.SFC<FlowListProps> = () => {
         additionalAction={additionalAction}
         button={{ show: true, label: t('+ Create Flow') }}
         secondaryButton={importButton}
+        defaultSortBy=" "
+        listOrder="desc"
       />
 
       <Link to="/webhook-logs" className={styles.Webhook}>

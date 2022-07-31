@@ -7,6 +7,10 @@
   min-width: 200px;
 }
 
+.Pinned {
+  width: 6%;
+}
+
 .Actions {
   justify-content: flex-end;
   margin-left: auto;
