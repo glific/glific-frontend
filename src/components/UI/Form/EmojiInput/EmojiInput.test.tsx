@@ -1,6 +1,5 @@
-import { render, fireEvent } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import { EmojiInput } from './EmojiInput';
-import userEvent from '@testing-library/user-event';
 import { EditorState } from 'draft-js';
 
 const setFieldValueMock = jest.fn();
@@ -29,7 +28,7 @@ it('should have a emoji picker', () => {
   expect(getByTestId('emoji-picker')).toBeInTheDocument();
 });
 
-// since we are mocking emoji-picker we need to implement the following funcationalities
+// since we are mocking emoji-picker we need to implement the following functionalities
 
 // test('clicking on emoji picker should open a container to select emojis', async () => {
 //   const user = userEvent.setup();
