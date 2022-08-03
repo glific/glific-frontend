@@ -88,7 +88,7 @@ export const filterFlowQuery = {
         limit: 50,
         offset: 0,
         order: 'DESC',
-        orderWith: ' ',
+        orderWith: 'is_pinned',
       },
     },
   },
