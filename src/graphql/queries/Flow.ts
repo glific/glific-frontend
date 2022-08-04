@@ -44,6 +44,7 @@ export const FILTER_FLOW = gql`
       lastPublishedAt
       ignoreKeywords
       updatedAt
+      isPinned
     }
   }
 `;
