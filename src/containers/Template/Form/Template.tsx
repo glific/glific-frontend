@@ -28,6 +28,7 @@ const regexForShortcode = /^[a-z0-9_]+$/g;
 const HSMValidation = {
   example: Yup.string()
     .transform((current, original) => original.getCurrentContent().getPlainText())
+    .max(1024, 'Maximum 1024 characters are allowed')
     .when('body', (messageValue: any, schema: any) =>
       schema.test({
         test: (exampleValue: any) => {
@@ -168,6 +169,10 @@ const Template: React.SFC<TemplateProps> = (props) => {
     onExampleChange = () => {},
     languageStyle = 'dropdown',
   } = props;
+
+  // "Audio" option is removed in case of HSM Template
+  const mediaTypes =
+    listItemName === 'HSM Template' ? options.filter(({ label }) => label !== 'AUDIO') : options;
 
   const [label, setLabel] = useState('');
   const [body, setBody] = useState(EditorState.createEmpty());
@@ -520,7 +525,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
     {
       component: AutoComplete,
       name: 'type',
-      options,
+      options: mediaTypes,
       optionLabel: 'label',
       multiple: false,
       textFieldProps: {
@@ -882,7 +887,8 @@ const Template: React.SFC<TemplateProps> = (props) => {
     label: Yup.string().required(t('Title is required.')).max(50, t('Title length is too long.')),
     body: Yup.string()
       .transform((current, original) => original.getCurrentContent().getPlainText())
-      .required(t('Message is required.')),
+      .required(t('Message is required.'))
+      .max(1024, 'Maximum 1024 characters are allowed'),
     type: Yup.object()
       .nullable()
       .when('attachmentURL', {
