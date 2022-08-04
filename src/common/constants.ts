@@ -141,7 +141,7 @@ export const setColumnToBackendTerms: any = (listName: string, columnName: strin
   };
 
   const additionalItems: any = {
-    flow: { TITLE: 'name' },
+    flow: { TITLE: 'name', ' ': 'is_pinned' },
     trigger: { TITLE: 'name' },
     Search: {
       TITLE: 'shortcode',
