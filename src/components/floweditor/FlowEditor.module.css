@@ -45,7 +45,6 @@
 .FlowContainer {
   position: relative;
   height: 100vh;
-  overflow: auto;
 }
 
 .ButtonContainer {
