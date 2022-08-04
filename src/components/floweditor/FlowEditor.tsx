@@ -282,7 +282,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
         buttonOk="Take Over"
         buttonMiddle="Go Back"
         handleOk={() => {
-          getOrganizationServices();
+          getFreeFlow({ variables: { id: flowId, isForced: true } });
           setCurrentEditDialogBox(false);
         }}
         handleMiddle={() => {
