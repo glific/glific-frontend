@@ -14,6 +14,7 @@ import { Login } from './Login';
 const mocks = [getCurrentUserQuery];
 
 jest.mock('axios');
+const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 const wrapper = (
   <MockedProvider mocks={mocks}>
