@@ -148,7 +148,7 @@ test('click on preview button should open simulator', async () => {
 //     expect(screen.getByText('The flow is being edited by NGO Main Account')).toBeInTheDocument();
 //   });
 
-//   fireEvent.click(screen.getByText('Okay'));
+//   fireEvent.click(getByText('Go Back'));
 // });
 
 test('publish flow which has error', async () => {

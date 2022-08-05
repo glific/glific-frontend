@@ -20,19 +20,6 @@ const mocks = [
   ...getCollectionsQuery,
 ];
 
-// console warning fix - react-i18next:: You will need to pass in an i18next instance by using initReactI18next
-// https://github.com/i18next/react-i18next/issues/876
-jest.mock('react-i18next', () => ({
-  useTranslation: () => ({ t: (key: any) => key }),
-}));
-
-jest.mock('react-router-dom', () => {
-  return {
-    ...jest.requireActual('react-router-dom'),
-    useParams: () => ({ id: '1' }),
-  };
-});
-
 const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <Collection />

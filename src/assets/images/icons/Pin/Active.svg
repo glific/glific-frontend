@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Pinned</title>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Group" stroke="#93A29B"
+            transform="translate(9.442026, 9.440228) scale(-1, 1) translate(-9.442026, -9.440228) translate(2.000000, 2.000000)">
+            <polygon id="Path-5" stroke-width="2" stroke-linejoin="round"
+                points="8.66168739 13.3967427 5.84725173 10.5016122 0 14.8804566 4.81139104 9.43605162 1.93815703 6.480437 3.73107461 4.65183375 7.45819654 4.65183375 10.5875547 1.3869762 9.81270219 0.558372658 14.4411974 5.18465135 13.6352202 4.37441999 10.5875547 7.58024324 10.5875547 11.419146">
+            </polygon>
+            <line x1="3.46019908" y1="8.038973" x2="7.29875108" y2="11.9992803" id="Path-38" stroke-width="2"></line>
+            <line x1="9.94409821" y1="5.62425927e-13" x2="14.8840514" y2="4.94715078" id="Path-38-Copy" stroke-width="3"
+                stroke-linecap="round"></line>
+        </g>
+    </g>
+</svg>

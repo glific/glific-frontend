@@ -11,6 +11,7 @@ import { ReactComponent as ImportIcon } from 'assets/images/icons/Flow/Import.sv
 import { ReactComponent as ConfigureIcon } from 'assets/images/icons/Configure/UnselectedDark.svg';
 import { ReactComponent as ContactVariable } from 'assets/images/icons/ContactVariable.svg';
 import { ReactComponent as WebhookLogsIcon } from 'assets/images/icons/Webhook/WebhookLight.svg';
+import { ReactComponent as PinIcon } from 'assets/images/icons/Pin/Active.svg';
 import { FILTER_FLOW, GET_FLOW_COUNT, EXPORT_FLOW, RELEASE_FLOW } from 'graphql/queries/Flow';
 import { DELETE_FLOW, IMPORT_FLOW } from 'graphql/mutations/Flow';
 import { List } from 'containers/List/List';
@@ -46,7 +47,20 @@ const getLastPublished = (date: string, fallback: string = '') =>
     <div className={styles.LastPublishedFallback}>{fallback}</div>
   );
 
-const columnStyles = [styles.Name, styles.DateColumn, styles.DateColumn, styles.Actions];
+const displayPinned = (isPinned: boolean) => {
+  if (isPinned) {
+    return <PinIcon />;
+  }
+  return '';
+};
+
+const columnStyles = [
+  styles.Pinned,
+  styles.Name,
+  styles.DateColumn,
+  styles.DateColumn,
+  styles.Actions,
+];
 const flowIcon = <FlowIcon className={styles.FlowIcon} />;
 
 const queries = {
@@ -158,13 +172,14 @@ export const FlowList = () => {
     },
   ];
 
-  const getColumns = ({ name, keywords, lastChangedAt, lastPublishedAt }: any) => ({
+  const getColumns = ({ name, keywords, lastChangedAt, lastPublishedAt, isPinned }: any) => ({
+    pin: displayPinned(isPinned),
     name: getName(name, keywords),
     lastPublishedAt: getLastPublished(lastPublishedAt, t('Not published yet')),
     lastChangedAt: getDate(lastChangedAt, t('Nothing in draft')),
   });
 
-  const columnNames = ['TITLE', 'LAST PUBLISHED', 'LAST SAVED IN DRAFT', 'ACTIONS'];
+  const columnNames = [' ', 'TITLE', 'LAST PUBLISHED', 'LAST SAVED IN DRAFT', 'ACTIONS'];
   const dialogMessage = t("You won't be able to use this flow.");
 
   const columnAttributes = {
@@ -193,6 +208,8 @@ export const FlowList = () => {
         additionalAction={additionalAction}
         button={{ show: true, label: t('+ Create Flow') }}
         secondaryButton={importButton}
+        defaultSortBy=" "
+        listOrder="desc"
       />
 
       <Link to="/webhook-logs" className={styles.Webhook}>

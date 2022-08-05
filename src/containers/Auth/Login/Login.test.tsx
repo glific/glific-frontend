@@ -14,18 +14,6 @@ import { Login } from './Login';
 const mocks = [getCurrentUserQuery];
 
 jest.mock('axios');
-const mockedAxios = axios as jest.Mocked<typeof axios>;
-
-jest.mock('react-i18next', () => ({
-  useTranslation: () => {
-    return {
-      t: (str: any) => str,
-      i18n: {
-        changeLanguage: jest.fn(),
-      },
-    };
-  },
-}));
 
 const wrapper = (
   <MockedProvider mocks={mocks}>

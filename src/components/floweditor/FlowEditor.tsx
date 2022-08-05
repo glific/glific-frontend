@@ -276,13 +276,21 @@ export const FlowEditor = () => {
         title={dialogMessage}
         alignButtons="center"
         skipCancel
-        buttonOk="Okay"
+        buttonOk="Take Over"
+        buttonMiddle="Go Back"
         handleOk={() => {
+          getFreeFlow({ variables: { id: flowId, isForced: true } });
+          setCurrentEditDialogBox(false);
+        }}
+        handleMiddle={() => {
           setConfirmedNavigation(true);
           navigate('/flow');
         }}
       >
-        <p className={styles.DialogDescription}>Please try again later or contact the user.</p>
+        <p className={styles.DialogDescription}>
+          You can either go back and edit it later or <br /> &lsquo;Take Over&rsquo; this flow to
+          start editing now.
+        </p>
       </DialogBox>
     );
   }
