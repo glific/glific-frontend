@@ -1344,10 +1344,10 @@
   resolved "https://registry.yarnpkg.com/@gar/promisify/-/promisify-1.1.3.tgz#555193ab2e3bb3b6adc3d551c9c030d9e860daf6"
   integrity sha512-k2Ty1JcVojjJFwrg/ThKi2ujJ7XNLYaFGNB/bWT9wGR+oSMJHMa5w+CUq6p/pVrKeNNgA7pCqEcjSnHVoqJQFw==
 
-"@glific/flow-editor@^1.17.1-2":
-  version "1.17.1-2"
-  resolved "https://registry.yarnpkg.com/@glific/flow-editor/-/flow-editor-1.17.1-2.tgz#b27f7fc6e9b0190824678646d05f7351811cb63f"
-  integrity sha512-+71qXOxrEDsq0pSV+uv5PNqgM2by8dEKvBA8OcdVVleSKR+jcUF/3h34qw2UyjsuQsrdf5Msi0QgX7+7dW5y2Q==
+"@glific/flow-editor@^1.17.1-3":
+  version "1.17.1-3"
+  resolved "https://registry.yarnpkg.com/@glific/flow-editor/-/flow-editor-1.17.1-3.tgz#9f8645559daa4b2d2a0745f8302e2b0d84bcae80"
+  integrity sha512-64VVqqjiKmrYOH5iPHlJiE5Kr7unqWacRK80uJur/m8+ZZNvJlUzJo4KvarbQsLW+vUDWLXsCpUKt1+CG7v4Dw==
   dependencies:
     react "^16.8.6"
     react-dom "^16.8.6"

@@ -123,7 +123,7 @@ test('check if someone else is using a flow', async () => {
     expect(getByText('The flow is being edited by NGO Main Account')).toBeInTheDocument();
   });
 
-  fireEvent.click(getByText('Okay'));
+  fireEvent.click(getByText('Go Back'));
 });
 
 test('publish flow which has error', async () => {

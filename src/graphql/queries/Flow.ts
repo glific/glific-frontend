@@ -48,6 +48,7 @@ export const FILTER_FLOW = gql`
       lastPublishedAt
       ignoreKeywords
       updatedAt
+      isPinned
       roles {
         id
         label
@@ -87,8 +88,8 @@ export const TERMINATE_FLOW = gql`
 `;
 
 export const GET_FREE_FLOW = gql`
-  query flowGet($id: ID!) {
-    flowGet(id: $id) {
+  query flowGet($id: ID!, $isForced: Boolean) {
+    flowGet(id: $id, isForced: $isForced) {
       flow {
         id
         uuid
