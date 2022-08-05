@@ -178,9 +178,16 @@ export const FlowList: React.SFC<FlowListProps> = () => {
     },
   ];
 
-  const getColumns = ({ name, keywords, lastChangedAt, lastPublishedAt,isPinned, roles }: any) => ({
+  const getColumns = ({
+    name,
+    keywords,
+    lastChangedAt,
+    lastPublishedAt,
+    isPinned,
+    roles,
+  }: any) => ({
     pin: displayPinned(isPinned),
-    name: getName(name, keywords,roles),
+    name: getName(name, keywords, roles),
     lastPublishedAt: getLastPublished(lastPublishedAt, t('Not published yet')),
     lastChangedAt: getDate(lastChangedAt, t('Nothing in draft')),
   });
