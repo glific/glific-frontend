@@ -135,6 +135,10 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
       setNotification(`${capitalListItemName} deleted successfully`);
       setDeleted(true);
     },
+    onError: (err: ApolloError) => {
+      setShowDialog(false);
+      setErrorMessage(err);
+    },
     awaitRefetchQueries: true,
     refetchQueries: [
       {
