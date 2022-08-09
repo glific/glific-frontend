@@ -70,7 +70,7 @@ export const Role = () => {
       listItem="accessRole"
       icon={roleIcon}
       languageSupport={false}
-      copyNotification={t('Copy of the flow has been created!')}
+      copyNotification={t('Copy of the role has been created!')}
     />
   );
 };
