@@ -2,6 +2,7 @@ import { GET_USERS_QUERY, FILTER_USERS, USER_COUNT, GET_USER_ROLES } from 'graph
 import { UPDATE_USER } from 'graphql/mutations/User';
 import { USER_LANGUAGES } from 'graphql/queries/Organization';
 import { GET_COLLECTIONS } from 'graphql/queries/Collection';
+import { GET_ROLE_NAMES } from 'graphql/queries/Role';
 
 const GET_ROLES_MOCK = {
   request: {
@@ -142,12 +143,36 @@ const UPDATE_USER_MOCK = {
   },
 };
 
+const getRoleNamesMock = {
+  request: {
+    query: GET_ROLE_NAMES,
+    variables: {},
+  },
+  result: {
+    data: {
+      accessRoles: [
+        {
+          data: {
+            accessRoles: [
+              { __typename: 'AccessRole', id: '1', isReserved: true, label: 'Admin' },
+              { __typename: 'AccessRole', id: '2', isReserved: true, label: 'Staff' },
+              { __typename: 'AccessRole', id: '3', isReserved: true, label: 'Manager' },
+              { __typename: 'AccessRole', id: '4', isReserved: true, label: 'No access' },
+            ],
+          },
+        },
+      ],
+    },
+  },
+};
+
 export const STAFF_MANAGEMENT_MOCKS = [
   GET_USER_MOCK,
   GET_ROLES_MOCK,
   GET_USER_LANGUAGE_MOCK,
   GET_GROUPS,
   UPDATE_USER_MOCK,
+  getRoleNamesMock,
 ];
 
 export const USER_COUNT_MOCK = {
@@ -169,7 +194,7 @@ const createUserMockData = new Array(5).fill(null).map((val, idx) => {
     id: `${index}`,
     name: `NGO Main Account${index}`,
     phone: `91987654321${index}`,
-    roles: [roles[idx]],
+    accessRoles: [roles[idx]],
     groups: [],
     contact: {
       id: `${index}`,

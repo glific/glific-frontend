@@ -18,6 +18,10 @@ export const GET_FLOW = gql`
         name
         uuid
         isActive
+        roles {
+          id
+          label
+        }
         isBackground
         keywords
         ignoreKeywords
@@ -45,6 +49,10 @@ export const FILTER_FLOW = gql`
       ignoreKeywords
       updatedAt
       isPinned
+      roles {
+        id
+        label
+      }
     }
   }
 `;
