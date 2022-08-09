@@ -14,8 +14,12 @@ import { getPlainTextFromEditor } from 'common/RichEditor';
 import { SEARCH_QUERY_VARIABLES } from 'common/constants';
 import { SEARCH_QUERY } from 'graphql/queries/Search';
 import { USER_LANGUAGES } from 'graphql/queries/Organization';
+import { GET_ROLE_NAMES } from 'graphql/queries/Role';
+import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { ReactComponent as DeleteIcon } from 'assets/images/icons/Delete/White.svg';
 import { ReactComponent as BackIcon } from 'assets/images/icons/Back.svg';
+import { organizationHasDynamicRole } from 'common/utils';
+import { getUserRole } from 'context/role';
 import styles from './FormLayout.module.css';
 
 export interface FormLayoutProps {
@@ -61,6 +65,7 @@ export interface FormLayoutProps {
   customStyles?: any;
   customHandler?: Function;
   copyNotification?: string;
+  roleAccessSupport?: boolean;
   showPreviewButton?: boolean;
   onPreviewClick?: Function;
   getQueryFetchPolicy?: any;
@@ -91,6 +96,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   linkParameter = null,
   cancelLink = null,
   languageSupport = true,
+  roleAccessSupport = false,
   setPayload,
   advanceSearch,
   cancelAction,
@@ -124,6 +130,8 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   const [customError, setCustomError] = useState<any>(null);
 
   const { t } = useTranslation();
+
+  const { data: roleData } = useQuery(GET_ROLE_NAMES);
 
   const capitalListItemName = listItemName[0].toUpperCase() + listItemName.slice(1);
   let item: any = null;
@@ -420,18 +428,42 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   // sort languages by their name
   languageOptions.sort((first: any, second: any) => (first.label > second.label ? 1 : -1));
 
-  const language = languageSupport
-    ? {
-        component: Dropdown,
-        name: 'languageId',
-        placeholder: t('Language'),
-        options: languageOptions,
-        validate: validateLanguage,
-        helperText: t('For more languages check settings or connect with your admin'),
-      }
-    : null;
+  let formFieldItems = formFields;
 
-  const formFieldItems = languageSupport ? [...formFields, language] : formFields;
+  if (languageSupport) {
+    const language = {
+      component: Dropdown,
+      name: 'languageId',
+      placeholder: t('Language'),
+      options: languageOptions,
+      validate: validateLanguage,
+      helperText: t('For more languages check settings or connect with your admin'),
+    };
+
+    formFieldItems = [...formFields, language];
+  }
+
+  if (roleAccessSupport && organizationHasDynamicRole() && getUserRole().includes('Admin')) {
+    const roleAccess = {
+      component: AutoComplete,
+      name: 'roles',
+      placeholder: t('Roles'),
+      options: roleData
+        ? roleData.accessRoles.map((role: any) => ({ label: role.label, id: role.id }))
+        : [],
+      optionLabel: 'label',
+      multiple: true,
+      textFieldProps: {
+        label: t('Roles'),
+        variant: 'outlined',
+      },
+
+      helperText: t('Select roles to apply to the resource'),
+    };
+
+    formFieldItems = [...formFields, roleAccess];
+  }
+
   const deleteButton =
     itemId && !type ? (
       <Button

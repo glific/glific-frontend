@@ -23,7 +23,8 @@ it('Renders Export consulting component successfully', async () => {
   const { getAllByText } = render(exportConsulting);
 
   await waitFor(() => {
-    expect(getAllByText('Date from').at(0)).toBeInTheDocument();
+    const dateFrom = getAllByText('Date from');
+    expect(dateFrom[0]).toBeInTheDocument();
   });
 });
 
@@ -31,7 +32,8 @@ it('should give proper validation errors', async () => {
   const { getAllByText, getByText } = render(exportConsulting);
 
   await waitFor(() => {
-    expect(getAllByText('Date from').at(0)).toBeInTheDocument();
+    const dateFrom = getAllByText('Date from');
+    expect(dateFrom[0]).toBeInTheDocument();
   });
 
   fireEvent.click(screen.getByText('Filter'));

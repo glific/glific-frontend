@@ -2,7 +2,7 @@ import React, { lazy, useEffect, useMemo, useState } from 'react';
 import { Switch, Route, Redirect, RouteComponentProps } from 'react-router-dom';
 
 import { Chat } from 'containers/Chat/Chat';
-import { getUserRole } from 'context/role';
+import { checkDynamicRole, getUserRole } from 'context/role';
 import { useToast } from 'services/ToastService';
 import ChatInterface from 'containers/Chat/ChatInterface/ChatInterface';
 import { ProviderContext } from 'context/session';
@@ -64,6 +64,9 @@ const InteractiveMessageList = lazy(
 );
 const InteractiveMessage = lazy(() => import('containers/InteractiveMessage/InteractiveMessage'));
 
+const RoleList = lazy(() => import('containers/Role/RoleList/RoleList'));
+const Role = lazy(() => import('containers/Role/Role'));
+
 const routeStaff = (
   <Switch>
     <Route path="/chat" component={Chat} />
@@ -91,6 +94,9 @@ const routeAdmin = (
     <Route path="/flow" exact component={FlowList} />
     <Route path="/flow/add" exact component={Flow} />
     <Route path="/flow/:id/edit" exact component={Flow} />
+    <Route path="/role" exact component={RoleList} />
+    <Route path="/role/add" exact component={Role} />
+    <Route path="/role/:id/edit" exact component={Role} />
     <Route path="/collection" exact component={CollectionList} />
     <Route path="/collection/add" exact component={Collection} />
     <Route path="/collection/:id/edit" exact component={Collection} />
@@ -213,6 +219,7 @@ export const AuthenticatedRoute: React.SFC = () => {
   }
 
   if (
+    checkDynamicRole() ||
     userRole.includes('Manager') ||
     userRole.includes('Admin') ||
     userRole.includes('Glific_admin')
