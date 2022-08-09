@@ -19,6 +19,10 @@ export const CREATE_FLOW = gql`
         name
         isActive
         uuid
+        roles {
+          id
+          label
+        }
       }
       errors {
         key
@@ -36,6 +40,10 @@ export const UPDATE_FLOW = gql`
         name
         isActive
         uuid
+        roles {
+          id
+          label
+        }
       }
       errors {
         key

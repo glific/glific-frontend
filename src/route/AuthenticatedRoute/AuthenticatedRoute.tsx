@@ -5,7 +5,7 @@ import { useQuery } from '@apollo/client';
 import { Chat } from 'containers/Chat/Chat';
 import ChatInterface from 'containers/Chat/ChatInterface/ChatInterface';
 import Loading from 'components/UI/Layout/Loading/Loading';
-import { getUserRole } from 'context/role';
+import { checkDynamicRole, getUserRole } from 'context/role';
 import { useToast } from 'services/ToastService';
 import { ProviderContext } from 'context/session';
 import { GET_ORGANIZATION_PROVIDER } from 'graphql/queries/Organization';
@@ -65,6 +65,9 @@ const InteractiveMessageList = lazy(
 );
 const InteractiveMessage = lazy(() => import('containers/InteractiveMessage/InteractiveMessage'));
 
+const RoleList = lazy(() => import('containers/Role/RoleList/RoleList'));
+const Role = lazy(() => import('containers/Role/Role'));
+
 const routeStaff = (
   <Routes>
     <Route index element={defaultRedirect} />
@@ -90,6 +93,9 @@ const routeAdmin = (
     <Route path="flow" element={<FlowList />} />
     <Route path="flow/add" element={<Flow />} />
     <Route path="flow/:id/edit" element={<Flow />} />
+    <Route path="role" element={<RoleList />} />
+    <Route path="role/add" element={<Role />} />
+    <Route path="role/:id/edit" element={<Role />} />
     <Route path="collection" element={<CollectionList />} />
     <Route path="collection/add" element={<Collection />} />
     <Route path="collection/:id/edit" element={<Collection />} />
@@ -183,6 +189,7 @@ export const AuthenticatedRoute = () => {
   }
 
   if (
+    checkDynamicRole() ||
     userRole.includes('Manager') ||
     userRole.includes('Admin') ||
     userRole.includes('Glific_admin')

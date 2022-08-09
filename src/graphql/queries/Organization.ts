@@ -116,6 +116,7 @@ export const GET_ORGANIZATION_SERVICES = gql`
       dialogflow
       googleCloudStorage
       flowUuidDisplay
+      rolesAndPermission
       contactProfileEnabled
     }
   }

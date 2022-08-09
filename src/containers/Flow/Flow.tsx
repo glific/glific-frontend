@@ -10,6 +10,8 @@ import { ReactComponent as FlowIcon } from 'assets/images/icons/Flow/Selected.sv
 import { CREATE_FLOW, UPDATE_FLOW, DELETE_FLOW, CREATE_FLOW_COPY } from 'graphql/mutations/Flow';
 import { GET_FLOW } from 'graphql/queries/Flow';
 import { setErrorMessage } from 'common/notification';
+import { getUserSession } from 'services/AuthService';
+import { checkDynamicRole } from 'context/role';
 import styles from './Flow.module.css';
 
 const flowIcon = <FlowIcon className={styles.FlowIcon} />;
@@ -26,11 +28,12 @@ export const Flow = () => {
   const [name, setName] = useState('');
   const [keywords, setKeywords] = useState('');
   const [isActive, setIsActive] = useState(true);
+  const [roles, setRoles] = useState<Array<any>>([]);
   const [isBackground, setIsBackground] = useState(false);
   const [ignoreKeywords, setIgnoreKeywords] = useState(false);
   const { t } = useTranslation();
 
-  const states = { isActive, isBackground, name, keywords, ignoreKeywords };
+  const states = { isActive, isBackground, name, keywords, ignoreKeywords, roles };
 
   const setStates = ({
     name: nameValue,
@@ -38,6 +41,7 @@ export const Flow = () => {
     isActive: isActiveValue,
     isBackground: isBackgroundValue,
     ignoreKeywords: ignoreKeywordsValue,
+    roles: rolesValue,
   }: any) => {
     // Override name & keywords when creating Flow Copy
     let fieldName = nameValue;
@@ -50,6 +54,7 @@ export const Flow = () => {
     setName(fieldName);
     setIsActive(isActiveValue);
     setIsBackground(isBackgroundValue);
+    setRoles(rolesValue);
 
     // we are receiving keywords as an array object
     if (fieldKeywords.length > 0) {
@@ -112,6 +117,7 @@ export const Flow = () => {
 
   const setPayload = (payload: any) => {
     let formattedKeywords;
+
     if (payload.keywords) {
       // remove white spaces
       const inputKeywords = payload.keywords.replace(/[\s]+/g, '');
@@ -119,9 +125,28 @@ export const Flow = () => {
       formattedKeywords = inputKeywords.split(',');
     }
 
+    const initialSelectedRoles = roles.map((role: any) => role.id);
+    const payloadRoleIds = payload.roles.map((role: any) => role.id);
+
+    let addRoleIds = payloadRoleIds.filter(
+      (selectedRoles: any) => !initialSelectedRoles.includes(selectedRoles)
+    );
+    const deleteRoleIds = initialSelectedRoles.filter(
+      (roleId: any) => !payloadRoleIds.includes(roleId)
+    );
+
+    if (checkDynamicRole()) {
+      const userRoles = getUserSession('roles').map((role: any) => role.id);
+      addRoleIds = [...addRoleIds, ...userRoles];
+    }
+
+    const { roles: userRoles, ...rest } = payload;
+
     // return modified payload
     return {
-      ...payload,
+      ...rest,
+      addRoleIds,
+      deleteRoleIds,
       keywords: formattedKeywords,
     };
   };
@@ -154,6 +179,7 @@ export const Flow = () => {
     <FormLayout
       {...queries}
       states={states}
+      roleAccessSupport
       setStates={setStates}
       setPayload={setPayload}
       validationSchema={FormSchema}

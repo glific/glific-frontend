@@ -17,7 +17,6 @@ import { PUBLISH_FLOW, RESET_FLOW_COUNT } from 'graphql/mutations/Flow';
 import { EXPORT_FLOW, GET_FLOW_DETAILS, GET_FREE_FLOW } from 'graphql/queries/Flow';
 import { setAuthHeaders } from 'services/AuthService';
 import { SideDrawerContext } from 'context/session';
-import { GET_ORGANIZATION_SERVICES } from 'graphql/queries/Organization';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { exportFlowMethod } from 'common/utils';
 import styles from './FlowEditor.module.css';
@@ -53,12 +52,12 @@ export const FlowEditor = () => {
   let dialog = null;
   let flowTitle: any;
 
-  const [getOrganizationServices] = useLazyQuery(GET_ORGANIZATION_SERVICES, {
+  const [getFreeFlow] = useLazyQuery(GET_FREE_FLOW, {
     fetchPolicy: 'network-only',
-    onCompleted: ({ organizationServices }) => {
-      if (organizationServices) {
+    onCompleted: ({ flowGet }) => {
+      if (flowGet.flow) {
         const { dialogflow, googleCloudStorage, flowUuidDisplay, contactProfileEnabled } =
-          organizationServices;
+          JSON.parse(localStorage.getItem('organizationServices') || '{}');
 
         if (googleCloudStorage) {
           config.attachmentsEnabled = true;
@@ -73,18 +72,9 @@ export const FlowEditor = () => {
         if (contactProfileEnabled) {
           config.filters.push('profile');
         }
-      }
 
-      showFlowEditor(document.getElementById('flow'), config);
-      setLoading(false);
-    },
-  });
-
-  const [getFreeFlow] = useLazyQuery(GET_FREE_FLOW, {
-    fetchPolicy: 'network-only',
-    onCompleted: ({ flowGet }) => {
-      if (flowGet.flow) {
-        getOrganizationServices();
+        showFlowEditor(document.getElementById('flow'), config);
+        setLoading(false);
       } else if (flowGet.errors && flowGet.errors.length) {
         setDialogMessage(flowGet.errors[0].message);
         setCurrentEditDialogBox(true);

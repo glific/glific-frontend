@@ -14,10 +14,12 @@ import {
   clearAuthSession,
   setUserSession,
   clearUserSession,
+  setOrganizationServices,
 } from 'services/AuthService';
 import { GET_CURRENT_USER } from 'graphql/queries/User';
 import { setUserRolePermissions } from 'context/role';
 import setLogs from 'config/logs';
+import { GET_ORGANIZATION_SERVICES } from 'graphql/queries/Organization';
 import { Auth } from '../Auth';
 
 const notApprovedMsg = 'Your account is not approved yet. Please contact your organisation admin.';
@@ -38,17 +40,29 @@ export const Login = () => {
 
   // get the information on current user
   const [getCurrentUser, { data: userData, error: userError }] = useLazyQuery(GET_CURRENT_USER);
+  const [getOrganizationServices, { data: organizationData }] =
+    useLazyQuery(GET_ORGANIZATION_SERVICES);
 
   useEffect(() => {
-    if (userData) {
+    if (userData && organizationData) {
+      const { user } = userData.currentUser;
+      // Todo: assigning this for the test cases to work with the same key name. Need to refactor it
+      const userCopy = JSON.parse(JSON.stringify(user));
+      userCopy.roles = user.accessRoles;
       // set the current user object
-      setUserSession(JSON.stringify(userData.currentUser.user));
+      setUserSession(JSON.stringify(userCopy));
+      setOrganizationServices(JSON.stringify(organizationData.organizationServices));
 
       // get the roles
-      const { roles } = userData.currentUser.user;
+      const { accessRoles } = userData.currentUser.user;
+
+      const userAccessRoles = accessRoles.map((role: any) => role.label);
 
       // check for user role none or empty
-      if ((roles.includes('None') && roles.length === 1) || roles.length === 0) {
+      if (
+        (userAccessRoles.includes('None') && userAccessRoles.length === 1) ||
+        userAccessRoles.length === 0
+      ) {
         accessDenied();
       } else {
         // needed to redirect after login
@@ -73,7 +87,7 @@ export const Login = () => {
     if (userError) {
       accessDenied();
     }
-  }, [userData, userError, setAuthenticated]);
+  }, [userData, userError, setAuthenticated, organizationData]);
 
   const formFields = [
     {
@@ -110,6 +124,7 @@ export const Login = () => {
       .then((response: any) => {
         const responseString = JSON.stringify(response.data.data);
         getCurrentUser();
+        getOrganizationServices();
         setAuthSession(responseString);
       })
       .catch((error) => {

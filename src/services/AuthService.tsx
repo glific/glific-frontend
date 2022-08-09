@@ -109,6 +109,7 @@ export const setUserSession = (user: string) => {
 export const clearUserSession = () => {
   localStorage.removeItem('glific_user');
   localStorage.removeItem('role');
+  localStorage.removeItem('organizationServices');
 };
 
 // get the current user session
@@ -142,6 +143,17 @@ export const getUserSession = (element?: string) => {
       returnValue = JSON.parse(user);
   }
   return returnValue;
+};
+
+export const setOrganizationServices = (services: string) => {
+  localStorage.setItem('organizationServices', services);
+};
+
+export const getOrganizationServices = (service: string) => {
+  let services: any = localStorage.getItem('organizationServices');
+  if (!services) return null;
+  services = JSON.parse(services);
+  return services[service];
 };
 
 export const setAuthHeaders = () => {

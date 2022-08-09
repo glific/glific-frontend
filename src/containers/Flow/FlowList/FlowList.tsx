@@ -17,19 +17,23 @@ import { DELETE_FLOW, IMPORT_FLOW } from 'graphql/mutations/Flow';
 import { List } from 'containers/List/List';
 import Loading from 'components/UI/Layout/Loading/Loading';
 import { DATE_TIME_FORMAT } from 'common/constants';
-import { exportFlowMethod } from 'common/utils';
+import { exportFlowMethod, organizationHasDynamicRole } from 'common/utils';
 import { setNotification } from 'common/notification';
 import { Button } from 'components/UI/Form/Button/Button';
 import styles from './FlowList.module.css';
 
-const getName = (text: string, keywordsList: any) => {
+const getName = (text: string, keywordsList: any, roles: any) => {
   const keywords = keywordsList.map((keyword: any) => keyword);
-
+  const accessRoles = roles && roles.map((role: any) => role.label);
+  const hasDynamicRole = organizationHasDynamicRole();
   return (
     <p className={`${styles.TableText} ${styles.NameText}`}>
       {text}
       <br />
       <span className={styles.Keyword}>{keywords.join(', ')}</span>
+      {hasDynamicRole && (
+        <span className={styles.Roles}>{accessRoles && accessRoles.join(', ')} </span>
+      )}
     </p>
   );
 };
@@ -172,9 +176,16 @@ export const FlowList = () => {
     },
   ];
 
-  const getColumns = ({ name, keywords, lastChangedAt, lastPublishedAt, isPinned }: any) => ({
+  const getColumns = ({
+    name,
+    keywords,
+    lastChangedAt,
+    lastPublishedAt,
+    isPinned,
+    roles,
+  }: any) => ({
     pin: displayPinned(isPinned),
-    name: getName(name, keywords),
+    name: getName(name, keywords, roles),
     lastPublishedAt: getLastPublished(lastPublishedAt, t('Not published yet')),
     lastChangedAt: getDate(lastChangedAt, t('Nothing in draft')),
   });

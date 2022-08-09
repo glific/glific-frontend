@@ -31,7 +31,7 @@ export const StaffManagementList = () => {
   };
 
   const getName = (text: string, roleList: any) => {
-    const roles = roleList.map((role: any) => role);
+    const roles = roleList.map((role: any) => role.label);
 
     return (
       <div className={`${styles.TableText} ${styles.NameText}`}>
@@ -49,8 +49,8 @@ export const StaffManagementList = () => {
     return <p className={styles.TableText}>{collections.join(', ')}</p>;
   };
 
-  const getColumns = ({ name, phone, groups, roles }: any) => ({
-    name: getName(name, roles),
+  const getColumns = ({ name, phone, groups, accessRoles }: any) => ({
+    name: getName(name, accessRoles),
     phone: getPhone(phone),
     group: getCollections(groups),
   });
@@ -71,17 +71,19 @@ export const StaffManagementList = () => {
       action.restricted = true;
     }
 
+    const userRoles = param.accessRoles.map((role: any) => role.label);
+
     // we should disable edit actions for admin and managers in case of users with Glific admin role
     if (
       (getUserRole().includes('Admin') || getUserRole().includes('Manager')) &&
-      param.roles.includes('Glific_admin')
+      userRoles.includes('Glific_admin')
     ) {
       action.edit = false;
       action.delete = false;
     }
 
     // we should disable edit actions for managers only in case of users with Admin role
-    if (getUserRole().includes('Manager') && param.roles.includes('Admin')) {
+    if (getUserRole().includes('Manager') && userRoles.includes('Admin')) {
       action.edit = false;
       action.delete = false;
     }
