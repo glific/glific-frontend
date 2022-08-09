@@ -3,8 +3,8 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
 
 import { Chat } from 'containers/Chat/Chat';
-import ChatInterface from 'containers/Chat/ChatInterface/ChatInterface';
-import Loading from 'components/UI/Layout/Loading/Loading';
+import { ChatInterface } from 'containers/Chat/ChatInterface/ChatInterface';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { checkDynamicRole, getUserRole } from 'context/role';
 import { useToast } from 'services/ToastService';
 import { ProviderContext } from 'context/session';

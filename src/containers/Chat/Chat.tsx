@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import Loading from 'components/UI/Layout/Loading/Loading';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { chatRoutes } from 'route/AuthenticatedRoute/AuthenticatedRoute';
-import ChatSubscription from './ChatSubscription/ChatSubscription';
+import { ChatSubscription } from './ChatSubscription/ChatSubscription';
 
 export const Chat = () => {
   const [loaded, setDataLoaded] = useState(false);
