@@ -18,6 +18,7 @@ export const GET_FLOW = gql`
         name
         uuid
         isActive
+        isPinned
         isBackground
         keywords
         ignoreKeywords
