@@ -2,7 +2,6 @@ import React, { lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
 
-import { Chat } from 'containers/Chat/Chat';
 import { ChatInterface } from 'containers/Chat/ChatInterface/ChatInterface';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { checkDynamicRole, getUserRole } from 'context/role';
@@ -15,6 +14,7 @@ const defaultRedirect = <Navigate to="/chat" />;
 
 // const TagList = lazy(() => import('containers/Tag/TagList/TagList'));
 // const Tag = lazy(() => import('containers/Tag/Tag'));
+const Chat = lazy(() => import('containers/Chat/Chat'));
 const Layout = lazy(() => import('components/UI/Layout/Layout'));
 const SpeedSendList = lazy(() => import('containers/Template/List/SpeedSendList/SpeedSendList'));
 const SpeedSend = lazy(() => import('containers/Template/Form/SpeedSend/SpeedSend'));
