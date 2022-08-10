@@ -248,7 +248,8 @@ describe('copy interactive message', () => {
 
     await waitFor(() => {
       expect(getByText('Copy Interactive Message')).toBeInTheDocument();
-      expect(getAllByTestId('input').at(0)?.querySelector('input')).toHaveValue('Copy of Continue');
+      const input = getAllByTestId('input');
+      expect(input[0]?.querySelector('input')).toHaveValue('Copy of Continue');
     });
   });
 });
