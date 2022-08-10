@@ -75,6 +75,9 @@ export const GET_CURRENT_USER = gql`
         }
         organization {
           id
+          contact {
+            phone
+          }
         }
         language {
           id
