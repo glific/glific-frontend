@@ -34,7 +34,7 @@ export const Flow: React.SFC<FlowProps> = ({ match }) => {
   const [isPinnedDisable, setIsPinnedDisable] = useState(false);
   const [keywords, setKeywords] = useState('');
   const [isActive, setIsActive] = useState(true);
-  const [isPinned, setIsPinned] = useState(true);
+  const [isPinned, setIsPinned] = useState(false);
   const [isBackground, setIsBackground] = useState(false);
   const [ignoreKeywords, setIgnoreKeywords] = useState(false);
   const { t } = useTranslation();
@@ -55,7 +55,6 @@ export const Flow: React.SFC<FlowProps> = ({ match }) => {
     isPinned: isPinnedValue,
     isBackground: isBackgroundValue,
     ignoreKeywords: ignoreKeywordsValue,
-    id,
   }: any) => {
     // Override name & keywords when creating Flow Copy
     let fieldName = nameValue;
@@ -70,7 +69,8 @@ export const Flow: React.SFC<FlowProps> = ({ match }) => {
         organization: { newcontactFlowId },
       },
     } = orgData;
-    if (+id === +newcontactFlowId) {
+    const flowId: string = match?.params?.id;
+    if (flowId === newcontactFlowId) {
       setIsPinnedDisable(true);
     }
 
