@@ -38,14 +38,18 @@ it('should support keywords in a separate language', async () => {
   const keywordInput = await (
     await findByTestId('formLayout')
   ).querySelector('input[name="keywords"]');
-  if (nameInput && keywordInput) {
-    fireEvent.change(nameInput, {
-      target: { value: 'New Flow' },
-    });
-    fireEvent.change(keywordInput, {
-      target: { value: 'मदद' },
-    });
-  }
+
+  expect(nameInput).not.toBeNull();
+  expect(nameInput).toBeInTheDocument();
+  expect(keywordInput).not.toBeNull();
+  expect(keywordInput).toBeInTheDocument();
+  fireEvent.change(nameInput!, {
+    target: { value: 'New Flow' },
+  });
+  fireEvent.change(keywordInput!, {
+    target: { value: 'मदद' },
+  });
+
   const button = getByText('Save');
   fireEvent.click(button);
 
@@ -62,14 +66,18 @@ it('should not allow special characters in keywords', async () => {
   const keywordInput = await (
     await findByTestId('formLayout')
   ).querySelector('input[name="keywords"]');
-  if (nameInput && keywordInput) {
-    fireEvent.change(nameInput, {
-      target: { value: 'New Flow' },
-    });
-    fireEvent.change(keywordInput, {
-      target: { value: 'Hey&' },
-    });
-  }
+
+  expect(nameInput).not.toBeNull();
+  expect(nameInput).toBeInTheDocument();
+  expect(keywordInput).not.toBeNull();
+  expect(keywordInput).toBeInTheDocument();
+
+  fireEvent.change(nameInput!, {
+    target: { value: 'New Flow' },
+  });
+  fireEvent.change(keywordInput!, {
+    target: { value: 'Hey&' },
+  });
   const button = getByText('Save');
   fireEvent.click(button);
 
