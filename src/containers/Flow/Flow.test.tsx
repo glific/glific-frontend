@@ -6,6 +6,11 @@ import { createBrowserHistory } from 'history';
 import { getOrganizationLanguagesQuery, getOrganizationQuery } from 'mocks/Organization';
 import { getFlowQuery, filterFlowQuery } from 'mocks/Flow';
 import { Flow } from './Flow';
+import { setOrganizationServices } from 'services/AuthService';
+
+setOrganizationServices(
+  '{"__typename":"OrganizationServicesResult","rolesAndPermission":true}'
+);
 
 const mocks = [
   ...getOrganizationQuery,
