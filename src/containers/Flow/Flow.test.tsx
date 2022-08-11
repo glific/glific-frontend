@@ -1,5 +1,5 @@
 import { MockedProvider } from '@apollo/client/testing';
-import { render, waitFor, fireEvent } from '@testing-library/react';
+import { render, waitFor, fireEvent, screen } from '@testing-library/react';
 import { MemoryRouter, Router } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 
@@ -8,9 +8,7 @@ import { getFlowQuery, filterFlowQuery } from 'mocks/Flow';
 import { Flow } from './Flow';
 import { setOrganizationServices } from 'services/AuthService';
 
-setOrganizationServices(
-  '{"__typename":"OrganizationServicesResult","rolesAndPermission":true}'
-);
+setOrganizationServices('{"__typename":"OrganizationServicesResult","rolesAndPermission":true}');
 
 const mocks = [
   ...getOrganizationQuery,
@@ -34,15 +32,20 @@ it('should render Flow', async () => {
 });
 
 it('should support keywords in a separate language', async () => {
-  const { container, getByText, findByText } = render(flow({ params: {} }));
+  const { container, getByText, findByText, findByTestId } = render(flow({ params: {} }));
 
-  await waitFor(() => {});
-  fireEvent.change(container.querySelector('input[name="name"]'), {
-    target: { value: 'New Flow' },
-  });
-  fireEvent.change(container.querySelector('input[name="keywords"]'), {
-    target: { value: 'मदद' },
-  });
+  const nameInput = await (await findByTestId('formLayout')).querySelector('input[name="name"]');
+  const keywordInput = await (
+    await findByTestId('formLayout')
+  ).querySelector('input[name="keywords"]');
+  if (nameInput && keywordInput) {
+    fireEvent.change(nameInput, {
+      target: { value: 'New Flow' },
+    });
+    fireEvent.change(keywordInput, {
+      target: { value: 'मदद' },
+    });
+  }
   const button = getByText('Save');
   fireEvent.click(button);
 
@@ -53,15 +56,20 @@ it('should support keywords in a separate language', async () => {
 });
 
 it('should not allow special characters in keywords', async () => {
-  const { container, getByText } = render(flow({ params: {} }));
+  const { container, getByText, findByTestId } = render(flow({ params: {} }));
 
-  await waitFor(() => {});
-  fireEvent.change(container.querySelector('input[name="name"]'), {
-    target: { value: 'New Flow' },
-  });
-  fireEvent.change(container.querySelector('input[name="keywords"]'), {
-    target: { value: 'Hey&' },
-  });
+  const nameInput = await (await findByTestId('formLayout')).querySelector('input[name="name"]');
+  const keywordInput = await (
+    await findByTestId('formLayout')
+  ).querySelector('input[name="keywords"]');
+  if (nameInput && keywordInput) {
+    fireEvent.change(nameInput, {
+      target: { value: 'New Flow' },
+    });
+    fireEvent.change(keywordInput, {
+      target: { value: 'Hey&' },
+    });
+  }
   const button = getByText('Save');
   fireEvent.click(button);
 
