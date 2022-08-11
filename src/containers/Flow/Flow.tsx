@@ -49,7 +49,7 @@ export const Flow: React.SFC<FlowProps> = ({ match }) => {
 
   if (loading) return <Loading />;
 
-  const states = { isActive, isPinned, isBackground, name, keywords, ignoreKeywords };
+  const states = { isActive, isPinned, isBackground, name, keywords, ignoreKeywords, roles };
 
   const setStates = ({
     name: nameValue,
