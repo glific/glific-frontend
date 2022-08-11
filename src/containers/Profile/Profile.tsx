@@ -57,9 +57,10 @@ export const Profile: React.SFC<ProfileProps> = ({
   const { data, loading } = useQuery(GET_CURRENT_USER);
   if (loading) return <Loading />;
 
-  const loggedInUserContactId = data.currentUser.user.contact.id;
-  const currentUserPhone = data.currentUser.user.phone;
-  const organizationPhone = data?.currentUser?.user?.organization?.contact?.phone;
+  const { user } = data.currentUser;
+  const loggedInUserContactId = user.contact.id;
+  const currentUserPhone = user.phone;
+  const organizationPhone = user?.organization?.contact?.phone;
 
   let currentContactId;
   if (!match) {
