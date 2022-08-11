@@ -35,6 +35,7 @@ export const getFlowQuery = {
           isActive: true,
           uuid: 'b050c652-65b5-4ccf-b62b-1e8b3f328676',
           keywords: ['help'],
+          isPinned: false,
           roles: [
             {
               id: '1',
@@ -113,6 +114,12 @@ export const filterFlowQuery = {
           updatedAt: '2021-03-05T04:32:23Z',
           uuid: '3fa22108-f464-41e5-81d9-d8a298854429',
           isPinned: true,
+          roles: [
+            {
+              id: '1',
+              label: 'Admin',
+            },
+          ],
         },
       ],
     },
