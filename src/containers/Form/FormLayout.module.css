@@ -126,3 +126,9 @@
 .BackLink svg {
   margin-right: 6px;
 }
+
+@media (max-width:768px) {
+  .Form, .ItemAdd {
+    width: 100%;
+  }
+}

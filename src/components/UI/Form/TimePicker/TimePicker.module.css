@@ -15,3 +15,9 @@
   font-size: 12px !important;
   margin-top: 4px !important;
 }
+
+@media (max-width:768px) {
+  .picker {
+    width: 100%;
+  }
+}

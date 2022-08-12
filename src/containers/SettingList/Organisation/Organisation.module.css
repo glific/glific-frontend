@@ -47,3 +47,9 @@
 .AddDayLabel {
   font-size: 16px;
 }
+
+@media (max-width:768px) {
+  .organization > div:nth-child(n + 2), .organization > div:first-child {
+    width: 100% !important;
+  }
+}

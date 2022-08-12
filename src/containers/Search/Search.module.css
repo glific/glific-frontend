@@ -57,3 +57,13 @@
 .FormSearch > div:nth-of-type(5) {
   margin-right: 18px;
 }
+
+@media (max-width:768px) {
+  .Form > div:nth-of-type(8), .Form > div:nth-of-type(9) {
+    width: 100% !important;
+    padding: 8px 0px;
+  }
+  .Form > div:nth-of-type(7) {
+    margin-left: 0px;
+  }
+}

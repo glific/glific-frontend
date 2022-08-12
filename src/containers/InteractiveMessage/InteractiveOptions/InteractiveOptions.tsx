@@ -108,6 +108,7 @@ export const InteractiveOptions: React.SFC<InteractiveOptionsProps> = ({
         row
         value={templateType}
         onChange={(event) => onTemplateTypeChange(event.target.value)}
+        className={styles.ForMobile}
       >
         <div className={styles.RadioLabelWrapper}>
           <FormControlLabel
