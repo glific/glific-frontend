@@ -139,7 +139,7 @@ export const Flow: React.SFC<FlowProps> = ({ match }) => {
       component: Checkbox,
       name: 'isPinned',
       title: t('Is pinned?'),
-      darkCheckbox: true,
+      darkCheckbox: !isPinnedDisable,
       disabled: isPinnedDisable,
     },
     {
