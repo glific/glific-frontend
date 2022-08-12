@@ -32,57 +32,54 @@ it('should render Flow', async () => {
 });
 
 it('should support keywords in a separate language', async () => {
-  const { container, getByText, findByText, findByTestId } = render(flow({ params: {} }));
+  const { container, getByText, findByText, getByTestId } = render(flow({ params: {} }));
 
-  const nameInput = await (await findByTestId('formLayout')).querySelector('input[name="name"]');
-  const keywordInput = await (
-    await findByTestId('formLayout')
-  ).querySelector('input[name="keywords"]');
+  await waitFor(() => {
+    const nameInput = getByTestId('formLayout').querySelector('input[name="name"]');
+    const keywordInput = getByTestId('formLayout').querySelector('input[name="keywords"]');
 
-  expect(nameInput).not.toBeNull();
-  expect(nameInput).toBeInTheDocument();
-  expect(keywordInput).not.toBeNull();
-  expect(keywordInput).toBeInTheDocument();
-  fireEvent.change(nameInput!, {
-    target: { value: 'New Flow' },
+    expect(nameInput).not.toBeNull();
+    expect(nameInput).toBeInTheDocument();
+    expect(keywordInput).not.toBeNull();
+    expect(keywordInput).toBeInTheDocument();
+
+    fireEvent.change(nameInput!, {
+      target: { value: 'New Flow' },
+    });
+    fireEvent.change(keywordInput!, {
+      target: { value: 'मदद' },
+    });
+
+    const button = getByText('Save');
+    fireEvent.click(button);
   });
-  fireEvent.change(keywordInput!, {
-    target: { value: 'मदद' },
-  });
-
-  const button = getByText('Save');
-  fireEvent.click(button);
-
-  await waitFor(() => {});
 
   // testing if we don't have element for error message
   // expect(container.querySelectorAll('.MuiFormHelperText-root').length).toBe(1);
 });
 
 it('should not allow special characters in keywords', async () => {
-  const { container, getByText, findByTestId } = render(flow({ params: {} }));
-
-  const nameInput = await (await findByTestId('formLayout')).querySelector('input[name="name"]');
-  const keywordInput = await (
-    await findByTestId('formLayout')
-  ).querySelector('input[name="keywords"]');
-
-  expect(nameInput).not.toBeNull();
-  expect(nameInput).toBeInTheDocument();
-  expect(keywordInput).not.toBeNull();
-  expect(keywordInput).toBeInTheDocument();
-
-  fireEvent.change(nameInput!, {
-    target: { value: 'New Flow' },
-  });
-  fireEvent.change(keywordInput!, {
-    target: { value: 'Hey&' },
-  });
-  const button = getByText('Save');
-  fireEvent.click(button);
+  const { container, getByText, getByTestId } = render(flow({ params: {} }));
 
   await waitFor(() => {
-    // error if a special character is introduced in the keyword
+    const nameInput = getByTestId('formLayout').querySelector('input[name="name"]');
+    const keywordInput = getByTestId('formLayout').querySelector('input[name="keywords"]');
+
+    expect(nameInput).not.toBeNull();
+    expect(nameInput).toBeInTheDocument();
+    expect(keywordInput).not.toBeNull();
+    expect(keywordInput).toBeInTheDocument();
+
+    fireEvent.change(nameInput!, {
+      target: { value: 'New Flow' },
+    });
+    fireEvent.change(keywordInput!, {
+      target: { value: 'Hey&' },
+    });
+
+    const button = getByText('Save');
+    fireEvent.click(button);
+
     expect(getByText('Sorry, special characters are not allowed.'));
   });
 });
