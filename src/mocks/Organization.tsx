@@ -28,6 +28,7 @@ export const getOrganizationQuery = [
               },
             ],
             id: 1,
+            newcontactFlowId: '5',
             outOfOffice: {
               enabled: true,
               defaultFlowId: 1,
@@ -71,6 +72,7 @@ export const getOrganizationQuery = [
               },
             ],
             id: 1,
+            newcontactFlowId: '5',
             outOfOffice: {
               enabled: true,
               defaultFlowId: 1,
@@ -114,6 +116,7 @@ export const getOrganizationQuery = [
             defaultLanguage: { id: '1', label: 'English' },
             id: '1',
             name: 'Glific',
+            newcontactFlowId: '5',
             outOfOffice: {
               defaultFlowId: '7',
               enabled: true,
@@ -154,6 +157,7 @@ export const getOrganisationSettings = {
             },
           ],
           id: '1',
+          newcontactFlowId: '5',
           outOfOffice: {
             enabled: true,
             defaultFlowId: 1,
