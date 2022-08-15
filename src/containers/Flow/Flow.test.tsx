@@ -46,7 +46,7 @@ it('should render Flow', async () => {
 });
 
 it('should support keywords in a separate language', async () => {
-  const { container, getByText, findByText, getByTestId } = render(flow({ params: {} }));
+  const { container, getByText, findByText, getByTestId } = render(flow());
 
   await waitFor(() => {
     const nameInput = getByTestId('formLayout').querySelector('input[name="name"]');
@@ -73,7 +73,7 @@ it('should support keywords in a separate language', async () => {
 });
 
 it('should not allow special characters in keywords', async () => {
-  const { container, getByText, getByTestId } = render(flow({ params: {} }));
+  const { container, getByText, getByTestId } = render(flow());
 
   await waitFor(() => {
     const nameInput = getByTestId('formLayout').querySelector('input[name="name"]');

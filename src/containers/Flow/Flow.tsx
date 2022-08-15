@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
 
 import { FormLayout } from 'containers/Form/FormLayout';
@@ -28,6 +28,7 @@ const queries = {
 
 export const Flow = () => {
   const location = useLocation();
+  const params = useParams();
   const [name, setName] = useState('');
   const [isPinnedDisable, setIsPinnedDisable] = useState(false);
   const [keywords, setKeywords] = useState('');
@@ -69,8 +70,8 @@ export const Flow = () => {
         organization: { newcontactFlowId },
       },
     } = orgData;
-    const flowId: string = match?.params?.id;
-    if (flowId === newcontactFlowId) {
+
+    if (params.id === newcontactFlowId) {
       setIsPinnedDisable(true);
     }
 

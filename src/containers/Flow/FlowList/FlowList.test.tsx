@@ -81,9 +81,6 @@ describe('<FlowList />', () => {
   });
 
   test('should redirect to make a copy', async () => {
-    // const history: any = createBrowserHistory();
-    // history.push({ pathname: `/flow/1/edit`, state: 'copy' });
-
     const copyFlow = () => (
       <MockedProvider mocks={mocks} addTypename={false}>
         <MemoryRouter>
