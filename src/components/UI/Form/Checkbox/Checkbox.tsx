@@ -16,6 +16,7 @@ export interface CheckboxProps {
   addLabelStyle?: boolean;
   infoType?: 'tooltip' | 'dialog';
   handleInfoClick?: Function;
+  customClass?: any | null;
 }
 
 export const Checkbox: React.SFC<CheckboxProps> = (props) => {
@@ -30,6 +31,7 @@ export const Checkbox: React.SFC<CheckboxProps> = (props) => {
     handleChange,
     infoType = 'tooltip',
     handleInfoClick = () => {},
+    customClass = null,
   } = props;
 
   const handleChangeCallback = () => {
@@ -55,8 +57,8 @@ export const Checkbox: React.SFC<CheckboxProps> = (props) => {
         labelPlacement="end"
         label={title}
         classes={{
-          label: addLabelStyle ? styles.Label : styles.LabelNoStyle,
-          root: styles.Root,
+          label: `${addLabelStyle ? styles.Label : styles.LabelNoStyle} ${customClass?.label}`,
+          root: `${styles.Root} ${customClass?.root}`,
         }}
       />
       {info && infoType === 'tooltip' && (

@@ -100,7 +100,7 @@ export const Organization: React.SFC<OrganizationProps> = (props) => {
           setCaptcha(null);
         }}
       >
-        {({ submitForm }) => (
+        {({ submitForm, values }) => (
           <div className={styles.CenterBox}>
             <Form className={styles.Form}>
               {formFields.map((field, index) => {
@@ -116,7 +116,7 @@ export const Organization: React.SFC<OrganizationProps> = (props) => {
                   className={styles.OrgButton}
                   data-testid="SubmitButton"
                   loading={loading}
-                  disabled={!captcha}
+                  disabled={!values.support || !values.message_me || !captcha}
                 >
                   {loading ? null : buttonText}
                 </Button>

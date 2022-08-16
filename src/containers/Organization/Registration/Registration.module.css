@@ -21,3 +21,14 @@
 .InputAdornment {
   cursor: pointer !important;
 }
+
+.CustomCheckboxLabel {
+  color: #93a29b;
+  padding-top: 9px;
+  font-size: .8rem;
+}
+
+.CustomCheckboxRoot {
+    display: flex !important;
+  align-items: flex-start !important;
+}
