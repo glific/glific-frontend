@@ -60,7 +60,7 @@ export const Profile: React.SFC<ProfileProps> = ({
   const { user } = data.currentUser;
   const loggedInUserContactId = user.contact.id;
   const currentUserPhone = user.phone;
-  const organizationPhone = user?.organization?.contact?.phone;
+  const organizationPhone = user.organization.contact.phone;
 
   let currentContactId;
   if (!match) {
