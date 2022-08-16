@@ -22,25 +22,6 @@ import { setColumnToBackendTerms } from 'common/constants';
 import { getUpdatedList, setListSession, getLastListSessionValues } from 'services/ListService';
 import styles from './List.module.css';
 
-const columnWrapper = (listItems: any) => {
-  const columnStyle = columns(listItems);
-  const titleAlias = ['name', 'label'];
-
-  for (let i = 0; i < titleAlias.length; i += 1) {
-    if (columnStyle[titleAlias[i]]) {
-      const titleColumn = (
-        <div className={listItems.isActive === true ? styles.Active : styles.Inactive}>
-          {columnStyle[titleAlias[i]]}
-        </div>
-      );
-
-      return { ...columnStyle, [titleAlias[i]]: titleColumn };
-    }
-  }
-
-  return columnStyle;
-};
-
 export interface ListProps {
   columnNames?: Array<string>;
   countQuery: DocumentNode;
@@ -497,6 +478,25 @@ export const List: React.SFC<ListProps> = ({
     }
     return null;
   }
+
+  const columnWrapper = (listItems: any) => {
+    const columnStyle = columns(listItems);
+    const titleAlias = ['name', 'label'];
+
+    for (let i = 0; i < titleAlias.length; i += 1) {
+      if (columnStyle[titleAlias[i]]) {
+        const titleColumn = (
+          <div className={listItems.isActive === true ? styles.Active : styles.Inactive}>
+            {columnStyle[titleAlias[i]]}
+          </div>
+        );
+
+        return { ...columnStyle, [titleAlias[i]]: titleColumn };
+      }
+    }
+
+    return columnStyle;
+  };
 
   function formatList(listItems: Array<any>) {
     return listItems.map(({ ...listItemObj }) => {
