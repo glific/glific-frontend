@@ -29,7 +29,7 @@ const getName = (text: string, keywordsList: any, roles: any) => {
   const accessRoles = roles && roles.map((role: any) => role.label);
   const hasDynamicRole = organizationHasDynamicRole();
   return (
-    <p className={`${styles.TableText} ${styles.NameText}`}>
+    <p>
       {text}
       <br />
       <span className={styles.Keyword}>{keywords.join(', ')}</span>

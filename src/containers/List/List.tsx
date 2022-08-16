@@ -22,6 +22,25 @@ import { setColumnToBackendTerms } from 'common/constants';
 import { getUpdatedList, setListSession, getLastListSessionValues } from 'services/ListService';
 import styles from './List.module.css';
 
+const columnWrapper = (listItems: any) => {
+  const columnStyle = columns(listItems);
+  const titleAlias = ['name', 'label'];
+
+  for (let i = 0; i < titleAlias.length; i += 1) {
+    if (columnStyle[titleAlias[i]]) {
+      const titleColumn = (
+        <div className={listItems.isActive === true ? styles.Active : styles.Inactive}>
+          {columnStyle[titleAlias[i]]}
+        </div>
+      );
+
+      return { ...columnStyle, [titleAlias[i]]: titleColumn };
+    }
+  }
+
+  return columnStyle;
+};
+
 export interface ListProps {
   columnNames?: Array<string>;
   countQuery: DocumentNode;
@@ -375,14 +394,14 @@ export const List: React.SFC<ListProps> = ({
   function getIcons(
     // id: number | undefined,
     item: any,
-    label: string,
-    isReserved: boolean | null,
-    listItems: any,
     allowedAction: any | null
   ) {
     // there might be a case when we might want to allow certain actions for reserved items
     // currently we don't allow edit or delete for reserved items. hence return early
-    const { id } = item;
+    const { id, label, name, isReserved } = item;
+
+    const labelValue = label !== null ? label : name;
+
     if (isReserved) {
       return null;
     }
@@ -423,9 +442,9 @@ export const List: React.SFC<ListProps> = ({
             let additionalActionParameter: any;
             const params: any = additionalAction[index].parameter.split('.');
             if (params.length > 1) {
-              additionalActionParameter = listItems[params[0]][params[1]];
+              additionalActionParameter = item[params[0]][params[1]];
             } else {
-              additionalActionParameter = listItems[params[0]];
+              additionalActionParameter = item[params[0]];
             }
             const key = index;
 
@@ -461,16 +480,16 @@ export const List: React.SFC<ListProps> = ({
               );
             }
             if (action.button) {
-              return action.button(listItems, action, key, fetchQuery);
+              return action.button(item, action, key, fetchQuery);
             }
             return null;
           })}
 
           {/* do not display edit & delete for staff role in collection */}
-          {userRolePermissions.manageCollections || listItems !== 'collections' ? (
+          {userRolePermissions.manageCollections || item !== 'collections' ? (
             <>
               {editButton}
-              {deleteButton(id, label)}
+              {deleteButton(id, labelValue)}
             </>
           ) : null}
         </div>
@@ -481,15 +500,13 @@ export const List: React.SFC<ListProps> = ({
 
   function formatList(listItems: Array<any>) {
     return listItems.map(({ ...listItemObj }) => {
-      const label = listItemObj.label ? listItemObj.label : listItemObj.name;
-      const isReserved = listItemObj.isReserved ? listItemObj.isReserved : null;
       // display only actions allowed to the user
       const allowedAction = restrictedAction
         ? restrictedAction(listItemObj)
         : { chat: true, edit: true, delete: true };
       return {
-        ...columns(listItemObj),
-        operations: getIcons(listItemObj, label, isReserved, listItemObj, allowedAction),
+        ...columnWrapper(listItemObj),
+        operations: getIcons(listItemObj, allowedAction),
         recordId: listItemObj.id,
       };
     });
