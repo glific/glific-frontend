@@ -262,13 +262,15 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
     delete payloadCopy.groups;
 
     let roleIds: any[] = [];
+    let isSameRole = true;
     // let's rebuild roles, as per backend
-    if (payloadCopy.roles)
+    if (payloadCopy.roles) {
       roleIds = hasDynamicRoles
         ? payloadCopy.roles.map((role: any) => role.id)
         : [payloadCopy.roles.id];
 
-    const isSameRole = payloadCopy.roles.id === roles.id;
+      isSameRole = payloadCopy.roles.id === roles.id;
+    }
 
     payloadCopy.addRoleIds = isSameRole ? [] : roleIds;
     payloadCopy.deleteRoleIds = isSameRole ? [] : [roles.id];
