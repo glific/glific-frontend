@@ -9,6 +9,13 @@
   word-break: break-word;
 }
 
+.Reason {
+  width: 20%;
+  margin-right: 10px;
+  margin-left: 10px;
+  word-break: break-word;
+}
+
 .Actions {
   width: 200px;
   justify-content: flex-end;
@@ -53,7 +60,7 @@
 }
 
 .Status {
-  width: 200px;
+  width: 150px;
 }
 
 .Filters {

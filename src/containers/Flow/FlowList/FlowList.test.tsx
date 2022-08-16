@@ -13,6 +13,7 @@ import {
   exportFlow,
   releaseFlow,
 } from 'mocks/Flow';
+import { getOrganizationQuery } from 'mocks/Organization';
 import testJSON from 'mocks/ImportFlow.json';
 import { setUserSession } from 'services/AuthService';
 import { FlowList } from './FlowList';
@@ -27,6 +28,7 @@ const mocks = [
   importFlow,
   releaseFlow,
   exportFlow,
+  ...getOrganizationQuery,
 ];
 
 const flowList = (
@@ -38,12 +40,6 @@ const flowList = (
 );
 
 HTMLAnchorElement.prototype.click = jest.fn();
-
-// console warning fix - react-i18next:: You will need to pass in an i18next instance by using initReactI18next
-// https://github.com/i18next/react-i18next/issues/876
-jest.mock('react-i18next', () => ({
-  useTranslation: () => ({ t: (key: any) => key }),
-}));
 
 setUserSession(JSON.stringify({ roles: ['Admin'] }));
 

@@ -141,7 +141,7 @@ export const setColumnToBackendTerms: any = (listName: string, columnName: strin
   };
 
   const additionalItems: any = {
-    flow: { TITLE: 'name' },
+    flow: { TITLE: 'name', ' ': 'is_pinned' },
     trigger: { TITLE: 'name' },
     Search: {
       TITLE: 'shortcode',
@@ -185,7 +185,7 @@ export const REFETCH_RANDOM_TIME_MAX = 40;
 
 // pre-requisite link for facebook business manager verification in organization setup
 export const FB_MANAGER_VERIFICATION =
-  'https://glific.slab.com/public/posts/facebook-verification-process-for-wa-business-api-065jvy5a';
+  'https://glific.slab.com/public/posts/02-facebook-verification-process-for-wa-business-api-skxjzu85';
 
 // pre-requisite link for gupshup account creation in organization setup
 export const GUPSHUP_ACCOUNT_CREATION =

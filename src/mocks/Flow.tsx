@@ -35,6 +35,13 @@ export const getFlowQuery = {
           isActive: true,
           uuid: 'b050c652-65b5-4ccf-b62b-1e8b3f328676',
           keywords: ['help'],
+          isPinned: false,
+          roles: [
+            {
+              id: '1',
+              label: 'Admin',
+            },
+          ],
           isBackground: false,
           ignoreKeywords: false,
         },
@@ -87,8 +94,8 @@ export const filterFlowQuery = {
       opts: {
         limit: 50,
         offset: 0,
-        order: 'ASC',
-        orderWith: 'name',
+        order: 'DESC',
+        orderWith: 'is_pinned',
       },
     },
   },
@@ -106,6 +113,13 @@ export const filterFlowQuery = {
           isBackground: false,
           updatedAt: '2021-03-05T04:32:23Z',
           uuid: '3fa22108-f464-41e5-81d9-d8a298854429',
+          isPinned: true,
+          roles: [
+            {
+              id: '1',
+              label: 'Admin',
+            },
+          ],
         },
       ],
     },
@@ -190,8 +204,8 @@ export const filterFlowNewQuery = {
       opts: {
         limit: 50,
         offset: 0,
-        order: 'ASC',
-        orderWith: 'name',
+        order: 'DESC',
+        orderWith: 'is_pinned',
       },
     },
   },
@@ -207,6 +221,7 @@ export const filterFlowNewQuery = {
           isBackground: false,
           updatedAt: '2021-03-05T04:32:23Z',
           uuid: '3fa22108-f464-41e5-81d9-d8a298854429',
+          isPinned: true,
         },
       ],
     },

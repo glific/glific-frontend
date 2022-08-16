@@ -24,6 +24,8 @@ const getLabel = (label: string) => <div className={styles.LabelText}>{label}</d
 
 const getBody = (text: string) => <p className={styles.TableText}>{WhatsAppToJsx(text)}</p>;
 
+const getReason = (reason: string) => <p className={styles.TableText}>{reason}</p>;
+
 const getUpdatedAt = (date: string) => (
   <div className={styles.LastModified}>{moment(date).format(DATE_TIME_FORMAT)}</div>
 );
@@ -129,16 +131,25 @@ export const Template: React.SFC<TemplateProps> = (props) => {
 
   let columnNames = ['TITLE', 'BODY'];
   columnNames = isHSM
-    ? [...columnNames, 'STATUS', 'ACTIONS']
+    ? [...columnNames, 'STATUS', ...(filters.REJECTED ? ['REASON'] : []), 'ACTIONS']
     : [...columnNames, 'LAST MODIFIED', 'ACTIONS'];
 
   let columnStyles: any = [styles.Label, styles.Body];
 
   columnStyles = isHSM
-    ? [...columnStyles, styles.Status, styles.Actions]
+    ? [...columnStyles, styles.Status, ...(filters.REJECTED ? [styles.Reason] : []), styles.Actions]
     : [...columnStyles, styles.LastModified, styles.Actions];
 
-  const getColumns = ({ id, language, label, body, updatedAt, translations, status }: any) => {
+  const getColumns = ({
+    id,
+    language,
+    label,
+    body,
+    updatedAt,
+    translations,
+    status,
+    reason,
+  }: any) => {
     const columns: any = {
       id,
       label: getLabel(label),
@@ -146,6 +157,9 @@ export const Template: React.SFC<TemplateProps> = (props) => {
     };
     if (isHSM) {
       columns.status = getStatus(status);
+      if (filters.REJECTED) {
+        columns.reason = getReason(reason);
+      }
     } else {
       columns.updatedAt = getUpdatedAt(updatedAt);
       columns.translations = getTranslations(language, translations);

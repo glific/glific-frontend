@@ -1,4 +1,5 @@
 .TableRow {
+  position: relative;
   display: flex !important;
   background-color: white;
   border-radius: 12px !important;

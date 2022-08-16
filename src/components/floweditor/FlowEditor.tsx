@@ -17,7 +17,6 @@ import { PUBLISH_FLOW, RESET_FLOW_COUNT } from 'graphql/mutations/Flow';
 import { EXPORT_FLOW, GET_FLOW_DETAILS, GET_FREE_FLOW } from 'graphql/queries/Flow';
 import { setAuthHeaders } from 'services/AuthService';
 import { SideDrawerContext } from 'context/session';
-import { GET_ORGANIZATION_SERVICES } from 'graphql/queries/Organization';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { exportFlowMethod } from 'common/utils';
 import styles from './FlowEditor.module.css';
@@ -57,30 +56,29 @@ export const FlowEditor = (props: FlowEditorProps) => {
   let dialog = null;
   let flowTitle: any;
 
-  const [getOrganizationServices] = useLazyQuery(GET_ORGANIZATION_SERVICES, {
-    fetchPolicy: 'network-only',
-    onCompleted: (services) => {
-      const { dialogflow, googleCloudStorage, flowUuidDisplay } = services.organizationServices;
-
-      if (googleCloudStorage) {
-        config.attachmentsEnabled = true;
-      }
-      if (!dialogflow) {
-        config.excludeTypes.push('split_by_intent');
-      }
-      if (flowUuidDisplay) {
-        config.showNodeLabel = true;
-      }
-      showFlowEditor(document.getElementById('flow'), config);
-      setLoading(false);
-    },
-  });
-
   const [getFreeFlow] = useLazyQuery(GET_FREE_FLOW, {
     fetchPolicy: 'network-only',
     onCompleted: ({ flowGet }) => {
       if (flowGet.flow) {
-        getOrganizationServices();
+        const { dialogflow, googleCloudStorage, flowUuidDisplay, contactProfileEnabled } =
+          JSON.parse(localStorage.getItem('organizationServices') || '{}');
+
+        if (googleCloudStorage) {
+          config.attachmentsEnabled = true;
+        }
+        if (!dialogflow) {
+          config.excludeTypes.push('split_by_intent');
+        }
+        if (flowUuidDisplay) {
+          config.showNodeLabel = true;
+        }
+
+        if (contactProfileEnabled) {
+          config.filters.push('profile');
+        }
+
+        showFlowEditor(document.getElementById('flow'), config);
+        setLoading(false);
       } else if (flowGet.errors && flowGet.errors.length) {
         setDialogMessage(flowGet.errors[0].message);
         setCurrentEditDialogBox(true);
@@ -271,13 +269,21 @@ export const FlowEditor = (props: FlowEditorProps) => {
         title={dialogMessage}
         alignButtons="center"
         skipCancel
-        buttonOk="Okay"
+        buttonOk="Take Over"
+        buttonMiddle="Go Back"
         handleOk={() => {
+          getFreeFlow({ variables: { id: flowId, isForced: true } });
+          setCurrentEditDialogBox(false);
+        }}
+        handleMiddle={() => {
           setConfirmedNavigation(true);
           history.push('/flow');
         }}
       >
-        <p className={styles.DialogDescription}>Please try again later or contact the user.</p>
+        <p className={styles.DialogDescription}>
+          You can either go back and edit it later or <br /> &lsquo;Take Over&rsquo; this flow to
+          start editing now.
+        </p>
       </DialogBox>
     );
   }

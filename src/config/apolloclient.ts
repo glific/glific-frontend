@@ -118,7 +118,7 @@ const gqlClient = (history: any) => {
   const httpLink: any = createLink({ uri: GLIFIC_API_URL });
 
   const retryIf = (error: any) => {
-    const doNotRetryCodes = [500, 400];
+    const doNotRetryCodes = [500, 400, 401];
     return !!error && !doNotRetryCodes.includes(error.statusCode);
   };
 
