@@ -25,7 +25,8 @@
 .CustomCheckboxLabel {
   color: #93a29b;
   padding-top: 9px;
-  font-size: .8rem;
+  font-size: 14px;
+  font-weight: 400 !important;
 }
 
 .CustomCheckboxRoot {
