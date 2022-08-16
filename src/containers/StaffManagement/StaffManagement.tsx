@@ -105,7 +105,7 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
       if (hasDynamicRoles) {
         const userRoles = accessRolesValue.map((role: any) => ({ id: role.id, label: role.label }));
         setRoles(userRoles);
-      } else {
+      } else if (accessRolesValue.length > 0) {
         setRoles({ id: accessRolesValue[0].id, label: accessRolesValue[0].label });
       }
     }
@@ -268,8 +268,10 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
         ? payloadCopy.roles.map((role: any) => role.id)
         : [payloadCopy.roles.id];
 
-    payloadCopy.addRoleIds = roleIds;
-    payloadCopy.deleteRoleIds = [roles.id];
+    const isSameRole = payloadCopy.roles.id === roles.id;
+
+    payloadCopy.addRoleIds = isSameRole ? [] : roleIds;
+    payloadCopy.deleteRoleIds = isSameRole ? [] : [roles.id];
 
     if (hasDynamicRoles) {
       const initialSelectedRoles = roles.map((role: any) => role.id);
