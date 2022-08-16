@@ -34,6 +34,10 @@ export const Checkbox: React.SFC<CheckboxProps> = (props) => {
     customClass = null,
   } = props;
 
+  const primaryColor = customClass?.primaryColor
+    ? { colorPrimary: customClass.primaryColor }
+    : null;
+
   const handleChangeCallback = () => {
     const { name, value } = field;
     form.setFieldValue(name, !value);
@@ -46,7 +50,7 @@ export const Checkbox: React.SFC<CheckboxProps> = (props) => {
         control={
           <CheckboxElement
             data-testid="checkboxLabel"
-            classes={darkCheckbox ? { colorPrimary: styles.CheckboxColor } : null}
+            classes={darkCheckbox ? { colorPrimary: styles.CheckboxColor } : primaryColor}
             {...field}
             color="primary"
             checked={field.value ? field.value : false}

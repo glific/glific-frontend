@@ -136,6 +136,7 @@ export const Registration: React.SFC<RegistrationProps> = (props) => {
       customClass: {
         label: styles.CustomCheckboxLabel,
         root: styles.CustomCheckboxRoot,
+        primaryColor: styles.CustomPrimaryCheckboxColor,
       },
     },
     {
@@ -146,6 +147,7 @@ export const Registration: React.SFC<RegistrationProps> = (props) => {
       customClass: {
         label: styles.CustomCheckboxLabel,
         root: styles.CustomCheckboxRoot,
+        primaryColor: styles.CustomPrimaryCheckboxColor,
       },
     },
   ];
