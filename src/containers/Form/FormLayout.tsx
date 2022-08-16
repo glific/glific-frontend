@@ -71,6 +71,7 @@ export interface FormLayoutProps {
   getQueryFetchPolicy?: any;
   saveOnPageChange?: boolean;
   entityId?: any;
+  restrictDelete?: boolean;
 }
 
 export const FormLayout = ({
@@ -118,6 +119,7 @@ export const FormLayout = ({
   getQueryFetchPolicy = 'cache-first',
   saveOnPageChange = true,
   entityId = null,
+  restrictDelete = false,
 }: FormLayoutProps) => {
   const [showDialog, setShowDialog] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
@@ -148,6 +150,10 @@ export const FormLayout = ({
     onCompleted: () => {
       setNotification(`${capitalListItemName} deleted successfully`);
       setDeleted(true);
+    },
+    onError: (err: ApolloError) => {
+      setShowDialog(false);
+      setErrorMessage(err);
     },
     awaitRefetchQueries: true,
     refetchQueries: [
@@ -471,7 +477,7 @@ export const FormLayout = ({
   }
 
   const deleteButton =
-    itemId && !type ? (
+    itemId && !type && !restrictDelete ? (
       <Button
         variant="contained"
         color="secondary"

@@ -48,14 +48,17 @@ export const Profile = ({
   const [phone, setPhone] = useState('');
   const [status, setStatus] = useState('');
   const [bspStatus, setBspStatus] = useState('');
+  const [hideRemoveBtn, setHideRemoveBtn] = useState(false);
   const { t } = useTranslation();
   const params = useParams();
 
   const { data, loading } = useQuery(GET_CURRENT_USER);
   if (loading) return <Loading />;
 
-  const loggedInUserContactId = data.currentUser.user.contact.id;
-  const currentUserPhone = data.currentUser.user.phone;
+  const { user } = data.currentUser;
+  const loggedInUserContactId = user.contact.id;
+  const currentUserPhone = user.phone;
+  const organizationPhone = user.organization.contact.phone;
 
   let currentContactId = loggedInUserContactId;
   if (params.id) {
@@ -74,10 +77,12 @@ export const Profile = ({
     setName(nameValue);
     if (phoneValue) {
       setPhone(phoneValue);
+      setHideRemoveBtn(organizationPhone === phoneValue);
     } else {
       // contact api does not return the phone when role is staff, hence in this case we manually set the phone
       // for the current user
       setPhone(currentUserPhone);
+      setHideRemoveBtn(organizationPhone === currentUserPhone);
     }
     setStatus(statusValue);
     setBspStatus(bspStatusValue);
@@ -161,6 +166,7 @@ export const Profile = ({
       type={type}
       title={pageTitle}
       entityId={currentContactId}
+      restrictDelete={hideRemoveBtn}
     />
   );
 };
