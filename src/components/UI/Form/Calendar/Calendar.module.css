@@ -12,4 +12,8 @@
   .CalendarInput {
     width: 100% !important;
   }
+  .Calendar {
+    width: 100% !important;
+    padding: 8px 0 !important;
+  }
 }

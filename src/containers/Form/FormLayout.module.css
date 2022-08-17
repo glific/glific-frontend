@@ -128,7 +128,7 @@
 }
 
 @media (max-width:768px) {
-  .Form, .ItemAdd {
-    width: 100%;
+  .Form, .ItemAdd, .Buttons {
+    width: 100% !important;
   }
 }

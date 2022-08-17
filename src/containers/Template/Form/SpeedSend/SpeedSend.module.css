@@ -15,11 +15,5 @@
 
 .AttachmentFields > div:nth-child(5) {
   display: inline-block !important;
-  width: 59% !important;
-}
-
-@media (max-width:768px) {
-  .AttachmentFields > div:nth-child(4), .AttachmentFields > div:nth-child(5) {
-    width: 100% !important;
-  }
+  width: 59%;
 }

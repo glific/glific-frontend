@@ -17,7 +17,7 @@
 }
 
 @media (max-width:768px) {
-  .picker {
-    width: 100%;
+  .picker, .TimePicker {
+    width: 100% !important;
   }
 }
