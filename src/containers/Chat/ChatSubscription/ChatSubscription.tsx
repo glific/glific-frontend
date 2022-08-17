@@ -218,19 +218,6 @@ export const ChatSubscription = ({ setDataLoaded }: ChatSubscriptionProps) => {
       variables: COLLECTION_SEARCH_QUERY_VARIABLES,
       fetchPolicy: 'network-only',
       nextFetchPolicy: 'cache-only',
-      onCompleted: () => {
-        const subscriptionVariables = { organizationId: getUserSession('organizationId') };
-
-        if (collectionSubscribe) {
-          // collection sent subscription
-          collectionSubscribe({
-            document: COLLECTION_SENT_SUBSCRIPTION,
-            variables: subscriptionVariables,
-            updateQuery: (prev, { subscriptionData }) =>
-              updateConversations(prev, subscriptionData, 'COLLECTION'),
-          });
-        }
-      },
     });
 
   const [loadData, { loading, error, subscribeToMore, data, refetch }] = useLazyQuery<any>(
@@ -239,52 +226,6 @@ export const ChatSubscription = ({ setDataLoaded }: ChatSubscriptionProps) => {
       variables: queryVariables,
       fetchPolicy: 'network-only',
       nextFetchPolicy: 'cache-only',
-      onCompleted: () => {
-        const subscriptionVariables = { organizationId: getUserSession('organizationId') };
-
-        if (subscribeToMore) {
-          // message received subscription
-          subscribeToMore({
-            document: MESSAGE_RECEIVED_SUBSCRIPTION,
-            variables: subscriptionVariables,
-            updateQuery: (prev, { subscriptionData }) =>
-              updateConversations(prev, subscriptionData, 'RECEIVED'),
-          });
-
-          // message sent subscription
-          subscribeToMore({
-            document: MESSAGE_SENT_SUBSCRIPTION,
-            variables: subscriptionVariables,
-            updateQuery: (prev, { subscriptionData }) =>
-              updateConversations(prev, subscriptionData, 'SENT'),
-          });
-
-          // message status subscription
-          subscribeToMore({
-            document: MESSAGE_STATUS_SUBSCRIPTION,
-            variables: subscriptionVariables,
-            updateQuery: (prev, { subscriptionData }) =>
-              updateConversations(prev, subscriptionData, 'STATUS'),
-            onError: () => {},
-          });
-
-          // tag added subscription
-          subscribeToMore({
-            document: ADD_MESSAGE_TAG_SUBSCRIPTION,
-            variables: subscriptionVariables,
-            updateQuery: (prev, { subscriptionData }) =>
-              updateConversations(prev, subscriptionData, 'TAG_ADDED'),
-          });
-
-          // tag delete subscription
-          subscribeToMore({
-            document: DELETE_MESSAGE_TAG_SUBSCRIPTION,
-            variables: subscriptionVariables,
-            updateQuery: (prev, { subscriptionData }) =>
-              updateConversations(prev, subscriptionData, 'TAG_DELETED'),
-          });
-        }
-      },
     }
   );
 
@@ -295,8 +236,62 @@ export const ChatSubscription = ({ setDataLoaded }: ChatSubscriptionProps) => {
   }, [data, collectionData]);
 
   useEffect(() => {
-    loadData();
-    loadCollectionData();
+    const subscriptionVariables = { organizationId: getUserSession('organizationId') };
+    loadData().then(() => {
+      if (subscribeToMore) {
+        // message received subscription
+        subscribeToMore({
+          document: MESSAGE_RECEIVED_SUBSCRIPTION,
+          variables: subscriptionVariables,
+          updateQuery: (prev, { subscriptionData }) =>
+            updateConversations(prev, subscriptionData, 'RECEIVED'),
+        });
+
+        // message sent subscription
+        subscribeToMore({
+          document: MESSAGE_SENT_SUBSCRIPTION,
+          variables: subscriptionVariables,
+          updateQuery: (prev, { subscriptionData }) =>
+            updateConversations(prev, subscriptionData, 'SENT'),
+        });
+
+        // message status subscription
+        subscribeToMore({
+          document: MESSAGE_STATUS_SUBSCRIPTION,
+          variables: subscriptionVariables,
+          updateQuery: (prev, { subscriptionData }) =>
+            updateConversations(prev, subscriptionData, 'STATUS'),
+          onError: () => {},
+        });
+
+        // tag added subscription
+        subscribeToMore({
+          document: ADD_MESSAGE_TAG_SUBSCRIPTION,
+          variables: subscriptionVariables,
+          updateQuery: (prev, { subscriptionData }) =>
+            updateConversations(prev, subscriptionData, 'TAG_ADDED'),
+        });
+
+        // tag delete subscription
+        subscribeToMore({
+          document: DELETE_MESSAGE_TAG_SUBSCRIPTION,
+          variables: subscriptionVariables,
+          updateQuery: (prev, { subscriptionData }) =>
+            updateConversations(prev, subscriptionData, 'TAG_DELETED'),
+        });
+      }
+    });
+    loadCollectionData().then(() => {
+      if (collectionSubscribe) {
+        // collection sent subscription
+        collectionSubscribe({
+          document: COLLECTION_SENT_SUBSCRIPTION,
+          variables: subscriptionVariables,
+          updateQuery: (prev, { subscriptionData }) =>
+            updateConversations(prev, subscriptionData, 'COLLECTION'),
+        });
+      }
+    });
   }, []);
 
   // lets return empty if we are still loading

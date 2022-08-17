@@ -174,30 +174,6 @@ export const Simulator = ({
     {
       fetchPolicy: 'network-only',
       nextFetchPolicy: 'cache-only',
-      onCompleted: ({ search }) => {
-        if (subscribeToMore) {
-          const subscriptionVariables = { organizationId: getUserSession('organizationId') };
-          // message received subscription
-          subscribeToMore({
-            document: SIMULATOR_MESSAGE_RECEIVED_SUBSCRIPTION,
-            variables: subscriptionVariables,
-            updateQuery: (prev, { subscriptionData }) =>
-              updateSimulatorConversations(prev, subscriptionData, 'RECEIVED'),
-          });
-
-          // message sent subscription
-          subscribeToMore({
-            document: SIMULATOR_MESSAGE_SENT_SUBSCRIPTION,
-            variables: subscriptionVariables,
-            updateQuery: (prev, { subscriptionData }) =>
-              updateSimulatorConversations(prev, subscriptionData, 'SENT'),
-          });
-
-          if (search.length > 0) {
-            sendMessage({ name: search[0].contact.name, phone: search[0].contact.phone });
-          }
-        }
-      },
     }
   );
 
@@ -222,7 +198,32 @@ export const Simulator = ({
     fetchPolicy: 'network-only',
     onCompleted: (simulatorData) => {
       if (simulatorData.simulatorGet) {
-        loadSimulator({ variables: getSimulatorVariables(simulatorData.simulatorGet.id) });
+        loadSimulator({ variables: getSimulatorVariables(simulatorData.simulatorGet.id) }).then(
+          ({ search }: any) => {
+            if (subscribeToMore) {
+              const subscriptionVariables = { organizationId: getUserSession('organizationId') };
+              // message received subscription
+              subscribeToMore({
+                document: SIMULATOR_MESSAGE_RECEIVED_SUBSCRIPTION,
+                variables: subscriptionVariables,
+                updateQuery: (prev, { subscriptionData }) =>
+                  updateSimulatorConversations(prev, subscriptionData, 'RECEIVED'),
+              });
+
+              // message sent subscription
+              subscribeToMore({
+                document: SIMULATOR_MESSAGE_SENT_SUBSCRIPTION,
+                variables: subscriptionVariables,
+                updateQuery: (prev, { subscriptionData }) =>
+                  updateSimulatorConversations(prev, subscriptionData, 'SENT'),
+              });
+
+              if (search.length > 0) {
+                sendMessage({ name: search[0].contact.name, phone: search[0].contact.phone });
+              }
+            }
+          }
+        );
         setSimulatorId(simulatorData.simulatorGet.id);
       } else {
         setNotification(
