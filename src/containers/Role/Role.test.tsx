@@ -13,10 +13,10 @@ const mocks = [getRoleQuery, createRoleMutation, updateRoleMutation, deleteRoleM
 
 jest.mock('react-router-dom', () => ({
   ...(jest.requireActual('react-router-dom') as {}),
-  useParams: () => ({ id: 5 }),
+  useParams: () => ({ id: '5' }),
 }));
 
-const role = () => (
+const role = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <MemoryRouter>
       <Role />
@@ -25,14 +25,14 @@ const role = () => (
 );
 
 it('should render Role form page', async () => {
-  const wrapper = render(role());
+  const wrapper = render(role);
   await waitFor(() => {
     expect(wrapper.container).toBeInTheDocument();
   });
 });
 
 it('should have fields for name and description', async () => {
-  const { getAllByTestId } = render(role());
+  const { getAllByTestId } = render(role);
   await waitFor(() => {
     expect(getAllByTestId('inputLabel')[0]).toHaveTextContent('Label');
     expect(getAllByTestId('inputLabel')[1]).toHaveTextContent('Description');
