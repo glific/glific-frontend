@@ -5,9 +5,12 @@ import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT } from 'common/constants';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import { conversationQuery } from 'mocks/Chat';
 import {
+  messageReceivedSubscription,
+  messageSendSubscription,
   simulatorGetQuery,
   simulatorReleaseQuery,
   simulatorReleaseSubscription,
+  simulatorSearchQuery,
 } from 'mocks/Simulator';
 import { Simulator } from './Simulator';
 import axios from 'axios';
@@ -23,6 +26,9 @@ const mocks = [
   conversationQuery,
   simulatorReleaseSubscription,
   simulatorReleaseQuery,
+  simulatorSearchQuery,
+  messageReceivedSubscription,
+  messageSendSubscription,
   simulatorGetQuery,
 ];
 const defaultProps = {

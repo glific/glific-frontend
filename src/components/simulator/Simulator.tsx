@@ -199,7 +199,7 @@ export const Simulator = ({
     onCompleted: (simulatorData) => {
       if (simulatorData.simulatorGet) {
         loadSimulator({ variables: getSimulatorVariables(simulatorData.simulatorGet.id) }).then(
-          ({ search }: any) => {
+          ({ data }: any) => {
             if (subscribeToMore) {
               const subscriptionVariables = { organizationId: getUserSession('organizationId') };
               // message received subscription
@@ -218,8 +218,11 @@ export const Simulator = ({
                   updateSimulatorConversations(prev, subscriptionData, 'SENT'),
               });
 
-              if (search.length > 0) {
-                sendMessage({ name: search[0].contact.name, phone: search[0].contact.phone });
+              if (data?.search.length > 0) {
+                sendMessage({
+                  name: data.search[0].contact.name,
+                  phone: data.search[0].contact.phone,
+                });
               }
             }
           }
