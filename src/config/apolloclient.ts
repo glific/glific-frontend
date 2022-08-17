@@ -3,7 +3,9 @@ import { createLink } from 'apollo-absinthe-upload-link';
 import { onError } from '@apollo/link-error';
 import { RetryLink } from '@apollo/client/link/retry';
 import { TokenRefreshLink } from 'apollo-link-token-refresh';
+import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
 import { setContext } from '@apollo/link-context';
+import { createClient } from 'graphql-ws';
 
 import {
   checkAuthStatusService,
@@ -14,8 +16,7 @@ import {
 import { CONNECTION_RECONNECT_ATTEMPTS } from 'common/constants';
 import { Logout } from 'containers/Auth/Logout/Logout';
 import setLogs from './logs';
-import { GLIFIC_API_URL } from '.';
-import absinthe from './absinthe';
+import { GLIFIC_API_URL, SOCKET } from '.';
 
 const subscribe = require('@jumpn/utils-graphql');
 
@@ -134,9 +135,18 @@ const gqlClient = (history: any) => {
     },
   });
 
+  const wsLink = new GraphQLWsLink(
+    createClient({
+      url: SOCKET,
+      connectionParams: {
+        authToken: getAuthSession('access_token'),
+      },
+    })
+  );
+
   const link = retryLink.split(
     (operation) => subscribe.hasSubscription(operation.query),
-    refreshTokenLink.concat(errorLink.concat(absinthe)),
+    refreshTokenLink.concat(errorLink.concat(wsLink)),
     refreshTokenLink.concat(errorLink.concat(authLink.concat(httpLink)))
   );
 
