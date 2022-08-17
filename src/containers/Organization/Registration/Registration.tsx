@@ -62,8 +62,7 @@ const initialFormValues = {
   api_key: '',
   email: '',
   shortcode: '',
-  support: true,
-  message_me: true,
+  addSupportStaff: true,
 };
 
 const supportCheckboxTitle =
@@ -130,25 +129,10 @@ export const Registration: React.SFC<RegistrationProps> = (props) => {
     },
     {
       component: Checkbox,
-      name: 'support',
+      name: 'addSupportStaff',
       title: supportCheckboxTitle,
       darkCheckbox: false,
-      customClass: {
-        label: styles.CustomCheckboxLabel,
-        root: styles.CustomCheckboxRoot,
-        primaryColor: styles.CustomPrimaryCheckboxColor,
-      },
-    },
-    {
-      component: Checkbox,
-      name: 'message_me',
-      title: 'I agree to let Glific team message me on WhatsApp.',
-      darkCheckbox: false,
-      customClass: {
-        label: styles.CustomCheckboxLabel,
-        root: styles.CustomCheckboxRoot,
-        primaryColor: styles.CustomPrimaryCheckboxColor,
-      },
+      checkboxType: 'iagree',
     },
   ];
 

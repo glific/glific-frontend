@@ -32,3 +32,19 @@
 .LabelNoStyle {
   color: #073f24;
 }
+
+.GreenCheckboxLabel {
+  color: #93a29b;
+  padding-top: 9px;
+  font-size: 14px;
+  font-weight: 400 !important;
+}
+
+.GreenCheckboxRoot {
+  display: flex !important;
+  align-items: flex-start !important;
+}
+
+.GreenCheckboxColor {
+  color: #119656 !important;
+}
