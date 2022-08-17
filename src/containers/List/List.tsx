@@ -481,6 +481,7 @@ export const List: React.SFC<ListProps> = ({
 
   const columnWrapper = (listItems: any) => {
     const columnStyle = columns(listItems);
+
     const titleAlias = ['name', 'label'];
 
     for (let i = 0; i < titleAlias.length; i += 1) {
