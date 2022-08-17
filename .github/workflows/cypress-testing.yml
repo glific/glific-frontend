@@ -96,7 +96,6 @@ jobs:
         run: |
           echo clone cypress repo
           git clone https://github.com/glific/cypress-testing.git
-          git checkout feature/package-fixes
           echo done. go to dir.
           cp -r cypress-testing/cypress cypress
           yarn add cypress@7.3.0
