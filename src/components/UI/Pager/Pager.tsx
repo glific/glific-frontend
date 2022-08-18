@@ -107,10 +107,14 @@ const createRows = (
     }
 
     let dataObj: any;
+    console.log(entry);
     if (entry.translations) dataObj = JSON.parse(entry.translations);
     return (
       <React.Fragment key={entry.recordId}>
-        <TableRow key={entry.recordId} className={styles.TableRow}>
+        <TableRow
+          key={entry.recordId}
+          className={`${styles.TableRow} ${entry.isActive ? styles.ActiveRow : styles.InactiveRow}`}
+        >
           {batchAction}
           {createRow(entry)}
         </TableRow>

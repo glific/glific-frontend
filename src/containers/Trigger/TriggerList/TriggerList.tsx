@@ -30,7 +30,7 @@ const getTooltip = (frequency: any, days: any) => {
 };
 
 const getName = (flow: any, startAt: any, frequency: any, days: any, isActive: boolean) => (
-  <p>
+  <p className={styles.LabelText}>
     <Tooltip title={getTooltip(frequency, days)} tooltipClass={styles.Tooltip} placement="right">
       <span className={styles.TriggerIcon}>{isActive ? <ClockIcon /> : <ClockInactiveIcon />}</span>
     </Tooltip>

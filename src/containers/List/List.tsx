@@ -479,26 +479,6 @@ export const List: React.SFC<ListProps> = ({
     return null;
   }
 
-  const columnWrapper = (listItems: any) => {
-    const columnStyle = columns(listItems);
-
-    const titleAlias = ['name', 'label'];
-
-    for (let i = 0; i < titleAlias.length; i += 1) {
-      if (columnStyle[titleAlias[i]]) {
-        const titleColumn = (
-          <div className={listItems.isActive === true ? styles.Active : styles.Inactive}>
-            {columnStyle[titleAlias[i]]}
-          </div>
-        );
-
-        return { ...columnStyle, [titleAlias[i]]: titleColumn };
-      }
-    }
-
-    return columnStyle;
-  };
-
   function formatList(listItems: Array<any>) {
     return listItems.map(({ ...listItemObj }) => {
       // display only actions allowed to the user
@@ -506,9 +486,10 @@ export const List: React.SFC<ListProps> = ({
         ? restrictedAction(listItemObj)
         : { chat: true, edit: true, delete: true };
       return {
-        ...columnWrapper(listItemObj),
+        ...columns(listItemObj),
         operations: getIcons(listItemObj, allowedAction),
         recordId: listItemObj.id,
+        isActive: listItemObj.isActive,
       };
     });
   }
