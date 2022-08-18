@@ -66,6 +66,7 @@ const Menu = ({ menus, children, eventType = 'Click', placement = 'top' }: MenuP
         transition
         disablePortal={placement === 'top'}
         placement={placement}
+        style={{ zIndex: 1 }}
       >
         {({ TransitionProps }) => (
           <Grow {...TransitionProps}>
