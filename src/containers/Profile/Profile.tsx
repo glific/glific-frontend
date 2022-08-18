@@ -49,6 +49,7 @@ export const Profile: React.SFC<ProfileProps> = ({
   const [phone, setPhone] = useState('');
   const [status, setStatus] = useState('');
   const [bspStatus, setBspStatus] = useState('');
+  const [hideRemoveBtn, setHideRemoveBtn] = useState(false);
   const { t } = useTranslation();
 
   let param = match;
@@ -56,8 +57,10 @@ export const Profile: React.SFC<ProfileProps> = ({
   const { data, loading } = useQuery(GET_CURRENT_USER);
   if (loading) return <Loading />;
 
-  const loggedInUserContactId = data.currentUser.user.contact.id;
-  const currentUserPhone = data.currentUser.user.phone;
+  const { user } = data.currentUser;
+  const loggedInUserContactId = user.contact.id;
+  const currentUserPhone = user.phone;
+  const organizationPhone = user.organization.contact.phone;
 
   let currentContactId;
   if (!match) {
@@ -80,10 +83,12 @@ export const Profile: React.SFC<ProfileProps> = ({
     setName(nameValue);
     if (phoneValue) {
       setPhone(phoneValue);
+      setHideRemoveBtn(organizationPhone === phoneValue);
     } else {
       // contact api does not return the phone when role is staff, hence in this case we manually set the phone
       // for the current user
       setPhone(currentUserPhone);
+      setHideRemoveBtn(organizationPhone === currentUserPhone);
     }
     setStatus(statusValue);
     setBspStatus(bspStatusValue);
@@ -167,6 +172,7 @@ export const Profile: React.SFC<ProfileProps> = ({
       afterDelete={afterDelete}
       type={type}
       title={pageTitle}
+      restrictDelete={hideRemoveBtn}
     />
   );
 };

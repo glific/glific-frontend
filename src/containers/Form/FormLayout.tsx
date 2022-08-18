@@ -70,6 +70,7 @@ export interface FormLayoutProps {
   onPreviewClick?: Function;
   getQueryFetchPolicy?: any;
   saveOnPageChange?: boolean;
+  restrictDelete?: boolean;
 }
 
 export const FormLayout: React.SFC<FormLayoutProps> = ({
@@ -117,6 +118,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   onPreviewClick = () => {},
   getQueryFetchPolicy = 'cache-first',
   saveOnPageChange = true,
+  restrictDelete = false,
 }: FormLayoutProps) => {
   const [showDialog, setShowDialog] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
@@ -142,6 +144,10 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     onCompleted: () => {
       setNotification(`${capitalListItemName} deleted successfully`);
       setDeleted(true);
+    },
+    onError: (err: ApolloError) => {
+      setShowDialog(false);
+      setErrorMessage(err);
     },
     awaitRefetchQueries: true,
     refetchQueries: [
@@ -465,7 +471,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   }
 
   const deleteButton =
-    itemId && !type ? (
+    itemId && !type && !restrictDelete ? (
       <Button
         variant="contained"
         color="secondary"
