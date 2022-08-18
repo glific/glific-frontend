@@ -16,7 +16,6 @@ export interface CheckboxProps {
   addLabelStyle?: boolean;
   infoType?: 'tooltip' | 'dialog';
   handleInfoClick?: Function;
-  checkboxType?: 'normal' | 'iagree';
 }
 
 export const Checkbox: React.SFC<CheckboxProps> = (props) => {
