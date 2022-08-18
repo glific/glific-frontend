@@ -42,6 +42,12 @@ const HelperLink = (
   </Link>
 );
 
+const CheckBoxWrapper = (props: any) => (
+  <div className={styles.Wrapper}>
+    <Checkbox {...props} />
+  </div>
+);
+
 const FormSchema = Yup.object().shape({
   name: Yup.string().required('NGO name is required'),
   phone: Yup.string().required('Your chatbot number is required'),
@@ -128,7 +134,7 @@ export const Registration: React.SFC<RegistrationProps> = (props) => {
       placeholder: 'Your email id',
     },
     {
-      component: Checkbox,
+      component: CheckBoxWrapper,
       name: 'addSupportStaff',
       title: supportCheckboxTitle,
       darkCheckbox: false,

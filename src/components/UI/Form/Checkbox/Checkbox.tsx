@@ -31,20 +31,7 @@ export const Checkbox: React.SFC<CheckboxProps> = (props) => {
     handleChange,
     infoType = 'tooltip',
     handleInfoClick = () => {},
-    checkboxType = 'normal',
   } = props;
-
-  const checkboxClass = () => {
-    if (darkCheckbox) {
-      return { colorPrimary: styles.CheckboxColor };
-    }
-
-    if (checkboxType === 'iagree') {
-      return { colorPrimary: styles.GreenCheckboxColor };
-    }
-
-    return null;
-  };
 
   const handleChangeCallback = () => {
     const { name, value } = field;
@@ -58,7 +45,7 @@ export const Checkbox: React.SFC<CheckboxProps> = (props) => {
         control={
           <CheckboxElement
             data-testid="checkboxLabel"
-            classes={checkboxClass()}
+            classes={darkCheckbox ? { colorPrimary: styles.CheckboxColor } : null}
             {...field}
             color="primary"
             checked={field.value ? field.value : false}
@@ -69,10 +56,8 @@ export const Checkbox: React.SFC<CheckboxProps> = (props) => {
         labelPlacement="end"
         label={title}
         classes={{
-          label: `${addLabelStyle ? styles.Label : styles.LabelNoStyle} ${
-            checkboxType === 'iagree' ? styles.GreenCheckboxLabel : null
-          }`,
-          root: `${styles.Root} ${checkboxType === 'iagree' ? styles.GreenCheckboxRoot : null}`,
+          label: addLabelStyle ? styles.Label : undefined,
+          root: styles.Root,
         }}
       />
       {info && infoType === 'tooltip' && (
