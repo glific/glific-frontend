@@ -236,9 +236,10 @@ export const ChatSubscription = ({ setDataLoaded }: ChatSubscriptionProps) => {
   }, [data, collectionData]);
 
   useEffect(() => {
+    let ignore = false;
     const subscriptionVariables = { organizationId: getUserSession('organizationId') };
     loadData().then(() => {
-      if (subscribeToMore) {
+      if (subscribeToMore && !ignore) {
         // message received subscription
         subscribeToMore({
           document: MESSAGE_RECEIVED_SUBSCRIPTION,
@@ -292,6 +293,10 @@ export const ChatSubscription = ({ setDataLoaded }: ChatSubscriptionProps) => {
         });
       }
     });
+
+    return () => {
+      ignore = true;
+    };
   }, []);
 
   // lets return empty if we are still loading
