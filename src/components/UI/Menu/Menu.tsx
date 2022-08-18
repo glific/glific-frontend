@@ -70,6 +70,7 @@ const Menu: React.SFC<MenuProps> = ({
         transition
         disablePortal={placement === 'top'}
         placement={placement}
+        style={{ zIndex: 1 }}
       >
         {({ TransitionProps }) => (
           <Grow {...TransitionProps}>
