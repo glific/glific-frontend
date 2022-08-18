@@ -107,7 +107,6 @@ const createRows = (
     }
 
     let dataObj: any;
-    console.log(entry);
     if (entry.translations) dataObj = JSON.parse(entry.translations);
     return (
       <React.Fragment key={entry.recordId}>
