@@ -14,6 +14,7 @@ import { useHistory } from 'react-router-dom';
 import { useMutation, useLazyQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 import { ReactComponent as TerminateFlowIcon } from 'assets/images/icons/Automations/Terminate.svg';
+import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import styles from './ContactBar.module.css';
 import { SearchDialogBox } from '../../../../components/UI/SearchDialogBox/SearchDialogBox';
 import { TerminateFlow } from './TerminateFlow/TerminateFlow';
@@ -46,7 +47,6 @@ import {
   setVariables,
 } from '../../../../common/constants';
 import { Timer } from '../../../../components/UI/Timer/Timer';
-import { DropdownDialog } from '../../../../components/UI/DropdownDialog/DropdownDialog';
 import { DialogBox } from '../../../../components/UI/DialogBox/DialogBox';
 import { Tooltip } from '../../../../components/UI/Tooltip/Tooltip';
 import { CLEAR_MESSAGES } from '../../../../graphql/mutations/Chat';
@@ -102,6 +102,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   const [showClearChatDialog, setClearChatDialog] = useState(false);
   const [addContactsDialogShow, setAddContactsDialogShow] = useState(false);
   const [showTerminateDialog, setShowTerminateDialog] = useState(false);
+  const [selectedFlow, setselectedFlow] = useState<any>('');
   const { t } = useTranslation();
 
   // get collection list
@@ -248,7 +249,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
 
   const handleFlowSubmit = (flowId: any) => {
     const flowVariables: any = {
-      flowId,
+      flowId: flowId || selectedFlow.id,
     };
 
     if (contactId) {
@@ -274,14 +275,25 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
 
   if (showFlowDialog) {
     dialogBox = (
-      <DropdownDialog
+      <DialogBox
         title={t('Select flow')}
         handleOk={handleFlowSubmit}
         handleCancel={closeFlowDialogBox}
-        options={flowOptions}
-        placeholder={t('Select flow')}
-        description={t('The contact will be responded as per the messages planned in the flow.')}
-      />
+        titleAlign="left"
+        buttonOk="Start"
+      >
+        <AutoComplete
+          options={flowOptions}
+          optionLabel="name"
+          multiple={false}
+          textFieldProps={{
+            variant: 'outlined',
+            label: t('Select flow'),
+          }}
+          field={{ value: selectedFlow }}
+          form={{ setFieldValue: (e: any, value: any) => setselectedFlow(value) }}
+        />
+      </DialogBox>
     );
   }
 
