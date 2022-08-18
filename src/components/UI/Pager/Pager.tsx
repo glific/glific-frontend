@@ -112,7 +112,9 @@ const createRows = (
       <React.Fragment key={entry.recordId}>
         <TableRow
           key={entry.recordId}
-          className={`${styles.TableRow} ${entry.isActive ? styles.ActiveRow : styles.InactiveRow}`}
+          className={`${styles.TableRow} ${
+            entry.isActive === false ? styles.InactiveRow : styles.ActiveRow
+          }`}
         >
           {batchAction}
           {createRow(entry)}
