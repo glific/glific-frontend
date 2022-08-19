@@ -29,14 +29,12 @@ const getTooltip = (frequency: any, days: any) => {
   return `Repeat: ${frequency}${frequency === 'weekly' ? `(${obj.toString()})` : ''}`;
 };
 
-const getName = (flow: any, startAt: any, frequency: any, days: any, isActive: any) => (
+const getName = (flow: any, startAt: any, frequency: any, days: any, isActive: boolean) => (
   <p className={styles.LabelText}>
     <Tooltip title={getTooltip(frequency, days)} tooltipClass={styles.Tooltip} placement="right">
       <span className={styles.TriggerIcon}>{isActive ? <ClockIcon /> : <ClockInactiveIcon />}</span>
     </Tooltip>
-    <span className={isActive ? '' : styles.Inactive}>{`${flow.name}_${moment(startAt).format(
-      'DD/MM/yyyy_hh:mmA'
-    )}`}</span>
+    <span>{`${flow.name}_${moment(startAt).format('DD/MM/yyyy_hh:mmA')}`}</span>
   </p>
 );
 

@@ -90,8 +90,11 @@
 }
 
 .NameText {
+  text-align: left;
+  padding: 12px 0px;
+  line-height: 1.25;
+  margin: 0;
   font-size: 20px !important;
-  color: #073f24 !important;
   word-break: break-all;
 }
 
