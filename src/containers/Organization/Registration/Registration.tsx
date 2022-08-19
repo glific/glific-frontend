@@ -6,6 +6,7 @@ import * as Yup from 'yup';
 import { Input } from 'components/UI/Form/Input/Input';
 import { PhoneInput } from 'components/UI/Form/PhoneInput/PhoneInput';
 import Tooltip from 'components/UI/Tooltip/Tooltip';
+import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { ONBOARD_URL } from 'config';
 import { ReactComponent as InfoIcon } from 'assets/images/icons/Info.svg';
 import { GUPSHUP_ACCOUNT_CREATION } from 'common/constants';
@@ -41,6 +42,12 @@ const HelperLink = (
   </Link>
 );
 
+const CheckBoxWrapper = (props: any) => (
+  <div className={styles.Wrapper}>
+    <Checkbox {...props} />
+  </div>
+);
+
 const FormSchema = Yup.object().shape({
   name: Yup.string().required('NGO name is required'),
   phone: Yup.string().required('Your chatbot number is required'),
@@ -61,7 +68,11 @@ const initialFormValues = {
   api_key: '',
   email: '',
   shortcode: '',
+  addSupportStaff: true,
 };
+
+const supportCheckboxTitle =
+  'I agree to let Glific team create a support staff account on my Glific setup. This allows us to get better troubleshooting response to our issues.';
 
 export const Registration: React.SFC<RegistrationProps> = (props) => {
   const { title, buttonText, handleStep } = props;
@@ -121,6 +132,13 @@ export const Registration: React.SFC<RegistrationProps> = (props) => {
       name: 'email',
       type: 'text',
       placeholder: 'Your email id',
+    },
+    {
+      component: CheckBoxWrapper,
+      name: 'addSupportStaff',
+      title: supportCheckboxTitle,
+      darkCheckbox: false,
+      checkboxType: 'iagree',
     },
   ];
 
