@@ -73,7 +73,7 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
     ? selectedOptions.map(({ id }: { id: any }) => id)
     : selectedOptions?.id;
 
-  const getIds = multiple ? selectedOption.map((option: any) => option.id) : selectedOption?.id;
+  const getIds = multiple ? selectedOption?.map((option: any) => option.id) : selectedOption?.id;
 
   return (
     <DialogBox
