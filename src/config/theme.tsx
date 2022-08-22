@@ -64,6 +64,29 @@ const theme = createTheme({
       },
     },
 
+    MuiFormControlLabel: {
+      label: { color: '#073f24' },
+    },
+
+    MuiIconButton: {
+      root: {
+        '& .MuiIconButton-label': {
+          position: 'relative',
+          zIndex: 0,
+        },
+        '& .MuiIconButton-label:after': {
+          content: '""',
+          left: 4,
+          top: 4,
+          height: 15,
+          width: 15,
+          position: 'absolute',
+          backgroundColor: 'white',
+          zIndex: -1,
+        },
+      },
+    },
+
     MuiListItem: {
       root: {
         color: '073F24',
