@@ -1,6 +1,6 @@
 {
   "name": "glific-frontend",
-  "version": "3.9.1",
+  "version": "3.9.2",
   "private": true,
   "dependencies": {
     "@absinthe/socket": "^0.2.1",
@@ -68,6 +68,8 @@
     "graphql": "^16.5.0",
     "i18next": "^21.9.0",
     "i18next-browser-languagedetector": "^6.1.5",
+    "interweave": "^13.0.0",
+    "interweave-autolink": "^5.0.0",
     "markdown-draft-js": "^2.4.0",
     "moment": "^2.29.4",
     "phoenix": "^1.6.11",

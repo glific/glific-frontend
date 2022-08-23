@@ -5,7 +5,7 @@ const messagesWithLinks = <MessagesWithLinks message={'hey there google.com'} />
 
 test('it renders correctly', () => {
   const { getByText } = render(messagesWithLinks);
-  expect(getByText('hey there google.com')).toBeInTheDocument();
+  expect(getByText('hey there')).toBeInTheDocument();
 });
 
 test('it renders links message', () => {

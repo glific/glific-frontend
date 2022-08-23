@@ -7,7 +7,11 @@ import { List } from 'containers/List/List';
 import { useMutation } from '@apollo/client';
 import { WhatsAppToJsx } from 'common/RichEditor';
 import { DATE_TIME_FORMAT, GUPSHUP_ENTERPRISE_SHORTCODE } from 'common/constants';
-import { GET_TEMPLATES_COUNT, FILTER_TEMPLATES } from 'graphql/queries/Template';
+import {
+  GET_TEMPLATES_COUNT,
+  FILTER_TEMPLATES,
+  FILTER_SESSION_TEMPLATES,
+} from 'graphql/queries/Template';
 import { DELETE_TEMPLATE, IMPORT_TEMPLATES } from 'graphql/mutations/Template';
 import { ReactComponent as DownArrow } from 'assets/images/icons/DownArrow.svg';
 import { ReactComponent as ApprovedIcon } from 'assets/images/icons/Template/Approved.svg';
@@ -36,12 +40,6 @@ const getTranslations = (language: any, data: string) => {
     delete dataObj[language.id];
   }
   return JSON.stringify(dataObj);
-};
-
-const queries = {
-  countQuery: GET_TEMPLATES_COUNT,
-  filterItemsQuery: FILTER_TEMPLATES,
-  deleteItemQuery: DELETE_TEMPLATE,
 };
 
 export interface TemplateProps {
@@ -91,6 +89,12 @@ export const Template = ({
       }
     },
   });
+
+  const queries = {
+    countQuery: GET_TEMPLATES_COUNT,
+    filterItemsQuery: isHSM ? FILTER_TEMPLATES : FILTER_SESSION_TEMPLATES,
+    deleteItemQuery: DELETE_TEMPLATE,
+  };
 
   const getStatus = (status: string) => {
     let statusValue;

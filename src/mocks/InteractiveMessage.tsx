@@ -120,6 +120,7 @@ export const getInteractiveCountQuery = {
 };
 
 const quickReplyMock = {
+  sendWithTitle: false,
   interactiveContent:
     '{"type":"quick_reply","options":[{"type":"text","title":"Yes"},{"type":"text","title":"No"}],"content":{"type":"text","text":"Do you want to continue?","header":"Continue"}}',
   label: 'Continue',
