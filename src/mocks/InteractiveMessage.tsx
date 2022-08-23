@@ -131,7 +131,6 @@ const quickReplyMock = {
     id: '1',
     label: 'English',
   },
-  sendWithTitle: true,
 };
 
 const quickReplyMedia = {
