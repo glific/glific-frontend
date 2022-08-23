@@ -52,6 +52,7 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
   const [filters, setFilters] = useState<any>({
     Critical: true,
     Warning: false,
+    Info: false,
   });
 
   const menuRef = useRef(null);
@@ -190,7 +191,7 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
     </Popover>
   );
 
-  const severityList = ['Critical', 'Warning'];
+  const severityList = ['Critical', 'Warning', 'Info'];
 
   const handleCheckedBox = (event: any) => {
     setFilters({ ...filters, [event.target.name]: event.target.checked });

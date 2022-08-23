@@ -9,6 +9,7 @@ import {
   getCountWithFilter,
   getCountWithEmptyFilter,
   markAllNotificationAsRead,
+  getInfoNotificationsQuery,
 } from 'mocks/Notifications';
 import { setUserSession } from 'services/AuthService';
 import { NotificationList } from './NotificationList';
@@ -23,6 +24,7 @@ const mocks: any = [
   getCountWithEmptyFilter,
   markAllNotificationAsRead,
   getFilteredNotificationsQuery,
+  getInfoNotificationsQuery,
 ];
 
 const notifications = (
@@ -101,5 +103,14 @@ test('it should show filter checkboxes', async () => {
   await waitFor(() => {
     const checkboxInput = screen.getAllByRole('checkbox');
     fireEvent.click(checkboxInput[0]);
+  });
+});
+
+test('it should have Info checkbox', async () => {
+  render(notifications);
+
+  await waitFor(() => {
+    const infoCheckbox = screen.getByRole('checkbox', { name: 'Info' });
+    expect(infoCheckbox).toBeInTheDocument();
   });
 });
