@@ -114,3 +114,32 @@ test('it should have Info checkbox', async () => {
     expect(infoCheckbox).toBeInTheDocument();
   });
 });
+
+test('Info checkbox should fetch only notifications with severity Info', async () => {
+  render(notifications);
+
+  // await waitFor(() => {
+  //   const infoCheckbox: HTMLInputElement = screen.getByRole('checkbox', { name: 'Info' });
+  //   const criticalCheckbox: HTMLInputElement = screen.getByRole('checkbox', { name: 'Critical' });
+  //   // fireEvent.click(infoCheckbox);
+  //   // fireEvent.click(criticalCheckbox);
+  //   console.log('🚀 ~ infoCheckbox', infoCheckbox.checked);
+  //   console.log('🚀 ~ criticalCheckbox', criticalCheckbox.checked);
+  //   const notificationslist = screen.getAllByText('Critical');
+  //   console.log('🚀 ~ notificationslist', notificationslist);
+  //   expect(infoCheckbox).toBeInTheDocument();
+  // });
+
+  const infoCheckbox: HTMLInputElement = await screen.findByRole('checkbox', { name: 'Info' });
+  // const infoCheckbox: HTMLInputElement = await screen.findByLabelText('checkbox');
+  const criticalCheckbox: HTMLInputElement = await screen.findByRole('checkbox', {
+    name: 'Critical',
+  });
+  console.log('🚀 ~ infoCheckbox', infoCheckbox.checked);
+  console.log('🚀 ~ criticalCheckbox', criticalCheckbox.checked);
+  fireEvent.click(infoCheckbox);
+  await waitFor(() => {
+    console.log('🚀 ~ infoCheckbox', infoCheckbox.checked);
+    console.log('🚀 ~ criticalCheckbox', criticalCheckbox.checked);
+  });
+});
