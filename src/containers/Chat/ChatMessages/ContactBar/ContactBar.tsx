@@ -283,6 +283,8 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
         optionLabel="name"
         multiple={false}
         buttonOk="Start"
+        searchLabel={t('Select flow')}
+        description={t('The contact will be responded as per the messages planned in the flow.')}
       />
     );
   }

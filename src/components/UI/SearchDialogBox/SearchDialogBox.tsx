@@ -23,6 +23,7 @@ export interface SearchDialogBoxProps {
   textFieldPlaceholder?: any;
   multiple?: boolean;
   buttonOk?: string;
+  description?: string;
 }
 
 export const SearchDialogBox = (props: SearchDialogBoxProps) => {
@@ -43,6 +44,7 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
     textFieldPlaceholder = '',
     multiple = true,
     buttonOk = 'Save',
+    description = '',
   } = props;
 
   const [selectedOption, setSelectedOptions] = useState<any>(multiple ? [] : '');
@@ -112,6 +114,9 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
             multiple={multiple}
           />
         </FormControl>
+        <div className={styles.Description} data-testid="description">
+          {description}
+        </div>
       </div>
     </DialogBox>
   );
