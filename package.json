@@ -139,7 +139,8 @@
       "text",
       "html",
       "lcov"
-    ]
+    ],
+    "testURL": "https://jestjs.io"
   },
   "devDependencies": {
     "@types/react-test-renderer": "^18.0.0",
