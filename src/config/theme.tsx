@@ -100,6 +100,14 @@ const theme = createTheme({
         },
       },
     },
+    MuiTableCell: {
+      body: {
+        color: 'unset',
+      },
+      head: {
+        color: '#ccd4d0',
+      },
+    },
     MuiMenuItem: {
       root: {
         '&:hover': {

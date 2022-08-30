@@ -26,9 +26,7 @@
   display: flex;
   font-weight: 500;
   font-size: 20px;
-  color: #073f24;
-  margin-top: 12px;
-  margin-bottom: 12px;
+  margin: 12px 0px;
   line-height: 1;
   word-break: break-all;
 }

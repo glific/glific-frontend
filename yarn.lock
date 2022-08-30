@@ -1344,10 +1344,10 @@
   resolved "https://registry.yarnpkg.com/@gar/promisify/-/promisify-1.1.3.tgz#555193ab2e3bb3b6adc3d551c9c030d9e860daf6"
   integrity sha512-k2Ty1JcVojjJFwrg/ThKi2ujJ7XNLYaFGNB/bWT9wGR+oSMJHMa5w+CUq6p/pVrKeNNgA7pCqEcjSnHVoqJQFw==
 
-"@glific/flow-editor@^1.17.1-4":
-  version "1.17.1-4"
-  resolved "https://registry.yarnpkg.com/@glific/flow-editor/-/flow-editor-1.17.1-4.tgz#54e1af5aaf5a5f59b75cfff72b6372bde27e3b80"
-  integrity sha512-ms4a/oxvEl5iSfrmZigwSx87DiyDxlgcfhCmBGR9Mh/ssb8BYjX46cLvxQ0TErkiIOfB9uES/cJqbc4fqCTxww==
+"@glific/flow-editor@^1.17.1-7":
+  version "1.17.1-7"
+  resolved "https://registry.yarnpkg.com/@glific/flow-editor/-/flow-editor-1.17.1-7.tgz#b0a87912cd11ee2bc9fb3f7d01978e78039d74c0"
+  integrity sha512-hexaBa4hSr6Ph1UAOyhXuetWVj5hikE+LkV5NXdSBUCY2kCiOEF9ng6hiDTwgEw6apkDi5t020/b8+rYtwIY3Q==
   dependencies:
     react "^16.8.6"
     react-dom "^16.8.6"
@@ -5380,7 +5380,7 @@ escalade@^3.0.2, escalade@^3.1.1:
   resolved "https://registry.yarnpkg.com/escalade/-/escalade-3.1.1.tgz#d8cfdc7000965c5a0174b4a82eaa5c0552742e40"
   integrity sha512-k0er2gUkLf8O0zKJiAhmkTnJlTvINGv7ygDNPbeIsX/TJjGJZHuh9B2UxbsaEkmlEo9MfhrSzmhIlhRlI2GXnw==
 
-escape-html@~1.0.3:
+escape-html@^1.0.3, escape-html@~1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/escape-html/-/escape-html-1.0.3.tgz#0258eae4d3d0c0974de1c169188ef0051d1d1988"
   integrity sha1-Aljq5NPQwJdN4cFpGI7wBR0dGYg=
@@ -7046,6 +7046,18 @@ internal-slot@^1.0.3:
     get-intrinsic "^1.1.0"
     has "^1.0.3"
     side-channel "^1.0.4"
+
+interweave-autolink@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/interweave-autolink/-/interweave-autolink-5.0.0.tgz#7ecd7c921dae8bfc55c27e18d2f63d8fbcc1e931"
+  integrity sha512-Hg+QTtul/57LesVouaBrvgknT01+2vx4Te8VOwV7PjEvmP0LQs2XYD2ZyF5uWRTn51mnSESAtz/Kx/MElwS50Q==
+
+interweave@^13.0.0:
+  version "13.0.0"
+  resolved "https://registry.yarnpkg.com/interweave/-/interweave-13.0.0.tgz#68fdaa6bde65cf296ba74829bb3746d2a5455a2b"
+  integrity sha512-Mckwj+ix/VtrZu1bRBIIohwrsXj12ZTvJCoYUMZlJmgtvIaQCj0i77eSZ63ckbA1TsPrz2VOvLW9/kTgm5d+mw==
+  dependencies:
+    escape-html "^1.0.3"
 
 ip-regex@^2.1.0:
   version "2.1.0"
@@ -11071,11 +11083,6 @@ react-shallow-renderer@^16.13.1:
   dependencies:
     object-assign "^4.1.1"
     react-is "^16.12.0 || ^17.0.0"
-
-react-string-replace@^0.5.0:
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/react-string-replace/-/react-string-replace-0.5.0.tgz#d563ea608f98c449eea5eb3c7511fe806dba7025"
-  integrity sha512-xtfotmm+Gby5LjfYg3s5+eT6bnwgOIdZRAdHTouLY/7SicDtX4JXjG7CAGaGDcS0ax4nsaaEVNRxArSa8BgQKw==
 
 react-test-renderer@^17.0.1:
   version "17.0.2"
