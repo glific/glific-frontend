@@ -511,6 +511,7 @@ export const conversationQuery = getConversationQuery({
         status: 'VALID',
         bspStatus: 'SESSION_AND_HSM',
         isOrgRead: true,
+        fields: '{}',
       },
       messages: [
         {
