@@ -34,3 +34,19 @@
   font-size: 14px;
   font-weight: 400 !important;
 }
+
+.Wrapper :global(.MuiIconButton-label) {
+  position: relative;
+  z-index: 0;
+}
+
+.Wrapper :global(.MuiIconButton-label:after) {
+  content: '';
+  left: 4px;
+  top: 4px;
+  height: 15px;
+  width: 15px;
+  position: absolute;
+  background-color: white;
+  z-index: -1;
+}
