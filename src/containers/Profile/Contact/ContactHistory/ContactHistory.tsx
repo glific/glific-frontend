@@ -2,7 +2,7 @@ import React from 'react';
 import { useQuery } from '@apollo/client';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
-
+import { getOrganizationServices } from 'services/AuthService';
 import { Button } from 'components/UI/Form/Button/Button';
 import Loading from 'components/UI/Layout/Loading/Loading';
 import { COUNT_CONTACT_HISTORY, GET_CONTACT_HISTORY } from 'graphql/queries/Contact';
@@ -12,10 +12,13 @@ import styles from './ContactHistory.module.css';
 
 export interface ContactHistoryProps {
   contactId: string;
+  profileId?: string | null;
 }
 
-export const ContactHistory: React.FC<ContactHistoryProps> = ({ contactId }) => {
+export const ContactHistory: React.FC<ContactHistoryProps> = ({ contactId, profileId }) => {
   const { t } = useTranslation();
+
+  const isContactProfileEnabled = getOrganizationServices('contactProfileEnabled');
 
   const { data: countHistory, loading: countHistoryLoading } = useQuery(COUNT_CONTACT_HISTORY, {
     fetchPolicy: 'network-only',
@@ -25,19 +28,25 @@ export const ContactHistory: React.FC<ContactHistoryProps> = ({ contactId }) => 
       },
     },
   });
+
+  const contactHistoryVariables: any = {
+    filter: {
+      contactId,
+    },
+    opts: {
+      limit: 10,
+      offset: 0,
+      order: 'DESC',
+    },
+  };
+
+  if (isContactProfileEnabled && profileId) {
+    contactHistoryVariables.filter.profileId = profileId;
+  }
   const { data, loading, fetchMore } = useQuery(GET_CONTACT_HISTORY, {
     notifyOnNetworkStatusChange: true,
     fetchPolicy: 'network-only',
-    variables: {
-      filter: {
-        contactId,
-      },
-      opts: {
-        limit: 10,
-        offset: 0,
-        order: 'DESC',
-      },
-    },
+    variables: contactHistoryVariables,
   });
 
   if (!data && loading) {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
@@ -12,6 +12,7 @@ import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { GET_CONTACT } from 'graphql/queries/Contact';
 import { CREATE_CONTACT, UPDATE_CONTACT, DELETE_CONTACT } from 'graphql/mutations/Contact';
 import { GET_CURRENT_USER } from 'graphql/queries/User';
+import { getOrganizationServices } from 'services/AuthService';
 
 const profileIcon = <ProfileIcon />;
 
@@ -49,12 +50,40 @@ export const Profile: React.SFC<ProfileProps> = ({
   const [phone, setPhone] = useState('');
   const [status, setStatus] = useState('');
   const [bspStatus, setBspStatus] = useState('');
+  const [languageId, setLanguageId] = useState('');
   const [hideRemoveBtn, setHideRemoveBtn] = useState(false);
   const { t } = useTranslation();
+  const isContactProfileEnabled = getOrganizationServices('contactProfileEnabled');
 
   let param = match;
 
   const { data, loading } = useQuery(GET_CURRENT_USER);
+
+  const updateName = () => {
+    if (!isContactProfileEnabled && !additionalField?.selectedProfile) {
+      return;
+    }
+    const { selectedProfile } = additionalField;
+
+    if (!selectedProfile) {
+      return;
+    }
+
+    if (selectedProfile.id === additionalField.activeProfileId) {
+      setName(`${selectedProfile.name} (currently active)`);
+    } else {
+      setName(selectedProfile.name);
+    }
+  };
+
+  useEffect(() => {
+    if (additionalField?.selectedProfile) {
+      const { selectedProfile } = additionalField;
+      setLanguageId(selectedProfile?.language?.id);
+      updateName();
+    }
+  }, [additionalField]);
+
   if (loading) return <Loading />;
 
   const { user } = data.currentUser;
@@ -71,16 +100,19 @@ export const Profile: React.SFC<ProfileProps> = ({
     currentContactId = match.params.id;
   }
 
-  const states: any = { name, phone, status, bspStatus };
+  const states: any = { name, phone, status, bspStatus, languageId };
 
   const setStates = ({
     name: nameValue,
     phone: phoneValue,
     status: statusValue,
     bspStatus: bspStatusValue,
+    language: languageIdValue,
     ...rest
   }: any) => {
     setName(nameValue);
+    updateName();
+
     if (phoneValue) {
       setPhone(phoneValue);
       setHideRemoveBtn(organizationPhone === phoneValue);
@@ -92,6 +124,9 @@ export const Profile: React.SFC<ProfileProps> = ({
     }
     setStatus(statusValue);
     setBspStatus(bspStatusValue);
+
+    setLanguageId(languageIdValue.id);
+
     if (additionalProfileStates) {
       additionalProfileStates.setState(rest[additionalProfileStates.name]);
     }
@@ -138,6 +173,10 @@ export const Profile: React.SFC<ProfileProps> = ({
   if (additionalProfileStates) {
     states[additionalProfileStates.name] = additionalProfileStates.state;
     formFields.splice(1, 0, additionalField);
+  }
+
+  if (isContactProfileEnabled && additionalField.selectedProfile) {
+    formFields.splice(0, 0, additionalField);
   }
 
   // remove phone field incase of contact profile

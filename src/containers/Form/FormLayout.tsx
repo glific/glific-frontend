@@ -495,8 +495,8 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
       enableReinitialize
       validateOnMount
       initialValues={{
-        ...states,
         languageId,
+        ...states,
       }}
       validationSchema={validationSchema}
       onSubmit={(itemData, { setErrors }) => {

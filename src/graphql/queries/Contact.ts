@@ -96,6 +96,9 @@ export const GET_CONTACT_DETAILS = gql`
   query getContact($id: ID!) {
     contact(id: $id) {
       contact {
+        activeProfile {
+          id
+        }
         phone
         maskedPhone
         status
@@ -135,5 +138,19 @@ export const GET_CONTACT_HISTORY = gql`
 export const COUNT_CONTACT_HISTORY = gql`
   query CountContactHistory($filter: ContactsHistoryFilter) {
     countContactHistory(filter: $filter)
+  }
+`;
+
+export const GET_CONTACT_PROFILES = gql`
+  query Profiles($filter: ProfileFilter) {
+    profiles(filter: $filter) {
+      fields
+      id
+      name
+      type
+      language {
+        id
+      }
+    }
   }
 `;
