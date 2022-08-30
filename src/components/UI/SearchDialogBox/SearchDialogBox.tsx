@@ -11,7 +11,7 @@ export interface SearchDialogBoxProps {
   handleOk: Function;
   handleCancel: Function;
   options: any;
-  selectedOptions: any;
+  selectedOptions?: any;
   icon?: any;
   optionLabel?: string;
   additionalOptionLabel?: string;
@@ -31,7 +31,7 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
     asyncSearch,
     icon,
     options,
-    selectedOptions,
+    selectedOptions = null,
     title,
     handleOk,
     optionLabel,

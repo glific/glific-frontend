@@ -275,7 +275,6 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   if (showFlowDialog) {
     dialogBox = (
       <SearchDialogBox
-        selectedOptions={null}
         title={t('Select flow')}
         handleOk={handleFlowSubmit}
         handleCancel={closeFlowDialogBox}
