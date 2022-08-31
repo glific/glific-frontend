@@ -16,6 +16,7 @@ interface Content {
 interface ButtonOption {
   type: string;
   title: string;
+  postbackText: string | null;
 }
 
 export interface QuickReplyTemplateProps {
@@ -48,6 +49,7 @@ export const QuickReplyTemplate: React.SFC<QuickReplyTemplateProps> = (props) =>
       if (option.title) {
         const payloadObject = {
           payload: {
+            postbackText: option.postbackText ?? '',
             type: 'button_reply',
             title: option.title,
             id: '',
