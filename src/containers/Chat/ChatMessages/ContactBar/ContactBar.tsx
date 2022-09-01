@@ -46,7 +46,6 @@ import {
   setVariables,
 } from '../../../../common/constants';
 import { Timer } from '../../../../components/UI/Timer/Timer';
-import { DropdownDialog } from '../../../../components/UI/DropdownDialog/DropdownDialog';
 import { DialogBox } from '../../../../components/UI/DialogBox/DialogBox';
 import { Tooltip } from '../../../../components/UI/Tooltip/Tooltip';
 import { CLEAR_MESSAGES } from '../../../../graphql/mutations/Chat';
@@ -246,6 +245,7 @@ export const ContactBar = ({
   }
 
   const handleFlowSubmit = (flowId: any) => {
+    if (!flowId) return;
     const flowVariables: any = {
       flowId,
     };
@@ -273,12 +273,15 @@ export const ContactBar = ({
 
   if (showFlowDialog) {
     dialogBox = (
-      <DropdownDialog
+      <SearchDialogBox
         title={t('Select flow')}
         handleOk={handleFlowSubmit}
         handleCancel={closeFlowDialogBox}
         options={flowOptions}
-        placeholder={t('Select flow')}
+        optionLabel="name"
+        multiple={false}
+        buttonOk="Start"
+        searchLabel={t('Select flow')}
         description={t('The contact will be responded as per the messages planned in the flow.')}
       />
     );

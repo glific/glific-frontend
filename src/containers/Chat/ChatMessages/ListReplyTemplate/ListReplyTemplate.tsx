@@ -176,7 +176,7 @@ export const ListReplyTemplateDrawer = ({
                     title: option.title,
                     id: '',
                     reply: `${option.title} ${index + 1} `,
-                    postbackText: '',
+                    postbackText: option.postbackText ?? '',
                     description: option.description,
                   },
                   context: {
