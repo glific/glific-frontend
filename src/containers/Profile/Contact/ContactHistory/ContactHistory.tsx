@@ -49,11 +49,11 @@ export const ContactHistory: React.FC<ContactHistoryProps> = ({ contactId, profi
     variables: contactHistoryVariables,
   });
 
-  if (!data && loading) {
+  if (!data || loading) {
     return <Loading />;
   }
 
-  if (!countHistory && countHistoryLoading) {
+  if (!countHistory || countHistoryLoading) {
     return <Loading />;
   }
 

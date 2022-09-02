@@ -125,7 +125,7 @@ export const ContactProfile: React.SFC<ContactProfileProps> = (props) => {
 
   let selectedProfile;
 
-  if (isContactProfileEnabled && selectedProfileId) {
+  if (isContactProfileEnabled && profileData) {
     selectedProfile = profileData.profiles.filter(
       (profile: any) => profile.id === selectedProfileId
     );

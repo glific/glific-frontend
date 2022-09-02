@@ -6,6 +6,7 @@ import {
   CONTACT_SEARCH_QUERY,
   GET_CONTACT_HISTORY,
   COUNT_CONTACT_HISTORY,
+  GET_CONTACT_PROFILES,
 } from 'graphql/queries/Contact';
 import { addFlowToContactQuery } from 'mocks/Flow';
 import { getOrganizationLanguagesQuery, getOrganizationQuery } from 'mocks/Organization';
@@ -109,7 +110,7 @@ export const clearMessagesQuery = {
 
 const date = new Date();
 
-export const getContactDetailsQuery = {
+export const getContactDetailsQuery = (attributes: any = {}) => ({
   request: {
     query: GET_CONTACT_DETAILS,
     variables: { id: '1' },
@@ -118,6 +119,7 @@ export const getContactDetailsQuery = {
     data: {
       contact: {
         contact: {
+          ...attributes,
           phone: '+919820198765',
           maskedPhone: '+919820198765',
           lastMessageAt: date.toISOString(),
@@ -139,7 +141,7 @@ export const getContactDetailsQuery = {
       },
     },
   },
-};
+});
 
 export const updateContact = {
   request: {
@@ -184,22 +186,6 @@ export const updateContactTags = {
     },
   },
 };
-
-export const LOGGED_IN_USER_MOCK = [
-  getCurrentUserQuery,
-  getContactDetailsQuery,
-  getOrganizationLanguagesQuery,
-  getOrganizationLanguagesQuery,
-  filterTagsQuery,
-  getCurrentUserQuery,
-  getContactQuery,
-  getContactDetailsQuery,
-  addFlowToContactQuery,
-  clearMessagesQuery,
-  ...getOrganizationQuery,
-  updateContact,
-  updateContactTags,
-];
 
 export const updateContactStatusQuery = {
   request: {
@@ -384,3 +370,72 @@ export const countContactHistoryQuery = {
     },
   },
 };
+
+export const getContactProfiles = {
+  request: {
+    query: GET_CONTACT_PROFILES,
+    variables: {
+      filter: { contactId: '1' },
+    },
+  },
+  result: {
+    data: {
+      profiles: [
+        {
+          fields:
+            '{"school":{"value":"Central","type":"string","label":"school","inserted_at":"2022-08-29T09:09:06.606859Z"},"role":{"value":"Teaccher","type":"string","label":"role","inserted_at":"2022-08-29T09:09:06.600165Z"},"name":{"value":"Shamoon","type":"string","label":"Name","inserted_at":"2022-08-29T09:09:06.590965Z"},"age":{"value":"11 to 14","type":"string","label":"age","inserted_at":"2022-08-29T09:09:06.614903Z"}}',
+          id: '2',
+          language: {
+            id: '1',
+          },
+          name: 'Shamoon',
+          type: 'Teaccher',
+        },
+        {
+          fields:
+            '{"school":{"value":"killer school","type":"string","label":"school","inserted_at":"2022-08-29T09:09:29.520346Z"},"role":{"value":"student","type":"string","label":"role","inserted_at":"2022-08-29T09:09:29.512350Z"},"name":{"value":"Killer","type":"string","label":"Name","inserted_at":"2022-08-29T09:09:29.506118Z"},"age":{"value":"Less than 10","type":"string","label":"age","inserted_at":"2022-08-29T09:09:29.527986Z"}}',
+          id: '3',
+          language: {
+            id: '2',
+          },
+          name: 'Killer',
+          type: 'student',
+        },
+        {
+          fields:
+            '{"school":{"value":"Central","type":"string","label":"school","inserted_at":"2022-08-30T08:36:30.895214Z"},"role":{"value":"Businessman","type":"string","label":"role","inserted_at":"2022-08-30T08:36:30.888247Z"},"name":{"value":"sambhar","type":"string","label":"Name","inserted_at":"2022-08-30T08:36:30.881465Z"},"age":{"value":"19 or above","type":"string","label":"age","inserted_at":"2022-08-30T08:36:30.903089Z"}}',
+          id: '4',
+          language: {
+            id: '1',
+          },
+          name: 'sambhar',
+          type: 'Businessman',
+        },
+      ],
+    },
+  },
+};
+
+export const LOGGED_IN_USER_MOCK = [
+  getCurrentUserQuery,
+  getContactDetailsQuery(),
+  getOrganizationLanguagesQuery,
+  getOrganizationLanguagesQuery,
+  filterTagsQuery,
+  getContactQuery,
+  addFlowToContactQuery,
+  clearMessagesQuery,
+  ...getOrganizationQuery,
+  updateContact,
+  updateContactTags,
+];
+
+export const LOGGED_IN_USER_MULTIPLE_PROFILES = [
+  getCurrentUserQuery,
+  getContactDetailsQuery({ activeProfile: { id: '4', __typename: 'Profile' } }),
+  getOrganizationLanguagesQuery,
+  getCurrentUserQuery,
+  ...getOrganizationQuery,
+  getContactQuery,
+  getContactProfiles,
+];
