@@ -59,10 +59,7 @@ export const validator = (templateType: any, t: any) => {
               title: Yup.string()
                 .test('is-emoji', t('Sorry! Emojis are not allowed in the title'), (value) => {
                   if (value) {
-                    const testEmoji =
-                      /(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/gi.test(
-                        value
-                      );
+                    const testEmoji = /\p{Emoji_Presentation}/gu.test(value);
                     return !testEmoji;
                   }
                   return true;
