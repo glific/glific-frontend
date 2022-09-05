@@ -168,7 +168,7 @@ export const ListReplyTemplateDrawer: React.SFC<ListTemplate> = (props) => {
                     title: option.title,
                     id: '',
                     reply: `${option.title} ${index + 1} `,
-                    postbackText: '',
+                    postbackText: option.postbackText ?? '',
                     description: option.description,
                   },
                   context: {

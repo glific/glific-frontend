@@ -287,11 +287,13 @@ export const blockContactQuery = {
   },
   result: {
     data: {
-      contact: {
-        id: '2',
-        name: 'Default Receiver',
-        phone: '99399393303',
-        language: null,
+      updateContact: {
+        contact: {
+          id: '2',
+          name: 'Default Receiver',
+          phone: '99399393303',
+          language: null,
+        },
       },
     },
   },
