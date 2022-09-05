@@ -381,7 +381,11 @@ export const List: React.SFC<ListProps> = ({
     // currently we don't allow edit or delete for reserved items. hence return early
     const { id, label, name, isReserved } = item;
 
-    const labelValue = label !== null ? label : name;
+    let labelValue = label;
+
+    if (name) {
+      labelValue = name;
+    }
 
     if (isReserved) {
       return null;

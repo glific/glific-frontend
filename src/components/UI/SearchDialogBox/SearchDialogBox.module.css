@@ -29,3 +29,9 @@
 .Autocomplete {
   margin-bottom: 10px !important;
 }
+
+.Description {
+  font-size: 16px;
+  color: #93a29b;
+  margin-bottom: 8px;
+}

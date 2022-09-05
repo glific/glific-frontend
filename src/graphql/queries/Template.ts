@@ -75,3 +75,15 @@ export const GET_HSM_CATEGORIES = gql`
     whatsappHsmCategories
   }
 `;
+
+export const SYNC_HSM_TEMPLATES = gql`
+  query syncHsmTemplate {
+    syncHsmTemplate {
+      message
+      errors {
+        key
+        message
+      }
+    }
+  }
+`;

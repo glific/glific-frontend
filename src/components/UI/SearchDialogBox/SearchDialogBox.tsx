@@ -11,7 +11,7 @@ export interface SearchDialogBoxProps {
   handleOk: Function;
   handleCancel: Function;
   options: any;
-  selectedOptions: any;
+  selectedOptions?: any;
   icon?: any;
   optionLabel?: string;
   additionalOptionLabel?: string;
@@ -21,6 +21,9 @@ export interface SearchDialogBoxProps {
   searchLabel?: string;
   renderTags?: boolean;
   textFieldPlaceholder?: any;
+  multiple?: boolean;
+  buttonOk?: string;
+  description?: string;
 }
 
 export const SearchDialogBox = (props: SearchDialogBoxProps) => {
@@ -28,7 +31,7 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
     asyncSearch,
     icon,
     options,
-    selectedOptions,
+    selectedOptions = null,
     title,
     handleOk,
     optionLabel,
@@ -39,15 +42,22 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
     searchLabel = 'Search',
     renderTags = true,
     textFieldPlaceholder = '',
+    multiple = true,
+    buttonOk = 'Save',
+    description = '',
   } = props;
 
-  const [selectedOption, setSelectedOptions] = useState<Array<string>>([]);
+  const [selectedOption, setSelectedOptions] = useState<any>(multiple ? [] : '');
   const [asyncSelectedOptions, setAsyncSelectedOptions] = useState<Array<any>>([]);
   const { t } = useTranslation();
 
   useEffect(() => {
     if (!asyncSearch) {
-      setSelectedOptions(options.filter((option: any) => selectedOptions.includes(option.id)));
+      setSelectedOptions(
+        multiple
+          ? options.filter((option: any) => selectedOptions.includes(option.id))
+          : selectedOptions
+      );
     }
   }, [selectedOptions, options]);
 
@@ -61,21 +71,21 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
     setSelectedOptions(value);
   };
 
-  const selectedOptionsIds = selectedOptions.map(({ id }: { id: any }) => id);
+  const selectedOptionsIds = multiple
+    ? selectedOptions.map(({ id }: { id: any }) => id)
+    : selectedOptions?.id;
+
+  const getIds = multiple ? selectedOption?.map((option: any) => option.id) : selectedOption?.id;
 
   return (
     <DialogBox
       title={title}
       handleOk={() =>
-        handleOk(
-          asyncSearch
-            ? asyncSelectedOptions.map((option: any) => option.id)
-            : selectedOption.map((option: any) => option.id)
-        )
+        handleOk(asyncSearch ? asyncSelectedOptions.map((option: any) => option.id) : getIds)
       }
       handleCancel={handleCancel}
       titleAlign="left"
-      buttonOk={t('Save')}
+      buttonOk={t(buttonOk)}
     >
       <div className={styles.DialogBox}>
         <FormControl fullWidth>
@@ -101,8 +111,12 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
             chipIcon={icon}
             renderTags={renderTags}
             selectedOptionsIds={selectedOptionsIds}
+            multiple={multiple}
           />
         </FormControl>
+        <div className={styles.Description} data-testid="description">
+          {description}
+        </div>
       </div>
     </DialogBox>
   );
