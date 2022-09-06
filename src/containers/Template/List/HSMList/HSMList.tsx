@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from 'components/UI/Form/Button/Button';
-import { useLazyQuery } from '@apollo/client';
-import { SYNC_HSM_TEMPLATES } from 'graphql/queries/Template';
+import { useMutation } from '@apollo/client';
+import { SYNC_HSM_TEMPLATES } from 'graphql/mutations/Template';
 import Loading from 'components/UI/Layout/Loading/Loading';
 import { setNotification } from 'common/notification';
 import { ReactComponent as TemplateIcon } from 'assets/images/icons/Template/UnselectedDark.svg';
@@ -15,7 +15,7 @@ export const HSMList: React.SFC<HSMListProps> = () => {
   const { t } = useTranslation();
   const [syncTemplateLoad, setSyncTemplateLoad] = useState(false);
   const templateIcon = <TemplateIcon className={styles.TemplateIcon} />;
-  const [resetFlowCountMethod] = useLazyQuery(SYNC_HSM_TEMPLATES, {
+  const [syncHsmTemplates] = useMutation(SYNC_HSM_TEMPLATES, {
     fetchPolicy: 'network-only',
     onCompleted: (data) => {
       if (data.errors) {
@@ -33,7 +33,7 @@ export const HSMList: React.SFC<HSMListProps> = () => {
 
   const handleHsmUpdates = () => {
     setSyncTemplateLoad(true);
-    resetFlowCountMethod();
+    syncHsmTemplates();
   };
 
   if (syncTemplateLoad) {
