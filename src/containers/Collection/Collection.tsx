@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useQuery, useLazyQuery, useMutation } from '@apollo/client';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
-
+import { addOrRemoveRoles } from 'containers/Flow/Flow';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Input } from 'components/UI/Form/Input/Input';
 import { FormLayout } from 'containers/Form/FormLayout';
@@ -32,6 +32,7 @@ export const Collection: React.SFC<CollectionProps> = ({ match }) => {
   const [label, setLabel] = useState('');
   const [description, setDescription] = useState('');
   const [users, setUsers] = useState([]);
+  const [roles, setRoles] = useState([]);
   const [selected, setSelected] = useState([]);
   const { t } = useTranslation();
 
@@ -78,9 +79,14 @@ export const Collection: React.SFC<CollectionProps> = ({ match }) => {
 
   const states = { label, description, users };
 
-  const setStates = ({ label: labelValue, description: descriptionValue }: any) => {
+  const setStates = ({
+    label: labelValue,
+    description: descriptionValue,
+    roles: rolesValue,
+  }: any) => {
     setLabel(labelValue);
     setDescription(descriptionValue);
+    setRoles(rolesValue);
   };
 
   const additionalState = (user: any) => {
@@ -165,13 +171,21 @@ export const Collection: React.SFC<CollectionProps> = ({ match }) => {
     deleteItemQuery: DELETE_COLLECTION,
   };
 
+  const setPayload = (payload: any) => {
+    const addRemoveRoles = addOrRemoveRoles(roles, payload);
+
+    return addRemoveRoles;
+  };
+
   return (
     <FormLayout
       refetchQueries={refetchQueries}
       additionalQuery={updateUsers}
+      roleAccessSupport
       {...queries}
       match={match}
       states={states}
+      setPayload={setPayload}
       additionalState={additionalState}
       languageSupport={false}
       setStates={setStates}

@@ -17,6 +17,26 @@ import { getUserSession } from 'services/AuthService';
 import { checkDynamicRole } from 'context/role';
 import styles from './Flow.module.css';
 
+export const addOrRemoveRoles = (roles: any, payload: any) => {
+  const initialSelectedRoles = roles.map((role: any) => role.id);
+  const payloadRoleIds = payload.roles.map((role: any) => role.id);
+
+  let addRoleIds = payloadRoleIds.filter(
+    (selectedRoles: any) => !initialSelectedRoles.includes(selectedRoles)
+  );
+  const deleteRoleIds = initialSelectedRoles.filter(
+    (roleId: any) => !payloadRoleIds.includes(roleId)
+  );
+
+  if (checkDynamicRole()) {
+    const userRoles = getUserSession('roles').map((role: any) => role.id);
+    addRoleIds = [...addRoleIds, ...userRoles];
+  }
+
+  const { roles: userRoles, ...rest } = payload;
+
+  return { ...rest, addRoleIds, deleteRoleIds };
+};
 export interface FlowProps {
   match: any;
 }
@@ -160,28 +180,11 @@ export const Flow: React.SFC<FlowProps> = ({ match }) => {
       formattedKeywords = inputKeywords.split(',');
     }
 
-    const initialSelectedRoles = roles.map((role: any) => role.id);
-    const payloadRoleIds = payload.roles.map((role: any) => role.id);
-
-    let addRoleIds = payloadRoleIds.filter(
-      (selectedRoles: any) => !initialSelectedRoles.includes(selectedRoles)
-    );
-    const deleteRoleIds = initialSelectedRoles.filter(
-      (roleId: any) => !payloadRoleIds.includes(roleId)
-    );
-
-    if (checkDynamicRole()) {
-      const userRoles = getUserSession('roles').map((role: any) => role.id);
-      addRoleIds = [...addRoleIds, ...userRoles];
-    }
-
-    const { roles: userRoles, ...rest } = payload;
+    const addRemoveRoles = addOrRemoveRoles(roles, payload);
 
     // return modified payload
     return {
-      ...rest,
-      addRoleIds,
-      deleteRoleIds,
+      ...addRemoveRoles,
       keywords: formattedKeywords,
     };
   };

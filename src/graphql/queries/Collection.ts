@@ -6,6 +6,10 @@ export const GET_COLLECTION = gql`
       group {
         id
         label
+        roles {
+          id
+          label
+        }
         description
         users {
           id
