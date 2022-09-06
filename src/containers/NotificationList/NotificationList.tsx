@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Checkbox, Popover, FormControlLabel } from '@material-ui/core';
+import { Popover, FormControlLabel, RadioGroup, Radio } from '@material-ui/core';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import { useApolloClient, useMutation } from '@apollo/client';
 import moment from 'moment';
@@ -49,14 +49,9 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
   const [text, setText] = useState<any>();
   const { t } = useTranslation();
   const history = useHistory();
-  const [filters, setFilters] = useState<any>({
-    Critical: true,
-    Warning: false,
-    Info: false,
-  });
+  const [filter, setFilter] = useState<any>('');
 
   const menuRef = useRef(null);
-  let filterValue: any = '';
 
   const [markNotificationAsRead] = useMutation(MARK_NOTIFICATIONS_AS_READ, {
     onCompleted: (data) => {
@@ -191,39 +186,31 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
     </Popover>
   );
 
-  const severityList = ['Critical', 'Warning', 'Info'];
-
-  const handleCheckedBox = (event: any) => {
-    setFilters({ ...filters, [event.target.name]: event.target.checked });
-  };
-
-  const filterName = Object.keys(filters).filter((k) => filters[k] === true);
-  if (filterName.length === 1) {
-    [filterValue] = filterName;
-  }
+  const severityList = ['Critical', 'Warning', 'Info', 'All'];
 
   const filterOnSeverity = (
     <div className={styles.Filters}>
-      {severityList.map((label, index) => {
-        const key = index;
-        return (
-          <FormControlLabel
-            key={key}
-            control={
-              <Checkbox
-                checked={filters[label]}
-                color="primary"
-                onChange={handleCheckedBox}
-                name={severityList[index]}
-              />
-            }
-            label={severityList[index]}
-            classes={{
-              label: styles.FilterLabel,
-            }}
-          />
-        );
-      })}
+      <RadioGroup
+        aria-label="template-type"
+        name="template-type"
+        row
+        value={filter}
+        onChange={(event) => {
+          const { value } = event.target;
+          setFilter(value);
+        }}
+      >
+        {severityList.map((label) => (
+          <div className={styles.RadioLabelWrapper}>
+            <FormControlLabel
+              value={label === 'All' ? '' : label}
+              control={<Radio color="primary" />}
+              classes={{ root: styles.RadioLabel }}
+              label={label}
+            />
+          </div>
+        ))}
+      </RadioGroup>
     </div>
   );
   return (
@@ -242,7 +229,7 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
         additionalAction={additionalAction}
         {...columnAttributes}
         removeSortBy={[t('Entity'), t('Severity'), t('Category')]}
-        filters={{ severity: filterValue }}
+        filters={{ severity: filter }}
         filterList={filterOnSeverity}
         listOrder="desc"
       />
