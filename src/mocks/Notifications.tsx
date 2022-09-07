@@ -5,7 +5,7 @@ export const getNotificationsQuery = {
   request: {
     query: FILTER_NOTIFICATIONS,
     variables: {
-      filter: { severity: 'Critical' },
+      filter: { severity: '' },
       opts: { limit: 50, offset: 0, order: 'DESC' },
     },
   },
@@ -86,7 +86,7 @@ export const getUnFitleredNotificationCountQuery = {
   request: {
     query: GET_NOTIFICATIONS_COUNT,
     variables: {
-      filter: {},
+      filter: { severity: '' },
     },
   },
   result: {

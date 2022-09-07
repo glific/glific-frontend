@@ -97,49 +97,23 @@ test('it should show copy text and view option on clicking entity ', async () =>
   });
 });
 
-test('it should show filter checkboxes', async () => {
+test('it should show filter radio button', async () => {
   render(notifications);
 
   await waitFor(() => {
-    const checkboxInput = screen.getAllByRole('checkbox');
+    const checkboxInput = screen.getAllByTestId('radio');
     fireEvent.click(checkboxInput[0]);
   });
 });
 
-test('it should have Info checkbox', async () => {
+test('it should have Info, Warning and critical checkbox', async () => {
   render(notifications);
 
   await waitFor(() => {
-    const infoCheckbox = screen.getByRole('checkbox', { name: 'Info' });
-    expect(infoCheckbox).toBeInTheDocument();
-  });
-});
-
-test('Info checkbox should fetch only notifications with severity Info', async () => {
-  render(notifications);
-
-  // await waitFor(() => {
-  //   const infoCheckbox: HTMLInputElement = screen.getByRole('checkbox', { name: 'Info' });
-  //   const criticalCheckbox: HTMLInputElement = screen.getByRole('checkbox', { name: 'Critical' });
-  //   // fireEvent.click(infoCheckbox);
-  //   // fireEvent.click(criticalCheckbox);
-  //   console.log('🚀 ~ infoCheckbox', infoCheckbox.checked);
-  //   console.log('🚀 ~ criticalCheckbox', criticalCheckbox.checked);
-  //   const notificationslist = screen.getAllByText('Critical');
-  //   console.log('🚀 ~ notificationslist', notificationslist);
-  //   expect(infoCheckbox).toBeInTheDocument();
-  // });
-
-  const infoCheckbox: HTMLInputElement = await screen.findByRole('checkbox', { name: 'Info' });
-  // const infoCheckbox: HTMLInputElement = await screen.findByLabelText('checkbox');
-  const criticalCheckbox: HTMLInputElement = await screen.findByRole('checkbox', {
-    name: 'Critical',
-  });
-  console.log('🚀 ~ infoCheckbox', infoCheckbox.checked);
-  console.log('🚀 ~ criticalCheckbox', criticalCheckbox.checked);
-  fireEvent.click(infoCheckbox);
-  await waitFor(() => {
-    console.log('🚀 ~ infoCheckbox', infoCheckbox.checked);
-    console.log('🚀 ~ criticalCheckbox', criticalCheckbox.checked);
+    const checkboxInput = screen.getAllByTestId('radio');
+    expect(checkboxInput[0]).toHaveTextContent('Critical');
+    expect(checkboxInput[1]).toHaveTextContent('Warning');
+    expect(checkboxInput[2]).toHaveTextContent('Info');
+    expect(checkboxInput[3]).toHaveTextContent('All');
   });
 });

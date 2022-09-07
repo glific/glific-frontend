@@ -207,6 +207,7 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
               control={<Radio color="primary" />}
               classes={{ root: styles.RadioLabel }}
               label={label}
+              data-testid="radio"
             />
           </div>
         ))}
