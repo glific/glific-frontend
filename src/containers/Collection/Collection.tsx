@@ -77,7 +77,7 @@ export const Collection: React.SFC<CollectionProps> = ({ match }) => {
     if (collectionUsers) setUsers(collectionUsers.group.group.users);
   }, [collectionUsers]);
 
-  const states = { label, description, users };
+  const states = { label, description, users, roles };
 
   const setStates = ({
     label: labelValue,

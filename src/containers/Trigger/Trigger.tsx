@@ -5,6 +5,7 @@ import { Typography } from '@material-ui/core';
 import moment from 'moment';
 import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { addOrRemoveRoles } from 'containers/Flow/Flow';
 
 import { ReactComponent as TriggerIcon } from 'assets/images/icons/Trigger/Union.svg';
 import { dateList, dayList, FLOW_STATUS_PUBLISHED, hourList, setVariables } from 'common/constants';
@@ -37,7 +38,7 @@ const checkDateTimeValidation = (startAtValue: string, startDateValue: string) =
   return true;
 };
 
-const setPayload = (payload: any) => {
+const setPayload = (payload: any, roles: any) => {
   const payloadCopy = payload;
 
   const { startDate, startTime, isActive, flowId, frequencyValues, groupId, endDate, frequency } =
@@ -56,6 +57,7 @@ const setPayload = (payload: any) => {
     endDate: moment(endDate).utc().format('yyyy-MM-DD'),
     startTime: moment(startAt).utc().format('THH:mm:ss'),
     frequency: frequency.value,
+    roles: payload.roles,
   };
 
   switch (updatedPayload.frequency) {
@@ -76,7 +78,11 @@ const setPayload = (payload: any) => {
       updatedPayload.isRepeating = false;
   }
 
-  return updatedPayload;
+  console.log(updatedPayload, roles);
+
+  const addedRoles = addOrRemoveRoles(roles, updatedPayload);
+
+  return addedRoles;
 };
 
 const getFrequencyDetails = (
@@ -127,6 +133,7 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
   const [endDate, setEndDate] = useState('');
   const [isRepeating, setIsRepeating] = useState('');
   const [frequencyValues, setFrequencyValues] = useState([]);
+  const [roles, setRoles] = useState([]);
   const [daysDisabled, setDaysDisabled] = useState(true);
   const [groupId, setGroupId] = useState<any>(null);
   const [minDate, setMinDate] = useState<any>(new Date());
@@ -145,6 +152,7 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
     frequencyValues,
     groupId,
     isActive,
+    roles,
   };
 
   const triggerFrequencyOptions = [
@@ -351,6 +359,7 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
     isActive: isActiveValue,
     isRepeating: isRepeatingValue,
     startAt: startAtValue,
+    roles: rolesValue,
   }: any) => {
     setIsRepeating(isRepeatingValue);
     setIsActive(isActiveValue);
@@ -372,6 +381,8 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
     setStartTime(moment(startAtValue).format('THH:mm:ss'));
     setfrequency(triggerFrequencyOptions.filter((trigger) => trigger.value === frequencyValue)[0]);
     setDaysDisabled(frequencyValue !== 'weekly' && frequencyValue !== 'monthly');
+    console.log(rolesValue);
+    setRoles(rolesValue);
 
     const getFlowId = flow.flows.filter((flows: any) => flows.id === flowValue.id);
     const getcollectionId = collections.groups.filter(
@@ -390,8 +401,9 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
       {...queries}
       match={match}
       states={states}
+      roleAccessSupport
       setStates={setStates}
-      setPayload={setPayload}
+      setPayload={(payload: any) => setPayload(payload, roles)}
       validationSchema={FormSchema}
       languageSupport={false}
       listItemName="trigger"

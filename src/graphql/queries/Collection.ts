@@ -34,6 +34,10 @@ export const FILTER_COLLECTIONS = gql`
       description
       isRestricted
       contactsCount
+      roles {
+        id
+        label
+      }
     }
   }
 `;
