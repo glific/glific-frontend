@@ -201,7 +201,7 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
         }}
       >
         {severityList.map((label) => (
-          <div className={styles.RadioLabelWrapper}>
+          <div className={styles.RadioLabelWrapper} key={label}>
             <FormControlLabel
               value={label === 'All' ? '' : label}
               control={<Radio color="primary" />}
