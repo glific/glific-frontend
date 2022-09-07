@@ -78,8 +78,6 @@ const setPayload = (payload: any, roles: any) => {
       updatedPayload.isRepeating = false;
   }
 
-  console.log(updatedPayload, roles);
-
   const addedRoles = addOrRemoveRoles(roles, updatedPayload);
 
   return addedRoles;
@@ -381,7 +379,7 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
     setStartTime(moment(startAtValue).format('THH:mm:ss'));
     setfrequency(triggerFrequencyOptions.filter((trigger) => trigger.value === frequencyValue)[0]);
     setDaysDisabled(frequencyValue !== 'weekly' && frequencyValue !== 'monthly');
-    console.log(rolesValue);
+
     setRoles(rolesValue);
 
     const getFlowId = flow.flows.filter((flows: any) => flows.id === flowValue.id);
