@@ -1,13 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Popover, FormControlLabel, RadioGroup, Radio } from '@material-ui/core';
 import { useNavigate } from 'react-router-dom';
-<<<<<<< HEAD
-import { useNavigate } from 'react-router-dom';
-import { Checkbox, Popover, FormControlLabel } from '@material-ui/core';
-=======
-import { useHistory } from 'react-router-dom';
-import { Popover, FormControlLabel, RadioGroup, Radio } from '@material-ui/core';
->>>>>>> 9da4616874f378083549a2d632b6cd305fcadc8e
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import { useApolloClient, useMutation } from '@apollo/client';
 import moment from 'moment';
@@ -54,18 +47,9 @@ export const NotificationList = () => {
   const [open, setOpen] = useState(false);
   const [text, setText] = useState<any>();
   const { t } = useTranslation();
-    const [filter, setFilter] = useState<any>('');
-    const navigate = useNavigate();
-<<<<<<< HEAD
-  const navigate = useNavigate();
-  const [filters, setFilters] = useState<any>({
-    Critical: true,
-    Warning: false,
-  });
-=======
-  const history = useHistory();
   const [filter, setFilter] = useState<any>('');
->>>>>>> 9da4616874f378083549a2d632b6cd305fcadc8e
+
+  const navigate = useNavigate();
 
   const menuRef = useRef(null);
 
