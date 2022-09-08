@@ -35,12 +35,10 @@ if (APPSIGNAL_API_KEY) {
 const root = createRoot(document.getElementById('root')!);
 
 root.render(
-  <React.StrictMode>
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <BrowserRouter>{appComponent}</BrowserRouter>
-    </ThemeProvider>
-  </React.StrictMode>
+  <ThemeProvider theme={theme}>
+    <CssBaseline />
+    <BrowserRouter>{appComponent}</BrowserRouter>
+  </ThemeProvider>
 );
 
 // If you want your app to work offline and load faster, you can change
