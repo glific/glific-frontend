@@ -6,7 +6,7 @@ import { TEMPLATE_MOCKS } from 'containers/Template/Template.test.helper';
 import { HSMList } from './HSMList';
 import { hsmTemplatesCountQuery } from 'mocks/Template';
 import userEvent from '@testing-library/user-event';
-import { SYNC_HSM_TEMPLATES } from 'graphql/queries/Template';
+import { SYNC_HSM_TEMPLATES } from 'graphql/mutations/Template';
 
 let syncCalled = false;
 

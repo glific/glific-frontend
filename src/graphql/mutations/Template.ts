@@ -86,3 +86,15 @@ export const IMPORT_TEMPLATES = gql`
     }
   }
 `;
+
+export const SYNC_HSM_TEMPLATES = gql`
+  mutation syncHsmTemplate {
+    syncHsmTemplate {
+      message
+      errors {
+        key
+        message
+      }
+    }
+  }
+`;
