@@ -1,6 +1,6 @@
 {
   "name": "glific-frontend",
-  "version": "3.9.5",
+  "version": "3.9.6",
   "private": true,
   "dependencies": {
     "@absinthe/socket": "^0.2.1",
