@@ -15,11 +15,11 @@ import { TimePicker } from 'components/UI/Form/TimePicker/TimePicker';
 import { Calendar } from 'components/UI/Form/Calendar/Calendar';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { GET_FLOWS } from 'graphql/queries/Flow';
+import { getAddOrRemoveRoleIds } from 'common/utils';
 import { GET_COLLECTIONS } from 'graphql/queries/Collection';
 import { GET_TRIGGER } from 'graphql/queries/Trigger';
 import { CREATE_TRIGGER, DELETE_TRIGGER, UPDATE_TRIGGER } from 'graphql/mutations/Trigger';
 import styles from './Trigger.module.css';
-import { getAddOrRemoveRoleIds } from 'common/utils';
 
 export interface TriggerProps {
   match: any;
