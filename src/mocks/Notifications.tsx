@@ -5,7 +5,7 @@ export const getNotificationsQuery = {
   request: {
     query: FILTER_NOTIFICATIONS,
     variables: {
-      filter: { severity: 'Critical' },
+      filter: { severity: '' },
       opts: { limit: 50, offset: 0, order: 'DESC' },
     },
   },
@@ -55,11 +55,38 @@ export const getFilteredNotificationsQuery = {
   },
 };
 
+export const getInfoNotificationsQuery = {
+  request: {
+    query: FILTER_NOTIFICATIONS,
+    variables: {
+      filter: { severity: 'Info' },
+      opts: { limit: 50, offset: 0, order: 'DESC' },
+    },
+  },
+  result: {
+    data: {
+      notifications: [
+        {
+          category: 'Message',
+          entity:
+            '{"status":"valid","phone":"8535124479","name":"Adelle Cavin","last_message_at":"2021-05-19T14:01:17Z","is_hsm":false,"id":9,"group_id":null,"flow_id":null,"bsp_status":"hsm"}',
+
+          id: '15',
+          isRead: false,
+          message: 'Could not send message to contact: Check Gupshup Setting',
+          severity: '"Info"',
+          updatedAt: '2021-05-20T12:06:26Z',
+        },
+      ],
+    },
+  },
+};
+
 export const getUnFitleredNotificationCountQuery = {
   request: {
     query: GET_NOTIFICATIONS_COUNT,
     variables: {
-      filter: {},
+      filter: { severity: '' },
     },
   },
   result: {
