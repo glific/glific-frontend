@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useQuery, useLazyQuery, useMutation } from '@apollo/client';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import { addOrRemoveRoles } from 'containers/Flow/Flow';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Input } from 'components/UI/Form/Input/Input';
 import { FormLayout } from 'containers/Form/FormLayout';
@@ -19,6 +18,7 @@ import { ReactComponent as CollectionIcon } from 'assets/images/icons/StaffManag
 import { ReactComponent as ContactIcon } from 'assets/images/icons/Contact/View.svg';
 import { COLLECTION_SEARCH_QUERY_VARIABLES, setVariables } from 'common/constants';
 import styles from './Collection.module.css';
+import { getAddOrRemoveRoleIds } from 'common/utils';
 
 export interface CollectionProps {
   match: any;
@@ -172,9 +172,8 @@ export const Collection: React.SFC<CollectionProps> = ({ match }) => {
   };
 
   const setPayload = (payload: any) => {
-    const addRemoveRoles = addOrRemoveRoles(roles, payload);
-
-    return addRemoveRoles;
+    const payloadWithRoleIds = getAddOrRemoveRoleIds(roles, payload);
+    return payloadWithRoleIds;
   };
 
   return (

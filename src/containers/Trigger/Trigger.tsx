@@ -5,7 +5,6 @@ import { Typography } from '@material-ui/core';
 import moment from 'moment';
 import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { addOrRemoveRoles } from 'containers/Flow/Flow';
 
 import { ReactComponent as TriggerIcon } from 'assets/images/icons/Trigger/Union.svg';
 import { dateList, dayList, FLOW_STATUS_PUBLISHED, hourList, setVariables } from 'common/constants';
@@ -20,6 +19,7 @@ import { GET_COLLECTIONS } from 'graphql/queries/Collection';
 import { GET_TRIGGER } from 'graphql/queries/Trigger';
 import { CREATE_TRIGGER, DELETE_TRIGGER, UPDATE_TRIGGER } from 'graphql/mutations/Trigger';
 import styles from './Trigger.module.css';
+import { getAddOrRemoveRoleIds } from 'common/utils';
 
 export interface TriggerProps {
   match: any;
@@ -78,9 +78,9 @@ const setPayload = (payload: any, roles: any) => {
       updatedPayload.isRepeating = false;
   }
 
-  const addedRoles = addOrRemoveRoles(roles, updatedPayload);
+  const payloadWithRoleIds = getAddOrRemoveRoleIds(roles, updatedPayload);
 
-  return addedRoles;
+  return payloadWithRoleIds;
 };
 
 const getFrequencyDetails = (
