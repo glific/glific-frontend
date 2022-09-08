@@ -33,6 +33,7 @@ export interface ProfileProps {
   additionalQuery?: Function;
   afterDelete?: any;
   removePhoneField?: boolean;
+  multiProfileAttributes?: any;
 }
 
 export const Profile: React.SFC<ProfileProps> = ({
@@ -45,6 +46,7 @@ export const Profile: React.SFC<ProfileProps> = ({
   additionalQuery,
   afterDelete,
   removePhoneField = false,
+  multiProfileAttributes,
 }) => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
@@ -60,16 +62,16 @@ export const Profile: React.SFC<ProfileProps> = ({
   const { data, loading } = useQuery(GET_CURRENT_USER);
 
   const updateName = () => {
-    if (!isContactProfileEnabled && !additionalField?.selectedProfile) {
+    if (!isContactProfileEnabled && !multiProfileAttributes?.selectedProfile) {
       return;
     }
-    const { selectedProfile } = additionalField;
+    const { selectedProfile } = multiProfileAttributes;
 
     if (!selectedProfile) {
       return;
     }
 
-    if (selectedProfile.id === additionalField.activeProfileId) {
+    if (selectedProfile.id === multiProfileAttributes.activeProfileId) {
       setName(`${selectedProfile.name} (currently active)`);
     } else {
       setName(selectedProfile.name);
@@ -77,12 +79,12 @@ export const Profile: React.SFC<ProfileProps> = ({
   };
 
   useEffect(() => {
-    if (additionalField?.selectedProfile) {
-      const { selectedProfile } = additionalField;
+    if (multiProfileAttributes?.selectedProfile) {
+      const { selectedProfile } = multiProfileAttributes;
       setLanguageId(selectedProfile?.language?.id);
       updateName();
     }
-  }, [additionalField]);
+  }, [multiProfileAttributes]);
 
   if (loading) return <Loading />;
 
@@ -149,6 +151,7 @@ export const Profile: React.SFC<ProfileProps> = ({
       name: 'phone',
       placeholder: t('Phone Number'),
       disabled: true,
+      skip: removePhoneField,
       skipPayload: true,
     },
     {
@@ -159,7 +162,6 @@ export const Profile: React.SFC<ProfileProps> = ({
       disabled: true,
       skipPayload: true,
     },
-
     {
       component: Dropdown,
       name: 'bspStatus',
@@ -175,13 +177,8 @@ export const Profile: React.SFC<ProfileProps> = ({
     formFields.splice(1, 0, additionalField);
   }
 
-  if (isContactProfileEnabled && additionalField.selectedProfile) {
-    formFields.splice(0, 0, additionalField);
-  }
-
-  // remove phone field incase of contact profile
-  if (removePhoneField) {
-    formFields.splice(2, 1);
+  if (isContactProfileEnabled && multiProfileAttributes.selectedProfile) {
+    formFields.splice(0, 0, multiProfileAttributes);
   }
 
   let type: any;
@@ -210,6 +207,7 @@ export const Profile: React.SFC<ProfileProps> = ({
       icon={profileIcon}
       afterDelete={afterDelete}
       type={type}
+      languageAttributes={multiProfileAttributes.selectedProfile ? { disabled: true } : {}}
       title={pageTitle}
       restrictDelete={hideRemoveBtn}
     />

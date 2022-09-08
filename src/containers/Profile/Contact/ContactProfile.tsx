@@ -180,7 +180,7 @@ export const ContactProfile: React.SFC<ContactProfileProps> = (props) => {
         <Profile
           {...props}
           // additionalProfileStates={additonalStates}
-          additionalField={switchProfile}
+          multiProfileAttributes={switchProfile}
           // additionalState={setSelectedTags}
           // additionalQuery={updateTags}
           profileType="Contact"
