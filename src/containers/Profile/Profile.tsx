@@ -207,7 +207,7 @@ export const Profile: React.SFC<ProfileProps> = ({
       icon={profileIcon}
       afterDelete={afterDelete}
       type={type}
-      languageAttributes={multiProfileAttributes.selectedProfile ? { disabled: true } : {}}
+      languageAttributes={multiProfileAttributes?.selectedProfile ? { disabled: true } : {}}
       title={pageTitle}
       restrictDelete={hideRemoveBtn}
     />
