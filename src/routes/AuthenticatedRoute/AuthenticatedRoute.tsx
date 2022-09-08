@@ -1,5 +1,5 @@
 import React, { lazy, Suspense, useEffect, useMemo, useState } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
 
 import { ChatInterface } from 'containers/Chat/ChatInterface/ChatInterface';
@@ -9,8 +9,6 @@ import { useToast } from 'services/ToastService';
 import { ProviderContext } from 'context/session';
 import { GET_ORGANIZATION_PROVIDER } from 'graphql/queries/Organization';
 import styles from './AuthenticatedRoute.module.css';
-
-const defaultRedirect = <Navigate to="/chat" />;
 
 // const TagList = lazy(() => import('containers/Tag/TagList/TagList'));
 // const Tag = lazy(() => import('containers/Tag/Tag'));
@@ -70,8 +68,6 @@ const Role = lazy(() => import('containers/Role/Role'));
 
 const routeStaff = (
   <Routes>
-    <Route index element={defaultRedirect} />
-    <Route path="chat/*" element={<Chat />} />
     <Route path="collection" element={<CollectionList />}>
       <Route path=":id/contacts" element={<CollectionContact />} />
     </Route>
@@ -79,6 +75,7 @@ const routeStaff = (
     <Route path="contact-profile/:id" element={<ContactProfile />} />
     <Route path="blocked-contacts" element={<BlockContactList />} />
     <Route path="myaccount" element={<MyAccount />} />
+    <Route path="/*" element={<Chat />} />
   </Routes>
 );
 
