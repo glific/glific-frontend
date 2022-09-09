@@ -177,7 +177,7 @@ export const Profile: React.SFC<ProfileProps> = ({
     formFields.splice(1, 0, additionalField);
   }
 
-  if (isContactProfileEnabled && multiProfileAttributes.selectedProfile) {
+  if (isContactProfileEnabled && multiProfileAttributes?.selectedProfile) {
     formFields.splice(0, 0, multiProfileAttributes);
   }
 
