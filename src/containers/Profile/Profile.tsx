@@ -62,7 +62,7 @@ export const Profile: React.SFC<ProfileProps> = ({
   const { data, loading } = useQuery(GET_CURRENT_USER);
 
   const updateName = () => {
-    if (!isContactProfileEnabled && !multiProfileAttributes?.selectedProfile) {
+    if (!isContactProfileEnabled || !multiProfileAttributes?.selectedProfile) {
       return;
     }
     const { selectedProfile } = multiProfileAttributes;
