@@ -22,6 +22,7 @@ export const getCollectionQuery = {
           id: '1',
           label: 'Staff group',
           description: 'Only for staff members',
+          roles: [],
           users: [
             {
               id: '1',

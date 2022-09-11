@@ -79,6 +79,7 @@ export const getTriggerQuery = (frequency: any) => ({
           flow: {
             id: '1',
           },
+          roles: [],
           frequency,
           hours: [],
           group: {

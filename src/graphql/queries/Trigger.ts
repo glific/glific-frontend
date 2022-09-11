@@ -15,6 +15,10 @@ export const TRIGGER_LIST_QUERY = gql`
         id
         label
       }
+      roles {
+        id
+        label
+      }
       endDate
       isActive
       isRepeating
@@ -37,6 +41,10 @@ export const GET_TRIGGER = gql`
           id
         }
         hours
+        roles {
+          id
+          label
+        }
         id
         isActive
         isRepeating
