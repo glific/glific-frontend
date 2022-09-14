@@ -71,6 +71,7 @@ export interface FormLayoutProps {
   getQueryFetchPolicy?: any;
   saveOnPageChange?: boolean;
   restrictDelete?: boolean;
+  languageAttributes?: any;
 }
 
 export const FormLayout: React.SFC<FormLayoutProps> = ({
@@ -119,6 +120,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   getQueryFetchPolicy = 'cache-first',
   saveOnPageChange = true,
   restrictDelete = false,
+  languageAttributes = {},
 }: FormLayoutProps) => {
   const [showDialog, setShowDialog] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
@@ -438,6 +440,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
 
   if (languageSupport) {
     const language = {
+      ...languageAttributes,
       component: Dropdown,
       name: 'languageId',
       placeholder: t('Language'),
@@ -495,8 +498,8 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
       enableReinitialize
       validateOnMount
       initialValues={{
-        ...states,
         languageId,
+        ...states,
       }}
       validationSchema={validationSchema}
       onSubmit={(itemData, { setErrors }) => {
