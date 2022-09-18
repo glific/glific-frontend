@@ -56,7 +56,7 @@ export const Profile = ({
   const { t } = useTranslation();
   const isContactProfileEnabled = getOrganizationServices('contactProfileEnabled');
 
-  let param = match;
+  const params = useParams();
 
   const { data, loading } = useQuery(GET_CURRENT_USER);
 

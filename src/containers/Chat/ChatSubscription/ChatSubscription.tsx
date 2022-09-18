@@ -54,7 +54,6 @@ export const ChatSubscription = ({ setDataLoaded }: ChatSubscriptionProps) => {
 
   const updateConversations = useCallback(
     (cachedConversations: any, subscriptionData: any, action: string) => {
-      console.log(action);
       // if there is no message data then return previous conversations
       if (!subscriptionData.data || subscriptionToRefetchSwitchHappened) {
         return cachedConversations;
