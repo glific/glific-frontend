@@ -72,6 +72,7 @@ export interface FormLayoutProps {
   saveOnPageChange?: boolean;
   entityId?: any;
   restrictDelete?: boolean;
+  languageAttributes?: any;
 }
 
 export const FormLayout = ({
@@ -120,6 +121,7 @@ export const FormLayout = ({
   saveOnPageChange = true,
   entityId = null,
   restrictDelete = false,
+  languageAttributes = {},
 }: FormLayoutProps) => {
   const [showDialog, setShowDialog] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
@@ -444,6 +446,7 @@ export const FormLayout = ({
 
   if (languageSupport) {
     const language = {
+      ...languageAttributes,
       component: Dropdown,
       name: 'languageId',
       placeholder: t('Language'),
@@ -501,8 +504,8 @@ export const FormLayout = ({
       enableReinitialize
       validateOnMount
       initialValues={{
-        ...states,
         languageId,
+        ...states,
       }}
       validationSchema={validationSchema}
       onSubmit={(itemData, { setErrors }) => {

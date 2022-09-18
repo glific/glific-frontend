@@ -3,7 +3,6 @@ import { useQuery, useLazyQuery, useMutation } from '@apollo/client';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
-
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Input } from 'components/UI/Form/Input/Input';
 import { FormLayout } from 'containers/Form/FormLayout';
@@ -15,6 +14,7 @@ import {
   DELETE_COLLECTION,
   UPDATE_COLLECTION_USERS,
 } from 'graphql/mutations/Collection';
+import { getAddOrRemoveRoleIds } from 'common/utils';
 import { SEARCH_QUERY } from 'graphql/queries/Search';
 import { ReactComponent as CollectionIcon } from 'assets/images/icons/StaffManagement/Active.svg';
 import { ReactComponent as ContactIcon } from 'assets/images/icons/Contact/View.svg';
@@ -30,6 +30,7 @@ export const Collection = () => {
   const [label, setLabel] = useState('');
   const [description, setDescription] = useState('');
   const [users, setUsers] = useState([]);
+  const [roles, setRoles] = useState([]);
   const [selected, setSelected] = useState([]);
   const { t } = useTranslation();
 
@@ -74,11 +75,16 @@ export const Collection = () => {
     if (collectionUsers) setUsers(collectionUsers.group.group.users);
   }, [collectionUsers]);
 
-  const states = { label, description, users };
+  const states = { label, description, users, roles };
 
-  const setStates = ({ label: labelValue, description: descriptionValue }: any) => {
+  const setStates = ({
+    label: labelValue,
+    description: descriptionValue,
+    roles: rolesValue,
+  }: any) => {
     setLabel(labelValue);
     setDescription(descriptionValue);
+    setRoles(rolesValue);
   };
 
   const additionalState = (user: any) => {
@@ -163,12 +169,19 @@ export const Collection = () => {
     deleteItemQuery: DELETE_COLLECTION,
   };
 
+  const setPayload = (payload: any) => {
+    const payloadWithRoleIds = getAddOrRemoveRoleIds(roles, payload);
+    return payloadWithRoleIds;
+  };
+
   return (
     <FormLayout
       refetchQueries={refetchQueries}
       additionalQuery={updateUsers}
+      roleAccessSupport
       {...queries}
       states={states}
+      setPayload={setPayload}
       additionalState={additionalState}
       languageSupport={false}
       setStates={setStates}

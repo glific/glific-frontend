@@ -15,6 +15,7 @@ import { TimePicker } from 'components/UI/Form/TimePicker/TimePicker';
 import { Calendar } from 'components/UI/Form/Calendar/Calendar';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { GET_FLOWS } from 'graphql/queries/Flow';
+import { getAddOrRemoveRoleIds } from 'common/utils';
 import { GET_COLLECTIONS } from 'graphql/queries/Collection';
 import { GET_TRIGGER } from 'graphql/queries/Trigger';
 import { CREATE_TRIGGER, DELETE_TRIGGER, UPDATE_TRIGGER } from 'graphql/mutations/Trigger';
@@ -34,7 +35,7 @@ const checkDateTimeValidation = (startAtValue: string, startDateValue: string) =
   return true;
 };
 
-const setPayload = (payload: any) => {
+const setPayload = (payload: any, roles: any) => {
   const payloadCopy = payload;
 
   const { startDate, startTime, isActive, flowId, frequencyValues, groupId, endDate, frequency } =
@@ -53,6 +54,7 @@ const setPayload = (payload: any) => {
     endDate: moment(endDate).utc().format('yyyy-MM-DD'),
     startTime: moment(startAt).utc().format('THH:mm:ss'),
     frequency: frequency.value,
+    roles: payload.roles,
   };
 
   switch (updatedPayload.frequency) {
@@ -73,7 +75,9 @@ const setPayload = (payload: any) => {
       updatedPayload.isRepeating = false;
   }
 
-  return updatedPayload;
+  const payloadWithRoleIds = getAddOrRemoveRoleIds(roles, updatedPayload);
+
+  return payloadWithRoleIds;
 };
 
 const getFrequencyDetails = (
@@ -124,6 +128,7 @@ export const Trigger = () => {
   const [endDate, setEndDate] = useState('');
   const [isRepeating, setIsRepeating] = useState('');
   const [frequencyValues, setFrequencyValues] = useState([]);
+  const [roles, setRoles] = useState([]);
   const [daysDisabled, setDaysDisabled] = useState(true);
   const [groupId, setGroupId] = useState<any>(null);
   const [minDate, setMinDate] = useState<any>(new Date());
@@ -143,6 +148,7 @@ export const Trigger = () => {
     frequencyValues,
     groupId,
     isActive,
+    roles,
   };
 
   const triggerFrequencyOptions = [
@@ -349,6 +355,7 @@ export const Trigger = () => {
     isActive: isActiveValue,
     isRepeating: isRepeatingValue,
     startAt: startAtValue,
+    roles: rolesValue,
   }: any) => {
     setIsRepeating(isRepeatingValue);
     setIsActive(isActiveValue);
@@ -371,6 +378,8 @@ export const Trigger = () => {
     setfrequency(triggerFrequencyOptions.filter((trigger) => trigger.value === frequencyValue)[0]);
     setDaysDisabled(frequencyValue !== 'weekly' && frequencyValue !== 'monthly');
 
+    setRoles(rolesValue);
+
     const getFlowId = flow.flows.filter((flows: any) => flows.id === flowValue.id);
     const getcollectionId = collections.groups.filter(
       (collection: any) => collection.id === groupValue.id
@@ -387,8 +396,9 @@ export const Trigger = () => {
     <FormLayout
       {...queries}
       states={states}
+      roleAccessSupport
       setStates={setStates}
-      setPayload={setPayload}
+      setPayload={(payload: any) => setPayload(payload, roles)}
       validationSchema={FormSchema}
       languageSupport={false}
       listItemName="trigger"
