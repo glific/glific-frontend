@@ -40,9 +40,6 @@ const ProfileChange = ({ selectedProfileId, setSelectedProfileId, profileData }:
     </RadioGroup>
   </FormControl>
 );
-export interface ContactProfileProps {
-  match: any;
-}
 
 export const ContactProfile = () => {
   const params = useParams();

@@ -46,7 +46,7 @@ export const Profile = ({
   afterDelete,
   removePhoneField = false,
   multiProfileAttributes,
-}) => {
+}: ProfileProps) => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [status, setStatus] = useState('');
