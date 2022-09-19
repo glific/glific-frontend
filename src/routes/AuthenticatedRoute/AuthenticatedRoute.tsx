@@ -68,9 +68,8 @@ const Role = lazy(() => import('containers/Role/Role'));
 
 const routeStaff = (
   <Routes>
-    <Route path="collection" element={<CollectionList />}>
-      <Route path=":id/contacts" element={<CollectionContact />} />
-    </Route>
+    <Route path="collection" element={<CollectionList />} />
+    <Route path="collection/:id/contacts" element={<CollectionContact />} />
     <Route path="user-profile" element={<UserProfile />} />
     <Route path="contact-profile/:id" element={<ContactProfile />} />
     <Route path="blocked-contacts" element={<BlockContactList />} />
