@@ -64,6 +64,7 @@ export const SearchBar = ({
     endAdornmentInput = (
       <InputAdornment position="end">
         <IconButton
+          disableFocusRipple
           aria-label="toggle password visibility"
           onClick={(e: any) => {
             handleClick(e, 'search', 'update');
