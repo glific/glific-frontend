@@ -240,8 +240,6 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
     const { value } = triggerFrequency;
     setDaysDisabled(false);
 
-    setfrequency(triggerFrequency);
-
     switch (value) {
       case 'weekly':
         setFrequencyPlaceholder(t('Select days'));
@@ -333,7 +331,7 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
         variant: 'outlined',
       },
       helperText:
-        frequency?.value === 'monthly' &&
+        frequency === 'monthly' &&
         t(
           'If you are selecting end of the month dates, then for the ones not present i.e. 30, 31, the selection will default to the last day of that month.'
         ),
