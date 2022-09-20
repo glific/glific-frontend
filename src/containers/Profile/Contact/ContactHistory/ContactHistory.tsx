@@ -44,7 +44,6 @@ export const ContactHistory = ({ contactId, profileId }: ContactHistoryProps) =>
     contactHistoryVariables.filter.profileId = profileId;
   }
   const { data, loading, fetchMore } = useQuery(GET_CONTACT_HISTORY, {
-    notifyOnNetworkStatusChange: true,
     fetchPolicy: 'network-only',
     variables: contactHistoryVariables,
   });
