@@ -22,6 +22,7 @@ const ImgFallback = ({ src, alt, ...rest }: ImgProps) => {
       alt={alt}
       ref={imgRef}
       src={imgSrc}
+      data-testid="mock-image"
       onLoad={() => {
         if (imgRef.current?.clientWidth === 0) {
           setImgSrc(FallbackImage);
