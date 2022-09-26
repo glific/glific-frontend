@@ -112,6 +112,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   const [getFlows, { data: flowsData }] = useLazyQuery(GET_FLOWS, {
     variables: setVariables({
       status: FLOW_STATUS_PUBLISHED,
+      isActive: true,
     }),
     fetchPolicy: 'network-only', // set for now, need to check cache issue
   });
