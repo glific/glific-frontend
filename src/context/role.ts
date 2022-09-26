@@ -49,27 +49,24 @@ export const setUserRolePermissions = () => {
 
   if (role && hasDynamicRole) {
     sideDrawerMenu = getMenus('sideDrawer', 'Dynamic');
-    staffManagementMenu = getMenus('staffManagement', 'Dynamic');
+    staffManagementMenu = getMenus('management', 'Dynamic');
   }
 
   if (role && role.includes('Staff')) {
     sideDrawerMenu = getMenus('sideDrawer');
-    staffManagementMenu = getMenus('staffManagement');
+    staffManagementMenu = getMenus('management');
   }
 
   if ((role && role.includes('Manager')) || role.includes('Admin')) {
     // gettting menus for Manager as menus are same as in Admin
     sideDrawerMenu = getMenus('sideDrawer', 'Manager');
-    staffManagementMenu = getMenus('staffManagement', 'Manager');
-
-    staffManagementMenu = staffManagementMenu.filter(
-      (menu: any) => menu.title !== 'Role Management' || organizationHasDynamicRole()
-    );
+    staffManagementMenu = getMenus('management', 'Manager');
 
     if (role.includes('Admin')) {
       accessSettings = true;
       manageSavedSearches = true;
       manageCollections = true;
+      staffManagementMenu = getMenus('management', 'Admin');
     }
   }
 
@@ -79,14 +76,18 @@ export const setUserRolePermissions = () => {
      */
     sideDrawerMenu = getMenus('sideDrawer', 'Manager');
     staffManagementMenu = [
-      ...getMenus('staffManagement', 'Manager'),
-      ...getMenus('staffManagement', 'Glific_admin'),
+      ...getMenus('management', 'Manager'),
+      ...getMenus('management', 'Glific_admin'),
     ];
 
     accessSettings = true;
     manageSavedSearches = true;
     manageCollections = true;
   }
+
+  staffManagementMenu = staffManagementMenu.filter(
+    (menu: any) => menu.title !== 'Role Management' || organizationHasDynamicRole()
+  );
 };
 
 // function to reset user permissions
