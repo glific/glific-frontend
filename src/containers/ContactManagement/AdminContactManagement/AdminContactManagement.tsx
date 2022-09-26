@@ -1,13 +1,129 @@
+import { UPLOAD_CONTACTS_SAMPLE } from 'config';
 import { Heading } from 'containers/Form/FormLayout';
-import React from 'react';
+import React, { useState } from 'react';
+import { Button } from 'components/UI/Form/Button/Button';
+import { ReactComponent as UploadIcon } from 'assets/images/icons/UploadLight.svg';
+import { ReactComponent as FileIcon } from 'assets/images/icons/Document/Light.svg';
+import { ReactComponent as CrossIcon } from 'assets/images/icons/Cross.svg';
+import { useTranslation } from 'react-i18next';
+import { useMutation } from '@apollo/client';
+import { IMPORT_CONTACTS } from 'graphql/mutations/Contact';
+import { setNotification } from 'common/notification';
 import { listIcon } from '../SuperAdminContactManagement/SuperAdminContactManagement';
+import styles from './AdminContactManagement.module.css';
 
 export interface AdminContactManagementProps {}
 
-export const AdminContactManagement: React.SFC<AdminContactManagementProps> = () => (
-  <div>
-    <Heading icon={listIcon} formTitle="Contact Management" />
-  </div>
-);
+export const AdminContactManagement: React.SFC<AdminContactManagementProps> = () => {
+  const [fileName, setFileName] = useState<string>('');
+  const [error, setError] = useState<any>(false);
+  const [csvContent, setCsvContent] = useState<String | null | ArrayBuffer>('');
+  const [uploadingContacts, setUploadingContacts] = useState(false);
+  const { t } = useTranslation();
+
+  const [importContacts] = useMutation(IMPORT_CONTACTS, {
+    onCompleted: (data: any) => {
+      if (data.errors) {
+        setNotification(data.errors[0].message, 'warning');
+      } else {
+        setUploadingContacts(false);
+        setNotification(t('Contacts have been uploaded'));
+      }
+    },
+    onError: (errors) => {
+      setNotification(errors.message, 'warning');
+      setUploadingContacts(false);
+    },
+  });
+
+  const addAttachment = (event: any) => {
+    const media = event.target.files[0];
+    const reader = new FileReader();
+    reader.readAsText(media);
+
+    reader.onload = () => {
+      const mediaName = media.name;
+      const extension = mediaName.slice((Math.max(0, mediaName.lastIndexOf('.')) || Infinity) + 1);
+      if (extension !== 'csv') {
+        setError(true);
+      } else {
+        const shortenedName = mediaName.length > 10 ? `${mediaName.slice(0, 10)}...` : mediaName;
+        setFileName(shortenedName);
+        setCsvContent(reader.result);
+      }
+    };
+  };
+
+  return (
+    <div>
+      <Heading icon={listIcon} formTitle="Contact Management" />
+      <div className={styles.Container}>
+        <div className={styles.Instructions}>
+          You can move contacts to collects in bulk or update their contact information. Please
+          create xls file that exactly matches the sample.
+          <span className={styles.Link}>View instructions </span>
+        </div>
+        <div className={styles.UploadContainer}>
+          <label className={styles.UploadEnabled} htmlFor="uploadFile">
+            <span>
+              <FileIcon className={styles.FileIcon} />
+              {fileName !== '' ? (
+                <>
+                  <span>{fileName}</span>
+                  <CrossIcon
+                    className={styles.CrossIcon}
+                    onClick={(event: any) => {
+                      event.preventDefault();
+                      setFileName('');
+                    }}
+                  />
+                </>
+              ) : (
+                <>Select .csv</>
+              )}
+
+              <input
+                type="file"
+                id="uploadFile"
+                disabled={fileName !== ''}
+                data-testid="uploadFile"
+                onChange={(event) => {
+                  setError(false);
+                  addAttachment(event);
+                }}
+              />
+            </span>
+          </label>
+          <div className={styles.Sample}>
+            <a href={UPLOAD_CONTACTS_SAMPLE}>Download Sample</a>
+          </div>
+
+          {error && (
+            <div className={styles.Error}>
+              1. Please make sure the file format matches the sample
+            </div>
+          )}
+        </div>
+        <Button
+          variant="contained"
+          color="primary"
+          disabled={fileName === ''}
+          loading={uploadingContacts}
+          onClick={() => {
+            setUploadingContacts(true);
+            importContacts({
+              variables: {
+                type: 'DATA',
+                data: csvContent,
+              },
+            });
+          }}
+        >
+          Upload <UploadIcon className={styles.UploadIcon} />
+        </Button>
+      </div>
+    </div>
+  );
+};
 
 export default AdminContactManagement;
