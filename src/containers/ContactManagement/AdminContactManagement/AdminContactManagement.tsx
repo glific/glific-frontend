@@ -16,7 +16,7 @@ export interface AdminContactManagementProps {}
 
 export const AdminContactManagement: React.SFC<AdminContactManagementProps> = () => {
   const [fileName, setFileName] = useState<string>('');
-  const [error, setError] = useState<any>(false);
+  const [errors, setErrors] = useState<any>([]);
   const [csvContent, setCsvContent] = useState<String | null | ArrayBuffer>('');
   const [uploadingContacts, setUploadingContacts] = useState(false);
   const { t } = useTranslation();
@@ -24,14 +24,14 @@ export const AdminContactManagement: React.SFC<AdminContactManagementProps> = ()
   const [importContacts] = useMutation(IMPORT_CONTACTS, {
     onCompleted: (data: any) => {
       if (data.errors) {
-        setNotification(data.errors[0].message, 'warning');
+        setErrors(data.errors);
       } else {
         setUploadingContacts(false);
         setNotification(t('Contacts have been uploaded'));
       }
     },
-    onError: (errors) => {
-      setNotification(errors.message, 'warning');
+    onError: (error) => {
+      setNotification(error.message, 'warning');
       setUploadingContacts(false);
     },
   });
@@ -45,7 +45,7 @@ export const AdminContactManagement: React.SFC<AdminContactManagementProps> = ()
       const mediaName = media.name;
       const extension = mediaName.slice((Math.max(0, mediaName.lastIndexOf('.')) || Infinity) + 1);
       if (extension !== 'csv') {
-        setError(true);
+        setErrors([{ message: 'Please make sure the file format matches the sample' }]);
       } else {
         const shortenedName = mediaName.length > 10 ? `${mediaName.slice(0, 10)}...` : mediaName;
         setFileName(shortenedName);
@@ -88,7 +88,7 @@ export const AdminContactManagement: React.SFC<AdminContactManagementProps> = ()
                 disabled={fileName !== ''}
                 data-testid="uploadFile"
                 onChange={(event) => {
-                  setError(false);
+                  setErrors([]);
                   addAttachment(event);
                 }}
               />
@@ -98,11 +98,13 @@ export const AdminContactManagement: React.SFC<AdminContactManagementProps> = ()
             <a href={UPLOAD_CONTACTS_SAMPLE}>Download Sample</a>
           </div>
 
-          {error && (
-            <div className={styles.Error}>
-              1. Please make sure the file format matches the sample
-            </div>
-          )}
+          {errors &&
+            errors.length > 0 &&
+            errors.map((error: any, index: number) => (
+              <div className={styles.Error}>
+                {index + 1}. {error.message}
+              </div>
+            ))}
         </div>
         <Button
           variant="contained"

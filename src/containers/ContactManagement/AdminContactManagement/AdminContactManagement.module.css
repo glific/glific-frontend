@@ -92,9 +92,13 @@
   border-bottom-style: dashed;
 }
 
+.Sample {
+  margin-bottom: 16px;
+}
+
 .Error {
   font-weight: 500;
-  margin-top: 16px;
+  margin-top: 4px;
   color: #dd1f1f;
 }
 
