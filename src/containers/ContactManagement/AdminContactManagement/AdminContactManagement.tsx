@@ -80,7 +80,7 @@ export const AdminContactManagement: React.SFC<AdminContactManagementProps> = ()
                   />
                 </>
               ) : (
-                <>Select .csv</>
+                'Select .csv'
               )}
 
               <input
