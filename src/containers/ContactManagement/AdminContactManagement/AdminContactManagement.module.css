@@ -12,6 +12,7 @@
 .Link {
   color: #119656;
   font-weight: 500;
+  cursor: pointer;
 }
 
 .UploadContainer {
@@ -50,6 +51,7 @@
   padding: 6px 0px;
   cursor: pointer;
   color: #93a29b;
+  background-color: #fff;
   font-weight: 500;
   font-size: 16px;
   justify-content: center;

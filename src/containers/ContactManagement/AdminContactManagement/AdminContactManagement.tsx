@@ -60,7 +60,7 @@ export const AdminContactManagement: React.SFC<AdminContactManagementProps> = ()
       <div className={styles.Container}>
         <div className={styles.Instructions}>
           You can move contacts to collects in bulk or update their contact information. Please
-          create xls file that exactly matches the sample.
+          create csv file that exactly matches the sample.
           <span className={styles.Link}>View instructions </span>
         </div>
         <div className={styles.UploadContainer}>
@@ -75,6 +75,7 @@ export const AdminContactManagement: React.SFC<AdminContactManagementProps> = ()
                     onClick={(event: any) => {
                       event.preventDefault();
                       setFileName('');
+                      setCsvContent('');
                     }}
                   />
                 </>
