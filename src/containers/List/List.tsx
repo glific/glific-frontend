@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Redirect, Link } from 'react-router-dom';
+import { Redirect, Link, useHistory, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useQuery, useMutation, DocumentNode, useLazyQuery } from '@apollo/client';
 import { IconButton, TableFooter, TablePagination, TableRow, Typography } from '@material-ui/core';
@@ -130,7 +130,13 @@ export const List: React.SFC<ListProps> = ({
   const [deleteItemID, setDeleteItemID] = useState<number | null>(null);
   const [deleteItemName, setDeleteItemName] = useState<string>('');
   const [newItem, setNewItem] = useState(false);
-  const [searchVal, setSearchVal] = useState('');
+  const location = useLocation();
+
+  // pick the search value from url if present
+  const [searchVal, setSearchVal] = useState(
+    new URLSearchParams(location.search).get('search') || ''
+  );
+  const history = useHistory();
 
   // check if the user has access to manage collections
   const userRolePermissions = getUserRolePermissions();
@@ -510,6 +516,9 @@ export const List: React.SFC<ListProps> = ({
   const handleSearch = (searchError: any) => {
     searchError.preventDefault();
     const searchValInput = searchError.target.querySelector('input').value.trim();
+    history.push({
+      search: `?search=${searchValInput}`,
+    });
     setSearchVal(searchValInput);
     resetTableVals();
   };
@@ -654,6 +663,7 @@ export const List: React.SFC<ListProps> = ({
           <SearchBar
             handleSubmit={handleSearch}
             onReset={() => {
+              history.push({ search: '' });
               setSearchVal('');
               resetTableVals();
             }}
