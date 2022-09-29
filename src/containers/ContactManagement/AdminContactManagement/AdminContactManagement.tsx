@@ -102,7 +102,7 @@ export const AdminContactManagement: React.SFC<AdminContactManagementProps> = ()
           {errors &&
             errors.length > 0 &&
             errors.map((error: any, index: number) => (
-              <div className={styles.Error}>
+              <div className={styles.Error} key={error.message}>
                 {index + 1}. {error.message}
               </div>
             ))}
