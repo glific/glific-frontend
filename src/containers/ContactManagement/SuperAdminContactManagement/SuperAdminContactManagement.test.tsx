@@ -19,7 +19,7 @@ const list = (
   </MockedProvider>
 );
 
-test('Contact management list renders correctly', async () => {
+test('Super admin contact management list renders correctly', async () => {
   render(list);
 
   expect(screen.getByText('Loading...')).toBeInTheDocument();
