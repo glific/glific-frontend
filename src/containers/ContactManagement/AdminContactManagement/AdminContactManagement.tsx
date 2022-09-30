@@ -108,6 +108,7 @@ export const AdminContactManagement: React.SFC<AdminContactManagementProps> = ()
             ))}
         </div>
         <Button
+          data-testid="uploadButton"
           variant="contained"
           color="primary"
           disabled={fileName === ''}
