@@ -1,6 +1,6 @@
-import { UPLOAD_CONTACTS_SAMPLE } from 'config';
-import { Heading } from 'containers/Form/FormLayout';
 import React, { useState } from 'react';
+import { UPLOAD_CONTACTS_ADMIN_SAMPLE } from 'config';
+import { Heading } from 'containers/Form/FormLayout';
 import { Button } from 'components/UI/Form/Button/Button';
 import { ReactComponent as UploadIcon } from 'assets/images/icons/UploadLight.svg';
 import { ReactComponent as FileIcon } from 'assets/images/icons/Document/Light.svg';
@@ -96,7 +96,7 @@ export const AdminContactManagement: React.SFC<AdminContactManagementProps> = ()
             </span>
           </label>
           <div className={styles.Sample}>
-            <a href={UPLOAD_CONTACTS_SAMPLE}>Download Sample</a>
+            <a href={UPLOAD_CONTACTS_ADMIN_SAMPLE}>Download Sample</a>
           </div>
 
           {errors &&
