@@ -86,7 +86,7 @@ export const setUserRolePermissions = () => {
   }
 
   staffManagementMenu = staffManagementMenu.filter(
-    (menu: any) => menu.title !== 'Role Management' || organizationHasDynamicRole()
+    (menu: any) => menu.title !== 'Role management' || organizationHasDynamicRole()
   );
 };
 
