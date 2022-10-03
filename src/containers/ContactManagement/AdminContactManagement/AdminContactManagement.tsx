@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { UPLOAD_CONTACTS_ADMIN_SAMPLE } from 'config';
+import { CONTACT_MANAGE_HELP_LINK, UPLOAD_CONTACTS_ADMIN_SAMPLE } from 'config';
 import { Heading } from 'containers/Form/FormLayout';
 import { Button } from 'components/UI/Form/Button/Button';
 import { ReactComponent as UploadIcon } from 'assets/images/icons/UploadLight.svg';
@@ -27,11 +27,13 @@ export const AdminContactManagement: React.SFC<AdminContactManagementProps> = ()
         setErrors(data.errors);
       } else {
         setUploadingContacts(false);
-        setNotification(t('Contacts have been uploaded'));
+        setNotification(t('Contacts have been updated'));
       }
+      setFileName('');
     },
     onError: (error) => {
-      setNotification(error.message, 'warning');
+      setErrors([{ message: error.message }]);
+      setFileName('');
       setUploadingContacts(false);
     },
   });
@@ -61,7 +63,14 @@ export const AdminContactManagement: React.SFC<AdminContactManagementProps> = ()
         <div className={styles.Instructions}>
           You can move contacts to collects in bulk or update their contact information. Please
           create csv file that exactly matches the sample.
-          <span className={styles.Link}>View instructions </span>
+          <a
+            href={CONTACT_MANAGE_HELP_LINK}
+            target="_blank"
+            rel="noreferrer"
+            className={styles.Link}
+          >
+            View instructions
+          </a>
         </div>
         <div className={styles.UploadContainer}>
           <label className={styles.UploadEnabled} htmlFor="uploadFile">
@@ -80,7 +89,7 @@ export const AdminContactManagement: React.SFC<AdminContactManagementProps> = ()
                   />
                 </>
               ) : (
-                'Select .csv'
+                'Select file'
               )}
 
               <input

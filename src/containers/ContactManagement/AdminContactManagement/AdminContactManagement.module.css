@@ -12,6 +12,7 @@
 .Link {
   color: #119656;
   font-weight: 500;
+  text-decoration: none;
   cursor: pointer;
 }
 

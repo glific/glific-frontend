@@ -54,3 +54,5 @@ export const UPLOAD_CONTACTS_ADMIN_SAMPLE =
   'https://storage.googleapis.com/cc-tides/sample_import_admin.csv';
 export const REGISTRATION_HELP_LINK =
   'https://glific.slab.com/public/posts/02-managing-staff-members-creating-account-on-glific-gg6fkw8h';
+export const CONTACT_MANAGE_HELP_LINK =
+  'https://glific.slab.com/public/posts/update-collection-with-bulk-contacts-or-contact-fields-yn8l1ggr';
