@@ -76,19 +76,19 @@ const menus = [
   },
 
   {
-    title: 'Collections',
+    title: 'Manage collections',
     path: '/collection',
     type: 'management',
     roles: ['Staff', 'Manager', 'Admin', 'Dynamic'],
   },
   {
-    title: 'Role Management',
+    title: 'Role management',
     path: '/role',
     type: 'management',
     roles: ['Manager', 'Admin'],
   },
   {
-    title: 'Staff Management',
+    title: 'Staff management',
     path: '/staff-management',
     type: 'management',
     roles: ['Manager', 'Admin'],
@@ -112,7 +112,7 @@ const menus = [
     roles: ['Glific_admin'],
   },
   {
-    title: 'Blocked Contacts',
+    title: 'Blocked contacts',
     path: '/blocked-contacts',
     type: 'management',
     roles: ['Staff', 'Manager', 'Admin', 'Dynamic'],
