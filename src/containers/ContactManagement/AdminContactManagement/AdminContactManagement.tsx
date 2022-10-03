@@ -61,7 +61,7 @@ export const AdminContactManagement: React.SFC<AdminContactManagementProps> = ()
       <Heading icon={listIcon} formTitle="Contact Management" />
       <div className={styles.Container}>
         <div className={styles.Instructions}>
-          You can move contacts to collects in bulk or update their contact information. Please
+          You can move contacts to collections in bulk or update their contact information. Please
           create csv file that exactly matches the sample.
           <a
             href={CONTACT_MANAGE_HELP_LINK}

@@ -23,7 +23,7 @@ test('Admin contact management form renders correctly', async () => {
   render(contactManagement);
   expect(
     screen.getByText(
-      'You can move contacts to collects in bulk or update their contact information. Please create csv file that exactly matches the sample.'
+      'You can move contacts to collections in bulk or update their contact information. Please create csv file that exactly matches the sample.'
     )
   ).toBeInTheDocument();
 });
