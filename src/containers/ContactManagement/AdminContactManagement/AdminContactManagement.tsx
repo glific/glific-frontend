@@ -132,7 +132,7 @@ export const AdminContactManagement: React.SFC<AdminContactManagementProps> = ()
             });
           }}
         >
-          Upload <UploadIcon className={styles.UploadIcon} />
+          <UploadIcon className={styles.FileIcon} /> Upload
         </Button>
       </div>
     </div>
