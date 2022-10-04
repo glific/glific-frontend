@@ -123,19 +123,18 @@ export const convertJSONtoStateData = (JSONData: any, interactiveType: string, l
       case 'video':
         result.type = type.toUpperCase();
         result.attachmentURL = url;
-        result.body = text;
         result.title = label;
         break;
       case 'file':
         result.type = 'DOCUMENT';
         result.attachmentURL = url;
-        result.body = '';
+
         result.title = label;
         break;
       default:
         result.type = null;
-        result.body = text || '';
     }
+    result.body = text || '';
     return result;
   }
 
