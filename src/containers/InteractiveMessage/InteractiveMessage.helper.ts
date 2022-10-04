@@ -247,7 +247,9 @@ export const getPayloadByMediaType = (mediaType: string, payload: any) => {
     case 'DOCUMENT':
       result.type = 'file';
       result.url = payload.attachmentURL;
-      result.filename = payload.attachmentURL.substring(payload.attachmentURL.lastIndexOf('/') + 1);
+      result.filename = payload.attachmentURL?.substring(
+        payload.attachmentURL.lastIndexOf('/') + 1
+      );
       break;
     default:
       result.type = 'text';
