@@ -243,19 +243,19 @@ export const getPayloadByMediaType = (mediaType: string, payload: any) => {
     case 'VIDEO':
       result.type = `${mediaType.toLowerCase()}`;
       result.url = payload.attachmentURL;
-      result.text = getPlainTextFromEditor(payload.body);
       break;
     case 'DOCUMENT':
       result.type = 'file';
       result.url = payload.attachmentURL;
-      result.filename = 'file';
+      result.filename = payload.attachmentURL.substring(payload.attachmentURL.lastIndexOf('/') + 1);
       break;
     default:
       result.type = 'text';
       result.header = payload.title;
-      result.text = getPlainTextFromEditor(payload.body);
       break;
   }
+
+  result.text = getPlainTextFromEditor(payload.body);
 
   return result;
 };
