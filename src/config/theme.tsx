@@ -32,7 +32,11 @@ const theme = createTheme({
         '&:hover': {
           backgroundColor: '#b5b5b5',
         },
+        '&:disabled': {
+          backgroundColor: '#93A29B',
+        },
       },
+
       outlinedPrimary: {
         border: '2px solid',
         '&:hover': {

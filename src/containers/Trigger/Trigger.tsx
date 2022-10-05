@@ -192,12 +192,17 @@ export const Trigger = () => {
         })
       ),
 
-    days: Yup.array()
+    frequencyValues: Yup.array()
       .nullable()
       .when('frequency', {
         is: (frequencyValue: any) => frequencyValue && frequencyValue.value === 'weekly',
         then: Yup.array().min(1, t('Please select a day')),
+      })
+      .when('frequency', {
+        is: (frequencyValue: any) => frequencyValue && frequencyValue.value === 'monthly',
+        then: Yup.array().min(1, t('Please select a date')),
       }),
+
     frequency: Yup.object().nullable().required(t('Repeat is required')),
     groupId: Yup.object().nullable().required(t('Collection is required')),
   };
@@ -324,11 +329,10 @@ export const Trigger = () => {
         variant: 'outlined',
       },
       helperText:
-        frequency === 'monthly'
-          ? t(
-              'If you are selecting end of the month dates, then for the ones not present i.e. 30, 31, the selection will default to the last day of that month.'
-            )
-          : null,
+        frequency === 'monthly' &&
+        t(
+          'If you are selecting end of the month dates, then for the ones not present i.e. 30, 31, the selection will default to the last day of that month.'
+        ),
     },
     {
       component: AutoComplete,

@@ -23,6 +23,15 @@ import { organizationHasDynamicRole } from 'common/utils';
 import { getUserRole } from 'context/role';
 import styles from './FormLayout.module.css';
 
+export const Heading = ({ icon, formTitle }: any) => (
+  <Typography variant="h5" className={styles.Title}>
+    <IconButton disabled className={styles.Icon}>
+      {icon}
+    </IconButton>
+    {formTitle}
+  </Typography>
+);
+
 export interface FormLayoutProps {
   deleteItemQuery: DocumentNode;
   states: Object;
@@ -621,15 +630,7 @@ export const FormLayout = ({
     formTitle = `Add a new ${listItemName}`; // case when adding a new item
   }
 
-  let heading = (
-    <Typography variant="h5" className={styles.Title}>
-      <IconButton disabled className={styles.Icon}>
-        {icon}
-      </IconButton>
-      {formTitle}
-    </Typography>
-  );
-
+  let heading = <Heading icon={icon} formTitle={formTitle} />;
   if (advanceSearch) {
     const data = advanceSearch({});
     if (data && data.heading) heading = data.heading;
