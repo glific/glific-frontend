@@ -10,8 +10,6 @@ import { List } from 'containers/List/List';
 import styles from './SuperAdminContactManagement.module.css';
 import UploadContactsDialog from '../UploadContactsDialog/UploadContactsDialog';
 
-export interface SuperAdminContactManagementProps {}
-
 const queries = {
   countQuery: GET_ORGANIZATION_COUNT,
   filterItemsQuery: FILTER_ORGANIZATIONS,
@@ -21,7 +19,7 @@ const queries = {
 export const listIcon = <CollectionIcon className={styles.OrgIcon} />;
 const extensionIcon = <UploadIcon className={styles.UploadIcon} />;
 
-export const SuperAdminContactManagement: React.SFC<SuperAdminContactManagementProps> = () => {
+export const SuperAdminContactManagement = () => {
   const { t } = useTranslation();
 
   const [showUploadDialog, setShowUploadDialog] = useState(false);
