@@ -62,14 +62,14 @@ export const AdminContactManagement: React.SFC<AdminContactManagementProps> = ()
       <div className={styles.Container}>
         <div className={styles.Instructions}>
           You can move contacts to collections in bulk or update their contact information. Please
-          create csv file that exactly matches the sample.
+          create csv file that exactly matches the sample. Here are the &nbsp;
           <a
             href={CONTACT_MANAGE_HELP_LINK}
             target="_blank"
             rel="noreferrer"
             className={styles.Link}
           >
-            View instructions
+            detailed instructions.
           </a>
         </div>
         <div className={styles.UploadContainer}>
