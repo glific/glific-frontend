@@ -21,11 +21,10 @@ const contactManagement = (
 
 test('Admin contact management form renders correctly', async () => {
   render(contactManagement);
-  expect(
-    screen.getByText(
-      'You can move contacts to collections in bulk or update their contact information. Please create csv file that exactly matches the sample.'
-    )
-  ).toBeInTheDocument();
+  const helpText = await screen.getByText(
+    'You can move contacts to collections in bulk or update their contact information. Please create csv file that exactly matches the sample. Here are the'
+  );
+  expect(helpText).toBeInTheDocument();
 });
 
 test('the page should have a disabled upload button by default', async () => {
