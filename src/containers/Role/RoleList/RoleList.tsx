@@ -6,8 +6,6 @@ import { COUNT_ROLES, FILTER_ROLES } from 'graphql/queries/Role';
 import { DELETE_ROLE } from 'graphql/mutations/Roles';
 import styles from './RoleList.module.css';
 
-export interface RoleListProps {}
-
 const getLabel = (text: string) => (
   <p className={`${styles.LabelText} ${styles.NameText}`}>{text}</p>
 );
@@ -25,7 +23,7 @@ const queries = {
   deleteItemQuery: DELETE_ROLE,
 };
 
-export const RoleList: React.SFC<RoleListProps> = () => {
+export const RoleList = () => {
   const { t } = useTranslation();
 
   const getColumns = ({ description, label }: any) => ({

@@ -10,8 +10,6 @@ import { List } from 'containers/List/List';
 import { DATE_TIME_FORMAT } from 'common/constants';
 import styles from './TagList.module.css';
 
-export interface TagListProps {}
-
 const getLabel = (label: string, colorCode: string = '#0C976D') => (
   <div className={styles.LabelContainer}>
     <FilledTagIcon className={styles.FilledTagIcon} stroke={colorCode} />
@@ -53,7 +51,7 @@ const queries = {
   deleteItemQuery: DELETE_TAG,
 };
 
-export const TagList: React.SFC<TagListProps> = () => {
+export const TagList = () => {
   const { t } = useTranslation();
 
   const columnNames = ['TITLE', 'DESCRIPTION', 'KEYWORDS', 'LAST MODIFIED', 'ACTIONS'];

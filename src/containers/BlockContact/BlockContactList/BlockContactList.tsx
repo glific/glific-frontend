@@ -13,8 +13,6 @@ import { DELETE_CONTACT, UPDATE_CONTACT } from 'graphql/mutations/Contact';
 import { SEARCH_QUERY } from 'graphql/queries/Search';
 import styles from './BlockContactList.module.css';
 
-export interface BlockContactListProps {}
-
 const getName = (name: string) => <p className={styles.LabelText}>{name}</p>;
 
 const getPhone = (text: string) => <p className={styles.TableText}>{text}</p>;
@@ -41,7 +39,7 @@ const columnAttributes = {
   columnStyles,
 };
 
-export const BlockContactList: React.SFC<BlockContactListProps> = () => {
+export const BlockContactList = () => {
   const [contactId, setContactId] = useState();
   const [unblockDialog, setUnblockDialog] = useState(false);
   const { t } = useTranslation();

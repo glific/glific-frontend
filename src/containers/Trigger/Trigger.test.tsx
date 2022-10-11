@@ -8,13 +8,20 @@ import * as AutoComplete from 'components/UI/Form/AutoComplete/AutoComplete';
 import { getTriggerQuery, hourlyTrigger } from 'mocks/Trigger';
 import { Trigger } from './Trigger';
 
+jest.mock('react-router-dom', () => {
+  return {
+    ...jest.requireActual('react-router-dom'),
+    useParams: () => ({ id: '1' }),
+  };
+});
+
 describe('trigger with daily frequency', () => {
   const frequencyDailyMocks = [getTriggerQuery('daily'), ...LIST_ITEM_MOCKS, ...SearchMocks];
 
   const frequencyDailyWrapper = (
     <MockedProvider mocks={frequencyDailyMocks} addTypename={false}>
       <MemoryRouter initialEntries={[{ state: 'copy' }]}>
-        <Trigger match={{ params: { id: '1' } }} />
+        <Trigger />
       </MemoryRouter>
     </MockedProvider>
   );
@@ -40,7 +47,7 @@ describe('trigger with no frequency', () => {
   const frequencyDailyWrapper = (
     <MockedProvider mocks={frequencyDailyMocks} addTypename={false}>
       <MemoryRouter>
-        <Trigger match={{ params: { id: '1' } }} />
+        <Trigger />
       </MemoryRouter>
     </MockedProvider>
   );
@@ -66,7 +73,7 @@ describe('trigger with hourly frequency', () => {
   const wrapper = (
     <MockedProvider mocks={mocks} addTypename={false}>
       <MemoryRouter>
-        <Trigger match={{ params: { id: '1' } }} />
+        <Trigger />
       </MemoryRouter>
     </MockedProvider>
   );
@@ -94,7 +101,7 @@ describe('trigger with weekly frequency', () => {
   const wrapper = (
     <MockedProvider mocks={mocks} addTypename={false}>
       <MemoryRouter>
-        <Trigger match={{ params: { id: '1' } }} />
+        <Trigger />
       </MemoryRouter>
     </MockedProvider>
   );

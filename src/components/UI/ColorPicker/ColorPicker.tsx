@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 
 import styles from './ColorPicker.module.css';
 
-export interface Props {
+export interface ColorPickerProps {
   colorCode: string;
   name: string;
   form: { setFieldValue: any };
@@ -15,7 +15,7 @@ export interface Props {
   helperText: string;
 }
 
-export const ColorPicker: React.SFC<Props> = ({ ...props }) => {
+export const ColorPicker = ({ ...props }: ColorPickerProps) => {
   const [displayPicker, setDisplayPicker] = useState(false);
   const [colorHex, setColorHex] = useState('');
   const { t } = useTranslation();

@@ -3,7 +3,7 @@ import * as Yup from 'yup';
 import { useQuery } from '@apollo/client';
 import { Typography } from '@material-ui/core';
 import moment from 'moment';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { ReactComponent as TriggerIcon } from 'assets/images/icons/Trigger/Union.svg';
@@ -21,9 +21,6 @@ import { GET_TRIGGER } from 'graphql/queries/Trigger';
 import { CREATE_TRIGGER, DELETE_TRIGGER, UPDATE_TRIGGER } from 'graphql/mutations/Trigger';
 import styles from './Trigger.module.css';
 
-export interface TriggerProps {
-  match: any;
-}
 const checkDateTimeValidation = (startAtValue: string, startDateValue: string) => {
   const isDateAhead = moment(startDateValue).isAfter(moment());
   const isTimeAhead = startAtValue > moment().format('THH:mm:ss');
@@ -122,7 +119,7 @@ const queries = {
   deleteItemQuery: DELETE_TRIGGER,
 };
 
-export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
+export const Trigger = () => {
   const [flowId, setFlowId] = useState(null);
   const [isActive, setIsActive] = useState(true);
   const [startTime, setStartTime] = useState('');
@@ -137,6 +134,7 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
   const [minDate, setMinDate] = useState<any>(new Date());
   const [frequencyPlaceholder, setFrequencyPlaceholder] = useState('Select days');
   const [frequencyOptions, setFrequencyOptions] = useState(dayList);
+  const params = useParams();
 
   const location = useLocation();
   const { t } = useTranslation();
@@ -167,7 +165,7 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
 
   const isCopyState = location.state === 'copy';
 
-  if (match.params.id && !isCopyState) {
+  if (params.id && !isCopyState) {
     isEditing = true;
   }
 
@@ -401,7 +399,6 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
   return (
     <FormLayout
       {...queries}
-      match={match}
       states={states}
       roleAccessSupport
       setStates={setStates}

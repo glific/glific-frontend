@@ -30,17 +30,15 @@ export interface QuickReplyTemplateProps {
   showHeader?: boolean;
 }
 
-export const QuickReplyTemplate: React.SFC<QuickReplyTemplateProps> = (props) => {
-  const {
-    content,
-    options,
-    disabled = false,
-    onQuickReplyClick,
-    isSimulator = false,
-    showHeader = true,
-    bspMessageId,
-  } = props;
-
+export const QuickReplyTemplate = ({
+  content,
+  options,
+  disabled = false,
+  onQuickReplyClick,
+  isSimulator = false,
+  showHeader = true,
+  bspMessageId,
+}: QuickReplyTemplateProps) => {
   if (!content && !options) {
     return null;
   }

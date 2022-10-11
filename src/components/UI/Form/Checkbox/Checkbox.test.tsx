@@ -20,7 +20,7 @@ describe('<Checkbox />', () => {
 
   it('test for check and uncheck', async () => {
     render(wrapper);
-    const checkbox = screen.getByRole('checkbox');
+    const checkbox: HTMLInputElement = screen.getByRole('checkbox');
     fireEvent.change(checkbox, { target: { value: 'true' } });
     expect(checkbox.value).toBe('true');
 

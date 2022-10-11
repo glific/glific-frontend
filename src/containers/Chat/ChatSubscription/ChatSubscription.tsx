@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useLazyQuery } from '@apollo/client';
+import { useLazyQuery, useQuery } from '@apollo/client';
 
 import {
   COLLECTION_SEARCH_QUERY_VARIABLES,
@@ -34,7 +34,7 @@ export interface ChatSubscriptionProps {
   setDataLoaded: any;
 }
 
-export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({ setDataLoaded }) => {
+export const ChatSubscription = ({ setDataLoaded }: ChatSubscriptionProps) => {
   const queryVariables = SEARCH_QUERY_VARIABLES;
 
   let refetchTimer: any = null;
@@ -213,91 +213,85 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({ setDataLoad
     [getContactQuery]
   );
 
-  const [loadCollectionData, { subscribeToMore: collectionSubscribe, data: collectionData }] =
-    useLazyQuery<any>(SEARCH_QUERY, {
+  const { subscribeToMore: collectionSubscribe, data: collectionData } = useQuery<any>(
+    SEARCH_QUERY,
+    {
       variables: COLLECTION_SEARCH_QUERY_VARIABLES,
       fetchPolicy: 'network-only',
       nextFetchPolicy: 'cache-only',
-      onCompleted: () => {
-        const subscriptionVariables = { organizationId: getUserSession('organizationId') };
-
-        if (collectionSubscribe) {
-          // collection sent subscription
-          collectionSubscribe({
-            document: COLLECTION_SENT_SUBSCRIPTION,
-            variables: subscriptionVariables,
-            updateQuery: (prev, { subscriptionData }) =>
-              updateConversations(prev, subscriptionData, 'COLLECTION'),
-          });
-        }
-      },
-    });
-
-  const [loadData, { loading, error, subscribeToMore, data, refetch }] = useLazyQuery<any>(
-    SEARCH_QUERY,
-    {
-      variables: queryVariables,
-      fetchPolicy: 'network-only',
-      nextFetchPolicy: 'cache-only',
-      onCompleted: () => {
-        const subscriptionVariables = { organizationId: getUserSession('organizationId') };
-
-        if (subscribeToMore) {
-          // message received subscription
-          subscribeToMore({
-            document: MESSAGE_RECEIVED_SUBSCRIPTION,
-            variables: subscriptionVariables,
-            updateQuery: (prev, { subscriptionData }) =>
-              updateConversations(prev, subscriptionData, 'RECEIVED'),
-          });
-
-          // message sent subscription
-          subscribeToMore({
-            document: MESSAGE_SENT_SUBSCRIPTION,
-            variables: subscriptionVariables,
-            updateQuery: (prev, { subscriptionData }) =>
-              updateConversations(prev, subscriptionData, 'SENT'),
-          });
-
-          // message status subscription
-          subscribeToMore({
-            document: MESSAGE_STATUS_SUBSCRIPTION,
-            variables: subscriptionVariables,
-            updateQuery: (prev, { subscriptionData }) =>
-              updateConversations(prev, subscriptionData, 'STATUS'),
-            onError: () => {},
-          });
-
-          // tag added subscription
-          subscribeToMore({
-            document: ADD_MESSAGE_TAG_SUBSCRIPTION,
-            variables: subscriptionVariables,
-            updateQuery: (prev, { subscriptionData }) =>
-              updateConversations(prev, subscriptionData, 'TAG_ADDED'),
-          });
-
-          // tag delete subscription
-          subscribeToMore({
-            document: DELETE_MESSAGE_TAG_SUBSCRIPTION,
-            variables: subscriptionVariables,
-            updateQuery: (prev, { subscriptionData }) =>
-              updateConversations(prev, subscriptionData, 'TAG_DELETED'),
-          });
-        }
-      },
     }
   );
+
+  const { loading, error, subscribeToMore, data, refetch } = useQuery<any>(SEARCH_QUERY, {
+    variables: queryVariables,
+    fetchPolicy: 'network-only',
+    nextFetchPolicy: 'cache-only',
+  });
+
+  useEffect(() => {
+    if (collectionSubscribe) {
+      const subscriptionVariables = { organizationId: getUserSession('organizationId') };
+      // collection sent subscription
+      collectionSubscribe({
+        document: COLLECTION_SENT_SUBSCRIPTION,
+        variables: subscriptionVariables,
+        updateQuery: (prev, { subscriptionData }) =>
+          updateConversations(prev, subscriptionData, 'COLLECTION'),
+      });
+    }
+  }, [collectionSubscribe]);
+
+  useEffect(() => {
+    if (subscribeToMore) {
+      const subscriptionVariables = { organizationId: getUserSession('organizationId') };
+      // message received subscription
+      subscribeToMore({
+        document: MESSAGE_RECEIVED_SUBSCRIPTION,
+        variables: subscriptionVariables,
+        updateQuery: (prev, { subscriptionData }) =>
+          updateConversations(prev, subscriptionData, 'RECEIVED'),
+      });
+
+      // message sent subscription
+      subscribeToMore({
+        document: MESSAGE_SENT_SUBSCRIPTION,
+        variables: subscriptionVariables,
+        updateQuery: (prev, { subscriptionData }) =>
+          updateConversations(prev, subscriptionData, 'SENT'),
+      });
+
+      // message status subscription
+      subscribeToMore({
+        document: MESSAGE_STATUS_SUBSCRIPTION,
+        variables: subscriptionVariables,
+        updateQuery: (prev, { subscriptionData }) =>
+          updateConversations(prev, subscriptionData, 'STATUS'),
+        onError: () => {},
+      });
+
+      // tag added subscription
+      subscribeToMore({
+        document: ADD_MESSAGE_TAG_SUBSCRIPTION,
+        variables: subscriptionVariables,
+        updateQuery: (prev, { subscriptionData }) =>
+          updateConversations(prev, subscriptionData, 'TAG_ADDED'),
+      });
+
+      // tag delete subscription
+      subscribeToMore({
+        document: DELETE_MESSAGE_TAG_SUBSCRIPTION,
+        variables: subscriptionVariables,
+        updateQuery: (prev, { subscriptionData }) =>
+          updateConversations(prev, subscriptionData, 'TAG_DELETED'),
+      });
+    }
+  }, [subscribeToMore]);
 
   useEffect(() => {
     if (data && collectionData) {
       setDataLoaded(true);
     }
   }, [data, collectionData]);
-
-  useEffect(() => {
-    loadData();
-    loadCollectionData();
-  }, []);
 
   // lets return empty if we are still loading
   if (loading) return <div />;

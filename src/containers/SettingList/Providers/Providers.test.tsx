@@ -11,7 +11,7 @@ const mocks = LIST_ITEM_MOCKS;
 const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <Router>
-      <Providers match={{ params: { id: 1 } }} />
+      <Providers />
     </Router>
   </MockedProvider>
 );
@@ -19,7 +19,7 @@ const wrapper = (
 const wrapperWithType = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <Router>
-      <Providers match={{ params: { type: 'gupshup' } }} />
+      <Providers />
     </Router>
   </MockedProvider>
 );

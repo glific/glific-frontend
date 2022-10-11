@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import { useQuery } from '@apollo/client';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { ReactComponent as StaffManagementIcon } from 'assets/images/icons/StaffManagement/Active.svg';
@@ -21,10 +21,6 @@ import { GET_ROLE_NAMES } from 'graphql/queries/Role';
 import { organizationHasDynamicRole } from 'common/utils';
 import styles from './StaffManagement.module.css';
 
-export interface StaffManagementProps {
-  match: any;
-}
-
 const staffManagementIcon = <StaffManagementIcon />;
 
 const queries = {
@@ -34,7 +30,7 @@ const queries = {
   deleteItemQuery: DELETE_USER,
 };
 
-export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
+export const StaffManagement = () => {
   const hasDynamicRoles = organizationHasDynamicRole();
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
@@ -45,7 +41,7 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   const [helpDialog, setHelpDialog] = useState(false);
   const [isAdmin] = useState(getUserRole().includes('Admin'));
   const [isManager] = useState(getUserRole().includes('Manager'));
-  const history = useHistory();
+  const navigate = useNavigate();
   const { t } = useTranslation();
 
   let dialog;
@@ -298,7 +294,7 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   const checkAfterSave = (updatedUser: any) => {
     const { id, roles: userRoles } = updatedUser.updateUser.user;
     if (isAdmin && getUserSession('id') === id && !userRoles.includes('Admin')) {
-      history.push('/logout/user');
+      navigate('/logout/user');
     }
   };
 
@@ -309,7 +305,6 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
       {dialog}
       <FormLayout
         {...queries}
-        match={match}
         afterSave={checkAfterSave}
         states={states}
         setStates={setStates}

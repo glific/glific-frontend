@@ -6,6 +6,7 @@ import axios from 'axios';
 import { ResetPasswordPhone } from './ResetPasswordPhone';
 
 jest.mock('axios');
+const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 const wrapper = (
   <MemoryRouter>
@@ -30,7 +31,7 @@ describe('<ResetPasswordPhone />', () => {
     const { container } = render(wrapper);
 
     // enter the phone
-    const phone = container.querySelector('input[type="tel"]');
+    const phone = container.querySelector('input[type="tel"]') as HTMLInputElement;
     fireEvent.change(phone, { target: { value: '+919978776554' } });
 
     // click on GENERATE button
@@ -39,7 +40,7 @@ describe('<ResetPasswordPhone />', () => {
 
     // set the mock
     const errorMessage = 'Cannot send the otp to 919978776554';
-    axios.post.mockImplementationOnce(() => Promise.reject(new Error(errorMessage)));
+    mockedAxios.post.mockImplementationOnce(() => Promise.reject(new Error(errorMessage)));
 
     await waitFor(() => {
       const authContainer = screen.getByTestId('AuthContainer');
@@ -53,7 +54,7 @@ describe('<ResetPasswordPhone />', () => {
     const { container } = render(wrapper);
 
     // enter the phone
-    const phone = container.querySelector('input[type="tel"]');
+    const phone = container.querySelector('input[type="tel"]') as HTMLInputElement;
     fireEvent.change(phone, { target: { value: '+919978776554' } });
 
     // click on continue
@@ -64,7 +65,7 @@ describe('<ResetPasswordPhone />', () => {
 
     // let's mock successful login submission
     const responseData = { data: { data: { data: {} } } };
-    axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+    mockedAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
 
     // TODOS: need to fix for successful response
     // await waitFor(() => {

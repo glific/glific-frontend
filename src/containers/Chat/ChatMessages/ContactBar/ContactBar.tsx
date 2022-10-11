@@ -9,7 +9,7 @@ import {
   ClickAwayListener,
   IconButton,
 } from '@material-ui/core';
-import { useHistory } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 import { useMutation, useLazyQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
@@ -80,21 +80,20 @@ export interface ContactBarProps {
   isSimulator?: boolean;
 }
 
-export const ContactBar: React.SFC<ContactBarProps> = (props) => {
-  const {
-    contactId,
-    collectionId,
-    contactBspStatus,
-    lastMessageTime,
-    contactStatus,
-    displayName,
-    handleAction,
-    isSimulator,
-  } = props;
-
+export const ContactBar = ({
+  contactId,
+  collectionId,
+  contactBspStatus,
+  lastMessageTime,
+  contactStatus,
+  displayName,
+  handleAction,
+  isSimulator,
+}: ContactBarProps) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
-  const history = useHistory();
+  const navigate = useNavigate();
+  const location = useLocation();
   const [showCollectionDialog, setShowCollectionDialog] = useState(false);
   const [showFlowDialog, setShowFlowDialog] = useState(false);
   const [showBlockDialog, setShowBlockDialog] = useState(false);
@@ -447,7 +446,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
       disabled={isSimulator}
       data-testid="viewProfile"
       onClick={() => {
-        history.push(`/contact-profile/${contactId}`);
+        navigate(`/contact-profile/${contactId}`);
       }}
     >
       {isSimulator ? (
@@ -462,7 +461,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
       className={styles.ListButtonPrimary}
       data-testid="viewContacts"
       onClick={() => {
-        history.push(`/collection/${collectionId}/contacts`);
+        navigate(`/collection/${collectionId}/contacts`);
       }}
     >
       <ProfileIcon className={styles.Icon} />
@@ -551,8 +550,6 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   }
 
   const getTitleAndIconForSmallScreen = (() => {
-    const { location } = history;
-
     if (location.pathname.includes('collection')) {
       return CollectionIcon;
     }

@@ -12,8 +12,14 @@ export interface StaticOrganizationContetsProps {
   buttonText?: any;
   handleStep?: any;
 }
-export const StaticOrganizationContents: React.SFC<StaticOrganizationContetsProps> = (props) => {
-  const { title, subtitle, links, buttonText, handleStep } = props;
+
+export const StaticOrganizationContents = ({
+  title,
+  subtitle,
+  links,
+  buttonText,
+  handleStep,
+}: StaticOrganizationContetsProps) => {
   let preRequisites;
   if (links) {
     preRequisites = links.map((item: any, index: number) => {

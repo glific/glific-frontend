@@ -41,9 +41,7 @@ export const Billing = () => (
   </Elements>
 );
 
-export interface BillingProps {}
-
-export const BillingForm: React.FC<BillingProps> = () => {
+export const BillingForm = () => {
   const stripe = useStripe();
   const elements = useElements();
 

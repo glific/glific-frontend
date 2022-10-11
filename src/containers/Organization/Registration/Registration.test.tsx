@@ -6,6 +6,8 @@ import axios from 'axios';
 import { Registration } from './Registration';
 
 jest.mock('axios');
+const mockedAxios = axios as jest.Mocked<typeof axios>;
+
 jest.mock('react-google-recaptcha', () => (props: any) => (
   <input
     type="checkbox"
@@ -62,7 +64,7 @@ describe('<Registration />', () => {
 
     const responseData = { data: { is_valid: true, messages: [] } };
     act(() => {
-      axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+      mockedAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
     });
   });
 
@@ -89,7 +91,7 @@ describe('<Registration />', () => {
 
     const responseData = { data: { is_valid: false, messages: [] } };
     act(() => {
-      axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+      mockedAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
     });
   });
 });

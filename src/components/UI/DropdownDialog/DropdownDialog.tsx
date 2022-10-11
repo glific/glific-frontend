@@ -13,8 +13,14 @@ export interface DropdownDialogProps {
   description?: string;
 }
 
-export const DropdownDialog: React.FC<DropdownDialogProps> = (props: DropdownDialogProps) => {
-  const { title, handleCancel, options, placeholder, description, handleOk } = props;
+export const DropdownDialog = ({
+  title,
+  handleCancel,
+  options,
+  placeholder,
+  description,
+  handleOk,
+}: DropdownDialogProps) => {
   const [selectedValue, setSelectedValue] = useState('');
 
   const handleChange = (event: any) => {

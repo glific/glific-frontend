@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Redirect, Link } from 'react-router-dom';
+import { Navigate, Link, useParams } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
+// eslint-disable-next-line no-unused-vars
 import { DocumentNode, ApolloError, useQuery, useMutation } from '@apollo/client';
 import { Typography, IconButton } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
@@ -32,7 +33,6 @@ export const Heading = ({ icon, formTitle }: any) => (
 );
 
 export interface FormLayoutProps {
-  match: any;
   deleteItemQuery: DocumentNode;
   states: Object;
   setStates: Function;
@@ -46,7 +46,7 @@ export interface FormLayoutProps {
   createItemQuery: DocumentNode;
   updateItemQuery: DocumentNode;
   defaultAttribute?: any;
-  icon: Object;
+  icon: React.ReactNode;
   idType?: string;
   additionalAction?: any;
   additionalQuery?: Function | null;
@@ -79,12 +79,12 @@ export interface FormLayoutProps {
   onPreviewClick?: Function;
   getQueryFetchPolicy?: any;
   saveOnPageChange?: boolean;
+  entityId?: any;
   restrictDelete?: boolean;
   languageAttributes?: any;
 }
 
-export const FormLayout: React.SFC<FormLayoutProps> = ({
-  match,
+export const FormLayout = ({
   deleteItemQuery,
   states,
   setStates,
@@ -128,6 +128,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   onPreviewClick = () => {},
   getQueryFetchPolicy = 'cache-first',
   saveOnPageChange = true,
+  entityId = null,
   restrictDelete = false,
   languageAttributes = {},
 }: FormLayoutProps) => {
@@ -141,6 +142,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   const [saveClick, onSaveClick] = useState(false);
   const [isLoadedData, setIsLoadedData] = useState(false);
   const [customError, setCustomError] = useState<any>(null);
+  const params = useParams();
 
   const { t } = useTranslation();
 
@@ -148,7 +150,11 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
 
   const capitalListItemName = listItemName[0].toUpperCase() + listItemName.slice(1);
   let item: any = null;
-  const itemId = match.params.id ? match.params.id : false;
+  let itemId = params.id ? params.id : false;
+  if (!itemId && entityId) {
+    itemId = entityId;
+  }
+
   let variables: any = itemId ? { [idType]: itemId } : false;
 
   const [deleteItem] = useMutation(deleteItemQuery, {
@@ -179,7 +185,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     },
   });
   if (listItem === 'credential') {
-    variables = match.params.shortcode ? { shortcode: match.params.shortcode } : false;
+    variables = params.type ? { shortcode: params.type } : false;
   }
 
   const { loading, error } = useQuery(getItemQuery, {
@@ -326,7 +332,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         /**
          * When idType is organizationId
          * We are updating billing for given organization
-         * since match.params.id is orgId we want billing
+         * since params.id is orgId we want billing
          * id to update billing details
          */
         const payloadBody = { ...payload };
@@ -420,18 +426,18 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   };
 
   if (formSubmitted && redirect) {
-    return <Redirect to={action ? `${additionalAction.link}/${link}` : `/${redirectionLink}`} />;
+    return <Navigate to={action ? `${additionalAction.link}/${link}` : `/${redirectionLink}`} />;
   }
 
   if (deleted) {
     if (afterDelete) {
-      return <Redirect to={afterDelete.link} />;
+      return <Navigate to={afterDelete.link} />;
     }
-    return <Redirect to={`/${redirectionLink}`} />;
+    return <Navigate to={`/${redirectionLink}`} />;
   }
 
   if (formCancelled) {
-    return <Redirect to={cancelLink ? `/${cancelLink}` : `/${redirectionLink}`} />;
+    return <Navigate to={cancelLink ? `/${cancelLink}` : `/${redirectionLink}`} />;
   }
   const validateLanguage = (value: any) => {
     if (value && getLanguageId) {

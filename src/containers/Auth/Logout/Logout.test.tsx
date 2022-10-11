@@ -17,7 +17,7 @@ describe('<Logout />', () => {
     render(
       <MockedProvider>
         <MemoryRouter>
-          <Logout match={{ params: { mode: 'user' } }} />
+          <Logout />
         </MemoryRouter>
       </MockedProvider>
     );
@@ -27,13 +27,13 @@ describe('<Logout />', () => {
     render(
       <MockedProvider>
         <MemoryRouter>
-          <Logout match={{ params: { mode: '' } }} />
+          <Logout />
         </MemoryRouter>
       </MockedProvider>
     );
 
     await waitFor(() => {
-      const button = screen.getByText('Login');
+      const button = screen.getByTestId('ok-button');
       fireEvent.click(button);
     });
   });

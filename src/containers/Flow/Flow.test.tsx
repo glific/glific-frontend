@@ -1,7 +1,6 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { render, waitFor, fireEvent } from '@testing-library/react';
-import { MemoryRouter, Router } from 'react-router-dom';
-import { createBrowserHistory } from 'history';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
 
 import { getOrganizationLanguagesQuery, getOrganizationQuery } from 'mocks/Organization';
 import { getFlowQuery, filterFlowQuery } from 'mocks/Flow';
@@ -16,23 +15,38 @@ const mocks = [
   filterFlowQuery,
   getOrganizationLanguagesQuery,
 ];
-const flow = (match: any) => (
+
+const mockUseLocationValue: any = {
+  pathname: '/',
+  search: '',
+  hash: '',
+  state: null,
+};
+jest.mock('react-router-dom', () => ({
+  ...(jest.requireActual('react-router-dom') as {}),
+  useLocation: () => {
+    return mockUseLocationValue;
+  },
+  useParams: () => ({ id: 1 }),
+}));
+
+const flow = () => (
   <MockedProvider mocks={mocks} addTypename={false}>
     <MemoryRouter>
-      <Flow match={match} />
+      <Flow />
     </MemoryRouter>
   </MockedProvider>
 );
 
 it('should render Flow', async () => {
-  const wrapper = render(flow({ params: { id: 1 } }));
+  const wrapper = render(flow());
   await waitFor(() => {
     expect(wrapper.container).toBeInTheDocument();
   });
 });
 
 it('should support keywords in a separate language', async () => {
-  const { container, getByText, findByText, getByTestId } = render(flow({ params: {} }));
+  const { container, getByText, findByText, getByTestId } = render(flow());
 
   await waitFor(() => {
     const nameInput = getByTestId('formLayout').querySelector('input[name="name"]');
@@ -59,7 +73,7 @@ it('should support keywords in a separate language', async () => {
 });
 
 it('should not allow special characters in keywords', async () => {
-  const { container, getByText, getByTestId } = render(flow({ params: {} }));
+  const { container, getByText, getByTestId } = render(flow());
 
   await waitFor(() => {
     const nameInput = getByTestId('formLayout').querySelector('input[name="name"]');
@@ -84,24 +98,43 @@ it('should not allow special characters in keywords', async () => {
   });
 });
 
-it('should create copy of flow', async () => {
-  const history: any = createBrowserHistory();
-  history.push({ pathname: `/flow/1/edit`, state: 'copy' });
-
-  const copyFlow = (match: any) => (
+it('should edit the flow', async () => {
+  const editFlow = () => (
     <MockedProvider mocks={mocks} addTypename={false}>
-      <Router history={history}>
-        <Flow match={match} />
-      </Router>
+      <MemoryRouter initialEntries={[`/flow/1/edit`]}>
+        <Routes>
+          <Route path="flow/:id/edit" element={<Flow />} />
+        </Routes>
+      </MemoryRouter>
+    </MockedProvider>
+  );
+  const { container } = render(editFlow());
+  await waitFor(() => {
+    const inputElement = container.querySelector('input[name="name"]') as HTMLInputElement;
+    expect(inputElement?.value).toBe('Help');
+  });
+});
+
+it('should create copy of flow', async () => {
+  mockUseLocationValue.state = 'copy';
+
+  const copyFlow = () => (
+    <MockedProvider mocks={mocks} addTypename={false}>
+      <MemoryRouter initialEntries={[`/flow/1/edit`]}>
+        <Routes>
+          <Route path="flow/:id/edit" element={<Flow />} />
+        </Routes>
+      </MemoryRouter>
     </MockedProvider>
   );
 
-  const { container, getByTestId } = render(copyFlow({ params: { id: 1 } }));
+  const { container, getByTestId } = render(copyFlow());
   await waitFor(() => {
-    expect(container.querySelector('input[name="name"]')?.value).toBe('Copy of Help');
+    const inputElement = container.querySelector('input[name="name"]') as HTMLInputElement;
+    expect(inputElement?.value).toBe('Copy of Help');
   });
 
-  fireEvent.change(container.querySelector('input[name="keywords"]'), {
+  fireEvent.change(container.querySelector('input[name="keywords"]') as HTMLInputElement, {
     target: { value: 'help, activity' },
   });
   const button = getByTestId('submitActionButton');
@@ -113,19 +146,4 @@ it('should create copy of flow', async () => {
     //   'The keyword `help` was already used in the `Help Workflow` Flow.'
     // );
   });
-});
-
-it('should edit the flow', async () => {
-  const history: any = createBrowserHistory();
-  history.push({ pathname: `/flow/1/edit` });
-
-  const editFlow = (match: any) => (
-    <MockedProvider mocks={mocks} addTypename={false}>
-      <Router history={history}>
-        <Flow match={match} />
-      </Router>
-    </MockedProvider>
-  );
-  const { container, getByTestId } = render(editFlow({ params: { id: 1 } }));
-  await waitFor(() => {});
 });

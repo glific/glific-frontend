@@ -12,10 +12,8 @@ import {
 import { DELETE_INTERACTIVE } from 'graphql/mutations/InteractiveMessage';
 import { getInteractiveMessageBody } from 'common/utils';
 import { QUICK_REPLY } from 'common/constants';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styles from './InteractiveMessageList.module.css';
-
-export interface InteractiveMessageListProps {}
 
 const getLabel = (text: string) => <p className={styles.LabelText}>{text}</p>;
 
@@ -62,11 +60,11 @@ const queries = {
   deleteItemQuery: DELETE_INTERACTIVE,
 };
 
-export const InteractiveMessageList: React.SFC<InteractiveMessageListProps> = () => {
+export const InteractiveMessageList = () => {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState('');
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const getColumns = ({ id, label, interactiveContent, type, language, translations }: any) => ({
     id,
@@ -95,7 +93,7 @@ export const InteractiveMessageList: React.SFC<InteractiveMessageListProps> = ()
   };
 
   const handleCopyInteractive = (id: string) => {
-    history.push({ pathname: `/interactive-message/${id}/edit`, state: 'copy' });
+    navigate(`/interactive-message/${id}/edit`, { state: 'copy' });
   };
 
   const additionalAction = [

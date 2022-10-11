@@ -68,7 +68,34 @@ export const mocks = [
   {
     request: {
       query: UPDATE_CONTACT_FIELDS,
-      variables: { id: '1', input: { name: 'Age Group Name' } },
+      variables: { id: '1', input: { name: 'Age Group' } },
+    },
+    result: {
+      data: {
+        updateContactsField: {
+          contactsField: {
+            valueType: 'TEXT',
+            updatedAt: '2021-05-31T02:46:05Z',
+            shortcode: 'age_group',
+            scope: 'CONTACT',
+            name: 'Age Group',
+            insertedAt: '2021-05-31T02:46:05Z',
+            id: '1',
+            organization: {
+              shortcode: 'glific',
+              isApproved: true,
+              isActive: true,
+            },
+          },
+          errors: null,
+        },
+      },
+    },
+  },
+  {
+    request: {
+      query: UPDATE_CONTACT_FIELDS,
+      variables: { id: '1', input: { name: 'Age Group' } },
     },
     result: {
       data: {

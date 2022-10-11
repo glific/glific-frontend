@@ -12,9 +12,7 @@ import { setNotification } from 'common/notification';
 import { listIcon } from '../SuperAdminContactManagement/SuperAdminContactManagement';
 import styles from './AdminContactManagement.module.css';
 
-export interface AdminContactManagementProps {}
-
-export const AdminContactManagement: React.SFC<AdminContactManagementProps> = () => {
+export const AdminContactManagement = () => {
   const [fileName, setFileName] = useState<string>('');
   const [errors, setErrors] = useState<any>([]);
   const [csvContent, setCsvContent] = useState<String | null | ArrayBuffer>('');

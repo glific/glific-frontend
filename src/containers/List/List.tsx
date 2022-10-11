@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Redirect, Link } from 'react-router-dom';
+import { Navigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useQuery, useMutation, DocumentNode, useLazyQuery } from '@apollo/client';
 import { IconButton, TableFooter, TablePagination, TableRow, Typography } from '@material-ui/core';
@@ -32,7 +32,7 @@ export interface ListProps {
   dialogMessage?: string | any;
   pageLink: string;
   columns: Function;
-  listIcon: Object;
+  listIcon: React.ReactNode;
   columnStyles: Array<any>;
   secondaryButton?: any;
   title: string;
@@ -85,7 +85,7 @@ interface TableVals {
   sortDirection: 'asc' | 'desc';
 }
 
-export const List: React.SFC<ListProps> = ({
+export const List = ({
   columnNames = [],
   countQuery,
   listItem,
@@ -269,7 +269,7 @@ export const List: React.SFC<ListProps> = ({
       }
       fetchQuery();
     }
-  }, [userRole]);
+  }, []);
 
   let deleteItem: any;
 
@@ -309,7 +309,7 @@ export const List: React.SFC<ListProps> = ({
   };
 
   const useDelete = (message: string | any) => {
-    let component = {};
+    let component: any = {};
     const props = { disableOk: false, handleOk: handleDeleteItem };
     if (typeof message === 'string') {
       component = message;
@@ -358,7 +358,7 @@ export const List: React.SFC<ListProps> = ({
   }
 
   if (newItem) {
-    return <Redirect to={`/${pageLink}/add`} />;
+    return <Navigate to={`/${pageLink}/add`} />;
   }
 
   if (loading || l || loadingCollections) return <Loading />;

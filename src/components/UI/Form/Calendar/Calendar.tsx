@@ -18,7 +18,7 @@ export interface CalendarProps {
   minDate?: any;
 }
 
-export const Calendar: React.SFC<CalendarProps> = ({
+export const Calendar = ({
   variant = 'inline',
   inputVariant = 'outlined',
   format = 'MM/dd/yyyy',
@@ -27,7 +27,7 @@ export const Calendar: React.SFC<CalendarProps> = ({
   form: { touched, errors, setFieldValue },
   placeholder,
   minDate,
-}) => {
+}: CalendarProps) => {
   const errorText = getIn(errors, field.name);
   const touchedVal = getIn(touched, field.name);
   const hasError = touchedVal && errorText !== undefined;

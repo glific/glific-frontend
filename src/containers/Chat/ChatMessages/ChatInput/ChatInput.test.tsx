@@ -113,7 +113,7 @@ describe('<ChatInput />', () => {
     fireEvent.click(getAllByTestId('shortcutButton')[0]);
 
     await waitFor(() => {
-      fireEvent.change(getByTestId('searchInput').querySelector('input'), {
+      fireEvent.change(getByTestId('searchInput').querySelector('input') as HTMLElement, {
         target: { value: 'hi' },
       });
     });

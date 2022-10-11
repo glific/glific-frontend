@@ -10,6 +10,7 @@ import {
 } from './AuthService';
 
 jest.mock('axios');
+const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 describe('AuthService', () => {
   beforeEach(() => {
@@ -30,7 +31,7 @@ describe('AuthService', () => {
 
     // let's mock the axios call
     const responseData = { data: { data: { data: {} } } };
-    axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+    mockedAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
     await expect(renewAuthToken()).resolves.toEqual(responseData);
   });
 
@@ -40,7 +41,7 @@ describe('AuthService', () => {
 
     // let's mock the axios call
     const invalidErrorMessage = 'Invalid token';
-    axios.post.mockImplementationOnce(() => Promise.reject(new Error(invalidErrorMessage)));
+    mockedAxios.post.mockImplementationOnce(() => Promise.reject(new Error(invalidErrorMessage)));
     await expect(renewAuthToken()).rejects.toThrow(invalidErrorMessage);
   });
 
@@ -91,13 +92,13 @@ describe('AuthService', () => {
     const responseData = {
       data: { message: 'OTP sent successfully to 919967665667', phone: '919967665667' },
     };
-    axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+    mockedAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
     await expect(sendOTP('919967665667')).resolves.toEqual(responseData);
   });
 
   test('testing sendOTP failure', async () => {
     const errorMessage = 'Cannot send the otp to 919967665667';
-    axios.post.mockImplementationOnce(() => Promise.reject(new Error(errorMessage)));
+    mockedAxios.post.mockImplementationOnce(() => Promise.reject(new Error(errorMessage)));
     await expect(sendOTP('919967665667')).rejects.toThrow(errorMessage);
   });
 });

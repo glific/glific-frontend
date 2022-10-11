@@ -10,9 +10,7 @@ import { List } from 'containers/List/List';
 import { getUserRole } from 'context/role';
 import styles from './StaffManagementList.module.css';
 
-export interface StaffManagementProps {}
-
-export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
+export const StaffManagementList = () => {
   const { t } = useTranslation();
 
   const { data: organizationPhone } = useQuery(GET_ORGANIZATION_PHONE);

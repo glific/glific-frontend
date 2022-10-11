@@ -62,7 +62,7 @@ test('template should have an input for label', () => {
 
 test('template should call the query on clicking save button', async () => {
   const { getByTestId } = render(messageTemplate);
-  fireEvent.change(getByTestId('templateInput').querySelector('input'), {
+  fireEvent.change(getByTestId('templateInput').querySelector('input') as HTMLElement, {
     target: {
       value: 'important',
     },
@@ -94,8 +94,7 @@ test('error when no input is provided', () => {
 test('error removed when user inputs a value', () => {
   const { getByTestId } = render(messageTemplate);
 
-  const input = getByTestId('templateInput').querySelector('input');
-  fireEvent.click(getByTestId('ok-button'));
+  const input = getByTestId('templateInput').querySelector('input') as HTMLElement;
   fireEvent.change(input, {
     target: {
       value: 'important',

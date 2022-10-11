@@ -78,6 +78,8 @@ const billingQuery = (status: any, subscriptionId: any = 'wjnwicwowc98nj') => ({
           email: 'glific@glific.com',
           id: '1',
           isActive: true,
+          deductTds: false,
+          tdsAmount: 0,
           stripeSubscriptionId: subscriptionId,
           stripeSubscriptionItems: null,
           stripeSubscriptionStatus: status,

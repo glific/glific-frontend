@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider, CssBaseline } from '@material-ui/core';
 import Appsignal from '@appsignal/javascript';
@@ -13,13 +13,13 @@ import { APPSIGNAL_API_KEY } from './config';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import { version } from '../package.json';
+import packageInfo from '../package.json';
 
 let appComponent = <App />;
 if (APPSIGNAL_API_KEY) {
   const appsignal = new Appsignal({
     key: APPSIGNAL_API_KEY,
-    revision: version,
+    revision: packageInfo.version,
   });
   appsignal.use(BreadcrumbsNetwork.plugin({ xhrEnabled: true }));
   appsignal.use(PathDecorator.plugin());
@@ -32,14 +32,13 @@ if (APPSIGNAL_API_KEY) {
   );
 }
 
-ReactDOM.render(
-  <React.StrictMode>
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <BrowserRouter>{appComponent}</BrowserRouter>
-    </ThemeProvider>
-  </React.StrictMode>,
-  document.getElementById('root')
+const root = createRoot(document.getElementById('root')!);
+
+root.render(
+  <ThemeProvider theme={theme}>
+    <CssBaseline />
+    <BrowserRouter>{appComponent}</BrowserRouter>
+  </ThemeProvider>
 );
 
 // If you want your app to work offline and load faster, you can change

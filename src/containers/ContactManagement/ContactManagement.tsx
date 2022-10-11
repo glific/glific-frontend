@@ -4,9 +4,7 @@ import { getUserRole } from 'context/role';
 import SuperAdminContactManagement from './SuperAdminContactManagement/SuperAdminContactManagement';
 import AdminContactManagement from './AdminContactManagement/AdminContactManagement';
 
-export interface ContactManagementProps {}
-
-export const ContactManagement: React.SFC<ContactManagementProps> = () => {
+export const ContactManagement = () => {
   const role = getUserRole();
   if (role.includes('Glific_admin')) {
     return <SuperAdminContactManagement />;

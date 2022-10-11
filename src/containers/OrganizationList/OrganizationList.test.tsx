@@ -11,7 +11,7 @@ afterEach(cleanup);
 const mocks = getAllOrganizations;
 setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
 
-const props = { match: { params: {} }, openExtensionModal: false, openCustomerModal: false };
+const props = { openExtensionModal: false, openCustomerModal: false };
 
 const list = (
   <MockedProvider mocks={mocks} addTypename={false}>
@@ -66,7 +66,7 @@ test('Update status', async () => {
   fireEvent.click(deleteButton);
 
   const confirmationInput = screen.getByRole('textbox');
-  UserEvent.type(confirmationInput, 'Test');
+  await UserEvent.type(confirmationInput, 'Test');
 
   expect(confirmationInput).toBeInTheDocument();
   expect(confirmationInput).toHaveValue('Test');

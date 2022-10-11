@@ -12,13 +12,18 @@ const mocks: any = CONVERSATION_MOCKS;
 
 setUserSession(JSON.stringify({ roles: ['Admin'], organization: { id: '1' } }));
 
+const ChatSubscriptionParams = {
+  setDataLoaded: jest.fn(),
+  setLoading: jest.fn(),
+};
+
 describe('<ChatSubscription />', () => {
   afterEach(cleanup);
 
   test('it should render <ChatSubscription /> component correctly', async () => {
     render(
       <MockedProvider mocks={mocks} addTypename={false}>
-        <ChatSubscription setDataLoaded={jest.fn()} setLoading={jest.fn()} />
+        <ChatSubscription {...ChatSubscriptionParams} />
       </MockedProvider>
     );
 
@@ -172,7 +177,7 @@ describe('<ChatSubscription />', () => {
     render(
       <ApolloProvider client={client}>
         <MockedProvider mocks={mocks} addTypename={false}>
-          <ChatSubscription setDataLoaded={jest.fn()} setLoading={jest.fn()} />
+          <ChatSubscription {...ChatSubscriptionParams} />
         </MockedProvider>
       </ApolloProvider>
     );

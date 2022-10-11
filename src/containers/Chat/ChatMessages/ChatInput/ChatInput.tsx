@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { EditorState, ContentState } from 'draft-js';
 import { Container, Button, ClickAwayListener, Fade, IconButton } from '@material-ui/core';
-import 'emoji-mart/css/emoji-mart.css';
 import clsx from 'clsx';
 import { useMutation, useQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
@@ -43,16 +42,15 @@ export interface ChatInputProps {
   lastMessageTime?: any;
 }
 
-export const ChatInput: React.SFC<ChatInputProps> = (props) => {
-  const {
-    onSendMessage,
-    contactBspStatus,
-    contactStatus,
-    additionalStyle,
-    handleHeightChange,
-    isCollection,
-    lastMessageTime,
-  } = props;
+export const ChatInput = ({
+  onSendMessage,
+  contactBspStatus,
+  contactStatus,
+  additionalStyle,
+  handleHeightChange,
+  isCollection,
+  lastMessageTime,
+}: ChatInputProps) => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [selectedTab, setSelectedTab] = useState('');
   const [open, setOpen] = React.useState(false);

@@ -10,6 +10,7 @@ describe('<ChatTemplates />', () => {
     searchVal: '',
     handleSelectText: jest.fn(),
     isTemplate: false,
+    isInteractiveMsg: false,
   };
 
   beforeEach(() => {
@@ -17,6 +18,7 @@ describe('<ChatTemplates />', () => {
       searchVal: '',
       handleSelectText: jest.fn(),
       isTemplate: false,
+      isInteractiveMsg: false,
     };
   });
 

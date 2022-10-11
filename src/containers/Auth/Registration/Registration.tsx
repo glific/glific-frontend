@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Redirect } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { REGISTRATION_HELP_LINK } from 'config';
@@ -10,27 +10,15 @@ import { ReactComponent as AlertIcon } from 'assets/images/icons/Alert/White.svg
 import { Auth } from '../Auth';
 import styles from './Registration.module.css';
 
-export interface RegistrationProps {}
-
-export const Registration: React.SFC<RegistrationProps> = () => {
+export const Registration = () => {
   const [redirect, setRedirect] = useState(false);
   const [user, setUser] = useState({ userName: '', phone: '', password: '' });
   const [authError, setAuthError] = useState('');
   const { t } = useTranslation();
 
   if (redirect) {
-    return (
-      <Redirect
-        to={{
-          pathname: '/confirmotp',
-          state: {
-            name: user.userName,
-            phoneNumber: user.phone,
-            password: user.password,
-          },
-        }}
-      />
-    );
+    const stateObject = { name: user.userName, phoneNumber: user.phone, password: user.password };
+    return <Navigate to="/confirmotp" replace state={stateObject} />;
   }
 
   const onSubmitRegistration = (values: any) => {

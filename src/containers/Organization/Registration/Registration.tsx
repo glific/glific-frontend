@@ -74,8 +74,7 @@ const initialFormValues = {
 const supportCheckboxTitle =
   'I agree to let Glific team create a support staff account on my Glific setup. This allows us to get better troubleshooting response to our issues.';
 
-export const Registration: React.SFC<RegistrationProps> = (props) => {
-  const { title, buttonText, handleStep } = props;
+export const Registration = ({ title, buttonText, handleStep }: RegistrationProps) => {
   const [registrationError, setRegistrationError] = useState<any>('');
   const [code, setCode] = useState('shortcode');
   const [redirect, setRedirect] = useState(false);

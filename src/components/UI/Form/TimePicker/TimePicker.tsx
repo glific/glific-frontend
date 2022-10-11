@@ -19,7 +19,7 @@ export interface TimePickerProps {
   helperText?: string;
 }
 
-export const TimePicker: React.SFC<TimePickerProps> = ({
+export const TimePicker = ({
   variant = 'inline',
   inputVariant = 'outlined',
   field,
@@ -27,7 +27,7 @@ export const TimePicker: React.SFC<TimePickerProps> = ({
   placeholder,
   disabled = false,
   helperText,
-}) => {
+}: TimePickerProps) => {
   moment.defaultFormat = 'Thh:mm:ss';
   const dateValue = field.value ? moment(field.value, moment.defaultFormat).toDate() : null;
   const [open, setOpen] = useState(false);

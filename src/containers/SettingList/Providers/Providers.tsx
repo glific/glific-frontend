@@ -3,6 +3,7 @@ import { useQuery, useApolloClient } from '@apollo/client';
 import Typography from '@material-ui/core/Typography';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router-dom';
 
 import { FormLayout } from 'containers/Form/FormLayout';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
@@ -16,10 +17,6 @@ import {
 } from 'graphql/mutations/Organization';
 import { ReactComponent as Settingicon } from 'assets/images/icons/Settings/Settings.svg';
 
-export interface ProvidersProps {
-  match: any;
-}
-
 let validation: any = {};
 let FormSchema = Yup.object().shape(validation);
 const SettingIcon = <Settingicon />;
@@ -31,20 +28,17 @@ const queries = {
   deleteItemQuery: DELETE_ORGANIZATION,
 };
 
-export const Providers: React.SFC<ProvidersProps> = ({ match }) => {
-  const type = match.params.type ? match.params.type : null;
+export const Providers = () => {
   const [credentialId, setCredentialId] = useState(null);
   const client = useApolloClient();
   const { t } = useTranslation();
-
-  const param = { params: { id: credentialId, shortcode: type } };
   const [stateValues, setStateValues] = useState({});
-
   const [formFields, setFormFields] = useState([]);
-  const states: any = {};
-
   const [keys, setKeys] = useState({});
   const [secrets, setSecrets] = useState({});
+  const params = useParams();
+  const type = params.type ? params.type : null;
+  const states: any = {};
 
   const { data: providerData } = useQuery(GET_PROVIDERS, {
     variables: { filter: { shortcode: type } },
@@ -185,7 +179,6 @@ export const Providers: React.SFC<ProvidersProps> = ({ match }) => {
       backLinkButton={{ text: t('Back to settings'), link: '/settings' }}
       {...queries}
       title={title}
-      match={param}
       states={stateValues}
       setStates={setCredential}
       validationSchema={FormSchema}
@@ -202,6 +195,7 @@ export const Providers: React.SFC<ProvidersProps> = ({ match }) => {
       type="settings"
       redirect
       afterSave={saveHandler}
+      entityId={credentialId}
     />
   );
 };

@@ -8,7 +8,7 @@ export interface CaptchaProps {
   onError?: any;
 }
 
-export const Captcha: React.SFC<CaptchaProps> = ({ onChange, onError }) => (
+export const Captcha = ({ onChange, onError }: CaptchaProps) => (
   <div>
     <ReCAPTCHA sitekey={RECAPTCHA_CLIENT_KEY} onChange={onChange} onErrored={onError} />
   </div>

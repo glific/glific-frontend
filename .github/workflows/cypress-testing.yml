@@ -96,11 +96,12 @@ jobs:
         run: |
           echo clone cypress repo
           git clone https://github.com/glific/cypress-testing.git
+          cd cypress-testing
+          git checkout feature/package-fixes
+          cd ..
           echo done. go to dir.
           cp -r cypress-testing/cypress cypress
           yarn add cypress@7.3.0
-          yarn add @cypress/code-coverage
-          yarn add @cypress/instrument-cra
           cp cypress-testing/cypress.json.example cypress.json
           echo Copy Cypress.json from example
 

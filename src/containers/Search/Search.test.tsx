@@ -5,7 +5,6 @@ import { Search } from './Search';
 import { LIST_ITEM_MOCKS } from './Search.test.helper';
 
 const defaultProps = (type = 'search') => ({
-  match: { params: { id: 1 } },
   type,
   search: jest.fn(),
   handleCancel: jest.fn(),
@@ -14,6 +13,7 @@ const defaultProps = (type = 'search') => ({
     term: 'hi',
   },
   setState: jest.fn(),
+  searchId: '1',
 });
 
 const mocks = LIST_ITEM_MOCKS;

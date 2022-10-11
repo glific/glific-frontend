@@ -1,4 +1,4 @@
-import * as Manifest from '@glific/flow-editor/build/asset-manifest.json';
+import Manifest from '@glific/flow-editor/build/asset-manifest.json';
 import { FLOW_EDITOR_CONFIGURE_LINK, FLOW_EDITOR_API, CONTACT_CHAT_LINK } from 'config/index';
 
 const glificBase = FLOW_EDITOR_API;

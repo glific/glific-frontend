@@ -107,6 +107,6 @@ describe('<CollectionList />', () => {
     await waitFor(() => {
       fireEvent.click(getAllByTestId('additionalButton')[0]);
     });
-    fireEvent.click(getByTestId('searchDialogBox').querySelector('button'));
+    fireEvent.click(getByTestId('searchDialogBox').querySelector('button') as HTMLElement);
   });
 });
