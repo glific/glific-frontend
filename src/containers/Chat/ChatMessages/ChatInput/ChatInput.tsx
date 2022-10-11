@@ -175,11 +175,12 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
         null,
         Number(selectedTemplate.id)
       );
+      resetVariable();
       // else the type will by default be text
     } else {
       onSendMessage(message, null, 'TEXT', selectedTemplate, variableParam);
+      resetVariable();
     }
-    resetVariable();
 
     // Resetting the EditorState
     setEditorState(
