@@ -92,7 +92,8 @@
     "typescript": "^4.8.3",
     "uuid": "^9.0.0",
     "winston-logflare": "^0.1.1",
-    "yup": "^0.32.11"
+    "yup": "^0.32.11",
+    "react-app-rewired": "^2.2.1"
   },
   "scripts": {
     "setup": "yarn cache clean && yarn install --force && yarn run floweditor",
@@ -144,7 +145,6 @@
     "i18next-parser": "^6.5.0",
     "prettier": "^2.7.1",
     "process": "^0.11.10",
-    "react-app-rewired": "^2.2.1",
     "react-test-renderer": "^18.2.0",
     "stream-browserify": "^3.0.0",
     "yarn-upgrade-all": "^0.7.1"
