@@ -94,7 +94,8 @@
     "winston-logflare": "^0.1.1",
     "yup": "^0.32.11",
     "react-app-rewired": "^2.2.1",
-    "process": "^0.11.10"
+    "process": "^0.11.10",
+    "buffer": "^6.0.3"
   },
   "scripts": {
     "setup": "yarn cache clean && yarn install --force && yarn run floweditor",
@@ -142,7 +143,6 @@
   },
   "devDependencies": {
     "@types/react-test-renderer": "^18.0.0",
-    "buffer": "^6.0.3",
     "i18next-parser": "^6.5.0",
     "prettier": "^2.7.1",
     "react-test-renderer": "^18.2.0",
