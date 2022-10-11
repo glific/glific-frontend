@@ -2,32 +2,22 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import { ApolloProvider } from '@apollo/client';
 import 'i18n/config';
-import { ClearCacheProvider, useClearCacheCtx } from 'react-clear-cache';
 
 import 'assets/fonts/fonts.css';
 import gqlClient from 'config/apolloclient';
 import { SessionContext, SideDrawerContext } from 'context/session';
 import ErrorHandler from 'containers/ErrorHandler/ErrorHandler';
-import { checkAuthStatusService, getUserSession } from 'services/AuthService';
+import { checkAuthStatusService } from 'services/AuthService';
 import { UnauthenticatedRoute } from 'routes/UnauthenticatedRoute/UnauthenticatedRoute';
 import { AuthenticatedRoute } from 'routes/AuthenticatedRoute/AuthenticatedRoute';
 import { Logout } from 'containers/Auth/Logout/Logout';
-import { CLEAR_CACHE_DURATION } from 'common/constants';
-import setLogs from 'config/logs';
 
 const App = () => {
-  const { isLatestVersion, emptyCacheStorage } = useClearCacheCtx();
   const navigate = useNavigate();
   // by default, do not assign any value to assume login or logout
   // let's checkAuthStatusService allocate it on useEffect
   const [authenticated, setAuthenticated] = useState<any>();
   const [drawerOpen, setDrawerOpen] = useState(window.innerWidth > 768);
-
-  // if not the latest version empty cache
-  if (!isLatestVersion && emptyCacheStorage) {
-    setLogs(`Empty cache storage for user id -${getUserSession('id')}`, 'info');
-    emptyCacheStorage();
-  }
 
   useEffect(() => {
     setAuthenticated(checkAuthStatusService());
@@ -75,9 +65,7 @@ const App = () => {
     <SessionContext.Provider value={values}>
       <ApolloProvider client={gqlClient(navigate)}>
         <ErrorHandler />
-        <SideDrawerContext.Provider value={sideDraawerValues}>
-          <ClearCacheProvider duration={CLEAR_CACHE_DURATION}>{routes}</ClearCacheProvider>
-        </SideDrawerContext.Provider>
+        <SideDrawerContext.Provider value={sideDraawerValues}>{routes}</SideDrawerContext.Provider>
       </ApolloProvider>
     </SessionContext.Provider>
   );
