@@ -67,7 +67,6 @@ export const InteractiveMessage = () => {
 
   const [previousState, setPreviousState] = useState<any>({});
   const [nextLanguage, setNextLanguage] = useState<any>('');
-  const [warning, setWarning] = useState<any>();
   const { t } = useTranslation();
   const params = useParams();
 
@@ -395,27 +394,9 @@ export const InteractiveMessage = () => {
     }
   };
 
-  const displayWarning = () => {
-    if (type && type.id === 'DOCUMENT') {
-      setWarning(
-        <div className={styles.Warning}>
-          <ol>
-            <li>{t('Body is not supported for document.')}</li>
-          </ol>
-        </div>
-      );
-    } else {
-      setWarning(null);
-    }
-  };
-
   useEffect(() => {
     handleAddInteractiveTemplate(false, QUICK_REPLY);
   }, []);
-
-  useEffect(() => {
-    displayWarning();
-  }, [type]);
 
   const dialogMessage = t("You won't be able to use this again.");
 
@@ -648,7 +629,6 @@ export const InteractiveMessage = () => {
       options,
       optionLabel: 'label',
       multiple: false,
-      helperText: warning,
       textFieldProps: {
         variant: 'outlined',
         label: t('Attachment type'),

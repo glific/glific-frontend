@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import styles from './QuickReplyTemplate.module.css';
 import { ChatMessageType } from '../ChatMessage/ChatMessageType/ChatMessageType';
+import { MessagesWithLinks } from '../MessagesWithLinks/MessagesWithLinks';
 
 interface Content {
   type: string;
@@ -90,6 +91,7 @@ export const QuickReplyTemplate = ({
           location={{}}
           isSimulatedMessage={isSimulator}
         />
+        {contentType === 'DOCUMENT' && <MessagesWithLinks message={media.text} />}
       </div>
       <div className={styles.ButtonContainer}>{quickReplyButtons}</div>
     </div>
