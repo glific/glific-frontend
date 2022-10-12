@@ -27,7 +27,7 @@
     "@material-ui/pickers": "^3.3.10",
     "@material-ui/styles": "^4.11.5",
     "@stripe/react-stripe-js": "^1.10.0",
-    "@stripe/stripe-js": "^1.36.0",
+    "@stripe/stripe-js": "^1.37.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^14.4.3",
