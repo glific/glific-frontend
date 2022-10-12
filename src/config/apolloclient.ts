@@ -146,7 +146,7 @@ const gqlClient = (history: any) => {
 
   const link = retryLink.split(
     (operation) => subscribe.hasSubscription(operation.query),
-    refreshTokenLink.concat(errorLink.concat(wsLink)),
+    wsLink,
     refreshTokenLink.concat(errorLink.concat(authLink.concat(httpLink)))
   );
 
