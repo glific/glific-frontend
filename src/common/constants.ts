@@ -8,7 +8,6 @@ export const DATE_TIME_FORMAT = 'DD/MM/YYYY, HH:mm:ss';
 export const SIMULATOR_CONTACT = '9876543210';
 export const FLOW_STATUS_PUBLISHED = 'published';
 export const SIMULATOR_NUMBER_START = '9876543210';
-export const CLEAR_CACHE_DURATION = 360000;
 export const GUPSHUP_ENTERPRISE_SHORTCODE = 'gupshup_enterprise';
 // to find variables in message
 export const pattern = /[^{}]+(?=})/g;
