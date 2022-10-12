@@ -6,6 +6,10 @@ export const GET_COLLECTION = gql`
       group {
         id
         label
+        roles {
+          id
+          label
+        }
         description
         users {
           id
@@ -30,6 +34,10 @@ export const FILTER_COLLECTIONS = gql`
       description
       isRestricted
       contactsCount
+      roles {
+        id
+        label
+      }
     }
   }
 `;

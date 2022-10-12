@@ -9,6 +9,7 @@ import {
   getCountWithFilter,
   getCountWithEmptyFilter,
   markAllNotificationAsRead,
+  getInfoNotificationsQuery,
 } from 'mocks/Notifications';
 import { setUserSession } from 'services/AuthService';
 import { NotificationList } from './NotificationList';
@@ -23,6 +24,7 @@ const mocks: any = [
   getCountWithEmptyFilter,
   markAllNotificationAsRead,
   getFilteredNotificationsQuery,
+  getInfoNotificationsQuery,
 ];
 
 const notifications = (
@@ -95,11 +97,23 @@ test('it should show copy text and view option on clicking entity ', async () =>
   });
 });
 
-test('it should show filter checkboxes', async () => {
+test('it should show filter radio button', async () => {
   render(notifications);
 
   await waitFor(() => {
-    const checkboxInput = screen.getAllByRole('checkbox');
+    const checkboxInput = screen.getAllByTestId('radio');
     fireEvent.click(checkboxInput[0]);
+  });
+});
+
+test('it should have Info, Warning and critical checkbox', async () => {
+  render(notifications);
+
+  await waitFor(() => {
+    const checkboxInput = screen.getAllByTestId('radio');
+    expect(checkboxInput[0]).toHaveTextContent('Critical');
+    expect(checkboxInput[1]).toHaveTextContent('Warning');
+    expect(checkboxInput[2]).toHaveTextContent('Info');
+    expect(checkboxInput[3]).toHaveTextContent('All');
   });
 });

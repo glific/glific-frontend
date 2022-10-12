@@ -49,6 +49,7 @@ export const FILTER_FLOW = gql`
       lastPublishedAt
       ignoreKeywords
       updatedAt
+      isActive
       isPinned
       roles {
         id

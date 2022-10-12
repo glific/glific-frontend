@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
 import Viewer from 'react-viewer';
 import ReactPlayer from 'react-player';
-import { Img } from 'react-image';
-
-import loadingImage from 'assets/images/loading.gif';
-import FallbackImage from 'assets/images/imageError.png';
+import HtmlImgFallback from 'components/UI/ImgFallback/ImgFallback';
 import VideoThumbnail from 'assets/images/videothumbnail.jpeg';
 import { ReactComponent as MapIcon } from 'assets/images/map.svg';
 import { ReactComponent as DocumentIconDark } from 'assets/images/icons/Document/Dark.svg';
@@ -49,11 +46,10 @@ export const ChatMessageType = ({
             className={isSimulatedMessage ? styles.SimulatorImage : imageStyle}
             data-testid="imageMessage"
           >
-            <Img
+            <HtmlImgFallback
               src={media.url}
               onClick={() => setShowViewer(true)}
-              loader={<img src={loadingImage} alt="loader" />}
-              unloader={<img src={FallbackImage} alt="fallback" />}
+              alt="message image"
             />
             <Viewer
               visible={showViewer}

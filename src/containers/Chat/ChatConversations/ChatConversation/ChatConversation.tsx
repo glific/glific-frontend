@@ -171,6 +171,9 @@ const ChatConversation = ({
     if (originalText.length > COMPACT_MESSAGE_LENGTH) {
       originalText = originalText.slice(0, COMPACT_MESSAGE_LENGTH).concat('...');
     }
+    // replace new line characters with space to come in same line
+    originalText = originalText.replace(/\n/g, ' ');
+
     displayMSG = WhatsAppToJsx(originalText);
   }
 

@@ -53,7 +53,7 @@ export const Checkbox = ({
         labelPlacement="end"
         label={title}
         classes={{
-          label: addLabelStyle ? styles.Label : styles.LabelNoStyle,
+          label: addLabelStyle ? styles.Label : undefined,
           root: styles.Root,
         }}
       />

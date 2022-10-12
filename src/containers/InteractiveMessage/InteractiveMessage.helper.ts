@@ -59,10 +59,7 @@ export const validator = (templateType: any, t: any) => {
               title: Yup.string()
                 .test('is-emoji', t('Sorry! Emojis are not allowed in the title'), (value) => {
                   if (value) {
-                    const testEmoji =
-                      /(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/gi.test(
-                        value
-                      );
+                    const testEmoji = /\p{Emoji_Presentation}/gu.test(value);
                     return !testEmoji;
                   }
                   return true;
@@ -126,19 +123,18 @@ export const convertJSONtoStateData = (JSONData: any, interactiveType: string, l
       case 'video':
         result.type = type.toUpperCase();
         result.attachmentURL = url;
-        result.body = text;
         result.title = label;
         break;
       case 'file':
         result.type = 'DOCUMENT';
         result.attachmentURL = url;
-        result.body = '';
+
         result.title = label;
         break;
       default:
         result.type = null;
-        result.body = text || '';
     }
+    result.body = text || '';
     return result;
   }
 
@@ -246,19 +242,21 @@ export const getPayloadByMediaType = (mediaType: string, payload: any) => {
     case 'VIDEO':
       result.type = `${mediaType.toLowerCase()}`;
       result.url = payload.attachmentURL;
-      result.text = getPlainTextFromEditor(payload.body);
       break;
     case 'DOCUMENT':
       result.type = 'file';
       result.url = payload.attachmentURL;
-      result.filename = 'file';
+      result.filename = payload.attachmentURL?.substring(
+        payload.attachmentURL.lastIndexOf('/') + 1
+      );
       break;
     default:
       result.type = 'text';
       result.header = payload.title;
-      result.text = getPlainTextFromEditor(payload.body);
       break;
   }
+
+  result.text = getPlainTextFromEditor(payload.body);
 
   return result;
 };

@@ -12,3 +12,12 @@
 .ContactProfile {
   display: flex;
 }
+
+.RadioLabel {
+  font-size: 16px !important;
+  font-weight: 500 !important;
+}
+
+.FormControl {
+  margin-bottom: 10px;
+}

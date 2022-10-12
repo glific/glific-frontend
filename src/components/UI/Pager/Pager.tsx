@@ -14,6 +14,7 @@ import {
 import { setColumnToBackendTerms } from 'common/constants';
 import styles from './Pager.module.css';
 
+const removeDisplayColumns = ['recordId', 'translations', 'id', 'isActive'];
 interface PagerProps {
   columnNames: Array<any>;
   removeSortBy: Array<any>;
@@ -83,7 +84,7 @@ const createRows = (
     let stylesIndex = -1;
     return Object.keys(entry).map((item: any) => {
       // let's not display recordId in the UI
-      if (item === 'recordId' || item === 'translations' || item === 'id') {
+      if (removeDisplayColumns.includes(item)) {
         return null;
       }
       // maintain columnStyles index
@@ -107,10 +108,12 @@ const createRows = (
     }
 
     let dataObj: any;
+    const isActiveRow = entry.isActive === false ? styles.InactiveRow : styles.ActiveRow;
     if (entry.translations) dataObj = JSON.parse(entry.translations);
+
     return (
       <React.Fragment key={entry.recordId}>
-        <TableRow key={entry.recordId} className={styles.TableRow}>
+        <TableRow key={entry.recordId} className={`${styles.TableRow} ${isActiveRow}`}>
           {batchAction}
           {createRow(entry)}
         </TableRow>

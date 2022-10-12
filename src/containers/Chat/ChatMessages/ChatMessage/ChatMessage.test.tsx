@@ -145,8 +145,10 @@ describe('<ChatMessage />', () => {
   // });
 
   test('it should detect a link in message', async () => {
-    const { getAllByTestId } = render(chatMessageText);
-    expect(getAllByTestId('messageLink')[0].getAttribute('href')).toBe('https://www.google.com');
+    const { container } = render(chatMessageText);
+    expect(container.querySelector('.react_tinylink_card_content_description')?.textContent).toBe(
+      'www.google.com'
+    );
   });
 
   const chatMessageVideo = chatMessage('VIDEO');
