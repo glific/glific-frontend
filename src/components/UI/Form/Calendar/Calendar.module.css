@@ -8,7 +8,7 @@
   padding-right: 2px !important;
 }
 
-@media (max-width: 768px) {
+@media screen and (max-width: 768px) {
   .CalendarInput {
     width: 100% !important;
   }
