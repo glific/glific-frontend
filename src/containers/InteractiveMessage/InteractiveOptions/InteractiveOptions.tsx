@@ -108,7 +108,7 @@ export const InteractiveOptions = ({
         row
         value={templateType}
         onChange={(event) => onTemplateTypeChange(event.target.value)}
-        className={styles.ForMobile}
+        className={styles.RadioGroupDisplay}
       >
         <div className={styles.RadioLabelWrapper}>
           <FormControlLabel
