@@ -127,8 +127,10 @@
   margin-right: 6px;
 }
 
-@media (max-width:768px) {
-  .Form, .ItemAdd, .Buttons {
+@media (max-width: 768px) {
+  .Form,
+  .ItemAdd,
+  .Buttons {
     width: 100% !important;
   }
 }

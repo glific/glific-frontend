@@ -57,7 +57,7 @@
   composes: Translation from 'App.module.css';
 }
 
-@media (max-width:768px) {
+@media (max-width: 768px) {
   .Input {
     width: 100% !important;
   }

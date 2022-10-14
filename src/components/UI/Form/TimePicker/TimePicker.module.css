@@ -16,8 +16,9 @@
   margin-top: 4px !important;
 }
 
-@media (max-width:768px) {
-  .picker, .TimePicker {
+@media (max-width: 768px) {
+  .picker,
+  .TimePicker {
     width: 100% !important;
   }
 }
