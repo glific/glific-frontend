@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Paper, Toolbar, Typography } from '@material-ui/core';
 import { useQuery } from '@apollo/client';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { Simulator } from 'components/simulator/Simulator';
@@ -23,32 +23,28 @@ import SavedSearches from '../SavedSearches/SavedSearches';
 import styles from './ChatInterface.module.css';
 
 export interface ChatInterfaceProps {
-  contactId?: number | string | null;
-  collectionId?: number | null;
   savedSearches?: boolean;
+  collectionType?: boolean;
 }
 
-export const ChatInterface: React.SFC<ChatInterfaceProps> = ({
-  contactId,
-  collectionId,
-  savedSearches,
-}) => {
+export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfaceProps) => {
   const [simulatorAccess, setSimulatorAccess] = useState(true);
   const [simulatorId, setSimulatorId] = useState(0);
   const { t } = useTranslation();
   const [startingHeight] = useState(
     `${window.innerWidth < 768 ? window.innerHeight - 46 : window.innerHeight}px`
   );
+  const params = useParams();
 
-  let selectedContactId = contactId;
-  let selectedCollectionId = collectionId;
+  let selectedContactId = params.contactId;
+  let selectedCollectionId: any = params.collectionId;
 
   // default query variables
   let queryVariables = SEARCH_QUERY_VARIABLES;
 
   // contact id === collection when the collection id is not passed in the url
   let selectedTab = 'contacts';
-  if (selectedCollectionId) {
+  if (selectedCollectionId || collectionType) {
     queryVariables = COLLECTION_SEARCH_QUERY_VARIABLES;
     selectedTab = 'collections';
   }
@@ -71,9 +67,9 @@ export const ChatInterface: React.SFC<ChatInterfaceProps> = ({
     return null;
   }
 
-  // let's handle the case when collection id is -1 then we set the first collection
+  // let's handle the case when the type is collection  then we set the first collection
   // as the selected collection
-  if (!selectedContactId && selectedCollectionId === -1 && data && data.search.length !== 0) {
+  if (!selectedContactId && collectionType && data && data.search.length !== 0) {
     if (data.search[0].group) {
       selectedCollectionId = data.search[0].group.id;
       selectedContactId = '';

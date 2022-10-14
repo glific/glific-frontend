@@ -145,8 +145,10 @@ describe('<ChatMessage />', () => {
   // });
 
   test('it should detect a link in message', async () => {
-    const { getAllByTestId } = render(chatMessageText);
-    expect(getAllByTestId('messageLink')[0].getAttribute('href')).toBe('https://www.google.com');
+    const { container } = render(chatMessageText);
+    expect(container.querySelector('.react_tinylink_card_content_description')?.textContent).toBe(
+      'www.google.com'
+    );
   });
 
   const chatMessageVideo = chatMessage('VIDEO');
@@ -268,32 +270,34 @@ describe('<ChatMessage />', () => {
   });
 
   const receivedProps = {
-    id: '93',
-    body: null,
-    insertedAt: '2021-05-25T14:09:43.623251Z',
-    messageNumber: 2,
+    id: 93,
+    body: 'test',
+    contactId: 4,
     receiver: {
-      id: '4',
+      id: 4,
     },
     sender: {
-      id: '1',
+      id: 1,
     },
-    location: null,
-    tags: [],
+    messageNumber: 2,
     type: 'IMAGE',
     media: {
       url: 'https://i.picsum.photos/id/1/200/300.jpg?hmac=jH5bDkLr6Tgy3oAg5khKCHeunZMHq0ehBZr6vGifPLY',
       caption: '\n',
     },
+    insertedAt: '2021-05-25T14:09:43.623251Z',
+    location: null,
+    tags: [],
     errors: '{}',
     contextMessage: null,
-    contactId: '4',
     popup: true,
     focus: true,
     showMessage: true,
     interactiveContent: '{}',
     sendBy: 'test',
     flowLabel: 'test1, test2',
+    jumpToMessage: null,
+    daySeparator: null,
   };
 
   test('it should render with image', async () => {

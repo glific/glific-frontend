@@ -3,11 +3,9 @@ import { RichUtils, Modifier, EditorState, ContentState } from 'draft-js';
 import Editor from '@draft-js-plugins/editor';
 import createMentionPlugin from '@draft-js-plugins/mention';
 import { InputAdornment, IconButton, ClickAwayListener } from '@material-ui/core';
-import { Picker } from 'emoji-mart';
-import 'emoji-mart/css/emoji-mart.css';
-import { useTranslation } from 'react-i18next';
 
 import { getPlainTextFromEditor } from 'common/RichEditor';
+import { EmojiPicker } from 'components/UI/EmojiPicker/EmojiPicker';
 import { Input } from '../Input/Input';
 import Styles from './EmojiInput.module.css';
 
@@ -77,7 +75,7 @@ const DraftField = (inputProps: any) => {
   );
 };
 
-export const EmojiInput: React.FC<EmojiInputProps> = ({
+export const EmojiInput = ({
   field: { value, name, onBlur },
   handleChange,
   getEditorValue,
@@ -85,7 +83,6 @@ export const EmojiInput: React.FC<EmojiInputProps> = ({
   ...props
 }: EmojiInputProps) => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const { t } = useTranslation();
 
   const updateValue = (input: any, isEmoji = false) => {
     const editorContentState = value.getCurrentContent();
@@ -131,9 +128,8 @@ export const EmojiInput: React.FC<EmojiInputProps> = ({
     }
     if (getEditorValue) {
       getEditorValue(editorState);
-    } else {
-      props.form.setFieldValue(name, editorState);
     }
+    props.form.setFieldValue(name, editorState);
   };
 
   const mentions = props.inputProp?.suggestions || [];
@@ -178,12 +174,9 @@ export const EmojiInput: React.FC<EmojiInputProps> = ({
   const editor = { inputComponent: DraftField, inputProps };
 
   const emojiPicker = showEmojiPicker ? (
-    <Picker
-      data-testid="emoji-container"
-      title={t('Pick your emoji…')}
-      emoji="point_up"
-      style={{ position: 'absolute', top: '10px', right: '0px', zIndex: 2 }}
-      onSelect={(emojiValue) => updateValue(emojiValue, true)}
+    <EmojiPicker
+      onEmojiSelect={(emojiValue: any) => updateValue(emojiValue, true)}
+      displayStyle={{ position: 'absolute', top: '10px', right: '0px', zIndex: 2 }}
     />
   ) : (
     ''

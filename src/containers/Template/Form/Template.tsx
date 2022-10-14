@@ -3,7 +3,7 @@ import * as Yup from 'yup';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { EditorState } from 'draft-js';
 import Typography from '@material-ui/core/Typography';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { FormLayout } from 'containers/Form/FormLayout';
@@ -124,7 +124,6 @@ const getTemplateAndButtons = (templateType: string, message: string, buttons: s
 };
 
 export interface TemplateProps {
-  match: any;
   listItemName: string;
   redirectionLink: string;
   icon: any;
@@ -151,25 +150,22 @@ interface QuickReplyTemplate {
   value: string;
 }
 
-const Template: React.SFC<TemplateProps> = (props) => {
-  const {
-    match,
-    listItemName,
-    redirectionLink,
-    icon,
-    defaultAttribute = { isHsm: false },
-    formField,
-    getSessionTemplatesCallBack,
-    customStyle,
-    getUrlAttachmentAndType,
-    getShortcode,
-    getExample,
-    setCategory,
-    category,
-    onExampleChange = () => {},
-    languageStyle = 'dropdown',
-  } = props;
-
+const Template = ({
+  listItemName,
+  redirectionLink,
+  icon,
+  defaultAttribute = { isHsm: false },
+  formField,
+  getSessionTemplatesCallBack,
+  customStyle,
+  getUrlAttachmentAndType,
+  getShortcode,
+  getExample,
+  setCategory,
+  category,
+  onExampleChange = () => {},
+  languageStyle = 'dropdown',
+}: TemplateProps) => {
   // "Audio" option is removed in case of HSM Template
   const mediaTypes =
     listItemName === 'HSM Template' ? options.filter(({ label }) => label !== 'AUDIO') : options;
@@ -194,8 +190,9 @@ const Template: React.SFC<TemplateProps> = (props) => {
   const [isAddButtonChecked, setIsAddButtonChecked] = useState(false);
   const [nextLanguage, setNextLanguage] = useState<any>('');
   const { t } = useTranslation();
-  const history = useHistory();
+  const navigate = useNavigate();
   const location: any = useLocation();
+  const params = useParams();
 
   const states = {
     language,
@@ -231,7 +228,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
         const selectedLangauge = languageOptions.find(
           (lang: any) => lang.label === location.state.language
         );
-        history.replace(location.pathname, null);
+        navigate(location.pathname);
         setLanguageId(selectedLangauge);
       } else if (!language.id) {
         const selectedLangauge = languageOptions.find(
@@ -357,19 +354,19 @@ const Template: React.SFC<TemplateProps> = (props) => {
   const [createMediaMessage] = useMutation(CREATE_MEDIA_MESSAGE);
 
   useEffect(() => {
-    if (Object.prototype.hasOwnProperty.call(match.params, 'id') && match.params.id) {
-      getSessionTemplate({ variables: { id: match.params.id } });
+    if (Object.prototype.hasOwnProperty.call(params, 'id') && params.id) {
+      getSessionTemplate({ variables: { id: params.id } });
     }
-  }, [match.params]);
+  }, []);
 
   useEffect(() => {
     if (languages) {
       const lang = languages.currentUser.user.organization.activeLanguages.slice();
-      // sort languages by their name
+      // sort languages by thaeir name
       lang.sort((first: any, second: any) => (first.label > second.label ? 1 : -1));
 
       setLanguageOptions(lang);
-      if (!Object.prototype.hasOwnProperty.call(match.params, 'id')) setLanguageId(lang[0]);
+      if (!Object.prototype.hasOwnProperty.call(params, 'id')) setLanguageId(lang[0]);
     }
   }, [languages]);
 
@@ -400,8 +397,8 @@ const Template: React.SFC<TemplateProps> = (props) => {
         }
         // need to check exact title
         found = sessionTemplates.sessionTemplates.filter((search: any) => search.label === value);
-        if (match.params.id && found.length > 0) {
-          found = found.filter((search: any) => search.id !== match.params.id);
+        if (params.id && found.length > 0) {
+          found = found.filter((search: any) => search.id !== params.id);
         }
       }
       if (found.length > 0) {
@@ -451,7 +448,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
     const selected = languageOptions.find(
       ({ label: languageLabel }: any) => languageLabel === value
     );
-    if (selected && Object.prototype.hasOwnProperty.call(match.params, 'id')) {
+    if (selected && Object.prototype.hasOwnProperty.call(params, 'id')) {
       updateTranslation(selected);
     } else if (selected) {
       setLanguageId(selected);
@@ -466,7 +463,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
     }
 
     // create translations only while updating
-    if (result && Object.prototype.hasOwnProperty.call(match.params, 'id')) {
+    if (result && Object.prototype.hasOwnProperty.call(params, 'id')) {
       updateTranslation(result);
     }
     if (result) setLanguageId(result);
@@ -582,7 +579,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
             variant: 'outlined',
             label: t('Language*'),
           },
-          disabled: !!(defaultAttribute.isHsm && match.params.id),
+          disabled: !!(defaultAttribute.isHsm && params.id),
           onChange: getLanguageId,
         }
       : {
@@ -599,7 +596,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
       name: 'label',
       placeholder: t('Title*'),
       validate: validateTitle,
-      disabled: !!(defaultAttribute.isHsm && match.params.id),
+      disabled: !!(defaultAttribute.isHsm && params.id),
       helperText: defaultAttribute.isHsm
         ? t('Define what use case does this template serve eg. OTP, optin, activity preference')
         : null,
@@ -614,7 +611,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
       rows: 5,
       convertToWhatsApp: true,
       textArea: true,
-      disabled: !!(defaultAttribute.isHsm && match.params.id),
+      disabled: !!(defaultAttribute.isHsm && params.id),
       helperText: defaultAttribute.isHsm
         ? 'You can also use variable and interactive actions. Variable format: {{1}}, Button format: [Button text,Value] Value can be a URL or a phone number.'
         : null,
@@ -709,7 +706,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
       component: Checkbox,
       title: <Typography variant="h6">Add buttons</Typography>,
       name: 'isAddButtonChecked',
-      disabled: !!(defaultAttribute.isHsm && match.params.id),
+      disabled: !!(defaultAttribute.isHsm && params.id),
       handleChange: (value: boolean) => setIsAddButtonChecked(value),
     },
     {
@@ -717,7 +714,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
       isAddButtonChecked,
       templateType,
       inputFields: templateButtons,
-      disabled: !!match.params.id,
+      disabled: !!params.id,
       onAddClick: addTemplateButtons,
       onRemoveClick: removeTemplateButtons,
       onInputChange: handeInputChange,
@@ -946,13 +943,12 @@ const Template: React.SFC<TemplateProps> = (props) => {
     if (saveClick) {
       return;
     }
-    if (match.params?.id) {
+    if (params?.id) {
       handleLanguageChange(nextLanguage);
     } else {
       const { sessionTemplate } = data.createSessionTemplate;
-      history.push(`/speed-send/${sessionTemplate.id}/edit`, {
-        language: nextLanguage,
-      });
+      location.language = nextLanguage;
+      navigate(`/speed-send/${sessionTemplate.id}/edit`);
     }
   };
 
@@ -963,7 +959,6 @@ const Template: React.SFC<TemplateProps> = (props) => {
   return (
     <FormLayout
       {...queries}
-      match={match}
       states={states}
       setStates={setStates}
       setPayload={setPayload}
@@ -980,7 +975,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
       isAttachment
       getMediaId={getMediaId}
       getQueryFetchPolicy="cache-and-network"
-      button={defaultAttribute.isHsm && !match.params.id ? t('Submit for Approval') : t('Save')}
+      button={defaultAttribute.isHsm && !params.id ? t('Submit for Approval') : t('Save')}
       customStyles={customStyle}
       saveOnPageChange={false}
       afterSave={!defaultAttribute.isHsm ? afterSave : undefined}

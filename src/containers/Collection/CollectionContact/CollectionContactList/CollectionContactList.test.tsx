@@ -6,6 +6,14 @@ import { countCollectionContactsQuery, getCollectionContactsQuery } from 'mocks/
 import { setUserSession } from 'services/AuthService';
 import { CollectionContactList } from './CollectionContactList';
 
+jest.mock('react-router-dom', () => {
+  
+  return {
+    ...jest.requireActual('react-router-dom'), 
+    useParams: () => ({ id: 1 }),
+  };
+});
+
 const mocks = [
   countCollectionContactsQuery,
   getCollectionContactsQuery,
@@ -14,7 +22,7 @@ const mocks = [
 const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <MemoryRouter>
-      <CollectionContactList match={{ params: { id: 1 } }} title={'Default Collection'} />
+      <CollectionContactList title={'Default Collection'} />
     </MemoryRouter>
   </MockedProvider>
 );

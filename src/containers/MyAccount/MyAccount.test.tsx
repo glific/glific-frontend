@@ -17,6 +17,8 @@ const mocks = [
 ];
 
 jest.mock('axios');
+const mockedAxios = axios as jest.Mocked<typeof axios>;
+
 const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <MemoryRouter>
@@ -41,7 +43,7 @@ describe('<MyAccount />', () => {
 
     // let's mock successful sending of OTP
     const responseData = { data: { data: { data: {} } } };
-    axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+    mockedAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
 
     await waitFor(() => {
       // click on generate OTP
@@ -53,7 +55,7 @@ describe('<MyAccount />', () => {
     const resendPasswordResponse = {
       data: { message: 'OTP sent successfully to 919967665667', phone: '919967665667' },
     };
-    axios.post.mockImplementationOnce(() => Promise.resolve(resendPasswordResponse));
+    mockedAxios.post.mockImplementationOnce(() => Promise.resolve(resendPasswordResponse));
 
     await waitFor(() => {
       // click on resend button
@@ -81,11 +83,11 @@ describe('<MyAccount />', () => {
     hindi.click();
 
     // enter otp
-    const input = container.querySelector('input[type="text"]');
+    const input = container.querySelector('input[type="text"]') as HTMLInputElement;
     UserEvent.type(input, '76554');
 
     // enter password
-    const password = container.querySelector('input[type="password"]');
+    const password = container.querySelector('input[type="password"]') as HTMLInputElement;
     UserEvent.type(password, 'pass123456');
 
     await waitFor(() => {
@@ -109,7 +111,7 @@ describe('<MyAccount />', () => {
 
     // let's mock error case sending of OTP
     const errorMessage = 'Cannot register 919967665667';
-    axios.post.mockImplementationOnce(() => Promise.reject(new Error(errorMessage)));
+    mockedAxios.post.mockImplementationOnce(() => Promise.reject(new Error(errorMessage)));
 
     await waitFor(() => {
       // click on generate OTP
@@ -127,7 +129,7 @@ describe('<MyAccount />', () => {
 
     // let's mock successful sending of OTP
     const responseData = { data: { data: { data: {} } } };
-    axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+    mockedAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
 
     await waitFor(() => {
       // click on generate OTP
@@ -136,16 +138,20 @@ describe('<MyAccount />', () => {
     });
 
     // click on CANCEL button
-    const cancelButton = screen.getByText('Cancel');
-    UserEvent.click(cancelButton);
+
+    await waitFor(() => {
+      const cancelButton = screen.getByText('Cancel');
+      UserEvent.click(cancelButton);
+    });
   });
 
   test('generate OTP error with incorrect OTP', async () => {
+    const user = UserEvent.setup();
     const { container } = render(wrapper);
 
     // let's mock successful sending of OTP
     const responseData = { data: { data: { data: {} } } };
-    axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+    mockedAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
 
     await waitFor(() => {
       // click on generate OTP
@@ -154,12 +160,15 @@ describe('<MyAccount />', () => {
     });
 
     // enter otp
-    const input = container.querySelector('input[type="text"]');
-    UserEvent.type(input, '1234');
+    const input = container.querySelector('input[type="text"]') as HTMLInputElement;
+    user.click(input);
+    user.keyboard('1234');
 
     // enter password
-    const password = container.querySelector('input[type="password"]');
-    UserEvent.type(password, 'pass123456');
+    const password = container.querySelector('input[type="password"]') as HTMLInputElement;
+    user.click(password);
+    user.keyboard('pass123456');
+
     await waitFor(() => {
       // click on save button
       const saveButton = screen.getByText('Save');
@@ -173,11 +182,12 @@ describe('<MyAccount />', () => {
   });
 
   test('generate OTP error with too many attempts', async () => {
+    const user = UserEvent.setup();
     const { container } = render(wrapper);
 
     // let's mock successful sending of OTP
     const responseData = { data: { data: { data: {} } } };
-    axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+    mockedAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
 
     await waitFor(() => {
       // click on generate OTP
@@ -186,12 +196,14 @@ describe('<MyAccount />', () => {
     });
 
     // enter otp
-    const input = container.querySelector('input[type="text"]');
-    UserEvent.type(input, '4567');
+    const input = container.querySelector('input[type="text"]') as HTMLInputElement;
+    user.click(input);
+    user.keyboard('4567');
 
     // enter password
-    const password = container.querySelector('input[type="password"]');
-    UserEvent.type(password, 'pass123456');
+    const password = container.querySelector('input[type="password"]') as HTMLInputElement;
+    user.click(password);
+    user.keyboard('pass123456');
 
     await waitFor(() => {
       // click on save button

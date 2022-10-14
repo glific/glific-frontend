@@ -18,20 +18,18 @@ export interface CheckboxProps {
   handleInfoClick?: Function;
 }
 
-export const Checkbox: React.SFC<CheckboxProps> = (props) => {
-  const {
-    field,
-    title,
-    info = false,
-    darkCheckbox,
-    disabled = false,
-    addLabelStyle = true,
-    form,
-    handleChange,
-    infoType = 'tooltip',
-    handleInfoClick = () => {},
-  } = props;
-
+export const Checkbox = ({
+  field,
+  title,
+  info = { title: '' },
+  darkCheckbox,
+  disabled = false,
+  addLabelStyle = true,
+  form,
+  handleChange,
+  infoType = 'tooltip',
+  handleInfoClick = () => {},
+}: CheckboxProps) => {
   const handleChangeCallback = () => {
     const { name, value } = field;
     form.setFieldValue(name, !value);
@@ -55,7 +53,7 @@ export const Checkbox: React.SFC<CheckboxProps> = (props) => {
         labelPlacement="end"
         label={title}
         classes={{
-          label: addLabelStyle ? styles.Label : styles.LabelNoStyle,
+          label: addLabelStyle ? styles.Label : undefined,
           root: styles.Root,
         }}
       />

@@ -6,19 +6,6 @@ import App from 'App';
 import { CONVERSATION_MOCKS } from 'mocks/Chat';
 import { setAuthSession, setUserSession } from 'services/AuthService';
 
-
-jest.mock('react-clear-cache', () => {
-  return {
-    ClearCacheProvider: ({ duration, children }: any) => {
-      return <div>{children}</div>;
-    },
-    useClearCacheCtx: () => ({
-      isLatestVersion: true,
-      emptyCacheStorage: jest.fn(),
-    }),
-  };
-});
-
 const mocks = CONVERSATION_MOCKS;
 
 jest.mock('axios', () => {
@@ -29,10 +16,11 @@ jest.mock('axios', () => {
   };
 });
 
-global.fetch = () =>
+global.fetch = jest.fn(() =>
   Promise.resolve({
-    json: () => Promise.resolve([]),
-  });
+    json: () => Promise.resolve({ test: 100 }),
+  })
+) as jest.Mock;
 
 const app = (
   <MockedProvider mocks={mocks} addTypename={false}>

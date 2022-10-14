@@ -59,7 +59,28 @@ export interface ChatMessageProps {
   daySeparator: string | null;
 }
 
-export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
+export const ChatMessage = ({
+  id,
+  popup,
+  focus,
+  sender,
+  contactId,
+  // tags,
+  insertedAt,
+  onClick,
+  type,
+  media,
+  body,
+  messageNumber,
+  location,
+  errors,
+  contextMessage,
+  jumpToMessage,
+  interactiveContent,
+  sendBy,
+  flowLabel,
+  daySeparator,
+}: ChatMessageProps) => {
   // const client = useApolloClient();
   const [showSaveMessageDialog, setShowSaveMessageDialog] = useState(false);
   const Ref = useRef(null);
@@ -71,28 +92,6 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   const popperId = open ? 'simple-popper' : undefined;
   // let displayTag: any;
   // let deleteId: string | number;
-  const {
-    id,
-    popup,
-    focus,
-    sender,
-    contactId,
-    // tags,
-    insertedAt,
-    onClick,
-    type,
-    media,
-    body,
-    messageNumber,
-    location,
-    errors,
-    contextMessage,
-    jumpToMessage,
-    interactiveContent,
-    sendBy,
-    flowLabel,
-    daySeparator,
-  } = props;
 
   useEffect(() => {
     if (popup) {
@@ -358,7 +357,6 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
                       type={contextMessage.type}
                       media={contextMessage.media}
                       body={contextMessage.body}
-                      insertedAt={contextMessage.insertedAt}
                       location={contextMessage.location}
                       isContextMessage
                     />
@@ -383,7 +381,6 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
                       type={type}
                       media={media}
                       body={bodyText}
-                      insertedAt={insertedAt}
                       location={location}
                     />
                   )}

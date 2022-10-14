@@ -10,10 +10,7 @@ export interface TerminateFlowProps {
   setDialog: any;
 }
 
-export const TerminateFlow: React.FC<TerminateFlowProps> = ({
-  contactId,
-  setDialog,
-}: TerminateFlowProps) => {
+export const TerminateFlow = ({ contactId, setDialog }: TerminateFlowProps) => {
   const [terminateFlow] = useMutation(TERMINATE_FLOW, {
     onCompleted: ({ terminateContactFlows }) => {
       if (terminateContactFlows.success) {

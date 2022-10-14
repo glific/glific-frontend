@@ -121,27 +121,26 @@ const BoldedText = (originalText: string, highlight: any) => {
   return text;
 };
 
-const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
+const ChatConversation = ({
+  lastMessage,
+  selected,
+  contactId,
+  contactName,
+  index,
+  highlightSearch,
+  searchMode,
+  senderLastMessage,
+  contactStatus,
+  contactBspStatus,
+  contactIsOrgRead,
+  entityType,
+  messageNumber,
+  onClick,
+}: ChatConversationProps) => {
   // check if message is unread and style it differently
   const client = useApolloClient();
   let chatInfoClass = [styles.ChatInfo, styles.ChatInfoRead];
   let chatBubble = [styles.ChatBubble, styles.ChatBubbleRead];
-  const {
-    lastMessage,
-    selected,
-    contactId,
-    contactName,
-    index,
-    highlightSearch,
-    searchMode,
-    senderLastMessage,
-    contactStatus,
-    contactBspStatus,
-    contactIsOrgRead,
-    entityType,
-    messageNumber,
-    onClick,
-  } = props;
 
   const [markAsRead] = useMutation(MARK_AS_READ, {
     onCompleted: (data) => {
@@ -172,6 +171,9 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
     if (originalText.length > COMPACT_MESSAGE_LENGTH) {
       originalText = originalText.slice(0, COMPACT_MESSAGE_LENGTH).concat('...');
     }
+    // replace new line characters with space to come in same line
+    originalText = originalText.replace(/\n/g, ' ');
+
     displayMSG = WhatsAppToJsx(originalText);
   }
 

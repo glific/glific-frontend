@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
 import { Dialog, DialogContent } from '@material-ui/core';
+import { useParams } from 'react-router-dom';
 
 import { Input } from 'components/UI/Form/Input/Input';
 import { FormLayout } from 'containers/Form/FormLayout';
@@ -11,20 +12,17 @@ import { CREATE_BILLING, UPDATE_BILLING } from 'graphql/mutations/Billing';
 import styles from './OrganizationCustomer.module.css';
 
 export interface OrganizationCustomerProps {
-  match: any;
   openDialog: boolean;
 }
 
-export const OrganizationCustomer: React.SFC<OrganizationCustomerProps> = ({
-  match,
-  openDialog,
-}) => {
+export const OrganizationCustomer = ({ openDialog }: OrganizationCustomerProps) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [currency, setCurrency] = useState('');
   const [tds, setTds] = useState(0);
   const [billingId, setBillingId] = useState(null);
   const [isBillingPresent, setIsBillingPresent] = useState(false);
+  const params = useParams();
 
   const { t } = useTranslation();
 
@@ -101,7 +99,7 @@ export const OrganizationCustomer: React.SFC<OrganizationCustomerProps> = ({
 
   const setPayload = (payload: any) => {
     const payloadBody = { ...payload };
-    payloadBody.organizationId = match.params.id;
+    payloadBody.organizationId = params.id;
 
     payloadBody.tds_amount = Number(payloadBody.tds);
     delete payloadBody.tds;
@@ -132,9 +130,8 @@ export const OrganizationCustomer: React.SFC<OrganizationCustomerProps> = ({
               title={t(`${title}`)}
               listItem="billing"
               listItemName="billing"
-              match={match}
               refetchQueries={[
-                { query: GET_ORGANIZATION_BILLING, variables: { organizationId: match.params.id } },
+                { query: GET_ORGANIZATION_BILLING, variables: { organizationId: params.id } },
               ]}
               states={states}
               setStates={setStates}

@@ -43,7 +43,7 @@ export const countSearchesQuery = {
   },
   result: {
     data: {
-      countTags: 1,
+      countSavedSearches: 1,
     },
   },
 };

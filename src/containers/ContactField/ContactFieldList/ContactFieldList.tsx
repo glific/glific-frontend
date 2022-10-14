@@ -13,7 +13,6 @@ import { ContactField } from '../ContactField';
 import styles from './ContactFieldList.module.css';
 
 interface ContactFieldListProps {
-  match: any;
   openDialog?: boolean;
 }
 
@@ -22,7 +21,7 @@ interface EditItemShape {
   column: string;
 }
 
-const ContactFieldList: React.SFC<ContactFieldListProps> = ({ match, openDialog }: any) => {
+const ContactFieldList = ({ openDialog }: ContactFieldListProps) => {
   const { t } = useTranslation();
   const [itemToBeEdited, setItemToBeEdited] = useState<EditItemShape | any>(null);
   const [error, setError] = useState<any>(null);
@@ -148,7 +147,7 @@ const ContactFieldList: React.SFC<ContactFieldListProps> = ({ match, openDialog 
         }}
       >
         <DialogContent classes={{ root: styles.DialogContent }}>
-          <ContactField match={match} />
+          <ContactField />
         </DialogContent>
       </Dialog>
     </div>

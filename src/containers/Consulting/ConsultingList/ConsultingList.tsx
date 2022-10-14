@@ -11,9 +11,7 @@ import { Consulting } from '../Consulting';
 import styles from './ConsultingList.module.css';
 import { ExportConsulting } from './ExportConsulting/ExportConsulting';
 
-interface ConsultingListProps {}
-
-const ConsultingList: React.SFC<ConsultingListProps> = () => {
+const ConsultingList = () => {
   const { t } = useTranslation();
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedConsulting, setSelectedConsulting] = useState('');
@@ -30,10 +28,7 @@ const ConsultingList: React.SFC<ConsultingListProps> = () => {
         }}
       >
         <DialogContent classes={{ root: styles.DialogContent }}>
-          <Consulting
-            match={{ params: { id: selectedConsulting } }}
-            setOpenDialog={setOpenDialog}
-          />
+          <Consulting organizationId={selectedConsulting} setOpenDialog={setOpenDialog} />
         </DialogContent>
       </Dialog>
     );

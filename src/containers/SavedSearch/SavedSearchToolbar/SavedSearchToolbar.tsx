@@ -20,8 +20,12 @@ export interface SavedSearchToolbarProps {
   searchMode?: boolean;
 }
 
-export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) => {
-  const { searchMode, refetchData, savedSearchCriteriaCallback, onSelect } = props;
+export const SavedSearchToolbar = ({
+  searchMode,
+  refetchData,
+  savedSearchCriteriaCallback,
+  onSelect,
+}: SavedSearchToolbarProps) => {
   const [selectedSavedSearch, setSelectedSavedSearch] = useState<number | null>(null);
   const [optionsSelected, setOptionsSelected] = useState(false);
   const [fixedSearches, setFixedSearches] = useState<any>([]);

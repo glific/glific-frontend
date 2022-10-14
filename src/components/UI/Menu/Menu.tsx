@@ -14,14 +14,10 @@ export interface MenuProps {
   menus: any;
   eventType?: string | undefined;
   placement?: PopperPlacementType | undefined;
+  children?: React.ReactNode;
 }
 
-const Menu: React.SFC<MenuProps> = ({
-  menus,
-  children,
-  eventType = 'Click',
-  placement = 'top',
-}) => {
+const Menu = ({ menus, children, eventType = 'Click', placement = 'top' }: MenuProps) => {
   const [open, setOpen] = useState(false);
   const anchorRef = useRef<HTMLDivElement>(null);
 
@@ -70,6 +66,7 @@ const Menu: React.SFC<MenuProps> = ({
         transition
         disablePortal={placement === 'top'}
         placement={placement}
+        style={{ zIndex: 1 }}
       >
         {({ TransitionProps }) => (
           <Grow {...TransitionProps}>

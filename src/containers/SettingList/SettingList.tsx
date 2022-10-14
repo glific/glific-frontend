@@ -11,7 +11,7 @@ import { ReactComponent as Settingicon } from 'assets/images/icons/Settings/Sett
 import { ReactComponent as EditIcon } from 'assets/images/icons/Edit.svg';
 import styles from './SettingList.module.css';
 
-export const SettingList: React.SFC = () => {
+export const SettingList = () => {
   const { t } = useTranslation();
   const { data: providerData, loading } = useQuery(GET_PROVIDERS);
 
@@ -73,7 +73,7 @@ export const SettingList: React.SFC = () => {
             <CardActions className={styles.CardActions}>
               <Link
                 to={{
-                  pathname: `settings/${data.shortcode}`,
+                  pathname: `/settings/${data.shortcode}`,
                 }}
                 className={styles.Link}
               >

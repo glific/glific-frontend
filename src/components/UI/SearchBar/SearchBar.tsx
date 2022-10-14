@@ -8,8 +8,8 @@ import { ReactComponent as AdvancedSearch } from 'assets/images/icons/AdvancedSe
 import styles from './SearchBar.module.css';
 
 export interface SearchBarProps {
-  handleChange?: (event: any) => void;
-  handleSubmit?: (event: React.FormEvent<HTMLFormElement>) => void;
+  handleChange?: (e: any) => void;
+  handleSubmit?: (e: React.FormEvent<HTMLFormElement>) => void;
   onReset: () => void;
   // This is for whether or not the parent gets re-rendered on search. To checkout comparison of
   // different functionalities, look at `ChatConversations` for without, and `TagList` with.
@@ -20,18 +20,16 @@ export interface SearchBarProps {
   searchMode: boolean;
 }
 
-export const SearchBar: React.SFC<SearchBarProps> = (props) => {
-  const {
-    searchMode,
-    searchVal,
-    onReset,
-    endAdornment,
-    handleClick,
-    handleSubmit,
-    handleChange,
-    className,
-  } = props;
-
+export const SearchBar = ({
+  searchMode,
+  searchVal,
+  onReset,
+  endAdornment,
+  handleClick,
+  handleSubmit,
+  handleChange,
+  className,
+}: SearchBarProps) => {
   const [localSearchValue, setLocalSearchValue] = useState(searchVal);
   const { t } = useTranslation();
 
@@ -66,6 +64,7 @@ export const SearchBar: React.SFC<SearchBarProps> = (props) => {
     endAdornmentInput = (
       <InputAdornment position="end">
         <IconButton
+          disableFocusRipple
           aria-label="toggle password visibility"
           onClick={(e: any) => {
             handleClick(e, 'search', 'update');

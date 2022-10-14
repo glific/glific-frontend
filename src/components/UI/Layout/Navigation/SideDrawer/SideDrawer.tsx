@@ -4,6 +4,7 @@ import {
   Drawer,
   makeStyles,
   createStyles,
+  // eslint-disable-next-line no-unused-vars
   Theme,
   Toolbar,
   Typography,
@@ -29,8 +30,6 @@ import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import { WalletBalance } from 'containers/WalletBalance/WalletBalance';
 import SideMenus from '../SideMenus/SideMenus';
 import styles from './SideDrawer.module.css';
-
-export interface SideDrawerProps {}
 
 const drawerWidth = SIDE_DRAWER_WIDTH;
 
@@ -122,7 +121,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export const SideDrawer: React.SFC<SideDrawerProps> = () => {
+export const SideDrawer = () => {
   const location = useLocation();
   const { drawerOpen, setDrawerOpen } = useContext(SideDrawerContext);
 
@@ -198,6 +197,11 @@ export const SideDrawer: React.SFC<SideDrawerProps> = () => {
     bottonMenuClasses.unshift(classes.BottomMenusVertical);
   }
 
+  const HiddenProps = {
+    smUp: true,
+    implementation: 'css' as 'css',
+  };
+
   return (
     <nav
       className={clsx({
@@ -207,7 +211,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = () => {
       aria-label="navigation menus"
       data-testid="navbar"
     >
-      <Hidden smUp implementation="css">
+      <Hidden {...HiddenProps}>
         <Drawer
           container={container}
           variant="temporary"

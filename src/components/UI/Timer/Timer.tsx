@@ -12,7 +12,7 @@ export interface TimerProps {
   contactBspStatus?: string;
 }
 
-export const Timer: React.FC<TimerProps> = (props: TimerProps) => {
+export const Timer = (props: TimerProps) => {
   const [currentTime, setCurrentTime] = useState(moment(new Date()));
   const { t } = useTranslation();
 

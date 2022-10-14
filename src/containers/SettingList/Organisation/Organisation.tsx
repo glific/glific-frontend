@@ -34,7 +34,7 @@ const queries = {
   deleteItemQuery: DELETE_ORGANIZATION,
 };
 
-export const Organisation: React.SFC = () => {
+export const Organisation = () => {
   const client = useApolloClient();
   const [name, setName] = useState('');
   const [hours, setHours] = useState(true);
@@ -440,7 +440,6 @@ export const Organisation: React.SFC = () => {
       backLinkButton={{ text: t('Back to settings'), link: '/settings' }}
       {...queries}
       title="organization settings"
-      match={{ params: { id: organizationId } }}
       states={States}
       setStates={setStates}
       validationSchema={FormSchema}
@@ -459,6 +458,7 @@ export const Organisation: React.SFC = () => {
       redirect
       afterSave={saveHandler}
       customStyles={styles.organization}
+      entityId={organizationId}
     />
   );
 };

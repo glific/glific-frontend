@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import styles from './QuickReplyTemplate.module.css';
 import { ChatMessageType } from '../ChatMessage/ChatMessageType/ChatMessageType';
+import { MessagesWithLinks } from '../MessagesWithLinks/MessagesWithLinks';
 
 interface Content {
   type: string;
@@ -16,6 +17,7 @@ interface Content {
 interface ButtonOption {
   type: string;
   title: string;
+  postbackText: string | null;
 }
 
 export interface QuickReplyTemplateProps {
@@ -28,17 +30,15 @@ export interface QuickReplyTemplateProps {
   showHeader?: boolean;
 }
 
-export const QuickReplyTemplate: React.SFC<QuickReplyTemplateProps> = (props) => {
-  const {
-    content,
-    options,
-    disabled = false,
-    onQuickReplyClick,
-    isSimulator = false,
-    showHeader = true,
-    bspMessageId,
-  } = props;
-
+export const QuickReplyTemplate = ({
+  content,
+  options,
+  disabled = false,
+  onQuickReplyClick,
+  isSimulator = false,
+  showHeader = true,
+  bspMessageId,
+}: QuickReplyTemplateProps) => {
   if (!content && !options) {
     return null;
   }
@@ -48,6 +48,7 @@ export const QuickReplyTemplate: React.SFC<QuickReplyTemplateProps> = (props) =>
       if (option.title) {
         const payloadObject = {
           payload: {
+            postbackText: option.postbackText ?? '',
             type: 'button_reply',
             title: option.title,
             id: '',
@@ -90,6 +91,7 @@ export const QuickReplyTemplate: React.SFC<QuickReplyTemplateProps> = (props) =>
           location={{}}
           isSimulatedMessage={isSimulator}
         />
+        {contentType === 'DOCUMENT' && <MessagesWithLinks message={media.text} />}
       </div>
       <div className={styles.ButtonContainer}>{quickReplyButtons}</div>
     </div>

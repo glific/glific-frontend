@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router-dom';
 
 import { ReactComponent as ProfileIcon } from 'assets/images/icons/Contact/Profile.svg';
 import { CONTACT_STATUS, PROVIDER_STATUS } from 'common/constants';
@@ -12,6 +13,7 @@ import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { GET_CONTACT } from 'graphql/queries/Contact';
 import { CREATE_CONTACT, UPDATE_CONTACT, DELETE_CONTACT } from 'graphql/mutations/Contact';
 import { GET_CURRENT_USER } from 'graphql/queries/User';
+import { getOrganizationServices } from 'services/AuthService';
 
 const profileIcon = <ProfileIcon />;
 
@@ -23,7 +25,6 @@ const queries = {
 };
 
 export interface ProfileProps {
-  match?: any;
   profileType: string;
   redirectionLink: string;
   additionalField?: any;
@@ -32,10 +33,10 @@ export interface ProfileProps {
   additionalQuery?: Function;
   afterDelete?: any;
   removePhoneField?: boolean;
+  multiProfileAttributes?: any;
 }
 
-export const Profile: React.SFC<ProfileProps> = ({
-  match,
+export const Profile = ({
   profileType,
   redirectionLink,
   additionalField,
@@ -44,17 +45,46 @@ export const Profile: React.SFC<ProfileProps> = ({
   additionalQuery,
   afterDelete,
   removePhoneField = false,
-}) => {
+  multiProfileAttributes,
+}: ProfileProps) => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [status, setStatus] = useState('');
   const [bspStatus, setBspStatus] = useState('');
+  const [languageId, setLanguageId] = useState('');
   const [hideRemoveBtn, setHideRemoveBtn] = useState(false);
   const { t } = useTranslation();
+  const isContactProfileEnabled = getOrganizationServices('contactProfileEnabled');
 
-  let param = match;
+  const params = useParams();
 
   const { data, loading } = useQuery(GET_CURRENT_USER);
+
+  const updateName = () => {
+    if (!isContactProfileEnabled || !multiProfileAttributes?.selectedProfile) {
+      return;
+    }
+    const { selectedProfile } = multiProfileAttributes;
+
+    if (!selectedProfile) {
+      return;
+    }
+
+    if (selectedProfile.id === multiProfileAttributes.activeProfileId) {
+      setName(`${selectedProfile.name} (currently active)`);
+    } else {
+      setName(selectedProfile.name);
+    }
+  };
+
+  useEffect(() => {
+    if (multiProfileAttributes?.selectedProfile) {
+      const { selectedProfile } = multiProfileAttributes;
+      setLanguageId(selectedProfile?.language?.id);
+      updateName();
+    }
+  }, [multiProfileAttributes]);
+
   if (loading) return <Loading />;
 
   const { user } = data.currentUser;
@@ -62,25 +92,24 @@ export const Profile: React.SFC<ProfileProps> = ({
   const currentUserPhone = user.phone;
   const organizationPhone = user.organization.contact.phone;
 
-  let currentContactId;
-  if (!match) {
-    // let's manually set the contact id in the match object in case of user profile
-    param = { params: { id: loggedInUserContactId } };
-    currentContactId = loggedInUserContactId;
-  } else {
-    currentContactId = match.params.id;
+  let currentContactId = loggedInUserContactId;
+  if (params.id) {
+    currentContactId = params.id;
   }
 
-  const states: any = { name, phone, status, bspStatus };
+  const states: any = { name, phone, status, bspStatus, languageId };
 
   const setStates = ({
     name: nameValue,
     phone: phoneValue,
     status: statusValue,
     bspStatus: bspStatusValue,
+    language: languageIdValue,
     ...rest
   }: any) => {
     setName(nameValue);
+    updateName();
+
     if (phoneValue) {
       setPhone(phoneValue);
       setHideRemoveBtn(organizationPhone === phoneValue);
@@ -92,6 +121,9 @@ export const Profile: React.SFC<ProfileProps> = ({
     }
     setStatus(statusValue);
     setBspStatus(bspStatusValue);
+
+    setLanguageId(languageIdValue.id);
+
     if (additionalProfileStates) {
       additionalProfileStates.setState(rest[additionalProfileStates.name]);
     }
@@ -114,6 +146,7 @@ export const Profile: React.SFC<ProfileProps> = ({
       name: 'phone',
       placeholder: t('Phone Number'),
       disabled: true,
+      skip: removePhoneField,
       skipPayload: true,
     },
     {
@@ -124,7 +157,6 @@ export const Profile: React.SFC<ProfileProps> = ({
       disabled: true,
       skipPayload: true,
     },
-
     {
       component: Dropdown,
       name: 'bspStatus',
@@ -140,9 +172,8 @@ export const Profile: React.SFC<ProfileProps> = ({
     formFields.splice(1, 0, additionalField);
   }
 
-  // remove phone field incase of contact profile
-  if (removePhoneField) {
-    formFields.splice(2, 1);
+  if (isContactProfileEnabled && multiProfileAttributes?.selectedProfile) {
+    formFields.splice(0, 0, multiProfileAttributes);
   }
 
   let type: any;
@@ -157,7 +188,6 @@ export const Profile: React.SFC<ProfileProps> = ({
   return (
     <FormLayout
       {...queries}
-      match={param}
       states={states}
       setStates={setStates}
       additionalState={additionalState}
@@ -171,7 +201,9 @@ export const Profile: React.SFC<ProfileProps> = ({
       icon={profileIcon}
       afterDelete={afterDelete}
       type={type}
+      languageAttributes={multiProfileAttributes?.selectedProfile ? { disabled: true } : {}}
       title={pageTitle}
+      entityId={currentContactId}
       restrictDelete={hideRemoveBtn}
     />
   );

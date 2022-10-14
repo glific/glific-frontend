@@ -10,23 +10,29 @@ import {
 } from 'mocks/Role';
 
 const mocks = [getRoleQuery, createRoleMutation, updateRoleMutation, deleteRoleMutation];
-const flow = (match: any) => (
+
+jest.mock('react-router-dom', () => ({
+  ...(jest.requireActual('react-router-dom') as {}),
+  useParams: () => ({ id: '5' }),
+}));
+
+const role = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <MemoryRouter>
-      <Role match={match} />
+      <Role />
     </MemoryRouter>
   </MockedProvider>
 );
 
 it('should render Role form page', async () => {
-  const wrapper = render(flow({ params: { id: '5' } }));
+  const wrapper = render(role);
   await waitFor(() => {
     expect(wrapper.container).toBeInTheDocument();
   });
 });
 
 it('should have fields for name and description', async () => {
-  const { getAllByTestId } = render(flow({ params: { id: '5' } }));
+  const { getAllByTestId } = render(role);
   await waitFor(() => {
     expect(getAllByTestId('inputLabel')[0]).toHaveTextContent('Label');
     expect(getAllByTestId('inputLabel')[1]).toHaveTextContent('Description');

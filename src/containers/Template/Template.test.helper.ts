@@ -4,6 +4,7 @@ import {
   GET_TEMPLATE,
   GET_HSM_CATEGORIES,
   GET_TEMPLATES_COUNT,
+  FILTER_SESSION_TEMPLATES,
 } from 'graphql/queries/Template';
 import { DELETE_TEMPLATE, CREATE_TEMPLATE } from 'graphql/mutations/Template';
 import {
@@ -41,7 +42,7 @@ const SpeedSendsSessionTemplates = [
     type: 'TEXT',
     language: {
       id: '1',
-      label: 'Hindi',
+      label: 'English',
     },
     MessageMedia: {
       id: 1,
@@ -53,7 +54,7 @@ const SpeedSendsSessionTemplates = [
 
 const speedSend = {
   request: {
-    query: FILTER_TEMPLATES,
+    query: FILTER_SESSION_TEMPLATES,
     variables: {
       filter: {
         isHsm: false,
@@ -63,6 +64,7 @@ const speedSend = {
         limit: 50,
         offset: 0,
         order: 'ASC',
+        orderWith: 'label',
       },
     },
   },
@@ -206,6 +208,7 @@ const filterTemplateQuery = {
           isHsm: true,
           isReserved: false,
           updatedAt: '2020-12-01T18:00:32Z',
+          translations: '{}',
         },
       ],
     },
@@ -250,6 +253,7 @@ const getTemplateData = {
       isActive: true,
       translations: '{}',
       type: 'TEXT',
+      isHsm: false,
       language: {
         id: '1',
         label: 'English',
@@ -258,6 +262,7 @@ const getTemplateData = {
       hasButtons: false,
       buttons: null,
       buttonType: null,
+      updatedAt: '2020-12-01T18:00:32Z',
     },
   },
 };
@@ -308,7 +313,7 @@ export const TEMPLATE_MOCKS = [
     request: {
       query: GET_TEMPLATE,
       variables: {
-        id: 1,
+        id: '1',
       },
     },
     result: {
@@ -319,7 +324,7 @@ export const TEMPLATE_MOCKS = [
     request: {
       query: GET_TEMPLATE,
       variables: {
-        id: 1,
+        id: '1',
       },
     },
     result: {
@@ -486,10 +491,8 @@ export const HSM_LIST = [
     },
     result: {
       data: {
-        sessionTemplates: [
-          getHSMTemplate('1', 'REJECTED')
-        ],
+        sessionTemplates: [getHSMTemplate('1', 'REJECTED')],
       },
     },
-  }
+  },
 ];

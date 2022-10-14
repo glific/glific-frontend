@@ -14,7 +14,7 @@ export interface SideMenusProps {
   opened: boolean;
 }
 
-const SideMenus: React.SFC<SideMenusProps> = ({ opened }) => {
+const SideMenus = ({ opened }: SideMenusProps) => {
   const location = useLocation();
   const { t } = useTranslation();
 

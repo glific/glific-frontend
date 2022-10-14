@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
 
 import { FormLayout } from 'containers/Form/FormLayout';
@@ -11,15 +11,10 @@ import { ReactComponent as FlowIcon } from 'assets/images/icons/Flow/Selected.sv
 import { CREATE_FLOW, UPDATE_FLOW, DELETE_FLOW, CREATE_FLOW_COPY } from 'graphql/mutations/Flow';
 import { GET_ORGANIZATION } from 'graphql/queries/Organization';
 import { GET_FLOW } from 'graphql/queries/Flow';
+import { getAddOrRemoveRoleIds } from 'common/utils';
 import { setErrorMessage } from 'common/notification';
 import Loading from 'components/UI/Layout/Loading/Loading';
-import { getUserSession } from 'services/AuthService';
-import { checkDynamicRole } from 'context/role';
 import styles from './Flow.module.css';
-
-export interface FlowProps {
-  match: any;
-}
 
 const flowIcon = <FlowIcon className={styles.FlowIcon} />;
 
@@ -30,8 +25,9 @@ const queries = {
   deleteItemQuery: DELETE_FLOW,
 };
 
-export const Flow: React.SFC<FlowProps> = ({ match }) => {
+export const Flow = () => {
   const location = useLocation();
+  const params = useParams();
   const [name, setName] = useState('');
   const [isPinnedDisable, setIsPinnedDisable] = useState(false);
   const [keywords, setKeywords] = useState('');
@@ -73,8 +69,8 @@ export const Flow: React.SFC<FlowProps> = ({ match }) => {
         organization: { newcontactFlowId },
       },
     } = orgData;
-    const flowId: string = match?.params?.id;
-    if (flowId === newcontactFlowId) {
+
+    if (params.id === newcontactFlowId) {
       setIsPinnedDisable(true);
     }
 
@@ -160,28 +156,11 @@ export const Flow: React.SFC<FlowProps> = ({ match }) => {
       formattedKeywords = inputKeywords.split(',');
     }
 
-    const initialSelectedRoles = roles.map((role: any) => role.id);
-    const payloadRoleIds = payload.roles.map((role: any) => role.id);
-
-    let addRoleIds = payloadRoleIds.filter(
-      (selectedRoles: any) => !initialSelectedRoles.includes(selectedRoles)
-    );
-    const deleteRoleIds = initialSelectedRoles.filter(
-      (roleId: any) => !payloadRoleIds.includes(roleId)
-    );
-
-    if (checkDynamicRole()) {
-      const userRoles = getUserSession('roles').map((role: any) => role.id);
-      addRoleIds = [...addRoleIds, ...userRoles];
-    }
-
-    const { roles: userRoles, ...rest } = payload;
+    const payloadWithRoleIds = getAddOrRemoveRoleIds(roles, payload);
 
     // return modified payload
     return {
-      ...rest,
-      addRoleIds,
-      deleteRoleIds,
+      ...payloadWithRoleIds,
       keywords: formattedKeywords,
     };
   };
@@ -213,7 +192,6 @@ export const Flow: React.SFC<FlowProps> = ({ match }) => {
   return (
     <FormLayout
       {...queries}
-      match={match}
       states={states}
       roleAccessSupport
       setStates={setStates}

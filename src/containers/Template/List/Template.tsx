@@ -7,7 +7,11 @@ import { List } from 'containers/List/List';
 import { useMutation } from '@apollo/client';
 import { WhatsAppToJsx } from 'common/RichEditor';
 import { DATE_TIME_FORMAT, GUPSHUP_ENTERPRISE_SHORTCODE } from 'common/constants';
-import { GET_TEMPLATES_COUNT, FILTER_TEMPLATES } from 'graphql/queries/Template';
+import {
+  GET_TEMPLATES_COUNT,
+  FILTER_TEMPLATES,
+  FILTER_SESSION_TEMPLATES,
+} from 'graphql/queries/Template';
 import { DELETE_TEMPLATE, IMPORT_TEMPLATES } from 'graphql/mutations/Template';
 import { ReactComponent as DownArrow } from 'assets/images/icons/DownArrow.svg';
 import { ReactComponent as ApprovedIcon } from 'assets/images/icons/Template/Approved.svg';
@@ -38,12 +42,6 @@ const getTranslations = (language: any, data: string) => {
   return JSON.stringify(dataObj);
 };
 
-const queries = {
-  countQuery: GET_TEMPLATES_COUNT,
-  filterItemsQuery: FILTER_TEMPLATES,
-  deleteItemQuery: DELETE_TEMPLATE,
-};
-
 export interface TemplateProps {
   title: string;
   listItem: string;
@@ -61,17 +59,16 @@ const statusFilter = {
   REJECTED: false,
 };
 
-export const Template: React.SFC<TemplateProps> = (props) => {
-  const {
-    title,
-    listItem,
-    listItemName,
-    pageLink,
-    listIcon,
-    filters: templateFilters,
-    buttonLabel,
-    isHSM,
-  } = props;
+export const Template = ({
+  title,
+  listItem,
+  listItemName,
+  pageLink,
+  listIcon,
+  filters: templateFilters,
+  buttonLabel,
+  isHSM,
+}: TemplateProps) => {
   const [open, setOpen] = useState(false);
   const [Id, setId] = useState('');
   const { t } = useTranslation();
@@ -92,6 +89,12 @@ export const Template: React.SFC<TemplateProps> = (props) => {
       }
     },
   });
+
+  const queries = {
+    countQuery: GET_TEMPLATES_COUNT,
+    filterItemsQuery: isHSM ? FILTER_TEMPLATES : FILTER_SESSION_TEMPLATES,
+    deleteItemQuery: DELETE_TEMPLATE,
+  };
 
   const getStatus = (status: string) => {
     let statusValue;

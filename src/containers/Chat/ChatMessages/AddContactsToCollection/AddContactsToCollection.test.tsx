@@ -74,7 +74,7 @@ test('change value in dialog box', () => {
     );
   });
   const { getByTestId, getByText } = render(addContacts);
-  fireEvent.change(getByTestId('searchDialogBox').querySelector('input'), {
+  fireEvent.change(getByTestId('searchDialogBox').querySelector('input') as HTMLElement, {
     target: { value: 'change' },
   });
 

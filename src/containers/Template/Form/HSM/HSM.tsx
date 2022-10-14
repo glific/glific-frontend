@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { EditorState } from 'draft-js';
 import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router-dom';
 import Loading from 'components/UI/Layout/Loading/Loading';
 import { ReactComponent as TemplateIcon } from 'assets/images/icons/Template/UnselectedDark.svg';
 import { GET_HSM_CATEGORIES } from 'graphql/queries/Template';
@@ -12,17 +13,13 @@ import { Simulator } from 'components/simulator/Simulator';
 import Template from '../Template';
 import styles from './HSM.module.css';
 
-export interface HSMProps {
-  match: any;
-}
-
 const defaultAttribute = {
   isHsm: true,
 };
 
 const templateIcon = <TemplateIcon className={styles.TemplateIcon} />;
 
-export const HSM: React.SFC<HSMProps> = ({ match }) => {
+export const HSM = () => {
   const [sampleMessages, setSampleMessages] = useState({
     type: 'TEXT',
     location: null,
@@ -33,6 +30,7 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
   const [example, setExample] = useState(EditorState.createEmpty());
   const [category, setCategory] = useState<any>({});
   const { t } = useTranslation();
+  const params = useParams();
 
   const { data: categoryList, loading } = useQuery(GET_HSM_CATEGORIES);
 
@@ -58,8 +56,8 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
     if (sessionTemplates && value) {
       // need to check exact shortcode
       found = sessionTemplates.sessionTemplates.filter((search: any) => search.shortcode === value);
-      if (match.params.id && found.length > 0) {
-        found = found.filter((search: any) => search.id !== match.params.id);
+      if (params.id && found.length > 0) {
+        found = found.filter((search: any) => search.id !== params.id);
       }
     }
     if (found.length > 0) {
@@ -110,7 +108,7 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
   };
 
   let disabled = false;
-  if (match.params.id) {
+  if (params.id) {
     disabled = true;
   }
 
@@ -161,7 +159,6 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
   return (
     <div>
       <Template
-        match={match}
         listItemName="HSM Template"
         redirectionLink="template"
         icon={templateIcon}

@@ -3,7 +3,7 @@ import * as Yup from 'yup';
 import { useQuery } from '@apollo/client';
 import { Typography } from '@material-ui/core';
 import moment from 'moment';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { ReactComponent as TriggerIcon } from 'assets/images/icons/Trigger/Union.svg';
@@ -15,14 +15,12 @@ import { TimePicker } from 'components/UI/Form/TimePicker/TimePicker';
 import { Calendar } from 'components/UI/Form/Calendar/Calendar';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { GET_FLOWS } from 'graphql/queries/Flow';
+import { getAddOrRemoveRoleIds } from 'common/utils';
 import { GET_COLLECTIONS } from 'graphql/queries/Collection';
 import { GET_TRIGGER } from 'graphql/queries/Trigger';
 import { CREATE_TRIGGER, DELETE_TRIGGER, UPDATE_TRIGGER } from 'graphql/mutations/Trigger';
 import styles from './Trigger.module.css';
 
-export interface TriggerProps {
-  match: any;
-}
 const checkDateTimeValidation = (startAtValue: string, startDateValue: string) => {
   const isDateAhead = moment(startDateValue).isAfter(moment());
   const isTimeAhead = startAtValue > moment().format('THH:mm:ss');
@@ -37,7 +35,7 @@ const checkDateTimeValidation = (startAtValue: string, startDateValue: string) =
   return true;
 };
 
-const setPayload = (payload: any) => {
+const setPayload = (payload: any, roles: any) => {
   const payloadCopy = payload;
 
   const { startDate, startTime, isActive, flowId, frequencyValues, groupId, endDate, frequency } =
@@ -56,6 +54,7 @@ const setPayload = (payload: any) => {
     endDate: moment(endDate).utc().format('yyyy-MM-DD'),
     startTime: moment(startAt).utc().format('THH:mm:ss'),
     frequency: frequency.value,
+    roles: payload.roles,
   };
 
   switch (updatedPayload.frequency) {
@@ -76,7 +75,9 @@ const setPayload = (payload: any) => {
       updatedPayload.isRepeating = false;
   }
 
-  return updatedPayload;
+  const payloadWithRoleIds = getAddOrRemoveRoleIds(roles, updatedPayload);
+
+  return payloadWithRoleIds;
 };
 
 const getFrequencyDetails = (
@@ -118,7 +119,7 @@ const queries = {
   deleteItemQuery: DELETE_TRIGGER,
 };
 
-export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
+export const Trigger = () => {
   const [flowId, setFlowId] = useState(null);
   const [isActive, setIsActive] = useState(true);
   const [startTime, setStartTime] = useState('');
@@ -127,11 +128,13 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
   const [endDate, setEndDate] = useState('');
   const [isRepeating, setIsRepeating] = useState('');
   const [frequencyValues, setFrequencyValues] = useState([]);
+  const [roles, setRoles] = useState([]);
   const [daysDisabled, setDaysDisabled] = useState(true);
   const [groupId, setGroupId] = useState<any>(null);
   const [minDate, setMinDate] = useState<any>(new Date());
   const [frequencyPlaceholder, setFrequencyPlaceholder] = useState('Select days');
   const [frequencyOptions, setFrequencyOptions] = useState(dayList);
+  const params = useParams();
 
   const location = useLocation();
   const { t } = useTranslation();
@@ -145,6 +148,7 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
     frequencyValues,
     groupId,
     isActive,
+    roles,
   };
 
   const triggerFrequencyOptions = [
@@ -161,7 +165,7 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
 
   const isCopyState = location.state === 'copy';
 
-  if (match.params.id && !isCopyState) {
+  if (params.id && !isCopyState) {
     isEditing = true;
   }
 
@@ -188,12 +192,17 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
         })
       ),
 
-    days: Yup.array()
+    frequencyValues: Yup.array()
       .nullable()
       .when('frequency', {
         is: (frequencyValue: any) => frequencyValue && frequencyValue.value === 'weekly',
         then: Yup.array().min(1, t('Please select a day')),
+      })
+      .when('frequency', {
+        is: (frequencyValue: any) => frequencyValue && frequencyValue.value === 'monthly',
+        then: Yup.array().min(1, t('Please select a date')),
       }),
+
     frequency: Yup.object().nullable().required(t('Repeat is required')),
     groupId: Yup.object().nullable().required(t('Collection is required')),
   };
@@ -320,11 +329,10 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
         variant: 'outlined',
       },
       helperText:
-        frequency === 'monthly'
-          ? t(
-              'If you are selecting end of the month dates, then for the ones not present i.e. 30, 31, the selection will default to the last day of that month.'
-            )
-          : null,
+        frequency === 'monthly' &&
+        t(
+          'If you are selecting end of the month dates, then for the ones not present i.e. 30, 31, the selection will default to the last day of that month.'
+        ),
     },
     {
       component: AutoComplete,
@@ -351,6 +359,7 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
     isActive: isActiveValue,
     isRepeating: isRepeatingValue,
     startAt: startAtValue,
+    roles: rolesValue,
   }: any) => {
     setIsRepeating(isRepeatingValue);
     setIsActive(isActiveValue);
@@ -373,6 +382,8 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
     setfrequency(triggerFrequencyOptions.filter((trigger) => trigger.value === frequencyValue)[0]);
     setDaysDisabled(frequencyValue !== 'weekly' && frequencyValue !== 'monthly');
 
+    setRoles(rolesValue);
+
     const getFlowId = flow.flows.filter((flows: any) => flows.id === flowValue.id);
     const getcollectionId = collections.groups.filter(
       (collection: any) => collection.id === groupValue.id
@@ -388,10 +399,10 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
   return (
     <FormLayout
       {...queries}
-      match={match}
       states={states}
+      roleAccessSupport
       setStates={setStates}
-      setPayload={setPayload}
+      setPayload={(payload: any) => setPayload(payload, roles)}
       validationSchema={FormSchema}
       languageSupport={false}
       listItemName="trigger"

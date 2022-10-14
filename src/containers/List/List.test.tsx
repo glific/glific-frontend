@@ -1,10 +1,11 @@
 import { render, screen, cleanup, waitFor } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
-import { Switch, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import { within, fireEvent } from '@testing-library/dom';
 
 import { Tag } from 'containers/Tag/Tag';
+import { OrganizationList } from 'containers/OrganizationList/OrganizationList';
 import { setUserSession } from 'services/AuthService';
 import { ReactComponent as ActivateIcon } from 'assets/images/icons/Activate.svg';
 import { ReactComponent as ApprovedIcon } from 'assets/images/icons/Template/Approved.svg';
@@ -44,7 +45,7 @@ describe('<List />', () => {
 
     await waitFor(() => {
       expect(container.querySelector('table')).toBeInTheDocument();
-      fireEvent.change(getByTestId('searchInput')?.querySelector('input'), {
+      fireEvent.change(getByTestId('searchInput').querySelector('input') as HTMLElement, {
         target: { value: 'Unread' },
       });
     });
@@ -58,9 +59,9 @@ describe('<List />', () => {
   test('list has proper headers', async () => {
     const { container } = render(list);
     await waitFor(() => {
-      const tableHead = container.querySelector('thead');
+      const tableHead = container.querySelector('thead') as HTMLTableSectionElement;
       const { getByText } = within(tableHead);
-      expect(getByText('LABEL')).toBeInTheDocument();
+      expect(getByText('TITLE')).toBeInTheDocument();
       expect(getByText('DESCRIPTION')).toBeInTheDocument();
       expect(getByText('KEYWORDS')).toBeInTheDocument();
       expect(getByText('ACTIONS')).toBeInTheDocument();
@@ -71,7 +72,7 @@ describe('<List />', () => {
     const { container } = render(list);
 
     await waitFor(() => {
-      const tableRow = container.querySelector('tbody tr');
+      const tableRow = container.querySelector('tbody tr') as HTMLTableRowElement;
       const { getByLabelText } = within(tableRow);
       expect(getByLabelText('Edit')).toBeInTheDocument();
       expect(getByLabelText('Delete')).toBeInTheDocument();
@@ -82,10 +83,10 @@ describe('<List />', () => {
 const listButtons = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <Router>
-      <Switch>
-        <Route path="/tag/add" exact component={Tag} />
-      </Switch>
-      <List {...defaultProps} />
+      <Routes>
+        <Route path="/" element={<List {...defaultProps} />} />
+        <Route path="tag/add" element={<Tag />} />
+      </Routes>
     </Router>
   </MockedProvider>
 );
@@ -94,7 +95,9 @@ describe('<List /> actions', () => {
   test('add new Button contains a route to add new page', async () => {
     const { container } = render(listButtons);
     await waitFor(() => {
-      const button = container.querySelector('button.MuiButton-containedPrimary');
+      const button = container.querySelector(
+        'button.MuiButton-containedPrimary'
+      ) as HTMLButtonElement;
       fireEvent.click(button);
     });
 
@@ -107,8 +110,10 @@ describe('<List /> actions', () => {
     const { container } = render(list);
 
     await waitFor(() => {
-      const { queryByLabelText } = within(container.querySelector('tbody tr'));
-      const button = queryByLabelText('Delete');
+      const { queryByLabelText } = within(
+        container.querySelector('tbody tr') as HTMLTableRowElement
+      );
+      const button = queryByLabelText('Delete') as HTMLButtonElement;
       fireEvent.click(button);
     });
 
@@ -128,7 +133,7 @@ describe('<List /> actions', () => {
     await waitFor(() => {
       const agreeButton = screen
         .queryByRole('dialog')
-        ?.querySelector('button.MuiButton-containedSecondary');
+        ?.querySelector('button.MuiButton-containedSecondary') as HTMLButtonElement;
       fireEvent.click(agreeButton);
     });
   });
@@ -137,15 +142,13 @@ describe('<List /> actions', () => {
 test('list sorting', async () => {
   const { container } = render(list);
   await waitFor(() => {
-    const tableHead = container.querySelector('thead');
+    const tableHead = container.querySelector('thead') as HTMLTableSectionElement;
     const { getByText } = within(tableHead);
     fireEvent.click(getByText('KEYWORDS'));
   });
 });
 
 describe('DialogMessage tests', () => {
-  let props = { ...orgProps };
-
   test('dialogMessage with custom component for delete', async () => {
     const useCustomDialog = () => {
       const component = (
@@ -160,8 +163,7 @@ describe('DialogMessage tests', () => {
       };
     };
 
-    props.dialogMessage = useCustomDialog;
-    props.additionalAction = [
+    const additionalAction = [
       {
         icon: ApprovedIcon,
         parameter: 'id',
@@ -176,10 +178,15 @@ describe('DialogMessage tests', () => {
       },
     ];
 
+    let props = { ...orgProps, dialogMessage: useCustomDialog, additionalAction };
+
     const list = (
       <MockedProvider mocks={ORG_LIST_MOCK} addTypename={false}>
         <Router>
-          <List {...props} />
+          <Routes>
+            <Route path="/" element={<List {...props} />} />
+            <Route path="tag/add" element={<OrganizationList />} />
+          </Routes>
         </Router>
       </MockedProvider>
     );
@@ -187,14 +194,15 @@ describe('DialogMessage tests', () => {
     const { container } = render(list);
 
     await waitFor(() => {
-      const { queryByLabelText } = within(container.querySelector('tbody tr'));
-      const button = queryByLabelText('Delete');
+      const { queryByLabelText } = within(
+        container.querySelector('tbody tr') as HTMLTableRowElement
+      );
+      const button = queryByLabelText('Delete') as HTMLButtonElement;
 
       fireEvent.click(button);
     });
   });
 });
-
 
 // Need to check and write cases for card type
 

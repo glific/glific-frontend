@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 
 import { ReactComponent as SearchIcon } from 'assets/images/icons/Search/SelectedEdit.svg';
 import { ReactComponent as TagIcon } from 'assets/images/icons/Tags/Selected.svg';
-import { GET_SEARCH, SEARCH_LIST_QUERY } from 'graphql/queries/Search';
+import { GET_SEARCH } from 'graphql/queries/Search';
 import { CREATE_SEARCH, UPDATE_SEARCH, DELETE_SEARCH } from 'graphql/mutations/Search';
 // import { FILTER_TAGS_NAME } from 'graphql/queries/Tag';
 import { GET_COLLECTIONS } from 'graphql/queries/Collection';
@@ -25,13 +25,13 @@ import { getObject } from 'common/utils';
 import styles from './Search.module.css';
 
 export interface SearchProps {
-  match?: any;
   type?: string;
   search?: any;
   handleCancel?: any;
   handleSave?: any;
   searchParam?: any;
   setState?: any;
+  searchId?: string | null;
 }
 
 const getPayload = (payload: any) => {
@@ -106,7 +106,7 @@ const queries = {
   deleteItemQuery: DELETE_SEARCH,
 };
 
-export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }) => {
+export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
   const { searchParam } = props;
   const [shortcode, setShortcode] = useState('');
   const [label, setLabel] = useState('');
@@ -271,10 +271,10 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
       args.filter = Object.assign(args.filter, dateExpression);
     }
     // For create new search then label & shortcode should be empty
-    // For update search match.params.id should not empty
+    // For update use existing label should not empty
     setStates({
-      label: match.params.id ? props.searchParam.label : '',
-      shortcode: match.params.id ? props.searchParam.shortcode : '',
+      label: searchId ? props.searchParam.label : '',
+      shortcode: searchId ? props.searchParam.shortcode : '',
       args: JSON.stringify(args),
     });
   };
@@ -286,31 +286,7 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
     }
   }, [searchParam]);
 
-  const { data: searchList } = useQuery(SEARCH_LIST_QUERY, {
-    variables: setVariables({}, 100, 0, 'ASC'),
-  });
-
   if (!data || !dataUser || !dataLabels) return <Loading />;
-
-  const validateTitle = (value: any) => {
-    let error;
-    if (value) {
-      let found = [];
-
-      if (searchList) {
-        found = searchList.savedSearches.filter(
-          (savedSearch: any) => savedSearch.shortcode === value
-        );
-        if (match.params.id && found.length > 0) {
-          found = found.filter((savedSearch: any) => savedSearch.id !== match.params.id);
-        }
-      }
-      if (found.length > 0) {
-        error = t('Title already exists.');
-      }
-    }
-    return error;
-  };
 
   const DataFields = [
     {
@@ -318,7 +294,6 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
       name: 'shortcode',
       type: 'text',
       placeholder: t('Search Title'),
-      validate: validateTitle,
       inputProp: {
         onChange: (event: any) => {
           setShortcode(event.target.value);
@@ -555,7 +530,6 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
       {dialog}
       <FormLayout
         {...queries}
-        match={match}
         states={states}
         setStates={setStates}
         setPayload={setPayload}

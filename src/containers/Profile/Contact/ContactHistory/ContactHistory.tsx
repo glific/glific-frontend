@@ -2,7 +2,7 @@ import React from 'react';
 import { useQuery } from '@apollo/client';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
-
+import { getOrganizationServices } from 'services/AuthService';
 import { Button } from 'components/UI/Form/Button/Button';
 import Loading from 'components/UI/Layout/Loading/Loading';
 import { COUNT_CONTACT_HISTORY, GET_CONTACT_HISTORY } from 'graphql/queries/Contact';
@@ -11,11 +11,14 @@ import { DATE_TIME_FORMAT } from 'common/constants';
 import styles from './ContactHistory.module.css';
 
 export interface ContactHistoryProps {
-  contactId: string;
+  contactId: string | undefined;
+  profileId?: string | null;
 }
 
-export const ContactHistory: React.FC<ContactHistoryProps> = ({ contactId }) => {
+export const ContactHistory = ({ contactId, profileId }: ContactHistoryProps) => {
   const { t } = useTranslation();
+
+  const isContactProfileEnabled = getOrganizationServices('contactProfileEnabled');
 
   const { data: countHistory, loading: countHistoryLoading } = useQuery(COUNT_CONTACT_HISTORY, {
     fetchPolicy: 'network-only',
@@ -25,26 +28,31 @@ export const ContactHistory: React.FC<ContactHistoryProps> = ({ contactId }) => 
       },
     },
   });
-  const { data, loading, fetchMore } = useQuery(GET_CONTACT_HISTORY, {
-    notifyOnNetworkStatusChange: true,
-    fetchPolicy: 'network-only',
-    variables: {
-      filter: {
-        contactId,
-      },
-      opts: {
-        limit: 10,
-        offset: 0,
-        order: 'DESC',
-      },
+
+  const contactHistoryVariables: any = {
+    filter: {
+      contactId,
     },
+    opts: {
+      limit: 10,
+      offset: 0,
+      order: 'DESC',
+    },
+  };
+
+  if (isContactProfileEnabled && profileId) {
+    contactHistoryVariables.filter.profileId = profileId;
+  }
+  const { data, loading, fetchMore } = useQuery(GET_CONTACT_HISTORY, {
+    fetchPolicy: 'network-only',
+    variables: contactHistoryVariables,
   });
 
-  if (!data && loading) {
+  if (!data || loading) {
     return <Loading />;
   }
 
-  if (!countHistory && countHistoryLoading) {
+  if (!countHistory || countHistoryLoading) {
     return <Loading />;
   }
 

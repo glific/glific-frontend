@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useMutation, useLazyQuery, useQuery } from '@apollo/client';
-import { Prompt, Redirect, useHistory } from 'react-router-dom';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { IconButton } from '@material-ui/core';
 
 import { ReactComponent as HelpIcon } from 'assets/images/icons/Help.svg';
@@ -26,14 +26,10 @@ declare function showFlowEditor(node: any, config: any): void;
 
 customElements.define = checkElementInRegistry(customElements.define);
 
-export interface FlowEditorProps {
-  match: any;
-}
-
-export const FlowEditor = (props: FlowEditorProps) => {
-  const { match } = props;
-  const history = useHistory();
-  const { uuid } = match.params;
+export const FlowEditor = () => {
+  const params = useParams();
+  const { uuid } = params;
+  const navigate = useNavigate();
   const [publishDialog, setPublishDialog] = useState(false);
   const [simulatorId, setSimulatorId] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -136,6 +132,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
   const closeModal = () => {
     setModalVisible(false);
   };
+  // eslint-disable-next-line no-unused-vars
   const handleBlockedNavigation = (nextLocation: any): boolean => {
     if (!confirmedNavigation) {
       setModalVisible(true);
@@ -150,9 +147,9 @@ export const FlowEditor = (props: FlowEditorProps) => {
   };
   useEffect(() => {
     if (confirmedNavigation && lastLocation) {
-      history.push(lastLocation);
+      navigate(lastLocation);
     }
-  }, [confirmedNavigation, lastLocation, history]);
+  }, [confirmedNavigation, lastLocation, navigate]);
 
   if (modalVisible) {
     modal = (
@@ -240,7 +237,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
   }, [flowId]);
 
   const handlePublishFlow = () => {
-    publishFlow({ variables: { uuid: match.params.uuid } });
+    publishFlow({ variables: { uuid: params.uuid } });
   };
 
   const handleCancelFlow = () => {
@@ -277,7 +274,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
         }}
         handleMiddle={() => {
           setConfirmedNavigation(true);
-          history.push('/flow');
+          navigate('/flow');
         }}
       >
         <p className={styles.DialogDescription}>
@@ -335,7 +332,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
   if (published && !IsError) {
     setNotification('The flow has been published');
     if (!stayOnPublish) {
-      return <Redirect to="/flow" />;
+      return <Navigate to="/flow" />;
     }
     setPublishDialog(false);
     setPublished(false);
@@ -378,7 +375,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
           color="default"
           className={styles.ContainedButton}
           onClick={() => {
-            history.push('/flow');
+            navigate('/flow');
           }}
         >
           Back
@@ -414,7 +411,6 @@ export const FlowEditor = (props: FlowEditorProps) => {
           Publish
         </Button>
       </div>
-
       <Simulator
         showSimulator={simulatorId > 0}
         setSimulatorId={setSimulatorId}
@@ -424,10 +420,9 @@ export const FlowEditor = (props: FlowEditorProps) => {
         resetMessage={resetMessage}
         getFlowKeyword={getFlowKeyword}
       />
-
       {modal}
-      <Prompt when message={handleBlockedNavigation} />
-
+      {/* TODOS: need to add custom Prompt */}
+      {/* <Prompt when message={handleBlockedNavigation} /> */}
       <div className={styles.FlowContainer}>
         <div
           className={drawerOpen ? styles.FlowName : styles.FlowNameClosed}

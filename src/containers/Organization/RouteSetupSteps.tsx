@@ -4,7 +4,7 @@ import { FB_MANAGER_VERIFICATION, GUPSHUP_ACCOUNT_CREATION } from 'common/consta
 import { StaticOrganizationContents } from './StaticOrganizationContents/StaticOrganizationContents';
 import { Registration } from './Registration/Registration';
 
-export const RouteSetupSteps: React.SFC = () => {
+export const RouteSetupSteps = () => {
   const [currentStep, setCurrentStep] = useState(0);
 
   const links = [

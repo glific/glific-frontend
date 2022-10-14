@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Redirect, Link } from 'react-router-dom';
+import { Navigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useQuery, useMutation, DocumentNode, useLazyQuery } from '@apollo/client';
 import { IconButton, TableFooter, TablePagination, TableRow, Typography } from '@material-ui/core';
@@ -32,7 +32,7 @@ export interface ListProps {
   dialogMessage?: string | any;
   pageLink: string;
   columns: Function;
-  listIcon: Object;
+  listIcon: React.ReactNode;
   columnStyles: Array<any>;
   secondaryButton?: any;
   title: string;
@@ -85,7 +85,7 @@ interface TableVals {
   sortDirection: 'asc' | 'desc';
 }
 
-export const List: React.SFC<ListProps> = ({
+export const List = ({
   columnNames = [],
   countQuery,
   listItem,
@@ -269,7 +269,7 @@ export const List: React.SFC<ListProps> = ({
       }
       fetchQuery();
     }
-  }, [userRole]);
+  }, []);
 
   let deleteItem: any;
 
@@ -309,7 +309,7 @@ export const List: React.SFC<ListProps> = ({
   };
 
   const useDelete = (message: string | any) => {
-    let component = {};
+    let component: any = {};
     const props = { disableOk: false, handleOk: handleDeleteItem };
     if (typeof message === 'string') {
       component = message;
@@ -358,7 +358,7 @@ export const List: React.SFC<ListProps> = ({
   }
 
   if (newItem) {
-    return <Redirect to={`/${pageLink}/add`} />;
+    return <Navigate to={`/${pageLink}/add`} />;
   }
 
   if (loading || l || loadingCollections) return <Loading />;
@@ -375,14 +375,18 @@ export const List: React.SFC<ListProps> = ({
   function getIcons(
     // id: number | undefined,
     item: any,
-    label: string,
-    isReserved: boolean | null,
-    listItems: any,
     allowedAction: any | null
   ) {
     // there might be a case when we might want to allow certain actions for reserved items
     // currently we don't allow edit or delete for reserved items. hence return early
-    const { id } = item;
+    const { id, label, name, isReserved } = item;
+
+    let labelValue = label;
+
+    if (name) {
+      labelValue = name;
+    }
+
     if (isReserved) {
       return null;
     }
@@ -423,9 +427,9 @@ export const List: React.SFC<ListProps> = ({
             let additionalActionParameter: any;
             const params: any = additionalAction[index].parameter.split('.');
             if (params.length > 1) {
-              additionalActionParameter = listItems[params[0]][params[1]];
+              additionalActionParameter = item[params[0]][params[1]];
             } else {
-              additionalActionParameter = listItems[params[0]];
+              additionalActionParameter = item[params[0]];
             }
             const key = index;
 
@@ -461,16 +465,16 @@ export const List: React.SFC<ListProps> = ({
               );
             }
             if (action.button) {
-              return action.button(listItems, action, key, fetchQuery);
+              return action.button(item, action, key, fetchQuery);
             }
             return null;
           })}
 
           {/* do not display edit & delete for staff role in collection */}
-          {userRolePermissions.manageCollections || listItems !== 'collections' ? (
+          {userRolePermissions.manageCollections || item !== 'collections' ? (
             <>
               {editButton}
-              {deleteButton(id, label)}
+              {deleteButton(id, labelValue)}
             </>
           ) : null}
         </div>
@@ -481,16 +485,15 @@ export const List: React.SFC<ListProps> = ({
 
   function formatList(listItems: Array<any>) {
     return listItems.map(({ ...listItemObj }) => {
-      const label = listItemObj.label ? listItemObj.label : listItemObj.name;
-      const isReserved = listItemObj.isReserved ? listItemObj.isReserved : null;
       // display only actions allowed to the user
       const allowedAction = restrictedAction
         ? restrictedAction(listItemObj)
         : { chat: true, edit: true, delete: true };
       return {
         ...columns(listItemObj),
-        operations: getIcons(listItemObj, label, isReserved, listItemObj, allowedAction),
+        operations: getIcons(listItemObj, allowedAction),
         recordId: listItemObj.id,
+        isActive: listItemObj.isActive,
       };
     });
   }

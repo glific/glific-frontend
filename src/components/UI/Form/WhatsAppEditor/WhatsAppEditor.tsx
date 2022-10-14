@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { Picker } from 'emoji-mart';
 import { RichUtils, getDefaultKeyBinding, Modifier, EditorState, Editor } from 'draft-js';
 import { IconButton, ClickAwayListener } from '@material-ui/core';
-import 'emoji-mart/css/emoji-mart.css';
 import ReactResizeDetector from 'react-resize-detector';
 import { useTranslation } from 'react-i18next';
 
 import { getPlainTextFromEditor } from 'common/RichEditor';
+import { EmojiPicker } from 'components/UI/EmojiPicker/EmojiPicker';
 import styles from './WhatsAppEditor.module.css';
 
 interface WhatsAppEditorProps {
@@ -17,8 +16,13 @@ interface WhatsAppEditorProps {
   readOnly?: boolean;
 }
 
-export const WhatsAppEditor: React.SFC<WhatsAppEditorProps> = (props) => {
-  const { setEditorState, sendMessage, editorState, handleHeightChange, readOnly = false } = props;
+export const WhatsAppEditor = ({
+  setEditorState,
+  sendMessage,
+  editorState,
+  handleHeightChange,
+  readOnly = false,
+}: WhatsAppEditorProps) => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const { t } = useTranslation();
 
@@ -130,12 +134,9 @@ export const WhatsAppEditor: React.SFC<WhatsAppEditorProps> = (props) => {
             </IconButton>
           </div>
           {showEmojiPicker ? (
-            <Picker
-              data-testid="emoji-popup"
-              title={t('Pick your emoji…')}
-              emoji="point_up"
-              style={emojiStyles}
-              onSelect={(emoji) => updateValue(emoji, true)}
+            <EmojiPicker
+              onEmojiSelect={(emoji: any) => updateValue(emoji, true)}
+              displayStyle={emojiStyles}
             />
           ) : null}
         </div>

@@ -42,13 +42,15 @@ describe('<ColorPicker />', () => {
 
 describe('Test choose color', () => {
   it('choose color', async () => {
+    const user = userEvent.setup();
     const { findByTestId } = render(wrapper);
 
     const container = await findByTestId('ChooseColor');
-    fireEvent.keyDown(container);
+    user.click(container);
 
     const color = await screen.findByDisplayValue('22194D');
-    userEvent.type(color, '{selectall}{backspace}9900EF');
-    expect(color).toHaveValue('9900EF');
+    await user.click(color);
+    await userEvent.keyboard('{backspace}{backspace}EF');
+    expect(color).toHaveValue('2219EF');
   });
 });
