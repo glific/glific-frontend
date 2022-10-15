@@ -7,3 +7,13 @@
 .CalendarInput .MuiOutlinedInput-adornedEnd {
   padding-right: 2px !important;
 }
+
+@media screen and (max-width: 768px) {
+  .CalendarInput {
+    width: 100% !important;
+  }
+  .Calendar {
+    width: 100% !important;
+    padding: 8px 0 !important;
+  }
+}
