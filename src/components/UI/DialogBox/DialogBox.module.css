@@ -40,6 +40,9 @@
   color: #073f24;
   padding-top: 24px !important;
   padding-bottom: 8px !important;
+  justify-content: center !important;
+  display: flex !important;
+  flex-direction: column !important;
 }
 
 .DialogTitle h2 {
@@ -49,13 +52,13 @@
 .DialogTitleCenter {
   composes: DialogTitle;
   text-align: center;
-  max-width: 395px;
+  max-width: 100%;
 }
 
 .DialogTitleLeft {
   composes: DialogTitle;
   text-align: left;
-  max-width: 395px;
+  max-width: 100%;
 }
 
 .DialogContentCenter {
