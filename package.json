@@ -64,7 +64,7 @@
     "interweave": "^13.0.0",
     "interweave-autolink": "^5.1.0",
     "moment": "^2.29.4",
-    "phoenix": "^1.6.11",
+    "phoenix": "^1.6.14",
     "pino": "^8.5.0",
     "pino-logflare": "^0.3.12",
     "react": "^18.2.0",

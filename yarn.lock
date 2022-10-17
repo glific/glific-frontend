@@ -8107,10 +8107,10 @@ performance-now@^2.1.0:
   resolved "https://registry.yarnpkg.com/performance-now/-/performance-now-2.1.0.tgz#6309f4e0e5fa913ec1c69307ae364b4b377c9e7b"
   integrity sha512-7EAHlyLHI56VEIdK57uwHdHKIaAGbnXPiw0yWbarQZOKaKpvUIgW0jWRVLiatnM+XXlSwsanIBH/hzGMJulMow==
 
-phoenix@^1.6.11:
-  version "1.6.11"
-  resolved "https://registry.yarnpkg.com/phoenix/-/phoenix-1.6.11.tgz#e29c3658c8fd6ba509e87130d2b1b20adc6a9a53"
-  integrity sha512-z/MSg9yY20JhTSj6tKmOYE9p+PuU+FVstYtgBfIZPGNLKhSuV9Zcs9LLLKWeiJ9EUzaXS/QeO8Po4+jJnyNfMw==
+phoenix@^1.6.14:
+  version "1.6.14"
+  resolved "https://registry.yarnpkg.com/phoenix/-/phoenix-1.6.14.tgz#54245b529ae445752a80c038fffbe1210845be63"
+  integrity sha512-0Xu8AJwcDgv2n+QvOlmHsYzrFHUEm5XDxyH0uLCDCgRfALfaq3hRN39GAtgYTPBwofSgF8JRRlaCKGAgjUuwmA==
 
 picocolors@^0.2.1:
   version "0.2.1"
