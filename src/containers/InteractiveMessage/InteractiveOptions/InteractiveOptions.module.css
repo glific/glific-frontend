@@ -53,12 +53,3 @@
   composes: Translation from 'App.module.css';
   margin-bottom: 8px;
 }
-
-@media screen and (max-width: 768px) {
-  .RadioLabelWrapper:last-child {
-    margin-left: 0px;
-  }
-  .RadioGroupDisplay {
-    justify-content: space-between;
-  }
-}

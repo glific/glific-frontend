@@ -47,9 +47,3 @@
   font-weight: 400;
   margin: 0 0 8px 16px;
 }
-
-@media screen and (max-width: 768px) {
-  .Input {
-    width: 100% !important;
-  }
-}

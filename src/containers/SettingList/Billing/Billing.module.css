@@ -223,14 +223,3 @@
   font-weight: 500;
   font-size: 16px;
 }
-
-@media screen and (max-width: 768px) {
-  .Form {
-    width: 100%;
-    padding: 0 24px;
-    margin-left: 0px;
-  }
-  .Setup {
-    display: block;
-  }
-}

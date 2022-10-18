@@ -56,9 +56,3 @@
 .Translation {
   composes: Translation from 'App.module.css';
 }
-
-@media screen and (max-width: 768px) {
-  .Input {
-    width: 100% !important;
-  }
-}

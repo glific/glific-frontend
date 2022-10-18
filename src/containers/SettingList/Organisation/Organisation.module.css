@@ -12,7 +12,7 @@
 
 .organization > div:first-child {
   display: inline-block !important;
-  width: 48%;
+  width: 48% !important;
   margin-right: 2% !important;
 }
 
@@ -29,7 +29,7 @@
 .organization > div:nth-of-type(12),
 .organization > div:nth-of-type(13) {
   display: inline-block;
-  width: 25%;
+  width: 25% !important;
   margin: 0% !important;
 }
 

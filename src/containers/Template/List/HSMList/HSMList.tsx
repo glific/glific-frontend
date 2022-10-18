@@ -17,14 +17,14 @@ export const HSMList = () => {
     fetchPolicy: 'network-only',
     onCompleted: (data) => {
       if (data.errors) {
-        setNotification('Sorry, failed to sync HSM updates', 'warning');
+        setNotification('Sorry, failed to get HSM updates', 'warning');
       } else {
         setNotification('HSMs updated successfully', 'success');
       }
       setSyncTemplateLoad(false);
     },
     onError: () => {
-      setNotification('Sorry, failed to sync HSM updates', 'warning');
+      setNotification('Sorry, failed to get HSM updates', 'warning');
       setSyncTemplateLoad(false);
     },
   });
@@ -58,7 +58,7 @@ export const HSMList = () => {
         onClick={() => handleHsmUpdates()}
         aria-hidden="true"
       >
-        SYNC HSM
+        GET HSM UPDATES
       </Button>
     </>
   );

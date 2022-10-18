@@ -15,5 +15,5 @@
 
 .AttachmentFields > div:nth-child(5) {
   display: inline-block !important;
-  width: 59%;
+  width: 59% !important;
 }
