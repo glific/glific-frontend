@@ -59,3 +59,23 @@ export const UPDATE_SHEET = gql`
     }
   }
 `;
+
+export const SYNC_SHEET = gql`
+  mutation SyncSheet($id: ID!) {
+    syncSheet(id: $id) {
+      sheet {
+        id
+        isActive
+        label
+        lastSyncedAt
+        updatedAt
+        url
+        insertedAt
+      }
+      errors {
+        key
+        message
+      }
+    }
+  }
+`;

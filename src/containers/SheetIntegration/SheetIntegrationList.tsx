@@ -4,7 +4,9 @@ import { ReactComponent as SheetIcon } from 'assets/images/icons/Sheets/Sheet.sv
 import { ReactComponent as UpdatesheetIcon } from 'assets/images/icons/Sheets/Updatesheet.svg';
 import { ReactComponent as LinkIcon } from 'assets/images/icons/Sheets/Link.svg';
 import { GET_SHEET_COUNT, GET_SHEETS } from 'graphql/queries/Sheet';
-import { DELETE_SHEET } from 'graphql/mutations/Sheet';
+import { DELETE_SHEET, SYNC_SHEET } from 'graphql/mutations/Sheet';
+import { setNotification } from 'common/notification';
+import { useMutation } from '@apollo/client';
 import { List } from 'containers/List/List';
 
 import styles from './SheetIntegrationList.module.css';
@@ -23,18 +25,33 @@ const queries = {
 export const SheetIntegrationList = () => {
   const { t } = useTranslation();
 
-  const additionalAction = [
-    {
-      label: t('Update sheet'),
-      icon: <UpdatesheetIcon />,
-      parameter: 'uuid',
-      link: '/sheet-integration/add',
+  const [syncSheetMutation] = useMutation(SYNC_SHEET, {
+    fetchPolicy: 'network-only',
+    onCompleted: async () => {
+      setNotification(`Sheet updated successfully`);
     },
+  });
+
+  const syncSheet = (id: any) => {
+    syncSheetMutation({ variables: { id } });
+  };
+
+  const linkSheet = (_id: any, item: any) => {
+    window.open(item.url);
+  };
+
+  const additionalAction = [
     {
       label: t('Link'),
       icon: <LinkIcon />,
       parameter: 'id',
-      link: '/sheet-integration/add',
+      dialog: linkSheet,
+    },
+    {
+      label: t('Update sheet'),
+      icon: <UpdatesheetIcon />,
+      parameter: 'id',
+      dialog: syncSheet,
     },
   ];
   const getColumns = ({ label }: any) => ({
