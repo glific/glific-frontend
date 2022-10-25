@@ -7,7 +7,7 @@ import { Input } from 'components/UI/Form/Input/Input';
 import { ReactComponent as SheetIcon } from 'assets/images/icons/Sheets/Sheet.svg';
 import { CREATE_SHEET, UPDATE_SHEET, DELETE_SHEET } from 'graphql/mutations/Sheet';
 import { GET_SHEET } from 'graphql/queries/Sheet';
-import styles from './SheetIntegrationList.module.css';
+import styles from './SheetIntegration.module.css';
 
 const sheetIcon = <SheetIcon className={styles.DarkIcon} />;
 

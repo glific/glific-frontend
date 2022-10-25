@@ -18,7 +18,9 @@ const SpeedSendList = lazy(() => import('containers/Template/List/SpeedSendList/
 const SpeedSend = lazy(() => import('containers/Template/Form/SpeedSend/SpeedSend'));
 const FlowList = lazy(() => import('containers/Flow/FlowList/FlowList'));
 const Flow = lazy(() => import('containers/Flow/Flow'));
-const SheetIntegrationList = lazy(() => import('containers/SheetIntegration/SheetIntegrationList'));
+const SheetIntegrationList = lazy(
+  () => import('containers/SheetIntegration/SheetIntegrationList/SheetIntegrationList')
+);
 const SheetIntegration = lazy(() => import('containers/SheetIntegration/SheetIntegration'));
 const CollectionList = lazy(() => import('containers/Collection/CollectionList/CollectionList'));
 const Collection = lazy(() => import('containers/Collection/Collection'));
