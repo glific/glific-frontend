@@ -1,4 +1,4 @@
-import { render, waitFor, fireEvent, screen } from '@testing-library/react';
+import { render, waitFor, fireEvent } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router';
 import { SheetIntegration } from './SheetIntegration';
@@ -53,7 +53,7 @@ test('sheet succesfully created and list page should open ', async () => {
       },
     });
     fireEvent.change(labelInput!, {
-      target: { value: 'NIRMAL' },
+      target: { value: 'Sample sheet' },
     });
     const button = getByText('Save');
     fireEvent.click(button);

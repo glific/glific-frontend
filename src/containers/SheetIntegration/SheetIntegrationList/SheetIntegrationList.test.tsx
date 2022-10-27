@@ -45,7 +45,6 @@ describe('<SheetIntegrationList />', () => {
   test('should search sheet and check if sheet keywords are present below the name', async () => {
     const { getByTestId, queryByPlaceholderText, getByText } = render(wrapper);
     await waitFor(() => {
-
       expect(getByTestId('searchInput')).toBeInTheDocument();
       const searchInput = queryByPlaceholderText('Search') as HTMLInputElement;
       fireEvent.change(searchInput, { target: { value: 'Sheet1' } });
@@ -62,7 +61,7 @@ describe('<SheetIntegrationList />', () => {
     await waitFor(() => {
       expect(getAllByTestId('additionalButton')[0]).toBeInTheDocument();
     });
-    // TODO: test flows
+
     await waitFor(() => {
       fireEvent.click(getAllByTestId('additionalButton')[0]);
       expect(window.open).toBeCalled();
@@ -71,7 +70,7 @@ describe('<SheetIntegrationList />', () => {
     await waitFor(() => {
       expect(getAllByTestId('additionalButton')[1]).toBeInTheDocument();
     });
-    // TODO: test flows
+
     await waitFor(() => {
       fireEvent.click(getAllByTestId('additionalButton')[1]);
     });
