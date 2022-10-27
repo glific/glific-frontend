@@ -25,7 +25,6 @@ export const SheetIntegration = () => {
   const { t } = useTranslation();
   const states = { label, url };
   const setStates = ({ label: labelValue, url: urlValue }: any) => {
-    // Override name & keywords when creating Flow Copy
     setLabel(labelValue);
     setUrl(urlValue);
   };
