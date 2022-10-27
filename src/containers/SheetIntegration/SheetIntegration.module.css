@@ -2,4 +2,5 @@
   color: green;
   border-bottom: 1px dashed green;
   display: inline;
+  text-decoration: none !important;
 }

@@ -6,6 +6,7 @@ import { FormLayout } from 'containers/Form/FormLayout';
 import { Input } from 'components/UI/Form/Input/Input';
 import { ReactComponent as SheetIcon } from 'assets/images/icons/Sheets/Sheet.svg';
 import { CREATE_SHEET, UPDATE_SHEET, DELETE_SHEET } from 'graphql/mutations/Sheet';
+import { SAMPLE_SHEET_LINK } from 'config';
 import { GET_SHEET } from 'graphql/queries/Sheet';
 import styles from './SheetIntegration.module.css';
 
@@ -41,7 +42,11 @@ export const SheetIntegration = () => {
       name: 'url',
       type: 'text',
       placeholder: t('Sheet URL'),
-      helperText: <div className={styles.HelperText}>View Sample</div>,
+      helperText: (
+        <a href={SAMPLE_SHEET_LINK} target="_blank" rel="noreferrer" className={styles.HelperText}>
+          View Sample
+        </a>
+      ),
     },
     {
       component: Input,

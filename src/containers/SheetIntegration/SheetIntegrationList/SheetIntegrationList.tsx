@@ -8,12 +8,19 @@ import { DELETE_SHEET, SYNC_SHEET } from 'graphql/mutations/Sheet';
 import { setNotification } from 'common/notification';
 import { useMutation } from '@apollo/client';
 import { List } from 'containers/List/List';
+import moment from 'moment';
+import { DATE_TIME_FORMAT } from 'common/constants';
 
 import styles from './SheetIntegrationList.module.css';
 
 const getName = (text: string) => <p className={styles.NameText}>{text}</p>;
+const getLastSyncedAt = (date: string, fallback: string = '') => (
+  <div className={styles.LastSyncText}>
+    {date ? moment(date).format(DATE_TIME_FORMAT) : fallback}
+  </div>
+);
 
-const columnStyles = [styles.Name, styles.Actions];
+const columnStyles = [styles.Name, styles.LastSyncText, styles.Actions];
 const sheetIcon = <SheetIcon className={styles.DarkIcon} />;
 
 const queries = {
@@ -54,11 +61,12 @@ export const SheetIntegrationList = () => {
       dialog: syncSheet,
     },
   ];
-  const getColumns = ({ label }: any) => ({
+  const getColumns = ({ label, lastSyncedAt }: any) => ({
     name: getName(label),
+    date: getLastSyncedAt(lastSyncedAt),
   });
 
-  const columnNames = ['LABEL', 'ACTIONS'];
+  const columnNames = ['LABEL', 'LAST SYNCED', 'ACTIONS'];
   const dialogMessage = t("You won't be able to use this sheet.");
 
   const columnAttributes = {
