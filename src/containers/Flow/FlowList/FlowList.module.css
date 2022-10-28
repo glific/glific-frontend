@@ -70,13 +70,13 @@
 
 .ContactFields {
   composes: Links;
-  left: 440px;
+  left: 420px;
 }
 
 .Sheets {
   composes: Links;
   display: flex;
-  left: 640px;
+  left: 600px;
 }
 
 .Sheets svg {
