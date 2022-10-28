@@ -38,7 +38,7 @@ describe('<SheetIntegrationList />', () => {
     // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();
     await waitFor(() => {
-      expect(getByText('Sheet integration')).toBeInTheDocument();
+      expect(getByText('Google sheet integration')).toBeInTheDocument();
     });
   });
 

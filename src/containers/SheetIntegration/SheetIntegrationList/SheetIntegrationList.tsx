@@ -55,7 +55,7 @@ export const SheetIntegrationList = () => {
       dialog: linkSheet,
     },
     {
-      label: t('Update sheet'),
+      label: t('Sync sheet'),
       icon: <UpdatesheetIcon />,
       parameter: 'id',
       dialog: syncSheet,
@@ -77,7 +77,7 @@ export const SheetIntegrationList = () => {
 
   return (
     <List
-      title={t('Sheet integration')}
+      title={t('Google sheet integration')}
       listItem="sheets"
       listItemName="Sheet"
       pageLink="Sheet-integration"

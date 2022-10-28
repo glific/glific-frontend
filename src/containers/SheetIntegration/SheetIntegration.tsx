@@ -59,7 +59,7 @@ export const SheetIntegration = () => {
     <FormLayout
       {...queries}
       states={states}
-      title={t('Sheet integration')}
+      title={t('Google sheet integration')}
       setStates={setStates}
       validationSchema={FormSchema}
       listItemName="Sheet"

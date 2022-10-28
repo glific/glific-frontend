@@ -88,12 +88,6 @@ const menus = [
     roles: ['Manager', 'Admin'],
   },
   {
-    title: 'Sheet management',
-    path: '/sheet-integration',
-    type: 'management',
-    roles: ['Manager', 'Admin'],
-  },
-  {
     title: 'Staff management',
     path: '/staff-management',
     type: 'management',
