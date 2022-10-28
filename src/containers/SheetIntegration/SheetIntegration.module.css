@@ -1,5 +1,6 @@
 .HelperText {
   color: green;
+  font-weight: 500;
   border-bottom: 1px dashed green;
   display: inline;
   text-decoration: none !important;
