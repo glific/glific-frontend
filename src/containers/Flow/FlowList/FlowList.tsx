@@ -234,7 +234,7 @@ export const FlowList = () => {
       </Link>
       <Link to="/sheet-integration" className={styles.Sheets}>
         <SheetsIcon />
-        {t('Google sheet integration')}
+        {t('Google sheets')}
       </Link>
     </>
   );
