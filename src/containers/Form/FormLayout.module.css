@@ -8,7 +8,7 @@
   box-sizing: border-box;
 }
 
-@media (min-width: 600px) {
+@media screen and (min-width: 600px) {
   .Item {
     width: 500px;
   }
@@ -125,4 +125,12 @@
 
 .BackLink svg {
   margin-right: 6px;
+}
+
+@media screen and (max-width: 768px) {
+  .Form,
+  .ItemAdd,
+  .Buttons {
+    width: 100% !important;
+  }
 }
