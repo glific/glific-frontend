@@ -662,7 +662,7 @@ export const List = ({
           <SearchBar
             handleSubmit={handleSearch}
             onReset={() => {
-              history.push({ search: '' });
+              setSearchParams({ search: '' });
               setSearchVal('');
               resetTableVals();
             }}
