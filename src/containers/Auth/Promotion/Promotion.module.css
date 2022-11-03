@@ -74,7 +74,7 @@
   display: flex;
 }
 
-.BodyListText > div {
+.BodyListText > span {
   border-radius: 50%;
   margin-right: 16px;
   font-size: 10px;

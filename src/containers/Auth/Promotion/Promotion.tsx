@@ -65,7 +65,7 @@ export const Promotion = () => {
           <div className={styles.Points}>
             {points.map((point, index) => (
               <p className={styles.BodyListText}>
-                <div>{index + 1}</div>
+                <span>{index + 1}</span>
                 {point}
               </p>
             ))}
@@ -76,7 +76,7 @@ export const Promotion = () => {
 
           <div className={styles.SocialIcons}>
             {socialIcons.map((socialIcon: any) => (
-              <a href={socialIcon.link} target="_blank" rel="noreferrer">
+              <a href={socialIcon.link} target="_blank" rel="noreferrer" key={socialIcon.link}>
                 {socialIcon.icon}
               </a>
             ))}
