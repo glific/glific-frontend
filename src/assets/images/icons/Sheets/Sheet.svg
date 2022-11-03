@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Group</title>
+    <g id="Sheets-integration" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Desktop/Sheets-integration" transform="translate(-269.000000, -28.000000)" stroke="#073F24" stroke-width="2">
+            <g id="Group" transform="translate(269.000000, 28.000000)">
+                <g id="Icon/Document/Dark">
+                    <path d="M6,1.33333333 L13.8836349,1.33333333 C14.4240155,1.33333333 14.9413997,1.55200102 15.3179868,1.93954902 L19.4343519,6.17572526 C19.7970839,6.54901497 20,7.04901008 20,7.56950957 L20,20.6666667 C20,21.7712362 19.1045695,22.6666667 18,22.6666667 L6,22.6666667 C4.8954305,22.6666667 4,21.7712362 4,20.6666667 L4,3.33333333 C4,2.22876383 4.8954305,1.33333333 6,1.33333333 Z" id="Rectangle"></path>
+                    <path d="M13,6.87176934 L14.6511638,8.25349872 L13,8.3142577 L13,6.87176934 Z" id="Path-28"></path>
+                </g>
+                <rect id="Rectangle" stroke-linejoin="round" x="7" y="12" width="10" height="7"></rect>
+                <line x1="7" y1="15.5" x2="17" y2="15.5" id="Path-2"></line>
+                <line x1="12" y1="12" x2="12" y2="19" id="Path-4"></line>
+            </g>
+        </g>
+    </g>
+</svg>

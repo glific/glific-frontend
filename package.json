@@ -17,7 +17,7 @@
     "@draft-js-plugins/mention": "^5.2.1",
     "@emoji-mart/data": "^1.0.6",
     "@emoji-mart/react": "^1.0.1",
-    "@glific/flow-editor": "^1.17.1-7",
+    "@glific/flow-editor": "^1.17.1-13",
     "@jumpn/utils-graphql": "^0.6.0",
     "@material-ui/core": "^4.12.4",
     "@material-ui/icons": "^4.11.3",

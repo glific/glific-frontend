@@ -53,27 +53,36 @@
   margin: 0;
 }
 
-.Webhook {
+.Links {
   color: #119656;
   position: fixed;
   bottom: 16px;
   font-size: 16px;
   font-weight: 500;
-  left: 262px;
   cursor: pointer;
   text-decoration: none;
 }
 
-.ContactFields {
-  color: #119656;
-  position: fixed;
-  bottom: 16px;
-  font-size: 16px;
-  font-weight: 500;
-  left: 440px;
-  cursor: pointer;
-  text-decoration: none;
+.Webhook {
+  composes: Links;
+  left: 262px;
 }
+
+.ContactFields {
+  composes: Links;
+  left: 420px;
+}
+
+.Sheets {
+  composes: Links;
+  display: flex;
+  left: 600px;
+}
+
+.Sheets svg {
+  margin-right: 8px;
+}
+
 .ContactFields svg {
   margin-right: 8px;
   transform: scale(1.1);
