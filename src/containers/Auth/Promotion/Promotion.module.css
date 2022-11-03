@@ -46,7 +46,7 @@
 .Dot {
   height: 8px;
   width: 8px;
-  background-color: red;
+  background-color: rgba(221, 31, 31, 1);
   border-radius: 50%;
   margin-left: 17px;
   margin-top: 15px;
@@ -70,6 +70,7 @@
   font-size: 16px;
   font-weight: 400;
   font-style: normal;
+  line-height: 1.25;
   align-items: baseline;
   display: flex;
 }
@@ -94,6 +95,7 @@
 }
 
 .ShareNow {
+  margin-top: 20px;
   color: rgba(7, 63, 36, 1);
   font-size: 16px;
   font-weight: 500;
@@ -112,5 +114,6 @@
 }
 
 .Image {
+  margin-top: -10px;
   text-align: center;
 }

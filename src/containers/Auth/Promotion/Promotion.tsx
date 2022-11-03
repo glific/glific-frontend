@@ -7,13 +7,7 @@ import { ReactComponent as MinimizeIcon } from 'assets/images/icons/Minimize.svg
 import { ReactComponent as MaximizeIcon } from 'assets/images/icons/Maximize.svg';
 import styles from './Promotion.module.css';
 
-const promotionContent = `Hi everyone, 60+ NGOs have used Glific to scale their operations, create lasting impact on the communities and change lives of thousands of beneficiaries through Glific’s WhatsApp chatbot.
-
-To support more NGOs in their journey, Glific has launched a Joy of Giving campaign. Through the campaign NGO’s can get 1 month of free WhatsApp Glific subscription.
-
-Tag/comment NGOs in your network that can benefit from the campaign.
-
-NGOs click here to get the referral benefits: https://lnkd.in/dXw8JTX7`;
+const promotionContent = `Hey! Here's a gift card for 1 month free subscription of Glific. Use this link to redeem the gift: https://wa.me/+917302307943?text=JoyOfGiving`;
 
 const socialIcons = [
   {
