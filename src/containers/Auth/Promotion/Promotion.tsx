@@ -7,17 +7,25 @@ import { ReactComponent as MinimizeIcon } from 'assets/images/icons/Minimize.svg
 import { ReactComponent as MaximizeIcon } from 'assets/images/icons/Maximize.svg';
 import styles from './Promotion.module.css';
 
+const promotionContent = `Hi everyone, 60+ NGOs have used Glific to scale their operations, create lasting impact on the communities and change lives of thousands of beneficiaries through Glific’s WhatsApp chatbot.
+
+To support more NGOs in their journey, Glific has launched a Joy of Giving campaign. Through the campaign NGO’s can get 1 month of free WhatsApp Glific subscription.
+
+Tag/comment NGOs in your network that can benefit from the campaign.
+
+NGOs click here to get the referral benefits: https://lnkd.in/dXw8JTX7`;
+
 const socialIcons = [
   {
-    link: '',
+    link: `https://wa.me/?text=${encodeURIComponent(promotionContent)}`,
     icon: <WhatsAppIcon />,
   },
   {
-    link: '',
+    link: 'https://www.linkedin.com/sharing/share-offsite/?url=https://www.linkedin.com/posts/glific_whatsappchatbot-whatsappbusinessapi-glific-activity-6991329445751975937-Zbok/?utm_source=share&utm_medium=member_desktop',
     icon: <LinkedinIcon />,
   },
   {
-    link: '',
+    link: `mailto:?body=${encodeURIComponent(promotionContent)}`,
     icon: <MailIcon />,
   },
 ];
@@ -50,7 +58,7 @@ export const Promotion = () => {
 
       {!minimized && (
         <>
-          <div className={styles.BodyUcaseText}>
+          <div className={styles.Image}>
             <PromotionImage />
           </div>
 
