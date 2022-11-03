@@ -91,11 +91,10 @@
 .Points {
   margin-left: 24px;
   margin-right: 24px;
-  margin-top: -36px;
 }
 
 .ShareNow {
-  margin-top: 20px;
+  margin-top: 30px;
   color: rgba(7, 63, 36, 1);
   font-size: 16px;
   font-weight: 500;
@@ -114,6 +113,10 @@
 }
 
 .Image {
-  margin-top: -10px;
+  margin-top: 8px;
   text-align: center;
+}
+
+.Image svg {
+  margin-left: 12px;
 }
