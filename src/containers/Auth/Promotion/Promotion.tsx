@@ -58,7 +58,7 @@ export const Promotion = () => {
 
           <div className={styles.Points}>
             {points.map((point, index) => (
-              <p className={styles.BodyListText}>
+              <p className={styles.BodyListText} key={point}>
                 <span>{index + 1}</span>
                 {point}
               </p>
