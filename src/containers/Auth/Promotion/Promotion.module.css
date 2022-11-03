@@ -1,0 +1,122 @@
+@media only screen and (max-width: 1024px) {
+  .Container {
+    display: none;
+  }
+}
+
+.Container {
+  position: fixed;
+  background: linear-gradient(130deg, #ffd7ca, #fff6ca);
+  width: 290px;
+  right: 24px;
+  bottom: 0;
+  border: 4px solid #073f24;
+  border-bottom: 0px;
+}
+
+.ContainerMax {
+  composes: Container;
+  height: 382px;
+}
+
+.ContainerMin {
+  composes: Container;
+  height: 40px;
+}
+
+.GiftCard {
+  color: rgba(7, 63, 36, 1);
+  font-size: 14px;
+  font-weight: 500;
+  margin-top: 9px;
+  margin-left: 10px;
+}
+
+.AccordianIcon {
+  margin-left: auto;
+  margin-right: 16px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.CardHeader {
+  display: flex;
+}
+
+.Dot {
+  height: 8px;
+  width: 8px;
+  background-color: rgba(221, 31, 31, 1);
+  border-radius: 50%;
+  margin-left: 17px;
+  margin-top: 15px;
+  margin-right: 10px;
+}
+
+.HeaderText {
+  color: rgba(221, 31, 31, 1);
+  font-size: 14px;
+  font-weight: 900;
+  width: 34px;
+  letter-spacing: 0px;
+  text-align: left;
+  line-height: 14px;
+  margin-top: 12px;
+}
+
+.BodyListText {
+  margin-top: 0px;
+  color: #073f24;
+  font-size: 16px;
+  font-weight: 400;
+  font-style: normal;
+  line-height: 1.25;
+  align-items: baseline;
+  display: flex;
+}
+
+.BodyListText > span {
+  border-radius: 50%;
+  margin-right: 16px;
+  font-size: 10px;
+  font-weight: 900;
+  text-align: center;
+  line-height: 1.8;
+  background: #073f24;
+  min-width: 18px;
+  height: 18px;
+  color: white;
+}
+
+.Points {
+  margin-left: 24px;
+  margin-right: 24px;
+}
+
+.ShareNow {
+  margin-top: 30px;
+  color: rgba(7, 63, 36, 1);
+  font-size: 16px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.SocialIcons {
+  margin-top: 8px;
+  display: flex;
+  justify-content: center;
+}
+
+.SocialIcons a {
+  margin: 0 8px;
+  cursor: pointer;
+}
+
+.Image {
+  margin-top: 8px;
+  text-align: center;
+}
+
+.Image svg {
+  margin-left: 12px;
+}
