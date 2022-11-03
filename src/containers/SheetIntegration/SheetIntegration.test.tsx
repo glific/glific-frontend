@@ -57,6 +57,6 @@ test('sheet succesfully created and list page should open ', async () => {
     });
     const button = getByText('Save');
     fireEvent.click(button);
-    expect(getByText('Google sheets')).toBeInTheDocument();
+    expect(getByText('Google sheet')).toBeInTheDocument();
   });
 });
