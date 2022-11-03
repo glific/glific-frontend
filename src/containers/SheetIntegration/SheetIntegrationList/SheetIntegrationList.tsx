@@ -35,7 +35,7 @@ export const SheetIntegrationList = () => {
   const [syncSheetMutation] = useMutation(SYNC_SHEET, {
     fetchPolicy: 'network-only',
     onCompleted: async () => {
-      setNotification(`Sheet updated successfully`);
+      setNotification('Data is successfully fetched from the Google sheet.');
     },
   });
 
@@ -55,7 +55,7 @@ export const SheetIntegrationList = () => {
       dialog: linkSheet,
     },
     {
-      label: t('Sync sheet'),
+      label: t('Sync'),
       icon: <UpdatesheetIcon />,
       parameter: 'id',
       dialog: syncSheet,
@@ -77,7 +77,7 @@ export const SheetIntegrationList = () => {
 
   return (
     <List
-      title={t('Google sheet integration')}
+      title={t('Google sheets')}
       listItem="sheets"
       listItemName="Sheet"
       pageLink="Sheet-integration"
