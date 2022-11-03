@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Redirect } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 
@@ -7,25 +7,17 @@ import { PhoneInput } from 'components/UI/Form/PhoneInput/PhoneInput';
 import { sendOTP } from 'services/AuthService';
 import { Auth } from '../Auth';
 
-export interface ResetPasswordPhoneProps {}
-
-export const ResetPasswordPhone: React.SFC<ResetPasswordPhoneProps> = () => {
+export const ResetPasswordPhone = () => {
   const [values, setValues] = useState({ phoneNumber: '' });
   const [redirect, setRedirect] = useState(false);
   const [authError, setAuthError] = useState('');
   const { t } = useTranslation();
 
   if (redirect) {
-    return (
-      <Redirect
-        to={{
-          pathname: '/resetpassword-confirmotp',
-          state: {
-            phoneNumber: values.phoneNumber,
-          },
-        }}
-      />
-    );
+    const stateObject = {
+      phoneNumber: values.phoneNumber,
+    };
+    return <Navigate to="/resetpassword-confirmotp" state={stateObject} />;
   }
 
   const onSubmitPhone = (data: any) => {

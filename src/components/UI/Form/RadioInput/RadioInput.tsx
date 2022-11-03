@@ -20,7 +20,7 @@ export interface RadioInputProps {
   handleChange?: any;
 }
 
-export const RadioInput: React.SFC<RadioInputProps> = ({
+export const RadioInput = ({
   labelYes = 'Yes',
   labelNo = 'No',
   row = true,
@@ -28,7 +28,7 @@ export const RadioInput: React.SFC<RadioInputProps> = ({
   form: { touched, errors, setFieldValue, values },
   radioTitle,
   handleChange,
-}) => {
+}: RadioInputProps) => {
   const selectedValue = values[field.name];
 
   const isChecked = (value: any) => selectedValue === value;

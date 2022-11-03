@@ -1,6 +1,6 @@
 import React from 'react';
 import moment from 'moment';
-import { useHistory } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { ReactComponent as TriggerIcon } from 'assets/images/icons/Trigger/Union.svg';
@@ -13,8 +13,6 @@ import { FULL_DATE_FORMAT, dayList } from 'common/constants';
 import { List } from 'containers/List/List';
 import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import styles from './TriggerList.module.css';
-
-export interface TriggerListProps {}
 
 const getTooltip = (frequency: any, days: any) => {
   const obj: any = [];
@@ -59,12 +57,14 @@ const queries = {
   deleteItemQuery: DELETE_TRIGGER,
 };
 
-export const TriggerList: React.SFC<TriggerListProps> = () => {
-  const history = useHistory();
+export const TriggerList = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const { t } = useTranslation();
 
   const setDialog = (id: any) => {
-    history.push({ pathname: `/trigger/${id}/edit`, state: 'copy' });
+    location.state = 'copy';
+    navigate(`/trigger/${id}/edit`);
   };
 
   const additionalAction = [

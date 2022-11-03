@@ -17,7 +17,7 @@ export interface AddVariablesPropTypes {
   variableParam: any;
 }
 
-export const AddVariables: React.FC<AddVariablesPropTypes> = ({
+export const AddVariables = ({
   setVariable,
   handleCancel,
   template,

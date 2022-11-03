@@ -9,19 +9,22 @@ const defaultProps = {
   maskedPhone: '9987399299',
   settings: '{"Status":"Active"}',
   collections: [{ id: 1, label: 'Default Collection', users: [{ name: 'Glific' }] }],
-  lastMessage: new Date(),
+  lastMessage: '',
+  statusMessage: '',
 };
+
 const propsWithMultipleCollections = {
   fields: {},
+  settings: {},
   phone: '9987399299',
   maskedPhone: '9987399299',
-  settings: {},
   collections: [
     { id: 1, label: 'Default Collection', users: [{ name: 'Glific' }] },
     { id: 2, label: 'Poetry Collection', users: [{ name: 'Admin' }] },
     { id: 2, label: 'Staff Collection', users: [{ name: 'Staff manager' }] },
   ],
-  lastMessage: new Date(),
+  lastMessage: '',
+  statusMessage: '',
 };
 
 const wrapper = <ContactDescription {...defaultProps}></ContactDescription>;

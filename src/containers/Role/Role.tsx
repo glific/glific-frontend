@@ -9,10 +9,6 @@ import { CREATE_ROLE, DELETE_ROLE, UPDATE_ROLE } from 'graphql/mutations/Roles';
 import { GET_ROLE } from 'graphql/queries/Role';
 import styles from './Role.module.css';
 
-export interface RoleProps {
-  match: any;
-}
-
 const roleIcon = <RoleIcon className={styles.Icon} />;
 
 const queries = {
@@ -22,7 +18,7 @@ const queries = {
   deleteItemQuery: DELETE_ROLE,
 };
 
-export const Role: React.SFC<RoleProps> = ({ match }) => {
+export const Role = () => {
   const [label, setLabel] = useState('');
   const [description, setDescription] = useState('');
 
@@ -63,7 +59,6 @@ export const Role: React.SFC<RoleProps> = ({ match }) => {
     <FormLayout
       title="Add a new role"
       {...queries}
-      match={match}
       states={states}
       setStates={setStates}
       validationSchema={FormSchema}
@@ -75,7 +70,7 @@ export const Role: React.SFC<RoleProps> = ({ match }) => {
       listItem="accessRole"
       icon={roleIcon}
       languageSupport={false}
-      copyNotification={t('Copy of the flow has been created!')}
+      copyNotification={t('Copy of the role has been created!')}
     />
   );
 };

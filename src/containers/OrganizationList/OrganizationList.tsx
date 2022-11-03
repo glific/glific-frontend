@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
 import { OutlinedInput } from '@material-ui/core';
@@ -21,7 +21,6 @@ import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
 import styles from './OrganizationList.module.css';
 
 export interface OrganizationListProps {
-  match: any;
   openExtensionModal?: boolean;
   openCustomerModal?: boolean;
 }
@@ -32,15 +31,14 @@ const queries = {
   deleteItemQuery: DELETE_INACTIVE_ORGANIZATIONS,
 };
 
-export const OrganizationList: React.SFC<OrganizationListProps> = ({
-  match,
+export const OrganizationList = ({
   openExtensionModal,
   openCustomerModal,
-}) => {
+}: OrganizationListProps) => {
   const { t } = useTranslation();
 
   const [orgName, setOrgName] = useState('');
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const columnNames = ['NAME', 'STATUS', 'ACTIONS'];
 
@@ -139,11 +137,11 @@ export const OrganizationList: React.SFC<OrganizationListProps> = ({
   };
 
   const addExtension = (id: any) => {
-    history.push({ pathname: `/organizations/${id}/extensions` });
+    navigate(`/organizations/${id}/extensions`);
   };
 
   const addCustomer = (id: any) => {
-    history.push({ pathname: `/organizations/${id}/customer` });
+    navigate(`/organizations/${id}/customer`);
   };
 
   const dialogMessage = deleteDialogue;
@@ -187,8 +185,8 @@ export const OrganizationList: React.SFC<OrganizationListProps> = ({
         {...queries}
         {...columnAttributes}
       />
-      <Extensions openDialog={!!openExtensionModal} match={match} />
-      <OrganizationCustomer openDialog={!!openCustomerModal} match={match} />
+      <Extensions openDialog={!!openExtensionModal} />
+      <OrganizationCustomer openDialog={!!openCustomerModal} />
     </>
   );
 };

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import moment from 'moment';
+import { useParams } from 'react-router-dom';
 import { getOrganizationServices } from 'services/AuthService';
 import { FormControl, FormControlLabel, Radio, RadioGroup } from '@material-ui/core';
 // import { useTranslation } from 'react-i18next';
@@ -39,20 +40,17 @@ const ProfileChange = ({ selectedProfileId, setSelectedProfileId, profileData }:
     </RadioGroup>
   </FormControl>
 );
-export interface ContactProfileProps {
-  match: any;
-}
 
-export const ContactProfile: React.SFC<ContactProfileProps> = (props) => {
+export const ContactProfile = () => {
+  const params = useParams();
   const [selectedProfileId, setSelectedProfileId] = useState('');
-  const { match } = props;
 
   const isContactProfileEnabled = getOrganizationServices('contactProfileEnabled');
 
-  const { loading, data } = useQuery(GET_CONTACT_DETAILS, { variables: { id: match.params.id } });
+  const { loading, data } = useQuery(GET_CONTACT_DETAILS, { variables: { id: params.id } });
 
   const { loading: profileLoading, data: profileData } = useQuery(GET_CONTACT_PROFILES, {
-    variables: { filter: { contactId: match.params.id } },
+    variables: { filter: { contactId: params.id } },
     skip: !isContactProfileEnabled,
   });
 
@@ -178,17 +176,16 @@ export const ContactProfile: React.SFC<ContactProfileProps> = (props) => {
     <div className={styles.ContactProfile}>
       <div className={styles.ContactForm} data-testid="ContactProfile">
         <Profile
-          {...props}
           // additionalProfileStates={additonalStates}
           multiProfileAttributes={switchProfile}
           // additionalState={setSelectedTags}
           // additionalQuery={updateTags}
           profileType="Contact"
-          redirectionLink={`chat/${match.params.id}`}
+          redirectionLink={`chat/${params.id}`}
           afterDelete={{ link: '/chat' }}
           removePhoneField
         />
-        <ContactHistory contactId={match.params.id} profileId={selectedProfileId} />
+        <ContactHistory contactId={params.id} profileId={selectedProfileId} />
       </div>
 
       <div className={styles.ContactDescription}>

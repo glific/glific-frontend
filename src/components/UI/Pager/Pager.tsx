@@ -195,21 +195,19 @@ const pagination = (
   />
 );
 
-export const Pager: React.SFC<PagerProps> = (props) => {
-  const {
-    data,
-    columnStyles,
-    showCheckbox,
-    columnNames,
-    tableVals,
-    listItemName,
-    handleTableChange,
-    totalRows,
-    collapseOpen,
-    collapseRow,
-    removeSortBy = [],
-  } = props;
-
+export const Pager = ({
+  data,
+  columnStyles,
+  showCheckbox,
+  columnNames,
+  tableVals,
+  listItemName,
+  handleTableChange,
+  totalRows,
+  collapseOpen,
+  collapseRow,
+  removeSortBy = [],
+}: PagerProps) => {
   const rows = createRows(data, columnStyles, showCheckbox, collapseRow, collapseOpen);
   const tableHead = tableHeadColumns(
     columnNames,

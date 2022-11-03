@@ -32,7 +32,7 @@ export interface DialogProps {
   buttonOkLoading?: boolean;
 }
 
-export const DialogBox: React.SFC<DialogProps> = ({
+export const DialogBox = ({
   open = true,
   title,
   handleOk = () => {},
@@ -54,7 +54,7 @@ export const DialogBox: React.SFC<DialogProps> = ({
   alwaysOntop = false,
   buttonMiddle,
   buttonOkLoading = false,
-}) => {
+}: DialogProps) => {
   let cancelButtonDisplay = null;
   if (!skipCancel) {
     cancelButtonDisplay = (

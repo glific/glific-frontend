@@ -31,7 +31,7 @@ export interface InteractiveOptionsProps {
   translation?: any;
   disabledType?: any;
 }
-export const InteractiveOptions: React.SFC<InteractiveOptionsProps> = ({
+export const InteractiveOptions = ({
   isAddButtonChecked,
   templateType,
   inputFields,
@@ -46,7 +46,7 @@ export const InteractiveOptions: React.SFC<InteractiveOptionsProps> = ({
   disabled = false,
   translation,
   disabledType,
-}) => {
+}: InteractiveOptionsProps) => {
   const { values, errors, touched, setFieldValue } = form;
 
   const handleAddClick = (helper: any, type: string) => {
@@ -108,6 +108,7 @@ export const InteractiveOptions: React.SFC<InteractiveOptionsProps> = ({
         row
         value={templateType}
         onChange={(event) => onTemplateTypeChange(event.target.value)}
+        className={styles.RadioGroupDisplay}
       >
         <div className={styles.RadioLabelWrapper}>
           <FormControlLabel

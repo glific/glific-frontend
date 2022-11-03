@@ -19,7 +19,7 @@ const asyncSearchProps = {
   ...defaultProps,
   icon: null,
   optionLabel: 'label',
-  options: ['1'],
+  options: [{ id: '1', label: 'something' }],
   asyncSearch: true,
 };
 
@@ -68,7 +68,7 @@ test('change value in dialog box', () => {
     );
   });
   const { getByTestId } = render(searchDialog(defaultProps));
-  fireEvent.change(getByTestId('searchDialogBox').querySelector('input'), {
+  fireEvent.change(getByTestId('searchDialogBox').querySelector('input') as Element, {
     target: { value: 'change' },
   });
 

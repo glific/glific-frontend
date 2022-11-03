@@ -31,7 +31,7 @@ test('click on Make a copy', async () => {
   const { container } = render(wrapper);
   await waitFor(() => {
     expect(container.querySelector('#additionalButton-icon')).toBeInTheDocument();
-    fireEvent.click(container.querySelector('#additionalButton-icon'));
+    fireEvent.click(container.querySelector('#additionalButton-icon') as SVGAElement);
   });
 });
 

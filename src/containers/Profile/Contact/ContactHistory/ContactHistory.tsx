@@ -11,11 +11,11 @@ import { DATE_TIME_FORMAT } from 'common/constants';
 import styles from './ContactHistory.module.css';
 
 export interface ContactHistoryProps {
-  contactId: string;
+  contactId: string | undefined;
   profileId?: string | null;
 }
 
-export const ContactHistory: React.FC<ContactHistoryProps> = ({ contactId, profileId }) => {
+export const ContactHistory = ({ contactId, profileId }: ContactHistoryProps) => {
   const { t } = useTranslation();
 
   const isContactProfileEnabled = getOrganizationServices('contactProfileEnabled');
@@ -44,7 +44,6 @@ export const ContactHistory: React.FC<ContactHistoryProps> = ({ contactId, profi
     contactHistoryVariables.filter.profileId = profileId;
   }
   const { data, loading, fetchMore } = useQuery(GET_CONTACT_HISTORY, {
-    notifyOnNetworkStatusChange: true,
     fetchPolicy: 'network-only',
     variables: contactHistoryVariables,
   });

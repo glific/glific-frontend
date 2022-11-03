@@ -3,7 +3,7 @@ import * as Yup from 'yup';
 import { Typography, IconButton } from '@material-ui/core';
 import { Formik, Form, Field } from 'formik';
 import { useQuery, useMutation, useApolloClient } from '@apollo/client';
-import { Redirect } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { ReactComponent as UserIcon } from 'assets/images/icons/Contact/Profile.svg';
@@ -18,9 +18,7 @@ import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
 import { sendOTP } from 'services/AuthService';
 import styles from './MyAccount.module.css';
 
-export interface MyAccountProps {}
-
-export const MyAccount: React.SFC<MyAccountProps> = () => {
+export const MyAccount = () => {
   // set the validation / errors / success message
   const [toastMessageInfo, setToastMessageInfo] = useState({ message: '', severity: '' });
 
@@ -161,7 +159,7 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
 
   // redirect to chat
   if (redirectToChat) {
-    return <Redirect to="/chat" />;
+    return <Navigate to="/chat" />;
   }
 
   // build form fields

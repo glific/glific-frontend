@@ -2,7 +2,7 @@ import React, { useCallback, useState, useEffect } from 'react';
 import { useQuery, useMutation, useLazyQuery } from '@apollo/client';
 import { CircularProgress, Container } from '@material-ui/core';
 import moment from 'moment';
-import { Redirect } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { useTranslation } from 'react-i18next';
 
@@ -11,7 +11,7 @@ import styles from './ChatMessages.module.css';
 import { ContactBar } from './ContactBar/ContactBar';
 import { ChatMessage } from './ChatMessage/ChatMessage';
 import { ChatInput } from './ChatInput/ChatInput';
-import { StatusBar } from './StatusBar/StatusBar';
+import StatusBar from './StatusBar/StatusBar';
 import { setNotification, setErrorMessage } from '../../../common/notification';
 import {
   SEARCH_QUERY_VARIABLES,
@@ -40,11 +40,7 @@ export interface ChatMessagesProps {
   startingHeight?: string;
 }
 
-export const ChatMessages: React.SFC<ChatMessagesProps> = ({
-  contactId,
-  collectionId,
-  startingHeight,
-}) => {
+export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMessagesProps) => {
   // create an instance of apollo client
 
   // const [loadAllTags, allTags] = useLazyQuery(FILTER_TAGS_NAME, {
@@ -508,7 +504,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
   // check if the search API results nothing for a particular contact ID and redirect to chat
   if (contactId && data) {
     if (data.search.length === 0 || data.search[0].contact.status === 'BLOCKED') {
-      return <Redirect to="/chat" />;
+      return <Navigate to="/chat" />;
     }
   }
 
@@ -734,7 +730,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
 
   let topChatBar;
   let chatInputSection;
-  if (contactId) {
+
+  if (contactId && conversationInfo.contact) {
     const displayName = getDisplayName(conversationInfo);
     topChatBar = (
       <ContactBar
@@ -757,7 +754,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
         contactBspStatus={conversationInfo.contact.bspStatus}
       />
     );
-  } else if (collectionId) {
+  } else if (collectionId && conversationInfo.group) {
     topChatBar = (
       <ContactBar
         collectionId={collectionId.toString()}

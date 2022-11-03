@@ -6,17 +6,19 @@ import { ContactProfile } from './ContactProfile';
 import { mocks as historyMock } from './ContactHistory/ContactHistory.test';
 import { setOrganizationServices } from 'services/AuthService';
 
+jest.mock('react-router-dom', () => {
+  return {
+    useParams: () => ({ id: '1' }),
+  };
+});
+
 describe('contact profile', () => {
   const mocks = [...LOGGED_IN_USER_MOCK, ...historyMock];
-
-  const defaultProps = {
-    match: { params: { id: '1' } },
-  };
 
   test('contact profile should render', async () => {
     const { getByTestId } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
-        <ContactProfile {...defaultProps} />
+        <ContactProfile />
       </MockedProvider>
     );
     await waitFor(() => {
@@ -27,16 +29,12 @@ describe('contact profile', () => {
   test('contact should have a name or number', async () => {
     const { getByTestId } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
-        <ContactProfile {...defaultProps} />
+        <ContactProfile />
       </MockedProvider>
     );
     await waitFor(() => {
       expect(getByTestId('ContactProfile')).toBeInTheDocument();
     });
-
-    // await waitFor(() => {
-    //   expect(getByTestId('outlinedInput').querySelector('input')?.value).toBe('Default User');
-    // });
   });
 
   /**
@@ -46,12 +44,9 @@ describe('contact profile', () => {
   test('it renders contact profile and update tags', async () => {
     const { getByRole } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
-        <ContactProfile {...defaultProps} />
+        <ContactProfile />
       </MockedProvider>
     );
-
-    // const autocomplete = screen.getByTestId('autocomplete-element');
-    // expect(autocomplete).toBeInTheDocument();
 
     // autocomplete.focus();
     // fireEvent.keyDown(autocomplete, { key: 'ArrowDown' });
@@ -69,19 +64,13 @@ describe('contact profile', () => {
 });
 
 describe('contact profile (multiple profile)', () => {
-  setOrganizationServices(
-    '{"contactProfileEnabled":true}'
-  );
+  setOrganizationServices('{"contactProfileEnabled":true}');
   const mocks = [...LOGGED_IN_USER_MULTIPLE_PROFILES, ...historyMock];
-
-  const defaultProps = {
-    match: { params: { id: '1' } },
-  };
 
   test('contact profile should render', async () => {
     const { getByTestId } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
-        <ContactProfile {...defaultProps} />
+        <ContactProfile />
       </MockedProvider>
     );
     await waitFor(() => {

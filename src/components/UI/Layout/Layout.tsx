@@ -9,8 +9,7 @@ export interface LayoutProps {
   children: any;
 }
 
-export const Layout: React.SFC<LayoutProps> = (props) => {
-  const { children } = props;
+export const Layout = ({ children }: LayoutProps) => {
   const { drawerOpen, setDrawerOpen } = useContext(SideDrawerContext);
   let mainStyle = styles.Main;
   if (!drawerOpen) {

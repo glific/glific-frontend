@@ -14,11 +14,7 @@ import {
 import { setVariables } from 'common/constants';
 import styles from './ContactField.module.css';
 
-export interface ConsultingProps {
-  match: any;
-}
-
-export const ContactField: React.SFC<ConsultingProps> = ({ match }) => {
+export const ContactField = () => {
   const { t } = useTranslation();
   const [name, setName] = useState('');
   const [shortcode, setShortcode] = useState('');
@@ -73,7 +69,6 @@ export const ContactField: React.SFC<ConsultingProps> = ({ match }) => {
         title={t('Add contact fields')}
         listItem="contactsField"
         listItemName="contactsField"
-        match={match}
         refetchQueries={[
           {
             query: GET_ALL_CONTACT_FIELDS,

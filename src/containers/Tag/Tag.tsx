@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import { useQuery, useLazyQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router-dom';
 
 import { FILTER_TAGS_NAME, GET_TAG, GET_TAGS } from 'graphql/queries/Tag';
 import { UPDATE_TAG, CREATE_TAG, DELETE_TAG } from 'graphql/mutations/Tag';
@@ -15,11 +16,7 @@ import { setVariables } from 'common/constants';
 import { getObject } from 'common/utils';
 import styles from './Tag.module.css';
 
-export interface TagProps {
-  match: any;
-}
-
-export const Tag: React.SFC<TagProps> = ({ match }) => {
+export const Tag = () => {
   const [label, setLabel] = useState('');
   const [description, setDescription] = useState('');
   const [keywords, setKeywords] = useState('');
@@ -28,6 +25,7 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
   const [filterLabel, setFilterLabel] = useState('');
   const [languageId, setLanguageId] = useState<any>(null);
   const { t } = useTranslation();
+  const params = useParams();
 
   const states = { label, description, keywords, colorCode, parentId };
 
@@ -66,8 +64,8 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
   let tags = [];
   tags = data.tags;
   // remove the self tag from list
-  if (match && match.params.id) {
-    tags = data.tags.filter((tag: any) => tag.id !== match.params.id);
+  if (params.id) {
+    tags = data.tags.filter((tag: any) => tag.id !== params.id);
   }
 
   const validateTitle = (value: any) => {
@@ -78,8 +76,8 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
       if (dataTag) {
         // need to check exact title
         found = dataTag.tags.filter((search: any) => search.label === value);
-        if (match.params.id && found.length > 0) {
-          found = found.filter((search: any) => search.id !== match.params.id);
+        if (params.id && found.length > 0) {
+          found = found.filter((search: any) => search.id !== params.id);
         }
       }
       if (found.length > 0) {
@@ -165,7 +163,6 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
   return (
     <FormLayout
       {...queries}
-      match={match}
       refetchQueries={[
         {
           query: FILTER_TAGS_NAME,

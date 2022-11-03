@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Redirect, Link, useHistory, useLocation } from 'react-router-dom';
+import { Link, Navigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useQuery, useMutation, DocumentNode, useLazyQuery } from '@apollo/client';
 import { IconButton, TableFooter, TablePagination, TableRow, Typography } from '@material-ui/core';
@@ -32,7 +32,7 @@ export interface ListProps {
   dialogMessage?: string | any;
   pageLink: string;
   columns: Function;
-  listIcon: Object;
+  listIcon: React.ReactNode;
   columnStyles: Array<any>;
   secondaryButton?: any;
   title: string;
@@ -85,7 +85,7 @@ interface TableVals {
   sortDirection: 'asc' | 'desc';
 }
 
-export const List: React.SFC<ListProps> = ({
+export const List = ({
   columnNames = [],
   countQuery,
   listItem,
@@ -130,13 +130,11 @@ export const List: React.SFC<ListProps> = ({
   const [deleteItemID, setDeleteItemID] = useState<number | null>(null);
   const [deleteItemName, setDeleteItemName] = useState<string>('');
   const [newItem, setNewItem] = useState(false);
-  const location = useLocation();
+
+  const [searchParams, setSearchParams] = useSearchParams();
 
   // pick the search value from url if present
-  const [searchVal, setSearchVal] = useState(
-    new URLSearchParams(location.search).get('search') || ''
-  );
-  const history = useHistory();
+  const [searchVal, setSearchVal] = useState(new URLSearchParams(searchParams).get('search') || '');
 
   // check if the user has access to manage collections
   const userRolePermissions = getUserRolePermissions();
@@ -275,7 +273,7 @@ export const List: React.SFC<ListProps> = ({
       }
       fetchQuery();
     }
-  }, [userRole]);
+  }, []);
 
   let deleteItem: any;
 
@@ -315,7 +313,7 @@ export const List: React.SFC<ListProps> = ({
   };
 
   const useDelete = (message: string | any) => {
-    let component = {};
+    let component: any = {};
     const props = { disableOk: false, handleOk: handleDeleteItem };
     if (typeof message === 'string') {
       component = message;
@@ -364,7 +362,7 @@ export const List: React.SFC<ListProps> = ({
   }
 
   if (newItem) {
-    return <Redirect to={`/${pageLink}/add`} />;
+    return <Navigate to={`/${pageLink}/add`} />;
   }
 
   if (loading || l || loadingCollections) return <Loading />;
@@ -516,8 +514,9 @@ export const List: React.SFC<ListProps> = ({
   const handleSearch = (searchError: any) => {
     searchError.preventDefault();
     const searchValInput = searchError.target.querySelector('input').value.trim();
-    history.push({
-      search: `?search=${searchValInput}`,
+
+    setSearchParams({
+      search: searchValInput,
     });
     setSearchVal(searchValInput);
     resetTableVals();

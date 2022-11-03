@@ -83,5 +83,7 @@ test('it renders QuickReplyTemplate with null', async () => {
   /**
    * When content and options are absent we are returning null
    */
-  render(<QuickReplyTemplate />);
+  props.content = '';
+  props.options = '';
+  render(<QuickReplyTemplate {...props} />);
 });

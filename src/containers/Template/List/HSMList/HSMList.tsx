@@ -9,9 +9,7 @@ import { ReactComponent as TemplateIcon } from 'assets/images/icons/Template/Uns
 import styles from './HSMList.module.css';
 import { Template } from '../Template';
 
-export interface HSMListProps {}
-
-export const HSMList: React.SFC<HSMListProps> = () => {
+export const HSMList = () => {
   const { t } = useTranslation();
   const [syncTemplateLoad, setSyncTemplateLoad] = useState(false);
   const templateIcon = <TemplateIcon className={styles.TemplateIcon} />;
@@ -19,14 +17,14 @@ export const HSMList: React.SFC<HSMListProps> = () => {
     fetchPolicy: 'network-only',
     onCompleted: (data) => {
       if (data.errors) {
-        setNotification('Sorry, failed to get HSM updates', 'warning');
+        setNotification('Sorry, failed to sync HSM updates', 'warning');
       } else {
         setNotification('HSMs updated successfully', 'success');
       }
       setSyncTemplateLoad(false);
     },
     onError: () => {
-      setNotification('Sorry, failed to get HSM updates', 'warning');
+      setNotification('Sorry, failed to sync HSM updates', 'warning');
       setSyncTemplateLoad(false);
     },
   });
@@ -60,7 +58,7 @@ export const HSMList: React.SFC<HSMListProps> = () => {
         onClick={() => handleHsmUpdates()}
         aria-hidden="true"
       >
-        GET HSM UPDATES
+        SYNC HSM
       </Button>
     </>
   );

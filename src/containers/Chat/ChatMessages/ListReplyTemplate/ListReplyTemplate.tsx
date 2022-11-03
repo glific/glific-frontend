@@ -24,13 +24,20 @@ interface TemplateProps {
   body: string;
   globalButtonTitle: string;
   items: Array<any>;
+}
+
+interface SimulatorTemplateProps {
+  title: string;
+  body: string;
+  globalButtonTitle: string;
+  items: Array<any>;
   onGlobalButtonClick: any;
   disabled?: boolean;
   showHeader?: boolean;
   bspMessageId?: string;
 }
 
-interface ListTemplate {
+interface ListTemplateProps {
   items: any;
   drawerTitle: string;
   disableSend?: boolean;
@@ -38,10 +45,9 @@ interface ListTemplate {
   onDrawerClose: any;
 }
 
-export const ChatTemplate: React.SFC<TemplateProps> = (props) => {
+export const ChatTemplate = ({ title, body, globalButtonTitle, items }: TemplateProps) => {
   const [showDialog, setShowDialog] = useState(false);
   const [checkedItem, setCheckedItem] = useState<any>(null);
-  const { title, body, globalButtonTitle, items } = props;
 
   let dialog;
 
@@ -111,36 +117,38 @@ export const ChatTemplate: React.SFC<TemplateProps> = (props) => {
   );
 };
 
-export const SimulatorTemplate: React.SFC<TemplateProps> = (props) => {
-  const {
-    title,
-    body,
-    globalButtonTitle,
-    items,
-    onGlobalButtonClick,
-    disabled,
-    showHeader = true,
-    bspMessageId,
-  } = props;
-  return (
-    <div className={styles.SimulatorContent}>
-      {showHeader && <p className={styles.ListHeader}>{title}</p>}
-      <ChatMessageType type="TEXT" body={body} isSimulatedMessage />
-      <Button
-        color="default"
-        disabled={disabled}
-        startIcon={<FormatListBulletedIcon />}
-        onClick={() => onGlobalButtonClick({ items, bspMessageId })}
-        className={styles.SimulatorButton}
-      >
-        {globalButtonTitle}
-      </Button>
-    </div>
-  );
-};
+export const SimulatorTemplate = ({
+  title,
+  body,
+  globalButtonTitle,
+  items,
+  onGlobalButtonClick,
+  disabled,
+  showHeader = true,
+  bspMessageId,
+}: SimulatorTemplateProps) => (
+  <div className={styles.SimulatorContent}>
+    {showHeader && <p className={styles.ListHeader}>{title}</p>}
+    <ChatMessageType type="TEXT" body={body} isSimulatedMessage />
+    <Button
+      color="default"
+      disabled={disabled}
+      startIcon={<FormatListBulletedIcon />}
+      onClick={() => onGlobalButtonClick({ items, bspMessageId })}
+      className={styles.SimulatorButton}
+    >
+      {globalButtonTitle}
+    </Button>
+  </div>
+);
 
-export const ListReplyTemplateDrawer: React.SFC<ListTemplate> = (props) => {
-  const { items, drawerTitle, onItemClick, onDrawerClose, disableSend = false } = props;
+export const ListReplyTemplateDrawer = ({
+  items,
+  drawerTitle,
+  onItemClick,
+  onDrawerClose,
+  disableSend = false,
+}: ListTemplateProps) => {
   const [checkedItem, setCheckedItem] = useState<any>(null);
 
   const handleItemClick = () => {
@@ -229,8 +237,11 @@ export const ListReplyTemplateDrawer: React.SFC<ListTemplate> = (props) => {
   );
 };
 
-export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
-  const { globalButtons, component: TemplateComponent, ...rest } = props;
+export const ListReplyTemplate = ({
+  globalButtons,
+  component: TemplateComponent,
+  ...rest
+}: ListReplyTemplateProps) => {
   const globalButtonTitle = globalButtons?.length ? globalButtons[0].title : '';
 
   return <TemplateComponent globalButtonTitle={globalButtonTitle} {...rest} />;

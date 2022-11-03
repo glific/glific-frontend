@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import * as Yup from 'yup';
 import { useLazyQuery } from '@apollo/client';
@@ -24,13 +24,11 @@ import { Auth } from '../Auth';
 
 const notApprovedMsg = 'Your account is not approved yet. Please contact your organisation admin.';
 
-export interface LoginProps {}
-
-export const Login: React.SFC<LoginProps> = () => {
+export const Login = () => {
   const { setAuthenticated } = useContext(SessionContext);
   const [authError, setAuthError] = useState('');
   const { i18n, t } = useTranslation();
-  const history = useHistory();
+  const navigate = useNavigate();
   const location: any = useLocation();
 
   // function to unauthorize access
@@ -78,11 +76,11 @@ export const Login: React.SFC<LoginProps> = () => {
           i18n.changeLanguage(userData.currentUser.user?.language.locale);
         }
 
-        if (location.state) {
-          history.push(location.state);
+        if (location.state?.to) {
+          navigate(location.state.to);
         } else {
           // redirect to chat
-          history.push('/chat');
+          navigate('/chat');
         }
       }
     }

@@ -42,7 +42,7 @@ const SpeedSendsSessionTemplates = [
     type: 'TEXT',
     language: {
       id: '1',
-      label: 'Hindi',
+      label: 'English',
     },
     MessageMedia: {
       id: 1,
@@ -208,6 +208,7 @@ const filterTemplateQuery = {
           isHsm: true,
           isReserved: false,
           updatedAt: '2020-12-01T18:00:32Z',
+          translations: '{}',
         },
       ],
     },
@@ -312,7 +313,7 @@ export const TEMPLATE_MOCKS = [
     request: {
       query: GET_TEMPLATE,
       variables: {
-        id: 1,
+        id: '1',
       },
     },
     result: {
@@ -323,7 +324,7 @@ export const TEMPLATE_MOCKS = [
     request: {
       query: GET_TEMPLATE,
       variables: {
-        id: 1,
+        id: '1',
       },
     },
     result: {

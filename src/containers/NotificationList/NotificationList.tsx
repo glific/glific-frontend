@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { useHistory } from 'react-router-dom';
 import { Popover, FormControlLabel, RadioGroup, Radio } from '@material-ui/core';
+import { useNavigate } from 'react-router-dom';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import { useApolloClient, useMutation } from '@apollo/client';
 import moment from 'moment';
@@ -17,7 +17,6 @@ import { FILTER_NOTIFICATIONS, GET_NOTIFICATIONS_COUNT } from 'graphql/queries/N
 import MARK_NOTIFICATIONS_AS_READ from 'graphql/mutations/Notifications';
 import styles from './NotificationList.module.css';
 
-export interface NotificationListProps {}
 const getDot = (isRead: boolean) => <div>{!isRead ? <div className={styles.Dot} /> : null}</div>;
 
 const getTime = (time: string) => (
@@ -43,13 +42,14 @@ const queries = {
 };
 const restrictedAction = () => ({ delete: false, edit: false });
 
-export const NotificationList: React.SFC<NotificationListProps> = () => {
+export const NotificationList = () => {
   const client = useApolloClient();
   const [open, setOpen] = useState(false);
   const [text, setText] = useState<any>();
   const { t } = useTranslation();
-  const history = useHistory();
   const [filter, setFilter] = useState<any>('');
+
+  const navigate = useNavigate();
 
   const menuRef = useRef(null);
 
@@ -79,10 +79,10 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
   const setDialog = (id: any, item: any) => {
     if (item.category === 'Message') {
       const chatID = JSON.parse(item.entity).id;
-      history.push({ pathname: `/chat/${chatID}` });
+      navigate(`/chat/${chatID}`);
     } else if (item.category === 'Flow') {
       const uuidFlow = JSON.parse(item.entity).flow_uuid;
-      history.push({ pathname: `/flow/configure/${uuidFlow}` });
+      navigate(`/flow/configure/${uuidFlow}`);
     } else {
       // this is item.category == Partner
       // need to figure out what should be done
