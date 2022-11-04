@@ -18,6 +18,10 @@ const SpeedSendList = lazy(() => import('containers/Template/List/SpeedSendList/
 const SpeedSend = lazy(() => import('containers/Template/Form/SpeedSend/SpeedSend'));
 const FlowList = lazy(() => import('containers/Flow/FlowList/FlowList'));
 const Flow = lazy(() => import('containers/Flow/Flow'));
+const SheetIntegrationList = lazy(
+  () => import('containers/SheetIntegration/SheetIntegrationList/SheetIntegrationList')
+);
+const SheetIntegration = lazy(() => import('containers/SheetIntegration/SheetIntegration'));
 const CollectionList = lazy(() => import('containers/Collection/CollectionList/CollectionList'));
 const Collection = lazy(() => import('containers/Collection/Collection'));
 const CollectionContact = lazy(
@@ -96,6 +100,9 @@ const routeAdmin = (
     <Route path="collection/add" element={<Collection />} />
     <Route path="collection/:id/edit" element={<Collection />} />
     <Route path="collection/:id/contacts" element={<CollectionContact />} />
+    <Route path="sheet-integration" element={<SheetIntegrationList />} />
+    <Route path="sheet-integration/add" element={<SheetIntegration />} />
+    <Route path="sheet-integration/:id/edit" element={<SheetIntegration />} />
 
     <Route path="flow/configure/:uuid" element={<FlowEditor />} />
 

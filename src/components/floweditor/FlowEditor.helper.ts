@@ -74,6 +74,7 @@ export const setConfig = (uuid: any) => ({
     recipients: `${glificBase}recipients`,
     completion: `${glificBase}completion`,
     activity: `${glificBase}activity`,
+    sheets: `${glificBase}sheets`,
     flows: `${glificBase}flows`,
     recents: `${glificBase}recents/`,
     revisions: `${glificBase}revisions/${uuid}`,

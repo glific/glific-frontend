@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { termsOfUse } from 'containers/Organization/Organization';
 import { Button } from 'components/UI/Form/Button/Button';
 import GlificLogo from 'assets/images/logo/Logo.svg';
+import { Promotion } from './Promotion/Promotion';
 import styles from './Auth.module.css';
 
 export interface AuthProps {
@@ -200,6 +201,7 @@ export const Auth = ({
           </>
         ) : null}
       </div>
+      {mode === 'login' && <Promotion />}
     </div>
   );
 };
