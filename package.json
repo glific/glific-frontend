@@ -127,7 +127,10 @@
       "text",
       "html",
       "lcov"
-    ]
+    ],
+    "moduleNameMapper": {
+      "axios": "axios/dist/node/axios.cjs"
+    }
   },
   "devDependencies": {
     "@types/react-test-renderer": "^18.0.0",
