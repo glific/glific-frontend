@@ -147,7 +147,7 @@ export const Flow = () => {
   ];
 
   const setPayload = (payload: any) => {
-    let formattedKeywords;
+    let formattedKeywords = [];
 
     if (payload.keywords) {
       // remove white spaces
