@@ -277,11 +277,15 @@ export const List = ({
   if (deleteItemQuery) {
     [deleteItem] = useMutation(deleteItemQuery, {
       onCompleted: () => {
+        setNotification(`${capitalListItemName} deleted successfully`);
         checkUserRole();
         refetchCount();
         if (refetchValues) {
           refetchValues(filterPayload());
         }
+      },
+      onError: () => {
+        setNotification(`Sorry! An error occurred!`, 'warning');
       },
     });
   }
@@ -298,7 +302,6 @@ export const List = ({
   const deleteHandler = (id: number) => {
     const variables = deleteModifier.variables ? deleteModifier.variables(id) : { id };
     deleteItem({ variables });
-    setNotification(`${capitalListItemName} deleted successfully`);
   };
 
   const handleDeleteItem = () => {
