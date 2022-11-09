@@ -132,7 +132,7 @@ export const NotificationList = () => {
         >
           {entityObj.name ? (
             <span>
-              Contact: {entityObj.name}
+              Name: {entityObj.name}
               <br />
               {croppedtext.slice(0, 25)}...
             </span>
