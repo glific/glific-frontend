@@ -136,7 +136,6 @@ export const updateSimulatorConversations = (
   }
 
   const updatedConversations = JSON.parse(JSON.stringify(cachedConversations));
-  console.log(cachedConversations);
   const updatedConversation = updatedConversations.search[0];
 
   // Add new message and move the conversation to the top
