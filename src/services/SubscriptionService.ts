@@ -109,7 +109,7 @@ export const updateSimulatorConversations = (
     return cachedConversations;
   }
 
-  if (!cachedConversations) {
+  if (!cachedConversations || !cachedConversations.search) {
     return null;
   }
 
@@ -136,6 +136,7 @@ export const updateSimulatorConversations = (
   }
 
   const updatedConversations = JSON.parse(JSON.stringify(cachedConversations));
+  console.log(cachedConversations);
   const updatedConversation = updatedConversations.search[0];
 
   // Add new message and move the conversation to the top
