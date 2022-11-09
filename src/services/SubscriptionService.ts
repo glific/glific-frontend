@@ -109,7 +109,7 @@ export const updateSimulatorConversations = (
     return cachedConversations;
   }
 
-  if (!cachedConversations) {
+  if (!cachedConversations || !cachedConversations.search) {
     return null;
   }
 
