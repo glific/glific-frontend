@@ -1327,7 +1327,7 @@
     prop-types "^15.8.1"
     react-popper "^2.2.5"
 
-"@emoji-mart/data@^1.0.6":
+"@emoji-mart/data@^1.0.8":
   version "1.0.8"
   resolved "https://registry.yarnpkg.com/@emoji-mart/data/-/data-1.0.8.tgz#07f9603878b9a813ba16a6ebbabd8515f3d1b91d"
   integrity sha512-AMpqLrR80dHfj8ZA6xaf8/t9reBy88vz07fBdwKVVoUX6X2Wi+R2p2uhIZFqNZe8zRd6kga3hKheqK+deElEZw==
@@ -1924,7 +1924,7 @@
   dependencies:
     prop-types "^15.7.2"
 
-"@stripe/stripe-js@^1.43.0":
+"@stripe/stripe-js@^1.44.1":
   version "1.44.1"
   resolved "https://registry.yarnpkg.com/@stripe/stripe-js/-/stripe-js-1.44.1.tgz#376fdbed2b394c84deaa2041b8029b97e7eab3a7"
   integrity sha512-DKj3U6tS+sCNsSXsoZbOl5gDrAVD3cAZ9QCiVSykLC3iJo085kkmw/3BAACRH54Bq2bN34yySuH6G1SLh2xHXA==
@@ -4547,7 +4547,7 @@ emittery@^0.8.1:
   resolved "https://registry.yarnpkg.com/emittery/-/emittery-0.8.1.tgz#bb23cc86d03b30aa75a7f734819dee2e1ba70860"
   integrity sha512-uDfvUjVrfGJJhymx/kz6prltenw1u7WrCg1oa94zYY8xxVpLLUu045LAT0dhDZdXG58/EpPL/5kA180fQ/qudg==
 
-emoji-mart@^5.2.2:
+emoji-mart@^5.3.2:
   version "5.3.2"
   resolved "https://registry.yarnpkg.com/emoji-mart/-/emoji-mart-5.3.2.tgz#37579c12696528018dbf7cc27fe188bab246da7b"
   integrity sha512-og6K4jYkZITe8pnFPHdFE576Tc6fCFl8JPhl98jRunH3bDulk3iqA+6Ue0iUZ/L/GWzLf9XME9QnpBd53N5YTg==
@@ -6009,7 +6009,7 @@ i18next@^21.2.0:
   dependencies:
     "@babel/runtime" "^7.17.2"
 
-i18next@^22.0.4:
+i18next@^22.0.5:
   version "22.0.5"
   resolved "https://registry.yarnpkg.com/i18next/-/i18next-22.0.5.tgz#81f29574b19d1c00e76523c3b45b91e3f9223ee3"
   integrity sha512-N2AXKCLHzv1ClfLqiwbAPJHClovfRv9iplySiZ/S3LfQ7PNjkVEkVpFbhCXDsPhQd6kLp6DKjbzpowniE8Mdiw==
