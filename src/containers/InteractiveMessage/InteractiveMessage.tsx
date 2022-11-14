@@ -388,8 +388,9 @@ export const InteractiveMessage = () => {
         handleLanguageChange(nextLanguage);
       } else {
         const { interactiveTemplate } = data.createInteractiveTemplate;
-        location.state.language = nextLanguage;
-        navigate(`/interactive-message/${interactiveTemplate.id}/edit`);
+        navigate(`/interactive-message/${interactiveTemplate.id}/edit`, {
+          state: { language: nextLanguage },
+        });
       }
     }
   };
