@@ -283,9 +283,9 @@ export const ChatMessage = ({
 
   const ErrorIcon = messageErrorStatus ? (
     <Tooltip
-      title={t('Something went wrong! This message could not be sent.')}
+      title={tooltipTitle}
       placement={isSender ? 'right' : 'left'}
-      tooltipClass={styles.WarningTooltip}
+      tooltipClass={styles.ErrorMessage}
       tooltipArrowClass={styles.ArrowTooltip}
     >
       <WarningIcon className={styles.ErrorMsgIcon} />

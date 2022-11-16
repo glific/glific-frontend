@@ -3,12 +3,15 @@ import { MockedProvider } from '@apollo/client/testing';
 
 import { SearchList } from './SearchList';
 import { LIST_ITEM_MOCKS } from '../Search.test.helper';
+import { MemoryRouter } from 'react-router';
 
 const mocks = LIST_ITEM_MOCKS;
 
 const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>
-    <SearchList />
+    <MemoryRouter>
+      <SearchList />
+    </MemoryRouter>
   </MockedProvider>
 );
 
