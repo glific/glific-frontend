@@ -25,6 +25,8 @@
 
 .CroppedText {
   composes: TableText;
+  overflow-wrap: break-word;
+  word-break: break-all;
   cursor: pointer;
 }
 
