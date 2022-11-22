@@ -150,7 +150,7 @@ export const chatRoutes = (
     <Route path="chat" element={<ChatInterface />} />
     <Route path="chat/collection" element={<ChatInterface collectionType />} />
     <Route path="chat/saved-searches" element={<ChatInterface savedSearches />} />
-    <Route path="saved-searches/:contactId" element={<ChatInterface savedSearches />} />
+    <Route path="chat/saved-searches/:contactId" element={<ChatInterface savedSearches />} />
     <Route path="chat/:contactId" element={<ChatInterface />} />
     <Route path="chat/collection/:collectionId" element={<ChatInterface />} />
     <Route path="/*" element={<ChatInterface />} />
