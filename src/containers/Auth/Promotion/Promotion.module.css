@@ -67,7 +67,7 @@
 .BodyListText {
   margin-top: 0px;
   color: #073f24;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 400;
   font-style: normal;
   line-height: 1.25;
@@ -91,6 +91,7 @@
 .Points {
   margin-left: 24px;
   margin-right: 24px;
+  margin-top: 67px;
 }
 
 .ShareNow {
@@ -113,10 +114,43 @@
 }
 
 .Image {
+  margin-right: 20px;
+  margin-left: 20px;
   margin-top: 8px;
   text-align: center;
+  color: #073f24;
+  font-size: 24px;
+  font-weight: 800;
+  font-style: bold;
+  line-height: 1;
+  position: relative;
+  top: 30px;
 }
 
 .Image svg {
   margin-left: 12px;
+}
+
+.KnowMore {
+  display: flex;
+  border-radius: 40px;
+  font-size: 16px;
+  font-weight: 500;
+  align-items: baseline;
+  background: #119656;
+  text-transform: uppercase;
+  padding: 6px 18px;
+  color: #fff;
+  margin-left: 64px;
+  margin-right: 58px;
+  margin-top: 32px;
+}
+
+.Arrow {
+  font-size: 19px;
+  margin-left: 5px;
+}
+
+.Link {
+  text-decoration: none;
 }
