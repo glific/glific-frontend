@@ -263,8 +263,8 @@ const Template = ({
       }
       const editorStateBody = getEditorFromContent(exampleValue);
 
-      setTimeout(() => setExample(editorStateBody), 0);
-      setTimeout(() => onExampleChange(exampleBody), 10);
+      setExample(editorStateBody);
+      onExampleChange(exampleBody);
     }
 
     if (hasButtons) {
