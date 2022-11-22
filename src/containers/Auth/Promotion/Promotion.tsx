@@ -5,7 +5,7 @@ import styles from './Promotion.module.css';
 
 const points = [
   'For any new NGOs that wants to use WhatsApp.',
-  'Share with this with someone who might benefit from this.',
+  'Share with someone who might benefit from this.',
 ];
 
 const LINK = 'https://glific---chintugudiyafoundation-22443339.hubspotpagebuilder.com/bootcamp';

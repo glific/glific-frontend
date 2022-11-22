@@ -135,6 +135,7 @@
   display: flex;
   border-radius: 40px;
   font-size: 16px;
+  font-weight: 500;
   align-items: baseline;
   background: #119656;
   text-transform: uppercase;
