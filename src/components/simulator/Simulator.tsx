@@ -69,6 +69,36 @@ export interface SimulatorProps {
   hasResetButton?: boolean;
 }
 
+const getStyleForDirection = (
+  directionValue: string,
+  isInteractiveValue: boolean,
+  messageTypeValue: any
+): string => {
+  switch (directionValue) {
+    case 'received':
+      if (isInteractiveValue) {
+        const simulatorClasses = [styles.ReceivedMessage, styles.InteractiveReceivedMessage];
+        return simulatorClasses.join(' ');
+      }
+
+      if (messageTypeValue === 'STICKER') {
+        return styles.StickerReceivedMessage;
+      }
+      break;
+
+    case 'send':
+      if (messageTypeValue === 'STICKER') {
+        return styles.StickerSendMessage;
+      }
+
+      return styles.SendMessage;
+
+    default:
+  }
+
+  return styles.ReceivedMessage;
+};
+
 const TimeComponent = (direction: any, insertedAt: any) => (
   <>
     <span className={direction === 'received' ? styles.TimeSent : styles.TimeReceived}>
@@ -256,19 +286,6 @@ export const Simulator = ({
     }
   }
 
-  const getStyleForDirection = (direction: string, isInteractive: boolean): string => {
-    const simulatorClasses = [styles.ReceivedMessage, styles.InteractiveReceivedMessage];
-    if (isInteractive && direction === 'received') {
-      return simulatorClasses.join(' ');
-    }
-
-    if (direction === 'send') {
-      return styles.SendMessage;
-    }
-
-    return styles.ReceivedMessage;
-  };
-
   const releaseUserSimulator = () => {
     releaseSimulator();
     setSimulatorId(0);
@@ -352,7 +369,7 @@ export const Simulator = ({
 
     return (
       <div key={index}>
-        <div className={getStyleForDirection(direction, isInteractiveContentPresent)}>
+        <div className={getStyleForDirection(direction, isInteractiveContentPresent, messageType)}>
           {isInteractiveContentPresent && direction !== 'send' ? (
             template
           ) : (
