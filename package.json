@@ -135,7 +135,7 @@
   "devDependencies": {
     "@types/react-test-renderer": "^18.0.0",
     "i18next-parser": "^7.0.3",
-    "prettier": "^2.7.1",
+    "prettier": "^2.8.0",
     "react-test-renderer": "^18.2.0",
     "stream-browserify": "^3.0.0",
     "yarn-upgrade-all": "^0.7.1"
