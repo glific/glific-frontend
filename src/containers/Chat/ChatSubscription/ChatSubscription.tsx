@@ -155,7 +155,7 @@ export const ChatSubscription = ({ setDataLoaded }: ChatSubscriptionProps) => {
           }).then(({ data: conversation }) => {
             if (conversation && conversation.search.length > 0) {
               // save the conversation and update cache
-              console.log('here');
+
               // temporary fix for cache. need to check why query variables change
               saveConversation(conversation, queryVariables);
             }
