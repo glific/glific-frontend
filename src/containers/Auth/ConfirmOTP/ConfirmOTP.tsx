@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Redirect } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 
 import { REACT_APP_GLIFIC_REGISTRATION_API } from 'config';
 import { Input } from 'components/UI/Form/Input/Input';
+// eslint-disable-next-line no-unused-vars
 import { sendOTP } from 'services/AuthService';
 import setLogs from 'config/logs';
 import { Auth } from '../Auth';
@@ -17,19 +18,24 @@ const successMessage = (
     approval. Click&nbsp;<a href="/login">here</a>&nbsp;for login.
   </div>
 );
-export interface ConfirmOTPProps {
-  location: any;
-}
 
-export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
-  const { location } = props;
+export const ConfirmOTP = () => {
   const [OTP, setOTP] = useState('');
   const [authSuccess, setAuthSuccess] = useState<any | string>('');
   const [authError, setAuthError] = useState('');
   const { t } = useTranslation();
+  const location = useLocation();
+  const [userObject, setUserObject] = useState({ name: '', phone: '', password: '' });
+
+  useEffect(() => {
+    const state = location.state as any;
+    if (state) {
+      setUserObject({ name: state.name, phone: state.phoneNumber, password: state.password });
+    }
+  }, [location]);
 
   const handleResend = () => {
-    sendOTP(location.state.phoneNumber, 'true')
+    sendOTP(userObject.phone, 'true')
       .then((response) => response)
       .catch(() => {
         setAuthError(t('We are unable to generate an OTP, kindly contact your technical team.'));
@@ -38,7 +44,7 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
 
   // Let's not allow direct navigation to this page
   if (location && location.state === undefined) {
-    return <Redirect to="/registration" />;
+    return <Navigate to="/registration" />;
   }
 
   const states = { OTP };
@@ -67,9 +73,9 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
     axios
       .post(REACT_APP_GLIFIC_REGISTRATION_API, {
         user: {
-          name: location.state.name,
-          phone: location.state.phoneNumber,
-          password: location.state.password,
+          name: userObject.name,
+          phone: userObject.phone,
+          password: userObject.password,
           otp: values.OTP,
         },
       })
@@ -82,8 +88,8 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
         setLogs(
           `onSubmitOTP:${{
             user: {
-              name: location.state.name,
-              phone: location.state.phoneNumber,
+              name: userObject.name,
+              phone: userObject.phone,
               otp: values.OTP,
             },
           }} URL:${REACT_APP_GLIFIC_REGISTRATION_API}`,

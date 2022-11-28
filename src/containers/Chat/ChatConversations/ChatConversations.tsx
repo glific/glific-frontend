@@ -19,8 +19,7 @@ export interface ChatConversationsProps {
   contactId?: number | string;
 }
 
-export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
-  const { contactId } = props;
+export const ChatConversations = ({ contactId }: ChatConversationsProps) => {
   // get the conversations stored from the cache
   const [searchVal, setSearchVal] = useState<any>();
   const [searchParam, setSearchParam] = useState<any>({});
@@ -28,7 +27,6 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
   const [savedSearchCriteria, setSavedSearchCriteria] = useState<string>('');
   const [savedSearchCriteriaId, setSavedSearchCriteriaId] = useState(null);
   const [savedSearches, setSavedSearches] = useState(null);
-  const [searchMethod, setSearchMethod] = useState('');
   const [dialog, setDialogbox] = useState(false);
   const [dialogType, setDialogboxType] = useState('');
   const [enableSearchMode, setEnableSearchMode] = useState(false);
@@ -111,9 +109,8 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
     }
   };
 
-  const handleClick = (event: any, data: any, type: string) => {
+  const handleClick = (event: any, data: any) => {
     event.preventDefault();
-    if (type) setSearchMethod(type);
     if (data) setDialogboxType(data);
     setDialogbox(!dialog);
   };
@@ -126,22 +123,20 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
   // create searches
   let dialogBox;
   if (dialog) {
-    const match = { params: searchMethod === 'update' ? { id: savedSearchCriteriaId } : {} };
     let searches = (
       <Search
-        match={match}
         type="saveSearch"
         search={search}
         searchParam={searchParam}
         handleCancel={closeDialogBox}
         handleSave={saveHandler}
+        searchId={savedSearchCriteriaId}
       />
     );
 
     if (dialogType === 'search')
       searches = (
         <Search
-          match={match}
           type="search"
           search={search}
           searchParam={searchParam}
@@ -165,14 +160,14 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
 
   const toolTip = t('The search will be updated as per new filters');
 
-  const buildButton = (toolTipTitle: string, type: string, label: string) => (
+  const buildButton = (toolTipTitle: string, label: string) => (
     <Tooltip title={toolTipTitle} placement="top">
       <Button
         color="primary"
         variant="outlined"
         className={styles.BackgroundWhite}
         onClick={(e: any) => {
-          handleClick(e, 'saveSearch', type);
+          handleClick(e, 'saveSearch');
         }}
       >
         {label}
@@ -180,9 +175,9 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
     </Tooltip>
   );
 
-  const btnUpdate = savedSearchCriteriaId ? buildButton(toolTip, 'update', 'Update') : null;
+  const btnUpdate = savedSearchCriteriaId ? buildButton(toolTip, 'Update') : null;
 
-  const btnCreate = buildButton(t('Create a new search'), t('new'), t('Create new'));
+  const btnCreate = buildButton(t('Create a new search'), t('Create new'));
 
   const btnCancel = (
     <IconButton

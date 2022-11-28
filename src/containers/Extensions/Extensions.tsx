@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router-dom';
 
 import { CREATE_EXTENSION, DELETE_EXTENSION, UPDATE_EXTENSION } from 'graphql/mutations/Extensions';
 import { GET_ORGANIZATION_EXTENSION } from 'graphql/queries/Exntesions';
@@ -13,7 +14,6 @@ import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import styles from './Extensions.module.css';
 
 export interface ExtensionProps {
-  match: any;
   openDialog: boolean;
 }
 const extensionIcon = <ExtensionIcon />;
@@ -23,11 +23,12 @@ const queries = {
   updateItemQuery: UPDATE_EXTENSION,
   deleteItemQuery: DELETE_EXTENSION,
 };
-export const Extensions: React.SFC<ExtensionProps> = ({ match, openDialog }) => {
+export const Extensions = ({ openDialog }: ExtensionProps) => {
   const [name, setName] = useState('');
   const [code, setCode] = useState('');
   const [isActive, setIsActive] = useState(false);
   const { t } = useTranslation();
+  const params = useParams();
 
   const states = { name, code, isActive };
   const setStates = ({ name: nameValue, code: codeValue, isActive: isActiveValue }: any) => {
@@ -35,6 +36,14 @@ export const Extensions: React.SFC<ExtensionProps> = ({ match, openDialog }) => 
     setCode(codeValue);
     setIsActive(isActiveValue);
   };
+
+  useEffect(() => {
+    if (!openDialog) {
+      setName('');
+      setCode('');
+      setIsActive(false);
+    }
+  });
 
   const FormSchema = Yup.object().shape({
     name: Yup.string().required(t('Title is required.')),
@@ -81,8 +90,8 @@ export const Extensions: React.SFC<ExtensionProps> = ({ match, openDialog }) => 
 
   const setPayload = (payload: any) => {
     const data = { ...payload };
-    if (match.params.id) {
-      data.clientId = match.params.id;
+    if (params.id) {
+      data.clientId = params.id;
     }
     return data;
   };
@@ -96,7 +105,6 @@ export const Extensions: React.SFC<ExtensionProps> = ({ match, openDialog }) => 
       <DialogContent classes={{ root: styles.DialogContent }}>
         <FormLayout
           {...queries}
-          match={match}
           states={states}
           setStates={setStates}
           validationSchema={FormSchema}
@@ -113,7 +121,7 @@ export const Extensions: React.SFC<ExtensionProps> = ({ match, openDialog }) => 
           idType="clientId"
           customStyles={[styles.Form]}
           refetchQueries={[
-            { query: GET_ORGANIZATION_EXTENSION, variables: { clientId: match.params.id } },
+            { query: GET_ORGANIZATION_EXTENSION, variables: { clientId: params.id } },
           ]}
         />
       </DialogContent>

@@ -8,7 +8,10 @@ export const GET_USERS_QUERY = gql`
         name
         phone
         isRestricted
-        roles
+        accessRoles {
+          id
+          label
+        }
         groups {
           id
           label
@@ -30,7 +33,9 @@ export const FILTER_USERS = gql`
       id
       name
       phone
-      roles
+      accessRoles {
+        label
+      }
       groups {
         id
         label
@@ -64,7 +69,10 @@ export const GET_CURRENT_USER = gql`
         id
         name
         phone
-        roles
+        accessRoles {
+          id
+          label
+        }
         contact {
           id
         }
@@ -75,6 +83,9 @@ export const GET_CURRENT_USER = gql`
         }
         organization {
           id
+          contact {
+            phone
+          }
         }
         language {
           id

@@ -4,6 +4,7 @@ import {
   GET_TEMPLATE,
   GET_HSM_CATEGORIES,
   GET_TEMPLATES_COUNT,
+  FILTER_SESSION_TEMPLATES,
 } from 'graphql/queries/Template';
 import { DELETE_TEMPLATE, CREATE_TEMPLATE } from 'graphql/mutations/Template';
 import {
@@ -30,6 +31,7 @@ const SpeedSendsSessionTemplates = [
     label: 'Good message',
     shortcode: 'test',
     status: 'ACCEPTED',
+    reason: 'test reason',
     isHsm: false,
     isReserved: false,
     isActive: false,
@@ -40,7 +42,7 @@ const SpeedSendsSessionTemplates = [
     type: 'TEXT',
     language: {
       id: '1',
-      label: 'Hindi',
+      label: 'English',
     },
     MessageMedia: {
       id: 1,
@@ -52,7 +54,7 @@ const SpeedSendsSessionTemplates = [
 
 const speedSend = {
   request: {
-    query: FILTER_TEMPLATES,
+    query: FILTER_SESSION_TEMPLATES,
     variables: {
       filter: {
         isHsm: false,
@@ -62,6 +64,7 @@ const speedSend = {
         limit: 50,
         offset: 0,
         order: 'ASC',
+        orderWith: 'label',
       },
     },
   },
@@ -205,6 +208,7 @@ const filterTemplateQuery = {
           isHsm: true,
           isReserved: false,
           updatedAt: '2020-12-01T18:00:32Z',
+          translations: '{}',
         },
       ],
     },
@@ -249,6 +253,7 @@ const getTemplateData = {
       isActive: true,
       translations: '{}',
       type: 'TEXT',
+      isHsm: false,
       language: {
         id: '1',
         label: 'English',
@@ -257,6 +262,7 @@ const getTemplateData = {
       hasButtons: false,
       buttons: null,
       buttonType: null,
+      updatedAt: '2020-12-01T18:00:32Z',
     },
   },
 };
@@ -307,7 +313,7 @@ export const TEMPLATE_MOCKS = [
     request: {
       query: GET_TEMPLATE,
       variables: {
-        id: 1,
+        id: '1',
       },
     },
     result: {
@@ -318,7 +324,7 @@ export const TEMPLATE_MOCKS = [
     request: {
       query: GET_TEMPLATE,
       variables: {
-        id: 1,
+        id: '1',
       },
     },
     result: {
@@ -398,6 +404,7 @@ const getHSMTemplate = (id: string, status: string) => ({
   language: { id: '1', label: 'English' },
   shortcode: 'account_balance',
   status,
+  reason: 'test reason',
   translations:
     '{"2":{"number_parameters":1,"language_id":2,"body":" अब आप नीचे दिए विकल्पों में से एक का चयन करके {{1}} के साथ समाप्त होने वाले खाते के लिए अपना खाता शेष या मिनी स्टेटमेंट देख सकते हैं। | [अकाउंट बैलेंस देखें] | [देखें मिनी स्टेटमेंट]"}}',
   type: 'TEXT',
@@ -452,9 +459,39 @@ export const HSM_LIST = [
       data: {
         sessionTemplates: [
           getHSMTemplate('1', 'APPROVED'),
-          getHSMTemplate('2', 'PENDING'),
-          getHSMTemplate('3', 'REJECTED'),
+          getHSMTemplate('2', 'APPROVED'),
+          getHSMTemplate('3', 'APPROVED'),
         ],
+      },
+    },
+  },
+  {
+    request: {
+      query: GET_TEMPLATES_COUNT,
+      variables: {
+        filter: {
+          isHsm: true,
+          status: 'REJECTED',
+        },
+      },
+    },
+    result: {
+      data: {
+        countSessionTemplates: 1,
+      },
+    },
+  },
+  {
+    request: {
+      query: FILTER_TEMPLATES,
+      variables: {
+        filter: { isHsm: true, status: 'REJECTED' },
+        opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'status' },
+      },
+    },
+    result: {
+      data: {
+        sessionTemplates: [getHSMTemplate('1', 'REJECTED')],
       },
     },
   },

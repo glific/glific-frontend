@@ -1,4 +1,5 @@
 .TableRow {
+  position: relative;
   display: flex !important;
   background-color: white;
   border-radius: 12px !important;
@@ -24,7 +25,6 @@
 
 .TableCell {
   font-size: 14px !important;
-  color: #ccd4d0 !important;
   display: flex !important;
   padding: 0px 10px !important;
   border: unset !important;
@@ -75,4 +75,12 @@
   margin-top: 12px;
   margin-bottom: 12px;
   line-height: 1;
+}
+
+.ActiveRow {
+  color: #073f24;
+}
+
+.InactiveRow {
+  color: #ccd4d0 !important;
 }

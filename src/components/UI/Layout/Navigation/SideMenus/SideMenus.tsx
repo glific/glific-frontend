@@ -14,7 +14,9 @@ export interface SideMenusProps {
   opened: boolean;
 }
 
-const SideMenus: React.SFC<SideMenusProps> = ({ opened }) => {
+const AnchorLink = (props: any) => <a {...props} />;
+
+const SideMenus = ({ opened }: SideMenusProps) => {
   const location = useLocation();
   const { t } = useTranslation();
 
@@ -70,9 +72,9 @@ const SideMenus: React.SFC<SideMenusProps> = ({ opened }) => {
           selected: styles.SelectedItem,
         }}
         key={menu.icon}
-        component={NavLink}
+        component={menu.url ? AnchorLink : NavLink}
         to={redirectPath}
-        {...(menu.url ? { target: '_blank', url: menu.url } : {})}
+        {...(menu.url ? { target: '_blank', href: menu.url, rel: 'noopener noreferrer' } : {})}
       >
         <ListItemIcon className={styles.ListItemIcon}>
           <ListIcon

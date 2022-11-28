@@ -7,7 +7,11 @@ import { List } from 'containers/List/List';
 import { useMutation } from '@apollo/client';
 import { WhatsAppToJsx } from 'common/RichEditor';
 import { DATE_TIME_FORMAT, GUPSHUP_ENTERPRISE_SHORTCODE } from 'common/constants';
-import { GET_TEMPLATES_COUNT, FILTER_TEMPLATES } from 'graphql/queries/Template';
+import {
+  GET_TEMPLATES_COUNT,
+  FILTER_TEMPLATES,
+  FILTER_SESSION_TEMPLATES,
+} from 'graphql/queries/Template';
 import { DELETE_TEMPLATE, IMPORT_TEMPLATES } from 'graphql/mutations/Template';
 import { ReactComponent as DownArrow } from 'assets/images/icons/DownArrow.svg';
 import { ReactComponent as ApprovedIcon } from 'assets/images/icons/Template/Approved.svg';
@@ -24,6 +28,8 @@ const getLabel = (label: string) => <div className={styles.LabelText}>{label}</d
 
 const getBody = (text: string) => <p className={styles.TableText}>{WhatsAppToJsx(text)}</p>;
 
+const getReason = (reason: string) => <p className={styles.TableText}>{reason}</p>;
+
 const getUpdatedAt = (date: string) => (
   <div className={styles.LastModified}>{moment(date).format(DATE_TIME_FORMAT)}</div>
 );
@@ -34,12 +40,6 @@ const getTranslations = (language: any, data: string) => {
     delete dataObj[language.id];
   }
   return JSON.stringify(dataObj);
-};
-
-const queries = {
-  countQuery: GET_TEMPLATES_COUNT,
-  filterItemsQuery: FILTER_TEMPLATES,
-  deleteItemQuery: DELETE_TEMPLATE,
 };
 
 export interface TemplateProps {
@@ -59,17 +59,16 @@ const statusFilter = {
   REJECTED: false,
 };
 
-export const Template: React.SFC<TemplateProps> = (props) => {
-  const {
-    title,
-    listItem,
-    listItemName,
-    pageLink,
-    listIcon,
-    filters: templateFilters,
-    buttonLabel,
-    isHSM,
-  } = props;
+export const Template = ({
+  title,
+  listItem,
+  listItemName,
+  pageLink,
+  listIcon,
+  filters: templateFilters,
+  buttonLabel,
+  isHSM,
+}: TemplateProps) => {
   const [open, setOpen] = useState(false);
   const [Id, setId] = useState('');
   const { t } = useTranslation();
@@ -90,6 +89,12 @@ export const Template: React.SFC<TemplateProps> = (props) => {
       }
     },
   });
+
+  const queries = {
+    countQuery: GET_TEMPLATES_COUNT,
+    filterItemsQuery: isHSM ? FILTER_TEMPLATES : FILTER_SESSION_TEMPLATES,
+    deleteItemQuery: DELETE_TEMPLATE,
+  };
 
   const getStatus = (status: string) => {
     let statusValue;
@@ -129,16 +134,25 @@ export const Template: React.SFC<TemplateProps> = (props) => {
 
   let columnNames = ['TITLE', 'BODY'];
   columnNames = isHSM
-    ? [...columnNames, 'STATUS', 'ACTIONS']
+    ? [...columnNames, 'STATUS', ...(filters.REJECTED ? ['REASON'] : []), 'ACTIONS']
     : [...columnNames, 'LAST MODIFIED', 'ACTIONS'];
 
   let columnStyles: any = [styles.Label, styles.Body];
 
   columnStyles = isHSM
-    ? [...columnStyles, styles.Status, styles.Actions]
+    ? [...columnStyles, styles.Status, ...(filters.REJECTED ? [styles.Reason] : []), styles.Actions]
     : [...columnStyles, styles.LastModified, styles.Actions];
 
-  const getColumns = ({ id, language, label, body, updatedAt, translations, status }: any) => {
+  const getColumns = ({
+    id,
+    language,
+    label,
+    body,
+    updatedAt,
+    translations,
+    status,
+    reason,
+  }: any) => {
     const columns: any = {
       id,
       label: getLabel(label),
@@ -146,6 +160,9 @@ export const Template: React.SFC<TemplateProps> = (props) => {
     };
     if (isHSM) {
       columns.status = getStatus(status);
+      if (filters.REJECTED) {
+        columns.reason = getReason(reason);
+      }
     } else {
       columns.updatedAt = getUpdatedAt(updatedAt);
       columns.translations = getTranslations(language, translations);

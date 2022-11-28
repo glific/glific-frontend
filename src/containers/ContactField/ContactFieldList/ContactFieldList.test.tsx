@@ -8,9 +8,14 @@ import { mocks, contactFieldErrorMock } from 'mocks/ContactFields';
 import ContactFieldList from './ContactFieldList';
 
 const props = {
-  match: { params: {} },
   openDialog: false,
 };
+
+jest.mock('react-router-dom', () => ({
+  ...(jest.requireActual('react-router-dom') as {}),
+
+  useParams: () => ({ id: '1' }),
+}));
 
 setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
 
@@ -61,8 +66,7 @@ test('it renders list successfully', async () => {
   await waitFor(() => {});
 });
 
-const errorMock: any = [...mocks];
-errorMock.pop();
+const errorMock: any = [...mocks, ...mocks];
 errorMock.push(contactFieldErrorMock);
 
 const listError = (

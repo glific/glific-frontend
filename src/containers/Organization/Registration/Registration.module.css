@@ -21,3 +21,32 @@
 .InputAdornment {
   cursor: pointer !important;
 }
+
+.Wrapper :global(.MuiFormControlLabel-root) {
+  display: flex;
+  align-items: flex-start;
+}
+
+.Wrapper :global(.MuiFormControlLabel-label) {
+  color: #93a29b;
+  padding: 10px 0px;
+  line-height: 1.2;
+  font-size: 14px;
+  font-weight: 400 !important;
+}
+
+.Wrapper :global(.MuiIconButton-label) {
+  position: relative;
+  z-index: 0;
+}
+
+.Wrapper :global(.MuiIconButton-label:after) {
+  content: '';
+  left: 4px;
+  top: 4px;
+  height: 15px;
+  width: 15px;
+  position: absolute;
+  background-color: white;
+  z-index: -1;
+}

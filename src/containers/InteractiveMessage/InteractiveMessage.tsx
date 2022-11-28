@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { EditorState } from 'draft-js';
-import { useLocation, useHistory } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useLazyQuery, useQuery } from '@apollo/client';
 import { setNotification } from 'common/notification';
 import { ReactComponent as InteractiveMessageIcon } from 'assets/images/icons/InteractiveMessage/Dark.svg';
@@ -36,10 +36,6 @@ import {
   validator,
 } from './InteractiveMessage.helper';
 
-export interface FlowProps {
-  match: any;
-}
-
 const interactiveMessageIcon = <InteractiveMessageIcon className={styles.Icon} />;
 
 const queries = {
@@ -49,9 +45,9 @@ const queries = {
   deleteItemQuery: DELETE_INTERACTIVE,
 };
 
-export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
+export const InteractiveMessage = () => {
   const location: any = useLocation();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [title, setTitle] = useState('');
   const [body, setBody] = useState(EditorState.createEmpty());
   const [templateType, setTemplateType] = useState<string>(QUICK_REPLY);
@@ -71,8 +67,8 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
 
   const [previousState, setPreviousState] = useState<any>({});
   const [nextLanguage, setNextLanguage] = useState<any>('');
-  const [warning, setWarning] = useState<any>();
   const { t } = useTranslation();
+  const params = useParams();
 
   // alter header & update/copy queries
   let header;
@@ -102,17 +98,17 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       lang.sort((first: any, second: any) => (first.id > second.id ? 1 : -1));
 
       setLanguageOptions(lang);
-      if (!Object.prototype.hasOwnProperty.call(match.params, 'id')) {
+      if (!Object.prototype.hasOwnProperty.call(params, 'id')) {
         setLanguage(lang[0]);
       }
     }
   }, [languages]);
 
   useEffect(() => {
-    if (Object.prototype.hasOwnProperty.call(match.params, 'id') && match.params.id) {
-      getInteractiveTemplateById({ variables: { id: match.params.id } });
+    if (Object.prototype.hasOwnProperty.call(params, 'id') && params.id) {
+      getInteractiveTemplateById({ variables: { id: params.id } });
     }
-  }, [match.params]);
+  }, [params]);
 
   const states = {
     language,
@@ -189,7 +185,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
         const selectedLangauge = languageOptions.find(
           (lang: any) => lang.label === location.state.language
         );
-        history.replace(location.pathname, null);
+        navigate(location.pathname);
         setLanguage(selectedLangauge);
       } else if (!language.id) {
         const selectedLangauge = languageOptions.find((lang: any) => lang.id === languageVal.id);
@@ -379,7 +375,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
 
   const handleLanguageChange = (value: any) => {
     const selected = languageOptions.find(({ label }: any) => label === value);
-    if (selected && Object.prototype.hasOwnProperty.call(match.params, 'id')) {
+    if (selected && Object.prototype.hasOwnProperty.call(params, 'id')) {
       updateTranslation(selected);
     } else if (selected) {
       setLanguage(selected);
@@ -388,38 +384,20 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
 
   const afterSave = (data: any, saveClick: boolean) => {
     if (!saveClick) {
-      if (match.params.id) {
+      if (params.id) {
         handleLanguageChange(nextLanguage);
       } else {
         const { interactiveTemplate } = data.createInteractiveTemplate;
-        history.push(`/interactive-message/${interactiveTemplate.id}/edit`, {
-          language: nextLanguage,
+        navigate(`/interactive-message/${interactiveTemplate.id}/edit`, {
+          state: { language: nextLanguage },
         });
       }
-    }
-  };
-
-  const displayWarning = () => {
-    if (type && type.id === 'DOCUMENT') {
-      setWarning(
-        <div className={styles.Warning}>
-          <ol>
-            <li>{t('Body is not supported for document.')}</li>
-          </ol>
-        </div>
-      );
-    } else {
-      setWarning(null);
     }
   };
 
   useEffect(() => {
     handleAddInteractiveTemplate(false, QUICK_REPLY);
   }, []);
-
-  useEffect(() => {
-    displayWarning();
-  }, [type]);
 
   const dialogMessage = t("You won't be able to use this again.");
 
@@ -451,7 +429,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     }
   };
 
-  const hasTranslations = match.params?.id && defaultLanguage?.id !== language?.id;
+  const hasTranslations = params?.id && defaultLanguage?.id !== language?.id;
 
   const fields = [
     {
@@ -507,7 +485,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       templateType,
       inputFields: templateButtons,
       disabled: false,
-      disabledType: match.params.id !== undefined,
+      disabledType: params?.id !== undefined,
       onAddClick: handleAddInteractiveTemplate,
       onRemoveClick: handleRemoveInteractiveTemplate,
       onInputChange: handleInputChange,
@@ -652,7 +630,6 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       options,
       optionLabel: 'label',
       multiple: false,
-      helperText: warning,
       textFieldProps: {
         variant: 'outlined',
         label: t('Attachment type'),
@@ -739,7 +716,6 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     <>
       <FormLayout
         {...queries}
-        match={match}
         states={states}
         setStates={setStates}
         setPayload={setPayload}

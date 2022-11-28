@@ -1,3 +1,4 @@
+import { organizationHasDynamicRole } from 'common/utils';
 import { getMenus } from 'config/menu';
 import { getUserSession } from 'services/AuthService';
 
@@ -15,12 +16,26 @@ let manageCollections: boolean = false;
 // function to get the logged in user role
 export const getUserRole = (): Array<any> => {
   if (!role || role.length === 0) {
-    const userRole: any = getUserSession('roles');
-    if (userRole) {
-      role = userRole;
+    const userRoles: any = getUserSession('roles');
+
+    if (userRoles) {
+      role = userRoles.map((userRole: any) => userRole.label);
     } else role = [];
   }
   return role;
+};
+
+export const checkDynamicRole = () => {
+  if (!role || role.length === 0) {
+    role = getUserRole();
+  }
+
+  for (let i = 0; i < role.length; i += 1)
+    if (!['Admin', 'Manager', 'Staff', 'None', 'Glific_admin'].includes(role[i])) {
+      return true;
+    }
+
+  return false;
 };
 
 // function to set the user permissions based on the role
@@ -30,20 +45,28 @@ export const setUserRolePermissions = () => {
     role = getUserRole();
   }
 
+  const hasDynamicRole = checkDynamicRole();
+
+  if (role && hasDynamicRole) {
+    sideDrawerMenu = getMenus('sideDrawer', 'Dynamic');
+    staffManagementMenu = getMenus('management', 'Dynamic');
+  }
+
   if (role && role.includes('Staff')) {
     sideDrawerMenu = getMenus('sideDrawer');
-    staffManagementMenu = getMenus('staffManagement');
+    staffManagementMenu = getMenus('management');
   }
 
   if ((role && role.includes('Manager')) || role.includes('Admin')) {
     // gettting menus for Manager as menus are same as in Admin
     sideDrawerMenu = getMenus('sideDrawer', 'Manager');
-    staffManagementMenu = getMenus('staffManagement', 'Manager');
+    staffManagementMenu = getMenus('management', 'Manager');
 
     if (role.includes('Admin')) {
       accessSettings = true;
       manageSavedSearches = true;
       manageCollections = true;
+      staffManagementMenu = getMenus('management', 'Admin');
     }
   }
 
@@ -53,14 +76,18 @@ export const setUserRolePermissions = () => {
      */
     sideDrawerMenu = getMenus('sideDrawer', 'Manager');
     staffManagementMenu = [
-      ...getMenus('staffManagement', 'Manager'),
-      ...getMenus('staffManagement', 'Glific_admin'),
+      ...getMenus('management', 'Manager'),
+      ...getMenus('management', 'Glific_admin'),
     ];
 
     accessSettings = true;
     manageSavedSearches = true;
     manageCollections = true;
   }
+
+  staffManagementMenu = staffManagementMenu.filter(
+    (menu: any) => menu.title !== 'Role management' || organizationHasDynamicRole()
+  );
 };
 
 // function to reset user permissions

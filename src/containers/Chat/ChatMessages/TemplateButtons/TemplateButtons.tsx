@@ -9,11 +9,11 @@ interface TemplateButtonProps {
   isSimulator?: any;
 }
 
-export const TemplateButtons: React.SFC<TemplateButtonProps> = ({
+export const TemplateButtons = ({
   template,
   callbackTemplateButtonClick,
   isSimulator = false,
-}) => {
+}: TemplateButtonProps) => {
   const handleButtonClick = (type: string, value: string) => {
     if (type === 'call-to-action') {
       if (value) window.open(value, '_blank');

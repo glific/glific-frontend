@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { FLOW_EDITOR_API } from 'config';
 import setLogs from 'config/logs';
-import { getAuthSession } from 'services/AuthService';
+import { checkDynamicRole } from 'context/role';
+import { getAuthSession, getOrganizationServices, getUserSession } from 'services/AuthService';
 import { SIMULATOR_NUMBER_START } from './constants';
 import { setNotification } from './notification';
 
@@ -149,6 +150,30 @@ export const numberToAbbreviation = (numberString: string) => {
     abbreviation = `${(number / 1000000).toFixed(0)}m`;
   }
   return abbreviation;
+};
+
+// need to check from backend if organization has dynamic role
+export const organizationHasDynamicRole = () => getOrganizationServices('rolesAndPermission');
+
+export const getAddOrRemoveRoleIds = (roles: any, payload: any) => {
+  const initialSelectedRoles = roles.map((role: any) => role.id);
+  const payloadRoleIds = payload.roles.map((role: any) => role.id);
+
+  let addRoleIds = payloadRoleIds.filter(
+    (selectedRoles: any) => !initialSelectedRoles.includes(selectedRoles)
+  );
+  const deleteRoleIds = initialSelectedRoles.filter(
+    (roleId: any) => !payloadRoleIds.includes(roleId)
+  );
+
+  if (checkDynamicRole()) {
+    const userRoles = getUserSession('roles').map((role: any) => role.id);
+    addRoleIds = [...addRoleIds, ...userRoles];
+  }
+
+  const { roles: userRoles, ...rest } = payload;
+
+  return { ...rest, addRoleIds, deleteRoleIds };
 };
 
 export default getObject;

@@ -19,7 +19,9 @@
         "tsx": "never"
       }
     ],
+    "no-restricted-globals": ["error", "event", "fdescribe"],
     "react/prop-types": "off",
+    "jsx-a11y/anchor-has-content": "off",
     "react/jsx-curly-newline": "off",
     "react/jsx-props-no-spreading": "off",
     "react/jsx-wrap-multilines": "off",
@@ -28,7 +30,9 @@
     "react/no-arrow-function-lifecycle": "off",
     "react/no-invalid-html-attribute": "off",
     "react/no-unused-class-component-methods": "off",
-    "react/function-component-definition": "off"
+    "react/function-component-definition": "off",
+    "react/require-default-props": "off",
+    "no-undef": "off"
   },
   "env": {
     "jest": true

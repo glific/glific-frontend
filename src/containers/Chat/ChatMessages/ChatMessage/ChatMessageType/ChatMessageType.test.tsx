@@ -17,7 +17,7 @@ const defaultProps: any = (type: string) => {
   };
 };
 
-jest.mock('react-viewer', () => (props) => {
+jest.mock('react-viewer', () => (props: any) => {
   const { onClose } = props;
   return <div data-testid="reactViewer" onClick={() => onClose()} />;
 });

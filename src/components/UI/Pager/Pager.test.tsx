@@ -46,10 +46,14 @@ describe('Server Table test', () => {
   const createTable = () => (
     <Pager
       columnNames={columnNames}
+      removeSortBy={[]}
       data={data}
       totalRows={totalRows}
       handleTableChange={handleTableChange}
+      listItemName="record"
       tableVals={tableVals}
+      collapseOpen={false}
+      collapseRow={undefined}
     />
   );
 

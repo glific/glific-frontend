@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import { useQuery } from '@apollo/client';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { ReactComponent as StaffManagementIcon } from 'assets/images/icons/StaffManagement/Active.svg';
@@ -11,17 +11,15 @@ import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
-import { GET_USERS_QUERY, GET_USER_ROLES } from 'graphql/queries/User';
+import { GET_USERS_QUERY } from 'graphql/queries/User';
 import { UPDATE_USER, DELETE_USER } from 'graphql/mutations/User';
 import { GET_COLLECTIONS } from 'graphql/queries/Collection';
 import { getUserRole } from 'context/role';
 import { setVariables } from 'common/constants';
 import { getUserSession } from 'services/AuthService';
+import { GET_ROLE_NAMES } from 'graphql/queries/Role';
+import { organizationHasDynamicRole } from 'common/utils';
 import styles from './StaffManagement.module.css';
-
-export interface StaffManagementProps {
-  match: any;
-}
 
 const staffManagementIcon = <StaffManagementIcon />;
 
@@ -32,17 +30,18 @@ const queries = {
   deleteItemQuery: DELETE_USER,
 };
 
-export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
+export const StaffManagement = () => {
+  const hasDynamicRoles = organizationHasDynamicRole();
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
-  const [roles, setRoles] = useState<any>(null);
+  const [roles, setRoles] = useState<any>([]);
   const [groups, setGroups] = useState(null);
   const [isRestricted, setIsRestricted] = useState(false);
   const [staffRole, setStaffRole] = useState(false);
   const [helpDialog, setHelpDialog] = useState(false);
   const [isAdmin] = useState(getUserRole().includes('Admin'));
   const [isManager] = useState(getUserRole().includes('Manager'));
-  const history = useHistory();
+  const navigate = useNavigate();
   const { t } = useTranslation();
 
   let dialog;
@@ -90,7 +89,7 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   const setStates = ({
     name: nameValue,
     phone: phoneValue,
-    roles: rolesValue,
+    accessRoles: accessRolesValue,
     groups: groupsValue,
     isRestricted: isRestrictedValue,
   }: any) => {
@@ -98,8 +97,13 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
     setPhone(phoneValue);
 
     // let' format the roles so that it is displayed correctly in the UI
-    if (rolesValue) {
-      setRoles({ id: rolesValue[0], label: rolesValue[0] });
+    if (accessRolesValue) {
+      if (hasDynamicRoles) {
+        const userRoles = accessRolesValue.map((role: any) => ({ id: role.id, label: role.label }));
+        setRoles(userRoles);
+      } else if (accessRolesValue.length > 0) {
+        setRoles({ id: accessRolesValue[0].id, label: accessRolesValue[0].label });
+      }
     }
 
     if (groupsValue) {
@@ -108,25 +112,38 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
     setIsRestricted(isRestrictedValue);
   };
 
-  const { loading: loadingRoles, data: roleData } = useQuery(GET_USER_ROLES);
+  const { loading: loadingRoles, data: roleData } = useQuery(GET_ROLE_NAMES, {
+    fetchPolicy: 'network-only',
+  });
 
   const { loading, data } = useQuery(GET_COLLECTIONS, {
     variables: setVariables(),
   });
 
   useEffect(() => {
-    if (roles && roles.id === 'Staff') {
+    let hasStaffRole = false;
+    if (hasDynamicRoles) {
+      hasStaffRole = roles && roles.length === 1 && roles[0].label === 'Staff';
+    } else {
+      hasStaffRole = roles && roles.label === 'Staff';
+    }
+
+    if (hasStaffRole) {
       setStaffRole(true);
     }
   }, [roles]);
   if (loading || loadingRoles) return <Loading />;
-  if (!data.groups || !roleData.roles) {
+  if (!data.groups || !roleData.accessRoles) {
     return null;
   }
 
   const rolesList: any = [];
-  roleData.roles.forEach((role: any) => {
-    rolesList.push({ id: role, label: role });
+  roleData.accessRoles.forEach((role: any) => {
+    if (hasDynamicRoles) {
+      rolesList.push({ id: role.id, label: role.label });
+    } else if (role.isReserved) {
+      rolesList.push({ id: role.id, label: role.label });
+    }
   });
 
   const getOptions = () => {
@@ -148,13 +165,21 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   let formFields: any = [];
 
   const handleRolesChange = (value: any) => {
-    if (value) {
-      const hasStaffRole = value.label === 'Staff';
-      if (hasStaffRole) {
-        setStaffRole(true);
-      } else {
-        setStaffRole(false);
-      }
+    if (!value) {
+      return;
+    }
+    let hasStaffRole = false;
+
+    if (hasDynamicRoles) {
+      hasStaffRole = value.length === 1 && value[0].label === 'Staff';
+    } else {
+      hasStaffRole = value.label === 'Staff';
+    }
+
+    if (hasStaffRole) {
+      setStaffRole(true);
+    } else {
+      setStaffRole(false);
     }
   };
 
@@ -184,9 +209,9 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
       options: rolesList,
       roleSelection: handleRolesChange,
       getOptions,
+      multiple: hasDynamicRoles,
       helpLink: { label: 'help?', handleClick: handleHelpClick },
       optionLabel: 'label',
-      multiple: false,
       textFieldProps: {
         label: t('Roles'),
         variant: 'outlined',
@@ -219,7 +244,9 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   const FormSchema = Yup.object().shape({
     name: Yup.string().required(t('Name is required.')),
     phone: Yup.string().required(t('Phone is required')),
-    roles: Yup.object().nullable().required(t('Roles is required')),
+    roles: hasDynamicRoles
+      ? Yup.array().nullable().required(t('Roles is required'))
+      : Yup.object().nullable().required(t('Roles is required')),
   });
 
   const setPayload = (payload: any) => {
@@ -231,24 +258,43 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
     delete payloadCopy.groups;
 
     let roleIds: any[] = [];
+    let isSameRole = true;
     // let's rebuild roles, as per backend
-    if (payloadCopy.roles) roleIds = [payloadCopy.roles.id];
+    if (payloadCopy.roles) {
+      roleIds = hasDynamicRoles
+        ? payloadCopy.roles.map((role: any) => role.id)
+        : [payloadCopy.roles.id];
+
+      isSameRole = payloadCopy.roles.id === roles.id;
+    }
+
+    payloadCopy.addRoleIds = isSameRole ? [] : roleIds;
+    payloadCopy.deleteRoleIds = isSameRole ? [] : [roles.id];
+
+    if (hasDynamicRoles) {
+      const initialSelectedRoles = roles.map((role: any) => role.id);
+      payloadCopy.addRoleIds = roleIds.filter(
+        (selectedRoles: any) => !initialSelectedRoles.includes(selectedRoles)
+      );
+      payloadCopy.deleteRoleIds = [];
+      payloadCopy.deleteRoleIds = initialSelectedRoles.filter(
+        (roleId: any) => !roleIds.includes(roleId)
+      );
+    }
 
     // delete current roles from the payload
     delete payloadCopy.roles;
-
     // return modified payload
     return {
       ...payloadCopy,
       groupIds: collectionIds,
-      roles: roleIds,
     };
   };
 
   const checkAfterSave = (updatedUser: any) => {
     const { id, roles: userRoles } = updatedUser.updateUser.user;
     if (isAdmin && getUserSession('id') === id && !userRoles.includes('Admin')) {
-      history.push('/logout/user');
+      navigate('/logout/user');
     }
   };
 
@@ -259,7 +305,6 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
       {dialog}
       <FormLayout
         {...queries}
-        match={match}
         afterSave={checkAfterSave}
         states={states}
         setStates={setStates}

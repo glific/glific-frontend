@@ -1,20 +1,20 @@
 import React, { useState } from 'react';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
+import { useQuery } from '@apollo/client';
 
 import { FormLayout } from 'containers/Form/FormLayout';
 import { Input } from 'components/UI/Form/Input/Input';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { ReactComponent as FlowIcon } from 'assets/images/icons/Flow/Selected.svg';
 import { CREATE_FLOW, UPDATE_FLOW, DELETE_FLOW, CREATE_FLOW_COPY } from 'graphql/mutations/Flow';
+import { GET_ORGANIZATION } from 'graphql/queries/Organization';
 import { GET_FLOW } from 'graphql/queries/Flow';
+import { getAddOrRemoveRoleIds } from 'common/utils';
 import { setErrorMessage } from 'common/notification';
+import Loading from 'components/UI/Layout/Loading/Loading';
 import styles from './Flow.module.css';
-
-export interface FlowProps {
-  match: any;
-}
 
 const flowIcon = <FlowIcon className={styles.FlowIcon} />;
 
@@ -25,23 +25,36 @@ const queries = {
   deleteItemQuery: DELETE_FLOW,
 };
 
-export const Flow: React.SFC<FlowProps> = ({ match }) => {
+export const Flow = () => {
   const location = useLocation();
+  const params = useParams();
   const [name, setName] = useState('');
+  const [isPinnedDisable, setIsPinnedDisable] = useState(false);
   const [keywords, setKeywords] = useState('');
   const [isActive, setIsActive] = useState(true);
+  const [isPinned, setIsPinned] = useState(false);
+  const [roles, setRoles] = useState<Array<any>>([]);
   const [isBackground, setIsBackground] = useState(false);
   const [ignoreKeywords, setIgnoreKeywords] = useState(false);
   const { t } = useTranslation();
 
-  const states = { isActive, isBackground, name, keywords, ignoreKeywords };
+  const { loading, data: orgData } = useQuery(GET_ORGANIZATION, {
+    variables: {},
+    fetchPolicy: 'network-only',
+  });
+
+  if (loading) return <Loading />;
+
+  const states = { isActive, isPinned, isBackground, name, keywords, ignoreKeywords, roles };
 
   const setStates = ({
     name: nameValue,
     keywords: keywordsValue,
     isActive: isActiveValue,
+    isPinned: isPinnedValue,
     isBackground: isBackgroundValue,
     ignoreKeywords: ignoreKeywordsValue,
+    roles: rolesValue,
   }: any) => {
     // Override name & keywords when creating Flow Copy
     let fieldName = nameValue;
@@ -51,9 +64,21 @@ export const Flow: React.SFC<FlowProps> = ({ match }) => {
       fieldKeywords = '';
     }
 
+    const {
+      organization: {
+        organization: { newcontactFlowId },
+      },
+    } = orgData;
+
+    if (params.id === newcontactFlowId) {
+      setIsPinnedDisable(true);
+    }
+
     setName(fieldName);
     setIsActive(isActiveValue);
+    setIsPinned(isPinnedValue);
     setIsBackground(isBackgroundValue);
+    setRoles(rolesValue);
 
     // we are receiving keywords as an array object
     if (fieldKeywords.length > 0) {
@@ -108,6 +133,13 @@ export const Flow: React.SFC<FlowProps> = ({ match }) => {
     },
     {
       component: Checkbox,
+      name: 'isPinned',
+      title: t('Is pinned?'),
+      darkCheckbox: !isPinnedDisable,
+      disabled: isPinnedDisable,
+    },
+    {
+      component: Checkbox,
       name: 'isBackground',
       title: t('Run this flow in the background'),
       darkCheckbox: true,
@@ -115,7 +147,8 @@ export const Flow: React.SFC<FlowProps> = ({ match }) => {
   ];
 
   const setPayload = (payload: any) => {
-    let formattedKeywords;
+    let formattedKeywords = [];
+
     if (payload.keywords) {
       // remove white spaces
       const inputKeywords = payload.keywords.replace(/[\s]+/g, '');
@@ -123,9 +156,11 @@ export const Flow: React.SFC<FlowProps> = ({ match }) => {
       formattedKeywords = inputKeywords.split(',');
     }
 
+    const payloadWithRoleIds = getAddOrRemoveRoleIds(roles, payload);
+
     // return modified payload
     return {
-      ...payload,
+      ...payloadWithRoleIds,
       keywords: formattedKeywords,
     };
   };
@@ -157,8 +192,8 @@ export const Flow: React.SFC<FlowProps> = ({ match }) => {
   return (
     <FormLayout
       {...queries}
-      match={match}
       states={states}
+      roleAccessSupport
       setStates={setStates}
       setPayload={setPayload}
       validationSchema={FormSchema}

@@ -18,6 +18,11 @@ export const GET_FLOW = gql`
         name
         uuid
         isActive
+        isPinned
+        roles {
+          id
+          label
+        }
         isBackground
         keywords
         ignoreKeywords
@@ -44,6 +49,12 @@ export const FILTER_FLOW = gql`
       lastPublishedAt
       ignoreKeywords
       updatedAt
+      isActive
+      isPinned
+      roles {
+        id
+        label
+      }
     }
   }
 `;
@@ -79,8 +90,8 @@ export const TERMINATE_FLOW = gql`
 `;
 
 export const GET_FREE_FLOW = gql`
-  query flowGet($id: ID!) {
-    flowGet(id: $id) {
+  query flowGet($id: ID!, $isForced: Boolean) {
+    flowGet(id: $id, isForced: $isForced) {
       flow {
         id
         uuid

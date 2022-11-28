@@ -17,6 +17,12 @@ export const getCurrentUserQuery = {
           contact: {
             id: '1',
           },
+          accessRoles: [
+            {
+              id: '1',
+              label: 'Admin',
+            },
+          ],
           groups: [
             {
               id: '1',
@@ -26,6 +32,9 @@ export const getCurrentUserQuery = {
           ],
           organization: {
             id: '1',
+            contact: {
+              phone: '917834811114',
+            },
           },
           language: {
             id: '1',

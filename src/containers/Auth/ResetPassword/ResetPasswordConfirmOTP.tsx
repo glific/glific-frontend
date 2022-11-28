@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Redirect } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Navigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
@@ -7,31 +7,36 @@ import { useTranslation } from 'react-i18next';
 import { RESET_PASSWORD } from 'config';
 import { Input } from 'components/UI/Form/Input/Input';
 import { PhoneInput } from 'components/UI/Form/PhoneInput/PhoneInput';
+// eslint-disable-next-line no-unused-vars
 import { sendOTP } from 'services/AuthService';
 import setLogs from 'config/logs';
 import { Auth } from '../Auth';
 
-export interface ResetPasswordConfirmOTPProps {
-  location: any;
-}
-
-export const ResetPasswordConfirmOTP: React.SFC<ResetPasswordConfirmOTPProps> = (props) => {
-  const { location } = props;
+export const ResetPasswordConfirmOTP = () => {
   const [redirect, setRedirect] = useState(false);
   const [authError, setAuthError] = useState('');
   const { t } = useTranslation();
+  const location = useLocation();
+  const [phoneNumber, setPhoneNumber] = useState('');
+
+  useEffect(() => {
+    const state = location.state as any;
+    if (state) {
+      setPhoneNumber(state.phoneNumber);
+    }
+  }, [location]);
 
   // Let's not allow direct navigation to this page
   if (location && location.state === undefined) {
-    return <Redirect to="/resetpassword-phone" />;
+    return <Navigate to="/resetpassword-phone" />;
   }
 
   if (redirect) {
-    return <Redirect to="/login" />;
+    return <Navigate to="/login" />;
   }
 
   const handleResend = () => {
-    sendOTP(location.state.phoneNumber);
+    sendOTP(phoneNumber);
   };
 
   const formFields = [
@@ -66,7 +71,7 @@ export const ResetPasswordConfirmOTP: React.SFC<ResetPasswordConfirmOTPProps> = 
   });
 
   const initialFormValues = {
-    phoneNumber: location.state.phoneNumber,
+    phoneNumber,
     OTP: '',
     password: '',
   };

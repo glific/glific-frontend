@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { termsOfUse } from 'containers/Organization/Organization';
 import { Button } from 'components/UI/Form/Button/Button';
 import GlificLogo from 'assets/images/logo/Logo.svg';
+import { Promotion } from './Promotion/Promotion';
 import styles from './Auth.module.css';
 
 export interface AuthProps {
@@ -31,24 +32,23 @@ export interface AuthProps {
   staffInstructions?: any;
 }
 
-export const Auth: React.SFC<AuthProps> = (props) => {
-  const {
-    pageTitle,
-    buttonText,
-    alternateLink,
-    alternateText,
-    mode,
-    initialFormValues = null,
-    saveHandler,
-    formFields,
-    validationSchema,
-    titleSubText,
-    linkText,
-    linkURL,
-    errorMessage,
-    successMessage,
-    staffInstructions,
-  } = props;
+export const Auth = ({
+  pageTitle,
+  buttonText,
+  alternateLink,
+  alternateText,
+  mode,
+  initialFormValues = null,
+  saveHandler,
+  formFields,
+  validationSchema,
+  titleSubText,
+  linkText,
+  linkURL,
+  errorMessage,
+  successMessage,
+  staffInstructions,
+}: AuthProps) => {
   // handle visibility for the password field
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -109,6 +109,7 @@ export const Auth: React.SFC<AuthProps> = (props) => {
   const handlePhone =
     () =>
     (value: string): void => {
+      // eslint-disable-next-line
       initialFormValues.phone = value;
     };
 
@@ -200,6 +201,7 @@ export const Auth: React.SFC<AuthProps> = (props) => {
           </>
         ) : null}
       </div>
+      {mode === 'login' && <Promotion />}
     </div>
   );
 };

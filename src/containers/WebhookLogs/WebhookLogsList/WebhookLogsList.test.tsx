@@ -14,9 +14,7 @@ beforeEach(() => {
       writeText: () => {},
     },
   });
-  jest
-    .spyOn(navigator.clipboard, 'writeText')
-    .mockImplementation(() => Promise.resolve({ data: {} }));
+  jest.spyOn(navigator.clipboard, 'writeText').mockImplementation(() => Promise.resolve());
 });
 
 const mocks = [getWebhookLogsQuery, getWebhookLogsQuery, getWebhookLogsCountQuery];

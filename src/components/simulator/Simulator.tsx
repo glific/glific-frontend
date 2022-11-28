@@ -69,6 +69,36 @@ export interface SimulatorProps {
   hasResetButton?: boolean;
 }
 
+const getStyleForDirection = (
+  directionValue: string,
+  isInteractiveValue: boolean,
+  messageTypeValue: any
+): string => {
+  switch (directionValue) {
+    case 'received':
+      if (isInteractiveValue) {
+        const simulatorClasses = [styles.ReceivedMessage, styles.InteractiveReceivedMessage];
+        return simulatorClasses.join(' ');
+      }
+
+      if (messageTypeValue === 'STICKER') {
+        return styles.StickerReceivedMessage;
+      }
+      break;
+
+    case 'send':
+      if (messageTypeValue === 'STICKER') {
+        return styles.StickerSendMessage;
+      }
+
+      return styles.SendMessage;
+
+    default:
+  }
+
+  return styles.ReceivedMessage;
+};
+
 const TimeComponent = (direction: any, insertedAt: any) => (
   <>
     <span className={direction === 'received' ? styles.TimeSent : styles.TimeReceived}>
@@ -88,7 +118,7 @@ const getSimulatorVariables = (id: any) => ({
   },
 });
 
-export const Simulator: React.FC<SimulatorProps> = ({
+export const Simulator = ({
   showSimulator,
   setSimulatorId,
   simulatorIcon = true,
@@ -120,11 +150,11 @@ export const Simulator: React.FC<SimulatorProps> = ({
   // chat messages will be shown on simulator
   const isSimulatedMessage = true;
 
-  const sendMessage = (senderDetails: any, interactivePayload?: any) => {
+  const sendMessage = (senderDetails: any, interactivePayload?: any, templateValue?: any) => {
     const sendMessageText = inputMessage === '' && message ? message : inputMessage;
 
     // check if send message text is not empty
-    if (!sendMessageText && !interactivePayload) return;
+    if (!sendMessageText && !interactivePayload && !templateValue) return;
 
     let type = 'text';
 
@@ -137,6 +167,8 @@ export const Simulator: React.FC<SimulatorProps> = ({
       payload = interactivePayload.payload;
       delete payload.type;
       context = interactivePayload.context;
+    } else if (templateValue) {
+      payload.text = templateValue;
     } else {
       payload.text = sendMessageText;
     }
@@ -172,32 +204,32 @@ export const Simulator: React.FC<SimulatorProps> = ({
     {
       fetchPolicy: 'network-only',
       nextFetchPolicy: 'cache-only',
-      onCompleted: ({ search }) => {
-        if (subscribeToMore) {
-          const subscriptionVariables = { organizationId: getUserSession('organizationId') };
-          // message received subscription
-          subscribeToMore({
-            document: SIMULATOR_MESSAGE_RECEIVED_SUBSCRIPTION,
-            variables: subscriptionVariables,
-            updateQuery: (prev, { subscriptionData }) =>
-              updateSimulatorConversations(prev, subscriptionData, 'RECEIVED'),
-          });
-
-          // message sent subscription
-          subscribeToMore({
-            document: SIMULATOR_MESSAGE_SENT_SUBSCRIPTION,
-            variables: subscriptionVariables,
-            updateQuery: (prev, { subscriptionData }) =>
-              updateSimulatorConversations(prev, subscriptionData, 'SENT'),
-          });
-
-          if (search.length > 0) {
-            sendMessage({ name: search[0].contact.name, phone: search[0].contact.phone });
-          }
-        }
-      },
     }
   );
+
+  const [getSimulator, { data }] = useLazyQuery(GET_SIMULATOR, {
+    fetchPolicy: 'network-only',
+    onCompleted: (simulatorData) => {
+      if (simulatorData.simulatorGet) {
+        loadSimulator({ variables: getSimulatorVariables(simulatorData.simulatorGet.id) }).then(
+          ({ data: searchData }: any) => {
+            if (searchData?.search.length > 0) {
+              sendMessage({
+                name: searchData.search[0].contact.name,
+                phone: searchData.search[0].contact.phone,
+              });
+            }
+          }
+        );
+        setSimulatorId(simulatorData.simulatorGet.id);
+      } else {
+        setNotification(
+          'Sorry! Simulators are in use by other staff members right now. Please wait for it to be idle',
+          'warning'
+        );
+      }
+    },
+  });
 
   const { data: simulatorSubscribe }: any = useSubscription(SIMULATOR_RELEASE_SUBSCRIPTION, {
     variables,
@@ -216,20 +248,26 @@ export const Simulator: React.FC<SimulatorProps> = ({
     }
   }, [simulatorSubscribe]);
 
-  const [getSimulator, { data }] = useLazyQuery(GET_SIMULATOR, {
-    fetchPolicy: 'network-only',
-    onCompleted: (simulatorData) => {
-      if (simulatorData.simulatorGet) {
-        loadSimulator({ variables: getSimulatorVariables(simulatorData.simulatorGet.id) });
-        setSimulatorId(simulatorData.simulatorGet.id);
-      } else {
-        setNotification(
-          'Sorry! Simulators are in use by other staff members right now. Please wait for it to be idle',
-          'warning'
-        );
-      }
-    },
-  });
+  useEffect(() => {
+    if (subscribeToMore) {
+      const subscriptionVariables = { organizationId: getUserSession('organizationId') };
+      // message received subscription
+      subscribeToMore({
+        document: SIMULATOR_MESSAGE_RECEIVED_SUBSCRIPTION,
+        variables: subscriptionVariables,
+        updateQuery: (prev, { subscriptionData }) =>
+          updateSimulatorConversations(prev, subscriptionData, 'RECEIVED'),
+      });
+
+      // message sent subscription
+      subscribeToMore({
+        document: SIMULATOR_MESSAGE_SENT_SUBSCRIPTION,
+        variables: subscriptionVariables,
+        updateQuery: (prev, { subscriptionData }) =>
+          updateSimulatorConversations(prev, subscriptionData, 'SENT'),
+      });
+    }
+  }, [subscribeToMore]);
 
   const [releaseSimulator]: any = useLazyQuery(RELEASE_SIMULATOR, {
     fetchPolicy: 'network-only',
@@ -247,19 +285,6 @@ export const Simulator: React.FC<SimulatorProps> = ({
       sender.phone = simulatedContact[0].contact.phone;
     }
   }
-
-  const getStyleForDirection = (direction: string, isInteractive: boolean): string => {
-    const simulatorClasses = [styles.ReceivedMessage, styles.InteractiveReceivedMessage];
-    if (isInteractive && direction === 'received') {
-      return simulatorClasses.join(' ');
-    }
-
-    if (direction === 'send') {
-      return styles.SendMessage;
-    }
-
-    return styles.ReceivedMessage;
-  };
 
   const releaseUserSimulator = () => {
     releaseSimulator();
@@ -344,7 +369,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
 
     return (
       <div key={index}>
-        <div className={getStyleForDirection(direction, isInteractiveContentPresent)}>
+        <div className={getStyleForDirection(direction, isInteractiveContentPresent, messageType)}>
           {isInteractiveContentPresent && direction !== 'send' ? (
             template
           ) : (
@@ -363,7 +388,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
         <div className={styles.TemplateButtons}>
           <TemplateButtons
             template={buttons}
-            callbackTemplateButtonClick={(value: string) => sendMessage(sender, value)}
+            callbackTemplateButtonClick={(value: string) => sendMessage(sender, null, value)}
             isSimulator
           />
         </div>

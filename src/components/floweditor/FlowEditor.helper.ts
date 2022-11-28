@@ -1,4 +1,4 @@
-import * as Manifest from '@glific/flow-editor/build/asset-manifest.json';
+import Manifest from '@glific/flow-editor/build/asset-manifest.json';
 import { FLOW_EDITOR_CONFIGURE_LINK, FLOW_EDITOR_API, CONTACT_CHAT_LINK } from 'config/index';
 
 const glificBase = FLOW_EDITOR_API;
@@ -74,6 +74,7 @@ export const setConfig = (uuid: any) => ({
     recipients: `${glificBase}recipients`,
     completion: `${glificBase}completion`,
     activity: `${glificBase}activity`,
+    sheets: `${glificBase}sheets`,
     flows: `${glificBase}flows`,
     recents: `${glificBase}recents/`,
     revisions: `${glificBase}revisions/${uuid}`,

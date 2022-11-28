@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Redirect, Link } from 'react-router-dom';
+import { Navigate, Link, useParams } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
+// eslint-disable-next-line no-unused-vars
 import { DocumentNode, ApolloError, useQuery, useMutation } from '@apollo/client';
 import { Typography, IconButton } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
@@ -14,12 +15,24 @@ import { getPlainTextFromEditor } from 'common/RichEditor';
 import { SEARCH_QUERY_VARIABLES } from 'common/constants';
 import { SEARCH_QUERY } from 'graphql/queries/Search';
 import { USER_LANGUAGES } from 'graphql/queries/Organization';
+import { GET_ROLE_NAMES } from 'graphql/queries/Role';
+import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { ReactComponent as DeleteIcon } from 'assets/images/icons/Delete/White.svg';
 import { ReactComponent as BackIcon } from 'assets/images/icons/Back.svg';
+import { organizationHasDynamicRole } from 'common/utils';
+import { getUserRole } from 'context/role';
 import styles from './FormLayout.module.css';
 
+export const Heading = ({ icon, formTitle }: any) => (
+  <Typography variant="h5" className={styles.Title}>
+    <IconButton disabled className={styles.Icon}>
+      {icon}
+    </IconButton>
+    {formTitle}
+  </Typography>
+);
+
 export interface FormLayoutProps {
-  match: any;
   deleteItemQuery: DocumentNode;
   states: Object;
   setStates: Function;
@@ -33,7 +46,7 @@ export interface FormLayoutProps {
   createItemQuery: DocumentNode;
   updateItemQuery: DocumentNode;
   defaultAttribute?: any;
-  icon: Object;
+  icon: React.ReactNode;
   idType?: string;
   additionalAction?: any;
   additionalQuery?: Function | null;
@@ -61,14 +74,17 @@ export interface FormLayoutProps {
   customStyles?: any;
   customHandler?: Function;
   copyNotification?: string;
+  roleAccessSupport?: boolean;
   showPreviewButton?: boolean;
   onPreviewClick?: Function;
   getQueryFetchPolicy?: any;
   saveOnPageChange?: boolean;
+  entityId?: any;
+  restrictDelete?: boolean;
+  languageAttributes?: any;
 }
 
-export const FormLayout: React.SFC<FormLayoutProps> = ({
-  match,
+export const FormLayout = ({
   deleteItemQuery,
   states,
   setStates,
@@ -91,6 +107,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   linkParameter = null,
   cancelLink = null,
   languageSupport = true,
+  roleAccessSupport = false,
   setPayload,
   advanceSearch,
   cancelAction,
@@ -111,6 +128,9 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   onPreviewClick = () => {},
   getQueryFetchPolicy = 'cache-first',
   saveOnPageChange = true,
+  entityId = null,
+  restrictDelete = false,
+  languageAttributes = {},
 }: FormLayoutProps) => {
   const [showDialog, setShowDialog] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
@@ -122,18 +142,29 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   const [saveClick, onSaveClick] = useState(false);
   const [isLoadedData, setIsLoadedData] = useState(false);
   const [customError, setCustomError] = useState<any>(null);
+  const params = useParams();
 
   const { t } = useTranslation();
 
+  const { data: roleData } = useQuery(GET_ROLE_NAMES);
+
   const capitalListItemName = listItemName[0].toUpperCase() + listItemName.slice(1);
   let item: any = null;
-  const itemId = match.params.id ? match.params.id : false;
+  let itemId = params.id ? params.id : false;
+  if (!itemId && entityId) {
+    itemId = entityId;
+  }
+
   let variables: any = itemId ? { [idType]: itemId } : false;
 
   const [deleteItem] = useMutation(deleteItemQuery, {
     onCompleted: () => {
       setNotification(`${capitalListItemName} deleted successfully`);
       setDeleted(true);
+    },
+    onError: (err: ApolloError) => {
+      setShowDialog(false);
+      setErrorMessage(err);
     },
     awaitRefetchQueries: true,
     refetchQueries: [
@@ -154,7 +185,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     },
   });
   if (listItem === 'credential') {
-    variables = match.params.shortcode ? { shortcode: match.params.shortcode } : false;
+    variables = params.type ? { shortcode: params.type } : false;
   }
 
   const { loading, error } = useQuery(getItemQuery, {
@@ -301,7 +332,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         /**
          * When idType is organizationId
          * We are updating billing for given organization
-         * since match.params.id is orgId we want billing
+         * since params.id is orgId we want billing
          * id to update billing details
          */
         const payloadBody = { ...payload };
@@ -395,18 +426,18 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   };
 
   if (formSubmitted && redirect) {
-    return <Redirect to={action ? `${additionalAction.link}/${link}` : `/${redirectionLink}`} />;
+    return <Navigate to={action ? `${additionalAction.link}/${link}` : `/${redirectionLink}`} />;
   }
 
   if (deleted) {
     if (afterDelete) {
-      return <Redirect to={afterDelete.link} />;
+      return <Navigate to={afterDelete.link} />;
     }
-    return <Redirect to={`/${redirectionLink}`} />;
+    return <Navigate to={`/${redirectionLink}`} />;
   }
 
   if (formCancelled) {
-    return <Redirect to={cancelLink ? `/${cancelLink}` : `/${redirectionLink}`} />;
+    return <Navigate to={cancelLink ? `/${cancelLink}` : `/${redirectionLink}`} />;
   }
   const validateLanguage = (value: any) => {
     if (value && getLanguageId) {
@@ -420,20 +451,45 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   // sort languages by their name
   languageOptions.sort((first: any, second: any) => (first.label > second.label ? 1 : -1));
 
-  const language = languageSupport
-    ? {
-        component: Dropdown,
-        name: 'languageId',
-        placeholder: t('Language'),
-        options: languageOptions,
-        validate: validateLanguage,
-        helperText: t('For more languages check settings or connect with your admin'),
-      }
-    : null;
+  let formFieldItems = formFields;
 
-  const formFieldItems = languageSupport ? [...formFields, language] : formFields;
+  if (languageSupport) {
+    const language = {
+      ...languageAttributes,
+      component: Dropdown,
+      name: 'languageId',
+      placeholder: t('Language'),
+      options: languageOptions,
+      validate: validateLanguage,
+      helperText: t('For more languages check settings or connect with your admin'),
+    };
+
+    formFieldItems = [...formFields, language];
+  }
+
+  if (roleAccessSupport && organizationHasDynamicRole() && getUserRole().includes('Admin')) {
+    const roleAccess = {
+      component: AutoComplete,
+      name: 'roles',
+      placeholder: t('Roles'),
+      options: roleData
+        ? roleData.accessRoles.map((role: any) => ({ label: role.label, id: role.id }))
+        : [],
+      optionLabel: 'label',
+      multiple: true,
+      textFieldProps: {
+        label: t('Roles'),
+        variant: 'outlined',
+      },
+
+      helperText: t('Select roles to apply to the resource'),
+    };
+
+    formFieldItems = [...formFields, roleAccess];
+  }
+
   const deleteButton =
-    itemId && !type ? (
+    itemId && !type && !restrictDelete ? (
       <Button
         variant="contained"
         color="secondary"
@@ -457,8 +513,8 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
       enableReinitialize
       validateOnMount
       initialValues={{
-        ...states,
         languageId,
+        ...states,
       }}
       validationSchema={validationSchema}
       onSubmit={(itemData, { setErrors }) => {
@@ -574,15 +630,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     formTitle = `Add a new ${listItemName}`; // case when adding a new item
   }
 
-  let heading = (
-    <Typography variant="h5" className={styles.Title}>
-      <IconButton disabled className={styles.Icon}>
-        {icon}
-      </IconButton>
-      {formTitle}
-    </Typography>
-  );
-
+  let heading = <Heading icon={icon} formTitle={formTitle} />;
   if (advanceSearch) {
     const data = advanceSearch({});
     if (data && data.heading) heading = data.heading;

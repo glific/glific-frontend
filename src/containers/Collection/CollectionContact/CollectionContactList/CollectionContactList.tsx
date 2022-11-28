@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router-dom';
 
 import { CONTACT_SEARCH_QUERY, GET_CONTACT_COUNT } from 'graphql/queries/Contact';
 import { UPDATE_COLLECTION_CONTACTS } from 'graphql/mutations/Collection';
@@ -8,7 +9,6 @@ import { List } from 'containers/List/List';
 import styles from './CollectionContactList.module.css';
 
 export interface CollectionContactListProps {
-  match: any;
   title: string;
 }
 
@@ -44,11 +44,11 @@ const columnAttributes = {
   columnStyles,
 };
 
-export const CollectionContactList: React.SFC<CollectionContactListProps> = (props) => {
+export const CollectionContactList = ({ title }: CollectionContactListProps) => {
   const { t } = useTranslation();
+  const params = useParams();
 
-  const { match, title } = props;
-  const collectionId = match.params.id;
+  const collectionId = params.id;
 
   const getDeleteQueryVariables = (id: any) => ({
     input: {

@@ -2,7 +2,7 @@ import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { fireEvent } from '@testing-library/dom';
 
-import { ErrorHandler } from './ErrorHandler';
+import ErrorHandler from './ErrorHandler';
 
 const resolvers = {
   Query: {

@@ -31,6 +31,7 @@ const filterInteractiveFunction = (filter: any, opts: any) => ({
             id: '1',
             label: 'English',
           },
+          sendWithTitle: true,
           interactiveContent:
             '{"body": "यह संदेश है ", "type": "list", "items": [{"title": "सूची शीर्षक १", "options": [{"type": "text", "title": "लाल", "description": ""}, {"type": "text", "title": "नीला", "description": ""}], "subtitle": "सूची शीर्षक १"}], "title": "इंटरेक्टिव लिस्ट हिंदी में", "globalButtons": [{"type": "text", "title": "सूची"}]}',
         },
@@ -43,6 +44,7 @@ const filterInteractiveFunction = (filter: any, opts: any) => ({
             id: '1',
             label: 'English',
           },
+          sendWithTitle: true,
           interactiveContent:
             '{"type":"quick_reply","options":[{"type":"text","title":"First"},{"type":"text","title":"Second"},{"type":"text","title":"Third"}],"content":{"url":"http://enterprise.smsgupshup.com/doc/GatewayAPIDoc.pdf","type":"file","filename":"Sample file"}}',
         },
@@ -56,6 +58,7 @@ const filterInteractiveFunction = (filter: any, opts: any) => ({
             id: '1',
             label: 'English',
           },
+          sendWithTitle: true,
           interactiveContent:
             '{"type": "quick_reply", "content": {"url": "https://picsum.photos/200/300", "type": "image", "caption": "body text"}, "options": [{"type": "text", "title": "First"}, {"type": "text", "title": "Second"}, {"type": "text", "title": "Third"}]}',
         },
@@ -68,6 +71,7 @@ const filterInteractiveFunction = (filter: any, opts: any) => ({
             id: '1',
             label: 'English',
           },
+          sendWithTitle: true,
           interactiveContent:
             '{"type":"quick_reply","options":[{"type":"text","title":"Excited"},{"type":"text","title":"Very Excited"}],"content":{"type":"text","text":"How excited are you for Glific?"}}',
         },
@@ -80,6 +84,7 @@ const filterInteractiveFunction = (filter: any, opts: any) => ({
             id: '1',
             label: 'English',
           },
+          sendWithTitle: true,
           interactiveContent:
             '{"type": "quick_reply", "content": {"url": "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4", "type": "video", "caption": "Sample video"}, "options": [{"type": "text", "title": "First"}, {"type": "text", "title": "Second"}, {"type": "text", "title": "Third"}]}',
         },
@@ -115,6 +120,7 @@ export const getInteractiveCountQuery = {
 };
 
 const quickReplyMock = {
+  sendWithTitle: false,
   interactiveContent:
     '{"type":"quick_reply","options":[{"type":"text","title":"Yes"},{"type":"text","title":"No"}],"content":{"type":"text","text":"Do you want to continue?","header":"Continue"}}',
   label: 'Continue',
@@ -145,6 +151,7 @@ const quickReplyMedia = {
 };
 
 const listReplyMock = {
+  sendWithTitle: false,
   label: 'list',
   type: 'LIST',
   translations: '{}',

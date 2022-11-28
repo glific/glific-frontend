@@ -17,7 +17,7 @@ export interface WalletBalanceProps {
   fullOpen: boolean;
 }
 
-export const WalletBalance: React.FC<WalletBalanceProps> = ({ fullOpen }) => {
+export const WalletBalance = ({ fullOpen }: WalletBalanceProps) => {
   const variables = { organizationId: getUserSession('organizationId') };
   const [retried, setRetried] = useState(false);
   const [displayBalance, setDisplayBalance] = useState<any>(null);

@@ -35,19 +35,18 @@ interface ConversationListProps {
   entityType?: string;
 }
 
-export const ConversationList: React.SFC<ConversationListProps> = (props) => {
-  const {
-    searchVal,
-    selectedContactId,
-    setSelectedContactId,
-    savedSearchCriteria,
-    savedSearchCriteriaId,
-    searchParam,
-    searchMode,
-    selectedCollectionId,
-    setSelectedCollectionId,
-    entityType = 'contact',
-  } = props;
+export const ConversationList = ({
+  searchVal,
+  selectedContactId,
+  setSelectedContactId,
+  savedSearchCriteria,
+  savedSearchCriteriaId,
+  searchParam,
+  searchMode,
+  selectedCollectionId,
+  setSelectedCollectionId,
+  entityType = 'contact',
+}: ConversationListProps) => {
   const client = useApolloClient();
   const [loadingOffset, setLoadingOffset] = useState(DEFAULT_CONTACT_LIMIT);
   const [showJumpToLatest, setShowJumpToLatest] = useState(false);

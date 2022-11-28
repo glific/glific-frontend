@@ -25,9 +25,11 @@ export const TEMPLATE_MOCKS = [
       shortcode: 'test',
       isReserved: true,
       status: 'APPROVED',
+      reason: 'test reason',
       isHsm: true,
       isActive: true,
       updatedAt: '2020-12-01T18:00:32Z',
+      numberParameters: 0,
       translations:
         '{"2":{"status":"approved","languageId":{"label":"Hindi","id":"2"},"label":"now","isHsm":false,"body":"hey","MessageMedia":null}}',
       type: 'TEXT',
@@ -50,7 +52,9 @@ export const TEMPLATE_MOCKS = [
       isHsm: false,
       isActive: true,
       status: null,
+      reason: 'test reason',
       updatedAt: '2020-12-01T18:00:32Z',
+      numberParameters: 0,
       translations: '{}',
       type: 'TEXT',
       language: {
@@ -74,7 +78,9 @@ export const TEMPLATE_MOCKS = [
       isHsm: true,
       isActive: true,
       status: 'APPROVED',
+      reason: 'test reason',
       updatedAt: '2020-12-01T18:00:32Z',
+      numberParameters: 0,
       translations: '{}',
       type: 'TEXT',
       language: {
@@ -96,7 +102,9 @@ export const TEMPLATE_MOCKS = [
       isHsm: false,
       isActive: true,
       status: null,
+      reason: 'test reason',
       updatedAt: '2020-12-01T18:00:32Z',
+      numberParameters: 0,
       translations: '{}',
       type: 'TEXT',
       language: {
@@ -122,7 +130,9 @@ export const TEMPLATE_MOCKS = [
       isHsm: true,
       isActive: true,
       status: 'APPROVED',
+      reason: 'test reason',
       updatedAt: '2020-12-01T18:00:32Z',
+      numberParameters: 0,
       translations: '{}',
       type: 'TEXT',
       language: {

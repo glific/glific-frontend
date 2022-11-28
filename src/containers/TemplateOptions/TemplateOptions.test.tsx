@@ -24,6 +24,8 @@ const form: any = {
   errors: {},
 };
 
+const submitCallback = jest.fn();
+
 test('it renders component and selects call to action type', async () => {
   const inputFields = [callToAction];
   form.values.templateButtons.push(callToAction);
@@ -41,7 +43,7 @@ test('it renders call to action button template successfully', async () => {
   form.values.templateButtons.push(callToAction);
   const defaultProps = props(true, 'CALL_TO_ACTION', inputFields, form);
   render(
-    <Formik initialValues={inputFields} onSubmit={() => jest.fn()}>
+    <Formik initialValues={inputFields} onSubmit={submitCallback}>
       <TemplateOptions {...defaultProps} />
     </Formik>
   );
@@ -67,7 +69,7 @@ test('it renders quick reply button template successfully', async () => {
   form.values.templateButtons.push(quickReply);
   const defaultProps = props(true, 'QUICK_REPLY', inputFields, form);
   render(
-    <Formik initialValues={inputFields} onSubmit={() => jest.fn()}>
+    <Formik initialValues={inputFields} onSubmit={submitCallback}>
       <TemplateOptions {...defaultProps} />
     </Formik>
   );

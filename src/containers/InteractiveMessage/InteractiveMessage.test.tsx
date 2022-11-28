@@ -1,7 +1,7 @@
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import axios from 'axios';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { Route, MemoryRouter, Routes } from 'react-router-dom';
 
 import { setUserSession } from 'services/AuthService';
 import { mocks } from 'mocks/InteractiveMessage';
@@ -30,11 +30,15 @@ jest.mock('axios', () => {
   };
 });
 
+const mockedAxios = axios as jest.Mocked<typeof axios>;
+
 const renderInteractiveMessage = (id: string) => (
   <MockedProvider mocks={mockData} addTypename={false}>
-    <Router>
-      <InteractiveMessage match={{ params: { id } }} />
-    </Router>
+    <MemoryRouter initialEntries={[`/interactive-message/${id}/edit`]}>
+      <Routes>
+        <Route path="interactive-message/:id/edit" element={<InteractiveMessage />} />
+      </Routes>
+    </MemoryRouter>
   </MockedProvider>
 );
 
@@ -53,9 +57,9 @@ const responseMock3 = {
 };
 
 const axiosApiCall = async () => {
-  axios.get.mockImplementationOnce(() => Promise.resolve({ data: responseMock1 }));
+  mockedAxios.get.mockImplementationOnce(() => Promise.resolve({ data: responseMock1 }));
 
-  axios.get.mockImplementationOnce(() => Promise.resolve({ data: responseMock2 }));
+  mockedAxios.get.mockImplementationOnce(() => Promise.resolve({ data: responseMock2 }));
 };
 
 const whenStable = async () => {
@@ -69,9 +73,9 @@ test('it renders empty interactive form', async () => {
 
   render(
     <MockedProvider mocks={mockData} addTypename={false}>
-      <Router>
-        <InteractiveMessage match={{ params: {} }} />
-      </Router>
+      <MemoryRouter>
+        <InteractiveMessage />
+      </MemoryRouter>
     </MockedProvider>
   );
 
@@ -248,7 +252,8 @@ describe('copy interactive message', () => {
 
     await waitFor(() => {
       expect(getByText('Copy Interactive Message')).toBeInTheDocument();
-      expect(getAllByTestId('input').at(0)?.querySelector('input')).toHaveValue('Copy of Continue');
+      const input = getAllByTestId('input');
+      expect(input[0]?.querySelector('input')).toHaveValue('Copy of Continue');
     });
   });
 });

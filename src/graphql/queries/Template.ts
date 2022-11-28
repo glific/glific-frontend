@@ -1,5 +1,19 @@
 import { gql } from '@apollo/client';
 
+const templateFields = `
+    id
+    body
+    label
+    isHsm
+    updatedAt
+    translations
+    type
+    language {
+      id
+      label
+    }
+`;
+
 export const GET_TEMPLATES_COUNT = gql`
   query countSessionTemplates($filter: SessionTemplateFilter!) {
     countSessionTemplates(filter: $filter)
@@ -9,22 +23,13 @@ export const GET_TEMPLATES_COUNT = gql`
 export const FILTER_TEMPLATES = gql`
   query sessionTemplates($filter: SessionTemplateFilter!, $opts: Opts!) {
     sessionTemplates(filter: $filter, opts: $opts) {
-      id
-      body
-      label
+      ${templateFields}
       shortcode
       status
-      isHsm
+      reason
       isReserved
       isActive
-      updatedAt
-      translations
       numberParameters
-      type
-      language {
-        id
-        label
-      }
       MessageMedia {
         id
         caption
@@ -34,19 +39,20 @@ export const FILTER_TEMPLATES = gql`
   }
 `;
 
+export const FILTER_SESSION_TEMPLATES = gql`
+  query sessionTemplates($filter: SessionTemplateFilter!, $opts: Opts!) {
+    sessionTemplates(filter: $filter, opts: $opts) {
+     ${templateFields}
+    }
+  }
+`;
+
 export const GET_TEMPLATE = gql`
   query getsessionTemplate($id: ID!) {
     sessionTemplate(id: $id) {
       sessionTemplate {
-        id
-        label
-        body
+        ${templateFields}
         isActive
-        language {
-          label
-          id
-        }
-        translations
         type
         MessageMedia {
           id

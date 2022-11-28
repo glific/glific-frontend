@@ -23,7 +23,7 @@ it('Renders Export consulting component successfully', async () => {
   const { getAllByText } = render(exportConsulting);
 
   await waitFor(() => {
-    expect(getAllByText('Date from').at(0)).toBeInTheDocument();
+    expect(getAllByText('Date from')[0]).toBeInTheDocument();
   });
 });
 
@@ -31,14 +31,12 @@ it('should give proper validation errors', async () => {
   const { getAllByText, getByText } = render(exportConsulting);
 
   await waitFor(() => {
-    expect(getAllByText('Date from').at(0)).toBeInTheDocument();
+    expect(getAllByText('Date from')[0]).toBeInTheDocument();
   });
 
   fireEvent.click(screen.getByText('Filter'));
 
   await waitFor(() => {
     expect(getByText('Organization is required')).toBeInTheDocument();
-    expect(getByText('Start date is required')).toBeInTheDocument();
-    expect(getByText('End date is required')).toBeInTheDocument();
   });
 });

@@ -10,7 +10,7 @@ export interface CollectionDescriptionProps {
   collectionId?: string;
 }
 
-export const CollectionDescription: React.FC<CollectionDescriptionProps> = ({
+export const CollectionDescription = ({
   users = [],
   description,
   collectionId,

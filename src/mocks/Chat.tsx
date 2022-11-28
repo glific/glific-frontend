@@ -482,7 +482,7 @@ export const savedSearchQueryError = {
     variables: { filter: { isReserved: false }, opts: {} },
   },
   result: {
-    errors: [new Error('An error occurred')],
+    errors: [],
   },
 };
 
@@ -511,6 +511,7 @@ export const conversationQuery = getConversationQuery({
         status: 'VALID',
         bspStatus: 'SESSION_AND_HSM',
         isOrgRead: true,
+        fields: '{}',
       },
       messages: [
         {

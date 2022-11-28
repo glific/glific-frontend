@@ -5,9 +5,7 @@ import { getUserSession } from 'services/AuthService';
 import { BSPBALANCE } from 'graphql/queries/Organization';
 import styles from './StatusBar.module.css';
 
-export interface StatusBarProps {}
-
-export const StatusBar: React.FC<StatusBarProps> = () => {
+const StatusBar = () => {
   const variables = { organizationId: getUserSession('organizationId') };
 
   // get gupshup balance
@@ -50,3 +48,5 @@ export const StatusBar: React.FC<StatusBarProps> = () => {
 
   return null;
 };
+
+export default StatusBar;

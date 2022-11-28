@@ -23,9 +23,7 @@ export interface ExportConsultingPropTypes {
 
 const formatDate = (value: any) => moment(value).format('YYYY-MM-DD');
 
-export const ExportConsulting: React.FC<ExportConsultingPropTypes> = ({
-  setFilters,
-}: ExportConsultingPropTypes) => {
+export const ExportConsulting = ({ setFilters }: ExportConsultingPropTypes) => {
   const { data: organizationList } = useQuery(FILTER_ORGANIZATIONS, {
     variables: setVariables(),
   });
@@ -76,18 +74,14 @@ export const ExportConsulting: React.FC<ExportConsultingPropTypes> = ({
       'Organization is required',
       (val) => val.name !== undefined
     ),
-    dateFrom: Yup.string().nullable().required(t('Start date is required')),
 
-    dateTo: Yup.string()
-      .nullable()
-      .required(t('End date is required'))
-      .when('dateFrom', (startDateValue: any, schema: any) =>
-        schema.test({
-          test: (endDateValue: any) =>
-            startDateValue && moment(endDateValue).isAfter(startDateValue),
-          message: t('End date should be greater than the start date'),
-        })
-      ),
+    dateTo: Yup.string().when('dateFrom', (startDateValue: any, schema: any) =>
+      schema.test({
+        test: (endDateValue: any) =>
+          !(startDateValue !== undefined && !moment(endDateValue).isAfter(startDateValue)),
+        message: t('End date should be greater than the start date'),
+      })
+    ),
   });
 
   return (
@@ -95,11 +89,14 @@ export const ExportConsulting: React.FC<ExportConsultingPropTypes> = ({
       <Formik
         initialValues={{ organization: { name: '', id: '' }, dateFrom: '', dateTo: '' }}
         onSubmit={(values) => {
-          setFilters({
-            organizationName: values.organization.name,
-            startDate: formatDate(values.dateFrom),
-            endDate: formatDate(values.dateTo),
-          });
+          const organizationFilter: any = { organizationName: values.organization.name };
+
+          if (values.dateFrom && values.dateTo) {
+            organizationFilter.startDate = formatDate(values.dateFrom);
+            organizationFilter.endDate = formatDate(values.dateTo);
+          }
+
+          setFilters(organizationFilter);
         }}
         validationSchema={validationSchema}
       >

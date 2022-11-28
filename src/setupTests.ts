@@ -6,6 +6,21 @@
 import '@testing-library/jest-dom/extend-expect';
 process.env.REACT_APP_WEB_SOCKET = 'ws://localhost/socket';
 
+jest.mock('react-media-recorder', () => {
+  return {
+    useReactMediaRecorder: () => {
+      return {
+        status: 'idle',
+        error: null,
+        startRecording: () => {},
+        stopRecording: () => {},
+        mediaBlobUrl: () => {},
+        clearBlobUrl: () => {},
+      };
+    },
+  };
+});
+
 jest.mock('react-i18next', () => {
   const reactI18next = jest.requireActual('react-i18next');
   return {
@@ -29,3 +44,5 @@ class ResizeObserver {
 }
 
 window.ResizeObserver = ResizeObserver;
+
+global.URL.createObjectURL = jest.fn();

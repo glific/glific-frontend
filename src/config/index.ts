@@ -50,5 +50,11 @@ export const STRIPE_PUBLISH_KEY = envVariables.REACT_APP_STRIPE_PUBLISH_KEY;
 export const ONBOARD_URL = `${GLIFIC_API_URL}/v1/onboard/setup`;
 export const RECAPTCHA_CLIENT_KEY = envVariables.REACT_APP_RECAPTCHA_CLIENT_KEY;
 export const UPLOAD_CONTACTS_SAMPLE = 'https://storage.googleapis.com/cc-tides/sample_import.csv';
+export const UPLOAD_CONTACTS_ADMIN_SAMPLE =
+  'https://storage.googleapis.com/cc-tides/sample_import_admin.csv';
 export const REGISTRATION_HELP_LINK =
   'https://glific.slab.com/public/posts/02-managing-staff-members-creating-account-on-glific-gg6fkw8h';
+export const CONTACT_MANAGE_HELP_LINK =
+  'https://glific.slab.com/public/posts/update-collection-with-bulk-contacts-or-contact-fields-yn8l1ggr';
+export const SAMPLE_SHEET_LINK =
+  'https://docs.google.com/spreadsheets/d/1fRpFyicqrUFxd79u_dGC8UOHEtAT3rA-G2i4tvOgScw';

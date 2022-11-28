@@ -5,15 +5,19 @@ import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT } from 'common/constants';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import { conversationQuery } from 'mocks/Chat';
 import {
+  messageReceivedSubscription,
+  messageSendSubscription,
   simulatorGetQuery,
   simulatorReleaseQuery,
   simulatorReleaseSubscription,
+  simulatorSearchQuery,
 } from 'mocks/Simulator';
 import { Simulator } from './Simulator';
 import axios from 'axios';
 import { setUserSession } from 'services/AuthService';
 
 jest.mock('axios');
+const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 setUserSession(JSON.stringify({ roles: ['Admin'], organization: { id: '1' } }));
 const mockSetShowSimulator = jest.fn();
@@ -22,6 +26,9 @@ const mocks = [
   conversationQuery,
   simulatorReleaseSubscription,
   simulatorReleaseQuery,
+  simulatorSearchQuery,
+  messageReceivedSubscription,
+  messageSendSubscription,
   simulatorGetQuery,
 ];
 const defaultProps = {
@@ -74,7 +81,7 @@ test('send a message/media from the simulator', async () => {
       <Simulator {...defaultProps} />
     </MockedProvider>
   );
-  axios.post.mockImplementation(() => Promise.resolve({ data: {} }));
+  mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
 
   const input = getByTestId('simulatorInput');
   fireEvent.change(input, { target: { value: 'something' } });

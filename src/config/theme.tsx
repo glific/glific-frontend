@@ -32,7 +32,11 @@ const theme = createTheme({
         '&:hover': {
           backgroundColor: '#b5b5b5',
         },
+        '&:disabled': {
+          backgroundColor: '#93A29B',
+        },
       },
+
       outlinedPrimary: {
         border: '2px solid',
         '&:hover': {
@@ -64,6 +68,10 @@ const theme = createTheme({
       },
     },
 
+    MuiFormControlLabel: {
+      label: { color: '#073f24' },
+    },
+
     MuiListItem: {
       root: {
         color: '073F24',
@@ -75,6 +83,14 @@ const theme = createTheme({
         '&$checked': {
           color: '#119656',
         },
+      },
+    },
+    MuiTableCell: {
+      body: {
+        color: 'unset',
+      },
+      head: {
+        color: '#ccd4d0',
       },
     },
     MuiMenuItem: {
