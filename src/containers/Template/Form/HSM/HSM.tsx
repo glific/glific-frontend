@@ -97,7 +97,8 @@ export const HSM = () => {
 
   const getAttachmentUrl = (type: any, media: any) => {
     const mediaBody = { ...media };
-    mediaBody.caption = sampleMessages.body;
+    const mediaObj: any = sampleMessages.media;
+    mediaBody.caption = mediaObj.caption;
     setSampleMessages((val) => ({ ...val, type, media: mediaBody }));
   };
 
