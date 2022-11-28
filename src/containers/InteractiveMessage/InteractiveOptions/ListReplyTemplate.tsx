@@ -116,7 +116,7 @@ export const ListReplyTemplate = ({
         <FormControl fullWidth error={isListTitleError} className={styles.FormControl}>
           <TextField
             label={sectionLabel}
-            placeholder={t(`List ${index + 1} title (Max 24 char.)`)}
+            placeholder={`List ${index + 1} title (Max 24 char.)`}
             variant="outlined"
             onChange={(e: any) => handleInputChange(e, 'title')}
             className={styles.TextField}

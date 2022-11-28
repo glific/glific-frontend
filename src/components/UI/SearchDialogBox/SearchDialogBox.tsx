@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { FormControl } from '@material-ui/core';
-import { useTranslation } from 'react-i18next';
 
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
@@ -49,7 +48,6 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
 
   const [selectedOption, setSelectedOptions] = useState<any>(multiple ? [] : '');
   const [asyncSelectedOptions, setAsyncSelectedOptions] = useState<Array<any>>([]);
-  const { t } = useTranslation();
 
   useEffect(() => {
     if (!asyncSearch) {
@@ -85,7 +83,7 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
       }
       handleCancel={handleCancel}
       titleAlign="left"
-      buttonOk={t(buttonOk)}
+      buttonOk={buttonOk}
     >
       <div className={styles.DialogBox}>
         <FormControl fullWidth>
