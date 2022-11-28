@@ -1,7 +1,6 @@
 import React from 'react';
 import { MenuItem as MenuItemElement } from '@material-ui/core';
 import { Link } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 
 import styles from './MenuItem.module.css';
 
@@ -14,8 +13,6 @@ export interface MenuItemProps {
 }
 
 const MenuItem = ({ className, onClickHandler, path, icon, title }: MenuItemProps) => {
-  const { t } = useTranslation();
-
   let menuItemClass = '';
   if (className === 'Danger') {
     menuItemClass = styles.Danger;
@@ -33,7 +30,7 @@ const MenuItem = ({ className, onClickHandler, path, icon, title }: MenuItemProp
   return (
     <MenuItemElement onClick={onClickHandler} {...link} data-testid="MenuItem">
       {icon}
-      <div className={`${menuItemClass} ${icon ? styles.Spacing : ''}`}>{t(title)}</div>
+      <div className={`${menuItemClass} ${icon ? styles.Spacing : ''}`}>{title}</div>
     </MenuItemElement>
   );
 };
