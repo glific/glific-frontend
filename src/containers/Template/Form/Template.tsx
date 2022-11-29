@@ -473,6 +473,12 @@ const Template = ({
 
   const validateURL = (value: string) => {
     if (value && type) {
+      // check if stickers are set instead of image, if so then return early
+      if (type.id === 'IMAGE' && value.slice(-5).toLocaleLowerCase() === '.webp') {
+        setIsUrlValid('Stickers are not allowed.');
+        return;
+      }
+
       validateMedia(value, type.id).then((response: any) => {
         if (!response.data.is_valid) {
           setIsUrlValid(response.data.message);
