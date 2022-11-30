@@ -2,8 +2,15 @@ import { Container } from '@material-ui/core';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import setLogs from 'config/logs';
 import React, { Component } from 'react';
-import { withRouter } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styles from './ErrorBoundary.module.css';
+
+function withRouter(Component: any) {
+  return function WrappedComponent(props: any) {
+    const navigate = useNavigate();
+    return <Component {...props} navigate={navigate} />;
+  };
+}
 
 class ErrorBoundary extends Component<any, any> {
   constructor(props: any) {
@@ -29,7 +36,7 @@ class ErrorBoundary extends Component<any, any> {
 
   render() {
     const { hasError } = this.state;
-    const { children, history } = this.props;
+    const { children, navigate } = this.props;
     if (hasError) {
       // You can render any custom fallback UI
       return (
@@ -39,7 +46,7 @@ class ErrorBoundary extends Component<any, any> {
               title="Error !"
               colorOk="secondary"
               handleOk={() => {
-                history.push('/logout/user');
+                navigate('/logout/user');
               }}
               handleCancel={() => {}}
               buttonOk="Ok"
