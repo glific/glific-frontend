@@ -15,12 +15,10 @@ export const setConfig = (uuid: any) => ({
   excludeTypes: [
     'add_contact_urn',
     'send_email',
-    'set_run_result',
     'call_resthook',
     'start_session',
     'open_ticket',
     'transfer_airtime',
-    'split_by_random',
     'split_by_scheme',
   ],
 
@@ -36,9 +34,6 @@ export const setConfig = (uuid: any) => ({
     'has_number_lte',
     'has_number_gte',
     'has_number_gt',
-    'has_date',
-    'has_date_category',
-    'has_date_lt',
     'has_date_eq',
     'has_date_gt',
     'has_time',

@@ -27,3 +27,5 @@ public/sitestatic
 cypress.json
 cypress/screenshots
 cypress/videos
+
+.tool-versions
