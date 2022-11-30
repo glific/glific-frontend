@@ -142,7 +142,7 @@ export const Auth = ({
           validationSchema={validationSchema}
           onSubmit={(item) => {
             setLoading(true);
-            saveHandler(item);
+            saveHandler(item, captcha);
           }}
         >
           {({ submitForm }) => (
@@ -163,7 +163,9 @@ export const Auth = ({
                   <Link to={`/${linkURL}`}>{linkText}</Link>
                 </div>
                 {!loading && isRegistration && (
-                  <Captcha onChange={handleCaptchaChange} onError={handleCaptchaError} />
+                  <div className={styles.Captcha}>
+                    <Captcha onChange={handleCaptchaChange} onError={handleCaptchaError} />
+                  </div>
                 )}
                 <div className={styles.CenterButton}>
                   <Button
@@ -175,8 +177,12 @@ export const Auth = ({
                     loading={loading}
                     disabled={isRegistration ? !captcha : false}
                   >
-                    {loading ? null : buttonText}
-                    {isRegistration && whatsAppIcon}
+                    {!loading && (
+                      <>
+                        {buttonText}
+                        {isRegistration && whatsAppIcon}
+                      </>
+                    )}
                   </Button>
                 </div>
                 {isRegistration && <div className={styles.InformationText}>{otpMessage}</div>}

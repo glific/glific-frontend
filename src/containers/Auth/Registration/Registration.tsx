@@ -36,13 +36,13 @@ export const Registration = () => {
       component: Input,
       name: 'userName',
       type: 'text',
-      placeholder: t('Your name'),
+      placeholder: t('Your full name'),
     },
     {
       component: PhoneInput,
       name: 'phone',
       type: 'phone',
-      placeholder: t('Your phone number'),
+      placeholder: t('Your personal WhatsApp number'),
       helperText: t('Please enter a phone number.'),
     },
     {
@@ -66,7 +66,7 @@ export const Registration = () => {
   return (
     <Auth
       pageTitle={t('Create your new account')}
-      buttonText="Register with "
+      buttonText={t('Register with ')}
       alternateLink="login"
       alternateText={t('Login to Glific')}
       mode="registration"

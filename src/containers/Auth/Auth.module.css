@@ -170,6 +170,7 @@
 }
 
 .ErrorMessage {
+  text-align: center;
   margin-top: 5px;
   color: red;
   width: 333px;
@@ -236,7 +237,13 @@
 
 .InformationText {
   font-size: 14px;
+  text-align: center;
   color: #93a29b;
-  font-weight: 500;
+  font-weight: 400;
   margin-bottom: 24px;
+}
+
+.Captcha {
+  display: flex;
+  justify-content: center;
 }
