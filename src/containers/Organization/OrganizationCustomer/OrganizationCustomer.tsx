@@ -127,7 +127,7 @@ export const OrganizationCustomer = ({ openDialog }: OrganizationCustomerProps) 
           <div className={styles.Layout}>
             <FormLayout
               {...queries}
-              title={t(`${title}`)}
+              title={title}
               listItem="billing"
               listItemName="billing"
               refetchQueries={[

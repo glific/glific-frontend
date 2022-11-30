@@ -31,12 +31,27 @@
   margin-top: 4px;
 }
 
+.StickerReceivedMessage {
+  composes: MessageText;
+  margin-right: 24px;
+  background: transparent;
+  margin-top: 4px;
+}
+
 .SendMessage {
   composes: MessageText;
   text-align: right;
   padding-right: 22px;
   margin-left: auto;
   background: #e1f4c9;
+}
+
+.StickerSendMessage {
+  composes: MessageText;
+  text-align: right;
+  padding-right: 22px;
+  margin-left: auto;
+  background: transparent;
 }
 
 .TimeSent {

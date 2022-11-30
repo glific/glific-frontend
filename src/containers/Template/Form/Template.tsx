@@ -168,7 +168,9 @@ const Template = ({
 }: TemplateProps) => {
   // "Audio" option is removed in case of HSM Template
   const mediaTypes =
-    listItemName === 'HSM Template' ? options.filter(({ label }) => label !== 'AUDIO') : options;
+    listItemName === 'HSM Template'
+      ? options.filter(({ label }) => label !== 'AUDIO' && label !== 'STICKER')
+      : options;
 
   const [label, setLabel] = useState('');
   const [body, setBody] = useState(EditorState.createEmpty());
@@ -263,8 +265,8 @@ const Template = ({
       }
       const editorStateBody = getEditorFromContent(exampleValue);
 
-      setTimeout(() => setExample(editorStateBody), 0);
-      setTimeout(() => onExampleChange(exampleBody), 10);
+      setExample(editorStateBody);
+      onExampleChange(exampleBody);
     }
 
     if (hasButtons) {
