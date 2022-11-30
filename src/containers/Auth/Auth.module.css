@@ -226,3 +226,17 @@
 .AlternateText {
   text-transform: uppercase;
 }
+
+.WhatsAppIcon {
+  width: 26px;
+  height: 26px;
+  background: transparent;
+  margin-left: 6px;
+}
+
+.InformationText {
+  font-size: 14px;
+  color: #93a29b;
+  font-weight: 500;
+  margin-bottom: 24px;
+}
