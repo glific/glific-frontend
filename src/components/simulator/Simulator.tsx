@@ -69,6 +69,36 @@ export interface SimulatorProps {
   hasResetButton?: boolean;
 }
 
+const getStyleForDirection = (
+  directionValue: string,
+  isInteractiveValue: boolean,
+  messageTypeValue: any
+): string => {
+  switch (directionValue) {
+    case 'received':
+      if (isInteractiveValue) {
+        const simulatorClasses = [styles.ReceivedMessage, styles.InteractiveReceivedMessage];
+        return simulatorClasses.join(' ');
+      }
+
+      if (messageTypeValue === 'STICKER') {
+        return styles.StickerReceivedMessage;
+      }
+      break;
+
+    case 'send':
+      if (messageTypeValue === 'STICKER') {
+        return styles.StickerSendMessage;
+      }
+
+      return styles.SendMessage;
+
+    default:
+  }
+
+  return styles.ReceivedMessage;
+};
+
 const TimeComponent = (direction: any, insertedAt: any) => (
   <>
     <span className={direction === 'received' ? styles.TimeSent : styles.TimeReceived}>
@@ -177,6 +207,30 @@ export const Simulator = ({
     }
   );
 
+  const [getSimulator, { data }] = useLazyQuery(GET_SIMULATOR, {
+    fetchPolicy: 'network-only',
+    onCompleted: (simulatorData) => {
+      if (simulatorData.simulatorGet) {
+        loadSimulator({ variables: getSimulatorVariables(simulatorData.simulatorGet.id) }).then(
+          ({ data: searchData }: any) => {
+            if (searchData?.search.length > 0) {
+              sendMessage({
+                name: searchData.search[0].contact.name,
+                phone: searchData.search[0].contact.phone,
+              });
+            }
+          }
+        );
+        setSimulatorId(simulatorData.simulatorGet.id);
+      } else {
+        setNotification(
+          'Sorry! Simulators are in use by other staff members right now. Please wait for it to be idle',
+          'warning'
+        );
+      }
+    },
+  });
+
   const { data: simulatorSubscribe }: any = useSubscription(SIMULATOR_RELEASE_SUBSCRIPTION, {
     variables,
   });
@@ -194,48 +248,26 @@ export const Simulator = ({
     }
   }, [simulatorSubscribe]);
 
-  const [getSimulator, { data }] = useLazyQuery(GET_SIMULATOR, {
-    fetchPolicy: 'network-only',
-    onCompleted: (simulatorData) => {
-      if (simulatorData.simulatorGet) {
-        loadSimulator({ variables: getSimulatorVariables(simulatorData.simulatorGet.id) }).then(
-          ({ data: searchData }: any) => {
-            if (subscribeToMore) {
-              const subscriptionVariables = { organizationId: getUserSession('organizationId') };
-              // message received subscription
-              subscribeToMore({
-                document: SIMULATOR_MESSAGE_RECEIVED_SUBSCRIPTION,
-                variables: subscriptionVariables,
-                updateQuery: (prev, { subscriptionData }) =>
-                  updateSimulatorConversations(prev, subscriptionData, 'RECEIVED'),
-              });
+  useEffect(() => {
+    if (subscribeToMore) {
+      const subscriptionVariables = { organizationId: getUserSession('organizationId') };
+      // message received subscription
+      subscribeToMore({
+        document: SIMULATOR_MESSAGE_RECEIVED_SUBSCRIPTION,
+        variables: subscriptionVariables,
+        updateQuery: (prev, { subscriptionData }) =>
+          updateSimulatorConversations(prev, subscriptionData, 'RECEIVED'),
+      });
 
-              // message sent subscription
-              subscribeToMore({
-                document: SIMULATOR_MESSAGE_SENT_SUBSCRIPTION,
-                variables: subscriptionVariables,
-                updateQuery: (prev, { subscriptionData }) =>
-                  updateSimulatorConversations(prev, subscriptionData, 'SENT'),
-              });
-
-              if (searchData?.search.length > 0) {
-                sendMessage({
-                  name: searchData.search[0].contact.name,
-                  phone: searchData.search[0].contact.phone,
-                });
-              }
-            }
-          }
-        );
-        setSimulatorId(simulatorData.simulatorGet.id);
-      } else {
-        setNotification(
-          'Sorry! Simulators are in use by other staff members right now. Please wait for it to be idle',
-          'warning'
-        );
-      }
-    },
-  });
+      // message sent subscription
+      subscribeToMore({
+        document: SIMULATOR_MESSAGE_SENT_SUBSCRIPTION,
+        variables: subscriptionVariables,
+        updateQuery: (prev, { subscriptionData }) =>
+          updateSimulatorConversations(prev, subscriptionData, 'SENT'),
+      });
+    }
+  }, [subscribeToMore]);
 
   const [releaseSimulator]: any = useLazyQuery(RELEASE_SIMULATOR, {
     fetchPolicy: 'network-only',
@@ -253,19 +285,6 @@ export const Simulator = ({
       sender.phone = simulatedContact[0].contact.phone;
     }
   }
-
-  const getStyleForDirection = (direction: string, isInteractive: boolean): string => {
-    const simulatorClasses = [styles.ReceivedMessage, styles.InteractiveReceivedMessage];
-    if (isInteractive && direction === 'received') {
-      return simulatorClasses.join(' ');
-    }
-
-    if (direction === 'send') {
-      return styles.SendMessage;
-    }
-
-    return styles.ReceivedMessage;
-  };
 
   const releaseUserSimulator = () => {
     releaseSimulator();
@@ -350,7 +369,7 @@ export const Simulator = ({
 
     return (
       <div key={index}>
-        <div className={getStyleForDirection(direction, isInteractiveContentPresent)}>
+        <div className={getStyleForDirection(direction, isInteractiveContentPresent, messageType)}>
           {isInteractiveContentPresent && direction !== 'send' ? (
             template
           ) : (

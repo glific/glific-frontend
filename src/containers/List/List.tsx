@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Navigate, Link } from 'react-router-dom';
+import { Link, Navigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useQuery, useMutation, DocumentNode, useLazyQuery } from '@apollo/client';
 import { IconButton, TableFooter, TablePagination, TableRow, Typography } from '@material-ui/core';
@@ -130,7 +130,11 @@ export const List = ({
   const [deleteItemID, setDeleteItemID] = useState<number | null>(null);
   const [deleteItemName, setDeleteItemName] = useState<string>('');
   const [newItem, setNewItem] = useState(false);
-  const [searchVal, setSearchVal] = useState('');
+
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // pick the search value from url if present
+  const [searchVal, setSearchVal] = useState(new URLSearchParams(searchParams).get('search') || '');
 
   // check if the user has access to manage collections
   const userRolePermissions = getUserRolePermissions();
@@ -513,6 +517,10 @@ export const List = ({
   const handleSearch = (searchError: any) => {
     searchError.preventDefault();
     const searchValInput = searchError.target.querySelector('input').value.trim();
+
+    setSearchParams({
+      search: searchValInput,
+    });
     setSearchVal(searchValInput);
     resetTableVals();
   };
@@ -657,6 +665,7 @@ export const List = ({
           <SearchBar
             handleSubmit={handleSearch}
             onReset={() => {
+              setSearchParams({ search: '' });
               setSearchVal('');
               resetTableVals();
             }}

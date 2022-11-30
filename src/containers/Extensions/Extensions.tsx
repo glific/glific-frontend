@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import * as Yup from 'yup';
@@ -36,6 +36,14 @@ export const Extensions = ({ openDialog }: ExtensionProps) => {
     setCode(codeValue);
     setIsActive(isActiveValue);
   };
+
+  useEffect(() => {
+    if (!openDialog) {
+      setName('');
+      setCode('');
+      setIsActive(false);
+    }
+  });
 
   const FormSchema = Yup.object().shape({
     name: Yup.string().required(t('Title is required.')),
