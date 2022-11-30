@@ -28,7 +28,7 @@ describe('<Registration />', () => {
     });
   });
 
-  it('should submit the form correctly and give error', async () => {
+  it('should check if all the fields are in correct state', async () => {
     const user = userEvent.setup();
     const { container } = render(wrapper);
 
@@ -44,21 +44,10 @@ describe('<Registration />', () => {
     await user.click(password);
     await user.keyboard('pass123456');
 
-    // set the mock error case while registration
-    const errorMessage = 'Cannot register 919978776554';
-    mockedAxios.post.mockImplementationOnce(() => Promise.reject(new Error(errorMessage)));
-
     await waitFor(() => {
-      // click on continue
+      // Regiter with button should be disabled by default
       const continueButton = screen.getByTestId('SubmitButton');
-      fireEvent.click(continueButton);
-    });
-
-    await waitFor(() => {
-      const authContainer = screen.getByTestId('AuthContainer');
-      expect(authContainer).toHaveTextContent(
-        'We are unable to register, kindly contact your technical team.'
-      );
+      expect(continueButton).toHaveAttribute('disabled');
     });
   });
 
@@ -82,7 +71,7 @@ describe('<Registration />', () => {
 
     // click on continue
     await waitFor(() => {
-      const continueButton = screen.getByText('Continue');
+      const continueButton = screen.getByText('Register with');
       // userEvent.click(continueButton);
     });
 

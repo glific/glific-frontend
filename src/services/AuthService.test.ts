@@ -10,6 +10,11 @@ import {
 } from './AuthService';
 
 jest.mock('axios');
+
+jest.mock('pino-logflare', () => ({
+  createWriteStream: jest.fn(),
+  createPinoBrowserSend: jest.fn(),
+}));
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 describe('AuthService', () => {
