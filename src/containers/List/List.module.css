@@ -53,10 +53,8 @@
   top: 0;
   width: calc(100% - 233px);
   display: flex;
-  padding: 10px;
-  padding-top: 6px;
+  padding: 6px 24px 10px 10px;
   z-index: 1000;
-  padding-right: 24px;
   justify-content: space-between;
   align-items: center;
   border-radius: 10px;
