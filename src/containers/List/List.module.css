@@ -43,15 +43,10 @@
   text-decoration: none;
 }
 
-.Body {
-  margin-top: 100px;
-}
-
 .Header {
-  position: fixed;
+  position: sticky;
   background-color: #f9f7f3;
   top: 0;
-  width: calc(100% - 233px);
   display: flex;
   padding: 6px 24px 10px 10px;
   z-index: 1000;
