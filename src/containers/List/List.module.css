@@ -56,11 +56,6 @@
   height: 100px;
 }
 
-.DetailsPageHeader {
-  composes: Header;
-  width: calc(68% - 200px);
-}
-
 .Icon {
   background-color: #eaedec !important;
   margin-right: 10px !important;
