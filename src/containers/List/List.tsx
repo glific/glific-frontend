@@ -74,7 +74,6 @@ export interface ListProps {
   defaultSortBy?: string | null;
   removeSortBy?: Array<any> | null;
   noItemText?: string | null;
-  isDetailsPage?: boolean;
   customStyles?: any;
 }
 
@@ -121,7 +120,6 @@ export const List = ({
   collapseRow = undefined,
   defaultSortBy,
   noItemText = null,
-  isDetailsPage = false,
   customStyles,
 }: ListProps) => {
   const { t } = useTranslation();
@@ -645,15 +643,9 @@ export const List = ({
     </div>
   );
 
-  let headerSize = styles.Header;
-
-  if (isDetailsPage) {
-    headerSize = styles.DetailsPageHeader;
-  }
-
   return (
     <>
-      <div className={headerSize} data-testid="listHeader">
+      <div className={styles.Header} data-testid="listHeader">
         <Typography variant="h5" className={styles.Title}>
           <IconButton disabled className={styles.Icon}>
             {listIcon}

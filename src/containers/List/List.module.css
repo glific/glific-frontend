@@ -43,29 +43,17 @@
   text-decoration: none;
 }
 
-.Body {
-  margin-top: 100px;
-}
-
 .Header {
-  position: fixed;
+  position: sticky;
   background-color: #f9f7f3;
   top: 0;
-  width: calc(100% - 233px);
   display: flex;
-  padding: 10px;
-  padding-top: 6px;
+  padding: 6px 24px 10px 10px;
   z-index: 1000;
-  padding-right: 24px;
   justify-content: space-between;
   align-items: center;
   border-radius: 10px;
   height: 100px;
-}
-
-.DetailsPageHeader {
-  composes: Header;
-  width: calc(68% - 200px);
 }
 
 .Icon {
