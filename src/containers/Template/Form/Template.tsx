@@ -531,6 +531,7 @@ const Template = ({
         variant: 'outlined',
         label: t('Attachment Type'),
       },
+      disabled: !!(defaultAttribute.isHsm && params.id),
       helperText: warning,
       onChange: (event: any) => {
         const val = event || '';
@@ -546,6 +547,10 @@ const Template = ({
       type: 'text',
       placeholder: t('Attachment URL'),
       validate: () => isUrlValid,
+      disabled: !!(defaultAttribute.isHsm && params.id),
+      helperText: t(
+        'Please provide a sample attachment for approval purpose. You may send a similar but different attachment when sending the HSM to users.'
+      ),
       inputProp: {
         onBlur: (event: any) => {
           setAttachmentURL(event.target.value);
