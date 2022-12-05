@@ -3,7 +3,9 @@ import { Formik, Form, Field } from 'formik';
 import { Typography } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Captcha } from 'components/UI/Form/Captcha/Captcha';
 
+import { ReactComponent as WhatsAppIcon } from 'assets/images/icons/Social/Whatsapp.svg';
 import { termsOfUse } from 'containers/Organization/Organization';
 import { Button } from 'components/UI/Form/Button/Button';
 import GlificLogo from 'assets/images/logo/Logo.svg';
@@ -29,7 +31,6 @@ export interface AuthProps {
   linkURL?: string;
   errorMessage?: string;
   successMessage?: string;
-  staffInstructions?: any;
 }
 
 export const Auth = ({
@@ -47,11 +48,11 @@ export const Auth = ({
   linkURL,
   errorMessage,
   successMessage,
-  staffInstructions,
 }: AuthProps) => {
   // handle visibility for the password field
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [captcha, setCaptcha] = useState(null);
   const { t } = useTranslation();
 
   const boxClass = [styles.Box];
@@ -87,6 +88,9 @@ export const Auth = ({
       break;
   }
 
+  const isRegistration = mode === 'registration';
+  const whatsAppIcon = <WhatsAppIcon className={styles.WhatsAppIcon} />;
+  const otpMessage = 'You will receive an OTP on your WhatsApp number';
   let displayErrorMessage: any = null;
   if (errorMessage) {
     displayErrorMessage = <div className={styles.ErrorMessage}>{errorMessage}</div>;
@@ -113,6 +117,14 @@ export const Auth = ({
       initialFormValues.phone = value;
     };
 
+  const handleCaptchaChange = (value: any) => {
+    setCaptcha(value);
+  };
+
+  const handleCaptchaError = () => {
+    setCaptcha(null);
+  };
+
   let formElements;
   // we should not render form elements when displaying success message
   if (!successMessage) {
@@ -123,7 +135,6 @@ export const Auth = ({
             {pageTitle}
           </Typography>
         </div>
-        {staffInstructions}
         <div className={styles.SubText}>{titleSubText}</div>
 
         <Formik
@@ -131,7 +142,7 @@ export const Auth = ({
           validationSchema={validationSchema}
           onSubmit={(item) => {
             setLoading(true);
-            saveHandler(item);
+            saveHandler(item, captcha);
           }}
         >
           {({ submitForm }) => (
@@ -151,6 +162,11 @@ export const Auth = ({
                 <div className={styles.Link}>
                   <Link to={`/${linkURL}`}>{linkText}</Link>
                 </div>
+                {!loading && isRegistration && (
+                  <div className={styles.Captcha}>
+                    <Captcha onChange={handleCaptchaChange} onError={handleCaptchaError} />
+                  </div>
+                )}
                 <div className={styles.CenterButton}>
                   <Button
                     variant={buttonContainedVariant ? 'contained' : 'outlined'}
@@ -159,10 +175,17 @@ export const Auth = ({
                     className={buttonClass}
                     data-testid="SubmitButton"
                     loading={loading}
+                    disabled={isRegistration ? !captcha : false}
                   >
-                    {loading ? null : buttonText}
+                    {!loading && (
+                      <>
+                        {buttonText}
+                        {isRegistration && whatsAppIcon}
+                      </>
+                    )}
                   </Button>
                 </div>
+                {isRegistration && <div className={styles.InformationText}>{otpMessage}</div>}
                 {/* We neeed to add this submit button to enable form sumbitting when user hits enter
                 key. This is an workaround solution till the bug in formik or react is fixed. For
                 more info: https://github.com/formium/formik/issues/1418 */}
@@ -186,7 +209,7 @@ export const Auth = ({
         </div>
         <div className={boxClass.join(' ')}>
           {formElements}
-          {mode === 'registration' && termsOfUse}
+          {isRegistration && termsOfUse}
         </div>
         {alternateText ? (
           <>
