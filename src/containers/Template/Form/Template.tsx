@@ -183,6 +183,7 @@ const Template = ({
   const [attachmentURL, setAttachmentURL] = useState<any>();
   const [languageOptions, setLanguageOptions] = useState<any>([]);
   const [isActive, setIsActive] = useState<boolean>(true);
+  const [validatingURL, setValidatingURL] = useState<boolean>(false);
   const [warning, setWarning] = useState<any>();
   const [isUrlValid, setIsUrlValid] = useState<any>();
   const [templateType, setTemplateType] = useState<string | null>(null);
@@ -473,12 +474,14 @@ const Template = ({
 
   const validateURL = (value: string) => {
     if (value && type) {
+      setValidatingURL(true);
       validateMedia(value, type.id, false).then((response: any) => {
         if (!response.data.is_valid) {
           setIsUrlValid(response.data.message);
         } else {
           setIsUrlValid('');
         }
+        setValidatingURL(false);
       });
     }
   };
@@ -983,6 +986,7 @@ const Template = ({
       getMediaId={getMediaId}
       getQueryFetchPolicy="cache-and-network"
       button={defaultAttribute.isHsm && !params.id ? t('Submit for Approval') : t('Save')}
+      buttonState={{ text: t('Validating URL'), status: validatingURL }}
       customStyles={customStyle}
       saveOnPageChange={false}
       afterSave={!defaultAttribute.isHsm ? afterSave : undefined}
