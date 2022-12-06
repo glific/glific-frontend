@@ -170,6 +170,7 @@
 }
 
 .ErrorMessage {
+  text-align: center;
   margin-top: 5px;
   color: red;
   width: 333px;
@@ -225,4 +226,24 @@
 
 .AlternateText {
   text-transform: uppercase;
+}
+
+.WhatsAppIcon {
+  width: 26px;
+  height: 26px;
+  background: transparent;
+  margin-left: 6px;
+}
+
+.InformationText {
+  font-size: 14px;
+  text-align: center;
+  color: #93a29b;
+  font-weight: 400;
+  margin-bottom: 24px;
+}
+
+.Captcha {
+  display: flex;
+  justify-content: center;
 }

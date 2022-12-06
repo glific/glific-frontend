@@ -57,6 +57,10 @@ export interface FormLayoutProps {
   advanceSearch?: any;
   additionalState?: any;
   button?: string;
+  buttonState?: {
+    text: string;
+    status: boolean;
+  };
   type?: string;
   afterSave?: Function;
   afterDelete?: { link: string };
@@ -112,6 +116,7 @@ export const FormLayout = ({
   advanceSearch,
   cancelAction,
   button = 'Save',
+  buttonState = { text: '', status: false },
   type,
   afterSave,
   afterDelete,
@@ -554,8 +559,9 @@ export const FormLayout = ({
               className={styles.Button}
               data-testid="submitActionButton"
               loading={saveClick}
+              disabled={buttonState.status}
             >
-              {button}
+              {buttonState.status ? buttonState.text : button}
             </Button>
             {additionalAction ? (
               <Button
