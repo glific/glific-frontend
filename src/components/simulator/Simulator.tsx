@@ -219,10 +219,6 @@ export const Simulator = ({
     },
   });
 
-  if (sentError || receiveError) {
-    return null;
-  }
-
   useEffect(() => {
     if (simulatorSubscribe) {
       try {
