@@ -259,7 +259,7 @@
   "+ Create Role": "+ Create Role",
   "You won't be able to use this search again.": "You won't be able to use this search again.",
   "Search Title": "Search Title",
-  "Enter name, tag, keyword": "Enter name, tag, keyword",
+  "Enter name, label, keyword": "Enter name, label, keyword",
   "Includes tags": "Includes tags",
   "Includes labels": "Includes labels",
   "Includes collections": "Includes collections",

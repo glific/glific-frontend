@@ -145,7 +145,7 @@
   "Description is required.": "विवरण की आवश्यकता है।",
   "You won't be able to use this search again.": "आप फिर से इस खोज का उपयोग नहीं कर पाएंगे।",
   "Search Title": "शीर्षक",
-  "Enter name, tag, keyword": "नाम, टैग, कीवर्ड दर्ज करें",
+  "Enter name, label, keyword": "नाम, लेबल, कीवर्ड दर्ज करें",
   "Includes tags": "टैग शामिल हैं",
   "Includes collections": "संग्रह शामिल हैं",
   "No collections available": "कोई संग्रह उपलब्ध नहीं है",
