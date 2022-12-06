@@ -2,18 +2,15 @@ import React, { useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import { REGISTRATION_HELP_LINK } from 'config';
 import { Input } from 'components/UI/Form/Input/Input';
 import { PhoneInput } from 'components/UI/Form/PhoneInput/PhoneInput';
 import { sendOTP } from 'services/AuthService';
-import { ReactComponent as AlertIcon } from 'assets/images/icons/Alert/White.svg';
 import { Auth } from '../Auth';
-import styles from './Registration.module.css';
 
 export const Registration = () => {
   const [redirect, setRedirect] = useState(false);
   const [user, setUser] = useState({ userName: '', phone: '', password: '' });
-  const [authError, setAuthError] = useState('');
+  const [authError, setAuthError] = useState<any>('');
   const { t } = useTranslation();
 
   if (redirect) {
@@ -21,46 +18,31 @@ export const Registration = () => {
     return <Navigate to="/confirmotp" replace state={stateObject} />;
   }
 
-  const onSubmitRegistration = (values: any) => {
-    sendOTP(values.phone, 'true')
-      .then(() => {
-        setUser(values);
-        setRedirect(true);
-      })
-      .catch(() => {
-        setAuthError(t('We are unable to register, kindly contact your technical team.'));
-      });
+  const onSubmitRegistration = (values: any, captcha: any) => {
+    if (captcha) {
+      sendOTP(values.phone, 'true')
+        .then(() => {
+          setUser(values);
+          setRedirect(true);
+        })
+        .catch(() => {
+          setAuthError(t('We are unable to register, kindly contact your technical team.'));
+        });
+    }
   };
-
-  const staffInstructions = (
-    <div className={styles.Instructions}>
-      <AlertIcon />
-      <div>
-        {t('Please optin to your org chatbot number before proceeding below. ')}
-        <a
-          href={REGISTRATION_HELP_LINK}
-          rel="noreferrer"
-          target="_blank"
-          className={styles.DocumentationLink}
-        >
-          {t('Here’s how.')}
-        </a>
-      </div>
-    </div>
-  );
 
   const formFields = [
     {
       component: Input,
       name: 'userName',
       type: 'text',
-      placeholder: t('Your name'),
+      placeholder: t('Your full name'),
     },
     {
       component: PhoneInput,
       name: 'phone',
       type: 'phone',
-      placeholder: t('Your phone number'),
+      placeholder: t('Your personal WhatsApp number'),
       helperText: t('Please enter a phone number.'),
     },
     {
@@ -84,8 +66,7 @@ export const Registration = () => {
   return (
     <Auth
       pageTitle={t('Create your new account')}
-      buttonText={t('Continue')}
-      staffInstructions={staffInstructions}
+      buttonText={t('Register with ')}
       alternateLink="login"
       alternateText={t('Login to Glific')}
       mode="registration"
