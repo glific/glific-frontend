@@ -132,6 +132,11 @@ const ContactFieldList = ({ openDialog }: ContactFieldListProps) => {
         listItemName="contactField"
         pageLink="contact-fields"
         listIcon={listIcon}
+        button={{
+          show: true,
+          link: '/contact-fields/add',
+          label: 'Add new',
+        }}
         searchParameter={['name']}
         dialogMessage={dialogMessage}
         dialogTitle={dialogTitle}
