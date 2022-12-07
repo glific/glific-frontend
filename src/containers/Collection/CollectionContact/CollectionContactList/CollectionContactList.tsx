@@ -75,7 +75,6 @@ export const CollectionContactList = ({ title }: CollectionContactListProps) => 
       button={{ show: false, label: '' }}
       pageLink="contact"
       listIcon={collectionIcon}
-      isDetailsPage
       deleteModifier={{
         icon: 'cross',
         variables: getDeleteQueryVariables,

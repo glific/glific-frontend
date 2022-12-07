@@ -320,7 +320,7 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
       component: Input,
       name: 'term',
       type: 'text',
-      placeholder: t('Enter name, tag, keyword'),
+      placeholder: t('Enter name, label, keyword'),
       inputProp: {
         onChange: (event: any) => {
           setTerm(event.target.value);

@@ -59,6 +59,7 @@ export const InteractiveMessage = () => {
   const [contactVariables, setContactVariables] = useState([]);
   const [defaultLanguage, setDefaultLanguage] = useState<any>({});
   const [sendWithTitle, setSendWithTitle] = useState<boolean>(true);
+  const [validatingURL, setValidatingURL] = useState<boolean>(false);
 
   const [language, setLanguage] = useState<any>({});
   const [languageOptions, setLanguageOptions] = useState<any>([]);
@@ -223,12 +224,14 @@ export const InteractiveMessage = () => {
 
   const validateURL = (value: string) => {
     if (value && type) {
-      validateMedia(value, type.id).then((response: any) => {
+      setValidatingURL(true);
+      validateMedia(value, type.id, false).then((response: any) => {
         if (!response.data.is_valid) {
           setIsUrlValid(response.data.message);
         } else {
           setIsUrlValid('');
         }
+        setValidatingURL(false);
       });
     }
   };
@@ -733,6 +736,7 @@ export const InteractiveMessage = () => {
         getQueryFetchPolicy="cache-and-network"
         afterSave={afterSave}
         saveOnPageChange={false}
+        buttonState={{ text: t('Validating URL'), status: validatingURL }}
       />
       <div className={styles.Simulator}>
         <Simulator

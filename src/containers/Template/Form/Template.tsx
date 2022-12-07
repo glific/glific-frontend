@@ -183,6 +183,7 @@ const Template = ({
   const [attachmentURL, setAttachmentURL] = useState<any>();
   const [languageOptions, setLanguageOptions] = useState<any>([]);
   const [isActive, setIsActive] = useState<boolean>(true);
+  const [validatingURL, setValidatingURL] = useState<boolean>(false);
   const [warning, setWarning] = useState<any>();
   const [isUrlValid, setIsUrlValid] = useState<any>();
   const [templateType, setTemplateType] = useState<string | null>(null);
@@ -473,12 +474,14 @@ const Template = ({
 
   const validateURL = (value: string) => {
     if (value && type) {
-      validateMedia(value, type.id).then((response: any) => {
+      setValidatingURL(true);
+      validateMedia(value, type.id, false).then((response: any) => {
         if (!response.data.is_valid) {
           setIsUrlValid(response.data.message);
         } else {
           setIsUrlValid('');
         }
+        setValidatingURL(false);
       });
     }
   };
@@ -531,6 +534,7 @@ const Template = ({
         variant: 'outlined',
         label: t('Attachment Type'),
       },
+      disabled: !!(defaultAttribute.isHsm && params.id),
       helperText: warning,
       onChange: (event: any) => {
         const val = event || '';
@@ -546,6 +550,10 @@ const Template = ({
       type: 'text',
       placeholder: t('Attachment URL'),
       validate: () => isUrlValid,
+      disabled: !!(defaultAttribute.isHsm && params.id),
+      helperText: t(
+        'Please provide a sample attachment for approval purpose. You may send a similar but different attachment when sending the HSM to users.'
+      ),
       inputProp: {
         onBlur: (event: any) => {
           setAttachmentURL(event.target.value);
@@ -978,6 +986,7 @@ const Template = ({
       getMediaId={getMediaId}
       getQueryFetchPolicy="cache-and-network"
       button={defaultAttribute.isHsm && !params.id ? t('Submit for Approval') : t('Save')}
+      buttonState={{ text: t('Validating URL'), status: validatingURL }}
       customStyles={customStyle}
       saveOnPageChange={false}
       afterSave={!defaultAttribute.isHsm ? afterSave : undefined}
