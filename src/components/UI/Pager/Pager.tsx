@@ -141,20 +141,22 @@ const tableHeadColumns = (
   return (
     <TableRow className={styles.TableHeadRow}>
       {batchAction}
-      {columnNames.map((name: string, i: number) => (
+      {columnNames.map((field: any, i: number) => (
         <TableCell
-          key={name}
+          key={field.name}
           className={`${styles.TableCell} ${columnStyles ? columnStyles[i] : null}`}
         >
-          {i !== columnNames.length - 1 && name !== '' && !removeSortBy?.includes(name) ? (
+          {i !== columnNames.length - 1 &&
+          field.name !== '' &&
+          !removeSortBy?.includes(field.name) ? (
             <TableSortLabel
-              active={setColumnToBackendTerms(listName, name) === tableVals.sortCol}
+              active={setColumnToBackendTerms(listName, field.name) === tableVals.sortCol}
               direction={tableVals.sortDirection}
               onClick={() => {
-                if (setColumnToBackendTerms(listName, name) !== tableVals.sortCol) {
-                  handleTableChange('sortCol', name);
+                if (setColumnToBackendTerms(listName, field.name) !== tableVals.sortCol) {
+                  handleTableChange('sortCol', field.name);
                 } else {
-                  handleTableChange('sortCol', name);
+                  handleTableChange('sortCol', field.name);
                   handleTableChange(
                     'sortDirection',
                     tableVals.sortDirection === 'asc' ? 'desc' : 'asc'
@@ -162,10 +164,10 @@ const tableHeadColumns = (
                 }
               }}
             >
-              {name}
+              {field.name}
             </TableSortLabel>
           ) : (
-            name
+            field.name
           )}
         </TableCell>
       ))}

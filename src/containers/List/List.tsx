@@ -23,7 +23,7 @@ import { getUpdatedList, setListSession, getLastListSessionValues } from 'servic
 import styles from './List.module.css';
 
 export interface ListProps {
-  columnNames?: Array<string>;
+  columnNames?: Array<any>;
   countQuery: DocumentNode;
   listItem: string;
   filterItemsQuery: DocumentNode;
@@ -139,7 +139,9 @@ export const List = ({
   const capitalListItemName = listItemName
     ? listItemName[0].toUpperCase() + listItemName.slice(1)
     : '';
-  let defaultColumnSort = columnNames[0];
+
+  // TODOS: fix the default sort
+  let defaultColumnSort = columnNames[0].name;
 
   // check if there is a default column set for sorting
   if (defaultSortBy) {
