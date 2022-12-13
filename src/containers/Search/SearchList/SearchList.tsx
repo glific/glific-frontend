@@ -28,8 +28,8 @@ export const SearchList = () => {
   const { t } = useTranslation();
 
   const columnNames = [
-    { name: 'label', label: 'Title' },
-    { name: 'description', label: 'Description' },
+    { name: 'shortcode', label: 'Title' },
+    { name: 'label', label: 'Description' },
     { label: 'Actions' },
   ];
   const dialogMessage = t(

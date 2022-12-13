@@ -18,7 +18,7 @@ import { ReactComponent as BackIcon } from 'assets/images/icons/Back.svg';
 import { GET_CURRENT_USER } from 'graphql/queries/User';
 import { getUserRole, getUserRolePermissions } from 'context/role';
 import { setNotification, setErrorMessage } from 'common/notification';
-import { setColumnToBackendTerms } from 'common/constants';
+// import { setColumnToBackendTerms } from 'common/constants';
 import { getUpdatedList, setListSession, getLastListSessionValues } from 'services/ListService';
 import styles from './List.module.css';
 
@@ -100,7 +100,7 @@ export const List = ({
   title,
   dialogTitle,
   filterList,
-  listOrder = 'asc',
+  // listOrder = 'asc',
   removeSortBy = null,
   button = {
     show: true,
@@ -153,12 +153,9 @@ export const List = ({
   const [defaultColumnSort, defaultColumnSortOrder] = getDefaultSortColumn(columnNames);
 
   // get the last sort column value from local storage if exist else set the default column
-  const getSortColumn = (listItemNameValue: string, columnName: string) => {
+  const getSortColumn = (listItemNameValue: string) => {
     // set the column name
-    let columnnNameValue;
-    if (columnName) {
-      columnnNameValue = columnName;
-    }
+    let columnnNameValue = defaultColumnSort;
 
     // check if we have sorting stored in local storage
     const sortValue = getLastListSessionValues(listItemNameValue, false);
@@ -168,13 +165,14 @@ export const List = ({
       columnnNameValue = sortValue;
     }
 
-    return setColumnToBackendTerms(listItemName, columnnNameValue);
+    return columnnNameValue;
   };
 
   // get the last sort direction value from local storage if exist else set the default order
   const getSortDirection = (listItemNameValue: string) => {
-    let sortDirection: any = listOrder;
-    sortDirection = defaultColumnSortOrder;
+    // let sortDirection: any = listOrder;
+    // TODOS: obsolete sortDirection param to list
+    let sortDirection = defaultColumnSortOrder;
 
     // check if we have sorting stored in local storage
     const sortValue = getLastListSessionValues(listItemNameValue, true);
@@ -189,7 +187,7 @@ export const List = ({
   const [tableVals, setTableVals] = useState<TableVals>({
     pageNum: 0,
     pageRows: 50,
-    sortCol: getSortColumn(listItemName, defaultColumnSort),
+    sortCol: getSortColumn(listItemName),
     sortDirection: getSortDirection(listItemName),
   });
 
@@ -197,9 +195,7 @@ export const List = ({
 
   const handleTableChange = (attribute: string, newVal: any) => {
     let updatedList;
-    let attributeValue = newVal;
     if (attribute === 'sortCol') {
-      attributeValue = setColumnToBackendTerms(listItemName, newVal);
       updatedList = getUpdatedList(listItemName, newVal, false);
     } else {
       updatedList = getUpdatedList(listItemName, newVal, true);
@@ -210,7 +206,7 @@ export const List = ({
 
     setTableVals({
       ...tableVals,
-      [attribute]: attributeValue,
+      [attribute]: newVal,
     });
   };
 
@@ -515,7 +511,7 @@ export const List = ({
     setTableVals({
       pageNum: 0,
       pageRows: 50,
-      sortCol: getSortColumn(listItemName, defaultColumnSort),
+      sortCol: getSortColumn(listItemName),
       sortDirection: getSortDirection(listItemName),
     });
   };
