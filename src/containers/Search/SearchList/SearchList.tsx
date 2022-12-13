@@ -30,7 +30,7 @@ export const SearchList = () => {
   const columnNames = [
     { name: 'label', label: 'Title' },
     { name: 'description', label: 'Description' },
-    { name: '', label: 'Actions' },
+    { label: 'Actions' },
   ];
   const dialogMessage = t(
     'This action will remove all the conversations that were linked to this search and remove it as an option to filter your chat screen.'

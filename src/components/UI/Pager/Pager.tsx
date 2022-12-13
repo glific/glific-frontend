@@ -11,7 +11,7 @@ import {
   Checkbox,
 } from '@material-ui/core';
 
-import { setColumnToBackendTerms } from 'common/constants';
+// import { setColumnToBackendTerms } from 'common/constants';
 import styles from './Pager.module.css';
 
 const removeDisplayColumns = ['recordId', 'translations', 'id', 'isActive'];
@@ -138,6 +138,7 @@ const tableHeadColumns = (
   if (showCheckbox) {
     batchAction = <Checkbox />;
   }
+  console.log('tableVals', tableVals);
   return (
     <TableRow className={styles.TableHeadRow}>
       {batchAction}
@@ -146,14 +147,12 @@ const tableHeadColumns = (
           key={field.name}
           className={`${styles.TableCell} ${columnStyles ? columnStyles[i] : null}`}
         >
-          {i !== columnNames.length - 1 &&
-          field.name !== '' &&
-          !removeSortBy?.includes(field.name) ? (
+          {i !== columnNames.length - 1 && field.name && !removeSortBy?.includes(field.name) ? (
             <TableSortLabel
-              active={setColumnToBackendTerms(listName, field.name) === tableVals.sortCol}
+              active={field.name === tableVals.sortCol}
               direction={tableVals.sortDirection}
               onClick={() => {
-                if (setColumnToBackendTerms(listName, field.name) !== tableVals.sortCol) {
+                if (field.name !== tableVals.sortCol) {
                   handleTableChange('sortCol', field.name);
                 } else {
                   handleTableChange('sortCol', field.name);
@@ -164,10 +163,10 @@ const tableHeadColumns = (
                 }
               }}
             >
-              {field.name}
+              {field.label}
             </TableSortLabel>
           ) : (
-            field.name
+            field.label
           )}
         </TableCell>
       ))}
