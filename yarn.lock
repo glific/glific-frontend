@@ -1386,10 +1386,10 @@
     minimatch "^3.1.2"
     strip-json-comments "^3.1.1"
 
-"@glific/flow-editor@^1.17.1-15":
-  version "1.17.1-15"
-  resolved "https://registry.yarnpkg.com/@glific/flow-editor/-/flow-editor-1.17.1-15.tgz#99035e20a9f1c4b34047107238d3cdaa6b9954ef"
-  integrity sha512-rG9fJrpU+ygrRyr6hj0239//AnTN5gHg8f/UJyh5fQQ30eQsYM0rZS1mz989rA5D2WC4gMPM7rAhpRy92tnaYA==
+"@glific/flow-editor@^1.17.1-17":
+  version "1.17.1-17"
+  resolved "https://registry.yarnpkg.com/@glific/flow-editor/-/flow-editor-1.17.1-17.tgz#3b231699b1f9a0f29fa0fdeb1d06d4e54ca39a08"
+  integrity sha512-+lEiZ/mJ46aAZozTQwGpx4hUy5tHSePN9088GMUuo55L/xLnqPtnpNAVkTfkJLEAcxnKH8InES93/cMW4AtLxg==
   dependencies:
     react "^16.8.6"
     react-dom "^16.8.6"
