@@ -138,7 +138,7 @@ const tableHeadColumns = (
   if (showCheckbox) {
     batchAction = <Checkbox />;
   }
-  console.log('tableVals', tableVals);
+
   return (
     <TableRow className={styles.TableHeadRow}>
       {batchAction}

@@ -118,7 +118,6 @@ export const List = ({
   restrictedAction,
   collapseOpen = false,
   collapseRow = undefined,
-  defaultSortBy,
   noItemText = null,
   customStyles,
 }: ListProps) => {
@@ -140,13 +139,19 @@ export const List = ({
     ? listItemName[0].toUpperCase() + listItemName.slice(1)
     : '';
 
-  // TODOS: fix the default sort
-  let defaultColumnSort = columnNames[0].name;
+  // function to get the default sorting set for columns
+  const getDefaultSortColumn = (columnsFields: any) => {
+    const sortColumn = columnsFields.reduce((field: any) => (field.sort ? field : ''));
+    if (sortColumn) {
+      return [sortColumn.name, sortColumn.order];
+    }
 
-  // check if there is a default column set for sorting
-  if (defaultSortBy) {
-    defaultColumnSort = defaultSortBy;
-  }
+    // if nothing is set assume first column is for sorting and order is 'asc'
+    return [columnNames[0].name, 'asc'];
+  };
+
+  const [defaultColumnSort, defaultColumnSortOrder] = getDefaultSortColumn(columnNames);
+
   // get the last sort column value from local storage if exist else set the default column
   const getSortColumn = (listItemNameValue: string, columnName: string) => {
     // set the column name
@@ -169,6 +174,7 @@ export const List = ({
   // get the last sort direction value from local storage if exist else set the default order
   const getSortDirection = (listItemNameValue: string) => {
     let sortDirection: any = listOrder;
+    sortDirection = defaultColumnSortOrder;
 
     // check if we have sorting stored in local storage
     const sortValue = getLastListSessionValues(listItemNameValue, true);
