@@ -205,14 +205,14 @@ export const Simulator = ({
     variables,
   });
 
-  const { error: sentError } = useSubscription(SIMULATOR_MESSAGE_SENT_SUBSCRIPTION, {
+  useSubscription(SIMULATOR_MESSAGE_SENT_SUBSCRIPTION, {
     variables,
     onData: ({ data: sentData }) => {
       setAllConversations(updateSimulatorConversations(allConversations, sentData, 'SENT'));
     },
   });
 
-  const { error: receiveError } = useSubscription(SIMULATOR_MESSAGE_RECEIVED_SUBSCRIPTION, {
+  useSubscription(SIMULATOR_MESSAGE_RECEIVED_SUBSCRIPTION, {
     variables,
     onData: ({ data: receivedData }) => {
       setAllConversations(updateSimulatorConversations(allConversations, receivedData, 'RECEIVED'));
