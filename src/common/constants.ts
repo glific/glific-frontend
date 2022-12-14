@@ -142,26 +142,12 @@ export const setColumnToBackendTerms: any = (listName: string, columnName: strin
   const additionalItems: any = {
     flow: { TITLE: 'name', ' ': 'is_pinned' },
     trigger: { TITLE: 'name' },
-    Search: {
-      TITLE: 'shortcode',
-      DESCRIPTION: 'label',
-    },
-    consultingHour: {
-      NAME: 'organization_name',
-      MINUTES: 'duration',
-      DATE: 'when',
-      TYPE: 'is_billable',
-    },
     notification: {
       TIMESTAMP: 'updated_at',
       SEVERITY: 'severity',
       CATEGORY: 'category',
       ENTITY: 'entity',
       MESSAGE: 'message',
-    },
-    contactField: {
-      'VARIABLE NAME': 'name',
-      'INPUT NAME': 'name',
     },
   };
 

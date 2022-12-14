@@ -153,6 +153,8 @@
   "Shortcode is required.": "Shortcode is required.",
   "Shortcode": "Shortcode",
   "Add contact fields": "Add contact fields",
+  "Variable name": "Variable name",
+  "Input name": "Input name",
   "Are you sure you want to delete this contact field record?": "Are you sure you want to delete this contact field record?",
   "Contact Variables": "Contact Variables",
   "Back to flows": "Back to flows",
