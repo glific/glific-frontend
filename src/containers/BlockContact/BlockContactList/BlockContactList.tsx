@@ -22,8 +22,6 @@ const getColumns = ({ name, maskedPhone }: any) => ({
   phone: getPhone(maskedPhone),
 });
 
-const columnNames = ['NAME', 'PHONE NO', 'ACTIONS'];
-
 const columnStyles = [styles.Label, styles.Phone, styles.Actions];
 const blockIcon = <BlockIcon className={styles.BlockIcon} />;
 
@@ -33,16 +31,22 @@ const queries = {
   deleteItemQuery: DELETE_CONTACT,
 };
 
-const columnAttributes = {
-  columnNames,
-  columns: getColumns,
-  columnStyles,
-};
-
 export const BlockContactList = () => {
   const [contactId, setContactId] = useState();
   const [unblockDialog, setUnblockDialog] = useState(false);
   const { t } = useTranslation();
+
+  const columnNames = [
+    { name: 'name', label: t('Name') },
+    { name: 'phone', label: t('Phone Number') },
+    { label: t('Actions') },
+  ];
+
+  const columnAttributes = {
+    columnNames,
+    columns: getColumns,
+    columnStyles,
+  };
 
   const unblockIcon = <UnblockIcon />;
 
