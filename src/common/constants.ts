@@ -141,13 +141,6 @@ export const setColumnToBackendTerms: any = (listName: string, columnName: strin
 
   const additionalItems: any = {
     trigger: { TITLE: 'name' },
-    notification: {
-      TIMESTAMP: 'updated_at',
-      SEVERITY: 'severity',
-      CATEGORY: 'category',
-      ENTITY: 'entity',
-      MESSAGE: 'message',
-    },
   };
 
   backendTerms = { ...backendTerms, ...additionalItems[listName] };

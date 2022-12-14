@@ -157,7 +157,15 @@ export const NotificationList = () => {
     setOpen(false);
   };
 
-  const columnNames = ['', 'TIMESTAMP', 'CATEGORY', 'SEVERITY', 'ENTITY', 'MESSAGE'];
+  const columnNames = [
+    { label: '' },
+    { name: 'updated_at', label: t('Timestamp') },
+    { name: 'category', label: t('Category') },
+    { name: 'severity', label: t('Severity') },
+    { name: 'entity', label: t('Entity') },
+    { name: 'message', label: t('Message') },
+    { label: t('Actions') },
+  ];
 
   const columnAttributes = {
     columnNames,

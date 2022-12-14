@@ -74,7 +74,13 @@ export const InteractiveMessageList = () => {
     translations: getTranslations(type, language, translations),
   });
 
-  const columnNames = ['TITLE', 'MESSAGE', 'TYPE', 'ACTIONS'];
+  const columnNames = [
+    { name: 'label', label: 'Title' },
+    { label: t('Message') },
+    { label: t('Type') },
+    { label: t('Actions') },
+  ];
+
   const dialogMessage = t("You won't be able to use this interactive message.");
 
   const columnAttributes = {
