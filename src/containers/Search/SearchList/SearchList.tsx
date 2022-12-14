@@ -28,9 +28,9 @@ export const SearchList = () => {
   const { t } = useTranslation();
 
   const columnNames = [
-    { name: 'shortcode', label: 'Title' },
-    { name: 'label', label: 'Description' },
-    { label: 'Actions' },
+    { name: 'shortcode', label: t('Title') },
+    { name: 'label', label: t('Description') },
+    { label: t('Actions') },
   ];
   const dialogMessage = t(
     'This action will remove all the conversations that were linked to this search and remove it as an option to filter your chat screen.'
