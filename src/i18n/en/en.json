@@ -192,6 +192,8 @@
   "Export flow": "Export flow",
   "Not published yet": "Not published yet",
   "Nothing in draft": "Nothing in draft",
+  "Last published": "Last published",
+  "Last saved in Draft": "Last saved in Draft",
   "You won't be able to use this flow.": "You won't be able to use this flow.",
   "Flows": "Flows",
   "+ Create Flow": "+ Create Flow",

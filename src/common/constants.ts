@@ -140,7 +140,6 @@ export const setColumnToBackendTerms: any = (listName: string, columnName: strin
   };
 
   const additionalItems: any = {
-    flow: { TITLE: 'name', ' ': 'is_pinned' },
     trigger: { TITLE: 'name' },
     notification: {
       TIMESTAMP: 'updated_at',
