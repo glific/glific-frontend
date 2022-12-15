@@ -399,5 +399,12 @@
   "For any help, please contact the Glific team": "For any help, please contact the Glific team",
   "Verify Gupshup settings": "Verify Gupshup settings",
   "You will be unable to send messages without recharge": "You will be unable to send messages without recharge",
+  "URL": "URL",
+  "Status Code": "Status Code",
+  "Error": "Error",
+  "Method": "Method",
+  "Request header": "Request header",
+  "Request JSON": "Request JSON",
+  "Response JSON": "Response JSON",
   "Webhook Logs": "Webhook Logs"
 }
