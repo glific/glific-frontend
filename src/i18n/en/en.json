@@ -367,6 +367,8 @@
   "Approved": "Approved",
   "Pending": "Pending",
   "Rejected": "Rejected",
+  "Body": "Body",
+  "Reason": "Reason",
   "It will stop showing when you draft a customized message": "It will stop showing when you draft a customized message",
   "Import templates": "Import templates",
   "Does not repeat": "Does not repeat",
