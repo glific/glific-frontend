@@ -54,7 +54,14 @@ const queries = {
 export const TagList = () => {
   const { t } = useTranslation();
 
-  const columnNames = ['TITLE', 'DESCRIPTION', 'KEYWORDS', 'LAST MODIFIED', 'ACTIONS'];
+  const columnNames = [
+    { name: 'label', label: t('Title') },
+    { name: 'description', label: t('Description') },
+    { label: t('Keywords') },
+    { name: 'updated_at', label: t('Last modified') },
+    { label: t('Actions') },
+  ];
+
   const dialogMessage = t("You won't be able to use this for tagging messages.");
 
   const columnAttributes = {
