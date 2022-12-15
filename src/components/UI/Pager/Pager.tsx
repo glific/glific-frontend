@@ -11,7 +11,6 @@ import {
   Checkbox,
 } from '@material-ui/core';
 
-// import { setColumnToBackendTerms } from 'common/constants';
 import styles from './Pager.module.css';
 
 const removeDisplayColumns = ['recordId', 'translations', 'id', 'isActive'];
