@@ -31,7 +31,11 @@ export const RoleList = () => {
     description: getDescription(description),
   });
 
-  const columnNames = ['LABEL', 'DESCRIPTION', 'ACTIONS'];
+  const columnNames = [
+    { name: 'label', label: t('Label') },
+    { name: 'description', label: t('Description') },
+    { label: t('Actions') },
+  ];
 
   const columnAttributes = {
     columnNames,
