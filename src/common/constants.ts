@@ -118,7 +118,7 @@ export const CONNECTION_RECONNECT_ATTEMPTS = 5;
 export const MEDIA_MESSAGE_TYPES = ['IMAGE', 'AUDIO', 'VIDEO', 'DOCUMENT', 'STICKER'];
 
 export const setColumnToBackendTerms: any = (listName: string, columnName: string) => {
-  let backendTerms: any = {
+  const backendTerms: any = {
     'LAST MODIFIED': 'updated_at',
     'END DATE': 'updated_at',
     NAME: 'name',
@@ -138,12 +138,6 @@ export const setColumnToBackendTerms: any = (listName: string, columnName: strin
     'REQUEST JSON': 'request_json',
     'RESPONSE JSON': 'response_json',
   };
-
-  const additionalItems: any = {
-    trigger: { TITLE: 'name' },
-  };
-
-  backendTerms = { ...backendTerms, ...additionalItems[listName] };
 
   return backendTerms[columnName];
 };

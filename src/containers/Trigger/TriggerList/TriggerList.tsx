@@ -73,7 +73,14 @@ export const TriggerList = () => {
       dialog: setDialog,
     },
   ];
-  const columnNames = ['TITLE', 'END DATE', 'COLLECTION', 'ACTIONS'];
+
+  const columnNames: any = [
+    { name: 'name', label: t('Title') },
+    { name: 'updated_at', label: t('End date') },
+    { label: t('Collections') },
+    { label: t('Actions') },
+  ];
+
   const columnAttributes = {
     columnNames,
     columns: getColumns,
