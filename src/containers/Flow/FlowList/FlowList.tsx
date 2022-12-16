@@ -192,7 +192,7 @@ export const FlowList = () => {
   });
 
   const columnNames = [
-    { name: 'is_pinned', label: '' },
+    { name: 'is_pinned', label: '', sort: true, order: 'desc' },
     { name: 'name', label: t('Title') },
     { label: t('Last published') },
     { label: t('Last saved in Draft') },
@@ -227,8 +227,6 @@ export const FlowList = () => {
         additionalAction={additionalAction}
         button={{ show: true, label: t('+ Create Flow') }}
         secondaryButton={importButton}
-        defaultSortBy=" "
-        listOrder="desc"
       />
 
       <Link to="/webhook-logs" className={styles.Webhook}>

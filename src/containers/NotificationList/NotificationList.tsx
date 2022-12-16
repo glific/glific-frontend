@@ -159,7 +159,7 @@ export const NotificationList = () => {
 
   const columnNames = [
     { label: '' },
-    { name: 'updated_at', label: t('Timestamp') },
+    { name: 'updated_at', label: t('Timestamp'), sort: true, order: 'desc' },
     { name: 'category', label: t('Category') },
     { name: 'severity', label: t('Severity') },
     { name: 'entity', label: t('Entity') },
@@ -240,7 +240,6 @@ export const NotificationList = () => {
         removeSortBy={[t('Entity'), t('Severity'), t('Category')]}
         filters={{ severity: filter }}
         filterList={filterOnSeverity}
-        listOrder="desc"
       />
       {popover}
     </div>

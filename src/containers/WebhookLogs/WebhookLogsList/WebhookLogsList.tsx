@@ -71,7 +71,7 @@ export const WebhookLogsList = () => {
   const { t } = useTranslation();
 
   const columnNames = [
-    { name: 'updated_at', label: t('Time') },
+    { name: 'updated_at', label: t('Time'), sort: true, order: 'desc' },
     { name: 'url', label: t('URL') },
     { name: 'status', label: t('Status') },
     { name: 'status_code', label: t('Status Code') },
@@ -195,7 +195,6 @@ export const WebhookLogsList = () => {
         restrictedAction={restrictedAction}
         {...columnAttributes}
         removeSortBy={['STATUS']}
-        listOrder="desc"
       />
       {popover}
     </div>

@@ -45,7 +45,6 @@ export interface ListProps {
   searchParameter?: Array<any>;
   filters?: Object | null;
   filterList?: any;
-  listOrder?: 'asc' | 'desc';
   displayListType?: string;
   cardLink?: Object | null;
   editSupport?: boolean;
@@ -99,7 +98,6 @@ export const List = ({
   title,
   dialogTitle,
   filterList,
-  // listOrder = 'asc',
   removeSortBy = null,
   button = {
     show: true,
@@ -169,8 +167,6 @@ export const List = ({
 
   // get the last sort direction value from local storage if exist else set the default order
   const getSortDirection = (listItemNameValue: string) => {
-    // let sortDirection: any = listOrder;
-    // TODOS: obsolete sortDirection param to list
     let sortDirection = defaultColumnSortOrder;
 
     // check if we have sorting stored in local storage

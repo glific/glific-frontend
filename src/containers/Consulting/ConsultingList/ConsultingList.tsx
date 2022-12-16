@@ -42,7 +42,7 @@ const ConsultingList = () => {
 
   const columnNames = [
     { name: 'organization_name', label: t('Name') },
-    { name: 'when', label: t('Date') },
+    { name: 'when', label: t('Date'), sort: true, order: 'desc' },
     { name: 'duration', label: t('Minutes') },
     { name: 'is_billable', label: t('Type') },
     { label: t('Team') },
@@ -125,8 +125,6 @@ const ConsultingList = () => {
       <ExportConsulting setFilters={setFilters} />
       {dialog}
       <List
-        defaultSortBy="DATE"
-        listOrder="desc"
         title={t('Consulting')}
         listItem="consultingHours"
         listItemName="consultingHour"
