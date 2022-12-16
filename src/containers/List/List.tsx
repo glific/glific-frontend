@@ -21,8 +21,15 @@ import { setNotification, setErrorMessage } from 'common/notification';
 import { getUpdatedList, setListSession, getLastListSessionValues } from 'services/ListService';
 import styles from './List.module.css';
 
+interface ColumnNames {
+  name?: string;
+  label: string;
+  sort?: boolean;
+  order?: string;
+}
+
 export interface ListProps {
-  columnNames?: Array<any>;
+  columnNames?: Array<ColumnNames>;
   countQuery: DocumentNode;
   listItem: string;
   filterItemsQuery: DocumentNode;

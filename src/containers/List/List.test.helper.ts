@@ -12,7 +12,13 @@ import { setVariables } from 'common/constants';
 import { getCurrentUserQuery } from 'mocks/User';
 
 export const defaultProps = {
-  columnNames: ['TITLE', 'DESCRIPTION', 'KEYWORDS', 'LAST MODIFIED', 'ACTIONS'],
+  columnNames: [
+    { name: 'label', label: 'Title' },
+    { name: 'description', label: 'Description' },
+    { label: 'Keywords' },
+    { name: 'updated_at', label: 'Last modified' },
+    { label: 'Actions' },
+  ],
   countQuery: GET_TAGS_COUNT,
   listItem: 'tags',
   filterItemsQuery: FILTER_TAGS,
@@ -216,7 +222,11 @@ export const LIST_MOCKS = [
 export const ORG_LIST_MOCK = [...getAllOrganizations];
 
 export const orgProps = {
-  columnNames: ['NAME', 'STATUS', 'ACTIONS'],
+  columnNames: [
+    { name: 'name', label: 'Name' },
+    { name: 'status', label: 'Status' },
+    { label: 'Actions' },
+  ],
   countQuery: GET_ORGANIZATION_COUNT,
   listItem: 'organizations',
   filterItemsQuery: FILTER_ORGANIZATIONS,

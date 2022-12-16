@@ -179,7 +179,7 @@ export const CollectionList = () => {
         restrictedAction={getRestrictedAction}
         title={t('Collections')}
         listItem="groups"
-        columnNames={['TITLE']}
+        columnNames={[{ name: 'label', label: t('Title') }]}
         listItemName="collection"
         displayListType="card"
         button={{ show: userRolePermissions.manageCollections, label: t('+ Create Collection') }}
