@@ -127,7 +127,6 @@ export const InteractiveMessageList = () => {
       dialogMessage={dialogMessage}
       noItemText="interactive message"
       {...queries}
-      removeSortBy={['TYPE', 'MESSAGE']}
       {...columnAttributes}
       button={{ show: true, label: t('+ Add New') }}
       additionalAction={additionalAction}

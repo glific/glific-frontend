@@ -223,7 +223,6 @@ export const FlowList = () => {
         {...queries}
         {...columnAttributes}
         searchParameter={['nameOrKeyword']}
-        removeSortBy={['LAST PUBLISHED', 'LAST SAVED IN DRAFT']}
         additionalAction={additionalAction}
         button={{ show: true, label: t('+ Create Flow') }}
         secondaryButton={importButton}

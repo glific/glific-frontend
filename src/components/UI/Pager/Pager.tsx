@@ -16,7 +16,6 @@ import styles from './Pager.module.css';
 const removeDisplayColumns = ['recordId', 'translations', 'id', 'isActive'];
 interface PagerProps {
   columnNames: Array<any>;
-  removeSortBy: Array<any>;
   data: any;
   columnStyles?: Array<any>;
   totalRows: number;
@@ -206,7 +205,6 @@ export const Pager = ({
   totalRows,
   collapseOpen,
   collapseRow,
-  removeSortBy = [],
 }: PagerProps) => {
   const rows = createRows(data, columnStyles, showCheckbox, collapseRow, collapseOpen);
   const tableHead = tableHeadColumns(
@@ -215,8 +213,7 @@ export const Pager = ({
     tableVals,
     handleTableChange,
     showCheckbox,
-    listItemName,
-    removeSortBy
+    listItemName
   );
 
   const tablePagination = pagination(columnNames, totalRows, handleTableChange, tableVals);

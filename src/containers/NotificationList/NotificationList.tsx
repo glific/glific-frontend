@@ -160,9 +160,9 @@ export const NotificationList = () => {
   const columnNames = [
     { label: '' },
     { name: 'updated_at', label: t('Timestamp'), sort: true, order: 'desc' },
-    { name: 'category', label: t('Category') },
-    { name: 'severity', label: t('Severity') },
-    { name: 'entity', label: t('Entity') },
+    { label: t('Category') },
+    { label: t('Severity') },
+    { label: t('Entity') },
     { name: 'message', label: t('Message') },
     { label: t('Actions') },
   ];
@@ -237,7 +237,6 @@ export const NotificationList = () => {
         restrictedAction={restrictedAction}
         additionalAction={additionalAction}
         {...columnAttributes}
-        removeSortBy={[t('Entity'), t('Severity'), t('Category')]}
         filters={{ severity: filter }}
         filterList={filterOnSeverity}
       />

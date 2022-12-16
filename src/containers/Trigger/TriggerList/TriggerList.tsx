@@ -102,7 +102,6 @@ export const TriggerList = () => {
       {...columnAttributes}
       searchParameter={['name']}
       additionalAction={additionalAction}
-      removeSortBy={['COLLECTION']}
     />
   );
 };

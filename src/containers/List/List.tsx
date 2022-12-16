@@ -70,7 +70,6 @@ export interface ListProps {
   collapseOpen?: boolean;
   collapseRow?: string;
   defaultSortBy?: string | null;
-  removeSortBy?: Array<any> | null;
   noItemText?: string | null;
   customStyles?: any;
 }
@@ -98,7 +97,6 @@ export const List = ({
   title,
   dialogTitle,
   filterList,
-  removeSortBy = null,
   button = {
     show: true,
     label: 'Add New',
@@ -543,7 +541,6 @@ export const List = ({
     displayList = (
       <Pager
         columnStyles={columnStyles}
-        removeSortBy={removeSortBy !== null ? removeSortBy : []}
         columnNames={columnNames}
         data={itemList}
         listItemName={listItemName}

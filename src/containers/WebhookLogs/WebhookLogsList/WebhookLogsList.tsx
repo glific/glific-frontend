@@ -73,7 +73,7 @@ export const WebhookLogsList = () => {
   const columnNames = [
     { name: 'updated_at', label: t('Time'), sort: true, order: 'desc' },
     { name: 'url', label: t('URL') },
-    { name: 'status', label: t('Status') },
+    { label: t('Status') },
     { name: 'status_code', label: t('Status Code') },
     { name: 'error', label: t('Error') },
     { name: 'method', label: t('Method') },
@@ -194,7 +194,6 @@ export const WebhookLogsList = () => {
         dialogMessage=""
         restrictedAction={restrictedAction}
         {...columnAttributes}
-        removeSortBy={['STATUS']}
       />
       {popover}
     </div>
