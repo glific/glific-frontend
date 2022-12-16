@@ -3,7 +3,11 @@ import { render } from '@testing-library/react';
 
 describe('Server Table test', () => {
   // Dummy data
-  const columnNames = ['First Name', 'Last Name', 'Message'];
+  const columnNames = [
+    { name: 'first_name', label: 'First Name' },
+    { name: 'last_name', label: 'Last Name' },
+    { name: 'message', label: 'Message' },
+  ];
 
   const data = [
     {
@@ -95,7 +99,7 @@ describe('Server Table test', () => {
   it('renders column names correctly', () => {
     const wrapper = render(createTable());
     for (let i = 0; i < columnNames.length - 1; i++) {
-      expect(wrapper.getByText(columnNames[i])).toBeInTheDocument();
+      expect(wrapper.getByText(columnNames[i].label)).toBeInTheDocument();
     }
   });
 

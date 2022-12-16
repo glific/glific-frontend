@@ -22,9 +22,9 @@ test('Interactive message list renders correctly', async () => {
   expect(screen.getByText('Loading...')).toBeInTheDocument();
 
   const title = await screen.findByText('Interactive msg');
-  const label = await screen.findByText('TITLE');
-  const messageBody = await screen.findByText('MESSAGE');
-  const type = await screen.findByText('TYPE');
+  const label = await screen.findByText('Title');
+  const messageBody = await screen.findByText('Message');
+  const type = await screen.findByText('Type');
 
   expect(title).toBeInTheDocument();
   expect(label).toBeInTheDocument();

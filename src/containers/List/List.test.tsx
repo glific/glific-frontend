@@ -144,7 +144,7 @@ test('list sorting', async () => {
   await waitFor(() => {
     const tableHead = container.querySelector('thead') as HTMLTableSectionElement;
     const { getByText } = within(tableHead);
-    fireEvent.click(getByText('KEYWORDS'));
+    fireEvent.click(getByText('Keywords'));
   });
 });
 

@@ -23,11 +23,11 @@ it('Renders ConsultingList component successfully', async () => {
 
   expect(screen.getByText('Loading...')).toBeInTheDocument();
   await waitFor(() => {
-    const nameLabel = screen.getByText('NAME');
-    const dateLabel = screen.getByText('DATE');
-    const minutesLabel = screen.getByText('MINUTES');
-    const typeLabel = screen.getByText('TYPE');
-    const actionLabel = screen.getByText('ACTIONS');
+    const nameLabel = screen.getByText('Name');
+    const dateLabel = screen.getByText('Date');
+    const minutesLabel = screen.getByText('Minutes');
+    const typeLabel = screen.getByText('Type');
+    const actionLabel = screen.getByText('Actions');
 
     expect(nameLabel).toBeInTheDocument();
     expect(dateLabel).toBeInTheDocument();

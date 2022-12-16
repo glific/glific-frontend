@@ -47,11 +47,11 @@ test('It should load notifications', async () => {
     expect(getByText('Notifications')).toBeInTheDocument();
   });
 
-  const time = await screen.findByText('TIMESTAMP');
-  const category = await screen.findByText('CATEGORY');
-  const severity = await screen.findByText('SEVERITY');
-  const entity = await screen.findByText('ENTITY');
-  const message = await screen.findByText('MESSAGE');
+  const time = await screen.findByText('Timestamp');
+  const category = await screen.findByText('Category');
+  const severity = await screen.findByText('Severity');
+  const entity = await screen.findByText('Entity');
+  const message = await screen.findByText('Message');
 
   expect(time).toBeInTheDocument();
   expect(category).toBeInTheDocument();
