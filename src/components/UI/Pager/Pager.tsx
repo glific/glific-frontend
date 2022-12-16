@@ -20,7 +20,6 @@ interface PagerProps {
   columnStyles?: Array<any>;
   totalRows: number;
   handleTableChange: Function;
-  listItemName: string;
   tableVals: {
     pageNum: number;
     pageRows: number;
@@ -128,9 +127,7 @@ const tableHeadColumns = (
   columnStyles: any,
   tableVals: any,
   handleTableChange: Function,
-  showCheckbox?: boolean,
-  listName?: string,
-  removeSortBy?: Array<any>
+  showCheckbox?: boolean
 ) => {
   let batchAction = null;
   if (showCheckbox) {
@@ -145,7 +142,7 @@ const tableHeadColumns = (
           key={field.name}
           className={`${styles.TableCell} ${columnStyles ? columnStyles[i] : null}`}
         >
-          {i !== columnNames.length - 1 && field.name && !removeSortBy?.includes(field.name) ? (
+          {i !== columnNames.length - 1 && field.name ? (
             <TableSortLabel
               active={field.name === tableVals.sortCol}
               direction={tableVals.sortDirection}
@@ -200,7 +197,6 @@ export const Pager = ({
   showCheckbox,
   columnNames,
   tableVals,
-  listItemName,
   handleTableChange,
   totalRows,
   collapseOpen,
@@ -212,8 +208,7 @@ export const Pager = ({
     columnStyles,
     tableVals,
     handleTableChange,
-    showCheckbox,
-    listItemName
+    showCheckbox
   );
 
   const tablePagination = pagination(columnNames, totalRows, handleTableChange, tableVals);

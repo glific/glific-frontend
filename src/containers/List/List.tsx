@@ -543,7 +543,6 @@ export const List = ({
         columnStyles={columnStyles}
         columnNames={columnNames}
         data={itemList}
-        listItemName={listItemName}
         totalRows={itemCount}
         handleTableChange={handleTableChange}
         tableVals={tableVals}

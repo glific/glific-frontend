@@ -49,7 +49,6 @@ describe('Server Table test', () => {
       data={data}
       totalRows={totalRows}
       handleTableChange={handleTableChange}
-      listItemName="record"
       tableVals={tableVals}
       collapseOpen={false}
       collapseRow={undefined}
