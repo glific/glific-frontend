@@ -143,7 +143,7 @@ export const List = ({
 
   // function to get the default sorting set for columns
   const getDefaultSortColumn = (columnsFields: any) => {
-    const sortColumn = columnsFields.reduce((field: any) => (field.sort ? field : ''));
+    const sortColumn = columnsFields.find((field: any) => (field.sort ? field : ''));
     if (sortColumn) {
       return [sortColumn.name, sortColumn.order];
     }
