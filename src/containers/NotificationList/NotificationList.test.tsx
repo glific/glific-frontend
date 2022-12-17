@@ -40,9 +40,6 @@ test('It should load notifications', async () => {
 
   expect(getByText('Loading...')).toBeInTheDocument();
 
-  await waitFor(() => {});
-  await waitFor(() => {});
-
   await waitFor(() => {
     expect(getByText('Notifications')).toBeInTheDocument();
   });

@@ -10,6 +10,7 @@ import {
   TableSortLabel,
   Checkbox,
 } from '@material-ui/core';
+import { v4 as uuidv4 } from 'uuid';
 
 import styles from './Pager.module.css';
 
@@ -89,7 +90,7 @@ const createRows = (
 
       return (
         <TableCell
-          key={item + entry.recordId}
+          key={uuidv4()}
           className={`${styles.TableCell} ${columnStyles ? columnStyles[stylesIndex] : null}`}
         >
           <div>{entry[item]}</div>
@@ -109,15 +110,15 @@ const createRows = (
     if (entry.translations) dataObj = JSON.parse(entry.translations);
 
     return (
-      <React.Fragment key={entry.recordId}>
-        <TableRow key={entry.recordId} className={`${styles.TableRow} ${isActiveRow}`}>
+      <>
+        <TableRow key={uuidv4()} className={`${styles.TableRow} ${isActiveRow}`}>
           {batchAction}
           {createRow(entry)}
         </TableRow>
         {collapseOpen && dataObj && entry.id === collapseRow
           ? collapsedRowData(dataObj, columnStyles, entry.recordId)
           : null}
-      </React.Fragment>
+      </>
     );
   });
 };
@@ -139,7 +140,7 @@ const tableHeadColumns = (
       {batchAction}
       {columnNames.map((field: any, i: number) => (
         <TableCell
-          key={field.name}
+          key={uuidv4()}
           className={`${styles.TableCell} ${columnStyles ? columnStyles[i] : null}`}
         >
           {i !== columnNames.length - 1 && field.name ? (
