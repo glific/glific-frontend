@@ -93,7 +93,7 @@ const createRows = (
           key={uuidv4()}
           className={`${styles.TableCell} ${columnStyles ? columnStyles[stylesIndex] : null}`}
         >
-          <div>{entry[item]}</div>
+          {entry[item]}
         </TableCell>
       );
     });
