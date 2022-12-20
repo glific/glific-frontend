@@ -6,7 +6,7 @@ export const getNotificationsQuery = {
     query: FILTER_NOTIFICATIONS,
     variables: {
       filter: { severity: '' },
-      opts: { limit: 50, offset: 0, order: 'DESC' },
+      opts: { limit: 50, offset: 0, order: 'DESC', orderWith: 'updated_at' },
     },
   },
   result: {
@@ -33,7 +33,7 @@ export const getFilteredNotificationsQuery = {
     query: FILTER_NOTIFICATIONS,
     variables: {
       filter: { severity: 'Warning' },
-      opts: { limit: 50, offset: 0, order: 'DESC' },
+      opts: { limit: 50, offset: 0, order: 'DESC', orderWith: 'updated_at' },
     },
   },
   result: {
@@ -60,7 +60,7 @@ export const getInfoNotificationsQuery = {
     query: FILTER_NOTIFICATIONS,
     variables: {
       filter: { severity: 'Info' },
-      opts: { limit: 50, offset: 0, order: 'DESC' },
+      opts: { limit: 50, offset: 0, order: 'DESC', orderWith: 'updated_at' },
     },
   },
   result: {
