@@ -604,7 +604,7 @@ const Template = ({
     {
       component: Input,
       name: 'label',
-      placeholder: t('Title*'),
+      placeholder: `${t('Title')}*`,
       validate: validateTitle,
       disabled: !!(defaultAttribute.isHsm && params.id),
       helperText: defaultAttribute.isHsm
@@ -617,7 +617,7 @@ const Template = ({
     {
       component: EmojiInput,
       name: 'body',
-      placeholder: t('Message*'),
+      placeholder: `${t('Message')}*`,
       rows: 5,
       convertToWhatsApp: true,
       textArea: true,

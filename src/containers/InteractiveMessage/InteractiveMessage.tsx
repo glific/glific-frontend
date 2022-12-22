@@ -448,7 +448,7 @@ export const InteractiveMessage = () => {
       component: Input,
       name: 'title',
       type: 'text',
-      placeholder: t('Title*'),
+      placeholder: `${t('Title')}*`,
       inputProp: {
         onBlur: (event: any) => setTitle(event.target.value),
       },
@@ -468,7 +468,7 @@ export const InteractiveMessage = () => {
         hasTranslations && getTranslation(templateType, 'body', translations, defaultLanguage),
       component: EmojiInput,
       name: 'body',
-      placeholder: t('Message*'),
+      placeholder: `${t('Message')}*`,
       rows: 5,
       convertToWhatsApp: true,
       textArea: true,
