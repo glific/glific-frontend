@@ -587,7 +587,7 @@ const Template = ({
           multiple: false,
           textFieldProps: {
             variant: 'outlined',
-            label: t('Language*'),
+            label: `${t('Language')}*`,
           },
           disabled: !!(defaultAttribute.isHsm && params.id),
           onChange: getLanguageId,
