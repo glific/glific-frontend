@@ -110,15 +110,15 @@ const createRows = (
     if (entry.translations) dataObj = JSON.parse(entry.translations);
 
     return (
-      <>
-        <TableRow key={uuidv4()} className={`${styles.TableRow} ${isActiveRow}`}>
+      <React.Fragment key={uuidv4()}>
+        <TableRow className={`${styles.TableRow} ${isActiveRow}`}>
           {batchAction}
           {createRow(entry)}
         </TableRow>
         {collapseOpen && dataObj && entry.id === collapseRow
           ? collapsedRowData(dataObj, columnStyles, entry.recordId)
           : null}
-      </>
+      </React.Fragment>
     );
   });
 };
