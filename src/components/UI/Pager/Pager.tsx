@@ -8,7 +8,6 @@ import {
   TablePagination,
   TableRow,
   TableSortLabel,
-  Checkbox,
 } from '@material-ui/core';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -27,7 +26,6 @@ interface PagerProps {
     sortCol: string;
     sortDirection: 'asc' | 'desc';
   };
-  showCheckbox?: boolean;
   collapseOpen: boolean;
   collapseRow: string | undefined;
 }
@@ -74,7 +72,6 @@ const collapsedRowData = (dataObj: any, columnStyles: any, recordId: any) => {
 const createRows = (
   data: any,
   columnStyles: any,
-  showCheckbox?: boolean,
   collapseRow?: string,
   collapseOpen: boolean = false
 ) => {
@@ -100,21 +97,13 @@ const createRows = (
   };
 
   return data.map((entry: any) => {
-    let batchAction = null;
-    if (showCheckbox) {
-      batchAction = <Checkbox />;
-    }
-
     let dataObj: any;
     const isActiveRow = entry.isActive === false ? styles.InactiveRow : styles.ActiveRow;
     if (entry.translations) dataObj = JSON.parse(entry.translations);
 
     return (
       <React.Fragment key={uuidv4()}>
-        <TableRow className={`${styles.TableRow} ${isActiveRow}`}>
-          {batchAction}
-          {createRow(entry)}
-        </TableRow>
+        <TableRow className={`${styles.TableRow} ${isActiveRow}`}>{createRow(entry)}</TableRow>
         {collapseOpen && dataObj && entry.id === collapseRow
           ? collapsedRowData(dataObj, columnStyles, entry.recordId)
           : null}
@@ -127,17 +116,10 @@ const tableHeadColumns = (
   columnNames: Array<any>,
   columnStyles: any,
   tableVals: any,
-  handleTableChange: Function,
-  showCheckbox?: boolean
+  handleTableChange: Function
 ) => {
-  let batchAction = null;
-  if (showCheckbox) {
-    batchAction = <Checkbox />;
-  }
-
-  return (
+  const headerRow = (
     <TableRow className={styles.TableHeadRow}>
-      {batchAction}
       {columnNames.map((field: any, i: number) => (
         <TableCell
           key={uuidv4()}
@@ -168,6 +150,7 @@ const tableHeadColumns = (
       ))}
     </TableRow>
   );
+  return headerRow;
 };
 
 const pagination = (
@@ -195,7 +178,6 @@ const pagination = (
 export const Pager = ({
   data,
   columnStyles,
-  showCheckbox,
   columnNames,
   tableVals,
   handleTableChange,
@@ -203,15 +185,8 @@ export const Pager = ({
   collapseOpen,
   collapseRow,
 }: PagerProps) => {
-  const rows = createRows(data, columnStyles, showCheckbox, collapseRow, collapseOpen);
-  const tableHead = tableHeadColumns(
-    columnNames,
-    columnStyles,
-    tableVals,
-    handleTableChange,
-    showCheckbox
-  );
-
+  const rows = createRows(data, columnStyles, collapseRow, collapseOpen);
+  const tableHead = tableHeadColumns(columnNames, columnStyles, tableVals, handleTableChange);
   const tablePagination = pagination(columnNames, totalRows, handleTableChange, tableVals);
 
   return (
