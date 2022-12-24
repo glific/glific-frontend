@@ -128,15 +128,15 @@ export const WebhookLogsList = () => {
   };
 
   const getColumns = ({
+    updatedAt,
     url,
-    method,
     status,
+    statusCode,
+    error,
+    method,
     requestHeaders,
     requestJson,
-    statusCode,
     responseJson,
-    error,
-    updatedAt,
   }: any) => ({
     updatedAt: getTime(updatedAt),
     url: getCroppedText(url, true),
@@ -189,7 +189,7 @@ export const WebhookLogsList = () => {
         pageLink="webhookLog"
         listIcon={webhookLogsIcon}
         searchParameter={['contact_phone', 'url']}
-        button={{ show: false, label: '' }}
+        button={{ show: false }}
         {...queries}
         dialogMessage=""
         restrictedAction={restrictedAction}
