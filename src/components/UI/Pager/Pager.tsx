@@ -11,11 +11,12 @@ import {
 } from '@material-ui/core';
 import { v4 as uuidv4 } from 'uuid';
 
+import { ColumnNames } from 'containers/List/List';
 import styles from './Pager.module.css';
 
 const removeDisplayColumns = ['recordId', 'translations', 'id', 'isActive'];
 interface PagerProps {
-  columnNames: Array<any>;
+  columnNames: Array<ColumnNames>;
   data: any;
   columnStyles?: Array<any>;
   totalRows: number;

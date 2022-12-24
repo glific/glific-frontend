@@ -21,7 +21,7 @@ import { setNotification, setErrorMessage } from 'common/notification';
 import { getUpdatedList, setListSession, getLastListSessionValues } from 'services/ListService';
 import styles from './List.module.css';
 
-interface ColumnNames {
+export interface ColumnNames {
   name?: string;
   label: string;
   sort?: boolean;
