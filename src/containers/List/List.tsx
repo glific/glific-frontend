@@ -48,7 +48,6 @@ export interface ListProps {
     link?: string;
     action?: Function;
   };
-  showCheckbox?: boolean;
   searchParameter?: Array<any>;
   filters?: Object | null;
   filterList?: any;
@@ -108,7 +107,6 @@ export const List = ({
     show: true,
     label: 'Add New',
   },
-  showCheckbox,
   deleteModifier = { icon: 'normal', variables: null, label: 'Delete' },
   editSupport = true,
   searchParameter = ['label'],
@@ -553,7 +551,6 @@ export const List = ({
         totalRows={itemCount}
         handleTableChange={handleTableChange}
         tableVals={tableVals}
-        showCheckbox={showCheckbox}
         collapseOpen={collapseOpen}
         collapseRow={collapseRow}
       />
