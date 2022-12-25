@@ -193,9 +193,7 @@ export const Pager = ({
   return (
     <div className={styles.TableContainer}>
       <Table className={styles.Table} data-testid="table">
-        <TableHead className={styles.TagListHeader} data-testid="tableHead">
-          {tableHead}
-        </TableHead>
+        <TableHead data-testid="tableHead">{tableHead}</TableHead>
         <TableBody data-testid="tableBody">{rows}</TableBody>
         <TableFooter className={styles.TableFooter} data-testid="tableFooter">
           <TableRow>{tablePagination}</TableRow>
