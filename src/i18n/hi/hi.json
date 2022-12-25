@@ -415,7 +415,7 @@
   "Not a valid time": "मान्य समय नहीं है",
   "New contact flow is required.": "नए संपर्क प्रवाह की आवश्यकता है।",
   "New contact flow": "नया संपर्क प्रवाह",
-  "The selected flow will trigger when end-users aren’t in any flow, their message doesn’t match any keyword, and the time of their message is as defined above. Note that the default flow is executed only once a day.": "चयनित प्रवाह तब ट्रिगर होगा जब अंतिम उपयोगकर्ता किसी भी प्रवाह में नहीं होंगे, उनका संदेश किसी भी कीवर्ड से मेल नहीं खाता है, और उनके संदेश का समय ऊपर परिभाषित किया गया है। ध्यान दें कि डिफ़ॉल्ट प्रवाह दिन में केवल एक बार निष्पादित होता है।",
+  "The selected flow will trigger when end-users aren’t in any flow, their message doesn’t match any keyword, and the time of their message is as defined above.": "चयनित प्रवाह तब ट्रिगर होगा जब अंतिम उपयोगकर्ता किसी भी प्रवाह में नहीं होंगे, उनका संदेश किसी भी कीवर्ड से मेल नहीं खाता है, और उनके संदेश का समय ऊपर परिभाषित किया गया है।",
   "For new contacts messaging your chatbot for the first time": "नए संपर्कों के लिए पहली बार अपने चैटबॉट को संदेश भेजना",
   "All day": "पूरे दिन",
   "Note: The next day begins after 12AM.": "नोट: अगला दिन 12AM के बाद शुरू होता है।",

@@ -316,7 +316,7 @@ export const Organisation = () => {
       },
       disabled: isDisabled,
       helperText: t(
-        'The selected flow will trigger when end-users aren’t in any flow, their message doesn’t match any keyword, and the time of their message is as defined above. Note that the default flow is executed only once a day.'
+        'The selected flow will trigger when end-users aren’t in any flow, their message doesn’t match any keyword, and the time of their message is as defined above.'
       ),
       validate: validateOutOfOfficeFlow,
     },
