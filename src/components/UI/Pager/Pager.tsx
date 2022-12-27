@@ -88,7 +88,7 @@ const createRows = (
 
       return (
         <TableCell
-          key={uuidv4()}
+          key={item + entry.recordId}
           className={`${styles.TableCell} ${columnStyles ? columnStyles[stylesIndex] : null}`}
         >
           {entry[item]}
@@ -103,7 +103,7 @@ const createRows = (
     if (entry.translations) dataObj = JSON.parse(entry.translations);
 
     return (
-      <React.Fragment key={uuidv4()}>
+      <React.Fragment key={entry.recordId}>
         <TableRow className={`${styles.TableRow} ${isActiveRow}`}>{createRow(entry)}</TableRow>
         {collapseOpen && dataObj && entry.id === collapseRow
           ? collapsedRowData(dataObj, columnStyles, entry.recordId)
