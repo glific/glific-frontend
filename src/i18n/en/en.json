@@ -389,7 +389,7 @@
   "If you are selecting end of the month dates, then for the ones not present i.e. 30, 31, the selection will default to the last day of that month.": "If you are selecting end of the month dates, then for the ones not present i.e. 30, 31, the selection will default to the last day of that month.",
   "Copy of the trigger has been created!": "Copy of the trigger has been created!",
   "You won't be able to use this trigger.": "You won't be able to use this trigger.",
-  "+ Create Trigger": "+ Create Trigger",
+  "Create Trigger": "Create Trigger",
   "Wallet balance is okay": "Wallet balance is okay",
   "Wallet balance is low": "Wallet balance is low",
   "For any help, please contact the Glific team": "For any help, please contact the Glific team",

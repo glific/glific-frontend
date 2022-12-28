@@ -47,6 +47,7 @@ export interface ListProps {
     label?: string;
     link?: string;
     action?: Function;
+    symbol?: string;
   };
   searchParameter?: Array<any>;
   filters?: Object | null;
@@ -603,7 +604,7 @@ export const List = ({
           variant="contained"
           onClick={() => button.action && button.action()}
         >
-          {button.label}
+          {button.symbol} {button.label}
         </Button>
       );
     } else if (!button.link) {
@@ -614,14 +615,14 @@ export const List = ({
           onClick={() => setNewItem(true)}
           data-testid="newItemButton"
         >
-          {button.label}
+          {button.symbol} {button.label}
         </Button>
       );
     } else {
       buttonContent = (
         <Link to={button.link}>
           <Button color="primary" variant="contained" data-testid="newItemLink">
-            {button.label}
+            {button.symbol} {button.label}
           </Button>
         </Link>
       );
