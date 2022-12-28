@@ -76,7 +76,7 @@ export const TagList = () => {
       listItemName="tag"
       pageLink="tag"
       listIcon={tagIcon}
-      button={{ show: true, label: t('+ Create Tag') }}
+      button={{ show: true, label: t('Create Tag'), symbol: '+' }}
       dialogMessage={dialogMessage}
       {...queries}
       {...columnAttributes}

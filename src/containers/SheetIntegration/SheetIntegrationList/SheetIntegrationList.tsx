@@ -91,7 +91,7 @@ export const SheetIntegrationList = () => {
       {...queries}
       {...columnAttributes}
       additionalAction={additionalAction}
-      button={{ show: true, label: t('+ Add Sheet') }}
+      button={{ show: true, label: t('Add Sheet'), symbol: '+' }}
     />
   );
 };

@@ -128,7 +128,7 @@ export const InteractiveMessageList = () => {
       noItemText="interactive message"
       {...queries}
       {...columnAttributes}
-      button={{ show: true, label: t('+ Add New') }}
+      button={{ show: true, label: t('Add New'), symbol: '+' }}
       additionalAction={additionalAction}
       collapseOpen={open}
       collapseRow={selectedId}

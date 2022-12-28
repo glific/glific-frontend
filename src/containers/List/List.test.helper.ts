@@ -31,7 +31,7 @@ export const defaultProps = {
   columnStyles: [],
   title: 'Tags',
   searchMode: true,
-  button: { show: true, label: '+ Create Tag' },
+  button: { show: true, label: 'Create Tag', symbol: '+' },
 };
 
 const count = {

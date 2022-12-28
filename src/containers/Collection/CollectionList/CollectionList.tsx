@@ -182,7 +182,11 @@ export const CollectionList = () => {
         columnNames={[{ name: 'label', label: t('Title') }]}
         listItemName="collection"
         displayListType="card"
-        button={{ show: userRolePermissions.manageCollections, label: t('+ Create Collection') }}
+        button={{
+          show: userRolePermissions.manageCollections,
+          label: t('Create Collection'),
+          symbol: '+',
+        }}
         pageLink="collection"
         listIcon={collectionIcon}
         dialogMessage={dialogMessage}

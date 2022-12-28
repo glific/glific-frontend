@@ -224,7 +224,7 @@ export const FlowList = () => {
         {...columnAttributes}
         searchParameter={['nameOrKeyword']}
         additionalAction={additionalAction}
-        button={{ show: true, label: t('+ Create Flow') }}
+        button={{ show: true, label: t('Create Flow'), symbol: '+' }}
         secondaryButton={importButton}
       />
 

@@ -298,7 +298,7 @@ export const Template = ({
     return <Loading />;
   }
 
-  const button = { show: true, label: buttonLabel };
+  const button = { show: true, label: buttonLabel, symbol: '+' };
   let secondaryButton = null;
 
   if (provider === GUPSHUP_ENTERPRISE_SHORTCODE) {
