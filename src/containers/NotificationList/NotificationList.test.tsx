@@ -48,13 +48,13 @@ test('It should load notifications', async () => {
   const category = await screen.findByText('Category');
   const severity = await screen.findByText('Severity');
   const entity = await screen.findByText('Entity');
-  const message = await screen.findByText('Message');
+  const message = await screen.findAllByText('Message');
 
   expect(time).toBeInTheDocument();
   expect(category).toBeInTheDocument();
   expect(severity).toBeInTheDocument();
   expect(entity).toBeInTheDocument();
-  expect(message).toBeInTheDocument();
+  expect(message).toHaveLength(2);
 });
 
 test('click on forward arrrow', async () => {
