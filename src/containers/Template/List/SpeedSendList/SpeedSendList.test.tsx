@@ -27,8 +27,8 @@ test('SpeedSendList has proper headers', async () => {
   });
 
   await waitFor(() => {
-    expect(getByText('TITLE')).toBeInTheDocument();
-    expect(getByText('BODY')).toBeInTheDocument();
-    expect(getByText('ACTIONS')).toBeInTheDocument();
+    expect(getByText('Title')).toBeInTheDocument();
+    expect(getByText('Body')).toBeInTheDocument();
+    expect(getByText('Actions')).toBeInTheDocument();
   });
 });

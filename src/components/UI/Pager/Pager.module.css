@@ -21,6 +21,7 @@
   padding: 0px 16px;
   padding-right: 5px;
   line-height: 1 !important;
+  text-transform: uppercase;
 }
 
 .TableCell {

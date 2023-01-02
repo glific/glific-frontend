@@ -117,59 +117,6 @@ export const CONNECTION_RECONNECT_ATTEMPTS = 5;
 
 export const MEDIA_MESSAGE_TYPES = ['IMAGE', 'AUDIO', 'VIDEO', 'DOCUMENT', 'STICKER'];
 
-export const setColumnToBackendTerms: any = (listName: string, columnName: string) => {
-  let backendTerms: any = {
-    'LAST MODIFIED': 'updated_at',
-    'END DATE': 'updated_at',
-    NAME: 'name',
-    LABEL: 'label',
-    BODY: 'body',
-    DESCRIPTION: 'description',
-    TITLE: 'label',
-    STATUS: 'status',
-    BENEFICIARY: 'name',
-    'PHONE NO': 'phone',
-    TIME: 'updated_at',
-    URL: 'url',
-    'STATUS CODE': 'status_code',
-    ERROR: 'error',
-    METHOD: 'method',
-    'REQUEST HEADER': 'request_headers',
-    'REQUEST JSON': 'request_json',
-    'RESPONSE JSON': 'response_json',
-  };
-
-  const additionalItems: any = {
-    flow: { TITLE: 'name', ' ': 'is_pinned' },
-    trigger: { TITLE: 'name' },
-    Search: {
-      TITLE: 'shortcode',
-      DESCRIPTION: 'label',
-    },
-    consultingHour: {
-      NAME: 'organization_name',
-      MINUTES: 'duration',
-      DATE: 'when',
-      TYPE: 'is_billable',
-    },
-    notification: {
-      TIMESTAMP: 'updated_at',
-      SEVERITY: 'severity',
-      CATEGORY: 'category',
-      ENTITY: 'entity',
-      MESSAGE: 'message',
-    },
-    contactField: {
-      'VARIABLE NAME': 'name',
-      'INPUT NAME': 'name',
-    },
-  };
-
-  backendTerms = { ...backendTerms, ...additionalItems[listName] };
-
-  return backendTerms[columnName];
-};
-
 // subscription duration to determine switch to fetch mode ( in seconds )
 export const SUBSCRIPTION_ALLOWED_DURATION = 5;
 

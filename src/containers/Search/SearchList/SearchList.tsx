@@ -27,7 +27,11 @@ const queries = {
 export const SearchList = () => {
   const { t } = useTranslation();
 
-  const columnNames = ['TITLE', 'DESCRIPTION', 'ACTIONS'];
+  const columnNames = [
+    { name: 'shortcode', label: t('Title') },
+    { name: 'label', label: t('Description') },
+    { label: t('Actions') },
+  ];
   const dialogMessage = t(
     'This action will remove all the conversations that were linked to this search and remove it as an option to filter your chat screen.'
   );
@@ -44,7 +48,7 @@ export const SearchList = () => {
       listItem="savedSearches"
       listItemName="Search"
       pageLink="search"
-      button={{ show: true, label: t('+ Create Search') }}
+      button={{ show: true, label: t('Create Search'), symbol: '+' }}
       listIcon={searchIcon}
       dialogMessage={dialogMessage}
       {...queries}

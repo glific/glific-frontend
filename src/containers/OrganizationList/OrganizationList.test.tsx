@@ -30,8 +30,8 @@ test('Organization list renders correctly', async () => {
   });
 
   const label = await screen.findByText('Organizations');
-  const nameLabel = await screen.findByText('NAME');
-  const statusLabel = await screen.findByText('STATUS');
+  const nameLabel = await screen.findByText('Name');
+  const statusLabel = await screen.findByText('Status');
 
   expect(label).toBeInTheDocument();
   expect(nameLabel).toBeInTheDocument();

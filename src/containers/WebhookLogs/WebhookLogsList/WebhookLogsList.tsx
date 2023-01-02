@@ -43,18 +43,6 @@ const getStatus = (status: string) => {
 
 const getText = (text: string) => <div className={styles.TableText}>{text}</div>;
 
-const columnNames = [
-  'TIME',
-  'URL',
-  'STATUS',
-  'STATUS CODE',
-  'ERROR',
-  'METHOD',
-  'REQUEST HEADER',
-  'REQUEST JSON',
-  'RESPONSE JSON',
-];
-
 const columnStyles = [
   styles.Time,
   styles.Url,
@@ -81,6 +69,18 @@ export const WebhookLogsList = () => {
   const [open, setOpen] = useState(false);
   const [text, setText] = useState<any>();
   const { t } = useTranslation();
+
+  const columnNames = [
+    { name: 'updated_at', label: t('Time'), sort: true, order: 'desc' },
+    { name: 'url', label: t('URL') },
+    { label: t('Status') },
+    { name: 'status_code', label: t('Status Code') },
+    { name: 'error', label: t('Error') },
+    { name: 'method', label: t('Method') },
+    { name: 'request_headers', label: t('Request header') },
+    { name: 'request_json', label: t('Request JSON') },
+    { name: 'response_json', label: t('Response JSON') },
+  ];
 
   const handleClick = (event: any) => {
     setAnchorEl(event.currentTarget);
@@ -128,15 +128,15 @@ export const WebhookLogsList = () => {
   };
 
   const getColumns = ({
+    updatedAt,
     url,
-    method,
     status,
+    statusCode,
+    error,
+    method,
     requestHeaders,
     requestJson,
-    statusCode,
     responseJson,
-    error,
-    updatedAt,
   }: any) => ({
     updatedAt: getTime(updatedAt),
     url: getCroppedText(url, true),
@@ -189,13 +189,11 @@ export const WebhookLogsList = () => {
         pageLink="webhookLog"
         listIcon={webhookLogsIcon}
         searchParameter={['contact_phone', 'url']}
-        button={{ show: false, label: '' }}
+        button={{ show: false }}
         {...queries}
         dialogMessage=""
         restrictedAction={restrictedAction}
         {...columnAttributes}
-        removeSortBy={['STATUS']}
-        listOrder="desc"
       />
       {popover}
     </div>

@@ -40,7 +40,14 @@ const ConsultingList = () => {
     deleteItemQuery: null,
   };
 
-  const columnNames = ['NAME', 'DATE', 'MINUTES', 'TYPE', 'TEAM', 'ACTIONS'];
+  const columnNames = [
+    { name: 'organization_name', label: t('Name') },
+    { name: 'when', label: t('Date'), sort: true, order: 'desc' },
+    { name: 'duration', label: t('Minutes') },
+    { name: 'is_billable', label: t('Type') },
+    { label: t('Team') },
+    { label: t('Actions') },
+  ];
 
   const getName = (label: string) => (
     <div className={styles.LabelContainer}>
@@ -118,8 +125,6 @@ const ConsultingList = () => {
       <ExportConsulting setFilters={setFilters} />
       {dialog}
       <List
-        defaultSortBy="DATE"
-        listOrder="desc"
         title={t('Consulting')}
         listItem="consultingHours"
         listItemName="consultingHour"

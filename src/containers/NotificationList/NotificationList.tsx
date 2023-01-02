@@ -157,7 +157,15 @@ export const NotificationList = () => {
     setOpen(false);
   };
 
-  const columnNames = ['', 'TIMESTAMP', 'CATEGORY', 'SEVERITY', 'ENTITY', 'MESSAGE'];
+  const columnNames = [
+    { label: '' },
+    { name: 'updated_at', label: t('Timestamp'), sort: true, order: 'desc' },
+    { label: t('Category') },
+    { label: t('Severity') },
+    { label: t('Entity') },
+    { name: 'message', label: t('Message') },
+    { label: t('Actions') },
+  ];
 
   const columnAttributes = {
     columnNames,
@@ -229,10 +237,8 @@ export const NotificationList = () => {
         restrictedAction={restrictedAction}
         additionalAction={additionalAction}
         {...columnAttributes}
-        removeSortBy={[t('Entity'), t('Severity'), t('Category')]}
         filters={{ severity: filter }}
         filterList={filterOnSeverity}
-        listOrder="desc"
       />
       {popover}
     </div>
