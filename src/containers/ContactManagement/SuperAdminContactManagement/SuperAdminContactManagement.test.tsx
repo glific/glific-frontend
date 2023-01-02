@@ -28,8 +28,8 @@ test('Super admin contact management list renders correctly', async () => {
   });
 
   const label = await screen.findByText('Contact management');
-  const nameLabel = await screen.findByText('NAME');
-  const actionLabel = await screen.findByText('ACTIONS');
+  const nameLabel = await screen.findByText('Name');
+  const actionLabel = await screen.findByText('Actions');
 
   expect(label).toBeInTheDocument();
   expect(nameLabel).toBeInTheDocument();

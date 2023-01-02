@@ -31,7 +31,11 @@ export const RoleList = () => {
     description: getDescription(description),
   });
 
-  const columnNames = ['LABEL', 'DESCRIPTION', 'ACTIONS'];
+  const columnNames = [
+    { name: 'label', label: t('Label') },
+    { name: 'description', label: t('Description') },
+    { label: t('Actions') },
+  ];
 
   const columnAttributes = {
     columnNames,
@@ -48,7 +52,7 @@ export const RoleList = () => {
       listIcon={roleIcon}
       {...queries}
       {...columnAttributes}
-      button={{ show: true, label: t('+ Create Role') }}
+      button={{ show: true, label: t('Create Role'), symbol: '+' }}
     />
   );
 };

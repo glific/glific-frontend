@@ -61,10 +61,10 @@ describe('<List />', () => {
     await waitFor(() => {
       const tableHead = container.querySelector('thead') as HTMLTableSectionElement;
       const { getByText } = within(tableHead);
-      expect(getByText('TITLE')).toBeInTheDocument();
-      expect(getByText('DESCRIPTION')).toBeInTheDocument();
-      expect(getByText('KEYWORDS')).toBeInTheDocument();
-      expect(getByText('ACTIONS')).toBeInTheDocument();
+      expect(getByText('Title')).toBeInTheDocument();
+      expect(getByText('Description')).toBeInTheDocument();
+      expect(getByText('Keywords')).toBeInTheDocument();
+      expect(getByText('Actions')).toBeInTheDocument();
     });
   });
 
@@ -144,7 +144,7 @@ test('list sorting', async () => {
   await waitFor(() => {
     const tableHead = container.querySelector('thead') as HTMLTableSectionElement;
     const { getByText } = within(tableHead);
-    fireEvent.click(getByText('KEYWORDS'));
+    fireEvent.click(getByText('Keywords'));
   });
 });
 

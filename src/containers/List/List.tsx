@@ -18,12 +18,18 @@ import { ReactComponent as BackIcon } from 'assets/images/icons/Back.svg';
 import { GET_CURRENT_USER } from 'graphql/queries/User';
 import { getUserRole, getUserRolePermissions } from 'context/role';
 import { setNotification, setErrorMessage } from 'common/notification';
-import { setColumnToBackendTerms } from 'common/constants';
 import { getUpdatedList, setListSession, getLastListSessionValues } from 'services/ListService';
 import styles from './List.module.css';
 
+export interface ColumnNames {
+  name?: string;
+  label: string;
+  sort?: boolean;
+  order?: string;
+}
+
 export interface ListProps {
-  columnNames?: Array<string>;
+  columnNames?: Array<ColumnNames>;
   countQuery: DocumentNode;
   listItem: string;
   filterItemsQuery: DocumentNode;
@@ -41,12 +47,11 @@ export interface ListProps {
     label?: string;
     link?: string;
     action?: Function;
+    symbol?: string;
   };
-  showCheckbox?: boolean;
   searchParameter?: Array<any>;
   filters?: Object | null;
   filterList?: any;
-  listOrder?: 'asc' | 'desc';
   displayListType?: string;
   cardLink?: Object | null;
   editSupport?: boolean;
@@ -72,9 +77,7 @@ export interface ListProps {
   collapseOpen?: boolean;
   collapseRow?: string;
   defaultSortBy?: string | null;
-  removeSortBy?: Array<any> | null;
   noItemText?: string | null;
-  isDetailsPage?: boolean;
   customStyles?: any;
 }
 
@@ -101,13 +104,10 @@ export const List = ({
   title,
   dialogTitle,
   filterList,
-  listOrder = 'asc',
-  removeSortBy = null,
   button = {
     show: true,
     label: 'Add New',
   },
-  showCheckbox,
   deleteModifier = { icon: 'normal', variables: null, label: 'Delete' },
   editSupport = true,
   searchParameter = ['label'],
@@ -119,9 +119,7 @@ export const List = ({
   restrictedAction,
   collapseOpen = false,
   collapseRow = undefined,
-  defaultSortBy,
   noItemText = null,
-  isDetailsPage = false,
   customStyles,
 }: ListProps) => {
   const { t } = useTranslation();
@@ -141,19 +139,24 @@ export const List = ({
   const capitalListItemName = listItemName
     ? listItemName[0].toUpperCase() + listItemName.slice(1)
     : '';
-  let defaultColumnSort = columnNames[0];
 
-  // check if there is a default column set for sorting
-  if (defaultSortBy) {
-    defaultColumnSort = defaultSortBy;
-  }
-  // get the last sort column value from local storage if exist else set the default column
-  const getSortColumn = (listItemNameValue: string, columnName: string) => {
-    // set the column name
-    let columnnNameValue;
-    if (columnName) {
-      columnnNameValue = columnName;
+  // function to get the default sorting set for columns
+  const getDefaultSortColumn = (columnsFields: any) => {
+    const sortColumn = columnsFields.find((field: any) => (field.sort ? field : ''));
+    if (sortColumn) {
+      return [sortColumn.name, sortColumn.order];
     }
+
+    // if nothing is set assume first column is for sorting and order is 'asc'
+    return [columnNames[0].name, 'asc'];
+  };
+
+  const [defaultColumnSort, defaultColumnSortOrder] = getDefaultSortColumn(columnNames);
+
+  // get the last sort column value from local storage if exist else set the default column
+  const getSortColumn = (listItemNameValue: string) => {
+    // set the column name
+    let columnnNameValue = defaultColumnSort;
 
     // check if we have sorting stored in local storage
     const sortValue = getLastListSessionValues(listItemNameValue, false);
@@ -163,12 +166,12 @@ export const List = ({
       columnnNameValue = sortValue;
     }
 
-    return setColumnToBackendTerms(listItemName, columnnNameValue);
+    return columnnNameValue;
   };
 
   // get the last sort direction value from local storage if exist else set the default order
   const getSortDirection = (listItemNameValue: string) => {
-    let sortDirection: any = listOrder;
+    let sortDirection = defaultColumnSortOrder;
 
     // check if we have sorting stored in local storage
     const sortValue = getLastListSessionValues(listItemNameValue, true);
@@ -183,7 +186,7 @@ export const List = ({
   const [tableVals, setTableVals] = useState<TableVals>({
     pageNum: 0,
     pageRows: 50,
-    sortCol: getSortColumn(listItemName, defaultColumnSort),
+    sortCol: getSortColumn(listItemName),
     sortDirection: getSortDirection(listItemName),
   });
 
@@ -191,9 +194,7 @@ export const List = ({
 
   const handleTableChange = (attribute: string, newVal: any) => {
     let updatedList;
-    let attributeValue = newVal;
     if (attribute === 'sortCol') {
-      attributeValue = setColumnToBackendTerms(listItemName, newVal);
       updatedList = getUpdatedList(listItemName, newVal, false);
     } else {
       updatedList = getUpdatedList(listItemName, newVal, true);
@@ -204,7 +205,7 @@ export const List = ({
 
     setTableVals({
       ...tableVals,
-      [attribute]: attributeValue,
+      [attribute]: newVal,
     });
   };
 
@@ -509,7 +510,7 @@ export const List = ({
     setTableVals({
       pageNum: 0,
       pageRows: 50,
-      sortCol: getSortColumn(listItemName, defaultColumnSort),
+      sortCol: getSortColumn(listItemName),
       sortDirection: getSortDirection(listItemName),
     });
   };
@@ -546,14 +547,11 @@ export const List = ({
     displayList = (
       <Pager
         columnStyles={columnStyles}
-        removeSortBy={removeSortBy !== null ? removeSortBy : []}
         columnNames={columnNames}
         data={itemList}
-        listItemName={listItemName}
         totalRows={itemCount}
         handleTableChange={handleTableChange}
         tableVals={tableVals}
-        showCheckbox={showCheckbox}
         collapseOpen={collapseOpen}
         collapseRow={collapseRow}
       />
@@ -606,7 +604,7 @@ export const List = ({
           variant="contained"
           onClick={() => button.action && button.action()}
         >
-          {button.label}
+          {button.symbol} {button.label}
         </Button>
       );
     } else if (!button.link) {
@@ -617,14 +615,14 @@ export const List = ({
           onClick={() => setNewItem(true)}
           data-testid="newItemButton"
         >
-          {button.label}
+          {button.symbol} {button.label}
         </Button>
       );
     } else {
       buttonContent = (
         <Link to={button.link}>
           <Button color="primary" variant="contained" data-testid="newItemLink">
-            {button.label}
+            {button.symbol} {button.label}
           </Button>
         </Link>
       );
@@ -645,15 +643,9 @@ export const List = ({
     </div>
   );
 
-  let headerSize = styles.Header;
-
-  if (isDetailsPage) {
-    headerSize = styles.DetailsPageHeader;
-  }
-
   return (
     <>
-      <div className={headerSize} data-testid="listHeader">
+      <div className={styles.Header} data-testid="listHeader">
         <Typography variant="h5" className={styles.Title}>
           <IconButton disabled className={styles.Icon}>
             {listIcon}

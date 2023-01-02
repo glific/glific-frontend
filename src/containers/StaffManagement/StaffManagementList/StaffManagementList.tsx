@@ -20,7 +20,14 @@ export const StaffManagementList = () => {
   const additionalAction = [
     { icon: chatIcon, parameter: 'contact.id', link: '/chat', label: t('Send Message') },
   ];
-  const columnNames = ['NAME', 'PHONE NO', 'ASSIGNED TO', 'ACTIONS'];
+
+  const columnNames = [
+    { name: 'name', label: t('Name') },
+    { name: 'phone', label: t('Phone number') },
+    { label: t('Assigned to') },
+    { label: t('Actions') },
+  ];
+
   const columnStyles = [styles.Name, styles.Phone, styles.Collection, styles.Actions];
   const staffIcon = <StaffIcon className={styles.StaffIcon} />;
 

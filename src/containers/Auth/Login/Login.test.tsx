@@ -14,6 +14,10 @@ import { Login } from './Login';
 const mocks = [getCurrentUserQuery];
 
 jest.mock('axios');
+jest.mock('pino-logflare', () => ({
+  createWriteStream: jest.fn(),
+  createPinoBrowserSend: jest.fn(),
+}));
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 const wrapper = (

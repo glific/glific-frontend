@@ -31,10 +31,10 @@ test('it renders list successfully', async () => {
   render(list);
   expect(screen.getByText('Loading...')).toBeInTheDocument();
   await waitFor(() => {
-    const variableNameLabel = screen.getByText('VARIABLE NAME');
-    const inputNameLabel = screen.getByText('INPUT NAME');
-    const shortcodeLabel = screen.getByText('SHORTCODE');
-    const actionLabel = screen.getByText('ACTIONS');
+    const variableNameLabel = screen.getByText('Variable name');
+    const inputNameLabel = screen.getByText('Input name');
+    const shortcodeLabel = screen.getByText('Shortcode');
+    const actionLabel = screen.getByText('Actions');
 
     expect(variableNameLabel).toBeInTheDocument();
     expect(inputNameLabel).toBeInTheDocument();

@@ -36,7 +36,7 @@ export const SuperAdminContactManagement = () => {
     );
   }
 
-  const columnNames = ['NAME', 'ACTIONS'];
+  const columnNames = [{ name: 'name', label: t('Name') }, { label: t('Actions') }];
 
   const getName = (label: string) => (
     <div className={styles.LabelContainer}>

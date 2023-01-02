@@ -21,10 +21,10 @@ test('StaffManagementList is rendered correctly', async () => {
   render(staffManagement);
 
   await waitFor(() => {
-    const nameLabel = screen.getByText('NAME');
-    const phoneLabel = screen.getByText('PHONE NO');
-    const assignedToLabel = screen.getByText('ASSIGNED TO');
-    const actionLabel = screen.getByText('ACTIONS');
+    const nameLabel = screen.getByText('Name');
+    const phoneLabel = screen.getByText('Phone number');
+    const assignedToLabel = screen.getByText('Assigned to');
+    const actionLabel = screen.getByText('Actions');
 
     expect(nameLabel).toBeInTheDocument();
     expect(phoneLabel).toBeInTheDocument();

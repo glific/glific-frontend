@@ -58,7 +58,12 @@ export const CollectionContactList = ({ title }: CollectionContactListProps) => 
     },
   });
 
-  const columnNames = ['BENEFICIARY', 'ALL COLLECTIONS', 'ACTIONS'];
+  const columnNames = [
+    { name: 'name', label: t('Beneficiary') },
+    { label: t('All Collections') },
+    { label: t('Actions') },
+  ];
+
   const dialogTitle = t('Are you sure you want to remove contact from this collection?');
   const dialogMessage = t('The contact will no longer receive messages sent to this collection');
 
@@ -75,7 +80,6 @@ export const CollectionContactList = ({ title }: CollectionContactListProps) => 
       button={{ show: false, label: '' }}
       pageLink="contact"
       listIcon={collectionIcon}
-      isDetailsPage
       deleteModifier={{
         icon: 'cross',
         variables: getDeleteQueryVariables,

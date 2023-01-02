@@ -48,7 +48,7 @@ export const HSMList = () => {
         listIcon={templateIcon}
         filters={{ isHsm: true }}
         isHSM
-        buttonLabel={t('+ Create HSM Template')}
+        buttonLabel={t('Create HSM Template')}
       />
       <Button
         variant="outlined"

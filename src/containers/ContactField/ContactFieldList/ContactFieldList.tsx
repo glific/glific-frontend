@@ -66,7 +66,12 @@ const ContactFieldList = ({ openDialog }: ContactFieldListProps) => {
     updateContactField({ variables });
   };
 
-  const columnNames = ['VARIABLE NAME', 'INPUT NAME', 'SHORTCODE', 'ACTIONS'];
+  const columnNames = [
+    { name: 'name', label: t('Variable name') },
+    { name: 'name', label: t('Input name') },
+    { label: t('Shortcode') },
+    { label: t('Actions') },
+  ];
 
   const getName = (label: string) => (
     <div className={styles.LabelContainer}>
@@ -132,6 +137,11 @@ const ContactFieldList = ({ openDialog }: ContactFieldListProps) => {
         listItemName="contactField"
         pageLink="contact-fields"
         listIcon={listIcon}
+        button={{
+          show: true,
+          link: '/contact-fields/add',
+          label: 'Add new',
+        }}
         searchParameter={['name']}
         dialogMessage={dialogMessage}
         dialogTitle={dialogTitle}

@@ -28,8 +28,22 @@ export const parseText = (text: string) => {
 
 export { parseText as parseTextMethod };
 
-const validateMediaMethod = (URL: string, attachmentType: string) =>
+const validateMediaMethod = (URL: string, attachmentType: string, allowStickers: boolean = true) =>
   new Promise((resolve) => {
+    // check if stickers are allowed instead of image, if not then return early
+    if (
+      !allowStickers &&
+      attachmentType === 'IMAGE' &&
+      URL.slice(-5).toLocaleLowerCase() === '.webp'
+    ) {
+      resolve({
+        data: {
+          is_valid: false,
+          message: 'Stickers are not allowed.',
+        },
+      });
+    }
+
     const encodedUrl = encodeURIComponent(URL);
     axios
       .get(
