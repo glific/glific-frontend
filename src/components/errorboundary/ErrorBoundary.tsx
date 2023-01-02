@@ -5,10 +5,10 @@ import React, { Component } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './ErrorBoundary.module.css';
 
-function withRouter(Component: any) {
+function withRouter(NavigateComponent: any) {
   return function WrappedComponent(props: any) {
     const navigate = useNavigate();
-    return <Component {...props} navigate={navigate} />;
+    return <NavigateComponent {...props} navigate={navigate} />;
   };
 }
 
