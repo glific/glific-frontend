@@ -66,6 +66,7 @@ const conversationMessageQuery = (
             status: 'VALID',
             bspStatus: 'SESSION_AND_HSM',
             isOrgRead: true,
+            fields: '{}',
           },
           messages: [
             {

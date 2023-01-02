@@ -191,7 +191,14 @@ export const FlowList = () => {
     lastChangedAt: getDate(lastChangedAt, t('Nothing in draft')),
   });
 
-  const columnNames = [' ', 'TITLE', 'LAST PUBLISHED', 'LAST SAVED IN DRAFT', 'ACTIONS'];
+  const columnNames = [
+    { name: 'is_pinned', label: '', sort: true, order: 'desc' },
+    { name: 'name', label: t('Title') },
+    { label: t('Last published') },
+    { label: t('Last saved in Draft') },
+    { label: t('Actions') },
+  ];
+
   const dialogMessage = t("You won't be able to use this flow.");
 
   const columnAttributes = {
@@ -216,12 +223,9 @@ export const FlowList = () => {
         {...queries}
         {...columnAttributes}
         searchParameter={['nameOrKeyword']}
-        removeSortBy={['LAST PUBLISHED', 'LAST SAVED IN DRAFT']}
         additionalAction={additionalAction}
-        button={{ show: true, label: t('+ Create Flow') }}
+        button={{ show: true, label: t('Create Flow'), symbol: '+' }}
         secondaryButton={importButton}
-        defaultSortBy=" "
-        listOrder="desc"
       />
 
       <Link to="/webhook-logs" className={styles.Webhook}>

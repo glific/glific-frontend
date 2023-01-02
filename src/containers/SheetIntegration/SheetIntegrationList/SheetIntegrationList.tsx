@@ -66,7 +66,12 @@ export const SheetIntegrationList = () => {
     date: getLastSyncedAt(lastSyncedAt),
   });
 
-  const columnNames = ['LABEL', 'LAST SYNCED', 'ACTIONS'];
+  const columnNames = [
+    { name: 'label', label: t('Label') },
+    { label: t('Last synced') },
+    { label: t('Actions') },
+  ];
+
   const dialogMessage = t("You won't be able to use this sheet.");
 
   const columnAttributes = {
@@ -86,7 +91,7 @@ export const SheetIntegrationList = () => {
       {...queries}
       {...columnAttributes}
       additionalAction={additionalAction}
-      button={{ show: true, label: t('+ Add Sheet') }}
+      button={{ show: true, label: t('Add Sheet'), symbol: '+' }}
     />
   );
 };

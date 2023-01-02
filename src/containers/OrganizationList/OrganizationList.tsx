@@ -40,7 +40,11 @@ export const OrganizationList = ({
   const [orgName, setOrgName] = useState('');
   const navigate = useNavigate();
 
-  const columnNames = ['NAME', 'STATUS', 'ACTIONS'];
+  const columnNames = [
+    { name: 'name', label: t('Name') },
+    { name: 'status', label: t('Status') },
+    { label: t('Actions') },
+  ];
 
   const getName = (label: string, insertedAt: any) => (
     <div className={styles.LabelContainer}>

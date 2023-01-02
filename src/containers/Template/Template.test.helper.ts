@@ -434,7 +434,7 @@ export const HSM_LIST = [
       query: FILTER_TEMPLATES,
       variables: {
         filter: { isHsm: true },
-        opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'status' },
+        opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'label' },
       },
     },
     result: {
@@ -452,7 +452,7 @@ export const HSM_LIST = [
       query: FILTER_TEMPLATES,
       variables: {
         filter: { isHsm: true, status: 'APPROVED' },
-        opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'status' },
+        opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'label' },
       },
     },
     result: {
@@ -486,7 +486,7 @@ export const HSM_LIST = [
       query: FILTER_TEMPLATES,
       variables: {
         filter: { isHsm: true, status: 'REJECTED' },
-        opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'status' },
+        opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'label' },
       },
     },
     result: {

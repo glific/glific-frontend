@@ -8,28 +8,25 @@ import {
   TablePagination,
   TableRow,
   TableSortLabel,
-  Checkbox,
 } from '@material-ui/core';
+import { v4 as uuidv4 } from 'uuid';
 
-import { setColumnToBackendTerms } from 'common/constants';
+import { ColumnNames } from 'containers/List/List';
 import styles from './Pager.module.css';
 
 const removeDisplayColumns = ['recordId', 'translations', 'id', 'isActive'];
 interface PagerProps {
-  columnNames: Array<any>;
-  removeSortBy: Array<any>;
+  columnNames: Array<ColumnNames>;
   data: any;
   columnStyles?: Array<any>;
   totalRows: number;
   handleTableChange: Function;
-  listItemName: string;
   tableVals: {
     pageNum: number;
     pageRows: number;
     sortCol: string;
     sortDirection: 'asc' | 'desc';
   };
-  showCheckbox?: boolean;
   collapseOpen: boolean;
   collapseRow: string | undefined;
 }
@@ -76,7 +73,6 @@ const collapsedRowData = (dataObj: any, columnStyles: any, recordId: any) => {
 const createRows = (
   data: any,
   columnStyles: any,
-  showCheckbox?: boolean,
   collapseRow?: string,
   collapseOpen: boolean = false
 ) => {
@@ -95,28 +91,20 @@ const createRows = (
           key={item + entry.recordId}
           className={`${styles.TableCell} ${columnStyles ? columnStyles[stylesIndex] : null}`}
         >
-          <div>{entry[item]}</div>
+          {entry[item]}
         </TableCell>
       );
     });
   };
 
   return data.map((entry: any) => {
-    let batchAction = null;
-    if (showCheckbox) {
-      batchAction = <Checkbox />;
-    }
-
     let dataObj: any;
     const isActiveRow = entry.isActive === false ? styles.InactiveRow : styles.ActiveRow;
     if (entry.translations) dataObj = JSON.parse(entry.translations);
 
     return (
       <React.Fragment key={entry.recordId}>
-        <TableRow key={entry.recordId} className={`${styles.TableRow} ${isActiveRow}`}>
-          {batchAction}
-          {createRow(entry)}
-        </TableRow>
+        <TableRow className={`${styles.TableRow} ${isActiveRow}`}>{createRow(entry)}</TableRow>
         {collapseOpen && dataObj && entry.id === collapseRow
           ? collapsedRowData(dataObj, columnStyles, entry.recordId)
           : null}
@@ -129,32 +117,24 @@ const tableHeadColumns = (
   columnNames: Array<any>,
   columnStyles: any,
   tableVals: any,
-  handleTableChange: Function,
-  showCheckbox?: boolean,
-  listName?: string,
-  removeSortBy?: Array<any>
+  handleTableChange: Function
 ) => {
-  let batchAction = null;
-  if (showCheckbox) {
-    batchAction = <Checkbox />;
-  }
-  return (
+  const headerRow = (
     <TableRow className={styles.TableHeadRow}>
-      {batchAction}
-      {columnNames.map((name: string, i: number) => (
+      {columnNames.map((field: any, i: number) => (
         <TableCell
-          key={name}
+          key={uuidv4()}
           className={`${styles.TableCell} ${columnStyles ? columnStyles[i] : null}`}
         >
-          {i !== columnNames.length - 1 && name !== '' && !removeSortBy?.includes(name) ? (
+          {i !== columnNames.length - 1 && field.name ? (
             <TableSortLabel
-              active={setColumnToBackendTerms(listName, name) === tableVals.sortCol}
+              active={field.name === tableVals.sortCol}
               direction={tableVals.sortDirection}
               onClick={() => {
-                if (setColumnToBackendTerms(listName, name) !== tableVals.sortCol) {
-                  handleTableChange('sortCol', name);
+                if (field.name !== tableVals.sortCol) {
+                  handleTableChange('sortCol', field.name);
                 } else {
-                  handleTableChange('sortCol', name);
+                  handleTableChange('sortCol', field.name);
                   handleTableChange(
                     'sortDirection',
                     tableVals.sortDirection === 'asc' ? 'desc' : 'asc'
@@ -162,15 +142,16 @@ const tableHeadColumns = (
                 }
               }}
             >
-              {name}
+              {field.label}
             </TableSortLabel>
           ) : (
-            name
+            field.label
           )}
         </TableCell>
       ))}
     </TableRow>
   );
+  return headerRow;
 };
 
 const pagination = (
@@ -198,35 +179,21 @@ const pagination = (
 export const Pager = ({
   data,
   columnStyles,
-  showCheckbox,
   columnNames,
   tableVals,
-  listItemName,
   handleTableChange,
   totalRows,
   collapseOpen,
   collapseRow,
-  removeSortBy = [],
 }: PagerProps) => {
-  const rows = createRows(data, columnStyles, showCheckbox, collapseRow, collapseOpen);
-  const tableHead = tableHeadColumns(
-    columnNames,
-    columnStyles,
-    tableVals,
-    handleTableChange,
-    showCheckbox,
-    listItemName,
-    removeSortBy
-  );
-
+  const rows = createRows(data, columnStyles, collapseRow, collapseOpen);
+  const tableHead = tableHeadColumns(columnNames, columnStyles, tableVals, handleTableChange);
   const tablePagination = pagination(columnNames, totalRows, handleTableChange, tableVals);
 
   return (
     <div className={styles.TableContainer}>
       <Table className={styles.Table} data-testid="table">
-        <TableHead className={styles.TagListHeader} data-testid="tableHead">
-          {tableHead}
-        </TableHead>
+        <TableHead data-testid="tableHead">{tableHead}</TableHead>
         <TableBody data-testid="tableBody">{rows}</TableBody>
         <TableFooter className={styles.TableFooter} data-testid="tableFooter">
           <TableRow>{tablePagination}</TableRow>

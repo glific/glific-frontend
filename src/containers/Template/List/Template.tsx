@@ -132,10 +132,21 @@ export const Template = ({
     return <span className={styles.Status}>{statusValue}</span>;
   };
 
-  let columnNames = ['TITLE', 'BODY'];
-  columnNames = isHSM
-    ? [...columnNames, 'STATUS', ...(filters.REJECTED ? ['REASON'] : []), 'ACTIONS']
-    : [...columnNames, 'LAST MODIFIED', 'ACTIONS'];
+  const columnNames: any = [
+    { name: 'label', label: t('Title') },
+    { name: 'body', label: t('Body') },
+  ];
+
+  if (isHSM) {
+    columnNames.push({ name: 'status', label: t('Status') });
+    if (filters.REJECTED) {
+      columnNames.push({ label: t('Reason') });
+    }
+  } else {
+    columnNames.push({ name: 'updated_at', label: t('Last modified') });
+  }
+
+  columnNames.push({ label: t('Actions') });
 
   let columnStyles: any = [styles.Label, styles.Body];
 
@@ -287,7 +298,7 @@ export const Template = ({
     return <Loading />;
   }
 
-  const button = { show: true, label: buttonLabel };
+  const button = { show: true, label: buttonLabel, symbol: '+' };
   let secondaryButton = null;
 
   if (provider === GUPSHUP_ENTERPRISE_SHORTCODE) {
