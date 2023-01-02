@@ -24,6 +24,7 @@
 }
 
 .GiftCard {
+  text-transform: uppercase;
   color: rgba(7, 63, 36, 1);
   font-size: 14px;
   font-weight: 500;
@@ -40,6 +41,20 @@
 
 .CardHeader {
   display: flex;
+}
+
+.Image {
+  margin-right: 20px;
+  margin-left: 20px;
+  margin-top: 8px;
+  text-align: center;
+  color: #073f24;
+  font-size: 24px;
+  font-weight: 800;
+  font-style: bold;
+  line-height: 1;
+  position: relative;
+  top: 30px;
 }
 
 .Dot {
