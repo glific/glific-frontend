@@ -1,7 +1,7 @@
 import React, { lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
-
+import ErrorBoundary from 'components/errorboundary/ErrorBoundary';
 import { ChatInterface } from 'containers/Chat/ChatInterface/ChatInterface';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { checkDynamicRole, getUserRole } from 'context/role';
@@ -207,7 +207,9 @@ export const AuthenticatedRoute = () => {
       <div className={styles.App} data-testid="app">
         <Layout>
           {toastMessage}
-          <Suspense fallback={<Loading />}>{route}</Suspense>
+          <Suspense fallback={<Loading />}>
+            <ErrorBoundary>{route}</ErrorBoundary>
+          </Suspense>
         </Layout>
       </div>
     </ProviderContext.Provider>
