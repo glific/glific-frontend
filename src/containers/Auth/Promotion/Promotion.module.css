@@ -16,7 +16,6 @@
 
 .ContainerMax {
   composes: Container;
-  height: 382px;
 }
 
 .ContainerMin {
@@ -25,6 +24,7 @@
 }
 
 .GiftCard {
+  text-transform: uppercase;
   color: rgba(7, 63, 36, 1);
   font-size: 14px;
   font-weight: 500;
@@ -41,6 +41,20 @@
 
 .CardHeader {
   display: flex;
+}
+
+.Image {
+  margin-right: 20px;
+  margin-left: 20px;
+  margin-top: 8px;
+  text-align: center;
+  color: #073f24;
+  font-size: 24px;
+  font-weight: 800;
+  font-style: bold;
+  line-height: 1;
+  position: relative;
+  top: 30px;
 }
 
 .Dot {
@@ -102,34 +116,7 @@
   text-align: center;
 }
 
-.SocialIcons {
-  margin-top: 8px;
-  display: flex;
-  justify-content: center;
-}
 
-.SocialIcons a {
-  margin: 0 8px;
-  cursor: pointer;
-}
-
-.Image {
-  margin-right: 20px;
-  margin-left: 20px;
-  margin-top: 8px;
-  text-align: center;
-  color: #073f24;
-  font-size: 24px;
-  font-weight: 800;
-  font-style: bold;
-  line-height: 1;
-  position: relative;
-  top: 30px;
-}
-
-.Image svg {
-  margin-left: 12px;
-}
 
 .KnowMore {
   display: flex;
@@ -144,6 +131,7 @@
   margin-left: 64px;
   margin-right: 58px;
   margin-top: 32px;
+  margin-bottom: 20px;
 }
 
 .Arrow {
