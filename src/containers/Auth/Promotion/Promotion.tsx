@@ -4,11 +4,12 @@ import { ReactComponent as MaximizeIcon } from 'assets/images/icons/Maximize.svg
 import styles from './Promotion.module.css';
 
 const points = [
-  'For any new NGOs that wants to use WhatsApp.',
-  'Share with someone who might benefit from this.',
+  'A community event where you get to meet  other NGOs and learn from each other to create a better impact with Glific.',
+  'Work with Glific team to share  your challenges better and try to solve it during the sprint.',
 ];
 
-const LINK = 'https://glific---chintugudiyafoundation-22443339.hubspotpagebuilder.com/bootcamp';
+const LINK =
+  'https://docs.google.com/spreadsheets/d/12Yd9dU8aUpiabjlf5emJM1XWWlVslv8fZBV_IlPa7xc/edit#gid=13579334';
 
 export const Promotion = () => {
   const [minimized, setMinimized] = useState(false);
@@ -20,7 +21,7 @@ export const Promotion = () => {
         <div className={styles.HeaderText}>NEW!</div>
         {minimized ? (
           <>
-            <div className={styles.GiftCard}>JUMPSTART</div>
+            <div className={styles.GiftCard}>Glific sprint</div>
             <MaximizeIcon
               className={styles.AccordianIcon}
               onClick={() => setMinimized(!minimized)}
@@ -33,7 +34,7 @@ export const Promotion = () => {
 
       {!minimized && (
         <>
-          <div className={styles.Image}>Jumpstart your program on WhatsApp in 2 days!</div>
+          <div className={styles.Image}>Glific&apos;s upcoming sprint from Jan 17-20 in Goa</div>
 
           <div className={styles.Points}>
             {points.map((point, index) => (
