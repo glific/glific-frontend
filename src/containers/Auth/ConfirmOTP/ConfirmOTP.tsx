@@ -25,17 +25,22 @@ export const ConfirmOTP = () => {
   const [authError, setAuthError] = useState('');
   const { t } = useTranslation();
   const location = useLocation();
-  const [userObject, setUserObject] = useState({ name: '', phone: '', password: '' });
+  const [userObject, setUserObject] = useState({ name: '', phone: '', password: '', captcha: '' });
 
   useEffect(() => {
     const state = location.state as any;
     if (state) {
-      setUserObject({ name: state.name, phone: state.phoneNumber, password: state.password });
+      setUserObject({
+        name: state.name,
+        phone: state.phoneNumber,
+        password: state.password,
+        captcha: state.captcha,
+      });
     }
   }, [location]);
 
   const handleResend = () => {
-    sendOTP(userObject.phone, 'true')
+    sendOTP(userObject.phone, userObject.captcha)
       .then((response) => response)
       .catch(() => {
         setAuthError(t('We are unable to generate an OTP, kindly contact your technical team.'));
@@ -43,7 +48,7 @@ export const ConfirmOTP = () => {
   };
 
   // Let's not allow direct navigation to this page
-  if (location && location.state === undefined) {
+  if (location && !location.state) {
     return <Navigate to="/registration" />;
   }
 
