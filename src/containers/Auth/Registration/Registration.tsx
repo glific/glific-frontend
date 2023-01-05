@@ -7,9 +7,19 @@ import { PhoneInput } from 'components/UI/Form/PhoneInput/PhoneInput';
 import { sendOTP } from 'services/AuthService';
 import { Auth } from '../Auth';
 
+interface SubmitRegistration {
+  userName: string;
+  phone: string;
+  password: string;
+  captcha: string;
+}
+
+const initialFormValues = { userName: '', phone: '', password: '', captcha: '' };
+
 export const Registration = () => {
   const [redirect, setRedirect] = useState(false);
-  const [user, setUser] = useState({ userName: '', phone: '', password: '' });
+
+  const [user, setUser] = useState(initialFormValues);
   const [authError, setAuthError] = useState<any>('');
   const { t } = useTranslation();
 
@@ -18,9 +28,9 @@ export const Registration = () => {
     return <Navigate to="/confirmotp" replace state={stateObject} />;
   }
 
-  const onSubmitRegistration = (values: any, captcha: any) => {
-    if (captcha) {
-      sendOTP(values.phone, 'true')
+  const onSubmitRegistration = (values: SubmitRegistration) => {
+    if (values.captcha) {
+      sendOTP(values.phone, values.captcha)
         .then(() => {
           setUser(values);
           setRedirect(true);
@@ -28,6 +38,8 @@ export const Registration = () => {
         .catch(() => {
           setAuthError(t('We are unable to register, kindly contact your technical team.'));
         });
+    } else {
+      setAuthError(t('Invalid captcha'));
     }
   };
 
@@ -60,8 +72,6 @@ export const Registration = () => {
       .min(8, t('Password must be at least 8 characters long.'))
       .required(t('Input required')),
   });
-
-  const initialFormValues = { userName: '', phone: '', password: '' };
 
   return (
     <Auth

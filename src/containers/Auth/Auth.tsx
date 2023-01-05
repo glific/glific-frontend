@@ -3,7 +3,7 @@ import { Formik, Form, Field } from 'formik';
 import { Typography } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Captcha } from 'components/UI/Form/Captcha/Captcha';
+import { CaptchaWrapper } from 'components/UI/Form/Captcha/Captcha';
 
 import { ReactComponent as WhatsAppIcon } from 'assets/images/icons/Social/Whatsapp.svg';
 import { termsOfUse } from 'containers/Organization/Organization';
@@ -52,7 +52,6 @@ export const Auth = ({
   // handle visibility for the password field
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [captcha, setCaptcha] = useState(null);
   const { t } = useTranslation();
 
   const boxClass = [styles.Box];
@@ -117,14 +116,6 @@ export const Auth = ({
       initialFormValues.phone = value;
     };
 
-  const handleCaptchaChange = (value: any) => {
-    setCaptcha(value);
-  };
-
-  const handleCaptchaError = () => {
-    setCaptcha(null);
-  };
-
   let formElements;
   // we should not render form elements when displaying success message
   if (!successMessage) {
@@ -142,10 +133,10 @@ export const Auth = ({
           validationSchema={validationSchema}
           onSubmit={(item) => {
             setLoading(true);
-            saveHandler(item, captcha);
+            saveHandler(item);
           }}
         >
-          {({ submitForm }) => (
+          {({ submitForm, setFieldValue, values }) => (
             <div className={styles.CenterBox}>
               <Form className={styles.Form}>
                 {formFields.map((field, index) => {
@@ -162,28 +153,36 @@ export const Auth = ({
                 <div className={styles.Link}>
                   <Link to={`/${linkURL}`}>{linkText}</Link>
                 </div>
-                {!loading && isRegistration && (
-                  <div className={styles.Captcha}>
-                    <Captcha onChange={handleCaptchaChange} onError={handleCaptchaError} />
-                  </div>
-                )}
                 <div className={styles.CenterButton}>
-                  <Button
-                    variant={buttonContainedVariant ? 'contained' : 'outlined'}
-                    color="primary"
-                    onClick={submitForm}
-                    className={buttonClass}
-                    data-testid="SubmitButton"
-                    loading={loading}
-                    disabled={isRegistration ? !captcha : false}
-                  >
-                    {!loading && (
-                      <>
-                        {buttonText}
-                        {isRegistration && whatsAppIcon}
-                      </>
-                    )}
-                  </Button>
+                  {isRegistration ? (
+                    <CaptchaWrapper
+                      variant="contained"
+                      color="primary"
+                      onClick={submitForm}
+                      className={buttonClass}
+                      data-testid="SubmitButton"
+                      loading={loading}
+                      onTokenUpdate={(token: string) => {
+                        setFieldValue('captcha', token);
+                      }}
+                      disabled={!values.captcha}
+                      action="register"
+                    >
+                      {buttonText}
+                      {whatsAppIcon}
+                    </CaptchaWrapper>
+                  ) : (
+                    <Button
+                      variant={buttonContainedVariant ? 'contained' : 'outlined'}
+                      color="primary"
+                      onClick={submitForm}
+                      className={buttonClass}
+                      data-testid="SubmitButton"
+                      loading={loading}
+                    >
+                      {!loading && buttonText}
+                    </Button>
+                  )}
                 </div>
                 {isRegistration && <div className={styles.InformationText}>{otpMessage}</div>}
                 {/* We neeed to add this submit button to enable form sumbitting when user hits enter
