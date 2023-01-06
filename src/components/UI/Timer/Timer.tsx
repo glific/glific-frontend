@@ -71,6 +71,7 @@ export const Timer = (props: TimerProps) => {
     const lastMessageTime = moment(time);
     const duration = moment.duration(currentTime.diff(lastMessageTime));
     hours = Math.floor(duration.asHours());
+    if (hours < 0) hours = 0;
     hours = hours > 24 ? 0 : 24 - hours;
   }
 
