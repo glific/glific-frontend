@@ -95,9 +95,9 @@ export const Organization = ({
                   data-testid="SubmitButton"
                   loading={loading}
                   onTokenUpdate={(token: string) => {
-                    setFieldValue('captchaToken', token);
+                    setFieldValue('token', token);
                   }}
-                  disabled={!values.captchaToken}
+                  disabled={!values.token}
                   action="organization_registration"
                 >
                   {loading ? null : buttonText}

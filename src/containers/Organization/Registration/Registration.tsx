@@ -69,7 +69,7 @@ const initialFormValues = {
   email: '',
   shortcode: '',
   addSupportStaff: true,
-  captchaToken: '',
+  token: '',
 };
 
 const supportCheckboxTitle =
@@ -143,7 +143,7 @@ export const Registration = ({ title, buttonText, handleStep }: RegistrationProp
   ];
 
   const handleSubmit = (values: any, setErrors: any, setLoading: any) => {
-    if (values.captchaToken) {
+    if (values.token) {
       axios
         .post(ONBOARD_URL, values)
         .then(({ data }: { data: any }) => {
