@@ -7,28 +7,26 @@ import { PhoneInput } from 'components/UI/Form/PhoneInput/PhoneInput';
 import { sendOTP } from 'services/AuthService';
 import { Auth } from '../Auth';
 
-interface SubmitRegistration {
-  userName: string;
+export interface User {
+  name: string;
   phone: string;
   password: string;
   captcha: string;
 }
 
-const initialFormValues = { userName: '', phone: '', password: '', captcha: '' };
+const initialFormValues: User = { name: '', phone: '', password: '', captcha: '' };
 
 export const Registration = () => {
   const [redirect, setRedirect] = useState(false);
-
-  const [user, setUser] = useState(initialFormValues);
+  const [user, setUser] = useState<User>(initialFormValues);
   const [authError, setAuthError] = useState<any>('');
   const { t } = useTranslation();
 
   if (redirect) {
-    const stateObject = { name: user.userName, phone: user.phone, password: user.password };
-    return <Navigate to="/confirmotp" replace state={stateObject} />;
+    return <Navigate to="/confirmotp" replace state={user} />;
   }
 
-  const onSubmitRegistration = (values: SubmitRegistration) => {
+  const onSubmitRegistration = (values: User) => {
     if (!values.captcha) {
       setAuthError(t('Invalid captcha'));
       return;
@@ -47,7 +45,7 @@ export const Registration = () => {
   const formFields = [
     {
       component: Input,
-      name: 'userName',
+      name: 'name',
       type: 'text',
       placeholder: t('Your full name'),
     },
@@ -67,7 +65,7 @@ export const Registration = () => {
   ];
 
   const FormSchema = Yup.object().shape({
-    userName: Yup.string().required(t('Input required')),
+    name: Yup.string().required(t('Input required')),
     phone: Yup.string().required(t('Input required')),
     password: Yup.string()
       .min(8, t('Password must be at least 8 characters long.'))

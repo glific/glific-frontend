@@ -10,13 +10,7 @@ import { Input } from 'components/UI/Form/Input/Input';
 import { sendOTP } from 'services/AuthService';
 import setLogs from 'config/logs';
 import { Auth } from '../Auth';
-
-interface User {
-  name: string;
-  phone: string;
-  password: string;
-  captcha: string;
-}
+import { User } from '../Registration/Registration';
 
 // let's define registration success message
 const successMessage = (
