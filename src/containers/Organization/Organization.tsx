@@ -43,7 +43,6 @@ export const Organization = ({
   const [loading, setLoading] = useState(false);
   const boxClass = [styles.Box, styles.RegistrationBox];
   const boxTitleClass = [styles.BoxTitle, styles.RegistrationBoxTitle];
-  const buttonContainedVariant = true;
 
   let displayErrorMessage: any = null;
 
@@ -88,7 +87,7 @@ export const Organization = ({
               })}
               <div className={styles.CenterButton}>
                 <Captcha
-                  variant={buttonContainedVariant ? 'contained' : 'outlined'}
+                  variant="contained"
                   color="primary"
                   onClick={submitForm}
                   className={styles.OrgButton}
