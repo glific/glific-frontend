@@ -6,7 +6,6 @@ import { Button, ButtonProps } from '../Button/Button';
 
 export interface CaptchaProps extends ButtonProps {
   onTokenUpdate: any;
-  onError?: any;
   action: string;
   children: any;
 }
