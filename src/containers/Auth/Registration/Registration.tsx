@@ -24,23 +24,24 @@ export const Registration = () => {
   const { t } = useTranslation();
 
   if (redirect) {
-    const stateObject = { name: user.userName, phoneNumber: user.phone, password: user.password };
+    const stateObject = { name: user.userName, phone: user.phone, password: user.password };
     return <Navigate to="/confirmotp" replace state={stateObject} />;
   }
 
   const onSubmitRegistration = (values: SubmitRegistration) => {
-    if (values.captcha) {
-      sendOTP(values.phone, values.captcha)
-        .then(() => {
-          setUser(values);
-          setRedirect(true);
-        })
-        .catch(() => {
-          setAuthError(t('We are unable to register, kindly contact your technical team.'));
-        });
-    } else {
+    if (!values.captcha) {
       setAuthError(t('Invalid captcha'));
+      return;
     }
+
+    sendOTP(values.phone, values.captcha)
+      .then(() => {
+        setUser(values);
+        setRedirect(true);
+      })
+      .catch(() => {
+        setAuthError(t('We are unable to register, kindly contact your technical team.'));
+      });
   };
 
   const formFields = [

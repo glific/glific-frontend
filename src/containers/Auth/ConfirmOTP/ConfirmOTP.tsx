@@ -11,6 +11,13 @@ import { sendOTP } from 'services/AuthService';
 import setLogs from 'config/logs';
 import { Auth } from '../Auth';
 
+interface User {
+  name: string;
+  phone: string;
+  password: string;
+  captcha: string;
+}
+
 // let's define registration success message
 const successMessage = (
   <div>
@@ -25,21 +32,19 @@ export const ConfirmOTP = () => {
   const [authError, setAuthError] = useState('');
   const { t } = useTranslation();
   const location = useLocation();
-  const [userObject, setUserObject] = useState({ name: '', phone: '', password: '', captcha: '' });
+  const [userObject, setUserObject] = useState<User>();
 
   useEffect(() => {
-    const state = location.state as any;
+    const state = location.state as User;
     if (state) {
-      setUserObject({
-        name: state.name,
-        phone: state.phoneNumber,
-        password: state.password,
-        captcha: state.captcha,
-      });
+      setUserObject(state);
     }
   }, [location]);
 
   const handleResend = () => {
+    if (!userObject) {
+      return;
+    }
     sendOTP(userObject.phone, userObject.captcha)
       .then((response) => response)
       .catch(() => {
@@ -75,6 +80,10 @@ export const ConfirmOTP = () => {
   const initialFormValues = { OTP: '' };
 
   const onSubmitOTP = (values: any) => {
+    if (!userObject) {
+      return;
+    }
+
     axios
       .post(REACT_APP_GLIFIC_REGISTRATION_API, {
         user: {

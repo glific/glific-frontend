@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Formik, Form, Field } from 'formik';
 import { Typography } from '@material-ui/core';
 
-import { CaptchaWrapper } from 'components/UI/Form/Captcha/Captcha';
+import { Captcha } from 'components/UI/Form/Captcha/Captcha';
 import { TERMS_OF_USE_LINK } from 'common/constants';
 import GlificLogo from 'assets/images/logo/Logo.svg';
 import styles from './Organization.module.css';
@@ -87,7 +87,7 @@ export const Organization = ({
                 return <Field className={styles.Form} key={key} {...field} />;
               })}
               <div className={styles.CenterButton}>
-                <CaptchaWrapper
+                <Captcha
                   variant={buttonContainedVariant ? 'contained' : 'outlined'}
                   color="primary"
                   onClick={submitForm}
@@ -101,7 +101,7 @@ export const Organization = ({
                   action="organization_registration"
                 >
                   {loading ? null : buttonText}
-                </CaptchaWrapper>
+                </Captcha>
               </div>
               <input className={styles.SubmitAction} type="submit" />
             </Form>

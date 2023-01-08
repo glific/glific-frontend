@@ -11,7 +11,7 @@ export interface CaptchaProps extends ButtonProps {
   children: any;
 }
 
-export const Captcha = ({ onTokenUpdate, onError, action, children, ...rest }: CaptchaProps) => {
+export const CaptchaButton = ({ onTokenUpdate, action, children, ...rest }: CaptchaProps) => {
   const { executeRecaptcha } = useGoogleReCaptcha();
 
   // Create an event handler so you can call the verification on button click event or form submit
@@ -32,8 +32,8 @@ export const Captcha = ({ onTokenUpdate, onError, action, children, ...rest }: C
   return <Button {...rest}>{!rest.loading && children}</Button>;
 };
 
-export const CaptchaWrapper = ({ children, ...rest }: CaptchaProps) => (
+export const Captcha = ({ children, ...rest }: CaptchaProps) => (
   <GoogleReCaptchaProvider reCaptchaKey={RECAPTCHA_CLIENT_KEY}>
-    <Captcha {...rest}>{children}</Captcha>
+    <CaptchaButton {...rest}>{children}</CaptchaButton>
   </GoogleReCaptchaProvider>
 );

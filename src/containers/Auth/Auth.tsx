@@ -3,7 +3,7 @@ import { Formik, Form, Field } from 'formik';
 import { Typography } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { CaptchaWrapper } from 'components/UI/Form/Captcha/Captcha';
+import { Captcha } from 'components/UI/Form/Captcha/Captcha';
 
 import { ReactComponent as WhatsAppIcon } from 'assets/images/icons/Social/Whatsapp.svg';
 import { termsOfUse } from 'containers/Organization/Organization';
@@ -155,7 +155,7 @@ export const Auth = ({
                 </div>
                 <div className={styles.CenterButton}>
                   {isRegistration ? (
-                    <CaptchaWrapper
+                    <Captcha
                       variant="contained"
                       color="primary"
                       onClick={submitForm}
@@ -170,7 +170,7 @@ export const Auth = ({
                     >
                       {buttonText}
                       {whatsAppIcon}
-                    </CaptchaWrapper>
+                    </Captcha>
                   ) : (
                     <Button
                       variant={buttonContainedVariant ? 'contained' : 'outlined'}
