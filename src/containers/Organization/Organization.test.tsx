@@ -7,16 +7,6 @@ import { MemoryRouter } from 'react-router-dom';
 import { Input } from 'components/UI/Form/Input/Input';
 import { Organization } from './Organization';
 
-jest.mock('react-google-recaptcha', () => (props: any) => (
-  <input
-    type="checkbox"
-    aria-label="recaptcha"
-    data-testid="recaptcha-sign-in"
-    className={props.size}
-    onChange={props.onChange}
-  />
-));
-
 const schema = Yup.object().shape({
   name: Yup.string().required('NGO name is required'),
 });
@@ -40,7 +30,7 @@ const props = {
 };
 
 test('it should render component and show error messages', () => {
-  const { container } = render(
+  render(
     <MockedProvider addTypename={false}>
       <MemoryRouter>
         <Organization {...props} errorMessage={{ global: 'Something went wrong' }} />
@@ -51,7 +41,7 @@ test('it should render component and show error messages', () => {
   const registration = screen.getByTestId('RegistrationContainer');
   expect(registration).toBeInTheDocument();
 
-  const captcha = screen.getByTestId('recaptcha-sign-in');
+  const captcha = screen.getByTestId('captcha-button');
   expect(captcha).toBeInTheDocument();
 
   // We can't submit the form as we don't have correct api key
@@ -79,11 +69,10 @@ test('Organization with success onboarding', () => {
   const registration = screen.getByTestId('RegistrationContainer');
   expect(registration).toBeInTheDocument();
 
-  const captcha = screen.getByTestId('recaptcha-sign-in');
+  const captcha = screen.getByTestId('captcha-button');
   expect(captcha).toBeInTheDocument();
 
   waitFor(() => {
-    fireEvent.click(captcha);
     const inputElements = screen.getAllByRole('textbox');
 
     UserEvent.type(inputElements[0], 'JaneDoe');

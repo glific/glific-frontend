@@ -91,7 +91,7 @@ export const Organization = ({
                   color="primary"
                   onClick={submitForm}
                   className={styles.OrgButton}
-                  data-testid="SubmitButton"
+                  data-testid="captcha-button"
                   loading={loading}
                   onTokenUpdate={(token: string) => {
                     setFieldValue('token', token);

@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next';
 
 import { REACT_APP_GLIFIC_REGISTRATION_API } from 'config';
 import { Input } from 'components/UI/Form/Input/Input';
-// eslint-disable-next-line no-unused-vars
 import { sendOTP } from 'services/AuthService';
 import setLogs from 'config/logs';
 import { Auth } from '../Auth';
@@ -53,6 +52,7 @@ export const ConfirmOTP = () => {
 
   const states = { OTP };
   const setStates = ({ OTPValue }: any) => {
+    console.log('scsc');
     setOTP(OTPValue);
   };
 
