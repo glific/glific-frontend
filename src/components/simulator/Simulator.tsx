@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useLazyQuery, useSubscription } from '@apollo/client';
+import { useApolloClient, useLazyQuery, useSubscription } from '@apollo/client';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 import { Button, ClickAwayListener } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
@@ -135,10 +135,12 @@ export const Simulator = ({
   const [simulatedMessages, setSimulatedMessage] = useState<any>();
   const [isOpen, setIsOpen] = useState(false);
 
+  const client = useApolloClient();
   // Template listing
   const [isDrawerOpen, setIsDrawerOpen] = useState<Boolean>(false);
   const [selectedListTemplate, setSelectedListTemplate] = useState<any>(null);
 
+  const [allConversations, setAllConversations] = useState<any>({});
   const variables = { organizationId: getUserSession('organizationId') };
 
   let messages: any[] = [];
@@ -199,40 +201,22 @@ export const Simulator = ({
     }
   };
 
-  const [loadSimulator, { data: allConversations, subscribeToMore }] = useLazyQuery(
-    SIMULATOR_SEARCH_QUERY,
-    {
-      fetchPolicy: 'network-only',
-      nextFetchPolicy: 'cache-only',
-    }
-  );
+  const { data: simulatorSubscribe }: any = useSubscription(SIMULATOR_RELEASE_SUBSCRIPTION, {
+    variables,
+  });
 
-  const [getSimulator, { data }] = useLazyQuery(GET_SIMULATOR, {
-    fetchPolicy: 'network-only',
-    onCompleted: (simulatorData) => {
-      if (simulatorData.simulatorGet) {
-        loadSimulator({ variables: getSimulatorVariables(simulatorData.simulatorGet.id) }).then(
-          ({ data: searchData }: any) => {
-            if (searchData?.search.length > 0) {
-              sendMessage({
-                name: searchData.search[0].contact.name,
-                phone: searchData.search[0].contact.phone,
-              });
-            }
-          }
-        );
-        setSimulatorId(simulatorData.simulatorGet.id);
-      } else {
-        setNotification(
-          'Sorry! Simulators are in use by other staff members right now. Please wait for it to be idle',
-          'warning'
-        );
-      }
+  useSubscription(SIMULATOR_MESSAGE_SENT_SUBSCRIPTION, {
+    variables,
+    onData: ({ data: sentData }) => {
+      setAllConversations(updateSimulatorConversations(allConversations, sentData, 'SENT'));
     },
   });
 
-  const { data: simulatorSubscribe }: any = useSubscription(SIMULATOR_RELEASE_SUBSCRIPTION, {
+  useSubscription(SIMULATOR_MESSAGE_RECEIVED_SUBSCRIPTION, {
     variables,
+    onData: ({ data: receivedData }) => {
+      setAllConversations(updateSimulatorConversations(allConversations, receivedData, 'RECEIVED'));
+    },
   });
 
   useEffect(() => {
@@ -248,42 +232,16 @@ export const Simulator = ({
     }
   }, [simulatorSubscribe]);
 
-  useEffect(() => {
-    if (subscribeToMore) {
-      const subscriptionVariables = { organizationId: getUserSession('organizationId') };
-      // message received subscription
-      subscribeToMore({
-        document: SIMULATOR_MESSAGE_RECEIVED_SUBSCRIPTION,
-        variables: subscriptionVariables,
-        updateQuery: (prev, { subscriptionData }) =>
-          updateSimulatorConversations(prev, subscriptionData, 'RECEIVED'),
-      });
-
-      // message sent subscription
-      subscribeToMore({
-        document: SIMULATOR_MESSAGE_SENT_SUBSCRIPTION,
-        variables: subscriptionVariables,
-        updateQuery: (prev, { subscriptionData }) =>
-          updateSimulatorConversations(prev, subscriptionData, 'SENT'),
-      });
-    }
-  }, [subscribeToMore]);
-
   const [releaseSimulator]: any = useLazyQuery(RELEASE_SIMULATOR, {
     fetchPolicy: 'network-only',
   });
 
-  if (allConversations && data && data.simulatorGet) {
-    // currently setting the simulated contact as the default receiver
-    const simulatedContact = allConversations.search.filter(
-      (item: any) => item.contact.id === data.simulatorGet.id
-    );
-    if (simulatedContact.length > 0) {
-      messages = simulatedContact[0].messages;
-      simulatorId = simulatedContact[0].contact.id;
-      sender.name = simulatedContact[0].contact.name;
-      sender.phone = simulatedContact[0].contact.phone;
-    }
+  if (allConversations && allConversations.search && allConversations.search.length > 0) {
+    const simulatedContact = allConversations.search;
+    messages = simulatedContact[0].messages;
+    simulatorId = simulatedContact[0].contact.id;
+    sender.name = simulatedContact[0].contact.name;
+    sender.phone = simulatedContact[0].contact.phone;
   }
 
   const releaseUserSimulator = () => {
@@ -306,8 +264,8 @@ export const Simulator = ({
           payload,
           sender: {
             // this number will be the simulated contact number
-            phone: data ? data.simulatorGet?.phone : '',
-            name: data ? data.simulatorGet?.name : '',
+            phone: sender.phone || '',
+            name: sender.name || '',
           },
         },
       })
@@ -443,17 +401,17 @@ export const Simulator = ({
 
   // for loading conversation
   useEffect(() => {
-    if (allConversations && data) {
+    if (allConversations && showSimulator) {
       getChatMessage();
     }
-  }, [data, allConversations]);
+  }, [allConversations]);
 
   // for sending message to Gupshup
   useEffect(() => {
-    if (!isPreviewMessage && message && data) {
+    if (!isPreviewMessage && message && showSimulator) {
       sendMessage(sender);
     }
-  }, [message]);
+  }, [message, showSimulator]);
 
   useEffect(() => {
     if (isPreviewMessage && interactiveMessage) {
@@ -618,7 +576,33 @@ export const Simulator = ({
     if (getFlowKeyword) {
       getFlowKeyword();
     }
-    getSimulator();
+    client
+      .query({ query: GET_SIMULATOR, fetchPolicy: 'network-only' })
+      .then(({ data: simulatorData }: any) => {
+        if (simulatorData.simulatorGet) {
+          client
+            .query({
+              fetchPolicy: 'network-only',
+              query: SIMULATOR_SEARCH_QUERY,
+              variables: getSimulatorVariables(simulatorData.simulatorGet.id),
+            })
+            .then(({ data: searchData }: any) => {
+              setAllConversations(searchData);
+              setSimulatorId(simulatorData.simulatorGet.id);
+              if (searchData?.search.length > 0) {
+                sendMessage({
+                  name: searchData.search[0].contact.name,
+                  phone: searchData.search[0].contact.phone,
+                });
+              }
+            });
+        } else {
+          setNotification(
+            'Sorry! Simulators are in use by other staff members right now. Please wait for it to be idle',
+            'warning'
+          );
+        }
+      });
   };
   return (
     <>

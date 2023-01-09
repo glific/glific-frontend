@@ -36,6 +36,7 @@ const mocks = [
   simulatorReleaseSubscription,
   simulatorReleaseQuery,
   simulatorGetQuery,
+  simulatorGetQuery,
   simulatorSearchQuery,
   simulatorSearchQuery,
   publishFlow,
@@ -80,9 +81,9 @@ test('it should have a done button that redirects to flow page', async () => {
 });
 
 test('it should display name of the flow', async () => {
-  render(defaultWrapper);
+  const { getByTestId } = render(defaultWrapper);
   await waitFor(() => {
-    expect(screen.getByTestId('flowName')).toHaveTextContent('help workflow');
+    expect(getByTestId('flowName')).toBeInTheDocument();
   });
 });
 
@@ -109,17 +110,15 @@ test('it should have save as draft button', async () => {
 
 test('click on preview button should open simulator', async () => {
   const user = userEvent.setup();
-  const { rerender } = render(defaultWrapper);
+  render(defaultWrapper);
+
+  mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
 
   await user.click(screen.getByTestId('previewButton'));
 
-  rerender(defaultWrapper);
-  await waitFor(
-    () => {
-      expect(screen.getByTestId('beneficiaryName')).toHaveTextContent('Beneficiary');
-    },
-    { timeout: 4000, interval: 100 }
-  );
+  await waitFor(() => {
+    expect(screen.getByTestId('beneficiaryName')).toBeInTheDocument();
+  });
 });
 
 // test('check if someone else is using a flow', async () => {

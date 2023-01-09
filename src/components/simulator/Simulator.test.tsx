@@ -27,8 +27,10 @@ const mocks = [
   simulatorReleaseSubscription,
   simulatorReleaseQuery,
   simulatorSearchQuery,
+  simulatorSearchQuery,
   messageReceivedSubscription,
   messageSendSubscription,
+  simulatorGetQuery,
   simulatorGetQuery,
 ];
 const defaultProps = {

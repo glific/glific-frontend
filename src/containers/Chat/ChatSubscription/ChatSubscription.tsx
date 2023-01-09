@@ -36,21 +36,13 @@ export interface ChatSubscriptionProps {
 
 export const ChatSubscription = ({ setDataLoaded }: ChatSubscriptionProps) => {
   const queryVariables = SEARCH_QUERY_VARIABLES;
+  const contactIdsFetched: any = [];
 
   let refetchTimer: any = null;
   const [triggerRefetch, setTriggerRefetch] = useState(false);
   let subscriptionToRefetchSwitchHappened = false;
 
-  const [getContactQuery] = useLazyQuery(SEARCH_QUERY, {
-    onCompleted: (conversation) => {
-      if (conversation && conversation.search.length > 0) {
-        // save the conversation and update cache
-
-        // temporary fix for cache. need to check why query variables change
-        saveConversation(conversation, queryVariables);
-      }
-    },
-  });
+  const [getContactQuery] = useLazyQuery(SEARCH_QUERY);
 
   const updateConversations = useCallback(
     (cachedConversations: any, subscriptionData: any, action: string) => {
@@ -155,9 +147,20 @@ export const ChatSubscription = ({ setDataLoaded }: ChatSubscriptionProps) => {
           variables
         );
 
-        getContactQuery({
-          variables,
-        });
+        if (!contactIdsFetched.includes(contactId)) {
+          contactIdsFetched.push(contactId);
+
+          getContactQuery({
+            variables,
+          }).then(({ data: conversation }) => {
+            if (conversation && conversation.search.length > 0) {
+              // save the conversation and update cache
+
+              // temporary fix for cache. need to check why query variables change
+              saveConversation(conversation, queryVariables);
+            }
+          });
+        }
 
         return cachedConversations;
       }
