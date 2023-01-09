@@ -29,14 +29,6 @@ const withResult = {
             sender: {
               id: '6',
             },
-            tags: [
-              {
-                id: '8',
-                label: 'Not working',
-                colorCode: '#00d084',
-                parent: null,
-              },
-            ],
             type: 'TEXT',
             media: null,
             errors: '{}',

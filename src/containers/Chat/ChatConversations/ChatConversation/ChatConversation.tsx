@@ -30,10 +30,6 @@ export interface ChatConversationProps {
     insertedAt: string;
     type: string;
     media: any;
-    tags: Array<{
-      id: number;
-      label: string;
-    }>;
   };
   messageNumber?: number;
   highlightSearch?: string | null;

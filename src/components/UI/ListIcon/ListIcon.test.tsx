@@ -13,27 +13,20 @@ import { ListIcon } from './ListIcon';
 describe('list icon tests', () => {
   const iconList: { [iconName: string]: string } = {
     chat: chatIcon,
-    tag: tagIcon,
     broadcast: broadcastIcon,
     flow: flowIcon,
     search: searchIcon,
     goal: goalsIcon,
     analytics: analyticsIcon,
   };
-  const createIcon = (type: string, selected: boolean) => {
-    return (
-      <MemoryRouter>
-        <ListIcon icon={type} />
-      </MemoryRouter>
-    );
-  };
-
-  const capitalize = (str: string) => {
-    return str.charAt(0).toUpperCase() + str.slice(1);
-  };
+  const createIcon = (type: string) => (
+    <MemoryRouter>
+      <ListIcon icon={type} />
+    </MemoryRouter>
+  );
 
   it('renders an object', () => {
-    const { getByTestId } = render(createIcon('chat', false));
+    const { getByTestId } = render(createIcon('chat'));
     expect(getByTestId('listIcon')).toBeInTheDocument();
   });
 
@@ -41,7 +34,7 @@ describe('list icon tests', () => {
     const keys = Object.keys(iconList);
 
     for (let i = 0; i < keys.length; i++) {
-      const { container } = render(createIcon(keys[i], false));
+      const { container } = render(createIcon(keys[i]));
       expect(container.querySelector('img')?.src).toContain('Unselected.svg');
     }
   });

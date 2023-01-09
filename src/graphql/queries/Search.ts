@@ -33,11 +33,6 @@ export const SEARCH_QUERY = gql`
           latitude
           longitude
         }
-        tags {
-          id
-          label
-          colorCode
-        }
         type
         media {
           url
@@ -102,11 +97,6 @@ export const SEARCH_MULTI_QUERY = gql`
         status
         bspStatus
         isOrgRead
-        tags {
-          id
-          label
-          colorCode
-        }
       }
       messages {
         id
@@ -127,11 +117,6 @@ export const SEARCH_MULTI_QUERY = gql`
         }
         sender {
           id
-        }
-        tags {
-          id
-          label
-          colorCode
         }
         type
         media {
@@ -185,11 +170,6 @@ export const SEARCH_MULTI_QUERY = gql`
         sender {
           id
         }
-        tags {
-          id
-          label
-          colorCode
-        }
         type
         media {
           url
@@ -215,11 +195,6 @@ export const SEARCH_MULTI_QUERY = gql`
         }
         sender {
           id
-        }
-        tags {
-          id
-          label
-          colorCode
         }
         type
         media {

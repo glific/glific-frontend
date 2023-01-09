@@ -24,7 +24,6 @@ const props: any = {
   profileType: 'User',
   redirectionLink: '/chat',
   additionalField: assignTags,
-  additionalProfileStates: { name: 'tags', state: '', setState: jest.fn() },
 };
 const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>

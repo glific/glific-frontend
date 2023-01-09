@@ -3,35 +3,10 @@ import moment from 'moment';
 import { MockedProvider } from '@apollo/client/testing';
 
 import { TIME_FORMAT } from 'common/constants';
-import { UPDATE_MESSAGE_TAGS } from 'graphql/mutations/Chat';
+
 import ChatMessage from './ChatMessage';
 
 HTMLAnchorElement.prototype.click = jest.fn();
-
-let resultReturned = false;
-
-const mocks = [
-  {
-    request: {
-      query: UPDATE_MESSAGE_TAGS,
-      variables: {
-        input: {
-          messageId: 1,
-          addTagIds: [],
-          deleteTagIds: ['1'],
-        },
-      },
-    },
-    result() {
-      resultReturned = true;
-      return {
-        data: {
-          messageTags: [],
-        },
-      };
-    },
-  },
-];
 
 const insertedAt = '2020-06-19T18:44:02Z';
 const Props: any = (link: any) => {
@@ -86,7 +61,7 @@ window.HTMLElement.prototype.scrollIntoView = jest.fn();
 
 describe('<ChatMessage />', () => {
   const chatMessage = (type: any) => (
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={[]} addTypename={false}>
       <ChatMessage {...Props(type)} />
     </MockedProvider>
   );
@@ -115,15 +90,6 @@ describe('<ChatMessage />', () => {
     expect(container.querySelector('.Other')).toBeInTheDocument();
   });
 
-  /**
-   * Commenting tags got replaced by labels..
-   */
-  // test('it should render the tags correctly', () => {
-  //   const { getByTestId } = render(chatMessageText);
-  //   const tags = within(getByTestId('tags'));
-  //   expect(tags.getByText('important')).toBeInTheDocument();
-  // });
-
   test('it should render the down arrow icon', () => {
     const { getAllByTestId } = render(chatMessageText);
     expect(getAllByTestId('messageOptions')[0]).toBeInTheDocument();
@@ -133,16 +99,6 @@ describe('<ChatMessage />', () => {
     const { getAllByTestId } = render(chatMessageText);
     expect(getAllByTestId('popup')[0]).toBeInTheDocument();
   });
-  /**
-   * Since removal of tags from chat screen, we don't have delete option now
-   */
-  // test('click on delete icon should call the delete query', async () => {
-  //   const { getAllByTestId } = render(chatMessageText);
-  //   fireEvent.click(getAllByTestId('deleteIcon')[0]);
-  //   await waitFor(() => {
-  //     expect(resultReturned).toBe(true);
-  //   });
-  // });
 
   test('it should detect a link in message', async () => {
     const { container } = render(chatMessageText);
@@ -233,7 +189,7 @@ describe('<ChatMessage />', () => {
   test('it should render error with payload', async () => {
     props.errors = '{"payload": {"payload": {"reason": "Something went wrong"}}} ';
     render(
-      <MockedProvider mocks={mocks} addTypename={false}>
+      <MockedProvider mocks={[]} addTypename={false}>
         <ChatMessage {...props} />
       </MockedProvider>
     );
@@ -251,7 +207,7 @@ describe('<ChatMessage />', () => {
     imageProps.errors = '{"message": ["Something went wrong"]}';
 
     render(
-      <MockedProvider mocks={mocks} addTypename={false}>
+      <MockedProvider addTypename={false}>
         <ChatMessage {...imageProps} />
       </MockedProvider>
     );
@@ -260,7 +216,7 @@ describe('<ChatMessage />', () => {
   test('it should render error with error message', () => {
     props.errors = '{"error": "Something went wrong"}';
     render(
-      <MockedProvider mocks={mocks} addTypename={false}>
+      <MockedProvider addTypename={false}>
         <ChatMessage {...props} />
       </MockedProvider>
     );
@@ -302,7 +258,7 @@ describe('<ChatMessage />', () => {
 
   test('it should render with image', async () => {
     const { rerender } = render(
-      <MockedProvider mocks={mocks} addTypename={false}>
+      <MockedProvider addTypename={false}>
         <ChatMessage {...receivedProps} />
       </MockedProvider>
     );
@@ -318,7 +274,7 @@ describe('<ChatMessage />', () => {
     const newProps = { ...receivedProps };
     newProps.showMessage = false;
     rerender(
-      <MockedProvider mocks={mocks} addTypename={false}>
+      <MockedProvider addTypename={false}>
         <ChatMessage {...newProps} />
       </MockedProvider>
     );
@@ -377,7 +333,7 @@ describe('<ChatMessage />', () => {
     receivedProps.type = 'QUICK_REPLY';
 
     render(
-      <MockedProvider mocks={mocks} addTypename={false}>
+      <MockedProvider addTypename={false}>
         <ChatMessage {...receivedProps} />
       </MockedProvider>
     );
@@ -388,7 +344,7 @@ describe('<ChatMessage />', () => {
     receivedProps.type = 'LIST';
 
     render(
-      <MockedProvider mocks={mocks} addTypename={false}>
+      <MockedProvider addTypename={false}>
         <ChatMessage {...receivedProps} />
       </MockedProvider>
     );

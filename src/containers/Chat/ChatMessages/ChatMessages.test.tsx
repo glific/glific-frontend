@@ -258,52 +258,6 @@ it('should contain the mock message', async () => {
   });
 });
 
-/**
- * Removing tags related test cases for now
- */
-// test('click on assign tag should open a dialog box with already assigned tags', async () => {
-//   const { getByTestId } = render(chatMessages);
-//   await waitFor(() => {
-//     fireEvent.click(getByTestId('messageOptions'));
-//   });
-
-//   fireEvent.click(getByTestId('dialogButton'));
-
-//   await waitFor(() => {
-//     expect(getByTestId('dialogBox')).toHaveTextContent('Assign tag to message');
-//   });
-// });
-
-// need to check how to mock these
-
-// test('assigned tags should be shown in searchbox', async () => {
-//   const { getByTestId } = render(chatMessages);
-//   await waitFor(() => {
-//     fireEvent.click(getByTestId('messageOptions'));
-//   });
-
-//   fireEvent.click(getByTestId('dialogButton'));
-
-//   await waitFor(() => {
-//     const searchBox = within(getByTestId('AutocompleteInput'));
-//     expect(searchBox.getAllByText('Search'));
-//   });
-// });
-
-// test('remove already assigned tags', async () => {
-//   const { getByTestId } = render(chatMessages);
-//   await wait();
-//   await wait();
-//   fireEvent.click(getByTestId('messageOptions'));
-//   await wait();
-//   act(() => {
-//     fireEvent.click(getByTestId('dialogButton'));
-//   });
-//   await wait();
-//   const searchBox = within(getByTestId('AutocompleteInput'));
-//   fireEvent.click(searchBox.getByTestId('deleteIcon'));
-// });
-
 test('focus on the latest message', async () => {
   const { getByTestId } = render(chatMessages);
   await waitFor(() => {

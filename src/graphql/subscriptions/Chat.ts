@@ -22,11 +22,6 @@ export const MESSAGE_RECEIVED_SUBSCRIPTION = gql`
         id
         phone
       }
-      tags {
-        id
-        label
-        colorCode
-      }
       media {
         url
         caption
@@ -86,11 +81,6 @@ export const MESSAGE_SENT_SUBSCRIPTION = gql`
       sender {
         id
         phone
-      }
-      tags {
-        id
-        label
-        colorCode
       }
       media {
         url
@@ -163,11 +153,6 @@ export const COLLECTION_SENT_SUBSCRIPTION = gql`
       sender {
         id
         phone
-      }
-      tags {
-        id
-        label
-        colorCode
       }
       media {
         url

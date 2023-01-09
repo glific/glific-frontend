@@ -4,7 +4,7 @@ import { MockedProvider } from '@apollo/client/testing';
 import { Route, Routes } from 'react-router-dom';
 
 import { setUserSession } from 'services/AuthService';
-import { TagList } from 'containers/Tag/TagList/TagList';
+import { FlowList } from 'containers/Flow/FlowList/FlowList';
 import { FormLayout } from './FormLayout';
 import { LIST_ITEM_MOCKS, listItemProps } from './FormLayout.test.helper';
 
@@ -47,7 +47,7 @@ test('save button should add a new tag', async () => {
       <Router>
         <Routes>
           <Route path="/" element={<FormLayout {...defaultProps} />} />
-          <Route path="tag" element={<TagList />} />
+          <Route path="flow" element={<FlowList />} />
         </Routes>
       </Router>
     </MockedProvider>
@@ -92,7 +92,7 @@ test('cancel button should redirect to taglist page', async () => {
       <Router>
         <Routes>
           <Route path="/" element={<FormLayout {...defaultProps} />} />
-          <Route path="tag" element={<TagList />} />
+          <Route path="tag" element={<FlowList />} />
         </Routes>
       </Router>
     </MockedProvider>

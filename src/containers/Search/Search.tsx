@@ -6,10 +6,9 @@ import { Typography } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 
 import { ReactComponent as SearchIcon } from 'assets/images/icons/Search/SelectedEdit.svg';
-import { ReactComponent as TagIcon } from 'assets/images/icons/Tags/Selected.svg';
+import { ReactComponent as LabelIcon } from 'assets/images/icons/Label/Selected.svg';
 import { GET_SEARCH } from 'graphql/queries/Search';
 import { CREATE_SEARCH, UPDATE_SEARCH, DELETE_SEARCH } from 'graphql/mutations/Search';
-// import { FILTER_TAGS_NAME } from 'graphql/queries/Tag';
 import { GET_COLLECTIONS } from 'graphql/queries/Collection';
 import { GET_USERS } from 'graphql/queries/User';
 import { GET_ALL_FLOW_LABELS } from 'graphql/queries/FlowLabel';
@@ -39,7 +38,6 @@ const getPayload = (payload: any) => {
     label,
     shortcode,
     term,
-    includeTags,
     includeGroups,
     includeUsers,
     includeLabels,
@@ -57,7 +55,6 @@ const getPayload = (payload: any) => {
     },
     filter: {
       term,
-      includeTags: includeTags ? includeTags.map((option: any) => option.id) : [],
       includeGroups: includeGroups ? includeGroups.map((option: any) => option.id) : [],
       includeUsers: includeUsers ? includeUsers.map((option: any) => option.id) : [],
       includeLabels: includeLabels ? includeLabels.map((option: any) => option.id) : [],
@@ -111,7 +108,6 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
   const [shortcode, setShortcode] = useState('');
   const [label, setLabel] = useState('');
   const [term, setTerm] = useState('');
-  // const [includeTags, setIncludeTags] = useState([]);
   const [includeGroups, setIncludeGroups] = useState([]);
   const [infoDialog, setInfoDialog] = useState(false);
   const [includeUsers, setIncludeUsers] = useState([]);
@@ -137,7 +133,6 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
     label,
     useExpression,
     term,
-    // includeTags,
     includeGroups,
     includeUsers,
     includeLabels,
@@ -146,10 +141,6 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
     dateFromExpression,
     dateToExpression,
   };
-
-  // const { data: dataT } = useQuery(FILTER_TAGS_NAME, {
-  //   variables: setVariables(),
-  // });
 
   const { data } = useQuery(GET_COLLECTIONS, {
     variables: setVariables(),
@@ -168,12 +159,6 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
     const filters = JSON.parse(args);
     Object.keys(filters.filter).map((key) => {
       switch (key) {
-        // case 'includeTags':
-        //   if (Object.prototype.hasOwnProperty.call(filters.filter, 'includeTags'))
-        //     if (dataT) {
-        //       setIncludeTags(getObject(dataT.tags, filters.filter.includeTags));
-        //     }
-        //   break;
         case 'includeGroups':
           if (Object.prototype.hasOwnProperty.call(filters.filter, 'includeGroups'))
             if (data) {
@@ -232,9 +217,6 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
       },
       filter: {
         term: props.searchParam.term,
-        // includeTags: props.searchParam.includeTags
-        //   ? props.searchParam.includeTags.map((option: any) => option.id)
-        //   : [],
         includeGroups: props.searchParam.includeGroups
           ? props.searchParam.includeGroups.map((option: any) => option.id)
           : [],
@@ -327,17 +309,6 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
         },
       },
     },
-    // {
-    //   component: AutoComplete,
-    //   name: 'includeTags',
-    //   label: t('Includes tags'),
-    //   options: dataT.tags,
-    //   optionLabel: 'label',
-    //   textFieldProps: {
-    //     variant: 'outlined',
-    //   },
-    //   icon: <TagIcon className={styles.TagIcon} />,
-    // },
     {
       component: AutoComplete,
       name: 'includeLabels',
@@ -347,7 +318,7 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
       textFieldProps: {
         variant: 'outlined',
       },
-      icon: <TagIcon stroke="#073f24" />,
+      icon: <LabelIcon stroke="#073f24" />,
       onChange: (val: any) => setIncludeLabels(val),
     },
     {

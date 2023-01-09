@@ -15,7 +15,7 @@ export const createSearchQuery = {
       input: {
         label: 'new search description',
         shortcode: 'new search',
-        args: '{"messageOpts":{"offset":0,"limit":10},"filter":{"term":"","includeTags":["10"]},"contactOpts":{"offset":0,"limit":20}}',
+        args: '{"messageOpts":{"offset":0,"limit":10},"filter":{"term":"","includeLabels":["10"]},"contactOpts":{"offset":0,"limit":20}}',
       },
     },
   },
@@ -24,7 +24,7 @@ export const createSearchQuery = {
       createSavedSearch: {
         errors: null,
         savedSearch: {
-          args: '{"messageOpts":{"offset":0,"limit":10},"filter":{"term":"","includeTags":["10"]},"contactOpts":{"offset":0,"limit":20}}',
+          args: '{"messageOpts":{"offset":0,"limit":10},"filter":{"term":"","includeLabels":["10"]},"contactOpts":{"offset":0,"limit":20}}',
           id: '11',
           label: 'new search description',
           shortcode: 'new search',
@@ -69,7 +69,7 @@ export const getSearchesQuery = [
       data: {
         savedSearches: [
           {
-            args: '{"messageOpts":{"offset":0,"limit":10},"filter":{"term":"","includeTags":["10"]},"contactOpts":{"offset":0,"limit":20}}',
+            args: '{"messageOpts":{"offset":0,"limit":10},"filter":{"term":"","includeLabels":["10"]},"contactOpts":{"offset":0,"limit":20}}',
             id: '8',
             label: 'Test search',
             shortcode: 'Save Search',
@@ -84,7 +84,7 @@ export const getSearchesQuery = [
       data: {
         savedSearches: [
           {
-            args: '{"messageOpts":{"offset":0,"limit":10},"filter":{"term":"","includeTags":["10"]},"contactOpts":{"offset":0,"limit":20}}',
+            args: '{"messageOpts":{"offset":0,"limit":10},"filter":{"term":"","includeLabels":["10"]},"contactOpts":{"offset":0,"limit":20}}',
             id: '8',
             label: 'Test search',
             shortcode: 'Save Search',
@@ -106,7 +106,7 @@ export const getSearch = {
     data: {
       savedSearch: {
         savedSearch: {
-          args: '{"messageOpts":{"offset":0,"limit":10},"filter":{"term":"","includeTags":["10"]},"contactOpts":{"offset":0,"limit":20}}',
+          args: '{"messageOpts":{"offset":0,"limit":10},"filter":{"term":"","includeLabels":["10"]},"contactOpts":{"offset":0,"limit":20}}',
           id: '1',
           label: 'Test search',
           shortcode: 'Save Search collection',
@@ -137,7 +137,6 @@ const contactsMock = new Array(25).fill(null).map((val: any, index: number) => (
   status: 'VALID',
   bspStatus: 'SESSION_AND_HSM',
   isOrgRead: false,
-  tags: [],
 }));
 
 export const searchContactCollection = [
@@ -163,7 +162,6 @@ export const searchContactCollection = [
               status: 'VALID',
               bspStatus: 'SESSION_AND_HSM',
               isOrgRead: false,
-              tags: [],
             },
             {
               id: '219',
@@ -174,7 +172,6 @@ export const searchContactCollection = [
               status: 'VALID',
               bspStatus: 'SESSION_AND_HSM',
               isOrgRead: true,
-              tags: [],
             },
             {
               id: '163',
@@ -185,7 +182,6 @@ export const searchContactCollection = [
               status: 'VALID',
               bspStatus: 'SESSION_AND_HSM',
               isOrgRead: false,
-              tags: [],
             },
             {
               id: '221',
@@ -196,7 +192,6 @@ export const searchContactCollection = [
               status: 'VALID',
               bspStatus: 'SESSION_AND_HSM',
               isOrgRead: false,
-              tags: [],
             },
             {
               id: '168',
@@ -207,7 +202,6 @@ export const searchContactCollection = [
               status: 'VALID',
               bspStatus: 'SESSION_AND_HSM',
               isOrgRead: false,
-              tags: [],
             },
             {
               id: '106',
@@ -218,7 +212,6 @@ export const searchContactCollection = [
               status: 'VALID',
               bspStatus: 'SESSION_AND_HSM',
               isOrgRead: true,
-              tags: [],
             },
             {
               id: '89',
@@ -229,7 +222,6 @@ export const searchContactCollection = [
               status: 'VALID',
               bspStatus: 'SESSION_AND_HSM',
               isOrgRead: false,
-              tags: [],
             },
             ...contactsMock,
           ],
@@ -254,7 +246,6 @@ export const searchContactCollection = [
               sender: {
                 id: '1',
               },
-              tags: [],
               type: 'TEXT',
               media: null,
               contextMessage: null,
@@ -282,13 +273,6 @@ export const searchContactCollection = [
               sender: {
                 id: '14',
               },
-              tags: [
-                {
-                  id: '19',
-                  label: 'This is for testing',
-                  colorCode: '#0C976D',
-                },
-              ],
               type: 'TEXT',
               media: null,
             },
@@ -314,7 +298,6 @@ export const searchContactCollection = [
               sender: {
                 id: '1',
               },
-              tags: [],
               type: 'TEXT',
               media: null,
               contextMessage: null,

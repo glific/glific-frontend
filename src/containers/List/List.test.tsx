@@ -4,7 +4,7 @@ import { MockedProvider } from '@apollo/client/testing';
 import { Routes, Route } from 'react-router-dom';
 import { within, fireEvent } from '@testing-library/dom';
 
-import { Tag } from 'containers/Tag/Tag';
+import { Flow } from 'containers/Flow/Flow';
 import { OrganizationList } from 'containers/OrganizationList/OrganizationList';
 import { setUserSession } from 'services/AuthService';
 import { ReactComponent as ActivateIcon } from 'assets/images/icons/Activate.svg';
@@ -85,7 +85,7 @@ const listButtons = (
     <Router>
       <Routes>
         <Route path="/" element={<List {...defaultProps} />} />
-        <Route path="tag/add" element={<Tag />} />
+        <Route path="flow/add" element={<Flow />} />
       </Routes>
     </Router>
   </MockedProvider>
