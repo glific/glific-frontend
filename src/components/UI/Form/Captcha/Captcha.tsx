@@ -2,15 +2,22 @@ import React, { useEffect, useCallback } from 'react';
 import { GoogleReCaptchaProvider, useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 
 import { RECAPTCHA_CLIENT_KEY } from 'config/index';
-import { Button, ButtonProps } from '../Button/Button';
 
-export interface CaptchaProps extends ButtonProps {
+export interface CaptchaProps {
   onTokenUpdate: any;
   action: string;
   children: any;
+  component: any;
+  [key: string]: any;
 }
 
-export const CaptchaButton = ({ onTokenUpdate, action, children, ...rest }: CaptchaProps) => {
+export const CaptchaConsumer = ({
+  component: Component,
+  onTokenUpdate,
+  action,
+  children,
+  ...rest
+}: CaptchaProps) => {
   const { executeRecaptcha } = useGoogleReCaptcha();
 
   // Create an event handler so you can call the verification on button click event or form submit
@@ -28,11 +35,13 @@ export const CaptchaButton = ({ onTokenUpdate, action, children, ...rest }: Capt
     handleReCaptchaVerify();
   }, [handleReCaptchaVerify]);
 
-  return <Button {...rest}>{!rest.loading && children}</Button>;
+  return <Component {...rest}>{children}</Component>;
 };
 
-export const Captcha = ({ children, ...rest }: CaptchaProps) => (
+export const Captcha = ({ children, component, ...rest }: CaptchaProps) => (
   <GoogleReCaptchaProvider reCaptchaKey={RECAPTCHA_CLIENT_KEY}>
-    <CaptchaButton {...rest}>{children}</CaptchaButton>
+    <CaptchaConsumer {...rest} component={component}>
+      {children}
+    </CaptchaConsumer>
   </GoogleReCaptchaProvider>
 );

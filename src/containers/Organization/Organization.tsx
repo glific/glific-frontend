@@ -5,6 +5,7 @@ import { Typography } from '@material-ui/core';
 import { Captcha } from 'components/UI/Form/Captcha/Captcha';
 import { TERMS_OF_USE_LINK } from 'common/constants';
 import GlificLogo from 'assets/images/logo/Logo.svg';
+import { Button } from 'components/UI/Form/Button/Button';
 import styles from './Organization.module.css';
 
 export interface OrganizationProps {
@@ -87,6 +88,7 @@ export const Organization = ({
               })}
               <div className={styles.CenterButton}>
                 <Captcha
+                  component={Button}
                   variant="contained"
                   color="primary"
                   onClick={submitForm}

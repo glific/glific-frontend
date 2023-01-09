@@ -8,6 +8,10 @@ import { REACT_APP_GLIFIC_REGISTRATION_API } from 'config';
 import { Input } from 'components/UI/Form/Input/Input';
 import { sendOTP } from 'services/AuthService';
 import setLogs from 'config/logs';
+import { IconButton, InputAdornment } from '@material-ui/core';
+import RefreshIcon from '@material-ui/icons/Refresh';
+import { Captcha } from 'components/UI/Form/Captcha/Captcha';
+import styles from './ConfirmOTP.module.css';
 import { Auth } from '../Auth';
 import { User } from '../Registration/Registration';
 
@@ -26,6 +30,7 @@ export const ConfirmOTP = () => {
   const { t } = useTranslation();
   const location = useLocation();
   const [userObject, setUserObject] = useState<User>();
+  const [token, setToken] = useState('');
 
   useEffect(() => {
     const state = location.state as User;
@@ -38,7 +43,7 @@ export const ConfirmOTP = () => {
     if (!userObject) {
       return;
     }
-    sendOTP(userObject.phone, userObject.captcha)
+    sendOTP(userObject.phone, token)
       .then((response) => response)
       .catch(() => {
         setAuthError(t('We are unable to generate an OTP, kindly contact your technical team.'));
@@ -55,6 +60,23 @@ export const ConfirmOTP = () => {
     setOTP(OTPValue);
   };
 
+  const endAdornment = (
+    <InputAdornment position="end">
+      <Captcha
+        component={IconButton}
+        aria-label="resend otp"
+        data-testid="resendOtp"
+        onClick={handleResend}
+        edge="end"
+        action="resend"
+        onTokenUpdate={(tokenString: string) => setToken(tokenString)}
+      >
+        <p className={styles.Resend}>resend</p>{' '}
+        <RefreshIcon classes={{ root: styles.ResendButton }} />
+      </Captcha>
+    </InputAdornment>
+  );
+
   const formFields = [
     {
       component: Input,
@@ -62,7 +84,7 @@ export const ConfirmOTP = () => {
       name: 'OTP',
       placeholder: 'OTP',
       helperText: t('Please confirm the OTP received at your WhatsApp number.'),
-      endAdornmentCallback: handleResend,
+      endAdornment,
     },
   ];
 

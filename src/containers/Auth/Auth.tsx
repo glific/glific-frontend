@@ -156,6 +156,7 @@ export const Auth = ({
                 <div className={styles.CenterButton}>
                   {isRegistration ? (
                     <Captcha
+                      component={Button}
                       variant="contained"
                       color="primary"
                       onClick={submitForm}
