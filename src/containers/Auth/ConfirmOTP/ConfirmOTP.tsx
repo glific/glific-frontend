@@ -52,7 +52,6 @@ export const ConfirmOTP = () => {
 
   const states = { OTP };
   const setStates = ({ OTPValue }: any) => {
-    console.log('scsc');
     setOTP(OTPValue);
   };
 
