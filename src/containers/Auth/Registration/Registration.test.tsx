@@ -44,17 +44,15 @@ describe('<Registration />', () => {
     await user.click(password);
     await user.keyboard('pass123456');
 
-    await waitFor(() => {
-      // Regiter with button should be disabled by default
-      const continueButton = screen.getByTestId('SubmitButton');
-      expect(continueButton).toHaveAttribute('disabled');
-    });
+    // Regiter with button should be disabled by default
+    const continueButton = screen.getByTestId('SubmitButton');
+    expect(continueButton).toHaveAttribute('disabled');
   });
 
   it('should submit the form correctly', async () => {
     const { container } = render(wrapper);
 
-    const userName = (await container.querySelector('input[name="userName"]')) as HTMLInputElement;
+    const userName = (await container.querySelector('input[name="name"]')) as HTMLInputElement;
     userEvent.type(userName, 'Jane Doe');
 
     const phone = (await container.querySelector('input[type="tel"]')) as HTMLInputElement;
