@@ -1,21 +1,21 @@
 import React, { useEffect, useCallback } from 'react';
-import { GoogleReCaptchaProvider, useGoogleReCaptcha } from 'react-google-recaptcha-v3';
-
-import { RECAPTCHA_CLIENT_KEY } from 'config/index';
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 
 export interface CaptchaProps {
   onTokenUpdate: any;
   action: string;
   children: any;
   component: any;
+  onClick: any;
   [key: string]: any;
 }
 
-export const CaptchaConsumer = ({
+export const Captcha = ({
   component: Component,
   onTokenUpdate,
   action,
   children,
+  onClick,
   ...rest
 }: CaptchaProps) => {
   const { executeRecaptcha } = useGoogleReCaptcha();
@@ -35,13 +35,15 @@ export const CaptchaConsumer = ({
     handleReCaptchaVerify();
   }, [handleReCaptchaVerify]);
 
-  return <Component {...rest}>{children}</Component>;
-};
-
-export const Captcha = ({ children, component, ...rest }: CaptchaProps) => (
-  <GoogleReCaptchaProvider reCaptchaKey={RECAPTCHA_CLIENT_KEY}>
-    <CaptchaConsumer {...rest} component={component}>
+  return (
+    <Component
+      onClick={() => {
+        handleReCaptchaVerify();
+        onClick();
+      }}
+      {...rest}
+    >
       {children}
-    </CaptchaConsumer>
-  </GoogleReCaptchaProvider>
-);
+    </Component>
+  );
+};
