@@ -6,6 +6,7 @@ import { MemoryRouter } from 'react-router-dom';
 
 import { Input } from 'components/UI/Form/Input/Input';
 import { Organization } from './Organization';
+import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 
 const schema = Yup.object().shape({
   name: Yup.string().required('NGO name is required'),
@@ -33,7 +34,9 @@ test('it should render component and show error messages', () => {
   render(
     <MockedProvider addTypename={false}>
       <MemoryRouter>
-        <Organization {...props} errorMessage={{ global: 'Something went wrong' }} />
+        <GoogleReCaptchaProvider reCaptchaKey="test key">
+          <Organization {...props} errorMessage={{ global: 'Something went wrong' }} />
+        </GoogleReCaptchaProvider>
       </MemoryRouter>
     </MockedProvider>
   );
@@ -61,7 +64,9 @@ test('Organization with success onboarding', () => {
   render(
     <MockedProvider addTypename={false}>
       <MemoryRouter>
-        <Organization {...props} />
+        <GoogleReCaptchaProvider reCaptchaKey="test key">
+          <Organization {...props} />
+        </GoogleReCaptchaProvider>
       </MemoryRouter>
     </MockedProvider>
   );
