@@ -5,7 +5,6 @@ import { Routes, Route } from 'react-router-dom';
 import { within, fireEvent } from '@testing-library/dom';
 
 import { Flow } from 'containers/Flow/Flow';
-import { OrganizationList } from 'containers/OrganizationList/OrganizationList';
 import { setUserSession } from 'services/AuthService';
 import { ReactComponent as ActivateIcon } from 'assets/images/icons/Activate.svg';
 import { ReactComponent as ApprovedIcon } from 'assets/images/icons/Template/Approved.svg';

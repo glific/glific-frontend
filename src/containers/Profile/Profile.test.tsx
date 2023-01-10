@@ -3,7 +3,6 @@ import { MockedProvider } from '@apollo/client/testing';
 
 import { LOGGED_IN_USER_MOCK } from 'mocks/Contact';
 import { Profile } from './Profile';
-import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 
 const mocks = LOGGED_IN_USER_MOCK;
 

@@ -1,12 +1,10 @@
 import { FILTER_ORGANIZATIONS, GET_ORGANIZATION_COUNT } from 'graphql/queries/Organization';
-import { GET_LANGUAGES } from 'graphql/queries/List';
 import { DELETE_INACTIVE_ORGANIZATIONS } from 'graphql/mutations/Organization';
 import {
   getOrganizationLanguagesQuery,
   getOrganizationQuery,
   getAllOrganizations,
 } from 'mocks/Organization';
-import { setVariables } from 'common/constants';
 import { getCurrentUserQuery } from 'mocks/User';
 import { FILTER_FLOW, GET_FLOW_COUNT } from 'graphql/queries/Flow';
 import { DELETE_FLOW } from 'graphql/mutations/Flow';
