@@ -1,4 +1,4 @@
-import { fireEvent, render, waitFor } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 
 import { LOGGED_IN_USER_MOCK, LOGGED_IN_USER_MULTIPLE_PROFILES } from 'mocks/Contact';
