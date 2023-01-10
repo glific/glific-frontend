@@ -4,6 +4,7 @@ import { MemoryRouter } from 'react-router-dom';
 
 import axios from 'axios';
 import { ConfirmOTP } from './ConfirmOTP';
+import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -24,7 +25,9 @@ jest.mock('react-router-dom', () => ({
 
 const wrapper = (
   <MemoryRouter>
-    <ConfirmOTP />
+    <GoogleReCaptchaProvider reCaptchaKey="test key">
+      <ConfirmOTP />
+    </GoogleReCaptchaProvider>
   </MemoryRouter>
 );
 
