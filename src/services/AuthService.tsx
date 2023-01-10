@@ -5,7 +5,7 @@ import setLogs from 'config/logs';
 
 interface RegisterRequest {
   phone: string;
-  registration?: boolean;
+  registration: string;
   token?: string;
 }
 
@@ -90,11 +90,11 @@ export const clearAuthSession = () => {
 export const sendOTP = (phoneNumber: string, registrationToken?: string) => {
   const user: RegisterRequest = {
     phone: phoneNumber,
-    registration: false,
+    registration: 'false',
   };
 
   if (registrationToken) {
-    user.registration = true;
+    user.registration = 'true';
     user.token = registrationToken;
   }
 
