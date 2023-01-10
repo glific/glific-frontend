@@ -148,7 +148,6 @@ const ChatConversation = ({
 
   // Need to handle following cases:
   // a. there might be some cases when there are no conversations against the contact
-  // b. handle unread formatting only if tags array is set
   if (!contactIsOrgRead) {
     chatInfoClass = [styles.ChatInfo, styles.ChatInfoUnread];
     chatBubble = [styles.ChatBubble, styles.ChatBubbleUnread];

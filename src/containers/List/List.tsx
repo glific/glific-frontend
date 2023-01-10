@@ -252,6 +252,7 @@ export const List = ({
       fetchPolicy: 'cache-and-network',
     }
   );
+
   // Get item data here
   const [fetchUserCollections, { loading: loadingCollections, data: userCollections }] =
     useLazyQuery(GET_CURRENT_USER);

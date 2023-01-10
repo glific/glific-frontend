@@ -24,12 +24,6 @@ const Props: any = (link: any) => {
     popup: 1,
     open: true,
     insertedAt,
-    tags: [
-      {
-        id: 1,
-        label: 'important',
-      },
-    ],
     type: link,
     media: { url: 'http://glific.com' },
     errors: '{}',
@@ -243,7 +237,6 @@ describe('<ChatMessage />', () => {
     },
     insertedAt: '2021-05-25T14:09:43.623251Z',
     location: null,
-    tags: [],
     errors: '{}',
     contextMessage: null,
     popup: true,

@@ -36,31 +36,6 @@ describe('contact profile', () => {
       expect(getByTestId('ContactProfile')).toBeInTheDocument();
     });
   });
-
-  /**
-   * Now tags will be replaced by labels
-   * commenting tag cases for now. we'll visit sometime later.
-   */
-  test('it renders contact profile and update tags', async () => {
-    const { getByRole } = render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <ContactProfile />
-      </MockedProvider>
-    );
-
-    // autocomplete.focus();
-    // fireEvent.keyDown(autocomplete, { key: 'ArrowDown' });
-    // await waitFor(() => {});
-
-    // // select the first item
-    // fireEvent.keyDown(autocomplete, { key: 'Enter' });
-    await waitFor(() => {});
-
-    await waitFor(() => {
-      const save = getByRole('button', { name: 'Save' });
-      fireEvent.click(save);
-    });
-  });
 });
 
 describe('contact profile (multiple profile)', () => {

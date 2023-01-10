@@ -6,10 +6,12 @@ import { getOrganizationLanguagesQuery, getOrganizationQuery } from 'mocks/Organ
 import { CREATE_FLOW, DELETE_FLOW, UPDATE_FLOW } from 'graphql/mutations/Flow';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { GET_FLOW } from 'graphql/queries/Flow';
+import { filterFlowQuery, getFlowCountQuery, getFlowQuery } from 'mocks/Flow';
+import { FormLayoutProps } from './FormLayout';
 
 const FormSchema = Yup.object();
 
-export const listItemProps = {
+export const listItemProps: FormLayoutProps = {
   deleteItemQuery: DELETE_FLOW,
   states: {
     isActive: true,
@@ -21,7 +23,6 @@ export const listItemProps = {
     roles: [],
   },
   setStates: jest.fn(),
-  setValidation: jest.fn(),
   listItemName: 'flow',
   dialogMessage: "You won't be able to use this flow again.",
   formFields: [
@@ -74,8 +75,14 @@ export const listItemProps = {
   createItemQuery: CREATE_FLOW,
   updateItemQuery: UPDATE_FLOW,
   validationSchema: FormSchema,
+  languageSupport: false,
   icon: null,
-  getLanguageId: Function,
 };
 
-export const LIST_ITEM_MOCKS = [...getOrganizationQuery, getOrganizationLanguagesQuery];
+export const LIST_ITEM_MOCKS = [
+  ...getOrganizationQuery,
+  getOrganizationLanguagesQuery,
+  getFlowQuery,
+  filterFlowQuery,
+  getFlowCountQuery,
+];

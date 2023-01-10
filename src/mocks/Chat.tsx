@@ -635,29 +635,6 @@ export const searchMultiQuery = (
               type: 'TEXT',
             },
           ],
-          tags: [
-            {
-              body: 'Hi',
-              contact: {
-                bspStatus: 'HSM',
-                id: '8',
-                lastMessageAt: '2020-10-15T07:15:33Z',
-                name: 'Dignesh',
-                status: 'VALID',
-              },
-              id: '12',
-              insertedAt: '2020-10-15T06:58:34.432894Z',
-              media: null,
-              messageNumber: 54,
-              receiver: {
-                id: '1',
-              },
-              sender: {
-                id: '8',
-              },
-              type: 'TEXT',
-            },
-          ],
         },
       },
     },

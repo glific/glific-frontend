@@ -40,7 +40,6 @@ export interface ChatMessageProps {
   media: any;
   insertedAt: string;
   onClick?: any;
-  tags: Array<any>;
   popup: any;
   setDialog?: any;
   focus?: boolean;

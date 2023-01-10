@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Navigate, Link, useParams } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
-// eslint-disable-next-line no-unused-vars
 import { DocumentNode, ApolloError, useQuery, useMutation } from '@apollo/client';
 import { Typography, IconButton } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
@@ -151,6 +150,7 @@ export const FormLayout = ({
 
   const { t } = useTranslation();
 
+  // TODO: this query should only get triggered when roles are enabled for an organization
   const { data: roleData } = useQuery(GET_ROLE_NAMES);
 
   const capitalListItemName = listItemName[0].toUpperCase() + listItemName.slice(1);
@@ -209,6 +209,7 @@ export const FormLayout = ({
       }
     },
   });
+
   const camelCaseItem = listItem[0].toUpperCase() + listItem.slice(1);
 
   const [updateItem] = useMutation(updateItemQuery, {
