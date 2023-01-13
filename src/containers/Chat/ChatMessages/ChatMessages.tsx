@@ -18,7 +18,6 @@ import {
   DEFAULT_MESSAGE_LIMIT,
   DEFAULT_CONTACT_LIMIT,
   DEFAULT_MESSAGE_LOADMORE_LIMIT,
-  SIMULATOR_NUMBER_START,
 } from '../../../common/constants';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 import {
@@ -26,7 +25,7 @@ import {
   CREATE_AND_SEND_MESSAGE_TO_COLLECTION_MUTATION,
 } from '../../../graphql/mutations/Chat';
 import { getCachedConverations, updateConversationsCache } from '../../../services/ChatService';
-import { addLogs, getDisplayName } from '../../../common/utils';
+import { addLogs, getDisplayName, isSimulator } from '../../../common/utils';
 import { CollectionInformation } from '../../Collection/CollectionInformation/CollectionInformation';
 
 export interface ChatMessagesProps {
@@ -647,7 +646,7 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
     topChatBar = (
       <ContactBar
         displayName={displayName}
-        isSimulator={conversationInfo.contact.phone.startsWith(SIMULATOR_NUMBER_START)}
+        isSimulator={isSimulator(conversationInfo.contact.phone)}
         contactId={contactId.toString()}
         lastMessageTime={conversationInfo.contact.lastMessageAt}
         contactStatus={conversationInfo.contact.status}

@@ -23,7 +23,6 @@ import { ReactComponent as AddContactIcon } from '../../../../assets/images/icon
 import { ReactComponent as BlockIcon } from '../../../../assets/images/icons/Block.svg';
 import { ReactComponent as BlockDisabledIcon } from '../../../../assets/images/icons/BlockDisabled.svg';
 import { ReactComponent as ProfileIcon } from '../../../../assets/images/icons/Contact/Profile.svg';
-import { ReactComponent as ProfileDisabledIcon } from '../../../../assets/images/icons/Contact/ProfileDisabled.svg';
 import { ReactComponent as FlowIcon } from '../../../../assets/images/icons/Flow/Dark.svg';
 import { ReactComponent as FlowUnselectedIcon } from '../../../../assets/images/icons/Flow/Unselected.svg';
 import { ReactComponent as ClearConversation } from '../../../../assets/images/icons/Chat/ClearConversation.svg';
@@ -443,17 +442,12 @@ export const ContactBar = ({
   const viewDetails = contactId ? (
     <Button
       className={styles.ListButtonPrimary}
-      disabled={isSimulator}
       data-testid="viewProfile"
       onClick={() => {
         navigate(`/contact-profile/${contactId}`);
       }}
     >
-      {isSimulator ? (
-        <ProfileDisabledIcon className={styles.Icon} />
-      ) : (
-        <ProfileIcon className={styles.Icon} />
-      )}
+      <ProfileIcon className={styles.Icon} />
       View contact profile
     </Button>
   ) : (

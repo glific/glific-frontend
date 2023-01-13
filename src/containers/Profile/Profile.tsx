@@ -14,6 +14,7 @@ import { GET_CONTACT } from 'graphql/queries/Contact';
 import { CREATE_CONTACT, UPDATE_CONTACT, DELETE_CONTACT } from 'graphql/mutations/Contact';
 import { GET_CURRENT_USER } from 'graphql/queries/User';
 import { getOrganizationServices } from 'services/AuthService';
+import { isSimulator } from 'common/utils';
 
 const profileIcon = <ProfileIcon />;
 
@@ -100,19 +101,21 @@ export const Profile = ({
   }: any) => {
     setName(nameValue);
     updateName();
+    let hideDeleteButton = false;
 
     if (phoneValue) {
       setPhone(phoneValue);
-      setHideRemoveBtn(organizationPhone === phoneValue);
+      hideDeleteButton = organizationPhone === phoneValue || isSimulator(phoneValue);
     } else {
       // contact api does not return the phone when role is staff, hence in this case we manually set the phone
       // for the current user
       setPhone(currentUserPhone);
-      setHideRemoveBtn(organizationPhone === currentUserPhone);
+      hideDeleteButton = organizationPhone === currentUserPhone;
     }
+
     setStatus(statusValue);
     setBspStatus(bspStatusValue);
-
+    setHideRemoveBtn(hideDeleteButton);
     setLanguageId(languageIdValue.id);
   };
 
