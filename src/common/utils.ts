@@ -6,6 +6,8 @@ import { getAuthSession, getOrganizationServices, getUserSession } from 'service
 import { SIMULATOR_NUMBER_START } from './constants';
 import { setNotification } from './notification';
 
+export const isSimulator = (phone: string) => phone.startsWith(SIMULATOR_NUMBER_START);
+
 export const getObject = (arr: any, data: any) => {
   const result: any = [];
   if (arr && data) {
@@ -130,7 +132,7 @@ export const getInteractiveMessageBody = (interactiveJSON: any) => {
 
 export const getDisplayName = (conversation: any) => {
   // let's return early with default simulator name if we are looking at simulator contact
-  const isSimulatorContact = conversation.contact.phone.startsWith(SIMULATOR_NUMBER_START);
+  const isSimulatorContact = isSimulator(conversation.contact.phone);
   if (isSimulatorContact) {
     return conversation.contact.name || conversation.contact.maskedPhone;
   }
