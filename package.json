@@ -80,7 +80,6 @@
     "react-player": "^2.11.0",
     "react-resize-detector": "^7.1.2",
     "react-router-dom": "^6.6.2",
-    "react-scripts": "^5.0.1",
     "react-tiny-link": "^3.6.1",
     "react-viewer": "^3.2.2",
     "typescript": "^4.9.4",
@@ -89,8 +88,9 @@
   },
   "scripts": {
     "setup": "yarn cache clean && yarn install --force && yarn run floweditor",
-    "start": "HTTPS=true SSL_CRT_FILE=../glific/priv/cert/glific.test+1.pem SSL_KEY_FILE=../glific/priv/cert/glific.test+1-key.pem react-app-rewired start",
-    "build": "yarn setup && react-app-rewired build",
+    "start": "HTTPS=true SSL_CRT_FILE=../glific/priv/cert/glific.test+1.pem SSL_KEY_FILE=../glific/priv/cert/glific.test+1-key.pem vite",
+    "build": "yarn setup && tsc && vite build",
+    "serve": "vite preview",
     "test": "react-app-rewired test",
     "test:coverage": "react-app-rewired test --coverage --watchAll",
     "cy:run": "cypress run",
@@ -134,10 +134,14 @@
   },
   "devDependencies": {
     "@types/react-test-renderer": "^18.0.0",
+    "@vitejs/plugin-react": "^3.0.1",
     "i18next-parser": "^7.2.0",
     "prettier": "^2.8.2",
     "react-test-renderer": "^18.2.0",
     "stream-browserify": "^3.0.0",
+    "vite": "^4.0.4",
+    "vite-plugin-svgr": "^2.4.0",
+    "vite-tsconfig-paths": "^4.0.3",
     "yarn-upgrade-all": "^0.7.1"
   }
 }
