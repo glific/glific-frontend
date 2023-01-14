@@ -58,7 +58,7 @@ Your app is ready to be deployed!
 
 ```
 docker build \
---build-arg REACT_APP_GLIFIC_API_PORT=API-PORT \
+--build-arg VITE_GLIFIC_API_PORT=API-PORT \
 --no-cache -t .
 ```
 
