@@ -1,4 +1,4 @@
-const envVariables: any = process.env;
+const envVariables: any = import.meta.env;
 
 const appName = envVariables.VITE_APPLICATION_NAME;
 

@@ -4,7 +4,7 @@
 // learn more: https://github.com/testing-library/jest-dom
 
 import '@testing-library/jest-dom/extend-expect';
-process.env.VITE_WEB_SOCKET = 'ws://localhost/socket';
+import.meta.env.VITE_WEB_SOCKET = 'ws://localhost/socket';
 
 jest.mock('react-media-recorder', () => {
   return {
