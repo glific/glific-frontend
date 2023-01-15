@@ -88,13 +88,12 @@
   },
   "scripts": {
     "setup": "yarn cache clean && yarn install --force && yarn run floweditor",
-    "start": "HTTPS=true SSL_CRT_FILE=../glific/priv/cert/glific.test+1.pem SSL_KEY_FILE=../glific/priv/cert/glific.test+1-key.pem vite",
+    "start": "vite --host=glific.test",
     "build": "yarn setup && tsc && vite build",
     "serve": "vite preview",
     "test": "react-app-rewired test",
     "test:coverage": "react-app-rewired test --coverage --watchAll",
     "cy:run": "cypress run",
-    "eject": "react-scripts eject",
     "format": "prettier \"**/*.{ts,tsx,css,graphql}\" --write",
     "floweditor": "cp -r node_modules/@glific/flow-editor/build/static public && rm -rf public/sitestatic && cp -r node_modules/@glific/flow-editor/build/sitestatic public",
     "extract-translations": "i18next"
