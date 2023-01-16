@@ -3,7 +3,6 @@ import { useLocation } from 'react-router-dom';
 import Badge from '@material-ui/core/Badge';
 
 import chatIcon from 'assets/images/icons/Chat/Unselected.svg';
-import tagIcon from 'assets/images/icons/Tags/Unselected.svg';
 import broadcastIcon from 'assets/images/icons/Broadcast/Unselected.svg';
 import flowIcon from 'assets/images/icons/Flow/Unselected.svg';
 import searchIcon from 'assets/images/icons/Search/Unselected.svg';
@@ -12,11 +11,9 @@ import analyticsIcon from 'assets/images/icons/Analytics/Unselected.svg';
 import speedSendIcon from 'assets/images/icons/SpeedSend/Unselected.svg';
 import templateIcon from 'assets/images/icons/Template/Unselected.svg';
 import chatSelectedIcon from 'assets/images/icons/Chat/Selected.svg';
-import tagSelectedIcon from 'assets/images/icons/Tags/Selected.svg';
 import broadcastSelectedIcon from 'assets/images/icons/Broadcast/Selected.svg';
 import flowSelectedIcon from 'assets/images/icons/Flow/Selected.svg';
 import searchSelectedIcon from 'assets/images/icons/Search/Selected.svg';
-// import goalsSelectedIcon from 'assets/images/icons/Goals/Selected.svg';
 import analyticsSelectedIcon from 'assets/images/icons/Analytics/Selected.svg';
 import interactiveMessageIcon from 'assets/images/icons/InteractiveMessage/Unselected.svg';
 import interactiveMessageSelectedIcon from 'assets/images/icons/InteractiveMessage/Selected.svg';
@@ -39,7 +36,6 @@ export const ListIcon = ({ icon, count, showBadge }: ListIconProps) => {
   const location = useLocation();
   const stringsToIcons: { [iconName: string]: string } = {
     chat: chatIcon,
-    tag: tagIcon,
     broadcast: broadcastIcon,
     flow: flowIcon,
     search: searchIcon,
@@ -55,11 +51,9 @@ export const ListIcon = ({ icon, count, showBadge }: ListIconProps) => {
 
   const stringsToSelectedIcons: { [iconName: string]: string } = {
     chat: chatSelectedIcon,
-    tag: tagSelectedIcon,
     broadcast: broadcastSelectedIcon,
     flow: flowSelectedIcon,
     search: searchSelectedIcon,
-    // goal: goalsSelectedIcon,
     analytics: analyticsSelectedIcon,
     'speed-send': speedSendSelectedIcon,
     template: templateSelectedIcon,

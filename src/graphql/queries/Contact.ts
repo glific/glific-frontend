@@ -83,10 +83,6 @@ export const GET_CONTACT = gql`
         bspStatus
         settings
         fields
-        tags {
-          id
-          label
-        }
       }
     }
   }

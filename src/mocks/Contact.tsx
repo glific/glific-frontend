@@ -10,12 +10,11 @@ import {
 } from 'graphql/queries/Contact';
 import { addFlowToContactQuery } from 'mocks/Flow';
 import { getOrganizationLanguagesQuery, getOrganizationQuery } from 'mocks/Organization';
-import { UPDATE_CONTACT, UPDATE_CONTACT_TAGS } from 'graphql/mutations/Contact';
+import { UPDATE_CONTACT } from 'graphql/mutations/Contact';
 import { UPDATE_CONTACT_COLLECTIONS } from 'graphql/mutations/Collection';
 import { CLEAR_MESSAGES } from 'graphql/mutations/Chat';
 import { setVariables } from 'common/constants';
 import { getCurrentUserQuery } from './User';
-import { filterTagsQuery } from './Tag';
 
 export const contactCollectionsQuery = {
   request: {
@@ -84,7 +83,6 @@ export const getContactQuery = {
           bspStatus: 'SESSION_AND_HSM',
           settings: {},
           fields: {},
-          tags: [{ id: '1', label: 'important' }],
         },
       },
     },
@@ -162,26 +160,6 @@ export const updateContact = {
         name: 'Default Receiver',
         phone: '99399393303',
         language: { id: '1', label: 'English' },
-      },
-    },
-  },
-};
-
-export const updateContactTags = {
-  request: {
-    query: UPDATE_CONTACT_TAGS,
-    variables: {
-      input: {
-        addTagIds: [],
-        contactId: 1,
-        deleteTagIds: ['1'],
-      },
-    },
-  },
-  result: {
-    data: {
-      updateContactTags: {
-        contactTags: [{ id: '1' }, { id: '2' }],
       },
     },
   },
@@ -423,13 +401,11 @@ export const LOGGED_IN_USER_MOCK = [
   getContactDetailsQuery(),
   getOrganizationLanguagesQuery,
   getOrganizationLanguagesQuery,
-  filterTagsQuery,
   getContactQuery,
   addFlowToContactQuery,
   clearMessagesQuery,
   ...getOrganizationQuery,
   updateContact,
-  updateContactTags,
 ];
 
 export const LOGGED_IN_USER_MULTIPLE_PROFILES = [

@@ -45,13 +45,6 @@ const body = {
   sender: {
     id: '2',
   },
-  tags: [
-    {
-      id: '1',
-      label: 'important',
-      colorCode: '#00d084',
-    },
-  ],
   type: 'TEXT',
   media: null,
   errors: '{}',
@@ -136,7 +129,6 @@ cache.writeQuery({
             sender: {
               id: '1',
             },
-            tags: null,
             type: 'TEXT',
             media: null,
             errors: '{}',

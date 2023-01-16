@@ -3,28 +3,12 @@ import { MockedProvider } from '@apollo/client/testing';
 
 import { LOGGED_IN_USER_MOCK } from 'mocks/Contact';
 import { Profile } from './Profile';
-import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 
 const mocks = LOGGED_IN_USER_MOCK;
-
-const assignTags = {
-  component: AutoComplete,
-  name: 'tags',
-  options: [],
-  additionalState: 'tags',
-  skipPayload: true,
-  optionLabel: 'label',
-  textFieldProps: {
-    label: 'Assign tags',
-    variant: 'outlined',
-  },
-};
 
 const props: any = {
   profileType: 'User',
   redirectionLink: '/chat',
-  additionalField: assignTags,
-  additionalProfileStates: { name: 'tags', state: '', setState: jest.fn() },
 };
 const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>

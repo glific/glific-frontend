@@ -3,15 +3,13 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 import { Route, Routes } from 'react-router-dom';
 
-import { setUserSession } from 'services/AuthService';
-import { TagList } from 'containers/Tag/TagList/TagList';
+import { FlowList } from 'containers/Flow/FlowList/FlowList';
 import { FormLayout } from './FormLayout';
 import { LIST_ITEM_MOCKS, listItemProps } from './FormLayout.test.helper';
 
 jest.mock('react-router-dom', () => {
   return {
     ...jest.requireActual('react-router-dom'),
-
     useParams: () => ({ id: 1 }),
   };
 });
@@ -26,6 +24,7 @@ const addItem = (
     </Router>
   </MockedProvider>
 );
+
 it('should have a form', async () => {
   const { container } = render(addItem);
   await waitFor(() => {
@@ -36,34 +35,8 @@ it('should have a form', async () => {
 it('should have a form with inputs', async () => {
   const { container } = render(addItem);
   await waitFor(() => {
-    expect(container.querySelector('input[name="label"]')).toBeInTheDocument();
-    expect(container.querySelector('input[name="languageId"]')).toBeInTheDocument();
-  });
-});
-
-test('save button should add a new tag', async () => {
-  const editItemRoute = (
-    <MockedProvider mocks={mocks} addTypename={false}>
-      <Router>
-        <Routes>
-          <Route path="/" element={<FormLayout {...defaultProps} />} />
-          <Route path="tag" element={<TagList />} />
-        </Routes>
-      </Router>
-    </MockedProvider>
-  );
-
-  const { container, getByText, getAllByTestId } = render(editItemRoute);
-
-  setUserSession(JSON.stringify({ roles: ['Admin'] }));
-
-  await waitFor(() => {
-    const button = getByText('Save');
-    fireEvent.click(button);
-  });
-
-  await waitFor(() => {
-    expect(container?.querySelector('input[name="label"]')).toHaveValue('important');
+    expect(container.querySelector('input[name="name"]')).toBeInTheDocument();
+    expect(container.querySelector('input[name="keywords"]')).toBeInTheDocument();
   });
 });
 
@@ -76,23 +49,23 @@ const editItem = (
 );
 
 test('inputs should have mock values', async () => {
-  const { container, unmount } = render(editItem);
+  const { container } = render(editItem);
 
   await waitFor(() => {
-    const labelField = container.querySelector('input[name="label"]') as HTMLInputElement;
-    const languageField = container.querySelector('input[name="languageId"]') as HTMLInputElement;
-    expect(labelField?.value).toBe('important');
-    expect(languageField.getAttribute('value')).toBe('1');
+    const nameField = container.querySelector('input[name="name"]') as HTMLInputElement;
+    const keywordsField = container.querySelector('input[name="keywords"]') as HTMLInputElement;
+    expect(nameField.getAttribute('value')).toBe('Help flow');
+    expect(keywordsField.getAttribute('value')).toBe('help');
   });
 });
 
-test('cancel button should redirect to taglist page', async () => {
-  const { container, getByText, unmount } = render(
+test('cancel button should redirect to flowlist page', async () => {
+  const { container, getByText } = render(
     <MockedProvider mocks={mocks} addTypename={false}>
       <Router>
         <Routes>
           <Route path="/" element={<FormLayout {...defaultProps} />} />
-          <Route path="tag" element={<TagList />} />
+          <Route path="flow" element={<FlowList />} />
         </Routes>
       </Router>
     </MockedProvider>
@@ -105,6 +78,6 @@ test('cancel button should redirect to taglist page', async () => {
   });
 
   await waitFor(() => {
-    expect(getByText('Tags')).toBeInTheDocument();
+    expect(getByText('Flows')).toBeInTheDocument();
   });
 });

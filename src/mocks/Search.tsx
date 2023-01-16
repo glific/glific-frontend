@@ -15,7 +15,7 @@ export const createSearchQuery = {
       input: {
         label: 'new search description',
         shortcode: 'new search',
-        args: '{"messageOpts":{"offset":0,"limit":10},"filter":{"term":"","includeTags":["10"]},"contactOpts":{"offset":0,"limit":20}}',
+        args: '{"messageOpts":{"offset":0,"limit":10},"filter":{"term":"","includeLabels":["10"]},"contactOpts":{"offset":0,"limit":20}}',
       },
     },
   },
@@ -24,7 +24,7 @@ export const createSearchQuery = {
       createSavedSearch: {
         errors: null,
         savedSearch: {
-          args: '{"messageOpts":{"offset":0,"limit":10},"filter":{"term":"","includeTags":["10"]},"contactOpts":{"offset":0,"limit":20}}',
+          args: '{"messageOpts":{"offset":0,"limit":10},"filter":{"term":"","includeLabels":["10"]},"contactOpts":{"offset":0,"limit":20}}',
           id: '11',
           label: 'new search description',
           shortcode: 'new search',
@@ -69,7 +69,7 @@ export const getSearchesQuery = [
       data: {
         savedSearches: [
           {
-            args: '{"messageOpts":{"offset":0,"limit":10},"filter":{"term":"","includeTags":["10"]},"contactOpts":{"offset":0,"limit":20}}',
+            args: '{"messageOpts":{"offset":0,"limit":10},"filter":{"term":"","includeLabels":["10"]},"contactOpts":{"offset":0,"limit":20}}',
             id: '8',
             label: 'Test search',
             shortcode: 'Save Search',
@@ -84,7 +84,7 @@ export const getSearchesQuery = [
       data: {
         savedSearches: [
           {
-            args: '{"messageOpts":{"offset":0,"limit":10},"filter":{"term":"","includeTags":["10"]},"contactOpts":{"offset":0,"limit":20}}',
+            args: '{"messageOpts":{"offset":0,"limit":10},"filter":{"term":"","includeLabels":["10"]},"contactOpts":{"offset":0,"limit":20}}',
             id: '8',
             label: 'Test search',
             shortcode: 'Save Search',
@@ -106,7 +106,7 @@ export const getSearch = {
     data: {
       savedSearch: {
         savedSearch: {
-          args: '{"messageOpts":{"offset":0,"limit":10},"filter":{"term":"","includeTags":["10"]},"contactOpts":{"offset":0,"limit":20}}',
+          args: '{"messageOpts":{"offset":0,"limit":10},"filter":{"term":"","includeLabels":["10"]},"contactOpts":{"offset":0,"limit":20}}',
           id: '1',
           label: 'Test search',
           shortcode: 'Save Search collection',
@@ -128,7 +128,7 @@ export const collectionCountSubscription = {
   },
 };
 
-const contactsMock = new Array(25).fill(null).map((val: any, index: number) => ({
+const contactsMock = new Array(30).fill(null).map((val: any, index: number) => ({
   id: `${index}`,
   name: `Test ${index}`,
   phone: '448-917-4013',
@@ -137,7 +137,6 @@ const contactsMock = new Array(25).fill(null).map((val: any, index: number) => (
   status: 'VALID',
   bspStatus: 'SESSION_AND_HSM',
   isOrgRead: false,
-  tags: [],
 }));
 
 export const searchContactCollection = [
@@ -163,7 +162,6 @@ export const searchContactCollection = [
               status: 'VALID',
               bspStatus: 'SESSION_AND_HSM',
               isOrgRead: false,
-              tags: [],
             },
             {
               id: '219',
@@ -174,7 +172,6 @@ export const searchContactCollection = [
               status: 'VALID',
               bspStatus: 'SESSION_AND_HSM',
               isOrgRead: true,
-              tags: [],
             },
             {
               id: '163',
@@ -185,51 +182,6 @@ export const searchContactCollection = [
               status: 'VALID',
               bspStatus: 'SESSION_AND_HSM',
               isOrgRead: false,
-              tags: [],
-            },
-            {
-              id: '221',
-              name: 'Emil Turner III',
-              phone: '430/265-5025',
-              maskedPhone: '430/******25',
-              lastMessageAt: '2021-05-03T04:56:51Z',
-              status: 'VALID',
-              bspStatus: 'SESSION_AND_HSM',
-              isOrgRead: false,
-              tags: [],
-            },
-            {
-              id: '168',
-              name: 'Miss Roslyn Eichmann III',
-              phone: '4687383633',
-              maskedPhone: '4687******33',
-              lastMessageAt: '2021-05-03T04:56:51Z',
-              status: 'VALID',
-              bspStatus: 'SESSION_AND_HSM',
-              isOrgRead: false,
-              tags: [],
-            },
-            {
-              id: '106',
-              name: 'Dr. Lisa Rodriguez III',
-              phone: '513.724.7478',
-              maskedPhone: '513.******78',
-              lastMessageAt: '2021-05-03T04:56:50Z',
-              status: 'VALID',
-              bspStatus: 'SESSION_AND_HSM',
-              isOrgRead: true,
-              tags: [],
-            },
-            {
-              id: '89',
-              name: 'Mrs. Pamela Smitham III',
-              phone: '627.646.4660',
-              maskedPhone: '627.******60',
-              lastMessageAt: '2021-05-03T04:56:50Z',
-              status: 'VALID',
-              bspStatus: 'SESSION_AND_HSM',
-              isOrgRead: false,
-              tags: [],
             },
             ...contactsMock,
           ],
@@ -254,43 +206,10 @@ export const searchContactCollection = [
               sender: {
                 id: '1',
               },
-              tags: [],
               type: 'TEXT',
               media: null,
               contextMessage: null,
               flowLabel: null,
-            },
-          ],
-          tags: [
-            {
-              id: '28',
-              body: 'So wise so young, they say, do never live long.',
-              messageNumber: 3,
-              insertedAt: '2021-04-17T06:20:08.385901Z',
-              contact: {
-                id: '14',
-                name: 'NGO Admin',
-                phone: '911234567890',
-                maskedPhone: '9112******90',
-                lastMessageAt: '2021-05-03T04:56:50Z',
-                status: 'VALID',
-                bspStatus: 'NONE',
-              },
-              receiver: {
-                id: '1',
-              },
-              sender: {
-                id: '14',
-              },
-              tags: [
-                {
-                  id: '19',
-                  label: 'This is for testing',
-                  colorCode: '#0C976D',
-                },
-              ],
-              type: 'TEXT',
-              media: null,
             },
           ],
           labels: [
@@ -314,7 +233,6 @@ export const searchContactCollection = [
               sender: {
                 id: '1',
               },
-              tags: [],
               type: 'TEXT',
               media: null,
               contextMessage: null,
