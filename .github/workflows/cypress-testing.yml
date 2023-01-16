@@ -99,8 +99,8 @@ jobs:
           echo done. go to dir.
           cp -r cypress-testing/cypress cypress
           yarn add cypress@7.3.0
-          cp cypress-testing/cypress.json.example cypress.json
-          echo Copy Cypress.json from example
+          echo Create cypress.config.ts from example
+          cp cypress.config.ts.example cypress.config.ts
 
         # Run frontend
       - name: Run glific frontend
