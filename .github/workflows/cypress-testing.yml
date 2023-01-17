@@ -98,9 +98,9 @@ jobs:
           git clone https://github.com/glific/cypress-testing.git
           echo done. go to dir.
           cp -r cypress-testing/cypress cypress
-          yarn add cypress@7.3.0
-          cp cypress-testing/cypress.json.example cypress.json
-          echo Copy Cypress.json from example
+          yarn add cypress@12.3.0
+          echo Create cypress.config.ts from example
+          cp cypress-testing/cypress.config.ts.example cypress.config.ts
 
         # Run frontend
       - name: Run glific frontend

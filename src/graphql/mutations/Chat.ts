@@ -13,29 +13,9 @@ export const CREATE_AND_SEND_MESSAGE_MUTATION = gql`
         receiver {
           id
         }
-        tags {
-          id
-          label
-        }
         media {
           url
           caption
-        }
-      }
-    }
-  }
-`;
-
-export const UPDATE_MESSAGE_TAGS = gql`
-  mutation updateMessageTags($input: MessageTagsInput!) {
-    updateMessageTags(input: $input) {
-      messageTags {
-        message {
-          id
-        }
-        tag {
-          id
-          label
         }
       }
     }

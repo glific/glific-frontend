@@ -16,17 +16,7 @@
             },
             "sender": {
               "id": "194"
-            },
-            "tags": [
-              {
-                "id": "20",
-                "label": "Participant"
-              },
-              {
-                "id": "15",
-                "label": "Help"
-              }
-            ]
+            }
           },
           {
             "body": "Rich gifts wax poor when givers prove unkind.",
@@ -37,8 +27,7 @@
             },
             "sender": {
               "id": "1"
-            },
-            "tags": []
+            }
           },
           {
             "body": "What's in a name? That which we call a rose by any other name would smell as sweet.",
@@ -49,21 +38,7 @@
             },
             "sender": {
               "id": "194"
-            },
-            "tags": [
-              {
-                "id": "2",
-                "label": "Contacts"
-              },
-              {
-                "id": "8",
-                "label": "Important"
-              },
-              {
-                "id": "6",
-                "label": "Thank You"
-              }
-            ]
+            }
           }
         ]
       },
@@ -83,7 +58,6 @@
             "sender": {
               "id": "1"
             },
-            "tags": [],
             "errors": "{}"
           },
           {
@@ -96,16 +70,6 @@
             "sender": {
               "id": "36"
             },
-            "tags": [
-              {
-                "id": "17",
-                "label": "Sequence"
-              },
-              {
-                "id": "8",
-                "label": "Important"
-              }
-            ],
             "errors": "{}"
           },
           {
@@ -118,16 +82,6 @@
             "sender": {
               "id": "36"
             },
-            "tags": [
-              {
-                "id": "16",
-                "label": "Numeric"
-              },
-              {
-                "id": "1",
-                "label": "Messages"
-              }
-            ],
             "errors": "{}"
           }
         ]

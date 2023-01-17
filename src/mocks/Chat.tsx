@@ -10,7 +10,7 @@ import {
   SEARCH_MULTI_QUERY,
   SEARCHES_COUNT,
 } from 'graphql/queries/Search';
-import { CREATE_AND_SEND_MESSAGE_MUTATION, UPDATE_MESSAGE_TAGS } from 'graphql/mutations/Chat';
+import { CREATE_AND_SEND_MESSAGE_MUTATION } from 'graphql/mutations/Chat';
 import {
   DEFAULT_CONTACT_LIMIT,
   DEFAULT_MESSAGE_LIMIT,
@@ -18,8 +18,6 @@ import {
 } from 'common/constants';
 import { searchQueryMock as searchQuery } from 'containers/Chat/ChatConversations/ChatConversations.test.helper';
 import { searchQueryEmptyMock as searchEmptyQuery } from 'containers/Chat/ChatConversations/ChatConversations.test.helper';
-import { addMessageTagSubscription, deleteMessageTagSubscription } from './Tag';
-import { filterTagsQuery, getTagsQuery } from './Tag';
 import { contactCollectionsQuery } from './Contact';
 import { getOrganizationLanguagesQuery } from './Organization';
 
@@ -79,14 +77,6 @@ const conversationMessageQuery = (
               sender: {
                 id: '2',
               },
-              tags: [
-                {
-                  id: '1',
-                  label: 'Unread',
-                  colorCode: '#00d084',
-                  parent: null,
-                },
-              ],
               type: 'TEXT',
               media: null,
               location: null,
@@ -157,7 +147,6 @@ export const conversationCollectionQuery = (
               messageNumber: 50,
               receiver: { id: '1' },
               sender: { id: '1' },
-              tags: [],
               type: 'TEXT',
               contextMessage: {
                 body: 'All good',
@@ -193,7 +182,6 @@ export const conversationCollectionQuery = (
               },
               type: 'TEXT',
               media: null,
-              tags: [],
               location: null,
               errors: '{}',
               contextMessage: {
@@ -245,7 +233,6 @@ export const messageReceivedSubscription = {
           id: '2',
           phone: '919090709009',
         },
-        tags: [],
         type: 'TEXT',
         fields: '{}',
         media: {
@@ -300,7 +287,6 @@ export const collectionSendSubscription = {
           id: '1',
           phone: '917834811114',
         },
-        tags: [],
         groupId: '2',
         type: 'TEXT',
         fields: '{}',
@@ -350,7 +336,6 @@ const messageSubscriptionData = {
       id: '1',
       phone: '917834811114',
     },
-    tags: [],
     type: 'TEXT',
     fields: '{}',
     media: {
@@ -420,7 +405,7 @@ export const savedSearchStatusQuery = {
     data: {
       savedSearches: [
         {
-          args: '{"messageOpts":{"limit":5},"filter":{"includeTags":["12"]},"contactOpts":{"limit":10}}',
+          args: '{"messageOpts":{"limit":5},"filter":{"includeLabels":["12"]},"contactOpts":{"limit":10}}',
           id: '1',
           isReserved: true,
           label: 'All',
@@ -428,7 +413,7 @@ export const savedSearchStatusQuery = {
           count: 10,
         },
         {
-          args: '{"messageOpts":{"limit":5},"filter":{"includeTags":["12"]},"contactOpts":{"limit":10}}',
+          args: '{"messageOpts":{"limit":5},"filter":{"includeLabels":["12"]},"contactOpts":{"limit":10}}',
           id: '2',
           isReserved: true,
           label: 'All unread conversations',
@@ -436,7 +421,7 @@ export const savedSearchStatusQuery = {
           count: 10,
         },
         {
-          args: '{"messageOpts":{"limit":5},"filter":{"includeTags":["12"]},"contactOpts":{"limit":10}}',
+          args: '{"messageOpts":{"limit":5},"filter":{"includeLabels":["12"]},"contactOpts":{"limit":10}}',
           id: '3',
           isReserved: true,
           label: 'Not replied',
@@ -444,7 +429,7 @@ export const savedSearchStatusQuery = {
           count: 10,
         },
         {
-          args: '{"messageOpts":{"limit":5},"filter":{"includeTags":["12"]},"contactOpts":{"limit":10}}',
+          args: '{"messageOpts":{"limit":5},"filter":{"includeLabels":["12"]},"contactOpts":{"limit":10}}',
           id: '4',
           isReserved: true,
           label: 'Optin',
@@ -465,7 +450,7 @@ export const savedSearchQuery = {
     data: {
       savedSearches: [
         {
-          args: '{"messageOpts":{"limit":5},"filter":{"includeTags":["12"]},"contactOpts":{"limit":10}}',
+          args: '{"messageOpts":{"limit":5},"filter":{"includeLabels":["12"]},"contactOpts":{"limit":10}}',
           id: '1',
           isReserved: false,
           label: 'test',
@@ -527,14 +512,6 @@ export const conversationQuery = getConversationQuery({
           sender: {
             id: '2',
           },
-          tags: [
-            {
-              id: '2',
-              label: 'Important',
-              colorCode: '#00d084',
-              parent: null,
-            },
-          ],
           type: 'TEXT',
           media: null,
           errors: '{}',
@@ -571,14 +548,6 @@ export const conversationQuery = getConversationQuery({
           sender: {
             id: '1',
           },
-          tags: [
-            {
-              id: '1',
-              label: 'Unread',
-              colorCode: '#00d084',
-              parent: null,
-            },
-          ],
           type: 'TEXT',
           media: null,
           errors: '{}',
@@ -632,7 +601,6 @@ export const searchMultiQuery = (
               lastMessageAt: '2020-11-18T04:37:57Z',
               name: 'Default receiver',
               status: 'VALID',
-              tags: [],
             },
             {
               bspStatus: 'SESSION',
@@ -640,7 +608,6 @@ export const searchMultiQuery = (
               lastMessageAt: '2020-11-18T04:37:57Z',
               name: 'Adelle Cavin',
               status: 'VALID',
-              tags: [],
             },
           ],
           messages: [
@@ -664,43 +631,7 @@ export const searchMultiQuery = (
               sender: {
                 id: '8',
               },
-              tags: [
-                {
-                  colorCode: '#0C976D',
-                  id: '4',
-                  label: 'Greeting',
-                },
-              ],
-              type: 'TEXT',
-            },
-          ],
-          tags: [
-            {
-              body: 'Hi',
-              contact: {
-                bspStatus: 'HSM',
-                id: '8',
-                lastMessageAt: '2020-10-15T07:15:33Z',
-                name: 'Dignesh',
-                status: 'VALID',
-              },
-              id: '12',
-              insertedAt: '2020-10-15T06:58:34.432894Z',
-              media: null,
-              messageNumber: 54,
-              receiver: {
-                id: '1',
-              },
-              sender: {
-                id: '8',
-              },
-              tags: [
-                {
-                  colorCode: '#0C976D',
-                  id: '4',
-                  label: 'Greeting',
-                },
-              ],
+
               type: 'TEXT',
             },
           ],
@@ -721,8 +652,6 @@ export const CONVERSATION_MOCKS = [
   messageSendSubscription,
   collectionSendSubscription,
   messageStatusSubscription,
-  addMessageTagSubscription,
-  deleteMessageTagSubscription,
   savedSearchQuery,
   getOrganizationLanguagesQuery,
   conversationMessageQuery('2', 'Jane Doe', '919090909009', DEFAULT_CONTACT_LIMIT, {
@@ -745,38 +674,6 @@ export const CONVERSATION_MOCKS = [
     offset: 0,
   }),
 ];
-
-const updateMessageTagsQuery = {
-  request: {
-    query: UPDATE_MESSAGE_TAGS,
-    variables: {
-      input: {
-        messageId: '7217',
-        addTagIds: ['87'],
-        deleteTagIds: ['1'],
-      },
-    },
-  },
-  result: {
-    data: {
-      updateMessageTags: {
-        messageTags: [
-          {
-            message: {
-              id: '7217',
-            },
-            tag: {
-              id: '87',
-              label: 'Good message',
-              colorCode: '#0C976D',
-              parent: null,
-            },
-          },
-        ],
-      },
-    },
-  },
-};
 
 const conversation = {
   search: [
@@ -802,26 +699,6 @@ const conversation = {
           sender: {
             id: '2',
           },
-          tags: [
-            {
-              id: '1',
-              label: 'important',
-              colorCode: '#00d084',
-              parent: null,
-            },
-            {
-              id: '5',
-              label: 'Greeting',
-              colorCode: '#00d084',
-              parent: null,
-            },
-            {
-              id: '15',
-              label: 'Help',
-              colorCode: '#00d084',
-              parent: null,
-            },
-          ],
           type: 'TEXT',
           media: null,
         },
@@ -854,7 +731,6 @@ const conversationWithMultipleMessages = {
           sender: {
             id: '2',
           },
-          tags: [],
           type: 'TEXT',
           media: null,
         },
@@ -868,7 +744,6 @@ const conversationWithMultipleMessages = {
           sender: {
             id: '2',
           },
-          tags: [],
           type: 'TEXT',
           media: null,
         },
@@ -903,12 +778,6 @@ const createAndSendMessageMutation = {
           sender: {
             id: '1',
           },
-          tags: [
-            {
-              id: 1,
-              label: 'critical',
-            },
-          ],
         },
       },
     },
@@ -940,14 +809,6 @@ const searchQueryResult = {
             sender: {
               id: '2',
             },
-            tags: [
-              {
-                id: '1',
-                label: 'important',
-                colorCode: '#00d084',
-                parent: null,
-              },
-            ],
             type: 'TEXT',
             media: null,
             contextMessage: {
@@ -1003,13 +864,9 @@ export const searchQuerywithFilterOffset = {
 
 const chatMessagesMocks = [
   contactCollectionsQuery,
-  updateMessageTagsQuery,
-  updateMessageTagsQuery,
   searchQuerywithFilter,
   searchQuerywithFilterOffset,
   searchQuerywithFilterOffset,
-  filterTagsQuery,
-  getTagsQuery,
   createAndSendMessageMutation,
 ];
 

@@ -4,8 +4,7 @@ import { MockedProvider } from '@apollo/client/testing';
 import { Routes, Route } from 'react-router-dom';
 import { within, fireEvent } from '@testing-library/dom';
 
-import { Tag } from 'containers/Tag/Tag';
-import { OrganizationList } from 'containers/OrganizationList/OrganizationList';
+import { Flow } from 'containers/Flow/Flow';
 import { setUserSession } from 'services/AuthService';
 import { ReactComponent as ActivateIcon } from 'assets/images/icons/Activate.svg';
 import { ReactComponent as ApprovedIcon } from 'assets/images/icons/Template/Approved.svg';
@@ -46,7 +45,7 @@ describe('<List />', () => {
     await waitFor(() => {
       expect(container.querySelector('table')).toBeInTheDocument();
       fireEvent.change(getByTestId('searchInput').querySelector('input') as HTMLElement, {
-        target: { value: 'Unread' },
+        target: { value: 'help' },
       });
     });
 
@@ -62,8 +61,8 @@ describe('<List />', () => {
       const tableHead = container.querySelector('thead') as HTMLTableSectionElement;
       const { getByText } = within(tableHead);
       expect(getByText('Title')).toBeInTheDocument();
-      expect(getByText('Description')).toBeInTheDocument();
-      expect(getByText('Keywords')).toBeInTheDocument();
+      expect(getByText('Last published')).toBeInTheDocument();
+      expect(getByText('Last saved in Draft')).toBeInTheDocument();
       expect(getByText('Actions')).toBeInTheDocument();
     });
   });
@@ -85,7 +84,7 @@ const listButtons = (
     <Router>
       <Routes>
         <Route path="/" element={<List {...defaultProps} />} />
-        <Route path="tag/add" element={<Tag />} />
+        <Route path="flow/add" element={<Flow />} />
       </Routes>
     </Router>
   </MockedProvider>
@@ -144,7 +143,7 @@ test('list sorting', async () => {
   await waitFor(() => {
     const tableHead = container.querySelector('thead') as HTMLTableSectionElement;
     const { getByText } = within(tableHead);
-    fireEvent.click(getByText('Keywords'));
+    fireEvent.click(getByText('Title'));
   });
 });
 
@@ -178,20 +177,20 @@ describe('DialogMessage tests', () => {
       },
     ];
 
-    let props = { ...orgProps, dialogMessage: useCustomDialog, additionalAction };
+    let organizationProps = { ...orgProps, dialogMessage: useCustomDialog, additionalAction };
 
-    const list = (
+    window.history.replaceState({}, 'Organization', '/');
+    const organizationList = (
       <MockedProvider mocks={ORG_LIST_MOCK} addTypename={false}>
         <Router>
           <Routes>
-            <Route path="/" element={<List {...props} />} />
-            <Route path="tag/add" element={<OrganizationList />} />
+            <Route path="/" element={<List {...organizationProps} />} />
           </Routes>
         </Router>
       </MockedProvider>
     );
 
-    const { container } = render(list);
+    const { container } = render(organizationList);
 
     await waitFor(() => {
       const { queryByLabelText } = within(
@@ -204,29 +203,29 @@ describe('DialogMessage tests', () => {
   });
 });
 
-// Need to check and write cases for card type
+// // Need to check and write cases for card type
 
-// describe('Card list type', () => {
-//   const cardTypeProps = defaultProps;
-//   cardTypeProps.displayListType = 'card';
-//   cardTypeProps.cardLink = {
-//     start: 'collection',
-//     end: 'contacts',
-//   };
-//   cardTypeProps.listItem = 'collections';
-//   const card = (
-//     <MockedProvider mocks={mocks} addTypename={false}>
-//       <Router>
-//         <List {...cardTypeProps} />
-//       </Router>
-//     </MockedProvider>
-//   );
+// // describe('Card list type', () => {
+// //   const cardTypeProps = defaultProps;
+// //   cardTypeProps.displayListType = 'card';
+// //   cardTypeProps.cardLink = {
+// //     start: 'collection',
+// //     end: 'contacts',
+// //   };
+// //   cardTypeProps.listItem = 'collections';
+// //   const card = (
+// //     <MockedProvider mocks={mocks} addTypename={false}>
+// //       <Router>
+// //         <List {...cardTypeProps} />
+// //       </Router>
+// //     </MockedProvider>
+// //   );
 
-//   test('list type is card', async () => {
-//     const { getAllByTestId } = render(card);
+// //   test('list type is card', async () => {
+// //     const { getAllByTestId } = render(card);
 
-//     await waitFor(() => {
-//       expect(getAllByTestId('description')[0]).toBeInTheDocument();
-//     });
-//   });
-// });
+// //     await waitFor(() => {
+// //       expect(getAllByTestId('description')[0]).toBeInTheDocument();
+// //     });
+// //   });
+// // });

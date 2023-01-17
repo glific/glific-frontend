@@ -44,13 +44,6 @@ cache.writeQuery({
             sender: {
               id: '2',
             },
-            tags: [
-              {
-                id: '1',
-                label: 'important',
-                colorCode: '#00d084',
-              },
-            ],
             type: 'TEXT',
             media: null,
             errors: '{}',
@@ -111,13 +104,6 @@ describe('<ChatInterface />', () => {
     // check if chat conversations are displayed
     const ChatConversation = await findByTestId('beneficiaryName');
     expect(ChatConversation).toHaveTextContent('Effie Cormier');
-
-    // check if tags are displayed in the ChatMessages
-    /**
-     * commenting tags for now
-     */
-    // const ConversationTag = await findAllByText('important');
-    // expect(ConversationTag[0]).toBeInTheDocument();
   });
 
   test('check condition when no subscription data provided', async () => {

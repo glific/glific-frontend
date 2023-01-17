@@ -28,10 +28,6 @@ const queries = {
 export interface ProfileProps {
   profileType: string;
   redirectionLink: string;
-  additionalField?: any;
-  additionalProfileStates?: any;
-  additionalState?: any;
-  additionalQuery?: Function;
   afterDelete?: any;
   removePhoneField?: boolean;
   multiProfileAttributes?: any;
@@ -40,10 +36,6 @@ export interface ProfileProps {
 export const Profile = ({
   profileType,
   redirectionLink,
-  additionalField,
-  additionalProfileStates,
-  additionalState,
-  additionalQuery,
   afterDelete,
   removePhoneField = false,
   multiProfileAttributes,
@@ -106,7 +98,6 @@ export const Profile = ({
     status: statusValue,
     bspStatus: bspStatusValue,
     language: languageIdValue,
-    ...rest
   }: any) => {
     setName(nameValue);
     updateName();
@@ -126,10 +117,6 @@ export const Profile = ({
     setBspStatus(bspStatusValue);
     setHideRemoveBtn(hideDeleteButton);
     setLanguageId(languageIdValue.id);
-
-    if (additionalProfileStates) {
-      additionalProfileStates.setState(rest[additionalProfileStates.name]);
-    }
   };
 
   const FormSchema = Yup.object().shape({
@@ -170,11 +157,6 @@ export const Profile = ({
     },
   ];
 
-  if (additionalProfileStates) {
-    states[additionalProfileStates.name] = additionalProfileStates.state;
-    formFields.splice(1, 0, additionalField);
-  }
-
   if (isContactProfileEnabled && multiProfileAttributes?.selectedProfile) {
     formFields.splice(0, 0, multiProfileAttributes);
   }
@@ -193,11 +175,9 @@ export const Profile = ({
       {...queries}
       states={states}
       setStates={setStates}
-      additionalState={additionalState}
       validationSchema={FormSchema}
       listItemName="Contact"
       dialogMessage={dialogMessage}
-      additionalQuery={additionalQuery}
       formFields={formFields}
       redirectionLink={redirectionLink}
       listItem="contact"
