@@ -100,7 +100,7 @@ jobs:
           cp -r cypress-testing/cypress cypress
           yarn add cypress@12.3.0
           echo Create cypress.config.ts from example
-          cp cypress.config.ts.example cypress.config.ts
+          cp cypress-testing/cypress.config.ts.example cypress.config.ts
 
         # Run frontend
       - name: Run glific frontend
