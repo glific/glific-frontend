@@ -88,11 +88,9 @@
   },
   "scripts": {
     "setup": "yarn cache clean && yarn install --force && yarn run floweditor",
-    "start": "vite --host=glific.test",
+    "dev": "vite --host=glific.test",
     "build": "yarn setup && tsc && vite build",
     "serve": "vite preview",
-    "test": "react-app-rewired test",
-    "test:coverage": "react-app-rewired test --coverage --watchAll",
     "cy:run": "cypress run",
     "format": "prettier \"**/*.{ts,tsx,css,graphql}\" --write",
     "floweditor": "cp -r node_modules/@glific/flow-editor/build/static public && rm -rf public/sitestatic && cp -r node_modules/@glific/flow-editor/build/sitestatic public",
