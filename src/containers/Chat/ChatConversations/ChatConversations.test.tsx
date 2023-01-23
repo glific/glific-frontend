@@ -43,13 +43,6 @@ cache.writeQuery({
             sender: {
               id: '2',
             },
-            tags: [
-              {
-                id: '1',
-                label: 'important',
-                colorCode: '#00d084',
-              },
-            ],
             type: 'TEXT',
             media: null,
             errors: null,
@@ -132,7 +125,7 @@ test('it should reset input on clicking cross icon', async () => {
 });
 
 test('it should load all contacts with unread tag', async () => {
-  const { getAllByTestId, getByText, getAllByText } = render(chatConversation);
+  const { getAllByTestId, getAllByText } = render(chatConversation);
   // loading is show initially
   expect(getAllByText('Loading...')).toHaveLength(2);
   await waitFor(() => {

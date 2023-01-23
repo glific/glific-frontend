@@ -10,8 +10,6 @@ import { ProviderContext } from 'context/session';
 import { GET_ORGANIZATION_PROVIDER } from 'graphql/queries/Organization';
 import styles from './AuthenticatedRoute.module.css';
 
-// const TagList = lazy(() => import('containers/Tag/TagList/TagList'));
-// const Tag = lazy(() => import('containers/Tag/Tag'));
 const Chat = lazy(() => import('containers/Chat/Chat'));
 const Layout = lazy(() => import('components/UI/Layout/Layout'));
 const SpeedSendList = lazy(() => import('containers/Template/List/SpeedSendList/SpeedSendList'));
@@ -84,9 +82,6 @@ const routeStaff = (
 
 const routeAdmin = (
   <Routes>
-    {/* <Route path="tag" element={<TagList />} />
-    <Route path="tag/add" element={<Tag />} />
-    <Route path="tag/:id/edit" element={<Tag />} /> */}
     <Route path="speed-send" element={<SpeedSendList />} />
     <Route path="speed-send/add" element={<SpeedSend />} />
     <Route path="speed-send/:id/edit" element={<SpeedSend />} />

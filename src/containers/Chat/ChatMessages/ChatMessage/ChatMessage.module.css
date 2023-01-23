@@ -145,38 +145,6 @@
   display: flex;
 }
 
-.TagContainerSender {
-  justify-content: flex-end;
-}
-
-.TagContainer {
-  display: flex;
-  line-height: 12px;
-  margin-bottom: 11px;
-  flex-wrap: wrap;
-}
-
-.TagMargin {
-  margin-right: 0px !important;
-  margin-left: 8px;
-}
-
-.Tag {
-  font-size: 12px;
-  font-weight: 500;
-  color: #073f24;
-  display: flex;
-  align-items: center;
-  margin-right: 13px;
-}
-
-.TagIcon {
-  margin-right: 4.27px;
-  font-weight: bold;
-  width: 11px;
-  vertical-align: text-top;
-}
-
 .MessageDetailsSender {
   margin-left: 32px;
   margin-top: 6px;

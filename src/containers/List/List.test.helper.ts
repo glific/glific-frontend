@@ -1,225 +1,59 @@
-import { GET_TAGS_COUNT, FILTER_TAGS, GET_TAGS } from 'graphql/queries/Tag';
 import { FILTER_ORGANIZATIONS, GET_ORGANIZATION_COUNT } from 'graphql/queries/Organization';
-import { GET_LANGUAGES } from 'graphql/queries/List';
-import { DELETE_TAG } from 'graphql/mutations/Tag';
 import { DELETE_INACTIVE_ORGANIZATIONS } from 'graphql/mutations/Organization';
 import {
   getOrganizationLanguagesQuery,
   getOrganizationQuery,
   getAllOrganizations,
 } from 'mocks/Organization';
-import { setVariables } from 'common/constants';
 import { getCurrentUserQuery } from 'mocks/User';
+import { FILTER_FLOW, GET_FLOW_COUNT } from 'graphql/queries/Flow';
+import { DELETE_FLOW } from 'graphql/mutations/Flow';
+import {
+  filterFlowQuery,
+  filterFlowWithNameOrKeywordQuery,
+  getFlowCountQuery,
+  getFlowCountWithFilterQuery,
+} from 'mocks/Flow';
 
 export const defaultProps = {
   columnNames: [
-    { name: 'label', label: 'Title' },
-    { name: 'description', label: 'Description' },
-    { label: 'Keywords' },
-    { name: 'updated_at', label: 'Last modified' },
+    { name: 'is_pinned', label: '', sort: true, order: 'desc' },
+    { name: 'name', label: 'Title' },
+    { label: 'Last published' },
+    { label: 'Last saved in Draft' },
     { label: 'Actions' },
   ],
-  countQuery: GET_TAGS_COUNT,
-  listItem: 'tags',
-  filterItemsQuery: FILTER_TAGS,
-  deleteItemQuery: DELETE_TAG,
-  listItemName: 'tag',
+  countQuery: GET_FLOW_COUNT,
+  listItem: 'flows',
+  filterItemsQuery: FILTER_FLOW,
+  deleteItemQuery: DELETE_FLOW,
+  listItemName: 'flow',
+  searchParameter: ['nameOrKeyword'],
   dialogMessage: 'are you sure?',
-  pageLink: 'tag',
+  pageLink: 'flow',
   columns: (listItem: any) => ({}),
   listIcon: null,
   columnStyles: [],
-  title: 'Tags',
+  title: 'Flows',
   searchMode: true,
-  button: { show: true, label: 'Create Tag', symbol: '+' },
-};
-
-const count = {
-  request: {
-    query: GET_TAGS_COUNT,
-    variables: {
-      filter: {},
-    },
-  },
-  result: {
-    data: {
-      countTags: 2,
-    },
-  },
-};
-
-const filter = {
-  request: {
-    query: FILTER_TAGS,
-    variables: {
-      filter: {},
-      opts: {
-        limit: 50,
-        offset: 0,
-        order: 'ASC',
-        orderWith: 'label',
-      },
-    },
-  },
-  result: {
-    data: {
-      tags: [
-        {
-          id: '87',
-          label: 'Unread',
-          description: 'Unread',
-          keywords: ['Hi'],
-          isReserved: false,
-          colorCode: '#0C976D',
-          parent: null,
-          updatedAt: '2020-12-01T18:00:28Z',
-        },
-        {
-          id: '88',
-          label: 'Not replied',
-          description: 'Not replied',
-          keywords: null,
-          isReserved: true,
-          colorCode: '#0C976D',
-          parent: null,
-          updatedAt: '2020-12-01T18:00:28Z',
-        },
-      ],
-    },
-  },
-};
-
-const search = {
-  request: {
-    query: FILTER_TAGS,
-    variables: {
-      filter: {
-        label: 'Unread',
-      },
-      opts: {
-        limit: 50,
-        offset: 0,
-        order: 'ASC',
-        orderWith: 'label',
-      },
-    },
-  },
-  result: {
-    data: {
-      tags: [
-        {
-          id: '87',
-          label: 'Unread',
-          description: 'Unread',
-          keywords: ['Hi'],
-          isReserved: false,
-          colorCode: '#0C976D',
-          parent: null,
-          updatedAt: '2020-12-01T18:00:28Z',
-        },
-      ],
-    },
-  },
-};
-
-const searchCount = {
-  request: {
-    query: GET_TAGS_COUNT,
-    variables: {
-      filter: {
-        label: 'Unread',
-      },
-    },
-  },
-  result: {
-    data: {
-      countTags: 2,
-    },
-  },
-};
-
-const getTags = {
-  request: {
-    query: GET_TAGS,
-    variables: setVariables(),
-  },
-  result: {
-    data: {
-      tags: [
-        {
-          colorCode: '#0C976D',
-          description: 'A default message tag',
-          id: '1',
-          label: 'Messages',
-          parent: null,
-          language: { id: '1', label: 'Hindi' },
-        },
-        {
-          colorCode: '#0C976D',
-          description: 'A contact tag for users that are marked as contacts',
-          id: '2',
-          label: 'Contacts',
-          parent: null,
-          language: { id: '1', label: 'Hindi' },
-        },
-      ],
-    },
-  },
+  button: { show: true, label: 'Create Flow', symbol: '+' },
 };
 
 export const LIST_MOCKS = [
   getCurrentUserQuery,
-
+  filterFlowQuery,
+  getFlowCountQuery,
+  filterFlowQuery,
+  getFlowCountQuery,
+  filterFlowWithNameOrKeywordQuery,
+  getFlowCountWithFilterQuery,
   getCurrentUserQuery,
-  {
-    request: {
-      query: DELETE_TAG,
-      variables: {
-        id: '87',
-      },
-    },
-    result: {
-      data: {
-        deleteTag: {
-          errors: null,
-        },
-      },
-    },
-  },
 
-  {
-    request: {
-      query: GET_LANGUAGES,
-    },
-    result: {
-      data: {
-        languages: [
-          {
-            id: '1',
-            label: 'English (United States)',
-          },
-          {
-            id: '2',
-            label: 'Hindi (India)',
-          },
-        ],
-      },
-    },
-  },
-  count,
-  count,
-  filter,
-  filter,
-  filter,
-  filter,
-  search,
-  searchCount,
-  getTags,
   ...getOrganizationQuery,
   getOrganizationLanguagesQuery,
 ];
 
-export const ORG_LIST_MOCK = [...getAllOrganizations];
+export const ORG_LIST_MOCK = [...getAllOrganizations, ...getAllOrganizations];
 
 export const orgProps = {
   columnNames: [

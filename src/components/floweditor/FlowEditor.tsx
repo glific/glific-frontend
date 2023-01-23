@@ -56,20 +56,19 @@ export const FlowEditor = () => {
     fetchPolicy: 'network-only',
     onCompleted: ({ flowGet }) => {
       if (flowGet.flow) {
-        const { dialogflow, googleCloudStorage, flowUuidDisplay, contactProfileEnabled } =
-          JSON.parse(localStorage.getItem('organizationServices') || '{}');
+        const services = JSON.parse(localStorage.getItem('organizationServices') || '{}');
 
-        if (googleCloudStorage) {
+        if (services.googleCloudStorage) {
           config.attachmentsEnabled = true;
         }
-        if (!dialogflow) {
+        if (!services.dialogflow) {
           config.excludeTypes.push('split_by_intent');
         }
-        if (flowUuidDisplay) {
+        if (services.flowUuidDisplay) {
           config.showNodeLabel = true;
         }
 
-        if (contactProfileEnabled) {
+        if (services.contactProfileEnabled) {
           config.filters.push('profile');
         }
 

@@ -118,8 +118,6 @@ export const ConversationList = ({
     }
     const params = searchParam;
     if (params) {
-      // if (params.includeTags && params.includeTags.length > 0)
-      //   filter.includeTags = params.includeTags.map((obj: any) => obj.id);
       if (params.includeGroups && params.includeGroups.length > 0)
         filter.includeGroups = params.includeGroups.map((obj: any) => obj.id);
       if (params.includeUsers && params.includeUsers.length > 0)
@@ -321,7 +319,7 @@ export const ConversationList = ({
   if (searchVal && searchMultiData && Object.keys(searchParam).length === 0) {
     conversations = searchMultiData.searchMulti;
     // to set search response sequence
-    const searchArray = { contacts: [], tags: [], messages: [], labels: [] };
+    const searchArray = { contacts: [], messages: [], labels: [] };
     let conversationsData;
     Object.keys(searchArray).forEach((dataArray: any) => {
       const header = (

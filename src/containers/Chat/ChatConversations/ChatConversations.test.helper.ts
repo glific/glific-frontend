@@ -29,14 +29,6 @@ const withResult = {
             sender: {
               id: '6',
             },
-            tags: [
-              {
-                id: '8',
-                label: 'Not working',
-                colorCode: '#00d084',
-                parent: null,
-              },
-            ],
             type: 'TEXT',
             media: null,
             errors: '{}',
@@ -127,7 +119,6 @@ export const searchMultiQuery = (
               phone: '9876543210',
               maskedPhone: '9876543210',
               status: 'VALID',
-              tags: [],
             },
             {
               bspStatus: 'SESSION',
@@ -135,7 +126,6 @@ export const searchMultiQuery = (
               lastMessageAt: '2020-11-18T04:37:57Z',
               name: 'Adelle Cavin',
               status: 'VALID',
-              tags: [],
             },
           ],
           messages: [
@@ -161,47 +151,8 @@ export const searchMultiQuery = (
               sender: {
                 id: '8',
               },
-              tags: [
-                {
-                  colorCode: '#0C976D',
-                  id: '4',
-                  label: 'Greeting',
-                },
-              ],
               type: 'TEXT',
               flowLabel: null,
-            },
-          ],
-          tags: [
-            {
-              body: 'Hi',
-              contact: {
-                bspStatus: 'HSM',
-                id: '8',
-                lastMessageAt: '2020-10-15T07:15:33Z',
-                name: 'Dignesh',
-                phone: '9876543210',
-                maskedPhone: '9876543210',
-                status: 'VALID',
-              },
-              id: '12',
-              insertedAt: '2020-10-15T06:58:34.432894Z',
-              media: null,
-              messageNumber: 54,
-              receiver: {
-                id: '1',
-              },
-              sender: {
-                id: '8',
-              },
-              tags: [
-                {
-                  colorCode: '#0C976D',
-                  id: '4',
-                  label: 'Greeting',
-                },
-              ],
-              type: 'TEXT',
             },
           ],
         },

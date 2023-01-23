@@ -47,7 +47,6 @@ export const getSubscriptionDetails = (action: string, subscriptionData: any) =>
   let newMessage: any;
   let contactId: number = 0;
   let collectionId: number = 0;
-  let tagData: any;
   let messageStatusData: any;
 
   switch (action) {
@@ -70,22 +69,6 @@ export const getSubscriptionDetails = (action: string, subscriptionData: any) =>
       messageStatusData = subscriptionData.data.updateMessageStatus;
       contactId = subscriptionData.data.updateMessageStatus.receiver.id;
       break;
-    case 'TAG_ADDED':
-    case 'TAG_DELETED':
-      if (action === 'TAG_ADDED') {
-        tagData = subscriptionData.data.createdMessageTag;
-      } else {
-        tagData = subscriptionData.data.deletedMessageTag;
-      }
-
-      if (tagData.message.flow === 'INBOUND') {
-        // we should use sender id to update the tag
-        contactId = tagData.message.sender.id;
-      } else {
-        // we should use receiver id to update the tag
-        contactId = tagData.message.receiver.id;
-      }
-      break;
     default:
       break;
   }
@@ -94,7 +77,6 @@ export const getSubscriptionDetails = (action: string, subscriptionData: any) =>
     newMessage,
     contactId,
     collectionId,
-    tagData,
     messageStatusData,
   };
 };
