@@ -9,7 +9,7 @@ import { ReactComponent as WhatsAppIcon } from 'assets/images/icons/Social/Whats
 import { termsOfUse } from 'containers/Organization/Organization';
 import { Button } from 'components/UI/Form/Button/Button';
 import GlificLogo from 'assets/images/logo/Logo.svg';
-import { Promotion } from './Promotion/Promotion';
+// import { Promotion } from './Promotion/Promotion';
 import styles from './Auth.module.css';
 
 export interface AuthProps {
@@ -224,7 +224,8 @@ export const Auth = ({
           </>
         ) : null}
       </div>
-      {mode === 'login' && <Promotion />}
+      {/* commenting the promotion code. This will be added when we will update with new content */}
+      {/* {mode === 'login' && <Promotion />} */}
     </div>
   );
 };
