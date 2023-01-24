@@ -20,6 +20,9 @@ export default defineConfig(({ command, mode, ssrBuild }) => {
           cert: fs.readFileSync('../glific/priv/cert/glific.test+1.pem'),
         },
       },
+      define: {
+        global: {},
+      },
     };
   } else {
     // command === 'build'
@@ -28,6 +31,9 @@ export default defineConfig(({ command, mode, ssrBuild }) => {
       plugins: [react(), viteTsconfigPaths(), svgrPlugin()],
       build: {
         outDir: 'build',
+      },
+      define: {
+        global: {},
       },
     };
   }
