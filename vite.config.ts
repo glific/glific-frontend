@@ -27,6 +27,7 @@ export default defineConfig(({ command, mode, ssrBuild }) => {
       define: {
         global: {},
       },
+      resolve: { alias: { util: 'util/' } },
     };
   } else {
     // command === 'build'
@@ -42,6 +43,7 @@ export default defineConfig(({ command, mode, ssrBuild }) => {
       define: {
         global: {},
       },
+      resolve: { alias: { util: 'util/' } },
     };
   }
 });
