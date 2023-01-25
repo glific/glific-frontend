@@ -151,6 +151,7 @@ export const FormLayout = ({
 
   const { t } = useTranslation();
 
+  // TODO: this query should only get triggered when roles are enabled for an organization
   const { data: roleData } = useQuery(GET_ROLE_NAMES);
 
   const capitalListItemName = listItemName[0].toUpperCase() + listItemName.slice(1);
@@ -209,6 +210,7 @@ export const FormLayout = ({
       }
     },
   });
+
   const camelCaseItem = listItem[0].toUpperCase() + listItem.slice(1);
 
   const [updateItem] = useMutation(updateItemQuery, {

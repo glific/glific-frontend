@@ -21,10 +21,6 @@ import {
   MESSAGE_STATUS_SUBSCRIPTION,
 } from 'graphql/subscriptions/Chat';
 import {
-  ADD_MESSAGE_TAG_SUBSCRIPTION,
-  DELETE_MESSAGE_TAG_SUBSCRIPTION,
-} from 'graphql/subscriptions/Tag';
-import {
   getSubscriptionDetails,
   recordRequests,
   switchSubscriptionToRefetch,
@@ -97,8 +93,10 @@ export const ChatSubscription = ({ setDataLoaded }: ChatSubscriptionProps) => {
         }
       }
 
-      const { newMessage, contactId, collectionId, tagData, messageStatusData } =
-        getSubscriptionDetails(action, subscriptionData);
+      const { newMessage, contactId, collectionId, messageStatusData } = getSubscriptionDetails(
+        action,
+        subscriptionData
+      );
 
       // loop through the cached conversations and find if contact exists
       let conversationIndex = 0;
@@ -167,7 +165,6 @@ export const ChatSubscription = ({ setDataLoaded }: ChatSubscriptionProps) => {
 
       // we need to handle 2 scenarios:
       // 1. Add new message if message is sent or received
-      // 2. Add/Delete message tags for a message
       // let's start by parsing existing conversations
       const updatedConversations = JSON.parse(JSON.stringify(cachedConversations));
       let updatedConversation = updatedConversations.search;
@@ -184,21 +181,7 @@ export const ChatSubscription = ({ setDataLoaded }: ChatSubscriptionProps) => {
       if (newMessage) {
         updatedConversation[0].messages.unshift(newMessage);
       } else {
-        // let's add/delete tags for the message
-        // tag object: tagData.tag
         updatedConversation[0].messages.forEach((message: any) => {
-          if (tagData && message.id === tagData.message.id) {
-            // let's add tag if action === "TAG_ADDED"
-            if (action === 'TAG_ADDED') {
-              message.tags.push(tagData.tag);
-            } else {
-              // handle delete of selected tags
-              // disabling eslint compile error for this until we find better solution
-              // eslint-disable-next-line
-              message.tags = message.tags.filter((tag: any) => tag.id !== tagData.tag.id);
-            }
-          }
-
           if (messageStatusData && message.id === messageStatusData.id) {
             // eslint-disable-next-line
             message.errors = messageStatusData.errors;
@@ -270,22 +253,6 @@ export const ChatSubscription = ({ setDataLoaded }: ChatSubscriptionProps) => {
         updateQuery: (prev, { subscriptionData }) =>
           updateConversations(prev, subscriptionData, 'STATUS'),
         onError: () => {},
-      });
-
-      // tag added subscription
-      subscribeToMore({
-        document: ADD_MESSAGE_TAG_SUBSCRIPTION,
-        variables: subscriptionVariables,
-        updateQuery: (prev, { subscriptionData }) =>
-          updateConversations(prev, subscriptionData, 'TAG_ADDED'),
-      });
-
-      // tag delete subscription
-      subscribeToMore({
-        document: DELETE_MESSAGE_TAG_SUBSCRIPTION,
-        variables: subscriptionVariables,
-        updateQuery: (prev, { subscriptionData }) =>
-          updateConversations(prev, subscriptionData, 'TAG_DELETED'),
       });
     }
   }, [subscribeToMore]);

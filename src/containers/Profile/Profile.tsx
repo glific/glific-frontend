@@ -14,6 +14,7 @@ import { GET_CONTACT } from 'graphql/queries/Contact';
 import { CREATE_CONTACT, UPDATE_CONTACT, DELETE_CONTACT } from 'graphql/mutations/Contact';
 import { GET_CURRENT_USER } from 'graphql/queries/User';
 import { getOrganizationServices } from 'services/AuthService';
+import { isSimulator } from 'common/utils';
 
 const profileIcon = <ProfileIcon />;
 
@@ -27,10 +28,6 @@ const queries = {
 export interface ProfileProps {
   profileType: string;
   redirectionLink: string;
-  additionalField?: any;
-  additionalProfileStates?: any;
-  additionalState?: any;
-  additionalQuery?: Function;
   afterDelete?: any;
   removePhoneField?: boolean;
   multiProfileAttributes?: any;
@@ -39,10 +36,6 @@ export interface ProfileProps {
 export const Profile = ({
   profileType,
   redirectionLink,
-  additionalField,
-  additionalProfileStates,
-  additionalState,
-  additionalQuery,
   afterDelete,
   removePhoneField = false,
   multiProfileAttributes,
@@ -105,28 +98,25 @@ export const Profile = ({
     status: statusValue,
     bspStatus: bspStatusValue,
     language: languageIdValue,
-    ...rest
   }: any) => {
     setName(nameValue);
     updateName();
+    let hideDeleteButton = false;
 
     if (phoneValue) {
       setPhone(phoneValue);
-      setHideRemoveBtn(organizationPhone === phoneValue);
+      hideDeleteButton = organizationPhone === phoneValue || isSimulator(phoneValue);
     } else {
       // contact api does not return the phone when role is staff, hence in this case we manually set the phone
       // for the current user
       setPhone(currentUserPhone);
-      setHideRemoveBtn(organizationPhone === currentUserPhone);
+      hideDeleteButton = organizationPhone === currentUserPhone;
     }
+
     setStatus(statusValue);
     setBspStatus(bspStatusValue);
-
+    setHideRemoveBtn(hideDeleteButton);
     setLanguageId(languageIdValue.id);
-
-    if (additionalProfileStates) {
-      additionalProfileStates.setState(rest[additionalProfileStates.name]);
-    }
   };
 
   const FormSchema = Yup.object().shape({
@@ -167,11 +157,6 @@ export const Profile = ({
     },
   ];
 
-  if (additionalProfileStates) {
-    states[additionalProfileStates.name] = additionalProfileStates.state;
-    formFields.splice(1, 0, additionalField);
-  }
-
   if (isContactProfileEnabled && multiProfileAttributes?.selectedProfile) {
     formFields.splice(0, 0, multiProfileAttributes);
   }
@@ -190,11 +175,9 @@ export const Profile = ({
       {...queries}
       states={states}
       setStates={setStates}
-      additionalState={additionalState}
       validationSchema={FormSchema}
       listItemName="Contact"
       dialogMessage={dialogMessage}
-      additionalQuery={additionalQuery}
       formFields={formFields}
       redirectionLink={redirectionLink}
       listItem="contact"

@@ -13,10 +13,10 @@ export interface CollectionContactListProps {
 }
 
 const getName = (label: string, phone: string) => (
-  <>
+  <div>
     <p className={styles.NameText}>{label}</p>
     <p className={styles.Phone}>{phone}</p>
-  </>
+  </div>
 );
 
 const getCollections = (collections: Array<any>) => (

@@ -41,12 +41,6 @@ const defaultProps = {
     body: 'Hello there!',
     insertedAt,
     type: 'TEXT',
-    tags: [
-      {
-        id: 1,
-        label: 'Unread',
-      },
-    ],
   },
 };
 
@@ -77,11 +71,4 @@ test('it should call the callback function on click action', () => {
   const { getAllByTestId } = render(wrapperContainer(defaultProps));
   fireEvent.click(getAllByTestId('list')[0]);
   expect(mockCallback).toHaveBeenCalled();
-});
-
-test('check the condition with empty tags', () => {
-  const propswithEmptyTags = { ...defaultProps };
-  propswithEmptyTags.lastMessage.tags = [];
-  const { container } = render(wrapperContainer(propswithEmptyTags));
-  expect(container.querySelector('.ChatInfoRead')).toBeInTheDocument();
 });

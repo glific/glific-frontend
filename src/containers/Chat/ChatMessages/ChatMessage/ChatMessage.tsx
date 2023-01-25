@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-// import { useApolloClient } from '@apollo/client';
 import Popper from '@material-ui/core/Popper';
 import { Button } from '@material-ui/core';
 import Fade from '@material-ui/core/Fade';
@@ -7,18 +6,15 @@ import Paper from '@material-ui/core/Paper';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 
-import { ReactComponent as TagIcon } from 'assets/images/icons/Tags/Filled.svg';
+import { ReactComponent as LabelIcon } from 'assets/images/icons/Label/Filled.svg';
 import { ReactComponent as WarningIcon } from 'assets/images/icons/Warning.svg';
 import { ReactComponent as MessageIcon } from 'assets/images/icons/Dropdown.svg';
-// import { ReactComponent as CloseIcon } from 'assets/images/icons/Close.svg';
 import {
   DATE_FORMAT,
   TIME_FORMAT,
   INTERACTIVE_LIST,
   INTERACTIVE_QUICK_REPLY,
 } from 'common/constants';
-// import { UPDATE_MESSAGE_TAGS } from 'graphql/mutations/Chat';
-// import { setNotification } from 'common/notification';
 import { WhatsAppToJsx, WhatsAppTemplateButton } from 'common/RichEditor';
 import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import { parseTextMethod } from 'common/utils';
@@ -44,7 +40,6 @@ export interface ChatMessageProps {
   media: any;
   insertedAt: string;
   onClick?: any;
-  tags: Array<any>;
   popup: any;
   setDialog?: any;
   focus?: boolean;
@@ -65,7 +60,6 @@ export const ChatMessage = ({
   focus,
   sender,
   contactId,
-  // tags,
   insertedAt,
   onClick,
   type,
@@ -81,7 +75,6 @@ export const ChatMessage = ({
   flowLabel,
   daySeparator,
 }: ChatMessageProps) => {
-  // const client = useApolloClient();
   const [showSaveMessageDialog, setShowSaveMessageDialog] = useState(false);
   const Ref = useRef(null);
   const messageRef = useRef<null | HTMLDivElement>(null);
@@ -90,8 +83,6 @@ export const ChatMessage = ({
 
   const open = Boolean(anchorEl);
   const popperId = open ? 'simple-popper' : undefined;
-  // let displayTag: any;
-  // let deleteId: string | number;
 
   useEffect(() => {
     if (popup) {
@@ -107,22 +98,13 @@ export const ChatMessage = ({
     }
   }, []);
 
-  // tagging delete mutation
-  // const [deleteTag] = useMutation(UPDATE_MESSAGE_TAGS, {
-  //   onCompleted: () => {
-  //     setNotification(client, t('Tag deleted successfully.'));
-  //   },
-  // });
-
   let iconLeft = false;
   let placement: any = 'bottom-end';
   let additionalClass = styles.Mine;
   let mineColor: string | null = styles.MineColor;
   let iconPlacement = styles.ButtonLeft;
   let datePlacement: string | null = styles.DateLeft;
-  // let tagContainer: string | null = styles.TagContainerSender;
   let labelContainer: string | null = styles.LabelContainerSender;
-  // let tagMargin: string | null = styles.TagMargin;
   let labelMargin: string | null = styles.LabelMargin;
   let messageDetails = styles.MessageDetails;
   const messageError = errors ? parseTextMethod(errors) : {};
@@ -165,9 +147,7 @@ export const ChatMessage = ({
     placement = 'bottom-start';
     iconPlacement = styles.ButtonRight;
     datePlacement = null;
-    // tagContainer = null;
     labelContainer = null;
-    // tagMargin = null;
     labelMargin = null;
     messageDetails = styles.MessageDetailsSender;
   }
@@ -215,38 +195,6 @@ export const ChatMessage = ({
       />
     );
   }
-
-  // const deleteTagHandler = (event: any) => {
-  //   deleteId = event.currentTarget.getAttribute('data-id');
-  //   deleteTag({
-  //     variables: {
-  //       input: {
-  //         messageId: props.id,
-  //         addTagIds: [],
-  //         deleteTagIds: [deleteId],
-  //       },
-  //     },
-  //   });
-  // };
-
-  // if (tags && tags.length > 0)
-  //   displayTag = tags.map((tag: any) => (
-  //     <div
-  //       key={tag.id}
-  //       className={`${styles.Tag} ${tagMargin}`}
-  //       style={{ color: tag.colorCode }}
-  //       data-testid="tags"
-  //     >
-  //       <TagIcon className={styles.TagIcon} stroke={tag.colorCode ? tag.colorCode : '#0C976D'} />
-  //       {tag.label}
-  //       <CloseIcon
-  //         className={styles.CloseIcon}
-  //         onClick={deleteTagHandler}
-  //         data-id={tag.id}
-  //         data-testid="deleteIcon"
-  //       />
-  //     </div>
-  //   ));
 
   const sendByLabel = !isSender && sendBy;
   let messageFooter;
@@ -324,7 +272,7 @@ export const ChatMessage = ({
     if (labels.length > 0) {
       displayLabel = labels.map((label: string) => (
         <div key={label} className={`${styles.Label} ${labelMargin}`} data-testid="labels">
-          <TagIcon className={styles.LabelIcon} stroke="#073f24" />
+          <LabelIcon className={styles.LabelIcon} stroke="#073f24" />
           {label}
         </div>
       ));
@@ -405,15 +353,6 @@ export const ChatMessage = ({
               {({ TransitionProps }) => (
                 <Fade {...TransitionProps} timeout={350}>
                   <Paper elevation={3}>
-                    {/* <Button
-                    className={styles.Popper}
-                    color="primary"
-                    onClick={props.setDialog}
-                    data-testid="dialogButton"
-                  >
-                    {t('Assign tag')}
-                  </Button>
-                  <br /> */}
                     <Button
                       className={styles.Popper}
                       color="primary"
@@ -449,9 +388,6 @@ export const ChatMessage = ({
             {templateButtons && <TemplateButtons template={templateButtons} />}
           </div>
           {dateAndSendBy}
-          {/* {displayTag ? (
-          <div className={`${styles.TagContainer} ${tagContainer}`}>{displayTag}</div>
-        ) : null} */}
           {displayLabel ? (
             <div className={`${styles.LabelContainer} ${labelContainer}`}>{displayLabel}</div>
           ) : null}
