@@ -117,6 +117,7 @@
     }
   },
   "devDependencies": {
+    "@rollup/plugin-inject": "^5.0.3",
     "@types/draft-js": "^0.11.10",
     "@types/emoji-mart": "^3.0.9",
     "@types/jest": "^29.2.5",
@@ -128,8 +129,8 @@
     "@types/react-linkify": "^1.0.1",
     "@types/react-router": "^5.1.20",
     "@types/react-router-dom": "^5.3.3",
-    "@types/uuid": "^9.0.0",
     "@types/react-test-renderer": "^18.0.0",
+    "@types/uuid": "^9.0.0",
     "@vitejs/plugin-react": "^3.0.1",
     "i18next-parser": "^7.2.0",
     "prettier": "^2.8.2",

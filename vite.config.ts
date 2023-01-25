@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react';
 import viteTsconfigPaths from 'vite-tsconfig-paths';
 import svgrPlugin from 'vite-plugin-svgr';
 import fs from 'fs';
+import inject from '@rollup/plugin-inject';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode, ssrBuild }) => {
@@ -12,6 +13,9 @@ export default defineConfig(({ command, mode, ssrBuild }) => {
       plugins: [react(), viteTsconfigPaths(), svgrPlugin()],
       build: {
         outDir: 'build',
+        rollupOptions: {
+          plugins: [inject({ Buffer: ['buffer', 'Buffer'], process: 'process' })],
+        },
       },
       server: {
         open: true,
@@ -22,7 +26,6 @@ export default defineConfig(({ command, mode, ssrBuild }) => {
       },
       define: {
         global: {},
-        'process.env.NODE_ENV': '"development"',
       },
     };
   } else {
@@ -32,10 +35,12 @@ export default defineConfig(({ command, mode, ssrBuild }) => {
       plugins: [react(), viteTsconfigPaths(), svgrPlugin()],
       build: {
         outDir: 'build',
+        rollupOptions: {
+          plugins: [inject({ Buffer: ['buffer', 'Buffer'], process: 'process' })],
+        },
       },
       define: {
         global: {},
-        'process.env.NODE_ENV': '"production"',
       },
     };
   }
