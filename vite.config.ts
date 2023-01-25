@@ -22,6 +22,7 @@ export default defineConfig(({ command, mode, ssrBuild }) => {
       },
       define: {
         global: {},
+        'process.env.NODE_ENV': '"development"',
       },
     };
   } else {
@@ -34,6 +35,7 @@ export default defineConfig(({ command, mode, ssrBuild }) => {
       },
       define: {
         global: {},
+        'process.env.NODE_ENV': '"production"',
       },
     };
   }
