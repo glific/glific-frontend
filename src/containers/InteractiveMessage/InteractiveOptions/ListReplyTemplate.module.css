@@ -71,7 +71,10 @@
 }
 
 .Translation {
+  /*
+  TODOS: Not sure why we need this?
   composes: Translation from 'App.module.css';
+  */
   margin-bottom: 8px;
 }
 

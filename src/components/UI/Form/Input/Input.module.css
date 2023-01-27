@@ -54,7 +54,7 @@
 }
 
 /*
-TODOS: Need to fix this
+TODOS: Not sure why we need this?
 .Translation {
   composes: Translation from 'App.module.css';
 }
