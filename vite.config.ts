@@ -1,3 +1,4 @@
+/// <reference types="vitest" />
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import viteTsconfigPaths from 'vite-tsconfig-paths';
@@ -28,6 +29,15 @@ export default defineConfig(({ command, mode, ssrBuild }) => {
         global: {},
       },
       resolve: { alias: { util: 'util/' } },
+      test: {
+        globals: true,
+        environment: 'jsdom',
+        setupFiles: './src/setupTests.ts',
+        coverage: {
+          reporter: ['text', 'html'],
+          exclude: ['node_modules/', 'src/setupTests.ts'],
+        },
+      },
     };
   } else {
     // command === 'build'
