@@ -71,7 +71,10 @@
     "cy:run": "cypress run",
     "format": "prettier \"**/*.{ts,tsx,css,graphql}\" --write",
     "floweditor": "cp -r node_modules/@glific/flow-editor/build/static public && rm -rf public/sitestatic && cp -r node_modules/@glific/flow-editor/build/sitestatic public",
-    "extract-translations": "i18next"
+    "extract-translations": "i18next",
+    "test": "vitest watch",
+    "test:no-watch": "vitest run",
+    "test:coverage": "vitest run --coverage"
   },
   "eslintConfig": {
     "extends": "react-app"

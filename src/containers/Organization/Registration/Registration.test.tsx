@@ -20,7 +20,7 @@ jest.mock('react-google-recaptcha', () => (props: any) => (
 const props = {
   title: 'Setup your NGO on Glific',
   buttonText: 'GET STARTED',
-  handleStep: jest.fn(),
+  handleStep: vi.fn(),
 };
 
 const wrapper = (

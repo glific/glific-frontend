@@ -18,15 +18,15 @@ import { Billing } from './Billing';
 
 const mocks = [createBillingSubscriptionQuery, getBillingQuery];
 
-const mountElementMock = jest.fn();
+const mountElementMock = vi.fn();
 const mockElement = () => ({
-  mount: jest.fn(),
-  destroy: jest.fn(),
+  mount: vi.fn(),
+  destroy: vi.fn(),
   on: mountElementMock,
-  update: jest.fn(),
+  update: vi.fn(),
 });
 
-window.open = jest.fn();
+window.open = vi.fn();
 
 const mockElements = () => {
   const elements: any = {};
@@ -44,18 +44,18 @@ const mockElements = () => {
 
 const mockStripe = () => ({
   elements: jest.fn(() => mockElements()),
-  createToken: jest.fn(),
-  createSource: jest.fn(),
+  createToken: vi.fn(),
+  createSource: vi.fn(),
   createPaymentMethod: jest.fn((props) => {
     return {
       error: null,
       paymentMethod: { id: 'qwerty' },
     };
   }),
-  confirmCardPayment: jest.fn(),
-  confirmCardSetup: jest.fn(),
-  paymentRequest: jest.fn(),
-  _registerWrapper: jest.fn(),
+  confirmCardPayment: vi.fn(),
+  confirmCardSetup: vi.fn(),
+  paymentRequest: vi.fn(),
+  _registerWrapper: vi.fn(),
 });
 
 jest.mock('@stripe/react-stripe-js', () => {

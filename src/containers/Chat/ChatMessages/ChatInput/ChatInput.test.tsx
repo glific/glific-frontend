@@ -51,7 +51,7 @@ describe('<ChatInput />', () => {
   const onSendMessageHandler = () => {
     inputSubmitted = true;
   };
-  const handleHeightChange = jest.fn();
+  const handleHeightChange = vi.fn();
 
   beforeEach(() => {
     inputSubmitted = false;
@@ -218,7 +218,7 @@ describe('<ChatInput />', () => {
 
   test('record audio', async () => {
     const propsWithMockSend: any = { ...defaultProps };
-    const sendMessageMock = jest.fn();
+    const sendMessageMock = vi.fn();
     propsWithMockSend.onSendMessage = sendMessageMock;
     const { getByText, getByTestId } = render(
       <MockedProvider mocks={mocks} addTypename={false}>

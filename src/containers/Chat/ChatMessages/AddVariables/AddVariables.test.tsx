@@ -10,14 +10,14 @@ import { AddVariables } from './AddVariables';
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
-const setVariableMock = jest.fn();
+const setVariableMock = vi.fn();
 
 const defaultProps = {
   setVariable: setVariableMock,
-  handleCancel: jest.fn(),
+  handleCancel: vi.fn(),
   template: { body: 'Hi {{1}}, Please find the attached bill.', numberParameters: 1 },
-  updateEditorState: jest.fn(),
-  variableParams: jest.fn(),
+  updateEditorState: vi.fn(),
+  variableParams: vi.fn(),
   variableParam: ['this', '4563', '5 minutes'],
 };
 

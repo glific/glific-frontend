@@ -2,7 +2,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { ColorPicker } from './ColorPicker';
 import userEvent from '@testing-library/user-event';
 
-const serFieldValueMock = jest.fn();
+const serFieldValueMock = vi.fn();
 
 const props = {
   name: 'colorCode',

@@ -2,7 +2,7 @@ import { render, fireEvent } from '@testing-library/react';
 import { ContentState, EditorState } from 'draft-js';
 import WhatsAppEditor from './WhatsAppEditor';
 
-const mockHandleKeyCommand = jest.fn();
+const mockHandleKeyCommand = vi.fn();
 
 jest.mock('draft-js', () => {
   const moduleMock = jest.requireActual('draft-js');
@@ -35,9 +35,9 @@ jest.mock('react-resize-detector', () => (...props: any) => {
 });
 
 describe('<WhatsAppEditor/>', () => {
-  const handleHeightChange = jest.fn();
-  const sendMessage = jest.fn();
-  const setEditorState = jest.fn();
+  const handleHeightChange = vi.fn();
+  const sendMessage = vi.fn();
+  const setEditorState = vi.fn();
 
   const defaultProps = (editorState: any) => {
     return {

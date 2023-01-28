@@ -3,9 +3,9 @@ import { MockedProvider } from '@apollo/client/testing';
 import { SearchDialogBox } from './SearchDialogBox';
 import * as AutoComplete from '../Form/AutoComplete/AutoComplete';
 
-const mockHandleOk = jest.fn();
-const mockHandleCancel = jest.fn();
-const mockHandleChange = jest.fn();
+const mockHandleOk = vi.fn();
+const mockHandleCancel = vi.fn();
+const mockHandleChange = vi.fn();
 const defaultProps = {
   title: 'Search Box',
   handleOk: mockHandleOk,

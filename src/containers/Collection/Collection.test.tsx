@@ -60,7 +60,7 @@ describe('<Collection />', () => {
   });
 
   test('it should call additional query and hit the update users function', async () => {
-    const mockCallback = jest.fn();
+    const mockCallback = vi.fn();
     const spy = jest.spyOn(FormLayout, 'FormLayout');
     spy.mockImplementation((props: any) => {
       const { additionalQuery } = props;

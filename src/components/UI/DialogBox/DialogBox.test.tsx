@@ -1,8 +1,8 @@
 import { fireEvent, render } from '@testing-library/react';
 import { DialogBox } from './DialogBox';
 
-const mockCallbackCancel = jest.fn();
-const mockCallbackOK = jest.fn();
+const mockCallbackCancel = vi.fn();
+const mockCallbackOK = vi.fn();
 const dialogBox = (
   <DialogBox
     open

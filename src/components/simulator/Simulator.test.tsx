@@ -20,7 +20,7 @@ jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 setUserSession(JSON.stringify({ roles: ['Admin'], organization: { id: '1' } }));
-const mockSetShowSimulator = jest.fn();
+const mockSetShowSimulator = vi.fn();
 
 const mocks = [
   conversationQuery,
@@ -38,7 +38,7 @@ const defaultProps = {
   setShowSimulator: mockSetShowSimulator,
   setSimulatorId: mockSetShowSimulator,
   isPreviewMessage: false,
-  resetMessage: jest.fn(),
+  resetMessage: vi.fn(),
 };
 
 test('simulator should open on click of simulator icon', async () => {
@@ -233,10 +233,10 @@ test('simulator should render template message', () => {
   );
 });
 
-const getFlowKeywordMock = jest.fn();
+const getFlowKeywordMock = vi.fn();
 const props = {
   showSimulator: true,
-  setSimulatorId: jest.fn(),
+  setSimulatorId: vi.fn(),
   simulatorIcon: true,
   isPreviewMessage: false,
   flowSimulator: false,

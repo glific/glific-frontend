@@ -29,18 +29,18 @@ const props: any = {
     touched: { globalButton: true },
     errors: { globalButton: 'Required' },
     values: { templateButtons: inputFields },
-    setFieldValue: jest.fn(),
+    setFieldValue: vi.fn(),
   },
-  onAddClick: jest.fn(),
-  onRemoveClick: jest.fn(),
-  onInputChange: jest.fn(),
-  onTemplateTypeChange: jest.fn(),
-  onListItemAddClick: jest.fn(),
-  onListItemRemoveClick: jest.fn(),
-  onGlobalButtonInputChange: jest.fn(),
+  onAddClick: vi.fn(),
+  onRemoveClick: vi.fn(),
+  onInputChange: vi.fn(),
+  onTemplateTypeChange: vi.fn(),
+  onListItemAddClick: vi.fn(),
+  onListItemRemoveClick: vi.fn(),
+  onGlobalButtonInputChange: vi.fn(),
 };
 
-const mock = jest.fn();
+const mock = vi.fn();
 
 test('it render interactive options for list reply template', async () => {
   render(

@@ -4,7 +4,7 @@ import { LanguageBar } from './LanguageBar';
 const props: any = {
   options: ['English', 'Hindi', 'Marathi'],
   selectedLangauge: null,
-  onLanguageChange: jest.fn(),
+  onLanguageChange: vi.fn(),
 };
 
 test('it renders component successfully and selects language', async () => {

@@ -4,7 +4,7 @@ import ToastMessage from './ToastMessage';
 jest.useFakeTimers();
 
 describe('<ToastMessage />', () => {
-  const mockCallback = jest.fn();
+  const mockCallback = vi.fn();
   const wrapper = (props: any) => (
     <ToastMessage {...props} severity={'success'} message={'Saved.'} handleClose={mockCallback} />
   );

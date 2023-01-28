@@ -33,7 +33,7 @@ const props = {
     },
   ],
   validationSchema: schema,
-  saveHandler: jest.fn(),
+  saveHandler: vi.fn(),
   initialFormValues: {
     name: '',
   },
@@ -91,6 +91,6 @@ test('Organization with success onboarding', () => {
     // click on continue
     const button = screen.getByText('Get Started');
     fireEvent.click(button);
-    expect(props.saveHandler).toHaveBeenCalledWith({ name: 'test' }, true, jest.fn(), jest.fn());
+    expect(props.saveHandler).toHaveBeenCalledWith({ name: 'test' }, true, vi.fn(), vi.fn());
   });
 });

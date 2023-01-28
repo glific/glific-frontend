@@ -2,7 +2,7 @@ import { render } from '@testing-library/react';
 import { EmojiInput } from './EmojiInput';
 import { EditorState } from 'draft-js';
 
-const setFieldValueMock = jest.fn();
+const setFieldValueMock = vi.fn();
 
 const wrapper = (
   <EmojiInput
@@ -12,7 +12,7 @@ const wrapper = (
       values: { input: EditorState.createEmpty() },
       setFieldValue: setFieldValueMock,
     }}
-    field={{ name: 'input', value: EditorState.createEmpty(), onChange: jest.fn() }}
+    field={{ name: 'input', value: EditorState.createEmpty(), onChange: vi.fn() }}
     label="Title"
     placeholder="Title"
     rows={10}

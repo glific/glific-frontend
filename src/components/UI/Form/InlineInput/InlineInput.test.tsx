@@ -4,8 +4,8 @@ import { InlineInput } from './InlineInput';
 
 const props: any = {
   value: '',
-  closeModal: jest.fn(),
-  callback: jest.fn(),
+  closeModal: vi.fn(),
+  callback: vi.fn(),
   error: null,
 };
 

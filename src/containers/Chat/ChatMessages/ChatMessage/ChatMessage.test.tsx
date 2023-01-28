@@ -6,7 +6,7 @@ import { TIME_FORMAT } from 'common/constants';
 
 import ChatMessage from './ChatMessage';
 
-HTMLAnchorElement.prototype.click = jest.fn();
+HTMLAnchorElement.prototype.click = vi.fn();
 
 const insertedAt = '2020-06-19T18:44:02Z';
 const Props: any = (link: any) => {
@@ -51,7 +51,7 @@ const Props: any = (link: any) => {
   };
 };
 
-window.HTMLElement.prototype.scrollIntoView = jest.fn();
+window.HTMLElement.prototype.scrollIntoView = vi.fn();
 
 describe('<ChatMessage />', () => {
   const chatMessage = (type: any) => (

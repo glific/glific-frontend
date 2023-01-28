@@ -11,7 +11,7 @@ const mocks = TEMPLATE_MOCKS;
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  useParams: jest.fn(),
+  useParams: vi.fn(),
 }));
 
 test('HSM form is loaded correctly in edit mode', async () => {

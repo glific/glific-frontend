@@ -219,7 +219,7 @@ const client = new ApolloClient({
   cache: cache,
   assumeImmutableResults: true,
 });
-window.HTMLElement.prototype.scrollIntoView = jest.fn();
+window.HTMLElement.prototype.scrollIntoView = vi.fn();
 
 const chatMessages = (
   <MemoryRouter>

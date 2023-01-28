@@ -9,8 +9,8 @@ describe('<DateTimePicker />', () => {
     placeholder: 'Date from',
     label: 'Date range',
     field: { name: 'example', value: null },
-    form: { dirty: false, touched: {}, errors: {}, setFieldValue: jest.fn() },
-    onChange: jest.fn(),
+    form: { dirty: false, touched: {}, errors: {}, setFieldValue: vi.fn() },
+    onChange: vi.fn(),
   };
 
   const wrapper = <DateTimePicker {...props} />;

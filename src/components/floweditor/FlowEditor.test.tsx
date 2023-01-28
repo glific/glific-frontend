@@ -62,7 +62,7 @@ declare global {
     showFlowEditor: any;
   }
 }
-window.showFlowEditor = (node: any, config: any) => jest.fn();
+window.showFlowEditor = (node: any, config: any) => vi.fn();
 
 const defaultWrapper = wrapperFunction(activeFlowMocks);
 

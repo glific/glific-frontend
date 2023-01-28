@@ -16,7 +16,7 @@ const mocks = [
 
 setUserSession(JSON.stringify({ roles: ['Admin'] }));
 
-const setDialogMock = jest.fn();
+const setDialogMock = vi.fn();
 const defaultProps = {
   collectionId: '1',
   setDialog: setDialogMock,

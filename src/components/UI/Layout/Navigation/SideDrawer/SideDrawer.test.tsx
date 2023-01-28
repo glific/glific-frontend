@@ -13,7 +13,7 @@ const mocks = [getCurrentUserQuery, ...walletBalanceQuery, ...walletBalanceSubsc
 
 describe('side drawer testing', () => {
   const component = (
-    <SideDrawerContext.Provider value={{ drawerOpen: true, setDrawerOpen: jest.fn() }}>
+    <SideDrawerContext.Provider value={{ drawerOpen: true, setDrawerOpen: vi.fn() }}>
       <MockedProvider mocks={mocks}>
         <Router>
           <SideDrawer />

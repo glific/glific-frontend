@@ -83,7 +83,7 @@ afterEach(cleanup);
 const simulatorParams = {
   contactId: 1,
   simulatorId: 1,
-  setShowSimulator: jest.fn(),
+  setShowSimulator: vi.fn(),
 };
 
 const chatConversation = (

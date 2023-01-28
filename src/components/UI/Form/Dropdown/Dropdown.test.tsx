@@ -20,7 +20,7 @@ jest.mock('@material-ui/core/Select', () => (props: any) => {
   );
 });
 
-const changeValue = jest.fn();
+const changeValue = vi.fn();
 describe('<Dropdown />', () => {
   const defaultProps = {
     options: [{ id: '1', label: 'Default' }],
@@ -28,7 +28,7 @@ describe('<Dropdown />', () => {
     form: { errors: { dropdown: 'Required' } },
     placeholder: 'Input your title',
     field: { value: '1', onChange: changeValue },
-    fieldChange: jest.fn(),
+    fieldChange: vi.fn(),
   };
 
   it('renders <Dropdown /> component', () => {

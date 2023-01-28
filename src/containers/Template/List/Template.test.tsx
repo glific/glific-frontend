@@ -68,7 +68,7 @@ const hsmProps: any = {
 const hsmMocks = [...HSM_LIST, getOrganizationBSP, importTemplateMutation];
 
 const hsmComponent = (
-  <ProviderContext.Provider value={{ provider: 'gupshup_enterprise', setProvider: jest.fn() }}>
+  <ProviderContext.Provider value={{ provider: 'gupshup_enterprise', setProvider: vi.fn() }}>
     <Router>
       <MockedProvider mocks={hsmMocks} addTypename={false}>
         <Template {...hsmProps} />

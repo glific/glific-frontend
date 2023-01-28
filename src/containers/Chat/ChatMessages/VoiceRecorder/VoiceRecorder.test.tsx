@@ -2,7 +2,7 @@ import { VoiceRecorder } from './VoiceRecorder';
 import { fireEvent, render, waitFor } from '@testing-library/react';
 import * as useReactMediaRecorder from 'react-media-recorder';
 
-const handleAudioRecordingMock = jest.fn();
+const handleAudioRecordingMock = vi.fn();
 const defaultProps = {
   handleAudioRecording: handleAudioRecordingMock,
   clearAudio: false,
@@ -27,8 +27,8 @@ test('it renders correctly', () => {
 test('check recording', async () => {
   const mediaRecorder = jest.spyOn(useReactMediaRecorder, 'useReactMediaRecorder');
   mediaRecorder.mockImplementation(() => {
-    const onStop = jest.fn();
-    const setStatus = jest.fn();
+    const onStop = vi.fn();
+    const setStatus = vi.fn();
 
     return {
       status: 'idle',
@@ -40,7 +40,7 @@ test('check recording', async () => {
         onStop();
       },
       mediaBlobUrl: 'blog://heythere',
-      clearBlobUrl: jest.fn(),
+      clearBlobUrl: vi.fn(),
     } as any;
   });
   const { getByTestId } = render(voiceRecorder);

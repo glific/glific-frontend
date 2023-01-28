@@ -8,10 +8,10 @@ import axios from 'axios';
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
-const setAttachment = jest.fn();
-const setAttachmentURL = jest.fn();
-const setAttachmentAdded = jest.fn();
-const setAttachmentType = jest.fn();
+const setAttachment = vi.fn();
+const setAttachmentURL = vi.fn();
+const setAttachmentAdded = vi.fn();
+const setAttachmentType = vi.fn();
 
 beforeEach(() => {
   cleanup();

@@ -10,7 +10,7 @@ describe('<AutoComplete />', () => {
     },
   ];
 
-  const mockHandleChange = jest.fn();
+  const mockHandleChange = vi.fn();
   const props = {
     label: 'Example',
     options: option,
@@ -22,15 +22,15 @@ describe('<AutoComplete />', () => {
 
   const asyncProps = {
     label: 'Example',
-    onChange: jest.fn(),
+    onChange: vi.fn(),
     options: option,
     optionLabel: 'label',
     field: { name: 'example', value: ['1'] },
-    form: { dirty: false, touched: false, errors: false, setFieldValue: jest.fn() },
+    form: { dirty: false, touched: false, errors: false, setFieldValue: vi.fn() },
     asyncSearch: true,
     asyncValues: {
       value: ['1'],
-      setValue: jest.fn(),
+      setValue: vi.fn(),
     },
   };
 

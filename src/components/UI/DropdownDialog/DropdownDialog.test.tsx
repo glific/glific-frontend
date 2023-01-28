@@ -19,9 +19,9 @@ jest.mock('../Form/Dropdown/Dropdown', () => {
   };
 });
 
-const mockCallbackCancel = jest.fn();
-const mockCallbackOK = jest.fn();
-const mockCallbackChange = jest.fn();
+const mockCallbackCancel = vi.fn();
+const mockCallbackOK = vi.fn();
+const mockCallbackChange = vi.fn();
 const dialogBox = (
   <DropdownDialog
     title="Default dialog"

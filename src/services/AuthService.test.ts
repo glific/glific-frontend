@@ -12,8 +12,8 @@ import {
 jest.mock('axios');
 
 jest.mock('pino-logflare', () => ({
-  createWriteStream: jest.fn(),
-  createPinoBrowserSend: jest.fn(),
+  createWriteStream: vi.fn(),
+  createPinoBrowserSend: vi.fn(),
 }));
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 

@@ -26,7 +26,7 @@ setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
 
 jest.mock('axios', () => {
   return {
-    get: jest.fn(),
+    get: vi.fn(),
   };
 });
 

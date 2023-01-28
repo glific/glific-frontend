@@ -2,7 +2,7 @@ import { fireEvent, render } from '@testing-library/react';
 import { Button } from './Button';
 
 describe('<Button />', () => {
-  const buttonCallback = jest.fn();
+  const buttonCallback = vi.fn();
 
   const defaultProps = {
     'data-testid': 'button',

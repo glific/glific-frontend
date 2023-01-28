@@ -7,7 +7,7 @@ import { MARK_AS_READ } from 'graphql/mutations/Chat';
 import { DATE_FORMAT } from 'common/constants';
 import ChatConversation from './ChatConversation';
 
-const mockCallback = jest.fn();
+const mockCallback = vi.fn();
 
 const mocks = [
   {

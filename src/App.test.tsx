@@ -11,8 +11,8 @@ const mocks = CONVERSATION_MOCKS;
 jest.mock('axios', () => {
   return {
     defaults: { headers: { common: {} } },
-    get: jest.fn(),
-    delete: jest.fn(),
+    get: vi.fn(),
+    delete: vi.fn(),
   };
 });
 

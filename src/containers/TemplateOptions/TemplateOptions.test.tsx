@@ -4,10 +4,10 @@ import { Formik } from 'formik';
 import { TemplateOptions } from './TemplateOptions';
 
 const props = (isAddButtonChecked: any, templateType: any, inputFields: any, form: any) => ({
-  onAddClick: jest.fn(),
-  onRemoveClick: jest.fn(),
-  onInputChange: jest.fn(),
-  onTemplateTypeChange: jest.fn(),
+  onAddClick: vi.fn(),
+  onRemoveClick: vi.fn(),
+  onInputChange: vi.fn(),
+  onTemplateTypeChange: vi.fn(),
   disabled: false,
   isAddButtonChecked,
   templateType,
@@ -24,7 +24,7 @@ const form: any = {
   errors: {},
 };
 
-const submitCallback = jest.fn();
+const submitCallback = vi.fn();
 
 test('it renders component and selects call to action type', async () => {
   const inputFields = [callToAction];

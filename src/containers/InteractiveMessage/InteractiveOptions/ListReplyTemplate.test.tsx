@@ -17,13 +17,13 @@ const props: any = {
       templateButtons: inputFields,
     },
   },
-  onListAddClick: jest.fn(),
-  onListRemoveClick: jest.fn(),
-  onListItemAddClick: jest.fn(),
-  onListItemRemoveClick: jest.fn(),
-  onInputChange: jest.fn(),
+  onListAddClick: vi.fn(),
+  onListRemoveClick: vi.fn(),
+  onListItemAddClick: vi.fn(),
+  onListItemRemoveClick: vi.fn(),
+  onInputChange: vi.fn(),
 };
-const mock = jest.fn();
+const mock = vi.fn();
 
 test('it renders the template', async () => {
   render(

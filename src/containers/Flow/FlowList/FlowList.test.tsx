@@ -39,7 +39,7 @@ const flowList = (
   </MockedProvider>
 );
 
-HTMLAnchorElement.prototype.click = jest.fn();
+HTMLAnchorElement.prototype.click = vi.fn();
 
 jest.mock('react-router-dom', () => {
   return {
@@ -124,7 +124,7 @@ describe('<FlowList />', () => {
   });
 
   test('should export flow to json file', async () => {
-    global.URL.createObjectURL = jest.fn();
+    global.URL.createObjectURL = vi.fn();
     render(flowList);
     await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 0)));
 

@@ -16,9 +16,9 @@ const props: any = {
   index: 0,
   inputFields,
   form,
-  onAddClick: jest.fn(),
-  onRemoveClick: jest.fn(),
-  onInputChange: jest.fn(),
+  onAddClick: vi.fn(),
+  onRemoveClick: vi.fn(),
+  onInputChange: vi.fn(),
 };
 
 test('it should render template', async () => {
