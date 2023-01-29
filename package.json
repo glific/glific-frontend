@@ -91,24 +91,6 @@
       "last 1 safari version"
     ]
   },
-  "jest": {
-    "collectCoverageFrom": [
-      "src/**/*.{ts,tsx}",
-      "!src/config/*.{ts,tsx}",
-      "!src/serviceWorker.ts",
-      "!src/react-app-env.d.ts",
-      "!src/index.tsx",
-      "!src/types/**/*.{ts,tsx}"
-    ],
-    "coverageReporters": [
-      "text",
-      "html",
-      "lcov"
-    ],
-    "moduleNameMapper": {
-      "axios": "axios/dist/node/axios.cjs"
-    }
-  },
   "devDependencies": {
     "@rollup/plugin-inject": "^5.0.3",
     "@testing-library/jest-dom": "^5.16.5",
@@ -116,7 +98,6 @@
     "@testing-library/user-event": "^14.4.3",
     "@types/draft-js": "^0.11.10",
     "@types/emoji-mart": "^3.0.9",
-    "@types/jest": "^29.2.5",
     "@types/node": "^18.11.18",
     "@types/react": "^18.0.26",
     "@types/react-color": "^3.0.6",
