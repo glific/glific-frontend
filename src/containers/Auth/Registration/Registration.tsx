@@ -37,8 +37,12 @@ export const Registration = () => {
         setUser(values);
         setRedirect(true);
       })
-      .catch(() => {
-        setAuthError(t('We are unable to register, kindly contact your technical team.'));
+      .catch((error: any) => {
+        if (error.response && error.response.data) {
+          setAuthError(error.response.data?.error?.message);
+        } else {
+          setAuthError(t('We are unable to register, kindly contact your technical team.'));
+        }
       });
   };
 
