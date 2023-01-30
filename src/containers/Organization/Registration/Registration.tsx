@@ -69,6 +69,7 @@ const initialFormValues = {
   email: '',
   shortcode: '',
   addSupportStaff: true,
+  token: '',
 };
 
 const supportCheckboxTitle =
@@ -141,30 +142,31 @@ export const Registration = ({ title, buttonText, handleStep }: RegistrationProp
     },
   ];
 
-  const handleSubmit = (values: any, captcha: any, setErrors: any, setLoading: any) => {
-    if (captcha) {
-      axios
-        .post(ONBOARD_URL, values)
-        .then(({ data }: { data: any }) => {
-          if (data.is_valid) {
-            setRedirect(true);
-          } else {
-            setRegistrationError(data.messages?.global);
-            if (setErrors && setLoading) {
-              const errors = data.messages;
-              delete errors.global;
-              setErrors(errors);
-              setLoading(false);
-            }
-          }
-        })
-        .catch(() => {
-          setRegistrationError({
-            global: 'Sorry! an error occured. Please contact the technical team for support',
-          });
-          setLoading(false);
-        });
+  const handleSubmit = (values: any, setErrors: any, setLoading: any) => {
+    if (!values.token) {
+      return;
     }
+    axios
+      .post(ONBOARD_URL, values)
+      .then(({ data }: { data: any }) => {
+        if (data.is_valid) {
+          setRedirect(true);
+        } else {
+          setRegistrationError(data.messages?.global);
+          if (setErrors && setLoading) {
+            const errors = data.messages;
+            delete errors.global;
+            setErrors(errors);
+            setLoading(false);
+          }
+        }
+      })
+      .catch(() => {
+        setRegistrationError({
+          global: 'Sorry! an error occured. Please contact the technical team for support',
+        });
+        setLoading(false);
+      });
   };
 
   return (

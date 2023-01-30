@@ -1,9 +1,14 @@
 import { render, act, fireEvent } from '@testing-library/react';
+import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 
 import RouteSetupSteps from './RouteSetupSteps';
 
 it('it renders component correctly', () => {
-  const { getByText } = render(<RouteSetupSteps />);
+  const { getByText } = render(
+    <GoogleReCaptchaProvider reCaptchaKey="test key">
+      <RouteSetupSteps />
+    </GoogleReCaptchaProvider>
+  );
 
   expect(getByText('Setup your NGO on Glific')).toBeInTheDocument();
   const continueButton = getByText('Continue');

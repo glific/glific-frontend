@@ -402,5 +402,6 @@
   "Request header": "Request header",
   "Request JSON": "Request JSON",
   "Response JSON": "Response JSON",
-  "Webhook Logs": "Webhook Logs"
+  "Webhook Logs": "Webhook Logs",
+  "Invalid captcha": "Invalid captcha"
 }
