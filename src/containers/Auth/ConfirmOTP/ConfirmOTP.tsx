@@ -6,10 +6,14 @@ import { useTranslation } from 'react-i18next';
 
 import { VITE_GLIFIC_REGISTRATION_API } from 'config';
 import { Input } from 'components/UI/Form/Input/Input';
-// eslint-disable-next-line no-unused-vars
 import { sendOTP } from 'services/AuthService';
 import setLogs from 'config/logs';
+import { IconButton, InputAdornment } from '@material-ui/core';
+import RefreshIcon from '@material-ui/icons/Refresh';
+import { Captcha } from 'components/UI/Form/Captcha/Captcha';
+import styles from './ConfirmOTP.module.css';
 import { Auth } from '../Auth';
+import { User } from '../Registration/Registration';
 
 // let's define registration success message
 const successMessage = (
@@ -25,17 +29,21 @@ export const ConfirmOTP = () => {
   const [authError, setAuthError] = useState('');
   const { t } = useTranslation();
   const location = useLocation();
-  const [userObject, setUserObject] = useState({ name: '', phone: '', password: '' });
+  const [userObject, setUserObject] = useState<User>();
+  const [token, setToken] = useState('');
 
   useEffect(() => {
-    const state = location.state as any;
+    const state = location.state as User;
     if (state) {
-      setUserObject({ name: state.name, phone: state.phoneNumber, password: state.password });
+      setUserObject(state);
     }
   }, [location]);
 
   const handleResend = () => {
-    sendOTP(userObject.phone, 'true')
+    if (!userObject) {
+      return;
+    }
+    sendOTP(userObject.phone, token)
       .then((response) => response)
       .catch(() => {
         setAuthError(t('We are unable to generate an OTP, kindly contact your technical team.'));
@@ -43,7 +51,7 @@ export const ConfirmOTP = () => {
   };
 
   // Let's not allow direct navigation to this page
-  if (location && location.state === undefined) {
+  if (location && !location.state) {
     return <Navigate to="/registration" />;
   }
 
@@ -52,6 +60,23 @@ export const ConfirmOTP = () => {
     setOTP(OTPValue);
   };
 
+  const endAdornment = (
+    <InputAdornment position="end">
+      <Captcha
+        component={IconButton}
+        aria-label="resend otp"
+        data-testid="resendOtp"
+        onClick={handleResend}
+        edge="end"
+        action="resend"
+        onTokenUpdate={(tokenString: string) => setToken(tokenString)}
+      >
+        <p className={styles.Resend}>resend</p>{' '}
+        <RefreshIcon classes={{ root: styles.ResendButton }} />
+      </Captcha>
+    </InputAdornment>
+  );
+
   const formFields = [
     {
       component: Input,
@@ -59,7 +84,7 @@ export const ConfirmOTP = () => {
       name: 'OTP',
       placeholder: 'OTP',
       helperText: t('Please confirm the OTP received at your WhatsApp number.'),
-      endAdornmentCallback: handleResend,
+      endAdornment,
     },
   ];
 
@@ -70,6 +95,10 @@ export const ConfirmOTP = () => {
   const initialFormValues = { OTP: '' };
 
   const onSubmitOTP = (values: any) => {
+    if (!userObject) {
+      return;
+    }
+
     axios
       .post(VITE_GLIFIC_REGISTRATION_API, {
         user: {
