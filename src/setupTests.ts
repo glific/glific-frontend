@@ -4,6 +4,8 @@
 // learn more: https://github.com/testing-library/jest-dom
 
 import '@testing-library/jest-dom/extend-expect';
+import { TextEncoder, TextDecoder } from 'util';
+
 process.env.REACT_APP_WEB_SOCKET = 'ws://localhost/socket';
 
 jest.mock('react-media-recorder', () => {
@@ -46,3 +48,7 @@ class ResizeObserver {
 window.ResizeObserver = ResizeObserver;
 
 global.URL.createObjectURL = jest.fn();
+
+// fixes TextEncoder error while running tests
+global.TextEncoder = TextEncoder;
+global.TextDecoder = TextDecoder;
