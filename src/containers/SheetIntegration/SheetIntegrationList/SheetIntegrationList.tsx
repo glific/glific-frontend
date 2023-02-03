@@ -13,7 +13,12 @@ import { DATE_TIME_FORMAT } from 'common/constants';
 
 import styles from './SheetIntegrationList.module.css';
 
-const getName = (text: string) => <p className={styles.NameText}>{text}</p>;
+const getName = (text: string, sheetDataCount: string) => (
+  <div>
+    <p className={styles.NameText}>{text}</p>
+    <p>{sheetDataCount} rows synced</p>
+  </div>
+);
 const getLastSyncedAt = (date: string, fallback: string = '') => (
   <div className={styles.LastSyncText}>
     {date ? moment(date).format(DATE_TIME_FORMAT) : fallback}
@@ -61,8 +66,8 @@ export const SheetIntegrationList = () => {
       dialog: syncSheet,
     },
   ];
-  const getColumns = ({ label, lastSyncedAt }: any) => ({
-    name: getName(label),
+  const getColumns = ({ label, sheetDataCount, lastSyncedAt }: any) => ({
+    name: getName(label, sheetDataCount),
     date: getLastSyncedAt(lastSyncedAt),
   });
 
