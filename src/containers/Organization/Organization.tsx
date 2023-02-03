@@ -4,8 +4,8 @@ import { Typography } from '@material-ui/core';
 
 import { Captcha } from 'components/UI/Form/Captcha/Captcha';
 import { TERMS_OF_USE_LINK } from 'common/constants';
-import { Button } from 'components/UI/Form/Button/Button';
 import GlificLogo from 'assets/images/logo/Logo.svg';
+import { Button } from 'components/UI/Form/Button/Button';
 import styles from './Organization.module.css';
 
 export interface OrganizationProps {
@@ -42,10 +42,8 @@ export const Organization = ({
   errorMessage,
 }: OrganizationProps) => {
   const [loading, setLoading] = useState(false);
-  const [captcha, setCaptcha] = useState(null);
   const boxClass = [styles.Box, styles.RegistrationBox];
   const boxTitleClass = [styles.BoxTitle, styles.RegistrationBoxTitle];
-  const buttonContainedVariant = true;
 
   let displayErrorMessage: any = null;
 
@@ -59,22 +57,6 @@ export const Organization = ({
 
   // Stop loading if any error
   if (loading && displayErrorMessage) setLoading(false);
-
-  /**
-   *
-   * @param value
-   * If captcha is successful then value will have callback string
-   * else value will be null
-   *
-   * This callback is called on onExpired so don't need to handle callback for onExpired
-   */
-  const handleCaptchaChange = (value: any) => {
-    setCaptcha(value);
-  };
-
-  const handleCaptchaError = () => {
-    setCaptcha(null);
-  };
 
   const formElements = (
     <>
@@ -94,30 +76,33 @@ export const Organization = ({
            * SetError and SetLoading is used to set server side messages
            * and toggle loading on and off
            */
-          saveHandler(item, captcha, setErrors, setLoading);
-          setCaptcha(null);
+          saveHandler(item, setErrors, setLoading);
         }}
       >
-        {({ submitForm }) => (
+        {({ submitForm, setFieldValue, values }) => (
           <div className={styles.CenterBox}>
             <Form className={styles.Form}>
               {formFields.map((field: any, index: number) => {
                 const key = index;
                 return <Field className={styles.Form} key={key} {...field} />;
               })}
-              {!loading && <Captcha onChange={handleCaptchaChange} onError={handleCaptchaError} />}
               <div className={styles.CenterButton}>
-                <Button
-                  variant={buttonContainedVariant ? 'contained' : 'outlined'}
+                <Captcha
+                  component={Button}
+                  variant="contained"
                   color="primary"
                   onClick={submitForm}
                   className={styles.OrgButton}
-                  data-testid="SubmitButton"
+                  data-testid="captcha-button"
                   loading={loading}
-                  disabled={!captcha}
+                  onTokenUpdate={(token: string) => {
+                    setFieldValue('token', token);
+                  }}
+                  disabled={!values.token}
+                  action="organization_registration"
                 >
                   {loading ? null : buttonText}
-                </Button>
+                </Captcha>
               </div>
               <input className={styles.SubmitAction} type="submit" />
             </Form>

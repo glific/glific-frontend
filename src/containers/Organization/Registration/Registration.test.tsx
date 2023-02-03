@@ -4,18 +4,10 @@ import { MemoryRouter } from 'react-router-dom';
 import axios from 'axios';
 
 import { Registration } from './Registration';
+import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
-
-jest.mock('react-google-recaptcha', () => (props: any) => (
-  <input
-    type="checkbox"
-    data-testid="recaptcha-sign-in"
-    className={props.size}
-    onChange={props.onChange}
-  />
-));
 
 const props = {
   title: 'Setup your NGO on Glific',
@@ -25,7 +17,9 @@ const props = {
 
 const wrapper = (
   <MemoryRouter>
-    <Registration {...props} />
+    <GoogleReCaptchaProvider reCaptchaKey="test key">
+      <Registration {...props} />
+    </GoogleReCaptchaProvider>
   </MemoryRouter>
 );
 
@@ -42,13 +36,12 @@ describe('<Registration />', () => {
   });
 
   test('onboard org correctly', async () => {
-    const { container } = render(wrapper);
+    render(wrapper);
 
-    const captcha = screen.getByTestId('recaptcha-sign-in');
+    const captcha = screen.getByTestId('captcha-button');
     expect(captcha).toBeInTheDocument();
 
     waitFor(() => {
-      fireEvent.click(captcha);
       const inputElements = screen.getAllByRole('textbox');
 
       fireEvent.change(inputElements[0], { target: { value: 'JaneDoe' } });
@@ -71,11 +64,10 @@ describe('<Registration />', () => {
   test('it should submit the form correctly and give global error', async () => {
     render(wrapper);
 
-    const captcha = screen.getByTestId('recaptcha-sign-in');
+    const captcha = screen.getByTestId('captcha-button');
     expect(captcha).toBeInTheDocument();
 
     waitFor(() => {
-      fireEvent.click(captcha);
       const inputElements = screen.getAllByRole('textbox');
 
       fireEvent.change(inputElements[0], { target: { value: 'JaneDoe' } });

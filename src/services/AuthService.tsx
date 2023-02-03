@@ -3,6 +3,12 @@ import axios from 'axios';
 import { RENEW_TOKEN, REACT_APP_GLIFIC_AUTHENTICATION_API } from 'config';
 import setLogs from 'config/logs';
 
+interface RegisterRequest {
+  phone: string;
+  registration: string;
+  token?: string;
+}
+
 // get the current authentication session
 export const getAuthSession = (element?: string) => {
   const session = localStorage.getItem('glific_session');
@@ -81,24 +87,32 @@ export const clearAuthSession = () => {
 };
 
 // service to sent the OTP based on the phone number
-export const sendOTP = (phoneNumber: string, registration = 'false') =>
-  axios
+export const sendOTP = (phoneNumber: string, registrationToken?: string) => {
+  const user: RegisterRequest = {
+    phone: phoneNumber,
+    registration: 'false',
+  };
+
+  if (registrationToken) {
+    user.registration = 'true';
+    user.token = registrationToken;
+  }
+
+  return axios
     .post(REACT_APP_GLIFIC_AUTHENTICATION_API, {
-      user: {
-        phone: phoneNumber,
-        registration,
-      },
+      user,
     })
     .then((response) => response)
     .catch((error) => {
       // add log's
       setLogs(
-        `phoneNumber:${phoneNumber} registration:${registration} URL:${REACT_APP_GLIFIC_AUTHENTICATION_API}`,
+        `phoneNumber:${phoneNumber} registration:${user.registration} URL:${REACT_APP_GLIFIC_AUTHENTICATION_API}`,
         'info'
       );
       setLogs(error, 'error');
       throw error;
     });
+};
 
 // set user object
 export const setUserSession = (user: string) => {

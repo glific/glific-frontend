@@ -7,34 +7,49 @@ import { PhoneInput } from 'components/UI/Form/PhoneInput/PhoneInput';
 import { sendOTP } from 'services/AuthService';
 import { Auth } from '../Auth';
 
+export interface User {
+  name: string;
+  phone: string;
+  password: string;
+  captcha: string;
+}
+
+const initialFormValues: User = { name: '', phone: '', password: '', captcha: '' };
+
 export const Registration = () => {
   const [redirect, setRedirect] = useState(false);
-  const [user, setUser] = useState({ userName: '', phone: '', password: '' });
+  const [user, setUser] = useState<User>(initialFormValues);
   const [authError, setAuthError] = useState<any>('');
   const { t } = useTranslation();
 
   if (redirect) {
-    const stateObject = { name: user.userName, phoneNumber: user.phone, password: user.password };
-    return <Navigate to="/confirmotp" replace state={stateObject} />;
+    return <Navigate to="/confirmotp" replace state={user} />;
   }
 
-  const onSubmitRegistration = (values: any, captcha: any) => {
-    if (captcha) {
-      sendOTP(values.phone, 'true')
-        .then(() => {
-          setUser(values);
-          setRedirect(true);
-        })
-        .catch(() => {
-          setAuthError(t('We are unable to register, kindly contact your technical team.'));
-        });
+  const onSubmitRegistration = (values: User) => {
+    if (!values.captcha) {
+      setAuthError(t('Invalid captcha'));
+      return;
     }
+
+    sendOTP(values.phone, values.captcha)
+      .then(() => {
+        setUser(values);
+        setRedirect(true);
+      })
+      .catch((error: any) => {
+        if (error.response && error.response.data) {
+          setAuthError(error.response.data.error?.message);
+        } else {
+          setAuthError(t('We are unable to register, kindly contact your technical team.'));
+        }
+      });
   };
 
   const formFields = [
     {
       component: Input,
-      name: 'userName',
+      name: 'name',
       type: 'text',
       placeholder: t('Your full name'),
     },
@@ -54,14 +69,12 @@ export const Registration = () => {
   ];
 
   const FormSchema = Yup.object().shape({
-    userName: Yup.string().required(t('Input required')),
+    name: Yup.string().required(t('Input required')),
     phone: Yup.string().required(t('Input required')),
     password: Yup.string()
       .min(8, t('Password must be at least 8 characters long.'))
       .required(t('Input required')),
   });
-
-  const initialFormValues = { userName: '', phone: '', password: '' };
 
   return (
     <Auth
