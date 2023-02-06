@@ -7,16 +7,10 @@
   text-decoration: none;
 }
 
-.NameText {
-  font-size: 20px;
-  font-weight: bold;
-}
-
 .Actions {
-  width: 20%;
   justify-content: flex-end;
-  margin-left: 160px;
-  margin-top: 15px;
+  margin-left: auto;
+  min-width: 200px;
 }
 
 .HelperText {
@@ -26,12 +20,31 @@
 }
 
 .LastSyncText {
-  padding-top: 24px;
+  padding-top: 12px;
+  text-align: left;
   font-size: 16px;
   color: #93a29b;
   line-height: 1.25;
   white-space: pre-line;
-  justify-content: flex-end;
-  margin-left: auto;
-  margin-right: -37px;
+  margin: 0;
+}
+
+.Name {
+  width: 35%;
+  min-width: 200px;
+}
+
+.NameText {
+  text-align: left;
+  font-weight: 500;
+  padding: 12px 0px;
+  line-height: 1.25;
+  margin: 0;
+  font-size: 20px !important;
+  word-break: break-all;
+}
+
+.SheetCount {
+  font-size: 12px;
+  color: #93a29b !important;
 }
