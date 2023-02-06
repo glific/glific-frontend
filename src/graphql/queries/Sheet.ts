@@ -27,6 +27,7 @@ export const GET_SHEETS = gql`
       url
       isActive
       label
+      sheetDataCount
       lastSyncedAt
       insertedAt
       updatedAt
