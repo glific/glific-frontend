@@ -7,11 +7,6 @@
   text-decoration: none;
 }
 
-.NameText {
-  font-size: 20px;
-  font-weight: bold;
-}
-
 .Actions {
   justify-content: flex-end;
   margin-left: auto;
@@ -37,4 +32,19 @@
 .Name {
   width: 35%;
   min-width: 200px;
+}
+
+.NameText {
+  text-align: left;
+  font-weight: 500;
+  padding: 12px 0px;
+  line-height: 1.25;
+  margin: 0;
+  font-size: 20px !important;
+  word-break: break-all;
+}
+
+.SheetCount {
+  font-size: 12px;
+  color: #93a29b !important;
 }

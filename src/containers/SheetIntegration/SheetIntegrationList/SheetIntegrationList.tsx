@@ -14,10 +14,11 @@ import { DATE_TIME_FORMAT } from 'common/constants';
 import styles from './SheetIntegrationList.module.css';
 
 const getName = (text: string, sheetDataCount: string) => (
-  <div>
-    <p className={styles.NameText}>{text}</p>
-    <p>{sheetDataCount} rows synced</p>
-  </div>
+  <p className={styles.NameText}>
+    {text}
+    <br />
+    <span className={styles.SheetCount}>{sheetDataCount} rows synced</span>
+  </p>
 );
 const getLastSyncedAt = (date: string, fallback: string = '') => (
   <div className={styles.LastSyncText}>
