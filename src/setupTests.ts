@@ -4,14 +4,10 @@
 // learn more: https://github.com/testing-library/jest-dom
 
 import '@testing-library/jest-dom/extend-expect';
-<<<<<<< HEAD
 import { vi } from 'vitest';
-import.meta.env.VITE_WEB_SOCKET = 'ws://localhost/socket';
-=======
 import { TextEncoder, TextDecoder } from 'util';
 
-process.env.REACT_APP_WEB_SOCKET = 'ws://localhost/socket';
->>>>>>> origin/master
+import.meta.env.VITE_WEB_SOCKET = 'ws://localhost/socket';
 
 vi.mock('react-media-recorder', () => {
   return {
