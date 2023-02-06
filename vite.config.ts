@@ -20,6 +20,7 @@ export default defineConfig(({ command, mode, ssrBuild }) => {
       },
       server: {
         open: true,
+        port: 3000,
         https: {
           key: fs.readFileSync('../glific/priv/cert/glific.test+1-key.pem'),
           cert: fs.readFileSync('../glific/priv/cert/glific.test+1.pem'),
