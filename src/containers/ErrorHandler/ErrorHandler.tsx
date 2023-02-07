@@ -55,7 +55,7 @@ const ErrorHandler = () => {
       <div data-testid="errorMessage">
         <DialogBox
           title={title}
-          colorOk="secondary"
+          colorOk="warning"
           handleOk={handleErrorClose}
           handleCancel={handleErrorClose}
           buttonOk="Ok"

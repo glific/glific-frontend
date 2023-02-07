@@ -303,7 +303,7 @@ export const ContactBar = ({
         handleCancel={() => setClearChatDialog(false)}
         alignButtons="center"
         buttonOk="YES, CLEAR"
-        colorOk="secondary"
+        colorOk="warning"
         buttonCancel="MAYBE LATER"
       >
         <p className={styles.DialogText}>{bodyContext}</p>
@@ -329,7 +329,7 @@ export const ContactBar = ({
         handleOk={handleBlock}
         handleCancel={() => setShowBlockDialog(false)}
         alignButtons="center"
-        colorOk="secondary"
+        colorOk="warning"
       >
         <p className={styles.DialogText}>
           You will not be able to view their chats and interact with them again

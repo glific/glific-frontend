@@ -44,7 +44,7 @@ class ErrorBoundary extends Component<any, any> {
           <div data-testid="errorMessage">
             <DialogBox
               title="Error !"
-              colorOk="secondary"
+              colorOk="warning"
               handleOk={() => {
                 navigate('/logout/user');
               }}

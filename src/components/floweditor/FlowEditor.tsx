@@ -156,7 +156,7 @@ export const FlowEditor = () => {
         title="Unsaved changes!"
         handleOk={handleConfirmNavigationClick}
         handleCancel={closeModal}
-        colorOk="secondary"
+        colorOk="warning"
         buttonOk="Ignore & leave"
         buttonCancel="Stay & recheck"
         alignButtons="center"
@@ -180,7 +180,7 @@ export const FlowEditor = () => {
         title="Warning!"
         handleOk={handleResetFlowCount}
         handleCancel={() => setShowResetFlowModal(false)}
-        colorOk="secondary"
+        colorOk="warning"
         buttonOk="Accept & reset"
         buttonCancel="DON'T RESET YET"
         alignButtons="center"

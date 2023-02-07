@@ -8,7 +8,6 @@ import styles from './Button.module.css';
 
 export interface ButtonProps extends MaterialButtonProps {
   'data-testid'?: string;
-
   children: any;
   className?: any;
   loading?: boolean;

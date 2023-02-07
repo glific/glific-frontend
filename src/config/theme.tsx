@@ -8,8 +8,11 @@ const theme = createTheme({
       // dark: will be calculated from palette.primary.main,
       // contrastText: will be calculated to contrast with palette.primary.main
     },
-    secondary: {
+    warning: {
       main: '#DD1F1F',
+    },
+    secondary: {
+      main: '#CACACA',
     },
   },
   typography: {

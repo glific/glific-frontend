@@ -355,7 +355,7 @@ export const List = ({
           dialogTitle || `Are you sure you want to delete the ${listItemName} "${deleteItemName}"?`
         }
         handleCancel={closeDialogBox}
-        colorOk="secondary"
+        colorOk="warning"
         alignButtons="center"
         {...props}
       >

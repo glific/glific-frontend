@@ -611,7 +611,7 @@ export const FormLayout = ({
         title={`Are you sure you want to delete the ${listItemName}?`}
         handleOk={handleDeleteItem}
         handleCancel={() => setShowDialog(false)}
-        colorOk="secondary"
+        colorOk="warning"
         alignButtons="center"
         contentAlign="center"
       >
