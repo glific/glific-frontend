@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useApolloClient, useLazyQuery, useSubscription } from '@apollo/client';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
-import { Button, ClickAwayListener } from '@material-ui/core';
+import { Button, ClickAwayListener } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Draggable from 'react-draggable';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
@@ -547,7 +547,6 @@ export const Simulator = ({
 
                 <Button
                   variant="contained"
-                  color="primary"
                   className={styles.SendButton}
                   disabled={isPreviewMessage}
                   onClick={() => sendMessage(sender)}

@@ -1,4 +1,4 @@
-import { createTheme } from '@material-ui/core/styles';
+import { createTheme } from '@mui/material/styles';
 
 const theme = createTheme({
   palette: {
@@ -15,100 +15,124 @@ const theme = createTheme({
   typography: {
     fontFamily: ['heebo', 'sans-serif'].join(','),
   },
-  overrides: {
+  components: {
     MuiTableSortLabel: {
-      icon: {
-        opacity: '0.7',
+      styleOverrides: {
+        icon: {
+          opacity: '0.7',
+        },
       },
     },
     MuiBackdrop: {
-      root: {
-        backgroundColor: 'rgba(147,162,155,0.84)',
+      styleOverrides: {
+        root: {
+          backgroundColor: 'rgba(147,162,155,0.84)',
+        },
       },
     },
     MuiButton: {
-      contained: {
-        backgroundColor: '#CACACA',
-        '&:hover': {
-          backgroundColor: '#b5b5b5',
-        },
-        '&:disabled': {
-          backgroundColor: '#93A29B',
-        },
-      },
+      styleOverrides: {
+        // contained: {
+        //   backgroundColor: '#CACACA',
+        //   '&:hover': {
+        //     backgroundColor: '#b5b5b5',
+        //   },
+        //   '&:disabled': {
+        //     backgroundColor: '#93A29B',
+        //   },
+        // },
 
-      outlinedPrimary: {
-        border: '2px solid',
-        '&:hover': {
+        outlinedPrimary: {
           border: '2px solid',
+          '&:hover': {
+            border: '2px solid',
+          },
         },
       },
     },
     MuiTablePagination: {
-      caption: {
-        fontSize: '16px',
-        color: '#073F24',
+      styleOverrides: {
+        // caption: {
+        //   fontSize: '16px',
+        //   color: '#073F24',
+        // },
       },
     },
     MuiOutlinedInput: {
-      notchedOutline: {
-        borderRadius: '12px',
-        borderWidth: '2px',
+      styleOverrides: {
+        notchedOutline: {
+          borderRadius: '12px',
+          borderWidth: '2px',
+        },
       },
     },
     MuiDialogActions: {
-      root: {
-        justifyContent: 'flex-start',
+      styleOverrides: {
+        root: {
+          justifyContent: 'flex-start',
+        },
       },
     },
     MuiCssBaseline: {
-      '@global': {
-        // override the pseudo-classes
-        '.Mui-disabled': { cursor: 'not-allowed !important' },
+      styleOverrides: {
+        '@global': {
+          // override the pseudo-classes
+          '.Mui-disabled': { cursor: 'not-allowed !important' },
+        },
       },
     },
-
     MuiFormControlLabel: {
-      label: { color: '#073f24' },
+      styleOverrides: {
+        label: { color: '#073f24' },
+      },
     },
-
     MuiListItem: {
-      root: {
-        color: '073F24',
+      styleOverrides: {
+        root: {
+          color: '073F24',
+        },
       },
     },
     MuiCheckbox: {
-      root: {
-        color: '#073f24',
-        '&$checked': {
-          color: '#119656',
+      styleOverrides: {
+        root: {
+          color: '#073f24',
+          '&.Mui-checked': {
+            color: '#119656',
+          },
         },
       },
     },
     MuiTableCell: {
-      body: {
-        color: 'unset',
-      },
-      head: {
-        color: '#ccd4d0',
+      styleOverrides: {
+        body: {
+          color: 'unset',
+        },
+        head: {
+          color: '#ccd4d0',
+        },
       },
     },
     MuiMenuItem: {
-      root: {
-        '&:hover': {
-          backgroundColor: '#EDF6F2',
+      styleOverrides: {
+        root: {
+          '&:hover': {
+            backgroundColor: '#EDF6F2',
+          },
         },
       },
     },
     MuiTypography: {
-      h5: {
-        '@media (max-width:768px)': {
-          fontSize: '1rem',
+      styleOverrides: {
+        h5: {
+          '@media (max-width:768px)': {
+            fontSize: '1rem',
+          },
         },
-      },
-      h6: {
-        '@media (max-width:768px)': {
-          fontSize: '1rem',
+        h6: {
+          '@media (max-width:768px)': {
+            fontSize: '1rem',
+          },
         },
       },
     },

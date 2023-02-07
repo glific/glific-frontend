@@ -19,8 +19,8 @@ export interface DialogProps {
   buttonCancel?: string;
   titleAlign?: string;
   contentAlign?: string;
-  colorOk?: 'inherit' | 'primary' | 'secondary' | 'default' | undefined;
-  colorCancel?: 'inherit' | 'primary' | 'secondary' | 'default' | undefined;
+  colorOk?: any;
+  colorCancel?: any;
   alignButtons?: string;
   skipCancel?: boolean;
   skipOk?: boolean;

@@ -104,7 +104,6 @@ export const ChatTemplate = ({ title, body, globalButtonTitle, items }: Template
       <div className={styles.ChatTemplateButton}>
         <Button
           variant="contained"
-          color="default"
           startIcon={<MenuIcon />}
           onClick={() => setShowDialog(true)}
           className={styles.GlobalButton}
@@ -131,7 +130,6 @@ export const SimulatorTemplate = ({
     {showHeader && <p className={styles.ListHeader}>{title}</p>}
     <ChatMessageType type="TEXT" body={body} isSimulatedMessage />
     <Button
-      color="default"
       disabled={disabled}
       startIcon={<FormatListBulletedIcon />}
       onClick={() => onGlobalButtonClick({ items, bspMessageId })}

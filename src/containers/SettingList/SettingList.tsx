@@ -77,7 +77,7 @@ export const SettingList = () => {
                 }}
                 className={styles.Link}
               >
-                <IconButton aria-label="Edit" color="default" data-testid="EditIcon">
+                <IconButton aria-label="Edit" data-testid="EditIcon">
                   <EditIcon />
                 </IconButton>
               </Link>

@@ -371,7 +371,6 @@ export const FlowEditor = () => {
 
         <Button
           variant="contained"
-          color="default"
           className={styles.ContainedButton}
           onClick={() => {
             navigate('/flow');

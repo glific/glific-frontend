@@ -214,7 +214,7 @@ export const MyAccount = () => {
                 >
                   {t('Save')}
                 </Button>
-                <Button variant="contained" color="default" onClick={cancelHandler}>
+                <Button variant="contained" onClick={cancelHandler}>
                   {t('Cancel')}
                 </Button>
               </>

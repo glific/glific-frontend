@@ -187,7 +187,7 @@ export const NotificationList = () => {
           <img src={CopyIcon} alt="copy" />
           {t('Copy text')}
         </span>
-        <Button variant="contained" color="default" onClick={handleClose}>
+        <Button variant="contained" onClick={handleClose}>
           {t('Done')}
         </Button>
       </div>

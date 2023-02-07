@@ -63,7 +63,6 @@ export const QuickReplyTemplate = ({
           <div className={styles.ButtonItem} key={uuidv4()}>
             <Button
               variant="contained"
-              color="default"
               disabled={disabled}
               onClick={() => onQuickReplyClick(payloadObject)}
               className={isSimulator ? styles.SimulatorButton : styles.ChatMessageButton}

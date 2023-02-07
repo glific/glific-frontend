@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { MouseEventHandler, useState } from 'react';
 import { Navigate, Link, useParams } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
 // eslint-disable-next-line no-unused-vars
@@ -80,7 +80,7 @@ export interface FormLayoutProps {
   copyNotification?: string;
   roleAccessSupport?: boolean;
   showPreviewButton?: boolean;
-  onPreviewClick?: Function;
+  onPreviewClick?: MouseEventHandler<HTMLButtonElement>;
   getQueryFetchPolicy?: any;
   saveOnPageChange?: boolean;
   entityId?: any;
@@ -578,12 +578,7 @@ export const FormLayout = ({
                 {additionalAction.label}
               </Button>
             ) : null}
-            <Button
-              variant="contained"
-              color="default"
-              onClick={cancelHandler}
-              data-testid="cancelActionButton"
-            >
+            <Button variant="contained" onClick={cancelHandler} data-testid="cancelActionButton">
               {t('Cancel')}
             </Button>
             {showPreviewButton && (
