@@ -1,5 +1,5 @@
 import React from 'react';
-import CallMadeSharpIcon from '@material-ui/icons/CallMadeSharp';
+import CallMadeSharpIcon from '@mui/icons-material/CallMadeSharp';
 
 import GlificLogo from 'assets/images/logo/Logo.svg';
 import { Button } from 'components/UI/Form/Button/Button';

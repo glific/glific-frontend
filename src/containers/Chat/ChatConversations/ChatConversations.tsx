@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, IconButton } from '@material-ui/core';
-import CancelOutlined from '@material-ui/icons/CancelOutlined';
+import CancelOutlined from '@mui/icons-material/CancelOutlined';
 import { useApolloClient, useQuery } from '@apollo/client/react';
 import { useTranslation } from 'react-i18next';
 

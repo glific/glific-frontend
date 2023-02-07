@@ -5,7 +5,7 @@ import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, KeyboardTimePicker } from '@material-ui/pickers';
 import moment from 'moment';
 import { getIn } from 'formik';
-import ScheduleIcon from '@material-ui/icons/Schedule';
+import ScheduleIcon from '@mui/icons-material/Schedule';
 
 import styles from './TimePicker.module.css';
 

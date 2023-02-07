@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { List, Container, CircularProgress, Typography } from '@material-ui/core';
-import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { useApolloClient, useLazyQuery, useQuery } from '@apollo/client';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';

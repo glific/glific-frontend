@@ -1,7 +1,7 @@
 import React from 'react';
 import { EditorState, ContentState } from 'draft-js';
-import CallIcon from '@material-ui/icons/Call';
-import OpenInNewIcon from '@material-ui/icons/OpenInNew';
+import CallIcon from '@mui/icons-material/Call';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { Interweave } from 'interweave';
 import { UrlMatcher } from 'interweave-autolink';
 

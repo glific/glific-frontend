@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useMutation, useLazyQuery, useQuery } from '@apollo/client';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
-import { IconButton } from '@material-ui/core';
+import { IconButton } from '@mui/material';
 
 import { ReactComponent as HelpIcon } from 'assets/images/icons/Help.svg';
 import { ReactComponent as FlowIcon } from 'assets/images/icons/Flow/Dark.svg';

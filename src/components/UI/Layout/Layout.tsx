@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import MenuIcon from '@material-ui/icons/Menu';
+import MenuIcon from '@mui/icons-material/Menu';
 import { SideDrawerContext } from 'context/session';
 import GlificLogo from 'assets/images/logo/Logo.svg';
 import { SideDrawer } from './Navigation/SideDrawer/SideDrawer';

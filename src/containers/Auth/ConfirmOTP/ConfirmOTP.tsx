@@ -9,7 +9,7 @@ import { Input } from 'components/UI/Form/Input/Input';
 import { sendOTP } from 'services/AuthService';
 import setLogs from 'config/logs';
 import { IconButton, InputAdornment } from '@material-ui/core';
-import RefreshIcon from '@material-ui/icons/Refresh';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import { Captcha } from 'components/UI/Form/Captcha/Captcha';
 import styles from './ConfirmOTP.module.css';
 import { Auth } from '../Auth';

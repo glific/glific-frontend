@@ -7,8 +7,8 @@ import { Link } from 'react-router-dom';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { CircularProgress, IconButton, InputAdornment, Typography } from '@material-ui/core';
-import CallMadeIcon from '@material-ui/icons/CallMade';
-import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
+import CallMadeIcon from '@mui/icons-material/CallMade';
+import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 
 import { ReactComponent as ApprovedIcon } from 'assets/images/icons/Template/Approved.svg';
 import { ReactComponent as Settingicon } from 'assets/images/icons/Settings/Settings.svg';

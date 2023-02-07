@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Button, Radio } from '@material-ui/core';
-import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
-import MenuIcon from '@material-ui/icons/Menu';
-import ClearIcon from '@material-ui/icons/Clear';
+import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
+import MenuIcon from '@mui/icons-material/Menu';
+import ClearIcon from '@mui/icons-material/Clear';
 import { v4 as uuidv4 } from 'uuid';
 
 import styles from './ListReplyTemplate.module.css';

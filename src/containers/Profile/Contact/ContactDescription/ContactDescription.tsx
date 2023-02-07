@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { IconButton } from '@material-ui/core';
-import { Visibility, VisibilityOff } from '@material-ui/icons';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 
 import { Timer } from 'components/UI/Timer/Timer';
