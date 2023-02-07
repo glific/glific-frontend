@@ -1,11 +1,12 @@
 import React from 'react';
-import Grid from '@material-ui/core/Grid';
-import DateFnsUtils from '@date-io/date-fns';
-import { MuiPickersUtilsProvider, KeyboardDateTimePicker } from '@material-ui/pickers';
-import 'date-fns';
-import { getIn } from 'formik';
 
-import { ReactComponent as CalenderIcon } from 'assets/images/icons/Calendar/Calendar.svg';
+import { LocalizationProvider, DateTimePicker as Picker } from '@mui/x-date-pickers';
+import { TextField } from '@mui/material';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import 'date-fns';
+// import { getIn } from 'formik';
+
+// import { ReactComponent as CalenderIcon } from 'assets/images/icons/Calendar/Calendar.svg';
 import styles from './DateTimePicker.module.css';
 
 export interface DateTimePickerProps {
@@ -20,18 +21,18 @@ export interface DateTimePickerProps {
 }
 
 export const DateTimePicker = ({
-  variant = 'inline',
-  inputVariant = 'outlined',
+  // variant = 'inline',
+  // inputVariant = 'outlined',
   format = 'dd/MM/yyyy hh:mm a',
   field,
-  form: { touched, errors, setFieldValue },
+  form: { setFieldValue },
   placeholder,
   minDate,
   onChange,
 }: DateTimePickerProps) => {
-  const errorText = getIn(errors, field.name);
-  const touchedVal = getIn(touched, field.name);
-  const hasError = touchedVal && errorText !== undefined;
+  // const errorText = getIn(errors, field.name);
+  // const touchedVal = getIn(touched, field.name);
+  // const hasError = touchedVal && errorText !== undefined;
   const dateValue = field.value ? field.value : null;
 
   const handleDateChange = (date: Date | null | string) => {
@@ -40,26 +41,19 @@ export const DateTimePicker = ({
     if (onChange) onChange(value);
   };
 
-  const icon = <CalenderIcon />;
+  // const icon = <CalenderIcon />;
   return (
-    <MuiPickersUtilsProvider utils={DateFnsUtils}>
-      <Grid className={styles.DateTimePicker}>
-        <KeyboardDateTimePicker
-          className={styles.Text}
-          error={hasError}
-          autoOk
-          variant={variant}
-          inputVariant={inputVariant}
-          format={format}
-          data-testid="date-picker-inline"
-          label={placeholder}
-          value={dateValue}
-          onChange={handleDateChange}
-          helperText={hasError ? errorText : ''}
-          minDate={minDate}
-          keyboardIcon={icon}
-        />
-      </Grid>
-    </MuiPickersUtilsProvider>
+    <LocalizationProvider dateAdapter={AdapterDateFns}>
+      <Picker
+        className={styles.Text}
+        data-testid="date-picker-inline"
+        renderInput={(props) => <TextField {...props} />}
+        label={placeholder}
+        inputFormat={format}
+        value={dateValue}
+        onChange={handleDateChange}
+        minDate={minDate}
+      />
+    </LocalizationProvider>
   );
 };

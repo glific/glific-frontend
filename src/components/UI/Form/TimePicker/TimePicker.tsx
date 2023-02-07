@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import 'date-fns';
-import Grid from '@material-ui/core/Grid';
-import DateFnsUtils from '@date-io/date-fns';
-import { MuiPickersUtilsProvider, KeyboardTimePicker } from '@material-ui/pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider, TimePicker as Picker } from '@mui/x-date-pickers';
 import moment from 'moment';
-import { getIn } from 'formik';
-import ScheduleIcon from '@mui/icons-material/Schedule';
+import { TextField } from '@mui/material';
+// import { getIn } from 'formik';
+// import ScheduleIcon from '@mui/icons-material/Schedule';
 
 import styles from './TimePicker.module.css';
 
@@ -20,21 +20,21 @@ export interface TimePickerProps {
 }
 
 export const TimePicker = ({
-  variant = 'inline',
-  inputVariant = 'outlined',
+  // variant = 'inline',
+  // inputVariant = 'outlined',
   field,
-  form: { setFieldValue, touched, errors },
+  form: { setFieldValue },
   placeholder,
   disabled = false,
   helperText,
 }: TimePickerProps) => {
   moment.defaultFormat = 'Thh:mm:ss';
-  const dateValue = field.value ? moment(field.value, moment.defaultFormat).toDate() : null;
+  const timeValue = field.value ? moment(field.value, moment.defaultFormat).toDate() : null;
   const [open, setOpen] = useState(false);
 
-  const errorText = getIn(errors, field.name);
-  const touchedVal = getIn(touched, field.name);
-  const hasError = touchedVal && errorText !== undefined;
+  // const errorText = getIn(errors, field.name);
+  // const touchedVal = getIn(touched, field.name);
+  // const hasError = touchedVal && errorText !== undefined;
 
   const handleDateChange = (time: Date | null) => {
     const value = time ? moment(time).format('THH:mm:ss') : null;
@@ -42,32 +42,27 @@ export const TimePicker = ({
   };
 
   return (
-    <MuiPickersUtilsProvider utils={DateFnsUtils}>
-      <Grid className={styles.TimePicker}>
-        <KeyboardTimePicker
-          error={hasError}
-          autoOk
-          open={open}
-          variant={variant}
-          inputVariant={inputVariant}
-          label={placeholder}
-          data-testid="time-picker"
-          mask="__:__ _M"
-          value={dateValue}
-          onClick={() => !disabled && setOpen(true)}
-          onClose={() => setOpen(false)}
-          disabled={disabled}
-          onChange={(date) => handleDateChange(date)}
-          keyboardIcon={<ScheduleIcon />}
-          helperText={hasError ? errorText : ''}
-          className={styles.picker}
-        />
-        {helperText && (
-          <div id="helper-text" className={styles.HelperText}>
-            {helperText}
-          </div>
-        )}
-      </Grid>
-    </MuiPickersUtilsProvider>
+    <LocalizationProvider dateAdapter={AdapterDateFns}>
+      <Picker
+        className={styles.picker}
+        label={placeholder}
+        data-testid="time-picker"
+        mask="__:__ _M"
+        open={open}
+        InputProps={{
+          onClick: () => !disabled && setOpen(true),
+        }}
+        onClose={() => setOpen(false)}
+        disabled={disabled}
+        value={timeValue}
+        onChange={handleDateChange}
+        renderInput={(params) => <TextField {...params} />}
+      />
+      {helperText && (
+        <div id="helper-text" className={styles.HelperText}>
+          {helperText}
+        </div>
+      )}
+    </LocalizationProvider>
   );
 };
