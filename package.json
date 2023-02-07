@@ -22,7 +22,6 @@
     "@glific/flow-editor": "^1.17.1-17",
     "@jumpn/utils-graphql": "^0.6.0",
     "@material-ui/core": "^4.12.4",
-    "@material-ui/pickers": "^3.3.10",
     "@material-ui/styles": "^4.11.5",
     "@mui/icons-material": "^5.11.0",
     "@mui/material": "^5.11.7",
