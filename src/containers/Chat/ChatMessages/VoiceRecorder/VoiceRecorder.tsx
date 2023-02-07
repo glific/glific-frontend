@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { useReactMediaRecorder } from 'react-media-recorder';
-import { IconButton } from '@material-ui/core';
+import { IconButton } from '@mui/material';
 import MicOffIcon from '@mui/icons-material/MicOff';
 import StopIcon from '@mui/icons-material/Stop';
 import CancelIcon from '@mui/icons-material/Cancel';

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
-import { Dialog, DialogContent } from '@material-ui/core';
+import { Dialog, DialogContent } from '@mui/material';
 import { useParams } from 'react-router-dom';
 
 import { Input } from 'components/UI/Form/Input/Input';

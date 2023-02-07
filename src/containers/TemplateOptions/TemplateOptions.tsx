@@ -6,7 +6,7 @@ import {
   TextField,
   FormHelperText,
   FormControl,
-} from '@material-ui/core';
+} from '@mui/material';
 import { FieldArray } from 'formik';
 
 import { Button } from 'components/UI/Form/Button/Button';

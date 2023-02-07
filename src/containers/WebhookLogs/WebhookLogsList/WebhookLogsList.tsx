@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Popover } from '@material-ui/core';
+import { Popover } from '@mui/material';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 

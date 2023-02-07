@@ -1,7 +1,7 @@
 import React, { useContext, useRef, useState } from 'react';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
-import { Checkbox, FormControlLabel } from '@material-ui/core';
+import { Checkbox, FormControlLabel } from '@mui/material';
 
 import { List } from 'containers/List/List';
 import { useMutation } from '@apollo/client';

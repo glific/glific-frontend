@@ -8,7 +8,7 @@ import {
   Button,
   ClickAwayListener,
   IconButton,
-} from '@material-ui/core';
+} from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 import { useMutation, useLazyQuery } from '@apollo/client';

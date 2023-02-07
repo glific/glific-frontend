@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Dialog, DialogContent } from '@material-ui/core';
-import Typography from '@material-ui/core/Typography';
+import { Dialog, DialogContent } from '@mui/material';
+import Typography from '@mui/material/Typography';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';

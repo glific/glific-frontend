@@ -6,7 +6,7 @@ import { Formik, Form, Field } from 'formik';
 import { Link } from 'react-router-dom';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import { CircularProgress, IconButton, InputAdornment, Typography } from '@material-ui/core';
+import { CircularProgress, IconButton, InputAdornment, Typography } from '@mui/material';
 import CallMadeIcon from '@mui/icons-material/CallMade';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 

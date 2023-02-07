@@ -6,7 +6,7 @@ import {
   FormControlLabel,
   FormLabel,
   FormHelperText,
-} from '@material-ui/core';
+} from '@mui/material';
 
 import styles from './RadioInput.module.css';
 

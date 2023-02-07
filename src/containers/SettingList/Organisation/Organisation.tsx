@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useLazyQuery, useApolloClient } from '@apollo/client';
-import Typography from '@material-ui/core/Typography/Typography';
-import { IconButton, InputAdornment } from '@material-ui/core';
+import Typography from '@mui/material/Typography/Typography';
+import { IconButton, InputAdornment } from '@mui/material';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 

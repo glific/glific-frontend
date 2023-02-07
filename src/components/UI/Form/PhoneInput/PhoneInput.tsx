@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormControl, FormHelperText } from '@material-ui/core';
+import { FormControl, FormHelperText } from '@mui/material';
 import 'react-phone-input-2/lib/bootstrap.css';
 import { getIn } from 'formik';
 import ReactPhoneInput from 'react-phone-input-2';

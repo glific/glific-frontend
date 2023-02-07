@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { InputBase, IconButton, InputAdornment } from '@material-ui/core';
+import { InputBase, IconButton, InputAdornment } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useTranslation } from 'react-i18next';
 

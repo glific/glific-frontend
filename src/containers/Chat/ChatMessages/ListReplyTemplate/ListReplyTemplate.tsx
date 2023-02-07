@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Radio } from '@material-ui/core';
+import { Button, Radio } from '@mui/material';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import MenuIcon from '@mui/icons-material/Menu';
 import ClearIcon from '@mui/icons-material/Clear';

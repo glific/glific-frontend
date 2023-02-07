@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { RichUtils, getDefaultKeyBinding, Modifier, EditorState, Editor } from 'draft-js';
-import { IconButton, ClickAwayListener } from '@material-ui/core';
+import { IconButton, ClickAwayListener } from '@mui/material';
 import ReactResizeDetector from 'react-resize-detector';
 import { useTranslation } from 'react-i18next';
 

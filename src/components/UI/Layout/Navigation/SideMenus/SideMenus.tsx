@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { ListItem, ListItemIcon, ListItemText, List } from '@material-ui/core';
+import { ListItem, ListItemIcon, ListItemText, List } from '@mui/material';
 import { useLazyQuery } from '@apollo/client';
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';

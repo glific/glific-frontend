@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Link, Navigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useQuery, useMutation, DocumentNode, useLazyQuery } from '@apollo/client';
-import { IconButton, TableFooter, TablePagination, TableRow, Typography } from '@material-ui/core';
+import { IconButton, TableFooter, TablePagination, TableRow, Typography } from '@mui/material';
 
 import { ListCard } from 'containers/List/ListCard/ListCard';
 import { Button } from 'components/UI/Form/Button/Button';

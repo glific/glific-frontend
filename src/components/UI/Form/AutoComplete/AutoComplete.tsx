@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import TextField from '@material-ui/core/TextField';
-import { Autocomplete } from '@mui/material';
-import { Chip, FormHelperText, FormControl, Checkbox } from '@material-ui/core';
+
+import {
+  Autocomplete,
+  TextField,
+  Chip,
+  FormHelperText,
+  FormControl,
+  Checkbox,
+} from '@mui/material';
+
 import { getIn } from 'formik';
 
 import { ReactComponent as DeleteIcon } from 'assets/images/icons/Close.svg';

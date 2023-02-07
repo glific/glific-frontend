@@ -2,17 +2,15 @@ import React, { useContext, useState } from 'react';
 import {
   Hidden,
   Drawer,
-  makeStyles,
-  createStyles,
   // eslint-disable-next-line no-unused-vars
   Theme,
   Toolbar,
   Typography,
-} from '@material-ui/core';
-import { createTheme, ThemeProvider } from '@material-ui/core/styles';
+  IconButton,
+} from '@mui/material';
+import { makeStyles, createStyles } from '@mui/styles';
 import MenuIcon from '@mui/icons-material/Menu';
 import clsx from 'clsx';
-import IconButton from '@material-ui/core/IconButton';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { SideDrawerContext, ProviderContext } from 'context/session';
@@ -32,16 +30,6 @@ import SideMenus from '../SideMenus/SideMenus';
 import styles from './SideDrawer.module.css';
 
 const drawerWidth = SIDE_DRAWER_WIDTH;
-
-const themeUI = createTheme({
-  typography: {
-    h6: {
-      fontSize: 24,
-      fontFamily: 'Tenor Sans, sans-serif',
-      color: '#0D6B3D',
-    },
-  },
-});
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -136,11 +124,10 @@ export const SideDrawer = () => {
       <Toolbar className={classes.anotherToolBar}>
         {drawerOpen ? (
           <div className={classes.outerBox}>
-            <ThemeProvider theme={themeUI}>
-              <Typography variant="h6" className={classes.title}>
-                <img src={GlificLogo} className={styles.GlificLogo} alt="Glific" />
-              </Typography>
-            </ThemeProvider>
+            <Typography variant="h6" className={classes.title}>
+              <img src={GlificLogo} className={styles.GlificLogo} alt="Glific" />
+            </Typography>
+
             <IconButton
               className={classes.iconButton}
               onClick={() => setDrawerOpen(false)}
@@ -215,7 +202,7 @@ export const SideDrawer = () => {
         <Drawer
           container={container}
           variant="temporary"
-          anchor={themeUI.direction === 'rtl' ? 'right' : 'left'}
+          anchor="right"
           open={mobileOpen}
           onClose={() => {
             setMobileOpen(!mobileOpen);

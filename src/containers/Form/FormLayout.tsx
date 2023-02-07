@@ -3,7 +3,7 @@ import { Navigate, Link, useParams } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
 // eslint-disable-next-line no-unused-vars
 import { DocumentNode, ApolloError, useQuery, useMutation } from '@apollo/client';
-import { Typography, IconButton } from '@material-ui/core';
+import { Typography, IconButton } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import { Button } from 'components/UI/Form/Button/Button';

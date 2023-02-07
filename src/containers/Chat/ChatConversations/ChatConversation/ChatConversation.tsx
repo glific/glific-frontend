@@ -1,6 +1,6 @@
 import React from 'react';
 import clsx from 'clsx';
-import { ListItem } from '@material-ui/core';
+import { ListItem } from '@mui/material';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 import { useApolloClient, useMutation } from '@apollo/client';

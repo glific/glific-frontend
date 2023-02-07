@@ -203,9 +203,7 @@ export const AuthenticatedRoute = () => {
         <Layout>
           {toastMessage}
           <Suspense fallback={<Loading />}>
-            {/* <ErrorBoundary> */}
-            {route}
-            {/* </ErrorBoundary> */}
+            <ErrorBoundary>{route}</ErrorBoundary>
           </Suspense>
         </Layout>
       </div>

@@ -1,6 +1,6 @@
 import React from 'react';
-import MenuItem from '@material-ui/core/MenuItem';
-import { Select, FormControl, InputLabel, FormHelperText } from '@material-ui/core';
+
+import { Select, FormControl, InputLabel, FormHelperText, MenuItem } from '@mui/material';
 
 import styles from './Dropdown.module.css';
 

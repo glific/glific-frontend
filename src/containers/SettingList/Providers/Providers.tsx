@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useQuery, useApolloClient } from '@apollo/client';
-import Typography from '@material-ui/core/Typography';
+import Typography from '@mui/material/Typography';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';

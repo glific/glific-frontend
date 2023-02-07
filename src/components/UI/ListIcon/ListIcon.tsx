@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import Badge from '@material-ui/core/Badge';
+import { Badge } from '@mui/material';
 
 import chatIcon from 'assets/images/icons/Chat/Unselected.svg';
 import broadcastIcon from 'assets/images/icons/Broadcast/Unselected.svg';

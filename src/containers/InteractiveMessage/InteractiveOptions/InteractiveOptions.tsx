@@ -6,7 +6,7 @@ import {
   FormControl,
   TextField,
   FormHelperText,
-} from '@material-ui/core';
+} from '@mui/material';
 import { FieldArray } from 'formik';
 
 import { ReactComponent as ApprovedIcon } from 'assets/images/icons/Template/Approved.svg';

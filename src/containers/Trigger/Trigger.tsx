@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import * as Yup from 'yup';
 import { useQuery } from '@apollo/client';
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import moment from 'moment';
 import { useLocation, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';

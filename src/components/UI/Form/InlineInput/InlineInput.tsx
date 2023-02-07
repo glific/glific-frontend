@@ -1,5 +1,5 @@
 import React, { useState, useEffect, createRef } from 'react';
-import { TextField } from '@material-ui/core';
+import { TextField } from '@mui/material';
 
 import { ReactComponent as Icon } from 'assets/images/icons/GreenTick.svg';
 import styles from './InlineInput.module.css';

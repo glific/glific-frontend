@@ -1,6 +1,6 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { useQuery, useMutation, useLazyQuery } from '@apollo/client';
-import { CircularProgress, Container } from '@material-ui/core';
+import { CircularProgress, Container } from '@mui/material';
 import moment from 'moment';
 import { Navigate } from 'react-router-dom';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';

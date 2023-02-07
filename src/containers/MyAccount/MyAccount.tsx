@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import * as Yup from 'yup';
-import { Typography, IconButton } from '@material-ui/core';
+import { Typography, IconButton } from '@mui/material';
 import { Formik, Form, Field } from 'formik';
 import { useQuery, useMutation, useApolloClient } from '@apollo/client';
 import { Navigate } from 'react-router-dom';

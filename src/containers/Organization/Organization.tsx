@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Formik, Form, Field } from 'formik';
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 
 import { Captcha } from 'components/UI/Form/Captcha/Captcha';
 import { TERMS_OF_USE_LINK } from 'common/constants';

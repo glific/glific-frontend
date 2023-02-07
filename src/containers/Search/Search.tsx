@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import { useQuery } from '@apollo/client';
 import moment from 'moment';
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import { ReactComponent as SearchIcon } from 'assets/images/icons/Search/SelectedEdit.svg';

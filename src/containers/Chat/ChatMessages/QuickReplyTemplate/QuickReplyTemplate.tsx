@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from '@material-ui/core';
+import { Button } from '@mui/material';
 import { v4 as uuidv4 } from 'uuid';
 
 import styles from './QuickReplyTemplate.module.css';

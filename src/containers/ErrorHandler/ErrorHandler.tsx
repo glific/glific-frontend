@@ -1,6 +1,6 @@
 import React from 'react';
 import { useQuery } from '@apollo/client';
-import { Container } from '@material-ui/core';
+import { Container } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import { ERROR_MESSAGE } from 'graphql/queries/Notification';

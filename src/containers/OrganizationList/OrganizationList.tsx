@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
-import { OutlinedInput } from '@material-ui/core';
+import { OutlinedInput } from '@mui/material';
 import { useMutation } from '@apollo/client';
 
 import { GET_ORGANIZATION_COUNT, FILTER_ORGANIZATIONS } from 'graphql/queries/Organization';

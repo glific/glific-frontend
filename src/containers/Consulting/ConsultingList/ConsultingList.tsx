@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
-import { Dialog, DialogContent } from '@material-ui/core';
+import { Dialog, DialogContent } from '@mui/material';
 import { ReactComponent as EditIcon } from 'assets/images/icons/Edit.svg';
 import { List } from 'containers/List/List';
 

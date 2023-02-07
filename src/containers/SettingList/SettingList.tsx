@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
-import Typography from '@material-ui/core/Typography/Typography';
-import { Card, CardContent, CardActions, IconButton } from '@material-ui/core';
+import Typography from '@mui/material/Typography/Typography';
+import { Card, CardContent, CardActions, IconButton } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import { Loading } from 'components/UI/Layout/Loading/Loading';
