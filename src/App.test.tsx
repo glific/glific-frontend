@@ -9,7 +9,7 @@ import { setAuthSession, setUserSession } from 'services/AuthService';
 
 const mocks = CONVERSATION_MOCKS;
 
-jest.mock('axios', () => {
+vi.mock('axios', () => {
   return {
     defaults: { headers: { common: {} } },
     get: vi.fn(),
@@ -17,11 +17,11 @@ jest.mock('axios', () => {
   };
 });
 
-global.fetch = jest.fn(() =>
+global.fetch = vi.fn(() =>
   Promise.resolve({
     json: () => Promise.resolve({ test: 100 }),
   })
-) as jest.Mock;
+) as vi.Mock;
 
 const app = (
   <MockedProvider mocks={mocks} addTypename={false}>

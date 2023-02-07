@@ -34,9 +34,6 @@
     "react/require-default-props": "off",
     "no-undef": "off"
   },
-  "env": {
-    "jest": true
-  },
   "settings": {
     "import/resolver": {
       "node": {

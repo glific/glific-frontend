@@ -1,8 +1,11 @@
 import { render, waitFor, fireEvent, screen } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
-import { SEARCH_QUERY } from 'graphql/queries/Search';
 import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT } from 'common/constants';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
+import axios from 'axios';
+import { vi } from 'vitest';
+
+import { SEARCH_QUERY } from 'graphql/queries/Search';
 import { conversationQuery } from 'mocks/Chat';
 import {
   messageReceivedSubscription,
@@ -13,11 +16,10 @@ import {
   simulatorSearchQuery,
 } from 'mocks/Simulator';
 import { Simulator } from './Simulator';
-import axios from 'axios';
 import { setUserSession } from 'services/AuthService';
 
-jest.mock('axios');
-const mockedAxios = axios as jest.Mocked<typeof axios>;
+vi.mock('axios');
+const mockedAxios = axios as vi.Mocked<typeof axios>;
 
 setUserSession(JSON.stringify({ roles: ['Admin'], organization: { id: '1' } }));
 const mockSetShowSimulator = vi.fn();
