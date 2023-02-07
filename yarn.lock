@@ -1941,24 +1941,6 @@
     react-is "^16.8.0 || ^17.0.0"
     react-transition-group "^4.4.0"
 
-"@mui/icons-material@^4.11.3":
-  version "4.11.3"
-  resolved "https://registry.yarnpkg.com/@mui/icons-material/-/icons-4.11.3.tgz#b0693709f9b161ce9ccde276a770d968484ecff1"
-  integrity sha512-IKHlyx6LDh8n19vzwH5RtHIOHl9Tu90aAAxcbWME6kp4dmvODM3UvOHJeMIDzUbd4muuJKHmlNoBN+mDY4XkBA==
-  dependencies:
-    "@babel/runtime" "^7.4.4"
-
-"@material-ui/lab@^4.0.0-alpha.61":
-  version "4.0.0-alpha.61"
-  resolved "https://registry.yarnpkg.com/@material-ui/lab/-/lab-4.0.0-alpha.61.tgz#9bf8eb389c0c26c15e40933cc114d4ad85e3d978"
-  integrity sha512-rSzm+XKiNUjKegj8bzt5+pygZeckNLOr+IjykH8sYdVk7dE9y2ZuUSofiMV2bJk3qU+JHwexmw+q0RyNZB9ugg==
-  dependencies:
-    "@babel/runtime" "^7.4.4"
-    "@material-ui/utils" "^4.11.3"
-    clsx "^1.0.4"
-    prop-types "^15.7.2"
-    react-is "^16.8.0 || ^17.0.0"
-
 "@material-ui/pickers@^3.3.10":
   version "3.3.10"
   resolved "https://registry.yarnpkg.com/@material-ui/pickers/-/pickers-3.3.10.tgz#f1b0f963348cc191645ef0bdeff7a67c6aa25485"
@@ -2042,20 +2024,6 @@
   integrity sha512-I2LaOKqO8a0xcLGtIozC9xoXjZAto5G5gh0FYUMAlbsIHNHIjn4Xrw9rvjY20vZonyiGrZNMAlAXYkY6JvhF6A==
   dependencies:
     "@babel/runtime" "^7.20.6"
-
-"@mui/lab@^5.0.0-alpha.118":
-  version "5.0.0-alpha.118"
-  resolved "https://registry.yarnpkg.com/@mui/lab/-/lab-5.0.0-alpha.118.tgz#89af166a0e1a21804162fab739c407697d333803"
-  integrity sha512-XedMEzYT6L9JawNV70mfMhDu4+2HNXSSn4+GPtFBE1Tefl8+djwK/FXdjPaG/qZzhwMyjO/RcwXzLPR0VWLpcw==
-  dependencies:
-    "@babel/runtime" "^7.20.7"
-    "@mui/base" "5.0.0-alpha.116"
-    "@mui/system" "^5.11.7"
-    "@mui/types" "^7.2.3"
-    "@mui/utils" "^5.11.7"
-    clsx "^1.2.1"
-    prop-types "^15.8.1"
-    react-is "^18.2.0"
 
 "@mui/material@^5.11.7":
   version "5.11.7"
