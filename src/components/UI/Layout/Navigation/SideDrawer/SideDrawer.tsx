@@ -63,7 +63,7 @@ const useStyles = makeStyles((theme: Theme) =>
       overflowX: 'hidden',
       width: '0px',
       [theme.breakpoints.up('sm')]: {
-        width: theme.spacing(9) + 1,
+        width: theme.spacing(10),
       },
     },
     toolbar: {
@@ -202,7 +202,7 @@ export const SideDrawer = () => {
         <Drawer
           container={container}
           variant="temporary"
-          anchor="right"
+          anchor="left"
           open={mobileOpen}
           onClose={() => {
             setMobileOpen(!mobileOpen);
