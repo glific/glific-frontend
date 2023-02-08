@@ -1,7 +1,9 @@
 import { fireEvent, render } from '@testing-library/react';
+import { vi } from 'vitest';
+
 import { DropdownDialog } from './DropdownDialog';
 
-jest.mock('../Form/Dropdown/Dropdown', () => {
+vi.mock('../Form/Dropdown/Dropdown', () => {
   return {
     Dropdown: (...props: any) => {
       return (

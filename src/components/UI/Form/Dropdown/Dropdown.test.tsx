@@ -1,8 +1,9 @@
 import { fireEvent, render } from '@testing-library/react';
+import { vi } from 'vitest';
 
 import { Dropdown } from './Dropdown';
 
-jest.mock('@material-ui/core/Select', () => (props: any) => {
+vi.mock('@material-ui/core/Select', () => (props: any) => {
   const { onChange, children } = props;
   return (
     <div>

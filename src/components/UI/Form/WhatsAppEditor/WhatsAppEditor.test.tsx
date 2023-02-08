@@ -1,11 +1,13 @@
 import { render, fireEvent } from '@testing-library/react';
 import { ContentState, EditorState } from 'draft-js';
+import { vi } from 'vitest';
+
 import WhatsAppEditor from './WhatsAppEditor';
 
 const mockHandleKeyCommand = vi.fn();
 
-jest.mock('draft-js', () => {
-  const moduleMock = jest.requireActual('draft-js');
+vi.mock('draft-js', () => {
+  const moduleMock = vi.requireActual('draft-js');
   return {
     ...moduleMock,
     Editor: (...props: any) => {
@@ -23,7 +25,7 @@ jest.mock('draft-js', () => {
   };
 });
 
-jest.mock('react-resize-detector', () => (...props: any) => {
+vi.mock('react-resize-detector', () => (...props: any) => {
   const { onResize, children } = props[0];
   return (
     <div>
