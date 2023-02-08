@@ -62,7 +62,7 @@ const hsmProps: any = {
   listIcon: <div></div>,
   filters: { isHsm: true },
   isHSM: true,
-  buttonLabel: 'Create HSM Template',
+  buttonLabel: 'Create',
 };
 
 const hsmMocks = [...HSM_LIST, getOrganizationBSP, importTemplateMutation];
