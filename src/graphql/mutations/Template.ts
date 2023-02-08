@@ -106,7 +106,7 @@ export const BULK_APPLY_TEMPLATES = gql`
         message
         key
       }
-      message
+      csv_rows
     }
   }
 `;

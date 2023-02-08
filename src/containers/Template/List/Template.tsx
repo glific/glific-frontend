@@ -94,16 +94,11 @@ export const Template = ({
   });
 
   const [bulkApplyTemplates] = useMutation(BULK_APPLY_TEMPLATES, {
-    onCompleted: () => {
+    onCompleted: (data: any) => {
       setImporting(false);
-      const string = `Title,Status\r\nWelcome Arogya,Template has been applied successfully\r\nSignup,Template has been applied successfully\r\nHelp,Template has been applied successfully\r\nActivity,Template has been applied successfully`;
 
-      exportCsvFile(string, 'result');
+      exportCsvFile(data.bulkApplyTemplates.csv_rows, 'result');
       setNotification('Templates applied successfully. Please check the csv file for the results');
-      // const { errors } = data.importTemplates;
-      // if (errors && errors.length > 0) {
-      //
-      // }
     },
   });
 
