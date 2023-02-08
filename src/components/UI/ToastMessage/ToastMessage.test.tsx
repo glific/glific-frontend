@@ -1,7 +1,9 @@
 import { fireEvent, render } from '@testing-library/react';
+import { vi } from 'vitest';
+
 import ToastMessage from './ToastMessage';
 
-jest.useFakeTimers();
+vi.useFakeTimers();
 
 describe('<ToastMessage />', () => {
   const mockCallback = vi.fn();
@@ -35,7 +37,7 @@ describe('<ToastMessage />', () => {
 
   // it('should check if the callback method is called after 1 second', async () => {
   //   const { getByTestId } = render(wrapper({ open: true, hideDuration: 1000 }));
-  //   jest.runAllTimers();
+  //   vi.runAllTimers();
   //   expect(mockCallback).toHaveBeenCalled();
   // });
 });

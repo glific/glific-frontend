@@ -1,7 +1,9 @@
 import { render } from '@testing-library/react';
+import { vi } from 'vitest';
+
 import { Tooltip } from './Tooltip';
 
-jest.mock('@material-ui/core/Tooltip', () => (...props: any) => {
+vi.mock('@material-ui/core/Tooltip', () => (...props: any) => {
   const { children, classes } = props[0];
   return (
     <div data-testid="tooltip" className={`${classes.tooltip} ${classes.arrow}`}>
