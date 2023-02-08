@@ -105,6 +105,12 @@ export const exportFlowMethod = async (exportData: any, flowName: string) => {
   downloadFile(href, `${flowName}.json`);
 };
 
+export const exportCsvFile = async (exportData: any, flowName: string) => {
+  const blob = new Blob([exportData], { type: 'text/csv' });
+  const href = await URL.createObjectURL(blob);
+  downloadFile(href, `${flowName}.csv`);
+};
+
 export { addLogsMethod as addLogs };
 
 export const getInteractiveMessageBody = (interactiveJSON: any) => {

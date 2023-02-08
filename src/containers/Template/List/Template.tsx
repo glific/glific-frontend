@@ -23,6 +23,7 @@ import { ReactComponent as ApprovedIcon } from 'assets/images/icons/Template/App
 import { ReactComponent as RejectedIcon } from 'assets/images/icons/Template/Rejected.svg';
 import { ReactComponent as PendingIcon } from 'assets/images/icons/Template/Pending.svg';
 import { ProviderContext } from 'context/session';
+import { exportCsvFile } from 'common/utils';
 import Loading from 'components/UI/Layout/Loading/Loading';
 import { setNotification } from 'common/notification';
 import styles from './Template.module.css';
@@ -93,12 +94,15 @@ export const Template = ({
   });
 
   const [bulkApplyTemplates] = useMutation(BULK_APPLY_TEMPLATES, {
-    onCompleted: (data: any) => {
-      console.log(data);
+    onCompleted: () => {
       setImporting(false);
+      const string = `Title,Status\r\nWelcome Arogya,Template has been applied successfully\r\nSignup,Template has been applied successfully\r\nHelp,Template has been applied successfully\r\nActivity,Template has been applied successfully`;
+
+      exportCsvFile(string, 'result');
+      setNotification('Templates applied successfully. Please check the csv file for the results');
       // const { errors } = data.importTemplates;
       // if (errors && errors.length > 0) {
-      //   setNotification('Error importing templates', 'warning');
+      //
       // }
     },
   });
@@ -268,7 +272,7 @@ export const Template = ({
   }
 
   if (importing) {
-    return <Loading />;
+    return <Loading message="Please wait while we process all the templates" />;
   }
 
   const button = { show: true, label: buttonLabel, symbol: '+' };
