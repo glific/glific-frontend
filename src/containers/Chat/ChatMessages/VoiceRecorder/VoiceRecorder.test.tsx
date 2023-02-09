@@ -1,6 +1,7 @@
 import { VoiceRecorder } from './VoiceRecorder';
 import { fireEvent, render, waitFor } from '@testing-library/react';
 import * as useReactMediaRecorder from 'react-media-recorder';
+import { vi } from 'vitest';
 
 const handleAudioRecordingMock = vi.fn();
 const defaultProps = {
@@ -9,12 +10,12 @@ const defaultProps = {
   isMicActive: false,
 };
 
-afterEach(() => jest.restoreAllMocks());
+afterEach(() => vi.restoreAllMocks());
 
 const voiceRecorder = <VoiceRecorder {...defaultProps} />;
 
 test('it renders correctly', () => {
-  const mediaRecorder = jest.spyOn(useReactMediaRecorder, 'useReactMediaRecorder');
+  const mediaRecorder = vi.spyOn(useReactMediaRecorder, 'useReactMediaRecorder');
   mediaRecorder.mockImplementation(() => {
     return {
       status: 'idle',
@@ -25,7 +26,7 @@ test('it renders correctly', () => {
 });
 
 test('check recording', async () => {
-  const mediaRecorder = jest.spyOn(useReactMediaRecorder, 'useReactMediaRecorder');
+  const mediaRecorder = vi.spyOn(useReactMediaRecorder, 'useReactMediaRecorder');
   mediaRecorder.mockImplementation(() => {
     const onStop = vi.fn();
     const setStatus = vi.fn();
@@ -63,7 +64,7 @@ test('check recording', async () => {
 // Todo: will come back to this after fixing all test cases
 
 // test('permission denied', async () => {
-//   const mediaRecorder = jest.spyOn(useReactMediaRecorder, 'useReactMediaRecorder');
+//   const mediaRecorder = vi.spyOn(useReactMediaRecorder, 'useReactMediaRecorder');
 //   mediaRecorder.mockImplementation(() => {
 //     return {
 //       error: 'permission_denied',

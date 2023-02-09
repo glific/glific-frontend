@@ -1,12 +1,13 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { cleanup, fireEvent, render, waitFor, screen } from '@testing-library/react';
+import axios from 'axios';
+import { vi } from 'vitest';
 
 import { uploadMediaMock } from 'mocks/Attachment';
 import { AddAttachment } from './AddAttachment';
-import axios from 'axios';
 
-jest.mock('axios');
-const mockedAxios = axios as jest.Mocked<typeof axios>;
+vi.mock('axios');
+const mockedAxios = axios as vi.Mocked<typeof axios>;
 
 const setAttachment = vi.fn();
 const setAttachmentURL = vi.fn();

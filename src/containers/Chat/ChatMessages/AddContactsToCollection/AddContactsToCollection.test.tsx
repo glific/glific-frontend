@@ -1,6 +1,7 @@
 import { AddContactsToCollection } from './AddContactsToCollection';
 import { render, cleanup, waitFor, fireEvent } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
+import { vi } from 'vitest';
 
 import { setUserSession } from 'services/AuthService';
 import { getCollectionContactsQuery, updateCollectionContactsQuery } from 'mocks/Collection';
@@ -58,7 +59,7 @@ test('save without changing anything', async () => {
 });
 
 test('change value in dialog box', () => {
-  const spy = jest.spyOn(AutoComplete, 'AutoComplete');
+  const spy = vi.spyOn(AutoComplete, 'AutoComplete');
   spy.mockImplementation((props: any) => {
     const { form, onChange } = props;
 

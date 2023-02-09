@@ -1,14 +1,14 @@
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
 import { MemoryRouter } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 import axios from 'axios';
+import { vi } from 'vitest';
 
 import { responseData, responseData1 } from 'mocks/AddVariables';
 import { AddVariables } from './AddVariables';
 
-jest.mock('axios');
-const mockedAxios = axios as jest.Mocked<typeof axios>;
+vi.mock('axios');
+const mockedAxios = axios as vi.Mocked<typeof axios>;
 
 const setVariableMock = vi.fn();
 

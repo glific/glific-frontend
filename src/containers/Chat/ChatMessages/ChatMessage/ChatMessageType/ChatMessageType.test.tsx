@@ -1,5 +1,6 @@
 import { fireEvent, render } from '@testing-library/react';
 import * as Img from 'react-image';
+import { vi } from 'vitest';
 
 import ChatMessageType from './ChatMessageType';
 
@@ -17,7 +18,7 @@ const defaultProps: any = (type: string) => {
   };
 };
 
-jest.mock('react-viewer', () => (props: any) => {
+vi.mock('react-viewer', () => (props: any) => {
   const { onClose } = props;
   return <div data-testid="reactViewer" onClick={() => onClose()} />;
 });
@@ -71,7 +72,7 @@ test('check condition if no media object is present', () => {
 test('show image on viewer', async () => {
   const props = defaultProps('IMAGE');
   props.media.url = 'https://google.com';
-  const spy = jest.spyOn(Img, 'Img');
+  const spy = vi.spyOn(Img, 'Img');
 
   spy.mockImplementation((props: any) => {
     const { onClick } = props;

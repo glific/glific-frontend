@@ -1,7 +1,8 @@
-import ChatInput from './ChatInput';
 import { MockedProvider } from '@apollo/client/testing';
 import { render, waitFor, fireEvent } from '@testing-library/react';
+import { vi } from 'vitest';
 
+import ChatInput from './ChatInput';
 import { TEMPLATE_MOCKS } from 'mocks/Template';
 import {
   createMediaMessageMock,
@@ -21,7 +22,7 @@ const mocks = [
 
 const blob = () => new Blob();
 
-jest.mock('../VoiceRecorder/VoiceRecorder', () => {
+vi.mock('../VoiceRecorder/VoiceRecorder', () => {
   return {
     VoiceRecorder: ({ handleAudioRecording, clearAudio }: any) => {
       return (
