@@ -199,3 +199,20 @@ export const importTemplateMutation = {
     },
   },
 };
+
+export const importTemplateMutationWithErrors = {
+  request: {
+    query: IMPORT_TEMPLATES,
+    variables: {
+      data: '"Template Id","Template Name","Body","Type","Quality Rating","Language","Status","Created On"\n"6344689","common_otp","Your OTP for {{1}} is {{2}}. This is valid for {}}.","TEXT","Unknown","English","Enabled","2022-03-10"',
+    },
+  },
+  result: {
+    data: {
+      importTemplates: {
+        errors: [{ key: 'import', message: 'Invalid format' }],
+        status: null,
+      },
+    },
+  },
+};
