@@ -134,7 +134,7 @@ describe('HSM templates', () => {
 
     await waitFor(() => {
       expect(notificationFunc).toHaveBeenCalledWith(
-        '"Templates applied successfully. Please check the csv file for the results"'
+        'Templates applied successfully. Please check the csv file for the results'
       );
     });
   });
