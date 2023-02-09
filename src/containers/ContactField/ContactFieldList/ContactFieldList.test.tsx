@@ -2,6 +2,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { BrowserRouter as Router } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
+import { vi } from 'vitest';
 
 import { setUserSession } from 'services/AuthService';
 import { mocks, contactFieldErrorMock } from 'mocks/ContactFields';
@@ -11,8 +12,8 @@ const props = {
   openDialog: false,
 };
 
-jest.mock('react-router-dom', () => ({
-  ...(jest.requireActual('react-router-dom') as {}),
+vi.mock('react-router-dom', () => ({
+  ...(vi.requireActual('react-router-dom') as {}),
 
   useParams: () => ({ id: '1' }),
 }));

@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-
 import { MockedProvider } from '@apollo/client/testing';
+import { vi } from 'vitest';
 
 import {
   getFlowCountQuery,
@@ -41,9 +41,9 @@ const flowList = (
 
 HTMLAnchorElement.prototype.click = vi.fn();
 
-jest.mock('react-router-dom', () => {
+vi.mock('react-router-dom', () => {
   return {
-    ...jest.requireActual('react-router-dom'),
+    ...vi.requireActual('react-router-dom'),
     useLocation: () => ({ state: 'copy', pathname: '/flow/1/edit' }),
     useParams: () => ({ id: 1 }),
   };
