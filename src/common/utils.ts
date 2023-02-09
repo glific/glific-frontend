@@ -111,6 +111,9 @@ export const exportCsvFile = async (exportData: any, flowName: string) => {
   downloadFile(href, `${flowName}.csv`);
 };
 
+export const getFileExtension = (fileName: string) =>
+  fileName.slice((Math.max(0, fileName.lastIndexOf('.')) || Infinity) + 1);
+
 export { addLogsMethod as addLogs };
 
 export const getInteractiveMessageBody = (interactiveJSON: any) => {

@@ -23,7 +23,7 @@ import { ReactComponent as ApprovedIcon } from 'assets/images/icons/Template/App
 import { ReactComponent as RejectedIcon } from 'assets/images/icons/Template/Rejected.svg';
 import { ReactComponent as PendingIcon } from 'assets/images/icons/Template/Pending.svg';
 import { ProviderContext } from 'context/session';
-import { exportCsvFile } from 'common/utils';
+import { exportCsvFile, getFileExtension } from 'common/utils';
 import Loading from 'components/UI/Layout/Loading/Loading';
 import { setNotification } from 'common/notification';
 import styles from './Template.module.css';
@@ -96,9 +96,16 @@ export const Template = ({
   const [bulkApplyTemplates] = useMutation(BULK_APPLY_TEMPLATES, {
     onCompleted: (data: any) => {
       setImporting(false);
-
-      exportCsvFile(data.bulkApplyTemplates.csv_rows, 'result');
-      setNotification('Templates applied successfully. Please check the csv file for the results');
+      if (data && data.bulkApplyTemplates) {
+        exportCsvFile(data.bulkApplyTemplates.csv_rows, 'result');
+        setNotification(
+          'Templates applied successfully. Please check the csv file for the results'
+        );
+      }
+    },
+    onError: () => {
+      setImporting(false);
+      setNotification('An error occured! Please check the format of the file', 'warning');
     },
   });
 
@@ -278,8 +285,14 @@ export const Template = ({
       <ImportButton
         title={t('Bulk apply')}
         onImport={() => setImporting(true)}
-        afterImport={(result: string) => {
-          bulkApplyTemplates({ variables: { data: result } });
+        afterImport={(result: string, media: any) => {
+          const extension = getFileExtension(media.name);
+          if (extension !== 'csv') {
+            setNotification('Please upload a valid CSV file', 'warning');
+            setImporting(false);
+          } else {
+            bulkApplyTemplates({ variables: { data: result } });
+          }
         }}
       />
     );
@@ -291,11 +304,7 @@ export const Template = ({
         title={t('Import templates')}
         onImport={() => setImporting(true)}
         afterImport={(result: string, media: any) => {
-          const mediaName = media.name;
-          const extension = mediaName.slice(
-            (Math.max(0, mediaName.lastIndexOf('.')) || Infinity) + 1
-          );
-
+          const extension = getFileExtension(media.name);
           if (extension !== 'csv') {
             setNotification('Please upload a valid CSV file', 'warning');
             setImporting(false);
