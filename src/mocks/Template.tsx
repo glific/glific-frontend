@@ -1,5 +1,5 @@
 import { setVariables } from 'common/constants';
-import { IMPORT_TEMPLATES } from 'graphql/mutations/Template';
+import { BULK_APPLY_TEMPLATES, IMPORT_TEMPLATES } from 'graphql/mutations/Template';
 import { FILTER_TEMPLATES, GET_TEMPLATES_COUNT } from 'graphql/queries/Template';
 
 export const filterTemplatesQuery = (term: any, data: any) => {
@@ -212,6 +212,23 @@ export const importTemplateMutationWithErrors = {
       importTemplates: {
         errors: [{ key: 'import', message: 'Invalid format' }],
         status: null,
+      },
+    },
+  },
+};
+
+export const bulkApplyMutation = {
+  request: {
+    query: BULK_APPLY_TEMPLATES,
+    variables: {
+      data: 'Language,Title,Message,Sample Message,Element Name,Category,Attachment Type,Attachment URL,Has Buttons,Button Type,CTA Button 1 Type,CTA Button 1 Title,CTA Button 1 Value,CTA Button 2 Type,CTA Button 2 Title,CTA Button 2 Value,Quick Reply 1 Title,Quick Reply 2 Title,Quick Reply 3 Title\nEnglish,Welcome glific,"Hi {{1}}, Welcome to the world","Hi [User], Welcome to the world",welcome_glific,TRANSACTIONAL,,,FALSE,,,,,,,,,,',
+    },
+  },
+  result: {
+    data: {
+      bulkApplyTemplates: {
+        errors: null,
+        csv_rows: 'Title,Status\nWelcome Glfic,Template has been applied successfully',
       },
     },
   },

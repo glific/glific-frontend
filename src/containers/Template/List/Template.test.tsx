@@ -14,7 +14,11 @@ import { TEMPLATE_MOCKS, HSM_LIST } from 'containers/Template/Template.test.help
 import { Template } from './Template';
 import { getOrganizationBSP } from 'mocks/Organization';
 import * as common from 'common/notification';
-import { importTemplateMutation, importTemplateMutationWithErrors } from 'mocks/Template';
+import {
+  bulkApplyMutation,
+  importTemplateMutation,
+  importTemplateMutationWithErrors,
+} from 'mocks/Template';
 import { ProviderContext } from 'context/session';
 
 afterEach(cleanup);
@@ -24,6 +28,9 @@ const templateString = `"Template Id","Template Name","Body","Type","Quality Rat
 "6344689","common_otp","Your OTP for {{1}} is {{2}}. This is valid for {{3}}.","TEXT","Unknown","English","Enabled","2022-03-10"`;
 const errorTemplateString = `"Template Id","Template Name","Body","Type","Quality Rating","Language","Status","Created On"
 "6344689","common_otp","Your OTP for {{1}} is {{2}}. This is valid for {}}.","TEXT","Unknown","English","Enabled","2022-03-10"`;
+
+export const bulkApplyString = `Language,Title,Message,Sample Message,Element Name,Category,Attachment Type,Attachment URL,Has Buttons,Button Type,CTA Button 1 Type,CTA Button 1 Title,CTA Button 1 Value,CTA Button 2 Type,CTA Button 2 Title,CTA Button 2 Value,Quick Reply 1 Title,Quick Reply 2 Title,Quick Reply 3 Title
+English,Welcome glific,"Hi {{1}}, Welcome to the world","Hi [User], Welcome to the world",welcome_glific,TRANSACTIONAL,,,FALSE,,,,,,,,,,`;
 
 const speedSendProps: any = {
   title: 'Speed sends',
@@ -68,7 +75,72 @@ const hsmProps: any = {
   buttonLabel: 'Create',
 };
 
-describe('Provide: Gupshup enterprise', () => {
+describe('HSM templates', () => {
+  const hsmMocks = [...HSM_LIST, bulkApplyMutation];
+  const hsmComponent = (
+    <Router>
+      <MockedProvider mocks={hsmMocks} addTypename={false}>
+        <Template {...hsmProps} />
+      </MockedProvider>
+    </Router>
+  );
+
+  test('it renders hsm list component', async () => {
+    render(hsmComponent);
+    // List rendered with status as approved
+    const listOfTemplates = await screen.findAllByText('Account Balance');
+    expect(listOfTemplates.length).toBeGreaterThanOrEqual(1);
+  });
+
+  test('reason column should appear when rejected templates are fetched', async () => {
+    render(hsmComponent);
+
+    const rejectCheckbox = await screen.findByRole('checkbox', { name: 'Rejected' });
+    fireEvent.click(rejectCheckbox);
+    screen.getByText('Loading...');
+
+    await waitForElementToBeRemoved(() => screen.getByText('Loading...'));
+
+    const rejectedSvgElement = await screen.findByText('test reason');
+    expect(rejectedSvgElement).toBeInTheDocument();
+  });
+
+  test('should have an option of bulk applying templates using csv file', async () => {
+    const { getByText } = render(hsmComponent);
+
+    const notificationFunc = jest.spyOn(common, 'setNotification');
+    await waitFor(() => {
+      expect(getByText('Loading...')).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      const importTemplateButton = getByText('Bulk apply');
+      expect(importTemplateButton).toBeInTheDocument();
+      fireEvent.click(importTemplateButton);
+    });
+
+    await waitFor(() => {
+      const csvFile = bulkApplyString;
+      const file = new File([csvFile], 'test.csv', {
+        type: 'text/csv',
+      });
+      const input = screen.getByTestId('import');
+      Object.defineProperty(input, 'files', {
+        value: [file],
+      });
+
+      fireEvent.change(input);
+    });
+
+    await waitFor(() => {
+      expect(notificationFunc).toHaveBeenCalledWith(
+        '"Templates applied successfully. Please check the csv file for the results"'
+      );
+    });
+  });
+});
+
+describe('Provider: Gupshup enterprise', () => {
   const hsmMocks = [
     ...HSM_LIST,
     getOrganizationBSP,
@@ -84,13 +156,6 @@ describe('Provide: Gupshup enterprise', () => {
       </Router>
     </ProviderContext.Provider>
   );
-
-  test('it renders hsm list component', async () => {
-    render(hsmComponent);
-    // List rendered with status as approved
-    const listOfTemplates = await screen.findAllByText('Account Balance');
-    expect(listOfTemplates.length).toBeGreaterThanOrEqual(1);
-  });
 
   test('should import templates using csv file', async () => {
     const { getByText } = render(hsmComponent);
@@ -153,18 +218,5 @@ describe('Provide: Gupshup enterprise', () => {
     await waitFor(() => {
       expect(notificationFunc).toHaveBeenCalledWith('Error importing templates', 'warning');
     });
-  });
-
-  test('reason column should appear when rejected templates are fetched', async () => {
-    render(hsmComponent);
-
-    const rejectCheckbox = await screen.findByRole('checkbox', { name: 'Rejected' });
-    fireEvent.click(rejectCheckbox);
-    screen.getByText('Loading...');
-
-    await waitForElementToBeRemoved(() => screen.getByText('Loading...'));
-
-    const rejectedSvgElement = await screen.findByText('test reason');
-    expect(rejectedSvgElement).toBeInTheDocument();
   });
 });
