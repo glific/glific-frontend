@@ -1,13 +1,14 @@
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
+import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 import axios from 'axios';
+import { vi } from 'vitest';
 
 import { Registration } from './Registration';
-import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 
-jest.mock('axios');
-const mockedAxios = axios as jest.Mocked<typeof axios>;
+vi.mock('axios');
+const mockedAxios = axios as vi.Mocked<typeof axios>;
 
 const props = {
   title: 'Setup your NGO on Glific',
@@ -25,7 +26,7 @@ const wrapper = (
 
 describe('<Registration />', () => {
   beforeEach(() => {
-    jest.resetAllMocks();
+    vi.resetAllMocks();
   });
 
   test('it should render correctly', async () => {

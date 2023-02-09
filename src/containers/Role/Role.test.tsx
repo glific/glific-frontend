@@ -1,6 +1,8 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { render, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
+import { vi } from 'vitest';
+
 import { Role } from './Role';
 import {
   createRoleMutation,
@@ -11,8 +13,8 @@ import {
 
 const mocks = [getRoleQuery, createRoleMutation, updateRoleMutation, deleteRoleMutation];
 
-jest.mock('react-router-dom', () => ({
-  ...(jest.requireActual('react-router-dom') as {}),
+vi.mock('react-router-dom', () => ({
+  ...(vi.requireActual('react-router-dom') as {}),
   useParams: () => ({ id: '5' }),
 }));
 

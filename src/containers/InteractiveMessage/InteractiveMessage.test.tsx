@@ -2,6 +2,7 @@ import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import axios from 'axios';
 import { Route, MemoryRouter, Routes } from 'react-router-dom';
+import { vi } from 'vitest';
 
 import { setUserSession } from 'services/AuthService';
 import { mocks } from 'mocks/InteractiveMessage';
@@ -13,8 +14,8 @@ const mockUseLocationValue: any = {
   hash: '',
   state: null,
 };
-jest.mock('react-router-dom', () => ({
-  ...(jest.requireActual('react-router-dom') as {}),
+vi.mock('react-router-dom', () => ({
+  ...(vi.requireActual('react-router-dom') as {}),
   useLocation: () => {
     return mockUseLocationValue;
   },
@@ -24,13 +25,13 @@ const mockData = [...mocks, ...mocks];
 
 setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
 
-jest.mock('axios', () => {
+vi.mock('axios', () => {
   return {
     get: vi.fn(),
   };
 });
 
-const mockedAxios = axios as jest.Mocked<typeof axios>;
+const mockedAxios = axios as vi.Mocked<typeof axios>;
 
 const renderInteractiveMessage = (id: string) => (
   <MockedProvider mocks={mockData} addTypename={false}>
@@ -80,7 +81,7 @@ test('it renders empty interactive form', async () => {
   );
 
   // Getting contact variables
-  jest.spyOn(axios, 'get').mockResolvedValueOnce(responseMock1);
+  vi.spyOn(axios, 'get').mockResolvedValueOnce(responseMock1);
   await whenStable();
 
   // Adding another quick reply button
@@ -197,7 +198,7 @@ test('it renders interactive quick reply in edit mode', async () => {
   render(renderInteractiveMessage('1'));
 
   await whenStable();
-  jest.spyOn(axios, 'get').mockResolvedValueOnce(responseMock1);
+  vi.spyOn(axios, 'get').mockResolvedValueOnce(responseMock1);
 
   await waitFor(() => {
     // Changing language to marathi to see translations
@@ -223,7 +224,7 @@ test('it renders interactive list in edit mode', async () => {
 
   render(renderInteractiveMessage('2'));
 
-  jest.spyOn(axios, 'get').mockResolvedValueOnce(responseMock1);
+  vi.spyOn(axios, 'get').mockResolvedValueOnce(responseMock1);
   await whenStable();
 
   await waitFor(() => {
@@ -238,7 +239,7 @@ test('it renders interactive quick reply with media in edit mode', async () => {
 
   render(renderInteractiveMessage('3'));
 
-  jest.spyOn(axios, 'get').mockResolvedValueOnce(responseMock3);
+  vi.spyOn(axios, 'get').mockResolvedValueOnce(responseMock3);
   await whenStable();
 });
 
@@ -248,7 +249,7 @@ describe('copy interactive message', () => {
     axiosApiCall();
 
     const { getByText, getAllByTestId } = render(renderInteractiveMessage('1'));
-    jest.spyOn(axios, 'get').mockResolvedValueOnce(responseMock1);
+    vi.spyOn(axios, 'get').mockResolvedValueOnce(responseMock1);
 
     await waitFor(() => {
       expect(getByText('Copy Interactive Message')).toBeInTheDocument();

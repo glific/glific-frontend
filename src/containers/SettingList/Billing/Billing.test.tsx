@@ -2,6 +2,7 @@ import { fireEvent, render, waitFor } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 import { MockedProvider } from '@apollo/client/testing';
 import { BrowserRouter as Router } from 'react-router-dom';
+import { vi } from 'vitest';
 
 import {
   createBillingSubscriptionQuery,
@@ -32,21 +33,21 @@ const mockElements = () => {
   const elements: any = {};
 
   return {
-    create: jest.fn((type) => {
+    create: vi.fn((type) => {
       elements[type] = mockElement();
       return elements[type];
     }),
-    getElement: jest.fn((type) => {
+    getElement: vi.fn((type) => {
       return elements[type] || null;
     }),
   };
 };
 
 const mockStripe = () => ({
-  elements: jest.fn(() => mockElements()),
+  elements: vi.fn(() => mockElements()),
   createToken: vi.fn(),
   createSource: vi.fn(),
-  createPaymentMethod: jest.fn((props) => {
+  createPaymentMethod: vi.fn((props) => {
     return {
       error: null,
       paymentMethod: { id: 'qwerty' },
@@ -58,8 +59,8 @@ const mockStripe = () => ({
   _registerWrapper: vi.fn(),
 });
 
-jest.mock('@stripe/react-stripe-js', () => {
-  const stripe = jest.requireActual('@stripe/react-stripe-js');
+vi.mock('@stripe/react-stripe-js', () => {
+  const stripe = vi.requireActual('@stripe/react-stripe-js');
 
   return {
     ...stripe,

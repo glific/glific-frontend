@@ -1,14 +1,15 @@
 import { render, waitFor, cleanup, fireEvent } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
+import { BrowserRouter } from 'react-router-dom';
+import { vi } from 'vitest';
 
 import * as FormLayout from 'containers/Form/FormLayout';
 import Template from './Template';
 import { TEMPLATE_MOCKS } from '../Template.test.helper';
-import { BrowserRouter } from 'react-router-dom';
 
-jest.mock('react-router-dom', () => {
+vi.mock('react-router-dom', () => {
   return {
-    ...jest.requireActual('react-router-dom'),
+    ...vi.requireActual('react-router-dom'),
     useParams: () => ({ id: '1' }),
   };
 });
@@ -38,7 +39,7 @@ test('HSM form is loaded correctly in edit mode', async () => {
 });
 
 test('save media in template', async () => {
-  const spy = jest.spyOn(FormLayout, 'FormLayout');
+  const spy = vi.spyOn(FormLayout, 'FormLayout');
   spy.mockImplementation((props: any) => {
     const { getMediaId } = props;
     return (

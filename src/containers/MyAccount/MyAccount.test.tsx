@@ -3,6 +3,7 @@ import UserEvent from '@testing-library/user-event';
 import { MockedProvider } from '@apollo/client/testing';
 import axios from 'axios';
 import { MemoryRouter } from 'react-router';
+import { vi } from 'vitest';
 
 import { getCurrentUserQuery, updateUserQuery } from 'mocks/User';
 import { getOrganizationLanguagesQuery } from 'mocks/Organization';
@@ -16,8 +17,8 @@ const mocks = [
   getOrganizationLanguagesQuery,
 ];
 
-jest.mock('axios');
-const mockedAxios = axios as jest.Mocked<typeof axios>;
+vi.mock('axios');
+const mockedAxios = axios as vi.Mocked<typeof axios>;
 
 const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>

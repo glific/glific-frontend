@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { vi } from 'vitest';
 
 import {
   renewAuthToken,
@@ -9,17 +10,17 @@ import {
   getAuthSession,
 } from './AuthService';
 
-jest.mock('axios');
+vi.mock('axios');
 
-jest.mock('pino-logflare', () => ({
+vi.mock('pino-logflare', () => ({
   createWriteStream: vi.fn(),
   createPinoBrowserSend: vi.fn(),
 }));
-const mockedAxios = axios as jest.Mocked<typeof axios>;
+const mockedAxios = axios as vi.Mocked<typeof axios>;
 
 describe('AuthService', () => {
   beforeEach(() => {
-    jest.resetAllMocks();
+    vi.resetAllMocks();
   });
 
   // let's create token expiry date for tomorrow
