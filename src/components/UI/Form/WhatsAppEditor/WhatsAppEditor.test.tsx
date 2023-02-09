@@ -6,8 +6,8 @@ import WhatsAppEditor from './WhatsAppEditor';
 
 const mockHandleKeyCommand = vi.fn();
 
-vi.mock('draft-js', () => {
-  const moduleMock = vi.requireActual('draft-js');
+vi.mock('draft-js', async () => {
+  const moduleMock = await vi.importActual<any>('draft-js');
   return {
     ...moduleMock,
     Editor: (...props: any) => {

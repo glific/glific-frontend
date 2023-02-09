@@ -18,22 +18,21 @@ vi.mock('react-media-recorder', () => {
   };
 });
 
-// TODOS: fix below mock
-// vi.mock('react-i18next', () => {
-//   const reactI18next = vi.requireActual('react-i18next');
-//   return {
-//     // this mock makes sure any components using the translate hook can use it without a warning being shown
-//     useTranslation: () => {
-//       return {
-//         t: (str: string) => str,
-//         i18n: {
-//           changeLanguage: () => new Promise(() => {}),
-//         },
-//       };
-//     },
-//     initReactI18next: reactI18next.initReactI18next,
-//   };
-// });
+vi.mock('react-i18next', async () => {
+  const reactI18next = await vi.importActual<any>('react-i18next');
+  return {
+    // this mock makes sure any components using the translate hook can use it without a warning being shown
+    useTranslation: () => {
+      return {
+        t: (str: string) => str,
+        i18n: {
+          changeLanguage: () => new Promise(() => {}),
+        },
+      };
+    },
+    initReactI18next: reactI18next.initReactI18next,
+  };
+});
 
 class ResizeObserver {
   observe() {}
