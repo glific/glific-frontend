@@ -404,5 +404,8 @@
   "Response JSON": "Response JSON",
   "Webhook Logs": "Webhook Logs",
   "Invalid captcha": "Invalid captcha",
-  "Bulk apply": "Bulk apply"
+  "Bulk apply": "Bulk apply",
+  "Error importing templates": "Error importing templates",
+  "Templates applied successfully. Please check the csv file for the results": "Templates applied successfully. Please check the csv file for the results",
+  "An error occured! Please check the format of the file": "An error occured! Please check the format of the file"
 }

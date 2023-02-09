@@ -88,7 +88,7 @@ export const Template = ({
       setImporting(false);
       const { errors } = data.importTemplates;
       if (errors && errors.length > 0) {
-        setNotification('Error importing templates', 'warning');
+        setNotification(t('Error importing templates'), 'warning');
       }
     },
   });
@@ -99,13 +99,13 @@ export const Template = ({
       if (data && data.bulkApplyTemplates) {
         exportCsvFile(data.bulkApplyTemplates.csv_rows, 'result');
         setNotification(
-          'Templates applied successfully. Please check the csv file for the results'
+          t('Templates applied successfully. Please check the csv file for the results')
         );
       }
     },
     onError: () => {
       setImporting(false);
-      setNotification('An error occured! Please check the format of the file', 'warning');
+      setNotification(t('An error occured! Please check the format of the file'), 'warning');
     },
   });
 
