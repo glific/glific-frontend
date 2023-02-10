@@ -59,8 +59,8 @@ const mockStripe = () => ({
   _registerWrapper: vi.fn(),
 });
 
-vi.mock('@stripe/react-stripe-js', () => {
-  const stripe = vi.requireActual('@stripe/react-stripe-js');
+vi.mock('@stripe/react-stripe-js', async () => {
+  const stripe = await vi.importActual<any>('@stripe/react-stripe-js');
 
   return {
     ...stripe,

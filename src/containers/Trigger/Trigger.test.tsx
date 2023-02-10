@@ -9,9 +9,9 @@ import * as AutoComplete from 'components/UI/Form/AutoComplete/AutoComplete';
 import { getTriggerQuery, hourlyTrigger } from 'mocks/Trigger';
 import { Trigger } from './Trigger';
 
-vi.mock('react-router-dom', () => {
+vi.mock('react-router-dom', async () => {
   return {
-    ...vi.requireActual('react-router-dom'),
+    ...(await vi.importActual<any>('react-router-dom')),
     useParams: () => ({ id: '1' }),
   };
 });

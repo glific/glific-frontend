@@ -7,9 +7,9 @@ import { FlowList } from 'containers/Flow/FlowList/FlowList';
 import { FormLayout } from './FormLayout';
 import { LIST_ITEM_MOCKS, listItemProps } from './FormLayout.test.helper';
 
-vi.mock('react-router-dom', () => {
+vi.mock('react-router-dom', async () => {
   return {
-    ...vi.requireActual('react-router-dom'),
+    ...(await vi.importActual<any>('react-router-dom')),
     useParams: () => ({ id: 1 }),
   };
 });

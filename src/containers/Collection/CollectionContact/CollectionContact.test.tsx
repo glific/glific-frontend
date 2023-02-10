@@ -7,9 +7,9 @@ import { countCollectionContactsQuery } from 'mocks/Contact';
 import { getCollectionQuery } from 'mocks/Collection';
 import { CollectionContact } from './CollectionContact';
 
-vi.mock('react-router-dom', () => {
+vi.mock('react-router-dom', async () => {
   return {
-    ...vi.requireActual('react-router-dom'),
+    ...(await vi.importActual<any>('react-router-dom')),
     useParams: () => ({ id: 1 }),
   };
 });

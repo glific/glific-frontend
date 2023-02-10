@@ -13,8 +13,8 @@ import {
 
 const mocks = [getRoleQuery, createRoleMutation, updateRoleMutation, deleteRoleMutation];
 
-vi.mock('react-router-dom', () => ({
-  ...(vi.requireActual('react-router-dom') as {}),
+vi.mock('react-router-dom', async () => ({
+  ...((await vi.importActual<any>('react-router-dom')) as {}),
   useParams: () => ({ id: '5' }),
 }));
 

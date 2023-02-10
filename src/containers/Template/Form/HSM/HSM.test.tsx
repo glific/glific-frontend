@@ -11,8 +11,8 @@ import { TEMPLATE_MOCKS } from 'containers/Template/Template.test.helper';
 afterEach(cleanup);
 const mocks = TEMPLATE_MOCKS;
 
-vi.mock('react-router-dom', () => ({
-  ...vi.requireActual('react-router-dom'),
+vi.mock('react-router-dom', async () => ({
+  ...(await vi.importActual<any>('react-router-dom')),
   useParams: vi.fn(),
 }));
 

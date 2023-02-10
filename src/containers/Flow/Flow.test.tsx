@@ -23,8 +23,8 @@ const mockUseLocationValue: any = {
   hash: '',
   state: null,
 };
-vi.mock('react-router-dom', () => ({
-  ...(vi.requireActual('react-router-dom') as {}),
+vi.mock('react-router-dom', async () => ({
+  ...((await vi.importActual<any>('react-router-dom')) as {}),
   useLocation: () => {
     return mockUseLocationValue;
   },

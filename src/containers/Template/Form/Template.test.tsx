@@ -7,9 +7,9 @@ import * as FormLayout from 'containers/Form/FormLayout';
 import Template from './Template';
 import { TEMPLATE_MOCKS } from '../Template.test.helper';
 
-vi.mock('react-router-dom', () => {
+vi.mock('react-router-dom', async () => {
   return {
-    ...vi.requireActual('react-router-dom'),
+    ...(await vi.importActual<any>('react-router-dom')),
     useParams: () => ({ id: '1' }),
   };
 });

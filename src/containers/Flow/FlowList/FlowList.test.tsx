@@ -41,9 +41,9 @@ const flowList = (
 
 HTMLAnchorElement.prototype.click = vi.fn();
 
-vi.mock('react-router-dom', () => {
+vi.mock('react-router-dom', async () => {
   return {
-    ...vi.requireActual('react-router-dom'),
+    ...(await vi.importActual<any>('react-router-dom')),
     useLocation: () => ({ state: 'copy', pathname: '/flow/1/edit' }),
     useParams: () => ({ id: 1 }),
   };
