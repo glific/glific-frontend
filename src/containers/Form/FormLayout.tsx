@@ -499,7 +499,7 @@ export const FormLayout = ({
     itemId && !type && !restrictDelete ? (
       <Button
         variant="contained"
-        color="secondary"
+        color="warning"
         className={styles.DeleteButton}
         onClick={() => setShowDialog(true)}
       >
@@ -578,7 +578,12 @@ export const FormLayout = ({
                 {additionalAction.label}
               </Button>
             ) : null}
-            <Button variant="contained" onClick={cancelHandler} data-testid="cancelActionButton">
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={cancelHandler}
+              data-testid="cancelActionButton"
+            >
               {t('Cancel')}
             </Button>
             {showPreviewButton && (

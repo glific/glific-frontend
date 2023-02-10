@@ -348,7 +348,7 @@ export const ContactBar = ({
     <Button
       data-testid="blockButton"
       className={styles.ListButtonDanger}
-      color="secondary"
+      color="warning"
       disabled={isSimulator}
       onClick={() => setShowBlockDialog(true)}
     >
