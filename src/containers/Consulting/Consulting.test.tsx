@@ -10,6 +10,7 @@ import {
 } from 'mocks/Consulting';
 import { setUserSession } from 'services/AuthService';
 import { Consulting } from './Consulting';
+import userEvent from '@testing-library/user-event';
 
 afterEach(cleanup);
 const setOpenDialogMock = jest.fn();
@@ -31,6 +32,7 @@ const wrapper = (
 );
 
 test('Render component correctly with empty form', async () => {
+  const user = userEvent.setup();
   const { container, getByText, getAllByRole, getByTestId } = render(wrapper);
 
   expect(getByText('Loading...')).toBeInTheDocument();
@@ -48,7 +50,7 @@ test('Render component correctly with empty form', async () => {
 
   // For selecting organization from dropdown
   const autoComplete = getByTestId('autocomplete-element');
-  fireEvent.mouseDown(autoComplete);
+  user.click(autoComplete);
 
   waitFor(() => {
     expect(getByText('Glific')).toBeInTheDocument();

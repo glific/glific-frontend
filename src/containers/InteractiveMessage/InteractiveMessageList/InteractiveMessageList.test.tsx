@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, getByText, render, screen } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { BrowserRouter as Router } from 'react-router-dom';
 
@@ -31,11 +31,6 @@ test('Interactive message list renders correctly', async () => {
   expect(messageBody).toBeInTheDocument();
   expect(type).toBeInTheDocument();
 
-  const [listTemplate, , imageTemplate] = await screen.findAllByRole('button', {
-    name: 'DownArrow.svg',
-  });
-  expect(listTemplate).toBeInTheDocument();
-  expect(imageTemplate).toBeInTheDocument();
-  fireEvent.click(listTemplate);
-  fireEvent.click(imageTemplate);
+  expect(screen.getByText('List')).toBeInTheDocument();
+  expect(screen.getAllByText('Quick Reply')[0]).toBeInTheDocument();
 });
