@@ -3,82 +3,103 @@ import { FLOW_EDITOR_CONFIGURE_LINK, FLOW_EDITOR_API, CONTACT_CHAT_LINK } from '
 
 const glificBase = FLOW_EDITOR_API;
 
-export const setConfig = (uuid: any) => ({
-  flow: uuid,
-  flowType: 'messaging',
-  localStorage: true,
-  mutable: true,
-  showNodeLabel: false,
-  attachmentsEnabled: false,
-  filters: ['whatsapp', 'classifier'],
+export const setConfig = (uuid: any) => {
+  const services = JSON.parse(localStorage.getItem('organizationServices') || '{}');
 
-  excludeTypes: [
-    'add_contact_urn',
-    'send_email',
-    'call_resthook',
-    'start_session',
-    'open_ticket',
-    'transfer_airtime',
-    'split_by_scheme',
-  ],
+  const config = {
+    flow: uuid,
+    flowType: 'messaging',
+    localStorage: true,
+    mutable: true,
+    showNodeLabel: false,
+    attachmentsEnabled: false,
+    filters: ['whatsapp', 'classifier'],
 
-  excludeOperators: [
-    'has_text',
-    'has_number_lt',
-    'has_number_lte',
-    'has_number_gte',
-    'has_number_gt',
-    'has_date',
-    'has_date_category',
-    'has_date_lt',
-    'has_number_lte',
-    'has_number_gte',
-    'has_number_gt',
-    'has_date_eq',
-    'has_date_gt',
-    'has_time',
-    'has_group',
-    'has_category',
-    'has_state',
-    'has_state_category',
-    'has_district',
-    'has_ward',
-    'has_error',
-    'has_value',
-  ],
-  help: {
-    legacy_extra: 'help.html',
-    missing_dependency: 'help.html',
-    invalid_regex: 'help.html',
-  },
-  endpoints: {
-    simulateStart: false,
-    simulateResume: false,
-    globals: `${glificBase}globals`,
-    groups: `${glificBase}groups`,
-    fields: `${glificBase}fields`,
-    labels: `${glificBase}labels`,
-    channels: `${glificBase}channels`,
-    classifiers: `${glificBase}classifiers`,
-    ticketers: `${glificBase}ticketers`,
-    resthooks: `${glificBase}resthooks`,
-    templates: `${glificBase}templates`,
-    languages: `${glificBase}languages`,
-    attachments: `${glificBase}flow-attachment`,
-    environment: `${glificBase}environment`,
-    recipients: `${glificBase}recipients`,
-    completion: `${glificBase}completion`,
-    activity: `${glificBase}activity`,
-    sheets: `${glificBase}sheets`,
-    flows: `${glificBase}flows`,
-    recents: `${glificBase}recents/`,
-    revisions: `${glificBase}revisions/${uuid}`,
-    editor: FLOW_EDITOR_CONFIGURE_LINK,
-    validateMedia: `${glificBase}validate-media`,
-    interactives: `${glificBase}interactive-templates`,
-    contact: CONTACT_CHAT_LINK,
-  },
-});
+    excludeTypes: [
+      'add_contact_urn',
+      'send_email',
+      'call_resthook',
+      'start_session',
+      'open_ticket',
+      'transfer_airtime',
+      'split_by_scheme',
+    ],
+
+    excludeOperators: [
+      'has_text',
+      'has_number_lt',
+      'has_number_lte',
+      'has_number_gte',
+      'has_number_gt',
+      'has_date',
+      'has_date_category',
+      'has_date_lt',
+      'has_number_lte',
+      'has_number_gte',
+      'has_number_gt',
+      'has_date_eq',
+      'has_date_gt',
+      'has_time',
+      'has_group',
+      'has_category',
+      'has_state',
+      'has_state_category',
+      'has_district',
+      'has_ward',
+      'has_error',
+      'has_value',
+    ],
+    help: {
+      legacy_extra: 'help.html',
+      missing_dependency: 'help.html',
+      invalid_regex: 'help.html',
+    },
+    endpoints: {
+      simulateStart: false,
+      simulateResume: false,
+      globals: `${glificBase}globals`,
+      groups: `${glificBase}groups`,
+      fields: `${glificBase}fields`,
+      labels: `${glificBase}labels`,
+      channels: `${glificBase}channels`,
+      classifiers: `${glificBase}classifiers`,
+      ticketers: `${glificBase}ticketers`,
+      resthooks: `${glificBase}resthooks`,
+      templates: `${glificBase}templates`,
+      languages: `${glificBase}languages`,
+      attachments: `${glificBase}flow-attachment`,
+      environment: `${glificBase}environment`,
+      recipients: `${glificBase}recipients`,
+      contacts: `${glificBase}recipients`,
+      completion: `${glificBase}completion`,
+      activity: `${glificBase}activity`,
+      sheets: `${glificBase}sheets`,
+      flows: `${glificBase}flows`,
+      recents: `${glificBase}recents/`,
+      revisions: `${glificBase}revisions/${uuid}`,
+      editor: FLOW_EDITOR_CONFIGURE_LINK,
+      validateMedia: `${glificBase}validate-media`,
+      interactives: `${glificBase}interactive-templates`,
+      contact: CONTACT_CHAT_LINK,
+    },
+  };
+
+  if (services.googleCloudStorage) {
+    config.attachmentsEnabled = true;
+  }
+  if (!services.dialogflow) {
+    config.excludeTypes.push('split_by_intent');
+  }
+  if (services.flowUuidDisplay) {
+    config.showNodeLabel = true;
+  }
+
+  if (services.contactProfileEnabled) {
+    config.filters.push('profile');
+  }
+
+  return config;
+};
 
 export const loadfiles = (startFlowEditor: any) => {
   const files: Array<HTMLScriptElement | HTMLLinkElement> = [];
