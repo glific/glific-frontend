@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { EditorState, ContentState } from 'draft-js';
 import { Container, Button, ClickAwayListener, Fade, IconButton } from '@mui/material';
-import clsx from 'clsx';
 import { useMutation, useQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 
@@ -285,9 +284,7 @@ export const ChatInput = ({
         data-testid="shortcutButton"
         onClick={() => handleClick(type)}
         aria-hidden="true"
-        className={clsx(styles.QuickSend, {
-          [styles.QuickSendSelected]: selectedTab === type,
-        })}
+        className={`${styles.QuickSend} ${selectedTab === type ? styles.QuickSendSelected : ''}`}
       >
         {type}
       </div>
@@ -388,10 +385,9 @@ export const ChatInput = ({
       </ClickAwayListener>
 
       <div
-        className={clsx(styles.ChatInputElements, {
-          [styles.Unrounded]: selectedTab !== '',
-          [styles.Rounded]: selectedTab === '',
-        })}
+        className={`${styles.ChatInputElements} ${
+          selectedTab === '' ? styles.Rounded : styles.Unrounded
+        }`}
       >
         <WhatsAppEditor
           editorState={updatedEditorState ? getEditorFromContent(updatedEditorState) : editorState}

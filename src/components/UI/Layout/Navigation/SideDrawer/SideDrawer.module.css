@@ -27,3 +27,78 @@
   padding-top: 10px;
   width: 52px;
 }
+
+.AnotherToolBar {
+  padding: '0px';
+}
+
+.drawer {
+  z-index: 1000;
+  width: 233px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.navClose {
+  width: 72px;
+}
+.drawerOpen {
+  width: 233px;
+  transition: width 255ms !important;
+}
+.drawerClose {
+  transition: width 255ms !important;
+  width: 72px;
+}
+.toolbar {
+  display: flex;
+}
+.content {
+  flex-grow: 1;
+  padding: 24px;
+}
+
+.outerBox {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.title {
+  align-self: center;
+  margin: 0 0 0 15px;
+}
+.iconButton {
+  margin: 0 10px 0 0;
+}
+.closedIcon {
+  margin: 12px 12px 12px 15px;
+}
+.BottomMenus {
+  z-index: 1;
+  position: absolute;
+  bottom: 50px;
+  display: flex;
+  width: 100%;
+  padding-left: 8px;
+}
+.BottomMenusWithoutWallet {
+  bottom: 10px;
+}
+.BottomMenusVertical {
+  flex-flow: column;
+}
+
+@media only screen and (max-width: 768px) {
+  .navClose {
+    width: 0px;
+  }
+
+  .drawerClose {
+    overflow-x: hidden;
+    width: 0px;
+  }
+
+  .drawerOpen {
+    width: 100%;
+  }
+}

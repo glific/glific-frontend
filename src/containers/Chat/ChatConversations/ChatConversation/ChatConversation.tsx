@@ -1,5 +1,4 @@
 import React from 'react';
-import clsx from 'clsx';
 import { ListItem } from '@mui/material';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
@@ -195,7 +194,7 @@ const ChatConversation = ({
       data-testid="list"
       button
       disableRipple
-      className={clsx(styles.StyledListItem, { [styles.SelectedColor]: selected })}
+      className={`${styles.StyledListItem} ${selected ? styles.SelectedColor : ''}`}
       component={Link}
       selected={selected}
       onClick={() => {
