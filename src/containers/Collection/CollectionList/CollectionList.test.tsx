@@ -68,7 +68,7 @@ describe('<CollectionList />', () => {
     expect(autocomplete).toBeInTheDocument();
 
     await waitFor(() => {
-      const input = screen.getByRole('textbox');
+      const input = screen.getByRole('combobox');
       fireEvent.change(input, { target: { value: 'glific' } });
     });
 
