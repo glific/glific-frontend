@@ -29,6 +29,7 @@ export const CREATE_SHEET = gql`
         isActive
         label
         lastSyncedAt
+        sheetDataCount
         updatedAt
         url
       }
@@ -48,6 +49,7 @@ export const UPDATE_SHEET = gql`
         isActive
         label
         lastSyncedAt
+        sheetDataCount
         updatedAt
         url
         insertedAt
@@ -68,6 +70,7 @@ export const SYNC_SHEET = gql`
         isActive
         label
         lastSyncedAt
+        sheetDataCount
         updatedAt
         url
         insertedAt

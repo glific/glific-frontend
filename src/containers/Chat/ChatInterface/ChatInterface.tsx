@@ -32,7 +32,7 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
   const [simulatorId, setSimulatorId] = useState(0);
   const { t } = useTranslation();
   const [startingHeight] = useState(
-    `${window.innerWidth < 768 ? window.innerHeight - 46 : window.innerHeight}px`
+    window.innerWidth < 768 ? `${window.innerHeight - 46}px` : `100vh`
   );
   const params = useParams();
 
