@@ -62,7 +62,6 @@ test('Render component correctly with empty form', async () => {
     fireEvent.change(inputElements[1], { target: { value: 'John Doe' } });
     fireEvent.change(inputElements[3], { target: { value: 15 } });
     fireEvent.change(inputElements[4], { target: { value: 'Glific Tean' } });
-    fireEvent.change(inputElements[5], { target: { value: 'Notes' } });
     fireEvent.click(radioButtons[0]);
   });
 
