@@ -32,13 +32,13 @@ export const SideDrawer = () => {
     <div>
       <Toolbar className={styles.AnotherToolBar}>
         {drawerOpen ? (
-          <div className={styles.outerBox}>
-            <Typography variant="h6" className={styles.title}>
+          <div className={styles.OuterBox}>
+            <Typography variant="h6" className={styles.Title}>
               <img src={GlificLogo} className={styles.GlificLogo} alt="Glific" />
             </Typography>
 
             <IconButton
-              className={styles.iconButton}
+              className={styles.IconButton}
               onClick={() => setDrawerOpen(false)}
               data-testid="drawer-button"
             >
@@ -100,7 +100,7 @@ export const SideDrawer = () => {
 
   return (
     <nav
-      className={drawerOpen ? styles.drawer : styles.navClose}
+      className={drawerOpen ? styles.Drawer : styles.NavClose}
       aria-label="navigation menus"
       data-testid="navbar"
     >
@@ -114,7 +114,7 @@ export const SideDrawer = () => {
             setMobileOpen(!mobileOpen);
           }}
           classes={{
-            paper: styles.drawerPaper,
+            paper: styles.DrawerPaper,
           }}
           ModalProps={{
             keepMounted: true,
@@ -124,9 +124,9 @@ export const SideDrawer = () => {
         </Drawer>
       </Hidden>
       <Drawer
-        className={drawerOpen ? styles.drawerOpen : styles.drawerClose}
+        className={drawerOpen ? styles.DrawerOpen : styles.DrawerClose}
         classes={{
-          paper: drawerOpen ? styles.drawerOpen : styles.drawerClose,
+          paper: drawerOpen ? styles.DrawerOpen : styles.DrawerClose,
         }}
         variant="permanent"
       >

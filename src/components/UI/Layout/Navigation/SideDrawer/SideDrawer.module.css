@@ -32,46 +32,46 @@
   padding: 0px 12px !important;
 }
 
-.drawer {
+.Drawer {
   z-index: 1000;
   width: 233px;
   flex-shrink: 0;
   white-space: nowrap;
 }
-.navClose {
+.NavClose {
   width: 72px;
 }
-.drawerOpen {
+.DrawerOpen {
   width: 233px;
   transition: width 255ms !important;
 }
-.drawerClose {
+.DrawerClose {
   transition: width 255ms !important;
   width: 72px;
 }
-.toolbar {
+.Toolbar {
   display: flex;
 }
-.content {
+.Content {
   flex-grow: 1;
   padding: 24px;
 }
 
-.outerBox {
+.OuterBox {
   display: flex;
   width: 100%;
   justify-content: space-between;
 }
 
-.title {
+.Title {
   align-self: center;
   margin: 0 0 0 15px;
 }
-.iconButton {
+.IconButton {
   margin: 0 10px 0 0;
   padding: 12px !important;
 }
-.closedIcon {
+.ClosedIcon {
   margin: 12px 12px 12px 15px;
 }
 .BottomMenus {
@@ -94,16 +94,16 @@
 }
 
 @media only screen and (max-width: 768px) {
-  .navClose {
+  .NavClose {
     width: 0px;
   }
 
-  .drawerClose {
+  .DrawerClose {
     overflow-x: hidden;
     width: 0px;
   }
 
-  .drawerOpen {
+  .DrawerOpen {
     width: 100%;
   }
 }
