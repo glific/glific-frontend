@@ -1,4 +1,4 @@
-import { fireEvent, render, waitFor, cleanup, screen } from '@testing-library/react';
+import { fireEvent, render, waitFor, cleanup, screen, within } from '@testing-library/react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 
@@ -33,27 +33,26 @@ const wrapper = (
 
 test('Render component correctly with empty form', async () => {
   const user = userEvent.setup();
-  const { container, getByText, getAllByRole, getByTestId } = render(wrapper);
+  render(wrapper);
 
-  expect(getByText('Loading...')).toBeInTheDocument();
-
-  expect(container).toBeInTheDocument();
+  expect(screen.getByText('Loading...')).toBeInTheDocument();
 
   await waitFor(() => {
-    expect(getByText('Add consulting record')).toBeInTheDocument();
+    expect(screen.getByText('Add consulting record')).toBeInTheDocument();
   });
 
   // Get all input elements
-  const inputElements = getAllByRole('textbox');
+  const inputElements = screen.getAllByRole('textbox');
   // Get all radio buttons
-  const radioButtons = getAllByRole('radio');
+  const radioButtons = screen.getAllByRole('radio');
 
   // For selecting organization from dropdown
-  const autoComplete = getByTestId('autocomplete-element');
-  user.click(autoComplete);
+  const autoComplete = screen.getByTestId('autocomplete-element');
+  const input = within(autoComplete).getByRole('combobox');
+  autoComplete.focus();
+  fireEvent.change(input, { target: { value: 'G' } });
 
-  waitFor(() => {
-    expect(getByText('Glific')).toBeInTheDocument();
+  await waitFor(() => {
     const selectedOption = screen.getByText('Glific');
 
     fireEvent.click(selectedOption);
