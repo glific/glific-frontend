@@ -36,16 +36,6 @@ const theme = createTheme({
     },
     MuiButton: {
       styleOverrides: {
-        // contained: {
-        //   backgroundColor: '#CACACA',
-        //   '&:hover': {
-        //     backgroundColor: '#b5b5b5',
-        //   },
-        //   '&:disabled': {
-        //     backgroundColor: '#93A29B',
-        //   },
-        // },
-
         outlinedPrimary: {
           border: '2px solid',
           '&:hover': {
@@ -56,10 +46,10 @@ const theme = createTheme({
     },
     MuiTablePagination: {
       styleOverrides: {
-        // caption: {
-        //   fontSize: '16px',
-        //   color: '#073F24',
-        // },
+        selectLabel: {
+          fontSize: '1rem',
+          color: '#073F24',
+        },
       },
     },
     MuiOutlinedInput: {
