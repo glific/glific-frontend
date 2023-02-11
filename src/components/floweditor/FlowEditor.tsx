@@ -33,6 +33,7 @@ export const FlowEditor = () => {
   const [publishDialog, setPublishDialog] = useState(false);
   const [simulatorId, setSimulatorId] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [flowEditorLoaded, setFlowEditorLoaded] = useState(false);
 
   const config = setConfig(uuid);
   const [published, setPublished] = useState(false);
@@ -55,25 +56,10 @@ export const FlowEditor = () => {
   const [getFreeFlow] = useLazyQuery(GET_FREE_FLOW, {
     fetchPolicy: 'network-only',
     onCompleted: ({ flowGet }) => {
-      if (flowGet.flow) {
-        const services = JSON.parse(localStorage.getItem('organizationServices') || '{}');
-
-        if (services.googleCloudStorage) {
-          config.attachmentsEnabled = true;
-        }
-        if (!services.dialogflow) {
-          config.excludeTypes.push('split_by_intent');
-        }
-        if (services.flowUuidDisplay) {
-          config.showNodeLabel = true;
-        }
-
-        if (services.contactProfileEnabled) {
-          config.filters.push('profile');
-        }
-
+      if (flowGet.flow && !flowEditorLoaded) {
         showFlowEditor(document.getElementById('flow'), config);
         setLoading(false);
+        setFlowEditorLoaded(true);
       } else if (flowGet.errors && flowGet.errors.length) {
         setDialogMessage(flowGet.errors[0].message);
         setCurrentEditDialogBox(true);
