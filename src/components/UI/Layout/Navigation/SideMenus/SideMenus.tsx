@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, forwardRef } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { ListItemButton, ListItemIcon, ListItemText, List } from '@mui/material';
 import { useLazyQuery } from '@apollo/client';
@@ -13,7 +13,7 @@ export interface SideMenusProps {
   opened: boolean;
 }
 
-const AnchorLink = (props: any) => <a {...props} />;
+const AnchorLink = forwardRef((props, ref: any) => <a {...props} ref={ref} />);
 
 const SideMenus = ({ opened }: SideMenusProps) => {
   const location = useLocation();
@@ -59,7 +59,6 @@ const SideMenus = ({ opened }: SideMenusProps) => {
 
     return (
       <ListItemButton
-        button
         disableRipple
         selected={isSelected}
         className={opened ? styles.OpenItem : styles.ClosedItem}
