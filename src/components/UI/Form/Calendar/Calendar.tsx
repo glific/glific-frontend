@@ -3,7 +3,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { TextField } from '@mui/material';
 import 'date-fns';
-// import { getIn } from 'formik';
+import { getIn } from 'formik';
 
 import styles from './Calendar.module.css';
 
@@ -19,18 +19,16 @@ export interface CalendarProps {
 }
 
 export const Calendar = ({
-  // variant = 'inline',
-  // inputVariant = 'outlined',
   format = 'MM/dd/yyyy',
   field,
   disabled = false,
-  form: { setFieldValue },
+  form: { setFieldValue, errors, touched },
   placeholder,
   minDate,
 }: CalendarProps) => {
-  // const errorText = getIn(errors, field.name);
-  // const touchedVal = getIn(touched, field.name);
-  // const hasError = touchedVal && errorText !== undefined;
+  const errorText = getIn(errors, field.name);
+  const touchedVal = getIn(touched, field.name);
+  const hasError = touchedVal && errorText !== undefined;
   const dateValue = field.value ? field.value : null;
   const [open, setOpen] = useState(false);
 
@@ -52,13 +50,19 @@ export const Calendar = ({
         onChange={handleDateChange}
         className={styles.CalendarInput}
         disabled={disabled}
-        data-testid="date-picker-inline"
         minDate={minDate}
         InputProps={{
+          error: hasError,
           onClick: () => !disabled && setOpen(true),
         }}
         onClose={() => setOpen(false)}
-        renderInput={(params) => <TextField {...params} />}
+        renderInput={(params) => (
+          <TextField
+            helperText={hasError ? errorText : ''}
+            data-testid="date-picker-inline"
+            {...params}
+          />
+        )}
       />
     </LocalizationProvider>
   );

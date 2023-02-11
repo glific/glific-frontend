@@ -47,7 +47,7 @@ describe('<TimePicker />', () => {
     render(wrapper);
     const input = screen.getByRole('button');
     fireEvent.click(input);
-    expect(screen.getByRole('presentation'));
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
   });
 });
 
@@ -66,6 +66,6 @@ describe('Disable <TimePicker />', () => {
     render(wrapper);
     const input = screen.getByRole('button');
     fireEvent.click(input);
-    expect(screen.queryAllByTestId('presentation')).toEqual([]);
+    expect(screen.queryByRole('dialog')).toEqual(null);
   });
 });

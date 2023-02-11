@@ -4,8 +4,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider, TimePicker as Picker } from '@mui/x-date-pickers';
 import moment from 'moment';
 import { TextField } from '@mui/material';
-// import { getIn } from 'formik';
-// import ScheduleIcon from '@mui/icons-material/Schedule';
+import { getIn } from 'formik';
 
 import styles from './TimePicker.module.css';
 
@@ -20,10 +19,8 @@ export interface TimePickerProps {
 }
 
 export const TimePicker = ({
-  // variant = 'inline',
-  // inputVariant = 'outlined',
   field,
-  form: { setFieldValue },
+  form: { setFieldValue, errors, touched },
   placeholder,
   disabled = false,
   helperText,
@@ -32,9 +29,9 @@ export const TimePicker = ({
   const timeValue = field.value ? moment(field.value, moment.defaultFormat).toDate() : null;
   const [open, setOpen] = useState(false);
 
-  // const errorText = getIn(errors, field.name);
-  // const touchedVal = getIn(touched, field.name);
-  // const hasError = touchedVal && errorText !== undefined;
+  const errorText = getIn(errors, field.name);
+  const touchedVal = getIn(touched, field.name);
+  const hasError = touchedVal && errorText !== undefined;
 
   const handleDateChange = (time: Date | null) => {
     const value = time ? moment(time).format('THH:mm:ss') : null;
@@ -46,17 +43,19 @@ export const TimePicker = ({
       <Picker
         className={styles.picker}
         label={placeholder}
-        data-testid="time-picker"
         mask="__:__ _M"
         open={open}
         InputProps={{
+          error: hasError,
           onClick: () => !disabled && setOpen(true),
         }}
         onClose={() => setOpen(false)}
         disabled={disabled}
         value={timeValue}
         onChange={handleDateChange}
-        renderInput={(params) => <TextField {...params} />}
+        renderInput={(params) => (
+          <TextField data-testid="time-picker" helperText={hasError ? errorText : ''} {...params} />
+        )}
       />
       {helperText && (
         <div id="helper-text" className={styles.HelperText}>

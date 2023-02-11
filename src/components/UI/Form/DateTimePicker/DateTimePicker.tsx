@@ -4,9 +4,8 @@ import { LocalizationProvider, DateTimePicker as Picker } from '@mui/x-date-pick
 import { TextField } from '@mui/material';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import 'date-fns';
-// import { getIn } from 'formik';
+import { getIn } from 'formik';
 
-// import { ReactComponent as CalenderIcon } from 'assets/images/icons/Calendar/Calendar.svg';
 import styles from './DateTimePicker.module.css';
 
 export interface DateTimePickerProps {
@@ -21,18 +20,16 @@ export interface DateTimePickerProps {
 }
 
 export const DateTimePicker = ({
-  // variant = 'inline',
-  // inputVariant = 'outlined',
   format = 'dd/MM/yyyy hh:mm a',
   field,
-  form: { setFieldValue },
+  form: { setFieldValue, errors, touched },
   placeholder,
   minDate,
   onChange,
 }: DateTimePickerProps) => {
-  // const errorText = getIn(errors, field.name);
-  // const touchedVal = getIn(touched, field.name);
-  // const hasError = touchedVal && errorText !== undefined;
+  const errorText = getIn(errors, field.name);
+  const touchedVal = getIn(touched, field.name);
+  const hasError = touchedVal && errorText !== undefined;
   const dateValue = field.value ? field.value : null;
 
   const handleDateChange = (date: Date | null | string) => {
@@ -41,16 +38,23 @@ export const DateTimePicker = ({
     if (onChange) onChange(value);
   };
 
-  // const icon = <CalenderIcon />;
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <Picker
         className={styles.Text}
-        data-testid="date-picker-inline"
-        renderInput={(props) => <TextField {...props} />}
+        renderInput={(props) => (
+          <TextField
+            data-testid="date-picker-inline"
+            helperText={hasError ? errorText : ''}
+            {...props}
+          />
+        )}
         label={placeholder}
         inputFormat={format}
         value={dateValue}
+        InputProps={{
+          error: hasError,
+        }}
         onChange={handleDateChange}
         minDate={minDate}
       />
