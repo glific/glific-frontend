@@ -29,7 +29,7 @@
 }
 
 .AnotherToolBar {
-  padding: '0px';
+  padding: 0px 12px !important;
 }
 
 .drawer {
@@ -69,6 +69,7 @@
 }
 .iconButton {
   margin: 0 10px 0 0;
+  padding: 12px !important;
 }
 .closedIcon {
   margin: 12px 12px 12px 15px;
@@ -79,7 +80,11 @@
   bottom: 50px;
   display: flex;
   width: 100%;
-  padding-left: 8px;
+  padding-left: 4px;
+}
+
+.BottomMenus > div {
+  margin: 0 6px;
 }
 .BottomMenusWithoutWallet {
   bottom: 10px;

@@ -42,28 +42,30 @@ export const Calendar = ({
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
-      <DatePicker
-        label={placeholder}
-        open={open}
-        value={dateValue}
-        inputFormat={format}
-        onChange={handleDateChange}
-        className={styles.CalendarInput}
-        disabled={disabled}
-        minDate={minDate}
-        InputProps={{
-          error: hasError,
-          onClick: () => !disabled && setOpen(true),
-        }}
-        onClose={() => setOpen(false)}
-        renderInput={(params) => (
-          <TextField
-            helperText={hasError ? errorText : ''}
-            data-testid="date-picker-inline"
-            {...params}
-          />
-        )}
-      />
+      <div className={styles.Calendar}>
+        <DatePicker
+          label={placeholder}
+          open={open}
+          value={dateValue}
+          inputFormat={format}
+          onChange={handleDateChange}
+          className={styles.CalendarInput}
+          disabled={disabled}
+          minDate={minDate}
+          InputProps={{
+            error: hasError,
+            onClick: () => !disabled && setOpen(true),
+          }}
+          onClose={() => setOpen(false)}
+          renderInput={(params) => (
+            <TextField
+              helperText={hasError ? errorText : ''}
+              data-testid="date-picker-inline"
+              {...params}
+            />
+          )}
+        />
+      </div>
     </LocalizationProvider>
   );
 };

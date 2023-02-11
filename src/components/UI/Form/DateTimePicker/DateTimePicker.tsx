@@ -40,24 +40,26 @@ export const DateTimePicker = ({
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
-      <Picker
-        className={styles.Text}
-        renderInput={(props) => (
-          <TextField
-            data-testid="date-picker-inline"
-            helperText={hasError ? errorText : ''}
-            {...props}
-          />
-        )}
-        label={placeholder}
-        inputFormat={format}
-        value={dateValue}
-        InputProps={{
-          error: hasError,
-        }}
-        onChange={handleDateChange}
-        minDate={minDate}
-      />
+      <div className={styles.DateTimePicker}>
+        <Picker
+          className={styles.Text}
+          renderInput={(props) => (
+            <TextField
+              data-testid="date-picker-inline"
+              helperText={hasError ? errorText : ''}
+              {...props}
+            />
+          )}
+          label={placeholder}
+          inputFormat={format}
+          value={dateValue}
+          InputProps={{
+            error: hasError,
+          }}
+          onChange={handleDateChange}
+          minDate={minDate}
+        />
+      </div>
     </LocalizationProvider>
   );
 };

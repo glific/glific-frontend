@@ -40,28 +40,34 @@ export const TimePicker = ({
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
-      <Picker
-        className={styles.picker}
-        label={placeholder}
-        mask="__:__ _M"
-        open={open}
-        InputProps={{
-          error: hasError,
-          onClick: () => !disabled && setOpen(true),
-        }}
-        onClose={() => setOpen(false)}
-        disabled={disabled}
-        value={timeValue}
-        onChange={handleDateChange}
-        renderInput={(params) => (
-          <TextField data-testid="time-picker" helperText={hasError ? errorText : ''} {...params} />
+      <div className={styles.TimePicker}>
+        <Picker
+          className={styles.Picker}
+          label={placeholder}
+          mask="__:__ _M"
+          open={open}
+          InputProps={{
+            error: hasError,
+            onClick: () => !disabled && setOpen(true),
+          }}
+          onClose={() => setOpen(false)}
+          disabled={disabled}
+          value={timeValue}
+          onChange={handleDateChange}
+          renderInput={(params) => (
+            <TextField
+              data-testid="time-picker"
+              helperText={hasError ? errorText : ''}
+              {...params}
+            />
+          )}
+        />
+        {helperText && (
+          <div id="helper-text" className={styles.HelperText}>
+            {helperText}
+          </div>
         )}
-      />
-      {helperText && (
-        <div id="helper-text" className={styles.HelperText}>
-          {helperText}
-        </div>
-      )}
+      </div>
     </LocalizationProvider>
   );
 };
