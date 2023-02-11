@@ -182,7 +182,9 @@ export const AutoComplete = ({
           freeSolo={freeSolo}
           autoSelect={autoSelect}
           disableClearable={disableClearable}
-          getOptionLabel={(option: any) => (option[optionLabel] ? option[optionLabel] : option)}
+          getOptionLabel={(option: any) =>
+            option[optionLabel] != null ? option[optionLabel] : option
+          }
           getOptionDisabled={getOptionDisabled}
           isOptionEqualToValue={(option, value) => {
             if (value) {

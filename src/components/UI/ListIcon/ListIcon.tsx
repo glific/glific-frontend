@@ -77,7 +77,7 @@ export const ListIcon = ({ icon, count, showBadge }: ListIconProps) => {
   return (
     <div>
       {showBadge && count ? (
-        <Badge badgeContent={count} color="secondary" classes={{ badge: styles.Badge }}>
+        <Badge badgeContent={count} color="warning" classes={{ badge: styles.Badge }}>
           {iconImage}
         </Badge>
       ) : (
