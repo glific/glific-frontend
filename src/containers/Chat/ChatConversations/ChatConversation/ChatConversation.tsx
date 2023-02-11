@@ -1,5 +1,5 @@
 import React from 'react';
-import { ListItem } from '@mui/material';
+import { ListItemButton } from '@mui/material';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 import { useApolloClient, useMutation } from '@apollo/client';
@@ -189,10 +189,9 @@ const ChatConversation = ({
   }
 
   return (
-    <ListItem
+    <ListItemButton
       key={index}
       data-testid="list"
-      button
       disableRipple
       className={`${styles.StyledListItem} ${selected ? styles.SelectedColor : ''}`}
       component={Link}
@@ -235,7 +234,7 @@ const ChatConversation = ({
           {moment(lastMessage.insertedAt).format(DATE_FORMAT)}
         </div>
       </div>
-    </ListItem>
+    </ListItemButton>
   );
 };
 
