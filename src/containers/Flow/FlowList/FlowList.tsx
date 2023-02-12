@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
@@ -7,7 +7,7 @@ import { useLazyQuery, useMutation } from '@apollo/client';
 import { ReactComponent as FlowIcon } from 'assets/images/icons/Flow/Dark.svg';
 import { ReactComponent as DuplicateIcon } from 'assets/images/icons/Flow/Duplicate.svg';
 import { ReactComponent as ExportIcon } from 'assets/images/icons/Flow/Export.svg';
-import { ReactComponent as ImportIcon } from 'assets/images/icons/Flow/Import.svg';
+
 import { ReactComponent as ConfigureIcon } from 'assets/images/icons/Configure/UnselectedDark.svg';
 import { ReactComponent as ContactVariable } from 'assets/images/icons/ContactVariable.svg';
 import { ReactComponent as WebhookLogsIcon } from 'assets/images/icons/Webhook/WebhookLight.svg';
@@ -16,11 +16,11 @@ import { ReactComponent as PinIcon } from 'assets/images/icons/Pin/Active.svg';
 import { FILTER_FLOW, GET_FLOW_COUNT, EXPORT_FLOW, RELEASE_FLOW } from 'graphql/queries/Flow';
 import { DELETE_FLOW, IMPORT_FLOW } from 'graphql/mutations/Flow';
 import { List } from 'containers/List/List';
+import { ImportButton } from 'components/UI/ImportButton/ImportButton';
 import Loading from 'components/UI/Layout/Loading/Loading';
 import { DATE_TIME_FORMAT } from 'common/constants';
 import { exportFlowMethod, organizationHasDynamicRole } from 'common/utils';
 import { setNotification } from 'common/notification';
-import { Button } from 'components/UI/Form/Button/Button';
 import styles from './FlowList.module.css';
 
 const getName = (text: string, keywordsList: any, roles: any) => {
@@ -79,7 +79,6 @@ const configureIcon = <ConfigureIcon />;
 export const FlowList = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const inputRef = useRef<any>(null);
 
   const [flowName, setFlowName] = useState('');
   const [importing, setImporting] = useState(false);
@@ -124,36 +123,12 @@ export const FlowList = () => {
     exportFlowMutation({ variables: { id } });
   };
 
-  const changeHandler = (event: any) => {
-    const fileReader: any = new FileReader();
-    fileReader.onload = function setImport() {
-      importFlow({ variables: { flow: fileReader.result } });
-    };
-    setImporting(true);
-    fileReader.readAsText(event.target.files[0]);
-  };
-
   const importButton = (
-    <span>
-      <input
-        type="file"
-        ref={inputRef}
-        hidden
-        name="file"
-        onChange={changeHandler}
-        data-testid="import"
-      />
-      <Button
-        onClick={() => {
-          if (inputRef.current) inputRef.current.click();
-        }}
-        variant="contained"
-        color="primary"
-      >
-        {t('Import flow')}
-        <ImportIcon />
-      </Button>
-    </span>
+    <ImportButton
+      title={t('Import flow')}
+      onImport={() => setImporting(true)}
+      afterImport={(result: string) => importFlow({ variables: { flow: result } })}
+    />
   );
 
   const additionalAction = [
