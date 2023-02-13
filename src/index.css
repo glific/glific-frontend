@@ -109,7 +109,7 @@ html {
   --color-error: rgb(var(--error-rgb));
   --color-alert: rgb(var(--error-rgb));
 
-  --font-size: 14px;
+  --font-size: 16px;
   --button-font-size: 1.125rem;
 
   --icon-color: var(--text-color);
@@ -137,10 +137,6 @@ html {
   --options-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   --dropdown-shadow: rgb(0 0 0 / 30%) 0px 0px 60px, rgb(0 0 0 / 12%) 0px 6px 12px;
 
-  font-size: var(--font-size);
-  font-weight: 300;
-  font-family: var(--font-family);
-
   --button-y: 6px;
   --button-x: 14px;
 
@@ -148,6 +144,12 @@ html {
 
   --menu-padding: 1em;
   --bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+#flow {
+  font-size: var(--font-size);
+  font-weight: 300;
+  font-family: var(--font-family);
 }
 
 temba-button {
