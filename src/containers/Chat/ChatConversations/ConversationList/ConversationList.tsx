@@ -433,8 +433,8 @@ export const ConversationList = ({
           query: SEARCH_QUERY,
           variables: conversationLoadMoreVariables,
         })
-        .then(({ data: searchData }) => {
-          if (searchData && searchData.search.length === 0) {
+        .then(({ data: loadMoreData }) => {
+          if (loadMoreData && loadMoreData.search.length === 0) {
             setShowLoadMore(false);
           } else {
             // Now if there is search string and tab is collection then load more will return appropriate data
@@ -443,14 +443,14 @@ export const ConversationList = ({
               variables.filter.groupLabel = searchVal;
             }
             // save the conversation and update cache
-            updateConversations(searchData, variables);
+            updateConversations(loadMoreData, variables);
             setShowLoadMore(true);
 
             setLoadingOffset(loadingOffset + DEFAULT_CONTACT_LOADMORE_LIMIT);
           }
           setShowLoading(false);
         })
-        .catch((error) => setShowLoading(false));
+        .catch(() => setShowLoading(false));
     }
   };
 
