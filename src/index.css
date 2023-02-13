@@ -109,7 +109,7 @@ html {
   --color-error: rgb(var(--error-rgb));
   --color-alert: rgb(var(--error-rgb));
 
-  --font-size: 16px;
+  --font-size: 14px;
   --button-font-size: 1.125rem;
 
   --icon-color: var(--text-color);
