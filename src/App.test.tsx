@@ -1,7 +1,7 @@
 import { MemoryRouter } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 import { waitFor, render } from '@testing-library/react';
-import { vi } from 'vitest';
+import { vi, describe, it } from 'vitest';
 
 import App from 'App';
 import { CONVERSATION_MOCKS } from 'mocks/Chat';
@@ -17,11 +17,7 @@ vi.mock('axios', () => {
   };
 });
 
-global.fetch = vi.fn(() =>
-  Promise.resolve({
-    json: () => Promise.resolve({ test: 100 }),
-  })
-) as vi.Mock;
+global.fetch = vi.fn();
 
 const app = (
   <MockedProvider mocks={mocks} addTypename={false}>
@@ -32,7 +28,7 @@ const app = (
 );
 
 describe('<App /> ', () => {
-  test('it should render <Login /> component by default', async () => {
+  it('it should render <Login /> component by default', async () => {
     const { getByTestId } = render(app);
 
     await waitFor(() => {
@@ -40,14 +36,14 @@ describe('<App /> ', () => {
     });
   });
 
-  test('it should render <App /> component correctly', async () => {
+  it('it should render <App /> component correctly', async () => {
     const { container } = render(app);
     await waitFor(() => {
       expect(container).toBeInTheDocument();
     });
   });
 
-  test('it should render <Chat /> component if session is active', async () => {
+  it('it should render <Chat /> component if session is active', async () => {
     // let's create token expiry date for tomorrow
 
     const tokenExpiryDate = new Date();
