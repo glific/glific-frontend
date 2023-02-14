@@ -1,5 +1,6 @@
 .Card {
   width: 31%;
+  cursor: pointer;
   position: relative !important;
   margin-right: 24px;
   margin-bottom: 24px;
