@@ -56,7 +56,7 @@ export const SheetIntegrationList = () => {
         handleOk={() => setShowDialog(false)}
       >
         {warningKeys.map((key, index) => (
-          <div className={styles.DialogContent}>
+          <div key={key} className={styles.DialogContent}>
             <strong>
               {index + 1}. {key}:
             </strong>{' '}
