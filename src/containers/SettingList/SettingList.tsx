@@ -1,10 +1,9 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
 import Typography from '@material-ui/core/Typography/Typography';
 import { Card, CardContent, CardActions, IconButton } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { GET_PROVIDERS } from 'graphql/queries/Organization';
 import { ReactComponent as Settingicon } from 'assets/images/icons/Settings/Settings.svg';
@@ -12,6 +11,7 @@ import { ReactComponent as EditIcon } from 'assets/images/icons/Edit.svg';
 import styles from './SettingList.module.css';
 
 export const SettingList = () => {
+  const navigate = useNavigate();
   const { t } = useTranslation();
   const { data: providerData, loading } = useQuery(GET_PROVIDERS);
 
@@ -56,6 +56,7 @@ export const SettingList = () => {
             className={styles.Card}
             key={data.shortcode}
             data-testid={data.shortcode}
+            onClick={() => navigate(`/settings/${data.shortcode}`)}
           >
             <CardContent className={styles.CardContent}>
               <div data-testid="label" className={styles.Label}>
