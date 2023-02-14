@@ -4,6 +4,7 @@ export const CREATE_CONTACT_FIELDS = gql`
   mutation createContactsField($input: ContactsFieldInput!) {
     createContactsField(input: $input) {
       contactsField {
+        variable
         valueType
         updatedAt
         shortcode
