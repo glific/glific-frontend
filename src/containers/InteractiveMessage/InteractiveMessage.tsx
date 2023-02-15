@@ -49,6 +49,7 @@ export const InteractiveMessage = () => {
   const location: any = useLocation();
   const navigate = useNavigate();
   const [title, setTitle] = useState('');
+  const [footer, setFooter] = useState('');
   const [body, setBody] = useState(EditorState.createEmpty());
   const [templateType, setTemplateType] = useState<string>(QUICK_REPLY);
   const [templateButtons, setTemplateButtons] = useState<Array<any>>([{ value: '' }]);
@@ -114,6 +115,7 @@ export const InteractiveMessage = () => {
   const states = {
     language,
     title,
+    footer,
     body,
     globalButton,
     templateButtons,
@@ -136,7 +138,9 @@ export const InteractiveMessage = () => {
 
       setLanguage(selectedLangauge);
     }
+
     setTitle(data.title);
+    setFooter(data.footer);
     setBody(getEditorFromContent(data.body));
     setTemplateType(typeValue);
     setTimeout(() => setTemplateButtons(data.templateButtons), 100);
@@ -203,6 +207,7 @@ export const InteractiveMessage = () => {
     }
 
     setTitle(titleText);
+    setFooter(data.footer);
     setBody(getEditorFromContent(data.body));
     setTemplateType(typeValue);
     setTimeout(() => setTemplateButtons(data.templateButtons), 100);
@@ -479,6 +484,19 @@ export const InteractiveMessage = () => {
       inputProp: {
         suggestions: contactVariables,
       },
+    },
+    {
+      skip: templateType !== QUICK_REPLY,
+      translation:
+        hasTranslations && getTranslation(templateType, 'footer', translations, defaultLanguage),
+      component: Input,
+      name: 'footer',
+      type: 'text',
+      placeholder: t('Footer'),
+      inputProp: {
+        onBlur: (event: any) => setFooter(event.target.value),
+      },
+      helperText: t('Only alphanumeric characters and spaces are allowed'),
     },
     {
       translation:
