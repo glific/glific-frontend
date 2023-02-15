@@ -91,6 +91,10 @@ export const validator = (templateType: any, t: any) => {
       .min(1)
       .max(3);
 
+    validation.footer = Yup.string()
+      .nullable()
+      .max(60, t('Footer value can be at most 60 characters'));
+
     validation.type = Yup.object()
       .nullable()
       .when('attachmentURL', {

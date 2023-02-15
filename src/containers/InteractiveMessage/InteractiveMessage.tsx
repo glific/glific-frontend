@@ -703,6 +703,7 @@ export const InteractiveMessage = () => {
     const payload = {
       title,
       body,
+      footer,
       attachmentURL,
       language,
     };
