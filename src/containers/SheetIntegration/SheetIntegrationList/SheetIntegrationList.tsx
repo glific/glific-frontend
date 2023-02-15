@@ -70,15 +70,18 @@ export const SheetIntegrationList = () => {
   const [syncSheetMutation] = useMutation(SYNC_SHEET, {
     fetchPolicy: 'network-only',
     onCompleted: async ({ syncSheet }) => {
+      const notificationMessage = 'Data is successfully fetched from the Google sheet.';
       if (syncSheet.sheet && syncSheet.sheet.warnings) {
         const sheetWarnings = JSON.parse(syncSheet.sheet.warnings);
 
         if (Object.keys(sheetWarnings).length) {
           setShowDialog(true);
           setWarnings(sheetWarnings);
+        } else {
+          setNotification(notificationMessage);
         }
       } else {
-        setNotification('Data is successfully fetched from the Google sheet.');
+        setNotification(notificationMessage);
       }
     },
   });
