@@ -7,10 +7,6 @@ import { setUserSession } from 'services/AuthService';
 import { mocks, contactFieldErrorMock } from 'mocks/ContactFields';
 import ContactFieldList from './ContactFieldList';
 
-const props = {
-  openDialog: false,
-};
-
 jest.mock('react-router-dom', () => ({
   ...(jest.requireActual('react-router-dom') as {}),
 
@@ -22,7 +18,7 @@ setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
 const list = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <Router>
-      <ContactFieldList {...props} />
+      <ContactFieldList />
     </Router>
   </MockedProvider>
 );
@@ -72,7 +68,7 @@ errorMock.push(contactFieldErrorMock);
 const listError = (
   <MockedProvider mocks={errorMock}>
     <Router>
-      <ContactFieldList {...props} />
+      <ContactFieldList />
     </Router>
   </MockedProvider>
 );

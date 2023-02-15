@@ -8,7 +8,7 @@ setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
 
 const wrapper = (
   <MockedProvider mocks={[]} addTypename={false}>
-    <ContactField />
+    <ContactField setOpenDialog={jest.fn()} />
   </MockedProvider>
 );
 
