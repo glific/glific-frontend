@@ -496,7 +496,6 @@ export const InteractiveMessage = () => {
       inputProp: {
         onBlur: (event: any) => setFooter(event.target.value),
       },
-      helperText: t('Only alphanumeric characters and spaces are allowed'),
     },
     {
       translation:
