@@ -7,6 +7,7 @@ import { ERROR_MESSAGE } from 'graphql/queries/Notification';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { setErrorMessage } from 'common/notification';
 import setLogs from 'config/logs';
+import styles from './ErrorHandler.module.css';
 
 const ErrorHandler = () => {
   const { t } = useTranslation();
@@ -63,7 +64,7 @@ const ErrorHandler = () => {
           alignButtons="center"
           contentAlign="center"
         >
-          {message}
+          <div className={styles.Message}>{message}</div>
         </DialogBox>
       </div>
     </Container>
