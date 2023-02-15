@@ -97,7 +97,7 @@ export const ChatMessageType = ({
     case 'VIDEO': {
       const videoStyles = isContextMessage ? styles.ContextMessageVideo : styles.Video;
       messageBody = (
-        <div className={`${isContextMessage && styles.ContentMessageContainer}`}>
+        <div className={isContextMessage ? styles.ContentMessageContainer : ''}>
           <div data-testid="videoMessage">
             <ReactPlayer
               className={isSimulatedMessage ? styles.SimulatorVideo : videoStyles}
