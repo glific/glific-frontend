@@ -262,7 +262,7 @@
   "Provider status": "Provider status",
   "Contact Profile": "Contact Profile",
   "My Profile": "My Profile",
-  "You won't be able to send the messages to this contact.": "You won't be able to send the messages to this contact.",
+  "You won't be able to send messages to this contact.": "You won't be able to send messages to this contact.",
   "Description is required.": "Description is required.",
   "You won't be able to use this role again.": "You won't be able to use this role again.",
   "Label": "Label",
@@ -407,5 +407,6 @@
   "Bulk apply": "Bulk apply",
   "Error importing templates": "Error importing templates",
   "Templates applied successfully. Please check the csv file for the results": "Templates applied successfully. Please check the csv file for the results",
-  "An error occured! Please check the format of the file": "An error occured! Please check the format of the file"
+  "An error occured! Please check the format of the file": "An error occured! Please check the format of the file",
+  "You won't be able to send messages to this profile.": "You won't be able to send messages to this profile."
 }

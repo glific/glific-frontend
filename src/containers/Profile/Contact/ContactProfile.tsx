@@ -47,6 +47,7 @@ export const ContactProfile = () => {
   const { loading: profileLoading, data: profileData } = useQuery(GET_CONTACT_PROFILES, {
     variables: { filter: { contactId: params.id } },
     skip: !isContactProfileEnabled,
+    fetchPolicy: 'network-only',
   });
 
   useEffect(() => {
@@ -120,7 +121,7 @@ export const ContactProfile = () => {
           multiProfileAttributes={switchProfile}
           profileType="Contact"
           redirectionLink={`chat/${params.id}`}
-          afterDelete={{ link: '/chat' }}
+          afterDelete={{ link: selectedProfile ? `/contact-profile/${params.id}` : '/chat' }}
           removePhoneField
         />
         <ContactHistory contactId={params.id} profileId={selectedProfileId} />
