@@ -1,4 +1,3 @@
-import React from 'react';
 import { FormControl, FormHelperText } from '@material-ui/core';
 import 'react-phone-input-2/lib/bootstrap.css';
 import { getIn } from 'formik';

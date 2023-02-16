@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { useLazyQuery, useQuery } from '@apollo/client';
 import { FILTER_ORGANIZATIONS } from 'graphql/queries/Organization';

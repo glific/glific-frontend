@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Popper from '@material-ui/core/Popper';
 import { Button } from '@material-ui/core';
 import Fade from '@material-ui/core/Fade';

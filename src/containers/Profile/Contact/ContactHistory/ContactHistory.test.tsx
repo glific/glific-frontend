@@ -8,7 +8,11 @@ import {
   contactHistoryQueryUpdatedOffset,
 } from 'mocks/Contact';
 
-export const mocks = [contactHistoryQuery, countContactHistoryQuery, contactHistoryQueryUpdatedOffset];
+export const mocks = [
+  contactHistoryQuery,
+  countContactHistoryQuery,
+  contactHistoryQueryUpdatedOffset,
+];
 const defaultProps = {
   contactId: '1',
 };

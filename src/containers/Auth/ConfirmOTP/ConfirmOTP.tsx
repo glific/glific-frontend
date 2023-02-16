@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Navigate, useLocation } from 'react-router-dom';
 import * as Yup from 'yup';

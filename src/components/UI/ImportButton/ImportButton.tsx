@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import { useRef } from 'react';
 import { ReactComponent as ImportIcon } from 'assets/images/icons/Flow/Import.svg';
 import { Button } from 'components/UI/Form/Button/Button';
 
