@@ -32,11 +32,11 @@
 }
 
 .SelectedText {
-  font-size: 1rem;
+  font-size: 0.875rem;
   color: #119656;
 }
 
 .UnselectedText {
-  font-size: 1rem;
+  font-size: 0.875rem;
   color: #93a29b;
 }

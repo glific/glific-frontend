@@ -17,7 +17,6 @@ const theme = createTheme({
   },
   typography: {
     fontFamily: ['heebo', 'sans-serif'].join(','),
-    fontSize: 16,
   },
   components: {
     MuiTableSortLabel: {
