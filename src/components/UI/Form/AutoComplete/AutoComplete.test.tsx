@@ -83,13 +83,30 @@ describe('<AutoComplete />', () => {
     render(<AutoComplete {...getAsyncProps({})} />);
     const autocomplete = screen.getByTestId('autocomplete-element');
     expect(autocomplete).toBeInTheDocument();
-    const message = screen.queryByText('Messages');
-    expect(message).toBeInTheDocument();
+
+    const input = within(autocomplete).getByRole('combobox');
+    autocomplete.focus();
+    fireEvent.change(input, { target: { value: 'M' } });
+    fireEvent.keyDown(autocomplete, { key: 'ArrowDown' });
+    const message = screen.queryAllByText('Messages');
+    expect(message[0]).toBeInTheDocument();
   });
 
   it('should not render the selected values in input field if the renderTags prop is false', () => {
     render(<AutoComplete {...getAsyncProps({ renderTags: false, selectedOptionsIds: ['1'] })} />);
     const message = screen.queryByText('Messages');
     expect(message).not.toBeInTheDocument();
+  });
+
+  it('should call roleSelection function if it is passed in props', () => {
+    const roleSelectionMock = jest.fn();
+    render(<AutoComplete {...getProps({ roleSelection: roleSelectionMock })} />);
+    const autocomplete = screen.getByTestId('autocomplete-element');
+    const input = within(autocomplete).getByRole('combobox');
+    autocomplete.focus();
+    fireEvent.change(input, { target: { value: 'M' } });
+    fireEvent.keyDown(autocomplete, { key: 'ArrowDown' });
+    fireEvent.keyDown(autocomplete, { key: 'Enter' });
+    expect(roleSelectionMock).toHaveBeenCalled();
   });
 });

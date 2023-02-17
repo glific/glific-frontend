@@ -177,13 +177,10 @@ export const AutoComplete = ({
             option[optionLabel] != null ? option[optionLabel] : option
           }
           getOptionDisabled={getOptionDisabled}
-          isOptionEqualToValue={(option, value) => {
-            if (value) {
-              return option[valueElementName] === value[valueElementName];
-            }
-            return false;
-          }}
-          onChange={(event, value: any) => {
+          isOptionEqualToValue={(option, value) =>
+            option[valueElementName] === value[valueElementName]
+          }
+          onChange={(_event, value: any) => {
             if (roleSelection) {
               roleSelection(value);
             }
