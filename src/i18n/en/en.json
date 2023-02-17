@@ -358,7 +358,7 @@
   "Message is required.": "Message is required.",
   "Attachment URL is required.": "Attachment URL is required.",
   "Submit for Approval": "Submit for Approval",
-  "Create HSM Template": "Create HSM Template",
+  "Create": "Create",
   "Create Speed Send": "Create Speed Send",
   "Approved": "Approved",
   "Pending": "Pending",
@@ -403,5 +403,9 @@
   "Request JSON": "Request JSON",
   "Response JSON": "Response JSON",
   "Webhook Logs": "Webhook Logs",
-  "Invalid captcha": "Invalid captcha"
+  "Invalid captcha": "Invalid captcha",
+  "Bulk apply": "Bulk apply",
+  "Error importing templates": "Error importing templates",
+  "Templates applied successfully. Please check the csv file for the results": "Templates applied successfully. Please check the csv file for the results",
+  "An error occured! Please check the format of the file": "An error occured! Please check the format of the file"
 }

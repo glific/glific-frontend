@@ -98,3 +98,15 @@ export const SYNC_HSM_TEMPLATES = gql`
     }
   }
 `;
+
+export const BULK_APPLY_TEMPLATES = gql`
+  mutation BulkApplyTemplates($data: String) {
+    bulkApplyTemplates(data: $data) {
+      errors {
+        message
+        key
+      }
+      csv_rows
+    }
+  }
+`;
