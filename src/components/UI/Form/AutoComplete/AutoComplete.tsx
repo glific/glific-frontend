@@ -123,12 +123,6 @@ export const AutoComplete = ({
     return option;
   };
 
-  /**
-   *
-   * @param value Callback value
-   * @param getTagProps Render tag props
-   *
-   */
   const getRenderTags = (value: Array<any>, getTagProps: any) => {
     let tagsToRender = value;
 
@@ -139,6 +133,7 @@ export const AutoComplete = ({
      * only post selected options will be visible
 
      */
+
     if (!renderTags) {
       tagsToRender = value.filter((option: any) => !selectedOptionsIds.includes(option.id));
     }
@@ -146,10 +141,6 @@ export const AutoComplete = ({
     return tagsToRender.map((option: any, index: number) => {
       const props = getTagProps({ index });
 
-      /**
-       * If disableClearable is true, removing onDelete event
-       * deleteIcon component will be disabled, when onDelete is absent
-       */
       if (disableClearable) {
         delete props.onDelete;
       }

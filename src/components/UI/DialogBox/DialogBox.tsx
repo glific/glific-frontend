@@ -89,7 +89,12 @@ export const DialogBox = ({
 
   if (buttonMiddle) {
     middleButtonDisplay = (
-      <Button onClick={() => handleMiddle()} color="primary" variant="outlined">
+      <Button
+        onClick={() => handleMiddle()}
+        color="primary"
+        variant="outlined"
+        data-testid="middle-button"
+      >
         {buttonMiddle}
       </Button>
     );

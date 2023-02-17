@@ -56,3 +56,10 @@ test('handleOk and onChange function', () => {
   fireEvent.click(getByTestId('ok-button'));
   expect(mockCallbackOK).toBeCalled();
 });
+
+test('click on ok button without selecting value', () => {
+  const { getByTestId } = render(dialogBox);
+
+  fireEvent.click(getByTestId('ok-button'));
+  expect(mockCallbackOK).toBeCalledTimes(0);
+});
