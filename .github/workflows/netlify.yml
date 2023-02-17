@@ -1,7 +1,7 @@
 name: Build and Deploy to Netlify
 on:
   pull_request:
-    branches: [master]
+    branches: []
 
 jobs:
   build:
