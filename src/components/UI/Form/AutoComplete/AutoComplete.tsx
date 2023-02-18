@@ -36,7 +36,6 @@ export interface AutocompleteProps {
   noOptionsText?: any;
   onChange?: any;
   asyncSearch?: boolean;
-  roleSelection?: any;
   openOptions?: boolean;
   disableClearable?: boolean;
   listBoxProps?: any;
@@ -65,7 +64,6 @@ export const AutoComplete = ({
   autoSelect = false,
   getOptions,
   asyncValues,
-  roleSelection,
   onChange,
   asyncSearch = false,
   helpLink,
@@ -181,18 +179,8 @@ export const AutoComplete = ({
             option[valueElementName] === value[valueElementName]
           }
           onChange={(_event, value: any) => {
-            if (roleSelection) {
-              roleSelection(value);
-            }
             if (asyncSearch && value.length > 0) {
-              const filterValues = asyncValues.value.filter(
-                (val: any) => val.id !== value[value.length - 1].id
-              );
-              if (filterValues.length === value.length - 2) {
-                asyncValues.setValue(filterValues);
-              } else {
-                asyncValues.setValue([...value]);
-              }
+              asyncValues.setValue([...value]);
               setSearchTerm('');
               onChange('');
             } else if (asyncSearch && value.length === 0) {

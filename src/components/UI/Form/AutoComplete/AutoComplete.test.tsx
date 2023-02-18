@@ -21,6 +21,8 @@ describe('<AutoComplete />', () => {
     form: { dirty: false, touched: false, errors: false, setFieldValue: mockHandleChange },
   });
 
+  const setValueMock = jest.fn();
+
   const getAsyncProps = (additionalProps: any) => ({
     ...additionalProps,
     label: 'Example',
@@ -32,7 +34,7 @@ describe('<AutoComplete />', () => {
     asyncSearch: true,
     asyncValues: {
       value: [{ id: '1', label: 'Messages' }],
-      setValue: jest.fn(),
+      setValue: setValueMock,
     },
   });
 
@@ -98,15 +100,47 @@ describe('<AutoComplete />', () => {
     expect(message).not.toBeInTheDocument();
   });
 
-  it('should call roleSelection function if it is passed in props', () => {
-    const roleSelectionMock = jest.fn();
-    render(<AutoComplete {...getProps({ roleSelection: roleSelectionMock })} />);
+  it('test onChange with asyncSearch true and have multiple values', () => {
+    const props = getAsyncProps({});
+    props.asyncValues.value = [
+      { id: '1', label: 'Messages' },
+      { id: '2', label: 'Messages 2' },
+    ];
+    props.options = [
+      { id: '1', label: 'Messages' },
+      { id: '2', label: 'Messages 2' },
+    ];
+    render(<AutoComplete {...props} />);
     const autocomplete = screen.getByTestId('autocomplete-element');
     const input = within(autocomplete).getByRole('combobox');
     autocomplete.focus();
     fireEvent.change(input, { target: { value: 'M' } });
     fireEvent.keyDown(autocomplete, { key: 'ArrowDown' });
     fireEvent.keyDown(autocomplete, { key: 'Enter' });
-    expect(roleSelectionMock).toHaveBeenCalled();
+
+    expect(setValueMock).toHaveBeenCalled();
+  });
+
+  it('test onChange with asyncSearch true and have a single value', () => {
+    const props = getAsyncProps({});
+    render(<AutoComplete {...props} />);
+    const autocomplete = screen.getByTestId('autocomplete-element');
+    const input = within(autocomplete).getByRole('combobox');
+    autocomplete.focus();
+    fireEvent.change(input, { target: { value: 'M' } });
+    fireEvent.keyDown(autocomplete, { key: 'ArrowDown' });
+    fireEvent.keyDown(autocomplete, { key: 'Enter' });
+
+    expect(setValueMock).toHaveBeenCalled();
+  });
+
+  it('should have a help link button if the props are passed', () => {
+    const handleClickMock = jest.fn();
+    render(
+      <AutoComplete {...getProps({ helpLink: { handleClick: handleClickMock, label: 'Help' } })} />
+    );
+    const helpButton = screen.getByTestId('helpButton');
+    fireEvent.keyDown(helpButton, { key: 'Enter' });
+    expect(handleClickMock).toHaveBeenCalled();
   });
 });
