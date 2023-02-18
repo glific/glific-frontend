@@ -1,4 +1,3 @@
-import React from 'react';
 import moment from 'moment';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';

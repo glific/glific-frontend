@@ -1,5 +1,5 @@
 // eslint-disable-next-line
-import React, { useContext, useEffect, CSSProperties } from 'react';
+import { useContext, useEffect, CSSProperties } from 'react';
 import axios from 'axios';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useApolloClient } from '@apollo/client';

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import * as Yup from 'yup';
 import { Typography, IconButton } from '@material-ui/core';
 import { Formik, Form, Field } from 'formik';
@@ -167,11 +167,7 @@ export const MyAccount = () => {
   if (!showOTPButton) {
     formFieldLayout = formFields.map((field: any, index) => {
       const key = index;
-      return (
-        <React.Fragment key={key}>
-          <Field key={key} {...field} />
-        </React.Fragment>
-      );
+      return <Field key={key} {...field} />;
     });
   }
 

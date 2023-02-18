@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, Fragment } from 'react';
 import { Navigate, Link, useParams } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
 // eslint-disable-next-line no-unused-vars
@@ -541,14 +541,14 @@ export const FormLayout = ({
             }
 
             return (
-              <React.Fragment key={key}>
+              <Fragment key={key}>
                 {field.label && (
                   <Typography variant="h5" className={styles.FieldLabel}>
                     {field.label}
                   </Typography>
                 )}
                 <Field key={key} {...field} onSubmit={submitForm} />
-              </React.Fragment>
+              </Fragment>
             );
           })}
           <div className={styles.Buttons}>
