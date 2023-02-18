@@ -8,6 +8,7 @@ describe('<PhoneInput />', () => {
     field: { name: 'example', value: '' },
     placeholder: 'Your phone number',
     form: { errors: false, setFieldValue: null },
+    errorText: 'Please provide a valid number',
   };
   const phoneInput = () => <PhoneInput {...props} />;
 
