@@ -114,9 +114,11 @@
     ]
   },
   "jest": {
+    "errorOnDeprecated": true,
     "collectCoverageFrom": [
       "src/**/*.{ts,tsx}",
       "!src/config/*.{ts,tsx}",
+      "!src/common/*.{ts,tsx}",
       "!src/serviceWorker.ts",
       "!src/react-app-env.d.ts",
       "!src/index.tsx",
