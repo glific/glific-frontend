@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, forwardRef } from 'react';
 import { RichUtils, Modifier, EditorState, ContentState } from 'draft-js';
 import Editor from '@draft-js-plugins/editor';
 import createMentionPlugin from '@draft-js-plugins/mention';
@@ -49,10 +49,9 @@ const customSuggestionsFilter = (searchValue: string, suggestions: Array<any>) =
   return filteredSuggestions.slice(0, length);
 };
 
-const DraftField = (inputProps: any) => {
+const DraftField = forwardRef((inputProps: any, ref) => {
   const {
     component: Component,
-    editorRef,
     open,
     suggestions,
     onOpenChange,
@@ -64,7 +63,7 @@ const DraftField = (inputProps: any) => {
 
   return (
     <>
-      <Component ref={editorRef} editorKey="editor" plugins={plugins} {...other} />
+      <Component ref={ref} editorKey="editor" plugins={plugins} {...other} />
       <MentionSuggestions
         open={open}
         onOpenChange={onOpenChange}
@@ -73,7 +72,7 @@ const DraftField = (inputProps: any) => {
       />
     </>
   );
-};
+});
 
 export const EmojiInput = ({
   field: { value, name, onBlur },
