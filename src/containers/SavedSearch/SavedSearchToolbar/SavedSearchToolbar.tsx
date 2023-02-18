@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useQuery, useSubscription } from '@apollo/client';
 import { IconButton, Popper, Fade, Paper, ClickAwayListener } from '@material-ui/core';
 

@@ -1,4 +1,3 @@
-import React from 'react';
 import { useQuery } from '@apollo/client';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';

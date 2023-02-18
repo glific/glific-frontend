@@ -1,4 +1,3 @@
-import React from 'react';
 import { Button, TextField, FormHelperText, FormControl } from '@material-ui/core';
 
 import { ReactComponent as CrossIcon } from 'assets/images/icons/Cross.svg';

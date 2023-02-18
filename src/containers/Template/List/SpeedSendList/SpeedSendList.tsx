@@ -1,4 +1,3 @@
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ReactComponent as SpeedSendIcon } from 'assets/images/icons/SpeedSend/Dark.svg';

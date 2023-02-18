@@ -1,4 +1,3 @@
-import React from 'react';
 import { ReactTinyLink } from 'react-tiny-link';
 
 import { WhatsAppToJsx } from '../../../../common/RichEditor';
