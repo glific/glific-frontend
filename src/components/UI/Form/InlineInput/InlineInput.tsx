@@ -46,6 +46,7 @@ export const InlineInput = ({
     <div ref={containerRef} onBlur={handleClose}>
       <TextField
         variant="outlined"
+        data-testid="inline-input"
         value={inputVal}
         label={label}
         fullWidth
