@@ -63,7 +63,11 @@ export const Checkbox = ({
         </Tooltip>
       )}
       {info && infoType === 'dialog' && (
-        <InfoIcon className={styles.InfoIcon} onClick={() => handleInfoClick()} />
+        <InfoIcon
+          className={styles.InfoIcon}
+          data-testid="info-icon"
+          onClick={() => handleInfoClick()}
+        />
       )}
     </div>
   );
