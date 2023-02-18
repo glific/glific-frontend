@@ -1,4 +1,5 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { backspace } from 'common/test-utils';
 import { Calendar } from './Calendar';
 
 const setFieldValueMock = jest.fn();
@@ -38,37 +39,6 @@ describe('<Calendar />', () => {
     fireEvent.change(input, { target: { value: '09/03/2020' } });
     expect(input).toHaveValue('09/03/2020');
   });
-
-  function backspace(element: any) {
-    let actuallyTyped = element.value;
-
-    const backspaceKey = {
-      key: 'Backspace',
-      code: 8,
-      inputType: 'deleteContentBackward',
-    };
-
-    const sharedEventConfig = {
-      key: backspaceKey.key,
-      charCode: backspaceKey.code,
-      keyCode: backspaceKey.code,
-      which: backspaceKey.code,
-    };
-    const downEvent = fireEvent.keyDown(element, sharedEventConfig);
-
-    if (downEvent) {
-      actuallyTyped = actuallyTyped.slice(0, -1);
-
-      fireEvent.input(element, {
-        target: { value: actuallyTyped },
-        inputType: backspaceKey.inputType,
-        bubbles: true,
-        cancelable: true,
-      });
-    }
-
-    fireEvent.keyUp(element, sharedEventConfig);
-  }
 
   it('should set the field value to null if no date is passed', async () => {
     render(wrapper);
