@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Viewer from 'react-viewer';
 import ReactPlayer from 'react-player';
 import HtmlImgFallback from 'components/UI/ImgFallback/ImgFallback';

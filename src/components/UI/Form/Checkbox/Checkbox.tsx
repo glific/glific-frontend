@@ -1,4 +1,3 @@
-import React from 'react';
 import { Checkbox as CheckboxElement, FormControlLabel } from '@material-ui/core';
 import { ReactComponent as InfoIcon } from 'assets/images/icons/Info.svg';
 

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Button } from '@material-ui/core';
 import { v4 as uuidv4 } from 'uuid';
 

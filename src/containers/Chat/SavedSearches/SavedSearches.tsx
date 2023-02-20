@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/client';
 import { Container } from '@material-ui/core';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import searchIcon from 'assets/images/icons/Search/Desktop.svg';

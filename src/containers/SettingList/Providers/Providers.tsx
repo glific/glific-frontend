@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery, useApolloClient } from '@apollo/client';
 import Typography from '@material-ui/core/Typography';
 import * as Yup from 'yup';

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { chatRoutes } from 'routes/AuthenticatedRoute/AuthenticatedRoute';
 import { ChatSubscription } from './ChatSubscription/ChatSubscription';
