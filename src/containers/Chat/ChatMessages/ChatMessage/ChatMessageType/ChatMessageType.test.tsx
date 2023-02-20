@@ -75,11 +75,11 @@ test('show image on viewer', async () => {
 
   spy.mockImplementation((props: any) => {
     const { onClick } = props;
-    return <img data-testid="mock-image" onClick={() => onClick()}></img>;
+    return <img data-testid="image-fallback" onClick={() => onClick()}></img>;
   });
   const { getByTestId } = render(<ChatMessageType {...defaultProps('IMAGE')} />);
   //opens the image with react viewer
-  fireEvent.click(getByTestId('mock-image'));
+  fireEvent.click(getByTestId('image-fallback'));
 
   expect(getByTestId('reactViewer')).toBeInTheDocument();
   fireEvent.click(getByTestId('reactViewer'));
