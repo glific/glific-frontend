@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';

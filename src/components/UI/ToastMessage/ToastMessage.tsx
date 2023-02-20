@@ -1,4 +1,3 @@
-import React from 'react';
 import { Snackbar, Alert } from '@mui/material';
 
 import { ReactComponent as CrossIcon } from 'assets/images/icons/Cross.svg';

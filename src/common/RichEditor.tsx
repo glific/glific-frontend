@@ -1,4 +1,3 @@
-import React from 'react';
 import { EditorState, ContentState } from 'draft-js';
 import CallIcon from '@mui/icons-material/Call';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';

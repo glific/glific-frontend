@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Container, IconButton } from '@mui/material';
 import CancelOutlined from '@mui/icons-material/CancelOutlined';
 import { useApolloClient, useQuery } from '@apollo/client/react';

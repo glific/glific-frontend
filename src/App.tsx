@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import { ApolloProvider } from '@apollo/client';
 import 'i18n/config';

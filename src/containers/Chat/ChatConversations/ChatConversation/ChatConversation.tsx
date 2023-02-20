@@ -1,4 +1,3 @@
-import React from 'react';
 import { ListItemButton } from '@mui/material';
 import { Link } from 'react-router-dom';
 import moment from 'moment';

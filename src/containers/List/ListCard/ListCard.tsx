@@ -1,4 +1,3 @@
-import React from 'react';
 import { Card, CardContent, Typography, CardActions } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';

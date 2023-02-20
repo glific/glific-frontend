@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import { useQuery } from '@apollo/client';
 import { useNavigate } from 'react-router-dom';

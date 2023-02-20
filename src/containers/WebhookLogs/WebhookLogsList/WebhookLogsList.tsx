@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Popover } from '@mui/material';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
