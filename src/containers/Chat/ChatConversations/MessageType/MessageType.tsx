@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { ReactComponent as ImageIcon } from 'assets/images/icons/Image.svg';
 import { ReactComponent as VideoIcon } from 'assets/images/icons/Video.svg';
 import { ReactComponent as AudioIcon } from 'assets/images/icons/Audio.svg';

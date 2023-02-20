@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { EditorState } from 'draft-js';
 import { useTranslation } from 'react-i18next';

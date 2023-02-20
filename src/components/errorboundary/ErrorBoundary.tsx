@@ -1,7 +1,7 @@
 import { Container } from '@material-ui/core';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import setLogs from 'config/logs';
-import React, { Component } from 'react';
+import { Component } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './ErrorBoundary.module.css';
 

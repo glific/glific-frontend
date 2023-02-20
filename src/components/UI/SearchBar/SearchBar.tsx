@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { InputBase, IconButton, InputAdornment } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { useTranslation } from 'react-i18next';

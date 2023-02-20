@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from 'components/UI/Form/Button/Button';
 import { useMutation } from '@apollo/client';
