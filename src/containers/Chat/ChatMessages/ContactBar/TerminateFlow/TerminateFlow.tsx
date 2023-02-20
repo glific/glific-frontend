@@ -1,4 +1,3 @@
-import React from 'react';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { useMutation } from '@apollo/client';
 import { setNotification } from 'common/notification';

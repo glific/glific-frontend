@@ -1,4 +1,3 @@
-import React from 'react';
 import clsx from 'clsx';
 import { ListItem } from '@material-ui/core';
 import { Link } from 'react-router-dom';

@@ -19,6 +19,7 @@
         "tsx": "never"
       }
     ],
+    "react/react-in-jsx-scope": "off",
     "no-restricted-globals": ["error", "event", "fdescribe"],
     "react/prop-types": "off",
     "jsx-a11y/anchor-has-content": "off",

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Container } from '@material-ui/core';
 
 import SearchBar from 'components/UI/SearchBar/SearchBar';

@@ -1,4 +1,3 @@
-import React from 'react';
 import CallMadeSharpIcon from '@material-ui/icons/CallMadeSharp';
 
 import GlificLogo from 'assets/images/logo/Logo.svg';

@@ -22,7 +22,7 @@ setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
 const list = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <Router>
-      <ContactFieldList {...props} />
+      <ContactFieldList />
     </Router>
   </MockedProvider>
 );
@@ -72,7 +72,7 @@ errorMock.push(contactFieldErrorMock);
 const listError = (
   <MockedProvider mocks={errorMock}>
     <Router>
-      <ContactFieldList {...props} />
+      <ContactFieldList />
     </Router>
   </MockedProvider>
 );

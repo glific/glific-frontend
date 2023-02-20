@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { EditorState, ContentState } from 'draft-js';
 import { Container, Button, ClickAwayListener, Fade, IconButton } from '@material-ui/core';
 import clsx from 'clsx';
@@ -53,7 +53,7 @@ export const ChatInput = ({
 }: ChatInputProps) => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [selectedTab, setSelectedTab] = useState('');
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const [searchVal, setSearchVal] = useState('');
   const [attachment, setAttachment] = useState(false);
   const [attachmentAdded, setAttachmentAdded] = useState(false);

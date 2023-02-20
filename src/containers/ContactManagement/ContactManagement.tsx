@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { getUserRole } from 'context/role';
 import SuperAdminContactManagement from './SuperAdminContactManagement/SuperAdminContactManagement';
 import AdminContactManagement from './AdminContactManagement/AdminContactManagement';
