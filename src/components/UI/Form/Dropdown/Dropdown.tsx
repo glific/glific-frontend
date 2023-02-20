@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Select, FormControl, InputLabel, FormHelperText, MenuItem } from '@mui/material';
 
 import styles from './Dropdown.module.css';

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 
@@ -31,9 +31,9 @@ export const Timer = (props: TimerProps) => {
     </a>
   );
   const createTooltip = (title: string) => (
-    <React.Fragment key="sessionTooltip">
+    <>
       {title} {link}
-    </React.Fragment>
+    </>
   );
 
   const { contactStatus, contactBspStatus, time } = props;

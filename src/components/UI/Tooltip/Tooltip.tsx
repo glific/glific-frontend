@@ -1,4 +1,3 @@
-import React from 'react';
 import { Tooltip as TooltipElement } from '@mui/material';
 
 import styles from './Tooltip.module.css';

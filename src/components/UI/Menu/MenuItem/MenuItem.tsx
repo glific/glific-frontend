@@ -1,4 +1,3 @@
-import React from 'react';
 import { MenuItem as MenuItemElement } from '@mui/material';
 import { Link } from 'react-router-dom';
 

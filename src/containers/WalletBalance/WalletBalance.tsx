@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { CircularProgress } from '@mui/material';
 import { useTranslation } from 'react-i18next';

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { FormControl, InputLabel, FormHelperText, OutlinedInput } from '@mui/material';
 import { useTranslation } from 'react-i18next';

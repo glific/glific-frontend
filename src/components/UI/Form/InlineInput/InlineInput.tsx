@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createRef } from 'react';
+import { useState, useEffect, createRef } from 'react';
 import { TextField } from '@mui/material';
 
 import { ReactComponent as Icon } from 'assets/images/icons/GreenTick.svg';

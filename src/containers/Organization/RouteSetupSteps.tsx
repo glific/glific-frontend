@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import { FB_MANAGER_VERIFICATION, GUPSHUP_ACCOUNT_CREATION } from 'common/constants';
 import { StaticOrganizationContents } from './StaticOrganizationContents/StaticOrganizationContents';

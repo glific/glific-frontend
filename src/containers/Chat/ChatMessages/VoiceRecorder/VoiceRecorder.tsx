@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useReactMediaRecorder } from 'react-media-recorder';
 import { IconButton } from '@mui/material';
 import MicOffIcon from '@mui/icons-material/MicOff';

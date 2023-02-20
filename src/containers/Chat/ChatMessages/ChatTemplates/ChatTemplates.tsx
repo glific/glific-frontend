@@ -1,4 +1,3 @@
-import React from 'react';
 import { useQuery } from '@apollo/client';
 import { List, ListItemButton, Divider, Paper, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
