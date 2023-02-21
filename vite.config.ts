@@ -1,4 +1,5 @@
 /// <reference types="vitest" />
+/// <reference types="vite-plugin-svgr/client" />
 import { defineConfig, ConfigEnv, UserConfigExport } from 'vite';
 import react from '@vitejs/plugin-react';
 import viteTsconfigPaths from 'vite-tsconfig-paths';
@@ -18,6 +19,14 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
           plugins: [inject({ Buffer: ['buffer', 'Buffer'], process: 'process' })],
         },
       },
+      optimizeDeps: {
+        esbuildOptions: {
+          // Node.js global to browser globalThis
+          define: {
+            global: 'globalThis',
+          },
+        },
+      },
       server: {
         open: true,
         port: 3000,
@@ -26,9 +35,6 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
           cert: fs.readFileSync('../glific/priv/cert/glific.test+1.pem'),
         },
       },
-      define: {
-        global: {},
-      },
       resolve: { alias: { util: 'util/' } },
       test: {
         globals: true,
@@ -36,8 +42,9 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
         setupFiles: './src/setupTests.ts',
         coverage: {
           reporter: ['text', 'html'],
-          exclude: ['node_modules/', 'src/setupTests.ts'],
+          exclude: ['node_modules/'],
         },
+        css: true,
       },
     });
   } else {
@@ -58,3 +65,5 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
     });
   }
 };
+
+console.log('sq1');
