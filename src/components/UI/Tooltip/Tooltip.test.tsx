@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react';
 import { Tooltip } from './Tooltip';
 
-jest.mock('@material-ui/core/Tooltip', () => (...props: any) => {
+jest.mock('@mui/material/Tooltip', () => (...props: any) => {
   const { children, classes } = props[0];
   return (
     <div data-testid="tooltip" className={`${classes.tooltip} ${classes.arrow}`}>

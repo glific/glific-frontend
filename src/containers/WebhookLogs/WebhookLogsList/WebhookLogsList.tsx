@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Popover } from '@material-ui/core';
+import { Popover } from '@mui/material';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 
@@ -174,7 +174,7 @@ export const WebhookLogsList = () => {
           <img src={CopyIcon} alt="copy" />
           {t('Copy text')}
         </span>
-        <Button variant="contained" color="default" onClick={handleClose}>
+        <Button variant="contained" onClick={handleClose}>
           {t('Done')}
         </Button>
       </div>

@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useQuery, useSubscription } from '@apollo/client';
-import { IconButton, Popper, Fade, Paper, ClickAwayListener } from '@material-ui/core';
+import { IconButton, Popper, Fade, Paper, ClickAwayListener } from '@mui/material';
 
 import { ReactComponent as OptionsIcon } from 'assets/images/icons/MoreOptions/Unselected.svg';
 import { ReactComponent as OptionsIconSelected } from 'assets/images/icons/MoreOptions/Selected.svg';

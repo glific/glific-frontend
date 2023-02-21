@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { FormControl } from '@material-ui/core';
+import { FormControl } from '@mui/material';
 
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Paper, Toolbar, Typography } from '@material-ui/core';
+import { Paper, Toolbar, Typography } from '@mui/material';
 import { useQuery } from '@apollo/client';
 import { Link, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';

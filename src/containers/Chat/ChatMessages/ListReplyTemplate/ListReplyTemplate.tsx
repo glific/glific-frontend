@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { Button, Radio } from '@material-ui/core';
-import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
-import MenuIcon from '@material-ui/icons/Menu';
-import ClearIcon from '@material-ui/icons/Clear';
+import { Button, Radio } from '@mui/material';
+import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
+import MenuIcon from '@mui/icons-material/Menu';
+import ClearIcon from '@mui/icons-material/Clear';
 import { v4 as uuidv4 } from 'uuid';
 
 import styles from './ListReplyTemplate.module.css';
@@ -104,7 +104,6 @@ export const ChatTemplate = ({ title, body, globalButtonTitle, items }: Template
       <div className={styles.ChatTemplateButton}>
         <Button
           variant="contained"
-          color="default"
           startIcon={<MenuIcon />}
           onClick={() => setShowDialog(true)}
           className={styles.GlobalButton}
@@ -131,7 +130,6 @@ export const SimulatorTemplate = ({
     {showHeader && <p className={styles.ListHeader}>{title}</p>}
     <ChatMessageType type="TEXT" body={body} isSimulatedMessage />
     <Button
-      color="default"
       disabled={disabled}
       startIcon={<FormatListBulletedIcon />}
       onClick={() => onGlobalButtonClick({ items, bspMessageId })}
