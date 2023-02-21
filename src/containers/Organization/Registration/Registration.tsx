@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { InputAdornment, Link } from '@material-ui/core';
+import { InputAdornment, Link } from '@mui/material';
 import * as Yup from 'yup';
 
 import { Input } from 'components/UI/Form/Input/Input';

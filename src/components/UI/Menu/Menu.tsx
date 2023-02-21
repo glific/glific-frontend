@@ -6,7 +6,7 @@ import {
   Paper,
   Popper,
   PopperPlacementType,
-} from '@material-ui/core';
+} from '@mui/material';
 
 import MenuItem from './MenuItem/MenuItem';
 

@@ -1,4 +1,4 @@
-import { fireEvent, render, waitFor, cleanup, screen } from '@testing-library/react';
+import { fireEvent, render, waitFor, cleanup, screen, within } from '@testing-library/react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 
@@ -10,6 +10,7 @@ import {
 } from 'mocks/Consulting';
 import { setUserSession } from 'services/AuthService';
 import { Consulting } from './Consulting';
+import userEvent from '@testing-library/user-event';
 
 afterEach(cleanup);
 const setOpenDialogMock = jest.fn();
@@ -31,27 +32,27 @@ const wrapper = (
 );
 
 test('Render component correctly with empty form', async () => {
-  const { container, getByText, getAllByRole, getByTestId } = render(wrapper);
+  const user = userEvent.setup();
+  render(wrapper);
 
-  expect(getByText('Loading...')).toBeInTheDocument();
-
-  expect(container).toBeInTheDocument();
+  expect(screen.getByText('Loading...')).toBeInTheDocument();
 
   await waitFor(() => {
-    expect(getByText('Add consulting record')).toBeInTheDocument();
+    expect(screen.getByText('Add consulting record')).toBeInTheDocument();
   });
 
   // Get all input elements
-  const inputElements = getAllByRole('textbox');
+  const inputElements = screen.getAllByRole('textbox');
   // Get all radio buttons
-  const radioButtons = getAllByRole('radio');
+  const radioButtons = screen.getAllByRole('radio');
 
   // For selecting organization from dropdown
-  const autoComplete = getByTestId('autocomplete-element');
-  fireEvent.mouseDown(autoComplete);
+  const autoComplete = screen.getByTestId('autocomplete-element');
+  const input = within(autoComplete).getByRole('combobox');
+  autoComplete.focus();
+  fireEvent.change(input, { target: { value: 'G' } });
 
-  waitFor(() => {
-    expect(getByText('Glific')).toBeInTheDocument();
+  await waitFor(() => {
     const selectedOption = screen.getByText('Glific');
 
     fireEvent.click(selectedOption);
@@ -62,7 +63,6 @@ test('Render component correctly with empty form', async () => {
     fireEvent.change(inputElements[1], { target: { value: 'John Doe' } });
     fireEvent.change(inputElements[3], { target: { value: 15 } });
     fireEvent.change(inputElements[4], { target: { value: 'Glific Tean' } });
-    fireEvent.change(inputElements[5], { target: { value: 'Notes' } });
     fireEvent.click(radioButtons[0]);
   });
 

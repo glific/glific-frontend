@@ -1,8 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import Popper from '@material-ui/core/Popper';
-import { Button } from '@material-ui/core';
-import Fade from '@material-ui/core/Fade';
-import Paper from '@material-ui/core/Paper';
+import { Button, Popper, Fade, Paper } from '@mui/material';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 
@@ -339,12 +336,14 @@ export const ChatMessage = ({
             <Popper
               id={popperId}
               open={open}
-              modifiers={{
-                preventOverflow: {
-                  enabled: true,
-                  boundariesElement: 'scrollParent',
+              modifiers={[
+                {
+                  name: 'preventOverflow',
+                  options: {
+                    altBoundary: true,
+                  },
                 },
-              }}
+              ]}
               anchorEl={anchorEl}
               placement={placement}
               transition
