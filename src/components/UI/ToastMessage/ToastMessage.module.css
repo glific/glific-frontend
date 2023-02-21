@@ -16,6 +16,8 @@
 
 .Action {
   cursor: pointer;
+  align-items: center !important;
+  padding: 0px !important;
   margin-right: 0px !important;
   padding-left: 0px !important;
   margin-left: 32px !important;

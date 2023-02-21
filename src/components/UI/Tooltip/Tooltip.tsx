@@ -1,5 +1,4 @@
-import React from 'react';
-import { Tooltip as TooltipElement } from '@material-ui/core';
+import { Tooltip as TooltipElement } from '@mui/material';
 
 import styles from './Tooltip.module.css';
 
@@ -41,7 +40,7 @@ export const Tooltip = ({
       placement={placement}
       arrow
       classes={{ tooltip: toolTipStyling.join(' '), arrow: toolTipArrowStyling.join(' ') }}
-      interactive={interactive}
+      disableInteractive={!interactive}
     >
       {children}
     </TooltipElement>

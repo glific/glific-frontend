@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import {
   ClickAwayListener,
   Grow,
@@ -6,7 +6,7 @@ import {
   Paper,
   Popper,
   PopperPlacementType,
-} from '@material-ui/core';
+} from '@mui/material';
 
 import MenuItem from './MenuItem/MenuItem';
 

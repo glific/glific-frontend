@@ -1,5 +1,4 @@
-import React from 'react';
-import { Checkbox as CheckboxElement, FormControlLabel } from '@material-ui/core';
+import { Checkbox as CheckboxElement, FormControlLabel } from '@mui/material';
 import { ReactComponent as InfoIcon } from 'assets/images/icons/Info.svg';
 
 import Tooltip from 'components/UI/Tooltip/Tooltip';

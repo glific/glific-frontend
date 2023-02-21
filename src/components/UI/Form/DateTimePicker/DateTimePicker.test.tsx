@@ -23,8 +23,8 @@ describe('<DateTimePicker />', () => {
   it('test date change event', async () => {
     render(wrapper);
     const input = screen.getByRole('textbox');
-    fireEvent.change(input, { target: { value: '14/05/2021 10:50 _' } });
-    expect(input).toHaveValue('14/05/2021 10:50 _');
+    fireEvent.change(input, { target: { value: '14/05/2021 10:50 AM' } });
+    expect(input).toHaveValue('14/05/2021 10:50 AM');
 
     expect(props.form.setFieldValue).toBeCalled();
     expect(props.onChange).toBeCalled();

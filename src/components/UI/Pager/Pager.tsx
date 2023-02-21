@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Table,
   TableHead,
@@ -8,7 +7,7 @@ import {
   TablePagination,
   TableRow,
   TableSortLabel,
-} from '@material-ui/core';
+} from '@mui/material';
 import { v4 as uuidv4 } from 'uuid';
 
 import { ColumnNames } from 'containers/List/List';
@@ -103,12 +102,14 @@ const createRows = (
     if (entry.translations) dataObj = JSON.parse(entry.translations);
 
     return (
-      <React.Fragment key={entry.recordId}>
-        <TableRow className={`${styles.TableRow} ${isActiveRow}`}>{createRow(entry)}</TableRow>
+      <>
+        <TableRow key={entry.recordId} className={`${styles.TableRow} ${isActiveRow}`}>
+          {createRow(entry)}
+        </TableRow>
         {collapseOpen && dataObj && entry.id === collapseRow
           ? collapsedRowData(dataObj, columnStyles, entry.recordId)
           : null}
-      </React.Fragment>
+      </>
     );
   });
 };

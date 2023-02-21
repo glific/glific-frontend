@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 
@@ -11,10 +11,13 @@ import {
   UPDATE_CONTACT_FIELDS,
   DELETE_CONTACT_FIELDS,
 } from 'graphql/mutations/ContactFields';
-import { setVariables } from 'common/constants';
 import styles from './ContactField.module.css';
 
-export const ContactField = () => {
+export interface ContactFieldProps {
+  setOpenDialog: any;
+}
+
+export const ContactField = ({ setOpenDialog }: ContactFieldProps) => {
   const { t } = useTranslation();
   const [name, setName] = useState('');
   const [shortcode, setShortcode] = useState('');
@@ -69,12 +72,24 @@ export const ContactField = () => {
         title={t('Add contact fields')}
         listItem="contactsField"
         listItemName="contactsField"
+        saveOnPageChange={false}
+        afterSave={() => setOpenDialog(false)}
+        // Todo: need to think about an effective way to refetch queries without variables
         refetchQueries={[
           {
             query: GET_ALL_CONTACT_FIELDS,
-            variables: setVariables(),
+            variables: {
+              filter: {},
+              opts: {
+                limit: 50,
+                offset: 0,
+                order: 'ASC',
+                orderWith: 'name',
+              },
+            },
           },
         ]}
+        cancelAction={() => setOpenDialog(false)}
         states={states}
         setStates={null}
         validationSchema={FormSchema}

@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dialog, DialogContent, Button } from '@material-ui/core';
+import { Dialog, DialogContent, Button } from '@mui/material';
 import { useMutation } from '@apollo/client';
 
 import { List } from 'containers/List/List';
@@ -12,19 +12,33 @@ import { ReactComponent as EditIcon } from 'assets/images/icons/GreenEdit.svg';
 import { ContactField } from '../ContactField';
 import styles from './ContactFieldList.module.css';
 
-interface ContactFieldListProps {
-  openDialog?: boolean;
-}
-
 interface EditItemShape {
   id: any;
   column: string;
 }
 
-const ContactFieldList = ({ openDialog }: ContactFieldListProps) => {
+const ContactFieldList = () => {
   const { t } = useTranslation();
+  const [openDialog, setOpenDialog] = useState(false);
   const [itemToBeEdited, setItemToBeEdited] = useState<EditItemShape | any>(null);
   const [error, setError] = useState<any>(null);
+
+  let dialog;
+
+  if (openDialog) {
+    dialog = (
+      <Dialog
+        open
+        classes={{
+          paper: styles.Dialogbox,
+        }}
+      >
+        <DialogContent classes={{ root: styles.DialogContent }}>
+          <ContactField setOpenDialog={setOpenDialog} />
+        </DialogContent>
+      </Dialog>
+    );
+  }
 
   const handleCloseModal = () => {
     setError(null);
@@ -131,6 +145,7 @@ const ContactFieldList = ({ openDialog }: ContactFieldListProps) => {
 
   return (
     <div className={styles.Container}>
+      {dialog}
       <List
         title={t('Contact Variables')}
         listItem="contactsFields"
@@ -139,8 +154,10 @@ const ContactFieldList = ({ openDialog }: ContactFieldListProps) => {
         listIcon={listIcon}
         button={{
           show: true,
-          link: '/contact-fields/add',
-          label: 'Add new',
+          label: t('Add contact fields'),
+          action: () => {
+            setOpenDialog(true);
+          },
         }}
         searchParameter={['name']}
         dialogMessage={dialogMessage}
@@ -150,16 +167,6 @@ const ContactFieldList = ({ openDialog }: ContactFieldListProps) => {
         {...queries}
         {...columnAttributes}
       />
-      <Dialog
-        open={!!openDialog}
-        classes={{
-          paper: styles.Dialogbox,
-        }}
-      >
-        <DialogContent classes={{ root: styles.DialogContent }}>
-          <ContactField />
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };

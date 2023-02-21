@@ -1,6 +1,5 @@
-import React from 'react';
 import { useLocation } from 'react-router-dom';
-import Badge from '@material-ui/core/Badge';
+import { Badge } from '@mui/material';
 
 import chatIcon from 'assets/images/icons/Chat/Unselected.svg';
 import broadcastIcon from 'assets/images/icons/Broadcast/Unselected.svg';
@@ -77,7 +76,7 @@ export const ListIcon = ({ icon, count, showBadge }: ListIconProps) => {
   return (
     <div>
       {showBadge && count ? (
-        <Badge badgeContent={count} color="secondary" classes={{ badge: styles.Badge }}>
+        <Badge badgeContent={count} color="warning" classes={{ badge: styles.Badge }}>
           {iconImage}
         </Badge>
       ) : (

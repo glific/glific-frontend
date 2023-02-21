@@ -1,8 +1,8 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { RichUtils, Modifier, EditorState, ContentState } from 'draft-js';
 import Editor from '@draft-js-plugins/editor';
 import createMentionPlugin from '@draft-js-plugins/mention';
-import { InputAdornment, IconButton, ClickAwayListener } from '@material-ui/core';
+import { InputAdornment, IconButton, ClickAwayListener } from '@mui/material';
 
 import { getPlainTextFromEditor } from 'common/RichEditor';
 import { EmojiPicker } from 'components/UI/EmojiPicker/EmojiPicker';

@@ -1,7 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import TextField from '@material-ui/core/TextField';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import { Chip, FormHelperText, FormControl, Checkbox } from '@material-ui/core';
+import { useEffect, useState } from 'react';
+import {
+  Autocomplete,
+  TextField,
+  Chip,
+  FormHelperText,
+  FormControl,
+  Checkbox,
+} from '@mui/material';
+
 import { getIn } from 'formik';
 
 import { ReactComponent as DeleteIcon } from 'assets/images/icons/Close.svg';
@@ -175,9 +181,11 @@ export const AutoComplete = ({
           freeSolo={freeSolo}
           autoSelect={autoSelect}
           disableClearable={disableClearable}
-          getOptionLabel={(option: any) => (option[optionLabel] ? option[optionLabel] : option)}
+          getOptionLabel={(option: any) =>
+            option[optionLabel] != null ? option[optionLabel] : option
+          }
           getOptionDisabled={getOptionDisabled}
-          getOptionSelected={(option, value) => {
+          isOptionEqualToValue={(option, value) => {
             if (value) {
               return option[valueElementName] === value[valueElementName];
             }
@@ -212,9 +220,9 @@ export const AutoComplete = ({
           disabled={disabled}
           disableCloseOnSelect={multiple}
           renderTags={getRenderTags}
-          renderOption={(option: any, { selected }) => (
-            <>
-              {multiple ? (
+          renderOption={(props, option, { selected }) => (
+            <li {...props}>
+              {multiple && (
                 <Checkbox
                   icon={icon}
                   checked={
@@ -224,11 +232,9 @@ export const AutoComplete = ({
                   }
                   color="primary"
                 />
-              ) : (
-                ''
               )}
               {getLabel(option)}
-            </>
+            </li>
           )}
           renderInput={(params: any) => {
             const { inputProps } = params;
@@ -263,11 +269,9 @@ export const AutoComplete = ({
           noOptionsText={noOptionsText}
           ListboxProps={listBoxProps}
         />
-        {helperText ? (
-          <FormHelperText className={styles.HelperText}>{helperText}</FormHelperText>
-        ) : null}
+        {helperText && <FormHelperText className={styles.HelperText}>{helperText}</FormHelperText>}
 
-        {helpLink ? (
+        {helpLink && (
           <div
             className={styles.HelpLink}
             onKeyDown={() => helpLink.handleClick()}
@@ -278,7 +282,7 @@ export const AutoComplete = ({
           >
             {helpLink.label}
           </div>
-        ) : null}
+        )}
       </FormControl>
     </div>
   );

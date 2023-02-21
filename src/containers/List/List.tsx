@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Link, Navigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useQuery, useMutation, DocumentNode, useLazyQuery } from '@apollo/client';
-import { IconButton, TableFooter, TablePagination, TableRow, Typography } from '@material-ui/core';
+import { IconButton, TableFooter, TablePagination, TableRow, Typography } from '@mui/material';
 
 import { ListCard } from 'containers/List/ListCard/ListCard';
 import { Button } from 'components/UI/Form/Button/Button';
@@ -355,7 +355,7 @@ export const List = ({
           dialogTitle || `Are you sure you want to delete the ${listItemName} "${deleteItemName}"?`
         }
         handleCancel={closeDialogBox}
-        colorOk="secondary"
+        colorOk="warning"
         alignButtons="center"
         {...props}
       >
@@ -403,7 +403,7 @@ export const List = ({
     if (editSupport) {
       editButton = allowedAction.edit && (
         <Link to={`/${pageLink}/${id}/edit`}>
-          <IconButton aria-label={t('Edit')} color="default" data-testid="EditIcon">
+          <IconButton aria-label={t('Edit')} data-testid="EditIcon">
             <Tooltip title={t('Edit')} placement="top">
               <EditIcon />
             </Tooltip>
@@ -416,7 +416,6 @@ export const List = ({
       allowedAction.delete ? (
         <IconButton
           aria-label={t('Delete')}
-          color="default"
           data-testid="DeleteIcon"
           onClick={() => showDialogHandler(Id, text)}
         >
@@ -445,11 +444,7 @@ export const List = ({
             if (action.link) {
               return (
                 <Link to={`${action.link}/${additionalActionParameter}`} key={key}>
-                  <IconButton
-                    color="default"
-                    className={styles.additonalButton}
-                    data-testid="additionalButton"
-                  >
+                  <IconButton className={styles.additonalButton} data-testid="additionalButton">
                     <Tooltip title={`${action.label}`} placement="top">
                       {action.icon}
                     </Tooltip>
@@ -460,7 +455,6 @@ export const List = ({
             if (action.dialog) {
               return (
                 <IconButton
-                  color="default"
                   data-testid="additionalButton"
                   className={styles.additonalButton}
                   id="additionalButton-icon"

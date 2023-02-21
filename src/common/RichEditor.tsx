@@ -1,7 +1,6 @@
-import React from 'react';
 import { EditorState, ContentState } from 'draft-js';
-import CallIcon from '@material-ui/icons/Call';
-import OpenInNewIcon from '@material-ui/icons/OpenInNew';
+import CallIcon from '@mui/icons-material/Call';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { Interweave } from 'interweave';
 import { UrlMatcher } from 'interweave-autolink';
 
@@ -97,8 +96,8 @@ export const WhatsAppTemplateButton = (text: string) => {
   const isTemplateButtonsPresent = text.search(exp);
 
   if (isTemplateButtonsPresent > 0) {
-    const messageBody = text.substr(0, isTemplateButtonsPresent);
-    const buttonsStr = text.substr(isTemplateButtonsPresent);
+    const messageBody = text.substring(0, isTemplateButtonsPresent);
+    const buttonsStr = text.substring(isTemplateButtonsPresent);
     const templateStr = buttonsStr.split('|');
 
     const buttons = templateStr

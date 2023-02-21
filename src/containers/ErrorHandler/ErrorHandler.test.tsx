@@ -36,9 +36,8 @@ describe('<ErrorHandler />', () => {
     expect(errorMessageText).toBeInTheDocument();
 
     // click ok and close
-    const okButton: any = screen
-      .queryByRole('dialog')
-      ?.querySelector('button.MuiButton-containedSecondary');
+    const okButton: any = screen.getByTestId('ok-button');
+
     fireEvent.click(okButton);
 
     //need to assert something here
@@ -74,9 +73,7 @@ test('it should render <ErrorHandler /> component with custom message', async ()
   expect(errorMessageText).toBeInTheDocument();
 
   // click ok and close
-  const okButton: any = screen
-    .queryByRole('dialog')
-    ?.querySelector('button.MuiButton-containedSecondary');
+  const okButton: any = screen.getByTestId('ok-button');
   fireEvent.click(okButton);
 
   //need to assert something here

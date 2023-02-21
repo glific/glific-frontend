@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useEffect, useMemo, useState } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
 import ErrorBoundary from 'components/errorboundary/ErrorBoundary';
@@ -132,7 +132,6 @@ const routeAdmin = (
     <Route path="consulting-hours/" element={<ConsultingHourList />} />
 
     <Route path="contact-fields/" element={<ContactFieldList />} />
-    <Route path="contact-fields/add" element={<ContactFieldList openDialog />} />
     <Route path="organizations/:id/extensions" element={<OrganizationList openExtensionModal />} />
     <Route path="organizations/:id/customer" element={<OrganizationList openCustomerModal />} />
 

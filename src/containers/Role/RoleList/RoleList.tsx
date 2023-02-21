@@ -1,4 +1,3 @@
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { List } from 'containers/List/List';
 import { ReactComponent as RoleIcon } from 'assets/images/icons/Role/Role.svg';

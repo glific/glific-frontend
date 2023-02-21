@@ -43,7 +43,7 @@ test('it should render variable options and save the form', async () => {
   });
 
   const autocomplete = screen.getByTestId('AutocompleteInput');
-  const input = within(autocomplete).getByRole('textbox');
+  const input = within(autocomplete).getByRole('combobox');
 
   autocomplete.focus();
   // assign value to input field

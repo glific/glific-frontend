@@ -1,5 +1,4 @@
-import React from 'react';
-import { Button } from '@material-ui/core';
+import { Button } from '@mui/material';
 import { v4 as uuidv4 } from 'uuid';
 
 import styles from './QuickReplyTemplate.module.css';
@@ -12,6 +11,7 @@ interface Content {
   header?: string;
   text?: string;
   filename?: string;
+  caption?: string;
 }
 
 interface ButtonOption {
@@ -63,7 +63,6 @@ export const QuickReplyTemplate = ({
           <div className={styles.ButtonItem} key={uuidv4()}>
             <Button
               variant="contained"
-              color="default"
               disabled={disabled}
               onClick={() => onQuickReplyClick(payloadObject)}
               className={isSimulator ? styles.SimulatorButton : styles.ChatMessageButton}
@@ -77,7 +76,7 @@ export const QuickReplyTemplate = ({
     })
     .filter((a) => a);
 
-  const { type, url, header = '', text = '', filename = '' } = content;
+  const { type, url, header = '', text = '', filename = '', caption } = content;
   const media = type === 'text' ? {} : { url, text };
   const contentType = type === 'file' ? 'DOCUMENT' : type.toUpperCase();
   return (
@@ -92,6 +91,7 @@ export const QuickReplyTemplate = ({
           isSimulatedMessage={isSimulator}
         />
         {contentType === 'DOCUMENT' && <MessagesWithLinks message={media.text} />}
+        {caption && <div className={styles.Caption}>{caption}</div>}
       </div>
       <div className={styles.ButtonContainer}>{quickReplyButtons}</div>
     </div>

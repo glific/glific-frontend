@@ -1,11 +1,9 @@
-import React from 'react';
-import Grid from '@material-ui/core/Grid';
-import DateFnsUtils from '@date-io/date-fns';
-import { MuiPickersUtilsProvider, KeyboardDateTimePicker } from '@material-ui/pickers';
+import { LocalizationProvider, DateTimePicker as Picker } from '@mui/x-date-pickers';
+import { TextField } from '@mui/material';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import 'date-fns';
 import { getIn } from 'formik';
 
-import { ReactComponent as CalenderIcon } from 'assets/images/icons/Calendar/Calendar.svg';
 import styles from './DateTimePicker.module.css';
 
 export interface DateTimePickerProps {
@@ -20,11 +18,9 @@ export interface DateTimePickerProps {
 }
 
 export const DateTimePicker = ({
-  variant = 'inline',
-  inputVariant = 'outlined',
   format = 'dd/MM/yyyy hh:mm a',
   field,
-  form: { touched, errors, setFieldValue },
+  form: { setFieldValue, errors, touched },
   placeholder,
   minDate,
   onChange,
@@ -40,26 +36,28 @@ export const DateTimePicker = ({
     if (onChange) onChange(value);
   };
 
-  const icon = <CalenderIcon />;
   return (
-    <MuiPickersUtilsProvider utils={DateFnsUtils}>
-      <Grid className={styles.DateTimePicker}>
-        <KeyboardDateTimePicker
+    <LocalizationProvider dateAdapter={AdapterDateFns}>
+      <div className={styles.DateTimePicker}>
+        <Picker
           className={styles.Text}
-          error={hasError}
-          autoOk
-          variant={variant}
-          inputVariant={inputVariant}
-          format={format}
-          data-testid="date-picker-inline"
+          renderInput={(props) => (
+            <TextField
+              data-testid="date-picker-inline"
+              helperText={hasError ? errorText : ''}
+              {...props}
+            />
+          )}
           label={placeholder}
+          inputFormat={format}
           value={dateValue}
+          InputProps={{
+            error: hasError,
+          }}
           onChange={handleDateChange}
-          helperText={hasError ? errorText : ''}
           minDate={minDate}
-          keyboardIcon={icon}
         />
-      </Grid>
-    </MuiPickersUtilsProvider>
+      </div>
+    </LocalizationProvider>
   );
 };

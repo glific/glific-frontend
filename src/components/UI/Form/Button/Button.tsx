@@ -1,16 +1,15 @@
-import React from 'react';
-import { Button as ButtonElement, CircularProgress } from '@material-ui/core';
+import {
+  Button as ButtonElement,
+  CircularProgress,
+  ButtonProps as MaterialButtonProps,
+} from '@mui/material';
 import styles from './Button.module.css';
 
-export interface ButtonProps {
+export interface ButtonProps extends MaterialButtonProps {
   'data-testid'?: string;
   children: any;
-  variant: 'text' | 'outlined' | 'contained' | undefined;
-  color: 'inherit' | 'primary' | 'secondary' | 'default' | undefined;
-  onClick?: any;
   className?: any;
   loading?: boolean;
-  disabled?: boolean;
   type?: any;
 }
 
@@ -20,7 +19,7 @@ export const Button = ({
   disabled = false,
   ...props
 }: ButtonProps) => {
-  let buttonColor = null;
+  let buttonColor;
   const { variant, color, onClick, className, children, ...rest } = props;
 
   if (variant === 'outlined') buttonColor = styles.ButtonColor;
