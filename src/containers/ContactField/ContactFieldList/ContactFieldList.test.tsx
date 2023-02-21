@@ -8,10 +8,6 @@ import { setUserSession } from 'services/AuthService';
 import { mocks, contactFieldErrorMock } from 'mocks/ContactFields';
 import ContactFieldList from './ContactFieldList';
 
-const props = {
-  openDialog: false,
-};
-
 vi.mock('react-router-dom', async () => ({
   ...((await vi.importActual<any>('react-router-dom')) as {}),
   useParams: () => ({ id: '1' }),

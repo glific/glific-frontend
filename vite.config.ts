@@ -1,6 +1,6 @@
 /// <reference types="vitest" />
 /// <reference types="vite-plugin-svgr/client" />
-import { defineConfig, ConfigEnv, UserConfigExport, loadEnv } from 'vite';
+import { defineConfig, ConfigEnv, UserConfigExport } from 'vite';
 import react from '@vitejs/plugin-react';
 import viteTsconfigPaths from 'vite-tsconfig-paths';
 import svgrPlugin from 'vite-plugin-svgr';
