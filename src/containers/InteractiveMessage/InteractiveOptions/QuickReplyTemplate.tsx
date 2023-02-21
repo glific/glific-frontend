@@ -40,7 +40,12 @@ export const QuickReplyTemplate = ({
   const name = 'Enter button text(20 char.)';
   const defaultValue = inputFields && inputFields[index]?.value;
   const endAdornmentIcon = inputFields.length > 1 && (
-    <CrossIcon className={styles.RemoveIcon} title="Remove" onClick={onRemoveClick} />
+    <CrossIcon
+      className={styles.RemoveIcon}
+      title="Remove"
+      data-testid="cross-icon"
+      onClick={onRemoveClick}
+    />
   );
 
   return (

@@ -160,6 +160,7 @@ export const ListReplyTemplate = ({
                               endAdornment: itemIndex !== 0 && showDeleteIcon && (
                                 <CrossIcon
                                   title="Remove"
+                                  data-testid="cross-icon"
                                   className={styles.ListDeleteIcon}
                                   onClick={() => handleRemoveListItem(arrayHelpers, itemIndex)}
                                 />

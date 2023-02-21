@@ -7,6 +7,7 @@ import { vi } from 'vitest';
 import { setUserSession } from 'services/AuthService';
 import { mocks } from 'mocks/InteractiveMessage';
 import { InteractiveMessage } from './InteractiveMessage';
+import { FLOW_EDITOR_API } from 'config';
 
 const mockUseLocationValue: any = {
   pathname: '/',
@@ -25,14 +26,6 @@ const mockData = [...mocks, ...mocks];
 
 setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
 
-vi.mock('axios', () => {
-  return {
-    get: vi.fn(),
-  };
-});
-
-const mockedAxios = axios as vi.Mocked<typeof axios>;
-
 const renderInteractiveMessage = (id: string) => (
   <MockedProvider mocks={mockData} addTypename={false}>
     <MemoryRouter initialEntries={[`/interactive-message/${id}/edit`]}>
@@ -43,35 +36,51 @@ const renderInteractiveMessage = (id: string) => (
   </MockedProvider>
 );
 
-const responseMock1 = {
+const fieldsMock = {
   results: [{ key: 'key 1' }, { key: 'key 2' }],
 };
 
-const responseMock2 = {
+const completionMock = {
   context: {
-    types: [{ name: 'contact', properties: [{ key: 'key 1' }, { key: 'key 2' }] }],
+    types: [
+      {
+        name: 'contact',
+        properties: [
+          {
+            help: 'the numeric ID of the contact',
+            key: 'id',
+            type: 'text',
+          },
+          {
+            help: 'the name of the contact',
+            key: 'name',
+            type: 'text',
+          },
+
+          {
+            help: 'the language of the contact as 3-letter ISO code',
+            key: 'language',
+            type: 'text',
+          },
+        ],
+      },
+    ],
   },
 };
 
-const responseMock3 = {
-  data: { is_valid: true },
-};
-
-const axiosApiCall = async () => {
-  mockedAxios.get.mockImplementationOnce(() => Promise.resolve({ data: responseMock1 }));
-
-  mockedAxios.get.mockImplementationOnce(() => Promise.resolve({ data: responseMock2 }));
-};
-
-const whenStable = async () => {
-  await waitFor(async () => {
-    await new Promise((resolve) => setTimeout(resolve, 0));
-  });
-};
+// Getting contact variables
+vi.spyOn(axios, 'get').mockImplementation((url: string) => {
+  console.log('qwerty', url);
+  if (url === `${FLOW_EDITOR_API}fields`) {
+    return Promise.resolve({ data: fieldsMock });
+  } else if (url === `${FLOW_EDITOR_API}completion`) {
+    return Promise.resolve({ data: completionMock });
+  } else {
+    return Promise.resolve({ data: {} });
+  }
+});
 
 test('it renders empty interactive form', async () => {
-  axiosApiCall();
-
   render(
     <MockedProvider mocks={mockData} addTypename={false}>
       <MemoryRouter>
@@ -79,10 +88,6 @@ test('it renders empty interactive form', async () => {
       </MemoryRouter>
     </MockedProvider>
   );
-
-  // Getting contact variables
-  vi.spyOn(axios, 'get').mockResolvedValueOnce(responseMock1);
-  await whenStable();
 
   // Adding another quick reply button
   await waitFor(() => {
@@ -164,14 +169,14 @@ test('it renders empty interactive form', async () => {
 
   await waitFor(() => {
     // Deleting list
-    const deleteListButton = screen.getByText('Dark.svg');
+    const deleteListButton = screen.getByTestId('interactive-icon');
     expect(deleteListButton).toBeInTheDocument();
     fireEvent.click(deleteListButton);
   });
 
   await waitFor(() => {
     // Deleting list item
-    const deleteListItemButton = screen.getByText('Cross.svg');
+    const deleteListItemButton = screen.getByTestId('cross-icon');
     expect(deleteListItemButton).toBeInTheDocument();
     fireEvent.click(deleteListItemButton);
   });
@@ -193,12 +198,9 @@ test('it renders empty interactive form', async () => {
 });
 
 test('it renders interactive quick reply in edit mode', async () => {
-  axiosApiCall();
-
   render(renderInteractiveMessage('1'));
 
-  await whenStable();
-  vi.spyOn(axios, 'get').mockResolvedValueOnce(responseMock1);
+  // vi.spyOn(axios, 'get').mockResolvedValueOnce(responseMock1);
 
   await waitFor(() => {
     // Changing language to marathi to see translations
@@ -220,12 +222,9 @@ test('it renders interactive quick reply in edit mode', async () => {
 });
 
 test('it renders interactive list in edit mode', async () => {
-  axiosApiCall();
-
   render(renderInteractiveMessage('2'));
 
-  vi.spyOn(axios, 'get').mockResolvedValueOnce(responseMock1);
-  await whenStable();
+  // vi.spyOn(axios, 'get').mockResolvedValueOnce(responseMock1);
 
   await waitFor(() => {
     const saveButton = screen.getByText('Save');
@@ -235,21 +234,17 @@ test('it renders interactive list in edit mode', async () => {
 });
 
 test('it renders interactive quick reply with media in edit mode', async () => {
-  axiosApiCall();
-
   render(renderInteractiveMessage('3'));
 
-  vi.spyOn(axios, 'get').mockResolvedValueOnce(responseMock3);
-  await whenStable();
+  // vi.spyOn(axios, 'get').mockResolvedValueOnce(responseMock3);
 });
 
 describe('copy interactive message', () => {
   test('it renders copy interactive quick reply message', async () => {
     mockUseLocationValue.state = 'copy';
-    axiosApiCall();
 
     const { getByText, getAllByTestId } = render(renderInteractiveMessage('1'));
-    vi.spyOn(axios, 'get').mockResolvedValueOnce(responseMock1);
+    // vi.spyOn(axios, 'get').mockResolvedValueOnce(responseMock1);
 
     await waitFor(() => {
       expect(getByText('Copy Interactive Message')).toBeInTheDocument();
