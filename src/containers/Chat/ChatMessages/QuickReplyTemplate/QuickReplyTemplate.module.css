@@ -45,3 +45,9 @@
 .TitleText {
   font-weight: 500;
 }
+
+.Caption {
+  font-size: 12px;
+  font-weight: 300;
+  color: #93a29b;
+}

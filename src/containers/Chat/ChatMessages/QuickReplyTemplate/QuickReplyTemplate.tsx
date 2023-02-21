@@ -11,6 +11,7 @@ interface Content {
   header?: string;
   text?: string;
   filename?: string;
+  caption?: string;
 }
 
 interface ButtonOption {
@@ -75,7 +76,7 @@ export const QuickReplyTemplate = ({
     })
     .filter((a) => a);
 
-  const { type, url, header = '', text = '', filename = '' } = content;
+  const { type, url, header = '', text = '', filename = '', caption } = content;
   const media = type === 'text' ? {} : { url, text };
   const contentType = type === 'file' ? 'DOCUMENT' : type.toUpperCase();
   return (
@@ -90,6 +91,7 @@ export const QuickReplyTemplate = ({
           isSimulatedMessage={isSimulator}
         />
         {contentType === 'DOCUMENT' && <MessagesWithLinks message={media.text} />}
+        {caption && <div className={styles.Caption}>{caption}</div>}
       </div>
       <div className={styles.ButtonContainer}>{quickReplyButtons}</div>
     </div>
