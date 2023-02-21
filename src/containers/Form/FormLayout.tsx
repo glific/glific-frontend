@@ -1,9 +1,9 @@
-import { useState, Fragment } from 'react';
+import { MouseEventHandler, useState, Fragment } from 'react';
 import { Navigate, Link, useParams } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
 // eslint-disable-next-line no-unused-vars
 import { DocumentNode, ApolloError, useQuery, useMutation } from '@apollo/client';
-import { Typography, IconButton } from '@material-ui/core';
+import { Typography, IconButton } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import { Button } from 'components/UI/Form/Button/Button';
@@ -80,7 +80,7 @@ export interface FormLayoutProps {
   copyNotification?: string;
   roleAccessSupport?: boolean;
   showPreviewButton?: boolean;
-  onPreviewClick?: Function;
+  onPreviewClick?: MouseEventHandler<HTMLButtonElement>;
   getQueryFetchPolicy?: any;
   saveOnPageChange?: boolean;
   entityId?: any;
@@ -499,7 +499,7 @@ export const FormLayout = ({
     itemId && !type && !restrictDelete ? (
       <Button
         variant="contained"
-        color="secondary"
+        color="warning"
         className={styles.DeleteButton}
         onClick={() => setShowDialog(true)}
       >
@@ -580,7 +580,7 @@ export const FormLayout = ({
             ) : null}
             <Button
               variant="contained"
-              color="default"
+              color="secondary"
               onClick={cancelHandler}
               data-testid="cancelActionButton"
             >
@@ -616,7 +616,7 @@ export const FormLayout = ({
         title={`Are you sure you want to delete the ${listItemName}?`}
         handleOk={handleDeleteItem}
         handleCancel={() => setShowDialog(false)}
-        colorOk="secondary"
+        colorOk="warning"
         alignButtons="center"
         contentAlign="center"
       >

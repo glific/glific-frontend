@@ -72,9 +72,9 @@ describe('<List />', () => {
 
     await waitFor(() => {
       const tableRow = container.querySelector('tbody tr') as HTMLTableRowElement;
-      const { getByLabelText } = within(tableRow);
-      expect(getByLabelText('Edit')).toBeInTheDocument();
-      expect(getByLabelText('Delete')).toBeInTheDocument();
+      const { getByTestId } = within(tableRow);
+      expect(getByTestId('EditIcon')).toBeInTheDocument();
+      expect(getByTestId('DeleteIcon')).toBeInTheDocument();
     });
   });
 });
@@ -109,10 +109,8 @@ describe('<List /> actions', () => {
     const { container } = render(list);
 
     await waitFor(() => {
-      const { queryByLabelText } = within(
-        container.querySelector('tbody tr') as HTMLTableRowElement
-      );
-      const button = queryByLabelText('Delete') as HTMLButtonElement;
+      const { queryByTestId } = within(container.querySelector('tbody tr') as HTMLTableRowElement);
+      const button = queryByTestId('DeleteIcon') as HTMLButtonElement;
       fireEvent.click(button);
     });
 
@@ -193,10 +191,8 @@ describe('DialogMessage tests', () => {
     const { container } = render(organizationList);
 
     await waitFor(() => {
-      const { queryByLabelText } = within(
-        container.querySelector('tbody tr') as HTMLTableRowElement
-      );
-      const button = queryByLabelText('Delete') as HTMLButtonElement;
+      const { queryByTestId } = within(container.querySelector('tbody tr') as HTMLTableRowElement);
+      const button = queryByTestId('DeleteIcon') as HTMLButtonElement;
 
       fireEvent.click(button);
     });

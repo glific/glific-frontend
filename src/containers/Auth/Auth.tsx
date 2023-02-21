@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Formik, Form, Field } from 'formik';
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Captcha } from 'components/UI/Form/Captcha/Captcha';

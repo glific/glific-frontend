@@ -89,9 +89,9 @@ describe('Server Table test', () => {
   it('passes in tableVals correctly', () => {
     const wrapper = render(createTable());
     expect(
-      wrapper.getByTestId('tableFooter').querySelectorAll('.MuiTablePagination-caption')[1]
-    ).toHaveTextContent('1-5 of 5');
-    expect(wrapper.getByTestId('tableFooter').querySelector('.MuiSelect-select')).toHaveTextContent(
+      wrapper.getByTestId('tableFooter').querySelectorAll('.MuiTablePagination-displayedRows')[0]
+    ).toHaveTextContent('1–5 of 5');
+    expect(wrapper.getByTestId('tableFooter').querySelector('.MuiTablePagination-select')).toHaveTextContent(
       '50'
     );
   });

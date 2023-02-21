@@ -1,4 +1,4 @@
-import { Container } from '@material-ui/core';
+import { Container } from '@mui/material';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import setLogs from 'config/logs';
 import { Component } from 'react';
@@ -44,7 +44,7 @@ class ErrorBoundary extends Component<any, any> {
           <div data-testid="errorMessage">
             <DialogBox
               title="Error !"
-              colorOk="secondary"
+              colorOk="warning"
               handleOk={() => {
                 navigate('/logout/user');
               }}

@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
-import { CircularProgress } from '@material-ui/core';
+import { CircularProgress } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import { ReactComponent as WhiteIcon } from 'assets/images/icons/White.svg';

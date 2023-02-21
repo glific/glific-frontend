@@ -3,7 +3,7 @@ import { vi } from 'vitest';
 
 import { Dropdown } from './Dropdown';
 
-vi.mock('@material-ui/core/Select', () => (props: any) => {
+vi.mock('@mui/material/Select', () => (props: any) => {
   const { onChange, children } = props;
   return (
     <div>

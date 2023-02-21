@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { List, ListItem, Divider, Paper, Typography } from '@material-ui/core';
+import { List, ListItemButton, Divider, Paper, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import styles from './ChatTemplates.module.css';
@@ -56,9 +56,8 @@ export const ChatTemplates = ({
 
     return (
       <div key={key}>
-        <ListItem
+        <ListItemButton
           data-testid="templateItem"
-          button
           disableRipple
           onClick={() => handleSelectText(obj, interactiveMsg)}
           className={styles.PopperListItem}
@@ -72,7 +71,7 @@ export const ChatTemplates = ({
               <AttachmentIconUnselected />
             </div>
           ) : null}
-        </ListItem>
+        </ListItemButton>
         <Divider light />
       </div>
     );

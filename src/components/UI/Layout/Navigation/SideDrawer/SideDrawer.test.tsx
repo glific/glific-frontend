@@ -67,7 +67,7 @@ describe('side drawer testing', () => {
       expect(getByTestId('navbar')).toBeInTheDocument();
     });
     // open menu
-    const [, drawer] = screen.getAllByRole('button');
-    fireEvent.click(drawer);
+    const drawer = screen.getAllByTestId('drawer-button-closed');
+    fireEvent.click(drawer[0]);
   });
 });

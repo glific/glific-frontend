@@ -1,6 +1,7 @@
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
-import { ThemeProvider, CssBaseline } from '@material-ui/core';
+import { ThemeProvider } from '@mui/material/styles';
+import { CssBaseline } from '@mui/material';
 import Appsignal from '@appsignal/javascript';
 import { ErrorBoundary } from '@appsignal/react';
 import * as WindowEvents from '@appsignal/plugin-window-events';

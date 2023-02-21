@@ -3,7 +3,7 @@ import { vi } from 'vitest';
 
 import { Tooltip } from './Tooltip';
 
-vi.mock('@material-ui/core/Tooltip', () => (...props: any) => {
+vi.mock('@mui/material/Tooltip', () => (...props: any) => {
   const { children, classes } = props[0];
   return (
     <div data-testid="tooltip" className={`${classes.tooltip} ${classes.arrow}`}>

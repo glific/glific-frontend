@@ -32,7 +32,7 @@ export const TerminateFlow = ({ contactId, setDialog }: TerminateFlowProps) => {
       buttonOk="YES, TERMINATE"
       buttonCancel="NO, CANCEL"
       additionalTitleStyles={styles.Title}
-      colorOk="secondary"
+      colorOk="warning"
       handleOk={handleTerminateFlow}
       handleCancel={() => {
         setDialog(false);

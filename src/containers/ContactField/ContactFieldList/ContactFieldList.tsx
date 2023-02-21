@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dialog, DialogContent, Button } from '@material-ui/core';
+import { Dialog, DialogContent, Button } from '@mui/material';
 import { useMutation } from '@apollo/client';
 
 import { List } from 'containers/List/List';
