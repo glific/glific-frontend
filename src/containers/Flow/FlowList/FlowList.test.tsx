@@ -101,7 +101,7 @@ describe('<FlowList />', () => {
     await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 0)));
 
     await waitFor(() => {
-      const importFlowButton = screen.getByText('Import.svg');
+      const importFlowButton = screen.getByTestId('import-icon');
       expect(importFlowButton).toBeInTheDocument();
       fireEvent.click(importFlowButton);
     });
@@ -129,7 +129,7 @@ describe('<FlowList />', () => {
     await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 0)));
 
     await waitFor(() => {
-      const exportButton = screen.getByText('Export.svg');
+      const exportButton = screen.getByTestId('export-icon');
       expect(exportButton).toBeInTheDocument();
 
       fireEvent.click(exportButton);

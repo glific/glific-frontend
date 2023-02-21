@@ -654,7 +654,7 @@ export const FormLayout = ({
   ) : null;
 
   return (
-    <div className={styles.ItemAdd}>
+    <div className={styles.ItemAdd} data-testid="add-container">
       {dialogBox}
       {heading}
       {backLink}

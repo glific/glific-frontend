@@ -11,9 +11,11 @@ const mocks = CONVERSATION_MOCKS;
 
 vi.mock('axios', () => {
   return {
-    defaults: { headers: { common: {} } },
-    get: vi.fn(),
-    delete: vi.fn(),
+    default: {
+      defaults: { headers: { common: {} } },
+      get: vi.fn(),
+      delete: vi.fn(),
+    },
   };
 });
 

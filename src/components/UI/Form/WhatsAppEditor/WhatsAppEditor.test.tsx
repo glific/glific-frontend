@@ -1,39 +1,35 @@
 import { render, fireEvent } from '@testing-library/react';
-import { ContentState, EditorState } from 'draft-js';
+import console from 'console';
+import draftJs, { EditorState, ContentState } from 'draft-js';
 import { vi } from 'vitest';
 
 import WhatsAppEditor from './WhatsAppEditor';
 
 const mockHandleKeyCommand = vi.fn();
 
-vi.mock('draft-js', async () => {
-  const moduleMock = await vi.importActual<any>('draft-js');
-  return {
-    ...moduleMock,
-    Editor: (...props: any) => {
-      return (
-        <input
-          data-testid="editor"
-          onClick={() => {
-            props[0].handleKeyCommand('underline');
-            mockHandleKeyCommand();
-          }}
-          onChange={(event) => props[0].onChange(event)}
-        ></input>
-      );
-    },
-  };
+vi.spyOn(draftJs, 'Editor').mockImplementation((...props: any) => {
+  return (
+    <input
+      data-testid="editor"
+      onClick={() => {
+        props[0].handleKeyCommand('underline');
+        mockHandleKeyCommand();
+      }}
+      onChange={(event) => props[0].onChange(event)}
+    ></input>
+  );
 });
 
-vi.mock('react-resize-detector', () => (...props: any) => {
-  const { onResize, children } = props[0];
-  return (
-    <div>
-      <div data-testid="resizer" onClick={() => onResize('30', '40')}>
-        {children}
+vi.mock('react-resize-detector', () => {
+  return {
+    default: (props) => (
+      <div>
+        <div data-testid="resizer" onClick={() => props.onResize('30', '40')}>
+          {props.children}
+        </div>
       </div>
-    </div>
-  );
+    ),
+  };
 });
 
 describe('<WhatsAppEditor/>', () => {
@@ -53,8 +49,8 @@ describe('<WhatsAppEditor/>', () => {
   const editorContent = EditorState.createWithContent(ContentState.createFromText('Hello'));
 
   test('it should have editor and emoji components', () => {
-    const { container, getByTestId } = render(<WhatsAppEditor {...defaultProps(editorContent)} />);
-    expect(container.querySelector('.Editor')).toBeInTheDocument();
+    const { getByTestId } = render(<WhatsAppEditor {...defaultProps(editorContent)} />);
+    expect(getByTestId('editor')).toBeInTheDocument();
     expect(getByTestId('emoji-picker')).toBeInTheDocument();
   });
 

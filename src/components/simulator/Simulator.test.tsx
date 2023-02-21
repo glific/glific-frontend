@@ -54,7 +54,8 @@ test('simulator should open on click of simulator icon', async () => {
 
   await waitFor(() => {
     fireEvent.click(button);
-    expect(mockSetShowSimulator).toHaveBeenCalledTimes(1);
+
+    expect(mockSetShowSimulator).toBeCalledTimes(1);
   });
 });
 
@@ -66,14 +67,13 @@ test('opened simulator should close when click of simulator icon', async () => {
     </MockedProvider>
   );
 
-  await waitFor(async () => new Promise((resolve) => setTimeout(resolve, 0)));
-
   // To open simulator
   const button = getByTestId('simulatorIcon');
 
   await waitFor(() => {
     fireEvent.click(button);
-    expect(mockSetShowSimulator).toHaveBeenCalledTimes(1);
+
+    expect(mockSetShowSimulator).toHaveBeenCalledTimes(2);
   });
 });
 

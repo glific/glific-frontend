@@ -38,9 +38,7 @@ test('it renders list successfully', async () => {
     expect(actionLabel).toBeInTheDocument();
   });
 
-  const editButtons = screen.getAllByRole('button', {
-    name: 'GreenEdit.svg',
-  });
+  const editButtons = screen.getAllByTestId('edit-icon');
   expect(editButtons[0]).toBeInTheDocument();
   fireEvent.click(editButtons[0]);
 
@@ -78,9 +76,7 @@ test('it renders component, edits field, saves and error occurs', async () => {
   expect(screen.getByText('Loading...')).toBeInTheDocument();
 
   await waitFor(() => {
-    const editButtons = screen.getAllByRole('button', {
-      name: 'GreenEdit.svg',
-    });
+    const editButtons = screen.getAllByTestId('edit-icon');
     expect(editButtons[3]).toBeInTheDocument();
     fireEvent.click(editButtons[3]);
   });

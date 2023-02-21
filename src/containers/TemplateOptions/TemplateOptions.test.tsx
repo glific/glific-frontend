@@ -79,7 +79,7 @@ test('it renders quick reply button template successfully', async () => {
   fireEvent.blur(value);
   await waitFor(() => {});
 
-  const deleteButtons = screen.getAllByText('Cross.svg');
+  const deleteButtons = screen.getAllByTestId('cross-icon');
   fireEvent.click(deleteButtons[1]);
   await waitFor(() => {});
 

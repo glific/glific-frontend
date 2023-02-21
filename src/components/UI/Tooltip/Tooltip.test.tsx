@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { vi } from 'vitest';
 
 import { Tooltip } from './Tooltip';
@@ -33,6 +33,8 @@ describe('Tooltip test', () => {
     const { container } = render(
       createTooltip({ tooltipArrowClass: 'tooltipArrow', tooltipClass: 'tooltip' })
     );
+
+    screen.debug();
     expect(container.querySelector('.tooltipArrow')).toBeInTheDocument();
     expect(container.querySelector('.tooltip')).toBeInTheDocument();
   });

@@ -18,9 +18,10 @@ const defaultProps: any = (type: string) => {
   };
 };
 
-vi.mock('react-viewer', () => (props: any) => {
-  const { onClose } = props;
-  return <div data-testid="reactViewer" onClick={() => onClose()} />;
+vi.mock('react-viewer', () => {
+  return {
+    default: ({ onClose }: any) => <div data-testid="reactViewer" onClick={() => onClose()} />,
+  };
 });
 
 test('it shows image when type of message is image', () => {

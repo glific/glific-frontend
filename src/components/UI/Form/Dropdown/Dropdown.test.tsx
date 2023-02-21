@@ -3,22 +3,23 @@ import { vi } from 'vitest';
 
 import { Dropdown } from './Dropdown';
 
-vi.mock('@mui/material/Select', () => (props: any) => {
-  const { onChange, children } = props;
-  return (
-    <div>
-      <select
-        data-testid="mock-select"
-        onChange={() => {
-          onChange();
-        }}
-      >
-        <option key={children[0].props.value} value={children[0].props.value}>
-          {children[0].props.children}
-        </option>
-      </select>
-    </div>
-  );
+vi.mock('@mui/material/Select', () => {
+  return {
+    default: ({ onChange, children }) => (
+      <div>
+        <select
+          data-testid="mock-select"
+          onChange={() => {
+            onChange();
+          }}
+        >
+          <option key={children[0].props.value} value={children[0].props.value}>
+            {children[0].props.children}
+          </option>
+        </select>
+      </div>
+    ),
+  };
 });
 
 const changeValue = vi.fn();

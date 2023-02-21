@@ -51,6 +51,7 @@ class ResizeObserver {
 }
 
 window.ResizeObserver = ResizeObserver;
+window.HTMLDocument = Document;
 
 global.URL.createObjectURL = vi.fn();
 

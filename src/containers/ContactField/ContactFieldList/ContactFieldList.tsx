@@ -105,7 +105,7 @@ const ContactFieldList = () => {
           {label}
           <span>
             <Button onClick={() => setItemToBeEdited({ id, column })}>
-              <EditIcon />
+              <EditIcon data-testid="edit-icon" />
             </Button>
           </span>
         </p>

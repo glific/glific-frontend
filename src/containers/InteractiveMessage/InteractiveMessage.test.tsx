@@ -70,7 +70,6 @@ const completionMock = {
 
 // Getting contact variables
 vi.spyOn(axios, 'get').mockImplementation((url: string) => {
-  console.log('qwerty', url);
   if (url === `${FLOW_EDITOR_API}fields`) {
     return Promise.resolve({ data: fieldsMock });
   } else if (url === `${FLOW_EDITOR_API}completion`) {

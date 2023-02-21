@@ -103,6 +103,7 @@ export const ListReplyTemplate = ({
           {inputFields.length > 1 && (
             <DeleteIcon
               title="Remove"
+              data-testid="delete-icon"
               className={styles.ListDeleteIcon}
               onClick={onListRemoveClick}
             />

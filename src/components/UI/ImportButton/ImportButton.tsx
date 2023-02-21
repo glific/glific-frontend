@@ -37,7 +37,7 @@ export const ImportButton = ({ title, onImport, afterImport }: ImportButtonProps
         color="primary"
       >
         {title}
-        <ImportIcon />
+        <ImportIcon data-testid="import-icon" />
       </Button>
     </span>
   );

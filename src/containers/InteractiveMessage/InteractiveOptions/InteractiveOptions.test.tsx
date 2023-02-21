@@ -70,8 +70,8 @@ test('it render interactive options for list reply template', async () => {
   fireEvent.click(addAnotherList);
   await waitFor(() => {});
 
-  const [list1] = screen.getAllByText('Red.svg');
-  const [listItem1] = screen.getAllByText('Cross.svg');
+  const [list1] = screen.getAllByTestId('delete-icon');
+  const [listItem1] = screen.getAllByTestId('cross-icon');
 
   expect(list1).toBeInTheDocument();
   expect(listItem1).toBeInTheDocument();
@@ -120,7 +120,7 @@ test('it render interactive options for quick reply template', async () => {
   fireEvent.click(addButton);
   await waitFor(() => {});
 
-  const [deleteFirstItem] = screen.getAllByText('Cross.svg');
+  const [deleteFirstItem] = screen.getAllByTestId('cross-icon');
   expect(deleteFirstItem).toBeInTheDocument();
 
   fireEvent.click(deleteFirstItem);

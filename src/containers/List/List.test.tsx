@@ -101,7 +101,7 @@ describe('<List /> actions', () => {
     });
 
     await waitFor(() => {
-      expect(container.querySelector('div.ItemAdd')).toBeInTheDocument();
+      expect(screen.getByTestId('add-container')).toBeInTheDocument();
     });
   });
 

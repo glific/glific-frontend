@@ -1,9 +1,7 @@
 import { render, waitFor, within, fireEvent, cleanup } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import userEvent from '@testing-library/user-event';
-import Router from 'react-router-dom';
-import { BrowserRouter } from 'react-router-dom';
-import { vi } from 'vitest';
+import * as Router from 'react-router-dom';
 
 import { HSM } from './HSM';
 import { TEMPLATE_MOCKS } from 'containers/Template/Template.test.helper';
@@ -13,16 +11,14 @@ const mocks = TEMPLATE_MOCKS;
 
 vi.mock('react-router-dom', async () => ({
   ...(await vi.importActual<any>('react-router-dom')),
-  useParams: vi.fn(),
+  useParams: () => ({ id: '1' }),
 }));
-
 test('HSM form is loaded correctly in edit mode', async () => {
-  vi.spyOn(Router, 'useParams').mockReturnValue({ id: '1' });
   const { getByText } = render(
     <MockedProvider mocks={mocks} addTypename={false}>
-      <BrowserRouter>
+      <Router.BrowserRouter>
         <HSM />
-      </BrowserRouter>
+      </Router.BrowserRouter>
     </MockedProvider>
   );
   await waitFor(() => {
@@ -32,12 +28,12 @@ test('HSM form is loaded correctly in edit mode', async () => {
 
 test('check for validations for the HSM form', async () => {
   const user = userEvent.setup();
-  vi.spyOn(Router, 'useParams').mockReturnValue({ id: undefined });
+
   const { getByText, container } = render(
     <MockedProvider mocks={mocks} addTypename={false}>
-      <BrowserRouter>
+      <Router.BrowserRouter>
         <HSM />
-      </BrowserRouter>
+      </Router.BrowserRouter>
     </MockedProvider>
   );
   await waitFor(() => {
