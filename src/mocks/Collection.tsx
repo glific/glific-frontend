@@ -154,6 +154,8 @@ export const filterCollectionQuery = {
           label: 'Staff group',
           description: 'Group for staff members',
           isRestricted: false,
+          contactsCount: 2,
+          roles: [],
         },
       ],
     },

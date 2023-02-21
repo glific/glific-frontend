@@ -1,4 +1,4 @@
-import { Button } from '@material-ui/core';
+import { Button } from '@mui/material';
 import { v4 as uuidv4 } from 'uuid';
 
 import styles from './QuickReplyTemplate.module.css';
@@ -63,7 +63,6 @@ export const QuickReplyTemplate = ({
           <div className={styles.ButtonItem} key={uuidv4()}>
             <Button
               variant="contained"
-              color="default"
               disabled={disabled}
               onClick={() => onQuickReplyClick(payloadObject)}
               className={isSimulator ? styles.SimulatorButton : styles.ChatMessageButton}

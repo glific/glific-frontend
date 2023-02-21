@@ -1,7 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
-import Typography from '@material-ui/core/Typography/Typography';
-import { Card, CardContent, CardActions, IconButton } from '@material-ui/core';
+import { Card, CardContent, CardActions, IconButton, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { GET_PROVIDERS } from 'graphql/queries/Organization';
@@ -77,7 +76,7 @@ export const SettingList = () => {
                 }}
                 className={styles.Link}
               >
-                <IconButton aria-label="Edit" color="default" data-testid="EditIcon">
+                <IconButton aria-label="Edit" data-testid="EditIcon">
                   <EditIcon />
                 </IconButton>
               </Link>

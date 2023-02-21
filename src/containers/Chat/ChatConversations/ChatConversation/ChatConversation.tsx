@@ -1,5 +1,4 @@
-import clsx from 'clsx';
-import { ListItem } from '@material-ui/core';
+import { ListItemButton } from '@mui/material';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 import { useApolloClient, useMutation } from '@apollo/client';
@@ -189,12 +188,11 @@ const ChatConversation = ({
   }
 
   return (
-    <ListItem
+    <ListItemButton
       key={index}
       data-testid="list"
-      button
       disableRipple
-      className={clsx(styles.StyledListItem, { [styles.SelectedColor]: selected })}
+      className={`${styles.StyledListItem} ${selected ? styles.SelectedColor : ''}`}
       component={Link}
       selected={selected}
       onClick={() => {
@@ -235,7 +233,7 @@ const ChatConversation = ({
           {moment(lastMessage.insertedAt).format(DATE_FORMAT)}
         </div>
       </div>
-    </ListItem>
+    </ListItemButton>
   );
 };
 

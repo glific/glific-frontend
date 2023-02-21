@@ -3,7 +3,7 @@ import { useQuery } from '@apollo/client';
 import moment from 'moment';
 import { useParams } from 'react-router-dom';
 import { getOrganizationServices } from 'services/AuthService';
-import { FormControl, FormControlLabel, Radio, RadioGroup } from '@material-ui/core';
+import { FormControl, FormControlLabel, Radio, RadioGroup } from '@mui/material';
 
 import { DATE_TIME_FORMAT } from 'common/constants';
 import { GET_CONTACT_DETAILS, GET_CONTACT_PROFILES } from 'graphql/queries/Contact';

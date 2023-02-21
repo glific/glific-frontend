@@ -2,7 +2,7 @@ import { fireEvent, render } from '@testing-library/react';
 
 import { Dropdown } from './Dropdown';
 
-jest.mock('@material-ui/core/Select', () => (props: any) => {
+jest.mock('@mui/material/Select', () => (props: any) => {
   const { onChange, children } = props;
   return (
     <div>
