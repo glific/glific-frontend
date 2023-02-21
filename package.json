@@ -94,7 +94,6 @@
   "devDependencies": {
     "@rollup/plugin-inject": "^5.0.3",
     "@testing-library/jest-dom": "^5.16.5",
-    "@vitest/ui": "^0.28.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^14.4.3",
     "@types/draft-js": "^0.11.10",
@@ -110,6 +109,8 @@
     "@types/react-test-renderer": "^18.0.0",
     "@types/uuid": "^9.0.0",
     "@vitejs/plugin-react": "^3.0.1",
+    "@vitest/coverage-c8": "^0.28.5",
+    "@vitest/ui": "^0.28.5",
     "buffer": "^6.0.3",
     "c8": "^7.12.0",
     "eslint-config-airbnb": "^19.0.4",
@@ -120,6 +121,7 @@
     "eslint-plugin-react": "^7.32.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "i18next-parser": "^7.6.0",
+    "jsdom": "^21.1.0",
     "prettier": "^2.8.3",
     "react-test-renderer": "^18.2.0",
     "stream-browserify": "^3.0.0",
@@ -128,7 +130,6 @@
     "vite-plugin-svgr": "^2.4.0",
     "vite-tsconfig-paths": "^4.0.3",
     "vitest": "^0.28.5",
-    "jsdom": "^21.1.0",
     "yarn-upgrade-all": "^0.7.2"
   }
 }
