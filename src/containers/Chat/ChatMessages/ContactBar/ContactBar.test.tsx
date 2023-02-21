@@ -120,7 +120,7 @@ describe('Menu test', () => {
     global.innerWidth = 500;
     // // Trigger the window resize event.
     global.dispatchEvent(new Event('resize'));
-    expect(screen.getByText('UnselectedDark.svg')).toBeInTheDocument();
+    expect(screen.getByTestId('icon-component')).toBeInTheDocument();
   });
 
   test('clicking on clear chat button should open up a dialog box', async () => {

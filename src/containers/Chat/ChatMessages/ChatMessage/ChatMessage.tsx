@@ -218,12 +218,13 @@ export const ChatMessage = ({
   }
 
   const icon = (
-    <MessageIcon
-      onClick={onClick}
-      ref={Ref}
-      className={`${styles.Button} ${iconPlacement}`}
-      data-testid="messageOptions"
-    />
+    <div ref={Ref}>
+      <MessageIcon
+        onClick={onClick}
+        className={`${styles.Button} ${iconPlacement}`}
+        data-testid="messageOptions"
+      />
+    </div>
   );
 
   const ErrorIcon = messageErrorStatus ? (
@@ -233,7 +234,7 @@ export const ChatMessage = ({
       tooltipClass={styles.ErrorMessage}
       tooltipArrowClass={styles.ArrowTooltip}
     >
-      <WarningIcon className={styles.ErrorMsgIcon} />
+      <WarningIcon className={styles.ErrorMsgIcon} data-testid="warning-icon" />
     </Tooltip>
   ) : null;
 
