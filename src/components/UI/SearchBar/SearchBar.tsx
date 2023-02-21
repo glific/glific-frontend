@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { InputBase, IconButton, InputAdornment } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
+import { InputBase, IconButton, InputAdornment } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import { useTranslation } from 'react-i18next';
 
 import searchIcon from 'assets/images/icons/Search/Desktop.svg';

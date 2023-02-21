@@ -1,4 +1,4 @@
-import { Dialog, DialogContent } from '@material-ui/core';
+import { Dialog, DialogContent } from '@mui/material';
 
 import { ReactComponent as CrossDarkIcon } from 'assets/images/icons/CrossDark.svg';
 import ChatInput from 'containers/Chat/ChatMessages/ChatInput/ChatInput';

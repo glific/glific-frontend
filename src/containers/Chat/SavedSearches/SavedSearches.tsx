@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { Container } from '@material-ui/core';
+import { Container } from '@mui/material';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 

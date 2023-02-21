@@ -1,4 +1,4 @@
-import { Button, TextField, FormHelperText, FormControl } from '@material-ui/core';
+import { Button, TextField, FormHelperText, FormControl } from '@mui/material';
 
 import { ReactComponent as CrossIcon } from 'assets/images/icons/Cross.svg';
 import { ReactComponent as AddIcon } from 'assets/images/icons/SquareAdd.svg';

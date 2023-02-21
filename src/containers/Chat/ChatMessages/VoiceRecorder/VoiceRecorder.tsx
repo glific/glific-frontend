@@ -1,9 +1,9 @@
 import { useCallback, useState } from 'react';
 import { useReactMediaRecorder } from 'react-media-recorder';
-import { IconButton } from '@material-ui/core';
-import MicOffIcon from '@material-ui/icons/MicOff';
-import StopIcon from '@material-ui/icons/Stop';
-import CancelIcon from '@material-ui/icons/Cancel';
+import { IconButton } from '@mui/material';
+import MicOffIcon from '@mui/icons-material/MicOff';
+import StopIcon from '@mui/icons-material/Stop';
+import CancelIcon from '@mui/icons-material/Cancel';
 import { useTranslation } from 'react-i18next';
 import { ReactComponent as MicIcon } from '../../../../assets/images/icons/Mic/Inactive.svg';
 import { ReactComponent as MicActiveIcon } from '../../../../assets/images/icons/Mic/Active.svg';
