@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   FormControl,
   OutlinedInput,
@@ -6,10 +5,10 @@ import {
   InputLabel,
   InputAdornment,
   IconButton,
-} from '@material-ui/core';
-import Visibility from '@material-ui/icons/Visibility';
-import VisibilityOff from '@material-ui/icons/VisibilityOff';
-import RefreshIcon from '@material-ui/icons/Refresh';
+} from '@mui/material';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import RefreshIcon from '@mui/icons-material/Refresh';
 
 import styles from './Input.module.css';
 

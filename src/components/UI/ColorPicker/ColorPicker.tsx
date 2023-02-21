@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { TwitterPicker } from 'react-color';
-import FormHelperText from '@material-ui/core/FormHelperText/FormHelperText';
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
-import { Input } from '@material-ui/core';
+
+import { Input, ClickAwayListener, FormHelperText } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import styles from './ColorPicker.module.css';

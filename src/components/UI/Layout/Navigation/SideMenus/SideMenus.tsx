@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, forwardRef } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { ListItem, ListItemIcon, ListItemText, List } from '@material-ui/core';
+import { ListItemButton, ListItemIcon, ListItemText, List } from '@mui/material';
 import { useLazyQuery } from '@apollo/client';
-import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
 
 import { GET_NOTIFICATIONS_COUNT } from 'graphql/queries/Notifications';
@@ -14,7 +13,7 @@ export interface SideMenusProps {
   opened: boolean;
 }
 
-const AnchorLink = (props: any) => <a {...props} />;
+const AnchorLink = forwardRef((props, ref: any) => <a {...props} ref={ref} />);
 
 const SideMenus = ({ opened }: SideMenusProps) => {
   const location = useLocation();
@@ -59,14 +58,10 @@ const SideMenus = ({ opened }: SideMenusProps) => {
     }
 
     return (
-      <ListItem
-        button
+      <ListItemButton
         disableRipple
         selected={isSelected}
-        className={clsx({
-          [styles.OpenItem]: opened,
-          [styles.ClosedItem]: !opened,
-        })}
+        className={opened ? styles.OpenItem : styles.ClosedItem}
         classes={{
           root: styles.IconItem,
           selected: styles.SelectedItem,
@@ -87,14 +82,11 @@ const SideMenus = ({ opened }: SideMenusProps) => {
           <ListItemText
             disableTypography
             data-testid="list-item"
-            className={clsx(styles.Text, {
-              [styles.SelectedText]: isSelected,
-              [styles.UnselectedText]: !isSelected,
-            })}
+            className={isSelected ? styles.SelectedText : styles.UnselectedText}
             primary={t(menu.title)}
           />
         ) : null}
-      </ListItem>
+      </ListItemButton>
     );
   });
 

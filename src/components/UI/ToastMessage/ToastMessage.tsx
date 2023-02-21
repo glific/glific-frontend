@@ -1,6 +1,4 @@
-import React from 'react';
-import { Snackbar } from '@material-ui/core';
-import Alert from '@material-ui/lab/Alert';
+import { Snackbar, Alert } from '@mui/material';
 
 import { ReactComponent as CrossIcon } from 'assets/images/icons/Cross.svg';
 import styles from './ToastMessage.module.css';

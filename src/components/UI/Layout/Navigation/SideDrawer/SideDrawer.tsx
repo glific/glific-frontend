@@ -1,23 +1,11 @@
-import React, { useContext, useState } from 'react';
-import {
-  Hidden,
-  Drawer,
-  makeStyles,
-  createStyles,
-  // eslint-disable-next-line no-unused-vars
-  Theme,
-  Toolbar,
-  Typography,
-} from '@material-ui/core';
-import { createTheme, ThemeProvider } from '@material-ui/core/styles';
-import MenuIcon from '@material-ui/icons/Menu';
-import clsx from 'clsx';
-import IconButton from '@material-ui/core/IconButton';
+import { useContext, useState } from 'react';
+import { Hidden, Drawer, Toolbar, Typography, IconButton } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { SideDrawerContext, ProviderContext } from 'context/session';
 import Menu from 'components/UI/Menu/Menu';
-import { SIDE_DRAWER_WIDTH, GUPSHUP_ENTERPRISE_SHORTCODE } from 'common/constants';
+import { GUPSHUP_ENTERPRISE_SHORTCODE } from 'common/constants';
 import InactiveStaffIcon from 'assets/images/icons/StaffManagement/Inactive.svg';
 import ActiveStaffIcon from 'assets/images/icons/StaffManagement/Active.svg';
 import InactiveUserIcon from 'assets/images/icons/User/Inactive.svg';
@@ -31,101 +19,10 @@ import { WalletBalance } from 'containers/WalletBalance/WalletBalance';
 import SideMenus from '../SideMenus/SideMenus';
 import styles from './SideDrawer.module.css';
 
-const drawerWidth = SIDE_DRAWER_WIDTH;
-
-const themeUI = createTheme({
-  typography: {
-    h6: {
-      fontSize: 24,
-      fontFamily: 'Tenor Sans, sans-serif',
-      color: '#0D6B3D',
-    },
-  },
-});
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    drawer: {
-      zIndex: 1000,
-      width: drawerWidth,
-      flexShrink: 0,
-      whiteSpace: 'nowrap',
-    },
-    navClose: {
-      width: '0px',
-      [theme.breakpoints.up('sm')]: {
-        width: '72px',
-      },
-    },
-    drawerOpen: {
-      width: '100%',
-      [theme.breakpoints.up('sm')]: {
-        width: drawerWidth,
-      },
-      transition: theme.transitions.create('width', {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.enteringScreen,
-      }),
-    },
-    drawerClose: {
-      transition: theme.transitions.create('width', {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen,
-      }),
-      overflowX: 'hidden',
-      width: '0px',
-      [theme.breakpoints.up('sm')]: {
-        width: theme.spacing(9) + 1,
-      },
-    },
-    toolbar: {
-      display: 'flex',
-    },
-    content: {
-      flexGrow: 1,
-      padding: theme.spacing(3),
-    },
-    drawerPaper: {},
-    outerBox: {
-      display: 'flex',
-      width: '100%',
-      justifyContent: 'space-between',
-    },
-    anotherToolBar: {
-      padding: '0px',
-    },
-    title: {
-      alignSelf: 'center',
-      margin: '0 0 0 15px',
-    },
-    iconButton: {
-      margin: '0 10px 0 0',
-    },
-    closedIcon: {
-      margin: '12px 12px 12px 15px',
-    },
-    BottomMenus: {
-      zIndex: 1,
-      position: 'absolute',
-      bottom: '50px',
-      display: 'flex',
-      width: '100%',
-      paddingLeft: '8px',
-    },
-    BottomMenusWithoutWallet: {
-      bottom: '10px',
-    },
-    BottomMenusVertical: {
-      flexFlow: 'column',
-    },
-  })
-);
-
 export const SideDrawer = () => {
   const location = useLocation();
   const { drawerOpen, setDrawerOpen } = useContext(SideDrawerContext);
 
-  const classes = useStyles();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { t } = useTranslation();
 
@@ -133,16 +30,15 @@ export const SideDrawer = () => {
 
   const drawer = (
     <div>
-      <Toolbar className={classes.anotherToolBar}>
+      <Toolbar className={styles.AnotherToolBar}>
         {drawerOpen ? (
-          <div className={classes.outerBox}>
-            <ThemeProvider theme={themeUI}>
-              <Typography variant="h6" className={classes.title}>
-                <img src={GlificLogo} className={styles.GlificLogo} alt="Glific" />
-              </Typography>
-            </ThemeProvider>
+          <div className={styles.OuterBox}>
+            <Typography variant="h6" className={styles.Title}>
+              <img src={GlificLogo} className={styles.GlificLogo} alt="Glific" />
+            </Typography>
+
             <IconButton
-              className={classes.iconButton}
+              className={styles.IconButton}
               onClick={() => setDrawerOpen(false)}
               data-testid="drawer-button"
             >
@@ -187,14 +83,14 @@ export const SideDrawer = () => {
     );
   }
 
-  // set the appropriate classes to display bottom menus correctly
-  const bottonMenuClasses = [classes.BottomMenus];
+  // set the appropriate styles to display bottom menus correctly
+  const bottonMenuClasses = [styles.BottomMenus];
   if (provider === GUPSHUP_ENTERPRISE_SHORTCODE) {
-    bottonMenuClasses.unshift(classes.BottomMenusWithoutWallet);
+    bottonMenuClasses.unshift(styles.BottomMenusWithoutWallet);
   }
 
   if (!drawerOpen) {
-    bottonMenuClasses.unshift(classes.BottomMenusVertical);
+    bottonMenuClasses.unshift(styles.BottomMenusVertical);
   }
 
   const HiddenProps = {
@@ -204,10 +100,7 @@ export const SideDrawer = () => {
 
   return (
     <nav
-      className={clsx({
-        [classes.drawer]: drawerOpen,
-        [classes.navClose]: !drawerOpen,
-      })}
+      className={drawerOpen ? styles.Drawer : styles.NavClose}
       aria-label="navigation menus"
       data-testid="navbar"
     >
@@ -215,13 +108,13 @@ export const SideDrawer = () => {
         <Drawer
           container={container}
           variant="temporary"
-          anchor={themeUI.direction === 'rtl' ? 'right' : 'left'}
+          anchor="left"
           open={mobileOpen}
           onClose={() => {
             setMobileOpen(!mobileOpen);
           }}
           classes={{
-            paper: classes.drawerPaper,
+            paper: styles.DrawerPaper,
           }}
           ModalProps={{
             keepMounted: true,
@@ -231,15 +124,9 @@ export const SideDrawer = () => {
         </Drawer>
       </Hidden>
       <Drawer
-        className={clsx(classes.drawer, {
-          [classes.drawerOpen]: drawerOpen,
-          [classes.drawerClose]: !drawerOpen,
-        })}
+        className={drawerOpen ? styles.DrawerOpen : styles.DrawerClose}
         classes={{
-          paper: clsx({
-            [classes.drawerOpen]: drawerOpen,
-            [classes.drawerClose]: !drawerOpen,
-          }),
+          paper: drawerOpen ? styles.DrawerOpen : styles.DrawerClose,
         }}
         variant="permanent"
       >

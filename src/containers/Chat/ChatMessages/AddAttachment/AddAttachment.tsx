@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { useMutation } from '@apollo/client';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import CircularProgress from '@mui/material/CircularProgress';
 
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';

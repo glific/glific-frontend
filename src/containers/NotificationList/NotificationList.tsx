@@ -1,7 +1,7 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { Popover, FormControlLabel, RadioGroup, Radio } from '@material-ui/core';
+import { useEffect, useState, useRef } from 'react';
+import { Popover, FormControlLabel, RadioGroup, Radio } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { useApolloClient, useMutation } from '@apollo/client';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
@@ -187,7 +187,7 @@ export const NotificationList = () => {
           <img src={CopyIcon} alt="copy" />
           {t('Copy text')}
         </span>
-        <Button variant="contained" color="default" onClick={handleClose}>
+        <Button variant="contained" onClick={handleClose}>
           {t('Done')}
         </Button>
       </div>

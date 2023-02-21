@@ -49,11 +49,9 @@ test('Update status', async () => {
 
   const label = await screen.findByText('Organizations');
 
-  const extensionButton = screen.getAllByRole('button', {
-    name: 'extension.svg',
-  })[0];
+  const extensionButton = screen.getAllByTestId('additionalButton')[0];
 
-  const orgCustomerButton = screen.getAllByRole('button', { name: 'customer_details.svg' })[0];
+  const orgCustomerButton = screen.getAllByTestId('additionalButton')[1];
 
   expect(label).toBeInTheDocument();
   expect(extensionButton).toBeInTheDocument();

@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import Grid from '@material-ui/core/Grid';
-import DateFnsUtils from '@date-io/date-fns';
-import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
+import { useState } from 'react';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
+import { TextField } from '@mui/material';
 import 'date-fns';
 import { getIn } from 'formik';
 
@@ -19,12 +19,10 @@ export interface CalendarProps {
 }
 
 export const Calendar = ({
-  variant = 'inline',
-  inputVariant = 'outlined',
   format = 'MM/dd/yyyy',
   field,
   disabled = false,
-  form: { touched, errors, setFieldValue },
+  form: { setFieldValue, errors, touched },
   placeholder,
   minDate,
 }: CalendarProps) => {
@@ -43,27 +41,31 @@ export const Calendar = ({
   };
 
   return (
-    <MuiPickersUtilsProvider utils={DateFnsUtils}>
-      <Grid className={styles.Calendar}>
-        <KeyboardDatePicker
-          error={hasError}
-          autoOk
+    <LocalizationProvider dateAdapter={AdapterDateFns}>
+      <div className={styles.Calendar}>
+        <DatePicker
+          label={placeholder}
           open={open}
-          variant={variant}
-          inputVariant={inputVariant}
-          format={format}
+          value={dateValue}
+          inputFormat={format}
+          onChange={handleDateChange}
           className={styles.CalendarInput}
           disabled={disabled}
-          data-testid="date-picker-inline"
-          label={placeholder}
-          value={dateValue}
-          onClick={() => !disabled && setOpen(true)}
-          onClose={() => setOpen(false)}
-          onChange={handleDateChange}
-          helperText={hasError ? errorText : ''}
           minDate={minDate}
+          InputProps={{
+            error: hasError,
+            onClick: () => !disabled && setOpen(true),
+          }}
+          onClose={() => setOpen(false)}
+          renderInput={(params) => (
+            <TextField
+              helperText={hasError ? errorText : ''}
+              data-testid="date-picker-inline"
+              {...params}
+            />
+          )}
         />
-      </Grid>
-    </MuiPickersUtilsProvider>
+      </div>
+    </LocalizationProvider>
   );
 };

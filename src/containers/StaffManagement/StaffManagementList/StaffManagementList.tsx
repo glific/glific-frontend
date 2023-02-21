@@ -1,4 +1,3 @@
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@apollo/client';
 import { GET_ORGANIZATION_PHONE } from 'graphql/queries/Organization';

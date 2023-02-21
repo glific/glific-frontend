@@ -5,16 +5,15 @@ export const getSheetCountQuery = {
   request: {
     query: GET_SHEET_COUNT,
     variables: {
-      filter: {
-      },
+      filter: {},
     },
-},
-      result: {
-        data: {
-          countSheets: 3,
-        },
-      },
-    };
+  },
+  result: {
+    data: {
+      countSheets: 3,
+    },
+  },
+};
 export const getSearchSheetQuery = {
   request: {
     query: GET_SHEET,
@@ -47,29 +46,29 @@ export const getSheetQuery = {
   },
   result: {
     data: {
-        sheets: [
-          {
-            id: '1',
-            insertedAt: '2022-10-16T14:54:55.000000Z',
-            isActive: true,
-            label: 'Sheet1',
-            lastSyncedAt: '2022-10-16T14:54:54Z',
-            updatedAt: '2022-10-16T14:54:55.000000Z',
-            url: 'https://glific.test:8080/Sheet-integration/add',
-          },
-          {
-            id: '2',
-            insertedAt: '2022-10-16T14:54:55.000000Z',
-            isActive: true,
-            label: 'Sheet2',
-            lastSyncedAt: '2022-10-16T14:54:54Z',
-            updatedAt: '2022-10-16T14:54:55.000000Z',
-            url: 'https://glific.test:8080/Sheet-integration/add',
-          },
-        ],
-      },
+      sheets: [
+        {
+          id: '1',
+          insertedAt: '2022-10-16T14:54:55.000000Z',
+          isActive: true,
+          label: 'Sheet1',
+          lastSyncedAt: '2022-10-16T14:54:54Z',
+          updatedAt: '2022-10-16T14:54:55.000000Z',
+          url: 'https://glific.test:8080/Sheet-integration/add',
+        },
+        {
+          id: '2',
+          insertedAt: '2022-10-16T14:54:55.000000Z',
+          isActive: true,
+          label: 'Sheet2',
+          lastSyncedAt: '2022-10-16T14:54:54Z',
+          updatedAt: '2022-10-16T14:54:55.000000Z',
+          url: 'https://glific.test:8080/Sheet-integration/add',
+        },
+      ],
     },
-  };
+  },
+};
 
 export const deleteSheetQuery = {
   request: {
@@ -114,4 +113,3 @@ export const createSheetQuery = {
     },
   },
 };
-

@@ -1,21 +1,21 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useApolloClient, useLazyQuery, useSubscription } from '@apollo/client';
-import AttachFileIcon from '@material-ui/icons/AttachFile';
-import { Button, ClickAwayListener } from '@material-ui/core';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
+import { Button, ClickAwayListener } from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Draggable from 'react-draggable';
-import DoneAllIcon from '@material-ui/icons/DoneAll';
-import InsertEmoticonIcon from '@material-ui/icons/InsertEmoticon';
-import MicIcon from '@material-ui/icons/Mic';
-import CallIcon from '@material-ui/icons/Call';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import VideocamIcon from '@material-ui/icons/Videocam';
-import CameraAltIcon from '@material-ui/icons/CameraAlt';
-import ClearIcon from '@material-ui/icons/Clear';
+import DoneAllIcon from '@mui/icons-material/DoneAll';
+import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
+import MicIcon from '@mui/icons-material/Mic';
+import CallIcon from '@mui/icons-material/Call';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import VideocamIcon from '@mui/icons-material/Videocam';
+import CameraAltIcon from '@mui/icons-material/CameraAlt';
+import ClearIcon from '@mui/icons-material/Clear';
 import axios from 'axios';
 import moment from 'moment';
 import { v4 as uuidv4 } from 'uuid';
-import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
+import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 
 import { Button as FormButton } from 'components/UI/Form/Button/Button';
 import DefaultWhatsappImage from 'assets/images/whatsappDefault.jpg';
@@ -547,7 +547,6 @@ export const Simulator = ({
 
                 <Button
                   variant="contained"
-                  color="primary"
                   className={styles.SendButton}
                   disabled={isPreviewMessage}
                   onClick={() => sendMessage(sender)}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import * as Yup from 'yup';
 import { useQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';

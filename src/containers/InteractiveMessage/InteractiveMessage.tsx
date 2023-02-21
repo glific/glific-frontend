@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { EditorState } from 'draft-js';
@@ -49,6 +49,7 @@ export const InteractiveMessage = () => {
   const location: any = useLocation();
   const navigate = useNavigate();
   const [title, setTitle] = useState('');
+  const [footer, setFooter] = useState('');
   const [body, setBody] = useState(EditorState.createEmpty());
   const [templateType, setTemplateType] = useState<string>(QUICK_REPLY);
   const [templateButtons, setTemplateButtons] = useState<Array<any>>([{ value: '' }]);
@@ -114,6 +115,7 @@ export const InteractiveMessage = () => {
   const states = {
     language,
     title,
+    footer,
     body,
     globalButton,
     templateButtons,
@@ -136,7 +138,9 @@ export const InteractiveMessage = () => {
 
       setLanguage(selectedLangauge);
     }
+
     setTitle(data.title);
+    setFooter(data.footer);
     setBody(getEditorFromContent(data.body));
     setTemplateType(typeValue);
     setTimeout(() => setTemplateButtons(data.templateButtons), 100);
@@ -203,6 +207,7 @@ export const InteractiveMessage = () => {
     }
 
     setTitle(titleText);
+    setFooter(data.footer);
     setBody(getEditorFromContent(data.body));
     setTemplateType(typeValue);
     setTimeout(() => setTemplateButtons(data.templateButtons), 100);
@@ -481,6 +486,18 @@ export const InteractiveMessage = () => {
       },
     },
     {
+      skip: templateType !== QUICK_REPLY,
+      translation:
+        hasTranslations && getTranslation(templateType, 'footer', translations, defaultLanguage),
+      component: Input,
+      name: 'footer',
+      type: 'text',
+      placeholder: t('Footer'),
+      inputProp: {
+        onBlur: (event: any) => setFooter(event.target.value),
+      },
+    },
+    {
       translation:
         hasTranslations && getTranslation(templateType, 'options', translations, defaultLanguage),
       component: InteractiveOptions,
@@ -685,6 +702,7 @@ export const InteractiveMessage = () => {
     const payload = {
       title,
       body,
+      footer,
       attachmentURL,
       language,
     };

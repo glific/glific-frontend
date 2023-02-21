@@ -57,7 +57,7 @@ describe('<Login />', () => {
   it('test the login form submission with correct creds', async () => {
     const { container } = render(wrapper);
 
-    userAction(container);
+    await userAction(container);
 
     // let's mock successful registration submission
     const responseData = { data: { data: { data: {} } } };

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Container } from '@material-ui/core';
+import { useState } from 'react';
+import { Container } from '@mui/material';
 
 import SearchBar from 'components/UI/SearchBar/SearchBar';
 import styles from './CollectionConversations.module.css';

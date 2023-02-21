@@ -1,9 +1,11 @@
-import React, { ReactNode } from 'react';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import DialogContentText from '@material-ui/core/DialogContentText';
+import { ReactNode } from 'react';
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  DialogContentText,
+} from '@mui/material';
 
 import { Button } from 'components/UI/Form/Button/Button';
 import styles from './DialogBox.module.css';
@@ -19,8 +21,8 @@ export interface DialogProps {
   buttonCancel?: string;
   titleAlign?: string;
   contentAlign?: string;
-  colorOk?: 'inherit' | 'primary' | 'secondary' | 'default' | undefined;
-  colorCancel?: 'inherit' | 'primary' | 'secondary' | 'default' | undefined;
+  colorOk?: any;
+  colorCancel?: any;
   alignButtons?: string;
   skipCancel?: boolean;
   skipOk?: boolean;
@@ -43,7 +45,7 @@ export const DialogBox = ({
   buttonOk = 'Confirm',
   buttonCancel = 'Cancel',
   colorOk = 'primary',
-  colorCancel = 'default',
+  colorCancel = 'secondary',
   alignButtons = 'left',
   titleAlign = 'center',
   contentAlign = 'left',
