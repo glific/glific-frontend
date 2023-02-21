@@ -91,6 +91,10 @@ export const validator = (templateType: any, t: any) => {
       .min(1)
       .max(3);
 
+    validation.footer = Yup.string()
+      .nullable()
+      .max(60, t('Footer value can be at most 60 characters'));
+
     validation.type = Yup.object()
       .nullable()
       .when('attachmentURL', {
@@ -114,7 +118,7 @@ export const convertJSONtoStateData = (JSONData: any, interactiveType: string, l
   const { title, body, items, content, options, globalButtons } = data;
 
   if (interactiveType === QUICK_REPLY) {
-    const { type, header, url, text } = content;
+    const { type, header, url, text, caption } = content;
     const result: any = {};
     result.templateButtons = options.map((option: any) => ({ value: option.title }));
     result.title = header || '';
@@ -135,6 +139,7 @@ export const convertJSONtoStateData = (JSONData: any, interactiveType: string, l
         result.type = null;
     }
     result.body = text || '';
+    result.footer = caption;
     return result;
   }
 
@@ -257,6 +262,7 @@ export const getPayloadByMediaType = (mediaType: string, payload: any) => {
   }
 
   result.text = getPlainTextFromEditor(payload.body);
+  result.caption = payload.footer;
 
   return result;
 };
@@ -280,6 +286,8 @@ export const getTranslation = (
           return defaultTemplate.content.header;
         case 'body':
           return defaultTemplate.content.text;
+        case 'footer':
+          return defaultTemplate.content.caption;
         case 'options':
           return defaultTemplate.options.map((option: any) => option.title);
         default:

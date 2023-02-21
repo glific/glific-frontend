@@ -96,8 +96,8 @@ export const WhatsAppTemplateButton = (text: string) => {
   const isTemplateButtonsPresent = text.search(exp);
 
   if (isTemplateButtonsPresent > 0) {
-    const messageBody = text.substr(0, isTemplateButtonsPresent);
-    const buttonsStr = text.substr(isTemplateButtonsPresent);
+    const messageBody = text.substring(0, isTemplateButtonsPresent);
+    const buttonsStr = text.substring(isTemplateButtonsPresent);
     const templateStr = buttonsStr.split('|');
 
     const buttons = templateStr
