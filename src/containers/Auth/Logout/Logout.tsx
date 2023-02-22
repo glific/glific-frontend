@@ -34,7 +34,7 @@ export const Logout = () => {
   const userLogout = () => {
     // get the auth token from session
     axios.defaults.headers.common.authorization = getAuthSession('access_token');
-    axios.delete(USER_SESSION).catch(() => {});
+    axios.delete(USER_SESSION);
   };
 
   const handleLogout = () => {
