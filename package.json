@@ -114,13 +114,19 @@
     ]
   },
   "jest": {
+    "errorOnDeprecated": true,
     "collectCoverageFrom": [
       "src/**/*.{ts,tsx}",
-      "!src/config/*.{ts,tsx}",
-      "!src/serviceWorker.ts",
       "!src/react-app-env.d.ts",
-      "!src/index.tsx",
       "!src/types/**/*.{ts,tsx}"
+    ],
+    "coveragePathIgnorePatterns": [
+      "/common/",
+      "/config/",
+      "/context/",
+      "/services/",
+      "/index.tsx",
+      "/serviceWorker.ts"
     ],
     "coverageReporters": [
       "text",
