@@ -3,9 +3,11 @@ import { vi } from 'vitest';
 
 import { Dropdown } from './Dropdown';
 
-vi.mock('@mui/material/Select', () => {
+vi.mock('@mui/material', async (importOriginal) => {
+  const mod: any = await importOriginal();
   return {
-    default: ({ onChange, children }) => (
+    ...mod,
+    Select: ({ onChange, children }: any) => (
       <div>
         <select
           data-testid="mock-select"

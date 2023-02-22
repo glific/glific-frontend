@@ -1,5 +1,4 @@
 import { render, fireEvent } from '@testing-library/react';
-import console from 'console';
 import draftJs, { EditorState, ContentState } from 'draft-js';
 import { vi } from 'vitest';
 

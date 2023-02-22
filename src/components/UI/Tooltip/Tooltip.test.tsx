@@ -1,6 +1,6 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { vi } from 'vitest';
-
+import userEvent from '@testing-library/user-event';
 import { Tooltip } from './Tooltip';
 
 vi.mock('@mui/material/Tooltip', () => (...props: any) => {
@@ -29,13 +29,15 @@ describe('Tooltip test', () => {
     expect(getByTestId('tooltip')).toHaveTextContent('Default tooltip');
   });
 
-  it('should add the classes send as props', () => {
-    const { container } = render(
-      createTooltip({ tooltipArrowClass: 'tooltipArrow', tooltipClass: 'tooltip' })
-    );
+  it('should add the classes send as props', async () => {
+    const user = userEvent.setup();
+    render(createTooltip({ tooltipArrowClass: 'tooltipArrow', tooltipClass: 'tooltip' }));
 
-    screen.debug();
-    expect(container.querySelector('.tooltipArrow')).toBeInTheDocument();
-    expect(container.querySelector('.tooltip')).toBeInTheDocument();
+    user.hover(screen.getByText('Default tooltip'));
+
+    await waitFor(() => {
+      expect(screen.getByRole('tooltip').querySelector('.tooltipArrow')).toBeInTheDocument();
+      expect(screen.getByRole('tooltip').querySelector('.tooltip')).toBeInTheDocument();
+    });
   });
 });

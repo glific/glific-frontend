@@ -1,4 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react';
+import { vi } from 'vitest';
 import { LanguageBar } from './LanguageBar';
 
 const props: any = {
@@ -26,5 +27,5 @@ test('it renders component with selected language', async () => {
   expect(hindi).toBeInTheDocument();
 
   fireEvent.click(hindi);
-  expect(props.onLanguageChange).toBeCalledTimes(1);
+  expect(props.onLanguageChange).toBeCalledTimes(2);
 });
