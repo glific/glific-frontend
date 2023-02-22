@@ -66,7 +66,7 @@
   "scripts": {
     "setup": "yarn cache clean && yarn install --force && yarn run floweditor",
     "dev": "vite --host=glific.test",
-    "build": "yarn setup && tsc && vite build",
+    "build": "yarn setup && vite build",
     "serve": "vite preview",
     "cy:run": "cypress run",
     "format": "prettier \"**/*.{ts,tsx,css,graphql}\" --write",

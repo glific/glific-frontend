@@ -4,10 +4,9 @@
       "vitest/globals",
       "vite/client",
       "@testing-library/jest-dom",
-      "vite-plugin-svgr/client",
-      "./src/types",
-      "./node_modules/@types"
+      "vite-plugin-svgr/client"
     ],
+    "typeRoots": ["./src/types", "./node_modules/@types"],
     "target": "ESNext",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "allowJs": false,
