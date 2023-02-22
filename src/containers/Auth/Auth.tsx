@@ -224,7 +224,6 @@ export const Auth = ({
           </>
         ) : null}
       </div>
-      {/* commenting the promotion code. This will be added when we will update with new content */}
       {mode === 'login' && <Promotion />}
     </div>
   );
