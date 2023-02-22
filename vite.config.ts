@@ -87,8 +87,13 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
           plugins: [inject({ Buffer: ['buffer', 'Buffer'], process: 'process' })],
         },
       },
-      define: {
-        global: {},
+      optimizeDeps: {
+        esbuildOptions: {
+          // Node.js global to browser globalThis
+          define: {
+            global: 'globalThis',
+          },
+        },
       },
       resolve: { alias: { util: 'util/' } },
     });
