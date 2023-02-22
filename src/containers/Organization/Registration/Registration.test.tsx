@@ -1,14 +1,14 @@
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
-import UserEvent from '@testing-library/user-event';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+// import UserEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
-import axios from 'axios';
+// import axios from 'axios';
 import { vi } from 'vitest';
 
 import { Registration } from './Registration';
 
 vi.mock('axios');
-const mockedAxios = axios as vi.Mocked<typeof axios>;
+// const mockedAxios = axios as vi.Mocked<typeof axios>;
 
 const props = {
   title: 'Setup your NGO on Glific',
