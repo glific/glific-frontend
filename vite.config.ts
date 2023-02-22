@@ -39,6 +39,18 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
   if (command === 'serve') {
     return defineConfig({
       // dev specific config
+      css: {
+        modules: {
+          generateScopedName: function (name, filename, css) {
+            var path = require('path');
+            var i = css.indexOf('.' + name);
+            var line = css.substring(0, i).split(/[\r\n]/).length;
+            var file = path.basename(filename, '.module.css');
+            // instead of line will put hash
+            return file + '_' + name + '_' + line;
+          },
+        },
+      },
       plugins: [react(), viteTsconfigPaths(), svgrPlugin()],
       build: {
         outDir: 'build',
