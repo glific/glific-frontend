@@ -5,9 +5,10 @@ import { vi } from 'vitest';
 import { Logout } from './Logout';
 import { MockedProvider } from '@apollo/client/testing';
 
-vi.mock('axios', () => {
+vi.mock('axios', async () => {
+  const actual: any = await vi.importActual('axios');
   return {
-    defaults: { headers: { common: {} } },
+    ...actual,
     get: vi.fn(),
     delete: vi.fn(),
   };

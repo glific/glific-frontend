@@ -97,7 +97,7 @@ jobs:
           echo clone cypress repo
           git clone https://github.com/glific/cypress-testing.git
           cd cypress-testing
-          git checkout fix/material-ui
+          git checkout feature/vite
           cd ..
           echo done. go to dir.
           cp -r cypress-testing/cypress cypress

@@ -42,6 +42,12 @@ export const SheetIntegrationList = () => {
     onCompleted: async () => {
       setNotification('Data is successfully fetched from the Google sheet.');
     },
+    onError: () => {
+      setNotification(
+        'Sorry! An error occurred while fetching data from the Google sheet.',
+        'warning'
+      );
+    },
   });
 
   const syncSheet = (id: any) => {
