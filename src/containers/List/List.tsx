@@ -193,15 +193,11 @@ export const List = ({
   let userRole: any = getUserRole();
 
   const handleTableChange = (attribute: string, newVal: any) => {
-    let updatedList;
-    if (attribute === 'sortCol') {
-      updatedList = getUpdatedList(listItemName, newVal, false);
-    } else {
-      updatedList = getUpdatedList(listItemName, newVal, true);
+    const isSortAttribute = attribute === 'sortCol' || attribute === 'sortDirection';
+    if (isSortAttribute) {
+      const updatedList = getUpdatedList(listItemName, newVal, attribute === 'sortDirection');
+      setListSession(JSON.stringify(updatedList));
     }
-
-    // set the sort criteria in local storage
-    setListSession(JSON.stringify(updatedList));
 
     setTableVals({
       ...tableVals,

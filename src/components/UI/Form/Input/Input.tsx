@@ -30,6 +30,7 @@ export interface InputProps {
   endAdornment?: any;
   inputProp?: any;
   translation?: string;
+  onChange?: any;
 }
 
 export const Input = ({ textArea = false, disabled = false, ...props }: InputProps) => {
@@ -47,6 +48,7 @@ export const Input = ({ textArea = false, disabled = false, ...props }: InputPro
     endAdornment,
     inputProp,
     translation,
+    onChange,
   } = props;
 
   let fieldType = type;
@@ -118,6 +120,14 @@ export const Input = ({ textArea = false, disabled = false, ...props }: InputPro
             label={placeholder}
             fullWidth
             {...field}
+            onChange={(e) => {
+              if (onChange) {
+                onChange(e.target.value);
+              }
+              if (field.onChange) {
+                field.onChange(e);
+              }
+            }}
             endAdornment={endAdornment || fieldEndAdorment}
           />
           {form && form.errors[field.name] && form.touched[field.name] ? (

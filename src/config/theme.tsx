@@ -33,6 +33,11 @@ const theme = createTheme({
         },
       },
     },
+    MuiIconButton: {
+      styleOverrides: {
+        root: { padding: '12px' },
+      },
+    },
     MuiButton: {
       styleOverrides: {
         outlinedPrimary: {

@@ -51,16 +51,18 @@
   color: #edf6f2;
   cursor: pointer;
   font-weight: 500;
+  font-size: 0.875rem;
   z-index: 101;
 }
 
 .ScrollButton {
   display: flex;
+  font-size: 0.875rem;
   align-items: center;
   background-color: #073f24;
   font-weight: 500;
   padding: 1px 8px;
-  margin: 0 auto;
+  margin: 1px auto;
   border-radius: 0 0 12px 12px;
   color: #edf6f2;
   cursor: pointer;
