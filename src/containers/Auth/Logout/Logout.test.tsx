@@ -5,14 +5,7 @@ import { vi } from 'vitest';
 import { Logout } from './Logout';
 import { MockedProvider } from '@apollo/client/testing';
 
-vi.mock('axios', async () => {
-  const actual: any = await vi.importActual('axios');
-  return {
-    ...actual,
-    get: vi.fn(),
-    delete: vi.fn(),
-  };
-});
+vi.mock('axios');
 
 describe('<Logout />', () => {
   test('it should logout user', async () => {
