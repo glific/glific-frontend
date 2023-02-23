@@ -35,6 +35,9 @@
     "react/require-default-props": "off",
     "no-undef": "off"
   },
+  "parserOptions": {
+    "sourceType": "module"
+  },
   "settings": {
     "import/resolver": {
       "node": {

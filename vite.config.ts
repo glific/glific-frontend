@@ -6,7 +6,6 @@ import viteTsconfigPaths from 'vite-tsconfig-paths';
 import checker from 'vite-plugin-checker';
 import svgrPlugin from 'vite-plugin-svgr';
 import fs from 'fs';
-import inject from '@rollup/plugin-inject';
 import nodePolyfills from 'rollup-plugin-polyfill-node';
 
 // https://vitejs.dev/config/
