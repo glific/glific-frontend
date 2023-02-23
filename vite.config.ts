@@ -30,8 +30,8 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
         environment: 'jsdom',
         setupFiles: './src/setupTests.ts',
         coverage: {
-          reporter: ["lcov"],
-          exclude: ['node_modules/'],
+          reporter: ['lcov'],
+          exclude: ['node_modules/', '**/*.test.tsx'],
         },
         css: true,
       },
@@ -88,14 +88,7 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
           plugins: [inject({ Buffer: ['buffer', 'Buffer'], process: 'process' })],
         },
       },
-      optimizeDeps: {
-        esbuildOptions: {
-          // Node.js global to browser globalThis
-          define: {
-            global: 'globalThis',
-          },
-        },
-      },
+
       resolve: { alias: { util: 'util/' } },
     });
   }
