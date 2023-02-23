@@ -1,6 +1,6 @@
 {
   "name": "glific-frontend",
-  "version": "4.3.0",
+  "version": "4.4.0",
   "private": true,
   "dependencies": {
     "@apollo/client": "^3.7.6",
@@ -90,6 +90,30 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "jest": {
+    "errorOnDeprecated": true,
+    "collectCoverageFrom": [
+      "src/**/*.{ts,tsx}",
+      "!src/react-app-env.d.ts",
+      "!src/types/**/*.{ts,tsx}"
+    ],
+    "coveragePathIgnorePatterns": [
+      "/common/",
+      "/config/",
+      "/context/",
+      "/services/",
+      "/index.tsx",
+      "/serviceWorker.ts"
+    ],
+    "coverageReporters": [
+      "text",
+      "html",
+      "lcov"
+    ],
+    "moduleNameMapper": {
+      "axios": "axios/dist/node/axios.cjs"
+    }
   },
   "devDependencies": {
     "@rollup/plugin-inject": "^5.0.3",

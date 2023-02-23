@@ -2,15 +2,18 @@ import { render, screen, fireEvent } from '@testing-library/react';
 
 import { Checkbox } from './Checkbox';
 
+const handleChangeMock = jest.fn();
+const setFieldMock = jest.fn();
+
 describe('<Checkbox />', () => {
-  const props = {
+  const getProps: any = () => ({
     title: 'Example',
     field: { name: 'example', value: false },
-    form: { dirty: false, touched: false, errors: false, setFieldValue: function () {} },
-    handleChange: function () {},
-  };
+    form: { dirty: false, touched: false, errors: false, setFieldValue: setFieldMock },
+    handleChange: handleChangeMock,
+  });
 
-  const wrapper = <Checkbox {...props} />;
+  const wrapper = <Checkbox {...getProps()} />;
 
   it('test for dafault value', async () => {
     render(wrapper);
@@ -29,5 +32,27 @@ describe('<Checkbox />', () => {
 
     fireEvent.click(checkbox);
     expect(wrapper.props.field.value).toBe(false);
+  });
+
+  it('tests handleChange not called if not defined', async () => {
+    const props = getProps();
+    delete props.handleChange;
+    render(<Checkbox {...props} />);
+    const checkbox: HTMLInputElement = screen.getByRole('checkbox');
+    fireEvent.click(checkbox);
+    expect(setFieldMock).toBeCalled();
+    expect(handleChangeMock).not.toBeCalled();
+  });
+
+  it('should trigger the dialog box if info type is dialog', async () => {
+    const handleInfoClickMock = jest.fn();
+    const props = getProps();
+    props.info = { title: 'dialog' };
+    props.infoType = 'dialog';
+    props.handleInfoClick = handleInfoClickMock;
+    render(<Checkbox {...props} />);
+    const infoIcon: HTMLInputElement = screen.getByTestId('info-icon');
+    fireEvent.click(infoIcon);
+    expect(handleInfoClickMock).toBeCalled();
   });
 });

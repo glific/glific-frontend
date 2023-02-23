@@ -9,7 +9,7 @@ export interface ImportButtonProps {
 }
 
 export const ImportButton = ({ title, onImport, afterImport }: ImportButtonProps) => {
-  const inputRef = useRef<any>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const changeHandler = (event: any) => {
     const media = event.target.files[0];
     const fileReader = new FileReader();
@@ -31,7 +31,7 @@ export const ImportButton = ({ title, onImport, afterImport }: ImportButtonProps
       />
       <Button
         onClick={() => {
-          if (inputRef.current) inputRef.current.click();
+          inputRef.current?.click();
         }}
         variant="contained"
         color="primary"

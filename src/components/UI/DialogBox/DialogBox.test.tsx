@@ -1,4 +1,4 @@
-import { fireEvent, render } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { DialogBox } from './DialogBox';
 
 const mockCallbackCancel = vi.fn();
@@ -55,4 +55,32 @@ it('Dialogbox with no ok and cancel buttons', () => {
     />
   );
   expect(container).toBeInTheDocument();
+});
+
+it('should have a middle button when buttonMiddle prop is passed', async () => {
+  const handleMiddleButtonMock = jest.fn();
+  render(
+    <DialogBox
+      skipOk
+      skipCancel
+      title="Dialog with middle button"
+      buttonMiddle="Configure"
+      handleMiddle={handleMiddleButtonMock}
+    />
+  );
+  const middleButton = await screen.getByTestId('middle-button');
+  fireEvent.click(middleButton);
+  expect(handleMiddleButtonMock).toBeCalled();
+});
+
+it('onClose event should be triggered if escape key is pressed', async () => {
+  const handleCancelMock = jest.fn();
+  render(<DialogBox title="Dialog with onClose action" handleCancel={handleCancelMock} />);
+  fireEvent.keyDown(screen.getByText(/Dialog with onClose action/i), {
+    key: 'Escape',
+    code: 'Escape',
+    keyCode: 27,
+    charCode: 27,
+  });
+  expect(handleCancelMock).toBeCalled();
 });

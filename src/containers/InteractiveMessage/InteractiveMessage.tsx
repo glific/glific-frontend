@@ -51,6 +51,7 @@ export const InteractiveMessage = () => {
   const location: any = useLocation();
   const navigate = useNavigate();
   const [title, setTitle] = useState('');
+  const [footer, setFooter] = useState('');
   const [body, setBody] = useState(EditorState.createEmpty());
   const [templateType, setTemplateType] = useState<string>(QUICK_REPLY);
   const [templateButtons, setTemplateButtons] = useState<Array<any>>([{ value: '' }]);
@@ -116,6 +117,7 @@ export const InteractiveMessage = () => {
   const states = {
     language,
     title,
+    footer,
     body,
     globalButton,
     templateButtons,
@@ -138,7 +140,9 @@ export const InteractiveMessage = () => {
 
       setLanguage(selectedLangauge);
     }
+
     setTitle(data.title);
+    setFooter(data.footer);
     setBody(getEditorFromContent(data.body));
     setTemplateType(typeValue);
     setTimeout(() => setTemplateButtons(data.templateButtons), 100);
@@ -205,6 +209,7 @@ export const InteractiveMessage = () => {
     }
 
     setTitle(titleText);
+    setFooter(data.footer);
     setBody(getEditorFromContent(data.body));
     setTemplateType(typeValue);
     setTimeout(() => setTemplateButtons(data.templateButtons), 100);
@@ -451,8 +456,8 @@ export const InteractiveMessage = () => {
       name: 'title',
       type: 'text',
       placeholder: `${t('Title')}*`,
-      inputProp: {
-        onBlur: (event: any) => setTitle(event.target.value),
+      onChange: (value: any) => {
+        setTitle(value);
       },
       helperText: t('Only alphanumeric characters and spaces are allowed'),
     },
@@ -480,6 +485,18 @@ export const InteractiveMessage = () => {
       },
       inputProp: {
         suggestions: contactVariables,
+      },
+    },
+    {
+      skip: templateType !== QUICK_REPLY,
+      translation:
+        hasTranslations && getTranslation(templateType, 'footer', translations, defaultLanguage),
+      component: Input,
+      name: 'footer',
+      type: 'text',
+      placeholder: t('Footer'),
+      onChange: (value: any) => {
+        setFooter(value);
       },
     },
     {
@@ -671,22 +688,13 @@ export const InteractiveMessage = () => {
   const validationScheme = Yup.object().shape(validation, [['type', 'attachmentURL']]);
 
   const getPreviewData = () => {
-    if (!(templateButtons && templateButtons.length)) {
-      return null;
-    }
-
-    const isButtonPresent = templateButtons.some((button: any) => {
-      const { value, options: opts } = button;
-      return !!value || !!(opts && opts.some((o: any) => !!o.title));
-    });
-
-    if (!isButtonPresent) {
-      return null;
-    }
+    const bodyText = getPlainTextFromEditor(body);
+    if (!title && !bodyText && !footer) return null;
 
     const payload = {
       title,
       body,
+      footer,
       attachmentURL,
       language,
     };
@@ -706,6 +714,7 @@ export const InteractiveMessage = () => {
   const previewData = useMemo(getPreviewData, [
     title,
     body,
+    footer,
     templateType,
     templateButtons,
     globalButton,
