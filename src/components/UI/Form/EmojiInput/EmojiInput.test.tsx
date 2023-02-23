@@ -12,8 +12,8 @@ Object.defineProperty(window, 'matchMedia', {
       matches: false,
       media: query,
       onchange: null,
-      addListener: jest.fn(),
-      removeListener: jest.fn(),
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
     };
   },
 });
