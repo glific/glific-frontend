@@ -30,7 +30,7 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
         environment: 'jsdom',
         setupFiles: './src/setupTests.ts',
         coverage: {
-          reporter: ['lcov'],
+          reporter: ["lcov"],
           exclude: ['node_modules/'],
         },
         css: true,

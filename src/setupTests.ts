@@ -11,6 +11,7 @@ import { cleanup } from '@testing-library/react';
 afterEach(() => {
   cleanup();
 });
+
 import.meta.env.VITE_WEB_SOCKET = 'ws://localhost/socket';
 
 vi.mock('react-media-recorder', () => {
