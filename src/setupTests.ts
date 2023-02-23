@@ -57,4 +57,4 @@ global.URL.createObjectURL = vi.fn();
 
 // fixes TextEncoder error while running tests
 global.TextEncoder = TextEncoder;
-global.TextDecoder = TextDecoder;
+global.TextDecoder = TextDecoder as any;

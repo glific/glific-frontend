@@ -10,7 +10,9 @@ const defaultProps = {
   isMicActive: false,
 };
 
-afterEach(() => vi.restoreAllMocks());
+afterEach(() => {
+  vi.restoreAllMocks();
+});
 
 const voiceRecorder = <VoiceRecorder {...defaultProps} />;
 

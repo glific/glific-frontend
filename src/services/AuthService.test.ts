@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { vi } from 'vitest';
 
 import {
   renewAuthToken,
@@ -16,7 +15,8 @@ vi.mock('pino-logflare', () => ({
   createWriteStream: vi.fn(),
   createPinoBrowserSend: vi.fn(),
 }));
-const mockedAxios = axios as vi.Mocked<typeof axios>;
+
+const mockedAxios = axios as any;
 
 describe('AuthService', () => {
   beforeEach(() => {

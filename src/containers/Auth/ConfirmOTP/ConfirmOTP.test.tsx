@@ -8,7 +8,7 @@ import { ConfirmOTP } from './ConfirmOTP';
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 
 vi.mock('axios');
-const mockedAxios = axios as vi.Mocked<typeof axios>;
+const mockedAxios = axios as any;
 
 const mockedState = {
   state: {

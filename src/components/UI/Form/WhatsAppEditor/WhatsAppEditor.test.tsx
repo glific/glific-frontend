@@ -6,8 +6,8 @@ import WhatsAppEditor from './WhatsAppEditor';
 
 const mockHandleKeyCommand = vi.fn();
 
-vi.spyOn(draftJs, 'Editor').mockImplementation((...props: any) => {
-  return (
+vi.spyOn(draftJs, 'Editor').mockImplementation((props: any, _context: any) => {
+  const input: any = (
     <input
       data-testid="editor"
       onClick={() => {
@@ -17,11 +17,12 @@ vi.spyOn(draftJs, 'Editor').mockImplementation((...props: any) => {
       onChange={(event) => props[0].onChange(event)}
     ></input>
   );
+  return input;
 });
 
 vi.mock('react-resize-detector', () => {
   return {
-    default: (props) => (
+    default: (props: any) => (
       <div>
         <div data-testid="resizer" onClick={() => props.onResize('30', '40')}>
           {props.children}

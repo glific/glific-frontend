@@ -8,7 +8,7 @@ import { responseData, responseData1 } from 'mocks/AddVariables';
 import { AddVariables } from './AddVariables';
 
 vi.mock('axios');
-const mockedAxios = axios as vi.Mocked<typeof axios>;
+const mockedAxios = axios as any;
 
 const setVariableMock = vi.fn();
 

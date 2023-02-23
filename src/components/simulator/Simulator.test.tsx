@@ -19,7 +19,7 @@ import { Simulator } from './Simulator';
 import { setUserSession } from 'services/AuthService';
 
 vi.mock('axios');
-const mockedAxios = axios as vi.Mocked<typeof axios>;
+const mockedAxios = axios as any;
 
 setUserSession(JSON.stringify({ roles: ['Admin'], organization: { id: '1' } }));
 const mockSetShowSimulator = vi.fn();

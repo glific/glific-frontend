@@ -3,6 +3,7 @@
 import { defineConfig, ConfigEnv, UserConfigExport } from 'vite';
 import react from '@vitejs/plugin-react';
 import viteTsconfigPaths from 'vite-tsconfig-paths';
+import checker from 'vite-plugin-checker';
 import svgrPlugin from 'vite-plugin-svgr';
 import fs from 'fs';
 import inject from '@rollup/plugin-inject';
@@ -51,7 +52,7 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
           },
         },
       },
-      plugins: [react(), viteTsconfigPaths(), svgrPlugin()],
+      plugins: [react(), viteTsconfigPaths(), svgrPlugin(), checker({ typescript: true })],
       build: {
         outDir: 'build',
         rollupOptions: {

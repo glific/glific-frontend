@@ -18,7 +18,7 @@ const mocks = [
 ];
 
 vi.mock('axios');
-const mockedAxios = axios as vi.Mocked<typeof axios>;
+const mockedAxios = axios as any;
 
 const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>

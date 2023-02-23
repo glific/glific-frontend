@@ -7,7 +7,7 @@ import { uploadMediaMock } from 'mocks/Attachment';
 import { AddAttachment } from './AddAttachment';
 
 vi.mock('axios');
-const mockedAxios = axios as vi.Mocked<typeof axios>;
+const mockedAxios = axios as any;
 
 const setAttachment = vi.fn();
 const setAttachmentURL = vi.fn();

@@ -7,7 +7,7 @@ import { vi } from 'vitest';
 import { ResetPasswordPhone } from './ResetPasswordPhone';
 
 vi.mock('axios');
-const mockedAxios = axios as vi.Mocked<typeof axios>;
+const mockedAxios = axios as any;
 
 const wrapper = (
   <MemoryRouter>

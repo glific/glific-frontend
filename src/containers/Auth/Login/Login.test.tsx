@@ -19,7 +19,7 @@ vi.mock('pino-logflare', () => ({
   createWriteStream: vi.fn(),
   createPinoBrowserSend: vi.fn(),
 }));
-const mockedAxios = axios as vi.Mocked<typeof axios>;
+const mockedAxios = axios as any;
 
 const wrapper = (
   <MockedProvider mocks={mocks}>

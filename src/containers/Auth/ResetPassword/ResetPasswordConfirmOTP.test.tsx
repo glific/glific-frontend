@@ -7,7 +7,7 @@ import { vi } from 'vitest';
 import { ResetPasswordConfirmOTP } from './ResetPasswordConfirmOTP';
 
 vi.mock('axios');
-const mockedAxios = axios as vi.Mocked<typeof axios>;
+const mockedAxios = axios as any;
 
 const wrapper = (
   <MemoryRouter>
