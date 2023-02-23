@@ -7,9 +7,11 @@ import checker from 'vite-plugin-checker';
 import svgrPlugin from 'vite-plugin-svgr';
 import fs from 'fs';
 import inject from '@rollup/plugin-inject';
+import nodePolyfills from 'rollup-plugin-polyfill-node';
 
 // https://vitejs.dev/config/
 export default ({ command, mode }: ConfigEnv): UserConfigExport => {
+  console.log(command, mode);
   if (mode === 'test' && command === 'serve') {
     return defineConfig({
       // dev specific config
@@ -26,11 +28,12 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
 
       resolve: { alias: { util: 'util/' } },
       test: {
+        reporters: ['default', 'html'],
         globals: true,
         environment: 'jsdom',
         setupFiles: './src/setupTests.ts',
         coverage: {
-          reporter: ['lcov'],
+          reporter: ['text', 'html', 'lcov'],
           exclude: ['node_modules/', '**/*.test.tsx'],
         },
         css: true,
@@ -53,12 +56,7 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
         },
       },
       plugins: [react(), viteTsconfigPaths(), svgrPlugin(), checker({ typescript: true })],
-      build: {
-        outDir: 'build',
-        rollupOptions: {
-          plugins: [inject({ Buffer: ['buffer', 'Buffer'], process: 'process' })],
-        },
-      },
+
       optimizeDeps: {
         esbuildOptions: {
           // Node.js global to browser globalThis
@@ -80,16 +78,36 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
   } else {
     // command === 'build'
     return defineConfig({
+      optimizeDeps: {
+        esbuildOptions: {
+          // Node.js global to browser globalThis
+          define: {
+            global: 'globalThis',
+          },
+        },
+      },
       // build specific config
       plugins: [react(), viteTsconfigPaths(), svgrPlugin()],
       build: {
+        commonjsOptions: {
+          defaultIsModuleExports(id) {
+            try {
+              const module = require(id);
+              if (module?.default) {
+                return false;
+              }
+              return 'auto';
+            } catch (error) {
+              return 'auto';
+            }
+          },
+          transformMixedEsModules: true,
+        },
         outDir: 'build',
         rollupOptions: {
-          plugins: [inject({ Buffer: ['buffer', 'Buffer'], process: 'process' })],
+          plugins: [nodePolyfills('buffer', 'process')],
         },
       },
-
-      resolve: { alias: { util: 'util/' } },
     });
   }
 };

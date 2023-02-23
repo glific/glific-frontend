@@ -601,6 +601,9 @@ export const Simulator = ({
             'warning'
           );
         }
+      })
+      .catch(() => {
+        setNotification('Sorry! Failed to get simulator', 'warning');
       });
   };
   return (

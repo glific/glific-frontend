@@ -43,7 +43,6 @@
     "moment": "^2.29.4",
     "pino": "^8.8.0",
     "pino-logflare": "^0.3.12",
-    "process": "^0.11.10",
     "react": "^18.2.0",
     "react-color": "^2.19.3",
     "react-dom": "^18.2.0",
@@ -59,9 +58,13 @@
     "react-scripts": "^5.0.1",
     "react-tiny-link": "^3.6.1",
     "react-viewer": "^3.2.2",
+    "rollup-plugin-polyfill-node": "^0.12.0",
     "util": "^0.12.5",
     "uuid": "^9.0.0",
     "yup": "^0.32.11"
+  },
+  "engines": {
+    "node": ">=16.0.0"
   },
   "scripts": {
     "setup": "yarn cache clean && yarn install --force && yarn run floweditor",
@@ -111,7 +114,6 @@
     "@vitejs/plugin-react": "^3.0.1",
     "@vitest/coverage-c8": "^0.28.5",
     "@vitest/ui": "^0.28.5",
-    "buffer": "^6.0.3",
     "c8": "^7.12.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-prettier": "^8.6.0",
