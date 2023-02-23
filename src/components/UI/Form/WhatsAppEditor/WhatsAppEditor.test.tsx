@@ -11,10 +11,10 @@ vi.spyOn(draftJs, 'Editor').mockImplementation((props: any, _context: any) => {
     <input
       data-testid="editor"
       onClick={() => {
-        props[0].handleKeyCommand('underline');
+        props.handleKeyCommand('underline');
         mockHandleKeyCommand();
       }}
-      onChange={(event) => props[0].onChange(event)}
+      onChange={(event) => props.onChange(event)}
     ></input>
   );
   return input;
