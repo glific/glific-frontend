@@ -28,14 +28,11 @@ export const Dropdown = ({
 }: DropdownProps) => {
   const { onChange, value, ...rest } = field;
 
-  let optionsList = null;
-  if (options) {
-    optionsList = options.map((option: any) => (
-      <MenuItem value={option.id} key={option.id}>
-        {option.label ? option.label : option.name}
-      </MenuItem>
-    ));
-  }
+  const optionsList = options.map((option: any) => (
+    <MenuItem value={option.id} key={option.id}>
+      {option.label ? option.label : option.name}
+    </MenuItem>
+  ));
 
   return (
     <div className={styles.Dropdown} data-testid="dropdown">

@@ -1,8 +1,31 @@
 import { render } from '@testing-library/react';
 import { EmojiInput } from './EmojiInput';
 import { EditorState } from 'draft-js';
+import userEvent from '@testing-library/user-event';
 
 const setFieldValueMock = jest.fn();
+
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: (query: any) => {
+    return {
+      matches: false,
+      media: query,
+      onchange: null,
+      addListener: jest.fn(),
+      removeListener: jest.fn(),
+    };
+  },
+});
+
+const mockIntersectionObserver = class {
+  constructor() {}
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+};
+
+(window as any).IntersectionObserver = mockIntersectionObserver;
 
 const wrapper = (
   <EmojiInput
@@ -30,16 +53,8 @@ it('should have a emoji picker', () => {
 
 // since we are mocking emoji-picker we need to implement the following functionalities
 
-// test('clicking on emoji picker should open a container to select emojis', async () => {
-//   const user = userEvent.setup();
-//   const { getByTestId, container } = render(wrapper);
-//   await user.click(getByTestId('emoji-picker'));
-//   expect(container.querySelector('.emoji-mart')).toBeInTheDocument();
-// });
-
-// test('clicking on an emoji should call onChange function', () => {
-//   const { getByTestId, container } = render(wrapper);
-//   fireEvent.click(getByTestId('emoji-picker'));
-//   fireEvent.click(container.querySelector('.emoji-mart-emoji') as Element);
-//   expect(setFieldValueMock).toBeCalled();
-// });
+test('clicking on emoji picker should open a container to select emojis', async () => {
+  const user = userEvent.setup();
+  const { getByTestId } = render(wrapper);
+  await user.click(getByTestId('emoji-picker'));
+});

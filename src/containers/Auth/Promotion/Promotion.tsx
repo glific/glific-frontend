@@ -4,12 +4,11 @@ import { ReactComponent as MaximizeIcon } from 'assets/images/icons/Maximize.svg
 import styles from './Promotion.module.css';
 
 const points = [
-  'A community event where you get to meet  other NGOs and learn from each other to create a better impact with Glific.',
-  'Work with Glific team to share  your challenges better and try to solve it during the sprint.',
+  'Arogya World ran their Diabetes Awareness prog through AI driven nudges on Glific',
+  'Great space for any new team member that wants to learn about the platform',
 ];
 
-const LINK =
-  'https://docs.google.com/spreadsheets/d/12Yd9dU8aUpiabjlf5emJM1XWWlVslv8fZBV_IlPa7xc/edit#gid=13579334';
+const LINK = 'https://us06web.zoom.us/meeting/register/tZUtcOuprzIqE9SRbYdqgVslASP6TSIZ_UaT';
 
 export const Promotion = () => {
   const [minimized, setMinimized] = useState(false);
@@ -34,7 +33,7 @@ export const Promotion = () => {
 
       {!minimized && (
         <>
-          <div className={styles.Image}>Glific&apos;s upcoming sprint from Jan 17-20 in Goa</div>
+          <div className={styles.Image}>Glific Vodcast Arogya World- 23rd Feb 3 PM</div>
 
           <div className={styles.Points}>
             {points.map((point, index) => (
@@ -46,7 +45,7 @@ export const Promotion = () => {
           </div>
           <a className={styles.Link} href={LINK} target="_blank" rel="noreferrer">
             <div className={styles.KnowMore}>
-              <div>KNOW MORE</div>
+              <div>REGISTER NOW</div>
               <div className={styles.Arrow}> ↗</div>
             </div>
           </a>

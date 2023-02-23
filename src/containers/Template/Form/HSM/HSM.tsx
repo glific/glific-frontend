@@ -28,7 +28,7 @@ export const HSM = () => {
   });
   const [shortcode, setShortcode] = useState('');
   const [example, setExample] = useState(EditorState.createEmpty());
-  const [category, setCategory] = useState<any>({});
+  const [category, setCategory] = useState<any>({ label: '', id: '' });
   const { t } = useTranslation();
   const params = useParams();
 
