@@ -58,7 +58,7 @@ it('Dialogbox with no ok and cancel buttons', () => {
 });
 
 it('should have a middle button when buttonMiddle prop is passed', async () => {
-  const handleMiddleButtonMock = jest.fn();
+  const handleMiddleButtonMock = vi.fn();
   render(
     <DialogBox
       skipOk
@@ -74,7 +74,7 @@ it('should have a middle button when buttonMiddle prop is passed', async () => {
 });
 
 it('onClose event should be triggered if escape key is pressed', async () => {
-  const handleCancelMock = jest.fn();
+  const handleCancelMock = vi.fn();
   render(<DialogBox title="Dialog with onClose action" handleCancel={handleCancelMock} />);
   fireEvent.keyDown(screen.getByText(/Dialog with onClose action/i), {
     key: 'Escape',

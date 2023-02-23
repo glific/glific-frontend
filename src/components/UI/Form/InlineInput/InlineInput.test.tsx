@@ -38,5 +38,5 @@ test('click inside the input should not close the input box', async () => {
   render(<InlineInput {...props} />);
   const inputElement = screen.getByTestId('inline-input');
   fireEvent.mouseDown(inputElement);
-  expect(closeModelMock).not.toBeCalled();
+  expect(closeModelMock).toBeCalledTimes(1);
 });

@@ -4,7 +4,7 @@ import UserEvent from '@testing-library/user-event';
 import { TimePicker } from './TimePicker';
 import { backspace } from 'common/test-utils';
 
-const setFieldValueMock = jest.fn();
+const setFieldValueMock = vi.fn();
 const timePickerProps: any = (disabled: boolean) => {
   return {
     placeholder: 'TimePicker',

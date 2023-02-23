@@ -31,13 +31,8 @@ describe('<Dropdown />', () => {
     form: { errors: { dropdown: 'Required' } },
     placeholder: 'Input your title',
     field: { value: '1', onChange: changeValue },
-<<<<<<< HEAD
     fieldChange: vi.fn(),
-  };
-=======
-    fieldChange: jest.fn(),
   });
->>>>>>> 4dbe7c522ac873a242706890a14b252012abdb32
 
   it('renders <Dropdown /> component', () => {
     const wrapper = render(<Dropdown {...getProps()} />);
