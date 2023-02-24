@@ -10,7 +10,6 @@ import nodePolyfills from 'rollup-plugin-polyfill-node';
 
 // https://vitejs.dev/config/
 export default ({ command, mode }: ConfigEnv): UserConfigExport => {
-  console.log(command, mode);
   if (mode === 'test' && command === 'serve') {
     return defineConfig({
       // dev specific config

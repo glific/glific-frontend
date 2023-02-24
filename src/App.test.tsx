@@ -5,19 +5,11 @@ import { vi, describe, it } from 'vitest';
 
 import App from 'App';
 import { CONVERSATION_MOCKS } from 'mocks/Chat';
-// import { setAuthSession, setUserSession } from 'services/AuthService';
+import { setAuthSession, setUserSession } from 'services/AuthService';
 
 const mocks = CONVERSATION_MOCKS;
 
-vi.mock('axios', () => {
-  return {
-    default: {
-      defaults: { headers: { common: {} } },
-      get: vi.fn(),
-      delete: vi.fn(),
-    },
-  };
-});
+vi.mock('axios');
 
 global.fetch = vi.fn();
 
@@ -45,25 +37,24 @@ describe('<App /> ', () => {
     });
   });
 
-  // Todo: fix this test
-  // it('it should render <Chat /> component if session is active', async () => {
-  //   // let's create token expiry date for tomorrow
+  it('it should render <Chat /> component if session is active', async () => {
+    // let's create token expiry date for tomorrow
 
-  //   const tokenExpiryDate = new Date();
-  //   tokenExpiryDate.setDate(new Date().getDate() + 1);
+    const tokenExpiryDate = new Date();
+    tokenExpiryDate.setDate(new Date().getDate() + 1);
 
-  //   setAuthSession(
-  //     '{"access_token":"access","renewal_token":"renew", "token_expiry_time":"' +
-  //       tokenExpiryDate +
-  //       '"}'
-  //   );
+    setAuthSession(
+      '{"access_token":"access","renewal_token":"renew", "token_expiry_time":"' +
+        tokenExpiryDate +
+        '"}'
+    );
 
-  //   setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Staff'] }));
+    setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Staff'] }));
 
-  //   const { getByTestId } = render(app);
+    const { getByTestId } = render(app);
 
-  //   await waitFor(() => {
-  //     expect(getByTestId('navbar')).toBeInTheDocument();
-  //   });
-  // });
+    await waitFor(() => {
+      expect(getByTestId('navbar')).toBeInTheDocument();
+    });
+  });
 });
