@@ -27,12 +27,13 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
 
       resolve: { alias: { util: 'util/' } },
       test: {
-        reporters: ['default', 'html'],
         globals: true,
         environment: 'jsdom',
         setupFiles: './src/setupTests.ts',
         coverage: {
           reporter: ['text', 'html', 'lcov'],
+          // choosing istanbul for now because of this https://github.com/vitest-dev/vitest/issues/1252
+          provider: 'istanbul', // or 'c8'
           exclude: ['node_modules/', '**/*.test.tsx'],
         },
         css: true,
@@ -88,6 +89,7 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
       // build specific config
       plugins: [react(), viteTsconfigPaths(), svgrPlugin()],
       build: {
+        // this is needed because of this https://github.com/vitejs/vite/issues/2139#issuecomment-1405624744
         commonjsOptions: {
           defaultIsModuleExports(id) {
             try {
