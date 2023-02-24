@@ -36,7 +36,8 @@
     "no-undef": "off"
   },
   "parserOptions": {
-    "sourceType": "module"
+    "sourceType": "module",
+    "allowImportExportEverywhere": true
   },
   "settings": {
     "import/resolver": {
