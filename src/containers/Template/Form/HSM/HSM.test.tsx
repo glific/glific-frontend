@@ -32,11 +32,6 @@ describe('Edit mode', () => {
 describe('Add mode', () => {
   test('check for validations for the HSM form', async () => {
     vi.spyOn(Router, 'useParams').mockReturnValue({ id: undefined });
-    // vi.doUnmock('react-router-dom');
-    // vi.mock('react-router-dom', async () => ({
-    //   ...(await vi.importActual<any>('react-router-dom')),
-    //   useParams: () => ({ id: undefined }),
-    // }));
     const user = userEvent.setup();
 
     const { getByText, container } = render(

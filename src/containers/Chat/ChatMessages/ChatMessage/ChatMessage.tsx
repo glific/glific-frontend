@@ -218,12 +218,8 @@ export const ChatMessage = ({
   }
 
   const icon = (
-    <div ref={Ref}>
-      <MessageIcon
-        onClick={onClick}
-        className={`${styles.Button} ${iconPlacement}`}
-        data-testid="messageOptions"
-      />
+    <div ref={Ref} className={`${styles.Button} ${iconPlacement}`}>
+      <MessageIcon onClick={onClick} data-testid="messageOptions" />
     </div>
   );
 

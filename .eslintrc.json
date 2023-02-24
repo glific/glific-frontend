@@ -35,10 +35,6 @@
     "react/require-default-props": "off",
     "no-undef": "off"
   },
-  "parserOptions": {
-    "sourceType": "module",
-    "allowImportExportEverywhere": true
-  },
   "settings": {
     "import/resolver": {
       "node": {
