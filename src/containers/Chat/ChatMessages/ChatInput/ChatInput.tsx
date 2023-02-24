@@ -425,6 +425,7 @@ export const ChatInput = ({
         ) : null}
         {audioOption}
         <IconButton
+          data-testid="attachmentIcon"
           className={styles.AttachmentIcon}
           onClick={() => {
             setAttachment(!attachment);

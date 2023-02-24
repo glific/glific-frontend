@@ -57,6 +57,7 @@ export const QuickReplyTemplate = ({
             <TextField
               placeholder={name}
               variant="outlined"
+              data-testid="textField"
               onChange={(e: any) => handleInputChange(e, 'value')}
               value={defaultValue}
               className={styles.TextField}
@@ -74,6 +75,7 @@ export const QuickReplyTemplate = ({
           {inputFields.length === index + 1 && inputFields.length !== 3 ? (
             <Button
               color="primary"
+              data-testid="addButton"
               onClick={onAddClick}
               className={styles.AddButton}
               startIcon={<AddIcon className={styles.AddIcon} />}

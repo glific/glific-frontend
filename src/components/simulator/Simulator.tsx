@@ -327,7 +327,10 @@ export const Simulator = ({
 
     return (
       <div key={index}>
-        <div className={getStyleForDirection(direction, isInteractiveContentPresent, messageType)}>
+        <div
+          className={getStyleForDirection(direction, isInteractiveContentPresent, messageType)}
+          data-test="simulatorMessage"
+        >
           {isInteractiveContentPresent && direction !== 'send' ? (
             template
           ) : (
@@ -506,7 +509,7 @@ export const Simulator = ({
             )}
 
             <div className={styles.Screen}>
-              <div className={styles.Header}>
+              <div className={styles.Header} data-testid="simulatorHeader">
                 <ArrowBackIcon />
                 <img src={DefaultWhatsappImage} alt="default" />
                 <span data-testid="beneficiaryName">Beneficiary</span>
