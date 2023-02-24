@@ -210,7 +210,7 @@ const ChatConversation = ({
         {entityType === 'contact' ? (
           <div className={styles.ChatIcons}>
             <div className={chatBubble.join(' ')} />
-            <div className={styles.Timer} data-testit="timerContainer">
+            <div className={styles.Timer} data-testid="timerContainer">
               <Timer
                 time={senderLastMessage}
                 contactStatus={contactStatus}
