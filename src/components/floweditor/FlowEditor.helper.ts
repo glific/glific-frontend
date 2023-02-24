@@ -19,7 +19,6 @@ export const setConfig = (uuid: any) => {
       'add_contact_urn',
       'send_email',
       'call_resthook',
-      'start_session',
       'open_ticket',
       'transfer_airtime',
       'split_by_scheme',
