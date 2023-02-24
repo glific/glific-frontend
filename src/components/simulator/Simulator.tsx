@@ -329,7 +329,7 @@ export const Simulator = ({
       <div key={index}>
         <div
           className={getStyleForDirection(direction, isInteractiveContentPresent, messageType)}
-          data-test="simulatorMessage"
+          data-testid="simulatorMessage"
         >
           {isInteractiveContentPresent && direction !== 'send' ? (
             template
