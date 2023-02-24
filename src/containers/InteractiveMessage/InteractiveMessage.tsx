@@ -454,8 +454,8 @@ export const InteractiveMessage = () => {
       name: 'title',
       type: 'text',
       placeholder: `${t('Title')}*`,
-      inputProp: {
-        onBlur: (event: any) => setTitle(event.target.value),
+      onChange: (value: any) => {
+        setTitle(value);
       },
       helperText: t('Only alphanumeric characters and spaces are allowed'),
     },
@@ -493,8 +493,8 @@ export const InteractiveMessage = () => {
       name: 'footer',
       type: 'text',
       placeholder: t('Footer'),
-      inputProp: {
-        onBlur: (event: any) => setFooter(event.target.value),
+      onChange: (value: any) => {
+        setFooter(value);
       },
     },
     {
@@ -686,18 +686,8 @@ export const InteractiveMessage = () => {
   const validationScheme = Yup.object().shape(validation, [['type', 'attachmentURL']]);
 
   const getPreviewData = () => {
-    if (!(templateButtons && templateButtons.length)) {
-      return null;
-    }
-
-    const isButtonPresent = templateButtons.some((button: any) => {
-      const { value, options: opts } = button;
-      return !!value || !!(opts && opts.some((o: any) => !!o.title));
-    });
-
-    if (!isButtonPresent) {
-      return null;
-    }
+    const bodyText = getPlainTextFromEditor(body);
+    if (!title && !bodyText && !footer) return null;
 
     const payload = {
       title,
@@ -722,6 +712,7 @@ export const InteractiveMessage = () => {
   const previewData = useMemo(getPreviewData, [
     title,
     body,
+    footer,
     templateType,
     templateButtons,
     globalButton,

@@ -28,7 +28,7 @@
 }
 
 .Text {
-  font-size: 1rem;
+  font-size: 0.875rem;
   margin: 0;
   width: calc(100% - 30px);
 }

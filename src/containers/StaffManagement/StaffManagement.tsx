@@ -207,7 +207,7 @@ export const StaffManagement = () => {
       disabled: isManager,
       placeholder: t('Roles'),
       options: rolesList,
-      roleSelection: handleRolesChange,
+      onChange: handleRolesChange,
       getOptions,
       multiple: hasDynamicRoles,
       helpLink: { label: 'help?', handleClick: handleHelpClick },
