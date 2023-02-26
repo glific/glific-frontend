@@ -156,9 +156,10 @@ export const FormLayout = ({
 
   const capitalListItemName = listItemName[0].toUpperCase() + listItemName.slice(1);
   let item: any = null;
-  let itemId = params.id ? params.id : false;
-  if (!itemId && entityId) {
-    itemId = entityId;
+
+  let itemId = entityId;
+  if (!itemId) {
+    itemId = params.id;
   }
 
   let variables: any = itemId ? { [idType]: itemId } : false;
