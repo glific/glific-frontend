@@ -100,7 +100,7 @@ describe('<Billing />', () => {
 
 test('creating a subscription with response as pending', async () => {
   const { getByText, getByTestId } = render(
-    <MockedProvider mocks={[createStatusPendingQuery]} addTypename={false}>
+    <MockedProvider mocks={[createStatusPendingQuery, getBillingQuery]} addTypename={false}>
       <Router>
         <Billing />
       </Router>
@@ -117,7 +117,10 @@ test('creating a subscription with response as pending', async () => {
 
 test('subscription status is already in pending state', async () => {
   const { getByText, getByTestId } = render(
-    <MockedProvider mocks={[getPendingBillingQuery]} addTypename={false}>
+    <MockedProvider
+      mocks={[getPendingBillingQuery, getBillingQuery, getCustomerPortalQuery]}
+      addTypename={false}
+    >
       <Router>
         <Billing />
       </Router>
@@ -142,7 +145,12 @@ test('complete a subscription', async () => {
   const user = UserEvent.setup();
   const { getByText, getByTestId } = render(
     <MockedProvider
-      mocks={[getBillingQueryWithoutsubscription, createBillingSubscriptionQuery]}
+      mocks={[
+        getBillingQueryWithoutsubscription,
+        createBillingSubscriptionQuery,
+        getBillingQuery,
+        getCustomerPortalQuery,
+      ]}
       addTypename={false}
     >
       <Router>
@@ -201,6 +209,7 @@ test('update billing details', async () => {
         getBillingQueryWithoutsubscription,
         createBillingSubscriptionQuery,
         updateBillingQuery,
+        getBillingQuery,
       ]}
       addTypename={false}
     >
@@ -227,7 +236,7 @@ test('update billing details', async () => {
   });
 });
 
-test('update billing details', async () => {
+test('update billing details with coupon code', async () => {
   const user = UserEvent.setup();
   const { getByText, getByTestId, container } = render(
     <MockedProvider
@@ -235,6 +244,7 @@ test('update billing details', async () => {
         getBillingQueryWithoutsubscription,
         createBillingSubscriptionPromoQuery,
         getCouponCode,
+        getBillingQuery,
       ]}
       addTypename={false}
     >
