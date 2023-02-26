@@ -58,3 +58,14 @@ export const IMPORT_CONTACTS = gql`
     }
   }
 `;
+
+export const DELETE_CONTACT_PROFILE = gql`
+  mutation deleteProfile($id: ID!) {
+    deleteProfile(id: $id) {
+      errors {
+        key
+        message
+      }
+    }
+  }
+`;
