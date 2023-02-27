@@ -409,5 +409,6 @@
   "Templates applied successfully. Please check the csv file for the results": "Templates applied successfully. Please check the csv file for the results",
   "An error occured! Please check the format of the file": "An error occured! Please check the format of the file",
   "You won't be able to send messages to this profile.": "You won't be able to send messages to this profile.",
-  "Footer": "Footer"
+  "Footer": "Footer",
+  "An error occured while uploading the file": "An error occured while uploading the file"
 }
