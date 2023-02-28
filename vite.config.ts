@@ -43,7 +43,13 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
   if (command === 'serve') {
     return defineConfig({
       // dev specific config
-      plugins: [react(), eslint(), viteTsconfigPaths(), svgrPlugin(), checker({ typescript: true })],
+      plugins: [
+        react(),
+        eslint(),
+        viteTsconfigPaths(),
+        svgrPlugin(),
+        checker({ typescript: true }),
+      ],
       optimizeDeps: {
         esbuildOptions: {
           // Node.js global to browser globalThis
