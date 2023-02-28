@@ -550,6 +550,7 @@ const Template = ({
       type: 'text',
       placeholder: t('Attachment URL'),
       validate: () => isUrlValid,
+      disabled: !!(defaultAttribute.isHsm && params.id),
       helperText: t(
         'Please provide a sample attachment for approval purpose. You may send a similar but different attachment when sending the HSM to users.'
       ),
@@ -985,7 +986,7 @@ const Template = ({
       getMediaId={getMediaId}
       getQueryFetchPolicy="cache-and-network"
       button={defaultAttribute.isHsm && !params.id ? t('Submit for Approval') : t('Save')}
-      buttonState={{ text: t('Validating URL'), status: validatingURL || type === 'TEXT' }}
+      buttonState={{ text: t('Validating URL'), status: validatingURL }}
       customStyles={customStyle}
       saveOnPageChange={false}
       afterSave={!defaultAttribute.isHsm ? afterSave : undefined}
