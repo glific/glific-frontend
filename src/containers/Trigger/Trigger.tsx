@@ -194,13 +194,14 @@ export const Trigger = () => {
 
     frequencyValues: Yup.array()
       .nullable()
-      .when('frequency', {
-        is: (frequencyValue: any) => frequencyValue && frequencyValue.value === 'weekly',
-        then: Yup.array().min(1, t('Please select a day')),
-      })
-      .when('frequency', {
-        is: (frequencyValue: any) => frequencyValue && frequencyValue.value === 'monthly',
-        then: Yup.array().min(1, t('Please select a date')),
+      .when('frequency', ([frequencyValue], schema) => {
+        if (frequencyValue && frequencyValue.value === 'weekly') {
+          return schema.min(1, t('Please select a day'));
+        }
+        if (frequencyValue && frequencyValue.value === 'monthly') {
+          return schema.min(1, t('Please select a date'));
+        }
+        return schema;
       }),
 
     frequency: Yup.object().nullable().required(t('Repeat is required')),

@@ -226,9 +226,11 @@ export const Organisation = () => {
     ),
     newcontactFlowId: Yup.object()
       .nullable()
-      .when('newcontactFlowEnabled', {
-        is: (val: string) => val,
-        then: Yup.object().nullable().required(t('New contact flow is required.')),
+      .when('newcontactFlowEnabled', ([newcontactFlowEnabledValue], schema) => {
+        if (newcontactFlowEnabledValue) {
+          return schema.nullable().required(t('New contact flow is required.'));
+        }
+        return schema;
       }),
   };
 

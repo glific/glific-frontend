@@ -898,15 +898,19 @@ const Template = ({
       .max(1024, 'Maximum 1024 characters are allowed'),
     type: Yup.object()
       .nullable()
-      .when('attachmentURL', {
-        is: (val: string) => val && val !== '',
-        then: Yup.object().nullable().required(t('Type is required.')),
+      .when('attachmentURL', ([attachmentURLValue], schema) => {
+        if (attachmentURLValue && attachmentURLValue !== '') {
+          return schema.required(t('Type is required.'));
+        }
+        return schema;
       }),
     attachmentURL: Yup.string()
       .nullable()
-      .when('type', {
-        is: (val: any) => val && val.id,
-        then: Yup.string().required(t('Attachment URL is required.')),
+      .when('type', ([typeValue], schema) => {
+        if (typeValue && typeValue.id) {
+          return schema.required(t('Attachment URL is required.'));
+        }
+        return schema;
       }),
   };
 
@@ -919,16 +923,17 @@ const Template = ({
             title: Yup.string().required('Required'),
             value: Yup.string()
               .required('Required')
-              .when('type', {
-                is: (val: any) => val === 'phone_number',
-                then: Yup.string().matches(/^\d{10,12}$/, 'Please enter valid phone number.'),
-              })
-              .when('type', {
-                is: (val: any) => val === 'url',
-                then: Yup.string().matches(
-                  /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_+.~#?&/=]*)/gi,
-                  'Please enter valid url.'
-                ),
+              .when('type', ([typeValue], schema) => {
+                if (typeValue === 'phone_number') {
+                  return schema.matches(/^\d{10,12}$/, 'Please enter valid phone number.');
+                }
+                if (typeValue === 'url') {
+                  return schema.matches(
+                    /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_+.~#?&/=]*)/gi,
+                    'Please enter valid url.'
+                  );
+                }
+                return schema;
               }),
           })
         )
