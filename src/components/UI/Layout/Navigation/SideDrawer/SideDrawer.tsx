@@ -16,7 +16,9 @@ import GlificLogo from 'assets/images/logo/Logo.svg';
 import { getUserRolePermissions, getUserAccountMenus, getStaffManagementMenus } from 'context/role';
 import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import { WalletBalance } from 'containers/WalletBalance/WalletBalance';
+import { isMidWidth } from 'common/utils';
 import SideMenus from '../SideMenus/SideMenus';
+
 import styles from './SideDrawer.module.css';
 
 export const SideDrawer = () => {
@@ -100,7 +102,16 @@ export const SideDrawer = () => {
 
   return (
     <nav
-      className={drawerOpen ? styles.Drawer : styles.NavClose}
+      onMouseOver={() => {
+        if (!isMidWidth()) setDrawerOpen(true);
+      }}
+      onMouseLeave={() => {
+        if (!isMidWidth()) setDrawerOpen(false);
+      }}
+      onFocus={() => {
+        if (!isMidWidth()) setDrawerOpen(true);
+      }}
+      className={drawerOpen && isMidWidth() ? styles.Drawer : styles.NavClose}
       aria-label="navigation menus"
       data-testid="navbar"
     >
@@ -124,7 +135,6 @@ export const SideDrawer = () => {
         </Drawer>
       </Hidden>
       <Drawer
-        className={drawerOpen ? styles.DrawerOpen : styles.DrawerClose}
         classes={{
           paper: drawerOpen ? styles.DrawerOpen : styles.DrawerClose,
         }}

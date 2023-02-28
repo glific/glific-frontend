@@ -245,7 +245,7 @@ export const List = ({
     filterItemsQuery,
     {
       variables: filterPayload(),
-      fetchPolicy: 'cache-and-network',
+      fetchPolicy: 'cache-first',
     }
   );
 
@@ -259,7 +259,7 @@ export const List = ({
 
   useEffect(() => {
     refetchCount();
-  }, [filterPayload, searchVal, filters]);
+  }, [searchVal]);
 
   useEffect(() => {
     if (userRole.length === 0) {

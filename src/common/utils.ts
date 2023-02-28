@@ -201,4 +201,6 @@ export const getAddOrRemoveRoleIds = (roles: any, payload: any) => {
   return { ...rest, addRoleIds, deleteRoleIds };
 };
 
+export const isMidWidth = () => window.innerWidth > 1280;
+
 export default getObject;
