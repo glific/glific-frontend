@@ -27,13 +27,12 @@ const regexForShortcode = /^[a-z0-9_]+$/g;
 
 const HSMValidation = {
   example: Yup.string()
-    .transform((current, original) => original.getCurrentContent().getPlainText())
+    .transform((_current, original) => original.getCurrentContent().getPlainText())
     .max(1024, 'Maximum 1024 characters are allowed')
-    .when('body', (messageValue: any, schema: any) =>
+    .when('body', ([body], schema: any) =>
       schema.test({
         test: (exampleValue: any) => {
-          const finalmessageValue =
-            messageValue && messageValue.replace(/\{\{([1-9]|1[0-9])\}\}/g, '[]');
+          const finalmessageValue = body && body.replace(/\{\{([1-9]|1[0-9])\}\}/g, '[]');
           const finalExampleValue = exampleValue && exampleValue.replace(/\[[^\]]*\]/g, '[]');
           return finalExampleValue === finalmessageValue;
         },
@@ -900,13 +899,13 @@ const Template = ({
       .nullable()
       .when('attachmentURL', {
         is: (val: string) => val && val !== '',
-        then: Yup.object().nullable().required(t('Type is required.')),
+        then: (schema) => schema.nullable().required(t('Type is required.')),
       }),
     attachmentURL: Yup.string()
       .nullable()
       .when('type', {
         is: (val: any) => val && val.id,
-        then: Yup.string().required(t('Attachment URL is required.')),
+        then: (schema) => schema.required(t('Attachment URL is required.')),
       }),
   };
 
@@ -921,14 +920,15 @@ const Template = ({
               .required('Required')
               .when('type', {
                 is: (val: any) => val === 'phone_number',
-                then: Yup.string().matches(/^\d{10,12}$/, 'Please enter valid phone number.'),
+                then: (schema) => schema.matches(/^\d{10,12}$/, 'Please enter valid phone number.'),
               })
               .when('type', {
                 is: (val: any) => val === 'url',
-                then: Yup.string().matches(
-                  /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_+.~#?&/=]*)/gi,
-                  'Please enter valid url.'
-                ),
+                then: (schema) =>
+                  schema.matches(
+                    /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_+.~#?&/=]*)/gi,
+                    'Please enter valid url.'
+                  ),
               }),
           })
         )
