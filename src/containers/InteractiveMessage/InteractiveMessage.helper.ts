@@ -99,7 +99,7 @@ export const validator = (templateType: any, t: any) => {
     validation.type = Yup.object()
       .nullable()
       .when('attachmentURL', ([attachmentURL], schema) => {
-        if (attachmentURL && attachmentURL !== '') {
+        if (attachmentURL) {
           return schema.required(t('Type is required.'));
         }
         return schema;

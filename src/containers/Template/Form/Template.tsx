@@ -899,7 +899,7 @@ const Template = ({
     type: Yup.object()
       .nullable()
       .when('attachmentURL', ([attachmentURLValue], schema) => {
-        if (attachmentURLValue && attachmentURLValue !== '') {
+        if (attachmentURLValue) {
           return schema.required(t('Type is required.'));
         }
         return schema;
