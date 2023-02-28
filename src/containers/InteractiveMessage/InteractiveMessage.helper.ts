@@ -42,8 +42,8 @@ export const validator = (templateType: any, t: any) => {
       .transform((_current, original) => original.getCurrentContent().getPlainText())
       .when('type', {
         is: (val: any) => val && val.id && val.id === 'DOCUMENT',
-        then: Yup.string().nullable(),
-        otherwise: Yup.string().required(t('Message content is required.')),
+        then: (schema) => schema.nullable(),
+        otherwise: (schema) => schema.required(t('Message content is required.')),
       }),
   };
 
@@ -99,14 +99,14 @@ export const validator = (templateType: any, t: any) => {
       .nullable()
       .when('attachmentURL', {
         is: (val: string) => val && val !== '',
-        then: Yup.object().nullable().required(t('Type is required.')),
+        then: (schema) => schema.nullable().required(t('Type is required.')),
       });
 
     validation.attachmentURL = Yup.string()
       .nullable()
       .when('type', {
         is: (val: any) => val && val.id,
-        then: Yup.string().required(t('Attachment URL is required.')),
+        then: (schema) => schema.required(t('Attachment URL is required.')),
       });
   }
 

@@ -35,18 +35,18 @@ const mocks = [
   simulatorGetQuery,
   simulatorGetQuery,
 ];
-const defaultProps = {
+const getDefaultProps = () => ({
   showSimulator: false,
   setShowSimulator: mockSetShowSimulator,
   setSimulatorId: mockSetShowSimulator,
   isPreviewMessage: false,
   resetMessage: vi.fn(),
-};
+});
 
 test('simulator should open on click of simulator icon', async () => {
   const { getByTestId } = render(
     <MockedProvider mocks={mocks}>
-      <Simulator {...defaultProps} />
+      <Simulator {...getDefaultProps()} />
     </MockedProvider>
   );
   // To open simulator
@@ -60,10 +60,13 @@ test('simulator should open on click of simulator icon', async () => {
 });
 
 test('opened simulator should close when click of simulator icon', async () => {
-  defaultProps.showSimulator = true;
+  const props = getDefaultProps();
+  const mockOpenSimulator = jest.fn();
+  props.showSimulator = true;
+  props.setSimulatorId = mockOpenSimulator;
   const { getByTestId } = render(
     <MockedProvider mocks={mocks}>
-      <Simulator {...defaultProps} />
+      <Simulator {...props} />
     </MockedProvider>
   );
 
@@ -72,17 +75,17 @@ test('opened simulator should close when click of simulator icon', async () => {
 
   await waitFor(() => {
     fireEvent.click(button);
-
     expect(mockSetShowSimulator).toHaveBeenCalledTimes(2);
   });
 });
 
 test('send a message/media from the simulator', async () => {
-  defaultProps.showSimulator = true;
+  const props = getDefaultProps();
+  props.showSimulator = true;
 
   const { getByTestId } = render(
     <MockedProvider mocks={mocks}>
-      <Simulator {...defaultProps} />
+      <Simulator {...props} />
     </MockedProvider>
   );
   mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
@@ -113,10 +116,11 @@ test('send a message/media from the simulator', async () => {
 });
 
 test('click on clear icon closes the simulator', async () => {
-  defaultProps.showSimulator = true;
+  const props = getDefaultProps();
+  props.showSimulator = true;
   const { getByTestId } = render(
     <MockedProvider mocks={mocks}>
-      <Simulator {...defaultProps} />
+      <Simulator {...props} />
     </MockedProvider>
   );
   await waitFor(() => {
