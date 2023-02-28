@@ -1,5 +1,5 @@
 import { GET_SHEET, GET_SHEETS, GET_SHEET_COUNT } from 'graphql/queries/Sheet';
-import { DELETE_SHEET, CREATE_SHEET } from 'graphql/mutations/Sheet';
+import { DELETE_SHEET, CREATE_SHEET, SYNC_SHEET } from 'graphql/mutations/Sheet';
 
 export const getSheetCountQuery = {
   request: {
@@ -107,6 +107,31 @@ export const createSheetQuery = {
           lastSyncedAt: '2022-10-14T06:06:23Z',
           updatedAt: '2022-10-14T06:06:23.141322Z',
           url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ6L9eu5zCfiCQiULhy_yrw7VYDoMDnb8pNi3E4l226iH865Z8Nv-6XWaZ-CStITlT3EmiCZ_RnHzof/pub?gid=0&single=true&output=csv',
+        },
+        errors: null,
+      },
+    },
+  },
+};
+
+export const syncSheetMutation = {
+  request: {
+    query: SYNC_SHEET,
+    variables: { id: '1' },
+  },
+  result: {
+    data: {
+      syncSheet: {
+        sheet: {
+          id: '3',
+          insertedAt: '2022-10-14T06:06:23.141322Z',
+          isActive: true,
+          sheetDataCount: 4,
+          label: 'sheet1',
+          lastSyncedAt: '2022-10-14T06:06:23Z',
+          updatedAt: '2022-10-14T06:06:23.141322Z',
+          url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ6L9eu5zCfiCQiULhy_yrw7VYDoMDnb8pNi3E4l226iH865Z8Nv-6XWaZ-CStITlT3EmiCZ_RnHzof/pub?gid=0&single=true&output=csv',
+          warnings: '{}',
         },
         errors: null,
       },
