@@ -27,13 +27,12 @@ const regexForShortcode = /^[a-z0-9_]+$/g;
 
 const HSMValidation = {
   example: Yup.string()
-    .transform((current, original) => original.getCurrentContent().getPlainText())
+    .transform((_current, original) => original.getCurrentContent().getPlainText())
     .max(1024, 'Maximum 1024 characters are allowed')
-    .when('body', (messageValue: any, schema: any) =>
+    .when('body', ([body], schema: any) =>
       schema.test({
         test: (exampleValue: any) => {
-          const finalmessageValue =
-            messageValue && messageValue.replace(/\{\{([1-9]|1[0-9])\}\}/g, '[]');
+          const finalmessageValue = body && body.replace(/\{\{([1-9]|1[0-9])\}\}/g, '[]');
           const finalExampleValue = exampleValue && exampleValue.replace(/\[[^\]]*\]/g, '[]');
           return finalExampleValue === finalmessageValue;
         },
@@ -898,19 +897,15 @@ const Template = ({
       .max(1024, 'Maximum 1024 characters are allowed'),
     type: Yup.object()
       .nullable()
-      .when('attachmentURL', ([attachmentURLValue], schema) => {
-        if (attachmentURLValue) {
-          return schema.required(t('Type is required.'));
-        }
-        return schema;
+      .when('attachmentURL', {
+        is: (val: string) => val && val !== '',
+        then: (schema) => schema.nullable().required(t('Type is required.')),
       }),
     attachmentURL: Yup.string()
       .nullable()
-      .when('type', ([typeValue], schema) => {
-        if (typeValue && typeValue.id) {
-          return schema.required(t('Attachment URL is required.'));
-        }
-        return schema;
+      .when('type', {
+        is: (val: any) => val && val.id,
+        then: (schema) => schema.required(t('Attachment URL is required.')),
       }),
   };
 
@@ -923,17 +918,17 @@ const Template = ({
             title: Yup.string().required('Required'),
             value: Yup.string()
               .required('Required')
-              .when('type', ([typeValue], schema) => {
-                if (typeValue === 'phone_number') {
-                  return schema.matches(/^\d{10,12}$/, 'Please enter valid phone number.');
-                }
-                if (typeValue === 'url') {
-                  return schema.matches(
+              .when('type', {
+                is: (val: any) => val === 'phone_number',
+                then: (schema) => schema.matches(/^\d{10,12}$/, 'Please enter valid phone number.'),
+              })
+              .when('type', {
+                is: (val: any) => val === 'url',
+                then: (schema) =>
+                  schema.matches(
                     /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_+.~#?&/=]*)/gi,
                     'Please enter valid url.'
-                  );
-                }
-                return schema;
+                  ),
               }),
           })
         )

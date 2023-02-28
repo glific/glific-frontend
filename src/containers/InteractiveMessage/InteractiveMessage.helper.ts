@@ -40,11 +40,10 @@ export const validator = (templateType: any, t: any) => {
       .max(60, t('Title can be at most 60 characters')),
     body: Yup.string()
       .transform((_current, original) => original.getCurrentContent().getPlainText())
-      .when('type', ([type], schema) => {
-        if (type && type.id && type.id === 'DOCUMENT') {
-          return schema.nullable();
-        }
-        return schema.required(t('Message content is required.'));
+      .when('type', {
+        is: (val: any) => val && val.id && val.id === 'DOCUMENT',
+        then: (schema) => schema.nullable(),
+        otherwise: (schema) => schema.required(t('Message content is required.')),
       }),
   };
 
@@ -98,20 +97,16 @@ export const validator = (templateType: any, t: any) => {
 
     validation.type = Yup.object()
       .nullable()
-      .when('attachmentURL', ([attachmentURL], schema) => {
-        if (attachmentURL) {
-          return schema.required(t('Type is required.'));
-        }
-        return schema;
+      .when('attachmentURL', {
+        is: (val: string) => val && val !== '',
+        then: (schema) => schema.nullable().required(t('Type is required.')),
       });
 
     validation.attachmentURL = Yup.string()
       .nullable()
-      .when('type', ([type], schema) => {
-        if (type && type.id) {
-          return schema.required(t('Attachment URL is required.'));
-        }
-        return schema;
+      .when('type', {
+        is: (val: any) => val && val.id,
+        then: (schema) => schema.required(t('Attachment URL is required.')),
       });
   }
 

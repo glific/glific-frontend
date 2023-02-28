@@ -101,11 +101,9 @@ export const Providers = () => {
   const addValidation = (fields: any, key: string) => {
     validation[key] = Yup.string()
       .nullable()
-      .when('isActive', ([isActive], schema) => {
-        if (isActive) {
-          return schema.required(`${fields[key].label} is required.`);
-        }
-        return schema;
+      .when('isActive', {
+        is: true,
+        then: (schema) => schema.nullable().required(`${fields[key].label} is required.`),
       });
     FormSchema = Yup.object().shape(validation);
   };

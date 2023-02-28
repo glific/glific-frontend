@@ -194,14 +194,13 @@ export const Trigger = () => {
 
     frequencyValues: Yup.array()
       .nullable()
-      .when('frequency', ([frequencyValue], schema) => {
-        if (frequencyValue && frequencyValue.value === 'weekly') {
-          return schema.min(1, t('Please select a day'));
-        }
-        if (frequencyValue && frequencyValue.value === 'monthly') {
-          return schema.min(1, t('Please select a date'));
-        }
-        return schema;
+      .when('frequency', {
+        is: (frequencyValue: any) => frequencyValue && frequencyValue.value === 'weekly',
+        then: (schema) => schema.min(1, t('Please select a day')),
+      })
+      .when('frequency', {
+        is: (frequencyValue: any) => frequencyValue && frequencyValue.value === 'monthly',
+        then: (schema) => schema.min(1, t('Please select a date')),
       }),
 
     frequency: Yup.object().nullable().required(t('Repeat is required')),
@@ -211,7 +210,7 @@ export const Trigger = () => {
   if (!isEditing) {
     schemaShape.startTime = Yup.string()
       .required(t('Time is required.'))
-      .when('startDate', (startDateValue: any, schema: any) =>
+      .when('startDate', ([startDateValue], schema: any) =>
         schema.test({
           test: (startAtValue: any) => checkDateTimeValidation(startAtValue, startDateValue),
           message: t('Start time should be greater than current time'),

@@ -226,11 +226,9 @@ export const Organisation = () => {
     ),
     newcontactFlowId: Yup.object()
       .nullable()
-      .when('newcontactFlowEnabled', ([newcontactFlowEnabledValue], schema) => {
-        if (newcontactFlowEnabledValue) {
-          return schema.nullable().required(t('New contact flow is required.'));
-        }
-        return schema;
+      .when('newcontactFlowEnabled', {
+        is: (val: string) => val,
+        then: (schema) => schema.nullable().required(t('New contact flow is required.')),
       }),
   };
 
