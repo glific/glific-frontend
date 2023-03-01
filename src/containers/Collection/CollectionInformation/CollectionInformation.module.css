@@ -50,6 +50,13 @@
 
 .Heading {
   font-size: 0.875rem;
+  color: #93a29b;
+}
+
+.MessageInfo {
+  display: flex;
+  gap: 20px;
+  margin-top: 10px;
 }
 
 @media only screen and (max-width: 768px) {

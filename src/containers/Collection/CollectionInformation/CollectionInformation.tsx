@@ -111,8 +111,8 @@ export const CollectionInformation = ({
   return (
     <div className={styles.InfoWrapper}>
       <div className={styles.CollectionInformation} data-testid="CollectionInformation">
-        <div className={styles.Heading}>{t('Contacts qualified for')}-</div>
-        <div>
+        <div className={styles.Heading}>{t('Contacts qualified for')}</div>
+        <div className={styles.MessageInfo}>
           {Object.keys(display).map((data: any) => (
             <div key={data} className={styles.SessionInfo}>
               {data}: <span className={styles.SessionCount}> {display[data]}</span>
