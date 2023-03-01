@@ -22,7 +22,7 @@ import { exportFlowMethod } from 'common/utils';
 import styles from './FlowEditor.module.css';
 import { checkElementInRegistry, loadfiles, setConfig } from './FlowEditor.helper';
 
-declare function showFlowEditor(node: any, config: any): void;
+declare function showFlowEditor(node: HTMLElement, config: any): void;
 
 customElements.define = checkElementInRegistry(customElements.define);
 
@@ -35,7 +35,7 @@ export const FlowEditor = () => {
   const [loading, setLoading] = useState(true);
   const [flowEditorLoaded, setFlowEditorLoaded] = useState(false);
 
-  const config = setConfig(uuid);
+  const config = uuid && setConfig(uuid);
   const [published, setPublished] = useState(false);
   const [stayOnPublish, setStayOnPublish] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -51,15 +51,18 @@ export const FlowEditor = () => {
 
   let modal = null;
   let dialog = null;
-  let flowTitle: any;
+  let flowTitle = '';
 
   const [getFreeFlow] = useLazyQuery(GET_FREE_FLOW, {
     fetchPolicy: 'network-only',
     onCompleted: ({ flowGet }) => {
       if (flowGet.flow && !flowEditorLoaded) {
-        showFlowEditor(document.getElementById('flow'), config);
-        setLoading(false);
-        setFlowEditorLoaded(true);
+        const element = document.getElementById('flow');
+        if (element) {
+          showFlowEditor(element, config);
+          setLoading(false);
+          setFlowEditorLoaded(true);
+        }
       } else if (flowGet.errors && flowGet.errors.length) {
         setDialogMessage(flowGet.errors[0].message);
         setCurrentEditDialogBox(true);
@@ -106,7 +109,7 @@ export const FlowEditor = () => {
     },
   });
 
-  let flowId: any;
+  let flowId = '';
 
   // flowname can return an empty array if the uuid present is not correct
   if (flowName && flowName.flows.length > 0) {

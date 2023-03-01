@@ -16,7 +16,7 @@ const App = () => {
   const navigate = useNavigate();
   // by default, do not assign any value to assume login or logout
   // let's checkAuthStatusService allocate it on useEffect
-  const [authenticated, setAuthenticated] = useState<any>();
+  const [authenticated, setAuthenticated] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(window.innerWidth > 768);
 
   useEffect(() => {
@@ -26,7 +26,7 @@ const App = () => {
   const sideDraawerValues = useMemo(
     () => ({
       drawerOpen,
-      setDrawerOpen: (value: any) => {
+      setDrawerOpen: (value: boolean) => {
         setDrawerOpen(value);
       },
     }),
@@ -36,7 +36,7 @@ const App = () => {
   const values = useMemo(
     () => ({
       authenticated,
-      setAuthenticated: (value: any) => {
+      setAuthenticated: (value: boolean) => {
         setAuthenticated(value);
       },
     }),

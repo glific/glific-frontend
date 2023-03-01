@@ -1,24 +1,32 @@
 import { Container } from '@mui/material';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import setLogs from 'config/logs';
-import { Component } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Component, ErrorInfo, ReactNode } from 'react';
+import { NavigateFunction, useNavigate } from 'react-router-dom';
 import styles from './ErrorBoundary.module.css';
 
-function withRouter(NavigateComponent: any) {
-  return function WrappedComponent(props: any) {
+function withRouter(NavigateComponent: typeof Component) {
+  return function WrappedComponent(props: ErrorBoundaryProps) {
     const navigate = useNavigate();
     return <NavigateComponent {...props} navigate={navigate} />;
   };
 }
 
-class ErrorBoundary extends Component<any, any> {
-  constructor(props: any) {
+interface ErrorBoundaryProps {
+  navigate?: NavigateFunction;
+  children: ReactNode;
+}
+interface ErrorBoundaryState {
+  hasError: boolean;
+}
+
+class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  constructor(props: ErrorBoundaryProps) {
     super(props);
     this.state = { hasError: false };
   }
 
-  static getDerivedStateFromError(error: any) {
+  static getDerivedStateFromError(error: Error) {
     const errorString = JSON.stringify(error);
     setLogs(errorString, 'error');
 
@@ -26,7 +34,7 @@ class ErrorBoundary extends Component<any, any> {
     return { hasError: true };
   }
 
-  componentDidCatch(error: any, errorInfo: any) {
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     const errorString = JSON.stringify(error);
     setLogs(errorString, 'error');
     setLogs(errorInfo, 'error');
@@ -46,7 +54,7 @@ class ErrorBoundary extends Component<any, any> {
               title="Error !"
               colorOk="warning"
               handleOk={() => {
-                navigate('/logout/user');
+                if (navigate) navigate('/logout/user');
               }}
               handleCancel={() => {}}
               buttonOk="Ok"

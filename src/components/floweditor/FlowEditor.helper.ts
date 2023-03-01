@@ -3,7 +3,7 @@ import { FLOW_EDITOR_CONFIGURE_LINK, FLOW_EDITOR_API, CONTACT_CHAT_LINK } from '
 
 const glificBase = FLOW_EDITOR_API;
 
-export const setConfig = (uuid: any) => {
+export const setConfig = (uuid: string) => {
   const services = JSON.parse(localStorage.getItem('organizationServices') || '{}');
 
   const config = {
@@ -101,10 +101,14 @@ export const setConfig = (uuid: any) => {
   return config;
 };
 
-export const loadfiles = (startFlowEditor: any) => {
+interface ManifestFiles {
+  [key: string]: string;
+}
+
+export const loadfiles = (startFlowEditor: Function) => {
   (window as any).static_url = '/sitestatic/';
   const files: Array<HTMLScriptElement | HTMLLinkElement> = [];
-  const filesToLoad: any = Manifest.files;
+  const filesToLoad: ManifestFiles = Manifest.files;
   let index = 0;
   Object.keys(filesToLoad).forEach((fileName) => {
     if (filesToLoad[fileName].startsWith('/static')) {
@@ -142,7 +146,7 @@ export const loadfiles = (startFlowEditor: any) => {
 };
 
 // function to suppress the error for custom registery in floweditor
-export const checkElementInRegistry = (fn: any) =>
+export const checkElementInRegistry = (fn: Function) =>
   // eslint-disable-next-line
   function (...args: any) {
     try {

@@ -80,12 +80,22 @@ const setPayload = (payload: any, roles: any) => {
   return payloadWithRoleIds;
 };
 
+export interface List {
+  id: number;
+  label: string;
+}
+interface FrequencyDetails {
+  values: Array<List>;
+  options: Array<List>;
+  placeholder: string;
+}
+
 const getFrequencyDetails = (
   frequencyValue: string,
-  daysValue: Array<any>,
-  hoursValue: Array<any>
+  daysValue: Array<List>,
+  hoursValue: Array<List>
 ) => {
-  const frequencyDetails = {
+  const frequencyDetails: FrequencyDetails = {
     values: [],
     options: dayList,
     placeholder: 'Select days',
@@ -127,7 +137,7 @@ export const Trigger = () => {
   const [frequency, setfrequency] = useState<any>(null);
   const [endDate, setEndDate] = useState('');
   const [isRepeating, setIsRepeating] = useState('');
-  const [frequencyValues, setFrequencyValues] = useState([]);
+  const [frequencyValues, setFrequencyValues] = useState<Array<List>>([]);
   const [roles, setRoles] = useState([]);
   const [daysDisabled, setDaysDisabled] = useState(true);
   const [groupId, setGroupId] = useState<any>(null);

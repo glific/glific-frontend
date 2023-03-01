@@ -59,10 +59,10 @@ const wrapperFunction = (mocks: any) => (
 
 declare global {
   interface Window {
-    showFlowEditor: any;
+    showFlowEditor: Function;
   }
 }
-window.showFlowEditor = (node: any, config: any) => jest.fn();
+window.showFlowEditor = (node: HTMLDivElement, config: any) => jest.fn();
 
 const defaultWrapper = wrapperFunction(activeFlowMocks);
 

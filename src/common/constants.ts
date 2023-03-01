@@ -29,12 +29,12 @@ export const CONTACT_STATUS = [
   { id: 'FAILED', label: 'Failed' },
 ];
 
-export const dateList: any = Array.from(Array(31), (_, i) => ({
+export const dateList = Array.from(Array(31), (_, i) => ({
   id: i + 1,
   label: (i + 1).toString(),
 }));
 
-export const hourList: any = Array.from(Array(24), (_, i) => {
+export const hourList = Array.from(Array(24), (_, i) => {
   let timeOfDay = 'AM';
   let hour = i;
   if (i > 11) {
@@ -53,7 +53,7 @@ export const hourList: any = Array.from(Array(24), (_, i) => {
   };
 });
 
-export const dayList: any = [
+export const dayList = [
   { id: 1, label: 'Monday' },
   { id: 2, label: 'Tuesday' },
   { id: 3, label: 'Wednesday' },
@@ -109,7 +109,7 @@ export const setVariables = (
   },
 });
 
-export const is24HourWindowOver = (time: any) =>
+export const is24HourWindowOver = (time: string) =>
   moment.duration(moment(new Date()).diff(moment(time))).asHours() > 24;
 
 // connection retry attempt configuration
