@@ -64,6 +64,7 @@ export const Calendar = ({
               helperText={hasError ? errorText : ''}
               data-testid="date-picker-inline"
               {...params}
+              error={hasError}
             />
           )}
         />
