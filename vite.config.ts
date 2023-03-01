@@ -60,42 +60,41 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
           cert: fs.readFileSync('../glific/priv/cert/glific.test+1.pem'),
         },
       },
-      resolve: { alias: { util: 'util/' } },
-    });
-  } else {
-    // command === 'build'
-    return defineConfig({
-      optimizeDeps: {
-        esbuildOptions: {
-          // Node.js global to browser globalThis
-          define: {
-            global: 'globalThis',
-          },
-        },
-      },
-      // build specific config
-      plugins: [react(), viteTsconfigPaths(), svgrPlugin()],
-      build: {
-        // this is needed because of this https://github.com/vitejs/vite/issues/2139#issuecomment-1405624744
-        commonjsOptions: {
-          defaultIsModuleExports(id) {
-            try {
-              const module = require(id);
-              if (module?.default) {
-                return false;
-              }
-              return 'auto';
-            } catch (error) {
-              return 'auto';
-            }
-          },
-          transformMixedEsModules: true,
-        },
-        outDir: 'build',
-        rollupOptions: {
-          plugins: [nodePolyfills('buffer', 'process')],
-        },
-      },
+      resolve: { alias: { util: 'util/', stream: 'stream-browserify' } }, // stream polyfill is needed by logflare
     });
   }
+  // command === 'build'
+  return defineConfig({
+    optimizeDeps: {
+      esbuildOptions: {
+        // Node.js global to browser globalThis
+        define: {
+          global: 'globalThis',
+        },
+      },
+    },
+    // build specific config
+    plugins: [react(), viteTsconfigPaths(), svgrPlugin()],
+    build: {
+      // this is needed because of this https://github.com/vitejs/vite/issues/2139#issuecomment-1405624744
+      commonjsOptions: {
+        defaultIsModuleExports(id) {
+          try {
+            const module = require(id);
+            if (module?.default) {
+              return false;
+            }
+            return 'auto';
+          } catch (error) {
+            return 'auto';
+          }
+        },
+        transformMixedEsModules: true,
+      },
+      outDir: 'build',
+      rollupOptions: {
+        plugins: [nodePolyfills('buffer', 'process')],
+      },
+    },
+  });
 };
