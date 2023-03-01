@@ -2,7 +2,7 @@
 /// <reference types="vite-plugin-svgr/client" />
 import { defineConfig, ConfigEnv, UserConfigExport } from 'vite';
 import react from '@vitejs/plugin-react';
-import eslint from 'vite-plugin-eslint';
+// import eslint from 'vite-plugin-eslint';
 import viteTsconfigPaths from 'vite-tsconfig-paths';
 import checker from 'vite-plugin-checker';
 import svgrPlugin from 'vite-plugin-svgr';
@@ -14,7 +14,7 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
   if (mode === 'test' && command === 'serve') {
     return defineConfig({
       // dev specific config
-      plugins: [react(), eslint(), viteTsconfigPaths(), svgrPlugin()],
+      plugins: [react(), viteTsconfigPaths(), svgrPlugin()],
 
       optimizeDeps: {
         esbuildOptions: {
@@ -43,13 +43,7 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
   if (command === 'serve') {
     return defineConfig({
       // dev specific config
-      plugins: [
-        react(),
-        eslint(),
-        viteTsconfigPaths(),
-        svgrPlugin(),
-        checker({ typescript: true }),
-      ],
+      plugins: [react(), viteTsconfigPaths(), svgrPlugin(), checker({ typescript: true })],
       optimizeDeps: {
         esbuildOptions: {
           // Node.js global to browser globalThis

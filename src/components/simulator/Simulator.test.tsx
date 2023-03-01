@@ -61,7 +61,7 @@ test('simulator should open on click of simulator icon', async () => {
 
 test('opened simulator should close when click of simulator icon', async () => {
   const props = getDefaultProps();
-  const mockOpenSimulator = jest.fn();
+  const mockOpenSimulator = vi.fn();
   props.showSimulator = true;
   props.setSimulatorId = mockOpenSimulator;
   const { getByTestId } = render(
