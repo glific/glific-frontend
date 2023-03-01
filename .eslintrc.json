@@ -3,16 +3,7 @@
   "plugins": ["prettier", "@typescript-eslint"],
   "parser": "@typescript-eslint/parser",
   "rules": {
-    "prettier/prettier": [
-      "error",
-      {
-        "semi": true,
-        "printWidth": 100,
-        "singleQuote": true,
-        "tabWidth": 2,
-        "endOfLine": "auto"
-      }
-    ],
+    "prettier/prettier": ["error"],
     "react/jsx-filename-extension": [
       1,
       {
