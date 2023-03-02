@@ -28,7 +28,7 @@
 }
 
 .Wrapper :global(.MuiFormControlLabel-label) {
-  color: #93a29b;
+  color: #93a29b !important;
   padding: 10px 0px;
   line-height: 1.2;
   font-size: 14px;
