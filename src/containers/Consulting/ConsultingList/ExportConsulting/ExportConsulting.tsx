@@ -70,13 +70,13 @@ export const ExportConsulting = ({ setFilters }: ExportConsultingPropTypes) => {
     organization: Yup.object().test(
       'organization',
       'Organization is required',
-      (val) => val.name !== undefined
+      (val: any) => val.name !== undefined
     ),
 
-    dateTo: Yup.string().when('dateFrom', (startDateValue: any, schema: any) =>
+    dateTo: Yup.string().when('dateFrom', ([dateFrom], schema: any) =>
       schema.test({
         test: (endDateValue: any) =>
-          !(startDateValue !== undefined && !moment(endDateValue).isAfter(startDateValue)),
+          !(dateFrom !== undefined && !moment(endDateValue).isAfter(dateFrom)),
         message: t('End date should be greater than the start date'),
       })
     ),
