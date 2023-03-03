@@ -194,7 +194,7 @@ export const Trigger = () => {
     endDate: Yup.string()
       .nullable()
       .required(t('End date is required'))
-      .when('startDate', (startDateValue: any, schema: any) =>
+      .when('startDate', ([startDateValue], schema: any) =>
         schema.test({
           test: (endDateValue: any) =>
             startDateValue && moment(endDateValue).isAfter(startDateValue),
