@@ -1721,10 +1721,10 @@
   resolved "https://registry.yarnpkg.com/@eslint/js/-/js-8.35.0.tgz#b7569632b0b788a0ca0e438235154e45d42813a7"
   integrity sha512-JXdzbRiWclLVoD8sNUjR443VVlYqiYmDVT6rGUEIEHU5YJW0gaVZwV2xgM7D4arkvASqD0IlLUVjHiFuxaftRw==
 
-"@glific/flow-editor@^1.19.1-1":
-  version "1.19.1-1"
-  resolved "https://registry.yarnpkg.com/@glific/flow-editor/-/flow-editor-1.19.1-1.tgz#d970491bb3265ccbf2900ed81c4a07e373d43123"
-  integrity sha512-gvXeHwMVW3pSRK4tveNZw+Bx9LsPme+SLC14nDPEQt5CyxqbauK7LJ9H6I+NbLzSrxkLMFU8xqEcAUFnJ3KMOA==
+"@glific/flow-editor@^1.19.1":
+  version "1.19.1"
+  resolved "https://registry.yarnpkg.com/@glific/flow-editor/-/flow-editor-1.19.1.tgz#5c2e389ee68b59f05ac67d3c5bc3c3acd4945ec6"
+  integrity sha512-zNP2yy2qEVMxeTLUgGq8eI1MKODggwirK+/a3iy2xDRmL2w5d0vqFh8+wOH6lE9VXhk0Bxf/uhC8ywabQQPC3Q==
   dependencies:
     react "^16.8.6"
     react-dom "^16.8.6"
