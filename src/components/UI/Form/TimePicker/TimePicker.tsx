@@ -58,6 +58,7 @@ export const TimePicker = ({
               data-testid="time-picker"
               helperText={hasError ? errorText : ''}
               {...params}
+              error={hasError}
             />
           )}
         />

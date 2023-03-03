@@ -50,7 +50,7 @@ const SavedSearches = () => {
 
   const label = (
     <div className={styles.SearchIcon}>
-      <img src={searchIcon} alt="Search" /> {t('Search')}
+      <img src={searchIcon} alt="Search" className={styles.Search} /> {t('Search')}
     </div>
   );
 

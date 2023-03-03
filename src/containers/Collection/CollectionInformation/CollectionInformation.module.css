@@ -3,13 +3,12 @@
   font-size: 12px;
   line-height: 10px;
   color: #cacaca;
-  display: flex;
   align-items: center;
   margin-bottom: 5px;
 }
 
 .SessionInfo {
-  padding: 0px 5px;
+  padding-top: 8px;
 }
 
 .SessionCount {
@@ -47,6 +46,17 @@
 
 .Count:not(:empty) ~ .Count:not(:empty):before {
   content: ', ';
+}
+
+.Heading {
+  font-size: 0.875rem;
+  color: #93a29b;
+}
+
+.MessageInfo {
+  display: flex;
+  gap: 20px;
+  margin-top: 10px;
 }
 
 @media only screen and (max-width: 768px) {
