@@ -201,6 +201,7 @@ export const getAddOrRemoveRoleIds = (roles: any, payload: any) => {
   return { ...rest, addRoleIds, deleteRoleIds };
 };
 
-export const isMidWidth = () => window.innerWidth > 1280;
+// lg breakpoint is 1200px for MUI
+export const isGreaterThanLgBreakpoint = () => window.innerWidth > 1200;
 
 export default getObject;

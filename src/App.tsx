@@ -11,14 +11,14 @@ import { checkAuthStatusService } from 'services/AuthService';
 import { UnauthenticatedRoute } from 'routes/UnauthenticatedRoute/UnauthenticatedRoute';
 import { AuthenticatedRoute } from 'routes/AuthenticatedRoute/AuthenticatedRoute';
 import { Logout } from 'containers/Auth/Logout/Logout';
-import { isMidWidth } from 'common/utils';
+import { isGreaterThanLgBreakpoint } from 'common/utils';
 
 const App = () => {
   const navigate = useNavigate();
   // by default, do not assign any value to assume login or logout
   // let's checkAuthStatusService allocate it on useEffect
   const [authenticated, setAuthenticated] = useState<any>();
-  const [drawerOpen, setDrawerOpen] = useState(isMidWidth());
+  const [drawerOpen, setDrawerOpen] = useState(isGreaterThanLgBreakpoint());
 
   useEffect(() => {
     setAuthenticated(checkAuthStatusService());
