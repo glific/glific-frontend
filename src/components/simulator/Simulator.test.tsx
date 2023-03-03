@@ -4,6 +4,8 @@ import { SEARCH_QUERY } from 'graphql/queries/Search';
 import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT } from 'common/constants';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import { conversationQuery } from 'mocks/Chat';
+import { setUserSession } from 'services/AuthService';
+import axios from 'axios';
 import {
   messageReceivedSubscription,
   messageSendSubscription,
@@ -13,8 +15,6 @@ import {
   simulatorSearchQuery,
 } from 'mocks/Simulator';
 import { Simulator } from './Simulator';
-import axios from 'axios';
-import { setUserSession } from 'services/AuthService';
 
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -165,7 +165,7 @@ const body = {
   flowLabel: null,
 };
 const cache = new InMemoryCache({ addTypename: false });
-export const searchQuery = {
+const searchQuery = {
   query: SEARCH_QUERY,
   variables: {
     filter: {},
@@ -195,7 +195,7 @@ export const searchQuery = {
 
 cache.writeQuery(searchQuery);
 const client = new ApolloClient({
-  cache: cache,
+  cache,
   assumeImmutableResults: true,
 });
 

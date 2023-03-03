@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, Dispatch, SetStateAction } from 'react';
 import { useApolloClient, useLazyQuery, useSubscription } from '@apollo/client';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { Button, ClickAwayListener } from '@mui/material';
@@ -57,13 +57,13 @@ import styles from './Simulator.module.css';
 
 export interface SimulatorProps {
   showSimulator: boolean;
-  setSimulatorId: any;
+  setSimulatorId?: Dispatch<SetStateAction<number>>;
   simulatorIcon?: boolean;
   message?: any;
   flowSimulator?: boolean;
   isPreviewMessage?: boolean;
-  resetMessage?: Function;
-  getFlowKeyword?: Function;
+  resetMessage?(): void;
+  getFlowKeyword?(): void;
   interactiveMessage?: any;
   showHeader?: boolean;
   hasResetButton?: boolean;
@@ -137,7 +137,7 @@ export const Simulator = ({
 
   const client = useApolloClient();
   // Template listing
-  const [isDrawerOpen, setIsDrawerOpen] = useState<Boolean>(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
   const [selectedListTemplate, setSelectedListTemplate] = useState<any>(null);
 
   const [allConversations, setAllConversations] = useState<any>({});
@@ -220,15 +220,19 @@ export const Simulator = ({
   });
 
   useEffect(() => {
-    if (simulatorSubscribe) {
-      try {
-        const userId = JSON.parse(simulatorSubscribe.simulatorRelease).simulator_release.user_id;
-        if (userId.toString() === getUserSession('id')) {
+    if (!simulatorSubscribe) {
+      return;
+    }
+
+    try {
+      const userId = JSON.parse(simulatorSubscribe.simulatorRelease).simulator_release.user_id;
+      if (userId.toString() === getUserSession('id')) {
+        if (setSimulatorId) {
           setSimulatorId(0);
         }
-      } catch (error) {
-        setLogs('simulator release error', 'error');
       }
+    } catch (error) {
+      setLogs('simulator release error', 'error');
     }
   }, [simulatorSubscribe]);
 
@@ -246,7 +250,9 @@ export const Simulator = ({
 
   const releaseUserSimulator = () => {
     releaseSimulator();
-    setSimulatorId(0);
+    if (setSimulatorId) {
+      setSimulatorId(0);
+    }
   };
 
   const handleOpenListReplyDrawer = (items: any) => {
@@ -280,7 +286,7 @@ export const Simulator = ({
     messageObject: any,
     direction: string,
     index: number,
-    isInteractive: boolean = false
+    isInteractive = false
   ) => {
     const { insertedAt, type, media, location, interactiveContent, bspMessageId, templateType } =
       messageObject;
@@ -587,7 +593,9 @@ export const Simulator = ({
             })
             .then(({ data: searchData }: any) => {
               setAllConversations(searchData);
-              setSimulatorId(simulatorData.simulatorGet.id);
+              if (setSimulatorId) {
+                setSimulatorId(simulatorData.simulatorGet.id);
+              }
               if (searchData?.search.length > 0) {
                 sendMessage({
                   name: searchData.search[0].contact.name,

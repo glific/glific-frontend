@@ -29,6 +29,7 @@ customElements.define = checkElementInRegistry(customElements.define);
 export const FlowEditor = () => {
   const params = useParams();
   const { uuid } = params;
+
   const navigate = useNavigate();
   const [publishDialog, setPublishDialog] = useState(false);
   const [simulatorId, setSimulatorId] = useState(0);
@@ -42,7 +43,7 @@ export const FlowEditor = () => {
   const [showResetFlowModal, setShowResetFlowModal] = useState(false);
   const [lastLocation, setLastLocation] = useState<Location | null>(null);
   const [confirmedNavigation, setConfirmedNavigation] = useState(false);
-  const [flowValidation, setFlowValidation] = useState<any>();
+  const [flowValidation, setFlowValidation] = useState<Array<Error>>([]);
   const [IsError, setIsError] = useState(false);
   const [flowKeyword, setFlowKeyword] = useState('');
   const [currentEditDialogBox, setCurrentEditDialogBox] = useState(false);
@@ -120,7 +121,7 @@ export const FlowEditor = () => {
   const closeModal = () => {
     setModalVisible(false);
   };
-  // eslint-disable-next-line no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleBlockedNavigation = (nextLocation: any): boolean => {
     if (!confirmedNavigation) {
       setModalVisible(true);
@@ -212,7 +213,7 @@ export const FlowEditor = () => {
           }
         });
         // clearing all timeouts when component unmounts
-        const highestTimeoutId: any = setTimeout(() => {});
+        const highestTimeoutId = setTimeout(() => undefined) as unknown as number;
         for (let timeoutId = 0; timeoutId < highestTimeoutId; timeoutId += 1) {
           clearTimeout(timeoutId);
         }
@@ -221,7 +222,7 @@ export const FlowEditor = () => {
         window.fetch = fetch;
       };
     }
-    return () => {};
+    return () => undefined;
   }, [flowId]);
 
   const handlePublishFlow = () => {
@@ -231,14 +232,14 @@ export const FlowEditor = () => {
   const handleCancelFlow = () => {
     setPublishDialog(false);
     setIsError(false);
-    setFlowValidation('');
+    setFlowValidation([]);
   };
 
   const errorMsg = () => (
     <div className={styles.DialogError}>
       Errors were detected in the flow. Would you like to continue modifying?
       <div>
-        {flowValidation.map((message: any) => (
+        {flowValidation.map((message: Error) => (
           <div key={message.message}>
             <WarningIcon className={styles.ErrorMsgIcon} />
             {message.message}
