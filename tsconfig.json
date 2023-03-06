@@ -7,7 +7,7 @@
       "vite-plugin-svgr/client"
     ],
     "typeRoots": ["./src/types"],
-    "target": "es2022",
+    "target": "ESNext",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "allowJs": false,
     "skipLibCheck": true,
