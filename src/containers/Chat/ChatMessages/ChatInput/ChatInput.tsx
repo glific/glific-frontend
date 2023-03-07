@@ -189,7 +189,7 @@ export const ChatInput = ({
     );
   };
 
-  const emojiStyles: any = {
+  const emojiStyles = {
     position: 'absolute',
     bottom: '60px',
     right: '-150px',

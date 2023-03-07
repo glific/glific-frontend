@@ -14,7 +14,7 @@ interface WhatsAppEditorProps {
   readOnly?: boolean;
 }
 
-export const updatedValue = (input: any, editorState: any, isEmoji: boolean = false) => {
+export const updatedValue = (input: any, editorState: EditorState, isEmoji: boolean = false) => {
   const editorContentState = editorState.getCurrentContent();
   const editorSelectionState: any = editorState.getSelection();
   const ModifiedContent = Modifier.replaceText(
