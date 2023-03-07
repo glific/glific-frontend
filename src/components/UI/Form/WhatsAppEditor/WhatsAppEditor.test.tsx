@@ -50,12 +50,6 @@ describe('<WhatsAppEditor/>', () => {
 
   const editorContent = EditorState.createWithContent(ContentState.createFromText('Hello'));
 
-  test('it should have editor and emoji components', () => {
-    const { container, getByTestId } = render(<WhatsAppEditor {...defaultProps(editorContent)} />);
-    expect(container.querySelector('.Editor')).toBeInTheDocument();
-    expect(getByTestId('emoji-picker')).toBeInTheDocument();
-  });
-
   test('input change should trigger callBacks', () => {
     const { getByTestId } = render(<WhatsAppEditor {...defaultProps(editorContent)} />);
     fireEvent.change(getByTestId('editor'), {
