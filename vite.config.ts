@@ -93,8 +93,9 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
       },
       outDir: 'build',
       rollupOptions: {
-        plugins: [nodePolyfills('buffer', 'process', 'stream')],
+        plugins: [nodePolyfills('buffer', 'process')],
       },
+      resolve: { alias: { util: 'util/', stream: 'stream-browserify' } },
     },
   });
 };
