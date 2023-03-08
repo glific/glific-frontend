@@ -93,7 +93,7 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
       },
       outDir: 'build',
       rollupOptions: {
-        plugins: [nodePolyfills('buffer', 'process')],
+        plugins: [nodePolyfills('buffer', 'process', 'stream')],
       },
     },
   });
