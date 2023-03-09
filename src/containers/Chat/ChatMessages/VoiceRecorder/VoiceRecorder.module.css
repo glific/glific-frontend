@@ -1,16 +1,9 @@
 .VoiceRecorder {
-}
-
-.RecorderIcon {
-  position: absolute !important;
-  bottom: 7px;
-  right: 164px;
+  display: flex;
 }
 
 .AudioPlayerSection {
   display: flex;
-  margin-top: 10px;
-  margin-right: 173px;
   align-items: center;
 }
 
@@ -35,12 +28,4 @@
 .MicIcon {
   height: 24px;
   width: 24px;
-}
-
-@media only screen and (max-width: 1024px) {
-  .RecorderIcon {
-    position: absolute !important;
-    bottom: -5%;
-    right: 40%;
-  }
 }
