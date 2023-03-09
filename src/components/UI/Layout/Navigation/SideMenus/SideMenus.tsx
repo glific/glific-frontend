@@ -39,14 +39,10 @@ const SideMenus = ({ opened }: SideMenusProps) => {
   }, []);
 
   // let's get count specific to menu paths
-  const getCount = (menuPath: any) => {
-    if (menuPath === '/notifications') {
-      // get menu notification count
-      return notificationCount;
-    }
+  // we should check for menu path if we have badges for other items.
+  // For now we have only one badge for notifications so returning that only
 
-    return 0;
-  };
+  const getCount = () => notificationCount;
 
   const menuObj: any[] = getSideDrawerMenus();
 
@@ -74,7 +70,7 @@ const SideMenus = ({ opened }: SideMenusProps) => {
         <ListItemIcon className={styles.ListItemIcon}>
           <ListIcon
             icon={menu.icon}
-            count={menu.badge ? getCount(menu.path) : 0}
+            count={menu.badge ? getCount() : 0}
             showBadge={menu.badge ? menu.badge : false}
           />
         </ListItemIcon>

@@ -35,7 +35,6 @@ export interface AutocompleteProps {
   noOptionsText?: any;
   onChange?: any;
   asyncSearch?: boolean;
-  roleSelection?: any;
   openOptions?: boolean;
   disableClearable?: boolean;
   listBoxProps?: any;
@@ -64,7 +63,6 @@ export const AutoComplete = ({
   autoSelect = false,
   getOptions,
   asyncValues,
-  roleSelection,
   onChange,
   asyncSearch = false,
   helpLink,
@@ -122,12 +120,6 @@ export const AutoComplete = ({
     return option;
   };
 
-  /**
-   *
-   * @param value Callback value
-   * @param getTagProps Render tag props
-   *
-   */
   const getRenderTags = (value: Array<any>, getTagProps: any) => {
     let tagsToRender = value;
 
@@ -138,6 +130,7 @@ export const AutoComplete = ({
      * only post selected options will be visible
 
      */
+
     if (!renderTags) {
       tagsToRender = value.filter((option: any) => !selectedOptionsIds.includes(option.id));
     }
@@ -145,10 +138,6 @@ export const AutoComplete = ({
     return tagsToRender.map((option: any, index: number) => {
       const props = getTagProps({ index });
 
-      /**
-       * If disableClearable is true, removing onDelete event
-       * deleteIcon component will be disabled, when onDelete is absent
-       */
       if (disableClearable) {
         delete props.onDelete;
       }
@@ -185,25 +174,12 @@ export const AutoComplete = ({
             option[optionLabel] != null ? option[optionLabel] : option
           }
           getOptionDisabled={getOptionDisabled}
-          isOptionEqualToValue={(option, value) => {
-            if (value) {
-              return option[valueElementName] === value[valueElementName];
-            }
-            return false;
-          }}
-          onChange={(event, value: any) => {
-            if (roleSelection) {
-              roleSelection(value);
-            }
+          isOptionEqualToValue={(option, value) =>
+            option[valueElementName] === value[valueElementName]
+          }
+          onChange={(_event, value: any) => {
             if (asyncSearch && value.length > 0) {
-              const filterValues = asyncValues.value.filter(
-                (val: any) => val.id !== value[value.length - 1].id
-              );
-              if (filterValues.length === value.length - 2) {
-                asyncValues.setValue(filterValues);
-              } else {
-                asyncValues.setValue([...value]);
-              }
+              asyncValues.setValue([...value]);
               setSearchTerm('');
               onChange('');
             } else if (asyncSearch && value.length === 0) {

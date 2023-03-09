@@ -44,7 +44,6 @@ export const TimePicker = ({
         <Picker
           className={styles.Picker}
           label={placeholder}
-          mask="__:__ _M"
           open={open}
           InputProps={{
             error: hasError,
@@ -59,6 +58,7 @@ export const TimePicker = ({
               data-testid="time-picker"
               helperText={hasError ? errorText : ''}
               {...params}
+              error={hasError}
             />
           )}
         />

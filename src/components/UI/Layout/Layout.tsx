@@ -23,6 +23,7 @@ export const Layout = ({ children }: LayoutProps) => {
           <img src={GlificLogo} className={styles.GlificLogo} alt="Glific" />
           <span
             aria-hidden
+            data-testid="menu-icon"
             className={styles.MenuIcon}
             onClick={() => {
               setDrawerOpen(true);

@@ -103,7 +103,7 @@ export const Providers = () => {
       .nullable()
       .when('isActive', {
         is: true,
-        then: Yup.string().nullable().required(`${fields[key].label} is required.`),
+        then: (schema) => schema.nullable().required(`${fields[key].label} is required.`),
       });
     FormSchema = Yup.object().shape(validation);
   };

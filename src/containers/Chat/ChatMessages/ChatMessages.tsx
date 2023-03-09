@@ -131,6 +131,16 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
     fetchPolicy: 'cache-only',
   });
 
+  useEffect(() => {
+    const clickListener = () => setShowDropdown(null);
+    if (showDropdown) {
+      window.addEventListener('click', clickListener, true);
+    }
+    return () => {
+      window.removeEventListener('click', clickListener);
+    };
+  }, [showDropdown]);
+
   const scrollToMessage = (messageNumberToScroll: any) => {
     setTimeout(() => {
       const scrollElement = document.querySelector(`#search${messageNumberToScroll}`);
@@ -603,6 +613,7 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
             )}
           </div>
         )}
+
         {messageList}
       </Container>
     );

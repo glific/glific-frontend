@@ -76,6 +76,7 @@
 }
 
 .LoadMoreButton {
+  font-size: 0.875rem;
   margin-bottom: 10px !important;
   margin: 0 auto;
   cursor: pointer;
@@ -91,6 +92,7 @@
 }
 
 .JumpToLatest {
+  font-size: 0.875rem;
   cursor: pointer;
   position: relative;
   display: flex;
@@ -103,7 +105,7 @@
   color: #edf6f2;
   border-radius: 12px 12px 0 0;
   z-index: 100;
-  margin-top: 5px;
+  margin-top: 1px;
   width: fit-content;
 }
 

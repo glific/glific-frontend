@@ -34,7 +34,9 @@ export const Calendar = ({
 
   const handleDateChange = (date: Date | null | string) => {
     if (date) {
-      if (date !== 'Invalid Date') setFieldValue(field.name, date);
+      if (date.toString() !== 'Invalid Date') {
+        setFieldValue(field.name, date);
+      }
     } else {
       setFieldValue(field.name, null);
     }
@@ -62,6 +64,7 @@ export const Calendar = ({
               helperText={hasError ? errorText : ''}
               data-testid="date-picker-inline"
               {...params}
+              error={hasError}
             />
           )}
         />

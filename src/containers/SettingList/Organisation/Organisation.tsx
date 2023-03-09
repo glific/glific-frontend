@@ -228,7 +228,7 @@ export const Organisation = () => {
       .nullable()
       .when('newcontactFlowEnabled', {
         is: (val: string) => val,
-        then: Yup.object().nullable().required(t('New contact flow is required.')),
+        then: (schema) => schema.nullable().required(t('New contact flow is required.')),
       }),
   };
 
