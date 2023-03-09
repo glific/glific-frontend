@@ -89,21 +89,23 @@ export const ConversationList = ({
     }
   });
 
-  // reset offset value on saved search changes
-  useEffect(() => {
-    if (savedSearchCriteriaId) {
-      setLoadingOffset(DEFAULT_CONTACT_LIMIT + 10);
-    }
-  }, [savedSearchCriteriaId]);
-
   const {
     loading: conversationLoading,
     error: conversationError,
     data,
+    refetch,
   } = useQuery<any>(SEARCH_QUERY, {
     variables: queryVariables,
     fetchPolicy: 'cache-only',
   });
+
+  // reset offset value on saved search changes
+  useEffect(() => {
+    if (savedSearchCriteriaId) {
+      setLoadingOffset(DEFAULT_CONTACT_LIMIT);
+      refetch(queryVariables);
+    }
+  }, [savedSearchCriteriaId]);
 
   const filterVariables = () => {
     if (savedSearchCriteria && Object.keys(searchParam).length === 0) {
