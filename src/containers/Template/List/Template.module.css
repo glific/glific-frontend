@@ -75,3 +75,19 @@
 .Input {
   display: inline;
 }
+
+.HelperText {
+  position: absolute;
+  bottom: -20px;
+  left: 40px;
+  color: green;
+  font-weight: 500;
+  font-size: 0.75rem;
+  border-bottom: 1px dashed green;
+  display: inline;
+  text-decoration: none !important;
+}
+
+.ImportButton {
+  position: relative;
+}

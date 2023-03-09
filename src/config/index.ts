@@ -58,3 +58,5 @@ export const CONTACT_MANAGE_HELP_LINK =
   'https://glific.slab.com/public/posts/update-collection-with-bulk-contacts-or-contact-fields-yn8l1ggr';
 export const SAMPLE_SHEET_LINK =
   'https://docs.google.com/spreadsheets/d/1fRpFyicqrUFxd79u_dGC8UOHEtAT3rA-G2i4tvOgScw';
+export const BULK_APPLY_SAMPLE_LINK =
+  'https://docs.google.com/spreadsheets/d/1x04wI9palh1Ag11TrdBbUj9pnyNOw8-I4834qN3idik';
