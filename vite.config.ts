@@ -95,7 +95,7 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
       rollupOptions: {
         plugins: [nodePolyfills('buffer', 'process')],
       },
-      resolve: { alias: { util: 'util/', stream: 'stream-browserify' } },
     },
+    resolve: { alias: { util: 'util/', stream: 'stream-browserify' } },
   });
 };
