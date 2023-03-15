@@ -2,11 +2,12 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router';
 import axios from 'axios';
+import { vi } from 'vitest';
 
 import { ResetPasswordPhone } from './ResetPasswordPhone';
 
-jest.mock('axios');
-const mockedAxios = axios as jest.Mocked<typeof axios>;
+vi.mock('axios');
+const mockedAxios = axios as any;
 
 const wrapper = (
   <MemoryRouter>
@@ -16,7 +17,7 @@ const wrapper = (
 
 describe('<ResetPasswordPhone />', () => {
   beforeEach(() => {
-    jest.resetAllMocks();
+    vi.resetAllMocks();
   });
 
   test('it should render correctly', async () => {

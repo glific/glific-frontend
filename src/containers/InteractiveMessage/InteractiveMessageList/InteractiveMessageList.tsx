@@ -15,7 +15,11 @@ import { QUICK_REPLY } from 'common/constants';
 import { useNavigate } from 'react-router-dom';
 import styles from './InteractiveMessageList.module.css';
 
-const getLabel = (text: string) => <p className={styles.LabelText}>{text}</p>;
+const getLabel = (text: string) => (
+  <p data-testid="label" className={styles.LabelText}>
+    {text}
+  </p>
+);
 
 const getType = (text: string) => {
   let type = '';

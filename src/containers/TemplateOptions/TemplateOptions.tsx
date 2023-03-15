@@ -148,7 +148,10 @@ export const TemplateOptions = ({
               </div>
               <div>
                 {inputFields.length > 1 ? (
-                  <DeleteIcon onClick={() => handleRemoveClick(arrayHelpers, index)} />
+                  <DeleteIcon
+                    onClick={() => handleRemoveClick(arrayHelpers, index)}
+                    data-testid="delete-icon"
+                  />
                 ) : null}
               </div>
             </div>
@@ -222,6 +225,7 @@ export const TemplateOptions = ({
                     <CrossIcon
                       className={styles.RemoveIcon}
                       title="Remove"
+                      data-testid="cross-icon"
                       onClick={() => handleRemoveClick(arrayHelpers, index)}
                     />
                   ),

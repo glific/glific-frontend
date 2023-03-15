@@ -16,6 +16,7 @@ import { UPLOAD_MEDIA } from 'graphql/mutations/Chat';
 import { ReactComponent as CrossIcon } from 'assets/images/icons/Cross.svg';
 import { ReactComponent as UploadIcon } from 'assets/images/icons/Upload.svg';
 import { ReactComponent as AlertIcon } from 'assets/images/icons/Alert/Red.svg';
+import { setNotification } from 'common/notification';
 import styles from './AddAttachment.module.css';
 
 const options = MEDIA_MESSAGE_TYPES.map((option: string) => ({
@@ -56,7 +57,9 @@ export const AddAttachment = ({
       setUploading(false);
     },
     onError: () => {
+      setFileName(null);
       setUploading(false);
+      setNotification(t('An error occured while uploading the file'), 'warning');
     },
   });
 

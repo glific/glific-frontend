@@ -11,19 +11,17 @@ import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
 import { Input } from 'components/UI/Form/Input/Input';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { GET_CONTACT } from 'graphql/queries/Contact';
-import { CREATE_CONTACT, UPDATE_CONTACT, DELETE_CONTACT } from 'graphql/mutations/Contact';
+import {
+  CREATE_CONTACT,
+  UPDATE_CONTACT,
+  DELETE_CONTACT,
+  DELETE_CONTACT_PROFILE,
+} from 'graphql/mutations/Contact';
 import { GET_CURRENT_USER } from 'graphql/queries/User';
 import { getOrganizationServices } from 'services/AuthService';
 import { isSimulator } from 'common/utils';
 
 const profileIcon = <ProfileIcon />;
-
-const queries = {
-  getItemQuery: GET_CONTACT,
-  createItemQuery: CREATE_CONTACT,
-  updateItemQuery: UPDATE_CONTACT,
-  deleteItemQuery: DELETE_CONTACT,
-};
 
 export interface ProfileProps {
   profileType: string;
@@ -48,13 +46,21 @@ export const Profile = ({
   const [hideRemoveBtn, setHideRemoveBtn] = useState(false);
   const { t } = useTranslation();
   const isContactProfileEnabled = getOrganizationServices('contactProfileEnabled');
+  const hasMultipleProfiles = multiProfileAttributes?.selectedProfile;
+
+  const queries = {
+    getItemQuery: GET_CONTACT,
+    createItemQuery: CREATE_CONTACT,
+    updateItemQuery: UPDATE_CONTACT,
+    deleteItemQuery: hasMultipleProfiles ? DELETE_CONTACT_PROFILE : DELETE_CONTACT,
+  };
 
   const params = useParams();
 
   const { data, loading } = useQuery(GET_CURRENT_USER);
 
   const updateName = () => {
-    if (!isContactProfileEnabled || !multiProfileAttributes?.selectedProfile) {
+    if (!isContactProfileEnabled || !hasMultipleProfiles) {
       return;
     }
     const { selectedProfile } = multiProfileAttributes;
@@ -71,7 +77,7 @@ export const Profile = ({
   };
 
   useEffect(() => {
-    if (multiProfileAttributes?.selectedProfile) {
+    if (hasMultipleProfiles) {
       const { selectedProfile } = multiProfileAttributes;
       setLanguageId(selectedProfile?.language?.id);
       updateName();
@@ -157,7 +163,7 @@ export const Profile = ({
     },
   ];
 
-  if (isContactProfileEnabled && multiProfileAttributes?.selectedProfile) {
+  if (isContactProfileEnabled && hasMultipleProfiles) {
     formFields.splice(0, 0, multiProfileAttributes);
   }
 
@@ -168,7 +174,9 @@ export const Profile = ({
     pageTitle = t('My Profile');
   }
 
-  const dialogMessage = t("You won't be able to send the messages to this contact.");
+  const dialogMessage = hasMultipleProfiles
+    ? t("You won't be able to send messages to this profile.")
+    : t("You won't be able to send messages to this contact.");
 
   return (
     <FormLayout
@@ -176,7 +184,7 @@ export const Profile = ({
       states={states}
       setStates={setStates}
       validationSchema={FormSchema}
-      listItemName="Contact"
+      listItemName={hasMultipleProfiles ? 'Contact profile' : 'Contact'}
       dialogMessage={dialogMessage}
       formFields={formFields}
       redirectionLink={redirectionLink}
@@ -184,9 +192,9 @@ export const Profile = ({
       icon={profileIcon}
       afterDelete={afterDelete}
       type={type}
-      languageAttributes={multiProfileAttributes?.selectedProfile ? { disabled: true } : {}}
+      languageAttributes={hasMultipleProfiles ? { disabled: true } : {}}
       title={pageTitle}
-      entityId={currentContactId}
+      entityId={hasMultipleProfiles ? multiProfileAttributes?.selectedProfileId : currentContactId}
       restrictDelete={hideRemoveBtn}
     />
   );

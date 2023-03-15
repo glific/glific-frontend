@@ -1,23 +1,22 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
+    "types": [
+      "vitest/globals",
+      "vite/client",
+      "@testing-library/jest-dom",
+      "vite-plugin-svgr/client"
     ],
-    "typeRoots": [
-      "./src/types",
-      "./node_modules/@types"
-    ],
-    "allowJs": true,
+    "typeRoots": ["./src/types"],
+    "target": "ESNext",
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "allowJs": false,
     "skipLibCheck": true,
-    "esModuleInterop": true,
+    "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "module": "esnext",
-    "moduleResolution": "node",
+    "module": "es2022",
+    "moduleResolution": "Node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
@@ -25,10 +24,5 @@
     "noFallthroughCasesInSwitch": true,
     "baseUrl": "src"
   },
-  "include": [
-    "src"
-  ],
-  "exclude": [
-    "./src/types"
-  ]
+  "include": ["src"]
 }

@@ -103,6 +103,7 @@ export const ListReplyTemplate = ({
           {inputFields.length > 1 && (
             <DeleteIcon
               title="Remove"
+              data-testid="delete-icon"
               className={styles.ListDeleteIcon}
               onClick={onListRemoveClick}
             />
@@ -160,6 +161,7 @@ export const ListReplyTemplate = ({
                               endAdornment: itemIndex !== 0 && showDeleteIcon && (
                                 <CrossIcon
                                   title="Remove"
+                                  data-testid="cross-icon"
                                   className={styles.ListDeleteIcon}
                                   onClick={() => handleRemoveListItem(arrayHelpers, itemIndex)}
                                 />

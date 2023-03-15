@@ -101,7 +101,7 @@ describe('<List /> actions', () => {
     });
 
     await waitFor(() => {
-      expect(container.querySelector('div.ItemAdd')).toBeInTheDocument();
+      expect(screen.getByTestId('add-container')).toBeInTheDocument();
     });
   });
 
@@ -155,7 +155,7 @@ describe('DialogMessage tests', () => {
       );
       return {
         component,
-        handleOkCallback: jest.fn(),
+        handleOkCallback: vi.fn(),
         isConfirmed: true,
       };
     };
@@ -165,13 +165,13 @@ describe('DialogMessage tests', () => {
         icon: ApprovedIcon,
         parameter: 'id',
         label: 'Approve',
-        button: () => <button onClick={() => jest.fn()}>Approve</button>,
+        button: () => <button onClick={() => vi.fn()}>Approve</button>,
       },
       {
         icon: ActivateIcon,
         parameter: 'id',
         label: 'Activate',
-        button: () => <button onClick={() => jest.fn()}>Activate</button>,
+        button: () => <button onClick={() => vi.fn()}>Activate</button>,
       },
     ];
 

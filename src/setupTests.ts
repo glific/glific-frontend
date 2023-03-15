@@ -1,14 +1,20 @@
-// jest-dom adds custom jest matchers for asserting on DOM nodes.
-// allows you to do things like:
-// expect(element).toHaveTextContent(/react/i)
-// learn more: https://github.com/testing-library/jest-dom
-
-import '@testing-library/jest-dom/extend-expect';
+import { vi } from 'vitest';
 import { TextEncoder, TextDecoder } from 'util';
+import { expect } from 'vitest';
+import matchers from '@testing-library/jest-dom/matchers';
+import '@testing-library/jest-dom/extend-expect';
 
-process.env.REACT_APP_WEB_SOCKET = 'ws://localhost/socket';
+expect.extend(matchers);
+import { cleanup } from '@testing-library/react';
 
-jest.mock('react-media-recorder', () => {
+// runs a cleanup after each test case (e.g. clearing jsdom)
+afterEach(() => {
+  cleanup();
+});
+
+import.meta.env.VITE_WEB_SOCKET = 'ws://localhost/socket';
+
+vi.mock('react-media-recorder', () => {
   return {
     useReactMediaRecorder: () => {
       return {
@@ -23,8 +29,8 @@ jest.mock('react-media-recorder', () => {
   };
 });
 
-jest.mock('react-i18next', () => {
-  const reactI18next = jest.requireActual('react-i18next');
+vi.mock('react-i18next', async () => {
+  const reactI18next = await vi.importActual<any>('react-i18next');
   return {
     // this mock makes sure any components using the translate hook can use it without a warning being shown
     useTranslation: () => {
@@ -46,9 +52,10 @@ class ResizeObserver {
 }
 
 window.ResizeObserver = ResizeObserver;
+window.HTMLDocument = Document;
 
-global.URL.createObjectURL = jest.fn();
+global.URL.createObjectURL = vi.fn();
 
 // fixes TextEncoder error while running tests
 global.TextEncoder = TextEncoder;
-global.TextDecoder = TextDecoder;
+global.TextDecoder = TextDecoder as any;

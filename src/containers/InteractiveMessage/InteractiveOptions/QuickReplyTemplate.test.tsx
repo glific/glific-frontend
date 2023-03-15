@@ -16,9 +16,9 @@ const props: any = {
   index: 0,
   inputFields,
   form,
-  onAddClick: jest.fn(),
-  onRemoveClick: jest.fn(),
-  onInputChange: jest.fn(),
+  onAddClick: vi.fn(),
+  onRemoveClick: vi.fn(),
+  onInputChange: vi.fn(),
 };
 
 test('it should render template', async () => {
@@ -47,7 +47,7 @@ test('it should render template with error', async () => {
   props.form = errorForm;
   render(<QuickReplyTemplate {...props} />);
 
-  const button = screen.getByText('Cross.svg');
+  const button = screen.getByTestId('cross-icon');
   expect(button).toBeInTheDocument();
 
   fireEvent.click(button);

@@ -1,6 +1,7 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { render, waitFor, fireEvent } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import { vi } from 'vitest';
 
 import { getOrganizationLanguagesQuery, getOrganizationQuery } from 'mocks/Organization';
 import { getFlowQuery, filterFlowQuery } from 'mocks/Flow';
@@ -22,8 +23,8 @@ const mockUseLocationValue: any = {
   hash: '',
   state: null,
 };
-jest.mock('react-router-dom', () => ({
-  ...(jest.requireActual('react-router-dom') as {}),
+vi.mock('react-router-dom', async () => ({
+  ...((await vi.importActual<any>('react-router-dom')) as {}),
   useLocation: () => {
     return mockUseLocationValue;
   },

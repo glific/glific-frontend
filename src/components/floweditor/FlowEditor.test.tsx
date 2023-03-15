@@ -1,8 +1,10 @@
-import { FlowEditor } from './FlowEditor';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 import { render, waitFor, fireEvent, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { vi } from 'vitest';
+
+import { FlowEditor } from './FlowEditor';
 import {
   getActiveFlow,
   getInactiveFlow,
@@ -21,15 +23,15 @@ import {
 } from 'mocks/Simulator';
 import axios from 'axios';
 
-jest.mock('react-router-dom', () => {
+vi.mock('react-router-dom', async () => {
   return {
-    ...jest.requireActual('react-router-dom'),
+    ...(await vi.importActual<any>('react-router-dom')),
     useParams: () => ({ uuid: 'b050c652-65b5-4ccf-b62b-1e8b3f328676' }),
   };
 });
 
-jest.mock('axios');
-const mockedAxios = axios as jest.Mocked<typeof axios>;
+vi.mock('axios');
+const mockedAxios = axios as any;
 
 const mocks = [
   conversationQuery,
@@ -62,7 +64,7 @@ declare global {
     showFlowEditor: any;
   }
 }
-window.showFlowEditor = (node: any, config: any) => jest.fn();
+window.showFlowEditor = (node: any, config: any) => vi.fn();
 
 const defaultWrapper = wrapperFunction(activeFlowMocks);
 
@@ -122,7 +124,7 @@ test('click on preview button should open simulator', async () => {
 });
 
 // test('check if someone else is using a flow', async () => {
-//   // onload is not defined for script element in jest so we need to trigger it manually
+//   // onload is not defined for script element in vite so we need to trigger it manually
 //   const mockCreateElement = document.createElement.bind(document);
 //   let scriptElements: any = [];
 //   document.createElement = function (tags: any, options: any) {

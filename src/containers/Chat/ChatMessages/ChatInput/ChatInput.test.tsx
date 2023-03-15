@@ -1,7 +1,8 @@
-import ChatInput from './ChatInput';
 import { MockedProvider } from '@apollo/client/testing';
 import { render, waitFor, fireEvent } from '@testing-library/react';
+import { vi } from 'vitest';
 
+import ChatInput from './ChatInput';
 import { TEMPLATE_MOCKS } from 'mocks/Template';
 import {
   createMediaMessageMock,
@@ -21,7 +22,7 @@ const mocks = [
 
 const blob = () => new Blob();
 
-jest.mock('../VoiceRecorder/VoiceRecorder', () => {
+vi.mock('../VoiceRecorder/VoiceRecorder', () => {
   return {
     VoiceRecorder: ({ handleAudioRecording, clearAudio }: any) => {
       return (
@@ -51,7 +52,7 @@ describe('<ChatInput />', () => {
   const onSendMessageHandler = () => {
     inputSubmitted = true;
   };
-  const handleHeightChange = jest.fn();
+  const handleHeightChange = vi.fn();
 
   beforeEach(() => {
     inputSubmitted = false;
@@ -218,7 +219,7 @@ describe('<ChatInput />', () => {
 
   test('record audio', async () => {
     const propsWithMockSend: any = { ...defaultProps };
-    const sendMessageMock = jest.fn();
+    const sendMessageMock = vi.fn();
     propsWithMockSend.onSendMessage = sendMessageMock;
     const { getByText, getByTestId } = render(
       <MockedProvider mocks={mocks} addTypename={false}>

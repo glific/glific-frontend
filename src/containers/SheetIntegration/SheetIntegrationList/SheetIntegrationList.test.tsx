@@ -9,6 +9,7 @@ import {
   deleteSheetQuery,
   createSheetQuery,
   getSheetCountQuery,
+  syncSheetMutation,
 } from 'mocks/Sheet';
 
 const mocks = [
@@ -18,6 +19,7 @@ const mocks = [
   deleteSheetQuery,
   createSheetQuery,
   getSheetCountQuery,
+  syncSheetMutation,
 ];
 
 const wrapper = (
@@ -28,7 +30,7 @@ const wrapper = (
   </MemoryRouter>
 );
 
-window.open = jest.fn();
+window.open = vi.fn();
 
 setUserSession(JSON.stringify({ roles: ['Admin'] }));
 describe('<SheetIntegrationList />', () => {

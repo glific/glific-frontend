@@ -6,13 +6,13 @@ import { LIST_ITEM_MOCKS } from './Search.test.helper';
 
 const defaultProps = (type = 'search') => ({
   type,
-  search: jest.fn(),
-  handleCancel: jest.fn(),
-  handleSave: jest.fn(),
+  search: vi.fn(),
+  handleCancel: vi.fn(),
+  handleSave: vi.fn(),
   searchParam: {
     term: 'hi',
   },
-  setState: jest.fn(),
+  setState: vi.fn(),
   searchId: '1',
 });
 

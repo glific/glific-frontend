@@ -48,3 +48,11 @@
   font-size: 12px;
   color: #93a29b !important;
 }
+
+.DialogContent {
+  max-width: 331px;
+  font-size: 16px;
+  font-weight: 400;
+  margin: 0 12px;
+  color: #073f24;
+}

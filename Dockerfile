@@ -1,10 +1,10 @@
 FROM node:12-alpine AS builder
 
 # Any env variables will be passed as arg here to make these available at build time.
-ARG REACT_APP_GLIFIC_API_PORT
+ARG VITE_GLIFIC_API_PORT
 
 # Add those arg as env variable for builder
-ENV REACT_APP_GLIFIC_API_PORT $REACT_APP_GLIFIC_API_PORT
+ENV VITE_GLIFIC_API_PORT $VITE_GLIFIC_API_PORT
 
 WORKDIR /app
 COPY . .

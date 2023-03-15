@@ -1,6 +1,7 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 import { MockedProvider } from '@apollo/client/testing';
+import { vi } from 'vitest';
 
 import { getCollectionQuery, getCollectionsQuery, getCollectionUsersQuery } from 'mocks/Collection';
 import { getUsersQuery } from 'mocks/User';
@@ -20,9 +21,9 @@ const mocks = [
   ...getCollectionsQuery,
 ];
 
-jest.mock('react-router-dom', () => {
+vi.mock('react-router-dom', async () => {
   return {
-    ...jest.requireActual('react-router-dom'),
+    ...(await vi.importActual<any>('react-router-dom')),
     useParams: () => ({ id: '1' }),
   };
 });
@@ -60,8 +61,8 @@ describe('<Collection />', () => {
   });
 
   test('it should call additional query and hit the update users function', async () => {
-    const mockCallback = jest.fn();
-    const spy = jest.spyOn(FormLayout, 'FormLayout');
+    const mockCallback = vi.fn();
+    const spy = vi.spyOn(FormLayout, 'FormLayout');
     spy.mockImplementation((props: any) => {
       const { additionalQuery } = props;
       return (

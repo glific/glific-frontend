@@ -1,11 +1,13 @@
 import { render, screen, act } from '@testing-library/react';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
-import { ChatMessages } from './ChatMessages';
 import { fireEvent, waitFor } from '@testing-library/dom';
 import { MemoryRouter } from 'react-router';
+import { MockedProvider } from '@apollo/client/testing';
+import { vi } from 'vitest';
+
+import { ChatMessages } from './ChatMessages';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT } from '../../../common/constants';
-import { MockedProvider } from '@apollo/client/testing';
 import { CONVERSATION_MOCKS, mocksWithConversation } from '../../../mocks/Chat';
 import * as ChatInput from '../ChatMessages/ChatInput/ChatInput';
 
@@ -219,7 +221,7 @@ const client = new ApolloClient({
   cache: cache,
   assumeImmutableResults: true,
 });
-window.HTMLElement.prototype.scrollIntoView = jest.fn();
+window.HTMLElement.prototype.scrollIntoView = vi.fn();
 
 const chatMessages = (
   <MemoryRouter>
@@ -489,7 +491,7 @@ test('If search query gives error', async () => {
 });
 
 test('send message to contact', async () => {
-  const spy = jest.spyOn(ChatInput, 'ChatInput');
+  const spy = vi.spyOn(ChatInput, 'ChatInput');
 
   spy.mockImplementation((props: any) => {
     const { onSendMessage } = props;

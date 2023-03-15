@@ -2,25 +2,28 @@ import { fireEvent, render, screen } from '@testing-library/react';
 
 import { Dropdown } from './Dropdown';
 
-jest.mock('@mui/material/Select', () => (props: any) => {
-  const { onChange, children } = props;
-  return (
-    <div>
-      <select
-        data-testid="mock-select"
-        onChange={() => {
-          onChange();
-        }}
-      >
-        <option key={children[0].props.value} value={children[0].props.value}>
-          {children[0].props.children}
-        </option>
-      </select>
-    </div>
-  );
+vi.mock('@mui/material', async (importOriginal) => {
+  const mod: any = await importOriginal();
+  return {
+    ...mod,
+    Select: ({ onChange, children }: any) => (
+      <div>
+        <select
+          data-testid="mock-select"
+          onChange={() => {
+            onChange();
+          }}
+        >
+          <option key={children[0].props.value} value={children[0].props.value}>
+            {children[0].props.children}
+          </option>
+        </select>
+      </div>
+    ),
+  };
 });
 
-const changeValue = jest.fn();
+const changeValue = vi.fn();
 describe('<Dropdown />', () => {
   const getProps: any = () => ({
     options: [{ id: '1', label: 'Default' }],
@@ -28,7 +31,7 @@ describe('<Dropdown />', () => {
     form: { errors: { dropdown: 'Required' } },
     placeholder: 'Input your title',
     field: { value: '1', onChange: changeValue },
-    fieldChange: jest.fn(),
+    fieldChange: vi.fn(),
   });
 
   it('renders <Dropdown /> component', () => {
