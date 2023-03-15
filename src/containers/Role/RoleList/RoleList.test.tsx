@@ -17,7 +17,7 @@ const rolesList = (
   </MockedProvider>
 );
 
-HTMLAnchorElement.prototype.click = jest.fn();
+HTMLAnchorElement.prototype.click = vi.fn();
 
 setUserSession(JSON.stringify({ roles: ['Admin'] }));
 

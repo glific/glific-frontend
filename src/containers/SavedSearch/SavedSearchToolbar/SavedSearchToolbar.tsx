@@ -137,7 +137,9 @@ export const SavedSearchToolbar = ({
         }}
         aria-hidden="true"
       >
-        <div className={labelClass.join(' ')}>{savedSearch.shortcode}</div>
+        <div className={labelClass.join(' ')} data-testid="editor-label">
+          {savedSearch.shortcode}
+        </div>
         <Tooltip title={count} placement="right">
           <div className={countClass.join(' ')}>{numberToAbbreviation(count)}</div>
         </Tooltip>

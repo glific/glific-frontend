@@ -10,7 +10,7 @@ import { getOrganizationCollections } from 'mocks/Collection';
 
 const mocks = [...getAllOrganizations, getOrganizationCollections];
 
-const setDialogMock = jest.fn();
+const setDialogMock = vi.fn();
 const props = {
   organizationDetails: {
     id: '1',

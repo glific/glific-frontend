@@ -40,7 +40,12 @@ export const QuickReplyTemplate = ({
   const name = 'Enter button text(20 char.)';
   const defaultValue = inputFields && inputFields[index]?.value;
   const endAdornmentIcon = inputFields.length > 1 && (
-    <CrossIcon className={styles.RemoveIcon} title="Remove" onClick={onRemoveClick} />
+    <CrossIcon
+      className={styles.RemoveIcon}
+      title="Remove"
+      data-testid="cross-icon"
+      onClick={onRemoveClick}
+    />
   );
 
   return (
@@ -52,6 +57,7 @@ export const QuickReplyTemplate = ({
             <TextField
               placeholder={name}
               variant="outlined"
+              data-testid="textField"
               onChange={(e: any) => handleInputChange(e, 'value')}
               value={defaultValue}
               className={styles.TextField}
@@ -69,6 +75,7 @@ export const QuickReplyTemplate = ({
           {inputFields.length === index + 1 && inputFields.length !== 3 ? (
             <Button
               color="primary"
+              data-testid="addButton"
               onClick={onAddClick}
               className={styles.AddButton}
               startIcon={<AddIcon className={styles.AddIcon} />}

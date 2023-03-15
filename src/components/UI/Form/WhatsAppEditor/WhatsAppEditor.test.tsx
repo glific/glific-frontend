@@ -1,43 +1,41 @@
 import { render, fireEvent } from '@testing-library/react';
-import { ContentState, EditorState } from 'draft-js';
+import draftJs, { EditorState, ContentState } from 'draft-js';
+import { vi } from 'vitest';
+
 import WhatsAppEditor from './WhatsAppEditor';
 
-const mockHandleKeyCommand = jest.fn();
+const mockHandleKeyCommand = vi.fn();
 
-jest.mock('draft-js', () => {
-  const moduleMock = jest.requireActual('draft-js');
+vi.spyOn(draftJs, 'Editor').mockImplementation((props: any, _context: any) => {
+  const input: any = (
+    <input
+      data-testid="editor"
+      onClick={() => {
+        props.handleKeyCommand('underline');
+        mockHandleKeyCommand();
+      }}
+      onChange={(event) => props.onChange(event)}
+    ></input>
+  );
+  return input;
+});
+
+vi.mock('react-resize-detector', () => {
   return {
-    ...moduleMock,
-    Editor: (...props: any) => {
-      return (
-        <input
-          data-testid="editor"
-          onClick={() => {
-            props[0].handleKeyCommand('underline');
-            mockHandleKeyCommand();
-          }}
-          onChange={(event) => props[0].onChange(event)}
-        ></input>
-      );
-    },
+    default: (props: any) => (
+      <div>
+        <div data-testid="resizer" onClick={() => props.onResize('30', '40')}>
+          {props.children}
+        </div>
+      </div>
+    ),
   };
 });
 
-jest.mock('react-resize-detector', () => (...props: any) => {
-  const { onResize, children } = props[0];
-  return (
-    <div>
-      <div data-testid="resizer" onClick={() => onResize('30', '40')}>
-        {children}
-      </div>
-    </div>
-  );
-});
-
 describe('<WhatsAppEditor/>', () => {
-  const handleHeightChange = jest.fn();
-  const sendMessage = jest.fn();
-  const setEditorState = jest.fn();
+  const handleHeightChange = vi.fn();
+  const sendMessage = vi.fn();
+  const setEditorState = vi.fn();
 
   const defaultProps = (editorState: any) => {
     return {

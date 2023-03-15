@@ -26,7 +26,7 @@ const props: any = {
   type: 'quick_reply',
   content,
   options,
-  onQuickReplyClick: jest.fn(),
+  onQuickReplyClick: vi.fn(),
 };
 
 test('it renders QuickReplyTemplate on simulator with image', async () => {

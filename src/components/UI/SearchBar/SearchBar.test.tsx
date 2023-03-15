@@ -2,9 +2,9 @@ import { fireEvent, render, waitFor } from '@testing-library/react';
 import SearchBar from './SearchBar';
 
 describe('<SearchBar/>', () => {
-  const mockChange = jest.fn();
-  const mockSubmit = jest.fn();
-  const mockReset = jest.fn();
+  const mockChange = vi.fn();
+  const mockSubmit = vi.fn();
+  const mockReset = vi.fn();
 
   const component = (searchValue: any, searchMode: boolean = true) => (
     <SearchBar

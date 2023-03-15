@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react';
 import { EmojiPicker } from './EmojiPicker';
 
-const onEmojiSelectMock = jest.fn();
+const onEmojiSelectMock = vi.fn();
 
 const mockIntersectionObserver = class {
   constructor() {}
@@ -19,8 +19,8 @@ Object.defineProperty(window, 'matchMedia', {
       matches: false,
       media: query,
       onchange: null,
-      addListener: jest.fn(),
-      removeListener: jest.fn(),
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
     };
   },
 });

@@ -2,14 +2,14 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { BrowserRouter as Router } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
+import { vi } from 'vitest';
 
 import { setUserSession } from 'services/AuthService';
 import { mocks, contactFieldErrorMock } from 'mocks/ContactFields';
 import ContactFieldList from './ContactFieldList';
 
-jest.mock('react-router-dom', () => ({
-  ...(jest.requireActual('react-router-dom') as {}),
-
+vi.mock('react-router-dom', async () => ({
+  ...((await vi.importActual<any>('react-router-dom')) as {}),
   useParams: () => ({ id: '1' }),
 }));
 
@@ -38,9 +38,7 @@ test('it renders list successfully', async () => {
     expect(actionLabel).toBeInTheDocument();
   });
 
-  const editButtons = screen.getAllByRole('button', {
-    name: 'GreenEdit.svg',
-  });
+  const editButtons = screen.getAllByTestId('edit-icon');
   expect(editButtons[0]).toBeInTheDocument();
   fireEvent.click(editButtons[0]);
 
@@ -78,9 +76,7 @@ test('it renders component, edits field, saves and error occurs', async () => {
   expect(screen.getByText('Loading...')).toBeInTheDocument();
 
   await waitFor(() => {
-    const editButtons = screen.getAllByRole('button', {
-      name: 'GreenEdit.svg',
-    });
+    const editButtons = screen.getAllByTestId('edit-icon');
     expect(editButtons[3]).toBeInTheDocument();
     fireEvent.click(editButtons[3]);
   });

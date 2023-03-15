@@ -96,6 +96,9 @@ jobs:
         run: |
           echo clone cypress repo
           git clone https://github.com/glific/cypress-testing.git
+          cd cypress-testing
+          git checkout feature/vite
+          cd ..
           echo done. go to dir.
           cp -r cypress-testing/cypress cypress
           yarn add cypress@12.3.0
@@ -105,7 +108,7 @@ jobs:
         # Run frontend
       - name: Run glific frontend
         run: |
-          HOST=glific.test HTTPS=true SSL_CRT_FILE=../glific/priv/cert/glific.test+1.pem SSL_KEY_FILE=../glific/priv/cert/glific.test+1-key.pem yarn start &
+          yarn dev &
 
         # Run backend
       - name: Run glific backend

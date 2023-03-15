@@ -443,6 +443,7 @@ export const ChatInput = ({
           ) : null}
 
           <IconButton
+            data-testid="attachmentIcon"
             className={styles.AttachmentIcon}
             onClick={() => {
               setAttachment(!attachment);
