@@ -5,7 +5,7 @@ import ImgFallback from './ImgFallback';
 const props: any = () => ({
   src: 'http://test.com',
   alt: 'fallback',
-  onClick: jest.fn(),
+  onClick: vi.fn(),
 });
 
 describe('Image fallback', () => {
@@ -22,7 +22,7 @@ describe('Image fallback', () => {
     const image = screen.getByTestId('image-fallback');
     fireEvent.error(image);
     await waitFor(() => {
-      expect(image).toHaveAttribute('src', 'imageError.png');
+      expect(image).toHaveAttribute('src', '/src/assets/images/imageError.png');
     });
   });
 
@@ -31,7 +31,7 @@ describe('Image fallback', () => {
     const image = screen.getByTestId('image-fallback');
     fireEvent.load(image);
     await waitFor(() => {
-      expect(image).toHaveAttribute('src', 'imageError.png');
+      expect(image).toHaveAttribute('src', '/src/assets/images/imageError.png');
     });
   });
 });

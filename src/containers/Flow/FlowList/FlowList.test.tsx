@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-
 import { MockedProvider } from '@apollo/client/testing';
+import { vi } from 'vitest';
 
 import {
   getFlowCountQuery,
@@ -39,11 +39,11 @@ const flowList = (
   </MockedProvider>
 );
 
-HTMLAnchorElement.prototype.click = jest.fn();
+HTMLAnchorElement.prototype.click = vi.fn();
 
-jest.mock('react-router-dom', () => {
+vi.mock('react-router-dom', async () => {
   return {
-    ...jest.requireActual('react-router-dom'),
+    ...(await vi.importActual<any>('react-router-dom')),
     useLocation: () => ({ state: 'copy', pathname: '/flow/1/edit' }),
     useParams: () => ({ id: 1 }),
   };
@@ -101,7 +101,7 @@ describe('<FlowList />', () => {
     await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 0)));
 
     await waitFor(() => {
-      const importFlowButton = screen.getByText('Import.svg');
+      const importFlowButton = screen.getByTestId('import-icon');
       expect(importFlowButton).toBeInTheDocument();
       fireEvent.click(importFlowButton);
     });
@@ -124,12 +124,12 @@ describe('<FlowList />', () => {
   });
 
   test('should export flow to json file', async () => {
-    global.URL.createObjectURL = jest.fn();
+    global.URL.createObjectURL = vi.fn();
     render(flowList);
     await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 0)));
 
     await waitFor(() => {
-      const exportButton = screen.getByText('Export.svg');
+      const exportButton = screen.getByTestId('export-icon');
       expect(exportButton).toBeInTheDocument();
 
       fireEvent.click(exportButton);

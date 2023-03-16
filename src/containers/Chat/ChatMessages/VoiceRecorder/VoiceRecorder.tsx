@@ -130,11 +130,10 @@ export const VoiceRecorder = ({
 
   return (
     <div className={styles.VoiceRecorder}>
-      {showRecordingOption}
-
       {audioPreview}
       {recordIndicator}
       {uploadStatus}
+      {showRecordingOption}
     </div>
   );
 };

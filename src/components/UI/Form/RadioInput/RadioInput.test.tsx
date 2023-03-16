@@ -4,7 +4,7 @@ import { RadioInput } from './RadioInput';
 
 describe('<RadioInput />', () => {
   const props: any = {
-    form: { touched: {}, errors: {}, values: {}, setFieldValue: jest.fn(), dirty: {} },
+    form: { touched: {}, errors: {}, values: {}, setFieldValue: vi.fn(), dirty: {} },
     field: { name: 'radioInput' },
   };
 
@@ -25,7 +25,7 @@ describe('<RadioInput />', () => {
   });
 
   it('Render radio component and return selected value as callback', () => {
-    props.handleChange = jest.fn();
+    props.handleChange = vi.fn();
     render(<RadioInput {...props} />);
 
     const radioYes = screen.getByText('Yes');

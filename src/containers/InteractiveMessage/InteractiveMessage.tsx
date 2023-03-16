@@ -36,7 +36,9 @@ import {
   validator,
 } from './InteractiveMessage.helper';
 
-const interactiveMessageIcon = <InteractiveMessageIcon className={styles.Icon} />;
+const interactiveMessageIcon = (
+  <InteractiveMessageIcon className={styles.Icon} data-testid="interactive-icon" />
+);
 
 const queries = {
   getItemQuery: GET_INTERACTIVE_MESSAGE,

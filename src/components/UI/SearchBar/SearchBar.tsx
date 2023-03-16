@@ -70,7 +70,7 @@ export const SearchBar = ({
             handleClick(e, 'search', 'update');
           }}
         >
-          <AdvancedSearch />
+          <AdvancedSearch data-testid="advanced-search-icon" />
         </IconButton>
       </InputAdornment>
     );

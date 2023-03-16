@@ -29,18 +29,18 @@ const props: any = {
     touched: { globalButton: true },
     errors: { globalButton: 'Required' },
     values: { templateButtons: inputFields },
-    setFieldValue: jest.fn(),
+    setFieldValue: vi.fn(),
   },
-  onAddClick: jest.fn(),
-  onRemoveClick: jest.fn(),
-  onInputChange: jest.fn(),
-  onTemplateTypeChange: jest.fn(),
-  onListItemAddClick: jest.fn(),
-  onListItemRemoveClick: jest.fn(),
-  onGlobalButtonInputChange: jest.fn(),
+  onAddClick: vi.fn(),
+  onRemoveClick: vi.fn(),
+  onInputChange: vi.fn(),
+  onTemplateTypeChange: vi.fn(),
+  onListItemAddClick: vi.fn(),
+  onListItemRemoveClick: vi.fn(),
+  onGlobalButtonInputChange: vi.fn(),
 };
 
-const mock = jest.fn();
+const mock = vi.fn();
 
 test('it render interactive options for list reply template', async () => {
   render(
@@ -70,8 +70,8 @@ test('it render interactive options for list reply template', async () => {
   fireEvent.click(addAnotherList);
   await waitFor(() => {});
 
-  const [list1] = screen.getAllByText('Red.svg');
-  const [listItem1] = screen.getAllByText('Cross.svg');
+  const [list1] = screen.getAllByTestId('delete-icon');
+  const [listItem1] = screen.getAllByTestId('cross-icon');
 
   expect(list1).toBeInTheDocument();
   expect(listItem1).toBeInTheDocument();
@@ -120,7 +120,7 @@ test('it render interactive options for quick reply template', async () => {
   fireEvent.click(addButton);
   await waitFor(() => {});
 
-  const [deleteFirstItem] = screen.getAllByText('Cross.svg');
+  const [deleteFirstItem] = screen.getAllByTestId('cross-icon');
   expect(deleteFirstItem).toBeInTheDocument();
 
   fireEvent.click(deleteFirstItem);
