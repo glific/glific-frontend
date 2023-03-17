@@ -174,9 +174,12 @@ export const AutoComplete = ({
             option[optionLabel] != null ? option[optionLabel] : option
           }
           getOptionDisabled={getOptionDisabled}
-          isOptionEqualToValue={(option, value) =>
-            option[valueElementName] === value[valueElementName]
-          }
+          isOptionEqualToValue={(option, value) => {
+            if (value) {
+              return option[valueElementName] === value[valueElementName];
+            }
+            return false;
+          }}
           onChange={(_event, value: any) => {
             if (asyncSearch && value.length > 0) {
               asyncValues.setValue([...value]);

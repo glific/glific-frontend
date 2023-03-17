@@ -1,13 +1,14 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
+import { vi } from 'vitest';
 
 import axios from 'axios';
 import { ConfirmOTP } from './ConfirmOTP';
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 
-jest.mock('axios');
-const mockedAxios = axios as jest.Mocked<typeof axios>;
+vi.mock('axios');
+const mockedAxios = axios as any;
 
 const mockedState = {
   state: {
@@ -18,8 +19,8 @@ const mockedState = {
   },
 };
 
-jest.mock('react-router-dom', () => ({
-  ...(jest.requireActual('react-router-dom') as {}),
+vi.mock('react-router-dom', async () => ({
+  ...((await vi.importActual<any>('react-router-dom')) as {}),
   useLocation: () => mockedState,
 }));
 
@@ -33,7 +34,7 @@ const wrapper = (
 
 describe('<ConfirmOTP />', () => {
   beforeEach(() => {
-    jest.resetAllMocks();
+    vi.resetAllMocks();
   });
 
   it('renders component properly', async () => {

@@ -1,6 +1,7 @@
 import { render, waitFor, fireEvent, screen } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router';
+import { vi } from 'vitest';
 
 import {
   countCollectionQuery,
@@ -89,7 +90,7 @@ describe('<CollectionList />', () => {
   test('add contacts to collection', async () => {
     setUserSession(JSON.stringify({ roles: ['Admin'] }));
 
-    const spy = jest.spyOn(SearchDialogBox, 'SearchDialogBox');
+    const spy = vi.spyOn(SearchDialogBox, 'SearchDialogBox');
     spy.mockImplementation((props: any) => {
       const { handleCancel, onChange } = props;
       return (

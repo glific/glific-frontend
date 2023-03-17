@@ -1,16 +1,11 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
+import { vi } from 'vitest';
 
 import { Logout } from './Logout';
 import { MockedProvider } from '@apollo/client/testing';
 
-jest.mock('axios', () => {
-  return {
-    defaults: { headers: { common: {} } },
-    get: jest.fn(),
-    delete: jest.fn(),
-  };
-});
+vi.mock('axios');
 
 describe('<Logout />', () => {
   test('it should logout user', async () => {

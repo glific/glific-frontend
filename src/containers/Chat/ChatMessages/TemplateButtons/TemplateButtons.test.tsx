@@ -19,7 +19,7 @@ const props: any = {
     },
   ],
 };
-window.open = jest.fn();
+window.open = vi.fn();
 
 test('renders components successfully with call-to-action buttons', () => {
   render(<TemplateButtons {...props} />);
@@ -49,7 +49,7 @@ test('renders components with quick reply buttons', () => {
     },
   ];
   props.isSimulator = true;
-  props.callbackTemplateButtonClick = jest.fn();
+  props.callbackTemplateButtonClick = vi.fn();
 
   render(<TemplateButtons {...props} />);
   const button = screen.getByText('Yes');

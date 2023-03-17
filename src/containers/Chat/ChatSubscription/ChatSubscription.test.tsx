@@ -13,8 +13,8 @@ const mocks: any = CONVERSATION_MOCKS;
 setUserSession(JSON.stringify({ roles: ['Admin'], organization: { id: '1' } }));
 
 const ChatSubscriptionParams = {
-  setDataLoaded: jest.fn(),
-  setLoading: jest.fn(),
+  setDataLoaded: vi.fn(),
+  setLoading: vi.fn(),
 };
 
 describe('<ChatSubscription />', () => {

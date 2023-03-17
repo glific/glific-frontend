@@ -513,7 +513,11 @@ export const ConversationList = ({
   const entityStyle = entityStyles[entityType];
 
   return (
-    <Container className={`${entityStyle} contactsContainer`} disableGutters>
+    <Container
+      className={`${entityStyle} contactsContainer`}
+      disableGutters
+      data-testid="listingContainer"
+    >
       {showJumpToLatest && !showLoading ? scrollToTop : null}
       <List className={styles.StyledList}>
         {conversationList}

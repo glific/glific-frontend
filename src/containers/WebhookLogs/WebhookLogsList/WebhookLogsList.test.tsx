@@ -1,6 +1,7 @@
 import { render, waitFor, fireEvent } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
+import { vi } from 'vitest';
 
 import { getWebhookLogsQuery, getWebhookLogsCountQuery } from 'mocks/WebhookLogs';
 import { setUserSession } from 'services/AuthService';
@@ -14,7 +15,7 @@ beforeEach(() => {
       writeText: () => {},
     },
   });
-  jest.spyOn(navigator.clipboard, 'writeText').mockImplementation(() => Promise.resolve());
+  vi.spyOn(navigator.clipboard, 'writeText').mockImplementation(() => Promise.resolve());
 });
 
 const mocks = [getWebhookLogsQuery, getWebhookLogsQuery, getWebhookLogsCountQuery];

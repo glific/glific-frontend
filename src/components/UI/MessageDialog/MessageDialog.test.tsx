@@ -3,11 +3,11 @@ import { MockedProvider } from '@apollo/client/testing';
 
 import { MessageDialog } from './MessageDialog';
 
-const handleClose = jest.fn();
+const handleClose = vi.fn();
 
 const defaultProps = {
   title: 'Send message',
-  onSendMessage: jest.fn(),
+  onSendMessage: vi.fn(),
   handleClose: handleClose,
 };
 const wrapper = (

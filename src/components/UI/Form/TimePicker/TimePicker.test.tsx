@@ -1,11 +1,10 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
-import '@testing-library/jest-dom/extend-expect';
 
 import { TimePicker } from './TimePicker';
 import { backspace } from 'common/test-utils';
 
-const setFieldValueMock = jest.fn();
+const setFieldValueMock = vi.fn();
 const timePickerProps: any = (disabled: boolean) => {
   return {
     placeholder: 'TimePicker',

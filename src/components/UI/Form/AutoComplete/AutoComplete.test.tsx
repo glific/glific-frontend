@@ -10,7 +10,7 @@ describe('<AutoComplete />', () => {
     },
   ];
 
-  const mockHandleChange = jest.fn();
+  const mockHandleChange = vi.fn();
   const getProps = (additionalProps: any) => ({
     ...additionalProps,
     label: 'Example',
@@ -21,16 +21,16 @@ describe('<AutoComplete />', () => {
     form: { dirty: false, touched: false, errors: false, setFieldValue: mockHandleChange },
   });
 
-  const setValueMock = jest.fn();
+  const setValueMock = vi.fn();
 
   const getAsyncProps = (additionalProps: any) => ({
     ...additionalProps,
     label: 'Example',
-    onChange: jest.fn(),
+    onChange: vi.fn(),
     options: option,
     optionLabel: 'label',
     field: { name: 'example', value: ['1'] },
-    form: { dirty: false, touched: false, errors: false, setFieldValue: jest.fn() },
+    form: { dirty: false, touched: false, errors: false, setFieldValue: vi.fn() },
     asyncSearch: true,
     asyncValues: {
       value: [{ id: '1', label: 'Messages' }],
@@ -135,7 +135,7 @@ describe('<AutoComplete />', () => {
   });
 
   it('should have a help link button if the props are passed', () => {
-    const handleClickMock = jest.fn();
+    const handleClickMock = vi.fn();
     render(
       <AutoComplete {...getProps({ helpLink: { handleClick: handleClickMock, label: 'Help' } })} />
     );

@@ -84,6 +84,12 @@ export const SheetIntegrationList = () => {
         setNotification(notificationMessage);
       }
     },
+    onError: () => {
+      setNotification(
+        'Sorry! An error occurred while fetching data from the Google sheet.',
+        'warning'
+      );
+    },
   });
 
   const syncSheet = (id: any) => {
