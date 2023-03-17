@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import axios from 'axios';
 import { MockedProvider } from '@apollo/client/testing';
+import { vi } from 'vitest';
 
 import {
   getCurrentUserQuery,
@@ -13,12 +14,12 @@ import { Login } from './Login';
 
 const mocks = [getCurrentUserQuery];
 
-jest.mock('axios');
-jest.mock('pino-logflare', () => ({
-  createWriteStream: jest.fn(),
-  createPinoBrowserSend: jest.fn(),
+vi.mock('axios');
+vi.mock('pino-logflare', () => ({
+  createWriteStream: vi.fn(),
+  createPinoBrowserSend: vi.fn(),
 }));
-const mockedAxios = axios as jest.Mocked<typeof axios>;
+const mockedAxios = axios as any;
 
 const wrapper = (
   <MockedProvider mocks={mocks}>
@@ -45,7 +46,7 @@ const userAction = async (container: any) => {
 
 describe('<Login />', () => {
   beforeEach(() => {
-    jest.resetAllMocks();
+    vi.resetAllMocks();
   });
 
   it('renders component properly', async () => {
@@ -62,7 +63,7 @@ describe('<Login />', () => {
     // let's mock successful registration submission
     const responseData = { data: { data: { data: {} } } };
 
-    const successPromise = jest.fn(() => Promise.resolve(responseData));
+    const successPromise = vi.fn(() => Promise.resolve(responseData));
 
     act(() => {
       mockedAxios.post.mockImplementationOnce(() => successPromise());
@@ -80,7 +81,7 @@ describe('<Login />', () => {
 
     // set the mock error case while login
     const errorMessage = 'Cannot login';
-    const rejectPromise = jest.fn(() => Promise.reject(errorMessage));
+    const rejectPromise = vi.fn(() => Promise.reject(errorMessage));
 
     act(() => {
       mockedAxios.post.mockImplementationOnce(() => rejectPromise());
@@ -105,7 +106,7 @@ describe('<Login />', () => {
     // let's mock successful registration submission
     const responseData = { data: { data: { data: {} } } };
 
-    const successPromise = jest.fn(() => Promise.resolve(responseData));
+    const successPromise = vi.fn(() => Promise.resolve(responseData));
 
     act(() => {
       mockedAxios.post.mockImplementationOnce(() => successPromise());
@@ -130,7 +131,7 @@ describe('<Login />', () => {
     // let's mock successful registration submission
     const responseData = { data: { data: { data: {} } } };
 
-    const successPromise = jest.fn(() => Promise.resolve(responseData));
+    const successPromise = vi.fn(() => Promise.resolve(responseData));
 
     act(() => {
       mockedAxios.post.mockImplementationOnce(() => successPromise());

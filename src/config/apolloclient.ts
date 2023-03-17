@@ -5,6 +5,7 @@ import { RetryLink } from '@apollo/client/link/retry';
 import { TokenRefreshLink } from 'apollo-link-token-refresh';
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
 import { setContext } from '@apollo/link-context';
+import { hasSubscription } from '@jumpn/utils-graphql';
 import { createClient } from 'graphql-ws';
 
 import {
@@ -17,8 +18,6 @@ import { CONNECTION_RECONNECT_ATTEMPTS } from 'common/constants';
 import { Logout } from 'containers/Auth/Logout/Logout';
 import setLogs from './logs';
 import { GLIFIC_API_URL, SOCKET } from '.';
-
-const subscribe = require('@jumpn/utils-graphql');
 
 export const cache = new InMemoryCache({
   typePolicies: {
@@ -145,7 +144,7 @@ const gqlClient = (history: any) => {
   );
 
   const link = retryLink.split(
-    (operation) => subscribe.hasSubscription(operation.query),
+    (operation) => hasSubscription(operation.query),
     wsLink,
     refreshTokenLink.concat(errorLink.concat(authLink.concat(httpLink)))
   );

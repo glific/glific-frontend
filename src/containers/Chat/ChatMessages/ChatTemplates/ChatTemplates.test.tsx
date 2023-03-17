@@ -8,7 +8,7 @@ const mocks = TEMPLATE_MOCKS;
 describe('<ChatTemplates />', () => {
   let defaultProps = {
     searchVal: '',
-    handleSelectText: jest.fn(),
+    handleSelectText: vi.fn(),
     isTemplate: false,
     isInteractiveMsg: false,
   };
@@ -16,7 +16,7 @@ describe('<ChatTemplates />', () => {
   beforeEach(() => {
     defaultProps = {
       searchVal: '',
-      handleSelectText: jest.fn(),
+      handleSelectText: vi.fn(),
       isTemplate: false,
       isInteractiveMsg: false,
     };

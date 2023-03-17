@@ -15,6 +15,7 @@ export const resources = {
 };
 
 i18next.use(LanguageDetector).use(initReactI18next).init({
+  returnNull: false,
   resources,
   fallbackLng: 'en',
 });

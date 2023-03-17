@@ -1,6 +1,7 @@
 import { fireEvent, render, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router';
+import { vi } from 'vitest';
 
 import { LIST_ITEM_MOCKS } from 'containers/SettingList/SettingList.test.helper';
 import { LIST_ITEM_MOCKS as SearchMocks } from 'containers/Search/Search.test.helper';
@@ -8,9 +9,9 @@ import * as AutoComplete from 'components/UI/Form/AutoComplete/AutoComplete';
 import { getTriggerQuery, hourlyTrigger } from 'mocks/Trigger';
 import { Trigger } from './Trigger';
 
-jest.mock('react-router-dom', () => {
+vi.mock('react-router-dom', async () => {
   return {
-    ...jest.requireActual('react-router-dom'),
+    ...(await vi.importActual<any>('react-router-dom')),
     useParams: () => ({ id: '1' }),
   };
 });
@@ -135,7 +136,7 @@ describe('trigger with weekly frequency', () => {
   });
 
   test('should load trigger edit form', async () => {
-    const spy = jest.spyOn(AutoComplete, 'AutoComplete');
+    const spy = vi.spyOn(AutoComplete, 'AutoComplete');
     spy.mockImplementation((props: any) => {
       const { form, onChange, options } = props;
 

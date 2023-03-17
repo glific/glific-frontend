@@ -86,6 +86,7 @@ export const Organization = ({
                 const key = index;
                 return <Field className={styles.Form} key={key} {...field} />;
               })}
+
               <div className={styles.CenterButton}>
                 <Captcha
                   component={Button}

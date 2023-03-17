@@ -33,7 +33,7 @@ const defaultProps = {
   contactId: '2',
   lastMessageTime: new Date(),
   contactBspStatus: 'SESSION',
-  handleAction: jest.fn(),
+  handleAction: vi.fn(),
 };
 const propsWithBspStatusNone = { ...defaultProps, contactBspStatus: 'NONE' };
 
@@ -120,7 +120,7 @@ describe('Menu test', () => {
     global.innerWidth = 500;
     // // Trigger the window resize event.
     global.dispatchEvent(new Event('resize'));
-    expect(screen.getByText('UnselectedDark.svg')).toBeInTheDocument();
+    expect(screen.getByTestId('icon-component')).toBeInTheDocument();
   });
 
   test('clicking on clear chat button should open up a dialog box', async () => {
@@ -194,7 +194,7 @@ describe('Collection test', () => {
   const collectionDefaultProps = {
     displayName: 'Default Collection',
     collectionId: '2',
-    handleAction: jest.fn(),
+    handleAction: vi.fn(),
   };
 
   const component = (

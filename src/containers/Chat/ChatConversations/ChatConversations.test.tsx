@@ -83,7 +83,7 @@ afterEach(cleanup);
 const simulatorParams = {
   contactId: 1,
   simulatorId: 1,
-  setShowSimulator: jest.fn(),
+  setShowSimulator: vi.fn(),
 };
 
 const chatConversation = (
@@ -143,7 +143,7 @@ test('it should render dialog when advance search is click', async () => {
     expect(container).toBeInTheDocument();
   });
 
-  const dialog = screen.getByText('AdvancedSearch.svg');
+  const dialog = await screen.getByTestId('advanced-search-icon');
   expect(dialog).toBeInTheDocument();
 
   await waitFor(() => {

@@ -12,12 +12,13 @@ import { ReactComponent as SendMessageIcon } from 'assets/images/icons/SendMessa
 import { getPlainTextFromEditor, getEditorFromContent } from 'common/RichEditor';
 import { is24HourWindowOver, pattern } from 'common/constants';
 import SearchBar from 'components/UI/SearchBar/SearchBar';
-import WhatsAppEditor from 'components/UI/Form/WhatsAppEditor/WhatsAppEditor';
+import WhatsAppEditor, { updatedValue } from 'components/UI/Form/WhatsAppEditor/WhatsAppEditor';
 import Tooltip from 'components/UI/Tooltip/Tooltip';
 import { CREATE_MEDIA_MESSAGE, UPLOAD_MEDIA_BLOB } from 'graphql/mutations/Chat';
 import { GET_ATTACHMENT_PERMISSION } from 'graphql/queries/Settings';
 import { setNotification } from 'common/notification';
 import { getInteractiveMessageBody } from 'common/utils';
+import { EmojiPicker } from 'components/UI/EmojiPicker/EmojiPicker';
 import { AddVariables } from '../AddVariables/AddVariables';
 import { AddAttachment } from '../AddAttachment/AddAttachment';
 import { VoiceRecorder } from '../VoiceRecorder/VoiceRecorder';
@@ -66,6 +67,7 @@ export const ChatInput = ({
   const [recordedAudio, setRecordedAudio] = useState<any>('');
   const [clearAudio, setClearAudio] = useState<any>(false);
   const [uploading, setUploading] = useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   const { t } = useTranslation();
   const speedSends = 'Speed sends';
@@ -187,6 +189,17 @@ export const ChatInput = ({
     );
   };
 
+  const emojiStyles = {
+    position: 'absolute',
+    bottom: '60px',
+    right: '-150px',
+    zIndex: 100,
+  };
+
+  if (window.innerWidth <= 768) {
+    emojiStyles.right = '5%';
+  }
+
   const handleClick = (title: string) => {
     // clear the search when tab is opened again
     setSearchVal('');
@@ -254,6 +267,9 @@ export const ChatInput = ({
 
   const variableParams = (params: Array<any>) => {
     setVariableParam(params);
+  };
+  const handleEmojiClickAway = () => {
+    setShowEmojiPicker(false);
   };
 
   if (variable) {
@@ -399,60 +415,91 @@ export const ChatInput = ({
             Object.keys(interactiveMessageContent).length !== 0
           }
         />
+        <div className={styles.Icons}>
+          {audioOption}
 
-        {selectedTemplate || Object.keys(interactiveMessageContent).length > 0 ? (
-          <Tooltip title={t('Remove message')} placement="top">
+          {selectedTemplate || Object.keys(interactiveMessageContent).length > 0 ? (
+            <Tooltip title={t('Remove message')} placement="top">
+              <IconButton
+                className={updatedEditorState ? styles.CrossIcon : styles.CrossIconWithVariable}
+                onClick={() => {
+                  resetVariable();
+                  resetAttachment();
+                }}
+              >
+                <CrossIcon />
+              </IconButton>
+            </Tooltip>
+          ) : null}
+          {updatedEditorState ? (
             <IconButton
-              className={updatedEditorState ? styles.CrossIcon : styles.CrossIconWithVariable}
+              className={styles.VariableIcon}
               onClick={() => {
-                resetVariable();
-                resetAttachment();
+                setVariable(!variable);
               }}
             >
-              <CrossIcon />
+              <VariableIcon />
             </IconButton>
-          </Tooltip>
-        ) : null}
-        {updatedEditorState ? (
+          ) : null}
+
           <IconButton
-            className={styles.VariableIcon}
+            data-testid="attachmentIcon"
+            className={styles.AttachmentIcon}
             onClick={() => {
-              setVariable(!variable);
+              setAttachment(!attachment);
             }}
           >
-            <VariableIcon />
+            {attachment || attachmentAdded ? <AttachmentIconSelected /> : <AttachmentIcon />}
           </IconButton>
-        ) : null}
-        {audioOption}
-        <IconButton
-          className={styles.AttachmentIcon}
-          onClick={() => {
-            setAttachment(!attachment);
-          }}
-        >
-          {attachment || attachmentAdded ? <AttachmentIconSelected /> : <AttachmentIcon />}
-        </IconButton>
-        <div className={styles.SendButtonContainer}>
-          <Button
-            className={styles.SendButton}
-            data-testid="sendButton"
-            variant="contained"
-            color="primary"
-            disableElevation
-            onClick={() => {
-              if (updatedEditorState) {
-                submitMessage(updatedEditorState);
-              } else {
-                submitMessage(getPlainTextFromEditor(editorState));
+          <ClickAwayListener onClickAway={handleEmojiClickAway}>
+            <div>
+              <IconButton
+                className={styles.EmojiButton}
+                data-testid="emoji-picker"
+                color="primary"
+                aria-label="pick emoji"
+                component="span"
+                onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+              >
+                <span role="img" aria-label="pick emoji">
+                  😀
+                </span>
+              </IconButton>
+
+              {showEmojiPicker ? (
+                <EmojiPicker
+                  onEmojiSelect={(emoji: any) =>
+                    setEditorState(updatedValue(emoji, editorState, true))
+                  }
+                  displayStyle={emojiStyles}
+                />
+              ) : null}
+            </div>
+          </ClickAwayListener>
+          <div className={styles.SendButtonContainer}>
+            <Button
+              className={styles.SendButton}
+              data-testid="sendButton"
+              variant="contained"
+              color="primary"
+              disableElevation
+              onClick={() => {
+                if (updatedEditorState) {
+                  submitMessage(updatedEditorState);
+                } else {
+                  submitMessage(getPlainTextFromEditor(editorState));
+                }
+              }}
+              disabled={
+                (!editorState.getCurrentContent().hasText() &&
+                  !attachmentAdded &&
+                  !recordedAudio) ||
+                uploading
               }
-            }}
-            disabled={
-              (!editorState.getCurrentContent().hasText() && !attachmentAdded && !recordedAudio) ||
-              uploading
-            }
-          >
-            <SendMessageIcon className={styles.SendIcon} />
-          </Button>
+            >
+              <SendMessageIcon className={styles.SendIcon} />
+            </Button>
+          </div>
         </div>
       </div>
     </Container>

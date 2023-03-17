@@ -1,15 +1,15 @@
 import { render, waitFor, within, fireEvent } from '@testing-library/react';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { Route, Routes, BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
-import { Route, Routes } from 'react-router-dom';
+import { vi } from 'vitest';
 
 import { FlowList } from 'containers/Flow/FlowList/FlowList';
 import { FormLayout } from './FormLayout';
 import { LIST_ITEM_MOCKS, listItemProps } from './FormLayout.test.helper';
 
-jest.mock('react-router-dom', () => {
+vi.mock('react-router-dom', async () => {
   return {
-    ...jest.requireActual('react-router-dom'),
+    ...(await vi.importActual<any>('react-router-dom')),
     useParams: () => ({ id: 1 }),
   };
 });

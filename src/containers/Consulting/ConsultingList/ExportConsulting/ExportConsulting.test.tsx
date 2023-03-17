@@ -9,7 +9,7 @@ import { getAllOrganizations } from 'mocks/Organization';
 const mocks = getAllOrganizations;
 setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
 
-const setFiltersMock = jest.fn();
+const setFiltersMock = vi.fn();
 
 const exportConsulting = (
   <MockedProvider mocks={mocks} addTypename={false}>

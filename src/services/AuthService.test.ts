@@ -9,17 +9,18 @@ import {
   getAuthSession,
 } from './AuthService';
 
-jest.mock('axios');
+vi.mock('axios');
 
-jest.mock('pino-logflare', () => ({
-  createWriteStream: jest.fn(),
-  createPinoBrowserSend: jest.fn(),
+vi.mock('pino-logflare', () => ({
+  createWriteStream: vi.fn(),
+  createPinoBrowserSend: vi.fn(),
 }));
-const mockedAxios = axios as jest.Mocked<typeof axios>;
+
+const mockedAxios = axios as any;
 
 describe('AuthService', () => {
   beforeEach(() => {
-    jest.resetAllMocks();
+    vi.resetAllMocks();
   });
 
   // let's create token expiry date for tomorrow

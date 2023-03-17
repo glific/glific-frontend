@@ -26,6 +26,7 @@ import { ProviderContext } from 'context/session';
 import { exportCsvFile, getFileExtension } from 'common/utils';
 import Loading from 'components/UI/Layout/Loading/Loading';
 import { setNotification } from 'common/notification';
+import { BULK_APPLY_SAMPLE_LINK } from 'config';
 import styles from './Template.module.css';
 
 const getLabel = (label: string) => <div className={styles.LabelText}>{label}</div>;
@@ -218,7 +219,7 @@ export const Template = ({
   let additionalAction = [
     {
       label: t('Show all languages'),
-      icon: <DownArrow />,
+      icon: <DownArrow data-testid="down-arrow" />,
       parameter: 'id',
       dialog: setDialog,
     },
@@ -282,19 +283,29 @@ export const Template = ({
 
   if (isHSM) {
     secondaryButton = (
-      <ImportButton
-        title={t('Bulk apply')}
-        onImport={() => setImporting(true)}
-        afterImport={(result: string, media: any) => {
-          const extension = getFileExtension(media.name);
-          if (extension !== 'csv') {
-            setNotification('Please upload a valid CSV file', 'warning');
-            setImporting(false);
-          } else {
-            bulkApplyTemplates({ variables: { data: result } });
-          }
-        }}
-      />
+      <div className={styles.ImportButton}>
+        <ImportButton
+          title={t('Bulk apply')}
+          onImport={() => setImporting(true)}
+          afterImport={(result: string, media: any) => {
+            const extension = getFileExtension(media.name);
+            if (extension !== 'csv') {
+              setNotification('Please upload a valid CSV file', 'warning');
+              setImporting(false);
+            } else {
+              bulkApplyTemplates({ variables: { data: result } });
+            }
+          }}
+        />
+        <a
+          href={BULK_APPLY_SAMPLE_LINK}
+          target="_blank"
+          rel="noreferrer"
+          className={styles.HelperText}
+        >
+          View Sample
+        </a>
+      </div>
     );
   }
 

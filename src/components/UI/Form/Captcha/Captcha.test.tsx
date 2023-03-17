@@ -5,8 +5,8 @@ import * as Recaptcha from 'react-google-recaptcha-v3';
 
 import { Captcha } from './Captcha';
 
-const onClickMock = jest.fn();
-const tokenUpdateMock = jest.fn();
+const onClickMock = vi.fn();
+const tokenUpdateMock = vi.fn();
 
 describe('<Captcha />', () => {
   const props = {
@@ -38,7 +38,7 @@ describe('<Captcha />', () => {
   });
 
   it('onTokenUpdate event handler should be called if we click on button', async () => {
-    const useRecaptcha = jest.spyOn(Recaptcha, 'useGoogleReCaptcha');
+    const useRecaptcha = vi.spyOn(Recaptcha, 'useGoogleReCaptcha');
     useRecaptcha.mockImplementation(() => ({ executeRecaptcha: () => Promise.resolve('Success') }));
     render(wrapper);
     const button = screen.getByTestId('captcha-button');

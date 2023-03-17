@@ -1,14 +1,15 @@
 import { render, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router';
+import { vi } from 'vitest';
 
 import { countCollectionContactsQuery } from 'mocks/Contact';
 import { getCollectionQuery } from 'mocks/Collection';
 import { CollectionContact } from './CollectionContact';
 
-jest.mock('react-router-dom', () => {
+vi.mock('react-router-dom', async () => {
   return {
-    ...jest.requireActual('react-router-dom'),
+    ...(await vi.importActual<any>('react-router-dom')),
     useParams: () => ({ id: 1 }),
   };
 });

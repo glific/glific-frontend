@@ -12,7 +12,6 @@ import theme from './config/theme';
 import { APPSIGNAL_API_KEY } from './config';
 import './index.css';
 import App from './App';
-import * as serviceWorker from './serviceWorker';
 import packageInfo from '../package.json';
 
 let appComponent = <App />;
@@ -40,8 +39,3 @@ root.render(
     <BrowserRouter>{appComponent}</BrowserRouter>
   </ThemeProvider>
 );
-
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();

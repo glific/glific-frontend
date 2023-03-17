@@ -13,7 +13,7 @@ import { Consulting } from './Consulting';
 import userEvent from '@testing-library/user-event';
 
 afterEach(cleanup);
-const setOpenDialogMock = jest.fn();
+const setOpenDialogMock = vi.fn();
 setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
 
 const mocks = [getOrganizationList, getConsultingHour, createConsultingHour, updateConsultingHour];

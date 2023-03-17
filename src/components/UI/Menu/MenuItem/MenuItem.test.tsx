@@ -5,7 +5,7 @@ import MenuItem from './MenuItem';
 const menuItemProps = {
   title: 'My Account',
   path: '/myaccount',
-  onClickHandler: jest.fn(),
+  onClickHandler: vi.fn(),
 };
 
 const component = (

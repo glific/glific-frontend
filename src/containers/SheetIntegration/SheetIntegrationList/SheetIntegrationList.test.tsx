@@ -30,7 +30,7 @@ const wrapper = (
   </MemoryRouter>
 );
 
-window.open = jest.fn();
+window.open = vi.fn();
 
 setUserSession(JSON.stringify({ roles: ['Admin'] }));
 describe('<SheetIntegrationList />', () => {
