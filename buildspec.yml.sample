@@ -1,7 +1,7 @@
 # Use this file in AWS code build for creating and pushing latest docker image to ECR repository.
 
 version: 0.2
-    
+
 phases:
   pre_build:
     commands:
@@ -14,8 +14,8 @@ phases:
   build:
     commands:
       - echo Build started on `date`
-      - echo Building the Docker image... 
-      - docker build --build-arg REACT_APP_GLIFIC_API=<API-URL> --build-arg REACT_APP_WEB_SOCKET=<SOCKET-URL> --build-arg REACT_APP_FLOW_EDITOR_API=<FLOWEDITOR-URL> -t $REPOSITORY_URI:latest .
+      - echo Building the Docker image...
+      - docker build --build-arg VITE_GLIFIC_API=<API-URL> --build-arg VITE_WEB_SOCKET=<SOCKET-URL> --build-arg VITE_FLOW_EDITOR_API=<FLOWEDITOR-URL> -t $REPOSITORY_URI:latest .
       - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
   post_build:
     commands:

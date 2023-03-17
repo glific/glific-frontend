@@ -2,11 +2,12 @@ import { render, screen, waitFor } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router';
 import axios from 'axios';
+import { vi } from 'vitest';
 
 import { ResetPasswordConfirmOTP } from './ResetPasswordConfirmOTP';
 
-jest.mock('axios');
-const mockedAxios = axios as jest.Mocked<typeof axios>;
+vi.mock('axios');
+const mockedAxios = axios as any;
 
 const wrapper = (
   <MemoryRouter>

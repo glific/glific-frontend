@@ -1,5 +1,6 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { render, waitFor, fireEvent } from '@testing-library/react';
+import { vi } from 'vitest';
 
 import { collectionCountQuery, savedSearchQueryError, savedSearchStatusQuery } from 'mocks/Chat';
 import { collectionCountSubscription } from 'mocks/Search';
@@ -10,9 +11,9 @@ const mocks = [savedSearchStatusQuery, collectionCountSubscription, collectionCo
 
 describe('testing <SavedSearchToolbar />', () => {
   const defaultProps = {
-    savedSearchCriteriaCallback: jest.fn,
+    savedSearchCriteriaCallback: vi.fn(),
     refetchData: { savedSearchCollection: null },
-    onSelect: jest.fn,
+    onSelect: vi.fn(),
   };
 
   setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
@@ -24,7 +25,7 @@ describe('testing <SavedSearchToolbar />', () => {
   );
 
   test('it should render <SavedSearchToolbar /> component correctly', async () => {
-    const { getByText, container } = render(savedSearchToolbar);
+    const { getByText, getAllByTestId } = render(savedSearchToolbar);
 
     // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();
@@ -37,7 +38,9 @@ describe('testing <SavedSearchToolbar />', () => {
       fireEvent.click(unreadButton);
     });
 
-    expect(container.querySelector('.SavedSearchItemSelected')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(getAllByTestId('editor-label')[0]).toBeInTheDocument();
+    });
   });
 
   test('it should render additional status', async () => {

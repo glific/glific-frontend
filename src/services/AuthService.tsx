@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { RENEW_TOKEN, REACT_APP_GLIFIC_AUTHENTICATION_API } from 'config';
+import { RENEW_TOKEN, VITE_GLIFIC_AUTHENTICATION_API } from 'config';
 import setLogs from 'config/logs';
 
 interface RegisterRequest {
@@ -99,14 +99,14 @@ export const sendOTP = (phoneNumber: string, registrationToken?: string) => {
   }
 
   return axios
-    .post(REACT_APP_GLIFIC_AUTHENTICATION_API, {
+    .post(VITE_GLIFIC_AUTHENTICATION_API, {
       user,
     })
     .then((response) => response)
     .catch((error) => {
       // add log's
       setLogs(
-        `phoneNumber:${phoneNumber} registration:${user.registration} URL:${REACT_APP_GLIFIC_AUTHENTICATION_API}`,
+        `phoneNumber:${phoneNumber} registration:${user.registration} URL:${VITE_GLIFIC_AUTHENTICATION_API}`,
         'info'
       );
       setLogs(error, 'error');

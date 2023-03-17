@@ -54,7 +54,7 @@ test('it renders speed-send list component', async () => {
   await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 0)));
 
   await waitFor(() => {
-    const showTranslationButton = screen.getByText('DownArrow.svg');
+    const showTranslationButton = screen.getByTestId('down-arrow');
     expect(showTranslationButton).toBeInTheDocument();
 
     fireEvent.click(showTranslationButton);
@@ -108,7 +108,7 @@ describe('HSM templates', () => {
   test('should have an option of bulk applying templates using csv file', async () => {
     const { getByText } = render(hsmComponent);
 
-    const notificationFunc = jest.spyOn(common, 'setNotification');
+    const notificationFunc = vi.spyOn(common, 'setNotification');
     await waitFor(() => {
       expect(getByText('Loading...')).toBeInTheDocument();
     });
@@ -148,7 +148,7 @@ describe('Provider: Gupshup enterprise', () => {
     importTemplateMutationWithErrors,
   ];
   const hsmComponent = (
-    <ProviderContext.Provider value={{ provider: 'gupshup_enterprise', setProvider: jest.fn() }}>
+    <ProviderContext.Provider value={{ provider: 'gupshup_enterprise', setProvider: vi.fn() }}>
       <Router>
         <MockedProvider mocks={hsmMocks} addTypename={false}>
           <Template {...hsmProps} />
@@ -190,7 +190,7 @@ describe('Provider: Gupshup enterprise', () => {
   test('it shows a warning when we get an error while importing', async () => {
     const { getByText } = render(hsmComponent);
 
-    const notificationFunc = jest.spyOn(common, 'setNotification');
+    const notificationFunc = vi.spyOn(common, 'setNotification');
 
     await waitFor(() => {
       expect(getByText('Loading...')).toBeInTheDocument();

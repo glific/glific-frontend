@@ -581,7 +581,7 @@ export const ContactBar = ({
       ) : null}
       <div className={styles.Chat} onClick={() => showChats()} aria-hidden="true">
         <IconButton className={styles.MobileIcon}>
-          <IconComponent />
+          <IconComponent data-testid="icon-component" />
         </IconButton>
       </div>
     </>

@@ -1,11 +1,13 @@
 import { render, fireEvent } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
+import { vi } from 'vitest';
+
 import { SearchDialogBox } from './SearchDialogBox';
 import * as AutoComplete from '../Form/AutoComplete/AutoComplete';
 
-const mockHandleOk = jest.fn();
-const mockHandleCancel = jest.fn();
-const mockHandleChange = jest.fn();
+const mockHandleOk = vi.fn();
+const mockHandleCancel = vi.fn();
+const mockHandleChange = vi.fn();
 const defaultProps = {
   title: 'Search Box',
   handleOk: mockHandleOk,
@@ -52,7 +54,7 @@ test('save with async prop', () => {
 });
 
 test('change value in dialog box', () => {
-  const spy = jest.spyOn(AutoComplete, 'AutoComplete');
+  const spy = vi.spyOn(AutoComplete, 'AutoComplete');
   spy.mockImplementation((props: any) => {
     const { form, onChange } = props;
 

@@ -42,7 +42,7 @@ export const Tooltip = ({
       classes={{ tooltip: toolTipStyling.join(' '), arrow: toolTipArrowStyling.join(' ') }}
       disableInteractive={!interactive}
     >
-      {children}
+      <div>{children}</div>
     </TooltipElement>
   );
 };

@@ -22,7 +22,7 @@ export const listItemProps: FormLayoutProps = {
     ignoreKeywords: false,
     roles: [],
   },
-  setStates: jest.fn(),
+  setStates: vi.fn(),
   listItemName: 'flow',
   dialogMessage: "You won't be able to use this flow again.",
   formFields: [

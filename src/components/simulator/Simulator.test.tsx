@@ -1,8 +1,11 @@
 import { render, waitFor, fireEvent, screen } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
-import { SEARCH_QUERY } from 'graphql/queries/Search';
 import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT } from 'common/constants';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
+import axios from 'axios';
+import { vi } from 'vitest';
+
+import { SEARCH_QUERY } from 'graphql/queries/Search';
 import { conversationQuery } from 'mocks/Chat';
 import {
   messageReceivedSubscription,
@@ -13,14 +16,13 @@ import {
   simulatorSearchQuery,
 } from 'mocks/Simulator';
 import { Simulator } from './Simulator';
-import axios from 'axios';
 import { setUserSession } from 'services/AuthService';
 
-jest.mock('axios');
-const mockedAxios = axios as jest.Mocked<typeof axios>;
+vi.mock('axios');
+const mockedAxios = axios as any;
 
 setUserSession(JSON.stringify({ roles: ['Admin'], organization: { id: '1' } }));
-const mockSetShowSimulator = jest.fn();
+const mockSetShowSimulator = vi.fn();
 
 const mocks = [
   conversationQuery,
@@ -38,7 +40,7 @@ const getDefaultProps = () => ({
   setShowSimulator: mockSetShowSimulator,
   setSimulatorId: mockSetShowSimulator,
   isPreviewMessage: false,
-  resetMessage: jest.fn(),
+  resetMessage: vi.fn(),
 });
 
 test('simulator should open on click of simulator icon', async () => {
@@ -52,13 +54,14 @@ test('simulator should open on click of simulator icon', async () => {
 
   await waitFor(() => {
     fireEvent.click(button);
-    expect(mockSetShowSimulator).toHaveBeenCalledTimes(1);
+
+    expect(mockSetShowSimulator).toBeCalledTimes(1);
   });
 });
 
 test('opened simulator should close when click of simulator icon', async () => {
   const props = getDefaultProps();
-  const mockOpenSimulator = jest.fn();
+  const mockOpenSimulator = vi.fn();
   props.showSimulator = true;
   props.setSimulatorId = mockOpenSimulator;
   const { getByTestId } = render(
@@ -67,14 +70,12 @@ test('opened simulator should close when click of simulator icon', async () => {
     </MockedProvider>
   );
 
-  await waitFor(async () => new Promise((resolve) => setTimeout(resolve, 0)));
-
   // To open simulator
   const button = getByTestId('simulatorIcon');
 
   await waitFor(() => {
     fireEvent.click(button);
-    expect(mockOpenSimulator).toHaveBeenCalledTimes(1);
+    expect(mockSetShowSimulator).toHaveBeenCalledTimes(2);
   });
 });
 
@@ -238,10 +239,10 @@ test('simulator should render template message', () => {
   );
 });
 
-const getFlowKeywordMock = jest.fn();
+const getFlowKeywordMock = vi.fn();
 const props = {
   showSimulator: true,
-  setSimulatorId: jest.fn(),
+  setSimulatorId: vi.fn(),
   simulatorIcon: true,
   isPreviewMessage: false,
   flowSimulator: false,

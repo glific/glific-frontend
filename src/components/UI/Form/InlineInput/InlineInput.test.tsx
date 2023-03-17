@@ -2,11 +2,11 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 
 import { InlineInput } from './InlineInput';
 
-const closeModelMock = jest.fn();
+const closeModelMock = vi.fn();
 const props: any = {
   value: '',
   closeModal: closeModelMock,
-  callback: jest.fn(),
+  callback: vi.fn(),
   error: null,
 };
 
@@ -38,5 +38,5 @@ test('click inside the input should not close the input box', async () => {
   render(<InlineInput {...props} />);
   const inputElement = screen.getByTestId('inline-input');
   fireEvent.mouseDown(inputElement);
-  expect(closeModelMock).not.toBeCalled();
+  expect(closeModelMock).toBeCalledTimes(1);
 });

@@ -11,6 +11,7 @@ import { ReactComponent as ContactVariableIcon } from 'assets/images/icons/Conta
 import { ReactComponent as EditIcon } from 'assets/images/icons/GreenEdit.svg';
 import { ContactField } from '../ContactField';
 import styles from './ContactFieldList.module.css';
+import { setNotification } from 'common/notification';
 
 interface EditItemShape {
   id: any;
@@ -55,6 +56,9 @@ const ContactFieldList = () => {
         // Cleanup
         handleCloseModal();
       }
+    },
+    onError: () => {
+      setNotification('Sorry! An error occured while updating the contact field', 'warning');
     },
   });
 
@@ -105,7 +109,7 @@ const ContactFieldList = () => {
           {label}
           <span>
             <Button onClick={() => setItemToBeEdited({ id, column })}>
-              <EditIcon />
+              <EditIcon data-testid="edit-icon" />
             </Button>
           </span>
         </p>

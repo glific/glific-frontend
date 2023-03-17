@@ -25,7 +25,6 @@ export const Captcha = ({
     if (!executeRecaptcha) {
       return;
     }
-
     const token = await executeRecaptcha(action);
     onTokenUpdate(token);
   }, [executeRecaptcha]);
