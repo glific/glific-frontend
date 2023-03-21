@@ -10,15 +10,12 @@ export interface LayoutProps {
 }
 
 export const Layout = ({ children }: LayoutProps) => {
-  const { drawerOpen, setDrawerOpen } = useContext(SideDrawerContext);
-  let mainStyle = styles.Main;
-  if (!drawerOpen) {
-    mainStyle = styles.MainFullWidth;
-  }
+  const { setDrawerOpen } = useContext(SideDrawerContext);
+
   return (
     <>
       <SideDrawer />
-      <main className={mainStyle} data-testid="layout">
+      <main className={styles.MainFullWidth} data-testid="layout">
         <div className={styles.MobileHeader}>
           <img src={GlificLogo} className={styles.GlificLogo} alt="Glific" />
           <span
