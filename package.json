@@ -21,7 +21,7 @@
     "@glific/flow-editor": "^1.19.1",
     "@jumpn/utils-graphql": "^0.6.0",
     "@mui/icons-material": "^5.11.9",
-    "@mui/material": "^5.11.10",
+    "@mui/material": "^5.11.12",
     "@mui/x-date-pickers": "^5.0.20",
     "@stripe/react-stripe-js": "^1.16.5",
     "@stripe/stripe-js": "^1.47.0",
