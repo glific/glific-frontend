@@ -7,7 +7,7 @@ const props = {
   subtitle: 'How to get started',
   links: [{ title: 'test', link: 'www.example.com' }],
   buttonText: 'Continue',
-  handleStep: jest.fn(),
+  handleStep: vi.fn(),
 };
 
 test('it renders organization onboarding pre-requisits information', () => {

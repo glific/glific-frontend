@@ -15,9 +15,14 @@
 
 @media only screen and (max-width: 768px) {
   .ChatConversations {
-    display: none !important;
     width: 100% !important;
   }
+
+  .ChatMessages {
+    display: none;
+    width: 100%;
+  }
+
   .TabContainer {
     display: flex !important;
     width: 100% !important;

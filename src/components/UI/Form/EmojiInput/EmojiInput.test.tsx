@@ -3,7 +3,7 @@ import { EmojiInput } from './EmojiInput';
 import { EditorState } from 'draft-js';
 import userEvent from '@testing-library/user-event';
 
-const setFieldValueMock = jest.fn();
+const setFieldValueMock = vi.fn();
 
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
@@ -12,8 +12,8 @@ Object.defineProperty(window, 'matchMedia', {
       matches: false,
       media: query,
       onchange: null,
-      addListener: jest.fn(),
-      removeListener: jest.fn(),
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
     };
   },
 });
@@ -35,7 +35,7 @@ const wrapper = (
       values: { input: EditorState.createEmpty() },
       setFieldValue: setFieldValueMock,
     }}
-    field={{ name: 'input', value: EditorState.createEmpty(), onChange: jest.fn() }}
+    field={{ name: 'input', value: EditorState.createEmpty(), onChange: vi.fn() }}
     label="Title"
     placeholder="Title"
     rows={10}

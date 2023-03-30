@@ -4,7 +4,7 @@ import { Navigate, useLocation } from 'react-router-dom';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 
-import { REACT_APP_GLIFIC_REGISTRATION_API } from 'config';
+import { VITE_GLIFIC_REGISTRATION_API } from 'config';
 import { Input } from 'components/UI/Form/Input/Input';
 import { sendOTP } from 'services/AuthService';
 import setLogs from 'config/logs';
@@ -100,7 +100,7 @@ export const ConfirmOTP = () => {
     }
 
     axios
-      .post(REACT_APP_GLIFIC_REGISTRATION_API, {
+      .post(VITE_GLIFIC_REGISTRATION_API, {
         user: {
           name: userObject.name,
           phone: userObject.phone,
@@ -121,7 +121,7 @@ export const ConfirmOTP = () => {
               phone: userObject.phone,
               otp: values.OTP,
             },
-          }} URL:${REACT_APP_GLIFIC_REGISTRATION_API}`,
+          }} URL:${VITE_GLIFIC_REGISTRATION_API}`,
           'info'
         );
         setLogs(error, 'error');

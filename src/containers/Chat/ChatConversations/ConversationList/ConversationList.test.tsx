@@ -26,7 +26,7 @@ const conversationList = (
       <ConversationList
         searchVal=""
         selectedContactId={2}
-        setSelectedContactId={jest.fn()}
+        setSelectedContactId={vi.fn()}
         savedSearchCriteria=""
         searchMode={false}
         searchParam={{}}
@@ -51,7 +51,7 @@ const props: any = {
   searchMode: false,
   searchParam: {},
   selectedCollectionId: '2',
-  setSelectedCollectionId: jest.fn(),
+  setSelectedCollectionId: vi.fn(),
   entityType: 'collection',
 };
 
@@ -125,7 +125,7 @@ test('it should render conversation collection list with searched value', async 
 const contactProps: any = {
   searchVal: 'III',
   selectedContactId: 216,
-  setSelectedContactId: jest.fn(),
+  setSelectedContactId: vi.fn(),
   searchMode: false,
   searchParam: {},
   entityType: 'contact',

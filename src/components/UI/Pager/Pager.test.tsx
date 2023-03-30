@@ -91,9 +91,9 @@ describe('Server Table test', () => {
     expect(
       wrapper.getByTestId('tableFooter').querySelectorAll('.MuiTablePagination-displayedRows')[0]
     ).toHaveTextContent('1–5 of 5');
-    expect(wrapper.getByTestId('tableFooter').querySelector('.MuiTablePagination-select')).toHaveTextContent(
-      '50'
-    );
+    expect(
+      wrapper.getByTestId('tableFooter').querySelector('.MuiTablePagination-select')
+    ).toHaveTextContent('50');
   });
 
   it('renders column names correctly', () => {

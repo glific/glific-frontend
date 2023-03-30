@@ -83,6 +83,9 @@ export const FlowEditor = () => {
         window.location.reload();
       }
     },
+    onError: (error) => {
+      setNotification('An error occured while resetting the flow count', 'warning');
+    },
   });
 
   const [publishFlow] = useMutation(PUBLISH_FLOW, {

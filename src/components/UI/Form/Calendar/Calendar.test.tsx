@@ -2,7 +2,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { backspace } from 'common/test-utils';
 import { Calendar } from './Calendar';
 
-const setFieldValueMock = jest.fn();
+const setFieldValueMock = vi.fn();
 describe('<Calendar />', () => {
   const getProps = () => ({
     name: 'dateFrom',

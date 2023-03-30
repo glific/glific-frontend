@@ -90,7 +90,7 @@
 
 .ErrorMsgIcon {
   margin: auto 12px;
-  flex: none;
+  height: 100%;
 }
 
 .WarningTooltip {
@@ -269,4 +269,9 @@
   padding-top: 4px;
   border-radius: 8px;
   box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.12);
+}
+
+.Icon {
+  align-items: center;
+  display: flex;
 }

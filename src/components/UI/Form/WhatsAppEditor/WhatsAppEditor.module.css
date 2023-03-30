@@ -1,11 +1,6 @@
-.EmojiButton {
-  position: absolute;
-  bottom: 0px;
-  right: 78px;
-}
-
 .Editor {
-  width: 75%;
+  overflow: auto;
+  width: 100%;
   min-height: 40px;
 }
 
@@ -32,17 +27,4 @@ span.emoji-mart-emoji {
 
 .emoji-mart-emoji {
   font-size: medium;
-}
-
-@media only screen and (max-width: 768px) {
-  .Editor {
-    width: 100%;
-    min-height: 40px;
-  }
-
-  .EmojiButton {
-    position: absolute;
-    bottom: -8%;
-    right: 20%;
-  }
 }

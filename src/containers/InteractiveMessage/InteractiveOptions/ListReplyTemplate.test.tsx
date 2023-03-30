@@ -17,13 +17,13 @@ const props: any = {
       templateButtons: inputFields,
     },
   },
-  onListAddClick: jest.fn(),
-  onListRemoveClick: jest.fn(),
-  onListItemAddClick: jest.fn(),
-  onListItemRemoveClick: jest.fn(),
-  onInputChange: jest.fn(),
+  onListAddClick: vi.fn(),
+  onListRemoveClick: vi.fn(),
+  onListItemAddClick: vi.fn(),
+  onListItemRemoveClick: vi.fn(),
+  onInputChange: vi.fn(),
 };
-const mock = jest.fn();
+const mock = vi.fn();
 
 test('it renders the template', async () => {
   render(
@@ -44,7 +44,7 @@ test('it renders the template', async () => {
   fireEvent.blur(title);
   fireEvent.blur(description);
 
-  const deleteItem = screen.getByText('Red.svg');
+  const deleteItem = screen.getByTestId('delete-icon');
   expect(deleteItem).toBeInTheDocument();
 
   fireEvent.click(deleteItem);
@@ -91,7 +91,7 @@ test('it renders template and perform actions', async () => {
   fireEvent.click(buttonToAddListItem);
   await waitFor(() => {});
 
-  const deleteList = screen.getByText('Red.svg');
+  const deleteList = screen.getByTestId('delete-icon');
   expect(deleteList).toBeInTheDocument();
 
   fireEvent.click(deleteList);

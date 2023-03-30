@@ -1,18 +1,33 @@
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, act } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
+import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 import axios from 'axios';
+import { vi } from 'vitest';
 
 import { Registration } from './Registration';
-import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 
-jest.mock('axios');
-const mockedAxios = axios as jest.Mocked<typeof axios>;
+vi.mock('axios');
+const mockedAxios = axios as any;
+
+vi.mock('react-google-recaptcha-v3', async () => {
+  const mod = await vi.importActual<any>('react-google-recaptcha-v3');
+  return {
+    ...mod,
+    useGoogleReCaptcha: () => {
+      return {
+        executeRecaptcha: () => {
+          return 'test token';
+        },
+      };
+    },
+  };
+});
 
 const props = {
   title: 'Setup your NGO on Glific',
   buttonText: 'GET STARTED',
-  handleStep: jest.fn(),
+  handleStep: vi.fn(),
 };
 
 const wrapper = (
@@ -25,7 +40,7 @@ const wrapper = (
 
 describe('<Registration />', () => {
   beforeEach(() => {
-    jest.resetAllMocks();
+    vi.resetAllMocks();
   });
 
   test('it should render correctly', async () => {

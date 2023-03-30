@@ -66,7 +66,7 @@ const props: any = {
   body: 'Test body',
   globalButtons,
   items,
-  onGlobalButtonClick: jest.fn(),
+  onGlobalButtonClick: vi.fn(),
   component: null,
 };
 
@@ -101,8 +101,8 @@ test('it renders ListReplyTemplate on SimulatorScreen', async () => {
 const listProps: any = {
   items: { items, context: { id: '', gsId: 'scscs' } },
   drawerTitle: 'Title',
-  onItemClick: jest.fn(),
-  onDrawerClose: jest.fn(),
+  onItemClick: vi.fn(),
+  onDrawerClose: vi.fn(),
 };
 
 test('it renders ListReplyTemplate on SimulatorScreen and opens drawer', async () => {

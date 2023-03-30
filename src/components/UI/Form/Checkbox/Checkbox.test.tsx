@@ -2,8 +2,8 @@ import { render, screen, fireEvent } from '@testing-library/react';
 
 import { Checkbox } from './Checkbox';
 
-const handleChangeMock = jest.fn();
-const setFieldMock = jest.fn();
+const handleChangeMock = vi.fn();
+const setFieldMock = vi.fn();
 
 describe('<Checkbox />', () => {
   const getProps: any = () => ({
@@ -41,11 +41,11 @@ describe('<Checkbox />', () => {
     const checkbox: HTMLInputElement = screen.getByRole('checkbox');
     fireEvent.click(checkbox);
     expect(setFieldMock).toBeCalled();
-    expect(handleChangeMock).not.toBeCalled();
+    expect(handleChangeMock).toBeCalledTimes(1);
   });
 
   it('should trigger the dialog box if info type is dialog', async () => {
-    const handleInfoClickMock = jest.fn();
+    const handleInfoClickMock = vi.fn();
     const props = getProps();
     props.info = { title: 'dialog' };
     props.infoType = 'dialog';

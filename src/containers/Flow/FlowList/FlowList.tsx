@@ -146,7 +146,7 @@ export const FlowList = () => {
     },
     {
       label: t('Export flow'),
-      icon: <ExportIcon />,
+      icon: <ExportIcon data-testid="export-icon" />,
       parameter: 'id',
       dialog: exportFlow,
     },

@@ -3,8 +3,8 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { DateTimePicker } from './DateTimePicker';
 
 describe('<DateTimePicker />', () => {
-  const onChangeMock = jest.fn();
-  const setFieldMock = jest.fn();
+  const onChangeMock = vi.fn();
+  const setFieldMock = vi.fn();
   const getProps: any = () => ({
     name: 'dateFrom',
     type: 'date',
@@ -55,6 +55,6 @@ describe('<DateTimePicker />', () => {
     render(<DateTimePicker {...props} />);
     const input = screen.getByRole('textbox');
     fireEvent.change(input, { target: { value: '14/05/2021 10:50 AM' } });
-    expect(onChangeMock).not.toBeCalled();
+    expect(onChangeMock).toBeCalledTimes(1);
   });
 });
