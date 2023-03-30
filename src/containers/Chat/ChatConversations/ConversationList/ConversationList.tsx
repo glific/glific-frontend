@@ -166,32 +166,6 @@ export const ConversationList = ({
     },
   });
 
-  const [loadMoreConversations, { data: contactsData }] = useLazyQuery<any>(SEARCH_QUERY, {
-    onCompleted: (searchData) => {
-      if (searchData && searchData.search.length === 0) {
-        setShowLoadMore(false);
-      } else {
-        // Now if there is search string and tab is collection then load more will return appropriate data
-        const variables: any = queryVariables;
-        if (selectedCollectionId && searchVal) {
-          variables.filter.groupLabel = searchVal;
-        }
-        // save the conversation and update cache
-        updateConversations(searchData, variables);
-        setShowLoadMore(true);
-
-        setLoadingOffset(loadingOffset + DEFAULT_CONTACT_LOADMORE_LIMIT);
-      }
-      setShowLoading(false);
-    },
-  });
-
-  useEffect(() => {
-    if (contactsData) {
-      setShowLoading(false);
-    }
-  }, [contactsData]);
-
   const [getFilterConvos, { called, loading, error, data: searchData }] =
     useLazyQuery<any>(SEARCH_QUERY);
 
@@ -454,9 +428,29 @@ export const ConversationList = ({
         },
       };
 
-      loadMoreConversations({
-        variables: conversationLoadMoreVariables,
-      });
+      client
+        .query({
+          query: SEARCH_QUERY,
+          variables: conversationLoadMoreVariables,
+        })
+        .then(({ data: loadMoreData }) => {
+          if (loadMoreData && loadMoreData.search.length === 0) {
+            setShowLoadMore(false);
+          } else {
+            // Now if there is search string and tab is collection then load more will return appropriate data
+            const variables: any = queryVariables;
+            if (selectedCollectionId && searchVal) {
+              variables.filter.groupLabel = searchVal;
+            }
+            // save the conversation and update cache
+            updateConversations(loadMoreData, variables);
+            setShowLoadMore(true);
+
+            setLoadingOffset(loadingOffset + DEFAULT_CONTACT_LOADMORE_LIMIT);
+          }
+          setShowLoading(false);
+        })
+        .catch(() => setShowLoading(false));
     }
   };
 
