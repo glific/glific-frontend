@@ -2,7 +2,7 @@ import { render, waitFor } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 
-import { TEMPLATE_MOCKS } from 'containers/Template/Template.test.helper';
+import { HSM_LIST, TEMPLATE_MOCKS } from 'containers/Template/Template.test.helper';
 import { HSMList } from './HSMList';
 import { hsmTemplatesCountQuery } from 'mocks/Template';
 import userEvent from '@testing-library/user-event';
@@ -27,7 +27,7 @@ export const syncTemplateQuery = {
   },
 };
 
-const mocks = [...TEMPLATE_MOCKS, hsmTemplatesCountQuery, syncTemplateQuery];
+const mocks = [...TEMPLATE_MOCKS, hsmTemplatesCountQuery, syncTemplateQuery, ...HSM_LIST];
 
 const template = (
   <MockedProvider mocks={mocks} addTypename={false}>

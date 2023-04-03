@@ -52,11 +52,11 @@ const searchListQuery = (QUERY: any, filter: any, limit: number, offset: number,
   return {
     query: QUERY,
     variables: {
-      filter: filter,
+      filter,
       opts: {
-        limit: limit,
-        offset: offset,
-        order: order,
+        limit,
+        offset,
+        order,
       },
     },
   };
@@ -80,6 +80,27 @@ export const getSearchesQuery = [
   },
   {
     request: searchListQuery(SEARCH_LIST_QUERY, {}, 100, 0, 'ASC'),
+    result: {
+      data: {
+        savedSearches: [
+          {
+            args: '{"messageOpts":{"offset":0,"limit":10},"filter":{"term":"","includeLabels":["10"]},"contactOpts":{"offset":0,"limit":20}}',
+            id: '8',
+            label: 'Test search',
+            shortcode: 'Save Search',
+          },
+        ],
+      },
+    },
+  },
+  {
+    request: {
+      query: SEARCH_LIST_QUERY,
+      variables: {
+        filter: {},
+        opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'shortcode' },
+      },
+    },
     result: {
       data: {
         savedSearches: [

@@ -3,7 +3,7 @@ import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router';
 import { vi } from 'vitest';
 
-import { countCollectionContactsQuery } from 'mocks/Contact';
+import { countCollectionContactsQuery, getCollectionContactsQuery } from 'mocks/Contact';
 import { getCollectionQuery } from 'mocks/Collection';
 import { CollectionContact } from './CollectionContact';
 
@@ -19,6 +19,7 @@ const mocks = [
   countCollectionContactsQuery,
   getCollectionQuery,
   getCollectionQuery,
+  getCollectionContactsQuery
 ];
 
 const wrapper = (
