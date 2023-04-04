@@ -94,6 +94,7 @@ const searchCollectionMocks = [
     searchGroup: true,
     groupLabel: 'test',
   }),
+  conversationCollectionQuery('2', 'Test collection'),
 ];
 
 test('it should render conversation collection list with searched value', async () => {
