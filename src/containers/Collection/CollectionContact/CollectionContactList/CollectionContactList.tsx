@@ -74,7 +74,7 @@ export const CollectionContactList = ({ title }: CollectionContactListProps) => 
       title={title}
       listItem="contacts"
       listItemName="contact"
-      searchParameter={['name']}
+      searchParameter={['term']}
       filters={{ includeGroups: collectionId }}
       button={{ show: false, label: '' }}
       pageLink="contact"
