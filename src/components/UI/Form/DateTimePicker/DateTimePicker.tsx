@@ -1,5 +1,4 @@
 import { LocalizationProvider, DateTimePicker as Picker } from '@mui/x-date-pickers';
-import { TextField } from '@mui/material';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import 'date-fns';
 import { getIn } from 'formik';
@@ -41,18 +40,15 @@ export const DateTimePicker = ({
       <div className={styles.DateTimePicker}>
         <Picker
           className={styles.Text}
-          renderInput={(props) => (
-            <TextField
-              data-testid="date-picker-inline"
-              helperText={hasError ? errorText : ''}
-              {...props}
-            />
-          )}
           label={placeholder}
-          inputFormat={format}
+          format={format}
           value={dateValue}
-          InputProps={{
-            error: hasError,
+          data-testid="time-picker"
+          slotProps={{
+            textField: {
+              helperText: hasError ? errorText : '',
+              error: hasError,
+            },
           }}
           onChange={handleDateChange}
           minDate={minDate}

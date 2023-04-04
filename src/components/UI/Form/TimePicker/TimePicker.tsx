@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import 'date-fns';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { LocalizationProvider, TimePicker as Picker } from '@mui/x-date-pickers';
+import { LocalizationProvider, TimePicker as Picker, renderTimeViewClock } from '@mui/x-date-pickers';
 import moment from 'moment';
-import { TextField } from '@mui/material';
 import { getIn } from 'formik';
 
 import styles from './TimePicker.module.css';
@@ -45,22 +44,18 @@ export const TimePicker = ({
           className={styles.Picker}
           label={placeholder}
           open={open}
-          InputProps={{
-            error: hasError,
-            onClick: () => !disabled && setOpen(true),
-          }}
           onClose={() => setOpen(false)}
           disabled={disabled}
           value={timeValue}
           onChange={handleDateChange}
-          renderInput={(params) => (
-            <TextField
-              data-testid="time-picker"
-              helperText={hasError ? errorText : ''}
-              {...params}
-              error={hasError}
-            />
-          )}
+          data-testid="time-picker"
+          slotProps={{
+            textField: {
+              helperText: hasError ? errorText : '',
+              error: hasError,
+              onClick: () => !disabled && setOpen(true),
+            },
+          }}
         />
         {helperText && (
           <div id="helper-text" className={styles.HelperText}>

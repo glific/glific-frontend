@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
-import { TextField } from '@mui/material';
 import 'date-fns';
 import { getIn } from 'formik';
 
@@ -49,24 +48,20 @@ export const Calendar = ({
           label={placeholder}
           open={open}
           value={dateValue}
-          inputFormat={format}
+          format={format}
           onChange={handleDateChange}
           className={styles.CalendarInput}
           disabled={disabled}
           minDate={minDate}
-          InputProps={{
-            error: hasError,
-            onClick: () => !disabled && setOpen(true),
+          data-testid="date-picker-inline"
+          slotProps={{
+            textField: {
+              helperText: hasError ? errorText : '',
+              error: hasError,
+              onClick: () => !disabled && setOpen(true),
+            },
           }}
           onClose={() => setOpen(false)}
-          renderInput={(params) => (
-            <TextField
-              helperText={hasError ? errorText : ''}
-              data-testid="date-picker-inline"
-              {...params}
-              error={hasError}
-            />
-          )}
         />
       </div>
     </LocalizationProvider>
