@@ -258,6 +258,7 @@ export const List = ({
   };
 
   useEffect(() => {
+    refetchValues();
     refetchCount();
   }, [searchVal]);
 
