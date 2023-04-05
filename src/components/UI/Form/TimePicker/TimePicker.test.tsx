@@ -14,6 +14,8 @@ const timePickerProps: any = (disabled: boolean) => {
   };
 };
 
+const cleanText = (timeValue: any) => timeValue.replace(/\u200e|\u2066|\u2067|\u2068|\u2069/g, '');
+
 describe('<TimePicker />', () => {
   const props = timePickerProps(false);
 
@@ -41,7 +43,7 @@ describe('<TimePicker />', () => {
     render(wrapper);
     const input = screen.getByRole('textbox');
     fireEvent.change(input, { target: { value: '09:00 am' } });
-    expect(input).toHaveValue('09:00 am');
+    expect(cleanText(input.getAttribute('value'))).to.equal('09:00 am');
   });
 
   it('should set the field value to null if no date is passed', async () => {
