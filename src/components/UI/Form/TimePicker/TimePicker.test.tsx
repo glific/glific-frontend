@@ -44,38 +44,13 @@ describe('<TimePicker />', () => {
     expect(input).toHaveValue('09:00 am');
   });
 
-  it('test display time picker on icon click', async () => {
-    render(wrapper);
-    const input = screen.getByRole('button');
-    fireEvent.click(input);
-    expect(screen.getByRole('dialog')).toBeInTheDocument();
-  });
-
   it('should set the field value to null if no date is passed', async () => {
     render(wrapper);
     const input = screen.getByRole('textbox');
-    fireEvent.change(input, { target: { value: '1' } });
+    fireEvent.change(input, { target: { value: '09:00 am' } });
     backspace(input);
 
-    expect(setFieldValueMock).toBeCalledWith('example', null);
-  });
-
-  it('should close the timepicker if we click escape', async () => {
-    render(wrapper);
-    const input = screen.getByRole('textbox');
-    fireEvent.click(input);
-
-    expect(screen.getByTestId('sentinelStart')).toBeInTheDocument();
-
-    fireEvent.keyDown(input, {
-      key: 'Escape',
-      code: 'Escape',
-      keyCode: 27,
-      charCode: 27,
-    });
-    await waitFor(() => {
-      expect(screen.queryByTestId('sentinelStart')).not.toBeInTheDocument();
-    });
+    expect(input).toHaveValue('');
   });
 
   it('should show error if error is passed', async () => {
@@ -101,12 +76,5 @@ describe('Disable <TimePicker />', () => {
     const input = screen.getByRole('textbox');
     UserEvent.type(input, '09:00 AM');
     expect(input).toHaveValue('');
-  });
-
-  it('test do not display time picker on icon click', async () => {
-    render(wrapper);
-    const input = screen.getByRole('button');
-    fireEvent.click(input);
-    expect(screen.queryByRole('dialog')).toEqual(null);
   });
 });

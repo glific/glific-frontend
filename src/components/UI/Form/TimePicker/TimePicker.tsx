@@ -1,7 +1,11 @@
 import { useState } from 'react';
 import 'date-fns';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { LocalizationProvider, TimePicker as Picker, renderTimeViewClock } from '@mui/x-date-pickers';
+import {
+  LocalizationProvider,
+  TimePicker as Picker,
+  renderTimeViewClock,
+} from '@mui/x-date-pickers';
 import moment from 'moment';
 import { getIn } from 'formik';
 
@@ -39,7 +43,7 @@ export const TimePicker = ({
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
-      <div className={styles.TimePicker}>
+      <div className={styles.TimePicker} data-testid="time-picker">
         <Picker
           className={styles.Picker}
           label={placeholder}
@@ -48,7 +52,6 @@ export const TimePicker = ({
           disabled={disabled}
           value={timeValue}
           onChange={handleDateChange}
-          data-testid="time-picker"
           slotProps={{
             textField: {
               helperText: hasError ? errorText : '',
