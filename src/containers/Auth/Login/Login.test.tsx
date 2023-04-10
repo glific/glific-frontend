@@ -50,24 +50,25 @@ describe('<Login />', () => {
   });
 
   it('renders component properly', async () => {
+    // let's mock successful registration submission
+    const responseData = { data: { data: { data: {} } } };
+
+    const successPromise = vi.fn(() => Promise.resolve(responseData));
+    mockedAxios.post.mockImplementation(() => successPromise());
     const { findByTestId } = render(wrapper);
     const authContainer = await findByTestId('AuthContainer');
     expect(authContainer).toHaveTextContent('Login to your account');
   });
 
   it('test the login form submission with correct creds', async () => {
-    const { container } = render(wrapper);
-
-    await userAction(container);
-
     // let's mock successful registration submission
     const responseData = { data: { data: { data: {} } } };
 
     const successPromise = vi.fn(() => Promise.resolve(responseData));
+    mockedAxios.post.mockImplementation(() => successPromise());
+    const { container } = render(wrapper);
 
-    act(() => {
-      mockedAxios.post.mockImplementationOnce(() => successPromise());
-    });
+    await userAction(container);
 
     await waitFor(() => {
       expect(successPromise).toHaveBeenCalled();
@@ -75,17 +76,14 @@ describe('<Login />', () => {
   });
 
   it('test the login form submission with incorrect creds', async () => {
-    const { container } = render(wrapper);
-
-    userAction(container);
-
     // set the mock error case while login
     const errorMessage = 'Cannot login';
     const rejectPromise = vi.fn(() => Promise.reject(errorMessage));
 
-    act(() => {
-      mockedAxios.post.mockImplementationOnce(() => rejectPromise());
-    });
+    mockedAxios.post.mockImplementationOnce(() => rejectPromise());
+    const { container } = render(wrapper);
+
+    userAction(container);
 
     await waitFor(() => {
       expect(rejectPromise).toHaveBeenCalled();
@@ -93,6 +91,12 @@ describe('<Login />', () => {
   });
 
   it('test the login form submission with error', async () => {
+    // let's mock successful registration submission
+    const responseData = { data: { data: { data: {} } } };
+
+    const successPromise = vi.fn(() => Promise.resolve(responseData));
+
+    mockedAxios.post.mockImplementationOnce(() => successPromise());
     const { container } = render(
       <MockedProvider mocks={[getCurrentUserErrorQuery]}>
         <MemoryRouter>
@@ -103,21 +107,18 @@ describe('<Login />', () => {
 
     userAction(container);
 
-    // let's mock successful registration submission
-    const responseData = { data: { data: { data: {} } } };
-
-    const successPromise = vi.fn(() => Promise.resolve(responseData));
-
-    act(() => {
-      mockedAxios.post.mockImplementationOnce(() => successPromise());
-    });
-
     await waitFor(() => {
       expect(successPromise).toHaveBeenCalled();
     });
   });
 
   it('test the login form submission with error(invalid role)', async () => {
+    // let's mock successful registration submission
+    const responseData = { data: { data: { data: {} } } };
+
+    const successPromise = vi.fn(() => Promise.resolve(responseData));
+
+    mockedAxios.post.mockImplementationOnce(() => successPromise());
     const { container } = render(
       <MockedProvider mocks={[getCurrentUserInvalidRoleQuery]}>
         <MemoryRouter>
@@ -127,15 +128,6 @@ describe('<Login />', () => {
     );
 
     userAction(container);
-
-    // let's mock successful registration submission
-    const responseData = { data: { data: { data: {} } } };
-
-    const successPromise = vi.fn(() => Promise.resolve(responseData));
-
-    act(() => {
-      mockedAxios.post.mockImplementationOnce(() => successPromise());
-    });
 
     await waitFor(() => {
       expect(successPromise).toHaveBeenCalled();
