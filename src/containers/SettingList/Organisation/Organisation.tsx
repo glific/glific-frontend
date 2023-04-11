@@ -53,9 +53,10 @@ export const Organisation = () => {
   const { data: languages } = useQuery(GET_LANGUAGES, {
     variables: { opts: { order: 'ASC' } },
   });
-  const { data: tierData } = useQuery(GET_QUALITY_RATING, {
+
+  useQuery(GET_QUALITY_RATING, {
     onCompleted: (tierData) => {
-      if (tierData) setTier(tierData?.qualityRating?.currentLimit);
+      if (tierData) setTier(tierData.qualityRating?.currentLimit);
     },
   });
 

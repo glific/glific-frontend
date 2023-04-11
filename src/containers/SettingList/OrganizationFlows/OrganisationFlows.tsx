@@ -29,7 +29,7 @@ const queries = {
   deleteItemQuery: DELETE_ORGANIZATION,
 };
 
-export const Organisation = () => {
+export const OrganisationFlows = () => {
   const client = useApolloClient();
   const [hours, setHours] = useState(true);
   const [enabledDays, setEnabledDays] = useState<any>([]);
@@ -346,6 +346,7 @@ export const Organisation = () => {
     let optinFlowId = null;
 
     if (newcontactFlowEnabled) {
+      console.log(payload);
       newContactFlowId = payload.newcontactFlowId.id;
     }
 
@@ -395,4 +396,4 @@ export const Organisation = () => {
   );
 };
 
-export default Organisation;
+export default OrganisationFlows;

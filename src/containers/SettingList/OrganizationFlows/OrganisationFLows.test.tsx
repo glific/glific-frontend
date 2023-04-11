@@ -4,14 +4,14 @@ import { MockedProvider } from '@apollo/client/testing';
 import { BrowserRouter as Router } from 'react-router-dom';
 
 import { ORGANISATION_MOCKS } from '../SettingList.test.helper';
-import { Organisation } from './OrganisationFlows';
+import { OrganisationFlows } from './OrganisationFlows';
 
 const mocks = ORGANISATION_MOCKS;
 
 const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <Router>
-      <Organisation />
+      <OrganisationFlows />
     </Router>
   </MockedProvider>
 );
@@ -41,7 +41,7 @@ test('it renders component in edit mode', async () => {
   const { getByText, getByTestId } = render(
     <MockedProvider mocks={[...ORGANISATION_MOCKS]} addTypename={false}>
       <Router>
-        <Organisation />
+        <OrganisationFlows />
       </Router>
     </MockedProvider>
   );
@@ -59,17 +59,6 @@ test('it renders component in edit mode', async () => {
 
       fireEvent.click(selectedOption);
     });
-  });
-
-  await waitFor(() => {
-    const [hours] = screen.getAllByRole('checkbox');
-    fireEvent.click(hours);
-  });
-
-  await waitFor(() => {
-    const phoneNumber = getByTestId('phoneNumber');
-    fireEvent.click(phoneNumber);
-    expect(phoneNumber).toBeInTheDocument();
   });
 
   await waitFor(() => {

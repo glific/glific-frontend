@@ -49,24 +49,6 @@ test('it renders component in edit mode', async () => {
   expect(getByText('Loading...')).toBeInTheDocument();
 
   await waitFor(() => {
-    const autoCompleteInput = screen.getAllByTestId('autocomplete-element');
-
-    fireEvent.mouseDown(autoCompleteInput[3]);
-
-    waitFor(() => {
-      const selectedOption = screen.getByText('Monday');
-      expect(selectedOption).toBeInTheDocument();
-
-      fireEvent.click(selectedOption);
-    });
-  });
-
-  await waitFor(() => {
-    const [hours] = screen.getAllByRole('checkbox');
-    fireEvent.click(hours);
-  });
-
-  await waitFor(() => {
     const phoneNumber = getByTestId('phoneNumber');
     fireEvent.click(phoneNumber);
     expect(phoneNumber).toBeInTheDocument();
