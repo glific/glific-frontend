@@ -148,7 +148,7 @@ export const Auth = ({
                     fieldInfo = { ...field, handlePhone };
                   }
                   const key = index;
-                  return <Field className={styles.Form} key={key} {...fieldInfo} />;
+                  return <Field key={key} {...fieldInfo} />;
                 })}
                 <div className={styles.Link}>
                   <Link to={`/${linkURL}`}>{linkText}</Link>

@@ -47,6 +47,9 @@ const BlockContactList = lazy(
   () => import('containers/BlockContact/BlockContactList/BlockContactList')
 );
 const Organisation = lazy(() => import('containers/SettingList/Organisation/Organisation'));
+const OrganisationFLows = lazy(
+  () => import('containers/SettingList/OrganizationFlows/OrganisationFlows')
+);
 const WebhookLogsList = lazy(
   () => import('containers/WebhookLogs/WebhookLogsList/WebhookLogsList')
 );
@@ -119,6 +122,7 @@ const routeAdmin = (
     <Route path="template/:id/edit" element={<HSM />} />
     <Route path="settings" element={<SettingList />} />
     <Route path="settings/organization" element={<Organisation />} />
+    <Route path="settings/organization-flows" element={<OrganisationFLows />} />
     <Route path="settings/billing" element={<Billing />} />
     <Route path="settings/:type" element={<Providers />} />
     <Route path="blocked-contacts" element={<BlockContactList />} />

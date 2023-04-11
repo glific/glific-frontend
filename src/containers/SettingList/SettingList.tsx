@@ -20,7 +20,12 @@ export const SettingList = () => {
     {
       name: 'Organisation',
       shortcode: 'organization',
-      description: t('Manage organisation name, supported languages, hours of operations.'),
+      description: t('Manage organisation name, supported languages.'),
+    },
+    {
+      name: 'Flows',
+      shortcode: 'organization-flows',
+      description: t('Manage organisation flows.'),
     },
     {
       name: 'Billing',

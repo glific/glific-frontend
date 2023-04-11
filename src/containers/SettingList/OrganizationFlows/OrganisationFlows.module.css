@@ -1,0 +1,22 @@
+.Item {
+  display: inline-block;
+  width: 48%;
+  vertical-align: top;
+  margin-right: 2% !important;
+  margin: 0 0 10px 0;
+}
+
+.CheckboxLabel {
+  font-size: 20px;
+  font-weight: 800;
+  color: '#073f24';
+  line-height: 1;
+}
+
+.AllDayCheck {
+  margin-left: 4px;
+}
+
+.AddDayLabel {
+  font-size: 16px;
+}
