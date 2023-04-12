@@ -29,7 +29,7 @@ describe('<Calendar />', () => {
   it('test empty date event', async () => {
     render(wrapper);
     const input = screen.getByRole('textbox');
-    expect(input).toHaveValue('');
+    expect(input).toHaveValue('MM / DD / YYYY');
   });
 
   it('test date change event', async () => {
@@ -37,7 +37,7 @@ describe('<Calendar />', () => {
     const input = screen.getByRole('textbox');
 
     fireEvent.change(input, { target: { value: '09/03/2020' } });
-    expect(input).toHaveValue('09/03/2020');
+    expect(input).toHaveValue('09 / 03 / 2020');
   });
 
   it('should set the field value to null if no date is passed', async () => {

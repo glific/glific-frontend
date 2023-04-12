@@ -112,8 +112,8 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
   const [infoDialog, setInfoDialog] = useState(false);
   const [includeUsers, setIncludeUsers] = useState([]);
   const [includeLabels, setIncludeLabels] = useState([]);
-  const [dateFrom, setdateFrom] = useState(null);
-  const [dateTo, setdateTo] = useState(null);
+  const [dateFrom, setdateFrom] = useState<any>(null);
+  const [dateTo, setdateTo] = useState<any>(null);
   const [useExpression, setUseExpression] = useState(false);
   const [dateFromExpression, setdateFromExpression] = useState(null);
   const [dateToExpression, setdateToExpression] = useState(null);
@@ -173,8 +173,8 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
           break;
         case 'dateRange':
           if (Object.prototype.hasOwnProperty.call(filters.filter, 'dateRange')) {
-            setdateFrom(filters.filter.dateRange.from);
-            setdateTo(filters.filter.dateRange.to);
+            setdateFrom(new Date(filters.filter.dateRange.from));
+            setdateTo(new Date(filters.filter.dateRange.to));
             setdateFromExpression(filters.filter.dateRange.from);
             setdateToExpression(filters.filter.dateRange.to);
           }
