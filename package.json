@@ -21,7 +21,7 @@
     "@glific/flow-editor": "^1.19.1-2",
     "@jumpn/utils-graphql": "^0.6.0",
     "@mui/icons-material": "^5.11.16",
-    "@mui/material": "^5.11.16",
+    "@mui/material": "^5.12.0",
     "@mui/x-date-pickers": "^6.1.0",
     "@stripe/react-stripe-js": "^2.1.0",
     "@stripe/stripe-js": "^1.52.1",
@@ -108,8 +108,8 @@
     "@types/react-router-dom": "^5.3.3",
     "@types/react-test-renderer": "^18.0.0",
     "@types/uuid": "^9.0.1",
-    "@vitest/coverage-istanbul": "^0.30.0",
-    "@vitest/ui": "^0.30.0",
+    "@vitest/coverage-istanbul": "^0.30.1",
+    "@vitest/ui": "^0.30.1",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-import": "^2.27.5",
@@ -123,7 +123,7 @@
     "react-test-renderer": "^18.2.0",
     "typescript": "^5.0.4",
     "vite-plugin-eslint": "^1.8.1",
-    "vitest": "^0.30.0",
+    "vitest": "^0.30.1",
     "yarn-upgrade-all": "^0.7.2"
   }
 }
