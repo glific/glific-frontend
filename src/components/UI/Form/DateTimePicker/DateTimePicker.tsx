@@ -37,13 +37,12 @@ export const DateTimePicker = ({
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
-      <div className={styles.DateTimePicker}>
+      <div className={styles.DateTimePicker} data-testid="date-picker-inline">
         <Picker
           className={styles.Text}
           label={placeholder}
           format={format}
           value={dateValue}
-          data-testid="time-picker"
           slotProps={{
             textField: {
               helperText: hasError ? errorText : '',

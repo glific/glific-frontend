@@ -43,7 +43,7 @@ export const Calendar = ({
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
-      <div className={styles.Calendar}>
+      <div className={styles.Calendar} data-testid="date-picker-inline">
         <DatePicker
           label={placeholder}
           open={open}
@@ -53,7 +53,6 @@ export const Calendar = ({
           className={styles.CalendarInput}
           disabled={disabled}
           minDate={minDate}
-          data-testid="date-picker-inline"
           slotProps={{
             textField: {
               helperText: hasError ? errorText : '',

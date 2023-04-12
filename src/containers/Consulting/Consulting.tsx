@@ -68,7 +68,7 @@ export const Consulting = ({ organizationId, setOpenDialog }: ConsultingProps) =
   }: any) => {
     setParticipants(supportMembers);
     setStaff(staffMembers);
-    setWhen(consultingDate);
+    setWhen(new Date(consultingDate));
     setDuration(durationInMin);
     setContent(description);
     setIsBillable(billable);
