@@ -43,7 +43,7 @@ const gqlClient = (history: any) => {
     accessTokenField: 'access_token',
     isTokenValidOrUndefined: () => checkAuthStatusService(),
     fetchAccessToken: async () => renewAuthToken(),
-    handleFetch: () => {},
+    handleFetch: () => { },
     handleResponse: (_operation, accessTokenField) => (response: any) => {
       // here we can both success and failures
       const tokenResponse: any = [];
