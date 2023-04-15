@@ -18,9 +18,16 @@ const wrapper = (
   </MemoryRouter>
 );
 
+export const postRequestMock = () => {
+  const responseData = { data: { data: {} } };
+  const successPromise = vi.fn(() => Promise.resolve(responseData));
+  mockedAxios.post.mockImplementation(() => successPromise());
+};
+
 describe('<Registration />', () => {
   beforeEach(() => {
     vi.resetAllMocks();
+    postRequestMock();
   });
 
   it('should render correctly', async () => {

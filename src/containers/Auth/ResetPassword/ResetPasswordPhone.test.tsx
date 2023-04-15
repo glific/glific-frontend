@@ -5,6 +5,7 @@ import axios from 'axios';
 import { vi } from 'vitest';
 
 import { ResetPasswordPhone } from './ResetPasswordPhone';
+import { postRequestMock } from '../Registration/Registration.test';
 
 vi.mock('axios');
 const mockedAxios = axios as any;
@@ -18,6 +19,7 @@ const wrapper = (
 describe('<ResetPasswordPhone />', () => {
   beforeEach(() => {
     vi.resetAllMocks();
+    postRequestMock();
   });
 
   test('it should render correctly', async () => {

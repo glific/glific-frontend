@@ -92,7 +92,7 @@ export const WalletBalance = ({ fullOpen }: WalletBalanceProps) => {
 
   const updateBalanceValue = (balance: any) => {
     if (balance) {
-      setDisplayBalance(balance);
+      setDisplayBalance(parseFloat(balance).toFixed(2));
     }
   };
 
@@ -101,7 +101,7 @@ export const WalletBalance = ({ fullOpen }: WalletBalanceProps) => {
       const balance = JSON.parse(balanceData.bspbalance);
       // check if we are not getting balance as null
       if (balance) {
-        setDisplayBalance(balance.balance);
+        setDisplayBalance(parseFloat(balance.balance).toFixed(2));
       }
     }
   }, [balanceData]);
