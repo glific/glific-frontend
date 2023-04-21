@@ -6,6 +6,7 @@ import { vi } from 'vitest';
 import axios from 'axios';
 import { ConfirmOTP } from './ConfirmOTP';
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
+import { postRequestMock } from '../Registration/Registration.test';
 
 vi.mock('axios');
 const mockedAxios = axios as any;
@@ -35,6 +36,7 @@ const wrapper = (
 describe('<ConfirmOTP />', () => {
   beforeEach(() => {
     vi.resetAllMocks();
+    postRequestMock();
   });
 
   it('renders component properly', async () => {

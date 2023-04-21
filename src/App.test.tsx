@@ -8,8 +8,10 @@ import { CONVERSATION_MOCKS } from 'mocks/Chat';
 import { setAuthSession, setUserSession } from 'services/AuthService';
 
 const mocks = CONVERSATION_MOCKS;
+import axios from 'axios';
 
 vi.mock('axios');
+const mockedAxios = axios as any;
 
 global.fetch = vi.fn();
 
@@ -23,6 +25,7 @@ const app = (
 
 describe('<App /> ', () => {
   it('it should render <Login /> component by default', async () => {
+    mockedAxios.post.mockImplementation(() => Promise.resolve({}));
     const { getByTestId } = render(app);
 
     await waitFor(() => {
@@ -39,6 +42,7 @@ describe('<App /> ', () => {
 
   it('it should render <Chat /> component if session is active', async () => {
     // let's create token expiry date for tomorrow
+    mockedAxios.post.mockResolvedValue(() => Promise.resolve({}));
 
     const tokenExpiryDate = new Date();
     tokenExpiryDate.setDate(new Date().getDate() + 1);

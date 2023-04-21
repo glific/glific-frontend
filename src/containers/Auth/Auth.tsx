@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Formik, Form, Field } from 'formik';
 import { Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
@@ -11,6 +11,9 @@ import { Button } from 'components/UI/Form/Button/Button';
 import GlificLogo from 'assets/images/logo/Logo.svg';
 // import { Promotion } from './Promotion/Promotion';
 import styles from './Auth.module.css';
+import axios from 'axios';
+import { ORGANIZATION_NAME } from 'config';
+import setLogs from 'config/logs';
 
 export interface AuthProps {
   pageTitle: string;
@@ -53,6 +56,14 @@ export const Auth = ({
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const { t } = useTranslation();
+  const [orgName, setOrgName] = useState('Glific');
+
+  useEffect(() => {
+    axios
+      .post(ORGANIZATION_NAME)
+      .then(({ data }) => setOrgName(data?.data?.name))
+      .catch((error) => setLogs(`orgName error ${JSON.stringify(error)}`, error));
+  }, []);
 
   const boxClass = [styles.Box];
   const boxTitleClass = [styles.BoxTitle];
@@ -207,6 +218,10 @@ export const Auth = ({
         <div>
           <img src={GlificLogo} className={styles.GlificLogo} alt="Glific" />
         </div>
+        <hr className={styles.Break} />
+
+        <div className={styles.OrganizationName}>{orgName}</div>
+
         <div className={boxClass.join(' ')}>
           {formElements}
           {isRegistration && termsOfUse}

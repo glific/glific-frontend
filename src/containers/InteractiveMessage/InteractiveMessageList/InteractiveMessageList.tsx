@@ -130,6 +130,7 @@ export const InteractiveMessageList = () => {
       listIcon={interactiveMsgIcon}
       dialogMessage={dialogMessage}
       noItemText="interactive message"
+      searchParameter={['term']}
       {...queries}
       {...columnAttributes}
       button={{ show: true, label: t('Add New'), symbol: '+' }}

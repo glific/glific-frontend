@@ -17,7 +17,7 @@
 
 .Box {
   border-radius: 12px;
-  margin-top: 5vh;
+  margin-top: 3vh;
   align-content: center;
   justify-content: center;
   flex-grow: 1;
@@ -83,6 +83,14 @@
   text-transform: uppercase;
 }
 
+.OrganizationName {
+  color: #073f24;
+  text-decoration: none;
+  font-size: 36px;
+  font-weight: bolder;
+  margin-top: 0.25rem;
+}
+
 .Auth a {
   color: #119656;
   text-decoration: none;
@@ -94,7 +102,15 @@
   color: #119656;
 }
 
-.Auth hr {
+.Break {
+  margin-top: 10px;
+  height: 1px;
+  width: 120px;
+  color: #eaedec;
+  border-style: solid;
+}
+
+.Or hr {
   margin-top: 32px;
   margin-left: 18px;
   margin-right: 18px;

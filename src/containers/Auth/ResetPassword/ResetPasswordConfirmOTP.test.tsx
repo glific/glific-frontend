@@ -5,6 +5,7 @@ import axios from 'axios';
 import { vi } from 'vitest';
 
 import { ResetPasswordConfirmOTP } from './ResetPasswordConfirmOTP';
+import { postRequestMock } from '../Registration/Registration.test';
 
 vi.mock('axios');
 const mockedAxios = axios as any;
@@ -16,6 +17,9 @@ const wrapper = (
 );
 
 describe('<ResetPasswordConfirmOTP />', () => {
+  beforeEach(() => {
+    postRequestMock();
+  });
   test('it should render', async () => {
     const { findByTestId } = render(wrapper);
 
