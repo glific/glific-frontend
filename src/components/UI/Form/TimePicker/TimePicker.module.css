@@ -2,10 +2,11 @@
   width: 241px;
   display: inline-block;
   padding: 10px 0px;
+  vertical-align: top;
 }
 
 .Picker {
-  width: 90%;
+  width: 95%;
 }
 
 .HelperText {
