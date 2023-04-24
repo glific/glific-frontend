@@ -30,6 +30,7 @@ export const GET_ORGANIZATION = gql`
         }
         signaturePhrase
         newcontactFlowId
+        optinFlowId
       }
     }
   }
@@ -142,6 +143,14 @@ export const GET_ORGANIZATION_PHONE = gql`
           phone
         }
       }
+    }
+  }
+`;
+
+export const GET_QUALITY_RATING = gql`
+  query QualityRating {
+    qualityRating {
+      currentLimit
     }
   }
 `;

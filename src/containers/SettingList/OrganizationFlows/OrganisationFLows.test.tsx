@@ -4,14 +4,14 @@ import { MockedProvider } from '@apollo/client/testing';
 import { BrowserRouter as Router } from 'react-router-dom';
 
 import { ORGANISATION_MOCKS } from '../SettingList.test.helper';
-import { Organisation } from './Organisation';
+import { OrganisationFlows } from './OrganisationFlows';
 
 const mocks = ORGANISATION_MOCKS;
 
 const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <Router>
-      <Organisation />
+      <OrganisationFlows />
     </Router>
   </MockedProvider>
 );
@@ -41,7 +41,7 @@ test('it renders component in edit mode', async () => {
   const { getByText, getByTestId } = render(
     <MockedProvider mocks={[...ORGANISATION_MOCKS]} addTypename={false}>
       <Router>
-        <Organisation />
+        <OrganisationFlows />
       </Router>
     </MockedProvider>
   );
@@ -49,9 +49,16 @@ test('it renders component in edit mode', async () => {
   expect(getByText('Loading...')).toBeInTheDocument();
 
   await waitFor(() => {
-    const phoneNumber = getByTestId('phoneNumber');
-    fireEvent.click(phoneNumber);
-    expect(phoneNumber).toBeInTheDocument();
+    const autoCompleteInput = screen.getAllByTestId('autocomplete-element');
+
+    fireEvent.mouseDown(autoCompleteInput[3]);
+
+    waitFor(() => {
+      const selectedOption = screen.getByText('Monday');
+      expect(selectedOption).toBeInTheDocument();
+
+      fireEvent.click(selectedOption);
+    });
   });
 
   await waitFor(() => {

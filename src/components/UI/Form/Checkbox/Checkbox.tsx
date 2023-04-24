@@ -15,6 +15,7 @@ export interface CheckboxProps {
   addLabelStyle?: boolean;
   infoType?: 'tooltip' | 'dialog';
   handleInfoClick?: Function;
+  className?: string;
 }
 
 export const Checkbox = ({
@@ -27,6 +28,7 @@ export const Checkbox = ({
   form,
   handleChange,
   infoType = 'tooltip',
+  className = '',
   handleInfoClick = () => {},
 }: CheckboxProps) => {
   const handleChangeCallback = () => {
@@ -36,7 +38,7 @@ export const Checkbox = ({
   };
 
   return (
-    <div className={styles.Checkbox}>
+    <div className={`${styles.Checkbox} ${className}`}>
       <FormControlLabel
         control={
           <CheckboxElement

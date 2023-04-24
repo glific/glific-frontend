@@ -29,6 +29,7 @@ export const getOrganizationQuery = [
             ],
             id: 1,
             newcontactFlowId: '5',
+            optinFlowId: '2',
             outOfOffice: {
               enabled: true,
               defaultFlowId: 1,
