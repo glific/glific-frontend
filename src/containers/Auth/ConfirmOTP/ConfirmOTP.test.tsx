@@ -2,11 +2,11 @@ import { render, screen, waitFor } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { vi } from 'vitest';
-
 import axios from 'axios';
-import { ConfirmOTP } from './ConfirmOTP';
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
+
 import { postRequestMock } from '../Registration/Registration.test';
+import { ConfirmOTP } from './ConfirmOTP';
 
 vi.mock('axios');
 const mockedAxios = axios as any;

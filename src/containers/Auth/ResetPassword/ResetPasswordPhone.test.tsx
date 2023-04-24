@@ -4,8 +4,8 @@ import { MemoryRouter } from 'react-router';
 import axios from 'axios';
 import { vi } from 'vitest';
 
-import { ResetPasswordPhone } from './ResetPasswordPhone';
 import { postRequestMock } from '../Registration/Registration.test';
+import { ResetPasswordPhone } from './ResetPasswordPhone';
 
 vi.mock('axios');
 const mockedAxios = axios as any;
