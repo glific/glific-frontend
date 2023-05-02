@@ -28,6 +28,7 @@ export const CREATE_SHEET = gql`
         id
         isActive
         label
+        type
         lastSyncedAt
         sheetDataCount
         updatedAt
@@ -52,6 +53,7 @@ export const UPDATE_SHEET = gql`
         sheetDataCount
         updatedAt
         url
+        type
         insertedAt
       }
       errors {
@@ -69,6 +71,7 @@ export const SYNC_SHEET = gql`
         id
         isActive
         label
+        type
         lastSyncedAt
         sheetDataCount
         updatedAt

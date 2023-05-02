@@ -8,6 +8,7 @@ export const GET_SHEET = gql`
         insertedAt
         isActive
         label
+        type
         lastSyncedAt
         updatedAt
         url
@@ -25,6 +26,7 @@ export const GET_SHEETS = gql`
     sheets(filter: $filter, opts: $opts) {
       id
       url
+      type
       isActive
       label
       sheetDataCount
