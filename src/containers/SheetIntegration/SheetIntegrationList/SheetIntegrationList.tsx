@@ -12,7 +12,6 @@ import moment from 'moment';
 import { DATE_TIME_FORMAT } from 'common/constants';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import styles from './SheetIntegrationList.module.css';
-import SheetIntegration from '../SheetIntegration';
 
 export enum SheetTypes {
   Read = 'READ',

@@ -91,8 +91,6 @@ export const SheetIntegration = () => {
       type = SheetTypes.All;
     } else if (data.writable) {
       type = SheetTypes.Write;
-    } else if (data.readable) {
-      type = SheetTypes.Read;
     }
 
     return {
