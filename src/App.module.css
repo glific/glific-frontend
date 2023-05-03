@@ -1,5 +1,6 @@
 .App {
   display: flex;
+  overflow: hidden;
 }
 
 .Translation {

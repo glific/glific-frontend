@@ -12,6 +12,7 @@ import moment from 'moment';
 import { DATE_TIME_FORMAT } from 'common/constants';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import styles from './SheetIntegrationList.module.css';
+import Loading from 'components/UI/Layout/Loading/Loading';
 
 const getName = (text: string, sheetDataCount: string) => (
   <p className={styles.NameText}>
@@ -67,7 +68,7 @@ export const SheetIntegrationList = () => {
     );
   }
 
-  const [syncSheetMutation] = useMutation(SYNC_SHEET, {
+  const [syncSheetMutation, { loading }] = useMutation(SYNC_SHEET, {
     fetchPolicy: 'network-only',
     onCompleted: async ({ syncSheet }) => {
       const notificationMessage = 'Data is successfully fetched from the Google sheet.';
@@ -91,6 +92,10 @@ export const SheetIntegrationList = () => {
       );
     },
   });
+
+  if (loading) {
+    return <Loading message="Sync in progress" />;
+  }
 
   const syncSheet = (id: any) => {
     syncSheetMutation({ variables: { id } });
