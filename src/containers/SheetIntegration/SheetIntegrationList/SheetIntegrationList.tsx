@@ -12,12 +12,27 @@ import moment from 'moment';
 import { DATE_TIME_FORMAT } from 'common/constants';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import styles from './SheetIntegrationList.module.css';
+import SheetIntegration from '../SheetIntegration';
 
-const getName = (text: string, sheetDataCount: string) => (
+export enum SheetTypes {
+  Read = 'READ',
+  Write = 'WRITE',
+  All = 'ALL',
+}
+
+const textForSheetType = {
+  READ: 'Read',
+  WRITE: 'Write',
+  ALL: 'Read & Write',
+};
+
+const getName = (text: string, sheetDataCount: string, type: SheetTypes) => (
   <p className={styles.NameText}>
     {text}
     <br />
-    <span className={styles.SheetCount}>{sheetDataCount} rows synced</span>
+    {type !== SheetTypes.Write && (
+      <span className={styles.SheetCount}>{sheetDataCount} rows synced</span>
+    )}
   </p>
 );
 const getLastSyncedAt = (date: string, fallback: string = '') => (
@@ -26,7 +41,10 @@ const getLastSyncedAt = (date: string, fallback: string = '') => (
   </div>
 );
 
-const columnStyles = [styles.Name, styles.LastSyncText, styles.Actions];
+const getType = (type: SheetTypes) => (
+  <div className={styles.LastSyncText}>{textForSheetType[type]}</div>
+);
+const columnStyles = [styles.Name, styles.LastSync, styles.Type, styles.Actions];
 const sheetIcon = <SheetIcon className={styles.DarkIcon} />;
 
 const queries = {
@@ -114,14 +132,16 @@ export const SheetIntegrationList = () => {
       dialog: syncSheet,
     },
   ];
-  const getColumns = ({ label, sheetDataCount, lastSyncedAt }: any) => ({
-    name: getName(label, sheetDataCount),
+  const getColumns = ({ label, sheetDataCount, lastSyncedAt, type }: any) => ({
+    name: getName(label, sheetDataCount, type),
     date: getLastSyncedAt(lastSyncedAt),
+    type: getType(type),
   });
 
   const columnNames = [
     { name: 'label', label: t('Label') },
     { label: t('Last synced') },
+    { label: t('Type') },
     { label: t('Actions') },
   ];
 

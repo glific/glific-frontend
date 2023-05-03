@@ -10,6 +10,7 @@ import { SAMPLE_SHEET_LINK } from 'config';
 import { GET_SHEET } from 'graphql/queries/Sheet';
 import styles from './SheetIntegration.module.css';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
+import { SheetTypes } from './SheetIntegrationList/SheetIntegrationList';
 
 const sheetIcon = <SheetIcon className={styles.DarkIcon} />;
 
@@ -30,11 +31,11 @@ export const SheetIntegration = () => {
   const setStates = ({ label: labelValue, url: urlValue, type: typeValue }: any) => {
     setLabel(labelValue);
     setUrl(urlValue);
-    if (typeValue === 'READ') {
+    if (typeValue === SheetTypes.Read) {
       setReadable(true);
-    } else if (typeValue === 'WRITE') {
+    } else if (typeValue === SheetTypes.Write) {
       setWritable(true);
-    } else if (typeValue === 'ALL') {
+    } else if (typeValue === SheetTypes.All) {
       setReadable(true);
       setWritable(true);
     }
@@ -85,16 +86,15 @@ export const SheetIntegration = () => {
   ];
 
   const setPayload = (data: any) => {
-    let type = 'READ';
+    let type = SheetTypes.Read;
     if (data.readable && data.writable) {
-      type = 'ALL';
+      type = SheetTypes.All;
     } else if (data.writable) {
-      type = 'WRITE';
+      type = SheetTypes.Write;
     } else if (data.readable) {
-      type = 'READ';
+      type = SheetTypes.Read;
     }
 
-    console.log(type);
     return {
       label: data.label,
       url: data.url,
