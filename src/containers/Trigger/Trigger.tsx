@@ -135,7 +135,6 @@ export const Trigger = () => {
   const [frequencyPlaceholder, setFrequencyPlaceholder] = useState('Select days');
   const [frequencyOptions, setFrequencyOptions] = useState(dayList);
   const params = useParams();
-  console.log(startDate, endDate);
   const location = useLocation();
   const { t } = useTranslation();
   const states = {
