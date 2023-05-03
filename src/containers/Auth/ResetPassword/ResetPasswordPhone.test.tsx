@@ -3,12 +3,16 @@ import UserEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router';
 import axios from 'axios';
 import { vi } from 'vitest';
-
-import { postRequestMock } from '../Registration/Registration.test';
 import { ResetPasswordPhone } from './ResetPasswordPhone';
 
 vi.mock('axios');
 const mockedAxios = axios as any;
+
+export const postRequestMock = () => {
+  const responseData = { data: { data: {} } };
+  const successPromise = vi.fn(() => Promise.resolve(responseData));
+  mockedAxios.post.mockImplementationOnce(() => successPromise());
+};
 
 const wrapper = (
   <MemoryRouter>
@@ -19,10 +23,10 @@ const wrapper = (
 describe('<ResetPasswordPhone />', () => {
   beforeEach(() => {
     vi.resetAllMocks();
-    postRequestMock();
   });
 
   test('it should render correctly', async () => {
+    postRequestMock();
     const { findByTestId } = render(wrapper);
 
     const resetPassword = await findByTestId('AuthContainer');
@@ -31,6 +35,9 @@ describe('<ResetPasswordPhone />', () => {
   });
 
   test('test the form submission with incorrect phone', async () => {
+    // set the mock
+    const errorMessage = 'Cannot send the otp to 919978776554';
+    mockedAxios.post.mockImplementation(() => Promise.reject(new Error(errorMessage)));
     const { container } = render(wrapper);
 
     // enter the phone
@@ -41,10 +48,6 @@ describe('<ResetPasswordPhone />', () => {
     const continueButton = screen.getByText('Generate OTP to confirm');
     UserEvent.click(continueButton);
 
-    // set the mock
-    const errorMessage = 'Cannot send the otp to 919978776554';
-    mockedAxios.post.mockImplementationOnce(() => Promise.reject(new Error(errorMessage)));
-
     await waitFor(() => {
       const authContainer = screen.getByTestId('AuthContainer');
       expect(authContainer).toHaveTextContent(
@@ -54,6 +57,7 @@ describe('<ResetPasswordPhone />', () => {
   });
 
   test('test the form submission with phone', async () => {
+    postRequestMock();
     const { container } = render(wrapper);
 
     // enter the phone
