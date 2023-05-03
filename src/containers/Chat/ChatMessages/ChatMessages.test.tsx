@@ -219,6 +219,7 @@ cache.writeQuery(collection);
 
 const client = new ApolloClient({
   cache: cache,
+  uri: 'http://localhost:4000/',
   assumeImmutableResults: true,
 });
 window.HTMLElement.prototype.scrollIntoView = vi.fn();
@@ -354,6 +355,7 @@ test('Collection: if cache', async () => {
 
   const client = new ApolloClient({
     cache: cache,
+    uri: 'http://localhost:4000/',
     assumeImmutableResults: true,
   });
   const chatMessagesWithCollection = (
@@ -423,6 +425,7 @@ test('Load more messages', async () => {
   cache.writeQuery(searchQuery);
   const client = new ApolloClient({
     cache: cache,
+    uri: 'http://localhost:4000/',
     assumeImmutableResults: true,
   });
 
@@ -472,6 +475,7 @@ test('If search query gives error', async () => {
   cache.writeQuery(searchQuery);
   const client = new ApolloClient({
     cache: cache,
+    uri: 'http://localhost:4000/',
     assumeImmutableResults: true,
   });
 
