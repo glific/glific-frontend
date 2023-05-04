@@ -16,7 +16,7 @@ export const StaffManagementList = () => {
 
   const dialogMessage = t('Once deleted this action cannot be undone.');
   const chatIcon = <ChatIcon />;
-  const additionalAction = [
+  const additionalAction = () => [
     { icon: chatIcon, parameter: 'contact.id', link: '/chat', label: t('Send Message') },
   ];
 

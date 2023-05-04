@@ -9,6 +9,8 @@ import { CREATE_SHEET, UPDATE_SHEET, DELETE_SHEET } from 'graphql/mutations/Shee
 import { SAMPLE_SHEET_LINK } from 'config';
 import { GET_SHEET } from 'graphql/queries/Sheet';
 import styles from './SheetIntegration.module.css';
+import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
+import { SheetTypes } from './SheetIntegrationList/SheetIntegrationList';
 
 const sheetIcon = <SheetIcon className={styles.DarkIcon} />;
 
@@ -22,11 +24,21 @@ const queries = {
 export const SheetIntegration = () => {
   const [label, setLabel] = useState('');
   const [url, setUrl] = useState('');
+  const [writable, setWritable] = useState(false);
+  const [readable, setReadable] = useState(false);
   const { t } = useTranslation();
-  const states = { label, url };
-  const setStates = ({ label: labelValue, url: urlValue }: any) => {
+  const states = { label, url, writable, readable };
+  const setStates = ({ label: labelValue, url: urlValue, type: typeValue }: any) => {
     setLabel(labelValue);
     setUrl(urlValue);
+    if (typeValue === SheetTypes.Read) {
+      setReadable(true);
+    } else if (typeValue === SheetTypes.Write) {
+      setWritable(true);
+    } else if (typeValue === SheetTypes.All) {
+      setReadable(true);
+      setWritable(true);
+    }
   };
   const FormSchema = Yup.object().shape({
     url: Yup.string().required(t('URL is required.')),
@@ -53,13 +65,47 @@ export const SheetIntegration = () => {
       type: 'text',
       placeholder: t('Sheet name'),
     },
+    {
+      component: Checkbox,
+      name: 'readable',
+      title: 'Read',
+      info: {
+        title: 'Read data from the sheet.',
+      },
+      darkCheckbox: true,
+    },
+    {
+      component: Checkbox,
+      name: 'writable',
+      title: 'Write',
+      info: {
+        title: 'Write data to the sheet.',
+      },
+      darkCheckbox: true,
+    },
   ];
+
+  const setPayload = (data: any) => {
+    let type = SheetTypes.Read;
+    if (data.readable && data.writable) {
+      type = SheetTypes.All;
+    } else if (data.writable) {
+      type = SheetTypes.Write;
+    }
+
+    return {
+      label: data.label,
+      url: data.url,
+      type,
+    };
+  };
 
   return (
     <FormLayout
       {...queries}
       states={states}
       title={t('Google sheet')}
+      setPayload={setPayload}
       setStates={setStates}
       validationSchema={FormSchema}
       listItemName="Sheet"

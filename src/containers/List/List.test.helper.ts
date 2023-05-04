@@ -36,6 +36,7 @@ export const defaultProps = {
   columnStyles: [],
   title: 'Flows',
   searchMode: true,
+  filters: { isActive: true },
   button: { show: true, label: 'Create Flow', symbol: '+' },
 };
 

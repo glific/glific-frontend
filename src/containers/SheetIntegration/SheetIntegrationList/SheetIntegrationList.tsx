@@ -12,12 +12,27 @@ import moment from 'moment';
 import { DATE_TIME_FORMAT } from 'common/constants';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import styles from './SheetIntegrationList.module.css';
+import Loading from 'components/UI/Layout/Loading/Loading';
 
-const getName = (text: string, sheetDataCount: string) => (
+export enum SheetTypes {
+  Read = 'READ',
+  Write = 'WRITE',
+  All = 'ALL',
+}
+
+const textForSheetType = {
+  READ: 'Read',
+  WRITE: 'Write',
+  ALL: 'Read & Write',
+};
+
+const getName = (text: string, sheetDataCount: string, type: SheetTypes) => (
   <p className={styles.NameText}>
     {text}
     <br />
-    <span className={styles.SheetCount}>{sheetDataCount} rows synced</span>
+    {type !== SheetTypes.Write && (
+      <span className={styles.SheetCount}>{sheetDataCount} rows synced</span>
+    )}
   </p>
 );
 const getLastSyncedAt = (date: string, fallback: string = '') => (
@@ -26,7 +41,10 @@ const getLastSyncedAt = (date: string, fallback: string = '') => (
   </div>
 );
 
-const columnStyles = [styles.Name, styles.LastSyncText, styles.Actions];
+const getType = (type: SheetTypes) => (
+  <div className={styles.LastSyncText}>{textForSheetType[type]}</div>
+);
+const columnStyles = [styles.Name, styles.LastSync, styles.Type, styles.Actions];
 const sheetIcon = <SheetIcon className={styles.DarkIcon} />;
 
 const queries = {
@@ -67,7 +85,7 @@ export const SheetIntegrationList = () => {
     );
   }
 
-  const [syncSheetMutation] = useMutation(SYNC_SHEET, {
+  const [syncSheetMutation, { loading }] = useMutation(SYNC_SHEET, {
     fetchPolicy: 'network-only',
     onCompleted: async ({ syncSheet }) => {
       const notificationMessage = 'Data is successfully fetched from the Google sheet.';
@@ -92,6 +110,10 @@ export const SheetIntegrationList = () => {
     },
   });
 
+  if (loading) {
+    return <Loading message="Sync in progress" />;
+  }
+
   const syncSheet = (id: any) => {
     syncSheetMutation({ variables: { id } });
   };
@@ -100,28 +122,39 @@ export const SheetIntegrationList = () => {
     window.open(item.url);
   };
 
-  const additionalAction = [
-    {
-      label: t('Link'),
-      icon: <LinkIcon />,
-      parameter: 'id',
-      dialog: linkSheet,
-    },
-    {
-      label: t('Sync'),
-      icon: <UpdatesheetIcon />,
-      parameter: 'id',
-      dialog: syncSheet,
-    },
-  ];
-  const getColumns = ({ label, sheetDataCount, lastSyncedAt }: any) => ({
-    name: getName(label, sheetDataCount),
+  const additionalAction = (listValue: any) => {
+    let actions = [
+      {
+        label: t('Link'),
+        icon: <LinkIcon />,
+        parameter: 'id',
+        dialog: linkSheet,
+      },
+    ];
+    if (listValue.type !== 'WRITE') {
+      actions = [
+        {
+          label: t('Sync'),
+          icon: <UpdatesheetIcon />,
+          parameter: 'id',
+          dialog: syncSheet,
+        },
+        ...actions,
+      ];
+    }
+    return actions;
+  };
+
+  const getColumns = ({ label, sheetDataCount, lastSyncedAt, type }: any) => ({
+    name: getName(label, sheetDataCount, type),
     date: getLastSyncedAt(lastSyncedAt),
+    type: getType(type),
   });
 
   const columnNames = [
     { name: 'label', label: t('Label') },
     { label: t('Last synced') },
+    { label: t('Type') },
     { label: t('Actions') },
   ];
 

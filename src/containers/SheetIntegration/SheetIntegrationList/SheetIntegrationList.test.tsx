@@ -64,13 +64,14 @@ describe('<SheetIntegrationList />', () => {
       expect(getAllByTestId('additionalButton')[0]).toBeInTheDocument();
     });
 
-    await waitFor(() => {
-      fireEvent.click(getAllByTestId('additionalButton')[0]);
-      expect(window.open).toBeCalled();
-    });
     //LINK Button
     await waitFor(() => {
-      expect(getAllByTestId('additionalButton')[1]).toBeInTheDocument();
+      expect(getAllByTestId('additionalButton')[0]).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      fireEvent.click(getAllByTestId('additionalButton')[1]);
+      expect(window.open).toBeCalled();
     });
 
     await waitFor(() => {

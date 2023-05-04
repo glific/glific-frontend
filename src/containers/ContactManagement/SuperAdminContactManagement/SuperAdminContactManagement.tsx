@@ -63,7 +63,7 @@ export const SuperAdminContactManagement = () => {
 
   const restrictedAction = () => ({ delete: false, edit: false });
 
-  const additionalActions = [
+  const additionalActions = () => [
     {
       icon: extensionIcon,
       parameter: 'id',

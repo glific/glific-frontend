@@ -160,7 +160,7 @@ describe('DialogMessage tests', () => {
       };
     };
 
-    const additionalAction = [
+    const additionalAction = () => [
       {
         icon: ApprovedIcon,
         parameter: 'id',

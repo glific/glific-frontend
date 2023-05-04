@@ -151,7 +151,7 @@ export const CollectionList = () => {
 
   const addContactIcon = <AddContactIcon />;
 
-  const additionalAction = [
+  const additionalAction = () => [
     {
       label: t('Add contacts to collection'),
       icon: addContactIcon,

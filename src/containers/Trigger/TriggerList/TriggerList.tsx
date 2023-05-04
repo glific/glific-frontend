@@ -64,7 +64,7 @@ export const TriggerList = () => {
     navigate(`/trigger/${id}/edit`, { state: 'copy' });
   };
 
-  const additionalAction = [
+  const additionalAction = () => [
     {
       label: t('Make a copy'),
       icon: <DuplicateIcon />,

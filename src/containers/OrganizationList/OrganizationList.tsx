@@ -150,7 +150,7 @@ export const OrganizationList = ({
 
   const dialogMessage = deleteDialogue;
 
-  const additionalActions = [
+  const additionalActions = () => [
     {
       icon: extensionIcon,
       parameter: 'id',

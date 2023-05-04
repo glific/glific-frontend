@@ -55,7 +55,7 @@ export interface ListProps {
   displayListType?: string;
   cardLink?: Object | null;
   editSupport?: boolean;
-  additionalAction?: Array<{
+  additionalAction?: (listValues: any) => Array<{
     icon: any;
     parameter: string;
     link?: string;
@@ -114,7 +114,7 @@ export const List = ({
   filters = null,
   displayListType = 'list',
   cardLink = null,
-  additionalAction = [],
+  additionalAction = () => [],
   backLinkButton,
   restrictedAction,
   collapseOpen = false,
@@ -260,7 +260,7 @@ export const List = ({
   useEffect(() => {
     refetchValues();
     refetchCount();
-  }, [searchVal]);
+  }, [searchVal, filters]);
 
   useEffect(() => {
     if (userRole.length === 0) {
@@ -424,13 +424,13 @@ export const List = ({
     if (id) {
       return (
         <div className={styles.Icons}>
-          {additionalAction.map((action: any, index: number) => {
+          {additionalAction(item).map((action: any, index: number) => {
             if (allowedAction.restricted) {
               return null;
             }
             // check if we are dealing with nested element
             let additionalActionParameter: any;
-            const params: any = additionalAction[index].parameter.split('.');
+            const params: any = action.parameter.split('.');
             if (params.length > 1) {
               additionalActionParameter = item[params[0]][params[1]];
             } else {
