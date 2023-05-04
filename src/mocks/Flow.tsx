@@ -131,7 +131,7 @@ export const filterFlowWithNameOrKeywordQuery = {
   request: {
     query: FILTER_FLOW,
     variables: {
-      filter: { nameOrKeyword: 'help' },
+      filter: { nameOrKeyword: 'help', isActive: true },
       opts: {
         limit: 50,
         offset: 0,
@@ -216,7 +216,7 @@ export const getFlowCountWithFilterQuery = {
   request: {
     query: GET_FLOW_COUNT,
     variables: {
-      filter: { nameOrKeyword: 'help' },
+      filter: { nameOrKeyword: 'help', isActive: true },
     },
   },
   result: {
