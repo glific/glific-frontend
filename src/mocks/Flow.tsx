@@ -90,7 +90,7 @@ export const filterFlowQuery = {
   request: {
     query: FILTER_FLOW,
     variables: {
-      filter: {},
+      filter: { isActive: true },
       opts: {
         limit: 50,
         offset: 0,
@@ -201,7 +201,7 @@ export const getFlowCountQuery = {
   request: {
     query: GET_FLOW_COUNT,
     variables: {
-      filter: {},
+      filter: { isActive: true },
     },
   },
 
