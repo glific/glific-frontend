@@ -117,20 +117,26 @@ export const SheetIntegrationList = () => {
     window.open(item.url);
   };
 
-  const additionalAction = [
-    {
-      label: t('Link'),
-      icon: <LinkIcon />,
-      parameter: 'id',
-      dialog: linkSheet,
-    },
-    {
-      label: t('Sync'),
-      icon: <UpdatesheetIcon />,
-      parameter: 'id',
-      dialog: syncSheet,
-    },
-  ];
+  const additionalAction = (listValue: any) => {
+    const actions = [
+      {
+        label: t('Link'),
+        icon: <LinkIcon />,
+        parameter: 'id',
+        dialog: linkSheet,
+      },
+    ];
+    if (listValue.type !== 'WRITE') {
+      actions.push({
+        label: t('Sync'),
+        icon: <UpdatesheetIcon />,
+        parameter: 'id',
+        dialog: syncSheet,
+      });
+    }
+    return actions;
+  };
+
   const getColumns = ({ label, sheetDataCount, lastSyncedAt, type }: any) => ({
     name: getName(label, sheetDataCount, type),
     date: getLastSyncedAt(lastSyncedAt),

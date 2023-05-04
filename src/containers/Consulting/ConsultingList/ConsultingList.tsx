@@ -111,7 +111,7 @@ const ConsultingList = () => {
 
   const restrictedAction = () => ({ delete: false, edit: false });
 
-  const additionalActions = [
+  const additionalActions = () => [
     {
       icon: <EditIcon />,
       parameter: 'id',

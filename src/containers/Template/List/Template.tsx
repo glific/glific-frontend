@@ -216,7 +216,7 @@ export const Template = ({
     }
   };
 
-  let additionalAction = [
+  let additionalAction = () => [
     {
       label: t('Show all languages'),
       icon: <DownArrow data-testid="down-arrow" />,
@@ -269,7 +269,7 @@ export const Template = ({
   let appliedFilters = templateFilters;
 
   if (isHSM) {
-    additionalAction = [];
+    additionalAction = () => [];
     defaultSortBy = 'STATUS';
     appliedFilters = { ...templateFilters, status: filterValue };
   }

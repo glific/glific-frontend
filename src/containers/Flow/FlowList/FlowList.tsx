@@ -131,7 +131,7 @@ export const FlowList = () => {
     />
   );
 
-  const additionalAction = [
+  const additionalAction = () => [
     {
       label: t('Configure'),
       icon: configureIcon,

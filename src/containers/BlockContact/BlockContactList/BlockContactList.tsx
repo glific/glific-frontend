@@ -107,7 +107,7 @@ export const BlockContactList = () => {
     );
   }
 
-  const additionalAction = [
+  const additionalAction = () => [
     {
       icon: unblockIcon,
       parameter: 'id',
