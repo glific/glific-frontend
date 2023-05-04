@@ -29,8 +29,17 @@
   margin: 0;
 }
 
+.LastSync {
+  width: 20%;
+  min-width: 200px;
+}
+
+.Type {
+  min-width: 100px;
+}
+
 .Name {
-  width: 35%;
+  width: 30%;
   min-width: 200px;
 }
 

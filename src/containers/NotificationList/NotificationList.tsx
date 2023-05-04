@@ -89,7 +89,7 @@ export const NotificationList = () => {
     }
   };
 
-  const additionalAction = [
+  const additionalAction = () => [
     {
       icon: <ArrowForwardIcon className={styles.RedirectArrow} />,
       parameter: 'id',

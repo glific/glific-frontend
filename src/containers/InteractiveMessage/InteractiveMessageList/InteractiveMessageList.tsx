@@ -106,7 +106,7 @@ export const InteractiveMessageList = () => {
     navigate(`/interactive-message/${id}/edit`, { state: 'copy' });
   };
 
-  const additionalAction = [
+  const additionalAction = () => [
     {
       label: t('Show all languages'),
       icon: <DownArrow />,
