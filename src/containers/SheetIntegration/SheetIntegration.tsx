@@ -68,7 +68,7 @@ export const SheetIntegration = () => {
     {
       component: Checkbox,
       name: 'readable',
-      title: 'Readable',
+      title: 'Read',
       info: {
         title: 'Read data from the sheet.',
       },
@@ -77,9 +77,9 @@ export const SheetIntegration = () => {
     {
       component: Checkbox,
       name: 'writable',
-      title: 'Writable',
+      title: 'Write',
       info: {
-        title: 'Write data to the sheet. Please ensure that the sheet credentials are added.',
+        title: 'Write data to the sheet.',
       },
       darkCheckbox: true,
     },
