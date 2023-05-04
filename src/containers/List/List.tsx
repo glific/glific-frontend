@@ -260,7 +260,7 @@ export const List = ({
   useEffect(() => {
     refetchValues();
     refetchCount();
-  }, [searchVal]);
+  }, [searchVal, filters]);
 
   useEffect(() => {
     if (userRole.length === 0) {

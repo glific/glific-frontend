@@ -1,4 +1,4 @@
-import { GLIFIC_DOCS_URL } from 'config';
+import { ANALYTICS_URL, GLIFIC_DOCS_URL } from 'config';
 
 // define all the menus in the system
 const menus = [
@@ -58,6 +58,14 @@ const menus = [
     type: 'sideDrawer',
     badge: true,
     roles: ['Manager', 'Admin', 'Dynamic'],
+  },
+  {
+    title: 'Analytics (Beta)',
+    path: '/analytics',
+    url: ANALYTICS_URL,
+    icon: 'analytics',
+    type: 'sideDrawer',
+    roles: ['Staff', 'Manager', 'Admin', 'Dynamic'],
   },
   {
     title: 'Help',

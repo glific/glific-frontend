@@ -186,12 +186,12 @@ export const FlowList = () => {
     return <Loading message="Uploading" />;
   }
 
-  const severityList = [
+  const filterList = [
     { label: 'Active', value: true },
     { label: 'Inactive', value: false },
   ];
 
-  const filterOnSeverity = (
+  const activeFilter = (
     <div className={styles.Filters}>
       <RadioGroup
         aria-label="template-type"
@@ -203,13 +203,13 @@ export const FlowList = () => {
           setFilter(JSON.parse(value));
         }}
       >
-        {severityList.map((list) => (
-          <div className={styles.RadioLabelWrapper} key={list.label}>
+        {filterList.map((filter) => (
+          <div className={styles.RadioLabelWrapper} key={filter.label}>
             <FormControlLabel
-              value={list.value}
+              value={filter.value}
               control={<Radio color="primary" />}
               classes={{ root: styles.RadioLabel }}
-              label={list.label}
+              label={filter.label}
               data-testid="radio"
             />
           </div>
@@ -234,7 +234,7 @@ export const FlowList = () => {
         button={{ show: true, label: t('Create Flow'), symbol: '+' }}
         secondaryButton={importButton}
         filters={{ isActive: filter }}
-        filterList={filterOnSeverity}
+        filterList={activeFilter}
       />
 
       <Link to="/webhook-logs" className={styles.Webhook}>
