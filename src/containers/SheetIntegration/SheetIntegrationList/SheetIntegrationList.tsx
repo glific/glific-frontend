@@ -118,7 +118,7 @@ export const SheetIntegrationList = () => {
   };
 
   const additionalAction = (listValue: any) => {
-    const actions = [
+    let actions = [
       {
         label: t('Link'),
         icon: <LinkIcon />,
@@ -127,12 +127,15 @@ export const SheetIntegrationList = () => {
       },
     ];
     if (listValue.type !== 'WRITE') {
-      actions.push({
-        label: t('Sync'),
-        icon: <UpdatesheetIcon />,
-        parameter: 'id',
-        dialog: syncSheet,
-      });
+      actions = [
+        {
+          label: t('Sync'),
+          icon: <UpdatesheetIcon />,
+          parameter: 'id',
+          dialog: syncSheet,
+        },
+        ...actions,
+      ];
     }
     return actions;
   };
