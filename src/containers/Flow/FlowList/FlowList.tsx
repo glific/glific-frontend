@@ -7,7 +7,7 @@ import { useLazyQuery, useMutation } from '@apollo/client';
 import { ReactComponent as FlowIcon } from 'assets/images/icons/Flow/Dark.svg';
 import { ReactComponent as DuplicateIcon } from 'assets/images/icons/Flow/Duplicate.svg';
 import { ReactComponent as ExportIcon } from 'assets/images/icons/Flow/Export.svg';
-
+import { FormControlLabel, Radio, RadioGroup } from '@mui/material';
 import { ReactComponent as ConfigureIcon } from 'assets/images/icons/Configure/UnselectedDark.svg';
 import { ReactComponent as ContactVariable } from 'assets/images/icons/ContactVariable.svg';
 import { ReactComponent as WebhookLogsIcon } from 'assets/images/icons/Webhook/WebhookLight.svg';
@@ -79,7 +79,7 @@ const configureIcon = <ConfigureIcon />;
 export const FlowList = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
-
+  const [filter, setFilter] = useState<any>(true);
   const [flowName, setFlowName] = useState('');
   const [importing, setImporting] = useState(false);
 
@@ -186,6 +186,38 @@ export const FlowList = () => {
     return <Loading message="Uploading" />;
   }
 
+  const filterList = [
+    { label: 'Active', value: true },
+    { label: 'Inactive', value: false },
+  ];
+
+  const activeFilter = (
+    <div className={styles.Filters}>
+      <RadioGroup
+        aria-label="template-type"
+        name="template-type"
+        row
+        value={filter}
+        onChange={(event) => {
+          const { value } = event.target;
+          setFilter(JSON.parse(value));
+        }}
+      >
+        {filterList.map((filter) => (
+          <div className={styles.RadioLabelWrapper} key={filter.label}>
+            <FormControlLabel
+              value={filter.value}
+              control={<Radio color="primary" />}
+              classes={{ root: styles.RadioLabel }}
+              label={filter.label}
+              data-testid="radio"
+            />
+          </div>
+        ))}
+      </RadioGroup>
+    </div>
+  );
+
   return (
     <>
       <List
@@ -201,6 +233,8 @@ export const FlowList = () => {
         additionalAction={additionalAction}
         button={{ show: true, label: t('Create Flow'), symbol: '+' }}
         secondaryButton={importButton}
+        filters={{ isActive: filter }}
+        filterList={activeFilter}
       />
 
       <Link to="/webhook-logs" className={styles.Webhook}>
