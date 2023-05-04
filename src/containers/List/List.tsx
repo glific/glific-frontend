@@ -430,7 +430,7 @@ export const List = ({
             }
             // check if we are dealing with nested element
             let additionalActionParameter: any;
-            const params: any = additionalAction(item)[index].parameter.split('.');
+            const params: any = action.parameter.split('.');
             if (params.length > 1) {
               additionalActionParameter = item[params[0]][params[1]];
             } else {

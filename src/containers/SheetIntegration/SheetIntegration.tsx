@@ -70,7 +70,7 @@ export const SheetIntegration = () => {
       name: 'readable',
       title: 'Readable',
       info: {
-        title: 'Read from this sheet. The sheet URL should be public',
+        title: 'Read data from the sheet.',
       },
       darkCheckbox: true,
     },
@@ -79,7 +79,7 @@ export const SheetIntegration = () => {
       name: 'writable',
       title: 'Writable',
       info: {
-        title: 'Write to this sheet. Sheet credentials should be filled in the settings section',
+        title: 'Write data to the sheet. Please ensure that the sheet credentials are added.',
       },
       darkCheckbox: true,
     },
