@@ -27,7 +27,6 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
 
       resolve: { alias: { util: 'util/' } },
       test: {
-        dangerouslyIgnoreUnhandledErrors: true,
         globals: true,
         environment: 'jsdom',
         setupFiles: './src/setupTests.ts',

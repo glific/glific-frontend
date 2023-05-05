@@ -177,10 +177,13 @@ export const updateContactStatusQuery = {
   },
   result: {
     data: {
-      contact: {
-        id: '1',
-        name: 'Default Receiver',
-        phone: '99399393303',
+      updateContact: {
+        contact: {
+          id: '1',
+          name: 'Default Receiver',
+          phone: '99399393303',
+          language: { id: '1', label: 'English' },
+        },
       },
     },
   },

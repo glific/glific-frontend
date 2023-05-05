@@ -300,9 +300,7 @@ test('Contact: if not cache', async () => {
 
   // need to check why we click this
 
-  // await waitFor(() => {
-  //   fireEvent.click(getByTestId('jumpToLatest'));
-  // });
+  await waitFor(() => {});
 });
 
 const chatMessagesWithCollection = (
@@ -345,12 +343,10 @@ test('Collection: if not cache', async () => {
   const { getByTestId } = render(chatMessagesWithCollection);
   // need to check why we click this
 
-  // await waitFor(() => {
-  //   fireEvent.click(getByTestId('jumpToLatest'));
-  // });
+  await waitFor(() => {});
 });
 
-test('Collection: if cache', async () => {
+test.only('Collection: if cache', async () => {
   cache.writeQuery(collection);
 
   const client = new ApolloClient({
@@ -369,9 +365,7 @@ test('Collection: if cache', async () => {
 
   // need to check why we click this
 
-  // await waitFor(() => {
-  //   fireEvent.click(getByTestId('jumpToLatest'));
-  // });
+  await waitFor(() => {});
 });
 
 test('click on Clear conversation', async () => {

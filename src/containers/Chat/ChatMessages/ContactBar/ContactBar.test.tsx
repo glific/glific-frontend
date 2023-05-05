@@ -8,7 +8,11 @@ import {
   clearMessagesQuery,
 } from '../../../../mocks/Contact';
 import { MemoryRouter } from 'react-router';
-import { getCollectionsQuery } from '../../../../mocks/Collection';
+import {
+  getCollectionInfo2,
+  getCollectionUsersQuery2,
+  getCollectionsQuery,
+} from '../../../../mocks/Collection';
 import {
   getPublishedFlowQuery,
   addFlowToContactQuery,
@@ -19,12 +23,14 @@ import { CONVERSATION_MOCKS } from '../../../../mocks/Chat';
 const mocks = [
   ...CONVERSATION_MOCKS,
   contactCollectionsQuery,
+  getCollectionInfo2,
   ...getCollectionsQuery,
   getPublishedFlowQuery,
   blockContactQuery,
   updateContactCollectionQuery,
   addFlowToContactQuery,
   addFlowToCollectionQuery,
+  getCollectionUsersQuery2,
   clearMessagesQuery,
 ];
 

@@ -80,7 +80,6 @@ const contactCountQuery = {
       filter: {
         status: 'BLOCKED',
       },
-      opts: { limit: 50, offset: 0, order: 'ASC' },
     },
   },
   result: {

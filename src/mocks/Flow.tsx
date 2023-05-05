@@ -230,7 +230,7 @@ export const getPublishedFlowQuery = {
   request: {
     query: GET_FLOWS,
     variables: {
-      filter: { status: 'published' },
+      filter: { status: 'published', isActive: true },
       opts: {
         order: 'ASC',
         limit: null,
