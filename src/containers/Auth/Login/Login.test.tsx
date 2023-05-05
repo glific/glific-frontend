@@ -83,7 +83,7 @@ describe('<Login />', () => {
     mockedAxios.post.mockImplementationOnce(() => rejectPromise());
     const { container } = render(wrapper);
 
-    userAction(container);
+    await userAction(container);
 
     await waitFor(() => {
       expect(rejectPromise).toHaveBeenCalled();
@@ -105,7 +105,7 @@ describe('<Login />', () => {
       </MockedProvider>
     );
 
-    userAction(container);
+    await userAction(container);
 
     await waitFor(() => {
       expect(successPromise).toHaveBeenCalled();
@@ -127,7 +127,7 @@ describe('<Login />', () => {
       </MockedProvider>
     );
 
-    userAction(container);
+    await userAction(container);
 
     await waitFor(() => {
       expect(successPromise).toHaveBeenCalled();

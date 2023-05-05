@@ -49,24 +49,10 @@ describe('<ConfirmOTP />', () => {
   });
 
   it('test the OTP form submission with correct OTP', async () => {
-    render(wrapper);
-
-    await waitFor(() => {
-      // enter the otp
-      const input = screen.getByRole('textbox');
-      UserEvent.type(input, '12345');
-
-      // click on continue
-      const continueButton = screen.getByText('Continue');
-      UserEvent.click(continueButton);
-    });
-
     // let's mock successful otp submission
     const responseData = { data: { data: { data: {} } } };
     mockedAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
-  });
 
-  it('test the OTP form submission with incorrect OTP', async () => {
     render(wrapper);
 
     await waitFor(() => {
@@ -79,23 +65,43 @@ describe('<ConfirmOTP />', () => {
       UserEvent.click(continueButton);
     });
 
+    await waitFor(() => {});
+  });
+
+  it('test the OTP form submission with incorrect OTP', async () => {
     // let's mock error response on otp submission
     const errorMessage = 'We are unable to register, kindly contact your technical team.';
     mockedAxios.post.mockImplementationOnce(() => Promise.reject(new Error(errorMessage)));
+    render(wrapper);
+
+    await waitFor(() => {
+      // enter the otp
+      const input = screen.getByRole('textbox');
+      UserEvent.type(input, '12345');
+
+      // click on continue
+      const continueButton = screen.getByText('Continue');
+      UserEvent.click(continueButton);
+    });
+
+    await waitFor(() => {});
   });
 
   it('test successful resend functionality', async () => {
-    render(wrapper);
-
     // set the mock
     const responseData = {
       data: { message: 'OTP sent successfully to 919967665667', phone: '919967665667' },
     };
     mockedAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+    render(wrapper);
 
+    await waitFor(() => {
+      const resendButton = screen.getByTestId('resendOtp');
+      UserEvent.click(resendButton);
+    });
     // click on resend button
-    const resendButton = screen.getByTestId('resendOtp');
-    UserEvent.click(resendButton);
+
+    await waitFor(() => {});
   });
 
   it('test unsuccessful resend functionality', async () => {
@@ -110,5 +116,7 @@ describe('<ConfirmOTP />', () => {
       const resendButton = screen.getByTestId('resendOtp');
       UserEvent.click(resendButton);
     });
+
+    await waitFor(() => {});
   });
 });
