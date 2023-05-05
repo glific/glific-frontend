@@ -13,7 +13,6 @@ import {
   getCouponCode,
   getCustomerPortalQuery,
   getPendingBillingQuery,
-  updateBillingQuery,
   getBillingQueryWithoutVars,
   updateBillingQueryMock3,
 } from 'mocks/Billing';

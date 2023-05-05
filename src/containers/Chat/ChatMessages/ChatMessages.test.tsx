@@ -346,7 +346,7 @@ test('Collection: if not cache', async () => {
   await waitFor(() => {});
 });
 
-test.only('Collection: if cache', async () => {
+test('Collection: if cache', async () => {
   cache.writeQuery(collection);
 
   const client = new ApolloClient({
