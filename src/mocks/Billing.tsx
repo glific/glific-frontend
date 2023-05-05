@@ -6,6 +6,8 @@ import GET_ORGANIZATION_BILLING, {
   GET_COUPON_CODE,
   GET_CUSTOMER_PORTAL,
 } from 'graphql/queries/Billing';
+import { getOrganizationLanguagesQuery } from './Organization';
+import { getRoleNamesMock } from 'containers/StaffManagement/StaffManagement.test.helper';
 
 export const createBillingSubscriptionQuery = {
   request: {
@@ -24,15 +26,38 @@ export const createBillingSubscriptionQuery = {
   },
 };
 
+export const updateBillingQueryMock3 = {
+  request: {
+    query: UPDATE_BILLING,
+    variables: {
+      id: '1',
+      input: { name: 'Glific Admin 1', email: 'glific@glific.com', currency: 'inr' },
+    },
+  },
+  result: {
+    data: {
+      updateBilling: {
+        billing: {
+          id: '1',
+        },
+        errors: null,
+      },
+    },
+  },
+};
+
 export const updateBillingQuery = {
   request: {
     query: UPDATE_BILLING,
     variables: {
       id: '1',
       input: {
-        name: 'Glific Admin 1',
+        name: 'test',
+        email: 'testing@example.com',
         currency: 'inr',
-        email: 'glific@glific.com',
+        organizationId: '1',
+        tds_amount: 4,
+        deduct_tds: true,
       },
     },
   },
@@ -42,6 +67,60 @@ export const updateBillingQuery = {
         billing: {
           id: '1',
         },
+        errors: null,
+      },
+    },
+  },
+};
+
+export const updateBillingQueryMock = {
+  request: {
+    query: UPDATE_BILLING,
+    variables: {
+      id: '1',
+      input: {
+        name: 'testing',
+        email: 'testing@example.com',
+        currency: 'inr',
+        organizationId: '1',
+        tds_amount: 4,
+        deduct_tds: true,
+      },
+    },
+  },
+  result: {
+    data: {
+      updateBilling: {
+        billing: {
+          id: '1',
+        },
+        errors: null,
+      },
+    },
+  },
+};
+export const updateBillingQueryMock2 = {
+  request: {
+    query: UPDATE_BILLING,
+    variables: {
+      id: '1',
+      input: {
+        name: 'Glific Admin',
+        email: 'glific@glific.com',
+        currency: 'inr',
+        organizationId: '1',
+        tds_amount: 0,
+        deduct_tds: false,
+      },
+    },
+  },
+  result: {
+    data: {
+      updateBilling: {
+        billing: {
+          id: '1',
+        },
+        errors: null,
       },
     },
   },
@@ -64,10 +143,14 @@ export const createStatusPendingQuery = {
   },
 };
 
-const billingQuery = (status: any, subscriptionId: any = 'wjnwicwowc98nj') => ({
+const billingQuery = (
+  status: any,
+  subscriptionId: any = 'wjnwicwowc98nj',
+  variables: any = { organizationId: '1' }
+) => ({
   request: {
     query: GET_ORGANIZATION_BILLING,
-    variables: {},
+    variables,
   },
   result: {
     data: {
@@ -91,9 +174,10 @@ const billingQuery = (status: any, subscriptionId: any = 'wjnwicwowc98nj') => ({
 
 export const getBillingQuery = billingQuery('');
 
-export const getPendingBillingQuery = billingQuery('pending');
+export const getPendingBillingQuery = billingQuery('pending', 'random_id', {});
 
 export const getBillingQueryWithoutsubscription = billingQuery(null, null);
+export const getBillingQueryWithoutVars = billingQuery(null, null, {});
 
 export const createBillingSubscriptionPromoQuery = {
   request: {
@@ -187,10 +271,14 @@ const createOrganizationBilling = {
   request: {
     query: CREATE_BILLING,
     variables: {
-      currency: 'inr',
-      email: 'testing@example.com',
-      name: 'testing',
-      organizationId: '2',
+      input: {
+        currency: 'inr',
+        email: 'testing@example.com',
+        name: 'testing',
+        organizationId: '1',
+        tds_amount: 4,
+        deduct_tds: true,
+      },
     },
   },
   result: {
@@ -206,8 +294,13 @@ const createOrganizationBilling = {
 };
 
 export const organizationCustomerMock = [
+  getBillingQuery,
+  getRoleNamesMock,
   createOrganizationBilling,
   getOrganizationBilling,
   getOrganizationBillingWithNoBilling,
   updateBillingQuery,
+  updateBillingQueryMock,
+  updateBillingQueryMock2,
+  getOrganizationLanguagesQuery,
 ];

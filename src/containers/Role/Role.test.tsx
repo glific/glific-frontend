@@ -10,8 +10,17 @@ import {
   getRoleQuery,
   updateRoleMutation,
 } from 'mocks/Role';
+import { getRoleNamesMock } from 'containers/StaffManagement/StaffManagement.test.helper';
+import { getOrganizationLanguagesQuery } from 'mocks/Organization';
 
-const mocks = [getRoleQuery, createRoleMutation, updateRoleMutation, deleteRoleMutation];
+const mocks = [
+  getRoleNamesMock,
+  getRoleQuery,
+  createRoleMutation,
+  getOrganizationLanguagesQuery,
+  updateRoleMutation,
+  deleteRoleMutation,
+];
 
 vi.mock('react-router-dom', async () => ({
   ...((await vi.importActual<any>('react-router-dom')) as {}),

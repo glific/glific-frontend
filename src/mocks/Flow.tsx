@@ -310,6 +310,7 @@ export const publishFlow = {
     data: {
       publishFlow: {
         errors: [{ message: 'Something went wrong' }],
+        success: null,
       },
     },
   },
@@ -402,7 +403,7 @@ export const resetFlowCount = {
   result: {
     data: {
       resetFlowCount: {
-        status: 'success',
+        success: true,
         errors: [],
       },
     },

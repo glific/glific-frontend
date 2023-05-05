@@ -189,7 +189,7 @@ export const updateContactStatusQuery = {
 export const countCollectionContactsQuery = {
   request: {
     query: GET_CONTACT_COUNT,
-    variables: { filter: { includeGroups: 1 } },
+    variables: { filter: { includeGroups: '1' } },
   },
   result: {
     data: {
@@ -218,12 +218,32 @@ export const getContactsQuery = {
     },
   },
 };
+export const getContactsSearchQuery = {
+  request: {
+    query: CONTACT_SEARCH_QUERY,
+    variables: setVariables({ name: 'glific' }, 50, 0, 'ASC'),
+  },
+  result: {
+    data: {
+      contacts: [
+        {
+          id: '1',
+          name: 'Glific User',
+          phone: '9876543211',
+          maskedPhone: '9876**3211',
+          groups: [],
+          status: 'hsm',
+        },
+      ],
+    },
+  },
+};
 
 export const getCollectionContactsQuery = {
   request: {
     query: CONTACT_SEARCH_QUERY,
     variables: {
-      filter: { includeGroups: 1 },
+      filter: { includeGroups: '1' },
       opts: {
         limit: 50,
         offset: 0,

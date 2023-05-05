@@ -3,7 +3,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import 'date-fns';
 import { getIn } from 'formik';
-
+import { parseISO } from 'date-fns';
 import styles from './Calendar.module.css';
 
 export interface CalendarProps {
@@ -28,7 +28,7 @@ export const Calendar = ({
   const errorText = getIn(errors, field.name);
   const touchedVal = getIn(touched, field.name);
   const hasError = touchedVal && errorText !== undefined;
-  const dateValue = field.value ? field.value : null;
+  const dateValue = field.value ? parseISO(field.value) : null;
   const [open, setOpen] = useState(false);
 
   const handleDateChange = (date: Date | null | string) => {

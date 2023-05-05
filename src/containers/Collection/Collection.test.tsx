@@ -8,8 +8,10 @@ import { getUsersQuery } from 'mocks/User';
 import { getOrganizationLanguagesQuery, getOrganizationQuery } from 'mocks/Organization';
 import * as FormLayout from 'containers/Form/FormLayout';
 import { Collection } from './Collection';
+import { getRoleNamesMock } from 'containers/StaffManagement/StaffManagement.test.helper';
 
 const mocks = [
+  getRoleNamesMock,
   getUsersQuery,
   ...getOrganizationQuery,
   getCollectionQuery,

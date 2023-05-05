@@ -16,6 +16,8 @@ import {
 } from 'mocks/Flow';
 import { conversationQuery } from 'mocks/Chat';
 import {
+  messageReceivedSubscription,
+  messageSendSubscription,
   simulatorGetQuery,
   simulatorReleaseQuery,
   simulatorReleaseSubscription,
@@ -34,8 +36,10 @@ vi.mock('axios');
 const mockedAxios = axios as any;
 
 const mocks = [
+  messageReceivedSubscription({ organizationId: null }),
+  messageSendSubscription({ organizationId: null }),
   conversationQuery,
-  simulatorReleaseSubscription,
+  simulatorReleaseSubscription({ organizationId: null }),
   simulatorReleaseQuery,
   simulatorGetQuery,
   simulatorGetQuery,

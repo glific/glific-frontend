@@ -2,6 +2,7 @@ import { fireEvent, render } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 
 import { MessageDialog } from './MessageDialog';
+import { getAttachmentPermissionMock } from 'mocks/Attachment';
 
 const handleClose = vi.fn();
 
@@ -11,7 +12,7 @@ const defaultProps = {
   handleClose: handleClose,
 };
 const wrapper = (
-  <MockedProvider>
+  <MockedProvider mocks={[getAttachmentPermissionMock]}>
     <MessageDialog {...defaultProps} />
   </MockedProvider>
 );

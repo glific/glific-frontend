@@ -4,13 +4,13 @@ import { MemoryRouter } from 'react-router';
 import { vi } from 'vitest';
 
 import { countCollectionContactsQuery, getCollectionContactsQuery } from 'mocks/Contact';
-import { getCollectionQuery } from 'mocks/Collection';
+import { getCollectionInfo, getCollectionQuery, getCollectionUsersQuery } from 'mocks/Collection';
 import { CollectionContact } from './CollectionContact';
 
 vi.mock('react-router-dom', async () => {
   return {
     ...(await vi.importActual<any>('react-router-dom')),
-    useParams: () => ({ id: 1 }),
+    useParams: () => ({ id: '1' }),
   };
 });
 
@@ -19,7 +19,10 @@ const mocks = [
   countCollectionContactsQuery,
   getCollectionQuery,
   getCollectionQuery,
-  getCollectionContactsQuery
+  getCollectionInfo,
+  getCollectionUsersQuery,
+  getCollectionContactsQuery,
+  getCollectionContactsQuery,
 ];
 
 const wrapper = (

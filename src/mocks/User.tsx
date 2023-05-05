@@ -90,6 +90,7 @@ export const updateUserQuery = [
       data: {
         updateCurrentUser: {
           errors: [{ message: 'incorrect_code' }],
+          user: null,
         },
       },
     },
@@ -103,6 +104,7 @@ export const updateUserQuery = [
       data: {
         updateCurrentUser: {
           errors: [{ message: 'Too many attempts' }],
+          user: null,
         },
       },
     },
@@ -116,7 +118,7 @@ export const updateUserQuery = [
       data: {
         updateCurrentUser: {
           errors: null,
-          user: {},
+          user: null,
         },
       },
     },

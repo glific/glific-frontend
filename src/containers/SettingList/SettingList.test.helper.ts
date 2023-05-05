@@ -6,9 +6,11 @@ import {
   getProvidersQuery,
   getOrganisationSettings,
   getCredential,
+  getQualityRating,
 } from 'mocks/Organization';
 import { FLOW_STATUS_PUBLISHED, setVariables } from 'common/constants';
 import { UPDATE_ORGANIZATION } from 'graphql/mutations/Organization';
+import { getRoleNamesMock } from 'containers/StaffManagement/StaffManagement.test.helper';
 
 const languageMock = {
   request: {
@@ -55,6 +57,7 @@ const flowsMock = {
 };
 
 export const LIST_ITEM_MOCKS = [
+  getRoleNamesMock,
   languageMock,
   languageMock,
   flowsMock,
@@ -127,6 +130,8 @@ const updateOrganisationMock = {
 };
 
 export const ORGANISATION_MOCKS = [
+  getRoleNamesMock,
+  getQualityRating,
   languageMock,
   getOrganizationLanguagesQuery,
   flowsMock,

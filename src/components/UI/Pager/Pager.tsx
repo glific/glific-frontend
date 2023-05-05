@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import {
   Table,
   TableHead,
@@ -102,14 +103,12 @@ const createRows = (
     if (entry.translations) dataObj = JSON.parse(entry.translations);
 
     return (
-      <>
-        <TableRow key={entry.recordId} className={`${styles.TableRow} ${isActiveRow}`}>
-          {createRow(entry)}
-        </TableRow>
+      <Fragment key={entry.recordId}>
+        <TableRow className={`${styles.TableRow} ${isActiveRow}`}>{createRow(entry)}</TableRow>
         {collapseOpen && dataObj && entry.id === collapseRow
           ? collapsedRowData(dataObj, columnStyles, entry.recordId)
           : null}
-      </>
+      </Fragment>
     );
   });
 };

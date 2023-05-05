@@ -8,7 +8,7 @@ import * as AutoComplete from '../Form/AutoComplete/AutoComplete';
 const mockHandleOk = vi.fn();
 const mockHandleCancel = vi.fn();
 const mockHandleChange = vi.fn();
-const defaultProps = {
+const defaultProps: any = {
   title: 'Search Box',
   handleOk: mockHandleOk,
   handleCancel: mockHandleCancel,
@@ -22,6 +22,7 @@ const asyncSearchProps = {
   icon: null,
   optionLabel: 'label',
   options: [{ id: '1', label: 'something' }],
+  selectedOptions: [{ id: '1', label: 'something' }],
   asyncSearch: true,
 };
 

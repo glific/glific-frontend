@@ -10,25 +10,29 @@ import {
   SIMULATOR_MESSAGE_SENT_SUBSCRIPTION,
 } from 'graphql/subscriptions/Simulator';
 
-export const simulatorReleaseSubscription = {
+export const simulatorReleaseSubscription = (variables: any = { organizationId: '1' }) => ({
   request: {
     query: SIMULATOR_RELEASE_SUBSCRIPTION,
-    variables: { organizationId: null },
-  },
-  result: {
-    data: null,
-  },
-};
-
-export const simulatorReleaseQuery = {
-  request: {
-    query: RELEASE_SIMULATOR,
-    variables: { organizationId: '1' },
+    variables,
   },
   result: {
     data: {
       simulatorRelease: {
         id: '1',
+      },
+    },
+  },
+});
+
+export const simulatorReleaseQuery = {
+  request: {
+    query: RELEASE_SIMULATOR,
+    variables: {},
+  },
+  result: {
+    data: {
+      simulatorRelease: {
+        id: null,
       },
     },
   },
@@ -97,10 +101,10 @@ export const simulatorSearchQuery = {
   },
 };
 
-export const messageReceivedSubscription = {
+export const messageReceivedSubscription = (variables: any = { organizationId: '1' }) => ({
   request: {
     query: SIMULATOR_MESSAGE_RECEIVED_SUBSCRIPTION,
-    variables: { organizationId: '1' },
+    variables,
   },
   result: {
     data: {
@@ -127,7 +131,7 @@ export const messageReceivedSubscription = {
       },
     },
   },
-};
+});
 
 const messageSubscriptionData = {
   sentSimulatorMessage: {
@@ -157,12 +161,12 @@ const messageSubscriptionData = {
   },
 };
 
-export const messageSendSubscription = {
+export const messageSendSubscription = (variables: any = { organizationId: '1' }) => ({
   request: {
     query: SIMULATOR_MESSAGE_SENT_SUBSCRIPTION,
-    variables: { organizationId: '1' },
+    variables,
   },
   result: {
     data: messageSubscriptionData,
   },
-};
+});

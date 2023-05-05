@@ -8,6 +8,7 @@ import {
   FILTER_ORGANIZATIONS,
   GET_ORGANIZATION_COUNT,
   GET_ORGANIZATION_PROVIDER,
+  GET_QUALITY_RATING,
 } from 'graphql/queries/Organization';
 import { BSP_BALANCE_SUBSCRIPTION } from 'graphql/subscriptions/PeriodicInfo';
 
@@ -118,6 +119,7 @@ export const getOrganizationQuery = [
             id: '1',
             name: 'Glific',
             newcontactFlowId: '5',
+            optinFlowId: '1',
             outOfOffice: {
               defaultFlowId: '7',
               enabled: true,
@@ -730,6 +732,19 @@ export const getOrganizationBSP = {
         organization: {
           bsp: { shortcode: 'gupshup_enterprise' },
         },
+      },
+    },
+  },
+};
+
+export const getQualityRating = {
+  request: {
+    query: GET_QUALITY_RATING,
+  },
+  result: {
+    data: {
+      qualityRating: {
+        currentLimit: 'TIER_1K',
       },
     },
   },
