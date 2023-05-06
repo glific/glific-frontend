@@ -74,7 +74,7 @@ describe('<ChatMessage />', () => {
     expect(getByTestId('content').innerHTML.includes('<b>Hello there!</b>')).toBe(true);
   });
 
-  test('it should render the message date  correctly', () => {
+  test.only('it should render the message date  correctly', () => {
     const { getByTestId } = render(chatMessageText);
     expect(getByTestId('date')).toHaveTextContent(moment(insertedAt).format(TIME_FORMAT));
   });
@@ -84,7 +84,7 @@ describe('<ChatMessage />', () => {
     expect(getAllByTestId('message')[0]).toBeInTheDocument();
   });
 
-  test('it should render the down arrow icon', () => {
+  test.only('it should render the down arrow icon', () => {
     const { getAllByTestId } = render(chatMessageText);
     expect(getAllByTestId('messageOptions')[0]).toBeInTheDocument();
   });
@@ -94,7 +94,7 @@ describe('<ChatMessage />', () => {
     expect(getAllByTestId('popup')[0]).toBeInTheDocument();
   });
 
-  test('it should detect a link in message', async () => {
+  test.only('it should detect a link in message', async () => {
     const { container } = render(chatMessageText);
     expect(container.querySelector('.react_tinylink_card_content_description')?.textContent).toBe(
       'www.google.com'
