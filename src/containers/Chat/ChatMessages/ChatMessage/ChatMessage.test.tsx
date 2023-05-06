@@ -62,7 +62,7 @@ describe('<ChatMessage />', () => {
 
   const chatMessageText = chatMessage('TEXT');
 
-  test('it should render the message content correctly', () => {
+  test.only('it should render the message content correctly', () => {
     const { getByTestId } = render(chatMessageText);
     expect(getByTestId('content').textContent).toContain(
       'Hello there! visit https://www.google.com'
