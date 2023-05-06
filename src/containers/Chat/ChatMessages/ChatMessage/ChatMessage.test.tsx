@@ -103,7 +103,7 @@ describe('<ChatMessage />', () => {
 
   const chatMessageVideo = chatMessage('VIDEO');
 
-  test.only('it should show the download media option when clicked on down arrow and message type is video', async () => {
+  test('it should show the download media option when clicked on down arrow and message type is video', async () => {
     const { getAllByTestId } = render(chatMessageVideo);
     fireEvent.click(getAllByTestId('popup')[0]);
     expect(getAllByTestId('downloadMedia')[0]).toBeVisible();
@@ -119,7 +119,7 @@ describe('<ChatMessage />', () => {
 
   const chatMessageAudio = chatMessage('AUDIO');
 
-  test.only('it should show the download media option when clicked on down arrow and message type is audio', async () => {
+  test('it should show the download media option when clicked on down arrow and message type is audio', async () => {
     const { getAllByTestId } = render(chatMessageAudio);
     fireEvent.click(getAllByTestId('popup')[0]);
     expect(getAllByTestId('downloadMedia')[0]).toBeVisible();
@@ -172,7 +172,7 @@ describe('<ChatMessage />', () => {
     });
   });
 
-  test.only('it should click on replied message', async () => {
+  test('it should click on replied message', async () => {
     const { getByTestId } = render(chatMessageDoc);
     await waitFor(() => {
       fireEvent.click(getByTestId('reply-message'));
@@ -193,7 +193,7 @@ describe('<ChatMessage />', () => {
   });
 
   const imageProps = getProps('DOCUMENT');
-  test.only('it should render error with message', () => {
+  test('it should render error with message', () => {
     imageProps.media = {
       url: 'https://file-examples-com.github.io/uploads/2017/10/file-sample_150kB.pdf',
       caption: 'test',
@@ -207,7 +207,7 @@ describe('<ChatMessage />', () => {
     );
   });
 
-  test.only('it should render error with error message', () => {
+  test('it should render error with error message', () => {
     props.errors = '{"error": "Something went wrong"}';
     render(
       <MockedProvider addTypename={false}>
@@ -332,7 +332,7 @@ describe('<ChatMessage />', () => {
     );
   });
 
-  test.only('it should render with list interactive template', async () => {
+  test('it should render with list interactive template', async () => {
     receivedProps.interactiveContent = JSON.stringify(listTemplate);
     receivedProps.type = 'LIST';
 
