@@ -44,39 +44,44 @@ describe('<Registration />', () => {
     const { container } = render(wrapper);
 
     const userName = container.querySelector('input[name="userName"]') as HTMLInputElement;
-    await user.click(userName);
-    await user.keyboard('John doe');
 
-    const phone = container.querySelector('input[type="tel"]') as HTMLInputElement;
-    await user.click(phone);
-    await user.keyboard('+919978776554');
+    await waitFor(() => {
+      user.click(userName);
+      user.keyboard('John doe');
 
-    const password = container.querySelector('input[type="password"]') as HTMLInputElement;
-    await user.click(password);
-    await user.keyboard('pass123456');
+      const phone = container.querySelector('input[type="tel"]') as HTMLInputElement;
+      user.click(phone);
+      user.keyboard('+919978776554');
 
-    // Regiter with button should be disabled by default
-    const continueButton = screen.getByTestId('SubmitButton');
-    expect(continueButton).toHaveAttribute('disabled');
+      const password = container.querySelector('input[type="password"]') as HTMLInputElement;
+      user.click(password);
+      user.keyboard('pass123456');
+
+      // Regiter with button should be disabled by default
+      const continueButton = screen.getByTestId('SubmitButton');
+      expect(continueButton).toHaveAttribute('disabled');
+    });
   });
 
   it('should submit the form correctly', async () => {
-    const { container } = render(wrapper);
-
-    const userName = (await container.querySelector('input[name="name"]')) as HTMLInputElement;
-    userEvent.type(userName, 'Jane Doe');
-
-    const phone = (await container.querySelector('input[type="tel"]')) as HTMLInputElement;
-    userEvent.type(phone, '+919978776554');
-
-    const password = (await container.querySelector('input[type="password"]')) as HTMLInputElement;
-    userEvent.type(password, 'pass123456');
-
     // let's mock successful registration submission
     const responseData = {
       values: { username: 'Jane Doe', phone: '+919978776554', password: 'pass123456' },
     };
     mockedAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+
+    const { container } = render(wrapper);
+
+    await waitFor(() => {
+      const userName = container.querySelector('input[name="name"]') as HTMLInputElement;
+      userEvent.type(userName, 'Jane Doe');
+
+      const phone = container.querySelector('input[type="tel"]') as HTMLInputElement;
+      userEvent.type(phone, '+919978776554');
+
+      const password = container.querySelector('input[type="password"]') as HTMLInputElement;
+      userEvent.type(password, 'pass123456');
+    });
 
     // click on continue
     await waitFor(() => {
