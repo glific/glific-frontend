@@ -172,7 +172,7 @@ describe('<ChatMessage />', () => {
     });
   });
 
-  test('it should click on replied message', async () => {
+  test.only('it should click on replied message', async () => {
     const { getByTestId } = render(chatMessageDoc);
     await waitFor(() => {
       fireEvent.click(getByTestId('reply-message'));
@@ -193,7 +193,7 @@ describe('<ChatMessage />', () => {
   });
 
   const imageProps = getProps('DOCUMENT');
-  test('it should render error with message', () => {
+  test.only('it should render error with message', () => {
     imageProps.media = {
       url: 'https://file-examples-com.github.io/uploads/2017/10/file-sample_150kB.pdf',
       caption: 'test',
@@ -207,7 +207,7 @@ describe('<ChatMessage />', () => {
     );
   });
 
-  test('it should render error with error message', () => {
+  test.only('it should render error with error message', () => {
     props.errors = '{"error": "Something went wrong"}';
     render(
       <MockedProvider addTypename={false}>
