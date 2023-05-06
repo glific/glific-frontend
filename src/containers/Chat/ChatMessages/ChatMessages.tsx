@@ -340,20 +340,6 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
     [createAndSendMessage, contactId]
   );
 
-  // HOOKS ESTABLISHED ABOVE
-
-  // Run through these cases to ensure data always exists
-
-  if (called && error) {
-    setErrorMessage(error);
-    return null;
-  }
-
-  if (conversationError) {
-    setErrorMessage(conversationError);
-    return null;
-  }
-
   // loop through the cached conversations and find if contact/Collection exists
   const updateConversationInfo = (type: string, Id: any) => {
     allConversations.search.map((conversation: any, index: any) => {
@@ -471,6 +457,19 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
       }
     }
   }, [searchMessageNumber]);
+
+  // HOOKS ESTABLISHED ABOVE
+
+  // Run through these cases to ensure data always exists
+  if (called && error) {
+    setErrorMessage(error);
+    return null;
+  }
+
+  if (conversationError) {
+    setErrorMessage(conversationError);
+    return null;
+  }
 
   // check if the search API results nothing for a particular contact ID and redirect to chat
   if (contactId && data) {

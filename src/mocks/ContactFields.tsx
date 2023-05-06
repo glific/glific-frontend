@@ -95,7 +95,7 @@ export const mocks = [
   {
     request: {
       query: UPDATE_CONTACT_FIELDS,
-      variables: { id: '2', input: { shortcode: 'doAg' } },
+      variables: { id: '2', input: { shortcode: 'dAg' } },
     },
     result: {
       data: {
@@ -103,7 +103,7 @@ export const mocks = [
           contactsField: {
             valueType: 'TEXT',
             updatedAt: '2021-05-31T02:46:05Z',
-            shortcode: 'doAg',
+            shortcode: 'dAg',
             scope: 'CONTACT',
             name: 'Do age group ',
             insertedAt: '2021-05-31T02:46:05Z',
@@ -133,6 +133,33 @@ export const mocks = [
             shortcode: 'age_group',
             scope: 'CONTACT',
             name: 'Age Group',
+            insertedAt: '2021-05-31T02:46:05Z',
+            id: '1',
+            organization: {
+              shortcode: 'glific',
+              isApproved: true,
+              isActive: true,
+            },
+          },
+          errors: null,
+        },
+      },
+    },
+  },
+  {
+    request: {
+      query: UPDATE_CONTACT_FIELDS,
+      variables: { id: '2', input: { shortcode: 'dob' } },
+    },
+    result: {
+      data: {
+        updateContactsField: {
+          contactsField: {
+            valueType: 'TEXT',
+            updatedAt: '2021-05-31T02:46:05Z',
+            shortcode: 'dob',
+            scope: 'CONTACT',
+            name: 'Date of birth',
             insertedAt: '2021-05-31T02:46:05Z',
             id: '1',
             organization: {

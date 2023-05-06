@@ -4,8 +4,8 @@ import { MemoryRouter } from 'react-router';
 import axios from 'axios';
 import { vi } from 'vitest';
 
-import { ResetPasswordConfirmOTP } from './ResetPasswordConfirmOTP';
 import { postRequestMock } from '../Registration/Registration.test';
+import { ResetPasswordConfirmOTP } from './ResetPasswordConfirmOTP';
 
 vi.mock('axios');
 const mockedAxios = axios as any;
@@ -29,6 +29,9 @@ describe('<ResetPasswordConfirmOTP />', () => {
   });
 
   test('it should submit the form correctly', async () => {
+    // let's mock successful reset password
+    const responseData = { data: { data: { data: {} } } };
+    mockedAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
     const { container } = render(wrapper);
     const inputElements = screen.getAllByRole('textbox');
     UserEvent.type(inputElements[1], '76554');
@@ -37,30 +40,28 @@ describe('<ResetPasswordConfirmOTP />', () => {
     UserEvent.type(password, 'pass123456');
 
     // click on save button
-    const saveButton = screen.getByText('Save');
-    UserEvent.click(saveButton);
-
-    // let's mock successful reset password
-    const responseData = { data: { data: { data: {} } } };
-    mockedAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+    await waitFor(() => {
+      const saveButton = screen.getByText('Save');
+      UserEvent.click(saveButton);
+    });
 
     //need to have an assertion here
     await waitFor(() => {});
   });
 
   it('test successful resend functionality', async () => {
-    render(wrapper);
-
     // set the mock
     const responseData = {
       data: { message: 'OTP sent successfully to 919967665667', phone: '919967665667' },
     };
     mockedAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+    render(wrapper);
 
     // click on resend button
     await waitFor(() => {
       const resendButton = screen.getByTestId('resendOtp');
       UserEvent.click(resendButton);
     });
+    await waitFor(() => {});
   });
 });

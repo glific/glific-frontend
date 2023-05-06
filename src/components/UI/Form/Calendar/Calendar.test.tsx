@@ -29,7 +29,7 @@ describe('<Calendar />', () => {
   it('test empty date event', async () => {
     render(wrapper);
     const input = screen.getByRole('textbox');
-    expect(input).toHaveValue('');
+    expect(input).toHaveValue('MM/DD/YYYY');
   });
 
   it('test date change event', async () => {

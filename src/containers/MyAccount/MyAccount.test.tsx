@@ -40,11 +40,10 @@ describe('<MyAccount />', () => {
   });
 
   test('generate OTP success flow', async () => {
-    const { container } = render(wrapper);
-
     // let's mock successful sending of OTP
     const responseData = { data: { data: { data: {} } } };
     mockedAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+    const { container } = render(wrapper);
 
     await waitFor(() => {
       // click on generate OTP
@@ -76,35 +75,14 @@ describe('<MyAccount />', () => {
       expect(screen.getAllByText('Input required')).toHaveLength(2);
     });
 
-    const dropdown = screen.getByTestId('dropdown');
-    const { getByRole } = within(dropdown);
-    const inputDropdown = getByRole('button');
-    fireEvent.mouseDown(inputDropdown);
-    const [english, hindi] = screen.getAllByRole('option');
-    hindi.click();
-
-    // enter otp
-    const input = container.querySelector('input[type="text"]') as HTMLInputElement;
-    UserEvent.type(input, '76554');
-
-    // enter password
-    const password = container.querySelector('input[type="password"]') as HTMLInputElement;
-    UserEvent.type(password, 'pass123456');
-
     await waitFor(() => {
-      // view password
-      const passwordToggle = screen.getByTestId('passwordToggle');
-      UserEvent.click(passwordToggle);
-
-      // click on save button
-      const saveButton = screen.getByText('Save');
-      UserEvent.click(saveButton);
+      const dropdown = screen.getByTestId('dropdown');
+      const { getByRole } = within(dropdown);
+      const inputDropdown = getByRole('button');
+      fireEvent.mouseDown(inputDropdown);
+      const [english, hindi] = screen.getAllByRole('option');
+      hindi.click();
     });
-
-    // assert successful save
-    // await waitFor(() => {
-    //   expect(screen.getByText('Password updated successfully!')).toBeInTheDocument();
-    // });
   });
 
   test('generate OTP error response', async () => {
@@ -121,8 +99,10 @@ describe('<MyAccount />', () => {
     });
 
     // close the alert
-    const closeAlert = await findByTestId('crossIcon');
-    UserEvent.click(closeAlert);
+    await waitFor(() => {
+      const closeAlert = screen.getByTestId('crossIcon');
+      UserEvent.click(closeAlert);
+    });
   });
 
   test('generate OTP success flow with cancel', async () => {

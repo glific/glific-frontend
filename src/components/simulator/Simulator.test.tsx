@@ -26,12 +26,13 @@ const mockSetShowSimulator = vi.fn();
 
 const mocks = [
   conversationQuery,
-  simulatorReleaseSubscription,
+  simulatorReleaseSubscription(),
+  simulatorReleaseQuery,
   simulatorReleaseQuery,
   simulatorSearchQuery,
   simulatorSearchQuery,
-  messageReceivedSubscription,
-  messageSendSubscription,
+  messageReceivedSubscription(),
+  messageSendSubscription(),
   simulatorGetQuery,
   simulatorGetQuery,
 ];

@@ -55,11 +55,11 @@ export const getFilteredNotificationsQuery = {
   },
 };
 
-export const getInfoNotificationsQuery = {
+export const getInfoNotificationsQuery = (filter: any = { severity: 'Info' }) => ({
   request: {
     query: FILTER_NOTIFICATIONS,
     variables: {
-      filter: { severity: 'Info' },
+      filter,
       opts: { limit: 50, offset: 0, order: 'DESC', orderWith: 'updated_at' },
     },
   },
@@ -80,7 +80,7 @@ export const getInfoNotificationsQuery = {
       ],
     },
   },
-};
+});
 
 export const getUnFitleredNotificationCountQuery = {
   request: {

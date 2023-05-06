@@ -33,7 +33,7 @@ describe('Tooltip test', () => {
     const user = userEvent.setup();
     render(createTooltip({ tooltipArrowClass: 'tooltipArrow', tooltipClass: 'tooltip' }));
 
-    user.hover(screen.getByText('Default tooltip'));
+    await user.hover(screen.getByText('Default tooltip'));
 
     await waitFor(() => {
       expect(screen.getByRole('tooltip').querySelector('.tooltipArrow')).toBeInTheDocument();

@@ -8,7 +8,7 @@ import {
   filterCollectionQuery,
   getCollectionContactsQuery,
 } from 'mocks/Collection';
-import { getContactsQuery } from 'mocks/Contact';
+import { getContactsQuery, getContactsSearchQuery } from 'mocks/Contact';
 import { getCurrentUserQuery } from 'mocks/User';
 import { getPublishedFlowQuery } from 'mocks/Flow';
 import { setUserSession } from 'services/AuthService';
@@ -23,6 +23,7 @@ const mocks = [
   getPublishedFlowQuery,
   getCollectionContactsQuery,
   getContactsQuery,
+  getContactsSearchQuery,
   getCurrentUserQuery,
 ];
 

@@ -230,7 +230,7 @@ export const getPublishedFlowQuery = {
   request: {
     query: GET_FLOWS,
     variables: {
-      filter: { status: 'published' },
+      filter: { status: 'published', isActive: true },
       opts: {
         order: 'ASC',
         limit: null,
@@ -310,6 +310,7 @@ export const publishFlow = {
     data: {
       publishFlow: {
         errors: [{ message: 'Something went wrong' }],
+        success: null,
       },
     },
   },
@@ -402,7 +403,7 @@ export const resetFlowCount = {
   result: {
     data: {
       resetFlowCount: {
-        status: 'success',
+        success: true,
         errors: [],
       },
     },

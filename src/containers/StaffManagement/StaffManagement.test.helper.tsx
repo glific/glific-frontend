@@ -143,7 +143,7 @@ const UPDATE_USER_MOCK = {
   },
 };
 
-const getRoleNamesMock = {
+export const getRoleNamesMock = {
   request: {
     query: GET_ROLE_NAMES,
     variables: {},
@@ -151,16 +151,10 @@ const getRoleNamesMock = {
   result: {
     data: {
       accessRoles: [
-        {
-          data: {
-            accessRoles: [
-              { __typename: 'AccessRole', id: '1', isReserved: true, label: 'Admin' },
-              { __typename: 'AccessRole', id: '2', isReserved: true, label: 'Staff' },
-              { __typename: 'AccessRole', id: '3', isReserved: true, label: 'Manager' },
-              { __typename: 'AccessRole', id: '4', isReserved: true, label: 'No access' },
-            ],
-          },
-        },
+        { __typename: 'AccessRole', id: '1', isReserved: true, label: 'Admin' },
+        { __typename: 'AccessRole', id: '2', isReserved: true, label: 'Staff' },
+        { __typename: 'AccessRole', id: '3', isReserved: true, label: 'Manager' },
+        { __typename: 'AccessRole', id: '4', isReserved: true, label: 'No access' },
       ],
     },
   },

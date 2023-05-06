@@ -10,6 +10,8 @@ import { MemoryRouter } from 'react-router';
 const mocks: any = CONVERSATION_MOCKS;
 
 setUserSession(JSON.stringify({ roles: ['Admin'], organization: { id: '1' } }));
+let scrollIntoViewMock = vitest.fn();
+window.HTMLElement.prototype.scrollIntoView = scrollIntoViewMock;
 
 describe('<Chat />', () => {
   afterEach(cleanup);

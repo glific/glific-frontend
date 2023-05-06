@@ -20,11 +20,15 @@ const mocks: any = [
   getUnFitleredNotificationCountQuery,
   getNotificationsQuery,
   getUnFitleredNotificationCountQuery,
+  getUnFitleredNotificationCountQuery,
   getCountWithFilter,
   getCountWithEmptyFilter,
   markAllNotificationAsRead,
   getFilteredNotificationsQuery,
-  getInfoNotificationsQuery,
+  getInfoNotificationsQuery({ severity: '' }),
+  getInfoNotificationsQuery({ severity: 'Critical' }),
+  getInfoNotificationsQuery({ severity: '' }),
+  getInfoNotificationsQuery(),
 ];
 
 const notifications = (

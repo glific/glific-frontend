@@ -4,8 +4,9 @@ import { MockedProvider } from '@apollo/client/testing';
 
 import { walletBalanceQuery, walletBalanceSubscription } from 'mocks/Organization';
 import { Layout } from './Layout';
+import { getNotificationCountQuery } from 'mocks/Notifications';
 
-const mocks = [...walletBalanceQuery, ...walletBalanceSubscription];
+const mocks = [...walletBalanceQuery, ...walletBalanceSubscription, getNotificationCountQuery];
 
 describe('layout testing', () => {
   it('renders the appropriate components', async () => {

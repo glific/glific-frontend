@@ -8,8 +8,14 @@ import { getCurrentUserQuery } from 'mocks/User';
 import { setUserSession } from 'services/AuthService';
 import { walletBalanceQuery, walletBalanceSubscription } from 'mocks/Organization';
 import { SideDrawerContext } from 'context/session';
+import { getNotificationCountQuery } from 'mocks/Notifications';
 
-const mocks = [getCurrentUserQuery, ...walletBalanceQuery, ...walletBalanceSubscription];
+const mocks = [
+  getCurrentUserQuery,
+  ...walletBalanceQuery,
+  ...walletBalanceSubscription,
+  getNotificationCountQuery,
+];
 
 describe('side drawer testing', () => {
   const component = (

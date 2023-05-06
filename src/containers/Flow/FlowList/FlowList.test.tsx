@@ -21,6 +21,10 @@ import { Flow } from '../Flow';
 
 const mocks = [
   getFlowCountQuery,
+  getFlowCountQuery,
+  getFlowCountQuery,
+  filterFlowQuery,
+  filterFlowQuery,
   filterFlowQuery,
   filterFlowNewQuery,
   getFlowCountNewQuery,

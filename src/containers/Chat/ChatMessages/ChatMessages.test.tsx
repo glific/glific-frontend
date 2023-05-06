@@ -219,6 +219,7 @@ cache.writeQuery(collection);
 
 const client = new ApolloClient({
   cache: cache,
+  uri: 'http://localhost:4000/',
   assumeImmutableResults: true,
 });
 window.HTMLElement.prototype.scrollIntoView = vi.fn();
@@ -299,9 +300,7 @@ test('Contact: if not cache', async () => {
 
   // need to check why we click this
 
-  // await waitFor(() => {
-  //   fireEvent.click(getByTestId('jumpToLatest'));
-  // });
+  await waitFor(() => {});
 });
 
 const chatMessagesWithCollection = (
@@ -344,9 +343,7 @@ test('Collection: if not cache', async () => {
   const { getByTestId } = render(chatMessagesWithCollection);
   // need to check why we click this
 
-  // await waitFor(() => {
-  //   fireEvent.click(getByTestId('jumpToLatest'));
-  // });
+  await waitFor(() => {});
 });
 
 test('Collection: if cache', async () => {
@@ -354,6 +351,7 @@ test('Collection: if cache', async () => {
 
   const client = new ApolloClient({
     cache: cache,
+    uri: 'http://localhost:4000/',
     assumeImmutableResults: true,
   });
   const chatMessagesWithCollection = (
@@ -367,9 +365,7 @@ test('Collection: if cache', async () => {
 
   // need to check why we click this
 
-  // await waitFor(() => {
-  //   fireEvent.click(getByTestId('jumpToLatest'));
-  // });
+  await waitFor(() => {});
 });
 
 test('click on Clear conversation', async () => {
@@ -423,6 +419,7 @@ test('Load more messages', async () => {
   cache.writeQuery(searchQuery);
   const client = new ApolloClient({
     cache: cache,
+    uri: 'http://localhost:4000/',
     assumeImmutableResults: true,
   });
 
@@ -472,6 +469,7 @@ test('If search query gives error', async () => {
   cache.writeQuery(searchQuery);
   const client = new ApolloClient({
     cache: cache,
+    uri: 'http://localhost:4000/',
     assumeImmutableResults: true,
   });
 

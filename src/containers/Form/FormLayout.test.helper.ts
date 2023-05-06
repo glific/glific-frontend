@@ -6,8 +6,9 @@ import { getOrganizationLanguagesQuery, getOrganizationQuery } from 'mocks/Organ
 import { CREATE_FLOW, DELETE_FLOW, UPDATE_FLOW } from 'graphql/mutations/Flow';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { GET_FLOW } from 'graphql/queries/Flow';
-import { filterFlowQuery, getFlowCountQuery, getFlowQuery } from 'mocks/Flow';
+import { filterFlowQuery, getFlowCountQuery, getFlowQuery, releaseFlow } from 'mocks/Flow';
 import { FormLayoutProps } from './FormLayout';
+import { getRoleNamesMock } from 'containers/StaffManagement/StaffManagement.test.helper';
 
 const FormSchema = Yup.object();
 
@@ -80,9 +81,13 @@ export const listItemProps: FormLayoutProps = {
 };
 
 export const LIST_ITEM_MOCKS = [
+  getRoleNamesMock,
+  releaseFlow,
   ...getOrganizationQuery,
   getOrganizationLanguagesQuery,
   getFlowQuery,
   filterFlowQuery,
+  filterFlowQuery,
+  getFlowCountQuery,
   getFlowCountQuery,
 ];

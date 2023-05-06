@@ -6,6 +6,13 @@ import { organizationCustomerMock } from 'mocks/Billing';
 import { OrganizationCustomer } from './OrganizationCustomer';
 
 const mocks = [...organizationCustomerMock];
+
+vi.mock('react-router-dom', async () => {
+  return {
+    ...(await vi.importActual<any>('react-router-dom')),
+    useParams: () => ({ id: '1' }),
+  };
+});
 setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Glific_admin'] }));
 
 test('it renders organization-customer component successfully without form data', async () => {

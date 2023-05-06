@@ -100,6 +100,7 @@ cache.writeQuery({
 
 const client = new ApolloClient({
   cache: cache,
+  uri: 'http://localhost:4000/',
   assumeImmutableResults: true,
 });
 

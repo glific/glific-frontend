@@ -13,11 +13,12 @@ import {
   getCouponCode,
   getCustomerPortalQuery,
   getPendingBillingQuery,
-  updateBillingQuery,
+  getBillingQueryWithoutVars,
+  updateBillingQueryMock3,
 } from 'mocks/Billing';
 import { Billing } from './Billing';
 
-const mocks = [createBillingSubscriptionQuery, getBillingQuery];
+const mocks = [createBillingSubscriptionQuery, getBillingQuery, getBillingQueryWithoutVars];
 
 const mountElementMock = vi.fn();
 const mockElement = () => ({
@@ -100,7 +101,10 @@ describe('<Billing />', () => {
 
 test('creating a subscription with response as pending', async () => {
   const { getByText, getByTestId } = render(
-    <MockedProvider mocks={[createStatusPendingQuery, getBillingQuery]} addTypename={false}>
+    <MockedProvider
+      mocks={[createStatusPendingQuery, getBillingQueryWithoutVars, getBillingQueryWithoutVars]}
+      addTypename={false}
+    >
       <Router>
         <Billing />
       </Router>
@@ -118,7 +122,7 @@ test('creating a subscription with response as pending', async () => {
 test('subscription status is already in pending state', async () => {
   const { getByText, getByTestId } = render(
     <MockedProvider
-      mocks={[getPendingBillingQuery, getBillingQuery, getCustomerPortalQuery]}
+      mocks={[getPendingBillingQuery, getCustomerPortalQuery, getBillingQueryWithoutVars]}
       addTypename={false}
     >
       <Router>
@@ -148,7 +152,8 @@ test('complete a subscription', async () => {
       mocks={[
         getBillingQueryWithoutsubscription,
         createBillingSubscriptionQuery,
-        getBillingQuery,
+        getBillingQueryWithoutVars,
+        getBillingQueryWithoutVars,
         getCustomerPortalQuery,
       ]}
       addTypename={false}
@@ -178,6 +183,7 @@ test('open customer portal', async () => {
         getBillingQueryWithoutsubscription,
         createBillingSubscriptionQuery,
         getCustomerPortalQuery,
+        getBillingQueryWithoutVars,
       ]}
       addTypename={false}
     >
@@ -208,8 +214,9 @@ test('update billing details', async () => {
       mocks={[
         getBillingQueryWithoutsubscription,
         createBillingSubscriptionQuery,
-        updateBillingQuery,
-        getBillingQuery,
+        updateBillingQueryMock3,
+        getBillingQueryWithoutVars,
+        getBillingQueryWithoutVars,
       ]}
       addTypename={false}
     >
@@ -219,6 +226,7 @@ test('update billing details', async () => {
     </MockedProvider>
   );
   // loading is show initially
+
   expect(getByText('Loading...')).toBeInTheDocument();
   await waitFor(() => {
     expect(getByText('Back to settings')).toBeInTheDocument();
@@ -227,9 +235,8 @@ test('update billing details', async () => {
   await waitFor(() => {
     const name = container.querySelector('input[name="name"]') as HTMLInputElement;
     fireEvent.change(name, { target: { value: 'Glific Admin 1' } });
+    user.click(getByTestId('submitButton'));
   });
-
-  user.click(getByTestId('submitButton'));
 
   await waitFor(() => {
     expect(getByText('You have an active subscription')).toBeInTheDocument();
@@ -244,7 +251,8 @@ test('update billing details with coupon code', async () => {
         getBillingQueryWithoutsubscription,
         createBillingSubscriptionPromoQuery,
         getCouponCode,
-        getBillingQuery,
+        getBillingQueryWithoutVars,
+        getBillingQueryWithoutVars,
       ]}
       addTypename={false}
     >

@@ -10,7 +10,7 @@ import { CollectionContactList } from './CollectionContactList';
 vi.mock('react-router-dom', async () => {
   return {
     ...(await vi.importActual<any>('react-router-dom')),
-    useParams: () => ({ id: 1 }),
+    useParams: () => ({ id: '1' }),
   };
 });
 

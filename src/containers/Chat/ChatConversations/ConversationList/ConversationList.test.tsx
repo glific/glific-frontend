@@ -18,6 +18,7 @@ contactCache.writeQuery(contact);
 
 const clientForContact = new ApolloClient({
   cache: contactCache,
+  uri: 'http://localhost:4000/',
   assumeImmutableResults: true,
 });
 const conversationList = (
@@ -60,6 +61,7 @@ collectionCache.writeQuery(collectionWithLoadMore);
 
 const clientForCollection = new ApolloClient({
   cache: collectionCache,
+  uri: 'http://localhost:4000/',
   assumeImmutableResults: true,
 });
 

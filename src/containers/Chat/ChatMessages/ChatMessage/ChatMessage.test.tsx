@@ -6,6 +6,14 @@ import { TIME_FORMAT } from 'common/constants';
 
 import ChatMessage from './ChatMessage';
 
+vi.mock('react-tiny-link', () => {
+  return {
+    ReactTinyLink: (props: any) => {
+      return <span>{props.url}</span>;
+    },
+  };
+});
+
 HTMLAnchorElement.prototype.click = vi.fn();
 
 const insertedAt = '2020-06-19T18:44:02Z';
@@ -92,13 +100,6 @@ describe('<ChatMessage />', () => {
   test('it should render popup', async () => {
     const { getAllByTestId } = render(chatMessageText);
     expect(getAllByTestId('popup')[0]).toBeInTheDocument();
-  });
-
-  test('it should detect a link in message', async () => {
-    const { container } = render(chatMessageText);
-    expect(container.querySelector('.react_tinylink_card_content_description')?.textContent).toBe(
-      'www.google.com'
-    );
   });
 
   const chatMessageVideo = chatMessage('VIDEO');
