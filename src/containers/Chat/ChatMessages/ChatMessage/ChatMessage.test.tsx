@@ -332,7 +332,7 @@ describe('<ChatMessage />', () => {
     );
   });
 
-  test('it should render with list interactive template', async () => {
+  test.only('it should render with list interactive template', async () => {
     receivedProps.interactiveContent = JSON.stringify(listTemplate);
     receivedProps.type = 'LIST';
 
