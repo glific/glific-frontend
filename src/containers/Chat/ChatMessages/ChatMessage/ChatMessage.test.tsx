@@ -6,6 +6,14 @@ import { TIME_FORMAT } from 'common/constants';
 
 import ChatMessage from './ChatMessage';
 
+vi.mock('react-tiny-link', () => {
+  return {
+    ReactTinyLink: (props: any) => {
+      return <span>{props.url}</span>;
+    },
+  };
+});
+
 HTMLAnchorElement.prototype.click = vi.fn();
 
 const insertedAt = '2020-06-19T18:44:02Z';
@@ -63,23 +71,15 @@ describe('<ChatMessage />', () => {
   const chatMessageText = chatMessage('TEXT');
 
   test('it should render the message content correctly', () => {
-    try {
-      const { getByTestId } = render(chatMessageText);
-      expect(getByTestId('content').textContent).toContain(
-        'Hello there! visit https://www.google.com'
-      );
-    } catch (error) {
-      console.log(error);
-    }
+    const { getByTestId } = render(chatMessageText);
+    expect(getByTestId('content').textContent).toContain(
+      'Hello there! visit https://www.google.com'
+    );
   });
 
   test('it should apply the correct styling', () => {
-    try {
-      const { getByTestId } = render(chatMessageText);
-      expect(getByTestId('content').innerHTML.includes('<b>Hello there!</b>')).toBe(true);
-    } catch (error) {
-      console.log(error);
-    }
+    const { getByTestId } = render(chatMessageText);
+    expect(getByTestId('content').innerHTML.includes('<b>Hello there!</b>')).toBe(true);
   });
 
   test('it should render the message date  correctly', () => {
@@ -93,12 +93,8 @@ describe('<ChatMessage />', () => {
   });
 
   test('it should render the down arrow icon', () => {
-    try {
-      const { getAllByTestId } = render(chatMessageText);
-      expect(getAllByTestId('messageOptions')[0]).toBeInTheDocument();
-    } catch (error) {
-      console.log(error);
-    }
+    const { getAllByTestId } = render(chatMessageText);
+    expect(getAllByTestId('messageOptions')[0]).toBeInTheDocument();
   });
 
   test('it should render popup', async () => {
@@ -106,71 +102,52 @@ describe('<ChatMessage />', () => {
     expect(getAllByTestId('popup')[0]).toBeInTheDocument();
   });
 
-  test('it should detect a link in message', async () => {
-    const { container } = render(chatMessageText);
-    expect(container.querySelector('.react_tinylink_card_content_description')?.textContent).toBe(
-      'www.google.com'
-    );
-  });
-
   const chatMessageVideo = chatMessage('VIDEO');
 
   test('it should show the download media option when clicked on down arrow and message type is video', async () => {
-    try {
-      const { getAllByTestId } = render(chatMessageVideo);
-      fireEvent.click(getAllByTestId('popup')[0]);
-      expect(getAllByTestId('downloadMedia')[0]).toBeVisible();
+    const { getAllByTestId } = render(chatMessageVideo);
+    fireEvent.click(getAllByTestId('popup')[0]);
+    expect(getAllByTestId('downloadMedia')[0]).toBeVisible();
 
-      // For download video
-      const download = getAllByTestId('downloadMedia')[0];
-      expect(download).toBeVisible();
+    // For download video
+    const download = getAllByTestId('downloadMedia')[0];
+    expect(download).toBeVisible();
 
-      await waitFor(() => {
-        fireEvent.click(download);
-      });
-    } catch (error) {
-      console.log(error);
-    }
+    await waitFor(() => {
+      fireEvent.click(download);
+    });
   });
 
   const chatMessageAudio = chatMessage('AUDIO');
 
   test('it should show the download media option when clicked on down arrow and message type is audio', async () => {
-    try {
-      const { getAllByTestId } = render(chatMessageAudio);
-      fireEvent.click(getAllByTestId('popup')[0]);
-      expect(getAllByTestId('downloadMedia')[0]).toBeVisible();
+    const { getAllByTestId } = render(chatMessageAudio);
+    fireEvent.click(getAllByTestId('popup')[0]);
+    expect(getAllByTestId('downloadMedia')[0]).toBeVisible();
 
-      // For download audio
-      const download = getAllByTestId('downloadMedia')[0];
-      expect(download).toBeVisible();
+    // For download audio
+    const download = getAllByTestId('downloadMedia')[0];
+    expect(download).toBeVisible();
 
-      await waitFor(() => {
-        fireEvent.click(download);
-      });
-    } catch (error) {
-      console.log(error);
-    }
+    await waitFor(() => {
+      fireEvent.click(download);
+    });
   });
 
   const chatMessageImage = chatMessage('IMAGE');
 
   test('it should show the download media option when clicked on down arrow and message type is image', async () => {
-    try {
-      const { getAllByTestId } = render(chatMessageImage);
-      fireEvent.click(getAllByTestId('popup')[0]);
-      expect(getAllByTestId('downloadMedia')[0]).toBeVisible();
+    const { getAllByTestId } = render(chatMessageImage);
+    fireEvent.click(getAllByTestId('popup')[0]);
+    expect(getAllByTestId('downloadMedia')[0]).toBeVisible();
 
-      // For download image
-      const download = getAllByTestId('downloadMedia')[0];
-      expect(download).toBeVisible();
+    // For download image
+    const download = getAllByTestId('downloadMedia')[0];
+    expect(download).toBeVisible();
 
-      await waitFor(() => {
-        fireEvent.click(download);
-      });
-    } catch (error) {
-      console.log(error);
-    }
+    await waitFor(() => {
+      fireEvent.click(download);
+    });
   });
 
   const chatMessageDoc = chatMessage('DOCUMENT');
@@ -197,31 +174,23 @@ describe('<ChatMessage />', () => {
   });
 
   test('it should click on replied message', async () => {
-    try {
-      const { getByTestId } = render(chatMessageDoc);
-      await waitFor(() => {
-        fireEvent.click(getByTestId('reply-message'));
-      });
-    } catch (error) {
-      console.log(error);
-    }
+    const { getByTestId } = render(chatMessageDoc);
+    await waitFor(() => {
+      fireEvent.click(getByTestId('reply-message'));
+    });
   });
 
   const props = getProps('TEXT');
   test('it should render error with payload', async () => {
-    try {
-      props.errors = '{"payload": {"payload": {"reason": "Something went wrong"}}} ';
-      render(
-        <MockedProvider mocks={[]} addTypename={false}>
-          <ChatMessage {...props} />
-        </MockedProvider>
-      );
+    props.errors = '{"payload": {"payload": {"reason": "Something went wrong"}}} ';
+    render(
+      <MockedProvider mocks={[]} addTypename={false}>
+        <ChatMessage {...props} />
+      </MockedProvider>
+    );
 
-      const errors = screen.getByTestId('warning-icon');
-      expect(errors).toBeInTheDocument();
-    } catch (error) {
-      console.log(error);
-    }
+    const errors = screen.getByTestId('warning-icon');
+    expect(errors).toBeInTheDocument();
   });
 
   const imageProps = getProps('DOCUMENT');
@@ -282,31 +251,27 @@ describe('<ChatMessage />', () => {
   };
 
   test('it should render with image', async () => {
-    try {
-      const { rerender } = render(
-        <MockedProvider addTypename={false}>
-          <ChatMessage {...receivedProps} />
-        </MockedProvider>
-      );
-      const messageMenu = screen.getByTestId('messageOptions');
+    const { rerender } = render(
+      <MockedProvider addTypename={false}>
+        <ChatMessage {...receivedProps} />
+      </MockedProvider>
+    );
+    const messageMenu = screen.getByTestId('messageOptions');
 
-      await waitFor(() => {});
+    await waitFor(() => {});
 
-      expect(messageMenu).toBeInTheDocument();
-      await waitFor(() => {
-        fireEvent.mouseDown(messageMenu);
-      });
+    expect(messageMenu).toBeInTheDocument();
+    await waitFor(() => {
+      fireEvent.mouseDown(messageMenu);
+    });
 
-      const newProps = { ...receivedProps };
-      newProps.showMessage = false;
-      rerender(
-        <MockedProvider addTypename={false}>
-          <ChatMessage {...newProps} />
-        </MockedProvider>
-      );
-    } catch (error) {
-      console.log(error);
-    }
+    const newProps = { ...receivedProps };
+    newProps.showMessage = false;
+    rerender(
+      <MockedProvider addTypename={false}>
+        <ChatMessage {...newProps} />
+      </MockedProvider>
+    );
   });
 
   const quickReplyTemplate = {
