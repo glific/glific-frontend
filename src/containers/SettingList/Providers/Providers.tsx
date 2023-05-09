@@ -36,6 +36,7 @@ export const Providers = () => {
   const [formFields, setFormFields] = useState([]);
   const [keys, setKeys] = useState({});
   const [secrets, setSecrets] = useState({});
+
   const params = useParams();
   const type = params.type ? params.type : null;
   const states: any = {};
@@ -109,6 +110,8 @@ export const Providers = () => {
   };
 
   const addField = (fields: any) => {
+    console.log(fields);
+
     // reset validation to empty
     resetValidation();
 
@@ -123,9 +126,8 @@ export const Providers = () => {
         ),
       },
     ];
-    const defaultStates: any = {};
+
     Object.keys(fields).forEach((key) => {
-      Object.assign(defaultStates, { [key]: fields[key].default });
       const field = {
         component: Input,
         name: key,
@@ -149,9 +151,12 @@ export const Providers = () => {
       providerData.providers.forEach((provider: any) => {
         const providerKeys = JSON.parse(provider.keys);
         const providerSecrets = JSON.parse(provider.secrets);
+        const providerMap= JSON.parse(provider.secret_map)
+
         const fields: any = {};
         Object.assign(fields, providerKeys);
         Object.assign(fields, providerSecrets);
+        fields.arraymap=providerMap
 
         addField(fields);
         setKeys(providerKeys);
