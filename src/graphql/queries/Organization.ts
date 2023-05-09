@@ -45,7 +45,6 @@ export const GET_PROVIDERS = gql`
       description
       keys
       secrets
-      secret_map
       group
       isRequired
     }
