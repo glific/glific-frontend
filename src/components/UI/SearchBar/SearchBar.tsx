@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import searchIcon from 'assets/images/icons/Search/Desktop.svg';
 import { ReactComponent as AdvancedSearch } from 'assets/images/icons/AdvancedSearch.svg';
 import styles from './SearchBar.module.css';
+import Track from 'services/TrackService';
 
 export interface SearchBarProps {
   handleChange?: (e: any) => void;
@@ -67,6 +68,7 @@ export const SearchBar = ({
           disableFocusRipple
           aria-label="toggle password visibility"
           onClick={(e: any) => {
+            Track('Advanced search');
             handleClick(e, 'search', 'update');
           }}
         >

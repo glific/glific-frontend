@@ -7,11 +7,16 @@ import { GET_PROVIDERS } from 'graphql/queries/Organization';
 import { ReactComponent as Settingicon } from 'assets/images/icons/Settings/Settings.svg';
 import { ReactComponent as EditIcon } from 'assets/images/icons/Edit.svg';
 import styles from './SettingList.module.css';
+import { useEffect } from 'react';
+import Track from 'services/TrackService';
 
 export const SettingList = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { data: providerData, loading } = useQuery(GET_PROVIDERS);
+  useEffect(() => {
+    Track('Visited Settings');
+  }, []);
 
   if (loading) return <Loading />;
   const SettingIcon = <Settingicon />;
