@@ -123,9 +123,8 @@ export const Providers = () => {
         ),
       },
     ];
-    const defaultStates: any = {};
+
     Object.keys(fields).forEach((key) => {
-      Object.assign(defaultStates, { [key]: fields[key].default });
       const field = {
         component: Input,
         name: key,
@@ -149,6 +148,7 @@ export const Providers = () => {
       providerData.providers.forEach((provider: any) => {
         const providerKeys = JSON.parse(provider.keys);
         const providerSecrets = JSON.parse(provider.secrets);
+
         const fields: any = {};
         Object.assign(fields, providerKeys);
         Object.assign(fields, providerSecrets);
