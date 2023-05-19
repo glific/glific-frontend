@@ -15,7 +15,7 @@ export const SettingList = () => {
   const { t } = useTranslation();
   const { data: providerData, loading } = useQuery(GET_PROVIDERS);
   useEffect(() => {
-    Track('Visited Settings');
+    Track('Visit Settings');
   }, []);
 
   if (loading) return <Loading />;
