@@ -18,6 +18,7 @@ import { EXPORT_FLOW, GET_FLOW_DETAILS, GET_FREE_FLOW } from 'graphql/queries/Fl
 import { setAuthHeaders } from 'services/AuthService';
 import { SideDrawerContext } from 'context/session';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
+import Track from 'services/TrackService';
 import { exportFlowMethod } from 'common/utils';
 import styles from './FlowEditor.module.css';
 import { checkElementInRegistry, loadfiles, setConfig } from './FlowEditor.helper';
@@ -204,6 +205,8 @@ export const FlowEditor = () => {
       window.onfocus = () => {
         getFreeFlow({ variables: { id: flowId } });
       };
+
+      Track('Flow opened');
 
       return () => {
         Object.keys(files).forEach((node: any) => {
