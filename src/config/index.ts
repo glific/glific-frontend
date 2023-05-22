@@ -34,6 +34,7 @@ export const GLIFIC_API_URL = `${GLIFIC_BACKEND_URL}/api`;
 export const VITE_GLIFIC_REGISTRATION_API = `${GLIFIC_API_URL}/v1/registration`;
 export const VITE_GLIFIC_AUTHENTICATION_API = `${GLIFIC_API_URL}/v1/registration/send-otp`;
 export const USER_SESSION = `${GLIFIC_API_URL}/v1/session`;
+export const USER_TRACKER = `${GLIFIC_API_URL}/v1/session/tracker`;
 export const ORGANIZATION_NAME = `${GLIFIC_API_URL}/v1/session/name`;
 export const RESET_PASSWORD = `${GLIFIC_API_URL}/v1/registration/reset-password`;
 export const RENEW_TOKEN = `${USER_SESSION}/renew`;

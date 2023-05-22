@@ -14,6 +14,7 @@ import { getUserRolePermissions } from 'context/role';
 import { SEARCH_OFFSET } from 'graphql/queries/Search';
 import ConversationList from './ConversationList/ConversationList';
 import styles from './ChatConversations.module.css';
+import Track from 'services/TrackService';
 
 export interface ChatConversationsProps {
   contactId?: number | string;
@@ -65,6 +66,7 @@ export const ChatConversations = ({ contactId }: ChatConversationsProps) => {
   };
 
   const handleSubmit = (event: any) => {
+    Track('Chat search');
     event.preventDefault();
     const searchValInput = event.target.querySelector('input').value.trim();
     setSearchVal(searchValInput);

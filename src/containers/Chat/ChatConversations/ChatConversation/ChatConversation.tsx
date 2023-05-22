@@ -10,6 +10,7 @@ import { SEARCH_OFFSET } from 'graphql/queries/Search';
 import { WhatsAppToJsx } from 'common/RichEditor';
 import { MessageType } from '../MessageType/MessageType';
 import styles from './ChatConversation.module.css';
+import Track from 'services/TrackService';
 
 export interface ChatConversationProps {
   contactId: number;
@@ -199,6 +200,7 @@ const ChatConversation = ({
         if (onClick) onClick(index);
         setSearchOffset(client, messageNumber);
         if (entityType === 'contact') {
+          Track('View contact');
           markAsRead({
             variables: { contactId: contactId.toString() },
           });
