@@ -73,6 +73,7 @@ window.showFlowEditor = (node: any, config: any) => vi.fn();
 const defaultWrapper = wrapperFunction(activeFlowMocks);
 
 test('it should display the flowEditor', async () => {
+  mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
   const { container } = render(defaultWrapper);
   await waitFor(() => {
     expect(container.querySelector('#flow')).toBeInTheDocument();
