@@ -1,0 +1,60 @@
+.EndDate {
+  min-width: 110px;
+  width: 15%;
+}
+
+.Name {
+  min-width: 290px;
+  width: 40%;
+}
+
+.Collections {
+  min-width: 145px;
+  width: 20%;
+}
+
+.Icon {
+  width: 29px;
+  height: 29px;
+}
+
+.LabelText {
+  display: flex;
+  font-weight: 500;
+  font-size: 20px;
+  word-break: break-all;
+  margin-top: 12px;
+  margin-bottom: 12px;
+  line-height: 1;
+}
+
+.EndDateVal {
+  padding-top: 12px;
+  color: #93a29b;
+  font-size: 17px;
+}
+
+.Collection {
+  padding-top: 12px;
+  color: #93a29b;
+  font-size: 17px;
+}
+
+.Actions {
+  min-width: 150px;
+  width: 25%;
+  justify-content: flex-end;
+  margin-left: auto;
+}
+
+.TriggerIcon {
+  margin-right: 8px;
+}
+
+.Tooltip {
+  width: 120px;
+}
+
+.Inactive {
+  color: #ccd4d0;
+}
