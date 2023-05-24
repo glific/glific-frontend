@@ -15,6 +15,7 @@ export const TICKET_LIST_QUERY = gql`
       updatedAt
       user {
         id
+        name
       }
     }
   }
