@@ -67,7 +67,7 @@ export const setConfig = (uuid: any) => {
       languages: `${glificBase}languages`,
       attachments: `${glificBase}flow-attachment`,
       environment: `${glificBase}environment`,
-      topics: `${glificBase}topics`,
+      topics: `${glificBase}labels`,
       users: `${glificBase}users`,
       recipients: `${glificBase}recipients`,
       contacts: `${glificBase}recipients`,
