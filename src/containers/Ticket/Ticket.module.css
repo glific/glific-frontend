@@ -1,0 +1,20 @@
+.Bold {
+  font-weight: 600;
+  color: #073f24;
+}
+.Content {
+  color: #93a29b;
+}
+
+.Container {
+  background-color: #e2f1ea !important;
+  padding: 1px 24px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+
+.TicketIcon {
+  color: #073f24 !important;
+  width: 29px;
+  height: 29px;
+}

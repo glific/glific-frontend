@@ -1,43 +1,63 @@
+.Dialogbox {
+  border-radius: 32px !important;
+  margin: 0px;
+  min-width: 456px;
+}
+
+.DialogContent {
+  padding: 0px 0px 4px 0px !important;
+}
+
+.Success {
+  background-color: #c8ebdc;
+  border-radius: 14px;
+  padding: 4px 8px;
+  color: #119656;
+}
+
+.ErrorStyle {
+  background-color: #fbe8e8;
+  border-radius: 14px;
+  padding: 4px 8px;
+  color: #dd1f1f;
+  min-width: 77px;
+  text-align: center;
+}
+
+.StatusContainer {
+  display: flex;
+  align-items: center;
+  padding: 4px 0;
+  font-size: 16px;
+}
+
 .EndDate {
   min-width: 110px;
   width: 15%;
 }
 
-.Name {
-  min-width: 290px;
-  width: 40%;
-}
-
-.Collections {
-  min-width: 145px;
+.Label {
+  min-width: 100px;
   width: 20%;
 }
 
-.Icon {
-  width: 29px;
-  height: 29px;
+.Issue {
+  min-width: 300px;
+  max-width: 400px;
+  width: 30%;
+}
+.Assigned {
+  width: 20%;
 }
 
-.LabelText {
-  display: flex;
-  font-weight: 500;
-  font-size: 20px;
-  word-break: break-all;
-  margin-top: 12px;
-  margin-bottom: 12px;
-  line-height: 1;
+.Status {
+  width: 10%;
 }
 
-.EndDateVal {
-  padding-top: 12px;
+.Body {
+  padding: 8px 0;
   color: #93a29b;
-  font-size: 17px;
-}
-
-.Collection {
-  padding-top: 12px;
-  color: #93a29b;
-  font-size: 17px;
+  font-size: 16px;
 }
 
 .Actions {
@@ -47,14 +67,39 @@
   margin-left: auto;
 }
 
-.TriggerIcon {
-  margin-right: 8px;
+.LabelText {
+  display: flex;
+  font-weight: 500;
+  font-size: 20px;
+  color: #073f24;
+  margin-top: 12px;
+  margin-bottom: 12px;
+  line-height: 1;
 }
 
-.Tooltip {
-  width: 120px;
+.TableText {
+  margin-right: 23px;
+  text-align: left;
+  padding: 12px 0px;
+  font-size: 16px;
+  color: #93a29b;
+  line-height: 1.25;
+  margin: 0;
 }
 
-.Inactive {
-  color: #ccd4d0;
+.Filters {
+  display: flex;
+  align-items: center;
+  margin-left: 50px;
+}
+
+.DropdownContainer {
+  min-width: 150px;
+  margin-left: 20px;
+}
+
+.Icon {
+  color: #073f24 !important;
+  width: 29px;
+  height: 29px;
 }
