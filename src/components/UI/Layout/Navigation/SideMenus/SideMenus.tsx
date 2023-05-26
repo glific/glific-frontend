@@ -99,7 +99,7 @@ const SideMenus = ({ opened }: SideMenusProps) => {
           ),
         }));
       return (
-        <Menu menus={subMenu} eventType="MouseEnter" placement={'right-start'}>
+        <Menu menus={subMenu} key={menu.icon} eventType="MouseEnter" placement={'right-start'}>
           {listItemButton}
         </Menu>
       );

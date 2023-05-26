@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 
 import { Input } from 'components/UI/Form/Input/Input';
