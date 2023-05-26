@@ -8,6 +8,7 @@ import { GET_NOTIFICATIONS_COUNT } from 'graphql/queries/Notifications';
 import ListIcon from 'components/UI/ListIcon/ListIcon';
 import { getSideDrawerMenus } from 'context/role';
 import styles from './SideMenus.module.css';
+import Menu from 'components/UI/Menu/Menu';
 
 export interface SideMenusProps {
   opened: boolean;
@@ -53,7 +54,7 @@ const SideMenus = ({ opened }: SideMenusProps) => {
       redirectPath = { pathname: menu.url };
     }
 
-    return (
+    const listItemButton = (
       <ListItemButton
         disableRipple
         selected={isSelected}
@@ -84,6 +85,27 @@ const SideMenus = ({ opened }: SideMenusProps) => {
         ) : null}
       </ListItemButton>
     );
+
+    if (menu.subMenu && menu.subMenu.length) {
+      const subMenu = menu.subMenu
+        .filter((item: any) => !item.show)
+        .map((item: any) => ({
+          ...item,
+          spacing: false,
+          icon: (
+            <ListItemIcon className={styles.ListItemIcon}>
+              <ListIcon icon={item.icon} />
+            </ListItemIcon>
+          ),
+        }));
+      return (
+        <Menu menus={subMenu} eventType="MouseEnter" placement={'right-start'}>
+          {listItemButton}
+        </Menu>
+      );
+    }
+
+    return listItemButton;
   });
 
   return (

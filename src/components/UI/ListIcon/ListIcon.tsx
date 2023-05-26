@@ -22,6 +22,10 @@ import triggerSelectedIcon from 'assets/images/icons/Trigger/Selected.svg';
 import triggerIcon from 'assets/images/icons/Trigger/Unselected.svg';
 import notificationIcon from 'assets/images/icons/Notification/Unselected.svg';
 import notificationSelectedIcon from 'assets/images/icons/Notification/Selected.svg';
+import sheetsIcon from 'assets/images/icons/Sheets/Light.svg';
+import contactVariableIcon from 'assets/images/icons/ContactVariable.svg';
+import webhookLogsIcon from 'assets/images/icons/Webhook/WebhookLight.svg';
+import supportAgentIcon from 'assets/images/icons/Ticket/Ticket.svg';
 import helpIcon from 'assets/images/icons/Help.svg';
 import styles from './ListIcon.module.css';
 
@@ -46,6 +50,10 @@ export const ListIcon = ({ icon, count, showBadge }: ListIconProps) => {
     notification: notificationIcon,
     'interactive-message': interactiveMessageIcon,
     help: helpIcon,
+    sheets: sheetsIcon,
+    tickets: supportAgentIcon,
+    webhook: webhookLogsIcon,
+    fields: contactVariableIcon,
   };
 
   const stringsToSelectedIcons: { [iconName: string]: string } = {
@@ -59,6 +67,10 @@ export const ListIcon = ({ icon, count, showBadge }: ListIconProps) => {
     trigger: triggerSelectedIcon,
     notification: notificationSelectedIcon,
     'interactive-message': interactiveMessageSelectedIcon,
+    sheets: sheetsIcon,
+    tickets: supportAgentIcon,
+    webhook: webhookLogsIcon,
+    fields: contactVariableIcon,
   };
 
   const iconImage = (
@@ -70,6 +82,7 @@ export const ListIcon = ({ icon, count, showBadge }: ListIconProps) => {
       }
       alt={'Selected '.concat(icon)}
       data-testid="listIcon"
+      style={{ marginRight: 0 }}
     />
   );
 

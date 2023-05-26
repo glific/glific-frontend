@@ -13,7 +13,7 @@ export const setConfig = (uuid: any) => {
     mutable: true,
     showNodeLabel: false,
     attachmentsEnabled: false,
-    filters: ['whatsapp', 'classifier', 'ticketer'],
+    filters: ['whatsapp', 'classifier'],
 
     excludeTypes: [
       'add_contact_urn',
@@ -96,6 +96,10 @@ export const setConfig = (uuid: any) => {
 
   if (services.contactProfileEnabled) {
     config.filters.push('profile');
+  }
+
+  if (services.ticketingEnabled) {
+    config.filters.push('ticketer');
   }
 
   return config;

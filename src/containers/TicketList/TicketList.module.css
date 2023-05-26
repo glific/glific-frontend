@@ -103,3 +103,21 @@
   width: 29px;
   height: 29px;
 }
+
+.FilterLabel {
+  color: #073f24 !important;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.RadioLabel > span {
+  line-height: 1 !important;
+  font-weight: 500 !important;
+  font-size: 16px !important;
+  font-family: 'Heebo', sans-serif !important;
+}
+
+.RadioLabel {
+  margin-right: 24px;
+}

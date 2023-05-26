@@ -9,9 +9,6 @@ import { ReactComponent as DuplicateIcon } from 'assets/images/icons/Flow/Duplic
 import { ReactComponent as ExportIcon } from 'assets/images/icons/Flow/Export.svg';
 import { FormControlLabel, Radio, RadioGroup } from '@mui/material';
 import { ReactComponent as ConfigureIcon } from 'assets/images/icons/Configure/UnselectedDark.svg';
-import { ReactComponent as ContactVariable } from 'assets/images/icons/ContactVariable.svg';
-import { ReactComponent as WebhookLogsIcon } from 'assets/images/icons/Webhook/WebhookLight.svg';
-import { ReactComponent as SheetsIcon } from 'assets/images/icons/Sheets/Light.svg';
 import { ReactComponent as PinIcon } from 'assets/images/icons/Pin/Active.svg';
 import { FILTER_FLOW, GET_FLOW_COUNT, EXPORT_FLOW, RELEASE_FLOW } from 'graphql/queries/Flow';
 import { DELETE_FLOW, IMPORT_FLOW } from 'graphql/mutations/Flow';
@@ -219,37 +216,22 @@ export const FlowList = () => {
   );
 
   return (
-    <>
-      <List
-        title={t('Flows')}
-        listItem="flows"
-        listItemName="flow"
-        pageLink="flow"
-        listIcon={flowIcon}
-        dialogMessage={dialogMessage}
-        {...queries}
-        {...columnAttributes}
-        searchParameter={['nameOrKeyword']}
-        additionalAction={additionalAction}
-        button={{ show: true, label: t('Create Flow'), symbol: '+' }}
-        secondaryButton={importButton}
-        filters={{ isActive: filter }}
-        filterList={activeFilter}
-      />
-
-      <Link to="/webhook-logs" className={styles.Webhook}>
-        <WebhookLogsIcon />
-        {t('Webhook logs')}
-      </Link>
-      <Link to="/contact-fields" className={styles.ContactFields}>
-        <ContactVariable />
-        {t('Contact variables')}
-      </Link>
-      <Link to="/sheet-integration" className={styles.Sheets}>
-        <SheetsIcon />
-        {t('Google sheets')}
-      </Link>
-    </>
+    <List
+      title={t('Flows')}
+      listItem="flows"
+      listItemName="flow"
+      pageLink="flow"
+      listIcon={flowIcon}
+      dialogMessage={dialogMessage}
+      {...queries}
+      {...columnAttributes}
+      searchParameter={['nameOrKeyword']}
+      additionalAction={additionalAction}
+      button={{ show: true, label: t('Create Flow'), symbol: '+' }}
+      secondaryButton={importButton}
+      filters={{ isActive: filter }}
+      filterList={activeFilter}
+    />
   );
 };
 
