@@ -1,7 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { DELETE_TRIGGER } from 'graphql/mutations/Trigger';
 import { List } from 'containers/List/List';
-import styles from './TicketList.module.css';
 import { ReactComponent as EditIcon } from 'assets/images/icons/Edit.svg';
 import { TICKET_COUNT_QUERY, TICKET_LIST_QUERY } from 'graphql/queries/Ticket';
 import { useState } from 'react';
@@ -10,6 +9,8 @@ import Ticket from 'containers/Ticket/Ticket';
 import { SupportAgent } from '@mui/icons-material';
 import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
 import { getUserSession } from 'services/AuthService';
+
+import styles from './TicketList.module.css';
 
 const getBody = (body: any) => <div className={styles.TableText}>{body}</div>;
 const getStatus = (status: string) => {
@@ -108,8 +109,6 @@ export const TicketList = () => {
       label: t('Add remark'),
     },
   ];
-
-  console.log();
 
   const activeFilter = (
     <div className={styles.Filters}>
