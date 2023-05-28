@@ -7,7 +7,7 @@ import userEvent from '@testing-library/user-event';
 import { getTicketQuery } from 'mocks/Ticket';
 
 afterEach(cleanup);
-const setOpenDialogMock = vi.fn();
+
 setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
 
 const mocks = [getTicketQuery];
