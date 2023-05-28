@@ -1,13 +1,4 @@
-import {
-  fireEvent,
-  render,
-  waitFor,
-  cleanup,
-  screen,
-  within,
-  getByTestId,
-} from '@testing-library/react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { render, waitFor, cleanup, screen } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 
 import { setUserSession } from 'services/AuthService';
