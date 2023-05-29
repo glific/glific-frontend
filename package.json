@@ -17,7 +17,7 @@
     "@emoji-mart/data": "^1.1.2",
     "@emoji-mart/react": "^1.1.1",
     "@emotion/react": "^11.10.8",
-    "@emotion/styled": "^11.10.8",
+    "@emotion/styled": "^11.11.0",
     "@glific/flow-editor": "^1.19.1-6",
     "@jumpn/utils-graphql": "^0.6.0",
     "@mui/icons-material": "^5.11.16",
