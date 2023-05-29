@@ -12,7 +12,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:12 # postgres image for test database.
+        image: postgres:13 # postgres image for test database.
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
@@ -23,8 +23,8 @@ jobs:
 
     strategy:
       matrix: # build matrix for the job
-        elixir: [1.14.2]
-        otp: [25.1.2]
+        elixir: [1.14.5]
+        otp: [25.3.2]
         node-version: [16.17.0]
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -83,7 +83,7 @@ jobs:
           echo install mix dependencies if not Cached
           mix local.rebar --force
           mix local.hex --force
-          mix hex.organization auth oban --key ${{ secrets.OBAN_PRO_KEY }}
+          mix hex.repo add oban https://getoban.pro/repo --fetch-public-key ${{ secrets.OBAN_PUBLIC_KEY }} --auth-key ${{ secrets.OBAN_PRO_KEY }}
           mix deps.get
           echo start mix setup
           echo done. start installing inotify-tools
