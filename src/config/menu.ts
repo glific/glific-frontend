@@ -1,4 +1,5 @@
 import { ANALYTICS_URL, GLIFIC_DOCS_URL } from 'config';
+import { getOrganizationServices } from 'services/AuthService';
 
 // define all the menus in the system
 const menus = [
@@ -21,8 +22,40 @@ const menus = [
     path: '/flow',
     icon: 'flow',
     type: 'sideDrawer',
+    subMenu: [
+      {
+        title: 'Google sheets',
+        path: '/sheet-integration',
+        icon: 'sheets',
+        type: 'sideDrawer',
+        roles: ['Manager', 'Admin', 'Dynamic'],
+      },
+      {
+        title: 'Webhook logs',
+        path: '/webhook-logs',
+        icon: 'webhook',
+        type: 'sideDrawer',
+        roles: ['Manager', 'Admin', 'Dynamic'],
+      },
+      {
+        title: 'Contact variables',
+        path: '/contact-fields',
+        icon: 'fields',
+        type: 'sideDrawer',
+        roles: ['Manager', 'Admin', 'Dynamic'],
+      },
+      {
+        title: 'Support tickets',
+        path: '/ticket',
+        icon: 'tickets',
+        type: 'sideDrawer',
+        roles: ['Manager', 'Admin', 'Dynamic'],
+        show: getOrganizationServices('ticketingEnabled'),
+      },
+    ],
     roles: ['Manager', 'Admin', 'Dynamic'],
   },
+
   {
     title: 'Triggers',
     path: '/trigger',
