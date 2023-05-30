@@ -17,7 +17,7 @@
 .MessageText a {
   text-decoration: none;
 }
-
+  
 .ReceivedMessage .MessageText {
   margin-right: 25px;
 }
@@ -40,7 +40,7 @@
 
 .SendMessage {
   composes: MessageText;
-  text-align: right;
+  text-align: left;
   padding-right: 22px;
   margin-left: auto;
   background: #e1f4c9;
