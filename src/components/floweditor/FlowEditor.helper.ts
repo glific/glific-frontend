@@ -19,7 +19,6 @@ export const setConfig = (uuid: any) => {
       'add_contact_urn',
       'send_email',
       'call_resthook',
-      'open_ticket',
       'transfer_airtime',
       'split_by_scheme',
     ],
@@ -68,6 +67,8 @@ export const setConfig = (uuid: any) => {
       languages: `${glificBase}languages`,
       attachments: `${glificBase}flow-attachment`,
       environment: `${glificBase}environment`,
+      topics: `${glificBase}labels`,
+      users: `${glificBase}users`,
       recipients: `${glificBase}recipients`,
       contacts: `${glificBase}recipients`,
       completion: `${glificBase}completion`,
@@ -95,6 +96,10 @@ export const setConfig = (uuid: any) => {
 
   if (services.contactProfileEnabled) {
     config.filters.push('profile');
+  }
+
+  if (!services.ticketingEnabled) {
+    config.filters.push('ticketer');
   }
 
   return config;

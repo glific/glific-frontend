@@ -9,9 +9,17 @@ export interface MenuItemProps {
   icon?: any;
   onClickHandler: any;
   className?: string;
+  spacing?: boolean;
 }
 
-const MenuItem = ({ className, onClickHandler, path, icon, title }: MenuItemProps) => {
+const MenuItem = ({
+  className,
+  onClickHandler,
+  path,
+  icon,
+  title,
+  spacing = true,
+}: MenuItemProps) => {
   let menuItemClass = '';
   if (className === 'Danger') {
     menuItemClass = styles.Danger;
@@ -29,7 +37,7 @@ const MenuItem = ({ className, onClickHandler, path, icon, title }: MenuItemProp
   return (
     <MenuItemElement onClick={onClickHandler} {...link} data-testid="MenuItem">
       {icon}
-      <div className={`${menuItemClass} ${icon ? styles.Spacing : ''}`}>{title}</div>
+      <div className={`${menuItemClass} ${icon && spacing ? styles.Spacing : ''}`}>{title}</div>
     </MenuItemElement>
   );
 };

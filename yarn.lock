@@ -639,10 +639,10 @@
   "resolved" "https://registry.npmjs.org/@esbuild/linux-x64/-/linux-x64-0.17.15.tgz"
   "version" "0.17.15"
 
-"@glific/flow-editor@^1.19.1-6":
-  "integrity" "sha512-iqGqQgmDsQBD6WLl69bwrPKy/P2eHJ3AOWMqkfKRQALf+Q2w+U5TG/wegGwI8SO8cPWOgpo+C0VKvPGf9oYH4w=="
-  "resolved" "https://registry.npmjs.org/@glific/flow-editor/-/flow-editor-1.19.1-6.tgz"
-  "version" "1.19.1-6"
+"@glific/flow-editor@^1.19.1-8":
+  version "1.19.1-8"
+  resolved "https://registry.yarnpkg.com/@glific/flow-editor/-/flow-editor-1.19.1-8.tgz#1b0ce6258c403221c285b7d8d83e3f5f21937bf4"
+  integrity sha512-4b+XPcDL2lOUahbFw6X5jSVmGYqrZ0P5xHqNfkyF3IGPW7/OqLtvWj7rPIr7tWHzJ39jFidXgoo1gGM2Xplbog==
   dependencies:
     "react" "^16.8.6"
     "react-dom" "^16.8.6"
