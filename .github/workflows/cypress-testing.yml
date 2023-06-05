@@ -25,20 +25,17 @@ jobs:
       matrix: # build matrix for the job
         elixir: [1.14.5]
         otp: [25.3.2]
-        node-version: [16.17.0]
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # frontend setup
       - name: Setup frontend
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
+      - name: Use latest Node.js
+        uses: actions/setup-node@v3
 
       - name: Setup elixir
-        uses: erlef/setup-elixir@v1
+        uses: erlef/setup-beam@v1
         with:
           elixir-version: ${{ matrix.elixir }}
           otp-version: ${{ matrix.otp }}

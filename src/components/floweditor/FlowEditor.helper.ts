@@ -98,7 +98,7 @@ export const setConfig = (uuid: any) => {
     config.filters.push('profile');
   }
 
-  if (!services.ticketingEnabled) {
+  if (services.ticketingEnabled) {
     config.filters.push('ticketer');
   }
 
