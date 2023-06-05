@@ -80,7 +80,7 @@
     "test:coverage": "vitest run --coverage"
   },
   "engines": {
-    "node": ">=16.15.0 <=16.20.0"
+    "node": ">=16.15.0"
   },
   "eslintConfig": {
     "extends": "react-app"
