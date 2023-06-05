@@ -119,6 +119,7 @@ export const GET_ORGANIZATION_SERVICES = gql`
       flowUuidDisplay
       rolesAndPermission
       contactProfileEnabled
+      ticketingEnabled
     }
   }
 `;

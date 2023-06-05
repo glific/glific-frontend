@@ -165,6 +165,7 @@ export const TicketList = () => {
         button={{ show: false }}
         listIcon={ticketIcon}
         {...queries}
+        searchParameter={['body']}
         {...columnAttributes}
         additionalAction={additionalAction}
         filters={filter}
