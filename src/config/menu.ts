@@ -50,7 +50,7 @@ const menus = [
         icon: 'tickets',
         type: 'sideDrawer',
         roles: ['Manager', 'Admin', 'Dynamic'],
-        show: getOrganizationServices('ticketingEnabled'),
+        show: !getOrganizationServices('ticketingEnabled'),
       },
     ],
     roles: ['Manager', 'Admin', 'Dynamic'],
