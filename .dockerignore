@@ -1,0 +1,24 @@
+# config files
+.github/
+.husky/
+.jest/
+.vscode/
+.editorconfig
+.eslintrc
+.git
+.gitignore
+.prettierignore
+.prettierrc
+.releaserc
+Dockerfile
+docker-compose.yml
+Jenkinsfile
+jest.config.js
+
+# documentation
+LICENSE
+CHANGELOG.md
+README.md
+
+# build files
+node_modules/
