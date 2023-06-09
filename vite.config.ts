@@ -56,8 +56,8 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
         open: true,
         port: 3000,
         https: {
-          key: fs.readFileSync('../glific/priv/cert/glific.test+1-key.pem'),
-          cert: fs.readFileSync('../glific/priv/cert/glific.test+1.pem'),
+          key: fs.readFileSync('cert/glific.test+1-key.pem'),
+          cert: fs.readFileSync('cert/glific.test+1.pem'),
         },
       },
       resolve: { alias: { util: 'util/', stream: 'stream-browserify' } }, // stream polyfill is needed by logflare

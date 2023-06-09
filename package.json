@@ -68,7 +68,7 @@
   },
   "scripts": {
     "setup": "yarn install --force && yarn run floweditor",
-    "dev": "vite --host=glific.test",
+    "dev": "vite --host=0.0.0.0",
     "build": "yarn setup && yarn vite build",
     "serve": "vite preview",
     "cy:run": "cypress run",
