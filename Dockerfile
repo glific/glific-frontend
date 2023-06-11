@@ -1,16 +1,20 @@
-FROM node:20
+FROM node:18-alpine
 
 # Create app directory
 WORKDIR /app/glific-frontend
 
+# Install dependencies
+RUN apk add --no-cache --update \
+    build-base git curl vim zsh inotify-tools openssl ncurses-libs esbuild
+ 
 # Copy package.json and yarn.lock to the working directory
 COPY package.json yarn.lock ./
 COPY .env.example ./.env
 
 # Install dependencies
 RUN set -ex; \
-      yarn install --frozen-lockfile --production; \
-      yarn cache clean;
+    yarn install --frozen-lockfile --production; \
+    yarn cache clean;
     
 # Copy the entire project to the working directory
 COPY . .
