@@ -5,7 +5,7 @@ WORKDIR /app/glific-frontend
 
 # Install dependencies
 RUN apk add --no-cache --update \
-    build-base git curl vim zsh inotify-tools openssl ncurses-libs esbuild
+    build-base git curl vim zsh inotify-tools openssl ncurses-libs
  
 # Copy package.json and yarn.lock to the working directory
 COPY package.json yarn.lock ./
@@ -27,4 +27,4 @@ EXPOSE 3000
 
 # Start the app
 # CMD ["yarn", "serve"]
-CMD ["tail", "-f", "/dev/null"]
+ENTRYPOINT ["yarn", "dev"]
