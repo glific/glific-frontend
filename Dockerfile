@@ -13,7 +13,8 @@ COPY .env.example ./.env
 
 # Install dependencies
 RUN set -ex; \
-    yarn install --frozen-lockfile --production; \
+    yarn install --frozen-lockfile; \
+    yarn setup; \
     yarn cache clean;
     
 # Copy the entire project to the working directory
