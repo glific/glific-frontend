@@ -4,6 +4,7 @@ import { List } from 'containers/List/List';
 import { ReactComponent as EditIcon } from 'assets/images/icons/Edit.svg';
 import { TICKET_COUNT_QUERY, TICKET_LIST_QUERY } from 'graphql/queries/Ticket';
 import { useState } from 'react';
+import { ReactComponent as ChatIcon } from 'assets/images/icons/Chat/UnselectedDark.svg';
 import { Dialog, DialogContent, FormControlLabel, Radio, RadioGroup } from '@mui/material';
 import Ticket from 'containers/Ticket/Ticket';
 import { SupportAgent } from '@mui/icons-material';
@@ -32,9 +33,9 @@ const getStatus = (status: string) => {
 const getLabel = (label: any) => <div className={styles.LabelText}>{label}</div>;
 const getUser = (user: any) => <div className={styles.TableText}>{user?.name}</div>;
 
-const getColumns = ({ body, status, topic, user }: any) => ({
-  label: getLabel(topic),
+const getColumns = ({ body, status, topic, user, contact }: any) => ({
   body: getBody(body),
+  contact: getUser(contact),
   status: getStatus(status),
   user: getUser(user),
 });
@@ -81,8 +82,8 @@ export const TicketList = () => {
   }
 
   const columnNames: any = [
-    { name: 'topic', label: t('Label') },
     { name: 'body', label: t('Issue') },
+    { label: t('Opened by') },
     { label: t('Status') },
     { label: t('Assigned to') },
     { label: t('Actions') },
@@ -99,6 +100,7 @@ export const TicketList = () => {
   };
 
   const additionalAction = () => [
+    { icon: <ChatIcon />, parameter: 'contact.id', link: '/chat', label: t('Send Message') },
     {
       icon: <EditIcon />,
       parameter: 'id',

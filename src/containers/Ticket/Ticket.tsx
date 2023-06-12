@@ -11,6 +11,10 @@ import { UPDATE_TICKET } from 'graphql/mutations/Ticket';
 import styles from './Ticket.module.css';
 import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
 import moment from 'moment';
+import { useQuery } from '@apollo/client';
+import { GET_USERS } from 'graphql/queries/User';
+import { setVariables } from 'common/constants';
+import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 
 export interface TicketProps {
   setOpenDialog: Function;
@@ -41,15 +45,21 @@ export const Ticket = ({ selectedTicket, setOpenDialog }: TicketProps) => {
   const { t } = useTranslation();
   const [status, setStatus] = useState('');
   const [remarks, setRemarks] = useState('');
+  const [user, setUser] = useState({});
   const [insertedAt, setInsertedAt] = useState('');
   const [body, setBody] = useState('');
   const [updatedAt, setUpdatedAt] = useState('');
+
+  const { data } = useQuery(GET_USERS, {
+    variables: setVariables(),
+  });
 
   const states = {
     status,
     remarks,
     insertedAt,
     body,
+    user,
     updatedAt,
   };
 
@@ -59,17 +69,20 @@ export const Ticket = ({ selectedTicket, setOpenDialog }: TicketProps) => {
     body: bodyValue,
     insertedAt: insertedAtValue,
     updatedAt: updatedAtValue,
+    user: userValue,
   }: any) => {
     setStatus(statusValue);
     setBody(bodyValue);
     setInsertedAt(insertedAtValue);
     setUpdatedAt(updatedAtValue);
     setRemarks(remarksValue);
+    setUser(userValue.name);
   };
 
   const setPayload = (payload: any) => ({
     status: payload.status,
     remarks: payload.remarks,
+    userId: payload.user.id,
   });
 
   const queries: any = {
@@ -92,6 +105,18 @@ export const Ticket = ({ selectedTicket, setOpenDialog }: TicketProps) => {
         { id: 'open', label: 'Open' },
         { id: 'closed', label: 'Closed' },
       ],
+    },
+
+    {
+      component: AutoComplete,
+      name: 'user',
+      multiple: false,
+      options: data ? data.users : [],
+      optionLabel: 'name',
+      textFieldProps: {
+        label: t('Change assignee'),
+        variant: 'outlined',
+      },
     },
     {
       component: Input,

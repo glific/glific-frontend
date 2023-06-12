@@ -6,6 +6,7 @@ export const TICKET_LIST_QUERY = gql`
       body
       contact {
         id
+        name
       }
       id
       insertedAt
@@ -37,6 +38,7 @@ export const GET_TICKET = gql`
         updatedAt
         user {
           id
+          name
         }
       }
     }
