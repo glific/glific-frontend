@@ -15,6 +15,7 @@ import { useQuery } from '@apollo/client';
 import { GET_USERS } from 'graphql/queries/User';
 import { setVariables } from 'common/constants';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
+import Loading from 'components/UI/Layout/Loading/Loading';
 
 export interface TicketProps {
   setOpenDialog: Function;
@@ -50,7 +51,7 @@ export const Ticket = ({ selectedTicket, setOpenDialog }: TicketProps) => {
   const [body, setBody] = useState('');
   const [updatedAt, setUpdatedAt] = useState('');
 
-  const { data } = useQuery(GET_USERS, {
+  const { data, loading } = useQuery(GET_USERS, {
     variables: setVariables(),
   });
 
@@ -132,6 +133,10 @@ export const Ticket = ({ selectedTicket, setOpenDialog }: TicketProps) => {
   ];
 
   const ticketIcon = <SupportAgent className={styles.TicketIcon} />;
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <div className={`${styles.Layout} ${styles.Edit}`}>
