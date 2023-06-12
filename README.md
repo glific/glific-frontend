@@ -15,6 +15,8 @@ Frontend interface built using React.
 - SSL is mandatory for both frontend and backend in development. You can find the instructions to generate ssl certificate [here](https://github.com/glific/glific#use-ssl-for-frontend-and-backend)
 - Configure below host in your `/etc/hosts`
   `127.0.0.1 glific.test`
+- Create a symbolic link from the root directory to the backend cert directory
+  `ln -s ../glific/priv/cert .`
 
 ## Installation steps
 
