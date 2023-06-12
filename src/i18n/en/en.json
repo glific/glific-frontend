@@ -410,5 +410,7 @@
   "Add remark": "Add remark",
   "Ticket status": "Ticket status",
   "Remarks": "Remarks",
-  "Update ticket": "Update ticket"
+  "Update ticket": "Update ticket",
+  "Opened by": "Opened by",
+  "Change assignee": "Change assignee"
 }

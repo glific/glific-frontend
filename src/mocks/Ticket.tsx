@@ -33,7 +33,7 @@ export const ticketListQuery = {
     query: TICKET_LIST_QUERY,
     variables: {
       filter: { status: 'open' },
-      opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'topic' },
+      opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'body' },
     },
   },
 
@@ -44,6 +44,7 @@ export const ticketListQuery = {
           body: '',
           contact: {
             id: '1',
+            name: 'NGO support',
           },
           id: '1',
           insertedAt: '2021-06-16T09:00:00.000Z',
