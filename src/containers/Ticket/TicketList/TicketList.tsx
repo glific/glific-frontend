@@ -30,7 +30,6 @@ const getStatus = (status: string) => {
   return <div className={styles.StatusContainer}>{showStatus}</div>;
 };
 
-const getLabel = (label: any) => <div className={styles.LabelText}>{label}</div>;
 const getUser = (user: any) => <div className={styles.TableText}>{user?.name}</div>;
 
 const getColumns = ({ body, status, topic, user, contact }: any) => ({
