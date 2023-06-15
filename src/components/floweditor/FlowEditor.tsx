@@ -56,7 +56,8 @@ export const FlowEditor = () => {
 
   const [getFreeFlowForced] = useLazyQuery(GET_FREE_FLOW, {
     onCompleted: () => {
-      window.location.reload();
+      showFlowEditor(document.getElementById('flow'), config);
+      setLoading(false);
     },
   });
 
