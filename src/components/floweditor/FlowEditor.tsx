@@ -55,6 +55,7 @@ export const FlowEditor = () => {
   let flowTitle: any;
 
   const [getFreeFlowForced] = useLazyQuery(GET_FREE_FLOW, {
+    fetchPolicy: 'network-only',
     onCompleted: () => {
       showFlowEditor(document.getElementById('flow'), config);
       setLoading(false);
