@@ -54,6 +54,14 @@ export const FlowEditor = () => {
   let dialog = null;
   let flowTitle: any;
 
+  const [getFreeFlowForced] = useLazyQuery(GET_FREE_FLOW, {
+    fetchPolicy: 'network-only',
+    onCompleted: () => {
+      showFlowEditor(document.getElementById('flow'), config);
+      setLoading(false);
+    },
+  });
+
   const [getFreeFlow] = useLazyQuery(GET_FREE_FLOW, {
     fetchPolicy: 'network-only',
     onCompleted: ({ flowGet }) => {
@@ -260,7 +268,7 @@ export const FlowEditor = () => {
         buttonOk="Take Over"
         buttonMiddle="Go Back"
         handleOk={() => {
-          getFreeFlow({ variables: { id: flowId, isForced: true } });
+          getFreeFlowForced({ variables: { id: flowId, isForced: true } });
           setCurrentEditDialogBox(false);
         }}
         handleMiddle={() => {
