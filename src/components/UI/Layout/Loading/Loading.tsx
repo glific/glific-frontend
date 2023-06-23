@@ -1,12 +1,8 @@
 import { Typography } from '@mui/material';
-import { useTranslation } from 'react-i18next';
-
 import styles from './Loading.module.css';
-import YamlContent from '../../../../../loadingMessages.yml';
+import YamlContent from '../../../../../productTips.yml';
 import { useContext, useEffect, useState } from 'react';
 import { RandomValueContext } from 'context/session';
-
-// console.log(YamlContent?.messages_for_loading[0]);
 
 export interface LoadingProps {
   message?: string;
@@ -14,23 +10,28 @@ export interface LoadingProps {
 
 export const Loading = ({ message }: LoadingProps) => {
   const { randomValue } = useContext(RandomValueContext);
-  // const index = Math.floor(Math.random() * 10);
   const [loader, setLoader] = useState('');
 
   useEffect(() => {
-    const timeOut = setTimeout(() => {
-      if (loader.length >= 6) {
-        setLoader(' .');
-      } else {
-        setLoader((prev) => prev + ' .');
-      }
-    }, 100);
-    return () => clearInterval(timeOut);
-  }, [loader]);
+    let isUnmounted = false;
+    let dots = '';
 
-  // console.log("index",index*10);
-  const { t } = useTranslation();
-  const messageToDisplay = YamlContent?.messages_for_loading[randomValue] || t('Loading...');
+    const updateLoader = () => {
+      if (!isUnmounted) {
+        dots = dots === '...' ? '' : dots + '.';
+        setLoader(dots);
+        setTimeout(updateLoader, 100);
+      }
+    };
+
+    updateLoader();
+
+    return () => {
+      isUnmounted = true;
+    };
+  }, []);
+
+  const messageToDisplay = YamlContent?.messages_for_loading[randomValue];
 
   return (
     <div className={styles.CenterItems} data-testid="loader">
