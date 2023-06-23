@@ -15,4 +15,9 @@ export const SideDrawerContext = createContext({
   setDrawerOpen: (value: any) => value,
 });
 
+export const RandomValueContext = createContext({
+  randomValue: Math.floor(Math.random() * 10),
+  setRandomValue: (value: any) => value,
+});
+
 export default SessionContext;

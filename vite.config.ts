@@ -8,13 +8,14 @@ import checker from 'vite-plugin-checker';
 import svgrPlugin from 'vite-plugin-svgr';
 import fs from 'fs';
 import nodePolyfills from 'rollup-plugin-polyfill-node';
+import ViteYaml from '@modyfi/vite-plugin-yaml';
 
 // https://vitejs.dev/config/
 export default ({ command, mode }: ConfigEnv): UserConfigExport => {
   if (mode === 'test' && command === 'serve') {
     return defineConfig({
       // dev specific config
-      plugins: [react(), viteTsconfigPaths(), svgrPlugin()],
+      plugins: [react(), viteTsconfigPaths(), svgrPlugin(), ViteYaml(),],
 
       optimizeDeps: {
         esbuildOptions: {
@@ -43,7 +44,7 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
   if (command === 'serve') {
     return defineConfig({
       // dev specific config
-      plugins: [react(), viteTsconfigPaths(), svgrPlugin(), checker({ typescript: true })],
+      plugins: [react(), viteTsconfigPaths(), svgrPlugin(), checker({ typescript: true }), ViteYaml(),],
       optimizeDeps: {
         esbuildOptions: {
           // Node.js global to browser globalThis
@@ -74,7 +75,7 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
       },
     },
     // build specific config
-    plugins: [react(), viteTsconfigPaths(), svgrPlugin()],
+    plugins: [react(), viteTsconfigPaths(), svgrPlugin(), ViteYaml(),],
     build: {
       // this is needed because of this https://github.com/vitejs/vite/issues/2139#issuecomment-1405624744
       commonjsOptions: {
@@ -93,7 +94,7 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
       },
       outDir: 'build',
       rollupOptions: {
-        plugins: [nodePolyfills('buffer', 'process')],
+        plugins: [nodePolyfills('buffer', 'process'), ViteYaml(),],
       },
     },
     resolve: { alias: { util: 'util/', stream: 'stream-browserify' } },
