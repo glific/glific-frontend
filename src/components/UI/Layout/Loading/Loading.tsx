@@ -1,4 +1,3 @@
-import { Typography } from '@mui/material';
 import styles from './Loading.module.css';
 import YamlContent from '../../../../../productTips.yml';
 import { useContext, useEffect, useState } from 'react';
@@ -10,7 +9,7 @@ export interface LoadingProps {
 
 export const Loading = ({ message }: LoadingProps) => {
   const { randomValue } = useContext(RandomValueContext);
-  const [loader, setLoader] = useState('');
+  const [loader, setLoader] = useState('.');
 
   useEffect(() => {
     let isUnmounted = false;
@@ -18,7 +17,7 @@ export const Loading = ({ message }: LoadingProps) => {
 
     const updateLoader = () => {
       if (!isUnmounted) {
-        dots = dots === '...' ? '' : dots + '.';
+        dots = dots === '...' ? '.' : dots + '.';
         setLoader(dots);
         setTimeout(updateLoader, 100);
       }
@@ -31,13 +30,15 @@ export const Loading = ({ message }: LoadingProps) => {
     };
   }, []);
 
-  const messageToDisplay = YamlContent?.messages_for_loading[randomValue];
+  const messageToDisplay = YamlContent?.messages_for_loading ? YamlContent?.messages_for_loading[randomValue]+". Loading...":"Loading...";
 
   return (
-    <div className={styles.CenterItems} data-testid="loader">
-      <Typography variant="h6" className={styles.LoadingText}>
-        {messageToDisplay+loader}
-      </Typography>
+    <div className={styles.LoadingDiv} data-testid="loader">
+      <div className={styles.LoadingInnerDiv}>
+        {messageToDisplay}
+        <br/>
+        {loader}
+      </div>
     </div>
   );
 };
