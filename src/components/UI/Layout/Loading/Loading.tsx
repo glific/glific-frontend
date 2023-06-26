@@ -19,7 +19,7 @@ export const Loading = ({ message }: LoadingProps) => {
       if (!isUnmounted) {
         dots = dots === '...' ? '.' : dots + '.';
         setLoader(dots);
-        setTimeout(updateLoader, 100);
+        setTimeout(updateLoader, 200);
       }
     };
 
@@ -30,13 +30,12 @@ export const Loading = ({ message }: LoadingProps) => {
     };
   }, []);
 
-  const messageToDisplay = YamlContent?.messages_for_loading ? YamlContent?.messages_for_loading[randomValue]+". Loading...":"Loading...";
+  const messageToDisplay = YamlContent?.messages_for_loading ? YamlContent?.messages_for_loading[randomValue]+" ":"Loading...";
 
   return (
     <div className={styles.LoadingDiv} data-testid="loader">
       <div className={styles.LoadingInnerDiv}>
         {messageToDisplay}
-        <br/>
         {loader}
       </div>
     </div>
