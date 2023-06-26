@@ -16,13 +16,13 @@
 }
 
 .LoadingInnerDiv {
-  max-width: 95%;
+  max-width: 95% !important;
   padding: 12px;
-  max-width: 360px;
+  width: 360px !important;
   text-align: center;
   font-size: 20px;
   background: #cee8dc;
-  min-height: 400px;
+  height: 400px !important;
   border-radius: 12px;
   display: flex;
   align-items: center;
