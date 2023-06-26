@@ -30,7 +30,13 @@ export const Loading = ({ message }: LoadingProps) => {
     };
   }, []);
 
-  const messageToDisplay = YamlContent?.messages_for_loading ? YamlContent?.messages_for_loading[randomValue]+" ":"Loading...";
+  var messageToDisplay = YamlContent?.messages_for_loading ? YamlContent?.messages_for_loading[randomValue]+" ":"Loading ";
+
+  useEffect(()=>{
+    if(YamlContent?.messages_for_loading){
+      messageToDisplay = YamlContent?.messages_for_loading[randomValue];
+    }
+  },[YamlContent?.messages_for_loading,randomValue]);
 
   return (
     <div className={styles.LoadingDiv} data-testid="loader">
