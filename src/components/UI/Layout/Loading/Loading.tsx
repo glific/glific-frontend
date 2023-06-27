@@ -1,15 +1,28 @@
 import styles from './Loading.module.css';
-import YamlContent from '../../../../../productTips.yml';
 import { useContext, useEffect, useState } from 'react';
 import { RandomValueContext } from 'context/session';
+import * as yaml from 'js-yaml';
 
 export interface LoadingProps {
   message?: string;
 }
 
 export const Loading = ({ message }: LoadingProps) => {
+  const [productTips, setProductTips] = useState<Array<string>>([]);
   const { randomValue } = useContext(RandomValueContext);
   const [loader, setLoader] = useState('.');
+
+  useEffect(() => {
+    fetch('../../../../../productTips.yml')
+      .then((response) => response.text())
+      .then((fileContents) => {
+        const loadedData: any = yaml.load(fileContents);
+        setProductTips(loadedData?.messages_for_loading);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 
   useEffect(() => {
     let isUnmounted = false;
@@ -30,13 +43,7 @@ export const Loading = ({ message }: LoadingProps) => {
     };
   }, []);
 
-  var messageToDisplay = YamlContent?.messages_for_loading ? YamlContent?.messages_for_loading[randomValue]+" ":"Loading ";
-
-  useEffect(()=>{
-    if(YamlContent?.messages_for_loading){
-      messageToDisplay = YamlContent?.messages_for_loading[randomValue];
-    }
-  },[YamlContent?.messages_for_loading,randomValue]);
+  var messageToDisplay = productTips.length > 0 ? productTips[randomValue] : ' ';
 
   return (
     <div className={styles.LoadingDiv} data-testid="loader">
