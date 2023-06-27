@@ -1,28 +1,16 @@
 import styles from './Loading.module.css';
 import { useContext, useEffect, useState } from 'react';
 import { RandomValueContext } from 'context/session';
-import * as yaml from 'js-yaml';
+import productTips from '../../../../../productTips';
 
 export interface LoadingProps {
   message?: string;
 }
 
 export const Loading = ({ message }: LoadingProps) => {
-  const [productTips, setProductTips] = useState<Array<string>>([]);
   const { randomValue } = useContext(RandomValueContext);
   const [loader, setLoader] = useState('.');
 
-  useEffect(() => {
-    fetch('../../../../../productTips.yml')
-      .then((response) => response.text())
-      .then((fileContents) => {
-        const loadedData: any = yaml.load(fileContents);
-        setProductTips(loadedData?.messages_for_loading);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
 
   useEffect(() => {
     let isUnmounted = false;
