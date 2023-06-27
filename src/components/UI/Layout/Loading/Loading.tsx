@@ -11,7 +11,6 @@ export const Loading = ({ message }: LoadingProps) => {
   const { randomValue } = useContext(RandomValueContext);
   const [loader, setLoader] = useState('.');
 
-
   useEffect(() => {
     let isUnmounted = false;
     let dots = '';
@@ -37,6 +36,7 @@ export const Loading = ({ message }: LoadingProps) => {
     <div className={styles.LoadingDiv} data-testid="loader">
       <div className={styles.LoadingInnerDiv}>
         {messageToDisplay}
+        <br/>
         {loader}
       </div>
     </div>
