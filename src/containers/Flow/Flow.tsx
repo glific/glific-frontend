@@ -31,6 +31,7 @@ export const Flow = () => {
   const [name, setName] = useState('');
   const [isPinnedDisable, setIsPinnedDisable] = useState(false);
   const [keywords, setKeywords] = useState('');
+  const [labels, setLabels] = useState('');
   const [isActive, setIsActive] = useState(true);
   const [isPinned, setIsPinned] = useState(false);
   const [roles, setRoles] = useState<Array<any>>([]);
@@ -45,11 +46,21 @@ export const Flow = () => {
 
   if (loading) return <Loading />;
 
-  const states = { isActive, isPinned, isBackground, name, keywords, ignoreKeywords, roles };
+  const states = {
+    isActive,
+    isPinned,
+    isBackground,
+    name,
+    keywords,
+    labels,
+    ignoreKeywords,
+    roles,
+  };
 
   const setStates = ({
     name: nameValue,
     keywords: keywordsValue,
+    Labels: LabelsValue,
     isActive: isActiveValue,
     isPinned: isPinnedValue,
     isBackground: isBackgroundValue,
@@ -59,6 +70,7 @@ export const Flow = () => {
     // Override name & keywords when creating Flow Copy
     let fieldName = nameValue;
     let fieldKeywords = keywordsValue;
+    let fieldLabels = LabelsValue;
     if (location.state === 'copy') {
       fieldName = `Copy of ${nameValue}`;
       fieldKeywords = '';
@@ -76,6 +88,7 @@ export const Flow = () => {
 
     setName(fieldName);
     setIsActive(isActiveValue);
+    setLabels(fieldLabels);
     setIsPinned(isPinnedValue);
     setIsBackground(isBackgroundValue);
     setRoles(rolesValue);
@@ -113,6 +126,12 @@ export const Flow = () => {
       type: 'text',
       placeholder: t('Keywords'),
       helperText: t('Enter comma separated keywords that trigger this flow'),
+    },
+    {
+      component: Input,
+      name: 'labels',
+      type: 'text',
+      placeholder: t('Labels'),
     },
     {
       component: Checkbox,
