@@ -176,6 +176,7 @@
   "Configure": "Configure",
   "Keywords": "Keywords",
   "Labels": "Labels",
+  "Enter comma separated labels that trigger this flow": "Enter comma separated labels that trigger this flow",
   "Enter comma separated keywords that trigger this flow": "Enter comma separated keywords that trigger this flow",
   "Ignore Keywords": "Ignore Keywords",
   "If activated, users will not be able to change this flow by entering keyword for any other flow.": "If activated, users will not be able to change this flow by entering keyword for any other flow.",

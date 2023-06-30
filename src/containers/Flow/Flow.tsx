@@ -132,6 +132,7 @@ export const Flow = () => {
       name: 'labels',
       type: 'text',
       placeholder: t('Labels'),
+      helperText: t('Enter comma separated labels that trigger this flow'),
     },
     {
       component: Checkbox,
