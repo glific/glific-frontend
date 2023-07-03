@@ -527,11 +527,13 @@ export const FormLayout = ({
       validationSchema={validationSchema}
       onSubmit={(itemData:any, { setErrors }) => {
         // when you want to show custom error on form field and error message is not coming from api
-        const updatedItemData = {
-          ...itemData,
-          tag_id: itemData?.tag_id?.id,
-        };
-        console.log("itemData",updatedItemData)
+        var updatedItemData=itemData; 
+        if(listItemName==="flow"){
+          updatedItemData = {
+            ...itemData,
+            tag_id: itemData?.tag_id?.id,
+          };
+        }
       
         setCustomError({ setErrors });
         saveHandler(updatedItemData);
