@@ -127,11 +127,11 @@ export const filterFlowQuery = {
   },
 };
 
-export const filterFlowWithnameOrKeywordOrLabelsQuery = {
+export const filterFlowWithname_or_keyword_or_tagsQuery = {
   request: {
     query: FILTER_FLOW,
     variables: {
-      filter: { nameOrKeywordOrLabels: 'help', isActive: true },
+      filter: { name_or_keyword_or_tags: 'help', isActive: true },
       opts: {
         limit: 50,
         offset: 0,
@@ -216,7 +216,7 @@ export const getFlowCountWithFilterQuery = {
   request: {
     query: GET_FLOW_COUNT,
     variables: {
-      filter: { nameOrKeywordOrLabels: 'help', isActive: true },
+      filter: { name_or_keyword_or_tags: 'help', isActive: true },
     },
   },
   result: {

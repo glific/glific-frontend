@@ -176,6 +176,7 @@
   "Configure": "Configure",
   "Keywords": "Keywords",
   "Labels": "Labels",
+  "Select Tags": "Select Tags",
   "Enter comma separated labels that trigger this flow": "Enter comma separated labels that trigger this flow",
   "Enter comma separated keywords that trigger this flow": "Enter comma separated keywords that trigger this flow",
   "Ignore Keywords": "Ignore Keywords",
@@ -414,5 +415,6 @@
   "Remarks": "Remarks",
   "Update ticket": "Update ticket",
   "Opened by": "Opened by",
-  "Change assignee": "Change assignee"
+  "Change assignee": "Change assignee",
+  "Tag": "Tag"
 }

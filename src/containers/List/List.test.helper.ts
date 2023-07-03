@@ -10,7 +10,7 @@ import { FILTER_FLOW, GET_FLOW_COUNT } from 'graphql/queries/Flow';
 import { DELETE_FLOW } from 'graphql/mutations/Flow';
 import {
   filterFlowQuery,
-  filterFlowWithnameOrKeywordOrLabelsQuery,
+  filterFlowWithname_or_keyword_or_tagsQuery,
   getFlowCountQuery,
   getFlowCountWithFilterQuery,
 } from 'mocks/Flow';
@@ -28,7 +28,7 @@ export const defaultProps = {
   filterItemsQuery: FILTER_FLOW,
   deleteItemQuery: DELETE_FLOW,
   listItemName: 'flow',
-  searchParameter: ['nameOrKeywordOrLabels'],
+  searchParameter: ['name_or_keyword_or_tags'],
   dialogMessage: 'are you sure?',
   pageLink: 'flow',
   columns: (listItem: any) => ({}),
@@ -46,7 +46,7 @@ export const LIST_MOCKS = [
   getFlowCountQuery,
   filterFlowQuery,
   getFlowCountQuery,
-  filterFlowWithnameOrKeywordOrLabelsQuery,
+  filterFlowWithname_or_keyword_or_tagsQuery,
   getFlowCountWithFilterQuery,
   getCurrentUserQuery,
 

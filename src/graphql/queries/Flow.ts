@@ -112,3 +112,12 @@ export const RELEASE_FLOW = gql`
     }
   }
 `;
+
+export const GET_TAGS = gql`
+  query Tags {
+    tags {
+      label
+      id
+    }
+  }
+`;

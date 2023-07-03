@@ -10,11 +10,12 @@ import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { ReactComponent as FlowIcon } from 'assets/images/icons/Flow/Selected.svg';
 import { CREATE_FLOW, UPDATE_FLOW, DELETE_FLOW, CREATE_FLOW_COPY } from 'graphql/mutations/Flow';
 import { GET_ORGANIZATION } from 'graphql/queries/Organization';
-import { GET_FLOW } from 'graphql/queries/Flow';
+import { GET_FLOW, GET_TAGS } from 'graphql/queries/Flow';
 import { getAddOrRemoveRoleIds } from 'common/utils';
 import { setErrorMessage } from 'common/notification';
 import Loading from 'components/UI/Layout/Loading/Loading';
 import styles from './Flow.module.css';
+import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 
 const flowIcon = <FlowIcon className={styles.FlowIcon} />;
 
@@ -31,7 +32,7 @@ export const Flow = () => {
   const [name, setName] = useState('');
   const [isPinnedDisable, setIsPinnedDisable] = useState(false);
   const [keywords, setKeywords] = useState('');
-  const [labels, setLabels] = useState('');
+  const [tag_id, setTag_id] = useState('');
   const [isActive, setIsActive] = useState(true);
   const [isPinned, setIsPinned] = useState(false);
   const [roles, setRoles] = useState<Array<any>>([]);
@@ -44,6 +45,11 @@ export const Flow = () => {
     fetchPolicy: 'network-only',
   });
 
+  const { data: tags } = useQuery(GET_TAGS, {
+    variables: {},
+    fetchPolicy: 'network-only',
+  });
+
   if (loading) return <Loading />;
 
   const states = {
@@ -52,7 +58,7 @@ export const Flow = () => {
     isBackground,
     name,
     keywords,
-    labels,
+    tag_id,
     ignoreKeywords,
     roles,
   };
@@ -60,7 +66,7 @@ export const Flow = () => {
   const setStates = ({
     name: nameValue,
     keywords: keywordsValue,
-    Labels: LabelsValue,
+    tag_id: Tag_idValue,
     isActive: isActiveValue,
     isPinned: isPinnedValue,
     isBackground: isBackgroundValue,
@@ -70,7 +76,7 @@ export const Flow = () => {
     // Override name & keywords when creating Flow Copy
     let fieldName = nameValue;
     let fieldKeywords = keywordsValue;
-    let fieldLabels = LabelsValue;
+    let fieldTag_id = Tag_idValue?.id;
     if (location.state === 'copy') {
       fieldName = `Copy of ${nameValue}`;
       fieldKeywords = '';
@@ -88,7 +94,7 @@ export const Flow = () => {
 
     setName(fieldName);
     setIsActive(isActiveValue);
-    setLabels(fieldLabels);
+    setTag_id(fieldTag_id);
     setIsPinned(isPinnedValue);
     setIsBackground(isBackgroundValue);
     setRoles(rolesValue);
@@ -128,11 +134,17 @@ export const Flow = () => {
       helperText: t('Enter comma separated keywords that trigger this flow'),
     },
     {
-      component: Input,
-      name: 'labels',
-      type: 'text',
-      placeholder: t('Labels'),
-      helperText: t('Enter comma separated labels that trigger this flow'),
+      component: AutoComplete,
+      name: 'tag_id',
+      options: tags ? tags?.tags:[{label:'Null',id:'Null'}],
+      optionLabel: 'label',
+      multiple: false,
+      valueElementName: 'id',
+      disabled: false,
+      textFieldProps: {
+        label: t('Tag'),
+        variant: 'outlined',
+      },
     },
     {
       component: Checkbox,
