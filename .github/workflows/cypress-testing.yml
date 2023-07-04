@@ -19,7 +19,7 @@ jobs:
           POSTGRES_DB: glific_dev
         ports:
           - 5432:5432
-        options: --network-alias=postgres --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
     strategy:
       matrix: # build matrix for the job
@@ -58,6 +58,7 @@ jobs:
       - name: Setup backend
         run: |
           echo '127.0.0.1  glific.test' | sudo tee -a /etc/hosts
+          echo '127.0.0.1  postgres' | sudo tee -a /etc/hosts
           echo '127.0.0.1  api.glific.test' | sudo tee -a /etc/hosts
           cd ../
           echo clone glific repo
