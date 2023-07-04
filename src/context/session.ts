@@ -18,7 +18,6 @@ export const SideDrawerContext = createContext({
 
 export const SelectedTipContext = createContext({
   selectedtip: productTips[Math.floor(Math.random() * 10)],
-  setDrawerOpen: (value: any) => value,
 });
 
 export default SessionContext;
