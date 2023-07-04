@@ -126,9 +126,6 @@ export const Ticket = ({ selectedTicket, setOpenDialog }: TicketProps) => {
       rows: 3,
       textArea: true,
       placeholder: t('Remarks'),
-      inputProp: {
-        onChange: (event: any) => setRemarks(event.target.value),
-      },
     },
   ];
 
