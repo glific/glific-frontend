@@ -48,6 +48,8 @@
   width: 100%;
   height: calc(100% - 30px);
   background-color: #fff;
+  font-size: 20px;
+  font-weight: 400;
 }
 
 .CenterItems {
