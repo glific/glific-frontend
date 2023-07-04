@@ -412,5 +412,7 @@
   "Remarks": "Remarks",
   "Update ticket": "Update ticket",
   "Opened by": "Opened by",
-  "Change assignee": "Change assignee"
+  "Change assignee": "Change assignee",
+  "Tag": "Tag",
+  "Select the most relevant tag": "Select the most relevant tag"
 }

@@ -42,6 +42,7 @@ const HSMValidation = {
     )
     .required('Example is required.'),
   category: Yup.object().nullable().required('Category is required.'),
+  tag_id: Yup.object().nullable().required('Tag is required.'),
   shortcode: Yup.string()
     .required('Element name is required.')
     .matches(
@@ -135,6 +136,8 @@ export interface TemplateProps {
   getExample?: any;
   setCategory?: any;
   category?: any;
+  setTag_id?: any;
+  tag_id?: any;
   onExampleChange?: any;
   languageStyle?: string;
 }
@@ -162,6 +165,8 @@ const Template = ({
   getExample,
   setCategory,
   category,
+  setTag_id,
+  tag_id,
   onExampleChange = () => {},
   languageStyle = 'dropdown',
 }: TemplateProps) => {
@@ -205,6 +210,7 @@ const Template = ({
     shortcode,
     example,
     category,
+    tag_id,
     isActive,
     templateButtons,
     isAddButtonChecked,
@@ -221,6 +227,7 @@ const Template = ({
     MessageMedia: MessageMediaValue,
     shortcode: shortcodeValue,
     category: categoryValue,
+    tag_id: tag_idValue,
     buttonType: templateButtonType,
     buttons,
     hasButtons,
@@ -301,6 +308,9 @@ const Template = ({
     }
     if (categoryValue) {
       setCategory({ label: categoryValue, id: categoryValue });
+    }
+    if (tag_idValue) {
+      setTag_id({ label: tag_idValue, id: tag_idValue });
     }
   };
 
@@ -794,6 +804,7 @@ const Template = ({
         delete payloadCopy.language;
         if (payloadCopy.isHsm) {
           payloadCopy.category = payloadCopy.category.label;
+          payloadCopy.tag_id = payloadCopy.tag_id.id;
           if (isAddButtonChecked && templateType) {
             const templateButtonData = getButtonTemplatePayload();
             Object.assign(payloadCopy, { ...templateButtonData });
@@ -803,6 +814,7 @@ const Template = ({
           delete payloadCopy.isActive;
           delete payloadCopy.shortcode;
           delete payloadCopy.category;
+          delete payloadCopy.tag_id;
         }
         if (payloadCopy.type === 'TEXT') {
           delete payloadCopy.attachmentURL;
@@ -849,6 +861,7 @@ const Template = ({
       }
       if (payloadCopy.isHsm) {
         payloadCopy.category = payloadCopy.category.label;
+        payloadCopy.tag_id = payloadCopy.tag_id.id;
 
         if (isAddButtonChecked && templateType) {
           const templateButtonData = getButtonTemplatePayload();
@@ -859,6 +872,7 @@ const Template = ({
         delete payloadCopy.isActive;
         delete payloadCopy.shortcode;
         delete payloadCopy.category;
+        delete payloadCopy.tag_id;
       }
 
       delete payloadCopy.isAddButtonChecked;
