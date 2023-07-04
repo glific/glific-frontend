@@ -12,13 +12,13 @@ jobs:
 
     services:
       postgres:
-        image: postgres:13 # postgres image for test database.
+        image: postgres:14 # postgres image for test database.
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
           POSTGRES_DB: glific_dev
         ports:
-          - 5432:5432
+          - 'postgres:5432:5432'
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
     strategy:
