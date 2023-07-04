@@ -473,7 +473,7 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
 
   // check if the search API results nothing for a particular contact ID and redirect to chat
   if (contactId && data) {
-    if (data.search.length === 0 || data.search[0].contact.status === 'BLOCKED') {
+    if (data.search.length === 0 || data.search[0]?.contact?.status === 'BLOCKED') {
       return <Navigate to="/chat" />;
     }
   }

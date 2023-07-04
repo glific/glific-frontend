@@ -12,7 +12,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:13 # postgres image for test database.
+        image: postgres:14 # postgres image for test database.
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
@@ -58,6 +58,7 @@ jobs:
       - name: Setup backend
         run: |
           echo '127.0.0.1  glific.test' | sudo tee -a /etc/hosts
+          echo '127.0.0.1  postgres' | sudo tee -a /etc/hosts
           echo '127.0.0.1  api.glific.test' | sudo tee -a /etc/hosts
           cd ../
           echo clone glific repo
