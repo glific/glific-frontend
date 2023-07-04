@@ -369,7 +369,7 @@ export const List = ({
     return <Navigate to={`/${pageLink}/add`} />;
   }
 
-  if (loading || l || loadingCollections) return <Loading />;
+  if (loading || l || loadingCollections) return <Loading showTip={true}/>;
   if (error || e) {
     if (error) {
       setErrorMessage(error);

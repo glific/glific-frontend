@@ -180,7 +180,7 @@ export const FlowList = () => {
   };
 
   if (importing) {
-    return <Loading message="Uploading" />;
+    return <Loading message="Uploading" showTip={true}/>;
   }
 
   const filterList = [
