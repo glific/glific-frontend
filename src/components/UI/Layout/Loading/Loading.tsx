@@ -23,10 +23,10 @@ export const Loading = ({ message, showTip = false }: LoadingProps) => {
             <CircularProgress />
           </div>
           <div className={styles.tipBackground}>
-            <div className={styles.tipHeading}>Pro tips</div>
-            <div className={styles.tipBody}>
+            <div className={styles.tipHeading}>PRO TIPS</div>
+            <Typography className={styles.tipBody}>
               {selectedtip}
-            </div>
+            </Typography>
           </div>
         </div>
       ):

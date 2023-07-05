@@ -29,13 +29,15 @@
 }
 
 .tipHeading{
-  height: 30px;
-  font-size: 24px;
+  height: 35.25px;
+  font-size: 24px !important;
+  font-family: 'heebo';
   font-weight: 900;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #ffffff;
+  margin-bottom: 10px;
 }
 
 .tipBody{
@@ -43,13 +45,16 @@
   align-items: center;
   justify-content: center;
   border-radius: 10px;
-  padding: 12px;
-  margin-top: 12px;
+  padding: 12px 32px;
   width: 100%;
-  height: calc(100% - 30px);
+  height: calc(100% - 45.25px);
   background-color: #fff;
-  font-size: 20px;
+  font-family: 'heebo';
+  line-height: 29.38px !important;
+  font-size: 20px !important;
   font-weight: 400;
+  color: #073F24;
+  text-align: center;
 }
 
 .CenterItems {
