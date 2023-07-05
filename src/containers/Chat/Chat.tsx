@@ -9,7 +9,7 @@ export const Chat = () => {
   return (
     <>
       <ChatSubscription setDataLoaded={setDataLoaded} />
-      {loaded ? chatRoutes : <Loading showTip={true}/>}
+      {loaded ? chatRoutes : <Loading />}
     </>
   );
 };

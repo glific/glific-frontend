@@ -199,7 +199,7 @@ export const AuthenticatedRoute = () => {
   ) {
     route = routeAdmin;
   }
-
+  
   // let's call chat subscriptions at this level so that we can listen to actions which are not performed
   // on chat screen, for eg: send message to collection
   return (
@@ -207,7 +207,7 @@ export const AuthenticatedRoute = () => {
       <div className={styles.App} data-testid="app">
         <Layout>
           {toastMessage}
-          <Suspense fallback={<Loading />}>
+          <Suspense fallback={<Loading showTip={window.location.pathname.startsWith("/flow/configure") }/>}>
             <ErrorBoundary>{route}</ErrorBoundary>
           </Suspense>
         </Layout>
