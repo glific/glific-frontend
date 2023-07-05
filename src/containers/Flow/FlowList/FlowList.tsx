@@ -225,7 +225,7 @@ export const FlowList = () => {
       dialogMessage={dialogMessage}
       {...queries}
       {...columnAttributes}
-      searchParameter={['nameOrKeyword']}
+      searchParameter={['nameOrKeywordOrTags']}
       additionalAction={additionalAction}
       button={{ show: true, label: t('Create Flow'), symbol: '+' }}
       secondaryButton={importButton}

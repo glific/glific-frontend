@@ -14,7 +14,7 @@
   z-index: 1000;
 }
 
-.tipBackground {
+.TipBackground {
   width: 90%;
   max-width: 528px;
   height: 239px;
@@ -28,7 +28,7 @@
   justify-content: center;
 }
 
-.tipHeading {
+.TipHeading {
   height: 35.25px;
   font-size: 24px !important;
   font-family: 'heebo';
@@ -40,7 +40,7 @@
   margin-bottom: 10px;
 }
 
-.tipBody {
+.TipBody {
   display: flex;
   align-items: center;
   justify-content: center;
