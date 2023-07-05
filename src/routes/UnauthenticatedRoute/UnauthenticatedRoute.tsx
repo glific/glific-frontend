@@ -16,7 +16,7 @@ export const UnauthenticatedRoute = () => {
   const OrganizationRegistration = lazy(() => import('containers/Organization/RouteSetupSteps'));
 
   return (
-    <Suspense fallback={<Loading />}>
+    <Suspense fallback={<Loading/>}>
       <GoogleReCaptchaProvider reCaptchaKey={RECAPTCHA_CLIENT_KEY}>
         <Routes>
           <Route index element={<Navigate to="/logout/user" replace />} />

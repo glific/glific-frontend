@@ -207,7 +207,9 @@ export const AuthenticatedRoute = () => {
       <div className={styles.App} data-testid="app">
         <Layout>
           {toastMessage}
-          <Suspense fallback={<Loading />}>
+          <Suspense
+            fallback={<Loading showTip={window.location.pathname.startsWith('/flow/configure')} />}
+          >
             <ErrorBoundary>{route}</ErrorBoundary>
           </Suspense>
         </Layout>
