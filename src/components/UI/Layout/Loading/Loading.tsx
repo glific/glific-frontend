@@ -2,6 +2,7 @@ import { CircularProgress, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import productTips from '../../../../../productTips';
 import styles from './Loading.module.css';
+import { useState } from 'react';
 
 export interface LoadingProps {
   message?: string;
@@ -11,7 +12,8 @@ export interface LoadingProps {
 export const Loading = ({ message, showTip = false }: LoadingProps) => {
   const { t } = useTranslation();
   const messageToDisplay = message || t('Loading...');
-  const selectedtip= productTips ? productTips[Math.floor(Math.random() * productTips.length)]:t('Loading...');
+  const [selectedTip] = useState(() => productTips ? productTips[Math.floor(Math.random() * productTips.length)] : t('Loading...'));
+
   return (
     <>
       {showTip ? (
@@ -22,7 +24,7 @@ export const Loading = ({ message, showTip = false }: LoadingProps) => {
           <div className={styles.tipBackground}>
             <div className={styles.tipHeading}>PRO TIPS</div>
             <Typography className={styles.tipBody}>
-              {selectedtip}
+              {selectedTip}
             </Typography>
           </div>
         </div>
