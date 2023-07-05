@@ -207,7 +207,7 @@ export const AuthenticatedRoute = () => {
       <div className={styles.App} data-testid="app">
         <Layout>
           {toastMessage}
-          <Suspense fallback={<Loading showTip={true}/>}>
+          <Suspense fallback={<Loading />}>
             <ErrorBoundary>{route}</ErrorBoundary>
           </Suspense>
         </Layout>
