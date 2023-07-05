@@ -1,4 +1,4 @@
-.LoadingWithTip{
+.LoadingWithTip {
   position: fixed;
   top: 0;
   left: 0;
@@ -14,7 +14,7 @@
   z-index: 1000;
 }
 
-.tipBackground{
+.tipBackground {
   width: 90%;
   max-width: 528px;
   height: 239px;
@@ -28,7 +28,7 @@
   justify-content: center;
 }
 
-.tipHeading{
+.tipHeading {
   height: 35.25px;
   font-size: 24px !important;
   font-family: 'heebo';
@@ -40,7 +40,7 @@
   margin-bottom: 10px;
 }
 
-.tipBody{
+.tipBody {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -53,7 +53,7 @@
   line-height: 29.38px !important;
   font-size: 20px !important;
   font-weight: 400;
-  color: #073F24;
+  color: #073f24;
   text-align: center;
 }
 

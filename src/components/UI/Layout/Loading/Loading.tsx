@@ -12,32 +12,30 @@ export interface LoadingProps {
 export const Loading = ({ message, showTip = false }: LoadingProps) => {
   const { t } = useTranslation();
   const messageToDisplay = message || t('Loading...');
-  const [selectedTip] = useState(() => productTips ? productTips[Math.floor(Math.random() * productTips.length)] : t('Loading...'));
+  const [selectedTip] = useState(() =>
+    productTips ? productTips[Math.floor(Math.random() * productTips.length)] : t('Loading...')
+  );
 
   return (
     <>
       {showTip ? (
         <div className={styles.LoadingWithTip} data-testid="loader">
-          <div style={{padding:"12px 0"}}>
+          <div style={{ padding: '12px 0' }}>
             <CircularProgress />
           </div>
           <div className={styles.tipBackground}>
             <div className={styles.tipHeading}>PRO TIPS</div>
-            <Typography className={styles.tipBody}>
-              {selectedTip}
-            </Typography>
+            <Typography className={styles.tipBody}>{selectedTip}</Typography>
           </div>
         </div>
-      ):
-      (
+      ) : (
         <div className={styles.CenterItems} data-testid="loader">
           <div className={styles.LoadingPadding}>
             <CircularProgress />
           </div>
           <Typography variant="h5">{messageToDisplay}</Typography>
         </div>
-      )
-      }
+      )}
     </>
   );
 };
