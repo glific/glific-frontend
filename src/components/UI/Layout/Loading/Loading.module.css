@@ -1,3 +1,62 @@
+.LoadingWithTip {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  background-color: rgb(255, 255, 255);
+  z-index: 1000;
+}
+
+.tipBackground {
+  width: 90%;
+  max-width: 528px;
+  height: 239px;
+  min-height: fit-content;
+  background-color: #119656;
+  padding: 20px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.tipHeading {
+  height: 35.25px;
+  font-size: 24px !important;
+  font-family: 'heebo';
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  margin-bottom: 10px;
+}
+
+.tipBody {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  padding: 12px 32px;
+  width: 100%;
+  height: calc(100% - 45.25px);
+  background-color: #fff;
+  font-family: 'heebo';
+  line-height: 29.38px !important;
+  font-size: 20px !important;
+  font-weight: 400;
+  color: #073f24;
+  text-align: center;
+}
+
 .CenterItems {
   display: flex;
   align-items: center;
