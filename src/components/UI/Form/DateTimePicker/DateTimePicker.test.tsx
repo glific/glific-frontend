@@ -26,7 +26,7 @@ describe('<DateTimePicker />', () => {
     render(wrapper);
     const input = screen.getByRole('textbox');
     fireEvent.change(input, { target: { value: '14/05/2021 10:50 AM' } });
-    expect(input).toHaveValue('14/05/2021⁩ ⁦10:50⁩ ⁦AM');
+    expect(input).toHaveValue('14/05/2021 10:50 AM');
 
     expect(setFieldMock).toBeCalled();
     expect(onChangeMock).toBeCalled();
