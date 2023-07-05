@@ -1,11 +1,5 @@
 {
   "compilerOptions": {
-    "types": [
-      "vitest/globals",
-      "vite/client",
-      "@testing-library/jest-dom",
-      "vite-plugin-svgr/client"
-    ],
     "typeRoots": ["./src/types"],
     "target": "ESNext",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
