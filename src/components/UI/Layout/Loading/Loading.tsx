@@ -1,6 +1,6 @@
 import { CircularProgress, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import productTips from '../../../../../productTips';
+import productTips from './productTips';
 import styles from './Loading.module.css';
 import { useState } from 'react';
 
