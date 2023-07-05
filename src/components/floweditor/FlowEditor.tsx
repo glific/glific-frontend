@@ -448,7 +448,7 @@ export const FlowEditor = () => {
           <ResetFlowIcon /> Reset flow counts
         </Button>
         <div id="flow" />
-        {loading && <Loading showTip={true}/>}
+        {loading && <Loading showTip/>}
       </div>
     </>
   );
