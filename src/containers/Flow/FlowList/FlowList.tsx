@@ -2,12 +2,21 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
-import { useLazyQuery, useMutation } from '@apollo/client';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 
 import { ReactComponent as FlowIcon } from 'assets/images/icons/Flow/Dark.svg';
 import { ReactComponent as DuplicateIcon } from 'assets/images/icons/Flow/Duplicate.svg';
 import { ReactComponent as ExportIcon } from 'assets/images/icons/Flow/Export.svg';
-import { FormControlLabel, Radio, RadioGroup } from '@mui/material';
+import {
+  FormControl,
+  FormControlLabel,
+  InputLabel,
+  MenuItem,
+  OutlinedInput,
+  Radio,
+  RadioGroup,
+  Select,
+} from '@mui/material';
 import { ReactComponent as ConfigureIcon } from 'assets/images/icons/Configure/UnselectedDark.svg';
 import { ReactComponent as PinIcon } from 'assets/images/icons/Pin/Active.svg';
 import { FILTER_FLOW, GET_FLOW_COUNT, EXPORT_FLOW, RELEASE_FLOW } from 'graphql/queries/Flow';
@@ -19,6 +28,7 @@ import { DATE_TIME_FORMAT } from 'common/constants';
 import { exportFlowMethod, organizationHasDynamicRole } from 'common/utils';
 import { setNotification } from 'common/notification';
 import styles from './FlowList.module.css';
+import { GET_TAGS } from 'graphql/queries/Tags';
 
 const getName = (text: string, keywordsList: any, roles: any) => {
   const keywords = keywordsList.map((keyword: any) => keyword);
@@ -187,6 +197,10 @@ export const FlowList = () => {
     { label: 'Active', value: true },
     { label: 'Inactive', value: false },
   ];
+  const { data: tag } = useQuery(GET_TAGS, {
+    variables: {},
+    fetchPolicy: 'network-only',
+  });
 
   const activeFilter = (
     <div className={styles.Filters}>
@@ -214,6 +228,42 @@ export const FlowList = () => {
       </RadioGroup>
     </div>
   );
+  const [selectedtag, setSelectedTag] = useState<any>('None');
+
+  const ITEM_HEIGHT = 48;
+  const ITEM_PADDING_TOP = 8;
+  const MenuProps = {
+    PaperProps: {
+      style: {
+        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+        width: 250,
+      },
+    },
+  };
+  const tagFilter = (
+    <div className={styles.Filters}>
+      <FormControl sx={{ width: 100, borderRadius: 2, borderColor: 'none' }}>
+        <InputLabel id="tag-dropdown-for-filter">Tag</InputLabel>
+        <Select
+          labelId="tag-dropdown-for-filter"
+          id="tag-dropdown-id"
+          value={selectedtag}
+          onChange={(event) => setSelectedTag(event.target.value)}
+          input={<OutlinedInput label="Tag" />}
+          MenuProps={MenuProps}
+          style={{ height: '45px' }}
+        >
+          <MenuItem value={'None'}>None</MenuItem>
+          {tag &&
+            tag.tags.map((data: any) => (
+              <MenuItem key={data.id} value={data.id}>
+                {data?.label}
+              </MenuItem>
+            ))}
+        </Select>
+      </FormControl>
+    </div>
+  );
 
   return (
     <List
@@ -225,12 +275,14 @@ export const FlowList = () => {
       dialogMessage={dialogMessage}
       {...queries}
       {...columnAttributes}
-      searchParameter={['nameOrKeyword']}
+      searchParameter={['name_or_keyword_or_tags']}
       additionalAction={additionalAction}
       button={{ show: true, label: t('Create Flow'), symbol: '+' }}
       secondaryButton={importButton}
       filters={{ isActive: filter }}
       filterList={activeFilter}
+      filtersTag={selectedtag}
+      filterDropdowm={tagFilter}
     />
   );
 };

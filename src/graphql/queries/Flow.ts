@@ -23,6 +23,10 @@ export const GET_FLOW = gql`
           id
           label
         }
+        tag {
+          label
+          id
+        }
         isBackground
         keywords
         ignoreKeywords

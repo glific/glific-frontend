@@ -52,7 +52,9 @@ export interface ListProps {
   };
   searchParameter?: Array<any>;
   filters?: Object | null;
+  filtersTag?: any;
   filterList?: any;
+  filterDropdowm?: any;
   displayListType?: string;
   cardLink?: Object | null;
   editSupport?: boolean;
@@ -105,6 +107,7 @@ export const List = ({
   title,
   dialogTitle,
   filterList,
+  filterDropdowm=null,
   button = {
     show: true,
     label: 'Add New',
@@ -113,6 +116,7 @@ export const List = ({
   editSupport = true,
   searchParameter = ['label'],
   filters = null,
+  filtersTag = null,
   displayListType = 'list',
   cardLink = null,
   additionalAction = () => [],
@@ -213,7 +217,7 @@ export const List = ({
       filter[parameter] = searchVal;
     });
   }
-  filter = { ...filter, ...filters };
+  filter = { ...filter, ...filters, ...(filtersTag != null && filtersTag != "None" && { tag_ids: parseInt(filtersTag) }) };
 
   const filterPayload = useCallback(() => {
     let order = 'ASC';
@@ -647,6 +651,7 @@ export const List = ({
           {title}
         </Typography>
         {filterList}
+        {filterDropdowm}
         <div className={styles.Buttons}>
           <SearchBar
             handleSubmit={handleSearch}

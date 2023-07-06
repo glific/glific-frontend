@@ -15,6 +15,8 @@ import { getAddOrRemoveRoleIds } from 'common/utils';
 import { setErrorMessage } from 'common/notification';
 import Loading from 'components/UI/Layout/Loading/Loading';
 import styles from './Flow.module.css';
+import { GET_TAGS } from 'graphql/queries/Tags';
+import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 
 const flowIcon = <FlowIcon className={styles.FlowIcon} />;
 
@@ -31,6 +33,7 @@ export const Flow = () => {
   const [name, setName] = useState('');
   const [isPinnedDisable, setIsPinnedDisable] = useState(false);
   const [keywords, setKeywords] = useState('');
+  const [tagId,setTagId]=useState(null);
   const [isActive, setIsActive] = useState(true);
   const [isPinned, setIsPinned] = useState(false);
   const [roles, setRoles] = useState<Array<any>>([]);
@@ -42,14 +45,19 @@ export const Flow = () => {
     variables: {},
     fetchPolicy: 'network-only',
   });
+  const { data: tag } = useQuery(GET_TAGS, {
+    variables: {},
+    fetchPolicy: 'network-only',
+  });
 
   if (loading) return <Loading />;
 
-  const states = { isActive, isPinned, isBackground, name, keywords, ignoreKeywords, roles };
+  const states = { isActive, isPinned, isBackground, name, keywords, tagId, ignoreKeywords, roles };
 
   const setStates = ({
     name: nameValue,
     keywords: keywordsValue,
+    tag:tagValue,
     isActive: isActiveValue,
     isPinned: isPinnedValue,
     isBackground: isBackgroundValue,
@@ -86,6 +94,10 @@ export const Flow = () => {
       setKeywords(fieldKeywords.join(','));
     }
     setIgnoreKeywords(ignoreKeywordsValue);
+    const getTagId = tag.tags.filter((tags: any) => tags.id === tagValue.id);
+    if (getTagId.length > 0) {
+      setTagId(getTagId[0]);
+    }
   };
 
   const regex =
@@ -113,6 +125,18 @@ export const Flow = () => {
       type: 'text',
       placeholder: t('Keywords'),
       helperText: t('Enter comma separated keywords that trigger this flow'),
+    },
+    {
+      component: AutoComplete,
+      name: 'tagId',
+      options: tag.tags,
+      optionLabel: 'label',
+      disabled: false,
+      multiple: false,
+      textFieldProps: {
+        variant: 'outlined',
+        label: t('Select flow'),
+      },
     },
     {
       component: Checkbox,
@@ -158,11 +182,14 @@ export const Flow = () => {
 
     const payloadWithRoleIds = getAddOrRemoveRoleIds(roles, payload);
 
-    // return modified payload
-    return {
+    const updatedPayload = {
       ...payloadWithRoleIds,
       keywords: formattedKeywords,
+      tag_id: payload.tagId.id, // Replace tagId with tag_id
     };
+    delete updatedPayload.tagId;
+    // return modified payload
+    return updatedPayload;
   };
 
   // alter header & update/copy queries
