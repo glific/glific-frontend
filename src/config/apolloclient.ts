@@ -41,7 +41,7 @@ export const cache = new InMemoryCache({
 const gqlClient = (history: any) => {
   const refreshTokenLink: any = new TokenRefreshLink({
     accessTokenField: 'access_token',
-    isTokenValidOrUndefined: () => checkAuthStatusService(),
+    isTokenValidOrUndefined: async () => checkAuthStatusService(),
     fetchAccessToken: async () => renewAuthToken(),
     handleFetch: () => { },
     handleResponse: (_operation, accessTokenField) => (response: any) => {

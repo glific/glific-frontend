@@ -173,7 +173,7 @@ export const InteractiveOptions = ({
         <div className={templateType === QUICK_REPLY ? styles.TemplateFields : ''}>
           <FieldArray
             name="templateButtons"
-            render={(arrayHelpers) =>
+            render={(arrayHelpers: any) =>
               values.templateButtons.map((row: any, index: any) => getButtons(index, arrayHelpers))
             }
           />

@@ -292,7 +292,7 @@ export const TemplateOptions = ({
         >
           <FieldArray
             name="templateButtons"
-            render={(arrayHelpers) =>
+            render={(arrayHelpers: any) =>
               values.templateButtons.map((row: any, index: any) =>
                 getButtons(row, index, arrayHelpers)
               )
