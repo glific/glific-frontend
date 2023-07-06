@@ -33,7 +33,7 @@ export const Flow = () => {
   const [name, setName] = useState('');
   const [isPinnedDisable, setIsPinnedDisable] = useState(false);
   const [keywords, setKeywords] = useState('');
-  const [tagId, setTagId] = useState(null);
+  const [tagId, setTagId] = useState({ id: 99, label: 'Null' });
   const [isActive, setIsActive] = useState(true);
   const [isPinned, setIsPinned] = useState(false);
   const [roles, setRoles] = useState<Array<any>>([]);
@@ -129,7 +129,7 @@ export const Flow = () => {
     {
       component: AutoComplete,
       name: 'tagId',
-      options: tag.tags,
+      options: tag ? tag.tags : [],
       optionLabel: 'label',
       disabled: false,
       multiple: false,
