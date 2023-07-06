@@ -131,7 +131,7 @@ export const ListReplyTemplate = ({
         <div>
           <FieldArray
             name={`templateButtons[${index}].options`}
-            render={(arrayHelpers) =>
+            render={(arrayHelpers: any) =>
               options.map((itemRow: any, itemIndex: any) => (
                 // disabling eslint for this as we have no other unique way to define a key
                 // eslint-disable-next-line react/no-array-index-key

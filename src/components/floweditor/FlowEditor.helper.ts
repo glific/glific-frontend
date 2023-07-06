@@ -13,7 +13,7 @@ export const setConfig = (uuid: any) => {
     mutable: true,
     showNodeLabel: false,
     attachmentsEnabled: false,
-    filters: ['whatsapp', 'classifier'],
+    filters: ['whatsapp', 'classifier', 'profile'],
 
     excludeTypes: [
       'add_contact_urn',
