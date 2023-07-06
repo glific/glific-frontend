@@ -1,3 +1,11 @@
+.SearchBar {
+  border-radius: 10px !important;
+  border-color: #93a29b;
+  border-width: 2px;
+  border-style: solid;
+  padding: 0px;
+}
+
 .Shortcode {
   width: 180px;
 }

@@ -241,28 +241,25 @@ export const FlowList = () => {
     },
   };
   const tagFilter = (
-    <div className={styles.Filters}>
-      <FormControl sx={{ width: 100, borderRadius: 2, borderColor: 'none' }}>
-        <InputLabel id="tag-dropdown-for-filter">Tag</InputLabel>
-        <Select
-          labelId="tag-dropdown-for-filter"
-          id="tag-dropdown-id"
-          value={selectedtag}
-          onChange={(event) => setSelectedTag(event.target.value)}
-          input={<OutlinedInput label="Tag" />}
-          MenuProps={MenuProps}
-          style={{ height: '45px' }}
-        >
-          <MenuItem value={'None'}>None</MenuItem>
-          {tag &&
-            tag.tags.map((data: any) => (
-              <MenuItem key={data.id} value={data.id}>
-                {data?.label}
-              </MenuItem>
-            ))}
-        </Select>
-      </FormControl>
-    </div>
+    <FormControl sx={{ width: 150 }}>
+      <Select
+        labelId="tag-dropdown-for-filter"
+        value={selectedtag}
+        onChange={(event) => setSelectedTag(event.target.value)}
+        MenuProps={MenuProps}
+        style={{ height: '48px' }}
+        className={styles.SearchBar}
+        sx={{ '& > fieldset': { border: 'none' } }}
+      >
+        <MenuItem value="None">None</MenuItem>
+        {tag &&
+          tag.tags.map((data: any) => (
+            <MenuItem key={data.id} value={data.id}>
+              {data?.label}
+            </MenuItem>
+          ))}
+      </Select>
+    </FormControl>
   );
 
   return (

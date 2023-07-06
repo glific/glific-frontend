@@ -33,7 +33,7 @@ export const Flow = () => {
   const [name, setName] = useState('');
   const [isPinnedDisable, setIsPinnedDisable] = useState(false);
   const [keywords, setKeywords] = useState('');
-  const [tagId,setTagId]=useState(null);
+  const [tagId, setTagId] = useState(null);
   const [isActive, setIsActive] = useState(true);
   const [isPinned, setIsPinned] = useState(false);
   const [roles, setRoles] = useState<Array<any>>([]);
@@ -57,7 +57,7 @@ export const Flow = () => {
   const setStates = ({
     name: nameValue,
     keywords: keywordsValue,
-    tag:tagValue,
+    tag: tagValue,
     isActive: isActiveValue,
     isPinned: isPinnedValue,
     isBackground: isBackgroundValue,
@@ -135,7 +135,7 @@ export const Flow = () => {
       multiple: false,
       textFieldProps: {
         variant: 'outlined',
-        label: t('Select flow'),
+        label: t('Select Tag'),
       },
     },
     {
