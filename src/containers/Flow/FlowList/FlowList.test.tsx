@@ -120,7 +120,9 @@ describe('<FlowList />', () => {
         value: [file],
       });
 
-      fireEvent.change(input);
+      setTimeout(() => {
+        fireEvent.change(input);
+      }, 100);
     });
 
     await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 0)));
