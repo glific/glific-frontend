@@ -10,9 +10,7 @@ import { ReactComponent as ExportIcon } from 'assets/images/icons/Flow/Export.sv
 import {
   FormControl,
   FormControlLabel,
-  InputLabel,
   MenuItem,
-  OutlinedInput,
   Radio,
   RadioGroup,
   Select,
@@ -255,7 +253,7 @@ export const FlowList = () => {
         {tag &&
           tag.tags.map((data: any) => (
             <MenuItem key={data.id} value={data.id}>
-              {data?.label}
+              {data.label}
             </MenuItem>
           ))}
       </Select>
