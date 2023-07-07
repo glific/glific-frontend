@@ -662,7 +662,7 @@ export const List = ({
           </div>
         </div>
       </div>
-      <hr className={styles.NoPaddingMargin} />
+
       <div className={styles.FilterFields}>
         <div style={{ display: 'flex' }}>
           {filterList}

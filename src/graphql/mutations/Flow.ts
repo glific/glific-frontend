@@ -44,6 +44,10 @@ export const UPDATE_FLOW = gql`
           id
           label
         }
+        tag {
+          label
+          id
+        }
       }
       errors {
         key

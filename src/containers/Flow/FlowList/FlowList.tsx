@@ -255,7 +255,7 @@ export const FlowList = () => {
           if (selected === null) {
             return (
               <MenuItem disabled value="">
-                <em>Select Tag</em>
+                Select Label
               </MenuItem>
             );
           }

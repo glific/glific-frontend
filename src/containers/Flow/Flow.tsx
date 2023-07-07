@@ -2,7 +2,7 @@ import { useState } from 'react';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useParams } from 'react-router-dom';
-import { useQuery } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client';
 
 import { FormLayout } from 'containers/Form/FormLayout';
 import { Input } from 'components/UI/Form/Input/Input';
@@ -17,6 +17,7 @@ import Loading from 'components/UI/Layout/Loading/Loading';
 import styles from './Flow.module.css';
 import { GET_TAGS } from 'graphql/queries/Tags';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
+import { CREATE_LABEL } from 'graphql/mutations/Tags';
 
 const flowIcon = <FlowIcon className={styles.FlowIcon} />;
 
@@ -33,7 +34,7 @@ export const Flow = () => {
   const [name, setName] = useState('');
   const [isPinnedDisable, setIsPinnedDisable] = useState(false);
   const [keywords, setKeywords] = useState('');
-  const [tagId, setTagId] = useState({ id: 99, label: '' });
+  const [tagId, setTagId] = useState({ id: '', label: '' });
   const [isActive, setIsActive] = useState(true);
   const [isPinned, setIsPinned] = useState(false);
   const [roles, setRoles] = useState<Array<any>>([]);
@@ -41,11 +42,24 @@ export const Flow = () => {
   const [ignoreKeywords, setIgnoreKeywords] = useState(false);
   const { t } = useTranslation();
 
-  const { loading, data: orgData } = useQuery(GET_ORGANIZATION, {
+  const { data: tag, refetch } = useQuery(GET_TAGS, {
     variables: {},
     fetchPolicy: 'network-only',
   });
-  const { data: tag } = useQuery(GET_TAGS, {
+  const [createTag] = useMutation(CREATE_LABEL);
+
+  const handleCreateLabel = async (value: string) => {
+    return createTag({
+      variables: {
+        input: {
+          label: value,
+          languageId: '1',
+        },
+      },
+    }).then((value) => value.data.createTag.tag);
+  };
+
+  const { loading, data: orgData } = useQuery(GET_ORGANIZATION, {
     variables: {},
     fetchPolicy: 'network-only',
   });
@@ -132,10 +146,12 @@ export const Flow = () => {
       options: tag ? tag.tags : [],
       optionLabel: 'label',
       disabled: false,
+      handleCreateItem: handleCreateLabel,
+      hasCreateOption: true,
       multiple: false,
       textFieldProps: {
         variant: 'outlined',
-        label: t('Select Tag'),
+        label: t('Label'),
       },
     },
     {
@@ -182,11 +198,16 @@ export const Flow = () => {
 
     const payloadWithRoleIds = getAddOrRemoveRoleIds(roles, payload);
 
-    const updatedPayload = {
+    let updatedPayload = {
       ...payloadWithRoleIds,
       keywords: formattedKeywords,
-      tag_id: payload.tagId.id, // Replace tagId with tag_id
     };
+    if (payload?.tagId?.id) {
+      updatedPayload = {
+        ...updatedPayload,
+        tag_id: payload.tagId.id,
+      };
+    }
     delete updatedPayload.tagId;
     // return modified payload
     return updatedPayload;

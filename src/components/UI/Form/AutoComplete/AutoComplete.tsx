@@ -44,6 +44,8 @@ export interface AutocompleteProps {
   selectTextAsOption?: boolean;
   onInputChange?: any;
   valueElementName?: string;
+  hasCreateOption?: boolean;
+  handleCreateItem?: any;
 }
 
 export const AutoComplete = ({
@@ -76,10 +78,13 @@ export const AutoComplete = ({
   selectTextAsOption = false,
   onInputChange = () => null,
   valueElementName = 'id',
+  hasCreateOption = false,
+  handleCreateItem = () => {},
 }: AutocompleteProps) => {
   const errorText = getIn(errors, field.name);
   const touchedVal = getIn(touched, field.name);
   const hasError = touchedVal && errorText !== undefined;
+  const [inputValue, setInputValue] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [optionValue, setOptionValue] = useState([]);
   const [open, setOpen] = useState(false);
@@ -155,6 +160,10 @@ export const AutoComplete = ({
       );
     });
   };
+  const createOption = {
+    label: `${inputValue} `,
+    inputValue,
+  };
 
   const getOptionDisabled = (option: any) => selectedOptionsIds.includes(option.id);
 
@@ -166,7 +175,7 @@ export const AutoComplete = ({
           classes={classes}
           multiple={multiple}
           data-testid="autocomplete-element"
-          options={optionValue}
+          options={hasCreateOption ? [...optionValue, createOption] : optionValue}
           freeSolo={freeSolo}
           autoSelect={autoSelect}
           disableClearable={disableClearable}
@@ -191,9 +200,21 @@ export const AutoComplete = ({
             if (onChange) {
               onChange(value);
             }
-            setFieldValue(field.name, value);
+            if (value && value.inputValue) {
+              handleCreateItem(value.inputValue).then((value: any) =>
+                setFieldValue(field.name, value)
+              );
+            } else {
+              setFieldValue(field.name, value);
+            }
           }}
-          onInputChange={onInputChange}
+          onInputChange={
+            hasCreateOption
+              ? (_event, newInputValue) => {
+                  setInputValue(newInputValue);
+                }
+              : onInputChange
+          }
           inputValue={asyncSearch ? searchTerm : undefined}
           value={getValue}
           disabled={disabled}
@@ -212,7 +233,7 @@ export const AutoComplete = ({
                   color="primary"
                 />
               )}
-              {getLabel(option)}
+              {option.inputValue ? <>Create "{option.inputValue}"</> : getLabel(option)}
             </li>
           )}
           renderInput={(params: any) => {
