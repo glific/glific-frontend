@@ -107,7 +107,7 @@ export const List = ({
   title,
   dialogTitle,
   filterList,
-  filterDropdowm=null,
+  filterDropdowm = null,
   button = {
     show: true,
     label: 'Add New',
@@ -217,7 +217,11 @@ export const List = ({
       filter[parameter] = searchVal;
     });
   }
-  filter = { ...filter, ...filters, ...(filtersTag != null && filtersTag != "None" && { tag_ids: parseInt(filtersTag) }) };
+  filter = {
+    ...filter,
+    ...filters,
+    ...(filtersTag != null && filtersTag != '' && { tag_ids: parseInt(filtersTag) }),
+  };
 
   const filterPayload = useCallback(() => {
     let order = 'ASC';
@@ -650,8 +654,20 @@ export const List = ({
           </IconButton>
           {title}
         </Typography>
-        {filterList}
-        {filterDropdowm}
+        <div>
+          {dialogBox}
+          <div className={styles.ButtonGroup}>
+            {buttonDisplay}
+            {secondaryButton}
+          </div>
+        </div>
+      </div>
+      <hr className={styles.NoPaddingMargin} />
+      <div className={styles.FilterFields}>
+        <div style={{ display: 'flex' }}>
+          {filterList}
+          {filterDropdowm}
+        </div>
         <div className={styles.Buttons}>
           <SearchBar
             handleSubmit={handleSearch}
@@ -668,15 +684,7 @@ export const List = ({
             searchMode
           />
         </div>
-        <div>
-          {dialogBox}
-          <div className={styles.ButtonGroup}>
-            {buttonDisplay}
-            {secondaryButton}
-          </div>
-        </div>
       </div>
-
       <div className={`${styles.Body} ${customStyles}`}>
         {backLink}
         {/* Rendering list of items */}

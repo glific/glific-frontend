@@ -7,7 +7,8 @@ import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { ReactComponent as FlowIcon } from 'assets/images/icons/Flow/Dark.svg';
 import { ReactComponent as DuplicateIcon } from 'assets/images/icons/Flow/Duplicate.svg';
 import { ReactComponent as ExportIcon } from 'assets/images/icons/Flow/Export.svg';
-import { FormControl, FormControlLabel, MenuItem, Radio, RadioGroup, Select } from '@mui/material';
+import { FormControl, MenuItem, Select, IconButton } from '@mui/material';
+import ClearIcon from '@mui/icons-material/Clear';
 import { ReactComponent as ConfigureIcon } from 'assets/images/icons/Configure/UnselectedDark.svg';
 import { ReactComponent as PinIcon } from 'assets/images/icons/Pin/Active.svg';
 import { FILTER_FLOW, GET_FLOW_COUNT, EXPORT_FLOW, RELEASE_FLOW } from 'graphql/queries/Flow';
@@ -78,6 +79,7 @@ export const FlowList = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [filter, setFilter] = useState<any>(true);
+  const [selectedtag, setSelectedTag] = useState<any>(null);
   const [flowName, setFlowName] = useState('');
   const [importing, setImporting] = useState(false);
 
@@ -193,34 +195,6 @@ export const FlowList = () => {
     fetchPolicy: 'network-only',
   });
 
-  const activeFilter = (
-    <div className={styles.Filters}>
-      <RadioGroup
-        aria-label="template-type"
-        name="template-type"
-        row
-        value={filter}
-        onChange={(event) => {
-          const { value } = event.target;
-          setFilter(JSON.parse(value));
-        }}
-      >
-        {filterList.map((filter) => (
-          <div className={styles.RadioLabelWrapper} key={filter.label}>
-            <FormControlLabel
-              value={filter.value}
-              control={<Radio color="primary" />}
-              classes={{ root: styles.RadioLabel }}
-              label={filter.label}
-              data-testid="radio"
-            />
-          </div>
-        ))}
-      </RadioGroup>
-    </div>
-  );
-  const [selectedtag, setSelectedTag] = useState<any>('None');
-
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
   const MenuProps = {
@@ -231,21 +205,68 @@ export const FlowList = () => {
       },
     },
   };
-  const tagFilter = (
+
+  const activeFilter = (
     <FormControl sx={{ width: 150 }}>
       <Select
-        labelId="tag-dropdown-for-filter"
-        value={selectedtag}
-        onChange={(event) => setSelectedTag(event.target.value)}
+        aria-label="template-type"
+        name="template-type"
+        value={filter}
+        onChange={(event) => {
+          const { value } = event.target;
+          setFilter(JSON.parse(value));
+        }}
         MenuProps={MenuProps}
-        style={{ height: '48px' }}
         className={styles.SearchBar}
         sx={{ '& > fieldset': { border: 'none' } }}
       >
-        <MenuItem value="None">None</MenuItem>
+        {filterList.map((filter: any) => (
+          <MenuItem key={filter.label} value={filter.value}>
+            {filter.label}
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
+  );
+
+  const tagFilter = (
+    <FormControl sx={{ width: 150, marginLeft: 2 }}>
+      <Select
+        labelId="tag-dropdown-for-filter"
+        displayEmpty
+        value={selectedtag}
+        onChange={(event) => {
+          setSelectedTag({ id: event.target.value.id, label: event.target.value.label });
+        }}
+        MenuProps={MenuProps}
+        className={styles.SearchBar}
+        sx={{ '& > fieldset': { border: 'none' } }}
+        endAdornment={
+          selectedtag !== null && (
+            <IconButton
+              sx={{ visibility: 'visible', height: 8, width: 8, marginRight: 1 }}
+              onClick={() => setSelectedTag(null)}
+            >
+              <ClearIcon />
+            </IconButton>
+          )
+        }
+        renderValue={(selected) => {
+          if (selected === null) {
+            return (
+              <MenuItem disabled value="">
+                <em>Select Tag</em>
+              </MenuItem>
+            );
+          }
+
+          return selected.label;
+        }}
+        inputProps={selectedtag === null ? {} : { IconComponent: () => null }}
+      >
         {tag &&
           tag.tags.map((data: any) => (
-            <MenuItem key={data.id} value={data.id}>
+            <MenuItem key={data.id} value={data}>
               {data.label}
             </MenuItem>
           ))}
@@ -269,7 +290,7 @@ export const FlowList = () => {
       secondaryButton={importButton}
       filters={{ isActive: filter }}
       filterList={activeFilter}
-      filtersTag={selectedtag}
+      filtersTag={selectedtag && selectedtag.id}
       filterDropdowm={tagFilter}
     />
   );
