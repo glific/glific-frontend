@@ -42,7 +42,7 @@ export const Flow = () => {
   const [ignoreKeywords, setIgnoreKeywords] = useState(false);
   const { t } = useTranslation();
 
-  const { data: tag, refetch } = useQuery(GET_TAGS, {
+  const { data: tag } = useQuery(GET_TAGS, {
     variables: {},
     fetchPolicy: 'network-only',
   });
@@ -202,7 +202,7 @@ export const Flow = () => {
       ...payloadWithRoleIds,
       keywords: formattedKeywords,
     };
-    if (payload?.tagId?.id) {
+    if (payload.tagId?.id) {
       updatedPayload = {
         ...updatedPayload,
         tag_id: payload.tagId.id,
