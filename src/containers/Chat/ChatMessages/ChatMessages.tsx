@@ -419,7 +419,7 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
 
     // if conversation is not present then fetch the collection
     if (conversationIndex < 0) {
-      if (!loading && !data) {
+      if ((!loading && !called) || (data && data.search[0].group.id !== collectionId)) {
         const variables = {
           filter: { id: collectionId, searchGroup: true },
           contactOpts: { limit: DEFAULT_CONTACT_LIMIT },

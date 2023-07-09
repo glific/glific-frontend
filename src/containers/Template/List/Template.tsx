@@ -23,13 +23,28 @@ import { ReactComponent as ApprovedIcon } from 'assets/images/icons/Template/App
 import { ReactComponent as RejectedIcon } from 'assets/images/icons/Template/Rejected.svg';
 import { ReactComponent as PendingIcon } from 'assets/images/icons/Template/Pending.svg';
 import { ProviderContext } from 'context/session';
-import { exportCsvFile, getFileExtension } from 'common/utils';
+import { copyToClipboardMethod, exportCsvFile, getFileExtension } from 'common/utils';
 import Loading from 'components/UI/Layout/Loading/Loading';
 import { setNotification } from 'common/notification';
 import { BULK_APPLY_SAMPLE_LINK } from 'config';
 import styles from './Template.module.css';
+import { CopyAllOutlined } from '@mui/icons-material';
 
-const getLabel = (label: string) => <div className={styles.LabelText}>{label}</div>;
+const getLabel = (label: string, uuid: string) => (
+  <div>
+    <div className={styles.LabelText}>{label}</div>
+    {uuid && (
+      <div
+        className={styles.Uuid}
+        onClick={() => {
+          copyToClipboardMethod(uuid);
+        }}
+      >
+        {uuid} <CopyAllOutlined className={styles.Copy} />
+      </div>
+    )}
+  </div>
+);
 
 const getBody = (text: string) => <p className={styles.TableText}>{WhatsAppToJsx(text)}</p>;
 
@@ -183,10 +198,11 @@ export const Template = ({
     translations,
     status,
     reason,
+    bsp,
   }: any) => {
     const columns: any = {
       id,
-      label: getLabel(label),
+      label: getLabel(label, bsp),
       body: getBody(body),
     };
     if (isHSM) {

@@ -24,6 +24,7 @@ export const FILTER_TEMPLATES = gql`
   query sessionTemplates($filter: SessionTemplateFilter!, $opts: Opts!) {
     sessionTemplates(filter: $filter, opts: $opts) {
       ${templateFields}
+      bsp
       shortcode
       status
       reason
