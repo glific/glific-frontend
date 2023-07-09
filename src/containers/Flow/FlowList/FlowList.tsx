@@ -230,7 +230,7 @@ export const FlowList = () => {
   );
 
   const tagFilter = (
-    <FormControl sx={{ width: 150, marginLeft: 2 }}>
+    <FormControl sx={{ marginLeft: 2 }}>
       <Select
         labelId="tag-dropdown-for-filter"
         displayEmpty
