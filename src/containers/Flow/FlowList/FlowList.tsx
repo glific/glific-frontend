@@ -2,12 +2,13 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
-import { useLazyQuery, useMutation } from '@apollo/client';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 
 import { ReactComponent as FlowIcon } from 'assets/images/icons/Flow/Dark.svg';
 import { ReactComponent as DuplicateIcon } from 'assets/images/icons/Flow/Duplicate.svg';
 import { ReactComponent as ExportIcon } from 'assets/images/icons/Flow/Export.svg';
-import { FormControlLabel, Radio, RadioGroup } from '@mui/material';
+import { FormControl, MenuItem, Select, IconButton } from '@mui/material';
+import ClearIcon from '@mui/icons-material/Clear';
 import { ReactComponent as ConfigureIcon } from 'assets/images/icons/Configure/UnselectedDark.svg';
 import { ReactComponent as PinIcon } from 'assets/images/icons/Pin/Active.svg';
 import { FILTER_FLOW, GET_FLOW_COUNT, EXPORT_FLOW, RELEASE_FLOW } from 'graphql/queries/Flow';
@@ -19,6 +20,7 @@ import { DATE_TIME_FORMAT } from 'common/constants';
 import { exportFlowMethod, organizationHasDynamicRole } from 'common/utils';
 import { setNotification } from 'common/notification';
 import styles from './FlowList.module.css';
+import { GET_TAGS } from 'graphql/queries/Tags';
 
 const getName = (text: string, keywordsList: any, roles: any) => {
   const keywords = keywordsList.map((keyword: any) => keyword);
@@ -77,6 +79,7 @@ export const FlowList = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [filter, setFilter] = useState<any>(true);
+  const [selectedtag, setSelectedTag] = useState<any>(null);
   const [flowName, setFlowName] = useState('');
   const [importing, setImporting] = useState(false);
 
@@ -187,32 +190,88 @@ export const FlowList = () => {
     { label: 'Active', value: true },
     { label: 'Inactive', value: false },
   ];
+  const { data: tag } = useQuery(GET_TAGS, {
+    variables: {},
+    fetchPolicy: 'network-only',
+  });
+
+  const ITEM_HEIGHT = 48;
+  const ITEM_PADDING_TOP = 8;
+  const MenuProps = {
+    PaperProps: {
+      style: {
+        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+        width: 250,
+      },
+    },
+  };
 
   const activeFilter = (
-    <div className={styles.Filters}>
-      <RadioGroup
+    <FormControl sx={{ width: 150 }}>
+      <Select
         aria-label="template-type"
         name="template-type"
-        row
         value={filter}
         onChange={(event) => {
           const { value } = event.target;
           setFilter(JSON.parse(value));
         }}
+        MenuProps={MenuProps}
+        className={styles.SearchBar}
+        sx={{ '& > fieldset': { border: 'none' } }}
       >
-        {filterList.map((filter) => (
-          <div className={styles.RadioLabelWrapper} key={filter.label}>
-            <FormControlLabel
-              value={filter.value}
-              control={<Radio color="primary" />}
-              classes={{ root: styles.RadioLabel }}
-              label={filter.label}
-              data-testid="radio"
-            />
-          </div>
+        {filterList.map((filter: any) => (
+          <MenuItem key={filter.label} value={filter.value}>
+            {filter.label}
+          </MenuItem>
         ))}
-      </RadioGroup>
-    </div>
+      </Select>
+    </FormControl>
+  );
+
+  const tagFilter = (
+    <FormControl sx={{ marginLeft: 2 }}>
+      <Select
+        labelId="tag-dropdown-for-filter"
+        displayEmpty
+        value={selectedtag}
+        onChange={(event) => {
+          setSelectedTag({ id: event.target.value.id, label: event.target.value.label });
+        }}
+        MenuProps={MenuProps}
+        className={styles.SearchBar}
+        sx={{ '& > fieldset': { border: 'none' } }}
+        endAdornment={
+          selectedtag !== null && (
+            <IconButton
+              sx={{ visibility: 'visible', height: 8, width: 8, marginRight: 1 }}
+              onClick={() => setSelectedTag(null)}
+            >
+              <ClearIcon />
+            </IconButton>
+          )
+        }
+        renderValue={(selected) => {
+          if (selected === null) {
+            return (
+              <MenuItem disabled value="">
+                Select Label
+              </MenuItem>
+            );
+          }
+
+          return selected.label;
+        }}
+        inputProps={selectedtag === null ? {} : { IconComponent: () => null }}
+      >
+        {tag &&
+          tag.tags.map((data: any) => (
+            <MenuItem key={data.id} value={data}>
+              {data.label}
+            </MenuItem>
+          ))}
+      </Select>
+    </FormControl>
   );
 
   return (
@@ -225,12 +284,14 @@ export const FlowList = () => {
       dialogMessage={dialogMessage}
       {...queries}
       {...columnAttributes}
-      searchParameter={['nameOrKeywordOrTags']}
+      searchParameter={['name_or_keyword_or_tags']}
       additionalAction={additionalAction}
       button={{ show: true, label: t('Create Flow'), symbol: '+' }}
       secondaryButton={importButton}
       filters={{ isActive: filter }}
       filterList={activeFilter}
+      filtersTag={selectedtag && selectedtag.id}
+      filterDropdowm={tagFilter}
     />
   );
 };

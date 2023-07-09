@@ -2,7 +2,7 @@ import { useState } from 'react';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useParams } from 'react-router-dom';
-import { useQuery } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client';
 
 import { FormLayout } from 'containers/Form/FormLayout';
 import { Input } from 'components/UI/Form/Input/Input';
@@ -15,6 +15,9 @@ import { getAddOrRemoveRoleIds } from 'common/utils';
 import { setErrorMessage } from 'common/notification';
 import Loading from 'components/UI/Layout/Loading/Loading';
 import styles from './Flow.module.css';
+import { GET_TAGS } from 'graphql/queries/Tags';
+import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
+import { CREATE_LABEL } from 'graphql/mutations/Tags';
 
 const flowIcon = <FlowIcon className={styles.FlowIcon} />;
 
@@ -31,12 +34,30 @@ export const Flow = () => {
   const [name, setName] = useState('');
   const [isPinnedDisable, setIsPinnedDisable] = useState(false);
   const [keywords, setKeywords] = useState('');
+  const [tagId, setTagId] = useState({ id: '', label: '' });
   const [isActive, setIsActive] = useState(true);
   const [isPinned, setIsPinned] = useState(false);
   const [roles, setRoles] = useState<Array<any>>([]);
   const [isBackground, setIsBackground] = useState(false);
   const [ignoreKeywords, setIgnoreKeywords] = useState(false);
   const { t } = useTranslation();
+
+  const { data: tag } = useQuery(GET_TAGS, {
+    variables: {},
+    fetchPolicy: 'network-only',
+  });
+  const [createTag] = useMutation(CREATE_LABEL);
+
+  const handleCreateLabel = async (value: string) => {
+    return createTag({
+      variables: {
+        input: {
+          label: value,
+          languageId: '1',
+        },
+      },
+    }).then((value) => value.data.createTag.tag);
+  };
 
   const { loading, data: orgData } = useQuery(GET_ORGANIZATION, {
     variables: {},
@@ -45,11 +66,12 @@ export const Flow = () => {
 
   if (loading) return <Loading />;
 
-  const states = { isActive, isPinned, isBackground, name, keywords, ignoreKeywords, roles };
+  const states = { isActive, isPinned, isBackground, name, keywords, tagId, ignoreKeywords, roles };
 
   const setStates = ({
     name: nameValue,
     keywords: keywordsValue,
+    tag: tagValue,
     isActive: isActiveValue,
     isPinned: isPinnedValue,
     isBackground: isBackgroundValue,
@@ -86,6 +108,10 @@ export const Flow = () => {
       setKeywords(fieldKeywords.join(','));
     }
     setIgnoreKeywords(ignoreKeywordsValue);
+    const getTagId = tag.tags.filter((tags: any) => tags.id === tagValue.id);
+    if (getTagId.length > 0) {
+      setTagId(getTagId[0]);
+    }
   };
 
   const regex =
@@ -113,6 +139,20 @@ export const Flow = () => {
       type: 'text',
       placeholder: t('Keywords'),
       helperText: t('Enter comma separated keywords that trigger this flow'),
+    },
+    {
+      component: AutoComplete,
+      name: 'tagId',
+      options: tag ? tag.tags : [],
+      optionLabel: 'label',
+      disabled: false,
+      handleCreateItem: handleCreateLabel,
+      hasCreateOption: true,
+      multiple: false,
+      textFieldProps: {
+        variant: 'outlined',
+        label: t('Label'),
+      },
     },
     {
       component: Checkbox,
@@ -158,11 +198,19 @@ export const Flow = () => {
 
     const payloadWithRoleIds = getAddOrRemoveRoleIds(roles, payload);
 
-    // return modified payload
-    return {
+    let updatedPayload = {
       ...payloadWithRoleIds,
       keywords: formattedKeywords,
     };
+    if (payload.tagId?.id) {
+      updatedPayload = {
+        ...updatedPayload,
+        tag_id: payload.tagId.id,
+      };
+    }
+    delete updatedPayload.tagId;
+    // return modified payload
+    return updatedPayload;
   };
 
   // alter header & update/copy queries
