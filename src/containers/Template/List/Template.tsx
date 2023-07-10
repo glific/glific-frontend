@@ -198,11 +198,11 @@ export const Template = ({
     translations,
     status,
     reason,
-    bsp,
+    bspId,
   }: any) => {
     const columns: any = {
       id,
-      label: getLabel(label, bsp),
+      label: getLabel(label, bspId),
       body: getBody(body),
     };
     if (isHSM) {
