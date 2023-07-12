@@ -274,6 +274,13 @@ export const FlowList = () => {
     </FormControl>
   );
 
+  var filters = { isActive: filter };
+
+  filters = {
+    ...filters,
+    ...(selectedtag?.id && { tagIds: [parseInt(selectedtag?.id)] }),
+  };
+
   return (
     <List
       title={t('Flows')}
@@ -288,7 +295,7 @@ export const FlowList = () => {
       additionalAction={additionalAction}
       button={{ show: true, label: t('Create Flow'), symbol: '+' }}
       secondaryButton={importButton}
-      filters={{ isActive: filter }}
+      filters={filters}
       filterList={activeFilter}
       filtersTag={selectedtag && selectedtag.id}
       filterDropdowm={tagFilter}

@@ -220,7 +220,6 @@ export const List = ({
   filter = {
     ...filter,
     ...filters,
-    ...(filtersTag != null && filtersTag != '' && { tagIds: [parseInt(filtersTag)] }),
   };
 
   const filterPayload = useCallback(() => {

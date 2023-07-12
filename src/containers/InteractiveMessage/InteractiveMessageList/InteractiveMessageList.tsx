@@ -150,7 +150,7 @@ export const InteractiveMessageList = () => {
       additionalAction={additionalAction}
       collapseOpen={open}
       collapseRow={selectedId}
-      filtersTag={selectedtag && selectedtag.id}
+      filters={selectedtag && selectedtag.id && { tagIds: [parseInt(selectedtag.id)] }}
       filterDropdowm={tagFilter}
     />
   );
