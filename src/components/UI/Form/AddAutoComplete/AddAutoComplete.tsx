@@ -1,4 +1,3 @@
-import { DocumentNode } from 'graphql';
 import { useMutation } from '@apollo/client';
 import { AutoComplete, AutocompleteProps } from '../AutoComplete/AutoComplete';
 import { CREATE_LABEL } from 'graphql/mutations/Tags';
