@@ -220,7 +220,7 @@ export const List = ({
   filter = {
     ...filter,
     ...filters,
-    ...(filtersTag != null && filtersTag != '' && { tag_ids: parseInt(filtersTag) }),
+    ...(filtersTag != null && filtersTag != '' && { tagIds: [parseInt(filtersTag)] }),
   };
 
   const filterPayload = useCallback(() => {
@@ -237,7 +237,7 @@ export const List = ({
         orderWith: tableVals.sortCol,
       },
     };
-  }, [searchVal, tableVals, filters]);
+  }, [searchVal, tableVals, filters, filtersTag]);
 
   // Get the total number of items here
   const {

@@ -14,6 +14,9 @@ import { getInteractiveMessageBody } from 'common/utils';
 import { QUICK_REPLY } from 'common/constants';
 import { useNavigate } from 'react-router-dom';
 import styles from './InteractiveMessageList.module.css';
+import { useQuery } from '@apollo/client';
+import { GET_TAGS } from 'graphql/queries/Tags';
+import { DropDown } from 'components/UI/Dropdown/DropDown';
 
 const getLabel = (text: string) => (
   <p data-testid="label" className={styles.LabelText}>
@@ -68,6 +71,7 @@ export const InteractiveMessageList = () => {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState('');
+  const [selectedtag, setSelectedTag] = useState<any>(null);
   const navigate = useNavigate();
 
   const getColumns = ({ id, label, interactiveContent, type, language, translations }: any) => ({
@@ -121,6 +125,15 @@ export const InteractiveMessageList = () => {
     },
   ];
 
+  const { data: tag } = useQuery(GET_TAGS, {
+    variables: {},
+    fetchPolicy: 'network-only',
+  });
+
+  const tagFilter = (
+    <DropDown tag={tag} selectedtag={selectedtag} setSelectedTag={setSelectedTag} />
+  );
+
   return (
     <List
       title={t('Interactive msg')}
@@ -137,6 +150,8 @@ export const InteractiveMessageList = () => {
       additionalAction={additionalAction}
       collapseOpen={open}
       collapseRow={selectedId}
+      filtersTag={selectedtag && selectedtag.id}
+      filterDropdowm={tagFilter}
     />
   );
 };
