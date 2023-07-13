@@ -43,6 +43,18 @@ export const UPDATE_CONTACT = gql`
   }
 `;
 
+export const MOVE_CONTACTS = gql`
+  mutation MoveContacts($data: String!, $moveContactsId: ID, $type: ImportContactsTypeEnum) {
+    moveContacts(data: $data, id: $moveContactsId, type: $type) {
+      errors {
+        message
+        key
+      }
+      csvRows
+    }
+  }
+`;
+
 export const IMPORT_CONTACTS = gql`
   mutation ImportContacts(
     $data: String!
