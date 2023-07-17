@@ -236,7 +236,7 @@ export const List = ({
         orderWith: tableVals.sortCol,
       },
     };
-  }, [searchVal, tableVals, filters, filtersTag]);
+  }, [searchVal, tableVals, filters]);
 
   // Get the total number of items here
   const {

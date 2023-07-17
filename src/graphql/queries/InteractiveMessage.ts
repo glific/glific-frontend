@@ -37,6 +37,10 @@ export const GET_INTERACTIVE_MESSAGE = gql`
           id
           label
         }
+        tag {
+          id
+          label
+        }
       }
     }
   }

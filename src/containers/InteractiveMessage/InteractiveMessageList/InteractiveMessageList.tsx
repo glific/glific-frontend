@@ -16,7 +16,7 @@ import { useNavigate } from 'react-router-dom';
 import styles from './InteractiveMessageList.module.css';
 import { useQuery } from '@apollo/client';
 import { GET_TAGS } from 'graphql/queries/Tags';
-import { DropDown } from 'components/UI/Dropdown/DropDown';
+import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 
 const getLabel = (text: string) => (
   <p data-testid="label" className={styles.LabelText}>
@@ -130,8 +130,28 @@ export const InteractiveMessageList = () => {
     fetchPolicy: 'network-only',
   });
 
+  // OnChange handler for the dropdown
+  const handleDropdownChange = (event: any) => {
+    setSelectedTag(event.target.value);
+  };
+
   const tagFilter = (
-    <DropDown tag={tag} selectedtag={selectedtag} setSelectedTag={setSelectedTag} />
+    <AutoComplete
+      options={tag ? tag.tags : []}
+      optionLabel="label"
+      disabled={false}
+      hasCreateOption={false}
+      multiple={false}
+      onChange={(value: any) => {
+        setSelectedTag(value);
+      }}
+      form={{ setFieldValue: handleDropdownChange }}
+      field={{ value: selectedtag, onChange: handleDropdownChange }}
+      textFieldProps={{
+        variant: 'outlined',
+        label: t('Select Label'),
+      }}
+    />
   );
 
   return (
