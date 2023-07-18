@@ -413,5 +413,8 @@
   "Update ticket": "Update ticket",
   "Opened by": "Opened by",
   "Change assignee": "Change assignee",
-  "Select Tag": "Select Tag"
+  "Select Tag": "Select Tag",
+  "View profile": "View profile",
+  "Copy UUID": "Copy UUID",
+  "Org Id": "Org Id"
 }
