@@ -1,5 +1,5 @@
 import { MockedProvider } from '@apollo/client/testing';
-import { render } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import { AddAutoComplete } from './AddAutoComplete';
 import { CREATE_LABEL } from 'graphql/mutations/Tags';
 describe('<AddAutoComplete />', () => {
@@ -10,8 +10,12 @@ describe('<AddAutoComplete />', () => {
       },
       result: {
         data: {
-          addAutoComplete: {
-            id: 1,
+          createTag: {
+            tag: {
+              description: null,
+              id: '1',
+              label: 'Messages',
+            },
           },
         },
       },
@@ -36,11 +40,14 @@ describe('<AddAutoComplete />', () => {
   };
 
   it('renders <AddAutoComplete /> component', () => {
-    const wrapper = render(
+    const container = render(
       <MockedProvider mocks={mocks}>
         <AddAutoComplete {...defaultProps} />
       </MockedProvider>
     );
-    expect(wrapper).toBeTruthy();
+    waitFor(() => {
+      expect(container).toBeTruthy();
+      expect(container.getByText('Messages')).toBeInTheDocument();
+    });
   });
 });
