@@ -663,7 +663,7 @@ export const List = ({
       </div>
 
       <div className={styles.FilterFields}>
-        <div style={{ display: 'flex' }}>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
           {filterList}
           {filterDropdowm}
         </div>
