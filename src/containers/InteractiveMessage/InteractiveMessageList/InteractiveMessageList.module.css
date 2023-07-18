@@ -1,6 +1,11 @@
 .Shortcode {
   width: 180px;
 }
+.customAutocomplete {
+  height: 48px;
+  width: 200px;
+  border-radius: 1px;
+}
 
 .Label {
   width: 20%;

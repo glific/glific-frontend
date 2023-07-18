@@ -44,8 +44,10 @@ export interface AutocompleteProps {
   selectTextAsOption?: boolean;
   onInputChange?: any;
   valueElementName?: string;
+  placeholder?: string;
   hasCreateOption?: boolean;
   handleCreateItem?: any;
+  inputSxStyle?: any;
 }
 
 export const AutoComplete = ({
@@ -80,6 +82,8 @@ export const AutoComplete = ({
   valueElementName = 'id',
   hasCreateOption = false,
   handleCreateItem = () => {},
+  placeholder = '',
+  inputSxStyle = {},
 }: AutocompleteProps) => {
   const errorText = getIn(errors, field.name);
   const touchedVal = getIn(touched, field.name);
@@ -256,6 +260,8 @@ export const AutoComplete = ({
                 helperText={hasError ? errorText : ''}
                 {...textFieldProps}
                 data-testid="AutocompleteInput"
+                placeholder={placeholder}
+                sx={inputSxStyle}
               />
             );
           }}
