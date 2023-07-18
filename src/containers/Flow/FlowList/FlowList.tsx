@@ -182,10 +182,6 @@ export const FlowList = () => {
     columnStyles,
   };
 
-  if (importing) {
-    return <Loading message="Uploading" />;
-  }
-
   const filterList = [
     { label: 'Active', value: true },
     { label: 'Inactive', value: false },
@@ -282,6 +278,10 @@ export const FlowList = () => {
     ...filters,
     ...(selectedtag?.id && { tagIds: [parseInt(selectedtag?.id)] }),
   };
+
+  if (importing) {
+    return <Loading message="Uploading" />;
+  }
 
   return (
     <List
