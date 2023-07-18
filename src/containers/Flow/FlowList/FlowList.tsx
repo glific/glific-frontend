@@ -21,6 +21,7 @@ import { exportFlowMethod, organizationHasDynamicRole } from 'common/utils';
 import { setNotification } from 'common/notification';
 import styles from './FlowList.module.css';
 import { GET_TAGS } from 'graphql/queries/Tags';
+import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 
 const getName = (text: string, keywordsList: any, roles: any) => {
   const keywords = keywordsList.map((keyword: any) => keyword);
@@ -206,6 +207,30 @@ export const FlowList = () => {
     },
   };
 
+  const inputSxStyle = {
+    '& .MuiOutlinedInput-root': {
+      height: '100%',
+      paddingBottom: 0,
+      paddingTop: 0,
+    },
+    '& fieldset': {
+      borderRadius: '12px',
+      border: 'none',
+    },
+    height: '100%',
+    borderRadius: '10px !important',
+    borderColor: '#93a29b',
+    borderWidth: '2px',
+    borderStyle: 'solid',
+    padding: 0,
+    marginLeft: '8px',
+  };
+
+  // OnChange handler for the dropdown
+  const handleDropdownChange = (event: any) => {
+    setSelectedTag(event.target.value);
+  };
+
   const activeFilter = (
     <FormControl sx={{ width: 150 }}>
       <Select
@@ -230,48 +255,26 @@ export const FlowList = () => {
   );
 
   const tagFilter = (
-    <FormControl sx={{ marginLeft: 2 }}>
-      <Select
-        labelId="tag-dropdown-for-filter"
-        displayEmpty
-        value={selectedtag}
-        onChange={(event) => {
-          setSelectedTag({ id: event.target.value.id, label: event.target.value.label });
-        }}
-        MenuProps={MenuProps}
-        className={styles.SearchBar}
-        sx={{ '& > fieldset': { border: 'none' } }}
-        endAdornment={
-          selectedtag !== null && (
-            <IconButton
-              sx={{ visibility: 'visible', height: 8, width: 8, marginRight: 1 }}
-              onClick={() => setSelectedTag(null)}
-            >
-              <ClearIcon />
-            </IconButton>
-          )
-        }
-        renderValue={(selected) => {
-          if (selected === null) {
-            return (
-              <MenuItem disabled value="">
-                Select Label
-              </MenuItem>
-            );
-          }
-
-          return selected.label;
-        }}
-        inputProps={selectedtag === null ? {} : { IconComponent: () => null }}
-      >
-        {tag &&
-          tag.tags.map((data: any) => (
-            <MenuItem key={data.id} value={data}>
-              {data.label}
-            </MenuItem>
-          ))}
-      </Select>
-    </FormControl>
+    <AutoComplete
+      classes={{
+        root: styles.customAutocomplete,
+      }}
+      inputSxStyle={inputSxStyle}
+      placeholder="Select Label"
+      options={tag ? tag.tags : []}
+      optionLabel="label"
+      disabled={false}
+      hasCreateOption={false}
+      multiple={false}
+      onChange={(value: any) => {
+        setSelectedTag(value);
+      }}
+      form={{ setFieldValue: handleDropdownChange }}
+      field={{
+        value: selectedtag,
+        onChange: handleDropdownChange,
+      }}
+    />
   );
 
   var filters = { isActive: filter };

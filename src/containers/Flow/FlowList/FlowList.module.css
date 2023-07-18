@@ -7,6 +7,12 @@
   height: 48px;
 }
 
+.customAutocomplete {
+  height: 48px;
+  width: 200px;
+  border-radius: 1px;
+}
+
 .Shortcode {
   width: 180px;
 }
