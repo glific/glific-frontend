@@ -475,22 +475,6 @@ export const InteractiveMessage = () => {
       },
       helperText: t('Only alphanumeric characters and spaces are allowed'),
     },
-    {
-      component: AddAutoComplete,
-      name: 'tagId',
-      options: tag ? tag.tags : [],
-      optionLabel: 'label',
-      disabled: false,
-      hasCreateOption: true,
-      multiple: false,
-      onChange: (value: any) => {
-        setTagId(value);
-      },
-      textFieldProps: {
-        variant: 'outlined',
-        label: t('Label'),
-      },
-    },
     // checkbox is not needed in media types
     {
       skip: type && type.label,
@@ -550,6 +534,22 @@ export const InteractiveMessage = () => {
         handleAddInteractiveTemplate(false, value, stateToRestore);
       },
       onGlobalButtonInputChange: (value: string) => setGlobalButton(value),
+    },
+    {
+      component: AddAutoComplete,
+      name: 'tagId',
+      options: tag ? tag.tags : [],
+      optionLabel: 'label',
+      disabled: false,
+      hasCreateOption: true,
+      multiple: false,
+      onChange: (value: any) => {
+        setTagId(value);
+      },
+      textFieldProps: {
+        variant: 'outlined',
+        label: t('Label'),
+      },
     },
   ];
 
