@@ -47,7 +47,7 @@ export interface AutocompleteProps {
   placeholder?: string;
   hasCreateOption?: boolean;
   handleCreateItem?: any;
-  inputSxStyle?: any;
+  isFilterType?: boolean;
 }
 
 export const AutoComplete = ({
@@ -83,7 +83,7 @@ export const AutoComplete = ({
   hasCreateOption = false,
   handleCreateItem = () => {},
   placeholder = '',
-  inputSxStyle = {},
+  isFilterType = false,
 }: AutocompleteProps) => {
   const errorText = getIn(errors, field.name);
   const touchedVal = getIn(touched, field.name);
@@ -261,7 +261,28 @@ export const AutoComplete = ({
                 {...textFieldProps}
                 data-testid="AutocompleteInput"
                 placeholder={placeholder}
-                sx={inputSxStyle}
+                sx={
+                  isFilterType
+                    ? {
+                        '& .MuiOutlinedInput-root': {
+                          height: '100%',
+                          paddingBottom: 0,
+                          paddingTop: 0,
+                        },
+                        '& fieldset': {
+                          borderRadius: '12px',
+                          border: 'none',
+                        },
+                        height: '100%',
+                        borderRadius: '10px !important',
+                        borderColor: '#93a29b',
+                        borderWidth: '2px',
+                        borderStyle: 'solid',
+                        padding: 0,
+                        marginLeft: '8px',
+                      }
+                    : {}
+                }
               />
             );
           }}

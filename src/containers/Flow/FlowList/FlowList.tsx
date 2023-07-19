@@ -202,25 +202,6 @@ export const FlowList = () => {
     },
   };
 
-  const inputSxStyle = {
-    '& .MuiOutlinedInput-root': {
-      height: '100%',
-      paddingBottom: 0,
-      paddingTop: 0,
-    },
-    '& fieldset': {
-      borderRadius: '12px',
-      border: 'none',
-    },
-    height: '100%',
-    borderRadius: '10px !important',
-    borderColor: '#93a29b',
-    borderWidth: '2px',
-    borderStyle: 'solid',
-    padding: 0,
-    marginLeft: '8px',
-  };
-
   // OnChange handler for the dropdown
   const handleDropdownChange = (event: any) => {
     setSelectedTag(event.target.value);
@@ -254,8 +235,8 @@ export const FlowList = () => {
       classes={{
         root: styles.customAutocomplete,
       }}
-      inputSxStyle={inputSxStyle}
-      placeholder="Select Label"
+      isFilterType={true}
+      placeholder="Select label"
       options={tag ? tag.tags : []}
       optionLabel="label"
       disabled={false}
