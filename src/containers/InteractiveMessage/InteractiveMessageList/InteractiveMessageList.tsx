@@ -137,10 +137,7 @@ export const InteractiveMessageList = () => {
 
   const tagFilter = (
     <AutoComplete
-      classes={{
-        root: styles.customAutocomplete,
-      }}
-      isFilterType={true}
+      isFilterType
       placeholder="Select label"
       options={tag ? tag.tags : []}
       optionLabel="label"

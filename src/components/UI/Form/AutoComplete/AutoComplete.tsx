@@ -93,6 +93,25 @@ export const AutoComplete = ({
   const [optionValue, setOptionValue] = useState([]);
   const [open, setOpen] = useState(false);
 
+  const inputSxStyle = {
+    '& .MuiOutlinedInput-root': {
+      height: '100%',
+      paddingBottom: 0,
+      paddingTop: 0,
+    },
+    '& fieldset': {
+      borderRadius: '12px',
+      border: 'none',
+    },
+    height: '100%',
+    borderRadius: '10px !important',
+    borderColor: '#93a29b',
+    borderWidth: '2px',
+    borderStyle: 'solid',
+    padding: 0,
+    marginLeft: '8px',
+  };
+
   useEffect(() => {
     if (options.length > 0) {
       setOptionValue(options);
@@ -177,6 +196,7 @@ export const AutoComplete = ({
         {questionText ? <div className={styles.QuestionText}>{questionText}</div> : null}
         <Autocomplete
           classes={classes}
+          sx={isFilterType ? { height: '48px' } : {}}
           multiple={multiple}
           data-testid="autocomplete-element"
           options={hasCreateOption ? [...optionValue, createOption] : optionValue}
@@ -261,28 +281,7 @@ export const AutoComplete = ({
                 {...textFieldProps}
                 data-testid="AutocompleteInput"
                 placeholder={placeholder}
-                sx={
-                  isFilterType
-                    ? {
-                        '& .MuiOutlinedInput-root': {
-                          height: '100%',
-                          paddingBottom: 0,
-                          paddingTop: 0,
-                        },
-                        '& fieldset': {
-                          borderRadius: '12px',
-                          border: 'none',
-                        },
-                        height: '100%',
-                        borderRadius: '10px !important',
-                        borderColor: '#93a29b',
-                        borderWidth: '2px',
-                        borderStyle: 'solid',
-                        padding: 0,
-                        marginLeft: '8px',
-                      }
-                    : {}
-                }
+                sx={isFilterType ? inputSxStyle : {}}
               />
             );
           }}
