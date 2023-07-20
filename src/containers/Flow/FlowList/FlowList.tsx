@@ -7,8 +7,7 @@ import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { ReactComponent as FlowIcon } from 'assets/images/icons/Flow/Dark.svg';
 import { ReactComponent as DuplicateIcon } from 'assets/images/icons/Flow/Duplicate.svg';
 import { ReactComponent as ExportIcon } from 'assets/images/icons/Flow/Export.svg';
-import { FormControl, MenuItem, Select, IconButton } from '@mui/material';
-import ClearIcon from '@mui/icons-material/Clear';
+import { FormControl, MenuItem, Select } from '@mui/material';
 import { ReactComponent as ConfigureIcon } from 'assets/images/icons/Configure/UnselectedDark.svg';
 import { ReactComponent as PinIcon } from 'assets/images/icons/Pin/Active.svg';
 import { FILTER_FLOW, GET_FLOW_COUNT, EXPORT_FLOW, RELEASE_FLOW } from 'graphql/queries/Flow';
@@ -21,6 +20,7 @@ import { exportFlowMethod, organizationHasDynamicRole } from 'common/utils';
 import { setNotification } from 'common/notification';
 import styles from './FlowList.module.css';
 import { GET_TAGS } from 'graphql/queries/Tags';
+import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 
 const getName = (text: string, keywordsList: any, roles: any) => {
   const keywords = keywordsList.map((keyword: any) => keyword);
@@ -182,10 +182,6 @@ export const FlowList = () => {
     columnStyles,
   };
 
-  if (importing) {
-    return <Loading message="Uploading" />;
-  }
-
   const filterList = [
     { label: 'Active', value: true },
     { label: 'Inactive', value: false },
@@ -204,6 +200,11 @@ export const FlowList = () => {
         width: 250,
       },
     },
+  };
+
+  // OnChange handler for the dropdown
+  const handleDropdownChange = (event: any) => {
+    setSelectedTag(event.target.value);
   };
 
   const activeFilter = (
@@ -230,49 +231,35 @@ export const FlowList = () => {
   );
 
   const tagFilter = (
-    <FormControl sx={{ marginLeft: 2 }}>
-      <Select
-        labelId="tag-dropdown-for-filter"
-        displayEmpty
-        value={selectedtag}
-        onChange={(event) => {
-          setSelectedTag({ id: event.target.value.id, label: event.target.value.label });
-        }}
-        MenuProps={MenuProps}
-        className={styles.SearchBar}
-        sx={{ '& > fieldset': { border: 'none' } }}
-        endAdornment={
-          selectedtag !== null && (
-            <IconButton
-              sx={{ visibility: 'visible', height: 8, width: 8, marginRight: 1 }}
-              onClick={() => setSelectedTag(null)}
-            >
-              <ClearIcon />
-            </IconButton>
-          )
-        }
-        renderValue={(selected) => {
-          if (selected === null) {
-            return (
-              <MenuItem disabled value="">
-                Select Label
-              </MenuItem>
-            );
-          }
-
-          return selected.label;
-        }}
-        inputProps={selectedtag === null ? {} : { IconComponent: () => null }}
-      >
-        {tag &&
-          tag.tags.map((data: any) => (
-            <MenuItem key={data.id} value={data}>
-              {data.label}
-            </MenuItem>
-          ))}
-      </Select>
-    </FormControl>
+    <AutoComplete
+      isFilterType
+      placeholder="Select label"
+      options={tag ? tag.tags : []}
+      optionLabel="label"
+      disabled={false}
+      hasCreateOption={false}
+      multiple={false}
+      onChange={(value: any) => {
+        setSelectedTag(value);
+      }}
+      form={{ setFieldValue: handleDropdownChange }}
+      field={{
+        value: selectedtag,
+        onChange: handleDropdownChange,
+      }}
+    />
   );
+
+  var filters = { isActive: filter };
+
+  filters = {
+    ...filters,
+    ...(selectedtag?.id && { tagIds: [parseInt(selectedtag?.id)] }),
+  };
+
+  if (importing) {
+    return <Loading message="Uploading" />;
+  }
 
   return (
     <List
@@ -288,7 +275,7 @@ export const FlowList = () => {
       additionalAction={additionalAction}
       button={{ show: true, label: t('Create Flow'), symbol: '+' }}
       secondaryButton={importButton}
-      filters={{ isActive: filter }}
+      filters={filters}
       filterList={activeFilter}
       filtersTag={selectedtag && selectedtag.id}
       filterDropdowm={tagFilter}

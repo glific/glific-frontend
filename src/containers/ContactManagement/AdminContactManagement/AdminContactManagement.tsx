@@ -7,10 +7,11 @@ import { ReactComponent as FileIcon } from 'assets/images/icons/Document/Light.s
 import { ReactComponent as CrossIcon } from 'assets/images/icons/Cross.svg';
 import { useTranslation } from 'react-i18next';
 import { useMutation } from '@apollo/client';
-import { IMPORT_CONTACTS } from 'graphql/mutations/Contact';
+import { MOVE_CONTACTS } from 'graphql/mutations/Contact';
 import { setNotification } from 'common/notification';
 import { listIcon } from '../SuperAdminContactManagement/SuperAdminContactManagement';
 import styles from './AdminContactManagement.module.css';
+import { exportCsvFile } from 'common/utils';
 
 export const AdminContactManagement = () => {
   const [fileName, setFileName] = useState<string>('');
@@ -19,11 +20,12 @@ export const AdminContactManagement = () => {
   const [uploadingContacts, setUploadingContacts] = useState(false);
   const { t } = useTranslation();
 
-  const [importContacts] = useMutation(IMPORT_CONTACTS, {
+  const [moveContacts] = useMutation(MOVE_CONTACTS, {
     onCompleted: (data: any) => {
       if (data.errors) {
         setErrors(data.errors);
       } else {
+        exportCsvFile(data.moveContacts.csvRows, 'results');
         setUploadingContacts(false);
         setNotification(t('Contacts have been updated'));
       }
@@ -122,7 +124,7 @@ export const AdminContactManagement = () => {
           loading={uploadingContacts}
           onClick={() => {
             setUploadingContacts(true);
-            importContacts({
+            moveContacts({
               variables: {
                 type: 'DATA',
                 data: csvContent,

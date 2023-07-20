@@ -43,8 +43,11 @@ export const OrganizationList = ({
   const columnNames = [
     { name: 'name', label: t('Name') },
     { name: 'status', label: t('Status') },
+    { name: 'id', label: t('Org Id') },
     { label: t('Actions') },
   ];
+
+  const getOrgId = (id: string) => <p className={styles.OrgIdContainer}>{id}</p>;
 
   const getName = (label: string, insertedAt: any) => (
     <div className={styles.LabelContainer}>
@@ -86,11 +89,12 @@ export const OrganizationList = ({
     return <Dropdown options={options} placeholder="" field={statusField} />;
   };
 
-  const columnStyles: any = [styles.Label, styles.Status, styles.Actions];
+  const columnStyles: any = [styles.Label, styles.Status, styles.OrgId, styles.Actions];
 
   const getColumns = ({ id, name, insertedAt, status }: any) => ({
     name: getName(name, insertedAt),
     isApproves: getStatus(id, status),
+    orgId: getOrgId(id),
   });
 
   const columnAttributes = {

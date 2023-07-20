@@ -29,6 +29,11 @@
   line-height: 1.25;
 }
 
+.OrgIdContainer {
+  font-size: 16px;
+  color: #073f24;
+}
+
 .LabelContainer {
   height: fit-content;
   align-items: baseline;
@@ -38,6 +43,10 @@
 .Status {
   display: flex;
   align-content: center;
+  width: 40%;
+}
+
+.OrgId {
   width: 20%;
 }
 
@@ -52,7 +61,7 @@
   height: 42px;
 }
 
-/* 
+/*
  Organization specific css
   DialogSubText -> Sub-text style for delete modal
   DialogSubInput -> Input confirmation styles
