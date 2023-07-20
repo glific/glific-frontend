@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Checkbox, FormControlLabel } from '@mui/material';
 
 import { List } from 'containers/List/List';
-import { useMutation } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { WhatsAppToJsx } from 'common/RichEditor';
 import { DATE_TIME_FORMAT, GUPSHUP_ENTERPRISE_SHORTCODE } from 'common/constants';
 import {
@@ -29,6 +29,8 @@ import { setNotification } from 'common/notification';
 import { BULK_APPLY_SAMPLE_LINK } from 'config';
 import styles from './Template.module.css';
 import { CopyAllOutlined } from '@mui/icons-material';
+import { GET_TAGS } from 'graphql/queries/Tags';
+import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 
 const getLabel = (label: string) => <div className={styles.LabelText}>{label}</div>;
 
@@ -84,6 +86,11 @@ export const Template = ({
   const [importing, setImporting] = useState(false);
 
   const [filters, setFilters] = useState<any>({ ...statusFilter, APPROVED: true });
+
+  const { data: tag } = useQuery(GET_TAGS, {
+    variables: {},
+    fetchPolicy: 'network-only',
+  });
 
   const [importTemplatesMutation] = useMutation(IMPORT_TEMPLATES, {
     onCompleted: (data: any) => {
@@ -343,6 +350,37 @@ export const Template = ({
     );
     button.show = false;
   }
+  const [selectedTag, setSelectedTag] = useState<any>(null);
+
+  // OnChange handler for the dropdown
+  const handleDropdownChange = (event: any) => {
+    setSelectedTag(event.target.value);
+  };
+
+  const tagFilter = (
+    <AutoComplete
+      isFilterType
+      placeholder="Select label"
+      options={tag ? tag.tags : []}
+      optionLabel="label"
+      disabled={false}
+      hasCreateOption={false}
+      multiple={false}
+      onChange={(value: any) => {
+        setSelectedTag(value);
+      }}
+      form={{ setFieldValue: handleDropdownChange }}
+      field={{
+        value: selectedTag,
+        onChange: handleDropdownChange,
+      }}
+    />
+  );
+
+  appliedFilters = {
+    ...appliedFilters,
+    ...(selectedTag?.id && { tagIds: [parseInt(selectedTag?.id)] }),
+  };
 
   return (
     <List
@@ -362,6 +400,7 @@ export const Template = ({
       filterList={isHSM && filterTemplateStatus}
       collapseOpen={open}
       collapseRow={Id}
+      filterDropdowm={tagFilter}
     />
   );
 };

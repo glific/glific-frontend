@@ -12,6 +12,8 @@ import { EmojiInput } from 'components/UI/Form/EmojiInput/EmojiInput';
 import { Simulator } from 'components/simulator/Simulator';
 import Template from '../Template';
 import styles from './HSM.module.css';
+import { GET_TAGS } from 'graphql/queries/Tags';
+import { AddAutoComplete } from 'components/UI/Form/AddAutoComplete/AddAutoComplete';
 
 const defaultAttribute = {
   isHsm: true,
@@ -26,6 +28,7 @@ export const HSM = () => {
     media: {},
     body: '',
   });
+  const [tagId, setTagId] = useState<any>(null);
   const [shortcode, setShortcode] = useState('');
   const [example, setExample] = useState(EditorState.createEmpty());
   const [category, setCategory] = useState<any>({ label: '', id: '' });
@@ -33,6 +36,10 @@ export const HSM = () => {
   const params = useParams();
 
   const { data: categoryList, loading } = useQuery(GET_HSM_CATEGORIES);
+  const { data: tag } = useQuery(GET_TAGS, {
+    variables: {},
+    fetchPolicy: 'network-only',
+  });
 
   if (loading) {
     return <Loading />;
@@ -155,6 +162,22 @@ export const HSM = () => {
         onBlur: (event: any) => setShortcode(event.target.value),
       },
     },
+    {
+      component: AddAutoComplete,
+      name: 'tagId',
+      options: tag ? tag.tags : [],
+      optionLabel: 'label',
+      disabled: false,
+      hasCreateOption: true,
+      multiple: false,
+      onChange: (value: any) => {
+        setTagId(value);
+      },
+      textFieldProps: {
+        variant: 'outlined',
+        label: t('Label'),
+      },
+    },
   ];
 
   return (
@@ -171,6 +194,8 @@ export const HSM = () => {
         getExample={example}
         setCategory={setCategory}
         category={category}
+        setTagId={setTagId}
+        tagId={tagId}
         onExampleChange={addButtonsToSampleMessage}
       />
       <Simulator

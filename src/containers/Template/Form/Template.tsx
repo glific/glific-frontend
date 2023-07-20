@@ -135,6 +135,8 @@ export interface TemplateProps {
   getExample?: any;
   setCategory?: any;
   category?: any;
+  setTagId?: any;
+  tagId?: any;
   onExampleChange?: any;
   languageStyle?: string;
 }
@@ -164,6 +166,8 @@ const Template = ({
   category,
   onExampleChange = () => {},
   languageStyle = 'dropdown',
+  setTagId,
+  tagId,
 }: TemplateProps) => {
   // "Audio" option is removed in case of HSM Template
   const mediaTypes =
@@ -205,6 +209,7 @@ const Template = ({
     shortcode,
     example,
     category,
+    tagId,
     isActive,
     templateButtons,
     isAddButtonChecked,
@@ -221,6 +226,7 @@ const Template = ({
     MessageMedia: MessageMediaValue,
     shortcode: shortcodeValue,
     category: categoryValue,
+    tag: tagIdValue,
     buttonType: templateButtonType,
     buttons,
     hasButtons,
@@ -301,6 +307,9 @@ const Template = ({
     }
     if (categoryValue) {
       setCategory({ label: categoryValue, id: categoryValue });
+    }
+    if (tagIdValue) {
+      setTagId(tagIdValue);
     }
   };
 
@@ -776,6 +785,7 @@ const Template = ({
 
   const setPayload = (payload: any) => {
     let payloadCopy = payload;
+    payloadCopy.tagId = payload.tagId.id;
     let translationsCopy: any = {};
 
     if (template) {
