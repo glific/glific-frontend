@@ -14,6 +14,9 @@ import { getInteractiveMessageBody } from 'common/utils';
 import { QUICK_REPLY } from 'common/constants';
 import { useNavigate } from 'react-router-dom';
 import styles from './InteractiveMessageList.module.css';
+import { useQuery } from '@apollo/client';
+import { GET_TAGS } from 'graphql/queries/Tags';
+import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 
 const getLabel = (text: string) => (
   <p data-testid="label" className={styles.LabelText}>
@@ -68,6 +71,7 @@ export const InteractiveMessageList = () => {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState('');
+  const [selectedtag, setSelectedTag] = useState<any>(null);
   const navigate = useNavigate();
 
   const getColumns = ({ id, label, interactiveContent, type, language, translations }: any) => ({
@@ -121,6 +125,36 @@ export const InteractiveMessageList = () => {
     },
   ];
 
+  const { data: tag } = useQuery(GET_TAGS, {
+    variables: {},
+    fetchPolicy: 'network-only',
+  });
+
+  // OnChange handler for the dropdown
+  const handleDropdownChange = (event: any) => {
+    setSelectedTag(event.target.value);
+  };
+
+  const tagFilter = (
+    <AutoComplete
+      isFilterType
+      placeholder="Select label"
+      options={tag ? tag.tags : []}
+      optionLabel="label"
+      disabled={false}
+      hasCreateOption={false}
+      multiple={false}
+      onChange={(value: any) => {
+        setSelectedTag(value);
+      }}
+      form={{ setFieldValue: handleDropdownChange }}
+      field={{
+        value: selectedtag,
+        onChange: handleDropdownChange,
+      }}
+    />
+  );
+
   return (
     <List
       title={t('Interactive msg')}
@@ -137,6 +171,8 @@ export const InteractiveMessageList = () => {
       additionalAction={additionalAction}
       collapseOpen={open}
       collapseRow={selectedId}
+      filters={selectedtag && selectedtag.id && { tagIds: [parseInt(selectedtag.id)] }}
+      filterDropdowm={tagFilter}
     />
   );
 };
