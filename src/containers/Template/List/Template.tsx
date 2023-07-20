@@ -30,21 +30,7 @@ import { BULK_APPLY_SAMPLE_LINK } from 'config';
 import styles from './Template.module.css';
 import { CopyAllOutlined } from '@mui/icons-material';
 
-const getLabel = (label: string, uuid: string) => (
-  <div>
-    <div className={styles.LabelText}>{label}</div>
-    {uuid && (
-      <div
-        className={styles.Uuid}
-        onClick={() => {
-          copyToClipboardMethod(uuid);
-        }}
-      >
-        {uuid} <CopyAllOutlined className={styles.Copy} />
-      </div>
-    )}
-  </div>
-);
+const getLabel = (label: string) => <div className={styles.LabelText}>{label}</div>;
 
 const getBody = (text: string) => <p className={styles.TableText}>{WhatsAppToJsx(text)}</p>;
 
@@ -198,11 +184,10 @@ export const Template = ({
     translations,
     status,
     reason,
-    bsp,
   }: any) => {
     const columns: any = {
       id,
-      label: getLabel(label, bsp),
+      label: getLabel(label),
       body: getBody(body),
     };
     if (isHSM) {
@@ -223,6 +208,14 @@ export const Template = ({
     columnStyles,
   };
 
+  const copyUuid = (_id: string, item: any) => {
+    if (item.bspId) {
+      copyToClipboardMethod(item.bspId);
+    } else {
+      setNotification('Sorry! UUID not found', 'warning');
+    }
+  };
+
   const setDialog = (id: string) => {
     if (Id !== id) {
       setId(id);
@@ -232,7 +225,7 @@ export const Template = ({
     }
   };
 
-  let additionalAction = () => [
+  let additionalAction: any = () => [
     {
       label: t('Show all languages'),
       icon: <DownArrow data-testid="down-arrow" />,
@@ -285,7 +278,14 @@ export const Template = ({
   let appliedFilters = templateFilters;
 
   if (isHSM) {
-    additionalAction = () => [];
+    additionalAction = () => [
+      {
+        label: t('Copy UUID'),
+        icon: <CopyAllOutlined sx={{ mt: 1, color: '#073F24' }} data-testid="copy-button" />,
+        parameter: 'id',
+        dialog: copyUuid,
+      },
+    ];
     defaultSortBy = 'STATUS';
     appliedFilters = { ...templateFilters, status: filterValue };
   }

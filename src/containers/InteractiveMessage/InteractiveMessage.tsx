@@ -35,6 +35,8 @@ import {
   getVariableOptions,
   validator,
 } from './InteractiveMessage.helper';
+import { GET_TAGS } from 'graphql/queries/Tags';
+import { AddAutoComplete } from 'components/UI/Form/AddAutoComplete/AddAutoComplete';
 
 const interactiveMessageIcon = (
   <InteractiveMessageIcon className={styles.Icon} data-testid="interactive-icon" />
@@ -63,7 +65,7 @@ export const InteractiveMessage = () => {
   const [defaultLanguage, setDefaultLanguage] = useState<any>({});
   const [sendWithTitle, setSendWithTitle] = useState<boolean>(true);
   const [validatingURL, setValidatingURL] = useState<boolean>(false);
-
+  const [tagId, setTagId] = useState<any>(null);
   const [language, setLanguage] = useState<any>({});
   const [languageOptions, setLanguageOptions] = useState<any>([]);
 
@@ -73,6 +75,11 @@ export const InteractiveMessage = () => {
   const [nextLanguage, setNextLanguage] = useState<any>('');
   const { t } = useTranslation();
   const params = useParams();
+
+  const { data: tag } = useQuery(GET_TAGS, {
+    variables: {},
+    fetchPolicy: 'network-only',
+  });
 
   // alter header & update/copy queries
   let header;
@@ -117,6 +124,7 @@ export const InteractiveMessage = () => {
   const states = {
     language,
     title,
+    tagId,
     footer,
     body,
     globalButton,
@@ -160,6 +168,7 @@ export const InteractiveMessage = () => {
   const setStates = ({
     label: labelValue,
     language: languageVal,
+    tag: tagValue,
     type: typeValue,
     interactiveContent: interactiveContentValue,
     translations: translationsVal,
@@ -227,6 +236,11 @@ export const InteractiveMessage = () => {
       setTranslations(translationsVal);
     }
     setSendWithTitle(sendInteractiveTitleValue);
+
+    const getTagId = tag.tags.filter((tags: any) => tags.id === tagValue.id);
+    if (getTagId.length > 0) {
+      setTagId(getTagId[0]);
+    }
   };
 
   const validateURL = (value: string) => {
@@ -521,6 +535,22 @@ export const InteractiveMessage = () => {
       },
       onGlobalButtonInputChange: (value: string) => setGlobalButton(value),
     },
+    {
+      component: AddAutoComplete,
+      name: 'tagId',
+      options: tag ? tag.tags : [],
+      optionLabel: 'label',
+      disabled: false,
+      hasCreateOption: true,
+      multiple: false,
+      onChange: (value: any) => {
+        setTagId(value);
+      },
+      textFieldProps: {
+        variant: 'outlined',
+        label: t('Label'),
+      },
+    },
   ];
 
   const getTemplateButtonPayload = (typeVal: string, buttons: Array<any>) => {
@@ -551,10 +581,16 @@ export const InteractiveMessage = () => {
     globalButtonVal: any
   ) => {
     const updatedPayload: any = { type: null, interactiveContent: null };
-
     const { language: selectedLanguage } = payload;
+    const { tagId } = payload;
     Object.assign(updatedPayload);
 
+    if (tagId) {
+      Object.assign(updatedPayload, { tag_id: tagId.id });
+    }
+    if (selectedLanguage) {
+      Object.assign(updatedPayload, { languageId: selectedLanguage.id });
+    }
     if (selectedLanguage) {
       Object.assign(updatedPayload, { languageId: selectedLanguage.id });
     }
@@ -694,6 +730,7 @@ export const InteractiveMessage = () => {
     const payload = {
       title,
       body,
+      tagId,
       footer,
       attachmentURL,
       language,
