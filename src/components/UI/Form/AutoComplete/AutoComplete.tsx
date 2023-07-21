@@ -100,16 +100,24 @@ export const AutoComplete = ({
       paddingTop: 0,
     },
     '& fieldset': {
-      borderRadius: '12px',
       border: 'none',
     },
+    '&  .css-hmtdmj-MuiAutocomplete-root': {
+      padding: '0 !important',
+    },
+    '&  .MuiOutlinedInput-root': {
+      padding: '0 !important',
+    },
+    '& .MuiAutocomplete-input': {
+      padding: '0 !important',
+    },
     height: '100%',
-    borderRadius: '10px !important',
-    borderColor: '#93a29b',
-    borderWidth: '2px',
+    borderRadius: '24px !important',
+    borderColor: '#cccccc',
+    borderWidth: '1px',
     borderStyle: 'solid',
-    padding: 0,
-    marginLeft: '8px',
+    background: '#ffffff',
+    paddingLeft: '18px',
   };
 
   useEffect(() => {
@@ -196,7 +204,7 @@ export const AutoComplete = ({
         {questionText ? <div className={styles.QuestionText}>{questionText}</div> : null}
         <Autocomplete
           classes={classes}
-          sx={isFilterType ? { height: '48px' } : {}}
+          sx={isFilterType ? { height: '36px' } : {}}
           multiple={multiple}
           data-testid="autocomplete-element"
           options={hasCreateOption ? [...optionValue, createOption] : optionValue}

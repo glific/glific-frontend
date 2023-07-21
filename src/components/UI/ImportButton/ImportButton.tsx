@@ -33,11 +33,14 @@ export const ImportButton = ({ title, onImport, afterImport }: ImportButtonProps
         onClick={() => {
           inputRef.current?.click();
         }}
-        variant="contained"
+        variant="outlined"
         color="primary"
       >
+        <ImportIcon
+          data-testid="import-icon"
+          style={{ height: '24px', width: '24px', marginRight: '10px' }}
+        />
         {title}
-        <ImportIcon data-testid="import-icon" />
       </Button>
     </span>
   );

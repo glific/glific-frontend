@@ -4,6 +4,7 @@ import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 
+import { ReactComponent as AddIcon } from 'assets/images/add.svg';
 import { ReactComponent as FlowIcon } from 'assets/images/icons/Flow/Dark.svg';
 import { ReactComponent as DuplicateIcon } from 'assets/images/icons/Flow/Duplicate.svg';
 import { ReactComponent as ExportIcon } from 'assets/images/icons/Flow/Export.svg';
@@ -260,7 +261,7 @@ export const FlowList = () => {
   if (importing) {
     return <Loading message="Uploading" />;
   }
-
+  const addIcon = <AddIcon style={{ marginRight: '10px', height: '12px', width: '12px' }} />;
   return (
     <List
       title={t('Flows')}
@@ -273,7 +274,7 @@ export const FlowList = () => {
       {...columnAttributes}
       searchParameter={['name_or_keyword_or_tags']}
       additionalAction={additionalAction}
-      button={{ show: true, label: t('Create Flow'), symbol: '+' }}
+      button={{ show: true, label: t('Create Flow'), symbol: addIcon }}
       secondaryButton={importButton}
       filters={filters}
       filterList={activeFilter}

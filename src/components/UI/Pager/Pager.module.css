@@ -1,10 +1,15 @@
+.Table {
+  background-color: #ffffff;
+}
 .TableRow {
   position: relative;
   display: flex !important;
   background-color: white;
-  border-radius: 12px !important;
-  margin-bottom: 12px !important;
-  border: 1px solid #eaedec !important;
+  /* border-radius: 12px !important; */
+  /* margin-bottom: 12px !important; */
+  /* border-bottom: 1px solid #eaedec !important; */
+  box-shadow: 0px 4px 4px 0px #0000000a;
+  border-bottom: 1px solid #efefef;
   padding: 4px 13px;
   padding-right: 5px;
 }
@@ -17,18 +22,21 @@
 
 .TableHeadRow {
   display: flex !important;
-  margin-bottom: 4px !important;
   padding: 0px 16px;
   padding-right: 5px;
   line-height: 1 !important;
-  text-transform: uppercase;
+  background: #dfece2 !important;
+  height: 50px !important;
+  align-items: center;
 }
 
 .TableCell {
   font-size: 14px !important;
   display: flex !important;
   padding: 0px 10px !important;
+  margin: 0;
   border: unset !important;
+  color: #0c1f14 !important;
 }
 
 .TableContainer {
@@ -42,7 +50,7 @@
   display: flex !important;
   justify-content: flex-end !important;
   width: 100%;
-  background: #f9f7f3;
+  background: #fff;
   bottom: 0px;
   right: 4px;
 }

@@ -15,6 +15,7 @@ import { ReactComponent as DeleteIcon } from 'assets/images/icons/Delete/Red.svg
 import { ReactComponent as EditIcon } from 'assets/images/icons/Edit.svg';
 import { ReactComponent as CrossIcon } from 'assets/images/icons/Cross.svg';
 import { ReactComponent as BackIcon } from 'assets/images/icons/Back.svg';
+import { ReactComponent as InfoIcon } from 'assets/images/info.svg';
 import { GET_CURRENT_USER } from 'graphql/queries/User';
 import { getUserRole, getUserRolePermissions } from 'context/role';
 import { setNotification, setErrorMessage } from 'common/notification';
@@ -30,6 +31,7 @@ export interface ColumnNames {
 }
 
 export interface ListProps {
+  helperText?: string;
   columnNames?: Array<ColumnNames>;
   countQuery: DocumentNode;
   listItem: string;
@@ -48,7 +50,7 @@ export interface ListProps {
     label?: string;
     link?: string;
     action?: Function;
-    symbol?: string;
+    symbol?: any;
   };
   searchParameter?: Array<any>;
   filters?: Object | null;
@@ -95,7 +97,6 @@ export const List = ({
   columnNames = [],
   countQuery,
   listItem,
-  listIcon,
   filterItemsQuery,
   deleteItemQuery,
   listItemName,
@@ -644,20 +645,26 @@ export const List = ({
     </div>
   );
 
+  const infoIcon = <InfoIcon className={styles.InfoIcon} />;
+  const headerText = (
+    <div className={styles.TextHeader}>{`Please go through all the ${title} added below`}</div>
+  );
+
   return (
     <>
       <div className={styles.Header} data-testid="listHeader">
-        <Typography variant="h5" className={styles.Title}>
-          <IconButton disabled className={styles.Icon}>
-            {listIcon}
-          </IconButton>
-          {title}
-        </Typography>
+        <div>
+          <div className={styles.Title}>
+            {title}
+            {infoIcon}
+          </div>
+          {headerText}
+        </div>
         <div>
           {dialogBox}
           <div className={styles.ButtonGroup}>
-            {buttonDisplay}
             {secondaryButton}
+            {buttonDisplay}
           </div>
         </div>
       </div>

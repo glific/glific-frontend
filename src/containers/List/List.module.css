@@ -12,8 +12,19 @@
 .Title {
   margin-left: 14px !important;
   vertical-align: middle;
-  font-weight: 500 !important;
-  color: #073f24;
+  height: 40px;
+  color: #191c1a;
+  display: flex;
+  align-items: first baseline;
+  font-weight: 700 !important;
+  font-size: 38px;
+}
+
+.TextHeader {
+  margin: 6px 0 0 14px !important;
+  font-weight: 400 !important;
+  color: #191c1a;
+  font-size: 12px;
 }
 
 .additonalButton {
@@ -23,6 +34,11 @@
 
 .IconButton {
   background-color: '#e0e0e0';
+}
+.InfoIcon {
+  margin-left: 10px !important;
+  height: 18px;
+  width: 18px;
 }
 
 .DropdownButton {
@@ -49,7 +65,7 @@
   background-color: #f9f7f3;
   top: 0;
   display: flex;
-  padding: 14px 24px 14px 10px;
+  padding: 26px 24px 26px 10px;
   z-index: 1000;
   justify-content: space-between;
   align-items: center;
