@@ -13,19 +13,25 @@
 }
 
 .Name {
-  width: 35%;
+  width: 25%;
   min-width: 200px;
 }
 
 .Pinned {
-  width: 4%;
+  width: 3%;
+  align-items: center;
+}
+
+.Label {
+  width: 15%;
   align-items: center;
 }
 
 .Actions {
-  justify-content: flex-end;
-  margin-left: auto;
+  width: 20%;
+  padding-right: 40px;
   min-width: 200px;
+  text-align: end;
 }
 
 .LabelText {
@@ -123,7 +129,7 @@
 }
 
 .DateColumn {
-  width: 18%;
+  width: 16.5%;
   min-width: 120px;
 }
 
@@ -134,6 +140,19 @@
 .LastPublishedFallback {
   composes: LastPublished;
   color: #cd8888;
+}
+
+.LabelButton {
+  height: 32px;
+  width: 84px;
+  background: #f0f7f1;
+  color: #555555;
+  font-weight: 500;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
 }
 
 .Roles {

@@ -8,6 +8,7 @@ import {
   TablePagination,
   TableRow,
   TableSortLabel,
+  TableContainer,
 } from '@mui/material';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -89,7 +90,8 @@ const createRows = (
       return (
         <TableCell
           key={item + entry.recordId}
-          className={`${styles.TableCell} ${columnStyles ? columnStyles[stylesIndex] : null}`}
+          // ${styles.TableCell}
+          // className={`${columnStyles ? columnStyles[stylesIndex] : null}`}
         >
           {entry[item]}
         </TableCell>
@@ -104,7 +106,11 @@ const createRows = (
 
     return (
       <Fragment key={entry.recordId}>
-        <TableRow className={`${styles.TableRow} ${isActiveRow}`}>{createRow(entry)}</TableRow>
+        <TableRow
+        // className={`${styles.TableRow} ${isActiveRow}`}
+        >
+          {createRow(entry)}
+        </TableRow>
         {collapseOpen && dataObj && entry.id === collapseRow
           ? collapsedRowData(dataObj, columnStyles, entry.recordId)
           : null}
@@ -120,11 +126,18 @@ const tableHeadColumns = (
   handleTableChange: Function
 ) => {
   const headerRow = (
-    <TableRow className={styles.TableHeadRow}>
+    <TableRow
+      sx={{ zIndex: 100, borderRadius: '10px' }}
+      //  className={styles.TableHeadRow}
+    >
       {columnNames.map((field: any, i: number) => (
         <TableCell
           key={uuidv4()}
-          className={`${styles.TableCell} ${columnStyles ? columnStyles[i] : null}`}
+          sx={{ backgroundColor: '#dfece2', color: '#0c1f14' }}
+          className={
+            // ${styles.TableCell}
+            `${columnStyles ? columnStyles[i] : null}`
+          }
         >
           {i !== columnNames.length - 1 && field.name ? (
             <TableSortLabel
@@ -192,13 +205,27 @@ export const Pager = ({
 
   return (
     <div className={styles.TableContainer}>
-      <Table className={styles.Table} data-testid="table">
-        <TableHead data-testid="tableHead">{tableHead}</TableHead>
-        <TableBody data-testid="tableBody">{rows}</TableBody>
-        <TableFooter className={styles.TableFooter} data-testid="tableFooter">
-          <TableRow>{tablePagination}</TableRow>
-        </TableFooter>
-      </Table>
+      <TableContainer
+        sx={{
+          minHeight: 440,
+          maxHeight: 440,
+          background: '#fff',
+          overflowY: 'scroll',
+          scrollbarWidth: 'none',
+          borderRadius: '10px 10px 0 0',
+          '&::-webkit-scrollbar': {
+            width: 0,
+          },
+        }}
+      >
+        <Table stickyHeader aria-label="sticky table" className={styles.Table} data-testid="table">
+          <TableHead data-testid="tableHead">{tableHead}</TableHead>
+          <TableBody data-testid="tableBody">{rows}</TableBody>
+        </Table>
+      </TableContainer>
+      <TableFooter className={styles.TableFooter} data-testid="tableFooter">
+        <TableRow>{tablePagination}</TableRow>
+      </TableFooter>
     </div>
   );
 };

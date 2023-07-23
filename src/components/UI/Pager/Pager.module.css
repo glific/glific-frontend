@@ -42,17 +42,19 @@
 .TableContainer {
   margin: 14px 24px;
   margin-bottom: 50px;
-  overflow: auto;
+  border-radius: 10px !important;
+  box-shadow: 0px 4px 8px 0px #00000014;
 }
 
 .TableFooter {
-  position: fixed;
+  border-radius: 0 0 10px 10px;
   display: flex !important;
   justify-content: flex-end !important;
   width: 100%;
   background: #fff;
   bottom: 0px;
   right: 4px;
+  box-shadow: 0px -4px 4px 0px #0000000a;
 }
 
 .FooterRow {

@@ -51,6 +51,11 @@ const getLastPublished = (date: string, fallback: string = '') =>
   ) : (
     <div className={styles.LastPublishedFallback}>{fallback}</div>
   );
+const getLabel = (tag: any) => (
+  <div className={styles.LabelButton}>
+    {tag ? (tag.label.length > 7 ? tag.label.slice(0, 7) + '..' : tag.label) : 'none'}
+  </div>
+);
 
 const displayPinned = (isPinned: boolean) => {
   if (isPinned) {
@@ -63,6 +68,7 @@ const columnStyles = [
   styles.Pinned,
   styles.Name,
   styles.DateColumn,
+  styles.Label,
   styles.DateColumn,
   styles.Actions,
 ];
@@ -158,19 +164,22 @@ export const FlowList = () => {
     keywords,
     lastChangedAt,
     lastPublishedAt,
-    isPinned,
+    tag,
     roles,
+    isPinned,
   }: any) => ({
     pin: displayPinned(isPinned),
     name: getName(name, keywords, roles),
     lastPublishedAt: getLastPublished(lastPublishedAt, t('Not published yet')),
+    label: getLabel(tag),
     lastChangedAt: getDate(lastChangedAt, t('Nothing in draft')),
   });
 
   const columnNames = [
-    { name: 'is_pinned', label: '', sort: true, order: 'desc' },
+    { label: '' },
     { name: 'name', label: t('Title') },
     { label: t('Last published') },
+    { label: t('Label') },
     { label: t('Last saved in Draft') },
     { label: t('Actions') },
   ];
