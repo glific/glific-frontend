@@ -1,8 +1,8 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { render, waitFor } from '@testing-library/react';
-import { AddAutoComplete } from './AddAutoComplete';
+import { CreateAutoComplete } from './CreateAutoComplete';
 import { CREATE_LABEL } from 'graphql/mutations/Tags';
-describe('<AddAutoComplete />', () => {
+describe('<CreateAutoComplete />', () => {
   const mocks = [
     {
       request: {
@@ -39,10 +39,10 @@ describe('<AddAutoComplete />', () => {
     form: { dirty: false, touched: false, errors: false, setFieldValue: mockHandleChange },
   };
 
-  it('renders <AddAutoComplete /> component', () => {
+  it('renders <CreateAutoComplete /> component', () => {
     const container = render(
       <MockedProvider mocks={mocks}>
-        <AddAutoComplete {...defaultProps} />
+        <CreateAutoComplete {...defaultProps} />
       </MockedProvider>
     );
     waitFor(() => {

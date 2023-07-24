@@ -36,7 +36,7 @@ import {
   validator,
 } from './InteractiveMessage.helper';
 import { GET_TAGS } from 'graphql/queries/Tags';
-import { AddAutoComplete } from 'components/UI/Form/AddAutoComplete/AddAutoComplete';
+import { CreateAutoComplete } from 'components/UI/Form/CreateAutoComplete/CreateAutoComplete';
 
 const interactiveMessageIcon = (
   <InteractiveMessageIcon className={styles.Icon} data-testid="interactive-icon" />
@@ -535,22 +535,6 @@ export const InteractiveMessage = () => {
       },
       onGlobalButtonInputChange: (value: string) => setGlobalButton(value),
     },
-    {
-      component: AddAutoComplete,
-      name: 'tagId',
-      options: tag ? tag.tags : [],
-      optionLabel: 'label',
-      disabled: false,
-      hasCreateOption: true,
-      multiple: false,
-      onChange: (value: any) => {
-        setTagId(value);
-      },
-      textFieldProps: {
-        variant: 'outlined',
-        label: t('Label'),
-      },
-    },
   ];
 
   const getTemplateButtonPayload = (typeVal: string, buttons: Array<any>) => {
@@ -718,7 +702,26 @@ export const InteractiveMessage = () => {
     },
   ];
 
-  const formFields = templateType === LIST ? [...fields] : [...fields, ...attachmentInputs];
+  let formFields: any = templateType === LIST ? [...fields] : [...fields, ...attachmentInputs];
+  formFields = [
+    ...formFields,
+    {
+      component: CreateAutoComplete,
+      name: 'tagId',
+      options: tag ? tag.tags : [],
+      optionLabel: 'label',
+      disabled: false,
+      hasCreateOption: true,
+      multiple: false,
+      onChange: (value: any) => {
+        setTagId(value);
+      },
+      textFieldProps: {
+        variant: 'outlined',
+        label: t('Tag'),
+      },
+    },
+  ];
 
   const validation = validator(templateType, t);
   const validationScheme = Yup.object().shape(validation, [['type', 'attachmentURL']]);

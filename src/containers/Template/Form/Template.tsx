@@ -16,10 +16,12 @@ import { LanguageBar } from 'components/UI/LanguageBar/LanguageBar';
 import { GET_TEMPLATE, FILTER_TEMPLATES } from 'graphql/queries/Template';
 import { CREATE_MEDIA_MESSAGE } from 'graphql/mutations/Chat';
 import { USER_LANGUAGES } from 'graphql/queries/Organization';
+import { GET_TAGS } from 'graphql/queries/Tags';
 import { CREATE_TEMPLATE, UPDATE_TEMPLATE, DELETE_TEMPLATE } from 'graphql/mutations/Template';
 import { MEDIA_MESSAGE_TYPES, CALL_TO_ACTION, QUICK_REPLY } from 'common/constants';
 import { getPlainTextFromEditor, getEditorFromContent } from 'common/RichEditor';
 import Loading from 'components/UI/Layout/Loading/Loading';
+import { CreateAutoComplete } from 'components/UI/Form/CreateAutoComplete/CreateAutoComplete';
 import { validateMedia } from 'common/utils';
 import styles from './Template.module.css';
 
@@ -135,8 +137,6 @@ export interface TemplateProps {
   getExample?: any;
   setCategory?: any;
   category?: any;
-  setTagId?: any;
-  tagId?: any;
   onExampleChange?: any;
   languageStyle?: string;
 }
@@ -166,8 +166,6 @@ const Template = ({
   category,
   onExampleChange = () => {},
   languageStyle = 'dropdown',
-  setTagId,
-  tagId,
 }: TemplateProps) => {
   // "Audio" option is removed in case of HSM Template
   const mediaTypes =
@@ -175,6 +173,7 @@ const Template = ({
       ? options.filter(({ label }) => label !== 'AUDIO' && label !== 'STICKER')
       : options;
 
+  const [tagId, setTagId] = useState<any>(null);
   const [label, setLabel] = useState('');
   const [body, setBody] = useState(EditorState.createEmpty());
   const [example, setExample] = useState(EditorState.createEmpty());
@@ -199,6 +198,11 @@ const Template = ({
   const navigate = useNavigate();
   const location: any = useLocation();
   const params = useParams();
+
+  const { data: tag } = useQuery(GET_TAGS, {
+    variables: {},
+    fetchPolicy: 'network-only',
+  });
 
   const states = {
     language,
@@ -740,6 +744,23 @@ const Template = ({
     },
   ];
 
+  const tags = {
+    component: CreateAutoComplete,
+    name: 'tagId',
+    options: tag ? tag.tags : [],
+    optionLabel: 'label',
+    disabled: false,
+    hasCreateOption: true,
+    multiple: false,
+    onChange: (value: any) => {
+      setTagId(value);
+    },
+    textFieldProps: {
+      variant: 'outlined',
+      label: t('Tag'),
+    },
+  };
+
   const hsmFields = formField && [
     ...formField.slice(0, 1),
     ...templateRadioOptions,
@@ -747,7 +768,7 @@ const Template = ({
   ];
 
   const fields = defaultAttribute.isHsm
-    ? [formIsActive, ...formFields, ...hsmFields, ...attachmentField]
+    ? [formIsActive, ...formFields, ...hsmFields, ...attachmentField, tags]
     : [...formFields, ...attachmentField];
 
   // Creating payload for button template
