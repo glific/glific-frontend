@@ -44,9 +44,10 @@
 }
 
 .Status {
-  composes: TableText;
-  display: flex;
-  align-content: center;
+  /* composes: Table Text; */
+  /* display: flex; */
+  /* align-content: center; */
+  /* text-align: center; */
 }
 .Status svg {
   margin-right: 8px;

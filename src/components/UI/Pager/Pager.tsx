@@ -207,8 +207,8 @@ export const Pager = ({
     <div className={styles.TableContainer}>
       <TableContainer
         sx={{
-          minHeight: 440,
-          maxHeight: 440,
+          minHeight: 410,
+          maxHeight: 410,
           background: '#fff',
           overflowY: 'scroll',
           scrollbarWidth: 'none',
