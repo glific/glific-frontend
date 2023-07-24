@@ -1,6 +1,6 @@
 {
   "name": "glific-frontend",
-  "version": "4.8.1",
+  "version": "4.10.0",
   "private": true,
   "dependencies": {
     "@apollo/client": "^3.7.16",
