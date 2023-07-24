@@ -418,5 +418,7 @@
   "View profile": "View profile",
   "Copy UUID": "Copy UUID",
   "Org Id": "Org Id",
-  "Tag": "Tag"
+  "Tag": "Tag",
+  "Export collection": "Export collection",
+  "Sheet type": "Sheet type"
 }

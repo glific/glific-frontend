@@ -79,3 +79,15 @@ export const GET_ORGANIZATION_COLLECTIONS = gql`
     }
   }
 `;
+
+export const EXPORT_COLLECTION_DATA = gql`
+  query ExportCollection($exportCollectionId: ID!) {
+    exportCollection(id: $exportCollectionId) {
+      status
+      errors {
+        message
+        key
+      }
+    }
+  }
+`;
