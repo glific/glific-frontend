@@ -17,9 +17,9 @@ import { SearchDialogBox } from 'components/UI/SearchDialogBox/SearchDialogBox';
 import { getUserRolePermissions, getUserRole } from 'context/role';
 import { setNotification } from 'common/notification';
 import { setVariables } from 'common/constants';
+import { CircularProgress, Modal } from '@mui/material';
 import styles from './CollectionList.module.css';
 import { exportCsvFile } from 'common/utils';
-import { Box, CircularProgress, Modal, Paper } from '@mui/material';
 
 const getLabel = (label: string, contactsCount: number) => (
   <div>
