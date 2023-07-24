@@ -5,7 +5,12 @@ import { useTranslation } from 'react-i18next';
 import { ReactComponent as CollectionIcon } from 'assets/images/icons/Collection/Dark.svg';
 import { ReactComponent as AddContactIcon } from 'assets/images/icons/Contact/Add.svg';
 import { DELETE_COLLECTION, UPDATE_COLLECTION_CONTACTS } from 'graphql/mutations/Collection';
-import { GET_COLLECTIONS_COUNT, FILTER_COLLECTIONS } from 'graphql/queries/Collection';
+import { ReactComponent as ExportIcon } from 'assets/images/icons/Flow/Export.svg';
+import {
+  GET_COLLECTIONS_COUNT,
+  FILTER_COLLECTIONS,
+  EXPORT_COLLECTION_DATA,
+} from 'graphql/queries/Collection';
 import { CONTACT_SEARCH_QUERY, GET_COLLECTION_CONTACTS } from 'graphql/queries/Contact';
 import { List } from 'containers/List/List';
 import { SearchDialogBox } from 'components/UI/SearchDialogBox/SearchDialogBox';
@@ -13,6 +18,8 @@ import { getUserRolePermissions, getUserRole } from 'context/role';
 import { setNotification } from 'common/notification';
 import { setVariables } from 'common/constants';
 import styles from './CollectionList.module.css';
+import { exportCsvFile } from 'common/utils';
+import { Box, CircularProgress, Modal, Paper } from '@mui/material';
 
 const getLabel = (label: string, contactsCount: number) => (
   <div>
@@ -50,11 +57,24 @@ export const CollectionList = () => {
 
   const [contactSearchTerm, setContactSearchTerm] = useState('');
   const [collectionId, setCollectionId] = useState();
-
+  const [exportData, setExportData] = useState(false);
   const { t } = useTranslation();
 
   const [getContacts, { data: contactsData }] = useLazyQuery(CONTACT_SEARCH_QUERY, {
     variables: setVariables({ name: contactSearchTerm }, 50),
+  });
+  const [exportCollectionData] = useLazyQuery(EXPORT_COLLECTION_DATA, {
+    onCompleted: (data) => {
+      if (data.errors) {
+        setNotification(data.errors[0].message, 'warning');
+      } else if (data.exportCollection) {
+        exportCsvFile(data.exportCollection.status, 'collection');
+      }
+      setExportData(false);
+    },
+    onError: (error) => {
+      setNotification('An error occured while exporting the collection', 'warning');
+    },
   });
 
   const [getCollectionContacts, { data: collectionContactsData }] =
@@ -99,6 +119,15 @@ export const CollectionList = () => {
     getContacts();
     setCollectionId(id);
     setAddContactsDialogShow(true);
+  };
+
+  const exportCollection = (id: string) => {
+    setExportData(true);
+    exportCollectionData({
+      variables: {
+        exportCollectionId: id,
+      },
+    });
   };
 
   const handleCollectionAdd = (value: any) => {
@@ -158,6 +187,12 @@ export const CollectionList = () => {
       parameter: 'id',
       dialog: setContactsDialog,
     },
+    {
+      label: t('Export collection'),
+      icon: <ExportIcon />,
+      parameter: 'id',
+      dialog: exportCollection,
+    },
   ];
 
   const getRestrictedAction = () => {
@@ -175,6 +210,13 @@ export const CollectionList = () => {
   const userRolePermissions = getUserRolePermissions();
   return (
     <>
+      {exportData && (
+        <Modal open>
+          <div className={styles.ExportPopup}>
+            Please wait while the data is exporting <CircularProgress size="1rem" />
+          </div>
+        </Modal>
+      )}
       <List
         restrictedAction={getRestrictedAction}
         title={t('Collections')}
