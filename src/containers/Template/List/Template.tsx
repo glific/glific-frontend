@@ -82,7 +82,7 @@ export const Template = ({
   const { t } = useTranslation();
 
   const { provider } = useContext(ProviderContext);
-
+  const [selectedTag, setSelectedTag] = useState<any>(null);
   const [importing, setImporting] = useState(false);
 
   const [filters, setFilters] = useState<any>({ ...statusFilter, APPROVED: true });
@@ -350,7 +350,6 @@ export const Template = ({
     );
     button.show = false;
   }
-  const [selectedTag, setSelectedTag] = useState<any>(null);
 
   // OnChange handler for the dropdown
   const handleDropdownChange = (event: any) => {

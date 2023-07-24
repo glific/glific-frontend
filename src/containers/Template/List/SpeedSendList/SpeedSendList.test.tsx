@@ -7,7 +7,7 @@ import { setUserSession } from 'services/AuthService';
 import { SpeedSendList } from './SpeedSendList';
 
 afterEach(cleanup);
-const mocks = TEMPLATE_MOCKS;
+const mocks = [...TEMPLATE_MOCKS, ...TEMPLATE_MOCKS];
 
 const speedSend = (
   <MockedProvider mocks={mocks} addTypename={false}>

@@ -806,7 +806,6 @@ const Template = ({
 
   const setPayload = (payload: any) => {
     let payloadCopy = payload;
-    payloadCopy.tagId = payload.tagId.id;
     let translationsCopy: any = {};
 
     if (template) {
@@ -880,7 +879,7 @@ const Template = ({
       }
       if (payloadCopy.isHsm) {
         payloadCopy.category = payloadCopy.category.label;
-
+        payloadCopy.tagId = payload.tagId.id;
         if (isAddButtonChecked && templateType) {
           const templateButtonData = getButtonTemplatePayload();
           Object.assign(payloadCopy, { ...templateButtonData });
