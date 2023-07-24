@@ -151,7 +151,7 @@ export const Flow = () => {
       multiple: false,
       textFieldProps: {
         variant: 'outlined',
-        label: t('Label'),
+        label: t('Tag'),
       },
     },
     {

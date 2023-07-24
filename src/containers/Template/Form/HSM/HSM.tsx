@@ -26,6 +26,7 @@ export const HSM = () => {
     media: {},
     body: '',
   });
+
   const [shortcode, setShortcode] = useState('');
   const [example, setExample] = useState(EditorState.createEmpty());
   const [category, setCategory] = useState<any>({ label: '', id: '' });

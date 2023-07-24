@@ -233,7 +233,7 @@ export const FlowList = () => {
   const tagFilter = (
     <AutoComplete
       isFilterType
-      placeholder="Select label"
+      placeholder="Select tag"
       options={tag ? tag.tags : []}
       optionLabel="label"
       disabled={false}

@@ -2,8 +2,9 @@ import { useMutation } from '@apollo/client';
 import { AutoComplete, AutocompleteProps } from '../AutoComplete/AutoComplete';
 import { CREATE_LABEL } from 'graphql/mutations/Tags';
 
-export interface AddAutoCompleteProp extends AutocompleteProps {}
-export const AddAutoComplete = ({ ...rest }: AddAutoCompleteProp) => {
+export interface CreateAutoCompleteProp extends AutocompleteProps {}
+
+export const CreateAutoComplete = ({ ...rest }: CreateAutoCompleteProp) => {
   const [createTag] = useMutation(CREATE_LABEL);
 
   const handleCreateItem = async (value: string) => {
