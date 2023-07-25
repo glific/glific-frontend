@@ -90,7 +90,6 @@ const createRows = (
       return (
         <TableCell
           key={item + entry.recordId}
-          // ${styles.TableCell}
           className={`${columnStyles ? columnStyles[stylesIndex] : null}`}
         >
           {entry[item]}
@@ -106,7 +105,6 @@ const createRows = (
 
     return (
       <Fragment key={entry.recordId}>
-        {/* ${styles.TableRow}  */}
         <TableRow className={`${isActiveRow}`}>{createRow(entry)}</TableRow>
         {collapseOpen && dataObj && entry.id === collapseRow
           ? collapsedRowData(dataObj, columnStyles, entry.recordId)
@@ -123,18 +121,12 @@ const tableHeadColumns = (
   handleTableChange: Function
 ) => {
   const headerRow = (
-    <TableRow
-      sx={{ zIndex: 100, borderRadius: '10px' }}
-      //  className={styles.TableHeadRow}
-    >
+    <TableRow className={styles.TableHeadRow}>
       {columnNames.map((field: any, i: number) => (
         <TableCell
           key={uuidv4()}
           sx={{ backgroundColor: '#dfece2', color: '#0c1f14', zIndex: 100 }}
-          className={
-            // ${styles.TableCell}
-            `${columnStyles ? columnStyles[i] : null}`
-          }
+          className={`${columnStyles ? columnStyles[i] : null}`}
         >
           {i !== columnNames.length - 1 && field.name ? (
             <TableSortLabel
@@ -204,8 +196,8 @@ export const Pager = ({
     <div className={styles.TableContainer}>
       <TableContainer
         sx={{
-          minHeight: 410,
-          maxHeight: 410,
+          minHeight: 440,
+          maxHeight: 440,
           background: '#fff',
           overflowY: 'scroll',
           scrollbarWidth: 'none',

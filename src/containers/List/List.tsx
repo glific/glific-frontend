@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Link, Navigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useQuery, useMutation, DocumentNode, useLazyQuery } from '@apollo/client';
-import { IconButton, TableFooter, TablePagination, TableRow } from '@mui/material';
+import { Divider, IconButton, TableFooter, TablePagination, TableRow } from '@mui/material';
 import { ListCard } from 'containers/List/ListCard/ListCard';
 import { Button } from 'components/UI/Form/Button/Button';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
@@ -10,7 +10,7 @@ import { Pager } from 'components/UI/Pager/Pager';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { SearchBar } from 'components/UI/SearchBar/SearchBar';
 import { Tooltip } from 'components/UI/Tooltip/Tooltip';
-import { ReactComponent as DeleteIcon } from 'assets/images/icons/Delete/Red.svg';
+import { ReactComponent as DeleteIcon } from 'assets/images/icons/Delete/TrashGrey.svg';
 import { ReactComponent as EditIcon } from 'assets/images/icons/Edit.svg';
 import { ReactComponent as CrossIcon } from 'assets/images/icons/Cross.svg';
 import { ReactComponent as BackIcon } from 'assets/images/icons/Back.svg';
@@ -431,27 +431,37 @@ export const List = ({
     let editButton = null;
     if (editSupport) {
       editButton = allowedAction.edit && (
-        <Link to={`/${pageLink}/${id}/edit`}>
-          <IconButton aria-label={t('Edit')} data-testid="EditIcon">
+        <Link to={`/${pageLink}/${id}/edit`} className={styles.NoTextDecoration}>
+          <div aria-label={t('Edit')} data-testid="EditIcon">
             <Tooltip title={t('Edit')} placement="top">
-              <EditIcon />
+              <div className={styles.IconWithText}>
+                <EditIcon className={styles.IconSize} />
+                <div className={styles.TextButton}>Edit</div>
+              </div>
             </Tooltip>
-          </IconButton>
+          </div>
         </Link>
       );
     }
 
     const deleteButton = (Id: any, text: string) =>
       allowedAction.delete ? (
-        <IconButton
+        <div
           aria-label={t('Delete')}
           data-testid="DeleteIcon"
           onClick={() => showDialogHandler(Id, text)}
         >
           <Tooltip title={`${deleteModifier.label}`} placement="top">
-            {deleteModifier.icon === 'cross' ? <CrossIcon /> : <DeleteIcon />}
+            {deleteModifier.icon === 'cross' ? (
+              <CrossIcon />
+            ) : (
+              <div className={styles.IconWithText}>
+                <DeleteIcon className={styles.IconSize} />
+                <div className={styles.TextButton}>Delete</div>
+              </div>
+            )}
           </Tooltip>
-        </IconButton>
+        </div>
       ) : null;
     if (id) {
       return (
@@ -507,8 +517,9 @@ export const List = ({
             showMoreOptions == id ? (
               <>
                 {moreButton}
-                <div className={styles.PopUp}>
+                <div className={`${styles.PopUp} ${styles.FlexCenter}`}>
                   {editButton}
+                  <Divider className={styles.DividerPopUp} />
                   {deleteButton(id, labelValue)}
                 </div>
               </>
@@ -699,7 +710,7 @@ export const List = ({
       </div>
 
       <div className={styles.FilterFields}>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div className={styles.FlexCenter}>
           {filterList}
           {filterDropdowm}
         </div>

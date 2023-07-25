@@ -6,10 +6,10 @@ import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 
 import { ReactComponent as AddIcon } from 'assets/images/add.svg';
 import { ReactComponent as FlowIcon } from 'assets/images/icons/Flow/Dark.svg';
-import { ReactComponent as DuplicateIcon } from 'assets/images/icons/Flow/Duplicate.svg';
+import { ReactComponent as DuplicateIcon } from 'assets/images/icons/Flow/Copy.svg';
 import { ReactComponent as ExportIcon } from 'assets/images/icons/Flow/Export.svg';
 import { FormControl, MenuItem, Select } from '@mui/material';
-import { ReactComponent as ConfigureIcon } from 'assets/images/icons/Configure/UnselectedDark.svg';
+import { ReactComponent as ConfigureIcon } from 'assets/images/icons/Configure/Setting.svg';
 import { ReactComponent as PinIcon } from 'assets/images/icons/Pin/Active.svg';
 import { FILTER_FLOW, GET_FLOW_COUNT, EXPORT_FLOW, RELEASE_FLOW } from 'graphql/queries/Flow';
 import { DELETE_FLOW, IMPORT_FLOW } from 'graphql/mutations/Flow';
@@ -51,11 +51,7 @@ const getLastPublished = (date: string, fallback: string = '') =>
   ) : (
     <div className={styles.LastPublishedFallback}>{fallback}</div>
   );
-const getLabel = (tag: any) => (
-  <div className={styles.LabelButton}>
-    {tag ? (tag.label.length > 7 ? tag.label.slice(0, 7) + '..' : tag.label) : 'none'}
-  </div>
-);
+const getLabel = (tag: any) => <div className={styles.LabelButton}>{tag ? tag.label : 'none'}</div>;
 
 const displayPinned = (isPinned: boolean) => {
   if (isPinned) {
@@ -176,7 +172,7 @@ export const FlowList = () => {
   });
 
   const columnNames = [
-    { label: '' },
+    { name: 'is_pinned', label: '', sort: true, order: 'desc' },
     { name: 'name', label: t('Title') },
     { label: t('Last published') },
     { label: t('Label') },
