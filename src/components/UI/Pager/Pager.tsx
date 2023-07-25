@@ -91,7 +91,7 @@ const createRows = (
         <TableCell
           key={item + entry.recordId}
           // ${styles.TableCell}
-          // className={`${columnStyles ? columnStyles[stylesIndex] : null}`}
+          className={`${columnStyles ? columnStyles[stylesIndex] : null}`}
         >
           {entry[item]}
         </TableCell>
@@ -106,11 +106,8 @@ const createRows = (
 
     return (
       <Fragment key={entry.recordId}>
-        <TableRow
-        // className={`${styles.TableRow} ${isActiveRow}`}
-        >
-          {createRow(entry)}
-        </TableRow>
+        {/* ${styles.TableRow}  */}
+        <TableRow className={`${isActiveRow}`}>{createRow(entry)}</TableRow>
         {collapseOpen && dataObj && entry.id === collapseRow
           ? collapsedRowData(dataObj, columnStyles, entry.recordId)
           : null}
@@ -133,7 +130,7 @@ const tableHeadColumns = (
       {columnNames.map((field: any, i: number) => (
         <TableCell
           key={uuidv4()}
-          sx={{ backgroundColor: '#dfece2', color: '#0c1f14' }}
+          sx={{ backgroundColor: '#dfece2', color: '#0c1f14', zIndex: 100 }}
           className={
             // ${styles.TableCell}
             `${columnStyles ? columnStyles[i] : null}`

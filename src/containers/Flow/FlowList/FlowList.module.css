@@ -19,12 +19,12 @@
 
 .Pinned {
   width: 3%;
-  align-items: center;
+  /* align-items: center; */
 }
 
 .Label {
   width: 15%;
-  align-items: center;
+  /* align-items: center; */
 }
 
 .Actions {
@@ -129,7 +129,7 @@
 }
 
 .DateColumn {
-  width: 16.5%;
+  width: 18.5%;
   min-width: 120px;
 }
 

@@ -15,6 +15,7 @@ import { ReactComponent as EditIcon } from 'assets/images/icons/Edit.svg';
 import { ReactComponent as CrossIcon } from 'assets/images/icons/Cross.svg';
 import { ReactComponent as BackIcon } from 'assets/images/icons/Back.svg';
 import { ReactComponent as InfoIcon } from 'assets/images/info.svg';
+import { ReactComponent as MoreOptions } from 'assets/images/icons/MoreOptions.svg';
 import { GET_CURRENT_USER } from 'graphql/queries/User';
 import { getUserRole, getUserRolePermissions } from 'context/role';
 import { setNotification, setErrorMessage } from 'common/notification';
@@ -128,7 +129,7 @@ export const List = ({
   customStyles,
 }: ListProps) => {
   const { t } = useTranslation();
-
+  const [showMoreOptions, setShowMoreOptions] = useState<string>('');
   // DialogBox states
   const [deleteItemID, setDeleteItemID] = useState<number | null>(null);
   const [deleteItemName, setDeleteItemName] = useState<string>('');
@@ -405,6 +406,28 @@ export const List = ({
     if (isReserved) {
       return null;
     }
+    let moreButton = null;
+
+    moreButton = (
+      <IconButton
+        aria-label={t('Edit')}
+        data-testid="EditIcon"
+        onClick={() => {
+          if (showMoreOptions == id) {
+            setShowMoreOptions('');
+          } else {
+            setShowMoreOptions(id);
+          }
+        }}
+      >
+        <Tooltip title={t('Edit')} placement="top">
+          <div style={{ height: '14px', display: 'flex', alignItems: 'center' }}>
+            <MoreOptions />
+          </div>
+        </Tooltip>
+      </IconButton>
+    );
+
     let editButton = null;
     if (editSupport) {
       editButton = allowedAction.edit && (
@@ -481,10 +504,17 @@ export const List = ({
 
           {/* do not display edit & delete for staff role in collection */}
           {userRolePermissions.manageCollections || item !== 'collections' ? (
-            <>
-              {editButton}
-              {deleteButton(id, labelValue)}
-            </>
+            showMoreOptions == id ? (
+              <>
+                {moreButton}
+                <div className={styles.PopUp}>
+                  {editButton}
+                  {deleteButton(id, labelValue)}
+                </div>
+              </>
+            ) : (
+              <>{moreButton}</>
+            )
           ) : null}
         </div>
       );
