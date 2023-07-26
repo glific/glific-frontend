@@ -6,6 +6,7 @@ export const GET_SHEET = gql`
       sheet {
         id
         insertedAt
+        autoSync
         isActive
         label
         type
@@ -28,6 +29,7 @@ export const GET_SHEETS = gql`
       url
       type
       isActive
+      autoSync
       label
       sheetDataCount
       lastSyncedAt

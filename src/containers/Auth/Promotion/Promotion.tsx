@@ -4,11 +4,11 @@ import { ReactComponent as MaximizeIcon } from 'assets/images/icons/Maximize.svg
 import styles from './Promotion.module.css';
 
 const points = [
-  'Arogya World ran their Diabetes Awareness prog through AI driven nudges on Glific',
-  'Great space for any new team member that wants to learn about the platform',
+  'Learn how to integrate ChatGPT with your chatbot to make your conversations more impactful and engaging!',
+  'Learn how TAP is using ChatGPT in their chatbot',
 ];
 
-const LINK = 'https://us06web.zoom.us/meeting/register/tZUtcOuprzIqE9SRbYdqgVslASP6TSIZ_UaT';
+const LINK = 'https://rb.gy/ywfqp';
 
 export const Promotion = () => {
   const [minimized, setMinimized] = useState(false);
@@ -20,7 +20,7 @@ export const Promotion = () => {
         <div className={styles.HeaderText}>NEW!</div>
         {minimized ? (
           <>
-            <div className={styles.GiftCard}>Glific sprint</div>
+            <div className={styles.GiftCard}>Glific Webinar</div>
             <MaximizeIcon
               className={styles.AccordianIcon}
               onClick={() => setMinimized(!minimized)}
@@ -33,7 +33,9 @@ export const Promotion = () => {
 
       {!minimized && (
         <>
-          <div className={styles.Image}>Glific Vodcast Arogya World- 23rd Feb 3 PM</div>
+          <div className={styles.Image}>
+            Webinar on ChatGPT integration with Glific 28th July 12 PM
+          </div>
 
           <div className={styles.Points}>
             {points.map((point, index) => (

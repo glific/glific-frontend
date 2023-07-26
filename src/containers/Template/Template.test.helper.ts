@@ -14,6 +14,7 @@ import {
 } from 'mocks/Organization';
 import { templateCountQuery } from 'mocks/Template';
 import { CREATE_MEDIA_MESSAGE } from 'graphql/mutations/Chat';
+import { GET_TAGS } from 'graphql/queries/Tags';
 
 const count = templateCountQuery(false, 2);
 
@@ -268,6 +269,28 @@ const getTemplateData = {
 };
 
 export const TEMPLATE_MOCKS = [
+  {
+    request: {
+      query: GET_TAGS,
+      variables: {},
+    },
+    result: {
+      data: {
+        tags: [
+          {
+            __typename: 'Tag',
+            id: '1',
+            label: 'Messages',
+          },
+          {
+            __typename: 'Tag',
+            id: '2',
+            label: 'Contacts',
+          },
+        ],
+      },
+    },
+  },
   {
     request: {
       query: CREATE_TEMPLATE,

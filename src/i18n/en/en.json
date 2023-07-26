@@ -414,9 +414,12 @@
   "Opened by": "Opened by",
   "Change assignee": "Change assignee",
   "Select Tag": "Select Tag",
-  "Select Label": "Select Label",
+  "Select tag": "Select tag",
   "View profile": "View profile",
   "Copy UUID": "Copy UUID",
   "Org Id": "Org Id",
-  "More": "More"
+  "More": "More",
+  "Tag": "Tag",
+  "Export collection": "Export collection",
+  "Sheet type": "Sheet type"
 }

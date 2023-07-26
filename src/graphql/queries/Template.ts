@@ -60,6 +60,10 @@ export const GET_TEMPLATE = gql`
           caption
           sourceUrl
         }
+        tag {
+          id
+          label
+        }
         category
         shortcode
         example

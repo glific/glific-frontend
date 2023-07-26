@@ -10,9 +10,23 @@ import { SAMPLE_SHEET_LINK } from 'config';
 import { GET_SHEET } from 'graphql/queries/Sheet';
 import styles from './SheetIntegration.module.css';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
-import { SheetTypes } from './SheetIntegrationList/SheetIntegrationList';
+import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 
 const sheetIcon = <SheetIcon className={styles.DarkIcon} />;
+const typeOptions = [
+  {
+    label: 'Read',
+    id: 'READ',
+  },
+  {
+    label: 'Write',
+    id: 'WRITE',
+  },
+  {
+    label: 'Read & Write',
+    id: 'ALL',
+  },
+];
 
 const queries = {
   getItemQuery: GET_SHEET,
@@ -24,21 +38,22 @@ const queries = {
 export const SheetIntegration = () => {
   const [label, setLabel] = useState('');
   const [url, setUrl] = useState('');
-  const [writable, setWritable] = useState(false);
-  const [readable, setReadable] = useState(false);
+  const [autoSync, setAutoSync] = useState(false);
+  const [type, setType] = useState<any>({ id: '', label: '' });
   const { t } = useTranslation();
-  const states = { label, url, writable, readable };
-  const setStates = ({ label: labelValue, url: urlValue, type: typeValue }: any) => {
+  const states = { label, url, type, autoSync };
+  const setStates = ({
+    label: labelValue,
+    url: urlValue,
+    type: typeValue,
+    autoSync: autoSyncValue,
+  }: any) => {
     setLabel(labelValue);
     setUrl(urlValue);
-    if (typeValue === SheetTypes.Read) {
-      setReadable(true);
-    } else if (typeValue === SheetTypes.Write) {
-      setWritable(true);
-    } else if (typeValue === SheetTypes.All) {
-      setReadable(true);
-      setWritable(true);
-    }
+    const selectedOption = typeOptions.find((option) => option.id === typeValue);
+    console.log(typeValue);
+    setType(selectedOption);
+    setAutoSync(autoSyncValue);
   };
   const FormSchema = Yup.object().shape({
     url: Yup.string().required(t('URL is required.')),
@@ -66,37 +81,33 @@ export const SheetIntegration = () => {
       placeholder: t('Sheet name'),
     },
     {
-      component: Checkbox,
-      name: 'readable',
-      title: 'Read',
-      info: {
-        title: 'Read data from the sheet.',
+      component: AutoComplete,
+      name: 'type',
+
+      options: typeOptions,
+      optionLabel: 'label',
+      multiple: false,
+      textFieldProps: {
+        label: t('Sheet type'),
+        variant: 'outlined',
       },
-      darkCheckbox: true,
     },
+
     {
       component: Checkbox,
-      name: 'writable',
-      title: 'Write',
+      name: 'autoSync',
+      title: 'Auto sync',
       info: {
-        title: 'Write data to the sheet.',
+        title: 'Data will be synced from the sheet on a daily basis',
       },
       darkCheckbox: true,
     },
   ];
 
   const setPayload = (data: any) => {
-    let type = SheetTypes.Read;
-    if (data.readable && data.writable) {
-      type = SheetTypes.All;
-    } else if (data.writable) {
-      type = SheetTypes.Write;
-    }
-
     return {
-      label: data.label,
-      url: data.url,
-      type,
+      ...data,
+      type: data.type.id,
     };
   };
 

@@ -16,10 +16,12 @@ import { LanguageBar } from 'components/UI/LanguageBar/LanguageBar';
 import { GET_TEMPLATE, FILTER_TEMPLATES } from 'graphql/queries/Template';
 import { CREATE_MEDIA_MESSAGE } from 'graphql/mutations/Chat';
 import { USER_LANGUAGES } from 'graphql/queries/Organization';
+import { GET_TAGS } from 'graphql/queries/Tags';
 import { CREATE_TEMPLATE, UPDATE_TEMPLATE, DELETE_TEMPLATE } from 'graphql/mutations/Template';
 import { MEDIA_MESSAGE_TYPES, CALL_TO_ACTION, QUICK_REPLY } from 'common/constants';
 import { getPlainTextFromEditor, getEditorFromContent } from 'common/RichEditor';
 import Loading from 'components/UI/Layout/Loading/Loading';
+import { CreateAutoComplete } from 'components/UI/Form/CreateAutoComplete/CreateAutoComplete';
 import { validateMedia } from 'common/utils';
 import styles from './Template.module.css';
 
@@ -171,6 +173,7 @@ const Template = ({
       ? options.filter(({ label }) => label !== 'AUDIO' && label !== 'STICKER')
       : options;
 
+  const [tagId, setTagId] = useState<any>(null);
   const [label, setLabel] = useState('');
   const [body, setBody] = useState(EditorState.createEmpty());
   const [example, setExample] = useState(EditorState.createEmpty());
@@ -196,6 +199,11 @@ const Template = ({
   const location: any = useLocation();
   const params = useParams();
 
+  const { data: tag } = useQuery(GET_TAGS, {
+    variables: {},
+    fetchPolicy: 'network-only',
+  });
+
   const states = {
     language,
     label,
@@ -205,6 +213,7 @@ const Template = ({
     shortcode,
     example,
     category,
+    tagId,
     isActive,
     templateButtons,
     isAddButtonChecked,
@@ -221,6 +230,7 @@ const Template = ({
     MessageMedia: MessageMediaValue,
     shortcode: shortcodeValue,
     category: categoryValue,
+    tag: tagIdValue,
     buttonType: templateButtonType,
     buttons,
     hasButtons,
@@ -301,6 +311,9 @@ const Template = ({
     }
     if (categoryValue) {
       setCategory({ label: categoryValue, id: categoryValue });
+    }
+    if (tagIdValue) {
+      setTagId(tagIdValue);
     }
   };
 
@@ -731,6 +744,23 @@ const Template = ({
     },
   ];
 
+  const tags = {
+    component: CreateAutoComplete,
+    name: 'tagId',
+    options: tag ? tag.tags : [],
+    optionLabel: 'label',
+    disabled: false,
+    hasCreateOption: true,
+    multiple: false,
+    onChange: (value: any) => {
+      setTagId(value);
+    },
+    textFieldProps: {
+      variant: 'outlined',
+      label: t('Tag'),
+    },
+  };
+
   const hsmFields = formField && [
     ...formField.slice(0, 1),
     ...templateRadioOptions,
@@ -738,7 +768,7 @@ const Template = ({
   ];
 
   const fields = defaultAttribute.isHsm
-    ? [formIsActive, ...formFields, ...hsmFields, ...attachmentField]
+    ? [formIsActive, ...formFields, ...hsmFields, ...attachmentField, tags]
     : [...formFields, ...attachmentField];
 
   // Creating payload for button template
@@ -849,7 +879,7 @@ const Template = ({
       }
       if (payloadCopy.isHsm) {
         payloadCopy.category = payloadCopy.category.label;
-
+        payloadCopy.tagId = payload.tagId.id;
         if (isAddButtonChecked && templateType) {
           const templateButtonData = getButtonTemplatePayload();
           Object.assign(payloadCopy, { ...templateButtonData });

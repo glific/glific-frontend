@@ -76,7 +76,7 @@ const hsmProps: any = {
 };
 
 describe('HSM templates', () => {
-  const hsmMocks = [...HSM_LIST, bulkApplyMutation];
+  const hsmMocks = [...HSM_LIST, ...HSM_LIST, bulkApplyMutation];
   const hsmComponent = (
     <Router>
       <MockedProvider mocks={hsmMocks} addTypename={false}>
@@ -142,6 +142,7 @@ describe('HSM templates', () => {
 
 describe('Provider: Gupshup enterprise', () => {
   const hsmMocks = [
+    ...HSM_LIST,
     ...HSM_LIST,
     getOrganizationBSP,
     importTemplateMutation,
