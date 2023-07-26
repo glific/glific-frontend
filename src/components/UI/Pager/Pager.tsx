@@ -215,14 +215,14 @@ export const Pager = ({
       <TableContainer sx={styleForContainer}>
         <Table stickyHeader aria-label="sticky table" className={styles.Table} data-testid="table">
           <TableHead data-testid="tableHead">{tableHead}</TableHead>
-          <TableBody data-testid="tableBody">{!loadingList && data?.length > 0 && rows}</TableBody>
+          <TableBody data-testid="tableBody">{!loadingList && data.length > 0 && rows}</TableBody>
         </Table>
         {loadingList && (
           <div className={styles.Body}>
             <Loading />
           </div>
         )}
-        {!loadingList && data?.length == 0 && <div className={styles.Body}>{noItemsText}</div>}
+        {!loadingList && data.length == 0 && <div className={styles.Body}>{noItemsText}</div>}
       </TableContainer>
       <TableFooter className={styles.TableFooter} data-testid="tableFooter">
         <TableRow>{tablePagination}</TableRow>

@@ -5,7 +5,6 @@ import { useQuery, useMutation, DocumentNode, useLazyQuery } from '@apollo/clien
 import { Divider, IconButton, TableFooter, TablePagination, TableRow } from '@mui/material';
 import { ListCard } from 'containers/List/ListCard/ListCard';
 import { Button } from 'components/UI/Form/Button/Button';
-import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { Pager } from 'components/UI/Pager/Pager';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { SearchBar } from 'components/UI/SearchBar/SearchBar';
@@ -532,20 +531,19 @@ export const List = ({
                       const key = index;
 
                       return (
-                        <>
+                        <div key={key}>
                           <Divider className={styles.DividerPopUp} />
                           <div
                             data-testid="additionalButton"
                             id="additionalButton-icon"
                             onClick={() => action.dialog(additionalActionParameter, item)}
-                            key={key}
                           >
                             <div className={styles.IconWithText}>
                               {action.icon}
                               <div className={styles.TextButton}>{action.name}</div>
                             </div>
                           </div>
-                        </>
+                        </div>
                       );
                     }
                     return null;
