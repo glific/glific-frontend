@@ -879,10 +879,13 @@ const Template = ({
       }
       if (payloadCopy.isHsm) {
         payloadCopy.category = payloadCopy.category.label;
-        payloadCopy.tagId = payload.tagId.id;
+
         if (isAddButtonChecked && templateType) {
           const templateButtonData = getButtonTemplatePayload();
           Object.assign(payloadCopy, { ...templateButtonData });
+        }
+        if (tagId) {
+          payloadCopy.tagId = payload.tagId.id;
         }
       } else {
         delete payloadCopy.example;
