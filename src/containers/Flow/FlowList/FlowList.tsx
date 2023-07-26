@@ -10,7 +10,7 @@ import { ReactComponent as DuplicateIcon } from 'assets/images/icons/Flow/Copy.s
 import { ReactComponent as ExportIcon } from 'assets/images/icons/Flow/Export.svg';
 import { FormControl, MenuItem, Select } from '@mui/material';
 import { ReactComponent as ConfigureIcon } from 'assets/images/icons/Configure/Setting.svg';
-import { ReactComponent as PinIcon } from 'assets/images/icons/Pin/Active.svg';
+import { ReactComponent as PinIcon } from 'assets/images/icons/Pin/Pin.svg';
 import { FILTER_FLOW, GET_FLOW_COUNT, EXPORT_FLOW, RELEASE_FLOW } from 'graphql/queries/Flow';
 import { DELETE_FLOW, IMPORT_FLOW } from 'graphql/mutations/Flow';
 import { List } from 'containers/List/List';
@@ -28,14 +28,14 @@ const getName = (text: string, keywordsList: any, roles: any) => {
   const accessRoles = roles && roles.map((role: any) => role.label);
   const hasDynamicRole = organizationHasDynamicRole();
   return (
-    <p className={styles.NameText}>
+    <div className={styles.NameText}>
       {text}
       <br />
       <span className={styles.Keyword}>{keywords.join(', ')}</span>
       {hasDynamicRole && (
         <span className={styles.Roles}>{accessRoles && accessRoles.join(', ')} </span>
       )}
-    </p>
+    </div>
   );
 };
 
@@ -140,18 +140,22 @@ export const FlowList = () => {
       icon: configureIcon,
       parameter: 'uuid',
       link: '/flow/configure',
+      isMoreOption: false,
     },
     {
       label: t('Make a copy'),
       icon: <DuplicateIcon />,
       parameter: 'id',
       dialog: setDialog,
+      isMoreOption: false,
     },
     {
       label: t('Export flow'),
-      icon: <ExportIcon data-testid="export-icon" />,
+      icon: <ExportIcon data-testid="export-icon" className={styles.IconSize} />,
       parameter: 'id',
       dialog: exportFlow,
+      isMoreOption: true,
+      name: 'Export',
     },
   ];
 
@@ -263,10 +267,8 @@ export const FlowList = () => {
     ...(selectedtag?.id && { tagIds: [parseInt(selectedtag?.id)] }),
   };
 
-  if (importing) {
-    return <Loading message="Uploading" />;
-  }
   const addIcon = <AddIcon style={{ marginRight: '10px', height: '12px', width: '12px' }} />;
+  const flowLink = 'https://glific.org/';
   return (
     <List
       title={t('Flows')}
@@ -274,6 +276,7 @@ export const FlowList = () => {
       listItemName="flow"
       pageLink="flow"
       listIcon={flowIcon}
+      listLink={flowLink}
       dialogMessage={dialogMessage}
       {...queries}
       {...columnAttributes}
@@ -285,6 +288,7 @@ export const FlowList = () => {
       filterList={activeFilter}
       filtersTag={selectedtag && selectedtag.id}
       filterDropdowm={tagFilter}
+      loadingList={importing}
     />
   );
 };

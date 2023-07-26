@@ -14,6 +14,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { ColumnNames } from 'containers/List/List';
 import styles from './Pager.module.css';
+import Loading from '../Layout/Loading/Loading';
 
 const removeDisplayColumns = ['recordId', 'translations', 'id', 'isActive'];
 interface PagerProps {
@@ -29,7 +30,9 @@ interface PagerProps {
     sortDirection: 'asc' | 'desc';
   };
   collapseOpen: boolean;
+  loadingList?: boolean;
   collapseRow: string | undefined;
+  noItemsText?: any;
 }
 
 // create a collapsible row
@@ -90,6 +93,7 @@ const createRows = (
       return (
         <TableCell
           key={item + entry.recordId}
+          sx={{ padding: 0 }}
           className={`${columnStyles ? columnStyles[stylesIndex] : null}`}
         >
           {entry[item]}
@@ -187,30 +191,38 @@ export const Pager = ({
   totalRows,
   collapseOpen,
   collapseRow,
+  loadingList = false,
+  noItemsText,
 }: PagerProps) => {
   const rows = createRows(data, columnStyles, collapseRow, collapseOpen);
   const tableHead = tableHeadColumns(columnNames, columnStyles, tableVals, handleTableChange);
   const tablePagination = pagination(columnNames, totalRows, handleTableChange, tableVals);
 
+  const styleForContainer = {
+    minHeight: '87%',
+    maxHeight: '87%',
+    background: '#fff',
+    overflowY: 'scroll',
+    scrollbarWidth: 'none',
+    borderRadius: '10px 10px 0 0',
+    '&::-webkit-scrollbar': {
+      width: 0,
+    },
+  };
+
   return (
     <div className={styles.TableContainer}>
-      <TableContainer
-        sx={{
-          minHeight: 440,
-          maxHeight: 440,
-          background: '#fff',
-          overflowY: 'scroll',
-          scrollbarWidth: 'none',
-          borderRadius: '10px 10px 0 0',
-          '&::-webkit-scrollbar': {
-            width: 0,
-          },
-        }}
-      >
+      <TableContainer sx={styleForContainer}>
         <Table stickyHeader aria-label="sticky table" className={styles.Table} data-testid="table">
           <TableHead data-testid="tableHead">{tableHead}</TableHead>
-          <TableBody data-testid="tableBody">{rows}</TableBody>
+          <TableBody data-testid="tableBody">{!loadingList && data?.length > 0 && rows}</TableBody>
         </Table>
+        {loadingList && (
+          <div className={styles.Body}>
+            <Loading />
+          </div>
+        )}
+        {!loadingList && data?.length == 0 && <div className={styles.Body}>{noItemsText}</div>}
       </TableContainer>
       <TableFooter className={styles.TableFooter} data-testid="tableFooter">
         <TableRow>{tablePagination}</TableRow>

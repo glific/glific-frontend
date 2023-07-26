@@ -31,6 +31,7 @@ export interface ColumnNames {
 }
 
 export interface ListProps {
+  loadingList?: boolean;
   helperText?: string;
   columnNames?: Array<ColumnNames>;
   countQuery: DocumentNode;
@@ -42,6 +43,7 @@ export interface ListProps {
   pageLink: string;
   columns: Function;
   listIcon: React.ReactNode;
+  listLink?: any;
   columnStyles: Array<any>;
   secondaryButton?: any;
   title: string;
@@ -94,6 +96,7 @@ interface TableVals {
 }
 
 export const List = ({
+  loadingList = false,
   columnNames = [],
   countQuery,
   listItem,
@@ -101,6 +104,7 @@ export const List = ({
   deleteItemQuery,
   listItemName,
   dialogMessage = '',
+  listLink = '',
   secondaryButton,
   pageLink,
   columns,
@@ -377,7 +381,6 @@ export const List = ({
     return <Navigate to={`/${pageLink}/add`} />;
   }
 
-  if (loading || l || loadingCollections) return <Loading />;
   if (error || e) {
     if (error) {
       setErrorMessage(error);
@@ -420,7 +423,7 @@ export const List = ({
           }
         }}
       >
-        <Tooltip title={t('Edit')} placement="top">
+        <Tooltip title={t('More')} placement="top">
           <div style={{ height: '14px', display: 'flex', alignItems: 'center' }}>
             <MoreOptions />
           </div>
@@ -433,12 +436,10 @@ export const List = ({
       editButton = allowedAction.edit && (
         <Link to={`/${pageLink}/${id}/edit`} className={styles.NoTextDecoration}>
           <div aria-label={t('Edit')} data-testid="EditIcon">
-            <Tooltip title={t('Edit')} placement="top">
-              <div className={styles.IconWithText}>
-                <EditIcon className={styles.IconSize} />
-                <div className={styles.TextButton}>Edit</div>
-              </div>
-            </Tooltip>
+            <div className={styles.IconWithText}>
+              <EditIcon className={styles.IconSize} />
+              <div className={styles.TextButton}>Edit</div>
+            </div>
           </div>
         </Link>
       );
@@ -451,63 +452,61 @@ export const List = ({
           data-testid="DeleteIcon"
           onClick={() => showDialogHandler(Id, text)}
         >
-          <Tooltip title={`${deleteModifier.label}`} placement="top">
-            {deleteModifier.icon === 'cross' ? (
-              <CrossIcon />
-            ) : (
-              <div className={styles.IconWithText}>
-                <DeleteIcon className={styles.IconSize} />
-                <div className={styles.TextButton}>Delete</div>
-              </div>
-            )}
-          </Tooltip>
+          {deleteModifier.icon === 'cross' ? (
+            <CrossIcon />
+          ) : (
+            <div className={styles.IconWithText}>
+              <DeleteIcon className={styles.IconSize} />
+              <div className={styles.TextButton}>Delete</div>
+            </div>
+          )}
         </div>
       ) : null;
+
     if (id) {
       return (
         <div className={styles.Icons}>
           {additionalAction(item).map((action: any, index: number) => {
-            if (allowedAction.restricted) {
-              return null;
-            }
-            // check if we are dealing with nested element
-            let additionalActionParameter: any;
-            const params: any = action.parameter.split('.');
-            if (params.length > 1) {
-              additionalActionParameter = item[params[0]][params[1]];
-            } else {
-              additionalActionParameter = item[params[0]];
-            }
-            const key = index;
+            if (!action?.isMoreOption) {
+              // check if we are dealing with nested element
+              let additionalActionParameter: any;
+              const params: any = action.parameter.split('.');
+              if (params.length > 1) {
+                additionalActionParameter = item[params[0]][params[1]];
+              } else {
+                additionalActionParameter = item[params[0]];
+              }
+              const key = index;
 
-            if (action.link) {
-              return (
-                <Link to={`${action.link}/${additionalActionParameter}`} key={key}>
-                  <IconButton className={styles.additonalButton} data-testid="additionalButton">
-                    <Tooltip title={`${action.label}`} placement="top">
+              if (action.link) {
+                return (
+                  <Link to={`${action.link}/${additionalActionParameter}`} key={key}>
+                    <IconButton className={styles.additonalButton} data-testid="additionalButton">
+                      <Tooltip title={`${action.label}`} placement="top">
+                        {action.icon}
+                      </Tooltip>
+                    </IconButton>
+                  </Link>
+                );
+              }
+              if (action.dialog) {
+                return (
+                  <IconButton
+                    data-testid="additionalButton"
+                    className={styles.additonalButton}
+                    id="additionalButton-icon"
+                    onClick={() => action.dialog(additionalActionParameter, item)}
+                    key={key}
+                  >
+                    <Tooltip title={`${action.label}`} placement="top" key={key}>
                       {action.icon}
                     </Tooltip>
                   </IconButton>
-                </Link>
-              );
-            }
-            if (action.dialog) {
-              return (
-                <IconButton
-                  data-testid="additionalButton"
-                  className={styles.additonalButton}
-                  id="additionalButton-icon"
-                  onClick={() => action.dialog(additionalActionParameter, item)}
-                  key={key}
-                >
-                  <Tooltip title={`${action.label}`} placement="top" key={key}>
-                    {action.icon}
-                  </Tooltip>
-                </IconButton>
-              );
-            }
-            if (action.button) {
-              return action.button(item, action, key, fetchQuery);
+                );
+              }
+              if (action.button) {
+                return action.button(item, action, key, fetchQuery);
+              }
             }
             return null;
           })}
@@ -521,6 +520,36 @@ export const List = ({
                   {editButton}
                   <Divider className={styles.DividerPopUp} />
                   {deleteButton(id, labelValue)}
+                  {additionalAction(item).map((action: any, index: number) => {
+                    if (action?.isMoreOption) {
+                      let additionalActionParameter: any;
+                      const params: any = action.parameter.split('.');
+                      if (params.length > 1) {
+                        additionalActionParameter = item[params[0]][params[1]];
+                      } else {
+                        additionalActionParameter = item[params[0]];
+                      }
+                      const key = index;
+
+                      return (
+                        <>
+                          <Divider className={styles.DividerPopUp} />
+                          <div
+                            data-testid="additionalButton"
+                            id="additionalButton-icon"
+                            onClick={() => action.dialog(additionalActionParameter, item)}
+                            key={key}
+                          >
+                            <div className={styles.IconWithText}>
+                              {action.icon}
+                              <div className={styles.TextButton}>{action.name}</div>
+                            </div>
+                          </div>
+                        </>
+                      );
+                    }
+                    return null;
+                  })}
                 </div>
               </>
             ) : (
@@ -584,6 +613,20 @@ export const List = ({
   if (countData) {
     itemCount = countData[`count${listItem[0].toUpperCase()}${listItem.slice(1)}`];
   }
+
+  var noItemsText = (
+    <div className={styles.NoResults}>
+      {searchVal ? (
+        <div>{t('Sorry, no results found! Please try a different search.')}</div>
+      ) : (
+        <div>
+          There are no {noItemText || listItemName}s right now.{' '}
+          {button.show && t('Please create one.')}
+        </div>
+      )}
+    </div>
+  );
+
   let displayList;
   if (displayListType === 'list') {
     displayList = (
@@ -596,6 +639,8 @@ export const List = ({
         tableVals={tableVals}
         collapseOpen={collapseOpen}
         collapseRow={collapseRow}
+        loadingList={loadingList || loading || l || loadingCollections ? true : false}
+        noItemsText={noItemsText}
       />
     );
   } else if (displayListType === 'card') {
@@ -672,20 +717,14 @@ export const List = ({
     buttonDisplay = <div className={styles.AddButton}>{buttonContent}</div>;
   }
 
-  const noItemsText = (
-    <div className={styles.NoResults}>
-      {searchVal ? (
-        <div>{t('Sorry, no results found! Please try a different search.')}</div>
-      ) : (
-        <div>
-          There are no {noItemText || listItemName}s right now.{' '}
-          {button.show && t('Please create one.')}
-        </div>
-      )}
-    </div>
+  const infoIcon = (
+    <InfoIcon
+      className={styles.InfoIcon}
+      onClick={() => {
+        window.location.replace(listLink ? listLink : 'https://glific.org/');
+      }}
+    />
   );
-
-  const infoIcon = <InfoIcon className={styles.InfoIcon} />;
   const headerText = (
     <div className={styles.TextHeader}>{`Please go through all the ${title} added below`}</div>
   );
@@ -734,7 +773,7 @@ export const List = ({
       <div className={`${styles.Body} ${customStyles}`}>
         {backLink}
         {/* Rendering list of items */}
-        {itemList.length > 0 ? displayList : noItemsText}
+        {displayList}
       </div>
     </>
   );
