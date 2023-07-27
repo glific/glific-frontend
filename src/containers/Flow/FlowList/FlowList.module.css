@@ -13,14 +13,14 @@
 }
 
 .Name {
-  width: 25%;
+  width: 27%;
   min-width: 200px;
   padding-left: 12px;
 }
 
 .Pinned {
   padding-left: 20px;
-  width: 4%;
+  width: 5%;
 }
 
 .Label {
@@ -28,7 +28,7 @@
 }
 
 .Actions {
-  width: 20%;
+  width: 15%;
   padding-right: 40px;
   min-width: 200px;
   text-align: end;
@@ -115,7 +115,7 @@
 }
 
 .NameText {
-  padding: 12px 0px;
+  padding: 14px 0px;
   line-height: 20px;
   margin: 0;
   font-size: 17px !important;
@@ -130,7 +130,7 @@
 }
 
 .DateColumn {
-  width: 18.5%;
+  width: 19.5%;
   min-width: 120px;
 }
 
