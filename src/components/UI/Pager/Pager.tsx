@@ -129,7 +129,13 @@ const tableHeadColumns = (
       {columnNames.map((field: any, i: number) => (
         <TableCell
           key={uuidv4()}
-          sx={{ backgroundColor: '#dfece2', color: '#0c1f14', zIndex: 100 }}
+          sx={{
+            backgroundColor: '#dfece2',
+            color: '#0c1f14',
+            zIndex: 100,
+            paddingLeft: 0,
+            paddingRight: 0,
+          }}
           className={`${columnStyles ? columnStyles[i] : null}`}
         >
           {i !== columnNames.length - 1 && field.name ? (

@@ -1,7 +1,7 @@
 .Input {
   display: flex;
   padding: 8px 0px;
-  min-width: 180px;
+  min-width: 150px;
 }
 
 .Input label {

@@ -133,6 +133,17 @@ export const List = ({
 }: ListProps) => {
   const { t } = useTranslation();
   const [showMoreOptions, setShowMoreOptions] = useState<string>('');
+
+  const onBlur = () => {
+    const concernedElement: any = document.querySelector('.DropDownClass');
+
+    document.addEventListener('mousedown', (event: any) => {
+      if (!concernedElement?.contains(event.target) && showMoreOptions != '') {
+        setShowMoreOptions('');
+      }
+    });
+  };
+
   // DialogBox states
   const [deleteItemID, setDeleteItemID] = useState<number | null>(null);
   const [deleteItemName, setDeleteItemName] = useState<string>('');
@@ -464,7 +475,7 @@ export const List = ({
 
     if (id) {
       return (
-        <div className={styles.Icons}>
+        <div className={styles.Icons} onBlur={onBlur}>
           {additionalAction(item).map((action: any, index: number) => {
             if (!action?.isMoreOption) {
               // check if we are dealing with nested element
@@ -512,10 +523,10 @@ export const List = ({
 
           {/* do not display edit & delete for staff role in collection */}
           {userRolePermissions.manageCollections || item !== 'collections' ? (
-            showMoreOptions == id ? (
-              <>
-                {moreButton}
-                <div className={`${styles.PopUp} ${styles.FlexCenter}`}>
+            <div className={styles.MoreOptions}>
+              {moreButton}
+              {showMoreOptions == id && (
+                <div className={`${styles.PopUp} ${styles.FlexCenter} DropDownClass`}>
                   {editButton}
                   <Divider className={styles.DividerPopUp} />
                   {deleteButton(id, labelValue)}
@@ -549,10 +560,8 @@ export const List = ({
                     return null;
                   })}
                 </div>
-              </>
-            ) : (
-              <>{moreButton}</>
-            )
+              )}
+            </div>
           ) : null}
         </div>
       );
