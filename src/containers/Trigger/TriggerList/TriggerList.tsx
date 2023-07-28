@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { ReactComponent as TriggerIcon } from 'assets/images/icons/Trigger/Union.svg';
 import { ReactComponent as ClockIcon } from 'assets/images/icons/Trigger/Clock.svg';
 import { ReactComponent as ClockInactiveIcon } from 'assets/images/icons/Trigger/Inactive.svg';
-import { ReactComponent as DuplicateIcon } from 'assets/images/icons/Flow/Duplicate.svg';
+import { ReactComponent as DuplicateIcon } from 'assets/images/icons/Flow/Copy.svg';
 import { TRIGGER_LIST_QUERY, TRIGGER_QUERY_COUNT } from 'graphql/queries/Trigger';
 import { DELETE_TRIGGER } from 'graphql/mutations/Trigger';
 import { FULL_DATE_FORMAT, dayList } from 'common/constants';
