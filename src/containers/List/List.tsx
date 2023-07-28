@@ -759,6 +759,11 @@ export const List = ({
         <div className={styles.FlexCenter}>
           {filterList}
           {filterDropdowm}
+          {!filterList && !filterDropdowm && (
+            <div className={styles.TextList}>
+              {`${itemList.length + ' ' + title} are currently listed below`}
+            </div>
+          )}
         </div>
         <div className={styles.Buttons}>
           <SearchBar

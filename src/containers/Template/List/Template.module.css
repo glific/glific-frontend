@@ -1,11 +1,17 @@
+.Name {
+  width: 25%;
+  min-width: 200px;
+  padding-left: 4%;
+}
+
 .Label {
   width: 200px;
 }
 
 .Body {
-  width: 40%;
-  margin-right: 10px;
-  margin-left: 20px;
+  width: 36%;
+  min-width: 200px;
+  padding: 0 4%;
   word-break: break-word;
 }
 
@@ -17,9 +23,10 @@
 }
 
 .Actions {
-  width: 200px;
-  justify-content: flex-end;
-  margin-left: auto;
+  width: 19%;
+  padding-right: 40px;
+  min-width: 200px;
+  text-align: end;
 }
 
 .LabelText {
@@ -33,12 +40,10 @@
 }
 
 .TableText {
-  margin-right: 23px;
   text-align: left;
   padding: 12px 0px;
-  font-size: 16px;
+  font-size: 14px;
   color: #93a29b;
-  line-height: 1.25;
   white-space: pre-line;
   margin: 0;
 }
@@ -49,12 +54,14 @@
   /* align-content: center; */
   /* text-align: center; */
 }
+
 .Status svg {
   margin-right: 8px;
 }
 
 .LastModified {
-  width: 185px;
+  width: 20%;
+  min-width: 185px;
   padding-top: 12px;
   color: #93a29b;
 }

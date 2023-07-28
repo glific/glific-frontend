@@ -18,7 +18,7 @@ import {
   IMPORT_TEMPLATES,
 } from 'graphql/mutations/Template';
 import { ImportButton } from 'components/UI/ImportButton/ImportButton';
-import { ReactComponent as DownArrow } from 'assets/images/icons/DownArrow.svg';
+import { ReactComponent as DownArrow } from 'assets/images/icons/LanguageTranslation.svg';
 import { ReactComponent as ApprovedIcon } from 'assets/images/icons/Template/Approved.svg';
 import { ReactComponent as RejectedIcon } from 'assets/images/icons/Template/Rejected.svg';
 import { ReactComponent as PendingIcon } from 'assets/images/icons/Template/Pending.svg';
@@ -44,6 +44,7 @@ const getUpdatedAt = (date: string) => (
 
 const getTranslations = (language: any, data: string) => {
   const dataObj = JSON.parse(data);
+  console.log('dataObj', dataObj);
   if (Object.prototype.hasOwnProperty.call(dataObj, language.id)) {
     delete dataObj[language.id];
   }
@@ -176,7 +177,7 @@ export const Template = ({
 
   columnNames.push({ label: t('Actions') });
 
-  let columnStyles: any = [styles.Label, styles.Body];
+  let columnStyles: any = [styles.Name, styles.Body];
 
   columnStyles = isHSM
     ? [...columnStyles, styles.Status, ...(filters.REJECTED ? [styles.Reason] : []), styles.Actions]

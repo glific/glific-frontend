@@ -54,19 +54,19 @@ const collapsedRowData = (dataObj: any, columnStyles: any, recordId: any) => {
     const rowIdentifier = `collapsedRowData-${recordId}-${index}`;
 
     return (
-      <TableRow className={styles.CollapseTableRow} key={rowIdentifier}>
-        <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[0] : null}`}>
+      <TableRow key={rowIdentifier}>
+        <TableCell className={`${columnStyles ? columnStyles[0] : null}`}>
           <div>
             <div className={styles.LabelText}>{dataObj[key].label}</div>
           </div>
         </TableCell>
-        <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[1] : null}`}>
+        <TableCell className={`${columnStyles ? columnStyles[1] : null}`}>
           <div>
             <p className={styles.TableText}>{dataObj[key].body}</p>
           </div>
         </TableCell>
-        <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[2] : null}`} />
-        <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[3] : null}`} />
+        <TableCell className={`${columnStyles ? columnStyles[2] : null}`} />
+        <TableCell className={`${columnStyles ? columnStyles[3] : null}`} />
       </TableRow>
     );
   });
@@ -131,7 +131,7 @@ const tableHeadColumns = (
           key={uuidv4()}
           sx={{
             backgroundColor: '#dfece2',
-            color: '#0c1f14',
+            color: 'rgba(12, 31, 20, 0.57)',
             zIndex: 100,
             paddingLeft: 0,
             paddingRight: 0,

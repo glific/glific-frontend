@@ -228,3 +228,10 @@
   min-height: 300px;
   height: 75% !important;
 }
+
+.TextList {
+  color: #555555;
+  font-weight: 400;
+  font-size: 14px;
+  margin-left: 20px;
+}

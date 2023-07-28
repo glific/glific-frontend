@@ -11,12 +11,6 @@
   padding-right: 5px;
 }
 
-.CollapseTableRow {
-  composes: TableRow;
-  margin-top: -20px !important;
-  border-radius: 0 0 12px 12px !important;
-}
-
 .TableHeadRow {
   z-index: 100;
   border-radius: '10px';
@@ -63,7 +57,7 @@
   margin-right: 23px;
   text-align: left;
   padding: 12px 0px;
-  font-size: 16px;
+  font-size: 14px;
   color: #93a29b;
   line-height: 1.25;
   white-space: pre-line;
@@ -73,7 +67,7 @@
 .LabelText {
   display: flex;
   font-weight: 500;
-  font-size: 20px;
+  font-size: 18px;
   color: #073f24;
   margin-top: 12px;
   margin-bottom: 12px;
