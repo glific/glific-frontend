@@ -37,7 +37,7 @@
     "formik": "^2.4.2",
     "graphql": "^16.7.1",
     "graphql-ws": "^5.14.0",
-    "i18next": "^23.2.7",
+    "i18next": "^23.2.8",
     "i18next-browser-languagedetector": "^7.1.0",
     "interweave": "^13.1.0",
     "interweave-autolink": "^5.1.0",
