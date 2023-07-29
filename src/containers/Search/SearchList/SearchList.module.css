@@ -1,35 +1,37 @@
 .Shortcode {
-  width: 180px;
+  padding-left: 4%;
+  width: 35%;
+  min-width: 180px;
 }
 
 .Name {
-  width: 291px;
+  width: 40%;
+  min-width: 291px;
 }
 
 .Actions {
-  width: 150px;
-  justify-content: flex-end;
-  margin-left: auto;
+  width: 25%;
+  min-width: 150px;
+  text-align: end;
+  padding-right: 4%;
 }
 
 .LabelText {
-  display: flex;
+  word-break: break-all;
+  padding: 14px 0px;
+  margin: 0;
+  font-size: 17px !important;
+  word-break: break-all;
+  color: #191c1a !important;
   font-weight: 500;
-  font-size: 20px;
-  color: #073f24;
-  margin-top: 12px;
-  margin-bottom: 12px;
-  line-height: 1;
 }
 
 .TableText {
-  margin-right: 23px;
-  text-align: left;
-  padding: 12px 0px;
-  font-size: 16px;
-  color: #93a29b;
-  line-height: 1.25;
+  font-size: 15px;
+  color: #555555;
+  white-space: pre-line;
   margin: 0;
+  font-weight: 400;
 }
 
 .Icon {
