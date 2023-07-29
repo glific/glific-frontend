@@ -22,7 +22,7 @@
     "@jumpn/utils-graphql": "^0.6.0",
     "@mui/icons-material": "^5.13.7",
     "@mui/material": "^5.13.7",
-    "@mui/x-date-pickers": "^6.9.1",
+    "@mui/x-date-pickers": "^6.9.2",
     "@stripe/react-stripe-js": "^2.1.1",
     "@stripe/stripe-js": "^1.54.1",
     "@types/jest": "^29.5.2",
