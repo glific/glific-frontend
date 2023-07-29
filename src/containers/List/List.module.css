@@ -1,6 +1,7 @@
 .Buttons {
+  display: flex;
+  align-items: center;
   border-color: #e0e0e0;
-  vertical-align: middle;
 }
 
 .Table {
@@ -51,7 +52,6 @@
   height: 80%;
   text-transform: capitalize;
   border-radius: 20px;
-  margin-left: 24px;
 }
 
 .AddButton a {
@@ -164,7 +164,7 @@
 .FilterFields {
   display: flex;
   align-items: center;
-  padding: 0 26px 0 3px;
+  padding: 0 26px 0 18px;
   justify-content: space-between;
   height: 80px !important;
 }

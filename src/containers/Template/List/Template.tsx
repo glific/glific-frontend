@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
-import { Checkbox, FormControlLabel } from '@mui/material';
+import { FormControl, MenuItem, Select } from '@mui/material';
 
 import { List } from 'containers/List/List';
 import { useMutation, useQuery } from '@apollo/client';
@@ -28,7 +28,7 @@ import Loading from 'components/UI/Layout/Loading/Loading';
 import { setNotification } from 'common/notification';
 import { BULK_APPLY_SAMPLE_LINK } from 'config';
 import styles from './Template.module.css';
-import { CopyAllOutlined } from '@mui/icons-material';
+import { ReactComponent as CopyAllOutlined } from 'assets/images/icons/Flow/Copy.svg';
 import { GET_TAGS } from 'graphql/queries/Tags';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 
@@ -60,6 +60,7 @@ export interface TemplateProps {
   filters: any;
   buttonLabel: string;
   isHSM?: boolean;
+  syncHSMButton?: any;
 }
 
 const statusFilter = {
@@ -77,6 +78,7 @@ export const Template = ({
   filters: templateFilters,
   buttonLabel,
   isHSM,
+  syncHSMButton,
 }: TemplateProps) => {
   const [open, setOpen] = useState(false);
   const [Id, setId] = useState('');
@@ -130,27 +132,27 @@ export const Template = ({
     switch (status) {
       case 'APPROVED':
         statusValue = (
-          <>
+          <div className={styles.AlginCenter}>
             <ApprovedIcon />
             {t('Approved')}
-          </>
+          </div>
         );
         break;
       case 'PENDING':
         statusValue = (
-          <>
+          <div className={styles.AlginCenter}>
             <PendingIcon />
             {t('Pending')}
-          </>
+          </div>
         );
         break;
 
       case 'REJECTED':
         statusValue = (
-          <>
+          <div className={styles.AlginCenter}>
             <RejectedIcon />
             {t('Rejected')}
-          </>
+          </div>
         );
         break;
 
@@ -158,7 +160,7 @@ export const Template = ({
         statusValue = status;
     }
 
-    return <span className={styles.Status}>{statusValue}</span>;
+    return <span>{statusValue}</span>;
   };
 
   const columnNames: any = [
@@ -248,8 +250,9 @@ export const Template = ({
 
   let filterValue: any = '';
   const statusList = ['Approved', 'Pending', 'Rejected'];
+
   const handleCheckedBox = (event: any) => {
-    setFilters({ ...statusFilter, [event.target.name.toUpperCase()]: event.target.checked });
+    setFilters({ ...statusFilter, [event.target.value.toUpperCase()]: true });
   };
 
   const filterStatusName = Object.keys(filters).filter((status) => filters[status] === true);
@@ -257,30 +260,35 @@ export const Template = ({
     [filterValue] = filterStatusName;
   }
 
+  const ITEM_HEIGHT = 48;
+  const ITEM_PADDING_TOP = 8;
+  const MenuProps = {
+    PaperProps: {
+      style: {
+        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+        width: 250,
+      },
+    },
+  };
+  // console.log('statusList', statusList, filters);
   const filterTemplateStatus = (
-    <div className={styles.Filters}>
-      {statusList.map((label, index) => {
-        const key = index;
-        const checked = filters[label.toUpperCase()];
-        return (
-          <FormControlLabel
-            key={key}
-            control={
-              <Checkbox
-                checked={checked}
-                color="primary"
-                onChange={handleCheckedBox}
-                name={statusList[index]}
-              />
-            }
-            label={statusList[index]}
-            classes={{
-              label: styles.FilterLabel,
-            }}
-          />
-        );
-      })}
-    </div>
+    <FormControl sx={{ width: 150 }}>
+      <Select
+        aria-label="template-type"
+        name="template-type"
+        value={statusList.filter((status) => filters[status.toUpperCase()] && status)}
+        onChange={handleCheckedBox}
+        MenuProps={MenuProps}
+        className={styles.DropDown}
+        sx={{ '& > fieldset': { border: 'none' } }}
+      >
+        {statusList?.map((status: any) => (
+          <MenuItem key={status} value={status}>
+            {status}
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
   );
 
   let appliedFilters = templateFilters;
@@ -289,7 +297,7 @@ export const Template = ({
     additionalAction = () => [
       {
         label: t('Copy UUID'),
-        icon: <CopyAllOutlined sx={{ mt: 1, color: '#073F24' }} data-testid="copy-button" />,
+        icon: <CopyAllOutlined data-testid="copy-button" />,
         parameter: 'id',
         dialog: copyUuid,
       },
@@ -308,6 +316,14 @@ export const Template = ({
   if (isHSM) {
     secondaryButton = (
       <div className={styles.ImportButton}>
+        <a
+          href={BULK_APPLY_SAMPLE_LINK}
+          target="_blank"
+          rel="noreferrer"
+          className={styles.HelperText}
+        >
+          View Sample
+        </a>
         <ImportButton
           title={t('Bulk apply')}
           onImport={() => setImporting(true)}
@@ -321,14 +337,6 @@ export const Template = ({
             }
           }}
         />
-        <a
-          href={BULK_APPLY_SAMPLE_LINK}
-          target="_blank"
-          rel="noreferrer"
-          className={styles.HelperText}
-        >
-          View Sample
-        </a>
       </div>
     );
   }
@@ -401,6 +409,7 @@ export const Template = ({
       collapseOpen={open}
       collapseRow={Id}
       filterDropdowm={isHSM && tagFilter}
+      syncHSMButton={syncHSMButton}
     />
   );
 };

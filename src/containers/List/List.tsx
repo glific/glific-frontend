@@ -85,6 +85,7 @@ export interface ListProps {
   defaultSortBy?: string | null;
   noItemText?: string | null;
   customStyles?: any;
+  syncHSMButton?: any;
 }
 
 interface TableVals {
@@ -130,6 +131,7 @@ export const List = ({
   collapseRow = undefined,
   noItemText = null,
   customStyles,
+  syncHSMButton,
 }: ListProps) => {
   const { t } = useTranslation();
   const [showMoreOptions, setShowMoreOptions] = useState<string>('');
@@ -766,6 +768,7 @@ export const List = ({
           )}
         </div>
         <div className={styles.Buttons}>
+          {syncHSMButton}
           <SearchBar
             handleSubmit={handleSearch}
             onReset={() => {

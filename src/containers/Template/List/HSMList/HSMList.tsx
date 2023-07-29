@@ -37,30 +37,30 @@ export const HSMList = () => {
   if (syncTemplateLoad) {
     return <Loading />;
   }
-
+  const syncHSMButton = (
+    <Button
+      variant="outlined"
+      color="primary"
+      className={styles.HsmUpdates}
+      data-testid="updateHsm"
+      onClick={() => handleHsmUpdates()}
+      aria-hidden="true"
+    >
+      SYNC HSM
+    </Button>
+  );
   return (
-    <>
-      <Template
-        title="Templates"
-        listItem="sessionTemplates"
-        listItemName="HSM Template"
-        pageLink="template"
-        listIcon={templateIcon}
-        filters={{ isHsm: true }}
-        isHSM
-        buttonLabel={t('Create')}
-      />
-      <Button
-        variant="outlined"
-        color="primary"
-        className={styles.HsmUpdates}
-        data-testid="updateHsm"
-        onClick={() => handleHsmUpdates()}
-        aria-hidden="true"
-      >
-        SYNC HSM
-      </Button>
-    </>
+    <Template
+      title="Templates"
+      listItem="sessionTemplates"
+      listItemName="HSM Template"
+      pageLink="template"
+      listIcon={templateIcon}
+      filters={{ isHsm: true }}
+      syncHSMButton={syncHSMButton}
+      isHSM
+      buttonLabel={t('Create')}
+    />
   );
 };
 

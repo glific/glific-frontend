@@ -45,10 +45,13 @@
 }
 
 .Status {
-  /* composes: Table Text; */
-  /* display: flex; */
-  /* align-content: center; */
-  /* text-align: center; */
+  text-align: center;
+}
+
+.AlginCenter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .Status svg {
@@ -81,20 +84,17 @@
 }
 
 .HelperText {
-  position: absolute;
-  bottom: -20px;
-  left: 40px;
-  color: green;
-  font-weight: 500;
-  font-size: 0.75rem;
-  border-bottom: 1px dashed green;
-  display: inline;
+  color: #2ea36a;
+  font-weight: 400;
+  font-size: 14px;
   text-decoration: none !important;
+  padding: 0 12px;
 }
 
 .ImportButton {
-  position: relative;
-  margin-bottom: 8px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .Uuid {
@@ -108,4 +108,14 @@
 .Copy {
   margin-left: 2px;
   font-size: 12px;
+}
+
+.DropDown {
+  border-radius: 24px;
+  border: 1px solid #cccccc;
+  display: flex;
+  width: 130px;
+  margin: auto;
+  height: 36px;
+  background: #ffffff;
 }
