@@ -27,16 +27,15 @@
 
 .TableContainer {
   padding: 14px 24px;
-  border-radius: 10px !important;
-  box-shadow: 0px 4px 8px 0px #00000014;
-  height: 75vh !important;
+  overflow: hidden;
+  height: calc(100vh - 200px) !important;
 }
 
 .TableFooter {
   border-radius: 0 0 10px 10px;
   display: flex !important;
   justify-content: flex-end !important;
-  height: 12%;
+  height: 50px;
   background: #fff;
   bottom: 0px;
   right: 4px;

@@ -131,7 +131,7 @@ const tableHeadColumns = (
           key={uuidv4()}
           sx={{
             backgroundColor: '#dfece2',
-            color: 'rgba(12, 31, 20, 0.57)',
+            color: 'rgba(12, 31, 20, 0.57) !important',
             zIndex: 100,
             paddingLeft: 0,
             paddingRight: 0,
@@ -152,6 +152,9 @@ const tableHeadColumns = (
                     tableVals.sortDirection === 'asc' ? 'desc' : 'asc'
                   );
                 }
+              }}
+              sx={{
+                color: 'rgba(12, 31, 20, 0.57) !important',
               }}
             >
               {field.label}
@@ -205,8 +208,8 @@ export const Pager = ({
   const tablePagination = pagination(columnNames, totalRows, handleTableChange, tableVals);
 
   const styleForContainer = {
-    minHeight: '87%',
-    maxHeight: '87%',
+    minHeight: 'calc(100% - 50px)',
+    maxHeight: 'calc(100% - 50px)',
     background: '#fff',
     overflowY: 'scroll',
     scrollbarWidth: 'none',
