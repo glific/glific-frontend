@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ReactComponent as InteractiveMessageIcon } from 'assets/images/icons/InteractiveMessage/Dark.svg';
-import { ReactComponent as DownArrow } from 'assets/images/icons/DownArrow.svg';
-import { ReactComponent as DuplicateIcon } from 'assets/images/icons/Flow/Duplicate.svg';
+import { ReactComponent as DownArrow } from 'assets/images/icons/LanguageTranslation.svg';
+import { ReactComponent as DuplicateIcon } from 'assets/images/icons/Flow/Copy.svg';
 import { List } from 'containers/List/List';
 import {
   FILTER_INTERACTIVE_MESSAGES,
