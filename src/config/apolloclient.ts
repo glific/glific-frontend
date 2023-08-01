@@ -4,8 +4,9 @@ import { onError } from '@apollo/link-error';
 import { RetryLink } from '@apollo/client/link/retry';
 import { TokenRefreshLink } from 'apollo-link-token-refresh';
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
+import { getMainDefinition } from '@apollo/client/utilities';
 import { setContext } from '@apollo/link-context';
-import { hasSubscription } from '@jumpn/utils-graphql';
+
 import { createClient } from 'graphql-ws';
 
 import {
@@ -43,7 +44,7 @@ const gqlClient = (history: any) => {
     accessTokenField: 'access_token',
     isTokenValidOrUndefined: async () => checkAuthStatusService(),
     fetchAccessToken: async () => renewAuthToken(),
-    handleFetch: () => { },
+    handleFetch: () => {},
     handleResponse: (_operation, accessTokenField) => (response: any) => {
       // here we can both success and failures
       const tokenResponse: any = [];
@@ -144,7 +145,10 @@ const gqlClient = (history: any) => {
   );
 
   const link = retryLink.split(
-    (operation) => hasSubscription(operation.query),
+    ({ query }) => {
+      const definition = getMainDefinition(query);
+      return definition.kind === 'OperationDefinition' && definition.operation === 'subscription';
+    },
     wsLink,
     refreshTokenLink.concat(errorLink.concat(authLink.concat(httpLink)))
   );

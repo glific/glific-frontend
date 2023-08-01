@@ -240,7 +240,7 @@ export const Auth = ({
         ) : null}
       </div>
       {/* commenting out the promotion section for now */}
-      {mode === 'login' && <Promotion />}
+      {/* {mode === 'login' && <Promotion />} */}
     </div>
   );
 };
