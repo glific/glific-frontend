@@ -9,7 +9,7 @@ import { ReactComponent as WhatsAppIcon } from 'assets/images/icons/Social/Whats
 import { termsOfUse } from 'containers/Organization/Organization';
 import { Button } from 'components/UI/Form/Button/Button';
 import GlificLogo from 'assets/images/logo/Logo.svg';
-import { Promotion } from './Promotion/Promotion';
+// import { Promotion } from './Promotion/Promotion';
 import styles from './Auth.module.css';
 import axios from 'axios';
 import { ORGANIZATION_NAME } from 'config';
