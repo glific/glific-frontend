@@ -1,11 +1,10 @@
 .TableText {
-  margin-right: 23px;
-  text-align: left;
-  padding: 12px 0px;
-  font-size: 16px !important;
-  color: #93a29b;
-  line-height: 1.25;
+  font-size: 15px;
+  line-height: 20px;
+  color: #555555;
+  white-space: pre-line;
   margin: 0;
+  font-weight: 400;
 }
 
 .Title {
@@ -28,13 +27,18 @@
 }
 
 .Name {
-  width: 25%;
+  width: 27%;
+  min-width: 200px;
 }
 
 .NameText {
-  font-size: 20px !important;
-  color: #073f24 !important;
+  padding: 14px 0px;
+  line-height: 20px;
+  margin: 0;
+  font-size: 17px !important;
   word-break: break-all;
+  color: #191c1a !important;
+  font-weight: 500;
 }
 
 .Role {
@@ -43,17 +47,17 @@
 }
 
 .Phone {
-  width: 15%;
+  width: 18%;
 }
 
 .Collection {
-  width: 45%;
+  width: 40%;
 }
 
 .Actions {
   width: 15%;
-  justify-content: flex-end;
-  margin-left: auto;
+  min-width: 200px;
+  text-align: end;
 }
 
 .StaffIcon {

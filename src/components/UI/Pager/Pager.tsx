@@ -93,7 +93,7 @@ const createRows = (
       return (
         <TableCell
           key={item + entry.recordId}
-          sx={{ padding: 0 }}
+          sx={{ padding: '0 25px' }}
           className={`${columnStyles ? columnStyles[stylesIndex] : null}`}
         >
           {entry[item]}
@@ -133,8 +133,8 @@ const tableHeadColumns = (
             backgroundColor: '#dfece2',
             color: 'rgba(12, 31, 20, 0.57) !important',
             zIndex: 100,
-            paddingLeft: 0,
-            paddingRight: 0,
+            paddingLeft: '25px',
+            paddingRight: '25px',
           }}
           className={`${columnStyles ? columnStyles[i] : null}`}
         >

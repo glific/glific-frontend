@@ -145,6 +145,8 @@ export const List = ({
       }
     });
   };
+  // Hover popoup state
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   // DialogBox states
   const [deleteItemID, setDeleteItemID] = useState<number | null>(null);
@@ -726,14 +728,43 @@ export const List = ({
     buttonDisplay = <div className={styles.AddButton}>{buttonContent}</div>;
   }
 
+  const handleMouseEnter = () => {
+    setIsPopupOpen(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsPopupOpen(false);
+  };
+
   const infoIcon = (
-    <InfoIcon
-      className={styles.InfoIcon}
-      onClick={() => {
-        window.location.replace(listLink ? listLink : 'https://glific.org/');
-      }}
-    />
+    <div className={styles.Hover} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+      <InfoIcon className={styles.InfoIcon} />
+
+      {isPopupOpen && (
+        <div className={styles.HoverPopUp}>
+          <div className={styles.Triangle}></div>
+          <div className={styles.HoverPopUpText}>
+            You can configure the flows by clicking on the configure button and are as follows:
+            <ul>
+              <li>Save as Draft</li>
+              <li>Publish Preview</li>
+              <li>Revision history</li>
+              <li>Reset {`${title}`} counts</li>
+            </ul>
+            <div
+              className={styles.HoverLink}
+              onClick={() => {
+                window.location.replace(listLink ? listLink : 'https://glific.org/');
+              }}
+            >
+              Learn more
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
+
   const headerText = (
     <div className={styles.TextHeader}>{`Please go through all the ${title} added below`}</div>
   );
