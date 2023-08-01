@@ -17,7 +17,7 @@
 .MessageText a {
   text-decoration: none;
 }
-  
+
 .ReceivedMessage .MessageText {
   margin-right: 25px;
 }
@@ -41,7 +41,7 @@
 .SendMessage {
   composes: MessageText;
   text-align: left;
-  padding-right: 22px;
+  padding-right: 12px;
   margin-left: auto;
   background: #e1f4c9;
 }
@@ -55,18 +55,22 @@
 }
 
 .TimeSent {
+  display: flex;
+  align-items: center;
   font-size: 8px;
   color: #868181;
   position: absolute;
-  right: 15px;
+  right: 6px;
   bottom: 3px;
 }
 
 .TimeReceived {
+  display: flex;
+  align-items: center;
   font-size: 8px;
   color: #868181;
   position: absolute;
-  right: 15px;
+  right: 6px;
   bottom: 2px;
 }
 
