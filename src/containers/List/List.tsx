@@ -574,18 +574,20 @@ export const List = ({
   }
 
   function formatList(listItems: Array<any>) {
-    return listItems.map(({ ...listItemObj }) => {
-      // display only actions allowed to the user
-      const allowedAction = restrictedAction
-        ? restrictedAction(listItemObj)
-        : { chat: true, edit: true, delete: true };
-      return {
-        ...columns(listItemObj),
-        operations: getIcons(listItemObj, allowedAction),
-        recordId: listItemObj.id,
-        isActive: listItemObj.isActive,
-      };
-    });
+    return listItems
+      ? listItems.map(({ ...listItemObj }) => {
+          // display only actions allowed to the user
+          const allowedAction = restrictedAction
+            ? restrictedAction(listItemObj)
+            : { chat: true, edit: true, delete: true };
+          return {
+            ...columns(listItemObj),
+            operations: getIcons(listItemObj, allowedAction),
+            recordId: listItemObj.id,
+            isActive: listItemObj.isActive,
+          };
+        })
+      : [];
   }
 
   const resetTableVals = () => {
@@ -744,7 +746,8 @@ export const List = ({
         <div className={styles.HoverPopUp}>
           <div className={styles.Triangle}></div>
           <div className={styles.HoverPopUpText}>
-            You can configure the flows by clicking on the configure button and are as follows:
+            You can configure the {`${title}`} by clicking on the configure button and are as
+            follows:
             <ul>
               <li>Save as Draft</li>
               <li>Publish Preview</li>

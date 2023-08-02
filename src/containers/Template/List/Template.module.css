@@ -1,7 +1,6 @@
 .Name {
   width: 25%;
   min-width: 200px;
-  padding-left: 4%;
 }
 
 .Label {
@@ -11,7 +10,6 @@
 .Body {
   width: 36%;
   min-width: 200px;
-  padding: 6px 2%;
   word-break: break-word;
 }
 
@@ -24,7 +22,6 @@
 
 .Actions {
   width: 19%;
-  padding-right: 40px;
   min-width: 200px;
   text-align: end;
 }
@@ -37,11 +34,11 @@
 
 .TableText {
   text-align: left;
-  padding: 12px 0px;
   font-size: 14px;
   color: #93a29b;
   white-space: pre-line;
   margin: 0;
+  padding: 0;
 }
 
 .Status {

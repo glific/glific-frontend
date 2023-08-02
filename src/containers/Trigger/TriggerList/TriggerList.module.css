@@ -6,7 +6,6 @@
 .Name {
   width: 33%;
   min-width: 250px;
-  padding: 6px 0 6px 20px;
 }
 
 .Collections {
@@ -21,7 +20,7 @@
 
 .LabelText {
   word-break: break-all;
-  padding: 14px 0px;
+  padding: 0;
   margin: 0;
   font-size: 17px !important;
   word-break: break-all;
@@ -47,7 +46,6 @@
 
 .Actions {
   width: 25%;
-  padding-right: 40px;
   min-width: 170px;
   text-align: end;
 }

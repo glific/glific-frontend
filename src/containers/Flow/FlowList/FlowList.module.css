@@ -15,11 +15,9 @@
 .Name {
   width: 27%;
   min-width: 200px;
-  padding-left: 12px;
 }
 
 .Pinned {
-  padding-left: 20px;
   width: 5%;
 }
 
@@ -38,18 +36,13 @@
   font-weight: 500;
   font-size: 20px;
   color: #073f24;
-  margin-top: 12px;
-  margin-bottom: 12px;
-  line-height: 1;
 }
 
 .TableText {
   margin-right: 23px;
   text-align: left;
-  padding: 12px 0px;
   font-size: 16px;
   color: #93a29b;
-  line-height: 1.25;
   margin: 0;
 }
 
@@ -113,7 +106,7 @@
 }
 
 .NameText {
-  padding: 14px 0px;
+  padding: 0px 0px;
   line-height: 20px;
   margin: 0;
   font-size: 17px !important;

@@ -13,12 +13,11 @@
   width: 25%;
   min-width: 150px;
   text-align: end;
-  padding-right: 4%;
 }
 
 .LabelText {
   word-break: break-all;
-  padding: 14px 0px;
+  padding: 0;
   margin: 0;
   font-size: 17px !important;
   word-break: break-all;

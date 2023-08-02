@@ -93,7 +93,7 @@ const createRows = (
       return (
         <TableCell
           key={item + entry.recordId}
-          sx={{ padding: '0 25px' }}
+          sx={{ padding: '20px 25px' }}
           className={`${columnStyles ? columnStyles[stylesIndex] : null}`}
         >
           {entry[item]}

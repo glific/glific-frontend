@@ -1,0 +1,59 @@
+.Name {
+  width: 30%;
+  min-width: 150px;
+  padding-left: 12px;
+}
+
+.Actions {
+  width: 15%;
+  min-width: 100px;
+  text-align: end !important;
+}
+
+.LabelText {
+  display: flex;
+  font-weight: 500;
+  font-size: 20px;
+  color: #073f24;
+}
+
+.TableText {
+  margin-right: 23px;
+  text-align: left;
+  font-size: 16px;
+  color: #93a29b;
+  margin: 0;
+}
+
+.FlowIcon {
+  width: 29px;
+  height: 29px;
+}
+
+.LastPublished {
+  font-size: 15px;
+  line-height: 20px;
+  color: #555555;
+  white-space: pre-line;
+  margin: 0;
+  font-weight: 400;
+}
+
+.Count {
+  width: 20%;
+  min-width: 120px;
+}
+
+.DateColumn {
+  width: 35%;
+  min-width: 120px;
+}
+
+.NameText {
+  line-height: 20px;
+  margin: 0;
+  font-size: 17px !important;
+  word-break: break-all;
+  color: #191c1a !important;
+  font-weight: 500;
+}

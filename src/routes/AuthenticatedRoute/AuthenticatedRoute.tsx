@@ -9,6 +9,8 @@ import { useToast } from 'services/ToastService';
 import { ProviderContext } from 'context/session';
 import { GET_ORGANIZATION_PROVIDER } from 'graphql/queries/Organization';
 import styles from './AuthenticatedRoute.module.css';
+import Tag from 'containers/Tag/Tag';
+import TagList from 'containers/Tag/TagList/TagList';
 
 const Chat = lazy(() => import('containers/Chat/Chat'));
 const Layout = lazy(() => import('components/UI/Layout/Layout'));
@@ -86,6 +88,9 @@ const routeStaff = (
 
 const routeAdmin = (
   <Routes>
+    <Route path="tag" element={<TagList />} />
+    <Route path="tag/:id/edit" element={<Tag />} />
+    <Route path="tag/add" element={<Tag />} />
     <Route path="speed-send" element={<SpeedSendList />} />
     <Route path="speed-send/add" element={<SpeedSend />} />
     <Route path="speed-send/:id/edit" element={<SpeedSend />} />

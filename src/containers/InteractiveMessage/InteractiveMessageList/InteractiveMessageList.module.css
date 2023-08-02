@@ -5,18 +5,16 @@
 .Label {
   width: 25%;
   min-width: 200px;
-  padding-left: 4%;
 }
 
 .Actions {
   width: 15%;
-  padding-right: 40px;
   min-width: 200px;
   text-align: end;
 }
 
 .LabelText {
-  padding: 14px 0px;
+  padding: 0;
   line-height: 20px;
   margin: 0;
   font-size: 17px !important;
@@ -32,7 +30,7 @@
   white-space: pre-line;
   margin: 0;
   font-weight: 400;
-  padding: 12px 4% 12px 0;
+  padding: 0;
 }
 
 .FlowIcon {
@@ -41,7 +39,7 @@
 }
 
 .LastPublished {
-  padding-top: 12px;
+  padding-top: 0;
   text-align: left;
   font-size: 16px;
   color: #93a29b;
