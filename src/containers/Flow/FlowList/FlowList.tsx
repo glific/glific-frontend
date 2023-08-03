@@ -50,7 +50,7 @@ const getLastPublished = (date: string, fallback: string = '') =>
   ) : (
     <div className={styles.LastPublishedFallback}>{fallback}</div>
   );
-const getLabel = (tag: any) => <div className={styles.LabelButton}>{tag ? tag.label : 'none'}</div>;
+const getLabel = (tag: any) => <div className={styles.LabelButton}>{tag.label}</div>;
 
 const displayPinned = (isPinned: boolean) => {
   if (isPinned) {
@@ -170,7 +170,7 @@ export const FlowList = () => {
     pin: displayPinned(isPinned),
     name: getName(name, keywords, roles),
     lastPublishedAt: getLastPublished(lastPublishedAt, t('Not published yet')),
-    label: getLabel(tag),
+    label: tag ? getLabel(tag) : '',
     lastChangedAt: getDate(lastChangedAt, t('Nothing in draft')),
   });
 
