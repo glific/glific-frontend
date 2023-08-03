@@ -1,7 +1,4 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-
 import { ReactComponent as AddIcon } from 'assets/images/add.svg';
 import { ReactComponent as FlowIcon } from 'assets/images/icons/Flow/Dark.svg';
 import { GET_TAG_COUNT, FILTER_TAGS } from 'graphql/queries/Tags';
@@ -20,7 +17,7 @@ const getCreated = (updatedAt: any) => {
 };
 
 const columnStyles = [styles.Name, styles.Count, styles.DateColumn, styles.Actions];
-const flowIcon = <FlowIcon className={styles.FlowIcon} />;
+const tagIcon = <FlowIcon className={styles.FlowIcon} />;
 
 const queries = {
   countQuery: GET_TAG_COUNT,
@@ -30,7 +27,6 @@ const queries = {
 
 export const TagList = () => {
   const { t } = useTranslation();
-  const [importing, setImporting] = useState(false);
 
   const getColumns = ({ label, updatedAt, id }: any) => ({
     name: getName(label),
@@ -45,7 +41,7 @@ export const TagList = () => {
     { label: t('Actions') },
   ];
 
-  const dialogMessage = t("You won't be able to use this flow.");
+  const dialogMessage = t("You won't be able to use this tag.");
 
   const columnAttributes = {
     columnNames,
@@ -53,7 +49,7 @@ export const TagList = () => {
     columnStyles,
   };
 
-  const addIcon = <AddIcon style={{ marginRight: '10px', height: '12px', width: '12px' }} />;
+  const addIcon = <AddIcon className={styles.AddIcon} />;
   const Link = 'https://glific.org/';
 
   return (
@@ -62,15 +58,12 @@ export const TagList = () => {
       listItem="tags"
       listItemName="tag"
       pageLink="tag"
-      listIcon={flowIcon}
+      listIcon={tagIcon}
       listLink={Link}
       dialogMessage={dialogMessage}
       {...queries}
       {...columnAttributes}
-      //   searchParameter={['name_or_keyword_or_tags']}
-      //   additionalAction={additionalAction}
       button={{ show: true, label: t('Create'), symbol: addIcon }}
-      loadingList={importing}
     />
   );
 };

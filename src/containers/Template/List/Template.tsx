@@ -132,7 +132,7 @@ export const Template = ({
     switch (status) {
       case 'APPROVED':
         statusValue = (
-          <div className={styles.AlginCenter}>
+          <div className={styles.AlignCenter}>
             <ApprovedIcon />
             {t('Approved')}
           </div>
@@ -140,7 +140,7 @@ export const Template = ({
         break;
       case 'PENDING':
         statusValue = (
-          <div className={styles.AlginCenter}>
+          <div className={styles.AlignCenter}>
             <PendingIcon />
             {t('Pending')}
           </div>
@@ -149,7 +149,7 @@ export const Template = ({
 
       case 'REJECTED':
         statusValue = (
-          <div className={styles.AlginCenter}>
+          <div className={styles.AlignCenter}>
             <RejectedIcon />
             {t('Rejected')}
           </div>
@@ -270,9 +270,12 @@ export const Template = ({
       },
     },
   };
-  // console.log('statusList', statusList, filters);
+  const FormStyle = {
+    width: 150,
+  };
+
   const filterTemplateStatus = (
-    <FormControl sx={{ width: 150 }}>
+    <FormControl sx={FormStyle}>
       <Select
         aria-label="template-type"
         name="template-type"
@@ -368,7 +371,7 @@ export const Template = ({
   const tagFilter = (
     <AutoComplete
       isFilterType
-      placeholder="Select label"
+      placeholder="Select tag"
       options={tag ? tag.tags : []}
       optionLabel="label"
       disabled={false}

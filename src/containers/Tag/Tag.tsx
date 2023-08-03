@@ -9,7 +9,7 @@ import styles from './Tag.module.css';
 import { GET_TAG } from 'graphql/queries/Tags';
 import { CREATE_LABEL, DELETE_TAG, UPDATE_TAG } from 'graphql/mutations/Tags';
 
-const flowIcon = <FlowIcon className={styles.FlowIcon} />;
+const tagIcon = <FlowIcon className={styles.FlowIcon} />;
 
 const queries = {
   getItemQuery: GET_TAG,
@@ -35,7 +35,7 @@ export const Tag = () => {
     label: Yup.string().required(t('Name is required.')),
   });
 
-  const dialogMessage = '';
+  const dialogMessage = t("You won't be able to use this tag.");
 
   const formFields = [
     {
@@ -52,10 +52,6 @@ export const Tag = () => {
     // return modified payload
     return payload;
   };
-
-  // alter header & update/copy queries
-  let title;
-  let type;
 
   const customHandler = (data: any) => {
     let dataCopy = data;
@@ -83,12 +79,8 @@ export const Tag = () => {
       formFields={formFields}
       redirectionLink="tag"
       cancelLink="tag"
-      linkParameter="uuid"
       listItem="tag"
-      icon={flowIcon}
-      languageSupport={false}
-      title={title}
-      type={type}
+      icon={tagIcon}
       customHandler={customHandler}
     />
   );

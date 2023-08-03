@@ -93,8 +93,7 @@ const createRows = (
       return (
         <TableCell
           key={item + entry.recordId}
-          sx={{ padding: '20px 25px' }}
-          className={`${columnStyles ? columnStyles[stylesIndex] : null}`}
+          className={`${columnStyles && columnStyles[stylesIndex]} ${styles.RowStyle}`}
         >
           {entry[item]}
         </TableCell>
@@ -129,14 +128,7 @@ const tableHeadColumns = (
       {columnNames.map((field: any, i: number) => (
         <TableCell
           key={uuidv4()}
-          sx={{
-            backgroundColor: '#dfece2',
-            color: 'rgba(12, 31, 20, 0.57) !important',
-            zIndex: 100,
-            paddingLeft: '25px',
-            paddingRight: '25px',
-          }}
-          className={`${columnStyles ? columnStyles[i] : null}`}
+          className={`${columnStyles && columnStyles[i]} ${styles.RowHeadStyle}`}
         >
           {i !== columnNames.length - 1 && field.name ? (
             <TableSortLabel
@@ -207,7 +199,7 @@ export const Pager = ({
   const tableHead = tableHeadColumns(columnNames, columnStyles, tableVals, handleTableChange);
   const tablePagination = pagination(columnNames, totalRows, handleTableChange, tableVals);
 
-  const styleForContainer = {
+  const StyleForContainer = {
     minHeight: 'calc(100% - 50px)',
     maxHeight: 'calc(100% - 50px)',
     background: '#fff',
@@ -221,7 +213,7 @@ export const Pager = ({
 
   return (
     <div className={styles.TableContainer}>
-      <TableContainer sx={styleForContainer}>
+      <TableContainer sx={StyleForContainer}>
         <Table stickyHeader aria-label="sticky table" className={styles.Table} data-testid="table">
           <TableHead data-testid="tableHead">{tableHead}</TableHead>
           <TableBody data-testid="tableBody">{!loadingList && data.length > 0 && rows}</TableBody>

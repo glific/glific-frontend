@@ -87,3 +87,15 @@
   justify-content: center;
   align-items: center;
 }
+
+.RowStyle {
+  padding: 15px 20px 15px 25px !important;
+}
+
+.RowHeadStyle {
+  background-color: #dfece2 !important;
+  color: rgba(12, 31, 20, 0.57) !important;
+  z-index: 100;
+  padding-left: 22px !important;
+  padding-right: 25px !important;
+}
