@@ -185,3 +185,7 @@
   height: 15px !important;
   width: 15px !important;
 }
+
+.ActiveFilter {
+  width: 150px !important;
+}

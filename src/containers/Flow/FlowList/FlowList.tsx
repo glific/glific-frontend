@@ -210,7 +210,7 @@ export const FlowList = () => {
   };
 
   const activeFilter = (
-    <FormControl sx={{ width: 150 }}>
+    <FormControl className={styles.ActiveFilter}>
       <Select
         aria-label="template-type"
         name="template-type"

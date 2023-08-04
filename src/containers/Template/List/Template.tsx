@@ -269,12 +269,9 @@ export const Template = ({
       },
     },
   };
-  const FormStyle = {
-    width: 150,
-  };
 
   const filterTemplateStatus = (
-    <FormControl sx={FormStyle}>
+    <FormControl className={styles.FormStyle}>
       <Select
         aria-label="template-type"
         name="template-type"

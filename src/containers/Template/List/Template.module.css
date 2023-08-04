@@ -116,3 +116,7 @@
   height: 36px;
   background: #ffffff;
 }
+
+.FormStyle {
+  width: 150px !important;
+}

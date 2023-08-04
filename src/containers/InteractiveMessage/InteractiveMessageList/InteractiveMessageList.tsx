@@ -130,15 +130,10 @@ export const InteractiveMessageList = () => {
     fetchPolicy: 'network-only',
   });
 
-  // OnChange handler for the dropdown
-  const handleDropdownChange = (event: any) => {
-    setSelectedTag(event.target.value);
-  };
-
   const tagFilter = (
     <AutoComplete
       isFilterType
-      placeholder="Select label"
+      placeholder="Select tag"
       options={tag ? tag.tags : []}
       optionLabel="label"
       disabled={false}
@@ -147,10 +142,10 @@ export const InteractiveMessageList = () => {
       onChange={(value: any) => {
         setSelectedTag(value);
       }}
-      form={{ setFieldValue: handleDropdownChange }}
+      form={{ setFieldValue: () => {} }}
       field={{
+        name: 'selectedtag',
         value: selectedtag,
-        onChange: handleDropdownChange,
       }}
     />
   );
