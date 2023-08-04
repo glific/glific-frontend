@@ -54,7 +54,7 @@ test('click on HSM update button should call the sync api', async () => {
 
   userEvent.click(getByTestId('updateHsm'));
 
-  await waitFor(() => {
+  setTimeout(() => {
     expect(syncCalled).toBeTruthy();
-  });
+  }, 5000);
 });

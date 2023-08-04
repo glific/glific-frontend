@@ -426,8 +426,7 @@ export const List = ({
 
     moreButton = (
       <IconButton
-        aria-label={t('Edit')}
-        data-testid="EditIcon"
+        data-testid="MoreIcon"
         onClick={() => {
           if (showMoreOptions == id) {
             setShowMoreOptions('');
