@@ -139,14 +139,12 @@ export const FlowList = () => {
       icon: configureIcon,
       parameter: 'uuid',
       link: '/flow/configure',
-      isMoreOption: false,
     },
     {
       label: t('Make a copy'),
       icon: <DuplicateIcon />,
       parameter: 'id',
       dialog: setDialog,
-      isMoreOption: false,
     },
     {
       label: t('Export flow'),
@@ -211,11 +209,6 @@ export const FlowList = () => {
     },
   };
 
-  // OnChange handler for the dropdown
-  const handleDropdownChange = (event: any) => {
-    setSelectedTag(event.target.value);
-  };
-
   const activeFilter = (
     <FormControl sx={{ width: 150 }}>
       <Select
@@ -251,10 +244,10 @@ export const FlowList = () => {
       onChange={(value: any) => {
         setSelectedTag(value);
       }}
-      form={{ setFieldValue: handleDropdownChange }}
+      form={{ setFieldValue: () => {} }}
       field={{
+        name: 'selectedtag',
         value: selectedtag,
-        onChange: handleDropdownChange,
       }}
     />
   );
@@ -266,16 +259,29 @@ export const FlowList = () => {
     ...(selectedtag?.id && { tagIds: [parseInt(selectedtag?.id)] }),
   };
 
-  const addIcon = <AddIcon style={{ marginRight: '10px', height: '12px', width: '12px' }} />;
-  const flowLink = 'https://glific.org/';
+  const addIcon = <AddIcon className={styles.AddIcon} />;
+
+  const helpData = {
+    heading: 'You can configure the flow by clicking on the configure button and are as follows:',
+    body: (
+      <ul>
+        <li>Save as Draft</li>
+        <li>Publish Preview</li>
+        <li>Revision history</li>
+        <li>Reset flow counts</li>
+      </ul>
+    ),
+    link: 'https://glific.org/',
+  };
+
   return (
     <List
+      helpData={helpData}
       title={t('Flows')}
       listItem="flows"
       listItemName="flow"
       pageLink="flow"
       listIcon={flowIcon}
-      listLink={flowLink}
       dialogMessage={dialogMessage}
       {...queries}
       {...columnAttributes}
@@ -285,7 +291,6 @@ export const FlowList = () => {
       secondaryButton={importButton}
       filters={filters}
       filterList={activeFilter}
-      filtersTag={selectedtag && selectedtag.id}
       filterDropdowm={tagFilter}
       loadingList={importing}
     />

@@ -50,7 +50,6 @@ export const TagList = () => {
   };
 
   const addIcon = <AddIcon className={styles.AddIcon} />;
-  const Link = 'https://glific.org/';
 
   return (
     <List
@@ -59,7 +58,6 @@ export const TagList = () => {
       listItemName="tag"
       pageLink="tag"
       listIcon={tagIcon}
-      listLink={Link}
       dialogMessage={dialogMessage}
       {...queries}
       {...columnAttributes}

@@ -41,8 +41,22 @@ export const SearchList = () => {
     columnStyles,
   };
 
+  const helpData = {
+    heading: 'You can configure the search by clicking on the configure button and are as follows:',
+    body: (
+      <ul>
+        <li>Save as Draft</li>
+        <li>Publish Preview</li>
+        <li>Revision history</li>
+        <li>Reset search counts</li>
+      </ul>
+    ),
+    link: 'https://glific.org/',
+  };
+
   return (
     <List
+      helpData={helpData}
       title="Searches"
       listItem="savedSearches"
       listItemName="Search"

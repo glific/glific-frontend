@@ -81,6 +81,7 @@ export const Tag = () => {
       cancelLink="tag"
       listItem="tag"
       icon={tagIcon}
+      languageSupport={false}
       customHandler={customHandler}
     />
   );

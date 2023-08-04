@@ -3,10 +3,12 @@ import { gql } from '@apollo/client';
 export const GET_TAGS = gql`
   query Tags($filter: TagFilter) {
     tags(filter: $filter) {
-      label
+      label,
+      id,
     }
   }
 `;
+
 export const GET_TAG = gql`
   query getTag($id: ID!) {
     tag(id: $id) {

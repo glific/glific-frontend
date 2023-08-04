@@ -97,9 +97,23 @@ export const StaffManagementList = () => {
     return action;
   };
 
+  const helpData = {
+    heading: 'You can configure the staff by clicking on the configure button and are as follows:',
+    body: (
+      <ul>
+        <li>Save as Draft</li>
+        <li>Publish Preview</li>
+        <li>Revision history</li>
+        <li>Reset staff counts</li>
+      </ul>
+    ),
+    link: 'https://glific.org/',
+  };
+
   return (
     <div>
       <List
+        helpData={helpData}
         title={t('Staff Management')}
         listItem="users"
         listItemName="user"

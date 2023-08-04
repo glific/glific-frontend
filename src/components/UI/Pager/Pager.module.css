@@ -95,7 +95,7 @@
 .RowHeadStyle {
   background-color: #dfece2 !important;
   color: rgba(12, 31, 20, 0.57) !important;
-  z-index: 100;
+  z-index: 100 !important;
   padding-left: 22px !important;
   padding-right: 25px !important;
 }

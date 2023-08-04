@@ -42,7 +42,7 @@ export interface ListProps {
   pageLink: string;
   columns: Function;
   listIcon: React.ReactNode;
-  listLink?: any;
+  helpData?: any;
   columnStyles: Array<any>;
   secondaryButton?: any;
   title: string;
@@ -104,7 +104,7 @@ export const List = ({
   deleteItemQuery,
   listItemName,
   dialogMessage = '',
-  listLink = '',
+  helpData = '',
   secondaryButton,
   pageLink,
   columns,
@@ -121,7 +121,6 @@ export const List = ({
   editSupport = true,
   searchParameter = ['label'],
   filters = null,
-  filtersTag = null,
   displayListType = 'list',
   cardLink = null,
   additionalAction = () => [],
@@ -741,23 +740,16 @@ export const List = ({
   const infoIcon = (
     <div className={styles.Hover} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       <InfoIcon className={styles.InfoIcon} />
-
-      {isPopupOpen && (
+      {isPopupOpen && helpData && (
         <div className={styles.HoverPopUp}>
           <div className={styles.Triangle}></div>
           <div className={styles.HoverPopUpText}>
-            You can configure the {`${title}`} by clicking on the configure button and are as
-            follows:
-            <ul>
-              <li>Save as Draft</li>
-              <li>Publish Preview</li>
-              <li>Revision history</li>
-              <li>Reset {`${title}`} counts</li>
-            </ul>
+            {helpData.heading}
+            {helpData.body}
             <div
               className={styles.HoverLink}
               onClick={() => {
-                window.location.replace(listLink ? listLink : 'https://glific.org/');
+                window.location.replace(helpData.link);
               }}
             >
               Learn more

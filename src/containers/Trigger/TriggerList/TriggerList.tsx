@@ -88,8 +88,23 @@ export const TriggerList = () => {
 
   const dialogMessage = t("You won't be able to use this trigger.");
 
+  const helpData = {
+    heading:
+      'You can configure the trigger by clicking on the configure button and are as follows:',
+    body: (
+      <ul>
+        <li>Save as Draft</li>
+        <li>Publish Preview</li>
+        <li>Revision history</li>
+        <li>Reset trigger counts</li>
+      </ul>
+    ),
+    link: 'https://glific.org/',
+  };
+
   return (
     <List
+      helpData={helpData}
       title="Triggers"
       listItem="triggers"
       listItemName="trigger"

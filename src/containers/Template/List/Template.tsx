@@ -44,7 +44,6 @@ const getUpdatedAt = (date: string) => (
 
 const getTranslations = (language: any, data: string) => {
   const dataObj = JSON.parse(data);
-  console.log('dataObj', dataObj);
   if (Object.prototype.hasOwnProperty.call(dataObj, language.id)) {
     delete dataObj[language.id];
   }
@@ -393,8 +392,23 @@ export const Template = ({
     ...(selectedTag?.id && { tagIds: [parseInt(selectedTag?.id)] }),
   };
 
+  const helpData = {
+    heading:
+      'You can configure the Speed send by clicking on the configure button and are as follows:',
+    body: (
+      <ul>
+        <li>Save as Draft</li>
+        <li>Publish Preview</li>
+        <li>Revision history</li>
+        <li>Reset Speed send counts</li>
+      </ul>
+    ),
+    link: 'https://glific.org/',
+  };
+
   return (
     <List
+      helpData={helpData}
       secondaryButton={secondaryButton}
       title={title}
       listItem={listItem}

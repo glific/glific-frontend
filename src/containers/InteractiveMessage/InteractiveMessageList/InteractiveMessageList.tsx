@@ -155,8 +155,23 @@ export const InteractiveMessageList = () => {
     />
   );
 
+  const helpData = {
+    heading:
+      'You can configure the interactive msg by clicking on the configure button and are as follows:',
+    body: (
+      <ul>
+        <li>Save as Draft</li>
+        <li>Publish Preview</li>
+        <li>Revision history</li>
+        <li>Reset interactive msg counts</li>
+      </ul>
+    ),
+    link: 'https://glific.org/',
+  };
+
   return (
     <List
+      helpData={helpData}
       title={t('Interactive msg')}
       listItem="interactiveTemplates"
       listItemName="interactive"
