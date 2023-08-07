@@ -280,9 +280,10 @@ export const Template = ({
         MenuProps={MenuProps}
         className={styles.DropDown}
         sx={{ '& > fieldset': { border: 'none' } }}
+        data-testid="dropdown-template"
       >
         {statusList.map((status: any) => (
-          <MenuItem key={status} value={status}>
+          <MenuItem data-testid="template-item" key={status} value={status}>
             {status}
           </MenuItem>
         ))}
