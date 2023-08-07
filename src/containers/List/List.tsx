@@ -786,7 +786,8 @@ export const List = ({
         <div className={styles.FlexCenter}>
           {filterList}
           {filterDropdowm}
-          {!filterList && !filterDropdowm && (
+          {backLink}
+          {!filterList && !filterDropdowm && !backLink && (
             <div className={styles.TextList}>
               {`${itemList.length + ' ' + title} are currently listed below`}
             </div>
@@ -811,7 +812,6 @@ export const List = ({
         </div>
       </div>
       <div className={`${styles.Body} ${customStyles}`}>
-        {backLink}
         {/* Rendering list of items */}
         {displayList}
       </div>

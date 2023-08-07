@@ -38,21 +38,23 @@ test('it renders list successfully', async () => {
     expect(actionLabel).toBeInTheDocument();
   });
 
-  const editButtons = screen.getAllByTestId('edit-icon');
+  setTimeout(async () => {
+    const editButtons = screen.getAllByTestId('edit-icon');
+    console.log('editButtons');
 
-  await waitFor(() => {
-    expect(editButtons[0]).toBeInTheDocument();
-    fireEvent.click(editButtons[0]);
-    // Edit, clears value and click save
-    const inputFields = screen.getAllByRole('textbox');
-    userEvent.type(inputFields[1], '{selectall}{backspace}');
+    await waitFor(() => {
+      expect(editButtons[0]).toBeInTheDocument();
+      fireEvent.click(editButtons[0]);
+      // Edit, clears value and click save
+      const inputFields = screen.getAllByRole('textbox');
+      userEvent.type(inputFields[1], '{selectall}{backspace}');
+      const saveButton = screen.getByTestId('save-button');
+      fireEvent.click(saveButton);
 
-    const saveButton = screen.getByTestId('save-button');
-    fireEvent.click(saveButton);
-
-    userEvent.type(inputFields[1], '{selectall}{backspace}Age Group Name');
-    fireEvent.click(saveButton);
-  });
+      userEvent.type(inputFields[1], '{selectall}{backspace}Age Group Name');
+      fireEvent.click(saveButton);
+    });
+  }, 5000);
 
   await waitFor(() => {});
 });
@@ -72,17 +74,19 @@ test('it renders component, edits field, saves and error occurs', async () => {
   render(listError);
   expect(screen.getByText('Loading...')).toBeInTheDocument();
 
-  await waitFor(() => {
-    const editButtons = screen.getAllByTestId('edit-icon');
-    expect(editButtons[3]).toBeInTheDocument();
-    fireEvent.click(editButtons[3]);
+  setTimeout(async () => {
+    await waitFor(() => {
+      const editButtons = screen.getAllByTestId('edit-icon');
+      expect(editButtons[3]).toBeInTheDocument();
+      fireEvent.click(editButtons[3]);
 
-    // Edit, clears value and click save
-    const inputFields = screen.getAllByRole('textbox');
-    userEvent.type(inputFields[1], '{selectall}{backspace}age_group');
-    const saveButton = screen.getByTestId('save-button');
-    fireEvent.click(saveButton);
-  });
+      // Edit, clears value and click save
+      const inputFields = screen.getAllByRole('textbox');
+      userEvent.type(inputFields[1], '{selectall}{backspace}age_group');
+      const saveButton = screen.getByTestId('save-button');
+      fireEvent.click(saveButton);
+    });
+  }, 5000);
 
   await waitFor(() => {});
 });

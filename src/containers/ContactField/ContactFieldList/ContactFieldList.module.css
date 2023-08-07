@@ -64,7 +64,6 @@
 }
 
 .OtherColumn {
-  display: flex;
   align-content: center;
   width: 20%;
 }
@@ -73,6 +72,7 @@
   width: 20%;
   justify-content: flex-end;
   margin-left: auto;
+  text-align: end;
 }
 
 .Dialogbox {
