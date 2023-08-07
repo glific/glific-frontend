@@ -39,7 +39,7 @@ export const cache = new InMemoryCache({
   },
 });
 
-const gqlClient = (history: any) => {
+const gqlClient = (navigate: any) => {
   const refreshTokenLink: any = new TokenRefreshLink({
     accessTokenField: 'access_token',
     isTokenValidOrUndefined: async () => checkAuthStatusService(),
@@ -105,7 +105,7 @@ const gqlClient = (history: any) => {
       switch (networkError.statusCode) {
         case 401:
           setLogs(`Error 401: logging user out`, 'error');
-          history.push('/logout/session');
+          navigate('/logout/session');
           break;
         default:
           // eslint-disable-next-line
