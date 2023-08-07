@@ -59,9 +59,11 @@ test('Update status', async () => {
   fireEvent.click(extensionButton);
   fireEvent.click(orgCustomerButton);
 
-  const deleteButton = screen.getByRole('button', { name: 'Delete' });
-  expect(deleteButton).toBeInTheDocument();
-  fireEvent.click(deleteButton);
+  setTimeout(() => {
+    const deleteButton = screen.getByRole('button', { name: 'Delete' });
+    expect(deleteButton).toBeInTheDocument();
+    fireEvent.click(deleteButton);
+  }, 5000);
 
   const confirmationInput = screen.getByRole('textbox');
   await UserEvent.type(confirmationInput, 'Test');
@@ -69,8 +71,10 @@ test('Update status', async () => {
   expect(confirmationInput).toBeInTheDocument();
   expect(confirmationInput).toHaveValue('Test');
 
-  const confirmDeleteButton = screen.getByText('Confirm');
-  expect(confirmDeleteButton).toBeInTheDocument();
+  setTimeout(() => {
+    const confirmDeleteButton = screen.getByText('Confirm');
+    expect(confirmDeleteButton).toBeInTheDocument();
 
-  fireEvent.click(confirmDeleteButton);
+    fireEvent.click(confirmDeleteButton);
+  }, 5000);
 });

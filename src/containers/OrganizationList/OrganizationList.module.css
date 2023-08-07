@@ -41,7 +41,6 @@
 }
 
 .Status {
-  display: flex;
   align-content: center;
   width: 40%;
 }
@@ -52,6 +51,7 @@
 
 .Actions {
   width: 20%;
+  text-align: end;
   justify-content: flex-end;
   margin-left: auto;
 }
