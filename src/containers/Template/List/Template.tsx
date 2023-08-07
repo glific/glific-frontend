@@ -359,11 +359,6 @@ export const Template = ({
     button.show = false;
   }
 
-  // OnChange handler for the dropdown
-  const handleDropdownChange = (event: any) => {
-    setSelectedTag(event.target.value);
-  };
-
   const tagFilter = (
     <AutoComplete
       isFilterType
@@ -376,10 +371,9 @@ export const Template = ({
       onChange={(value: any) => {
         setSelectedTag(value);
       }}
-      form={{ setFieldValue: handleDropdownChange }}
+      form={{ setFieldValue: () => {} }}
       field={{
         value: selectedTag,
-        onChange: handleDropdownChange,
       }}
     />
   );
