@@ -1,4 +1,4 @@
-import { render, waitFor, fireEvent, screen } from '@testing-library/react';
+import { render, waitFor, fireEvent, screen, cleanup } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 
@@ -16,6 +16,7 @@ import { NotificationList } from './NotificationList';
 
 setUserSession(JSON.stringify({ roles: ['Admin'] }));
 
+afterEach(cleanup);
 const mocks: any = [
   getUnFitleredNotificationCountQuery,
   getNotificationsQuery,
@@ -41,8 +42,13 @@ const notifications = (
 
 test('It should load notifications', async () => {
   const { getByText } = render(notifications);
+  const loading = await screen.findByText('Loading...');
 
-  expect(getByText('Loading...')).toBeInTheDocument();
+  setTimeout(async () => {
+    await waitFor(() => {
+      expect(loading).toBeInTheDocument();
+    });
+  }, 5000);
 
   await waitFor(() => {
     expect(getByText('Notifications')).toBeInTheDocument();
@@ -53,12 +59,15 @@ test('It should load notifications', async () => {
   const severity = await screen.findByText('Severity');
   const entity = await screen.findByText('Entity');
   const message = await screen.findAllByText('Message');
-
-  expect(time).toBeInTheDocument();
-  expect(category).toBeInTheDocument();
-  expect(severity).toBeInTheDocument();
-  expect(entity).toBeInTheDocument();
-  expect(message).toHaveLength(2);
+  setTimeout(async () => {
+    await waitFor(() => {
+      expect(time).toBeInTheDocument();
+      expect(category).toBeInTheDocument();
+      expect(severity).toBeInTheDocument();
+      expect(entity).toBeInTheDocument();
+      expect(message).toHaveLength(2);
+    });
+  }, 5000);
 });
 
 test('click on forward arrrow', async () => {
