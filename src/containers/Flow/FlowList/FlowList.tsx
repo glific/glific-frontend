@@ -151,7 +151,7 @@ export const FlowList = () => {
       icon: <ExportIcon data-testid="export-icon" className={styles.IconSize} />,
       parameter: 'id',
       dialog: exportFlow,
-      isMoreOption: true,
+      hasMore: true,
       name: 'Export',
     },
   ];

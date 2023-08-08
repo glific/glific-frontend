@@ -44,30 +44,27 @@ test('It should load notifications', async () => {
   const { getByText } = render(notifications);
   const loading = await screen.findByText('Loading...');
 
-  setTimeout(async () => {
-    await waitFor(() => {
-      expect(loading).toBeInTheDocument();
-    });
-  }, 5000);
+  await waitFor(() => {
+    expect(loading).toBeInTheDocument();
+  });
 
   await waitFor(() => {
     expect(getByText('Notifications')).toBeInTheDocument();
   });
 
-  const time = await screen.findByText('Timestamp');
-  const category = await screen.findByText('Category');
-  const severity = await screen.findByText('Severity');
-  const entity = await screen.findByText('Entity');
-  const message = await screen.findAllByText('Message');
-  setTimeout(async () => {
-    await waitFor(() => {
-      expect(time).toBeInTheDocument();
-      expect(category).toBeInTheDocument();
-      expect(severity).toBeInTheDocument();
-      expect(entity).toBeInTheDocument();
-      expect(message).toHaveLength(2);
-    });
-  }, 5000);
+  const time = screen.getByText('Timestamp');
+  const category = screen.getByText('Category');
+  const severity = screen.getByText('Severity');
+  const entity = screen.getByText('Entity');
+  const message = screen.getAllByText('Message');
+
+  await waitFor(() => {
+    expect(time).toBeInTheDocument();
+    expect(category).toBeInTheDocument();
+    expect(severity).toBeInTheDocument();
+    expect(entity).toBeInTheDocument();
+    expect(message).toHaveLength(2);
+  });
 });
 
 test('click on forward arrrow', async () => {

@@ -2,7 +2,14 @@ import { useState, useEffect, useCallback } from 'react';
 import { Link, Navigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useQuery, useMutation, DocumentNode, useLazyQuery } from '@apollo/client';
-import { Divider, IconButton, TableFooter, TablePagination, TableRow } from '@mui/material';
+import {
+  ClickAwayListener,
+  Divider,
+  IconButton,
+  TableFooter,
+  TablePagination,
+  TableRow,
+} from '@mui/material';
 import { ListCard } from 'containers/List/ListCard/ListCard';
 import { Button } from 'components/UI/Form/Button/Button';
 import { Pager } from 'components/UI/Pager/Pager';
@@ -29,6 +36,12 @@ export interface ColumnNames {
   order?: string;
 }
 
+export interface HelpDataProps {
+  heading: string;
+  body: JSX.Element;
+  link: string;
+}
+
 export interface ListProps {
   loadingList?: boolean;
   helperText?: string;
@@ -42,7 +55,7 @@ export interface ListProps {
   pageLink: string;
   columns: Function;
   listIcon: React.ReactNode;
-  helpData?: any;
+  helpData?: HelpDataProps;
   columnStyles: Array<any>;
   secondaryButton?: any;
   title: string;
@@ -104,7 +117,11 @@ export const List = ({
   deleteItemQuery,
   listItemName,
   dialogMessage = '',
-  helpData = '',
+  helpData = {
+    heading: '',
+    body: <></>,
+    link: '',
+  },
   secondaryButton,
   pageLink,
   columns,
@@ -135,15 +152,6 @@ export const List = ({
   const { t } = useTranslation();
   const [showMoreOptions, setShowMoreOptions] = useState<string>('');
 
-  const onBlur = () => {
-    const concernedElement: any = document.querySelector('.DropDownClass');
-
-    document.addEventListener('mousedown', (event: any) => {
-      if (!concernedElement?.contains(event.target) && showMoreOptions != '') {
-        setShowMoreOptions('');
-      }
-    });
-  };
   // Hover popoup state
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
@@ -427,7 +435,8 @@ export const List = ({
     moreButton = (
       <IconButton
         data-testid="MoreIcon"
-        onClick={() => {
+        onClick={(event) => {
+          event.stopPropagation();
           if (showMoreOptions == id) {
             setShowMoreOptions('');
           } else {
@@ -475,97 +484,99 @@ export const List = ({
         </div>
       ) : null;
 
+    const actionsInsideMore = additionalAction(item).filter((action: any) => action?.hasMore);
+    const actionsOutsideMore = additionalAction(item).filter((action: any) => !action?.hasMore);
+
+    const actionListMap = (actionList: any, hasMore: boolean) => {
+      return actionList.map((action: any, index: number) => {
+        // check if we are dealing with nested element
+        let additionalActionParameter: any;
+        const params: any = action.parameter.split('.');
+        if (params.length > 1) {
+          additionalActionParameter = item[params[0]][params[1]];
+        } else {
+          additionalActionParameter = item[params[0]];
+        }
+        const key = index;
+
+        if (hasMore) {
+          return (
+            <div key={key}>
+              <Divider className={styles.DividerPopUp} />
+              <div
+                data-testid="additionalButton"
+                id="additionalButton-icon"
+                onClick={() => action.dialog(additionalActionParameter, item)}
+              >
+                <div className={styles.IconWithText}>
+                  {action.icon}
+                  <div className={styles.TextButton}>{action.name}</div>
+                </div>
+              </div>
+            </div>
+          );
+        }
+
+        if (action.link) {
+          return (
+            <Link to={`${action.link}/${additionalActionParameter}`} key={key}>
+              <IconButton className={styles.additonalButton} data-testid="additionalButton">
+                <Tooltip title={`${action.label}`} placement="top">
+                  {action.icon}
+                </Tooltip>
+              </IconButton>
+            </Link>
+          );
+        }
+        if (action.dialog) {
+          return (
+            <IconButton
+              data-testid="additionalButton"
+              className={styles.additonalButton}
+              id="additionalButton-icon"
+              onClick={() => action.dialog(additionalActionParameter, item)}
+              key={key}
+            >
+              <Tooltip title={`${action.label}`} placement="top" key={key}>
+                {action.icon}
+              </Tooltip>
+            </IconButton>
+          );
+        }
+        if (action.button) {
+          return action.button(item, action, key, fetchQuery);
+        }
+        e;
+        return null;
+      });
+    };
+
     if (id) {
       return (
-        <div className={styles.Icons} onBlur={onBlur}>
-          {additionalAction(item).map((action: any, index: number) => {
-            if (!action?.isMoreOption) {
-              // check if we are dealing with nested element
-              let additionalActionParameter: any;
-              const params: any = action.parameter.split('.');
-              if (params.length > 1) {
-                additionalActionParameter = item[params[0]][params[1]];
-              } else {
-                additionalActionParameter = item[params[0]];
-              }
-              const key = index;
+        <ClickAwayListener
+          onClickAway={() => {
+            showMoreOptions && setShowMoreOptions('');
+          }}
+        >
+          <div className={styles.Icons}>
+            {actionListMap(actionsOutsideMore, false)}
 
-              if (action.link) {
-                return (
-                  <Link to={`${action.link}/${additionalActionParameter}`} key={key}>
-                    <IconButton className={styles.additonalButton} data-testid="additionalButton">
-                      <Tooltip title={`${action.label}`} placement="top">
-                        {action.icon}
-                      </Tooltip>
-                    </IconButton>
-                  </Link>
-                );
-              }
-              if (action.dialog) {
-                return (
-                  <IconButton
-                    data-testid="additionalButton"
-                    className={styles.additonalButton}
-                    id="additionalButton-icon"
-                    onClick={() => action.dialog(additionalActionParameter, item)}
-                    key={key}
-                  >
-                    <Tooltip title={`${action.label}`} placement="top" key={key}>
-                      {action.icon}
-                    </Tooltip>
-                  </IconButton>
-                );
-              }
-              if (action.button) {
-                return action.button(item, action, key, fetchQuery);
-              }
-            }
-            return null;
-          })}
-
-          {/* do not display edit & delete for staff role in collection */}
-          {userRolePermissions.manageCollections || item !== 'collections' ? (
-            <div className={styles.MoreOptions}>
-              {moreButton}
-              {showMoreOptions == id && (
-                <div className={`${styles.PopUp} ${styles.FlexCenter} DropDownClass`}>
-                  {editButton}
-                  <Divider className={styles.DividerPopUp} />
-                  {deleteButton(id, labelValue)}
-                  {additionalAction(item).map((action: any, index: number) => {
-                    if (action?.isMoreOption) {
-                      let additionalActionParameter: any;
-                      const params: any = action.parameter.split('.');
-                      if (params.length > 1) {
-                        additionalActionParameter = item[params[0]][params[1]];
-                      } else {
-                        additionalActionParameter = item[params[0]];
-                      }
-                      const key = index;
-
-                      return (
-                        <div key={key}>
-                          <Divider className={styles.DividerPopUp} />
-                          <div
-                            data-testid="additionalButton"
-                            id="additionalButton-icon"
-                            onClick={() => action.dialog(additionalActionParameter, item)}
-                          >
-                            <div className={styles.IconWithText}>
-                              {action.icon}
-                              <div className={styles.TextButton}>{action.name}</div>
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    }
-                    return null;
-                  })}
-                </div>
-              )}
-            </div>
-          ) : null}
-        </div>
+            {/* do not display edit & delete for staff role in collection */}
+            {userRolePermissions.manageCollections || item !== 'collections' ? (
+              <div className={styles.MoreOptions}>
+                {moreButton}
+                {showMoreOptions == id && (
+                  <div className={`${styles.PopUp} ${styles.FlexCenter} DropDownClass`}>
+                    {editButton}
+                    <Divider className={styles.DividerPopUp} />
+                    {deleteButton(id, labelValue)}
+                    {actionListMap(actionsInsideMore, true)}
+                  </div>
+                )}
+              </div>
+            ) : null}
+          </div>
+        </ClickAwayListener>
       );
     }
     return null;

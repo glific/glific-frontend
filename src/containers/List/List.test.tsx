@@ -202,9 +202,14 @@ describe('DialogMessage tests', () => {
 
     await waitFor(() => {
       const { queryByTestId } = within(container.querySelector('tbody tr') as HTMLTableRowElement);
-      // const button = queryByTestId('DeleteIcon') as HTMLButtonElement;
+      const MoreButton = queryByTestId('MoreIcon');
 
-      // fireEvent.click(button);
+      if (MoreButton) {
+        fireEvent.click(MoreButton);
+      }
+
+      const button = queryByTestId('DeleteIcon') as HTMLButtonElement;
+      fireEvent.click(button);
     });
   });
 });
