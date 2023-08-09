@@ -1,14 +1,14 @@
-import { render, cleanup, fireEvent, act, screen } from '@testing-library/react';
+import { render, cleanup, fireEvent, act, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import UserEvent from '@testing-library/user-event';
 import { BrowserRouter as Router } from 'react-router-dom';
 
-import { getAllOrganizations } from 'mocks/Organization';
+import { deleteOrganization, getAllOrganizations } from 'mocks/Organization';
 import { setUserSession } from 'services/AuthService';
 import OrganizationList from './OrganizationList';
 
 afterEach(cleanup);
-const mocks = getAllOrganizations;
+const mocks = [...getAllOrganizations, deleteOrganization];
 setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
 
 const props = { openExtensionModal: false, openCustomerModal: false };
@@ -77,4 +77,5 @@ test('Update status', async () => {
 
     fireEvent.click(confirmDeleteButton);
   }, 5000);
+  await waitFor(() => {});
 });

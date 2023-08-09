@@ -101,7 +101,7 @@ describe('<List /> actions', () => {
     const { container } = render(listButtons);
     await waitFor(() => {
       const button = container.querySelector(
-        'button.MuiButton-containedPrimary'
+        'button.MuiButton-containedPrimary',
       ) as HTMLButtonElement;
       fireEvent.click(button);
     });
@@ -164,8 +164,10 @@ describe('DialogMessage tests', () => {
       );
       return {
         component,
-        handleOkCallback: vi.fn(),
-        isConfirmed: true,
+        props: {
+          handleOk: vi.fn(),
+          disableOk: false,
+        },
       };
     };
 

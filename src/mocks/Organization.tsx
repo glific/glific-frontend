@@ -1,4 +1,4 @@
-import { UPDATE_CREDENTIAL } from 'graphql/mutations/Organization';
+import { DELETE_INACTIVE_ORGANIZATIONS, UPDATE_CREDENTIAL } from 'graphql/mutations/Organization';
 import {
   GET_ORGANIZATION,
   USER_LANGUAGES,
@@ -721,6 +721,18 @@ export const getAllOrganizations = [
     },
   },
 ];
+
+export const deleteOrganization = {
+  request: {
+    query: DELETE_INACTIVE_ORGANIZATIONS,
+    variables: { isConfirmed: false, deleteOrganizationID: '2' },
+  },
+  result: {
+    data: {
+      organization: null,
+    },
+  },
+};
 
 export const getOrganizationBSP = {
   request: {
