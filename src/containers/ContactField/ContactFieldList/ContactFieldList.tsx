@@ -24,6 +24,12 @@ const ContactFieldList = () => {
   const [itemToBeEdited, setItemToBeEdited] = useState<EditItemShape | any>(null);
   const [error, setError] = useState<any>(null);
 
+  const [deleteContactField] = useMutation(DELETE_CONTACT_FIELDS, {
+    onError: () => {
+      setNotification('Sorry! An error occured while deleting the contact field', 'warning');
+    },
+  });
+
   let dialog;
 
   if (openDialog) {
@@ -144,7 +150,42 @@ const ContactFieldList = () => {
   };
 
   const listIcon = <ContactVariableIcon className={styles.ContactFieldIcon} color="primary.dark" />;
-  const dialogMessage = t('This action cannot be undone.');
+  const dialogMessage = ({ deleteItemID, deleteItemName, refetch, setDeleteItemID }: any) => {
+    const component = (
+      <div>
+        <p className={styles.DialogSubText}>
+          <strong> Available options:-</strong>
+          <br />
+          1. Delete only contact field (no impact on contacts).
+          <br />
+          2. Delete contact field and associated data (removes "{deleteItemName}" field from all
+          contacts).
+        </p>
+      </div>
+    );
+
+    return {
+      component,
+      props: {
+        buttonOk: 'Delete field',
+        buttonMiddle: 'Delete field & data',
+        additionalTitleStyles: styles.Title,
+        handleMiddle: () => {
+          deleteContactField({
+            variables: {
+              deleteAssoc: true,
+              id: deleteItemID,
+            },
+            onCompleted: () => {
+              setNotification('Contact field deleted successfully!');
+              refetch();
+              setDeleteItemID(null);
+            },
+          });
+        },
+      },
+    };
+  };
   const dialogTitle = t('Are you sure you want to delete this contact field record?');
 
   return (
