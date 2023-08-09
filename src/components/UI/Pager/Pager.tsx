@@ -145,9 +145,7 @@ const tableHeadColumns = (
                   );
                 }
               }}
-              sx={{
-                color: 'rgba(12, 31, 20, 0.57) !important',
-              }}
+              className={styles.HeaderColor}
             >
               {field.label}
             </TableSortLabel>
@@ -199,21 +197,9 @@ export const Pager = ({
   const tableHead = tableHeadColumns(columnNames, columnStyles, tableVals, handleTableChange);
   const tablePagination = pagination(columnNames, totalRows, handleTableChange, tableVals);
 
-  const StyleForContainer = {
-    minHeight: 'calc(100% - 50px)',
-    maxHeight: 'calc(100% - 50px)',
-    background: '#fff',
-    overflowY: 'scroll',
-    scrollbarWidth: 'none',
-    borderRadius: '10px 10px 0 0',
-    '&::-webkit-scrollbar': {
-      width: 0,
-    },
-  };
-
   return (
     <div className={styles.TableContainer}>
-      <TableContainer sx={StyleForContainer}>
+      <TableContainer className={styles.StyleForContainer}>
         <Table stickyHeader aria-label="sticky table" className={styles.Table} data-testid="table">
           <TableHead data-testid="tableHead">{tableHead}</TableHead>
           <TableBody data-testid="tableBody">{!loadingList && data.length > 0 && rows}</TableBody>

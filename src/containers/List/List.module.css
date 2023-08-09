@@ -273,3 +273,9 @@
   justify-content: flex-end;
   cursor: pointer;
 }
+
+.MoreOptionsIcon {
+  height: 14px;
+  display: flex;
+  align-items: center;
+}

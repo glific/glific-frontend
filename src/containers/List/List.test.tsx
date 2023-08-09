@@ -73,7 +73,6 @@ describe('<List />', () => {
       // Wait for the MoreIcon to appear and become clickable
       const moreButton = await screen.findByTestId('MoreIcon', {}, { timeout: 5000 });
       fireEvent.click(moreButton);
-      console.log('moreButton', moreButton);
       await waitFor(() => {
         const tableRow = container.querySelector('tbody tr') as HTMLTableRowElement;
         const { getByTestId } = within(tableRow);

@@ -204,7 +204,7 @@ export const AutoComplete = ({
         {questionText ? <div className={styles.QuestionText}>{questionText}</div> : null}
         <Autocomplete
           classes={classes}
-          sx={isFilterType ? { height: '36px' } : {}}
+          className={isFilterType ? styles.FilterHeight : ''}
           multiple={multiple}
           data-testid="autocomplete-element"
           options={hasCreateOption ? [...optionValue, createOption] : optionValue}

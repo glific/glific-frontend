@@ -42,16 +42,10 @@ export const SearchList = () => {
   };
 
   const helpData = {
-    heading: 'You can configure the search by clicking on the configure button and are as follows:',
-    body: (
-      <ul>
-        <li>Save as Draft</li>
-        <li>Publish Preview</li>
-        <li>Revision history</li>
-        <li>Reset search counts</li>
-      </ul>
-    ),
-    link: 'https://glific.org/',
+    heading:
+      'Glific provides search functionality to NGO staff to find contacts from a large set of contacts list.',
+    body: <></>,
+    link: 'https://glific.github.io/docs/docs/Product%20Features/Searches',
   };
 
   return (

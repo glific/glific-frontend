@@ -151,7 +151,7 @@ export const FlowList = () => {
       icon: <ExportIcon data-testid="export-icon" className={styles.IconSize} />,
       parameter: 'id',
       dialog: exportFlow,
-      hasMore: true,
+      hasMoreOption: true,
       name: 'Export',
     },
   ];
@@ -176,7 +176,7 @@ export const FlowList = () => {
     { name: 'is_pinned', label: '', sort: true, order: 'desc' },
     { name: 'name', label: t('Title') },
     { label: t('Last published') },
-    { label: t('Label') },
+    { label: t('Tag') },
     { label: t('Last saved in Draft') },
     { label: t('Actions') },
   ];
@@ -221,7 +221,6 @@ export const FlowList = () => {
         }}
         MenuProps={MenuProps}
         className={styles.SearchBar}
-        sx={{ '& > fieldset': { border: 'none' } }}
       >
         {filterList.map((filter: any) => (
           <MenuItem key={filter.label} value={filter.value}>
@@ -271,7 +270,7 @@ export const FlowList = () => {
         <li>Reset flow counts</li>
       </ul>
     ),
-    link: 'https://glific.org/',
+    link: 'https://glific.github.io/docs/docs/category/flows',
   };
 
   return (

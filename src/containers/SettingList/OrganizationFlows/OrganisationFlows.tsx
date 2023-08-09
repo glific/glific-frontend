@@ -346,7 +346,6 @@ export const OrganisationFlows = () => {
     let optinFlowId = null;
 
     if (newcontactFlowEnabled) {
-      console.log(payload);
       newContactFlowId = payload.newcontactFlowId.id;
     }
 

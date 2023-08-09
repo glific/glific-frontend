@@ -8,6 +8,10 @@
   background: #ffffff;
 }
 
+.SearchBar > fieldset {
+  border: none !important;
+}
+
 .Shortcode {
   width: 180px;
 }
@@ -188,4 +192,10 @@
 
 .ActiveFilter {
   width: 150px !important;
+}
+
+.AddIcon {
+  margin-right: 10px;
+  height: 12px;
+  width: 12px;
 }

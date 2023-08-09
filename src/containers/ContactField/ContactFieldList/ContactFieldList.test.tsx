@@ -44,7 +44,6 @@ test('it renders list successfully', async () => {
 
   setTimeout(async () => {
     const editButtons = screen.getAllByTestId('edit-icon');
-    console.log('editButtons');
 
     await waitFor(() => {
       expect(editButtons[0]).toBeInTheDocument();

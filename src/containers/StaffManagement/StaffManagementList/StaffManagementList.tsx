@@ -98,16 +98,10 @@ export const StaffManagementList = () => {
   };
 
   const helpData = {
-    heading: 'You can configure the staff by clicking on the configure button and are as follows:',
-    body: (
-      <ul>
-        <li>Save as Draft</li>
-        <li>Publish Preview</li>
-        <li>Revision history</li>
-        <li>Reset staff counts</li>
-      </ul>
-    ),
-    link: 'https://glific.org/',
+    heading:
+      'You can create accounts for yourself and your team to define the level of access each of your staff member has to the Glific account.',
+    body: <></>,
+    link: 'https://glific.github.io/docs/docs/Product%20Features/Others/Staff%20Management%20&%20Role%20Management',
   };
 
   return (

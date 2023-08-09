@@ -47,7 +47,6 @@ export const Tag = () => {
   ];
 
   const setPayload = (payload: any) => {
-    console.log('payload', payload);
     payload = { ...payload, Language_id: '1' };
     // return modified payload
     return payload;

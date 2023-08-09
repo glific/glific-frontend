@@ -49,6 +49,10 @@
   margin: 0 0 8px 16px;
 }
 
+.FilterHeight {
+  height: 36px !important;
+}
+
 @media screen and (max-width: 768px) {
   .Input {
     width: 100% !important;

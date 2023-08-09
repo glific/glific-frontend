@@ -99,3 +99,20 @@
   padding-left: 22px !important;
   padding-right: 25px !important;
 }
+
+.HeaderColor {
+  color: rgba(12, 31, 20, 0.57) !important;
+}
+
+.StyleForContainer {
+  min-height: calc(100% - 50px) !important;
+  max-height: calc(100% - 50px) !important;
+  background: #fff !important;
+  overflow-y: scroll !important;
+  scrollbar-width: none !important;
+  border-radius: 10px 10px 0 0 !important;
+}
+
+.StyleForContainer::-webkit-scrollbar {
+  width: 0 !important;
+}

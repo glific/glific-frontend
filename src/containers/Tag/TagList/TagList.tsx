@@ -51,8 +51,16 @@ export const TagList = () => {
 
   const addIcon = <AddIcon className={styles.AddIcon} />;
 
+  const helpData = {
+    heading:
+      'You have the ability to create and edit tags, allowing you to assign tags to messages, templates, flows, and more.',
+    body: <></>,
+    link: '',
+  };
+
   return (
     <List
+      helpData={helpData}
       title={t('Tags')}
       listItem="tags"
       listItemName="tag"

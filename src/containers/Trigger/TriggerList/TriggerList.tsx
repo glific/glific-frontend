@@ -90,16 +90,9 @@ export const TriggerList = () => {
 
   const helpData = {
     heading:
-      'You can configure the trigger by clicking on the configure button and are as follows:',
-    body: (
-      <ul>
-        <li>Save as Draft</li>
-        <li>Publish Preview</li>
-        <li>Revision history</li>
-        <li>Reset trigger counts</li>
-      </ul>
-    ),
-    link: 'https://glific.org/',
+      'Triggers in Glific are used to start a flow with specific contacts in a collection at a scheduled time. Triggers can be used for scheduling periodic tasks and automatically sharing them with required beneficiaries.',
+    body: <></>,
+    link: 'https://glific.github.io/docs/docs/Product%20Features/Triggers',
   };
 
   return (

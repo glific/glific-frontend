@@ -31,6 +31,7 @@ import styles from './Template.module.css';
 import { ReactComponent as CopyAllOutlined } from 'assets/images/icons/Flow/Copy.svg';
 import { GET_TAGS } from 'graphql/queries/Tags';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
+import { ReactComponent as AddIcon } from 'assets/images/add.svg';
 
 const getLabel = (label: string) => <div className={styles.LabelText}>{label}</div>;
 
@@ -279,7 +280,6 @@ export const Template = ({
         onChange={handleCheckedBox}
         MenuProps={MenuProps}
         className={styles.DropDown}
-        sx={{ '& > fieldset': { border: 'none' } }}
         data-testid="dropdown-template"
       >
         {statusList.map((status: any) => (
@@ -310,7 +310,9 @@ export const Template = ({
     return <Loading message="Please wait while we process all the templates" />;
   }
 
-  const button = { show: true, label: buttonLabel, symbol: '+' };
+  const addIcon = <AddIcon className={styles.AddIcon} />;
+
+  const button = { show: true, label: buttonLabel, symbol: addIcon };
   let secondaryButton = null;
 
   if (isHSM) {
@@ -385,17 +387,13 @@ export const Template = ({
   };
 
   const helpData = {
-    heading:
-      'You can configure the Speed send by clicking on the configure button and are as follows:',
-    body: (
-      <ul>
-        <li>Save as Draft</li>
-        <li>Publish Preview</li>
-        <li>Revision history</li>
-        <li>Reset Speed send counts</li>
-      </ul>
-    ),
-    link: 'https://glific.org/',
+    heading: isHSM
+      ? "HSM (Highly Structured Message) templates are pre-approved messages by Whatsapp which are used to send to the users when their session window is closed (i.e after 24hours of inactive conversation). These templates ensure compliance with WhatsApp's guidelines and allow NGO's to send notifications, customer support messages and alerts with placeholders for personalized information."
+      : 'Speed Sends is a functionality in Glific to create a message or save the messages and reuse it in future chats.',
+    body: <></>,
+    link: isHSM
+      ? 'https://glific.github.io/docs/docs/Product%20Features/Templates'
+      : 'https://glific.github.io/docs/docs/Product%20Features/Speed%20Sends',
   };
 
   return (

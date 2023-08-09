@@ -152,16 +152,9 @@ export const InteractiveMessageList = () => {
 
   const helpData = {
     heading:
-      'You can configure the interactive msg by clicking on the configure button and are as follows:',
-    body: (
-      <ul>
-        <li>Save as Draft</li>
-        <li>Publish Preview</li>
-        <li>Revision history</li>
-        <li>Reset interactive msg counts</li>
-      </ul>
-    ),
-    link: 'https://glific.org/',
+      'Interactive Messages are used by NGOs to create engaging and dynamic conversations with their beneficiaries. This feature helps NGOs to go beyond simple text-based notifications and include interactive elements like buttons, quick replies, list menus etc. It enhances the user experience through guided interactions and helps the NGOs collect cleaner data.',
+    body: <></>,
+    link: 'https://glific.github.io/docs/docs/Product%20Features/Interactive%20Messages',
   };
 
   return (

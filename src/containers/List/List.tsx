@@ -445,7 +445,7 @@ export const List = ({
         }}
       >
         <Tooltip title={t('More')} placement="top">
-          <div style={{ height: '14px', display: 'flex', alignItems: 'center' }}>
+          <div className={styles.MoreOptionsIcon}>
             <MoreOptions />
           </div>
         </Tooltip>
@@ -484,10 +484,12 @@ export const List = ({
         </div>
       ) : null;
 
-    const actionsInsideMore = additionalAction(item).filter((action: any) => action?.hasMore);
-    const actionsOutsideMore = additionalAction(item).filter((action: any) => !action?.hasMore);
+    const actionsInsideMore = additionalAction(item).filter((action: any) => action?.hasMoreOption);
+    const actionsOutsideMore = additionalAction(item).filter(
+      (action: any) => !action?.hasMoreOption
+    );
 
-    const actionListMap = (actionList: any, hasMore: boolean) => {
+    const actionListMap = (actionList: any, hasMoreOption: boolean) => {
       return actionList.map((action: any, index: number) => {
         // check if we are dealing with nested element
         let additionalActionParameter: any;
@@ -499,7 +501,7 @@ export const List = ({
         }
         const key = index;
 
-        if (hasMore) {
+        if (hasMoreOption) {
           return (
             <div key={key}>
               <Divider className={styles.DividerPopUp} />
