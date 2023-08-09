@@ -52,8 +52,8 @@ export const UPDATE_CONTACT_FIELDS = gql`
 `;
 
 export const DELETE_CONTACT_FIELDS = gql`
-  mutation deleteContactsField($id: ID!) {
-    deleteContactsField(id: $id) {
+  mutation deleteContactsField($id: ID!, $deleteAssoc: Boolean) {
+    deleteContactsField(id: $id, deleteAssoc: $deleteAssoc) {
       contactsField {
         valueType
         updatedAt

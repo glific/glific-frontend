@@ -117,7 +117,7 @@ export const OrganizationList = ({
     setNotification('Organization deleted successfully');
   };
 
-  const deleteDialogue = (id: any, name: any) => {
+  const deleteDialogue = ({ deleteItemID, deleteItemName, refetch, setDeleteItemID }: any) => {
     const component = (
       <div>
         <p className={styles.DialogSubText}>
@@ -131,16 +131,18 @@ export const OrganizationList = ({
         />
       </div>
     );
-
-    const isConfirmed = orgName === name;
+    const isConfirmed = orgName === deleteItemName;
+    console.log(orgName, deleteItemName);
     const payload = {
       isConfirmed,
-      deleteOrganizationID: id,
+      deleteOrganizationID: deleteItemID,
     };
     return {
       component,
-      handleOkCallback: (val: any) => handleDeleteInActiveOrg({ payload, ...val }),
-      isConfirmed,
+      props: {
+        disableOk: !isConfirmed,
+        handleOk: () => handleDeleteInActiveOrg({ payload, refetch, setDeleteItemID }),
+      },
     };
   };
 

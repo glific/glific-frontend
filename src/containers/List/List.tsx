@@ -254,7 +254,7 @@ export const List = ({
     {
       variables: filterPayload(),
       fetchPolicy: 'cache-first',
-    }
+    },
   );
 
   // Get item data here
@@ -324,32 +324,35 @@ export const List = ({
   };
 
   const useDelete = (message: string | any) => {
-    let component: any = {};
-    const props = { disableOk: false, handleOk: handleDeleteItem };
     if (typeof message === 'string') {
-      component = message;
+      const props = { handleOk: handleDeleteItem };
+      return {
+        component: message,
+        props,
+      };
     } else {
       /**
        * Custom component to render
        * message should contain 3 params
        * 1. component: Component to render
-       * 2. isConfirm: To check true or false value
-       * 3. handleOkCallback: Callback action to delete item
+       * 2. props: props to pass to dialog component
        */
-      const {
-        component: componentToRender,
-        isConfirmed,
-        handleOkCallback,
-      } = message(deleteItemID, deleteItemName);
-      component = componentToRender;
-      props.disableOk = !isConfirmed;
-      props.handleOk = () => handleOkCallback({ refetch: fetchQuery, setDeleteItemID });
-    }
 
-    return {
-      component,
-      props,
-    };
+      const dialogParams = {
+        deleteItemID,
+        deleteItemName,
+        refetch: refetchValues,
+        setDeleteItemID,
+      };
+      const { component, props } = message(dialogParams);
+      if (!props.handleOk) {
+        props.handleOk = handleDeleteItem;
+      }
+      return {
+        component,
+        props,
+      };
+    }
   };
 
   let dialogBox;
@@ -390,7 +393,7 @@ export const List = ({
   function getIcons(
     // id: number | undefined,
     item: any,
-    allowedAction: any | null
+    allowedAction: any | null,
   ) {
     // there might be a case when we might want to allow certain actions for reserved items
     // currently we don't allow edit or delete for reserved items. hence return early
