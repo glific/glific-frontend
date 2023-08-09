@@ -18,7 +18,7 @@ test('Render component correctly with the values', async () => {
   render(
     <MockedProvider mocks={mocks}>
       <Ticket selectedTicket={'1'} setOpenDialog={setOpenDialogMock} />
-    </MockedProvider>
+    </MockedProvider>,
   );
 
   expect(screen.getByText('Loading...')).toBeInTheDocument();
@@ -28,7 +28,9 @@ test('Render component correctly with the values', async () => {
   });
 
   // should have the heading as the issue
-  expect(screen.getByTestId('formLayout')).toHaveTextContent('Please resolve this issue');
-  // also should have remarks
-  expect(screen.getByTestId('formLayout')).toHaveTextContent('The issue was resolved');
+  await waitFor(() => {
+    expect(screen.getByTestId('formLayout')).toHaveTextContent('Please resolve this issue');
+    // also should have remarks
+    expect(screen.getByTestId('formLayout')).toHaveTextContent('The issue was resolved');
+  });
 });
