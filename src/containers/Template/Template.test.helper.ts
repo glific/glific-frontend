@@ -14,7 +14,6 @@ import {
 } from 'mocks/Organization';
 import { templateCountQuery } from 'mocks/Template';
 import { CREATE_MEDIA_MESSAGE } from 'graphql/mutations/Chat';
-import { GET_TAGS } from 'graphql/queries/Tags';
 import { getFilterTagQuery } from 'mocks/Tag';
 
 const count = templateCountQuery(false, 2);
