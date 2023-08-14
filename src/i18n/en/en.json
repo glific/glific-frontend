@@ -418,7 +418,12 @@
   "View profile": "View profile",
   "Copy UUID": "Copy UUID",
   "Org Id": "Org Id",
+  "More": "More",
   "Tag": "Tag",
   "Export collection": "Export collection",
-  "Sheet type": "Sheet type"
+  "Sheet type": "Sheet type",
+  "Tags": "Tags",
+  "Created": "Created",
+  "You won't be able to use this tag.": "You won't be able to use this tag.",
+  "No. of flows": "No. of flows"
 }

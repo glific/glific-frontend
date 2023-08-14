@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { ReactComponent as TriggerIcon } from 'assets/images/icons/Trigger/Union.svg';
 import { ReactComponent as ClockIcon } from 'assets/images/icons/Trigger/Clock.svg';
 import { ReactComponent as ClockInactiveIcon } from 'assets/images/icons/Trigger/Inactive.svg';
-import { ReactComponent as DuplicateIcon } from 'assets/images/icons/Flow/Duplicate.svg';
+import { ReactComponent as DuplicateIcon } from 'assets/images/icons/Flow/Copy.svg';
 import { TRIGGER_LIST_QUERY, TRIGGER_QUERY_COUNT } from 'graphql/queries/Trigger';
 import { DELETE_TRIGGER } from 'graphql/mutations/Trigger';
 import { FULL_DATE_FORMAT, dayList } from 'common/constants';
@@ -88,8 +88,16 @@ export const TriggerList = () => {
 
   const dialogMessage = t("You won't be able to use this trigger.");
 
+  const helpData = {
+    heading:
+      'Triggers in Glific are used to start a flow with specific contacts in a collection at a scheduled time. Triggers can be used for scheduling periodic tasks and automatically sharing them with required beneficiaries.',
+    body: <></>,
+    link: 'https://glific.github.io/docs/docs/Product%20Features/Triggers',
+  };
+
   return (
     <List
+      helpData={helpData}
       title="Triggers"
       listItem="triggers"
       listItemName="trigger"

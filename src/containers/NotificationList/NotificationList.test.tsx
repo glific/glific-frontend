@@ -1,4 +1,4 @@
-import { render, waitFor, fireEvent, screen } from '@testing-library/react';
+import { render, waitFor, fireEvent, screen, cleanup } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 
@@ -16,6 +16,7 @@ import { NotificationList } from './NotificationList';
 
 setUserSession(JSON.stringify({ roles: ['Admin'] }));
 
+afterEach(cleanup);
 const mocks: any = [
   getUnFitleredNotificationCountQuery,
   getNotificationsQuery,
@@ -41,24 +42,29 @@ const notifications = (
 
 test('It should load notifications', async () => {
   const { getByText } = render(notifications);
+  const loading = await screen.findByText('Loading...');
 
-  expect(getByText('Loading...')).toBeInTheDocument();
+  await waitFor(() => {
+    expect(loading).toBeInTheDocument();
+  });
 
   await waitFor(() => {
     expect(getByText('Notifications')).toBeInTheDocument();
   });
 
-  const time = await screen.findByText('Timestamp');
-  const category = await screen.findByText('Category');
-  const severity = await screen.findByText('Severity');
-  const entity = await screen.findByText('Entity');
-  const message = await screen.findAllByText('Message');
+  const time = screen.getByText('Timestamp');
+  const category = screen.getByText('Category');
+  const severity = screen.getByText('Severity');
+  const entity = screen.getByText('Entity');
+  const message = screen.getAllByText('Message');
 
-  expect(time).toBeInTheDocument();
-  expect(category).toBeInTheDocument();
-  expect(severity).toBeInTheDocument();
-  expect(entity).toBeInTheDocument();
-  expect(message).toHaveLength(2);
+  await waitFor(() => {
+    expect(time).toBeInTheDocument();
+    expect(category).toBeInTheDocument();
+    expect(severity).toBeInTheDocument();
+    expect(entity).toBeInTheDocument();
+    expect(message).toHaveLength(2);
+  });
 });
 
 test('click on forward arrrow', async () => {

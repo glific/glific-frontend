@@ -59,6 +59,10 @@ export const FILTER_FLOW = gql`
         id
         label
       }
+      tag {
+        label
+        id
+      }
     }
   }
 `;

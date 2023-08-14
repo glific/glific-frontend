@@ -2,25 +2,33 @@ import { useState, useEffect, useCallback } from 'react';
 import { Link, Navigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useQuery, useMutation, DocumentNode, useLazyQuery } from '@apollo/client';
-import { IconButton, TableFooter, TablePagination, TableRow, Typography } from '@mui/material';
-
+import {
+  ClickAwayListener,
+  Divider,
+  IconButton,
+  TableFooter,
+  TablePagination,
+  TableRow,
+} from '@mui/material';
 import { ListCard } from 'containers/List/ListCard/ListCard';
 import { Button } from 'components/UI/Form/Button/Button';
-import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { Pager } from 'components/UI/Pager/Pager';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { SearchBar } from 'components/UI/SearchBar/SearchBar';
 import { Tooltip } from 'components/UI/Tooltip/Tooltip';
-import { ReactComponent as DeleteIcon } from 'assets/images/icons/Delete/Red.svg';
+import { ReactComponent as DeleteIcon } from 'assets/images/icons/Delete/TrashGrey.svg';
 import { ReactComponent as EditIcon } from 'assets/images/icons/Edit.svg';
 import { ReactComponent as CrossIcon } from 'assets/images/icons/Cross.svg';
 import { ReactComponent as BackIcon } from 'assets/images/icons/Back.svg';
+import { ReactComponent as InfoIcon } from 'assets/images/info.svg';
+import { ReactComponent as MoreOptions } from 'assets/images/icons/MoreOptions.svg';
 import { GET_CURRENT_USER } from 'graphql/queries/User';
 import { getUserRole, getUserRolePermissions } from 'context/role';
 import { setNotification, setErrorMessage } from 'common/notification';
 import { getUpdatedList, setListSession, getLastListSessionValues } from 'services/ListService';
 import styles from './List.module.css';
 import Track from 'services/TrackService';
+import Loading from 'components/UI/Layout/Loading/Loading';
 
 export interface ColumnNames {
   name?: string;
@@ -29,7 +37,14 @@ export interface ColumnNames {
   order?: string;
 }
 
+export interface HelpDataProps {
+  heading: string;
+  body: JSX.Element;
+  link: string;
+}
+
 export interface ListProps {
+  loadingList?: boolean;
   columnNames?: Array<ColumnNames>;
   countQuery: DocumentNode;
   listItem: string;
@@ -40,6 +55,7 @@ export interface ListProps {
   pageLink: string;
   columns: Function;
   listIcon: React.ReactNode;
+  helpData?: HelpDataProps;
   columnStyles: Array<any>;
   secondaryButton?: any;
   title: string;
@@ -48,13 +64,12 @@ export interface ListProps {
     label?: string;
     link?: string;
     action?: Function;
-    symbol?: string;
+    symbol?: any;
   };
   searchParameter?: Array<any>;
   filters?: Object | null;
   filtersTag?: any;
   filterList?: any;
-  filterDropdowm?: any;
   displayListType?: string;
   cardLink?: Object | null;
   editSupport?: boolean;
@@ -92,14 +107,19 @@ interface TableVals {
 }
 
 export const List = ({
+  loadingList = false,
   columnNames = [],
   countQuery,
   listItem,
-  listIcon,
   filterItemsQuery,
   deleteItemQuery,
   listItemName,
   dialogMessage = '',
+  helpData = {
+    heading: '',
+    body: <></>,
+    link: '',
+  },
   secondaryButton,
   pageLink,
   columns,
@@ -107,7 +127,6 @@ export const List = ({
   title,
   dialogTitle,
   filterList,
-  filterDropdowm = null,
   button = {
     show: true,
     label: 'Add New',
@@ -116,7 +135,6 @@ export const List = ({
   editSupport = true,
   searchParameter = ['label'],
   filters = null,
-  filtersTag = null,
   displayListType = 'list',
   cardLink = null,
   additionalAction = () => [],
@@ -128,6 +146,10 @@ export const List = ({
   customStyles,
 }: ListProps) => {
   const { t } = useTranslation();
+  const [showMoreOptions, setShowMoreOptions] = useState<string>('');
+
+  // Hover popoup state
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   // DialogBox states
   const [deleteItemID, setDeleteItemID] = useState<number | null>(null);
@@ -379,7 +401,6 @@ export const List = ({
     return <Navigate to={`/${pageLink}/add`} />;
   }
 
-  if (loading || l || loadingCollections) return <Loading />;
   if (error || e) {
     if (error) {
       setErrorMessage(error);
@@ -408,106 +429,175 @@ export const List = ({
     if (isReserved) {
       return null;
     }
+    let moreButton = null;
+
+    moreButton = (
+      <IconButton
+        data-testid="MoreIcon"
+        onClick={(event) => {
+          event.stopPropagation();
+          if (showMoreOptions == id) {
+            setShowMoreOptions('');
+          } else {
+            setShowMoreOptions(id);
+          }
+        }}
+      >
+        <Tooltip title={t('More')} placement="top">
+          <div className={styles.MoreOptionsIcon}>
+            <MoreOptions />
+          </div>
+        </Tooltip>
+      </IconButton>
+    );
+
     let editButton = null;
     if (editSupport) {
       editButton = allowedAction.edit && (
-        <Link to={`/${pageLink}/${id}/edit`}>
-          <IconButton aria-label={t('Edit')} data-testid="EditIcon">
-            <Tooltip title={t('Edit')} placement="top">
-              <EditIcon />
-            </Tooltip>
-          </IconButton>
+        <Link to={`/${pageLink}/${id}/edit`} className={styles.NoTextDecoration}>
+          <div aria-label={t('Edit')} data-testid="EditIcon">
+            <div className={styles.IconWithText}>
+              <EditIcon className={styles.IconSize} />
+              <div className={styles.TextButton}>Edit</div>
+            </div>
+          </div>
         </Link>
       );
     }
 
     const deleteButton = (Id: any, text: string) =>
       allowedAction.delete ? (
-        <IconButton
+        <div
           aria-label={t('Delete')}
           data-testid="DeleteIcon"
           onClick={() => showDialogHandler(Id, text)}
         >
-          <Tooltip title={`${deleteModifier.label}`} placement="top">
-            {deleteModifier.icon === 'cross' ? <CrossIcon /> : <DeleteIcon />}
-          </Tooltip>
-        </IconButton>
+          {deleteModifier.icon === 'cross' ? (
+            <CrossIcon />
+          ) : (
+            <div className={styles.IconWithText}>
+              <DeleteIcon className={styles.IconSize} />
+              <div className={styles.TextButton}>Delete</div>
+            </div>
+          )}
+        </div>
       ) : null;
+
+    const actionsInsideMore = additionalAction(item).filter((action: any) => action?.hasMoreOption);
+    const actionsOutsideMore = additionalAction(item).filter(
+      (action: any) => !action?.hasMoreOption,
+    );
+
+    const actionListMap = (actionList: any, hasMoreOption: boolean) => {
+      return actionList.map((action: any, index: number) => {
+        // check if we are dealing with nested element
+        let additionalActionParameter: any;
+        const params: any = action.parameter.split('.');
+        if (params.length > 1) {
+          additionalActionParameter = item[params[0]][params[1]];
+        } else {
+          additionalActionParameter = item[params[0]];
+        }
+        const key = index;
+
+        if (hasMoreOption) {
+          return (
+            <div key={key}>
+              <Divider className={styles.DividerPopUp} />
+              <div
+                data-testid="additionalButton"
+                id="additionalButton-icon"
+                onClick={() => action.dialog(additionalActionParameter, item)}
+              >
+                <div className={styles.IconWithText}>
+                  {action.icon}
+                  <div className={styles.TextButton}>{action.name}</div>
+                </div>
+              </div>
+            </div>
+          );
+        }
+
+        if (action.link) {
+          return (
+            <Link to={`${action.link}/${additionalActionParameter}`} key={key}>
+              <IconButton className={styles.additonalButton} data-testid="additionalButton">
+                <Tooltip title={`${action.label}`} placement="top">
+                  {action.icon}
+                </Tooltip>
+              </IconButton>
+            </Link>
+          );
+        }
+        if (action.dialog) {
+          return (
+            <IconButton
+              data-testid="additionalButton"
+              className={styles.additonalButton}
+              id="additionalButton-icon"
+              onClick={() => action.dialog(additionalActionParameter, item)}
+              key={key}
+            >
+              <Tooltip title={`${action.label}`} placement="top" key={key}>
+                {action.icon}
+              </Tooltip>
+            </IconButton>
+          );
+        }
+        if (action.button) {
+          return action.button(item, action, key, fetchQuery);
+        }
+        e;
+        return null;
+      });
+    };
+
     if (id) {
       return (
-        <div className={styles.Icons}>
-          {additionalAction(item).map((action: any, index: number) => {
-            if (allowedAction.restricted) {
-              return null;
-            }
-            // check if we are dealing with nested element
-            let additionalActionParameter: any;
-            const params: any = action.parameter.split('.');
-            if (params.length > 1) {
-              additionalActionParameter = item[params[0]][params[1]];
-            } else {
-              additionalActionParameter = item[params[0]];
-            }
-            const key = index;
+        <ClickAwayListener
+          onClickAway={() => {
+            showMoreOptions && setShowMoreOptions('');
+          }}
+        >
+          <div className={styles.Icons}>
+            {actionListMap(actionsOutsideMore, false)}
 
-            if (action.link) {
-              return (
-                <Link to={`${action.link}/${additionalActionParameter}`} key={key}>
-                  <IconButton className={styles.additonalButton} data-testid="additionalButton">
-                    <Tooltip title={`${action.label}`} placement="top">
-                      {action.icon}
-                    </Tooltip>
-                  </IconButton>
-                </Link>
-              );
-            }
-            if (action.dialog) {
-              return (
-                <IconButton
-                  data-testid="additionalButton"
-                  className={styles.additonalButton}
-                  id="additionalButton-icon"
-                  onClick={() => action.dialog(additionalActionParameter, item)}
-                  key={key}
-                >
-                  <Tooltip title={`${action.label}`} placement="top" key={key}>
-                    {action.icon}
-                  </Tooltip>
-                </IconButton>
-              );
-            }
-            if (action.button) {
-              return action.button(item, action, key, fetchQuery);
-            }
-            return null;
-          })}
-
-          {/* do not display edit & delete for staff role in collection */}
-          {userRolePermissions.manageCollections || item !== 'collections' ? (
-            <>
-              {editButton}
-              {deleteButton(id, labelValue)}
-            </>
-          ) : null}
-        </div>
+            {/* do not display edit & delete for staff role in collection */}
+            {userRolePermissions.manageCollections || item !== 'collections' ? (
+              <div className={styles.MoreOptions}>
+                {moreButton}
+                {showMoreOptions == id && (
+                  <div className={`${styles.PopUp} ${styles.FlexCenter} DropDownClass`}>
+                    {editButton}
+                    <Divider className={styles.DividerPopUp} />
+                    {deleteButton(id, labelValue)}
+                    {actionListMap(actionsInsideMore, true)}
+                  </div>
+                )}
+              </div>
+            ) : null}
+          </div>
+        </ClickAwayListener>
       );
     }
     return null;
   }
 
   function formatList(listItems: Array<any>) {
-    return listItems.map(({ ...listItemObj }) => {
-      // display only actions allowed to the user
-      const allowedAction = restrictedAction
-        ? restrictedAction(listItemObj)
-        : { chat: true, edit: true, delete: true };
-      return {
-        ...columns(listItemObj),
-        operations: getIcons(listItemObj, allowedAction),
-        recordId: listItemObj.id,
-        isActive: listItemObj.isActive,
-      };
-    });
+    return listItems
+      ? listItems.map(({ ...listItemObj }) => {
+          // display only actions allowed to the user
+          const allowedAction = restrictedAction
+            ? restrictedAction(listItemObj)
+            : { chat: true, edit: true, delete: true };
+          return {
+            ...columns(listItemObj),
+            operations: getIcons(listItemObj, allowedAction),
+            recordId: listItemObj.id,
+            isActive: listItemObj.isActive,
+          };
+        })
+      : [];
   }
 
   const resetTableVals = () => {
@@ -546,6 +636,20 @@ export const List = ({
   if (countData) {
     itemCount = countData[`count${listItem[0].toUpperCase()}${listItem.slice(1)}`];
   }
+
+  var noItemsText = (
+    <div className={styles.NoResults}>
+      {searchVal ? (
+        <div>{t('Sorry, no results found! Please try a different search.')}</div>
+      ) : (
+        <div>
+          There are no {noItemText || listItemName}s right now.{' '}
+          {button.show && t('Please create one.')}
+        </div>
+      )}
+    </div>
+  );
+
   let displayList;
   if (displayListType === 'list') {
     displayList = (
@@ -558,11 +662,15 @@ export const List = ({
         tableVals={tableVals}
         collapseOpen={collapseOpen}
         collapseRow={collapseRow}
+        loadingList={loadingList || loading || l || loadingCollections}
+        noItemsText={noItemsText}
       />
     );
   } else if (displayListType === 'card') {
     /* istanbul ignore next */
-    displayList = (
+    displayList = loading ? (
+      <Loading />
+    ) : (
       <>
         <ListCard data={itemList} link={cardLink} />
         <table>
@@ -634,14 +742,32 @@ export const List = ({
     buttonDisplay = <div className={styles.AddButton}>{buttonContent}</div>;
   }
 
-  const noItemsText = (
-    <div className={styles.NoResults}>
-      {searchVal ? (
-        <div>{t('Sorry, no results found! Please try a different search.')}</div>
-      ) : (
-        <div>
-          There are no {noItemText || listItemName}s right now.{' '}
-          {button.show && t('Please create one.')}
+  const handleMouseEnter = () => {
+    setIsPopupOpen(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsPopupOpen(false);
+  };
+
+  const infoIcon = (
+    <div className={styles.Hover} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+      <InfoIcon className={styles.InfoIcon} />
+      {isPopupOpen && helpData && (
+        <div className={styles.HoverPopUp}>
+          <div className={styles.Triangle}></div>
+          <div className={styles.HoverPopUpText}>
+            {helpData.heading}
+            {helpData.body}
+            <div
+              className={styles.HoverLink}
+              onClick={() => {
+                window.location.replace(helpData.link);
+              }}
+            >
+              Learn more
+            </div>
+          </div>
         </div>
       )}
     </div>
@@ -650,25 +776,25 @@ export const List = ({
   return (
     <>
       <div className={styles.Header} data-testid="listHeader">
-        <Typography variant="h5" className={styles.Title}>
-          <IconButton disabled className={styles.Icon}>
-            {listIcon}
-          </IconButton>
-          {title}
-        </Typography>
+        <div>
+          <div className={styles.Title}>
+            {title}
+            {infoIcon}
+          </div>
+        </div>
         <div>
           {dialogBox}
           <div className={styles.ButtonGroup}>
-            {buttonDisplay}
             {secondaryButton}
+            {buttonDisplay}
           </div>
         </div>
       </div>
 
       <div className={styles.FilterFields}>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div className={styles.FlexCenter}>
           {filterList}
-          {filterDropdowm}
+          {backLink}
         </div>
         <div className={styles.Buttons}>
           <SearchBar
@@ -688,9 +814,8 @@ export const List = ({
         </div>
       </div>
       <div className={`${styles.Body} ${customStyles}`}>
-        {backLink}
         {/* Rendering list of items */}
-        {itemList.length > 0 ? displayList : noItemsText}
+        {displayList}
       </div>
     </>
   );

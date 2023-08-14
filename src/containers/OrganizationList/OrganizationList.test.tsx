@@ -43,24 +43,26 @@ test('Update status', async () => {
 
   expect(screen.getByText('Loading...')).toBeInTheDocument();
 
-  await act(async () => {
-    await new Promise((resolve) => setTimeout(resolve, 0));
+  await waitFor(() => {
+    expect(screen.getByText('Organizations')).toBeInTheDocument();
+    expect(screen.getAllByTestId('additionalButton')).toBeDefined();
   });
-
-  const label = await screen.findByText('Organizations');
 
   const extensionButton = screen.getAllByTestId('additionalButton')[0];
 
   const orgCustomerButton = screen.getAllByTestId('additionalButton')[1];
 
-  expect(label).toBeInTheDocument();
   expect(extensionButton).toBeInTheDocument();
   expect(orgCustomerButton).toBeInTheDocument();
   fireEvent.click(extensionButton);
   fireEvent.click(orgCustomerButton);
+  const moreButton = screen.getAllByTestId('MoreIcon');
+  fireEvent.click(moreButton[0]);
+  await waitFor(() => {
+    expect(screen.getByTestId('DeleteIcon')).toBeInTheDocument();
+  });
+  const deleteButton = screen.getByTestId('DeleteIcon');
 
-  const deleteButton = screen.getByRole('button', { name: 'Delete' });
-  expect(deleteButton).toBeInTheDocument();
   fireEvent.click(deleteButton);
 
   const confirmationInput = screen.getByRole('textbox');
@@ -73,5 +75,6 @@ test('Update status', async () => {
   expect(confirmDeleteButton).toBeInTheDocument();
 
   fireEvent.click(confirmDeleteButton);
+
   await waitFor(() => {});
 });

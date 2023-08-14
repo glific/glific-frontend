@@ -1,11 +1,15 @@
+.Name {
+  width: 25%;
+  min-width: 200px;
+}
+
 .Label {
   width: 200px;
 }
 
 .Body {
-  width: 40%;
-  margin-right: 10px;
-  margin-left: 20px;
+  width: 36%;
+  min-width: 200px;
   word-break: break-word;
 }
 
@@ -17,44 +21,43 @@
 }
 
 .Actions {
-  width: 200px;
-  justify-content: flex-end;
-  margin-left: auto;
+  width: 19%;
+  min-width: 200px;
+  text-align: end;
 }
 
 .LabelText {
-  display: flex;
   font-weight: 500;
-  font-size: 20px;
-  margin-top: 12px;
-  margin-bottom: 6px;
-  line-height: 1;
+  font-size: 17px;
   word-break: break-all;
 }
 
 .TableText {
-  margin-right: 23px;
   text-align: left;
-  padding: 12px 0px;
-  font-size: 16px;
+  font-size: 14px;
   color: #93a29b;
-  line-height: 1.25;
   white-space: pre-line;
   margin: 0;
+  padding: 0;
 }
 
 .Status {
-  composes: TableText;
-  display: flex;
-  align-content: center;
+  text-align: center;
 }
+
+.AlignCenter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .Status svg {
   margin-right: 8px;
 }
 
 .LastModified {
-  width: 185px;
-  padding-top: 12px;
+  width: 20%;
+  min-width: 185px;
   color: #93a29b;
 }
 
@@ -78,20 +81,17 @@
 }
 
 .HelperText {
-  position: absolute;
-  bottom: -20px;
-  left: 40px;
-  color: green;
-  font-weight: 500;
-  font-size: 0.75rem;
-  border-bottom: 1px dashed green;
-  display: inline;
+  color: #2ea36a;
+  font-weight: 400;
+  font-size: 14px;
   text-decoration: none !important;
+  padding: 0 12px;
 }
 
 .ImportButton {
-  position: relative;
-  margin-bottom: 8px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .Uuid {
@@ -105,4 +105,28 @@
 .Copy {
   margin-left: 2px;
   font-size: 12px;
+}
+
+.DropDown {
+  border-radius: 24px;
+  border: 1px solid #cccccc;
+  display: flex;
+  width: 130px;
+  margin: auto;
+  height: 36px;
+  background: #ffffff;
+}
+
+.DropDown > fieldset {
+  border: none !important;
+}
+
+.FormStyle {
+  width: 150px !important;
+}
+
+.AddIcon {
+  margin-right: 10px;
+  height: 12px;
+  width: 12px;
 }

@@ -51,7 +51,6 @@ export const SheetIntegration = () => {
     setLabel(labelValue);
     setUrl(urlValue);
     const selectedOption = typeOptions.find((option) => option.id === typeValue);
-    console.log(typeValue);
     setType(selectedOption);
     setAutoSync(autoSyncValue);
   };

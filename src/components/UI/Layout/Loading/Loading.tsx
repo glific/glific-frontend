@@ -18,7 +18,7 @@ export const Loading = ({ message, showTip = false }: LoadingProps) => {
     <>
       {showTip ? (
         <div className={styles.LoadingWithTip} data-testid="loader">
-          <div style={{ padding: '12px 0' }}>
+          <div className={styles.LoadingCircularProgress}>
             <CircularProgress />
           </div>
           <div className={styles.TipBackground}>

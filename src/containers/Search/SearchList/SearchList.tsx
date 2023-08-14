@@ -41,8 +41,16 @@ export const SearchList = () => {
     columnStyles,
   };
 
+  const helpData = {
+    heading:
+      'Glific provides search functionality to NGO staff to find contacts from a large set of contacts list.',
+    body: <></>,
+    link: 'https://glific.github.io/docs/docs/Product%20Features/Searches',
+  };
+
   return (
     <List
+      helpData={helpData}
       title="Searches"
       listItem="savedSearches"
       listItemName="Search"

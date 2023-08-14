@@ -14,3 +14,24 @@ export const CREATE_LABEL = gql`
     }
   }
 `;
+
+export const UPDATE_TAG = gql`
+  mutation UpdateTag($id: ID!) {
+    updateTag(id: $id) {
+      tag {
+        label
+      }
+    }
+  }
+`;
+
+export const DELETE_TAG = gql`
+  mutation DeleteTag($id: ID!) {
+    deleteTag(id: $id) {
+      errors {
+        key
+        message
+      }
+    }
+  }
+`;

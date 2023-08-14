@@ -4,17 +4,17 @@ import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 
+import { ReactComponent as AddIcon } from 'assets/images/add.svg';
 import { ReactComponent as FlowIcon } from 'assets/images/icons/Flow/Dark.svg';
-import { ReactComponent as DuplicateIcon } from 'assets/images/icons/Flow/Duplicate.svg';
+import { ReactComponent as DuplicateIcon } from 'assets/images/icons/Flow/Copy.svg';
 import { ReactComponent as ExportIcon } from 'assets/images/icons/Flow/Export.svg';
 import { FormControl, MenuItem, Select } from '@mui/material';
-import { ReactComponent as ConfigureIcon } from 'assets/images/icons/Configure/UnselectedDark.svg';
-import { ReactComponent as PinIcon } from 'assets/images/icons/Pin/Active.svg';
+import { ReactComponent as ConfigureIcon } from 'assets/images/icons/Configure/Setting.svg';
+import { ReactComponent as PinIcon } from 'assets/images/icons/Pin/Pin.svg';
 import { FILTER_FLOW, GET_FLOW_COUNT, EXPORT_FLOW, RELEASE_FLOW } from 'graphql/queries/Flow';
 import { DELETE_FLOW, IMPORT_FLOW } from 'graphql/mutations/Flow';
 import { List } from 'containers/List/List';
 import { ImportButton } from 'components/UI/ImportButton/ImportButton';
-import Loading from 'components/UI/Layout/Loading/Loading';
 import { DATE_TIME_FORMAT } from 'common/constants';
 import { exportFlowMethod, organizationHasDynamicRole } from 'common/utils';
 import { setNotification } from 'common/notification';
@@ -27,14 +27,14 @@ const getName = (text: string, keywordsList: any, roles: any) => {
   const accessRoles = roles && roles.map((role: any) => role.label);
   const hasDynamicRole = organizationHasDynamicRole();
   return (
-    <p className={styles.NameText}>
+    <div className={styles.NameText}>
       {text}
       <br />
       <span className={styles.Keyword}>{keywords.join(', ')}</span>
       {hasDynamicRole && (
         <span className={styles.Roles}>{accessRoles && accessRoles.join(', ')} </span>
       )}
-    </p>
+    </div>
   );
 };
 
@@ -50,6 +50,7 @@ const getLastPublished = (date: string, fallback: string = '') =>
   ) : (
     <div className={styles.LastPublishedFallback}>{fallback}</div>
   );
+const getLabel = (tag: any) => <div className={styles.LabelButton}>{tag.label}</div>;
 
 const displayPinned = (isPinned: boolean) => {
   if (isPinned) {
@@ -62,6 +63,7 @@ const columnStyles = [
   styles.Pinned,
   styles.Name,
   styles.DateColumn,
+  styles.Label,
   styles.DateColumn,
   styles.Actions,
 ];
@@ -95,9 +97,9 @@ export const FlowList = () => {
       if (!success) {
         setNotification(
           t(
-            'Sorry! An error occurred! This could happen if the flow is already present or error in the import file.'
+            'Sorry! An error occurred! This could happen if the flow is already present or error in the import file.',
           ),
-          'error'
+          'error',
         );
       } else {
         setNotification(t('The flow has been imported successfully.'));
@@ -146,9 +148,11 @@ export const FlowList = () => {
     },
     {
       label: t('Export flow'),
-      icon: <ExportIcon data-testid="export-icon" />,
+      icon: <ExportIcon data-testid="export-icon" className={styles.IconSize} />,
       parameter: 'id',
       dialog: exportFlow,
+      hasMoreOption: true,
+      name: 'Export',
     },
   ];
 
@@ -157,12 +161,14 @@ export const FlowList = () => {
     keywords,
     lastChangedAt,
     lastPublishedAt,
-    isPinned,
+    tag,
     roles,
+    isPinned,
   }: any) => ({
     pin: displayPinned(isPinned),
     name: getName(name, keywords, roles),
     lastPublishedAt: getLastPublished(lastPublishedAt, t('Not published yet')),
+    label: tag ? getLabel(tag) : '',
     lastChangedAt: getDate(lastChangedAt, t('Nothing in draft')),
   });
 
@@ -170,6 +176,7 @@ export const FlowList = () => {
     { name: 'is_pinned', label: '', sort: true, order: 'desc' },
     { name: 'name', label: t('Title') },
     { label: t('Last published') },
+    { label: t('Tag') },
     { label: t('Last saved in Draft') },
     { label: t('Actions') },
   ];
@@ -191,63 +198,44 @@ export const FlowList = () => {
     fetchPolicy: 'network-only',
   });
 
-  const ITEM_HEIGHT = 48;
-  const ITEM_PADDING_TOP = 8;
-  const MenuProps = {
-    PaperProps: {
-      style: {
-        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-        width: 250,
-      },
-    },
-  };
-
-  // OnChange handler for the dropdown
-  const handleDropdownChange = (event: any) => {
-    setSelectedTag(event.target.value);
-  };
-
   const activeFilter = (
-    <FormControl sx={{ width: 150 }}>
-      <Select
-        aria-label="template-type"
-        name="template-type"
-        value={filter}
-        onChange={(event) => {
-          const { value } = event.target;
-          setFilter(JSON.parse(value));
+    <>
+      <FormControl>
+        <Select
+          aria-label="template-type"
+          name="template-type"
+          value={filter}
+          onChange={(event) => {
+            const { value } = event.target;
+            setFilter(JSON.parse(value));
+          }}
+          className={styles.SearchBar}
+        >
+          {filterList.map((filter: any) => (
+            <MenuItem key={filter.label} value={filter.value}>
+              {filter.label}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+      <AutoComplete
+        isFilterType
+        placeholder="Select tag"
+        options={tag ? tag.tags : []}
+        optionLabel="label"
+        disabled={false}
+        hasCreateOption={false}
+        multiple={false}
+        onChange={(value: any) => {
+          setSelectedTag(value);
         }}
-        MenuProps={MenuProps}
-        className={styles.SearchBar}
-        sx={{ '& > fieldset': { border: 'none' } }}
-      >
-        {filterList.map((filter: any) => (
-          <MenuItem key={filter.label} value={filter.value}>
-            {filter.label}
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
-  );
-
-  const tagFilter = (
-    <AutoComplete
-      isFilterType
-      placeholder="Select tag"
-      options={tag ? tag.tags : []}
-      optionLabel="label"
-      disabled={false}
-      hasCreateOption={false}
-      multiple={false}
-      onChange={(value: any) => {
-        setSelectedTag(value);
-      }}
-      form={{ setFieldValue: handleDropdownChange }}
-      field={{
-        value: selectedtag,
-        onChange: handleDropdownChange,
-      }}
-    />
+        form={{ setFieldValue: () => {} }}
+        field={{
+          name: 'selectedtag',
+          value: selectedtag,
+        }}
+      />
+    </>
   );
 
   var filters = { isActive: filter };
@@ -257,12 +245,24 @@ export const FlowList = () => {
     ...(selectedtag?.id && { tagIds: [parseInt(selectedtag?.id)] }),
   };
 
-  if (importing) {
-    return <Loading message="Uploading" />;
-  }
+  const addIcon = <AddIcon className={styles.AddIcon} />;
+
+  const helpData = {
+    heading: 'You can configure the flow by clicking on the configure button and are as follows:',
+    body: (
+      <ul>
+        <li>Save as Draft</li>
+        <li>Publish Preview</li>
+        <li>Revision history</li>
+        <li>Reset flow counts</li>
+      </ul>
+    ),
+    link: 'https://glific.github.io/docs/docs/category/flows',
+  };
 
   return (
     <List
+      helpData={helpData}
       title={t('Flows')}
       listItem="flows"
       listItemName="flow"
@@ -273,12 +273,11 @@ export const FlowList = () => {
       {...columnAttributes}
       searchParameter={['name_or_keyword_or_tags']}
       additionalAction={additionalAction}
-      button={{ show: true, label: t('Create Flow'), symbol: '+' }}
+      button={{ show: true, label: t('Create Flow'), symbol: addIcon }}
       secondaryButton={importButton}
       filters={filters}
       filterList={activeFilter}
-      filtersTag={selectedtag && selectedtag.id}
-      filterDropdowm={tagFilter}
+      loadingList={importing}
     />
   );
 };

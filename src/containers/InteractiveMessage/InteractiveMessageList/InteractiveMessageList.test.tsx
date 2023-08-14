@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { BrowserRouter as Router } from 'react-router-dom';
 
@@ -21,16 +21,20 @@ test('Interactive message list renders correctly', async () => {
   render(list);
   expect(screen.getByText('Loading...')).toBeInTheDocument();
 
-  const title = await screen.findByText('Interactive msg');
-  const label = await screen.findByText('Title');
-  const messageBody = await screen.findByText('Message');
-  const type = await screen.findByText('Type');
+  await waitFor(() => {
+    const title = screen.getByText('Interactive msg');
+    const label = screen.getByText('Title');
+    const messageBody = screen.getByText('Message');
+    const type = screen.getByText('Type');
 
-  expect(title).toBeInTheDocument();
-  expect(label).toBeInTheDocument();
-  expect(messageBody).toBeInTheDocument();
-  expect(type).toBeInTheDocument();
+    expect(title).toBeInTheDocument();
+    expect(label).toBeInTheDocument();
+    expect(messageBody).toBeInTheDocument();
+    expect(type).toBeInTheDocument();
+  });
 
-  expect(screen.getByText('List')).toBeInTheDocument();
-  expect(screen.getAllByText('Quick Reply')[0]).toBeInTheDocument();
+  await waitFor(() => {
+    expect(screen.getByText('List')).toBeInTheDocument();
+    expect(screen.getAllByText('Quick Reply')[0]).toBeInTheDocument();
+  });
 });

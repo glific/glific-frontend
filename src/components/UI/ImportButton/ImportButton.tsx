@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 import { ReactComponent as ImportIcon } from 'assets/images/icons/Flow/Import.svg';
 import { Button } from 'components/UI/Form/Button/Button';
+import styles from './ImportButton.module.css';
 
 export interface ImportButtonProps {
   title: string;
@@ -33,11 +34,11 @@ export const ImportButton = ({ title, onImport, afterImport }: ImportButtonProps
         onClick={() => {
           inputRef.current?.click();
         }}
-        variant="contained"
+        variant="outlined"
         color="primary"
       >
+        <ImportIcon data-testid="import-icon" className={styles.ImportIcon} />
         {title}
-        <ImportIcon data-testid="import-icon" />
       </Button>
     </span>
   );

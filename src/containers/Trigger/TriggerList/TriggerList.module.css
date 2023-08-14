@@ -1,11 +1,11 @@
 .EndDate {
-  min-width: 110px;
-  width: 15%;
+  min-width: 100px;
+  width: 22%;
 }
 
 .Name {
-  min-width: 290px;
-  width: 40%;
+  width: 33%;
+  min-width: 250px;
 }
 
 .Collections {
@@ -19,32 +19,35 @@
 }
 
 .LabelText {
-  display: flex;
-  font-weight: 500;
-  font-size: 20px;
   word-break: break-all;
-  margin-top: 12px;
-  margin-bottom: 12px;
-  line-height: 1;
+  padding: 0;
+  margin: 0;
+  font-size: 17px !important;
+  word-break: break-all;
+  color: #191c1a !important;
+  font-weight: 500;
 }
 
 .EndDateVal {
-  padding-top: 12px;
-  color: #93a29b;
-  font-size: 17px;
+  font-size: 15px;
+  color: #555555;
+  white-space: pre-line;
+  margin: 0;
+  font-weight: 400;
 }
 
 .Collection {
-  padding-top: 12px;
-  color: #93a29b;
-  font-size: 17px;
+  font-size: 15px;
+  color: #555555;
+  white-space: pre-line;
+  margin: 0;
+  font-weight: 400;
 }
 
 .Actions {
-  min-width: 150px;
   width: 25%;
-  justify-content: flex-end;
-  margin-left: auto;
+  min-width: 170px;
+  text-align: end;
 }
 
 .TriggerIcon {

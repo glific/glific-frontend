@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { BrowserRouter as Router } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
@@ -7,6 +7,10 @@ import { vi } from 'vitest';
 import { setUserSession } from 'services/AuthService';
 import { mocks, contactFieldErrorMock } from 'mocks/ContactFields';
 import ContactFieldList from './ContactFieldList';
+
+afterEach(() => {
+  cleanup();
+});
 
 vi.mock('react-router-dom', async () => ({
   ...((await vi.importActual<any>('react-router-dom')) as {}),
@@ -38,22 +42,24 @@ test('it renders list successfully', async () => {
     expect(actionLabel).toBeInTheDocument();
   });
 
-  const editButtons = screen.getAllByTestId('edit-icon');
-
   await waitFor(() => {
-    expect(editButtons[0]).toBeInTheDocument();
-    fireEvent.click(editButtons[0]);
-    // Edit, clears value and click save
-    const inputFields = screen.getAllByRole('textbox');
-    userEvent.type(inputFields[1], '{selectall}{backspace}');
-
-    const saveButton = screen.getByTestId('save-button');
-    fireEvent.click(saveButton);
-
-    userEvent.type(inputFields[1], '{selectall}{backspace}Age Group Name');
-    fireEvent.click(saveButton);
+    expect(screen.getByText('age_group')).toBeInTheDocument();
+    expect(screen.getAllByTestId('edit-icon')).toBeDefined();
   });
 
+  const editButtons = screen.getAllByTestId('edit-icon');
+
+  fireEvent.click(editButtons[0]);
+
+  await waitFor(() => {
+    expect(screen.getByTestId('inline-input')).toBeInTheDocument();
+  });
+
+  const inputFields = screen.getAllByRole('textbox');
+  userEvent.type(inputFields[1], '{selectall}{backspace}');
+  userEvent.type(inputFields[1], '{selectall}{backspace}Age Group Name');
+  const saveButton = screen.getByTestId('save-button');
+  fireEvent.click(saveButton);
   await waitFor(() => {});
 });
 
@@ -80,9 +86,10 @@ test('it renders component, edits field, saves and error occurs', async () => {
     // Edit, clears value and click save
     const inputFields = screen.getAllByRole('textbox');
     userEvent.type(inputFields[1], '{selectall}{backspace}age_group');
-    const saveButton = screen.getByTestId('save-button');
-    fireEvent.click(saveButton);
   });
+
+  const saveButton = screen.getByTestId('save-button');
+  fireEvent.click(saveButton);
 
   await waitFor(() => {});
 });

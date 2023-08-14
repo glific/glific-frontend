@@ -31,3 +31,6 @@ cypress/screenshots
 cypress/videos
 
 .tool-versions
+
+/priv
+/.vscode

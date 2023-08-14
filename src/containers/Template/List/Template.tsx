@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
-import { Checkbox, FormControlLabel } from '@mui/material';
+import { FormControl, MenuItem, Select } from '@mui/material';
 
 import { List } from 'containers/List/List';
 import { useMutation, useQuery } from '@apollo/client';
@@ -18,7 +18,7 @@ import {
   IMPORT_TEMPLATES,
 } from 'graphql/mutations/Template';
 import { ImportButton } from 'components/UI/ImportButton/ImportButton';
-import { ReactComponent as DownArrow } from 'assets/images/icons/DownArrow.svg';
+import { ReactComponent as DownArrow } from 'assets/images/icons/LanguageTranslation.svg';
 import { ReactComponent as ApprovedIcon } from 'assets/images/icons/Template/Approved.svg';
 import { ReactComponent as RejectedIcon } from 'assets/images/icons/Template/Rejected.svg';
 import { ReactComponent as PendingIcon } from 'assets/images/icons/Template/Pending.svg';
@@ -28,9 +28,10 @@ import Loading from 'components/UI/Layout/Loading/Loading';
 import { setNotification } from 'common/notification';
 import { BULK_APPLY_SAMPLE_LINK } from 'config';
 import styles from './Template.module.css';
-import { CopyAllOutlined } from '@mui/icons-material';
+import { ReactComponent as CopyAllOutlined } from 'assets/images/icons/Flow/Copy.svg';
 import { GET_TAGS } from 'graphql/queries/Tags';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
+import { ReactComponent as AddIcon } from 'assets/images/add.svg';
 
 const getLabel = (label: string) => <div className={styles.LabelText}>{label}</div>;
 
@@ -59,6 +60,7 @@ export interface TemplateProps {
   filters: any;
   buttonLabel: string;
   isHSM?: boolean;
+  syncHSMButton?: any;
 }
 
 const statusFilter = {
@@ -76,6 +78,7 @@ export const Template = ({
   filters: templateFilters,
   buttonLabel,
   isHSM,
+  syncHSMButton,
 }: TemplateProps) => {
   const [open, setOpen] = useState(false);
   const [Id, setId] = useState('');
@@ -108,7 +111,7 @@ export const Template = ({
       if (data && data.bulkApplyTemplates) {
         exportCsvFile(data.bulkApplyTemplates.csv_rows, 'result');
         setNotification(
-          t('Templates applied successfully. Please check the csv file for the results')
+          t('Templates applied successfully. Please check the csv file for the results'),
         );
       }
     },
@@ -129,27 +132,27 @@ export const Template = ({
     switch (status) {
       case 'APPROVED':
         statusValue = (
-          <>
+          <div className={styles.AlignCenter}>
             <ApprovedIcon />
             {t('Approved')}
-          </>
+          </div>
         );
         break;
       case 'PENDING':
         statusValue = (
-          <>
+          <div className={styles.AlignCenter}>
             <PendingIcon />
             {t('Pending')}
-          </>
+          </div>
         );
         break;
 
       case 'REJECTED':
         statusValue = (
-          <>
+          <div className={styles.AlignCenter}>
             <RejectedIcon />
             {t('Rejected')}
-          </>
+          </div>
         );
         break;
 
@@ -157,7 +160,7 @@ export const Template = ({
         statusValue = status;
     }
 
-    return <span className={styles.Status}>{statusValue}</span>;
+    return <span>{statusValue}</span>;
   };
 
   const columnNames: any = [
@@ -176,7 +179,7 @@ export const Template = ({
 
   columnNames.push({ label: t('Actions') });
 
-  let columnStyles: any = [styles.Label, styles.Body];
+  let columnStyles: any = [styles.Name, styles.Body];
 
   columnStyles = isHSM
     ? [...columnStyles, styles.Status, ...(filters.REJECTED ? [styles.Reason] : []), styles.Actions]
@@ -247,8 +250,9 @@ export const Template = ({
 
   let filterValue: any = '';
   const statusList = ['Approved', 'Pending', 'Rejected'];
+
   const handleCheckedBox = (event: any) => {
-    setFilters({ ...statusFilter, [event.target.name.toUpperCase()]: event.target.checked });
+    setFilters({ ...statusFilter, [event.target.value.toUpperCase()]: true });
   };
 
   const filterStatusName = Object.keys(filters).filter((status) => filters[status] === true);
@@ -257,29 +261,41 @@ export const Template = ({
   }
 
   const filterTemplateStatus = (
-    <div className={styles.Filters}>
-      {statusList.map((label, index) => {
-        const key = index;
-        const checked = filters[label.toUpperCase()];
-        return (
-          <FormControlLabel
-            key={key}
-            control={
-              <Checkbox
-                checked={checked}
-                color="primary"
-                onChange={handleCheckedBox}
-                name={statusList[index]}
-              />
-            }
-            label={statusList[index]}
-            classes={{
-              label: styles.FilterLabel,
-            }}
-          />
-        );
-      })}
-    </div>
+    <>
+      <FormControl className={styles.FormStyle}>
+        <Select
+          aria-label="template-type"
+          name="template-type"
+          value={statusList.filter((status) => filters[status.toUpperCase()] && status)}
+          onChange={handleCheckedBox}
+          className={styles.DropDown}
+          data-testid="dropdown-template"
+        >
+          {statusList.map((status: any) => (
+            <MenuItem data-testid="template-item" key={status} value={status}>
+              {status}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+      <AutoComplete
+        isFilterType
+        placeholder="Select tag"
+        options={tag ? tag.tags : []}
+        optionLabel="label"
+        disabled={false}
+        hasCreateOption={false}
+        multiple={false}
+        onChange={(value: any) => {
+          setSelectedTag(value);
+        }}
+        form={{ setFieldValue: () => {} }}
+        field={{
+          value: selectedTag,
+        }}
+      />
+      {syncHSMButton}
+    </>
   );
 
   let appliedFilters = templateFilters;
@@ -288,7 +304,7 @@ export const Template = ({
     additionalAction = () => [
       {
         label: t('Copy UUID'),
-        icon: <CopyAllOutlined sx={{ mt: 1, color: '#073F24' }} data-testid="copy-button" />,
+        icon: <CopyAllOutlined data-testid="copy-button" />,
         parameter: 'id',
         dialog: copyUuid,
       },
@@ -301,12 +317,22 @@ export const Template = ({
     return <Loading message="Please wait while we process all the templates" />;
   }
 
-  const button = { show: true, label: buttonLabel, symbol: '+' };
+  const addIcon = <AddIcon className={styles.AddIcon} />;
+
+  const button = { show: true, label: buttonLabel, symbol: addIcon };
   let secondaryButton = null;
 
   if (isHSM) {
     secondaryButton = (
       <div className={styles.ImportButton}>
+        <a
+          href={BULK_APPLY_SAMPLE_LINK}
+          target="_blank"
+          rel="noreferrer"
+          className={styles.HelperText}
+        >
+          View Sample
+        </a>
         <ImportButton
           title={t('Bulk apply')}
           onImport={() => setImporting(true)}
@@ -320,14 +346,6 @@ export const Template = ({
             }
           }}
         />
-        <a
-          href={BULK_APPLY_SAMPLE_LINK}
-          target="_blank"
-          rel="noreferrer"
-          className={styles.HelperText}
-        >
-          View Sample
-        </a>
       </div>
     );
   }
@@ -351,38 +369,24 @@ export const Template = ({
     button.show = false;
   }
 
-  // OnChange handler for the dropdown
-  const handleDropdownChange = (event: any) => {
-    setSelectedTag(event.target.value);
-  };
-
-  const tagFilter = (
-    <AutoComplete
-      isFilterType
-      placeholder="Select tag"
-      options={tag ? tag.tags : []}
-      optionLabel="label"
-      disabled={false}
-      hasCreateOption={false}
-      multiple={false}
-      onChange={(value: any) => {
-        setSelectedTag(value);
-      }}
-      form={{ setFieldValue: handleDropdownChange }}
-      field={{
-        value: selectedTag,
-        onChange: handleDropdownChange,
-      }}
-    />
-  );
-
   appliedFilters = {
     ...appliedFilters,
     ...(selectedTag?.id && { tagIds: [parseInt(selectedTag?.id)] }),
   };
 
+  const helpData = {
+    heading: isHSM
+      ? "HSM (Highly Structured Message) templates are pre-approved messages by Whatsapp which are used to send to the users when their session window is closed (i.e after 24hours of inactive conversation). These templates ensure compliance with WhatsApp's guidelines and allow NGO's to send notifications, customer support messages and alerts with placeholders for personalized information."
+      : 'Speed Sends is a functionality in Glific to create a message or save the messages and reuse it in future chats.',
+    body: <></>,
+    link: isHSM
+      ? 'https://glific.github.io/docs/docs/Product%20Features/Templates'
+      : 'https://glific.github.io/docs/docs/Product%20Features/Speed%20Sends',
+  };
+
   return (
     <List
+      helpData={helpData}
       secondaryButton={secondaryButton}
       title={title}
       listItem={listItem}
@@ -399,7 +403,6 @@ export const Template = ({
       filterList={isHSM && filterTemplateStatus}
       collapseOpen={open}
       collapseRow={Id}
-      filterDropdowm={isHSM && tagFilter}
     />
   );
 };

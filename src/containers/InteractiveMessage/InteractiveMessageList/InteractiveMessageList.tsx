@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ReactComponent as InteractiveMessageIcon } from 'assets/images/icons/InteractiveMessage/Dark.svg';
-import { ReactComponent as DownArrow } from 'assets/images/icons/DownArrow.svg';
-import { ReactComponent as DuplicateIcon } from 'assets/images/icons/Flow/Duplicate.svg';
+import { ReactComponent as DownArrow } from 'assets/images/icons/LanguageTranslation.svg';
+import { ReactComponent as DuplicateIcon } from 'assets/images/icons/Flow/Copy.svg';
 import { List } from 'containers/List/List';
 import {
   FILTER_INTERACTIVE_MESSAGES,
@@ -130,11 +130,6 @@ export const InteractiveMessageList = () => {
     fetchPolicy: 'network-only',
   });
 
-  // OnChange handler for the dropdown
-  const handleDropdownChange = (event: any) => {
-    setSelectedTag(event.target.value);
-  };
-
   const tagFilter = (
     <AutoComplete
       isFilterType
@@ -147,16 +142,24 @@ export const InteractiveMessageList = () => {
       onChange={(value: any) => {
         setSelectedTag(value);
       }}
-      form={{ setFieldValue: handleDropdownChange }}
+      form={{ setFieldValue: () => {} }}
       field={{
+        name: 'selectedtag',
         value: selectedtag,
-        onChange: handleDropdownChange,
       }}
     />
   );
 
+  const helpData = {
+    heading:
+      'Interactive Messages are used by NGOs to create engaging and dynamic conversations with their beneficiaries. This feature helps NGOs to go beyond simple text-based notifications and include interactive elements like buttons, quick replies, list menus etc. It enhances the user experience through guided interactions and helps the NGOs collect cleaner data.',
+    body: <></>,
+    link: 'https://glific.github.io/docs/docs/Product%20Features/Interactive%20Messages',
+  };
+
   return (
     <List
+      helpData={helpData}
       title={t('Interactive msg')}
       listItem="interactiveTemplates"
       listItemName="interactive"
@@ -172,7 +175,7 @@ export const InteractiveMessageList = () => {
       collapseOpen={open}
       collapseRow={selectedId}
       filters={selectedtag && selectedtag.id && { tagIds: [parseInt(selectedtag.id)] }}
-      filterDropdowm={tagFilter}
+      filterList={tagFilter}
     />
   );
 };

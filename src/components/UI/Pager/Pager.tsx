@@ -8,11 +8,13 @@ import {
   TablePagination,
   TableRow,
   TableSortLabel,
+  TableContainer,
 } from '@mui/material';
 import { v4 as uuidv4 } from 'uuid';
 
 import { ColumnNames } from 'containers/List/List';
 import styles from './Pager.module.css';
+import Loading from '../Layout/Loading/Loading';
 
 const removeDisplayColumns = ['recordId', 'translations', 'id', 'isActive'];
 interface PagerProps {
@@ -28,10 +30,12 @@ interface PagerProps {
     sortDirection: 'asc' | 'desc';
   };
   collapseOpen: boolean;
+  loadingList?: boolean;
   collapseRow: string | undefined;
+  noItemsText?: any;
 }
 
-// create a collapsible row
+// TODO: cleanup the translations code
 const collapsedRowData = (dataObj: any, columnStyles: any, recordId: any) => {
   // if empty dataObj
   if (Object.keys(dataObj).length === 0) {
@@ -50,19 +54,19 @@ const collapsedRowData = (dataObj: any, columnStyles: any, recordId: any) => {
     const rowIdentifier = `collapsedRowData-${recordId}-${index}`;
 
     return (
-      <TableRow className={styles.CollapseTableRow} key={rowIdentifier}>
-        <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[0] : null}`}>
+      <TableRow key={rowIdentifier}>
+        <TableCell className={`${columnStyles ? columnStyles[0] : null}`}>
           <div>
             <div className={styles.LabelText}>{dataObj[key].label}</div>
           </div>
         </TableCell>
-        <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[1] : null}`}>
+        <TableCell className={`${columnStyles ? columnStyles[1] : null}`}>
           <div>
             <p className={styles.TableText}>{dataObj[key].body}</p>
           </div>
         </TableCell>
-        <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[2] : null}`} />
-        <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[3] : null}`} />
+        <TableCell className={`${columnStyles ? columnStyles[2] : null}`} />
+        <TableCell className={`${columnStyles ? columnStyles[3] : null}`} />
       </TableRow>
     );
   });
@@ -74,7 +78,7 @@ const createRows = (
   data: any,
   columnStyles: any,
   collapseRow?: string,
-  collapseOpen: boolean = false
+  collapseOpen: boolean = false,
 ) => {
   const createRow = (entry: any) => {
     let stylesIndex = -1;
@@ -89,7 +93,7 @@ const createRows = (
       return (
         <TableCell
           key={item + entry.recordId}
-          className={`${styles.TableCell} ${columnStyles ? columnStyles[stylesIndex] : null}`}
+          className={`${columnStyles && columnStyles[stylesIndex]} ${styles.RowStyle}`}
         >
           {entry[item]}
         </TableCell>
@@ -98,13 +102,14 @@ const createRows = (
   };
 
   return data.map((entry: any) => {
+    console.log(entry);
     let dataObj: any;
     const isActiveRow = entry.isActive === false ? styles.InactiveRow : styles.ActiveRow;
     if (entry.translations) dataObj = JSON.parse(entry.translations);
 
     return (
       <Fragment key={entry.recordId}>
-        <TableRow className={`${styles.TableRow} ${isActiveRow}`}>{createRow(entry)}</TableRow>
+        <TableRow className={`${isActiveRow}`}>{createRow(entry)}</TableRow>
         {collapseOpen && dataObj && entry.id === collapseRow
           ? collapsedRowData(dataObj, columnStyles, entry.recordId)
           : null}
@@ -117,14 +122,14 @@ const tableHeadColumns = (
   columnNames: Array<any>,
   columnStyles: any,
   tableVals: any,
-  handleTableChange: Function
+  handleTableChange: Function,
 ) => {
   const headerRow = (
     <TableRow className={styles.TableHeadRow}>
       {columnNames.map((field: any, i: number) => (
         <TableCell
           key={uuidv4()}
-          className={`${styles.TableCell} ${columnStyles ? columnStyles[i] : null}`}
+          className={`${columnStyles && columnStyles[i]} ${styles.RowHeadStyle}`}
         >
           {i !== columnNames.length - 1 && field.name ? (
             <TableSortLabel
@@ -137,10 +142,11 @@ const tableHeadColumns = (
                   handleTableChange('sortCol', field.name);
                   handleTableChange(
                     'sortDirection',
-                    tableVals.sortDirection === 'asc' ? 'desc' : 'asc'
+                    tableVals.sortDirection === 'asc' ? 'desc' : 'asc',
                   );
                 }
               }}
+              className={styles.HeaderColor}
             >
               {field.label}
             </TableSortLabel>
@@ -158,7 +164,7 @@ const pagination = (
   columnNames: Array<any>,
   totalRows: number,
   handleTableChange: Function,
-  tableVals: any
+  tableVals: any,
 ) => (
   <TablePagination
     className={styles.FooterRow}
@@ -185,6 +191,8 @@ export const Pager = ({
   totalRows,
   collapseOpen,
   collapseRow,
+  loadingList = false,
+  noItemsText,
 }: PagerProps) => {
   const rows = createRows(data, columnStyles, collapseRow, collapseOpen);
   const tableHead = tableHeadColumns(columnNames, columnStyles, tableVals, handleTableChange);
@@ -192,13 +200,21 @@ export const Pager = ({
 
   return (
     <div className={styles.TableContainer}>
-      <Table className={styles.Table} data-testid="table">
-        <TableHead data-testid="tableHead">{tableHead}</TableHead>
-        <TableBody data-testid="tableBody">{rows}</TableBody>
-        <TableFooter className={styles.TableFooter} data-testid="tableFooter">
-          <TableRow>{tablePagination}</TableRow>
-        </TableFooter>
-      </Table>
+      <TableContainer className={styles.StyleForContainer}>
+        <Table stickyHeader aria-label="sticky table" data-testid="table">
+          <TableHead data-testid="tableHead">{tableHead}</TableHead>
+          <TableBody data-testid="tableBody">{!loadingList && data.length > 0 && rows}</TableBody>
+        </Table>
+        {loadingList && (
+          <div className={styles.Body}>
+            <Loading />
+          </div>
+        )}
+        {!loadingList && data.length == 0 && <div className={styles.Body}>{noItemsText}</div>}
+      </TableContainer>
+      <TableFooter className={styles.TableFooter} data-testid="tableFooter">
+        <TableRow>{tablePagination}</TableRow>
+      </TableFooter>
     </div>
   );
 };

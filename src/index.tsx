@@ -3,6 +3,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
 import { CssBaseline } from '@mui/material';
 import Appsignal from '@appsignal/javascript';
+import { StyledEngineProvider } from '@mui/material/styles';
 import { ErrorBoundary } from '@appsignal/react';
 import * as WindowEvents from '@appsignal/plugin-window-events';
 import * as BreadcrumbsNetwork from '@appsignal/plugin-breadcrumbs-network';
@@ -34,8 +35,10 @@ if (APPSIGNAL_API_KEY) {
 const root = createRoot(document.getElementById('root')!);
 
 root.render(
-  <ThemeProvider theme={theme}>
-    <CssBaseline />
-    <BrowserRouter>{appComponent}</BrowserRouter>
-  </ThemeProvider>
+  <StyledEngineProvider injectFirst>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <BrowserRouter>{appComponent}</BrowserRouter>
+    </ThemeProvider>
+  </StyledEngineProvider>,
 );

@@ -1,33 +1,29 @@
 .SearchField {
   height: 100%;
   width: 100%;
-  padding: 0 0 0 10px;
-  border-radius: 10px;
-  align-items: center !important;
+  border-radius: 24px;
 }
 
 .IconAndText {
   width: 100%;
   display: flex;
+  align-items: center;
 }
 
 .SearchBar {
-  border-radius: 10px;
-  border-color: #93a29b;
-  border-width: 2px;
-  border-style: solid;
+  padding: 0 18px;
+  border-radius: 24px;
   display: flex;
-  width: 93%;
-  padding: 0px;
+  width: 90%;
   margin: auto;
-  margin-top: 14px;
-  margin-bottom: 12px;
-  height: 48px;
+  height: 36px;
+  box-shadow: 0px 2px 4px 0px #00000014;
+  background: #ffffff;
 }
 
 .SearchIcon {
-  margin-left: 8px;
-  width: 24px;
+  width: 20px;
+  height: 20px;
   vertical-align: middle;
 }
 
@@ -39,7 +35,6 @@
 }
 
 .ResetSearch {
-  /* margin-right: 3px !important; */
   height: 80%;
   align-self: center;
   padding: 3px !important;

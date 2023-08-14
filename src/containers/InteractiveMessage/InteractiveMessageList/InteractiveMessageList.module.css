@@ -3,35 +3,34 @@
 }
 
 .Label {
-  width: 20%;
+  width: 25%;
   min-width: 200px;
 }
 
 .Actions {
-  justify-content: flex-end;
-  margin-left: auto;
+  width: 15%;
   min-width: 200px;
+  text-align: end;
 }
 
 .LabelText {
-  display: flex;
-  font-weight: 500;
-  font-size: 20px;
-  color: #073f24;
-  margin-top: 12px;
-  margin-bottom: 12px;
-  line-height: 1;
+  padding: 0;
+  line-height: 20px;
+  margin: 0;
+  font-size: 17px !important;
   word-break: break-all;
+  color: #191c1a !important;
+  font-weight: 500;
 }
 
 .TableText {
-  margin-right: 23px;
-  text-align: left;
-  padding: 12px 0px;
-  font-size: 16px;
-  color: #93a29b;
-  line-height: 1.25;
+  font-size: 15px;
+  line-height: 20px;
+  color: #555555;
+  white-space: pre-line;
   margin: 0;
+  font-weight: 400;
+  padding: 0;
 }
 
 .FlowIcon {
@@ -40,7 +39,7 @@
 }
 
 .LastPublished {
-  padding-top: 12px;
+  padding-top: 0;
   text-align: left;
   font-size: 16px;
   color: #93a29b;
@@ -98,9 +97,10 @@
 
 .Message {
   width: 40%;
-  min-width: 120px;
+  min-width: 150px;
 }
 
 .Type {
   width: 20%;
+  min-width: 100px;
 }

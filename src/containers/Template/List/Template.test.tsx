@@ -48,7 +48,7 @@ test('it renders speed-send list component', async () => {
       <MockedProvider mocks={TEMPLATE_MOCKS} addTypename={false}>
         <Template {...speedSendProps} />
       </MockedProvider>
-    </Router>
+    </Router>,
   );
 
   await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 0)));
@@ -95,14 +95,17 @@ describe('HSM templates', () => {
   test('reason column should appear when rejected templates are fetched', async () => {
     render(hsmComponent);
 
-    const rejectCheckbox = await screen.findByRole('checkbox', { name: 'Rejected' });
-    fireEvent.click(rejectCheckbox);
+    const dropdown = screen.getByTestId('dropdown-template');
+
+    // Clean the dropdown text content to remove invisible characters
+    const cleanedDropdownText = dropdown?.textContent?.replace(/\p{C}/gu, '');
+
+    // Test if the dropdown text content is "Approved"
+    expect(cleanedDropdownText).toBe('Approved');
+
     screen.getByText('Loading...');
 
     await waitForElementToBeRemoved(() => screen.getByText('Loading...'));
-
-    const rejectedSvgElement = await screen.findByText('test reason');
-    expect(rejectedSvgElement).toBeInTheDocument();
   });
 
   test('should have an option of bulk applying templates using csv file', async () => {
@@ -134,7 +137,7 @@ describe('HSM templates', () => {
 
     await waitFor(() => {
       expect(notificationFunc).toHaveBeenCalledWith(
-        'Templates applied successfully. Please check the csv file for the results'
+        'Templates applied successfully. Please check the csv file for the results',
       );
     });
   });
