@@ -86,9 +86,10 @@ test('it renders component, edits field, saves and error occurs', async () => {
     // Edit, clears value and click save
     const inputFields = screen.getAllByRole('textbox');
     userEvent.type(inputFields[1], '{selectall}{backspace}age_group');
-    const saveButton = screen.getByTestId('save-button');
-    fireEvent.click(saveButton);
   });
+
+  const saveButton = screen.getByTestId('save-button');
+  fireEvent.click(saveButton);
 
   await waitFor(() => {});
 });

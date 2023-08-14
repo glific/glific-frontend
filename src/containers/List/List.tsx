@@ -45,7 +45,6 @@ export interface HelpDataProps {
 
 export interface ListProps {
   loadingList?: boolean;
-  helperText?: string;
   columnNames?: Array<ColumnNames>;
   countQuery: DocumentNode;
   listItem: string;
