@@ -40,7 +40,7 @@ describe('<CollectionList />', () => {
     const { getByText } = render(wrapper);
 
     // loading is show initially
-    // expect(getByText('Loading...')).toBeInTheDocument();
+    expect(getByText('Loading...')).toBeInTheDocument();
 
     await waitFor(() => {
       expect(getByText('Collections')).toBeInTheDocument();
@@ -56,7 +56,7 @@ describe('<CollectionList />', () => {
     const { getByText, getAllByTestId } = render(wrapper);
 
     // loading is show initially
-    // expect(getByText('Loading...')).toBeInTheDocument();
+    expect(getByText('Loading...')).toBeInTheDocument();
     await waitFor(() => {
       expect(getAllByTestId('additionalButton')[0]).toBeInTheDocument();
     });
@@ -105,7 +105,7 @@ describe('<CollectionList />', () => {
     const { getByText, getAllByTestId, getByTestId } = render(wrapper);
 
     // loading is show initially
-    // expect(getByText('Loading...')).toBeInTheDocument();
+    expect(getByText('Loading...')).toBeInTheDocument();
     await waitFor(() => {
       fireEvent.click(getAllByTestId('additionalButton')[0]);
     });

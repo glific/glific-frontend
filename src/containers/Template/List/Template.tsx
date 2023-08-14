@@ -294,6 +294,7 @@ export const Template = ({
           value: selectedTag,
         }}
       />
+      {syncHSMButton}
     </>
   );
 
@@ -402,7 +403,6 @@ export const Template = ({
       filterList={isHSM && filterTemplateStatus}
       collapseOpen={open}
       collapseRow={Id}
-      syncHSMButton={syncHSMButton}
     />
   );
 };

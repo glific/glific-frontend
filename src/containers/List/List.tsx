@@ -28,6 +28,7 @@ import { setNotification, setErrorMessage } from 'common/notification';
 import { getUpdatedList, setListSession, getLastListSessionValues } from 'services/ListService';
 import styles from './List.module.css';
 import Track from 'services/TrackService';
+import Loading from 'components/UI/Layout/Loading/Loading';
 
 export interface ColumnNames {
   name?: string;
@@ -97,7 +98,6 @@ export interface ListProps {
   defaultSortBy?: string | null;
   noItemText?: string | null;
   customStyles?: any;
-  syncHSMButton?: any;
 }
 
 interface TableVals {
@@ -145,7 +145,6 @@ export const List = ({
   collapseRow = undefined,
   noItemText = null,
   customStyles,
-  syncHSMButton,
 }: ListProps) => {
   const { t } = useTranslation();
   const [showMoreOptions, setShowMoreOptions] = useState<string>('');
@@ -670,7 +669,9 @@ export const List = ({
     );
   } else if (displayListType === 'card') {
     /* istanbul ignore next */
-    displayList = (
+    displayList = loading ? (
+      <Loading />
+    ) : (
       <>
         <ListCard data={itemList} link={cardLink} />
         <table>
@@ -797,7 +798,6 @@ export const List = ({
           {backLink}
         </div>
         <div className={styles.Buttons}>
-          {syncHSMButton}
           <SearchBar
             handleSubmit={handleSearch}
             onReset={() => {
