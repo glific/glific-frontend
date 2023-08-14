@@ -7,6 +7,8 @@ import { vi } from 'vitest';
 import { setUserSession } from 'services/AuthService';
 import { mocks, contactFieldErrorMock } from 'mocks/ContactFields';
 import ContactFieldList from './ContactFieldList';
+import axios from 'axios';
+vi.mock('axios');
 
 afterEach(() => {
   cleanup();
@@ -19,6 +21,7 @@ vi.mock('react-router-dom', async () => ({
 
 setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
 
+axios.post.mockResolvedValue(() => Promise.resolve({ data: { status: 'ok' } }));
 const list = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <Router>

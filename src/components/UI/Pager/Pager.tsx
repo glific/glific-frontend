@@ -102,7 +102,6 @@ const createRows = (
   };
 
   return data.map((entry: any) => {
-    console.log(entry);
     let dataObj: any;
     const isActiveRow = entry.isActive === false ? styles.InactiveRow : styles.ActiveRow;
     if (entry.translations) dataObj = JSON.parse(entry.translations);
