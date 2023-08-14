@@ -11,7 +11,8 @@ export const getTicketQuery = {
         ticket: {
           body: 'Please resolve this issue',
           contact: {
-            id: '1',
+            id: '2',
+            name: 'Glific contact',
           },
           id: '1',
           insertedAt: '2021-06-16T09:00:00.000Z',
@@ -20,7 +21,8 @@ export const getTicketQuery = {
           topic: 'General',
           updatedAt: '2021-06-16T09:00:00.000Z',
           user: {
-            id: '1',
+            id: '3',
+            name: 'Glific user',
           },
         },
       },

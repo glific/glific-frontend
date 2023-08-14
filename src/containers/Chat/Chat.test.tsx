@@ -1,4 +1,4 @@
-import { cleanup, render, waitFor } from '@testing-library/react';
+import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 
 import { setUserSession } from 'services/AuthService';
@@ -6,6 +6,11 @@ import { CONVERSATION_MOCKS } from 'mocks/Chat';
 
 import { Chat } from './Chat';
 import { MemoryRouter } from 'react-router';
+
+vi.mock('containers/Chat/ChatSubscription/ChatSubscription', () => ({
+  default: () => <div>Chat subscription</div>,
+  ChatSubscription: () => <div>Chat subscription</div>,
+}));
 
 const mocks: any = CONVERSATION_MOCKS;
 
@@ -22,11 +27,12 @@ describe('<Chat />', () => {
         <MockedProvider mocks={mocks} addTypename={false}>
           <Chat />
         </MockedProvider>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     // there is nothing to assert here just waiting for all the mock calls working
-    await waitFor(() => {});
-    await waitFor(() => {});
+    await waitFor(() => {
+      expect(screen.getByText('Chat subscription')).toBeInTheDocument();
+    });
   });
 });

@@ -222,6 +222,7 @@ const updateMockByType = (id: string, input: any, response: any) => ({
           updatedAt: '2021-07-14T11:26:00Z',
           ...response,
         },
+        errors: null,
       },
       errors: null,
     },

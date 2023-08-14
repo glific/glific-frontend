@@ -95,7 +95,7 @@ export const ChatSubscription = ({ setDataLoaded }: ChatSubscriptionProps) => {
 
       const { newMessage, contactId, collectionId, messageStatusData } = getSubscriptionDetails(
         action,
-        subscriptionData
+        subscriptionData,
       );
 
       // loop through the cached conversations and find if contact exists
@@ -142,7 +142,7 @@ export const ChatSubscription = ({ setDataLoaded }: ChatSubscriptionProps) => {
 
         addLogs(
           `${action}-contact is not cached, so we need to fetch the conversations and add to cache`,
-          variables
+          variables,
         );
 
         if (!contactIdsFetched.includes(contactId)) {
@@ -196,7 +196,7 @@ export const ChatSubscription = ({ setDataLoaded }: ChatSubscriptionProps) => {
       const returnConversations = { ...cachedConversations, ...updatedConversations };
       return returnConversations;
     },
-    [getContactQuery]
+    [getContactQuery],
   );
 
   const { subscribeToMore: collectionSubscribe, data: collectionData } = useQuery<any>(
@@ -205,7 +205,7 @@ export const ChatSubscription = ({ setDataLoaded }: ChatSubscriptionProps) => {
       variables: COLLECTION_SEARCH_QUERY_VARIABLES,
       fetchPolicy: 'network-only',
       nextFetchPolicy: 'cache-only',
-    }
+    },
   );
 
   const { loading, error, subscribeToMore, data, refetch } = useQuery<any>(SEARCH_QUERY, {

@@ -90,34 +90,35 @@ test('it renders empty interactive form', async () => {
 
   // Adding another quick reply button
   await waitFor(() => {
-    const addQuickReplyButton = screen.getByText('Add quick reply');
-    expect(addQuickReplyButton).toBeInTheDocument();
-    fireEvent.click(addQuickReplyButton);
+    expect(screen.getByText('Add quick reply')).toBeInTheDocument();
   });
+
+  const addQuickReplyButton = screen.getByText('Add quick reply');
+  fireEvent.click(addQuickReplyButton);
 
   await waitFor(() => {
-    // Get all input elements
-    const [title, quickReply1, quickReply2, , attachmentUrl] = screen.getAllByRole('textbox');
-    expect(title).toBeInTheDocument();
-    expect(quickReply1).toBeInTheDocument();
-    expect(quickReply2).toBeInTheDocument();
-    expect(attachmentUrl).toBeInTheDocument();
-
-    fireEvent.change(title, { target: { value: 'new title' } });
-    fireEvent.blur(title);
-    fireEvent.change(quickReply1, { target: { value: 'Yes' } });
-    fireEvent.change(quickReply2, { target: { value: 'No' } });
-    fireEvent.change(attachmentUrl, { target: { value: 'https://picsum.photos/200/300' } });
-    fireEvent.blur(attachmentUrl);
+    expect(screen.getAllByRole('textbox')).toHaveLength(6);
   });
+
+  const [title, quickReply1, quickReply2, , attachmentUrl] = screen.getAllByRole('textbox');
+  expect(title).toBeInTheDocument();
+  expect(quickReply1).toBeInTheDocument();
+  expect(quickReply2).toBeInTheDocument();
+  expect(attachmentUrl).toBeInTheDocument();
+  fireEvent.change(title, { target: { value: 'new title' } });
+  fireEvent.blur(title);
+  fireEvent.change(quickReply1, { target: { value: 'Yes' } });
+  fireEvent.change(quickReply2, { target: { value: 'No' } });
+  fireEvent.change(attachmentUrl, { target: { value: 'https://picsum.photos/200/300' } });
+  fireEvent.blur(attachmentUrl);
 
   // Changing language to marathi
   await waitFor(() => {
-    const language = screen.getByText('Marathi');
-    expect(language).toBeInTheDocument();
-
-    fireEvent.click(language);
+    expect(screen.getByText('Marathi')).toBeInTheDocument();
   });
+
+  const language = screen.getByText('Marathi');
+  fireEvent.click(language);
 
   await waitFor(() => {
     const [attachmentType] = screen.getAllByTestId('autocomplete-element');
@@ -134,8 +135,9 @@ test('it renders empty interactive form', async () => {
   await waitFor(() => {
     expect(quickReplyRadio).toBeInTheDocument();
     expect(listRadio).toBeInTheDocument();
-    fireEvent.click(listRadio);
   });
+
+  fireEvent.click(listRadio);
 
   await waitFor(() => {
     // Adding list data

@@ -5,12 +5,14 @@ import { setUserSession } from 'services/AuthService';
 import { Ticket } from './Ticket';
 import userEvent from '@testing-library/user-event';
 import { getTicketQuery } from 'mocks/Ticket';
+import { getOrganizationLanguagesQuery } from 'mocks/Organization';
+import { getUsersQuery } from 'mocks/User';
 
 afterEach(cleanup);
 
 setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
 
-const mocks = [getTicketQuery];
+const mocks = [getTicketQuery, getOrganizationLanguagesQuery, getUsersQuery];
 
 test('Render component correctly with the values', async () => {
   const user = userEvent.setup();

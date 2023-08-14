@@ -14,10 +14,6 @@ import { vi } from 'vitest';
 import { setUserSession } from 'services/AuthService';
 import { mocks, contactFieldErrorMock } from 'mocks/ContactFields';
 import ContactFieldList from './ContactFieldList';
-import axios from 'axios';
-
-vi.mock('axios');
-axios.post.mockResolvedValue(() => Promise.resolve({ data: { status: 'ok' } }));
 
 afterEach(() => {
   cleanup();
