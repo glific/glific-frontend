@@ -175,7 +175,7 @@ export const InteractiveMessageList = () => {
       collapseOpen={open}
       collapseRow={selectedId}
       filters={selectedtag && selectedtag.id && { tagIds: [parseInt(selectedtag.id)] }}
-      filterDropdowm={tagFilter}
+      filterList={tagFilter}
     />
   );
 };

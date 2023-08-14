@@ -26,12 +26,9 @@ const theme = createTheme({
         },
       },
     },
+    // Todo: Override Mui backdrop color
     MuiBackdrop: {
-      styleOverrides: {
-        root: {
-          backgroundColor: 'rgba(147,162,155,0.84)',
-        },
-      },
+      styleOverrides: {},
     },
     MuiIconButton: {
       styleOverrides: {

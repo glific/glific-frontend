@@ -1,9 +1,6 @@
-.Table {
-  background-color: #ffffff;
-}
 .TableRow {
   position: relative;
-  display: flex !important;
+  display: flex;
   background-color: white;
   box-shadow: 0px 4px 4px 0px #0000000a;
   border-bottom: 1px solid #efefef;
@@ -11,41 +8,36 @@
   padding-right: 5px;
 }
 
-.TableHeadRow {
-  z-index: 100;
-  border-radius: '10px';
-}
-
 .TableCell {
-  font-size: 14px !important;
-  display: flex !important;
-  padding: 0px 10px !important;
+  font-size: 14px;
+  display: flex;
+  padding: 0px 10px;
   margin: 0;
-  border: unset !important;
-  color: #0c1f14 !important;
+  border: unset;
+  color: #0c1f14;
 }
 
 .TableContainer {
-  padding: 14px 24px;
+  padding: 18px 56px;
   overflow: hidden;
-  height: calc(100vh - 200px) !important;
+  height: calc(100vh - 200px);
 }
 
 .TableFooter {
   border-radius: 0 0 10px 10px;
-  display: flex !important;
-  justify-content: flex-end !important;
+  display: flex;
+  justify-content: flex-end;
   height: 50px;
   background: #fff;
   bottom: 0px;
   right: 4px;
-  box-shadow: 0px -4px 4px 0px #0000000a;
+  box-shadow: 0px -4px 4px 0px rgba(0, 0, 0, 0.04);
 }
 
 .FooterRow {
-  border: 0px !important;
-  font-size: 16px !important;
-  color: #073f24 !important;
+  border: 0px;
+  font-size: 16px;
+  color: #073f24;
 }
 
 .FooterRow > div {
@@ -78,7 +70,7 @@
 }
 
 .InactiveRow {
-  color: #ccd4d0 !important;
+  color: #ccd4d0;
 }
 
 .Body {
@@ -89,30 +81,29 @@
 }
 
 .RowStyle {
-  padding: 15px 20px 15px 25px !important;
+  padding: 15px 20px 15px 25px;
 }
 
 .RowHeadStyle {
-  background-color: #dfece2 !important;
-  color: rgba(12, 31, 20, 0.57) !important;
-  z-index: 100 !important;
-  padding-left: 22px !important;
-  padding-right: 25px !important;
+  background-color: #dfece2;
+  color: rgba(12, 31, 20, 0.57);
+  z-index: 100;
+  padding-left: 22px;
+  padding-right: 25px;
 }
 
 .HeaderColor {
-  color: rgba(12, 31, 20, 0.57) !important;
+  color: rgba(12, 31, 20, 0.57);
 }
 
 .StyleForContainer {
-  min-height: calc(100% - 50px) !important;
-  max-height: calc(100% - 50px) !important;
-  background: #fff !important;
-  overflow-y: scroll !important;
-  scrollbar-width: none !important;
-  border-radius: 10px 10px 0 0 !important;
+  height: calc(100% - 50px);
+  background: #fff;
+  overflow-y: scroll;
+  scrollbar-width: none;
+  border-radius: 10px 10px 0 0;
 }
 
 .StyleForContainer::-webkit-scrollbar {
-  width: 0 !important;
+  width: 0;
 }

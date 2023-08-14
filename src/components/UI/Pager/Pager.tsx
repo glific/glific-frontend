@@ -35,7 +35,7 @@ interface PagerProps {
   noItemsText?: any;
 }
 
-// create a collapsible row
+// TODO: cleanup the translations code
 const collapsedRowData = (dataObj: any, columnStyles: any, recordId: any) => {
   // if empty dataObj
   if (Object.keys(dataObj).length === 0) {
@@ -78,7 +78,7 @@ const createRows = (
   data: any,
   columnStyles: any,
   collapseRow?: string,
-  collapseOpen: boolean = false
+  collapseOpen: boolean = false,
 ) => {
   const createRow = (entry: any) => {
     let stylesIndex = -1;
@@ -102,6 +102,7 @@ const createRows = (
   };
 
   return data.map((entry: any) => {
+    console.log(entry);
     let dataObj: any;
     const isActiveRow = entry.isActive === false ? styles.InactiveRow : styles.ActiveRow;
     if (entry.translations) dataObj = JSON.parse(entry.translations);
@@ -121,7 +122,7 @@ const tableHeadColumns = (
   columnNames: Array<any>,
   columnStyles: any,
   tableVals: any,
-  handleTableChange: Function
+  handleTableChange: Function,
 ) => {
   const headerRow = (
     <TableRow className={styles.TableHeadRow}>
@@ -141,7 +142,7 @@ const tableHeadColumns = (
                   handleTableChange('sortCol', field.name);
                   handleTableChange(
                     'sortDirection',
-                    tableVals.sortDirection === 'asc' ? 'desc' : 'asc'
+                    tableVals.sortDirection === 'asc' ? 'desc' : 'asc',
                   );
                 }
               }}
@@ -163,7 +164,7 @@ const pagination = (
   columnNames: Array<any>,
   totalRows: number,
   handleTableChange: Function,
-  tableVals: any
+  tableVals: any,
 ) => (
   <TablePagination
     className={styles.FooterRow}
@@ -200,7 +201,7 @@ export const Pager = ({
   return (
     <div className={styles.TableContainer}>
       <TableContainer className={styles.StyleForContainer}>
-        <Table stickyHeader aria-label="sticky table" className={styles.Table} data-testid="table">
+        <Table stickyHeader aria-label="sticky table" data-testid="table">
           <TableHead data-testid="tableHead">{tableHead}</TableHead>
           <TableBody data-testid="tableBody">{!loadingList && data.length > 0 && rows}</TableBody>
         </Table>

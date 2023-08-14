@@ -111,7 +111,7 @@ export const Template = ({
       if (data && data.bulkApplyTemplates) {
         exportCsvFile(data.bulkApplyTemplates.csv_rows, 'result');
         setNotification(
-          t('Templates applied successfully. Please check the csv file for the results')
+          t('Templates applied successfully. Please check the csv file for the results'),
         );
       }
     },
@@ -260,35 +260,41 @@ export const Template = ({
     [filterValue] = filterStatusName;
   }
 
-  const ITEM_HEIGHT = 48;
-  const ITEM_PADDING_TOP = 8;
-  const MenuProps = {
-    PaperProps: {
-      style: {
-        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-        width: 250,
-      },
-    },
-  };
-
   const filterTemplateStatus = (
-    <FormControl className={styles.FormStyle}>
-      <Select
-        aria-label="template-type"
-        name="template-type"
-        value={statusList.filter((status) => filters[status.toUpperCase()] && status)}
-        onChange={handleCheckedBox}
-        MenuProps={MenuProps}
-        className={styles.DropDown}
-        data-testid="dropdown-template"
-      >
-        {statusList.map((status: any) => (
-          <MenuItem data-testid="template-item" key={status} value={status}>
-            {status}
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
+    <>
+      <FormControl className={styles.FormStyle}>
+        <Select
+          aria-label="template-type"
+          name="template-type"
+          value={statusList.filter((status) => filters[status.toUpperCase()] && status)}
+          onChange={handleCheckedBox}
+          className={styles.DropDown}
+          data-testid="dropdown-template"
+        >
+          {statusList.map((status: any) => (
+            <MenuItem data-testid="template-item" key={status} value={status}>
+              {status}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+      <AutoComplete
+        isFilterType
+        placeholder="Select tag"
+        options={tag ? tag.tags : []}
+        optionLabel="label"
+        disabled={false}
+        hasCreateOption={false}
+        multiple={false}
+        onChange={(value: any) => {
+          setSelectedTag(value);
+        }}
+        form={{ setFieldValue: () => {} }}
+        field={{
+          value: selectedTag,
+        }}
+      />
+    </>
   );
 
   let appliedFilters = templateFilters;
@@ -362,25 +368,6 @@ export const Template = ({
     button.show = false;
   }
 
-  const tagFilter = (
-    <AutoComplete
-      isFilterType
-      placeholder="Select tag"
-      options={tag ? tag.tags : []}
-      optionLabel="label"
-      disabled={false}
-      hasCreateOption={false}
-      multiple={false}
-      onChange={(value: any) => {
-        setSelectedTag(value);
-      }}
-      form={{ setFieldValue: () => {} }}
-      field={{
-        value: selectedTag,
-      }}
-    />
-  );
-
   appliedFilters = {
     ...appliedFilters,
     ...(selectedTag?.id && { tagIds: [parseInt(selectedTag?.id)] }),
@@ -415,7 +402,6 @@ export const Template = ({
       filterList={isHSM && filterTemplateStatus}
       collapseOpen={open}
       collapseRow={Id}
-      filterDropdowm={isHSM && tagFilter}
       syncHSMButton={syncHSMButton}
     />
   );

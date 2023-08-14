@@ -70,7 +70,6 @@ export interface ListProps {
   filters?: Object | null;
   filtersTag?: any;
   filterList?: any;
-  filterDropdowm?: any;
   displayListType?: string;
   cardLink?: Object | null;
   editSupport?: boolean;
@@ -129,7 +128,6 @@ export const List = ({
   title,
   dialogTitle,
   filterList,
-  filterDropdowm = null,
   button = {
     show: true,
     label: 'Add New',
@@ -489,7 +487,7 @@ export const List = ({
 
     const actionsInsideMore = additionalAction(item).filter((action: any) => action?.hasMoreOption);
     const actionsOutsideMore = additionalAction(item).filter(
-      (action: any) => !action?.hasMoreOption
+      (action: any) => !action?.hasMoreOption,
     );
 
     const actionListMap = (actionList: any, hasMoreOption: boolean) => {
@@ -666,7 +664,7 @@ export const List = ({
         tableVals={tableVals}
         collapseOpen={collapseOpen}
         collapseRow={collapseRow}
-        loadingList={loadingList || loading || l || loadingCollections ? true : false}
+        loadingList={loadingList || loading || l || loadingCollections}
         noItemsText={noItemsText}
       />
     );
@@ -775,10 +773,6 @@ export const List = ({
     </div>
   );
 
-  const headerText = (
-    <div className={styles.TextHeader}>{`Please go through all the ${title} added below`}</div>
-  );
-
   return (
     <>
       <div className={styles.Header} data-testid="listHeader">
@@ -787,7 +781,6 @@ export const List = ({
             {title}
             {infoIcon}
           </div>
-          {headerText}
         </div>
         <div>
           {dialogBox}
@@ -801,13 +794,7 @@ export const List = ({
       <div className={styles.FilterFields}>
         <div className={styles.FlexCenter}>
           {filterList}
-          {filterDropdowm}
           {backLink}
-          {!filterList && !filterDropdowm && !backLink && (
-            <div className={styles.TextList}>
-              {`${itemList.length + ' ' + title} are currently listed below`}
-            </div>
-          )}
         </div>
         <div className={styles.Buttons}>
           {syncHSMButton}

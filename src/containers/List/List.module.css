@@ -9,21 +9,13 @@
 }
 
 .Title {
-  margin-left: 14px !important;
+  margin-left: 14px;
   vertical-align: middle;
-  height: 40px;
   color: #191c1a;
   display: flex;
   align-items: first baseline;
-  font-weight: 700 !important;
+  font-weight: 700;
   font-size: 38px;
-}
-
-.TextHeader {
-  margin: 12px 0 0 14px !important;
-  font-weight: 400 !important;
-  color: #191c1a;
-  font-size: 12px;
 }
 
 .additonalButton {
@@ -35,17 +27,10 @@
   background-color: '#e0e0e0';
 }
 .InfoIcon {
-  margin-left: 10px !important;
+  margin-left: 10px;
   height: 18px;
   width: 18px;
   cursor: pointer;
-}
-
-.DropdownButton {
-  margin-left: 24px !important;
-  border-radius: 50% !important;
-  min-width: 25px !important;
-  margin-right: 14px !important;
 }
 
 .AddButton {
@@ -61,20 +46,17 @@
 .Header {
   position: sticky;
   border-bottom: 1px solid #e0e0e0;
-  background-color: #f9f7f3;
   top: 0;
   display: flex;
-  padding: 22px 24px 22px 10px;
+  padding: 22px 52px ;
   z-index: 1000;
   justify-content: space-between;
   align-items: center;
-  border-radius: 10px;
-  height: 110px !important;
 }
 
 .Icon {
-  background-color: #eaedec !important;
-  margin-right: 10px !important;
+  background-color: #eaedec;
+  margin-right: 10px;
 }
 
 .Icons {
@@ -89,7 +71,7 @@
 }
 
 .ButtonsCenter {
-  justify-content: center !important;
+  justify-content: center;
 }
 
 .DialogText {
@@ -125,8 +107,8 @@
 
 .TableFooter {
   position: fixed;
-  display: flex !important;
-  justify-content: flex-end !important;
+  display: flex;
+  justify-content: flex-end;
   width: calc(100% - 243px);
   background: #fafafa;
   bottom: 0px;
@@ -134,9 +116,9 @@
 }
 
 .FooterRow {
-  border: 0px !important;
-  font-size: 16px !important;
-  color: #073f24 !important;
+  border: 0px;
+  font-size: 16px;
+  color: #073f24;
 }
 
 .FooterRow > div {
@@ -164,9 +146,8 @@
 .FilterFields {
   display: flex;
   align-items: center;
-  padding: 0 26px 0 18px;
+  padding: 20px 48px 0 56px;
   justify-content: space-between;
-  height: 80px !important;
 }
 
 .FlexCenter {
@@ -200,33 +181,32 @@
 }
 
 .IconWithText {
-  display: flex !important;
+  display: flex;
   align-items: center;
   padding: 5px;
   cursor: pointer;
 }
 
 .NoTextDecoration {
-  text-decoration: none !important;
+  text-decoration: none;
 }
 
 .IconSize {
-  height: 15px !important;
-  width: 15px !important;
+  height: 15px;
+  width: 15px;
 }
 
 .TextButton {
   display: flex;
   align-items: center;
   color: #777777;
-  font-size: 15px !important;
+  font-size: 15px;
   width: 55px;
   padding: 0 5px;
 }
 
 .Body {
-  min-height: calc(100vh - 200px);
-  height: calc(100vh - 200px) !important;
+  height: calc(100vh - 200px);
 }
 
 .TextList {
