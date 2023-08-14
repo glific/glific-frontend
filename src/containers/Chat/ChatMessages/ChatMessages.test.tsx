@@ -11,6 +11,13 @@ import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT } from '../../../common/co
 import { CONVERSATION_MOCKS, mocksWithConversation } from '../../../mocks/Chat';
 import * as ChatInput from '../ChatMessages/ChatInput/ChatInput';
 
+window.fetch = vi.fn(() =>
+  Promise.resolve({
+    json: () => Promise.resolve({ message: 'Logged!' }),
+    ok: true,
+    status: 200,
+  }),
+);
 const defineUrl = (url: string) => {
   Object.defineProperty(window, 'location', {
     value: {
@@ -296,9 +303,7 @@ test('Contact: if not cache', async () => {
       </MockedProvider>
     </ApolloProvider>
   );
-  const { getByTestId } = render(chatMessagesWithCollection);
-
-  // need to check why we click this
+  render(chatMessagesWithCollection);
 
   await waitFor(() => {});
 });

@@ -1,4 +1,11 @@
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import {
+  cleanup,
+  fireEvent,
+  getAllByTestId,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { BrowserRouter as Router } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
@@ -8,7 +15,9 @@ import { setUserSession } from 'services/AuthService';
 import { mocks, contactFieldErrorMock } from 'mocks/ContactFields';
 import ContactFieldList from './ContactFieldList';
 import axios from 'axios';
+
 vi.mock('axios');
+axios.post.mockResolvedValue(() => Promise.resolve({ data: { status: 'ok' } }));
 
 afterEach(() => {
   cleanup();
@@ -21,7 +30,6 @@ vi.mock('react-router-dom', async () => ({
 
 setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
 
-axios.post.mockResolvedValue(() => Promise.resolve({ data: { status: 'ok' } }));
 const list = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <Router>
@@ -58,16 +66,19 @@ test('it renders list successfully', async () => {
     expect(screen.getByTestId('inline-input')).toBeInTheDocument();
   });
 
-  const inputFields = screen.getAllByRole('textbox');
-  userEvent.type(inputFields[1], '{selectall}{backspace}');
-  userEvent.type(inputFields[1], '{selectall}{backspace}Age Group Name');
+  const inputFields = screen.getByTestId('inline-input') as HTMLElement;
+
+  await userEvent.click(inputFields);
+  await userEvent.type(inputFields.querySelector('input') as HTMLElement, ' Name');
+
   const saveButton = screen.getByTestId('save-button');
   fireEvent.click(saveButton);
-  await waitFor(() => {});
+  await waitFor(() => {
+    expect(screen.getByText('Age Group Name')).toBeInTheDocument();
+  });
 });
 
-const errorMock: any = [...mocks, ...mocks];
-errorMock.push(contactFieldErrorMock);
+const errorMock: any = [contactFieldErrorMock, ...mocks, ...mocks];
 
 const listError = (
   <MockedProvider mocks={errorMock}>
@@ -94,5 +105,7 @@ test('it renders component, edits field, saves and error occurs', async () => {
   const saveButton = screen.getByTestId('save-button');
   fireEvent.click(saveButton);
 
-  await waitFor(() => {});
+  await waitFor(() => {
+    expect(screen.getByTestId('inlineInputError')).toBeInTheDocument();
+  });
 });
