@@ -121,6 +121,10 @@ export const filterFlowQuery = {
               label: 'Admin',
             },
           ],
+          tag: {
+            id: '1',
+            label: 'help',
+          },
         },
       ],
     },

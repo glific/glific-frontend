@@ -60,7 +60,7 @@ export const InteractiveMessage = () => {
   const [globalButton, setGlobalButton] = useState('');
   const [isUrlValid, setIsUrlValid] = useState<any>();
   const [type, setType] = useState<any>(null);
-  const [attachmentURL, setAttachmentURL] = useState<any>();
+  const [attachmentURL, setAttachmentURL] = useState<any>('');
   const [contactVariables, setContactVariables] = useState([]);
   const [defaultLanguage, setDefaultLanguage] = useState<any>({});
   const [sendWithTitle, setSendWithTitle] = useState<boolean>(true);
@@ -76,7 +76,7 @@ export const InteractiveMessage = () => {
   const { t } = useTranslation();
   const params = useParams();
 
-  const { data: tag } = useQuery(GET_TAGS, {
+  const { data: tag, loading: tagsLoading } = useQuery(GET_TAGS, {
     variables: {},
     fetchPolicy: 'network-only',
   });
@@ -199,7 +199,7 @@ export const InteractiveMessage = () => {
     if (languageOptions.length > 0 && languageVal) {
       if (location.state?.language) {
         const selectedLangauge = languageOptions.find(
-          (lang: any) => lang.label === location.state.language
+          (lang: any) => lang.label === location.state.language,
         );
         navigate(location.pathname);
         setLanguage(selectedLangauge);
@@ -266,7 +266,7 @@ export const InteractiveMessage = () => {
   const handleAddInteractiveTemplate = (
     addFromTemplate: boolean,
     templateTypeVal: string,
-    stateToRestore: any = null
+    stateToRestore: any = null,
   ) => {
     let buttons: any = [];
     const buttonType: any = {
@@ -291,7 +291,7 @@ export const InteractiveMessage = () => {
     const newOptions = [...oldOptions, { title: '', description: '' }];
 
     const result = buttons.map((row: any, idx: number) =>
-      rowNo === idx ? { ...row, options: newOptions } : row
+      rowNo === idx ? { ...row, options: newOptions } : row,
     );
 
     setTemplateButtons(result);
@@ -315,7 +315,7 @@ export const InteractiveMessage = () => {
     index: number,
     value: string,
     payload: any,
-    setFieldValue: any
+    setFieldValue: any,
   ) => {
     const { key, itemIndex, isOption } = payload;
     const buttons = [...templateButtons];
@@ -377,7 +377,7 @@ export const InteractiveMessage = () => {
         });
       } else if (template) {
         const fillDataWithEmptyValues = getDefaultValuesByTemplate(
-          template.interactiveTemplate.interactiveTemplate
+          template.interactiveTemplate.interactiveTemplate,
         );
 
         updateStates({
@@ -426,7 +426,7 @@ export const InteractiveMessage = () => {
   const dialogMessage = t("You won't be able to use this again.");
 
   const options = MEDIA_MESSAGE_TYPES.filter(
-    (msgType: string) => !['AUDIO', 'STICKER'].includes(msgType)
+    (msgType: string) => !['AUDIO', 'STICKER'].includes(msgType),
   ).map((option: string) => ({ id: option, label: option }));
 
   let timer: any = null;
@@ -562,7 +562,7 @@ export const InteractiveMessage = () => {
     titleVal: string,
     templateTypeVal: string,
     templateButtonVal: Array<any>,
-    globalButtonVal: any
+    globalButtonVal: any,
   ) => {
     const updatedPayload: any = { type: null, interactiveContent: null };
     const { language: selectedLanguage } = payload;
@@ -624,7 +624,7 @@ export const InteractiveMessage = () => {
       titleVal,
       templateTypeVal,
       templateButtonVal,
-      globalButtonVal
+      globalButtonVal,
     );
 
     let translationsCopy: any = {};
@@ -695,8 +695,7 @@ export const InteractiveMessage = () => {
           setAttachmentURL(event.target.value);
         },
         onChange: (event: any) => {
-          clearTimeout(timer);
-          timer = setTimeout(() => setAttachmentURL(event.target.value), 1000);
+          setAttachmentURL(event.target.value);
         },
       },
     },
@@ -744,7 +743,7 @@ export const InteractiveMessage = () => {
       title,
       templateType,
       templateButtons,
-      globalButton
+      globalButton,
     );
 
     const data = { templateType, interactiveContent };
@@ -762,7 +761,7 @@ export const InteractiveMessage = () => {
     attachmentURL,
   ]);
 
-  if (languageOptions.length < 1 || loadingTemplate) {
+  if (languageOptions.length < 1 || loadingTemplate || tagsLoading) {
     return <Loading />;
   }
 

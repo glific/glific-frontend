@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   Autocomplete,
   TextField,
@@ -29,7 +29,6 @@ export interface AutocompleteProps {
   disabled?: boolean;
   helpLink?: any;
   chipIcon?: any;
-  getOptions?: any;
   validate?: any;
   asyncValues?: any;
   noOptionsText?: any;
@@ -65,7 +64,6 @@ export const AutoComplete = ({
   disabled = false,
   freeSolo = false,
   autoSelect = false,
-  getOptions,
   asyncValues,
   onChange,
   asyncSearch = false,
@@ -90,7 +88,6 @@ export const AutoComplete = ({
   const hasError = touchedVal && errorText !== undefined;
   const [inputValue, setInputValue] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
-  const [optionValue, setOptionValue] = useState([]);
   const [open, setOpen] = useState(false);
 
   // Todo: clean this style for autocomplete
@@ -121,24 +118,11 @@ export const AutoComplete = ({
     paddingLeft: '18px',
   };
 
-  useEffect(() => {
-    if (options.length > 0) {
-      setOptionValue(options);
-    }
-  }, [options]);
-
-  useEffect(() => {
-    if (getOptions && getOptions()) {
-      const optionList = getOptions();
-      if (optionList.length > 0) setOptionValue(optionList);
-    }
-  }, [open, getOptions]);
-
   const getValue = (() => {
     if (multiple && asyncSearch) return asyncValues.value;
     if (multiple) {
-      if (optionValue.length > 0 && field.value) {
-        return optionValue.filter((option: any) =>
+      if (options.length > 0 && field.value) {
+        return options.filter((option: any) =>
           field.value.map((value: any) => value.id).includes(option.id),
         );
       }
@@ -208,7 +192,7 @@ export const AutoComplete = ({
           className={isFilterType ? styles.FilterHeight : ''}
           multiple={multiple}
           data-testid="autocomplete-element"
-          options={hasCreateOption ? [...optionValue, createOption] : optionValue}
+          options={hasCreateOption ? [...options, createOption] : options}
           freeSolo={freeSolo}
           autoSelect={autoSelect}
           disableClearable={disableClearable}
