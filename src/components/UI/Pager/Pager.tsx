@@ -166,6 +166,7 @@ const pagination = (
   tableVals: any,
 ) => (
   <TablePagination
+    component="div"
     className={styles.FooterRow}
     colSpan={columnNames.length}
     count={totalRows}
@@ -211,9 +212,9 @@ export const Pager = ({
         )}
         {!loadingList && data.length == 0 && <div className={styles.Body}>{noItemsText}</div>}
       </TableContainer>
-      <TableFooter className={styles.TableFooter} data-testid="tableFooter">
-        <TableRow>{tablePagination}</TableRow>
-      </TableFooter>
+      <div className={styles.TableFooter} data-testid="tableFooter">
+        <div>{tablePagination}</div>
+      </div>
     </div>
   );
 };
