@@ -7,6 +7,7 @@ import {
 } from 'graphql/queries/Search';
 import { COLLECTION_COUNT_SUBSCRIPTION } from 'graphql/subscriptions/PeriodicInfo';
 import { MARK_AS_READ } from 'graphql/mutations/Chat';
+import { conversationQuery } from './Chat';
 
 export const createSearchQuery = {
   request: {
@@ -165,6 +166,7 @@ const contactsMock = new Array(30).fill(null).map((val: any, index: number) => (
 }));
 
 export const searchContactCollection = [
+  conversationQuery,
   {
     request: {
       query: SEARCH_MULTI_QUERY,
@@ -217,7 +219,7 @@ export const searchContactCollection = [
               messageNumber: 2,
               insertedAt: '2021-05-05T05:40:02.434957Z',
               contact: {
-                id: '1',
+                id: '31',
                 name: 'Test',
                 phone: '+919090909090',
                 maskedPhone: '9090******90',
@@ -239,12 +241,12 @@ export const searchContactCollection = [
           ],
           labels: [
             {
-              id: '23237',
+              id: '23238',
               body: 'Please check this\n',
               messageNumber: 2,
               insertedAt: '2021-05-05T05:40:02.434957Z',
               contact: {
-                id: '1',
+                id: '34',
                 name: 'Test',
                 phone: '+919090909090',
                 maskedPhone: '9090******90',

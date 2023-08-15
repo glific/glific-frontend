@@ -18,6 +18,8 @@ import testJSON from 'mocks/ImportFlow.json';
 import { setUserSession } from 'services/AuthService';
 import { FlowList } from './FlowList';
 import { Flow } from '../Flow';
+import { getFilterTagQuery } from 'mocks/Tag';
+import { getRoleNameQuery } from 'mocks/Role';
 
 const mocks = [
   getFlowCountQuery,
@@ -32,6 +34,8 @@ const mocks = [
   importFlow,
   releaseFlow,
   exportFlow,
+  getFilterTagQuery,
+  getRoleNameQuery,
   ...getOrganizationQuery,
 ];
 

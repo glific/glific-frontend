@@ -295,7 +295,7 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
     mediaId: string,
     messageType: string,
     selectedTemplate: any,
-    variableParam: any
+    variableParam: any,
   ) => {
     // display collection info popup
     setDialogbox('collection');
@@ -322,7 +322,7 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
       messageType: string,
       selectedTemplate: any,
       variableParam: any,
-      interactiveTemplateId: any
+      interactiveTemplateId: any,
     ) => {
       const payload: any = {
         body,
@@ -337,7 +337,7 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
         variables: { input: updatePayload(payload, selectedTemplate, variableParam) },
       });
     },
-    [createAndSendMessage, contactId]
+    [createAndSendMessage, contactId],
   );
 
   // loop through the cached conversations and find if contact/Collection exists
@@ -428,7 +428,7 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
 
         addLogs(
           `if conversation is not present then search for collection-${collectionId}`,
-          variables
+          variables,
         );
 
         getSearchQuery({
@@ -538,7 +538,7 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
         jumpToMessage={jumpToMessage}
         daySeparator={showDaySeparator(
           reverseConversation[index].insertedAt,
-          reverseConversation[index + 1] ? reverseConversation[index + 1].insertedAt : null
+          reverseConversation[index + 1] ? reverseConversation[index + 1].insertedAt : null,
         )}
       />
     ));

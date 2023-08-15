@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { List, Container, CircularProgress, Typography } from '@mui/material';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { useApolloClient, useLazyQuery, useQuery } from '@apollo/client';
@@ -198,7 +198,7 @@ export const ConversationList = ({
         }
         setShowLoading(false);
       },
-    }
+    },
   );
 
   useEffect(() => {
@@ -262,7 +262,7 @@ export const ConversationList = ({
     }
 
     return (
-      <>
+      <Fragment key={contact.id}>
         {index === 0 ? header : null}
         <ChatConversation
           key={contact.id}
@@ -286,7 +286,7 @@ export const ConversationList = ({
           messageNumber={conversation.messageNumber}
           searchMode={searchMode}
         />
-      </>
+      </Fragment>
     );
   };
 
@@ -304,7 +304,7 @@ export const ConversationList = ({
         </div>
       );
       conversationsData = conversations[dataArray].map((conversation: any, index: number) =>
-        buildChatConversation(index, header, conversation)
+        buildChatConversation(index, header, conversation),
       );
       // Check if its not empty
       if (conversationsData.length > 0) {

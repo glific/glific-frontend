@@ -25,9 +25,9 @@ const list = (
 
 afterEach(cleanup);
 describe('<List />', () => {
-  test('should have loading', () => {
+  test('should have loading', async () => {
     const { getByText } = render(list);
-    waitFor(() => {
+    await waitFor(() => {
       expect(getByText('Loading...')).toBeInTheDocument();
     });
   });
@@ -173,13 +173,21 @@ describe('DialogMessage tests', () => {
         icon: ApprovedIcon,
         parameter: 'id',
         label: 'Approve',
-        button: () => <button onClick={() => vi.fn()}>Approve</button>,
+        button: (_item: any, _action: any, key: string) => (
+          <button key={key} onClick={() => vi.fn()}>
+            Approve
+          </button>
+        ),
       },
       {
         icon: ActivateIcon,
         parameter: 'id',
         label: 'Activate',
-        button: () => <button onClick={() => vi.fn()}>Activate</button>,
+        button: (_item: any, _action: any, key: string) => (
+          <button key={key} onClick={() => vi.fn()}>
+            Activate
+          </button>
+        ),
       },
     ];
 

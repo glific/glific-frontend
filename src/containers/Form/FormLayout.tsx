@@ -185,6 +185,7 @@ export const FormLayout = ({
   // get the organization for current user and have languages option set to that.
 
   const organization = useQuery(USER_LANGUAGES, {
+    skip: !languageSupport,
     onCompleted: (data: any) => {
       if (!itemId) {
         setLanguageId(data.currentUser.user.organization.defaultLanguage.id);

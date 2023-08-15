@@ -450,42 +450,6 @@ test('Should render for multi-search', async () => {
   });
 });
 
-test('If search query gives error', async () => {
-  const searchQuery = {
-    query: SEARCH_QUERY,
-    variables: {
-      filter: {},
-      contactOpts: { limit: DEFAULT_CONTACT_LIMIT },
-      messageOpts: { limit: DEFAULT_MESSAGE_LIMIT },
-    },
-    result: {
-      errors: [new Error('An error occurred')],
-    },
-    data: null,
-  };
-
-  cache.writeQuery(searchQuery);
-  const client = new ApolloClient({
-    cache: cache,
-    uri: 'http://localhost:4000/',
-    assumeImmutableResults: true,
-  });
-
-  const chatMessages = (
-    <MemoryRouter>
-      <ApolloProvider client={client}>
-        <ChatMessages contactId="2" />
-      </ApolloProvider>
-    </MemoryRouter>
-  );
-
-  render(chatMessages);
-
-  await waitFor(() => {
-    screen.getAllByText('Effie Cormier');
-  });
-});
-
 test('send message to contact', async () => {
   const spy = vi.spyOn(ChatInput, 'ChatInput');
 

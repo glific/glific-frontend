@@ -83,7 +83,7 @@ const setPayload = (payload: any, roles: any) => {
 const getFrequencyDetails = (
   frequencyValue: string,
   daysValue: Array<any>,
-  hoursValue: Array<any>
+  hoursValue: Array<any>,
 ) => {
   const frequencyDetails = {
     values: [],
@@ -188,7 +188,7 @@ export const Trigger = () => {
           test: (endDateValue: any) =>
             startDateValue && moment(endDateValue).isAfter(startDateValue),
           message: t('End date should be greater than the start date'),
-        })
+        }),
       ),
 
     frequencyValues: Yup.array()
@@ -213,7 +213,7 @@ export const Trigger = () => {
         schema.test({
           test: (startAtValue: any) => checkDateTimeValidation(startAtValue, startDateValue),
           message: t('Start time should be greater than current time'),
-        })
+        }),
       );
   }
 
@@ -330,7 +330,7 @@ export const Trigger = () => {
       helperText:
         frequency === 'monthly' &&
         t(
-          'If you are selecting end of the month dates, then for the ones not present i.e. 30, 31, the selection will default to the last day of that month.'
+          'If you are selecting end of the month dates, then for the ones not present i.e. 30, 31, the selection will default to the last day of that month.',
         ),
     },
     {
@@ -367,7 +367,7 @@ export const Trigger = () => {
     const { values, options, placeholder } = getFrequencyDetails(
       frequencyValue,
       daysValue,
-      hoursValue
+      hoursValue,
     );
     setFrequencyValues(values);
     setFrequencyOptions(options);
@@ -385,7 +385,7 @@ export const Trigger = () => {
 
     const getFlowId = flow.flows.filter((flows: any) => flows.id === flowValue.id);
     const getcollectionId = collections.groups.filter(
-      (collection: any) => collection.id === groupValue.id
+      (collection: any) => collection.id === groupValue.id,
     );
     if (getFlowId.length > 0) {
       setFlowId(getFlowId[0]);

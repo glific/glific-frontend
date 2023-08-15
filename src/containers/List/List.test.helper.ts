@@ -10,10 +10,13 @@ import { FILTER_FLOW, GET_FLOW_COUNT } from 'graphql/queries/Flow';
 import { DELETE_FLOW } from 'graphql/mutations/Flow';
 import {
   filterFlowQuery,
+  filterFlowSortQuery,
   filterFlowWithNameOrKeywordOrTagQuery,
   getFlowCountQuery,
   getFlowCountWithFilterQuery,
 } from 'mocks/Flow';
+import { getFilterTagQuery } from 'mocks/Tag';
+import { getRoleNameQuery } from 'mocks/Role';
 
 export const defaultProps = {
   columnNames: [
@@ -45,11 +48,13 @@ export const LIST_MOCKS = [
   filterFlowQuery,
   getFlowCountQuery,
   filterFlowQuery,
+  filterFlowSortQuery,
   getFlowCountQuery,
   filterFlowWithNameOrKeywordOrTagQuery,
   getFlowCountWithFilterQuery,
   getCurrentUserQuery,
-
+  getFilterTagQuery,
+  getRoleNameQuery,
   ...getOrganizationQuery,
   getOrganizationLanguagesQuery,
 ];

@@ -20,6 +20,7 @@ import {
   importTemplateMutationWithErrors,
 } from 'mocks/Template';
 import { ProviderContext } from 'context/session';
+import { getFilterTagQuery } from 'mocks/Tag';
 
 afterEach(cleanup);
 setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
@@ -39,6 +40,7 @@ const speedSendProps: any = {
   pageLink: 'speed-send',
   listIcon: <div></div>,
   filters: { isHsm: false },
+  isHsm: false,
   buttonLabel: 'Create Speed Send',
 };
 
@@ -51,17 +53,14 @@ test('it renders speed-send list component', async () => {
     </Router>,
   );
 
-  await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 0)));
-
   await waitFor(() => {
-    const showTranslationButton = screen.getByTestId('down-arrow');
-    expect(showTranslationButton).toBeInTheDocument();
-
-    fireEvent.click(showTranslationButton);
-
-    // toggling
-    fireEvent.click(showTranslationButton);
+    expect(screen.getByTestId('down-arrow')).toBeInTheDocument();
   });
+  const showTranslationButton = screen.getByTestId('down-arrow');
+  fireEvent.click(showTranslationButton);
+
+  // toggling
+  fireEvent.click(showTranslationButton);
 });
 
 const hsmProps: any = {
@@ -76,7 +75,8 @@ const hsmProps: any = {
 };
 
 describe('HSM templates', () => {
-  const hsmMocks = [...HSM_LIST, ...HSM_LIST, bulkApplyMutation];
+  // Todo: consuming a lot of queries. Need to check if we should refactor it
+  const hsmMocks = [...HSM_LIST, ...HSM_LIST, ...HSM_LIST, bulkApplyMutation, getFilterTagQuery];
   const hsmComponent = (
     <Router>
       <MockedProvider mocks={hsmMocks} addTypename={false}>
@@ -147,9 +147,11 @@ describe('Provider: Gupshup enterprise', () => {
   const hsmMocks = [
     ...HSM_LIST,
     ...HSM_LIST,
+    ...HSM_LIST,
     getOrganizationBSP,
     importTemplateMutation,
     importTemplateMutationWithErrors,
+    getFilterTagQuery,
   ];
   const hsmComponent = (
     <ProviderContext.Provider value={{ provider: 'gupshup_enterprise', setProvider: vi.fn() }}>

@@ -44,6 +44,10 @@ export const getFlowQuery = {
           ],
           isBackground: false,
           ignoreKeywords: false,
+          tag: {
+            id: '1',
+            label: 'New tag',
+          },
         },
       },
     },
@@ -86,6 +90,36 @@ export const addFlowToCollectionQuery = {
   },
 };
 
+const filterFlowResult = {
+  data: {
+    flows: [
+      {
+        id: '1',
+        ignoreKeywords: true,
+        isActive: true,
+        keywords: ['help', 'मदद'],
+        lastChangedAt: '2021-03-05T04:32:23Z',
+        lastPublishedAt: null,
+        name: 'Help Workflow',
+        isBackground: false,
+        updatedAt: '2021-03-05T04:32:23Z',
+        uuid: '3fa22108-f464-41e5-81d9-d8a298854429',
+        isPinned: true,
+        roles: [
+          {
+            id: '1',
+            label: 'Admin',
+          },
+        ],
+        tag: {
+          id: '1',
+          label: 'help',
+        },
+      },
+    ],
+  },
+};
+
 export const filterFlowQuery = {
   request: {
     query: FILTER_FLOW,
@@ -100,35 +134,24 @@ export const filterFlowQuery = {
     },
   },
 
-  result: {
-    data: {
-      flows: [
-        {
-          id: '1',
-          ignoreKeywords: true,
-          isActive: true,
-          keywords: ['help', 'मदद'],
-          lastChangedAt: '2021-03-05T04:32:23Z',
-          lastPublishedAt: null,
-          name: 'Help Workflow',
-          isBackground: false,
-          updatedAt: '2021-03-05T04:32:23Z',
-          uuid: '3fa22108-f464-41e5-81d9-d8a298854429',
-          isPinned: true,
-          roles: [
-            {
-              id: '1',
-              label: 'Admin',
-            },
-          ],
-          tag: {
-            id: '1',
-            label: 'help',
-          },
-        },
-      ],
+  result: filterFlowResult,
+};
+
+export const filterFlowSortQuery = {
+  request: {
+    query: FILTER_FLOW,
+    variables: {
+      filter: { isActive: true },
+      opts: {
+        limit: 50,
+        offset: 0,
+        order: 'DESC',
+        orderWith: 'name',
+      },
     },
   },
+
+  result: filterFlowResult,
 };
 
 export const filterFlowWithNameOrKeywordOrTagQuery = {
