@@ -30,8 +30,6 @@ export const ListReplyTemplate = ({
   onInputChange,
   translation,
 }: ListReplyTemplateProps) => {
-  const { t } = useTranslation();
-
   const isError = (key: string, itemIdx: number) => {
     const error =
       errors.templateButtons &&

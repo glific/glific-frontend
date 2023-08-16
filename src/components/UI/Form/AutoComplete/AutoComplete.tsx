@@ -139,7 +139,7 @@ export const AutoComplete = ({
     if (multiple) {
       if (optionValue.length > 0 && field.value) {
         return optionValue.filter((option: any) =>
-          field.value.map((value: any) => value.id).includes(option.id),
+          field.value.map((value: any) => value.id).includes(option.id)
         );
       }
       return [];
@@ -235,7 +235,7 @@ export const AutoComplete = ({
             }
             if (value && value.inputValue) {
               handleCreateItem(value.inputValue).then((value: any) =>
-                setFieldValue(field.name, value),
+                setFieldValue(field.name, value)
               );
             } else {
               setFieldValue(field.name, value);

@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-
+import { ReactComponent as AddIcon } from 'assets/images/add.svg';
 import { ReactComponent as SearchIcon } from 'assets/images/icons/Search/Dark.svg';
 import { List } from 'containers/List/List';
 import { SEARCH_LIST_QUERY, SEARCH_QUERY_COUNT } from 'graphql/queries/Search';
@@ -41,6 +41,8 @@ export const SearchList = () => {
     columnStyles,
   };
 
+  const addIcon = <AddIcon className={styles.AddIcon} />;
+
   const helpData = {
     heading:
       'Glific provides search functionality to NGO staff to find contacts from a large set of contacts list.',
@@ -55,7 +57,7 @@ export const SearchList = () => {
       listItem="savedSearches"
       listItemName="Search"
       pageLink="search"
-      button={{ show: true, label: t('Create Search'), symbol: '+' }}
+      button={{ show: true, label: t('Create Search'), symbol: addIcon }}
       listIcon={searchIcon}
       dialogMessage={dialogMessage}
       {...queries}

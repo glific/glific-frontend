@@ -7,7 +7,6 @@ import { useParams } from 'react-router-dom';
 import { ReactComponent as ProfileIcon } from 'assets/images/icons/Contact/Profile.svg';
 import { CONTACT_STATUS, PROVIDER_STATUS } from 'common/constants';
 import { FormLayout } from 'containers/Form/FormLayout';
-import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
 import { Input } from 'components/UI/Form/Input/Input';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { GET_CONTACT } from 'graphql/queries/Contact';

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-
+import { ReactComponent as AddIcon } from 'assets/images/add.svg';
 import { ReactComponent as InteractiveMessageIcon } from 'assets/images/icons/InteractiveMessage/Dark.svg';
 import { ReactComponent as DownArrow } from 'assets/images/icons/LanguageTranslation.svg';
 import { ReactComponent as DuplicateIcon } from 'assets/images/icons/Flow/Copy.svg';
@@ -150,6 +150,8 @@ export const InteractiveMessageList = () => {
     />
   );
 
+  const addIcon = <AddIcon className={styles.AddIcon} />;
+
   const helpData = {
     heading:
       'Interactive Messages are used by NGOs to create engaging and dynamic conversations with their beneficiaries. This feature helps NGOs to go beyond simple text-based notifications and include interactive elements like buttons, quick replies, list menus etc. It enhances the user experience through guided interactions and helps the NGOs collect cleaner data.',
@@ -170,7 +172,7 @@ export const InteractiveMessageList = () => {
       searchParameter={['term']}
       {...queries}
       {...columnAttributes}
-      button={{ show: true, label: t('Add New'), symbol: '+' }}
+      button={{ show: true, label: t('Add New'), symbol: addIcon }}
       additionalAction={additionalAction}
       collapseOpen={open}
       collapseRow={selectedId}
