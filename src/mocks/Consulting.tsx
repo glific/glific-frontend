@@ -5,7 +5,6 @@ import {
 } from 'graphql/queries/Consulting';
 import { CREATE_CONSULTING_HOUR, UPDATE_CONSULTING_HOURS } from 'graphql/mutations/Consulting';
 import { FILTER_ORGANIZATIONS } from 'graphql/queries/Organization';
-import { getCurrentUserQuery } from './User';
 
 const mockListDummyData = new Array(10).fill(null).map((val: any, index: number) => ({
   id: `${index}`,

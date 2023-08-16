@@ -5,7 +5,6 @@ import { vi, describe, it } from 'vitest';
 
 import App from 'App';
 import { CONVERSATION_MOCKS } from 'mocks/Chat';
-import { setAuthSession, setUserSession } from 'services/AuthService';
 
 const mocks = CONVERSATION_MOCKS;
 import axios from 'axios';
