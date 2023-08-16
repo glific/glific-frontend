@@ -1,6 +1,5 @@
 import { TextField, FormHelperText, FormControl } from '@mui/material';
 import { FieldArray } from 'formik';
-import { useTranslation } from 'react-i18next';
 import { Button } from 'components/UI/Form/Button/Button';
 import { ReactComponent as DeleteIcon } from 'assets/images/icons/Delete/Red.svg';
 import { ReactComponent as CrossIcon } from 'assets/images/icons/Cross.svg';
