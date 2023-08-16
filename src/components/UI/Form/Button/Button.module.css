@@ -8,6 +8,7 @@
 }
 
 .ButtonColor {
+  background-color: #ffffff !important;
   color: #119656 !important;
   border: 1px solid #cccccc !important;
 }

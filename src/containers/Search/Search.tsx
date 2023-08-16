@@ -275,6 +275,7 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
       component: Input,
       name: 'shortcode',
       type: 'text',
+      label: t('Search Title'),
       placeholder: t('Search Title'),
       inputProp: {
         onChange: (event: any) => {
@@ -286,6 +287,7 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
       component: Input,
       name: 'label',
       type: 'text',
+      label: t('Description'),
       placeholder: t('Description'),
       rows: 3,
       textArea: true,
@@ -302,6 +304,7 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
       component: Input,
       name: 'term',
       type: 'text',
+      label: t('Enter name, label, keyword'),
       placeholder: t('Enter name, label, keyword'),
       inputProp: {
         onChange: (event: any) => {
@@ -313,6 +316,7 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
       component: AutoComplete,
       name: 'includeLabels',
       label: t('Includes labels'),
+      placeholder: t('Includes labels'),
       options: dataLabels.flowLabels,
       optionLabel: 'name',
       textFieldProps: {
@@ -381,7 +385,7 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
       name: 'dateTo',
       type: 'date',
       disabled: useExpression,
-      placeholder: t('Date to'),
+      // placeholder: t('Date to'),
     },
   ];
 

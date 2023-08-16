@@ -5,10 +5,9 @@ import {
   FormControl,
   TextField,
   FormHelperText,
+  Typography,
 } from '@mui/material';
 import { FieldArray } from 'formik';
-
-import { ReactComponent as ApprovedIcon } from 'assets/images/icons/Template/Approved.svg';
 import { QUICK_REPLY, LIST } from 'common/constants';
 import { QuickReplyTemplate } from './QuickReplyTemplate';
 import { ListReplyTemplate } from './ListReplyTemplate';
@@ -99,6 +98,15 @@ export const InteractiveOptions = ({
     return template;
   };
 
+  const radioButtonColor = {
+    '& .MuiSvgIcon-root': {
+      color: '#119656',
+    },
+    '&.Mui-checked': {
+      color: '#119656',
+    },
+  };
+
   const radioTemplateType = (
     <div>
       <RadioGroup
@@ -113,12 +121,7 @@ export const InteractiveOptions = ({
           <FormControlLabel
             value={QUICK_REPLY}
             control={
-              <Radio
-                disabled={disabledType}
-                color="primary"
-                checkedIcon={<ApprovedIcon className={styles.CheckedIcon} />}
-                size="small"
-              />
+              <Radio disabled={disabledType} color="primary" size="small" sx={radioButtonColor} />
             }
             className={templateType === QUICK_REPLY ? styles.SelectedLabel : ''}
             classes={{ root: styles.RadioLabel }}
@@ -129,12 +132,7 @@ export const InteractiveOptions = ({
           <FormControlLabel
             value={LIST}
             control={
-              <Radio
-                disabled={disabledType}
-                color="primary"
-                checkedIcon={<ApprovedIcon className={styles.CheckedIcon} />}
-                size="small"
-              />
+              <Radio disabled={disabledType} color="primary" size="small" sx={radioButtonColor} />
             }
             className={templateType === LIST ? styles.SelectedLabel : ''}
             classes={{ root: styles.RadioLabel }}
@@ -150,10 +148,11 @@ export const InteractiveOptions = ({
             error={!!(errors.globalButton && touched.globalButton)}
             className={styles.FormControl}
           >
+            <Typography variant="h5" className={styles.FieldLabel}>
+              List header*
+            </Typography>
             <TextField
               placeholder="List header"
-              variant="outlined"
-              label="List header*"
               className={styles.TextField}
               onChange={(e: any) => {
                 setFieldValue('globalButton', e.target.value);
@@ -170,7 +169,11 @@ export const InteractiveOptions = ({
       )}
 
       {templateType && (
-        <div className={templateType === QUICK_REPLY ? styles.TemplateFields : ''}>
+        <div
+          className={
+            templateType === QUICK_REPLY ? styles.TemplateFields : styles.TemplateFieldsList
+          }
+        >
           <FieldArray
             name="templateButtons"
             render={(arrayHelpers: any) =>

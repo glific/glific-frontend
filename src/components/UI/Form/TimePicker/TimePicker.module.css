@@ -1,12 +1,12 @@
 .TimePicker {
-  width: 241px;
   display: inline-block;
   padding: 10px 0px;
   vertical-align: top;
+  width: 100% !important;
 }
 
 .Picker {
-  width: 95%;
+  width: 100%;
 }
 
 .HelperText {

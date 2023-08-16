@@ -1,5 +1,7 @@
 .TextField {
   width: 100%;
+  background-color: #ffffff;
+  border-radius: 12px;
 }
 
 .Font {
@@ -88,6 +90,14 @@
   margin-bottom: 0px !important;
 }
 
+.QuickReplyContainer {
+  padding: 24px;
+  background: #f8faf5;
+  border-radius: 12px;
+  border: 1px solid #cccccc;
+  margin-top: 12px;
+}
+
 .QuickReplyContainer > div > div {
   margin-bottom: 12px !important;
 }
@@ -102,8 +112,10 @@
 
 .CallToActionContainer {
   padding: 24px;
-  background: white;
+  background: #f8faf5;
   border-radius: 12px;
+  border: 1px solid #cccccc;
+  margin-top: 12px;
 }
 
 .RemoveIcon {

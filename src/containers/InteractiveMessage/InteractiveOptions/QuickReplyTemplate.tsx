@@ -1,7 +1,7 @@
-import { Button, TextField, FormHelperText, FormControl } from '@mui/material';
+import { TextField, FormHelperText, FormControl } from '@mui/material';
 
 import { ReactComponent as CrossIcon } from 'assets/images/icons/Cross.svg';
-import { ReactComponent as AddIcon } from 'assets/images/icons/SquareAdd.svg';
+import { ReactComponent as AddIcon } from 'assets/images/icons/CircleAdd.svg';
 import styles from './QuickReplyTemplate.module.css';
 
 export interface QuickReplyTemplateProps {
@@ -71,19 +71,11 @@ export const QuickReplyTemplate = ({
             ) : null}
           </FormControl>
         </div>
-        <div>
-          {inputFields.length === index + 1 && inputFields.length !== 3 ? (
-            <Button
-              color="primary"
-              data-testid="addButton"
-              onClick={onAddClick}
-              className={styles.AddButton}
-              startIcon={<AddIcon className={styles.AddIcon} />}
-            >
-              Add quick reply
-            </Button>
-          ) : null}
-        </div>
+        {inputFields.length === index + 1 && inputFields.length !== 3 ? (
+          <div data-testid="addButton" onClick={onAddClick} className={styles.AddButton}>
+            <AddIcon className={styles.AddIcon} />
+          </div>
+        ) : null}
       </div>
     </>
   );

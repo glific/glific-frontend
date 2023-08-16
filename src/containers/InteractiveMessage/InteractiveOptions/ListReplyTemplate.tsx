@@ -1,7 +1,7 @@
-import { Button, TextField, FormHelperText, FormControl } from '@mui/material';
+import { TextField, FormHelperText, FormControl } from '@mui/material';
 import { FieldArray } from 'formik';
 import { useTranslation } from 'react-i18next';
-
+import { Button } from 'components/UI/Form/Button/Button';
 import { ReactComponent as DeleteIcon } from 'assets/images/icons/Delete/Red.svg';
 import { ReactComponent as CrossIcon } from 'assets/images/icons/Cross.svg';
 import { ReactComponent as AddIcon } from 'assets/images/icons/SquareAdd.svg';
@@ -98,7 +98,7 @@ export const ListReplyTemplate = ({
   return (
     <div className={styles.WrapperBackground} key={index.toString()}>
       <div className={styles.Section}>
-        <div>List {index + 1}</div>
+        <div className={styles.Heading}>List {index + 1}</div>
         <div>
           {inputFields.length > 1 && (
             <DeleteIcon
@@ -213,23 +213,18 @@ export const ListReplyTemplate = ({
                     {isAddMoreOptionAllowed < 10 &&
                       inputFields.length === index + 1 &&
                       options.length === itemIndex + 1 && (
-                        <Button
-                          color="primary"
-                          className={styles.AddButton}
-                          onClick={onListAddClick}
-                          startIcon={<AddIcon className={styles.AddIcon} />}
-                        >
-                          {t('Add another list')}
+                        <Button color="primary" variant="outlined" onClick={onListAddClick}>
+                          Add list
                         </Button>
                       )}
                     {isAddMoreOptionAllowed < 10 && options.length === itemIndex + 1 && (
                       <Button
                         color="primary"
-                        className={styles.AddButton}
+                        variant="outlined"
                         onClick={() => handleAddListItem(arrayHelpers)}
                         startIcon={<AddIcon className={styles.AddIcon} />}
                       >
-                        {t('Add another list item')}
+                        Add item
                       </Button>
                     )}
                   </div>

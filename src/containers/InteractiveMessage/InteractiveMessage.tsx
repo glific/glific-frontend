@@ -469,7 +469,8 @@ export const InteractiveMessage = () => {
       component: Input,
       name: 'title',
       type: 'text',
-      placeholder: `${t('Title')}*`,
+      placeholder: `${t('Title')}`,
+      label: `${t('Title')}*`,
       onChange: (value: any) => {
         setTitle(value);
       },
@@ -489,7 +490,8 @@ export const InteractiveMessage = () => {
         hasTranslations && getTranslation(templateType, 'body', translations, defaultLanguage),
       component: EmojiInput,
       name: 'body',
-      placeholder: `${t('Message')}*`,
+      label: `${t('Message')}*`,
+      placeholder: `${t('Message')}`,
       rows: 5,
       convertToWhatsApp: true,
       textArea: true,
@@ -509,6 +511,7 @@ export const InteractiveMessage = () => {
       name: 'footer',
       type: 'text',
       placeholder: t('Footer'),
+      label: t('Footer'),
       onChange: (value: any) => {
         setFooter(value);
       },
@@ -672,10 +675,8 @@ export const InteractiveMessage = () => {
       options,
       optionLabel: 'label',
       multiple: false,
-      textFieldProps: {
-        variant: 'outlined',
-        label: t('Attachment type'),
-      },
+      label: t('Attachment type'),
+      placeholder: t('Attachment type'),
       onChange: (event: any) => {
         const val = event || '';
         if (!event) {
@@ -689,6 +690,7 @@ export const InteractiveMessage = () => {
       name: 'attachmentURL',
       type: 'text',
       placeholder: t('Attachment URL'),
+      label: t('Attachment URL'),
       validate: () => isUrlValid,
       inputProp: {
         onBlur: (event: any) => {
@@ -716,10 +718,8 @@ export const InteractiveMessage = () => {
       onChange: (value: any) => {
         setTagId(value);
       },
-      textFieldProps: {
-        variant: 'outlined',
-        label: t('Tag'),
-      },
+      label: t('Tag'),
+      placeholder: t('Tag'),
     },
   ];
 

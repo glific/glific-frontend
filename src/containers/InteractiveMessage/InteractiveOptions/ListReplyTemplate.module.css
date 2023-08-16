@@ -22,9 +22,10 @@
 
 .WrapperBackground {
   padding: 16px 24px 8px 24px;
-  background: white;
-  border-radius: 16px;
-  margin-bottom: 6px;
+  background: #f8faf5;
+  border-radius: 10px;
+  border: 1px solid #cccccc;
+  margin-bottom: 25px;
 }
 
 .ListReplyWrapper {
@@ -81,4 +82,15 @@
 
 .HelperText {
   margin-left: 12px;
+}
+
+.TextField {
+  background-color: white;
+  border-radius: 12px;
+}
+
+.Heading {
+  font-weight: 500;
+  font-size: 16px;
+  font-weight: 18px;
 }

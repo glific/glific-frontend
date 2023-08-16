@@ -132,12 +132,14 @@ export const Collection = () => {
       name: 'label',
       type: 'text',
       placeholder: t('Title'),
+      label: t('Title'),
       validate: validateTitle,
     },
     {
       component: Input,
       name: 'description',
       type: 'text',
+      label: t('Description'),
       placeholder: t('Description'),
       rows: 3,
       textArea: true,
@@ -148,10 +150,8 @@ export const Collection = () => {
       additionalState: 'users',
       options: data ? data.users : [],
       optionLabel: 'name',
-      textFieldProps: {
-        label: t('Assign staff to collection'),
-        variant: 'outlined',
-      },
+      label: t('Assign staff to collection'),
+      placeholder: t('Assign staff to collection'),
       skipPayload: true,
       icon: <ContactIcon className={styles.ContactIcon} />,
       helperText: t(

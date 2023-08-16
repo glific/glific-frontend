@@ -262,7 +262,7 @@ export const Trigger = () => {
       name: 'isActive',
       title: (
         <Typography variant="h6" className={styles.IsActive}>
-          Is active?
+          Active?
         </Typography>
       ),
       darkCheckbox: true,
@@ -274,9 +274,10 @@ export const Trigger = () => {
       optionLabel: 'name',
       disabled: isEditing,
       multiple: false,
+      label: t('Select flow'),
+      placeholder: t('Select flow'),
       textFieldProps: {
         variant: 'outlined',
-        label: t('Select flow'),
       },
     },
     {
@@ -284,7 +285,7 @@ export const Trigger = () => {
       type: 'date',
       name: 'startDate',
       disabled: isEditing,
-      placeholder: t('Start date'),
+      label: t('Date range'),
       minDate,
     },
     {
@@ -292,26 +293,25 @@ export const Trigger = () => {
       type: 'date',
       name: 'endDate',
       disabled: isEditing,
-      placeholder: t('End date'),
       minDate,
     },
     {
       component: TimePicker,
       name: 'startTime',
       disabled: isEditing,
-      placeholder: t('Time'),
+      label: t('Time'),
     },
     {
       component: AutoComplete,
       name: 'frequency',
       placeholder: t('Repeat'),
+      label: t('Repeat'),
       options: triggerFrequencyOptions,
       optionLabel: 'label',
       disabled: isEditing,
       valueElementName: 'value',
       multiple: false,
       textFieldProps: {
-        label: t('Repeat'),
         variant: 'outlined',
       },
       onChange: handleFrequencyChange,
@@ -319,12 +319,12 @@ export const Trigger = () => {
     {
       component: AutoComplete,
       name: 'frequencyValues',
+      label: frequencyPlaceholder,
       placeholder: frequencyPlaceholder,
       options: frequencyOptions,
       disabled: isEditing || daysDisabled,
       optionLabel: 'label',
       textFieldProps: {
-        label: frequencyPlaceholder,
         variant: 'outlined',
       },
       helperText:
@@ -337,12 +337,12 @@ export const Trigger = () => {
       component: AutoComplete,
       name: 'groupId',
       placeholder: t('Select collection'),
+      label: t('Select collection'),
       options: collections.groups,
       multiple: false,
       disabled: isEditing,
       optionLabel: 'label',
       textFieldProps: {
-        label: t('Select collection'),
         variant: 'outlined',
       },
     },

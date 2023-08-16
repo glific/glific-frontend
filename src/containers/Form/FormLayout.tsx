@@ -22,15 +22,29 @@ import { ReactComponent as BackIcon } from 'assets/images/icons/Back.svg';
 import { organizationHasDynamicRole } from 'common/utils';
 import { getUserRole } from 'context/role';
 import styles from './FormLayout.module.css';
+import HelpIcon from 'components/UI/HelpIcon/HelpIcon';
 
-export const Heading = ({ icon, formTitle }: any) => (
-  <Typography variant="h5" className={styles.Title}>
-    <IconButton disabled className={styles.Icon}>
-      {icon}
-    </IconButton>
-    {formTitle}
-  </Typography>
-);
+export const Heading = ({ title = '', formTitle, helpData }: any) => {
+  return (
+    <div className={styles.Header}>
+      <div>
+        <div className={styles.Title}>
+          {formTitle}
+          <HelpIcon helpData={helpData} />
+        </div>
+        <div
+          className={styles.TextHeader}
+        >{`To create a new ${title}, Fill up the following details`}</div>
+      </div>
+    </div>
+  );
+};
+
+export interface HelpDataProps {
+  heading: string;
+  body: JSX.Element;
+  link: string;
+}
 
 export interface FormLayoutProps {
   deleteItemQuery: DocumentNode;
@@ -86,6 +100,7 @@ export interface FormLayoutProps {
   entityId?: any;
   restrictDelete?: boolean;
   languageAttributes?: any;
+  helpData?: HelpDataProps;
 }
 
 export const FormLayout = ({
@@ -136,6 +151,11 @@ export const FormLayout = ({
   entityId = null,
   restrictDelete = false,
   languageAttributes = {},
+  helpData = {
+    heading: '',
+    body: <></>,
+    link: '',
+  },
 }: FormLayoutProps) => {
   const [showDialog, setShowDialog] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
@@ -639,7 +659,7 @@ export const FormLayout = ({
     formTitle = `Add a new ${listItemName}`; // case when adding a new item
   }
 
-  let heading = <Heading icon={icon} formTitle={formTitle} />;
+  let heading = <Heading title={listItemName} formTitle={formTitle} helpData={helpData} />;
   if (advanceSearch) {
     const data = advanceSearch({});
     if (data && data.heading) heading = data.heading;

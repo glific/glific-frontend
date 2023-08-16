@@ -11,7 +11,7 @@ import { FieldArray } from 'formik';
 import { Button } from 'components/UI/Form/Button/Button';
 import Tooltip from 'components/UI/Tooltip/Tooltip';
 import { ReactComponent as DeleteIcon } from 'assets/images/icons/Delete/Red.svg';
-import { ReactComponent as InfoIcon } from 'assets/images/icons/Info.svg';
+import { ReactComponent as InfoIcon } from 'assets/images/Info.svg';
 import { ReactComponent as CrossIcon } from 'assets/images/icons/Cross.svg';
 import {
   GUPSHUP_CALL_TO_ACTION,
@@ -163,7 +163,6 @@ export const TemplateOptions = ({
                   defaultValue={value}
                   placeholder={buttonTitle}
                   variant="outlined"
-                  label={buttonTitle}
                   onBlur={(e: any) => onInputChange(e, row, index, 'title')}
                   className={styles.TextField}
                   error={isError('title')}
@@ -183,7 +182,6 @@ export const TemplateOptions = ({
                   disabled={disabled}
                   placeholder={buttonValue}
                   variant="outlined"
-                  label={buttonValue}
                   onBlur={(e: any) => onInputChange(e, row, index, 'value')}
                   className={styles.TextField}
                   error={isError('value')}
@@ -283,13 +281,7 @@ export const TemplateOptions = ({
       </RadioGroup>
 
       {templateType ? (
-        <div
-          className={
-            templateType === QUICK_REPLY
-              ? styles.QuickTemplateFields
-              : styles.CallToActionTemplateFields
-          }
-        >
+        <div className={styles.CallToActionTemplateFields}>
           <FieldArray
             name="templateButtons"
             render={(arrayHelpers: any) =>
