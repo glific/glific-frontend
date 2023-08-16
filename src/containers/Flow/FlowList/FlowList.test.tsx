@@ -123,13 +123,11 @@ describe('<FlowList />', () => {
       Object.defineProperty(input, 'files', {
         value: [file],
       });
-
-      setTimeout(() => {
-        fireEvent.change(input);
-      }, 100);
     });
 
-    await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 0)));
+    const input = screen.getByTestId('import');
+    fireEvent.change(input);
+
     await waitFor(() => {});
   });
 

@@ -123,15 +123,15 @@ export const Trigger = () => {
   const [flowId, setFlowId] = useState(null);
   const [isActive, setIsActive] = useState(true);
   const [startTime, setStartTime] = useState('');
-  const [startDate, setStartDate] = useState<any>('');
+  const [startDate, setStartDate] = useState<any>(null);
   const [frequency, setfrequency] = useState<any>(null);
-  const [endDate, setEndDate] = useState<any>('');
+  const [endDate, setEndDate] = useState<any>(null);
   const [isRepeating, setIsRepeating] = useState('');
   const [frequencyValues, setFrequencyValues] = useState([]);
   const [roles, setRoles] = useState([]);
   const [daysDisabled, setDaysDisabled] = useState(true);
   const [groupId, setGroupId] = useState<any>(null);
-  const [minDate, setMinDate] = useState<any>(new Date());
+  const [minDate, setMinDate] = useState<any>(moment().utc());
   const [frequencyPlaceholder, setFrequencyPlaceholder] = useState('Select days');
   const [frequencyOptions, setFrequencyOptions] = useState(dayList);
   const params = useParams();
@@ -362,7 +362,7 @@ export const Trigger = () => {
   }: any) => {
     setIsRepeating(isRepeatingValue);
     setIsActive(isActiveValue);
-    setEndDate(new Date(endDateValue));
+    setEndDate(endDateValue);
 
     const { values, options, placeholder } = getFrequencyDetails(
       frequencyValue,
@@ -372,10 +372,11 @@ export const Trigger = () => {
     setFrequencyValues(values);
     setFrequencyOptions(options);
     setFrequencyPlaceholder(placeholder);
-    setStartDate(new Date(startAtValue));
+
+    setStartDate(startAtValue);
     // If a user wants to update the trigger
-    if (moment(new Date()).isAfter(startAtValue, 'days')) {
-      setMinDate(new Date(startAtValue));
+    if (moment().utc().isAfter(startAtValue, 'days')) {
+      setMinDate(startAtValue);
     }
     setStartTime(moment(startAtValue).format('THH:mm:ss'));
     setfrequency(triggerFrequencyOptions.filter((trigger) => trigger.value === frequencyValue)[0]);

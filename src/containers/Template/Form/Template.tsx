@@ -179,8 +179,8 @@ const Template = ({
   const [example, setExample] = useState(EditorState.createEmpty());
   const [filterLabel, setFilterLabel] = useState('');
   const [shortcode, setShortcode] = useState('');
-  const [language, setLanguageId] = useState<any>({});
-  const [type, setType] = useState<any>(null);
+  const [language, setLanguageId] = useState<any>(undefined);
+  const [type, setType] = useState<any>(undefined);
   const [translations, setTranslations] = useState<any>();
   const [attachmentURL, setAttachmentURL] = useState<any>();
   const [languageOptions, setLanguageOptions] = useState<any>([]);
@@ -242,7 +242,7 @@ const Template = ({
         );
         navigate(location.pathname);
         setLanguageId(selectedLangauge);
-      } else if (!language.id) {
+      } else if (!language?.id) {
         const selectedLangauge = languageOptions.find(
           (lang: any) => lang.id === languageIdValue.id,
         );
@@ -289,7 +289,7 @@ const Template = ({
     }
     if (translationsValue) {
       const translationsCopy = JSON.parse(translationsValue);
-      const currentLanguage = language.id || languageIdValue.id;
+      const currentLanguage = language?.id || languageIdValue.id;
       if (
         Object.keys(translationsCopy).length > 0 &&
         translationsCopy[currentLanguage] &&

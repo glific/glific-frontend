@@ -14,6 +14,8 @@ import {
   PUBLISH_FLOW,
   IMPORT_FLOW,
   RESET_FLOW_COUNT,
+  UPDATE_FLOW,
+  CREATE_FLOW_COPY,
 } from 'graphql/mutations/Flow';
 import { GET_ORGANIZATION_SERVICES } from 'graphql/queries/Organization';
 import json from './ImportFlow.json';
@@ -432,6 +434,88 @@ export const resetFlowCount = {
       resetFlowCount: {
         success: true,
         errors: [],
+      },
+    },
+  },
+};
+
+export const updateFlowQuery = {
+  request: {
+    query: UPDATE_FLOW,
+    variables: {
+      id: 1,
+      input: {
+        isActive: true,
+        isPinned: false,
+        isBackground: false,
+        name: 'New Flow',
+        keywords: ['मदद'],
+        ignoreKeywords: false,
+        addRoleIds: [],
+        deleteRoleIds: [],
+        tag_id: '1',
+      },
+    },
+  },
+  result: {
+    data: {
+      updateFlow: {
+        flow: {
+          roles: null,
+          tag: null,
+          id: '1',
+          isActive: true,
+          ignoreKeywords: false,
+          keywords: ['मदद'],
+          name: 'New Flow',
+          isBackground: false,
+          updatedAt: '2021-03-05T04:32:23Z',
+          uuid: '3fa22108-f464-41e5-81d9-d8a298854429',
+          isPinned: false,
+        },
+
+        errors: null,
+      },
+    },
+  },
+};
+
+export const copyFlowQuery = {
+  request: {
+    query: CREATE_FLOW_COPY,
+    variables: {
+      id: 1,
+      input: {
+        isActive: true,
+        isPinned: false,
+        isBackground: false,
+        name: 'Copy of Help',
+        keywords: ['help', 'activity'],
+        ignoreKeywords: false,
+        addRoleIds: [],
+        deleteRoleIds: [],
+        tag_id: '1',
+      },
+    },
+  },
+  result: {
+    data: {
+      copyFlow: {
+        flow: {
+          roles: [],
+          tag: { id: '1', label: 'New tag' },
+          id: '1',
+          isActive: true,
+          keywords: ['help', 'activity'],
+
+          name: 'Copy of Help',
+          isBackground: false,
+          updatedAt: '2021-03-05T04:32:23Z',
+          uuid: '3fa22108-f464-41e5-81d9-d8a298854429',
+          isPinned: false,
+        },
+
+        errors: null,
       },
     },
   },

@@ -9,11 +9,13 @@ import {
   getAttachmentPermissionMock,
   uploadBlobMock,
 } from 'mocks/Attachment';
-import { searchInteractive } from 'mocks/InteractiveMessage';
+import { searchInteractive, searchInteractiveHi } from 'mocks/InteractiveMessage';
 import '../VoiceRecorder/VoiceRecorder';
 
 const mocks = [
   searchInteractive,
+  searchInteractive,
+  searchInteractiveHi,
   ...TEMPLATE_MOCKS,
   getAttachmentPermissionMock,
   uploadBlobMock,
@@ -171,13 +173,13 @@ describe('<ChatInput />', () => {
     const { getByText } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
         <ChatInput {...propsWithBspStatusNone} />
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     expect(
       getByText(
-        'Sorry, chat is unavailable with this contact at this moment because they aren’t opted in to your number.'
-      )
+        'Sorry, chat is unavailable with this contact at this moment because they aren’t opted in to your number.',
+      ),
     ).toBeInTheDocument();
   });
 
@@ -187,7 +189,7 @@ describe('<ChatInput />', () => {
     const { getByText } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
         <ChatInput {...propsWithBspStatusHSM} />
-      </MockedProvider>
+      </MockedProvider>,
     );
     expect(getByText('Templates')).toBeInTheDocument();
   });
@@ -198,7 +200,7 @@ describe('<ChatInput />', () => {
     const { getByText } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
         <ChatInput {...propsWithBspStatusSession} />
-      </MockedProvider>
+      </MockedProvider>,
     );
     expect(getByText('Speed sends')).toBeInTheDocument();
   });
@@ -212,7 +214,7 @@ describe('<ChatInput />', () => {
     const { getByText } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
         <ChatInput {...propsWithChatWindowOver} />
-      </MockedProvider>
+      </MockedProvider>,
     );
     expect(getByText('Templates')).toBeInTheDocument();
   });
@@ -224,7 +226,7 @@ describe('<ChatInput />', () => {
     const { getByText, getByTestId } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
         <ChatInput {...propsWithMockSend} />
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     await waitFor(() => {

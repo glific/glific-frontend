@@ -105,6 +105,7 @@ export const filterInteractiveQuery = filterInteractiveFunction(
 );
 
 export const searchInteractive = filterInteractiveFunction({ label: '' }, {});
+export const searchInteractiveHi = filterInteractiveFunction({ label: 'hi' }, {});
 
 export const getInteractiveCountQuery = {
   request: {

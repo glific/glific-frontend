@@ -25,6 +25,8 @@ import {
 } from 'mocks/Simulator';
 import axios from 'axios';
 
+window.location = { assign: vi.fn() } as any;
+
 vi.mock('react-router-dom', async () => {
   return {
     ...(await vi.importActual<any>('react-router-dom')),
@@ -255,8 +257,8 @@ test('reset flow counts', async () => {
   await waitFor(() => {
     expect(
       getByText(
-        'Please be careful, this cannot be undone. Once you reset the flow counts you will lose tracking of how many times a node was triggered for users.'
-      )
+        'Please be careful, this cannot be undone. Once you reset the flow counts you will lose tracking of how many times a node was triggered for users.',
+      ),
     ).toBeInTheDocument();
   });
 

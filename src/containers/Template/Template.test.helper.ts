@@ -256,11 +256,13 @@ const getTemplateData = {
       buttons: null,
       buttonType: null,
       updatedAt: '2020-12-01T18:00:32Z',
+      tag: null,
     },
   },
 };
 
 export const TEMPLATE_MOCKS = [
+  getFilterTagQuery,
   getFilterTagQuery,
   {
     request: {

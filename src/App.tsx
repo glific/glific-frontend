@@ -24,14 +24,14 @@ const App = () => {
     setAuthenticated(checkAuthStatusService());
   }, []);
 
-  const sideDraawerValues = useMemo(
+  const sideDrawerValues = useMemo(
     () => ({
       drawerOpen,
       setDrawerOpen: (value: any) => {
         setDrawerOpen(value);
       },
     }),
-    [drawerOpen]
+    [drawerOpen],
   );
 
   const values = useMemo(
@@ -41,7 +41,7 @@ const App = () => {
         setAuthenticated(value);
       },
     }),
-    [authenticated]
+    [authenticated],
   );
 
   let routes;
@@ -66,7 +66,7 @@ const App = () => {
     <SessionContext.Provider value={values}>
       <ApolloProvider client={gqlClient(navigate)}>
         <ErrorHandler />
-        <SideDrawerContext.Provider value={sideDraawerValues}>{routes}</SideDrawerContext.Provider>
+        <SideDrawerContext.Provider value={sideDrawerValues}>{routes}</SideDrawerContext.Provider>
       </ApolloProvider>
     </SessionContext.Provider>
   );
