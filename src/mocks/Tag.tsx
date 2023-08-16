@@ -1,4 +1,4 @@
-import { GET_TAG, FILTER_TAGS } from 'graphql/queries/Tags';
+import { GET_TAG, FILTER_TAGS, GET_TAGS } from 'graphql/queries/Tags';
 
 export const getTagQuery = {
   request: {
@@ -67,6 +67,29 @@ export const filterTagQuery = {
           label: 'Staff',
           shortcode: 'staff',
           updatedAt: '2023-07-26T07:31:31Z',
+        },
+      ],
+    },
+  },
+};
+
+export const getFilterTagQuery = {
+  request: {
+    query: GET_TAGS,
+    variables: {},
+  },
+  result: {
+    data: {
+      tags: [
+        {
+          __typename: 'Tag',
+          id: '1',
+          label: 'Messages',
+        },
+        {
+          __typename: 'Tag',
+          id: '2',
+          label: 'Contacts',
         },
       ],
     },

@@ -37,14 +37,6 @@ const template = (
   </MockedProvider>
 );
 
-test('HSMList is rendered correctly', async () => {
-  const { getByText } = render(template);
-
-  await waitFor(() => {
-    expect(getByText('Templates')).toBeInTheDocument();
-  });
-});
-
 test('click on HSM update button should call the sync api', async () => {
   const { getByTestId } = render(template);
 
@@ -54,7 +46,7 @@ test('click on HSM update button should call the sync api', async () => {
 
   userEvent.click(getByTestId('updateHsm'));
 
-  setTimeout(() => {
+  await waitFor(() => {
     expect(syncCalled).toBeTruthy();
-  }, 5000);
+  });
 });

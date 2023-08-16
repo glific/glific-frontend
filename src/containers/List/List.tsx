@@ -28,6 +28,7 @@ import { setNotification, setErrorMessage } from 'common/notification';
 import { getUpdatedList, setListSession, getLastListSessionValues } from 'services/ListService';
 import styles from './List.module.css';
 import Track from 'services/TrackService';
+import Loading from 'components/UI/Layout/Loading/Loading';
 
 export interface ColumnNames {
   name?: string;
@@ -44,7 +45,6 @@ export interface HelpDataProps {
 
 export interface ListProps {
   loadingList?: boolean;
-  helperText?: string;
   columnNames?: Array<ColumnNames>;
   countQuery: DocumentNode;
   listItem: string;
@@ -70,7 +70,6 @@ export interface ListProps {
   filters?: Object | null;
   filtersTag?: any;
   filterList?: any;
-  filterDropdowm?: any;
   displayListType?: string;
   cardLink?: Object | null;
   editSupport?: boolean;
@@ -98,7 +97,6 @@ export interface ListProps {
   defaultSortBy?: string | null;
   noItemText?: string | null;
   customStyles?: any;
-  syncHSMButton?: any;
 }
 
 interface TableVals {
@@ -129,7 +127,6 @@ export const List = ({
   title,
   dialogTitle,
   filterList,
-  filterDropdowm = null,
   button = {
     show: true,
     label: 'Add New',
@@ -147,7 +144,6 @@ export const List = ({
   collapseRow = undefined,
   noItemText = null,
   customStyles,
-  syncHSMButton,
 }: ListProps) => {
   const { t } = useTranslation();
   const [showMoreOptions, setShowMoreOptions] = useState<string>('');
@@ -489,7 +485,7 @@ export const List = ({
 
     const actionsInsideMore = additionalAction(item).filter((action: any) => action?.hasMoreOption);
     const actionsOutsideMore = additionalAction(item).filter(
-      (action: any) => !action?.hasMoreOption
+      (action: any) => !action?.hasMoreOption,
     );
 
     const actionListMap = (actionList: any, hasMoreOption: boolean) => {
@@ -666,13 +662,15 @@ export const List = ({
         tableVals={tableVals}
         collapseOpen={collapseOpen}
         collapseRow={collapseRow}
-        loadingList={loadingList || loading || l || loadingCollections ? true : false}
+        loadingList={loadingList || loading || l || loadingCollections}
         noItemsText={noItemsText}
       />
     );
   } else if (displayListType === 'card') {
     /* istanbul ignore next */
-    displayList = (
+    displayList = loading ? (
+      <Loading />
+    ) : (
       <>
         <ListCard data={itemList} link={cardLink} />
         <table>
@@ -775,10 +773,6 @@ export const List = ({
     </div>
   );
 
-  const headerText = (
-    <div className={styles.TextHeader}>{`Please go through all the ${title} added below`}</div>
-  );
-
   return (
     <>
       <div className={styles.Header} data-testid="listHeader">
@@ -787,7 +781,6 @@ export const List = ({
             {title}
             {infoIcon}
           </div>
-          {headerText}
         </div>
         <div>
           {dialogBox}
@@ -801,16 +794,9 @@ export const List = ({
       <div className={styles.FilterFields}>
         <div className={styles.FlexCenter}>
           {filterList}
-          {filterDropdowm}
           {backLink}
-          {!filterList && !filterDropdowm && !backLink && (
-            <div className={styles.TextList}>
-              {`${itemList.length + ' ' + title} are currently listed below`}
-            </div>
-          )}
         </div>
         <div className={styles.Buttons}>
-          {syncHSMButton}
           <SearchBar
             handleSubmit={handleSearch}
             onReset={() => {

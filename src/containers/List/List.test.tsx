@@ -68,20 +68,17 @@ describe('<List />', () => {
   });
 
   test('A row in the table should have an edit and delete button', async () => {
-    const { container } = render(list);
-    try {
-      // Wait for the MoreIcon to appear and become clickable
-      const moreButton = await screen.findByTestId('MoreIcon', {}, { timeout: 5000 });
-      fireEvent.click(moreButton);
-      await waitFor(() => {
-        const tableRow = container.querySelector('tbody tr') as HTMLTableRowElement;
-        const { getByTestId } = within(tableRow);
-        expect(getByTestId('EditIcon')).toBeInTheDocument();
-        expect(getByTestId('DeleteIcon')).toBeInTheDocument();
-      });
-    } catch (e) {
-      console.error('Test failed:', e);
-    }
+    render(list);
+    // Wait for the MoreIcon to appear and become clickable
+    await waitFor(() => {
+      expect(screen.getByTestId('MoreIcon')).toBeInTheDocument();
+    });
+    const moreButton = screen.getByTestId('MoreIcon');
+    fireEvent.click(moreButton);
+    await waitFor(() => {
+      expect(screen.getByTestId('EditIcon')).toBeInTheDocument();
+      expect(screen.getByTestId('DeleteIcon')).toBeInTheDocument();
+    });
   });
 });
 

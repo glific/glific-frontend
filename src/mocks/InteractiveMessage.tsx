@@ -9,6 +9,7 @@ import {
   GET_INTERACTIVE_MESSAGE,
 } from 'graphql/queries/InteractiveMessage';
 import { getOrganizationLanguagesWithoutOrder } from './Organization';
+import { getFilterTagQuery } from './Tag';
 
 const filterInteractiveFunction = (filter: any, opts: any) => ({
   request: {
@@ -100,7 +101,7 @@ export const filterInteractiveQuery = filterInteractiveFunction(
     offset: 0,
     order: 'ASC',
     orderWith: 'label',
-  }
+  },
 );
 
 export const searchInteractive = filterInteractiveFunction({ label: '' }, {});
@@ -131,6 +132,7 @@ const quickReplyMock = {
     id: '1',
     label: 'English',
   },
+  tag: { id: 1, label: 'hey' },
 };
 
 const quickReplyMedia = {
@@ -247,5 +249,6 @@ export const mocks: any = [
   getTemplateByType('2', listReplyMock),
   getTemplateByType('3', quickReplyMedia),
   deleteMock,
+  getFilterTagQuery,
   getOrganizationLanguagesWithoutOrder,
 ];

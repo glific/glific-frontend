@@ -253,10 +253,9 @@ temba-menu:defined {
 
 body {
   width: 100%;
-  overflow-y: scroll;
   margin: 0;
   font-family: 'heebo' !important;
-  background-color: #f9f7f4 !important;
+  background-color: #f8faf5 !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

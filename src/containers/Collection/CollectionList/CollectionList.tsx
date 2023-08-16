@@ -88,7 +88,7 @@ export const CollectionList = () => {
         setNotification(
           `${numberDeleted} contact${
             numberDeleted === 1 ? '' : 's  were'
-          } removed and ${numberAdded} contact${numberAdded === 1 ? '' : 's  were'} added`
+          } removed and ${numberAdded} contact${numberAdded === 1 ? '' : 's  were'} added`,
         );
       } else if (numberDeleted > 0) {
         setNotification(`${numberDeleted} contact${numberDeleted === 1 ? '' : 's  were'} removed`);
@@ -133,7 +133,7 @@ export const CollectionList = () => {
   const handleCollectionAdd = (value: any) => {
     const selectedContacts = value.filter(
       (contact: any) =>
-        !collectionContacts.map((collectionContact: any) => collectionContact.id).includes(contact)
+        !collectionContacts.map((collectionContact: any) => collectionContact.id).includes(contact),
     );
     const unselectedContacts = collectionContacts
       .map((collectionContact: any) => collectionContact.id)

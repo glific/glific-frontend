@@ -133,8 +133,8 @@ describe('<FlowList />', () => {
     global.URL.createObjectURL = vi.fn();
     render(flowList);
     await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 0)));
-    const MoreButton = screen.getByTestId('MoreIcon');
-    fireEvent.click(MoreButton);
+    const moreButton = screen.getByTestId('MoreIcon');
+    fireEvent.click(moreButton);
 
     await waitFor(() => {
       const exportButton = screen.getByTestId('export-icon');

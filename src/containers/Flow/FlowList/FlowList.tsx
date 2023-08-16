@@ -97,9 +97,9 @@ export const FlowList = () => {
       if (!success) {
         setNotification(
           t(
-            'Sorry! An error occurred! This could happen if the flow is already present or error in the import file.'
+            'Sorry! An error occurred! This could happen if the flow is already present or error in the import file.',
           ),
-          'error'
+          'error',
         );
       } else {
         setNotification(t('The flow has been imported successfully.'));
@@ -198,57 +198,44 @@ export const FlowList = () => {
     fetchPolicy: 'network-only',
   });
 
-  const ITEM_HEIGHT = 48;
-  const ITEM_PADDING_TOP = 8;
-  const MenuProps = {
-    PaperProps: {
-      style: {
-        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-        width: 250,
-      },
-    },
-  };
-
   const activeFilter = (
-    <FormControl className={styles.ActiveFilter}>
-      <Select
-        aria-label="template-type"
-        name="template-type"
-        value={filter}
-        onChange={(event) => {
-          const { value } = event.target;
-          setFilter(JSON.parse(value));
+    <>
+      <FormControl>
+        <Select
+          aria-label="template-type"
+          name="template-type"
+          value={filter}
+          onChange={(event) => {
+            const { value } = event.target;
+            setFilter(JSON.parse(value));
+          }}
+          className={styles.SearchBar}
+        >
+          {filterList.map((filter: any) => (
+            <MenuItem key={filter.label} value={filter.value}>
+              {filter.label}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+      <AutoComplete
+        isFilterType
+        placeholder="Select tag"
+        options={tag ? tag.tags : []}
+        optionLabel="label"
+        disabled={false}
+        hasCreateOption={false}
+        multiple={false}
+        onChange={(value: any) => {
+          setSelectedTag(value);
         }}
-        MenuProps={MenuProps}
-        className={styles.SearchBar}
-      >
-        {filterList.map((filter: any) => (
-          <MenuItem key={filter.label} value={filter.value}>
-            {filter.label}
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
-  );
-
-  const tagFilter = (
-    <AutoComplete
-      isFilterType
-      placeholder="Select tag"
-      options={tag ? tag.tags : []}
-      optionLabel="label"
-      disabled={false}
-      hasCreateOption={false}
-      multiple={false}
-      onChange={(value: any) => {
-        setSelectedTag(value);
-      }}
-      form={{ setFieldValue: () => {} }}
-      field={{
-        name: 'selectedtag',
-        value: selectedtag,
-      }}
-    />
+        form={{ setFieldValue: () => {} }}
+        field={{
+          name: 'selectedtag',
+          value: selectedtag,
+        }}
+      />
+    </>
   );
 
   var filters = { isActive: filter };
@@ -290,7 +277,6 @@ export const FlowList = () => {
       secondaryButton={importButton}
       filters={filters}
       filterList={activeFilter}
-      filterDropdowm={tagFilter}
       loadingList={importing}
     />
   );

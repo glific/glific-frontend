@@ -21,21 +21,20 @@ test('Interactive message list renders correctly', async () => {
   render(list);
   expect(screen.getByText('Loading...')).toBeInTheDocument();
 
-  await waitFor(
-    async () => {
-      const title = await screen.findByText('Interactive msg');
-      const label = await screen.findByText('Title');
-      const messageBody = await screen.findByText('Message');
-      const type = await screen.findByText('Type');
+  await waitFor(() => {
+    const title = screen.getByText('Interactive msg');
+    const label = screen.getByText('Title');
+    const messageBody = screen.getByText('Message');
+    const type = screen.getByText('Type');
 
-      expect(title).toBeInTheDocument();
-      expect(label).toBeInTheDocument();
-      expect(messageBody).toBeInTheDocument();
-      expect(type).toBeInTheDocument();
-    },
-    { timeout: 5000 }
-  );
+    expect(title).toBeInTheDocument();
+    expect(label).toBeInTheDocument();
+    expect(messageBody).toBeInTheDocument();
+    expect(type).toBeInTheDocument();
+  });
 
-  expect(screen.getByText('List')).toBeInTheDocument();
-  expect(screen.getAllByText('Quick Reply')[0]).toBeInTheDocument();
+  await waitFor(() => {
+    expect(screen.getByText('List')).toBeInTheDocument();
+    expect(screen.getAllByText('Quick Reply')[0]).toBeInTheDocument();
+  });
 });

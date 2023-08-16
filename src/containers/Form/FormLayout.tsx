@@ -172,7 +172,7 @@ export const FormLayout = ({
   const { t } = useTranslation();
 
   // TODO: this query should only get triggered when roles are enabled for an organization
-  const { data: roleData } = useQuery(GET_ROLE_NAMES);
+  const { data: roleData } = useQuery(GET_ROLE_NAMES, { skip: !roleAccessSupport });
 
   const capitalListItemName = listItemName[0].toUpperCase() + listItemName.slice(1);
   let item: any = null;
