@@ -139,6 +139,7 @@ export const CollectionContactList = ({ title }: CollectionContactListProps) => 
       variant="contained"
       color="primary"
       onClick={() => {
+        getContacts();
         setAddContactsDialogShow(true);
       }}
     >
