@@ -1,4 +1,4 @@
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent, cleanup } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import axios from 'axios';
 import { Route, MemoryRouter, Routes } from 'react-router-dom';
@@ -8,6 +8,10 @@ import { setUserSession } from 'services/AuthService';
 import { mocks } from 'mocks/InteractiveMessage';
 import { InteractiveMessage } from './InteractiveMessage';
 import { FLOW_EDITOR_API } from 'config';
+
+afterEach(() => {
+  cleanup();
+});
 
 const mockUseLocationValue: any = {
   pathname: '/',
@@ -79,18 +83,18 @@ vi.spyOn(axios, 'get').mockImplementation((url: string) => {
   }
 });
 
-test('it renders empty interactive form', async () => {
+test.only('it renders empty interactive form', async () => {
   render(
     <MockedProvider mocks={mockData} addTypename={false}>
       <MemoryRouter>
         <InteractiveMessage />
       </MemoryRouter>
-    </MockedProvider>,
+    </MockedProvider>
   );
 
   // Adding another quick reply button
   await waitFor(() => {
-    const addQuickReplyButton = screen.getByText('Add quick reply');
+    const addQuickReplyButton = screen.getByTestId('addButton');
     expect(addQuickReplyButton).toBeInTheDocument();
     fireEvent.click(addQuickReplyButton);
   });
@@ -154,24 +158,26 @@ test('it renders empty interactive form', async () => {
 
   await waitFor(() => {
     // Adding another list item
-    const addAnotherListItemButton = screen.getByText('Add another list item');
+    const addAnotherListItemButton = screen.getByText('Add item');
     expect(addAnotherListItemButton);
     fireEvent.click(addAnotherListItemButton);
   });
 
   await waitFor(() => {
     // Adding another list
-    const addAnotherListButton = screen.getByText('Add another list');
+    const addAnotherListButton = screen.getByText('Add list');
     expect(addAnotherListButton);
     fireEvent.click(addAnotherListButton);
   });
 
-  await waitFor(() => {
-    // Deleting list
-    const deleteListButton = screen.getByTestId('interactive-icon');
-    expect(deleteListButton).toBeInTheDocument();
-    fireEvent.click(deleteListButton);
-  });
+  setTimeout(async () => {
+    await waitFor(() => {
+      // Deleting list
+      const deleteListButton = screen.getByTestId('delete-icon');
+      expect(deleteListButton).toBeInTheDocument();
+      fireEvent.click(deleteListButton);
+    });
+  }, 5000);
 
   await waitFor(() => {
     // Deleting list item

@@ -41,7 +41,7 @@ export const Dropdown = ({
         fullWidth
         error={form && form.errors[field.name] && form.touched[field.name]}
       >
-        <Typography variant="h5" className={styles.FieldLabel}>
+        <Typography data-testid="inputLabel" variant="h5" className={styles.FieldLabel}>
           {placeholder}
         </Typography>
         <Select

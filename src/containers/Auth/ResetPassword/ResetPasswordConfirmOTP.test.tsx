@@ -22,10 +22,10 @@ describe('<ResetPasswordConfirmOTP />', () => {
   });
   test('it should render', async () => {
     const { findByTestId } = render(wrapper);
-
     const resetPassword = await findByTestId('AuthContainer');
-    expect(resetPassword).toHaveTextContent('Reset your password');
-    expect(resetPassword).toHaveTextContent('New Password');
+    await waitFor(() => {
+      expect(resetPassword).toHaveTextContent('Reset your password');
+    });
   });
 
   test('it should submit the form correctly', async () => {

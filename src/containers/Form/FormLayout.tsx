@@ -563,7 +563,7 @@ export const FormLayout = ({
             return (
               <Fragment key={key}>
                 {field.label && (
-                  <Typography variant="h5" className={styles.FieldLabel}>
+                  <Typography data-testid="formLabel" variant="h5" className={styles.FieldLabel}>
                     {field.label}
                   </Typography>
                 )}
