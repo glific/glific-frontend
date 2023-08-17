@@ -111,7 +111,6 @@ export const CollectionContactList = ({ title }: CollectionContactListProps) => 
         searchLabel="Search contacts"
         textFieldPlaceholder="Type here"
         onChange={(value: any) => {
-          console.log(value);
           if (typeof value === 'string') {
             setContactSearchTerm(value);
           } else if (typeof value === 'object') {
