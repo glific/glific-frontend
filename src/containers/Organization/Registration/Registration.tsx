@@ -8,7 +8,7 @@ import { PhoneInput } from 'components/UI/Form/PhoneInput/PhoneInput';
 import Tooltip from 'components/UI/Tooltip/Tooltip';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { ONBOARD_URL } from 'config';
-import { ReactComponent as InfoIcon } from 'assets/images/icons/Info.svg';
+import { ReactComponent as InfoIcon } from 'assets/images/icons/info.svg';
 import { GUPSHUP_ACCOUNT_CREATION } from 'common/constants';
 import { Organization } from '../Organization';
 import styles from './Registration.module.css';

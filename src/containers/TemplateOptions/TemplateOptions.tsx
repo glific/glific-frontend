@@ -11,7 +11,7 @@ import { FieldArray } from 'formik';
 import { Button } from 'components/UI/Form/Button/Button';
 import Tooltip from 'components/UI/Tooltip/Tooltip';
 import { ReactComponent as DeleteIcon } from 'assets/images/icons/Delete/Red.svg';
-import { ReactComponent as InfoIcon } from 'assets/images/Info.svg';
+import { ReactComponent as InfoIcon } from 'assets/images/info.svg';
 import { ReactComponent as CrossIcon } from 'assets/images/icons/Cross.svg';
 import {
   GUPSHUP_CALL_TO_ACTION,
