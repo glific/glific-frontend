@@ -104,6 +104,8 @@ export const CollectionContactList = ({ title }: CollectionContactListProps) => 
         optionLabel="name"
         additionalOptionLabel="phone"
         asyncSearch
+        colorOk="warning"
+        buttonOk="Remove"
         disableClearable={false}
         selectedOptions={selectedContacts}
         searchLabel="Search contacts"
@@ -137,7 +139,7 @@ export const CollectionContactList = ({ title }: CollectionContactListProps) => 
   const removeCollectionButton = (
     <Button
       variant="contained"
-      color="primary"
+      color="error"
       onClick={() => {
         getContacts();
         setAddContactsDialogShow(true);
