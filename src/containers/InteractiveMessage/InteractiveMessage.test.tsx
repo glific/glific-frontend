@@ -83,7 +83,7 @@ vi.spyOn(axios, 'get').mockImplementation((url: string) => {
   }
 });
 
-test.only('it renders empty interactive form', async () => {
+test('it renders empty interactive form', async () => {
   render(
     <MockedProvider mocks={mockData} addTypename={false}>
       <MemoryRouter>
