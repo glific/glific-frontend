@@ -8,6 +8,7 @@ describe('<Input />', () => {
     field: { name: 'input', value: 'default', onBlur: vi.fn() },
     label: 'Title',
     placeholder: 'Title',
+    isInputLabel: true,
   });
   const input = <Input {...getProps()} />;
   it('renders <Input /> component', () => {
