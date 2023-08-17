@@ -1,11 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
 import { CONTACT_SEARCH_QUERY, GET_CONTACT_COUNT } from 'graphql/queries/Contact';
 import { UPDATE_COLLECTION_CONTACTS } from 'graphql/mutations/Collection';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import { ReactComponent as AddContactIcon } from 'assets/images/icons/Contact/Add.svg';
 import { ReactComponent as CollectionIcon } from 'assets/images/icons/Collection/Dark.svg';
 import { List } from 'containers/List/List';
 import styles from './CollectionContactList.module.css';
@@ -127,10 +126,6 @@ export const CollectionContactList = ({ title }: CollectionContactListProps) => 
     { label: t('Actions') },
   ];
 
-  const setContactsDialog = (id: any) => {
-    getContacts();
-    setAddContactsDialogShow(true);
-  };
   const additionalAction = () => [
     {
       icon: <ArrowForwardIcon className={styles.RedirectArrow} />,
