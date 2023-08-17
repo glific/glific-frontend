@@ -15,11 +15,21 @@
 }
 
 .HelperText {
-  margin-left: 16px !important;
+  margin-left: 0px !important;
   color: #93a29b !important;
   font-size: 12px !important;
 }
 
 .Paper {
   max-height: 400px !important;
+}
+
+.FieldLabel {
+  margin-top: 16px !important;
+  vertical-align: middle;
+  font-weight: 500 !important;
+  font-size: 16px !important;
+  line-height: 18px !important;
+  color: #555555;
+  margin-bottom: 8px;
 }
