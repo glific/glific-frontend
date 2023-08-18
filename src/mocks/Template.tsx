@@ -1,6 +1,7 @@
 import { setVariables } from 'common/constants';
 import { BULK_APPLY_TEMPLATES, IMPORT_TEMPLATES } from 'graphql/mutations/Template';
 import { FILTER_TEMPLATES, GET_TEMPLATES_COUNT } from 'graphql/queries/Template';
+import { searchInteractive, searchInteractiveHi } from './InteractiveMessage';
 
 export const filterTemplatesQuery = (term: any, data: any) => {
   return {
@@ -17,6 +18,8 @@ export const filterTemplatesQuery = (term: any, data: any) => {
 };
 
 export const TEMPLATE_MOCKS = [
+  searchInteractive,
+  searchInteractiveHi,
   filterTemplatesQuery('', [
     {
       id: '87',

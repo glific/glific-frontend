@@ -81,7 +81,7 @@ const BoldedText = (originalText: string, highlight: any) => {
         // we need calculate the length of the string before the search keyword
         const beforeSearchKeywordLength = strings[index].length;
         formattedStringArray[index] = string.substring(
-          beforeSearchKeywordLength - availableCharacterLength / 2
+          beforeSearchKeywordLength - availableCharacterLength / 2,
         );
       } else if (index % 2 !== 0) {
         formattedStringArray[index] = string;
@@ -108,7 +108,7 @@ const BoldedText = (originalText: string, highlight: any) => {
             </span>
           ) : (
             string
-          )
+          ),
         )}
       </span>
     );

@@ -10,7 +10,7 @@ import { SpeedSend } from './SpeedSend';
 beforeEach(() => {
   cleanup();
 });
-const mocks = TEMPLATE_MOCKS;
+const mocks = [...TEMPLATE_MOCKS, ...TEMPLATE_MOCKS];
 setUserSession(JSON.stringify({ roles: ['Admin'] }));
 
 describe('SpeedSend', () => {
@@ -23,7 +23,7 @@ describe('SpeedSend', () => {
             <Route path="/speed-send" element={<SpeedSendList />} />
           </Routes>
         </MemoryRouter>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     await waitFor(() => {
@@ -46,7 +46,7 @@ describe('SpeedSend', () => {
             <Route path="/speed-send" element={<SpeedSendList />} />
           </Routes>
         </MemoryRouter>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     await waitFor(() => {

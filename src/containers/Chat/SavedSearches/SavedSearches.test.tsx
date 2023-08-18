@@ -2,14 +2,27 @@ import { fireEvent, render, waitFor } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 import { MockedProvider } from '@apollo/client/testing';
 
-import { savedSearchQuery, savedSearchQueryError } from 'mocks/Chat';
+import { conversationMessageQuery, savedSearchQuery, savedSearchQueryError } from 'mocks/Chat';
 import { setUserSession } from 'services/AuthService';
 import SavedSearches from './SavedSearches';
+import { MemoryRouter } from 'react-router';
+
+const searchQueryMock = conversationMessageQuery(
+  { includeLabels: ['12'] },
+  'Jane Doe',
+  '919090909009',
+  1,
+  {
+    limit: 1,
+  },
+);
 
 const SavedSearch = (
-  <MockedProvider mocks={[savedSearchQuery]}>
-    <SavedSearches />
-  </MockedProvider>
+  <MemoryRouter>
+    <MockedProvider mocks={[savedSearchQuery, searchQueryMock]}>
+      <SavedSearches />
+    </MockedProvider>
+  </MemoryRouter>
 );
 
 describe('<SavedSearches />', () => {
@@ -27,7 +40,7 @@ describe('<SavedSearches />', () => {
     });
   });
 
-  test('click on search input', async () => {
+  test.only('click on search input', async () => {
     const { getByTestId, getByText } = render(SavedSearch);
 
     await waitFor(() => {

@@ -130,7 +130,6 @@ export interface TemplateProps {
   icon: any;
   defaultAttribute?: any;
   formField?: any;
-  getSessionTemplatesCallBack?: any;
   customStyle?: any;
   getUrlAttachmentAndType?: any;
   getShortcode?: any;
@@ -157,7 +156,6 @@ const Template = ({
   icon,
   defaultAttribute = { isHsm: false },
   formField,
-  getSessionTemplatesCallBack,
   customStyle,
   getUrlAttachmentAndType,
   getShortcode,
@@ -351,17 +349,6 @@ const Template = ({
     variables: { opts: { order: 'ASC' } },
   });
 
-  const [getSessionTemplates, { data: sessionTemplates }] = useLazyQuery<any>(FILTER_TEMPLATES, {
-    variables: {
-      filter: { languageId: language ? parseInt(language.id, 10) : null },
-      opts: {
-        order: 'ASC',
-        limit: null,
-        offset: 0,
-      },
-    },
-  });
-
   const [getSessionTemplate, { data: template, loading: templateLoading }] =
     useLazyQuery<any>(GET_TEMPLATE);
 
@@ -386,12 +373,6 @@ const Template = ({
   }, [languages]);
 
   useEffect(() => {
-    if (filterLabel && language && language.id) {
-      getSessionTemplates();
-    }
-  }, [filterLabel, language, getSessionTemplates]);
-
-  useEffect(() => {
     setShortcode(getShortcode);
   }, [getShortcode]);
 
@@ -400,28 +381,6 @@ const Template = ({
       setExample(getExample);
     }
   }, [getExample]);
-
-  const validateTitle = (value: any) => {
-    let error;
-    if (value) {
-      setFilterLabel(value);
-      let found = [];
-      if (sessionTemplates) {
-        if (getSessionTemplatesCallBack) {
-          getSessionTemplatesCallBack(sessionTemplates);
-        }
-        // need to check exact title
-        found = sessionTemplates.sessionTemplates.filter((search: any) => search.label === value);
-        if (params.id && found.length > 0) {
-          found = found.filter((search: any) => search.id !== params.id);
-        }
-      }
-      if (found.length > 0) {
-        error = t('Title already exists.');
-      }
-    }
-    return error;
-  };
 
   const updateTranslation = (value: any) => {
     const translationId = value.id;
@@ -617,7 +576,6 @@ const Template = ({
       component: Input,
       name: 'label',
       placeholder: `${t('Title')}*`,
-      validate: validateTitle,
       disabled: !!(defaultAttribute.isHsm && params.id),
       helperText: defaultAttribute.isHsm
         ? t('Define what use case does this template serve eg. OTP, optin, activity preference')

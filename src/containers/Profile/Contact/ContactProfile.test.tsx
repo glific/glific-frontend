@@ -20,7 +20,7 @@ describe('contact profile', () => {
     const { getByTestId } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
         <ContactProfile />
-      </MockedProvider>
+      </MockedProvider>,
     );
     await waitFor(() => {
       expect(getByTestId('ContactProfile')).toBeInTheDocument();
@@ -31,7 +31,7 @@ describe('contact profile', () => {
     const { getByTestId } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
         <ContactProfile />
-      </MockedProvider>
+      </MockedProvider>,
     );
     await waitFor(() => {
       expect(getByTestId('ContactProfile')).toBeInTheDocument();
@@ -47,7 +47,7 @@ describe('contact profile (multiple profile)', () => {
     const { getByTestId } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
         <ContactProfile />
-      </MockedProvider>
+      </MockedProvider>,
     );
     await waitFor(() => {
       expect(getByTestId('ContactProfile')).toBeInTheDocument();

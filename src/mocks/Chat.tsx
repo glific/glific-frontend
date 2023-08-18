@@ -33,8 +33,8 @@ const getConversationQuery = (data: any) => {
   };
 };
 
-const conversationMessageQuery = (
-  contactId: any,
+export const conversationMessageQuery = (
+  filter: any,
   contactName: string,
   contactNumber: string,
   contactLimit: number = DEFAULT_CONTACT_LIMIT,
@@ -46,7 +46,7 @@ const conversationMessageQuery = (
       contactOpts: {
         limit: contactLimit,
       },
-      filter: { id: contactId.toString() },
+      filter,
       messageOpts: messageLimit,
     },
   },
@@ -56,7 +56,7 @@ const conversationMessageQuery = (
         {
           group: null,
           contact: {
-            id: contactId.toString(),
+            id: '2',
             name: contactName,
             phone: contactNumber,
             maskedPhone: contactNumber,
@@ -289,7 +289,6 @@ export const collectionSendSubscription = {
           id: '1',
           phone: '917834811114',
         },
-        groupId: '2',
         type: 'TEXT',
         fields: '{}',
         media: {
@@ -328,7 +327,7 @@ const messageSubscriptionData = {
     body: 'How can we help?',
     groupId: null,
     flow: 'OUTBOUND',
-    groupId:null,
+    groupId: null,
     id: '22',
     messageNumber: 0,
     insertedAt: '2020-07-11T14:03:28Z',
@@ -454,7 +453,7 @@ export const savedSearchQuery = {
     data: {
       savedSearches: [
         {
-          args: '{"messageOpts":{"limit":5},"filter":{"includeLabels":["12"]},"contactOpts":{"limit":10}}',
+          args: '{"messageOpts":{"limit":1},"filter":{"includeLabels":["12"]},"contactOpts":{"limit":1}}',
           id: '1',
           isReserved: false,
           label: 'test',
@@ -469,10 +468,15 @@ export const savedSearchQuery = {
 export const savedSearchQueryError = {
   request: {
     query: SAVED_SEARCH_QUERY,
-    variables: { filter: { isReserved: false }, opts: {} },
+    variables: { filter: { isReserved: true }, opts: {} },
   },
   result: {
-    errors: [],
+    errors: [
+      {
+        key: 'search',
+        message: 'error',
+      },
+    ],
   },
 };
 
@@ -658,17 +662,17 @@ export const CONVERSATION_MOCKS = [
   messageStatusSubscription,
   savedSearchQuery,
   getOrganizationLanguagesQuery,
-  conversationMessageQuery('2', 'Jane Doe', '919090909009', DEFAULT_CONTACT_LIMIT, {
+  conversationMessageQuery({ id: '2' }, 'Jane Doe', '919090909009', DEFAULT_CONTACT_LIMIT, {
     limit: DEFAULT_MESSAGE_LIMIT,
   }),
-  conversationMessageQuery('3', 'Jane Monroe', '919090709009', DEFAULT_CONTACT_LIMIT, {
+  conversationMessageQuery({ id: '3' }, 'Jane Monroe', '919090709009', DEFAULT_CONTACT_LIMIT, {
     limit: DEFAULT_MESSAGE_LIMIT,
   }),
-  conversationMessageQuery('2', 'Jane Doe', '919090909009', 1, {
+  conversationMessageQuery({ id: '2' }, 'Jane Doe', '919090909009', 1, {
     limit: DEFAULT_MESSAGE_LIMIT,
     offset: 0,
   }),
-  conversationMessageQuery(5, 'Jane Doe', '919090909009', 1, {
+  conversationMessageQuery({ id: '5' }, 'Jane Doe', '919090909009', 1, {
     limit: DEFAULT_MESSAGE_LIMIT,
     offset: 0,
   }),

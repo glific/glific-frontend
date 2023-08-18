@@ -35,14 +35,14 @@ export const OrganisationFlows = () => {
   const [enabledDays, setEnabledDays] = useState<any>([]);
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
-  const [defaultFlowId, setDefaultFlowId] = useState<any>(null);
-  const [flowId, setFlowId] = useState<any>(null);
+  const [defaultFlowId, setDefaultFlowId] = useState<any>(undefined);
+  const [flowId, setFlowId] = useState<any>(undefined);
   const [isDisabled, setIsDisable] = useState(false);
   const [isFlowDisabled, setIsFlowDisable] = useState(true);
-  const [organizationId, setOrganizationId] = useState(null);
-  const [newcontactFlowId, setNewcontactFlowId] = useState(null);
+  const [organizationId, setOrganizationId] = useState(undefined);
+  const [newcontactFlowId, setNewcontactFlowId] = useState(undefined);
   const [newcontactFlowEnabled, setNewcontactFlowEnabled] = useState(false);
-  const [optinFlowId, setOptinFlowId] = useState(null);
+  const [optinFlowId, setOptinFlowId] = useState(undefined);
   const [optinFlowEnabled, setOptinFlowEnabled] = useState(false);
   const [allDayCheck, setAllDayCheck] = useState(false);
 
@@ -177,7 +177,7 @@ export const OrganisationFlows = () => {
     startTime: Yup.string().test(
       'is-valid',
       t('Not a valid time'),
-      (value) => value !== 'Invalid date'
+      (value) => value !== 'Invalid date',
     ),
     newcontactFlowId: Yup.object()
       .nullable()
@@ -215,7 +215,7 @@ export const OrganisationFlows = () => {
       },
       disabled: isDisabled,
       helperText: t(
-        'The selected flow will trigger when end-users aren’t in any flow, their message doesn’t match any keyword, and the time of their message is as defined below.'
+        'The selected flow will trigger when end-users aren’t in any flow, their message doesn’t match any keyword, and the time of their message is as defined below.',
       ),
       validate: validateOutOfOfficeFlow,
     },
