@@ -21,8 +21,8 @@ export const getTicketQuery = {
           topic: 'General',
           updatedAt: '2021-06-16T09:00:00.000Z',
           user: {
-            id: '3',
-            name: 'Glific user',
+            id: '1',
+            name: 'John Doe',
           },
         },
       },

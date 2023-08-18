@@ -277,6 +277,7 @@ export const collectionSendSubscription = {
       sentGroupMessage: {
         body: 'How can we help?',
         flow: 'OUTBOUND',
+        groupId: null,
         id: '22',
         insertedAt: '2020-07-11T14:03:28Z',
         messageNumber: 0,
@@ -327,6 +328,7 @@ const messageSubscriptionData = {
     body: 'How can we help?',
     groupId: null,
     flow: 'OUTBOUND',
+    groupId:null,
     id: '22',
     messageNumber: 0,
     insertedAt: '2020-07-11T14:03:28Z',

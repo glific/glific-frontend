@@ -34,8 +34,8 @@ export const StaffManagement = () => {
   const hasDynamicRoles = organizationHasDynamicRole();
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
-  const [roles, setRoles] = useState<any>([]);
-  const [groups, setGroups] = useState(null);
+  const [roles, setRoles] = useState<any>(undefined);
+  const [groups, setGroups] = useState(undefined);
   const [isRestricted, setIsRestricted] = useState(false);
   const [staffRole, setStaffRole] = useState(false);
   const [helpDialog, setHelpDialog] = useState(false);

@@ -9,6 +9,7 @@ import {
   GET_ORGANIZATION_COUNT,
   GET_ORGANIZATION_PROVIDER,
   GET_QUALITY_RATING,
+  GET_ORGANIZATION_PHONE,
 } from 'graphql/queries/Organization';
 import { BSP_BALANCE_SUBSCRIPTION } from 'graphql/subscriptions/PeriodicInfo';
 
@@ -757,6 +758,21 @@ export const getQualityRating = {
     data: {
       qualityRating: {
         currentLimit: 'TIER_1K',
+      },
+    },
+  },
+};
+
+export const getOrganizationPhone = {
+  request: {
+    query: GET_ORGANIZATION_PHONE,
+  },
+  result: {
+    data: {
+      organization: {
+        organization: {
+          contact: { phone: '91987654321' },
+        },
       },
     },
   },

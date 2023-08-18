@@ -27,7 +27,17 @@ export const syncTemplateQuery = {
   },
 };
 
-const mocks = [...TEMPLATE_MOCKS, hsmTemplatesCountQuery, syncTemplateQuery, ...HSM_LIST];
+// Todo: multiple calls are made here. We need to refactor this code
+const mocks = [
+  ...TEMPLATE_MOCKS,
+  ...TEMPLATE_MOCKS,
+  hsmTemplatesCountQuery,
+  syncTemplateQuery,
+  ...HSM_LIST,
+  ...HSM_LIST,
+  ...HSM_LIST,
+  ...HSM_LIST,
+];
 
 const template = (
   <MockedProvider mocks={mocks} addTypename={false}>
