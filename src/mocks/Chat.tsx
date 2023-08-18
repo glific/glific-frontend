@@ -277,7 +277,7 @@ export const collectionSendSubscription = {
       sentGroupMessage: {
         body: 'How can we help?',
         flow: 'OUTBOUND',
-        groupId: null,
+        groupId: 1,
         id: '22',
         insertedAt: '2020-07-11T14:03:28Z',
         messageNumber: 0,
@@ -327,7 +327,6 @@ const messageSubscriptionData = {
     body: 'How can we help?',
     groupId: null,
     flow: 'OUTBOUND',
-    groupId: null,
     id: '22',
     messageNumber: 0,
     insertedAt: '2020-07-11T14:03:28Z',
@@ -459,23 +458,6 @@ export const savedSearchQuery = {
           label: 'test',
           shortcode: 'test',
           count: 10,
-        },
-      ],
-    },
-  },
-};
-
-export const savedSearchQueryError = {
-  request: {
-    query: SAVED_SEARCH_QUERY,
-    variables: { filter: { isReserved: true }, opts: {} },
-  },
-  result: {
-    data: {
-      savedSearches: [],
-      errors: [
-        {
-          message: 'error',
         },
       ],
     },

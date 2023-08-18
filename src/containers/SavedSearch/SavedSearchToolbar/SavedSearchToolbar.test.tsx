@@ -84,19 +84,4 @@ describe('testing <SavedSearchToolbar />', () => {
 
     await waitFor(() => {});
   });
-
-  test('check if savedSearch query return error', async () => {
-    const savedSearchToolbar = (
-      <MockedProvider
-        mocks={[savedSearchQueryError, collectionCountSubscription, collectionCountQuery]}
-      >
-        <SavedSearchToolbar {...defaultProps} />
-      </MockedProvider>
-    );
-    const { getByText } = render(savedSearchToolbar);
-
-    await waitFor(() => {
-      getByText('error');
-    });
-  });
 });

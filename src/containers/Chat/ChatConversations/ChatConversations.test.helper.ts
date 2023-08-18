@@ -2,7 +2,6 @@ import { collectionCountQuery, savedSearchStatusQuery } from 'mocks/Chat';
 import { SEARCH_QUERY, SEARCH_MULTI_QUERY, SEARCH_OFFSET } from 'graphql/queries/Search';
 import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT } from 'common/constants';
 import { collectionCountSubscription } from 'mocks/Search';
-import { searchQueryWthLabelsMock } from '../SavedSearches/SavedSearches.test';
 
 const withResult = {
   data: {
@@ -195,7 +194,7 @@ export const SearchConversationsMocks = [
 export const ChatConversationMocks = [
   collectionCountSubscription,
   collectionCountQuery,
-  searchQueryWthLabelsMock,
+
   ...chatConversationsMocks,
   ...chatConversationsMocks,
   savedSearchStatusQuery,

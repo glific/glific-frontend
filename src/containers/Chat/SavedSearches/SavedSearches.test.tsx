@@ -1,13 +1,12 @@
-import { fireEvent, render, waitFor } from '@testing-library/react';
-import UserEvent from '@testing-library/user-event';
-import { MockedProvider } from '@apollo/client/testing';
-
 import {
   conversationMessageQuery,
   savedSearchNotReservedError,
   savedSearchQuery,
-  savedSearchQueryError,
 } from 'mocks/Chat';
+import { fireEvent, render, waitFor } from '@testing-library/react';
+import UserEvent from '@testing-library/user-event';
+import { MockedProvider } from '@apollo/client/testing';
+
 import { setUserSession } from 'services/AuthService';
 import SavedSearches from './SavedSearches';
 import { MemoryRouter } from 'react-router';
