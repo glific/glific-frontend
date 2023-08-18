@@ -1,6 +1,8 @@
-import { savedSearchStatusQuery } from 'mocks/Chat';
+import { collectionCountQuery, savedSearchStatusQuery } from 'mocks/Chat';
 import { SEARCH_QUERY, SEARCH_MULTI_QUERY, SEARCH_OFFSET } from 'graphql/queries/Search';
 import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT } from 'common/constants';
+import { collectionCountSubscription } from 'mocks/Search';
+import { searchQueryWthLabelsMock } from '../SavedSearches/SavedSearches.test';
 
 const withResult = {
   data: {
@@ -10,6 +12,8 @@ const withResult = {
         group: null,
         contact: {
           id: '6',
+          fields: '{}',
+          isOrgRead: false,
           name: 'Red Sparrow',
           phone: '919520285543',
           maskedPhone: '919520285543',
@@ -21,6 +25,8 @@ const withResult = {
           {
             id: '34',
             body: 'Hi',
+            messageNumber: 1,
+            sendBy: null,
             location: null,
             insertedAt: '2020-08-03T07:01:36Z',
             receiver: {
@@ -64,7 +70,7 @@ const searchQuery = (
   messageLimit: object,
   contactLimit: number,
   filter: any,
-  showResult: boolean = true
+  showResult: boolean = true,
 ) => {
   return {
     request: {
@@ -80,31 +86,31 @@ const searchQuery = (
 };
 
 export const chatConversationsMocks = [
-  searchQuery({ limit: DEFAULT_CONTACT_LIMIT }, DEFAULT_MESSAGE_LIMIT, {}),
-  searchQuery({ limit: DEFAULT_CONTACT_LIMIT }, DEFAULT_MESSAGE_LIMIT, { term: 'a' }, false),
-  searchQuery({ limit: DEFAULT_CONTACT_LIMIT }, DEFAULT_MESSAGE_LIMIT, { term: '' }),
+  searchQuery({ limit: DEFAULT_MESSAGE_LIMIT }, DEFAULT_CONTACT_LIMIT, {}),
+  searchQuery({ limit: DEFAULT_MESSAGE_LIMIT }, DEFAULT_CONTACT_LIMIT, { term: 'a' }, false),
+  searchQuery({ limit: DEFAULT_MESSAGE_LIMIT }, DEFAULT_CONTACT_LIMIT, { term: '' }),
   searchQuery(
     { limit: DEFAULT_CONTACT_LIMIT },
     DEFAULT_MESSAGE_LIMIT,
     { includeTags: ['12'] },
-    false
+    false,
   ),
-  searchQuery({ limit: DEFAULT_CONTACT_LIMIT }, 1, {}, false),
-  searchQuery({ limit: DEFAULT_CONTACT_LIMIT, offset: 0 }, 1, { id: '6' }, false),
+  searchQuery({ limit: DEFAULT_MESSAGE_LIMIT }, 1, {}, false),
+  searchQuery({ limit: DEFAULT_MESSAGE_LIMIT, offset: 0 }, 1, { id: '6' }, false),
 ];
 
 export const searchMultiQuery = (
   term: string = '',
   contactLimit: number = DEFAULT_CONTACT_LIMIT,
-  messageLimit: number = DEFAULT_MESSAGE_LIMIT
+  messageLimit: number = DEFAULT_MESSAGE_LIMIT,
 ) => {
   return {
     request: {
       query: SEARCH_MULTI_QUERY,
       variables: {
-        contactOpts: { order: 'DESC', contactLimit },
+        contactOpts: { order: 'DESC', limit: contactLimit },
         searchFilter: { term },
-        messageOpts: { messageLimit, order: 'ASC' },
+        messageOpts: { limit: messageLimit, offset: 0, order: 'ASC' },
       },
     },
     result: {
@@ -116,13 +122,17 @@ export const searchMultiQuery = (
               id: '2',
               lastMessageAt: '2020-11-18T04:37:57Z',
               name: 'Default receiver',
+              isOrgRead: false,
               phone: '9876543210',
-              maskedPhone: '9876543210',
+              maskedPhone: '9876**3210',
               status: 'VALID',
             },
             {
               bspStatus: 'SESSION',
               id: '3',
+              isOrgRead: false,
+              phone: '9876543211',
+              maskedPhone: '9876**3211',
               lastMessageAt: '2020-11-18T04:37:57Z',
               name: 'Adelle Cavin',
               status: 'VALID',
@@ -130,6 +140,7 @@ export const searchMultiQuery = (
           ],
           messages: [
             {
+              contextMessage: null,
               body: 'Hi',
               location: null,
               contact: {
@@ -155,6 +166,7 @@ export const searchMultiQuery = (
               flowLabel: null,
             },
           ],
+          labels: [],
         },
       },
     },
@@ -181,6 +193,9 @@ export const SearchConversationsMocks = [
 ];
 
 export const ChatConversationMocks = [
+  collectionCountSubscription,
+  collectionCountQuery,
+  searchQueryWthLabelsMock,
   ...chatConversationsMocks,
   ...chatConversationsMocks,
   savedSearchStatusQuery,
@@ -192,10 +207,10 @@ export const ChatConversationMocks = [
 export const searchQueryMock = searchQuery(
   { limit: DEFAULT_CONTACT_LIMIT },
   DEFAULT_MESSAGE_LIMIT,
-  { term: '' }
+  { term: '' },
 );
 export const searchQueryEmptyMock = searchQuery(
   { limit: DEFAULT_CONTACT_LIMIT },
   DEFAULT_MESSAGE_LIMIT,
-  {}
+  {},
 );

@@ -18,7 +18,7 @@ describe('<WalletBalance />', () => {
     render(
       <MockedProvider mocks={mocks}>
         <WalletBalance fullOpen={true} />
-      </MockedProvider>
+      </MockedProvider>,
     );
     // display initial loading
     const loading = screen.getByTestId('loading');
@@ -38,7 +38,7 @@ describe('<WalletBalance />', () => {
     render(
       <MockedProvider mocks={mocks}>
         <WalletBalance fullOpen={false} />
-      </MockedProvider>
+      </MockedProvider>,
     );
     // display initial loading
     const loading = screen.getByTestId('loading');
@@ -59,7 +59,7 @@ describe('<WalletBalance />', () => {
     render(
       <MockedProvider mocks={mocks}>
         <WalletBalance fullOpen={false} />
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     // display initial loading
@@ -75,13 +75,13 @@ describe('<WalletBalance />', () => {
 });
 
 describe('<WalletBalance />', () => {
-  const mocks = [...errorBalanceQuery, ...walletBalanceHighSubscription];
+  const mocks = [...errorBalanceQuery, ...errorBalanceQuery, ...walletBalanceHighSubscription];
 
   test('Query returns error', async () => {
     render(
       <MockedProvider mocks={mocks}>
         <WalletBalance fullOpen={false} />
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     // display initial loading
@@ -102,7 +102,7 @@ describe('<WalletBalance />', () => {
     render(
       <MockedProvider mocks={mocks}>
         <WalletBalance fullOpen={true} />
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     // display initial loading
@@ -121,7 +121,7 @@ describe('<WalletBalance />', () => {
     render(
       <MockedProvider mocks={mocks}>
         <WalletBalance fullOpen={true} />
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     // display initial loading

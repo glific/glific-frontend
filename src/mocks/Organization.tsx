@@ -630,7 +630,21 @@ export const errorBalanceQuery = [
       query: BSPBALANCE,
       variables: { organizationId: null },
     },
-    error: new Error('An error occured'),
+    result: {
+      data: { bspbalance: null },
+    },
+    errors: [
+      {
+        message: 'Error while fetching the BSP balance',
+        path: ['bspbalance'],
+        locations: [
+          {
+            line: 2,
+            column: 3,
+          },
+        ],
+      },
+    ],
   },
 ];
 

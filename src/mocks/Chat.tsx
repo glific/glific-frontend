@@ -408,7 +408,7 @@ export const savedSearchStatusQuery = {
     data: {
       savedSearches: [
         {
-          args: '{"messageOpts":{"limit":5},"filter":{"includeLabels":["12"]},"contactOpts":{"limit":10}}',
+          args: '{"messageOpts":{"limit":1},"filter":{"includeLabels":["12"]},"contactOpts":{"limit":1}}',
           id: '1',
           isReserved: true,
           label: 'All',
@@ -471,12 +471,31 @@ export const savedSearchQueryError = {
     variables: { filter: { isReserved: true }, opts: {} },
   },
   result: {
-    errors: [
-      {
-        key: 'search',
-        message: 'error',
-      },
-    ],
+    data: {
+      savedSearches: [],
+      errors: [
+        {
+          message: 'error',
+        },
+      ],
+    },
+  },
+};
+
+export const savedSearchNotReservedError = {
+  request: {
+    query: SAVED_SEARCH_QUERY,
+    variables: { filter: { isReserved: false }, opts: {} },
+  },
+  result: {
+    data: {
+      savedSearches: [],
+      errors: [
+        {
+          message: 'error',
+        },
+      ],
+    },
   },
 };
 
