@@ -20,6 +20,7 @@ import { ReactComponent as CollectionIcon } from 'assets/images/icons/StaffManag
 import { ReactComponent as ContactIcon } from 'assets/images/icons/Contact/View.svg';
 import { COLLECTION_SEARCH_QUERY_VARIABLES, setVariables } from 'common/constants';
 import styles from './Collection.module.css';
+import { collectionInfo } from 'common/HelpData';
 
 export const Collection = () => {
   const [selectedUsers, { data: collectionUsers }] = useLazyQuery(GET_COLLECTION_USERS, {
@@ -192,6 +193,7 @@ export const Collection = () => {
       redirectionLink="collection"
       listItem="group"
       icon={collectionIcon}
+      helpData={collectionInfo}
     />
   );
 };

@@ -32,6 +32,7 @@ import { ReactComponent as CopyAllOutlined } from 'assets/images/icons/Flow/Copy
 import { GET_TAGS } from 'graphql/queries/Tags';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { ReactComponent as AddIcon } from 'assets/images/add.svg';
+import { speedSendInfo, templateInfo } from 'common/HelpData';
 
 const getLabel = (label: string) => <div className={styles.LabelText}>{label}</div>;
 
@@ -111,7 +112,7 @@ export const Template = ({
       if (data && data.bulkApplyTemplates) {
         exportCsvFile(data.bulkApplyTemplates.csv_rows, 'result');
         setNotification(
-          t('Templates applied successfully. Please check the csv file for the results'),
+          t('Templates applied successfully. Please check the csv file for the results')
         );
       }
     },
@@ -374,19 +375,9 @@ export const Template = ({
     ...(selectedTag?.id && { tagIds: [parseInt(selectedTag?.id)] }),
   };
 
-  const helpData = {
-    heading: isHSM
-      ? "HSM (Highly Structured Message) templates are pre-approved messages by Whatsapp which are used to send to the users when their session window is closed (i.e after 24hours of inactive conversation). These templates ensure compliance with WhatsApp's guidelines and allow NGO's to send notifications, customer support messages and alerts with placeholders for personalized information."
-      : 'Speed Sends is a functionality in Glific to create a message or save the messages and reuse it in future chats.',
-    body: <></>,
-    link: isHSM
-      ? 'https://glific.github.io/docs/docs/Product%20Features/Templates'
-      : 'https://glific.github.io/docs/docs/Product%20Features/Speed%20Sends',
-  };
-
   return (
     <List
-      helpData={helpData}
+      helpData={isHSM ? templateInfo : speedSendInfo}
       secondaryButton={secondaryButton}
       title={title}
       listItem={listItem}

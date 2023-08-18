@@ -20,6 +20,7 @@ import { GET_COLLECTIONS } from 'graphql/queries/Collection';
 import { GET_TRIGGER } from 'graphql/queries/Trigger';
 import { CREATE_TRIGGER, DELETE_TRIGGER, UPDATE_TRIGGER } from 'graphql/mutations/Trigger';
 import styles from './Trigger.module.css';
+import { triggerInfo } from 'common/HelpData';
 
 const checkDateTimeValidation = (startAtValue: string, startDateValue: string) => {
   const isDateAhead = moment(startDateValue).isAfter(moment());
@@ -401,6 +402,7 @@ export const Trigger = () => {
       copyNotification={t('Copy of the trigger has been created!')}
       icon={triggerIcon}
       customStyles={styles.Triggers}
+      helpData={triggerInfo}
     />
   );
 };

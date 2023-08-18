@@ -22,6 +22,7 @@ import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT, setVariables } from 'comm
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { getObject } from 'common/utils';
 import styles from './Search.module.css';
+import { searchInfo } from 'common/HelpData';
 
 export interface SearchProps {
   type?: string;
@@ -514,6 +515,7 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
         customStyles={customStyles}
         type={type}
         afterSave={saveHandler}
+        helpData={searchInfo}
       />
     </>
   );

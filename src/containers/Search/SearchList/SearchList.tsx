@@ -5,6 +5,7 @@ import { List } from 'containers/List/List';
 import { SEARCH_LIST_QUERY, SEARCH_QUERY_COUNT } from 'graphql/queries/Search';
 import { DELETE_SEARCH } from 'graphql/mutations/Search';
 import styles from './SearchList.module.css';
+import { searchInfo } from 'common/HelpData';
 
 const getShortcode = (shortcode: string) => <p className={styles.LabelText}>{shortcode}</p>;
 const getLabel = (text: string) => <p className={styles.TableText}>{text}</p>;
@@ -43,16 +44,9 @@ export const SearchList = () => {
 
   const addIcon = <AddIcon className={styles.AddIcon} />;
 
-  const helpData = {
-    heading:
-      'Glific provides search functionality to NGO staff to find contacts from a large set of contacts list.',
-    body: <></>,
-    link: 'https://glific.github.io/docs/docs/Product%20Features/Searches',
-  };
-
   return (
     <List
-      helpData={helpData}
+      helpData={searchInfo}
       title="Searches"
       listItem="savedSearches"
       listItemName="Search"

@@ -20,6 +20,7 @@ import { getUserSession } from 'services/AuthService';
 import { GET_ROLE_NAMES } from 'graphql/queries/Role';
 import { organizationHasDynamicRole } from 'common/utils';
 import styles from './StaffManagement.module.css';
+import { staffManagementInfo } from 'common/HelpData';
 
 const staffManagementIcon = <StaffManagementIcon />;
 
@@ -313,6 +314,7 @@ export const StaffManagement = () => {
         listItem="user"
         icon={staffManagementIcon}
         languageSupport={false}
+        helpData={staffManagementInfo}
       />
     </>
   );

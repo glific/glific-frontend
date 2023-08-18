@@ -17,6 +17,7 @@ import styles from './InteractiveMessageList.module.css';
 import { useQuery } from '@apollo/client';
 import { GET_TAGS } from 'graphql/queries/Tags';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
+import { interactiveMessageInfo } from 'common/HelpData';
 
 const getLabel = (text: string) => (
   <p data-testid="label" className={styles.LabelText}>
@@ -152,16 +153,9 @@ export const InteractiveMessageList = () => {
 
   const addIcon = <AddIcon className={styles.AddIcon} />;
 
-  const helpData = {
-    heading:
-      'Interactive Messages are used by NGOs to create engaging and dynamic conversations with their beneficiaries. This feature helps NGOs to go beyond simple text-based notifications and include interactive elements like buttons, quick replies, list menus etc. It enhances the user experience through guided interactions and helps the NGOs collect cleaner data.',
-    body: <></>,
-    link: 'https://glific.github.io/docs/docs/Product%20Features/Interactive%20Messages',
-  };
-
   return (
     <List
-      helpData={helpData}
+      helpData={interactiveMessageInfo}
       title={t('Interactive msg')}
       listItem="interactiveTemplates"
       listItemName="interactive"

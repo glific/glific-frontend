@@ -18,6 +18,7 @@ import styles from './Flow.module.css';
 import { GET_TAGS } from 'graphql/queries/Tags';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { CREATE_LABEL } from 'graphql/mutations/Tags';
+import { flowInfo } from 'common/HelpData';
 
 const flowIcon = <FlowIcon className={styles.FlowIcon} />;
 
@@ -237,19 +238,6 @@ export const Flow = () => {
     setErrorMessage({ message: dataCopy }, t('Sorry! An error occurred!'));
   };
 
-  const helpData = {
-    heading: 'You can configure the flow by clicking on the configure button and are as follows:',
-    body: (
-      <ul>
-        <li>Save as Draft</li>
-        <li>Publish Preview</li>
-        <li>Revision history</li>
-        <li>Reset flow counts</li>
-      </ul>
-    ),
-    link: 'https://glific.github.io/docs/docs/category/flows',
-  };
-
   return (
     <FormLayout
       {...queries}
@@ -272,7 +260,7 @@ export const Flow = () => {
       type={type}
       copyNotification={t('Copy of the flow has been created!')}
       customHandler={customHandler}
-      helpData={helpData}
+      helpData={flowInfo}
     />
   );
 };

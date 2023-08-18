@@ -20,6 +20,7 @@ import { setVariables } from 'common/constants';
 import { CircularProgress, Modal } from '@mui/material';
 import styles from './CollectionList.module.css';
 import { exportCsvFile } from 'common/utils';
+import { collectionInfo } from 'common/HelpData';
 
 const getLabel = (label: string, contactsCount: number) => (
   <div>
@@ -211,13 +212,6 @@ export const CollectionList = () => {
 
   const addIcon = <AddIcon className={styles.AddIcon} />;
 
-  const helpData = {
-    heading:
-      'Collections is a feature in Glific to keep one set of users in one place and use it to communicate with all users in that collection in one go.',
-    body: <></>,
-    link: 'https://glific.github.io/docs/docs/Product%20Features/Others/Collections',
-  };
-
   return (
     <>
       {exportData && (
@@ -228,7 +222,7 @@ export const CollectionList = () => {
         </Modal>
       )}
       <List
-        helpData={helpData}
+        helpData={collectionInfo}
         restrictedAction={getRestrictedAction}
         title={t('Collections')}
         listItem="groups"

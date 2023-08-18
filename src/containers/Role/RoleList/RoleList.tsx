@@ -5,6 +5,7 @@ import { COUNT_ROLES, FILTER_ROLES } from 'graphql/queries/Role';
 import { DELETE_ROLE } from 'graphql/mutations/Roles';
 import styles from './RoleList.module.css';
 import { ReactComponent as AddIcon } from 'assets/images/add.svg';
+import { roleInfo } from 'common/HelpData';
 
 const getLabel = (text: string) => (
   <p className={`${styles.LabelText} ${styles.NameText}`}>{text}</p>
@@ -45,16 +46,9 @@ export const RoleList = () => {
 
   const addIcon = <AddIcon className={styles.AddIcon} />;
 
-  const helpData = {
-    heading:
-      'Glific also allows you to create specific roles to be assigned to your staff members besides the built-in roles. This feature is disabled by default for all NGOs, but could be enabled on demand. This feature allows you to create specific roles for your staff members like Teacher, Admin, Content Creator etc.',
-    body: <></>,
-    link: 'https://glific.github.io/docs/docs/Product%20Features/Others/Staff%20Management%20&%20Role%20Management',
-  };
-
   return (
     <List
-      helpData={helpData}
+      helpData={roleInfo}
       title={t('Role Management')}
       listItem="accessRoles"
       listItemName="role"

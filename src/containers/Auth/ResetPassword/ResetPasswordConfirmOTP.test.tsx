@@ -25,6 +25,7 @@ describe('<ResetPasswordConfirmOTP />', () => {
     const resetPassword = await findByTestId('AuthContainer');
     await waitFor(() => {
       expect(resetPassword).toHaveTextContent('Reset your password');
+      expect(resetPassword).toHaveTextContent('New Password');
     });
   });
 

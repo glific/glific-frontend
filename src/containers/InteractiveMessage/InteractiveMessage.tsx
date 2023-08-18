@@ -37,6 +37,7 @@ import {
 } from './InteractiveMessage.helper';
 import { GET_TAGS } from 'graphql/queries/Tags';
 import { CreateAutoComplete } from 'components/UI/Form/CreateAutoComplete/CreateAutoComplete';
+import { interactiveMessageInfo } from 'common/HelpData';
 
 const interactiveMessageIcon = (
   <InteractiveMessageIcon className={styles.Icon} data-testid="interactive-icon" />
@@ -788,6 +789,7 @@ export const InteractiveMessage = () => {
         afterSave={afterSave}
         saveOnPageChange={false}
         buttonState={{ text: t('Validating URL'), status: validatingURL }}
+        helpData={interactiveMessageInfo}
       />
       <div className={styles.Simulator}>
         <Simulator
