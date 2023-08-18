@@ -19,6 +19,7 @@ import {
 } from 'graphql/mutations/Flow';
 import { GET_ORGANIZATION_SERVICES } from 'graphql/queries/Organization';
 import json from './ImportFlow.json';
+import { GET_ALL_FLOW_LABELS } from 'graphql/queries/FlowLabel';
 
 export const getFlowQuery = {
   request: {
@@ -517,6 +518,23 @@ export const copyFlowQuery = {
 
         errors: null,
       },
+    },
+  },
+};
+
+export const getAllFlowLabelsQuery = {
+  request: {
+    query: GET_ALL_FLOW_LABELS,
+    variables: { filter: {}, opts: { limit: null, offset: 0, order: 'ASC' } },
+  },
+  result: {
+    data: {
+      flowLabels: [
+        {
+          id: '1',
+          name: 'dob',
+        },
+      ],
     },
   },
 };

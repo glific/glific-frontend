@@ -1,7 +1,10 @@
-import { collectionCountQuery, savedSearchStatusQuery } from 'mocks/Chat';
+import { collectionCountQuery, conversationMessageQuery, savedSearchStatusQuery } from 'mocks/Chat';
 import { SEARCH_QUERY, SEARCH_MULTI_QUERY, SEARCH_OFFSET } from 'graphql/queries/Search';
 import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT } from 'common/constants';
 import { collectionCountSubscription } from 'mocks/Search';
+import { getCollectionsQuery } from 'mocks/Collection';
+import { getUsersQuery } from 'mocks/User';
+import { getAllFlowLabelsQuery } from 'mocks/Flow';
 
 const withResult = {
   data: {
@@ -191,16 +194,88 @@ export const SearchConversationsMocks = [
   searchMultiQuery('a'),
 ];
 
+export const searchQueryForSavedSearch = {
+  request: {
+    query: SEARCH_QUERY,
+    variables: {
+      messageOpts: { limit: 1 },
+      filter: { includeLabels: ['12'] },
+      contactOpts: { limit: 1 },
+    },
+  },
+  result: {
+    data: {
+      search: [
+        {
+          group: null,
+          contact: {
+            id: '2',
+            name: 'Glific user',
+            phone: '919876543210',
+            maskedPhone: '91987**43210',
+            lastMessageAt: '2020-06-25T13:36:43Z',
+            status: 'VALID',
+            bspStatus: 'SESSION_AND_HSM',
+            isOrgRead: true,
+            fields: '{}',
+          },
+          messages: [
+            {
+              id: '1',
+              body: 'Hello',
+              insertedAt: '2020-06-25T13:36:43Z',
+              receiver: {
+                id: '1',
+              },
+              sender: {
+                id: '2',
+              },
+              type: 'TEXT',
+              media: null,
+              location: null,
+              errors: null,
+              messageNumber: 2,
+              contextMessage: {
+                body: 'All good',
+                contextId: 1,
+                messageNumber: 10,
+                errors: '{}',
+                media: null,
+                type: 'TEXT',
+                insertedAt: '2021-04-26T06:13:03.832721Z',
+                location: null,
+                receiver: {
+                  id: '1',
+                },
+                sender: {
+                  id: '2',
+                  name: 'User',
+                },
+              },
+              sendBy: 'Glific User',
+              interactiveContent: '{}',
+              flowLabel: null,
+            },
+          ],
+        },
+      ],
+    },
+  },
+};
+
 export const ChatConversationMocks = [
   collectionCountSubscription,
   collectionCountQuery,
-
+  ...getCollectionsQuery,
+  getUsersQuery,
+  getAllFlowLabelsQuery,
   ...chatConversationsMocks,
   ...chatConversationsMocks,
   savedSearchStatusQuery,
   ...SearchConversationsMocks,
   ...SearchConversationsMocks,
   searchOffset,
+  searchQueryForSavedSearch,
 ];
 
 export const searchQueryMock = searchQuery(
