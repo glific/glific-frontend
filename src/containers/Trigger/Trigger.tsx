@@ -276,9 +276,6 @@ export const Trigger = () => {
       multiple: false,
       label: t('Select flow'),
       placeholder: t('Select flow'),
-      textFieldProps: {
-        variant: 'outlined',
-      },
     },
     {
       component: Calendar,
@@ -311,9 +308,6 @@ export const Trigger = () => {
       disabled: isEditing,
       valueElementName: 'value',
       multiple: false,
-      textFieldProps: {
-        variant: 'outlined',
-      },
       onChange: handleFrequencyChange,
     },
     {
@@ -324,9 +318,6 @@ export const Trigger = () => {
       options: frequencyOptions,
       disabled: isEditing || daysDisabled,
       optionLabel: 'label',
-      textFieldProps: {
-        variant: 'outlined',
-      },
       helperText:
         frequency === 'monthly' &&
         t(
@@ -342,9 +333,6 @@ export const Trigger = () => {
       multiple: false,
       disabled: isEditing,
       optionLabel: 'label',
-      textFieldProps: {
-        variant: 'outlined',
-      },
     },
   ];
 

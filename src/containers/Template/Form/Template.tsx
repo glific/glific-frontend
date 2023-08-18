@@ -40,7 +40,7 @@ const HSMValidation = {
         },
         message:
           'Message and sample look different. Please check for any characters, extra spaces or new lines.',
-      }),
+      })
     )
     .required('Example is required.'),
   category: Yup.object().nullable().required('Category is required.'),
@@ -48,7 +48,7 @@ const HSMValidation = {
     .required('Element name is required.')
     .matches(
       regexForShortcode,
-      'Only lowercase alphanumeric characters and underscores are allowed.',
+      'Only lowercase alphanumeric characters and underscores are allowed.'
     ),
 };
 
@@ -238,13 +238,13 @@ const Template = ({
     if (languageOptions.length > 0 && languageIdValue) {
       if (location.state) {
         const selectedLangauge = languageOptions.find(
-          (lang: any) => lang.label === location.state.language,
+          (lang: any) => lang.label === location.state.language
         );
         navigate(location.pathname);
         setLanguageId(selectedLangauge);
       } else if (!language.id) {
         const selectedLangauge = languageOptions.find(
-          (lang: any) => lang.id === languageIdValue.id,
+          (lang: any) => lang.id === languageIdValue.id
         );
         setLanguageId(selectedLangauge);
       } else {
@@ -266,7 +266,7 @@ const Template = ({
         const { buttons: buttonsVal, template } = getTemplateAndButtons(
           templateButtonType,
           exampleValue,
-          buttons,
+          buttons
         );
         exampleBody = template;
         setTemplateButtons(buttonsVal);
@@ -461,7 +461,7 @@ const Template = ({
 
   const handleLanguageChange = (value: any) => {
     const selected = languageOptions.find(
-      ({ label: languageLabel }: any) => languageLabel === value,
+      ({ label: languageLabel }: any) => languageLabel === value
     );
     if (selected && Object.prototype.hasOwnProperty.call(params, 'id')) {
       updateTranslation(selected);
@@ -515,7 +515,7 @@ const Template = ({
             <li>{t('Animated stickers are not supported.')}</li>
             <li>{t('Captions along with stickers are not supported.')}</li>
           </ol>
-        </div>,
+        </div>
       );
     } else if (type && type.id === 'AUDIO') {
       setWarning(
@@ -523,7 +523,7 @@ const Template = ({
           <ol>
             <li>{t('Captions along with audio are not supported.')}</li>
           </ol>
-        </div>,
+        </div>
       );
     } else {
       setWarning(null);
@@ -563,7 +563,7 @@ const Template = ({
       validate: () => isUrlValid,
       disabled: !!(defaultAttribute.isHsm && params.id),
       helperText: t(
-        'Please provide a sample attachment for approval purpose. You may send a similar but different attachment when sending the HSM to users.',
+        'Please provide a sample attachment for approval purpose. You may send a similar but different attachment when sending the HSM to users.'
       ),
       inputProp: {
         onBlur: (event: any) => {
@@ -597,9 +597,6 @@ const Template = ({
           optionLabel: 'label',
           multiple: false,
           label: `${t('Language')}*`,
-          textFieldProps: {
-            variant: 'outlined',
-          },
           disabled: !!(defaultAttribute.isHsm && params.id),
           onChange: getLanguageId,
         }
@@ -964,10 +961,10 @@ const Template = ({
                 then: (schema) =>
                   schema.matches(
                     /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_+.~#?&/=]*)/gi,
-                    'Please enter valid url.',
+                    'Please enter valid url.'
                   ),
               }),
-          }),
+          })
         )
         .min(1)
         .max(2);
@@ -976,7 +973,7 @@ const Template = ({
         .of(
           Yup.object().shape({
             value: Yup.string().required('Required'),
-          }),
+          })
         )
         .min(1)
         .max(3);

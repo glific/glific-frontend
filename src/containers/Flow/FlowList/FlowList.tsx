@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-
 import { ReactComponent as AddIcon } from 'assets/images/add.svg';
 import { ReactComponent as FlowIcon } from 'assets/images/icons/Flow/Dark.svg';
 import { ReactComponent as DuplicateIcon } from 'assets/images/icons/Flow/Copy.svg';
@@ -97,9 +96,9 @@ export const FlowList = () => {
       if (!success) {
         setNotification(
           t(
-            'Sorry! An error occurred! This could happen if the flow is already present or error in the import file.',
+            'Sorry! An error occurred! This could happen if the flow is already present or error in the import file.'
           ),
-          'error',
+          'error'
         );
       } else {
         setNotification(t('The flow has been imported successfully.'));

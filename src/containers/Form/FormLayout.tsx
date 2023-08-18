@@ -505,10 +505,7 @@ export const FormLayout = ({
         : [],
       optionLabel: 'label',
       multiple: true,
-      textFieldProps: {
-        label: t('Roles'),
-        variant: 'outlined',
-      },
+      label: t('Roles'),
 
       helperText: t('Select roles to apply to the resource'),
     };

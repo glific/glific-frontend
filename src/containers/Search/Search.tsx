@@ -319,9 +319,6 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
       placeholder: t('Includes labels'),
       options: dataLabels.flowLabels,
       optionLabel: 'name',
-      textFieldProps: {
-        variant: 'outlined',
-      },
       icon: <LabelIcon stroke="#073f24" />,
       onChange: (val: any) => setIncludeLabels(val),
     },
@@ -333,9 +330,6 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
       options: data.groups,
       optionLabel: 'label',
       noOptionsText: t('No collections available'),
-      textFieldProps: {
-        variant: 'outlined',
-      },
       onChange: (val: any) => setIncludeGroups(val),
     },
     {
@@ -345,9 +339,6 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
       label: t('Includes staff'),
       options: dataUser.users,
       optionLabel: 'name',
-      textFieldProps: {
-        variant: 'outlined',
-      },
       onChange: (val: any) => setIncludeUsers(val),
     },
   ];
@@ -385,7 +376,7 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
       name: 'dateTo',
       type: 'date',
       disabled: useExpression,
-      // placeholder: t('Date to'),
+      placeholder: t('Date to'),
     },
   ];
 

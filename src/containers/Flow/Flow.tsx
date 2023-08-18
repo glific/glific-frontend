@@ -133,9 +133,6 @@ export const Flow = () => {
       type: 'text',
       label: t('Name'),
       placeholder: t('Name'),
-      textFieldProps: {
-        variant: 'outlined',
-      },
     },
     {
       component: Input,
@@ -154,9 +151,6 @@ export const Flow = () => {
       handleCreateItem: handleCreateLabel,
       hasCreateOption: true,
       multiple: false,
-      textFieldProps: {
-        variant: 'outlined',
-      },
       label: t('Tag'),
       placeholder: t('Tag'),
     },

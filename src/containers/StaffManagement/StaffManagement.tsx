@@ -193,11 +193,13 @@ export const StaffManagement = () => {
       name: 'name',
       type: 'text',
       placeholder: t('Username'),
+      label: t('Username'),
     },
     {
       component: Input,
       name: 'phone',
       placeholder: t('Phone Number'),
+      label: t('Phone Number'),
       disabled: true,
       skipPayload: true,
     },
@@ -212,10 +214,7 @@ export const StaffManagement = () => {
       multiple: hasDynamicRoles,
       helpLink: { label: 'help?', handleClick: handleHelpClick },
       optionLabel: 'label',
-      textFieldProps: {
-        label: t('Roles'),
-        variant: 'outlined',
-      },
+      label: t('Roles'),
     },
     {
       component: AutoComplete,
@@ -223,10 +222,7 @@ export const StaffManagement = () => {
       placeholder: t('Assigned to collection(s)'),
       options: data.groups,
       optionLabel: 'label',
-      textFieldProps: {
-        label: t('Assigned to collection(s)'),
-        variant: 'outlined',
-      },
+      label: t('Assigned to collection(s)'),
     },
   ];
 

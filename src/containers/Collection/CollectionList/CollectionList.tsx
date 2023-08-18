@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
-
+import { ReactComponent as AddIcon } from 'assets/images/add.svg';
 import { ReactComponent as CollectionIcon } from 'assets/images/icons/Collection/Dark.svg';
 import { ReactComponent as AddContactIcon } from 'assets/images/icons/Contact/Add.svg';
 import { DELETE_COLLECTION, UPDATE_COLLECTION_CONTACTS } from 'graphql/mutations/Collection';
@@ -88,7 +88,7 @@ export const CollectionList = () => {
         setNotification(
           `${numberDeleted} contact${
             numberDeleted === 1 ? '' : 's  were'
-          } removed and ${numberAdded} contact${numberAdded === 1 ? '' : 's  were'} added`,
+          } removed and ${numberAdded} contact${numberAdded === 1 ? '' : 's  were'} added`
         );
       } else if (numberDeleted > 0) {
         setNotification(`${numberDeleted} contact${numberDeleted === 1 ? '' : 's  were'} removed`);
@@ -133,7 +133,7 @@ export const CollectionList = () => {
   const handleCollectionAdd = (value: any) => {
     const selectedContacts = value.filter(
       (contact: any) =>
-        !collectionContacts.map((collectionContact: any) => collectionContact.id).includes(contact),
+        !collectionContacts.map((collectionContact: any) => collectionContact.id).includes(contact)
     );
     const unselectedContacts = collectionContacts
       .map((collectionContact: any) => collectionContact.id)
@@ -208,6 +208,16 @@ export const CollectionList = () => {
 
   // check if the user has access to manage collections
   const userRolePermissions = getUserRolePermissions();
+
+  const addIcon = <AddIcon className={styles.AddIcon} />;
+
+  const helpData = {
+    heading:
+      'Collections is a feature in Glific to keep one set of users in one place and use it to communicate with all users in that collection in one go.',
+    body: <></>,
+    link: 'https://glific.github.io/docs/docs/Product%20Features/Others/Collections',
+  };
+
   return (
     <>
       {exportData && (
@@ -218,6 +228,7 @@ export const CollectionList = () => {
         </Modal>
       )}
       <List
+        helpData={helpData}
         restrictedAction={getRestrictedAction}
         title={t('Collections')}
         listItem="groups"
@@ -227,7 +238,7 @@ export const CollectionList = () => {
         button={{
           show: userRolePermissions.manageCollections,
           label: t('Create Collection'),
-          symbol: '+',
+          symbol: addIcon,
         }}
         pageLink="collection"
         listIcon={collectionIcon}
