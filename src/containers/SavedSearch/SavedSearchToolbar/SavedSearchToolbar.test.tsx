@@ -2,12 +2,7 @@ import { MockedProvider } from '@apollo/client/testing';
 import { render, waitFor, fireEvent } from '@testing-library/react';
 import { vi } from 'vitest';
 
-import {
-  collectionCountQuery,
-  savedSearchQuery,
-  savedSearchQueryError,
-  savedSearchStatusQuery,
-} from 'mocks/Chat';
+import { collectionCountQuery, savedSearchQuery, savedSearchStatusQuery } from 'mocks/Chat';
 import { collectionCountSubscription } from 'mocks/Search';
 import { setUserSession } from 'services/AuthService';
 import SavedSearchToolbar from './SavedSearchToolbar';

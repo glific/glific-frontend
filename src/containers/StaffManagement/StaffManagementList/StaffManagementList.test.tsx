@@ -9,9 +9,11 @@ import { getOrganizationPhone } from 'mocks/Organization';
 import axios from 'axios';
 
 vi.mock('axios');
+const mockedAxios = axios as any;
+
 const mocks = [USER_COUNT_MOCK, FILTER_USER_MOCK, getOrganizationPhone];
 
-axios.post.mockImplementation(() => Promise.resolve({ data: {} }));
+mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
 
 const staffManagement = (
   <MockedProvider mocks={mocks} addTypename={false}>

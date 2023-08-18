@@ -13,7 +13,7 @@ import { EmojiInput } from 'components/UI/Form/EmojiInput/EmojiInput';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { LanguageBar } from 'components/UI/LanguageBar/LanguageBar';
-import { GET_TEMPLATE, FILTER_TEMPLATES } from 'graphql/queries/Template';
+import { GET_TEMPLATE } from 'graphql/queries/Template';
 import { CREATE_MEDIA_MESSAGE } from 'graphql/mutations/Chat';
 import { USER_LANGUAGES } from 'graphql/queries/Organization';
 import { GET_TAGS } from 'graphql/queries/Tags';
