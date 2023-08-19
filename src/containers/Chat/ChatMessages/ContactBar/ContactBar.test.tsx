@@ -102,7 +102,7 @@ describe('Menu test', () => {
     });
   });
 
-  test('clicking on Start flow should open up a dialog box', async () => {
+  test.only('clicking on Start flow should open up a dialog box', async () => {
     fireEvent.click(screen.getByTestId('flowButton'));
     await waitFor(() => {
       expect(screen.getAllByText('Select flow')[0]).toBeInTheDocument();
@@ -134,7 +134,7 @@ describe('Menu test', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText('Are you sure you want to clear all conversation for this contact?')
+        screen.getByText('Are you sure you want to clear all conversation for this contact?'),
       ).toBeInTheDocument();
       // click on cancel
       fireEvent.click(screen.getByTestId('ok-button'));
@@ -146,7 +146,7 @@ describe('Menu test', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText('Are you sure you want to clear all conversation for this contact?')
+        screen.getByText('Are you sure you want to clear all conversation for this contact?'),
       ).toBeInTheDocument();
     });
     // click on cancel

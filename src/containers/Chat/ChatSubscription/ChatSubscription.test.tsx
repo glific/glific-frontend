@@ -84,7 +84,7 @@ export const searchQuery = {
         group: null,
         contact: {
           id: '2',
-          field: '{}',
+          fields: '{}',
           name: 'Effie Cormier',
           phone: '987654321',
           maskedPhone: '98****321',

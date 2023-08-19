@@ -12,9 +12,7 @@ export interface SearchBarProps {
   handleChange?: (e: any) => void;
   handleSubmit?: (e: React.FormEvent<HTMLFormElement>) => void;
   onReset: () => void;
-  // This is for whether or not the parent gets re-rendered on search. To checkout comparison of
-  // different functionalities, look at `ChatConversations` for without, and `TagList` with.
-  searchVal?: string; // Calvin update-- all use-cases will use searchVal?
+  searchVal?: string;
   className?: any;
   handleClick?: any;
   endAdornment?: any;
@@ -23,7 +21,7 @@ export interface SearchBarProps {
 
 export const SearchBar = ({
   searchMode,
-  searchVal,
+  searchVal = '',
   onReset,
   endAdornment,
   handleClick,

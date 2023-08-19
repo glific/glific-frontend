@@ -46,7 +46,7 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
     description = '',
   } = props;
 
-  const [selectedOption, setSelectedOptions] = useState<any>(multiple ? [] : '');
+  const [selectedOption, setSelectedOptions] = useState<any>(multiple ? [] : null);
   const [asyncSelectedOptions, setAsyncSelectedOptions] = useState<Array<any>>([]);
 
   useEffect(() => {
@@ -54,7 +54,7 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
       setSelectedOptions(
         multiple
           ? options.filter((option: any) => selectedOptions.includes(option.id))
-          : selectedOptions
+          : selectedOptions,
       );
     }
   }, [selectedOptions, options]);

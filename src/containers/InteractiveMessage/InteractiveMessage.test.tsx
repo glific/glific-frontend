@@ -20,6 +20,7 @@ vi.mock('react-router-dom', async () => ({
   useLocation: () => {
     return mockUseLocationValue;
   },
+  Navigate: ({ to }: any) => <div>Navigated to {to}</div>,
 }));
 
 const mockData = [...mocks, ...mocks];
@@ -201,24 +202,29 @@ test('it renders empty interactive form', async () => {
 test('it renders interactive quick reply in edit mode', async () => {
   render(renderInteractiveMessage('1'));
 
-  // vi.spyOn(axios, 'get').mockResolvedValueOnce(responseMock1);
-
   await waitFor(() => {
     // Changing language to marathi to see translations
-    const marathi = screen.getByText('Marathi');
-    fireEvent.click(marathi);
+    expect(screen.getByText('Marathi')).toBeInTheDocument();
   });
 
-  await waitFor(() => {
-    // Changing back to English
-    const english = screen.getByText('English');
-    fireEvent.click(english);
-  });
+  const marathi = screen.getByText('Marathi');
+  fireEvent.click(marathi);
 
   await waitFor(() => {
-    const saveButton = screen.getByText('Save');
-    expect(saveButton).toBeInTheDocument();
-    fireEvent.click(saveButton);
+    expect(screen.getByText('English')).toBeInTheDocument();
+  });
+  // Changing back to English
+  const english = screen.getByText('English');
+  fireEvent.click(english);
+
+  await waitFor(() => {
+    expect(screen.getByText('Save')).toBeInTheDocument();
+  });
+  const saveButton = screen.getByText('Save');
+  fireEvent.click(saveButton);
+
+  await waitFor(() => {
+    expect(screen.getByText('Navigated to /interactive-message')).toBeInTheDocument();
   });
 });
 
