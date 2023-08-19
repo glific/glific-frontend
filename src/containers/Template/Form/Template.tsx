@@ -175,10 +175,9 @@ const Template = ({
   const [label, setLabel] = useState('');
   const [body, setBody] = useState(EditorState.createEmpty());
   const [example, setExample] = useState(EditorState.createEmpty());
-  const [filterLabel, setFilterLabel] = useState('');
   const [shortcode, setShortcode] = useState('');
-  const [language, setLanguageId] = useState<any>(undefined);
-  const [type, setType] = useState<any>(undefined);
+  const [language, setLanguageId] = useState<any>(null);
+  const [type, setType] = useState<any>(null);
   const [translations, setTranslations] = useState<any>();
   const [attachmentURL, setAttachmentURL] = useState<any>();
   const [languageOptions, setLanguageOptions] = useState<any>([]);
@@ -283,7 +282,7 @@ const Template = ({
     if (typeValue && typeValue !== 'TEXT') {
       setType({ id: typeValue, label: typeValue });
     } else {
-      setType('');
+      setType(null);
     }
     if (translationsValue) {
       const translationsCopy = JSON.parse(translationsValue);
@@ -335,7 +334,7 @@ const Template = ({
     if (typeValue && typeValue !== 'TEXT') {
       setType({ id: typeValue, label: typeValue });
     } else {
-      setType('');
+      setType(null);
     }
 
     if (MessageMediaValue) {
@@ -508,7 +507,7 @@ const Template = ({
       disabled: !!(defaultAttribute.isHsm && params.id),
       helperText: warning,
       onChange: (event: any) => {
-        const val = event || '';
+        const val = event;
         if (!event) {
           setIsUrlValid(val);
         }
