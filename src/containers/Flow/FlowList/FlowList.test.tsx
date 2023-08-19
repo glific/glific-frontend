@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, getByTestId, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 import { vi } from 'vitest';
@@ -25,6 +25,8 @@ const mocks = [
   getFlowCountQuery,
   getFlowCountQuery,
   getFlowCountQuery,
+  getFlowCountQuery,
+  filterFlowQuery,
   filterFlowQuery,
   filterFlowQuery,
   filterFlowQuery,
@@ -106,13 +108,12 @@ describe('<FlowList />', () => {
   test('should import flow using json file', async () => {
     render(flowList);
 
-    await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 0)));
-
     await waitFor(() => {
-      const importFlowButton = screen.getByTestId('import-icon');
-      expect(importFlowButton).toBeInTheDocument();
-      fireEvent.click(importFlowButton);
+      expect(screen.getByTestId('import-icon')).toBeInTheDocument();
     });
+
+    const importFlowButton = screen.getByTestId('import-icon');
+    fireEvent.click(importFlowButton);
 
     await waitFor(() => {
       const json = JSON.stringify(testJSON);
