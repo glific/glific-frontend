@@ -1,8 +1,4 @@
-import {
-  conversationMessageQuery,
-  savedSearchNotReservedError,
-  savedSearchQuery,
-} from 'mocks/Chat';
+import { conversationMessageQuery, savedSearchQuery } from 'mocks/Chat';
 import { fireEvent, render, waitFor } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 import { MockedProvider } from '@apollo/client/testing';
