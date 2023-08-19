@@ -18,7 +18,7 @@ test('Render component correctly with the values', async () => {
   render(
     <MockedProvider mocks={mocks}>
       <Ticket selectedTicket={'1'} setOpenDialog={setOpenDialogMock} />
-    </MockedProvider>,
+    </MockedProvider>
   );
 
   expect(screen.getByText('Loading...')).toBeInTheDocument();

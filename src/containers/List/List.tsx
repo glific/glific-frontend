@@ -254,7 +254,7 @@ export const List = ({
     {
       variables: filterPayload(),
       fetchPolicy: 'cache-first',
-    },
+    }
   );
 
   // Get item data here
@@ -393,7 +393,7 @@ export const List = ({
   function getIcons(
     // id: number | undefined,
     item: any,
-    allowedAction: any | null,
+    allowedAction: any | null
   ) {
     // there might be a case when we might want to allow certain actions for reserved items
     // currently we don't allow edit or delete for reserved items. hence return early
