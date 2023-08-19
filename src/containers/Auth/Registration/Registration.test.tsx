@@ -44,19 +44,18 @@ describe('<Registration />', () => {
     const { container } = render(wrapper);
 
     const userName = container.querySelector('input[name="userName"]') as HTMLInputElement;
+    await user.click(userName);
+    await user.keyboard('John doe');
+
+    const phone = container.querySelector('input[type="tel"]') as HTMLInputElement;
+    await user.click(phone);
+    await user.keyboard('+919978776554');
+
+    const password = container.querySelector('input[type="password"]') as HTMLInputElement;
+    await user.click(password);
+    await user.keyboard('pass123456');
 
     await waitFor(() => {
-      user.click(userName);
-      user.keyboard('John doe');
-
-      const phone = container.querySelector('input[type="tel"]') as HTMLInputElement;
-      user.click(phone);
-      user.keyboard('+919978776554');
-
-      const password = container.querySelector('input[type="password"]') as HTMLInputElement;
-      user.click(password);
-      user.keyboard('pass123456');
-
       // Regiter with button should be disabled by default
       const continueButton = screen.getByTestId('SubmitButton');
       expect(continueButton).toHaveAttribute('disabled');
@@ -64,6 +63,7 @@ describe('<Registration />', () => {
   });
 
   it('should submit the form correctly', async () => {
+    const user = userEvent.setup();
     // let's mock successful registration submission
     const responseData = {
       values: { username: 'Jane Doe', phone: '+919978776554', password: 'pass123456' },
@@ -71,21 +71,17 @@ describe('<Registration />', () => {
     mockedAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
 
     const { container } = render(wrapper);
+    const userName = container.querySelector('input[name="name"]') as HTMLInputElement;
+    await user.type(userName, 'Jane Doe');
+    const phone = container.querySelector('input[type="tel"]') as HTMLInputElement;
+    await user.type(phone, '+919978776554');
 
-    await waitFor(() => {
-      const userName = container.querySelector('input[name="name"]') as HTMLInputElement;
-      userEvent.type(userName, 'Jane Doe');
-
-      const phone = container.querySelector('input[type="tel"]') as HTMLInputElement;
-      userEvent.type(phone, '+919978776554');
-
-      const password = container.querySelector('input[type="password"]') as HTMLInputElement;
-      userEvent.type(password, 'pass123456');
-    });
+    const password = container.querySelector('input[type="password"]') as HTMLInputElement;
+    await user.type(password, 'pass123456');
 
     // click on continue
     await waitFor(() => {
-      const continueButton = screen.getByText('Register with');
+      expect(screen.getByText('Register with')).toBeInTheDocument();
       // userEvent.click(continueButton);
     });
 

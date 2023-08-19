@@ -50,9 +50,9 @@ const setPayload = (payload: any, roles: any) => {
     days: [],
     hours: [],
     groupId: groupId.id,
-    startDate: moment(startAt).utc().format('yyyy-MM-DD'),
-    endDate: moment(endDate).utc().format('yyyy-MM-DD'),
-    startTime: moment(startAt).utc().format('THH:mm:ss'),
+    startDate: moment(startAt).format('yyyy-MM-DD'),
+    endDate: moment(endDate).format('yyyy-MM-DD'),
+    startTime: moment(startAt).format('THH:mm:ss'),
     frequency: frequency.value,
     roles: payload.roles,
   };
