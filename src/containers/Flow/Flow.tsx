@@ -160,7 +160,7 @@ export const Flow = () => {
       title: t('Ignore Keywords'),
       info: {
         title: t(
-          'If activated, users will not be able to change this flow by entering keyword for any other flow.',
+          'If activated, users will not be able to change this flow by entering keyword for any other flow.'
         ),
       },
       darkCheckbox: true,

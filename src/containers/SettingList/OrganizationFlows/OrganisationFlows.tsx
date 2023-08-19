@@ -182,7 +182,7 @@ export const OrganisationFlows = () => {
     startTime: Yup.string().test(
       'is-valid',
       t('Not a valid time'),
-      (value) => value !== 'Invalid date',
+      (value) => value !== 'Invalid date'
     ),
     newcontactFlowId: Yup.object()
       .nullable()
@@ -220,7 +220,7 @@ export const OrganisationFlows = () => {
       },
       disabled: isDisabled,
       helperText: t(
-        'The selected flow will trigger when end-users aren’t in any flow, their message doesn’t match any keyword, and the time of their message is as defined below.',
+        'The selected flow will trigger when end-users aren’t in any flow, their message doesn’t match any keyword, and the time of their message is as defined below.'
       ),
       validate: validateOutOfOfficeFlow,
     },

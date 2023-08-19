@@ -38,7 +38,7 @@ export const conversationMessageQuery = (
   contactName: string,
   contactNumber: string,
   contactLimit: number = DEFAULT_CONTACT_LIMIT,
-  messageLimit: object = { limit: DEFAULT_MESSAGE_LIMIT },
+  messageLimit: object = { limit: DEFAULT_MESSAGE_LIMIT }
 ) => ({
   request: {
     query: SEARCH_QUERY,
@@ -115,7 +115,7 @@ export const conversationCollectionQuery = (
   collectionName: string,
   filter: object = { searchGroup: true },
   contactLimit: number = DEFAULT_CONTACT_LIMIT,
-  messageLimit: object = { limit: DEFAULT_MESSAGE_LIMIT },
+  messageLimit: object = { limit: DEFAULT_MESSAGE_LIMIT }
 ) => ({
   request: {
     query: SEARCH_QUERY,
@@ -572,7 +572,7 @@ export const conversationQuery = getConversationQuery({
 export const searchMultiQuery = (
   term: string = '',
   contactLimit: number = DEFAULT_CONTACT_LIMIT,
-  messageLimit: number = DEFAULT_MESSAGE_LIMIT,
+  messageLimit: number = DEFAULT_MESSAGE_LIMIT
 ) => {
   return {
     request: {

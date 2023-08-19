@@ -86,7 +86,7 @@ test('it renders empty interactive form', async () => {
       <MemoryRouter>
         <InteractiveMessage />
       </MemoryRouter>
-    </MockedProvider>,
+    </MockedProvider>
   );
 
   // Adding another quick reply button

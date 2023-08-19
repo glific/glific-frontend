@@ -24,7 +24,7 @@ describe('<ChatSubscription />', () => {
     render(
       <MockedProvider mocks={mocks} addTypename={false}>
         <ChatSubscription {...ChatSubscriptionParams} />
-      </MockedProvider>,
+      </MockedProvider>
     );
 
     // there is nothing to assert here just waiting for all the mock calls working
@@ -173,7 +173,7 @@ describe('<ChatSubscription />', () => {
         <MockedProvider mocks={mocks} addTypename={false}>
           <ChatSubscription {...ChatSubscriptionParams} />
         </MockedProvider>
-      </ApolloProvider>,
+      </ApolloProvider>
     );
 
     // there is nothing to assert here just waiting for all the mock calls working

@@ -134,7 +134,7 @@ describe('Menu test', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText('Are you sure you want to clear all conversation for this contact?'),
+        screen.getByText('Are you sure you want to clear all conversation for this contact?')
       ).toBeInTheDocument();
       // click on cancel
       fireEvent.click(screen.getByTestId('ok-button'));
@@ -146,7 +146,7 @@ describe('Menu test', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText('Are you sure you want to clear all conversation for this contact?'),
+        screen.getByText('Are you sure you want to clear all conversation for this contact?')
       ).toBeInTheDocument();
     });
     // click on cancel

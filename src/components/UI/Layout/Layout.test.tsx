@@ -15,7 +15,7 @@ describe('layout testing', () => {
         <MemoryRouter>
           <Layout>Default layout</Layout>
         </MemoryRouter>
-      </MockedProvider>,
+      </MockedProvider>
     );
 
     await waitFor(() => {
@@ -30,7 +30,7 @@ describe('layout testing', () => {
         <MemoryRouter>
           <Layout>Default layout</Layout>
         </MemoryRouter>
-      </MockedProvider>,
+      </MockedProvider>
     );
     fireEvent.click(getByTestId('menu-icon'));
   });

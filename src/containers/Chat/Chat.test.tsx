@@ -27,7 +27,7 @@ describe('<Chat />', () => {
         <MockedProvider mocks={mocks} addTypename={false}>
           <Chat />
         </MockedProvider>
-      </MemoryRouter>,
+      </MemoryRouter>
     );
 
     // there is nothing to assert here just waiting for all the mock calls working

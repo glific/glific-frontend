@@ -110,7 +110,7 @@ export const AddVariables = ({
     Object.keys(variable).forEach((element: string, index: number) => {
       body = body.replace(
         `{{${index + 1}}}`,
-        variable[element].key ? variable[element].key : variable[element],
+        variable[element].key ? variable[element].key : variable[element]
       );
     });
     updateEditorState(body);

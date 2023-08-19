@@ -23,7 +23,7 @@ describe('SpeedSend', () => {
             <Route path="/speed-send" element={<SpeedSendList />} />
           </Routes>
         </MemoryRouter>
-      </MockedProvider>,
+      </MockedProvider>
     );
 
     await waitFor(() => {
@@ -46,7 +46,7 @@ describe('SpeedSend', () => {
             <Route path="/speed-send" element={<SpeedSendList />} />
           </Routes>
         </MemoryRouter>
-      </MockedProvider>,
+      </MockedProvider>
     );
 
     await waitFor(() => {

@@ -43,7 +43,7 @@ test('it renders component in edit mode', async () => {
       <Router>
         <OrganisationFlows />
       </Router>
-    </MockedProvider>,
+    </MockedProvider>
   );
   // loading is show initially
   expect(getByText('Loading...')).toBeInTheDocument();

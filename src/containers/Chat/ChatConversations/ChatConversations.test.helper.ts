@@ -72,7 +72,7 @@ const searchQuery = (
   messageLimit: object,
   contactLimit: number,
   filter: any,
-  showResult: boolean = true,
+  showResult: boolean = true
 ) => {
   return {
     request: {
@@ -95,7 +95,7 @@ export const chatConversationsMocks = [
     { limit: DEFAULT_CONTACT_LIMIT },
     DEFAULT_MESSAGE_LIMIT,
     { includeTags: ['12'] },
-    false,
+    false
   ),
   searchQuery({ limit: DEFAULT_MESSAGE_LIMIT }, 1, {}, false),
   searchQuery({ limit: DEFAULT_MESSAGE_LIMIT, offset: 0 }, 1, { id: '6' }, false),
@@ -104,7 +104,7 @@ export const chatConversationsMocks = [
 export const searchMultiQuery = (
   term: string = '',
   contactLimit: number = DEFAULT_CONTACT_LIMIT,
-  messageLimit: number = DEFAULT_MESSAGE_LIMIT,
+  messageLimit: number = DEFAULT_MESSAGE_LIMIT
 ) => {
   return {
     request: {
@@ -281,10 +281,10 @@ export const ChatConversationMocks = [
 export const searchQueryMock = searchQuery(
   { limit: DEFAULT_CONTACT_LIMIT },
   DEFAULT_MESSAGE_LIMIT,
-  { term: '' },
+  { term: '' }
 );
 export const searchQueryEmptyMock = searchQuery(
   { limit: DEFAULT_CONTACT_LIMIT },
   DEFAULT_MESSAGE_LIMIT,
-  {},
+  {}
 );

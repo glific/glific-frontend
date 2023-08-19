@@ -35,7 +35,7 @@ describe('<AuthenticatedRoute />', () => {
             <AuthenticatedRoute />
           </Suspense>
         </BrowserRouter>
-      </MockedProvider>,
+      </MockedProvider>
     );
 
     await waitFor(() => {

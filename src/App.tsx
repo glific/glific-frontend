@@ -31,7 +31,7 @@ const App = () => {
         setDrawerOpen(value);
       },
     }),
-    [drawerOpen],
+    [drawerOpen]
   );
 
   const values = useMemo(
@@ -41,7 +41,7 @@ const App = () => {
         setAuthenticated(value);
       },
     }),
-    [authenticated],
+    [authenticated]
   );
 
   let routes;

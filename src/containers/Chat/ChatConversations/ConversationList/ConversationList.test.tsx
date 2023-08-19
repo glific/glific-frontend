@@ -71,7 +71,7 @@ test('it should render conversation collection list with readMore', async () => 
       <Router>
         <ConversationList {...props} />
       </Router>
-    </ApolloProvider>,
+    </ApolloProvider>
   );
 
   expect(container).toBeInTheDocument();
@@ -112,7 +112,7 @@ test('it should render conversation collection list with searched value', async 
       <Router>
         <ConversationList {...props} />
       </Router>
-    </MockedProvider>,
+    </MockedProvider>
   );
 
   await waitFor(() => {
@@ -139,7 +139,7 @@ test('It render contact collection with multi-search', async () => {
       <Router>
         <ConversationList {...contactProps} />
       </Router>
-    </MockedProvider>,
+    </MockedProvider>
   );
 
   await waitFor(() => {
@@ -160,7 +160,7 @@ test('It render contact collection with no result', async () => {
       <Router>
         <ConversationList {...contactProps} />
       </Router>
-    </MockedProvider>,
+    </MockedProvider>
   );
 
   await waitFor(() => {

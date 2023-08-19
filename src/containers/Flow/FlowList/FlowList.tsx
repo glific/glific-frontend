@@ -97,9 +97,9 @@ export const FlowList = () => {
       if (!success) {
         setNotification(
           t(
-            'Sorry! An error occurred! This could happen if the flow is already present or error in the import file.',
+            'Sorry! An error occurred! This could happen if the flow is already present or error in the import file.'
           ),
-          'error',
+          'error'
         );
       } else {
         setNotification(t('The flow has been imported successfully.'));

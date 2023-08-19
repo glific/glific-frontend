@@ -79,7 +79,7 @@ export const Consulting = ({ organizationId, setOpenDialog }: ConsultingProps) =
      */
     if (!org) {
       const selectedOrg = organizationList.organizations.find(
-        ({ name }: { name: string }) => name === organizationName,
+        ({ name }: { name: string }) => name === organizationName
       );
       setOrganization(selectedOrg);
     } else setOrganization(org);

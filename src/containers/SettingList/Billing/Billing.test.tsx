@@ -108,7 +108,7 @@ test('creating a subscription with response as pending', async () => {
       <Router>
         <Billing />
       </Router>
-    </MockedProvider>,
+    </MockedProvider>
   );
   // loading is show initially
   expect(getByText('Loading...')).toBeInTheDocument();
@@ -128,7 +128,7 @@ test('subscription status is already in pending state', async () => {
       <Router>
         <Billing />
       </Router>
-    </MockedProvider>,
+    </MockedProvider>
   );
   // loading is show initially
   expect(getByText('Loading...')).toBeInTheDocument();
@@ -161,7 +161,7 @@ test('complete a subscription', async () => {
       <Router>
         <Billing />
       </Router>
-    </MockedProvider>,
+    </MockedProvider>
   );
   // loading is show initially
   expect(getByText('Loading...')).toBeInTheDocument();
@@ -190,7 +190,7 @@ test('open customer portal', async () => {
       <Router>
         <Billing />
       </Router>
-    </MockedProvider>,
+    </MockedProvider>
   );
 
   await waitFor(() => {
@@ -215,7 +215,7 @@ test('update billing details', async () => {
       <Router>
         <Billing />
       </Router>
-    </MockedProvider>,
+    </MockedProvider>
   );
   // loading is show initially
 
@@ -251,7 +251,7 @@ test('update billing details with coupon code', async () => {
       <Router>
         <Billing />
       </Router>
-    </MockedProvider>,
+    </MockedProvider>
   );
   // loading is show initially
   expect(getByText('Loading...')).toBeInTheDocument();

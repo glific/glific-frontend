@@ -14,7 +14,7 @@ const searchQueryWthLabelsMock = conversationMessageQuery(
   1,
   {
     limit: 1,
-  },
+  }
 );
 
 const SavedSearch = (

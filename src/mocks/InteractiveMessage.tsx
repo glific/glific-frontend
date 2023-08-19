@@ -101,7 +101,7 @@ export const filterInteractiveQuery = filterInteractiveFunction(
     offset: 0,
     order: 'ASC',
     orderWith: 'label',
-  },
+  }
 );
 
 export const searchInteractive = filterInteractiveFunction({ label: '' }, {});

@@ -33,7 +33,7 @@ export const ExportConsulting = ({ setFilters }: ExportConsultingPropTypes) => {
     onCompleted: ({ fetchConsultingHours }) => {
       downloadFile(
         `data:attachment/csv,${encodeURIComponent(fetchConsultingHours)}`,
-        'consulting-hours.csv',
+        'consulting-hours.csv'
       );
     },
   });
@@ -70,7 +70,7 @@ export const ExportConsulting = ({ setFilters }: ExportConsultingPropTypes) => {
     organization: Yup.object().test(
       'organization',
       'Organization is required',
-      (val: any) => val && val.name !== undefined,
+      (val: any) => val && val.name !== undefined
     ),
 
     dateTo: Yup.string().when('dateFrom', ([dateFrom], schema: any) =>
@@ -78,7 +78,7 @@ export const ExportConsulting = ({ setFilters }: ExportConsultingPropTypes) => {
         test: (endDateValue: any) =>
           !(dateFrom !== undefined && !moment(endDateValue).isAfter(dateFrom)),
         message: t('End date should be greater than the start date'),
-      }),
+      })
     ),
   });
 

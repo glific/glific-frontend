@@ -67,9 +67,9 @@ export const validator = (templateType: any, t: any) => {
                 .required(t('Title is required'))
                 .max(24, t('Title can be at most 24 characters')),
               description: Yup.string().max(72, t('Description can be at most 72 characters')),
-            }),
+            })
           ),
-        }),
+        })
       )
       // need to add this since adding a new method in yup does not add its type declarations
       // @ts-ignore
@@ -86,7 +86,7 @@ export const validator = (templateType: any, t: any) => {
           value: Yup.string()
             .required(t('Required'))
             .max(20, t('Button value can be at most 20 characters')),
-        }),
+        })
       )
       .min(1)
       .max(3);
@@ -225,7 +225,7 @@ export const getVariableOptions = async (setContactVariables: any) => {
   });
 
   const properties = contactData.data.context.types.find(
-    ({ name }: { name: string }) => name === 'contact',
+    ({ name }: { name: string }) => name === 'contact'
   );
 
   const contacts =
@@ -252,7 +252,7 @@ export const getPayloadByMediaType = (mediaType: string, payload: any) => {
       result.type = 'file';
       result.url = payload.attachmentURL;
       result.filename = payload.attachmentURL?.substring(
-        payload.attachmentURL.lastIndexOf('/') + 1,
+        payload.attachmentURL.lastIndexOf('/') + 1
       );
       break;
     default:
@@ -273,7 +273,7 @@ export const getTranslation = (
   interactiveType: string,
   attribute: any,
   translations: any,
-  defaultLanguage: any,
+  defaultLanguage: any
 ) => {
   if (defaultLanguage.id) {
     const defaultTemplate = JSON.parse(translations)[defaultLanguage.id];

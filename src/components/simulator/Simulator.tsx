@@ -72,7 +72,7 @@ export interface SimulatorProps {
 const getStyleForDirection = (
   directionValue: string,
   isInteractiveValue: boolean,
-  messageTypeValue: any,
+  messageTypeValue: any
 ): string => {
   switch (directionValue) {
     case 'received':
@@ -190,7 +190,7 @@ export const Simulator = ({
         // add log's
         setLogs(
           `sendMessageText:${sendMessageText} GUPSHUP_CALLBACK_URL:${GUPSHUP_CALLBACK_URL}`,
-          'info',
+          'info'
         );
         setLogs(error, 'error');
       });
@@ -283,7 +283,7 @@ export const Simulator = ({
     messageObject: any,
     direction: string,
     index: number,
-    isInteractive: boolean = false,
+    isInteractive: boolean = false
   ) => {
     const { insertedAt, type, media, location, interactiveContent, bspMessageId, templateType } =
       messageObject;
@@ -440,7 +440,7 @@ export const Simulator = ({
         }, 100);
       }
     },
-    [messages],
+    [messages]
   );
 
   const handleAttachmentClick = (media: any) => {
@@ -604,7 +604,7 @@ export const Simulator = ({
         } else {
           setNotification(
             'Sorry! Simulators are in use by other staff members right now. Please wait for it to be idle',
-            'warning',
+            'warning'
           );
         }
       })

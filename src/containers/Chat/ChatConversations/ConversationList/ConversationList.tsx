@@ -198,7 +198,7 @@ export const ConversationList = ({
         }
         setShowLoading(false);
       },
-    },
+    }
   );
 
   useEffect(() => {
@@ -304,7 +304,7 @@ export const ConversationList = ({
         </div>
       );
       conversationsData = conversations[dataArray].map((conversation: any, index: number) =>
-        buildChatConversation(index, header, conversation),
+        buildChatConversation(index, header, conversation)
       );
       // Check if its not empty
       if (conversationsData.length > 0) {

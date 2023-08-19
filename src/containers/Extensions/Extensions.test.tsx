@@ -67,7 +67,7 @@ test('it should render filled form with extension details', async () => {
   render(
     <MockedProvider mocks={updateMocks} addTypename={false}>
       <Extensions {...props} />
-    </MockedProvider>,
+    </MockedProvider>
   );
   await waitFor(() => {});
 

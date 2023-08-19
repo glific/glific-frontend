@@ -30,7 +30,7 @@ const setLogs = (message: any, type: string) => {
           },
         },
       },
-      stream,
+      stream
     );
 
     let logMessage = message;

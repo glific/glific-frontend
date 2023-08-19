@@ -124,7 +124,7 @@ describe('<AutoComplete />', () => {
   it('should have a help link button if the props are passed', () => {
     const handleClickMock = vi.fn();
     render(
-      <AutoComplete {...getProps({ helpLink: { handleClick: handleClickMock, label: 'Help' } })} />,
+      <AutoComplete {...getProps({ helpLink: { handleClick: handleClickMock, label: 'Help' } })} />
     );
     const helpButton = screen.getByTestId('helpButton');
     fireEvent.keyDown(helpButton, { key: 'Enter' });

@@ -50,7 +50,7 @@ test('it renders speed-send list component', async () => {
       <MockedProvider mocks={TEMPLATE_MOCKS} addTypename={false}>
         <Template {...speedSendProps} />
       </MockedProvider>
-    </Router>,
+    </Router>
   );
 
   await waitFor(() => {
@@ -137,7 +137,7 @@ describe('HSM templates', () => {
 
     await waitFor(() => {
       expect(notificationFunc).toHaveBeenCalledWith(
-        'Templates applied successfully. Please check the csv file for the results',
+        'Templates applied successfully. Please check the csv file for the results'
       );
     });
   });

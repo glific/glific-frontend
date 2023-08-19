@@ -77,7 +77,7 @@ const createRows = (
   data: any,
   columnStyles: any,
   collapseRow?: string,
-  collapseOpen: boolean = false,
+  collapseOpen: boolean = false
 ) => {
   const createRow = (entry: any) => {
     let stylesIndex = -1;
@@ -120,7 +120,7 @@ const tableHeadColumns = (
   columnNames: Array<any>,
   columnStyles: any,
   tableVals: any,
-  handleTableChange: Function,
+  handleTableChange: Function
 ) => {
   const headerRow = (
     <TableRow className={styles.TableHeadRow}>
@@ -140,7 +140,7 @@ const tableHeadColumns = (
                   handleTableChange('sortCol', field.name);
                   handleTableChange(
                     'sortDirection',
-                    tableVals.sortDirection === 'asc' ? 'desc' : 'asc',
+                    tableVals.sortDirection === 'asc' ? 'desc' : 'asc'
                   );
                 }
               }}
@@ -162,7 +162,7 @@ const pagination = (
   columnNames: Array<any>,
   totalRows: number,
   handleTableChange: Function,
-  tableVals: any,
+  tableVals: any
 ) => (
   <TablePagination
     component="div"
