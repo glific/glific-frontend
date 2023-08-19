@@ -3,7 +3,6 @@ import { MockedProvider } from '@apollo/client/testing';
 
 import { setUserSession } from 'services/AuthService';
 import { Ticket } from './Ticket';
-import userEvent from '@testing-library/user-event';
 import { getTicketQuery } from 'mocks/Ticket';
 import { getUsersQuery } from 'mocks/User';
 import { getRoleNamesMock } from 'containers/StaffManagement/StaffManagement.test.helper';
@@ -16,7 +15,6 @@ setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
 const mocks = [getTicketQuery, getUsersQuery, getRoleNamesMock, getOrganizationLanguagesQuery];
 
 test('Render component correctly with the values', async () => {
-  const user = userEvent.setup();
   const setOpenDialogMock = vi.fn();
   render(
     <MockedProvider mocks={mocks}>

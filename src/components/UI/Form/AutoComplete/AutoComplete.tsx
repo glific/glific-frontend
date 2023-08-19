@@ -14,7 +14,7 @@ import { ReactComponent as DeleteIcon } from 'assets/images/icons/Close.svg';
 import styles from './AutoComplete.module.css';
 
 export interface AutocompleteProps {
-  options: any;
+  options: Array<any>;
   optionLabel: string;
   additionalOptionLabel?: string;
   field: any;
@@ -50,7 +50,7 @@ export interface AutocompleteProps {
 }
 
 export const AutoComplete = ({
-  options,
+  options = [],
   optionLabel,
   additionalOptionLabel,
   field,
@@ -183,6 +183,8 @@ export const AutoComplete = ({
 
   const getOptionDisabled = (option: any) => selectedOptionsIds.includes(option.id);
 
+  const renderedOption = options.length > 0 ? options : [getValue];
+
   return (
     <div className={styles.Input}>
       <FormControl fullWidth error={hasError}>
@@ -192,7 +194,7 @@ export const AutoComplete = ({
           className={isFilterType ? styles.FilterHeight : ''}
           multiple={multiple}
           data-testid="autocomplete-element"
-          options={hasCreateOption ? [...options, createOption] : options}
+          options={hasCreateOption ? [...renderedOption, createOption] : renderedOption}
           freeSolo={freeSolo}
           autoSelect={autoSelect}
           disableClearable={disableClearable}

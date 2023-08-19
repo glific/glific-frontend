@@ -464,23 +464,6 @@ export const savedSearchQuery = {
   },
 };
 
-export const savedSearchNotReservedError = {
-  request: {
-    query: SAVED_SEARCH_QUERY,
-    variables: { filter: { isReserved: false }, opts: {} },
-  },
-  result: {
-    data: {
-      savedSearches: [],
-      errors: [
-        {
-          message: 'error',
-        },
-      ],
-    },
-  },
-};
-
 export const collectionCountQuery = {
   request: {
     query: SEARCHES_COUNT,

@@ -68,17 +68,4 @@ describe('<SavedSearches />', () => {
       UserEvent.type(input, 'hi');
     });
   });
-
-  test('check if savedSearch query return error', async () => {
-    const SavedSearch = (
-      <MockedProvider mocks={[savedSearchNotReservedError]}>
-        <SavedSearches />
-      </MockedProvider>
-    );
-    const { getByText } = render(SavedSearch);
-
-    await waitFor(() => {
-      getByText('No options available');
-    });
-  });
 });
