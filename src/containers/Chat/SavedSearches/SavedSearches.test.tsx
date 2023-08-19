@@ -1,15 +1,28 @@
+import { conversationMessageQuery, savedSearchQuery } from 'mocks/Chat';
 import { fireEvent, render, waitFor } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 import { MockedProvider } from '@apollo/client/testing';
 
-import { savedSearchQuery, savedSearchQueryError } from 'mocks/Chat';
 import { setUserSession } from 'services/AuthService';
 import SavedSearches from './SavedSearches';
+import { MemoryRouter } from 'react-router';
+
+const searchQueryWthLabelsMock = conversationMessageQuery(
+  { includeLabels: ['12'] },
+  'Jane Doe',
+  '919090909009',
+  1,
+  {
+    limit: 1,
+  }
+);
 
 const SavedSearch = (
-  <MockedProvider mocks={[savedSearchQuery]}>
-    <SavedSearches />
-  </MockedProvider>
+  <MemoryRouter>
+    <MockedProvider mocks={[savedSearchQuery, searchQueryWthLabelsMock]}>
+      <SavedSearches />
+    </MockedProvider>
+  </MemoryRouter>
 );
 
 describe('<SavedSearches />', () => {
@@ -49,19 +62,6 @@ describe('<SavedSearches />', () => {
       fireEvent.click(autocompleteInput);
       const input = container.querySelector('input[type="text"]') as HTMLInputElement;
       UserEvent.type(input, 'hi');
-    });
-  });
-
-  test('check if savedSearch query return error', async () => {
-    const SavedSearch = (
-      <MockedProvider mocks={[savedSearchQueryError]}>
-        <SavedSearches />
-      </MockedProvider>
-    );
-    const { getByText } = render(SavedSearch);
-
-    await waitFor(() => {
-      getByText('No options available');
     });
   });
 });

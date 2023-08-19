@@ -13,7 +13,7 @@ import { EmojiInput } from 'components/UI/Form/EmojiInput/EmojiInput';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { LanguageBar } from 'components/UI/LanguageBar/LanguageBar';
-import { GET_TEMPLATE, FILTER_TEMPLATES } from 'graphql/queries/Template';
+import { GET_TEMPLATE } from 'graphql/queries/Template';
 import { CREATE_MEDIA_MESSAGE } from 'graphql/mutations/Chat';
 import { USER_LANGUAGES } from 'graphql/queries/Organization';
 import { GET_TAGS } from 'graphql/queries/Tags';
@@ -131,7 +131,6 @@ export interface TemplateProps {
   icon: any;
   defaultAttribute?: any;
   formField?: any;
-  getSessionTemplatesCallBack?: any;
   customStyle?: any;
   getUrlAttachmentAndType?: any;
   getShortcode?: any;
@@ -158,7 +157,6 @@ const Template = ({
   icon,
   defaultAttribute = { isHsm: false },
   formField,
-  getSessionTemplatesCallBack,
   customStyle,
   getUrlAttachmentAndType,
   getShortcode,
@@ -178,9 +176,8 @@ const Template = ({
   const [label, setLabel] = useState('');
   const [body, setBody] = useState(EditorState.createEmpty());
   const [example, setExample] = useState(EditorState.createEmpty());
-  const [filterLabel, setFilterLabel] = useState('');
   const [shortcode, setShortcode] = useState('');
-  const [language, setLanguageId] = useState<any>({});
+  const [language, setLanguageId] = useState<any>(null);
   const [type, setType] = useState<any>(null);
   const [translations, setTranslations] = useState<any>();
   const [attachmentURL, setAttachmentURL] = useState<any>();
@@ -243,7 +240,7 @@ const Template = ({
         );
         navigate(location.pathname);
         setLanguageId(selectedLangauge);
-      } else if (!language.id) {
+      } else if (!language?.id) {
         const selectedLangauge = languageOptions.find(
           (lang: any) => lang.id === languageIdValue.id
         );
@@ -286,11 +283,11 @@ const Template = ({
     if (typeValue && typeValue !== 'TEXT') {
       setType({ id: typeValue, label: typeValue });
     } else {
-      setType('');
+      setType(null);
     }
     if (translationsValue) {
       const translationsCopy = JSON.parse(translationsValue);
-      const currentLanguage = language.id || languageIdValue.id;
+      const currentLanguage = language?.id || languageIdValue.id;
       if (
         Object.keys(translationsCopy).length > 0 &&
         translationsCopy[currentLanguage] &&
@@ -338,7 +335,7 @@ const Template = ({
     if (typeValue && typeValue !== 'TEXT') {
       setType({ id: typeValue, label: typeValue });
     } else {
-      setType('');
+      setType(null);
     }
 
     if (MessageMediaValue) {
@@ -350,17 +347,6 @@ const Template = ({
 
   const { data: languages } = useQuery(USER_LANGUAGES, {
     variables: { opts: { order: 'ASC' } },
-  });
-
-  const [getSessionTemplates, { data: sessionTemplates }] = useLazyQuery<any>(FILTER_TEMPLATES, {
-    variables: {
-      filter: { languageId: language ? parseInt(language.id, 10) : null },
-      opts: {
-        order: 'ASC',
-        limit: null,
-        offset: 0,
-      },
-    },
   });
 
   const [getSessionTemplate, { data: template, loading: templateLoading }] =
@@ -387,12 +373,6 @@ const Template = ({
   }, [languages]);
 
   useEffect(() => {
-    if (filterLabel && language && language.id) {
-      getSessionTemplates();
-    }
-  }, [filterLabel, language, getSessionTemplates]);
-
-  useEffect(() => {
     setShortcode(getShortcode);
   }, [getShortcode]);
 
@@ -401,28 +381,6 @@ const Template = ({
       setExample(getExample);
     }
   }, [getExample]);
-
-  const validateTitle = (value: any) => {
-    let error;
-    if (value) {
-      setFilterLabel(value);
-      let found = [];
-      if (sessionTemplates) {
-        if (getSessionTemplatesCallBack) {
-          getSessionTemplatesCallBack(sessionTemplates);
-        }
-        // need to check exact title
-        found = sessionTemplates.sessionTemplates.filter((search: any) => search.label === value);
-        if (params.id && found.length > 0) {
-          found = found.filter((search: any) => search.id !== params.id);
-        }
-      }
-      if (found.length > 0) {
-        error = t('Title already exists.');
-      }
-    }
-    return error;
-  };
 
   const updateTranslation = (value: any) => {
     const translationId = value.id;
@@ -548,7 +506,7 @@ const Template = ({
       disabled: !!(defaultAttribute.isHsm && params.id),
       helperText: warning,
       onChange: (event: any) => {
-        const val = event || '';
+        const val = event;
         if (!event) {
           setIsUrlValid(val);
         }
@@ -613,9 +571,8 @@ const Template = ({
     {
       component: Input,
       name: 'label',
+      placeholder: `${t('Title')}*`,
       label: `${t('Title')}*`,
-      placeholder: `${t('Title')}`,
-      validate: validateTitle,
       disabled: !!(defaultAttribute.isHsm && params.id),
       helperText: defaultAttribute.isHsm
         ? t('Define what use case does this template serve eg. OTP, optin, activity preference')

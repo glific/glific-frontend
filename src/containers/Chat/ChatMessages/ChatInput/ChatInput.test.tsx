@@ -9,11 +9,13 @@ import {
   getAttachmentPermissionMock,
   uploadBlobMock,
 } from 'mocks/Attachment';
-import { searchInteractive } from 'mocks/InteractiveMessage';
+import { searchInteractive, searchInteractiveHi } from 'mocks/InteractiveMessage';
 import '../VoiceRecorder/VoiceRecorder';
 
 const mocks = [
   searchInteractive,
+  searchInteractive,
+  searchInteractiveHi,
   ...TEMPLATE_MOCKS,
   getAttachmentPermissionMock,
   uploadBlobMock,

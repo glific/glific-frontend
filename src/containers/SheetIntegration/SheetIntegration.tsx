@@ -39,7 +39,7 @@ export const SheetIntegration = () => {
   const [label, setLabel] = useState('');
   const [url, setUrl] = useState('');
   const [autoSync, setAutoSync] = useState(false);
-  const [type, setType] = useState<any>({ id: '', label: '' });
+  const [type, setType] = useState<any>(typeOptions[0]);
   const { t } = useTranslation();
   const states = { label, url, type, autoSync };
   const setStates = ({
@@ -101,7 +101,7 @@ export const SheetIntegration = () => {
   const setPayload = (data: any) => {
     return {
       ...data,
-      type: data.type.id,
+      type: data.type?.id,
     };
   };
 

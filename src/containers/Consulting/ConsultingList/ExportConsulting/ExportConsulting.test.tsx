@@ -5,8 +5,9 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { setUserSession } from 'services/AuthService';
 import { ExportConsulting } from './ExportConsulting';
 import { getAllOrganizations } from 'mocks/Organization';
+import { getOrganizationList } from 'mocks/Consulting';
 
-const mocks = getAllOrganizations;
+const mocks = [...getAllOrganizations, getOrganizationList];
 setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
 
 const setFiltersMock = vi.fn();

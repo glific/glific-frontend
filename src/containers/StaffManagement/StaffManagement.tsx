@@ -35,8 +35,8 @@ export const StaffManagement = () => {
   const hasDynamicRoles = organizationHasDynamicRole();
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
-  const [roles, setRoles] = useState<any>([]);
-  const [groups, setGroups] = useState(null);
+  const [roles, setRoles] = useState<any>(undefined);
+  const [groups, setGroups] = useState(undefined);
   const [isRestricted, setIsRestricted] = useState(false);
   const [staffRole, setStaffRole] = useState(false);
   const [helpDialog, setHelpDialog] = useState(false);
@@ -138,7 +138,7 @@ export const StaffManagement = () => {
     return null;
   }
 
-  const rolesList: any = [];
+  let rolesList: any = [];
   roleData.accessRoles.forEach((role: any) => {
     if (hasDynamicRoles) {
       rolesList.push({ id: role.id, label: role.label });
@@ -147,21 +147,17 @@ export const StaffManagement = () => {
     }
   });
 
-  const getOptions = () => {
-    let options: any = [];
-    if (rolesList.length > 0) {
-      if (isManager) {
-        // should not display Admin role to manager.
-        options = rolesList.filter(
-          (item: any) => item.label !== 'Admin' && item.label !== 'Glific admin'
-        );
-      }
-      if (isAdmin) {
-        options = rolesList.filter((item: any) => item.label !== 'Glific admin');
-      }
+  if (rolesList.length > 0) {
+    if (isManager) {
+      // should not display Admin role to manager.
+      rolesList = rolesList.filter(
+        (item: any) => item.label !== 'Admin' && item.label !== 'Glific admin'
+      );
     }
-    return options;
-  };
+    if (isAdmin) {
+      rolesList = rolesList.filter((item: any) => item.label !== 'Glific admin');
+    }
+  }
 
   let formFields: any = [];
 
@@ -211,7 +207,6 @@ export const StaffManagement = () => {
       placeholder: t('Roles'),
       options: rolesList,
       onChange: handleRolesChange,
-      getOptions,
       multiple: hasDynamicRoles,
       helpLink: { label: 'help?', handleClick: handleHelpClick },
       optionLabel: 'label',

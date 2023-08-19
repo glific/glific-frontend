@@ -18,11 +18,15 @@ import testJSON from 'mocks/ImportFlow.json';
 import { setUserSession } from 'services/AuthService';
 import { FlowList } from './FlowList';
 import { Flow } from '../Flow';
+import { getFilterTagQuery } from 'mocks/Tag';
+import { getRoleNameQuery } from 'mocks/Role';
 
 const mocks = [
   getFlowCountQuery,
   getFlowCountQuery,
   getFlowCountQuery,
+  getFlowCountQuery,
+  filterFlowQuery,
   filterFlowQuery,
   filterFlowQuery,
   filterFlowQuery,
@@ -32,6 +36,8 @@ const mocks = [
   importFlow,
   releaseFlow,
   exportFlow,
+  getFilterTagQuery,
+  getRoleNameQuery,
   ...getOrganizationQuery,
 ];
 
@@ -102,13 +108,12 @@ describe('<FlowList />', () => {
   test('should import flow using json file', async () => {
     render(flowList);
 
-    await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 0)));
-
     await waitFor(() => {
-      const importFlowButton = screen.getByTestId('import-icon');
-      expect(importFlowButton).toBeInTheDocument();
-      fireEvent.click(importFlowButton);
+      expect(screen.getByTestId('import-icon')).toBeInTheDocument();
     });
+
+    const importFlowButton = screen.getByTestId('import-icon');
+    fireEvent.click(importFlowButton);
 
     await waitFor(() => {
       const json = JSON.stringify(testJSON);
@@ -119,13 +124,11 @@ describe('<FlowList />', () => {
       Object.defineProperty(input, 'files', {
         value: [file],
       });
-
-      setTimeout(() => {
-        fireEvent.change(input);
-      }, 100);
     });
 
-    await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 0)));
+    const input = screen.getByTestId('import');
+    fireEvent.change(input);
+
     await waitFor(() => {});
   });
 

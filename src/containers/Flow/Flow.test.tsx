@@ -4,9 +4,11 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { vi } from 'vitest';
 
 import { getOrganizationLanguagesQuery, getOrganizationQuery } from 'mocks/Organization';
-import { getFlowQuery, filterFlowQuery } from 'mocks/Flow';
+import { getFlowQuery, filterFlowQuery, updateFlowQuery, copyFlowQuery } from 'mocks/Flow';
 import { Flow } from './Flow';
 import { setOrganizationServices } from 'services/AuthService';
+import { getFilterTagQuery } from 'mocks/Tag';
+import { getRoleNameQuery } from 'mocks/Role';
 
 setOrganizationServices('{"__typename":"OrganizationServicesResult","rolesAndPermission":true}');
 
@@ -14,7 +16,11 @@ const mocks = [
   ...getOrganizationQuery,
   getFlowQuery,
   filterFlowQuery,
+  getFilterTagQuery,
+  getRoleNameQuery,
   getOrganizationLanguagesQuery,
+  updateFlowQuery,
+  copyFlowQuery,
 ];
 
 const mockUseLocationValue: any = {

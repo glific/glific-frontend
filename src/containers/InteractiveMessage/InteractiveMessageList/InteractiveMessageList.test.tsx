@@ -5,8 +5,14 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { filterInteractiveQuery, getInteractiveCountQuery } from 'mocks/InteractiveMessage';
 import { setUserSession } from 'services/AuthService';
 import InteractiveMessageList from './InteractiveMessageList';
+import { getFilterTagQuery } from 'mocks/Tag';
 
-const mocks = [filterInteractiveQuery, filterInteractiveQuery, getInteractiveCountQuery];
+const mocks = [
+  filterInteractiveQuery,
+  filterInteractiveQuery,
+  getInteractiveCountQuery,
+  getFilterTagQuery,
+];
 setUserSession(JSON.stringify({ roles: ['Admin'] }));
 
 const list = (

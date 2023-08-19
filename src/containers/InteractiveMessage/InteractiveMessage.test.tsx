@@ -24,6 +24,7 @@ vi.mock('react-router-dom', async () => ({
   useLocation: () => {
     return mockUseLocationValue;
   },
+  Navigate: ({ to }: any) => <div>Navigated to {to}</div>,
 }));
 
 const mockData = [...mocks, ...mocks];
@@ -94,34 +95,35 @@ test('it renders empty interactive form', async () => {
 
   // Adding another quick reply button
   await waitFor(() => {
-    const addQuickReplyButton = screen.getByTestId('addButton');
-    expect(addQuickReplyButton).toBeInTheDocument();
-    fireEvent.click(addQuickReplyButton);
+    expect(screen.getByText('Add quick reply')).toBeInTheDocument();
   });
+
+  const addQuickReplyButton = screen.getByText('Add quick reply');
+  fireEvent.click(addQuickReplyButton);
 
   await waitFor(() => {
-    // Get all input elements
-    const [title, quickReply1, quickReply2, , attachmentUrl] = screen.getAllByRole('textbox');
-    expect(title).toBeInTheDocument();
-    expect(quickReply1).toBeInTheDocument();
-    expect(quickReply2).toBeInTheDocument();
-    expect(attachmentUrl).toBeInTheDocument();
-
-    fireEvent.change(title, { target: { value: 'new title' } });
-    fireEvent.blur(title);
-    fireEvent.change(quickReply1, { target: { value: 'Yes' } });
-    fireEvent.change(quickReply2, { target: { value: 'No' } });
-    fireEvent.change(attachmentUrl, { target: { value: 'https://picsum.photos/200/300' } });
-    fireEvent.blur(attachmentUrl);
+    expect(screen.getAllByRole('textbox')).toHaveLength(6);
   });
+
+  const [title, quickReply1, quickReply2, , attachmentUrl] = screen.getAllByRole('textbox');
+  expect(title).toBeInTheDocument();
+  expect(quickReply1).toBeInTheDocument();
+  expect(quickReply2).toBeInTheDocument();
+  expect(attachmentUrl).toBeInTheDocument();
+  fireEvent.change(title, { target: { value: 'new title' } });
+  fireEvent.blur(title);
+  fireEvent.change(quickReply1, { target: { value: 'Yes' } });
+  fireEvent.change(quickReply2, { target: { value: 'No' } });
+  fireEvent.change(attachmentUrl, { target: { value: 'https://picsum.photos/200/300' } });
+  fireEvent.blur(attachmentUrl);
 
   // Changing language to marathi
   await waitFor(() => {
-    const language = screen.getByText('Marathi');
-    expect(language).toBeInTheDocument();
-
-    fireEvent.click(language);
+    expect(screen.getByText('Marathi')).toBeInTheDocument();
   });
+
+  const language = screen.getByText('Marathi');
+  fireEvent.click(language);
 
   await waitFor(() => {
     const [attachmentType] = screen.getAllByTestId('autocomplete-element');
@@ -138,8 +140,9 @@ test('it renders empty interactive form', async () => {
   await waitFor(() => {
     expect(quickReplyRadio).toBeInTheDocument();
     expect(listRadio).toBeInTheDocument();
-    fireEvent.click(listRadio);
   });
+
+  fireEvent.click(listRadio);
 
   await waitFor(() => {
     // Adding list data
@@ -205,24 +208,29 @@ test('it renders empty interactive form', async () => {
 test('it renders interactive quick reply in edit mode', async () => {
   render(renderInteractiveMessage('1'));
 
-  // vi.spyOn(axios, 'get').mockResolvedValueOnce(responseMock1);
-
   await waitFor(() => {
     // Changing language to marathi to see translations
-    const marathi = screen.getByText('Marathi');
-    fireEvent.click(marathi);
+    expect(screen.getByText('Marathi')).toBeInTheDocument();
   });
 
-  await waitFor(() => {
-    // Changing back to English
-    const english = screen.getByText('English');
-    fireEvent.click(english);
-  });
+  const marathi = screen.getByText('Marathi');
+  fireEvent.click(marathi);
 
   await waitFor(() => {
-    const saveButton = screen.getByText('Save');
-    expect(saveButton).toBeInTheDocument();
-    fireEvent.click(saveButton);
+    expect(screen.getByText('English')).toBeInTheDocument();
+  });
+  // Changing back to English
+  const english = screen.getByText('English');
+  fireEvent.click(english);
+
+  await waitFor(() => {
+    expect(screen.getByText('Save')).toBeInTheDocument();
+  });
+  const saveButton = screen.getByText('Save');
+  fireEvent.click(saveButton);
+
+  await waitFor(() => {
+    expect(screen.getByText('Navigated to /interactive-message')).toBeInTheDocument();
   });
 });
 

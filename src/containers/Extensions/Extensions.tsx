@@ -28,6 +28,7 @@ export const Extensions = ({ openDialog }: ExtensionProps) => {
   const [code, setCode] = useState('');
   const [isActive, setIsActive] = useState(false);
   const { t } = useTranslation();
+
   const params = useParams();
 
   const states = { name, code, isActive };

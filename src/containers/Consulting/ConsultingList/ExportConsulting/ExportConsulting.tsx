@@ -67,7 +67,7 @@ export const ExportConsulting = ({ setFilters }: ExportConsultingPropTypes) => {
     organization: Yup.object().test(
       'organization',
       'Organization is required',
-      (val: any) => val.name !== undefined
+      (val: any) => val && val.name !== undefined
     ),
 
     dateTo: Yup.string().when('dateFrom', ([dateFrom], schema: any) =>
@@ -82,7 +82,7 @@ export const ExportConsulting = ({ setFilters }: ExportConsultingPropTypes) => {
   return (
     <div className={styles.FilterContainer}>
       <Formik
-        initialValues={{ organization: { name: '', id: '' }, dateFrom: '', dateTo: '' }}
+        initialValues={{ organization: undefined, dateFrom: '', dateTo: '' } as any}
         onSubmit={(values) => {
           const organizationFilter: any = { organizationName: values.organization.name };
 

@@ -9,7 +9,7 @@ describe('<Calendar />', () => {
     type: 'date',
     placeholder: 'Date from',
     label: 'Date range',
-    field: { name: 'example', value: 'cs' },
+    field: { name: 'example', value: 'Fri Aug 18 2023 00:00:00 GMT+0530 (India Standard Time)' },
     form: {
       dirty: false,
       touched: {},

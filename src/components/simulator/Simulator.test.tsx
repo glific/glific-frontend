@@ -48,7 +48,7 @@ test('simulator should open on click of simulator icon', async () => {
   const { getByTestId } = render(
     <MockedProvider mocks={mocks}>
       <Simulator {...getDefaultProps()} />
-    </MockedProvider>,
+    </MockedProvider>
   );
   // To open simulator
   const button = getByTestId('simulatorIcon');
@@ -67,7 +67,7 @@ test('opened simulator should close when click of simulator icon', async () => {
   const { getByTestId } = render(
     <MockedProvider mocks={mocks}>
       <Simulator {...props} />
-    </MockedProvider>,
+    </MockedProvider>
   );
 
   // To open simulator
@@ -85,7 +85,7 @@ test('send a message/media from the simulator', async () => {
   const { getByTestId } = render(
     <MockedProvider mocks={mocks}>
       <Simulator {...props} />
-    </MockedProvider>,
+    </MockedProvider>
   );
   mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
 
@@ -120,7 +120,7 @@ test('click on clear icon closes the simulator', async () => {
   const { getByTestId } = render(
     <MockedProvider mocks={mocks}>
       <Simulator {...props} />
-    </MockedProvider>,
+    </MockedProvider>
   );
   await waitFor(() => {
     fireEvent.click(getByTestId('clearIcon'));
@@ -234,7 +234,7 @@ test('simulator should render template message', () => {
   render(
     <ApolloProvider client={client}>
       <Simulator {...HSMProps} />
-    </ApolloProvider>,
+    </ApolloProvider>
   );
 });
 
@@ -253,7 +253,7 @@ test('simulator should reset on clicking the reset button message', () => {
   const { getByTestId } = render(
     <MockedProvider mocks={mocks}>
       <Simulator {...props} />
-    </MockedProvider>,
+    </MockedProvider>
   );
 
   const resetButton = getByTestId('resetIcon');

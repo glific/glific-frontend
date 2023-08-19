@@ -3,6 +3,7 @@ import { UPDATE_CONTACT_FIELDS } from 'graphql/mutations/ContactFields';
 
 const contactFieldsListMock = [
   {
+    __typename: 'ContactsField',
     variable: '@contact.fields.age_group',
     valueType: 'TEXT',
     updatedAt: '2021-05-31T02:46:05Z',
@@ -18,6 +19,7 @@ const contactFieldsListMock = [
     },
   },
   {
+    __typename: 'ContactsField',
     variable: '@contact.fields.dob',
     valueType: 'TEXT',
     updatedAt: '2021-05-31T02:46:05Z',
@@ -68,17 +70,18 @@ export const mocks = [
   {
     request: {
       query: UPDATE_CONTACT_FIELDS,
-      variables: { id: '1', input: { name: 'Age Group' } },
+      variables: { id: '1', input: { name: 'Age Group Name' } },
     },
     result: {
       data: {
         updateContactsField: {
           contactsField: {
+            __typename: 'ContactsField',
             valueType: 'TEXT',
             updatedAt: '2021-05-31T02:46:05Z',
             shortcode: 'age_group',
             scope: 'CONTACT',
-            name: 'Age Group',
+            name: 'Age Group Name',
             insertedAt: '2021-05-31T02:46:05Z',
             id: '1',
             organization: {
@@ -178,7 +181,7 @@ export const mocks = [
 export const contactFieldErrorMock = {
   request: {
     query: UPDATE_CONTACT_FIELDS,
-    variables: { id: '2', input: { shortcode: 'age_group' } },
+    variables: { id: '2', input: { shortcode: 'dob' } },
   },
   result: {
     data: {

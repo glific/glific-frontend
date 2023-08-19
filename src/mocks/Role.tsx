@@ -1,4 +1,4 @@
-import { COUNT_ROLES, FILTER_ROLES, GET_ROLE } from 'graphql/queries/Role';
+import { COUNT_ROLES, FILTER_ROLES, GET_ROLE, GET_ROLE_NAMES } from 'graphql/queries/Role';
 import { CREATE_ROLE, DELETE_ROLE, UPDATE_ROLE } from 'graphql/mutations/Roles';
 
 export const countRolesQuery = {
@@ -130,6 +130,27 @@ export const getRoleQuery = {
           label: 'Teacher',
         },
       },
+    },
+  },
+};
+
+export const getRoleNameQuery = {
+  request: {
+    query: GET_ROLE_NAMES,
+    variables: {},
+  },
+  result: {
+    data: {
+      accessRoles: [
+        {
+          __typename: 'AccessRole',
+          description: 'Default Admin Role',
+          id: '1',
+          insertedAt: '2022-06-09T06:49:29Z',
+          isReserved: true,
+          label: 'Admin',
+        },
+      ],
     },
   },
 };

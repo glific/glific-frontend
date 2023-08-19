@@ -62,18 +62,3 @@ test('check recording', async () => {
 
   expect(handleAudioRecordingMock).toHaveBeenCalled();
 });
-
-// Todo: will come back to this after fixing all test cases
-
-// test('permission denied', async () => {
-//   const mediaRecorder = vi.spyOn(useReactMediaRecorder, 'useReactMediaRecorder');
-//   mediaRecorder.mockImplementation(() => {
-//     return {
-//       error: 'permission_denied',
-//     } as any;
-//   });
-//   const { getByTestId } = render(<VoiceRecorder {...defaultProps} />);
-//   await waitFor(() => {
-//     expect(getByTestId('micOffIcon')).toBeInTheDocument();
-//   });
-// });
