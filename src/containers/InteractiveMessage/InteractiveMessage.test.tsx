@@ -95,10 +95,10 @@ test('it renders empty interactive form', async () => {
 
   // Adding another quick reply button
   await waitFor(() => {
-    expect(screen.getByText('Add quick reply')).toBeInTheDocument();
+    expect(screen.getByTestId('addButton')).toBeInTheDocument();
   });
 
-  const addQuickReplyButton = screen.getByText('Add quick reply');
+  const addQuickReplyButton = screen.getByTestId('addButton');
   fireEvent.click(addQuickReplyButton);
 
   await waitFor(() => {

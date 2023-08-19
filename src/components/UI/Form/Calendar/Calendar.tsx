@@ -44,6 +44,7 @@ export const Calendar = ({
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <div className={styles.Calendar} data-testid="date-picker-inline">
         <DatePicker
+          label={placeholder}
           open={open}
           value={dateValue}
           format={format}
@@ -56,7 +57,6 @@ export const Calendar = ({
               helperText: hasError ? errorText : '',
               error: hasError,
               onClick: () => !disabled && setOpen(true),
-              placeholder: placeholder,
             },
           }}
           onClose={() => setOpen(false)}
