@@ -150,7 +150,7 @@ export const InteractiveMessage = () => {
     }
 
     setTitle(data.title);
-    setFooter(data.footer);
+    setFooter(data.footer || '');
     setBody(getEditorFromContent(data.body));
     setTemplateType(typeValue);
     setTimeout(() => setTemplateButtons(data.templateButtons), 100);
@@ -218,7 +218,7 @@ export const InteractiveMessage = () => {
     }
 
     setTitle(titleText);
-    setFooter(data.footer);
+    setFooter(data.footer || '');
     setBody(getEditorFromContent(data.body));
     setTemplateType(typeValue);
     setTimeout(() => setTemplateButtons(data.templateButtons), 100);

@@ -35,14 +35,14 @@ export const OrganisationFlows = () => {
   const [enabledDays, setEnabledDays] = useState<any>([]);
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
-  const [defaultFlowId, setDefaultFlowId] = useState<any>(undefined);
-  const [flowId, setFlowId] = useState<any>(undefined);
+  const [defaultFlowId, setDefaultFlowId] = useState<any>(null);
+  const [flowId, setFlowId] = useState<any>(null);
   const [isDisabled, setIsDisable] = useState(false);
   const [isFlowDisabled, setIsFlowDisable] = useState(true);
-  const [organizationId, setOrganizationId] = useState(undefined);
-  const [newcontactFlowId, setNewcontactFlowId] = useState(undefined);
+  const [organizationId, setOrganizationId] = useState(null);
+  const [newcontactFlowId, setNewcontactFlowId] = useState(null);
   const [newcontactFlowEnabled, setNewcontactFlowEnabled] = useState(false);
-  const [optinFlowId, setOptinFlowId] = useState(undefined);
+  const [optinFlowId, setOptinFlowId] = useState(null);
   const [optinFlowEnabled, setOptinFlowEnabled] = useState(false);
   const [allDayCheck, setAllDayCheck] = useState(false);
 
@@ -80,7 +80,12 @@ export const OrganisationFlows = () => {
     setEnabledDays(getEnabledDays(data.enabledDays));
   };
 
-  const getFlow = (id: string) => flow.flows.filter((option: any) => option.id === id)[0];
+  const getFlow = (id: string) => {
+    const flowFound = flow.flows.filter((option: any) => option.id === id);
+    if (flowFound.length > 0) {
+      return flowFound[0];
+    } else return null;
+  };
 
   const setStates = ({
     outOfOffice: outOfOfficeValue,

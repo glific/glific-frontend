@@ -183,7 +183,7 @@ export const AutoComplete = ({
 
   const getOptionDisabled = (option: any) => selectedOptionsIds.includes(option.id);
 
-  const renderedOption = options.length > 0 ? options : [getValue];
+  const renderedOption = options.length > 0 ? options : multiple ? getValue : [getValue];
 
   return (
     <div className={styles.Input}>

@@ -33,7 +33,7 @@ export const Consulting = ({ organizationId, setOpenDialog }: ConsultingProps) =
   const [participants, setParticipants] = useState('');
   const [staff, setStaff] = useState('');
   const [when, setWhen] = useState<any>(new Date());
-  const [duration, setDuration] = useState<number>();
+  const [duration, setDuration] = useState<number>(0);
   const [content, setContent] = useState('');
   const [isBillable, setIsBillable] = useState<any>(null);
   const [organization, setOrganization] = useState<any>(null);
@@ -79,7 +79,7 @@ export const Consulting = ({ organizationId, setOpenDialog }: ConsultingProps) =
      */
     if (!org) {
       const selectedOrg = organizationList.organizations.find(
-        ({ name }: { name: string }) => name === organizationName
+        ({ name }: { name: string }) => name === organizationName,
       );
       setOrganization(selectedOrg);
     } else setOrganization(org);

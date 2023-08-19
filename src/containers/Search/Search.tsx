@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import { useQuery } from '@apollo/client';
 import moment from 'moment';
-import { Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import { ReactComponent as SearchIcon } from 'assets/images/icons/Search/SelectedEdit.svg';
@@ -115,8 +114,8 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
   const [dateFrom, setdateFrom] = useState<any>(null);
   const [dateTo, setdateTo] = useState<any>(null);
   const [useExpression, setUseExpression] = useState(false);
-  const [dateFromExpression, setdateFromExpression] = useState(null);
-  const [dateToExpression, setdateToExpression] = useState(null);
+  const [dateFromExpression, setdateFromExpression] = useState('');
+  const [dateToExpression, setdateToExpression] = useState('');
   const [formFields, setFormFields] = useState<any>([]);
   const [button, setButton] = useState<string>('Save');
   const { t } = useTranslation();
@@ -420,26 +419,10 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
 
     let heading;
     if (type === 'search') {
-      heading = (
-        <>
-          <Typography variant="h5" className={styles.Title}>
-            {t('Search conversations')}
-          </Typography>
-          <Typography variant="subtitle1" className={styles.Subtext}>
-            {t('Apply more parameters to search for conversations.')}
-          </Typography>
-        </>
-      );
-
       FormSchema = Yup.object().shape({});
     }
 
     if (type === 'saveSearch') {
-      heading = (
-        <Typography variant="h5" className={styles.Title}>
-          {t('Save Search')}
-        </Typography>
-      );
       addFieldsValidation(validation);
     }
 
@@ -451,7 +434,7 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
       if (type === 'saveSearch') setFormFields(DataFields);
     }
     return {
-      heading,
+      heading: 'not needed',
     };
   };
 
@@ -496,12 +479,22 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
 
   const customStyles = type ? [styles.FormSearch] : [styles.Form];
 
+  let heading;
+  if (type === 'search') {
+    heading = t('Search conversations');
+  }
+
+  if (type === 'saveSearch') {
+    heading = t('Save Search');
+  }
+
   return (
     <>
       {dialog}
       <FormLayout
         {...queries}
         states={states}
+        title={type ? heading : undefined}
         setStates={setStates}
         setPayload={setPayload}
         validationSchema={FormSchema}
