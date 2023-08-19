@@ -57,16 +57,8 @@ const speedSend = {
   request: {
     query: FILTER_SESSION_TEMPLATES,
     variables: {
-      filter: {
-        isHsm: false,
-      },
-
-      opts: {
-        limit: 50,
-        offset: 0,
-        order: 'ASC',
-        orderWith: 'label',
-      },
+      filter: { isHsm: false },
+      opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'label' },
     },
   },
   result: {
@@ -264,11 +256,13 @@ const getTemplateData = {
       buttons: null,
       buttonType: null,
       updatedAt: '2020-12-01T18:00:32Z',
+      tag: null,
     },
   },
 };
 
 export const TEMPLATE_MOCKS = [
+  getFilterTagQuery,
   getFilterTagQuery,
   {
     request: {
@@ -381,6 +375,8 @@ export const TEMPLATE_MOCKS = [
   filterTemplateQuery,
   filterTemplateQuery,
   count,
+  count,
+  speedSend,
   speedSend,
   HSMTemplateCount,
   HSMTemplate,
@@ -399,6 +395,7 @@ const getHSMTemplate = (id: string, status: string) => ({
   MessageMedia: null,
   body: 'You can now view your Account Balance or Mini statement for Account ending with {{1}} simply by selecting one of the options below.',
   id,
+  bspId: null,
   isActive: true,
   isHsm: true,
   isReserved: false,

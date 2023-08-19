@@ -53,29 +53,46 @@ export const getOrganizationExtension = {
     },
   },
 };
+export const getEmptyOrganizationExtension = {
+  request: {
+    query: GET_ORGANIZATION_EXTENSION,
+    variables: {
+      clientId: '1',
+    },
+  },
+  result: {
+    data: {
+      getOrganizationExtension: {
+        Extension: null,
+      },
+    },
+  },
+};
 
 export const createExtension = {
   request: {
     query: CREATE_EXTENSION,
     variables: {
       input: {
-        clientId: '1',
-        code: 'defmodule Glific.Test.Extension, do: def default_phone(), do: %{phone: 9876543210}',
+        name: 'GCS bucket',
+        code: 'defmodule Glific.Test.Extension, do :def default_phone(), do: %{phone: 9876543210}',
         isActive: false,
-        name: 'Activity',
+        clientId: '1',
       },
     },
   },
   result: {
     data: {
       createExtension: {
-        extension: {
+        Extension: {
+          id: '1',
           code: 'defmodule Glific.Test.Extension, do: def default_phone(), do: %{phone: 9876543210}',
           isActive: false,
           isValid: true,
           module: 'Elixir.Glific.Test.Extension',
           name: 'Activity',
         },
+        errors: null,
       },
     },
   },
@@ -86,24 +103,25 @@ export const updateExtension = {
     query: UPDATE_EXTENSION,
     variables: {
       clientId: '1',
-      input: {
-        clientId: '1',
-        code: 'defmodule Glific.Test.Extension, do: def default_phone(), do: %{phone: 9876543210}',
-        isActive: true,
-        name: 'Activity',
-      },
+      input: { name: 'test', code: 'test', isActive: true, clientId: '1' },
     },
   },
   result: {
     data: {
       update_organization_extension: {
-        extension: {
+        Extension: {
+          id: '1',
           code: 'defmodule Glific.Test.Extension, do: def default_phone(), do: %{phone: 9876543210}',
           isActive: true,
+          organization: {
+            name: 'Glific',
+            isActive: true,
+          },
           isValid: true,
           module: 'Elixir.Glific.Test.Extension',
           name: 'Activity',
         },
+        errors: null,
       },
     },
   },

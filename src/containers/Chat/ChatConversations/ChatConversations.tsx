@@ -114,7 +114,7 @@ export const ChatConversations = ({ contactId }: ChatConversationsProps) => {
   const handleClick = (event: any, data: any) => {
     event.preventDefault();
     if (data) setDialogboxType(data);
-    setDialogbox(!dialog);
+    setDialogbox((dialog) => !dialog);
   };
 
   const saveHandler = (data: any) => {
@@ -125,27 +125,7 @@ export const ChatConversations = ({ contactId }: ChatConversationsProps) => {
   // create searches
   let dialogBox;
   if (dialog) {
-    let searches = (
-      <Search
-        type="saveSearch"
-        search={search}
-        searchParam={searchParam}
-        handleCancel={closeDialogBox}
-        handleSave={saveHandler}
-        searchId={savedSearchCriteriaId}
-      />
-    );
-
-    if (dialogType === 'search')
-      searches = (
-        <Search
-          type="search"
-          search={search}
-          searchParam={searchParam}
-          handleCancel={closeDialogBox}
-        />
-      );
-
+    const isearchType = dialogType === 'search';
     dialogBox = (
       <DialogBox
         title=""
@@ -155,7 +135,14 @@ export const ChatConversations = ({ contactId }: ChatConversationsProps) => {
         skipOk
         skipCancel
       >
-        {searches}
+        <Search
+          type={isearchType ? 'search' : 'saveSearch'}
+          search={search}
+          searchParam={searchParam}
+          handleCancel={closeDialogBox}
+          handleSave={isearchType ? undefined : saveHandler}
+          searchId={isearchType ? undefined : savedSearchCriteriaId}
+        />
       </DialogBox>
     );
   }

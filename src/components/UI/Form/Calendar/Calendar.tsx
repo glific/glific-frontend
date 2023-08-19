@@ -4,6 +4,7 @@ import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import 'date-fns';
 import { getIn } from 'formik';
 import styles from './Calendar.module.css';
+import { parseISO } from 'date-fns';
 
 export interface CalendarProps {
   variant?: any;
@@ -27,12 +28,11 @@ export const Calendar = ({
   const errorText = getIn(errors, field.name);
   const touchedVal = getIn(touched, field.name);
   const hasError = touchedVal && errorText !== undefined;
-  const dateValue = field.value ? field.value : null;
+  const dateValue = typeof field.value === 'string' ? parseISO(field.value) : field.value;
   const [open, setOpen] = useState(false);
-
   const handleDateChange = (date: Date | null | string) => {
     if (date) {
-      if (date.toString() !== 'Invalid Date') {
+      if (date !== 'Invalid Date') {
         setFieldValue(field.name, date);
       }
     } else {
@@ -51,7 +51,7 @@ export const Calendar = ({
           onChange={handleDateChange}
           className={styles.CalendarInput}
           disabled={disabled}
-          minDate={minDate}
+          minDate={parseISO(minDate)}
           slotProps={{
             textField: {
               helperText: hasError ? errorText : '',

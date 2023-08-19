@@ -111,7 +111,7 @@ export const Template = ({
       if (data && data.bulkApplyTemplates) {
         exportCsvFile(data.bulkApplyTemplates.csv_rows, 'result');
         setNotification(
-          t('Templates applied successfully. Please check the csv file for the results'),
+          t('Templates applied successfully. Please check the csv file for the results')
         );
       }
     },

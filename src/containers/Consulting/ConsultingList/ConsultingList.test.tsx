@@ -43,8 +43,10 @@ it('Renders dialog box on clicking add new button', async () => {
   expect(getByText('Loading...')).toBeInTheDocument();
 
   await waitFor(() => {
-    fireEvent.click(getByText('Add Consulting Hours'));
+    expect(getByText('Add Consulting Hours')).toBeInTheDocument();
   });
+
+  fireEvent.click(getByText('Add Consulting Hours'));
 
   await waitFor(() => {
     expect(screen.getByText('Add consulting record')).toBeInTheDocument();

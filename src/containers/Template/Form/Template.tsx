@@ -13,7 +13,7 @@ import { EmojiInput } from 'components/UI/Form/EmojiInput/EmojiInput';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { LanguageBar } from 'components/UI/LanguageBar/LanguageBar';
-import { GET_TEMPLATE, FILTER_TEMPLATES } from 'graphql/queries/Template';
+import { GET_TEMPLATE } from 'graphql/queries/Template';
 import { CREATE_MEDIA_MESSAGE } from 'graphql/mutations/Chat';
 import { USER_LANGUAGES } from 'graphql/queries/Organization';
 import { GET_TAGS } from 'graphql/queries/Tags';
@@ -40,7 +40,7 @@ const HSMValidation = {
         },
         message:
           'Message and sample look different. Please check for any characters, extra spaces or new lines.',
-      }),
+      })
     )
     .required('Example is required.'),
   category: Yup.object().nullable().required('Category is required.'),
@@ -48,7 +48,7 @@ const HSMValidation = {
     .required('Element name is required.')
     .matches(
       regexForShortcode,
-      'Only lowercase alphanumeric characters and underscores are allowed.',
+      'Only lowercase alphanumeric characters and underscores are allowed.'
     ),
 };
 
@@ -130,7 +130,6 @@ export interface TemplateProps {
   icon: any;
   defaultAttribute?: any;
   formField?: any;
-  getSessionTemplatesCallBack?: any;
   customStyle?: any;
   getUrlAttachmentAndType?: any;
   getShortcode?: any;
@@ -157,7 +156,6 @@ const Template = ({
   icon,
   defaultAttribute = { isHsm: false },
   formField,
-  getSessionTemplatesCallBack,
   customStyle,
   getUrlAttachmentAndType,
   getShortcode,
@@ -177,9 +175,8 @@ const Template = ({
   const [label, setLabel] = useState('');
   const [body, setBody] = useState(EditorState.createEmpty());
   const [example, setExample] = useState(EditorState.createEmpty());
-  const [filterLabel, setFilterLabel] = useState('');
   const [shortcode, setShortcode] = useState('');
-  const [language, setLanguageId] = useState<any>({});
+  const [language, setLanguageId] = useState<any>(null);
   const [type, setType] = useState<any>(null);
   const [translations, setTranslations] = useState<any>();
   const [attachmentURL, setAttachmentURL] = useState<any>();
@@ -238,13 +235,13 @@ const Template = ({
     if (languageOptions.length > 0 && languageIdValue) {
       if (location.state) {
         const selectedLangauge = languageOptions.find(
-          (lang: any) => lang.label === location.state.language,
+          (lang: any) => lang.label === location.state.language
         );
         navigate(location.pathname);
         setLanguageId(selectedLangauge);
-      } else if (!language.id) {
+      } else if (!language?.id) {
         const selectedLangauge = languageOptions.find(
-          (lang: any) => lang.id === languageIdValue.id,
+          (lang: any) => lang.id === languageIdValue.id
         );
         setLanguageId(selectedLangauge);
       } else {
@@ -266,7 +263,7 @@ const Template = ({
         const { buttons: buttonsVal, template } = getTemplateAndButtons(
           templateButtonType,
           exampleValue,
-          buttons,
+          buttons
         );
         exampleBody = template;
         setTemplateButtons(buttonsVal);
@@ -285,11 +282,11 @@ const Template = ({
     if (typeValue && typeValue !== 'TEXT') {
       setType({ id: typeValue, label: typeValue });
     } else {
-      setType('');
+      setType(null);
     }
     if (translationsValue) {
       const translationsCopy = JSON.parse(translationsValue);
-      const currentLanguage = language.id || languageIdValue.id;
+      const currentLanguage = language?.id || languageIdValue.id;
       if (
         Object.keys(translationsCopy).length > 0 &&
         translationsCopy[currentLanguage] &&
@@ -337,7 +334,7 @@ const Template = ({
     if (typeValue && typeValue !== 'TEXT') {
       setType({ id: typeValue, label: typeValue });
     } else {
-      setType('');
+      setType(null);
     }
 
     if (MessageMediaValue) {
@@ -349,17 +346,6 @@ const Template = ({
 
   const { data: languages } = useQuery(USER_LANGUAGES, {
     variables: { opts: { order: 'ASC' } },
-  });
-
-  const [getSessionTemplates, { data: sessionTemplates }] = useLazyQuery<any>(FILTER_TEMPLATES, {
-    variables: {
-      filter: { languageId: language ? parseInt(language.id, 10) : null },
-      opts: {
-        order: 'ASC',
-        limit: null,
-        offset: 0,
-      },
-    },
   });
 
   const [getSessionTemplate, { data: template, loading: templateLoading }] =
@@ -386,12 +372,6 @@ const Template = ({
   }, [languages]);
 
   useEffect(() => {
-    if (filterLabel && language && language.id) {
-      getSessionTemplates();
-    }
-  }, [filterLabel, language, getSessionTemplates]);
-
-  useEffect(() => {
     setShortcode(getShortcode);
   }, [getShortcode]);
 
@@ -400,28 +380,6 @@ const Template = ({
       setExample(getExample);
     }
   }, [getExample]);
-
-  const validateTitle = (value: any) => {
-    let error;
-    if (value) {
-      setFilterLabel(value);
-      let found = [];
-      if (sessionTemplates) {
-        if (getSessionTemplatesCallBack) {
-          getSessionTemplatesCallBack(sessionTemplates);
-        }
-        // need to check exact title
-        found = sessionTemplates.sessionTemplates.filter((search: any) => search.label === value);
-        if (params.id && found.length > 0) {
-          found = found.filter((search: any) => search.id !== params.id);
-        }
-      }
-      if (found.length > 0) {
-        error = t('Title already exists.');
-      }
-    }
-    return error;
-  };
 
   const updateTranslation = (value: any) => {
     const translationId = value.id;
@@ -461,7 +419,7 @@ const Template = ({
 
   const handleLanguageChange = (value: any) => {
     const selected = languageOptions.find(
-      ({ label: languageLabel }: any) => languageLabel === value,
+      ({ label: languageLabel }: any) => languageLabel === value
     );
     if (selected && Object.prototype.hasOwnProperty.call(params, 'id')) {
       updateTranslation(selected);
@@ -515,7 +473,7 @@ const Template = ({
             <li>{t('Animated stickers are not supported.')}</li>
             <li>{t('Captions along with stickers are not supported.')}</li>
           </ol>
-        </div>,
+        </div>
       );
     } else if (type && type.id === 'AUDIO') {
       setWarning(
@@ -523,7 +481,7 @@ const Template = ({
           <ol>
             <li>{t('Captions along with audio are not supported.')}</li>
           </ol>
-        </div>,
+        </div>
       );
     } else {
       setWarning(null);
@@ -549,7 +507,7 @@ const Template = ({
       disabled: !!(defaultAttribute.isHsm && params.id),
       helperText: warning,
       onChange: (event: any) => {
-        const val = event || '';
+        const val = event;
         if (!event) {
           setIsUrlValid(val);
         }
@@ -564,7 +522,7 @@ const Template = ({
       validate: () => isUrlValid,
       disabled: !!(defaultAttribute.isHsm && params.id),
       helperText: t(
-        'Please provide a sample attachment for approval purpose. You may send a similar but different attachment when sending the HSM to users.',
+        'Please provide a sample attachment for approval purpose. You may send a similar but different attachment when sending the HSM to users.'
       ),
       inputProp: {
         onBlur: (event: any) => {
@@ -617,7 +575,6 @@ const Template = ({
       component: Input,
       name: 'label',
       placeholder: `${t('Title')}*`,
-      validate: validateTitle,
       disabled: !!(defaultAttribute.isHsm && params.id),
       helperText: defaultAttribute.isHsm
         ? t('Define what use case does this template serve eg. OTP, optin, activity preference')
@@ -960,10 +917,10 @@ const Template = ({
                 then: (schema) =>
                   schema.matches(
                     /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_+.~#?&/=]*)/gi,
-                    'Please enter valid url.',
+                    'Please enter valid url.'
                   ),
               }),
-          }),
+          })
         )
         .min(1)
         .max(2);
@@ -972,7 +929,7 @@ const Template = ({
         .of(
           Yup.object().shape({
             value: Yup.string().required('Required'),
-          }),
+          })
         )
         .min(1)
         .max(3);

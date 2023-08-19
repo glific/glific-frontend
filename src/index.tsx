@@ -40,5 +40,5 @@ root.render(
       <CssBaseline />
       <BrowserRouter>{appComponent}</BrowserRouter>
     </ThemeProvider>
-  </StyledEngineProvider>,
+  </StyledEngineProvider>
 );

@@ -4,9 +4,9 @@ import { MockedProvider } from '@apollo/client/testing';
 import { vi } from 'vitest';
 import { setUserSession } from 'services/AuthService';
 import { TagList } from './TagList';
-import { filterTagQuery, getTagQuery } from 'mocks/Tag';
+import { countTagQuery, filterTagQuery, getTagQuery } from 'mocks/Tag';
 
-const mocks = [getTagQuery, filterTagQuery];
+const mocks = [getTagQuery, filterTagQuery, countTagQuery];
 
 const tagList = (
   <MockedProvider mocks={mocks} addTypename={false}>

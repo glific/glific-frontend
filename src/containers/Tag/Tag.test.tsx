@@ -3,13 +3,21 @@ import { render, waitFor } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { vi } from 'vitest';
 import { getOrganizationLanguagesQuery, getOrganizationQuery } from 'mocks/Organization';
-import { getTagQuery, filterTagQuery } from 'mocks/Tag';
+import { getTagQuery, filterTagQuery, getFilterTagQuery } from 'mocks/Tag';
 import { Tag } from './Tag';
 import { setOrganizationServices } from 'services/AuthService';
+import { getRoleNameQuery } from 'mocks/Role';
 
 setOrganizationServices('{"__typename":"OrganizationServicesResult","rolesAndPermission":true}');
 
-const mocks = [...getOrganizationQuery, getTagQuery, filterTagQuery, getOrganizationLanguagesQuery];
+const mocks = [
+  ...getOrganizationQuery,
+  getTagQuery,
+  filterTagQuery,
+  getOrganizationLanguagesQuery,
+  getFilterTagQuery,
+  getRoleNameQuery,
+];
 
 const mockUseLocationValue: any = {
   pathname: '/',

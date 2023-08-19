@@ -11,12 +11,19 @@ import {
 import { setUserSession } from 'services/AuthService';
 import { Consulting } from './Consulting';
 import userEvent from '@testing-library/user-event';
+import { getOrganizationLanguagesWithoutOrder } from 'mocks/Organization';
 
 afterEach(cleanup);
 const setOpenDialogMock = vi.fn();
 setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
 
-const mocks = [getOrganizationList, getConsultingHour, createConsultingHour, updateConsultingHour];
+const mocks = [
+  getOrganizationList,
+  getConsultingHour,
+  createConsultingHour,
+  updateConsultingHour,
+  getOrganizationLanguagesWithoutOrder,
+];
 const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <Router>
@@ -111,7 +118,9 @@ test('Click in cancel button', async () => {
   expect(getByText('Loading...')).toBeInTheDocument();
   await waitFor(() => {
     expect(getByText('Cancel')).toBeInTheDocument();
-    fireEvent.click(getByText('Cancel'));
+  });
+  fireEvent.click(getByText('Cancel'));
+  await waitFor(() => {
     expect(setOpenDialogMock).toHaveBeenCalledWith(false);
   });
 });

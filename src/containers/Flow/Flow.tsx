@@ -34,7 +34,7 @@ export const Flow = () => {
   const [name, setName] = useState('');
   const [isPinnedDisable, setIsPinnedDisable] = useState(false);
   const [keywords, setKeywords] = useState('');
-  const [tagId, setTagId] = useState({ id: '', label: '' });
+  const [tagId, setTagId] = useState(null);
   const [isActive, setIsActive] = useState(true);
   const [isPinned, setIsPinned] = useState(false);
   const [roles, setRoles] = useState<Array<any>>([]);
@@ -108,7 +108,7 @@ export const Flow = () => {
       setKeywords(fieldKeywords.join(','));
     }
     setIgnoreKeywords(ignoreKeywordsValue);
-    const getTagId = tag.tags.filter((tags: any) => tags.id === tagValue.id);
+    const getTagId = tag && tag.tags.filter((tags: any) => tags.id === tagValue?.id);
     if (getTagId.length > 0) {
       setTagId(getTagId[0]);
     }

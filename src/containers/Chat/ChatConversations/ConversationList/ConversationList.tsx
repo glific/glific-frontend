@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { List, Container, CircularProgress, Typography } from '@mui/material';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { useApolloClient, useLazyQuery, useQuery } from '@apollo/client';
@@ -262,7 +262,7 @@ export const ConversationList = ({
     }
 
     return (
-      <>
+      <Fragment key={contact.id}>
         {index === 0 ? header : null}
         <ChatConversation
           key={contact.id}
@@ -286,7 +286,7 @@ export const ConversationList = ({
           messageNumber={conversation.messageNumber}
           searchMode={searchMode}
         />
-      </>
+      </Fragment>
     );
   };
 
@@ -316,7 +316,6 @@ export const ConversationList = ({
 
   // build the conversation list only if there are conversations
   if (!conversationList && conversations && conversations.length > 0) {
-    // TODO: Need to check why test is not returning correct result
     conversationList = conversations.map((conversation: any, index: number) => {
       let lastMessage = [];
       if (conversation.messages.length > 0) {

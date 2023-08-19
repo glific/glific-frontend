@@ -1,4 +1,4 @@
-import { MouseEventHandler, useState, Fragment } from 'react';
+import { MouseEventHandler, useState, Fragment, useEffect } from 'react';
 import { Navigate, Link, useParams } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
 // eslint-disable-next-line no-unused-vars
@@ -113,6 +113,7 @@ export const FormLayout = ({
   languageSupport = true,
   roleAccessSupport = false,
   setPayload,
+  // Todo: lets move advanced search out of here as this is not generic
   advanceSearch,
   cancelAction,
   button = 'Save',
@@ -151,8 +152,13 @@ export const FormLayout = ({
 
   const { t } = useTranslation();
 
-  // TODO: this query should only get triggered when roles are enabled for an organization
   const { data: roleData } = useQuery(GET_ROLE_NAMES, { skip: !roleAccessSupport });
+
+  useEffect(() => {
+    if (advanceSearch) {
+      advanceSearch({});
+    }
+  }, [advanceSearch]);
 
   const capitalListItemName = listItemName[0].toUpperCase() + listItemName.slice(1);
   let item: any = null;
@@ -185,6 +191,7 @@ export const FormLayout = ({
   // get the organization for current user and have languages option set to that.
 
   const organization = useQuery(USER_LANGUAGES, {
+    skip: !languageSupport,
     onCompleted: (data: any) => {
       if (!itemId) {
         setLanguageId(data.currentUser.user.organization.defaultLanguage.id);
@@ -640,10 +647,6 @@ export const FormLayout = ({
   }
 
   let heading = <Heading icon={icon} formTitle={formTitle} />;
-  if (advanceSearch) {
-    const data = advanceSearch({});
-    if (data && data.heading) heading = data.heading;
-  }
 
   const backLink = backLinkButton ? (
     <div className={styles.BackLink}>

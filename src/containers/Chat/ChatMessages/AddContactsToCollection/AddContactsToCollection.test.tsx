@@ -5,12 +5,13 @@ import { vi } from 'vitest';
 
 import { setUserSession } from 'services/AuthService';
 import { getCollectionContactsQuery, updateCollectionContactsQuery } from 'mocks/Collection';
-import { getContactsQuery } from 'mocks/Contact';
+import { getContactsQuery, getContactsSearchQuery } from 'mocks/Contact';
 import * as AutoComplete from 'components/UI/Form/AutoComplete/AutoComplete';
 
 const mocks = [
   getCollectionContactsQuery,
   getCollectionContactsQuery,
+  getContactsSearchQuery,
   getContactsQuery,
   updateCollectionContactsQuery,
 ];
@@ -67,7 +68,7 @@ test('change value in dialog box', () => {
       <div data-testid="searchDialogBox">
         <input
           onChange={(value) => {
-            onChange('hey');
+            onChange('glific');
             form.setFieldValue(value);
           }}
         />

@@ -60,7 +60,7 @@ export const InteractiveMessage = () => {
   const [globalButton, setGlobalButton] = useState('');
   const [isUrlValid, setIsUrlValid] = useState<any>();
   const [type, setType] = useState<any>(null);
-  const [attachmentURL, setAttachmentURL] = useState<any>();
+  const [attachmentURL, setAttachmentURL] = useState<any>('');
   const [contactVariables, setContactVariables] = useState([]);
   const [defaultLanguage, setDefaultLanguage] = useState<any>({});
   const [sendWithTitle, setSendWithTitle] = useState<boolean>(true);
@@ -76,7 +76,7 @@ export const InteractiveMessage = () => {
   const { t } = useTranslation();
   const params = useParams();
 
-  const { data: tag } = useQuery(GET_TAGS, {
+  const { data: tag, loading: tagsLoading } = useQuery(GET_TAGS, {
     variables: {},
     fetchPolicy: 'network-only',
   });
@@ -150,7 +150,7 @@ export const InteractiveMessage = () => {
     }
 
     setTitle(data.title);
-    setFooter(data.footer);
+    setFooter(data.footer || '');
     setBody(getEditorFromContent(data.body));
     setTemplateType(typeValue);
     setTimeout(() => setTemplateButtons(data.templateButtons), 100);
@@ -218,7 +218,7 @@ export const InteractiveMessage = () => {
     }
 
     setTitle(titleText);
-    setFooter(data.footer);
+    setFooter(data.footer || '');
     setBody(getEditorFromContent(data.body));
     setTemplateType(typeValue);
     setTimeout(() => setTemplateButtons(data.templateButtons), 100);
@@ -695,8 +695,7 @@ export const InteractiveMessage = () => {
           setAttachmentURL(event.target.value);
         },
         onChange: (event: any) => {
-          clearTimeout(timer);
-          timer = setTimeout(() => setAttachmentURL(event.target.value), 1000);
+          setAttachmentURL(event.target.value);
         },
       },
     },
@@ -762,7 +761,7 @@ export const InteractiveMessage = () => {
     attachmentURL,
   ]);
 
-  if (languageOptions.length < 1 || loadingTemplate) {
+  if (languageOptions.length < 1 || loadingTemplate || tagsLoading) {
     return <Loading />;
   }
 

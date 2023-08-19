@@ -1,3 +1,4 @@
+import { CREATE_TRIGGER, UPDATE_TRIGGER } from 'graphql/mutations/Trigger';
 import { TRIGGER_LIST_QUERY, TRIGGER_QUERY_COUNT, GET_TRIGGER } from 'graphql/queries/Trigger';
 
 export const triggerListQuery = {
@@ -102,6 +103,147 @@ const hourlyTrigger = () => {
   hourlyTrigger.result.data.trigger.trigger.days = [];
   hourlyTrigger.result.data.trigger.trigger.hours = [1, 13];
   return hourlyTrigger;
+};
+
+export const createTriggerQuery = {
+  request: {
+    query: CREATE_TRIGGER,
+    variables: {
+      id: '1',
+      input: {
+        isActive: true,
+        isRepeating: true,
+        flowId: '1',
+        days: [],
+        hours: [],
+        groupId: '1',
+        startDate: '2021-02-28',
+        endDate: '2021-03-13',
+        startTime: 'T20:00:22',
+        frequency: 'daily',
+        addRoleIds: [],
+        deleteRoleIds: [],
+      },
+    },
+  },
+  result: {
+    data: {
+      createTrigger: {
+        trigger: {
+          days: [],
+          endDate: '2021-03-13',
+          flow: {
+            id: '1',
+          },
+          roles: [],
+          name: 'New trigger',
+          frequency: 'none',
+          hours: [],
+          group: {
+            id: '1',
+          },
+          id: '1',
+          isActive: true,
+          isRepeating: false,
+          startAt: '2021-02-28T20:00:22Z',
+        },
+      },
+    },
+  },
+};
+
+export const updateTriggerQuery = {
+  request: {
+    query: UPDATE_TRIGGER,
+    variables: {
+      id: '1',
+      input: {
+        isActive: true,
+        isRepeating: false,
+        flowId: '1',
+        days: [],
+        hours: [],
+        groupId: '1',
+        startDate: '2021-02-28',
+        endDate: '2021-03-13',
+        startTime: 'T20:00:22',
+        frequency: 'none',
+        addRoleIds: [],
+        deleteRoleIds: [],
+      },
+    },
+  },
+  result: {
+    data: {
+      updateTrigger: {
+        trigger: {
+          days: [],
+          endDate: '2021-03-13',
+          flow: {
+            id: '1',
+          },
+          roles: [],
+          name: 'New trigger',
+          frequency: 'none',
+          hours: [],
+          group: {
+            id: '1',
+          },
+          id: '1',
+          isActive: true,
+          isRepeating: false,
+          startAt: '2021-02-28T20:00:22Z',
+        },
+      },
+    },
+  },
+};
+
+export const updateTriggerWeeklyQuery = {
+  request: {
+    query: UPDATE_TRIGGER,
+    variables: {
+      id: '1',
+      input: {
+        isActive: true,
+        isRepeating: true,
+        flowId: '1',
+        days: [1, 2],
+        hours: [],
+        groupId: '1',
+        startDate: '2021-02-28',
+        endDate: '2021-03-13',
+        startTime: 'T20:00:22',
+        frequency: 'weekly',
+        addRoleIds: [],
+        deleteRoleIds: [],
+      },
+    },
+  },
+  result: {
+    data: {
+      updateTrigger: {
+        trigger: {
+          days: [1, 2],
+          endDate: '2021-03-13',
+          flow: {
+            id: '1',
+          },
+          roles: [],
+          name: 'New trigger',
+          frequency: 'weekly',
+          hours: [],
+          group: {
+            id: '1',
+          },
+          id: '1',
+          isActive: true,
+          isRepeating: true,
+          startAt: '2021-02-28T20:00:22Z',
+        },
+      },
+    },
+  },
 };
 
 export { hourlyTrigger };

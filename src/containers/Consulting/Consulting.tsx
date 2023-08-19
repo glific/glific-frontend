@@ -33,7 +33,7 @@ export const Consulting = ({ organizationId, setOpenDialog }: ConsultingProps) =
   const [participants, setParticipants] = useState('');
   const [staff, setStaff] = useState('');
   const [when, setWhen] = useState<any>(new Date());
-  const [duration, setDuration] = useState<number>();
+  const [duration, setDuration] = useState<number>(0);
   const [content, setContent] = useState('');
   const [isBillable, setIsBillable] = useState<any>(null);
   const [organization, setOrganization] = useState<any>(null);

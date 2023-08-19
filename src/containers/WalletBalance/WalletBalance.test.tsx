@@ -75,7 +75,7 @@ describe('<WalletBalance />', () => {
 });
 
 describe('<WalletBalance />', () => {
-  const mocks = [...errorBalanceQuery, ...walletBalanceHighSubscription];
+  const mocks = [...errorBalanceQuery, ...errorBalanceQuery, ...walletBalanceHighSubscription];
 
   test('Query returns error', async () => {
     render(

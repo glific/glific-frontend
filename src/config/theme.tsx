@@ -8,6 +8,9 @@ const theme = createTheme({
       // dark: will be calculated from palette.primary.main,
       // contrastText: will be calculated to contrast with palette.primary.main
     },
+    error: {
+      main: '#fb5c5c',
+    },
     warning: {
       main: '#DD1F1F',
     },

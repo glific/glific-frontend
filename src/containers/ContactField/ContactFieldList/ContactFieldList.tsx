@@ -111,7 +111,7 @@ const ContactFieldList = () => {
 
     return (
       <div className={styles.OtherColumnContainer}>
-        <p className={styles.OtherColumnText}>
+        <p className={styles.OtherColumnText} data-testid="otherColumn">
           {label}
           <span>
             <Button onClick={() => setItemToBeEdited({ id, column })}>

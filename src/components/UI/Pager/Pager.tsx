@@ -4,7 +4,6 @@ import {
   TableHead,
   TableBody,
   TableCell,
-  TableFooter,
   TablePagination,
   TableRow,
   TableSortLabel,
@@ -78,7 +77,7 @@ const createRows = (
   data: any,
   columnStyles: any,
   collapseRow?: string,
-  collapseOpen: boolean = false,
+  collapseOpen: boolean = false
 ) => {
   const createRow = (entry: any) => {
     let stylesIndex = -1;
@@ -102,7 +101,6 @@ const createRows = (
   };
 
   return data.map((entry: any) => {
-    console.log(entry);
     let dataObj: any;
     const isActiveRow = entry.isActive === false ? styles.InactiveRow : styles.ActiveRow;
     if (entry.translations) dataObj = JSON.parse(entry.translations);
@@ -122,7 +120,7 @@ const tableHeadColumns = (
   columnNames: Array<any>,
   columnStyles: any,
   tableVals: any,
-  handleTableChange: Function,
+  handleTableChange: Function
 ) => {
   const headerRow = (
     <TableRow className={styles.TableHeadRow}>
@@ -142,7 +140,7 @@ const tableHeadColumns = (
                   handleTableChange('sortCol', field.name);
                   handleTableChange(
                     'sortDirection',
-                    tableVals.sortDirection === 'asc' ? 'desc' : 'asc',
+                    tableVals.sortDirection === 'asc' ? 'desc' : 'asc'
                   );
                 }
               }}
@@ -164,9 +162,10 @@ const pagination = (
   columnNames: Array<any>,
   totalRows: number,
   handleTableChange: Function,
-  tableVals: any,
+  tableVals: any
 ) => (
   <TablePagination
+    component="div"
     className={styles.FooterRow}
     colSpan={columnNames.length}
     count={totalRows}
@@ -212,9 +211,9 @@ export const Pager = ({
         )}
         {!loadingList && data.length == 0 && <div className={styles.Body}>{noItemsText}</div>}
       </TableContainer>
-      <TableFooter className={styles.TableFooter} data-testid="tableFooter">
-        <TableRow>{tablePagination}</TableRow>
-      </TableFooter>
+      <div className={styles.TableFooter} data-testid="tableFooter">
+        <div>{tablePagination}</div>
+      </div>
     </div>
   );
 };

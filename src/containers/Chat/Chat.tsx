@@ -5,7 +5,6 @@ import { ChatSubscription } from './ChatSubscription/ChatSubscription';
 
 export const Chat = () => {
   const [loaded, setDataLoaded] = useState(false);
-
   return (
     <>
       <ChatSubscription setDataLoaded={setDataLoaded} />
