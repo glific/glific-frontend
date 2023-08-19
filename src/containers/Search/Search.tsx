@@ -417,7 +417,6 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
     // close dialogbox
     if (dataType === 'cancel') props.handleCancel();
 
-    let heading;
     if (type === 'search') {
       FormSchema = Yup.object().shape({});
     }
