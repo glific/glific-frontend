@@ -23,6 +23,7 @@ export interface SearchDialogBoxProps {
   multiple?: boolean;
   buttonOk?: string;
   description?: string;
+  colorOk?: string;
 }
 
 export const SearchDialogBox = (props: SearchDialogBoxProps) => {
@@ -44,6 +45,7 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
     multiple = true,
     buttonOk = 'Save',
     description = '',
+    colorOk,
   } = props;
 
   const [selectedOption, setSelectedOptions] = useState<any>(multiple ? [] : null);
@@ -83,6 +85,7 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
       }
       handleCancel={handleCancel}
       titleAlign="left"
+      colorOk={colorOk}
       buttonOk={buttonOk}
     >
       <div className={styles.DialogBox}>

@@ -412,7 +412,7 @@ export const List = ({
   function getIcons(
     // id: number | undefined,
     item: any,
-    allowedAction: any | null,
+    allowedAction: any | null
   ) {
     // there might be a case when we might want to allow certain actions for reserved items
     // currently we don't allow edit or delete for reserved items. hence return early
@@ -483,7 +483,7 @@ export const List = ({
 
     const actionsInsideMore = additionalAction(item).filter((action: any) => action?.hasMoreOption);
     const actionsOutsideMore = additionalAction(item).filter(
-      (action: any) => !action?.hasMoreOption,
+      (action: any) => !action?.hasMoreOption
     );
 
     const actionListMap = (actionList: any, hasMoreOption: boolean) => {
