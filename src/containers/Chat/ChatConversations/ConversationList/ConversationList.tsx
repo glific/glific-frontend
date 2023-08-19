@@ -316,7 +316,6 @@ export const ConversationList = ({
 
   // build the conversation list only if there are conversations
   if (!conversationList && conversations && conversations.length > 0) {
-    // TODO: Need to check why test is not returning correct result
     conversationList = conversations.map((conversation: any, index: number) => {
       let lastMessage = [];
       if (conversation.messages.length > 0) {

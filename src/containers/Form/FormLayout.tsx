@@ -152,7 +152,6 @@ export const FormLayout = ({
 
   const { t } = useTranslation();
 
-  // TODO: this query should only get triggered when roles are enabled for an organization
   const { data: roleData } = useQuery(GET_ROLE_NAMES, { skip: !roleAccessSupport });
 
   useEffect(() => {

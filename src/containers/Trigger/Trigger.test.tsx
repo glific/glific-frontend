@@ -7,6 +7,7 @@ import { LIST_ITEM_MOCKS } from 'containers/SettingList/SettingList.test.helper'
 import { LIST_ITEM_MOCKS as SearchMocks } from 'containers/Search/Search.test.helper';
 import * as AutoComplete from 'components/UI/Form/AutoComplete/AutoComplete';
 import {
+  createTriggerQuery,
   getTriggerQuery,
   hourlyTrigger,
   updateTriggerQuery,
@@ -22,7 +23,12 @@ vi.mock('react-router-dom', async () => {
 });
 
 describe('trigger with daily frequency', () => {
-  const frequencyDailyMocks = [getTriggerQuery('daily'), ...LIST_ITEM_MOCKS, ...SearchMocks];
+  const frequencyDailyMocks = [
+    getTriggerQuery('daily'),
+    ...LIST_ITEM_MOCKS,
+    ...SearchMocks,
+    createTriggerQuery,
+  ];
 
   const frequencyDailyWrapper = (
     <MockedProvider mocks={frequencyDailyMocks} addTypename={false}>
@@ -63,7 +69,6 @@ describe('trigger with no frequency', () => {
     </MockedProvider>
   );
 
-  // Todo: depreciation warning for moment in test
   test('save functionality', async () => {
     const { getByText, getAllByTestId } = render(frequencyDailyWrapper);
 
