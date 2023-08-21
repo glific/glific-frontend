@@ -167,7 +167,6 @@ export const InteractiveOptions = ({
           </FormControl>
         </div>
       )}
-
       {templateType && (
         <div
           className={

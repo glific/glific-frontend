@@ -59,6 +59,21 @@ const theme = createTheme({
           borderRadius: '12px',
           borderWidth: '2px',
         },
+        root: {
+          height: '48px',
+        },
+        multiline: {
+          minHeight: '160px',
+        },
+      },
+    },
+    MuiAutocomplete: {
+      styleOverrides: {
+        root: {
+          '& .MuiOutlinedInput-root': {
+            padding: '0px 0px 0px 14px !important',
+          },
+        },
       },
     },
     MuiDialogActions: {

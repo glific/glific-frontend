@@ -15,6 +15,8 @@
 
 .Root {
   margin-right: 5px !important;
+  margin-top: 19px;
+  height: 18px;
 }
 
 .Tooltip {
@@ -23,7 +25,7 @@
 }
 
 .InfoIcon {
-  margin-bottom: -4px;
+  margin-bottom: -11px;
   cursor: pointer;
   height: 16px;
   width: 16px;

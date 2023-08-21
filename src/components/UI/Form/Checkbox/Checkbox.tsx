@@ -59,7 +59,7 @@ export const Checkbox = ({
       />
       {info?.title && infoType === 'tooltip' && (
         <Tooltip tooltipClass={styles.Tooltip} title={info.title} placement="right">
-          <InfoIcon />
+          <InfoIcon className={styles.InfoIcon} />
         </Tooltip>
       )}
       {info && infoType === 'dialog' && (

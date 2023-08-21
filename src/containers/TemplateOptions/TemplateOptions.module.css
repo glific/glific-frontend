@@ -43,6 +43,7 @@
 
 .RadioStyles {
   composes: Font;
+  margin-bottom: 12px;
 }
 
 .RadioLabel > span:last-child {
@@ -67,8 +68,9 @@
 
 .RadioLabelWrapper {
   width: 50%;
-  align-items: center;
   display: flex;
+  align-items: center;
+  margin-top: 20px;
 }
 
 .Tooltip {
@@ -95,7 +97,7 @@
   background: #f8faf5;
   border-radius: 12px;
   border: 1px solid #cccccc;
-  margin-top: 12px;
+  margin-top: 18px;
 }
 
 .QuickReplyContainer > div > div {
@@ -115,7 +117,7 @@
   background: #f8faf5;
   border-radius: 12px;
   border: 1px solid #cccccc;
-  margin-top: 12px;
+  margin-top: 18px;
 }
 
 .RemoveIcon {
@@ -136,4 +138,8 @@
 
 .CallToActionTemplateFields > div:nth-child(3) > div > div {
   margin-bottom: 0px !important;
+}
+
+.Button {
+  margin-top: 7px;
 }

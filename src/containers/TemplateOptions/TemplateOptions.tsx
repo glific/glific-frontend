@@ -194,7 +194,7 @@ export const TemplateOptions = ({
               </FormControl>
             </div>
           </div>
-          <div>
+          <div className={styles.Button}>
             {inputFields.length === index + 1 && inputFields.length !== 2
               ? addButton(arrayHelpers, true)
               : null}

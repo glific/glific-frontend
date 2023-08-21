@@ -200,7 +200,7 @@ export const AutoComplete = ({
   const getOptionDisabled = (option: any) => selectedOptionsIds.includes(option.id);
 
   return (
-    <div className={styles.Input}>
+    <div className={isFilterType ? styles.FilterInput : styles.Input}>
       <FormControl fullWidth error={hasError}>
         {questionText ? <div className={styles.QuestionText}>{questionText}</div> : null}
         <Autocomplete

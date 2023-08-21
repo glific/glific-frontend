@@ -1,6 +1,11 @@
 .Input {
   display: flex;
-  padding: 8px 0px;
+  padding-top: 15px;
+  min-width: 150px;
+}
+
+.FilterInput {
+  display: flex;
   min-width: 150px;
 }
 
@@ -13,11 +18,12 @@
 }
 
 .HelperText {
-  margin-left: 0px !important;
+  margin: 0px !important;
+  padding: 0px !important;
   color: #93a29b !important;
   line-height: 1 !important;
   font-size: 12px !important;
-  margin-top: 4px !important;
+  margin-top: 7px !important;
 }
 
 .HelpLink {

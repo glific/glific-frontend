@@ -7,7 +7,6 @@
   align-items: center;
   display: flex;
   padding-top: 24px;
-  padding-bottom: 16px;
 }
 
 .RadioLabelWrapper:last-child {
@@ -73,7 +72,7 @@
   font-size: 16px !important;
   line-height: 18px !important;
   color: #555555;
-  margin-bottom: 8px;
+  margin-bottom: 15px;
 }
 
 @media screen and (max-width: 768px) {

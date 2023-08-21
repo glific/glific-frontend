@@ -61,6 +61,7 @@
 
 .ActionButtons {
   padding-top: 16px;
+  margin-top: 12px;
 }
 
 .ActionButtons > button:first-child {
