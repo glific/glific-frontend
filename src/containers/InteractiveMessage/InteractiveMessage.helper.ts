@@ -262,7 +262,9 @@ export const getPayloadByMediaType = (mediaType: string, payload: any) => {
   }
 
   result.text = getPlainTextFromEditor(payload.body);
-  result.caption = payload.footer;
+  if (payload.footer) {
+    result.caption = payload.footer;
+  }
 
   return result;
 };

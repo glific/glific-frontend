@@ -271,13 +271,10 @@ export const List = ({
   });
 
   // Get item data here
-  const [fetchQuery, { loading, error, data, refetch: refetchValues }] = useLazyQuery(
-    filterItemsQuery,
-    {
-      variables: filterPayload(),
-      fetchPolicy: 'cache-first',
-    },
-  );
+  const [, { loading, error, data, refetch: refetchValues }] = useLazyQuery(filterItemsQuery, {
+    variables: filterPayload(),
+    fetchPolicy: 'cache-first',
+  });
 
   // Get item data here
   const [fetchUserCollections, { loading: loadingCollections, data: userCollections }] =
@@ -288,6 +285,7 @@ export const List = ({
   };
 
   useEffect(() => {
+    // Todo: refetching values twice. Need to think of a better way to do this
     refetchValues();
     refetchCount();
   }, [searchVal, filters]);
@@ -297,10 +295,10 @@ export const List = ({
       checkUserRole();
     } else {
       if (!userRolePermissions.manageCollections && listItem === 'collections') {
+        console.log(listItem);
         // if user role staff then display collections related to login user
         fetchUserCollections();
       }
-      fetchQuery();
       Track(`Visit ${listItemName}`);
     }
   }, []);
@@ -414,7 +412,7 @@ export const List = ({
   function getIcons(
     // id: number | undefined,
     item: any,
-    allowedAction: any | null,
+    allowedAction: any | null
   ) {
     // there might be a case when we might want to allow certain actions for reserved items
     // currently we don't allow edit or delete for reserved items. hence return early
@@ -485,7 +483,7 @@ export const List = ({
 
     const actionsInsideMore = additionalAction(item).filter((action: any) => action?.hasMoreOption);
     const actionsOutsideMore = additionalAction(item).filter(
-      (action: any) => !action?.hasMoreOption,
+      (action: any) => !action?.hasMoreOption
     );
 
     const actionListMap = (actionList: any, hasMoreOption: boolean) => {
@@ -544,10 +542,6 @@ export const List = ({
             </IconButton>
           );
         }
-        if (action.button) {
-          return action.button(item, action, key, fetchQuery);
-        }
-        e;
         return null;
       });
     };

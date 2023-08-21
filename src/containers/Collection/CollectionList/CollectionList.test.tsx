@@ -45,10 +45,6 @@ describe('<CollectionList />', () => {
     await waitFor(() => {
       expect(getByText('Collections')).toBeInTheDocument();
     });
-
-    // TODO: test flows
-
-    // TODO: test delete
   });
 
   test('it should have add contact to collection dialog box ', async () => {

@@ -1,4 +1,4 @@
-import { GET_TAG, FILTER_TAGS, GET_TAGS } from 'graphql/queries/Tags';
+import { GET_TAG, FILTER_TAGS, GET_TAGS, GET_TAG_COUNT } from 'graphql/queries/Tags';
 
 export const getTagQuery = {
   request: {
@@ -44,11 +44,9 @@ export const filterTagQuery = {
         order: 'ASC',
         offset: 0,
         limit: 50,
-        orderWith: 'id',
+        orderWith: 'label',
       },
-      filter: {
-        isActive: true,
-      },
+      filter: {},
     },
   },
 
@@ -64,6 +62,10 @@ export const filterTagQuery = {
           isActive: true,
           isReserved: true,
           keywords: null,
+          language: {
+            id: '1',
+            label: 'English',
+          },
           label: 'Staff',
           shortcode: 'staff',
           updatedAt: '2023-07-26T07:31:31Z',
@@ -92,6 +94,20 @@ export const getFilterTagQuery = {
           label: 'Contacts',
         },
       ],
+    },
+  },
+};
+
+export const countTagQuery = {
+  request: {
+    query: GET_TAG_COUNT,
+    variables: { filter: {} },
+  },
+  result: {
+    data: {
+      countTags: {
+        countTags: 1,
+      },
     },
   },
 };

@@ -7,7 +7,9 @@ import { SEARCH_QUERY } from 'graphql/queries/Search';
 import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT } from 'common/constants';
 import ChatConversations from './ChatConversations';
 import { ChatConversationMocks } from './ChatConversations.test.helper';
+import { setUserSession } from 'services/AuthService';
 
+setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
 const cache = new InMemoryCache({ addTypename: false });
 cache.writeQuery({
   query: SEARCH_QUERY,
@@ -22,6 +24,7 @@ cache.writeQuery({
         group: null,
         contact: {
           id: '2',
+          fields: '{}',
           name: 'Effie Cormier',
           phone: '987654321',
           maskedPhone: '98****321',

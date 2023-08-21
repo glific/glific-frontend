@@ -55,16 +55,19 @@ test('it renders list successfully', async () => {
     expect(screen.getByTestId('inline-input')).toBeInTheDocument();
   });
 
-  const inputFields = screen.getAllByRole('textbox');
-  userEvent.type(inputFields[1], '{selectall}{backspace}');
-  userEvent.type(inputFields[1], '{selectall}{backspace}Age Group Name');
+  const inputFields = screen.getByTestId('inline-input') as HTMLElement;
+
+  await userEvent.click(inputFields);
+  await userEvent.type(inputFields.querySelector('input') as HTMLElement, ' Name');
+
   const saveButton = screen.getByTestId('save-button');
   fireEvent.click(saveButton);
-  await waitFor(() => {});
+  await waitFor(() => {
+    expect(screen.getByText('Age Group Name')).toBeInTheDocument();
+  });
 });
 
-const errorMock: any = [...mocks, ...mocks];
-errorMock.push(contactFieldErrorMock);
+const errorMock: any = [contactFieldErrorMock, ...mocks, ...mocks];
 
 const listError = (
   <MockedProvider mocks={errorMock}>
@@ -91,5 +94,7 @@ test('it renders component, edits field, saves and error occurs', async () => {
   const saveButton = screen.getByTestId('save-button');
   fireEvent.click(saveButton);
 
-  await waitFor(() => {});
+  await waitFor(() => {
+    expect(screen.getByTestId('inlineInputError')).toBeInTheDocument();
+  });
 });

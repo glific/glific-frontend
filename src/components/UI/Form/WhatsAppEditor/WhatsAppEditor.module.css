@@ -20,7 +20,6 @@
   font-size: 16px;
 }
 
-/* TODO: Override emoji-mart-emoji font-size to make it medium. */
 span.emoji-mart-emoji {
   font-size: medium;
 }

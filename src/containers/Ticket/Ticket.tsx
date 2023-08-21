@@ -46,7 +46,7 @@ export const Ticket = ({ selectedTicket, setOpenDialog }: TicketProps) => {
   const { t } = useTranslation();
   const [status, setStatus] = useState('');
   const [remarks, setRemarks] = useState('');
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState(null);
   const [insertedAt, setInsertedAt] = useState('');
   const [body, setBody] = useState('');
   const [updatedAt, setUpdatedAt] = useState('');
@@ -77,7 +77,7 @@ export const Ticket = ({ selectedTicket, setOpenDialog }: TicketProps) => {
     setInsertedAt(insertedAtValue);
     setUpdatedAt(updatedAtValue);
     setRemarks(remarksValue);
-    setUser(userValue.name);
+    setUser(userValue);
   };
 
   const setPayload = (payload: any) => ({

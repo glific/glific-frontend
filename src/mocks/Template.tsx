@@ -1,6 +1,7 @@
 import { setVariables } from 'common/constants';
 import { BULK_APPLY_TEMPLATES, IMPORT_TEMPLATES } from 'graphql/mutations/Template';
 import { FILTER_TEMPLATES, GET_TEMPLATES_COUNT } from 'graphql/queries/Template';
+import { searchInteractive, searchInteractiveHi } from './InteractiveMessage';
 
 export const filterTemplatesQuery = (term: any, data: any) => {
   return {
@@ -17,9 +18,12 @@ export const filterTemplatesQuery = (term: any, data: any) => {
 };
 
 export const TEMPLATE_MOCKS = [
+  searchInteractive,
+  searchInteractiveHi,
   filterTemplatesQuery('', [
     {
       id: '87',
+      bspId: null,
       label: 'Good message',
       body: 'Hey there',
       shortcode: 'test',
@@ -46,6 +50,7 @@ export const TEMPLATE_MOCKS = [
     {
       id: '94',
       label: 'Message',
+      bspId: null,
       body: 'some description',
       shortcode: 'test',
       isReserved: true,
@@ -71,6 +76,7 @@ export const TEMPLATE_MOCKS = [
   filterTemplatesQuery('', [
     {
       id: '87',
+      bspId: null,
       label: 'Good message',
       body: 'Hey there',
       shortcode: 'test',
@@ -96,6 +102,7 @@ export const TEMPLATE_MOCKS = [
     {
       id: '94',
       label: 'Message',
+      bspId: null,
       body: 'some description',
       shortcode: 'test',
       isReserved: true,
@@ -124,6 +131,7 @@ export const TEMPLATE_MOCKS = [
     {
       id: '87',
       label: 'Good message',
+      bspId: null,
       body: 'hi can you help!',
       shortcode: 'test',
       isReserved: true,

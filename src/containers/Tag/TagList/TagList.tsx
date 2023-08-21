@@ -35,7 +35,7 @@ export const TagList = () => {
   });
 
   const columnNames = [
-    { label: t('Title') },
+    { name: 'label', label: t('Title') },
     { label: t('No. of flows') },
     { label: t('Created') },
     { label: t('Actions') },

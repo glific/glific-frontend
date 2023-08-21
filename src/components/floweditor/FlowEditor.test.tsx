@@ -25,6 +25,8 @@ import {
 } from 'mocks/Simulator';
 import axios from 'axios';
 
+window.location = { assign: vi.fn() } as any;
+
 vi.mock('react-router-dom', async () => {
   return {
     ...(await vi.importActual<any>('react-router-dom')),

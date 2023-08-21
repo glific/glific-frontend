@@ -80,7 +80,12 @@ export const OrganisationFlows = () => {
     setEnabledDays(getEnabledDays(data.enabledDays));
   };
 
-  const getFlow = (id: string) => flow.flows.filter((option: any) => option.id === id)[0];
+  const getFlow = (id: string) => {
+    const flowFound = flow.flows.filter((option: any) => option.id === id);
+    if (flowFound.length > 0) {
+      return flowFound[0];
+    } else return null;
+  };
 
   const setStates = ({
     outOfOffice: outOfOfficeValue,

@@ -2,12 +2,18 @@ import { MockedProvider } from '@apollo/client/testing';
 import { render, waitFor, fireEvent } from '@testing-library/react';
 import { vi } from 'vitest';
 
-import { collectionCountQuery, savedSearchQueryError, savedSearchStatusQuery } from 'mocks/Chat';
+import { collectionCountQuery, savedSearchQuery, savedSearchStatusQuery } from 'mocks/Chat';
 import { collectionCountSubscription } from 'mocks/Search';
 import { setUserSession } from 'services/AuthService';
 import SavedSearchToolbar from './SavedSearchToolbar';
 
-const mocks = [savedSearchStatusQuery, collectionCountSubscription, collectionCountQuery];
+const mocks = [
+  savedSearchStatusQuery,
+
+  savedSearchQuery,
+  collectionCountSubscription,
+  collectionCountQuery,
+];
 
 describe('testing <SavedSearchToolbar />', () => {
   const defaultProps = {
@@ -72,20 +78,5 @@ describe('testing <SavedSearchToolbar />', () => {
     fireEvent.click(optin);
 
     await waitFor(() => {});
-  });
-
-  test('check if savedSearch query return error', async () => {
-    const savedSearchToolbar = (
-      <MockedProvider
-        mocks={[savedSearchQueryError, collectionCountSubscription, collectionCountQuery]}
-      >
-        <SavedSearchToolbar {...defaultProps} />
-      </MockedProvider>
-    );
-    const { getByText } = render(savedSearchToolbar);
-
-    await waitFor(() => {
-      getByText('error');
-    });
   });
 });

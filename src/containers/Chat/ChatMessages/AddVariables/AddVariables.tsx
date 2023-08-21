@@ -26,7 +26,11 @@ export const AddVariables = ({
   variableParam,
 }: AddVariablesPropTypes) => {
   const [formFieldItems, setFormFieldItems] = useState<any>([]);
-  const [initialValues, setInitialValues] = useState<any>({});
+  const initialValue: any = {};
+  variableParam.forEach((value: any, i: any) => {
+    initialValue[`variable${i + 1}`] = value;
+  });
+  const [initialValues, setInitialValues] = useState<any>(initialValue);
   const { t } = useTranslation();
   const [contactVariables, setContactVariables] = useState<any>([]);
 
@@ -97,14 +101,6 @@ export const AddVariables = ({
       setFormFieldItems(formFieldItem);
     }
   }, [template, contactVariables, initialValues]);
-
-  useEffect(() => {
-    const initialValue: any = {};
-    variableParam.forEach((value: any, i: any) => {
-      initialValue[`variable${i + 1}`] = value;
-    });
-    setInitialValues(initialValue);
-  }, [variableParam]);
 
   const updateText = (variable: any) => {
     let body = template?.body;

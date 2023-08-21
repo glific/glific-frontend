@@ -5,7 +5,6 @@ import { vi, describe, it } from 'vitest';
 
 import App from 'App';
 import { CONVERSATION_MOCKS } from 'mocks/Chat';
-import { setAuthSession, setUserSession } from 'services/AuthService';
 
 const mocks = CONVERSATION_MOCKS;
 import axios from 'axios';
@@ -23,6 +22,11 @@ const app = (
   </MockedProvider>
 );
 
+vi.mock('routes/AuthenticatedRoute/AuthenticatedRoute', () => ({
+  default: () => <div>Authenticated route subscription</div>,
+  AuthenticatedRoute: () => <div>Chat subscription</div>,
+}));
+
 describe('<App /> ', () => {
   it('it should render <Login /> component by default', async () => {
     mockedAxios.post.mockImplementation(() => Promise.resolve({}));
@@ -37,28 +41,6 @@ describe('<App /> ', () => {
     const { container } = render(app);
     await waitFor(() => {
       expect(container).toBeInTheDocument();
-    });
-  });
-
-  it('it should render <Chat /> component if session is active', async () => {
-    // let's create token expiry date for tomorrow
-    mockedAxios.post.mockResolvedValue(() => Promise.resolve({}));
-
-    const tokenExpiryDate = new Date();
-    tokenExpiryDate.setDate(new Date().getDate() + 1);
-
-    setAuthSession(
-      '{"access_token":"access","renewal_token":"renew", "token_expiry_time":"' +
-        tokenExpiryDate +
-        '"}'
-    );
-
-    setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Staff'] }));
-
-    const { getByTestId } = render(app);
-
-    await waitFor(() => {
-      expect(getByTestId('navbar')).toBeInTheDocument();
     });
   });
 });

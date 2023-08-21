@@ -10,7 +10,7 @@ import { SpeedSend } from './SpeedSend';
 beforeEach(() => {
   cleanup();
 });
-const mocks = TEMPLATE_MOCKS;
+const mocks = [...TEMPLATE_MOCKS, ...TEMPLATE_MOCKS];
 setUserSession(JSON.stringify({ roles: ['Admin'] }));
 
 describe('SpeedSend', () => {
