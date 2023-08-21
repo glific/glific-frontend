@@ -67,6 +67,9 @@ const theme = createTheme({
         },
         multiline: {
           minHeight: '160px',
+          '& textarea': {
+            height: '100% !important',
+          },
         },
       },
     },

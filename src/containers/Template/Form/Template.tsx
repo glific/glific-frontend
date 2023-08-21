@@ -571,7 +571,7 @@ const Template = ({
     {
       component: Input,
       name: 'label',
-      placeholder: `${t('Title')}*`,
+      placeholder: `${t('Title')}`,
       label: `${t('Title')}*`,
       disabled: !!(defaultAttribute.isHsm && params.id),
       helperText: defaultAttribute.isHsm
