@@ -18,7 +18,10 @@
 }
 
 .Form > h5:nth-of-type(7) {
-  display: inline;
+  display: inline-block;
+  margin-right: 173px;
+  margin-top: 24px !important;
+  margin-bottom: 15px !important;
 }
 
 .Form > div:nth-of-type(7) {
@@ -27,12 +30,12 @@
 
 .Form > div:nth-of-type(7) {
   font-weight: 400 !important;
-  margin-left: 195px;
+  /* margin-left: 195px; */
 }
 
 .Form > div:nth-of-type(8) {
   display: inline-block;
-  margin-right: 18px;
+  margin-right: 16px;
   width: 48%;
   padding: 0px;
 }
@@ -43,9 +46,7 @@
 }
 
 .DateRangeLabel {
-  margin-right: 12px;
   width: fit-content;
-  margin-top: -12px !important;
 }
 
 .DialogTitleText {
