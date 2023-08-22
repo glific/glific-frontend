@@ -1,16 +1,22 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
-import { Card, CardContent, CardActions, IconButton, Typography } from '@mui/material';
+import { IconButton, Typography, Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { GET_PROVIDERS } from 'graphql/queries/Organization';
 import { ReactComponent as Settingicon } from 'assets/images/icons/Settings/Settings.svg';
-import { ReactComponent as EditIcon } from 'assets/images/icons/Edit.svg';
 import styles from './SettingList.module.css';
 import { useEffect } from 'react';
 import Track from 'services/TrackService';
+import OrganisationFlows from './OrganizationFlows/OrganisationFlows';
+import Organisation from './Organisation/Organisation';
+import Billing from './Billing/Billing';
+import Providers from './Providers/Providers';
 
 export const SettingList = () => {
+  const { type } = useParams();
+  const location = useLocation();
+
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { data: providerData, loading } = useQuery(GET_PROVIDERS);
@@ -54,46 +60,50 @@ export const SettingList = () => {
     CardList = [...List, ...providerData.providers];
   }
 
+  const drawer = (
+    <div className={styles.Drawer}>
+      {CardList.map((data: any, index: number) => (
+        <div
+          key={index}
+          onClick={() => navigate(`/settings/${data.shortcode}`)}
+          className={`${styles.Tab} ${
+            location.pathname == `/settings/${data.shortcode}` && styles.ActiveTab
+          }
+          ${
+            location.pathname == '/settings' && data.shortcode == 'organization' && styles.ActiveTab
+          }
+          `}
+        >
+          {data?.name}
+        </div>
+      ))}
+    </div>
+  );
+
   return (
     <>
       {heading}
-      <div className={styles.CardContainer}>
-        {CardList.map((data: any) => (
-          <Card
-            variant="outlined"
-            className={styles.Card}
-            key={data.shortcode}
-            data-testid={data.shortcode}
-            onClick={() => navigate(`/settings/${data.shortcode}`)}
-          >
-            <CardContent className={styles.CardContent}>
-              <div data-testid="label" className={styles.Label}>
-                {data.name}
-              </div>
-              <Typography
-                variant="body2"
-                component="div"
-                data-testid="description"
-                className={styles.Description}
-              >
-                {data.description}
-              </Typography>
-            </CardContent>
-            <CardActions className={styles.CardActions}>
-              <Link
-                to={{
-                  pathname: `/settings/${data.shortcode}`,
-                }}
-                className={styles.Link}
-              >
-                <IconButton aria-label="Edit" data-testid="EditIcon">
-                  <EditIcon />
-                </IconButton>
-              </Link>
-            </CardActions>
-          </Card>
-        ))}
-      </div>
+      <Box sx={{ display: 'flex' }}>
+        {drawer}
+        <Box
+          component="main"
+          sx={{
+            overflowY: 'scroll',
+            flexGrow: 1,
+            p: 3,
+            height: '90vh',
+          }}
+        >
+          {(location.pathname == '/settings/organization' || location.pathname == '/settings') && (
+            <Organisation />
+          )}
+          {location.pathname == '/settings/organization-flows' && <OrganisationFlows />}
+          {location.pathname == '/settings/billing' && <Billing />}
+          {type && type != 'organization' && type != 'organization-flows' && type != 'billing' && (
+            <Providers />
+          )}
+        </Box>
+      </Box>
     </>
   );
 };

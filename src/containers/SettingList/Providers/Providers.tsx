@@ -176,7 +176,6 @@ export const Providers = () => {
 
   return (
     <FormLayout
-      backLinkButton={{ text: t('Back to settings'), link: '/settings' }}
       {...queries}
       title={title}
       states={stateValues}

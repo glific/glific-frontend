@@ -275,15 +275,6 @@ export const BillingForm = () => {
     }
   };
 
-  const backLink = (
-    <div className={styles.BackLink}>
-      <Link to="/settings">
-        <BackIcon />
-        Back to settings
-      </Link>
-    </div>
-  );
-
   const cardElements = (
     <>
       <CardElement
@@ -359,7 +350,6 @@ export const BillingForm = () => {
         </IconButton>
         Billing
       </Typography>
-      {backLink}
       <div className={styles.Description}>
         <div className={styles.UpperSection}>
           <div className={styles.Setup}>

@@ -374,7 +374,6 @@ export const OrganisationFlows = () => {
 
   return (
     <FormLayout
-      backLinkButton={{ text: t('Back to settings'), link: '/settings' }}
       {...queries}
       title="organization flows"
       states={States}
