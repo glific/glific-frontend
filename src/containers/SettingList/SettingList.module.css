@@ -72,6 +72,7 @@
   padding: 44px 40px;
   background-color: white;
   width: fit-content;
+  border-radius: 1px solid #efefef;
 }
 
 .Tab {
