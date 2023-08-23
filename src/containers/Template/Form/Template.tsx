@@ -1018,7 +1018,7 @@ const Template = ({
       getLanguageId={getLanguageId}
       languageSupport={false}
       isAttachment
-      getMediaId={getMediaId}
+      getMediaId={defaultAttribute.isHsm && params.id ? () => {} : getMediaId}
       getQueryFetchPolicy="cache-and-network"
       button={defaultAttribute.isHsm && !params.id ? t('Submit for Approval') : t('Save')}
       buttonState={{ text: t('Validating URL'), status: validatingURL }}
