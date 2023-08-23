@@ -1,8 +1,10 @@
 .LabelText {
   font-weight: 500;
-  font-size: 20px;
-  margin: 0px;
-  color: #073f24;
+  font-size: 17px;
+  line-height: 20px;
+  color: #191c1a;
+  display: flex;
+  align-items: center;
 }
 
 .CollectionDescription {
@@ -17,8 +19,11 @@
 }
 
 .UserCount {
-  font-size: 12px;
-  color: #cacaca;
+  font-size: 15px;
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  color: #555;
 }
 
 .ExportPopup {
@@ -30,4 +35,20 @@
   box-shadow: 24px;
   border-radius: 10px;
   padding: 24px;
+}
+
+.Label {
+  min-width: 200px !important;
+  width: 20% !important;
+}
+
+.Contact {
+  width: 40% !important;
+  min-width: 200px;
+}
+
+.Actions {
+  width: 40% !important;
+  min-width: 200px !important;
+  text-align: end;
 }
