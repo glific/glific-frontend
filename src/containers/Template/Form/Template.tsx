@@ -198,7 +198,7 @@ const Template = ({
   const navigate = useNavigate();
   const location: any = useLocation();
   const params = useParams();
-  const isEditForm = !!params?.id;
+  const isEditForm = !!params.id;
 
   const { data: tag } = useQuery(GET_TAGS, {
     variables: {},
@@ -370,7 +370,7 @@ const Template = ({
   const [createMediaMessage] = useMutation(CREATE_MEDIA_MESSAGE);
 
   useEffect(() => {
-    if (params?.id) {
+    if (params.id) {
       getSessionTemplate({ variables: { id: params.id } });
     }
   }, []);
@@ -988,7 +988,7 @@ const Template = ({
     if (saveClick) {
       return;
     }
-    if (params?.id) {
+    if (params.id) {
       handleLanguageChange(nextLanguage);
     } else {
       const { sessionTemplate } = data.createSessionTemplate;
