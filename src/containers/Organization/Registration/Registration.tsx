@@ -161,10 +161,16 @@ export const Registration = ({ title, buttonText, handleStep }: RegistrationProp
           }
         }
       })
-      .catch(() => {
-        setRegistrationError({
-          global: 'Sorry! an error occured. Please contact the technical team for support',
-        });
+      .catch((error: any) => {
+        if (error.response?.data && error.response?.data?.error) {
+          setRegistrationError({
+            global: error.response.data.error.message,
+          });
+        } else {
+          setRegistrationError({
+            global: 'Sorry! an error occured. Please contact the technical team for support',
+          });
+        }
         setLoading(false);
       });
   };
