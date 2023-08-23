@@ -114,10 +114,7 @@ export const Consulting = ({ organizationId, setOpenDialog }: ConsultingProps) =
       options: organizationOptions,
       optionLabel: 'name',
       multiple: false,
-      textFieldProps: {
-        label: t('Select Organization'),
-        variant: 'outlined',
-      },
+      label: t('Select Organization'),
       onChange: (val: any) => setOrganization(val),
     },
     {

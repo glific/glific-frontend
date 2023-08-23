@@ -96,7 +96,8 @@ export const HSM = () => {
     {
       component: EmojiInput,
       name: 'example',
-      placeholder: `${t('Sample message')}*`,
+      label: `${t('Sample message')}*`,
+      placeholder: `${t('Type your message')}*`,
       rows: 5,
       convertToWhatsApp: true,
       textArea: true,
@@ -114,10 +115,8 @@ export const HSM = () => {
       options: categoryOpn,
       optionLabel: 'label',
       multiple: false,
-      textFieldProps: {
-        variant: 'outlined',
-        label: `${t('Category')}*`,
-      },
+      label: `${t('Category')}*`,
+      placeholder: `${t('Category')}*`,
       disabled,
       helperText: t('Select the most relevant category'),
       onChange: (event: any) => {
@@ -128,6 +127,7 @@ export const HSM = () => {
       component: Input,
       name: 'shortcode',
       placeholder: `${t('Element name')}*`,
+      label: `${t('Element name')}*`,
       disabled,
       inputProp: {
         onBlur: (event: any) => setShortcode(event.target.value),

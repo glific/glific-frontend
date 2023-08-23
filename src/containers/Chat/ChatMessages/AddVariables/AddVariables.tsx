@@ -94,10 +94,7 @@ export const AddVariables = ({
           onInputChange: (event: any, newInputValue: any) => {
             syncInitialValuesWithFormik(newInputValue, index);
           },
-          textFieldProps: {
-            variant: 'outlined',
-            label: `Variable ${index}`,
-          },
+          label: `Variable ${index}`,
         });
       }
 

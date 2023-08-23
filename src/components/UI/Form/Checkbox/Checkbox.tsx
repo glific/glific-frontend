@@ -1,6 +1,5 @@
 import { Checkbox as CheckboxElement, FormControlLabel } from '@mui/material';
-import { ReactComponent as InfoIcon } from 'assets/images/icons/Info.svg';
-
+import { ReactComponent as InfoIcon } from 'assets/images/info.svg';
 import Tooltip from 'components/UI/Tooltip/Tooltip';
 import styles from './Checkbox.module.css';
 
@@ -60,7 +59,7 @@ export const Checkbox = ({
       />
       {info?.title && infoType === 'tooltip' && (
         <Tooltip tooltipClass={styles.Tooltip} title={info.title} placement="right">
-          <InfoIcon />
+          <InfoIcon className={styles.InfoIcon} />
         </Tooltip>
       )}
       {info && infoType === 'dialog' && (

@@ -7,7 +7,6 @@ import { useParams } from 'react-router-dom';
 import { ReactComponent as ProfileIcon } from 'assets/images/icons/Contact/Profile.svg';
 import { CONTACT_STATUS, PROVIDER_STATUS } from 'common/constants';
 import { FormLayout } from 'containers/Form/FormLayout';
-import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
 import { Input } from 'components/UI/Form/Input/Input';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { GET_CONTACT } from 'graphql/queries/Contact';
@@ -20,6 +19,7 @@ import {
 import { GET_CURRENT_USER } from 'graphql/queries/User';
 import { getOrganizationServices } from 'services/AuthService';
 import { isSimulator } from 'common/utils';
+import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 
 const profileIcon = <ProfileIcon />;
 
@@ -135,31 +135,41 @@ export const Profile = ({
       name: 'name',
       type: 'text',
       disabled: profileType === 'Contact',
+      label: t('Name'),
       placeholder: t('Name'),
     },
     {
       component: Input,
       name: 'phone',
       placeholder: t('Phone Number'),
+      label: t('Phone Number'),
       disabled: true,
       skip: removePhoneField,
       skipPayload: true,
     },
     {
-      component: Dropdown,
+      component: AutoComplete,
       name: 'status',
       placeholder: t('Status'),
+      label: t('Status'),
       options: CONTACT_STATUS,
+      optionLabel: 'label',
       disabled: true,
       skipPayload: true,
+      handleCreateItem: () => {},
+      multiple: false,
     },
     {
-      component: Dropdown,
+      component: AutoComplete,
       name: 'bspStatus',
       placeholder: t('Provider status'),
+      label: t('Provider status'),
       options: PROVIDER_STATUS,
+      optionLabel: 'label',
       disabled: true,
       skipPayload: true,
+      handleCreateItem: () => {},
+      multiple: false,
     },
   ];
 

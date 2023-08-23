@@ -1,4 +1,4 @@
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent, cleanup } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import axios from 'axios';
 import { Route, MemoryRouter, Routes } from 'react-router-dom';
@@ -8,6 +8,10 @@ import { setUserSession } from 'services/AuthService';
 import { mocks } from 'mocks/InteractiveMessage';
 import { InteractiveMessage } from './InteractiveMessage';
 import { FLOW_EDITOR_API } from 'config';
+
+afterEach(() => {
+  cleanup();
+});
 
 const mockUseLocationValue: any = {
   pathname: '/',
@@ -91,10 +95,10 @@ test('it renders empty interactive form', async () => {
 
   // Adding another quick reply button
   await waitFor(() => {
-    expect(screen.getByText('Add quick reply')).toBeInTheDocument();
+    expect(screen.getByTestId('addButton')).toBeInTheDocument();
   });
 
-  const addQuickReplyButton = screen.getByText('Add quick reply');
+  const addQuickReplyButton = screen.getByTestId('addButton');
   fireEvent.click(addQuickReplyButton);
 
   await waitFor(() => {
@@ -157,25 +161,24 @@ test('it renders empty interactive form', async () => {
 
   await waitFor(() => {
     // Adding another list item
-    const addAnotherListItemButton = screen.getByText('Add another list item');
+    const addAnotherListItemButton = screen.getByText('Add item');
     expect(addAnotherListItemButton);
     fireEvent.click(addAnotherListItemButton);
   });
 
   await waitFor(() => {
     // Adding another list
-    const addAnotherListButton = screen.getByText('Add another list');
+    const addAnotherListButton = screen.getByText('Add list');
     expect(addAnotherListButton);
     fireEvent.click(addAnotherListButton);
   });
 
   await waitFor(() => {
-    // Deleting list
-    const deleteListButton = screen.getByTestId('interactive-icon');
-    expect(deleteListButton).toBeInTheDocument();
-    fireEvent.click(deleteListButton);
+    expect(screen.getAllByTestId('delete-icon')).toHaveLength(2);
   });
-
+  // Deleting list
+  const deleteListButton = screen.getAllByTestId('delete-icon')[1];
+  fireEvent.click(deleteListButton);
   await waitFor(() => {
     // Deleting list item
     const deleteListItemButton = screen.getByTestId('cross-icon');

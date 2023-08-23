@@ -21,6 +21,7 @@ import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT, setVariables } from 'comm
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { getObject } from 'common/utils';
 import styles from './Search.module.css';
+import { searchInfo } from 'common/HelpData';
 
 export interface SearchProps {
   type?: string;
@@ -274,6 +275,7 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
       component: Input,
       name: 'shortcode',
       type: 'text',
+      label: t('Search Title'),
       placeholder: t('Search Title'),
       inputProp: {
         onChange: (event: any) => {
@@ -285,6 +287,7 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
       component: Input,
       name: 'label',
       type: 'text',
+      label: t('Description'),
       placeholder: t('Description'),
       rows: 3,
       textArea: true,
@@ -301,6 +304,7 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
       component: Input,
       name: 'term',
       type: 'text',
+      label: t('Enter name, label, keyword'),
       placeholder: t('Enter name, label, keyword'),
       inputProp: {
         onChange: (event: any) => {
@@ -312,11 +316,9 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
       component: AutoComplete,
       name: 'includeLabels',
       label: t('Includes labels'),
+      placeholder: t('Includes labels'),
       options: dataLabels.flowLabels,
       optionLabel: 'name',
-      textFieldProps: {
-        variant: 'outlined',
-      },
       icon: <LabelIcon stroke="#073f24" />,
       onChange: (val: any) => setIncludeLabels(val),
     },
@@ -328,9 +330,6 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
       options: data.groups,
       optionLabel: 'label',
       noOptionsText: t('No collections available'),
-      textFieldProps: {
-        variant: 'outlined',
-      },
       onChange: (val: any) => setIncludeGroups(val),
     },
     {
@@ -340,9 +339,6 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
       label: t('Includes staff'),
       options: dataUser.users,
       optionLabel: 'name',
-      textFieldProps: {
-        variant: 'outlined',
-      },
       onChange: (val: any) => setIncludeUsers(val),
     },
   ];
@@ -511,6 +507,7 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
         customStyles={customStyles}
         type={type}
         afterSave={saveHandler}
+        helpData={searchInfo}
       />
     </>
   );

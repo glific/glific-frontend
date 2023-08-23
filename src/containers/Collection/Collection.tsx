@@ -20,6 +20,7 @@ import { ReactComponent as CollectionIcon } from 'assets/images/icons/StaffManag
 import { ReactComponent as ContactIcon } from 'assets/images/icons/Contact/View.svg';
 import { COLLECTION_SEARCH_QUERY_VARIABLES, setVariables } from 'common/constants';
 import styles from './Collection.module.css';
+import { collectionInfo } from 'common/HelpData';
 
 export const Collection = () => {
   const [selectedUsers, { data: collectionUsers }] = useLazyQuery(GET_COLLECTION_USERS, {
@@ -132,12 +133,14 @@ export const Collection = () => {
       name: 'label',
       type: 'text',
       placeholder: t('Title'),
+      label: t('Title'),
       validate: validateTitle,
     },
     {
       component: Input,
       name: 'description',
       type: 'text',
+      label: t('Description'),
       placeholder: t('Description'),
       rows: 3,
       textArea: true,
@@ -148,10 +151,8 @@ export const Collection = () => {
       additionalState: 'users',
       options: data ? data.users : [],
       optionLabel: 'name',
-      textFieldProps: {
-        label: t('Assign staff to collection'),
-        variant: 'outlined',
-      },
+      label: t('Assign staff to collection'),
+      placeholder: t('Assign staff to collection'),
       skipPayload: true,
       icon: <ContactIcon className={styles.ContactIcon} />,
       helperText: t(
@@ -192,6 +193,7 @@ export const Collection = () => {
       redirectionLink="collection"
       listItem="group"
       icon={collectionIcon}
+      helpData={collectionInfo}
     />
   );
 };

@@ -65,7 +65,7 @@
 }
 
 .TitleText {
-  font-weight: bold !important;
+  font-weight: bold;
 }
 
 .CenterBox {
@@ -177,12 +177,12 @@
 
 .AuthButton {
   width: 334px;
-  margin-right: 0px !important;
+  margin-right: 0px;
 }
 
 .AuthRegistrationButton {
   composes: AuthButton;
-  border: 0px !important;
+  border: 0px;
 }
 
 .ErrorMessage {
@@ -228,12 +228,12 @@
 .RegistrationBox input:hover,
 .OTPBox input,
 .OTPBox input:hover {
-  color: #93a29b !important;
+  color: #93a29b;
 }
 
 .RegistrationBox fieldset,
 .OTPBox fieldset {
-  border-color: #93a29b !important;
+  border-color: #93a29b;
 }
 
 .SubmitAction {
@@ -262,4 +262,13 @@
 .Captcha {
   display: flex;
   justify-content: center;
+}
+
+.FieldLabel {
+  margin-top: 16px;
+  vertical-align: middle;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 18px;
+  color: #555555;
 }

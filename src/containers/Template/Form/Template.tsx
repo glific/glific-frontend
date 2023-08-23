@@ -24,6 +24,7 @@ import Loading from 'components/UI/Layout/Loading/Loading';
 import { CreateAutoComplete } from 'components/UI/Form/CreateAutoComplete/CreateAutoComplete';
 import { validateMedia } from 'common/utils';
 import styles from './Template.module.css';
+import { speedSendInfo } from 'common/HelpData';
 
 const regexForShortcode = /^[a-z0-9_]+$/g;
 
@@ -67,8 +68,8 @@ const formIsActive = {
   component: Checkbox,
   name: 'isActive',
   title: (
-    <Typography variant="h6" style={{ color: '#073f24' }}>
-      Is active?
+    <Typography variant="h6" className={styles.IsActive}>
+      Active?
     </Typography>
   ),
   darkCheckbox: true,
@@ -500,10 +501,8 @@ const Template = ({
       options: mediaTypes,
       optionLabel: 'label',
       multiple: false,
-      textFieldProps: {
-        variant: 'outlined',
-        label: t('Attachment Type'),
-      },
+      label: t('Attachment Type'),
+      placeholder: t('Attachment Type'),
       disabled: !!(defaultAttribute.isHsm && params.id),
       helperText: warning,
       onChange: (event: any) => {
@@ -518,6 +517,7 @@ const Template = ({
       component: Input,
       name: 'attachmentURL',
       type: 'text',
+      label: t('Attachment URL'),
       placeholder: t('Attachment URL'),
       validate: () => isUrlValid,
       disabled: !!(defaultAttribute.isHsm && params.id),
@@ -555,10 +555,7 @@ const Template = ({
           options: languageOptions,
           optionLabel: 'label',
           multiple: false,
-          textFieldProps: {
-            variant: 'outlined',
-            label: `${t('Language')}*`,
-          },
+          label: `${t('Language')}*`,
           disabled: !!(defaultAttribute.isHsm && params.id),
           onChange: getLanguageId,
         }
@@ -574,7 +571,8 @@ const Template = ({
     {
       component: Input,
       name: 'label',
-      placeholder: `${t('Title')}*`,
+      placeholder: `${t('Title')}`,
+      label: `${t('Title')}*`,
       disabled: !!(defaultAttribute.isHsm && params.id),
       helperText: defaultAttribute.isHsm
         ? t('Define what use case does this template serve eg. OTP, optin, activity preference')
@@ -583,10 +581,12 @@ const Template = ({
         onBlur: (event: any) => setLabel(event.target.value),
       },
     },
+    formIsActive,
     {
       component: EmojiInput,
       name: 'body',
-      placeholder: `${t('Message')}*`,
+      label: `${t('Message')}*`,
+      placeholder: `${t('Type your message')}`,
       rows: 5,
       convertToWhatsApp: true,
       textArea: true,
@@ -683,7 +683,11 @@ const Template = ({
   const templateRadioOptions = [
     {
       component: Checkbox,
-      title: <Typography variant="h6">Add buttons</Typography>,
+      title: (
+        <Typography variant="h6" className={styles.IsActive}>
+          Add buttons
+        </Typography>
+      ),
       name: 'isAddButtonChecked',
       disabled: !!(defaultAttribute.isHsm && params.id),
       handleChange: (value: boolean) => setIsAddButtonChecked(value),
@@ -712,10 +716,8 @@ const Template = ({
     onChange: (value: any) => {
       setTagId(value);
     },
-    textFieldProps: {
-      variant: 'outlined',
-      label: t('Tag'),
-    },
+    label: t('Tag'),
+    placeholder: t('Tag'),
   };
 
   const hsmFields = formField && [
@@ -725,7 +727,7 @@ const Template = ({
   ];
 
   const fields = defaultAttribute.isHsm
-    ? [formIsActive, ...formFields, ...hsmFields, ...attachmentField, tags]
+    ? [...formFields, ...hsmFields, ...attachmentField, tags]
     : [...formFields, ...attachmentField];
 
   // Creating payload for button template
@@ -980,6 +982,7 @@ const Template = ({
       customStyles={customStyle}
       saveOnPageChange={false}
       afterSave={!defaultAttribute.isHsm ? afterSave : undefined}
+      helpData={speedSendInfo}
     />
   );
 };

@@ -46,10 +46,7 @@ export const ExportConsulting = ({ setFilters }: ExportConsultingPropTypes) => {
       options: organizationList ? organizationList.organizations : [],
       optionLabel: 'name',
       multiple: false,
-      textFieldProps: {
-        label: t('Select Organization'),
-        variant: 'outlined',
-      },
+      label: t('Select Organization'),
     },
     {
       component: Calendar,
