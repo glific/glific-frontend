@@ -10,7 +10,6 @@ export interface Menu {
   url?: string;
   show?: boolean;
   subMenu?: Menu[];
-  className?: string;
 }
 
 // define all the menus in the system
@@ -171,6 +170,43 @@ const menus: Menu[] = [
   },
 
   {
+    title: 'Account',
+    path: '/user-profile',
+    icon: 'profile',
+    type: 'sideDrawer',
+    roles: ['Manager', 'Admin', 'Dynamic'],
+    subMenu: [
+      {
+        title: 'My Profile',
+        path: '/user-profile',
+        type: 'userAccount',
+        icon: 'profile',
+        roles: ['Staff', 'Manager', 'Admin', 'Dynamic'],
+      },
+      {
+        title: 'My Account',
+        path: '/myaccount',
+        icon: 'account',
+        type: 'userAccount',
+        roles: ['Staff', 'Manager', 'Admin', 'Dynamic'],
+      },
+      {
+        title: 'Settings',
+        path: '/settings',
+        icon: 'settings',
+        type: 'userAccount',
+        roles: ['Admin'],
+      },
+      {
+        title: 'Logout',
+        path: '/logout/user',
+        icon: 'logout',
+        type: 'userAccount',
+        roles: ['Staff', 'Manager', 'Admin', 'Dynamic'],
+      },
+    ],
+  },
+  {
     title: 'Admin',
     path: '/organizations',
     icon: 'manage',
@@ -199,40 +235,6 @@ const menus: Menu[] = [
     ],
   },
 
-  {
-    title: 'Account',
-    path: '/user-profile',
-    icon: 'manage',
-    type: 'sideDrawer',
-    roles: ['Manager', 'Admin', 'Dynamic'],
-    subMenu: [
-      {
-        title: 'My Profile',
-        path: '/user-profile',
-        type: 'userAccount',
-        roles: ['Staff', 'Manager', 'Admin', 'Dynamic'],
-      },
-      {
-        title: 'My Account',
-        path: '/myaccount',
-        type: 'userAccount',
-        roles: ['Staff', 'Manager', 'Admin', 'Dynamic'],
-      },
-      {
-        title: 'Settings',
-        path: '/settings',
-        type: 'userAccount',
-        roles: ['Admin'],
-      },
-      {
-        title: 'Logout',
-        path: '/logout/user',
-        className: 'Danger',
-        type: 'userAccount',
-        roles: ['Staff', 'Manager', 'Admin', 'Dynamic'],
-      },
-    ],
-  },
   {
     title: 'Analytics',
     path: '/analytics',

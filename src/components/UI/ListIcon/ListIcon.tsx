@@ -18,6 +18,10 @@ import ContactIcon from 'assets/images/icons/SideDrawer/ContactIcon';
 import BlockIcon from 'assets/images/icons/SideDrawer/BlockIcon';
 import TagIcon from 'assets/images/icons/SideDrawer/TagIcon';
 import HelpIcon from 'assets/images/icons/SideDrawer/HelpIcon';
+import ProfileIcon from 'assets/images/icons/SideDrawer/ProfileIcon';
+import AcoountIcon from 'assets/images/icons/SideDrawer/AccountIcon';
+import SettingsIcon from 'assets/images/icons/SideDrawer/SettingsIcon';
+import LogoutIcon from 'assets/images/icons/SideDrawer/LogoutIcon';
 
 export interface ListIconProps {
   icon: string | undefined;
@@ -49,6 +53,10 @@ export const ListIcon = ({ icon = '', selected = false, count }: ListIconProps) 
     contact: ContactIcon,
     block: BlockIcon,
     tag: TagIcon,
+    profile: ProfileIcon,
+    account: AcoountIcon,
+    settings: SettingsIcon,
+    logout: LogoutIcon,
   };
 
   return (
