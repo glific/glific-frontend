@@ -1,4 +1,4 @@
-import { Select, FormControl, InputLabel, FormHelperText, MenuItem } from '@mui/material';
+import { Select, FormControl, FormHelperText, MenuItem, Typography } from '@mui/material';
 
 import styles from './Dropdown.module.css';
 
@@ -41,11 +41,9 @@ export const Dropdown = ({
         fullWidth
         error={form && form.errors[field.name] && form.touched[field.name]}
       >
-        {placeholder ? (
-          <InputLabel id="simple-select-outlined-label" data-testid="inputLabel">
-            {placeholder}
-          </InputLabel>
-        ) : null}
+        <Typography data-testid="inputLabel" variant="h5" className={styles.FieldLabel}>
+          {placeholder}
+        </Typography>
         <Select
           onChange={(event) => {
             onChange(event);
@@ -60,7 +58,6 @@ export const Dropdown = ({
           }}
           value={fieldValue !== undefined ? fieldValue : value}
           {...rest}
-          label={placeholder !== '' ? placeholder : undefined}
           fullWidth
           disabled={disabled}
         >

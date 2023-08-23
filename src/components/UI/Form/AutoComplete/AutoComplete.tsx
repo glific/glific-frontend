@@ -186,7 +186,7 @@ export const AutoComplete = ({
   const renderedOption = options.length > 0 ? options : multiple ? getValue : [getValue];
 
   return (
-    <div className={styles.Input}>
+    <div className={isFilterType ? styles.FilterInput : styles.Input}>
       <FormControl fullWidth error={hasError}>
         {questionText ? <div className={styles.QuestionText}>{questionText}</div> : null}
         <Autocomplete

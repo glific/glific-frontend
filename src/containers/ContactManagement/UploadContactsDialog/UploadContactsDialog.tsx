@@ -110,10 +110,7 @@ export const UploadContactsDialog = ({
       options: collections.organizationGroups,
       multiple: false,
       optionLabel: 'label',
-      textFieldProps: {
-        label: t('Collection'),
-        variant: 'outlined',
-      },
+      label: t('Collection'),
     },
     {
       component: Checkbox,

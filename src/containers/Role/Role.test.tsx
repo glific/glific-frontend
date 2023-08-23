@@ -1,5 +1,5 @@
 import { MockedProvider } from '@apollo/client/testing';
-import { render, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { vi } from 'vitest';
 
@@ -43,9 +43,16 @@ it('should render Role form page', async () => {
 });
 
 it('should have fields for name and description', async () => {
-  const { getAllByTestId } = render(role);
+  render(role);
+
   await waitFor(() => {
-    expect(getAllByTestId('inputLabel')[0]).toHaveTextContent('Label');
-    expect(getAllByTestId('inputLabel')[1]).toHaveTextContent('Description');
+    const loadingText = screen.queryByText('Loading...');
+    expect(loadingText).not.toBeInTheDocument();
   });
+
+  const Label = screen.getByText('Label');
+  expect(Label).toBeInTheDocument();
+
+  const Description = screen.getByText('Description');
+  expect(Description).toBeInTheDocument();
 });

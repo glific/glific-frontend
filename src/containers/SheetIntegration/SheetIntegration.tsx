@@ -82,16 +82,11 @@ export const SheetIntegration = () => {
     {
       component: AutoComplete,
       name: 'type',
-
       options: typeOptions,
       optionLabel: 'label',
       multiple: false,
-      textFieldProps: {
-        label: t('Sheet type'),
-        variant: 'outlined',
-      },
+      label: t('Sheet type'),
     },
-
     {
       component: Checkbox,
       name: 'autoSync',

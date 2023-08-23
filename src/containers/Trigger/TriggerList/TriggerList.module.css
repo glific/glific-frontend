@@ -61,3 +61,9 @@
 .Inactive {
   color: #ccd4d0;
 }
+
+.AddIcon {
+  margin-right: 10px;
+  height: 12px;
+  width: 12px;
+}
