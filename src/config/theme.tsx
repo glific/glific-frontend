@@ -33,6 +33,14 @@ const theme = createTheme({
     MuiBackdrop: {
       styleOverrides: {},
     },
+    MuiDivider: {
+      styleOverrides: {
+        root: {
+          borderColor: '#EFEFEF',
+          boxShadow: '0px 0px 4px 0px rgba(0, 0, 0, 0.06)',
+        },
+      },
+    },
     MuiIconButton: {
       styleOverrides: {
         root: { padding: '12px' },
@@ -61,6 +69,13 @@ const theme = createTheme({
         notchedOutline: {
           borderRadius: '12px',
           borderWidth: '2px',
+        },
+      },
+    },
+    MuiListItemIcon: {
+      styleOverrides: {
+        root: {
+          minWidth: '32px',
         },
       },
     },

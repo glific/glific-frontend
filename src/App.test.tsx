@@ -1,8 +1,8 @@
 import { MemoryRouter } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
-import { waitFor, render } from '@testing-library/react';
+import { waitFor, render, screen } from '@testing-library/react';
 import { vi, describe, it } from 'vitest';
-
+import { setAuthSession, setUserSession } from 'services/AuthService';
 import App from 'App';
 import { CONVERSATION_MOCKS } from 'mocks/Chat';
 
@@ -37,10 +37,26 @@ describe('<App /> ', () => {
     });
   });
 
-  it('it should render <App /> component correctly', async () => {
+  it('it should render <App /> component correctly in unauthenticated mode', async () => {
     const { container } = render(app);
     await waitFor(() => {
       expect(container).toBeInTheDocument();
+      expect(screen.getByText('Login')).toBeInTheDocument();
+    });
+  });
+
+  it('it should render <App /> component correctly in authenticated mode', async () => {
+    const tokenExpiryDate = new Date();
+    tokenExpiryDate.setDate(new Date().getDate() + 1);
+    setAuthSession(
+      '{"access_token":"access","renewal_token":"renew", "token_expiry_time":"' +
+        tokenExpiryDate +
+        '"}'
+    );
+    setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Staff'] }));
+    render(app);
+    await waitFor(() => {
+      expect(screen.getByText('Chat subscription')).toBeInTheDocument();
     });
   });
 });

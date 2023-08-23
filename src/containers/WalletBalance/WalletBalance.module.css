@@ -1,16 +1,22 @@
 .WalletBalance {
-  position: absolute;
-  bottom: 0;
   color: #ffffff;
-  font-size: 14px !important;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 500;
   width: 100%;
-  z-index: 11111;
-  height: 26px;
+  height: 36px;
+}
+
+.Balance {
+  margin-left: auto;
+  margin-right: 14px;
+  color: #119656;
 }
 
 .WalletBalanceHigh {
-  background-color: #119656;
+  background: #f0f7f1;
 }
 
 .WalletBalanceLow {
@@ -18,7 +24,7 @@
 }
 
 .BalanceText {
-  padding: 4px;
+  color: #119656;
 }
 
 .Progress {
@@ -33,5 +39,22 @@
 }
 
 .WalletBalanceText {
-  padding-top: 4px;
+  padding-left: 24px;
+  display: flex;
+  width: 100%;
+  color: #191c1a;
+}
+
+.WalletBalanceLowText {
+  padding-left: 24px;
+  align-items: baseline;
+  display: flex;
+  width: 100%;
+  color: white;
+}
+
+.BalanceLow {
+  color: white;
+  margin-left: auto;
+  margin-right: 14px;
 }

@@ -10,11 +10,11 @@
 
 .IconItem {
   border-radius: 12px !important;
-  margin: auto !important;
+  margin: auto;
 }
 
 .SelectedItem {
-  background: #e2f1ea !important;
+  background: #cce6d0 !important;
 }
 
 .SelectedItem:hover {
@@ -22,8 +22,8 @@
 }
 
 .OpenItem {
-  width: 90% !important;
-  padding: 6px 8px !important;
+  margin: 0px 8px;
+  padding: 6px 16px;
 }
 
 .ClosedItem {
@@ -32,11 +32,47 @@
 }
 
 .SelectedText {
-  font-size: 0.875rem;
-  color: #119656;
+  font-size: 13px;
+  font-weight: 700;
+  color: #073f24;
 }
 
 .UnselectedText {
-  font-size: 0.875rem;
-  color: #93a29b;
+  font-size: 13px;
+  font-weight: 500;
+  color: #717971;
+}
+
+.Divider {
+  margin: 8px 0px;
+}
+
+@keyframes slideInFromLeft {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.Transition {
+  animation: 0.1s ease-in 0s 1 slideInFromLeft;
+}
+
+.SubMenuTitle {
+  padding-left: 24px;
+  margin-top: 20px;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #073f24;
+}
+.SubMenuTitleOpen {
+  composes: SubMenuTitle;
+}
+
+.SubMenuTitleClose {
+  composes: SubMenuTitle;
+  padding-left: 12px;
 }
