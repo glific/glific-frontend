@@ -132,10 +132,7 @@ export const Organisation = () => {
       name: 'activeLanguages',
       options: languages.languages,
       optionLabel: 'label',
-      textFieldProps: {
-        variant: 'outlined',
-        label: t('Supported languages'),
-      },
+      label: t('Supported languages'),
       validate: validateActiveLanguages,
     },
     {
@@ -144,10 +141,7 @@ export const Organisation = () => {
       options: languages.languages,
       optionLabel: 'label',
       multiple: false,
-      textFieldProps: {
-        variant: 'outlined',
-        label: t('Default language'),
-      },
+      label: t('Default language'),
       validate: validateDefaultLanguage,
     },
     {

@@ -1,36 +1,52 @@
 .Input {
   display: flex;
-  padding: 8px 0px;
+  padding-top: 15px;
+  width: 100%;
 }
 
 .InputBorder {
-  border-radius: 12px !important;
-  border-width: 2px !important;
+  border-radius: 12px;
+  border-width: 2px;
 }
 
 .Label {
   font-size: 16px;
   font-weight: 500;
-  color: #93a29b !important;
+  color: #93a29b;
 }
 
 .HelperText {
-  margin-left: 16px !important;
-  color: #93a29b !important;
-  line-height: 1 !important;
-  font-size: 12px !important;
-  margin-top: 4px !important;
+  margin-left: 0px;
+  color: #999999;
+  line-height: 1;
+  font-size: 12px;
+  margin-top: 7px;
+  line-height: 18px;
+  font-weight: 400;
 }
 
 .Multiline {
-  padding-bottom: 35px !important;
+  padding-bottom: 35px;
 }
 
 .OutlineInput > div:first-child {
-  width: inherit !important;
+  width: inherit;
   height: 100px;
   overflow: auto;
+  overflow-x: hidden;
 }
+
+.OutlineInput :global(#placeholder-editor) {
+  position: absolute;
+  z-index: 0;
+  color: #a2a2a2;
+  font-weight: 400;
+}
+
+.OutlineInput ::-webkit-scrollbar {
+  width: 0px;
+}
+
 .Resend {
   color: #119656;
   font-weight: bold;
@@ -50,7 +66,11 @@
 }
 
 .DangerText {
-  margin-left: 16px !important;
+  margin-left: 0px;
+  font-size: 12px;
+  margin-top: 4px;
+  line-height: 18px;
+  font-weight: 400;
 }
 
 .Translation {
@@ -63,6 +83,6 @@
 
 @media screen and (max-width: 768px) {
   .Input {
-    width: 100% !important;
+    width: 100%;
   }
 }

@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-
 import { ReactComponent as AddIcon } from 'assets/images/add.svg';
 import { ReactComponent as FlowIcon } from 'assets/images/icons/Flow/Dark.svg';
 import { ReactComponent as DuplicateIcon } from 'assets/images/icons/Flow/Copy.svg';
@@ -21,6 +20,7 @@ import { setNotification } from 'common/notification';
 import styles from './FlowList.module.css';
 import { GET_TAGS } from 'graphql/queries/Tags';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
+import { flowInfo } from 'common/HelpData';
 
 const getName = (text: string, keywordsList: any, roles: any) => {
   const keywords = keywordsList.map((keyword: any) => keyword);
@@ -247,22 +247,9 @@ export const FlowList = () => {
 
   const addIcon = <AddIcon className={styles.AddIcon} />;
 
-  const helpData = {
-    heading: 'You can configure the flow by clicking on the configure button and are as follows:',
-    body: (
-      <ul>
-        <li>Save as Draft</li>
-        <li>Publish Preview</li>
-        <li>Revision history</li>
-        <li>Reset flow counts</li>
-      </ul>
-    ),
-    link: 'https://glific.github.io/docs/docs/category/flows',
-  };
-
   return (
     <List
-      helpData={helpData}
+      helpData={flowInfo}
       title={t('Flows')}
       listItem="flows"
       listItemName="flow"

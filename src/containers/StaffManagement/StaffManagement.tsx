@@ -20,6 +20,7 @@ import { getUserSession } from 'services/AuthService';
 import { GET_ROLE_NAMES } from 'graphql/queries/Role';
 import { organizationHasDynamicRole } from 'common/utils';
 import styles from './StaffManagement.module.css';
+import { staffManagementInfo } from 'common/HelpData';
 
 const staffManagementIcon = <StaffManagementIcon />;
 
@@ -189,11 +190,13 @@ export const StaffManagement = () => {
       name: 'name',
       type: 'text',
       placeholder: t('Username'),
+      label: t('Username'),
     },
     {
       component: Input,
       name: 'phone',
       placeholder: t('Phone Number'),
+      label: t('Phone Number'),
       disabled: true,
       skipPayload: true,
     },
@@ -207,10 +210,7 @@ export const StaffManagement = () => {
       multiple: hasDynamicRoles,
       helpLink: { label: 'help?', handleClick: handleHelpClick },
       optionLabel: 'label',
-      textFieldProps: {
-        label: t('Roles'),
-        variant: 'outlined',
-      },
+      label: t('Roles'),
     },
     {
       component: AutoComplete,
@@ -218,10 +218,7 @@ export const StaffManagement = () => {
       placeholder: t('Assigned to collection(s)'),
       options: data.groups,
       optionLabel: 'label',
-      textFieldProps: {
-        label: t('Assigned to collection(s)'),
-        variant: 'outlined',
-      },
+      label: t('Assigned to collection(s)'),
     },
   ];
 
@@ -312,6 +309,7 @@ export const StaffManagement = () => {
         listItem="user"
         icon={staffManagementIcon}
         languageSupport={false}
+        helpData={staffManagementInfo}
       />
     </>
   );

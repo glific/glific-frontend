@@ -1,5 +1,5 @@
 .CheckboxColor {
-  color: #073f24 !important;
+  color: #006d3f;
 }
 
 .Checkbox {
@@ -8,21 +8,24 @@
 }
 
 .Label {
-  font-weight: 500 !important;
+  font-weight: 400;
   font-size: 16px;
+  line-height: 18px;
 }
 
 .Root {
-  margin-right: 5px !important;
+  margin-right: 5px;
+  margin-top: 19px;
+  height: 18px;
 }
 
 .Tooltip {
   margin-top: 4px;
-  max-width: 150px !important;
+  max-width: 150px;
 }
 
 .InfoIcon {
-  margin-bottom: -4px;
+  margin-bottom: -11px;
   cursor: pointer;
   height: 16px;
   width: 16px;

@@ -1,7 +1,7 @@
 import moment from 'moment';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-
+import { ReactComponent as AddIcon } from 'assets/images/add.svg';
 import { ReactComponent as TriggerIcon } from 'assets/images/icons/Trigger/Union.svg';
 import { ReactComponent as ClockIcon } from 'assets/images/icons/Trigger/Clock.svg';
 import { ReactComponent as ClockInactiveIcon } from 'assets/images/icons/Trigger/Inactive.svg';
@@ -12,6 +12,7 @@ import { FULL_DATE_FORMAT, dayList } from 'common/constants';
 import { List } from 'containers/List/List';
 import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import styles from './TriggerList.module.css';
+import { triggerInfo } from 'common/HelpData';
 
 const getTooltip = (frequency: any, days: any) => {
   const obj: any = [];
@@ -88,21 +89,16 @@ export const TriggerList = () => {
 
   const dialogMessage = t("You won't be able to use this trigger.");
 
-  const helpData = {
-    heading:
-      'Triggers in Glific are used to start a flow with specific contacts in a collection at a scheduled time. Triggers can be used for scheduling periodic tasks and automatically sharing them with required beneficiaries.',
-    body: <></>,
-    link: 'https://glific.github.io/docs/docs/Product%20Features/Triggers',
-  };
+  const addIcon = <AddIcon className={styles.AddIcon} />;
 
   return (
     <List
-      helpData={helpData}
+      helpData={triggerInfo}
       title="Triggers"
       listItem="triggers"
       listItemName="trigger"
       pageLink="trigger"
-      button={{ show: true, label: t('Create Trigger'), symbol: '+' }}
+      button={{ show: true, label: t('Create Trigger'), symbol: addIcon }}
       listIcon={triggerIcon}
       dialogMessage={dialogMessage}
       {...queries}

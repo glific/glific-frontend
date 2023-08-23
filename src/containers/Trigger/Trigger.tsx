@@ -20,6 +20,7 @@ import { GET_COLLECTIONS } from 'graphql/queries/Collection';
 import { GET_TRIGGER } from 'graphql/queries/Trigger';
 import { CREATE_TRIGGER, DELETE_TRIGGER, UPDATE_TRIGGER } from 'graphql/mutations/Trigger';
 import styles from './Trigger.module.css';
+import { triggerInfo } from 'common/HelpData';
 
 const checkDateTimeValidation = (startAtValue: string, startDateValue: string) => {
   const isDateAhead = moment(startDateValue).isAfter(moment());
@@ -262,7 +263,7 @@ export const Trigger = () => {
       name: 'isActive',
       title: (
         <Typography variant="h6" className={styles.IsActive}>
-          Is active?
+          Active?
         </Typography>
       ),
       darkCheckbox: true,
@@ -274,16 +275,15 @@ export const Trigger = () => {
       optionLabel: 'name',
       disabled: isEditing,
       multiple: false,
-      textFieldProps: {
-        variant: 'outlined',
-        label: t('Select flow'),
-      },
+      label: t('Select flow'),
+      placeholder: t('Select flow'),
     },
     {
       component: Calendar,
       type: 'date',
       name: 'startDate',
       disabled: isEditing,
+      label: t('Date range'),
       placeholder: t('Start date'),
       minDate,
     },
@@ -291,42 +291,36 @@ export const Trigger = () => {
       component: Calendar,
       type: 'date',
       name: 'endDate',
-      disabled: isEditing,
       placeholder: t('End date'),
+      disabled: isEditing,
       minDate,
     },
     {
       component: TimePicker,
       name: 'startTime',
       disabled: isEditing,
-      placeholder: t('Time'),
+      label: t('Time'),
     },
     {
       component: AutoComplete,
       name: 'frequency',
       placeholder: t('Repeat'),
+      label: t('Repeat'),
       options: triggerFrequencyOptions,
       optionLabel: 'label',
       disabled: isEditing,
       valueElementName: 'value',
       multiple: false,
-      textFieldProps: {
-        label: t('Repeat'),
-        variant: 'outlined',
-      },
       onChange: handleFrequencyChange,
     },
     {
       component: AutoComplete,
       name: 'frequencyValues',
+      label: frequencyPlaceholder,
       placeholder: frequencyPlaceholder,
       options: frequencyOptions,
       disabled: isEditing || daysDisabled,
       optionLabel: 'label',
-      textFieldProps: {
-        label: frequencyPlaceholder,
-        variant: 'outlined',
-      },
       helperText:
         frequency === 'monthly' &&
         t(
@@ -337,14 +331,11 @@ export const Trigger = () => {
       component: AutoComplete,
       name: 'groupId',
       placeholder: t('Select collection'),
+      label: t('Select collection'),
       options: collections.groups,
       multiple: false,
       disabled: isEditing,
       optionLabel: 'label',
-      textFieldProps: {
-        label: t('Select collection'),
-        variant: 'outlined',
-      },
     },
   ];
 
@@ -414,6 +405,7 @@ export const Trigger = () => {
       copyNotification={t('Copy of the trigger has been created!')}
       icon={triggerIcon}
       customStyles={styles.Triggers}
+      helpData={triggerInfo}
     />
   );
 };

@@ -214,10 +214,8 @@ export const OrganisationFlows = () => {
       options: flow.flows,
       optionLabel: 'name',
       multiple: false,
-      textFieldProps: {
-        variant: 'outlined',
-        label: t('Select flow'),
-      },
+      label: t('Select flow'),
+      placeholder: t('Select flow'),
       disabled: isDisabled,
       helperText: t(
         'The selected flow will trigger when end-users aren’t in any flow, their message doesn’t match any keyword, and the time of their message is as defined below.'
@@ -230,10 +228,7 @@ export const OrganisationFlows = () => {
       name: 'enabledDays',
       options: dayList,
       optionLabel: 'label',
-      textFieldProps: {
-        variant: 'outlined',
-        label: t('Select days'),
-      },
+      label: t('Select days'),
       disabled: isDisabled,
       onChange: handleChangeInDays,
       validate: validateDaysSelection,
@@ -250,14 +245,14 @@ export const OrganisationFlows = () => {
     {
       component: TimePicker,
       name: 'startTime',
-      placeholder: t('Start'),
+      label: t('Start'),
       disabled: isDisabled || allDayCheck,
       helperText: t('Note: The next day begins after 12AM.'),
     },
     {
       component: TimePicker,
       name: 'endTime',
-      placeholder: t('Stop'),
+      label: t('Stop'),
       disabled: isDisabled || allDayCheck,
     },
   ];
@@ -271,10 +266,8 @@ export const OrganisationFlows = () => {
         options: flow.flows,
         optionLabel: 'name',
         multiple: false,
-        textFieldProps: {
-          variant: 'outlined',
-          label: t('Select flow'),
-        },
+        label: t('Select flow'),
+        placeholder: t('Select flow'),
         disabled: isDisabled,
         questionText: t('Would you like to trigger a flow for all the other days & times?'),
       },
@@ -296,10 +289,7 @@ export const OrganisationFlows = () => {
       optionLabel: 'name',
       multiple: false,
       disabled: !newcontactFlowEnabled,
-      textFieldProps: {
-        variant: 'outlined',
-        label: t('Select flow'),
-      },
+      label: t('Select flow'),
       helperText: t('For new contacts messaging your chatbot for the first time'),
     },
 
@@ -316,10 +306,8 @@ export const OrganisationFlows = () => {
       optionLabel: 'name',
       multiple: false,
       disabled: !optinFlowEnabled,
-      textFieldProps: {
-        variant: 'outlined',
-        label: t('Select flow'),
-      },
+      label: t('Select flow'),
+      placeholder: t('Select flow'),
     },
   ];
 

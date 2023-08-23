@@ -114,7 +114,7 @@ test('it render interactive options for quick reply template', async () => {
     count++;
   }
 
-  const [addButton] = screen.getAllByRole('button');
+  const addButton = screen.getByTestId('addButton');
   expect(addButton).toBeInTheDocument();
 
   fireEvent.click(addButton);

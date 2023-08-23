@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
-
+import { ReactComponent as AddIcon } from 'assets/images/add.svg';
 import { ReactComponent as CollectionIcon } from 'assets/images/icons/Collection/Dark.svg';
 import { ReactComponent as AddContactIcon } from 'assets/images/icons/Contact/Add.svg';
 import { DELETE_COLLECTION, UPDATE_COLLECTION_CONTACTS } from 'graphql/mutations/Collection';
@@ -20,6 +20,7 @@ import { setVariables } from 'common/constants';
 import { CircularProgress, Modal } from '@mui/material';
 import styles from './CollectionList.module.css';
 import { exportCsvFile } from 'common/utils';
+import { collectionInfo } from 'common/HelpData';
 
 const getLabel = (label: string, contactsCount: number) => (
   <div>
@@ -208,6 +209,9 @@ export const CollectionList = () => {
 
   // check if the user has access to manage collections
   const userRolePermissions = getUserRolePermissions();
+
+  const addIcon = <AddIcon className={styles.AddIcon} />;
+
   return (
     <>
       {exportData && (
@@ -218,6 +222,7 @@ export const CollectionList = () => {
         </Modal>
       )}
       <List
+        helpData={collectionInfo}
         restrictedAction={getRestrictedAction}
         title={t('Collections')}
         listItem="groups"
@@ -227,7 +232,7 @@ export const CollectionList = () => {
         button={{
           show: userRolePermissions.manageCollections,
           label: t('Create Collection'),
-          symbol: '+',
+          symbol: addIcon,
         }}
         pageLink="collection"
         listIcon={collectionIcon}

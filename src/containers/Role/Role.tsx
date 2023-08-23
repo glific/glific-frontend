@@ -8,6 +8,7 @@ import { ReactComponent as RoleIcon } from 'assets/images/icons/Role/Role.svg';
 import { CREATE_ROLE, DELETE_ROLE, UPDATE_ROLE } from 'graphql/mutations/Roles';
 import { GET_ROLE } from 'graphql/queries/Role';
 import styles from './Role.module.css';
+import { roleInfo } from 'common/HelpData';
 
 const roleIcon = <RoleIcon className={styles.Icon} />;
 
@@ -44,6 +45,7 @@ export const Role = () => {
       name: 'label',
       type: 'text',
       placeholder: t('Label'),
+      label: t('Label'),
     },
     {
       component: Input,
@@ -52,6 +54,7 @@ export const Role = () => {
       textArea: true,
       rows: 3,
       placeholder: t('Description'),
+      label: t('Description'),
     },
   ];
 
@@ -71,6 +74,7 @@ export const Role = () => {
       icon={roleIcon}
       languageSupport={false}
       copyNotification={t('Copy of the role has been created!')}
+      helpData={roleInfo}
     />
   );
 };

@@ -159,7 +159,20 @@ export const Auth = ({
                     fieldInfo = { ...field, handlePhone };
                   }
                   const key = index;
-                  return <Field key={key} {...fieldInfo} />;
+                  return (
+                    <div key={key}>
+                      {field.label && (
+                        <Typography
+                          data-testid="formLabel"
+                          variant="h5"
+                          className={styles.FieldLabel}
+                        >
+                          {field.label}
+                        </Typography>
+                      )}
+                      <Field {...fieldInfo} />
+                    </div>
+                  );
                 })}
                 <div className={styles.Link}>
                   <Link to={`/${linkURL}`}>{linkText}</Link>
