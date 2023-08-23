@@ -173,15 +173,12 @@ test('it renders empty interactive form', async () => {
     fireEvent.click(addAnotherListButton);
   });
 
-  setTimeout(async () => {
-    await waitFor(() => {
-      // Deleting list
-      const deleteListButton = screen.getByTestId('delete-icon');
-      expect(deleteListButton).toBeInTheDocument();
-      fireEvent.click(deleteListButton);
-    });
-  }, 5000);
-
+  await waitFor(() => {
+    expect(screen.getAllByTestId('delete-icon')).toHaveLength(2);
+  });
+  // Deleting list
+  const deleteListButton = screen.getAllByTestId('delete-icon')[1];
+  fireEvent.click(deleteListButton);
   await waitFor(() => {
     // Deleting list item
     const deleteListItemButton = screen.getByTestId('cross-icon');

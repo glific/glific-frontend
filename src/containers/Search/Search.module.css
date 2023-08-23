@@ -1,13 +1,13 @@
 .Title {
-  margin-left: 36px !important;
-  margin-top: 16px !important;
+  margin-left: 36px;
+  margin-top: 16px;
   vertical-align: middle;
-  font-weight: 500 !important;
+  font-weight: 500;
   color: #073f24;
 }
 
 .Subtext {
-  margin-left: 36px !important;
+  margin-left: 36px;
   vertical-align: middle;
   color: #afbbb6;
 }
@@ -20,8 +20,8 @@
 .Form > h5:nth-of-type(7) {
   display: inline-block;
   margin-right: 173px;
-  margin-top: 24px !important;
-  margin-bottom: 15px !important;
+  margin-top: 24px;
+  margin-bottom: 15px;
 }
 
 .Form > div:nth-of-type(7) {
@@ -29,8 +29,7 @@
 }
 
 .Form > div:nth-of-type(7) {
-  font-weight: 400 !important;
-  /* margin-left: 195px; */
+  font-weight: 400;
 }
 
 .Form > div:nth-of-type(8) {

@@ -31,13 +31,13 @@ export interface InputProps {
   inputProp?: any;
   translation?: string;
   onChange?: any;
-  isInputLabel?: boolean;
+  inputLabel?: boolean;
 }
 
 export const Input = ({
   textArea = false,
   disabled = false,
-  isInputLabel = false,
+  inputLabel = false,
   ...props
 }: InputProps) => {
   const {
@@ -109,7 +109,7 @@ export const Input = ({
       {translation && <div className={styles.Translation}>{translation}</div>}
       <div className={styles.Input} data-testid="input">
         <FormControl fullWidth error={showError}>
-          {isInputLabel && (
+          {inputLabel && (
             <InputLabel variant="standard" className={styles.Label} data-testid="inputLabel">
               {placeholder}
             </InputLabel>
@@ -126,7 +126,7 @@ export const Input = ({
             multiline={textArea}
             rows={rows}
             className={styles.OutlineInput}
-            label={isInputLabel ? placeholder : ''}
+            label={inputLabel ? placeholder : ''}
             fullWidth
             {...field}
             onChange={(e) => {

@@ -42,40 +42,40 @@
 }
 
 .Buttons > :not(:last-child) {
-  margin-right: 16px !important;
+  margin-right: 16px;
 }
 
 .Title {
-  margin-left: 14px !important;
+  margin-left: 14px;
   vertical-align: middle;
   height: 40px;
   color: #191c1a;
   display: flex;
   align-items: first baseline;
-  font-weight: 700 !important;
+  font-weight: 700;
   font-size: 38px;
 }
 
 .FieldLabel {
-  margin-top: 24px !important;
+  margin-top: 24px;
   vertical-align: middle;
-  font-weight: 500 !important;
-  font-size: 16px !important;
-  line-height: 18px !important;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 18px;
   color: #555555;
 }
 
 .Icon {
-  background-color: #eaedec !important;
-  margin-right: 10px !important;
+  background-color: #eaedec;
+  margin-right: 10px;
 }
 
 .DeleteIcon {
-  margin-right: 9px !important;
+  margin-right: 9px;
 }
 
 .DeleteButton {
-  margin-left: auto !important;
+  margin-left: auto;
 }
 
 .CheckHeader {
@@ -99,7 +99,7 @@
 }
 
 .CheckBox {
-  color: blue !important;
+  color: blue;
 }
 
 .Select {
@@ -129,7 +129,7 @@
   .Form,
   .ItemAdd,
   .Buttons {
-    width: 100% !important;
+    width: 100%;
   }
 }
 
@@ -143,12 +143,12 @@
   z-index: 1000;
   justify-content: space-between;
   align-items: center;
-  height: 110px !important;
+  height: 110px;
 }
 
 .TextHeader {
-  margin: 12px 0 0 14px !important;
-  font-weight: 400 !important;
+  margin: 12px 0 0 14px;
+  font-weight: 400;
   color: #191c1a;
   font-size: 12px;
 }

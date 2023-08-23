@@ -1,36 +1,36 @@
 .Input {
   display: flex;
   padding-top: 15px;
-  width: 100% !important;
+  width: 100%;
 }
 
 .InputBorder {
-  border-radius: 12px !important;
-  border-width: 2px !important;
+  border-radius: 12px;
+  border-width: 2px;
 }
 
 .Label {
   font-size: 16px;
   font-weight: 500;
-  color: #93a29b !important;
+  color: #93a29b;
 }
 
 .HelperText {
-  margin-left: 0px !important;
-  color: #999999 !important;
-  line-height: 1 !important;
-  font-size: 12px !important;
-  margin-top: 7px !important;
-  line-height: 18px !important;
-  font-weight: 400 !important;
+  margin-left: 0px;
+  color: #999999;
+  line-height: 1;
+  font-size: 12px;
+  margin-top: 7px;
+  line-height: 18px;
+  font-weight: 400;
 }
 
 .Multiline {
-  padding-bottom: 35px !important;
+  padding-bottom: 35px;
 }
 
 .OutlineInput > div:first-child {
-  width: inherit !important;
+  width: inherit;
   height: 100px;
   overflow: auto;
   overflow-x: hidden;
@@ -40,11 +40,11 @@
   position: absolute;
   z-index: 0;
   color: #a2a2a2;
-  font-weight: 400 !important;
+  font-weight: 400;
 }
 
 .OutlineInput ::-webkit-scrollbar {
-  width: 0px !important;
+  width: 0px;
 }
 
 .Resend {
@@ -66,11 +66,11 @@
 }
 
 .DangerText {
-  margin-left: 0px !important;
-  font-size: 12px !important;
-  margin-top: 4px !important;
-  line-height: 18px !important;
-  font-weight: 400 !important;
+  margin-left: 0px;
+  font-size: 12px;
+  margin-top: 4px;
+  line-height: 18px;
+  font-weight: 400;
 }
 
 .Translation {
@@ -83,6 +83,6 @@
 
 @media screen and (max-width: 768px) {
   .Input {
-    width: 100% !important;
+    width: 100%;
   }
 }

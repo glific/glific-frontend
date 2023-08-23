@@ -22,21 +22,21 @@
 }
 
 .RadioLabelWrapper > label > span {
-  padding-left: 0px !important;
-  color: #555555 !important;
-  font-weight: 500 !important;
-  font-size: 16px !important;
+  padding-left: 0px;
+  color: #555555;
+  font-weight: 500;
+  font-size: 16px;
 }
 
 .RadioLabel > span {
-  line-height: 1 !important;
-  font-weight: 500 !important;
-  font-size: 16px !important;
-  font-family: 'Heebo', sans-serif !important;
+  line-height: 1;
+  font-weight: 500;
+  font-size: 16px;
+  font-family: 'Heebo', sans-serif;
 }
 
 .SelectedLabel {
-  border-color: #073f24 !important;
+  border-color: #073f24;
 }
 
 .GlobalButton {
@@ -66,11 +66,11 @@
 }
 
 .FieldLabel {
-  margin-top: 16px !important;
+  margin-top: 16px;
   vertical-align: middle;
-  font-weight: 500 !important;
-  font-size: 16px !important;
-  line-height: 18px !important;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 18px;
   color: #555555;
   margin-bottom: 15px;
 }
