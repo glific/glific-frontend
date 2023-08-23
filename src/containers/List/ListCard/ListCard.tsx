@@ -30,9 +30,7 @@ export const ListCard = ({ data, columnStyles }: ListCardProps) => {
     };
 
     return data.map((entry: any) => {
-      let dataObj: any;
       const isActiveRow = entry.isActive === false ? styles.InactiveRow : styles.ActiveRow;
-      if (entry.translations) dataObj = JSON.parse(entry.translations);
 
       return (
         <Fragment key={entry.recordId}>
