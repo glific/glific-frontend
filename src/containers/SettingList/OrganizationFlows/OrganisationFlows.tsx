@@ -363,7 +363,7 @@ export const OrganisationFlows = () => {
   return (
     <FormLayout
       {...queries}
-      title="organization flows"
+      title="Organization flows"
       states={States}
       setStates={setStates}
       validationSchema={FormSchema}

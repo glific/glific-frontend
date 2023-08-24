@@ -83,9 +83,9 @@
 
 .Form {
   width: 500px;
-  margin-left: 24px;
-  margin-top: 10px;
   padding-bottom: 32px;
+  background-color: #fff;
+  width: 100%;
 }
 
 .Subscribed {
@@ -222,6 +222,11 @@
   color: #cacaca;
   font-weight: 500;
   font-size: 16px;
+}
+
+.Body {
+  padding: 40px 53px 0 53px;
+  width: fit-content;
 }
 
 @media screen and (max-width: 768px) {

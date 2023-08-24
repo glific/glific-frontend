@@ -73,6 +73,7 @@
   background-color: white;
   width: fit-content;
   border-right: 1px solid #efefef;
+  height: calc(100vh - 110px) !important;
 }
 
 .Tab {
@@ -98,4 +99,10 @@
   font-weight: 700 !important;
   color: #073f24 !important;
   background-color: #cce6d0 !important;
+}
+
+.SettingBody {
+  height: calc(100vh - 110px) !important;
+  overflow-y: scroll;
+  width: 100%;
 }

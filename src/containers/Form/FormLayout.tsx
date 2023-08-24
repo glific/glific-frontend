@@ -40,6 +40,20 @@ export const Heading = ({ title = '', formTitle, helpData }: any) => {
   );
 };
 
+export const SettingHeading = ({
+  formTitle,
+  desc = 'Manage organisation name, supported languages',
+}: any) => {
+  return (
+    <div className={styles.SettingHeader}>
+      <div>
+        <div className={styles.SettingTitle}>{formTitle}</div>
+        <div className={styles.SettingTextHeader}>{desc}</div>
+      </div>
+    </div>
+  );
+};
+
 export interface HelpDataProps {
   heading: string;
   body: JSX.Element;
@@ -663,7 +677,12 @@ export const FormLayout = ({
     formTitle = `Add a new ${listItemName}`; // case when adding a new item
   }
 
-  let heading = <Heading icon={icon} formTitle={formTitle} />;
+  let heading =
+    type == 'settings' ? (
+      <SettingHeading formTitle={formTitle} />
+    ) : (
+      <Heading icon={icon} formTitle={formTitle} />
+    );
 
   const backLink = backLinkButton ? (
     <div className={styles.BackLink}>

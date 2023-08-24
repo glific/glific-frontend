@@ -16,6 +16,7 @@ import {
   UPDATE_CREDENTIAL,
 } from 'graphql/mutations/Organization';
 import { ReactComponent as Settingicon } from 'assets/images/icons/Settings/Settings.svg';
+import styles from './Providers.module.css';
 
 let validation: any = {};
 let FormSchema = Yup.object().shape(validation);
@@ -117,8 +118,8 @@ export const Providers = () => {
         component: Checkbox,
         name: 'isActive',
         title: (
-          <Typography variant="h6" style={{ color: '#073f24' }}>
-            {t('Is active?')}
+          <Typography variant="h6" className={styles.IsActive}>
+            Active?
           </Typography>
         ),
       },
@@ -130,6 +131,7 @@ export const Providers = () => {
         name: key,
         type: 'text',
         placeholder: fields[key].label,
+        label: fields[key].label,
         disabled: fields[key].view_only,
       };
       formField.push(field);

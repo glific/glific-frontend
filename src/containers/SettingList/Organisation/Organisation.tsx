@@ -126,6 +126,7 @@ export const Organisation = () => {
       name: 'name',
       type: 'text',
       placeholder: t('Organisation name'),
+      label: t('Organisation name'),
     },
     {
       component: AutoComplete,
@@ -149,6 +150,7 @@ export const Organisation = () => {
       name: 'signaturePhrase',
       type: 'text',
       placeholder: t('Webhook signature'),
+      label: t('Webhook signature'),
     },
 
     {
@@ -175,6 +177,7 @@ export const Organisation = () => {
       name: 'tier',
       type: 'text',
       placeholder: t('WhatsApp tier'),
+      label: t('WhatsApp tier'),
       skip: !tier,
       disabled: true,
     },
@@ -204,7 +207,7 @@ export const Organisation = () => {
   return (
     <FormLayout
       {...queries}
-      title="organization settings"
+      title="Organization settings"
       states={States}
       setStates={setStates}
       validationSchema={FormSchema}

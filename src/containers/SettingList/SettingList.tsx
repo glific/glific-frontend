@@ -1,6 +1,6 @@
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
-import { IconButton, Typography, Box } from '@mui/material';
+import { Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { GET_PROVIDERS } from 'graphql/queries/Organization';
@@ -12,6 +12,7 @@ import OrganisationFlows from './OrganizationFlows/OrganisationFlows';
 import Organisation from './Organisation/Organisation';
 import Billing from './Billing/Billing';
 import Providers from './Providers/Providers';
+import { Heading } from 'containers/Form/FormLayout';
 
 export const SettingList = () => {
   const { type } = useParams();
@@ -45,15 +46,6 @@ export const SettingList = () => {
     },
   ];
 
-  const heading = (
-    <Typography variant="h5" className={styles.Title}>
-      <IconButton disabled className={styles.Icon}>
-        {SettingIcon}
-      </IconButton>
-      {t('Settings')}
-    </Typography>
-  );
-
   let CardList: any = [];
   if (providerData) {
     // create setting list of Organisation & providers
@@ -82,18 +74,10 @@ export const SettingList = () => {
 
   return (
     <>
-      {heading}
+      <Heading formTitle="Settings" />
       <Box sx={{ display: 'flex' }}>
         {drawer}
-        <Box
-          component="main"
-          sx={{
-            overflowY: 'scroll',
-            flexGrow: 1,
-            p: 3,
-            height: '90vh',
-          }}
-        >
+        <Box className={styles.SettingBody}>
           {(location.pathname == '/settings/organization' || location.pathname == '/settings') && (
             <Organisation />
           )}
