@@ -43,7 +43,10 @@ const gqlClient = (navigate: any) => {
   const refreshTokenLink: any = new TokenRefreshLink({
     accessTokenField: 'access_token',
     isTokenValidOrUndefined: async () => checkAuthStatusService(),
-    fetchAccessToken: async () => renewAuthToken(),
+    fetchAccessToken: async () => {
+      setLogs('renew token called from apollo client', 'info');
+      return renewAuthToken();
+    },
     handleFetch: () => {},
     handleResponse: (_operation, accessTokenField) => (response: any) => {
       // here we can both success and failures

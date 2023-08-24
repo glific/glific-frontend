@@ -202,6 +202,7 @@ export const setAuthHeaders = () => {
           authorization: getAuthSession('access_token'),
         };
       }
+      setLogs('renew token called from floweditor', 'info');
       const result = await fetch(...parametersCopy);
       return result;
     })(args);
@@ -260,6 +261,7 @@ export const setAuthHeaders = () => {
         }
         this.setRequestHeader('authorization', getAuthSession('access_token'));
         send.call(this, body);
+        setLogs('renew token called from floweditor', 'info');
       }
     };
   })(XMLHttpRequest.prototype.send);
