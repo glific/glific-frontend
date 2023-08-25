@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useQuery, useApolloClient } from '@apollo/client';
 import Typography from '@mui/material/Typography';
 import * as Yup from 'yup';
-import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
 import { FormLayout } from 'containers/Form/FormLayout';
@@ -32,7 +31,6 @@ const queries = {
 export const Providers = () => {
   const [credentialId, setCredentialId] = useState(null);
   const client = useApolloClient();
-  const { t } = useTranslation();
   const [stateValues, setStateValues] = useState({});
   const [formFields, setFormFields] = useState([]);
   const [keys, setKeys] = useState({});

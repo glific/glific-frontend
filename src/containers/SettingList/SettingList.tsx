@@ -60,7 +60,7 @@ export const SettingList = () => {
           }
           `}
         >
-          {data?.name}
+          {data.name}
         </div>
       ))}
     </div>

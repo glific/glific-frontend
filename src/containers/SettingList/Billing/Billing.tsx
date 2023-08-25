@@ -3,17 +3,14 @@ import { CardElement, useStripe, useElements, Elements } from '@stripe/react-str
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { loadStripe } from '@stripe/stripe-js';
 import { Formik, Form, Field } from 'formik';
-import { Link } from 'react-router-dom';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import { CircularProgress, IconButton, InputAdornment, Typography } from '@mui/material';
+import { CircularProgress, InputAdornment } from '@mui/material';
 import CallMadeIcon from '@mui/icons-material/CallMade';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 
 import { ReactComponent as ApprovedIcon } from 'assets/images/icons/Template/Approved.svg';
-import { ReactComponent as Settingicon } from 'assets/images/icons/Settings/Settings.svg';
 import { ReactComponent as PendingIcon } from 'assets/images/icons/Template/Pending.svg';
-import { ReactComponent as BackIcon } from 'assets/images/icons/Back.svg';
 import {
   CREATE_BILLING_SUBSCRIPTION,
   UPDATE_BILLING,
