@@ -1,8 +1,6 @@
 import { useContext, useState } from 'react';
 import { Hidden, Drawer, Toolbar, Typography, IconButton } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import { useLocation } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { SideDrawerContext, ProviderContext } from 'context/session';
 import { GUPSHUP_ENTERPRISE_SHORTCODE } from 'common/constants';
 import GlificLogo from 'assets/images/logo/Logo.svg';

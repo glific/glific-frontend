@@ -2,7 +2,6 @@ import { useState, useEffect, forwardRef } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { ListItemButton, ListItemIcon, ListItemText, List, Divider } from '@mui/material';
 import { useLazyQuery } from '@apollo/client';
-import { useTranslation } from 'react-i18next';
 import { ReactComponent as LinkIcon } from 'assets/images/icons/UrlLink.svg';
 import { ReactComponent as BackIcon } from 'assets/images/icons/SideDrawerBack.svg';
 import { GET_NOTIFICATIONS_COUNT } from 'graphql/queries/Notifications';
