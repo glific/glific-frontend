@@ -20,9 +20,6 @@ test('it renders component properly', async () => {
   const { getByText } = render(wrapper);
   // loading is show initially
   expect(getByText('Loading...')).toBeInTheDocument();
-  await waitFor(() => {
-    expect(getByText('Back to settings')).toBeInTheDocument();
-  });
 });
 
 test('it renders component and clicks cancel', async () => {

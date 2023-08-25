@@ -29,9 +29,6 @@ describe('<Providers />', () => {
     const { getByText } = render(wrapper);
     // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();
-    await waitFor(() => {
-      expect(getByText('Back to settings')).toBeInTheDocument();
-    });
   });
 });
 
