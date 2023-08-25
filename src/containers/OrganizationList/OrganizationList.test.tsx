@@ -24,7 +24,7 @@ const list = (
 test('Organization list renders correctly', async () => {
   render(list);
 
-  expect(screen.getByText('Loading...')).toBeInTheDocument();
+  expect(screen.getByTestId('loading')).toBeInTheDocument();
   await act(async () => {
     await new Promise((resolve) => setTimeout(resolve, 0));
   });
@@ -41,7 +41,7 @@ test('Organization list renders correctly', async () => {
 test('Update status', async () => {
   render(list);
 
-  expect(screen.getByText('Loading...')).toBeInTheDocument();
+  expect(screen.getByTestId('loading')).toBeInTheDocument();
 
   await waitFor(() => {
     expect(screen.getByText('Organizations')).toBeInTheDocument();

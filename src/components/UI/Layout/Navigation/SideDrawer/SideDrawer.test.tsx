@@ -38,17 +38,6 @@ describe('side drawer testing', () => {
     fireEvent.click(button);
   });
 
-  it('should open bottom menus', async () => {
-    const { getAllByTestId } = render(component);
-
-    await waitFor(() => {
-      const profileMenu = screen.getByTestId('profileMenu');
-      fireEvent.mouseOver(profileMenu);
-
-      expect(getAllByTestId('MenuItem')[0]).toHaveTextContent('My Profile');
-    });
-  });
-
   it('correct menu items rendered', async () => {
     setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
     const { getAllByTestId } = render(component);

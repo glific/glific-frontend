@@ -60,7 +60,7 @@ export const ListIcon = ({ icon = '', selected = false, count }: ListIconProps) 
   };
 
   return (
-    <span>
+    <span data-testid="listIcon">
       {stringsToIcons[icon] && (
         <RenderIcon component={stringsToIcons[icon]} color={selected ? '#073f24' : '#999999'} />
       )}

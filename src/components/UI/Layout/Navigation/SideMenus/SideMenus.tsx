@@ -19,7 +19,6 @@ const AnchorLink = forwardRef((props, ref: any) => <a {...props} ref={ref} />);
 const SideMenus = ({ opened }: SideMenusProps) => {
   const [subMenu, setSubMenu] = useState({ active: false, value: '' });
   const location = useLocation();
-  const { t } = useTranslation();
 
   // handle count for notifictions
   const [notificationCount, setNotificationCount] = useState(0);

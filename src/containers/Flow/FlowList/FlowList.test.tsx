@@ -63,8 +63,8 @@ setUserSession(JSON.stringify({ roles: ['Admin'] }));
 
 describe('<FlowList />', () => {
   test('should render Flow', async () => {
-    const { getByText } = render(flowList);
-    expect(getByText('Loading...')).toBeInTheDocument();
+    const { getByText, getByTestId } = render(flowList);
+    expect(getByTestId('loading')).toBeInTheDocument();
     await waitFor(() => {
       expect(getByText('Flows'));
     });

@@ -12,11 +12,9 @@ import SideMenus from '../SideMenus/SideMenus';
 import styles from './SideDrawer.module.css';
 
 export const SideDrawer = () => {
-  const location = useLocation();
   const { drawerOpen, setDrawerOpen } = useContext(SideDrawerContext);
 
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { t } = useTranslation();
 
   const { provider } = useContext(ProviderContext);
 

@@ -23,8 +23,8 @@ setUserSession(JSON.stringify({ roles: ['Admin'] }));
 
 describe('<Role List />', () => {
   test('should render a list of roles', async () => {
-    const { getByText } = render(rolesList);
-    expect(getByText('Loading...')).toBeInTheDocument();
+    const { getByTestId, getByText } = render(rolesList);
+    expect(getByTestId('loading')).toBeInTheDocument();
     await waitFor(() => {
       expect(getByText('Role Management')).toBeInTheDocument();
       expect(getByText('Admin')).toBeInTheDocument();

@@ -35,10 +35,10 @@ const wrapper = (
 
 describe('<CollectionContact />', () => {
   test('should render CollectionContact', async () => {
-    const { getByText } = render(wrapper);
+    const { getByText, getByTestId } = render(wrapper);
 
     // loading is show initially
-    expect(getByText('Loading...')).toBeInTheDocument();
+    expect(getByTestId('loading')).toBeInTheDocument();
 
     await waitFor(() => {
       expect(getByText('Back to all collections')).toBeInTheDocument();
