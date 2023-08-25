@@ -174,7 +174,11 @@ export const BillingForm = () => {
   });
 
   if (billLoading || portalLoading) {
-    return <Loading />;
+    return (
+      <div className={styles.LoadingBackground}>
+        <Loading />
+      </div>
+    );
   }
 
   // check if the organization is already subscribed or in pending state

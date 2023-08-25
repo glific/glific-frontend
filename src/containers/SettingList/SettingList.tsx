@@ -1,32 +1,26 @@
-import { useNavigate, useLocation, useParams } from 'react-router-dom';
+import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
 import { Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { GET_PROVIDERS } from 'graphql/queries/Organization';
-import { ReactComponent as Settingicon } from 'assets/images/icons/Settings/Settings.svg';
 import styles from './SettingList.module.css';
 import { useEffect } from 'react';
 import Track from 'services/TrackService';
-import OrganisationFlows from './OrganizationFlows/OrganisationFlows';
-import Organisation from './Organisation/Organisation';
-import Billing from './Billing/Billing';
-import Providers from './Providers/Providers';
 import { Heading } from 'containers/Form/FormLayout';
 
 export const SettingList = () => {
-  const { type } = useParams();
   const location = useLocation();
 
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { data: providerData, loading } = useQuery(GET_PROVIDERS);
+
   useEffect(() => {
     Track('Visit Settings');
   }, []);
 
   if (loading) return <Loading />;
-  const SettingIcon = <Settingicon />;
 
   const List = [
     {
@@ -78,14 +72,7 @@ export const SettingList = () => {
       <Box sx={{ display: 'flex' }}>
         {drawer}
         <Box className={styles.SettingBody}>
-          {(location.pathname == '/settings/organization' || location.pathname == '/settings') && (
-            <Organisation />
-          )}
-          {location.pathname == '/settings/organization-flows' && <OrganisationFlows />}
-          {location.pathname == '/settings/billing' && <Billing />}
-          {type && type != 'organization' && type != 'organization-flows' && type != 'billing' && (
-            <Providers />
-          )}
+          <Outlet />
         </Box>
       </Box>
     </>

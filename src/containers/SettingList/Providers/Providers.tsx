@@ -172,7 +172,12 @@ export const Providers = () => {
       });
   };
 
-  if (!providerData || loading) return <Loading />;
+  if (!providerData || loading)
+    return (
+      <div className={styles.LoadingBackground}>
+        <Loading />
+      </div>
+    );
 
   const title = providerData.providers[0].name;
 

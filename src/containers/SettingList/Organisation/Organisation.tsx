@@ -88,7 +88,10 @@ export const Organisation = () => {
     }
   }, [orgData]);
 
-  if (!languages) return <Loading />;
+  if (!languages) return;
+  <div className={styles.LoadingBackground}>
+    <Loading />
+  </div>;
 
   let activeLanguage: any = [];
   const validateActiveLanguages = (value: any) => {

@@ -11,6 +11,7 @@ import { GET_ORGANIZATION_PROVIDER } from 'graphql/queries/Organization';
 import styles from './AuthenticatedRoute.module.css';
 import Tag from 'containers/Tag/Tag';
 import TagList from 'containers/Tag/TagList/TagList';
+import OrganisationFlows from 'containers/SettingList/OrganizationFlows/OrganisationFlows';
 
 const Chat = lazy(() => import('containers/Chat/Chat'));
 const Layout = lazy(() => import('components/UI/Layout/Layout'));
@@ -50,9 +51,7 @@ const BlockContactList = lazy(
   () => import('containers/BlockContact/BlockContactList/BlockContactList')
 );
 const Organisation = lazy(() => import('containers/SettingList/Organisation/Organisation'));
-const OrganisationFLows = lazy(
-  () => import('containers/SettingList/OrganizationFlows/OrganisationFlows')
-);
+
 const WebhookLogsList = lazy(
   () => import('containers/WebhookLogs/WebhookLogsList/WebhookLogsList')
 );
@@ -127,8 +126,13 @@ const routeAdmin = (
     <Route path="template/add" element={<HSM />} />
     <Route path="template/:id/edit" element={<HSM />} />
     <Route path="ticket" element={<TicketList />} />
-    <Route path="settings" element={<SettingList />} />
-    <Route path="settings/:type" element={<SettingList />} />
+    <Route path="settings" element={<SettingList />}>
+      <Route path="" element={<Organisation />} />
+      <Route path="organization" element={<Organisation />} />
+      <Route path="organization-flows" element={<OrganisationFlows />} />
+      <Route path="billing" element={<Billing />} />
+      <Route path=":type" element={<Providers />} />
+    </Route>
     <Route path="blocked-contacts" element={<BlockContactList />} />
     <Route path="webhook-logs" element={<WebhookLogsList />} />
     <Route path="notifications" element={<NotificationList />} />

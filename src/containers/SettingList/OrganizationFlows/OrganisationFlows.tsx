@@ -137,7 +137,12 @@ export const OrganisationFlows = () => {
     }
   }, [orgData]);
 
-  if (!flow) return <Loading />;
+  if (!flow)
+    return (
+      <div className={styles.LoadingBackground}>
+        <Loading />
+      </div>
+    );
 
   const handleChange = (value: any) => {
     setIsDisable(!value);

@@ -4,3 +4,9 @@
   line-height: 18px;
   font-size: 16px;
 }
+
+.LoadingBackground {
+  height: 100%;
+  width: 100%;
+  background-color: white;
+}

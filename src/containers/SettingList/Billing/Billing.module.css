@@ -10,9 +10,9 @@
 }
 
 .Description {
-  border: 1px solid #d8d8d8;
-  border-radius: 12px;
-  background-color: white;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  background: #f8faf5;
   margin-bottom: 20px;
 }
 
@@ -227,6 +227,12 @@
 .Body {
   padding: 40px 53px 0 53px;
   width: fit-content;
+}
+
+.LoadingBackground {
+  height: 100%;
+  width: 100%;
+  background-color: white;
 }
 
 @media screen and (max-width: 768px) {

@@ -91,9 +91,9 @@ export const AutoComplete = ({
   const [open, setOpen] = useState(false);
 
   // Todo: clean this style for autocomplete
-  const inputSxStyle = {
+  const filterSxStyle = {
     '& .MuiOutlinedInput-root': {
-      height: '100%',
+      height: '36px !important',
       paddingBottom: 0,
       paddingTop: 0,
     },
@@ -109,13 +109,21 @@ export const AutoComplete = ({
     '& .MuiAutocomplete-input': {
       padding: '0 !important',
     },
-    height: '100%',
     borderRadius: '24px !important',
     borderColor: '#cccccc',
     borderWidth: '1px',
     borderStyle: 'solid',
     background: '#ffffff',
     paddingLeft: '18px',
+  };
+
+  const inputSxStyle = {
+    '& .MuiOutlinedInput-root': {
+      height: 'fit-content !important',
+      minHeight: '48px',
+      paddingBottom: 0,
+      paddingTop: 0,
+    },
   };
 
   const getValue = (() => {
@@ -276,7 +284,7 @@ export const AutoComplete = ({
                 {...textFieldProps}
                 data-testid="AutocompleteInput"
                 placeholder={placeholder}
-                sx={isFilterType ? inputSxStyle : {}}
+                sx={isFilterType ? filterSxStyle : inputSxStyle}
               />
             );
           }}
