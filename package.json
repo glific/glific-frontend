@@ -20,7 +20,7 @@
     "@emotion/styled": "^11.11.0",
     "@glific/flow-editor": "^1.19.3",
     "@mui/icons-material": "^5.14.1",
-    "@mui/material": "^5.14.2",
+    "@mui/material": "^5.14.3",
     "@mui/x-date-pickers": "^6.10.2",
     "@stripe/react-stripe-js": "^2.1.1",
     "@stripe/stripe-js": "^1.54.2",
