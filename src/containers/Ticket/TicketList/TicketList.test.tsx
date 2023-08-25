@@ -19,9 +19,9 @@ const wrapper = (
 setUserSession(JSON.stringify({ roles: ['Admin'] }));
 
 test('should load the trigger list', async () => {
-  const { getByText } = render(wrapper);
+  const { getByText, getByTestId } = render(wrapper);
 
-  expect(getByText('Loading...')).toBeInTheDocument();
+  expect(getByTestId('loading')).toBeInTheDocument();
   await waitFor(() => {
     expect(getByText('Tickets')).toBeInTheDocument();
   });

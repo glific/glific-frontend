@@ -42,7 +42,7 @@ const notifications = (
 
 test('It should load notifications', async () => {
   const { getByText } = render(notifications);
-  const loading = await screen.findByText('Loading...');
+  const loading = await screen.getByTestId('loading');
 
   await waitFor(() => {
     expect(loading).toBeInTheDocument();

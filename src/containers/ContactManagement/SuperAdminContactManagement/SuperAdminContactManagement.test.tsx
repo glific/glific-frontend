@@ -22,7 +22,7 @@ const list = (
 test('Super admin contact management list renders correctly', async () => {
   render(list);
 
-  expect(screen.getByText('Loading...')).toBeInTheDocument();
+  expect(screen.getByTestId('loading')).toBeInTheDocument();
   await act(async () => {
     await new Promise((resolve) => setTimeout(resolve, 0));
   });

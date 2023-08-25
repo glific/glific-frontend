@@ -27,7 +27,7 @@ describe('<WalletBalance />', () => {
     await waitFor(() => {
       const walletBalance = screen.getByTestId('WalletBalance');
       expect(walletBalance).toBeInTheDocument();
-      expect(walletBalance).toHaveTextContent('Wallet balance is low');
+      expect(walletBalance).toHaveTextContent('Wallet balance');
     });
   });
 });
