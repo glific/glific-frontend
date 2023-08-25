@@ -235,6 +235,15 @@
   background-color: white;
 }
 
+.FieldLabel {
+  margin-top: 24px;
+  vertical-align: middle;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 18px;
+  color: #555555;
+}
+
 @media screen and (max-width: 768px) {
   .Form {
     width: 100%;

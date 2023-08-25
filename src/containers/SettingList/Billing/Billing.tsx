@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Fragment } from 'react';
 import { CardElement, useStripe, useElements, Elements } from '@stripe/react-stripe-js';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { loadStripe } from '@stripe/stripe-js';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import { CircularProgress, InputAdornment } from '@mui/material';
+import { CircularProgress, InputAdornment, Typography } from '@mui/material';
 import CallMadeIcon from '@mui/icons-material/CallMade';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 
@@ -422,46 +422,64 @@ export const BillingForm = () => {
             {({ values, setFieldError, setFieldTouched }) => (
               <Form>
                 {processIncomplete && (
-                  <Field
-                    component={Input}
-                    name="coupon"
-                    type="text"
-                    placeholder="Coupon Code"
-                    disabled={couponApplied}
-                    endAdornment={
-                      <InputAdornment position="end">
-                        {couponLoading ? (
-                          <CircularProgress />
-                        ) : (
-                          <div
-                            aria-hidden
-                            className={styles.Apply}
-                            onClick={() => {
-                              if (values.coupon === '') {
-                                setFieldError('coupon', 'Please input coupon code');
-                                setFieldTouched('coupon');
-                              } else {
-                                getCouponCode({ variables: { code: values.coupon } });
-                              }
-                            }}
-                          >
-                            {couponApplied ? (
-                              <CancelOutlinedIcon
-                                className={styles.CrossIcon}
-                                onClick={() => setCouponApplied(false)}
-                              />
-                            ) : (
-                              ' APPLY'
-                            )}
-                          </div>
-                        )}
-                      </InputAdornment>
-                    }
-                  />
+                  <>
+                    <Typography data-testid="formLabel" variant="h5" className={styles.FieldLabel}>
+                      {'Coupon Code'}
+                    </Typography>
+                    <Field
+                      component={Input}
+                      name="coupon"
+                      type="text"
+                      placeholder="Coupon Code"
+                      disabled={couponApplied}
+                      endAdornment={
+                        <InputAdornment position="end">
+                          {couponLoading ? (
+                            <CircularProgress />
+                          ) : (
+                            <div
+                              aria-hidden
+                              className={styles.Apply}
+                              onClick={() => {
+                                if (values.coupon === '') {
+                                  setFieldError('coupon', 'Please input coupon code');
+                                  setFieldTouched('coupon');
+                                } else {
+                                  getCouponCode({ variables: { code: values.coupon } });
+                                }
+                              }}
+                            >
+                              {couponApplied ? (
+                                <CancelOutlinedIcon
+                                  className={styles.CrossIcon}
+                                  onClick={() => setCouponApplied(false)}
+                                />
+                              ) : (
+                                ' APPLY'
+                              )}
+                            </div>
+                          )}
+                        </InputAdornment>
+                      }
+                    />
+                  </>
                 )}
                 {formFieldItems.map((field, index) => {
                   const key = index;
-                  return <Field key={key} {...field} />;
+                  return (
+                    <Fragment key={key}>
+                      {field.label && (
+                        <Typography
+                          data-testid="formLabel"
+                          variant="h5"
+                          className={styles.FieldLabel}
+                        >
+                          {field.label}
+                        </Typography>
+                      )}
+                      <Field key={key} {...field} />
+                    </Fragment>
+                  );
                 })}
 
                 {paymentBody}

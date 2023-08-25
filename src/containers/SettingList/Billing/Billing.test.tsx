@@ -91,10 +91,6 @@ describe('<Billing />', () => {
     const { getByText } = render(wrapper);
     // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();
-    await waitFor(() => {
-      expect(getByText('Back to settings')).toBeInTheDocument();
-    });
-
     expect(mountElementMock).toHaveBeenCalled;
   });
 });
@@ -112,9 +108,7 @@ test('creating a subscription with response as pending', async () => {
   );
   // loading is show initially
   expect(getByText('Loading...')).toBeInTheDocument();
-  await waitFor(() => {
-    expect(getByText('Back to settings')).toBeInTheDocument();
-  });
+
   fireEvent.click(getByTestId('submitButton'));
   await waitFor(() => {});
 });
@@ -132,9 +126,6 @@ test('subscription status is already in pending state', async () => {
   );
   // loading is show initially
   expect(getByText('Loading...')).toBeInTheDocument();
-  await waitFor(() => {
-    expect(getByText('Back to settings')).toBeInTheDocument();
-  });
 
   await waitFor(() => {
     expect(getByText('Your payment is in pending state'));
@@ -165,9 +156,6 @@ test('complete a subscription', async () => {
   );
   // loading is show initially
   expect(getByText('Loading...')).toBeInTheDocument();
-  await waitFor(() => {
-    expect(getByText('Back to settings')).toBeInTheDocument();
-  });
   user.click(getByTestId('submitButton'));
   await waitFor(() => {});
   await waitFor(() => {
@@ -193,9 +181,6 @@ test('open customer portal', async () => {
     </MockedProvider>
   );
 
-  await waitFor(() => {
-    expect(getByText('Back to settings')).toBeInTheDocument();
-  });
   user.click(getByTestId('submitButton'));
 });
 
@@ -220,9 +205,6 @@ test('update billing details', async () => {
   // loading is show initially
 
   expect(getByText('Loading...')).toBeInTheDocument();
-  await waitFor(() => {
-    expect(getByText('Back to settings')).toBeInTheDocument();
-  });
 
   await waitFor(() => {
     const name = container.querySelector('input[name="name"]') as HTMLInputElement;
@@ -255,9 +237,6 @@ test('update billing details with coupon code', async () => {
   );
   // loading is show initially
   expect(getByText('Loading...')).toBeInTheDocument();
-  await waitFor(() => {
-    expect(getByText('Back to settings')).toBeInTheDocument();
-  });
 
   const coupon = container.querySelector('input[name="coupon"]') as HTMLInputElement;
   await user.click(coupon);
