@@ -355,7 +355,7 @@ export const Trigger = () => {
     endDate: endDateValue,
     flow: flowValue,
     frequency: frequencyValue,
-    group: groupValue,
+    groups: groupValue,
     isActive: isActiveValue,
     isRepeating: isRepeatingValue,
     startAt: startAtValue,
@@ -385,15 +385,12 @@ export const Trigger = () => {
     setRoles(rolesValue);
 
     const getFlowId = flow.flows.filter((flows: any) => flows.id === flowValue.id);
-    // const getcollectionId = collections.groups.filter(
-    //   (collection: any) => collection.id === groupValue.id
-    // );
+
     if (getFlowId.length > 0) {
       setFlowId(getFlowId[0]);
     }
-    // if (getcollectionId.length > 0) {
-    //   setGroupIds(getcollectionId[0]);
-    // }
+
+    setGroupIds(groupValue);
   };
 
   return (
