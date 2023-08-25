@@ -52,3 +52,9 @@
   min-width: 200px !important;
   text-align: end;
 }
+
+.AddIcon {
+  margin-right: 10px;
+  height: 12px;
+  width: 12px;
+}

@@ -22,8 +22,8 @@ setUserSession(JSON.stringify({ roles: ['Admin'] }));
 
 describe('<TagList />', () => {
   test('should render Flow', async () => {
-    const { getByText } = render(tagList);
-    expect(getByText('Loading...')).toBeInTheDocument();
+    const { getByText, getByTestId } = render(tagList);
+    expect(getByTestId('loading')).toBeInTheDocument();
     await waitFor(() => {
       expect(getByText('Tags'));
     });

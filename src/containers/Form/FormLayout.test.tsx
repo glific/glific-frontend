@@ -60,7 +60,7 @@ test('inputs should have mock values', async () => {
 });
 
 test('cancel button should redirect to flowlist page', async () => {
-  const { container, getByText } = render(
+  const { container, getByText, getByTestId } = render(
     <MockedProvider mocks={mocks} addTypename={false}>
       <Router>
         <Routes>
@@ -74,7 +74,7 @@ test('cancel button should redirect to flowlist page', async () => {
     const { queryByText } = within(container.querySelector('form') as HTMLElement);
     const button = queryByText('Cancel') as HTMLButtonElement;
     fireEvent.click(button);
-    expect(getByText('Loading...')).toBeInTheDocument();
+    expect(getByTestId('loading')).toBeInTheDocument();
   });
 
   await waitFor(() => {

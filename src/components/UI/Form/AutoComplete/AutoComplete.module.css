@@ -1,23 +1,29 @@
 .Input {
   display: flex;
-  padding: 8px 0px;
+  padding-top: 15px;
+  min-width: 150px;
+}
+
+.FilterInput {
+  display: flex;
   min-width: 150px;
 }
 
 .Input label {
-  color: #93a29b !important;
+  color: #93a29b;
 }
 
 .Chip {
-  background-color: #e2f1ea !important;
+  background-color: #e2f1ea;
 }
 
 .HelperText {
-  margin-left: 16px !important;
-  color: #93a29b !important;
-  line-height: 1 !important;
-  font-size: 12px !important;
-  margin-top: 4px !important;
+  margin: 0px;
+  padding: 0px;
+  color: #93a29b;
+  line-height: 1;
+  font-size: 12px;
+  margin-top: 7px;
 }
 
 .HelpLink {
@@ -31,12 +37,12 @@
   font-size: 14px;
 }
 .DeleteIcon {
-  width: 8px !important;
-  margin-right: 13px !important;
+  width: 8px;
+  margin-right: 13px;
 }
 
 .Paper > ul > li:hover {
-  background-color: #edf6f2 !important;
+  background-color: #edf6f2;
 }
 .Paper > ul > li {
   color: #073f24;
@@ -44,17 +50,29 @@
 
 .QuestionText {
   color: #073f24;
-  font-size: 16px;
+  font-size: 12px;
   font-weight: 400;
-  margin: 0 0 8px 16px;
+  margin: 0 0 4px 0px;
 }
 
 .FilterHeight {
-  height: 36px !important;
+  height: 36px;
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
 }
 
 @media screen and (max-width: 768px) {
   .Input {
-    width: 100% !important;
+    width: 100%;
   }
 }

@@ -103,17 +103,17 @@ describe('HSM templates', () => {
     // Test if the dropdown text content is "Approved"
     expect(cleanedDropdownText).toBe('Approved');
 
-    screen.getByText('Loading...');
+    screen.getByTestId('loading');
 
-    await waitForElementToBeRemoved(() => screen.getByText('Loading...'));
+    await waitForElementToBeRemoved(() => screen.getByTestId('loading'));
   });
 
   test('should have an option of bulk applying templates using csv file', async () => {
-    const { getByText } = render(hsmComponent);
+    const { getByText, getByTestId } = render(hsmComponent);
 
     const notificationFunc = vi.spyOn(common, 'setNotification');
     await waitFor(() => {
-      expect(getByText('Loading...')).toBeInTheDocument();
+      expect(getByTestId('loading')).toBeInTheDocument();
     });
 
     await waitFor(() => {
@@ -164,10 +164,10 @@ describe('Provider: Gupshup enterprise', () => {
   );
 
   test('should import templates using csv file', async () => {
-    const { getByText } = render(hsmComponent);
+    const { getByText, getByTestId } = render(hsmComponent);
 
     await waitFor(() => {
-      expect(getByText('Loading...')).toBeInTheDocument();
+      expect(getByTestId('loading')).toBeInTheDocument();
     });
 
     await waitFor(() => {
@@ -194,12 +194,12 @@ describe('Provider: Gupshup enterprise', () => {
   });
 
   test('it shows a warning when we get an error while importing', async () => {
-    const { getByText } = render(hsmComponent);
+    const { getByText, getByTestId } = render(hsmComponent);
 
     const notificationFunc = vi.spyOn(common, 'setNotification');
 
     await waitFor(() => {
-      expect(getByText('Loading...')).toBeInTheDocument();
+      expect(getByTestId('loading')).toBeInTheDocument();
     });
 
     await waitFor(() => {

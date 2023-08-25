@@ -1,10 +1,10 @@
 import { organizationHasDynamicRole } from 'common/utils';
-import { getMenus } from 'config/menu';
+import { Menu, getMenus } from 'config/menu';
 import { getUserSession } from 'services/AuthService';
 
 let role: any[] = [];
-let sideDrawerMenu: any = [];
-let staffManagementMenu: any = [];
+let sideDrawerMenu: Menu[] = [];
+let staffManagementMenu: Menu[] = [];
 
 // we are correctly using mutable export bindings hence making an exception for below
 /* eslint-disable */

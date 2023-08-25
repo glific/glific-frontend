@@ -114,10 +114,7 @@ export const Ticket = ({ selectedTicket, setOpenDialog }: TicketProps) => {
       multiple: false,
       options: data ? data.users : [],
       optionLabel: 'name',
-      textFieldProps: {
-        label: t('Change assignee'),
-        variant: 'outlined',
-      },
+      label: t('Change assignee'),
     },
     {
       component: Input,

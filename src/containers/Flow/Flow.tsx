@@ -18,6 +18,7 @@ import styles from './Flow.module.css';
 import { GET_TAGS } from 'graphql/queries/Tags';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { CREATE_LABEL } from 'graphql/mutations/Tags';
+import { flowInfo } from 'common/HelpData';
 
 const flowIcon = <FlowIcon className={styles.FlowIcon} />;
 
@@ -131,12 +132,14 @@ export const Flow = () => {
       component: Input,
       name: 'name',
       type: 'text',
+      label: t('Name'),
       placeholder: t('Name'),
     },
     {
       component: Input,
       name: 'keywords',
       type: 'text',
+      label: t('Keywords'),
       placeholder: t('Keywords'),
       helperText: t('Enter comma separated keywords that trigger this flow'),
     },
@@ -149,10 +152,8 @@ export const Flow = () => {
       handleCreateItem: handleCreateLabel,
       hasCreateOption: true,
       multiple: false,
-      textFieldProps: {
-        variant: 'outlined',
-        label: t('Tag'),
-      },
+      label: t('Tag'),
+      placeholder: t('Tag'),
     },
     {
       component: Checkbox,
@@ -259,6 +260,7 @@ export const Flow = () => {
       type={type}
       copyNotification={t('Copy of the flow has been created!')}
       customHandler={customHandler}
+      helpData={flowInfo}
     />
   );
 };

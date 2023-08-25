@@ -26,9 +26,9 @@ const list = (
 afterEach(cleanup);
 describe('<List />', () => {
   test('should have loading', async () => {
-    const { getByText } = render(list);
+    const { getByTestId } = render(list);
     await waitFor(() => {
-      expect(getByText('Loading...')).toBeInTheDocument();
+      expect(getByTestId('loading')).toBeInTheDocument();
     });
   });
 

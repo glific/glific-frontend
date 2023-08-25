@@ -29,7 +29,7 @@ const list = (
 
 test('it renders list successfully', async () => {
   render(list);
-  expect(screen.getByText('Loading...')).toBeInTheDocument();
+  expect(screen.getByTestId('loading')).toBeInTheDocument();
   await waitFor(() => {
     const variableNameLabel = screen.getByText('Variable name');
     const inputNameLabel = screen.getByText('Input name');
@@ -79,7 +79,7 @@ const listError = (
 
 test('it renders component, edits field, saves and error occurs', async () => {
   render(listError);
-  expect(screen.getByText('Loading...')).toBeInTheDocument();
+  expect(screen.getByTestId('loading')).toBeInTheDocument();
 
   await waitFor(() => {
     const editButtons = screen.getAllByTestId('edit-icon');
