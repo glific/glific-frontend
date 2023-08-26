@@ -109,7 +109,9 @@ test('creating a subscription with response as pending', async () => {
   // loading is show initially
   expect(getByText('Loading...')).toBeInTheDocument();
 
-  fireEvent.click(getByTestId('submitButton'));
+  await waitFor(() => {
+    fireEvent.click(getByTestId('submitButton'));
+  });
   await waitFor(() => {});
 });
 
@@ -156,7 +158,10 @@ test('complete a subscription', async () => {
   );
   // loading is show initially
   expect(getByText('Loading...')).toBeInTheDocument();
-  user.click(getByTestId('submitButton'));
+
+  await waitFor(() => {
+    user.click(getByTestId('submitButton'));
+  });
   await waitFor(() => {});
   await waitFor(() => {
     expect(getByText('You have an active subscription')).toBeInTheDocument();
@@ -181,7 +186,9 @@ test('open customer portal', async () => {
     </MockedProvider>
   );
 
-  user.click(getByTestId('submitButton'));
+  await waitFor(() => {
+    user.click(getByTestId('submitButton'));
+  });
 });
 
 test('update billing details', async () => {
@@ -239,16 +246,21 @@ test('update billing details with coupon code', async () => {
   expect(getByText('Loading...')).toBeInTheDocument();
 
   const coupon = container.querySelector('input[name="coupon"]') as HTMLInputElement;
-  await user.click(coupon);
-  await user.keyboard('PBXGFH');
 
-  await user.click(getByText('APPLY'));
+  await waitFor(async () => {
+    await user.click(coupon);
+    await user.keyboard('PBXGFH');
+
+    await user.click(getByText('APPLY'));
+  });
 
   await waitFor(() => {
     expect(getByText('Coupon Applied!')).toBeInTheDocument();
   });
 
-  user.click(getByTestId('submitButton'));
+  await waitFor(() => {
+    user.click(getByTestId('submitButton'));
+  });
 
   await waitFor(() => {
     expect(getByText('You have an active subscription')).toBeInTheDocument();

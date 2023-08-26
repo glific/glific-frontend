@@ -281,6 +281,9 @@ export const BillingForm = () => {
 
   const cardElements = (
     <>
+      <Typography data-testid="formLabel" variant="h5" className={styles.FieldLabel}>
+        {'Card Details'}
+      </Typography>
       <CardElement
         options={{ hidePostalCode: true }}
         className={styles.Card}
