@@ -44,6 +44,7 @@ export interface HelpDataProps {
 }
 
 export interface ListProps {
+  descriptionBox?: any;
   loadingList?: boolean;
   columnNames?: Array<ColumnNames>;
   countQuery: DocumentNode;
@@ -107,6 +108,7 @@ interface TableVals {
 }
 
 export const List = ({
+  descriptionBox = <></>,
   loadingList = false,
   columnNames = [],
   countQuery,
@@ -796,6 +798,8 @@ export const List = ({
           </div>
         </div>
       </div>
+      {/* description box */}
+      {descriptionBox}
 
       <div className={styles.FilterFields}>
         <div className={styles.FlexCenter}>
