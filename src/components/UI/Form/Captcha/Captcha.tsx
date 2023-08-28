@@ -37,8 +37,7 @@ export const Captcha = ({
   return (
     <Component
       onClick={() => {
-        handleReCaptchaVerify();
-        onClick();
+        handleReCaptchaVerify().then(() => onClick());
       }}
       {...rest}
     >

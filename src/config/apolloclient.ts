@@ -14,6 +14,7 @@ import {
   renewAuthToken,
   getAuthSession,
   setAuthSession,
+  getUserSession,
 } from 'services/AuthService';
 import { CONNECTION_RECONNECT_ATTEMPTS } from 'common/constants';
 import { Logout } from 'containers/Auth/Logout/Logout';
@@ -140,6 +141,7 @@ const gqlClient = (navigate: any) => {
       url: SOCKET,
       connectionParams: {
         authToken: getAuthSession('access_token'),
+        userId: getUserSession('id'),
       },
     })
   );
