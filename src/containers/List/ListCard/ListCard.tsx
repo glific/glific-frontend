@@ -44,8 +44,8 @@ export const ListCard = ({ data, columnStyles }: ListCardProps) => {
 
   return (
     <div className={styles.TableContainer}>
-      <Table className={styles.Table} data-testid="table">
-        <TableBody data-testid="tableBody">{rows}</TableBody>
+      <Table className={styles.Table} data-testid="listCardTable">
+        <TableBody data-testid="listCardBody">{rows}</TableBody>
       </Table>
     </div>
   );
