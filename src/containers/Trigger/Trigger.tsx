@@ -390,7 +390,12 @@ export const Trigger = () => {
       setFlowId(getFlowId[0]);
     }
 
-    setGroupIds(groupValue);
+    if (groupValue && collections.groups && groupValue.length > 0) {
+      const selectedGroups = collections.groups.filter((group: any) =>
+        groupValue.includes(group.label)
+      );
+      setGroupIds(selectedGroups);
+    }
   };
 
   return (
