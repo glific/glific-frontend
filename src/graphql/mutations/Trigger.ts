@@ -21,9 +21,7 @@ export const CREATE_TRIGGER = gql`
           id
         }
         frequency
-        group {
-          id
-        }
+        groups
         id
         isActive
         hours
@@ -45,9 +43,7 @@ export const UPDATE_TRIGGER = gql`
           id
         }
         frequency
-        group {
-          id
-        }
+        groups
         id
         isActive
         hours
