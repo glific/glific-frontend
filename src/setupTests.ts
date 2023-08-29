@@ -1,10 +1,8 @@
 import { vi } from 'vitest';
 import { TextEncoder, TextDecoder } from 'util';
 import { expect } from 'vitest';
-import matchers from '@testing-library/jest-dom/matchers';
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom/vitest';
 
-expect.extend(matchers);
 import { cleanup } from '@testing-library/react';
 
 // runs a cleanup after each test case (e.g. clearing jsdom)
