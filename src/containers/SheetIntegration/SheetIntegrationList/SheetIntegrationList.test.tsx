@@ -35,10 +35,10 @@ window.open = vi.fn();
 setUserSession(JSON.stringify({ roles: ['Admin'] }));
 describe('<SheetIntegrationList />', () => {
   test('Should render SheetIntegrationList', async () => {
-    const { getByText, getAllByTestId } = render(wrapper);
+    const { getByText, getByTestId } = render(wrapper);
 
     // loading is show initially
-    expect(getByText('Loading...')).toBeInTheDocument();
+    expect(getByTestId('loading')).toBeInTheDocument();
     await waitFor(() => {
       expect(getByText('Google sheets')).toBeInTheDocument();
     });
@@ -55,10 +55,10 @@ describe('<SheetIntegrationList />', () => {
   });
 
   test('Link and Sync Button testing', async () => {
-    const { getByText, getAllByTestId } = render(wrapper);
+    const { getAllByTestId, getByTestId } = render(wrapper);
 
     // loading is show initially
-    expect(getByText('Loading...')).toBeInTheDocument();
+    expect(getByTestId('loading')).toBeInTheDocument();
     // SYNC Button
     await waitFor(() => {
       expect(getAllByTestId('additionalButton')[0]).toBeInTheDocument();

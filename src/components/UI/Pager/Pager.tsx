@@ -8,12 +8,12 @@ import {
   TableRow,
   TableSortLabel,
   TableContainer,
+  Skeleton,
 } from '@mui/material';
 import { v4 as uuidv4 } from 'uuid';
 
 import { ColumnNames } from 'containers/List/List';
 import styles from './Pager.module.css';
-import Loading from '../Layout/Loading/Loading';
 
 const removeDisplayColumns = ['recordId', 'translations', 'id', 'isActive'];
 interface PagerProps {
@@ -205,8 +205,16 @@ export const Pager = ({
           <TableBody data-testid="tableBody">{!loadingList && data.length > 0 && rows}</TableBody>
         </Table>
         {loadingList && (
-          <div className={styles.Body}>
-            <Loading />
+          <div className={styles.Skeleton} data-testid="loading">
+            {[...Array(3).keys()].map((key) => (
+              <Skeleton
+                key={key}
+                variant="rounded"
+                width={'100%'}
+                height={50}
+                sx={{ margin: '10px' }}
+              />
+            ))}
           </div>
         )}
         {!loadingList && data.length == 0 && <div className={styles.Body}>{noItemsText}</div>}
