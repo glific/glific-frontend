@@ -12,6 +12,9 @@ import styles from './AuthenticatedRoute.module.css';
 import Tag from 'containers/Tag/Tag';
 import TagList from 'containers/Tag/TagList/TagList';
 import OrganisationFlows from 'containers/SettingList/OrganizationFlows/OrganisationFlows';
+import Billing from 'containers/SettingList/Billing/Billing';
+import Providers from 'containers/SettingList/Providers/Providers';
+import Organisation from 'containers/SettingList/Organisation/Organisation';
 
 const Chat = lazy(() => import('containers/Chat/Chat'));
 const Layout = lazy(() => import('components/UI/Layout/Layout'));
@@ -44,13 +47,9 @@ const HSM = lazy(() => import('containers/Template/Form/HSM/HSM'));
 
 const TicketList = lazy(() => import('containers/Ticket/TicketList/TicketList'));
 const SettingList = lazy(() => import('containers/SettingList/SettingList'));
-const Billing = lazy(() => import('containers/SettingList/Billing/Billing'));
-
-const Providers = lazy(() => import('containers/SettingList/Providers/Providers'));
 const BlockContactList = lazy(
   () => import('containers/BlockContact/BlockContactList/BlockContactList')
 );
-const Organisation = lazy(() => import('containers/SettingList/Organisation/Organisation'));
 
 const WebhookLogsList = lazy(
   () => import('containers/WebhookLogs/WebhookLogsList/WebhookLogsList')
