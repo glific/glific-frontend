@@ -88,12 +88,7 @@ export const Organisation = () => {
     }
   }, [orgData]);
 
-  if (!languages)
-    return (
-      <div className={styles.LoadingBackground}>
-        <Loading />
-      </div>
-    );
+  if (!languages) return <Loading isWhite />;
 
   let activeLanguage: any = [];
   const validateActiveLanguages = (value: any) => {
@@ -232,6 +227,7 @@ export const Organisation = () => {
       afterSave={saveHandler}
       customStyles={styles.organization}
       entityId={organizationId}
+      noHeading
     />
   );
 };

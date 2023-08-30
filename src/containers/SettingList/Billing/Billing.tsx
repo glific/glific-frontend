@@ -27,7 +27,6 @@ import { Input } from 'components/UI/Form/Input/Input';
 import { STRIPE_PUBLISH_KEY } from 'config';
 import { setNotification } from 'common/notification';
 import styles from './Billing.module.css';
-import { SettingHeading } from 'containers/Form/FormLayout';
 
 // Make sure to call `loadStripe` outside of a component’s render to avoid
 // recreating the `Stripe` object on every render.
@@ -171,11 +170,7 @@ export const BillingForm = () => {
   });
 
   if (billLoading || portalLoading) {
-    return (
-      <div className={styles.LoadingBackground}>
-        <Loading />
-      </div>
-    );
+    return <Loading isWhite />;
   }
 
   // check if the organization is already subscribed or in pending state
@@ -351,7 +346,6 @@ export const BillingForm = () => {
   const processIncomplete = !alreadySubscribed && !pending && !disable;
   return (
     <div className={styles.Form}>
-      <SettingHeading formTitle="Billing" />
       <div className={styles.Body}>
         <div className={styles.Description}>
           <div className={styles.UpperSection}>

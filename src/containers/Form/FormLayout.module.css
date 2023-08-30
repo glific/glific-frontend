@@ -152,25 +152,3 @@
   color: #191c1a;
   font-size: 12px;
 }
-
-/* setting header css */
-.SettingHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 53px 53px 0 53px;
-}
-
-.SettingTitle {
-  color: #212121;
-  display: flex;
-  font-weight: 700;
-  font-size: 24px;
-}
-
-.SettingTextHeader {
-  font-weight: 400;
-  color: #555;
-  font-size: 15px;
-  line-height: 20px;
-}

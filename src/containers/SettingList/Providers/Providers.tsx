@@ -170,12 +170,7 @@ export const Providers = () => {
       });
   };
 
-  if (!providerData || loading)
-    return (
-      <div className={styles.LoadingBackground}>
-        <Loading />
-      </div>
-    );
+  if (!providerData || loading) return <Loading isWhite />;
 
   const title = providerData.providers[0].name;
 
@@ -200,6 +195,7 @@ export const Providers = () => {
       redirect
       afterSave={saveHandler}
       entityId={credentialId}
+      noHeading
     />
   );
 };

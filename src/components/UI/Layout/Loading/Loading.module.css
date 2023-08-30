@@ -64,6 +64,9 @@
   height: 100%;
   flex-direction: column;
 }
+.WhiteBackground {
+  background-color: #fff;
+}
 
 .LoadingPadding {
   padding-top: 100px;

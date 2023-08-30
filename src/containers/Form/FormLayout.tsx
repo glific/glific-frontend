@@ -23,6 +23,7 @@ import { organizationHasDynamicRole } from 'common/utils';
 import { getUserRole } from 'context/role';
 import styles from './FormLayout.module.css';
 import HelpIcon from 'components/UI/HelpIcon/HelpIcon';
+import { SettingHeading } from 'containers/SettingList/SettingList';
 
 export const Heading = ({ title = '', formTitle, helpData }: any) => {
   return (
@@ -35,20 +36,6 @@ export const Heading = ({ title = '', formTitle, helpData }: any) => {
         <div
           className={styles.TextHeader}
         >{`To create a new ${title}, Fill up the following details`}</div>
-      </div>
-    </div>
-  );
-};
-
-export const SettingHeading = ({
-  formTitle,
-  desc = 'Manage organisation name, supported languages',
-}: any) => {
-  return (
-    <div className={styles.SettingHeader}>
-      <div>
-        <div className={styles.SettingTitle}>{formTitle}</div>
-        <div className={styles.SettingTextHeader}>{desc}</div>
       </div>
     </div>
   );
@@ -115,6 +102,7 @@ export interface FormLayoutProps {
   restrictDelete?: boolean;
   languageAttributes?: any;
   helpData?: HelpDataProps;
+  noHeading?: boolean;
 }
 
 export const FormLayout = ({
@@ -166,11 +154,7 @@ export const FormLayout = ({
   entityId = null,
   restrictDelete = false,
   languageAttributes = {},
-  helpData = {
-    heading: '',
-    body: <></>,
-    link: '',
-  },
+  noHeading = false,
 }: FormLayoutProps) => {
   const [showDialog, setShowDialog] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
@@ -677,12 +661,7 @@ export const FormLayout = ({
     formTitle = `Add a new ${listItemName}`; // case when adding a new item
   }
 
-  let heading =
-    type == 'settings' ? (
-      <SettingHeading formTitle={formTitle} />
-    ) : (
-      <Heading icon={icon} formTitle={formTitle} />
-    );
+  let heading = <Heading icon={icon} formTitle={formTitle} />;
 
   const backLink = backLinkButton ? (
     <div className={styles.BackLink}>
@@ -696,7 +675,7 @@ export const FormLayout = ({
   return (
     <div className={styles.ItemAdd} data-testid="add-container">
       {dialogBox}
-      {heading}
+      {!noHeading && heading}
       {backLink}
       {form}
     </div>

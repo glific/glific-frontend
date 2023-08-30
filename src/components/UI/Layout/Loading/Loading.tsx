@@ -7,9 +7,10 @@ import { useState } from 'react';
 export interface LoadingProps {
   message?: string;
   showTip?: boolean;
+  isWhite?: boolean;
 }
 
-export const Loading = ({ message, showTip = false }: LoadingProps) => {
+export const Loading = ({ message, showTip = false, isWhite = false }: LoadingProps) => {
   const { t } = useTranslation();
   const messageToDisplay = message || t('Loading...');
   const [selectedTip] = useState(() => productTips[Math.floor(Math.random() * productTips.length)]);
@@ -27,7 +28,10 @@ export const Loading = ({ message, showTip = false }: LoadingProps) => {
           </div>
         </div>
       ) : (
-        <div className={styles.CenterItems} data-testid="loader">
+        <div
+          className={`${styles.CenterItems} ${isWhite && styles.WhiteBackground}`}
+          data-testid="loader"
+        >
           <div className={styles.LoadingPadding}>
             <CircularProgress />
           </div>

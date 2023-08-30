@@ -137,12 +137,7 @@ export const OrganisationFlows = () => {
     }
   }, [orgData]);
 
-  if (!flow)
-    return (
-      <div className={styles.LoadingBackground}>
-        <Loading />
-      </div>
-    );
+  if (!flow) return <Loading isWhite />;
 
   const handleChange = (value: any) => {
     setIsDisable(!value);
@@ -388,6 +383,7 @@ export const OrganisationFlows = () => {
       afterSave={saveHandler}
       customStyles={styles.organization}
       entityId={organizationId}
+      noHeading
     />
   );
 };

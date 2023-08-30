@@ -5,9 +5,23 @@ import { useTranslation } from 'react-i18next';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { GET_PROVIDERS } from 'graphql/queries/Organization';
 import styles from './SettingList.module.css';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Track from 'services/TrackService';
 import { Heading } from 'containers/Form/FormLayout';
+
+export const SettingHeading = ({
+  formTitle,
+  desc = 'Manage organisation name, supported languages',
+}: any) => {
+  return (
+    <div className={styles.SettingHeader}>
+      <div>
+        <div className={styles.SettingTitle}>{formTitle}</div>
+        <div className={styles.SettingTextHeader}>{desc}</div>
+      </div>
+    </div>
+  );
+};
 
 export const SettingList = () => {
   const location = useLocation();
@@ -66,12 +80,26 @@ export const SettingList = () => {
     </div>
   );
 
+  const formheading = (pathname: string) => {
+    if (pathname == '/settings') {
+      return 'Organisation';
+    }
+    pathname = pathname
+      .replace(/\/settings\//gi, '')
+      .replace(/_/gi, ' ')
+      .replace(/-/gi, ' ');
+    return pathname.charAt(0).toUpperCase() + pathname.slice(1);
+  };
+
+  let formTitle = formheading(location.pathname);
+
   return (
     <>
       <Heading formTitle="Settings" />
       <Box sx={{ display: 'flex' }}>
         {drawer}
         <Box className={styles.SettingBody}>
+          <SettingHeading formTitle={formTitle} />
           <Outlet />
         </Box>
       </Box>
