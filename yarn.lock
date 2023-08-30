@@ -319,10 +319,10 @@
   dependencies:
     "@date-io/core" "^2.17.0"
 
-"@draft-js-plugins/editor@^4.1.3":
-  version "4.1.3"
-  resolved "https://registry.yarnpkg.com/@draft-js-plugins/editor/-/editor-4.1.3.tgz#460d70d3b639d17f4e1f15b7d180b8c8698b1ec1"
-  integrity sha512-Mxr1GUFzN0VcVVP6XClvWS2o33Rh8ZG3l41h9l27hJoLRYVywpuzI6TXD0UFYDIHX50fz6n70sQCdoHmkBsfKQ==
+"@draft-js-plugins/editor@^4.1.4":
+  version "4.1.4"
+  resolved "https://registry.yarnpkg.com/@draft-js-plugins/editor/-/editor-4.1.4.tgz#456e01b032b8ef44f0c77ea777aa3c44172de892"
+  integrity sha512-NlE1AIsPPfmdn+JIwwmcAm18FgwJ9/A55+2VXf3US3PmITJVL+y9VORCwLbGh2sb0RXvgFOIbqs8pPAOe8F8WQ==
   dependencies:
     immutable "~3.7.4"
     prop-types "^15.8.1"
