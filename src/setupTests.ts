@@ -1,6 +1,5 @@
 import { vi } from 'vitest';
 import { TextEncoder, TextDecoder } from 'util';
-import { expect } from 'vitest';
 import '@testing-library/jest-dom/vitest';
 
 import { cleanup } from '@testing-library/react';
