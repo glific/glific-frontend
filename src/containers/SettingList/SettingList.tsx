@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { GET_PROVIDERS } from 'graphql/queries/Organization';
 import styles from './SettingList.module.css';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import Track from 'services/TrackService';
 import { Heading } from 'containers/Form/FormLayout';
 

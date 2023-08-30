@@ -23,7 +23,6 @@ import { organizationHasDynamicRole } from 'common/utils';
 import { getUserRole } from 'context/role';
 import styles from './FormLayout.module.css';
 import HelpIcon from 'components/UI/HelpIcon/HelpIcon';
-import { SettingHeading } from 'containers/SettingList/SettingList';
 
 export const Heading = ({ title = '', formTitle, helpData }: any) => {
   return (
