@@ -230,7 +230,6 @@ test('update billing details', async () => {
   fireEvent.change(name, { target: { value: 'Glific Admin 1' } });
   user.click(getByTestId('submitButton'));
 
-  screen.debug();
   await waitFor(() => {
     expect(getByText('You have an active subscription')).toBeInTheDocument();
   });
@@ -274,8 +273,4 @@ test('update billing details with coupon code', async () => {
 
   user.click(getByTestId('submitButton'));
   await waitFor(() => {});
-
-  // await waitFor(() => {
-  //   expect(getByText('You have an active subscription')).toBeInTheDocument();
-  // });
 });
