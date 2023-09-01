@@ -137,7 +137,7 @@ export const OrganisationFlows = () => {
     }
   }, [orgData]);
 
-  if (!flow) return <Loading />;
+  if (!flow) return <Loading whiteBackground />;
 
   const handleChange = (value: any) => {
     setIsDisable(!value);
@@ -362,9 +362,8 @@ export const OrganisationFlows = () => {
 
   return (
     <FormLayout
-      backLinkButton={{ text: t('Back to settings'), link: '/settings' }}
       {...queries}
-      title="organization flows"
+      title="Organization flows"
       states={States}
       setStates={setStates}
       validationSchema={FormSchema}
@@ -380,10 +379,11 @@ export const OrganisationFlows = () => {
       icon={SettingIcon}
       languageSupport={false}
       type="settings"
-      redirect
+      redirect={false}
       afterSave={saveHandler}
       customStyles={styles.organization}
       entityId={organizationId}
+      noHeading
     />
   );
 };

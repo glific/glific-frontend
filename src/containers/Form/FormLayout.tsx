@@ -101,6 +101,7 @@ export interface FormLayoutProps {
   restrictDelete?: boolean;
   languageAttributes?: any;
   helpData?: HelpDataProps;
+  noHeading?: boolean;
 }
 
 export const FormLayout = ({
@@ -152,11 +153,7 @@ export const FormLayout = ({
   entityId = null,
   restrictDelete = false,
   languageAttributes = {},
-  helpData = {
-    heading: '',
-    body: <></>,
-    link: '',
-  },
+  noHeading = false,
 }: FormLayoutProps) => {
   const [showDialog, setShowDialog] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
@@ -677,7 +674,7 @@ export const FormLayout = ({
   return (
     <div className={styles.ItemAdd} data-testid="add-container">
       {dialogBox}
-      {heading}
+      {!noHeading && heading}
       {backLink}
       {form}
     </div>

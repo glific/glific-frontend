@@ -1,27 +1,42 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
-import { Card, CardContent, CardActions, IconButton, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { GET_PROVIDERS } from 'graphql/queries/Organization';
-import { ReactComponent as Settingicon } from 'assets/images/icons/Settings/Settings.svg';
-import { ReactComponent as EditIcon } from 'assets/images/icons/Edit.svg';
 import styles from './SettingList.module.css';
 import { useEffect } from 'react';
 import Track from 'services/TrackService';
+import { Heading } from 'containers/Form/FormLayout';
+
+export const SettingHeading = ({
+  formTitle,
+  desc = 'Manage organisation name, supported languages',
+}: any) => {
+  return (
+    <div className={styles.SettingHeader}>
+      <div>
+        <div className={styles.SettingTitle}>{formTitle}</div>
+        <div className={styles.SettingTextHeader}>{desc}</div>
+      </div>
+    </div>
+  );
+};
 
 export const SettingList = () => {
+  const location = useLocation();
+
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { data: providerData, loading } = useQuery(GET_PROVIDERS);
+
   useEffect(() => {
     Track('Visit Settings');
   }, []);
 
   if (loading) return <Loading />;
-  const SettingIcon = <Settingicon />;
 
-  const List = [
+  const list = [
     {
       name: 'Organisation',
       shortcode: 'organization',
@@ -39,61 +54,56 @@ export const SettingList = () => {
     },
   ];
 
-  const heading = (
-    <Typography variant="h5" className={styles.Title}>
-      <IconButton disabled className={styles.Icon}>
-        {SettingIcon}
-      </IconButton>
-      {t('Settings')}
-    </Typography>
-  );
-
-  let CardList: any = [];
+  let cardList: any = [];
   if (providerData) {
     // create setting list of Organisation & providers
-    CardList = [...List, ...providerData.providers];
+    cardList = [...list, ...providerData.providers];
   }
+
+  const drawer = (
+    <div className={styles.Drawer}>
+      {cardList.map((data: any, index: number) => (
+        <div
+          key={index}
+          onClick={() => navigate(`/settings/${data.shortcode}`)}
+          className={`${styles.Tab} ${
+            location.pathname == `/settings/${data.shortcode}` && styles.ActiveTab
+          }
+          ${
+            location.pathname == '/settings' && data.shortcode == 'organization' && styles.ActiveTab
+          }
+          `}
+        >
+          {data.name}
+        </div>
+      ))}
+    </div>
+  );
+
+  // Todo: we should do this with a better approach
+  const formheading = (pathname: string) => {
+    if (pathname == '/settings') {
+      return 'Organisation';
+    }
+    pathname = pathname
+      .replace(/\/settings\//gi, '')
+      .replace(/_/gi, ' ')
+      .replace(/-/gi, ' ');
+    return pathname.charAt(0).toUpperCase() + pathname.slice(1);
+  };
+
+  let formTitle = formheading(location.pathname);
 
   return (
     <>
-      {heading}
-      <div className={styles.CardContainer}>
-        {CardList.map((data: any) => (
-          <Card
-            variant="outlined"
-            className={styles.Card}
-            key={data.shortcode}
-            data-testid={data.shortcode}
-            onClick={() => navigate(`/settings/${data.shortcode}`)}
-          >
-            <CardContent className={styles.CardContent}>
-              <div data-testid="label" className={styles.Label}>
-                {data.name}
-              </div>
-              <Typography
-                variant="body2"
-                component="div"
-                data-testid="description"
-                className={styles.Description}
-              >
-                {data.description}
-              </Typography>
-            </CardContent>
-            <CardActions className={styles.CardActions}>
-              <Link
-                to={{
-                  pathname: `/settings/${data.shortcode}`,
-                }}
-                className={styles.Link}
-              >
-                <IconButton aria-label="Edit" data-testid="EditIcon">
-                  <EditIcon />
-                </IconButton>
-              </Link>
-            </CardActions>
-          </Card>
-        ))}
-      </div>
+      <Heading formTitle="Settings" />
+      <Box sx={{ display: 'flex' }}>
+        {drawer}
+        <Box className={styles.SettingBody}>
+          <SettingHeading formTitle={formTitle} />
+          <Outlet />
+        </Box>
+      </Box>
     </>
   );
 };

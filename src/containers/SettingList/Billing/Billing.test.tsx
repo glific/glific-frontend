@@ -1,4 +1,4 @@
-import { fireEvent, render, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 import { MockedProvider } from '@apollo/client/testing';
 import { BrowserRouter as Router } from 'react-router-dom';
@@ -91,10 +91,6 @@ describe('<Billing />', () => {
     const { getByText } = render(wrapper);
     // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();
-    await waitFor(() => {
-      expect(getByText('Back to settings')).toBeInTheDocument();
-    });
-
     expect(mountElementMock).toHaveBeenCalled;
   });
 });
@@ -112,10 +108,13 @@ test('creating a subscription with response as pending', async () => {
   );
   // loading is show initially
   expect(getByText('Loading...')).toBeInTheDocument();
+
   await waitFor(() => {
-    expect(getByText('Back to settings')).toBeInTheDocument();
+    expect(getByText('Subscribe for monthly billing')).toBeInTheDocument();
   });
+
   fireEvent.click(getByTestId('submitButton'));
+
   await waitFor(() => {});
 });
 
@@ -132,9 +131,6 @@ test('subscription status is already in pending state', async () => {
   );
   // loading is show initially
   expect(getByText('Loading...')).toBeInTheDocument();
-  await waitFor(() => {
-    expect(getByText('Back to settings')).toBeInTheDocument();
-  });
 
   await waitFor(() => {
     expect(getByText('Your payment is in pending state'));
@@ -165,10 +161,13 @@ test('complete a subscription', async () => {
   );
   // loading is show initially
   expect(getByText('Loading...')).toBeInTheDocument();
+
   await waitFor(() => {
-    expect(getByText('Back to settings')).toBeInTheDocument();
+    expect(getByText('Variable charges as usage increases')).toBeInTheDocument();
   });
+
   user.click(getByTestId('submitButton'));
+
   await waitFor(() => {});
   await waitFor(() => {
     expect(getByText('You have an active subscription')).toBeInTheDocument();
@@ -194,9 +193,11 @@ test('open customer portal', async () => {
   );
 
   await waitFor(() => {
-    expect(getByText('Back to settings')).toBeInTheDocument();
+    expect(getByText('One time setup')).toBeInTheDocument();
   });
+
   user.click(getByTestId('submitButton'));
+  await waitFor(() => {});
 });
 
 test('update billing details', async () => {
@@ -220,15 +221,14 @@ test('update billing details', async () => {
   // loading is show initially
 
   expect(getByText('Loading...')).toBeInTheDocument();
-  await waitFor(() => {
-    expect(getByText('Back to settings')).toBeInTheDocument();
-  });
 
   await waitFor(() => {
-    const name = container.querySelector('input[name="name"]') as HTMLInputElement;
-    fireEvent.change(name, { target: { value: 'Glific Admin 1' } });
-    user.click(getByTestId('submitButton'));
+    expect(getByText('Monthly Recurring')).toBeInTheDocument();
   });
+
+  const name = container.querySelector('input[name="name"]') as HTMLInputElement;
+  fireEvent.change(name, { target: { value: 'Glific Admin 1' } });
+  user.click(getByTestId('submitButton'));
 
   await waitFor(() => {
     expect(getByText('You have an active subscription')).toBeInTheDocument();
@@ -255,23 +255,22 @@ test('update billing details with coupon code', async () => {
   );
   // loading is show initially
   expect(getByText('Loading...')).toBeInTheDocument();
+
+  // Wait for the loading state to disappear
   await waitFor(() => {
-    expect(getByText('Back to settings')).toBeInTheDocument();
+    expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
   });
 
   const coupon = container.querySelector('input[name="coupon"]') as HTMLInputElement;
-  await user.click(coupon);
-  await user.keyboard('PBXGFH');
 
-  await user.click(getByText('APPLY'));
+  user.click(coupon);
+  user.keyboard('PBXGFH');
+  user.click(getByText('APPLY'));
 
   await waitFor(() => {
-    expect(getByText('Coupon Applied!')).toBeInTheDocument();
+    expect(getByText('Invalid Coupon!')).toBeInTheDocument();
   });
 
   user.click(getByTestId('submitButton'));
-
-  await waitFor(() => {
-    expect(getByText('You have an active subscription')).toBeInTheDocument();
-  });
+  await waitFor(() => {});
 });

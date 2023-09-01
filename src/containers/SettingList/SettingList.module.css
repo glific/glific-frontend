@@ -67,3 +67,65 @@
   background-color: #eaedec !important;
   margin-right: 10px !important;
 }
+
+.Drawer {
+  padding: 44px 40px;
+  background-color: white;
+  width: fit-content;
+  border-right: 1px solid #efefef;
+  height: calc(100vh - 110px) !important;
+}
+
+.Tab {
+  border-radius: 10px;
+  width: 200px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  margin: 2px 0;
+  padding: 0px !important;
+  font-weight: 400;
+  font-size: 14px;
+  color: #717971;
+  padding-left: 16px !important;
+}
+
+.Tab:hover {
+  background-color: #71797123;
+  cursor: pointer !important;
+}
+
+.ActiveTab {
+  font-weight: 700 !important;
+  color: #073f24 !important;
+  background-color: #cce6d0 !important;
+}
+
+.SettingBody {
+  height: calc(100vh - 110px) !important;
+  overflow-y: scroll;
+  width: 100%;
+}
+
+/* setting header css */
+.SettingHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 53px 53px 0 53px;
+  background-color: #fff;
+}
+
+.SettingTitle {
+  color: #212121;
+  display: flex;
+  font-weight: 700;
+  font-size: 24px;
+}
+
+.SettingTextHeader {
+  font-weight: 400;
+  color: #555;
+  font-size: 15px;
+  line-height: 20px;
+}
