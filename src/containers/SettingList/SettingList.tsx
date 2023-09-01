@@ -36,7 +36,7 @@ export const SettingList = () => {
 
   if (loading) return <Loading />;
 
-  const List = [
+  const list = [
     {
       name: 'Organisation',
       shortcode: 'organization',
@@ -54,15 +54,15 @@ export const SettingList = () => {
     },
   ];
 
-  let CardList: any = [];
+  let cardList: any = [];
   if (providerData) {
     // create setting list of Organisation & providers
-    CardList = [...List, ...providerData.providers];
+    cardList = [...list, ...providerData.providers];
   }
 
   const drawer = (
     <div className={styles.Drawer}>
-      {CardList.map((data: any, index: number) => (
+      {cardList.map((data: any, index: number) => (
         <div
           key={index}
           onClick={() => navigate(`/settings/${data.shortcode}`)}
@@ -80,6 +80,7 @@ export const SettingList = () => {
     </div>
   );
 
+  // Todo: we should do this with a better approach
   const formheading = (pathname: string) => {
     if (pathname == '/settings') {
       return 'Organisation';
