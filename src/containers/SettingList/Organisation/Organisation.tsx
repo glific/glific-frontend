@@ -88,7 +88,7 @@ export const Organisation = () => {
     }
   }, [orgData]);
 
-  if (!languages) return <Loading isWhite />;
+  if (!languages) return <Loading whiteBackground />;
 
   let activeLanguage: any = [];
   const validateActiveLanguages = (value: any) => {

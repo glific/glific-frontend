@@ -170,7 +170,7 @@ export const BillingForm = () => {
   });
 
   if (billLoading || portalLoading) {
-    return <Loading isWhite />;
+    return <Loading whiteBackground />;
   }
 
   // check if the organization is already subscribed or in pending state
