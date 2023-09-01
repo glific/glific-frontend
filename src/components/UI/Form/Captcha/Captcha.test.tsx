@@ -34,7 +34,9 @@ describe('<Captcha />', () => {
     render(wrapper);
     const button = screen.getByTestId('captcha-button');
     fireEvent.click(button);
-    expect(onClickMock).toHaveBeenCalled();
+    await waitFor(() => {
+      expect(onClickMock).toHaveBeenCalled();
+    });
   });
 
   it('onTokenUpdate event handler should be called if we click on button', async () => {

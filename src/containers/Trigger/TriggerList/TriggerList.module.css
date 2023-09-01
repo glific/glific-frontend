@@ -37,11 +37,17 @@
 }
 
 .Collection {
+<<<<<<< HEAD
   font-size: 15px;
   color: #555555;
   white-space: pre-line;
   margin: 0;
   font-weight: 400;
+=======
+  padding: 8px 0px;
+  color: #93a29b;
+  font-size: 16px;
+>>>>>>> origin
 }
 
 .Actions {

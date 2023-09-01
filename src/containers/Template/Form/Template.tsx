@@ -196,6 +196,7 @@ const Template = ({
   const navigate = useNavigate();
   const location: any = useLocation();
   const params = useParams();
+  const isEditForm = !!params.id;
 
   const { data: tag } = useQuery(GET_TAGS, {
     variables: {},
@@ -356,7 +357,7 @@ const Template = ({
   const [createMediaMessage] = useMutation(CREATE_MEDIA_MESSAGE);
 
   useEffect(() => {
-    if (Object.prototype.hasOwnProperty.call(params, 'id') && params.id) {
+    if (params.id) {
       getSessionTemplate({ variables: { id: params.id } });
     }
   }, []);
@@ -368,7 +369,7 @@ const Template = ({
       lang.sort((first: any, second: any) => (first.label > second.label ? 1 : -1));
 
       setLanguageOptions(lang);
-      if (!Object.prototype.hasOwnProperty.call(params, 'id')) setLanguageId(lang[0]);
+      if (!isEditForm) setLanguageId(lang[0]);
     }
   }, [languages]);
 
@@ -422,7 +423,7 @@ const Template = ({
     const selected = languageOptions.find(
       ({ label: languageLabel }: any) => languageLabel === value
     );
-    if (selected && Object.prototype.hasOwnProperty.call(params, 'id')) {
+    if (selected && isEditForm) {
       updateTranslation(selected);
     } else if (selected) {
       setLanguageId(selected);
@@ -437,7 +438,7 @@ const Template = ({
     }
 
     // create translations only while updating
-    if (result && Object.prototype.hasOwnProperty.call(params, 'id')) {
+    if (result && isEditForm) {
       updateTranslation(result);
     }
     if (result) setLanguageId(result);
@@ -843,9 +844,6 @@ const Template = ({
           const templateButtonData = getButtonTemplatePayload();
           Object.assign(payloadCopy, { ...templateButtonData });
         }
-        if (tagId) {
-          payloadCopy.tagId = payload.tagId.id;
-        }
       } else {
         delete payloadCopy.example;
         delete payloadCopy.isActive;
@@ -861,6 +859,10 @@ const Template = ({
         delete payloadCopy.attachmentURL;
       }
       payloadCopy.translations = JSON.stringify(translationsCopy);
+    }
+
+    if (tagId) {
+      payloadCopy.tagId = payload.tagId.id;
     }
 
     return payloadCopy;
@@ -945,7 +947,7 @@ const Template = ({
     if (saveClick) {
       return;
     }
-    if (params?.id) {
+    if (params.id) {
       handleLanguageChange(nextLanguage);
     } else {
       const { sessionTemplate } = data.createSessionTemplate;
@@ -964,7 +966,7 @@ const Template = ({
       states={states}
       setStates={setStates}
       setPayload={setPayload}
-      validationSchema={FormSchema}
+      validationSchema={isEditForm ? Yup.object() : FormSchema}
       listItemName={listItemName}
       dialogMessage={dialogMessage}
       formFields={fields}
@@ -975,7 +977,7 @@ const Template = ({
       getLanguageId={getLanguageId}
       languageSupport={false}
       isAttachment
-      getMediaId={getMediaId}
+      getMediaId={defaultAttribute.isHsm && params.id ? () => {} : getMediaId}
       getQueryFetchPolicy="cache-and-network"
       button={defaultAttribute.isHsm && !params.id ? t('Submit for Approval') : t('Save')}
       buttonState={{ text: t('Validating URL'), status: validatingURL }}

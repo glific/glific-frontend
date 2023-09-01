@@ -40,12 +40,14 @@ const getEndDate = (date: any) => (
   <div className={styles.EndDateVal}>{moment(date).format(FULL_DATE_FORMAT)}</div>
 );
 
-const getCollections = (group: any) => <div className={styles.Collection}>{group.label}</div>;
+const getCollections = (groups: any) => (
+  <div className={styles.Collection}>{groups && groups.join(', ')}</div>
+);
 
-const getColumns = ({ endDate, group, frequency, days, flow, startAt, isActive }: any) => ({
+const getColumns = ({ endDate, groups, frequency, days, flow, startAt, isActive }: any) => ({
   name: getName(flow, startAt, frequency, days, isActive),
   startAt: getEndDate(endDate),
-  collections: getCollections(group),
+  collections: getCollections(groups),
 });
 
 const columnStyles = [styles.Name, styles.EndDate, styles.Collections, styles.Actions];
