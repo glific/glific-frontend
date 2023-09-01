@@ -24,7 +24,7 @@
   font-size: 20px;
   word-break: break-all;
   margin-top: 12px;
-  margin-bottom: 12px;
+  margin-bottom: 6px;
   line-height: 1;
 }
 
@@ -57,4 +57,13 @@
 
 .Inactive {
   color: #ccd4d0;
+}
+
+.NextTrigger {
+  padding-bottom: 6px;
+}
+
+.NameContainer {
+  display: flex;
+  align-items: center;
 }
