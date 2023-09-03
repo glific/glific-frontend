@@ -26,13 +26,20 @@ const getTooltip = (frequency: any, days: any) => {
   return `Repeat: ${frequency}${frequency === 'weekly' ? `(${obj.toString()})` : ''}`;
 };
 
-const getName = (flow: any, startAt: any, frequency: any, days: any, isActive: boolean) => (
-  <p className={styles.LabelText}>
+const getName = ({ flow, startAt, frequency, days, isActive, nextTriggerAt }: any) => (
+  <div className={styles.NameContainer}>
     <Tooltip title={getTooltip(frequency, days)} tooltipClass={styles.Tooltip} placement="right">
       <span className={styles.TriggerIcon}>{isActive ? <ClockIcon /> : <ClockInactiveIcon />}</span>
     </Tooltip>
-    <span>{`${flow.name}_${moment(startAt).format('DD/MM/yyyy_hh:mmA')}`}</span>
-  </p>
+    <div>
+      <p className={styles.LabelText}>
+        <span>{`${flow.name}_${moment(startAt).format('DD/MM/yyyy_hh:mmA')}`}</span>
+      </p>
+      <div className={styles.NextTrigger}>
+        {isActive ? <>Next trigger {moment(nextTriggerAt).fromNow()}</> : 'Trigger in inactive'}
+      </div>
+    </div>
+  </div>
 );
 
 const getEndDate = (date: any) => (
@@ -43,11 +50,14 @@ const getCollections = (groups: any) => (
   <div className={styles.Collection}>{groups && groups.join(', ')}</div>
 );
 
-const getColumns = ({ endDate, groups, frequency, days, flow, startAt, isActive }: any) => ({
-  name: getName(flow, startAt, frequency, days, isActive),
-  startAt: getEndDate(endDate),
-  collections: getCollections(groups),
-});
+const getColumns = (columns: any) => {
+  const { endDate, groups } = columns;
+  return {
+    name: getName(columns),
+    startAt: getEndDate(endDate),
+    collections: getCollections(groups),
+  };
+};
 
 const columnStyles = [styles.Name, styles.EndDate, styles.Collections, styles.Actions];
 const triggerIcon = <TriggerIcon className={styles.Icon} />;
