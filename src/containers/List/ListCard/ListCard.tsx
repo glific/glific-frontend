@@ -15,12 +15,12 @@ export const ListCard = ({ data, columnStyles }: ListCardProps) => {
       delete entry.recordId;
       delete entry.isActive;
 
-      return Object.keys(entry).map((item: any) => {
+      return Object.keys(entry).map((item: any, index: number) => {
         // maintain columnStyles index
         stylesIndex += 1;
         return (
           <TableCell
-            key={item + entry.recordId}
+            key={index}
             className={`${columnStyles && columnStyles[stylesIndex]} ${styles.TableCell}`}
           >
             {entry[item]}
@@ -29,11 +29,11 @@ export const ListCard = ({ data, columnStyles }: ListCardProps) => {
       });
     };
 
-    return data.map((entry: any) => {
+    return data.map((entry: any, index: number) => {
       const isActiveRow = entry.isActive === false ? styles.InactiveRow : styles.ActiveRow;
 
       return (
-        <Fragment key={entry.recordId}>
+        <Fragment key={index}>
           <TableRow className={` ${isActiveRow} ${styles.TableRow}`}>{createRow(entry)}</TableRow>
         </Fragment>
       );
