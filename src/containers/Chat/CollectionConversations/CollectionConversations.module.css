@@ -1,6 +1,6 @@
 .CollectionConversations {
   width: 100%;
-  height: calc(100vh - 80px);
+  height: calc(100vh - 130px);
   overflow-y: hidden;
   position: relative;
 }

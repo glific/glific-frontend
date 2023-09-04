@@ -2,8 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useQuery, useSubscription } from '@apollo/client';
 import { IconButton, Popper, Fade, Paper, ClickAwayListener } from '@mui/material';
 
-import { ReactComponent as OptionsIcon } from 'assets/images/icons/MoreOptions/Unselected.svg';
-import { ReactComponent as OptionsIconSelected } from 'assets/images/icons/MoreOptions/Selected.svg';
+import { ReactComponent as OptionsIcon } from 'assets/images/icons/MoreOptions/More.svg';
 import { SAVED_SEARCH_QUERY, SEARCHES_COUNT } from 'graphql/queries/Search';
 import { COLLECTION_COUNT_SUBSCRIPTION } from 'graphql/subscriptions/PeriodicInfo';
 import { setErrorMessage } from 'common/notification';
@@ -113,19 +112,13 @@ export const SavedSearchToolbar = ({
   }
 
   const savedSearchList = fixedSearches.slice(0, 3).map((savedSearch: any) => {
-    // set the selected class if the button is clicked
-    const labelClass = [styles.SavedSearchItemLabel];
-    const countClass = [styles.SavedSearchCount];
-    if (savedSearch.id === selectedSavedSearch) {
-      labelClass.push(styles.SavedSearchItemSelected);
-      countClass.push(styles.SavedSearchSelectedCount);
-    }
+    const active = savedSearch.id === selectedSavedSearch;
 
     const count = searchesCount[savedSearch.shortcode] ? searchesCount[savedSearch.shortcode] : 0;
     return (
       <div
         data-testid="savedSearchDiv"
-        className={styles.SavedSearchItem}
+        className={`${styles.SavedSearchItem} ${active && styles.SavedSearchSelected}`}
         key={savedSearch.id}
         onClick={() => {
           handlerSavedSearchCriteria(savedSearch.args, savedSearch.id);
@@ -137,12 +130,15 @@ export const SavedSearchToolbar = ({
         }}
         aria-hidden="true"
       >
-        <div className={labelClass.join(' ')} data-testid="editor-label">
+        <div
+          className={`${styles.SavedSearchItemLabel} ${active && styles.SavedSearchItemSelected}`}
+          data-testid="editor-label"
+        >
           {savedSearch.shortcode}
+          <Tooltip title={count} placement="right">
+            <div className={styles.SavedSearchCount}>{`(${numberToAbbreviation(count)})`}</div>
+          </Tooltip>
         </div>
-        <Tooltip title={count} placement="right">
-          <div className={countClass.join(' ')}>{numberToAbbreviation(count)}</div>
-        </Tooltip>
       </div>
     );
   });
@@ -186,28 +182,23 @@ export const SavedSearchToolbar = ({
   return (
     <div className={styles.SavedSearchToolbar}>
       <div className={styles.SaveSearchContainer}>{savedSearchList}</div>
-      <div className={styles.MoreLink}>
-        <ClickAwayListener onClickAway={handleClickAway}>
-          <IconButton
-            onClick={() => {
-              setAnchorEl(Ref.current);
-              setOptionsSelected(true);
-            }}
-            aria-label="more"
-            aria-controls="long-menu"
-            aria-haspopup="true"
-            size="small"
-            ref={Ref}
-          >
-            {optionsSelected ? (
-              <OptionsIconSelected className={styles.OptionsIcon} />
-            ) : (
-              <OptionsIcon className={styles.OptionsIcon} />
-            )}
-          </IconButton>
-        </ClickAwayListener>
-        {additionalOptions}
-      </div>
+      <ClickAwayListener onClickAway={handleClickAway}>
+        <IconButton
+          onClick={() => {
+            setAnchorEl(Ref.current);
+            setOptionsSelected(true);
+          }}
+          aria-label="more"
+          aria-controls="long-menu"
+          aria-haspopup="true"
+          size="small"
+          ref={Ref}
+          className={`${styles.OptionsIcon} ${optionsSelected && styles.OptionsSelectedIcon}`}
+        >
+          <OptionsIcon className={styles.MoreIcon} />
+        </IconButton>
+      </ClickAwayListener>
+      {additionalOptions}
     </div>
   );
 };

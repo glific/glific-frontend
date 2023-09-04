@@ -210,14 +210,20 @@ const ChatConversation = ({
     >
       <div>
         {entityType === 'contact' ? (
-          <div className={styles.ChatIcons}>
-            <div className={chatBubble.join(' ')} />
-            <div className={styles.Timer} data-testid="timerContainer">
-              <Timer
-                time={senderLastMessage}
-                contactStatus={contactStatus}
-                contactBspStatus={contactBspStatus}
-              />
+          // <div className={styles.ChatIcons}>
+          //   <div className={chatBubble.join(' ')} />
+          //   <div className={styles.Timer} data-testid="timerContainer">
+          //     <Timer
+          //       time={senderLastMessage}
+          //       contactStatus={contactStatus}
+          //       contactBspStatus={contactBspStatus}
+          //     />
+          //   </div>
+          // </div>
+          <div className={styles.Profile}>
+            <div className={styles.ProfileName}>{name.charAt(0).toUpperCase()}</div>
+            <div className={`${styles.ProfileStatus} ${selected && styles.SelectedColor}`}>
+              <div className={styles.ProfileStatusCircle} />
             </div>
           </div>
         ) : (

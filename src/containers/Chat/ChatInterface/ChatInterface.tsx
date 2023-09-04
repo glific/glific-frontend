@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Paper, Toolbar, Typography } from '@mui/material';
+import { Paper, Typography } from '@mui/material';
 import { useQuery } from '@apollo/client';
-import { Link, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { Simulator } from 'components/simulator/Simulator';
@@ -10,17 +10,12 @@ import { SEARCH_QUERY } from 'graphql/queries/Search';
 import { getUserRole } from 'context/role';
 import { setErrorMessage } from 'common/notification';
 import { COLLECTION_SEARCH_QUERY_VARIABLES, SEARCH_QUERY_VARIABLES } from 'common/constants';
-import selectedChatIcon from 'assets/images/icons/Chat/SelectedContact.svg';
-import unselectedChatIcon from 'assets/images/icons/Chat/Unselected.svg';
-import collectionIcon from 'assets/images/icons/Chat/Collection.svg';
-import selectedCollectionIcon from 'assets/images/icons/Chat/SelectedCollection.svg';
-import savedSearchIcon from 'assets/images/icons/Chat/SavedSearch.svg';
-import selectedSavedSearchIcon from 'assets/images/icons/Chat/SelectedSavedSearch.svg';
 import ChatConversations from '../ChatConversations/ChatConversations';
 import ChatMessages from '../ChatMessages/ChatMessages';
 import CollectionConversations from '../CollectionConversations/CollectionConversations';
 import SavedSearches from '../SavedSearches/SavedSearches';
 import styles from './ChatInterface.module.css';
+import HelpIcon from 'components/UI/HelpIcon/HelpIcon';
 
 export interface ChatInterfaceProps {
   savedSearches?: boolean;
@@ -28,6 +23,7 @@ export interface ChatInterfaceProps {
 }
 
 export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfaceProps) => {
+  const navigate = useNavigate();
   const [simulatorAccess, setSimulatorAccess] = useState(true);
   const [simulatorId, setSimulatorId] = useState(0);
   const { t } = useTranslation();
@@ -96,14 +92,30 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
   if (data && data.search.length === 0) {
     chatInterface = noConversations;
   } else {
-    let contactSelectedClass = '';
-    let collectionSelectedClass = '';
-    let savedSearchClass = '';
+    const tabs = [
+      {
+        tab: 'Chat',
+        link: '/chat/',
+        active: false,
+      },
+      {
+        tab: 'Collections',
+        link: '/chat/collection/',
+        active: false,
+      },
+      {
+        tab: 'Saved searches',
+        link: '/chat/saved-searches/',
+        active: false,
+      },
+    ];
+
+    let heading = '';
 
     if (selectedCollectionId || (selectedTab === 'collections' && !savedSearches)) {
       listingContent = <CollectionConversations collectionId={selectedCollectionId} />;
-      // set class for collections tab
-      collectionSelectedClass = `${styles.SelectedTab}`;
+      heading = 'Collections';
+      tabs[1].active = true;
     } else if (selectedContactId && !savedSearches) {
       // let's enable simulator only when contact tab is shown
 
@@ -111,14 +123,29 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
         <ChatConversations contactId={simulatorId > 0 ? simulatorId : selectedContactId} />
       );
 
-      // set class for contacts tab
-      contactSelectedClass = `${styles.SelectedTab}`;
+      tabs[0].active = true;
+      heading = 'Chat';
     } else if (savedSearches) {
-      // set class for saved search
-      savedSearchClass = `${styles.SelectedTab}`;
-      // for saved search
       listingContent = <SavedSearches />;
+      heading = 'Saved searches';
+      tabs[2].active = true;
     }
+
+    const TabHeader = ({ tab }: any) => {
+      return (
+        <div
+          className={`${styles.Tab} ${tab.active && styles.ActiveTab}`}
+          onClick={() => navigate(tab.link)}
+        >
+          <Typography
+            className={`${styles.TitleText} ${tab.active && styles.SelectedTab}`}
+            variant="h6"
+          >
+            {t(tab.tab)}
+          </Typography>
+        </div>
+      );
+    };
 
     chatInterface = (
       <>
@@ -131,91 +158,17 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
         </div>
 
         <div className={`${styles.ChatConversations} ChatConversations`}>
-          <Toolbar className={styles.ToolBar}>
-            <div className={styles.TabContainer}>
-              <div>
-                <Link to="/chat">
-                  <div className={styles.Title}>
-                    <div className={styles.IconBackground}>
-                      <img
-                        src={contactSelectedClass ? selectedChatIcon : unselectedChatIcon}
-                        height="24"
-                        className={styles.Icon}
-                        alt="Conversation"
-                      />
-                    </div>
-                    <div>
-                      <Typography
-                        className={`${styles.TitleText} ${contactSelectedClass}`}
-                        variant="h6"
-                      >
-                        {t('Contacts')}
-                      </Typography>
-                    </div>
-                  </div>
-                </Link>
-                <div
-                  className={`${
-                    contactSelectedClass ? styles.DarkHighLighter : styles.LightHighLighter
-                  }`}
-                />
-              </div>
-              <div>
-                <Link to="/chat/collection">
-                  <div className={styles.Title}>
-                    <div className={styles.IconBackground}>
-                      <img
-                        src={collectionSelectedClass ? selectedCollectionIcon : collectionIcon}
-                        height="24"
-                        className={styles.Icon}
-                        alt="Conversation"
-                      />
-                    </div>
-                    <div>
-                      <Typography
-                        className={`${styles.TitleText} ${collectionSelectedClass}`}
-                        variant="h6"
-                      >
-                        {t('Collections')}
-                      </Typography>
-                    </div>
-                  </div>
-                </Link>
-                <div
-                  className={`${
-                    collectionSelectedClass ? styles.DarkHighLighter : styles.LightHighLighter
-                  }`}
-                />
-              </div>
-              <div>
-                <Link to="/chat/saved-searches/">
-                  <div className={styles.Title}>
-                    <div className={styles.IconBackground}>
-                      <img
-                        src={savedSearchClass ? selectedSavedSearchIcon : savedSearchIcon}
-                        height="24"
-                        className={styles.Icon}
-                        alt="Conversation"
-                      />
-                    </div>
-                    <div>
-                      <Typography
-                        className={`${styles.TitleText} ${savedSearchClass}`}
-                        variant="h6"
-                      >
-                        {t('Saved searches')}
-                      </Typography>
-                    </div>
-                  </div>
-                </Link>
-                <div
-                  className={`${
-                    savedSearchClass ? styles.DarkHighLighter : styles.LightHighLighter
-                  }`}
-                />
-              </div>
-            </div>
-          </Toolbar>
+          <div className={styles.Title}>
+            {heading}
+            <HelpIcon />
+          </div>
+          {/* <Toolbar className={styles.ToolBar}> */}
+          <div className={styles.TabContainer}>
+            {tabs.map((tab: any) => (
+              <TabHeader tab={tab} />
+            ))}
+          </div>
+          {/* </Toolbar> */}
 
           <div>{listingContent}</div>
         </div>
