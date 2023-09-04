@@ -23,7 +23,6 @@
   padding: 0;
   margin: 0;
   font-size: 17px !important;
-  word-break: break-all;
   color: #191c1a !important;
   font-weight: 500;
 }
@@ -31,6 +30,7 @@
 .EndDateVal {
   font-size: 15px;
   color: #555555;
+  white-space: pre-line;
   margin: 0;
   font-weight: 400;
 }
@@ -38,6 +38,7 @@
 .Collection {
   font-size: 15px;
   color: #555555;
+  white-space: pre-line;
   margin: 0;
   font-weight: 400;
 }
