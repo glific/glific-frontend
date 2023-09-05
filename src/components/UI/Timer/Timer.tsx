@@ -104,7 +104,7 @@ export const Timer = (props: TimerProps) => {
       interactive
     >
       <div className={timerStyle} data-testid="timerCount">
-        {hours}
+        {hours} hrs
       </div>
     </Tooltip>
   );

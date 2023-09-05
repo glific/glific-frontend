@@ -168,8 +168,8 @@ export const SavedSearchToolbar = ({
                   onClick={() => handleAdditionalSavedSearch(search)}
                   aria-hidden="true"
                 >
-                  <span className={styles.Label}>{search.shortcode}</span>
-                  <span className={styles.Count}>{numberToAbbreviation(count)}</span>
+                  <div>{search.shortcode}</div>
+                  <div className={styles.Count}>{`(${numberToAbbreviation(count)})`}</div>
                 </div>
               );
             })}

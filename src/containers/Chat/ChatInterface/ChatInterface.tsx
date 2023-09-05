@@ -136,6 +136,7 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
         <div
           className={`${styles.Tab} ${tab.active && styles.ActiveTab}`}
           onClick={() => navigate(tab.link)}
+          key={tab.link}
         >
           <Typography
             className={`${styles.TitleText} ${tab.active && styles.SelectedTab}`}
@@ -180,9 +181,9 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
     <Paper>
       <div
         className={styles.Chat}
-        style={{
-          height: startingHeight,
-        }}
+        // style={{
+        //   height: startingHeight,
+        // }}
         data-testid="chatContainer"
       >
         {chatInterface}

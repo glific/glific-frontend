@@ -135,7 +135,6 @@ const ChatConversation = ({
   // check if message is unread and style it differently
   const client = useApolloClient();
   let chatInfoClass = [styles.ChatInfo, styles.ChatInfoRead];
-  let chatBubble = [styles.ChatBubble, styles.ChatBubbleRead];
 
   const [markAsRead] = useMutation(MARK_AS_READ, {
     onCompleted: (data) => {
@@ -149,7 +148,6 @@ const ChatConversation = ({
   // a. there might be some cases when there are no conversations against the contact
   if (!contactIsOrgRead) {
     chatInfoClass = [styles.ChatInfo, styles.ChatInfoUnread];
-    chatBubble = [styles.ChatBubble, styles.ChatBubbleUnread];
   }
 
   const name = contactName?.length > 20 ? `${contactName.slice(0, 20)}...` : contactName;
@@ -210,21 +208,13 @@ const ChatConversation = ({
     >
       <div>
         {entityType === 'contact' ? (
-          // <div className={styles.ChatIcons}>
-          //   <div className={chatBubble.join(' ')} />
-          //   <div className={styles.Timer} data-testid="timerContainer">
-          //     <Timer
-          //       time={senderLastMessage}
-          //       contactStatus={contactStatus}
-          //       contactBspStatus={contactBspStatus}
-          //     />
-          //   </div>
-          // </div>
           <div className={styles.Profile}>
             <div className={styles.ProfileName}>{name.charAt(0).toUpperCase()}</div>
-            <div className={`${styles.ProfileStatus} ${selected && styles.SelectedColor}`}>
-              <div className={styles.ProfileStatusCircle} />
-            </div>
+            {!contactIsOrgRead && (
+              <div className={`${styles.ProfileStatus} ${selected && styles.SelectedColor}`}>
+                <div className={styles.ProfileStatusCircle} />
+              </div>
+            )}
           </div>
         ) : (
           ''
@@ -237,8 +227,17 @@ const ChatConversation = ({
         <div className={styles.MessageContent} data-testid="content">
           {isTextType && highlightSearch ? BoldedText(body, highlightSearch) : displayMSG}
         </div>
+      </div>
+      <div>
         <div className={styles.MessageDate} data-testid="date">
           {moment(lastMessage.insertedAt).format(DATE_FORMAT)}
+        </div>
+        <div className={styles.MessageDate} data-testid="timerContainer">
+          <Timer
+            time={senderLastMessage}
+            contactStatus={contactStatus}
+            contactBspStatus={contactBspStatus}
+          />
         </div>
       </div>
     </ListItemButton>

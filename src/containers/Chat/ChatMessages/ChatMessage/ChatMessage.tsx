@@ -310,7 +310,7 @@ export const ChatMessage = ({
         ) : null}
 
         <div className={styles.Inline}>
-          {iconLeft ? icon : null}
+          {/* {iconLeft ? icon : null} */}
           {ErrorIcon}
           <div className={chatMessageClasses.join(' ')}>
             <Tooltip title={tooltipTitle} placement={isSender ? 'right' : 'left'}>
@@ -319,12 +319,16 @@ export const ChatMessage = ({
                   {isInteractiveContentPresent && !isSender ? (
                     template
                   ) : (
-                    <ChatMessageType
-                      type={type}
-                      media={media}
-                      body={bodyText}
-                      location={location}
-                    />
+                    <>
+                      <ChatMessageType
+                        type={type}
+                        media={media}
+                        body={bodyText}
+                        location={location}
+                        isSender={isSender}
+                      />
+                      {dateAndSendBy}
+                    </>
                   )}
                 </div>
               </div>
@@ -374,7 +378,7 @@ export const ChatMessage = ({
               )}
             </Popper>
           </div>
-          {iconLeft ? null : icon}
+          {/* {iconLeft ? null : icon} */}
         </div>
 
         {saveTemplateMessage}
@@ -383,7 +387,7 @@ export const ChatMessage = ({
           <div className={`${messageErrorStatus ? styles.TemplateButtonOnError : ''}`}>
             {templateButtons && <TemplateButtons template={templateButtons} />}
           </div>
-          {dateAndSendBy}
+
           {displayLabel ? (
             <div className={`${styles.LabelContainer} ${labelContainer}`}>{displayLabel}</div>
           ) : null}

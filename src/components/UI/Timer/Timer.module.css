@@ -1,23 +1,31 @@
 .Timer {
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 700;
-  line-height: 1;
+  color: #555;
+  border-radius: 11px;
+  background: #ecf7f1;
+  width: 42px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 7px 10px;
 }
 
 .TimerNormal {
   composes: Timer;
-  color: #7200a1;
 }
 
 .TimerApproachEnd {
   composes: Timer;
-  color: #dd1f1f;
+  color: #dd1f1f !important;
+  background: #f7ecec !important;
 }
 
 .TimerEnd {
   margin-left: 3px;
   composes: Timer;
-  color: #93a29b;
+  color: #555;
 }
 
 .TimerNormalTooltip {

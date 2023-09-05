@@ -591,7 +591,7 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
     messageListContainer = (
       <Container
         className={`${styles.MessageList} messageContainer `}
-        style={{ height: `calc(100% - 195px - ${reducedHeight}px)` }}
+        style={{ height: `calc(100vh - 205px - ${reducedHeight}px)` }}
         maxWidth={false}
         data-testid="messageContainer"
       >
@@ -738,9 +738,9 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
   return (
     <Container
       className={styles.ChatMessages}
-      style={{
-        height: startingHeight,
-      }}
+      // style={{
+      //   height: startingHeight,
+      // }}
       maxWidth={false}
       disableGutters
     >
