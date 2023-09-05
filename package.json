@@ -34,7 +34,7 @@
     "draft-js": "^0.11.7",
     "emoji-mart": "^5.5.2",
     "formik": "^2.4.2",
-    "graphql": "^16.7.1",
+    "graphql": "^16.8.0",
     "graphql-ws": "^5.14.0",
     "i18next": "^23.4.1",
     "i18next-browser-languagedetector": "^7.1.0",
