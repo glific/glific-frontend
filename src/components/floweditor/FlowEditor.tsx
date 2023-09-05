@@ -35,14 +35,11 @@ export const FlowEditor = () => {
   const [simulatorId, setSimulatorId] = useState(0);
   const [loading, setLoading] = useState(true);
   const [flowEditorLoaded, setFlowEditorLoaded] = useState(false);
-
+  const [flowId, setFlowId] = useState();
   const config = setConfig(uuid);
   const [published, setPublished] = useState(false);
   const [stayOnPublish, setStayOnPublish] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
   const [showResetFlowModal, setShowResetFlowModal] = useState(false);
-  const [lastLocation, setLastLocation] = useState<Location | null>(null);
-  const [confirmedNavigation, setConfirmedNavigation] = useState(false);
   const [flowValidation, setFlowValidation] = useState<any>();
   const [IsError, setIsError] = useState(false);
   const [flowKeyword, setFlowKeyword] = useState('');
@@ -118,54 +115,14 @@ export const FlowEditor = () => {
     },
   });
 
-  let flowId: any;
+  useEffect(() => {
+    if (flowName && flowName.flows.length > 0) {
+      setFlowId(flowName.flows[0].id);
+    }
+  }, [flowName]);
 
-  // flowname can return an empty array if the uuid present is not correct
   if (flowName && flowName.flows.length > 0) {
     flowTitle = flowName.flows[0].name;
-    flowId = flowName.flows[0].id;
-  }
-
-  const closeModal = () => {
-    setModalVisible(false);
-  };
-  // eslint-disable-next-line no-unused-vars
-  const handleBlockedNavigation = (nextLocation: any): boolean => {
-    if (!confirmedNavigation) {
-      setModalVisible(true);
-      setLastLocation(nextLocation);
-      return false;
-    }
-    return true;
-  };
-  const handleConfirmNavigationClick = () => {
-    setModalVisible(false);
-    setConfirmedNavigation(true);
-  };
-  useEffect(() => {
-    if (confirmedNavigation && lastLocation) {
-      navigate(lastLocation);
-    }
-  }, [confirmedNavigation, lastLocation, navigate]);
-
-  if (modalVisible) {
-    modal = (
-      <DialogBox
-        title="Unsaved changes!"
-        handleOk={handleConfirmNavigationClick}
-        handleCancel={closeModal}
-        colorOk="warning"
-        buttonOk="Ignore & leave"
-        buttonCancel="Stay & recheck"
-        alignButtons="center"
-        contentAlign="center"
-        additionalTitleStyles={styles.DialogTitle}
-      >
-        <div className={styles.DialogContent}>
-          Your changes will not be saved if you navigate away. Please save as draft or publish.
-        </div>
-      </DialogBox>
-    );
   }
 
   const handleResetFlowCount = () => {
@@ -209,10 +166,12 @@ export const FlowEditor = () => {
         getFreeFlow({ variables: { id: flowId } });
       });
 
-      // when switching tabs we need to check if the flow is still active for the user
-      window.onfocus = () => {
+      const onfocus = () => {
         getFreeFlow({ variables: { id: flowId } });
       };
+
+      // when switching tabs we need to check if the flow is still active for the user
+      window.addEventListener('focus', onfocus);
 
       Track('Flow opened');
 
@@ -227,6 +186,7 @@ export const FlowEditor = () => {
         for (let timeoutId = 0; timeoutId < highestTimeoutId; timeoutId += 1) {
           clearTimeout(timeoutId);
         }
+        window.removeEventListener('focus', onfocus);
         XMLHttpRequest.prototype.send = xmlSend;
         XMLHttpRequest.prototype.open = xmlOpen;
         window.fetch = fetch;
@@ -272,7 +232,6 @@ export const FlowEditor = () => {
           setCurrentEditDialogBox(false);
         }}
         handleMiddle={() => {
-          setConfirmedNavigation(true);
           navigate('/flow');
         }}
       >
@@ -419,8 +378,6 @@ export const FlowEditor = () => {
         getFlowKeyword={getFlowKeyword}
       />
       {modal}
-      {/* TODOS: need to add custom Prompt */}
-      {/* <Prompt when message={handleBlockedNavigation} /> */}
       <div className={styles.FlowContainer}>
         <div
           className={drawerOpen ? styles.FlowName : styles.FlowNameClosed}

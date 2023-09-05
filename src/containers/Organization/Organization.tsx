@@ -99,7 +99,7 @@ export const Organization = ({
                   onTokenUpdate={(token: string) => {
                     setFieldValue('token', token);
                   }}
-                  disabled={!values.token}
+                  disabled={!values.token || loading}
                   action="organization_registration"
                 >
                   {loading ? null : buttonText}

@@ -58,7 +58,7 @@ export const UPLOAD_CONTACTS_ADMIN_SAMPLE =
 export const REGISTRATION_HELP_LINK =
   'https://glific.slab.com/public/posts/02-managing-staff-members-creating-account-on-glific-gg6fkw8h';
 export const CONTACT_MANAGE_HELP_LINK =
-  'https://glific.slab.com/public/posts/update-collection-with-bulk-contacts-or-contact-fields-yn8l1ggr';
+  'https://glific.github.io/docs/docs/FAQ/Update%20collection%20with%20bulk%20contacts%20or%20contact%20fields/';
 export const SAMPLE_SHEET_LINK =
   'https://docs.google.com/spreadsheets/d/1fRpFyicqrUFxd79u_dGC8UOHEtAT3rA-G2i4tvOgScw';
 export const BULK_APPLY_SAMPLE_LINK =

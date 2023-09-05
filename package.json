@@ -1,6 +1,6 @@
 {
   "name": "glific-frontend",
-  "version": "4.11.2",
+  "version": "4.11.3",
   "private": true,
   "dependencies": {
     "@apollo/client": "^3.7.17",
@@ -18,7 +18,7 @@
     "@emoji-mart/react": "^1.1.1",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
-    "@glific/flow-editor": "^1.19.2",
+    "@glific/flow-editor": "^1.19.3",
     "@mui/icons-material": "^5.14.1",
     "@mui/material": "^5.14.2",
     "@mui/x-date-pickers": "^6.10.2",
