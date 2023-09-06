@@ -175,9 +175,10 @@ export const ChatMessage = ({
 
   const downloadMedia = () => {
     const testForValidUrl = new RegExp(VALID_URL_REGEX, 'gi');
-    if (testForValidUrl.test(media.url + downloadExtension())) {
+    const mediaUrl = media.url + downloadExtension();
+    if (testForValidUrl.test(mediaUrl)) {
       const link = document.createElement('a');
-      link.href = media.url + downloadExtension();
+      link.href = mediaUrl;
       link.setAttribute('download', link.href);
       document.body.appendChild(link);
       link.click();
