@@ -47,66 +47,71 @@ const SideMenus = ({ opened }: SideMenusProps) => {
 
   const menuObj: any[] = getSideDrawerMenus();
 
-  const menuList = menuObj.map((menu) => {
-    const isSelected = location.pathname.startsWith(menu.path);
-    let redirectPath = menu.path;
-    if (menu.url) {
-      redirectPath = { pathname: menu.url };
-    }
+  const menuList = menuObj
+    .filter((item: any) => {
+      console.log(item);
+      return !item.show;
+    })
+    .map((menu) => {
+      const isSelected = location.pathname.startsWith(menu.path);
+      let redirectPath = menu.path;
+      if (menu.url) {
+        redirectPath = { pathname: menu.url };
+      }
 
-    const listItemButton = (
-      <ListItemButton
-        disableRipple
-        selected={isSelected}
-        className={opened ? styles.OpenItem : styles.ClosedItem}
-        classes={{
-          root: styles.IconItem,
-          selected: styles.SelectedItem,
-        }}
-        key={menu.icon}
-        component={menu.url ? AnchorLink : NavLink}
-        to={redirectPath}
-        {...(menu.url ? { target: '_blank', href: menu.url, rel: 'noopener noreferrer' } : {})}
-      >
-        <ListItemIcon className={styles.ListItemIcon}>
-          <ListIcon
-            icon={menu.icon}
-            count={menu.badge ? getCount() : 0}
-            showBadge={menu.badge ? menu.badge : false}
-          />
-        </ListItemIcon>
-        {opened ? (
-          <ListItemText
-            disableTypography
-            data-testid="list-item"
-            className={isSelected ? styles.SelectedText : styles.UnselectedText}
-            primary={t(menu.title)}
-          />
-        ) : null}
-      </ListItemButton>
-    );
-
-    if (menu.subMenu && menu.subMenu.length) {
-      const subMenu = menu.subMenu
-        .filter((item: any) => !item.show)
-        .map((item: any) => ({
-          ...item,
-          spacing: false,
-          icon: (
-            <ListItemIcon className={styles.ListItemIcon}>
-              <ListIcon icon={item.icon} />
-            </ListItemIcon>
-          ),
-        }));
-      return (
-        <Menu menus={subMenu} key={menu.icon} eventType="MouseEnter" placement={'right-start'}>
-          {listItemButton}
-        </Menu>
+      const listItemButton = (
+        <ListItemButton
+          disableRipple
+          selected={isSelected}
+          className={opened ? styles.OpenItem : styles.ClosedItem}
+          classes={{
+            root: styles.IconItem,
+            selected: styles.SelectedItem,
+          }}
+          key={menu.icon}
+          component={menu.url ? AnchorLink : NavLink}
+          to={redirectPath}
+          {...(menu.url ? { target: '_blank', href: menu.url, rel: 'noopener noreferrer' } : {})}
+        >
+          <ListItemIcon className={styles.ListItemIcon}>
+            <ListIcon
+              icon={menu.icon}
+              count={menu.badge ? getCount() : 0}
+              showBadge={menu.badge ? menu.badge : false}
+            />
+          </ListItemIcon>
+          {opened ? (
+            <ListItemText
+              disableTypography
+              data-testid="list-item"
+              className={isSelected ? styles.SelectedText : styles.UnselectedText}
+              primary={t(menu.title)}
+            />
+          ) : null}
+        </ListItemButton>
       );
-    }
 
-    return listItemButton;
-  });
+      if (menu.subMenu && menu.subMenu.length) {
+        const subMenu = menu.subMenu
+          .filter((item: any) => !item.show)
+          .map((item: any) => ({
+            ...item,
+            spacing: false,
+            icon: (
+              <ListItemIcon className={styles.ListItemIcon}>
+                <ListIcon icon={item.icon} />
+              </ListItemIcon>
+            ),
+          }));
+        return (
+          <Menu menus={subMenu} key={menu.icon} eventType="MouseEnter" placement={'right-start'}>
+            {listItemButton}
+          </Menu>
+        );
+      }
+
+      return listItemButton;
+    });
 
   return (
     <List className={styles.List} data-testid="list">
