@@ -55,7 +55,14 @@ const menus = [
     ],
     roles: ['Manager', 'Admin', 'Dynamic'],
   },
-
+  {
+    title: 'Support tickets',
+    path: '/ticket',
+    icon: 'tickets',
+    type: 'sideDrawer',
+    roles: ['Staff'],
+    show: !getOrganizationServices('ticketingEnabled'),
+  },
   {
     title: 'Triggers',
     path: '/trigger',
