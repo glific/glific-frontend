@@ -9,6 +9,8 @@ export const SIMULATOR_CONTACT = '9876543210';
 export const FLOW_STATUS_PUBLISHED = 'published';
 export const SIMULATOR_NUMBER_START = '9876543210';
 export const GUPSHUP_ENTERPRISE_SHORTCODE = 'gupshup_enterprise';
+export const VALID_URL_REGEX =
+  'https?://(www.)?[-a-zA-Z0-9@:%._+~#=]{2,256}.[a-z]{2,4}([-a-zA-Z0-9@:%_+.~#?&\/=]*)';
 // to find variables in message
 export const pattern = /[^{}]+(?=})/g;
 

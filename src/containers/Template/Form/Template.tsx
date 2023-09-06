@@ -18,7 +18,12 @@ import { CREATE_MEDIA_MESSAGE } from 'graphql/mutations/Chat';
 import { USER_LANGUAGES } from 'graphql/queries/Organization';
 import { GET_TAGS } from 'graphql/queries/Tags';
 import { CREATE_TEMPLATE, UPDATE_TEMPLATE, DELETE_TEMPLATE } from 'graphql/mutations/Template';
-import { MEDIA_MESSAGE_TYPES, CALL_TO_ACTION, QUICK_REPLY } from 'common/constants';
+import {
+  MEDIA_MESSAGE_TYPES,
+  CALL_TO_ACTION,
+  QUICK_REPLY,
+  VALID_URL_REGEX,
+} from 'common/constants';
 import { getPlainTextFromEditor, getEditorFromContent } from 'common/RichEditor';
 import Loading from 'components/UI/Layout/Loading/Loading';
 import { CreateAutoComplete } from 'components/UI/Form/CreateAutoComplete/CreateAutoComplete';
@@ -960,10 +965,7 @@ const Template = ({
               .when('type', {
                 is: (val: any) => val === 'url',
                 then: (schema) =>
-                  schema.matches(
-                    /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_+.~#?&/=]*)/gi,
-                    'Please enter valid url.'
-                  ),
+                  schema.matches(new RegExp(VALID_URL_REGEX, 'gi'), 'Please enter valid url.'),
               }),
           })
         )
