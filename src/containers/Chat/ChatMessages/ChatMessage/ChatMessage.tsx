@@ -195,11 +195,7 @@ export const ChatMessage = ({
 
   const sendByLabel = !isSender && sendBy;
   let messageFooter;
-  if (sendByLabel) {
-    messageFooter = `${sendBy} | ${moment(insertedAt).format(TIME_FORMAT)}`;
-  } else {
-    messageFooter = moment(insertedAt).format(TIME_FORMAT);
-  }
+  messageFooter = moment(insertedAt).format(TIME_FORMAT);
 
   const dateAndSendBy = messageFooter && (
     <div className={`${styles.Date} ${datePlacement}`} data-testid="date">
@@ -380,6 +376,7 @@ export const ChatMessage = ({
           </div>
           {/* {iconLeft ? null : icon} */}
         </div>
+        <div className={styles.SendBy}>{sendBy}</div>
 
         {saveTemplateMessage}
 

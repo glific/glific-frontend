@@ -567,15 +567,8 @@ export const ContactBar = ({
               time={lastMessageTime}
               contactStatus={contactStatus}
               contactBspStatus={contactBspStatus}
+              variant={'Secondary'}
             />
-          </div>
-          <div>
-            {/* {assignedToCollection ? (
-              <>
-                <span className={styles.CollectionHeading}>Assigned to</span>
-                <span className={styles.CollectionsName}>{assignedToCollection}</span>
-              </>
-            ) : null} */}
           </div>
         </div>
       ) : null}

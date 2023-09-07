@@ -499,6 +499,11 @@ export const ChatInput = ({
                   !recordedAudio) ||
                 uploading
               }
+              sx={{
+                '&:disabled': {
+                  backgroundColor: 'rgba(17, 150, 86, 0.57)',
+                },
+              }}
             >
               <SendMessageIcon className={styles.SendIcon} />
             </Button>

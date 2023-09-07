@@ -1,6 +1,5 @@
 .ChatMessage {
   display: flex;
-  justify-content: center;
   position: relative;
   max-width: 100%;
   border-radius: 12px 12px 0px 12px;
@@ -129,6 +128,7 @@
 }
 
 .Date {
+  min-width: 85px;
   justify-content: flex-end;
   display: flex;
   color: #fff;
@@ -148,6 +148,16 @@
 
 .Inline {
   display: flex;
+}
+.SendBy {
+  display: flex;
+  align-items: flex-end;
+  justify-content: end;
+  margin: 4px 48px;
+  color: #191c1a;
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 17px;
 }
 
 .MessageDetailsSender {

@@ -8,11 +8,23 @@
 }
 
 .SessionInfo {
-  padding-top: 8px;
+  display: flex;
+  align-items: center;
+  color: #555;
+  font-weight: 400;
 }
 
 .SessionCount {
   color: #93a29b;
+  font-size: 12px;
+  line-height: 12px;
+  font-weight: 700 !important;
+  color: #555;
+  border-radius: 5px;
+  background: #ecf7f1;
+  padding: 8px;
+  text-align: center;
+  margin-left: 4px;
 }
 
 .CollectionHeading {
@@ -38,7 +50,6 @@
 }
 
 .Message {
-  width: 331px;
   line-height: 20px;
   text-align: center;
   color: #073f24;
@@ -55,7 +66,7 @@
 
 .MessageInfo {
   display: flex;
-  gap: 20px;
+  gap: 16px;
   margin-top: 10px;
 }
 

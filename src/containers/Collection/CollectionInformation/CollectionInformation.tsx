@@ -111,23 +111,23 @@ export const CollectionInformation = ({
   return (
     <div className={styles.InfoWrapper}>
       <div className={styles.CollectionInformation} data-testid="CollectionInformation">
-        <div className={styles.Heading}>{t('Contacts qualified for')}</div>
+        {/* <div className={styles.Heading}>{t('Contacts qualified for')}</div> */}
         <div className={styles.MessageInfo}>
           {Object.keys(display).map((data: any) => (
             <div key={data} className={styles.SessionInfo}>
-              {data}: <span className={styles.SessionCount}> {display[data]}</span>
+              {data}:<span className={styles.SessionCount}> {display[data]}</span>
             </div>
           ))}
         </div>
       </div>
-      <div className={styles.CollectionAssigned}>
+      {/* <div className={styles.CollectionAssigned}>
         {assignedToCollection && staff ? (
           <>
             <span className={styles.CollectionHeading}>{t('Assigned to')}</span>
             <span className={styles.CollectionsName}>{assignedToCollection}</span>
           </>
         ) : null}
-      </div>
+      </div> */}
     </div>
   );
 };

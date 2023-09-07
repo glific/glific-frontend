@@ -12,6 +12,10 @@
   margin: 7px 10px;
 }
 
+.SecondaryTimer {
+  border-radius: 5px !important;
+}
+
 .TimerNormal {
   composes: Timer;
 }

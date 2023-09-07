@@ -4,6 +4,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useTranslation } from 'react-i18next';
 
 import searchIcon from 'assets/images/icons/Search/Desktop.svg';
+import search from 'assets/images/icons/Search/Search.svg';
 import { ReactComponent as AdvancedSearch } from 'assets/images/icons/AdvancedSearch.svg';
 import styles from './SearchBar.module.css';
 import Track from 'services/TrackService';
@@ -69,6 +70,7 @@ export const SearchBar = ({
             Track('Advanced search');
             handleClick(e, 'search', 'update');
           }}
+          className={styles.FilterIcon}
         >
           <AdvancedSearch data-testid="advanced-search-icon" />
         </IconButton>
@@ -80,6 +82,7 @@ export const SearchBar = ({
     <form onSubmit={handleSubmit} autoComplete="off" data-testid="searchForm">
       <div className={`${styles.SearchBar} ${className}`}>
         <div className={styles.IconAndText}>
+          {endAdornment && <img src={search} className={styles.searchIconFilter} alt="Search" />}
           <InputBase
             data-testid="searchInput"
             className={styles.SearchField}
@@ -94,7 +97,7 @@ export const SearchBar = ({
             value={inputValue}
             endAdornment={endAdornmentInput}
           />
-          <img src={searchIcon} className={styles.SearchIcon} alt="Search" />
+          {!endAdornment && <img src={searchIcon} className={styles.SearchIcon} alt="Search" />}
         </div>
         {resetButton}
       </div>
