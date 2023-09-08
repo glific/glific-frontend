@@ -213,7 +213,11 @@ export const ChatInput = ({
     setOpen(selectedTab !== title);
   };
 
-  const handleClickAway = () => {
+  const handleClickAway = (event?: any) => {
+    const popupElement = document.getElementById('popup');
+    if (popupElement && popupElement.contains(event.target)) {
+      return;
+    }
     setOpen(false);
     setSelectedTab('');
   };
@@ -296,13 +300,13 @@ export const ChatInput = ({
   };
 
   const quickSendButtons = (quickSendTypes: any) => {
-    const buttons = quickSendTypes.map((type: string) => (
+    const buttons = quickSendTypes.map((type: string, icon?: any) => (
       <div
         key={type}
         data-testid="shortcutButton"
         onClick={() => handleClick(type)}
         aria-hidden="true"
-        className={`${styles.QuickSend} ${selectedTab === type ? styles.QuickSendSelected : ''}`}
+        className={`${styles.QuickSend} ${selectedTab === type && styles.QuickSendSelected}`}
       >
         {type}
       </div>
@@ -372,45 +376,48 @@ export const ChatInput = ({
     };
     dialog = <AddAttachment {...dialogProps} />;
   }
+
   return (
     <Container
       className={`${styles.ChatInput} ${additionalStyle}`}
       data-testid="message-input-container"
     >
       {dialog}
-      <ClickAwayListener onClickAway={handleClickAway}>
-        <div className={styles.SendsContainer}>
-          {open ? (
-            <Fade in={open} timeout={200}>
-              <div className={styles.Popup}>
-                <ChatTemplates
-                  isTemplate={selectedTab === templates}
-                  isInteractiveMsg={selectedTab === interactiveMsg}
-                  searchVal={searchVal}
-                  handleSelectText={handleSelectText}
-                />
-                <SearchBar
-                  className={styles.ChatSearchBar}
-                  handleChange={handleSearch}
-                  onReset={() => setSearchVal('')}
-                  searchMode
-                />
-              </div>
-            </Fade>
-          ) : null}
-          {quickSendButtons(quickSendTypes)}
-        </div>
-      </ClickAwayListener>
 
-      <div
-        className={`${styles.ChatInputElements} ${
-          selectedTab === '' ? styles.Rounded : styles.Unrounded
-        }`}
-      >
-        <IconButton className={styles.AttachmentIcon}>
-          <DownIcon />
-        </IconButton>
+      <div className={styles.SendsContainer} id="popup">
+        {open ? (
+          <Fade in={open} timeout={200}>
+            <div className={styles.Popup}>
+              <ChatTemplates
+                isTemplate={selectedTab === templates}
+                isInteractiveMsg={selectedTab === interactiveMsg}
+                searchVal={searchVal}
+                handleSelectText={handleSelectText}
+              />
+              <SearchBar
+                className={styles.ChatSearchBar}
+                handleChange={handleSearch}
+                onReset={() => setSearchVal('')}
+                searchMode
+              />
+              {selectedTab && quickSendButtons(quickSendTypes)}
+            </div>
+          </Fade>
+        ) : null}
+      </div>
 
+      <div className={styles.ChatInputElements}>
+        <ClickAwayListener onClickAway={handleClickAway}>
+          <IconButton
+            className={styles.AttachmentIcon}
+            onClick={() => {
+              handleClick(quickSendTypes[0]);
+            }}
+            aria-hidden="true"
+          >
+            <DownIcon />
+          </IconButton>
+        </ClickAwayListener>
         <IconButton
           data-testid="attachmentIcon"
           className={styles.AttachmentIcon}

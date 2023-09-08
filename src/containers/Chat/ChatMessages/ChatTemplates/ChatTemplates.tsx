@@ -60,7 +60,7 @@ export const ChatTemplates = ({
           data-testid="templateItem"
           disableRipple
           onClick={() => handleSelectText(obj, interactiveMsg)}
-          className={styles.PopperListItem}
+          className={`${styles.PopperListItem}`}
         >
           <p className={styles.Text}>
             <b style={{ marginRight: '5px' }}>{obj.label}:</b>
@@ -72,7 +72,6 @@ export const ChatTemplates = ({
             </div>
           ) : null}
         </ListItemButton>
-        <Divider light />
       </div>
     );
   };
