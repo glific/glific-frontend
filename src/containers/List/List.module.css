@@ -261,18 +261,3 @@
   display: flex;
   align-items: center;
 }
-
-.ViewButton {
-  display: flex;
-  height: 32px;
-  padding: 11px 12px;
-  justify-content: center;
-  align-items: center;
-  color: #777;
-  font-size: 13px;
-  font-weight: 400;
-  border-radius: 16px;
-  background: #f5f5f5;
-  cursor: pointer;
-  margin-right: 8px;
-}
