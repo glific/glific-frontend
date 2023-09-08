@@ -31,12 +31,9 @@ const getContact = (contactsCount: number) => (
   </div>
 );
 
-// const getDescription = (text: string) => <p className={styles.CollectionDescription}>{text}</p>;
-
 const getColumns = ({ label, contactsCount }: any) => ({
   label: getLabel(label),
   contacts: getContact(contactsCount),
-  // description: getDescription(description),
 });
 
 const columnStyles = [styles.Label, styles.Contact, styles.Actions];
