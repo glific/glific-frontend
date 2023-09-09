@@ -115,17 +115,16 @@
   font-size: 11px;
   font-weight: 500;
   padding: 8px 17px;
+  gap: 8px;
 }
 
 .QuickSendSelected {
   background-color: #119656;
-  color: #fff;
+  color: #fff !important;
 }
 
 .ShortcutPaper {
   width: 100%;
-  /* width: 1200px; */
-  /* height: 300px; */
   z-index: -1;
   position: relative;
   padding: 0px 0px 30px 0px;
@@ -138,10 +137,8 @@
   border-color: rgba(0, 0, 0, 0.08);
   border-width: 1px 2px 1px 2px;
   border-style: solid;
-  /* border-radius: 25px 25px 0px 0px; */
   box-sizing: border-box;
   width: 100%;
-  /* height: 500px; */
   flex: none;
   bottom: 0;
 }
@@ -205,6 +202,11 @@ svg.SendIcon {
 .Icons {
   display: flex;
   align-items: center;
+}
+
+.Icon {
+  height: 18px;
+  width: 18px;
 }
 
 @media only screen and (max-width: 768px) {

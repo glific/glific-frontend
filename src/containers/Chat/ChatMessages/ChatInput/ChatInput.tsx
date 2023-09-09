@@ -26,6 +26,12 @@ import ChatTemplates from '../ChatTemplates/ChatTemplates';
 import styles from './ChatInput.module.css';
 import { ReactComponent as EmojiIcon } from 'assets/images/icons/EmojiIcon.svg';
 import { ReactComponent as DownIcon } from 'assets/images/DownIcon.svg';
+import { ReactComponent as SpeedSend } from 'assets/images/icons/SpeedSend/Selected.svg';
+import { ReactComponent as SpeedSendWhite } from 'assets/images/icons/SpeedSend/White.svg';
+import { ReactComponent as Templates } from 'assets/images/icons/Template/Selected.svg';
+import { ReactComponent as TemplatesWhite } from 'assets/images/icons/Template/White.svg';
+import { ReactComponent as InteractiveMsg } from 'assets/images/icons/InteractiveMessage/Selected.svg';
+import { ReactComponent as InteractiveMsgWhite } from 'assets/images/icons/InteractiveMessage/White.svg';
 
 export interface ChatInputProps {
   onSendMessage(
@@ -72,9 +78,17 @@ export const ChatInput = ({
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   const { t } = useTranslation();
-  const speedSends = 'Speed sends';
-  const templates = 'Templates';
-  const interactiveMsg = 'Interactive msg';
+  const speedSends = {
+    type: 'Speed sends',
+    icon: <SpeedSend />,
+    activeIcon: <SpeedSendWhite className={styles.Icon} />,
+  };
+  const templates = { type: 'Templates', icon: <Templates />, activeIcon: <TemplatesWhite /> };
+  const interactiveMsg = {
+    type: 'Interactive msg',
+    icon: <InteractiveMsg />,
+    activeIcon: <InteractiveMsgWhite />,
+  };
   let uploadPermission = false;
 
   let dialog;
@@ -300,15 +314,16 @@ export const ChatInput = ({
   };
 
   const quickSendButtons = (quickSendTypes: any) => {
-    const buttons = quickSendTypes.map((type: string, icon?: any) => (
+    const buttons = quickSendTypes.map((data: any) => (
       <div
-        key={type}
+        key={data.type}
         data-testid="shortcutButton"
-        onClick={() => handleClick(type)}
+        onClick={() => handleClick(data.type)}
         aria-hidden="true"
-        className={`${styles.QuickSend} ${selectedTab === type && styles.QuickSendSelected}`}
+        className={`${styles.QuickSend} ${selectedTab === data.type && styles.QuickSendSelected}`}
       >
-        {type}
+        {selectedTab === data.type ? data.activeIcon : data.icon}
+        {data.type}
       </div>
     ));
     return <div className={styles.QuickSendButtons}>{buttons}</div>;
@@ -389,8 +404,8 @@ export const ChatInput = ({
           <Fade in={open} timeout={200}>
             <div className={styles.Popup}>
               <ChatTemplates
-                isTemplate={selectedTab === templates}
-                isInteractiveMsg={selectedTab === interactiveMsg}
+                isTemplate={selectedTab === templates.type}
+                isInteractiveMsg={selectedTab === interactiveMsg.type}
                 searchVal={searchVal}
                 handleSelectText={handleSelectText}
               />
@@ -399,6 +414,7 @@ export const ChatInput = ({
                 handleChange={handleSearch}
                 onReset={() => setSearchVal('')}
                 searchMode
+                IsFront
               />
               {selectedTab && quickSendButtons(quickSendTypes)}
             </div>
@@ -411,7 +427,7 @@ export const ChatInput = ({
           <IconButton
             className={styles.AttachmentIcon}
             onClick={() => {
-              handleClick(quickSendTypes[0]);
+              handleClick(quickSendTypes[0].type);
             }}
             aria-hidden="true"
           >
