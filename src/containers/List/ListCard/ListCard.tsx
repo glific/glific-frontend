@@ -1,41 +1,52 @@
-import { Card, CardContent, Typography, CardActions } from '@mui/material';
-import { Link } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
+import { Table, TableBody, TableCell, TableRow } from '@mui/material';
+import { Fragment } from 'react';
 
 import styles from './ListCard.module.css';
 
 interface ListCardProps {
   data: any;
-  link: any;
+  columnStyles?: Array<any>;
 }
 
-export const ListCard = ({ data, link }: ListCardProps) => {
-  const { t } = useTranslation();
+export const ListCard = ({ data, columnStyles }: ListCardProps) => {
+  const createRows = (data: any, columnStyles: any) => {
+    const createRow = (entry: any) => {
+      let stylesIndex = -1;
+      delete entry.recordId;
+      delete entry.isActive;
 
-  const linkPath = (id: any) => `/${link.start}/${id}/${link.end}`;
+      return Object.keys(entry).map((item: any, index: number) => {
+        // maintain columnStyles index
+        stylesIndex += 1;
+        return (
+          <TableCell
+            key={index}
+            className={`${columnStyles && columnStyles[stylesIndex]} ${styles.TableCell}`}
+          >
+            {entry[item]}
+          </TableCell>
+        );
+      });
+    };
 
-  const viewDetails = (id: any) => (
-    <Link to={linkPath(id)} className={styles.Link}>
-      <p>{t('View Details')}</p>
-    </Link>
-  );
+    return data.map((entry: any, index: number) => {
+      const isActiveRow = entry.isActive === false ? styles.InactiveRow : styles.ActiveRow;
+
+      return (
+        <Fragment key={index}>
+          <TableRow className={` ${isActiveRow} ${styles.TableRow}`}>{createRow(entry)}</TableRow>
+        </Fragment>
+      );
+    });
+  };
+
+  const rows = createRows(data, columnStyles);
+
   return (
-    <div className={styles.CardContainer}>
-      {data.map((dataInfo: any) => (
-        <Card variant="outlined" className={styles.Card} key={dataInfo.id}>
-          <CardContent className={styles.CardContent}>
-            <div data-testid="label">{dataInfo.label}</div>
-
-            <Typography variant="body2" component="div" data-testid="description">
-              {dataInfo.description}
-            </Typography>
-          </CardContent>
-          <CardActions className={styles.CardActions}>
-            {viewDetails(dataInfo.id)}
-            {dataInfo.operations}
-          </CardActions>
-        </Card>
-      ))}
+    <div className={styles.TableContainer}>
+      <Table className={styles.Table} data-testid="listCardTable">
+        <TableBody data-testid="listCardBody">{rows}</TableBody>
+      </Table>
     </div>
   );
 };

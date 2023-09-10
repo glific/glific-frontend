@@ -1,42 +1,87 @@
-.Card {
-  width: 31%;
-  position: relative !important;
-  margin-right: 24px;
-  margin-bottom: 24px;
-  border-radius: 12px !important;
-  border-color: #eaedec !important;
-  min-height: 188px;
+.TableRow {
+  position: relative;
+  display: flex !important;
+  background-color: white;
+  border-radius: 10px !important;
+  margin-bottom: 4px !important;
+  padding: 4px 13px;
+  padding-right: 5px;
+  height: 72px;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.04);
 }
 
-.CardContainer {
-  display: flex;
-  padding: 16px;
-  flex-wrap: wrap;
-  padding-bottom: 32px;
+.CollapseTableRow {
+  composes: TableRow;
+  margin-top: -20px !important;
+  border-radius: 0 0 12px 12px !important;
 }
 
-.Link {
-  text-decoration: none;
+.TableHeadRow {
+  display: flex !important;
+  margin-bottom: 4px !important;
+  padding: 0px 16px;
+  padding-right: 5px;
+  line-height: 1 !important;
   text-transform: uppercase;
-  font-weight: 800;
-  color: #119656;
-  padding-left: 8px;
-  font-size: 16px;
-}
-.Link > p {
-  margin: 0px;
 }
 
-.CardActions > :last-child {
-  margin-left: auto !important;
+.TableCell {
+  font-size: 14px !important;
+  display: flex !important;
+  padding: 0px 10px !important;
+  border: unset !important;
 }
 
-.CardActions {
-  position: absolute !important;
+.TableContainer {
+  overflow: auto;
+  padding: 18px 56px;
+}
+
+.TableFooter {
+  position: fixed;
+  display: flex !important;
+  justify-content: flex-end !important;
   width: 100%;
-  bottom: 0px !important;
+  background: #f9f7f3;
+  bottom: 0px;
+  right: 4px;
 }
 
-.CardContent {
-  padding-bottom: 50px !important;
+.FooterRow {
+  border: 0px !important;
+  font-size: 16px !important;
+  color: #073f24 !important;
+}
+
+.FooterRow > div {
+  min-height: 55px;
+}
+
+.TableText {
+  margin-right: 23px;
+  text-align: left;
+  padding: 12px 0px;
+  font-size: 16px;
+  color: #93a29b;
+  line-height: 1.25;
+  white-space: pre-line;
+  margin: 0;
+}
+
+.LabelText {
+  display: flex;
+  font-weight: 500;
+  font-size: 20px;
+  color: #073f24;
+  margin-top: 12px;
+  margin-bottom: 12px;
+  line-height: 1;
+}
+
+.ActiveRow {
+  color: #073f24;
+}
+
+.InactiveRow {
+  color: #ccd4d0 !important;
 }
