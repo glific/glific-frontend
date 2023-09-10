@@ -954,18 +954,19 @@ const Template = ({
       validation.templateButtons = Yup.array()
         .of(
           Yup.object().shape({
-            type: Yup.string().required('Required'),
-            title: Yup.string().required('Required'),
+            type: Yup.string().required(t('Required')),
+            title: Yup.string().required(t('Required')),
             value: Yup.string()
               .required('Required')
               .when('type', {
                 is: (val: any) => val === 'phone_number',
-                then: (schema) => schema.matches(/^\d{10,12}$/, 'Please enter valid phone number.'),
+                then: (schema) =>
+                  schema.matches(/^\d{10,12}$/, t('Please enter valid phone number.')),
               })
               .when('type', {
                 is: (val: any) => val === 'url',
                 then: (schema) =>
-                  schema.matches(new RegExp(VALID_URL_REGEX, 'gi'), 'Please enter valid url.'),
+                  schema.matches(new RegExp(VALID_URL_REGEX, 'gi'), t('Please enter valid url.')),
               }),
           })
         )
@@ -975,7 +976,7 @@ const Template = ({
       validation.templateButtons = Yup.array()
         .of(
           Yup.object().shape({
-            value: Yup.string().required('Required'),
+            value: Yup.string().required(t('Required')),
           })
         )
         .min(1)
