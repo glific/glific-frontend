@@ -9,23 +9,19 @@
 }
 
 .SessionInfo {
-  display: flex;
-  align-items: center;
-  color: #555;
-  font-weight: 400;
+  color: #999;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
 }
 
 .SessionCount {
-  color: #93a29b;
-  font-size: 12px;
-  line-height: 12px;
-  font-weight: 700 !important;
   color: #555;
-  border-radius: 5px;
-  background: #ecf7f1;
-  padding: 8px;
-  text-align: center;
-  margin-left: 4px;
+  font-family: Heebo;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 20px;
 }
 
 .CollectionHeading {
