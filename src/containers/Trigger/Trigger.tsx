@@ -39,8 +39,10 @@ const checkDateTimeValidation = (startAtValue: string, startDateValue: string) =
 const setPayload = (payload: any, roles: any) => {
   const payloadCopy = payload;
 
-  const { startDate, startTime, isActive, flowId, frequencyValues, groupId, endDate, frequency } =
+  const { startDate, startTime, isActive, flowId, frequencyValues, groupIds, endDate, frequency } =
     payloadCopy;
+
+  const groups = groupIds.map((group: any) => parseInt(group.id));
   // covert the time to UTC
   const startAt = moment(`
     ${moment(startDate).format('yyyy-MM-DD')}${startTime}`).utc();
@@ -50,7 +52,7 @@ const setPayload = (payload: any, roles: any) => {
     flowId: flowId.id,
     days: [],
     hours: [],
-    groupId: groupId.id,
+    groupIds: groups,
     startDate: moment(startAt).format('yyyy-MM-DD'),
     endDate: moment(endDate).format('yyyy-MM-DD'),
     startTime: moment(startAt).format('THH:mm:ss'),
@@ -131,7 +133,7 @@ export const Trigger = () => {
   const [frequencyValues, setFrequencyValues] = useState([]);
   const [roles, setRoles] = useState([]);
   const [daysDisabled, setDaysDisabled] = useState(true);
-  const [groupId, setGroupId] = useState<any>(null);
+  const [groupIds, setGroupIds] = useState<any>(null);
   const [minDate, setMinDate] = useState<any>(moment().utc());
   const [frequencyPlaceholder, setFrequencyPlaceholder] = useState('Select days');
   const [frequencyOptions, setFrequencyOptions] = useState(dayList);
@@ -146,7 +148,7 @@ export const Trigger = () => {
     endDate,
     isRepeating,
     frequencyValues,
-    groupId,
+    groupIds,
     isActive,
     roles,
   };
@@ -204,7 +206,7 @@ export const Trigger = () => {
       }),
 
     frequency: Yup.object().nullable().required(t('Repeat is required')),
-    groupId: Yup.object().nullable().required(t('Collection is required')),
+    groupIds: Yup.array().nullable().required(t('Collection is required')),
   };
 
   if (!isEditing) {
@@ -329,11 +331,10 @@ export const Trigger = () => {
     },
     {
       component: AutoComplete,
-      name: 'groupId',
+      name: 'groupIds',
       placeholder: t('Select collection'),
       label: t('Select collection'),
       options: collections.groups,
-      multiple: false,
       disabled: isEditing,
       optionLabel: 'label',
     },
@@ -345,15 +346,15 @@ export const Trigger = () => {
     endDate: endDateValue,
     flow: flowValue,
     frequency: frequencyValue,
-    group: groupValue,
+    groups: groupValue,
     isActive: isActiveValue,
     isRepeating: isRepeatingValue,
     startAt: startAtValue,
     roles: rolesValue,
   }: any) => {
     setIsRepeating(isRepeatingValue);
-    setIsActive(isActiveValue);
     setEndDate(endDateValue);
+    setIsActive(isCopyState ? true : isActiveValue);
 
     const { values, options, placeholder } = getFrequencyDetails(
       frequencyValue,
@@ -376,14 +377,16 @@ export const Trigger = () => {
     setRoles(rolesValue);
 
     const getFlowId = flow.flows.filter((flows: any) => flows.id === flowValue.id);
-    const getcollectionId = collections.groups.filter(
-      (collection: any) => collection.id === groupValue.id
-    );
+
     if (getFlowId.length > 0) {
       setFlowId(getFlowId[0]);
     }
-    if (getcollectionId.length > 0) {
-      setGroupId(getcollectionId[0]);
+
+    if (groupValue && collections.groups && groupValue.length > 0) {
+      const selectedGroups = collections.groups.filter((group: any) =>
+        groupValue.includes(group.label)
+      );
+      setGroupIds(selectedGroups);
     }
   };
 

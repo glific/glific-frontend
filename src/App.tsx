@@ -7,7 +7,7 @@ import 'assets/fonts/fonts.css';
 import gqlClient from 'config/apolloclient';
 import { SessionContext, SideDrawerContext } from 'context/session';
 import ErrorHandler from 'containers/ErrorHandler/ErrorHandler';
-import { checkAuthStatusService } from 'services/AuthService';
+import { checkAuthStatusService, getAuthSession } from 'services/AuthService';
 import { UnauthenticatedRoute } from 'routes/UnauthenticatedRoute/UnauthenticatedRoute';
 import { AuthenticatedRoute } from 'routes/AuthenticatedRoute/AuthenticatedRoute';
 import { Logout } from 'containers/Auth/Logout/Logout';
@@ -20,7 +20,9 @@ const App = () => {
   const [drawerOpen, setDrawerOpen] = useState(true);
 
   useEffect(() => {
-    setAuthenticated(checkAuthStatusService());
+    const isAccessTokenPresent = getAuthSession('accessToken') !== null;
+    const isTokenExpired = checkAuthStatusService();
+    setAuthenticated(isTokenExpired || isAccessTokenPresent);
   }, []);
 
   const sideDrawerValues = useMemo(

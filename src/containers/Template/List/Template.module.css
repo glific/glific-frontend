@@ -113,8 +113,9 @@
   display: flex;
   width: 130px;
   margin: auto;
-  height: 36px;
+  height: 36px !important;
   background: #ffffff;
+  min-height: 36px !important;
 }
 
 .DropDown > fieldset {

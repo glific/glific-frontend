@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useQuery, useApolloClient } from '@apollo/client';
 import Typography from '@mui/material/Typography';
 import * as Yup from 'yup';
-import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
 import { FormLayout } from 'containers/Form/FormLayout';
@@ -16,6 +15,7 @@ import {
   UPDATE_CREDENTIAL,
 } from 'graphql/mutations/Organization';
 import { ReactComponent as Settingicon } from 'assets/images/icons/Settings/Settings.svg';
+import styles from './Providers.module.css';
 
 let validation: any = {};
 let FormSchema = Yup.object().shape(validation);
@@ -31,7 +31,6 @@ const queries = {
 export const Providers = () => {
   const [credentialId, setCredentialId] = useState(null);
   const client = useApolloClient();
-  const { t } = useTranslation();
   const [stateValues, setStateValues] = useState({});
   const [formFields, setFormFields] = useState([]);
   const [keys, setKeys] = useState({});
@@ -117,8 +116,8 @@ export const Providers = () => {
         component: Checkbox,
         name: 'isActive',
         title: (
-          <Typography variant="h6" style={{ color: '#073f24' }}>
-            {t('Is active?')}
+          <Typography variant="h6" className={styles.IsActive}>
+            Active?
           </Typography>
         ),
       },
@@ -130,6 +129,7 @@ export const Providers = () => {
         name: key,
         type: 'text',
         placeholder: fields[key].label,
+        label: fields[key].label,
         disabled: fields[key].view_only,
       };
       formField.push(field);
@@ -170,13 +170,12 @@ export const Providers = () => {
       });
   };
 
-  if (!providerData || loading) return <Loading />;
+  if (!providerData || loading) return <Loading whiteBackground />;
 
   const title = providerData.providers[0].name;
 
   return (
     <FormLayout
-      backLinkButton={{ text: t('Back to settings'), link: '/settings' }}
       {...queries}
       title={title}
       states={stateValues}
@@ -193,9 +192,10 @@ export const Providers = () => {
       icon={SettingIcon}
       languageSupport={false}
       type="settings"
-      redirect
+      redirect={false}
       afterSave={saveHandler}
       entityId={credentialId}
+      noHeading
     />
   );
 };

@@ -56,7 +56,7 @@
 }
 
 .FilterHeight {
-  height: 36px;
+  height: 36px !important;
 }
 
 ::-webkit-scrollbar {

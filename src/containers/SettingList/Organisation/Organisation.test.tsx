@@ -19,16 +19,17 @@ const wrapper = (
 test('it renders component properly', async () => {
   const { getByText } = render(wrapper);
   // loading is show initially
-  expect(getByText('Loading...')).toBeInTheDocument();
   await waitFor(() => {
-    expect(getByText('Back to settings')).toBeInTheDocument();
+    expect(getByText('Loading...')).toBeInTheDocument();
   });
 });
 
 test('it renders component and clicks cancel', async () => {
   const { getByText } = render(wrapper);
   // loading is show initially
-  expect(getByText('Loading...')).toBeInTheDocument();
+  await waitFor(() => {
+    expect(getByText('Loading...')).toBeInTheDocument();
+  });
   await waitFor(() => {
     const Button = screen.getByText('Cancel');
     expect(Button).toBeInTheDocument();
@@ -46,7 +47,9 @@ test('it renders component in edit mode', async () => {
     </MockedProvider>
   );
   // loading is show initially
-  expect(getByText('Loading...')).toBeInTheDocument();
+  await waitFor(() => {
+    expect(getByText('Loading...')).toBeInTheDocument();
+  });
 
   await waitFor(() => {
     const phoneNumber = getByTestId('phoneNumber');

@@ -88,7 +88,7 @@ export const Organisation = () => {
     }
   }, [orgData]);
 
-  if (!languages) return <Loading />;
+  if (!languages) return <Loading whiteBackground />;
 
   let activeLanguage: any = [];
   const validateActiveLanguages = (value: any) => {
@@ -126,6 +126,7 @@ export const Organisation = () => {
       name: 'name',
       type: 'text',
       placeholder: t('Organisation name'),
+      label: t('Organisation name'),
     },
     {
       component: AutoComplete,
@@ -149,6 +150,7 @@ export const Organisation = () => {
       name: 'signaturePhrase',
       type: 'text',
       placeholder: t('Webhook signature'),
+      label: t('Webhook signature'),
     },
 
     {
@@ -175,6 +177,7 @@ export const Organisation = () => {
       name: 'tier',
       type: 'text',
       placeholder: t('WhatsApp tier'),
+      label: t('WhatsApp tier'),
       skip: !tier,
       disabled: true,
     },
@@ -203,9 +206,8 @@ export const Organisation = () => {
 
   return (
     <FormLayout
-      backLinkButton={{ text: t('Back to settings'), link: '/settings' }}
       {...queries}
-      title="organization settings"
+      title="Organization settings"
       states={States}
       setStates={setStates}
       validationSchema={FormSchema}
@@ -225,6 +227,7 @@ export const Organisation = () => {
       afterSave={saveHandler}
       customStyles={styles.organization}
       entityId={organizationId}
+      noHeading
     />
   );
 };

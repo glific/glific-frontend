@@ -3,14 +3,14 @@
   border: 1px solid #cccccc;
   display: flex;
   margin-right: 8px;
-  height: 36px;
+  height: 36px !important;
   background: #ffffff;
+  min-height: 36px !important;
 }
 
 .SearchBar > fieldset {
   border: none !important;
 }
-
 .Shortcode {
   width: 180px;
 }

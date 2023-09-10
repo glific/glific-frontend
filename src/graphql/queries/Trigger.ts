@@ -11,14 +11,12 @@ export const TRIGGER_LIST_QUERY = gql`
         id
         name
       }
-      group {
-        id
-        label
-      }
+      groups
       roles {
         id
         label
       }
+      nextTriggerAt
       endDate
       isActive
       isRepeating
@@ -37,9 +35,7 @@ export const GET_TRIGGER = gql`
           id
         }
         frequency
-        group {
-          id
-        }
+        groups
         hours
         roles {
           id
