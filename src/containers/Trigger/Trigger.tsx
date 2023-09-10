@@ -353,8 +353,8 @@ export const Trigger = () => {
     roles: rolesValue,
   }: any) => {
     setIsRepeating(isRepeatingValue);
-    setIsActive(isActiveValue);
     setEndDate(endDateValue);
+    setIsActive(isCopyState ? true : isActiveValue);
 
     const { values, options, placeholder } = getFrequencyDetails(
       frequencyValue,
