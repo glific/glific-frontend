@@ -17,23 +17,25 @@ export const CollectionDescription = ({
   const { t } = useTranslation();
 
   const userList = (
-    <ul className={styles.UserList}>
+    <div className={styles.UserList}>
       {users.map((user: any) => (
         <li key={user.id}>{user.name}</li>
       ))}
-    </ul>
+    </div>
   );
   return (
     <div className={styles.DescriptionContainer} data-testid="collectionDescription">
-      <h2 className={styles.Title}>{t('Description')}</h2>
       <p className={styles.Description}>{description}</p>
       <div className={styles.CollectionInformation}>
+        <h2 className={styles.Title}>{t('Description')}</h2>
         <CollectionInformation collectionId={collectionId} staff={false} />
       </div>
 
       <div className={styles.StaffDivider} />
-      <h2 className={styles.Title}>{t('Assigned to staff')}</h2>
-      <div>{userList}</div>
+      <div className={styles.Assignees}>
+        <div className={styles.TitleAssign}>{t('Assigned to staff')}</div>
+        <div>{userList}</div>
+      </div>
     </div>
   );
 };

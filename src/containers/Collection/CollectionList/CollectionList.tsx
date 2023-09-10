@@ -20,26 +20,23 @@ import { setVariables } from 'common/constants';
 import { CircularProgress, Modal } from '@mui/material';
 import styles from './CollectionList.module.css';
 import { exportCsvFile } from 'common/utils';
+import { useNavigate } from 'react-router-dom';
 import { collectionInfo } from 'common/HelpData';
 
-const getLabel = (label: string, contactsCount: number) => (
-  <div>
-    <div className={styles.LabelText}>{label}</div>
-    <div className={styles.UserCount}>
-      {contactsCount} contact{contactsCount === 1 ? '' : 's'}
-    </div>
+const getLabel = (label: string) => <div className={styles.LabelText}>{label}</div>;
+
+const getContact = (contactsCount: number) => (
+  <div className={styles.UserCount}>
+    {contactsCount} contact{contactsCount === 1 ? '' : 's'}
   </div>
 );
 
-const getDescription = (text: string) => <p className={styles.CollectionDescription}>{text}</p>;
-
-const getColumns = ({ id, label, description, contactsCount }: any) => ({
-  id,
-  label: getLabel(label, contactsCount),
-  description: getDescription(description),
+const getColumns = ({ label, contactsCount }: any) => ({
+  label: getLabel(label),
+  contacts: getContact(contactsCount),
 });
 
-const columnStyles = [styles.Label, styles.Description, styles.Actions];
+const columnStyles = [styles.Label, styles.Contact, styles.Actions];
 const collectionIcon = <CollectionIcon className={styles.CollectionIcon} />;
 
 const queries = {
@@ -54,6 +51,7 @@ const columnAttributes = {
 };
 
 export const CollectionList = () => {
+  const navigate = useNavigate();
   const [addContactsDialogShow, setAddContactsDialogShow] = useState(false);
 
   const [contactSearchTerm, setContactSearchTerm] = useState('');
@@ -180,8 +178,21 @@ export const CollectionList = () => {
   }
 
   const addContactIcon = <AddContactIcon />;
+  const viewButton = <div className={styles.ViewButton}>View</div>;
+
+  const linkPath = (id: any) => `/${cardLink.start}/${id}/${cardLink.end}`;
+
+  const viewCollection = (id: any) => {
+    navigate(linkPath(id));
+  };
 
   const additionalAction = () => [
+    {
+      icon: viewButton,
+      parameter: 'id',
+      textButton: 'View',
+      dialog: viewCollection,
+    },
     {
       label: t('Add contacts to collection'),
       icon: addContactIcon,
@@ -193,6 +204,7 @@ export const CollectionList = () => {
       icon: <ExportIcon />,
       parameter: 'id',
       dialog: exportCollection,
+      hasMoreOption: true,
     },
   ];
 

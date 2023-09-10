@@ -4,7 +4,8 @@
   line-height: 10px;
   color: #cacaca;
   align-items: center;
-  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
 }
 
 .SessionInfo {
@@ -60,14 +61,16 @@
 }
 
 .Heading {
-  font-size: 0.875rem;
-  color: #93a29b;
+  color: #555;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px; /* 142.857% */
 }
 
 .MessageInfo {
   display: flex;
-  gap: 16px;
-  margin-top: 10px;
+  gap: 0 72px;
+  margin: 0 29px 0 17px;
 }
 
 @media only screen and (max-width: 768px) {

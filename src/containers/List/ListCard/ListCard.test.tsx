@@ -23,10 +23,10 @@ const card = (
 
 test('it should have correct label', () => {
   const { getByTestId } = render(card);
-  expect(getByTestId('label')).toHaveTextContent('Staff Management Collection');
+  expect(getByTestId('listCardTable')).toHaveTextContent('Staff Management Collection');
 });
 
 test('it should have correct description', () => {
   const { getByTestId } = render(card);
-  expect(getByTestId('description')).toHaveTextContent('All staff members of the organization');
+  expect(getByTestId('listCardBody')).toHaveTextContent('All staff members of the organization');
 });

@@ -44,6 +44,7 @@ export interface HelpDataProps {
 }
 
 export interface ListProps {
+  descriptionBox?: any;
   loadingList?: boolean;
   columnNames?: Array<ColumnNames>;
   countQuery: DocumentNode;
@@ -107,6 +108,7 @@ interface TableVals {
 }
 
 export const List = ({
+  descriptionBox = <></>,
   loadingList = false,
   columnNames = [],
   countQuery,
@@ -516,6 +518,18 @@ export const List = ({
           );
         }
 
+        if (action.textButton) {
+          return (
+            <div
+              className={styles.ViewButton}
+              onClick={() => action.dialog(additionalActionParameter, item)}
+              key={key}
+            >
+              {action.textButton}
+            </div>
+          );
+        }
+
         if (action.link) {
           return (
             <Link to={`${action.link}/${additionalActionParameter}`} key={key}>
@@ -666,7 +680,7 @@ export const List = ({
       <Loading />
     ) : (
       <>
-        <ListCard data={itemList} link={cardLink} />
+        <ListCard columnStyles={columnStyles} data={itemList} />
         <table>
           <TableFooter className={styles.TableFooter} data-testid="tableFooter">
             <TableRow>
@@ -784,6 +798,8 @@ export const List = ({
           </div>
         </div>
       </div>
+      {/* description box */}
+      {descriptionBox}
 
       <div className={styles.FilterFields}>
         <div className={styles.FlexCenter}>
