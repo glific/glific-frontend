@@ -114,47 +114,49 @@ const SideMenus = ({ opened }: SideMenusProps) => {
     </ListItemButton>
   );
 
-  const menuListDisplay = menuToDisplay.map((menu) => {
-    const isSelected = location.pathname.startsWith(menu.path);
-    let redirectPath = menu.path;
+  const menuListDisplay = menuToDisplay
+    .filter((menu) => !menu.show)
+    .map((menu) => {
+      const isSelected = location.pathname.startsWith(menu.path);
+      let redirectPath = menu.path;
 
-    const listItemButton = (
-      <ListItemButton
-        disableRipple
-        selected={isSelected}
-        className={opened ? styles.OpenItem : styles.ClosedItem}
-        classes={{
-          root: styles.IconItem,
-          selected: styles.SelectedItem,
-        }}
-        onClick={() => {
-          if (!menu.subMenu) return;
-          if (subMenu.active) {
-            setSubMenu({ active: false, value: menu.path });
-          } else {
-            setSubMenu({ active: true, value: menu.path });
-          }
-        }}
-        key={menu.title}
-        component={NavLink}
-        to={redirectPath}
-      >
-        <ListItemIcon className={styles.ListItemIcon}>
-          <ListIcon selected={isSelected} icon={menu.icon} count={notificationCount} />
-        </ListItemIcon>
-        {opened && (
-          <ListItemText
-            disableTypography
-            data-testid="list-item"
-            className={isSelected ? styles.SelectedText : styles.UnselectedText}
-            primary={menu.title}
-          />
-        )}
-      </ListItemButton>
-    );
+      const listItemButton = (
+        <ListItemButton
+          disableRipple
+          selected={isSelected}
+          className={opened ? styles.OpenItem : styles.ClosedItem}
+          classes={{
+            root: styles.IconItem,
+            selected: styles.SelectedItem,
+          }}
+          onClick={() => {
+            if (!menu.subMenu) return;
+            if (subMenu.active) {
+              setSubMenu({ active: false, value: menu.path });
+            } else {
+              setSubMenu({ active: true, value: menu.path });
+            }
+          }}
+          key={menu.title}
+          component={NavLink}
+          to={redirectPath}
+        >
+          <ListItemIcon className={styles.ListItemIcon}>
+            <ListIcon selected={isSelected} icon={menu.icon} count={notificationCount} />
+          </ListItemIcon>
+          {opened && (
+            <ListItemText
+              disableTypography
+              data-testid="list-item"
+              className={isSelected ? styles.SelectedText : styles.UnselectedText}
+              primary={menu.title}
+            />
+          )}
+        </ListItemButton>
+      );
 
-    return listItemButton;
-  });
+      return listItemButton;
+    });
 
   return (
     <List className={styles.List} data-testid="list">

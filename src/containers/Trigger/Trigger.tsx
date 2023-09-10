@@ -52,7 +52,7 @@ const setPayload = (payload: any, roles: any) => {
     flowId: flowId.id,
     days: [],
     hours: [],
-    groupId: groups,
+    groupIds: groups,
     startDate: moment(startAt).format('yyyy-MM-DD'),
     endDate: moment(endDate).format('yyyy-MM-DD'),
     startTime: moment(startAt).format('THH:mm:ss'),
@@ -353,8 +353,8 @@ export const Trigger = () => {
     roles: rolesValue,
   }: any) => {
     setIsRepeating(isRepeatingValue);
-    setIsActive(isActiveValue);
     setEndDate(endDateValue);
+    setIsActive(isCopyState ? true : isActiveValue);
 
     const { values, options, placeholder } = getFrequencyDetails(
       frequencyValue,

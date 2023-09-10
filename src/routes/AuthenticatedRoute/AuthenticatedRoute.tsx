@@ -77,6 +77,7 @@ const routeStaff = (
     <Route path="collection" element={<CollectionList />} />
     <Route path="collection/:id/contacts" element={<CollectionContact />} />
     <Route path="user-profile" element={<UserProfile />} />
+    <Route path="ticket" element={<TicketList />} />
     <Route path="contact-profile/:id" element={<ContactProfile />} />
     <Route path="blocked-contacts" element={<BlockContactList />} />
     <Route path="myaccount" element={<MyAccount />} />

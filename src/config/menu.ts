@@ -67,6 +67,14 @@ const menus: Menu[] = [
     roles: ['Manager', 'Admin', 'Dynamic'],
   },
   {
+    title: 'Support tickets',
+    path: '/ticket',
+    icon: 'tickets',
+    type: 'sideDrawer',
+    roles: ['Staff'],
+    show: !getOrganizationServices('ticketingEnabled'),
+  },
+  {
     title: 'Quick tools',
     path: '/interactive-message',
     icon: 'speed-send',

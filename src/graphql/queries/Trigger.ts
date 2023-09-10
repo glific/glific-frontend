@@ -16,6 +16,7 @@ export const TRIGGER_LIST_QUERY = gql`
         id
         label
       }
+      nextTriggerAt
       endDate
       isActive
       isRepeating
