@@ -24,7 +24,7 @@
     "@mui/x-date-pickers": "^6.10.2",
     "@stripe/react-stripe-js": "^2.1.1",
     "@stripe/stripe-js": "^1.54.2",
-    "@types/jest": "^29.5.3",
+    "@types/jest": "^29.5.4",
     "@vitejs/plugin-react": "^4.0.4",
     "apollo-absinthe-upload-link": "^1.7.0",
     "apollo-link-token-refresh": "^0.6.0",
