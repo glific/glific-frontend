@@ -49,7 +49,6 @@ const SideMenus = ({ opened }: SideMenusProps) => {
 
   const menuList = menuObj
     .filter((item: any) => {
-      console.log(item);
       return !item.show;
     })
     .map((menu) => {

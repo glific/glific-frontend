@@ -64,6 +64,7 @@ const whatsappStyles = (format: any, wildcard: any, opTag: any, clTag: any) => {
 
 const showLivePreview = (format: any) => {
   let formatObject = format;
+  formatObject = new Option(formatObject).innerHTML;
   formatObject = whatsappStyles(formatObject, '_', '<i>', '</i>');
   formatObject = whatsappStyles(formatObject, '*', '<b>', '</b>');
   formatObject = whatsappStyles(formatObject, '~', '<s>', '</s>');
