@@ -567,7 +567,7 @@ export const ContactBar = ({
               time={lastMessageTime}
               contactStatus={contactStatus}
               contactBspStatus={contactBspStatus}
-              variant={'Secondary'}
+              variant="secondary"
             />
           </div>
         </div>

@@ -82,7 +82,7 @@ export const SearchBar = ({
     <form onSubmit={handleSubmit} autoComplete="off" data-testid="searchForm">
       <div className={`${styles.SearchBar} ${className}`}>
         <div className={styles.IconAndText}>
-          {endAdornment && <img src={search} className={styles.searchIconFilter} alt="Search" />}
+          {endAdornment && <img src={search} className={styles.SearchIconFilter} alt="Search" />}
           <InputBase
             data-testid="searchInput"
             className={styles.SearchField}

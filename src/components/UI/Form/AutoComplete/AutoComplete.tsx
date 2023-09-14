@@ -189,9 +189,17 @@ export const AutoComplete = ({
     inputValue,
   };
 
-  const getOptionDisabled = (option: any) => selectedOptionsIds.includes(option.id);
+  const getOptionDisabled = (option: any) => {
+    console.log(option);
+    return selectedOptionsIds.includes(option.id);
+  };
 
-  const renderedOption = options.length > 0 ? options : multiple ? getValue : [getValue];
+  let renderedOption = [];
+  if (getValue) {
+    renderedOption = options.length > 0 ? options : multiple ? getValue : [getValue];
+  }
+
+  console.log(renderedOption);
 
   return (
     <div className={isFilterType ? styles.FilterInput : styles.Input}>

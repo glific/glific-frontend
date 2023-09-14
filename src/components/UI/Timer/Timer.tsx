@@ -10,7 +10,7 @@ export interface TimerProps {
   time: any;
   contactStatus?: string;
   contactBspStatus?: string;
-  variant?: string;
+  variant?: 'primary' | 'secondary';
 }
 
 export const Timer = (props: TimerProps) => {
@@ -37,7 +37,7 @@ export const Timer = (props: TimerProps) => {
     </>
   );
 
-  const { contactStatus, contactBspStatus, time, variant = 'Primary' } = props;
+  const { contactStatus, contactBspStatus, time, variant = 'primary' } = props;
 
   let intervalID: any;
   useEffect(() => {
@@ -105,7 +105,7 @@ export const Timer = (props: TimerProps) => {
       interactive
     >
       <div
-        className={timerStyle + ' ' + (variant == 'Secondary' && styles.SecondaryTimer)}
+        className={timerStyle + ' ' + (variant === 'secondary' && styles.SecondaryTimer)}
         data-testid="timerCount"
       >
         {hours} hrs

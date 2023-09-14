@@ -29,7 +29,7 @@
   vertical-align: middle;
 }
 
-.searchIconFilter {
+.SearchIconFilter {
   composes: SearchIcon;
   margin-right: 4px;
 }
