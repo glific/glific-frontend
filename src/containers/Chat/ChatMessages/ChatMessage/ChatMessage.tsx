@@ -11,6 +11,7 @@ import {
   TIME_FORMAT,
   INTERACTIVE_LIST,
   INTERACTIVE_QUICK_REPLY,
+  VALID_URL_REGEX,
 } from 'common/constants';
 import { WhatsAppToJsx, WhatsAppTemplateButton } from 'common/RichEditor';
 import { Tooltip } from 'components/UI/Tooltip/Tooltip';
@@ -21,6 +22,7 @@ import { ChatMessageType } from './ChatMessageType/ChatMessageType';
 import { ListReplyTemplate, ChatTemplate } from '../ListReplyTemplate/ListReplyTemplate';
 import { QuickReplyTemplate } from '../QuickReplyTemplate/QuickReplyTemplate';
 import styles from './ChatMessage.module.css';
+import { setNotification } from 'common/notification';
 
 export interface ChatMessageProps {
   id: number;
@@ -172,13 +174,19 @@ export const ChatMessage = ({
   };
 
   const downloadMedia = () => {
-    const link = document.createElement('a');
-    link.href = media.url + downloadExtension();
-    link.setAttribute('download', link.href);
-    document.body.appendChild(link);
-    link.click();
-    if (link.parentNode) {
-      link.parentNode.removeChild(link);
+    const testForValidUrl = new RegExp(VALID_URL_REGEX, 'gi');
+    const mediaUrl = media.url + downloadExtension();
+    if (testForValidUrl.test(mediaUrl)) {
+      const link = document.createElement('a');
+      link.href = mediaUrl;
+      link.setAttribute('download', link.href);
+      document.body.appendChild(link);
+      link.click();
+      if (link.parentNode) {
+        link.parentNode.removeChild(link);
+      }
+    } else {
+      setNotification('Error! Invalid media url', 'warning');
     }
   };
 

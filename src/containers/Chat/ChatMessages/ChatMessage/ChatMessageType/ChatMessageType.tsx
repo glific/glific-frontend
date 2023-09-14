@@ -8,6 +8,7 @@ import { ReactComponent as DocumentIconDark } from 'assets/images/icons/Document
 import { ReactComponent as DownloadIcon } from 'assets/images/icons/Download.svg';
 import { MessagesWithLinks } from 'containers/Chat/ChatMessages/MessagesWithLinks/MessagesWithLinks';
 import styles from './ChatMessageType.module.css';
+import { VALID_URL_REGEX } from 'common/constants';
 
 export interface ChatMessageTypeProps {
   type: string;
@@ -39,6 +40,15 @@ export const ChatMessageType = ({
     );
   }
 
+  let mediaUrl;
+
+  if (media.url) {
+    const testForValidUrl = new RegExp(VALID_URL_REGEX, 'gi');
+    if (testForValidUrl.test(media.url)) {
+      mediaUrl = media.url;
+    }
+  }
+
   switch (type) {
     case 'IMAGE': {
       const imageStyle = isContextMessage ? styles.ContextMessageImage : styles.Image;
@@ -49,7 +59,7 @@ export const ChatMessageType = ({
             data-testid="imageMessage"
           >
             <HtmlImgFallback
-              src={media.url}
+              src={mediaUrl}
               onClick={() => setShowViewer(true)}
               alt="message image"
             />
@@ -58,7 +68,7 @@ export const ChatMessageType = ({
               onClose={() => {
                 setShowViewer(false);
               }}
-              images={[{ src: media.url, alt: '' }]}
+              images={[{ src: mediaUrl, alt: '' }]}
               zIndex={1501} // greater than tooltips
             />
           </div>
@@ -73,7 +83,7 @@ export const ChatMessageType = ({
       messageBody = (
         <img
           data-testid="stickerMessage"
-          src={media.url}
+          src={mediaUrl}
           className={isSimulatedMessage ? styles.SimulatorSticker : styles.Image}
           aria-hidden="true"
           alt="sticker"
@@ -90,7 +100,7 @@ export const ChatMessageType = ({
             controlsList="nodownload"
             className={isSimulatedMessage ? styles.SimulatorAudio : styles.Audio}
           >
-            <source src={media.url} />
+            <source src={mediaUrl} />
           </audio>
         </div>
       );
@@ -103,7 +113,7 @@ export const ChatMessageType = ({
           <div data-testid="videoMessage">
             <ReactPlayer
               className={isSimulatedMessage ? styles.SimulatorVideo : videoStyles}
-              url={media.url}
+              url={mediaUrl}
               controls
               light={VideoThumbnail}
               config={{ file: { attributes: { controlsList: 'nodownload' } } }}
@@ -123,7 +133,7 @@ export const ChatMessageType = ({
             {media.caption}
           </div>
           <a
-            href={media.url}
+            href={mediaUrl}
             className={styles.DocumentText}
             download={media.caption}
             target="_blank"
