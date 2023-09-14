@@ -191,9 +191,9 @@ export const AutoComplete = ({
 
   const getOptionDisabled = (option: any) => selectedOptionsIds.includes(option.id);
 
-  let renderedOption = [];
-  if (getValue) {
-    renderedOption = options.length > 0 ? options : multiple ? getValue : [getValue];
+  let renderedOption = options;
+  if (getValue && options.length === 0) {
+    renderedOption = multiple ? getValue : [getValue];
   }
 
   return (

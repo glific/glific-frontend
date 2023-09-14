@@ -213,11 +213,11 @@ export const ChatMessage = ({
     );
   }
 
-  const icon = (
-    <div ref={Ref} className={`${styles.Button} ${iconPlacement}`}>
-      <MessageIcon onClick={onClick} data-testid="messageOptions" />
-    </div>
-  );
+  // const icon = (
+  //   <div ref={Ref} className={`${styles.Button} ${iconPlacement}`}>
+  //     <MessageIcon onClick={onClick} data-testid="messageOptions" />
+  //   </div>
+  // );
 
   const ErrorIcon = messageErrorStatus ? (
     <Tooltip
