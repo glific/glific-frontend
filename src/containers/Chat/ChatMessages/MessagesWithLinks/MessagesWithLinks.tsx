@@ -7,9 +7,14 @@ import { CORS_PROXY_URL } from '../../../../config';
 export interface MessagesWithLinksProps {
   message: any;
   showPreview?: boolean;
+  isSender?: boolean;
 }
 
-export const MessagesWithLinks = ({ message, showPreview = true }: MessagesWithLinksProps) => {
+export const MessagesWithLinks = ({
+  message,
+  showPreview = true,
+  isSender = false,
+}: MessagesWithLinksProps) => {
   let linkPreview = null;
   const messagebody: any = WhatsAppToJsx(message);
   const regexForLink =
@@ -31,11 +36,10 @@ export const MessagesWithLinks = ({ message, showPreview = true }: MessagesWithL
       </div>
     );
   }
-
   return (
     <>
       {showPreview && linkPreview}
-      {messagebody}
+      <div className={`${styles.Message} ${isSender && styles.MessageOther} `}>{messagebody}</div>
     </>
   );
 };

@@ -1,73 +1,66 @@
 .SavedSearchToolbar {
-  padding: 8px 6px;
+  padding: 12px 18px;
   display: flex;
 }
 
 .SaveSearchContainer {
-  color: #93a29b !important;
-  cursor: pointer;
-  width: 100%;
-  font-weight: 800;
   display: flex;
+  width: 100%;
+  gap: 8px;
 }
 
 .SavedSearchItem {
   display: flex;
-  flex-grow: 1;
-  font-size: 16px;
-  padding: 0px 2px;
+  height: 32px;
+  padding: 12px;
   justify-content: center;
   align-items: center;
-  line-height: 1;
+  flex-shrink: 0;
+  border-radius: 30px;
+  background: #fff;
+  cursor: pointer;
+  border-radius: 30px;
+  border: 1px solid #e0e0e0;
+}
+
+.SavedSearchSelected {
+  background: #073f24 !important;
 }
 
 .SavedSearchItemLabel {
-  padding: 0px 4px;
-  text-align: center;
+  display: flex;
+  font-size: 12px;
+  font-weight: 500;
+  color: #6e8e7f;
 }
 
 .SavedSearchItemSelected {
-  color: #119656 !important;
+  color: #fff !important;
+  font-weight: 700;
 }
 
 .SavedSearchCount {
-  padding: 5px;
-  min-width: 16px;
-  height: 16px;
-  border-radius: 8px;
-  align-items: center;
-  font-size: 10px;
-  color: #edf6f2;
-  background-color: #93a29b;
-  display: flex;
-  justify-content: center;
+  padding-left: 3px;
 }
 
 .SavedSearchSelectedCount {
   background-color: #119656;
 }
 
-.MoreLink {
-  margin-left: auto;
-  margin-right: 6px;
-}
-
 .LabelContainer {
-  align-items: center;
-  padding: 8px 16px;
-  font-size: 16px;
+  color: #6e8e7f;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
   display: flex;
-  color: #93a29b !important;
-  cursor: pointer;
-  font-weight: 800;
+  align-items: center;
+  width: 140px;
+  height: 40px;
+  padding: 12px 12px 12px 16px;
 }
 
 .LabelContainer:hover {
   background-color: #edf6f2;
-}
-
-.Label {
-  margin-right: 20px;
 }
 
 .Count {
@@ -76,16 +69,33 @@
 }
 
 .Popper {
-  padding-top: 8px !important;
-  padding-bottom: 8px !important;
+  max-height: 280px !important;
+  z-index: 100;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.16);
+  width: 140px;
+  height: 120px;
 }
 
-.OptionsIcon {
-  width: 24px;
+.MoreIcon {
   height: 24px;
 }
 
+.OptionsIcon {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border-radius: 24px;
+  background: #fff;
+}
+
+.OptionsSelectedIcon {
+  background-color: #71797123;
+}
+
 .PopperContainer {
-  max-height: 280px !important;
-  overflow: auto;
+  width: 160px;
+  z-index: 100;
+  padding-top: 8px;
 }

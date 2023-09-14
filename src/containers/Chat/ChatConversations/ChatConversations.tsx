@@ -199,6 +199,17 @@ export const ChatConversations = ({ contactId }: ChatConversationsProps) => {
 
   return (
     <Container className={styles.ChatConversations} disableGutters>
+      <div className={styles.SearchBar}>
+        <SearchBar
+          handleChange={handleChange}
+          handleSubmit={handleSubmit}
+          onReset={() => resetSearch()}
+          searchVal={searchVal}
+          handleClick={handleClick}
+          endAdornment
+          searchMode={enableSearchMode}
+        />
+      </div>
       <SavedSearchToolbar
         savedSearchCriteriaCallback={handlerSavedSearchCriteria}
         refetchData={{ savedSearches }}
@@ -208,16 +219,6 @@ export const ChatConversations = ({ contactId }: ChatConversationsProps) => {
           if (enableSearchMode) setEnableSearchMode(false);
         }}
         searchMode={enableSearchMode}
-      />
-      <SearchBar
-        handleChange={handleChange}
-        handleSubmit={handleSubmit}
-        onReset={() => resetSearch()}
-        searchVal={searchVal}
-        handleClick={handleClick}
-        endAdornment
-        searchMode={enableSearchMode}
-        className={styles.SavedSearchTopMargin}
       />
       <ConversationList
         searchVal={searchVal}

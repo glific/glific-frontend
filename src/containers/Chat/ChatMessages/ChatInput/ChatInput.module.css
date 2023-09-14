@@ -2,7 +2,6 @@
   padding-top: 15px;
   position: absolute;
   bottom: 15px;
-
   left: 0;
   right: 0;
   margin: auto;
@@ -10,22 +9,22 @@
 
 .ChatInputElements {
   display: flex;
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.12);
-  height: 64px;
+  height: 72px;
   width: 100%;
   padding: 10px;
-  background-color: #ffffff;
   justify-content: space-between;
   height: fit-content;
   max-height: 200px;
+  border: 1px solid #e0e0e0;
+  background: #fff;
 }
 
 .Rounded {
-  border-radius: 15px;
+  border-radius: 35px;
 }
 
 .Unrounded {
-  border-radius: 0px 0px 15px 15px;
+  border-radius: 0px 0px 35px 35px;
 }
 
 .ChatInputElements::-webkit-scrollbar {
@@ -87,15 +86,16 @@
   height: 40px;
   min-width: unset !important;
   width: 40px !important;
-  padding: 10px !important;
+  padding: 10px 7px 5px 8px !important;
 }
 
 .SendButtonContainer {
   padding: 0 10px;
 }
 
-.EmojiButton {
-  padding: 0px 10px !important;
+.EmojiIcon {
+  height: 30px;
+  width: 30px;
 }
 
 .Editor {
@@ -196,8 +196,8 @@
 }
 
 .AttachmentIcon svg {
-  height: 24px;
-  width: 24px;
+  height: 24px !important;
+  width: 24px !important;
 }
 
 .CrossIcon svg,
@@ -207,7 +207,8 @@
 }
 
 svg.SendIcon {
-  margin-top: 2px;
+  height: 25px;
+  width: 25px;
 }
 
 .Icons {

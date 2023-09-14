@@ -195,11 +195,7 @@ export const ChatMessage = ({
 
   const sendByLabel = !isSender && sendBy;
   let messageFooter;
-  if (sendByLabel) {
-    messageFooter = `${sendBy} | ${moment(insertedAt).format(TIME_FORMAT)}`;
-  } else {
-    messageFooter = moment(insertedAt).format(TIME_FORMAT);
-  }
+  messageFooter = moment(insertedAt).format(TIME_FORMAT);
 
   const dateAndSendBy = messageFooter && (
     <div className={`${styles.Date} ${datePlacement}`} data-testid="date">
@@ -217,11 +213,11 @@ export const ChatMessage = ({
     );
   }
 
-  const icon = (
-    <div ref={Ref} className={`${styles.Button} ${iconPlacement}`}>
-      <MessageIcon onClick={onClick} data-testid="messageOptions" />
-    </div>
-  );
+  // const icon = (
+  //   <div ref={Ref} className={`${styles.Button} ${iconPlacement}`}>
+  //     <MessageIcon onClick={onClick} data-testid="messageOptions" />
+  //   </div>
+  // );
 
   const ErrorIcon = messageErrorStatus ? (
     <Tooltip
@@ -310,7 +306,7 @@ export const ChatMessage = ({
         ) : null}
 
         <div className={styles.Inline}>
-          {iconLeft ? icon : null}
+          {/* {iconLeft ? icon : null} */}
           {ErrorIcon}
           <div className={chatMessageClasses.join(' ')}>
             <Tooltip title={tooltipTitle} placement={isSender ? 'right' : 'left'}>
@@ -319,12 +315,16 @@ export const ChatMessage = ({
                   {isInteractiveContentPresent && !isSender ? (
                     template
                   ) : (
-                    <ChatMessageType
-                      type={type}
-                      media={media}
-                      body={bodyText}
-                      location={location}
-                    />
+                    <>
+                      <ChatMessageType
+                        type={type}
+                        media={media}
+                        body={bodyText}
+                        location={location}
+                        isSender={isSender}
+                      />
+                      {dateAndSendBy}
+                    </>
                   )}
                 </div>
               </div>
@@ -374,8 +374,9 @@ export const ChatMessage = ({
               )}
             </Popper>
           </div>
-          {iconLeft ? null : icon}
+          {/* {iconLeft ? null : icon} */}
         </div>
+        <div className={styles.SendBy}>{sendBy}</div>
 
         {saveTemplateMessage}
 
@@ -383,7 +384,7 @@ export const ChatMessage = ({
           <div className={`${messageErrorStatus ? styles.TemplateButtonOnError : ''}`}>
             {templateButtons && <TemplateButtons template={templateButtons} />}
           </div>
-          {dateAndSendBy}
+
           {displayLabel ? (
             <div className={`${styles.LabelContainer} ${labelContainer}`}>{displayLabel}</div>
           ) : null}

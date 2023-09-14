@@ -3,7 +3,8 @@
   display: flex;
   flex-direction: row;
   border-bottom: 1px solid rgba(0, 0, 0, 0.12);
-  min-height: 85px !important;
+  min-height: 97px !important;
+  background-color: #fff;
 }
 
 .ContactInfoContainer {
@@ -55,8 +56,11 @@
 }
 
 .Title {
-  font-size: 20px !important;
-  color: #073f24;
+  color: #191c1a;
+  font-size: 22px;
+  font-weight: 700;
+  padding-left: 12px;
+  margin-right: 8px;
 }
 
 .Configure {
@@ -70,23 +74,19 @@
 }
 
 .Popper button {
-  padding: 5px 30px 5px 10px !important;
+  padding: 12px !important;
   text-transform: none !important;
-}
-
-.Popper > div:first-child {
-  padding-top: 10px !important;
-}
-
-.Popper > div:last-child {
-  padding-bottom: 10px !important;
 }
 
 .ListButton {
   width: 100% !important;
-  font-weight: 400 !important;
-  font-size: 16px !important;
-  justify-content: flex-start !important;
+  color: #717971;
+  font-family: Heebo;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 18px;
+  border-radius: 10px;
 }
 
 .ListButton:hover {
@@ -103,16 +103,22 @@
 }
 
 .Icon {
-  margin-right: 16px;
-  margin-left: 6px;
+  width: 18px;
+  height: 18px;
+  color: #999999 !important;
+  margin-right: 17px;
 }
 
 .ListButtonPrimary {
   composes: ListButton;
-  color: #073f24 !important;
+  color: #717971;
+  display: flex;
+  justify-content: start;
 }
 .ListButtonDanger {
   composes: ListButton;
+  display: flex;
+  justify-content: start;
 }
 
 .ListButtonDanger:hover {
@@ -120,12 +126,15 @@
 }
 
 .Container {
-  margin-top: 6px;
-  width: 270px;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.08);
+  width: 196px;
 }
 
 .ContactCollections {
   flex-direction: row;
+  margin-right: 12px;
 }
 
 .CollectionHeading {
@@ -136,9 +145,16 @@
 }
 
 .CollectionsName {
-  composes: CollectionHeading;
-  margin-left: 6px;
-  color: #93a29b;
+  font-size: 12px;
+  font-weight: 700 !important;
+  color: #555;
+  border-radius: 5px;
+  background: #ecf7f1;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
 }
 
 .ContactDetails {
@@ -147,15 +163,17 @@
 }
 
 .SessionTimerContainer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
   margin-left: auto;
   width: 50%;
+  gap: 26px;
 }
 
 .SessionTimer {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  margin-bottom: 5px;
 }
 
 .SessionTimer + div {
@@ -163,12 +181,10 @@
 }
 
 .SessionTimer span {
-  font-size: 10px;
-
-  text-align: right;
-  line-height: 1;
-  color: #cacaca;
-  margin-right: 6px;
+  color: #555;
+  font-size: 12px;
+  font-weight: 400;
+  margin-right: 5px;
 }
 
 .DialogText {
@@ -183,7 +199,6 @@
 .ContactInfoWrapper {
   display: flex;
   width: 100%;
-  align-items: flex-end;
   justify-content: space-between;
 }
 
@@ -191,6 +206,20 @@
   display: flex;
   justify-content: space-between;
   width: 100%;
+}
+
+.ProfileName {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background-color: #f2f2f2;
+  border-radius: 99%;
+  color: #191c1a;
+  font-size: 26px;
+  font-weight: 500;
+  line-height: 16px;
 }
 
 @media only screen and (max-width: 768px) {
@@ -212,10 +241,6 @@
   .Chat {
     display: flex !important;
     padding: 12px !important;
-  }
-
-  .ContactCollections {
-    padding-left: 12px;
   }
 
   .ContactBarWrapper {

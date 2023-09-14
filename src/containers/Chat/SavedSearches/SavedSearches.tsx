@@ -61,7 +61,7 @@ const SavedSearches = () => {
           options={options}
           classes={{ paper: styles.Paper, listbox: styles.Listbox }}
           optionLabel="shortcode"
-          field={{}}
+          field={{ value: null }}
           form={{ setFieldValue: changeValue }}
           textFieldProps={{
             label,

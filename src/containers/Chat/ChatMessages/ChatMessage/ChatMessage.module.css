@@ -1,14 +1,14 @@
 .ChatMessage {
   display: flex;
-  justify-content: center;
   position: relative;
   max-width: 100%;
-  border-radius: 12px;
-  font-family: 'Heebo', sans-serif, emoji;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  border-radius: 12px 12px 0px 12px;
+  background: #fff;
+  box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.16);
   clear: both;
   max-width: 404px;
   min-width: 85px;
+  margin: 0 48px;
 }
 
 .ChatMessage::after {
@@ -54,7 +54,9 @@
 }
 
 .OtherColor {
-  background-color: #a9d5c0;
+  border-radius: 12px 12px 12px 0px;
+  background: #073f24;
+  box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.16);
 }
 
 .Mine::before {
@@ -76,7 +78,7 @@
   font-weight: 400;
   line-height: 20px;
   color: #073f24;
-  padding: 10px 16px;
+  padding: 12px;
   word-wrap: break-word;
   /* Supports breaklines without need for text conversions. */
   white-space: pre-line;
@@ -121,15 +123,18 @@
 }
 
 .DateLeft {
-  justify-content: flex-end;
+  margin-top: 16px !important;
+  color: #191c1a !important;
 }
 
 .Date {
+  min-width: 85px;
+  justify-content: flex-end;
   display: flex;
-  color: #93a29b;
+  color: #fff;
   font-size: 10px;
-  margin-bottom: 7px;
-  line-height: normal;
+  font-weight: 400;
+  line-height: 16px;
 }
 
 .Popper {
@@ -143,6 +148,16 @@
 
 .Inline {
   display: flex;
+}
+.SendBy {
+  display: flex;
+  align-items: flex-end;
+  justify-content: end;
+  margin: 4px 48px;
+  color: #191c1a;
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 17px;
 }
 
 .MessageDetailsSender {
@@ -174,7 +189,7 @@
 
 .ReplyMessage {
   max-width: 372px;
-  margin-left: 32px;
+  margin-left: 48px;
   margin-bottom: -20px;
   cursor: pointer;
 }
@@ -260,15 +275,12 @@
 }
 
 .DaySeparatorContent {
-  text-align: center;
-  width: 54px;
-  height: 20px;
-  background-color: #edf6f2;
-  color: #073f24;
-  font-size: 10px;
-  padding-top: 4px;
-  border-radius: 8px;
-  box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.12);
+  padding: 8px 17px;
+  background: #e0e0e0;
+  color: #191c1a;
+  font-size: 11px;
+  font-weight: 500;
+  border-radius: 5px;
 }
 
 .Icon {

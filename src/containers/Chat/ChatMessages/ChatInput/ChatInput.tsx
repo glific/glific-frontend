@@ -24,6 +24,8 @@ import { AddAttachment } from '../AddAttachment/AddAttachment';
 import { VoiceRecorder } from '../VoiceRecorder/VoiceRecorder';
 import ChatTemplates from '../ChatTemplates/ChatTemplates';
 import styles from './ChatInput.module.css';
+import { ReactComponent as EmojiIcon } from 'assets/images/icons/EmojiIcon.svg';
+import { ReactComponent as DownIcon } from 'assets/images/DownIcon.svg';
 
 export interface ChatInputProps {
   onSendMessage(
@@ -405,6 +407,19 @@ export const ChatInput = ({
           selectedTab === '' ? styles.Rounded : styles.Unrounded
         }`}
       >
+        <IconButton className={styles.AttachmentIcon}>
+          <DownIcon />
+        </IconButton>
+
+        <IconButton
+          data-testid="attachmentIcon"
+          className={styles.AttachmentIcon}
+          onClick={() => {
+            setAttachment(!attachment);
+          }}
+        >
+          {attachment || attachmentAdded ? <AttachmentIconSelected /> : <AttachmentIcon />}
+        </IconButton>
         <WhatsAppEditor
           editorState={updatedEditorState ? getEditorFromContent(updatedEditorState) : editorState}
           setEditorState={setEditorState}
@@ -442,28 +457,16 @@ export const ChatInput = ({
             </IconButton>
           ) : null}
 
-          <IconButton
-            data-testid="attachmentIcon"
-            className={styles.AttachmentIcon}
-            onClick={() => {
-              setAttachment(!attachment);
-            }}
-          >
-            {attachment || attachmentAdded ? <AttachmentIconSelected /> : <AttachmentIcon />}
-          </IconButton>
           <ClickAwayListener onClickAway={handleEmojiClickAway}>
             <div>
               <IconButton
-                className={styles.EmojiButton}
                 data-testid="emoji-picker"
                 color="primary"
                 aria-label="pick emoji"
                 component="span"
                 onClick={() => setShowEmojiPicker(!showEmojiPicker)}
               >
-                <span role="img" aria-label="pick emoji">
-                  😀
-                </span>
+                <EmojiIcon className={styles.EmojiIcon} role="img" aria-label="pick emoji" />
               </IconButton>
 
               {showEmojiPicker ? (
@@ -496,6 +499,11 @@ export const ChatInput = ({
                   !recordedAudio) ||
                 uploading
               }
+              sx={{
+                '&:disabled': {
+                  backgroundColor: 'rgba(17, 150, 86, 0.57)',
+                },
+              }}
             >
               <SendMessageIcon className={styles.SendIcon} />
             </Button>

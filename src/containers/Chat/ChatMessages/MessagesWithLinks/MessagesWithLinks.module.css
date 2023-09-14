@@ -6,3 +6,17 @@
 .LinkPreview a {
   box-shadow: none;
 }
+.Message {
+  color: #191c1a;
+  leading-trim: both;
+  text-edge: cap;
+  font-family: Heebo;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.MessageOther {
+  color: #fff !important;
+}

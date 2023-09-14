@@ -41,24 +41,22 @@ const notifications = (
 );
 
 test('It should load notifications', async () => {
-  const { getByText } = render(notifications);
-  const loading = await screen.getByTestId('loading');
+  render(notifications);
 
   await waitFor(() => {
-    expect(loading).toBeInTheDocument();
+    expect(screen.getByTestId('loading')).toBeInTheDocument();
   });
 
   await waitFor(() => {
-    expect(getByText('Notifications')).toBeInTheDocument();
+    expect(screen.getByText('Notifications')).toBeInTheDocument();
   });
 
-  const time = screen.getByText('Timestamp');
-  const category = screen.getByText('Category');
-  const severity = screen.getByText('Severity');
-  const entity = screen.getByText('Entity');
-  const message = screen.getAllByText('Message');
-
   await waitFor(() => {
+    const time = screen.getByText('Timestamp');
+    const category = screen.getByText('Category');
+    const severity = screen.getByText('Severity');
+    const entity = screen.getByText('Entity');
+    const message = screen.getAllByText('Message');
     expect(time).toBeInTheDocument();
     expect(category).toBeInTheDocument();
     expect(severity).toBeInTheDocument();

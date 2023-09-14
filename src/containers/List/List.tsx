@@ -297,7 +297,6 @@ export const List = ({
       checkUserRole();
     } else {
       if (!userRolePermissions.manageCollections && listItem === 'collections') {
-        console.log(listItem);
         // if user role staff then display collections related to login user
         fetchUserCollections();
       }
