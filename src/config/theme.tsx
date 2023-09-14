@@ -120,7 +120,7 @@ const theme = createTheme({
     MuiListItem: {
       styleOverrides: {
         root: {
-          color: '073F24',
+          color: '#073F24',
         },
       },
     },

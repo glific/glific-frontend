@@ -18,7 +18,7 @@ import styles from './ContactBar.module.css';
 import { SearchDialogBox } from '../../../../components/UI/SearchDialogBox/SearchDialogBox';
 import { TerminateFlow } from './TerminateFlow/TerminateFlow';
 
-import { ReactComponent as DropdownIcon } from '../../../../assets/images/icons/BrownDropdown.svg';
+import { ReactComponent as DropdownIcon } from '../../../../assets/images/icons/CircleDown.svg';
 import { ReactComponent as AddContactIcon } from '../../../../assets/images/icons/Contact/Light.svg';
 import { ReactComponent as BlockIcon } from '../../../../assets/images/icons/Block.svg';
 import { ReactComponent as BlockDisabledIcon } from '../../../../assets/images/icons/BlockDisabled.svg';
@@ -517,7 +517,6 @@ export const ContactBar = ({
           <Paper elevation={3} className={styles.Container}>
             {viewDetails}
             {flowButton}
-
             {addMember}
             {terminateFLows}
             {blockContactButton}
@@ -534,8 +533,8 @@ export const ContactBar = ({
   let contactCollections: any;
   if (selectedCollections.length > 0) {
     contactCollections = (
-      <div className={styles.ContactCollections}>
-        <span className={styles.CollectionHeading}>Collections</span>
+      <div className={styles.SessionTimer}>
+        <span>Collections:</span>
         <span className={styles.CollectionsName} data-testid="collectionNames">
           {selectedCollectionsName}
         </span>
@@ -561,21 +560,15 @@ export const ContactBar = ({
     <>
       {contactId ? (
         <div className={styles.SessionTimerContainer}>
+          {contactCollections}
           <div className={styles.SessionTimer} data-testid="sessionTimer">
-            <span>Session Timer</span>
+            <span>Time left:</span>
             <Timer
               time={lastMessageTime}
               contactStatus={contactStatus}
               contactBspStatus={contactBspStatus}
+              variant="secondary"
             />
-          </div>
-          <div>
-            {assignedToCollection ? (
-              <>
-                <span className={styles.CollectionHeading}>Assigned to</span>
-                <span className={styles.CollectionsName}>{assignedToCollection}</span>
-              </>
-            ) : null}
           </div>
         </div>
       ) : null}
@@ -600,6 +593,15 @@ export const ContactBar = ({
           <div className={styles.ContactInfoWrapper}>
             <div className={styles.InfoWrapperRight}>
               <div className={styles.ContactDetails}>
+                <div className={styles.ProfileName}>{displayName.charAt(0).toUpperCase()}</div>
+                <Typography
+                  className={styles.Title}
+                  variant="h6"
+                  noWrap
+                  data-testid="beneficiaryName"
+                >
+                  {displayName}
+                </Typography>
                 <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
                   <div
                     className={styles.Configure}
@@ -611,16 +613,7 @@ export const ContactBar = ({
                     <DropdownIcon />
                   </div>
                 </ClickAwayListener>
-                <Typography
-                  className={styles.Title}
-                  variant="h6"
-                  noWrap
-                  data-testid="beneficiaryName"
-                >
-                  {displayName}
-                </Typography>
               </div>
-              {contactCollections}
             </div>
             {collectionStatus}
             {sessionAndCollectionAssignedTo}

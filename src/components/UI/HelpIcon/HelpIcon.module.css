@@ -7,7 +7,6 @@
 
 .Hover {
   position: relative;
-  margin-top: -10p;
   z-index: 1000;
 }
 
@@ -26,7 +25,7 @@
 
 .HoverPopUpText {
   background-color: white;
-  width: 387px;
+  max-width: 387px;
   box-shadow: 0px 4px 4px 0px #00000014;
   color: #555555;
   font-size: 12px;
