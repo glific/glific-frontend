@@ -163,7 +163,7 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
 
           <div className={styles.TabContainer}>
             {tabs.map((tab: any) => (
-              <TabHeader tab={tab} />
+              <TabHeader tab={tab} key={tab.link} />
             ))}
           </div>
 

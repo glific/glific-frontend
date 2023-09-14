@@ -263,12 +263,12 @@ test('update billing details with coupon code', async () => {
 
   const coupon = container.querySelector('input[name="coupon"]') as HTMLInputElement;
 
-  user.click(coupon);
-  user.keyboard('PBXGFH');
+  await user.click(coupon);
+  await user.keyboard('PBXGFH');
   user.click(getByText('APPLY'));
 
   await waitFor(() => {
-    expect(getByText('Invalid Coupon!')).toBeInTheDocument();
+    expect(getByText('Coupon Applied!')).toBeInTheDocument();
   });
 
   user.click(getByTestId('submitButton'));
