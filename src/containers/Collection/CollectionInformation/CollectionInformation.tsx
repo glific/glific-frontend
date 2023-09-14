@@ -120,6 +120,7 @@ export const CollectionInformation = ({
           ))}
         </div>
       </div>
+      {/* Todo: Assign to collection */}
       {/* <div className={styles.CollectionAssigned}>
         {assignedToCollection && staff ? (
           <>

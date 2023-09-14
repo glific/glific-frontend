@@ -39,11 +39,6 @@
   margin: 25px 0 23px 24px;
 }
 
-/* .ToolBar {
-  width: 395px;
-  padding: 0 !important;
-} */
-
 .TabContainer {
   display: flex;
   justify-content: space-between;

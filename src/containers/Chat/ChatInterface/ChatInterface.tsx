@@ -27,9 +27,7 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
   const [simulatorAccess, setSimulatorAccess] = useState(true);
   const [simulatorId, setSimulatorId] = useState(0);
   const { t } = useTranslation();
-  const [startingHeight] = useState(
-    window.innerWidth < 768 ? `${window.innerHeight - 46}px` : `100vh`
-  );
+
   const params = useParams();
 
   let selectedContactId = params.contactId;
@@ -152,7 +150,6 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
       <>
         <div className={`${styles.ChatMessages} chatMessages`}>
           <ChatMessages
-            startingHeight={startingHeight}
             contactId={simulatorId > 0 ? simulatorId : selectedContactId}
             collectionId={selectedCollectionId}
           />
@@ -163,13 +160,12 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
             {heading}
             <HelpIcon />
           </div>
-          {/* <Toolbar className={styles.ToolBar}> */}
+
           <div className={styles.TabContainer}>
             {tabs.map((tab: any) => (
-              <TabHeader tab={tab} />
+              <TabHeader tab={tab} key={tab.link} />
             ))}
           </div>
-          {/* </Toolbar> */}
 
           <div>{listingContent}</div>
         </div>
@@ -179,13 +175,7 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
 
   return (
     <Paper>
-      <div
-        className={styles.Chat}
-        // style={{
-        //   height: startingHeight,
-        // }}
-        data-testid="chatContainer"
-      >
+      <div className={styles.Chat} data-testid="chatContainer">
         {chatInterface}
       </div>
       {simulatorAccess && !selectedCollectionId ? (

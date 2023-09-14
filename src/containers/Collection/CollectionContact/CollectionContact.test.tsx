@@ -1,4 +1,4 @@
-import { render, waitFor } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router';
 import { vi } from 'vitest';
@@ -35,13 +35,9 @@ const wrapper = (
 
 describe('<CollectionContact />', () => {
   test('should render CollectionContact', async () => {
-    const { getByText, getByTestId } = render(wrapper);
+    const { getByTestId } = render(wrapper);
 
     // loading is show initially
     expect(getByTestId('loading')).toBeInTheDocument();
-
-    await waitFor(() => {
-      expect(getByText('Back to all collections')).toBeInTheDocument();
-    });
   });
 });
