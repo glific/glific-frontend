@@ -414,7 +414,7 @@ export const ChatInput = ({
                 handleChange={handleSearch}
                 onReset={() => setSearchVal('')}
                 searchMode
-                IsFront
+                iconFront
               />
               {selectedTab && quickSendButtons(quickSendTypes)}
             </div>

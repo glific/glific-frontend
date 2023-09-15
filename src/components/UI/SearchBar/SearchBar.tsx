@@ -18,7 +18,7 @@ export interface SearchBarProps {
   handleClick?: any;
   endAdornment?: any;
   searchMode: boolean;
-  IsFront?: boolean;
+  iconFront?: boolean;
 }
 
 export const SearchBar = ({
@@ -30,7 +30,7 @@ export const SearchBar = ({
   handleSubmit,
   handleChange,
   className,
-  IsFront = false,
+  iconFront = false,
 }: SearchBarProps) => {
   const [localSearchValue, setLocalSearchValue] = useState(searchVal);
   const { t } = useTranslation();
@@ -84,7 +84,7 @@ export const SearchBar = ({
     <form onSubmit={handleSubmit} autoComplete="off" data-testid="searchForm">
       <div className={`${styles.SearchBar} ${className}`}>
         <div className={styles.IconAndText}>
-          {IsFront && <img src={search} className={styles.searchIconFilter} alt="Search" />}
+          {iconFront && <img src={search} className={styles.searchIconFilter} alt="Search" />}
           <InputBase
             data-testid="searchInput"
             className={styles.SearchField}
@@ -99,7 +99,7 @@ export const SearchBar = ({
             value={inputValue}
             endAdornment={endAdornmentInput}
           />
-          {!IsFront && <img src={searchIcon} className={styles.SearchIcon} alt="Search" />}
+          {!iconFront && <img src={searchIcon} className={styles.SearchIcon} alt="Search" />}
         </div>
         {resetButton}
       </div>

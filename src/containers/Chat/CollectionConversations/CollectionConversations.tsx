@@ -35,7 +35,7 @@ const CollectionConversations = ({ collectionId }: CollectionConversationsProps)
           handleSubmit={handleSubmit}
           onReset={() => setSearchVal('')}
           searchMode
-          IsFront
+          iconFront
         />
       </div>
       <ConversationList
