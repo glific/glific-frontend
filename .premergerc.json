@@ -1,0 +1,8 @@
+{
+  "files": [
+    {
+      "path": "src/components/simulator/Simulator.tsx",
+      "functions": ["calculate"]
+    }
+  ]
+}
