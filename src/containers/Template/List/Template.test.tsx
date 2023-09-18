@@ -51,17 +51,16 @@ test('it renders speed-send list component', async () => {
     </Router>
   );
 
-  await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 0)));
-
   await waitFor(() => {
-    const showTranslationButton = screen.getByTestId('down-arrow');
-    expect(showTranslationButton).toBeInTheDocument();
-
-    fireEvent.click(showTranslationButton);
-
-    // toggling
-    fireEvent.click(showTranslationButton);
+    expect(screen.getByTestId('down-arrow')).toBeInTheDocument();
   });
+
+  const showTranslationButton = screen.getByTestId('down-arrow');
+
+  fireEvent.click(showTranslationButton);
+
+  // toggling
+  fireEvent.click(showTranslationButton);
 });
 
 const hsmProps: any = {
