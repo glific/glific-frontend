@@ -2,7 +2,7 @@ import { ANALYTICS_URL, GLIFIC_DOCS_URL } from 'config';
 import { getOrganizationServices } from 'services/AuthService';
 
 // define all the menus in the system
-const menus = [
+const menus = () => [
   {
     title: 'Chats',
     path: '/chat',
@@ -180,7 +180,7 @@ const menus = [
 ];
 
 export const getMenus = (menuType = 'sideDrawer', role = 'Staff') =>
-  menus
+  menus()
     .filter((menu: any) => menu.type === menuType && menu.roles.includes(role))
     .map((menu: any) => menu);
 
