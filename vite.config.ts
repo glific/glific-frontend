@@ -59,6 +59,14 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
           key: fs.readFileSync('../glific/priv/cert/glific.test+1-key.pem'),
           cert: fs.readFileSync('../glific/priv/cert/glific.test+1.pem'),
         },
+        headers: {
+          'X-Content-Type-Options': 'nosniff',
+          'X-XSS-Protection': '1; mode=block',
+          'X-Frame-Options': 'deny',
+          'Content-Security-Policy':
+            "default-src 'self'; script-src * 'unsafe-inline' blob:; style-src * 'unsafe-inline'; font-src * data:; connect-src *;",
+          'Strict-Transport-Security': 'max-age=63072000; includeSubdomains; preload',
+        },
       },
       resolve: { alias: { util: 'util/', stream: 'stream-browserify' } }, // stream polyfill is needed by logflare
     });
