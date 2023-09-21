@@ -64,7 +64,7 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
           'X-XSS-Protection': '1; mode=block',
           'X-Frame-Options': 'deny',
           'Content-Security-Policy':
-            "default-src 'self'; script-src * 'unsafe-inline' blob:; style-src * 'unsafe-inline'; font-src * data:; connect-src *;",
+            "default-src 'self'; script-src 'self' 'unsafe-inline' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; connect-src *;",
           'Strict-Transport-Security': 'max-age=63072000; includeSubdomains; preload',
         },
       },
