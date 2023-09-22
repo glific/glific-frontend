@@ -40,7 +40,7 @@ export const ChatMessageType = ({
 
   let mediaUrl;
 
-  if (media.url) {
+  if (media && media.url) {
     const testForValidUrl = new RegExp(VALID_URL_REGEX, 'gi');
     if (testForValidUrl.test(media.url)) {
       mediaUrl = media.url;
