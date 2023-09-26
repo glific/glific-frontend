@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import moment from 'moment';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate, useLocation, Route, Routes } from 'react-router-dom';
 import { getOrganizationServices } from 'services/AuthService';
-import { FormControl, FormControlLabel, Radio, RadioGroup } from '@mui/material';
+import { Box, FormControl, FormControlLabel, Radio, RadioGroup } from '@mui/material';
 
 import { DATE_TIME_FORMAT } from 'common/constants';
 import { GET_CONTACT_DETAILS, GET_CONTACT_PROFILES } from 'graphql/queries/Contact';
@@ -12,6 +12,7 @@ import { ContactDescription } from './ContactDescription/ContactDescription';
 import styles from './ContactProfile.module.css';
 import { Profile } from '../Profile';
 import { ContactHistory } from './ContactHistory/ContactHistory';
+import { Heading } from 'containers/Form/FormLayout';
 
 const ProfileChange = ({ selectedProfileId, setSelectedProfileId, profileData }: any) => (
   <FormControl fullWidth className={styles.FormControl}>
@@ -37,6 +38,9 @@ const ProfileChange = ({ selectedProfileId, setSelectedProfileId, profileData }:
 );
 
 export const ContactProfile = () => {
+  const location = useLocation();
+
+  const navigate = useNavigate();
   const params = useParams();
   const [selectedProfileId, setSelectedProfileId] = useState('');
 
@@ -113,31 +117,90 @@ export const ContactProfile = () => {
     activeProfileId: activeProfile?.id,
   };
 
-  return (
-    <div className={styles.ContactProfile}>
-      <div className={styles.ContactForm} data-testid="ContactProfile">
-        <Profile
-          multiProfileAttributes={switchProfile}
-          profileType="Contact"
-          redirectionLink={`chat/${params.id}`}
-          afterDelete={{ link: selectedProfile ? `/contact-profile/${params.id}` : '/chat' }}
-          removePhoneField
-        />
-        <ContactHistory contactId={params.id} profileId={selectedProfileId} />
-      </div>
+  const list = [
+    {
+      name: 'Profile',
+      shortcode: '',
+    },
+    {
+      name: 'Details',
+      shortcode: 'details',
+    },
+    {
+      name: 'Contact History',
+      shortcode: 'history',
+    },
+  ];
 
-      <div className={styles.ContactDescription}>
-        <ContactDescription
-          statusMessage={statusMessage}
-          phone={phone}
-          maskedPhone={maskedPhone}
-          fields={fields}
-          settings={settings}
-          collections={groups}
-          lastMessage={lastMessage}
-        />
-      </div>
+  const pathNameCheck = (id: any, shortcode: string) => {
+    if (!shortcode && `/contact-profile/${id}` == location.pathname) {
+      return true;
+    }
+    return (
+      `/contact-profile/${id}/${shortcode}` == location.pathname ||
+      `/contact-profile/${id}/${shortcode}/` == location.pathname
+    );
+  };
+
+  const drawer = (
+    <div className={styles.Drawer}>
+      {list.map((data: any, index: number) => (
+        <div
+          key={index}
+          onClick={() => navigate(`/contact-profile/${params.id}/${data.shortcode}`)}
+          className={`${styles.Tab} ${
+            pathNameCheck(params.id, data.shortcode) && styles.ActiveTab
+          }`}
+        >
+          {data.name}
+        </div>
+      ))}
     </div>
+  );
+
+  return (
+    <>
+      <Heading formTitle="Contact Profile" />
+      <Box sx={{ display: 'flex' }}>
+        {drawer}
+        <Box className={styles.ProfileBody}>
+          <Routes>
+            <Route
+              path=""
+              element={
+                <Profile
+                  multiProfileAttributes={switchProfile}
+                  profileType="Contact"
+                  redirectionLink={`chat/${params.id}`}
+                  afterDelete={{
+                    link: selectedProfile ? `/contact-profile/${params.id}` : '/chat',
+                  }}
+                  removePhoneField
+                />
+              }
+            />
+            <Route
+              path="details"
+              element={
+                <ContactDescription
+                  statusMessage={statusMessage}
+                  phone={phone}
+                  maskedPhone={maskedPhone}
+                  fields={fields}
+                  settings={settings}
+                  collections={groups}
+                  lastMessage={lastMessage}
+                />
+              }
+            />
+            <Route
+              path="history"
+              element={<ContactHistory contactId={params.id} profileId={selectedProfileId} />}
+            />
+          </Routes>
+        </Box>
+      </Box>
+    </>
   );
 };
 

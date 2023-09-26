@@ -78,7 +78,7 @@ const routeStaff = (
     <Route path="collection/:id/contacts" element={<CollectionContact />} />
     <Route path="user-profile" element={<UserProfile />} />
     <Route path="ticket" element={<TicketList />} />
-    <Route path="contact-profile/:id" element={<ContactProfile />} />
+    <Route path="contact-profile/:id/*" element={<ContactProfile />} />
     <Route path="blocked-contacts" element={<BlockContactList />} />
     <Route path="myaccount" element={<MyAccount />} />
     <Route path="/*" element={<Chat />} />
@@ -119,7 +119,7 @@ const routeAdmin = (
     <Route path="staff-management" element={<StaffManagementList />} />
     <Route path="contact-management" element={<ContactManagement />} />
     <Route path="staff-management/:id/edit" element={<StaffManagement />} />
-    <Route path="contact-profile/:id" element={<ContactProfile />} />
+    <Route path="contact-profile/:id/*" element={<ContactProfile />} />
     <Route path="user-profile" element={<UserProfile />} />
     <Route path="myaccount" element={<MyAccount />} />
     <Route path="template" element={<HSMList />} />

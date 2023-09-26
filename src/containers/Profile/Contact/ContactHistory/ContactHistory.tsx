@@ -8,14 +8,68 @@ import { COUNT_CONTACT_HISTORY, GET_CONTACT_HISTORY } from 'graphql/queries/Cont
 import setLogs from 'config/logs';
 import { DATE_TIME_FORMAT } from 'common/constants';
 import styles from './ContactHistory.module.css';
+import Pager from 'components/UI/Pager/Pager';
+import { useState } from 'react';
+import { getUpdatedList, setListSession, getLastListSessionValues } from 'services/ListService';
 
 export interface ContactHistoryProps {
   contactId: string | undefined;
   profileId?: string | null;
 }
+interface TableVals {
+  pageNum: number;
+  pageRows: number;
+  sortCol: string;
+  sortDirection: 'asc' | 'desc';
+}
 
 export const ContactHistory = ({ contactId, profileId }: ContactHistoryProps) => {
   const { t } = useTranslation();
+
+  const columnStyles = [styles.Label, styles.DateAndTime];
+  const columnNames = [{ name: 'label', label: t('Title') }, { label: t('Date and Time') }];
+
+  const getDefaultSortColumn = (columnsFields: any) => {
+    const sortColumn = columnsFields.find((field: any) => (field.sort ? field : ''));
+    if (sortColumn) {
+      return [sortColumn.name, sortColumn.order];
+    }
+
+    return [columnNames[0].name, 'asc'];
+  };
+
+  const [defaultColumnSort, defaultColumnSortOrder] = getDefaultSortColumn(columnNames);
+
+  const getSortColumn = (listItemNameValue: string) => {
+    let columnnNameValue = defaultColumnSort;
+
+    const sortValue = getLastListSessionValues(listItemNameValue, false);
+
+    if (sortValue) {
+      columnnNameValue = sortValue;
+    }
+
+    return columnnNameValue;
+  };
+
+  const getSortDirection = (listItemNameValue: string) => {
+    let sortDirection = defaultColumnSortOrder;
+
+    const sortValue = getLastListSessionValues(listItemNameValue, true);
+    if (sortValue) {
+      sortDirection = sortValue;
+    }
+
+    return sortDirection;
+  };
+
+  // Table attributes
+  const [tableVals, setTableVals] = useState<TableVals>({
+    pageNum: 0,
+    pageRows: 5,
+    sortCol: getSortColumn('Contact Profile'),
+    sortDirection: getSortDirection('Contact Profile'),
+  });
 
   const isContactProfileEnabled = getOrganizationServices('contactProfileEnabled');
 
@@ -46,6 +100,33 @@ export const ContactHistory = ({ contactId, profileId }: ContactHistoryProps) =>
     fetchPolicy: 'network-only',
     variables: contactHistoryVariables,
   });
+
+  var tableData;
+
+  function formatDate(inputDate: string): string {
+    const options: Intl.DateTimeFormatOptions = {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+      second: 'numeric',
+      hour12: true,
+    };
+
+    const date = new Date(inputDate);
+    return date.toLocaleDateString('en-US', options).replace(/ at/g, ',');
+  }
+
+  if (data) {
+    tableData = data.contactHistory.map(
+      ({ eventLabel, eventDatetime }: { eventLabel: string; eventDatetime: string }) => ({
+        eventLabel,
+        eventDatetime: formatDate(eventDatetime),
+      })
+    );
+  }
 
   if (!data || loading) {
     return <Loading />;
@@ -119,6 +200,35 @@ export const ContactHistory = ({ contactId, profileId }: ContactHistoryProps) =>
     return null;
   };
 
+  const handleTableChange = (attribute: string, newVal: any) => {
+    const isSortAttribute = attribute === 'sortCol' || attribute === 'sortDirection';
+    if (isSortAttribute) {
+      const updatedList = getUpdatedList('Contact Profile', newVal, attribute === 'sortDirection');
+      setListSession(JSON.stringify(updatedList));
+    }
+
+    setTableVals({
+      ...tableVals,
+      [attribute]: newVal,
+    });
+  };
+
+  console.log('data.contactHistory}', data.contactHistory);
+  const listList = (
+    <Pager
+      columnStyles={columnStyles}
+      columnNames={columnNames}
+      data={tableData}
+      totalRows={tableData ? tableData.length : 0}
+      handleTableChange={handleTableChange}
+      tableVals={tableVals}
+      collapseOpen={false}
+      collapseRow={undefined}
+    />
+  );
+
+  // console.log('data.contactHistory', typeof data.contactHistory);
+
   let items = data.contactHistory.map(({ eventLabel, eventType, insertedAt, eventMeta }: any) => {
     let label;
     switch (eventType) {
@@ -150,8 +260,8 @@ export const ContactHistory = ({ contactId, profileId }: ContactHistoryProps) =>
 
   return (
     <div className={styles.HistoryContainer} data-testid="ContactHistory">
-      <h2 className={styles.Title}>{t('Contact History')}</h2>
-      {items}
+      <div className={styles.Title}>{t('Contact History')}</div>
+      {listList}
       {showMoreButton}
     </div>
   );

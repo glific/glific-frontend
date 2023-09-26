@@ -1,16 +1,16 @@
 .HistoryContainer {
-  padding-left: 36px;
-  margin-bottom: 36px;
-  width: 500px;
+  height: fit-content;
+  padding-bottom: 0;
+  background-color: #f8faf5;
 }
 
 .Title {
-  color: #073f24;
-  font-weight: 800;
+  color: #555555;
   font-size: 20px;
-  margin-bottom: 12px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid #eaedec;
+  font-weight: 500;
+  line-height: 18px;
+  letter-spacing: 0px;
+  padding: 56px 50px 0 50px;
 }
 
 .DetailBlock {
@@ -39,4 +39,21 @@
 .Button {
   text-align: center;
   margin: 24px;
+}
+
+.Label {
+  width: 50%;
+  min-width: 200px;
+  color: #191c1a;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.DateAndTime {
+  color: #555;
+  text-align: right;
+  font-size: 15px;
+  font-weight: 400;
+  width: 50%;
+  min-width: 200px;
 }
