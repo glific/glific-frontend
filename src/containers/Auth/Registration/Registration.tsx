@@ -72,7 +72,11 @@ export const Registration = () => {
     name: Yup.string().required(t('Input required')),
     phone: Yup.string().required(t('Input required')),
     password: Yup.string()
-      .min(8, t('Password must be at least 8 characters long.'))
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
+        'Password must contain at least one lowercase letter, one uppercase letter, one number, and one special character'
+      )
+      .min(10, t('Password must be at least 10 characters long.'))
       .required(t('Input required')),
   });
 

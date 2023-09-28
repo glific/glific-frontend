@@ -116,7 +116,7 @@
   "Please enter a valid OTP": "कृपया एक वैध OTP दर्ज करें",
   "Too many attempts, please retry after sometime.": "बहुत सारे प्रयास, कृपया कुछ समय के बाद फिर से प्रयास करें ।",
   "Input required": "इनपुट की आवश्यकता",
-  "Password must be at least 8 characters long.": "पासवर्ड कम से कम 8 वर्ण लंबा होना चाहिए।",
+  "Password must be at least 10 characters long.": "पासवर्ड कम से कम 10 वर्ण लंबा होना चाहिए।",
   "Please confirm the OTP received at your WhatsApp number.": "कृपया अपने व्हाट्सएप नंबर पर प्राप्त ओटीपी की पुष्टि करें।",
   "Change Password": "पासवर्ड बदलें",
   "Generate OTP": "ओटीपी जनरेट करें",
