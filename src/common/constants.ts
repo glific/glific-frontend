@@ -1,4 +1,5 @@
 import moment from 'moment';
+import * as Yup from 'yup';
 
 export const SIDE_DRAWER_WIDTH = 233;
 export const DATE_FORMAT = 'DD/MM/YY';
@@ -199,6 +200,15 @@ export const SAMPLE_MEDIA_FOR_SIMULATOR = [
     },
   },
 ];
+
+export const yupPasswordValidation = (t: any) =>
+  Yup.string()
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!"#$%&'()*+,\-./:;<=>?@[\]^_`{|}~])[A-Za-z\d!"#$%&'()*+,\-./:;<=>?@[\]^_`{|}~]+$/,
+      'Password must contain at least one lowercase letter, one uppercase letter, one number, and one special character'
+    )
+    .min(10, t('Password must be at least 10 characters long.'))
+    .required(t('Input required'));
 
 export const INTERACTIVE_QUICK_REPLY = 'QUICK_REPLY';
 export const INTERACTIVE_LIST = 'LIST';

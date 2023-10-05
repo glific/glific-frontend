@@ -7,10 +7,12 @@ import { useTranslation } from 'react-i18next';
 import { RESET_PASSWORD } from 'config';
 import { Input } from 'components/UI/Form/Input/Input';
 import { PhoneInput } from 'components/UI/Form/PhoneInput/PhoneInput';
+import { yupPasswordValidation } from 'common/constants';
 // eslint-disable-next-line no-unused-vars
 import { sendOTP } from 'services/AuthService';
 import setLogs from 'config/logs';
 import { Auth } from '../Auth';
+
 
 export const ResetPasswordConfirmOTP = () => {
   const [redirect, setRedirect] = useState(false);
@@ -65,13 +67,7 @@ export const ResetPasswordConfirmOTP = () => {
 
   const FormSchema = Yup.object().shape({
     OTP: Yup.string().required(t('Input required')),
-    password: Yup.string()
-      .matches(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
-        'Password must contain at least one lowercase letter, one uppercase letter, one number, and one special character'
-      )
-      .min(10, t('Password must be at least 10 characters long.'))
-      .required(t('Input required')),
+    password: yupPasswordValidation(t),
   });
 
   const initialFormValues = {

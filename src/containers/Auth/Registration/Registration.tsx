@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
+import { yupPasswordValidation } from 'common/constants';
 import { Input } from 'components/UI/Form/Input/Input';
 import { PhoneInput } from 'components/UI/Form/PhoneInput/PhoneInput';
 import { sendOTP } from 'services/AuthService';
 import { Auth } from '../Auth';
+
 
 export interface User {
   name: string;
@@ -71,13 +73,7 @@ export const Registration = () => {
   const FormSchema = Yup.object().shape({
     name: Yup.string().required(t('Input required')),
     phone: Yup.string().required(t('Input required')),
-    password: Yup.string()
-      .matches(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
-        'Password must contain at least one lowercase letter, one uppercase letter, one number, and one special character'
-      )
-      .min(10, t('Password must be at least 10 characters long.'))
-      .required(t('Input required')),
+    password: yupPasswordValidation(t),
   });
 
   return (
