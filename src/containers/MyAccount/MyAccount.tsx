@@ -16,7 +16,9 @@ import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { ToastMessage } from 'components/UI/ToastMessage/ToastMessage';
 import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
 import { sendOTP } from 'services/AuthService';
+import { yupPasswordValidation } from 'common/constants';
 import styles from './MyAccount.module.css';
+
 
 export const MyAccount = () => {
   // set the validation / errors / success message
@@ -132,13 +134,7 @@ export const MyAccount = () => {
   // setup form schema base on Yup
   const FormSchema = Yup.object().shape({
     otp: Yup.string().required(t('Input required')),
-    password: Yup.string()
-      .matches(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
-        'Password must contain at least one lowercase letter, one uppercase letter, one number, and one special character'
-      )
-      .min(10, t('Password must be at least 10 characters long.'))
-      .required(t('Input required')),
+    password: yupPasswordValidation(t),
   });
 
   // for configuration that needs to be rendered
