@@ -28,6 +28,9 @@ export const getAuthSession = (element?: string) => {
     case 'access_token':
       returnValue = JSON.parse(session).access_token;
       break;
+    case 'last_login_time':
+      returnValue = JSON.parse(session).last_login_time;
+      break;
     default:
       returnValue = session;
   }
@@ -171,7 +174,7 @@ export const getOrganizationServices = (service: string) => {
 };
 
 export const setAuthHeaders = () => {
-  // // add authorization header in all calls
+  // add authorization header in all calls
   let renewTokenCalled = false;
   let renewCallInProgress = false;
 
