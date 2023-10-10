@@ -53,7 +53,7 @@ const gqlClient = (navigate: any) => {
       // in case of successful token renewal
       if (response.data) {
         // lets set the session
-        setAuthSession(JSON.stringify(response.data.data));
+        setAuthSession(response.data.data);
 
         // we need to return below as handleFetch expects it
         tokenResponse[accessTokenField] = response.data.data.access_token;
