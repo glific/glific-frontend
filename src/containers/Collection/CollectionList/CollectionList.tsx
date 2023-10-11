@@ -53,6 +53,7 @@ const columnAttributes = {
 };
 
 export const CollectionList = () => {
+  const [updateCollection, setUpdateCollection] = useState(false);
   const [addContactsDialogShow, setAddContactsDialogShow] = useState(false);
 
   const [contactSearchTerm, setContactSearchTerm] = useState('');
@@ -95,6 +96,7 @@ export const CollectionList = () => {
       } else {
         setNotification(`${numberAdded} contact${numberAdded === 1 ? '' : 's  were'} added`);
       }
+      setUpdateCollection((updateCollection) => !updateCollection);
       setAddContactsDialogShow(false);
     },
     refetchQueries: [{ query: GET_COLLECTION_CONTACTS, variables: { id: collectionId } }],
@@ -218,6 +220,7 @@ export const CollectionList = () => {
         </Modal>
       )}
       <List
+        refreshList={updateCollection}
         restrictedAction={getRestrictedAction}
         title={t('Collections')}
         listItem="groups"
