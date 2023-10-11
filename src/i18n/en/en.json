@@ -221,6 +221,7 @@
   "Add New": "Add New",
   "Add another list": "Add another list",
   "Add another list item": "Add another list item",
+  "Last login": "Last login",
   "Delete": "Delete",
   "Sorry, no results found! Please try a different search.": "Sorry, no results found! Please try a different search.",
   "Please create one.": "Please create one.",
@@ -418,5 +419,6 @@
   "Request header": "Request header",
   "Request JSON": "Request JSON",
   "Response JSON": "Response JSON",
-  "Webhook Logs": "Webhook Logs"
+  "Webhook Logs": "Webhook Logs",
+  "Created at": "Created at"
 }
