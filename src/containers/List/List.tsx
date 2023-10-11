@@ -52,7 +52,6 @@ export interface ListProps {
   };
   searchParameter?: Array<any>;
   filters?: Object | null;
-  filtersTag?: any;
   filterList?: any;
   filterDropdowm?: any;
   displayListType?: string;
@@ -82,6 +81,7 @@ export interface ListProps {
   defaultSortBy?: string | null;
   noItemText?: string | null;
   customStyles?: any;
+  refreshList?: boolean;
 }
 
 interface TableVals {
@@ -116,7 +116,7 @@ export const List = ({
   editSupport = true,
   searchParameter = ['label'],
   filters = null,
-  filtersTag = null,
+  refreshList = false,
   displayListType = 'list',
   cardLink = null,
   additionalAction = () => [],
@@ -268,7 +268,7 @@ export const List = ({
   useEffect(() => {
     refetchValues();
     refetchCount();
-  }, [searchVal, filters]);
+  }, [searchVal, filters, refreshList]);
 
   useEffect(() => {
     if (userRole.length === 0) {

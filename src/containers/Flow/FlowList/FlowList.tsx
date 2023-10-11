@@ -277,7 +277,6 @@ export const FlowList = () => {
       secondaryButton={importButton}
       filters={filters}
       filterList={activeFilter}
-      filtersTag={selectedtag && selectedtag.id}
       filterDropdowm={tagFilter}
     />
   );
