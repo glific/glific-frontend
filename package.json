@@ -62,7 +62,7 @@
     "uuid": "^9.0.1",
     "vite": "^4.4.9",
     "vite-plugin-checker": "^0.6.2",
-    "vite-plugin-svgr": "^3.2.0",
+    "vite-plugin-svgr": "^3.3.0",
     "vite-tsconfig-paths": "^4.2.1",
     "yup": "^1.2.0"
   },
