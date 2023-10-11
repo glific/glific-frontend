@@ -6,12 +6,16 @@ import { DATE_TIME_FORMAT } from 'common/constants';
 
 import styles from './LastLogin.module.css';
 
-export const LastLogin = () => {
+interface LastLoginProps {
+  drawerOpen: boolean;
+}
+
+export const LastLogin = ({ drawerOpen }: LastLoginProps) => {
   const { t } = useTranslation();
   const lastLogin = getAuthSession('last_login_time');
-  return (
+  return drawerOpen ? (
     <div className={styles.lastLogin}>
       {t('Last login')}: {moment(lastLogin).format(DATE_TIME_FORMAT)}
     </div>
-  );
+  ) : null;
 };

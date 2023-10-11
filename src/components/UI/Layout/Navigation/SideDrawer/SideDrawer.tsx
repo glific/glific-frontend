@@ -184,7 +184,7 @@ export const SideDrawer = () => {
           </div>
         </div>
         {drawer}
-        <LastLogin />
+        <LastLogin drawerOpen={drawerOpen} />
         <WalletBalance fullOpen={drawerOpen} />
       </Drawer>
     </nav>
