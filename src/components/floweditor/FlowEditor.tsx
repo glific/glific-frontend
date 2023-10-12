@@ -3,11 +3,11 @@ import { useMutation, useLazyQuery, useQuery } from '@apollo/client';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { IconButton } from '@mui/material';
 
-import { ReactComponent as HelpIcon } from 'assets/images/icons/Help.svg';
-import { ReactComponent as FlowIcon } from 'assets/images/icons/Flow/Dark.svg';
-import { ReactComponent as WarningIcon } from 'assets/images/icons/Warning.svg';
-import { ReactComponent as ExportIcon } from 'assets/images/icons/Flow/Export.svg';
-import { ReactComponent as ResetFlowIcon } from 'assets/images/icons/Flow/ResetFlow.svg';
+import HelpIcon from 'assets/images/icons/Help.svg?react';
+import FlowIcon from 'assets/images/icons/Flow/Dark.svg?react';
+import WarningIcon from 'assets/images/icons/Warning.svg?react';
+import ExportIcon from 'assets/images/icons/Flow/Export.svg?react';
+import ResetFlowIcon from 'assets/images/icons/Flow/ResetFlow.svg?react';
 import { Button } from 'components/UI/Form/Button/Button';
 import { APP_NAME, FLOWS_HELP_LINK } from 'config/index';
 import { Simulator } from 'components/simulator/Simulator';
