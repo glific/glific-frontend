@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 
-import { ReactComponent as ContactOptOutIcon } from 'assets/images/icons/ContactOptOut.svg';
+import ContactOptOutIcon from 'assets/images/icons/ContactOptOut.svg?react';
 import Tooltip from 'components/UI/Tooltip/Tooltip';
 import styles from './Timer.module.css';
 

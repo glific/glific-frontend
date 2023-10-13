@@ -1,15 +1,15 @@
-import { ReactComponent as ImageIcon } from 'assets/images/icons/Image.svg';
-import { ReactComponent as VideoIcon } from 'assets/images/icons/Video.svg';
-import { ReactComponent as AudioIcon } from 'assets/images/icons/Audio.svg';
-import { ReactComponent as DocumentIcon } from 'assets/images/icons/Document/Light.svg';
-import { ReactComponent as StickerIcon } from 'assets/images/icons/Sticker/Light.svg';
-import { ReactComponent as LocationIcon } from 'assets/images/icons/Location/Light.svg';
-import { ReactComponent as ImageIconDark } from 'assets/images/icons/Image/Dark.svg';
-import { ReactComponent as VideoIconDark } from 'assets/images/icons/Video/Dark.svg';
-import { ReactComponent as AudioIconDark } from 'assets/images/icons/Audio/Dark.svg';
-import { ReactComponent as DocumentIconDark } from 'assets/images/icons/Document/Dark.svg';
-import { ReactComponent as StickerIconDark } from 'assets/images/icons/Sticker/Dark.svg';
-import { ReactComponent as LocationIconDark } from 'assets/images/icons/Location/Dark.svg';
+import ImageIcon from 'assets/images/icons/Image.svg?react';
+import VideoIcon from 'assets/images/icons/Video.svg?react';
+import AudioIcon from 'assets/images/icons/Audio.svg?react';
+import DocumentIcon from 'assets/images/icons/Document/Light.svg?react';
+import StickerIcon from 'assets/images/icons/Sticker/Light.svg?react';
+import LocationIcon from 'assets/images/icons/Location/Light.svg?react';
+import ImageIconDark from 'assets/images/icons/Image/Dark.svg?react';
+import VideoIconDark from 'assets/images/icons/Video/Dark.svg?react';
+import AudioIconDark from 'assets/images/icons/Audio/Dark.svg?react';
+import DocumentIconDark from 'assets/images/icons/Document/Dark.svg?react';
+import StickerIconDark from 'assets/images/icons/Sticker/Dark.svg?react';
+import LocationIconDark from 'assets/images/icons/Location/Dark.svg?react';
 
 import styles from './MessageType.module.css';
 
