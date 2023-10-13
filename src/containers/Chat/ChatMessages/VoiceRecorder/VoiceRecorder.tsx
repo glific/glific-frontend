@@ -5,8 +5,8 @@ import MicOffIcon from '@mui/icons-material/MicOff';
 import StopIcon from '@mui/icons-material/Stop';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { useTranslation } from 'react-i18next';
-import { ReactComponent as MicIcon } from '../../../../assets/images/icons/Mic/Inactive.svg';
-import { ReactComponent as MicActiveIcon } from '../../../../assets/images/icons/Mic/Active.svg';
+import MicIcon from '../../../../assets/images/icons/Mic/Inactive.svg?react';
+import MicActiveIcon from '../../../../assets/images/icons/Mic/Active.svg?react';
 
 import styles from './VoiceRecorder.module.css';
 

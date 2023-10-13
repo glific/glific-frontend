@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 
-import { ReactComponent as CollectionIcon } from 'assets/images/icons/Collection/Dark.svg';
-import { ReactComponent as AddContactIcon } from 'assets/images/icons/Contact/Add.svg';
+import CollectionIcon from 'assets/images/icons/Collection/Dark.svg?react';
+import AddContactIcon from 'assets/images/icons/Contact/Add.svg?react';
+import ExportIcon from 'assets/images/icons/Flow/Export.svg?react';
 import { DELETE_COLLECTION, UPDATE_COLLECTION_CONTACTS } from 'graphql/mutations/Collection';
-import { ReactComponent as ExportIcon } from 'assets/images/icons/Flow/Export.svg';
 import {
   GET_COLLECTIONS_COUNT,
   FILTER_COLLECTIONS,

@@ -13,22 +13,22 @@ import { useNavigate, useLocation } from 'react-router-dom';
 
 import { useMutation, useLazyQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
-import { ReactComponent as TerminateFlowIcon } from 'assets/images/icons/Automations/Terminate.svg';
 import styles from './ContactBar.module.css';
 import { SearchDialogBox } from '../../../../components/UI/SearchDialogBox/SearchDialogBox';
 import { TerminateFlow } from './TerminateFlow/TerminateFlow';
 
-import { ReactComponent as DropdownIcon } from '../../../../assets/images/icons/BrownDropdown.svg';
-import { ReactComponent as AddContactIcon } from '../../../../assets/images/icons/Contact/Light.svg';
-import { ReactComponent as BlockIcon } from '../../../../assets/images/icons/Block.svg';
-import { ReactComponent as BlockDisabledIcon } from '../../../../assets/images/icons/BlockDisabled.svg';
-import { ReactComponent as ProfileIcon } from '../../../../assets/images/icons/Contact/Profile.svg';
-import { ReactComponent as FlowIcon } from '../../../../assets/images/icons/Flow/Dark.svg';
-import { ReactComponent as FlowUnselectedIcon } from '../../../../assets/images/icons/Flow/Unselected.svg';
-import { ReactComponent as ClearConversation } from '../../../../assets/images/icons/Chat/ClearConversation.svg';
-import { ReactComponent as ChatIcon } from '../../../../assets/images/icons/Chat/UnselectedDark.svg';
-import { ReactComponent as CollectionIcon } from '../../../../assets/images/icons/Chat/SelectedCollection.svg';
-import { ReactComponent as SavedSearchIcon } from '../../../../assets/images/icons/Chat/SelectedSavedSearch.svg';
+import TerminateFlowIcon from 'assets/images/icons/Automations/Terminate.svg?react';
+import DropdownIcon from '../../../../assets/images/icons/BrownDropdown.svg?react';
+import AddContactIcon from '../../../../assets/images/icons/Contact/Light.svg?react';
+import BlockIcon from '../../../../assets/images/icons/Block.svg?react';
+import BlockDisabledIcon from '../../../../assets/images/icons/BlockDisabled.svg?react';
+import ProfileIcon from '../../../../assets/images/icons/Contact/Profile.svg?react';
+import FlowIcon from '../../../../assets/images/icons/Flow/Dark.svg?react';
+import FlowUnselectedIcon from '../../../../assets/images/icons/Flow/Unselected.svg?react';
+import ClearConversation from '../../../../assets/images/icons/Chat/ClearConversation.svg?react';
+import ChatIcon from '../../../../assets/images/icons/Chat/UnselectedDark.svg?react';
+import CollectionIcon from '../../../../assets/images/icons/Chat/SelectedCollection.svg?react';
+import SavedSearchIcon from '../../../../assets/images/icons/Chat/SelectedSavedSearch.svg?react';
 
 import { GET_COLLECTIONS } from '../../../../graphql/queries/Collection';
 import { UPDATE_CONTACT_COLLECTIONS } from '../../../../graphql/mutations/Collection';
