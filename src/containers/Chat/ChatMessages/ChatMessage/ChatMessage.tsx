@@ -3,9 +3,9 @@ import { Button, Popper, Fade, Paper } from '@mui/material';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 
-import { ReactComponent as LabelIcon } from 'assets/images/icons/Label/Filled.svg';
-import { ReactComponent as WarningIcon } from 'assets/images/icons/Warning.svg';
-import { ReactComponent as MessageIcon } from 'assets/images/icons/Dropdown.svg';
+import LabelIcon from 'assets/images/icons/Label/Filled.svg?react';
+import WarningIcon from 'assets/images/icons/Warning.svg?react';
+import MessageIcon from 'assets/images/icons/Dropdown.svg?react';
 import {
   DATE_FORMAT,
   TIME_FORMAT,
