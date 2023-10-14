@@ -219,17 +219,12 @@ export const ChatInput = ({
   const handleClick = (title: string) => {
     // clear the search when tab is opened again
     setSearchVal('');
-    if (selectedTab === title) {
-      setSelectedTab('');
-    } else {
-      setSelectedTab(title);
-    }
-    setOpen(selectedTab !== title);
+    setSelectedTab(title);
   };
 
   const handleClickAway = (event?: any) => {
     const popupElement = document.getElementById('popup');
-    if (popupElement && popupElement.contains(event.target)) {
+    if (popupElement && event && popupElement.contains(event.target)) {
       return;
     }
     setOpen(false);
@@ -425,8 +420,10 @@ export const ChatInput = ({
       <div className={styles.ChatInputElements}>
         <ClickAwayListener onClickAway={handleClickAway}>
           <IconButton
+            data-testid="shortcut-open-button"
             className={styles.AttachmentIcon}
             onClick={() => {
+              setOpen((open) => !open);
               handleClick(quickSendTypes[0].type);
             }}
             aria-hidden="true"
