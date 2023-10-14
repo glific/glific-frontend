@@ -10,10 +10,10 @@ import { CircularProgress, IconButton, InputAdornment, Typography } from '@mui/m
 import CallMadeIcon from '@mui/icons-material/CallMade';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 
-import { ReactComponent as ApprovedIcon } from 'assets/images/icons/Template/Approved.svg';
-import { ReactComponent as Settingicon } from 'assets/images/icons/Settings/Settings.svg';
-import { ReactComponent as PendingIcon } from 'assets/images/icons/Template/Pending.svg';
-import { ReactComponent as BackIcon } from 'assets/images/icons/Back.svg';
+import ApprovedIcon from 'assets/images/icons/Template/Approved.svg?react';
+import Settingicon from 'assets/images/icons/Settings/Settings.svg?react';
+import PendingIcon from 'assets/images/icons/Template/Pending.svg?react';
+import BackIcon from 'assets/images/icons/Back.svg?react';
 import {
   CREATE_BILLING_SUBSCRIPTION,
   UPDATE_BILLING,

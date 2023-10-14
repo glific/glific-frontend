@@ -18,10 +18,10 @@ import {
   IMPORT_TEMPLATES,
 } from 'graphql/mutations/Template';
 import { ImportButton } from 'components/UI/ImportButton/ImportButton';
-import { ReactComponent as DownArrow } from 'assets/images/icons/DownArrow.svg';
-import { ReactComponent as ApprovedIcon } from 'assets/images/icons/Template/Approved.svg';
-import { ReactComponent as RejectedIcon } from 'assets/images/icons/Template/Rejected.svg';
-import { ReactComponent as PendingIcon } from 'assets/images/icons/Template/Pending.svg';
+import DownArrow from 'assets/images/icons/DownArrow.svg?react';
+import ApprovedIcon from 'assets/images/icons/Template/Approved.svg?react';
+import RejectedIcon from 'assets/images/icons/Template/Rejected.svg?react';
+import PendingIcon from 'assets/images/icons/Template/Pending.svg?react';
 import { ProviderContext } from 'context/session';
 import { copyToClipboardMethod, exportCsvFile, getFileExtension } from 'common/utils';
 import Loading from 'components/UI/Layout/Loading/Loading';

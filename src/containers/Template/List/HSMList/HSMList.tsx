@@ -5,7 +5,7 @@ import { useMutation } from '@apollo/client';
 import { SYNC_HSM_TEMPLATES } from 'graphql/mutations/Template';
 import Loading from 'components/UI/Layout/Loading/Loading';
 import { setNotification } from 'common/notification';
-import { ReactComponent as TemplateIcon } from 'assets/images/icons/Template/UnselectedDark.svg';
+import TemplateIcon from 'assets/images/icons/Template/UnselectedDark.svg?react';
 import styles from './HSMList.module.css';
 import { Template } from '../Template';
 
