@@ -1,21 +1,20 @@
 .ChatTemplates {
-  position: absolute;
   width: 100%;
   bottom: 100px;
-  padding-top: 5px;
-  background-color: white;
-  border-radius: 15px 15px 0px 0px;
+  border-radius: 24px 24px 0px 0px !important;
+  z-index: 10;
 }
 
 .ShortcutList {
   max-height: 350px;
   bottom: 0px;
   overflow-y: scroll;
+  padding: 0 !important;
+  border-radius: 24px 24px 0px 0px !important;
 }
 
 .ShortcutList::-webkit-scrollbar {
-  width: 12px;
-  background: transparent;
+  display: none;
 }
 
 .ShortcutList::-webkit-scrollbar-thumb {
@@ -34,15 +33,33 @@
 }
 
 .PopperListItem {
-  color: #073f24 !important;
+  padding: 12px;
+  border-bottom: 1px solid #efefef;
+  position: relative;
+  z-index: 100;
+}
+
+.Text b {
+  color: #555;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.Text a {
+  color: #119656;
+  text-decoration-line: underline;
+}
+
+.Text span {
+  color: #555;
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
 }
 
 .PopperListItem:hover {
   background-color: #e2f1ea !important;
-}
-
-.Paper {
-  border-radius: 25px 25px 0px 0px;
 }
 
 .AttachmentPin {
