@@ -1,7 +1,7 @@
 import { Button, TextField, FormHelperText, FormControl } from '@mui/material';
 
-import { ReactComponent as CrossIcon } from 'assets/images/icons/Cross.svg';
-import { ReactComponent as AddIcon } from 'assets/images/icons/SquareAdd.svg';
+import CrossIcon from 'assets/images/icons/Cross.svg?react';
+import AddIcon from 'assets/images/icons/SquareAdd.svg?react';
 import styles from './QuickReplyTemplate.module.css';
 
 export interface QuickReplyTemplateProps {

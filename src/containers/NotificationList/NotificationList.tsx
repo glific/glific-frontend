@@ -6,8 +6,8 @@ import { useApolloClient, useMutation } from '@apollo/client';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 
-import { ReactComponent as NotificationIcon } from 'assets/images/icons/Notification/Notification-dark-icon.svg';
-import { ReactComponent as ViewIcon } from 'assets/images/icons/View.svg';
+import NotificationIcon from 'assets/images/icons/Notification/Notification-dark-icon.svg?react';
+import ViewIcon from 'assets/images/icons/View.svg?react';
 import CopyIcon from 'assets/images/icons/Copy.png';
 import { List } from 'containers/List/List';
 import Menu from 'components/UI/Menu/Menu';

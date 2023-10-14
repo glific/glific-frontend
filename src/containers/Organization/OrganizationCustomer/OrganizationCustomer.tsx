@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom';
 
 import { Input } from 'components/UI/Form/Input/Input';
 import { FormLayout } from 'containers/Form/FormLayout';
-import { ReactComponent as OrganizationCustomerIcon } from 'assets/images/icons/customer_details.svg';
+import OrganizationCustomerIcon from 'assets/images/icons/customer_details.svg?react';
 import { GET_ORGANIZATION_BILLING } from 'graphql/queries/Billing';
 import { CREATE_BILLING, UPDATE_BILLING } from 'graphql/mutations/Billing';
 import styles from './OrganizationCustomer.module.css';
