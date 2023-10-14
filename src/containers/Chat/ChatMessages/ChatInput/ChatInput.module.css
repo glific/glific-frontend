@@ -17,14 +17,7 @@
   max-height: 200px;
   border: 1px solid #e0e0e0;
   background: #fff;
-}
-
-.Rounded {
   border-radius: 35px;
-}
-
-.Unrounded {
-  border-radius: 0px 0px 35px 35px;
 }
 
 .ChatInputElements::-webkit-scrollbar {
@@ -104,31 +97,34 @@
 
 .SendsContainer {
   display: flex;
-  /* margin-top: -20px; */
+  margin-bottom: 8px;
   flex-flow: row nowrap;
   position: relative;
 }
 
 .QuickSend {
-  font-size: 0.875rem;
-  margin-left: 8px;
-  background-color: #93a29b;
-  color: #edf6f2;
-  padding: 5px 12px 5px 12px;
-  border-radius: 15px 15px 0px 0px;
   cursor: pointer;
-  position: relative;
   z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 35px;
+  border: 1px solid #119656;
+  background: #fff;
+  color: #119656;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 8px 17px;
+  gap: 8px;
 }
 
 .QuickSendSelected {
   background-color: #119656;
+  color: #fff !important;
 }
 
 .ShortcutPaper {
   width: 100%;
-  /* width: 1200px; */
-  /* height: 300px; */
   z-index: -1;
   position: relative;
   padding: 0px 0px 30px 0px;
@@ -141,24 +137,18 @@
   border-color: rgba(0, 0, 0, 0.08);
   border-width: 1px 2px 1px 2px;
   border-style: solid;
-  /* border-radius: 25px 25px 0px 0px; */
   box-sizing: border-box;
   width: 100%;
-  /* height: 500px; */
   flex: none;
   bottom: 0;
 }
 
 .ChatSearchBar {
-  border-color: #eaedec;
-  width: 95%;
+  border-radius: 24px;
+  border: 1px solid #ccc;
+  background: #fff;
   height: 40px;
-  position: absolute;
-  bottom: 40px;
-  width: 95%;
-  margin: auto;
-  left: 0;
-  right: 0;
+  margin: 16px !important;
 }
 
 .Popup {
@@ -166,13 +156,10 @@
   height: auto;
   min-height: 160px;
   max-height: 600px;
-  background-color: white;
   position: relative;
-  border-color: rgba(0, 0, 0, 0.08);
-  border-width: 2px;
-  border-style: solid;
-  border-radius: 15px 15px 0px 0px;
-  padding-top: 10px;
+  border-radius: 24px;
+  border: 1px solid #e0e0e0;
+  background: #fff;
 }
 
 .HidePopup {
@@ -181,10 +168,11 @@
 
 .QuickSendButtons {
   width: 100%;
-  position: absolute;
   bottom: 0;
   height: 30px;
   display: flex;
+  gap: 16px;
+  margin: 16px;
 }
 
 .ContactOptOutMessage {
@@ -214,6 +202,11 @@ svg.SendIcon {
 .Icons {
   display: flex;
   align-items: center;
+}
+
+.Icon {
+  height: 18px;
+  width: 18px;
 }
 
 @media only screen and (max-width: 768px) {

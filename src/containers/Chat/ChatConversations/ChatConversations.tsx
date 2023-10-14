@@ -208,6 +208,7 @@ export const ChatConversations = ({ contactId }: ChatConversationsProps) => {
           handleClick={handleClick}
           endAdornment
           searchMode={enableSearchMode}
+          iconFront
         />
       </div>
       <SavedSearchToolbar
