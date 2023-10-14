@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { List, ListItemButton, Divider, Paper, Typography } from '@mui/material';
+import { List, ListItemButton, Paper, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import styles from './ChatTemplates.module.css';
