@@ -7,6 +7,7 @@ import {
   countContactHistoryQuery,
   contactHistoryQueryUpdatedOffset,
 } from 'mocks/Contact';
+import { MemoryRouter } from 'react-router';
 
 export const mocks = [
   contactHistoryQuery,
@@ -18,28 +19,22 @@ const defaultProps = {
 };
 
 const wrapper = (
-  <MockedProvider mocks={mocks} addTypename={false}>
-    <ContactHistory {...defaultProps} />
-  </MockedProvider>
+  <MemoryRouter>
+    <MockedProvider mocks={mocks} addTypename={false}>
+      <ContactHistory {...defaultProps} />
+    </MockedProvider>
+  </MemoryRouter>
 );
 
-it('should render ContactDescription', async () => {
-  const { getByTestId, getByText } = render(wrapper);
-  expect(getByText('Loading...')).toBeInTheDocument();
+it('should render Contact Description', async () => {
+  const { getByText, getByTestId } = render(wrapper);
+  expect(getByTestId('loading')).toBeInTheDocument();
   await waitFor(() => {
-    expect(getByTestId('ContactHistory')).toBeInTheDocument();
+    expect(getByText('Contact History')).toBeInTheDocument();
   });
 
-  expect(getByText('Removed from collection: "Optout contacts"')).toBeInTheDocument();
-});
+  fireEvent.click(getByText('Contact History'));
 
-it('should load more details when we click on show more button', async () => {
-  const { getByTestId, getByText } = render(wrapper);
-  expect(getByText('Loading...')).toBeInTheDocument();
-  await waitFor(() => {
-    expect(getByTestId('ContactHistory')).toBeInTheDocument();
-  });
-  fireEvent.click(getByText('Show more'));
   await waitFor(() => {
     expect(getByText('Removed from collection: "Optout contacts"')).toBeInTheDocument();
   });
