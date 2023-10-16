@@ -155,3 +155,13 @@ export const GET_QUALITY_RATING = gql`
     }
   }
 `;
+
+export const GET_ORGANIZATION_STATUS = gql`
+  query organizationState {
+    organization {
+      organization {
+        isSuspended
+      }
+    }
+  }
+`;

@@ -28,7 +28,7 @@
   "Invalid captcha": "Invalid captcha",
   "Your full name": "Your full name",
   "Your personal WhatsApp number": "Your personal WhatsApp number",
-  "Password must be at least 8 characters long.": "Password must be at least 8 characters long.",
+  "Password must be at least 10 characters long.": "Password must be at least 10 characters long.",
   "Register with ": "Register with ",
   "Login to Glific": "Login to Glific",
   "Phone number": "Phone number",
@@ -221,6 +221,7 @@
   "Add New": "Add New",
   "Add another list": "Add another list",
   "Add another list item": "Add another list item",
+  "Last login": "Last login",
   "Delete": "Delete",
   "Sorry, no results found! Please try a different search.": "Sorry, no results found! Please try a different search.",
   "Please create one.": "Please create one.",
@@ -428,5 +429,6 @@
   "You won't be able to use this tag.": "You won't be able to use this tag.",
   "Type your message": "Type your message",
   "No. of flows": "No. of flows",
-  "Wallet balance": "Wallet balance"
+  "Wallet balance": "Wallet balance",
+  "Created at": "Created at"
 }

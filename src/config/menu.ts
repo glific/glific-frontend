@@ -13,7 +13,7 @@ export interface Menu {
 }
 
 // define all the menus in the system
-const menus: Menu[] = [
+const menus = (): Menu[] => [
   {
     title: 'Chats',
     path: '/chat',
@@ -262,6 +262,8 @@ const menus: Menu[] = [
 ];
 
 export const getMenus = (menuType = 'sideDrawer', role = 'Staff') =>
-  menus.filter((menu) => menu.type === menuType && menu.roles.includes(role)).map((menu) => menu);
+  menus()
+    .filter((menu: any) => menu.type === menuType && menu.roles.includes(role))
+    .map((menu: any) => menu);
 
 export default getMenus;

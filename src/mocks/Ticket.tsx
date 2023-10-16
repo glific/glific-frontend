@@ -35,7 +35,7 @@ export const ticketListQuery = {
     query: TICKET_LIST_QUERY,
     variables: {
       filter: { status: 'open' },
-      opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'body' },
+      opts: { limit: 50, offset: 0, order: 'DESC', orderWith: 'inserted_at' },
     },
   },
 
