@@ -95,9 +95,11 @@ export interface ListProps {
   restrictedAction?: any;
   collapseOpen?: boolean;
   collapseRow?: string;
+  showActions?: boolean;
   defaultSortBy?: string | null;
   noItemText?: string | null;
   customStyles?: any;
+  showHeader?: boolean;
 }
 
 interface TableVals {
@@ -146,6 +148,8 @@ export const List = ({
   collapseRow = undefined,
   noItemText = null,
   customStyles,
+  showActions = true,
+  showHeader = true,
 }: ListProps) => {
   const { t } = useTranslation();
   const [showMoreOptions, setShowMoreOptions] = useState<string>('');
@@ -597,12 +601,17 @@ export const List = ({
           const allowedAction = restrictedAction
             ? restrictedAction(listItemObj)
             : { chat: true, edit: true, delete: true };
-          return {
+
+          const items = {
             ...columns(listItemObj),
-            operations: getIcons(listItemObj, allowedAction),
+
             recordId: listItemObj.id,
             isActive: listItemObj.isActive,
           };
+          if (showActions) {
+            items.operations = getIcons(listItemObj, allowedAction);
+          }
+          return items;
         })
       : [];
   }
@@ -782,46 +791,50 @@ export const List = ({
 
   return (
     <>
-      <div className={styles.Header} data-testid="listHeader">
-        <div>
-          <div className={styles.Title}>
-            {title}
-            {infoIcon}
+      {showHeader && (
+        <>
+          <div className={styles.Header} data-testid="listHeader">
+            <div>
+              <div className={styles.Title}>
+                {title}
+                {infoIcon}
+              </div>
+            </div>
+            <div>
+              {dialogBox}
+              <div className={styles.ButtonGroup}>
+                {secondaryButton}
+                {buttonDisplay}
+              </div>
+            </div>
           </div>
-        </div>
-        <div>
-          {dialogBox}
-          <div className={styles.ButtonGroup}>
-            {secondaryButton}
-            {buttonDisplay}
-          </div>
-        </div>
-      </div>
-      {/* description box */}
-      {descriptionBox}
+          {/* description box */}
+          {descriptionBox}
 
-      <div className={styles.FilterFields}>
-        <div className={styles.FlexCenter}>
-          {filterList}
-          {backLink}
-        </div>
-        <div className={styles.Buttons}>
-          <SearchBar
-            handleSubmit={handleSearch}
-            onReset={() => {
-              setSearchParams({ search: '' });
-              setSearchVal('');
-              resetTableVals();
-            }}
-            searchVal={searchVal}
-            handleChange={(err: any) => {
-              // reset value only if empty
-              if (!err.target.value) setSearchVal('');
-            }}
-            searchMode
-          />
-        </div>
-      </div>
+          <div className={styles.FilterFields}>
+            <div className={styles.FlexCenter}>
+              {filterList}
+              {backLink}
+            </div>
+            <div className={styles.Buttons}>
+              <SearchBar
+                handleSubmit={handleSearch}
+                onReset={() => {
+                  setSearchParams({ search: '' });
+                  setSearchVal('');
+                  resetTableVals();
+                }}
+                searchVal={searchVal}
+                handleChange={(err: any) => {
+                  // reset value only if empty
+                  if (!err.target.value) setSearchVal('');
+                }}
+                searchMode
+              />
+            </div>
+          </div>
+        </>
+      )}
       <div className={`${styles.Body} ${customStyles}`}>
         {/* Rendering list of items */}
         {displayList}

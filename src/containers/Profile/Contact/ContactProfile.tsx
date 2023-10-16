@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import moment from 'moment';
-import { useParams, useNavigate, useLocation, Route, Routes } from 'react-router-dom';
+import { useParams, useNavigate, useLocation, Route, Routes, Navigate } from 'react-router-dom';
 import { getOrganizationServices } from 'services/AuthService';
 import { Box, FormControl, FormControlLabel, Radio, RadioGroup } from '@mui/material';
 
@@ -36,6 +36,21 @@ const ProfileChange = ({ selectedProfileId, setSelectedProfileId, profileData }:
     </RadioGroup>
   </FormControl>
 );
+
+const list = [
+  {
+    name: 'Profile',
+    shortcode: 'profile',
+  },
+  {
+    name: 'Details',
+    shortcode: 'details',
+  },
+  {
+    name: 'Contact History',
+    shortcode: 'history',
+  },
+];
 
 export const ContactProfile = () => {
   const location = useLocation();
@@ -117,44 +132,20 @@ export const ContactProfile = () => {
     activeProfileId: activeProfile?.id,
   };
 
-  const list = [
-    {
-      name: 'Profile',
-      shortcode: '',
-    },
-    {
-      name: 'Details',
-      shortcode: 'details',
-    },
-    {
-      name: 'Contact History',
-      shortcode: 'history',
-    },
-  ];
-
-  const pathNameCheck = (id: any, shortcode: string) => {
-    if (!shortcode && `/contact-profile/${id}` == location.pathname) {
-      return true;
-    }
-    return (
-      `/contact-profile/${id}/${shortcode}` == location.pathname ||
-      `/contact-profile/${id}/${shortcode}/` == location.pathname
-    );
-  };
-
   const drawer = (
     <div className={styles.Drawer}>
-      {list.map((data: any, index: number) => (
-        <div
-          key={index}
-          onClick={() => navigate(`/contact-profile/${params.id}/${data.shortcode}`)}
-          className={`${styles.Tab} ${
-            pathNameCheck(params.id, data.shortcode) && styles.ActiveTab
-          }`}
-        >
-          {data.name}
-        </div>
-      ))}
+      {list.map((data: any, index: number) => {
+        const active = location.pathname.endsWith(data.shortcode);
+        return (
+          <div
+            key={index}
+            onClick={() => navigate(`/contact-profile/${params.id}/${data.shortcode}`)}
+            className={`${styles.Tab} ${active ? styles.ActiveTab : ''}`}
+          >
+            {data.name}
+          </div>
+        );
+      })}
     </div>
   );
 
@@ -166,7 +157,7 @@ export const ContactProfile = () => {
         <Box className={styles.ProfileBody}>
           <Routes>
             <Route
-              path=""
+              path="profile"
               element={
                 <Profile
                   multiProfileAttributes={switchProfile}
@@ -197,6 +188,8 @@ export const ContactProfile = () => {
               path="history"
               element={<ContactHistory contactId={params.id} profileId={selectedProfileId} />}
             />
+
+            <Route path="*" element={<Navigate to="profile" />} />
           </Routes>
         </Box>
       </Box>

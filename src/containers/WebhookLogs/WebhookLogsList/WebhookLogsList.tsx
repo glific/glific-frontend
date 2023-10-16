@@ -191,6 +191,7 @@ export const WebhookLogsList = () => {
         searchParameter={['contact_phone', 'url']}
         button={{ show: false }}
         {...queries}
+        showActions={false}
         dialogMessage=""
         restrictedAction={restrictedAction}
         {...columnAttributes}

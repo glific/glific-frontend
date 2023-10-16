@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Typography } from '@mui/material';
+import { IconButton, Typography } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 
@@ -98,14 +98,14 @@ export const ContactDescription = ({
         <div data-testid="phone" className={styles.PhoneField}>
           +{phoneDisplayValue}
         </div>
-        {/* <IconButton
+        <IconButton
           aria-label="toggle phone visibility"
           data-testid="phoneToggle"
           onClick={handlePhoneDisplay}
           edge="end"
         >
           {visibilityElement}
-        </IconButton> */}
+        </IconButton>
       </div>
     );
   }
