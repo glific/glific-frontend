@@ -121,10 +121,9 @@ export const Login = () => {
         },
       })
       .then((response: any) => {
-        const responseString = JSON.stringify(response.data.data);
         getCurrentUser();
         getOrganizationServices();
-        setAuthSession(responseString);
+        setAuthSession(response.data.data);
       })
       .catch((error) => {
         setAuthError(t('Invalid phone or password.'));

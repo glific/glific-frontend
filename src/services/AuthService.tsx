@@ -28,6 +28,9 @@ export const getAuthSession = (element?: string) => {
     case 'access_token':
       returnValue = JSON.parse(session).access_token;
       break;
+    case 'last_login_time':
+      returnValue = JSON.parse(session).last_login_time;
+      break;
     default:
       returnValue = session;
   }
@@ -77,8 +80,14 @@ export const checkAuthStatusService = () => {
 };
 
 // set authentication session
-export const setAuthSession = (session: string) => {
-  localStorage.setItem('glific_session', session);
+export const setAuthSession = (session: object) => {
+  const lastLoginTime = getAuthSession('last_login_time');
+  if (lastLoginTime) {
+    const existingSession = { ...session, last_login_time: lastLoginTime };
+    localStorage.setItem('glific_session', JSON.stringify(existingSession));
+  } else {
+    localStorage.setItem('glific_session', JSON.stringify(session));
+  }
 };
 
 // clear the authentication session
@@ -171,7 +180,7 @@ export const getOrganizationServices = (service: string) => {
 };
 
 export const setAuthHeaders = () => {
-  // // add authorization header in all calls
+  // add authorization header in all calls
   let renewTokenCalled = false;
   let renewCallInProgress = false;
 
@@ -193,7 +202,7 @@ export const setAuthHeaders = () => {
       const authToken = await renewAuthToken();
       if (authToken.data) {
         // update localstore
-        setAuthSession(JSON.stringify(authToken.data.data));
+        setAuthSession(authToken.data.data);
         renewTokenCalled = false;
       }
       if (parametersCopy[1]) {
@@ -255,7 +264,7 @@ export const setAuthHeaders = () => {
         const authToken = await renewAuthToken();
         if (authToken.data) {
           // update localstore
-          setAuthSession(JSON.stringify(authToken.data.data));
+          setAuthSession(authToken.data.data);
           renewTokenCalled = false;
         }
         this.setRequestHeader('authorization', getAuthSession('access_token'));

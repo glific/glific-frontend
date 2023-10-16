@@ -5,6 +5,7 @@ import { SideDrawerContext, ProviderContext } from 'context/session';
 import { GUPSHUP_ENTERPRISE_SHORTCODE } from 'common/constants';
 import GlificLogo from 'assets/images/logo/Logo.svg';
 import { WalletBalance } from 'containers/WalletBalance/WalletBalance';
+import { LastLogin } from 'containers/LastLogin/LastLogin';
 import SideMenus from '../SideMenus/SideMenus';
 
 import styles from './SideDrawer.module.css';
@@ -99,6 +100,7 @@ export const SideDrawer = () => {
         variant="permanent"
       >
         {drawer}
+        <LastLogin drawerOpen={drawerOpen} />
       </Drawer>
     </nav>
   );

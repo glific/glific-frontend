@@ -57,6 +57,7 @@ test('it renders speed-send list component', async () => {
     expect(screen.getByTestId('down-arrow')).toBeInTheDocument();
   });
   const showTranslationButton = screen.getByTestId('down-arrow');
+
   fireEvent.click(showTranslationButton);
 
   // toggling

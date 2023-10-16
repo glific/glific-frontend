@@ -26,10 +26,11 @@ describe('AuthService', () => {
   // let's create token expiry date for tomorrow
   const tokenExpiryDate = new Date();
   tokenExpiryDate.setDate(new Date().getDate() + 1);
-  const session =
-    '{"access_token":"access","renewal_token":"renew", "token_expiry_time":"' +
-    tokenExpiryDate +
-    '"}';
+  const session = {
+    access_token: 'access',
+    renewal_token: 'renew',
+    token_expiry_time: tokenExpiryDate,
+  };
 
   test('testing renewAuthToken', async () => {
     // set the session
@@ -69,11 +70,11 @@ describe('AuthService', () => {
     // set the session
     const expiredTokenDate = new Date();
     expiredTokenDate.setDate(new Date().getDate() - 1);
-    setAuthSession(
-      '{"access_token":"access","renewal_token":"renew", "token_expiry_time":"' +
-        expiredTokenDate +
-        '"}'
-    );
+    setAuthSession({
+      access_token: 'access',
+      renewal_token: 'renew',
+      token_expiry_time: expiredTokenDate,
+    });
     const response = checkAuthStatusService();
     expect(response).toBeFalsy();
   });
