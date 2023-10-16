@@ -419,7 +419,6 @@
   "Request header": "Request header",
   "Request JSON": "Request JSON",
   "Response JSON": "Response JSON",
-  "Webhook Logs": "Webhook Logs",
   "Topic": "Topic",
   "Select Tag": "Select Tag",
   "Select tag": "Select tag",
@@ -430,5 +429,6 @@
   "Type your message": "Type your message",
   "No. of flows": "No. of flows",
   "Wallet balance": "Wallet balance",
-  "Created at": "Created at"
+  "Created at": "Created at",
+  "Webhook Logs": "Webhook Logs"
 }

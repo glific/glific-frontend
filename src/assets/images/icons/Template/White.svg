@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Icon/Template/Selected</title>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Icon/Template/Selected" stroke="#fff" stroke-width="2">
+            <path d="M16,13 L12.0629539,13 L12.0629539,15.2740974 C12.0629539,15.8263821 11.6152387,16.2740974 11.0629539,16.2740974 C10.8174799,16.2740974 10.580581,16.1838082 10.3973766,16.0204263 L7.01049516,13 L7.01049516,13 L1.98257375,13" id="Path" stroke-linecap="round"></path>
+            <rect id="Rectangle" x="2" y="5" width="6" height="4" rx="2"></rect>
+            <line x1="1.98257375" y1="1.5" x2="16" y2="1.5" id="Path-16" stroke-linecap="round"></line>
+            <line x1="12" y1="5" x2="16" y2="5" id="Path-16-Copy" stroke-linecap="round"></line>
+            <line x1="12" y1="8.5" x2="16" y2="8.5" id="Path-16-Copy-2" stroke-linecap="round"></line>
+        </g>
+    </g>
+</svg>

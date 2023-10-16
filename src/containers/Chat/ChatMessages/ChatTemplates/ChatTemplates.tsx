@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { List, ListItemButton, Divider, Paper, Typography } from '@mui/material';
+import { List, ListItemButton, Paper, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import styles from './ChatTemplates.module.css';
@@ -60,7 +60,7 @@ export const ChatTemplates = ({
           data-testid="templateItem"
           disableRipple
           onClick={() => handleSelectText(obj, interactiveMsg)}
-          className={styles.PopperListItem}
+          className={`${styles.PopperListItem}`}
         >
           <p className={styles.Text}>
             <b style={{ marginRight: '5px' }}>{obj.label}:</b>
@@ -72,7 +72,6 @@ export const ChatTemplates = ({
             </div>
           ) : null}
         </ListItemButton>
-        <Divider light />
       </div>
     );
   };
