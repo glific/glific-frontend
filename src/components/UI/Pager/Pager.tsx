@@ -10,8 +10,6 @@ import {
   TableContainer,
   Skeleton,
 } from '@mui/material';
-import { v4 as uuidv4 } from 'uuid';
-
 import { ColumnNames } from 'containers/List/List';
 import styles from './Pager.module.css';
 
