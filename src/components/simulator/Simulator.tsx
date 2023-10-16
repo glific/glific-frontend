@@ -16,7 +16,7 @@ import axios from 'axios';
 import moment from 'moment';
 import { v4 as uuidv4 } from 'uuid';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
-
+import BackgroundPhoneImage from 'assets/images/phone.png';
 import { Button as FormButton } from 'components/UI/Form/Button/Button';
 import DefaultWhatsappImage from 'assets/images/whatsappDefault.jpg';
 import { ReactComponent as SimulatorIcon } from 'assets/images/icons/Simulator.svg';
@@ -488,6 +488,7 @@ export const Simulator = ({
       <div className={styles.SimContainer}>
         <div>
           <div id="simulator" className={styles.Simulator}>
+            <img src={BackgroundPhoneImage} className={styles.BackgroundImage} draggable="false" />
             {!isPreviewMessage && (
               <>
                 <ClearIcon
