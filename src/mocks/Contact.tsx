@@ -307,11 +307,7 @@ export const contactHistoryQuery = {
     query: GET_CONTACT_HISTORY,
     variables: {
       filter: { contactId: '1' },
-      opts: {
-        limit: 10,
-        offset: 0,
-        order: 'DESC',
-      },
+      opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'event_label' },
     },
   },
   result: {

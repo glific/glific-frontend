@@ -124,7 +124,6 @@ export const GET_CONTACT_HISTORY = gql`
       eventLabel
       eventMeta
       eventType
-      id
       insertedAt
       updatedAt
     }

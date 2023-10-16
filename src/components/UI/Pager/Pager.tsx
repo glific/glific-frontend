@@ -10,8 +10,6 @@ import {
   TableContainer,
   Skeleton,
 } from '@mui/material';
-import { v4 as uuidv4 } from 'uuid';
-
 import { ColumnNames } from 'containers/List/List';
 import styles from './Pager.module.css';
 
@@ -126,7 +124,7 @@ const tableHeadColumns = (
     <TableRow className={styles.TableHeadRow}>
       {columnNames.map((field: any, i: number) => (
         <TableCell
-          key={uuidv4()}
+          key={field.label}
           className={`${columnStyles && columnStyles[i]} ${styles.RowHeadStyle}`}
         >
           {i !== columnNames.length - 1 && field.name ? (
