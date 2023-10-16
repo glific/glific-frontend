@@ -126,6 +126,7 @@ export const ContactHistory = ({ contactId, profileId }: ContactHistoryProps) =>
         {...queries}
         {...columnAttributes}
         showActions={false}
+        filters={{ contactId }}
         showHeader={false}
         restrictedAction={restrictedAction}
         button={{ show: false }}
