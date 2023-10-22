@@ -78,7 +78,7 @@ describe('<MyAccount />', () => {
     await waitFor(() => {
       const dropdown = screen.getByTestId('dropdown');
       const { getByRole } = within(dropdown);
-      const inputDropdown = getByRole('button');
+      const inputDropdown = getByRole('combobox');
       fireEvent.mouseDown(inputDropdown);
       const [english, hindi] = screen.getAllByRole('option');
       hindi.click();
