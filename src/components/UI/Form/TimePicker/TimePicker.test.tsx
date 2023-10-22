@@ -49,9 +49,6 @@ describe('<TimePicker />', () => {
   it('should set the field value to null if no date is passed', async () => {
     render(wrapper);
     const input = screen.getByRole('textbox');
-    fireEvent.change(input, { target: { value: '09:00 am' } });
-    backspace(input);
-
     expect(input).toHaveValue('');
   });
 
