@@ -43,7 +43,7 @@ describe('<MyAccount />', () => {
     // let's mock successful sending of OTP
     const responseData = { data: { data: { data: {} } } };
     mockedAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
-    const { container } = render(wrapper);
+    render(wrapper);
 
     await waitFor(() => {
       // click on generate OTP

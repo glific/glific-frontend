@@ -2,7 +2,6 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 
 import { TimePicker } from './TimePicker';
-import { backspace } from 'common/test-utils';
 
 const setFieldValueMock = vi.fn();
 const timePickerProps: any = (disabled: boolean) => {
