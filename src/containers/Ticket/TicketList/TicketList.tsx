@@ -1,16 +1,17 @@
-import { useTranslation } from 'react-i18next';
-import { DELETE_TRIGGER } from 'graphql/mutations/Trigger';
-import { List } from 'containers/List/List';
-import { ReactComponent as EditIcon } from 'assets/images/icons/Edit.svg';
-import { TICKET_COUNT_QUERY, TICKET_LIST_QUERY } from 'graphql/queries/Ticket';
 import { useState } from 'react';
-import { ReactComponent as ChatIcon } from 'assets/images/icons/Chat/UnselectedDark.svg';
+import { useTranslation } from 'react-i18next';
 import { Dialog, DialogContent, FormControlLabel, Radio, RadioGroup } from '@mui/material';
-import Ticket from 'containers/Ticket/Ticket';
 import { SupportAgent } from '@mui/icons-material';
+import moment from 'moment';
+
+import EditIcon from 'assets/images/icons/Edit.svg?react';
+import ChatIcon from 'assets/images/icons/Chat/UnselectedDark.svg?react';
+import { DELETE_TRIGGER } from 'graphql/mutations/Trigger';
+import { TICKET_COUNT_QUERY, TICKET_LIST_QUERY } from 'graphql/queries/Ticket';
+import { List } from 'containers/List/List';
+import Ticket from 'containers/Ticket/Ticket';
 import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
 import { getUserSession } from 'services/AuthService';
-import moment from 'moment';
 
 import styles from './TicketList.module.css';
 

@@ -4,7 +4,7 @@ import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
-import { ReactComponent as ProfileIcon } from 'assets/images/icons/Contact/Profile.svg';
+import ProfileIcon from 'assets/images/icons/Contact/Profile.svg?react';
 import { CONTACT_STATUS, PROVIDER_STATUS } from 'common/constants';
 import { FormLayout } from 'containers/Form/FormLayout';
 import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';

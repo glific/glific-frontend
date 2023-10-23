@@ -4,8 +4,8 @@ import { Card, CardContent, CardActions, IconButton, Typography } from '@mui/mat
 import { useTranslation } from 'react-i18next';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { GET_PROVIDERS } from 'graphql/queries/Organization';
-import { ReactComponent as Settingicon } from 'assets/images/icons/Settings/Settings.svg';
-import { ReactComponent as EditIcon } from 'assets/images/icons/Edit.svg';
+import Settingicon from 'assets/images/icons/Settings/Settings.svg?react';
+import EditIcon from 'assets/images/icons/Edit.svg?react';
 import styles from './SettingList.module.css';
 import { useEffect } from 'react';
 import Track from 'services/TrackService';

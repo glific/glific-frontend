@@ -10,7 +10,7 @@ import {
 
 import { getIn } from 'formik';
 
-import { ReactComponent as DeleteIcon } from 'assets/images/icons/Close.svg';
+import DeleteIcon from 'assets/images/icons/Close.svg?react';
 import styles from './AutoComplete.module.css';
 
 export interface AutocompleteProps {

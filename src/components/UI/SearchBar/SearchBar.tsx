@@ -4,7 +4,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useTranslation } from 'react-i18next';
 
 import searchIcon from 'assets/images/icons/Search/Desktop.svg';
-import { ReactComponent as AdvancedSearch } from 'assets/images/icons/AdvancedSearch.svg';
+import AdvancedSearch from 'assets/images/icons/AdvancedSearch.svg?react';
 import styles from './SearchBar.module.css';
 import Track from 'services/TrackService';
 

@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 import { CONTACT_SEARCH_QUERY, GET_CONTACT_COUNT } from 'graphql/queries/Contact';
 import { UPDATE_COLLECTION_CONTACTS } from 'graphql/mutations/Collection';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import { ReactComponent as CollectionIcon } from 'assets/images/icons/Collection/Dark.svg';
+import CollectionIcon from 'assets/images/icons/Collection/Dark.svg?react';
 import { List } from 'containers/List/List';
 import styles from './CollectionContactList.module.css';
 import { useLazyQuery, useMutation } from '@apollo/client';

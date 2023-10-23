@@ -15,7 +15,7 @@ import {
   CREATE_CREDENTIAL,
   UPDATE_CREDENTIAL,
 } from 'graphql/mutations/Organization';
-import { ReactComponent as Settingicon } from 'assets/images/icons/Settings/Settings.svg';
+import Settingicon from 'assets/images/icons/Settings/Settings.svg?react';
 
 let validation: any = {};
 let FormSchema = Yup.object().shape(validation);

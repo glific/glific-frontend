@@ -3,8 +3,8 @@ import { Popover } from '@mui/material';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 
-import { ReactComponent as WebhookLogIcon } from 'assets/images/icons/Webhook/WebhookDark.svg';
-import { ReactComponent as ViewIcon } from 'assets/images/icons/View.svg';
+import WebhookLogIcon from 'assets/images/icons/Webhook/WebhookDark.svg?react';
+import ViewIcon from 'assets/images/icons/View.svg?react';
 import CopyIcon from 'assets/images/icons/Copy.png';
 import { List } from 'containers/List/List';
 import Menu from 'components/UI/Menu/Menu';

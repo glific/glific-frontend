@@ -6,7 +6,7 @@ import moment from 'moment';
 import { useLocation, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-import { ReactComponent as TriggerIcon } from 'assets/images/icons/Trigger/Union.svg';
+import TriggerIcon from 'assets/images/icons/Trigger/Union.svg?react';
 import { dateList, dayList, FLOW_STATUS_PUBLISHED, hourList, setVariables } from 'common/constants';
 import { FormLayout } from 'containers/Form/FormLayout';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
@@ -14,8 +14,8 @@ import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { TimePicker } from 'components/UI/Form/TimePicker/TimePicker';
 import { Calendar } from 'components/UI/Form/Calendar/Calendar';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
-import { GET_FLOWS } from 'graphql/queries/Flow';
 import { getAddOrRemoveRoleIds } from 'common/utils';
+import { GET_FLOWS } from 'graphql/queries/Flow';
 import { GET_COLLECTIONS } from 'graphql/queries/Collection';
 import { GET_TRIGGER } from 'graphql/queries/Trigger';
 import { CREATE_TRIGGER, DELETE_TRIGGER, UPDATE_TRIGGER } from 'graphql/mutations/Trigger';

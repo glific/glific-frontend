@@ -4,11 +4,11 @@ import { Container, Button, ClickAwayListener, Fade, IconButton } from '@mui/mat
 import { useMutation, useQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 
-import { ReactComponent as AttachmentIcon } from 'assets/images/icons/Attachment/Unselected.svg';
-import { ReactComponent as AttachmentIconSelected } from 'assets/images/icons/Attachment/Selected.svg';
-import { ReactComponent as VariableIcon } from 'assets/images/icons/Template/Variable.svg';
-import { ReactComponent as CrossIcon } from 'assets/images/icons/Clear.svg';
-import { ReactComponent as SendMessageIcon } from 'assets/images/icons/SendMessage.svg';
+import AttachmentIcon from 'assets/images/icons/Attachment/Unselected.svg?react';
+import AttachmentIconSelected from 'assets/images/icons/Attachment/Selected.svg?react';
+import VariableIcon from 'assets/images/icons/Template/Variable.svg?react';
+import CrossIcon from 'assets/images/icons/Clear.svg?react';
+import SendMessageIcon from 'assets/images/icons/SendMessage.svg?react';
 import { getPlainTextFromEditor, getEditorFromContent } from 'common/RichEditor';
 import { is24HourWindowOver, pattern } from 'common/constants';
 import SearchBar from 'components/UI/SearchBar/SearchBar';

@@ -19,8 +19,8 @@ import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 
 import { Button as FormButton } from 'components/UI/Form/Button/Button';
 import DefaultWhatsappImage from 'assets/images/whatsappDefault.jpg';
-import { ReactComponent as SimulatorIcon } from 'assets/images/icons/Simulator.svg';
-import { ReactComponent as ResetIcon } from 'assets/images/icons/Reset/Dark.svg';
+import SimulatorIcon from 'assets/images/icons/Simulator.svg?react';
+import ResetIcon from 'assets/images/icons/Reset/Dark.svg?react';
 import {
   TIME_FORMAT,
   SAMPLE_MEDIA_FOR_SIMULATOR,

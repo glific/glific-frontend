@@ -8,7 +8,7 @@ import {
 } from '@mui/material';
 import { FieldArray } from 'formik';
 
-import { ReactComponent as ApprovedIcon } from 'assets/images/icons/Template/Approved.svg';
+import ApprovedIcon from 'assets/images/icons/Template/Approved.svg?react';
 import { QUICK_REPLY, LIST } from 'common/constants';
 import { QuickReplyTemplate } from './QuickReplyTemplate';
 import { ListReplyTemplate } from './ListReplyTemplate';

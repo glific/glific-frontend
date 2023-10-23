@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { FormLayout } from 'containers/Form/FormLayout';
 import { Input } from 'components/UI/Form/Input/Input';
-import { ReactComponent as RoleIcon } from 'assets/images/icons/Role/Role.svg';
+import RoleIcon from 'assets/images/icons/Role/Role.svg?react';
 import { CREATE_ROLE, DELETE_ROLE, UPDATE_ROLE } from 'graphql/mutations/Roles';
 import { GET_ROLE } from 'graphql/queries/Role';
 import styles from './Role.module.css';

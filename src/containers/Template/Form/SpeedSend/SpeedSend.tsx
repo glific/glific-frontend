@@ -1,4 +1,4 @@
-import { ReactComponent as SpeedSendIcon } from 'assets/images/icons/SpeedSend/Selected.svg';
+import SpeedSendIcon from 'assets/images/icons/SpeedSend/Selected.svg?react';
 import Template from '../Template';
 import styles from './SpeedSend.module.css';
 
