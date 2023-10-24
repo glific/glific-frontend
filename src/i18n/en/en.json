@@ -181,6 +181,7 @@
   "Keywords": "Keywords",
   "Enter comma separated keywords that trigger this flow": "Enter comma separated keywords that trigger this flow",
   "Tag": "Tag",
+  "Use this to categorize your flows.": "Use this to categorize your flows.",
   "Ignore Keywords": "Ignore Keywords",
   "If activated, users will not be able to change this flow by entering keyword for any other flow.": "If activated, users will not be able to change this flow by entering keyword for any other flow.",
   "Is pinned?": "Is pinned?",
@@ -380,6 +381,7 @@
   "Change assignee": "Change assignee",
   "Remarks": "Remarks",
   "Update ticket": "Update ticket",
+  "Created at": "Created at",
   "Issue": "Issue",
   "Opened by": "Opened by",
   "Add remark": "Add remark",
@@ -419,6 +421,5 @@
   "Request header": "Request header",
   "Request JSON": "Request JSON",
   "Response JSON": "Response JSON",
-  "Webhook Logs": "Webhook Logs",
-  "Created at": "Created at"
+  "Webhook Logs": "Webhook Logs"
 }
