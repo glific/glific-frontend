@@ -15,11 +15,9 @@ import ClearIcon from '@mui/icons-material/Clear';
 import axios from 'axios';
 import moment from 'moment';
 import { v4 as uuidv4 } from 'uuid';
-import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import BackgroundPhoneImage from 'assets/images/phone.png';
-import { Button as FormButton } from 'components/UI/Form/Button/Button';
 import DefaultWhatsappImage from 'assets/images/whatsappDefault.jpg';
-import SimulatorIcon from 'assets/images/icons/Simulator.svg?react';
+
 import ResetIcon from 'assets/images/icons/Reset/Dark.svg?react';
 import {
   TIME_FORMAT,
@@ -121,7 +119,7 @@ export const Simulator = ({
   setShowSimulator = () => {},
   message,
   isPreviewMessage,
-  getSimulatorId,
+  getSimulatorId = () => {},
   interactiveMessage,
   showHeader = true,
   hasResetButton = false,

@@ -317,7 +317,11 @@ export const FlowEditor = () => {
       {dialog}
       <div className={styles.Header}>
         <div className={styles.Title}>
-          <BackIconFlow onClick={() => navigate('/flow')} className={styles.BackIcon} />
+          <BackIconFlow
+            onClick={() => navigate('/flow')}
+            className={styles.BackIcon}
+            data-testid="back-button"
+          />
           <Typography variant="h6" data-testid="flowName">
             {flowName ? flowTitle : 'Flow'}
           </Typography>
@@ -330,6 +334,7 @@ export const FlowEditor = () => {
             aria-haspopup="true"
             aria-expanded={open ? 'true' : undefined}
             variant="contained"
+            data-testid="moreButton"
             disableElevation
             onClick={handleClick}
           >
@@ -372,7 +377,7 @@ export const FlowEditor = () => {
           <Button
             variant="outlined"
             color="primary"
-            data-testid="button"
+            data-testid="previewButton"
             className={styles.ContainedButton}
             onClick={() => setShowSimulator(!showSimulator)}
           >
