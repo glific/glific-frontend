@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 
-import { ReactComponent as BlockIcon } from 'assets/images/icons/Block.svg';
-import { ReactComponent as UnblockIcon } from 'assets/images/icons/Unblock.svg';
+import BlockIcon from 'assets/images/icons/Block.svg?react';
+import UnblockIcon from 'assets/images/icons/Unblock.svg?react';
 import { List } from 'containers/List/List';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { setNotification } from 'common/notification';

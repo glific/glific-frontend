@@ -3,7 +3,7 @@ import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { FormLayout } from 'containers/Form/FormLayout';
 import { Input } from 'components/UI/Form/Input/Input';
-import { ReactComponent as FlowIcon } from 'assets/images/icons/Flow/Selected.svg';
+import FlowIcon from 'assets/images/icons/Flow/Selected.svg?react';
 import { setErrorMessage } from 'common/notification';
 import styles from './Tag.module.css';
 import { GET_TAG } from 'graphql/queries/Tags';

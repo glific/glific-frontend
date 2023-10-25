@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Captcha } from 'components/UI/Form/Captcha/Captcha';
 
-import { ReactComponent as WhatsAppIcon } from 'assets/images/icons/Social/Whatsapp.svg';
+import WhatsAppIcon from 'assets/images/icons/Social/Whatsapp.svg?react';
 import { termsOfUse } from 'containers/Organization/Organization';
 import { Button } from 'components/UI/Form/Button/Button';
 import GlificLogo from 'assets/images/logo/Logo.svg';

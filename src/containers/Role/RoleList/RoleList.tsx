@@ -1,10 +1,10 @@
 import { useTranslation } from 'react-i18next';
 import { List } from 'containers/List/List';
-import { ReactComponent as RoleIcon } from 'assets/images/icons/Role/Role.svg';
+import RoleIcon from 'assets/images/icons/Role/Role.svg?react';
 import { COUNT_ROLES, FILTER_ROLES } from 'graphql/queries/Role';
 import { DELETE_ROLE } from 'graphql/mutations/Roles';
 import styles from './RoleList.module.css';
-import { ReactComponent as AddIcon } from 'assets/images/add.svg';
+import AddIcon from 'assets/images/add.svg?react';
 import { roleInfo } from 'common/HelpData';
 
 const getLabel = (text: string) => (

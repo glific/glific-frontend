@@ -1,7 +1,7 @@
 import ChatIcon from 'assets/images/icons/SideDrawer/ChatIcon';
 import FlowIcon from 'assets/images/icons/SideDrawer/FlowIcon';
 import SearchIcon from 'assets/images/icons/SideDrawer/SearchIcon';
-import { ReactComponent as AnalyticsIcon } from 'assets/images/icons/Analytics/Unselected.svg';
+import AnalyticsIcon from 'assets/images/icons/Analytics/Unselected.svg?react';
 import SpeedSendIcon from 'assets/images/icons/SideDrawer/SpeedSendIcon';
 import TemplateIcon from 'assets/images/icons/SideDrawer/TemplateIcon';
 import InteractiveMessageIcon from 'assets/images/icons/SideDrawer/InteractiveIcon';

@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
-import { ReactComponent as AddIcon } from 'assets/images/add.svg';
-import { ReactComponent as SearchIcon } from 'assets/images/icons/Search/Dark.svg';
+import AddIcon from 'assets/images/add.svg?react';
+import SearchIcon from 'assets/images/icons/Search/Dark.svg?react';
 import { List } from 'containers/List/List';
 import { SEARCH_LIST_QUERY, SEARCH_QUERY_COUNT } from 'graphql/queries/Search';
 import { DELETE_SEARCH } from 'graphql/mutations/Search';

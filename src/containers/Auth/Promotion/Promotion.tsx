@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { ReactComponent as MinimizeIcon } from 'assets/images/icons/Minimize.svg';
-import { ReactComponent as MaximizeIcon } from 'assets/images/icons/Maximize.svg';
+import MinimizeIcon from 'assets/images/icons/Minimize.svg?react';
+import MaximizeIcon from 'assets/images/icons/Maximize.svg?react';
 import styles from './Promotion.module.css';
 
 const points = [

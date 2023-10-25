@@ -10,9 +10,9 @@ import {
   DELETE_INACTIVE_ORGANIZATIONS,
   UPDATE_ORGANIZATION_STATUS,
 } from 'graphql/mutations/Organization';
-import { ReactComponent as OrganisationIcon } from 'assets/images/icons/Organisation.svg';
-import { ReactComponent as ExtensionIcon } from 'assets/images/icons/extension.svg';
-import { ReactComponent as CustomerDetailsIcon } from 'assets/images/icons/customer_details.svg';
+import OrganisationIcon from 'assets/images/icons/Organisation.svg?react';
+import ExtensionIcon from 'assets/images/icons/extension.svg?react';
+import CustomerDetailsIcon from 'assets/images/icons/customer_details.svg?react';
 import { setNotification } from 'common/notification';
 import { List } from 'containers/List/List';
 import { Extensions } from 'containers/Extensions/Extensions';

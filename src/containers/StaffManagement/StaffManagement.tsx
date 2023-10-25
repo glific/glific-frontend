@@ -4,7 +4,7 @@ import { useQuery } from '@apollo/client';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-import { ReactComponent as StaffManagementIcon } from 'assets/images/icons/StaffManagement/Active.svg';
+import StaffManagementIcon from 'assets/images/icons/StaffManagement/Active.svg?react';
 import { FormLayout } from 'containers/Form/FormLayout';
 import { Input } from 'components/UI/Form/Input/Input';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';

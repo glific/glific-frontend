@@ -6,7 +6,7 @@ import { useQuery, useMutation, useApolloClient } from '@apollo/client';
 import { Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-import { ReactComponent as UserIcon } from 'assets/images/icons/Contact/Profile.svg';
+import UserIcon from 'assets/images/icons/Contact/Profile.svg?react';
 import { UPDATE_CURRENT_USER } from 'graphql/mutations/User';
 import { GET_CURRENT_USER } from 'graphql/queries/User';
 import { USER_LANGUAGES } from 'graphql/queries/Organization';
@@ -18,7 +18,6 @@ import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
 import { sendOTP } from 'services/AuthService';
 import { yupPasswordValidation } from 'common/constants';
 import styles from './MyAccount.module.css';
-
 
 export const MyAccount = () => {
   // set the validation / errors / success message

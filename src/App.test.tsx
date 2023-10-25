@@ -12,7 +12,7 @@ import axios from 'axios';
 vi.mock('axios');
 const mockedAxios = axios as any;
 
-global.fetch = vi.fn();
+global.fetch = vi.fn() as any;
 
 const app = (
   <MockedProvider mocks={mocks} addTypename={false}>

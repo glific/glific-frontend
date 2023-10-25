@@ -195,6 +195,7 @@ export const setAuthHeaders = () => {
             authorization: getAuthSession('access_token'),
           };
         }
+        // @ts-ignore
         const result = await fetch(...parametersCopy);
         return result;
       }
@@ -211,6 +212,7 @@ export const setAuthHeaders = () => {
           authorization: getAuthSession('access_token'),
         };
       }
+      // @ts-ignore
       const result = await fetch(...parametersCopy);
       return result;
     })(args);

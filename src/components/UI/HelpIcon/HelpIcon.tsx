@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import styles from './HelpIcon.module.css';
-import { ReactComponent as InfoIcon } from 'assets/images/info.svg';
+import InfoIcon from 'assets/images/info.svg?react';
 
 export interface HelpDataProps {
   heading: string;

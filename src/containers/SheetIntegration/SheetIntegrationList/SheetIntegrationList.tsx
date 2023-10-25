@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ReactComponent as SheetIcon } from 'assets/images/icons/Sheets/Sheet.svg';
-import { ReactComponent as UpdatesheetIcon } from 'assets/images/icons/Sheets/Updatesheet.svg';
-import { ReactComponent as LinkIcon } from 'assets/images/icons/Sheets/Link.svg';
+import SheetIcon from 'assets/images/icons/Sheets/Sheet.svg?react';
+import UpdatesheetIcon from 'assets/images/icons/Sheets/Updatesheet.svg?react';
+import LinkIcon from 'assets/images/icons/Sheets/Link.svg?react';
 import { GET_SHEET_COUNT, GET_SHEETS } from 'graphql/queries/Sheet';
 import { DELETE_SHEET, SYNC_SHEET } from 'graphql/mutations/Sheet';
 import { setNotification } from 'common/notification';

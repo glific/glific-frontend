@@ -2,14 +2,13 @@ import { useState } from 'react';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 import { Dialog, DialogContent } from '@mui/material';
-import { ReactComponent as EditIcon } from 'assets/images/icons/Edit.svg';
+import EditIcon from 'assets/images/icons/Edit.svg?react';
+import ConsultingIcon from 'assets/images/icons/icon-consulting.svg?react';
 import { List } from 'containers/List/List';
-
-import { GET_CONSULTING_HOURS, GET_CONSULTING_HOURS_COUNT } from 'graphql/queries/Consulting';
-import { ReactComponent as ConsultingIcon } from 'assets/images/icons/icon-consulting.svg';
 import { Consulting } from '../Consulting';
-import styles from './ConsultingList.module.css';
 import { ExportConsulting } from './ExportConsulting/ExportConsulting';
+import { GET_CONSULTING_HOURS, GET_CONSULTING_HOURS_COUNT } from 'graphql/queries/Consulting';
+import styles from './ConsultingList.module.css';
 
 const ConsultingList = () => {
   const { t } = useTranslation();

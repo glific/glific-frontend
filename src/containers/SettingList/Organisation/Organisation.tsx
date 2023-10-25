@@ -15,8 +15,8 @@ import {
   UPDATE_ORGANIZATION,
 } from 'graphql/mutations/Organization';
 import { GET_LANGUAGES } from 'graphql/queries/List';
-import { ReactComponent as Settingicon } from 'assets/images/icons/Settings/Settings.svg';
-import { ReactComponent as CopyIcon } from 'assets/images/icons/Settings/Copy.svg';
+import Settingicon from 'assets/images/icons/Settings/Settings.svg?react';
+import CopyIcon from 'assets/images/icons/Settings/Copy.svg?react';
 import { copyToClipboard } from 'common/utils';
 import styles from './Organisation.module.css';
 

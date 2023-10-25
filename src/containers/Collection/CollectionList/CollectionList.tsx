@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
-import { ReactComponent as AddIcon } from 'assets/images/add.svg';
-import { ReactComponent as CollectionIcon } from 'assets/images/icons/Collection/Dark.svg';
-import { ReactComponent as AddContactIcon } from 'assets/images/icons/Contact/Add.svg';
+
+import CollectionIcon from 'assets/images/icons/Collection/Dark.svg?react';
+import AddContactIcon from 'assets/images/icons/Contact/Add.svg?react';
+import ExportIcon from 'assets/images/icons/Flow/Export.svg?react';
 import { DELETE_COLLECTION, UPDATE_COLLECTION_CONTACTS } from 'graphql/mutations/Collection';
-import { ReactComponent as ExportIcon } from 'assets/images/icons/Flow/Export.svg';
 import {
   GET_COLLECTIONS_COUNT,
   FILTER_COLLECTIONS,
@@ -18,6 +18,7 @@ import { getUserRolePermissions, getUserRole } from 'context/role';
 import { setNotification } from 'common/notification';
 import { setVariables } from 'common/constants';
 import { CircularProgress, Modal } from '@mui/material';
+import AddIcon from 'assets/images/add.svg?react';
 import styles from './CollectionList.module.css';
 import { exportCsvFile } from 'common/utils';
 import { useNavigate } from 'react-router-dom';

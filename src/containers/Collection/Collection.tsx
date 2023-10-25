@@ -16,8 +16,8 @@ import {
 } from 'graphql/mutations/Collection';
 import { getAddOrRemoveRoleIds } from 'common/utils';
 import { SEARCH_QUERY } from 'graphql/queries/Search';
-import { ReactComponent as CollectionIcon } from 'assets/images/icons/StaffManagement/Active.svg';
-import { ReactComponent as ContactIcon } from 'assets/images/icons/Contact/View.svg';
+import CollectionIcon from 'assets/images/icons/StaffManagement/Active.svg?react';
+import ContactIcon from 'assets/images/icons/Contact/View.svg?react';
 import { COLLECTION_SEARCH_QUERY_VARIABLES, setVariables } from 'common/constants';
 import styles from './Collection.module.css';
 import { collectionInfo } from 'common/HelpData';

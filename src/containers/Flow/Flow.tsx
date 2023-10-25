@@ -7,7 +7,7 @@ import { useQuery, useMutation } from '@apollo/client';
 import { FormLayout } from 'containers/Form/FormLayout';
 import { Input } from 'components/UI/Form/Input/Input';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
-import { ReactComponent as FlowIcon } from 'assets/images/icons/Flow/Selected.svg';
+import FlowIcon from 'assets/images/icons/Flow/Selected.svg?react';
 import { CREATE_FLOW, UPDATE_FLOW, DELETE_FLOW, CREATE_FLOW_COPY } from 'graphql/mutations/Flow';
 import { GET_ORGANIZATION } from 'graphql/queries/Organization';
 import { GET_FLOW } from 'graphql/queries/Flow';
