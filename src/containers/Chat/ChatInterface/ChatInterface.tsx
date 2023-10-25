@@ -152,6 +152,7 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
             <Tabs value={value} onChange={handleTabChange} aria-label="basic tabs example">
               {tabs.map((tab) => (
                 <Tab
+                  key={tab.label}
                   classes={{ selected: styles.TabSelected }}
                   className={styles.Tab}
                   label={tab.label}

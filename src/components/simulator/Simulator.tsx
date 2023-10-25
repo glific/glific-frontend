@@ -34,7 +34,7 @@ import {
   RELEASE_SIMULATOR,
   SIMULATOR_SEARCH_QUERY,
 } from 'graphql/queries/Simulator';
-import { SIMULATOR_RELEASE_SUBSCRIPTION } from 'graphql/subscriptions/PeriodicInfo';
+// import { SIMULATOR_RELEASE_SUBSCRIPTION } from 'graphql/subscriptions/PeriodicInfo';
 import { getUserSession } from 'services/AuthService';
 import { setNotification } from 'common/notification';
 import setLogs from 'config/logs';

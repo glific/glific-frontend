@@ -222,16 +222,16 @@ test('simulator should render template message', () => {
   );
 });
 
-const getFlowKeywordMock = vi.fn();
-const props = {
-  showSimulator: true,
-  setSimulatorId: vi.fn(),
-  simulatorIcon: true,
-  isPreviewMessage: false,
-  flowSimulator: false,
-  getFlowKeyword: getFlowKeywordMock,
-  hasResetButton: true,
-};
+// const getFlowKeywordMock = vi.fn();
+// const props = {
+//   showSimulator: true,
+//   setSimulatorId: vi.fn(),
+//   simulatorIcon: true,
+//   isPreviewMessage: false,
+//   flowSimulator: false,
+//   getFlowKeyword: getFlowKeywordMock,
+//   hasResetButton: true,
+// };
 
 // Todo: fix this test
 // test('simulator should reset on clicking the reset button message', () => {

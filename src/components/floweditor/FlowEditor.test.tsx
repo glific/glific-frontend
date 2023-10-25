@@ -1,7 +1,6 @@
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 import { render, waitFor, fireEvent, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
 
 import { FlowEditor } from './FlowEditor';
