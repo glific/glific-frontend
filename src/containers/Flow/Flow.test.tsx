@@ -9,6 +9,7 @@ import { Flow } from './Flow';
 import { setOrganizationServices } from 'services/AuthService';
 import { getFilterTagQuery } from 'mocks/Tag';
 import { getRoleNameQuery } from 'mocks/Role';
+import userEvent from '@testing-library/user-event';
 
 setOrganizationServices('{"__typename":"OrganizationServicesResult","rolesAndPermission":true}');
 
@@ -53,23 +54,23 @@ it('should render Flow', async () => {
 });
 
 it('should support keywords in a separate language', async () => {
-  const { getByText, getByTestId } = render(flow());
+  const user = userEvent.setup();
+  const { getByText, getByTestId, container } = render(flow());
 
   await waitFor(() => {
     const nameInput = getByTestId('formLayout').querySelector('input[name="name"]');
     const keywordInput = getByTestId('formLayout').querySelector('input[name="keywords"]');
 
-    expect(nameInput).not.toBeNull();
     expect(nameInput).toBeInTheDocument();
-    expect(keywordInput).not.toBeNull();
     expect(keywordInput).toBeInTheDocument();
+  });
 
-    fireEvent.change(nameInput!, {
-      target: { value: 'New Flow' },
-    });
-    fireEvent.change(keywordInput!, {
-      target: { value: 'मदद' },
-    });
+  await user.type(
+    container.querySelector('input[name="name"]') as HTMLInputElement,
+    '{backspace}{backspace}{backspace}{backspace}New Flow'
+  );
+  fireEvent.change(container.querySelector('input[name="keywords"]')!, {
+    target: { value: 'मदद' },
   });
 
   const button = getByText('Save');

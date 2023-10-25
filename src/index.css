@@ -260,6 +260,29 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+#canvas-container {
+  margin-top: 70px;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+::-webkit-scrollbar {
+  width: 3px;
+  height: 3px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+.MuiTabs-indicator {
+  height: 32px;
+  border-radius: 25px;
+  z-index: 0;
 }

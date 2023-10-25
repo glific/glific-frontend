@@ -33,6 +33,22 @@ const theme = createTheme({
     MuiBackdrop: {
       styleOverrides: {},
     },
+    MuiTabs: {
+      styleOverrides: {
+        root: {
+          height: '32px',
+          minHeight: '32px',
+        },
+      },
+    },
+    MuiTab: {
+      styleOverrides: {
+        root: {
+          height: '32px',
+          minHeight: '32px',
+        },
+      },
+    },
     MuiDivider: {
       styleOverrides: {
         root: {

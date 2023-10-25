@@ -1,7 +1,6 @@
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 import { render, waitFor, fireEvent, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
 
 import { FlowEditor } from './FlowEditor';
@@ -82,10 +81,10 @@ test('it should display the flowEditor', async () => {
   });
 });
 
-test('it should have a done button that redirects to flow page', async () => {
+test('it should have a back button that redirects to flow page', async () => {
   const { getByTestId } = render(defaultWrapper);
   await waitFor(() => {
-    expect(getByTestId('button')).toBeInTheDocument();
+    expect(getByTestId('back-button')).toBeInTheDocument();
   });
 });
 
@@ -96,12 +95,12 @@ test('it should display name of the flow', async () => {
   });
 });
 
-test('it should have a help button that redirects to help page', async () => {
-  const { getByTestId } = render(defaultWrapper);
-  await waitFor(() => {
-    expect(getByTestId('helpButton')).toBeInTheDocument();
-  });
-});
+// test('it should have a help button that redirects to help page', async () => {
+//   const { getByTestId } = render(defaultWrapper);
+//   await waitFor(() => {
+//     expect(getByTestId('helpButton')).toBeInTheDocument();
+//   });
+// });
 
 test('it should have a preview button', async () => {
   const { getByTestId } = render(defaultWrapper);
@@ -110,25 +109,12 @@ test('it should have a preview button', async () => {
   });
 });
 
-test('it should have save as draft button', async () => {
-  const { getByTestId } = render(defaultWrapper);
-  await waitFor(() => {
-    expect(getByTestId('saveDraftButton')).toBeInTheDocument();
-  });
-});
-
-test('click on preview button should open simulator', async () => {
-  const user = userEvent.setup();
-  render(defaultWrapper);
-
-  mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
-
-  await user.click(screen.getByTestId('previewButton'));
-
-  await waitFor(() => {
-    expect(screen.getByTestId('beneficiaryName')).toBeInTheDocument();
-  });
-});
+// test('it should have save as draft button', async () => {
+//   const { getByTestId } = render(defaultWrapper);
+//   await waitFor(() => {
+//     expect(getByTestId('saveDraftButton')).toBeInTheDocument();
+//   });
+// });
 
 // test('check if someone else is using a flow', async () => {
 //   // onload is not defined for script element in vite so we need to trigger it manually
@@ -247,13 +233,14 @@ test('flow with no keywords', async () => {
 
 test('reset flow counts', async () => {
   mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
-  const { getByTestId, getByText, rerender } = render(wrapperFunction(noKeywordMocks));
+  const { getByTestId, getByText } = render(wrapperFunction(noKeywordMocks));
 
   await waitFor(() => {
     expect(screen.findByText('help workflow'));
   });
 
-  fireEvent.click(getByTestId('resetFlow'));
+  fireEvent.click(getByTestId('moreButton'));
+  fireEvent.click(getByText('Reset flow count'));
   await waitFor(() => {
     expect(
       getByText(

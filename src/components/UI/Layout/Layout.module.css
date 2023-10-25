@@ -5,6 +5,7 @@
 .MainFullWidth {
   width: 100%;
   overflow: auto;
+  position: relative;
 }
 
 .MobileHeader {
