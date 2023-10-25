@@ -1,32 +1,17 @@
-import { SyntheticEvent, useContext, useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useMutation, useLazyQuery, useQuery } from '@apollo/client';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
-import {
-  ClickAwayListener,
-  Grow,
-  IconButton,
-  Menu,
-  MenuItem,
-  MenuList,
-  Paper,
-  Popper,
-  Typography,
-} from '@mui/material';
-
-import { ReactComponent as BackIconFlow } from 'assets/images/icons/BackIconFlow.svg';
-import { ReactComponent as FlowIcon } from 'assets/images/icons/Flow/Dark.svg';
-import { ReactComponent as WarningIcon } from 'assets/images/icons/Warning.svg';
-import { ReactComponent as ExportIcon } from 'assets/images/icons/Flow/Export.svg';
-import { ReactComponent as ResetFlowIcon } from 'assets/images/icons/Flow/ResetFlow.svg';
+import { Menu, MenuItem, Typography } from '@mui/material';
+import BackIconFlow from 'assets/images/icons/BackIconFlow.svg?react';
+import WarningIcon from 'assets/images/icons/Warning.svg?react';
 import { Button } from 'components/UI/Form/Button/Button';
-import { APP_NAME, FLOWS_HELP_LINK } from 'config/index';
+import { APP_NAME } from 'config/index';
 import { Simulator } from 'components/simulator/Simulator';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { setNotification } from 'common/notification';
 import { PUBLISH_FLOW, RESET_FLOW_COUNT } from 'graphql/mutations/Flow';
 import { EXPORT_FLOW, GET_FLOW_DETAILS, GET_FREE_FLOW } from 'graphql/queries/Flow';
 import { setAuthHeaders } from 'services/AuthService';
-import { SideDrawerContext } from 'context/session';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import Track from 'services/TrackService';
 import { exportFlowMethod } from 'common/utils';
@@ -52,7 +37,6 @@ export const FlowEditor = () => {
   const [showResetFlowModal, setShowResetFlowModal] = useState(false);
   const [flowValidation, setFlowValidation] = useState<any>();
   const [IsError, setIsError] = useState(false);
-  const [flowKeyword, setFlowKeyword] = useState('');
   const [currentEditDialogBox, setCurrentEditDialogBox] = useState(false);
   const [dialogMessage, setDialogMessage] = useState('');
 
@@ -313,10 +297,6 @@ export const FlowEditor = () => {
     setPublishDialog(false);
     setPublished(false);
   }
-
-  const resetMessage = () => {
-    setFlowKeyword('');
-  };
 
   const getFlowKeyword = () => {
     const flows = flowName ? flowName.flows : null;

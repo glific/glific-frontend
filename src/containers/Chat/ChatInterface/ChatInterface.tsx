@@ -12,7 +12,7 @@ import { setErrorMessage } from 'common/notification';
 import { COLLECTION_SEARCH_QUERY_VARIABLES, SEARCH_QUERY_VARIABLES } from 'common/constants';
 import ChatConversations from '../ChatConversations/ChatConversations';
 import ChatMessages from '../ChatMessages/ChatMessages';
-import { ReactComponent as SimulatorIcon } from 'assets/images/icons/Simulator.svg';
+import SimulatorIcon from 'assets/images/icons/Simulator.svg?react';
 import CollectionConversations from '../CollectionConversations/CollectionConversations';
 import SavedSearches from '../SavedSearches/SavedSearches';
 import styles from './ChatInterface.module.css';

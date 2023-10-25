@@ -4,7 +4,7 @@ import { EditorState } from 'draft-js';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import Loading from 'components/UI/Layout/Loading/Loading';
-import { ReactComponent as TemplateIcon } from 'assets/images/icons/Template/UnselectedDark.svg';
+import TemplateIcon from 'assets/images/icons/Template/UnselectedDark.svg?react';
 import { GET_HSM_CATEGORIES } from 'graphql/queries/Template';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Input } from 'components/UI/Form/Input/Input';

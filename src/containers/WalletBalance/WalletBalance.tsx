@@ -3,8 +3,8 @@ import { useQuery } from '@apollo/client';
 import { Skeleton } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-import { ReactComponent as WhiteIcon } from 'assets/images/icons/White.svg';
-import { ReactComponent as SelectWhiteIcon } from 'assets/images/icons/SelectWhite.svg';
+import WhiteIcon from 'assets/images/icons/White.svg?react';
+import SelectWhiteIcon from 'assets/images/icons/SelectWhite.svg?react';
 import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import { BSPBALANCE } from 'graphql/queries/Organization';
 import { BSP_BALANCE_SUBSCRIPTION } from 'graphql/subscriptions/PeriodicInfo';

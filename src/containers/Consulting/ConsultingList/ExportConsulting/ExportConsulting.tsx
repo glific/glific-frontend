@@ -6,7 +6,7 @@ import { EXPORT_CONSULTING_HOURS } from 'graphql/queries/Consulting';
 import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
 
-import { ReactComponent as ExportIcon } from 'assets/images/icons/Export/export.svg';
+import ExportIcon from 'assets/images/icons/Export/export.svg?react';
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
 import { Calendar } from 'components/UI/Form/Calendar/Calendar';

@@ -6,8 +6,8 @@ import { within, fireEvent } from '@testing-library/dom';
 
 import { Flow } from 'containers/Flow/Flow';
 import { setUserSession } from 'services/AuthService';
-import { ReactComponent as ActivateIcon } from 'assets/images/icons/Activate.svg';
-import { ReactComponent as ApprovedIcon } from 'assets/images/icons/Template/Approved.svg';
+import ActivateIcon from 'assets/images/icons/Activate.svg?react';
+import ApprovedIcon from 'assets/images/icons/Template/Approved.svg?react';
 import { LIST_MOCKS, defaultProps, ORG_LIST_MOCK, orgProps } from './List.test.helper';
 import { List } from './List';
 

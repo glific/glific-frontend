@@ -16,7 +16,7 @@ import {
   DELETE_ORGANIZATION,
   UPDATE_ORGANIZATION,
 } from 'graphql/mutations/Organization';
-import { ReactComponent as Settingicon } from 'assets/images/icons/Settings/Settings.svg';
+import Settingicon from 'assets/images/icons/Settings/Settings.svg?react';
 import { dayList, FLOW_STATUS_PUBLISHED, setVariables } from 'common/constants';
 import styles from './OrganisationFlows.module.css';
 

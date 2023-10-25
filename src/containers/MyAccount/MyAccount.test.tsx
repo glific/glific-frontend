@@ -43,7 +43,7 @@ describe('<MyAccount />', () => {
     // let's mock successful sending of OTP
     const responseData = { data: { data: { data: {} } } };
     mockedAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
-    const { container } = render(wrapper);
+    render(wrapper);
 
     await waitFor(() => {
       // click on generate OTP
@@ -78,7 +78,7 @@ describe('<MyAccount />', () => {
     await waitFor(() => {
       const dropdown = screen.getByTestId('dropdown');
       const { getByRole } = within(dropdown);
-      const inputDropdown = getByRole('button');
+      const inputDropdown = getByRole('combobox');
       fireEvent.mouseDown(inputDropdown);
       const [english, hindi] = screen.getAllByRole('option');
       hindi.click();

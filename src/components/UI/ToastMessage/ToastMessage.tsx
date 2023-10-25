@@ -1,6 +1,6 @@
 import { Snackbar, Alert } from '@mui/material';
 
-import { ReactComponent as CrossIcon } from 'assets/images/icons/Cross.svg';
+import CrossIcon from 'assets/images/icons/Cross.svg?react';
 import styles from './ToastMessage.module.css';
 
 // Since attribute severity can only have 5 values,

@@ -2,7 +2,8 @@ import { useState, useRef, useEffect } from 'react';
 import { useQuery, useSubscription } from '@apollo/client';
 import { IconButton, Popper, Fade, Paper, ClickAwayListener } from '@mui/material';
 
-import { ReactComponent as OptionsIcon } from 'assets/images/icons/MoreOptions/More.svg';
+import OptionsIcon from 'assets/images/icons/MoreOptions/More.svg?react';
+
 import { SAVED_SEARCH_QUERY, SEARCHES_COUNT } from 'graphql/queries/Search';
 import { COLLECTION_COUNT_SUBSCRIPTION } from 'graphql/subscriptions/PeriodicInfo';
 import { setErrorMessage } from 'common/notification';

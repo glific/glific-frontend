@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { ReactComponent as ImportIcon } from 'assets/images/icons/Flow/Import.svg';
+import ImportIcon from 'assets/images/icons/Flow/Import.svg?react';
 import { Button } from 'components/UI/Form/Button/Button';
 import styles from './ImportButton.module.css';
 

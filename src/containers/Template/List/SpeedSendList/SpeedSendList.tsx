@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
-import { ReactComponent as SpeedSendIcon } from 'assets/images/icons/SpeedSend/Dark.svg';
+import SpeedSendIcon from 'assets/images/icons/SpeedSend/Dark.svg?react';
 import Template from '../Template';
 import styles from './SpeedSendList.module.css';
 

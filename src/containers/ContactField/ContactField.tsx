@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { Input } from 'components/UI/Form/Input/Input';
 import { FormLayout } from 'containers/Form/FormLayout';
-import { ReactComponent as ContactVariableIcon } from 'assets/images/icons/ContactVariable.svg';
+import ContactVariableIcon from 'assets/images/icons/ContactVariable.svg?react';
 import { GET_CONTACT_FIELD_BY_ID, GET_ALL_CONTACT_FIELDS } from 'graphql/queries/ContactFields';
 import {
   CREATE_CONTACT_FIELDS,

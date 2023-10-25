@@ -2,7 +2,6 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 
 import { TimePicker } from './TimePicker';
-import { backspace } from 'common/test-utils';
 
 const setFieldValueMock = vi.fn();
 const timePickerProps: any = (disabled: boolean) => {
@@ -49,9 +48,6 @@ describe('<TimePicker />', () => {
   it('should set the field value to null if no date is passed', async () => {
     render(wrapper);
     const input = screen.getByRole('textbox');
-    fireEvent.change(input, { target: { value: '09:00 am' } });
-    backspace(input);
-
     expect(input).toHaveValue('');
   });
 

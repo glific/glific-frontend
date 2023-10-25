@@ -18,20 +18,20 @@ import {
   IMPORT_TEMPLATES,
 } from 'graphql/mutations/Template';
 import { ImportButton } from 'components/UI/ImportButton/ImportButton';
-import { ReactComponent as DownArrow } from 'assets/images/icons/LanguageTranslation.svg';
-import { ReactComponent as ApprovedIcon } from 'assets/images/icons/Template/Approved.svg';
-import { ReactComponent as RejectedIcon } from 'assets/images/icons/Template/Rejected.svg';
-import { ReactComponent as PendingIcon } from 'assets/images/icons/Template/Pending.svg';
+import DownArrow from 'assets/images/icons/DownArrow.svg?react';
+import ApprovedIcon from 'assets/images/icons/Template/Approved.svg?react';
+import RejectedIcon from 'assets/images/icons/Template/Rejected.svg?react';
+import PendingIcon from 'assets/images/icons/Template/Pending.svg?react';
 import { ProviderContext } from 'context/session';
 import { copyToClipboardMethod, exportCsvFile, getFileExtension } from 'common/utils';
 import Loading from 'components/UI/Layout/Loading/Loading';
 import { setNotification } from 'common/notification';
 import { BULK_APPLY_SAMPLE_LINK } from 'config';
 import styles from './Template.module.css';
-import { ReactComponent as CopyAllOutlined } from 'assets/images/icons/Flow/Copy.svg';
+import CopyAllOutlined from 'assets/images/icons/Flow/Copy.svg?react';
 import { GET_TAGS } from 'graphql/queries/Tags';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
-import { ReactComponent as AddIcon } from 'assets/images/add.svg';
+import AddIcon from 'assets/images/add.svg?react';
 import { speedSendInfo, templateInfo } from 'common/HelpData';
 
 const getLabel = (label: string) => <div className={styles.LabelText}>{label}</div>;

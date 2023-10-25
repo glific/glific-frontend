@@ -64,7 +64,7 @@ vi.mock('config/logs', () => {
 
 window.ResizeObserver = ResizeObserver;
 window.HTMLDocument = Document;
-window.fetch = vi.fn();
+window.fetch = vi.fn() as any;
 
 global.URL.createObjectURL = vi.fn();
 

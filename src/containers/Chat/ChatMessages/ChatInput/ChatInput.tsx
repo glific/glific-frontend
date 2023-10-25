@@ -4,11 +4,11 @@ import { Container, Button, ClickAwayListener, Fade, IconButton } from '@mui/mat
 import { useMutation, useQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 
-import { ReactComponent as AttachmentIcon } from 'assets/images/icons/Attachment/Unselected.svg';
-import { ReactComponent as AttachmentIconSelected } from 'assets/images/icons/Attachment/Selected.svg';
-import { ReactComponent as VariableIcon } from 'assets/images/icons/Template/Variable.svg';
-import { ReactComponent as CrossIcon } from 'assets/images/icons/Clear.svg';
-import { ReactComponent as SendMessageIcon } from 'assets/images/icons/SendMessage.svg';
+import AttachmentIcon from 'assets/images/icons/Attachment/Unselected.svg?react';
+import AttachmentIconSelected from 'assets/images/icons/Attachment/Selected.svg?react';
+import VariableIcon from 'assets/images/icons/Template/Variable.svg?react';
+import CrossIcon from 'assets/images/icons/Clear.svg?react';
+import SendMessageIcon from 'assets/images/icons/SendMessage.svg?react';
 import { getPlainTextFromEditor, getEditorFromContent } from 'common/RichEditor';
 import { is24HourWindowOver, pattern } from 'common/constants';
 import SearchBar from 'components/UI/SearchBar/SearchBar';
@@ -24,14 +24,14 @@ import { AddAttachment } from '../AddAttachment/AddAttachment';
 import { VoiceRecorder } from '../VoiceRecorder/VoiceRecorder';
 import ChatTemplates from '../ChatTemplates/ChatTemplates';
 import styles from './ChatInput.module.css';
-import { ReactComponent as EmojiIcon } from 'assets/images/icons/EmojiIcon.svg';
-import { ReactComponent as DownIcon } from 'assets/images/DownIcon.svg';
-import { ReactComponent as SpeedSend } from 'assets/images/icons/SpeedSend/Selected.svg';
-import { ReactComponent as SpeedSendWhite } from 'assets/images/icons/SpeedSend/White.svg';
-import { ReactComponent as Templates } from 'assets/images/icons/Template/Selected.svg';
-import { ReactComponent as TemplatesWhite } from 'assets/images/icons/Template/White.svg';
-import { ReactComponent as InteractiveMsg } from 'assets/images/icons/InteractiveMessage/Selected.svg';
-import { ReactComponent as InteractiveMsgWhite } from 'assets/images/icons/InteractiveMessage/White.svg';
+import EmojiIcon from 'assets/images/icons/EmojiIcon.svg?react';
+import DownIcon from 'assets/images/DownIcon.svg?react';
+import SpeedSend from 'assets/images/icons/SpeedSend/Selected.svg?react';
+import SpeedSendWhite from 'assets/images/icons/SpeedSend/White.svg?react';
+import Templates from 'assets/images/icons/Template/Selected.svg?react';
+import TemplatesWhite from 'assets/images/icons/Template/White.svg?react';
+import InteractiveMsg from 'assets/images/icons/InteractiveMessage/Selected.svg?react';
+import InteractiveMsgWhite from 'assets/images/icons/InteractiveMessage/White.svg?react';
 
 export interface ChatInputProps {
   onSendMessage(

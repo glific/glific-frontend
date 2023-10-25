@@ -8,7 +8,7 @@ import { useParams } from 'react-router-dom';
 import { CREATE_EXTENSION, DELETE_EXTENSION, UPDATE_EXTENSION } from 'graphql/mutations/Extensions';
 import { GET_ORGANIZATION_EXTENSION } from 'graphql/queries/Extensions';
 import { Input } from 'components/UI/Form/Input/Input';
-import { ReactComponent as ExtensionIcon } from 'assets/images/icons/extension.svg';
+import ExtensionIcon from 'assets/images/icons/extension.svg?react';
 import { FormLayout } from 'containers/Form/FormLayout';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import styles from './Extensions.module.css';

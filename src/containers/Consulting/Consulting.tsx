@@ -10,7 +10,7 @@ import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { RadioInput } from 'components/UI/Form/RadioInput/RadioInput';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { FormLayout } from 'containers/Form/FormLayout';
-import { ReactComponent as ConsultingIcon } from 'assets/images/icons/icon-consulting.svg';
+import ConsultingIcon from 'assets/images/icons/icon-consulting.svg?react';
 import { GET_CONSULTING_HOURS_BY_ID, GET_CONSULTING_HOURS } from 'graphql/queries/Consulting';
 import {
   CREATE_CONSULTING_HOUR,

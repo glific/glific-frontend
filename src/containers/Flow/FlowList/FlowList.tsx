@@ -4,13 +4,14 @@ import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 
-import { ReactComponent as AddIcon } from 'assets/images/add.svg';
-import { ReactComponent as FlowIcon } from 'assets/images/icons/Flow/Dark.svg';
-import { ReactComponent as DuplicateIcon } from 'assets/images/icons/Flow/Copy.svg';
-import { ReactComponent as ExportIcon } from 'assets/images/icons/Flow/Export.svg';
+import AddIcon from 'assets/images/add.svg?react';
 import { FormControl, MenuItem, Select } from '@mui/material';
-import { ReactComponent as ConfigureIcon } from 'assets/images/icons/Configure/Setting.svg';
-import { ReactComponent as PinIcon } from 'assets/images/icons/Pin/Pin.svg';
+
+import FlowIcon from 'assets/images/icons/Flow/Dark.svg?react';
+import DuplicateIcon from 'assets/images/icons/Flow/Duplicate.svg?react';
+import ExportIcon from 'assets/images/icons/Flow/Export.svg?react';
+import ConfigureIcon from 'assets/images/icons/Configure/UnselectedDark.svg?react';
+import PinIcon from 'assets/images/icons/Pin/Active.svg?react';
 import { FILTER_FLOW, GET_FLOW_COUNT, EXPORT_FLOW, RELEASE_FLOW } from 'graphql/queries/Flow';
 import { DELETE_FLOW, IMPORT_FLOW } from 'graphql/mutations/Flow';
 import { List } from 'containers/List/List';

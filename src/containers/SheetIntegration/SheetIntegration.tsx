@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { FormLayout } from 'containers/Form/FormLayout';
 import { Input } from 'components/UI/Form/Input/Input';
-import { ReactComponent as SheetIcon } from 'assets/images/icons/Sheets/Sheet.svg';
+import SheetIcon from 'assets/images/icons/Sheets/Sheet.svg?react';
 import { CREATE_SHEET, UPDATE_SHEET, DELETE_SHEET } from 'graphql/mutations/Sheet';
 import { SAMPLE_SHEET_LINK } from 'config';
 import { GET_SHEET } from 'graphql/queries/Sheet';

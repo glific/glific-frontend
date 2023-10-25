@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
-import { ReactComponent as AddIcon } from 'assets/images/add.svg';
-import { ReactComponent as FlowIcon } from 'assets/images/icons/Flow/Dark.svg';
+import AddIcon from 'assets/images/add.svg?react';
+import FlowIcon from 'assets/images/icons/Flow/Dark.svg?react';
 import { GET_TAG_COUNT, FILTER_TAGS } from 'graphql/queries/Tags';
 import { DELETE_TAG } from 'graphql/mutations/Tags';
 import { List } from 'containers/List/List';

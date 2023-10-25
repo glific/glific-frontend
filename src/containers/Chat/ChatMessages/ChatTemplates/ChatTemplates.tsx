@@ -3,7 +3,7 @@ import { List, ListItemButton, Paper, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import styles from './ChatTemplates.module.css';
-import { ReactComponent as AttachmentIconUnselected } from '../../../../assets/images/icons/Attachment/Attachment.svg';
+import AttachmentIconUnselected from '../../../../assets/images/icons/Attachment/Attachment.svg?react';
 import { FILTER_TEMPLATES } from '../../../../graphql/queries/Template';
 import { WhatsAppToJsx } from '../../../../common/RichEditor';
 import { setVariables } from '../../../../common/constants';

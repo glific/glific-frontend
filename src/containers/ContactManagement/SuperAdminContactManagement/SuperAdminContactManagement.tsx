@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next';
 
 import { GET_ORGANIZATION_COUNT, FILTER_ORGANIZATIONS } from 'graphql/queries/Organization';
 
-import { ReactComponent as CollectionIcon } from 'assets/images/icons/Collection/Dark.svg';
-import { ReactComponent as UploadIcon } from 'assets/images/icons/Upload/Dark.svg';
+import CollectionIcon from 'assets/images/icons/Collection/Dark.svg?react';
+import UploadIcon from 'assets/images/icons/Upload/Dark.svg?react';
 
 import { List } from 'containers/List/List';
 import styles from './SuperAdminContactManagement.module.css';

@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import searchIcon from 'assets/images/icons/Search/Desktop.svg';
 import search from 'assets/images/icons/Search/Search.svg';
-import { ReactComponent as AdvancedSearch } from 'assets/images/icons/AdvancedSearch.svg';
+import AdvancedSearch from 'assets/images/icons/AdvancedSearch.svg?react';
 import styles from './SearchBar.module.css';
 import Track from 'services/TrackService';
 

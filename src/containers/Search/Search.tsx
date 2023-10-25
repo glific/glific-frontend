@@ -4,8 +4,8 @@ import { useQuery } from '@apollo/client';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 
-import { ReactComponent as SearchIcon } from 'assets/images/icons/Search/SelectedEdit.svg';
-import { ReactComponent as LabelIcon } from 'assets/images/icons/Label/Selected.svg';
+import SearchIcon from 'assets/images/icons/Search/SelectedEdit.svg?react';
+import LabelIcon from 'assets/images/icons/Label/Selected.svg?react';
 import { GET_SEARCH } from 'graphql/queries/Search';
 import { CREATE_SEARCH, UPDATE_SEARCH, DELETE_SEARCH } from 'graphql/mutations/Search';
 import { GET_COLLECTIONS } from 'graphql/queries/Collection';
