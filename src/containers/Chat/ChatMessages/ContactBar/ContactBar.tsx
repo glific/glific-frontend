@@ -508,8 +508,9 @@ export const ContactBar = ({
     <Popper
       open={open}
       anchorEl={anchorEl}
-      placement="bottom-start"
+      placement="bottom-end"
       transition
+      disablePortal
       className={styles.Popper}
     >
       {({ TransitionProps }) => (

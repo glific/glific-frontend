@@ -1,1 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?><svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"> <title>Icon/Delete/Red</title> <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"> <g id="Icon/Delete/Red" stroke="#DD1F1F" stroke-width="2"> <path d="M17,4 L15.8672759,4 C15.369634,4 14.9477177,4.36591782 14.8773296,4.85855664 L14.1226704,16.1414434 C14.0522823,16.6340822 13.630366,17 13.1327241,17 L4.86751309,17 C4.36976836,17 3.9477978,16.633935 3.87752849,16.1411754 L3.12633751,4.8588246 C3.0560682,4.36606498 2.63409764,4 2.13635291,4 L1,4" id="Rectangle"></path> <line x1="11" y1="8" x2="7" y2="12.0050267" id="Path-4" stroke-linecap="round"></line> <line x1="11" y1="8" x2="7" y2="12.0050267" id="Path-4" stroke-linecap="round" transform="translate(9.000000, 10.002513) scale(-1, 1) translate(-9.000000, -10.002513) "></line> <line x1="1" y1="4" x2="17" y2="4" id="Path-6" stroke-linecap="round"></line> <path d="M7,2.99820965 L7,2 C7,1.44771525 7.44771525,1 8,1 L10,1 C10.5522847,1 11,1.44771525 11,2 L11,3 L11,3" id="Path-9"></path> </g> </g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 15 15" fill="none">
+  <path d="M1.875 3.75H3.125H13.125" stroke="#777777" stroke-width="1.5" stroke-linecap="round"
+    stroke-linejoin="round" />
+  <path
+    d="M11.875 3.75V12.5C11.875 12.8315 11.7433 13.1495 11.5089 13.3839C11.2745 13.6183 10.9565 13.75 10.625 13.75H4.375C4.04348 13.75 3.72554 13.6183 3.49112 13.3839C3.2567 13.1495 3.125 12.8315 3.125 12.5V3.75M5 3.75V2.5C5 2.16848 5.1317 1.85054 5.36612 1.61612C5.60054 1.3817 5.91848 1.25 6.25 1.25H8.75C9.08152 1.25 9.39946 1.3817 9.63388 1.61612C9.8683 1.85054 10 2.16848 10 2.5V3.75"
+    stroke="#777777" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M6.25 6.875V10.625" stroke="#777777" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M8.75 6.875V10.625" stroke="#777777" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+</svg>

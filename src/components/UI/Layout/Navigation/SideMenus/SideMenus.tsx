@@ -38,6 +38,11 @@ const SideMenus = ({ opened }: SideMenusProps) => {
     getNotificationCount();
   }, []);
 
+  useEffect(() => {
+    if (location.state && location.state.subMenu) {
+      setSubMenu(location.state.subMenu);
+    }
+  }, [location]);
   // let's get count specific to menu paths
   // we should check for menu path if we have badges for other items.
   // For now we have only one badge for notifications so returning that only

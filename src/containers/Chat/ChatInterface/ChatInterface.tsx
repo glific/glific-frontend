@@ -20,7 +20,7 @@ import HelpIcon from 'components/UI/HelpIcon/HelpIcon';
 
 const tabs = [
   {
-    label: 'Chat',
+    label: 'Contacts',
     link: '/chat/',
   },
   {
@@ -127,7 +127,7 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
         <ChatConversations contactId={simulatorId > 0 ? simulatorId : selectedContactId} />
       );
 
-      heading = 'Chat';
+      heading = 'Contacts';
     } else if (savedSearches) {
       listingContent = <SavedSearches />;
       heading = 'Saved searches';

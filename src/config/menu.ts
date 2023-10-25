@@ -181,6 +181,7 @@ const menus = (): Menu[] => [
     title: 'Account',
     path: '/user-profile',
     icon: 'profile',
+    show: true,
     type: 'sideDrawer',
     roles: ['Manager', 'Admin', 'Dynamic'],
     subMenu: [

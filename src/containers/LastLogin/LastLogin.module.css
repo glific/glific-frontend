@@ -1,8 +1,33 @@
-.lastLogin {
-  position: absolute;
-  bottom: 4px;
-  font-size: 12px;
-  padding-left: 12px;
+.LastLogin {
+  font-size: 9px;
+
   color: #073f24;
   font-weight: 500;
+}
+
+.UserAccount {
+  width: 100%;
+  cursor: pointer;
+  background-color: white;
+  position: absolute;
+  bottom: 0px;
+}
+
+.UserAccount:hover {
+  background-color: #f0f7f1;
+}
+
+.User {
+  padding: 12px;
+  display: flex;
+  align-items: center;
+}
+
+.User svg {
+  margin-right: 8px;
+}
+
+.User p {
+  width: 130px;
+  overflow: auto;
 }
