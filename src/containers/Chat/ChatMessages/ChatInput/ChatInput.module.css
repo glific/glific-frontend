@@ -20,19 +20,6 @@
   border-radius: 35px;
 }
 
-.ChatInputElements::-webkit-scrollbar {
-  width: 22px;
-}
-
-.ChatInputElements::-webkit-scrollbar-thumb {
-  border-radius: 5px;
-  background: lightgray;
-  height: 1em;
-  border: 0.5em solid rgba(0, 0, 0, 0);
-  background-clip: padding-box;
-  -webkit-border-radius: 1em;
-}
-
 .InputContainer {
   width: 85%;
   font-size: 16px;

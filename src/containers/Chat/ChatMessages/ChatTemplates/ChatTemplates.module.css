@@ -13,19 +13,6 @@
   border-radius: 24px 24px 0px 0px !important;
 }
 
-.ShortcutList::-webkit-scrollbar {
-  display: none;
-}
-
-.ShortcutList::-webkit-scrollbar-thumb {
-  border-radius: 5px;
-  background: lightgray;
-  height: 1em;
-  border: 0.2em solid rgba(0, 0, 0, 0);
-  background-clip: padding-box;
-  -webkit-border-radius: 1em;
-}
-
 .Text {
   font-size: 0.875rem;
   margin: 0;

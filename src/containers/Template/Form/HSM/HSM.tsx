@@ -150,13 +150,7 @@ export const HSM = () => {
         category={category}
         onExampleChange={addButtonsToSampleMessage}
       />
-      <Simulator
-        setSimulatorId={0}
-        showSimulator
-        isPreviewMessage
-        message={sampleMessages}
-        simulatorIcon={false}
-      />
+      <Simulator isPreviewMessage message={sampleMessages} simulatorIcon={false} />
     </div>
   );
 };

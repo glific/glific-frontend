@@ -792,8 +792,6 @@ export const InteractiveMessage = () => {
       />
       <div className={styles.Simulator}>
         <Simulator
-          setSimulatorId={0}
-          showSimulator
           isPreviewMessage
           message={{}}
           showHeader={sendWithTitle}

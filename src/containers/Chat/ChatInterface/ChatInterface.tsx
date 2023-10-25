@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Paper, Typography } from '@mui/material';
+import { Paper, Tab, Tabs, Typography } from '@mui/material';
 import { useQuery } from '@apollo/client';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -12,11 +12,26 @@ import { setErrorMessage } from 'common/notification';
 import { COLLECTION_SEARCH_QUERY_VARIABLES, SEARCH_QUERY_VARIABLES } from 'common/constants';
 import ChatConversations from '../ChatConversations/ChatConversations';
 import ChatMessages from '../ChatMessages/ChatMessages';
+import { ReactComponent as SimulatorIcon } from 'assets/images/icons/Simulator.svg';
 import CollectionConversations from '../CollectionConversations/CollectionConversations';
 import SavedSearches from '../SavedSearches/SavedSearches';
 import styles from './ChatInterface.module.css';
 import HelpIcon from 'components/UI/HelpIcon/HelpIcon';
 
+const tabs = [
+  {
+    label: 'Chat',
+    link: '/chat/',
+  },
+  {
+    label: 'Collections',
+    link: '/chat/collection/',
+  },
+  {
+    label: 'Searches',
+    link: '/chat/saved-searches/',
+  },
+];
 export interface ChatInterfaceProps {
   savedSearches?: boolean;
   collectionType?: boolean;
@@ -25,9 +40,10 @@ export interface ChatInterfaceProps {
 export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfaceProps) => {
   const navigate = useNavigate();
   const [simulatorAccess, setSimulatorAccess] = useState(true);
+  const [showSimulator, setShowSimulator] = useState(false);
   const [simulatorId, setSimulatorId] = useState(0);
   const { t } = useTranslation();
-
+  const [value, setValue] = useState(tabs[0].link);
   const params = useParams();
 
   let selectedContactId = params.contactId;
@@ -87,33 +103,23 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
   let chatInterface: any;
   let listingContent;
 
+  const getSimulatorId = (id: any) => {
+    setSimulatorId(id);
+  };
+
+  const handleTabChange = (_event: React.SyntheticEvent, newValue: string) => {
+    setValue(newValue);
+    navigate(newValue);
+  };
+
   if (data && data.search.length === 0) {
     chatInterface = noConversations;
   } else {
-    const tabs = [
-      {
-        tab: 'Chat',
-        link: '/chat/',
-        active: false,
-      },
-      {
-        tab: 'Collections',
-        link: '/chat/collection/',
-        active: false,
-      },
-      {
-        tab: 'Saved searches',
-        link: '/chat/saved-searches/',
-        active: false,
-      },
-    ];
-
     let heading = '';
 
     if (selectedCollectionId || (selectedTab === 'collections' && !savedSearches)) {
       listingContent = <CollectionConversations collectionId={selectedCollectionId} />;
       heading = 'Collections';
-      tabs[1].active = true;
     } else if (selectedContactId && !savedSearches) {
       // let's enable simulator only when contact tab is shown
 
@@ -121,30 +127,11 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
         <ChatConversations contactId={simulatorId > 0 ? simulatorId : selectedContactId} />
       );
 
-      tabs[0].active = true;
       heading = 'Chat';
     } else if (savedSearches) {
       listingContent = <SavedSearches />;
       heading = 'Saved searches';
-      tabs[2].active = true;
     }
-
-    const TabHeader = ({ tab }: any) => {
-      return (
-        <div
-          className={`${styles.Tab} ${tab.active && styles.ActiveTab}`}
-          onClick={() => navigate(tab.link)}
-          key={tab.link}
-        >
-          <Typography
-            className={`${styles.TitleText} ${tab.active && styles.SelectedTab}`}
-            variant="h6"
-          >
-            {t(tab.tab)}
-          </Typography>
-        </div>
-      );
-    };
 
     chatInterface = (
       <>
@@ -162,9 +149,17 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
           </div>
 
           <div className={styles.TabContainer}>
-            {tabs.map((tab: any) => (
-              <TabHeader tab={tab} key={tab.link} />
-            ))}
+            <Tabs value={value} onChange={handleTabChange} aria-label="basic tabs example">
+              {tabs.map((tab) => (
+                <Tab
+                  classes={{ selected: styles.TabSelected }}
+                  className={styles.Tab}
+                  label={tab.label}
+                  value={tab.link}
+                  disableRipple
+                />
+              ))}
+            </Tabs>
           </div>
 
           <div>{listingContent}</div>
@@ -173,13 +168,27 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
     );
   }
 
+  const handleCloseSimulator = (value: boolean) => {
+    setShowSimulator(value);
+    setSimulatorId(0);
+  };
+
   return (
     <Paper>
       <div className={styles.Chat} data-testid="chatContainer">
         {chatInterface}
       </div>
-      {simulatorAccess && !selectedCollectionId ? (
-        <Simulator setSimulatorId={setSimulatorId} showSimulator={simulatorId > 0} />
+      <SimulatorIcon
+        className={styles.SimulatorIcon}
+        onClick={() => {
+          setShowSimulator(!showSimulator);
+          if (showSimulator) {
+            setSimulatorId(0);
+          }
+        }}
+      />
+      {simulatorAccess && !selectedCollectionId && showSimulator ? (
+        <Simulator setShowSimulator={handleCloseSimulator} getSimulatorId={getSimulatorId} />
       ) : null}
     </Paper>
   );

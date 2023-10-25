@@ -26,10 +26,10 @@ export const Button = ({
 
   return (
     <ButtonElement
+      {...rest}
       variant={variant}
       color={color}
       onClick={onClick}
-      data-testid={rest['data-testid']}
       className={`${styles.Button} ${className} ${buttonColor}`}
       disabled={loading || disabled}
       type={type}

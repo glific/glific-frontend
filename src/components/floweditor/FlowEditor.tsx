@@ -1,9 +1,19 @@
-import { useContext, useEffect, useState } from 'react';
+import { SyntheticEvent, useContext, useEffect, useRef, useState } from 'react';
 import { useMutation, useLazyQuery, useQuery } from '@apollo/client';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
-import { IconButton } from '@mui/material';
+import {
+  ClickAwayListener,
+  Grow,
+  IconButton,
+  Menu,
+  MenuItem,
+  MenuList,
+  Paper,
+  Popper,
+  Typography,
+} from '@mui/material';
 
-import { ReactComponent as HelpIcon } from 'assets/images/icons/Help.svg';
+import { ReactComponent as BackIconFlow } from 'assets/images/icons/BackIconFlow.svg';
 import { ReactComponent as FlowIcon } from 'assets/images/icons/Flow/Dark.svg';
 import { ReactComponent as WarningIcon } from 'assets/images/icons/Warning.svg';
 import { ReactComponent as ExportIcon } from 'assets/images/icons/Flow/Export.svg';
@@ -32,12 +42,12 @@ export const FlowEditor = () => {
   const { uuid } = params;
   const navigate = useNavigate();
   const [publishDialog, setPublishDialog] = useState(false);
-  const [simulatorId, setSimulatorId] = useState(0);
   const [loading, setLoading] = useState(true);
   const [flowEditorLoaded, setFlowEditorLoaded] = useState(false);
   const [flowId, setFlowId] = useState();
   const config = setConfig(uuid);
   const [published, setPublished] = useState(false);
+  const [showSimulator, setShowSimulator] = useState(false);
   const [stayOnPublish, setStayOnPublish] = useState(false);
   const [showResetFlowModal, setShowResetFlowModal] = useState(false);
   const [flowValidation, setFlowValidation] = useState<any>();
@@ -45,7 +55,15 @@ export const FlowEditor = () => {
   const [flowKeyword, setFlowKeyword] = useState('');
   const [currentEditDialogBox, setCurrentEditDialogBox] = useState(false);
   const [dialogMessage, setDialogMessage] = useState('');
-  const { drawerOpen } = useContext(SideDrawerContext);
+
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   let modal = null;
   let dialog = null;
@@ -305,11 +323,11 @@ export const FlowEditor = () => {
     if (flows && flows.length > 0) {
       const { isActive, keywords } = flows[0];
       if (isActive && keywords.length > 0) {
-        setFlowKeyword(`draft:${keywords[0]}`);
+        return `draft:${keywords[0]}`;
       } else if (keywords.length === 0) {
-        setFlowKeyword('No keyword found');
+        return 'No keyword found';
       } else {
-        setFlowKeyword('Sorry, the flow is not active');
+        return 'Sorry, the flow is not active';
       }
     }
   };
@@ -317,93 +335,91 @@ export const FlowEditor = () => {
   return (
     <>
       {dialog}
-      <div className={styles.ButtonContainer}>
-        <a
-          href={FLOWS_HELP_LINK}
-          className={styles.Link}
-          target="_blank"
-          rel="noopener noreferrer"
-          data-testid="helpButton"
-        >
-          <HelpIcon className={styles.HelpIcon} />
-        </a>
-
-        <Button
-          variant="contained"
-          className={styles.ContainedButton}
-          onClick={() => {
-            navigate('/flow');
-          }}
-        >
-          Back
-        </Button>
-
-        <div
-          className={styles.ExportIcon}
-          onClick={() => exportFlowMutation({ variables: { id: flowId } })}
-          aria-hidden="true"
-        >
-          <ExportIcon />
+      <div className={styles.Header}>
+        <div className={styles.Title}>
+          <BackIconFlow onClick={() => navigate('/flow')} className={styles.BackIcon} />
+          <Typography variant="h6" data-testid="flowName">
+            {flowName ? flowTitle : 'Flow'}
+          </Typography>
         </div>
 
-        <Button
-          variant="outlined"
-          color="primary"
-          data-testid="saveDraftButton"
-          className={simulatorId === 0 ? styles.Draft : styles.SimulatorDraft}
-          onClick={() => {
-            setNotification('The flow has been saved as draft');
-          }}
-        >
-          Save as draft
-        </Button>
+        <div className={styles.Actions}>
+          <Button
+            id="demo-customized-button"
+            aria-controls={open ? 'demo-customized-menu' : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? 'true' : undefined}
+            variant="contained"
+            disableElevation
+            onClick={handleClick}
+          >
+            More
+          </Button>
+          <Menu
+            id="demo-customized-menu"
+            MenuListProps={{
+              'aria-labelledby': 'demo-customized-button',
+            }}
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+          >
+            <MenuItem
+              onClick={() => {
+                // Todo: add some kind of loading
+                exportFlowMutation({
+                  variables: {
+                    id: flowId,
+                  },
+                });
+                handleClose();
+              }}
+              disableRipple
+            >
+              Export flow
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                setShowResetFlowModal(true);
+                handleClose();
+              }}
+              disableRipple
+            >
+              Reset flow count
+            </MenuItem>
+          </Menu>
 
-        <Button
-          variant="contained"
-          color="primary"
-          data-testid="button"
-          className={styles.ContainedButton}
-          onClick={() => setPublishDialog(true)}
-        >
-          Publish
-        </Button>
+          <Button
+            variant="outlined"
+            color="primary"
+            data-testid="button"
+            className={styles.ContainedButton}
+            onClick={() => setShowSimulator(!showSimulator)}
+          >
+            Preview
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            data-testid="button"
+            className={styles.ContainedButton}
+            onClick={() => setPublishDialog(true)}
+          >
+            Publish
+          </Button>
+        </div>
       </div>
-      <Simulator
-        showSimulator={simulatorId > 0}
-        setSimulatorId={setSimulatorId}
-        hasResetButton
-        flowSimulator
-        message={flowKeyword}
-        resetMessage={resetMessage}
-        getFlowKeyword={getFlowKeyword}
-      />
+
+      {showSimulator && (
+        <Simulator
+          setShowSimulator={setShowSimulator}
+          hasResetButton
+          flowSimulator
+          message={getFlowKeyword()}
+        />
+      )}
       {modal}
       <div className={styles.FlowContainer}>
-        <div
-          className={drawerOpen ? styles.FlowName : styles.FlowNameClosed}
-          data-testid="flowName"
-        >
-          {flowName && (
-            <>
-              <IconButton disabled className={styles.Icon}>
-                <FlowIcon />
-              </IconButton>
-
-              {flowTitle}
-            </>
-          )}
-        </div>
-
-        <Button
-          variant="outlined"
-          color="primary"
-          className={drawerOpen ? styles.ResetFlow : styles.ResetClosedDrawer}
-          data-testid="resetFlow"
-          onClick={() => setShowResetFlowModal(true)}
-          aria-hidden="true"
-        >
-          <ResetFlowIcon /> Reset flow counts
-        </Button>
         <div id="flow" />
         {loading && <Loading showTip />}
       </div>

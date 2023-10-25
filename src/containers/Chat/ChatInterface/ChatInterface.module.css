@@ -55,24 +55,17 @@
 }
 
 .Tab {
+  color: #191c1a;
   width: 110px;
   height: 32px;
+  font-size: 13px;
   text-decoration: none;
-  border-radius: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.Tab:hover {
-  background-color: #d9d9d9;
+  text-transform: none;
+  z-index: 1;
+  font-weight: 700;
 }
 
-.ActiveTab {
-  background: #119656 !important;
-  color: #fff;
-}
-
-.SelectedTab {
+.TabSelected {
   color: #fff !important;
 }
 
@@ -99,4 +92,11 @@
     padding: 24px 16px 0 16px !important;
     width: 100% !important;
   }
+}
+
+.SimulatorIcon {
+  cursor: pointer;
+  position: absolute;
+  right: 0;
+  bottom: 0;
 }

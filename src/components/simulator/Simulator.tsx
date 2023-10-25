@@ -56,13 +56,12 @@ import { updateSimulatorConversations } from 'services/SubscriptionService';
 import styles from './Simulator.module.css';
 
 export interface SimulatorProps {
-  showSimulator: boolean;
-  setSimulatorId: any;
+  setShowSimulator?: any;
   simulatorIcon?: boolean;
   message?: any;
   flowSimulator?: boolean;
   isPreviewMessage?: boolean;
-  resetMessage?: Function;
+  getSimulatorId?: any;
   getFlowKeyword?: Function;
   interactiveMessage?: any;
   showHeader?: boolean;
@@ -119,14 +118,10 @@ const getSimulatorVariables = (id: any) => ({
 });
 
 export const Simulator = ({
-  showSimulator,
-  setSimulatorId,
-  simulatorIcon = true,
+  setShowSimulator = () => {},
   message,
-  flowSimulator,
   isPreviewMessage,
-  resetMessage,
-  getFlowKeyword,
+  getSimulatorId,
   interactiveMessage,
   showHeader = true,
   hasResetButton = false,
@@ -195,16 +190,29 @@ export const Simulator = ({
         setLogs(error, 'error');
       });
     setInputMessage('');
-    // reset the message from floweditor for the next time
-    if (resetMessage) {
-      resetMessage();
-    }
   };
 
-  const { data: simulatorSubscribe }: any = useSubscription(SIMULATOR_RELEASE_SUBSCRIPTION, {
-    variables,
-    skip: isPreviewMessage,
-  });
+  // Todo: think how to incorporate this
+  // useSubscription(SIMULATOR_RELEASE_SUBSCRIPTION, {
+  //   variables,
+  //   skip: isPreviewMessage,
+  //   onData: ({ data: simulatorSubscribe }) => {
+  //     console.log(simulatorSubscribe);
+  //     if (simulatorSubscribe.data) {
+  //       try {
+  //         const userId = JSON.parse(simulatorSubscribe.data.simulatorRelease).simulator_release
+  //           .user_id;
+  //         console.log(userId, getUserSession('id'));
+  //         if (userId.toString() === getUserSession('id')) {
+  //           console.log('jaaj');
+  //           setShowSimulator(false);
+  //         }
+  //       } catch (error) {
+  //         setLogs('simulator release error', 'error');
+  //       }
+  //     }
+  //   },
+  // });
 
   useSubscription(SIMULATOR_MESSAGE_SENT_SUBSCRIPTION, {
     variables,
@@ -222,19 +230,6 @@ export const Simulator = ({
     },
   });
 
-  useEffect(() => {
-    if (simulatorSubscribe) {
-      try {
-        const userId = JSON.parse(simulatorSubscribe.simulatorRelease).simulator_release.user_id;
-        if (userId.toString() === getUserSession('id')) {
-          setSimulatorId(0);
-        }
-      } catch (error) {
-        setLogs('simulator release error', 'error');
-      }
-    }
-  }, [simulatorSubscribe]);
-
   const [releaseSimulator]: any = useLazyQuery(RELEASE_SIMULATOR, {
     fetchPolicy: 'network-only',
   });
@@ -249,7 +244,7 @@ export const Simulator = ({
 
   const releaseUserSimulator = () => {
     releaseSimulator();
-    setSimulatorId(0);
+    setShowSimulator(false);
   };
 
   const handleOpenListReplyDrawer = (items: any) => {
@@ -398,6 +393,12 @@ export const Simulator = ({
     }
   };
 
+  useEffect(() => {
+    if (!isPreviewMessage) {
+      handleSimulator();
+    }
+  }, []);
+
   // to display only preview for template
   useEffect(() => {
     if (isPreviewMessage) {
@@ -407,17 +408,17 @@ export const Simulator = ({
 
   // for loading conversation
   useEffect(() => {
-    if (allConversations && showSimulator) {
+    if (allConversations) {
       getChatMessage();
     }
   }, [allConversations]);
 
-  // for sending message to Gupshup
-  useEffect(() => {
-    if (!isPreviewMessage && message && showSimulator) {
-      sendMessage(sender);
-    }
-  }, [message, showSimulator]);
+  // // for sending message to Gupshup
+  // useEffect(() => {
+  //   if (!isPreviewMessage && message) {
+  //     sendMessage(sender);
+  //   }
+  // }, [message]);
 
   useEffect(() => {
     if (isPreviewMessage && interactiveMessage) {
@@ -503,9 +504,7 @@ export const Simulator = ({
                     data-testid="resetIcon"
                     className={styles.ResetIcon}
                     onClick={() => {
-                      if (getFlowKeyword) {
-                        getFlowKeyword();
-                      }
+                      sendMessage(sender);
                     }}
                   />
                 )}
@@ -578,10 +577,6 @@ export const Simulator = ({
   );
 
   const handleSimulator = () => {
-    // check for the flowkeyword from floweditor
-    if (getFlowKeyword) {
-      getFlowKeyword();
-    }
     client
       .query({ query: GET_SIMULATOR, fetchPolicy: 'network-only' })
       .then(({ data: simulatorData }: any) => {
@@ -594,8 +589,8 @@ export const Simulator = ({
             })
             .then(({ data: searchData }: any) => {
               setAllConversations(searchData);
-              setSimulatorId(simulatorData.simulatorGet.id);
               if (searchData?.search.length > 0) {
+                getSimulatorId(searchData.search[0].contact.id);
                 sendMessage({
                   name: searchData.search[0].contact.name,
                   phone: searchData.search[0].contact.phone,
@@ -613,43 +608,5 @@ export const Simulator = ({
         setNotification('Sorry! Failed to get simulator', 'warning');
       });
   };
-  return (
-    <>
-      {showSimulator && simulator}
-      {simulatorIcon && (
-        <SimulatorIcon
-          data-testid="simulatorIcon"
-          className={showSimulator ? styles.SimulatorIconClicked : styles.SimulatorIconNormal}
-          onClick={() => {
-            if (showSimulator) {
-              releaseUserSimulator();
-            } else {
-              handleSimulator();
-            }
-          }}
-        />
-      )}
-
-      {flowSimulator && (
-        <div className={styles.PreviewButton}>
-          <FormButton
-            variant="outlined"
-            color="primary"
-            data-testid="previewButton"
-            className={styles.Button}
-            onClick={() => {
-              if (showSimulator) {
-                releaseUserSimulator();
-              } else {
-                handleSimulator();
-              }
-            }}
-          >
-            Preview
-            {showSimulator && <CancelOutlinedIcon className={styles.CrossIcon} />}
-          </FormButton>
-        </div>
-      )}
-    </>
-  );
+  return simulator;
 };

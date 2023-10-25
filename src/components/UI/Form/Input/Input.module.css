@@ -43,10 +43,6 @@
   font-weight: 400;
 }
 
-.OutlineInput ::-webkit-scrollbar {
-  width: 0px;
-}
-
 .Resend {
   color: #119656;
   font-weight: bold;
