@@ -157,7 +157,7 @@ export const Organisation = () => {
       component: Input,
       name: 'phone',
       type: 'text',
-      placeholder: t('Organisation phone number'),
+      label: t('Organisation phone number'),
       disabled: true,
       endAdornment: (
         <InputAdornment position="end">

@@ -87,25 +87,23 @@ const theme = createTheme({
           borderWidth: '2px',
         },
         root: {
-          height: '48px',
+          paddingTop: '6px !important',
+          paddingBottom: '6px !important',
         },
-        multiline: {
-          minHeight: '160px',
-          '& textarea': {
-            height: '100% !important',
-          },
+        input: {
+          padding: '6px 16px',
         },
       },
     },
-    MuiAutocomplete: {
-      styleOverrides: {
-        root: {
-          '& .MuiOutlinedInput-root': {
-            padding: '0px 0px 0px 14px !important',
-          },
-        },
-      },
-    },
+    // MuiAutocomplete: {
+    //   styleOverrides: {
+    //     root: {
+    //       '& .MuiOutlinedInput-root': {
+    //         padding: '0px 0px 0px 14px !important',
+    //       },
+    //     },
+    //   },
+    // },
     MuiListItemIcon: {
       styleOverrides: {
         root: {

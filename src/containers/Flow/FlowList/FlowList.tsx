@@ -226,8 +226,6 @@ export const FlowList = () => {
         placeholder="Select tag"
         options={tag ? tag.tags : []}
         optionLabel="label"
-        disabled={false}
-        hasCreateOption={false}
         multiple={false}
         onChange={(value: any) => {
           setSelectedTag(value);
