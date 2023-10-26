@@ -765,6 +765,7 @@ const Template = ({
       variant: 'outlined',
       label: t('Tag'),
     },
+    helperText: t('Use this to categorize your templates.'),
   };
 
   const hsmFields = formField && [

@@ -138,7 +138,7 @@ export const Flow = () => {
       name: 'keywords',
       type: 'text',
       placeholder: t('Keywords'),
-      helperText: t('Enter comma separated keywords that trigger this flow'),
+      helperText: t('Enter comma separated keywords that trigger this flow.'),
     },
     {
       component: AutoComplete,
