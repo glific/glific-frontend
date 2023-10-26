@@ -30,6 +30,7 @@
 
 .OutlineInput > div:first-child {
   width: inherit;
+  padding: 8px 16px;
   height: 100px;
   overflow: auto;
   overflow-x: hidden;

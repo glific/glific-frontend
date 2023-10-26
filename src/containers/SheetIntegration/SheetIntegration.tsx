@@ -66,6 +66,7 @@ export const SheetIntegration = () => {
       component: Input,
       name: 'url',
       type: 'text',
+      label: t('Sheet URL'),
       placeholder: t('Sheet URL'),
       helperText: (
         <a href={SAMPLE_SHEET_LINK} target="_blank" rel="noreferrer" className={styles.HelperText}>
@@ -77,6 +78,7 @@ export const SheetIntegration = () => {
       component: Input,
       name: 'label',
       type: 'text',
+      label: t('Sheet name'),
       placeholder: t('Sheet name'),
     },
     {

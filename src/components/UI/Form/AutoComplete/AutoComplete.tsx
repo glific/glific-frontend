@@ -181,7 +181,6 @@ export const AutoComplete = ({
           data-testid="autocomplete-element"
           options={hasCreateOption ? [...renderedOption, createOption] : renderedOption}
           freeSolo={freeSolo}
-          disablePortal
           autoSelect={autoSelect}
           disableClearable={disableClearable}
           getOptionLabel={(option: any) =>

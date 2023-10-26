@@ -56,8 +56,6 @@ export const ListReplyTemplate = ({
     return !!error;
   })();
 
-  const sectionLabel = `Enter list ${index + 1} title*`;
-
   const { templateButtons } = values;
   const { options } = templateButtons[index];
 
@@ -114,7 +112,6 @@ export const ListReplyTemplate = ({
         {translation && <div className={styles.Translation}>{translation.title}</div>}
         <FormControl fullWidth error={isListTitleError} className={styles.FormControl}>
           <TextField
-            label={sectionLabel}
             placeholder={`List ${index + 1} title (Max 24 char.)`}
             variant="outlined"
             onChange={(e: any) => handleInputChange(e, 'title')}
@@ -151,7 +148,6 @@ export const ListReplyTemplate = ({
                           <TextField
                             placeholder={`Title ${itemIndex + 1} (Max 24 char.)`}
                             variant="outlined"
-                            label={`Enter list item ${itemIndex + 1} title*`}
                             onChange={(e: any) => handleInputChange(e, 'title', itemIndex, true)}
                             className={styles.TextField}
                             error={isError('title', itemIndex)}
@@ -191,7 +187,6 @@ export const ListReplyTemplate = ({
                           <TextField
                             placeholder={`Description ${itemIndex + 1} (Max 60 char.)`}
                             variant="outlined"
-                            label={`Enter list item ${itemIndex + 1} description`}
                             onChange={(e: any) =>
                               handleInputChange(e, 'description', itemIndex, true)
                             }

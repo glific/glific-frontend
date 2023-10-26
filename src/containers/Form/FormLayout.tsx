@@ -29,7 +29,7 @@ export const Heading = ({ title = '', formTitle, helpData }: any) => {
     <div className={styles.Header}>
       <div>
         <div className={styles.Title}>
-          {formTitle}
+          <div className={styles.TitleText}> {formTitle}</div>
           <HelpIcon helpData={helpData} />
         </div>
         <div
@@ -660,7 +660,7 @@ export const FormLayout = ({
     formTitle = `Add a new ${listItemName}`; // case when adding a new item
   }
 
-  let heading = <Heading icon={icon} formTitle={formTitle} />;
+  let heading = <Heading icon={icon} formTitle={formTitle} title={listItemName} />;
 
   const backLink = backLinkButton ? (
     <div className={styles.BackLink}>

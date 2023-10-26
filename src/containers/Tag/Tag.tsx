@@ -43,6 +43,7 @@ export const Tag = () => {
       name: 'label',
       type: 'text',
       placeholder: t('Name'),
+      label: t('Name'),
     },
   ];
 

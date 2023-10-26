@@ -66,9 +66,6 @@ const theme = createTheme({
       styleOverrides: {
         outlinedPrimary: {
           border: '2px solid',
-          '&:hover': {
-            border: '2px solid',
-          },
         },
       },
     },
@@ -89,6 +86,7 @@ const theme = createTheme({
         root: {
           paddingTop: '6px !important',
           paddingBottom: '6px !important',
+          paddingLeft: '0px !important',
         },
         input: {
           padding: '6px 16px',

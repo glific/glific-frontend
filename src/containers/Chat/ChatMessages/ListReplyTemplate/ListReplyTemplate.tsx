@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, Radio } from '@mui/material';
+import { Button, Divider, Radio } from '@mui/material';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import MenuIcon from '@mui/icons-material/Menu';
 import ClearIcon from '@mui/icons-material/Clear';
@@ -126,9 +126,12 @@ export const SimulatorTemplate = ({
   showHeader = true,
   bspMessageId,
 }: SimulatorTemplateProps) => (
-  <div className={styles.SimulatorContent}>
-    {showHeader && <p className={styles.ListHeader}>{title}</p>}
-    <ChatMessageType type="TEXT" body={body} isSimulatedMessage />
+  <div>
+    <div className={styles.SimulatorContent}>
+      {showHeader && <p className={styles.ListHeader}>{title}</p>}
+      <ChatMessageType type="TEXT" body={body} isSimulatedMessage />
+    </div>
+    <Divider />
     <Button
       disabled={disabled}
       startIcon={<FormatListBulletedIcon />}
@@ -190,12 +193,13 @@ export const ListReplyTemplateDrawer = ({
                       className={styles.ListItem}
                       onClick={() => setCheckedItem(payloadObject)}
                     >
-                      <div>
-                        <div>{option.title}</div>
+                      <div className={styles.ListItemText}>
+                        <div className={styles.ListItemTextTitle}>{option.title}</div>
                         <div>{option.description}</div>
                       </div>
                       <div>
                         <Radio
+                          className={styles.ListItemRadio}
                           value={option.title}
                           name="radio-list-item"
                           size="small"
