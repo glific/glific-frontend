@@ -1,11 +1,12 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, MouseEvent, Fragment } from 'react';
 import { Link, Navigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useQuery, useMutation, DocumentNode, useLazyQuery } from '@apollo/client';
 import {
-  ClickAwayListener,
   Divider,
   IconButton,
+  Menu,
+  MenuItem,
   TableFooter,
   TablePagination,
   TableRow,
@@ -17,11 +18,9 @@ import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { SearchBar } from 'components/UI/SearchBar/SearchBar';
 import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 
-import InfoIcon from 'assets/images/info.svg?react';
 import MoreOptions from 'assets/images/icons/MoreOptions.svg?react';
 import DeleteIcon from 'assets/images/icons/Delete/Red.svg?react';
 import EditIcon from 'assets/images/icons/Edit.svg?react';
-import CrossIcon from 'assets/images/icons/Cross.svg?react';
 import BackIcon from 'assets/images/icons/Back.svg?react';
 import { GET_CURRENT_USER } from 'graphql/queries/User';
 import { getUserRole, getUserRolePermissions } from 'context/role';
@@ -30,7 +29,81 @@ import { getUpdatedList, setListSession, getLastListSessionValues } from 'servic
 import styles from './List.module.css';
 import Track from 'services/TrackService';
 import Loading from 'components/UI/Layout/Loading/Loading';
+import HelpIcon from 'components/UI/HelpIcon/HelpIcon';
 
+const actionListMap = (item: any, actionList: any, hasMoreOption: boolean) => {
+  return actionList.map((action: any, index: number) => {
+    // check if we are dealing with nested element
+    let additionalActionParameter: any;
+    const params: any = action.parameter.split('.');
+    if (params.length > 1) {
+      additionalActionParameter = item[params[0]][params[1]];
+    } else {
+      additionalActionParameter = item[params[0]];
+    }
+    const key = index;
+
+    if (hasMoreOption) {
+      return (
+        <Fragment key={key}>
+          <Divider className={styles.Divider} />
+          <MenuItem className={styles.MenuItem}>
+            <div
+              data-testid="additionalButton"
+              id="additionalButton-icon"
+              onClick={() => action.dialog(additionalActionParameter, item)}
+            >
+              <div className={styles.IconWithText}>
+                {action.icon}
+                <div className={styles.TextButton}>{action.label}</div>
+              </div>
+            </div>
+          </MenuItem>
+        </Fragment>
+      );
+    }
+
+    if (action.textButton) {
+      return (
+        <div
+          className={styles.ViewButton}
+          onClick={() => action.dialog(additionalActionParameter, item)}
+          key={key}
+        >
+          {action.textButton}
+        </div>
+      );
+    }
+
+    if (action.link) {
+      return (
+        <Link to={`${action.link}/${additionalActionParameter}`} key={key}>
+          <IconButton className={styles.additonalButton} data-testid="additionalButton">
+            <Tooltip title={`${action.label}`} placement="top">
+              {action.icon}
+            </Tooltip>
+          </IconButton>
+        </Link>
+      );
+    }
+    if (action.dialog) {
+      return (
+        <IconButton
+          data-testid="additionalButton"
+          className={styles.additonalButton}
+          id="additionalButton-icon"
+          onClick={() => action.dialog(additionalActionParameter, item)}
+          key={key}
+        >
+          <Tooltip title={`${action.label}`} placement="top" key={key}>
+            {action.icon}
+          </Tooltip>
+        </IconButton>
+      );
+    }
+    return null;
+  });
+};
 export interface ColumnNames {
   name?: string;
   label: string;
@@ -72,7 +145,6 @@ export interface ListProps {
   filters?: Object | null;
   filterList?: any;
   displayListType?: string;
-  cardLink?: Object | null;
   editSupport?: boolean;
   additionalAction?: (listValues: any) => Array<{
     icon: any;
@@ -83,9 +155,7 @@ export interface ListProps {
     button?: any;
   }>;
   deleteModifier?: {
-    icon: string;
     variables: any;
-    label?: string;
   };
   dialogTitle?: string;
   backLinkButton?: {
@@ -136,13 +206,12 @@ export const List = ({
     show: true,
     label: 'Add New',
   },
-  deleteModifier = { icon: 'normal', variables: null, label: 'Delete' },
+  deleteModifier = { variables: null },
   editSupport = true,
   searchParameter = ['label'],
   filters = null,
   refreshList = false,
   displayListType = 'list',
-  cardLink = null,
   additionalAction = () => [],
   backLinkButton,
   restrictedAction,
@@ -156,8 +225,14 @@ export const List = ({
   const { t } = useTranslation();
   const [showMoreOptions, setShowMoreOptions] = useState<string>('');
 
-  // Hover popoup state
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   // DialogBox states
   const [deleteItemID, setDeleteItemID] = useState<number | null>(null);
@@ -436,26 +511,6 @@ export const List = ({
     }
     let moreButton = null;
 
-    moreButton = (
-      <IconButton
-        data-testid="MoreIcon"
-        onClick={(event) => {
-          event.stopPropagation();
-          if (showMoreOptions == id) {
-            setShowMoreOptions('');
-          } else {
-            setShowMoreOptions(id);
-          }
-        }}
-      >
-        <Tooltip title={t('More')} placement="top">
-          <div className={styles.MoreOptionsIcon}>
-            <MoreOptions />
-          </div>
-        </Tooltip>
-      </IconButton>
-    );
-
     let editButton = null;
     if (editSupport) {
       editButton = allowedAction.edit && (
@@ -477,120 +532,73 @@ export const List = ({
           data-testid="DeleteIcon"
           onClick={() => showDialogHandler(Id, text)}
         >
-          {deleteModifier.icon === 'cross' ? (
-            <CrossIcon />
-          ) : (
-            <div className={styles.IconWithText}>
-              <DeleteIcon className={styles.IconSize} />
-              <div className={styles.TextButton}>Delete</div>
-            </div>
-          )}
+          <div className={styles.IconWithText}>
+            <DeleteIcon className={styles.IconSize} />
+            <div className={styles.TextButton}>Delete</div>
+          </div>
         </div>
       ) : null;
 
-    const actionsInsideMore = additionalAction(item).filter((action: any) => action?.hasMoreOption);
-    const actionsOutsideMore = additionalAction(item).filter(
-      (action: any) => !action?.hasMoreOption
-    );
+    const actionsInsideMore = additionalAction(item).filter((action: any) => action?.insideMore);
+    const actionsOutsideMore = additionalAction(item).filter((action: any) => !action?.insideMore);
 
-    const actionListMap = (actionList: any, hasMoreOption: boolean) => {
-      return actionList.map((action: any, index: number) => {
-        // check if we are dealing with nested element
-        let additionalActionParameter: any;
-        const params: any = action.parameter.split('.');
-        if (params.length > 1) {
-          additionalActionParameter = item[params[0]][params[1]];
-        } else {
-          additionalActionParameter = item[params[0]];
-        }
-        const key = index;
-
-        if (hasMoreOption) {
-          return (
-            <div key={key}>
-              <Divider className={styles.DividerPopUp} />
-              <div
-                data-testid="additionalButton"
-                id="additionalButton-icon"
-                onClick={() => action.dialog(additionalActionParameter, item)}
-              >
-                <div className={styles.IconWithText}>
-                  {action.icon}
-                  <div className={styles.TextButton}>{action.name}</div>
-                </div>
-              </div>
+    if (actionsInsideMore.length > 0 || allowedAction.edit || allowedAction.delete) {
+      moreButton = (
+        <IconButton
+          data-testid="MoreIcon"
+          onClick={(event) => {
+            setAnchorEl(event.currentTarget);
+            if (showMoreOptions == id) {
+              setShowMoreOptions('');
+            } else {
+              setShowMoreOptions(id);
+            }
+          }}
+        >
+          <Tooltip title={t('More')} placement="top">
+            <div className={styles.MoreOptionsIcon}>
+              <MoreOptions />
             </div>
-          );
-        }
-
-        if (action.textButton) {
-          return (
-            <div
-              className={styles.ViewButton}
-              onClick={() => action.dialog(additionalActionParameter, item)}
-              key={key}
-            >
-              {action.textButton}
-            </div>
-          );
-        }
-
-        if (action.link) {
-          return (
-            <Link to={`${action.link}/${additionalActionParameter}`} key={key}>
-              <IconButton className={styles.additonalButton} data-testid="additionalButton">
-                <Tooltip title={`${action.label}`} placement="top">
-                  {action.icon}
-                </Tooltip>
-              </IconButton>
-            </Link>
-          );
-        }
-        if (action.dialog) {
-          return (
-            <IconButton
-              data-testid="additionalButton"
-              className={styles.additonalButton}
-              id="additionalButton-icon"
-              onClick={() => action.dialog(additionalActionParameter, item)}
-              key={key}
-            >
-              <Tooltip title={`${action.label}`} placement="top" key={key}>
-                {action.icon}
-              </Tooltip>
-            </IconButton>
-          );
-        }
-        return null;
-      });
-    };
+          </Tooltip>
+        </IconButton>
+      );
+    }
 
     if (id) {
       return (
-        <ClickAwayListener
-          onClickAway={() => {
-            showMoreOptions && setShowMoreOptions('');
-          }}
-        >
-          <div className={styles.Icons}>
-            {actionListMap(actionsOutsideMore, false)}
+        <div className={styles.Icons}>
+          {actionListMap(item, actionsOutsideMore, false)}
 
-            {/* do not display edit & delete for staff role in collection */}
-            {userRolePermissions.manageCollections || item !== 'collections' ? (
-              <div className={styles.MoreOptions}>
-                {moreButton}
-                {showMoreOptions == id && (
-                  <div className={`${styles.PopUp} ${styles.FlexCenter} DropDownClass`}>
-                    {editButton}
-                    <Divider className={styles.DividerPopUp} />
-                    {deleteButton(id, labelValue)}
-                    {actionListMap(actionsInsideMore, true)}
-                  </div>
-                )}
-              </div>
-            ) : null}
-          </div>
-        </ClickAwayListener>
+          {/* do not display edit & delete for staff role in collection */}
+          {userRolePermissions.manageCollections || item !== 'collections' ? (
+            <div className={styles.MoreOptions}>
+              {moreButton}
+              {showMoreOptions == id && (
+                <Menu
+                  anchorEl={anchorEl}
+                  id="account-menu"
+                  open={open}
+                  onClose={handleClose}
+                  onClick={handleClose}
+                  classes={{ list: styles.MenuList }}
+                  anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'right',
+                  }}
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                >
+                  <MenuItem className={styles.MenuItem}> {editButton}</MenuItem>
+                  <Divider className={styles.Divider} />
+                  <MenuItem className={styles.MenuItem}> {deleteButton(id, labelValue)}</MenuItem>
+                  {actionListMap(item, actionsInsideMore, true)}
+                </Menu>
+              )}
+            </div>
+          ) : null}
+        </div>
       );
     }
     return null;
@@ -760,37 +768,6 @@ export const List = ({
     buttonDisplay = <div className={styles.AddButton}>{buttonContent}</div>;
   }
 
-  const handleMouseEnter = () => {
-    setIsPopupOpen(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsPopupOpen(false);
-  };
-
-  const infoIcon = (
-    <div className={styles.Hover} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-      <InfoIcon className={styles.InfoIcon} />
-      {isPopupOpen && helpData && (
-        <div className={styles.HoverPopUp}>
-          <div className={styles.Triangle}></div>
-          <div className={styles.HoverPopUpText}>
-            {helpData.heading}
-            {helpData.body}
-            <div
-              className={styles.HoverLink}
-              onClick={() => {
-                window.location.replace(helpData.link);
-              }}
-            >
-              Learn more
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-
   return (
     <>
       {showHeader && (
@@ -798,8 +775,8 @@ export const List = ({
           <div className={styles.Header} data-testid="listHeader">
             <div>
               <div className={styles.Title}>
-                {title}
-                {infoIcon}
+                <div className={styles.TitleText}> {title}</div>
+                <HelpIcon helpData={helpData} />
               </div>
             </div>
             <div>

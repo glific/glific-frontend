@@ -3,22 +3,23 @@
   font-size: 12px;
   line-height: 10px;
   color: #cacaca;
-  align-items: center;
-  display: flex;
-  align-items: center;
 }
 
 .SessionInfo {
-  color: #999;
-  font-size: 14px;
-  font-weight: 500;
+  color: #555;
+  font-size: 12px;
   line-height: 20px;
 }
 
 .SessionCount {
+  margin-left: 4px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
   color: #555;
-  font-family: Heebo;
-  font-size: 14px;
+  padding: 4px 8px;
+  background-color: #ecf7f1;
+  border-radius: 5px;
   font-style: normal;
   font-weight: 700;
   line-height: 20px;
@@ -42,8 +43,8 @@
 }
 
 .InfoWrapper {
-  align-items: flex-end;
-  flex-direction: column;
+  display: flex;
+  align-items: center;
 }
 
 .Message {
@@ -65,8 +66,7 @@
 
 .MessageInfo {
   display: flex;
-  gap: 0 72px;
-  margin: 0 29px 0 17px;
+  gap: 0 16px;
 }
 
 @media only screen and (max-width: 768px) {

@@ -191,9 +191,9 @@ export const CollectionList = () => {
 
   const additionalAction = () => [
     {
+      label: t('View details'),
       icon: viewButton,
       parameter: 'id',
-      textButton: 'View',
       dialog: viewCollection,
     },
     {
@@ -203,11 +203,11 @@ export const CollectionList = () => {
       dialog: setContactsDialog,
     },
     {
-      label: t('Export collection'),
+      label: t('Export'),
       icon: <ExportIcon />,
       parameter: 'id',
       dialog: exportCollection,
-      hasMoreOption: true,
+      insideMore: true,
     },
   ];
 
@@ -254,7 +254,6 @@ export const CollectionList = () => {
         listIcon={collectionIcon}
         dialogMessage={dialogMessage}
         additionalAction={additionalAction}
-        cardLink={cardLink}
         {...queries}
         {...columnAttributes}
       />

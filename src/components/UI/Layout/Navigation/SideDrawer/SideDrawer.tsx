@@ -26,11 +26,7 @@ export const SideDrawer = () => {
               <img src={GlificLogo} className={styles.GlificLogo} alt="Glific" />
             </Typography>
 
-            <IconButton
-              className={styles.IconButton}
-              onClick={() => setDrawerOpen(false)}
-              data-testid="drawer-button"
-            >
+            <IconButton onClick={() => setDrawerOpen(false)} data-testid="drawer-button">
               <MenuIcon />
             </IconButton>
           </div>
