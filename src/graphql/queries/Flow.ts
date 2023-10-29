@@ -19,6 +19,7 @@ export const GET_FLOW = gql`
         uuid
         isActive
         isPinned
+        description
         roles {
           id
           label
@@ -48,6 +49,7 @@ export const FILTER_FLOW = gql`
       name
       uuid
       keywords
+      description
       lastChangedAt
       isBackground
       lastPublishedAt
