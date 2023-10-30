@@ -720,6 +720,7 @@ export const InteractiveMessage = () => {
         variant: 'outlined',
         label: t('Tag'),
       },
+      helperText: t('Use this to categorize your interactive messages.'),
     },
   ];
 
