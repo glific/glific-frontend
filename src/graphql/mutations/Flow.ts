@@ -18,6 +18,7 @@ export const CREATE_FLOW = gql`
         id
         name
         isActive
+        description
         uuid
         roles {
           id
@@ -39,6 +40,7 @@ export const UPDATE_FLOW = gql`
         id
         name
         isActive
+        description
         uuid
         roles {
           id
@@ -91,6 +93,7 @@ export const CREATE_FLOW_COPY = gql`
         id
         name
         keywords
+        description
         uuid
       }
       errors {
