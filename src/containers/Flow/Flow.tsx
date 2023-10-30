@@ -151,7 +151,7 @@ export const Flow = () => {
       name: 'keywords',
       type: 'text',
       placeholder: t('Keywords'),
-      helperText: t('Enter comma separated keywords that trigger this flow'),
+      helperText: t('Enter comma separated keywords that trigger this flow.'),
     },
     {
       component: Input,
@@ -174,6 +174,7 @@ export const Flow = () => {
         variant: 'outlined',
         label: t('Tag'),
       },
+      helperText: t('Use this to categorize your flows.'),
     },
     {
       component: Checkbox,

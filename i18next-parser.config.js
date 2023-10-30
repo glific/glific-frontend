@@ -22,7 +22,7 @@ module.exports = {
   // Supports JSON (.json) and YAML (.yml) file formats
   // Where to write the locale files relative to process.cwd()
 
-  input: ['src/**/*.tsx'],
+  input: ['src/**/*.tsx', 'src/**/*.ts'],
   // An array of globs that describe where to look for source files
   // relative to the location of the configuration file
   // Globs syntax: https://github.com/isaacs/node-glob#glob-primer
