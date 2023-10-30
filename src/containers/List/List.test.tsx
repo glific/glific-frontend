@@ -152,7 +152,7 @@ test('list sorting', async () => {
 });
 
 describe('DialogMessage tests', () => {
-  test('dialogMessage with custom component for delete', async () => {
+  test.only('dialogMessage with custom component for delete', async () => {
     const useCustomDialog = () => {
       const component = (
         <div>

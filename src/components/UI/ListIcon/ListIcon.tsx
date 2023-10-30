@@ -22,6 +22,8 @@ import ProfileIcon from 'assets/images/icons/SideDrawer/ProfileIcon';
 import AcoountIcon from 'assets/images/icons/SideDrawer/AccountIcon';
 import SettingsIcon from 'assets/images/icons/SideDrawer/SettingsIcon';
 import LogoutIcon from 'assets/images/icons/SideDrawer/LogoutIcon';
+import OrganizationIcon from 'assets/images/icons/SideDrawer/OrganizationIcon';
+import ConsultingIcon from 'assets/images/icons/SideDrawer/ConsultingIcon';
 
 export interface ListIconProps {
   icon: string | undefined;
@@ -57,6 +59,8 @@ export const ListIcon = ({ icon = '', selected = false, count }: ListIconProps) 
     account: AcoountIcon,
     settings: SettingsIcon,
     logout: LogoutIcon,
+    organization: OrganizationIcon,
+    consulting: ConsultingIcon,
   };
 
   return (

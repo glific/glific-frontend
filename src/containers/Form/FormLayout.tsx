@@ -563,10 +563,12 @@ export const FormLayout = ({
 
             return (
               <Fragment key={key}>
-                {field.label && (
+                {field.label ? (
                   <Typography data-testid="formLabel" variant="h5" className={styles.FieldLabel}>
                     {field.label}
                   </Typography>
+                ) : (
+                  <div className={styles.Spacing} />
                 )}
                 <Field key={key} {...field} onSubmit={submitForm} />
               </Fragment>

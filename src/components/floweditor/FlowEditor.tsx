@@ -4,6 +4,8 @@ import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { Menu, MenuItem, Typography } from '@mui/material';
 import BackIconFlow from 'assets/images/icons/BackIconFlow.svg?react';
 import WarningIcon from 'assets/images/icons/Warning.svg?react';
+import PreviewIcon from 'assets/images/icons/PreviewIcon.svg?react';
+import PublishIcon from 'assets/images/icons/PublishIcon.svg?react';
 import { Button } from 'components/UI/Form/Button/Button';
 import { APP_NAME } from 'config/index';
 import { Simulator } from 'components/simulator/Simulator';
@@ -329,11 +331,10 @@ export const FlowEditor = () => {
 
         <div className={styles.Actions}>
           <Button
-            id="demo-customized-button"
             aria-controls={open ? 'demo-customized-menu' : undefined}
             aria-haspopup="true"
             aria-expanded={open ? 'true' : undefined}
-            variant="contained"
+            variant="outlined"
             data-testid="moreButton"
             disableElevation
             onClick={handleClick}
@@ -378,18 +379,18 @@ export const FlowEditor = () => {
             variant="outlined"
             color="primary"
             data-testid="previewButton"
-            className={styles.ContainedButton}
             onClick={() => setShowSimulator(!showSimulator)}
           >
+            <PreviewIcon className={styles.Icon} />
             Preview
           </Button>
           <Button
             variant="contained"
             color="primary"
             data-testid="button"
-            className={styles.ContainedButton}
             onClick={() => setPublishDialog(true)}
           >
+            <PublishIcon className={styles.Icon} />
             Publish
           </Button>
         </div>

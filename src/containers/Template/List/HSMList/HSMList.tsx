@@ -34,13 +34,11 @@ export const HSMList = () => {
     syncHsmTemplates();
   };
 
-  if (syncTemplateLoad) {
-    return <Loading />;
-  }
   const syncHSMButton = (
     <Button
       variant="outlined"
       color="primary"
+      loading={syncTemplateLoad}
       className={styles.HsmUpdates}
       data-testid="updateHsm"
       onClick={() => handleHsmUpdates()}
@@ -57,6 +55,7 @@ export const HSMList = () => {
       pageLink="template"
       listIcon={templateIcon}
       filters={{ isHsm: true }}
+      loading={syncTemplateLoad}
       syncHSMButton={syncHSMButton}
       isHSM
       buttonLabel={t('Create')}

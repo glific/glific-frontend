@@ -92,12 +92,6 @@
   text-align: end;
 }
 
-/* 5th div need more top bottom margin */
-.Form > div:nth-of-type(5) {
-  padding: 0;
-  margin: 20px 0px !important;
-}
-
 /* 5th div helperText need more font-size and top margin */
 .Form > div:nth-of-type(5) > div > p[id='helper-text'] {
   font-size: 16px !important;

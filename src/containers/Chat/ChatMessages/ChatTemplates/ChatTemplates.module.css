@@ -10,7 +10,7 @@
   bottom: 0px;
   overflow-y: scroll;
   padding: 0 !important;
-  border-radius: 24px 24px 0px 0px !important;
+  border-radius: 12px 12px 0px 0px !important;
 }
 
 .Text {
@@ -52,4 +52,12 @@
 .AttachmentPin {
   text-align: right;
   width: 30px;
+}
+
+.NoResult {
+  margin-top: 10px;
+}
+
+.TemplateList {
+  padding-top: 10px;
 }

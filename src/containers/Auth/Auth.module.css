@@ -214,6 +214,7 @@
   font-size: 16px;
   color: #93a29b;
   font-weight: 500;
+  margin-top: 10px;
   margin-left: 10px;
   padding-bottom: 10px;
 }
@@ -271,4 +272,8 @@
   font-size: 16px;
   line-height: 18px;
   color: #555555;
+}
+
+.Spacing {
+  margin: 15px 0px;
 }

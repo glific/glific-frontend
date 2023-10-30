@@ -157,3 +157,7 @@
 .TitleText {
   margin-right: 8px;
 }
+
+.Spacing {
+  margin: 20px 0px !important;
+}
