@@ -10,7 +10,7 @@ import { List } from 'containers/List/List';
 import Menu from 'components/UI/Menu/Menu';
 import { Button } from 'components/UI/Form/Button/Button';
 import { FILTER_WEBHOOK_LOGS, GET_WEBHOOK_LOGS_COUNT } from 'graphql/queries/WebhookLogs';
-import { copyToClipboard } from 'common/utils';
+import { copyToClipboard, slicedString } from 'common/utils';
 import { DATE_TIME_FORMAT } from 'common/constants';
 import styles from './WebhookLogsList.module.css';
 
@@ -121,7 +121,7 @@ export const WebhookLogsList = () => {
           onKeyDown={handleClick}
           aria-hidden="true"
         >
-          {newtext.length > 21 ? `${newtext.slice(0, 21)}...` : newtext}
+          {slicedString(newtext, 21)}
         </div>
       </Menu>
     );
