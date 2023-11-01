@@ -11,6 +11,7 @@ import { WhatsAppToJsx } from 'common/RichEditor';
 import { MessageType } from '../MessageType/MessageType';
 import styles from './ChatConversation.module.css';
 import Track from 'services/TrackService';
+import { slicedString } from 'common/utils';
 
 export interface ChatConversationProps {
   contactId: number;
@@ -152,7 +153,7 @@ const ChatConversation = ({
     chatBubble = [styles.ChatBubble, styles.ChatBubbleUnread];
   }
 
-  const name = contactName?.length > 20 ? `${contactName.slice(0, 20)}...` : contactName;
+  const name = slicedString(contactName, 20);
 
   const { type, body } = lastMessage;
   const isTextType = type === 'TEXT';

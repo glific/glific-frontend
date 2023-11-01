@@ -11,7 +11,7 @@ import { MOVE_CONTACTS } from 'graphql/mutations/Contact';
 import { setNotification } from 'common/notification';
 import { listIcon } from '../SuperAdminContactManagement/SuperAdminContactManagement';
 import styles from './AdminContactManagement.module.css';
-import { exportCsvFile } from 'common/utils';
+import { exportCsvFile, slicedString } from 'common/utils';
 
 export const AdminContactManagement = () => {
   const [fileName, setFileName] = useState<string>('');
@@ -49,7 +49,7 @@ export const AdminContactManagement = () => {
       if (extension !== 'csv') {
         setErrors([{ message: 'Please make sure the file format matches the sample' }]);
       } else {
-        const shortenedName = mediaName.length > 10 ? `${mediaName.slice(0, 10)}...` : mediaName;
+        const shortenedName = slicedString(mediaName, 10);
         setFileName(shortenedName);
         setCsvContent(reader.result);
       }
