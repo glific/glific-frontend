@@ -1,8 +1,13 @@
-.lastLogin {
+.LastLogin {
   position: absolute;
   bottom: 26px;
   font-size: 12px;
   padding-left: 22px;
   color: #073f24;
   font-weight: 500;
+}
+
+.LastLoginEnterprise {
+  composes: LastLogin;
+  bottom: 2px;
 }
