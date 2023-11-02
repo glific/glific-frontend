@@ -31,9 +31,8 @@
   font-size: 16px;
 }
 
-.EndDate {
-  min-width: 110px;
-  width: 15%;
+.Id {
+  width: 100px;
 }
 
 .Created {

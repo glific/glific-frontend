@@ -12,9 +12,9 @@ import { List } from 'containers/List/List';
 import Ticket from 'containers/Ticket/Ticket';
 import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
 import { getUserSession } from 'services/AuthService';
-
 import styles from './TicketList.module.css';
 
+const getId = (id: any) => <div className={styles.TableText}>{id}</div>;
 const getBody = (body: any) => <div className={styles.TableText}>{body}</div>;
 const getInsertedAt = (insertedAt: string) => (
   <div className={styles.TableText}>{moment(insertedAt).format('DD-MM-YYYY hh:mm')}</div>
@@ -37,7 +37,8 @@ const getStatus = (status: string) => {
 
 const getUser = (user: any) => <div className={styles.TableText}>{user?.name}</div>;
 
-const getColumns = ({ body, status, insertedAt, user, contact }: any) => ({
+const getColumns = ({ id, body, status, insertedAt, user, contact }: any) => ({
+  ticketId: getId(id),
   insertedAt: getInsertedAt(insertedAt),
   body: getBody(body),
   contact: getUser(contact),
@@ -46,6 +47,7 @@ const getColumns = ({ body, status, insertedAt, user, contact }: any) => ({
 });
 
 const columnStyles = [
+  styles.Id,
   styles.Created,
   styles.Label,
   styles.Issue,
@@ -94,6 +96,7 @@ export const TicketList = () => {
   }
 
   const columnNames: any = [
+    { name: 'id', label: t('ID') },
     { name: 'inserted_at', label: t('Created at'), sort: true, order: 'desc' },
     { name: 'body', label: t('Issue') },
     { label: t('Opened by') },
