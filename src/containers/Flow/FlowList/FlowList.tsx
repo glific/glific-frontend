@@ -6,7 +6,7 @@ import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { FormControl, MenuItem, Select } from '@mui/material';
 
 import FlowIcon from 'assets/images/icons/Flow/Dark.svg?react';
-import DuplicateIcon from 'assets/images/icons/Flow/Duplicate.svg?react';
+import DuplicateIcon from 'assets/images/icons/Duplicate.svg?react';
 import ExportIcon from 'assets/images/icons/Flow/Export.svg?react';
 import ConfigureIcon from 'assets/images/icons/Configure/UnselectedDark.svg?react';
 import PinIcon from 'assets/images/icons/Pin/Active.svg?react';

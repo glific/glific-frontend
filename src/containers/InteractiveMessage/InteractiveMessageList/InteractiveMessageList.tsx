@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import InteractiveMessageIcon from 'assets/images/icons/InteractiveMessage/Dark.svg?react';
 import DownArrow from 'assets/images/icons/DownArrow.svg?react';
-import DuplicateIcon from 'assets/images/icons/Flow/Duplicate.svg?react';
+import DuplicateIcon from 'assets/images/icons/Duplicate.svg?react';
 import { List } from 'containers/List/List';
 import {
   FILTER_INTERACTIVE_MESSAGES,
