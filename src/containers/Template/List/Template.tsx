@@ -1,10 +1,11 @@
 import { useContext, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 import { Checkbox, FormControlLabel } from '@mui/material';
+import { useMutation, useQuery } from '@apollo/client';
 
 import { List } from 'containers/List/List';
-import { useMutation, useQuery } from '@apollo/client';
 import { WhatsAppToJsx } from 'common/RichEditor';
 import { DATE_TIME_FORMAT, GUPSHUP_ENTERPRISE_SHORTCODE } from 'common/constants';
 import {
@@ -22,6 +23,7 @@ import DownArrow from 'assets/images/icons/DownArrow.svg?react';
 import ApprovedIcon from 'assets/images/icons/Template/Approved.svg?react';
 import RejectedIcon from 'assets/images/icons/Template/Rejected.svg?react';
 import PendingIcon from 'assets/images/icons/Template/Pending.svg?react';
+import DuplicateIcon from 'assets/images/icons/Duplicate.svg?react';
 import { ProviderContext } from 'context/session';
 import { copyToClipboardMethod, exportCsvFile, getFileExtension } from 'common/utils';
 import Loading from 'components/UI/Layout/Loading/Loading';
@@ -80,6 +82,7 @@ export const Template = ({
   const [open, setOpen] = useState(false);
   const [Id, setId] = useState('');
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const { provider } = useContext(ProviderContext);
   const [selectedTag, setSelectedTag] = useState<any>(null);
@@ -223,6 +226,14 @@ export const Template = ({
     }
   };
 
+  const setCopyDialog = (id: any) => {
+    let redirectPath = 'speed-send';
+    if (isHSM) {
+      redirectPath = 'template';
+    }
+    navigate(`/${redirectPath}/${id}/edit`, { state: 'copy' });
+  };
+
   const setDialog = (id: string) => {
     if (Id !== id) {
       setId(id);
@@ -232,7 +243,15 @@ export const Template = ({
     }
   };
 
+  const copyAction = {
+    label: t('Make a copy'),
+    icon: <DuplicateIcon />,
+    parameter: 'id',
+    dialog: setCopyDialog,
+  };
+
   let additionalAction: any = () => [
+    copyAction,
     {
       label: t('Show all languages'),
       icon: <DownArrow data-testid="down-arrow" />,
@@ -286,6 +305,7 @@ export const Template = ({
 
   if (isHSM) {
     additionalAction = () => [
+      copyAction,
       {
         label: t('Copy UUID'),
         icon: <CopyAllOutlined sx={{ mt: 1, color: '#073F24' }} data-testid="copy-button" />,
