@@ -203,7 +203,21 @@ const Template = ({
   const navigate = useNavigate();
   const location: any = useLocation();
   const params = useParams();
-  const isEditForm = !!params.id;
+
+  let isEditing = false;
+  let mode;
+
+  const isCopyState = location.state === 'copy';
+  if (isCopyState) {
+    queries.updateItemQuery = CREATE_TEMPLATE;
+    mode = 'copy';
+  } else {
+    queries.updateItemQuery = UPDATE_TEMPLATE;
+  }
+
+  if (params.id && !isCopyState) {
+    isEditing = true;
+  }
 
   const { data: tag } = useQuery(GET_TAGS, {
     variables: {},
@@ -387,7 +401,7 @@ const Template = ({
       lang.sort((first: any, second: any) => (first.label > second.label ? 1 : -1));
 
       setLanguageOptions(lang);
-      if (!isEditForm) setLanguageId(lang[0]);
+      if (!isEditing) setLanguageId(lang[0]);
     }
   }, [languages]);
 
@@ -469,7 +483,7 @@ const Template = ({
     const selected = languageOptions.find(
       ({ label: languageLabel }: any) => languageLabel === value
     );
-    if (selected && isEditForm) {
+    if (selected && isEditing) {
       updateTranslation(selected);
     } else if (selected) {
       setLanguageId(selected);
@@ -484,7 +498,7 @@ const Template = ({
     }
 
     // create translations only while updating
-    if (result && isEditForm) {
+    if (result && isEditing) {
       updateTranslation(result);
     }
     if (result) setLanguageId(result);
@@ -1005,13 +1019,18 @@ const Template = ({
     return <Loading />;
   }
 
+  let copyMessage = t('Copy of the speed send has been created!');
+  if (defaultAttribute.isHsm) {
+    copyMessage = t('Copy of the template has been created!');
+  }
+
   return (
     <FormLayout
       {...queries}
       states={states}
       setStates={setStates}
       setPayload={setPayload}
-      validationSchema={isEditForm ? Yup.object() : FormSchema}
+      validationSchema={isEditing ? Yup.object() : FormSchema}
       listItemName={listItemName}
       dialogMessage={dialogMessage}
       formFields={fields}
@@ -1029,6 +1048,8 @@ const Template = ({
       customStyles={customStyle}
       saveOnPageChange={false}
       afterSave={!defaultAttribute.isHsm ? afterSave : undefined}
+      type={mode}
+      copyNotification={copyMessage}
     />
   );
 };

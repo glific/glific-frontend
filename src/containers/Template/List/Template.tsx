@@ -251,13 +251,13 @@ export const Template = ({
   };
 
   let additionalAction: any = () => [
-    copyAction,
     {
       label: t('Show all languages'),
       icon: <DownArrow data-testid="down-arrow" />,
       parameter: 'id',
       dialog: setDialog,
     },
+    copyAction,
   ];
 
   let defaultSortBy;
@@ -305,13 +305,13 @@ export const Template = ({
 
   if (isHSM) {
     additionalAction = () => [
-      copyAction,
       {
         label: t('Copy UUID'),
         icon: <CopyAllOutlined sx={{ mt: 1, color: '#073F24' }} data-testid="copy-button" />,
         parameter: 'id',
         dialog: copyUuid,
       },
+      copyAction,
     ];
     defaultSortBy = 'STATUS';
     appliedFilters = { ...templateFilters, status: filterValue };
