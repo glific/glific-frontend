@@ -9,6 +9,9 @@ import ChatIcon from 'assets/images/icons/Chat/UnselectedDark.svg?react';
 import { DELETE_TRIGGER } from 'graphql/mutations/Trigger';
 import { TICKET_COUNT_QUERY, TICKET_LIST_QUERY } from 'graphql/queries/Ticket';
 import { List } from 'containers/List/List';
+import { Button } from 'components/UI/Form/Button/Button';
+import { ExportTicket } from './ExportTicket/ExportTicket';
+import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import Ticket from 'containers/Ticket/Ticket';
 import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
 import { getUserSession } from 'services/AuthService';
@@ -67,8 +70,8 @@ const filterList = [
 ];
 
 export const TicketList = () => {
+  const [showExportDialog, setShowExportDialog] = useState(false);
   const { t } = useTranslation();
-
   const userId = getUserSession('id');
 
   const [openDialog, setOpenDialog] = useState(false);
@@ -90,6 +93,21 @@ export const TicketList = () => {
           <Ticket selectedTicket={selectedTicket} setOpenDialog={setOpenDialog}></Ticket>
         </DialogContent>
       </Dialog>
+    );
+  }
+
+  if (showExportDialog) {
+    dialog = (
+      <DialogBox
+        open
+        title="Export tickets"
+        titleAlign="left"
+        skipOk
+        skipCancel
+        handleCancel={() => setShowExportDialog(false)}
+      >
+        <ExportTicket />
+      </DialogBox>
     );
   }
 
@@ -162,6 +180,12 @@ export const TicketList = () => {
     </div>
   );
 
+  const secondaryButton = (
+    <Button variant="contained" onClick={() => setShowExportDialog(true)}>
+      Export tickets
+    </Button>
+  );
+
   const filter: any = { status };
 
   if (assignedToUser) {
@@ -178,6 +202,7 @@ export const TicketList = () => {
         listItemName="ticket"
         pageLink="ticket"
         button={{ show: false }}
+        secondaryButton={secondaryButton}
         listIcon={ticketIcon}
         {...queries}
         searchParameter={['body']}

@@ -50,3 +50,9 @@ export const TICKET_COUNT_QUERY = gql`
     countTickets(filter: $filter)
   }
 `;
+
+export const EXPORT_SUPPORT_TICKETS = gql`
+  query fetchSupportTickets($filter: FetchSupportTickets) {
+    fetchSupportTickets(filter: $filter)
+  }
+`;
