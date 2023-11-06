@@ -31,9 +31,8 @@
   font-size: 16px;
 }
 
-.EndDate {
-  min-width: 110px;
-  width: 15%;
+.Id {
+  width: 100px;
 }
 
 .Created {
@@ -86,6 +85,7 @@
   color: #93a29b;
   line-height: 1.25;
   margin: 0;
+  word-break: break-all;
 }
 
 .Filters {
