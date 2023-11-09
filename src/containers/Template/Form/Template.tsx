@@ -209,6 +209,27 @@ const Template = ({
     fetchPolicy: 'network-only',
   });
 
+  const { data: languages } = useQuery(USER_LANGUAGES, {
+    variables: { opts: { order: 'ASC' } },
+  });
+
+  const [getSessionTemplates, { data: sessionTemplates }] = useLazyQuery<any>(FILTER_TEMPLATES, {
+    variables: {
+      filter: { languageId: language ? parseInt(language.id, 10) : null },
+      opts: {
+        order: 'ASC',
+        limit: null,
+        offset: 0,
+      },
+    },
+  });
+
+  const [getSessionTemplate, { data: template, loading: templateLoading }] =
+    useLazyQuery<any>(GET_TEMPLATE);
+
+  // create media for attachment
+  const [createMediaMessage] = useMutation(CREATE_MEDIA_MESSAGE);
+
   const states = {
     language,
     label,
@@ -351,27 +372,6 @@ const Template = ({
       setAttachmentURL('');
     }
   };
-
-  const { data: languages } = useQuery(USER_LANGUAGES, {
-    variables: { opts: { order: 'ASC' } },
-  });
-
-  const [getSessionTemplates, { data: sessionTemplates }] = useLazyQuery<any>(FILTER_TEMPLATES, {
-    variables: {
-      filter: { languageId: language ? parseInt(language.id, 10) : null },
-      opts: {
-        order: 'ASC',
-        limit: null,
-        offset: 0,
-      },
-    },
-  });
-
-  const [getSessionTemplate, { data: template, loading: templateLoading }] =
-    useLazyQuery<any>(GET_TEMPLATE);
-
-  // create media for attachment
-  const [createMediaMessage] = useMutation(CREATE_MEDIA_MESSAGE);
 
   useEffect(() => {
     if (params.id) {
