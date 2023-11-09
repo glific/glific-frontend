@@ -204,21 +204,6 @@ const Template = ({
   const location: any = useLocation();
   const params = useParams();
 
-  let isEditing = false;
-  let mode;
-
-  const isCopyState = location.state === 'copy';
-  if (isCopyState) {
-    queries.updateItemQuery = CREATE_TEMPLATE;
-    mode = 'copy';
-  } else {
-    queries.updateItemQuery = UPDATE_TEMPLATE;
-  }
-
-  if (params.id && !isCopyState) {
-    isEditing = true;
-  }
-
   const { data: tag } = useQuery(GET_TAGS, {
     variables: {},
     fetchPolicy: 'network-only',
@@ -421,6 +406,65 @@ const Template = ({
     }
   }, [getExample]);
 
+  useEffect(() => {
+    if ((type === '' || type) && attachmentURL) {
+      validateURL(attachmentURL);
+      if (getUrlAttachmentAndType) {
+        getUrlAttachmentAndType(type.id || 'TEXT', { url: attachmentURL });
+      }
+    }
+  }, [type, attachmentURL]);
+
+  useEffect(() => {
+    displayWarning();
+  }, [type]);
+
+  useEffect(() => {
+    if (templateType) {
+      addTemplateButtons(false);
+    }
+  }, [templateType]);
+
+  // Removing buttons when checkbox is checked or unchecked
+  useEffect(() => {
+    if (getExample) {
+      const { message }: any = getTemplateAndButton(getPlainTextFromEditor(getExample));
+      onExampleChange(message || '');
+    }
+  }, [isAddButtonChecked]);
+
+  // Converting buttons to template and vice-versa to show realtime update on simulator
+  useEffect(() => {
+    if (templateButtons.length > 0) {
+      const parse = convertButtonsToTemplate(templateButtons, templateType);
+
+      const parsedText = parse.length ? `| ${parse.join(' | ')}` : null;
+
+      const { message }: any = getTemplateAndButton(getPlainTextFromEditor(example));
+
+      const sampleText: any = parsedText && message + parsedText;
+
+      if (sampleText) {
+        onExampleChange(sampleText);
+      }
+    }
+  }, [templateButtons]);
+
+  let isEditing = false;
+  let mode;
+
+  const isCopyState = location.state === 'copy';
+  if (isCopyState) {
+    queries.updateItemQuery = CREATE_TEMPLATE;
+    mode = 'copy';
+  } else {
+    queries.updateItemQuery = UPDATE_TEMPLATE;
+  }
+
+  if (params.id && !isCopyState) {
+    isEditing = true;
+  }
+
   const validateTitle = (value: any) => {
     let error;
     if (value) {
@@ -518,15 +562,6 @@ const Template = ({
     }
   };
 
-  useEffect(() => {
-    if ((type === '' || type) && attachmentURL) {
-      validateURL(attachmentURL);
-      if (getUrlAttachmentAndType) {
-        getUrlAttachmentAndType(type.id || 'TEXT', { url: attachmentURL });
-      }
-    }
-  }, [type, attachmentURL]);
-
   const displayWarning = () => {
     if (type && type.id === 'STICKER') {
       setWarning(
@@ -549,10 +584,6 @@ const Template = ({
       setWarning(null);
     }
   };
-
-  useEffect(() => {
-    displayWarning();
-  }, [type]);
 
   let timer: any = null;
   const attachmentField = [
@@ -684,12 +715,6 @@ const Template = ({
     setTemplateButtons(result);
   };
 
-  useEffect(() => {
-    if (templateType) {
-      addTemplateButtons(false);
-    }
-  }, [templateType]);
-
   const getTemplateAndButton = (text: string) => {
     const exp = /(\|\s\[)|(\|\[)/;
     const areButtonsPresent = text.search(exp);
@@ -704,31 +729,6 @@ const Template = ({
 
     return { message, buttons };
   };
-
-  // Removing buttons when checkbox is checked or unchecked
-  useEffect(() => {
-    if (getExample) {
-      const { message }: any = getTemplateAndButton(getPlainTextFromEditor(getExample));
-      onExampleChange(message || '');
-    }
-  }, [isAddButtonChecked]);
-
-  // Converting buttons to template and vice-versa to show realtime update on simulator
-  useEffect(() => {
-    if (templateButtons.length > 0) {
-      const parse = convertButtonsToTemplate(templateButtons, templateType);
-
-      const parsedText = parse.length ? `| ${parse.join(' | ')}` : null;
-
-      const { message }: any = getTemplateAndButton(getPlainTextFromEditor(example));
-
-      const sampleText: any = parsedText && message + parsedText;
-
-      if (sampleText) {
-        onExampleChange(sampleText);
-      }
-    }
-  }, [templateButtons]);
 
   const handeInputChange = (event: any, row: any, index: any, eventType: any) => {
     const { value } = event.target;
