@@ -204,25 +204,41 @@ const Template = ({
   const location: any = useLocation();
   const params = useParams();
 
-  const { data: tag } = useQuery(GET_TAGS, {
+  let isEditing = false;
+  let mode;
+
+  const isCopyState = location.state === 'copy';
+  if (isCopyState) {
+    queries.updateItemQuery = CREATE_TEMPLATE;
+    mode = 'copy';
+  } else {
+    queries.updateItemQuery = UPDATE_TEMPLATE;
+  }
+
+  if (params.id && !isCopyState) {
+    isEditing = true;
+  }
+
+  const { data: tag, loading: tagLoading } = useQuery(GET_TAGS, {
     variables: {},
     fetchPolicy: 'network-only',
   });
 
-  const { data: languages } = useQuery(USER_LANGUAGES, {
+  const { data: languages, loading: languageLoading } = useQuery(USER_LANGUAGES, {
     variables: { opts: { order: 'ASC' } },
   });
 
-  const [getSessionTemplates, { data: sessionTemplates }] = useLazyQuery<any>(FILTER_TEMPLATES, {
-    variables: {
-      filter: { languageId: language ? parseInt(language.id, 10) : null },
-      opts: {
-        order: 'ASC',
-        limit: null,
-        offset: 0,
+  const [getSessionTemplates, { data: sessionTemplates, loading: sessionTemplateLoading }] =
+    useLazyQuery<any>(FILTER_TEMPLATES, {
+      variables: {
+        filter: { languageId: language ? parseInt(language.id, 10) : null },
+        opts: {
+          order: 'ASC',
+          limit: null,
+          offset: 0,
+        },
       },
-    },
-  });
+    });
 
   const [getSessionTemplate, { data: template, loading: templateLoading }] =
     useLazyQuery<any>(GET_TEMPLATE);
@@ -373,6 +389,79 @@ const Template = ({
     }
   };
 
+  const displayWarning = () => {
+    if (type && type.id === 'STICKER') {
+      setWarning(
+        <div className={styles.Warning}>
+          <ol>
+            <li>{t('Animated stickers are not supported.')}</li>
+            <li>{t('Captions along with stickers are not supported.')}</li>
+          </ol>
+        </div>
+      );
+    } else if (type && type.id === 'AUDIO') {
+      setWarning(
+        <div className={styles.Warning}>
+          <ol>
+            <li>{t('Captions along with audio are not supported.')}</li>
+          </ol>
+        </div>
+      );
+    } else {
+      setWarning(null);
+    }
+  };
+
+  const validateURL = (value: string) => {
+    if (value && type) {
+      setValidatingURL(true);
+      validateMedia(value, type.id, false).then((response: any) => {
+        if (!response.data.is_valid) {
+          setIsUrlValid(response.data.message);
+        } else {
+          setIsUrlValid('');
+        }
+        setValidatingURL(false);
+      });
+    }
+  };
+
+  const addTemplateButtons = (addFromTemplate: boolean = true) => {
+    let buttons: any = [];
+    const buttonType: any = {
+      QUICK_REPLY: { value: '' },
+      CALL_TO_ACTION: { type: '', title: '', value: '' },
+    };
+
+    if (templateType) {
+      buttons = addFromTemplate
+        ? [...templateButtons, buttonType[templateType]]
+        : [buttonType[templateType]];
+    }
+
+    setTemplateButtons(buttons);
+  };
+
+  const removeTemplateButtons = (index: number) => {
+    const result = templateButtons.filter((val, idx) => idx !== index);
+    setTemplateButtons(result);
+  };
+
+  const getTemplateAndButton = (text: string) => {
+    const exp = /(\|\s\[)|(\|\[)/;
+    const areButtonsPresent = text.search(exp);
+
+    let message: any = text;
+    let buttons: any = null;
+
+    if (areButtonsPresent !== -1) {
+      buttons = text.substr(areButtonsPresent);
+      message = text.substr(0, areButtonsPresent);
+    }
+
+    return { message, buttons };
+  };
+
   useEffect(() => {
     if (params.id) {
       getSessionTemplate({ variables: { id: params.id } });
@@ -450,19 +539,8 @@ const Template = ({
     }
   }, [templateButtons]);
 
-  let isEditing = false;
-  let mode;
-
-  const isCopyState = location.state === 'copy';
-  if (isCopyState) {
-    queries.updateItemQuery = CREATE_TEMPLATE;
-    mode = 'copy';
-  } else {
-    queries.updateItemQuery = UPDATE_TEMPLATE;
-  }
-
-  if (params.id && !isCopyState) {
-    isEditing = true;
+  if (languageLoading || templateLoading || tagLoading || sessionTemplateLoading) {
+    return <Loading />;
   }
 
   const validateTitle = (value: any) => {
@@ -546,43 +624,6 @@ const Template = ({
       updateTranslation(result);
     }
     if (result) setLanguageId(result);
-  };
-
-  const validateURL = (value: string) => {
-    if (value && type) {
-      setValidatingURL(true);
-      validateMedia(value, type.id, false).then((response: any) => {
-        if (!response.data.is_valid) {
-          setIsUrlValid(response.data.message);
-        } else {
-          setIsUrlValid('');
-        }
-        setValidatingURL(false);
-      });
-    }
-  };
-
-  const displayWarning = () => {
-    if (type && type.id === 'STICKER') {
-      setWarning(
-        <div className={styles.Warning}>
-          <ol>
-            <li>{t('Animated stickers are not supported.')}</li>
-            <li>{t('Captions along with stickers are not supported.')}</li>
-          </ol>
-        </div>
-      );
-    } else if (type && type.id === 'AUDIO') {
-      setWarning(
-        <div className={styles.Warning}>
-          <ol>
-            <li>{t('Captions along with audio are not supported.')}</li>
-          </ol>
-        </div>
-      );
-    } else {
-      setWarning(null);
-    }
   };
 
   let timer: any = null;
@@ -693,42 +734,6 @@ const Template = ({
       },
     },
   ];
-
-  const addTemplateButtons = (addFromTemplate: boolean = true) => {
-    let buttons: any = [];
-    const buttonType: any = {
-      QUICK_REPLY: { value: '' },
-      CALL_TO_ACTION: { type: '', title: '', value: '' },
-    };
-
-    if (templateType) {
-      buttons = addFromTemplate
-        ? [...templateButtons, buttonType[templateType]]
-        : [buttonType[templateType]];
-    }
-
-    setTemplateButtons(buttons);
-  };
-
-  const removeTemplateButtons = (index: number) => {
-    const result = templateButtons.filter((val, idx) => idx !== index);
-    setTemplateButtons(result);
-  };
-
-  const getTemplateAndButton = (text: string) => {
-    const exp = /(\|\s\[)|(\|\[)/;
-    const areButtonsPresent = text.search(exp);
-
-    let message: any = text;
-    let buttons: any = null;
-
-    if (areButtonsPresent !== -1) {
-      buttons = text.substr(areButtonsPresent);
-      message = text.substr(0, areButtonsPresent);
-    }
-
-    return { message, buttons };
-  };
 
   const handeInputChange = (event: any, row: any, index: any, eventType: any) => {
     const { value } = event.target;
@@ -1014,10 +1019,6 @@ const Template = ({
       navigate(`/speed-send/${sessionTemplate.id}/edit`);
     }
   };
-
-  if (languageOptions.length < 1 || templateLoading) {
-    return <Loading />;
-  }
 
   let copyMessage = t('Copy of the speed send has been created!');
   if (defaultAttribute.isHsm) {
