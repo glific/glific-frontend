@@ -278,7 +278,7 @@ const Template = ({
     hasButtons,
   }: any) => {
     if (languageOptions.length > 0 && languageIdValue) {
-      if (location.state) {
+      if (location.state && location.state !== 'copy') {
         const selectedLangauge = languageOptions.find(
           (lang: any) => lang.label === location.state.language
         );
