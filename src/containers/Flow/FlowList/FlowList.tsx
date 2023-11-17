@@ -127,7 +127,7 @@ export const FlowList = () => {
       >
         <div className={styles.ImportDialog}>
           {importStatus.map((status: any) => (
-            <div>
+            <div key={status.flowName}>
               <strong>{status.flowName}:</strong> {status.status}
             </div>
           ))}
