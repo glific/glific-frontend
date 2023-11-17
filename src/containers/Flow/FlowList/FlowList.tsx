@@ -91,16 +91,10 @@ export const FlowList = () => {
 
   const [importFlow] = useMutation(IMPORT_FLOW, {
     onCompleted: (result: any) => {
-      const { success } = result.importFlow;
-      if (!success) {
-        setNotification(
-          t(
-            'Sorry! An error occurred! This could happen if the flow is already present or error in the import file.'
-          ),
-          'error'
-        );
-      } else {
-        setNotification(t('The flow has been imported successfully.'));
+      const { status } = result.importFlow;
+      if (status) {
+        const statusValue = status.map((stat: any) => `${stat.flowName}: ${stat.status}`);
+        setNotification(t(statusValue.join('\n')));
       }
       setImporting(false);
     },
