@@ -39,7 +39,6 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
     handleCancel,
     onChange,
     disableClearable,
-    searchLabel = 'Search',
     renderTags = true,
     textFieldPlaceholder = '',
     multiple = true,
@@ -105,7 +104,6 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
             }}
             form={{ setFieldValue: changeValue }}
             textFieldProps={{
-              label: searchLabel,
               variant: 'outlined',
               placeholder: textFieldPlaceholder,
             }}

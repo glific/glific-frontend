@@ -161,7 +161,7 @@ export const Auth = ({
                   const key = index;
                   return (
                     <div key={key}>
-                      {field.label && (
+                      {field.label ? (
                         <Typography
                           data-testid="formLabel"
                           variant="h5"
@@ -169,6 +169,8 @@ export const Auth = ({
                         >
                           {field.label}
                         </Typography>
+                      ) : (
+                        <div className={styles.Spacing} />
                       )}
                       <Field {...fieldInfo} />
                     </div>

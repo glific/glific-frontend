@@ -25,7 +25,7 @@ export const ChatTemplates = ({
 }: ChatTemplatesProps) => {
   const { t } = useTranslation();
 
-  const filterVariables = () => setVariables({ term: searchVal });
+  const filterVariables = () => setVariables({ term: searchVal }, 50);
   const { loading, error, data } = useQuery<any>(FILTER_TEMPLATES, {
     variables: filterVariables(),
   });
@@ -90,11 +90,8 @@ export const ChatTemplates = ({
 
     const templateObj = [...data.sessionTemplates, ...translationsObj];
     const interactiveObj = interactives ? [...interactives.interactiveTemplates] : [];
-    let text;
+
     let listItems;
-    if (isTemplate) text = 'templates';
-    else if (isInteractiveMsg) text = 'interactive msg';
-    else text = 'speed sends';
 
     if (!isInteractiveMsg) {
       listItems = templateObj.map((obj: any, index: number) => {
@@ -118,14 +115,16 @@ export const ChatTemplates = ({
     listItems = listItems.filter((n) => n);
 
     return listItems.length !== 0 ? (
-      <List className={styles.ShortcutList}>
-        <Paper elevation={0} className={styles.Paper}>
-          {listItems}
-        </Paper>
-      </List>
+      <div className={styles.TemplateList}>
+        <List className={styles.ShortcutList}>
+          <Paper elevation={0} className={styles.Paper}>
+            {listItems}
+          </Paper>
+        </List>
+      </div>
     ) : (
-      <Typography data-testid="no-results" align="center" variant="h6">
-        {`No ${text} for that search.`}
+      <Typography className={styles.NoResult} data-testid="no-results" align="center" variant="h6">
+        {`No results found for the search.`}
       </Typography>
     );
   };

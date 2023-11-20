@@ -54,11 +54,11 @@ describe('<CollectionList />', () => {
     // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();
     await waitFor(() => {
-      expect(getAllByTestId('additionalButton')[0]).toBeInTheDocument();
+      expect(getAllByTestId('additionalButton')[1]).toBeInTheDocument();
     });
 
     await waitFor(() => {
-      fireEvent.click(getAllByTestId('additionalButton')[0]);
+      fireEvent.click(getAllByTestId('additionalButton')[1]);
     });
 
     expect(getByText('Add contacts to the collection')).toBeInTheDocument();
@@ -103,7 +103,7 @@ describe('<CollectionList />', () => {
     // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();
     await waitFor(() => {
-      fireEvent.click(getAllByTestId('additionalButton')[0]);
+      fireEvent.click(getAllByTestId('additionalButton')[1]);
     });
     fireEvent.click(getByTestId('searchDialogBox').querySelector('button') as HTMLElement);
   });

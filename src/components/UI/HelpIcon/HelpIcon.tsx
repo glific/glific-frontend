@@ -1,6 +1,6 @@
-import { useState } from 'react';
 import styles from './HelpIcon.module.css';
 import InfoIcon from 'assets/images/info.svg?react';
+import { Tooltip } from '@mui/material';
 
 export interface HelpDataProps {
   heading: string;
@@ -19,37 +19,39 @@ export const HelpIcon = ({
     link: '',
   },
 }: HelpIconProps) => {
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
-
-  const handleMouseEnter = () => {
-    setIsPopupOpen(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsPopupOpen(false);
-  };
-
   return (
-    <div className={styles.Hover} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-      <InfoIcon className={styles.InfoIcon} />
-      {isPopupOpen && helpData && (
-        <div className={styles.HoverPopUp}>
-          <div className={styles.Triangle}></div>
-          <div className={styles.HoverPopUpText}>
-            {helpData.heading}
-            {helpData.body}
-            <div
-              className={styles.HoverLink}
-              onClick={() => {
-                window.location.replace(helpData.link);
-              }}
-            >
-              Learn more
+    <Tooltip
+      classes={{
+        tooltip: styles.Popper,
+        arrow: styles.PopperArrow,
+      }}
+      placement="bottom-start"
+      title={
+        <>
+          {helpData && (
+            <div>
+              <div className={styles.HoverPopUpText}>
+                {helpData.heading}
+                {helpData.body}
+                <div
+                  className={styles.HoverLink}
+                  onClick={() => {
+                    window.open(helpData.link);
+                  }}
+                >
+                  Learn more
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      )}
-    </div>
+          )}
+        </>
+      }
+      arrow
+    >
+      <span className={styles.InfoIconContainer}>
+        <InfoIcon className={styles.InfoIcon} />
+      </span>
+    </Tooltip>
   );
 };
 

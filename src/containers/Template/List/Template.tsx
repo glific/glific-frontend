@@ -61,6 +61,7 @@ export interface TemplateProps {
   filters: any;
   buttonLabel: string;
   isHSM?: boolean;
+  loading?: boolean;
   syncHSMButton?: any;
 }
 
@@ -79,6 +80,7 @@ export const Template = ({
   filters: templateFilters,
   buttonLabel,
   isHSM,
+  loading = false,
   syncHSMButton,
 }: TemplateProps) => {
   const [open, setOpen] = useState(false);
@@ -284,8 +286,6 @@ export const Template = ({
         placeholder="Select tag"
         options={tag ? tag.tags : []}
         optionLabel="label"
-        disabled={false}
-        hasCreateOption={false}
         multiple={false}
         onChange={(value: any) => {
           setSelectedTag(value);
@@ -377,6 +377,7 @@ export const Template = ({
 
   return (
     <List
+      loadingList={loading}
       helpData={isHSM ? templateInfo : speedSendInfo}
       secondaryButton={secondaryButton}
       title={title}

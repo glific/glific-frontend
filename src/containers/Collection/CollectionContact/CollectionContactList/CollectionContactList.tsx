@@ -137,7 +137,6 @@ export const CollectionContactList = ({
       label: t('View profile'),
       link: '/contact-profile',
       parameter: 'id',
-      hasMoreOption: true,
     },
   ];
   const removeCollectionButton = (
@@ -174,9 +173,7 @@ export const CollectionContactList = ({
         pageLink="contact"
         listIcon={collectionIcon}
         deleteModifier={{
-          icon: 'cross',
           variables: getDeleteQueryVariables,
-          label: t('Remove from this collection'),
         }}
         editSupport={false}
         dialogMessage={dialogMessage}

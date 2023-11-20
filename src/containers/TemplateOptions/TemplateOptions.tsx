@@ -213,7 +213,6 @@ export const TemplateOptions = ({
                 defaultValue={value}
                 title={title}
                 placeholder={`Quick reply ${index + 1} title`}
-                label={`Quick reply ${index + 1} title`}
                 variant="outlined"
                 onBlur={(e: any) => onInputChange(e, row, index, 'value')}
                 className={styles.TextField}

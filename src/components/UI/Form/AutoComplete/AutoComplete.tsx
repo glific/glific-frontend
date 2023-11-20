@@ -90,41 +90,16 @@ export const AutoComplete = ({
   const [searchTerm, setSearchTerm] = useState('');
   const [open, setOpen] = useState(false);
 
-  // Todo: clean this style for autocomplete
-  const filterSxStyle = {
-    '& .MuiOutlinedInput-root': {
-      height: '36px !important',
-      paddingBottom: 0,
-      paddingTop: 0,
-    },
-    '& fieldset': {
-      border: 'none',
-    },
-    '&  .css-hmtdmj-MuiAutocomplete-root': {
-      padding: '0 !important',
-    },
-    '&  .MuiOutlinedInput-root': {
-      padding: '0 !important',
-    },
-    '& .MuiAutocomplete-input': {
-      padding: '0 !important',
-    },
-    borderRadius: '24px !important',
-    borderColor: '#cccccc',
-    borderWidth: '1px',
-    borderStyle: 'solid',
-    background: '#ffffff',
-    paddingLeft: '18px',
-  };
+  let classStyles = { ...classes, input: styles.DefaultInputRoot };
 
-  const inputSxStyle = {
-    '& .MuiOutlinedInput-root': {
-      height: 'fit-content !important',
-      minHeight: '48px',
-      paddingBottom: 0,
-      paddingTop: 0,
-    },
-  };
+  if (isFilterType) {
+    classStyles = {
+      input: styles.InputAuto,
+      inputRoot: styles.InputRoot,
+      root: styles.Root,
+      endAdornment: styles.Adornment,
+    };
+  }
 
   const getValue = (() => {
     if (multiple && asyncSearch) return asyncValues.value;
@@ -197,12 +172,11 @@ export const AutoComplete = ({
   }
 
   return (
-    <div className={isFilterType ? styles.FilterInput : styles.Input}>
+    <div className={styles.Input}>
       <FormControl fullWidth error={hasError}>
         {questionText ? <div className={styles.QuestionText}>{questionText}</div> : null}
         <Autocomplete
-          classes={classes}
-          className={isFilterType ? styles.FilterHeight : ''}
+          classes={classStyles}
           multiple={multiple}
           data-testid="autocomplete-element"
           options={hasCreateOption ? [...renderedOption, createOption] : renderedOption}
@@ -287,7 +261,6 @@ export const AutoComplete = ({
                 {...textFieldProps}
                 data-testid="AutocompleteInput"
                 placeholder={placeholder}
-                sx={isFilterType ? filterSxStyle : inputSxStyle}
               />
             );
           }}

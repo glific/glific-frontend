@@ -174,6 +174,20 @@ const menus = (): Menu[] => [
         icon: 'speed-send',
         roles: ['Manager', 'Admin'],
       },
+      {
+        title: 'Organizations',
+        path: '/organizations',
+        icon: 'organization',
+        type: 'management',
+        roles: ['Glific_admin'],
+      },
+      {
+        title: 'Consulting',
+        path: '/consulting-hours',
+        type: 'management',
+        icon: 'consulting',
+        roles: ['Glific_admin'],
+      },
     ],
   },
 
@@ -215,35 +229,6 @@ const menus = (): Menu[] => [
       },
     ],
   },
-  {
-    title: 'Admin',
-    path: '/organizations',
-    icon: 'manage',
-    type: 'sideDrawer',
-    roles: ['Glific_admin'],
-    subMenu: [
-      {
-        title: 'Organizations',
-        path: '/organizations',
-        type: 'management',
-        roles: ['Glific_admin'],
-      },
-      {
-        title: 'Consulting',
-        path: '/consulting-hours',
-        type: 'management',
-        roles: ['Glific_admin'],
-      },
-      {
-        title: 'Contacts',
-        path: '/contact-management',
-        type: 'management',
-        icon: 'contact',
-        roles: ['Glific_admin'],
-      },
-    ],
-  },
-
   {
     title: 'Analytics',
     path: '/analytics',

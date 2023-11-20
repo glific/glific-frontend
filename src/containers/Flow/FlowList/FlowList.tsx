@@ -140,21 +140,22 @@ export const FlowList = () => {
       label: t('Configure'),
       icon: configureIcon,
       parameter: 'uuid',
+
       link: '/flow/configure',
     },
     {
       label: t('Make a copy'),
       icon: <DuplicateIcon />,
       parameter: 'id',
+
       dialog: setDialog,
     },
     {
-      label: t('Export flow'),
+      label: t('Export'),
       icon: <ExportIcon data-testid="export-icon" className={styles.IconSize} />,
       parameter: 'id',
       dialog: exportFlow,
-      hasMoreOption: true,
-      name: 'Export',
+      insideMore: true,
     },
   ];
 
@@ -225,8 +226,6 @@ export const FlowList = () => {
         placeholder="Select tag"
         options={tag ? tag.tags : []}
         optionLabel="label"
-        disabled={false}
-        hasCreateOption={false}
         multiple={false}
         onChange={(value: any) => {
           setSelectedTag(value);

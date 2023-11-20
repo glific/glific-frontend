@@ -1,6 +1,5 @@
 .Input {
   display: flex;
-  padding-top: 15px;
   width: 100%;
 }
 
@@ -31,6 +30,7 @@
 
 .OutlineInput > div:first-child {
   width: inherit;
+  padding: 8px 16px;
   height: 100px;
   overflow: auto;
   overflow-x: hidden;
@@ -62,7 +62,7 @@
 }
 
 .DangerText {
-  margin-left: 0px;
+  margin-left: 14px;
   font-size: 12px;
   margin-top: 4px;
   line-height: 18px;

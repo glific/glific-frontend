@@ -260,3 +260,20 @@
   display: flex;
   align-items: center;
 }
+
+.TitleText {
+  margin-right: 12px;
+}
+
+.MenuList {
+  padding: 0px;
+}
+
+.MenuItem {
+  padding: 0px 6px;
+}
+
+.Divider {
+  margin-top: 0px !important;
+  margin-bottom: 0px !important;
+}

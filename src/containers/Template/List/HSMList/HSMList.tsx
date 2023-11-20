@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { Button } from 'components/UI/Form/Button/Button';
 import { useMutation } from '@apollo/client';
 import { SYNC_HSM_TEMPLATES } from 'graphql/mutations/Template';
-import Loading from 'components/UI/Layout/Loading/Loading';
 import { setNotification } from 'common/notification';
 import TemplateIcon from 'assets/images/icons/Template/UnselectedDark.svg?react';
 import styles from './HSMList.module.css';
@@ -34,13 +33,11 @@ export const HSMList = () => {
     syncHsmTemplates();
   };
 
-  if (syncTemplateLoad) {
-    return <Loading />;
-  }
   const syncHSMButton = (
     <Button
       variant="outlined"
       color="primary"
+      loading={syncTemplateLoad}
       className={styles.HsmUpdates}
       data-testid="updateHsm"
       onClick={() => handleHsmUpdates()}
@@ -57,6 +54,7 @@ export const HSMList = () => {
       pageLink="template"
       listIcon={templateIcon}
       filters={{ isHsm: true }}
+      loading={syncTemplateLoad}
       syncHSMButton={syncHSMButton}
       isHSM
       buttonLabel={t('Create')}

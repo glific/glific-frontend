@@ -121,9 +121,9 @@ const ConsultingList = () => {
 
   return (
     <>
-      <ExportConsulting setFilters={setFilters} />
       {dialog}
       <List
+        descriptionBox={<ExportConsulting setFilters={setFilters} />}
         title={t('Consulting')}
         listItem="consultingHours"
         listItemName="consultingHour"

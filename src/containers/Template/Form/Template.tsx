@@ -573,6 +573,7 @@ const Template = ({
         };
 
   const formFields = [
+    formIsActive,
     languageComponent,
     {
       component: Input,
@@ -587,7 +588,7 @@ const Template = ({
         onBlur: (event: any) => setLabel(event.target.value),
       },
     },
-    formIsActive,
+
     {
       component: EmojiInput,
       name: 'body',

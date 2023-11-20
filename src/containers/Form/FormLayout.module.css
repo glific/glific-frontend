@@ -63,6 +63,7 @@
   font-size: 16px;
   line-height: 18px;
   color: #555555;
+  padding-bottom: 14px;
 }
 
 .Icon {
@@ -151,4 +152,12 @@
   font-weight: 400;
   color: #191c1a;
   font-size: 12px;
+}
+
+.TitleText {
+  margin-right: 8px;
+}
+
+.Spacing {
+  margin: 20px 0px !important;
 }

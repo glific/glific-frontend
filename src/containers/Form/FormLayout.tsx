@@ -29,7 +29,7 @@ export const Heading = ({ title = '', formTitle, helpData }: any) => {
     <div className={styles.Header}>
       <div>
         <div className={styles.Title}>
-          {formTitle}
+          <div className={styles.TitleText}> {formTitle}</div>
           <HelpIcon helpData={helpData} />
         </div>
         <div
@@ -563,10 +563,12 @@ export const FormLayout = ({
 
             return (
               <Fragment key={key}>
-                {field.label && (
+                {field.label ? (
                   <Typography data-testid="formLabel" variant="h5" className={styles.FieldLabel}>
                     {field.label}
                   </Typography>
+                ) : (
+                  <div className={styles.Spacing} />
                 )}
                 <Field key={key} {...field} onSubmit={submitForm} />
               </Fragment>
@@ -660,7 +662,7 @@ export const FormLayout = ({
     formTitle = `Add a new ${listItemName}`; // case when adding a new item
   }
 
-  let heading = <Heading icon={icon} formTitle={formTitle} />;
+  let heading = <Heading icon={icon} formTitle={formTitle} title={listItemName} />;
 
   const backLink = backLinkButton ? (
     <div className={styles.BackLink}>

@@ -7,7 +7,7 @@ export const filterTemplatesQuery = (term: any, data: any) => {
   return {
     request: {
       query: FILTER_TEMPLATES,
-      variables: setVariables({ term: term }),
+      variables: setVariables({ term: term }, 50),
     },
     result: {
       data: {

@@ -6,8 +6,8 @@
 
 .GlobalButton {
   width: 100%;
-  background-color: #eaedec !important;
-  margin: 6px 0px !important;
+  color: #1690cf;
+  background-color: white !important;
 }
 
 .SimulatorButton {
@@ -16,7 +16,7 @@
 }
 
 .List {
-  height: calc(100% - 60px);
+  height: calc(100% - 70px);
   overflow-y: auto;
 }
 .ListItemChat {
@@ -67,7 +67,7 @@
   width: 100%;
   padding: 8px;
   height: 360px;
-  border-radius: 12px 12px 0px 0px;
+  border-radius: 12px 12px 25px 25px;
 }
 
 .DrawerHeading {
@@ -88,6 +88,7 @@
 
 .SendButton {
   padding: 4px 0px;
+
 }
 
 .SendButton > button {
@@ -161,9 +162,21 @@
   font-size: 14px;
   font-weight: 400;
   padding: 4px 8px;
-  background-color: #edf6f2;
 }
 
 .Options > button:hover {
   background-color: #edf6f2;
+}
+
+.ListItemText {
+  width: 100%;
+  color: #000;
+  text-align: left;
+}
+
+.ListItemRadio {
+  width: 100%;
+}
+.ListItemTextTitle {
+  font-weight: 500;
 }

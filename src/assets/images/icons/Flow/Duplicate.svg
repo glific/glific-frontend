@@ -1,16 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 61.2 (89653) - https://sketch.com -->
-    <title>Copy Flow</title>
-    <desc>Created with Sketch.</desc>
-    <g id="Flows" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="Desktop/Flows" transform="translate(-1180.000000, -216.000000)" stroke="#073F24" stroke-width="2">
-            <g id="Icon/Duplicate" transform="translate(1180.000000, 216.000000)">
-                <path d="M12.6381497,1 L15,1 C16.1045695,1 17,1.8954305 17,3 L17,11 C17,12.1045695 16.1045695,13 15,13 L7,13 C5.8954305,13 5,12.1045695 5,11 L5,8.6226174 L5,8.6226174" id="Path-5" transform="translate(11.000000, 7.000000) rotate(-90.000000) translate(-11.000000, -7.000000) "></path>
-                <path d="M3,5 L11,5 C12.1045695,5 13,5.8954305 13,7 L13,15 C13,16.1045695 12.1045695,17 11,17 L3,17 C1.8954305,17 1,16.1045695 1,15 L1,7 C1,5.8954305 1.8954305,5 3,5 Z" id="Rectangle-Copy-4"></path>
-                <line x1="7" y1="9" x2="7" y2="13" id="Path-26" stroke-linecap="round" transform="translate(7.000000, 11.000000) rotate(-90.000000) translate(-7.000000, -11.000000) "></line>
-                <line x1="7" y1="9" x2="7" y2="13" id="Path-26" stroke-linecap="round"></line>
-            </g>
-        </g>
-    </g>
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+  <path
+    d="M13 6.125H7.375C6.68464 6.125 6.125 6.68464 6.125 7.375V13C6.125 13.6904 6.68464 14.25 7.375 14.25H13C13.6904 14.25 14.25 13.6904 14.25 13V7.375C14.25 6.68464 13.6904 6.125 13 6.125Z"
+    stroke="#777777" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+  <path
+    d="M3.625 9.875H3C2.66848 9.875 2.35054 9.7433 2.11612 9.50888C1.8817 9.27446 1.75 8.95652 1.75 8.625V3C1.75 2.66848 1.8817 2.35054 2.11612 2.11612C2.35054 1.8817 2.66848 1.75 3 1.75H8.625C8.95652 1.75 9.27446 1.8817 9.50888 2.11612C9.7433 2.35054 9.875 2.66848 9.875 3V3.625"
+    stroke="#777777" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
 </svg>
