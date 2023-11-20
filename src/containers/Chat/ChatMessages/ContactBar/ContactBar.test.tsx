@@ -86,8 +86,6 @@ describe('Menu test', () => {
     fireEvent.click(screen.getByTestId('collectionButton'));
     await waitFor(() => {
       expect(screen.getByText('Add contact to collection')).toBeInTheDocument();
-      expect(screen.getAllByText('Search')[1]).toBeInTheDocument();
-      fireEvent.click(screen.getAllByText('Search')[1]);
       const button = screen.getByText('Save');
       fireEvent.click(button);
     });

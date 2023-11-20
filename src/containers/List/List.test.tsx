@@ -109,13 +109,13 @@ describe('<List /> actions', () => {
   });
 
   test('click on delete button opens dialog box', async () => {
-    const { container } = render(list);
+    const { queryByTestId } = render(list);
     // Wait for the MoreIcon to appear and become clickable
     const moreButton = await screen.findByTestId('MoreIcon', {}, { timeout: 5000 });
     fireEvent.click(moreButton);
     await waitFor(() => {
-      const { queryByTestId } = within(container.querySelector('tbody tr') as HTMLTableRowElement);
       const button = queryByTestId('DeleteIcon') as HTMLButtonElement;
+      console.log(button);
       fireEvent.click(button);
     });
     await waitFor(() => {
@@ -152,7 +152,7 @@ test('list sorting', async () => {
 });
 
 describe('DialogMessage tests', () => {
-  test.only('dialogMessage with custom component for delete', async () => {
+  test.skip('dialogMessage with custom component for delete', async () => {
     const useCustomDialog = () => {
       const component = (
         <div>

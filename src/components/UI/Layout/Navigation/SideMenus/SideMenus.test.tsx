@@ -25,11 +25,11 @@ test('it should be initialized properly', async () => {
 });
 
 test('it should mark notification as read on notification click', async () => {
-  const { getAllByTestId } = render(sidemenus);
-  await waitFor(async () => {
-    await new Promise((resolve) => setTimeout(resolve, 1));
+  const { getAllByTestId, getByTestId } = render(sidemenus);
+  await waitFor(() => {
+    expect(getByTestId('list')).toBeInTheDocument();
   });
   const listItem = getAllByTestId('list-item');
-  expect(listItem[7]).toBeInTheDocument();
-  fireEvent.click(listItem[7]);
+  expect(listItem[3]).toBeInTheDocument();
+  fireEvent.click(listItem[3]);
 });
