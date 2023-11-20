@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, MouseEvent, Fragment } from 'react';
+import { useState, useEffect, useCallback, Fragment } from 'react';
 import { Link, Navigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useQuery, useMutation, DocumentNode, useLazyQuery } from '@apollo/client';
