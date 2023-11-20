@@ -90,11 +90,8 @@ export const ChatTemplates = ({
 
     const templateObj = [...data.sessionTemplates, ...translationsObj];
     const interactiveObj = interactives ? [...interactives.interactiveTemplates] : [];
-    let text;
+
     let listItems;
-    if (isTemplate) text = 'templates';
-    else if (isInteractiveMsg) text = 'interactive msg';
-    else text = 'speed sends';
 
     if (!isInteractiveMsg) {
       listItems = templateObj.map((obj: any, index: number) => {

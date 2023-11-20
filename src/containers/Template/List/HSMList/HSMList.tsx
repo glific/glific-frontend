@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { Button } from 'components/UI/Form/Button/Button';
 import { useMutation } from '@apollo/client';
 import { SYNC_HSM_TEMPLATES } from 'graphql/mutations/Template';
-import Loading from 'components/UI/Layout/Loading/Loading';
 import { setNotification } from 'common/notification';
 import TemplateIcon from 'assets/images/icons/Template/UnselectedDark.svg?react';
 import styles from './HSMList.module.css';
