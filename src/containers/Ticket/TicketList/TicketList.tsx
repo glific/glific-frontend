@@ -190,7 +190,7 @@ export const TicketList = () => {
         button={{ show: false }}
         listIcon={ticketIcon}
         {...queries}
-        searchParameter={['body']}
+        searchParameter={['nameOrPhone']}
         {...columnAttributes}
         additionalAction={additionalAction}
         filters={filter}
