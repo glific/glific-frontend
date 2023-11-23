@@ -166,3 +166,7 @@
 .RadioLabel {
   margin-right: 24px;
 }
+
+.ImportDialog {
+  max-width: 395px;
+}

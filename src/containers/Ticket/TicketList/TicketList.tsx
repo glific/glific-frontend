@@ -116,7 +116,14 @@ export const TicketList = () => {
   };
 
   const additionalAction = () => [
-    { icon: <ChatIcon />, parameter: 'contact.id', link: '/chat', label: t('Send Message') },
+    {
+      icon: <ChatIcon />,
+      parameter: 'contact',
+      dialog: (contact: any) => {
+        window.open(`chat/${contact.id}`);
+      },
+      label: t('Send Message'),
+    },
     {
       icon: <EditIcon />,
       parameter: 'id',
@@ -183,7 +190,7 @@ export const TicketList = () => {
         button={{ show: false }}
         listIcon={ticketIcon}
         {...queries}
-        searchParameter={['body']}
+        searchParameter={['nameOrPhone']}
         {...columnAttributes}
         additionalAction={additionalAction}
         filters={filter}
