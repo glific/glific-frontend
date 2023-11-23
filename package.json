@@ -25,7 +25,7 @@
     "@stripe/react-stripe-js": "^2.3.1",
     "@stripe/stripe-js": "^2.1.10",
     "@types/jest": "^29.5.7",
-    "@vitejs/plugin-react": "^4.1.0",
+    "@vitejs/plugin-react": "^4.1.1",
     "apollo-absinthe-upload-link": "^1.7.0",
     "apollo-link-token-refresh": "^0.6.1",
     "axios": "^1.6.0",
