@@ -284,6 +284,7 @@ export const InteractiveMessage = () => {
     const buttonType: any = {
       QUICK_REPLY: { value: '' },
       LIST: { title: '', options: [{ title: '', description: '' }] },
+      LOCATION_REQUEST_MESSAGE: {},
     };
 
     const templateResult = stateToRestore || [buttonType[templateTypeVal]];
