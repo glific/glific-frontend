@@ -29,7 +29,6 @@ export const InteractiveOptions = ({
   form,
   onAddClick,
   onRemoveClick,
-
   onInputChange,
   onGlobalButtonInputChange,
   onListItemAddClick,

@@ -120,22 +120,16 @@ test('it renders empty interactive form', async () => {
   });
 
   await waitFor(() => {
-    const [attachmentType] = screen.getAllByTestId('autocomplete-element');
-
-    expect(attachmentType).toBeInTheDocument();
-
-    attachmentType.focus();
-    fireEvent.keyDown(attachmentType, { key: 'ArrowDown' });
-    fireEvent.keyDown(attachmentType, { key: 'Enter' });
+    const [interactiveType] = screen.getAllByTestId('autocomplete-element');
+    expect(interactiveType).toBeInTheDocument();
   });
 
-  // Switiching between radio buttons
-  const [quickReplyRadio, listRadio] = screen.getAllByRole('radio');
-  await waitFor(() => {
-    expect(quickReplyRadio).toBeInTheDocument();
-    expect(listRadio).toBeInTheDocument();
-    fireEvent.click(listRadio);
-  });
+  // Switiching to list
+  const [interactiveType] = screen.getAllByTestId('autocomplete-element');
+  interactiveType.focus();
+  fireEvent.keyDown(interactiveType, { key: 'ArrowDown' });
+  fireEvent.keyDown(interactiveType, { key: 'ArrowDown' });
+  fireEvent.keyDown(interactiveType, { key: 'Enter' });
 
   await waitFor(() => {
     // Adding list data
@@ -179,9 +173,6 @@ test('it renders empty interactive form', async () => {
     expect(deleteListItemButton).toBeInTheDocument();
     fireEvent.click(deleteListItemButton);
   });
-
-  // Switching back to quick reply radio
-  fireEvent.click(quickReplyRadio);
 
   await waitFor(() => {
     const saveButton = screen.getByText('Save');
