@@ -55,23 +55,19 @@ describe('Add mode', () => {
       expect(queryByText('Message is required.')).toBeInTheDocument();
     });
 
-    // length validation is not working. Basically setting of
-    // text field value is not working hence, commenting
-    // below for now
+    fireEvent.change(container.querySelector('input[name="label"]') as HTMLInputElement, {
+      target: {
+        value:
+          'We are not allowing a really long title, and we should trigger validation for this.',
+      },
+    });
 
-    // fireEvent.change(container.querySelector('input[name="label"]') as HTMLInputElement, {
-    //   target: {
-    //     value:
-    //       'We are not allowing a really long title, and we should trigger validation for this.',
-    //   },
-    // });
+    await user.click(button);
 
-    // await user.click(button);
-
-    // // we should still have 2 errors
-    // await waitFor(() => {
-    //   expect(queryByText('Title length is too long.')).toBeInTheDocument();
-    //   expect(queryByText('Message is required.')).toBeInTheDocument();
-    // });
+    // we should still have 2 errors
+    await waitFor(() => {
+      expect(queryByText('Title length is too long.')).toBeInTheDocument();
+      expect(queryByText('Message is required.')).toBeInTheDocument();
+    });
   });
 });

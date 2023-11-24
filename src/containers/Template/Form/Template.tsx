@@ -227,18 +227,6 @@ const Template = ({
     variables: { opts: { order: 'ASC' } },
   });
 
-  const [getSessionTemplates, { data: sessionTemplates, loading: sessionTemplateLoading }] =
-    useLazyQuery<any>(FILTER_TEMPLATES, {
-      variables: {
-        filter: { languageId: language ? parseInt(language.id, 10) : null },
-        opts: {
-          order: 'ASC',
-          limit: null,
-          offset: 0,
-        },
-      },
-    });
-
   const [getSessionTemplate, { data: template, loading: templateLoading }] =
     useLazyQuery<any>(GET_TEMPLATE);
 
