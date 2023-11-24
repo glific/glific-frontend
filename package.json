@@ -23,7 +23,7 @@
     "@mui/material": "^5.14.16",
     "@mui/x-date-pickers": "^6.17.0",
     "@stripe/react-stripe-js": "^2.3.1",
-    "@stripe/stripe-js": "^2.1.10",
+    "@stripe/stripe-js": "^2.1.11",
     "@types/jest": "^29.5.7",
     "@vitejs/plugin-react": "^4.1.0",
     "apollo-absinthe-upload-link": "^1.7.0",
