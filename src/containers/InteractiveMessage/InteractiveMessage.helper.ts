@@ -117,50 +117,53 @@ export const convertJSONtoStateData = (JSONData: any, interactiveType: string, l
   const data = { ...JSONData };
   const { title, body, items, content, options, globalButtons } = data;
 
-  if (interactiveType === QUICK_REPLY) {
-    const { type, header, url, text, caption } = content;
-    const result: any = {};
-    result.templateButtons = options.map((option: any) => ({ value: option.title }));
-    result.title = header || '';
-    switch (type) {
-      case 'image':
-      case 'video':
-        result.type = type.toUpperCase();
-        result.attachmentURL = url;
-        result.title = label;
-        break;
-      case 'file':
-        result.type = 'DOCUMENT';
-        result.attachmentURL = url;
-
-        result.title = label;
-        break;
-      default:
-        result.type = null;
+  let result: any = {};
+  switch (interactiveType) {
+    case QUICK_REPLY: {
+      const { type, header, url, text, caption } = content;
+      result.templateButtons = options.map((option: any) => ({ value: option.title }));
+      result.title = header || '';
+      switch (type) {
+        case 'image':
+        case 'video':
+          result.type = type.toUpperCase();
+          result.attachmentURL = url;
+          result.title = label;
+          break;
+        case 'file':
+          result.type = 'DOCUMENT';
+          result.attachmentURL = url;
+          result.title = label;
+          break;
+        default:
+          result.type = null;
+      }
+      result.body = text || '';
+      result.footer = caption;
+      break;
     }
-    result.body = text || '';
-    result.footer = caption;
-    return result;
-  } else if (interactiveType === LIST) {
-    const result: any = {};
-    result.templateButtons = items.map((item: any) => {
-      const itemOptions = item.options.map((option: any) => ({
-        title: option.title,
-        description: option.description,
-      }));
-      return {
-        title: item.title,
-        options: itemOptions,
-      };
-    });
-    result.body = body;
-    result.title = title;
-    result.globalButton = globalButtons[0].title;
-    return result;
-  } else if (interactiveType === LOCATION_REQUEST) {
-    const result = { body: body.text, title: label };
-    return result;
+    case LIST: {
+      result.templateButtons = items.map((item: any) => {
+        const itemOptions = item.options.map((option: any) => ({
+          title: option.title,
+          description: option.description,
+        }));
+        return {
+          title: item.title,
+          options: itemOptions,
+        };
+      });
+      result.body = body;
+      result.title = title;
+      result.globalButton = globalButtons[0].title;
+      break;
+    }
+    case LOCATION_REQUEST: {
+      result = { body: body.text, title: label };
+      break;
+    }
   }
+  return result;
 };
 
 export const getDefaultValuesByTemplate = (templateData: any) => {

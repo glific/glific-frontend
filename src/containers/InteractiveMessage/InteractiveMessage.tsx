@@ -52,7 +52,7 @@ const queries = {
 const templateTypeOptions = [
   { id: QUICK_REPLY, label: 'Reply buttons' },
   { id: LIST, label: 'List message' },
-  { id: LOCATION_REQUEST, label: 'Location request message' },
+  { id: LOCATION_REQUEST, label: 'Location request' },
 ];
 
 export const InteractiveMessage = () => {
@@ -628,7 +628,7 @@ export const InteractiveMessage = () => {
 
     if (templateType === LOCATION_REQUEST) {
       const bodyText = getPlainTextFromEditor(payload.body);
-      const listJson = {
+      const locationJson = {
         type: 'location_request_message',
         body: {
           type: 'text',
@@ -640,7 +640,7 @@ export const InteractiveMessage = () => {
       };
       Object.assign(updatedPayload, {
         type: LOCATION_REQUEST,
-        interactiveContent: JSON.stringify(listJson),
+        interactiveContent: JSON.stringify(locationJson),
       });
     }
     return updatedPayload;

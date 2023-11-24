@@ -9,10 +9,10 @@ import MessageIcon from 'assets/images/icons/Dropdown.svg?react';
 import {
   DATE_FORMAT,
   TIME_FORMAT,
-  INTERACTIVE_LIST,
-  INTERACTIVE_QUICK_REPLY,
+  LIST,
+  QUICK_REPLY,
   VALID_URL_REGEX,
-  INTERACTIVE_LOCATION_REQUEST,
+  LOCATION_REQUEST,
 } from 'common/constants';
 import { WhatsAppToJsx, WhatsAppTemplateButton } from 'common/RichEditor';
 import { Tooltip } from 'components/UI/Tooltip/Tooltip';
@@ -262,15 +262,15 @@ export const ChatMessage = ({
   }
 
   let template = null;
-  if (type === INTERACTIVE_LIST) {
+  if (type === LIST) {
     template = <ListReplyTemplate {...content} disabled component={ChatTemplate} />;
   }
 
-  if (type === INTERACTIVE_QUICK_REPLY) {
+  if (type === QUICK_REPLY) {
     template = <QuickReplyTemplate {...content} disabled />;
   }
 
-  if (type === INTERACTIVE_LOCATION_REQUEST) {
+  if (type === LOCATION_REQUEST) {
     template = <LocationRequestTemplate content={content} disabled />;
   }
 

@@ -24,8 +24,8 @@ import ResetIcon from 'assets/images/icons/Reset/Dark.svg?react';
 import {
   TIME_FORMAT,
   SAMPLE_MEDIA_FOR_SIMULATOR,
-  INTERACTIVE_LIST,
-  INTERACTIVE_QUICK_REPLY,
+  LIST,
+  QUICK_REPLY,
   DEFAULT_MESSAGE_LIMIT,
   LOCATION_REQUEST,
 } from 'common/constants';
@@ -298,7 +298,7 @@ export const Simulator = ({
     if (content) {
       isInteractiveContentPresent = !!Object.entries(content).length;
 
-      if (isInteractiveContentPresent && messageType === INTERACTIVE_LIST) {
+      if (isInteractiveContentPresent && messageType === LIST) {
         template = (
           <>
             <ListReplyTemplate
@@ -313,7 +313,7 @@ export const Simulator = ({
         );
       }
 
-      if (isInteractiveContentPresent && messageType === INTERACTIVE_QUICK_REPLY) {
+      if (isInteractiveContentPresent && messageType === QUICK_REPLY) {
         template = (
           <QuickReplyTemplate
             {...content}
@@ -397,7 +397,7 @@ export const Simulator = ({
       const { templateType, interactiveContent } = interactiveMessage;
       const previewMessage = renderMessage(interactiveMessage, 'received', 0, true);
       setSimulatedMessage(previewMessage);
-      if (templateType === INTERACTIVE_LIST) {
+      if (templateType === LIST) {
         const { items } = JSON.parse(interactiveContent);
         setSelectedListTemplate(items);
       } else {

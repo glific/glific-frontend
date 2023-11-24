@@ -1,9 +1,9 @@
 import { Button } from '@mui/material';
 import LocationIconDark from 'assets/images/icons/Location/Dark.svg?react';
 import styles from './LocationRequestTemplate.module.css';
-import { ChatMessageType } from '..//ChatMessageType/ChatMessageType';
+import { ChatMessageType } from '../ChatMessageType/ChatMessageType';
 
-export interface QuickReplyTemplateProps {
+export interface LocationRequestTemplateProps {
   content: any;
   disabled?: boolean;
 
@@ -11,7 +11,7 @@ export interface QuickReplyTemplateProps {
   onSendLocationClick?: any;
 }
 
-const payload = {
+const locationPayload = {
   type: 'location',
   name: 'location',
   id: 'LOCATION',
@@ -27,7 +27,7 @@ export const LocationRequestTemplate = ({
   isSimulator = false,
 
   onSendLocationClick = () => {},
-}: QuickReplyTemplateProps) => {
+}: LocationRequestTemplateProps) => {
   const body = content.body.text;
   return (
     <div>
@@ -38,7 +38,7 @@ export const LocationRequestTemplate = ({
         variant="text"
         disabled={disabled}
         startIcon={<LocationIconDark />}
-        onClick={() => onSendLocationClick({ payload })}
+        onClick={() => onSendLocationClick({ payload: locationPayload })}
         className={isSimulator ? styles.SimulatorButton : styles.ChatButton}
       >
         Send Location
