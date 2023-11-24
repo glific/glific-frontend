@@ -520,7 +520,7 @@ const Template = ({
     }
   }, [templateButtons]);
 
-  if (languageLoading || templateLoading || tagLoading || sessionTemplateLoading) {
+  if (languageLoading || templateLoading || tagLoading) {
     return <Loading />;
   }
 
