@@ -182,7 +182,6 @@ const Template = ({
   const [label, setLabel] = useState('');
   const [body, setBody] = useState(EditorState.createEmpty());
   const [example, setExample] = useState(EditorState.createEmpty());
-  const [filterLabel, setFilterLabel] = useState('');
   const [shortcode, setShortcode] = useState('');
   const [language, setLanguageId] = useState<any>({});
   const [type, setType] = useState<any>(null);
@@ -480,12 +479,6 @@ const Template = ({
   }, [languages]);
 
   useEffect(() => {
-    if (filterLabel && language && language.id) {
-      getSessionTemplates();
-    }
-  }, [filterLabel, language, getSessionTemplates]);
-
-  useEffect(() => {
     setShortcode(getShortcode);
   }, [getShortcode]);
 
@@ -542,28 +535,6 @@ const Template = ({
   if (languageLoading || templateLoading || tagLoading || sessionTemplateLoading) {
     return <Loading />;
   }
-
-  const validateTitle = (value: any) => {
-    let error;
-    if (value) {
-      setFilterLabel(value);
-      let found = [];
-      if (sessionTemplates) {
-        if (getSessionTemplatesCallBack) {
-          getSessionTemplatesCallBack(sessionTemplates);
-        }
-        // need to check exact title
-        found = sessionTemplates.sessionTemplates.filter((search: any) => search.label === value);
-        if (params.id && found.length > 0) {
-          found = found.filter((search: any) => search.id !== params.id);
-        }
-      }
-      if (found.length > 0) {
-        error = t('Title already exists.');
-      }
-    }
-    return error;
-  };
 
   const updateTranslation = (value: any) => {
     const translationId = value.id;
@@ -709,7 +680,6 @@ const Template = ({
       component: Input,
       name: 'label',
       placeholder: `${t('Title')}*`,
-      validate: validateTitle,
       disabled: !!(defaultAttribute.isHsm && params.id),
       helperText: defaultAttribute.isHsm
         ? t('Define what use case does this template serve eg. OTP, optin, activity preference')
