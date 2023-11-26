@@ -39,7 +39,7 @@
     "i18next": "^23.6.0",
     "i18next-browser-languagedetector": "^7.1.0",
     "interweave": "^13.1.0",
-    "interweave-autolink": "^5.1.0",
+    "interweave-autolink": "^5.1.1",
     "moment": "^2.29.4",
     "pino": "^8.16.1",
     "pino-logflare": "^0.4.2",
