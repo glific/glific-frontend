@@ -746,6 +746,7 @@ export const InteractiveMessage = () => {
 
   let formFields: any =
     templateType === QUICK_REPLY ? [...fields, ...attachmentInputs] : [...fields];
+
   formFields = [
     ...formFields,
     {
