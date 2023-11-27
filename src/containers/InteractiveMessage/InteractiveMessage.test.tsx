@@ -36,6 +36,14 @@ const renderInteractiveMessage = (id: string) => (
   </MockedProvider>
 );
 
+const interactiveMessage = (
+  <MockedProvider mocks={mockData} addTypename={false}>
+    <MemoryRouter>
+      <InteractiveMessage />
+    </MemoryRouter>
+  </MockedProvider>
+);
+
 const fieldsMock = {
   results: [{ key: 'key 1' }, { key: 'key 2' }],
 };
@@ -80,13 +88,7 @@ vi.spyOn(axios, 'get').mockImplementation((url: string) => {
 });
 
 test('it renders empty interactive form', async () => {
-  render(
-    <MockedProvider mocks={mockData} addTypename={false}>
-      <MemoryRouter>
-        <InteractiveMessage />
-      </MemoryRouter>
-    </MockedProvider>
-  );
+  render(interactiveMessage);
 
   // Adding another quick reply button
   await waitFor(() => {
@@ -240,6 +242,36 @@ describe('copy interactive message', () => {
       expect(getByText('Copy Interactive Message')).toBeInTheDocument();
       const input = getAllByTestId('input');
       expect(input[0]?.querySelector('input')).toHaveValue('Copy of Continue');
+    });
+  });
+});
+
+describe('location request message', () => {
+  test('it renders empty location request message', async () => {
+    render(interactiveMessage);
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('autocomplete-element')[0]).toBeInTheDocument();
+    });
+    const [interactiveType] = screen.getAllByTestId('autocomplete-element');
+
+    // Switiching to location request
+    interactiveType.focus();
+    fireEvent.keyDown(interactiveType, { key: 'ArrowDown' });
+    fireEvent.keyDown(interactiveType, { key: 'ArrowDown' });
+    fireEvent.keyDown(interactiveType, { key: 'ArrowDown' });
+    fireEvent.keyDown(interactiveType, { key: 'Enter' });
+    await waitFor(() => {
+      expect(interactiveType.querySelector('input')).toHaveValue('Location request');
+    });
+
+    fireEvent.change(screen.getAllByTestId('outlinedInput')[0]?.querySelector('input'), {
+      target: { value: 'Section 1' },
+    });
+
+    // have send location in simulator preview
+    await waitFor(() => {
+      expect(screen.getByText('Send Location')).toBeInTheDocument();
     });
   });
 });
