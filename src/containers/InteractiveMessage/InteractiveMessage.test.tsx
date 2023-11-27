@@ -265,9 +265,12 @@ describe('location request message', () => {
       expect(interactiveType.querySelector('input')).toHaveValue('Location request');
     });
 
-    fireEvent.change(screen.getAllByTestId('outlinedInput')[0]?.querySelector('input'), {
-      target: { value: 'Section 1' },
-    });
+    fireEvent.change(
+      screen.getAllByTestId('outlinedInput')[0]?.querySelector('input') as HTMLElement,
+      {
+        target: { value: 'Section 1' },
+      }
+    );
 
     // have send location in simulator preview
     await waitFor(() => {
