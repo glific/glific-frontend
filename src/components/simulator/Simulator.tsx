@@ -24,9 +24,10 @@ import ResetIcon from 'assets/images/icons/Reset/Dark.svg?react';
 import {
   TIME_FORMAT,
   SAMPLE_MEDIA_FOR_SIMULATOR,
-  INTERACTIVE_LIST,
-  INTERACTIVE_QUICK_REPLY,
+  LIST,
+  QUICK_REPLY,
   DEFAULT_MESSAGE_LIMIT,
+  LOCATION_REQUEST,
 } from 'common/constants';
 import { GUPSHUP_CALLBACK_URL } from 'config';
 import { ChatMessageType } from 'containers/Chat/ChatMessages/ChatMessage/ChatMessageType/ChatMessageType';
@@ -54,6 +55,7 @@ import {
 } from 'graphql/subscriptions/Simulator';
 import { updateSimulatorConversations } from 'services/SubscriptionService';
 import styles from './Simulator.module.css';
+import { LocationRequestTemplate } from 'containers/Chat/ChatMessages/ChatMessage/LocationRequestTemplate/LocationRequestTemplate';
 
 export interface SimulatorProps {
   showSimulator: boolean;
@@ -296,7 +298,7 @@ export const Simulator = ({
     if (content) {
       isInteractiveContentPresent = !!Object.entries(content).length;
 
-      if (isInteractiveContentPresent && messageType === INTERACTIVE_LIST) {
+      if (isInteractiveContentPresent && messageType === LIST) {
         template = (
           <>
             <ListReplyTemplate
@@ -311,7 +313,7 @@ export const Simulator = ({
         );
       }
 
-      if (isInteractiveContentPresent && messageType === INTERACTIVE_QUICK_REPLY) {
+      if (isInteractiveContentPresent && messageType === QUICK_REPLY) {
         template = (
           <QuickReplyTemplate
             {...content}
@@ -320,6 +322,15 @@ export const Simulator = ({
             disabled={isInteractive}
             bspMessageId={bspMessageId}
             onQuickReplyClick={(value: any) => sendMessage(sender, value)}
+          />
+        );
+      }
+      if (isInteractiveContentPresent && messageType === LOCATION_REQUEST) {
+        template = (
+          <LocationRequestTemplate
+            content={content}
+            isSimulator
+            onSendLocationClick={(payload: any) => sendMessage(sender, payload)}
           />
         );
       }
@@ -386,7 +397,7 @@ export const Simulator = ({
       const { templateType, interactiveContent } = interactiveMessage;
       const previewMessage = renderMessage(interactiveMessage, 'received', 0, true);
       setSimulatedMessage(previewMessage);
-      if (templateType === INTERACTIVE_LIST) {
+      if (templateType === LIST) {
         const { items } = JSON.parse(interactiveContent);
         setSelectedListTemplate(items);
       } else {

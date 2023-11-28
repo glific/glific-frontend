@@ -134,6 +134,8 @@ export const getInteractiveMessageBody = (interactiveJSON: any) => {
       default:
         break;
     }
+  } else if (interactiveJSON.type === 'location_request_message') {
+    messageBody = interactiveJSON.body.text;
   }
 
   return messageBody;
