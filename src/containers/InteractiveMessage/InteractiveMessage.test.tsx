@@ -36,6 +36,14 @@ const renderInteractiveMessage = (id: string) => (
   </MockedProvider>
 );
 
+const interactiveMessage = (
+  <MockedProvider mocks={mockData} addTypename={false}>
+    <MemoryRouter>
+      <InteractiveMessage />
+    </MemoryRouter>
+  </MockedProvider>
+);
+
 const fieldsMock = {
   results: [{ key: 'key 1' }, { key: 'key 2' }],
 };
@@ -80,13 +88,7 @@ vi.spyOn(axios, 'get').mockImplementation((url: string) => {
 });
 
 test('it renders empty interactive form', async () => {
-  render(
-    <MockedProvider mocks={mockData} addTypename={false}>
-      <MemoryRouter>
-        <InteractiveMessage />
-      </MemoryRouter>
-    </MockedProvider>
-  );
+  render(interactiveMessage);
 
   // Adding another quick reply button
   await waitFor(() => {
@@ -120,22 +122,16 @@ test('it renders empty interactive form', async () => {
   });
 
   await waitFor(() => {
-    const [attachmentType] = screen.getAllByTestId('autocomplete-element');
-
-    expect(attachmentType).toBeInTheDocument();
-
-    attachmentType.focus();
-    fireEvent.keyDown(attachmentType, { key: 'ArrowDown' });
-    fireEvent.keyDown(attachmentType, { key: 'Enter' });
+    const [interactiveType] = screen.getAllByTestId('autocomplete-element');
+    expect(interactiveType).toBeInTheDocument();
   });
 
-  // Switiching between radio buttons
-  const [quickReplyRadio, listRadio] = screen.getAllByRole('radio');
-  await waitFor(() => {
-    expect(quickReplyRadio).toBeInTheDocument();
-    expect(listRadio).toBeInTheDocument();
-    fireEvent.click(listRadio);
-  });
+  // Switiching to list
+  const [interactiveType] = screen.getAllByTestId('autocomplete-element');
+  interactiveType.focus();
+  fireEvent.keyDown(interactiveType, { key: 'ArrowDown' });
+  fireEvent.keyDown(interactiveType, { key: 'ArrowDown' });
+  fireEvent.keyDown(interactiveType, { key: 'Enter' });
 
   await waitFor(() => {
     // Adding list data
@@ -179,9 +175,6 @@ test('it renders empty interactive form', async () => {
     expect(deleteListItemButton).toBeInTheDocument();
     fireEvent.click(deleteListItemButton);
   });
-
-  // Switching back to quick reply radio
-  fireEvent.click(quickReplyRadio);
 
   await waitFor(() => {
     const saveButton = screen.getByText('Save');
@@ -249,6 +242,39 @@ describe('copy interactive message', () => {
       expect(getByText('Copy Interactive Message')).toBeInTheDocument();
       const input = getAllByTestId('input');
       expect(input[0]?.querySelector('input')).toHaveValue('Copy of Continue');
+    });
+  });
+});
+
+describe('location request message', () => {
+  test('it renders empty location request message', async () => {
+    render(interactiveMessage);
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('autocomplete-element')[0]).toBeInTheDocument();
+    });
+    const [interactiveType] = screen.getAllByTestId('autocomplete-element');
+
+    // Switiching to location request
+    interactiveType.focus();
+    fireEvent.keyDown(interactiveType, { key: 'ArrowDown' });
+    fireEvent.keyDown(interactiveType, { key: 'ArrowDown' });
+    fireEvent.keyDown(interactiveType, { key: 'ArrowDown' });
+    fireEvent.keyDown(interactiveType, { key: 'Enter' });
+    await waitFor(() => {
+      expect(interactiveType.querySelector('input')).toHaveValue('Location request');
+    });
+
+    fireEvent.change(
+      screen.getAllByTestId('outlinedInput')[0]?.querySelector('input') as HTMLElement,
+      {
+        target: { value: 'Section 1' },
+      }
+    );
+
+    // have send location in simulator preview
+    await waitFor(() => {
+      expect(screen.getByText('Send Location')).toBeInTheDocument();
     });
   });
 });
