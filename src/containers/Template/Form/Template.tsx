@@ -597,7 +597,7 @@ const Template = ({
         variant: 'outlined',
         label: t('Attachment Type'),
       },
-      disabled: !!(defaultAttribute.isHsm && params.id),
+      disabled: isEditing,
       helperText: warning,
       onChange: (event: any) => {
         const val = event || '';
@@ -613,7 +613,7 @@ const Template = ({
       type: 'text',
       placeholder: t('Attachment URL'),
       validate: () => isUrlValid,
-      disabled: !!(defaultAttribute.isHsm && params.id),
+      disabled: isEditing,
       helperText: t(
         'Please provide a sample attachment for approval purpose. You may send a similar but different attachment when sending the HSM to users.'
       ),
@@ -652,7 +652,7 @@ const Template = ({
             variant: 'outlined',
             label: `${t('Language')}*`,
           },
-          disabled: !!(defaultAttribute.isHsm && params.id),
+          disabled: isEditing,
           onChange: getLanguageId,
         }
       : {
@@ -668,7 +668,7 @@ const Template = ({
       component: Input,
       name: 'label',
       placeholder: `${t('Title')}*`,
-      disabled: !!(defaultAttribute.isHsm && params.id),
+      disabled: isEditing,
       helperText: defaultAttribute.isHsm
         ? t('Define what use case does this template serve eg. OTP, optin, activity preference')
         : null,
@@ -683,7 +683,7 @@ const Template = ({
       rows: 5,
       convertToWhatsApp: true,
       textArea: true,
-      disabled: !!(defaultAttribute.isHsm && params.id),
+      disabled: isEditing,
       helperText: defaultAttribute.isHsm
         ? 'You can also use variable and interactive actions. Variable format: {{1}}, Button format: [Button text,Value] Value can be a URL or a phone number.'
         : null,
@@ -711,7 +711,7 @@ const Template = ({
       component: Checkbox,
       title: <Typography variant="h6">Add buttons</Typography>,
       name: 'isAddButtonChecked',
-      disabled: !!(defaultAttribute.isHsm && params.id),
+      disabled: !!(defaultAttribute.isHsm && params.id && !isCopyState),
       handleChange: (value: boolean) => setIsAddButtonChecked(value),
     },
     {
@@ -719,7 +719,7 @@ const Template = ({
       isAddButtonChecked,
       templateType,
       inputFields: templateButtons,
-      disabled: !!params.id,
+      disabled: isEditing,
       onAddClick: addTemplateButtons,
       onRemoveClick: removeTemplateButtons,
       onInputChange: handeInputChange,
@@ -732,7 +732,7 @@ const Template = ({
     name: 'tagId',
     options: tag ? tag.tags : [],
     optionLabel: 'label',
-    disabled: false,
+    disabled: isEditing,
     hasCreateOption: true,
     multiple: false,
     onChange: (value: any) => {
