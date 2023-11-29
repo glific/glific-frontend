@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { LIST, QUICK_REPLY } from 'common/constants';
+import { LIST, LOCATION_REQUEST, QUICK_REPLY } from 'common/constants';
 import { getPlainTextFromEditor } from 'common/RichEditor';
 import { FLOW_EDITOR_API } from 'config';
 import { getAuthSession } from 'services/AuthService';
@@ -79,7 +79,7 @@ export const validator = (templateType: any, t: any) => {
     validation.globalButton = Yup.string()
       .required(t('Required'))
       .max(20, t('Button value can be at most 20 characters'));
-  } else {
+  } else if (templateType === QUICK_REPLY) {
     validation.templateButtons = Yup.array()
       .of(
         Yup.object().shape({
@@ -117,53 +117,58 @@ export const convertJSONtoStateData = (JSONData: any, interactiveType: string, l
   const data = { ...JSONData };
   const { title, body, items, content, options, globalButtons } = data;
 
-  if (interactiveType === QUICK_REPLY) {
-    const { type, header, url, text, caption } = content;
-    const result: any = {};
-    result.templateButtons = options.map((option: any) => ({ value: option.title }));
-    result.title = header || '';
-    switch (type) {
-      case 'image':
-      case 'video':
-        result.type = type.toUpperCase();
-        result.attachmentURL = url;
-        result.title = label;
-        break;
-      case 'file':
-        result.type = 'DOCUMENT';
-        result.attachmentURL = url;
-
-        result.title = label;
-        break;
-      default:
-        result.type = null;
+  let result: any = {};
+  switch (interactiveType) {
+    case QUICK_REPLY: {
+      const { type, header, url, text, caption } = content;
+      result.templateButtons = options.map((option: any) => ({ value: option.title }));
+      result.title = header || '';
+      switch (type) {
+        case 'image':
+        case 'video':
+          result.type = type.toUpperCase();
+          result.attachmentURL = url;
+          result.title = label;
+          break;
+        case 'file':
+          result.type = 'DOCUMENT';
+          result.attachmentURL = url;
+          result.title = label;
+          break;
+        default:
+          result.type = null;
+      }
+      result.body = text || '';
+      result.footer = caption;
+      break;
     }
-    result.body = text || '';
-    result.footer = caption;
-    return result;
+    case LIST: {
+      result.templateButtons = items.map((item: any) => {
+        const itemOptions = item.options.map((option: any) => ({
+          title: option.title,
+          description: option.description,
+        }));
+        return {
+          title: item.title,
+          options: itemOptions,
+        };
+      });
+      result.body = body;
+      result.title = title;
+      result.globalButton = globalButtons[0].title;
+      break;
+    }
+    case LOCATION_REQUEST: {
+      result = { body: body.text, title: label };
+      break;
+    }
   }
-
-  const result: any = {};
-  result.templateButtons = items.map((item: any) => {
-    const itemOptions = item.options.map((option: any) => ({
-      title: option.title,
-      description: option.description,
-    }));
-    return {
-      title: item.title,
-      options: itemOptions,
-    };
-  });
-  result.body = body;
-  result.title = title;
-  result.globalButton = globalButtons[0].title;
   return result;
 };
 
 export const getDefaultValuesByTemplate = (templateData: any) => {
   const { type: templateType, interactiveContent } = templateData;
   const data = JSON.parse(interactiveContent);
-
   let result: any = {};
   if (templateType === QUICK_REPLY) {
     const { type, content, options } = data;
@@ -177,9 +182,7 @@ export const getDefaultValuesByTemplate = (templateData: any) => {
     result.type = type;
     result.content = updatedContent;
     result.options = updatedOptions;
-  }
-
-  if (templateType === LIST) {
+  } else if (templateType === LIST) {
     result = Object.keys(data).reduce((res: any, key: string) => {
       const dataVal = data[key];
       if (typeof dataVal === 'string') {
@@ -202,6 +205,9 @@ export const getDefaultValuesByTemplate = (templateData: any) => {
 
       return res;
     }, {});
+  } else if (templateType === LOCATION_REQUEST) {
+    result.body = { text: '' };
+    result.title = '';
   }
   return result;
 };
@@ -293,20 +299,29 @@ export const getTranslation = (
         default:
           return null;
       }
-    }
-
-    switch (attribute) {
-      case 'title':
-        return defaultTemplate.title;
-      case 'body':
-        return defaultTemplate.body;
-      case 'options':
-        return {
-          items: defaultTemplate.items,
-          globalButton: defaultTemplate.globalButtons[0].title,
-        };
-      default:
-        return null;
+    } else if (interactiveType === LIST) {
+      switch (attribute) {
+        case 'title':
+          return defaultTemplate.title;
+        case 'body':
+          return defaultTemplate.body;
+        case 'options':
+          return {
+            items: defaultTemplate.items,
+            globalButton: defaultTemplate.globalButtons[0].title,
+          };
+        default:
+          return null;
+      }
+    } else if (interactiveType === LOCATION_REQUEST) {
+      switch (attribute) {
+        case 'title':
+          return defaultTemplate.title;
+        case 'body':
+          return defaultTemplate.body.text;
+        default:
+          return null;
+      }
     }
   }
   return null;
