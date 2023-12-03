@@ -32,7 +32,7 @@
 }
 
 .Id {
-  width: 100px;
+  width: 70px;
 }
 
 .Created {
@@ -40,19 +40,19 @@
 }
 
 .Label {
-  width: 300px;
+  width: 270px;
 }
 
 .Issue {
-  width: 200px;
+  width: 130px;
 }
 
 .Assigned {
-  width: 200px;
+  width: 120px;
 }
 
 .Status {
-  width: 100px;
+  width: 200px;
 }
 
 .Body {
@@ -62,7 +62,7 @@
 }
 
 .Actions {
-  width: 150px;
+  width: 120px;
   justify-content: flex-end;
   margin-left: auto;
 }
@@ -103,6 +103,14 @@
   color: #073f24 !important;
   width: 29px;
   height: 29px;
+}
+
+.ExportIcon g {
+  stroke: white !important;
+}
+
+.ExportIcon {
+  margin-right: 8px;
 }
 
 .FilterLabel {

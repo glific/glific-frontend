@@ -9,7 +9,6 @@
   margin-top: 10px;
   align-items: center;
   align-content: center;
-
   display: flex;
 }
 
@@ -18,13 +17,12 @@
   margin-left: 18px;
 }
 
-.Buttons {
-  display: flex;
-  align-items: center;
-  margin-left: 24px;
+.FieldContainer {
+  width: 100%;
 }
 
-.FieldContainer > div {
-  padding: 0px 10px;
-  width: 100%;
+.Description {
+  font-size: 16px;
+  color: #93a29b;
+  margin-bottom: 8px;
 }

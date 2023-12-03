@@ -56,3 +56,12 @@ export const EXPORT_SUPPORT_TICKETS = gql`
     fetchSupportTickets(filter: $filter)
   }
 `;
+
+export const UPDATE_TICKETS_STATUS = gql`
+  mutation UpdateTicketStatusBasedOnTopic($input: UpdateTicketStatusBasedOnTopic) {
+    updateTicketStatusBasedOnTopic(input: $input) {
+      message
+      success
+    }
+  }
+`;

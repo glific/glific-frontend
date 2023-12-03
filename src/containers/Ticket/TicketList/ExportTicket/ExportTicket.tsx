@@ -10,21 +10,25 @@ import { Button } from 'components/UI/Form/Button/Button';
 
 import styles from './ExportTicket.module.css';
 import { EXPORT_SUPPORT_TICKETS } from 'graphql/queries/Ticket';
+import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 
-export interface ExportTicketPropTypes {}
+export interface ExportTicketPropTypes {
+  setShowExportDialog: any;
+}
 
 const formatDate = (value: any) => moment(value).format('YYYY-MM-DD');
 
-export const ExportTicket = () => {
+export const ExportTicket = ({ setShowExportDialog }: ExportTicketPropTypes) => {
   const { t } = useTranslation();
 
-  const [getTicketDetails] = useLazyQuery(EXPORT_SUPPORT_TICKETS, {
+  const [getTicketDetails, { loading }] = useLazyQuery(EXPORT_SUPPORT_TICKETS, {
     fetchPolicy: 'network-only',
     onCompleted: ({ fetchSupportTickets }) => {
       downloadFile(
         `data:attachment/csv,${encodeURIComponent(fetchSupportTickets)}`,
-        'consulting-hours.csv'
+        'tickets.csv'
       );
+      setShowExportDialog(false);
     },
   });
 
@@ -55,45 +59,46 @@ export const ExportTicket = () => {
   });
 
   return (
-    <div className={styles.FilterContainer}>
-      <Formik
-        initialValues={{ startDate: '', endDate: '' }}
-        onSubmit={(values) => {
-          if (values.startDate && values.endDate) {
-            getTicketDetails({
-              variables: {
-                filter: {
-                  startDate: formatDate(values.startDate),
-                  endDate: formatDate(values.endDate),
-                },
+    <Formik
+      initialValues={{ startDate: '', endDate: '' }}
+      onSubmit={(values) => {
+        if (values.startDate && values.endDate) {
+          getTicketDetails({
+            variables: {
+              filter: {
+                startDate: formatDate(values.startDate),
+                endDate: formatDate(values.endDate),
               },
-            });
-          }
-        }}
-        validationSchema={validationSchema}
-      >
-        {({ submitForm }) => (
-          <div>
-            <Form className={styles.Form}>
-              {formFields.map((field) => (
-                <Field className={styles.Field} {...field} key={field.name} />
-              ))}
-
-              <div className={styles.Buttons}>
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  onClick={() => {
-                    submitForm();
-                  }}
-                >
-                  Export
-                </Button>
+            },
+          });
+        }
+      }}
+      validationSchema={validationSchema}
+    >
+      {({ submitForm }) => (
+        <DialogBox
+          open
+          title="Export tickets"
+          titleAlign="left"
+          buttonOk="Export"
+          buttonOkLoading={loading}
+          alignButtons="center"
+          handleOk={() => submitForm()}
+          handleCancel={() => setShowExportDialog(false)}
+        >
+          <div className={styles.FilterContainer}>
+            <Form>
+              <div className={styles.Form}>
+                {formFields.map((field) => (
+                  <div className={styles.FieldContainer}>
+                    <Field {...field} key={field.name} />
+                  </div>
+                ))}
               </div>
             </Form>
           </div>
-        )}
-      </Formik>
-    </div>
+        </DialogBox>
+      )}
+    </Formik>
   );
 };
