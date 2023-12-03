@@ -14,6 +14,7 @@ export const TICKET_LIST_QUERY = gql`
       status
       topic
       updatedAt
+      messageNumber
       user {
         id
         name

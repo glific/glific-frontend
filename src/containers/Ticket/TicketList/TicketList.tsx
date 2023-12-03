@@ -119,8 +119,12 @@ export const TicketList = () => {
     {
       icon: <ChatIcon />,
       parameter: 'contact',
-      dialog: (contact: any) => {
-        window.open(`chat/${contact.id}`);
+      dialog: (contact: any, item: any) => {
+        if (item.messageNumber) {
+          window.open(`chat/${contact.id}?search=${item.messageNumber}`);
+        } else {
+          window.open(`chat/${contact.id}`);
+        }
       },
       label: t('Send Message'),
     },
