@@ -116,7 +116,18 @@ export const TicketList = () => {
   };
 
   const additionalAction = () => [
-    { icon: <ChatIcon />, parameter: 'contact.id', link: '/chat', label: t('Send Message') },
+    {
+      icon: <ChatIcon />,
+      parameter: 'contact',
+      dialog: (contact: any, item: any) => {
+        if (item.messageNumber) {
+          window.open(`chat/${contact.id}?search=${item.messageNumber}`);
+        } else {
+          window.open(`chat/${contact.id}`);
+        }
+      },
+      label: t('Send Message'),
+    },
     {
       icon: <EditIcon />,
       parameter: 'id',
@@ -195,7 +206,7 @@ export const TicketList = () => {
         secondaryButton={secondaryButton}
         listIcon={ticketIcon}
         {...queries}
-        searchParameter={['body']}
+        searchParameter={['nameOrPhone']}
         {...columnAttributes}
         additionalAction={additionalAction}
         filters={filter}

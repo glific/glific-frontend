@@ -45,9 +45,13 @@ const collapsedRowData = (dataObj: any, columnStyles: any, recordId: any) => {
       </TableRow>
     );
   }
+  console.log(dataObj);
 
   const additionalRowInformation = Object.keys(dataObj).map((key, index) => {
     const rowIdentifier = `collapsedRowData-${recordId}-${index}`;
+
+    // This is for location translation type where the text is inside body.
+    const body = typeof dataObj[key].body === 'string' ? dataObj[key].body : dataObj[key].body.text;
 
     return (
       <TableRow className={styles.CollapseTableRow} key={rowIdentifier}>
@@ -58,11 +62,9 @@ const collapsedRowData = (dataObj: any, columnStyles: any, recordId: any) => {
         </TableCell>
         <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[1] : null}`}>
           <div>
-            <p className={styles.TableText}>{dataObj[key].body}</p>
+            <p className={styles.TableText}>{body}</p>
           </div>
         </TableCell>
-        <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[2] : null}`} />
-        <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[3] : null}`} />
       </TableRow>
     );
   });

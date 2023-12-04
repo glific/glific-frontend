@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import InteractiveMessageIcon from 'assets/images/icons/InteractiveMessage/Dark.svg?react';
 import DownArrow from 'assets/images/icons/DownArrow.svg?react';
-import DuplicateIcon from 'assets/images/icons/Flow/Duplicate.svg?react';
+import DuplicateIcon from 'assets/images/icons/Duplicate.svg?react';
 import { List } from 'containers/List/List';
 import {
   FILTER_INTERACTIVE_MESSAGES,
@@ -25,13 +25,13 @@ const getLabel = (text: string) => (
 );
 
 const getType = (text: string) => {
-  let type = '';
-  if (text === 'QUICK_REPLY') {
-    type = 'Quick Reply';
-  } else if (text === 'LIST') {
-    type = 'List';
-  }
-  return <p className={styles.TableText}>{type}</p>;
+  const typeMappings: any = {
+    LOCATION_REQUEST_MESSAGE: 'Location request',
+    QUICK_REPLY: 'Quick Reply',
+    LIST: 'List',
+  };
+
+  return <p className={styles.TableText}>{typeMappings[text]}</p>;
 };
 
 const getBody = (text: string) => {
