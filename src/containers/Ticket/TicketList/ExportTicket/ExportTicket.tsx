@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next';
 import moment from 'moment';
 import { Calendar } from 'components/UI/Form/Calendar/Calendar';
 import { downloadFile } from 'common/utils';
-import { Button } from 'components/UI/Form/Button/Button';
 
 import styles from './ExportTicket.module.css';
 import { EXPORT_SUPPORT_TICKETS } from 'graphql/queries/Ticket';
@@ -24,10 +23,7 @@ export const ExportTicket = ({ setShowExportDialog }: ExportTicketPropTypes) => 
   const [getTicketDetails, { loading }] = useLazyQuery(EXPORT_SUPPORT_TICKETS, {
     fetchPolicy: 'network-only',
     onCompleted: ({ fetchSupportTickets }) => {
-      downloadFile(
-        `data:attachment/csv,${encodeURIComponent(fetchSupportTickets)}`,
-        'tickets.csv'
-      );
+      downloadFile(`data:attachment/csv,${encodeURIComponent(fetchSupportTickets)}`, 'tickets.csv');
       setShowExportDialog(false);
     },
   });
@@ -90,7 +86,7 @@ export const ExportTicket = ({ setShowExportDialog }: ExportTicketPropTypes) => 
             <Form>
               <div className={styles.Form}>
                 {formFields.map((field) => (
-                  <div className={styles.FieldContainer}>
+                  <div className={styles.FieldContainer} key={field.name}>
                     <Field {...field} key={field.name} />
                   </div>
                 ))}

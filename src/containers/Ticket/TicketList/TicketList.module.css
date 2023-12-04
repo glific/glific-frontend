@@ -8,29 +8,6 @@
   padding: 0px 0px 4px 0px !important;
 }
 
-.Success {
-  background-color: #c8ebdc;
-  border-radius: 14px;
-  padding: 4px 8px;
-  color: #119656;
-}
-
-.ErrorStyle {
-  background-color: #fbe8e8;
-  border-radius: 14px;
-  padding: 4px 8px;
-  color: #dd1f1f;
-  min-width: 77px;
-  text-align: center;
-}
-
-.StatusContainer {
-  display: flex;
-  align-items: center;
-  padding: 4px 0;
-  font-size: 16px;
-}
-
 .Id {
   width: 70px;
 }

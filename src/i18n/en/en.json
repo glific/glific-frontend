@@ -434,5 +434,6 @@
   "Request JSON": "Request JSON",
   "Response JSON": "Response JSON",
   "Webhook Logs": "Webhook Logs",
-  "ID": "ID"
+  "ID": "ID",
+  "Topic": "Topic"
 }

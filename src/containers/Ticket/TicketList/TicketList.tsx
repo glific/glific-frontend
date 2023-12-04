@@ -12,7 +12,6 @@ import { TICKET_COUNT_QUERY, TICKET_LIST_QUERY } from 'graphql/queries/Ticket';
 import { List } from 'containers/List/List';
 import { Button } from 'components/UI/Form/Button/Button';
 import { ExportTicket } from './ExportTicket/ExportTicket';
-import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import Ticket from 'containers/Ticket/Ticket';
 import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
 import { getUserSession } from 'services/AuthService';
@@ -26,21 +25,6 @@ const getTopic = (topic: any) => <div className={styles.TableText}>{topic}</div>
 const getInsertedAt = (insertedAt: string) => (
   <div className={styles.TableText}>{moment(insertedAt).format('DD-MM-YYYY hh:mm')}</div>
 );
-const getStatus = (status: string) => {
-  let showStatus;
-  switch (status) {
-    case 'open':
-      showStatus = <div className={styles.Success}>{status}</div>;
-      break;
-    case 'closed':
-      showStatus = <div className={styles.ErrorStyle}>{status}</div>;
-      break;
-    default:
-      showStatus = status;
-  }
-
-  return <div className={styles.StatusContainer}>{showStatus}</div>;
-};
 
 const getUser = (user: any) => <div className={styles.TableText}>{user?.name}</div>;
 

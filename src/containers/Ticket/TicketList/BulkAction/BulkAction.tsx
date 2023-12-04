@@ -1,9 +1,8 @@
-import { useLazyQuery, useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
 
 import { useTranslation } from 'react-i18next';
-import moment from 'moment';
 import styles from './BulkAction.module.css';
 import { UPDATE_TICKETS_STATUS } from 'graphql/queries/Ticket';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
@@ -28,7 +27,7 @@ export const BulkAction = ({ setShowBulkClose }: BulkActionPropTypes) => {
       component: Input,
       name: 'topic',
       type: 'text',
-      placeholder: 'Topic',
+      placeholder: t('Topic'),
     },
   ];
 
@@ -68,7 +67,7 @@ export const BulkAction = ({ setShowBulkClose }: BulkActionPropTypes) => {
             <Form>
               <div className={styles.Form}>
                 {formFields.map((field) => (
-                  <div className={styles.FieldContainer}>
+                  <div className={styles.FieldContainer} key={field.name}>
                     <Field {...field} key={field.name} />
                   </div>
                 ))}

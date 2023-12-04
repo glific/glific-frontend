@@ -12,7 +12,7 @@ setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
 const exportConsulting = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <Router>
-      <ExportTicket />
+      <ExportTicket setShowExportDialog={() => vi.fn()} />
     </Router>
   </MockedProvider>
 );

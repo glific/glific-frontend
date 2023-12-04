@@ -1,26 +1,26 @@
-// import { render, waitFor } from '@testing-library/react';
-// import { MockedProvider } from '@apollo/client/testing';
-// import { BrowserRouter as Router } from 'react-router-dom';
+import { render, waitFor } from '@testing-library/react';
+import { MockedProvider } from '@apollo/client/testing';
+import { BrowserRouter as Router } from 'react-router-dom';
 
-// import { setUserSession } from 'services/AuthService';
-// import { ExportTicket } from './ExportTicket';
-// import { getAllOrganizations } from 'mocks/Organization';
+import { setUserSession } from 'services/AuthService';
+import { BulkAction } from './BulkAction';
+import { getAllOrganizations } from 'mocks/Organization';
 
-// const mocks = getAllOrganizations;
-// setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
+const mocks = getAllOrganizations;
+setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
 
-// const exportConsulting = (
-//   <MockedProvider mocks={mocks} addTypename={false}>
-//     <Router>
-//       <ExportTicket />
-//     </Router>
-//   </MockedProvider>
-// );
+const bulkUpdate = (
+  <MockedProvider mocks={mocks} addTypename={false}>
+    <Router>
+      <BulkAction setShowBulkClose={() => vi.fn()} />
+    </Router>
+  </MockedProvider>
+);
 
-// it('Renders Export ticket component successfully', async () => {
-//   const { getAllByText } = render(exportConsulting);
+it('Renders Export ticket component successfully', async () => {
+  const { getByText } = render(bulkUpdate);
 
-//   await waitFor(() => {
-//     expect(getAllByText('Date from')[0]).toBeInTheDocument();
-//   });
-// });
+  await waitFor(() => {
+    expect(getByText('All tickets will be closed for this topic')).toBeInTheDocument();
+  });
+});
