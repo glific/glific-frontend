@@ -5,44 +5,35 @@ import { SupportAgent } from '@mui/icons-material';
 import moment from 'moment';
 
 import EditIcon from 'assets/images/icons/Edit.svg?react';
+import ExportIcon from 'assets/images/icons/Flow/Export.svg?react';
 import ChatIcon from 'assets/images/icons/Chat/UnselectedDark.svg?react';
 import { DELETE_TRIGGER } from 'graphql/mutations/Trigger';
 import { TICKET_COUNT_QUERY, TICKET_LIST_QUERY } from 'graphql/queries/Ticket';
 import { List } from 'containers/List/List';
+import { Button } from 'components/UI/Form/Button/Button';
+import { ExportTicket } from './ExportTicket/ExportTicket';
 import Ticket from 'containers/Ticket/Ticket';
 import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
 import { getUserSession } from 'services/AuthService';
 import styles from './TicketList.module.css';
+import { BulkAction } from './BulkAction/BulkAction';
 
 const getId = (id: any) => <div className={styles.TableText}>{id}</div>;
 const getBody = (body: any) => <div className={styles.TableText}>{body}</div>;
+const getTopic = (topic: any) => <div className={styles.TableText}>{topic}</div>;
+
 const getInsertedAt = (insertedAt: string) => (
   <div className={styles.TableText}>{moment(insertedAt).format('DD-MM-YYYY hh:mm')}</div>
 );
-const getStatus = (status: string) => {
-  let showStatus;
-  switch (status) {
-    case 'open':
-      showStatus = <div className={styles.Success}>{status}</div>;
-      break;
-    case 'closed':
-      showStatus = <div className={styles.ErrorStyle}>{status}</div>;
-      break;
-    default:
-      showStatus = status;
-  }
-
-  return <div className={styles.StatusContainer}>{showStatus}</div>;
-};
 
 const getUser = (user: any) => <div className={styles.TableText}>{user?.name}</div>;
 
-const getColumns = ({ id, body, status, insertedAt, user, contact }: any) => ({
+const getColumns = ({ id, body, status, insertedAt, user, contact, topic }: any) => ({
   ticketId: getId(id),
   insertedAt: getInsertedAt(insertedAt),
   body: getBody(body),
+  topic: getTopic(topic),
   contact: getUser(contact),
-  status: getStatus(status),
   user: getUser(user),
 });
 
@@ -69,8 +60,9 @@ const filterList = [
 ];
 
 export const TicketList = () => {
+  const [showExportDialog, setShowExportDialog] = useState(false);
+  const [showBulkClose, setShowBulkClose] = useState(false);
   const { t } = useTranslation();
-
   const userId = getUserSession('id');
 
   const [openDialog, setOpenDialog] = useState(false);
@@ -95,12 +87,20 @@ export const TicketList = () => {
     );
   }
 
+  if (showExportDialog) {
+    dialog = <ExportTicket setShowExportDialog={setShowExportDialog} />;
+  }
+
+  if (showBulkClose) {
+    dialog = <BulkAction setShowBulkClose={setShowBulkClose} />;
+  }
+
   const columnNames: any = [
     { name: 'id', label: t('ID') },
     { name: 'inserted_at', label: t('Created at'), sort: true, order: 'desc' },
     { name: 'body', label: t('Issue') },
+    { label: t('Topic') },
     { label: t('Opened by') },
-    { label: t('Status') },
     { label: t('Assigned to') },
     { label: t('Actions') },
   ];
@@ -176,6 +176,17 @@ export const TicketList = () => {
     </div>
   );
 
+  const secondaryButton = (
+    <div>
+      <Button variant="contained" onClick={() => setShowExportDialog(true)}>
+        <ExportIcon className={styles.ExportIcon} /> Export
+      </Button>
+      <Button variant="contained" onClick={() => setShowBulkClose(true)}>
+        Bulk Update
+      </Button>
+    </div>
+  );
+
   const filter: any = { status };
 
   if (assignedToUser) {
@@ -192,6 +203,7 @@ export const TicketList = () => {
         listItemName="ticket"
         pageLink="ticket"
         button={{ show: false }}
+        secondaryButton={secondaryButton}
         listIcon={ticketIcon}
         {...queries}
         searchParameter={['nameOrPhone']}

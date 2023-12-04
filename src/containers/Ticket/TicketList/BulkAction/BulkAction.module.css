@@ -1,0 +1,28 @@
+.FormContainer {
+  padding: 16px 24px;
+}
+
+.FilterContainer {
+  max-width: 400px;
+}
+.Form {
+  margin-top: 10px;
+  align-items: center;
+  align-content: center;
+  display: flex;
+}
+
+.ExportIcon {
+  cursor: pointer;
+  margin-left: 18px;
+}
+
+.FieldContainer {
+  width: 100%;
+}
+
+.Description {
+  font-size: 16px;
+  color: #93a29b;
+  margin-bottom: 8px;
+}
