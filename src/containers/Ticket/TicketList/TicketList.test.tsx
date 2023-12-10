@@ -19,7 +19,7 @@ const wrapper = (
 setUserSession(JSON.stringify({ roles: ['Admin'] }));
 
 test('should load the ticket list', async () => {
-  const { getByText } = render(wrapper);
+  const { getByText, getByTestId } = render(wrapper);
 
   expect(getByTestId('loading')).toBeInTheDocument();
   await waitFor(() => {
