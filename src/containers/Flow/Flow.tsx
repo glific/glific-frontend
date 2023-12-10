@@ -35,7 +35,8 @@ export const Flow = () => {
   const [name, setName] = useState('');
   const [isPinnedDisable, setIsPinnedDisable] = useState(false);
   const [keywords, setKeywords] = useState('');
-  const [tagId, setTagId] = useState(null);
+  const [description, setDescription] = useState('');
+  const [tagId, setTagId] = useState({ id: '', label: '' });
   const [isActive, setIsActive] = useState(true);
   const [isPinned, setIsPinned] = useState(false);
   const [roles, setRoles] = useState<Array<any>>([]);
@@ -67,11 +68,22 @@ export const Flow = () => {
 
   if (loading) return <Loading />;
 
-  const states = { isActive, isPinned, isBackground, name, keywords, tagId, ignoreKeywords, roles };
+  const states = {
+    isActive,
+    isPinned,
+    isBackground,
+    name,
+    keywords,
+    description,
+    tagId,
+    ignoreKeywords,
+    roles,
+  };
 
   const setStates = ({
     name: nameValue,
     keywords: keywordsValue,
+    description: descriptionValue,
     tag: tagValue,
     isActive: isActiveValue,
     isPinned: isPinnedValue,
@@ -102,6 +114,7 @@ export const Flow = () => {
     setIsPinned(isPinnedValue);
     setIsBackground(isBackgroundValue);
     setRoles(rolesValue);
+    setDescription(descriptionValue);
 
     // we are receiving keywords as an array object
     if (fieldKeywords.length > 0) {
@@ -141,7 +154,15 @@ export const Flow = () => {
       type: 'text',
       label: t('Keywords'),
       placeholder: t('Keywords'),
-      helperText: t('Enter comma separated keywords that trigger this flow'),
+      helperText: t('Enter comma separated keywords that trigger this flow.'),
+    },
+    {
+      component: Input,
+      name: 'description',
+      type: 'text',
+      textArea: true,
+      rows: 2,
+      placeholder: t('Description'),
     },
     {
       component: AutoComplete,
@@ -152,8 +173,11 @@ export const Flow = () => {
       handleCreateItem: handleCreateLabel,
       hasCreateOption: true,
       multiple: false,
-      label: t('Tag'),
-      placeholder: t('Tag'),
+      textFieldProps: {
+        variant: 'outlined',
+        label: t('Tag'),
+      },
+      helperText: t('Use this to categorize your flows.'),
     },
     {
       component: Checkbox,

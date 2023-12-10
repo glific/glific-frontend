@@ -152,6 +152,9 @@ export const GUPSHUP_QUICK_REPLY =
 export const CALL_TO_ACTION = 'CALL_TO_ACTION';
 export const LIST = 'LIST';
 export const QUICK_REPLY = 'QUICK_REPLY';
+export const LOCATION_REQUEST = 'LOCATION_REQUEST_MESSAGE';
+export const TERMS_OF_USE_LINK = 'https://tides.coloredcow.com/terms-of-use';
+export const COMPACT_MESSAGE_LENGTH = 35;
 
 // Gupshup sample media
 export const SAMPLE_MEDIA_FOR_SIMULATOR = [
@@ -209,10 +212,3 @@ export const yupPasswordValidation = (t: any) =>
     )
     .min(10, t('Password must be at least 10 characters long.'))
     .required(t('Input required'));
-
-export const INTERACTIVE_QUICK_REPLY = 'QUICK_REPLY';
-export const INTERACTIVE_LIST = 'LIST';
-
-export const TERMS_OF_USE_LINK = 'https://tides.coloredcow.com/terms-of-use';
-
-export const COMPACT_MESSAGE_LENGTH = 35;

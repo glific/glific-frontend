@@ -8,7 +8,7 @@ import AddIcon from 'assets/images/add.svg?react';
 import { FormControl, MenuItem, Select } from '@mui/material';
 
 import FlowIcon from 'assets/images/icons/Flow/Dark.svg?react';
-import DuplicateIcon from 'assets/images/icons/Flow/Duplicate.svg?react';
+import DuplicateIcon from 'assets/images/icons/Duplicate.svg?react';
 import ExportIcon from 'assets/images/icons/Flow/Export.svg?react';
 import ConfigureIcon from 'assets/images/icons/Configure/UnselectedDark.svg?react';
 import PinIcon from 'assets/images/icons/Pin/Active.svg?react';
@@ -18,11 +18,11 @@ import { List } from 'containers/List/List';
 import { ImportButton } from 'components/UI/ImportButton/ImportButton';
 import { DATE_TIME_FORMAT } from 'common/constants';
 import { exportFlowMethod, organizationHasDynamicRole } from 'common/utils';
-import { setNotification } from 'common/notification';
 import styles from './FlowList.module.css';
 import { GET_TAGS } from 'graphql/queries/Tags';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { flowInfo } from 'common/HelpData';
+import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 
 const getName = (text: string, keywordsList: any, roles: any) => {
   const keywords = keywordsList.map((keyword: any) => keyword);
@@ -86,6 +86,7 @@ export const FlowList = () => {
   const [selectedtag, setSelectedTag] = useState<any>(null);
   const [flowName, setFlowName] = useState('');
   const [importing, setImporting] = useState(false);
+  const [importStatus, setImportStatus] = useState([]);
 
   const [releaseFlow] = useLazyQuery(RELEASE_FLOW);
 
@@ -95,17 +96,8 @@ export const FlowList = () => {
 
   const [importFlow] = useMutation(IMPORT_FLOW, {
     onCompleted: (result: any) => {
-      const { success } = result.importFlow;
-      if (!success) {
-        setNotification(
-          t(
-            'Sorry! An error occurred! This could happen if the flow is already present or error in the import file.'
-          ),
-          'error'
-        );
-      } else {
-        setNotification(t('The flow has been imported successfully.'));
-      }
+      const { status } = result.importFlow;
+      setImportStatus(status);
       setImporting(false);
     },
   });
@@ -126,6 +118,27 @@ export const FlowList = () => {
     setFlowName(item.name);
     exportFlowMutation({ variables: { id } });
   };
+  let dialog;
+
+  if (importStatus.length > 0) {
+    dialog = (
+      <DialogBox
+        title="Import flow Status"
+        buttonOk="Okay"
+        alignButtons="center"
+        handleOk={() => setImportStatus([])}
+        skipCancel
+      >
+        <div className={styles.ImportDialog}>
+          {importStatus.map((status: any) => (
+            <div key={status.flowName}>
+              <strong>{status.flowName}:</strong> {status.status}
+            </div>
+          ))}
+        </div>
+      </DialogBox>
+    );
+  }
 
   const importButton = (
     <ImportButton
@@ -249,24 +262,27 @@ export const FlowList = () => {
   const addIcon = <AddIcon className={styles.AddIcon} />;
 
   return (
-    <List
-      helpData={flowInfo}
-      title={t('Flows')}
-      listItem="flows"
-      listItemName="flow"
-      pageLink="flow"
-      listIcon={flowIcon}
-      dialogMessage={dialogMessage}
-      {...queries}
-      {...columnAttributes}
-      searchParameter={['name_or_keyword_or_tags']}
-      additionalAction={additionalAction}
-      button={{ show: true, label: t('Create Flow'), symbol: addIcon }}
-      secondaryButton={importButton}
-      filters={filters}
-      filterList={activeFilter}
-      loadingList={importing}
-    />
+    <>
+      {dialog}
+      <List
+        helpData={flowInfo}
+        title={t('Flows')}
+        listItem="flows"
+        listItemName="flow"
+        pageLink="flow"
+        listIcon={flowIcon}
+        dialogMessage={dialogMessage}
+        {...queries}
+        {...columnAttributes}
+        searchParameter={['name_or_keyword_or_tags']}
+        additionalAction={additionalAction}
+        button={{ show: true, label: t('Create Flow'), symbol: addIcon }}
+        secondaryButton={importButton}
+        filters={filters}
+        filterList={activeFilter}
+        loadingList={importing}
+      />
+    </>
   );
 };
 

@@ -31,3 +31,8 @@
   width: 130px;
   overflow: auto;
 }
+
+.LastLoginEnterprise {
+  composes: LastLogin;
+  bottom: 2px;
+}

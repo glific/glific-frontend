@@ -84,7 +84,7 @@
   margin: 0 6px;
 }
 .BottomMenusWithoutWallet {
-  bottom: 10px;
+  bottom: 15px;
 }
 .BottomMenusVertical {
   flex-flow: column;

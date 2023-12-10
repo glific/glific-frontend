@@ -81,13 +81,6 @@ test('it render interactive options for list reply template', async () => {
 
   fireEvent.click(listItem1);
   await waitFor(() => {});
-
-  const [quickReplyRadio] = screen.getAllByRole('radio');
-
-  expect(quickReplyRadio).toBeInTheDocument();
-  fireEvent.click(quickReplyRadio);
-
-  await waitFor(() => {});
 });
 
 const quickReplyInputFields = [{ value: 'yes' }, { value: 'no' }];

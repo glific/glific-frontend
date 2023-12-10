@@ -10,7 +10,7 @@ import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
 import { Input } from 'components/UI/Form/Input/Input';
 import { MessageType } from 'containers/Chat/ChatConversations/MessageType/MessageType';
 import { MEDIA_MESSAGE_TYPES } from 'common/constants';
-import { validateMedia } from 'common/utils';
+import { slicedString, validateMedia } from 'common/utils';
 import setLogs from 'config/logs';
 import { UPLOAD_MEDIA } from 'graphql/mutations/Chat';
 import CrossIcon from 'assets/images/icons/Cross.svg?react';
@@ -167,7 +167,7 @@ export const AddAttachment = ({
     if (media) {
       const mediaName = media.name;
       const extension = mediaName.slice((Math.max(0, mediaName.lastIndexOf('.')) || Infinity) + 1);
-      const shortenedName = mediaName.length > 15 ? `${mediaName.slice(0, 15)}...` : mediaName;
+      const shortenedName = slicedString(mediaName, 15);
       setFileName(shortenedName);
       setUploading(true);
       uploadMedia({

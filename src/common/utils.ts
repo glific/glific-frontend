@@ -134,6 +134,8 @@ export const getInteractiveMessageBody = (interactiveJSON: any) => {
       default:
         break;
     }
+  } else if (interactiveJSON.type === 'location_request_message') {
+    messageBody = interactiveJSON.body.text;
   }
 
   return messageBody;
@@ -208,5 +210,8 @@ export const trimStringWithMaxLength = (input: string, maxLength: number): strin
   const trimmedString = input.slice(0, maxLength - 3);
   return trimmedString + '...';
 };
+
+export const slicedString = (string: string, length: number) =>
+  string?.length > length ? `${string.slice(0, length)}...` : string;
 
 export default getObject;

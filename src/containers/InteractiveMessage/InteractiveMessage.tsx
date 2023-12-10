@@ -21,7 +21,7 @@ import { EmojiInput } from 'components/UI/Form/EmojiInput/EmojiInput';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Simulator } from 'components/simulator/Simulator';
 import { LanguageBar } from 'components/UI/LanguageBar/LanguageBar';
-import { LIST, MEDIA_MESSAGE_TYPES, QUICK_REPLY } from 'common/constants';
+import { LIST, LOCATION_REQUEST, MEDIA_MESSAGE_TYPES, QUICK_REPLY } from 'common/constants';
 import { validateMedia } from 'common/utils';
 import Loading from 'components/UI/Layout/Loading/Loading';
 import { getPlainTextFromEditor, getEditorFromContent } from 'common/RichEditor';
@@ -50,6 +50,12 @@ const queries = {
   deleteItemQuery: DELETE_INTERACTIVE,
 };
 
+const templateTypeOptions = [
+  { id: QUICK_REPLY, label: 'Reply buttons' },
+  { id: LIST, label: 'List message' },
+  { id: LOCATION_REQUEST, label: 'Location request' },
+];
+
 export const InteractiveMessage = () => {
   const location: any = useLocation();
   const navigate = useNavigate();
@@ -57,6 +63,7 @@ export const InteractiveMessage = () => {
   const [footer, setFooter] = useState('');
   const [body, setBody] = useState(EditorState.createEmpty());
   const [templateType, setTemplateType] = useState<string>(QUICK_REPLY);
+  const [templateTypeField, setTemplateTypeField] = useState<any>(templateTypeOptions[0]);
   const [templateButtons, setTemplateButtons] = useState<Array<any>>([{ value: '' }]);
   const [globalButton, setGlobalButton] = useState('');
   const [isUrlValid, setIsUrlValid] = useState<any>();
@@ -76,6 +83,8 @@ export const InteractiveMessage = () => {
   const [nextLanguage, setNextLanguage] = useState<any>('');
   const { t } = useTranslation();
   const params = useParams();
+
+  const isLocationRequestType = templateType === LOCATION_REQUEST;
 
   const { data: tag, loading: tagsLoading } = useQuery(GET_TAGS, {
     variables: {},
@@ -132,6 +141,7 @@ export const InteractiveMessage = () => {
     templateButtons,
     sendWithTitle,
     templateType,
+    templateTypeField,
     type,
     attachmentURL,
   };
@@ -154,6 +164,7 @@ export const InteractiveMessage = () => {
     setFooter(data.footer || '');
     setBody(getEditorFromContent(data.body));
     setTemplateType(typeValue);
+    setTemplateTypeField(templateTypeOptions.find((option) => option.id === typeValue));
     setTimeout(() => setTemplateButtons(data.templateButtons), 100);
 
     if (typeValue === LIST) {
@@ -222,6 +233,7 @@ export const InteractiveMessage = () => {
     setFooter(data.footer || '');
     setBody(getEditorFromContent(data.body));
     setTemplateType(typeValue);
+    setTemplateTypeField(templateTypeOptions.find((option) => option.id === typeValue));
     setTimeout(() => setTemplateButtons(data.templateButtons), 100);
 
     if (typeValue === LIST) {
@@ -238,7 +250,7 @@ export const InteractiveMessage = () => {
     }
     setSendWithTitle(sendInteractiveTitleValue);
 
-    const getTagId = tag.tags.filter((tags: any) => tags.id === tagValue.id);
+    const getTagId = tag.tags.filter((tags: any) => tags.id === tagValue?.id);
     if (getTagId.length > 0) {
       setTagId(getTagId[0]);
     }
@@ -273,6 +285,7 @@ export const InteractiveMessage = () => {
     const buttonType: any = {
       QUICK_REPLY: { value: '' },
       LIST: { title: '', options: [{ title: '', description: '' }] },
+      LOCATION_REQUEST_MESSAGE: {},
     };
 
     const templateResult = stateToRestore || [buttonType[templateTypeVal]];
@@ -465,6 +478,23 @@ export const InteractiveMessage = () => {
       onLanguageChange,
     },
     {
+      component: AutoComplete,
+      onChange: (change: any) => {
+        const value = change.id;
+        const stateToRestore = previousState[value];
+        setTemplateType(value);
+        setTemplateTypeField(change);
+        setPreviousState({ [templateType]: templateButtons });
+        handleAddInteractiveTemplate(false, value, stateToRestore);
+      },
+      name: 'templateTypeField',
+      options: templateTypeOptions,
+      multiple: false,
+      disabled: params?.id !== undefined,
+      placeholder: 'Type',
+      optionLabel: 'label',
+    },
+    {
       translation:
         hasTranslations && getTranslation(templateType, 'title', translations, defaultLanguage),
       component: Input,
@@ -479,7 +509,7 @@ export const InteractiveMessage = () => {
     },
     // checkbox is not needed in media types
     {
-      skip: type && type.label,
+      skip: (type && type.label) || isLocationRequestType,
       component: Checkbox,
       name: 'sendWithTitle',
       title: t('Show title in message'),
@@ -525,18 +555,11 @@ export const InteractiveMessage = () => {
       templateType,
       inputFields: templateButtons,
       disabled: false,
-      disabledType: params?.id !== undefined,
       onAddClick: handleAddInteractiveTemplate,
       onRemoveClick: handleRemoveInteractiveTemplate,
       onInputChange: handleInputChange,
       onListItemAddClick: handleAddListItem,
       onListItemRemoveClick: handleRemoveListItem,
-      onTemplateTypeChange: (value: string) => {
-        const stateToRestore = previousState[value];
-        setTemplateType(value);
-        setPreviousState({ [templateType]: templateButtons });
-        handleAddInteractiveTemplate(false, value, stateToRestore);
-      },
       onGlobalButtonInputChange: (value: string) => setGlobalButton(value),
     },
   ];
@@ -606,6 +629,24 @@ export const InteractiveMessage = () => {
         interactiveContent: JSON.stringify(listJSON),
       });
     }
+
+    if (templateType === LOCATION_REQUEST) {
+      const bodyText = getPlainTextFromEditor(payload.body);
+      const locationJson = {
+        type: 'location_request_message',
+        body: {
+          type: 'text',
+          text: bodyText,
+        },
+        action: {
+          name: 'send_location',
+        },
+      };
+      Object.assign(updatedPayload, {
+        type: LOCATION_REQUEST,
+        interactiveContent: JSON.stringify(locationJson),
+      });
+    }
     return updatedPayload;
   };
 
@@ -635,6 +676,7 @@ export const InteractiveMessage = () => {
     if (translations) {
       translationsCopy = JSON.parse(translations);
       translationsCopy[language.id] = JSON.parse(payloadData.interactiveContent);
+      setTranslations(JSON.stringify(translationsCopy));
     }
 
     const langIds = Object.keys(translationsCopy);
@@ -704,7 +746,8 @@ export const InteractiveMessage = () => {
     },
   ];
 
-  let formFields: any = templateType === LIST ? [...fields] : [...fields, ...attachmentInputs];
+  let formFields: any =
+    templateType === QUICK_REPLY ? [...fields, ...attachmentInputs] : [...fields];
   formFields = [
     ...formFields,
     {
@@ -720,6 +763,7 @@ export const InteractiveMessage = () => {
       },
       label: t('Tag'),
       placeholder: t('Tag'),
+      helperText: t('Use this to categorize your interactive messages.'),
     },
   ];
 

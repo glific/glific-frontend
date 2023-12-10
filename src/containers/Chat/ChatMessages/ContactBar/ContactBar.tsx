@@ -49,6 +49,7 @@ import { DialogBox } from '../../../../components/UI/DialogBox/DialogBox';
 import { Tooltip } from '../../../../components/UI/Tooltip/Tooltip';
 import { CLEAR_MESSAGES } from '../../../../graphql/mutations/Chat';
 import { showChats } from '../../../../common/responsive';
+import { slicedString } from 'common/utils';
 import { CollectionInformation } from '../../../Collection/CollectionInformation/CollectionInformation';
 import AddContactsToCollection from '../AddContactsToCollection/AddContactsToCollection';
 
@@ -614,6 +615,14 @@ export const ContactBar = ({
                     <DropdownIcon />
                   </div>
                 </ClickAwayListener>
+                <Typography
+                  className={styles.Title}
+                  variant="h6"
+                  noWrap
+                  data-testid="beneficiaryName"
+                >
+                  {slicedString(displayName, 40)}
+                </Typography>
               </div>
             </div>
             {collectionStatus}

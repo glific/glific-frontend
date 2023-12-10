@@ -5,7 +5,7 @@ import AddIcon from 'assets/images/add.svg?react';
 import TriggerIcon from 'assets/images/icons/Trigger/Union.svg?react';
 import ClockIcon from 'assets/images/icons/Trigger/Clock.svg?react';
 import ClockInactiveIcon from 'assets/images/icons/Trigger/Inactive.svg?react';
-import DuplicateIcon from 'assets/images/icons/Flow/Duplicate.svg?react';
+import DuplicateIcon from 'assets/images/icons/Duplicate.svg?react';
 import { TRIGGER_LIST_QUERY, TRIGGER_QUERY_COUNT } from 'graphql/queries/Trigger';
 import { DELETE_TRIGGER } from 'graphql/mutations/Trigger';
 import { FULL_DATE_FORMAT, dayList } from 'common/constants';

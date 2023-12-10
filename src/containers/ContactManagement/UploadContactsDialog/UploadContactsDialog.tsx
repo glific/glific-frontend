@@ -13,6 +13,7 @@ import UploadIcon from 'assets/images/icons/Upload.svg?react';
 import CrossIcon from 'assets/images/icons/Cross.svg?react';
 import { UPLOAD_CONTACTS_SAMPLE } from 'config';
 import { IMPORT_CONTACTS } from 'graphql/mutations/Contact';
+import { slicedString } from 'common/utils';
 import { setNotification } from 'common/notification';
 import styles from './UploadContactsDialog.module.css';
 
@@ -76,7 +77,7 @@ export const UploadContactsDialog = ({
       if (extension !== 'csv') {
         setError(true);
       } else {
-        const shortenedName = mediaName.length > 15 ? `${mediaName.slice(0, 15)}...` : mediaName;
+        const shortenedName = slicedString(mediaName, 15);
         setFileName(shortenedName);
         setCsvContent(reader.result);
       }

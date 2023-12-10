@@ -1,16 +1,8 @@
-import {
-  RadioGroup,
-  FormControlLabel,
-  Radio,
-  FormControl,
-  TextField,
-  FormHelperText,
-  Typography,
+import { FormControl, TextField, FormHelperText   Typography,
 } from '@mui/material';
 import { FieldArray } from 'formik';
 
-import ApprovedIcon from 'assets/images/icons/Template/Approved.svg?react';
-import { QUICK_REPLY, LIST } from 'common/constants';
+import { QUICK_REPLY, LIST, LOCATION_REQUEST } from 'common/constants';
 import { QuickReplyTemplate } from './QuickReplyTemplate';
 import { ListReplyTemplate } from './ListReplyTemplate';
 import styles from './InteractiveOptions.module.css';
@@ -38,14 +30,12 @@ export const InteractiveOptions = ({
   form,
   onAddClick,
   onRemoveClick,
-  onTemplateTypeChange,
   onInputChange,
   onGlobalButtonInputChange,
   onListItemAddClick,
   onListItemRemoveClick,
   disabled = false,
   translation,
-  disabledType,
 }: InteractiveOptionsProps) => {
   const { values, errors, touched, setFieldValue } = form;
 
@@ -111,37 +101,6 @@ export const InteractiveOptions = ({
 
   const radioTemplateType = (
     <div>
-      <RadioGroup
-        aria-label="template-type"
-        name="template-type"
-        row
-        value={templateType}
-        onChange={(event) => onTemplateTypeChange(event.target.value)}
-        className={styles.RadioGroupDisplay}
-      >
-        <div className={styles.RadioLabelWrapper}>
-          <FormControlLabel
-            value={QUICK_REPLY}
-            control={
-              <Radio disabled={disabledType} color="primary" size="small" sx={radioButtonColor} />
-            }
-            className={templateType === QUICK_REPLY ? styles.SelectedLabel : ''}
-            classes={{ root: styles.RadioLabel }}
-            label="Reply buttons"
-          />
-        </div>
-        <div className={styles.RadioLabelWrapper}>
-          <FormControlLabel
-            value={LIST}
-            control={
-              <Radio disabled={disabledType} color="primary" size="small" sx={radioButtonColor} />
-            }
-            className={templateType === LIST ? styles.SelectedLabel : ''}
-            classes={{ root: styles.RadioLabel }}
-            label="List message"
-          />
-        </div>
-      </RadioGroup>
       {templateType && templateType === LIST && (
         <div className={styles.GlobalButton}>
           {translation && <div className={styles.Translation}>{translation.globalButton}</div>}
@@ -169,7 +128,7 @@ export const InteractiveOptions = ({
           </FormControl>
         </div>
       )}
-      {templateType && (
+      {templateType && templateType !== LOCATION_REQUEST && (
         <div
           className={
             templateType === QUICK_REPLY ? styles.TemplateFields : styles.TemplateFieldsList
