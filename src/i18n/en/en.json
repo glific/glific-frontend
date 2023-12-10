@@ -373,6 +373,8 @@
   "Message is required.": "Message is required.",
   "Please enter valid phone number.": "Please enter valid phone number.",
   "Please enter valid url.": "Please enter valid url.",
+  "Copy of the speed send has been created!": "",
+  "Copy of the template has been created!": "",
   "Submit for Approval": "Submit for Approval",
   "Create": "Create",
   "Create Speed Send": "Create Speed Send",
@@ -393,6 +395,7 @@
   "Change assignee": "Change assignee",
   "Remarks": "Remarks",
   "Update ticket": "Update ticket",
+  "ID": "ID",
   "Created at": "Created at",
   "Issue": "Issue",
   "Opened by": "Opened by",
@@ -434,5 +437,6 @@
   "Request JSON": "Request JSON",
   "Response JSON": "Response JSON",
   "Webhook Logs": "Webhook Logs",
-  "ID": "ID"
+  "Topic": "Topic"
+
 }

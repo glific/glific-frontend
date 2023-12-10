@@ -14,6 +14,7 @@ export const TICKET_LIST_QUERY = gql`
       status
       topic
       updatedAt
+      messageNumber
       user {
         id
         name
@@ -48,5 +49,20 @@ export const GET_TICKET = gql`
 export const TICKET_COUNT_QUERY = gql`
   query countTickets($filter: TicketFilter!) {
     countTickets(filter: $filter)
+  }
+`;
+
+export const EXPORT_SUPPORT_TICKETS = gql`
+  query fetchSupportTickets($filter: FetchSupportTickets) {
+    fetchSupportTickets(filter: $filter)
+  }
+`;
+
+export const UPDATE_TICKETS_STATUS = gql`
+  mutation UpdateTicketStatusBasedOnTopic($input: UpdateTicketStatusBasedOnTopic) {
+    updateTicketStatusBasedOnTopic(input: $input) {
+      message
+      success
+    }
   }
 `;

@@ -1,0 +1,30 @@
+.FormContainer {
+  padding: 16px 24px;
+}
+
+.FilterContainer {
+  max-width: 400px;
+}
+.Form {
+  margin-top: 10px;
+  align-items: center;
+  align-content: center;
+
+  display: flex;
+}
+
+.ExportIcon {
+  cursor: pointer;
+  margin-left: 18px;
+}
+
+.Buttons {
+  display: flex;
+  align-items: center;
+  margin-left: 24px;
+}
+
+.FieldContainer > div {
+  padding: 0px 10px;
+  width: 100%;
+}
