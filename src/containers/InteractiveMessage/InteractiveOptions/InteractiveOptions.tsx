@@ -1,5 +1,4 @@
-import { FormControl, TextField, FormHelperText   Typography,
-} from '@mui/material';
+import { FormControl, TextField, FormHelperText, Typography } from '@mui/material';
 import { FieldArray } from 'formik';
 
 import { QUICK_REPLY, LIST, LOCATION_REQUEST } from 'common/constants';
