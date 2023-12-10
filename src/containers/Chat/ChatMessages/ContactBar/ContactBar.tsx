@@ -602,7 +602,7 @@ export const ContactBar = ({
                   noWrap
                   data-testid="beneficiaryName"
                 >
-                  {displayName}
+                  {slicedString(displayName, 40)}
                 </Typography>
                 <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
                   <div
@@ -615,14 +615,6 @@ export const ContactBar = ({
                     <DropdownIcon />
                   </div>
                 </ClickAwayListener>
-                <Typography
-                  className={styles.Title}
-                  variant="h6"
-                  noWrap
-                  data-testid="beneficiaryName"
-                >
-                  {slicedString(displayName, 40)}
-                </Typography>
               </div>
             </div>
             {collectionStatus}
