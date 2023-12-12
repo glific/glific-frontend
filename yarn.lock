@@ -949,7 +949,7 @@
   dependencies:
     prop-types "^15.7.2"
 
-"@stripe/stripe-js@^2.2.0":
+"@stripe/stripe-js@^2.2.1":
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/@stripe/stripe-js/-/stripe-js-2.2.1.tgz#532bbb796b2be680308aca6becef9967bc19bef7"
   integrity sha512-Wd81A0u8EwT3cf+Xv1mpMI18RbXVhgh19MtPcF9ojNTlG3kl36B1+XFe1KQfnJxD3WRnVfDuI0rNCK53mcGm6g==
