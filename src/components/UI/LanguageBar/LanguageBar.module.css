@@ -2,11 +2,11 @@
   position: fixed;
   top: 24px;
   right: 24px;
-  display: flex;
-  flex-direction: row;
+  max-width: 500px;
 }
 
 .LanguageWrapper > button {
+  justify-content: unset !important;
   font-weight: 400 !important;
   font-size: 16px !important;
   line-height: 1 !important;

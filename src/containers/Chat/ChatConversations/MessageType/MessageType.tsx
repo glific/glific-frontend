@@ -50,6 +50,7 @@ export const MessageType = ({ type, body = '', color = 'light' }: MessageTypePro
     LOCATION: 'Location',
     QUICK_REPLY: 'Quick Reply',
     LIST: 'List',
+    LOCATION_REQUEST_MESSAGE: 'Location Request',
   };
 
   const option = (
