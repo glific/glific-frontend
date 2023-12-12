@@ -19,9 +19,6 @@ export const LastLogin = ({ drawerOpen }: LastLoginProps) => {
   const { t } = useTranslation();
   const userName = getUserSession('name');
   const lastLogin = getAuthSession('last_login_time');
-  const { provider } = useContext(ProviderContext);
-  const lastLoginStyle =
-    provider === GUPSHUP_ENTERPRISE_SHORTCODE ? styles.LastLoginEnterprise : styles.LastLogin;
   return drawerOpen ? (
     <div
       className={styles.UserAccount}
