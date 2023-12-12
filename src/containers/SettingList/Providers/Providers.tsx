@@ -138,7 +138,7 @@ export const Providers = () => {
       addValidation(fields, key);
 
       // add dafault value for the field
-      states[key] = fields[key].default;
+      states[key] = fields[key].default || '';
     });
     setStateValues(states);
     setFormFields(formField);
