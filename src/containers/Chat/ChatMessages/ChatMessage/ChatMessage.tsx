@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 
 import LabelIcon from 'assets/images/icons/Label/Filled.svg?react';
 import WarningIcon from 'assets/images/icons/Warning.svg?react';
-import MessageIcon from 'assets/images/icons/Dropdown.svg?react';
 import {
   DATE_FORMAT,
   TIME_FORMAT,
@@ -103,7 +102,7 @@ export const ChatMessage = ({
   let placement: any = 'bottom-end';
   let additionalClass = styles.Mine;
   let mineColor: string | null = styles.MineColor;
-  let iconPlacement = styles.ButtonLeft;
+  // let iconPlacement = styles.ButtonLeft;
   let datePlacement: string | null = styles.DateLeft;
   let labelContainer: string | null = styles.LabelContainerSender;
   let labelMargin: string | null = styles.LabelMargin;
@@ -146,7 +145,7 @@ export const ChatMessage = ({
     mineColor = styles.OtherColor;
     iconLeft = true;
     placement = 'bottom-start';
-    iconPlacement = styles.ButtonRight;
+    // iconPlacement = styles.ButtonRight;
     datePlacement = null;
     labelContainer = null;
     labelMargin = null;
@@ -203,7 +202,6 @@ export const ChatMessage = ({
     );
   }
 
-  const sendByLabel = !isSender && sendBy;
   let messageFooter;
   messageFooter = moment(insertedAt).format(TIME_FORMAT);
 

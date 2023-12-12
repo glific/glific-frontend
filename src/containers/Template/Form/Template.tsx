@@ -29,7 +29,6 @@ import Loading from 'components/UI/Layout/Loading/Loading';
 import { CreateAutoComplete } from 'components/UI/Form/CreateAutoComplete/CreateAutoComplete';
 import { validateMedia } from 'common/utils';
 import styles from './Template.module.css';
-import { speedSendInfo } from 'common/HelpData';
 
 const regexForShortcode = /^[a-z0-9_]+$/g;
 

@@ -89,15 +89,6 @@ export const InteractiveOptions = ({
     return template;
   };
 
-  const radioButtonColor = {
-    '& .MuiSvgIcon-root': {
-      color: '#119656',
-    },
-    '&.Mui-checked': {
-      color: '#119656',
-    },
-  };
-
   const radioTemplateType = (
     <div>
       {templateType && templateType === LIST && (
