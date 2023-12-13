@@ -603,9 +603,9 @@
   integrity sha512-OfX7E2oUDYxtBvsuS4e/jSn4Q9Qb6DzgeYtsAdkPZ47znpoNsMgZw0+tVijiv3uGNR6dgNlty6r9rzIzHjtd/A==
 
 "@glific/flow-editor@^1.19.3-3":
-  version "1.19.3"
-  resolved "https://registry.yarnpkg.com/@glific/flow-editor/-/flow-editor-1.19.3.tgz#575f56a381b6c1bc6a381c2a69329b7b6d6989d1"
-  integrity sha512-gb3BfAYBnOs5Mb/C2bcSNHQuHk9gNLUHA8q1B7vYNk/ctogfCWUi4akHoGcvRNhtAp2vUpocOynk2NiVyE4H1Q==
+  version "1.19.3-3"
+  resolved "https://registry.yarnpkg.com/@glific/flow-editor/-/flow-editor-1.19.3-3.tgz#606c66cba0c8547d9f42108c4992a20125808740"
+  integrity sha512-8J7CG4w0QAGN85FqQgmcbA+yWKuRcIFd2/KrYjngMmD8G9ZvtRXDpIwigtoIU0jHib5HqYR+zfO8/F8PPgHxqQ==
   dependencies:
     react "^16.8.6"
     react-dom "^16.8.6"
