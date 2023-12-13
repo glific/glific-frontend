@@ -447,8 +447,9 @@
   "No. of flows": "No. of flows",
   "Date and Time": "Date and Time",
   "Wallet balance": "Wallet balance",
-  "Created at": "Created at",
   "Webhook Logs": "Webhook Logs",
   "Export": "Export",
-  "View details": "View details"
+  "View details": "View details",
+  "Topic is required": "Topic is required",
+  "Select topic": "Select topic"
 }
