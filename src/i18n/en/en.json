@@ -437,6 +437,7 @@
   "Request JSON": "Request JSON",
   "Response JSON": "Response JSON",
   "Webhook Logs": "Webhook Logs",
-  "Topic": "Topic"
-
+  "Topic": "Topic",
+  "Topic name is required": "Topic name is required",
+  "Select topic": "Select topic"
 }

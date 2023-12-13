@@ -1,4 +1,4 @@
-import { useMutation } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
 
@@ -6,7 +6,10 @@ import { useTranslation } from 'react-i18next';
 import styles from './BulkAction.module.css';
 import { UPDATE_TICKETS_STATUS } from 'graphql/queries/Ticket';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
-import { Input } from 'components/UI/Form/Input/Input';
+import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
+import { GET_ALL_FLOW_LABELS } from 'graphql/queries/FlowLabel';
+import { setVariables } from 'common/constants';
+import { setNotification } from 'common/notification';
 
 export interface BulkActionPropTypes {
   setShowBulkClose: any;
@@ -18,33 +21,44 @@ export const BulkAction = ({ setShowBulkClose }: BulkActionPropTypes) => {
   const [updateTicketsStatus, { loading }] = useMutation(UPDATE_TICKETS_STATUS, {
     fetchPolicy: 'network-only',
     onCompleted: (data) => {
+      setNotification('Tickets closed successfully');
       setShowBulkClose(false);
     },
   });
 
+  const { data: dataLabels } = useQuery(GET_ALL_FLOW_LABELS, {
+    variables: setVariables(),
+  });
+
   const formFields = [
     {
-      component: Input,
+      component: AutoComplete,
       name: 'topic',
-      type: 'text',
-      placeholder: t('Topic'),
+      placeholder: t('Select topic'),
+      options: dataLabels ? dataLabels.flowLabels : [],
+      optionLabel: 'name',
+      multiple: false,
+      textFieldProps: {
+        label: t('Topic'),
+        variant: 'outlined',
+      },
     },
   ];
 
   const validationSchema = Yup.object().shape({
-    topic: Yup.string().required(),
+    topic: Yup.object().required('Topic is required'),
   });
 
   return (
     <Formik
-      initialValues={{ topic: '' }}
-      onSubmit={(values) => {
+      initialValues={{ topic: undefined }}
+      onSubmit={(values: any) => {
         if (values.topic) {
           updateTicketsStatus({
             variables: {
               input: {
                 status: 'closed',
-                topic: values.topic,
+                topic: values.topic.name,
               },
             },
           });

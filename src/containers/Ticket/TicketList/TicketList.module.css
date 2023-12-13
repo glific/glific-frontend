@@ -73,7 +73,7 @@
 
 .DropdownContainer {
   min-width: 150px;
-  margin-left: 20px;
+  margin: 0 20px;
 }
 
 .Icon {
