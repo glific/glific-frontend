@@ -18,7 +18,7 @@
     "@emoji-mart/react": "^1.1.1",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
-    "@glific/flow-editor": "^1.19.3-2",
+    "@glific/flow-editor": "^1.19.3-3",
     "@mui/icons-material": "^5.14.19",
     "@mui/material": "^5.14.20",
     "@mui/x-date-pickers": "^6.18.4",
