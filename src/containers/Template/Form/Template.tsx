@@ -135,7 +135,6 @@ export interface TemplateProps {
   icon: any;
   defaultAttribute?: any;
   formField?: any;
-  getSessionTemplatesCallBack?: any;
   customStyle?: any;
   getUrlAttachmentAndType?: any;
   getShortcode?: any;
@@ -162,7 +161,6 @@ const Template = ({
   icon,
   defaultAttribute = { isHsm: false },
   formField,
-  getSessionTemplatesCallBack,
   customStyle,
   getUrlAttachmentAndType,
   getShortcode,
@@ -214,7 +212,8 @@ const Template = ({
     queries.updateItemQuery = UPDATE_TEMPLATE;
   }
 
-  if (params.id && !isCopyState) {
+  // disable fields in edit mode for hsm template
+  if (params.id && !isCopyState && defaultAttribute.isHsm) {
     isEditing = true;
   }
 

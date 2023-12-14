@@ -47,28 +47,6 @@ export const HSM = () => {
     });
   }
 
-  let sessionTemplates: any;
-  const getSessionTemplates = (data: any) => {
-    sessionTemplates = data;
-  };
-
-  const validateShortcode = (value: any) => {
-    let error;
-    let found = [];
-    if (sessionTemplates && value) {
-      // need to check exact shortcode
-      found = sessionTemplates.sessionTemplates.filter((search: any) => search.shortcode === value);
-      if (params.id && found.length > 0) {
-        found = found.filter((search: any) => search.id !== params.id);
-      }
-    }
-    if (found.length > 0) {
-      error = t('Element name already exists.');
-    }
-
-    return error;
-  };
-
   const removeFirstLineBreak = (text: any) =>
     text?.length === 1 ? text.slice(0, 1).replace(/(\r\n|\n|\r)/, '') : text;
 
@@ -152,7 +130,6 @@ export const HSM = () => {
       component: Input,
       name: 'shortcode',
       placeholder: `${t('Element name')}*`,
-      validate: validateShortcode,
       disabled,
       inputProp: {
         onBlur: (event: any) => setShortcode(event.target.value),
@@ -168,7 +145,6 @@ export const HSM = () => {
         icon={templateIcon}
         defaultAttribute={defaultAttribute}
         formField={formFields}
-        getSessionTemplatesCallBack={getSessionTemplates}
         getUrlAttachmentAndType={getAttachmentUrl}
         getShortcode={shortcode}
         getExample={example}
