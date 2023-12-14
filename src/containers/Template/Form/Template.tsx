@@ -212,7 +212,8 @@ const Template = ({
     queries.updateItemQuery = UPDATE_TEMPLATE;
   }
 
-  if (params.id && !isCopyState) {
+  // disable fields in edit mode for hsm template
+  if (params.id && !isCopyState && defaultAttribute.isHsm) {
     isEditing = true;
   }
 

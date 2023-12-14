@@ -206,7 +206,7 @@ export const TicketList = () => {
         secondaryButton={secondaryButton}
         listIcon={ticketIcon}
         {...queries}
-        searchParameter={['nameOrPhone']}
+        searchParameter={['nameOrPhoneOrBody']}
         {...columnAttributes}
         additionalAction={additionalAction}
         filters={filter}
