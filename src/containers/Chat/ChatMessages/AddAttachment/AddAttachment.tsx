@@ -210,22 +210,24 @@ export const AddAttachment = ({
           >
             <div className={styles.DialogContent} data-testid="attachmentDialog">
               {formFieldItems.map((field: any) => (
-                <Field {...field} key={field.name} validateURL={errors} />
-              ))}
-              {attachmentType !== '' && (
-                <div className={styles.CrossIcon}>
-                  <CrossIcon
-                    data-testid="crossIcon"
-                    onClick={() => {
-                      setAttachmentType('');
-                      setAttachmentURL('');
-                      setAttachmentAdded(false);
-                      setErrors(null);
-                      setFileName(null);
-                    }}
-                  />
+                <div className={styles.AttachmentFieldWrapper}>
+                  <Field {...field} key={field.name} validateURL={errors} />
+                  {field.name === 'attachmentURL' && attachmentType !== '' && (
+                    <div className={styles.CrossIcon}>
+                      <CrossIcon
+                        data-testid="crossIcon"
+                        onClick={() => {
+                          setAttachmentType('');
+                          setAttachmentURL('');
+                          setAttachmentAdded(false);
+                          setErrors(null);
+                          setFileName(null);
+                        }}
+                      />
+                    </div>
+                  )}
                 </div>
-              )}
+              ))}
               <div className={styles.FormError}>{errors}</div>
             </div>
             {attachmentType !== '' && (
