@@ -210,7 +210,7 @@ export const AddAttachment = ({
           >
             <div className={styles.DialogContent} data-testid="attachmentDialog">
               {formFieldItems.map((field: any) => (
-                <div className={styles.AttachmentFieldWrapper}>
+                <div className={styles.AttachmentFieldWrapper} key={field.name}>
                   <Field {...field} key={field.name} validateURL={errors} />
                   {field.name === 'attachmentURL' && attachmentType !== '' && (
                     <div className={styles.CrossIcon}>
