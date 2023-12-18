@@ -152,7 +152,7 @@ export const ContactProfile = () => {
   return (
     <>
       <Heading formTitle="Contact Profile" />
-      <Box sx={{ display: 'flex' }}>
+      <Box className={styles.ContactProfile}>
         {drawer}
         <Box className={styles.ProfileBody}>
           <Routes>
