@@ -69,6 +69,10 @@
   padding: 10px 7px 5px 8px !important;
 }
 
+.SendButton:disabled {
+  background-color: rgba(17, 150, 86, 0.57);
+}
+
 .SendButtonContainer {
   padding: 0 10px;
 }
