@@ -212,7 +212,7 @@ export const Pager = ({
                 variant="rounded"
                 width={'100%'}
                 height={50}
-                sx={{ margin: '10px' }}
+                className={styles.Skeleton}
               />
             ))}
           </div>
