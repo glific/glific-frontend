@@ -344,3 +344,8 @@
   background: transparent !important;
   padding: 0px !important;
 }
+
+.DoneAllIcon {
+  font-size: 10px;
+  margin-left: 2px;
+}

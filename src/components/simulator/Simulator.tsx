@@ -102,7 +102,7 @@ const TimeComponent = ({ direction, insertedAt }: any) => (
   <>
     <span className={direction === 'received' ? styles.TimeSent : styles.TimeReceived}>
       {moment(insertedAt).format(TIME_FORMAT)}
-      {direction === 'send' && <DoneAllIcon sx={{ fontSize: 10, ml: '2px' }} />}
+      {direction === 'send' && <DoneAllIcon className={styles.DoneAllIcon} />}
     </span>
   </>
 );
