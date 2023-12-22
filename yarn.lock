@@ -602,10 +602,10 @@
   resolved "https://registry.yarnpkg.com/@floating-ui/utils/-/utils-0.1.6.tgz#22958c042e10b67463997bd6ea7115fe28cbcaf9"
   integrity sha512-OfX7E2oUDYxtBvsuS4e/jSn4Q9Qb6DzgeYtsAdkPZ47znpoNsMgZw0+tVijiv3uGNR6dgNlty6r9rzIzHjtd/A==
 
-"@glific/flow-editor@^1.19.3-3":
-  version "1.19.3-3"
-  resolved "https://registry.yarnpkg.com/@glific/flow-editor/-/flow-editor-1.19.3-3.tgz#606c66cba0c8547d9f42108c4992a20125808740"
-  integrity sha512-8J7CG4w0QAGN85FqQgmcbA+yWKuRcIFd2/KrYjngMmD8G9ZvtRXDpIwigtoIU0jHib5HqYR+zfO8/F8PPgHxqQ==
+"@glific/flow-editor@^1.19.3-4":
+  version "1.19.3-4"
+  resolved "https://registry.yarnpkg.com/@glific/flow-editor/-/flow-editor-1.19.3-4.tgz#b5d644ae6fa2283bc174111cfeeacd7f1ce0c097"
+  integrity sha512-NrC6J3pDRsiZGC/r5uhl4dKFhAvBuMbNpZGBPdw9XY3heQ0BGalNaG3PfZVLD6/kq1KHQfAg3BqYr8uiGK244A==
   dependencies:
     react "^16.8.6"
     react-dom "^16.8.6"
