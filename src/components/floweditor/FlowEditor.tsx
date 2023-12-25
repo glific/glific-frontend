@@ -22,6 +22,7 @@ import Track from 'services/TrackService';
 import { exportFlowMethod } from 'common/utils';
 import styles from './FlowEditor.module.css';
 import { checkElementInRegistry, loadfiles, setConfig } from './FlowEditor.helper';
+import { FlowTranslation } from 'containers/Flow/FlowTranslation';
 
 declare function showFlowEditor(node: any, config: any): void;
 
@@ -40,6 +41,7 @@ export const FlowEditor = () => {
   const [published, setPublished] = useState(false);
   const [stayOnPublish, setStayOnPublish] = useState(false);
   const [showResetFlowModal, setShowResetFlowModal] = useState(false);
+  const [showTranslateFlowModal, setShowTranslateFlowModal] = useState(false);
   const [flowValidation, setFlowValidation] = useState<any>();
   const [IsError, setIsError] = useState(false);
   const [flowKeyword, setFlowKeyword] = useState('');
@@ -148,6 +150,10 @@ export const FlowEditor = () => {
         </div>
       </DialogBox>
     );
+  }
+
+  if (showTranslateFlowModal) {
+    modal = <FlowTranslation flowId={flowId} setDialog={setShowTranslateFlowModal} />;
   }
 
   useEffect(() => {
@@ -394,16 +400,26 @@ export const FlowEditor = () => {
           )}
         </div>
 
-        <Button
-          variant="outlined"
-          color="primary"
-          className={drawerOpen ? styles.ResetFlow : styles.ResetClosedDrawer}
-          data-testid="resetFlow"
-          onClick={() => setShowResetFlowModal(true)}
-          aria-hidden="true"
-        >
-          <ResetFlowIcon /> Reset flow counts
-        </Button>
+        <div className={drawerOpen ? styles.FlowLeftButtons : styles.FlowLeftButtonsClosedDrawer}>
+          <Button
+            variant="outlined"
+            color="primary"
+            data-testid="resetFlow"
+            onClick={() => setShowResetFlowModal(true)}
+            aria-hidden="true"
+          >
+            <ResetFlowIcon /> Reset flow counts
+          </Button>
+          <Button
+            variant="outlined"
+            color="primary"
+            data-testid="translateFlow"
+            onClick={() => setShowTranslateFlowModal(true)}
+            aria-hidden="true"
+          >
+            Translation
+          </Button>
+        </div>
         <div id="flow" />
         {loading && <Loading showTip />}
       </div>
