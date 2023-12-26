@@ -125,3 +125,15 @@ export const RESET_FLOW_COUNT = gql`
     }
   }
 `;
+
+export const AUTO_TRANSLATE_FLOW = gql`
+  mutation inlineFlowLocalization($id: ID!) {
+    inlineFlowLocalization(id: $id) {
+      success
+      errors {
+        key
+        message
+      }
+    }
+  }
+`;

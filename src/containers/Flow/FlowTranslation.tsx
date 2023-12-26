@@ -1,8 +1,11 @@
 import { useState } from 'react';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import styles from './FlowTranslation.module.css';
-import { FormControl, FormLabel, RadioGroup, FormControlLabel, Radio } from '@mui/material';
+import { FormControl, RadioGroup, FormControlLabel, Radio } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { AUTO_TRANSLATE_FLOW } from 'graphql/mutations/Flow';
+import { setNotification } from 'common/notification';
+import { useMutation } from '@apollo/client';
 
 export interface FlowTranslationProps {
   flowId: string | undefined;
@@ -14,9 +17,20 @@ export const FlowTranslation = ({ flowId, setDialog }: FlowTranslationProps) => 
 
   const { t } = useTranslation();
 
+  const [autoTranslateFlow] = useMutation(AUTO_TRANSLATE_FLOW, {
+    onCompleted: ({ inlineFlowLocalization }) => {
+      if (inlineFlowLocalization.success) {
+        setNotification(t('Flow has been translated successfully'));
+      } else if (inlineFlowLocalization.errors) {
+        setNotification(inlineFlowLocalization.errors[0].message, 'warning');
+      }
+    },
+  });
+
   const handleAuto = () => {
-    console.log('handle auto');
+    autoTranslateFlow({ variables: { id: flowId } });
   };
+
   const handleExport = () => {
     console.log('handle export');
   };
