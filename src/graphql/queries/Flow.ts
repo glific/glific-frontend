@@ -118,3 +118,11 @@ export const RELEASE_FLOW = gql`
     }
   }
 `;
+
+export const EXPORT_FLOW_LOCALIZATIONS = gql`
+  query exportFlowLocalization($id: ID!) {
+    exportFlowLocalization(id: $id) {
+      exportData
+    }
+  }
+`;

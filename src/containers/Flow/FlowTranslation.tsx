@@ -1,11 +1,15 @@
 import { useState } from 'react';
+import { useLazyQuery, useMutation } from '@apollo/client';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
-import styles from './FlowTranslation.module.css';
 import { FormControl, RadioGroup, FormControlLabel, Radio } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+
 import { AUTO_TRANSLATE_FLOW } from 'graphql/mutations/Flow';
+import { EXPORT_FLOW_LOCALIZATIONS } from 'graphql/queries/Flow';
 import { setNotification } from 'common/notification';
-import { useMutation } from '@apollo/client';
+import { exportCsvFile } from 'common/utils';
+
+import styles from './FlowTranslation.module.css';
 
 export interface FlowTranslationProps {
   flowId: string | undefined;
@@ -27,12 +31,24 @@ export const FlowTranslation = ({ flowId, setDialog }: FlowTranslationProps) => 
     },
   });
 
+  const [exportFlowTranslations] = useLazyQuery(EXPORT_FLOW_LOCALIZATIONS, {
+    fetchPolicy: 'network-only',
+    onCompleted: async ({ exportFlowLocalization }) => {
+      const { exportData } = exportFlowLocalization;
+      console.log('exportData', exportData);
+      exportCsvFile(exportData, `Flow_Translations_${flowId}`);
+    },
+    onError: (error) => {
+      setNotification(t('An error occured while exporting flow translations'), 'warning');
+    },
+  });
+
   const handleAuto = () => {
     autoTranslateFlow({ variables: { id: flowId } });
   };
 
   const handleExport = () => {
-    console.log('handle export');
+    exportFlowTranslations({ variables: { id: flowId } });
   };
 
   const handleImport = () => {
