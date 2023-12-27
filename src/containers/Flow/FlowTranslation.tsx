@@ -24,8 +24,10 @@ export const FlowTranslation = ({ flowId, setDialog }: FlowTranslationProps) => 
   const [autoTranslateFlow] = useMutation(AUTO_TRANSLATE_FLOW, {
     onCompleted: ({ inlineFlowLocalization }) => {
       if (inlineFlowLocalization.success) {
+        setDialog(false);
         setNotification(t('Flow has been translated successfully'));
       } else if (inlineFlowLocalization.errors) {
+        setDialog(false);
         setNotification(inlineFlowLocalization.errors[0].message, 'warning');
       }
     },
@@ -35,10 +37,11 @@ export const FlowTranslation = ({ flowId, setDialog }: FlowTranslationProps) => 
     fetchPolicy: 'network-only',
     onCompleted: async ({ exportFlowLocalization }) => {
       const { exportData } = exportFlowLocalization;
-      console.log('exportData', exportData);
       exportCsvFile(exportData, `Flow_Translations_${flowId}`);
+      setDialog(false);
     },
     onError: (error) => {
+      setDialog(false);
       setNotification(t('An error occured while exporting flow translations'), 'warning');
     },
   });
@@ -47,7 +50,7 @@ export const FlowTranslation = ({ flowId, setDialog }: FlowTranslationProps) => 
     autoTranslateFlow({ variables: { id: flowId } });
   };
 
-  const handleExport = () => {
+  const handleExport = async () => {
     exportFlowTranslations({ variables: { id: flowId } });
   };
 
@@ -63,8 +66,6 @@ export const FlowTranslation = ({ flowId, setDialog }: FlowTranslationProps) => 
     } else {
       handleImport();
     }
-
-    setDialog(false);
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
