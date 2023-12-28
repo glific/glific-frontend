@@ -4,11 +4,13 @@ import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { FormControl, RadioGroup, FormControlLabel, Radio } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-import { AUTO_TRANSLATE_FLOW } from 'graphql/mutations/Flow';
+import { AUTO_TRANSLATE_FLOW, IMPORT_FLOW_LOCALIZATIONS } from 'graphql/mutations/Flow';
 import { EXPORT_FLOW_LOCALIZATIONS } from 'graphql/queries/Flow';
 import { setNotification } from 'common/notification';
 import { exportCsvFile } from 'common/utils';
 
+import { ImportButton } from 'components/UI/ImportButton/ImportButton';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
 import styles from './FlowTranslation.module.css';
 
 export interface FlowTranslationProps {
@@ -18,6 +20,7 @@ export interface FlowTranslationProps {
 
 export const FlowTranslation = ({ flowId, setDialog }: FlowTranslationProps) => {
   const [action, setAction] = useState('auto');
+  const [importing, setImporting] = useState(false);
 
   const { t } = useTranslation();
 
@@ -43,6 +46,13 @@ export const FlowTranslation = ({ flowId, setDialog }: FlowTranslationProps) => 
     onError: (error) => {
       setDialog(false);
       setNotification(t('An error occured while exporting flow translations'), 'warning');
+    },
+  });
+
+  const [importFlow] = useMutation(IMPORT_FLOW_LOCALIZATIONS, {
+    onCompleted: (result: any) => {
+      const { status } = result.importFlow;
+      setImporting(false);
     },
   });
 
@@ -72,6 +82,20 @@ export const FlowTranslation = ({ flowId, setDialog }: FlowTranslationProps) => 
     setAction((event.target as HTMLInputElement).value);
   };
 
+  const importButton = (
+    <ImportButton
+      title={t('Import translations')}
+      onImport={() => setImporting(true)}
+      afterImport={(result: string) =>
+        importFlow({ variables: { localization: result, id: flowId } })
+      }
+    />
+  );
+
+  if (importing) {
+    return <Loading message="Uploading" />;
+  }
+
   const dialogContent = (
     <div>
       <FormControl>
@@ -85,6 +109,7 @@ export const FlowTranslation = ({ flowId, setDialog }: FlowTranslationProps) => 
           <FormControlLabel value="export" control={<Radio />} label={t('Export translations')} />
           <FormControlLabel value="import" control={<Radio />} label={t('Import translations')} />
         </RadioGroup>
+        {action === 'import' ? importButton : ''}
       </FormControl>
     </div>
   );
@@ -100,6 +125,7 @@ export const FlowTranslation = ({ flowId, setDialog }: FlowTranslationProps) => 
       handleCancel={() => {
         setDialog(false);
       }}
+      skipOk={action === 'import'}
     >
       {dialogContent}
     </DialogBox>

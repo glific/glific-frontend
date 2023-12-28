@@ -139,13 +139,9 @@ export const AUTO_TRANSLATE_FLOW = gql`
 `;
 
 export const IMPORT_FLOW_LOCALIZATIONS = gql`
-  mutation importFlowLocalization($id: ID!) {
-    importFlowLocalization(id: $id) {
+  mutation importFlowLocalization($localization: String!, $id: ID!) {
+    importFlowLocalization(localization: $localization, id: $id) {
       success
-      errors {
-        key
-        message
-      }
     }
   }
 `;
