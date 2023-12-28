@@ -11,7 +11,6 @@ import { exportCsvFile } from 'common/utils';
 
 import { ImportButton } from 'components/UI/ImportButton/ImportButton';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
-import styles from './FlowTranslation.module.css';
 
 export interface FlowTranslationProps {
   flowId: string | undefined;
@@ -120,7 +119,6 @@ export const FlowTranslation = ({ flowId, setDialog }: FlowTranslationProps) => 
       alignButtons="center"
       buttonOk="Submit"
       buttonCancel="Cancel"
-      additionalTitleStyles={styles.Title}
       handleOk={handleOk}
       handleCancel={() => {
         setDialog(false);
