@@ -51,8 +51,8 @@ export const FlowTranslation = ({ flowId, setDialog }: FlowTranslationProps) => 
 
   const [importFlow] = useMutation(IMPORT_FLOW_LOCALIZATIONS, {
     onCompleted: (result: any) => {
-      const { status } = result.importFlow;
       setImporting(false);
+      setDialog(false);
     },
   });
 
