@@ -53,19 +53,21 @@ export const FlowTranslation = ({ flowId, setDialog }: FlowTranslationProps) => 
     onCompleted: (result: any) => {
       setImporting(false);
       setDialog(false);
+      refreshPage();
     },
   });
 
   const handleAuto = () => {
     autoTranslateFlow({ variables: { id: flowId } });
+    refreshPage();
   };
 
   const handleExport = async () => {
     exportFlowTranslations({ variables: { id: flowId } });
   };
 
-  const handleImport = () => {
-    console.log('handle import');
+  const refreshPage = () => {
+    window.location.reload();
   };
 
   const handleOk = () => {
@@ -73,8 +75,6 @@ export const FlowTranslation = ({ flowId, setDialog }: FlowTranslationProps) => 
       handleAuto();
     } else if (action === 'export') {
       handleExport();
-    } else {
-      handleImport();
     }
   };
 
