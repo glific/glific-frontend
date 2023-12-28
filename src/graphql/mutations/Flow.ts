@@ -145,3 +145,14 @@ export const IMPORT_FLOW_LOCALIZATIONS = gql`
     }
   }
 `;
+
+export const TERMINATE_FLOW = gql`
+  mutation TerminateContactFlows($contactId: ID!) {
+    terminateContactFlows(contactId: $contactId) {
+      success
+      errors {
+        message
+      }
+    }
+  }
+`;
