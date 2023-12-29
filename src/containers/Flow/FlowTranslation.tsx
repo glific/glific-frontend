@@ -103,6 +103,7 @@ export const FlowTranslation = ({ flowId, setDialog }: FlowTranslationProps) => 
           name="radio-buttons-group"
           value={action}
           onChange={handleChange}
+          data-testid="translation-options"
         >
           <FormControlLabel value="auto" control={<Radio />} label={t('Automatic translation')} />
           <FormControlLabel value="export" control={<Radio />} label={t('Export translations')} />
