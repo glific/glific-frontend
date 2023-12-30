@@ -36,3 +36,6 @@ cypress/videos
 
 # certs
 **/**certs
+
+# nginx conf file
+nginx.conf
