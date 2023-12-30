@@ -53,11 +53,12 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
         },
       },
       server: {
-        open: true,
+        //host: "0.0.0.0",
+        open: false,
         port: 3000,
         https: {
-          key: fs.readFileSync('../glific/priv/cert/glific.test+1-key.pem'),
-          cert: fs.readFileSync('../glific/priv/cert/glific.test+1.pem'),
+          key: fs.readFileSync('./certs/glific.test+1-key.pem'),
+          cert: fs.readFileSync('./certs/glific.test+1.pem'),
         },
         headers: {
           'X-Content-Type-Options': 'nosniff',

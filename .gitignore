@@ -31,3 +31,8 @@ cypress/screenshots
 cypress/videos
 
 .tool-versions
+
+**/**.pem
+
+# certs
+**/**certs
