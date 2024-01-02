@@ -97,7 +97,7 @@ export const SettingList = () => {
   return (
     <>
       <Heading formTitle="Settings" />
-      <Box sx={{ display: 'flex' }}>
+      <Box className={styles.SettingsContainer}>
         {drawer}
         <Box className={styles.SettingBody}>
           <SettingHeading formTitle={formTitle} />

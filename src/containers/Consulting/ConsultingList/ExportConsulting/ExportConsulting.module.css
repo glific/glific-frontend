@@ -36,25 +36,3 @@
 .Field {
   width: 100px !important;
 }
-
-.Form > div:first-child {
-  width: 30% !important;
-}
-
-.Form > div:nth-child(2) > div {
-  width: 100% !important;
-}
-
-.Form > div:nth-child(2) {
-  width: 30% !important;
-  margin-left: 24px;
-}
-
-.Form > div:nth-child(3) {
-  width: 30% !important;
-  margin-left: 24px;
-}
-
-.Form > div:nth-child(3) > div {
-  width: 100% !important;
-}

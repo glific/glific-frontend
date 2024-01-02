@@ -24,7 +24,7 @@ import { getUserRole } from 'context/role';
 import styles from './FormLayout.module.css';
 import HelpIcon from 'components/UI/HelpIcon/HelpIcon';
 
-export const Heading = ({ title = '', formTitle, helpData }: any) => {
+export const Heading = ({ title = '', formTitle, helpData, showHeaderHelp = true }: any) => {
   return (
     <div className={styles.Header}>
       <div>
@@ -32,9 +32,9 @@ export const Heading = ({ title = '', formTitle, helpData }: any) => {
           <div className={styles.TitleText}> {formTitle}</div>
           <HelpIcon helpData={helpData} />
         </div>
-        <div
-          className={styles.TextHeader}
-        >{`To create a new ${title}, Fill up the following details`}</div>
+        <div className={styles.TextHeader}>
+          {showHeaderHelp ? `${title}, please enter below details.` : ''}
+        </div>
       </div>
     </div>
   );

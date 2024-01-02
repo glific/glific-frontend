@@ -56,9 +56,19 @@ export const AdminContactManagement = () => {
     };
   };
 
+  const helpData = {
+    heading: '',
+    body: '',
+    link: 'https://glific.github.io/docs/docs/FAQ/Update%20collection%20with%20bulk%20contacts%20or%20contact%20fields/',
+  };
   return (
     <div>
-      <Heading icon={listIcon} formTitle="Contact Management" />
+      <Heading
+        icon={listIcon}
+        formTitle="Contact Management"
+        showHeaderHelp={false}
+        helpData={helpData}
+      />
       <div className={styles.Container}>
         <div className={styles.Instructions}>
           You can move contacts to collections in bulk or update their contact information. Please

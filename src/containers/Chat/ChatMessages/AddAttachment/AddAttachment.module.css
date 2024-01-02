@@ -1,18 +1,13 @@
 .DialogContent {
-  display: flex;
-  flex: auto;
-  flex-wrap: wrap;
   min-height: 80px;
   margin-bottom: 20px;
   width: 410px;
 }
 
-.DialogContent > div:nth-child(1) {
-  width: 90%;
-}
-
-.DialogContent > div:nth-child(2) {
-  width: 90%;
+.AttachmentFieldWrapper {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
 }
 
 .CrossIcon {

@@ -9,8 +9,10 @@
   background-color: white;
   box-shadow: -2px 0px 6px rgba(0, 0, 0, 0.06);
 }
+
 .ContactProfile {
   display: flex;
+  margin-top: 10px;
 }
 
 .RadioLabel {

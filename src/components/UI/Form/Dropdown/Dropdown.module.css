@@ -1,6 +1,7 @@
 .Dropdown {
   display: flex;
   padding: 8px 0px;
+  width: 100%;
 }
 
 .Label {
