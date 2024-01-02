@@ -30,7 +30,7 @@
     "apollo-link-token-refresh": "^0.6.1",
     "axios": "^1.6.3",
     "buffer": "^6.0.3",
-    "date-fns": "^3.0.6",
+    "date-fns": "2.30.0",
     "draft-js": "^0.11.7",
     "emoji-mart": "^5.5.2",
     "formik": "^2.4.5",

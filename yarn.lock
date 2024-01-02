@@ -2201,10 +2201,12 @@ data-urls@^5.0.0:
     whatwg-mimetype "^4.0.0"
     whatwg-url "^14.0.0"
 
-date-fns@^3.0.6:
-  version "3.0.6"
-  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-3.0.6.tgz#fe3aeb7592d359f075ffc41cb16139828810ca83"
-  integrity sha512-W+G99rycpKMMF2/YD064b2lE7jJGUe+EjOES7Q8BIGY8sbNdbgcs9XFTZwvzc9Jx1f3k7LB7gZaZa7f8Agzljg==
+date-fns@2.30.0:
+  version "2.30.0"
+  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.30.0.tgz#f367e644839ff57894ec6ac480de40cae4b0f4d0"
+  integrity sha512-fnULvOpxnC5/Vg3NCiWelDsLiUc9bRwAPs/+LfTLNvetFCtCTN+yQz15C/fs4AwX1R9K5GLtLfn8QW+dWisaAw==
+  dependencies:
+    "@babel/runtime" "^7.21.0"
 
 de-indent@^1.0.2:
   version "1.0.2"
