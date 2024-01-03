@@ -127,6 +127,10 @@
   max-width: none !important;
 }
 
+.Button {
+  background-color: white !important;
+}
+
 .FlowLeftButtons {
   display: flex;
   position: fixed !important;
@@ -135,7 +139,6 @@
   z-index: 1000;
   font-weight: 500;
   align-items: center;
-  background-color: white !important;
   cursor: pointer;
 }
 

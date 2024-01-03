@@ -53,11 +53,15 @@ export const FlowEditor = () => {
   let dialog = null;
   let flowTitle: any;
 
+  const loadFlowEditor = () => {
+    showFlowEditor(document.getElementById('flow'), config);
+    setLoading(false);
+  };
+
   const [getFreeFlowForced] = useLazyQuery(GET_FREE_FLOW, {
     fetchPolicy: 'network-only',
     onCompleted: () => {
-      showFlowEditor(document.getElementById('flow'), config);
-      setLoading(false);
+      loadFlowEditor();
     },
   });
 
@@ -65,8 +69,7 @@ export const FlowEditor = () => {
     fetchPolicy: 'network-only',
     onCompleted: ({ flowGet }) => {
       if (flowGet.flow && !flowEditorLoaded) {
-        showFlowEditor(document.getElementById('flow'), config);
-        setLoading(false);
+        loadFlowEditor();
         setFlowEditorLoaded(true);
       } else if (flowGet.errors && flowGet.errors.length) {
         setDialogMessage(flowGet.errors[0].message);
@@ -153,7 +156,13 @@ export const FlowEditor = () => {
   }
 
   if (showTranslateFlowModal) {
-    modal = <FlowTranslation flowId={flowId} setDialog={setShowTranslateFlowModal} />;
+    modal = (
+      <FlowTranslation
+        loadFlowEditor={loadFlowEditor}
+        flowId={flowId}
+        setDialog={setShowTranslateFlowModal}
+      />
+    );
   }
 
   useEffect(() => {
@@ -402,6 +411,7 @@ export const FlowEditor = () => {
 
         <div className={drawerOpen ? styles.FlowLeftButtons : styles.FlowLeftButtonsClosedDrawer}>
           <Button
+            className={styles.Button}
             variant="outlined"
             color="primary"
             data-testid="resetFlow"
@@ -411,6 +421,7 @@ export const FlowEditor = () => {
             <ResetFlowIcon /> Reset flow counts
           </Button>
           <Button
+            className={styles.Button}
             variant="outlined"
             color="primary"
             data-testid="translateFlow"

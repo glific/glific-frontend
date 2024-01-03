@@ -10,7 +10,7 @@ const mocks = [getFlowTranslations];
 const flowTranslation = () => {
   return (
     <MockedProvider mocks={mocks} addTypename={false}>
-      <FlowTranslation flowId="1" setDialog={vi.fn()} />
+      <FlowTranslation loadFlowEditor={vi.fn()} flowId="1" setDialog={vi.fn()} />
     </MockedProvider>
   );
 };

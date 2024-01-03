@@ -1,0 +1,5 @@
+.BackDrop {
+  color: white;
+  z-index: 100000;
+  font-size: 20px;
+}
