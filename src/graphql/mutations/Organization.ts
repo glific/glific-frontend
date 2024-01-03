@@ -7,6 +7,10 @@ export const UPDATE_ORGANIZATION = gql`
         id
         shortcode
         name
+        defaultLanguage {
+          id
+          label
+        }
         outOfOffice {
           defaultFlowId
           enabled
