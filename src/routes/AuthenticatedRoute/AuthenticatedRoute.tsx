@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
 import ErrorBoundary from 'components/errorboundary/ErrorBoundary';
 import { ChatInterface } from 'containers/Chat/ChatInterface/ChatInterface';
@@ -9,6 +9,7 @@ import { useToast } from 'services/ToastService';
 import { ProviderContext } from 'context/session';
 import { GET_ORGANIZATION_PROVIDER } from 'graphql/queries/Organization';
 import styles from './AuthenticatedRoute.module.css';
+import { checkAuthStatusService } from 'services/AuthService';
 
 const Chat = lazy(() => import('containers/Chat/Chat'));
 const Layout = lazy(() => import('components/UI/Layout/Layout'));
@@ -201,19 +202,29 @@ export const AuthenticatedRoute = () => {
     route = routeAdmin;
   }
 
+  const authStatus = checkAuthStatusService();
+
   // let's call chat subscriptions at this level so that we can listen to actions which are not performed
   // on chat screen, for eg: send message to collection
   return (
     <ProviderContext.Provider value={values}>
       <div className={styles.App} data-testid="app">
-        <Layout>
-          {toastMessage}
-          <Suspense
-            fallback={<Loading showTip={window.location.pathname.startsWith('/flow/configure')} />}
-          >
-            <ErrorBoundary>{route}</ErrorBoundary>
-          </Suspense>
-        </Layout>
+        <Suspense
+          fallback={
+            <Loading
+              showTip={authStatus && window.location.pathname.startsWith('/flow/configure')}
+            />
+          }
+        >
+          {authStatus ? (
+            <Layout>
+              {toastMessage}
+              <ErrorBoundary>{route}</ErrorBoundary>
+            </Layout>
+          ) : (
+            <Navigate to="/logout/session" replace />
+          )}
+        </Suspense>
       </div>
     </ProviderContext.Provider>
   );
