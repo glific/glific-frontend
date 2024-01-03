@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import * as Yup from 'yup';
-import { useQuery } from '@apollo/client';
-import { Typography } from '@mui/material';
+import { useMutation, useQuery } from '@apollo/client';
+import { CircularProgress, Typography } from '@mui/material';
 import moment from 'moment';
 import { useLocation, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -18,7 +18,12 @@ import { getAddOrRemoveRoleIds } from 'common/utils';
 import { GET_FLOWS } from 'graphql/queries/Flow';
 import { GET_COLLECTIONS } from 'graphql/queries/Collection';
 import { GET_TRIGGER } from 'graphql/queries/Trigger';
-import { CREATE_TRIGGER, DELETE_TRIGGER, UPDATE_TRIGGER } from 'graphql/mutations/Trigger';
+import {
+  CREATE_TRIGGER,
+  DELETE_TRIGGER,
+  UPDATE_TRIGGER,
+  VALIDATE_TRIGGER,
+} from 'graphql/mutations/Trigger';
 import styles from './Trigger.module.css';
 
 const checkDateTimeValidation = (startAtValue: string, startDateValue: string) => {
@@ -134,6 +139,7 @@ export const Trigger = () => {
   const [daysDisabled, setDaysDisabled] = useState(true);
   const [groupIds, setGroupIds] = useState<any>(null);
   const [minDate, setMinDate] = useState<any>(new Date());
+  const [triggerFlowWarning, setTriggerFlowWarning] = useState<any>();
   const [frequencyPlaceholder, setFrequencyPlaceholder] = useState('Select days');
   const [frequencyOptions, setFrequencyOptions] = useState(dayList);
   const params = useParams();
@@ -232,7 +238,28 @@ export const Trigger = () => {
     variables: setVariables(),
   });
 
+  const [validateTriggerFlow, { loading }] = useMutation(VALIDATE_TRIGGER, {
+    onCompleted: ({ validateTrigger }) => {
+      if (!validateTrigger.success && validateTrigger.errors && validateTrigger.errors.length > 0) {
+        setTriggerFlowWarning(validateTrigger.errors[0].message);
+      }
+    },
+  });
+
   if (!flow || !collections) return <Loading />;
+
+  const handleFlowChange = (flow: any) => {
+    setTriggerFlowWarning(undefined);
+    if (flow) {
+      validateTriggerFlow({
+        variables: {
+          input: {
+            flowId: flow.id,
+          },
+        },
+      });
+    }
+  };
 
   const handleFrequencyChange = (triggerFrequency: any) => {
     if (!triggerFrequency) return;
@@ -280,7 +307,19 @@ export const Trigger = () => {
         variant: 'outlined',
         label: t('Select flow'),
       },
+      onChange: handleFlowChange,
+      helperText: loading ? (
+        <>
+          Validating flow...
+          <CircularProgress size="12px" />
+        </>
+      ) : triggerFlowWarning ? (
+        <div className={styles.Warning}>{`Warning: ${triggerFlowWarning}`} </div>
+      ) : (
+        ''
+      ),
     },
+
     {
       component: Calendar,
       type: 'date',
