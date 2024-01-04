@@ -27,7 +27,11 @@ export const ResetPasswordPhone = () => {
         setRedirect(true);
       })
       .catch((error) => {
-        setAuthError(error?.response?.data?.error?.message)
+        if (error?.response?.status === 400) {
+          setAuthError(error?.response?.data?.error?.message);
+        } else if (error?.response?.status === 500) {
+          setAuthError('We are unable to generate an OTP, kindly contact your technical team.');
+        }
       });
   };
 
