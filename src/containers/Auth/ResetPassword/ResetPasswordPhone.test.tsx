@@ -56,7 +56,7 @@ describe('<ResetPasswordPhone />', () => {
 
     await waitFor(() => {
       expect(screen.getByTestId('AuthContainer')).toHaveTextContent(
-        errorMessage?.response?.data?.error?.message
+        errorMessage.response.data.error.message
       );
     });
   });
