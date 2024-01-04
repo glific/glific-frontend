@@ -68,8 +68,8 @@ const getPayload = (payload: any) => {
   if (!useExpression && dateFrom && dateFrom !== 'Invalid date') {
     const dateRange = {
       dateRange: {
-        to: dayjs(dateTo).format('yyyy-MM-DD'),
-        from: dayjs(dateFrom).format('yyyy-MM-DD'),
+        to: dayjs(dateTo).format('YYYY-MM-DD'),
+        from: dayjs(dateFrom).format('YYYY-MM-DD'),
       },
     };
     args.filter = Object.assign(args.filter, dateRange);
@@ -236,8 +236,8 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
     if (props.searchParam.dateFrom && props.searchParam.dateFrom !== 'Invalid date') {
       const dateRange = {
         dateRange: {
-          to: dayjs(props.searchParam.dateTo).format('yyyy-MM-DD'),
-          from: dayjs(props.searchParam.dateFrom).format('yyyy-MM-DD'),
+          to: dayjs(props.searchParam.dateTo).format('YYYY-MM-DD'),
+          from: dayjs(props.searchParam.dateFrom).format('YYYY-MM-DD'),
         },
       };
       args.filter = Object.assign(args.filter, dateRange);
