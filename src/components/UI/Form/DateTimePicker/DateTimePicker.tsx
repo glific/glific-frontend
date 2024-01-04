@@ -17,7 +17,7 @@ export interface DateTimePickerProps {
 }
 
 export const DateTimePicker = ({
-  format = 'DD/MM/YYYY HH:mm a',
+  format = 'dd/MM/yyyy hh:mm a',
   field,
   form: { setFieldValue, errors, touched },
   placeholder,

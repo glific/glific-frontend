@@ -17,7 +17,7 @@ export interface CalendarProps {
 }
 
 export const Calendar = ({
-  format = 'MM/DD/YYYY',
+  format = 'MM/dd/yyyy',
   field,
   disabled = false,
   form: { setFieldValue, errors, touched },
