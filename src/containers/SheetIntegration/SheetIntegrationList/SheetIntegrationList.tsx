@@ -8,7 +8,7 @@ import { DELETE_SHEET, SYNC_SHEET } from 'graphql/mutations/Sheet';
 import { setNotification } from 'common/notification';
 import { useMutation } from '@apollo/client';
 import { List } from 'containers/List/List';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { DATE_TIME_FORMAT } from 'common/constants';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import styles from './SheetIntegrationList.module.css';
@@ -37,7 +37,7 @@ const getName = (text: string, sheetDataCount: string, type: SheetTypes) => (
 );
 const getLastSyncedAt = (date: string, fallback: string = '') => (
   <div className={styles.LastSyncText}>
-    {date ? moment(date).format(DATE_TIME_FORMAT) : fallback}
+    {date ? dayjs(date).format(DATE_TIME_FORMAT) : fallback}
   </div>
 );
 

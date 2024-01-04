@@ -3,7 +3,7 @@ import { Popover, FormControlLabel, RadioGroup, Radio } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { useApolloClient, useMutation } from '@apollo/client';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 
 import NotificationIcon from 'assets/images/icons/Notification/Notification-dark-icon.svg?react';
@@ -20,7 +20,7 @@ import styles from './NotificationList.module.css';
 const getDot = (isRead: boolean) => <div>{!isRead ? <div className={styles.Dot} /> : null}</div>;
 
 const getTime = (time: string) => (
-  <div className={styles.TableText}>{moment(time).format('DD-MM-YYYY hh:mm')}</div>
+  <div className={styles.TableText}>{dayjs(time).format('DD-MM-YYYY hh:mm')}</div>
 );
 
 const getText = (text: string) => <div className={styles.TableText}>{text}</div>;

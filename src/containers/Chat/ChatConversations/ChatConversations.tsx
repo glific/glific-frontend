@@ -34,7 +34,7 @@ export const ChatConversations = ({ contactId }: ChatConversationsProps) => {
   const offset = useQuery(SEARCH_OFFSET);
   const client = useApolloClient();
   const { t } = useTranslation();
-
+  
   // restore multi-search after conversation click
   useEffect(() => {
     if (offset.data && offset.data.search) {

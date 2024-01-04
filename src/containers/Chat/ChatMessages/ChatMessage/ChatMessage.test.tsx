@@ -1,5 +1,5 @@
 import { render, fireEvent, waitFor, screen } from '@testing-library/react';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { MockedProvider } from '@apollo/client/testing';
 
 import { TIME_FORMAT } from 'common/constants';
@@ -84,7 +84,7 @@ describe('<ChatMessage />', () => {
 
   test('it should render the message date  correctly', () => {
     const { getByTestId } = render(chatMessageText);
-    expect(getByTestId('date')).toHaveTextContent(moment(insertedAt).format(TIME_FORMAT));
+    expect(getByTestId('date')).toHaveTextContent(dayjs(insertedAt).format(TIME_FORMAT));
   });
 
   test('it should render "Other" class for the content', () => {

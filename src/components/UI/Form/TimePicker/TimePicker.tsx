@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import 'date-fns';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider, TimePicker as Picker } from '@mui/x-date-pickers';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { getIn } from 'formik';
-
+import utc from 'dayjs/plugin/utc';
 import styles from './TimePicker.module.css';
+dayjs.extend(utc);
 
 export interface TimePickerProps {
   variant?: any;
@@ -24,16 +24,17 @@ export const TimePicker = ({
   disabled = false,
   helperText,
 }: TimePickerProps) => {
-  moment.defaultFormat = 'Thh:mm:ss';
-  const timeValue = field.value ? moment(field.value, moment.defaultFormat).toDate() : null;
-  const [open, setOpen] = useState(false);
+  const timeValue = field.value
+    ? dayjs(`${dayjs().format('YYYY-MM-DD')}${field.value}`).toDate()
+    : null;
+  const [open, setOpen] = useState(false);  
 
   const errorText = getIn(errors, field.name);
   const touchedVal = getIn(touched, field.name);
   const hasError = touchedVal && errorText !== undefined;
 
   const handleDateChange = (time: Date | null) => {
-    const value = time ? moment(time).format('THH:mm:ss') : null;
+    const value = time ? dayjs(time).format('THH:mm:ss') : null;
     setFieldValue(field.name, value);
   };
 

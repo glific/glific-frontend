@@ -3,7 +3,7 @@ import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
 
 import { useTranslation } from 'react-i18next';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { Calendar } from 'components/UI/Form/Calendar/Calendar';
 import { downloadFile } from 'common/utils';
 
@@ -15,7 +15,7 @@ export interface ExportTicketPropTypes {
   setShowExportDialog: any;
 }
 
-const formatDate = (value: any) => moment(value).format('YYYY-MM-DD');
+const formatDate = (value: any) => dayjs(value).format('YYYY-MM-DD');
 
 export const ExportTicket = ({ setShowExportDialog }: ExportTicketPropTypes) => {
   const { t } = useTranslation();
@@ -48,7 +48,7 @@ export const ExportTicket = ({ setShowExportDialog }: ExportTicketPropTypes) => 
     endDate: Yup.string().when('startDate', ([startDate], schema: any) =>
       schema.test({
         test: (endDateValue: any) =>
-          !(startDate !== undefined && !moment(endDateValue).isAfter(startDate)),
+          !(startDate !== undefined && !dayjs(endDateValue).isAfter(startDate)),
         message: t('End date should be greater than the start date'),
       })
     ),

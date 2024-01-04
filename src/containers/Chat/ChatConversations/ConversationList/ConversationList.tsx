@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { List, Container, CircularProgress, Typography } from '@mui/material';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { useApolloClient, useLazyQuery, useQuery } from '@apollo/client';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 
 import Loading from 'components/UI/Layout/Loading/Loading';
@@ -75,6 +75,7 @@ export const ConversationList = ({
     }
   }, [scrollHeight.data]);
 
+
   useEffect(() => {
     const contactsContainer: any = document.querySelector('.contactsContainer');
     if (contactsContainer) {
@@ -128,8 +129,8 @@ export const ConversationList = ({
         filter.includeLabels = params.includeLabels.map((obj: any) => obj.id);
       if (params.dateFrom) {
         filter.dateRange = {
-          from: moment(params.dateFrom).format('YYYY-MM-DD'),
-          to: moment(params.dateTo).format('YYYY-MM-DD'),
+          from: dayjs(params.dateFrom).format('YYYY-MM-DD'),
+          to: dayjs(params.dateTo).format('YYYY-MM-DD'),
         };
       }
     }

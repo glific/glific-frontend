@@ -69,6 +69,8 @@ export const OrganisationFlows = () => {
     }),
     fetchPolicy: 'network-only', // set for now, need to check cache issue
   });
+  console.log("Sdfc");
+  
 
   const [getOrg, { data: orgData }] = useLazyQuery<any>(GET_ORGANIZATION);
 

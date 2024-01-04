@@ -2,8 +2,9 @@ import { useState } from 'react';
 import * as Yup from 'yup';
 import { useMutation, useQuery } from '@apollo/client';
 import { CircularProgress, Typography } from '@mui/material';
-import moment from 'moment';
 import { useLocation, useParams } from 'react-router-dom';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 import { useTranslation } from 'react-i18next';
 
 import TriggerIcon from 'assets/images/icons/Trigger/Union.svg?react';
@@ -25,10 +26,12 @@ import {
   VALIDATE_TRIGGER,
 } from 'graphql/mutations/Trigger';
 import styles from './Trigger.module.css';
+dayjs.extend(utc);
 
 const checkDateTimeValidation = (startAtValue: string, startDateValue: string) => {
-  const isDateAhead = moment(startDateValue).isAfter(moment());
-  const isTimeAhead = startAtValue > moment().format('THH:mm:ss');
+  const isDateAhead = dayjs(startDateValue).isAfter(dayjs());
+
+  const isTimeAhead = startAtValue > dayjs().format('THH:mm:ss');
 
   if (!isDateAhead) {
     // if start date is current date then only check for time
@@ -39,7 +42,6 @@ const checkDateTimeValidation = (startAtValue: string, startDateValue: string) =
   }
   return true;
 };
-
 const setPayload = (payload: any, roles: any) => {
   const payloadCopy = payload;
 
@@ -48,8 +50,8 @@ const setPayload = (payload: any, roles: any) => {
 
   const groups = groupIds.map((group: any) => parseInt(group.id));
   // covert the time to UTC
-  const startAt = moment(`
-    ${moment(startDate).format('yyyy-MM-DD')}${startTime}`).utc();
+  const startAt = dayjs(`${dayjs(startDate).format('YYYY-MM-DD')}${startTime}`).utc();
+
   const updatedPayload = {
     isActive,
     isRepeating: true,
@@ -57,9 +59,9 @@ const setPayload = (payload: any, roles: any) => {
     days: [],
     hours: [],
     groupIds: groups,
-    startDate: moment(startAt).utc().format('yyyy-MM-DD'),
-    endDate: moment(endDate).utc().format('yyyy-MM-DD'),
-    startTime: moment(startAt).utc().format('THH:mm:ss'),
+    startDate: dayjs(startAt).utc().format('YYYY-MM-DD'),
+    endDate: dayjs(endDate).utc().format('YYYY-MM-DD'),
+    startTime: dayjs(startAt).utc().format('THH:mm:ss'),
     frequency: frequency.value,
     roles: payload.roles,
   };
@@ -194,7 +196,7 @@ export const Trigger = () => {
       .when('startDate', ([startDateValue], schema: any) =>
         schema.test({
           test: (endDateValue: any) =>
-            startDateValue && moment(endDateValue).isAfter(startDateValue),
+            startDateValue && dayjs(endDateValue).isAfter(startDateValue),
           message: t('End date should be greater than the start date'),
         })
       ),
@@ -414,10 +416,10 @@ export const Trigger = () => {
     setFrequencyPlaceholder(placeholder);
     setStartDate(new Date(startAtValue));
     // If a user wants to update the trigger
-    if (moment(new Date()).isAfter(startAtValue, 'days')) {
+    if (dayjs().isAfter(startAtValue, 'days')) {
       setMinDate(new Date(startAtValue));
     }
-    setStartTime(moment(startAtValue).format('THH:mm:ss'));
+    setStartTime(dayjs(startAtValue).format('THH:mm:ss'));
     setfrequency(triggerFrequencyOptions.filter((trigger) => trigger.value === frequencyValue)[0]);
     setDaysDisabled(frequencyValue !== 'weekly' && frequencyValue !== 'monthly');
 

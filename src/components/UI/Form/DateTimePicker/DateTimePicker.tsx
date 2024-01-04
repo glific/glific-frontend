@@ -1,6 +1,6 @@
 import { LocalizationProvider, DateTimePicker as Picker } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import 'date-fns';
+import 'dayjs';
 import { getIn } from 'formik';
 
 import styles from './DateTimePicker.module.css';
@@ -30,10 +30,11 @@ export const DateTimePicker = ({
   const dateValue = field.value ? field.value : null;
 
   const handleDateChange = (date: Date | null | string) => {
-    const value = date && date.toString() !== 'Invalid Date' ? date : null;
+    const value = date && date.toString() !== 'Invalid Date' ? date : null;    
     setFieldValue(field.name, value);
     if (onChange) onChange(value);
   };
+  
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>

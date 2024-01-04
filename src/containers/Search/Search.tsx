@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import { useQuery } from '@apollo/client';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
@@ -68,8 +68,8 @@ const getPayload = (payload: any) => {
   if (!useExpression && dateFrom && dateFrom !== 'Invalid date') {
     const dateRange = {
       dateRange: {
-        to: moment(dateTo).format('yyyy-MM-DD'),
-        from: moment(dateFrom).format('yyyy-MM-DD'),
+        to: dayjs(dateTo).format('yyyy-MM-DD'),
+        from: dayjs(dateFrom).format('yyyy-MM-DD'),
       },
     };
     args.filter = Object.assign(args.filter, dateRange);
@@ -236,8 +236,8 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
     if (props.searchParam.dateFrom && props.searchParam.dateFrom !== 'Invalid date') {
       const dateRange = {
         dateRange: {
-          to: moment(props.searchParam.dateTo).format('yyyy-MM-DD'),
-          from: moment(props.searchParam.dateFrom).format('yyyy-MM-DD'),
+          to: dayjs(props.searchParam.dateTo).format('yyyy-MM-DD'),
+          from: dayjs(props.searchParam.dateFrom).format('yyyy-MM-DD'),
         },
       };
       args.filter = Object.assign(args.filter, dateRange);

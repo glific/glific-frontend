@@ -1,7 +1,7 @@
-import moment from 'moment';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime'
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-
 import TriggerIcon from 'assets/images/icons/Trigger/Union.svg?react';
 import ClockIcon from 'assets/images/icons/Trigger/Clock.svg?react';
 import ClockInactiveIcon from 'assets/images/icons/Trigger/Inactive.svg?react';
@@ -12,6 +12,7 @@ import { FULL_DATE_FORMAT, dayList } from 'common/constants';
 import { List } from 'containers/List/List';
 import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import styles from './TriggerList.module.css';
+dayjs.extend(relativeTime)
 
 const getTooltip = (frequency: any, days: any) => {
   const obj: any = [];
@@ -33,17 +34,17 @@ const getName = ({ flow, startAt, frequency, days, isActive, nextTriggerAt }: an
     </Tooltip>
     <div>
       <p className={styles.LabelText}>
-        <span>{`${flow.name}_${moment(startAt).format('DD/MM/yyyy_hh:mmA')}`}</span>
+        <span>{`${flow.name}_${dayjs(startAt).format('DD/MM/yyyy_hh:mmA')}`}</span>
       </p>
       <div className={styles.NextTrigger}>
-        {isActive ? <>Next trigger {moment(nextTriggerAt).fromNow()}</> : 'Trigger in inactive'}
+        {isActive ? <>Next trigger {dayjs(nextTriggerAt).fromNow()}</> : 'Trigger in inactive'}
       </div>
     </div>
   </div>
 );
 
 const getEndDate = (date: any) => (
-  <div className={styles.EndDateVal}>{moment(date).format(FULL_DATE_FORMAT)}</div>
+  <div className={styles.EndDateVal}>{dayjs(date).format(FULL_DATE_FORMAT)}</div>
 );
 
 const getCollections = (groups: any) => (

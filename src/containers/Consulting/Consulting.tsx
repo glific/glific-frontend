@@ -2,7 +2,7 @@ import { useState } from 'react';
 import * as Yup from 'yup';
 import { useQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 import { Input } from 'components/UI/Form/Input/Input';
 import { DateTimePicker } from 'components/UI/Form/DateTimePicker/DateTimePicker';
@@ -183,7 +183,7 @@ export const Consulting = ({ organizationId, setOpenDialog }: ConsultingProps) =
     }
 
     // Setting date to appropriate format
-    data.when = moment(when).toISOString();
+    data.when = dayjs(when).toISOString();
 
     if (organization) {
       data.clientId = Number(organization.id);
@@ -194,6 +194,7 @@ export const Consulting = ({ organizationId, setOpenDialog }: ConsultingProps) =
   };
 
   const orgOptions = organizationList.organizations;
+  console.log(orgOptions)
 
   return (
     <div className={`${styles.Layout} ${organizationId ? styles.Edit : ''}`}>

@@ -493,7 +493,7 @@ export const List = ({
       );
     }
     return null;
-  }
+  }  
 
   function formatList(listItems: Array<any>) {
     return listItems.map(({ ...listItemObj }) => {

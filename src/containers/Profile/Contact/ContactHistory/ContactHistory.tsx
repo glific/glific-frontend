@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import { getOrganizationServices } from 'services/AuthService';
 import { Button } from 'components/UI/Form/Button/Button';
@@ -139,7 +139,7 @@ export const ContactHistory = ({ contactId, profileId }: ContactHistoryProps) =>
     return (
       <div className={styles.DetailBlock} key={key}>
         <div className={styles.LineItem}>{label}</div>
-        <div className={styles.LineItemDate}>{moment(insertedAt).format(DATE_TIME_FORMAT)}</div>
+        <div className={styles.LineItemDate}>{dayjs(insertedAt).format(DATE_TIME_FORMAT)}</div>
       </div>
     );
   });

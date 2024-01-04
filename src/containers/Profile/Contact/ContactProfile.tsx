@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { useParams } from 'react-router-dom';
 import { getOrganizationServices } from 'services/AuthService';
 import { FormControl, FormControlLabel, Radio, RadioGroup } from '@mui/material';
@@ -85,14 +85,14 @@ export const ContactProfile = () => {
 
   let optinMethod = '';
   if (contactData.optinMethod) {
-    optinMethod = `via ${contactData.optinMethod} on ${moment(contactData.optinTime).format(
+    optinMethod = `via ${contactData.optinMethod} on ${dayjs(contactData.optinTime).format(
       DATE_TIME_FORMAT
     )}`;
   }
 
   let optoutMethod = '';
   if (contactData.optoutMethod) {
-    optoutMethod = `via ${contactData.optoutMethod} on ${moment(contactData.optoutTime).format(
+    optoutMethod = `via ${contactData.optoutMethod} on ${dayjs(contactData.optoutTime).format(
       DATE_TIME_FORMAT
     )}`;
   }

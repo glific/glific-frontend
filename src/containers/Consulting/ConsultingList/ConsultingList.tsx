@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import { Dialog, DialogContent } from '@mui/material';
 import EditIcon from 'assets/images/icons/Edit.svg?react';
@@ -55,7 +55,7 @@ const ConsultingList = () => {
   );
 
   const getOtherColumn = (label: any, isDate: boolean = false) => {
-    const text = isDate ? moment(label).format('DD MMM YYYY') : label;
+    const text = isDate ? dayjs(label).format('DD MMM YYYY') : label;
     return (
       <div>
         <p className={styles.StatusText}>{text}</p>

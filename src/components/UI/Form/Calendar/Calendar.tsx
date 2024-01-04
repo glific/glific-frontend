@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
-import 'date-fns';
+import 'dayjs';
 import { getIn } from 'formik';
 import styles from './Calendar.module.css';
 
@@ -31,7 +31,7 @@ export const Calendar = ({
   const [open, setOpen] = useState(false);
 
   const handleDateChange = (date: Date | null | string) => {
-    if (date) {
+    if (date) {      
       if (date.toString() !== 'Invalid Date') {
         setFieldValue(field.name, date);
       }

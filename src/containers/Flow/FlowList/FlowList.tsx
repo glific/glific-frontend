@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { FormControl, MenuItem, Select } from '@mui/material';
@@ -40,13 +40,13 @@ const getName = (text: string, keywordsList: any, roles: any) => {
 
 const getDate = (date: string, fallback: string = '') => (
   <div className={styles.LastPublished}>
-    {date ? moment(date).format(DATE_TIME_FORMAT) : fallback}
+    {date ? dayjs(date).format(DATE_TIME_FORMAT) : fallback}
   </div>
 );
 
 const getLastPublished = (date: string, fallback: string = '') =>
   date ? (
-    <div className={styles.LastPublished}>{moment(date).format(DATE_TIME_FORMAT)}</div>
+    <div className={styles.LastPublished}>{dayjs(date).format(DATE_TIME_FORMAT)}</div>
   ) : (
     <div className={styles.LastPublishedFallback}>{fallback}</div>
   );

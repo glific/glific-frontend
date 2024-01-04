@@ -1,6 +1,6 @@
 import { ListItemButton } from '@mui/material';
 import { Link } from 'react-router-dom';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { useApolloClient, useMutation } from '@apollo/client';
 
 import { COMPACT_MESSAGE_LENGTH, DATE_FORMAT } from 'common/constants';
@@ -233,7 +233,7 @@ const ChatConversation = ({
           {isTextType && highlightSearch ? BoldedText(body, highlightSearch) : displayMSG}
         </div>
         <div className={styles.MessageDate} data-testid="date">
-          {moment(lastMessage.insertedAt).format(DATE_FORMAT)}
+          {dayjs(lastMessage.insertedAt).format(DATE_FORMAT)}
         </div>
       </div>
     </ListItemButton>

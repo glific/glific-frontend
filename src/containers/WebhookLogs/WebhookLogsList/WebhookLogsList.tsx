@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Popover } from '@mui/material';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 
 import WebhookLogIcon from 'assets/images/icons/Webhook/WebhookDark.svg?react';
@@ -15,7 +15,7 @@ import { DATE_TIME_FORMAT } from 'common/constants';
 import styles from './WebhookLogsList.module.css';
 
 const getTime = (time: string) => (
-  <div className={styles.TableText}>{moment(time).format(DATE_TIME_FORMAT)}</div>
+  <div className={styles.TableText}>{dayjs(time).format(DATE_TIME_FORMAT)}</div>
 );
 
 /* istanbul ignore next */

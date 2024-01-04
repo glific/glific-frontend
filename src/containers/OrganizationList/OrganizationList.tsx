@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { OutlinedInput } from '@mui/material';
 import { useMutation } from '@apollo/client';
 
@@ -54,7 +54,7 @@ export const OrganizationList = ({
       <p className={styles.LabelText}>
         {label}
         <br />
-        <span className={styles.SubLabelText}>{moment(insertedAt).format('DD MMM YYYY')}</span>
+        <span className={styles.SubLabelText}>{dayjs(insertedAt).format('DD MMM YYYY')}</span>
       </p>
     </div>
   );
