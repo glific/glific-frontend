@@ -203,6 +203,7 @@ export const Organisation = () => {
       name: payload.name,
       activeLanguageIds,
       signaturePhrase: payload.signaturePhrase,
+      defaultLanguageId: payload.defaultLanguage.id,
     };
     return object;
   };

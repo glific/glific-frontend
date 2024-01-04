@@ -11,6 +11,18 @@ export const DELETE_TRIGGER = gql`
   }
 `;
 
+export const VALIDATE_TRIGGER = gql`
+  mutation ValidateTrigger($input: TriggerInput!) {
+    validateTrigger(input: $input) {
+      errors {
+        key
+        message
+      }
+      success
+    }
+  }
+`;
+
 export const CREATE_TRIGGER = gql`
   mutation createTrigger($input: TriggerInput!) {
     createTrigger(input: $input) {
