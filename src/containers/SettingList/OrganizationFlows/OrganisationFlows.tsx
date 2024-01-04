@@ -68,9 +68,7 @@ export const OrganisationFlows = () => {
       status: FLOW_STATUS_PUBLISHED,
     }),
     fetchPolicy: 'network-only', // set for now, need to check cache issue
-  });
-  console.log("Sdfc");
-  
+  });  
 
   const [getOrg, { data: orgData }] = useLazyQuery<any>(GET_ORGANIZATION);
 
@@ -348,7 +346,6 @@ export const OrganisationFlows = () => {
     let optinFlowId = null;
 
     if (newcontactFlowEnabled) {
-      console.log(payload);
       newContactFlowId = payload.newcontactFlowId.id;
     }
 

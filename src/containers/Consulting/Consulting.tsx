@@ -194,8 +194,6 @@ export const Consulting = ({ organizationId, setOpenDialog }: ConsultingProps) =
   };
 
   const orgOptions = organizationList.organizations;
-  console.log(orgOptions)
-
   return (
     <div className={`${styles.Layout} ${organizationId ? styles.Edit : ''}`}>
       <FormLayout
