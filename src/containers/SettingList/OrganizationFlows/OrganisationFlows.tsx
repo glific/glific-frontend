@@ -68,7 +68,7 @@ export const OrganisationFlows = () => {
       status: FLOW_STATUS_PUBLISHED,
     }),
     fetchPolicy: 'network-only', // set for now, need to check cache issue
-  });  
+  });
 
   const [getOrg, { data: orgData }] = useLazyQuery<any>(GET_ORGANIZATION);
 
