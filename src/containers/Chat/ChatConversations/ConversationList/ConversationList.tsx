@@ -75,7 +75,6 @@ export const ConversationList = ({
     }
   }, [scrollHeight.data]);
 
-
   useEffect(() => {
     const contactsContainer: any = document.querySelector('.contactsContainer');
     if (contactsContainer) {

@@ -14,7 +14,6 @@ export interface TimerProps {
 
 export const Timer = (props: TimerProps) => {
   const [currentTime, setCurrentTime] = useState(dayjs());
-
   const { t } = useTranslation();
 
   const link = (
