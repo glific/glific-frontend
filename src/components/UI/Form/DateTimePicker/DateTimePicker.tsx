@@ -1,5 +1,5 @@
 import { LocalizationProvider, DateTimePicker as Picker } from '@mui/x-date-pickers';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import 'dayjs';
 import { getIn } from 'formik';
 
@@ -37,7 +37,7 @@ export const DateTimePicker = ({
   
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDateFns}>
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
       <div className={styles.DateTimePicker} data-testid="date-picker-inline">
         <Picker
           className={styles.Text}

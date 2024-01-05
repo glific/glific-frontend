@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider, TimePicker as Picker } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
 import { getIn } from 'formik';
@@ -39,7 +39,7 @@ export const TimePicker = ({
   };
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDateFns}>
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
       <div className={styles.TimePicker} data-testid="time-picker">
         <Picker
           className={styles.Picker}
