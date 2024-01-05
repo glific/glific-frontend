@@ -36,11 +36,17 @@ describe('<ResetPasswordPhone />', () => {
 
   test('test the form submission with incorrect phone', async () => {
     // set the mock
-    const errorMessage = 'Cannot send the otp to 919978776554';
-    mockedAxios.post.mockImplementation(() => Promise.reject(new Error(errorMessage)));
+    const errorMessage = {
+      response: {
+        data: {
+          error: {
+            message: 'Account with phone number 919425010449 does not exist',
+          },
+        },
+      },
+    };
+    mockedAxios.post.mockImplementation(() => Promise.reject(errorMessage));
     const { container } = render(wrapper);
-
-    // enter the phone
     const phone = container.querySelector('input[type="tel"]') as HTMLInputElement;
     fireEvent.change(phone, { target: { value: '+919978776554' } });
 
@@ -49,9 +55,8 @@ describe('<ResetPasswordPhone />', () => {
     UserEvent.click(continueButton);
 
     await waitFor(() => {
-      const authContainer = screen.getByTestId('AuthContainer');
-      expect(authContainer).toHaveTextContent(
-        'We are unable to generate an OTP, kindly contact your technical team.'
+      expect(screen.getByTestId('AuthContainer')).toHaveTextContent(
+        errorMessage.response.data.error.message
       );
     });
   });
