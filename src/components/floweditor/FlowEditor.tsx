@@ -22,6 +22,7 @@ import Track from 'services/TrackService';
 import { exportFlowMethod } from 'common/utils';
 import styles from './FlowEditor.module.css';
 import { checkElementInRegistry, loadfiles, setConfig } from './FlowEditor.helper';
+import { FlowTranslation } from 'containers/Flow/FlowTranslation';
 
 declare function showFlowEditor(node: any, config: any): void;
 
@@ -40,6 +41,7 @@ export const FlowEditor = () => {
   const [published, setPublished] = useState(false);
   const [stayOnPublish, setStayOnPublish] = useState(false);
   const [showResetFlowModal, setShowResetFlowModal] = useState(false);
+  const [showTranslateFlowModal, setShowTranslateFlowModal] = useState(false);
   const [flowValidation, setFlowValidation] = useState<any>();
   const [IsError, setIsError] = useState(false);
   const [flowKeyword, setFlowKeyword] = useState('');
@@ -51,11 +53,15 @@ export const FlowEditor = () => {
   let dialog = null;
   let flowTitle: any;
 
+  const loadFlowEditor = () => {
+    showFlowEditor(document.getElementById('flow'), config);
+    setLoading(false);
+  };
+
   const [getFreeFlowForced] = useLazyQuery(GET_FREE_FLOW, {
     fetchPolicy: 'network-only',
     onCompleted: () => {
-      showFlowEditor(document.getElementById('flow'), config);
-      setLoading(false);
+      loadFlowEditor();
     },
   });
 
@@ -63,8 +69,7 @@ export const FlowEditor = () => {
     fetchPolicy: 'network-only',
     onCompleted: ({ flowGet }) => {
       if (flowGet.flow && !flowEditorLoaded) {
-        showFlowEditor(document.getElementById('flow'), config);
-        setLoading(false);
+        loadFlowEditor();
         setFlowEditorLoaded(true);
       } else if (flowGet.errors && flowGet.errors.length) {
         setDialogMessage(flowGet.errors[0].message);
@@ -147,6 +152,16 @@ export const FlowEditor = () => {
           tracking of how many times a node was triggered for users.
         </div>
       </DialogBox>
+    );
+  }
+
+  if (showTranslateFlowModal) {
+    modal = (
+      <FlowTranslation
+        loadFlowEditor={loadFlowEditor}
+        flowId={flowId}
+        setDialog={setShowTranslateFlowModal}
+      />
     );
   }
 
@@ -394,16 +409,28 @@ export const FlowEditor = () => {
           )}
         </div>
 
-        <Button
-          variant="outlined"
-          color="primary"
-          className={drawerOpen ? styles.ResetFlow : styles.ResetClosedDrawer}
-          data-testid="resetFlow"
-          onClick={() => setShowResetFlowModal(true)}
-          aria-hidden="true"
-        >
-          <ResetFlowIcon /> Reset flow counts
-        </Button>
+        <div className={drawerOpen ? styles.FlowLeftButtons : styles.FlowLeftButtonsClosedDrawer}>
+          <Button
+            className={styles.Button}
+            variant="outlined"
+            color="primary"
+            data-testid="resetFlow"
+            onClick={() => setShowResetFlowModal(true)}
+            aria-hidden="true"
+          >
+            <ResetFlowIcon /> Reset flow counts
+          </Button>
+          <Button
+            className={styles.Button}
+            variant="outlined"
+            color="primary"
+            data-testid="translateFlow"
+            onClick={() => setShowTranslateFlowModal(true)}
+            aria-hidden="true"
+          >
+            Translation
+          </Button>
+        </div>
         <div id="flow" />
         {loading && <Loading showTip />}
       </div>
