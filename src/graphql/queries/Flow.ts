@@ -84,17 +84,6 @@ export const EXPORT_FLOW = gql`
   }
 `;
 
-export const TERMINATE_FLOW = gql`
-  mutation TerminateContactFlows($contactId: ID!) {
-    terminateContactFlows(contactId: $contactId) {
-      success
-      errors {
-        message
-      }
-    }
-  }
-`;
-
 export const GET_FREE_FLOW = gql`
   query flowGet($id: ID!, $isForced: Boolean) {
     flowGet(id: $id, isForced: $isForced) {
@@ -115,6 +104,14 @@ export const RELEASE_FLOW = gql`
     flowRelease {
       id
       uuid
+    }
+  }
+`;
+
+export const EXPORT_FLOW_LOCALIZATIONS = gql`
+  query exportFlowLocalization($id: ID!) {
+    exportFlowLocalization(id: $id) {
+      exportData
     }
   }
 `;

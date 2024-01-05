@@ -127,23 +127,22 @@
   max-width: none !important;
 }
 
-.ResetFlow {
+.Button {
+  background-color: white !important;
+}
+
+.FlowLeftButtons {
+  display: flex;
   position: fixed !important;
   bottom: 13px;
   left: 270px;
   z-index: 1000;
   font-weight: 500;
-  display: flex;
   align-items: center;
-  background-color: white !important;
   cursor: pointer;
 }
 
-.ResetFlow svg {
-  margin-right: 6px;
-}
-
-.ResetClosedDrawer {
-  composes: ResetFlow;
+.FlowLeftButtonsClosedDrawer {
+  composes: FlowLeftButtons;
   left: 90px;
 }
