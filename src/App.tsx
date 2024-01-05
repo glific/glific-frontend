@@ -7,11 +7,27 @@ import 'assets/fonts/fonts.css';
 import gqlClient from 'config/apolloclient';
 import { SessionContext, SideDrawerContext } from 'context/session';
 import ErrorHandler from 'containers/ErrorHandler/ErrorHandler';
-import { checkAuthStatusService, getAuthSession } from 'services/AuthService';
+import { checkAuthStatusService, getAuthSession, renewAuthToken, setAuthSession } from 'services/AuthService';
 import { UnauthenticatedRoute } from 'routes/UnauthenticatedRoute/UnauthenticatedRoute';
 import { AuthenticatedRoute } from 'routes/AuthenticatedRoute/AuthenticatedRoute';
 import { Logout } from 'containers/Auth/Logout/Logout';
 import { isGreaterThanLgBreakpoint } from 'common/utils';
+
+const checkSessionValidity = async function () {
+  try {
+    // renew access token
+    const response = await renewAuthToken();
+    if (response.data) {
+      // set the session
+      setAuthSession(response.data.data);
+      return true;
+    }
+    return false;
+  } catch (_err) {
+    // error indicates session has expired or invalid tokens
+    return false;
+  }
+};
 
 const App = () => {
   const navigate = useNavigate();
@@ -21,9 +37,25 @@ const App = () => {
   const [drawerOpen, setDrawerOpen] = useState(isGreaterThanLgBreakpoint());
 
   useEffect(() => {
-    const isAccessTokenPresent = getAuthSession('accessToken') !== null;
-    const isTokenExpired = checkAuthStatusService();
-    setAuthenticated(isTokenExpired || isAccessTokenPresent);
+    const checkAuth = async () => {
+      const isAccessTokenPresent = getAuthSession('accessToken') !== null;
+      const isTokenAlive = checkAuthStatusService();
+      let isSessionAlive = false;
+      if (isAccessTokenPresent && isTokenAlive){
+        // Healthy session
+        isSessionAlive = true;
+      }
+      else if(!isAccessTokenPresent){
+        // New user
+        isSessionAlive = false;
+      }
+      else{
+        // expired token
+        isSessionAlive = await checkSessionValidity();
+      }
+      setAuthenticated(isSessionAlive);
+    };
+    checkAuth();
   }, []);
 
   const sideDraawerValues = useMemo(
