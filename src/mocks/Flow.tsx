@@ -16,6 +16,7 @@ import {
   RESET_FLOW_COUNT,
   UPDATE_FLOW,
   CREATE_FLOW_COPY,
+  AUTO_TRANSLATE_FLOW,
 } from 'graphql/mutations/Flow';
 import { GET_ORGANIZATION_SERVICES } from 'graphql/queries/Organization';
 import json from './ImportFlow.json';
@@ -476,6 +477,21 @@ export const updateFlowQuery = {
         },
 
         errors: null,
+      },
+    },
+  },
+};
+
+export const getFlowTranslations = {
+  request: {
+    query: AUTO_TRANSLATE_FLOW,
+    variables: { id: '1' },
+  },
+  result: {
+    data: {
+      inlineFlowLocalization: {
+        success: true,
+        errors: [],
       },
     },
   },
