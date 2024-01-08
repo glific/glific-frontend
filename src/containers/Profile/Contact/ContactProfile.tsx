@@ -151,7 +151,7 @@ export const ContactProfile = () => {
 
   return (
     <>
-      <Heading formTitle="Contact Profile" />
+      <Heading formTitle="Contact Profile" showHeaderHelp={false} />
       <Box className={styles.ContactProfile}>
         {drawer}
         <Box className={styles.ProfileBody}>
