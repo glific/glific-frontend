@@ -22,7 +22,7 @@ export const Button = ({
   let buttonColor;
   const { variant, color, onClick, className, children, ...rest } = props;
 
-  if (variant === 'outlined') buttonColor = styles.ButtonColor;
+  // if (variant === 'outlined') buttonColor = styles.ButtonColor;
 
   return (
     <ButtonElement

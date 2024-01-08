@@ -15,7 +15,7 @@ const theme = createTheme({
       main: '#DD1F1F',
     },
     secondary: {
-      main: '#CACACA',
+      main: '#777',
     },
   },
   typography: {
@@ -62,13 +62,7 @@ const theme = createTheme({
         root: { padding: '12px' },
       },
     },
-    MuiButton: {
-      styleOverrides: {
-        outlinedPrimary: {
-          border: '2px solid',
-        },
-      },
-    },
+
     MuiTablePagination: {
       styleOverrides: {
         selectLabel: {

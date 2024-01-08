@@ -1,8 +1,8 @@
 .DialogboxPaper {
-  border-radius: 24px !important;
+  border-radius: 10px;
   margin: 0px !important;
   margin-top: 66px !important;
-  min-width: 395px !important;
+  width: 474px;
 }
 
 .ScrollPaper {
@@ -10,8 +10,6 @@
 }
 
 .Dialogbox {
-  max-width: 80%;
-  min-width: 459px;
   margin: 0 auto;
   height: unset !important;
   max-height: 90% !important;
@@ -26,7 +24,8 @@
 }
 
 .DialogActions {
-  padding-left: 24px !important;
+  margin-left: auto;
+  padding-right: 24px !important;
   padding-bottom: 24px !important;
 }
 
@@ -36,9 +35,11 @@
 }
 
 .DialogTitle {
+  padding: 32px;
   white-space: pre-line;
-  color: #073f24;
-  padding-top: 24px !important;
+  line-height: normal;
+  font-weight: 700;
+  font-size: 24px;
   padding-bottom: 8px !important;
 }
 
@@ -49,23 +50,33 @@
 .DialogTitleCenter {
   composes: DialogTitle;
   text-align: center;
-  max-width: 395px;
 }
 
 .DialogTitleLeft {
   composes: DialogTitle;
   text-align: left;
-  max-width: 395px;
 }
 
 .DialogContentCenter {
+  padding: 20px 32px;
+
+  font-weight: 500;
   text-align: center;
   word-break: break-word;
 }
 
 .DialogContentLeft {
   text-align: left;
+  font-weight: 500;
+  padding: 20px 32px;
   word-break: break-word;
+}
+
+.CloseIcon {
+  position: absolute;
+  right: 8px;
+  top: 20px;
+  color: #777;
 }
 
 @media only screen and (max-width: 768px) {

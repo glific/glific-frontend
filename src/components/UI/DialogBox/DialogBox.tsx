@@ -5,8 +5,9 @@ import {
   DialogContent,
   DialogTitle,
   DialogContentText,
+  IconButton,
 } from '@mui/material';
-
+import CloseIcon from '@mui/icons-material/Close';
 import { Button } from 'components/UI/Form/Button/Button';
 import styles from './DialogBox.module.css';
 
@@ -61,7 +62,7 @@ export const DialogBox = ({
   if (!skipCancel) {
     cancelButtonDisplay = (
       <Button
-        variant="contained"
+        variant="outlined"
         onClick={() => handleCancel()}
         color={colorCancel}
         data-testid="cancel-button"
@@ -136,6 +137,9 @@ export const DialogBox = ({
       <DialogTitle id="alert-dialog-title" className={titleStyle} data-testid="dialogTitle">
         {title}
       </DialogTitle>
+      <IconButton aria-label="close" className={styles.CloseIcon} onClick={() => handleCancel()}>
+        <CloseIcon />
+      </IconButton>
       <DialogContent className={contentStyle}>
         {contentText ? (
           <DialogContentText id="alert-dialog-description">{contentText}</DialogContentText>
@@ -143,9 +147,9 @@ export const DialogBox = ({
         {children}
       </DialogContent>
       <DialogActions className={dialogActionStyle}>
-        {okButtonDisplay}
-        {middleButtonDisplay}
         {cancelButtonDisplay}
+        {middleButtonDisplay}
+        {okButtonDisplay}
       </DialogActions>
     </Dialog>
   );
