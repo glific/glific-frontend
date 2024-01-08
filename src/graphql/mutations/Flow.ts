@@ -125,3 +125,34 @@ export const RESET_FLOW_COUNT = gql`
     }
   }
 `;
+
+export const AUTO_TRANSLATE_FLOW = gql`
+  mutation inlineFlowLocalization($id: ID!) {
+    inlineFlowLocalization(id: $id) {
+      success
+      errors {
+        key
+        message
+      }
+    }
+  }
+`;
+
+export const IMPORT_FLOW_LOCALIZATIONS = gql`
+  mutation importFlowLocalization($localization: String!, $id: ID!) {
+    importFlowLocalization(localization: $localization, id: $id) {
+      success
+    }
+  }
+`;
+
+export const TERMINATE_FLOW = gql`
+  mutation TerminateContactFlows($contactId: ID!) {
+    terminateContactFlows(contactId: $contactId) {
+      success
+      errors {
+        message
+      }
+    }
+  }
+`;

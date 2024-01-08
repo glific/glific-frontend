@@ -136,7 +136,7 @@ describe('<List /> actions', () => {
     await waitFor(() => {
       const agreeButton = screen
         .queryByRole('dialog')
-        ?.querySelector('button.MuiButton-containedSecondary') as HTMLButtonElement;
+        ?.querySelector('button.MuiButton-outlinedSecondary') as HTMLButtonElement;
       fireEvent.click(agreeButton);
     });
   });

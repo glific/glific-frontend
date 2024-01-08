@@ -87,7 +87,7 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
       colorOk={colorOk}
       buttonOk={buttonOk}
     >
-      <div className={styles.DialogBox}>
+      <div>
         <FormControl fullWidth>
           <AutoComplete
             disableClearable={disableClearable}
