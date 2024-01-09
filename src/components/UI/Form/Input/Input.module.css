@@ -71,6 +71,7 @@
 
 .Translation {
   background-color: #f7f0e5;
+  margin-bottom: 8px;
   padding: 6px 16px;
   border-radius: 10px;
   white-space: pre-line;

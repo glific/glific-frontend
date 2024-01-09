@@ -8,6 +8,7 @@ import { GET_NOTIFICATIONS_COUNT } from 'graphql/queries/Notifications';
 import ListIcon from 'components/UI/ListIcon/ListIcon';
 import { getSideDrawerMenus } from 'context/role';
 import styles from './SideMenus.module.css';
+import { useTranslation } from 'react-i18next';
 
 export interface SideMenusProps {
   opened: boolean;
@@ -18,6 +19,7 @@ const AnchorLink = forwardRef((props, ref: any) => <a {...props} ref={ref} />);
 const SideMenus = ({ opened }: SideMenusProps) => {
   const [subMenu, setSubMenu] = useState({ active: false, value: '' });
   const location = useLocation();
+  const { t } = useTranslation();
 
   // handle count for notifictions
   const [notificationCount, setNotificationCount] = useState(0);
@@ -85,7 +87,7 @@ const SideMenus = ({ opened }: SideMenusProps) => {
               disableTypography
               data-testid="list-item"
               className={styles.UnselectedText}
-              primary={link.title}
+              primary={t(link.title as any)}
             />
             <LinkIcon />
           </>
@@ -113,7 +115,7 @@ const SideMenus = ({ opened }: SideMenusProps) => {
           disableTypography
           data-testid="list-item"
           className={styles.UnselectedText}
-          primary="back"
+          primary={t('back')}
         />
       )}
     </ListItemButton>
@@ -154,7 +156,7 @@ const SideMenus = ({ opened }: SideMenusProps) => {
               disableTypography
               data-testid="list-item"
               className={isSelected ? styles.SelectedText : styles.UnselectedText}
-              primary={menu.title}
+              primary={t(menu.title as any)}
             />
           )}
         </ListItemButton>
