@@ -183,10 +183,8 @@ export const CollectionList = () => {
   const addContactIcon = <AddContactIcon />;
   const viewButton = <div className={styles.ViewButton}>View</div>;
 
-  const linkPath = (id: any) => `/${cardLink.start}/${id}/${cardLink.end}`;
-
   const viewCollection = (id: any) => {
-    navigate(linkPath(id));
+    navigate(`/collection/${id}/contacts`);
   };
 
   const additionalAction = () => [
@@ -219,8 +217,6 @@ export const CollectionList = () => {
     }
     return action;
   };
-
-  const cardLink = { start: 'collection', end: 'contacts' };
 
   // check if the user has access to manage collections
   const userRolePermissions = getUserRolePermissions();

@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { List, ListItemButton, Paper, Typography } from '@mui/material';
+import { CircularProgress, List, ListItemButton, Paper, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import styles from './ChatTemplates.module.css';
@@ -9,7 +9,6 @@ import { WhatsAppToJsx } from '../../../../common/RichEditor';
 import { setVariables } from '../../../../common/constants';
 import { getInteractiveMessageBody } from '../../../../common/utils';
 import { FILTER_INTERACTIVE_MESSAGES } from '../../../../graphql/queries/InteractiveMessage';
-
 interface ChatTemplatesProps {
   searchVal: string;
   handleSelectText(obj: any, isInteractiveMsg: boolean): void;
@@ -40,7 +39,12 @@ export const ChatTemplates = ({
     },
   });
 
-  if (loading) return <div />;
+  if (loading)
+    return (
+      <div className={styles.Loading}>
+        <CircularProgress size="20px" />
+      </div>
+    );
   if (error || data.sessionTemplates === undefined) return <p>{t('Error :(')}</p>;
 
   const getListItem = (obj: any, index: number, interactiveMsg: boolean = false) => {

@@ -19,22 +19,26 @@
   height: calc(100% - 70px);
   overflow-y: auto;
 }
+
 .ListItemChat {
+  justify-content: left;
   padding: 0 !important;
   font-size: 16px !important;
   color: #93a29b !important;
   width: 100%;
 }
 
-.ListItemChat > span {
-  justify-content: space-between;
-  text-transform: none !important;
-  font-weight: 400 !important;
+.OptionTitle {
   text-align: left;
 }
+.OptionDescription {
+  text-align: right;
+  margin-left: auto;
+  font-size: 8px;
+}
 
-.ListItemChat > span > div > :last-child {
-  font-size: 12px;
+.RadioButton {
+  margin-left: auto;
 }
 
 .ListItem {
@@ -88,7 +92,6 @@
 
 .SendButton {
   padding: 4px 0px;
-
 }
 
 .SendButton > button {
@@ -144,17 +147,13 @@
 
 .ListItemTitle {
   color: #073f24;
-  font-weight: 400;
+  font-weight: 600;
   font-size: 16px;
   margin-bottom: 10px;
 }
 
 .ListItemContainer {
   margin-bottom: 10px;
-}
-
-.DialogContent {
-  width: 370px;
 }
 
 .SectionTitle {

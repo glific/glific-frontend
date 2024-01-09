@@ -20,6 +20,7 @@ import {
   QUICK_REPLY,
 } from 'common/constants';
 import styles from './TemplateOptions.module.css';
+import { Fragment } from 'react';
 
 export interface TemplateOptionsProps {
   isAddButtonChecked: boolean;
@@ -91,7 +92,7 @@ export const TemplateOptions = ({
 
     if (templateType === CALL_TO_ACTION) {
       template = (
-        <div className={styles.CallToActionContainer} key={index.toString()}>
+        <Fragment key={index.toString()}>
           <div className={styles.CallToActionWrapper}>
             <div>
               <div className={styles.RadioStyles}>
@@ -199,14 +200,14 @@ export const TemplateOptions = ({
               ? addButton(arrayHelpers, true)
               : null}
           </div>
-        </div>
+        </Fragment>
       );
     }
 
     if (templateType === QUICK_REPLY) {
       template = (
-        <div className={styles.QuickReplyContainer} key={index.toString()}>
-          <div className={styles.QuickReplyWrapper}>
+        <>
+          <div className={styles.QuickReplyWrapper} key={index.toString()}>
             <FormControl fullWidth error={isError('value')} className={styles.FormControl}>
               <TextField
                 disabled={disabled}
@@ -240,7 +241,7 @@ export const TemplateOptions = ({
               ? addButton(arrayHelpers)
               : null}
           </div>
-        </div>
+        </>
       );
     }
     return template;
@@ -283,11 +284,13 @@ export const TemplateOptions = ({
         <div className={styles.CallToActionTemplateFields}>
           <FieldArray
             name="templateButtons"
-            render={(arrayHelpers: any) =>
-              values.templateButtons.map((row: any, index: any) =>
-                getButtons(row, index, arrayHelpers)
-              )
-            }
+            render={(arrayHelpers: any) => (
+              <div className={styles.QuickReplyContainer}>
+                {values.templateButtons.map((row: any, index: any) =>
+                  getButtons(row, index, arrayHelpers)
+                )}
+              </div>
+            )}
           />
         </div>
       ) : null}

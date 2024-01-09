@@ -434,5 +434,20 @@
   "Request header": "Request header",
   "Request JSON": "Request JSON",
   "Response JSON": "Response JSON",
-  "Webhook Logs": "Webhook Logs"
+  "Select Tag": "Select Tag",
+  "Select tag": "Select tag",
+  "More": "More",
+  "Tags": "Tags",
+  "Created": "Created",
+  "You won't be able to use this tag.": "You won't be able to use this tag.",
+  "Type your message": "Type your message",
+  "No. of flows": "No. of flows",
+  "Date and Time": "Date and Time",
+  "Wallet balance": "Wallet balance",
+  "Export": "Export",
+  "View details": "View details",
+  "Topic is required": "Topic is required",
+  "Webhook Logs": "Webhook Logs",
+  "Translate": "Translate",
+  "back": "back"
 }

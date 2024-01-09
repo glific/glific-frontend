@@ -5,6 +5,12 @@
   z-index: 10;
 }
 
+.Loading {
+  padding-top: 8px;
+  width: 100%;
+  text-align: center;
+}
+
 .ShortcutList {
   max-height: 350px;
   bottom: 0px;
@@ -55,6 +61,8 @@
 }
 
 .NoResult {
+  color: #555;
+  font-size: 16px;
   margin-top: 10px;
 }
 
