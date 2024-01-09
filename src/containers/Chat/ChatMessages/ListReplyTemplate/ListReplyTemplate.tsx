@@ -64,10 +64,10 @@ export const ChatTemplate = ({ title, body, globalButtonTitle, items }: Template
               onClick={() => setCheckedItem(option.title)}
             >
               <div>
-                <div>{option.title}</div>
-                <div>{option.description}</div>
+                <div className={styles.OptionTitle}>{option.title}</div>
+                <div className={styles.OptionDescription}>{option.description}</div>
               </div>
-              <div>
+              <div className={styles.RadioButton}>
                 <Radio
                   value={option.title}
                   name="radio-list-item"
