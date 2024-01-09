@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import moment from 'moment';
 import { useParams, useNavigate, useLocation, Route, Routes, Navigate } from 'react-router-dom';
-import { getOrganizationServices } from 'services/AuthService';
 import { Box, FormControl, FormControlLabel, Radio, RadioGroup } from '@mui/material';
 
+import { getOrganizationServices } from 'services/AuthService';
 import { DATE_TIME_FORMAT } from 'common/constants';
 import { GET_CONTACT_DETAILS, GET_CONTACT_PROFILES } from 'graphql/queries/Contact';
 import Loading from 'components/UI/Layout/Loading/Loading';

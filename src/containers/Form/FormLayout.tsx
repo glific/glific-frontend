@@ -33,7 +33,7 @@ export const Heading = ({ title = '', formTitle, helpData, showHeaderHelp = true
           {helpData ? <HelpIcon helpData={helpData} /> : ''}
         </div>
         <div className={styles.TextHeader}>
-          {showHeaderHelp ? `${title}, please enter below details.` : ''}
+          {showHeaderHelp ? `Please enter below details.` : ''}
         </div>
       </div>
     </div>
@@ -503,7 +503,6 @@ export const FormLayout = ({
     const roleAccess = {
       component: AutoComplete,
       name: 'roles',
-      placeholder: t('Roles'),
       options: roleData
         ? roleData.accessRoles.map((role: any) => ({ label: role.label, id: role.id }))
         : [],
