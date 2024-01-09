@@ -92,13 +92,15 @@ jobs:
         # cypress setup
       - name: Setup cypress
         run: |
+          cd ../
           echo clone cypress repo
           git clone https://github.com/glific/cypress-testing.git
           echo done. go to dir.
-          cp -r cypress-testing/cypress cypress
-          yarn add cypress@12.3.0
+          cd cypress-testing
           echo Create cypress.config.ts from example
-          cp cypress-testing/cypress.config.ts.example cypress.config.ts
+          cp cypress.config.ts.example cypress.config.ts
+          yarn install
+          cd ../glific-frontend/
 
         # Run frontend
       - name: Run glific frontend
@@ -119,4 +121,5 @@ jobs:
         # Run cypress
       - name: Cypress run
         run: |
+          cd ../cypress-testing
           yarn run cypress run --record --key ${{ secrets.CYPRESS_DASHBOARD_KEY }}
