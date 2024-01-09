@@ -1,4 +1,4 @@
-import moment from 'moment';
+import dayjs from 'dayjs';
 import * as Yup from 'yup';
 
 export const SIDE_DRAWER_WIDTH = 233;
@@ -11,7 +11,7 @@ export const FLOW_STATUS_PUBLISHED = 'published';
 export const SIMULATOR_NUMBER_START = '9876543210';
 export const GUPSHUP_ENTERPRISE_SHORTCODE = 'gupshup_enterprise';
 export const VALID_URL_REGEX =
-  'https?://(www.)?[-a-zA-Z0-9@:%._+~#=]{2,256}.[a-z]{2,4}([-a-zA-Z0-9@:%_+.~#?&\/=]*)';
+  'https?://(www.)?[-a-zA-Z0-9@:%._+~#=]{2,256}.[a-z]{2,4}([-a-zA-Z0-9@:%_+.~#?&/=]*)';
 // to find variables in message
 export const pattern = /[^{}]+(?=})/g;
 
@@ -112,8 +112,8 @@ export const setVariables = (
   },
 });
 
-export const is24HourWindowOver = (time: any) =>
-  moment.duration(moment(new Date()).diff(moment(time))).asHours() > 24;
+export const is24HourWindowOver = (time: any) => dayjs().diff(dayjs(time), 'hours') > 24;
+// moment.duration(moment(new Date()).diff(moment(time))).asHours() > 24;
 
 // connection retry attempt configuration
 export const CONNECTION_RECONNECT_ATTEMPTS = 5;

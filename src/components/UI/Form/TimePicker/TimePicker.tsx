@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider, TimePicker as Picker } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
 import { getIn } from 'formik';
@@ -24,30 +24,28 @@ export const TimePicker = ({
   disabled = false,
   helperText,
 }: TimePickerProps) => {
-  const timeValue = field.value
-    ? dayjs(`${dayjs().format('YYYY-MM-DD')}${field.value}`).toDate()
-    : null;
-  const [open, setOpen] = useState(false);  
+  const timeValue = field.value ? field.value : null;  
+  const [open, setOpen] = useState(false);
 
   const errorText = getIn(errors, field.name);
   const touchedVal = getIn(touched, field.name);
   const hasError = touchedVal && errorText !== undefined;
 
   const handleDateChange = (time: Date | null) => {
-    const value = time ? dayjs(time).format('THH:mm:ss') : null;
+    const value = time ? time : null;
     setFieldValue(field.name, value);
   };
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDateFns}>
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
       <div className={styles.TimePicker} data-testid="time-picker">
         <Picker
           className={styles.Picker}
           label={placeholder}
           open={open}
+          value={timeValue}
           onClose={() => setOpen(false)}
           disabled={disabled}
-          value={timeValue}
           onChange={handleDateChange}
           slotProps={{
             textField: {

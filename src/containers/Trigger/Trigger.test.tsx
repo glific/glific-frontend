@@ -8,6 +8,9 @@ import { LIST_ITEM_MOCKS as SearchMocks } from 'containers/Search/Search.test.he
 import * as AutoComplete from 'components/UI/Form/AutoComplete/AutoComplete';
 import { getTriggerQuery, hourlyTrigger } from 'mocks/Trigger';
 import { Trigger } from './Trigger';
+import dayjs from 'dayjs';
+import utc from 'dayjs'
+dayjs.extend(utc)
 
 vi.mock('react-router-dom', async () => {
   return {

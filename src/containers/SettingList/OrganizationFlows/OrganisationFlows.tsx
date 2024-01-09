@@ -19,6 +19,7 @@ import {
 import Settingicon from 'assets/images/icons/Settings/Settings.svg?react';
 import { dayList, FLOW_STATUS_PUBLISHED, setVariables } from 'common/constants';
 import styles from './OrganisationFlows.module.css';
+import dayjs from 'dayjs';
 
 const SettingIcon = <Settingicon />;
 
@@ -33,8 +34,8 @@ export const OrganisationFlows = () => {
   const client = useApolloClient();
   const [hours, setHours] = useState(true);
   const [enabledDays, setEnabledDays] = useState<any>([]);
-  const [startTime, setStartTime] = useState('');
-  const [endTime, setEndTime] = useState('');
+  const [startTime, setStartTime] = useState<any>('');
+  const [endTime, setEndTime] = useState<any>('');
   const [defaultFlowId, setDefaultFlowId] = useState<any>(null);
   const [flowId, setFlowId] = useState<any>(null);
   const [isDisabled, setIsDisable] = useState(false);
@@ -74,9 +75,9 @@ export const OrganisationFlows = () => {
 
   const getEnabledDays = (data: any) => data.filter((option: any) => option.enabled);
 
-  const setOutOfOffice = (data: any) => {
-    setStartTime(data.startTime);
-    setEndTime(data.endTime);
+  const setOutOfOffice = (data: any) => {    
+    setStartTime(dayjs(`${dayjs().format('YYYY-MM-DD')}T${data.startTime}`));
+    setEndTime(dayjs(`${dayjs().format('YYYY-MM-DD')}T${data.endTime}`));
     setEnabledDays(getEnabledDays(data.enabledDays));
   };
 
@@ -155,11 +156,11 @@ export const OrganisationFlows = () => {
 
     return error;
   };
-
+  
   const handleAllDayCheck = (addDayCheck: boolean) => {
     if (!allDayCheck) {
-      setStartTime('00:00:00');
-      setEndTime('23:59:00');
+      setStartTime(dayjs(`${dayjs().format('YYYY-MM-DD')}T00:00:00`));
+      setEndTime(dayjs(`${dayjs().format('YYYY-MM-DD')}T23:59:00`));
     }
     setAllDayCheck(addDayCheck);
   };

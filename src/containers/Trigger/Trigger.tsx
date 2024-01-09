@@ -49,8 +49,9 @@ const setPayload = (payload: any, roles: any) => {
     payloadCopy;
 
   const groups = groupIds.map((group: any) => parseInt(group.id));
+  const startAtTime = dayjs(startTime).format("THH:mm:ss")
   // covert the time to UTC
-  const startAt = dayjs(`${dayjs(startDate).format('YYYY-MM-DD')}${startTime}`).utc();
+  const startAt = dayjs(`${dayjs(startDate).format('YYYY-MM-DD')}${startAtTime}`).utc();
 
   const updatedPayload = {
     isActive,
@@ -131,7 +132,7 @@ const queries = {
 export const Trigger = () => {
   const [flowId, setFlowId] = useState(null);
   const [isActive, setIsActive] = useState(true);
-  const [startTime, setStartTime] = useState('');
+  const [startTime, setStartTime] = useState<any>('');
   const [startDate, setStartDate] = useState<any>('');
   const [frequency, setfrequency] = useState<any>(null);
   const [endDate, setEndDate] = useState<any>('');
@@ -140,7 +141,7 @@ export const Trigger = () => {
   const [roles, setRoles] = useState([]);
   const [daysDisabled, setDaysDisabled] = useState(true);
   const [groupIds, setGroupIds] = useState<any>(null);
-  const [minDate, setMinDate] = useState<any>(new Date());
+  const [minDate, setMinDate] = useState<any>(dayjs());
   const [triggerFlowWarning, setTriggerFlowWarning] = useState<any>();
   const [frequencyPlaceholder, setFrequencyPlaceholder] = useState('Select days');
   const [frequencyOptions, setFrequencyOptions] = useState(dayList);
@@ -404,7 +405,7 @@ export const Trigger = () => {
   }: any) => {
     setIsRepeating(isRepeatingValue);
     setIsActive(isCopyState ? true : isActiveValue);
-    setEndDate(new Date(endDateValue));
+    setEndDate(dayjs());
 
     const { values, options, placeholder } = getFrequencyDetails(
       frequencyValue,
@@ -414,12 +415,12 @@ export const Trigger = () => {
     setFrequencyValues(values);
     setFrequencyOptions(options);
     setFrequencyPlaceholder(placeholder);
-    setStartDate(new Date(startAtValue));
+    setStartDate(dayjs(startAtValue));
     // If a user wants to update the trigger
     if (dayjs().isAfter(startAtValue, 'days')) {
-      setMinDate(new Date(startAtValue));
+      setMinDate(dayjs(startAtValue));
     }
-    setStartTime(dayjs(startAtValue).format('THH:mm:ss'));
+    setStartTime(startAtValue ? dayjs(startAtValue) : null);
     setfrequency(triggerFrequencyOptions.filter((trigger) => trigger.value === frequencyValue)[0]);
     setDaysDisabled(frequencyValue !== 'weekly' && frequencyValue !== 'monthly');
 

@@ -55,7 +55,7 @@ const ConsultingList = () => {
   );
 
   const getOtherColumn = (label: any, isDate: boolean = false) => {
-    const text = isDate ? dayjs(label).format('DD MMM YYYY') : label;
+    const text = isDate ? dayjs(label).format('DD MMM YYYY hh:mm a') : label;
     return (
       <div>
         <p className={styles.StatusText}>{text}</p>

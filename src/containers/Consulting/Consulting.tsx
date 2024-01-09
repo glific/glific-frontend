@@ -32,7 +32,7 @@ export const Consulting = ({ organizationId, setOpenDialog }: ConsultingProps) =
   const { t } = useTranslation();
   const [participants, setParticipants] = useState('');
   const [staff, setStaff] = useState('');
-  const [when, setWhen] = useState<any>(new Date());
+  const [when, setWhen] = useState<any>(dayjs());
   const [duration, setDuration] = useState<number>();
   const [content, setContent] = useState('');
   const [isBillable, setIsBillable] = useState<any>(null);
@@ -68,7 +68,7 @@ export const Consulting = ({ organizationId, setOpenDialog }: ConsultingProps) =
   }: any) => {
     setParticipants(supportMembers);
     setStaff(staffMembers);
-    setWhen(new Date(consultingDate));
+    setWhen(dayjs(consultingDate));
     setDuration(durationInMin);
     setContent(description);
     setIsBillable(billable);
