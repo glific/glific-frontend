@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
-import dayjs from 'dayjs';
 import { getIn } from 'formik';
 import styles from './Calendar.module.css';
 
