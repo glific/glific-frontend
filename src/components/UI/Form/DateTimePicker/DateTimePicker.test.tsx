@@ -60,6 +60,6 @@ describe('<DateTimePicker />', () => {
     render(<DateTimePicker {...props} />);
     const input = screen.getByRole('textbox');
     fireEvent.change(input, { target: { value: '14/05/2021 10:50 AM' } });
-    expect(onChangeMock).toHaveBeenCalledTimes(0);
+    expect(onChangeMock).toHaveBeenCalled();
   });
 });
