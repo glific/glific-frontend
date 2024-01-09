@@ -113,7 +113,6 @@ export const setVariables = (
 });
 
 export const is24HourWindowOver = (time: any) => dayjs().diff(dayjs(time), 'hours') > 24;
-// moment.duration(moment(new Date()).diff(moment(time))).asHours() > 24;
 
 // connection retry attempt configuration
 export const CONNECTION_RECONNECT_ATTEMPTS = 5;

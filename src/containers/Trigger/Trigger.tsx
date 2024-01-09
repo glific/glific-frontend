@@ -41,6 +41,7 @@ const checkDateTimeValidation = (startAtValue: string, startDateValue: string) =
   }
   return true;
 };
+
 const setPayload = (payload: any, roles: any) => {
   const payloadCopy = payload;
 
@@ -48,7 +49,7 @@ const setPayload = (payload: any, roles: any) => {
     payloadCopy;
 
   const groups = groupIds.map((group: any) => parseInt(group.id));
-  const startAtTime = dayjs(startTime).format("THH:mm:ss")
+  const startAtTime = dayjs(startTime).format('THH:mm:ss');
   // covert the time to UTC
   const startAt = dayjs(`${dayjs(startDate).format('YYYY-MM-DD')}${startAtTime}`).utc();
 

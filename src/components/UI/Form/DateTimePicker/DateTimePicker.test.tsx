@@ -24,14 +24,13 @@ describe('<DateTimePicker />', () => {
     expect(screen.getByTestId('date-picker-inline')).toHaveTextContent('Date from');
   });
 
-  it.only('test date change event', async () => {
+  it('test date change event', async () => {
     render(wrapper);
     const input = screen.getByRole('textbox');
     userEvent.type(input, '14/05/2021 09:50 am');
 
     await waitFor(() => {
       expect(input).toHaveValue('14/05/2021 09:50 am');
-      screen.debug()
     });
 
     expect(setFieldMock).toHaveBeenCalled();

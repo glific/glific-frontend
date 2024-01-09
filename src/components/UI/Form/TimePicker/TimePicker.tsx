@@ -4,6 +4,7 @@ import { LocalizationProvider, TimePicker as Picker } from '@mui/x-date-pickers'
 import dayjs from 'dayjs';
 import { getIn } from 'formik';
 import utc from 'dayjs/plugin/utc';
+
 import styles from './TimePicker.module.css';
 dayjs.extend(utc);
 
@@ -24,7 +25,7 @@ export const TimePicker = ({
   disabled = false,
   helperText,
 }: TimePickerProps) => {
-  const timeValue = field.value ? field.value : null;  
+  const timeValue = field.value ? field.value : null;
   const [open, setOpen] = useState(false);
 
   const errorText = getIn(errors, field.name);

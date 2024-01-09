@@ -28,7 +28,6 @@ export const Calendar = ({
   const touchedVal = getIn(touched, field.name);
   const hasError = touchedVal && errorText !== undefined;
   const dateValue = field.value ? field.value : null;
-  
   const [open, setOpen] = useState(false);
 
   const handleDateChange = (date: Date | null | string) => {

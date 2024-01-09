@@ -75,7 +75,7 @@ export const OrganisationFlows = () => {
 
   const getEnabledDays = (data: any) => data.filter((option: any) => option.enabled);
 
-  const setOutOfOffice = (data: any) => {    
+  const setOutOfOffice = (data: any) => {
     setStartTime(dayjs(`${dayjs().format('YYYY-MM-DD')}T${data.startTime}`));
     setEndTime(dayjs(`${dayjs().format('YYYY-MM-DD')}T${data.endTime}`));
     setEnabledDays(getEnabledDays(data.enabledDays));
@@ -156,7 +156,7 @@ export const OrganisationFlows = () => {
 
     return error;
   };
-  
+
   const handleAllDayCheck = (addDayCheck: boolean) => {
     if (!allDayCheck) {
       setStartTime(dayjs(`${dayjs().format('YYYY-MM-DD')}T00:00:00`));
