@@ -30,7 +30,6 @@ dayjs.extend(utc);
 
 const checkDateTimeValidation = (startAtValue: string, startDateValue: string) => {
   const isDateAhead = dayjs(startDateValue).isAfter(dayjs());
-
   const isTimeAhead = startAtValue > dayjs().format('THH:mm:ss');
 
   if (!isDateAhead) {

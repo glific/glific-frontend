@@ -32,7 +32,7 @@ export const Calendar = ({
   const [open, setOpen] = useState(false);
 
   const handleDateChange = (date: Date | null | string) => {
-    if (date) {      
+    if (date) {
       if (date.toString() !== 'Invalid Date') {
         setFieldValue(field.name, date);
       }

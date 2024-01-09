@@ -14,7 +14,6 @@ export interface TimerProps {
 
 export const Timer = (props: TimerProps) => {
   const [currentTime, setCurrentTime] = useState(dayjs());
-
   const { t } = useTranslation();
 
   const link = (
@@ -71,7 +70,6 @@ export const Timer = (props: TimerProps) => {
   if (time) {
     const lastMessageTime = dayjs(time);
     const duration = currentTime.diff(lastMessageTime, "hour")
-
     hours = Math.floor(duration);
     if (hours < 0) hours = 0;
     hours = hours > 24 ? 0 : 24 - hours;
