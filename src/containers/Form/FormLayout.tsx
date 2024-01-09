@@ -30,7 +30,7 @@ export const Heading = ({ title = '', formTitle, helpData, showHeaderHelp = true
       <div>
         <div className={styles.Title}>
           <div className={styles.TitleText}> {formTitle}</div>
-          <HelpIcon helpData={helpData} />
+          {helpData ? <HelpIcon helpData={helpData} /> : ''}
         </div>
         <div className={styles.TextHeader}>
           {showHeaderHelp ? `${title}, please enter below details.` : ''}
