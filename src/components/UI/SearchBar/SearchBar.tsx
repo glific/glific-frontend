@@ -51,7 +51,8 @@ export const SearchBar = ({
       <IconButton
         data-testid="resetButton"
         className={styles.ResetSearch}
-        onClick={() => {
+        onClick={(event: any) => {
+          event?.stopPropagation();
           setLocalSearchValue('');
           onReset();
         }}
