@@ -16,7 +16,7 @@ test('it renders contact form successfully', async () => {
   const { container } = render(wrapper);
 
   expect(container).toBeInTheDocument();
-  expect(screen.getByText('Add contact fields')).toBeInTheDocument();
+  expect(screen.getByText('Add contact field')).toBeInTheDocument();
 
   // Get all input elements
   const inputElements = screen.getAllByRole('textbox');
