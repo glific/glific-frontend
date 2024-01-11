@@ -1,11 +1,11 @@
 .ChatListingContainer {
-  height: calc(100%);
+  height: calc(100%- 108px);
   overflow-y: auto;
   padding: 0px !important;
 }
 
 .CollectionListingContainer {
-  height: calc(100% - 89px);
+  height: calc(100% - 60px);
   overflow-y: auto;
   padding: 0px !important;
 }

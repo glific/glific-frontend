@@ -55,7 +55,7 @@ export const Calendar = ({
           slotProps={{
             textField: {
               helperText: hasError ? errorText : '',
-              error: hasError,
+              error: !!hasError,
               onClick: () => !disabled && setOpen(true),
             },
           }}
