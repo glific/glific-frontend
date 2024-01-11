@@ -16,12 +16,30 @@ const wrapper = (
   </MockedProvider>
 );
 
+test('it should render the placeholders correctly', async () => {
+  const { getByTestId, getByText } = render(wrapper);
+
+  expect(getByText('Loading...')).toBeInTheDocument();
+
+  await waitFor(() => {
+    expect(getByTestId('formLayout')).toHaveTextContent('Organisation name');
+    expect(getByTestId('formLayout')).toHaveTextContent('Supported languages');
+    expect(getByTestId('formLayout')).toHaveTextContent('Default language');
+    expect(getByTestId('formLayout')).toHaveTextContent('Organisation phone number');
+    expect(getByTestId('formLayout')).toHaveTextContent('Low balance threshold for warning emails');
+    expect(getByTestId('formLayout')).toHaveTextContent(
+      'Critical balance threshold for warning emails'
+    );
+    expect(getByTestId('formLayout')).toHaveTextContent('Recieve warning mails?');
+  });
+});
+
 test('it renders component properly', async () => {
-  const { getByText } = render(wrapper);
+  const { getByText, getByTestId } = render(wrapper);
   // loading is show initially
   expect(getByText('Loading...')).toBeInTheDocument();
   await waitFor(() => {
-    expect(getByText('Back to settings')).toBeInTheDocument();
+    expect(getByTestId('add-container')).toHaveTextContent('Organisation name');
   });
 });
 
@@ -45,7 +63,7 @@ test('it renders component in edit mode', async () => {
       </Router>
     </MockedProvider>
   );
-  // loading is show initially
+  // loading is show initiallyiokk
   expect(getByText('Loading...')).toBeInTheDocument();
 
   await waitFor(() => {
@@ -57,5 +75,31 @@ test('it renders component in edit mode', async () => {
   await waitFor(() => {
     const submit = getByTestId('submitActionButton');
     fireEvent.click(submit);
+  });
+});
+
+test('it submits form correctly', async () => {
+  const { getByText, getByTestId } = render(wrapper);
+
+  expect(getByText('Loading...')).toBeInTheDocument();
+
+  await waitFor(() => {
+    const inputElements = screen.getAllByRole('textbox');
+    const numberInputElements = screen.getAllByRole('spinbutton');
+
+    fireEvent.change(inputElements[0], { target: { value: 'Glificc' } });
+    fireEvent.change(inputElements[1], { target: { value: 'Please change me, NOW!' } });
+    fireEvent.change(numberInputElements[0], { target: { value: '10' } });
+    fireEvent.change(numberInputElements[1], { target: { value: '5' } });
+  });
+
+  await waitFor(() => {
+    const submitButton = screen.getByText('Save');
+    expect(submitButton).toBeInTheDocument();
+    fireEvent.click(submitButton);
+  });
+
+  await waitFor(() => {
+    expect(getByTestId('formLayout')).toHaveTextContent('Organisation name');
   });
 });

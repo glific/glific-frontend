@@ -122,6 +122,11 @@ const updateOrganisationMock = {
             flowId: null,
             startTime: '09:00:00',
           },
+          setting: {
+            lowBalanceThreshold: '10',
+            criticalBalanceThreshold: '5',
+            sendWarningMail: false,
+          },
           shortcode: 'glific',
         },
       },

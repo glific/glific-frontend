@@ -441,5 +441,9 @@
   "Request JSON": "Request JSON",
   "Response JSON": "Response JSON",
   "Webhook Logs": "Webhook Logs",
-  "Translate": "Translate"
+  "Translate": "Translate",
+  "Recieve warning mails?": "Recieve warning mails?",
+  "Critical balance threshold for warning emails": "Critical balance threshold for warning emails",
+  "Low balance threshold for warning emails": "Low balance threshold for warning emails",
+  "Threshold value should not be negative!": "Threshold value should not be negative!"
 }

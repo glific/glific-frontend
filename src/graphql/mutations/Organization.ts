@@ -26,6 +26,11 @@ export const UPDATE_ORGANIZATION = gql`
           id
           label
         }
+        setting {
+          lowBalanceThreshold
+          criticalBalanceThreshold
+          sendWarningMail
+        }
       }
       errors {
         key
