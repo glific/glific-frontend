@@ -56,7 +56,7 @@ export const RoleList = () => {
       listIcon={roleIcon}
       {...queries}
       {...columnAttributes}
-      button={{ show: true, label: t('Create Role'), symbol: addIcon }}
+      button={{ show: true, label: t('Create'), symbol: addIcon }}
     />
   );
 };

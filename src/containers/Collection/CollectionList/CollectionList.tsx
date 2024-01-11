@@ -243,7 +243,7 @@ export const CollectionList = () => {
         displayListType="card"
         button={{
           show: userRolePermissions.manageCollections,
-          label: t('Create Collection'),
+          label: t('Create'),
           symbol: addIcon,
         }}
         pageLink="collection"
