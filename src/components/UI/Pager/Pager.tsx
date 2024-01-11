@@ -46,7 +46,6 @@ const collapsedRowData = (dataObj: any, columnStyles: any, recordId: any) => {
       </TableRow>
     );
   }
-  console.log(dataObj);
 
   const additionalRowInformation = Object.keys(dataObj).map((key, index) => {
     const rowIdentifier = `collapsedRowData-${recordId}-${index}`;

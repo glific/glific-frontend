@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useMutation, useLazyQuery, useQuery } from '@apollo/client';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
-import { Menu, MenuItem, Typography } from '@mui/material';
+import { Backdrop, Menu, MenuItem, Typography } from '@mui/material';
 import BackIconFlow from 'assets/images/icons/BackIconFlow.svg?react';
 import WarningIcon from 'assets/images/icons/Warning.svg?react';
 import PreviewIcon from 'assets/images/icons/PreviewIcon.svg?react';
@@ -19,7 +19,7 @@ import Track from 'services/TrackService';
 import { exportFlowMethod } from 'common/utils';
 import styles from './FlowEditor.module.css';
 import { checkElementInRegistry, loadfiles, setConfig } from './FlowEditor.helper';
-import { FlowTranslation } from 'containers/Flow/FlowTranslation';
+import { BackdropLoader, FlowTranslation } from 'containers/Flow/FlowTranslation';
 
 declare function showFlowEditor(node: any, config: any): void;
 
@@ -82,7 +82,7 @@ export const FlowEditor = () => {
     },
   });
 
-  const [exportFlowMutation] = useLazyQuery(EXPORT_FLOW, {
+  const [exportFlowMutation, { loading: exportFlowloading }] = useLazyQuery(EXPORT_FLOW, {
     fetchPolicy: 'network-only',
     onCompleted: async ({ exportFlow }) => {
       const { exportData } = exportFlow;
@@ -331,6 +331,7 @@ export const FlowEditor = () => {
 
   return (
     <>
+      {exportFlowloading && <BackdropLoader />}
       {dialog}
       <div className={styles.Header}>
         <div className={styles.Title}>
@@ -367,7 +368,6 @@ export const FlowEditor = () => {
           >
             <MenuItem
               onClick={() => {
-                // Todo: add some kind of loading
                 exportFlowMutation({
                   variables: {
                     id: flowId,
