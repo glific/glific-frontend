@@ -90,7 +90,6 @@ export const BillingForm = () => {
       component: Input,
       name: 'name',
       type: 'text',
-      placeholder: 'Your Organization Name',
       label: 'Your Organization Name',
       disabled: alreadySubscribed || pending || disable,
     },
@@ -98,7 +97,6 @@ export const BillingForm = () => {
       component: Input,
       name: 'email',
       type: 'text',
-      placeholder: 'Email ID',
       label: 'Email ID',
       disabled: alreadySubscribed || pending || disable,
     },
@@ -427,7 +425,6 @@ export const BillingForm = () => {
                       component={Input}
                       name="coupon"
                       type="text"
-                      placeholder="Coupon Code"
                       disabled={couponApplied}
                       endAdornment={
                         <InputAdornment position="end">
