@@ -154,7 +154,7 @@ export const InteractiveMessageList = () => {
   return (
     <List
       helpData={interactiveMessageInfo}
-      title={t('Interactive msg')}
+      title={t('Interactive messages')}
       listItem="interactiveTemplates"
       listItemName="interactive"
       pageLink="interactive-message"
@@ -164,7 +164,7 @@ export const InteractiveMessageList = () => {
       searchParameter={['term']}
       {...queries}
       {...columnAttributes}
-      button={{ show: true, label: t('Add New'), symbol: addIcon }}
+      button={{ show: true, label: t('Create'), symbol: addIcon }}
       additionalAction={additionalAction}
       collapseOpen={open}
       collapseRow={selectedId}

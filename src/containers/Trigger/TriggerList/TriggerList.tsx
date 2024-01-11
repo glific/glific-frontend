@@ -110,7 +110,7 @@ export const TriggerList = () => {
       listItem="triggers"
       listItemName="trigger"
       pageLink="trigger"
-      button={{ show: true, label: t('Create Trigger'), symbol: addIcon }}
+      button={{ show: true, label: t('Create'), symbol: addIcon }}
       listIcon={triggerIcon}
       dialogMessage={dialogMessage}
       {...queries}
