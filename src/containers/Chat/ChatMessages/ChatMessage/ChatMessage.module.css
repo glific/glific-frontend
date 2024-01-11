@@ -8,7 +8,6 @@
   clear: both;
   max-width: 404px;
   min-width: 85px;
-  margin: 0 48px;
 }
 
 .ChatMessage::after {
@@ -152,7 +151,7 @@
   display: flex;
   align-items: flex-end;
   justify-content: end;
-  margin: 4px 48px;
+  margin: 4px 32px;
   color: #191c1a;
   font-size: 10px;
   font-weight: 400;

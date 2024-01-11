@@ -13,6 +13,7 @@ import {
   VALID_URL_REGEX,
   LOCATION_REQUEST,
 } from 'common/constants';
+import MessageIcon from 'assets/images/icons/Dropdown.svg?react';
 import { WhatsAppToJsx, WhatsAppTemplateButton } from 'common/RichEditor';
 import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import { parseTextMethod } from 'common/utils';
@@ -102,7 +103,7 @@ export const ChatMessage = ({
   let placement: any = 'bottom-end';
   let additionalClass = styles.Mine;
   let mineColor: string | null = styles.MineColor;
-  // let iconPlacement = styles.ButtonLeft;
+  let iconPlacement = styles.ButtonLeft;
   let datePlacement: string | null = styles.DateLeft;
   let labelContainer: string | null = styles.LabelContainerSender;
   let labelMargin: string | null = styles.LabelMargin;
@@ -145,7 +146,7 @@ export const ChatMessage = ({
     mineColor = styles.OtherColor;
     iconLeft = true;
     placement = 'bottom-start';
-    // iconPlacement = styles.ButtonRight;
+    iconPlacement = styles.ButtonRight;
     datePlacement = null;
     labelContainer = null;
     labelMargin = null;
@@ -180,6 +181,7 @@ export const ChatMessage = ({
     if (testForValidUrl.test(mediaUrl)) {
       const link = document.createElement('a');
       link.href = mediaUrl;
+      console.log(mediaUrl);
       link.setAttribute('download', link.href);
       document.body.appendChild(link);
       link.click();
@@ -221,11 +223,11 @@ export const ChatMessage = ({
     );
   }
 
-  // const icon = (
-  //   <div ref={Ref} className={`${styles.Button} ${iconPlacement}`}>
-  //     <MessageIcon onClick={onClick} data-testid="messageOptions" />
-  //   </div>
-  // );
+  const icon = (
+    <div ref={Ref} className={`${styles.Button} ${iconPlacement}`}>
+      <MessageIcon onClick={onClick} data-testid="messageOptions" />
+    </div>
+  );
 
   const ErrorIcon = messageErrorStatus ? (
     <Tooltip
@@ -318,7 +320,7 @@ export const ChatMessage = ({
         ) : null}
 
         <div className={styles.Inline}>
-          {/* {iconLeft ? icon : null} */}
+          {iconLeft && icon}
           {ErrorIcon}
           <div className={chatMessageClasses.join(' ')}>
             <Tooltip title={tooltipTitle} placement={isSender ? 'right' : 'left'}>
@@ -386,7 +388,7 @@ export const ChatMessage = ({
               )}
             </Popper>
           </div>
-          {/* {iconLeft ? null : icon} */}
+          {iconLeft ? null : icon}
         </div>
         <div className={styles.SendBy}>{sendBy}</div>
 
