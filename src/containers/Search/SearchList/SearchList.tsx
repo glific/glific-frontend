@@ -51,7 +51,7 @@ export const SearchList = () => {
       listItem="savedSearches"
       listItemName="Search"
       pageLink="search"
-      button={{ show: true, label: t('Create Search'), symbol: addIcon }}
+      button={{ show: true, label: t('Create'), symbol: addIcon }}
       listIcon={searchIcon}
       dialogMessage={dialogMessage}
       {...queries}

@@ -275,8 +275,7 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
       component: Input,
       name: 'shortcode',
       type: 'text',
-      label: t('Search Title'),
-      placeholder: t('Search Title'),
+      label: t('Title'),
       inputProp: {
         onChange: (event: any) => {
           setShortcode(event.target.value);
@@ -288,7 +287,6 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
       name: 'label',
       type: 'text',
       label: t('Description'),
-      placeholder: t('Description'),
       rows: 3,
       textArea: true,
       inputProp: {
@@ -305,7 +303,6 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
       name: 'term',
       type: 'text',
       label: t('Enter name, label, keyword'),
-      placeholder: t('Enter name, label, keyword'),
       inputProp: {
         onChange: (event: any) => {
           setTerm(event.target.value);
@@ -316,7 +313,6 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
       component: AutoComplete,
       name: 'includeLabels',
       label: t('Includes labels'),
-      placeholder: t('Includes labels'),
       options: dataLabels.flowLabels,
       optionLabel: 'name',
       icon: <LabelIcon stroke="#073f24" />,
@@ -325,7 +321,6 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
     {
       component: AutoComplete,
       name: 'includeGroups',
-      placeholder: t('Includes collections'),
       label: t('Includes collections'),
       options: data.groups,
       optionLabel: 'label',
@@ -335,7 +330,6 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
     {
       component: AutoComplete,
       name: 'includeUsers',
-      placeholder: t('Includes staff'),
       label: t('Includes staff'),
       options: dataUser.users,
       optionLabel: 'name',
@@ -357,7 +351,7 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
             infoType: 'dialog',
             handleInfoClick: () => setInfoDialog(true),
             handleChange: (value: any) => setUseExpression(value),
-            label: <span className={styles.DateRangeLabel}> {t('Date range')}</span>,
+            label: t('Date range'),
           },
         ];
 
