@@ -9,6 +9,7 @@ import { Consulting } from '../Consulting';
 import { ExportConsulting } from './ExportConsulting/ExportConsulting';
 import { GET_CONSULTING_HOURS, GET_CONSULTING_HOURS_COUNT } from 'graphql/queries/Consulting';
 import styles from './ConsultingList.module.css';
+import { DATE_TIME_FORMAT_WITH_AMPM2, FULL_DATE_FORMAT_WITH_MONTH } from 'common/constants';
 
 const ConsultingList = () => {
   const { t } = useTranslation();
@@ -55,7 +56,7 @@ const ConsultingList = () => {
   );
 
   const getOtherColumn = (label: any, isDate: boolean = false) => {
-    const text = isDate ? dayjs(label).format('DD MMM YYYY hh:mm a') : label;
+    const text = isDate ? dayjs(label).format(FULL_DATE_FORMAT_WITH_MONTH) : label;
     return (
       <div>
         <p className={styles.StatusText}>{text}</p>

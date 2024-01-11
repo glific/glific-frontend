@@ -8,7 +8,15 @@ import utc from 'dayjs/plugin/utc';
 import { useTranslation } from 'react-i18next';
 
 import TriggerIcon from 'assets/images/icons/Trigger/Union.svg?react';
-import { dateList, dayList, FLOW_STATUS_PUBLISHED, hourList, setVariables } from 'common/constants';
+import {
+  dateList,
+  dayList,
+  FLOW_STATUS_PUBLISHED,
+  FULL_DATE_FORMAT2,
+  hourList,
+  setVariables,
+  FULL_TIME_FORMAT2,
+} from 'common/constants';
 import { FormLayout } from 'containers/Form/FormLayout';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
@@ -30,7 +38,7 @@ dayjs.extend(utc);
 
 const checkDateTimeValidation = (startAtValue: string, startDateValue: string) => {
   const isDateAhead = dayjs(startDateValue).isAfter(dayjs());
-  const isTimeAhead = startAtValue > dayjs().format('THH:mm:ss');
+  const isTimeAhead = startAtValue > dayjs().format(FULL_TIME_FORMAT2);
 
   if (!isDateAhead) {
     // if start date is current date then only check for time
@@ -49,9 +57,9 @@ const setPayload = (payload: any, roles: any) => {
     payloadCopy;
 
   const groups = groupIds.map((group: any) => parseInt(group.id));
-  const startAtTime = dayjs(startTime).format('THH:mm:ss');
+  const startAtTime = dayjs(startTime).format(FULL_TIME_FORMAT2);
   // covert the time to UTC
-  const startAt = dayjs(`${dayjs(startDate).format('YYYY-MM-DD')}${startAtTime}`).utc();
+  const startAt = dayjs(`${dayjs(startDate).format(FULL_DATE_FORMAT2)}${startAtTime}`).utc();
 
   const updatedPayload = {
     isActive,
@@ -60,9 +68,9 @@ const setPayload = (payload: any, roles: any) => {
     days: [],
     hours: [],
     groupIds: groups,
-    startDate: dayjs(startAt).utc().format('YYYY-MM-DD'),
-    endDate: dayjs(endDate).utc().format('YYYY-MM-DD'),
-    startTime: dayjs(startAt).utc().format('THH:mm:ss'),
+    startDate: dayjs(startAt).utc().format(FULL_DATE_FORMAT2),
+    endDate: dayjs(endDate).utc().format(FULL_DATE_FORMAT2),
+    startTime: dayjs(startAt).utc().format(FULL_TIME_FORMAT2),
     frequency: frequency.value,
     roles: payload.roles,
   };
@@ -405,7 +413,7 @@ export const Trigger = () => {
   }: any) => {
     setIsRepeating(isRepeatingValue);
     setIsActive(isCopyState ? true : isActiveValue);
-    setEndDate(dayjs());
+    setEndDate(dayjs(endDateValue));
 
     const { values, options, placeholder } = getFrequencyDetails(
       frequencyValue,

@@ -16,11 +16,12 @@ import { copyToClipboard } from 'common/utils';
 import { FILTER_NOTIFICATIONS, GET_NOTIFICATIONS_COUNT } from 'graphql/queries/Notifications';
 import MARK_NOTIFICATIONS_AS_READ from 'graphql/mutations/Notifications';
 import styles from './NotificationList.module.css';
+import { DATE_TIME_FORMAT } from 'common/constants';
 
 const getDot = (isRead: boolean) => <div>{!isRead ? <div className={styles.Dot} /> : null}</div>;
 
 const getTime = (time: string) => (
-  <div className={styles.TableText}>{dayjs(time).format('DD-MM-YYYY hh:mm')}</div>
+  <div className={styles.TableText}>{dayjs(time).format(DATE_TIME_FORMAT)}</div>
 );
 
 const getText = (text: string) => <div className={styles.TableText}>{text}</div>;

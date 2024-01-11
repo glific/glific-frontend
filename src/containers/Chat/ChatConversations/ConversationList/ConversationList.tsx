@@ -15,6 +15,7 @@ import {
   DEFAULT_MESSAGE_LIMIT,
   DEFAULT_CONTACT_LOADMORE_LIMIT,
   DEFAULT_MESSAGE_LOADMORE_LIMIT,
+  FULL_DATE_FORMAT2,
 } from 'common/constants';
 import { updateConversations } from 'services/ChatService';
 import { showMessages } from 'common/responsive';
@@ -128,8 +129,8 @@ export const ConversationList = ({
         filter.includeLabels = params.includeLabels.map((obj: any) => obj.id);
       if (params.dateFrom) {
         filter.dateRange = {
-          from: dayjs(params.dateFrom).format('YYYY-MM-DD'),
-          to: dayjs(params.dateTo).format('YYYY-MM-DD'),
+          from: dayjs(params.dateFrom).format(FULL_DATE_FORMAT2),
+          to: dayjs(params.dateTo).format(FULL_DATE_FORMAT2),
         };
       }
     }

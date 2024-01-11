@@ -18,6 +18,7 @@ import {
   DEFAULT_MESSAGE_LIMIT,
   DEFAULT_CONTACT_LIMIT,
   DEFAULT_MESSAGE_LOADMORE_LIMIT,
+  FULL_DATE_FORMAT2,
 } from '../../../common/constants';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 import {
@@ -510,14 +511,17 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
 
   const showDaySeparator = (currentDate: string, nextDate: string) => {
     // if it's last message and its date is greater than current date then show day separator
-    if (!nextDate && dayjs(currentDate).format('YYYY-MM-DD') < dayjs().format('YYYY-MM-DD')) {
+    if (
+      !nextDate &&
+      dayjs(currentDate).format(FULL_DATE_FORMAT2) < dayjs().format(FULL_DATE_FORMAT2)
+    ) {
       return true;
     }
 
     // if the day is changed then show day separator
     if (
       nextDate &&
-      dayjs(currentDate).format('YYYY-MM-DD') > dayjs(nextDate).format('YYYY-MM-DD')
+      dayjs(currentDate).format(FULL_DATE_FORMAT2) > dayjs(nextDate).format(FULL_DATE_FORMAT2)
     ) {
       return true;
     }

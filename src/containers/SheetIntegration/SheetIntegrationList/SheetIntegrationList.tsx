@@ -9,7 +9,7 @@ import { setNotification } from 'common/notification';
 import { useMutation } from '@apollo/client';
 import { List } from 'containers/List/List';
 import dayjs from 'dayjs';
-import { DATE_TIME_FORMAT } from 'common/constants';
+import { FULL_DATE_TIME_FORMAT } from 'common/constants';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import styles from './SheetIntegrationList.module.css';
 import Loading from 'components/UI/Layout/Loading/Loading';
@@ -37,7 +37,7 @@ const getName = (text: string, sheetDataCount: string, type: SheetTypes) => (
 );
 const getLastSyncedAt = (date: string, fallback: string = '') => (
   <div className={styles.LastSyncText}>
-    {date ? dayjs(date).format(DATE_TIME_FORMAT) : fallback}
+    {date ? dayjs(date).format(FULL_DATE_TIME_FORMAT) : fallback}
   </div>
 );
 

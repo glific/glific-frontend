@@ -7,7 +7,7 @@ import { useMutation, useQuery } from '@apollo/client';
 
 import { List } from 'containers/List/List';
 import { WhatsAppToJsx } from 'common/RichEditor';
-import { DATE_TIME_FORMAT, GUPSHUP_ENTERPRISE_SHORTCODE } from 'common/constants';
+import { FULL_DATE_TIME_FORMAT, GUPSHUP_ENTERPRISE_SHORTCODE } from 'common/constants';
 import {
   GET_TEMPLATES_COUNT,
   FILTER_TEMPLATES,
@@ -41,7 +41,7 @@ const getBody = (text: string) => <p className={styles.TableText}>{WhatsAppToJsx
 const getReason = (reason: string) => <p className={styles.TableText}>{reason}</p>;
 
 const getUpdatedAt = (date: string) => (
-  <div className={styles.LastModified}>{dayjs(date).format(DATE_TIME_FORMAT)}</div>
+  <div className={styles.LastModified}>{dayjs(date).format(FULL_DATE_TIME_FORMAT)}</div>
 );
 
 const getTranslations = (language: any, data: string) => {

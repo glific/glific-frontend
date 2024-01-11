@@ -18,7 +18,12 @@ import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Calendar } from 'components/UI/Form/Calendar/Calendar';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import Loading from 'components/UI/Layout/Loading/Loading';
-import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT, setVariables } from 'common/constants';
+import {
+  DEFAULT_CONTACT_LIMIT,
+  DEFAULT_MESSAGE_LIMIT,
+  FULL_DATE_FORMAT2,
+  setVariables,
+} from 'common/constants';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { getObject } from 'common/utils';
 import styles from './Search.module.css';
@@ -68,8 +73,8 @@ const getPayload = (payload: any) => {
   if (!useExpression && dateFrom && dateFrom !== 'Invalid date') {
     const dateRange = {
       dateRange: {
-        to: dayjs(dateTo).format('YYYY-MM-DD'),
-        from: dayjs(dateFrom).format('YYYY-MM-DD'),
+        to: dayjs(dateTo).format(FULL_DATE_FORMAT2),
+        from: dayjs(dateFrom).format(FULL_DATE_FORMAT2),
       },
     };
     args.filter = Object.assign(args.filter, dateRange);
@@ -236,8 +241,8 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
     if (props.searchParam.dateFrom && props.searchParam.dateFrom !== 'Invalid date') {
       const dateRange = {
         dateRange: {
-          to: dayjs(props.searchParam.dateTo).format('YYYY-MM-DD'),
-          from: dayjs(props.searchParam.dateFrom).format('YYYY-MM-DD'),
+          to: dayjs(props.searchParam.dateTo).format(FULL_DATE_FORMAT2),
+          from: dayjs(props.searchParam.dateFrom).format(FULL_DATE_FORMAT2),
         },
       };
       args.filter = Object.assign(args.filter, dateRange);

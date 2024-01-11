@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 import { getOrganizationServices } from 'services/AuthService';
 import { FormControl, FormControlLabel, Radio, RadioGroup } from '@mui/material';
 
-import { DATE_TIME_FORMAT } from 'common/constants';
+import { FULL_DATE_TIME_FORMAT } from 'common/constants';
 import { GET_CONTACT_DETAILS, GET_CONTACT_PROFILES } from 'graphql/queries/Contact';
 import Loading from 'components/UI/Layout/Loading/Loading';
 import { ContactDescription } from './ContactDescription/ContactDescription';
@@ -86,14 +86,14 @@ export const ContactProfile = () => {
   let optinMethod = '';
   if (contactData.optinMethod) {
     optinMethod = `via ${contactData.optinMethod} on ${dayjs(contactData.optinTime).format(
-      DATE_TIME_FORMAT
+      FULL_DATE_TIME_FORMAT
     )}`;
   }
 
   let optoutMethod = '';
   if (contactData.optoutMethod) {
     optoutMethod = `via ${contactData.optoutMethod} on ${dayjs(contactData.optoutTime).format(
-      DATE_TIME_FORMAT
+      FULL_DATE_TIME_FORMAT
     )}`;
   }
 
