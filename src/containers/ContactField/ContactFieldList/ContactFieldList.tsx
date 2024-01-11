@@ -199,7 +199,8 @@ const ContactFieldList = () => {
         listIcon={listIcon}
         button={{
           show: true,
-          label: t('Add contact field'),
+          label: t('Create Contact field'),
+          symbol: '+',
           action: () => {
             setOpenDialog(true);
           },
