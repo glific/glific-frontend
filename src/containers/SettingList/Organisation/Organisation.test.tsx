@@ -39,6 +39,7 @@ test('it renders component properly', async () => {
   // loading is show initially
   expect(getByText('Loading...')).toBeInTheDocument();
   await waitFor(() => {
+    expect(getByText('Back to settings')).toBeInTheDocument();
     expect(getByTestId('add-container')).toHaveTextContent('Organisation name');
   });
 });
@@ -63,7 +64,7 @@ test('it renders component in edit mode', async () => {
       </Router>
     </MockedProvider>
   );
-  // loading is show initiallyiokk
+  // loading is show initially 
   expect(getByText('Loading...')).toBeInTheDocument();
 
   await waitFor(() => {
