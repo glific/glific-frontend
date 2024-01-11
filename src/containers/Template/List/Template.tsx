@@ -61,7 +61,6 @@ export interface TemplateProps {
   pageLink: string;
   listIcon: any;
   filters: any;
-  buttonLabel: string;
   isHSM?: boolean;
   loading?: boolean;
   syncHSMButton?: any;
@@ -80,7 +79,6 @@ export const Template = ({
   pageLink,
   listIcon,
   filters: templateFilters,
-  buttonLabel,
   isHSM,
   loading = false,
   syncHSMButton,
@@ -340,7 +338,7 @@ export const Template = ({
 
   const addIcon = <AddIcon className={styles.AddIcon} />;
 
-  const button = { show: true, label: buttonLabel, symbol: addIcon };
+  const button = { show: true, label: t('Create'), symbol: addIcon };
   let secondaryButton = null;
 
   if (isHSM) {

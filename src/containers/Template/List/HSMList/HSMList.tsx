@@ -57,7 +57,6 @@ export const HSMList = () => {
       loading={syncTemplateLoad}
       syncHSMButton={syncHSMButton}
       isHSM
-      buttonLabel={t('Create')}
     />
   );
 };

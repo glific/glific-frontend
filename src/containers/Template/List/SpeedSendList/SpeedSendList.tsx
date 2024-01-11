@@ -16,7 +16,6 @@ export const SpeedSendList = () => {
       pageLink="speed-send"
       listIcon={speedSendIcon}
       filters={{ isHsm: false }}
-      buttonLabel={t('Create Speed Send')}
     />
   );
 };
