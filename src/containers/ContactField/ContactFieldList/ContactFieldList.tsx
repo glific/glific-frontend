@@ -8,6 +8,7 @@ import { InlineInput } from 'components/UI/Form/InlineInput/InlineInput';
 import { COUNT_CONTACT_FIELDS, GET_ALL_CONTACT_FIELDS } from 'graphql/queries/ContactFields';
 import { DELETE_CONTACT_FIELDS, UPDATE_CONTACT_FIELDS } from 'graphql/mutations/ContactFields';
 import ContactVariableIcon from 'assets/images/icons/ContactVariableDark.svg?react';
+import AddIcon from 'assets/images/add.svg?react';
 import EditIcon from 'assets/images/icons/GreenEdit.svg?react';
 import { ContactField } from '../ContactField';
 import styles from './ContactFieldList.module.css';
@@ -188,6 +189,8 @@ const ContactFieldList = () => {
   };
   const dialogTitle = t('Are you sure you want to delete this contact field record?');
 
+  const addIcon = <AddIcon className={styles.AddIcon} />;
+
   return (
     <div className={styles.Container}>
       {dialog}
@@ -199,8 +202,8 @@ const ContactFieldList = () => {
         listIcon={listIcon}
         button={{
           show: true,
-          label: t('Create Contact field'),
-          symbol: '+',
+          label: t('Create'),
+          symbol: addIcon,
           action: () => {
             setOpenDialog(true);
           },

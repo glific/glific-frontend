@@ -276,7 +276,7 @@ export const FlowList = () => {
         {...columnAttributes}
         searchParameter={['name_or_keyword_or_tags']}
         additionalAction={additionalAction}
-        button={{ show: true, label: t('Create Flow'), symbol: addIcon }}
+        button={{ show: true, label: t('Create'), symbol: addIcon }}
         secondaryButton={importButton}
         filters={filters}
         filterList={activeFilter}

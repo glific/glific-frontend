@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import SheetIcon from 'assets/images/icons/Sheets/Sheet.svg?react';
+import AddIcon from 'assets/images/add.svg?react';
 import UpdatesheetIcon from 'assets/images/icons/Sheets/Updatesheet.svg?react';
 import LinkIcon from 'assets/images/icons/Sheets/Link.svg?react';
 import { GET_SHEET_COUNT, GET_SHEETS } from 'graphql/queries/Sheet';
@@ -166,6 +167,8 @@ export const SheetIntegrationList = () => {
     columnStyles,
   };
 
+  const addIcon = <AddIcon className={styles.AddIcon} />;
+
   return (
     <>
       {dialog}
@@ -179,7 +182,7 @@ export const SheetIntegrationList = () => {
         {...queries}
         {...columnAttributes}
         additionalAction={additionalAction}
-        button={{ show: true, label: t('Create Sheet'), symbol: '+' }}
+        button={{ show: true, label: t('Create'), symbol: addIcon }}
       />
     </>
   );
