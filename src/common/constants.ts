@@ -2,10 +2,10 @@ import dayjs from 'dayjs';
 import * as Yup from 'yup';
 
 export const SIDE_DRAWER_WIDTH = 233;
-export const DATE_FORMAT = 'DD/MM/YY';
-export const FULL_DATE_FORMAT = 'DD/MM/YYYY';
-export const FULL_DATE_FORMAT2 = 'YYYY-MM-DD';
-export const FULL_DATE_FORMAT_WITH_MONTH = 'DD MMM YYYY';
+export const SHORT_DATE_FORMAT = 'DD/MM/YY';
+export const LONG_DATE_FORMAT = 'DD/MM/YYYY';
+export const ISO_DATE_FORMAT = 'YYYY-MM-DD';
+export const DATE_FORMAT_WITH_MONTH = 'DD MMM YYYY';
 export const TIME_FORMAT = 'HH:mm';
 export const SHORT_TIME_FORMAT = 'HH:mm';
 export const LONG_TIME_FORMAT = 'HH:mm:ss';
