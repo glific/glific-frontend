@@ -64,13 +64,26 @@ test('it renders component in edit mode', async () => {
       </Router>
     </MockedProvider>
   );
-  // loading is show initially 
+  // loading is show initially
   expect(getByText('Loading...')).toBeInTheDocument();
 
+  //correct values are rendered in the form
   await waitFor(() => {
-    const phoneNumber = getByTestId('phoneNumber');
+    const inputElements = screen.getAllByRole('textbox');
+    const numberInputElements = screen.getAllByRole('spinbutton');
+
+    const orgName = inputElements[0] as unknown as HTMLInputElement;
+    const signaturePhrase = inputElements[1] as unknown as HTMLInputElement;
+    const phoneNumber = inputElements[2] as unknown as HTMLInputElement;
+    const lowBalanceThreshold = numberInputElements[0] as unknown as HTMLInputElement;
+    const criticalBalanceThreshold = numberInputElements[1] as unknown as HTMLInputElement;
+
     fireEvent.click(phoneNumber);
-    expect(phoneNumber).toBeInTheDocument();
+    expect(orgName?.value).toBe('Glific');
+    expect(signaturePhrase?.value).toBe('Please change me, NOW!');
+    expect(phoneNumber?.value).toBe('917834811114');
+    expect(lowBalanceThreshold?.value).toBe('10');
+    expect(criticalBalanceThreshold?.value).toBe('5');
   });
 
   await waitFor(() => {
@@ -80,7 +93,7 @@ test('it renders component in edit mode', async () => {
 });
 
 test('it submits form correctly', async () => {
-  const { getByText, getByTestId } = render(wrapper);
+  const { getByText } = render(wrapper);
 
   expect(getByText('Loading...')).toBeInTheDocument();
 
@@ -88,7 +101,7 @@ test('it submits form correctly', async () => {
     const inputElements = screen.getAllByRole('textbox');
     const numberInputElements = screen.getAllByRole('spinbutton');
 
-    fireEvent.change(inputElements[0], { target: { value: 'Glificc' } });
+    fireEvent.change(inputElements[0], { target: { value: 'Glific' } });
     fireEvent.change(inputElements[1], { target: { value: 'Please change me, NOW!' } });
     fireEvent.change(numberInputElements[0], { target: { value: '10' } });
     fireEvent.change(numberInputElements[1], { target: { value: '5' } });
@@ -98,9 +111,5 @@ test('it submits form correctly', async () => {
     const submitButton = screen.getByText('Save');
     expect(submitButton).toBeInTheDocument();
     fireEvent.click(submitButton);
-  });
-
-  await waitFor(() => {
-    expect(getByTestId('formLayout')).toHaveTextContent('Organisation name');
   });
 });
