@@ -126,19 +126,18 @@ export const Organisation = () => {
     return error;
   };
 
-  const validateThresholdFieds = (value: any) => {
-    let error;
-    if (value < 0) {      
-      error = t('Threshold value should not be negative!');
-    }
-    return error;
-  };
-
   const validation = {
     name: Yup.string().required(t('Organisation name is required.')),
     activeLanguages: Yup.array().required(t('Supported Languages is required.')),
     defaultLanguage: Yup.object().nullable().required(t('Default Language is required.')),
     signaturePhrase: Yup.string().nullable().required(t('Webhook signature is required.')),
+    criticalBalanceThreshold: Yup.number()
+      .min(0, t('Threshold value should not be negative!'))
+      .required(t('Critical Balance Threshold is required.')),
+    lowBalanceThreshold: Yup.number()
+      .min(0, t('Threshold value should not be negative!'))
+      .required(t('Low Balance Threshold is required.')),
+    sendWarningMail: Yup.bool(),
   };
 
   const FormSchema = Yup.object().shape(validation);
@@ -212,14 +211,12 @@ export const Organisation = () => {
       name: 'lowBalanceThreshold',
       type: 'number',
       placeholder: t('Low balance threshold for warning emails'),
-      validate: validateThresholdFieds
     },
     {
       component: Input,
       name: 'criticalBalanceThreshold',
       type: 'number',
       placeholder: t('Critical balance threshold for warning emails'),
-      validate: validateThresholdFieds
     },
     {
       component: Checkbox,
