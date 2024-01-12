@@ -140,7 +140,7 @@ export const DialogBox = ({
       <IconButton aria-label="close" className={styles.CloseIcon} onClick={() => handleCancel()}>
         <CloseIcon />
       </IconButton>
-      <DialogContent className={contentStyle}>
+      <DialogContent className={contentStyle} data-testid="dialog-content">
         {contentText ? (
           <DialogContentText id="alert-dialog-description">{contentText}</DialogContentText>
         ) : null}

@@ -20,6 +20,7 @@ export const LastLogin = ({ drawerOpen }: LastLoginProps) => {
   return drawerOpen ? (
     <div
       className={styles.UserAccount}
+      data-testid="user-account"
       onClick={() =>
         navigate('/user-profile', { state: { subMenu: { active: true, value: '/user-profile' } } })
       }

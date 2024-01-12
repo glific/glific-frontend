@@ -180,6 +180,7 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
         {chatInterface}
       </div>
       <SimulatorIcon
+        data-testid="simulatorIcon"
         className={styles.SimulatorIcon}
         onClick={() => {
           setShowSimulator(!showSimulator);

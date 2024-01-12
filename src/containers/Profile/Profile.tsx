@@ -206,7 +206,7 @@ export const Profile = ({
       title={pageTitle}
       entityId={hasMultipleProfiles ? multiProfileAttributes?.selectedProfileId : currentContactId}
       restrictDelete={hideRemoveBtn}
-      noHeading
+      noHeading={profileType === 'Contact'}
     />
   );
 };

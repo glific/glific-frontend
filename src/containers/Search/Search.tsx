@@ -487,6 +487,7 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
     <>
       {dialog}
       <FormLayout
+        noHeading
         {...queries}
         states={states}
         title={type ? heading : undefined}
