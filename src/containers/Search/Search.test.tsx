@@ -82,7 +82,7 @@ test('it renders component with saveSearch params', async () => {
 
   await waitFor(() => {
     const formLayout = getByTestId('formLayout');
-    expect(formLayout).toHaveTextContent('Search');
+    expect(formLayout).toHaveTextContent('Save Search');
   });
 
   const [shortcode, label, news] = screen.getAllByRole('textbox');

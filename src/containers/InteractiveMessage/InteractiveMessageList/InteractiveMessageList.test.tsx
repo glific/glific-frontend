@@ -28,7 +28,7 @@ test('Interactive message list renders correctly', async () => {
   expect(screen.getByTestId('loading')).toBeInTheDocument();
 
   await waitFor(() => {
-    const title = screen.getByText('Interactive msg');
+    const title = screen.getByText('Interactive messages');
     const label = screen.getByText('Title');
     const messageBody = screen.getByText('Message');
     const type = screen.getByText('Type');
