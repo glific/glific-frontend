@@ -12,10 +12,10 @@ import {
   dateList,
   dayList,
   FLOW_STATUS_PUBLISHED,
-  FULL_DATE_FORMAT2,
+  ISO_DATE_FORMAT,
   hourList,
   setVariables,
-  FULL_TIME_FORMAT2,
+  EXTENDED_TIME_FORMAT,
 } from 'common/constants';
 import { FormLayout } from 'containers/Form/FormLayout';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
@@ -38,7 +38,7 @@ dayjs.extend(utc);
 
 const checkDateTimeValidation = (startAtValue: string, startDateValue: string) => {
   const isDateAhead = dayjs(startDateValue).isAfter(dayjs());
-  const isTimeAhead = startAtValue > dayjs().format(FULL_TIME_FORMAT2);
+  const isTimeAhead = startAtValue > dayjs().format(EXTENDED_TIME_FORMAT);
 
   if (!isDateAhead) {
     // if start date is current date then only check for time
@@ -57,9 +57,9 @@ const setPayload = (payload: any, roles: any) => {
     payloadCopy;
 
   const groups = groupIds.map((group: any) => parseInt(group.id));
-  const startAtTime = dayjs(startTime).format(FULL_TIME_FORMAT2);
+  const startAtTime = dayjs(startTime).format(EXTENDED_TIME_FORMAT);
   // covert the time to UTC
-  const startAt = dayjs(`${dayjs(startDate).format(FULL_DATE_FORMAT2)}${startAtTime}`).utc();
+  const startAt = dayjs(`${dayjs(startDate).format(ISO_DATE_FORMAT)}${startAtTime}`).utc();
 
   const updatedPayload = {
     isActive,
@@ -68,9 +68,9 @@ const setPayload = (payload: any, roles: any) => {
     days: [],
     hours: [],
     groupIds: groups,
-    startDate: dayjs(startAt).utc().format(FULL_DATE_FORMAT2),
-    endDate: dayjs(endDate).utc().format(FULL_DATE_FORMAT2),
-    startTime: dayjs(startAt).utc().format(FULL_TIME_FORMAT2),
+    startDate: dayjs(startAt).utc().format(ISO_DATE_FORMAT),
+    endDate: dayjs(endDate).utc().format(ISO_DATE_FORMAT),
+    startTime: dayjs(startAt).utc().format(EXTENDED_TIME_FORMAT),
     frequency: frequency.value,
     roles: payload.roles,
   };

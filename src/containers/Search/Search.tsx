@@ -21,7 +21,7 @@ import Loading from 'components/UI/Layout/Loading/Loading';
 import {
   DEFAULT_CONTACT_LIMIT,
   DEFAULT_MESSAGE_LIMIT,
-  FULL_DATE_FORMAT2,
+  ISO_DATE_FORMAT,
   setVariables,
 } from 'common/constants';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
@@ -73,8 +73,8 @@ const getPayload = (payload: any) => {
   if (!useExpression && dateFrom && dateFrom !== 'Invalid date') {
     const dateRange = {
       dateRange: {
-        to: dayjs(dateTo).format(FULL_DATE_FORMAT2),
-        from: dayjs(dateFrom).format(FULL_DATE_FORMAT2),
+        to: dayjs(dateTo).format(ISO_DATE_FORMAT),
+        from: dayjs(dateFrom).format(ISO_DATE_FORMAT),
       },
     };
     args.filter = Object.assign(args.filter, dateRange);
@@ -241,8 +241,8 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
     if (props.searchParam.dateFrom && props.searchParam.dateFrom !== 'Invalid date') {
       const dateRange = {
         dateRange: {
-          to: dayjs(props.searchParam.dateTo).format(FULL_DATE_FORMAT2),
-          from: dayjs(props.searchParam.dateFrom).format(FULL_DATE_FORMAT2),
+          to: dayjs(props.searchParam.dateTo).format(ISO_DATE_FORMAT),
+          from: dayjs(props.searchParam.dateFrom).format(ISO_DATE_FORMAT),
         },
       };
       args.filter = Object.assign(args.filter, dateRange);

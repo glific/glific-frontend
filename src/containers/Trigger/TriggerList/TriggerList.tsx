@@ -9,7 +9,7 @@ import ClockInactiveIcon from 'assets/images/icons/Trigger/Inactive.svg?react';
 import DuplicateIcon from 'assets/images/icons/Duplicate.svg?react';
 import { TRIGGER_LIST_QUERY, TRIGGER_QUERY_COUNT } from 'graphql/queries/Trigger';
 import { DELETE_TRIGGER } from 'graphql/mutations/Trigger';
-import { DATE_TIME_FORMAT_WITH_AMPM, FULL_DATE_FORMAT, dayList } from 'common/constants';
+import { EXTENDED_DATE_TIME_FORMAT_WITH_AMPM, LONG_DATE_FORMAT, dayList } from 'common/constants';
 import { List } from 'containers/List/List';
 import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import styles from './TriggerList.module.css';
@@ -35,7 +35,7 @@ const getName = ({ flow, startAt, frequency, days, isActive, nextTriggerAt }: an
     </Tooltip>
     <div>
       <p className={styles.LabelText}>
-        <span>{`${flow.name}_${dayjs(startAt).format(DATE_TIME_FORMAT_WITH_AMPM)}`}</span>
+        <span>{`${flow.name}_${dayjs(startAt).format(EXTENDED_DATE_TIME_FORMAT_WITH_AMPM)}`}</span>
       </p>
       <div className={styles.NextTrigger}>
         {isActive ? <>Next trigger {dayjs(nextTriggerAt).fromNow()}</> : 'Trigger in inactive'}
@@ -45,7 +45,7 @@ const getName = ({ flow, startAt, frequency, days, isActive, nextTriggerAt }: an
 );
 
 const getEndDate = (date: any) => (
-  <div className={styles.EndDateVal}>{dayjs(date).format(FULL_DATE_FORMAT)}</div>
+  <div className={styles.EndDateVal}>{dayjs(date).format(LONG_DATE_FORMAT)}</div>
 );
 
 const getCollections = (groups: any) => (

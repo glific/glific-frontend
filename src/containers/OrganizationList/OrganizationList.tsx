@@ -19,7 +19,7 @@ import { Extensions } from 'containers/Extensions/Extensions';
 import { OrganizationCustomer } from 'containers/Organization/OrganizationCustomer/OrganizationCustomer';
 import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
 import styles from './OrganizationList.module.css';
-import { FULL_DATE_FORMAT_WITH_MONTH } from 'common/constants';
+import { DATE_FORMAT_WITH_MONTH } from 'common/constants';
 
 export interface OrganizationListProps {
   openExtensionModal?: boolean;
@@ -56,7 +56,7 @@ export const OrganizationList = ({
         {label}
         <br />
         <span className={styles.SubLabelText}>
-          {dayjs(insertedAt).format(FULL_DATE_FORMAT_WITH_MONTH)}
+          {dayjs(insertedAt).format(DATE_FORMAT_WITH_MONTH)}
         </span>
       </p>
     </div>

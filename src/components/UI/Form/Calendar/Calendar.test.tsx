@@ -1,6 +1,7 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { backspace } from 'common/test-utils';
 import { Calendar } from './Calendar';
+import { MONTH_DATE_FORMAT } from 'common/constants';
 
 const setFieldValueMock = vi.fn();
 describe('<Calendar />', () => {
@@ -29,7 +30,7 @@ describe('<Calendar />', () => {
   it('test empty date event', async () => {
     render(wrapper);
     const input = screen.getByRole('textbox');
-    expect(input).toHaveValue('MM/DD/YYYY');
+    expect(input).toHaveValue(MONTH_DATE_FORMAT);
   });
 
   it('test date change event', async () => {

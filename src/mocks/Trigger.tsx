@@ -1,4 +1,3 @@
-import dayjs from 'dayjs';
 import { TRIGGER_LIST_QUERY, TRIGGER_QUERY_COUNT, GET_TRIGGER } from 'graphql/queries/Trigger';
 
 export const triggerListQuery = {
@@ -78,7 +77,7 @@ export const getTriggerQuery = (frequency: any) => ({
       trigger: {
         trigger: {
           days: [1, 2],
-          endDate: dayjs('2021-03-13'),
+          endDate: '2021-03-13',
           flow: {
             id: '1',
           },
@@ -91,7 +90,7 @@ export const getTriggerQuery = (frequency: any) => ({
           id: '1',
           isActive: true,
           isRepeating: true,
-          startAt: dayjs('2021-02-28T20:00:22Z'),
+          startAt: '2021-02-28T20:00:22Z',
         },
       },
     },

@@ -5,6 +5,7 @@ import utc from 'dayjs/plugin/utc';
 import { getIn } from 'formik';
 
 import styles from './DateTimePicker.module.css';
+import { DATE_TIME_FORMAT_WITH_AMPM_SHORT } from 'common/constants';
 dayjs.extend(utc);
 
 export interface DateTimePickerProps {
@@ -19,7 +20,7 @@ export interface DateTimePickerProps {
 }
 
 export const DateTimePicker = ({
-  format = 'DD/MM/YYYY hh:mm a',
+  format = DATE_TIME_FORMAT_WITH_AMPM_SHORT,
   field,
   form: { setFieldValue, errors, touched },
   placeholder,

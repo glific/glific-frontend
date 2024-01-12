@@ -11,11 +11,11 @@ import Menu from 'components/UI/Menu/Menu';
 import { Button } from 'components/UI/Form/Button/Button';
 import { FILTER_WEBHOOK_LOGS, GET_WEBHOOK_LOGS_COUNT } from 'graphql/queries/WebhookLogs';
 import { copyToClipboard, slicedString } from 'common/utils';
-import { FULL_DATE_TIME_FORMAT } from 'common/constants';
+import { STANDARD_DATE_TIME_FORMAT } from 'common/constants';
 import styles from './WebhookLogsList.module.css';
 
 const getTime = (time: string) => (
-  <div className={styles.TableText}>{dayjs(time).format(FULL_DATE_TIME_FORMAT)}</div>
+  <div className={styles.TableText}>{dayjs(time).format(STANDARD_DATE_TIME_FORMAT)}</div>
 );
 
 /* istanbul ignore next */
