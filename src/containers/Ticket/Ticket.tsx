@@ -13,7 +13,7 @@ import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
 import dayjs from 'dayjs';
 import { useQuery } from '@apollo/client';
 import { GET_USERS } from 'graphql/queries/User';
-import { DATE_TIME_FORMAT2, setVariables } from 'common/constants';
+import { EXTENDED_DATE_TIME_FORMAT, setVariables } from 'common/constants';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import Loading from 'components/UI/Layout/Loading/Loading';
 
@@ -32,11 +32,11 @@ const TicketDetails = ({ form }: any) => {
 
       <p className={styles.Content}>
         <span className={styles.Bold}>Opened: </span>
-        {dayjs(values.insertedAt).format(DATE_TIME_FORMAT2)}
+        {dayjs(values.insertedAt).format(EXTENDED_DATE_TIME_FORMAT)}
       </p>
       <p className={styles.Content}>
         <span className={styles.Bold}> Last updated: </span>
-        {dayjs(values.updatedAt).format(DATE_TIME_FORMAT2)}
+        {dayjs(values.updatedAt).format(EXTENDED_DATE_TIME_FORMAT)}
       </p>
     </div>
   );

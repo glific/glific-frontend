@@ -10,13 +10,13 @@ import { downloadFile } from 'common/utils';
 import styles from './ExportTicket.module.css';
 import { EXPORT_SUPPORT_TICKETS } from 'graphql/queries/Ticket';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
-import { FULL_DATE_FORMAT2 } from 'common/constants';
+import { ISO_DATE_FORMAT } from 'common/constants';
 
 export interface ExportTicketPropTypes {
   setShowExportDialog: any;
 }
 
-const formatDate = (value: any) => dayjs(value).format(FULL_DATE_FORMAT2);
+const formatDate = (value: any) => dayjs(value).format(ISO_DATE_FORMAT);
 
 export const ExportTicket = ({ setShowExportDialog }: ExportTicketPropTypes) => {
   const { t } = useTranslation();

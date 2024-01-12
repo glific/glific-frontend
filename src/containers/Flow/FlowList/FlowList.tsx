@@ -15,7 +15,7 @@ import { DELETE_FLOW, IMPORT_FLOW } from 'graphql/mutations/Flow';
 import { List } from 'containers/List/List';
 import { ImportButton } from 'components/UI/ImportButton/ImportButton';
 import Loading from 'components/UI/Layout/Loading/Loading';
-import { FULL_DATE_TIME_FORMAT } from 'common/constants';
+import { STANDARD_DATE_TIME_FORMAT } from 'common/constants';
 import { exportFlowMethod, organizationHasDynamicRole } from 'common/utils';
 import styles from './FlowList.module.css';
 import { GET_TAGS } from 'graphql/queries/Tags';
@@ -40,13 +40,13 @@ const getName = (text: string, keywordsList: any, roles: any) => {
 
 const getDate = (date: string, fallback: string = '') => (
   <div className={styles.LastPublished}>
-    {date ? dayjs(date).format(FULL_DATE_TIME_FORMAT) : fallback}
+    {date ? dayjs(date).format(STANDARD_DATE_TIME_FORMAT) : fallback}
   </div>
 );
 
 const getLastPublished = (date: string, fallback: string = '') =>
   date ? (
-    <div className={styles.LastPublished}>{dayjs(date).format(FULL_DATE_TIME_FORMAT)}</div>
+    <div className={styles.LastPublished}>{dayjs(date).format(STANDARD_DATE_TIME_FORMAT)}</div>
   ) : (
     <div className={styles.LastPublishedFallback}>{fallback}</div>
   );

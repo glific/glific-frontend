@@ -1,7 +1,7 @@
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { useLazyQuery, useQuery } from '@apollo/client';
 import { FILTER_ORGANIZATIONS } from 'graphql/queries/Organization';
-import { FULL_DATE_FORMAT2, setVariables } from 'common/constants';
+import { ISO_DATE_FORMAT, setVariables } from 'common/constants';
 import { EXPORT_CONSULTING_HOURS } from 'graphql/queries/Consulting';
 import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
@@ -19,7 +19,7 @@ export interface ExportConsultingPropTypes {
   setFilters: any;
 }
 
-const formatDate = (value: any) => dayjs(value).format(FULL_DATE_FORMAT2);
+const formatDate = (value: any) => dayjs(value).format(ISO_DATE_FORMAT);
 
 export const ExportConsulting = ({ setFilters }: ExportConsultingPropTypes) => {
   const { data: organizationList } = useQuery(FILTER_ORGANIZATIONS, {

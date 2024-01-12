@@ -22,7 +22,7 @@ import DefaultWhatsappImage from 'assets/images/whatsappDefault.jpg';
 import SimulatorIcon from 'assets/images/icons/Simulator.svg?react';
 import ResetIcon from 'assets/images/icons/Reset/Dark.svg?react';
 import {
-  TIME_FORMAT,
+  SHORT_TIME_FORMAT,
   SAMPLE_MEDIA_FOR_SIMULATOR,
   LIST,
   QUICK_REPLY,
@@ -104,7 +104,7 @@ const getStyleForDirection = (
 const TimeComponent = ({ direction, insertedAt }: any) => (
   <>
     <span className={direction === 'received' ? styles.TimeSent : styles.TimeReceived}>
-      {dayjs(insertedAt).format(TIME_FORMAT)}
+      {dayjs(insertedAt).format(SHORT_TIME_FORMAT)}
       {direction === 'send' && <DoneAllIcon sx={{ fontSize: 10, ml: '2px' }} />}
     </span>
   </>

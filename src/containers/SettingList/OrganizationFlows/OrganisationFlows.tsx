@@ -20,8 +20,8 @@ import Settingicon from 'assets/images/icons/Settings/Settings.svg?react';
 import {
   dayList,
   FLOW_STATUS_PUBLISHED,
-  FULL_DATE_FORMAT2,
-  FULL_TIME_FORMAT2,
+  ISO_DATE_FORMAT,
+  EXTENDED_TIME_FORMAT,
   setVariables,
 } from 'common/constants';
 import styles from './OrganisationFlows.module.css';
@@ -82,8 +82,8 @@ export const OrganisationFlows = () => {
   const getEnabledDays = (data: any) => data.filter((option: any) => option.enabled);
 
   const setOutOfOffice = (data: any) => {
-    setStartTime(dayjs(`${dayjs().format(FULL_DATE_FORMAT2)}T${data.startTime}`));
-    setEndTime(dayjs(`${dayjs().format(FULL_DATE_FORMAT2)}T${data.endTime}`));
+    setStartTime(dayjs(`${dayjs().format(ISO_DATE_FORMAT)}T${data.startTime}`));
+    setEndTime(dayjs(`${dayjs().format(ISO_DATE_FORMAT)}T${data.endTime}`));
     setEnabledDays(getEnabledDays(data.enabledDays));
   };
 
@@ -165,8 +165,8 @@ export const OrganisationFlows = () => {
 
   const handleAllDayCheck = (addDayCheck: boolean) => {
     if (!allDayCheck) {
-      setStartTime(dayjs(`${dayjs().format(FULL_DATE_FORMAT2)}T00:00:00`));
-      setEndTime(dayjs(`${dayjs().format(FULL_DATE_FORMAT2)}T23:59:00`));
+      setStartTime(dayjs(`${dayjs().format(ISO_DATE_FORMAT)}T00:00:00`));
+      setEndTime(dayjs(`${dayjs().format(ISO_DATE_FORMAT)}T23:59:00`));
     }
     setAllDayCheck(addDayCheck);
   };
@@ -364,9 +364,9 @@ export const OrganisationFlows = () => {
         defaultFlowId: payload.defaultFlowId ? payload.defaultFlowId.id : null,
         enabled: payload.hours,
         enabledDays: assignDays(payload.enabledDays),
-        endTime: dayjs(payload.endTime).format(FULL_TIME_FORMAT2),
+        endTime: dayjs(payload.endTime).format(EXTENDED_TIME_FORMAT),
         flowId: payload.flowId ? payload.flowId.id : null,
-        startTime: dayjs(payload.startTime).format(FULL_TIME_FORMAT2),
+        startTime: dayjs(payload.startTime).format(EXTENDED_TIME_FORMAT),
       },
       newcontactFlowId: newContactFlowId,
       optinFlowId,
