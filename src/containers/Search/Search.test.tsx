@@ -81,11 +81,11 @@ test('it renders component with saveSearch params', async () => {
   expect(getByText('Loading...')).toBeInTheDocument();
 
   await waitFor(() => {
-    const formLayout = getByTestId('formLayout');
+    const formLayout = getByTestId('add-container');
     expect(formLayout).toHaveTextContent('Save Search');
   });
 
-  const [shortcode, label, news] = screen.getAllByRole('textbox');
+  const [shortcode, label] = screen.getAllByRole('textbox');
 
   fireEvent.change(shortcode, { target: { value: 'test' } });
   fireEvent.change(label, { target: { value: 'test' } });
