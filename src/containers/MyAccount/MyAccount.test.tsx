@@ -80,9 +80,9 @@ describe('<MyAccount />', () => {
       const { getByRole } = within(dropdown);
       const inputDropdown = getByRole('combobox');
       fireEvent.mouseDown(inputDropdown);
-      const [english, hindi] = screen.getAllByRole('option');
-      hindi.click();
     });
+    const [english, hindi] = screen.getAllByRole('option');
+    await hindi.click();
   });
 
   test('generate OTP error response', async () => {
@@ -100,9 +100,10 @@ describe('<MyAccount />', () => {
 
     // close the alert
     await waitFor(() => {
-      const closeAlert = screen.getByTestId('crossIcon');
-      UserEvent.click(closeAlert);
+      expect(screen.getByTestId('crossIcon')).toBeInTheDocument();
     });
+    const closeAlert = screen.getByTestId('crossIcon');
+    await UserEvent.click(closeAlert);
   });
 
   test('generate OTP success flow with cancel', async () => {
@@ -118,12 +119,12 @@ describe('<MyAccount />', () => {
       UserEvent.click(generateOTPButton);
     });
 
-    // click on CANCEL button
-
     await waitFor(() => {
-      const cancelButton = screen.getByText('Cancel');
-      UserEvent.click(cancelButton);
+      // click on cancel button
+      expect(screen.getByText('Cancel')).toBeInTheDocument();
     });
+    const cancelButton = screen.getByText('Cancel');
+    UserEvent.click(cancelButton);
   });
 
   test('generate OTP error with incorrect OTP', async () => {
@@ -152,9 +153,10 @@ describe('<MyAccount />', () => {
 
     await waitFor(() => {
       // click on save button
-      const saveButton = screen.getByText('Save');
-      UserEvent.click(saveButton);
+      expect(screen.getByText('Save')).toBeInTheDocument();
     });
+    const saveButton = screen.getByText('Save');
+    await UserEvent.click(saveButton);
 
     // assert for incorrect OTP
     // await waitFor(() => {
@@ -188,8 +190,9 @@ describe('<MyAccount />', () => {
 
     await waitFor(() => {
       // click on save button
-      const saveButton = screen.getByText('Save');
-      UserEvent.click(saveButton);
+      expect(screen.getByText('Save')).toBeInTheDocument();
     });
+    const saveButton = screen.getByText('Save');
+    await UserEvent.click(saveButton);
   });
 });
