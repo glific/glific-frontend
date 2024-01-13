@@ -2,11 +2,6 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 import { vi } from 'vitest';
-import { loadErrorMessages, loadDevMessages } from '@apollo/client/dev';
-
-// Adds messages only in a dev environment
-loadDevMessages();
-loadErrorMessages();
 
 import {
   getFlowCountQuery,
@@ -142,7 +137,7 @@ describe('<FlowList />', () => {
     render(flowList);
 
     await waitFor(() => {
-      const moreButton = screen.getByTestId('MoreIcon');
+      screen.getByTestId('MoreIcon');
     });
     const moreButton = screen.getByTestId('MoreIcon');
     fireEvent.click(moreButton);

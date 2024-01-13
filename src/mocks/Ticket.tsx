@@ -49,6 +49,7 @@ export const ticketListQuery = {
             name: 'NGO support',
           },
           id: '1',
+          messageNumber: 23,
           insertedAt: '2021-06-16T09:00:00.000Z',
           remarks: 'This issue is resolved',
           status: 'open',
