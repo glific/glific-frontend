@@ -9,20 +9,21 @@ import styles from './HSMList.module.css';
 import { Template } from '../Template';
 
 export const HSMList = () => {
+  const { t } = useTranslation();
   const [syncTemplateLoad, setSyncTemplateLoad] = useState(false);
   const templateIcon = <TemplateIcon className={styles.TemplateIcon} />;
   const [syncHsmTemplates] = useMutation(SYNC_HSM_TEMPLATES, {
     fetchPolicy: 'network-only',
     onCompleted: (data) => {
       if (data.errors) {
-        setNotification('Sorry, failed to sync HSM updates', 'warning');
+        setNotification(t('Sorry, failed to sync HSM updates.'), 'warning');
       } else {
-        setNotification('HSMs updated successfully', 'success');
+        setNotification(t('HSMs updated successfully.'), 'success');
       }
       setSyncTemplateLoad(false);
     },
     onError: () => {
-      setNotification('Sorry, failed to sync HSM updates', 'warning');
+      setNotification(t('Sorry, failed to sync HSM updates.'), 'warning');
       setSyncTemplateLoad(false);
     },
   });

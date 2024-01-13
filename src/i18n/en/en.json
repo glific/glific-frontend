@@ -429,5 +429,7 @@
   "Topic is required": "Topic is required",
   "Webhook Logs": "Webhook Logs",
   "Translate": "Translate",
-  "back": "back"
+  "back": "back",
+  "Sorry, failed to sync HSM updates.": "Sorry, failed to sync HSM updates.",
+  "HSMs updated successfully.": "HSMs updated successfully."
 }
