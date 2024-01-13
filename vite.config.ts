@@ -1,7 +1,6 @@
 /// <reference types="vitest" />
 /// <reference types="vite-plugin-svgr/client" />
 import { defineConfig, ConfigEnv, UserConfigExport } from 'vite';
-import { configDefaults } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 // import eslint from 'vite-plugin-eslint';
 import viteTsconfigPaths from 'vite-tsconfig-paths';
