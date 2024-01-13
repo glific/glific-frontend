@@ -38,7 +38,7 @@ dayjs.extend(utc);
 
 const checkDateTimeValidation = (startAtValue: string, startDateValue: string) => {
   const isDateAhead = dayjs(startDateValue).isAfter(dayjs());
-  const isTimeAhead = startAtValue > dayjs().format(EXTENDED_TIME_FORMAT);
+  const isTimeAhead = dayjs(startAtValue).isAfter(dayjs());
 
   if (!isDateAhead) {
     // if start date is current date then only check for time
