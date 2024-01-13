@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import UserIcon from 'assets/images/icons/UserIcon.svg?react';
 import { getAuthSession, getUserSession } from 'services/AuthService';
-import { STANDARD_DATE_TIME_FORMAT, GUPSHUP_ENTERPRISE_SHORTCODE } from 'common/constants';
+import { STANDARD_DATE_TIME_FORMAT } from 'common/constants';
 
 import styles from './LastLogin.module.css';
 import { Divider, Typography } from '@mui/material';

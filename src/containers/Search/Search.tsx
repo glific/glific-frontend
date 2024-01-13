@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import { useQuery } from '@apollo/client';
 import dayjs from 'dayjs';
-import { Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import SearchIcon from 'assets/images/icons/Search/SelectedEdit.svg?react';

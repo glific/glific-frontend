@@ -1,4 +1,3 @@
-import { useQuery } from '@apollo/client';
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import { getOrganizationServices } from 'services/AuthService';

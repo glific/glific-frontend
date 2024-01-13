@@ -1,7 +1,6 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { backspace } from 'common/test-utils';
 import { Calendar } from './Calendar';
-import { MONTH_DATE_FORMAT } from 'common/constants';
 import dayjs from 'dayjs';
 
 const setFieldValueMock = vi.fn();

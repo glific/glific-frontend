@@ -35,7 +35,6 @@ import {
 } from 'graphql/mutations/Trigger';
 import styles from './Trigger.module.css';
 import { triggerInfo } from 'common/HelpData';
-import timezone from 'dayjs/plugin/timezone';
 dayjs.extend(utc);
 
 const checkDateTimeValidation = (startAtValue: string, startDateValue: string) => {
