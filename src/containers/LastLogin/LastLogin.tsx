@@ -1,8 +1,8 @@
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import UserIcon from 'assets/images/icons/UserIcon.svg?react';
 import { getAuthSession, getUserSession } from 'services/AuthService';
-import { DATE_TIME_FORMAT } from 'common/constants';
+import { STANDARD_DATE_TIME_FORMAT } from 'common/constants';
 
 import styles from './LastLogin.module.css';
 import { Divider, Typography } from '@mui/material';
@@ -20,6 +20,7 @@ export const LastLogin = ({ drawerOpen }: LastLoginProps) => {
   return drawerOpen ? (
     <div
       className={styles.UserAccount}
+      data-testid="user-account"
       onClick={() =>
         navigate('/user-profile', { state: { subMenu: { active: true, value: '/user-profile' } } })
       }
@@ -30,7 +31,7 @@ export const LastLogin = ({ drawerOpen }: LastLoginProps) => {
         <div>
           <Typography variant="body2"> {userName}</Typography>
           <div className={styles.LastLogin}>
-            {t('Last login')}: {moment(lastLogin).format(DATE_TIME_FORMAT)}
+            {t('Last login')}: {dayjs(lastLogin).format(STANDARD_DATE_TIME_FORMAT)}
           </div>
         </div>
       </div>

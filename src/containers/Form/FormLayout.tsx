@@ -26,7 +26,7 @@ import HelpIcon from 'components/UI/HelpIcon/HelpIcon';
 
 export const Heading = ({ title = '', formTitle, helpData, showHeaderHelp = true }: any) => {
   return (
-    <div className={styles.Header}>
+    <div className={styles.Header} data-testid="heading">
       <div>
         <div className={styles.Title}>
           <div className={styles.TitleText}> {formTitle}</div>

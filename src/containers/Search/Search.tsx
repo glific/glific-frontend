@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import { useQuery } from '@apollo/client';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 
 import SearchIcon from 'assets/images/icons/Search/SelectedEdit.svg?react';
@@ -17,7 +17,12 @@ import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Calendar } from 'components/UI/Form/Calendar/Calendar';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import Loading from 'components/UI/Layout/Loading/Loading';
-import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT, setVariables } from 'common/constants';
+import {
+  DEFAULT_CONTACT_LIMIT,
+  DEFAULT_MESSAGE_LIMIT,
+  ISO_DATE_FORMAT,
+  setVariables,
+} from 'common/constants';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { getObject } from 'common/utils';
 import styles from './Search.module.css';
@@ -68,8 +73,8 @@ const getPayload = (payload: any) => {
   if (!useExpression && dateFrom && dateFrom !== 'Invalid date') {
     const dateRange = {
       dateRange: {
-        to: moment(dateTo).format('yyyy-MM-DD'),
-        from: moment(dateFrom).format('yyyy-MM-DD'),
+        to: dayjs(dateTo).format(ISO_DATE_FORMAT),
+        from: dayjs(dateFrom).format(ISO_DATE_FORMAT),
       },
     };
     args.filter = Object.assign(args.filter, dateRange);
@@ -173,8 +178,8 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
           break;
         case 'dateRange':
           if (Object.prototype.hasOwnProperty.call(filters.filter, 'dateRange')) {
-            setdateFrom(new Date(filters.filter.dateRange.from));
-            setdateTo(new Date(filters.filter.dateRange.to));
+            setdateFrom(dayjs(filters.filter.dateRange.from));
+            setdateTo(dayjs(filters.filter.dateRange.to));
             setdateFromExpression(filters.filter.dateRange.from);
             setdateToExpression(filters.filter.dateRange.to);
           }
@@ -236,8 +241,8 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
     if (props.searchParam.dateFrom && props.searchParam.dateFrom !== 'Invalid date') {
       const dateRange = {
         dateRange: {
-          to: moment(props.searchParam.dateTo).format('yyyy-MM-DD'),
-          from: moment(props.searchParam.dateFrom).format('yyyy-MM-DD'),
+          to: dayjs(props.searchParam.dateTo).format(ISO_DATE_FORMAT),
+          from: dayjs(props.searchParam.dateFrom).format(ISO_DATE_FORMAT),
         },
       };
       args.filter = Object.assign(args.filter, dateRange);
@@ -481,6 +486,7 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
     <>
       {dialog}
       <FormLayout
+        noHeading
         {...queries}
         states={states}
         title={type ? heading : undefined}

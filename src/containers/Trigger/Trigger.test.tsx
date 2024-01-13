@@ -14,6 +14,9 @@ import {
   updateTriggerWeeklyQuery,
 } from 'mocks/Trigger';
 import { Trigger } from './Trigger';
+import dayjs from 'dayjs';
+import utc from 'dayjs';
+dayjs.extend(utc);
 
 vi.mock('react-router-dom', async () => {
   return {

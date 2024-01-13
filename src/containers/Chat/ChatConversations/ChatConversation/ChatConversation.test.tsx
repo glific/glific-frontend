@@ -1,10 +1,10 @@
 import { fireEvent, render } from '@testing-library/react';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router-dom';
 
 import { MARK_AS_READ } from 'graphql/mutations/Chat';
-import { DATE_FORMAT } from 'common/constants';
+import { SHORT_DATE_FORMAT } from 'common/constants';
 import ChatConversation from './ChatConversation';
 
 const mockCallback = vi.fn();
@@ -64,7 +64,7 @@ test('it should render the message content correctly', () => {
 
 test('it should render the message date correctly', () => {
   const { getByTestId } = render(wrapperContainer(defaultProps));
-  expect(getByTestId('date')).toHaveTextContent(moment(insertedAt).format(DATE_FORMAT));
+  expect(getByTestId('date')).toHaveTextContent(dayjs(insertedAt).format(SHORT_DATE_FORMAT));
 });
 
 test('it should call the callback function on click action', () => {

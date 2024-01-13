@@ -1,10 +1,10 @@
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import { getOrganizationServices } from 'services/AuthService';
 import { COUNT_CONTACT_HISTORY, GET_CONTACT_HISTORY } from 'graphql/queries/Contact';
 import setLogs from 'config/logs';
-import { DATE_TIME_FORMAT } from 'common/constants';
 import { List } from 'containers/List/List';
+import { STANDARD_DATE_TIME_FORMAT } from 'common/constants';
 import styles from './ContactHistory.module.css';
 
 export interface ContactHistoryProps {
@@ -90,7 +90,7 @@ export const ContactHistory = ({ contactId, profileId }: ContactHistoryProps) =>
   };
 
   const getInsertedAt = (insertedAt: string) => (
-    <div className={styles.LineItemDate}>{moment(insertedAt).format(DATE_TIME_FORMAT)}</div>
+    <div className={styles.LineItemDate}>{dayjs(insertedAt).format(STANDARD_DATE_TIME_FORMAT)}</div>
   );
 
   const queries = {

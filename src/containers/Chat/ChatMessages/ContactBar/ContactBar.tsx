@@ -148,9 +148,14 @@ export const ContactBar = ({
 
   const [blockContact] = useMutation(UPDATE_CONTACT, {
     onCompleted: () => {
+      setShowBlockDialog(false);
       setNotification(t('Contact blocked successfully.'));
     },
     refetchQueries: [{ query: SEARCH_QUERY, variables: SEARCH_QUERY_VARIABLES }],
+    onError: () => {
+      setShowBlockDialog(false);
+      setNotification(t('Sorry! An error occurred!'), 'warning');
+    },
   });
 
   const [addFlow] = useMutation(ADD_FLOW_TO_CONTACT, {

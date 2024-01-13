@@ -40,8 +40,8 @@ export const Profile = ({
 }: ProfileProps) => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
-  const [status, setStatus] = useState('');
-  const [bspStatus, setBspStatus] = useState('');
+  const [status, setStatus] = useState(null);
+  const [bspStatus, setBspStatus] = useState(null);
   const [languageId, setLanguageId] = useState('');
   const [hideRemoveBtn, setHideRemoveBtn] = useState(false);
   const { t } = useTranslation();
@@ -206,7 +206,7 @@ export const Profile = ({
       title={pageTitle}
       entityId={hasMultipleProfiles ? multiProfileAttributes?.selectedProfileId : currentContactId}
       restrictDelete={hideRemoveBtn}
-      noHeading
+      noHeading={profileType === 'Contact'}
     />
   );
 };

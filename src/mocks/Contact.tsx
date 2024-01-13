@@ -419,6 +419,7 @@ export const getContactProfiles = {
 
 export const LOGGED_IN_USER_MOCK = [
   getCurrentUserQuery,
+  getCurrentUserQuery,
   getContactProfiles,
   getContactDetailsQuery(),
   getOrganizationLanguagesQuery,

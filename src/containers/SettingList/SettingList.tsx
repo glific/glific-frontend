@@ -14,7 +14,7 @@ export const SettingHeading = ({
   desc = 'Manage organisation name, supported languages',
 }: any) => {
   return (
-    <div className={styles.SettingHeader}>
+    <div className={styles.SettingHeader} data-testid="setting-header">
       <div>
         <div className={styles.SettingTitle}>{formTitle}</div>
         <div className={styles.SettingTextHeader}>{desc}</div>
@@ -61,22 +61,24 @@ export const SettingList = () => {
   }
 
   const drawer = (
-    <div className={styles.Drawer}>
-      {cardList.map((data: any, index: number) => (
-        <div
-          key={index}
-          onClick={() => navigate(`/settings/${data.shortcode}`)}
-          className={`${styles.Tab} ${
-            location.pathname == `/settings/${data.shortcode}` && styles.ActiveTab
-          }
+    <div className={styles.Drawer} data-testid="setting-drawer">
+      {cardList
+        .sort((first: any, second: any) => (first.name > second.name ? 1 : -1))
+        .map((data: any, index: number) => (
+          <div
+            key={index}
+            onClick={() => navigate(`/settings/${data.shortcode}`)}
+            className={`${styles.Tab} ${
+              location.pathname == `/settings/${data.shortcode}` && styles.ActiveTab
+            }
           ${
             location.pathname == '/settings' && data.shortcode == 'organization' && styles.ActiveTab
           }
           `}
-        >
-          {data.name}
-        </div>
-      ))}
+          >
+            {data.name}
+          </div>
+        ))}
     </div>
   );
 

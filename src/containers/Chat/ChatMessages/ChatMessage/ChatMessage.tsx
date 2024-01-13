@@ -1,18 +1,19 @@
 import { useEffect, useRef, useState } from 'react';
 import { Button, Popper, Fade, Paper } from '@mui/material';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 
 import LabelIcon from 'assets/images/icons/Label/Filled.svg?react';
 import WarningIcon from 'assets/images/icons/Warning.svg?react';
 import {
-  DATE_FORMAT,
-  TIME_FORMAT,
+  SHORT_DATE_FORMAT,
+  SHORT_TIME_FORMAT,
   LIST,
   QUICK_REPLY,
   VALID_URL_REGEX,
   LOCATION_REQUEST,
 } from 'common/constants';
+import MessageIcon from 'assets/images/icons/Dropdown.svg?react';
 import { WhatsAppToJsx, WhatsAppTemplateButton } from 'common/RichEditor';
 import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import { parseTextMethod } from 'common/utils';
@@ -102,14 +103,14 @@ export const ChatMessage = ({
   let placement: any = 'bottom-end';
   let additionalClass = styles.Mine;
   let mineColor: string | null = styles.MineColor;
-  // let iconPlacement = styles.ButtonLeft;
+  let iconPlacement = styles.ButtonLeft;
   let datePlacement: string | null = styles.DateLeft;
   let labelContainer: string | null = styles.LabelContainerSender;
   let labelMargin: string | null = styles.LabelMargin;
   let messageDetails = styles.MessageDetails;
   const messageError = errors ? parseTextMethod(errors) : {};
   let messageErrorStatus: any = false;
-  let tooltipTitle: any = moment(insertedAt).format(DATE_FORMAT);
+  let tooltipTitle: any = dayjs(insertedAt).format(SHORT_DATE_FORMAT);
 
   // Check if the message has an error after sending the message.
   if (Object.prototype.hasOwnProperty.call(messageError, 'payload')) {
@@ -145,7 +146,7 @@ export const ChatMessage = ({
     mineColor = styles.OtherColor;
     iconLeft = true;
     placement = 'bottom-start';
-    // iconPlacement = styles.ButtonRight;
+    iconPlacement = styles.ButtonRight;
     datePlacement = null;
     labelContainer = null;
     labelMargin = null;
@@ -203,7 +204,8 @@ export const ChatMessage = ({
   }
 
   let messageFooter;
-  messageFooter = moment(insertedAt).format(TIME_FORMAT);
+
+  messageFooter = dayjs(insertedAt).format(SHORT_TIME_FORMAT);
 
   const dateAndSendBy = messageFooter && (
     <div className={`${styles.Date} ${datePlacement}`} data-testid="date">
@@ -216,16 +218,16 @@ export const ChatMessage = ({
   if (daySeparator) {
     daySeparatorContent = (
       <div className={styles.DaySeparator} data-testid="daySeparator">
-        <p className={styles.DaySeparatorContent}>{moment(insertedAt).format(DATE_FORMAT)}</p>
+        <p className={styles.DaySeparatorContent}>{dayjs(insertedAt).format(SHORT_DATE_FORMAT)}</p>
       </div>
     );
   }
 
-  // const icon = (
-  //   <div ref={Ref} className={`${styles.Button} ${iconPlacement}`}>
-  //     <MessageIcon onClick={onClick} data-testid="messageOptions" />
-  //   </div>
-  // );
+  const icon = (
+    <div ref={Ref} className={`${styles.Button} ${iconPlacement}`}>
+      <MessageIcon onClick={onClick} data-testid="messageOptions" />
+    </div>
+  );
 
   const ErrorIcon = messageErrorStatus ? (
     <Tooltip
@@ -290,7 +292,10 @@ export const ChatMessage = ({
         id={`search${messageNumber}`}
       >
         {contextMessage ? (
-          <Tooltip title={moment(contextMessage.insertedAt).format(DATE_FORMAT)} placement="right">
+          <Tooltip
+            title={dayjs(contextMessage.insertedAt).format(SHORT_DATE_FORMAT)}
+            placement="right"
+          >
             <div
               className={styles.ReplyMessage}
               onClick={() => jumpToMessage(contextMessage.messageNumber)}
@@ -318,7 +323,7 @@ export const ChatMessage = ({
         ) : null}
 
         <div className={styles.Inline}>
-          {/* {iconLeft ? icon : null} */}
+          {iconLeft && icon}
           {ErrorIcon}
           <div className={chatMessageClasses.join(' ')}>
             <Tooltip title={tooltipTitle} placement={isSender ? 'right' : 'left'}>
@@ -386,7 +391,7 @@ export const ChatMessage = ({
               )}
             </Popper>
           </div>
-          {/* {iconLeft ? null : icon} */}
+          {iconLeft ? null : icon}
         </div>
         <div className={styles.SendBy}>{sendBy}</div>
 

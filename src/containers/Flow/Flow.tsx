@@ -36,7 +36,7 @@ export const Flow = () => {
   const [isPinnedDisable, setIsPinnedDisable] = useState(false);
   const [keywords, setKeywords] = useState('');
   const [description, setDescription] = useState('');
-  const [tagId, setTagId] = useState({ id: '', label: '' });
+  const [tagId, setTagId] = useState(null);
   const [isActive, setIsActive] = useState(true);
   const [isPinned, setIsPinned] = useState(false);
   const [roles, setRoles] = useState<Array<any>>([]);

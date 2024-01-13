@@ -19,7 +19,7 @@ import Track from 'services/TrackService';
 import { exportFlowMethod } from 'common/utils';
 import styles from './FlowEditor.module.css';
 import { checkElementInRegistry, loadfiles, setConfig } from './FlowEditor.helper';
-import { FlowTranslation } from 'containers/Flow/FlowTranslation';
+import { BackdropLoader, FlowTranslation } from 'containers/Flow/FlowTranslation';
 
 declare function showFlowEditor(node: any, config: any): void;
 
@@ -82,7 +82,7 @@ export const FlowEditor = () => {
     },
   });
 
-  const [exportFlowMutation] = useLazyQuery(EXPORT_FLOW, {
+  const [exportFlowMutation, { loading: exportFlowloading }] = useLazyQuery(EXPORT_FLOW, {
     fetchPolicy: 'network-only',
     onCompleted: async ({ exportFlow }) => {
       const { exportData } = exportFlow;
@@ -331,6 +331,7 @@ export const FlowEditor = () => {
 
   return (
     <>
+      {exportFlowloading && <BackdropLoader />}
       {dialog}
       <div className={styles.Header}>
         <div className={styles.Title}>
@@ -367,7 +368,6 @@ export const FlowEditor = () => {
           >
             <MenuItem
               onClick={() => {
-                // Todo: add some kind of loading
                 exportFlowMutation({
                   variables: {
                     id: flowId,
