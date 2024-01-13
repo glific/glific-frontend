@@ -602,7 +602,7 @@ export const FormLayout = ({
               </Button>
             ) : null}
             <Button
-              variant="contained"
+              variant="outlined"
               color="secondary"
               onClick={cancelHandler}
               data-testid="cancelActionButton"
