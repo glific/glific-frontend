@@ -587,10 +587,12 @@ export const List = ({
                     horizontal: 'right',
                   }}
                 >
-                  <MenuItem className={styles.MenuItem}> {editButton}</MenuItem>
-                  <Divider className={styles.Divider} />
-                  <MenuItem className={styles.MenuItem}> {deleteButton(id, labelValue)}</MenuItem>
-                  {actionListMap(item, actionsInsideMore, true)}
+                  <div>
+                    <MenuItem className={styles.MenuItem}> {editButton}</MenuItem>
+                    <Divider className={styles.Divider} />
+                    <MenuItem className={styles.MenuItem}> {deleteButton(id, labelValue)}</MenuItem>
+                    {actionListMap(item, actionsInsideMore, true)}
+                  </div>
                 </Menu>
               )}
             </div>

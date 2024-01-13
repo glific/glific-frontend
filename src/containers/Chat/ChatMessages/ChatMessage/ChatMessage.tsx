@@ -181,7 +181,6 @@ export const ChatMessage = ({
     if (testForValidUrl.test(mediaUrl)) {
       const link = document.createElement('a');
       link.href = mediaUrl;
-      console.log(mediaUrl);
       link.setAttribute('download', link.href);
       document.body.appendChild(link);
       link.click();

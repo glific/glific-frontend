@@ -99,8 +99,8 @@ export const ExportConsulting = ({ setFilters }: ExportConsultingPropTypes) => {
           <div className={styles.FormContainer}>
             <Form className={styles.Form}>
               {formFields.map((field) => (
-                <div className={styles.Field}>
-                  <Field {...field} key={field.name} />
+                <div className={styles.Field} key={field.name}>
+                  <Field {...field} />
                 </div>
               ))}
 

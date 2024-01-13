@@ -2,6 +2,11 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 import { vi } from 'vitest';
+import { loadErrorMessages, loadDevMessages } from '@apollo/client/dev';
+
+// Adds messages only in a dev environment
+loadDevMessages();
+loadErrorMessages();
 
 import {
   getFlowCountQuery,
@@ -135,7 +140,10 @@ describe('<FlowList />', () => {
   test('should export flow to json file', async () => {
     global.URL.createObjectURL = vi.fn();
     render(flowList);
-    await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 0)));
+
+    await waitFor(() => {
+      const moreButton = screen.getByTestId('MoreIcon');
+    });
     const moreButton = screen.getByTestId('MoreIcon');
     fireEvent.click(moreButton);
 

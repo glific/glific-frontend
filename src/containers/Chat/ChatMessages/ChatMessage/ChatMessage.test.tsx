@@ -14,6 +14,13 @@ vi.mock('react-tiny-link', () => {
   };
 });
 
+// mock react player
+vi.mock('react-player', () => {
+  return {
+    default: () => <video></video>,
+  };
+});
+
 HTMLAnchorElement.prototype.click = vi.fn();
 
 const insertedAt = '2020-06-19T18:44:02Z';

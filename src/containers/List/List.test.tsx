@@ -115,7 +115,6 @@ describe('<List /> actions', () => {
     fireEvent.click(moreButton);
     await waitFor(() => {
       const button = queryByTestId('DeleteIcon') as HTMLButtonElement;
-      console.log(button);
       fireEvent.click(button);
     });
     await waitFor(() => {

@@ -1,5 +1,5 @@
-import { render } from '@testing-library/react';
-import { MockedProvider } from '@apollo/client/testing';
+import { getByText, render, screen, waitFor } from '@testing-library/react';
+import { MockedProvider, wait } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router';
 import { vi } from 'vitest';
 
@@ -35,9 +35,11 @@ const wrapper = (
 
 describe('<CollectionContact />', () => {
   test('should render CollectionContact', async () => {
-    const { getByTestId } = render(wrapper);
-
+    const { getByTestId, getByText } = render(wrapper);
     // loading is show initially
     expect(getByTestId('loading')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(getByText('Collection')).toBeInTheDocument();
+    });
   });
 });

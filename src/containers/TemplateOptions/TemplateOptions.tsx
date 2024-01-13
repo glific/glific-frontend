@@ -92,7 +92,7 @@ export const TemplateOptions = ({
 
     if (templateType === CALL_TO_ACTION) {
       template = (
-        <Fragment key={index.toString()}>
+        <Fragment>
           <div className={styles.CallToActionWrapper}>
             <div>
               <div className={styles.RadioStyles}>
@@ -286,9 +286,9 @@ export const TemplateOptions = ({
             name="templateButtons"
             render={(arrayHelpers: any) => (
               <div className={styles.QuickReplyContainer}>
-                {values.templateButtons.map((row: any, index: any) =>
-                  getButtons(row, index, arrayHelpers)
-                )}
+                {values.templateButtons.map((row: any, index: any) => (
+                  <div key={index}> {getButtons(row, index, arrayHelpers)}</div>
+                ))}
               </div>
             )}
           />
