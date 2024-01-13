@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
-import 'date-fns';
 import { getIn } from 'formik';
 import styles from './Calendar.module.css';
+import { MONTH_DATE_FORMAT } from 'common/constants';
 
 export interface CalendarProps {
   variant?: any;
@@ -17,7 +17,7 @@ export interface CalendarProps {
 }
 
 export const Calendar = ({
-  format = 'MM/dd/yyyy',
+  format = MONTH_DATE_FORMAT,
   field,
   disabled = false,
   form: { setFieldValue, errors, touched },
@@ -41,7 +41,7 @@ export const Calendar = ({
   };
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDateFns}>
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
       <div className={styles.Calendar} data-testid="date-picker-inline">
         <DatePicker
           label={placeholder}

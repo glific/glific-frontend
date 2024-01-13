@@ -1,12 +1,12 @@
 import { useQuery } from '@apollo/client';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import { getOrganizationServices } from 'services/AuthService';
 import { Button } from 'components/UI/Form/Button/Button';
 import Loading from 'components/UI/Layout/Loading/Loading';
 import { COUNT_CONTACT_HISTORY, GET_CONTACT_HISTORY } from 'graphql/queries/Contact';
 import setLogs from 'config/logs';
-import { DATE_TIME_FORMAT } from 'common/constants';
+import { STANDARD_DATE_TIME_FORMAT } from 'common/constants';
 import styles from './ContactHistory.module.css';
 
 export interface ContactHistoryProps {
@@ -139,7 +139,7 @@ export const ContactHistory = ({ contactId, profileId }: ContactHistoryProps) =>
     return (
       <div className={styles.DetailBlock} key={key}>
         <div className={styles.LineItem}>{label}</div>
-        <div className={styles.LineItemDate}>{moment(insertedAt).format(DATE_TIME_FORMAT)}</div>
+        <div className={styles.LineItemDate}>{dayjs(insertedAt).format(STANDARD_DATE_TIME_FORMAT)}</div>
       </div>
     );
   });
