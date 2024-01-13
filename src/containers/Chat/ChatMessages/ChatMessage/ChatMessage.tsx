@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { Button, Popper, Fade, Paper } from '@mui/material';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 
 import LabelIcon from 'assets/images/icons/Label/Filled.svg?react';
 import WarningIcon from 'assets/images/icons/Warning.svg?react';
 import {
-  DATE_FORMAT,
-  TIME_FORMAT,
+  SHORT_DATE_FORMAT,
+  SHORT_TIME_FORMAT,
   LIST,
   QUICK_REPLY,
   VALID_URL_REGEX,
@@ -110,7 +110,7 @@ export const ChatMessage = ({
   let messageDetails = styles.MessageDetails;
   const messageError = errors ? parseTextMethod(errors) : {};
   let messageErrorStatus: any = false;
-  let tooltipTitle: any = moment(insertedAt).format(DATE_FORMAT);
+  let tooltipTitle: any = dayjs(insertedAt).format(SHORT_DATE_FORMAT);
 
   // Check if the message has an error after sending the message.
   if (Object.prototype.hasOwnProperty.call(messageError, 'payload')) {
@@ -204,7 +204,8 @@ export const ChatMessage = ({
   }
 
   let messageFooter;
-  messageFooter = moment(insertedAt).format(TIME_FORMAT);
+
+  messageFooter = dayjs(insertedAt).format(SHORT_TIME_FORMAT);
 
   const dateAndSendBy = messageFooter && (
     <div className={`${styles.Date} ${datePlacement}`} data-testid="date">
@@ -217,7 +218,7 @@ export const ChatMessage = ({
   if (daySeparator) {
     daySeparatorContent = (
       <div className={styles.DaySeparator} data-testid="daySeparator">
-        <p className={styles.DaySeparatorContent}>{moment(insertedAt).format(DATE_FORMAT)}</p>
+        <p className={styles.DaySeparatorContent}>{dayjs(insertedAt).format(SHORT_DATE_FORMAT)}</p>
       </div>
     );
   }
@@ -291,7 +292,10 @@ export const ChatMessage = ({
         id={`search${messageNumber}`}
       >
         {contextMessage ? (
-          <Tooltip title={moment(contextMessage.insertedAt).format(DATE_FORMAT)} placement="right">
+          <Tooltip
+            title={dayjs(contextMessage.insertedAt).format(SHORT_DATE_FORMAT)}
+            placement="right"
+          >
             <div
               className={styles.ReplyMessage}
               onClick={() => jumpToMessage(contextMessage.messageNumber)}

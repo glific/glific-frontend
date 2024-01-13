@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
-import moment from 'moment';
 import { useParams, useNavigate, useLocation, Route, Routes, Navigate } from 'react-router-dom';
+import dayjs from 'dayjs';
 import { getOrganizationServices } from 'services/AuthService';
 import { Box, FormControl, FormControlLabel, Radio, RadioGroup } from '@mui/material';
 
-import { DATE_TIME_FORMAT } from 'common/constants';
+import { STANDARD_DATE_TIME_FORMAT } from 'common/constants';
 import { GET_CONTACT_DETAILS, GET_CONTACT_PROFILES } from 'graphql/queries/Contact';
 import Loading from 'components/UI/Layout/Loading/Loading';
 import { ContactDescription } from './ContactDescription/ContactDescription';
@@ -104,15 +104,15 @@ export const ContactProfile = () => {
 
   let optinMethod = '';
   if (contactData.optinMethod) {
-    optinMethod = `via ${contactData.optinMethod} on ${moment(contactData.optinTime).format(
-      DATE_TIME_FORMAT
+    optinMethod = `via ${contactData.optinMethod} on ${dayjs(contactData.optinTime).format(
+      STANDARD_DATE_TIME_FORMAT
     )}`;
   }
 
   let optoutMethod = '';
   if (contactData.optoutMethod) {
-    optoutMethod = `via ${contactData.optoutMethod} on ${moment(contactData.optoutTime).format(
-      DATE_TIME_FORMAT
+    optoutMethod = `via ${contactData.optoutMethod} on ${dayjs(contactData.optoutTime).format(
+      STANDARD_DATE_TIME_FORMAT
     )}`;
   }
 

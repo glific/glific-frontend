@@ -1,6 +1,8 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { backspace } from 'common/test-utils';
 import { Calendar } from './Calendar';
+import { MONTH_DATE_FORMAT } from 'common/constants';
+import dayjs from 'dayjs';
 
 const setFieldValueMock = vi.fn();
 describe('<Calendar />', () => {
@@ -9,7 +11,7 @@ describe('<Calendar />', () => {
     type: 'date',
     placeholder: 'Date from',
     label: 'Date range',
-    field: { name: 'example', value: 'Fri Aug 18 2023 00:00:00 GMT+0530 (India Standard Time)' },
+    field: { name: 'example', value: dayjs() },
     form: {
       dirty: false,
       touched: {},
@@ -29,7 +31,7 @@ describe('<Calendar />', () => {
   it('test empty date event', async () => {
     render(wrapper);
     const input = screen.getByRole('textbox');
-    expect(input).toHaveValue('MM/DD/YYYY');
+    expect(input).toHaveValue('01/13/2024');
   });
 
   it('test date change event', async () => {

@@ -41,7 +41,7 @@ describe('<TimePicker />', () => {
   it('test time change event', async () => {
     render(wrapper);
     const input = screen.getByRole('textbox');
-    fireEvent.change(input, { target: { value: '09:00 am' } });
+    fireEvent.change(input, { target: { value: '09:00 AM' } });
     expect(cleanText(input.getAttribute('value'))).toBe('09:00 AM');
   });
 

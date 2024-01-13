@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dialog, DialogContent, FormControlLabel, Radio, RadioGroup } from '@mui/material';
 import { SupportAgent } from '@mui/icons-material';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 import EditIcon from 'assets/images/icons/Edit.svg?react';
 import ExportIcon from 'assets/images/icons/Flow/Export.svg?react';
@@ -17,13 +17,14 @@ import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
 import { getUserSession } from 'services/AuthService';
 import styles from './TicketList.module.css';
 import { BulkAction } from './BulkAction/BulkAction';
+import { SHORT_DATE_TIME_FORMAT } from 'common/constants';
 
 const getId = (id: any) => <div className={styles.TableText}>{id}</div>;
 const getBody = (body: any) => <div className={styles.TableText}>{body}</div>;
 const getTopic = (topic: any) => <div className={styles.TableText}>{topic}</div>;
 
 const getInsertedAt = (insertedAt: string) => (
-  <div className={styles.TableText}>{moment(insertedAt).format('DD-MM-YYYY hh:mm')}</div>
+  <div className={styles.TableText}>{dayjs(insertedAt).format(SHORT_DATE_TIME_FORMAT)}</div>
 );
 
 const getUser = (user: any) => <div className={styles.TableText}>{user?.name}</div>;
