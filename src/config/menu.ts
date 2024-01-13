@@ -137,7 +137,7 @@ const menus = (): Menu[] => [
     path: '/collection',
     icon: 'manage',
     type: 'sideDrawer',
-    roles: ['Manager', 'Admin', 'Dynamic'],
+    roles: ['Staff', 'Manager', 'Admin', 'Dynamic'],
     subMenu: [
       {
         title: 'Collections',
