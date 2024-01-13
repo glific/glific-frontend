@@ -9,7 +9,6 @@ import styles from './HSMList.module.css';
 import { Template } from '../Template';
 
 export const HSMList = () => {
-  const { t } = useTranslation();
   const [syncTemplateLoad, setSyncTemplateLoad] = useState(false);
   const templateIcon = <TemplateIcon className={styles.TemplateIcon} />;
   const [syncHsmTemplates] = useMutation(SYNC_HSM_TEMPLATES, {

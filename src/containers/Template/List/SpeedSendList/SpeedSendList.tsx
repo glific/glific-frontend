@@ -5,7 +5,6 @@ import Template from '../Template';
 import styles from './SpeedSendList.module.css';
 
 export const SpeedSendList = () => {
-  const { t } = useTranslation();
   const speedSendIcon = <SpeedSendIcon className={styles.SpeedSendIcon} />;
 
   return (
