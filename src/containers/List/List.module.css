@@ -273,3 +273,9 @@
   margin-top: 0px !important;
   margin-bottom: 0px !important;
 }
+
+.AddIcon {
+  margin-right: 5px;
+  height: 12px;
+  width: 12px;
+}

@@ -4,7 +4,6 @@ import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 
-import AddIcon from 'assets/images/add.svg?react';
 import { FormControl, MenuItem, Select } from '@mui/material';
 
 import FlowIcon from 'assets/images/icons/Flow/Dark.svg?react';
@@ -259,8 +258,6 @@ export const FlowList = () => {
     ...(selectedtag?.id && { tagIds: [parseInt(selectedtag?.id)] }),
   };
 
-  const addIcon = <AddIcon className={styles.AddIcon} />;
-
   return (
     <>
       {dialog}
@@ -276,7 +273,7 @@ export const FlowList = () => {
         {...columnAttributes}
         searchParameter={['name_or_keyword_or_tags']}
         additionalAction={additionalAction}
-        button={{ show: true, label: t('Create'), symbol: addIcon }}
+        button={{ show: true, label: t('Create') }}
         secondaryButton={importButton}
         filters={filters}
         filterList={activeFilter}

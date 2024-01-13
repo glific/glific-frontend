@@ -22,6 +22,7 @@ import MoreOptions from 'assets/images/icons/MoreOptions.svg?react';
 import DeleteIcon from 'assets/images/icons/Delete/Red.svg?react';
 import EditIcon from 'assets/images/icons/Edit.svg?react';
 import BackIcon from 'assets/images/icons/Back.svg?react';
+import AddIcon from 'assets/images/add.svg?react';
 import { GET_CURRENT_USER } from 'graphql/queries/User';
 import { getUserRole, getUserRolePermissions } from 'context/role';
 import { setNotification, setErrorMessage } from 'common/notification';
@@ -733,6 +734,11 @@ export const List = ({
 
   let buttonDisplay;
   if (button.show) {
+    const addIcon = <AddIcon className={styles.AddIcon} />;
+    if (!button?.symbol) {
+      button.symbol = addIcon;
+    }
+
     let buttonContent;
     if (button.action) {
       buttonContent = (

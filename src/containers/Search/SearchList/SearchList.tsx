@@ -1,5 +1,4 @@
 import { useTranslation } from 'react-i18next';
-import AddIcon from 'assets/images/add.svg?react';
 import SearchIcon from 'assets/images/icons/Search/Dark.svg?react';
 import { List } from 'containers/List/List';
 import { SEARCH_LIST_QUERY, SEARCH_QUERY_COUNT } from 'graphql/queries/Search';
@@ -42,8 +41,6 @@ export const SearchList = () => {
     columnStyles,
   };
 
-  const addIcon = <AddIcon className={styles.AddIcon} />;
-
   return (
     <List
       helpData={searchInfo}
@@ -51,7 +48,7 @@ export const SearchList = () => {
       listItem="savedSearches"
       listItemName="Search"
       pageLink="search"
-      button={{ show: true, label: t('Create'), symbol: addIcon }}
+      button={{ show: true, label: t('Create') }}
       listIcon={searchIcon}
       dialogMessage={dialogMessage}
       {...queries}
