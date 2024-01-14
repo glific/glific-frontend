@@ -10,7 +10,7 @@ import {
 } from 'graphql/queries/Contact';
 import { addFlowToContactQuery } from 'mocks/Flow';
 import { getOrganizationLanguagesQuery, getOrganizationQuery } from 'mocks/Organization';
-import { UPDATE_CONTACT } from 'graphql/mutations/Contact';
+import { UPDATE_CONTACT, MOVE_CONTACTS } from 'graphql/mutations/Contact';
 import { UPDATE_CONTACT_COLLECTIONS } from 'graphql/mutations/Collection';
 import { CLEAR_MESSAGES } from 'graphql/mutations/Chat';
 import { setVariables } from 'common/constants';
@@ -190,6 +190,24 @@ export const updateContactStatusQuery = {
     },
   },
 };
+
+export const moveContacts = {
+  request: {
+    query: MOVE_CONTACTS,
+    variables: {
+      type: "DATA",
+      data: "name,phone,collection\n  John Doe,919876543210,\"Optin collection,Optout Collection\"\n  Virat Kohli,919876543220,Cricket"
+    }
+  },
+  result: {
+    data: {
+      moveContacts: {
+        errors: null,
+        csvRows: "Test Row"
+      }
+    }
+  }
+}
 
 export const countCollectionContactsQuery = {
   request: {
