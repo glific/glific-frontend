@@ -18,7 +18,6 @@ import { getUserRolePermissions, getUserRole } from 'context/role';
 import { setNotification } from 'common/notification';
 import { setVariables } from 'common/constants';
 import { CircularProgress, Modal } from '@mui/material';
-import AddIcon from 'assets/images/add.svg?react';
 import styles from './CollectionList.module.css';
 import { exportCsvFile } from 'common/utils';
 import { useNavigate } from 'react-router-dom';
@@ -221,8 +220,6 @@ export const CollectionList = () => {
   // check if the user has access to manage collections
   const userRolePermissions = getUserRolePermissions();
 
-  const addIcon = <AddIcon className={styles.AddIcon} />;
-
   return (
     <>
       {exportData && (
@@ -244,7 +241,6 @@ export const CollectionList = () => {
         button={{
           show: userRolePermissions.manageCollections,
           label: t('Create'),
-          symbol: addIcon,
         }}
         pageLink="collection"
         listIcon={collectionIcon}
