@@ -24,12 +24,12 @@ import { getUserRole } from 'context/role';
 import styles from './FormLayout.module.css';
 import HelpIcon from 'components/UI/HelpIcon/HelpIcon';
 
-export const Heading = ({ title = '', formTitle, helpData, showHeaderHelp = true }: any) => {
+export const Heading = ({ formTitle, helpData, showHeaderHelp = true }: any) => {
   return (
     <div className={styles.Header} data-testid="heading">
       <div>
         <div className={styles.Title}>
-          <div className={styles.TitleText}> {formTitle}</div>
+          <div className={styles.TitleText}>{formTitle}</div>
           {helpData ? <HelpIcon helpData={helpData} /> : ''}
         </div>
         <div className={styles.TextHeader}>
@@ -617,7 +617,7 @@ export const FormLayout = ({
                 className={styles.Button}
                 data-testid="previewButton"
               >
-                Preview
+                {t('Preview')}
               </Button>
             )}
             {deleteButton}
@@ -661,7 +661,7 @@ export const FormLayout = ({
     formTitle = `Add a new ${listItemName}`; // case when adding a new item
   }
 
-  let heading = <Heading icon={icon} formTitle={formTitle} title={listItemName} />;
+  let heading = <Heading icon={icon} formTitle={formTitle} />;
 
   const backLink = backLinkButton ? (
     <div className={styles.BackLink}>
