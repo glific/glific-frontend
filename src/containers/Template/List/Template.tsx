@@ -33,7 +33,6 @@ import styles from './Template.module.css';
 import CopyAllOutlined from 'assets/images/icons/Flow/Copy.svg?react';
 import { GET_TAGS } from 'graphql/queries/Tags';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
-import AddIcon from 'assets/images/add.svg?react';
 import { speedSendInfo, templateInfo } from 'common/HelpData';
 
 const getLabel = (label: string) => <div className={styles.LabelText}>{label}</div>;
@@ -61,7 +60,6 @@ export interface TemplateProps {
   pageLink: string;
   listIcon: any;
   filters: any;
-  buttonLabel: string;
   isHSM?: boolean;
   loading?: boolean;
   syncHSMButton?: any;
@@ -80,7 +78,6 @@ export const Template = ({
   pageLink,
   listIcon,
   filters: templateFilters,
-  buttonLabel,
   isHSM,
   loading = false,
   syncHSMButton,
@@ -338,9 +335,7 @@ export const Template = ({
     return <Loading message="Please wait while we process all the templates" />;
   }
 
-  const addIcon = <AddIcon className={styles.AddIcon} />;
-
-  const button = { show: true, label: buttonLabel, symbol: addIcon };
+  const button = { show: true, label: t('Create') };
   let secondaryButton = null;
 
   if (isHSM) {

@@ -592,10 +592,7 @@ const Template = ({
       options: mediaTypes,
       optionLabel: 'label',
       multiple: false,
-      textFieldProps: {
-        variant: 'outlined',
-        label: t('Attachment Type'),
-      },
+      label: t('Attachment Type'),
       disabled: isEditing,
       helperText: warning,
       onChange: (event: any) => {
@@ -611,7 +608,6 @@ const Template = ({
       name: 'attachmentURL',
       type: 'text',
       label: t('Attachment URL'),
-      placeholder: t('Attachment URL'),
       validate: () => isUrlValid,
       disabled: isEditing,
       helperText: t(
@@ -668,7 +664,7 @@ const Template = ({
     {
       component: Input,
       name: 'label',
-      placeholder: `${t('Title')}*`,
+      label: t('Title'),
       disabled: isEditing,
       helperText: defaultAttribute.isHsm
         ? t('Define what use case does this template serve eg. OTP, optin, activity preference')
@@ -681,8 +677,8 @@ const Template = ({
     {
       component: EmojiInput,
       name: 'body',
-      label: `${t('Message')}*`,
-      placeholder: `${t('Type your message')}`,
+      label: t('Message'),
+      placeholder: t('Type your message'),
       rows: 5,
       convertToWhatsApp: true,
       textArea: true,

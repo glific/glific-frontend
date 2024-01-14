@@ -44,7 +44,6 @@ export const Role = () => {
       component: Input,
       name: 'label',
       type: 'text',
-      placeholder: t('Label'),
       label: t('Label'),
     },
     {
@@ -53,7 +52,6 @@ export const Role = () => {
       type: 'text',
       textArea: true,
       rows: 3,
-      placeholder: t('Description'),
       label: t('Description'),
     },
   ];

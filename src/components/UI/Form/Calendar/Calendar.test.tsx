@@ -30,7 +30,8 @@ describe('<Calendar />', () => {
   it('test empty date event', async () => {
     render(wrapper);
     const input = screen.getByRole('textbox');
-    expect(input).toHaveValue('01/13/2024');
+    const now = dayjs(new Date()).format('MM/DD/YYYY');
+    expect(input).toHaveValue(now);
   });
 
   it('test date change event', async () => {

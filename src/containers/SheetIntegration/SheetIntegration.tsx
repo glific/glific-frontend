@@ -66,8 +66,7 @@ export const SheetIntegration = () => {
       component: Input,
       name: 'url',
       type: 'text',
-      label: t('Sheet URL'),
-      placeholder: t('Sheet URL'),
+      label: t('URL'),
       helperText: (
         <a href={SAMPLE_SHEET_LINK} target="_blank" rel="noreferrer" className={styles.HelperText}>
           View Sample
@@ -78,8 +77,7 @@ export const SheetIntegration = () => {
       component: Input,
       name: 'label',
       type: 'text',
-      label: t('Sheet name'),
-      placeholder: t('Sheet name'),
+      label: t('Name'),
     },
     {
       component: AutoComplete,
@@ -87,7 +85,8 @@ export const SheetIntegration = () => {
       options: typeOptions,
       optionLabel: 'label',
       multiple: false,
-      label: t('Sheet type'),
+      label: t('Allowed operations'),
+      helperText: t('What operations are allowed to be performed in the sheet?'),
     },
     {
       component: Checkbox,

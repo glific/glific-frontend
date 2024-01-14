@@ -107,7 +107,7 @@ const getFrequencyDetails = (
   const frequencyDetails = {
     values: [],
     options: dayList,
-    placeholder: 'Select days',
+    label: 'Select days',
   };
   switch (frequencyValue) {
     case 'weekly':
@@ -116,12 +116,12 @@ const getFrequencyDetails = (
     case 'monthly':
       frequencyDetails.values = dateList.filter((day: any) => daysValue.includes(day.id));
       frequencyDetails.options = dateList;
-      frequencyDetails.placeholder = 'Select dates';
+      frequencyDetails.label = 'Select dates';
       break;
     case 'hourly':
       frequencyDetails.values = hourList.filter((day: any) => hoursValue.includes(day.id));
       frequencyDetails.options = hourList;
-      frequencyDetails.placeholder = 'Select hours';
+      frequencyDetails.label = 'Select hours';
       break;
     default:
   }
@@ -152,7 +152,7 @@ export const Trigger = () => {
   const [groupIds, setGroupIds] = useState<any>(null);
   const [minDate, setMinDate] = useState<any>(dayjs());
   const [triggerFlowWarning, setTriggerFlowWarning] = useState<any>();
-  const [frequencyPlaceholder, setFrequencyPlaceholder] = useState('Select days');
+  const [frequencyLabel, setFrequencyLabel] = useState('Select days');
   const [frequencyOptions, setFrequencyOptions] = useState(dayList);
   const params = useParams();
   const location = useLocation();
@@ -280,15 +280,15 @@ export const Trigger = () => {
 
     switch (value) {
       case 'weekly':
-        setFrequencyPlaceholder(t('Select days'));
+        setFrequencyLabel(t('Select days'));
         setFrequencyOptions(dayList);
         break;
       case 'monthly':
-        setFrequencyPlaceholder(t('Select dates'));
+        setFrequencyLabel(t('Select dates'));
         setFrequencyOptions(dateList);
         break;
       case 'hourly':
-        setFrequencyPlaceholder(t('Select hours'));
+        setFrequencyLabel(t('Select hours'));
         setFrequencyOptions(hourList);
         break;
       default:
@@ -316,11 +316,6 @@ export const Trigger = () => {
       disabled: isEditing,
       multiple: false,
       label: t('Select flow'),
-      placeholder: t('Select flow'),
-      textFieldProps: {
-        variant: 'outlined',
-        label: t('Select flow'),
-      },
       onChange: handleFlowChange,
       helperText: loading ? (
         <>
@@ -360,7 +355,6 @@ export const Trigger = () => {
     {
       component: AutoComplete,
       name: 'frequency',
-      placeholder: t('Repeat'),
       label: t('Repeat'),
       options: triggerFrequencyOptions,
       optionLabel: 'label',
@@ -372,8 +366,7 @@ export const Trigger = () => {
     {
       component: AutoComplete,
       name: 'frequencyValues',
-      label: frequencyPlaceholder,
-      placeholder: frequencyPlaceholder,
+      label: frequencyLabel,
       options: frequencyOptions,
       disabled: isEditing || daysDisabled,
       optionLabel: 'label',
@@ -386,7 +379,6 @@ export const Trigger = () => {
     {
       component: AutoComplete,
       name: 'groupIds',
-      placeholder: t('Select collection'),
       label: t('Select collection'),
       options: collections.groups,
       disabled: isEditing,
@@ -411,14 +403,10 @@ export const Trigger = () => {
     setIsActive(isCopyState ? true : isActiveValue);
     setEndDate(dayjs(endDateValue));
 
-    const { values, options, placeholder } = getFrequencyDetails(
-      frequencyValue,
-      daysValue,
-      hoursValue
-    );
+    const { values, options, label } = getFrequencyDetails(frequencyValue, daysValue, hoursValue);
     setFrequencyValues(values);
     setFrequencyOptions(options);
-    setFrequencyPlaceholder(placeholder);
+    setFrequencyLabel(label);
     setStartDate(dayjs(startAtValue));
     // If a user wants to update the trigger
     if (dayjs().isAfter(startAtValue, 'days')) {

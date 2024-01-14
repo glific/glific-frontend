@@ -222,7 +222,6 @@ export const OrganisationFlows = () => {
       optionLabel: 'name',
       multiple: false,
       label: t('Select flow'),
-      placeholder: t('Select flow'),
       disabled: isDisabled,
       helperText: t(
         'The selected flow will trigger when end-users aren’t in any flow, their message doesn’t match any keyword, and the time of their message is as defined below.'
@@ -274,7 +273,6 @@ export const OrganisationFlows = () => {
         optionLabel: 'name',
         multiple: false,
         label: t('Select flow'),
-        placeholder: t('Select flow'),
         disabled: isDisabled,
         questionText: t('Would you like to trigger a flow for all the other days & times?'),
       },
@@ -314,7 +312,6 @@ export const OrganisationFlows = () => {
       multiple: false,
       disabled: !optinFlowEnabled,
       label: t('Select flow'),
-      placeholder: t('Select flow'),
     },
   ];
 

@@ -103,7 +103,6 @@ export const InteractiveOptions = ({
               List header*
             </Typography>
             <TextField
-              placeholder="List header"
               className={styles.TextField}
               onChange={(e: any) => {
                 setFieldValue('globalButton', e.target.value);
