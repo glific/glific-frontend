@@ -735,7 +735,7 @@ export const List = ({
   let buttonDisplay;
   if (button.show) {
     const addIcon = <AddIcon className={styles.AddIcon} />;
-    if (!button?.symbol) {
+    if (!button.symbol) {
       button.symbol = addIcon;
     }
 
