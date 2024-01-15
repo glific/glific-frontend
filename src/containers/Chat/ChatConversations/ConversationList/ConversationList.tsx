@@ -256,7 +256,6 @@ export const ConversationList = ({
     if (conversation.contact) {
       contact = conversation.contact;
     }
-
     let selectedRecord = false;
     if (selectedContactId === contact.id) {
       selectedRecord = true;
