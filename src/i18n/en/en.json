@@ -441,5 +441,6 @@
   "Request JSON": "Request JSON",
   "Response JSON": "Response JSON",
   "Webhook Logs": "Webhook Logs",
-  "Translate": "Translate"
+  "Translate": "Translate",
+  "An error occured while translating flows.": "An error occured while translating flows."
 }
