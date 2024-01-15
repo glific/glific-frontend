@@ -42,7 +42,6 @@ export const Tag = () => {
       component: Input,
       name: 'label',
       type: 'text',
-      placeholder: t('Name'),
       label: t('Name'),
     },
   ];

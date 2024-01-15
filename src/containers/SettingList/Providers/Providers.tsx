@@ -128,7 +128,6 @@ export const Providers = () => {
         component: Input,
         name: key,
         type: 'text',
-        placeholder: fields[key].label,
         label: fields[key].label,
         disabled: fields[key].view_only,
       };

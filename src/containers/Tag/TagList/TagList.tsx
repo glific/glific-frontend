@@ -1,5 +1,4 @@
 import { useTranslation } from 'react-i18next';
-import AddIcon from 'assets/images/add.svg?react';
 import FlowIcon from 'assets/images/icons/Flow/Dark.svg?react';
 import { GET_TAG_COUNT, FILTER_TAGS } from 'graphql/queries/Tags';
 import { DELETE_TAG } from 'graphql/mutations/Tags';
@@ -49,8 +48,6 @@ export const TagList = () => {
     columnStyles,
   };
 
-  const addIcon = <AddIcon className={styles.AddIcon} />;
-
   const helpData = {
     heading:
       'You have the ability to create and edit tags, allowing you to assign tags to messages, templates, flows, and more.',
@@ -69,7 +66,7 @@ export const TagList = () => {
       dialogMessage={dialogMessage}
       {...queries}
       {...columnAttributes}
-      button={{ show: true, label: t('Create'), symbol: addIcon }}
+      button={{ show: true, label: t('Create') }}
     />
   );
 };

@@ -2,7 +2,6 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import AddIcon from 'assets/images/add.svg?react';
 import TriggerIcon from 'assets/images/icons/Trigger/Union.svg?react';
 import ClockIcon from 'assets/images/icons/Trigger/Clock.svg?react';
 import ClockInactiveIcon from 'assets/images/icons/Trigger/Inactive.svg?react';
@@ -103,8 +102,6 @@ export const TriggerList = () => {
 
   const dialogMessage = t("You won't be able to use this trigger.");
 
-  const addIcon = <AddIcon className={styles.AddIcon} />;
-
   return (
     <List
       helpData={triggerInfo}
@@ -112,7 +109,7 @@ export const TriggerList = () => {
       listItem="triggers"
       listItemName="trigger"
       pageLink="trigger"
-      button={{ show: true, label: t('Create Trigger'), symbol: addIcon }}
+      button={{ show: true, label: t('Create') }}
       listIcon={triggerIcon}
       dialogMessage={dialogMessage}
       {...queries}

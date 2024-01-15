@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import AddIcon from 'assets/images/add.svg?react';
 import InteractiveMessageIcon from 'assets/images/icons/InteractiveMessage/Dark.svg?react';
 import DownArrow from 'assets/images/icons/DownArrow.svg?react';
 import DuplicateIcon from 'assets/images/icons/Duplicate.svg?react';
@@ -149,12 +148,10 @@ export const InteractiveMessageList = () => {
     />
   );
 
-  const addIcon = <AddIcon className={styles.AddIcon} />;
-
   return (
     <List
       helpData={interactiveMessageInfo}
-      title={t('Interactive msg')}
+      title={t('Interactive messages')}
       listItem="interactiveTemplates"
       listItemName="interactive"
       pageLink="interactive-message"
@@ -164,7 +161,7 @@ export const InteractiveMessageList = () => {
       searchParameter={['term']}
       {...queries}
       {...columnAttributes}
-      button={{ show: true, label: t('Add New'), symbol: addIcon }}
+      button={{ show: true, label: t('Create') }}
       additionalAction={additionalAction}
       collapseOpen={open}
       collapseRow={selectedId}

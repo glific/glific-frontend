@@ -2,7 +2,7 @@
   border-radius: 10px;
   margin: 0px !important;
   margin-top: 66px !important;
-  width: 474px;
+  min-width: 474px;
 }
 
 .ScrollPaper {
