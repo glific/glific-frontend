@@ -115,6 +115,7 @@ export const GET_ORGANIZATION_SERVICES = gql`
   query organizationServices {
     organizationServices {
       dialogflow
+      autoTranslationEnabled
       googleCloudStorage
       flowUuidDisplay
       rolesAndPermission
