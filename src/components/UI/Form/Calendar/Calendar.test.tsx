@@ -10,7 +10,7 @@ describe('<Calendar />', () => {
     type: 'date',
     placeholder: 'Date from',
     label: 'Date range',
-    field: { name: 'example', value: dayjs('01/13/2024') },
+    field: { name: 'example', value: dayjs() },
     form: {
       dirty: false,
       touched: {},
