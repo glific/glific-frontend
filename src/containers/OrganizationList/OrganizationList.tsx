@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { OutlinedInput } from '@mui/material';
 import { useMutation } from '@apollo/client';
 
@@ -19,6 +19,7 @@ import { Extensions } from 'containers/Extensions/Extensions';
 import { OrganizationCustomer } from 'containers/Organization/OrganizationCustomer/OrganizationCustomer';
 import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
 import styles from './OrganizationList.module.css';
+import { DATE_FORMAT_WITH_MONTH } from 'common/constants';
 
 export interface OrganizationListProps {
   openExtensionModal?: boolean;
@@ -54,7 +55,9 @@ export const OrganizationList = ({
       <p className={styles.LabelText}>
         {label}
         <br />
-        <span className={styles.SubLabelText}>{moment(insertedAt).format('DD MMM YYYY')}</span>
+        <span className={styles.SubLabelText}>
+          {dayjs(insertedAt).format(DATE_FORMAT_WITH_MONTH)}
+        </span>
       </p>
     </div>
   );

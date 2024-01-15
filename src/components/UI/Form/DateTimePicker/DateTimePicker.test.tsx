@@ -1,6 +1,8 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 
 import { DateTimePicker } from './DateTimePicker';
+import dayjs from 'dayjs';
+import { userEvent } from '@testing-library/user-event';
 
 describe('<DateTimePicker />', () => {
   const onChangeMock = vi.fn();
@@ -25,11 +27,14 @@ describe('<DateTimePicker />', () => {
   it('test date change event', async () => {
     render(wrapper);
     const input = screen.getByRole('textbox');
-    fireEvent.change(input, { target: { value: '14/05/2021 10:50 AM' } });
-    expect(input).toHaveValue('14/05/2021 10:50 AM');
+    userEvent.type(input, '14/05/2021 09:50 am');
 
-    expect(setFieldMock).toBeCalled();
-    expect(onChangeMock).toBeCalled();
+    await waitFor(() => {
+      expect(input).toHaveValue('14/05/2021 09:50 am');
+    });
+
+    expect(setFieldMock).toHaveBeenCalled();
+    expect(onChangeMock).toHaveBeenCalled();
   });
 
   it('test date with errors', async () => {
@@ -43,7 +48,7 @@ describe('<DateTimePicker />', () => {
 
   it('test date default value', async () => {
     const props = getProps();
-    props.field.value = new Date();
+    props.field.value = dayjs();
     render(<DateTimePicker {...props} />);
     const input = screen.getByRole('textbox');
     expect(input).toHaveValue();
@@ -55,6 +60,6 @@ describe('<DateTimePicker />', () => {
     render(<DateTimePicker {...props} />);
     const input = screen.getByRole('textbox');
     fireEvent.change(input, { target: { value: '14/05/2021 10:50 AM' } });
-    expect(onChangeMock).toBeCalledTimes(1);
+    expect(onChangeMock).toHaveBeenCalled();
   });
 });

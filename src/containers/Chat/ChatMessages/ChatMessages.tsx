@@ -1,7 +1,7 @@
 import { useCallback, useState, useEffect } from 'react';
 import { useQuery, useMutation, useLazyQuery } from '@apollo/client';
 import { CircularProgress, Container } from '@mui/material';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { Navigate } from 'react-router-dom';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useTranslation } from 'react-i18next';
@@ -18,6 +18,7 @@ import {
   DEFAULT_MESSAGE_LIMIT,
   DEFAULT_CONTACT_LIMIT,
   DEFAULT_MESSAGE_LOADMORE_LIMIT,
+  ISO_DATE_FORMAT,
 } from '../../../common/constants';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 import {
@@ -510,14 +511,17 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
 
   const showDaySeparator = (currentDate: string, nextDate: string) => {
     // if it's last message and its date is greater than current date then show day separator
-    if (!nextDate && moment(currentDate).format('YYYY-MM-DD') < moment().format('YYYY-MM-DD')) {
+    if (
+      !nextDate &&
+      dayjs(currentDate).format(ISO_DATE_FORMAT) < dayjs().format(ISO_DATE_FORMAT)
+    ) {
       return true;
     }
 
     // if the day is changed then show day separator
     if (
       nextDate &&
-      moment(currentDate).format('YYYY-MM-DD') > moment(nextDate).format('YYYY-MM-DD')
+      dayjs(currentDate).format(ISO_DATE_FORMAT) > dayjs(nextDate).format(ISO_DATE_FORMAT)
     ) {
       return true;
     }

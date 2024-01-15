@@ -1,8 +1,8 @@
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 
 import { getAuthSession } from 'services/AuthService';
-import { DATE_TIME_FORMAT, GUPSHUP_ENTERPRISE_SHORTCODE } from 'common/constants';
+import { STANDARD_DATE_TIME_FORMAT, GUPSHUP_ENTERPRISE_SHORTCODE } from 'common/constants';
 
 import styles from './LastLogin.module.css';
 import { useContext } from 'react';
@@ -20,7 +20,7 @@ export const LastLogin = ({ drawerOpen }: LastLoginProps) => {
     provider === GUPSHUP_ENTERPRISE_SHORTCODE ? styles.LastLoginEnterprise : styles.LastLogin;
   return drawerOpen ? (
     <div className={lastLoginStyle}>
-      {t('Last login')}: {moment(lastLogin).format(DATE_TIME_FORMAT)}
+      {t('Last login')}: {dayjs(lastLogin).format(STANDARD_DATE_TIME_FORMAT)}
     </div>
   ) : null;
 };
