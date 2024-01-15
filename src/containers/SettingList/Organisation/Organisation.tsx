@@ -126,6 +126,10 @@ export const Organisation = () => {
     return error;
   };
 
+  const handleSendWarningMails = (sendWarningMail: boolean) => {
+    setSendWarningMail(sendWarningMail);
+  };
+
   const validation = {
     name: Yup.string().required(t('Organisation name is required.')),
     activeLanguages: Yup.array().required(t('Supported Languages is required.')),
@@ -207,21 +211,24 @@ export const Organisation = () => {
       disabled: true,
     },
     {
+      component: Checkbox,
+      name: 'sendWarningMail',
+      handleChange: handleSendWarningMails,
+      title: t('Recieve warning mails?'),
+    },
+    {
       component: Input,
       name: 'lowBalanceThreshold',
       type: 'number',
       placeholder: t('Low balance threshold for warning emails'),
+      disabled: !sendWarningMail,
     },
     {
       component: Input,
       name: 'criticalBalanceThreshold',
       type: 'number',
       placeholder: t('Critical balance threshold for warning emails'),
-    },
-    {
-      component: Checkbox,
-      name: 'sendWarningMail',
-      title: t('Recieve warning mails?'),
+      disabled: !sendWarningMail,
     },
   ];
 
