@@ -132,17 +132,36 @@ export const ContactProfile = () => {
     activeProfileId: activeProfile?.id,
   };
 
+  let profileHeaders: Array<{ id: string | undefined; name: string }> = [];
+  if (profileData.profiles.length > 0) {
+    profileHeaders = profileData.profiles;
+  }
+
   const drawer = (
     <div className={styles.Drawer}>
-      {list.map((data: any, index: number) => {
-        const active = location.pathname.endsWith(data.shortcode);
+      {profileHeaders.map(({ id, name }) => {
         return (
-          <div
-            key={index}
-            onClick={() => navigate(`/contact-profile/${params.id}/${data.shortcode}`)}
-            className={`${styles.Tab} ${active ? styles.ActiveTab : ''}`}
-          >
-            {data.name}
+          <div className={styles.profileHeaderContainer}>
+            <div className={styles.profileHeader}>
+              <div className={styles.profileHeaderTitle}>
+                {name} - {id}
+              </div>
+              <div className={styles.profileHeaderIcon}>Icon</div>
+            </div>
+            <div className={styles.profileHeaderElements}>
+              {list.map((data: any, index: number) => {
+                const active = location.pathname.endsWith(data.shortcode);
+                return (
+                  <div
+                    key={index}
+                    onClick={() => navigate(`/contact-profile/${params.id}/${data.shortcode}`)}
+                    className={`${styles.Tab} ${active ? styles.ActiveTab : ''}`}
+                  >
+                    {data.name}
+                  </div>
+                );
+              })}
+            </div>
           </div>
         );
       })}
