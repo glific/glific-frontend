@@ -47,7 +47,7 @@ describe('<Captcha />', () => {
     fireEvent.click(button);
 
     await waitFor(() => {
-      expect(tokenUpdateMock).toBeCalled();
+      expect(tokenUpdateMock).toHaveBeenCalled();
     });
   });
 });
