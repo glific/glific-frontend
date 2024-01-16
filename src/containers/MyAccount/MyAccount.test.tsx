@@ -82,7 +82,11 @@ describe('<MyAccount />', () => {
       fireEvent.mouseDown(inputDropdown);
     });
     const [english, hindi] = screen.getAllByRole('option');
-    await hindi.click();
+
+    await waitFor(() => {
+      hindi.click();
+      expect(screen.getByText('Language changed successfully!')).toBeInTheDocument();
+    });
   });
 
   test('generate OTP error response', async () => {
