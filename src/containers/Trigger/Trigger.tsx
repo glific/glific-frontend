@@ -337,6 +337,7 @@ export const Trigger = () => {
       label: t('Date range'),
       placeholder: t('Start date'),
       minDate,
+      className: styles.CalendarLeft,
     },
     {
       component: Calendar,
@@ -345,6 +346,7 @@ export const Trigger = () => {
       placeholder: t('End date'),
       disabled: isEditing,
       minDate,
+      className: styles.CalendarRight,
     },
     {
       component: TimePicker,

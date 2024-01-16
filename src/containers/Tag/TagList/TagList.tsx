@@ -8,14 +8,12 @@ import styles from './TagList.module.css';
 const getName = (Name: any) => {
   return <div className={styles.NameText}>{Name}</div>;
 };
-const noOfFlows = (number: any) => {
-  return <div className={styles.NameText}>{number}</div>;
-};
+
 const getCreated = (updatedAt: any) => {
   return <div className={styles.TableText}>{updatedAt}</div>;
 };
 
-const columnStyles = [styles.Name, styles.Count, styles.DateColumn, styles.Actions];
+const columnStyles = [styles.Name, styles.DateColumn, styles.Actions];
 const tagIcon = <FlowIcon className={styles.FlowIcon} />;
 
 const queries = {
@@ -29,13 +27,11 @@ export const TagList = () => {
 
   const getColumns = ({ label, updatedAt, id }: any) => ({
     name: getName(label),
-    noOfFlows: noOfFlows(id),
     created: getCreated(updatedAt),
   });
 
   const columnNames = [
     { name: 'label', label: t('Title') },
-    { label: t('No. of flows') },
     { label: t('Created') },
     { label: t('Actions') },
   ];

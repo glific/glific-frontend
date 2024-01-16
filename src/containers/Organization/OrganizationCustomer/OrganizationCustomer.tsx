@@ -63,7 +63,7 @@ export const OrganizationCustomer = ({ openDialog }: OrganizationCustomerProps) 
       component: Input,
       name: 'name',
       type: 'text',
-      placeholder: t('Customer Name'),
+      label: t('Customer Name'),
       inputProp: {
         onChange: (event: any) => setName(event.target.value),
       },
@@ -72,7 +72,7 @@ export const OrganizationCustomer = ({ openDialog }: OrganizationCustomerProps) 
       component: Input,
       name: 'email',
       type: 'text',
-      placeholder: t('Customer Email'),
+      label: t('Customer Email'),
       inputProp: {
         onChange: (event: any) => setEmail(event.target.value),
       },
@@ -81,7 +81,7 @@ export const OrganizationCustomer = ({ openDialog }: OrganizationCustomerProps) 
       component: Input,
       name: 'currency',
       type: 'text',
-      placeholder: t('Currency'),
+      label: t('Currency'),
       inputProp: {
         onChange: (event: any) => setCurrency(event.target.value),
       },
@@ -90,7 +90,7 @@ export const OrganizationCustomer = ({ openDialog }: OrganizationCustomerProps) 
       component: Input,
       name: 'tds',
       type: 'number',
-      placeholder: t('TDS%'),
+      label: t('TDS%'),
       inputProp: {
         onChange: (event: any) => setTds(event.target.value),
       },

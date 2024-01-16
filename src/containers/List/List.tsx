@@ -3,6 +3,7 @@ import { Link, Navigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useQuery, useMutation, DocumentNode, useLazyQuery } from '@apollo/client';
 import {
+  Backdrop,
   Divider,
   IconButton,
   Menu,
@@ -546,11 +547,7 @@ export const List = ({
           data-testid="MoreIcon"
           onClick={(event) => {
             setAnchorEl(event.currentTarget);
-            if (showMoreOptions == id) {
-              setShowMoreOptions('');
-            } else {
-              setShowMoreOptions(id);
-            }
+            setShowMoreOptions(showMoreOptions == id ? '' : id);
           }}
         >
           <Tooltip title={t('More')} placement="top">
@@ -572,29 +569,33 @@ export const List = ({
             <div className={styles.MoreOptions}>
               {moreButton}
               {showMoreOptions == id && (
-                <Menu
-                  anchorEl={anchorEl}
-                  id="account-menu"
-                  open={open}
-                  onClose={handleClose}
-                  onClick={handleClose}
-                  classes={{ list: styles.MenuList }}
-                  anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'right',
-                  }}
-                  transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
-                >
-                  <div>
-                    <MenuItem className={styles.MenuItem}> {editButton}</MenuItem>
-                    <Divider className={styles.Divider} />
-                    <MenuItem className={styles.MenuItem}> {deleteButton(id, labelValue)}</MenuItem>
-                    {actionListMap(item, actionsInsideMore, true)}
-                  </div>
-                </Menu>
+                <Backdrop className={styles.Backdrop} open onClick={() => setShowMoreOptions('')}>
+                  <Menu
+                    anchorEl={anchorEl}
+                    id="account-menu"
+                    open={open}
+                    onClose={handleClose}
+                    onClick={handleClose}
+                    classes={{ list: styles.MenuList }}
+                    anchorOrigin={{
+                      vertical: 'bottom',
+                      horizontal: 'right',
+                    }}
+                    transformOrigin={{
+                      vertical: 'top',
+                      horizontal: 'right',
+                    }}
+                  >
+                    <div>
+                      <MenuItem className={styles.MenuItem}> {editButton}</MenuItem>
+                      <Divider className={styles.Divider} />
+                      <MenuItem className={styles.MenuItem}>
+                        {deleteButton(id, labelValue)}
+                      </MenuItem>
+                      {actionListMap(item, actionsInsideMore, true)}
+                    </div>
+                  </Menu>
+                </Backdrop>
               )}
             </div>
           ) : null}

@@ -14,6 +14,7 @@ export interface CalendarProps {
   form: { dirty: any; touched: any; errors: any; setFieldValue: any };
   placeholder: string;
   minDate?: any;
+  className?: string;
 }
 
 export const Calendar = ({
@@ -23,6 +24,7 @@ export const Calendar = ({
   form: { setFieldValue, errors, touched },
   placeholder,
   minDate,
+  className,
 }: CalendarProps) => {
   const errorText = getIn(errors, field.name);
   const touchedVal = getIn(touched, field.name);
@@ -49,7 +51,7 @@ export const Calendar = ({
           value={dateValue}
           format={format}
           onChange={handleDateChange}
-          className={styles.CalendarInput}
+          className={`${styles.CalendarInput} ${className}`}
           disabled={disabled}
           minDate={minDate}
           slotProps={{

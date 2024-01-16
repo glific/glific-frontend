@@ -26,7 +26,7 @@
 }
 
 .ItemAdd {
-  min-height: 100vh;
+  /* min-height: 100vh; */
   background-color: #ffffff;
 }
 
@@ -156,8 +156,4 @@
 
 .TitleText {
   margin-right: 8px;
-}
-
-.Spacing {
-  margin: 20px 0px !important;
 }
