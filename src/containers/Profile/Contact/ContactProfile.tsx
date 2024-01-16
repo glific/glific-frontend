@@ -3,9 +3,10 @@ import { useQuery } from '@apollo/client';
 import { useParams, useNavigate, useLocation, Route, Routes, Navigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { getOrganizationServices } from 'services/AuthService';
-import { Box, FormControl, FormControlLabel, Radio, RadioGroup } from '@mui/material';
+import { Box, Collapse } from '@mui/material';
 
-import DropdownIcon from '../../../assets/images/icons/BrownDropdown.svg?react';
+import CollapseIcon from '../../../assets/images/icons/Collapse.svg?react';
+import ExpandIcon from '../../../assets/images/icons/Expand.svg?react';
 import { STANDARD_DATE_TIME_FORMAT } from 'common/constants';
 import { GET_CONTACT_DETAILS, GET_CONTACT_PROFILES } from 'graphql/queries/Contact';
 import Loading from 'components/UI/Layout/Loading/Loading';
@@ -125,7 +126,7 @@ export const ContactProfile = () => {
               }}
             >
               <div className={styles.ProfileHeaderTitle}>{name}</div>
-              <DropdownIcon />
+              {id === selectedProfileId ? <ExpandIcon /> : <CollapseIcon />}
             </div>
             <div className={styles.ProfileHeaderElements}>
               {list.map((data: any, index: number) => {

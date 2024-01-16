@@ -18,7 +18,7 @@ import { SearchDialogBox } from '../../../../components/UI/SearchDialogBox/Searc
 import { TerminateFlow } from './TerminateFlow/TerminateFlow';
 
 import TerminateFlowIcon from 'assets/images/icons/Automations/Terminate.svg?react';
-import DropdownIcon from '../../../../assets/images/icons/BrownDropdown.svg?react';
+import ExpandIcon from '../../../../assets/images/icons/Expand.svg?react';
 import AddContactIcon from '../../../../assets/images/icons/Contact/Light.svg?react';
 import BlockIcon from '../../../../assets/images/icons/Block.svg?react';
 import BlockDisabledIcon from '../../../../assets/images/icons/BlockDisabled.svg?react';
@@ -617,7 +617,7 @@ export const ContactBar = ({
                     onKeyPress={handleConfigureIconClick}
                     aria-hidden
                   >
-                    <DropdownIcon />
+                    <ExpandIcon />
                   </div>
                 </ClickAwayListener>
               </div>
