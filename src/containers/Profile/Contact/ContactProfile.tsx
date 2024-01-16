@@ -142,14 +142,14 @@ export const ContactProfile = () => {
     <div className={styles.Drawer}>
       {profileHeaders.map(({ id, name }) => {
         return (
-          <div className={styles.ProfileHeaderContainer}>
+          <div className={styles.ProfileHeaderContainer} key={id}>
             <div
               className={styles.ProfileHeader}
-              onClick={(clickedId: any = id) => setSelectedProfileId(clickedId)}
+              onClick={() => {
+                setSelectedProfileId(`${id}`);
+              }}
             >
-              <div className={styles.ProfileHeaderTitle}>
-                {name} - {id}
-              </div>
+              <div className={styles.ProfileHeaderTitle}>{name}</div>
               <DropdownIcon />
             </div>
             <div className={styles.ProfileHeaderElements}>
