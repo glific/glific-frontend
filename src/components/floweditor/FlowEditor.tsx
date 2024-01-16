@@ -13,7 +13,7 @@ import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { setNotification } from 'common/notification';
 import { PUBLISH_FLOW, RESET_FLOW_COUNT } from 'graphql/mutations/Flow';
 import { EXPORT_FLOW, GET_FLOW_DETAILS, GET_FREE_FLOW } from 'graphql/queries/Flow';
-import { setAuthHeaders } from 'services/AuthService';
+import { getOrganizationServices, setAuthHeaders } from 'services/AuthService';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import Track from 'services/TrackService';
 import { exportFlowMethod } from 'common/utils';
@@ -52,6 +52,8 @@ export const FlowEditor = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const isTranslationEnabled = getOrganizationServices('autoTranslationEnabled');
 
   let modal = null;
   let dialog = null;
@@ -388,15 +390,17 @@ export const FlowEditor = () => {
             >
               Reset flow count
             </MenuItem>
-            <MenuItem
-              onClick={() => {
-                setShowTranslateFlowModal(true);
-                handleClose();
-              }}
-              disableRipple
-            >
-              Translate
-            </MenuItem>
+            {isTranslationEnabled && (
+              <MenuItem
+                onClick={() => {
+                  setShowTranslateFlowModal(true);
+                  handleClose();
+                }}
+                disableRipple
+              >
+                Translate
+              </MenuItem>
+            )}
           </Menu>
 
           <Button
