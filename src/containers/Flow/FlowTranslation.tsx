@@ -47,6 +47,10 @@ export const FlowTranslation = ({ flowId, setDialog, loadFlowEditor }: FlowTrans
         setNotification(inlineFlowLocalization.errors[0].message, 'warning');
       }
     },
+    onError: () => {
+      setDialog(false);
+      setNotification(t('An error occured while translating flows.'));
+    },
   });
 
   const [exportFlowTranslations, { loading: exportLoad }] = useLazyQuery(
