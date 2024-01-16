@@ -1,41 +1,40 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
-import { useParams, useNavigate, useLocation, Route, Routes, Navigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
-import { getOrganizationServices } from 'services/AuthService';
 import { Box, Collapse } from '@mui/material';
 
 import CollapseIcon from '../../../assets/images/icons/Collapse.svg?react';
 import ExpandIcon from '../../../assets/images/icons/Expand.svg?react';
 import { STANDARD_DATE_TIME_FORMAT } from 'common/constants';
+import { getOrganizationServices } from 'services/AuthService';
 import { GET_CONTACT_DETAILS, GET_CONTACT_PROFILES } from 'graphql/queries/Contact';
 import Loading from 'components/UI/Layout/Loading/Loading';
 import { ContactDescription } from './ContactDescription/ContactDescription';
-import styles from './ContactProfile.module.css';
 import { Profile } from '../Profile';
 import { ContactHistory } from './ContactHistory/ContactHistory';
 import { Heading } from 'containers/Form/FormLayout';
+import styles from './ContactProfile.module.css';
 
 const list = [
   {
     name: 'Profile',
-    shortcode: 'profile',
+    section: 'profile',
   },
   {
     name: 'Details',
-    shortcode: 'details',
+    section: 'details',
   },
   {
     name: 'Contact History',
-    shortcode: 'history',
+    section: 'history',
   },
 ];
 
 export const ContactProfile = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
   const params = useParams();
   const [selectedProfileId, setSelectedProfileId] = useState('');
+  const [showProfileSection, setShowProfileSection] = useState('profile');
 
   const isContactProfileEnabled = getOrganizationServices('contactProfileEnabled');
   const { loading, data } = useQuery(GET_CONTACT_DETAILS, { variables: { id: params.id } });
@@ -123,6 +122,7 @@ export const ContactProfile = () => {
               className={styles.ProfileHeader}
               onClick={() => {
                 setSelectedProfileId(`${id}`);
+                setShowProfileSection('profile');
               }}
             >
               <div className={styles.ProfileHeaderTitle}>{name}</div>
@@ -131,12 +131,13 @@ export const ContactProfile = () => {
             <Collapse in={id === selectedProfileId}>
               <div className={styles.ProfileHeaderElements}>
                 {list.map((data: any, index: number) => {
-                  const active = location.pathname.endsWith(data.shortcode);
                   return (
                     <div
                       key={index}
-                      onClick={() => navigate(`/contact-profile/${params.id}/${data.shortcode}`)}
-                      className={`${styles.Tab} ${active ? styles.ActiveTab : ''}`}
+                      onClick={() => setShowProfileSection(data.section)}
+                      className={`${styles.Tab} ${
+                        showProfileSection === data.section ? styles.ActiveTab : ''
+                      }`}
                     >
                       {data.name}
                     </div>
@@ -150,49 +151,38 @@ export const ContactProfile = () => {
     </div>
   );
 
+  let profileBodyContent;
+  if (showProfileSection === 'profile') {
+    profileBodyContent = (
+      <Profile
+        multiProfileAttributes={switchProfile}
+        profileType="Contact"
+        removePhoneField
+        redirectionLink={`chat/${params.id}`}
+      />
+    );
+  } else if (showProfileSection === 'details') {
+    profileBodyContent = (
+      <ContactDescription
+        statusMessage={statusMessage}
+        phone={phone}
+        maskedPhone={maskedPhone}
+        fields={fields}
+        settings={settings}
+        collections={groups}
+        lastMessage={lastMessage}
+      />
+    );
+  } else if (showProfileSection === 'history') {
+    profileBodyContent = <ContactHistory contactId={params.id} profileId={selectedProfileId} />;
+  }
+
   return (
     <>
       <Heading formTitle="Contact Profile" showHeaderHelp={false} />
       <Box className={styles.ContactProfile}>
         {drawer}
-        <Box className={styles.ProfileBody}>
-          <Routes>
-            <Route
-              path="profile"
-              element={
-                <Profile
-                  multiProfileAttributes={switchProfile}
-                  profileType="Contact"
-                  redirectionLink={`chat/${params.id}`}
-                  afterDelete={{
-                    link: selectedProfile ? `/contact-profile/${params.id}` : '/chat',
-                  }}
-                  removePhoneField
-                />
-              }
-            />
-            <Route
-              path="details"
-              element={
-                <ContactDescription
-                  statusMessage={statusMessage}
-                  phone={phone}
-                  maskedPhone={maskedPhone}
-                  fields={fields}
-                  settings={settings}
-                  collections={groups}
-                  lastMessage={lastMessage}
-                />
-              }
-            />
-            <Route
-              path="history"
-              element={<ContactHistory contactId={params.id} profileId={selectedProfileId} />}
-            />
-
-            <Route path="*" element={<Navigate to="profile" />} />
-          </Routes>
-        </Box>
+        <Box className={styles.ProfileBody}>{profileBodyContent}</Box>
       </Box>
     </>
   );
