@@ -15,29 +15,6 @@ import { Profile } from '../Profile';
 import { ContactHistory } from './ContactHistory/ContactHistory';
 import { Heading } from 'containers/Form/FormLayout';
 
-const ProfileChange = ({ selectedProfileId, setSelectedProfileId, profileData }: any) => (
-  <FormControl fullWidth className={styles.FormControl}>
-    <RadioGroup
-      aria-label="action-radio-buttons"
-      name="action-radio-buttons"
-      row
-      value={selectedProfileId}
-      onChange={(event: any) => setSelectedProfileId(event?.target.value)}
-      className={styles.RadioGroup}
-    >
-      {profileData.profiles.map((profile: any) => (
-        <FormControlLabel
-          key={profile.id}
-          value={profile.id}
-          control={<Radio color="primary" />}
-          label={profile.name}
-          classes={{ label: styles.RadioLabel }}
-        />
-      ))}
-    </RadioGroup>
-  </FormControl>
-);
-
 const list = [
   {
     name: 'Profile',
@@ -55,7 +32,6 @@ const list = [
 
 export const ContactProfile = () => {
   const location = useLocation();
-
   const navigate = useNavigate();
   const params = useParams();
   const [selectedProfileId, setSelectedProfileId] = useState('');
@@ -125,7 +101,6 @@ export const ContactProfile = () => {
   }
 
   const switchProfile = {
-    component: ProfileChange,
     selectedProfileId,
     setSelectedProfileId,
     profileData,
