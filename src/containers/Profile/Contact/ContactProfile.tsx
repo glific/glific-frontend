@@ -5,6 +5,7 @@ import dayjs from 'dayjs';
 import { getOrganizationServices } from 'services/AuthService';
 import { Box, FormControl, FormControlLabel, Radio, RadioGroup } from '@mui/material';
 
+import DropdownIcon from '../../../assets/images/icons/BrownDropdown.svg?react';
 import { STANDARD_DATE_TIME_FORMAT } from 'common/constants';
 import { GET_CONTACT_DETAILS, GET_CONTACT_PROFILES } from 'graphql/queries/Contact';
 import Loading from 'components/UI/Layout/Loading/Loading';
@@ -141,14 +142,17 @@ export const ContactProfile = () => {
     <div className={styles.Drawer}>
       {profileHeaders.map(({ id, name }) => {
         return (
-          <div className={styles.profileHeaderContainer}>
-            <div className={styles.profileHeader}>
-              <div className={styles.profileHeaderTitle}>
+          <div className={styles.ProfileHeaderContainer}>
+            <div
+              className={styles.ProfileHeader}
+              onClick={(clickedId: any = id) => setSelectedProfileId(clickedId)}
+            >
+              <div className={styles.ProfileHeaderTitle}>
                 {name} - {id}
               </div>
-              <div className={styles.profileHeaderIcon}>Icon</div>
+              <DropdownIcon />
             </div>
-            <div className={styles.profileHeaderElements}>
+            <div className={styles.ProfileHeaderElements}>
               {list.map((data: any, index: number) => {
                 const active = location.pathname.endsWith(data.shortcode);
                 return (
