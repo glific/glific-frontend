@@ -128,20 +128,22 @@ export const ContactProfile = () => {
               <div className={styles.ProfileHeaderTitle}>{name}</div>
               {id === selectedProfileId ? <ExpandIcon /> : <CollapseIcon />}
             </div>
-            <div className={styles.ProfileHeaderElements}>
-              {list.map((data: any, index: number) => {
-                const active = location.pathname.endsWith(data.shortcode);
-                return (
-                  <div
-                    key={index}
-                    onClick={() => navigate(`/contact-profile/${params.id}/${data.shortcode}`)}
-                    className={`${styles.Tab} ${active ? styles.ActiveTab : ''}`}
-                  >
-                    {data.name}
-                  </div>
-                );
-              })}
-            </div>
+            <Collapse in={id === selectedProfileId}>
+              <div className={styles.ProfileHeaderElements}>
+                {list.map((data: any, index: number) => {
+                  const active = location.pathname.endsWith(data.shortcode);
+                  return (
+                    <div
+                      key={index}
+                      onClick={() => navigate(`/contact-profile/${params.id}/${data.shortcode}`)}
+                      className={`${styles.Tab} ${active ? styles.ActiveTab : ''}`}
+                    >
+                      {data.name}
+                    </div>
+                  );
+                })}
+              </div>
+            </Collapse>
           </div>
         );
       })}
