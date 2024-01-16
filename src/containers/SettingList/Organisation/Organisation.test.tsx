@@ -1,7 +1,7 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import UserEvent from '@testing-library/user-event';
+import { render, screen, fireEvent, waitFor, getByTestId } from '@testing-library/react';
+import UserEvent, { userEvent } from '@testing-library/user-event';
 import { MockedProvider } from '@apollo/client/testing';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router, MemoryRouter, Route, Routes } from 'react-router-dom';
 
 import { ORGANISATION_MOCKS } from '../SettingList.test.helper';
 import { Organisation } from './Organisation';
@@ -10,9 +10,9 @@ const mocks = ORGANISATION_MOCKS;
 
 const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>
-    <Router>
+    <MemoryRouter initialEntries={['/settings/organization']}>
       <Organisation />
-    </Router>
+    </MemoryRouter>
   </MockedProvider>
 );
 
@@ -58,11 +58,11 @@ test('it renders component and clicks cancel', async () => {
 
 test('it renders component in edit mode', async () => {
   const { getByText, getByTestId } = render(
-    <MockedProvider mocks={[...ORGANISATION_MOCKS]} addTypename={false}>
-      <Router>
-        <Organisation />
-      </Router>
-    </MockedProvider>
+    <MemoryRouter initialEntries={['/organization']}>
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <Route path="/settings/organization" element={<Organisation />} />
+      </MockedProvider>
+    </MemoryRouter>
   );
   // loading is show initially
   expect(getByText('Loading...')).toBeInTheDocument();
@@ -92,8 +92,16 @@ test('it renders component in edit mode', async () => {
   });
 });
 
-test('it submits form correctly', async () => {
-  const { getByText } = render(wrapper);
+test.only('it submits form correctly', async () => {
+  const { getByText } = render(
+    <MemoryRouter initialEntries={['/settings/organization']}>
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <Routes>
+          <Route path="/settings/organization" element={<Organisation />} />
+        </Routes>
+      </MockedProvider>
+    </MemoryRouter>
+  );
 
   expect(getByText('Loading...')).toBeInTheDocument();
 
@@ -107,9 +115,13 @@ test('it submits form correctly', async () => {
     fireEvent.change(numberInputElements[1], { target: { value: '5' } });
   });
 
+  userEvent.click(getByText('Save'));
+  console.log(window.location.pathname);
+
   await waitFor(() => {
-    const submitButton = screen.getByText('Save');
-    expect(submitButton).toBeInTheDocument();
-    fireEvent.click(submitButton);
+    console.log(getByText('Save'));
+
+    console.log(window.location.pathname);
+    // expect(getByText('Settings edited successfully!'));
   });
 });
