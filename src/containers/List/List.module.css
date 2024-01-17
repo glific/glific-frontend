@@ -279,3 +279,7 @@
   height: 12px;
   width: 12px;
 }
+
+.Backdrop {
+  z-index: 1000;
+}

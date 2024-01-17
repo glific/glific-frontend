@@ -433,5 +433,6 @@
   "HSMs updated successfully.": "HSMs updated successfully.",
   "Preview": "Preview",
   "Report": "Report",
-  "Enter the email address you'd like to CC.": "Enter the email address you'd like to CC."
+  "Enter the email address you'd like to CC.": "Enter the email address you'd like to CC.",
+  "An error occured while translating flows.": "An error occured while translating flows."
 }

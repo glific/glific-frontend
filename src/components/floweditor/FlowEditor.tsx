@@ -13,12 +13,13 @@ import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { setNotification } from 'common/notification';
 import { PUBLISH_FLOW, RESET_FLOW_COUNT } from 'graphql/mutations/Flow';
 import { EXPORT_FLOW, GET_FLOW_DETAILS, GET_FREE_FLOW } from 'graphql/queries/Flow';
-import { setAuthHeaders } from 'services/AuthService';
+import { getOrganizationServices, setAuthHeaders } from 'services/AuthService';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import Track from 'services/TrackService';
 import { exportFlowMethod } from 'common/utils';
 import styles from './FlowEditor.module.css';
 import { checkElementInRegistry, loadfiles, setConfig } from './FlowEditor.helper';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { BackdropLoader, FlowTranslation } from 'containers/Flow/FlowTranslation';
 
 declare function showFlowEditor(node: any, config: any): void;
@@ -52,6 +53,8 @@ export const FlowEditor = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const isTranslationEnabled = getOrganizationServices('autoTranslationEnabled');
 
   let modal = null;
   let dialog = null;
@@ -355,7 +358,7 @@ export const FlowEditor = () => {
             disableElevation
             onClick={handleClick}
           >
-            More
+            More <ArrowDropDownIcon />
           </Button>
           <Menu
             id="demo-customized-menu"
@@ -388,15 +391,17 @@ export const FlowEditor = () => {
             >
               Reset flow count
             </MenuItem>
-            <MenuItem
-              onClick={() => {
-                setShowTranslateFlowModal(true);
-                handleClose();
-              }}
-              disableRipple
-            >
-              Translate
-            </MenuItem>
+            {isTranslationEnabled && (
+              <MenuItem
+                onClick={() => {
+                  setShowTranslateFlowModal(true);
+                  handleClose();
+                }}
+                disableRipple
+              >
+                Translate
+              </MenuItem>
+            )}
           </Menu>
 
           <Button

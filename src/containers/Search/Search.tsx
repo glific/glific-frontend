@@ -473,23 +473,13 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
 
   const customStyles = type ? [styles.FormSearch] : [styles.Form];
 
-  let heading;
-  if (type === 'search') {
-    heading = t('Search conversations');
-  }
-
-  if (type === 'saveSearch') {
-    heading = t('Save Search');
-  }
-
   return (
     <>
       {dialog}
       <FormLayout
-        noHeading
+        noHeading={type !== undefined}
         {...queries}
         states={states}
-        title={type ? heading : undefined}
         setStates={setStates}
         setPayload={setPayload}
         validationSchema={FormSchema}

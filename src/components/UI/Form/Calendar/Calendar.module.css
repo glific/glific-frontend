@@ -1,7 +1,6 @@
 .Calendar {
-  width: 48%;
-  display: inline-block;
-  padding: 8px 0px;
+  display: inline;
+  width: 100%;
 }
 
 .CalendarInput .MuiOutlinedInput-adornedEnd {

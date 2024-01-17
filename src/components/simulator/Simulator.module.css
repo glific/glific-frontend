@@ -109,7 +109,7 @@
 
 .SimContainer {
   position: fixed;
-  right: 0;
+  right: 20px;
   top: 100px;
   z-index: 10000;
 }
@@ -273,7 +273,7 @@
 .ResetIcon {
   position: absolute;
   top: 30px;
-  right: 0px;
+  right: 2px;
   cursor: pointer;
 }
 

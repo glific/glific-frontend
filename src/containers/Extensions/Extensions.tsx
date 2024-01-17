@@ -54,10 +54,17 @@ export const Extensions = ({ openDialog }: ExtensionProps) => {
   const dialogMessage = t("You won't be able to use this extension again.");
   const formFields = [
     {
+      component: Checkbox,
+      name: 'isActive',
+      title: t('Is active?'),
+
+      handleChange: (value: any) => setIsActive(value),
+    },
+    {
       component: Input,
       name: 'name',
       type: 'text',
-      placeholder: t('Title'),
+      label: t('Title'),
       inputProp: {
         onChange: (event: any) => setName(event.target.value),
       },
@@ -69,20 +76,10 @@ export const Extensions = ({ openDialog }: ExtensionProps) => {
       type: 'text',
       rows: 3,
       textArea: true,
-      placeholder: t('Code snippet'),
+      label: t('Code snippet'),
       inputProp: {
         onChange: (event: any) => setCode(event.target.value),
       },
-    },
-    {
-      component: Checkbox,
-      name: 'isActive',
-      title: (
-        <Typography variant="body2" style={{ color: '#93A29B' }}>
-          {t('Is active?')}
-        </Typography>
-      ),
-      handleChange: (value: any) => setIsActive(value),
     },
   ];
 

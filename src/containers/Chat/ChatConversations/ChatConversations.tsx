@@ -128,7 +128,8 @@ export const ChatConversations = ({ contactId }: ChatConversationsProps) => {
     const isearchType = dialogType === 'search';
     dialogBox = (
       <DialogBox
-        title=""
+        titleAlign="left"
+        title={isearchType ? t('Search conversations') : t('Save Search')}
         handleCancel={closeDialogBox}
         handleOk={handleSubmit}
         buttonOk={t('Search')}

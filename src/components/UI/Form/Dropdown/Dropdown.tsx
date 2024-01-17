@@ -41,9 +41,11 @@ export const Dropdown = ({
         fullWidth
         error={form && form.errors[field.name] && form.touched[field.name]}
       >
-        <Typography data-testid="inputLabel" variant="h5" className={styles.FieldLabel}>
-          {placeholder}
-        </Typography>
+        {placeholder && (
+          <Typography data-testid="inputLabel" variant="h5" className={styles.FieldLabel}>
+            {placeholder}
+          </Typography>
+        )}
         <Select
           onChange={(event) => {
             onChange(event);

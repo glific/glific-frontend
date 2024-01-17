@@ -13,3 +13,15 @@
 .Warning {
   color: red;
 }
+
+.CalendarLeft {
+  width: 50%;
+  display: inline-block;
+  padding-right: 4px;
+}
+
+.CalendarRight {
+  padding-left: 4px;
+  width: 50%;
+  display: inline-block;
+}
