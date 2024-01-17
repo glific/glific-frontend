@@ -12,9 +12,10 @@ import { setNotification } from 'common/notification';
 export interface RaiseToGupShupPropTypes {
   handleCancel: any;
   templateId: any;
+  label: any;
 }
 
-export const RaiseToGupShup = ({ handleCancel, templateId }: RaiseToGupShupPropTypes) => {
+export const RaiseToGupShup = ({ handleCancel, templateId, label }: RaiseToGupShupPropTypes) => {
   const [initialValues, setInitialValues] = useState<any>({
     email: '',
   });
@@ -32,7 +33,7 @@ export const RaiseToGupShup = ({ handleCancel, templateId }: RaiseToGupShupPropT
           setEmail(event.target.value);
         },
       },
-      helperText: t("Enter the email address(es) you'd like to CC."),
+      helperText: t("Enter the email address you'd like to CC."),
     },
   ];
 
@@ -81,7 +82,7 @@ export const RaiseToGupShup = ({ handleCancel, templateId }: RaiseToGupShupPropT
         <Form data-testid="formLayout">
           <DialogBox
             titleAlign="left"
-            title={t('Report To Gupshup')}
+            title={`Report Template ${label} to Gupshup`}
             handleOk={() => {
               submitForm();
             }}

@@ -35,8 +35,6 @@ import CopyAllOutlined from 'assets/images/icons/Flow/Copy.svg?react';
 import { GET_TAGS } from 'graphql/queries/Tags';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { speedSendInfo, templateInfo } from 'common/HelpData';
-import { DialogBox } from 'components/UI/DialogBox/DialogBox';
-import { Input } from 'components/UI/Form/Input/Input';
 import { RaiseToGupShup } from './RaiseToGupShup';
 
 const getLabel = (label: string) => <div className={styles.LabelText}>{label}</div>;
@@ -97,7 +95,7 @@ export const Template = ({
 
   const [filters, setFilters] = useState<any>({ ...statusFilter, APPROVED: true });
 
-  const [raiseToGupShupId, setRaiseToGupShupId] = useState(null);
+  const [raiseToGupshupTemplate, setRaiseToGupshupTemplate] = useState<any>(null);
 
   const { data: tag } = useQuery(GET_TAGS, {
     variables: {},
@@ -243,12 +241,12 @@ export const Template = ({
     navigate(`/${redirectPath}/${id}/edit`, { state: 'copy' });
   };
 
-  const showRaiseToGupShupDialog = (id: any) => {
-    setRaiseToGupShupId(id);
+  const showRaiseToGupShupDialog = (id: any, item: any) => {
+    setRaiseToGupshupTemplate(item);
   };
 
   const closeDialogBox = () => {
-    setRaiseToGupShupId(null);
+    setRaiseToGupshupTemplate(null);
   };
 
   const setDialog = (id: string) => {
@@ -332,7 +330,7 @@ export const Template = ({
   let appliedFilters = templateFilters;
 
   const raiseToGupshup = {
-    label: t('Report To Gupshup'),
+    label: t('Report'),
     icon: <ReportIcon />,
     parameter: 'id',
     dialog: showRaiseToGupShupDialog,
@@ -355,8 +353,14 @@ export const Template = ({
     appliedFilters = { ...templateFilters, status: filterValue };
   }
   let dialogBox;
-  if (raiseToGupShupId) {
-    dialogBox = <RaiseToGupShup handleCancel={closeDialogBox} templateId={raiseToGupShupId} />;
+  if (raiseToGupshupTemplate) {
+    dialogBox = (
+      <RaiseToGupShup
+        handleCancel={closeDialogBox}
+        templateId={raiseToGupshupTemplate?.id}
+        label={raiseToGupshupTemplate?.label}
+      />
+    );
   }
 
   if (importing) {
