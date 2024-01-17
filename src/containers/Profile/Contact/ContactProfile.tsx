@@ -3,6 +3,7 @@ import { useQuery } from '@apollo/client';
 import { useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { Box, Collapse } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import CollapseIcon from '../../../assets/images/icons/Collapse.svg?react';
 import ExpandIcon from '../../../assets/images/icons/Expand.svg?react';
@@ -17,25 +18,11 @@ import { ContactHistory } from './ContactHistory/ContactHistory';
 import { Heading } from 'containers/Form/FormLayout';
 import styles from './ContactProfile.module.css';
 
-const list = [
-  {
-    name: 'Profile',
-    section: 'profile',
-  },
-  {
-    name: 'Details',
-    section: 'details',
-  },
-  {
-    name: 'Contact History',
-    section: 'history',
-  },
-];
-
 export const ContactProfile = () => {
   const params = useParams();
   const [selectedProfileId, setSelectedProfileId] = useState('');
   const [showProfileSection, setShowProfileSection] = useState('profile');
+  const { t } = useTranslation();
 
   const isContactProfileEnabled = getOrganizationServices('contactProfileEnabled');
   const { loading, data } = useQuery(GET_CONTACT_DETAILS, { variables: { id: params.id } });
@@ -117,6 +104,21 @@ export const ContactProfile = () => {
   } else {
     profileHeaders = [{ id: 'noProfile', name: contactDisplayName }];
   }
+
+  const list = [
+    {
+      name: t('Profile'),
+      section: 'profile',
+    },
+    {
+      name: t('Details'),
+      section: 'details',
+    },
+    {
+      name: t('History'),
+      section: 'history',
+    },
+  ];
 
   const drawer = (
     <div className={styles.Drawer}>
