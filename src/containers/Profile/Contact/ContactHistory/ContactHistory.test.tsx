@@ -30,10 +30,8 @@ it('should render Contact Description', async () => {
   const { getByText, getByTestId } = render(wrapper);
   expect(getByTestId('loading')).toBeInTheDocument();
   await waitFor(() => {
-    expect(getByText('Contact History')).toBeInTheDocument();
+    expect(getByText('Date and Time')).toBeInTheDocument();
   });
-
-  fireEvent.click(getByText('Contact History'));
 
   await waitFor(() => {
     expect(getByText('Removed from collection: "Optout contacts"')).toBeInTheDocument();
