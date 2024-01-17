@@ -26,7 +26,7 @@ const wrapper = (
   </MemoryRouter>
 );
 
-it('should render Contact Description', async () => {
+it('should render Contact History', async () => {
   const { getByText, getByTestId } = render(wrapper);
   expect(getByTestId('loading')).toBeInTheDocument();
   await waitFor(() => {
