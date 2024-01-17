@@ -244,7 +244,6 @@ export const Template = ({
   };
 
   const showRaiseToGupShupDialog = (id: any) => {
-    console.log(id);
     setRaiseToGupShupId(id);
   };
 
@@ -333,11 +332,12 @@ export const Template = ({
   let appliedFilters = templateFilters;
 
   const raiseToGupshup = {
-    label: t('Raise To Gupshup'),
+    label: t('Report To Gupshup'),
     icon: <ReportIcon />,
     parameter: 'id',
     dialog: showRaiseToGupShupDialog,
     hidden: filterValue !== 'REJECTED',
+    insideMore: true,
   };
 
   if (isHSM) {

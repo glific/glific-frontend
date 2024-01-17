@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Formik, Form, Field } from 'formik';
 import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
@@ -7,6 +7,7 @@ import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { Input } from 'components/UI/Form/Input/Input';
 import { REPORT_TO_GUPSHUP } from 'graphql/mutations/Template';
 import { useMutation } from '@apollo/client';
+import { setNotification } from 'common/notification';
 
 export interface RaiseToGupShupPropTypes {
   handleCancel: any;
@@ -28,33 +29,44 @@ export const RaiseToGupShup = ({ handleCancel, templateId }: RaiseToGupShupPropT
       placeholder: 'CC',
       inputProp: {
         onChange: (event: any) => {
-          setInitialValues({
-            ...initialValues,
-            email: event.target.value,
-          });
+          setEmail(event.target.value);
         },
       },
-      // helperText: t('Please confirm the OTP received at your WhatsApp number.'),
+      helperText: t("Enter the email address(es) you'd like to CC."),
     },
   ];
 
-  const setPayload = (payload: any) => {
-    const data = { ...payload };
-    return data;
-  };
+  useEffect(() => {
+    setInitialValues({
+      ...initialValues,
+      email: email,
+    });
+  }, [email]);
 
   const [reportToGupshup] = useMutation(REPORT_TO_GUPSHUP, {
     onCompleted: (data: any) => {
-      console.log(data);
+      setNotification('Email Sent Successfully!');
+      handleCancel();
     },
-    onError: (error: any) => {},
+    onError: (error: any) => {
+      setNotification(error?.message, 'warning');
+    },
   });
 
   const validation = {
-    email: Yup.string().email('Invalid Email').required(t('Email is required.')),
+    email: Yup.string().email('Invalid Email').required('Atleast One Email is Required'),
   };
 
   const FormSchema = Yup.object().shape(validation);
+
+  const performTask = (data: any) => {
+    reportToGupshup({
+      variables: {
+        cc: JSON.stringify(data),
+        templateId: templateId,
+      },
+    });
+  };
 
   const form = (
     <Formik
@@ -62,22 +74,18 @@ export const RaiseToGupShup = ({ handleCancel, templateId }: RaiseToGupShupPropT
       initialValues={initialValues}
       validationSchema={FormSchema}
       onSubmit={(itemData) => {
-        setPayload(itemData);
-        reportToGupshup({
-          variables: { cc: JSON.stringify(itemData), templateId: templateId },
-        });
+        performTask(itemData);
       }}
     >
       {({ submitForm }) => (
         <Form data-testid="formLayout">
           <DialogBox
             titleAlign="left"
-            title={t('Raise To Gupshup')}
+            title={t('Report To Gupshup')}
             handleOk={() => {
               submitForm();
             }}
             handleCancel={() => {
-              //   setVariable(false);
               handleCancel();
             }}
             buttonOk={t('Done')}

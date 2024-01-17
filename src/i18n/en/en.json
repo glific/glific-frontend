@@ -432,5 +432,6 @@
   "Sorry, failed to sync HSM updates.": "Sorry, failed to sync HSM updates.",
   "HSMs updated successfully.": "HSMs updated successfully.",
   "Preview": "Preview",
-  "Raise To Gupshup": "Raise To Gupshup"
+  "Report To Gupshup": "Report To Gupshup",
+  "Enter the email address(es) you'd like to CC.": "Enter the email address(es) you'd like to CC."
 }
