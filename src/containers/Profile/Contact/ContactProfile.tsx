@@ -99,7 +99,7 @@ export const ContactProfile = () => {
   };
 
   let profileHeaders: Array<{ id: string | undefined; name: string }> = [];
-  if (profileData.profiles.length > 0) {
+  if (profileData && profileData.profiles.length > 0) {
     profileHeaders = profileData.profiles;
   } else {
     profileHeaders = [{ id: 'noProfile', name: contactDisplayName }];
