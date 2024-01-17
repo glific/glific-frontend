@@ -111,6 +111,8 @@ export const ContactProfile = () => {
   let profileHeaders: Array<{ id: string | undefined; name: string }> = [];
   if (profileData.profiles.length > 0) {
     profileHeaders = profileData.profiles;
+  } else {
+    profileHeaders = [{ id: 'noProfile', name: 'Name' }];
   }
 
   const drawer = (
@@ -128,7 +130,7 @@ export const ContactProfile = () => {
               <div className={styles.ProfileHeaderTitle}>{name}</div>
               {id === selectedProfileId ? <ExpandIcon /> : <CollapseIcon />}
             </div>
-            <Collapse in={id === selectedProfileId}>
+            <Collapse in={id === selectedProfileId || id === 'noProfile'}>
               <div className={styles.ProfileHeaderElements}>
                 {list.map((data: any, index: number) => {
                   return (
@@ -174,7 +176,11 @@ export const ContactProfile = () => {
       />
     );
   } else if (showProfileSection === 'history') {
-    profileBodyContent = <ContactHistory contactId={params.id} profileId={selectedProfileId} />;
+    if (selectedProfileId === 'noProfile') {
+      profileBodyContent = <ContactHistory contactId={params.id} />;
+    } else {
+      profileBodyContent = <ContactHistory contactId={params.id} profileId={selectedProfileId} />;
+    }
   }
 
   return (
