@@ -7,6 +7,7 @@ import { Box, Collapse } from '@mui/material';
 import CollapseIcon from '../../../assets/images/icons/Collapse.svg?react';
 import ExpandIcon from '../../../assets/images/icons/Expand.svg?react';
 import { STANDARD_DATE_TIME_FORMAT } from 'common/constants';
+import { getDisplayName } from 'common/utils';
 import { getOrganizationServices } from 'services/AuthService';
 import { GET_CONTACT_DETAILS, GET_CONTACT_PROFILES } from 'graphql/queries/Contact';
 import Loading from 'components/UI/Layout/Loading/Loading';
@@ -63,6 +64,8 @@ export const ContactProfile = () => {
   const { phone, maskedPhone, status, groups, lastMessage, settings, activeProfile } = contactData;
   let { fields } = contactData;
 
+  const contactDisplayName = getDisplayName(contact);
+
   let selectedProfile;
 
   if (isContactProfileEnabled && profileData && profileData.profiles.length > 0) {
@@ -112,7 +115,7 @@ export const ContactProfile = () => {
   if (profileData.profiles.length > 0) {
     profileHeaders = profileData.profiles;
   } else {
-    profileHeaders = [{ id: 'noProfile', name: 'Name' }];
+    profileHeaders = [{ id: 'noProfile', name: contactDisplayName }];
   }
 
   const drawer = (
