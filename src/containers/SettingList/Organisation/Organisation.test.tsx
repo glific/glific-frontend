@@ -1,5 +1,12 @@
-import { render, screen, fireEvent, waitFor, getByTestId } from '@testing-library/react';
-import UserEvent, { userEvent } from '@testing-library/user-event';
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+  getByTestId,
+  getAllByTestId,
+} from '@testing-library/react';
+import UserEvent from '@testing-library/user-event';
 import { MockedProvider } from '@apollo/client/testing';
 import { BrowserRouter as Router, MemoryRouter, Route, Routes } from 'react-router-dom';
 
@@ -58,11 +65,11 @@ test('it renders component and clicks cancel', async () => {
 
 test('it renders component in edit mode', async () => {
   const { getByText, getByTestId } = render(
-    <MemoryRouter initialEntries={['/organization']}>
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <Route path="/settings/organization" element={<Organisation />} />
-      </MockedProvider>
-    </MemoryRouter>
+    <MockedProvider mocks={[...ORGANISATION_MOCKS]} addTypename={false}>
+      <Router>
+        <Organisation />
+      </Router>
+    </MockedProvider>
   );
   // loading is show initially
   expect(getByText('Loading...')).toBeInTheDocument();
@@ -72,11 +79,11 @@ test('it renders component in edit mode', async () => {
     const inputElements = screen.getAllByRole('textbox');
     const numberInputElements = screen.getAllByRole('spinbutton');
 
-    const orgName = inputElements[0] as unknown as HTMLInputElement;
-    const signaturePhrase = inputElements[1] as unknown as HTMLInputElement;
-    const phoneNumber = inputElements[2] as unknown as HTMLInputElement;
-    const lowBalanceThreshold = numberInputElements[0] as unknown as HTMLInputElement;
-    const criticalBalanceThreshold = numberInputElements[1] as unknown as HTMLInputElement;
+    const orgName = inputElements[0] as HTMLInputElement;
+    const signaturePhrase = inputElements[1] as HTMLInputElement;
+    const phoneNumber = inputElements[2] as HTMLInputElement;
+    const lowBalanceThreshold = numberInputElements[0] as HTMLInputElement;
+    const criticalBalanceThreshold = numberInputElements[1] as HTMLInputElement;
 
     fireEvent.click(phoneNumber);
     expect(orgName?.value).toBe('Glific');
@@ -89,39 +96,5 @@ test('it renders component in edit mode', async () => {
   await waitFor(() => {
     const submit = getByTestId('submitActionButton');
     fireEvent.click(submit);
-  });
-});
-
-test.only('it submits form correctly', async () => {
-  const { getByText } = render(
-    <MemoryRouter initialEntries={['/settings/organization']}>
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <Routes>
-          <Route path="/settings/organization" element={<Organisation />} />
-        </Routes>
-      </MockedProvider>
-    </MemoryRouter>
-  );
-
-  expect(getByText('Loading...')).toBeInTheDocument();
-
-  await waitFor(() => {
-    const inputElements = screen.getAllByRole('textbox');
-    const numberInputElements = screen.getAllByRole('spinbutton');
-
-    fireEvent.change(inputElements[0], { target: { value: 'Glific' } });
-    fireEvent.change(inputElements[1], { target: { value: 'Please change me, NOW!' } });
-    fireEvent.change(numberInputElements[0], { target: { value: '10' } });
-    fireEvent.change(numberInputElements[1], { target: { value: '5' } });
-  });
-
-  userEvent.click(getByText('Save'));
-  console.log(window.location.pathname);
-
-  await waitFor(() => {
-    console.log(getByText('Save'));
-
-    console.log(window.location.pathname);
-    // expect(getByText('Settings edited successfully!'));
   });
 });

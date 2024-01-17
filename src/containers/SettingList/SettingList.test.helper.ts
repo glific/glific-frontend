@@ -92,6 +92,68 @@ const updateOrganisationMock = {
         endTime: '20:00:00',
         flowId: null,
         startTime: '09:00:00',
+        setting: {
+          lowBalanceThreshold: '10',
+          criticalBalanceThreshold: '5',
+          sendWarningMail: false,
+        },
+      },
+    },
+  },
+  result: {
+    data: {
+      updateOrganization: {
+        errors: null,
+        organization: {
+          activeLanguages: [
+            { id: '1', label: 'English' },
+            { id: '2', label: 'Hindi' },
+          ],
+          id: '1',
+          name: 'Glific',
+          outOfOffice: {
+            defaultFlowId: '7',
+            enabled: true,
+            enabledDays: [
+              { id: 1, enabled: true },
+              { id: 2, enabled: true },
+              { id: 3, enabled: true },
+              { id: 4, enabled: true },
+              { id: 5, enabled: true },
+              { id: 6, enabled: true },
+              { id: 7, enabled: true },
+            ],
+            endTime: '20:00:00',
+            flowId: null,
+            startTime: '09:00:00',
+          },
+          setting: {
+            lowBalanceThreshold: '10',
+            criticalBalanceThreshold: '5',
+            sendWarningMail: false,
+          },
+          shortcode: 'glific',
+        },
+      },
+    },
+  },
+};
+
+const updateOrganisationMock2 = {
+  request: {
+    query: UPDATE_ORGANIZATION,
+    variables: {
+      id: 1,
+      input: {
+        name: 'Glific',
+        activeLanguageIds: ['1', '2'],
+        signaturePhrase: 'Please change me, NOW!',
+        defaultLanguageId: '1',
+        setting: {
+          lowBalanceThreshold: '10',
+          criticalBalanceThreshold: '5',
+          sendWarningMail: false,
+        },
       },
     },
   },
@@ -142,4 +204,5 @@ export const ORGANISATION_MOCKS = [
   flowsMock,
   ...getOrganizationQuery,
   updateOrganisationMock,
+  updateOrganisationMock2,
 ];
