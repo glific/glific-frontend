@@ -12,6 +12,7 @@ import { getDisplayName } from 'common/utils';
 import { getOrganizationServices } from 'services/AuthService';
 import { GET_CONTACT_DETAILS, GET_CONTACT_PROFILES } from 'graphql/queries/Contact';
 import Loading from 'components/UI/Layout/Loading/Loading';
+import { AvatarDisplay } from 'components/UI/AvatarDisplay/AvatarDisplay';
 import { ContactDescription } from './ContactDescription/ContactDescription';
 import { Profile } from '../Profile';
 import { ContactHistory } from './ContactHistory/ContactHistory';
@@ -132,7 +133,16 @@ export const ContactProfile = () => {
                 setShowProfileSection('profile');
               }}
             >
-              <div className={styles.ProfileHeaderTitle}>{name}</div>
+              <div
+                className={
+                  id === selectedProfileId
+                    ? `${styles.ProfileHeaderTitle} ${styles.SelectedProfile}`
+                    : styles.ProfileHeaderTitle
+                }
+              >
+                <AvatarDisplay name={name} />
+                {name}
+              </div>
               {id === selectedProfileId ? <ExpandIcon /> : <CollapseIcon />}
             </div>
             <Collapse in={id === selectedProfileId || id === 'noProfile'}>

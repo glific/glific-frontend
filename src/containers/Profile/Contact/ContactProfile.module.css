@@ -72,6 +72,13 @@
 .ProfileHeaderTitle {
   font-size: 16px;
   font-weight: 500;
+  color: #717971;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.SelectedProfile {
   color: #191c1a;
 }
 
