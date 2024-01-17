@@ -15,7 +15,7 @@ import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { setNotification } from 'common/notification';
 import { PUBLISH_FLOW, RESET_FLOW_COUNT } from 'graphql/mutations/Flow';
 import { EXPORT_FLOW, GET_FLOW_DETAILS, GET_FREE_FLOW } from 'graphql/queries/Flow';
-import { setAuthHeaders } from 'services/AuthService';
+import { getOrganizationServices, setAuthHeaders } from 'services/AuthService';
 import { SideDrawerContext } from 'context/session';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import Track from 'services/TrackService';
@@ -48,6 +48,7 @@ export const FlowEditor = () => {
   const [currentEditDialogBox, setCurrentEditDialogBox] = useState(false);
   const [dialogMessage, setDialogMessage] = useState('');
   const { drawerOpen } = useContext(SideDrawerContext);
+  const isTranslationEnabled = getOrganizationServices('autoTranslationEnabled');
 
   let modal = null;
   let dialog = null;
@@ -420,16 +421,19 @@ export const FlowEditor = () => {
           >
             <ResetFlowIcon /> Reset flow counts
           </Button>
-          <Button
-            className={styles.Button}
-            variant="outlined"
-            color="primary"
-            data-testid="translateFlow"
-            onClick={() => setShowTranslateFlowModal(true)}
-            aria-hidden="true"
-          >
-            Translation
-          </Button>
+
+          {isTranslationEnabled && (
+            <Button
+              className={styles.Button}
+              variant="outlined"
+              color="primary"
+              data-testid="translateFlow"
+              onClick={() => setShowTranslateFlowModal(true)}
+              aria-hidden="true"
+            >
+              Translation
+            </Button>
+          )}
         </div>
         <div id="flow" />
         {loading && <Loading showTip />}
