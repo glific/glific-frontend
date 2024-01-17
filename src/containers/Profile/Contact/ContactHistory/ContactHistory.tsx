@@ -101,7 +101,6 @@ export const ContactHistory = ({ contactId, profileId }: ContactHistoryProps) =>
   const restrictedAction = () => ({ delete: false, edit: false });
   return (
     <div className={styles.HistoryContainer} data-testid="ContactHistory">
-      <div className={styles.Title}>{t('Contact History')}</div>
       <List
         title={t('Contact History')}
         listItem="contactHistory"
