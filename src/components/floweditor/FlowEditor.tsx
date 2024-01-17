@@ -19,6 +19,7 @@ import Track from 'services/TrackService';
 import { exportFlowMethod } from 'common/utils';
 import styles from './FlowEditor.module.css';
 import { checkElementInRegistry, loadfiles, setConfig } from './FlowEditor.helper';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { BackdropLoader, FlowTranslation } from 'containers/Flow/FlowTranslation';
 
 declare function showFlowEditor(node: any, config: any): void;
@@ -357,7 +358,7 @@ export const FlowEditor = () => {
             disableElevation
             onClick={handleClick}
           >
-            More
+            More <ArrowDropDownIcon />
           </Button>
           <Menu
             id="demo-customized-menu"
