@@ -1,12 +1,5 @@
 import { ReactNode } from 'react';
-import {
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  DialogContentText,
-  IconButton,
-} from '@mui/material';
+import { Dialog, DialogActions, DialogContent, DialogTitle, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { Button } from 'components/UI/Form/Button/Button';
 import styles from './DialogBox.module.css';
@@ -27,7 +20,6 @@ export interface DialogProps {
   alignButtons?: string;
   skipCancel?: boolean;
   skipOk?: boolean;
-  contentText?: string;
   disableOk?: boolean;
   alwaysOntop?: boolean;
   buttonMiddle?: string | null;
@@ -52,7 +44,6 @@ export const DialogBox = ({
   contentAlign = 'left',
   skipCancel = false,
   skipOk = false,
-  contentText,
   disableOk = false,
   alwaysOntop = false,
   buttonMiddle,
@@ -141,9 +132,6 @@ export const DialogBox = ({
         <CloseIcon />
       </IconButton>
       <DialogContent className={contentStyle} data-testid="dialog-content">
-        {contentText ? (
-          <DialogContentText id="alert-dialog-description">{contentText}</DialogContentText>
-        ) : null}
         {children}
       </DialogContent>
       <DialogActions className={dialogActionStyle}>
