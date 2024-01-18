@@ -17,17 +17,22 @@
   background-color: #f0f7f1;
 }
 
-.User {
+.UserOpen {
   padding: 12px;
   display: flex;
   align-items: center;
 }
 
-.User svg {
+.UserClosed {
+  padding: 16px;
+  display: flex;
+}
+
+.UserOpen svg {
   margin-right: 8px;
 }
 
-.User p {
+.UserOpen p {
   width: 130px;
   overflow: auto;
 }

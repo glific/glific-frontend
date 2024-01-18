@@ -179,16 +179,18 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
       <div className={styles.Chat} data-testid="chatContainer">
         {chatInterface}
       </div>
-      <SimulatorIcon
-        data-testid="simulatorIcon"
-        className={styles.SimulatorIcon}
-        onClick={() => {
-          setShowSimulator(!showSimulator);
-          if (showSimulator) {
-            setSimulatorId(0);
-          }
-        }}
-      />
+      {selectedTab === 'contacts' && !savedSearches && (
+        <SimulatorIcon
+          data-testid="simulatorIcon"
+          className={styles.SimulatorIcon}
+          onClick={() => {
+            setShowSimulator(!showSimulator);
+            if (showSimulator) {
+              setSimulatorId(0);
+            }
+          }}
+        />
+      )}
       {simulatorAccess && !selectedCollectionId && showSimulator ? (
         <Simulator setShowSimulator={handleCloseSimulator} getSimulatorId={getSimulatorId} />
       ) : null}
