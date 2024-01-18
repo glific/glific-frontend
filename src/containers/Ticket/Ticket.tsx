@@ -1,21 +1,19 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-
-import { Input } from 'components/UI/Form/Input/Input';
-
-import { FormLayout } from 'containers/Form/FormLayout';
 import { SupportAgent } from '@mui/icons-material';
+import { useQuery } from '@apollo/client';
+import dayjs from 'dayjs';
+
 import { GET_TICKET } from 'graphql/queries/Ticket';
 import { UPDATE_TICKET } from 'graphql/mutations/Ticket';
-
-import styles from './Ticket.module.css';
-import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
-import dayjs from 'dayjs';
-import { useQuery } from '@apollo/client';
 import { GET_USERS } from 'graphql/queries/User';
-import { EXTENDED_DATE_TIME_FORMAT, setVariables } from 'common/constants';
+import { Input } from 'components/UI/Form/Input/Input';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
-import Loading from 'components/UI/Layout/Loading/Loading';
+import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
+import { FormLayout } from 'containers/Form/FormLayout';
+import { EXTENDED_DATE_TIME_FORMAT, setVariables } from 'common/constants';
+import styles from './Ticket.module.css';
 
 export interface TicketProps {
   setOpenDialog: Function;
