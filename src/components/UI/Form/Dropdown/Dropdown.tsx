@@ -58,6 +58,7 @@ export const Dropdown = ({
               paper: styles.Paper,
             },
           }}
+          classes={{outlined: styles.Outlined}}
           value={fieldValue !== undefined ? fieldValue : value}
           {...rest}
           fullWidth
