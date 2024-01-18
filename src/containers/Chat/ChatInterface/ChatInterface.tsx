@@ -16,7 +16,6 @@ import SimulatorIcon from 'assets/images/icons/Simulator.svg?react';
 import CollectionConversations from '../CollectionConversations/CollectionConversations';
 import SavedSearches from '../SavedSearches/SavedSearches';
 import styles from './ChatInterface.module.css';
-import HelpIcon from 'components/UI/HelpIcon/HelpIcon';
 
 const tabs = [
   {
