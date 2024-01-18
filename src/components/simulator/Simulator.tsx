@@ -55,6 +55,7 @@ import { updateSimulatorConversations } from 'services/SubscriptionService';
 import styles from './Simulator.module.css';
 import { LocationRequestTemplate } from 'containers/Chat/ChatMessages/ChatMessage/LocationRequestTemplate/LocationRequestTemplate';
 import { BackdropLoader } from 'containers/Flow/FlowTranslation';
+import { SIMULATOR_RELEASE_SUBSCRIPTION } from 'graphql/subscriptions/PeriodicInfo';
 
 export interface SimulatorProps {
   setShowSimulator?: any;
@@ -197,27 +198,24 @@ export const Simulator = ({
     setInputMessage('');
   };
 
-  // Todo: think how to incorporate this
-  // useSubscription(SIMULATOR_RELEASE_SUBSCRIPTION, {
-  //   variables,
-  //   skip: isPreviewMessage,
-  //   onData: ({ data: simulatorSubscribe }) => {
-  //     console.log(simulatorSubscribe);
-  //     if (simulatorSubscribe.data) {
-  //       try {
-  //         const userId = JSON.parse(simulatorSubscribe.data.simulatorRelease).simulator_release
-  //           .user_id;
-  //         console.log(userId, getUserSession('id'));
-  //         if (userId.toString() === getUserSession('id')) {
-  //           console.log('jaaj');
-  //           setShowSimulator(false);
-  //         }
-  //       } catch (error) {
-  //         setLogs('simulator release error', 'error');
-  //       }
-  //     }
-  //   },
-  // });
+  useSubscription(SIMULATOR_RELEASE_SUBSCRIPTION, {
+    fetchPolicy: 'network-only',
+    variables,
+    skip: isPreviewMessage || simulatorId === '',
+    onData: ({ data: simulatorSubscribe }) => {
+      if (simulatorSubscribe.data) {
+        try {
+          const userId = JSON.parse(simulatorSubscribe.data.simulatorRelease).simulator_release
+            .user_id;
+          if (userId.toString() === getUserSession('id')) {
+            setShowSimulator(false);
+          }
+        } catch (error) {
+          setLogs('simulator release error', 'error');
+        }
+      }
+    },
+  });
 
   useSubscription(SIMULATOR_MESSAGE_SENT_SUBSCRIPTION, {
     variables,
