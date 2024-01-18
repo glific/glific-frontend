@@ -304,6 +304,7 @@ export const ContactBar = ({
         handleOk={handleClearChatSubmit}
         handleCancel={() => setClearChatDialog(false)}
         alignButtons="center"
+        titleAlign="left"
         buttonOk="YES, CLEAR"
         colorOk="warning"
         buttonCancel="MAYBE LATER"
