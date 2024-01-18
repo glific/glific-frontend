@@ -192,11 +192,7 @@ export const List = ({
   deleteItemQuery,
   listItemName,
   dialogMessage = '',
-  helpData = {
-    heading: '',
-    body: <></>,
-    link: '',
-  },
+  helpData,
   secondaryButton,
   pageLink,
   columns,
@@ -782,7 +778,7 @@ export const List = ({
             <div>
               <div className={styles.Title}>
                 <div className={styles.TitleText}> {title}</div>
-                <HelpIcon helpData={helpData} />
+                {helpData && <HelpIcon helpData={helpData} />}
               </div>
             </div>
             <div>

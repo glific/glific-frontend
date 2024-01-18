@@ -145,7 +145,6 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
         <div className={`${styles.ChatConversations} ChatConversations`}>
           <div className={styles.Title}>
             <div className={styles.Heading}> {heading}</div>
-            <HelpIcon helpData={{ heading: 'hey', body: <></>, link: '' }} />
           </div>
 
           <div className={styles.TabContainer}>
