@@ -90,7 +90,7 @@ export const AutoComplete = ({
   const [searchTerm, setSearchTerm] = useState('');
   const [open, setOpen] = useState(false);
 
-  let classStyles = { ...classes, input: styles.DefaultInputRoot };
+  let classStyles = { ...classes, inputRoot: styles.DefaultInputRoot };
 
   if (isFilterType) {
     classStyles = {

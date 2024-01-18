@@ -50,6 +50,12 @@ export const TimePicker = ({
           onChange={handleDateChange}
           slotProps={{
             textField: {
+              inputProps: {
+                className: styles.Input,
+              },
+              InputLabelProps: {
+                className: styles.Label,
+              },
               helperText: hasError ? errorText : '',
               error: hasError,
               onClick: () => !disabled && setOpen(true),

@@ -17,6 +17,14 @@
   margin-top: 4px;
 }
 
+.Input {
+  padding: 12.5px 14px;
+}
+
+.Label {
+  top: -3px;
+}
+
 @media screen and (max-width: 768px) {
   .picker,
   .TimePicker {
