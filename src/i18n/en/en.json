@@ -434,5 +434,10 @@
   "Sorry, failed to sync HSM updates.": "Sorry, failed to sync HSM updates.",
   "HSMs updated successfully.": "HSMs updated successfully.",
   "Preview": "Preview",
-  "An error occured while translating flows.": "An error occured while translating flows."
+  "An error occured while translating flows.": "An error occured while translating flows.",
+  "Export with auto translate": "Export with auto translate",
+  "Generate translations for all available languages automatically.": "Generate translations for all available languages automatically.",
+  "Translate the content and export it as a CSV file.": "Translate the content and export it as a CSV file.",
+  "Export the content without any automatic translations.": "Export the content without any automatic translations.",
+  "Import translations from a CSV file into the application.": "Import translations from a CSV file into the application."
 }
