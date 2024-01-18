@@ -29,10 +29,6 @@ const theme = createTheme({
         },
       },
     },
-    // Todo: Override Mui backdrop color
-    MuiBackdrop: {
-      styleOverrides: {},
-    },
     MuiTabs: {
       styleOverrides: {
         root: {
