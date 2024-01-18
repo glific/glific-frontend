@@ -490,7 +490,7 @@ export const FormLayout = ({
       ...languageAttributes,
       component: Dropdown,
       name: 'languageId',
-      placeholder: t('Language'),
+      label: t('Language'),
       options: languageOptions,
       validate: validateLanguage,
       helperText: t('For more languages check settings or connect with your admin'),

@@ -53,7 +53,9 @@ test('opened simulator should close when click of simulator icon', async () => {
       <Simulator {...props} />
     </MockedProvider>
   );
-
+  await waitFor(() => {
+    expect(getByTestId('clearIcon')).toBeInTheDocument();
+  });
   // To open simulator
   const button = getByTestId('clearIcon');
   fireEvent.click(button);
@@ -65,14 +67,16 @@ test('opened simulator should close when click of simulator icon', async () => {
 test('send a message/media from the simulator', async () => {
   const props = getDefaultProps();
   props.showSimulator = true;
-
+  mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
   const { getByTestId } = render(
     <MockedProvider mocks={mocks}>
       <Simulator {...props} />
     </MockedProvider>
   );
-  mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
 
+  await waitFor(() => {
+    expect(getByTestId('simulatorInput')).toBeInTheDocument();
+  });
   const input = getByTestId('simulatorInput');
   fireEvent.change(input, { target: { value: 'something' } });
 
@@ -112,77 +116,6 @@ test('click on clear icon closes the simulator', async () => {
   expect(mockSetShowSimulator).toBeCalled();
 });
 
-const body = {
-  id: '1',
-  body: 'Hey there whats up?',
-  insertedAt: '2020-06-25T13:36:43Z',
-  location: null,
-  messageNumber: 48,
-  receiver: {
-    id: '1',
-  },
-  sender: {
-    id: '2',
-  },
-  type: 'TEXT',
-  media: null,
-  errors: '{}',
-  contextMessage: {
-    body: 'All good',
-    contextId: 1,
-    messageNumber: 10,
-    errors: '{}',
-    media: null,
-    type: 'TEXT',
-    insertedAt: '2021-04-26T06:13:03.832721Z',
-    location: null,
-    receiver: {
-      id: '1',
-    },
-    sender: {
-      id: '2',
-      name: 'User',
-    },
-  },
-  interactiveContent: '{}',
-  sendBy: 'test',
-  flowLabel: null,
-};
-const cache = new InMemoryCache({ addTypename: false });
-export const searchQuery = {
-  query: SEARCH_QUERY,
-  variables: {
-    filter: {},
-    contactOpts: { limit: DEFAULT_CONTACT_LIMIT },
-    messageOpts: { limit: DEFAULT_MESSAGE_LIMIT },
-  },
-  data: {
-    search: [
-      {
-        group: null,
-        contact: {
-          id: '2',
-          name: 'Effie Cormier',
-          phone: '987654321',
-          fields: '{}',
-          maskedPhone: '98****321',
-          lastMessageAt: new Date(),
-          status: 'VALID',
-          bspStatus: 'SESSION_AND_HSM',
-          isOrgRead: true,
-        },
-        messages: [body],
-      },
-    ],
-  },
-};
-
-cache.writeQuery(searchQuery);
-const client = new ApolloClient({
-  cache: cache,
-  assumeImmutableResults: true,
-});
-
 const HSMProps: any = {
   showSimulator: true,
   setShowSimulator: mockSetShowSimulator,
@@ -192,18 +125,21 @@ const HSMProps: any = {
 };
 
 const HSMSimulator = (
-  <ApolloProvider client={client}>
+  <MockedProvider mocks={mocks}>
     <Simulator {...HSMProps} />
-  </ApolloProvider>
+  </MockedProvider>
 );
 
 test('simulator should open by default in preview HSM', async () => {
+  mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
   const { getByTestId } = render(HSMSimulator);
-
-  expect(getByTestId('beneficiaryName')).toBeInTheDocument();
+  await waitFor(() => {
+    expect(getByTestId('beneficiaryName')).toBeInTheDocument();
+  });
 });
 
 test('simulator icon should not be seen in preview HSM', async () => {
+  mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
   const { getByTestId } = render(HSMSimulator);
   expect(() => getByTestId('simulatorIcon')).toThrow();
 });
@@ -216,32 +152,37 @@ test('simulator should render template message', () => {
     body: 'This is time for play. | [view contact, +917834811114]\n',
   };
   render(
-    <ApolloProvider client={client}>
+    <MockedProvider mocks={mocks}>
       <Simulator {...HSMProps} />
-    </ApolloProvider>
+    </MockedProvider>
   );
 });
 
-// const getFlowKeywordMock = vi.fn();
-// const props = {
-//   showSimulator: true,
-//   setSimulatorId: vi.fn(),
-//   simulatorIcon: true,
-//   isPreviewMessage: false,
-//   flowSimulator: false,
-//   getFlowKeyword: getFlowKeywordMock,
-//   hasResetButton: true,
-// };
+const props = {
+  showSimulator: true,
+  setSimulatorId: vi.fn(),
+  message: 'fake_message',
+  simulatorIcon: true,
+  isPreviewMessage: false,
+  flowSimulator: false,
+  hasResetButton: true,
+};
 
-// Todo: fix this test
-// test('simulator should reset on clicking the reset button message', () => {
-//   const { getByTestId } = render(
-//     <MockedProvider mocks={mocks}>
-//       <Simulator {...props} />
-//     </MockedProvider>
-//   );
+test('simulator should reset on clicking the reset button message', async () => {
+  mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
+  const { getByTestId } = render(
+    <MockedProvider mocks={mocks}>
+      <Simulator {...props} />
+    </MockedProvider>
+  );
 
-//   const resetButton = getByTestId('resetIcon');
-//   fireEvent.click(resetButton);
-//   expect(getFlowKeywordMock).toBeCalled();
-// });
+  await waitFor(() => {
+    expect(getByTestId('resetIcon')).toBeInTheDocument();
+  });
+
+  const resetButton = getByTestId('resetIcon');
+  fireEvent.click(resetButton);
+  await waitFor(() => {
+    expect(mockedAxios.post).toHaveBeenCalledTimes(4);
+  });
+});

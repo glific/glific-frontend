@@ -644,10 +644,7 @@ const Template = ({
           options: languageOptions,
           optionLabel: 'label',
           multiple: false,
-          textFieldProps: {
-            variant: 'outlined',
-            label: `${t('Language')}*`,
-          },
+          label: `${t('Language')}*`,
           disabled: isEditing,
           onChange: getLanguageId,
         }

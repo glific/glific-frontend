@@ -69,6 +69,9 @@
   left: 520px !important;
   top: 0px !important;
 }
+.CollectionInformation {
+  margin-right: 30px;
+}
 
 .CollectionInformation > .InfoWrapper {
   display: contents !important;

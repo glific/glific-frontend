@@ -54,6 +54,7 @@ import {
 import { updateSimulatorConversations } from 'services/SubscriptionService';
 import styles from './Simulator.module.css';
 import { LocationRequestTemplate } from 'containers/Chat/ChatMessages/ChatMessage/LocationRequestTemplate/LocationRequestTemplate';
+import { BackdropLoader } from 'containers/Flow/FlowTranslation';
 
 export interface SimulatorProps {
   setShowSimulator?: any;
@@ -62,10 +63,14 @@ export interface SimulatorProps {
   flowSimulator?: boolean;
   isPreviewMessage?: boolean;
   getSimulatorId?: any;
-  getFlowKeyword?: Function;
   interactiveMessage?: any;
   showHeader?: boolean;
   hasResetButton?: boolean;
+}
+
+interface Sender {
+  name: string;
+  phone: string;
 }
 
 const getStyleForDirection = (
@@ -140,14 +145,14 @@ export const Simulator = ({
 
   let messages: any[] = [];
   let simulatorId = '';
-  const sender = {
+  const sender: Sender = {
     name: '',
     phone: '',
   };
   // chat messages will be shown on simulator
   const isSimulatedMessage = true;
 
-  const sendMessage = (senderDetails: any, interactivePayload?: any, templateValue?: any) => {
+  const sendMessage = (senderDetails: Sender, interactivePayload?: any, templateValue?: any) => {
     const sendMessageText = inputMessage === '' && message ? message : inputMessage;
 
     // check if send message text is not empty
@@ -422,13 +427,6 @@ export const Simulator = ({
     }
   }, [allConversations]);
 
-  // // for sending message to Gupshup
-  // useEffect(() => {
-  //   if (!isPreviewMessage && message) {
-  //     sendMessage(sender);
-  //   }
-  // }, [message]);
-
   useEffect(() => {
     if (isPreviewMessage && interactiveMessage) {
       getPreviewMessage();
@@ -617,5 +615,11 @@ export const Simulator = ({
         setNotification('Sorry! Failed to get simulator', 'warning');
       });
   };
-  return simulator;
+  return isPreviewMessage ? (
+    simulator
+  ) : simulatorId ? (
+    simulator
+  ) : (
+    <BackdropLoader text="Please wait while the simulator is loading" />
+  );
 };

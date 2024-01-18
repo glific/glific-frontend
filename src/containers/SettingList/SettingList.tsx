@@ -82,7 +82,6 @@ export const SettingList = () => {
     </div>
   );
 
-  // Todo: we should do this with a better approach
   const formheading = (pathname: string) => {
     if (pathname == '/settings') {
       return 'Organisation';
