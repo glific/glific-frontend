@@ -30,7 +30,7 @@ import { setNotification, setErrorMessage } from 'common/notification';
 import { getUpdatedList, setListSession, getLastListSessionValues } from 'services/ListService';
 import styles from './List.module.css';
 import Track from 'services/TrackService';
-import Loading from 'components/UI/Layout/Loading/Loading';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
 import HelpIcon from 'components/UI/HelpIcon/HelpIcon';
 
 const actionListMap = (item: any, actionList: any, hasMoreOption: boolean) => {

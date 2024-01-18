@@ -11,7 +11,7 @@ import { STANDARD_DATE_TIME_FORMAT } from 'common/constants';
 import { getDisplayName } from 'common/utils';
 import { getOrganizationServices } from 'services/AuthService';
 import { GET_CONTACT_DETAILS, GET_CONTACT_PROFILES } from 'graphql/queries/Contact';
-import Loading from 'components/UI/Layout/Loading/Loading';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { AvatarDisplay } from 'components/UI/AvatarDisplay/AvatarDisplay';
 import { Heading } from 'components/UI/Heading/Heading';
 import { ContactDescription } from './ContactDescription/ContactDescription';

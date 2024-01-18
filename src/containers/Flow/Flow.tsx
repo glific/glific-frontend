@@ -13,7 +13,7 @@ import { GET_ORGANIZATION } from 'graphql/queries/Organization';
 import { GET_FLOW } from 'graphql/queries/Flow';
 import { getAddOrRemoveRoleIds } from 'common/utils';
 import { setErrorMessage } from 'common/notification';
-import Loading from 'components/UI/Layout/Loading/Loading';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
 import styles from './Flow.module.css';
 import { GET_TAGS } from 'graphql/queries/Tags';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';

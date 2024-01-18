@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import searchIcon from 'assets/images/icons/Search/Desktop.svg';
 import { setErrorMessage } from 'common/notification';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
-import Loading from 'components/UI/Layout/Loading/Loading';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { SAVED_SEARCH_QUERY } from 'graphql/queries/Search';
 import ConversationList from 'containers/Chat/ChatConversations/ConversationList/ConversationList';
 import styles from './SavedSearches.module.css';
