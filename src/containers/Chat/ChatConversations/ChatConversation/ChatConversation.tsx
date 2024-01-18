@@ -12,6 +12,7 @@ import { MessageType } from '../MessageType/MessageType';
 import styles from './ChatConversation.module.css';
 import Track from 'services/TrackService';
 import { slicedString } from 'common/utils';
+import { AvatarDisplay } from 'components/UI/AvatarDisplay/AvatarDisplay';
 
 export interface ChatConversationProps {
   contactId: number;
@@ -209,14 +210,7 @@ const ChatConversation = ({
     >
       <div>
         {entityType === 'contact' ? (
-          <div className={styles.Profile}>
-            <div className={styles.ProfileName}>{name.charAt(0).toUpperCase()}</div>
-            {!contactIsOrgRead && (
-              <div className={`${styles.ProfileStatus} ${selected && styles.SelectedColor}`}>
-                <div className={styles.ProfileStatusCircle} />
-              </div>
-            )}
-          </div>
+          <AvatarDisplay name={name} badgeDisplay={!contactIsOrgRead} />
         ) : (
           ''
         )}

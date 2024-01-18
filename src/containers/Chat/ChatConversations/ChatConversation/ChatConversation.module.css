@@ -107,37 +107,3 @@
   height: 75px;
   padding-top: 22px;
 }
-
-.Profile {
-  width: 40px;
-  height: 40px;
-  background-color: #f2f2f2;
-  border-radius: 99%;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #212121;
-  font-size: 16px;
-  font-weight: 500;
-}
-
-.ProfileStatus {
-  position: absolute;
-  width: 16px;
-  height: 16px;
-  background-color: #fff;
-  border-radius: 99%;
-  right: -4px;
-  top: -4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.ProfileStatusCircle {
-  width: 8px;
-  height: 8px;
-  background-color: #119656;
-  border-radius: 99%;
-}
