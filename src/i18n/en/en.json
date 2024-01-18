@@ -448,5 +448,7 @@
   "Low balance threshold for warning emails": "Low balance threshold for warning emails",
   "Threshold value should not be negative!": "Threshold value should not be negative!",
   "Low Balance Threshold is required.": "Low Balance Threshold is required.",
-  "Critical Balance Threshold is required.": "Critical Balance Threshold is required."
+  "Critical Balance Threshold is required.": "Critical Balance Threshold is required.",
+  "Recieve critical balance threshold mails every two days.": "Recieve critical balance threshold mails every two days.",
+  "Recieve low balance threshold mails once a week.": "Recieve low balance threshold mails once a week."
 }

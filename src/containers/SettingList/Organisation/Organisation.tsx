@@ -222,6 +222,7 @@ export const Organisation = () => {
       type: 'number',
       placeholder: t('Low balance threshold for warning emails'),
       disabled: !sendWarningMail,
+      helperText: t('Recieve low balance threshold mails once a week.'),
     },
     {
       component: Input,
@@ -229,6 +230,7 @@ export const Organisation = () => {
       type: 'number',
       placeholder: t('Critical balance threshold for warning emails'),
       disabled: !sendWarningMail,
+      helperText: t('Recieve critical balance threshold mails every two days.'),
     },
   ];
 
