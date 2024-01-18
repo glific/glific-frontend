@@ -775,7 +775,7 @@ export const List = ({
   }
 
   return (
-    <>
+    <div className={styles.ListContainer}>
       {showHeader && (
         <>
           <div className={styles.Header} data-testid="listHeader">
@@ -824,6 +824,6 @@ export const List = ({
         {/* Rendering list of items */}
         {displayList}
       </div>
-    </>
+    </div>
   );
 };

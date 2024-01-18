@@ -283,3 +283,8 @@
 .Backdrop {
   z-index: 1000;
 }
+
+.ListContainer {
+  height: 100vh;
+  background-color: #f8faf5;
+}
