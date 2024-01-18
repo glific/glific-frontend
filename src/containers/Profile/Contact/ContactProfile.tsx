@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
@@ -124,8 +124,10 @@ export const ContactProfile = () => {
   const drawer = (
     <div className={styles.Drawer}>
       {profileHeaders.map(({ id, name }) => {
+        const showProfileSelected = id === selectedProfileId || id === 'noProfile';
+
         return (
-          <div className={styles.ProfileHeaderContainer} key={id}>
+          <React.Fragment key={id}>
             <div
               className={styles.ProfileHeader}
               onClick={() => {
@@ -135,7 +137,7 @@ export const ContactProfile = () => {
             >
               <div
                 className={
-                  id === selectedProfileId
+                  showProfileSelected
                     ? `${styles.ProfileHeaderTitle} ${styles.SelectedProfile}`
                     : styles.ProfileHeaderTitle
                 }
@@ -143,9 +145,9 @@ export const ContactProfile = () => {
                 <AvatarDisplay name={name} />
                 {name}
               </div>
-              {id === selectedProfileId ? <ExpandIcon /> : <CollapseIcon />}
+              {showProfileSelected ? <ExpandIcon /> : <CollapseIcon />}
             </div>
-            <Collapse in={id === selectedProfileId || id === 'noProfile'}>
+            <Collapse in={showProfileSelected}>
               <div className={styles.ProfileHeaderElements}>
                 {list.map((data: any, index: number) => {
                   return (
@@ -162,7 +164,7 @@ export const ContactProfile = () => {
                 })}
               </div>
             </Collapse>
-          </div>
+          </React.Fragment>
         );
       })}
     </div>
