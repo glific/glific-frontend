@@ -4,3 +4,9 @@
   font-size: inherit;
   font-weight: 500;
 }
+
+.Large {
+  width: 48px;
+  height: 48px;
+  font-size: 26px;
+}

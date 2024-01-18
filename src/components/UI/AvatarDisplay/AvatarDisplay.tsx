@@ -9,14 +9,14 @@ export interface AvatarDisplayProps {
   badgeDisplay?: boolean;
 }
 
-export const AvatarDisplay = ({
-  name,
-  type = 'normal',
-  badgeDisplay = false,
-}: AvatarDisplayProps) => {
+export const AvatarDisplay = ({ name, type, badgeDisplay = false }: AvatarDisplayProps) => {
   const nameInitials = name.split(' ')[0][0];
 
-  let avatarContent = <Avatar className={styles.Default}>{nameInitials}</Avatar>;
+  const avatarClasses = [styles.Default];
+  if (type === 'large') {
+    avatarClasses.push(styles.Large);
+  }
+  let avatarContent = <Avatar className={avatarClasses.join(' ')}>{nameInitials}</Avatar>;
 
   if (badgeDisplay) {
     avatarContent = (
