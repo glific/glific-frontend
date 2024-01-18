@@ -1,16 +1,7 @@
 .DescriptionContainer {
   min-height: 100vh;
-  padding: 56px 46px;
+  padding: 16px 53px;
   background-color: #fff;
-}
-
-.Title {
-  color: #555555;
-  font-size: 20px;
-  font-weight: 500;
-  line-height: 18px;
-  letter-spacing: 0px;
-  margin-left: 10px;
 }
 
 .Description {

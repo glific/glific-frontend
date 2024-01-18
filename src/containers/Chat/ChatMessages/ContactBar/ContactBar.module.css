@@ -207,20 +207,6 @@
   width: 100%;
 }
 
-.ProfileName {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-  background-color: #f2f2f2;
-  border-radius: 99%;
-  color: #191c1a;
-  font-size: 26px;
-  font-weight: 500;
-  line-height: 16px;
-}
-
 @media only screen and (max-width: 768px) {
   .ContactBar {
     border-bottom: unset;

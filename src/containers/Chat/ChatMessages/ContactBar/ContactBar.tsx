@@ -10,15 +10,11 @@ import {
   IconButton,
 } from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
-
 import { useMutation, useLazyQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
-import styles from './ContactBar.module.css';
-import { SearchDialogBox } from '../../../../components/UI/SearchDialogBox/SearchDialogBox';
-import { TerminateFlow } from './TerminateFlow/TerminateFlow';
 
 import TerminateFlowIcon from 'assets/images/icons/Automations/Terminate.svg?react';
-import DropdownIcon from '../../../../assets/images/icons/BrownDropdown.svg?react';
+import ExpandIcon from '../../../../assets/images/icons/Expand.svg?react';
 import AddContactIcon from '../../../../assets/images/icons/Contact/Light.svg?react';
 import BlockIcon from '../../../../assets/images/icons/Block.svg?react';
 import BlockDisabledIcon from '../../../../assets/images/icons/BlockDisabled.svg?react';
@@ -37,6 +33,7 @@ import { GET_FLOWS } from '../../../../graphql/queries/Flow';
 import { ADD_FLOW_TO_CONTACT, ADD_FLOW_TO_COLLECTION } from '../../../../graphql/mutations/Flow';
 import { UPDATE_CONTACT } from '../../../../graphql/mutations/Contact';
 import { SEARCH_QUERY } from '../../../../graphql/queries/Search';
+import { CLEAR_MESSAGES } from '../../../../graphql/mutations/Chat';
 import { setErrorMessage, setNotification } from '../../../../common/notification';
 import {
   FLOW_STATUS_PUBLISHED,
@@ -47,11 +44,15 @@ import {
 import { Timer } from '../../../../components/UI/Timer/Timer';
 import { DialogBox } from '../../../../components/UI/DialogBox/DialogBox';
 import { Tooltip } from '../../../../components/UI/Tooltip/Tooltip';
-import { CLEAR_MESSAGES } from '../../../../graphql/mutations/Chat';
+import { AvatarDisplay } from 'components/UI/AvatarDisplay/AvatarDisplay';
+import { SearchDialogBox } from '../../../../components/UI/SearchDialogBox/SearchDialogBox';
+import { TerminateFlow } from './TerminateFlow/TerminateFlow';
 import { showChats } from '../../../../common/responsive';
 import { slicedString } from 'common/utils';
 import { CollectionInformation } from '../../../Collection/CollectionInformation/CollectionInformation';
 import AddContactsToCollection from '../AddContactsToCollection/AddContactsToCollection';
+
+import styles from './ContactBar.module.css';
 
 const status = ['SESSION', 'SESSION_AND_HSM', 'HSM'];
 
@@ -600,7 +601,7 @@ export const ContactBar = ({
           <div className={styles.ContactInfoWrapper}>
             <div className={styles.InfoWrapperRight}>
               <div className={styles.ContactDetails}>
-                <div className={styles.ProfileName}>{displayName.charAt(0).toUpperCase()}</div>
+                <AvatarDisplay name={displayName} type="large" />
                 <Typography
                   className={styles.Title}
                   variant="h6"
@@ -617,7 +618,7 @@ export const ContactBar = ({
                     onKeyPress={handleConfigureIconClick}
                     aria-hidden
                   >
-                    <DropdownIcon />
+                    <ExpandIcon />
                   </div>
                 </ClickAwayListener>
               </div>

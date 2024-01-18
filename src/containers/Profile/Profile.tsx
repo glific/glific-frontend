@@ -173,10 +173,6 @@ export const Profile = ({
     },
   ];
 
-  if (isContactProfileEnabled && hasMultipleProfiles) {
-    formFields.splice(0, 0, multiProfileAttributes);
-  }
-
   let type: any;
   let pageTitle = t('Contact Profile');
   if (profileType === 'User' || loggedInUserContactId === currentContactId) {

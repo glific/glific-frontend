@@ -1,16 +1,7 @@
 .HistoryContainer {
   height: fit-content;
-  padding-bottom: 0;
+  padding: 16px 0px;
   background-color: #f8faf5;
-}
-
-.Title {
-  color: #555555;
-  font-size: 20px;
-  font-weight: 500;
-  line-height: 18px;
-  letter-spacing: 0px;
-  padding: 56px 50px 0 50px;
 }
 
 .DetailBlock {
