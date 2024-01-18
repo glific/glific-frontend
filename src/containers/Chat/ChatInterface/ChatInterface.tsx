@@ -147,7 +147,7 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
           </div>
 
           <div className={styles.TabContainer}>
-            <Tabs value={value} onChange={handleTabChange} aria-label="basic tabs example">
+            <Tabs value={value} onChange={handleTabChange} aria-label="chat tabs">
               {tabs.map((tab) => (
                 <Tab
                   key={tab.label}
