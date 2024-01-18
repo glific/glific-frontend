@@ -1,11 +1,8 @@
 import { render, waitFor, fireEvent, screen } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
-import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT } from 'common/constants';
-import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import axios from 'axios';
 import { vi } from 'vitest';
 
-import { SEARCH_QUERY } from 'graphql/queries/Search';
 import { conversationQuery } from 'mocks/Chat';
 import {
   messageReceivedSubscription,
