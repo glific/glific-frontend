@@ -79,6 +79,11 @@
   color: #777;
 }
 
+.BackdropRoot {
+  background-color:rgba(0, 0, 0, 0.6);
+
+}
+
 @media only screen and (max-width: 768px) {
   .DialogboxPaper {
     min-width: 240px !important;

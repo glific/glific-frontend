@@ -113,6 +113,13 @@ export const DialogBox = ({
   }
   return (
     <Dialog
+      slotProps={{
+        backdrop: {
+          classes: {
+            root: styles.BackdropRoot,
+          },
+        },
+      }}
       data-testid="dialogBox"
       open={open}
       classes={{

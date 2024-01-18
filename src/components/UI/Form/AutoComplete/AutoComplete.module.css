@@ -35,9 +35,10 @@
   cursor: pointer;
   font-size: 14px;
 }
+
 .DeleteIcon {
   width: 8px;
-  margin-right: 13px;
+  margin-right: 13px !important;
 }
 
 .Paper > ul > li:hover {
