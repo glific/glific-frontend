@@ -1,10 +1,11 @@
 import { MockedProvider } from '@apollo/client/testing';
-import { cleanup, fireEvent, render, waitFor, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, waitFor, screen, act } from '@testing-library/react';
 import axios from 'axios';
 import { vi } from 'vitest';
 
-import { uploadMediaMock } from 'mocks/Attachment';
+import { uploadMediaMock, uploadMediaErrorMock } from 'mocks/Attachment';
 import { AddAttachment } from './AddAttachment';
+import { setNotification } from 'common/notification';
 
 vi.mock('axios');
 const mockedAxios = axios as any;
@@ -17,7 +18,7 @@ const setAttachmentType = vi.fn();
 beforeEach(() => {
   cleanup();
 });
-const mocks = [uploadMediaMock, uploadMediaMock];
+const mocks = [uploadMediaMock];
 
 const addAttachment = (attachmentType = '', attachmentURL = '') => {
   const defaultProps = {
@@ -35,6 +36,14 @@ const addAttachment = (attachmentType = '', attachmentURL = '') => {
     </MockedProvider>
   );
 };
+
+vi.mock('common/notification', async (importOriginal) => {
+  const mod = await importOriginal<typeof import('common/notification')>()
+  return {
+    ...mod,
+    setNotification: vi.fn((...args) => { return args[1] }),
+  }
+})
 
 beforeEach(() => {
   mockedAxios.get.mockImplementation(() =>
@@ -58,33 +67,30 @@ test('uploading a file', async () => {
   });
 });
 
-// Need to clean previous test cases renders
+test('add a valid attachment', async () => {
+  const responseData = { data: { is_valid: true } };
+  act(() => {
+    mockedAxios.get.mockImplementationOnce(() => Promise.resolve(responseData));
+  });
+  render(addAttachment('IMAGE', 'https://glific.com'));
 
-// test('add an attachment', async () => {
-//   const { getByTestId, getByText } = render(addAttachment('IMAGE', 'https://glific.com'));
-//   const responseData = { data: { is_valid: true } };
-//   act(() => {
-//     mockedAxios.get.mockImplementationOnce(() => Promise.resolve(responseData));
-//   });
-//   fireEvent.click(getByTestId('ok-button'));
+  await waitFor(() => {
+    expect(setAttachmentAdded).toHaveBeenCalled();
+  });
+});
 
-//   await waitFor(() => {
-//     expect(setAttachmentAdded).toHaveBeenCalled();
-//   });
-// });
+test('attachment is invalid', async () => {
+  const responseData = { data: { is_valid: false, message: 'Content type not valid' } };
+  act(() => {
+    mockedAxios.get.mockImplementationOnce(() => Promise.resolve(responseData));
+  });
 
-// test('attachment is invalid', async () => {
-//   const { getByTestId, getByText } = render(addAttachment('IMAGE', 'https://glific.com'));
-//   const responseData = { data: { is_valid: false, message: 'Content type not valid' } };
-//   act(() => {
-//     mockedAxios.get.mockImplementationOnce(() => Promise.resolve(responseData));
-//   });
-//   fireEvent.click(getByTestId('ok-button'));
+  render(addAttachment('IMAGE', 'https://glific.com'));
 
-//   await waitFor(() => {
-//     expect(getByText('Content type not valid')).toBeInTheDocument();
-//   });
-// });
+  await waitFor(() => {
+    expect(screen.getByText('Content type not valid')).toBeInTheDocument();
+  });
+});
 
 test('it should reset type if cross icon is clicked', () => {
   const { getByTestId } = render(addAttachment('IMAGE'));
@@ -117,3 +123,46 @@ test('show warnings if attachment type is sticker', () => {
   const helpText = screen.getByText('Animated stickers are not supported.');
   expect(helpText).toBeInTheDocument();
 });
+
+test('should get error notification if uploading media fails', async () => {
+  const defaultProps = {
+    setAttachment,
+    setAttachmentURL,
+    setAttachmentAdded,
+    setAttachmentType,
+    attachmentURL: '',
+    attachmentType: 'IMAGE',
+    uploadPermission: true,
+  };
+  render(<MockedProvider mocks={[uploadMediaErrorMock]}>
+    <AddAttachment {...defaultProps} />
+  </MockedProvider>)
+
+  const file = { name: 'photo.png' };
+
+  fireEvent.change(screen.getByTestId('uploadFile'), { target: { files: [file] } });
+
+  await waitFor(() => {
+    expect(setNotification).toHaveReturnedWith('warning');
+  });
+})
+
+test('successful media submission', async () => {
+  const responseData = { data: { is_valid: true } };
+  act(() => {
+    mockedAxios.get.mockImplementationOnce(() => Promise.resolve(responseData));
+  });
+  render(addAttachment('IMAGE', 'https://glific.com'));
+
+  // delay to let url validation complete
+  await waitFor(() => new Promise(res => setTimeout(res, 50)));
+
+  await waitFor(() => {
+    fireEvent.click(screen.getByTestId('ok-button'));
+  })
+  await waitFor(() => {
+    expect(setAttachmentType).toHaveBeenCalledWith('IMAGE');
+    expect(setAttachmentURL).toHaveBeenCalledWith('https://glific.com')
+    expect(setAttachment).toHaveBeenCalledWith(false);
+  })
+})
