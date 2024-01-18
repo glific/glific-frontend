@@ -65,18 +65,6 @@ const actionListMap = (item: any, actionList: any, hasMoreOption: boolean) => {
       );
     }
 
-    if (action.textButton) {
-      return (
-        <div
-          className={styles.ViewButton}
-          onClick={() => action.dialog(additionalActionParameter, item)}
-          key={key}
-        >
-          {action.textButton}
-        </div>
-      );
-    }
-
     if (action.link) {
       return (
         <Link to={`${action.link}/${additionalActionParameter}`} key={key}>
