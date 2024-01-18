@@ -675,7 +675,6 @@ const Template = ({
       component: EmojiInput,
       name: 'body',
       label: t('Message'),
-      placeholder: t('Type your message'),
       rows: 5,
       convertToWhatsApp: true,
       textArea: true,

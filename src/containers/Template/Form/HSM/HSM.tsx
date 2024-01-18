@@ -99,7 +99,6 @@ export const HSM = () => {
       component: EmojiInput,
       name: 'example',
       label: `${t('Sample message')}*`,
-      placeholder: `${t('Type your message')}*`,
       rows: 5,
       convertToWhatsApp: true,
       textArea: true,

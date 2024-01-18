@@ -43,7 +43,14 @@
 }
 
 .OutlineInput :global(.public-DraftEditor-content) {
-  padding-bottom: 81px;
+  height: 100px;
+  width: 100%;
+}
+
+.OutlineInput :global(.DraftEditor-root) {
+  height: 100px;
+  overflow: auto;
+  width: 100%;
 }
 
 .DangerText {
