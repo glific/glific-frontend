@@ -1,8 +1,9 @@
+import { useState } from 'react';
 import { CircularProgress, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+
 import { productTips } from './ProductTip';
 import styles from './Loading.module.css';
-import { useState } from 'react';
 
 export interface LoadingProps {
   message?: string;
@@ -41,5 +42,3 @@ export const Loading = ({ message, showTip = false, whiteBackground = false }: L
     </>
   );
 };
-
-export default Loading;

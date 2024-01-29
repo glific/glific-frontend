@@ -75,8 +75,13 @@
 .CloseIcon {
   position: absolute;
   right: 8px;
-  top: 20px;
+  top: 10px;
   color: #777;
+}
+
+.BackdropRoot {
+  background-color:rgba(0, 0, 0, 0.6);
+
 }
 
 @media only screen and (max-width: 768px) {

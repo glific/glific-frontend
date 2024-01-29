@@ -30,7 +30,7 @@ import { setNotification, setErrorMessage } from 'common/notification';
 import { getUpdatedList, setListSession, getLastListSessionValues } from 'services/ListService';
 import styles from './List.module.css';
 import Track from 'services/TrackService';
-import Loading from 'components/UI/Layout/Loading/Loading';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
 import HelpIcon from 'components/UI/HelpIcon/HelpIcon';
 
 const actionListMap = (item: any, actionList: any, hasMoreOption: boolean) => {
@@ -65,18 +65,6 @@ const actionListMap = (item: any, actionList: any, hasMoreOption: boolean) => {
             </div>
           </MenuItem>
         </Fragment>
-      );
-    }
-
-    if (action.textButton) {
-      return (
-        <div
-          className={styles.ViewButton}
-          onClick={() => action.dialog(additionalActionParameter, item)}
-          key={key}
-        >
-          {action.textButton}
-        </div>
       );
     }
 
@@ -195,11 +183,7 @@ export const List = ({
   deleteItemQuery,
   listItemName,
   dialogMessage = '',
-  helpData = {
-    heading: '',
-    body: <></>,
-    link: '',
-  },
+  helpData,
   secondaryButton,
   pageLink,
   columns,
@@ -778,14 +762,14 @@ export const List = ({
   }
 
   return (
-    <>
+    <div className={styles.ListContainer}>
       {showHeader && (
         <>
           <div className={styles.Header} data-testid="listHeader">
             <div>
               <div className={styles.Title}>
                 <div className={styles.TitleText}> {title}</div>
-                <HelpIcon helpData={helpData} />
+                {helpData && <HelpIcon helpData={helpData} />}
               </div>
             </div>
             <div>
@@ -827,6 +811,6 @@ export const List = ({
         {/* Rendering list of items */}
         {displayList}
       </div>
-    </>
+    </div>
   );
 };

@@ -16,7 +16,7 @@ import { Input } from 'components/UI/Form/Input/Input';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Calendar } from 'components/UI/Form/Calendar/Calendar';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
-import Loading from 'components/UI/Layout/Loading/Loading';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
 import {
   DEFAULT_CONTACT_LIMIT,
   DEFAULT_MESSAGE_LIMIT,

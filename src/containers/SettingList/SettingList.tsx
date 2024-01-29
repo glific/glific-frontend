@@ -2,12 +2,13 @@ import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
 import { Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { useEffect } from 'react';
+
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { GET_PROVIDERS } from 'graphql/queries/Organization';
-import styles from './SettingList.module.css';
-import { useEffect } from 'react';
+import { Heading } from 'components/UI/Heading/Heading';
 import Track from 'services/TrackService';
-import { Heading } from 'containers/Form/FormLayout';
+import styles from './SettingList.module.css';
 
 export const SettingHeading = ({
   formTitle,
@@ -82,7 +83,6 @@ export const SettingList = () => {
     </div>
   );
 
-  // Todo: we should do this with a better approach
   const formheading = (pathname: string) => {
     if (pathname == '/settings') {
       return 'Organisation';

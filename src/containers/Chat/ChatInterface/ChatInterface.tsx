@@ -5,7 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { Simulator } from 'components/simulator/Simulator';
-import Loading from 'components/UI/Layout/Loading/Loading';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { SEARCH_QUERY } from 'graphql/queries/Search';
 import { getUserRole } from 'context/role';
 import { setErrorMessage } from 'common/notification';
@@ -16,7 +16,6 @@ import SimulatorIcon from 'assets/images/icons/Simulator.svg?react';
 import CollectionConversations from '../CollectionConversations/CollectionConversations';
 import SavedSearches from '../SavedSearches/SavedSearches';
 import styles from './ChatInterface.module.css';
-import HelpIcon from 'components/UI/HelpIcon/HelpIcon';
 
 const tabs = [
   {
@@ -145,11 +144,10 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
         <div className={`${styles.ChatConversations} ChatConversations`}>
           <div className={styles.Title}>
             <div className={styles.Heading}> {heading}</div>
-            <HelpIcon helpData={{ heading: 'hey', body: <></>, link: '' }} />
           </div>
 
           <div className={styles.TabContainer}>
-            <Tabs value={value} onChange={handleTabChange} aria-label="basic tabs example">
+            <Tabs value={value} onChange={handleTabChange} aria-label="chat tabs">
               {tabs.map((tab) => (
                 <Tab
                   key={tab.label}
@@ -179,16 +177,18 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
       <div className={styles.Chat} data-testid="chatContainer">
         {chatInterface}
       </div>
-      <SimulatorIcon
-        data-testid="simulatorIcon"
-        className={styles.SimulatorIcon}
-        onClick={() => {
-          setShowSimulator(!showSimulator);
-          if (showSimulator) {
-            setSimulatorId(0);
-          }
-        }}
-      />
+      {selectedTab === 'contacts' && !savedSearches && (
+        <SimulatorIcon
+          data-testid="simulatorIcon"
+          className={styles.SimulatorIcon}
+          onClick={() => {
+            setShowSimulator(!showSimulator);
+            if (showSimulator) {
+              setSimulatorId(0);
+            }
+          }}
+        />
+      )}
       {simulatorAccess && !selectedCollectionId && showSimulator ? (
         <Simulator setShowSimulator={handleCloseSimulator} getSimulatorId={getSimulatorId} />
       ) : null}

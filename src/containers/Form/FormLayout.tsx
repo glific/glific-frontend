@@ -17,28 +17,12 @@ import { SEARCH_QUERY } from 'graphql/queries/Search';
 import { USER_LANGUAGES } from 'graphql/queries/Organization';
 import { GET_ROLE_NAMES } from 'graphql/queries/Role';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
+import { Heading } from 'components/UI/Heading/Heading';
 import DeleteIcon from 'assets/images/icons/Delete/White.svg?react';
 import BackIcon from 'assets/images/icons/Back.svg?react';
 import { organizationHasDynamicRole } from 'common/utils';
 import { getUserRole } from 'context/role';
 import styles from './FormLayout.module.css';
-import HelpIcon from 'components/UI/HelpIcon/HelpIcon';
-
-export const Heading = ({ formTitle, helpData, showHeaderHelp = true }: any) => {
-  return (
-    <div className={styles.Header} data-testid="heading">
-      <div>
-        <div className={styles.Title}>
-          <div className={styles.TitleText}>{formTitle}</div>
-          {helpData ? <HelpIcon helpData={helpData} /> : ''}
-        </div>
-        <div className={styles.TextHeader}>
-          {showHeaderHelp ? `Please enter below details.` : ''}
-        </div>
-      </div>
-    </div>
-  );
-};
 
 export interface HelpDataProps {
   heading: string;
@@ -490,7 +474,7 @@ export const FormLayout = ({
       ...languageAttributes,
       component: Dropdown,
       name: 'languageId',
-      placeholder: t('Language'),
+      label: t('Language'),
       options: languageOptions,
       validate: validateLanguage,
       helperText: t('For more languages check settings or connect with your admin'),
@@ -659,7 +643,7 @@ export const FormLayout = ({
     formTitle = `Add a new ${listItemName}`; // case when adding a new item
   }
 
-  let heading = <Heading icon={icon} formTitle={formTitle} />;
+  let heading = <Heading formTitle={formTitle} />;
 
   const backLink = backLinkButton ? (
     <div className={styles.BackLink}>

@@ -17,7 +17,7 @@ export const LastLogin = ({ drawerOpen }: LastLoginProps) => {
   const { t } = useTranslation();
   const userName = getUserSession('name');
   const lastLogin = getAuthSession('last_login_time');
-  return drawerOpen ? (
+  return (
     <div
       className={styles.UserAccount}
       data-testid="user-account"
@@ -26,15 +26,17 @@ export const LastLogin = ({ drawerOpen }: LastLoginProps) => {
       }
     >
       <Divider />
-      <div className={styles.User}>
+      <div className={drawerOpen ? styles.UserOpen : styles.UserClosed}>
         <UserIcon />
-        <div>
-          <Typography variant="body2"> {userName}</Typography>
-          <div className={styles.LastLogin}>
-            {t('Last login')}: {dayjs(lastLogin).format(STANDARD_DATE_TIME_FORMAT)}
+        {drawerOpen && (
+          <div>
+            <Typography variant="body2"> {userName}</Typography>
+            <div className={styles.LastLogin}>
+              {t('Last login')}: {dayjs(lastLogin).format(STANDARD_DATE_TIME_FORMAT)}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
-  ) : null;
+  );
 };

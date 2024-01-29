@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Formik, Form, Field } from 'formik';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
-
+import styles from './AddVariables.module.css';
 import { FLOW_EDITOR_API } from 'config';
 import { getAuthSession } from 'services/AuthService';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
@@ -130,7 +130,6 @@ export const AddVariables = ({
           <DialogBox
             titleAlign="left"
             title={t('Select variables for the message')}
-            contentText={template?.body}
             handleOk={() => {
               submitForm();
             }}
@@ -141,6 +140,7 @@ export const AddVariables = ({
             buttonOk={t('Done')}
             alignButtons="left"
           >
+            <div className={styles.TemplateText}> {template?.body}</div>
             <div data-testid="variablesDialog">
               {formFieldItems.map((field: any) => (
                 <Field {...field} key={field.name} />

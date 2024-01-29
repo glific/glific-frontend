@@ -11,12 +11,12 @@ import { STANDARD_DATE_TIME_FORMAT } from 'common/constants';
 import { getDisplayName } from 'common/utils';
 import { getOrganizationServices } from 'services/AuthService';
 import { GET_CONTACT_DETAILS, GET_CONTACT_PROFILES } from 'graphql/queries/Contact';
-import Loading from 'components/UI/Layout/Loading/Loading';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { AvatarDisplay } from 'components/UI/AvatarDisplay/AvatarDisplay';
+import { Heading } from 'components/UI/Heading/Heading';
 import { ContactDescription } from './ContactDescription/ContactDescription';
 import { Profile } from '../Profile';
 import { ContactHistory } from './ContactHistory/ContactHistory';
-import { Heading } from 'containers/Form/FormLayout';
 import styles from './ContactProfile.module.css';
 
 export const ContactProfile = () => {
@@ -202,7 +202,7 @@ export const ContactProfile = () => {
 
   return (
     <>
-      <Heading formTitle="Contact Profile" showHeaderHelp={false} />
+      <Heading formTitle={t('Contact Profile')} showHeaderHelp={false} />
       <Box className={styles.ContactProfile}>
         {drawer}
         <Box className={styles.ProfileBody}>{profileBodyContent}</Box>

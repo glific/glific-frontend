@@ -188,7 +188,6 @@ export const ContactBar = ({
   let initialSelectedCollectionIds: Array<any> = [];
   let selectedCollectionsName;
   let selectedCollections: any = [];
-  let assignedToCollection: any = [];
 
   if (data) {
     const { groups } = data.contact.contact;
@@ -196,10 +195,6 @@ export const ContactBar = ({
 
     selectedCollections = groups.map((group: any) => group.label);
     selectedCollectionsName = shortenMultipleItems(selectedCollections);
-
-    assignedToCollection = groups.map((group: any) => group.users.map((user: any) => user.name));
-    assignedToCollection = Array.from(new Set([].concat(...assignedToCollection)));
-    assignedToCollection = shortenMultipleItems(assignedToCollection);
   }
 
   if (collectionsData) {
@@ -309,6 +304,7 @@ export const ContactBar = ({
         handleOk={handleClearChatSubmit}
         handleCancel={() => setClearChatDialog(false)}
         alignButtons="center"
+        titleAlign="left"
         buttonOk="YES, CLEAR"
         colorOk="warning"
         buttonCancel="MAYBE LATER"

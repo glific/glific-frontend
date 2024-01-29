@@ -7,10 +7,9 @@ import OptionsIcon from 'assets/images/icons/MoreOptions/More.svg?react';
 import { SAVED_SEARCH_QUERY, SEARCHES_COUNT } from 'graphql/queries/Search';
 import { COLLECTION_COUNT_SUBSCRIPTION } from 'graphql/subscriptions/PeriodicInfo';
 import { setErrorMessage } from 'common/notification';
-import Loading from 'components/UI/Layout/Loading/Loading';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { numberToAbbreviation } from 'common/utils';
 import { getUserSession } from 'services/AuthService';
-import Tooltip from 'components/UI/Tooltip/Tooltip';
 import styles from './SavedSearchToolbar.module.css';
 
 export interface SavedSearchToolbarProps {
@@ -136,9 +135,7 @@ export const SavedSearchToolbar = ({
           data-testid="editor-label"
         >
           {savedSearch.shortcode}
-          <Tooltip title={count} placement="right">
-            <div className={styles.SavedSearchCount}>{`(${numberToAbbreviation(count)})`}</div>
-          </Tooltip>
+          <div className={styles.SavedSearchCount}>{`(${numberToAbbreviation(count)})`}</div>
         </div>
       </div>
     );
