@@ -35,7 +35,7 @@
 }
 
 .DialogTitle {
-  padding: 32px;
+  padding: 32px 56px;
   white-space: pre-line;
   line-height: normal;
   font-weight: 700;
@@ -75,13 +75,12 @@
 .CloseIcon {
   position: absolute;
   right: 8px;
-  top: 10px;
+  top: 6px;
   color: #777;
 }
 
 .BackdropRoot {
-  background-color:rgba(0, 0, 0, 0.6);
-
+  background-color: rgba(0, 0, 0, 0.6);
 }
 
 @media only screen and (max-width: 768px) {
