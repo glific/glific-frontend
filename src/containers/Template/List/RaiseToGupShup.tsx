@@ -10,9 +10,9 @@ import { useMutation } from '@apollo/client';
 import { setNotification } from 'common/notification';
 
 export interface RaiseToGupShupPropTypes {
-  handleCancel: any;
-  templateId: any;
-  label: any;
+  handleCancel: Function;
+  templateId: string;
+  label: string;
 }
 
 export const RaiseToGupShup = ({ handleCancel, templateId, label }: RaiseToGupShupPropTypes) => {
