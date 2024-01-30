@@ -20,18 +20,6 @@ vi.spyOn(draftJs, 'Editor').mockImplementation((props: any, _context: any) => {
   return input;
 });
 
-vi.mock('react-resize-detector', () => {
-  return {
-    default: (props: any) => (
-      <div>
-        <div data-testid="resizer" onClick={() => props.onResize('30', '40')}>
-          {props.children}
-        </div>
-      </div>
-    ),
-  };
-});
-
 describe('<WhatsAppEditor/>', () => {
   const handleHeightChange = vi.fn();
   const sendMessage = vi.fn();
