@@ -9,15 +9,12 @@ import { useEffect } from 'react';
 import Track from 'services/TrackService';
 import { Heading } from 'containers/Form/FormLayout';
 
-export const SettingHeading = ({
-  formTitle,
-  desc = 'Manage organisation name, supported languages',
-}: any) => {
+export const SettingHeading = ({ formTitle, description }: any) => {
   return (
     <div className={styles.SettingHeader} data-testid="setting-header">
       <div>
         <div className={styles.SettingTitle}>{formTitle}</div>
-        <div className={styles.SettingTextHeader}>{desc}</div>
+        <div className={styles.SettingTextHeader}>{description}</div>
       </div>
     </div>
   );
@@ -38,14 +35,14 @@ export const SettingList = () => {
 
   const list = [
     {
-      name: 'Organisation',
+      name: 'Organization',
       shortcode: 'organization',
-      description: t('Manage organisation name, supported languages.'),
+      description: t('Manage organization name, supported languages.'),
     },
     {
       name: 'Flows',
       shortcode: 'organization-flows',
-      description: t('Manage organisation flows.'),
+      description: t('Manage organization flows.'),
     },
     {
       name: 'Billing',
@@ -56,29 +53,31 @@ export const SettingList = () => {
 
   let cardList: any = [];
   if (providerData) {
+    const providers = [...providerData.providers];
+    const sortedProviders = providers.sort((first: any, second: any) =>
+      first.name > second.name ? 1 : -1
+    );
     // create setting list of Organisation & providers
-    cardList = [...list, ...providerData.providers];
+    cardList = [...list, ...sortedProviders];
   }
 
   const drawer = (
     <div className={styles.Drawer} data-testid="setting-drawer">
-      {cardList
-        .sort((first: any, second: any) => (first.name > second.name ? 1 : -1))
-        .map((data: any, index: number) => (
-          <div
-            key={index}
-            onClick={() => navigate(`/settings/${data.shortcode}`)}
-            className={`${styles.Tab} ${
-              location.pathname == `/settings/${data.shortcode}` && styles.ActiveTab
-            }
+      {cardList.map((data: any, index: number) => (
+        <div
+          key={index}
+          onClick={() => navigate(`/settings/${data.shortcode}`)}
+          className={`${styles.Tab} ${
+            location.pathname == `/settings/${data.shortcode}` && styles.ActiveTab
+          }
           ${
             location.pathname == '/settings' && data.shortcode == 'organization' && styles.ActiveTab
           }
           `}
-          >
-            {data.name}
-          </div>
-        ))}
+        >
+          {data.name}
+        </div>
+      ))}
     </div>
   );
 
@@ -93,7 +92,11 @@ export const SettingList = () => {
     return pathname.charAt(0).toUpperCase() + pathname.slice(1);
   };
 
-  let formTitle = formheading(location.pathname);
+  const formTitle = formheading(location.pathname);
+
+  const subheading = cardList.find(
+    (data: any) => data.shortcode === location.pathname.replace(/\/settings\//gi, '')
+  ).description;
 
   return (
     <>
@@ -101,7 +104,7 @@ export const SettingList = () => {
       <Box className={styles.SettingsContainer}>
         {drawer}
         <Box className={styles.SettingBody}>
-          <SettingHeading formTitle={formTitle} />
+          <SettingHeading formTitle={formTitle} description={subheading} />
           <Outlet />
         </Box>
       </Box>

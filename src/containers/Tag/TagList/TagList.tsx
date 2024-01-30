@@ -4,13 +4,17 @@ import { GET_TAG_COUNT, FILTER_TAGS } from 'graphql/queries/Tags';
 import { DELETE_TAG } from 'graphql/mutations/Tags';
 import { List } from 'containers/List/List';
 import styles from './TagList.module.css';
+import dayjs from 'dayjs';
+import { STANDARD_DATE_TIME_FORMAT } from 'common/constants';
 
 const getName = (Name: any) => {
   return <div className={styles.NameText}>{Name}</div>;
 };
 
-const getCreated = (updatedAt: any) => {
-  return <div className={styles.TableText}>{updatedAt}</div>;
+const getCreated = (updatedAt: string) => {
+  return (
+    <div className={styles.TableText}>{dayjs(updatedAt).format(STANDARD_DATE_TIME_FORMAT)}</div>
+  );
 };
 
 const columnStyles = [styles.Name, styles.DateColumn, styles.Actions];

@@ -122,7 +122,7 @@ export const Ticket = ({ selectedTicket, setOpenDialog }: TicketProps) => {
       type: 'text',
       rows: 3,
       textArea: true,
-      placeholder: t('Remarks'),
+      label: t('Remarks'),
     },
   ];
 
