@@ -422,30 +422,30 @@ export const Template = ({
     ...(selectedTag?.id && { tagIds: [parseInt(selectedTag?.id)] }),
   };
 
-  if (dialogBox) {
-    return dialogBox;
-  }
   return (
-    <List
-      loadingList={loading}
-      helpData={isHSM ? templateInfo : speedSendInfo}
-      secondaryButton={secondaryButton}
-      title={title}
-      listItem={listItem}
-      listItemName={listItemName}
-      pageLink={pageLink}
-      listIcon={listIcon}
-      additionalAction={additionalAction}
-      dialogMessage={dialogMessage}
-      filters={appliedFilters}
-      defaultSortBy={defaultSortBy}
-      button={button}
-      {...columnAttributes}
-      {...queries}
-      filterList={isHSM && filterTemplateStatus}
-      collapseOpen={open}
-      collapseRow={Id}
-    />
+    <>
+      {dialogBox}
+      <List
+        loadingList={loading}
+        helpData={isHSM ? templateInfo : speedSendInfo}
+        secondaryButton={secondaryButton}
+        title={title}
+        listItem={listItem}
+        listItemName={listItemName}
+        pageLink={pageLink}
+        listIcon={listIcon}
+        additionalAction={additionalAction}
+        dialogMessage={dialogMessage}
+        filters={appliedFilters}
+        defaultSortBy={defaultSortBy}
+        button={button}
+        {...columnAttributes}
+        {...queries}
+        filterList={isHSM && filterTemplateStatus}
+        collapseOpen={open}
+        collapseRow={Id}
+      />
+    </>
   );
 };
 
