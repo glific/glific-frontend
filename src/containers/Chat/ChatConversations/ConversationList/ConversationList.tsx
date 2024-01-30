@@ -5,7 +5,7 @@ import { useApolloClient, useLazyQuery, useQuery } from '@apollo/client';
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 
-import Loading from 'components/UI/Layout/Loading/Loading';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { SEARCH_QUERY, SEARCH_MULTI_QUERY, SCROLL_HEIGHT } from 'graphql/queries/Search';
 import { setErrorMessage } from 'common/notification';
 import {

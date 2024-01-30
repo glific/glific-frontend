@@ -203,14 +203,6 @@ export const getAddOrRemoveRoleIds = (roles: any, payload: any) => {
   return { ...rest, addRoleIds, deleteRoleIds };
 };
 
-export const trimStringWithMaxLength = (input: string, maxLength: number): string => {
-  if (input.length <= maxLength) {
-    return input;
-  }
-  const trimmedString = input.slice(0, maxLength - 3);
-  return trimmedString + '...';
-};
-
 export const slicedString = (string: string, length: number) =>
   string?.length > length ? `${string.slice(0, length)}...` : string;
 

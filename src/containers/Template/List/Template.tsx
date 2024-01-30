@@ -18,22 +18,22 @@ import {
   DELETE_TEMPLATE,
   IMPORT_TEMPLATES,
 } from 'graphql/mutations/Template';
+import { GET_TAGS } from 'graphql/queries/Tags';
 import { ImportButton } from 'components/UI/ImportButton/ImportButton';
 import DownArrow from 'assets/images/icons/DownArrow.svg?react';
 import ApprovedIcon from 'assets/images/icons/Template/Approved.svg?react';
 import RejectedIcon from 'assets/images/icons/Template/Rejected.svg?react';
 import PendingIcon from 'assets/images/icons/Template/Pending.svg?react';
 import DuplicateIcon from 'assets/images/icons/Duplicate.svg?react';
+import CopyAllOutlined from 'assets/images/icons/Flow/Copy.svg?react';
 import { ProviderContext } from 'context/session';
 import { copyToClipboardMethod, exportCsvFile, getFileExtension } from 'common/utils';
-import Loading from 'components/UI/Layout/Loading/Loading';
+import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { setNotification } from 'common/notification';
 import { BULK_APPLY_SAMPLE_LINK } from 'config';
-import styles from './Template.module.css';
-import CopyAllOutlined from 'assets/images/icons/Flow/Copy.svg?react';
-import { GET_TAGS } from 'graphql/queries/Tags';
-import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { speedSendInfo, templateInfo } from 'common/HelpData';
+import styles from './Template.module.css';
 
 const getLabel = (label: string) => <div className={styles.LabelText}>{label}</div>;
 

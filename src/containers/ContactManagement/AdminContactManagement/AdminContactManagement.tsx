@@ -1,17 +1,17 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useMutation } from '@apollo/client';
+
 import { CONTACT_MANAGE_HELP_LINK, UPLOAD_CONTACTS_ADMIN_SAMPLE } from 'config';
-import { Heading } from 'containers/Form/FormLayout';
 import { Button } from 'components/UI/Form/Button/Button';
+import { Heading } from 'components/UI/Heading/Heading';
 import UploadIcon from 'assets/images/icons/UploadLight.svg?react';
 import FileIcon from 'assets/images/icons/Document/Light.svg?react';
 import CrossIcon from 'assets/images/icons/Cross.svg?react';
-import { useTranslation } from 'react-i18next';
-import { useMutation } from '@apollo/client';
 import { MOVE_CONTACTS } from 'graphql/mutations/Contact';
-import { setNotification } from 'common/notification';
-import { listIcon } from '../SuperAdminContactManagement/SuperAdminContactManagement';
-import styles from './AdminContactManagement.module.css';
 import { exportCsvFile, slicedString } from 'common/utils';
+import { setNotification } from 'common/notification';
+import styles from './AdminContactManagement.module.css';
 
 export const AdminContactManagement = () => {
   const [fileName, setFileName] = useState<string>('');
@@ -63,12 +63,7 @@ export const AdminContactManagement = () => {
   };
   return (
     <div>
-      <Heading
-        icon={listIcon}
-        formTitle="Contact Management"
-        showHeaderHelp={false}
-        helpData={helpData}
-      />
+      <Heading formTitle="Contact Management" showHeaderHelp={false} helpData={helpData} />
       <div className={styles.Container}>
         <div className={styles.Instructions}>
           You can move contacts to collections in bulk or update their contact information. Please

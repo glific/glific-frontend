@@ -22,7 +22,7 @@ import {
   GET_COUPON_CODE,
 } from 'graphql/queries/Billing';
 import { Button } from 'components/UI/Form/Button/Button';
-import Loading from 'components/UI/Layout/Loading/Loading';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { Input } from 'components/UI/Form/Input/Input';
 import { STRIPE_PUBLISH_KEY } from 'config';
 import { setNotification } from 'common/notification';
