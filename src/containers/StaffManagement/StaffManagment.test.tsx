@@ -1,6 +1,6 @@
 import { render, fireEvent, waitFor, screen } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
-import { BrowserRouter as Router, useParams } from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
 
 import { StaffManagement } from './StaffManagement';
 import { STAFF_MANAGEMENT_MOCKS } from './StaffManagement.test.helper';

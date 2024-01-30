@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { EmojiInput } from './EmojiInput';
-import draftJs, { EditorState, RichUtils } from 'draft-js';
+import draftJs, { EditorState } from 'draft-js';
 import userEvent from '@testing-library/user-event';
 
 const setFieldValueMock = vi.fn();

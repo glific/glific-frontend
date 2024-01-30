@@ -5,7 +5,6 @@ import { vi } from 'vitest';
 import { LOGGED_IN_USER_MOCK, LOGGED_IN_USER_MULTIPLE_PROFILES } from 'mocks/Contact';
 import { ContactProfile } from './ContactProfile';
 import { mocks as historyMock } from './ContactHistory/ContactHistory.test';
-import { setOrganizationServices } from 'services/AuthService';
 import { MemoryRouter } from 'react-router-dom';
 
 vi.mock('react-router-dom', async () => {
