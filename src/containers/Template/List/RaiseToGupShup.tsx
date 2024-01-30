@@ -55,7 +55,7 @@ export const RaiseToGupShup = ({ handleCancel, templateId, label }: RaiseToGupSh
   });
 
   const validation = {
-    email: Yup.string().email('Invalid Email').required('Atleast One Email is Required'),
+    email: Yup.string().email('Invalid Email').required('Email is Required'),
   };
 
   const FormSchema = Yup.object().shape(validation);
