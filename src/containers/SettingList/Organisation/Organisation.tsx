@@ -19,6 +19,7 @@ import Settingicon from 'assets/images/icons/Settings/Settings.svg?react';
 import CopyIcon from 'assets/images/icons/Settings/Copy.svg?react';
 import { copyToClipboard } from 'common/utils';
 import styles from './Organisation.module.css';
+import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 
 const SettingIcon = <Settingicon />;
 
@@ -38,6 +39,9 @@ export const Organisation = () => {
   const [signaturePhrase, setSignaturePhrase] = useState('');
   const [phone, setPhone] = useState<string>('');
   const [tier, setTier] = useState();
+  const [lowBalanceThreshold, setLowBalanceThreshold] = useState('');
+  const [criticalBalanceThreshold, setCriticalBalanceThreshold] = useState('');
+  const [sendWarningMail, setSendWarningMail] = useState<boolean>(false);
 
   const { t } = useTranslation();
 
@@ -48,6 +52,9 @@ export const Organisation = () => {
     signaturePhrase,
     phone,
     tier,
+    lowBalanceThreshold,
+    criticalBalanceThreshold,
+    sendWarningMail,
   };
 
   const { data: languages } = useQuery(GET_LANGUAGES, {
@@ -62,18 +69,26 @@ export const Organisation = () => {
 
   const [getOrg, { data: orgData }] = useLazyQuery<any>(GET_ORGANIZATION);
 
+  const setSettings = (data: any) => {
+    setLowBalanceThreshold(data.lowBalanceThreshold);
+    setCriticalBalanceThreshold(data.criticalBalanceThreshold);
+    setSendWarningMail(data.sendWarningMail);
+  };
+
   const setStates = ({
     name: nameValue,
     activeLanguages: activeLanguagesValue,
     defaultLanguage: defaultLanguageValue,
     signaturePhrase: signaturePhraseValue,
     contact: contactValue,
+    setting: settingValue,
   }: any) => {
     setName(nameValue);
     setSignaturePhrase(signaturePhraseValue);
     if (activeLanguagesValue) setActiveLanguages(activeLanguagesValue);
     if (defaultLanguageValue) setDefaultLanguage(defaultLanguageValue);
     setPhone(contactValue.phone);
+    setSettings(settingValue);
   };
 
   useEffect(() => {
@@ -111,11 +126,22 @@ export const Organisation = () => {
     return error;
   };
 
+  const handleSendWarningMails = (sendWarningMail: boolean) => {
+    setSendWarningMail(sendWarningMail);
+  };
+
   const validation = {
     name: Yup.string().required(t('Organisation name is required.')),
     activeLanguages: Yup.array().required(t('Supported Languages is required.')),
     defaultLanguage: Yup.object().nullable().required(t('Default Language is required.')),
     signaturePhrase: Yup.string().nullable().required(t('Webhook signature is required.')),
+    criticalBalanceThreshold: Yup.number()
+      .min(0, t('Threshold value should not be negative!'))
+      .required(t('Critical Balance Threshold is required.')),
+    lowBalanceThreshold: Yup.number()
+      .min(0, t('Threshold value should not be negative!'))
+      .required(t('Low Balance Threshold is required.')),
+    sendWarningMail: Yup.bool(),
   };
 
   const FormSchema = Yup.object().shape(validation);
@@ -184,6 +210,28 @@ export const Organisation = () => {
       skip: !tier,
       disabled: true,
     },
+    {
+      component: Checkbox,
+      name: 'sendWarningMail',
+      handleChange: handleSendWarningMails,
+      title: t('Recieve warning mails?'),
+    },
+    {
+      component: Input,
+      name: 'lowBalanceThreshold',
+      type: 'number',
+      placeholder: t('Low balance threshold for warning emails'),
+      disabled: !sendWarningMail,
+      helperText: t('Recieve low balance threshold mails once a week.'),
+    },
+    {
+      component: Input,
+      name: 'criticalBalanceThreshold',
+      type: 'number',
+      placeholder: t('Critical balance threshold for warning emails'),
+      disabled: !sendWarningMail,
+      helperText: t('Recieve critical balance threshold mails every two days.'),
+    },
   ];
 
   const saveHandler = (data: any) => {
@@ -204,6 +252,11 @@ export const Organisation = () => {
       activeLanguageIds,
       signaturePhrase: payload.signaturePhrase,
       defaultLanguageId: payload.defaultLanguage.id,
+      setting: {
+        lowBalanceThreshold: payload.lowBalanceThreshold.toString(),
+        criticalBalanceThreshold: payload.criticalBalanceThreshold.toString(),
+        sendWarningMail: payload.sendWarningMail,
+      },
     };
     return object;
   };
