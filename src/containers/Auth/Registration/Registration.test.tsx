@@ -1,10 +1,10 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import axios from 'axios';
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 import { vi } from 'vitest';
-
+import * as Recaptcha from 'react-google-recaptcha-v3';
 import { Registration } from './Registration';
 
 vi.mock('axios');
@@ -13,7 +13,10 @@ const mockedAxios = axios as any;
 const wrapper = (
   <MemoryRouter>
     <GoogleReCaptchaProvider reCaptchaKey="test key">
-      <Registration />
+      <Routes>
+        <Route path="/" element={<Registration />} />
+        <Route path="/confirmotp" element={<div>Confirm OTP</div>} />
+      </Routes>
     </GoogleReCaptchaProvider>
   </MemoryRouter>
 );
@@ -44,6 +47,7 @@ describe('<Registration />', () => {
     const { container } = render(wrapper);
 
     const userName = container.querySelector('input[name="userName"]') as HTMLInputElement;
+
     await user.click(userName);
     await user.keyboard('John doe');
 
@@ -63,34 +67,38 @@ describe('<Registration />', () => {
   });
 
   it('should submit the form correctly', async () => {
-    const user = userEvent.setup();
+    const useRecaptcha = vi.spyOn(Recaptcha, 'useGoogleReCaptcha');
+    const promise = () => Promise.resolve('some_fake_token');
+    useRecaptcha.mockImplementation(() => ({
+      executeRecaptcha: promise,
+    }));
+
     // let's mock successful registration submission
     const responseData = {
       values: { username: 'Jane Doe', phone: '+919978776554', password: 'pass123456' },
     };
     mockedAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
 
-    const { container } = render(wrapper);
+    const { container, getByText } = render(wrapper);
+
     const userName = container.querySelector('input[name="name"]') as HTMLInputElement;
-    await user.type(userName, 'Jane Doe');
+    fireEvent.change(userName, { target: { value: 'John doe' } });
     const phone = container.querySelector('input[type="tel"]') as HTMLInputElement;
-    await user.type(phone, '+919978776554');
+    fireEvent.change(phone, { target: { value: '+919978776554' } });
 
     const password = container.querySelector('input[type="password"]') as HTMLInputElement;
-    await user.type(password, 'pass123456');
+    fireEvent.change(password, { target: { value: 'Pass@123456' } });
 
-    // click on continue
     await waitFor(() => {
-      expect(screen.getByText('Register with')).toBeInTheDocument();
-      // userEvent.click(continueButton);
+      expect(getByText('Register with')).toBeInTheDocument();
     });
 
-    // TODOS: we need to test successful response
-    // await waitFor(() => {
-    //   const authContainer = screen.getByTestId('AuthContainer');
-    //   expect(authContainer).toHaveTextContent(
-    //     'Please confirm the OTP received at your WhatsApp number.'
-    //   );
-    // });
+    const registerWithButton = screen.getByTestId('SubmitButton') as HTMLButtonElement;
+
+    fireEvent.click(registerWithButton);
+
+    await waitFor(() => {
+      expect(getByText('Confirm OTP')).toBeInTheDocument();
+    });
   });
 });

@@ -13,13 +13,14 @@ import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { setNotification } from 'common/notification';
 import { PUBLISH_FLOW, RESET_FLOW_COUNT } from 'graphql/mutations/Flow';
 import { EXPORT_FLOW, GET_FLOW_DETAILS, GET_FREE_FLOW } from 'graphql/queries/Flow';
-import { setAuthHeaders } from 'services/AuthService';
+import { getOrganizationServices, setAuthHeaders } from 'services/AuthService';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import Track from 'services/TrackService';
 import { exportFlowMethod } from 'common/utils';
 import styles from './FlowEditor.module.css';
 import { checkElementInRegistry, loadfiles, setConfig } from './FlowEditor.helper';
-import { FlowTranslation } from 'containers/Flow/FlowTranslation';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import { BackdropLoader, FlowTranslation } from 'containers/Flow/FlowTranslation';
 
 declare function showFlowEditor(node: any, config: any): void;
 
@@ -53,6 +54,8 @@ export const FlowEditor = () => {
     setAnchorEl(null);
   };
 
+  const isTranslationEnabled = getOrganizationServices('autoTranslationEnabled');
+
   let modal = null;
   let dialog = null;
   let flowTitle: any;
@@ -82,7 +85,7 @@ export const FlowEditor = () => {
     },
   });
 
-  const [exportFlowMutation] = useLazyQuery(EXPORT_FLOW, {
+  const [exportFlowMutation, { loading: exportFlowloading }] = useLazyQuery(EXPORT_FLOW, {
     fetchPolicy: 'network-only',
     onCompleted: async ({ exportFlow }) => {
       const { exportData } = exportFlow;
@@ -331,6 +334,7 @@ export const FlowEditor = () => {
 
   return (
     <>
+      {exportFlowloading && <BackdropLoader />}
       {dialog}
       <div className={styles.Header}>
         <div className={styles.Title}>
@@ -354,7 +358,7 @@ export const FlowEditor = () => {
             disableElevation
             onClick={handleClick}
           >
-            More
+            More <ArrowDropDownIcon />
           </Button>
           <Menu
             id="demo-customized-menu"
@@ -367,7 +371,6 @@ export const FlowEditor = () => {
           >
             <MenuItem
               onClick={() => {
-                // Todo: add some kind of loading
                 exportFlowMutation({
                   variables: {
                     id: flowId,
@@ -388,15 +391,17 @@ export const FlowEditor = () => {
             >
               Reset flow count
             </MenuItem>
-            <MenuItem
-              onClick={() => {
-                setShowTranslateFlowModal(true);
-                handleClose();
-              }}
-              disableRipple
-            >
-              Translate
-            </MenuItem>
+            {isTranslationEnabled && (
+              <MenuItem
+                onClick={() => {
+                  setShowTranslateFlowModal(true);
+                  handleClose();
+                }}
+                disableRipple
+              >
+                Translate
+              </MenuItem>
+            )}
           </Menu>
 
           <Button

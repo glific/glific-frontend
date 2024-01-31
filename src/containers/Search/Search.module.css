@@ -58,6 +58,7 @@
   color: #073f24;
 }
 
-.FormSearch > div:nth-of-type(5) {
-  margin-right: 18px;
+.FormSearch {
+  padding: 0px;
+  width: 100%;
 }

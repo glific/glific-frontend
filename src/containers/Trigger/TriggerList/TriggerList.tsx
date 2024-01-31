@@ -1,18 +1,19 @@
-import moment from 'moment';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import AddIcon from 'assets/images/add.svg?react';
 import TriggerIcon from 'assets/images/icons/Trigger/Union.svg?react';
 import ClockIcon from 'assets/images/icons/Trigger/Clock.svg?react';
 import ClockInactiveIcon from 'assets/images/icons/Trigger/Inactive.svg?react';
 import DuplicateIcon from 'assets/images/icons/Duplicate.svg?react';
 import { TRIGGER_LIST_QUERY, TRIGGER_QUERY_COUNT } from 'graphql/queries/Trigger';
 import { DELETE_TRIGGER } from 'graphql/mutations/Trigger';
-import { FULL_DATE_FORMAT, dayList } from 'common/constants';
+import { EXTENDED_DATE_TIME_FORMAT_WITH_AMPM, LONG_DATE_FORMAT, dayList } from 'common/constants';
 import { List } from 'containers/List/List';
 import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import styles from './TriggerList.module.css';
 import { triggerInfo } from 'common/HelpData';
+dayjs.extend(relativeTime);
 
 const getTooltip = (frequency: any, days: any) => {
   const obj: any = [];
@@ -34,17 +35,17 @@ const getName = ({ flow, startAt, frequency, days, isActive, nextTriggerAt }: an
     </Tooltip>
     <div>
       <p className={styles.LabelText}>
-        <span>{`${flow.name}_${moment(startAt).format('DD/MM/yyyy_hh:mmA')}`}</span>
+        <span>{`${flow.name}_${dayjs(startAt).format(EXTENDED_DATE_TIME_FORMAT_WITH_AMPM)}`}</span>
       </p>
       <div className={styles.NextTrigger}>
-        {isActive ? <>Next trigger {moment(nextTriggerAt).fromNow()}</> : 'Trigger in inactive'}
+        {isActive ? <>Next trigger {dayjs(nextTriggerAt).fromNow()}</> : 'Trigger in inactive'}
       </div>
     </div>
   </div>
 );
 
 const getEndDate = (date: any) => (
-  <div className={styles.EndDateVal}>{moment(date).format(FULL_DATE_FORMAT)}</div>
+  <div className={styles.EndDateVal}>{dayjs(date).format(LONG_DATE_FORMAT)}</div>
 );
 
 const getCollections = (groups: any) => (
@@ -101,8 +102,6 @@ export const TriggerList = () => {
 
   const dialogMessage = t("You won't be able to use this trigger.");
 
-  const addIcon = <AddIcon className={styles.AddIcon} />;
-
   return (
     <List
       helpData={triggerInfo}
@@ -110,7 +109,7 @@ export const TriggerList = () => {
       listItem="triggers"
       listItemName="trigger"
       pageLink="trigger"
-      button={{ show: true, label: t('Create Trigger'), symbol: addIcon }}
+      button={{ show: true, label: t('Create') }}
       listIcon={triggerIcon}
       dialogMessage={dialogMessage}
       {...queries}

@@ -1,22 +1,23 @@
 import { useTranslation } from 'react-i18next';
-import AddIcon from 'assets/images/add.svg?react';
 import FlowIcon from 'assets/images/icons/Flow/Dark.svg?react';
 import { GET_TAG_COUNT, FILTER_TAGS } from 'graphql/queries/Tags';
 import { DELETE_TAG } from 'graphql/mutations/Tags';
 import { List } from 'containers/List/List';
 import styles from './TagList.module.css';
+import dayjs from 'dayjs';
+import { STANDARD_DATE_TIME_FORMAT } from 'common/constants';
 
 const getName = (Name: any) => {
   return <div className={styles.NameText}>{Name}</div>;
 };
-const noOfFlows = (number: any) => {
-  return <div className={styles.NameText}>{number}</div>;
-};
-const getCreated = (updatedAt: any) => {
-  return <div className={styles.TableText}>{updatedAt}</div>;
+
+const getCreated = (updatedAt: string) => {
+  return (
+    <div className={styles.TableText}>{dayjs(updatedAt).format(STANDARD_DATE_TIME_FORMAT)}</div>
+  );
 };
 
-const columnStyles = [styles.Name, styles.Count, styles.DateColumn, styles.Actions];
+const columnStyles = [styles.Name, styles.DateColumn, styles.Actions];
 const tagIcon = <FlowIcon className={styles.FlowIcon} />;
 
 const queries = {
@@ -30,13 +31,11 @@ export const TagList = () => {
 
   const getColumns = ({ label, updatedAt, id }: any) => ({
     name: getName(label),
-    noOfFlows: noOfFlows(id),
     created: getCreated(updatedAt),
   });
 
   const columnNames = [
     { name: 'label', label: t('Title') },
-    { label: t('No. of flows') },
     { label: t('Created') },
     { label: t('Actions') },
   ];
@@ -48,8 +47,6 @@ export const TagList = () => {
     columns: getColumns,
     columnStyles,
   };
-
-  const addIcon = <AddIcon className={styles.AddIcon} />;
 
   const helpData = {
     heading:
@@ -69,7 +66,7 @@ export const TagList = () => {
       dialogMessage={dialogMessage}
       {...queries}
       {...columnAttributes}
-      button={{ show: true, label: t('Create'), symbol: addIcon }}
+      button={{ show: true, label: t('Create') }}
     />
   );
 };

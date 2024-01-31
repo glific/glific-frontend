@@ -1,63 +1,29 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
-import moment from 'moment';
-import { useParams, useNavigate, useLocation, Route, Routes, Navigate } from 'react-router-dom';
-import { getOrganizationServices } from 'services/AuthService';
-import { Box, FormControl, FormControlLabel, Radio, RadioGroup } from '@mui/material';
+import { useParams } from 'react-router-dom';
+import dayjs from 'dayjs';
+import { Box, Collapse } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
-import { DATE_TIME_FORMAT } from 'common/constants';
+import CollapseIcon from '../../../assets/images/icons/Collapse.svg?react';
+import ExpandIcon from '../../../assets/images/icons/Expand.svg?react';
+import { STANDARD_DATE_TIME_FORMAT } from 'common/constants';
+import { getDisplayName } from 'common/utils';
+import { getOrganizationServices } from 'services/AuthService';
 import { GET_CONTACT_DETAILS, GET_CONTACT_PROFILES } from 'graphql/queries/Contact';
-import Loading from 'components/UI/Layout/Loading/Loading';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
+import { AvatarDisplay } from 'components/UI/AvatarDisplay/AvatarDisplay';
+import { Heading } from 'components/UI/Heading/Heading';
 import { ContactDescription } from './ContactDescription/ContactDescription';
-import styles from './ContactProfile.module.css';
 import { Profile } from '../Profile';
 import { ContactHistory } from './ContactHistory/ContactHistory';
-import { Heading } from 'containers/Form/FormLayout';
-
-const ProfileChange = ({ selectedProfileId, setSelectedProfileId, profileData }: any) => (
-  <FormControl fullWidth className={styles.FormControl}>
-    <RadioGroup
-      aria-label="action-radio-buttons"
-      name="action-radio-buttons"
-      row
-      value={selectedProfileId}
-      onChange={(event: any) => setSelectedProfileId(event?.target.value)}
-      className={styles.RadioGroup}
-    >
-      {profileData.profiles.map((profile: any) => (
-        <FormControlLabel
-          key={profile.id}
-          value={profile.id}
-          control={<Radio color="primary" />}
-          label={profile.name}
-          classes={{ label: styles.RadioLabel }}
-        />
-      ))}
-    </RadioGroup>
-  </FormControl>
-);
-
-const list = [
-  {
-    name: 'Profile',
-    shortcode: 'profile',
-  },
-  {
-    name: 'Details',
-    shortcode: 'details',
-  },
-  {
-    name: 'Contact History',
-    shortcode: 'history',
-  },
-];
+import styles from './ContactProfile.module.css';
 
 export const ContactProfile = () => {
-  const location = useLocation();
-
-  const navigate = useNavigate();
   const params = useParams();
   const [selectedProfileId, setSelectedProfileId] = useState('');
+  const [showProfileSection, setShowProfileSection] = useState('profile');
+  const { t } = useTranslation();
 
   const isContactProfileEnabled = getOrganizationServices('contactProfileEnabled');
   const { loading, data } = useQuery(GET_CONTACT_DETAILS, { variables: { id: params.id } });
@@ -86,6 +52,8 @@ export const ContactProfile = () => {
   const { phone, maskedPhone, status, groups, lastMessage, settings, activeProfile } = contactData;
   let { fields } = contactData;
 
+  const contactDisplayName = getDisplayName(contact);
+
   let selectedProfile;
 
   if (isContactProfileEnabled && profileData && profileData.profiles.length > 0) {
@@ -104,15 +72,15 @@ export const ContactProfile = () => {
 
   let optinMethod = '';
   if (contactData.optinMethod) {
-    optinMethod = `via ${contactData.optinMethod} on ${moment(contactData.optinTime).format(
-      DATE_TIME_FORMAT
+    optinMethod = `via ${contactData.optinMethod} on ${dayjs(contactData.optinTime).format(
+      STANDARD_DATE_TIME_FORMAT
     )}`;
   }
 
   let optoutMethod = '';
   if (contactData.optoutMethod) {
-    optoutMethod = `via ${contactData.optoutMethod} on ${moment(contactData.optoutTime).format(
-      DATE_TIME_FORMAT
+    optoutMethod = `via ${contactData.optoutMethod} on ${dayjs(contactData.optoutTime).format(
+      STANDARD_DATE_TIME_FORMAT
     )}`;
   }
 
@@ -124,7 +92,6 @@ export const ContactProfile = () => {
   }
 
   const switchProfile = {
-    component: ProfileChange,
     selectedProfileId,
     setSelectedProfileId,
     profileData,
@@ -132,66 +99,113 @@ export const ContactProfile = () => {
     activeProfileId: activeProfile?.id,
   };
 
+  let profileHeaders: Array<{ id: string | undefined; name: string }> = [];
+  if (profileData && profileData.profiles.length > 0) {
+    profileHeaders = profileData.profiles;
+  } else {
+    profileHeaders = [{ id: 'noProfile', name: contactDisplayName }];
+  }
+
+  const list = [
+    {
+      name: t('Profile'),
+      section: 'profile',
+    },
+    {
+      name: t('Details'),
+      section: 'details',
+    },
+    {
+      name: t('History'),
+      section: 'history',
+    },
+  ];
+
   const drawer = (
     <div className={styles.Drawer}>
-      {list.map((data: any, index: number) => {
-        const active = location.pathname.endsWith(data.shortcode);
+      {profileHeaders.map(({ id, name }) => {
+        const showProfileSelected = id === selectedProfileId || id === 'noProfile';
+
         return (
-          <div
-            key={index}
-            onClick={() => navigate(`/contact-profile/${params.id}/${data.shortcode}`)}
-            className={`${styles.Tab} ${active ? styles.ActiveTab : ''}`}
-          >
-            {data.name}
-          </div>
+          <React.Fragment key={id}>
+            <div
+              className={styles.ProfileHeader}
+              onClick={() => {
+                setSelectedProfileId(`${id}`);
+                setShowProfileSection('profile');
+              }}
+            >
+              <div
+                className={
+                  showProfileSelected
+                    ? `${styles.ProfileHeaderTitle} ${styles.SelectedProfile}`
+                    : styles.ProfileHeaderTitle
+                }
+              >
+                <AvatarDisplay name={name} />
+                {name}
+              </div>
+              {showProfileSelected ? <ExpandIcon /> : <CollapseIcon />}
+            </div>
+            <Collapse in={showProfileSelected}>
+              <div className={styles.ProfileHeaderElements}>
+                {list.map((data: any, index: number) => {
+                  return (
+                    <div
+                      key={index}
+                      onClick={() => setShowProfileSection(data.section)}
+                      className={`${styles.Tab} ${
+                        showProfileSection === data.section ? styles.ActiveTab : ''
+                      }`}
+                    >
+                      {data.name}
+                    </div>
+                  );
+                })}
+              </div>
+            </Collapse>
+          </React.Fragment>
         );
       })}
     </div>
   );
 
+  let profileBodyContent;
+  if (showProfileSection === 'profile') {
+    profileBodyContent = (
+      <Profile
+        multiProfileAttributes={switchProfile}
+        profileType="Contact"
+        removePhoneField
+        redirectionLink={`chat/${params.id}`}
+      />
+    );
+  } else if (showProfileSection === 'details') {
+    profileBodyContent = (
+      <ContactDescription
+        statusMessage={statusMessage}
+        phone={phone}
+        maskedPhone={maskedPhone}
+        fields={fields}
+        settings={settings}
+        collections={groups}
+        lastMessage={lastMessage}
+      />
+    );
+  } else if (showProfileSection === 'history') {
+    if (selectedProfileId === 'noProfile') {
+      profileBodyContent = <ContactHistory contactId={params.id} />;
+    } else {
+      profileBodyContent = <ContactHistory contactId={params.id} profileId={selectedProfileId} />;
+    }
+  }
+
   return (
     <>
-      <Heading formTitle="Contact Profile" />
+      <Heading formTitle={t('Contact Profile')} showHeaderHelp={false} />
       <Box className={styles.ContactProfile}>
         {drawer}
-        <Box className={styles.ProfileBody}>
-          <Routes>
-            <Route
-              path="profile"
-              element={
-                <Profile
-                  multiProfileAttributes={switchProfile}
-                  profileType="Contact"
-                  redirectionLink={`chat/${params.id}`}
-                  afterDelete={{
-                    link: selectedProfile ? `/contact-profile/${params.id}` : '/chat',
-                  }}
-                  removePhoneField
-                />
-              }
-            />
-            <Route
-              path="details"
-              element={
-                <ContactDescription
-                  statusMessage={statusMessage}
-                  phone={phone}
-                  maskedPhone={maskedPhone}
-                  fields={fields}
-                  settings={settings}
-                  collections={groups}
-                  lastMessage={lastMessage}
-                />
-              }
-            />
-            <Route
-              path="history"
-              element={<ContactHistory contactId={params.id} profileId={selectedProfileId} />}
-            />
-
-            <Route path="*" element={<Navigate to="profile" />} />
-          </Routes>
-        </Box>
+        <Box className={styles.ProfileBody}>{profileBodyContent}</Box>
       </Box>
     </>
   );

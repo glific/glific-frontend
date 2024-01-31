@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import { useQuery } from '@apollo/client';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 
 import SearchIcon from 'assets/images/icons/Search/SelectedEdit.svg?react';
@@ -16,8 +16,13 @@ import { Input } from 'components/UI/Form/Input/Input';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Calendar } from 'components/UI/Form/Calendar/Calendar';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
-import Loading from 'components/UI/Layout/Loading/Loading';
-import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT, setVariables } from 'common/constants';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
+import {
+  DEFAULT_CONTACT_LIMIT,
+  DEFAULT_MESSAGE_LIMIT,
+  ISO_DATE_FORMAT,
+  setVariables,
+} from 'common/constants';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { getObject } from 'common/utils';
 import styles from './Search.module.css';
@@ -68,8 +73,8 @@ const getPayload = (payload: any) => {
   if (!useExpression && dateFrom && dateFrom !== 'Invalid date') {
     const dateRange = {
       dateRange: {
-        to: moment(dateTo).format('yyyy-MM-DD'),
-        from: moment(dateFrom).format('yyyy-MM-DD'),
+        to: dayjs(dateTo).format(ISO_DATE_FORMAT),
+        from: dayjs(dateFrom).format(ISO_DATE_FORMAT),
       },
     };
     args.filter = Object.assign(args.filter, dateRange);
@@ -173,8 +178,8 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
           break;
         case 'dateRange':
           if (Object.prototype.hasOwnProperty.call(filters.filter, 'dateRange')) {
-            setdateFrom(new Date(filters.filter.dateRange.from));
-            setdateTo(new Date(filters.filter.dateRange.to));
+            setdateFrom(dayjs(filters.filter.dateRange.from));
+            setdateTo(dayjs(filters.filter.dateRange.to));
             setdateFromExpression(filters.filter.dateRange.from);
             setdateToExpression(filters.filter.dateRange.to);
           }
@@ -236,8 +241,8 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
     if (props.searchParam.dateFrom && props.searchParam.dateFrom !== 'Invalid date') {
       const dateRange = {
         dateRange: {
-          to: moment(props.searchParam.dateTo).format('yyyy-MM-DD'),
-          from: moment(props.searchParam.dateFrom).format('yyyy-MM-DD'),
+          to: dayjs(props.searchParam.dateTo).format(ISO_DATE_FORMAT),
+          from: dayjs(props.searchParam.dateFrom).format(ISO_DATE_FORMAT),
         },
       };
       args.filter = Object.assign(args.filter, dateRange);
@@ -275,8 +280,7 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
       component: Input,
       name: 'shortcode',
       type: 'text',
-      label: t('Search Title'),
-      placeholder: t('Search Title'),
+      label: t('Title'),
       inputProp: {
         onChange: (event: any) => {
           setShortcode(event.target.value);
@@ -288,7 +292,6 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
       name: 'label',
       type: 'text',
       label: t('Description'),
-      placeholder: t('Description'),
       rows: 3,
       textArea: true,
       inputProp: {
@@ -305,7 +308,6 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
       name: 'term',
       type: 'text',
       label: t('Enter name, label, keyword'),
-      placeholder: t('Enter name, label, keyword'),
       inputProp: {
         onChange: (event: any) => {
           setTerm(event.target.value);
@@ -316,7 +318,6 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
       component: AutoComplete,
       name: 'includeLabels',
       label: t('Includes labels'),
-      placeholder: t('Includes labels'),
       options: dataLabels.flowLabels,
       optionLabel: 'name',
       icon: <LabelIcon stroke="#073f24" />,
@@ -325,7 +326,6 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
     {
       component: AutoComplete,
       name: 'includeGroups',
-      placeholder: t('Includes collections'),
       label: t('Includes collections'),
       options: data.groups,
       optionLabel: 'label',
@@ -335,7 +335,6 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
     {
       component: AutoComplete,
       name: 'includeUsers',
-      placeholder: t('Includes staff'),
       label: t('Includes staff'),
       options: dataUser.users,
       optionLabel: 'name',
@@ -357,7 +356,7 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
             infoType: 'dialog',
             handleInfoClick: () => setInfoDialog(true),
             handleChange: (value: any) => setUseExpression(value),
-            label: <span className={styles.DateRangeLabel}> {t('Date range')}</span>,
+            label: t('Date range'),
           },
         ];
 
@@ -474,22 +473,13 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
 
   const customStyles = type ? [styles.FormSearch] : [styles.Form];
 
-  let heading;
-  if (type === 'search') {
-    heading = t('Search conversations');
-  }
-
-  if (type === 'saveSearch') {
-    heading = t('Save Search');
-  }
-
   return (
     <>
       {dialog}
       <FormLayout
+        noHeading={type !== undefined}
         {...queries}
         states={states}
-        title={type ? heading : undefined}
         setStates={setStates}
         setPayload={setPayload}
         validationSchema={FormSchema}

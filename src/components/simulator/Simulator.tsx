@@ -13,14 +13,14 @@ import VideocamIcon from '@mui/icons-material/Videocam';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import ClearIcon from '@mui/icons-material/Clear';
 import axios from 'axios';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { v4 as uuidv4 } from 'uuid';
 import BackgroundPhoneImage from 'assets/images/phone.png';
 import DefaultWhatsappImage from 'assets/images/whatsappDefault.jpg';
 
 import ResetIcon from 'assets/images/icons/Reset/Dark.svg?react';
 import {
-  TIME_FORMAT,
+  SHORT_TIME_FORMAT,
   SAMPLE_MEDIA_FOR_SIMULATOR,
   LIST,
   QUICK_REPLY,
@@ -54,6 +54,8 @@ import {
 import { updateSimulatorConversations } from 'services/SubscriptionService';
 import styles from './Simulator.module.css';
 import { LocationRequestTemplate } from 'containers/Chat/ChatMessages/ChatMessage/LocationRequestTemplate/LocationRequestTemplate';
+import { BackdropLoader } from 'containers/Flow/FlowTranslation';
+import { SIMULATOR_RELEASE_SUBSCRIPTION } from 'graphql/subscriptions/PeriodicInfo';
 
 export interface SimulatorProps {
   setShowSimulator?: any;
@@ -62,10 +64,14 @@ export interface SimulatorProps {
   flowSimulator?: boolean;
   isPreviewMessage?: boolean;
   getSimulatorId?: any;
-  getFlowKeyword?: Function;
   interactiveMessage?: any;
   showHeader?: boolean;
   hasResetButton?: boolean;
+}
+
+interface Sender {
+  name: string;
+  phone: string;
 }
 
 const getStyleForDirection = (
@@ -101,7 +107,7 @@ const getStyleForDirection = (
 const TimeComponent = ({ direction, insertedAt }: any) => (
   <>
     <span className={direction === 'received' ? styles.TimeSent : styles.TimeReceived}>
-      {moment(insertedAt).format(TIME_FORMAT)}
+      {dayjs(insertedAt).format(SHORT_TIME_FORMAT)}
       {direction === 'send' && <DoneAllIcon className={styles.DoneAllIcon} />}
     </span>
   </>
@@ -140,14 +146,14 @@ export const Simulator = ({
 
   let messages: any[] = [];
   let simulatorId = '';
-  const sender = {
+  const sender: Sender = {
     name: '',
     phone: '',
   };
   // chat messages will be shown on simulator
   const isSimulatedMessage = true;
 
-  const sendMessage = (senderDetails: any, interactivePayload?: any, templateValue?: any) => {
+  const sendMessage = (senderDetails: Sender, interactivePayload?: any, templateValue?: any) => {
     const sendMessageText = inputMessage === '' && message ? message : inputMessage;
 
     // check if send message text is not empty
@@ -192,27 +198,24 @@ export const Simulator = ({
     setInputMessage('');
   };
 
-  // Todo: think how to incorporate this
-  // useSubscription(SIMULATOR_RELEASE_SUBSCRIPTION, {
-  //   variables,
-  //   skip: isPreviewMessage,
-  //   onData: ({ data: simulatorSubscribe }) => {
-  //     console.log(simulatorSubscribe);
-  //     if (simulatorSubscribe.data) {
-  //       try {
-  //         const userId = JSON.parse(simulatorSubscribe.data.simulatorRelease).simulator_release
-  //           .user_id;
-  //         console.log(userId, getUserSession('id'));
-  //         if (userId.toString() === getUserSession('id')) {
-  //           console.log('jaaj');
-  //           setShowSimulator(false);
-  //         }
-  //       } catch (error) {
-  //         setLogs('simulator release error', 'error');
-  //       }
-  //     }
-  //   },
-  // });
+  useSubscription(SIMULATOR_RELEASE_SUBSCRIPTION, {
+    fetchPolicy: 'network-only',
+    variables,
+    skip: isPreviewMessage || simulatorId === '',
+    onData: ({ data: simulatorSubscribe }) => {
+      if (simulatorSubscribe.data) {
+        try {
+          const userId = JSON.parse(simulatorSubscribe.data.simulatorRelease).simulator_release
+            .user_id;
+          if (userId.toString() === getUserSession('id')) {
+            setShowSimulator(false);
+          }
+        } catch (error) {
+          setLogs('simulator release error', 'error');
+        }
+      }
+    },
+  });
 
   useSubscription(SIMULATOR_MESSAGE_SENT_SUBSCRIPTION, {
     variables,
@@ -422,13 +425,6 @@ export const Simulator = ({
     }
   }, [allConversations]);
 
-  // // for sending message to Gupshup
-  // useEffect(() => {
-  //   if (!isPreviewMessage && message) {
-  //     sendMessage(sender);
-  //   }
-  // }, [message]);
-
   useEffect(() => {
     if (isPreviewMessage && interactiveMessage) {
       getPreviewMessage();
@@ -617,5 +613,11 @@ export const Simulator = ({
         setNotification('Sorry! Failed to get simulator', 'warning');
       });
   };
-  return simulator;
+  return isPreviewMessage ? (
+    simulator
+  ) : simulatorId ? (
+    simulator
+  ) : (
+    <BackdropLoader text="Please wait while the simulator is loading" />
+  );
 };

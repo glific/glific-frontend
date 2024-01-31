@@ -1,33 +1,18 @@
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
-import { getOrganizationServices } from 'services/AuthService';
 import { COUNT_CONTACT_HISTORY, GET_CONTACT_HISTORY } from 'graphql/queries/Contact';
 import setLogs from 'config/logs';
-import { DATE_TIME_FORMAT } from 'common/constants';
 import { List } from 'containers/List/List';
+import { STANDARD_DATE_TIME_FORMAT } from 'common/constants';
 import styles from './ContactHistory.module.css';
 
 export interface ContactHistoryProps {
   contactId: string | undefined;
   profileId?: string | null;
 }
-interface TableVals {
-  pageNum: number;
-  pageRows: number;
-  sortCol: string;
-  sortDirection: 'asc' | 'desc';
-}
 
 export const ContactHistory = ({ contactId, profileId }: ContactHistoryProps) => {
   const { t } = useTranslation();
-
-  const isContactProfileEnabled = getOrganizationServices('contactProfileEnabled');
-
-  const contactHistoryVariables: any = {};
-
-  if (isContactProfileEnabled && profileId) {
-    contactHistoryVariables.profileId = profileId;
-  }
 
   const flowEvents = (eventLabel: string, eventMeta: string) => {
     try {
@@ -90,7 +75,7 @@ export const ContactHistory = ({ contactId, profileId }: ContactHistoryProps) =>
   };
 
   const getInsertedAt = (insertedAt: string) => (
-    <div className={styles.LineItemDate}>{moment(insertedAt).format(DATE_TIME_FORMAT)}</div>
+    <div className={styles.LineItemDate}>{dayjs(insertedAt).format(STANDARD_DATE_TIME_FORMAT)}</div>
   );
 
   const queries = {
@@ -116,7 +101,6 @@ export const ContactHistory = ({ contactId, profileId }: ContactHistoryProps) =>
   const restrictedAction = () => ({ delete: false, edit: false });
   return (
     <div className={styles.HistoryContainer} data-testid="ContactHistory">
-      <div className={styles.Title}>{t('Contact History')}</div>
       <List
         title={t('Contact History')}
         listItem="contactHistory"
@@ -126,7 +110,7 @@ export const ContactHistory = ({ contactId, profileId }: ContactHistoryProps) =>
         {...queries}
         {...columnAttributes}
         showActions={false}
-        filters={{ contactId }}
+        filters={{ contactId, profileId }}
         showHeader={false}
         restrictedAction={restrictedAction}
         button={{ show: false }}

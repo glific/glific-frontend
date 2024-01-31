@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 
-import AddIcon from 'assets/images/add.svg?react';
 import { FormControl, MenuItem, Select } from '@mui/material';
 
 import FlowIcon from 'assets/images/icons/Flow/Dark.svg?react';
@@ -16,7 +15,7 @@ import { FILTER_FLOW, GET_FLOW_COUNT, EXPORT_FLOW, RELEASE_FLOW } from 'graphql/
 import { DELETE_FLOW, IMPORT_FLOW } from 'graphql/mutations/Flow';
 import { List } from 'containers/List/List';
 import { ImportButton } from 'components/UI/ImportButton/ImportButton';
-import { DATE_TIME_FORMAT } from 'common/constants';
+import { STANDARD_DATE_TIME_FORMAT } from 'common/constants';
 import { exportFlowMethod, organizationHasDynamicRole } from 'common/utils';
 import styles from './FlowList.module.css';
 import { GET_TAGS } from 'graphql/queries/Tags';
@@ -42,13 +41,13 @@ const getName = (text: string, keywordsList: any, roles: any) => {
 
 const getDate = (date: string, fallback: string = '') => (
   <div className={styles.LastPublished}>
-    {date ? moment(date).format(DATE_TIME_FORMAT) : fallback}
+    {date ? dayjs(date).format(STANDARD_DATE_TIME_FORMAT) : fallback}
   </div>
 );
 
 const getLastPublished = (date: string, fallback: string = '') =>
   date ? (
-    <div className={styles.LastPublished}>{moment(date).format(DATE_TIME_FORMAT)}</div>
+    <div className={styles.LastPublished}>{dayjs(date).format(STANDARD_DATE_TIME_FORMAT)}</div>
   ) : (
     <div className={styles.LastPublishedFallback}>{fallback}</div>
   );
@@ -259,8 +258,6 @@ export const FlowList = () => {
     ...(selectedtag?.id && { tagIds: [parseInt(selectedtag?.id)] }),
   };
 
-  const addIcon = <AddIcon className={styles.AddIcon} />;
-
   return (
     <>
       {dialog}
@@ -276,7 +273,7 @@ export const FlowList = () => {
         {...columnAttributes}
         searchParameter={['name_or_keyword_or_tags']}
         additionalAction={additionalAction}
-        button={{ show: true, label: t('Create Flow'), symbol: addIcon }}
+        button={{ show: true, label: t('Create') }}
         secondaryButton={importButton}
         filters={filters}
         filterList={activeFilter}

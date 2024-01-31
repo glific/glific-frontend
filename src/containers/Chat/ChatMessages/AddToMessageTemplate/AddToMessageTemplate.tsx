@@ -29,7 +29,7 @@ export const AddToMessageTemplate = ({ id, message, changeDisplay }: AddToMessag
     refetchQueries: [
       {
         query: FILTER_TEMPLATES,
-        variables: setVariables({ term: '' }),
+        variables: setVariables({ term: '' }, 50),
       },
     ],
   });

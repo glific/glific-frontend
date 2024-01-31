@@ -13,6 +13,7 @@ import { EmojiInput } from 'components/UI/Form/EmojiInput/EmojiInput';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { LanguageBar } from 'components/UI/LanguageBar/LanguageBar';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { GET_TEMPLATE } from 'graphql/queries/Template';
 import { CREATE_MEDIA_MESSAGE } from 'graphql/mutations/Chat';
 import { USER_LANGUAGES } from 'graphql/queries/Organization';
@@ -25,7 +26,6 @@ import {
   VALID_URL_REGEX,
 } from 'common/constants';
 import { getPlainTextFromEditor, getEditorFromContent } from 'common/RichEditor';
-import Loading from 'components/UI/Layout/Loading/Loading';
 import { CreateAutoComplete } from 'components/UI/Form/CreateAutoComplete/CreateAutoComplete';
 import { validateMedia } from 'common/utils';
 import styles from './Template.module.css';
@@ -592,10 +592,7 @@ const Template = ({
       options: mediaTypes,
       optionLabel: 'label',
       multiple: false,
-      textFieldProps: {
-        variant: 'outlined',
-        label: t('Attachment Type'),
-      },
+      label: t('Attachment Type'),
       disabled: isEditing,
       helperText: warning,
       onChange: (event: any) => {
@@ -611,7 +608,6 @@ const Template = ({
       name: 'attachmentURL',
       type: 'text',
       label: t('Attachment URL'),
-      placeholder: t('Attachment URL'),
       validate: () => isUrlValid,
       disabled: isEditing,
       helperText: t(
@@ -648,10 +644,7 @@ const Template = ({
           options: languageOptions,
           optionLabel: 'label',
           multiple: false,
-          textFieldProps: {
-            variant: 'outlined',
-            label: `${t('Language')}*`,
-          },
+          label: `${t('Language')}*`,
           disabled: isEditing,
           onChange: getLanguageId,
         }
@@ -668,7 +661,7 @@ const Template = ({
     {
       component: Input,
       name: 'label',
-      placeholder: `${t('Title')}*`,
+      label: t('Title'),
       disabled: isEditing,
       helperText: defaultAttribute.isHsm
         ? t('Define what use case does this template serve eg. OTP, optin, activity preference')
@@ -681,8 +674,7 @@ const Template = ({
     {
       component: EmojiInput,
       name: 'body',
-      label: `${t('Message')}*`,
-      placeholder: `${t('Type your message')}`,
+      label: t('Message'),
       rows: 5,
       convertToWhatsApp: true,
       textArea: true,

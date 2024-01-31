@@ -1,9 +1,12 @@
 import { LocalizationProvider, DateTimePicker as Picker } from '@mui/x-date-pickers';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import 'date-fns';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 import { getIn } from 'formik';
 
 import styles from './DateTimePicker.module.css';
+import { DATE_TIME_FORMAT_WITH_AMPM_SHORT } from 'common/constants';
+dayjs.extend(utc);
 
 export interface DateTimePickerProps {
   variant?: any;
@@ -17,7 +20,7 @@ export interface DateTimePickerProps {
 }
 
 export const DateTimePicker = ({
-  format = 'dd/MM/yyyy hh:mm a',
+  format = DATE_TIME_FORMAT_WITH_AMPM_SHORT,
   field,
   form: { setFieldValue, errors, touched },
   placeholder,
@@ -30,21 +33,28 @@ export const DateTimePicker = ({
   const dateValue = field.value ? field.value : null;
 
   const handleDateChange = (date: Date | null | string) => {
-    const value = date && date.toString() !== 'Invalid Date' ? date : null;
+    const value = date && date.toString() !== 'Invalid Date' ? dayjs(date) : null;
     setFieldValue(field.name, value);
     if (onChange) onChange(value);
   };
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDateFns}>
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
       <div className={styles.DateTimePicker} data-testid="date-picker-inline">
         <Picker
           className={styles.Text}
           label={placeholder}
+          timezone="system"
           format={format}
           value={dateValue}
           slotProps={{
             textField: {
+              inputProps: {
+                className: styles.Input,
+              },
+              InputLabelProps: {
+                className: styles.Label,
+              },
               helperText: hasError ? errorText : '',
               error: hasError,
             },

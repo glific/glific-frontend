@@ -26,6 +26,10 @@
   color: #555;
 }
 
+.DescriptionText {
+  composes: UserCount;
+}
+
 .ExportPopup {
   position: absolute;
   top: 50%;
@@ -38,25 +42,21 @@
 }
 
 .Label {
-  min-width: 200px !important;
-  width: 20% !important;
+  width: 300px;
+}
+
+.Description {
+  width: 400px;
 }
 
 .Contact {
-  width: 40% !important;
-  min-width: 200px;
+  width: 200px;
 }
 
 .Actions {
-  width: 40% !important;
-  min-width: 200px !important;
+  width: 30%;
+  min-width: 200px;
   text-align: end;
-}
-
-.AddIcon {
-  margin-right: 10px;
-  height: 12px;
-  width: 12px;
 }
 
 .ViewButton {

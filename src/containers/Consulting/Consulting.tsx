@@ -2,7 +2,7 @@ import { useState } from 'react';
 import * as Yup from 'yup';
 import { useQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 import { Input } from 'components/UI/Form/Input/Input';
 import { DateTimePicker } from 'components/UI/Form/DateTimePicker/DateTimePicker';
@@ -32,7 +32,7 @@ export const Consulting = ({ organizationId, setOpenDialog }: ConsultingProps) =
   const { t } = useTranslation();
   const [participants, setParticipants] = useState('');
   const [staff, setStaff] = useState('');
-  const [when, setWhen] = useState<any>(new Date());
+  const [when, setWhen] = useState<any>(dayjs());
   const [duration, setDuration] = useState<number>(0);
   const [content, setContent] = useState('');
   const [isBillable, setIsBillable] = useState<any>(null);
@@ -68,7 +68,7 @@ export const Consulting = ({ organizationId, setOpenDialog }: ConsultingProps) =
   }: any) => {
     setParticipants(supportMembers);
     setStaff(staffMembers);
-    setWhen(new Date(consultingDate));
+    setWhen(dayjs(consultingDate));
     setDuration(durationInMin);
     setContent(description);
     setIsBillable(billable);
@@ -110,7 +110,6 @@ export const Consulting = ({ organizationId, setOpenDialog }: ConsultingProps) =
     {
       component: AutoComplete,
       name: 'organization',
-      placeholder: t('Select Organization'),
       options: organizationOptions,
       optionLabel: 'name',
       multiple: false,
@@ -121,7 +120,7 @@ export const Consulting = ({ organizationId, setOpenDialog }: ConsultingProps) =
       component: Input,
       name: 'participants',
       type: 'text',
-      placeholder: t('Participants'),
+      label: t('Participants'),
       inputProp: {
         onChange: (event: any) => setParticipants(event.target.value),
       },
@@ -129,14 +128,15 @@ export const Consulting = ({ organizationId, setOpenDialog }: ConsultingProps) =
     {
       component: DateTimePicker,
       name: 'when',
-      placeholder: t('Select date'),
+      label: t('Select date'),
       onChange: (val: any) => setWhen(val),
+
     },
     {
       component: Input,
       name: 'duration',
       type: 'text',
-      placeholder: t('Enter time (in mins)'),
+      label: t('Enter time (in mins)'),
       inputProp: {
         onChange: (event: any) => setDuration(Number(event.target.value)),
       },
@@ -152,7 +152,7 @@ export const Consulting = ({ organizationId, setOpenDialog }: ConsultingProps) =
       component: Input,
       name: 'staff',
       type: 'text',
-      placeholder: t('Support team'),
+      label: t('Support team'),
       inputProp: {
         onChange: (event: any) => setStaff(event.target.value),
       },
@@ -163,7 +163,7 @@ export const Consulting = ({ organizationId, setOpenDialog }: ConsultingProps) =
       type: 'text',
       rows: 3,
       textArea: true,
-      placeholder: t('Notes'),
+      label: t('Notes'),
       inputProp: {
         onChange: (event: any) => setContent(event.target.value),
       },
@@ -180,7 +180,7 @@ export const Consulting = ({ organizationId, setOpenDialog }: ConsultingProps) =
     }
 
     // Setting date to appropriate format
-    data.when = moment(when).toISOString();
+    data.when = dayjs(when).toISOString();
 
     if (organization) {
       data.clientId = Number(organization.id);

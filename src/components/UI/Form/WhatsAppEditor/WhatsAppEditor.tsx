@@ -1,9 +1,9 @@
+import { useCallback } from 'react';
 import { RichUtils, getDefaultKeyBinding, Modifier, EditorState, Editor } from 'draft-js';
-import ReactResizeDetector from 'react-resize-detector';
+import { useResizeDetector } from 'react-resize-detector';
 import { useTranslation } from 'react-i18next';
 
 import { getPlainTextFromEditor } from 'common/RichEditor';
-
 import styles from './WhatsAppEditor.module.css';
 
 interface WhatsAppEditorProps {
@@ -82,24 +82,28 @@ export const WhatsAppEditor = ({
     return getDefaultKeyBinding(e);
   };
 
+  const onResize = useCallback((height: any) => {
+    handleHeightChange(height - 40);
+  }, []);
+
+  const { ref } = useResizeDetector({
+    refreshMode: 'debounce',
+    refreshRate: 1000,
+    onResize,
+  });
+
   return (
-    <ReactResizeDetector
-      data-testid="resizer"
-      handleHeight
-      onResize={(width: any, height: any) => handleHeightChange(height - 40)} // 40 is the initial height
-    >
-      <div className={styles.Editor}>
-        <Editor
-          data-testid="editor"
-          editorState={editorState}
-          onChange={handleChange}
-          handleKeyCommand={handleKeyCommand}
-          keyBindingFn={keyBindingFn}
-          placeholder={t('Type a message...')}
-          readOnly={readOnly}
-        />
-      </div>
-    </ReactResizeDetector>
+    <div className={styles.Editor} ref={ref} data-testid="resizer">
+      <Editor
+        data-testid="editor"
+        editorState={editorState}
+        onChange={handleChange}
+        handleKeyCommand={handleKeyCommand}
+        keyBindingFn={keyBindingFn}
+        placeholder={t('Type a message...')}
+        readOnly={readOnly}
+      />
+    </div>
   );
 };
 

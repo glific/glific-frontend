@@ -105,9 +105,7 @@ export const countTagQuery = {
   },
   result: {
     data: {
-      countTags: {
-        countTags: 1,
-      },
+      countTags: 1,
     },
   },
 };

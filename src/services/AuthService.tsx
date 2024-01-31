@@ -9,6 +9,15 @@ interface RegisterRequest {
   token?: string;
 }
 
+type ServiceType =
+  | 'dialogflow'
+  | 'autoTranslationEnabled'
+  | 'googleCloudStorage'
+  | 'flowUuidDisplay'
+  | 'rolesAndPermission'
+  | 'contactProfileEnabled'
+  | 'ticketingEnabled';
+
 // get the current authentication session
 export const getAuthSession = (element?: string) => {
   const session = localStorage.getItem('glific_session');
@@ -175,7 +184,7 @@ export const setOrganizationServices = (services: string) => {
   localStorage.setItem('organizationServices', services);
 };
 
-export const getOrganizationServices = (service: string) => {
+export const getOrganizationServices = (service: ServiceType) => {
   let services: any = localStorage.getItem('organizationServices');
   if (!services) return null;
   services = JSON.parse(services);

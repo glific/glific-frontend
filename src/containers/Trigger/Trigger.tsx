@@ -2,12 +2,21 @@ import { useState } from 'react';
 import * as Yup from 'yup';
 import { useMutation, useQuery } from '@apollo/client';
 import { CircularProgress, Typography } from '@mui/material';
-import moment from 'moment';
 import { useLocation, useParams } from 'react-router-dom';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 import { useTranslation } from 'react-i18next';
 
 import TriggerIcon from 'assets/images/icons/Trigger/Union.svg?react';
-import { dateList, dayList, FLOW_STATUS_PUBLISHED, hourList, setVariables } from 'common/constants';
+import {
+  dateList,
+  dayList,
+  FLOW_STATUS_PUBLISHED,
+  ISO_DATE_FORMAT,
+  hourList,
+  setVariables,
+  EXTENDED_TIME_FORMAT,
+} from 'common/constants';
 import { FormLayout } from 'containers/Form/FormLayout';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
@@ -26,10 +35,11 @@ import {
 } from 'graphql/mutations/Trigger';
 import styles from './Trigger.module.css';
 import { triggerInfo } from 'common/HelpData';
+dayjs.extend(utc);
 
 const checkDateTimeValidation = (startAtValue: string, startDateValue: string) => {
-  const isDateAhead = moment(startDateValue).isAfter(moment());
-  const isTimeAhead = startAtValue > moment().format('THH:mm:ss');
+  const isDateAhead = dayjs(startDateValue).isAfter(dayjs());
+  const isTimeAhead = dayjs(startAtValue).isAfter(dayjs());
 
   if (!isDateAhead) {
     // if start date is current date then only check for time
@@ -48,9 +58,10 @@ const setPayload = (payload: any, roles: any) => {
     payloadCopy;
 
   const groups = groupIds.map((group: any) => parseInt(group.id));
+  const startAtTime = dayjs(startTime).format(EXTENDED_TIME_FORMAT);
   // covert the time to UTC
-  const startAt = moment(`
-    ${moment(startDate).format('yyyy-MM-DD')}${startTime}`).utc();
+  const startAt = dayjs(`${dayjs(startDate).format(ISO_DATE_FORMAT)}${startAtTime}`).utc();
+
   const updatedPayload = {
     isActive,
     isRepeating: true,
@@ -58,9 +69,9 @@ const setPayload = (payload: any, roles: any) => {
     days: [],
     hours: [],
     groupIds: groups,
-    startDate: moment(startAt).format('yyyy-MM-DD'),
-    endDate: moment(endDate).format('yyyy-MM-DD'),
-    startTime: moment(startAt).format('THH:mm:ss'),
+    startDate: dayjs(startAt).utc().format(ISO_DATE_FORMAT),
+    endDate: dayjs(endDate).utc().format(ISO_DATE_FORMAT),
+    startTime: dayjs(startAt).utc().format(EXTENDED_TIME_FORMAT),
     frequency: frequency.value,
     roles: payload.roles,
   };
@@ -96,7 +107,7 @@ const getFrequencyDetails = (
   const frequencyDetails = {
     values: [],
     options: dayList,
-    placeholder: 'Select days',
+    label: 'Select days',
   };
   switch (frequencyValue) {
     case 'weekly':
@@ -105,12 +116,12 @@ const getFrequencyDetails = (
     case 'monthly':
       frequencyDetails.values = dateList.filter((day: any) => daysValue.includes(day.id));
       frequencyDetails.options = dateList;
-      frequencyDetails.placeholder = 'Select dates';
+      frequencyDetails.label = 'Select dates';
       break;
     case 'hourly':
       frequencyDetails.values = hourList.filter((day: any) => hoursValue.includes(day.id));
       frequencyDetails.options = hourList;
-      frequencyDetails.placeholder = 'Select hours';
+      frequencyDetails.label = 'Select hours';
       break;
     default:
   }
@@ -130,18 +141,18 @@ const queries = {
 export const Trigger = () => {
   const [flowId, setFlowId] = useState(null);
   const [isActive, setIsActive] = useState(true);
-  const [startTime, setStartTime] = useState('');
-  const [startDate, setStartDate] = useState<any>(null);
+  const [startTime, setStartTime] = useState<any>('');
+  const [startDate, setStartDate] = useState<any>('');
   const [frequency, setfrequency] = useState<any>(null);
-  const [endDate, setEndDate] = useState<any>(null);
-  const [isRepeating, setIsRepeating] = useState('');
+  const [endDate, setEndDate] = useState<any>('');
+  const [isRepeating, setIsRepeating] = useState(null);
   const [frequencyValues, setFrequencyValues] = useState([]);
   const [roles, setRoles] = useState([]);
   const [daysDisabled, setDaysDisabled] = useState(true);
   const [groupIds, setGroupIds] = useState<any>(null);
-  const [minDate, setMinDate] = useState<any>(moment().utc());
+  const [minDate, setMinDate] = useState<any>(dayjs());
   const [triggerFlowWarning, setTriggerFlowWarning] = useState<any>();
-  const [frequencyPlaceholder, setFrequencyPlaceholder] = useState('Select days');
+  const [frequencyLabel, setFrequencyLabel] = useState('Select days');
   const [frequencyOptions, setFrequencyOptions] = useState(dayList);
   const params = useParams();
   const location = useLocation();
@@ -195,7 +206,7 @@ export const Trigger = () => {
       .when('startDate', ([startDateValue], schema: any) =>
         schema.test({
           test: (endDateValue: any) =>
-            startDateValue && moment(endDateValue).isAfter(startDateValue),
+            startDateValue && dayjs(endDateValue).isAfter(startDateValue),
           message: t('End date should be greater than the start date'),
         })
       ),
@@ -269,15 +280,15 @@ export const Trigger = () => {
 
     switch (value) {
       case 'weekly':
-        setFrequencyPlaceholder(t('Select days'));
+        setFrequencyLabel(t('Select days'));
         setFrequencyOptions(dayList);
         break;
       case 'monthly':
-        setFrequencyPlaceholder(t('Select dates'));
+        setFrequencyLabel(t('Select dates'));
         setFrequencyOptions(dateList);
         break;
       case 'hourly':
-        setFrequencyPlaceholder(t('Select hours'));
+        setFrequencyLabel(t('Select hours'));
         setFrequencyOptions(hourList);
         break;
       default:
@@ -305,11 +316,6 @@ export const Trigger = () => {
       disabled: isEditing,
       multiple: false,
       label: t('Select flow'),
-      placeholder: t('Select flow'),
-      textFieldProps: {
-        variant: 'outlined',
-        label: t('Select flow'),
-      },
       onChange: handleFlowChange,
       helperText: loading ? (
         <>
@@ -331,6 +337,7 @@ export const Trigger = () => {
       label: t('Date range'),
       placeholder: t('Start date'),
       minDate,
+      className: styles.CalendarLeft,
     },
     {
       component: Calendar,
@@ -339,6 +346,7 @@ export const Trigger = () => {
       placeholder: t('End date'),
       disabled: isEditing,
       minDate,
+      className: styles.CalendarRight,
     },
     {
       component: TimePicker,
@@ -349,7 +357,6 @@ export const Trigger = () => {
     {
       component: AutoComplete,
       name: 'frequency',
-      placeholder: t('Repeat'),
       label: t('Repeat'),
       options: triggerFrequencyOptions,
       optionLabel: 'label',
@@ -361,8 +368,7 @@ export const Trigger = () => {
     {
       component: AutoComplete,
       name: 'frequencyValues',
-      label: frequencyPlaceholder,
-      placeholder: frequencyPlaceholder,
+      label: frequencyLabel,
       options: frequencyOptions,
       disabled: isEditing || daysDisabled,
       optionLabel: 'label',
@@ -375,7 +381,6 @@ export const Trigger = () => {
     {
       component: AutoComplete,
       name: 'groupIds',
-      placeholder: t('Select collection'),
       label: t('Select collection'),
       options: collections.groups,
       disabled: isEditing,
@@ -398,22 +403,18 @@ export const Trigger = () => {
     setIsRepeating(isRepeatingValue);
     setEndDate(endDateValue);
     setIsActive(isCopyState ? true : isActiveValue);
+    setEndDate(dayjs(endDateValue));
 
-    const { values, options, placeholder } = getFrequencyDetails(
-      frequencyValue,
-      daysValue,
-      hoursValue
-    );
+    const { values, options, label } = getFrequencyDetails(frequencyValue, daysValue, hoursValue);
     setFrequencyValues(values);
     setFrequencyOptions(options);
-    setFrequencyPlaceholder(placeholder);
-
-    setStartDate(startAtValue);
+    setFrequencyLabel(label);
+    setStartDate(dayjs(startAtValue));
     // If a user wants to update the trigger
-    if (moment().utc().isAfter(startAtValue, 'days')) {
-      setMinDate(startAtValue);
+    if (dayjs().isAfter(startAtValue, 'days')) {
+      setMinDate(dayjs(startAtValue));
     }
-    setStartTime(moment(startAtValue).format('THH:mm:ss'));
+    setStartTime(startAtValue ? dayjs(startAtValue) : null);
     setfrequency(triggerFrequencyOptions.filter((trigger) => trigger.value === frequencyValue)[0]);
     setDaysDisabled(frequencyValue !== 'weekly' && frequencyValue !== 'monthly');
 

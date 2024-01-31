@@ -1,14 +1,14 @@
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { useLazyQuery, useQuery } from '@apollo/client';
 import { FILTER_ORGANIZATIONS } from 'graphql/queries/Organization';
-import { setVariables } from 'common/constants';
+import { ISO_DATE_FORMAT, setVariables } from 'common/constants';
 import { EXPORT_CONSULTING_HOURS } from 'graphql/queries/Consulting';
 import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
 
 import ExportIcon from 'assets/images/icons/Export/export.svg?react';
 import { useTranslation } from 'react-i18next';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { Calendar } from 'components/UI/Form/Calendar/Calendar';
 import { downloadFile } from 'common/utils';
 import { Button } from 'components/UI/Form/Button/Button';
@@ -19,7 +19,7 @@ export interface ExportConsultingPropTypes {
   setFilters: any;
 }
 
-const formatDate = (value: any) => moment(value).format('YYYY-MM-DD');
+const formatDate = (value: any) => dayjs(value).format(ISO_DATE_FORMAT);
 
 export const ExportConsulting = ({ setFilters }: ExportConsultingPropTypes) => {
   const { data: organizationList } = useQuery(FILTER_ORGANIZATIONS, {
@@ -73,7 +73,7 @@ export const ExportConsulting = ({ setFilters }: ExportConsultingPropTypes) => {
     dateTo: Yup.string().when('dateFrom', ([dateFrom], schema: any) =>
       schema.test({
         test: (endDateValue: any) =>
-          !(dateFrom !== undefined && !moment(endDateValue).isAfter(dateFrom)),
+          !(dateFrom !== undefined && !dayjs(endDateValue).isAfter(dateFrom)),
         message: t('End date should be greater than the start date'),
       })
     ),
@@ -99,7 +99,9 @@ export const ExportConsulting = ({ setFilters }: ExportConsultingPropTypes) => {
           <div className={styles.FormContainer}>
             <Form className={styles.Form}>
               {formFields.map((field) => (
-                <Field className={styles.Field} {...field} key={field.name} />
+                <div className={styles.Field} key={field.name}>
+                  <Field {...field} />
+                </div>
               ))}
 
               <div className={styles.Buttons}>

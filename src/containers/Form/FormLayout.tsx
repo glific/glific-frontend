@@ -17,28 +17,12 @@ import { SEARCH_QUERY } from 'graphql/queries/Search';
 import { USER_LANGUAGES } from 'graphql/queries/Organization';
 import { GET_ROLE_NAMES } from 'graphql/queries/Role';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
+import { Heading } from 'components/UI/Heading/Heading';
 import DeleteIcon from 'assets/images/icons/Delete/White.svg?react';
 import BackIcon from 'assets/images/icons/Back.svg?react';
 import { organizationHasDynamicRole } from 'common/utils';
 import { getUserRole } from 'context/role';
 import styles from './FormLayout.module.css';
-import HelpIcon from 'components/UI/HelpIcon/HelpIcon';
-
-export const Heading = ({ title = '', formTitle, helpData, showHeaderHelp = true }: any) => {
-  return (
-    <div className={styles.Header}>
-      <div>
-        <div className={styles.Title}>
-          <div className={styles.TitleText}> {formTitle}</div>
-          <HelpIcon helpData={helpData} />
-        </div>
-        <div className={styles.TextHeader}>
-          {showHeaderHelp ? `${title}, please enter below details.` : ''}
-        </div>
-      </div>
-    </div>
-  );
-};
 
 export interface HelpDataProps {
   heading: string;
@@ -490,7 +474,7 @@ export const FormLayout = ({
       ...languageAttributes,
       component: Dropdown,
       name: 'languageId',
-      placeholder: t('Language'),
+      label: t('Language'),
       options: languageOptions,
       validate: validateLanguage,
       helperText: t('For more languages check settings or connect with your admin'),
@@ -503,7 +487,6 @@ export const FormLayout = ({
     const roleAccess = {
       component: AutoComplete,
       name: 'roles',
-      placeholder: t('Roles'),
       options: roleData
         ? roleData.accessRoles.map((role: any) => ({ label: role.label, id: role.id }))
         : [],
@@ -563,12 +546,10 @@ export const FormLayout = ({
 
             return (
               <Fragment key={key}>
-                {field.label ? (
+                {field.label && (
                   <Typography data-testid="formLabel" variant="h5" className={styles.FieldLabel}>
                     {field.label}
                   </Typography>
-                ) : (
-                  <div className={styles.Spacing} />
                 )}
                 <Field key={key} {...field} onSubmit={submitForm} />
               </Fragment>
@@ -603,7 +584,7 @@ export const FormLayout = ({
               </Button>
             ) : null}
             <Button
-              variant="contained"
+              variant="outlined"
               color="secondary"
               onClick={cancelHandler}
               data-testid="cancelActionButton"
@@ -618,7 +599,7 @@ export const FormLayout = ({
                 className={styles.Button}
                 data-testid="previewButton"
               >
-                Preview
+                {t('Preview')}
               </Button>
             )}
             {deleteButton}
@@ -662,7 +643,7 @@ export const FormLayout = ({
     formTitle = `Add a new ${listItemName}`; // case when adding a new item
   }
 
-  let heading = <Heading icon={icon} formTitle={formTitle} title={listItemName} />;
+  let heading = <Heading formTitle={formTitle} />;
 
   const backLink = backLinkButton ? (
     <div className={styles.BackLink}>

@@ -2,7 +2,7 @@ import { render, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { vi } from 'vitest';
 
-import { LOGGED_IN_USER_MOCK, LOGGED_IN_USER_MULTIPLE_PROFILES } from 'mocks/Contact';
+import { LOGGED_IN_USER_MOCK } from 'mocks/Contact';
 import { ContactProfile } from './ContactProfile';
 import { mocks as historyMock } from './ContactHistory/ContactHistory.test';
 import { MemoryRouter } from 'react-router-dom';
@@ -33,23 +33,3 @@ describe('contact profile', () => {
     });
   });
 });
-
-// Todo: Multiple profiles display
-
-// describe('contact profile (multiple profile)', () => {
-//   setOrganizationServices('{"contactProfileEnabled":true}');
-//   const mocks = [...LOGGED_IN_USER_MULTIPLE_PROFILES, ...historyMock];
-
-//   test('contact profile should render', async () => {
-//     const { getByTestId } = render(
-//       <MemoryRouter>
-//         <MockedProvider mocks={mocks} addTypename={false}>
-//           <ContactProfile />
-//         </MockedProvider>
-//       </MemoryRouter>
-//     );
-//     await waitFor(() => {
-//       expect(getByTestId('ContactProfile')).toBeInTheDocument();
-//     });
-//   });
-// });

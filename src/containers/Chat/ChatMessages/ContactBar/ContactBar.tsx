@@ -10,15 +10,11 @@ import {
   IconButton,
 } from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
-
 import { useMutation, useLazyQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
-import styles from './ContactBar.module.css';
-import { SearchDialogBox } from '../../../../components/UI/SearchDialogBox/SearchDialogBox';
-import { TerminateFlow } from './TerminateFlow/TerminateFlow';
 
 import TerminateFlowIcon from 'assets/images/icons/Automations/Terminate.svg?react';
-import DropdownIcon from '../../../../assets/images/icons/BrownDropdown.svg?react';
+import ExpandIcon from '../../../../assets/images/icons/Expand.svg?react';
 import AddContactIcon from '../../../../assets/images/icons/Contact/Light.svg?react';
 import BlockIcon from '../../../../assets/images/icons/Block.svg?react';
 import BlockDisabledIcon from '../../../../assets/images/icons/BlockDisabled.svg?react';
@@ -37,6 +33,7 @@ import { GET_FLOWS } from '../../../../graphql/queries/Flow';
 import { ADD_FLOW_TO_CONTACT, ADD_FLOW_TO_COLLECTION } from '../../../../graphql/mutations/Flow';
 import { UPDATE_CONTACT } from '../../../../graphql/mutations/Contact';
 import { SEARCH_QUERY } from '../../../../graphql/queries/Search';
+import { CLEAR_MESSAGES } from '../../../../graphql/mutations/Chat';
 import { setErrorMessage, setNotification } from '../../../../common/notification';
 import {
   FLOW_STATUS_PUBLISHED,
@@ -47,11 +44,15 @@ import {
 import { Timer } from '../../../../components/UI/Timer/Timer';
 import { DialogBox } from '../../../../components/UI/DialogBox/DialogBox';
 import { Tooltip } from '../../../../components/UI/Tooltip/Tooltip';
-import { CLEAR_MESSAGES } from '../../../../graphql/mutations/Chat';
+import { AvatarDisplay } from 'components/UI/AvatarDisplay/AvatarDisplay';
+import { SearchDialogBox } from '../../../../components/UI/SearchDialogBox/SearchDialogBox';
+import { TerminateFlow } from './TerminateFlow/TerminateFlow';
 import { showChats } from '../../../../common/responsive';
 import { slicedString } from 'common/utils';
 import { CollectionInformation } from '../../../Collection/CollectionInformation/CollectionInformation';
 import AddContactsToCollection from '../AddContactsToCollection/AddContactsToCollection';
+
+import styles from './ContactBar.module.css';
 
 const status = ['SESSION', 'SESSION_AND_HSM', 'HSM'];
 
@@ -148,9 +149,14 @@ export const ContactBar = ({
 
   const [blockContact] = useMutation(UPDATE_CONTACT, {
     onCompleted: () => {
+      setShowBlockDialog(false);
       setNotification(t('Contact blocked successfully.'));
     },
     refetchQueries: [{ query: SEARCH_QUERY, variables: SEARCH_QUERY_VARIABLES }],
+    onError: () => {
+      setShowBlockDialog(false);
+      setNotification(t('Sorry! An error occurred!'), 'warning');
+    },
   });
 
   const [addFlow] = useMutation(ADD_FLOW_TO_CONTACT, {
@@ -182,7 +188,6 @@ export const ContactBar = ({
   let initialSelectedCollectionIds: Array<any> = [];
   let selectedCollectionsName;
   let selectedCollections: any = [];
-  let assignedToCollection: any = [];
 
   if (data) {
     const { groups } = data.contact.contact;
@@ -190,10 +195,6 @@ export const ContactBar = ({
 
     selectedCollections = groups.map((group: any) => group.label);
     selectedCollectionsName = shortenMultipleItems(selectedCollections);
-
-    assignedToCollection = groups.map((group: any) => group.users.map((user: any) => user.name));
-    assignedToCollection = Array.from(new Set([].concat(...assignedToCollection)));
-    assignedToCollection = shortenMultipleItems(assignedToCollection);
   }
 
   if (collectionsData) {
@@ -303,6 +304,7 @@ export const ContactBar = ({
         handleOk={handleClearChatSubmit}
         handleCancel={() => setClearChatDialog(false)}
         alignButtons="center"
+        titleAlign="left"
         buttonOk="YES, CLEAR"
         colorOk="warning"
         buttonCancel="MAYBE LATER"
@@ -595,7 +597,7 @@ export const ContactBar = ({
           <div className={styles.ContactInfoWrapper}>
             <div className={styles.InfoWrapperRight}>
               <div className={styles.ContactDetails}>
-                <div className={styles.ProfileName}>{displayName.charAt(0).toUpperCase()}</div>
+                <AvatarDisplay name={displayName} type="large" />
                 <Typography
                   className={styles.Title}
                   variant="h6"
@@ -612,7 +614,7 @@ export const ContactBar = ({
                     onKeyPress={handleConfigureIconClick}
                     aria-hidden
                   >
-                    <DropdownIcon />
+                    <ExpandIcon />
                   </div>
                 </ClickAwayListener>
               </div>

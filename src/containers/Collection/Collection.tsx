@@ -132,7 +132,6 @@ export const Collection = () => {
       component: Input,
       name: 'label',
       type: 'text',
-      placeholder: t('Title'),
       label: t('Title'),
       validate: validateTitle,
     },
@@ -141,7 +140,6 @@ export const Collection = () => {
       name: 'description',
       type: 'text',
       label: t('Description'),
-      placeholder: t('Description'),
       rows: 3,
       textArea: true,
     },
@@ -152,7 +150,6 @@ export const Collection = () => {
       options: data ? data.users : [],
       optionLabel: 'name',
       label: t('Assign staff to collection'),
-      placeholder: t('Assign staff to collection'),
       skipPayload: true,
       icon: <ContactIcon className={styles.ContactIcon} />,
       helperText: t(

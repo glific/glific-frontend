@@ -23,7 +23,7 @@ import { Simulator } from 'components/simulator/Simulator';
 import { LanguageBar } from 'components/UI/LanguageBar/LanguageBar';
 import { LIST, LOCATION_REQUEST, MEDIA_MESSAGE_TYPES, QUICK_REPLY } from 'common/constants';
 import { validateMedia } from 'common/utils';
-import Loading from 'components/UI/Layout/Loading/Loading';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { getPlainTextFromEditor, getEditorFromContent } from 'common/RichEditor';
 import { InteractiveOptions } from './InteractiveOptions/InteractiveOptions';
 import styles from './InteractiveMessage.module.css';
@@ -491,7 +491,7 @@ export const InteractiveMessage = () => {
       options: templateTypeOptions,
       multiple: false,
       disabled: params?.id !== undefined,
-      placeholder: 'Type',
+      label: t('Type'),
       optionLabel: 'label',
     },
     {
@@ -500,8 +500,7 @@ export const InteractiveMessage = () => {
       component: Input,
       name: 'title',
       type: 'text',
-      placeholder: `${t('Title')}`,
-      label: `${t('Title')}*`,
+      label: t('Title'),
       onChange: (value: any) => {
         setTitle(value);
       },
@@ -521,8 +520,7 @@ export const InteractiveMessage = () => {
         hasTranslations && getTranslation(templateType, 'body', translations, defaultLanguage),
       component: EmojiInput,
       name: 'body',
-      label: `${t('Message')}*`,
-      placeholder: `${t('Message')}`,
+      label: t('Message'),
       rows: 5,
       convertToWhatsApp: true,
       textArea: true,
@@ -541,7 +539,6 @@ export const InteractiveMessage = () => {
       component: Input,
       name: 'footer',
       type: 'text',
-      placeholder: t('Footer'),
       label: t('Footer'),
       onChange: (value: any) => {
         setFooter(value);
@@ -719,7 +716,6 @@ export const InteractiveMessage = () => {
       optionLabel: 'label',
       multiple: false,
       label: t('Attachment type'),
-      placeholder: t('Attachment type'),
       onChange: (event: any) => {
         const val = event || '';
         if (!event) {
@@ -732,7 +728,6 @@ export const InteractiveMessage = () => {
       component: Input,
       name: 'attachmentURL',
       type: 'text',
-      placeholder: t('Attachment URL'),
       label: t('Attachment URL'),
       validate: () => isUrlValid,
       inputProp: {
@@ -762,7 +757,6 @@ export const InteractiveMessage = () => {
         setTagId(value);
       },
       label: t('Tag'),
-      placeholder: t('Tag'),
       helperText: t('Use this to categorize your interactive messages.'),
     },
   ];
@@ -821,7 +815,7 @@ export const InteractiveMessage = () => {
         type={stateType}
         validationSchema={validationScheme}
         listItem="interactiveTemplate"
-        listItemName="interactive msg"
+        listItemName="Interactive message"
         dialogMessage={dialogMessage}
         formFields={formFields}
         redirectionLink="interactive-message"

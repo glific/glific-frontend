@@ -8,6 +8,7 @@ import {
   Radio,
   Backdrop,
   CircularProgress,
+  FormHelperText,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import styles from './FlowTranslation.module.css';
@@ -24,7 +25,7 @@ export interface FlowTranslationProps {
   loadFlowEditor: any;
 }
 
-const BackdropLoader = ({ text }: any) => (
+export const BackdropLoader = ({ text }: any) => (
   <Backdrop className={styles.BackDrop} open>
     {text} <CircularProgress color="inherit" />
   </Backdrop>
@@ -46,6 +47,10 @@ export const FlowTranslation = ({ flowId, setDialog, loadFlowEditor }: FlowTrans
         setDialog(false);
         setNotification(inlineFlowLocalization.errors[0].message, 'warning');
       }
+    },
+    onError: () => {
+      setDialog(false);
+      setNotification(t('An error occured while translating flows.'));
     },
   });
 
@@ -78,7 +83,11 @@ export const FlowTranslation = ({ flowId, setDialog, loadFlowEditor }: FlowTrans
   };
 
   const handleExport = async () => {
-    exportFlowTranslations({ variables: { id: flowId } });
+    exportFlowTranslations({ variables: { id: flowId, addTranslation: false } });
+  };
+
+  const handleAutoExport = () => {
+    exportFlowTranslations({ variables: { id: flowId, addTranslation: true } });
   };
 
   const handleOk = () => {
@@ -86,6 +95,8 @@ export const FlowTranslation = ({ flowId, setDialog, loadFlowEditor }: FlowTrans
       handleAuto();
     } else if (action === 'export') {
       handleExport();
+    } else if (action === 'export-auto') {
+      handleAutoExport();
     }
   };
 
@@ -115,6 +126,29 @@ export const FlowTranslation = ({ flowId, setDialog, loadFlowEditor }: FlowTrans
     return <BackdropLoader text="Please wait while the flow is getting translated..." />;
   }
 
+  const translationOptions = [
+    {
+      value: 'auto',
+      label: t('Automatic translation'),
+      description: t('Generate translations for all available languages automatically.'),
+    },
+    {
+      value: 'export-auto',
+      label: t('Export with auto translate'),
+      description: t('Translate the content and export it as a CSV file.'),
+    },
+    {
+      value: 'export',
+      label: t('Export translations'),
+      description: t('Export the content without any automatic translations.'),
+    },
+    {
+      value: 'import',
+      label: t('Import translations'),
+      description: t('Import translations from a CSV file into the application.'),
+    },
+  ];
+
   const dialogContent = (
     <div>
       <FormControl>
@@ -125,9 +159,16 @@ export const FlowTranslation = ({ flowId, setDialog, loadFlowEditor }: FlowTrans
           onChange={handleChange}
           data-testid="translation-options"
         >
-          <FormControlLabel value="auto" control={<Radio />} label={t('Automatic translation')} />
-          <FormControlLabel value="export" control={<Radio />} label={t('Export translations')} />
-          <FormControlLabel value="import" control={<Radio />} label={t('Import translations')} />
+          {translationOptions.map((option) => (
+            <div key={option.value}>
+              <FormControlLabel
+                value={option.value}
+                control={<Radio className={styles.Radio} />}
+                label={option.label}
+              />
+              <FormHelperText className={styles.FormHelper}>{option.description}</FormHelperText>
+            </div>
+          ))}
         </RadioGroup>
         {action === 'import' ? importButton : ''}
       </FormControl>
@@ -136,7 +177,7 @@ export const FlowTranslation = ({ flowId, setDialog, loadFlowEditor }: FlowTrans
 
   return (
     <DialogBox
-      title="Translate Flow"
+      title="Translate Options"
       alignButtons="center"
       buttonOk="Submit"
       buttonCancel="Cancel"

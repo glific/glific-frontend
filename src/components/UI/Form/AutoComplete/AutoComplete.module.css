@@ -10,6 +10,7 @@
 
 .Input label {
   color: #93a29b;
+  top: -3px;
 }
 
 .Chip {
@@ -35,9 +36,10 @@
   cursor: pointer;
   font-size: 14px;
 }
+
 .DeleteIcon {
   width: 8px;
-  margin-right: 13px;
+  margin-right: 13px !important;
 }
 
 .Paper > ul > li:hover {
@@ -86,5 +88,5 @@
 }
 
 .DefaultInputRoot {
-  padding: 4.5px 4px 7.5px 16px !important;
+  padding: 5px !important;
 }

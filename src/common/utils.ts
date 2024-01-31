@@ -156,7 +156,7 @@ export const getDisplayName = (conversation: any) => {
     setLogs(er, 'error');
   }
 
-  if (contactFields?.name) {
+  if (contactFields?.name && contactFields.name.value) {
     displayName = contactFields.name.value;
   } else if (conversation.contact.name) {
     displayName = conversation.contact.name;
@@ -201,14 +201,6 @@ export const getAddOrRemoveRoleIds = (roles: any, payload: any) => {
   const { roles: userRoles, ...rest } = payload;
 
   return { ...rest, addRoleIds, deleteRoleIds };
-};
-
-export const trimStringWithMaxLength = (input: string, maxLength: number): string => {
-  if (input.length <= maxLength) {
-    return input;
-  }
-  const trimmedString = input.slice(0, maxLength - 3);
-  return trimmedString + '...';
 };
 
 export const slicedString = (string: string, length: number) =>

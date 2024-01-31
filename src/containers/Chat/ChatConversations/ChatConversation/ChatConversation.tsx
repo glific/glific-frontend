@@ -1,9 +1,9 @@
 import { ListItemButton } from '@mui/material';
 import { Link } from 'react-router-dom';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { useApolloClient, useMutation } from '@apollo/client';
 
-import { COMPACT_MESSAGE_LENGTH, DATE_FORMAT } from 'common/constants';
+import { COMPACT_MESSAGE_LENGTH, SHORT_DATE_FORMAT } from 'common/constants';
 import { Timer } from 'components/UI/Timer/Timer';
 import { MARK_AS_READ, CONTACT_FRAGMENT } from 'graphql/mutations/Chat';
 import { SEARCH_OFFSET } from 'graphql/queries/Search';
@@ -12,6 +12,7 @@ import { MessageType } from '../MessageType/MessageType';
 import styles from './ChatConversation.module.css';
 import Track from 'services/TrackService';
 import { slicedString } from 'common/utils';
+import { AvatarDisplay } from 'components/UI/AvatarDisplay/AvatarDisplay';
 
 export interface ChatConversationProps {
   contactId: number;
@@ -209,14 +210,7 @@ const ChatConversation = ({
     >
       <div>
         {entityType === 'contact' ? (
-          <div className={styles.Profile}>
-            <div className={styles.ProfileName}>{name.charAt(0).toUpperCase()}</div>
-            {!contactIsOrgRead && (
-              <div className={`${styles.ProfileStatus} ${selected && styles.SelectedColor}`}>
-                <div className={styles.ProfileStatusCircle} />
-              </div>
-            )}
-          </div>
+          <AvatarDisplay name={name} badgeDisplay={!contactIsOrgRead} />
         ) : (
           ''
         )}
@@ -231,7 +225,7 @@ const ChatConversation = ({
       </div>
       <div>
         <div className={styles.MessageDate} data-testid="date">
-          {moment(lastMessage.insertedAt).format(DATE_FORMAT)}
+          {dayjs(lastMessage.insertedAt).format(SHORT_DATE_FORMAT)}
         </div>
         <div className={styles.MessageDate} data-testid="timerContainer">
           <Timer

@@ -13,7 +13,7 @@ import { GET_ORGANIZATION } from 'graphql/queries/Organization';
 import { GET_FLOW } from 'graphql/queries/Flow';
 import { getAddOrRemoveRoleIds } from 'common/utils';
 import { setErrorMessage } from 'common/notification';
-import Loading from 'components/UI/Layout/Loading/Loading';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
 import styles from './Flow.module.css';
 import { GET_TAGS } from 'graphql/queries/Tags';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
@@ -36,7 +36,7 @@ export const Flow = () => {
   const [isPinnedDisable, setIsPinnedDisable] = useState(false);
   const [keywords, setKeywords] = useState('');
   const [description, setDescription] = useState('');
-  const [tagId, setTagId] = useState({ id: '', label: '' });
+  const [tagId, setTagId] = useState(null);
   const [isActive, setIsActive] = useState(true);
   const [isPinned, setIsPinned] = useState(false);
   const [roles, setRoles] = useState<Array<any>>([]);
@@ -146,14 +146,12 @@ export const Flow = () => {
       name: 'name',
       type: 'text',
       label: t('Name'),
-      placeholder: t('Name'),
     },
     {
       component: Input,
       name: 'keywords',
       type: 'text',
       label: t('Keywords'),
-      placeholder: t('Keywords'),
       helperText: t('Enter comma separated keywords that trigger this flow.'),
     },
     {
@@ -162,7 +160,7 @@ export const Flow = () => {
       type: 'text',
       textArea: true,
       rows: 2,
-      placeholder: t('Description'),
+      label: t('Description'),
     },
     {
       component: AutoComplete,
@@ -173,10 +171,7 @@ export const Flow = () => {
       handleCreateItem: handleCreateLabel,
       hasCreateOption: true,
       multiple: false,
-      textFieldProps: {
-        variant: 'outlined',
-        label: t('Tag'),
-      },
+      label: t('Tag'),
       helperText: t('Use this to categorize your flows.'),
     },
     {

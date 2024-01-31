@@ -17,8 +17,15 @@ import {
   UPDATE_ORGANIZATION,
 } from 'graphql/mutations/Organization';
 import Settingicon from 'assets/images/icons/Settings/Settings.svg?react';
-import { dayList, FLOW_STATUS_PUBLISHED, setVariables } from 'common/constants';
+import {
+  dayList,
+  FLOW_STATUS_PUBLISHED,
+  ISO_DATE_FORMAT,
+  EXTENDED_TIME_FORMAT,
+  setVariables,
+} from 'common/constants';
 import styles from './OrganisationFlows.module.css';
+import dayjs from 'dayjs';
 
 const SettingIcon = <Settingicon />;
 
@@ -33,8 +40,8 @@ export const OrganisationFlows = () => {
   const client = useApolloClient();
   const [hours, setHours] = useState(true);
   const [enabledDays, setEnabledDays] = useState<any>([]);
-  const [startTime, setStartTime] = useState('');
-  const [endTime, setEndTime] = useState('');
+  const [startTime, setStartTime] = useState<any>('');
+  const [endTime, setEndTime] = useState<any>('');
   const [defaultFlowId, setDefaultFlowId] = useState<any>(null);
   const [flowId, setFlowId] = useState<any>(null);
   const [isDisabled, setIsDisable] = useState(false);
@@ -75,8 +82,8 @@ export const OrganisationFlows = () => {
   const getEnabledDays = (data: any) => data.filter((option: any) => option.enabled);
 
   const setOutOfOffice = (data: any) => {
-    setStartTime(data.startTime);
-    setEndTime(data.endTime);
+    setStartTime(dayjs(`${dayjs().format(ISO_DATE_FORMAT)}T${data.startTime}`));
+    setEndTime(dayjs(`${dayjs().format(ISO_DATE_FORMAT)}T${data.endTime}`));
     setEnabledDays(getEnabledDays(data.enabledDays));
   };
 
@@ -163,8 +170,8 @@ export const OrganisationFlows = () => {
 
   const handleAllDayCheck = (addDayCheck: boolean) => {
     if (!allDayCheck) {
-      setStartTime('00:00:00');
-      setEndTime('23:59:00');
+      setStartTime(dayjs(`${dayjs().format(ISO_DATE_FORMAT)}T00:00:00`));
+      setEndTime(dayjs(`${dayjs().format(ISO_DATE_FORMAT)}T23:59:00`));
     }
     setAllDayCheck(addDayCheck);
   };
@@ -215,7 +222,6 @@ export const OrganisationFlows = () => {
       optionLabel: 'name',
       multiple: false,
       label: t('Select flow'),
-      placeholder: t('Select flow'),
       disabled: isDisabled,
       helperText: t(
         'The selected flow will trigger when end-users aren’t in any flow, their message doesn’t match any keyword, and the time of their message is as defined below.'
@@ -267,7 +273,6 @@ export const OrganisationFlows = () => {
         optionLabel: 'name',
         multiple: false,
         label: t('Select flow'),
-        placeholder: t('Select flow'),
         disabled: isDisabled,
         questionText: t('Would you like to trigger a flow for all the other days & times?'),
       },
@@ -307,7 +312,6 @@ export const OrganisationFlows = () => {
       multiple: false,
       disabled: !optinFlowEnabled,
       label: t('Select flow'),
-      placeholder: t('Select flow'),
     },
   ];
 
@@ -350,9 +354,9 @@ export const OrganisationFlows = () => {
         defaultFlowId: payload.defaultFlowId ? payload.defaultFlowId.id : null,
         enabled: payload.hours,
         enabledDays: assignDays(payload.enabledDays),
-        endTime: payload.endTime,
+        endTime: dayjs(payload.endTime).format(EXTENDED_TIME_FORMAT),
         flowId: payload.flowId ? payload.flowId.id : null,
-        startTime: payload.startTime,
+        startTime: dayjs(payload.startTime).format(EXTENDED_TIME_FORMAT),
       },
       newcontactFlowId: newContactFlowId,
       optinFlowId,

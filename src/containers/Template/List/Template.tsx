@@ -1,13 +1,13 @@
 import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import { FormControl, MenuItem, Select } from '@mui/material';
 import { useMutation, useQuery } from '@apollo/client';
 
 import { List } from 'containers/List/List';
 import { WhatsAppToJsx } from 'common/RichEditor';
-import { DATE_TIME_FORMAT, GUPSHUP_ENTERPRISE_SHORTCODE } from 'common/constants';
+import { STANDARD_DATE_TIME_FORMAT, GUPSHUP_ENTERPRISE_SHORTCODE } from 'common/constants';
 import {
   GET_TEMPLATES_COUNT,
   FILTER_TEMPLATES,
@@ -18,23 +18,24 @@ import {
   DELETE_TEMPLATE,
   IMPORT_TEMPLATES,
 } from 'graphql/mutations/Template';
+import { GET_TAGS } from 'graphql/queries/Tags';
 import { ImportButton } from 'components/UI/ImportButton/ImportButton';
 import DownArrow from 'assets/images/icons/DownArrow.svg?react';
 import ApprovedIcon from 'assets/images/icons/Template/Approved.svg?react';
 import RejectedIcon from 'assets/images/icons/Template/Rejected.svg?react';
+import ReportIcon from 'assets/images/icons/Template/Report.svg?react';
 import PendingIcon from 'assets/images/icons/Template/Pending.svg?react';
 import DuplicateIcon from 'assets/images/icons/Duplicate.svg?react';
+import CopyAllOutlined from 'assets/images/icons/Flow/Copy.svg?react';
 import { ProviderContext } from 'context/session';
 import { copyToClipboardMethod, exportCsvFile, getFileExtension } from 'common/utils';
-import Loading from 'components/UI/Layout/Loading/Loading';
+import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { setNotification } from 'common/notification';
 import { BULK_APPLY_SAMPLE_LINK } from 'config';
-import styles from './Template.module.css';
-import CopyAllOutlined from 'assets/images/icons/Flow/Copy.svg?react';
-import { GET_TAGS } from 'graphql/queries/Tags';
-import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
-import AddIcon from 'assets/images/add.svg?react';
 import { speedSendInfo, templateInfo } from 'common/HelpData';
+import styles from './Template.module.css';
+import { RaiseToGupShup } from './RaiseToGupShup';
 
 const getLabel = (label: string) => <div className={styles.LabelText}>{label}</div>;
 
@@ -43,7 +44,7 @@ const getBody = (text: string) => <p className={styles.TableText}>{WhatsAppToJsx
 const getReason = (reason: string) => <p className={styles.TableText}>{reason}</p>;
 
 const getUpdatedAt = (date: string) => (
-  <div className={styles.LastModified}>{moment(date).format(DATE_TIME_FORMAT)}</div>
+  <div className={styles.LastModified}>{dayjs(date).format(STANDARD_DATE_TIME_FORMAT)}</div>
 );
 
 const getTranslations = (language: any, data: string) => {
@@ -61,7 +62,6 @@ export interface TemplateProps {
   pageLink: string;
   listIcon: any;
   filters: any;
-  buttonLabel: string;
   isHSM?: boolean;
   loading?: boolean;
   syncHSMButton?: any;
@@ -80,7 +80,6 @@ export const Template = ({
   pageLink,
   listIcon,
   filters: templateFilters,
-  buttonLabel,
   isHSM,
   loading = false,
   syncHSMButton,
@@ -95,6 +94,8 @@ export const Template = ({
   const [importing, setImporting] = useState(false);
 
   const [filters, setFilters] = useState<any>({ ...statusFilter, APPROVED: true });
+
+  const [raiseToGupshupTemplate, setRaiseToGupshupTemplate] = useState<any>(null);
 
   const { data: tag } = useQuery(GET_TAGS, {
     variables: {},
@@ -240,6 +241,14 @@ export const Template = ({
     navigate(`/${redirectPath}/${id}/edit`, { state: 'copy' });
   };
 
+  const showRaiseToGupShupDialog = (id: any, item: any) => {
+    setRaiseToGupshupTemplate(item);
+  };
+
+  const closeDialogBox = () => {
+    setRaiseToGupshupTemplate(null);
+  };
+
   const setDialog = (id: string) => {
     if (Id !== id) {
       setId(id);
@@ -320,6 +329,15 @@ export const Template = ({
 
   let appliedFilters = templateFilters;
 
+  const raiseToGupshup = {
+    label: t('Report'),
+    icon: <ReportIcon />,
+    parameter: 'id',
+    dialog: showRaiseToGupShupDialog,
+    hidden: filterValue !== 'REJECTED',
+    insideMore: true,
+  };
+
   if (isHSM) {
     additionalAction = () => [
       {
@@ -329,18 +347,27 @@ export const Template = ({
         dialog: copyUuid,
       },
       copyAction,
+      raiseToGupshup,
     ];
     defaultSortBy = 'STATUS';
     appliedFilters = { ...templateFilters, status: filterValue };
+  }
+  let dialogBox;
+  if (raiseToGupshupTemplate) {
+    dialogBox = (
+      <RaiseToGupShup
+        handleCancel={closeDialogBox}
+        templateId={raiseToGupshupTemplate?.id}
+        label={raiseToGupshupTemplate?.label}
+      />
+    );
   }
 
   if (importing) {
     return <Loading message="Please wait while we process all the templates" />;
   }
 
-  const addIcon = <AddIcon className={styles.AddIcon} />;
-
-  const button = { show: true, label: buttonLabel, symbol: addIcon };
+  const button = { show: true, label: t('Create') };
   let secondaryButton = null;
 
   if (isHSM) {
@@ -396,26 +423,29 @@ export const Template = ({
   };
 
   return (
-    <List
-      loadingList={loading}
-      helpData={isHSM ? templateInfo : speedSendInfo}
-      secondaryButton={secondaryButton}
-      title={title}
-      listItem={listItem}
-      listItemName={listItemName}
-      pageLink={pageLink}
-      listIcon={listIcon}
-      additionalAction={additionalAction}
-      dialogMessage={dialogMessage}
-      filters={appliedFilters}
-      defaultSortBy={defaultSortBy}
-      button={button}
-      {...columnAttributes}
-      {...queries}
-      filterList={isHSM && filterTemplateStatus}
-      collapseOpen={open}
-      collapseRow={Id}
-    />
+    <>
+      {dialogBox}
+      <List
+        loadingList={loading}
+        helpData={isHSM ? templateInfo : speedSendInfo}
+        secondaryButton={secondaryButton}
+        title={title}
+        listItem={listItem}
+        listItemName={listItemName}
+        pageLink={pageLink}
+        listIcon={listIcon}
+        additionalAction={additionalAction}
+        dialogMessage={dialogMessage}
+        filters={appliedFilters}
+        defaultSortBy={defaultSortBy}
+        button={button}
+        {...columnAttributes}
+        {...queries}
+        filterList={isHSM && filterTemplateStatus}
+        collapseOpen={open}
+        collapseRow={Id}
+      />
+    </>
   );
 };
 

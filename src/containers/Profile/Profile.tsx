@@ -40,8 +40,8 @@ export const Profile = ({
 }: ProfileProps) => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
-  const [status, setStatus] = useState('');
-  const [bspStatus, setBspStatus] = useState('');
+  const [status, setStatus] = useState(null);
+  const [bspStatus, setBspStatus] = useState(null);
   const [languageId, setLanguageId] = useState('');
   const [hideRemoveBtn, setHideRemoveBtn] = useState(false);
   const { t } = useTranslation();
@@ -173,10 +173,6 @@ export const Profile = ({
     },
   ];
 
-  if (isContactProfileEnabled && hasMultipleProfiles) {
-    formFields.splice(0, 0, multiProfileAttributes);
-  }
-
   let type: any;
   let pageTitle = t('Contact Profile');
   if (profileType === 'User' || loggedInUserContactId === currentContactId) {
@@ -206,7 +202,7 @@ export const Profile = ({
       title={pageTitle}
       entityId={hasMultipleProfiles ? multiProfileAttributes?.selectedProfileId : currentContactId}
       restrictDelete={hideRemoveBtn}
-      noHeading
+      noHeading={profileType === 'Contact'}
     />
   );
 };

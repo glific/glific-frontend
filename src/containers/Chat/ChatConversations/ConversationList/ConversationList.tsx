@@ -2,10 +2,10 @@ import { Fragment, useEffect, useState } from 'react';
 import { List, Container, CircularProgress, Typography } from '@mui/material';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { useApolloClient, useLazyQuery, useQuery } from '@apollo/client';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 
-import Loading from 'components/UI/Layout/Loading/Loading';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { SEARCH_QUERY, SEARCH_MULTI_QUERY, SCROLL_HEIGHT } from 'graphql/queries/Search';
 import { setErrorMessage } from 'common/notification';
 import {
@@ -15,6 +15,7 @@ import {
   DEFAULT_MESSAGE_LIMIT,
   DEFAULT_CONTACT_LOADMORE_LIMIT,
   DEFAULT_MESSAGE_LOADMORE_LIMIT,
+  ISO_DATE_FORMAT,
 } from 'common/constants';
 import { updateConversations } from 'services/ChatService';
 import { showMessages } from 'common/responsive';
@@ -128,8 +129,8 @@ export const ConversationList = ({
         filter.includeLabels = params.includeLabels.map((obj: any) => obj.id);
       if (params.dateFrom) {
         filter.dateRange = {
-          from: moment(params.dateFrom).format('YYYY-MM-DD'),
-          to: moment(params.dateTo).format('YYYY-MM-DD'),
+          from: dayjs(params.dateFrom).format(ISO_DATE_FORMAT),
+          to: dayjs(params.dateTo).format(ISO_DATE_FORMAT),
         };
       }
     }

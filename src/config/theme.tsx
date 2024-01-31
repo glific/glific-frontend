@@ -15,7 +15,7 @@ const theme = createTheme({
       main: '#DD1F1F',
     },
     secondary: {
-      main: '#777',
+      main: '#777777',
     },
   },
   typography: {
@@ -28,10 +28,6 @@ const theme = createTheme({
           opacity: '0.7',
         },
       },
-    },
-    // Todo: Override Mui backdrop color
-    MuiBackdrop: {
-      styleOverrides: {},
     },
     MuiTabs: {
       styleOverrides: {
@@ -77,25 +73,8 @@ const theme = createTheme({
           borderRadius: '12px',
           borderWidth: '2px',
         },
-        root: {
-          paddingTop: '6px !important',
-          paddingBottom: '6px !important',
-          paddingLeft: '0px !important',
-        },
-        input: {
-          padding: '6px 16px',
-        },
       },
     },
-    // MuiAutocomplete: {
-    //   styleOverrides: {
-    //     root: {
-    //       '& .MuiOutlinedInput-root': {
-    //         padding: '0px 0px 0px 14px !important',
-    //       },
-    //     },
-    //   },
-    // },
     MuiListItemIcon: {
       styleOverrides: {
         root: {

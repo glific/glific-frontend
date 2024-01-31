@@ -112,7 +112,6 @@ export const ContactDescription = ({
 
   return (
     <div className={styles.DescriptionContainer} data-testid="contactDescription">
-      <div className={styles.Title}>{t('Details')}</div>
       <div className={styles.DetailBlock}>
         <Typography data-testid="formLabel" variant="h5" className={styles.FieldLabel}>
           Number

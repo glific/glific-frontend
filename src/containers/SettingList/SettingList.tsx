@@ -2,22 +2,20 @@ import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
 import { Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { useEffect } from 'react';
+
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { GET_PROVIDERS } from 'graphql/queries/Organization';
-import styles from './SettingList.module.css';
-import { useEffect } from 'react';
+import { Heading } from 'components/UI/Heading/Heading';
 import Track from 'services/TrackService';
-import { Heading } from 'containers/Form/FormLayout';
+import styles from './SettingList.module.css';
 
-export const SettingHeading = ({
-  formTitle,
-  desc = 'Manage organisation name, supported languages',
-}: any) => {
+export const SettingHeading = ({ formTitle, description }: any) => {
   return (
-    <div className={styles.SettingHeader}>
+    <div className={styles.SettingHeader} data-testid="setting-header">
       <div>
         <div className={styles.SettingTitle}>{formTitle}</div>
-        <div className={styles.SettingTextHeader}>{desc}</div>
+        <div className={styles.SettingTextHeader}>{description}</div>
       </div>
     </div>
   );
@@ -38,14 +36,14 @@ export const SettingList = () => {
 
   const list = [
     {
-      name: 'Organisation',
+      name: 'Organization',
       shortcode: 'organization',
-      description: t('Manage organisation name, supported languages.'),
+      description: t('Manage organization name, supported languages.'),
     },
     {
       name: 'Flows',
       shortcode: 'organization-flows',
-      description: t('Manage organisation flows.'),
+      description: t('Manage organization flows.'),
     },
     {
       name: 'Billing',
@@ -56,12 +54,16 @@ export const SettingList = () => {
 
   let cardList: any = [];
   if (providerData) {
+    const providers = [...providerData.providers];
+    const sortedProviders = providers.sort((first: any, second: any) =>
+      first.name > second.name ? 1 : -1
+    );
     // create setting list of Organisation & providers
-    cardList = [...list, ...providerData.providers];
+    cardList = [...list, ...sortedProviders];
   }
 
   const drawer = (
-    <div className={styles.Drawer}>
+    <div className={styles.Drawer} data-testid="setting-drawer">
       {cardList.map((data: any, index: number) => (
         <div
           key={index}
@@ -80,7 +82,6 @@ export const SettingList = () => {
     </div>
   );
 
-  // Todo: we should do this with a better approach
   const formheading = (pathname: string) => {
     if (pathname == '/settings') {
       return 'Organisation';
@@ -92,7 +93,11 @@ export const SettingList = () => {
     return pathname.charAt(0).toUpperCase() + pathname.slice(1);
   };
 
-  let formTitle = formheading(location.pathname);
+  const formTitle = formheading(location.pathname);
+
+  const subheading = cardList.find(
+    (data: any) => data.shortcode === location.pathname.replace(/\/settings\//gi, '')
+  );
 
   return (
     <>
@@ -100,7 +105,10 @@ export const SettingList = () => {
       <Box className={styles.SettingsContainer}>
         {drawer}
         <Box className={styles.SettingBody}>
-          <SettingHeading formTitle={formTitle} />
+          <SettingHeading
+            formTitle={formTitle}
+            description={subheading ? subheading.description : ''}
+          />
           <Outlet />
         </Box>
       </Box>

@@ -46,7 +46,7 @@ export const ContactField = ({ setOpenDialog }: ContactFieldProps) => {
       component: Input,
       name: 'name',
       type: 'text',
-      placeholder: t('Name'),
+      label: t('Name'),
       inputProp: {
         onChange: (event: any) => setName(event.target.value),
       },
@@ -55,7 +55,7 @@ export const ContactField = ({ setOpenDialog }: ContactFieldProps) => {
       component: Input,
       name: 'shortcode',
       type: 'text',
-      placeholder: t('Shortcode'),
+      label: t('Shortcode'),
       inputProp: {
         onChange: (event: any) => setShortcode(event.target.value),
       },
@@ -69,7 +69,7 @@ export const ContactField = ({ setOpenDialog }: ContactFieldProps) => {
     <div className={styles.Layout}>
       <FormLayout
         {...queries}
-        title={t('Add contact fields')}
+        title={t('Add a new Contact field')}
         listItem="contactsField"
         listItemName="contactsField"
         saveOnPageChange={false}

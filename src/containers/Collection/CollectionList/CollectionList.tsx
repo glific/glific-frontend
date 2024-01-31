@@ -18,7 +18,6 @@ import { getUserRolePermissions, getUserRole } from 'context/role';
 import { setNotification } from 'common/notification';
 import { setVariables } from 'common/constants';
 import { CircularProgress, Modal } from '@mui/material';
-import AddIcon from 'assets/images/add.svg?react';
 import styles from './CollectionList.module.css';
 import { exportCsvFile } from 'common/utils';
 import { useNavigate } from 'react-router-dom';
@@ -26,18 +25,23 @@ import { collectionInfo } from 'common/HelpData';
 
 const getLabel = (label: string) => <div className={styles.LabelText}>{label}</div>;
 
+const getDescription = (description: string) => (
+  <div className={styles.DescriptionText}>{description}</div>
+);
+
 const getContact = (contactsCount: number) => (
   <div className={styles.UserCount}>
     {contactsCount} contact{contactsCount === 1 ? '' : 's'}
   </div>
 );
 
-const getColumns = ({ label, contactsCount }: any) => ({
+const getColumns = ({ label, contactsCount, description }: any) => ({
   label: getLabel(label),
+  description: getDescription(description),
   contacts: getContact(contactsCount),
 });
 
-const columnStyles = [styles.Label, styles.Contact, styles.Actions];
+const columnStyles = [styles.Label, styles.Description, styles.Contact, styles.Actions];
 const collectionIcon = <CollectionIcon className={styles.CollectionIcon} />;
 
 const queries = {
@@ -221,8 +225,6 @@ export const CollectionList = () => {
   // check if the user has access to manage collections
   const userRolePermissions = getUserRolePermissions();
 
-  const addIcon = <AddIcon className={styles.AddIcon} />;
-
   return (
     <>
       {exportData && (
@@ -243,8 +245,7 @@ export const CollectionList = () => {
         displayListType="card"
         button={{
           show: userRolePermissions.manageCollections,
-          label: t('Create Collection'),
-          symbol: addIcon,
+          label: t('Create'),
         }}
         pageLink="collection"
         listIcon={collectionIcon}

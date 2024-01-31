@@ -138,7 +138,6 @@
 }
 
 .LabelButton {
-  height: 32px;
   width: fit-content;
   min-width: 80px;
   padding: 6px 12px;
@@ -187,12 +186,6 @@
 .IconSize {
   height: 15px !important;
   width: 15px !important;
-}
-
-.AddIcon {
-  margin-right: 10px;
-  height: 12px;
-  width: 12px;
 }
 
 .ImportDialog {

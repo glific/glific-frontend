@@ -49,6 +49,11 @@ export const getOrganizationQuery = [
               flowId: 2,
               startTime: '12:31:27',
             },
+            setting: {
+              lowBalanceThreshold: '10',
+              criticalBalanceThreshold: '5',
+              sendWarningMail: false,
+            },
             name: 'Glific',
             signaturePhrase: 'Sample text',
             contact: {
@@ -92,6 +97,11 @@ export const getOrganizationQuery = [
               endTime: '12:30:27',
               flowId: 2,
               startTime: '12:31:27',
+            },
+            setting: {
+              lowBalanceThreshold: '10',
+              criticalBalanceThreshold: '5',
+              sendWarningMail: false,
             },
             name: 'Glific',
             signaturePhrase: 'Sample text',
@@ -138,6 +148,11 @@ export const getOrganizationQuery = [
               flowId: '1',
               startTime: '09:00:00',
             },
+            setting: {
+              lowBalanceThreshold: '10',
+              criticalBalanceThreshold: '5',
+              sendWarningMail: false,
+            },
             signaturePhrase: 'Please change me, NOW!',
           },
         },
@@ -178,6 +193,11 @@ export const getOrganisationSettings = {
             endTime: '12:30:27',
             flowId: 2,
             startTime: '12:31:27',
+          },
+          setting: {
+            lowBalanceThreshold: '10',
+            criticalBalanceThreshold: '5',
+            sendWarningMail: false,
           },
           name: 'Glific',
           signaturePhrase: 'Sample text',

@@ -28,21 +28,6 @@
   padding-bottom: 35px;
 }
 
-.OutlineInput > div:first-child {
-  width: inherit;
-  padding: 8px 16px;
-  height: 100px;
-  overflow: auto;
-  overflow-x: hidden;
-}
-
-.OutlineInput :global(#placeholder-editor) {
-  position: absolute;
-  z-index: 0;
-  color: #a2a2a2;
-  font-weight: 400;
-}
-
 .Resend {
   color: #119656;
   font-weight: bold;
@@ -58,7 +43,14 @@
 }
 
 .OutlineInput :global(.public-DraftEditor-content) {
-  padding-bottom: 81px;
+  height: 100px;
+  width: 100%;
+}
+
+.OutlineInput :global(.DraftEditor-root) {
+  height: 100px;
+  overflow: auto;
+  width: 100%;
 }
 
 .DangerText {
@@ -76,6 +68,10 @@
   border-radius: 10px;
   white-space: pre-line;
   color: #aa9677;
+}
+
+.OutlinedInput {
+  padding: 12.5px 14px;
 }
 
 @media screen and (max-width: 768px) {

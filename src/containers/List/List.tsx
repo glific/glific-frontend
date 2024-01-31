@@ -3,6 +3,7 @@ import { Link, Navigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useQuery, useMutation, DocumentNode, useLazyQuery } from '@apollo/client';
 import {
+  Backdrop,
   Divider,
   IconButton,
   Menu,
@@ -22,13 +23,14 @@ import MoreOptions from 'assets/images/icons/MoreOptions.svg?react';
 import DeleteIcon from 'assets/images/icons/Delete/Red.svg?react';
 import EditIcon from 'assets/images/icons/Edit.svg?react';
 import BackIcon from 'assets/images/icons/Back.svg?react';
+import AddIcon from 'assets/images/add.svg?react';
 import { GET_CURRENT_USER } from 'graphql/queries/User';
 import { getUserRole, getUserRolePermissions } from 'context/role';
 import { setNotification, setErrorMessage } from 'common/notification';
 import { getUpdatedList, setListSession, getLastListSessionValues } from 'services/ListService';
 import styles from './List.module.css';
 import Track from 'services/TrackService';
-import Loading from 'components/UI/Layout/Loading/Loading';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
 import HelpIcon from 'components/UI/HelpIcon/HelpIcon';
 
 const actionListMap = (item: any, actionList: any, hasMoreOption: boolean) => {
@@ -43,6 +45,9 @@ const actionListMap = (item: any, actionList: any, hasMoreOption: boolean) => {
     }
     const key = index;
 
+    if (action.hidden) {
+      return null;
+    }
     if (hasMoreOption) {
       return (
         <Fragment key={key}>
@@ -60,18 +65,6 @@ const actionListMap = (item: any, actionList: any, hasMoreOption: boolean) => {
             </div>
           </MenuItem>
         </Fragment>
-      );
-    }
-
-    if (action.textButton) {
-      return (
-        <div
-          className={styles.ViewButton}
-          onClick={() => action.dialog(additionalActionParameter, item)}
-          key={key}
-        >
-          {action.textButton}
-        </div>
       );
     }
 
@@ -190,11 +183,7 @@ export const List = ({
   deleteItemQuery,
   listItemName,
   dialogMessage = '',
-  helpData = {
-    heading: '',
-    body: <></>,
-    link: '',
-  },
+  helpData,
   secondaryButton,
   pageLink,
   columns,
@@ -545,11 +534,7 @@ export const List = ({
           data-testid="MoreIcon"
           onClick={(event) => {
             setAnchorEl(event.currentTarget);
-            if (showMoreOptions == id) {
-              setShowMoreOptions('');
-            } else {
-              setShowMoreOptions(id);
-            }
+            setShowMoreOptions(showMoreOptions == id ? '' : id);
           }}
         >
           <Tooltip title={t('More')} placement="top">
@@ -571,27 +556,33 @@ export const List = ({
             <div className={styles.MoreOptions}>
               {moreButton}
               {showMoreOptions == id && (
-                <Menu
-                  anchorEl={anchorEl}
-                  id="account-menu"
-                  open={open}
-                  onClose={handleClose}
-                  onClick={handleClose}
-                  classes={{ list: styles.MenuList }}
-                  anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'right',
-                  }}
-                  transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
-                >
-                  <MenuItem className={styles.MenuItem}> {editButton}</MenuItem>
-                  <Divider className={styles.Divider} />
-                  <MenuItem className={styles.MenuItem}> {deleteButton(id, labelValue)}</MenuItem>
-                  {actionListMap(item, actionsInsideMore, true)}
-                </Menu>
+                <Backdrop className={styles.Backdrop} open onClick={() => setShowMoreOptions('')}>
+                  <Menu
+                    anchorEl={anchorEl}
+                    id="account-menu"
+                    open={open}
+                    onClose={handleClose}
+                    onClick={handleClose}
+                    classes={{ list: styles.MenuList }}
+                    anchorOrigin={{
+                      vertical: 'bottom',
+                      horizontal: 'right',
+                    }}
+                    transformOrigin={{
+                      vertical: 'top',
+                      horizontal: 'right',
+                    }}
+                  >
+                    <div>
+                      <MenuItem className={styles.MenuItem}> {editButton}</MenuItem>
+                      <Divider className={styles.Divider} />
+                      <MenuItem className={styles.MenuItem}>
+                        {deleteButton(id, labelValue)}
+                      </MenuItem>
+                      {actionListMap(item, actionsInsideMore, true)}
+                    </div>
+                  </Menu>
+                </Backdrop>
               )}
             </div>
           ) : null}
@@ -731,6 +722,11 @@ export const List = ({
 
   let buttonDisplay;
   if (button.show) {
+    const addIcon = <AddIcon className={styles.AddIcon} />;
+    if (!button.symbol) {
+      button.symbol = addIcon;
+    }
+
     let buttonContent;
     if (button.action) {
       buttonContent = (
@@ -766,14 +762,14 @@ export const List = ({
   }
 
   return (
-    <>
+    <div className={styles.ListContainer}>
       {showHeader && (
         <>
           <div className={styles.Header} data-testid="listHeader">
             <div>
               <div className={styles.Title}>
                 <div className={styles.TitleText}> {title}</div>
-                <HelpIcon helpData={helpData} />
+                {helpData && <HelpIcon helpData={helpData} />}
               </div>
             </div>
             <div>
@@ -815,6 +811,6 @@ export const List = ({
         {/* Rendering list of items */}
         {displayList}
       </div>
-    </>
+    </div>
   );
 };

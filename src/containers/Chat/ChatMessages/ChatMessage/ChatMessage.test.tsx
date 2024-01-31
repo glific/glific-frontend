@@ -1,8 +1,8 @@
 import { render, fireEvent, waitFor, screen } from '@testing-library/react';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { MockedProvider } from '@apollo/client/testing';
 
-import { TIME_FORMAT } from 'common/constants';
+import { SHORT_TIME_FORMAT } from 'common/constants';
 
 import ChatMessage from './ChatMessage';
 
@@ -11,6 +11,13 @@ vi.mock('react-tiny-link', () => {
     ReactTinyLink: (props: any) => {
       return <span>{props.url}</span>;
     },
+  };
+});
+
+// mock react player
+vi.mock('react-player', () => {
+  return {
+    default: () => <video></video>,
   };
 });
 
@@ -84,7 +91,7 @@ describe('<ChatMessage />', () => {
 
   test('it should render the message date  correctly', () => {
     const { getByTestId } = render(chatMessageText);
-    expect(getByTestId('date')).toHaveTextContent(moment(insertedAt).format(TIME_FORMAT));
+    expect(getByTestId('date')).toHaveTextContent(dayjs(insertedAt).format(SHORT_TIME_FORMAT));
   });
 
   test('it should render "Other" class for the content', () => {
@@ -92,19 +99,19 @@ describe('<ChatMessage />', () => {
     expect(getAllByTestId('message')[0]).toBeInTheDocument();
   });
 
-  test.skip('it should render the down arrow icon', () => {
+  test('it should render the down arrow icon', () => {
     const { getAllByTestId } = render(chatMessageText);
     expect(getAllByTestId('messageOptions')[0]).toBeInTheDocument();
   });
 
-  test.skip('it should render popup', async () => {
+  test('it should render popup', async () => {
     const { getAllByTestId } = render(chatMessageText);
     expect(getAllByTestId('popup')[0]).toBeInTheDocument();
   });
 
   const chatMessageVideo = chatMessage('VIDEO');
 
-  test.skip('it should show the download media option when clicked on down arrow and message type is video', async () => {
+  test('it should show the download media option when clicked on down arrow and message type is video', async () => {
     const { getAllByTestId } = render(chatMessageVideo);
     fireEvent.click(getAllByTestId('popup')[0]);
     expect(getAllByTestId('downloadMedia')[0]).toBeVisible();
@@ -120,7 +127,7 @@ describe('<ChatMessage />', () => {
 
   const chatMessageAudio = chatMessage('AUDIO');
 
-  test.skip('it should show the download media option when clicked on down arrow and message type is audio', async () => {
+  test('it should show the download media option when clicked on down arrow and message type is audio', async () => {
     const { getAllByTestId } = render(chatMessageAudio);
     fireEvent.click(getAllByTestId('popup')[0]);
     expect(getAllByTestId('downloadMedia')[0]).toBeVisible();
@@ -136,7 +143,7 @@ describe('<ChatMessage />', () => {
 
   const chatMessageImage = chatMessage('IMAGE');
 
-  test.skip('it should show the download media option when clicked on down arrow and message type is image', async () => {
+  test('it should show the download media option when clicked on down arrow and message type is image', async () => {
     const { getAllByTestId } = render(chatMessageImage);
     fireEvent.click(getAllByTestId('popup')[0]);
     expect(getAllByTestId('downloadMedia')[0]).toBeVisible();
@@ -152,7 +159,7 @@ describe('<ChatMessage />', () => {
 
   const chatMessageDoc = chatMessage('DOCUMENT');
 
-  test.skip('it should show the download media option when clicked on down arrow and message type is document', async () => {
+  test('it should show the download media option when clicked on down arrow and message type is document', async () => {
     const { getAllByTestId, getAllByText } = render(chatMessageDoc);
     fireEvent.click(getAllByTestId('popup')[0]);
 
@@ -250,7 +257,7 @@ describe('<ChatMessage />', () => {
     daySeparator: null,
   };
 
-  test.skip('it should render with image', async () => {
+  test('it should render with image', async () => {
     const { rerender } = render(
       <MockedProvider addTypename={false}>
         <ChatMessage {...receivedProps} />
