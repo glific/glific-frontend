@@ -45,6 +45,9 @@ const actionListMap = (item: any, actionList: any, hasMoreOption: boolean) => {
     }
     const key = index;
 
+    if (action.hidden) {
+      return null;
+    }
     if (hasMoreOption) {
       return (
         <Fragment key={key}>

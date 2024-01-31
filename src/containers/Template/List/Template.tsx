@@ -23,6 +23,7 @@ import { ImportButton } from 'components/UI/ImportButton/ImportButton';
 import DownArrow from 'assets/images/icons/DownArrow.svg?react';
 import ApprovedIcon from 'assets/images/icons/Template/Approved.svg?react';
 import RejectedIcon from 'assets/images/icons/Template/Rejected.svg?react';
+import ReportIcon from 'assets/images/icons/Template/Report.svg?react';
 import PendingIcon from 'assets/images/icons/Template/Pending.svg?react';
 import DuplicateIcon from 'assets/images/icons/Duplicate.svg?react';
 import CopyAllOutlined from 'assets/images/icons/Flow/Copy.svg?react';
@@ -34,6 +35,7 @@ import { setNotification } from 'common/notification';
 import { BULK_APPLY_SAMPLE_LINK } from 'config';
 import { speedSendInfo, templateInfo } from 'common/HelpData';
 import styles from './Template.module.css';
+import { RaiseToGupShup } from './RaiseToGupShup';
 
 const getLabel = (label: string) => <div className={styles.LabelText}>{label}</div>;
 
@@ -92,6 +94,8 @@ export const Template = ({
   const [importing, setImporting] = useState(false);
 
   const [filters, setFilters] = useState<any>({ ...statusFilter, APPROVED: true });
+
+  const [raiseToGupshupTemplate, setRaiseToGupshupTemplate] = useState<any>(null);
 
   const { data: tag } = useQuery(GET_TAGS, {
     variables: {},
@@ -237,6 +241,14 @@ export const Template = ({
     navigate(`/${redirectPath}/${id}/edit`, { state: 'copy' });
   };
 
+  const showRaiseToGupShupDialog = (id: any, item: any) => {
+    setRaiseToGupshupTemplate(item);
+  };
+
+  const closeDialogBox = () => {
+    setRaiseToGupshupTemplate(null);
+  };
+
   const setDialog = (id: string) => {
     if (Id !== id) {
       setId(id);
@@ -317,6 +329,15 @@ export const Template = ({
 
   let appliedFilters = templateFilters;
 
+  const raiseToGupshup = {
+    label: t('Report'),
+    icon: <ReportIcon />,
+    parameter: 'id',
+    dialog: showRaiseToGupShupDialog,
+    hidden: filterValue !== 'REJECTED',
+    insideMore: true,
+  };
+
   if (isHSM) {
     additionalAction = () => [
       {
@@ -326,9 +347,20 @@ export const Template = ({
         dialog: copyUuid,
       },
       copyAction,
+      raiseToGupshup,
     ];
     defaultSortBy = 'STATUS';
     appliedFilters = { ...templateFilters, status: filterValue };
+  }
+  let dialogBox;
+  if (raiseToGupshupTemplate) {
+    dialogBox = (
+      <RaiseToGupShup
+        handleCancel={closeDialogBox}
+        templateId={raiseToGupshupTemplate?.id}
+        label={raiseToGupshupTemplate?.label}
+      />
+    );
   }
 
   if (importing) {
@@ -391,26 +423,29 @@ export const Template = ({
   };
 
   return (
-    <List
-      loadingList={loading}
-      helpData={isHSM ? templateInfo : speedSendInfo}
-      secondaryButton={secondaryButton}
-      title={title}
-      listItem={listItem}
-      listItemName={listItemName}
-      pageLink={pageLink}
-      listIcon={listIcon}
-      additionalAction={additionalAction}
-      dialogMessage={dialogMessage}
-      filters={appliedFilters}
-      defaultSortBy={defaultSortBy}
-      button={button}
-      {...columnAttributes}
-      {...queries}
-      filterList={isHSM && filterTemplateStatus}
-      collapseOpen={open}
-      collapseRow={Id}
-    />
+    <>
+      {dialogBox}
+      <List
+        loadingList={loading}
+        helpData={isHSM ? templateInfo : speedSendInfo}
+        secondaryButton={secondaryButton}
+        title={title}
+        listItem={listItem}
+        listItemName={listItemName}
+        pageLink={pageLink}
+        listIcon={listIcon}
+        additionalAction={additionalAction}
+        dialogMessage={dialogMessage}
+        filters={appliedFilters}
+        defaultSortBy={defaultSortBy}
+        button={button}
+        {...columnAttributes}
+        {...queries}
+        filterList={isHSM && filterTemplateStatus}
+        collapseOpen={open}
+        collapseRow={Id}
+      />
+    </>
   );
 };
 
