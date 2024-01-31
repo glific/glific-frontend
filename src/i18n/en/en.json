@@ -442,5 +442,12 @@
   "Import translations from a CSV file into the application.": "Import translations from a CSV file into the application.",
   "Report": "Report",
   "Enter the email address you'd like to CC.": "Enter the email address you'd like to CC.",
-  "An error occured while translating flows.": "An error occured while translating flows."
+  "Recieve warning mails?": "Recieve warning mails?",
+  "Critical balance threshold for warning emails": "Critical balance threshold for warning emails",
+  "Low balance threshold for warning emails": "Low balance threshold for warning emails",
+  "Threshold value should not be negative!": "Threshold value should not be negative!",
+  "Low Balance Threshold is required.": "Low Balance Threshold is required.",
+  "Critical Balance Threshold is required.": "Critical Balance Threshold is required.",
+  "Recieve critical balance threshold mails every two days.": "Recieve critical balance threshold mails every two days.",
+  "Recieve low balance threshold mails once a week.": "Recieve low balance threshold mails once a week."
 }

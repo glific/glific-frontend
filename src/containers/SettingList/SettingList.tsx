@@ -97,7 +97,7 @@ export const SettingList = () => {
 
   const subheading = cardList.find(
     (data: any) => data.shortcode === location.pathname.replace(/\/settings\//gi, '')
-  ).description;
+  );
 
   return (
     <>
@@ -105,7 +105,10 @@ export const SettingList = () => {
       <Box className={styles.SettingsContainer}>
         {drawer}
         <Box className={styles.SettingBody}>
-          <SettingHeading formTitle={formTitle} description={subheading} />
+          <SettingHeading
+            formTitle={formTitle}
+            description={subheading ? subheading.description : ''}
+          />
           <Outlet />
         </Box>
       </Box>

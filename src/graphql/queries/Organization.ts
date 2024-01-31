@@ -28,6 +28,11 @@ export const GET_ORGANIZATION = gql`
           id
           label
         }
+        setting {
+          lowBalanceThreshold
+          criticalBalanceThreshold
+          sendWarningMail
+        }
         signaturePhrase
         newcontactFlowId
         optinFlowId
