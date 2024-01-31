@@ -25,18 +25,23 @@ import { collectionInfo } from 'common/HelpData';
 
 const getLabel = (label: string) => <div className={styles.LabelText}>{label}</div>;
 
+const getDescription = (description: string) => (
+  <div className={styles.DescriptionText}>{description}</div>
+);
+
 const getContact = (contactsCount: number) => (
   <div className={styles.UserCount}>
     {contactsCount} contact{contactsCount === 1 ? '' : 's'}
   </div>
 );
 
-const getColumns = ({ label, contactsCount }: any) => ({
+const getColumns = ({ label, contactsCount, description }: any) => ({
   label: getLabel(label),
+  description: getDescription(description),
   contacts: getContact(contactsCount),
 });
 
-const columnStyles = [styles.Label, styles.Contact, styles.Actions];
+const columnStyles = [styles.Label, styles.Description, styles.Contact, styles.Actions];
 const collectionIcon = <CollectionIcon className={styles.CollectionIcon} />;
 
 const queries = {
