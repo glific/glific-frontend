@@ -82,8 +82,10 @@ export const WhatsAppEditor = ({
     return getDefaultKeyBinding(e);
   };
 
-  const onResize = useCallback((height: any) => {
-    handleHeightChange(height - 40);
+  const onResize = useCallback((width: number | undefined, height: number | undefined) => {
+    if (height) {
+      handleHeightChange(height - 40);
+    }
   }, []);
 
   const { ref } = useResizeDetector({
