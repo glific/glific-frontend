@@ -154,8 +154,10 @@ test('successful media submission', async () => {
   });
   render(addAttachment('IMAGE', 'https://glific.com'));
 
-  // delay to let url validation complete
-  await waitFor(() => new Promise(res => setTimeout(res, 50)));
+  // let url validation complete
+  await waitFor(() => {
+    expect(screen.queryByText('Please wait for the attachment URL verification')).not.toBeInTheDocument();
+  });
 
   await waitFor(() => {
     fireEvent.click(screen.getByTestId('ok-button'));
