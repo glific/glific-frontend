@@ -1,6 +1,6 @@
 import { MemoryRouter } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
-import { waitFor, render } from '@testing-library/react';
+import { waitFor, render, screen } from '@testing-library/react';
 import { vi, describe, it } from 'vitest';
 
 import App from 'App';
@@ -12,6 +12,26 @@ import axios from 'axios';
 
 vi.mock('axios');
 const mockedAxios = axios as any;
+
+vi.mock('services/AuthService', async (importOriginal) => {
+  const mod = await importOriginal<typeof import('services/AuthService')>()
+  return {
+    ...mod,
+    renewAuthToken: vi.fn(() => {
+      const tokenExpiryDate = new Date();
+      tokenExpiryDate.setDate(new Date().getDate() + 1);
+      return Promise.resolve({
+        data: {
+          data: {
+            access_token: 'access',
+            renewal_token: 'renew',
+            token_expiry_time: tokenExpiryDate
+          }
+        }
+      })
+    }),
+  }
+})
 
 global.fetch = vi.fn() as any;
 
@@ -44,21 +64,17 @@ describe('<App /> ', () => {
     // let's create token expiry date for tomorrow
     mockedAxios.post.mockResolvedValue(() => Promise.resolve({}));
 
-    const tokenExpiryDate = new Date();
-    tokenExpiryDate.setDate(new Date().getDate() + 1);
-
     setAuthSession({
       access_token: 'access',
-      renewal_token: 'renew',
-      token_expiry_time: tokenExpiryDate,
+      renewal_token: 'renew'
     });
 
     setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Staff'] }));
 
-    const { getByTestId } = render(app);
+    render(app);
 
     await waitFor(() => {
-      expect(getByTestId('navbar')).toBeInTheDocument();
+      expect(screen.getByTestId('navbar')).toBeInTheDocument();
     });
   });
 });
