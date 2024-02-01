@@ -210,6 +210,7 @@ export const OrganisationFlows = () => {
   let defaultFlowFields: any = [
     {
       component: Checkbox,
+      className: styles.Checkbox,
       name: 'hours',
       title: <Typography className={styles.CheckboxLabel}>{t('Default flow')}</Typography>,
       handleChange,
@@ -245,7 +246,7 @@ export const OrganisationFlows = () => {
       name: 'allDayCheck',
       title: <Typography className={styles.AddDayLabel}>{t('All day')}</Typography>,
       handleChange: handleAllDayCheck,
-      className: styles.AllDayCheck,
+      className: styles.Checkbox,
     },
 
     {
@@ -284,6 +285,7 @@ export const OrganisationFlows = () => {
     {
       component: Checkbox,
       name: 'newcontactFlowEnabled',
+      className: styles.Checkbox,
       title: <Typography className={styles.CheckboxLabel}>{t('New contact flow')}</Typography>,
       handleChange: setNewcontactFlowEnabled,
     },
@@ -301,6 +303,7 @@ export const OrganisationFlows = () => {
     {
       component: Checkbox,
       name: 'optinFlowEnabled',
+      className: styles.Checkbox,
       title: <Typography className={styles.CheckboxLabel}>{t('Optin flow')}</Typography>,
       handleChange: setOptinFlowEnabled,
     },

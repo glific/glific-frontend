@@ -13,8 +13,9 @@
   font-size: 16px;
 }
 
-.AllDayCheck {
-  margin-left: 4px;
+.Checkbox {
+  margin-bottom: -10px;
+  margin-top: 16px;
 }
 
 .AddDayLabel {
