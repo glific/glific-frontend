@@ -278,7 +278,7 @@ export const Organisation = () => {
       icon={SettingIcon}
       languageSupport={false}
       type="settings"
-      redirect
+      redirect={false}
       afterSave={saveHandler}
       customStyles={styles.organization}
       entityId={organizationId}

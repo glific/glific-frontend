@@ -34,7 +34,7 @@
 
 .TableContainer {
   overflow: auto;
-  padding: 18px 56px;
+  padding: 18px 56px 56px 56px;
 }
 
 .TableFooter {

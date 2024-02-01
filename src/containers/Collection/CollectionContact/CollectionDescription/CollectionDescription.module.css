@@ -7,6 +7,11 @@
   background-color: #fff;
 }
 
+.Describe {
+  max-width: 500px;
+  display: flex;
+}
+
 .Description {
   font-size: 16px;
   margin-top: 0px;
@@ -29,7 +34,7 @@
 }
 
 .UserList li {
-  color: #555;
+  color: #8e8e8e;
   leading-trim: both;
   text-edge: cap;
   font-family: Heebo;
@@ -46,7 +51,7 @@
 
 .Title {
   font-weight: 500;
-  margin: 0 0 17px 0;
+  margin: 0 10px 17px 0;
   padding: 0;
   color: #191c1a;
   font-size: 20px;
