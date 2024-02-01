@@ -1,4 +1,5 @@
 import { render, screen, waitFor, fireEvent, cleanup } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { MockedProvider } from '@apollo/client/testing';
 import axios from 'axios';
 import { Route, MemoryRouter, Routes } from 'react-router-dom';
@@ -8,6 +9,7 @@ import { setUserSession } from 'services/AuthService';
 import { mocks } from 'mocks/InteractiveMessage';
 import { InteractiveMessage } from './InteractiveMessage';
 import { FLOW_EDITOR_API } from 'config';
+import { setNotification } from 'common/notification';
 
 afterEach(() => {
   cleanup();
@@ -26,6 +28,43 @@ vi.mock('react-router-dom', async () => ({
   },
   Navigate: ({ to }: any) => <div>Navigated to {to}</div>,
 }));
+
+vi.mock('common/notification', async (importOriginal) => {
+  const mod = await importOriginal<typeof import('common/notification')>()
+  return {
+    ...mod,
+    setNotification: vi.fn(),
+  }
+})
+
+// mocking emoji picker to easily fill message field with an emoji
+vi.mock('components/UI/EmojiPicker/EmojiPicker', async (importOriginal) => {
+  const mod = await importOriginal<typeof import('components/UI/EmojiPicker/EmojiPicker')>()
+  return {
+    ...mod,
+    EmojiPicker: vi.fn((props: any) => {
+      const mockEmoji = {
+        id: 'grinning',
+        name: 'Grinning Face',
+        colons: ':grinning:',
+        text: '',
+        emoticons: [],
+        skin: null,
+        native: '😀',
+      };
+      const Picker: any = (
+        <input
+          data-testid="emoji-container"
+          onClick={() => {
+            props.onEmojiSelect(mockEmoji);
+          }}
+          onChange={(event) => props.onChange(event)}
+        ></input>
+      );
+      return Picker;
+    }),
+  }
+})
 
 const mockData = [...mocks, ...mocks];
 
@@ -181,17 +220,21 @@ test('it renders empty interactive form', async () => {
     fireEvent.click(deleteListItemButton);
   });
 
+  // Fill Message field with an emoji (as it's a required field)
+  await userEvent.click(screen.getByTestId('emoji-picker'));
+  const emojiContainer = screen.getByTestId('emoji-container');
+  await userEvent.click(emojiContainer);
+
   await waitFor(() => {
     const saveButton = screen.getByText('Save');
     expect(saveButton).toBeInTheDocument();
     fireEvent.click(saveButton);
   });
 
-  // TODOS: need to fix below
-  // // succesful save
-  // await waitFor(() => {
-  //   expect(screen.getByText('Interactive created successfully!')).toBeInTheDocument();
-  // });
+  // successful save
+  await waitFor(() => {
+    expect(setNotification).toHaveBeenCalledWith('Interactive message created successfully!');
+  });
 });
 
 test('it renders interactive quick reply in edit mode', async () => {
