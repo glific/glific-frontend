@@ -39,18 +39,13 @@ const App = () => {
   useEffect(() => {
     const checkAuth = async () => {
       const isAccessTokenPresent = getAuthSession('accessToken') !== null;
-      const isTokenAlive = checkAuthStatusService();
       let isSessionAlive = false;
-      if (isAccessTokenPresent && isTokenAlive){
-        // Healthy session
-        isSessionAlive = true;
-      }
-      else if(!isAccessTokenPresent){
+      if(!isAccessTokenPresent){
         // New user
         isSessionAlive = false;
       }
       else{
-        // expired token
+        // existing user
         isSessionAlive = await checkSessionValidity();
       }
       setAuthenticated(isSessionAlive);
