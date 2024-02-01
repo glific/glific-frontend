@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { startTransition, useState, useEffect, useMemo } from 'react';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import { ApolloProvider } from '@apollo/client';
 import 'i18n/config';
@@ -7,7 +7,8 @@ import 'assets/fonts/fonts.css';
 import gqlClient from 'config/apolloclient';
 import { SessionContext, SideDrawerContext } from 'context/session';
 import ErrorHandler from 'containers/ErrorHandler/ErrorHandler';
-import { checkAuthStatusService, getAuthSession, renewAuthToken, setAuthSession } from 'services/AuthService';
+import Loading from 'components/UI/Layout/Loading/Loading';
+import { getAuthSession, renewAuthToken, setAuthSession } from 'services/AuthService';
 import { UnauthenticatedRoute } from 'routes/UnauthenticatedRoute/UnauthenticatedRoute';
 import { AuthenticatedRoute } from 'routes/AuthenticatedRoute/AuthenticatedRoute';
 import { Logout } from 'containers/Auth/Logout/Logout';
@@ -48,7 +49,9 @@ const App = () => {
         // existing user
         isSessionAlive = await checkSessionValidity();
       }
-      setAuthenticated(isSessionAlive);
+      startTransition(() => {
+        setAuthenticated(isSessionAlive);
+      });
     };
     checkAuth();
   }, []);
@@ -95,7 +98,9 @@ const App = () => {
     <SessionContext.Provider value={values}>
       <ApolloProvider client={gqlClient(navigate)}>
         <ErrorHandler />
-        <SideDrawerContext.Provider value={sideDraawerValues}>{routes}</SideDrawerContext.Provider>
+        <SideDrawerContext.Provider value={sideDraawerValues}>
+          {routes ? routes : <Loading />}
+        </SideDrawerContext.Provider>
       </ApolloProvider>
     </SessionContext.Provider>
   );
