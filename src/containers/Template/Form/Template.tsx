@@ -953,7 +953,7 @@ const Template = ({
       validation.templateButtons = Yup.array()
         .of(
           Yup.object().shape({
-            value: Yup.string().required(t('Required')),
+            value: Yup.string().max(25, 'Only 25 characts are allowed').required(t('Required')),
           })
         )
         .min(1)
