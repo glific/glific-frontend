@@ -20,6 +20,7 @@ import {
   QUICK_REPLY,
 } from 'common/constants';
 import styles from './TemplateOptions.module.css';
+import { useState } from 'react';
 
 export interface TemplateOptionsProps {
   isAddButtonChecked: boolean;
@@ -49,6 +50,8 @@ export const TemplateOptions = ({
     CALL_TO_ACTION: 'Call to action',
     QUICK_REPLY: 'Quick Reply',
   };
+
+  const [isDisabled, setIsDisabled] = useState(false);
 
   const handleAddClick = (helper: any, type: boolean) => {
     const obj = type ? { type: '', value: '', title: '' } : { value: '' };
@@ -220,6 +223,9 @@ export const TemplateOptions = ({
                 onBlur={(e: any) => onInputChange(e, row, index, 'value')}
                 className={styles.TextField}
                 error={isError('value')}
+                inputProps={{
+                  maxLength: 25,
+                }}
                 InputProps={{
                   endAdornment: inputFields.length > 1 && !disabled && (
                     <CrossIcon
@@ -231,6 +237,7 @@ export const TemplateOptions = ({
                   ),
                 }}
               />
+              <FormHelperText>{'Quick replies limited to 25 characters.'}</FormHelperText>
               {errors.templateButtons &&
               touched.templateButtons &&
               touched.templateButtons[index] ? (
