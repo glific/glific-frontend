@@ -235,7 +235,9 @@ export const TemplateOptions = ({
               touched.templateButtons &&
               touched.templateButtons[index] ? (
                 <FormHelperText>{errors.templateButtons[index]?.value}</FormHelperText>
-              ) : null}
+              ) : (
+                <FormHelperText>{'Quick replies limited to 25 characters.'}</FormHelperText>
+              )}
             </FormControl>
           </div>
           <div>
