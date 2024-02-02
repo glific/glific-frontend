@@ -167,7 +167,7 @@ export const Simulator = ({
     let context: any = {};
 
     if (interactivePayload) {
-      type = interactivePayload.payload.type;
+      type = interactivePayload.payload.type || interactivePayload.type;
       payload = interactivePayload.payload;
       delete payload.type;
       context = interactivePayload.context;

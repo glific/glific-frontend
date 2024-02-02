@@ -16,6 +16,7 @@ const locationPayload = {
   name: 'location',
   id: 'LOCATION',
   payload: {
+    type: 'location',
     latitude: '41.725556',
     longitude: '-49.946944',
   },
@@ -38,7 +39,7 @@ export const LocationRequestTemplate = ({
         variant="text"
         disabled={disabled}
         startIcon={<LocationIconDark />}
-        onClick={() => onSendLocationClick({ payload: locationPayload })}
+        onClick={() => onSendLocationClick(locationPayload)}
         className={isSimulator ? styles.SimulatorButton : styles.ChatButton}
       >
         Send Location
