@@ -20,8 +20,6 @@ import {
   QUICK_REPLY,
 } from 'common/constants';
 import styles from './TemplateOptions.module.css';
-import { useState } from 'react';
-
 export interface TemplateOptionsProps {
   isAddButtonChecked: boolean;
   templateType: string | null;
@@ -50,8 +48,6 @@ export const TemplateOptions = ({
     CALL_TO_ACTION: 'Call to action',
     QUICK_REPLY: 'Quick Reply',
   };
-
-  const [isDisabled, setIsDisabled] = useState(false);
 
   const handleAddClick = (helper: any, type: boolean) => {
     const obj = type ? { type: '', value: '', title: '' } : { value: '' };
