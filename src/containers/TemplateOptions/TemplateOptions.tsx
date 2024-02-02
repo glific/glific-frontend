@@ -20,6 +20,7 @@ import {
   QUICK_REPLY,
 } from 'common/constants';
 import styles from './TemplateOptions.module.css';
+
 export interface TemplateOptionsProps {
   isAddButtonChecked: boolean;
   templateType: string | null;
