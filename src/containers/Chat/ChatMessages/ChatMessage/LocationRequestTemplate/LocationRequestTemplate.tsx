@@ -16,6 +16,7 @@ const locationPayload = {
   name: 'location',
   id: 'LOCATION',
   payload: {
+    type: 'location',
     latitude: '41.725556',
     longitude: '-49.946944',
   },
