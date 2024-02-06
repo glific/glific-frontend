@@ -149,6 +149,7 @@ export const ChatInput = ({
       };
       setUploading(true);
     }
+    console.log(message);
 
     // check for an empty message or message with just spaces
     if ((!message || /^\s*$/.test(message)) && !attachmentAdded) return;
@@ -177,16 +178,17 @@ export const ChatInput = ({
       resetVariable();
       // else the type will by default be text
     } else {
+      console.log('n');
+
       onSendMessage(message, null, 'TEXT', selectedTemplate, variableParam);
       resetVariable();
     }
 
     // Resetting the EditorState
-    setEditorState(
-      EditorState.moveFocusToEnd(
-        EditorState.push(editorState, ContentState.createFromText(''), 'remove-range')
-      )
-    );
+    // setEditorState('');
+    // EditorState.moveFocusToEnd(
+    //   EditorState.push(editorState, ContentState.createFromText(''), 'remove-range')
+    // )
   };
 
   const emojiStyles = {
@@ -490,12 +492,7 @@ export const ChatInput = ({
                   submitMessage(getPlainTextFromEditor(editorState));
                 }
               }}
-              disabled={
-                (!editorState.getCurrentContent().hasText() &&
-                  !attachmentAdded &&
-                  !recordedAudio) ||
-                uploading
-              }
+              // disabled={(!attachmentAdded && !recordedAudio) || uploading}
             >
               <SendMessageIcon className={styles.SendIcon} />
             </Button>

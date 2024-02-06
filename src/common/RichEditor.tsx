@@ -9,9 +9,9 @@ const regexForLink =
   /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_+.~#?&/=]*)/gi;
 
 // Convert Draft.js to WhatsApp message format.
-export const getPlainTextFromEditor = (editorState: any) =>
-  editorState.getCurrentContent().getPlainText();
-
+export const getPlainTextFromEditor = (editorState: any) => {
+  return editorState?.textContent;
+};
 export const getEditorFromContent = (text: string) =>
   EditorState.createWithContent(ContentState.createFromText(text));
 

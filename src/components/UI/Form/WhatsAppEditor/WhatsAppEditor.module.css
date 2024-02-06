@@ -28,3 +28,29 @@ span.emoji-mart-emoji {
 .emoji-mart-emoji {
   font-size: medium;
 }
+
+.editorInput {
+  resize: none;
+  font-size: 16px;
+  overflow: auto;
+  width: 100%;
+  min-height: 40px;
+  margin-top: 4px;
+  position: relative;
+  tab-size: 1;
+  outline: 0;
+  /* padding: 4px 10px; */
+}
+
+.editorPlaceholder {
+  color: #999;
+  overflow: hidden;
+  position: absolute;
+  text-overflow: ellipsis;
+  top: 45px;
+  left: 35px;
+  font-size: 15px;
+  user-select: none;
+  display: inline-block;
+  pointer-events: none;
+}

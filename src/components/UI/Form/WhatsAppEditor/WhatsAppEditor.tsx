@@ -1,7 +1,17 @@
 import { useCallback } from 'react';
+import { useEffect } from 'react';
+
 import { RichUtils, getDefaultKeyBinding, Modifier, EditorState, Editor } from 'draft-js';
+import { LexicalComposer } from '@lexical/react/LexicalComposer';
+import { PlainTextPlugin } from '@lexical/react/LexicalPlainTextPlugin';
+import { ContentEditable } from '@lexical/react/LexicalContentEditable';
+import { $getSelection, $createTextNode } from 'lexical';
+import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
+import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
+import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
 import { useResizeDetector } from 'react-resize-detector';
 import { useTranslation } from 'react-i18next';
+import { KEY_DOWN_COMMAND, COMMAND_PRIORITY_LOW } from 'lexical';
 
 import { getPlainTextFromEditor } from 'common/RichEditor';
 import styles from './WhatsAppEditor.module.css';
@@ -48,44 +58,8 @@ export const WhatsAppEditor = ({
     setEditorState(editorStateChange);
   };
 
-  const handleKeyCommand = (command: string, editorStateChange: any) => {
-    // On enter, submit. Otherwise, deal with commands like normal.
-    if (command === 'enter') {
-      // Convert Draft.js to WhatsApp
-      sendMessage(getPlainTextFromEditor(editorStateChange));
-      return 'handled';
-    }
-
-    if (command === 'underline') {
-      return 'handled';
-    }
-
-    if (command === 'bold') {
-      setEditorState(updatedValue('**', editorState));
-    } else if (command === 'italic') {
-      setEditorState(updatedValue('__', editorState));
-    } else {
-      const newState = RichUtils.handleKeyCommand(editorStateChange, command);
-      if (newState) {
-        setEditorState(newState);
-        return 'handled';
-      }
-    }
-    return 'not-handled';
-  };
-
-  const keyBindingFn = (e: any) => {
-    // Shift-enter is by default supported. Only 'enter' needs to be changed.
-    if (e.keyCode === 13 && !e.nativeEvent.shiftKey) {
-      return 'enter';
-    }
-    return getDefaultKeyBinding(e);
-  };
-
-  const onResize = useCallback((width: number | undefined, height: number | undefined) => {
-    if (height) {
-      handleHeightChange(height - 40);
-    }
+  const onResize = useCallback((height: any) => {
+    handleHeightChange(height - 40);
   }, []);
 
   const { ref } = useResizeDetector({
@@ -94,17 +68,118 @@ export const WhatsAppEditor = ({
     onResize,
   });
 
+  const onError = (error: any) => {
+    console.error(error);
+  };
+
+  const exampleTheme = {
+    ltr: 'ltr',
+    rtl: 'rtl',
+    paragraph: 'editor-paragraph',
+    input: 'editor-input',
+  };
+
+  const initialConfig = {
+    namespace: 'MyEditor',
+    onError,
+    theme: exampleTheme,
+  };
+
+  const onChange = (editorState: any) => {
+    setEditorState(editorState.toJSON());
+  };
+
+  const handleFormatting = (text: string, formatter: string) => {
+    switch (formatter) {
+      case 'bold':
+        return `*${text}*`;
+      case 'italic':
+        return `_${text}_`;
+      case 'strikethrough':
+        return `~${text}~`;
+      default:
+        return text;
+    }
+  };
+
+  function MyCustomAutoFocusPlugin() {
+    const [editor] = useLexicalComposerContext();
+
+    useEffect(() => {
+      // const sendMessageCommand = editor.registerCommand(
+      //   KEY_ENTER_COMMAND,
+      //   (event: KeyboardEvent) => {
+      //     // Handle enter key presses here
+      //     console.log('nf');
+
+      //     // sendMessage(getPlainTextFromEditor(editor.getRootElement()));
+      //     return false;
+      //   },
+      //   COMMAND_PRIORITY_LOW
+      // );
+
+      // sendMessageCommand();
+
+      return editor.registerCommand(
+        KEY_DOWN_COMMAND,
+        (event: KeyboardEvent) => {
+          console.log(event);
+
+          // Handle event here
+          let formatter = '';
+          if (event.code === 'Enter' && !readOnly) {
+            event.preventDefault(); // Prevent line break on enter
+            // editor.update(() => {
+            //   const emptyNode = createEmptyNode(); // Replace with your preferred empty node constructor
+            //   editor.setEditorState(
+            //     editor.createEditorState({
+            //       nodes: [emptyNode],
+            //     })
+            //   );
+            // });
+            // sendMessage(getPlainTextFromEditor(editor.getRootElement()));
+          } else if ((event.ctrlKey || event.metaKey) && event.code === 'KeyB') {
+            formatter = 'bold';
+          } else if ((event.ctrlKey || event.metaKey) && event.code === 'KeyI') {
+            formatter = 'italic';
+          }
+
+          // console.log(formatter);
+
+          editor.update(() => {
+            const selection = $getSelection();
+            if (selection?.getTextContent() && formatter) {
+              const text = handleFormatting(selection?.getTextContent(), formatter);
+              const newNode = $createTextNode(text);
+              selection?.insertNodes([newNode]);
+            }
+          });
+          // console.log(event);
+
+          return false;
+        },
+        COMMAND_PRIORITY_LOW
+      );
+    }, [editor, onChange]);
+
+    return null;
+  }
+  function Placeholder() {
+    return <div className={styles.editorPlaceholder}>Type a message...</div>;
+  }
+
   return (
     <div className={styles.Editor} ref={ref} data-testid="resizer">
-      <Editor
-        data-testid="editor"
-        editorState={editorState}
-        onChange={handleChange}
-        handleKeyCommand={handleKeyCommand}
-        keyBindingFn={keyBindingFn}
-        placeholder={t('Type a message...')}
-        readOnly={readOnly}
-      />
+      <LexicalComposer initialConfig={initialConfig}>
+        <PlainTextPlugin
+          data-testid="editor"
+          placeholder={<Placeholder />}
+          contentEditable={<ContentEditable className={styles.editorInput} />}
+          ErrorBoundary={LexicalErrorBoundary}
+        />
+        <HistoryPlugin />
+        <MyCustomAutoFocusPlugin />
+      </LexicalComposer>
     </div>
   );
 };
