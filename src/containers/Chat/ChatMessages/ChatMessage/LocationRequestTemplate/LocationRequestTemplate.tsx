@@ -20,7 +20,7 @@ export const LocationRequestTemplate = ({
   onSendLocationClick = () => {},
 }: LocationRequestTemplateProps) => {
   const body = content.body.text;
-  const locationPayload = SAMPLE_MEDIA_FOR_SIMULATOR[5];
+  const locationPayload = SAMPLE_MEDIA_FOR_SIMULATOR[5].payload;
   return (
     <div>
       <div className={styles.MessageContent}>
