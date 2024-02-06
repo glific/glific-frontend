@@ -2,6 +2,7 @@ import { Button } from '@mui/material';
 import LocationIconDark from 'assets/images/icons/Location/Dark.svg?react';
 import styles from './LocationRequestTemplate.module.css';
 import { ChatMessageType } from '../ChatMessageType/ChatMessageType';
+import { SAMPLE_MEDIA_FOR_SIMULATOR } from 'common/constants';
 
 export interface LocationRequestTemplateProps {
   content: any;
@@ -11,17 +12,6 @@ export interface LocationRequestTemplateProps {
   onSendLocationClick?: any;
 }
 
-const locationPayload = {
-  type: 'location',
-  name: 'location',
-  id: 'LOCATION',
-  payload: {
-    type: 'location',
-    latitude: '41.725556',
-    longitude: '-49.946944',
-  },
-};
-
 export const LocationRequestTemplate = ({
   content,
   disabled = false,
@@ -30,6 +20,7 @@ export const LocationRequestTemplate = ({
   onSendLocationClick = () => {},
 }: LocationRequestTemplateProps) => {
   const body = content.body.text;
+  const locationPayload = SAMPLE_MEDIA_FOR_SIMULATOR[5];
   return (
     <div>
       <div className={styles.MessageContent}>

@@ -167,7 +167,7 @@ export const Simulator = ({
     let context: any = {};
 
     if (interactivePayload) {
-      type = interactivePayload.payload.type || interactivePayload.type;
+      type = interactivePayload.payload.type;
       payload = interactivePayload.payload;
       delete payload.type;
       context = interactivePayload.context;
@@ -330,7 +330,7 @@ export const Simulator = ({
           <LocationRequestTemplate
             content={content}
             isSimulator
-            onSendLocationClick={(payload: any) => sendMessage(sender, payload)}
+            onSendLocationClick={(payload: any) => sendMediaMessage('location', payload)}
           />
         );
       }
