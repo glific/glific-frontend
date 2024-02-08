@@ -29,12 +29,13 @@ import Loading from 'components/UI/Layout/Loading/Loading';
 import { CreateAutoComplete } from 'components/UI/Form/CreateAutoComplete/CreateAutoComplete';
 import { validateMedia } from 'common/utils';
 import styles from './Template.module.css';
+import { Editor } from '../Editor';
 
 const regexForShortcode = /^[a-z0-9_]+$/g;
 
 const HSMValidation = {
   example: Yup.string()
-    .transform((_current, original) => original.getCurrentContent().getPlainText())
+    // .transform((_current, original) => original.getCurrentContent().getPlainText())
     .max(1024, 'Maximum 1024 characters are allowed')
     .when('body', ([body], schema: any) =>
       schema.test({
@@ -178,8 +179,9 @@ const Template = ({
 
   const [tagId, setTagId] = useState<any>(null);
   const [label, setLabel] = useState('');
-  const [body, setBody] = useState(EditorState.createEmpty());
-  const [example, setExample] = useState(EditorState.createEmpty());
+  const [body, setBody] = useState<any>();
+  const [bodyy, setBodyy] = useState();
+  const [example, setExample] = useState();
   const [shortcode, setShortcode] = useState('');
   const [language, setLanguageId] = useState<any>({});
   const [type, setType] = useState<any>(null);
@@ -284,7 +286,8 @@ const Template = ({
     setIsActive(isActiveValue);
 
     if (typeof bodyValue === 'string') {
-      setBody(getEditorFromContent(bodyValue));
+      console.log(bodyValue);
+      setBody(bodyValue);
     }
 
     if (exampleValue) {
@@ -303,7 +306,7 @@ const Template = ({
       }
       const editorStateBody = getEditorFromContent(exampleValue);
 
-      setExample(editorStateBody);
+      // setExample(editorStateBody);
       onExampleChange(exampleBody);
     }
 
@@ -325,7 +328,9 @@ const Template = ({
       ) {
         const content = translationsCopy[currentLanguage];
         setLabel(content.label);
-        setBody(getEditorFromContent(content.body));
+        console.log(content);
+
+        setBody(content.body);
       }
       setTranslations(translationsValue);
     }
@@ -359,7 +364,9 @@ const Template = ({
     setLabel(labelValue);
 
     if (typeof bodyValue === 'string') {
-      setBody(getEditorFromContent(bodyValue));
+      console.log(bodyValue);
+
+      setBody(bodyValue);
     }
 
     if (typeValue && typeValue !== 'TEXT') {
@@ -435,7 +442,7 @@ const Template = ({
 
   const getTemplateAndButton = (text: string) => {
     const exp = /(\|\s\[)|(\|\[)/;
-    const areButtonsPresent = text.search(exp);
+    const areButtonsPresent = -1;
 
     let message: any = text;
     let buttons: any = null;
@@ -687,10 +694,12 @@ const Template = ({
         ? 'You can also use variable and interactive actions. Variable format: {{1}}, Button format: [Button text,Value] Value can be a URL or a phone number.'
         : null,
       getEditorValue: (value: any) => {
+        console.log(value);
         setBody(value);
       },
     },
   ];
+  console.log(body);
 
   const handeInputChange = (event: any, row: any, index: any, eventType: any) => {
     const { value } = event.target;
@@ -790,6 +799,7 @@ const Template = ({
   const setPayload = (payload: any) => {
     let payloadCopy = payload;
     let translationsCopy: any = {};
+    console.log(payload);
 
     if (template) {
       if (template.sessionTemplate.sessionTemplate.language.id === language.id) {
@@ -909,7 +919,7 @@ const Template = ({
     language: Yup.object().nullable().required('Language is required.'),
     label: Yup.string().required(t('Title is required.')).max(50, t('Title length is too long.')),
     body: Yup.string()
-      .transform((current, original) => original.getCurrentContent().getPlainText())
+      // .transform((current, original) => original.getCurrentContent().getPlainText())
       .required(t('Message is required.'))
       .max(1024, 'Maximum 1024 characters are allowed'),
     type: Yup.object()

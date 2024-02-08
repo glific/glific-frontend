@@ -373,16 +373,24 @@ export const FormLayout = ({
     }
   };
   const saveHandler = ({ languageId: languageIdValue, ...itemData }: any) => {
+    console.log(itemData, defaultAttribute);
+
     let payload = {
       ...itemData,
       ...defaultAttribute,
     };
-    payload = languageSupport
-      ? { ...payload, languageId: Number(languageIdValue) }
-      : { ...payload };
+
+    console.log(payload);
+
+    // payload = languageSupport
+    //   ? { ...payload, languageId: Number(languageIdValue) }
+    //   : { ...payload };
+    console.log(languageSupport);
 
     // create custom payload for searches
     if (setPayload) {
+      console.log(payload);
+
       payload = setPayload(payload);
       if (advanceSearch) {
         const data = advanceSearch(payload);
@@ -527,6 +535,8 @@ export const FormLayout = ({
       validationSchema={validationSchema}
       onSubmit={(itemData, { setErrors }) => {
         // when you want to show custom error on form field and error message is not coming from api
+        console.log(itemData);
+
         setCustomError({ setErrors });
         saveHandler(itemData);
       }}
@@ -557,6 +567,7 @@ export const FormLayout = ({
               color="primary"
               onClick={() => {
                 onSaveButtonClick(errors);
+                console.log(errors);
                 submitForm();
               }}
               className={styles.Button}

@@ -106,19 +106,6 @@ export const WhatsAppEditor = ({
     const [editor] = useLexicalComposerContext();
 
     useEffect(() => {
-      // const sendMessageCommand = editor.registerCommand(
-      //   KEY_ENTER_COMMAND,
-      //   (event: KeyboardEvent) => {
-      //     // Handle enter key presses here
-      //     console.log('nf');
-
-      //     // sendMessage(getPlainTextFromEditor(editor.getRootElement()));
-      //     return false;
-      //   },
-      //   COMMAND_PRIORITY_LOW
-      // );
-
-      // sendMessageCommand();
 
       return editor.registerCommand(
         KEY_DOWN_COMMAND,
@@ -129,15 +116,6 @@ export const WhatsAppEditor = ({
           let formatter = '';
           if (event.code === 'Enter' && !readOnly) {
             event.preventDefault(); // Prevent line break on enter
-            // editor.update(() => {
-            //   const emptyNode = createEmptyNode(); // Replace with your preferred empty node constructor
-            //   editor.setEditorState(
-            //     editor.createEditorState({
-            //       nodes: [emptyNode],
-            //     })
-            //   );
-            // });
-            // sendMessage(getPlainTextFromEditor(editor.getRootElement()));
           } else if ((event.ctrlKey || event.metaKey) && event.code === 'KeyB') {
             formatter = 'bold';
           } else if ((event.ctrlKey || event.metaKey) && event.code === 'KeyI') {

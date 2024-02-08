@@ -1,0 +1,110 @@
+.HelperText {
+  margin-left: 16px !important;
+  color: #93a29b !important;
+  line-height: 1 !important;
+  font-size: 12px !important;
+  margin-top: 4px !important;
+  /* position: absolute; */
+  /* bottom: 0; */
+}
+
+.Editor {
+  margin-bottom: 1rem;
+  position: relative;
+  border: 2px solid rgba(0, 0, 0, 0.23);
+  border-radius: 12px;
+  height: 10rem;
+  position: relative;
+  padding: 0 1rem;
+}
+
+.EditorInput {
+  resize: none;
+  font-size: 16px;
+  overflow: auto;
+  width: 100%;
+  min-height: 40px;
+  margin-top: 4px;
+  position: relative;
+  tab-size: 1;
+  outline: 0;
+}
+
+.boxii {
+  background-color: red !important;
+}
+
+.EditorWrapper {
+  margin-bottom: 0.8rem;
+}
+
+.Multiline {
+  padding-bottom: 35px !important;
+}
+
+.OutlineInput > div:first-child {
+  width: inherit !important;
+  height: 100px;
+  overflow: auto;
+}
+
+.EmojiPosition {
+  cursor: pointer;
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  white-space: initial !important;
+}
+
+.Emoji {
+  width: 24px;
+}
+
+.Font {
+  line-height: 1.25;
+  font-weight: 400;
+  font-size: 16px;
+  font-family: 'Heebo', sans-serif;
+  color: #073f24;
+  text-transform: inherit !important;
+}
+
+/* 
+  Overriding draft-js mentions styles as per requirement
+*/
+.mentionSuggestions {
+  composes: Font;
+  background: #fff;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  transform-origin: 50% 0%;
+  transform: scaleY(0);
+  box-shadow: 0px 6px 6px 0px lightgray;
+  z-index: 100;
+  overflow-y: auto;
+  max-height: 360px;
+}
+
+.mentionSuggestionsEntry {
+  padding: 7px 10px 3px 10px;
+  transition: background-color 0.4s cubic-bezier(0.27, 1.27, 0.48, 0.56);
+}
+
+.mentionSuggestionsEntry:active {
+  background-color: #edf6f2;
+}
+
+.mentionSuggestionsEntryFocused {
+  composes: mentionSuggestionsEntry;
+  background-color: #edf6f2;
+}
+
+.mentionSuggestionsEntryText,
+.mentionSuggestionsEntryTitle {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

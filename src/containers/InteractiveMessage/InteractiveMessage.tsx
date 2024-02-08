@@ -60,7 +60,7 @@ export const InteractiveMessage = () => {
   const navigate = useNavigate();
   const [title, setTitle] = useState('');
   const [footer, setFooter] = useState('');
-  const [body, setBody] = useState(EditorState.createEmpty());
+  const [body, setBody] = useState<any>();
   const [templateType, setTemplateType] = useState<string>(QUICK_REPLY);
   const [templateTypeField, setTemplateTypeField] = useState<any>(templateTypeOptions[0]);
   const [templateButtons, setTemplateButtons] = useState<Array<any>>([{ value: '' }]);

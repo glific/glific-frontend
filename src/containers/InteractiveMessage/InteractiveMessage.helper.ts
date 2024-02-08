@@ -39,7 +39,7 @@ export const validator = (templateType: any, t: any) => {
       .required(t('Title is required'))
       .max(60, t('Title can be at most 60 characters')),
     body: Yup.string()
-      .transform((_current, original) => original.getCurrentContent().getPlainText())
+      // .transform((_current, original) => original.getCurrentContent().getPlainText())
       .when('type', {
         is: (val: any) => val && val.id && val.id === 'DOCUMENT',
         then: (schema) => schema.nullable(),
@@ -239,7 +239,7 @@ export const getVariableOptions = async (setContactVariables: any) => {
     properties.properties
       .map((i: any) => contactVariablesprefix.concat(i.key))
       .concat(fields)
-      .map((val: string) => ({ name: val }))
+      .map((val: string) => val)
       .slice(1);
 
   setContactVariables(contacts);

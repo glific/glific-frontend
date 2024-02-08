@@ -1,12 +1,12 @@
 import { useState, useMemo, useCallback, forwardRef } from 'react';
 import { RichUtils, Modifier, EditorState, ContentState } from 'draft-js';
-import Editor from '@draft-js-plugins/editor';
 import createMentionPlugin from '@draft-js-plugins/mention';
 import { InputAdornment, IconButton, ClickAwayListener } from '@mui/material';
 
 import { getPlainTextFromEditor } from 'common/RichEditor';
 import { EmojiPicker } from 'components/UI/EmojiPicker/EmojiPicker';
 import { Input } from '../Input/Input';
+import { Editor } from 'containers/Template/Editor';
 import Styles from './EmojiInput.module.css';
 
 export interface EmojiInputProps {
@@ -122,12 +122,16 @@ export const EmojiInput = ({
   };
 
   const draftJsChange = (editorState: any) => {
+    console.log(editorState);
+
     if (handleChange) {
-      handleChange(getPlainTextFromEditor(props.form.values.example));
+      handleChange(editorState);
     }
     if (getEditorValue) {
       getEditorValue(editorState);
     }
+    console.log(name, editorState);
+
     props.form.setFieldValue(name, editorState);
   };
 
@@ -207,7 +211,13 @@ export const EmojiInput = ({
   );
 
   const input = (
-    <Input field={{ name, value, onBlur }} {...props} editor={editor} emojiPicker={picker} />
+    <Editor
+      field={{ name, value, onBlur }}
+      {...props}
+      editor={editor}
+      picker={picker}
+      onChange={draftJsChange}
+    />
   );
 
   return input;
