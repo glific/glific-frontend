@@ -10,8 +10,6 @@ const regexForLink =
 
 // Convert Draft.js to WhatsApp message format.
 export const getPlainTextFromEditor = (editorState: any) => {
-  console.log(editorState);
-
   return editorState;
 };
 export const getEditorFromContent = (text: string) =>

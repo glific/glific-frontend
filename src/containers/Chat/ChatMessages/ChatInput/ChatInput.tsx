@@ -202,11 +202,11 @@ export const ChatInput = ({
     }
 
     // Resetting the EditorState
-    setEditorState(
-      EditorState.moveFocusToEnd(
-        EditorState.push(editorState, ContentState.createFromText(''), 'remove-range')
-      )
-    );
+    editor.update(() => {
+      const root = $getRoot();
+      root.clear();
+    });
+    editor.focus();
   };
 
   const emojiStyles = {
@@ -244,8 +244,6 @@ export const ChatInput = ({
 
   const handleSelectText = (obj: any, isInteractiveMsg: boolean = false) => {
     resetVariable();
-    console.log(obj.body);
-
     // set selected template
 
     let messageBody = obj.body;
@@ -253,7 +251,6 @@ export const ChatInput = ({
       const interactiveContent = JSON.parse(obj.interactiveContent);
       messageBody = getInteractiveMessageBody(interactiveContent);
       setInteractiveMessageContent(interactiveContent);
-      console.log(interactiveContent);
     }
 
     setSelectedTemplate(obj);
@@ -265,7 +262,6 @@ export const ChatInput = ({
       paragraph.append($createTextNode(messageBody || ''));
       root.append(paragraph);
     });
-    console.log(getEditorFromContent(messageBody));
 
     // Add attachment if present
     if (Object.prototype.hasOwnProperty.call(obj, 'MessageMedia') && obj.MessageMedia) {
@@ -291,6 +287,7 @@ export const ChatInput = ({
   };
 
   const updateEditorState = (body: string) => {
+    setUpdatedEditorState(true);
     editor.update(() => {
       const root = $getRoot();
       root.clear();
@@ -442,7 +439,6 @@ export const ChatInput = ({
         }`}
       >
         <WhatsAppEditor
-          editorState={updatedEditorState ? getEditorFromContent(updatedEditorState) : editorState}
           setEditorState={setEditorState}
           sendMessage={submitMessage}
           handleHeightChange={handleHeightChange}
@@ -515,13 +511,9 @@ export const ChatInput = ({
               color="primary"
               disableElevation
               onClick={() => {
-                if (updatedEditorState) {
-                  submitMessage(updatedEditorState);
-                } else {
-                  submitMessage(getPlainTextFromEditor(editorState));
-                }
+                submitMessage(editorState);
               }}
-              disabled={(!attachmentAdded && !recordedAudio) || uploading}
+              // disabled={(!attachmentAdded && !recordedAudio) || uploading}
             >
               <SendMessageIcon className={styles.SendIcon} />
             </Button>

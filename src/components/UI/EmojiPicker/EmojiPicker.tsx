@@ -23,7 +23,6 @@ export const EmojiPicker = ({ displayStyle, onEmojiSelect }: EmojiPickerProps) =
       <Picker
         data={data}
         onEmojiSelect={(emoji: any) => {
-          console.log(emoji);
           editor.update(() => {
             const selection = $getSelection();
             if ($isRangeSelection(selection)) {

@@ -3,11 +3,11 @@ import { RichUtils, Modifier, EditorState, ContentState } from 'draft-js';
 import createMentionPlugin from '@draft-js-plugins/mention';
 import { InputAdornment, IconButton, ClickAwayListener } from '@mui/material';
 
-import { getPlainTextFromEditor } from 'common/RichEditor';
 import { EmojiPicker } from 'components/UI/EmojiPicker/EmojiPicker';
-import { Input } from '../Input/Input';
 import { Editor } from 'containers/Template/Editor';
 import Styles from './EmojiInput.module.css';
+import { LexicalComposer } from '@lexical/react/LexicalComposer';
+import { BeautifulMentionNode } from 'lexical-beautiful-mentions';
 
 export interface EmojiInputProps {
   field: any;
@@ -122,15 +122,12 @@ export const EmojiInput = ({
   };
 
   const draftJsChange = (editorState: any) => {
-    console.log(editorState);
-
     if (handleChange) {
       handleChange(editorState);
     }
     if (getEditorValue) {
       getEditorValue(editorState);
     }
-    console.log(name, editorState);
 
     props.form.setFieldValue(name, editorState);
   };
@@ -211,13 +208,15 @@ export const EmojiInput = ({
   );
 
   const input = (
-    <Editor
-      field={{ name, value, onBlur }}
-      {...props}
-      editor={editor}
-      picker={picker}
-      onChange={draftJsChange}
-    />
+    <LexicalComposer
+      initialConfig={{
+        namespace: 'template-input',
+        onError: (error) => console.log(error),
+        nodes: [BeautifulMentionNode],
+      }}
+    >
+      <Editor field={{ name, value, onBlur }} {...props} picker={picker} onChange={draftJsChange} />
+    </LexicalComposer>
   );
 
   return input;

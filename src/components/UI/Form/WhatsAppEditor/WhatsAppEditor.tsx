@@ -18,7 +18,6 @@ import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 interface WhatsAppEditorProps {
   handleHeightChange(newHeight: number): void;
   sendMessage(message: any): void;
-  editorState: any;
   setEditorState(editorState: any): void;
   readOnly?: boolean;
 }
@@ -47,15 +46,10 @@ export const updatedValue = (input: any, editorState: EditorState, isEmoji: bool
 export const WhatsAppEditor = ({
   setEditorState,
   sendMessage,
-  editorState,
   handleHeightChange,
   readOnly = false,
 }: WhatsAppEditorProps) => {
   const { t } = useTranslation();
-
-  const handleChange = (editorStateChange: any) => {
-    setEditorState(editorStateChange);
-  };
 
   const onResize = useCallback((height: any) => {
     handleHeightChange(height - 40);
@@ -113,8 +107,6 @@ export const WhatsAppEditor = ({
             formatter = 'italic';
           }
 
-          // console.log(formatter);
-
           editor.update(() => {
             const selection = $getSelection();
             if (selection?.getTextContent() && formatter) {
@@ -123,7 +115,6 @@ export const WhatsAppEditor = ({
               selection?.insertNodes([newNode]);
             }
           });
-          // console.log(event);
 
           return false;
         },

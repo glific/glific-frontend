@@ -68,8 +68,6 @@ export const HSM = () => {
   };
 
   const getSimulatorMessage = (messages: any) => {
-    console.log(messages);
-
     const message = removeFirstLineBreak(messages);
     const media: any = { ...sampleMessages.media };
     const text = getTemplate(message);
@@ -95,7 +93,6 @@ export const HSM = () => {
   if (params.id && !isCopyState) {
     disabled = true;
   }
-  console.log(example);
 
   const formFields = [
     {
@@ -110,8 +107,6 @@ export const HSM = () => {
         'Replace variables eg. {{1}} with actual values enclosed in [ ] eg. [12345] to show a complete message with meaningful word/statement/numbers/ special characters.',
       handleChange: getSimulatorMessage,
       getEditorValue: (value: any) => {
-        console.log(value);
-
         setExample(value);
       },
     },
