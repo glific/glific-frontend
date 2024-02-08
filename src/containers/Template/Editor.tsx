@@ -1,5 +1,5 @@
 import styles from './Editor.module.css';
-import { forwardRef, useCallback, useState } from 'react';
+import { forwardRef, useState } from 'react';
 import { useEffect } from 'react';
 import { PlainTextPlugin } from '@lexical/react/LexicalPlainTextPlugin';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
@@ -9,7 +9,7 @@ import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext
 import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
 import { useResizeDetector } from 'react-resize-detector';
 import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
-import { KEY_DOWN_COMMAND, COMMAND_PRIORITY_LOW, createCommand } from 'lexical';
+import { KEY_DOWN_COMMAND, COMMAND_PRIORITY_LOW } from 'lexical';
 import { ClickAwayListener, FormHelperText, IconButton, InputAdornment } from '@mui/material';
 import {
   BeautifulMentionsPlugin,
@@ -48,7 +48,7 @@ export const Editor = ({ textArea = false, disabled = false, ...props }: EditorP
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const mentions = props.inputProp?.suggestions || [];
   const suggestions = {
-    '@': mentions?.map((el: any) => el?.split('@')[1]),
+    '@': mentions.map((el: any) => el?.split('@')[1]),
   };
 
   const [editor] = useLexicalComposerContext();

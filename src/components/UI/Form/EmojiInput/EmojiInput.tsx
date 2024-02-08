@@ -171,8 +171,6 @@ export const EmojiInput = ({
     onChange: draftJsChange,
   };
 
-  const editor = { inputComponent: DraftField, inputProps };
-
   const emojiPicker = showEmojiPicker ? (
     <EmojiPicker
       onEmojiSelect={(emojiValue: any) => updateValue(emojiValue, true)}

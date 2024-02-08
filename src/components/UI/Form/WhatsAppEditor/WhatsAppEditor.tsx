@@ -4,12 +4,11 @@ import { useEffect } from 'react';
 import { Modifier, EditorState } from 'draft-js';
 import { PlainTextPlugin } from '@lexical/react/LexicalPlainTextPlugin';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
-import { $getSelection, $createTextNode, CLEAR_EDITOR_COMMAND, $getRoot } from 'lexical';
+import { $getSelection, $createTextNode, $getRoot } from 'lexical';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
 import { useResizeDetector } from 'react-resize-detector';
-import { useTranslation } from 'react-i18next';
 import { KEY_DOWN_COMMAND, COMMAND_PRIORITY_LOW } from 'lexical';
 
 import styles from './WhatsAppEditor.module.css';
@@ -49,8 +48,6 @@ export const WhatsAppEditor = ({
   handleHeightChange,
   readOnly = false,
 }: WhatsAppEditorProps) => {
-  const { t } = useTranslation();
-
   const onResize = useCallback((height: any) => {
     handleHeightChange(height - 40);
   }, []);

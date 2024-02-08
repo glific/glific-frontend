@@ -1,7 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import { EditorState } from 'draft-js';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useLazyQuery, useQuery } from '@apollo/client';
 import { setNotification } from 'common/notification';

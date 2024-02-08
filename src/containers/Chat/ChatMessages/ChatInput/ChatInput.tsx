@@ -1,5 +1,4 @@
-import { useCallback, useState } from 'react';
-import { EditorState, ContentState } from 'draft-js';
+import { useState } from 'react';
 import { Container, Button, ClickAwayListener, Fade, IconButton } from '@mui/material';
 import { useMutation, useQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
@@ -9,10 +8,10 @@ import AttachmentIconSelected from 'assets/images/icons/Attachment/Selected.svg?
 import VariableIcon from 'assets/images/icons/Template/Variable.svg?react';
 import CrossIcon from 'assets/images/icons/Clear.svg?react';
 import SendMessageIcon from 'assets/images/icons/SendMessage.svg?react';
-import { getPlainTextFromEditor, getEditorFromContent } from 'common/RichEditor';
+import { getEditorFromContent } from 'common/RichEditor';
 import { is24HourWindowOver, pattern } from 'common/constants';
 import SearchBar from 'components/UI/SearchBar/SearchBar';
-import WhatsAppEditor, { updatedValue } from 'components/UI/Form/WhatsAppEditor/WhatsAppEditor';
+import WhatsAppEditor from 'components/UI/Form/WhatsAppEditor/WhatsAppEditor';
 import Tooltip from 'components/UI/Tooltip/Tooltip';
 import { CREATE_MEDIA_MESSAGE, UPLOAD_MEDIA_BLOB } from 'graphql/mutations/Chat';
 import { GET_ATTACHMENT_PERMISSION } from 'graphql/queries/Settings';
@@ -25,17 +24,7 @@ import { VoiceRecorder } from '../VoiceRecorder/VoiceRecorder';
 import ChatTemplates from '../ChatTemplates/ChatTemplates';
 import styles from './ChatInput.module.css';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import {
-  $createParagraphNode,
-  $createTextNode,
-  $getRoot,
-  $getSelection,
-  $insertNodes,
-  $isRangeSelection,
-  LexicalCommand,
-  TextNode,
-  createCommand,
-} from 'lexical';
+import { $createParagraphNode, $createTextNode, $getRoot } from 'lexical';
 
 export interface ChatInputProps {
   onSendMessage(

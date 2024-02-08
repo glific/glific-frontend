@@ -1,15 +1,7 @@
 import data from '@emoji-mart/data';
 import Picker from '@emoji-mart/react';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import {
-  $createTextNode,
-  $getSelection,
-  $isRangeSelection,
-  LexicalCommand,
-  createCommand,
-} from 'lexical';
-import { useEffect } from 'react';
-
+import { $createTextNode, $getSelection, $isRangeSelection } from 'lexical';
 export interface EmojiPickerProps {
   displayStyle: object;
   onEmojiSelect: Function;
