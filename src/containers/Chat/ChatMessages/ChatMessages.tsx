@@ -28,6 +28,7 @@ import {
 import { getCachedConverations, updateConversationsCache } from '../../../services/ChatService';
 import { addLogs, getDisplayName, isSimulator } from '../../../common/utils';
 import { CollectionInformation } from '../../Collection/CollectionInformation/CollectionInformation';
+import { LexicalComposer } from '@lexical/react/LexicalComposer';
 
 export interface ChatMessagesProps {
   contactId?: number | string | null;
@@ -511,10 +512,7 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
 
   const showDaySeparator = (currentDate: string, nextDate: string) => {
     // if it's last message and its date is greater than current date then show day separator
-    if (
-      !nextDate &&
-      dayjs(currentDate).format(ISO_DATE_FORMAT) < dayjs().format(ISO_DATE_FORMAT)
-    ) {
+    if (!nextDate && dayjs(currentDate).format(ISO_DATE_FORMAT) < dayjs().format(ISO_DATE_FORMAT)) {
       return true;
     }
 
@@ -670,13 +668,20 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
     );
 
     chatInputSection = (
-      <ChatInput
-        handleHeightChange={handleHeightChange}
-        onSendMessage={sendMessageHandler}
-        lastMessageTime={conversationInfo.contact.lastMessageAt}
-        contactStatus={conversationInfo.contact.status}
-        contactBspStatus={conversationInfo.contact.bspStatus}
-      />
+      <LexicalComposer
+        initialConfig={{
+          namespace: 'chat-input',
+          onError: (error: any) => console.log(error),
+        }}
+      >
+        <ChatInput
+          handleHeightChange={handleHeightChange}
+          onSendMessage={sendMessageHandler}
+          lastMessageTime={conversationInfo.contact.lastMessageAt}
+          contactStatus={conversationInfo.contact.status}
+          contactBspStatus={conversationInfo.contact.bspStatus}
+        />
+      </LexicalComposer>
     );
   } else if (collectionId && conversationInfo.group) {
     topChatBar = (
@@ -688,11 +693,18 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
     );
 
     chatInputSection = (
-      <ChatInput
-        handleHeightChange={handleHeightChange}
-        onSendMessage={sendCollectionMessageHandler}
-        isCollection
-      />
+      <LexicalComposer
+        initialConfig={{
+          namespace: 'chat-input',
+          onError: (error: any) => console.log(error),
+        }}
+      >
+        <ChatInput
+          handleHeightChange={handleHeightChange}
+          onSendMessage={sendCollectionMessageHandler}
+          isCollection
+        />
+      </LexicalComposer>
     );
   }
 

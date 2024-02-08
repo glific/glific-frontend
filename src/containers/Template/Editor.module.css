@@ -9,13 +9,28 @@
 }
 
 .Editor {
-  margin-bottom: 1rem;
+  /* margin-bottom: 1rem; */
   position: relative;
   border: 2px solid rgba(0, 0, 0, 0.23);
   border-radius: 12px;
   height: 10rem;
   position: relative;
   padding: 0 1rem;
+  position: relative;
+  display: block;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+.Label {
+  font-size: 16px;
+  font-weight: 500;
+  color: #93a29b !important;
+}
+
+.DangerText {
+  margin-left: 16px !important;
+  color: #fb5c5c;
 }
 
 .EditorInput {
@@ -24,6 +39,7 @@
   overflow: auto;
   width: 100%;
   min-height: 40px;
+  height: 100%;
   margin-top: 4px;
   position: relative;
   tab-size: 1;
@@ -35,7 +51,7 @@
 }
 
 .EditorWrapper {
-  margin-bottom: 0.8rem;
+  margin: 1rem 0;
 }
 
 .Multiline {
@@ -54,6 +70,36 @@
   bottom: 20px;
   right: 20px;
   white-space: initial !important;
+}
+
+.editorScroller {
+  min-height: 150px;
+  border: 0;
+  display: flex;
+  position: relative;
+  outline: 0;
+  z-index: 0;
+}
+
+.disabled {
+  position: relative;
+  border: 2px solid rgba(0, 0, 0, 0.23);
+  border-radius: 12px;
+  height: 10rem;
+  position: relative;
+  padding: 0 1rem;
+  position: relative;
+  display: block;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  color: rgba(0, 0, 0, 0.38);
+  pointer-events: none;
+}
+.editor {
+  flex: auto;
+  position: relative;
+  resize: vertical;
+  z-index: -1;
 }
 
 .Emoji {

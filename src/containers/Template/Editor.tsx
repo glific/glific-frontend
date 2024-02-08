@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
 import { PlainTextPlugin } from '@lexical/react/LexicalPlainTextPlugin';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
-import { $getSelection, $createTextNode, $getRoot } from 'lexical';
+import { $getSelection, $createTextNode, $getRoot, $createParagraphNode } from 'lexical';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
@@ -14,20 +14,9 @@ import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 import { useTranslation } from 'react-i18next';
 import { KEY_DOWN_COMMAND, COMMAND_PRIORITY_LOW, $isRangeSelection, createCommand } from 'lexical';
 import styled from '@emotion/styled';
-import {
-  ClickAwayListener,
-  FormHelperText,
-  IconButton,
-  InputAdornment,
-  OutlinedInput,
-} from '@mui/material';
-import { Input } from 'components/UI/Form/Input/Input';
+import { ClickAwayListener, FormHelperText, IconButton, InputAdornment } from '@mui/material';
 import {
   BeautifulMentionsPlugin,
-  BeautifulMentionNode,
-  BeautifulMentionsMenuProps,
-  BeautifulMentionsTheme,
-  BeautifulMentionsMenuItemProps,
   BeautifulMentionComponentProps,
   createBeautifulMentionNode,
 } from 'lexical-beautiful-mentions';
@@ -81,26 +70,20 @@ export const Editor = ({ textArea = false, disabled = false, ...props }: EditorP
     console.error(error);
   };
 
-  const beautifulMentionsTheme: BeautifulMentionsTheme = {
-    // 👇 use the trigger name as the key
-    '@': 'px-1 mx-px ...',
-    // 👇 add the "Focused" suffix to style the focused mention
-    '@Focused': 'outline-none shadow-md ...',
-    // 👇 use a configuration object if you need to apply different styles to trigger and value
-    'due:': {
-      trigger: 'text-blue-400 ...',
-      value: 'text-orange-400 ...',
-    },
-  };
+  function prepopulatedRichText() {
+    const root = $getRoot();
+    const paragraph = $createParagraphNode();
+    paragraph.append($createTextNode(field?.value || ''));
+    console.log(paragraph);
+    root.append(paragraph);
+  }
+
   const exampleTheme = {
     ltr: 'ltr',
     rtl: 'rtl',
     paragraph: 'editor-paragraph',
     input: 'editor-input',
-    beautifulMentions: beautifulMentionsTheme,
   };
-  const value =
-    '{"root":{"children":[{"children":[],"direction":null,"format":"","indent":0,"type":"paragraph","version":1}],"direction":null,"format":"","indent":0,"type":"root","version":1}}';
 
   const CustomMentionComponent = forwardRef<HTMLDivElement, BeautifulMentionComponentProps>(
     ({ trigger, value, data: myData, children, ...other }, ref) => {
@@ -111,14 +94,16 @@ export const Editor = ({ textArea = false, disabled = false, ...props }: EditorP
       );
     }
   );
+  console.log(field.value);
 
   const initialConfig = {
     namespace: 'MyEditor',
     onError,
     theme: exampleTheme,
-    paragraph: 'editor-paragraph',
-    input: 'editor-input',
-    nodes: [...createBeautifulMentionNode(CustomMentionComponent)],
+    // paragraph: 'editor-paragraph',
+    // input: 'editor-input',
+    // nodes: [...createBeautifulMentionNode(CustomMentionComponent)],
+    editorState: prepopulatedRichText,
   };
 
   const mentions = props.inputProp?.suggestions || [];
@@ -126,8 +111,6 @@ export const Editor = ({ textArea = false, disabled = false, ...props }: EditorP
   const suggestions = {
     '@': mentions,
   };
-
-  console.log(mentions);
 
   const { ref } = useResizeDetector({
     refreshMode: 'debounce',
@@ -149,8 +132,19 @@ export const Editor = ({ textArea = false, disabled = false, ...props }: EditorP
         return text;
     }
   };
+
   function MyCustomAutoFocusPlugin() {
     const [editor] = useLexicalComposerContext();
+
+    useEffect(() => {
+      editor.update(() => {
+        const root = $getRoot();
+        const paragraph = $createParagraphNode();
+        paragraph.append($createTextNode(field?.value || ''));
+        console.log(paragraph);
+        root.append(paragraph);
+      });
+    }, [field.value]);
 
     useEffect(() => {
       return editor.registerCommand(
@@ -214,6 +208,7 @@ export const Editor = ({ textArea = false, disabled = false, ...props }: EditorP
         1
       );
     }, [editor]);
+
     return (
       <ClickAwayListener
         onClickAway={() => {
@@ -250,6 +245,8 @@ export const Editor = ({ textArea = false, disabled = false, ...props }: EditorP
   };
 
   function onChangee(editorState: any) {
+    console.log('triggered');
+
     editorState.read(() => {
       const root = $getRoot();
       console.log(root.getTextContent());
@@ -260,12 +257,18 @@ export const Editor = ({ textArea = false, disabled = false, ...props }: EditorP
 
   return (
     <div className={styles.EditorWrapper}>
-      <div className={styles.Editor} ref={ref} data-testid="resizer">
+      <div className={disabled ? styles?.disabled : styles.Editor} ref={ref} data-testid="resizer">
         <LexicalComposer initialConfig={initialConfig}>
           <PlainTextPlugin
             data-testid="editor"
             placeholder={<Placeholder />}
-            contentEditable={<ContentEditable className={styles.EditorInput} />}
+            contentEditable={
+              <div className={styles.editorScroller}>
+                <div className={styles.editor}>
+                  <ContentEditable disabled={disabled} className={styles.EditorInput} />
+                </div>
+              </div>
+            }
             ErrorBoundary={LexicalErrorBoundary}
           />
           <HistoryPlugin />
@@ -275,6 +278,9 @@ export const Editor = ({ textArea = false, disabled = false, ...props }: EditorP
           {picker && <AddEmojiPlugin />}
         </LexicalComposer>
       </div>
+      {form && form.errors[field.name] && form.touched[field.name] ? (
+        <FormHelperText className={styles.DangerText}>{form.errors[field.name]}</FormHelperText>
+      ) : null}
       {props.helperText && (
         <FormHelperText className={styles.HelperText}>{props.helperText}</FormHelperText>
       )}

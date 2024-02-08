@@ -1,11 +1,10 @@
 import { useCallback } from 'react';
 import { useEffect } from 'react';
 
-import { RichUtils, getDefaultKeyBinding, Modifier, EditorState, Editor } from 'draft-js';
-import { LexicalComposer } from '@lexical/react/LexicalComposer';
+import { Modifier, EditorState } from 'draft-js';
 import { PlainTextPlugin } from '@lexical/react/LexicalPlainTextPlugin';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
-import { $getSelection, $createTextNode } from 'lexical';
+import { $getSelection, $createTextNode, CLEAR_EDITOR_COMMAND, $getRoot } from 'lexical';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
@@ -13,12 +12,12 @@ import { useResizeDetector } from 'react-resize-detector';
 import { useTranslation } from 'react-i18next';
 import { KEY_DOWN_COMMAND, COMMAND_PRIORITY_LOW } from 'lexical';
 
-import { getPlainTextFromEditor } from 'common/RichEditor';
 import styles from './WhatsAppEditor.module.css';
+import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 
 interface WhatsAppEditorProps {
   handleHeightChange(newHeight: number): void;
-  sendMessage(message: string): void;
+  sendMessage(message: any): void;
   editorState: any;
   setEditorState(editorState: any): void;
   readOnly?: boolean;
@@ -68,25 +67,11 @@ export const WhatsAppEditor = ({
     onResize,
   });
 
-  const onError = (error: any) => {
-    console.error(error);
-  };
-
-  const exampleTheme = {
-    ltr: 'ltr',
-    rtl: 'rtl',
-    paragraph: 'editor-paragraph',
-    input: 'editor-input',
-  };
-
-  const initialConfig = {
-    namespace: 'MyEditor',
-    onError,
-    theme: exampleTheme,
-  };
-
   const onChange = (editorState: any) => {
-    setEditorState(editorState.toJSON());
+    editorState.read(() => {
+      const root = $getRoot();
+      setEditorState(root.getTextContent());
+    });
   };
 
   const handleFormatting = (text: string, formatter: string) => {
@@ -106,16 +91,22 @@ export const WhatsAppEditor = ({
     const [editor] = useLexicalComposerContext();
 
     useEffect(() => {
-
       return editor.registerCommand(
         KEY_DOWN_COMMAND,
         (event: KeyboardEvent) => {
-          console.log(event);
-
           // Handle event here
           let formatter = '';
           if (event.code === 'Enter' && !readOnly) {
-            event.preventDefault(); // Prevent line break on enter
+            event.preventDefault();
+
+            if (
+              editor.getRootElement()?.textContent &&
+              typeof editor.getRootElement()?.textContent === 'string'
+            ) {
+              sendMessage(editor?.getRootElement()?.textContent);
+            }
+            // sendMessage()
+            // Prevent line break on enter
           } else if ((event.ctrlKey || event.metaKey) && event.code === 'KeyB') {
             formatter = 'bold';
           } else if ((event.ctrlKey || event.metaKey) && event.code === 'KeyI') {
@@ -148,16 +139,15 @@ export const WhatsAppEditor = ({
 
   return (
     <div className={styles.Editor} ref={ref} data-testid="resizer">
-      <LexicalComposer initialConfig={initialConfig}>
-        <PlainTextPlugin
-          data-testid="editor"
-          placeholder={<Placeholder />}
-          contentEditable={<ContentEditable className={styles.editorInput} />}
-          ErrorBoundary={LexicalErrorBoundary}
-        />
-        <HistoryPlugin />
-        <MyCustomAutoFocusPlugin />
-      </LexicalComposer>
+      <PlainTextPlugin
+        data-testid="editor"
+        placeholder={<Placeholder />}
+        contentEditable={<ContentEditable className={styles.editorInput} />}
+        ErrorBoundary={LexicalErrorBoundary}
+      />
+      <HistoryPlugin />
+      <MyCustomAutoFocusPlugin />
+      <OnChangePlugin onChange={onChange} />
     </div>
   );
 };
