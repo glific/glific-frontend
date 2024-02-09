@@ -1,4 +1,4 @@
-import { render, fireEvent, waitFor } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import draftJs, { EditorState, ContentState } from 'draft-js';
 import { vi } from 'vitest';
 
