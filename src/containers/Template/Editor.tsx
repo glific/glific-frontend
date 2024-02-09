@@ -38,14 +38,8 @@ export interface EditorProps {
   onChange?: any;
 }
 
-type MentionsProps = {
-  mentions: any;
-};
-
 export const Editor = ({ textArea = false, disabled = false, ...props }: EditorProps) => {
   const { field, form, picker, placeholder, onChange } = props;
-
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const mentions = props.inputProp?.suggestions || [];
   const suggestions = {
     '@': mentions.map((el: any) => el?.split('@')[1]),
@@ -126,13 +120,6 @@ export const Editor = ({ textArea = false, disabled = false, ...props }: EditorP
     });
   };
 
-  const emojiStyles = {
-    position: 'absolute',
-    bottom: '60px',
-    right: '-150px',
-    zIndex: 100,
-  };
-
   return (
     <div className={styles.EditorWrapper}>
       <div className={disabled ? styles?.disabled : styles.Editor} ref={ref} data-testid="resizer">
@@ -158,32 +145,7 @@ export const Editor = ({ textArea = false, disabled = false, ...props }: EditorP
         />
         {/* <MentionsPlugin suggestions={suggestions} /> */}
         <OnChangePlugin onChange={handleChange} />
-        {picker && (
-          <ClickAwayListener
-            onClickAway={() => {
-              setShowEmojiPicker(false);
-            }}
-          >
-            <InputAdornment className={styles.EmojiPosition} position="end">
-              <IconButton
-                color="primary"
-                data-testid="emoji-picker"
-                aria-label="pick emoji"
-                component="span"
-                className={styles.Emoji}
-                onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-              >
-                <span role="img" aria-label="pick emoji">
-                  😀
-                </span>
-              </IconButton>
-
-              {showEmojiPicker && (
-                <EmojiPicker onEmojiSelect={() => {}} displayStyle={emojiStyles} />
-              )}
-            </InputAdornment>
-          </ClickAwayListener>
-        )}
+        {picker && picker}
       </div>
       {form && form.errors[field.name] && form.touched[field.name] ? (
         <FormHelperText className={styles.DangerText}>{form.errors[field.name]}</FormHelperText>

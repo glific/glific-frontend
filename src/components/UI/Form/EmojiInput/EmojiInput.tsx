@@ -103,25 +103,7 @@ export const EmojiInput = ({
     props.form.setFieldValue(name, updatedEditorState);
   };
 
-  const handleKeyCommand = (command: any, editorState: any) => {
-    if (command === 'underline') {
-      return 'handled';
-    }
-    if (command === 'bold') {
-      updateValue('**');
-    } else if (command === 'italic') {
-      updateValue('__');
-    } else {
-      const newState = RichUtils.handleKeyCommand(editorState, command);
-      if (newState) {
-        props.form.setFieldValue(name, newState);
-        return 'handled';
-      }
-    }
-    return 'not-handled';
-  };
-
-  const draftJsChange = (editorState: any) => {
+  const lexicalChange = (editorState: any) => {
     if (handleChange) {
       handleChange(editorState);
     }
@@ -133,43 +115,6 @@ export const EmojiInput = ({
   };
 
   const mentions = props.inputProp?.suggestions || [];
-
-  const [open, setOpen] = useState(false);
-  const [suggestions, setSuggestions] = useState(mentions);
-
-  const onOpenChange = (_open: boolean) => {
-    setOpen(_open);
-  };
-
-  const getSuggestions = useCallback(customSuggestionsFilter, []);
-
-  const onSearchChange = ({ value: searchValue }: { value: string }) => {
-    setSuggestions(getSuggestions(searchValue, mentions));
-  };
-
-  const inputProps = {
-    component: Editor,
-    editorState: value,
-    open,
-    readOnly: props.disabled,
-    suggestions,
-    onOpenChange,
-    onSearchChange,
-    handlePastedText: (text: string, html: string, editorState: EditorState) => {
-      const pastedBlocks = ContentState.createFromText(text).getBlockMap();
-      const newState = Modifier.replaceWithFragment(
-        editorState.getCurrentContent(),
-        editorState.getSelection(),
-        pastedBlocks
-      );
-      const newEditorState = EditorState.push(editorState, newState, 'insert-fragment');
-      draftJsChange(newEditorState);
-      return 'handled';
-    },
-    handleKeyCommand,
-    onBlur: handleBlur,
-    onChange: draftJsChange,
-  };
 
   const emojiPicker = showEmojiPicker ? (
     <EmojiPicker
@@ -184,9 +129,16 @@ export const EmojiInput = ({
     setShowEmojiPicker(false);
   };
 
+  const emojiStyles = {
+    position: 'absolute',
+    bottom: '60px',
+    right: '-150px',
+    zIndex: 100,
+  };
+
   const picker = (
     <ClickAwayListener onClickAway={handleClickAway}>
-      <InputAdornment position="end" className={Styles.EmojiPosition}>
+      <InputAdornment className={Styles.EmojiPosition} position="end">
         <IconButton
           color="primary"
           data-testid="emoji-picker"
@@ -200,7 +152,7 @@ export const EmojiInput = ({
           </span>
         </IconButton>
 
-        {emojiPicker}
+        {showEmojiPicker && <EmojiPicker onEmojiSelect={() => {}} displayStyle={emojiStyles} />}
       </InputAdornment>
     </ClickAwayListener>
   );
@@ -213,7 +165,7 @@ export const EmojiInput = ({
         nodes: [BeautifulMentionNode],
       }}
     >
-      <Editor field={{ name, value, onBlur }} {...props} picker={picker} onChange={draftJsChange} />
+      <Editor field={{ name, value, onBlur }} {...props} picker={picker} onChange={lexicalChange} />
     </LexicalComposer>
   );
 

@@ -96,8 +96,6 @@ export const WhatsAppEditor = ({
             ) {
               sendMessage(editor?.getRootElement()?.textContent);
             }
-            // sendMessage()
-            // Prevent line break on enter
           } else if ((event.ctrlKey || event.metaKey) && event.code === 'KeyB') {
             formatter = 'bold';
           } else if ((event.ctrlKey || event.metaKey) && event.code === 'KeyI') {
