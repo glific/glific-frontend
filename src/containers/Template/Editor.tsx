@@ -1,5 +1,5 @@
 import styles from './Editor.module.css';
-import { forwardRef, useState } from 'react';
+import { forwardRef } from 'react';
 import { useEffect } from 'react';
 import { PlainTextPlugin } from '@lexical/react/LexicalPlainTextPlugin';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
@@ -10,13 +10,12 @@ import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
 import { useResizeDetector } from 'react-resize-detector';
 import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 import { KEY_DOWN_COMMAND, COMMAND_PRIORITY_LOW } from 'lexical';
-import { ClickAwayListener, FormHelperText, IconButton, InputAdornment } from '@mui/material';
+import { FormHelperText } from '@mui/material';
 import {
   BeautifulMentionsPlugin,
   BeautifulMentionsMenuProps,
   BeautifulMentionsMenuItemProps,
 } from 'lexical-beautiful-mentions';
-import EmojiPicker from 'components/UI/EmojiPicker/EmojiPicker';
 
 export interface EditorProps {
   type?: any;

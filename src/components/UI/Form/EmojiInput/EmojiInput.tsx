@@ -1,5 +1,4 @@
-import { useState, useMemo, useCallback, forwardRef } from 'react';
-import { RichUtils, Modifier, EditorState, ContentState } from 'draft-js';
+import { useState, useMemo, forwardRef } from 'react';
 import createMentionPlugin from '@draft-js-plugins/mention';
 import { InputAdornment, IconButton, ClickAwayListener } from '@mui/material';
 
@@ -22,58 +21,6 @@ export interface EmojiInputProps {
   inputProp?: any;
 }
 
-const getMentionComponentAndPlugin = () => {
-  const mentionPlugin = createMentionPlugin({
-    theme: Styles,
-  });
-  const { MentionSuggestions } = mentionPlugin;
-  const plugins = [mentionPlugin];
-  return { plugins, MentionSuggestions };
-};
-
-const customSuggestionsFilter = (searchValue: string, suggestions: Array<any>) => {
-  const size = (list: any) => (list.constructor.name === 'List' ? list.size : list.length);
-
-  const get = (obj: any, attr: any) => (obj.get ? obj.get(attr) : obj[attr]);
-
-  const value = searchValue.toLowerCase();
-  const filteredSuggestions = suggestions.filter(
-    (suggestion) => !value || get(suggestion, 'name').toLowerCase().indexOf(value) > -1
-  );
-
-  /**
-   * We can restrict no of values from dropdown using this
-   * Currently returning all values for give dropdown
-   */
-  const length = size(filteredSuggestions);
-  return filteredSuggestions.slice(0, length);
-};
-
-const DraftField = forwardRef((inputProps: any, ref) => {
-  const {
-    component: Component,
-    open,
-    suggestions,
-    onOpenChange,
-    onSearchChange,
-    ...other
-  } = inputProps;
-
-  const { MentionSuggestions, plugins } = useMemo(getMentionComponentAndPlugin, []);
-
-  return (
-    <>
-      <Component ref={ref} editorKey="editor" plugins={plugins} {...other} />
-      <MentionSuggestions
-        open={open}
-        onOpenChange={onOpenChange}
-        suggestions={suggestions}
-        onSearchChange={onSearchChange}
-      />
-    </>
-  );
-});
-
 export const EmojiInput = ({
   field: { value, name, onBlur },
   handleChange,
@@ -82,26 +29,6 @@ export const EmojiInput = ({
   ...props
 }: EmojiInputProps) => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-
-  const updateValue = (input: any, isEmoji = false) => {
-    const editorContentState = value.getCurrentContent();
-    const editorSelectionState: any = value.getSelection();
-    const ModifiedContent = Modifier.replaceText(
-      editorContentState,
-      editorSelectionState,
-      isEmoji ? input.native : input
-    );
-    let updatedEditorState = EditorState.push(value, ModifiedContent, 'insert-characters');
-    if (!isEmoji) {
-      const editorSelectionStateMod = updatedEditorState.getSelection();
-      const updatedSelection = editorSelectionStateMod.merge({
-        anchorOffset: editorSelectionStateMod.getAnchorOffset() - 1,
-        focusOffset: editorSelectionStateMod.getFocusOffset() - 1,
-      });
-      updatedEditorState = EditorState.forceSelection(updatedEditorState, updatedSelection);
-    }
-    props.form.setFieldValue(name, updatedEditorState);
-  };
 
   const lexicalChange = (editorState: any) => {
     if (handleChange) {
@@ -113,17 +40,6 @@ export const EmojiInput = ({
 
     props.form.setFieldValue(name, editorState);
   };
-
-  const mentions = props.inputProp?.suggestions || [];
-
-  const emojiPicker = showEmojiPicker ? (
-    <EmojiPicker
-      onEmojiSelect={(emojiValue: any) => updateValue(emojiValue, true)}
-      displayStyle={{ position: 'absolute', top: '10px', right: '0px', zIndex: 2 }}
-    />
-  ) : (
-    ''
-  );
 
   const handleClickAway = () => {
     setShowEmojiPicker(false);
