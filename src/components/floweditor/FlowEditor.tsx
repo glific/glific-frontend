@@ -405,7 +405,10 @@ export const FlowEditor = () => {
                 <FlowIcon />
               </IconButton>
 
-              {flowTitle}
+              <div className={styles.FlowNameContainer}>
+                {flowTitle}
+                <span className={styles.FlowKeyword}>{flowName?.flows[0]?.keywords[0]}</span>
+              </div>
             </>
           )}
         </div>
