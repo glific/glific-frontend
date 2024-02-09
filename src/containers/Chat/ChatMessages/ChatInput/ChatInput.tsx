@@ -517,7 +517,7 @@ export const ChatInput = ({
               onClick={() => {
                 submitMessage(editorState);
               }}
-              // disabled={(!attachmentAdded && !recordedAudio) || uploading}
+              disabled={(!editorState && !attachmentAdded && !recordedAudio) || uploading}
             >
               <SendMessageIcon className={styles.SendIcon} />
             </Button>

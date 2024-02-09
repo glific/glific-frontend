@@ -88,11 +88,6 @@ export const InteractiveMessage = () => {
     fetchPolicy: 'network-only',
   });
 
-  let isEditing = false;
-  if (params.id) {
-    isEditing = true;
-  }
-
   // alter header & update/copy queries
   let header;
 
