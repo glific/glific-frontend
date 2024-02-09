@@ -1,7 +1,5 @@
-import { useState, useMemo, forwardRef } from 'react';
-import createMentionPlugin from '@draft-js-plugins/mention';
+import { useState } from 'react';
 import { InputAdornment, IconButton, ClickAwayListener } from '@mui/material';
-
 import { EmojiPicker } from 'components/UI/EmojiPicker/EmojiPicker';
 import { Editor } from 'containers/Template/Editor';
 import Styles from './EmojiInput.module.css';
