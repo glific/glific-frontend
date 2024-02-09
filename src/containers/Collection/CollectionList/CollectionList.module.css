@@ -28,6 +28,7 @@
 
 .DescriptionText {
   composes: UserCount;
+  padding: 10px 0px;
 }
 
 .ExportPopup {

@@ -269,7 +269,7 @@ export const FlowEditor = () => {
     dialog = (
       <DialogBox
         title="Ready to publish?"
-        buttonOk="Publish & Stay"
+        buttonOk="Publish & stay"
         titleAlign="center"
         buttonMiddle="Publish & go back"
         handleOk={() => {

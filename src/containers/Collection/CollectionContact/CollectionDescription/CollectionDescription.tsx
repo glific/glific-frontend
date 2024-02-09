@@ -18,16 +18,17 @@ export const CollectionDescription = ({
 
   const userList = (
     <div className={styles.UserList}>
-      {users.map((user: any) => (
-        <li key={user.id}>{user.name}</li>
-      ))}
+      {users.length ? users.map((user: any) => <li key={user.id}>{user.name}</li>) : <li>None</li>}
     </div>
   );
   return (
     <div className={styles.DescriptionContainer} data-testid="collectionDescription">
-      <p className={styles.Description}>{description}</p>
       <div className={styles.CollectionInformation}>
-        <h2 className={styles.Title}>{t('Description')}</h2>
+        <div className={styles.Describe}>
+          <h2 className={styles.Title}>{t('Description')}</h2>{' '}
+          <p className={styles.Description}>{description}</p>
+        </div>
+
         <CollectionInformation collectionId={collectionId} staff={false} />
       </div>
 
