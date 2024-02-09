@@ -3,6 +3,7 @@ import { MockedProvider } from '@apollo/client/testing';
 
 import { MessageDialog } from './MessageDialog';
 import { getAttachmentPermissionMock } from 'mocks/Attachment';
+import { LexicalComposer } from '@lexical/react/LexicalComposer';
 
 const handleClose = vi.fn();
 
@@ -13,7 +14,14 @@ const defaultProps = {
 };
 const wrapper = (
   <MockedProvider mocks={[getAttachmentPermissionMock]}>
-    <MessageDialog {...defaultProps} />
+    <LexicalComposer
+      initialConfig={{
+        namespace: 'chat-input',
+        onError: (error: any) => console.log(error),
+      }}
+    >
+      <MessageDialog {...defaultProps} />
+    </LexicalComposer>
   </MockedProvider>
 );
 

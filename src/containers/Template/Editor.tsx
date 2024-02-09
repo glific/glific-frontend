@@ -1,5 +1,5 @@
 import styles from './Editor.module.css';
-import { forwardRef } from 'react';
+import { forwardRef, useState } from 'react';
 import { useEffect } from 'react';
 import { PlainTextPlugin } from '@lexical/react/LexicalPlainTextPlugin';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
@@ -39,6 +39,7 @@ export interface EditorProps {
 }
 
 export const Editor = ({ textArea = false, disabled = false, ...props }: EditorProps) => {
+  const [editorState, setEditorState] = useState<any>('');
   const { field, form, picker, placeholder, onChange } = props;
   const mentions = props.inputProp?.suggestions || [];
   const suggestions = {
@@ -54,7 +55,7 @@ export const Editor = ({ textArea = false, disabled = false, ...props }: EditorP
   const [editor] = useLexicalComposerContext();
 
   useEffect(() => {
-    if (field.value && isEditing) {
+    if (field.value && isEditing && !editorState) {
       editor.update(() => {
         const root = $getRoot();
         root.clear();
@@ -63,7 +64,7 @@ export const Editor = ({ textArea = false, disabled = false, ...props }: EditorP
         root.append(paragraph);
       });
     }
-  }, [field]);
+  }, [field.value]);
 
   const { ref } = useResizeDetector({
     refreshMode: 'debounce',
@@ -87,44 +88,41 @@ export const Editor = ({ textArea = false, disabled = false, ...props }: EditorP
     }
   };
 
-  const MyCustomAutoFocusPlugin = () => {
-    const [editor] = useLexicalComposerContext();
+  useEffect(() => {
+    return editor.registerCommand(
+      KEY_DOWN_COMMAND,
+      (event: KeyboardEvent) => {
+        let formatter = '';
+        if (event.code === 'Enter') {
+          event.preventDefault(); // Prevent line break on enter
+        } else if ((event.ctrlKey || event.metaKey) && event.code === 'KeyB') {
+          formatter = 'bold';
+        } else if ((event.ctrlKey || event.metaKey) && event.code === 'KeyI') {
+          formatter = 'italic';
+        } else if ((event.ctrlKey || event.metaKey) && event.code === 'KeyS') {
+          formatter = 'strikethrough';
+        }
 
-    useEffect(() => {
-      return editor.registerCommand(
-        KEY_DOWN_COMMAND,
-        (event: KeyboardEvent) => {
-          let formatter = '';
-          if (event.code === 'Enter') {
-            event.preventDefault(); // Prevent line break on enter
-          } else if ((event.ctrlKey || event.metaKey) && event.code === 'KeyB') {
-            formatter = 'bold';
-          } else if ((event.ctrlKey || event.metaKey) && event.code === 'KeyI') {
-            formatter = 'italic';
+        editor.update(() => {
+          const selection = $getSelection();
+          if (selection?.getTextContent() && formatter) {
+            const text = handleFormatting(selection?.getTextContent(), formatter);
+            const newNode = $createTextNode(text);
+            selection?.insertNodes([newNode]);
           }
-
-          editor.update(() => {
-            const selection = $getSelection();
-            if (selection?.getTextContent() && formatter) {
-              const text = handleFormatting(selection?.getTextContent(), formatter);
-              const newNode = $createTextNode(text);
-              selection?.insertNodes([newNode]);
-            }
-          });
-          return false;
-        },
-        COMMAND_PRIORITY_LOW
-      );
-    }, [editor]);
-
-    return null;
-  };
+        });
+        return false;
+      },
+      COMMAND_PRIORITY_LOW
+    );
+  }, [editor]);
 
   const handleChange = (editorState: any) => {
     editorState.read(() => {
       const root = $getRoot();
-      if (!isEditing) {
+      if (!disabled) {
         onChange(root.getTextContent());
+        setEditorState(root.getTextContent());
       }
     });
   };
@@ -138,14 +136,17 @@ export const Editor = ({ textArea = false, disabled = false, ...props }: EditorP
           contentEditable={
             <div className={styles.editorScroller}>
               <div className={styles.editor}>
-                <ContentEditable disabled={disabled} className={styles.EditorInput} />
+                <ContentEditable
+                  data-testid={'editor'}
+                  disabled={disabled}
+                  className={styles.EditorInput}
+                />
               </div>
             </div>
           }
           ErrorBoundary={LexicalErrorBoundary}
         />
         <HistoryPlugin />
-        <MyCustomAutoFocusPlugin />
         <BeautifulMentionsPlugin
           menuComponent={CustomMenu}
           menuItemComponent={CustomMenuItem}

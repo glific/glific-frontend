@@ -810,27 +810,29 @@ export const InteractiveMessage = () => {
 
   return (
     <>
-      <FormLayout
-        {...queries}
-        states={states}
-        setStates={setStates}
-        setPayload={setPayload}
-        title={header}
-        type={stateType}
-        validationSchema={validationScheme}
-        listItem="interactiveTemplate"
-        listItemName="interactive msg"
-        dialogMessage={dialogMessage}
-        formFields={formFields}
-        redirectionLink="interactive-message"
-        cancelLink="interactive-message"
-        icon={interactiveMessageIcon}
-        languageSupport={false}
-        getQueryFetchPolicy="cache-and-network"
-        afterSave={afterSave}
-        saveOnPageChange={false}
-        buttonState={{ text: t('Validating URL'), status: validatingURL }}
-      />
+      {!loadingTemplate && (
+        <FormLayout
+          {...queries}
+          states={states}
+          setStates={setStates}
+          setPayload={setPayload}
+          title={header}
+          type={stateType}
+          validationSchema={validationScheme}
+          listItem="interactiveTemplate"
+          listItemName="interactive msg"
+          dialogMessage={dialogMessage}
+          formFields={formFields}
+          redirectionLink="interactive-message"
+          cancelLink="interactive-message"
+          icon={interactiveMessageIcon}
+          languageSupport={false}
+          getQueryFetchPolicy="cache-and-network"
+          afterSave={afterSave}
+          saveOnPageChange={false}
+          buttonState={{ text: t('Validating URL'), status: validatingURL }}
+        />
+      )}
       <div className={styles.Simulator}>
         <Simulator
           setSimulatorId={0}

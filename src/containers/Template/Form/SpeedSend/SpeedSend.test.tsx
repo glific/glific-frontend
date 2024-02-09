@@ -6,7 +6,7 @@ import { SpeedSendList } from 'containers/Template/List/SpeedSendList/SpeedSendL
 import { TEMPLATE_MOCKS } from 'containers/Template/Template.test.helper';
 import { setUserSession } from 'services/AuthService';
 import { SpeedSend } from './SpeedSend';
-
+import '../../../../jestconfig.mock';
 beforeEach(() => {
   cleanup();
 });

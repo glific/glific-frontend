@@ -106,7 +106,7 @@ export const WhatsAppEditor = ({
       <PlainTextPlugin
         data-testid="editor"
         placeholder={<Placeholder />}
-        contentEditable={<ContentEditable className={styles.editorInput} />}
+        contentEditable={<ContentEditable data-testid={'editor'} className={styles.editorInput} />}
         ErrorBoundary={LexicalErrorBoundary}
       />
       <HistoryPlugin />

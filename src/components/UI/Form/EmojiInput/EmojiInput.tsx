@@ -21,6 +21,12 @@ export interface EmojiInputProps {
   inputProp?: any;
 }
 
+interface EmojiPickerProps {
+  handleClickAway: any;
+  showEmojiPicker: any;
+  setShowEmojiPicker: any;
+}
+
 export const EmojiInput = ({
   field: { value, name, onBlur },
   handleChange,
@@ -67,11 +73,7 @@ export const EmojiInput = ({
 
   return input;
 };
-interface EmojiPickerProps {
-  handleClickAway: any;
-  showEmojiPicker: any;
-  setShowEmojiPicker: any;
-}
+
 const EmojiPickerComponent = ({
   showEmojiPicker,
   setShowEmojiPicker,

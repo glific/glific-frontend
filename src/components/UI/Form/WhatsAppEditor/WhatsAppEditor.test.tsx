@@ -3,8 +3,10 @@ import draftJs, { EditorState, ContentState } from 'draft-js';
 import { vi } from 'vitest';
 
 import WhatsAppEditor from './WhatsAppEditor';
+import { LexicalComposer } from '@lexical/react/LexicalComposer';
+import { userEvent } from '@testing-library/user-event';
 
-const mockHandleKeyCommand = vi.fn();
+const mockHandleFormatting = vi.fn();
 
 const mockObserve = vi.fn();
 global.ResizeObserver = vi.fn().mockImplementation(() => ({
@@ -19,7 +21,7 @@ vi.spyOn(draftJs, 'Editor').mockImplementation((props: any, _context: any) => {
       data-testid="editor"
       onClick={() => {
         props.handleKeyCommand('underline');
-        mockHandleKeyCommand();
+        mockHandleFormatting();
       }}
       onChange={(event) => props.onChange(event)}
     ></input>
@@ -32,34 +34,63 @@ describe('<WhatsAppEditor/>', () => {
   const sendMessage = vi.fn();
   const setEditorState = vi.fn();
 
-  const defaultProps = (editorState: any) => {
+  const defaultProps = () => {
     return {
       handleHeightChange: handleHeightChange,
       sendMessage: sendMessage,
-      editorState: editorState,
       setEditorState: setEditorState,
     };
   };
 
   const editorContent = EditorState.createWithContent(ContentState.createFromText('Hello'));
 
-  test('input change should trigger callBacks', () => {
-    const { getByTestId } = render(<WhatsAppEditor {...defaultProps(editorContent)} />);
-    fireEvent.change(getByTestId('editor'), {
-      target: { value: 10 },
-    });
+  test('input change should trigger callBacks', async () => {
+    const { getByTestId } = render(
+      <LexicalComposer
+        initialConfig={{
+          namespace: 'chat-input',
+          onError: (error: any) => console.log(error),
+        }}
+      >
+        <WhatsAppEditor {...defaultProps()} />
+      </LexicalComposer>
+    );
+
+    await userEvent.click(getByTestId('editor'));
+    await userEvent.keyboard('10');
+
+    console.log(getByTestId('editor').innerText);
+
     expect(setEditorState).toHaveBeenCalled();
   });
 
-  test('handleKeyCommand should work with new commands', () => {
-    const { getByTestId } = render(<WhatsAppEditor {...defaultProps(editorContent)} />);
-    fireEvent.click(getByTestId('editor'));
+  test('handleKeyCommand should work with new commands', async () => {
+    const { getByTestId } = render(
+      <LexicalComposer
+        initialConfig={{
+          namespace: 'chat-input',
+          onError: (error: any) => console.log(error),
+        }}
+      >
+        <WhatsAppEditor {...defaultProps()} />
+      </LexicalComposer>
+    );
+    await userEvent.click(getByTestId('editor'));
 
-    expect(mockHandleKeyCommand).toHaveBeenCalled();
+    expect(mockHandleFormatting).toHaveBeenCalled();
   });
 
   test('resize observer event is called', async () => {
-    render(<WhatsAppEditor {...defaultProps(editorContent)} />);
+    render(
+      <LexicalComposer
+        initialConfig={{
+          namespace: 'chat-input',
+          onError: (error: any) => console.log(error),
+        }}
+      >
+        <WhatsAppEditor {...defaultProps()} />
+      </LexicalComposer>
+    );
     await waitFor(() => {
       expect(mockObserve).toHaveBeenCalled();
     });
