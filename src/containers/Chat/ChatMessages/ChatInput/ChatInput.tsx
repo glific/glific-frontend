@@ -8,7 +8,6 @@ import AttachmentIconSelected from 'assets/images/icons/Attachment/Selected.svg?
 import VariableIcon from 'assets/images/icons/Template/Variable.svg?react';
 import CrossIcon from 'assets/images/icons/Clear.svg?react';
 import SendMessageIcon from 'assets/images/icons/SendMessage.svg?react';
-import { getEditorFromContent } from 'common/RichEditor';
 import { is24HourWindowOver, pattern } from 'common/constants';
 import SearchBar from 'components/UI/SearchBar/SearchBar';
 import WhatsAppEditor from 'components/UI/Form/WhatsAppEditor/WhatsAppEditor';
@@ -24,7 +23,13 @@ import { VoiceRecorder } from '../VoiceRecorder/VoiceRecorder';
 import ChatTemplates from '../ChatTemplates/ChatTemplates';
 import styles from './ChatInput.module.css';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import { $createParagraphNode, $createTextNode, $getRoot } from 'lexical';
+import {
+  $createParagraphNode,
+  $createTextNode,
+  $getRoot,
+  $getSelection,
+  $isRangeSelection,
+} from 'lexical';
 
 export interface ChatInputProps {
   onSendMessage(
@@ -244,7 +249,7 @@ export const ChatInput = ({
 
     setSelectedTemplate(obj);
     // Conversion from HTML text to EditorState
-    setEditorState(getEditorFromContent(messageBody));
+    setEditorState(messageBody);
     editor.update(() => {
       const root = $getRoot();
       const paragraph = $createParagraphNode();
@@ -488,7 +493,17 @@ export const ChatInput = ({
               </IconButton>
 
               {showEmojiPicker ? (
-                <EmojiPicker onEmojiSelect={() => {}} displayStyle={emojiStyles} />
+                <EmojiPicker
+                  onEmojiSelect={(emoji: any) => {
+                    editor.update(() => {
+                      const selection = $getSelection();
+                      if ($isRangeSelection(selection)) {
+                        selection.insertNodes([$createTextNode(emoji.native)]);
+                      }
+                    });
+                  }}
+                  displayStyle={emojiStyles}
+                />
               ) : null}
             </div>
           </ClickAwayListener>

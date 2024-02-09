@@ -1,7 +1,6 @@
 import { useCallback } from 'react';
 import { useEffect } from 'react';
 
-import { Modifier, EditorState } from 'draft-js';
 import { PlainTextPlugin } from '@lexical/react/LexicalPlainTextPlugin';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import { $getSelection, $createTextNode, $getRoot } from 'lexical';
@@ -20,27 +19,6 @@ interface WhatsAppEditorProps {
   setEditorState(editorState: any): void;
   readOnly?: boolean;
 }
-
-export const updatedValue = (input: any, editorState: EditorState, isEmoji: boolean = false) => {
-  const editorContentState = editorState.getCurrentContent();
-  const editorSelectionState: any = editorState.getSelection();
-  const ModifiedContent = Modifier.replaceText(
-    editorContentState,
-    editorSelectionState,
-    isEmoji ? input.native : input
-  );
-  let updatedEditorState = EditorState.push(editorState, ModifiedContent, 'insert-characters');
-  if (!isEmoji) {
-    const editorSelectionStateMod = updatedEditorState.getSelection();
-    const updatedSelection = editorSelectionStateMod.merge({
-      anchorOffset: editorSelectionStateMod.getAnchorOffset() - 1,
-      focusOffset: editorSelectionStateMod.getFocusOffset() - 1,
-    });
-    updatedEditorState = EditorState.forceSelection(updatedEditorState, updatedSelection);
-  }
-
-  return updatedEditorState;
-};
 
 export const WhatsAppEditor = ({
   setEditorState,

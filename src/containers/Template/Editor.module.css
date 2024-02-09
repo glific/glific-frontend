@@ -45,6 +45,9 @@
   tab-size: 1;
   outline: 0;
 }
+.EditorInput p {
+  overflow: scroll !important;
+}
 
 .boxii {
   background-color: red !important;

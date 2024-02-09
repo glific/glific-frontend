@@ -23,7 +23,6 @@ import { LanguageBar } from 'components/UI/LanguageBar/LanguageBar';
 import { LIST, LOCATION_REQUEST, MEDIA_MESSAGE_TYPES, QUICK_REPLY } from 'common/constants';
 import { validateMedia } from 'common/utils';
 import Loading from 'components/UI/Layout/Loading/Loading';
-import { getPlainTextFromEditor, getEditorFromContent } from 'common/RichEditor';
 import { InteractiveOptions } from './InteractiveOptions/InteractiveOptions';
 import styles from './InteractiveMessage.module.css';
 import {
@@ -88,6 +87,11 @@ export const InteractiveMessage = () => {
     variables: {},
     fetchPolicy: 'network-only',
   });
+
+  let isEditing = false;
+  if (params.id) {
+    isEditing = true;
+  }
 
   // alter header & update/copy queries
   let header;
@@ -160,7 +164,7 @@ export const InteractiveMessage = () => {
 
     setTitle(data.title);
     setFooter(data.footer);
-    setBody(getEditorFromContent(data.body));
+    setBody(data.body);
     setTemplateType(typeValue);
     setTemplateTypeField(templateTypeOptions.find((option) => option.id === typeValue));
     setTimeout(() => setTemplateButtons(data.templateButtons), 100);
@@ -229,7 +233,7 @@ export const InteractiveMessage = () => {
 
     setTitle(titleText);
     setFooter(data.footer);
-    setBody(getEditorFromContent(data.body));
+    setBody(data.body);
     setTemplateType(typeValue);
     setTemplateTypeField(templateTypeOptions.find((option) => option.id === typeValue));
     setTimeout(() => setTemplateButtons(data.templateButtons), 100);
@@ -448,7 +452,7 @@ export const InteractiveMessage = () => {
     setNextLanguage(option);
     const { values, errors } = form;
     if (values.type?.label === 'TEXT') {
-      if (values.title || values.body.getCurrentContent().getPlainText()) {
+      if (values.title || values.body) {
         if (errors) {
           setNotification(t('Please check the errors'), 'warning');
         }
@@ -456,7 +460,7 @@ export const InteractiveMessage = () => {
         handleLanguageChange(option);
       }
     }
-    if (values.body.getCurrentContent().getPlainText()) {
+    if (values.body) {
       if (Object.keys(errors).length !== 0) {
         setNotification(t('Please check the errors'), 'warning');
       }
@@ -614,7 +618,7 @@ export const InteractiveMessage = () => {
     }
 
     if (templateTypeVal === LIST) {
-      const bodyText = getPlainTextFromEditor(payload.body);
+      const bodyText = payload.body;
       const items = getTemplateButtonPayload(templateTypeVal, templateButtonVal);
       const globalButtons = [{ type: 'text', title: globalButtonVal }];
 
@@ -626,7 +630,7 @@ export const InteractiveMessage = () => {
     }
 
     if (templateType === LOCATION_REQUEST) {
-      const bodyText = getPlainTextFromEditor(payload.body);
+      const bodyText = payload.body;
       const locationJson = {
         type: 'location_request_message',
         body: {
@@ -770,7 +774,7 @@ export const InteractiveMessage = () => {
   const validationScheme = Yup.object().shape(validation, [['type', 'attachmentURL']]);
 
   const getPreviewData = () => {
-    const bodyText = getPlainTextFromEditor(body);
+    const bodyText = body;
     if (!title && !bodyText && !footer) return null;
 
     const payload = {

@@ -23,7 +23,6 @@ import {
   QUICK_REPLY,
   VALID_URL_REGEX,
 } from 'common/constants';
-import { getPlainTextFromEditor, getEditorFromContent } from 'common/RichEditor';
 import Loading from 'components/UI/Layout/Loading/Loading';
 import { CreateAutoComplete } from 'components/UI/Form/CreateAutoComplete/CreateAutoComplete';
 import { validateMedia } from 'common/utils';
@@ -33,7 +32,6 @@ const regexForShortcode = /^[a-z0-9_]+$/g;
 
 const HSMValidation = {
   example: Yup.string()
-    // .transform((_current, original) => original.getCurrentContent().getPlainText())
     .max(1024, 'Maximum 1024 characters are allowed')
     .when('body', ([body], schema: any) =>
       schema.test({
@@ -495,7 +493,7 @@ const Template = ({
   // Removing buttons when checkbox is checked or unchecked
   useEffect(() => {
     if (getExample) {
-      const { message }: any = getTemplateAndButton(getPlainTextFromEditor(getExample));
+      const { message }: any = getTemplateAndButton(getExample);
       onExampleChange(message || '');
     }
   }, [isAddButtonChecked]);
@@ -507,7 +505,7 @@ const Template = ({
 
       const parsedText = parse.length ? `| ${parse.join(' | ')}` : null;
 
-      const { message }: any = getTemplateAndButton(getPlainTextFromEditor(example));
+      const { message }: any = getTemplateAndButton(example);
 
       const sampleText: any = parsedText && message + parsedText;
 
@@ -631,7 +629,7 @@ const Template = ({
   const onLanguageChange = (option: string, form: any) => {
     setNextLanguage(option);
     const { values } = form;
-    if (values.label || values.body.getCurrentContent().getPlainText()) {
+    if (values.label || values.body) {
       return;
     }
     handleLanguageChange(option);
@@ -773,15 +771,15 @@ const Template = ({
     }, []);
 
     // get template body
-    const templateBody = getTemplateAndButton(getPlainTextFromEditor(body));
-    const templateExample = getTemplateAndButton(getPlainTextFromEditor(example));
+    const templateBody = getTemplateAndButton(body);
+    const templateExample = getTemplateAndButton(example);
 
     return {
       hasButtons: true,
       buttons: JSON.stringify(buttons),
       buttonType: templateType,
-      body: getEditorFromContent(templateBody.message),
-      example: getEditorFromContent(templateExample.message),
+      body: templateBody.message,
+      example: templateExample.message,
     };
   };
 
@@ -837,7 +835,7 @@ const Template = ({
             status: 'approved',
             languageId: language,
             label: payloadCopy.label,
-            body: getPlainTextFromEditor(payloadCopy.body),
+            body: payloadCopy.body,
             MessageMedia: messageMedia,
             ...defaultAttribute,
           };
@@ -907,7 +905,6 @@ const Template = ({
     language: Yup.object().nullable().required('Language is required.'),
     label: Yup.string().required(t('Title is required.')).max(50, t('Title length is too long.')),
     body: Yup.string()
-      // .transform((current, original) => original.getCurrentContent().getPlainText())
       .required(t('Message is required.'))
       .max(1024, 'Maximum 1024 characters are allowed'),
     type: Yup.object()

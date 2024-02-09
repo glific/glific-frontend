@@ -16,6 +16,7 @@ import {
   BeautifulMentionsMenuProps,
   BeautifulMentionsMenuItemProps,
 } from 'lexical-beautiful-mentions';
+import { useParams } from 'react-router';
 
 export interface EditorProps {
   type?: any;
@@ -43,8 +44,26 @@ export const Editor = ({ textArea = false, disabled = false, ...props }: EditorP
   const suggestions = {
     '@': mentions.map((el: any) => el?.split('@')[1]),
   };
+  const params = useParams();
+
+  let isEditing = false;
+  if (params.id) {
+    isEditing = true;
+  }
 
   const [editor] = useLexicalComposerContext();
+
+  useEffect(() => {
+    if (field.value && isEditing) {
+      editor.update(() => {
+        const root = $getRoot();
+        root.clear();
+        const paragraph = $createParagraphNode();
+        paragraph.append($createTextNode(field.value || ''));
+        root.append(paragraph);
+      });
+    }
+  }, [field]);
 
   const { ref } = useResizeDetector({
     refreshMode: 'debounce',
@@ -54,16 +73,6 @@ export const Editor = ({ textArea = false, disabled = false, ...props }: EditorP
   const Placeholder = () => {
     return <p className={styles.editorPlaceholder}>{placeholder}</p>;
   };
-
-  useEffect(() => {
-    editor.update(() => {
-      const root = $getRoot();
-      root.clear();
-      const paragraph = $createParagraphNode();
-      paragraph.append($createTextNode(field.value || ''));
-      root.append(paragraph);
-    });
-  }, []);
 
   const handleFormatting = (text: string, formatter: string) => {
     switch (formatter) {
@@ -85,7 +94,6 @@ export const Editor = ({ textArea = false, disabled = false, ...props }: EditorP
       return editor.registerCommand(
         KEY_DOWN_COMMAND,
         (event: KeyboardEvent) => {
-          // Handle event here
           let formatter = '';
           if (event.code === 'Enter') {
             event.preventDefault(); // Prevent line break on enter
@@ -115,7 +123,9 @@ export const Editor = ({ textArea = false, disabled = false, ...props }: EditorP
   const handleChange = (editorState: any) => {
     editorState.read(() => {
       const root = $getRoot();
-      onChange(root.getTextContent());
+      if (!isEditing) {
+        onChange(root.getTextContent());
+      }
     });
   };
 
@@ -142,7 +152,6 @@ export const Editor = ({ textArea = false, disabled = false, ...props }: EditorP
           triggers={['@']}
           items={suggestions}
         />
-        {/* <MentionsPlugin suggestions={suggestions} /> */}
         <OnChangePlugin onChange={handleChange} />
         {picker && picker}
       </div>

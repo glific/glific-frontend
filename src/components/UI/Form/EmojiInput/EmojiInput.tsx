@@ -5,6 +5,8 @@ import { Editor } from 'containers/Template/Editor';
 import Styles from './EmojiInput.module.css';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
 import { BeautifulMentionNode } from 'lexical-beautiful-mentions';
+import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
+import { $createTextNode, $getSelection, $isRangeSelection } from 'lexical';
 
 export interface EmojiInputProps {
   field: any;
@@ -43,32 +45,12 @@ export const EmojiInput = ({
     setShowEmojiPicker(false);
   };
 
-  const emojiStyles = {
-    position: 'absolute',
-    bottom: '60px',
-    right: '-150px',
-    zIndex: 100,
-  };
-
   const picker = (
-    <ClickAwayListener onClickAway={handleClickAway}>
-      <InputAdornment className={Styles.EmojiPosition} position="end">
-        <IconButton
-          color="primary"
-          data-testid="emoji-picker"
-          aria-label="pick emoji"
-          component="span"
-          className={Styles.Emoji}
-          onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-        >
-          <span role="img" aria-label="pick emoji">
-            😀
-          </span>
-        </IconButton>
-
-        {showEmojiPicker && <EmojiPicker onEmojiSelect={() => {}} displayStyle={emojiStyles} />}
-      </InputAdornment>
-    </ClickAwayListener>
+    <EmojiPickerComponent
+      handleClickAway={handleClickAway}
+      setShowEmojiPicker={setShowEmojiPicker}
+      showEmojiPicker={showEmojiPicker}
+    />
   );
 
   const input = (
@@ -84,4 +66,56 @@ export const EmojiInput = ({
   );
 
   return input;
+};
+interface EmojiPickerProps {
+  handleClickAway: any;
+  showEmojiPicker: any;
+  setShowEmojiPicker: any;
+}
+const EmojiPickerComponent = ({
+  showEmojiPicker,
+  setShowEmojiPicker,
+  handleClickAway,
+}: EmojiPickerProps) => {
+  const [editor] = useLexicalComposerContext();
+
+  const emojiStyles = {
+    position: 'absolute',
+    bottom: '60px',
+    right: '-150px',
+    zIndex: 100,
+  };
+
+  return (
+    <ClickAwayListener onClickAway={handleClickAway}>
+      <InputAdornment className={Styles.EmojiPosition} position="end">
+        <IconButton
+          color="primary"
+          data-testid="emoji-picker"
+          aria-label="pick emoji"
+          component="span"
+          className={Styles.Emoji}
+          onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+        >
+          <span role="img" aria-label="pick emoji">
+            😀
+          </span>
+        </IconButton>
+
+        {showEmojiPicker && (
+          <EmojiPicker
+            onEmojiSelect={(emoji: any) => {
+              editor.update(() => {
+                const selection = $getSelection();
+                if ($isRangeSelection(selection)) {
+                  selection.insertNodes([$createTextNode(emoji.native)]);
+                }
+              });
+            }}
+            displayStyle={emojiStyles}
+          />
+        )}
+      </InputAdornment>
+    </ClickAwayListener>
+  );
 };
