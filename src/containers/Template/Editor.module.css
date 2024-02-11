@@ -45,34 +45,13 @@
   tab-size: 1;
   outline: 0;
 }
+
 .EditorInput p {
   overflow: scroll !important;
 }
 
-.boxii {
-  background-color: red !important;
-}
-
 .EditorWrapper {
   margin: 1rem 0;
-}
-
-.Multiline {
-  padding-bottom: 35px !important;
-}
-
-.OutlineInput > div:first-child {
-  width: inherit !important;
-  height: 100px;
-  overflow: auto;
-}
-
-.EmojiPosition {
-  cursor: pointer;
-  position: absolute;
-  bottom: 20px;
-  right: 20px;
-  white-space: initial !important;
 }
 
 .editorScroller {
@@ -98,64 +77,12 @@
   color: rgba(0, 0, 0, 0.38);
   pointer-events: none;
 }
+
 .editor {
   flex: auto;
   position: relative;
   resize: vertical;
   z-index: -1;
-}
-
-.Emoji {
-  width: 24px;
-}
-
-.Font {
-  line-height: 1.25;
-  font-weight: 400;
-  font-size: 16px;
-  font-family: 'Heebo', sans-serif;
-  color: #073f24;
-  text-transform: inherit !important;
-}
-
-/* 
-  Overriding draft-js mentions styles as per requirement
-*/
-.mentionSuggestions {
-  composes: Font;
-  background: #fff;
-  border-radius: 8px;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-  transform-origin: 50% 0%;
-  transform: scaleY(0);
-  box-shadow: 0px 6px 6px 0px lightgray;
-  z-index: 100;
-  overflow-y: auto;
-  max-height: 360px;
-}
-
-.mentionSuggestionsEntry {
-  padding: 7px 10px 3px 10px;
-  transition: background-color 0.4s cubic-bezier(0.27, 1.27, 0.48, 0.56);
-}
-
-.mentionSuggestionsEntry:active {
-  background-color: #edf6f2;
-}
-
-.mentionSuggestionsEntryFocused {
-  composes: mentionSuggestionsEntry;
-  background-color: #edf6f2;
-}
-
-.mentionSuggestionsEntryText,
-.mentionSuggestionsEntryTitle {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .editorPlaceholder {
@@ -171,13 +98,9 @@
   pointer-events: none;
 }
 
-/* .MentionMenu {
-  background: #fff;
-  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.3);
-  border-radius: 8px;
-  position: fixed;
-} */
-
+/* 
+  Overriding draft-js mentions styles as per requirement
+*/
 .MentionMenu {
   padding: 0;
   background: #fff;
@@ -189,9 +112,6 @@
   border-radius: 8px;
   max-height: 200px;
   overflow-y: scroll;
-}
-
-.MentionMenu {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
@@ -210,7 +130,6 @@
 }
 
 .MentionMenu li {
-  /* margin: 0 8px 0 8px; */
   padding: 8px;
   color: #050505;
   cursor: pointer;
@@ -253,20 +172,10 @@
 
 .MentionMenu li .icon {
   display: flex;
-  /* width: 20px; */
-  /* height: 20px; */
   user-select: none;
   margin-right: 8px;
   line-height: 16px;
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
-}
-
-.component-picker-menu {
-  width: 200px;
-}
-
-.mentions-menu {
-  width: 250px;
 }

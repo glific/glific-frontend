@@ -69,9 +69,13 @@ export const WhatsAppEditor = ({
             event.preventDefault();
 
             if (
+              editor &&
               editor.getRootElement()?.textContent &&
               typeof editor.getRootElement()?.textContent === 'string'
             ) {
+              sendMessage(editor.getRootElement()?.textContent);
+            }
+            {
               sendMessage(editor?.getRootElement()?.textContent);
             }
           } else if ((event.ctrlKey || event.metaKey) && event.code === 'KeyB') {

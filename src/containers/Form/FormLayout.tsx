@@ -527,7 +527,6 @@ export const FormLayout = ({
       validationSchema={validationSchema}
       onSubmit={(itemData, { setErrors }) => {
         // when you want to show custom error on form field and error message is not coming from api
-
         setCustomError({ setErrors });
         saveHandler(itemData);
       }}

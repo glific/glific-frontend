@@ -43,7 +43,7 @@ export const Editor = ({ textArea = false, disabled = false, ...props }: EditorP
   const { field, form, picker, placeholder, onChange } = props;
   const mentions = props.inputProp?.suggestions || [];
   const suggestions = {
-    '@': mentions,
+    '@': mentions?.map((mention: string) => mention?.split('@')[1]),
   };
   const params = useParams();
 
@@ -147,7 +147,6 @@ export const Editor = ({ textArea = false, disabled = false, ...props }: EditorP
           ErrorBoundary={LexicalErrorBoundary}
         />
         <HistoryPlugin />
-        {/* <MentionField mentions={suggestions['@']} />{' '} */}
         <BeautifulMentionsPlugin
           menuComponent={CustomMenu}
           menuItemComponent={CustomMenuItem}
