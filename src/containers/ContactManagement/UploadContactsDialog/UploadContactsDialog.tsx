@@ -195,7 +195,7 @@ export const UploadContactsDialog = ({
             </div>
 
             {error && (
-              <div className={styles.Error}>
+              <div data-testid="invalidCsvFormat" className={styles.Error}>
                 1. Please make sure the file format matches the sample
               </div>
             )}

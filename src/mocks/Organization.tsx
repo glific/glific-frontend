@@ -10,6 +10,7 @@ import {
   GET_ORGANIZATION_PROVIDER,
   GET_QUALITY_RATING,
   GET_ORGANIZATION_PHONE,
+  GET_ORGANIZATION_SERVICES
 } from 'graphql/queries/Organization';
 import { BSP_BALANCE_SUBSCRIPTION } from 'graphql/subscriptions/PeriodicInfo';
 
@@ -208,6 +209,23 @@ export const getOrganisationSettings = {
     },
   },
 };
+export const getOrganizationServicesQuery = {
+  request: {
+    query: GET_ORGANIZATION_SERVICES,
+  },
+  result: {
+    data: {
+      organizationServices: {
+        dialogflow: true,
+        googleCloudStorage: true,
+        flowUuidDisplay: true,
+        rolesAndPermission: true,
+        contactProfileEnabled: true,
+        ticketingEnabled: true,
+      }
+    }
+  }
+}
 export const getProvidersQuery = [
   {
     request: {

@@ -30,6 +30,10 @@ const GET_USER_MOCK = {
           phone: '919999988888',
           isRestricted: false,
           roles: ['Staff'],
+          accessRoles: {
+            id: '1',
+            label: 'Admin'
+          },
           groups: [
             {
               id: '2',
