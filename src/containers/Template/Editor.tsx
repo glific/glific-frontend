@@ -1,15 +1,20 @@
 import styles from './Editor.module.css';
-import { forwardRef, useState } from 'react';
-import { useEffect } from 'react';
+import { forwardRef, useState, useEffect } from 'react';
 import { PlainTextPlugin } from '@lexical/react/LexicalPlainTextPlugin';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
-import { $getSelection, $createTextNode, $getRoot, $createParagraphNode } from 'lexical';
+import {
+  $getSelection,
+  $createTextNode,
+  $getRoot,
+  $createParagraphNode,
+  KEY_DOWN_COMMAND,
+  COMMAND_PRIORITY_LOW,
+} from 'lexical';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
 import { useResizeDetector } from 'react-resize-detector';
 import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
-import { KEY_DOWN_COMMAND, COMMAND_PRIORITY_LOW } from 'lexical';
 import { FormHelperText } from '@mui/material';
 import {
   BeautifulMentionsPlugin,
@@ -43,7 +48,7 @@ export const Editor = ({ textArea = false, disabled = false, ...props }: EditorP
   const { field, form, picker, placeholder, onChange } = props;
   const mentions = props.inputProp?.suggestions || [];
   const suggestions = {
-    '@': mentions?.map((mention: string) => mention.split('@')[1]),
+    '@': mentions.map((mention: string) => mention?.split('@')[1]),
   };
   const params = useParams();
 
@@ -154,7 +159,7 @@ export const Editor = ({ textArea = false, disabled = false, ...props }: EditorP
           items={suggestions}
         />
         <OnChangePlugin onChange={handleChange} />
-        {picker && picker}
+        {picker}
       </div>
       {form && form.errors[field.name] && form.touched[field.name] ? (
         <FormHelperText className={styles.DangerText}>{form.errors[field.name]}</FormHelperText>
