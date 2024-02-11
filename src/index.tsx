@@ -13,6 +13,11 @@ import { APPSIGNAL_API_KEY } from './config';
 import './index.css';
 import App from './App';
 import packageInfo from '../package.json';
+import { NEW_DOMAIN, OLD_DOMAIN } from 'common/constants';
+
+if (location.hostname.endsWith(OLD_DOMAIN)) {
+  location.hostname = location.hostname.replace(OLD_DOMAIN, NEW_DOMAIN) + location.pathname;
+}
 
 let appComponent = <App />;
 if (APPSIGNAL_API_KEY) {
