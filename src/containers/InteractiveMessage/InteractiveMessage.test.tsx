@@ -1,3 +1,4 @@
+import '../../matchMediMock';
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import axios from 'axios';
@@ -8,6 +9,16 @@ import { setUserSession } from 'services/AuthService';
 import { mocks } from 'mocks/InteractiveMessage';
 import { InteractiveMessage } from './InteractiveMessage';
 import { FLOW_EDITOR_API } from 'config';
+import { userEvent } from '@testing-library/user-event';
+
+const mockIntersectionObserver = class {
+  constructor() {}
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+};
+
+(window as any).IntersectionObserver = mockIntersectionObserver;
 
 const mockUseLocationValue: any = {
   pathname: '/',
@@ -99,21 +110,23 @@ test('it renders empty interactive form', async () => {
 
   await waitFor(() => {
     // Get all input elements
-    const [title, quickReply1, quickReply2, , attachmentUrl] = screen.getAllByRole('textbox');
+    const [title, lexicalEditor, quickReply1, quickReply2, , attachmentUrl] =
+      screen.getAllByRole('textbox');
     expect(title).toBeInTheDocument();
     expect(quickReply1).toBeInTheDocument();
     expect(quickReply2).toBeInTheDocument();
     expect(attachmentUrl).toBeInTheDocument();
 
     fireEvent.change(title, { target: { value: 'new title' } });
-    fireEvent.blur(title);
+    userEvent.click(lexicalEditor);
+    userEvent.keyboard('Yes');
     fireEvent.change(quickReply1, { target: { value: 'Yes' } });
     fireEvent.change(quickReply2, { target: { value: 'No' } });
     fireEvent.change(attachmentUrl, { target: { value: 'https://picsum.photos/200/300' } });
     fireEvent.blur(attachmentUrl);
   });
 
-  // Changing language to marathi
+  // // Changing language to marathi
   await waitFor(() => {
     const language = screen.getByText('Marathi');
     expect(language).toBeInTheDocument();
@@ -135,7 +148,9 @@ test('it renders empty interactive form', async () => {
 
   await waitFor(() => {
     // Adding list data
-    const [, header, listTitle, listItemTitle, listItemDesc] = screen.getAllByRole('textbox');
+    // [title, lexicalEditor, quickReply1, quickReply2, , attachmentUrl]
+    const [, , header, listTitle, listItemTitle, listItemDesc] = screen.getAllByRole('textbox');
+
     expect(header).toBeInTheDocument();
     expect(listTitle).toBeInTheDocument();
     expect(listItemTitle).toBeInTheDocument();

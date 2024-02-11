@@ -1,22 +1,9 @@
+import '../../../../matchMediMock';
 import { render } from '@testing-library/react';
 import { EmojiInput } from './EmojiInput';
-import { EditorState } from 'draft-js';
 import userEvent from '@testing-library/user-event';
 
 const setFieldValueMock = vi.fn();
-
-Object.defineProperty(window, 'matchMedia', {
-  writable: true,
-  value: (query: any) => {
-    return {
-      matches: false,
-      media: query,
-      onchange: null,
-      addListener: vi.fn(),
-      removeListener: vi.fn(),
-    };
-  },
-});
 
 const mockIntersectionObserver = class {
   constructor() {}
@@ -32,10 +19,10 @@ const wrapper = (
     form={{
       touched: false,
       errors: {},
-      values: { input: EditorState.createEmpty() },
+      values: { input: '' },
       setFieldValue: setFieldValueMock,
     }}
-    field={{ name: 'input', value: EditorState.createEmpty(), onChange: vi.fn() }}
+    field={{ name: 'input', value: '', onChange: vi.fn() }}
     label="Title"
     placeholder="Title"
     rows={10}
@@ -43,7 +30,7 @@ const wrapper = (
 );
 it('renders <EmojiInput /> component', () => {
   const { getByTestId } = render(wrapper);
-  expect(getByTestId('input')).toBeInTheDocument();
+  expect(getByTestId('editor')).toBeInTheDocument();
 });
 
 it('should have a emoji picker', () => {

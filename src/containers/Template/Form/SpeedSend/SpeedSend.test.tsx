@@ -1,3 +1,4 @@
+import '../../../../matchMediMock';
 import { render, within, fireEvent, cleanup, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
@@ -6,12 +7,33 @@ import { SpeedSendList } from 'containers/Template/List/SpeedSendList/SpeedSendL
 import { TEMPLATE_MOCKS } from 'containers/Template/Template.test.helper';
 import { setUserSession } from 'services/AuthService';
 import { SpeedSend } from './SpeedSend';
-import '../../../../jestconfig.mock';
 beforeEach(() => {
   cleanup();
 });
 const mocks = TEMPLATE_MOCKS;
 setUserSession(JSON.stringify({ roles: ['Admin'] }));
+
+const mockIntersectionObserver = class {
+  constructor() {}
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+};
+
+(window as any).IntersectionObserver = mockIntersectionObserver;
+
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: (query: any) => {
+    return {
+      matches: false,
+      media: query,
+      onchange: null,
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+    };
+  },
+});
 
 describe('SpeedSend', () => {
   test('cancel button should redirect to SpeedSendlist page', async () => {

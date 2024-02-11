@@ -6,7 +6,11 @@ import Styles from './EmojiInput.module.css';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
 import { BeautifulMentionNode } from 'lexical-beautiful-mentions';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import { $createTextNode, $getSelection, $isRangeSelection } from 'lexical';
+import {
+  $createTextNode,
+  $getSelection,
+  $isRangeSelection,
+} from 'lexical';
 
 export interface EmojiInputProps {
   field: any;
