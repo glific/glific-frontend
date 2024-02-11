@@ -96,7 +96,7 @@ export const WhatsAppEditor = ({
       },
       COMMAND_PRIORITY_LOW
     );
-  }, [editor, onChange]);
+  }, [editor]);
 
   const Placeholder = () => {
     return <div className={styles.editorPlaceholder}>Type a message...</div>;
