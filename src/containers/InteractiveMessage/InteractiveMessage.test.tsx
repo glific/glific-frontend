@@ -148,7 +148,6 @@ test('it renders empty interactive form', async () => {
 
   await waitFor(() => {
     // Adding list data
-    // [title, lexicalEditor, quickReply1, quickReply2, , attachmentUrl]
     const [, , header, listTitle, listItemTitle, listItemDesc] = screen.getAllByRole('textbox');
 
     expect(header).toBeInTheDocument();

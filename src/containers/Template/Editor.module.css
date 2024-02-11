@@ -4,12 +4,9 @@
   line-height: 1 !important;
   font-size: 12px !important;
   margin-top: 4px !important;
-  /* position: absolute; */
-  /* bottom: 0; */
 }
 
 .Editor {
-  /* margin-bottom: 1rem; */
   position: relative;
   border: 2px solid rgba(0, 0, 0, 0.23);
   border-radius: 12px;
