@@ -96,7 +96,9 @@ jobs:
           git clone https://github.com/glific/cypress-testing.git
           echo done. go to dir.
           cp -r cypress-testing/cypress cypress
-          yarn global add
+          cd cypress
+          yarn global add $PWD
+          cd ..
           echo Create cypress.config.ts from example
           cp cypress-testing/cypress.config.ts.example cypress.config.ts
 
