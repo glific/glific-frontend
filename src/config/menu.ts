@@ -22,6 +22,29 @@ const menus = (): Menu[] => [
     roles: ['Staff', 'Manager', 'Admin', 'Dynamic'],
   },
   {
+    title: 'Whatsapp Group',
+    path: '/group/chat',
+    icon: 'chat',
+    type: 'sideDrawer',
+    roles: ['Staff', 'Manager', 'Admin', 'Dynamic'],
+    subMenu: [
+      {
+        title: 'Chat',
+        path: '/group/chat',
+        icon: 'chat',
+        type: 'sideDrawer',
+        roles: ['Manager', 'Admin', 'Dynamic'],
+      },
+      {
+        title: 'Collections',
+        path: '/group/collections',
+        icon: 'collection',
+        type: 'sideDrawer',
+        roles: ['Manager', 'Admin', 'Dynamic'],
+      },
+    ],
+  },
+  {
     title: 'Flows',
     path: '/flow',
     icon: 'flow',
