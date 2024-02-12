@@ -395,9 +395,6 @@ export const FormLayout = ({
       if (field.additionalState) {
         additionalState(payload[field.additionalState]);
       }
-      if (field.convertToWhatsApp && payload[field.name]) {
-        payload[field.name] = payload[field.name];
-      }
       if (field.skipPayload) {
         delete payload[field.name];
       }
