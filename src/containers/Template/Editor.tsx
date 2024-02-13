@@ -136,13 +136,12 @@ export const Editor = ({ textArea = false, disabled = false, ...props }: EditorP
     <div className={styles.EditorWrapper}>
       <div className={disabled ? styles?.disabled : styles.Editor} ref={ref} data-testid="resizer">
         <PlainTextPlugin
-          data-testid="editor"
           placeholder={<Placeholder />}
           contentEditable={
             <div className={styles.editorScroller}>
               <div className={styles.editor}>
                 <ContentEditable
-                  data-testid={'editor'}
+                  data-testid={`editor-${field.name}`}
                   disabled={disabled}
                   className={styles.EditorInput}
                 />

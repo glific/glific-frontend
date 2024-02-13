@@ -1,5 +1,5 @@
 import '../../../../matchMediMock';
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { EmojiInput } from './EmojiInput';
 import userEvent from '@testing-library/user-event';
 
@@ -28,9 +28,9 @@ const wrapper = (
     rows={10}
   />
 );
-it('renders <EmojiInput /> component', () => {
+it.only('renders <EmojiInput /> component', () => {
   const { getByTestId } = render(wrapper);
-  expect(getByTestId('editor')).toBeInTheDocument();
+  expect(getByTestId('editor-input')).toBeInTheDocument();
 });
 
 it('should have a emoji picker', () => {

@@ -103,7 +103,7 @@ export const WhatsAppEditor = ({
   };
 
   return (
-    <div className={styles.Editor} ref={ref} data-testid="resizer">
+    <div className={`${styles.Editor} LexicalEditor`} ref={ref} data-testid="resizer">
       <PlainTextPlugin
         data-testid="editor"
         placeholder={<Placeholder />}
