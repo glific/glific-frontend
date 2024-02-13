@@ -21,11 +21,25 @@
   color: #073f24;
   font-weight: 500;
   font-size: 20px;
+  display: flex;
+  align-items: center;
 }
 
 .FlowNameClosed {
   composes: FlowName;
   left: 90px;
+  display: flex;
+  align-items: center;
+}
+
+.FlowNameContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.FlowKeyword {
+  font-size: 12px;
+  color: #93a29b !important;
 }
 
 :global(.Flow_empty_flow__roKNh) {
