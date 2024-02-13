@@ -85,6 +85,8 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
     }
   }
 
+  console.log(data);
+
   // let's handle the case when contact id and collection id is not passed in the url then we set the
   // first record as selected contact
   if (!selectedContactId && !selectedCollectionId && data && data.search.length !== 0) {

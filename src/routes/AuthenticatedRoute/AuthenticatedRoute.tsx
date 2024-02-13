@@ -15,6 +15,7 @@ import OrganisationFlows from 'containers/SettingList/OrganizationFlows/Organisa
 import Billing from 'containers/SettingList/Billing/Billing';
 import Providers from 'containers/SettingList/Providers/Providers';
 import Organisation from 'containers/SettingList/Organisation/Organisation';
+import { GroupChatInterface } from 'containers/Groups/ChatInterface';
 
 const Chat = lazy(() => import('containers/Chat/Chat'));
 const Layout = lazy(() => import('components/UI/Layout/Layout'));
@@ -146,6 +147,10 @@ const routeAdmin = (
     <Route path="contact-fields/" element={<ContactFieldList />} />
     <Route path="organizations/:id/extensions" element={<OrganizationList openExtensionModal />} />
     <Route path="organizations/:id/customer" element={<OrganizationList openCustomerModal />} />
+
+    <Route path="/group/chat" element={<GroupChatInterface />} />
+    <Route path="/group/chat/collection" element={<GroupChatInterface collections />} />
+    <Route path="/group/collections" element={<CollectionList groups />} />
 
     <Route path="/*" element={<Chat />} />
   </Routes>

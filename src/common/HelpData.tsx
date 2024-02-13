@@ -60,6 +60,13 @@ export const collectionInfo: Item = {
   link: 'https://glific.github.io/docs/docs/Product%20Features/Others/Collections',
 };
 
+export const groupCollectionInfo: Item = {
+  heading:
+    'Group Collections is a feature in Glific to keep one set of groups in one place and use it to communicate with all the groups in that collection in one go.',
+  body: <></>,
+  link: 'https://glific.github.io/docs/docs/Product%20Features/Others/Collections',
+};
+
 export const staffManagementInfo: Item = {
   heading:
     'You can create accounts for yourself and your team to define the level of access each of your staff member has to the Glific account.',

@@ -21,7 +21,7 @@ import { CircularProgress, Modal } from '@mui/material';
 import styles from './CollectionList.module.css';
 import { exportCsvFile } from 'common/utils';
 import { useNavigate } from 'react-router-dom';
-import { collectionInfo } from 'common/HelpData';
+import { collectionInfo, groupCollectionInfo } from 'common/HelpData';
 
 const getLabel = (label: string) => <div className={styles.LabelText}>{label}</div>;
 
@@ -55,7 +55,11 @@ const columnAttributes = {
   columnStyles,
 };
 
-export const CollectionList = () => {
+interface CollectionListProps {
+  groups?: boolean;
+}
+
+export const CollectionList = ({ groups }: CollectionListProps) => {
   const navigate = useNavigate();
   const [updateCollection, setUpdateCollection] = useState(false);
   const [addContactsDialogShow, setAddContactsDialogShow] = useState(false);
@@ -65,6 +69,13 @@ export const CollectionList = () => {
   const [exportData, setExportData] = useState(false);
   const { t } = useTranslation();
 
+  let heading = t('Collections');
+  let collectioninfo = collectionInfo;
+
+  if (groups) {
+    heading = t('Group Collections');
+    collectioninfo = groupCollectionInfo;
+  }
   const [getContacts, { data: contactsData }] = useLazyQuery(CONTACT_SEARCH_QUERY, {
     variables: setVariables({ name: contactSearchTerm }, 50),
   });
@@ -235,10 +246,10 @@ export const CollectionList = () => {
         </Modal>
       )}
       <List
-        helpData={collectionInfo}
+        helpData={collectioninfo}
         refreshList={updateCollection}
         restrictedAction={getRestrictedAction}
-        title={t('Collections')}
+        title={heading}
         listItem="groups"
         columnNames={[{ name: 'label', label: t('Title') }]}
         listItemName="collection"
