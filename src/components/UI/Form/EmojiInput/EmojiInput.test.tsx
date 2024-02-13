@@ -28,7 +28,7 @@ const wrapper = (
     rows={10}
   />
 );
-it.only('renders <EmojiInput /> component', () => {
+it('renders <EmojiInput /> component', () => {
   const { getByTestId } = render(wrapper);
   expect(getByTestId('editor-input')).toBeInTheDocument();
 });
