@@ -407,7 +407,9 @@ export const FlowEditor = () => {
 
               <div className={styles.FlowNameContainer}>
                 {flowTitle}
-                <span className={styles.FlowKeyword}>{flowName?.flows[0]?.keywords[0]}</span>
+                <span className={styles.FlowKeyword}>
+                  {flowName?.flows[0]?.keywords.join(', ')}
+                </span>
               </div>
             </>
           )}
