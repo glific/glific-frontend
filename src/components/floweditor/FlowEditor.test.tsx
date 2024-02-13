@@ -9,7 +9,7 @@ import {
   getActiveFlow,
   getInactiveFlow,
   getFlowWithoutKeyword,
-  getOrganisationServicesQuery,
+  getOrganizationServicesQuery,
   publishFlow,
   getFreeFlow,
   resetFlowCount,
@@ -46,7 +46,7 @@ const mocks = [
   simulatorSearchQuery,
   simulatorSearchQuery,
   publishFlow,
-  getOrganisationServicesQuery,
+  getOrganizationServicesQuery,
   getFreeFlow,
   getFreeFlow,
 ];

@@ -23,14 +23,14 @@ export const SettingList = () => {
 
   const List = [
     {
-      name: 'Organisation',
+      name: 'Organization',
       shortcode: 'organization',
-      description: t('Manage organisation name, supported languages.'),
+      description: t('Manage organization name, supported languages.'),
     },
     {
       name: 'Flows',
       shortcode: 'organization-flows',
-      description: t('Manage organisation flows.'),
+      description: t('Manage organization flows.'),
     },
     {
       name: 'Billing',
@@ -50,7 +50,7 @@ export const SettingList = () => {
 
   let CardList: any = [];
   if (providerData) {
-    // create setting list of Organisation & providers
+    // create setting list of Organization & providers
     CardList = [...List, ...providerData.providers];
   }
 
