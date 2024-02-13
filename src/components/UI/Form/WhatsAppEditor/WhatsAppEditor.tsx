@@ -15,6 +15,7 @@ import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
 import { useResizeDetector } from 'react-resize-detector';
 
 import styles from './WhatsAppEditor.module.css';
+import { getTextContent } from 'common/RichEditor';
 
 interface WhatsAppEditorProps {
   handleHeightChange(newHeight: number): void;
@@ -69,14 +70,8 @@ export const WhatsAppEditor = ({
         let formatter = '';
         if (event.code === 'Enter' && !readOnly) {
           event.preventDefault();
-          if (
-            editor &&
-            editor.getRootElement() &&
-            editor.getRootElement()!.textContent &&
-            typeof editor.getRootElement()!.textContent === 'string'
-          ) {
-            sendMessage(editor.getRootElement()?.textContent);
-          }
+          let textMessage = getTextContent(editor);
+          sendMessage(textMessage);
         } else if ((event.ctrlKey || event.metaKey) && event.code === 'KeyB') {
           formatter = 'bold';
         } else if ((event.ctrlKey || event.metaKey) && event.code === 'KeyI') {

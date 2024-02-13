@@ -1,5 +1,5 @@
 import '../../../../matchMediMock';
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import { EmojiInput } from './EmojiInput';
 import userEvent from '@testing-library/user-event';
 

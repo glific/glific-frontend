@@ -55,7 +55,6 @@ describe('<WhatsAppEditor/>', () => {
     );
 
     const editor = screen.getByTestId('editor');
-    console.log(editor);
 
     await userEvent.click(editor);
     await userEvent.tab();
