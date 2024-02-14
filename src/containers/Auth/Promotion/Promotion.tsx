@@ -4,8 +4,8 @@ import MaximizeIcon from 'assets/images/icons/Maximize.svg?react';
 import styles from './Promotion.module.css';
 
 const points = [
-  'Learn how to integrate ChatGPT with your chatbot to make your conversations more impactful and engaging!',
-  'Learn how TAP is using ChatGPT in their chatbot',
+  'We are migrating from "tides.coloredcow.com" to "glific.com" and you will be automatically redirected to the correct URL',
+  'For eg. if your URL is staging.tides.coloredcow.com, the updated URL will be staging.glific.com',
 ];
 
 const LINK = 'https://rb.gy/ywfqp';
@@ -20,7 +20,7 @@ export const Promotion = () => {
         <div className={styles.HeaderText}>NEW!</div>
         {minimized ? (
           <>
-            <div className={styles.GiftCard}>Glific Webinar</div>
+            <div className={styles.GiftCard}>Domain migration</div>
             <MaximizeIcon
               className={styles.AccordianIcon}
               onClick={() => setMinimized(!minimized)}
@@ -33,9 +33,7 @@ export const Promotion = () => {
 
       {!minimized && (
         <>
-          <div className={styles.Image}>
-            Webinar on ChatGPT integration with Glific 28th July 12 PM
-          </div>
+          <div className={styles.Image}>Domain name migration</div>
 
           <div className={styles.Points}>
             {points.map((point, index) => (
@@ -45,12 +43,12 @@ export const Promotion = () => {
               </p>
             ))}
           </div>
-          <a className={styles.Link} href={LINK} target="_blank" rel="noreferrer">
+          {/* <a className={styles.Link} href={LINK} target="_blank" rel="noreferrer">
             <div className={styles.KnowMore}>
               <div>REGISTER NOW</div>
               <div className={styles.Arrow}> ↗</div>
             </div>
-          </a>
+          </a> */}
         </>
       )}
     </div>

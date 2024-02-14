@@ -8,8 +8,9 @@
   position: fixed;
   background: linear-gradient(130deg, #ffd7ca, #fff6ca);
   width: 290px;
-  right: 24px;
+  right: 60px;
   bottom: 0;
+  padding-bottom: 40px;
   border: 4px solid #073f24;
   border-bottom: 0px;
 }
