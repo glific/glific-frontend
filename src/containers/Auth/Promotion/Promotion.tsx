@@ -3,10 +3,7 @@ import MinimizeIcon from 'assets/images/icons/Minimize.svg?react';
 import MaximizeIcon from 'assets/images/icons/Maximize.svg?react';
 import styles from './Promotion.module.css';
 
-const points = [
-  'We are migrating from "tides.coloredcow.com" to "glific.com" and you will be automatically redirected to the correct URL',
-  'For eg. if your URL is staging.tides.coloredcow.com, the updated URL will be staging.glific.com',
-];
+const hostname = location.hostname.replace('.glific.com', '');
 
 const LINK = 'https://rb.gy/ywfqp';
 
@@ -20,7 +17,7 @@ export const Promotion = () => {
         <div className={styles.HeaderText}>NEW!</div>
         {minimized ? (
           <>
-            <div className={styles.GiftCard}>Domain migration</div>
+            <div className={styles.GiftCard}>New Website Address!</div>
             <MaximizeIcon
               className={styles.AccordianIcon}
               onClick={() => setMinimized(!minimized)}
@@ -33,15 +30,29 @@ export const Promotion = () => {
 
       {!minimized && (
         <>
-          <div className={styles.Image}>Domain name migration</div>
+          <div className={styles.Image}>New Website Address!</div>
 
           <div className={styles.Points}>
-            {points.map((point, index) => (
-              <p className={styles.BodyListText} key={point}>
-                <span>{index + 1}</span>
-                {point}
-              </p>
-            ))}
+            <p className={styles.BodyListText}>
+              <span>{1}</span>
+              <div>
+                We're Moving: <strong>tides.coloredcow.com</strong> is changing to{' '}
+                <strong>glific.com</strong>! To access your Glific account use{' '}
+                <strong>{hostname}.glific.com </strong>
+                instead of{' '}
+                <strong>
+                  {hostname}
+                  .tides.coloredcow.com
+                </strong>
+              </div>
+            </p>
+            <p className={styles.BodyListText}>
+              <span>2</span>
+              <div>
+                What this means? <strong>{hostname}.tides.coloredcow.com </strong>
+                page will become inactive on 31st March. Bookmark the new Glific address right away
+              </div>
+            </p>
           </div>
           {/* <a className={styles.Link} href={LINK} target="_blank" rel="noreferrer">
             <div className={styles.KnowMore}>
