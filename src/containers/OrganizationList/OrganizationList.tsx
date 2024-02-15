@@ -10,7 +10,7 @@ import {
   DELETE_INACTIVE_ORGANIZATIONS,
   UPDATE_ORGANIZATION_STATUS,
 } from 'graphql/mutations/Organization';
-import OrganisationIcon from 'assets/images/icons/Organisation.svg?react';
+import OrganizationIcon from 'assets/images/icons/Organization.svg?react';
 import ExtensionIcon from 'assets/images/icons/extension.svg?react';
 import CustomerDetailsIcon from 'assets/images/icons/customer_details.svg?react';
 import { setNotification } from 'common/notification';
@@ -106,7 +106,7 @@ export const OrganizationList = ({
     columnStyles,
   };
 
-  const listIcon = <OrganisationIcon className={styles.OrgIcon} />;
+  const listIcon = <OrganizationIcon className={styles.OrgIcon} />;
   const extensionIcon = <ExtensionIcon className={styles.ExtensionIcon} />;
 
   const customerDetailsIcon = <CustomerDetailsIcon />;
