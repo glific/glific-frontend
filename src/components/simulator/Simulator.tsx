@@ -329,7 +329,7 @@ export const Simulator = ({
           <LocationRequestTemplate
             content={content}
             isSimulator
-            onSendLocationClick={(payload: any) => sendMessage(sender, payload)}
+            onSendLocationClick={(payload: any) => sendMediaMessage('location', payload)}
           />
         );
       }

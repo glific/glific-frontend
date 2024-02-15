@@ -350,7 +350,7 @@ export const publishFlow = {
   },
 };
 
-export const getOrganisationServicesQuery = {
+export const getOrganizationServicesQuery = {
   request: {
     query: GET_ORGANIZATION_SERVICES,
   },

@@ -159,7 +159,7 @@ export const getOrganizationQuery = [
     },
   },
 ];
-export const getOrganisationSettings = {
+export const getOrganizationSettings = {
   request: {
     query: GET_ORGANIZATION,
     variables: { id: '1' },

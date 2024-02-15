@@ -3,15 +3,15 @@ import UserEvent from '@testing-library/user-event';
 import { MockedProvider } from '@apollo/client/testing';
 import { BrowserRouter as Router, MemoryRouter } from 'react-router-dom';
 
-import { ORGANISATION_MOCKS } from '../SettingList.test.helper';
-import { Organisation } from './Organisation';
+import { ORGANIZATION_MOCKS } from '../SettingList.test.helper';
+import { Organization } from './Organization';
 
-const mocks = ORGANISATION_MOCKS;
+const mocks = ORGANIZATION_MOCKS;
 
 const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <MemoryRouter initialEntries={['/settings/organization']}>
-      <Organisation />
+      <Organization />
     </MemoryRouter>
   </MockedProvider>
 );
@@ -22,10 +22,10 @@ test('it should render the placeholders correctly', async () => {
   expect(getByText('Loading...')).toBeInTheDocument();
 
   await waitFor(() => {
-    expect(getByTestId('formLayout')).toHaveTextContent('Organisation name');
+    expect(getByTestId('formLayout')).toHaveTextContent('Organization name');
     expect(getByTestId('formLayout')).toHaveTextContent('Supported languages');
     expect(getByTestId('formLayout')).toHaveTextContent('Default language');
-    expect(getByTestId('formLayout')).toHaveTextContent('Organisation phone number');
+    expect(getByTestId('formLayout')).toHaveTextContent('Organization phone number');
     // Todo: Fix this
     // expect(getByTestId('formLayout')).toHaveTextContent('Recieve low balance threshold mails once a week​');
     // expect(getByTestId('formLayout')).toHaveTextContent(
@@ -59,9 +59,9 @@ test('it renders component and clicks cancel', async () => {
 
 test('it renders component in edit mode', async () => {
   const { getByText, getByTestId } = render(
-    <MockedProvider mocks={[...ORGANISATION_MOCKS]} addTypename={false}>
+    <MockedProvider mocks={[...ORGANIZATION_MOCKS]} addTypename={false}>
       <Router>
-        <Organisation />
+        <Organization />
       </Router>
     </MockedProvider>
   );

@@ -18,7 +18,7 @@ import { GET_LANGUAGES } from 'graphql/queries/List';
 import Settingicon from 'assets/images/icons/Settings/Settings.svg?react';
 import CopyIcon from 'assets/images/icons/Settings/Copy.svg?react';
 import { copyToClipboard } from 'common/utils';
-import styles from './Organisation.module.css';
+import styles from './Organization.module.css';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 
 const SettingIcon = <Settingicon />;
@@ -30,7 +30,7 @@ const queries = {
   deleteItemQuery: DELETE_ORGANIZATION,
 };
 
-export const Organisation = () => {
+export const Organization = () => {
   const client = useApolloClient();
   const [name, setName] = useState('');
   const [organizationId, setOrganizationId] = useState(null);
@@ -131,7 +131,7 @@ export const Organisation = () => {
   };
 
   const validation = {
-    name: Yup.string().required(t('Organisation name is required.')),
+    name: Yup.string().required(t('Organization name is required.')),
     activeLanguages: Yup.array().required(t('Supported Languages is required.')),
     defaultLanguage: Yup.object().nullable().required(t('Default Language is required.')),
     signaturePhrase: Yup.string().nullable().required(t('Webhook signature is required.')),
@@ -151,8 +151,8 @@ export const Organisation = () => {
       component: Input,
       name: 'name',
       type: 'text',
-      placeholder: t('Organisation name'),
-      label: t('Organisation name'),
+      placeholder: t('Organization name'),
+      label: t('Organization name'),
     },
     {
       component: AutoComplete,
@@ -183,7 +183,7 @@ export const Organisation = () => {
       component: Input,
       name: 'phone',
       type: 'text',
-      label: t('Organisation phone number'),
+      label: t('Organization phone number'),
       disabled: true,
       endAdornment: (
         <InputAdornment position="end">
@@ -287,4 +287,4 @@ export const Organisation = () => {
   );
 };
 
-export default Organisation;
+export default Organization;

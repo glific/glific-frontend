@@ -84,7 +84,7 @@ export const SettingList = () => {
 
   const formheading = (pathname: string) => {
     if (pathname == '/settings') {
-      return 'Organisation';
+      return 'Organization';
     }
     pathname = pathname
       .replace(/\/settings\//gi, '')

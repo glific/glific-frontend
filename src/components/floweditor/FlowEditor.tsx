@@ -59,6 +59,7 @@ export const FlowEditor = () => {
   let modal = null;
   let dialog = null;
   let flowTitle: any;
+  let flowKeywords;
 
   const loadFlowEditor = () => {
     showFlowEditor(document.getElementById('flow'), config);
@@ -135,6 +136,7 @@ export const FlowEditor = () => {
 
   if (flowName && flowName.flows.length > 0) {
     flowTitle = flowName.flows[0].name;
+    flowKeywords = flowName.flows[0].keywords.join(', ');
   }
 
   const handleResetFlowCount = () => {
@@ -343,9 +345,12 @@ export const FlowEditor = () => {
             className={styles.BackIcon}
             data-testid="back-button"
           />
-          <Typography variant="h6" data-testid="flowName">
-            {flowName ? flowTitle : 'Flow'}
-          </Typography>
+          <div>
+            <Typography variant="h6" data-testid="flowName">
+              {flowName ? flowTitle : 'Flow'}
+            </Typography>
+            <div>{flowKeywords}</div>
+          </div>
         </div>
 
         <div className={styles.Actions}>
