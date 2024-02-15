@@ -206,6 +206,42 @@ const createMockByType = (body: any) => ({
   },
 });
 
+const createInteractiveCustomMock = () => ({
+  request: {
+    query: CREATE_INTERACTIVE,
+    variables: {
+      input: {
+        type: "LIST",
+        interactiveContent: '{"type":"list","title":"new title","body":"😀","globalButtons":[{"type":"text","title":"Section 1"}],"items":[{"title":"title","subtitle":"title","options":[{"type":"text","title":"red","description":"red is color"}]}]}',
+        languageId: "2",
+        label: "new title",
+        sendWithTitle: true,
+        translations: '{"2":{"type":"list","title":"new title","body":"😀","globalButtons":[{"type":"text","title":"Section 1"}],"items":[{"title":"title","subtitle":"title","options":[{"type":"text","title":"red","description":"red is color"}]}]}}'
+      }
+    },
+  },
+  result: {
+    data: {
+      createInteractiveTemplate: {
+        interactiveTemplate: {
+          id: 2,
+          language: {
+            id: '1',
+            label: 'English',
+          },
+          type: "LIST",
+          interactiveContent: '{"type":"list","title":"new title","body":"😀","globalButtons":[{"type":"text","title":"Section 1"}],"items":[{"title":"title","subtitle":"title","options":[{"type":"text","title":"red","description":"red is color"}]}]}',
+          languageId: "2",
+          label: "new title",
+          sendWithTitle: true,
+          translations: '{"2":{"type":"list","title":"new title","body":"😀","globalButtons":[{"type":"text","title":"Section 1"}],"items":[{"title":"title","subtitle":"title","options":[{"type":"text","title":"red","description":"red is color"}]}]}}',
+        },
+        errors: null
+      },
+    },
+  },
+});
+
 const updateMockByType = (id: string, input: any, response: any) => ({
   request: {
     query: UPDATE_INTERACTIVE,
@@ -268,6 +304,7 @@ const deleteMock = {
 export const mocks: any = [
   createMockByType(quickReplyMock),
   createMockByType(listReplyMock),
+  createInteractiveCustomMock(),
   updateMockByType('1', quickReplyMockInput, quickReplyMock),
   updateMockByType('2', listReplyMock, listReplyMock),
   getTemplateByType('1', quickReplyMock),

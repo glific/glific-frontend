@@ -5,6 +5,16 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { StaffManagement } from './StaffManagement';
 import { STAFF_MANAGEMENT_MOCKS } from './StaffManagement.test.helper';
 
+vi.mock('react-router-dom', async (importOriginal) => {
+  const mod = await importOriginal<typeof import('react-router-dom')>()
+  return {
+    ...mod,
+    useParams: () => ({
+      id: '1'
+    })
+  }
+})
+
 const mocks = STAFF_MANAGEMENT_MOCKS;
 
 const staffManagement = (
@@ -46,3 +56,11 @@ test('it should have a help link', async () => {
   fireEvent.click(closeButton);
   await waitFor(() => {});
 });
+
+test('it should load with the initial values', async () => {
+  render(staffManagement);
+  await waitFor(() => {
+    expect(screen.getByPlaceholderText("Username")).toHaveValue('Staff');
+    expect(screen.getByPlaceholderText('Phone Number')).toHaveValue('919999988888')
+  })
+})

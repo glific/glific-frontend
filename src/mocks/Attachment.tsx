@@ -60,3 +60,11 @@ export const uploadMediaMock = {
     },
   },
 };
+
+export const uploadMediaErrorMock = {
+  request: {
+    query: UPLOAD_MEDIA,
+    variables: { media: { name: 'photo.png' }, extension: 'png' }
+  },
+  error: new Error('An error occurred')
+}
