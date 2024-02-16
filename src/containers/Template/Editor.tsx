@@ -122,6 +122,12 @@ export const Editor = ({ textArea = false, disabled = false, ...props }: EditorP
     );
   }, [editor]);
 
+  useEffect(() => {
+    if (disabled) {
+      editor.setEditable(false);
+    }
+  }, [disabled]);
+
   const handleChange = (editorState: any) => {
     editorState.read(() => {
       const root = $getRoot();

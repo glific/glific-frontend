@@ -20,12 +20,10 @@ import { getTextContent } from 'common/RichEditor';
 interface WhatsAppEditorProps {
   handleHeightChange(newHeight: number): void;
   sendMessage(message: any): void;
-  setEditorState(editorState: any): void;
   readOnly?: boolean;
 }
 
 export const WhatsAppEditor = ({
-  setEditorState,
   sendMessage,
   handleHeightChange,
   readOnly = false,
@@ -41,13 +39,6 @@ export const WhatsAppEditor = ({
     refreshRate: 1000,
     onResize,
   });
-
-  const onChange = (editorState: any) => {
-    editorState.read(() => {
-      const root = $getRoot();
-      setEditorState(root.getTextContent());
-    });
-  };
 
   const handleFormatting = (text: string, formatter: string) => {
     switch (formatter) {
@@ -68,10 +59,11 @@ export const WhatsAppEditor = ({
       (event: KeyboardEvent) => {
         // Handle event here
         let formatter = '';
-        if (event.code === 'Enter' && !readOnly) {
+        if (event.code === 'Enter' && !event.shiftKey) {
           event.preventDefault();
           let textMessage = getTextContent(editor);
           sendMessage(textMessage);
+          return true;
         } else if ((event.ctrlKey || event.metaKey) && event.code === 'KeyB') {
           formatter = 'bold';
         } else if ((event.ctrlKey || event.metaKey) && event.code === 'KeyI') {
@@ -102,11 +94,16 @@ export const WhatsAppEditor = ({
       <PlainTextPlugin
         data-testid="editor"
         placeholder={<Placeholder />}
-        contentEditable={<ContentEditable data-testid={'editor'} className={styles.editorInput} />}
+        contentEditable={
+          <ContentEditable
+            value={undefined}
+            data-testid={'editor'}
+            className={styles.editorInput}
+          />
+        }
         ErrorBoundary={LexicalErrorBoundary}
       />
       <HistoryPlugin />
-      <OnChangePlugin onChange={onChange} />
     </div>
   );
 };

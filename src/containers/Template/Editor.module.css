@@ -12,7 +12,7 @@
   border-radius: 12px;
   height: 10rem;
   position: relative;
-  padding: 0 1rem;
+  padding: 0 1rem 1rem 1rem;
   position: relative;
   display: block;
   border-bottom-left-radius: 10px;
@@ -33,7 +33,6 @@
 .EditorInput {
   resize: none;
   font-size: 16px;
-  overflow: auto;
   width: 100%;
   min-height: 40px;
   height: 100%;
@@ -52,12 +51,13 @@
 }
 
 .editorScroller {
-  min-height: 150px;
   border: 0;
   display: flex;
   position: relative;
   outline: 0;
   z-index: 0;
+  height: 100%;
+  overflow: auto;
 }
 
 .disabled {
@@ -66,13 +66,12 @@
   border-radius: 12px;
   height: 10rem;
   position: relative;
-  padding: 0 1rem;
+  padding: 0 1rem 1rem 1rem;
   position: relative;
   display: block;
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
   color: rgba(0, 0, 0, 0.38);
-  pointer-events: none;
 }
 
 .editor {
