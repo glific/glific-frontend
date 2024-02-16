@@ -4,7 +4,7 @@ import {
   getOrganizationLanguagesQuery,
   getOrganizationQuery,
   getProvidersQuery,
-  getOrganisationSettings,
+  getOrganizationSettings,
   getCredential,
   getQualityRating,
 } from 'mocks/Organization';
@@ -64,11 +64,11 @@ export const LIST_ITEM_MOCKS = [
   ...getOrganizationQuery,
   ...getProvidersQuery,
   ...getCredential,
-  getOrganisationSettings,
+  getOrganizationSettings,
   getOrganizationLanguagesQuery,
 ];
 
-const updateOrganisationMock = {
+const updateOrganizationMock = {
   request: {
     query: UPDATE_ORGANIZATION,
     variables: {
@@ -139,7 +139,7 @@ const updateOrganisationMock = {
   },
 };
 
-const updateOrganisationMock2 = {
+const updateOrganizationMock2 = {
   request: {
     query: UPDATE_ORGANIZATION,
     variables: {
@@ -196,13 +196,13 @@ const updateOrganisationMock2 = {
   },
 };
 
-export const ORGANISATION_MOCKS = [
+export const ORGANIZATION_MOCKS = [
   getRoleNamesMock,
   getQualityRating,
   languageMock,
   getOrganizationLanguagesQuery,
   flowsMock,
   ...getOrganizationQuery,
-  updateOrganisationMock,
-  updateOrganisationMock2,
+  updateOrganizationMock,
+  updateOrganizationMock2,
 ];

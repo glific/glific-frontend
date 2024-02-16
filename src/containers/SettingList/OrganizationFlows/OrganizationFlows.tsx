@@ -24,7 +24,7 @@ import {
   EXTENDED_TIME_FORMAT,
   setVariables,
 } from 'common/constants';
-import styles from './OrganisationFlows.module.css';
+import styles from './OrganizationFlows.module.css';
 import dayjs from 'dayjs';
 
 const SettingIcon = <Settingicon />;
@@ -36,7 +36,7 @@ const queries = {
   deleteItemQuery: DELETE_ORGANIZATION,
 };
 
-export const OrganisationFlows = () => {
+export const OrganizationFlows = () => {
   const client = useApolloClient();
   const [hours, setHours] = useState(true);
   const [enabledDays, setEnabledDays] = useState<any>([]);
@@ -402,4 +402,4 @@ export const OrganisationFlows = () => {
   );
 };
 
-export default OrganisationFlows;
+export default OrganizationFlows;
