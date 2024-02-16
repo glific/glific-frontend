@@ -1,14 +1,7 @@
 import { useCallback, useEffect } from 'react';
 import { PlainTextPlugin } from '@lexical/react/LexicalPlainTextPlugin';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
-import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
-import {
-  $getSelection,
-  $createTextNode,
-  $getRoot,
-  KEY_DOWN_COMMAND,
-  COMMAND_PRIORITY_LOW,
-} from 'lexical';
+import { $getSelection, $createTextNode, KEY_DOWN_COMMAND, COMMAND_PRIORITY_LOW } from 'lexical';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';

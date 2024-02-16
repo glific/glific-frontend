@@ -38,8 +38,10 @@ describe('<WhatsAppEditor/>', () => {
     );
 
     await userEvent.click(getByTestId('editor'));
-    await userEvent.keyboard('10');
-    expect(setEditorState).toHaveBeenCalled();
+    await userEvent.tab();
+    await fireEvent.input(getByTestId('editor'), { data: 'test' });
+
+    expect(getByTestId('editor')).toHaveTextContent('test');
   });
 
   test('text is changed in lexical editor', async () => {

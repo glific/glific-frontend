@@ -151,15 +151,19 @@ describe('<ChatInput />', () => {
     });
   });
 
-  test('send an interactive message', async () => {
+  test.only('send an interactive message', async () => {
     const { getAllByTestId, getByTestId } = render(chatInput);
     const interactiveMessages = getAllByTestId('shortcutButton')[2];
     fireEvent.click(interactiveMessages);
     await waitFor(() => {
       const listItem = getAllByTestId('templateItem')[0];
+      console.log('DDD', getAllByTestId('templateItem')[0].outerHTML);
+
       fireEvent.click(listItem);
     });
     fireEvent.click(getByTestId('sendButton'));
+    console.log(inputSubmitted);
+
     expect(inputSubmitted).toBe(true);
   });
 
