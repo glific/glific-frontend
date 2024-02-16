@@ -511,7 +511,7 @@ export const ContactBar = ({
     <Popper
       open={open}
       anchorEl={anchorEl}
-      placement="bottom-end"
+      placement="bottom-start"
       transition
       disablePortal
       className={styles.Popper}
@@ -597,7 +597,6 @@ export const ContactBar = ({
           <div className={styles.ContactInfoWrapper}>
             <div className={styles.InfoWrapperRight}>
               <div className={styles.ContactDetails}>
-                <AvatarDisplay name={displayName} type="large" />
                 <Typography
                   className={styles.Title}
                   variant="h6"

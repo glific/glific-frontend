@@ -31,6 +31,7 @@
   margin-left: 3px;
   composes: Timer;
   color: #555;
+  background: #eee;
 }
 
 .TimerNormalTooltip {

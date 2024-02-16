@@ -329,10 +329,10 @@ export const ChatInput = ({
   if (contactBspStatus) {
     switch (contactBspStatus) {
       case 'SESSION':
-        quickSendTypes = [speedSends, interactiveMsg];
+        quickSendTypes = [interactiveMsg, speedSends];
         break;
       case 'SESSION_AND_HSM':
-        quickSendTypes = [speedSends, templates, interactiveMsg];
+        quickSendTypes = [templates, interactiveMsg, speedSends];
         break;
       case 'HSM':
         quickSendTypes = [templates];

@@ -81,14 +81,18 @@
 }
 
 .HelperText {
+  position: absolute;
   color: #2ea36a;
   font-weight: 400;
-  font-size: 14px;
+  font-size: 10px;
+  bottom: -20px;
+  right: 10px;
   text-decoration: none !important;
   padding: 0 12px;
 }
 
 .ImportButton {
+  position: relative;
   display: flex;
   flex-direction: row;
   align-items: center;

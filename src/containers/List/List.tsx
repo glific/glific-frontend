@@ -2,17 +2,8 @@ import { useState, useEffect, useCallback, Fragment } from 'react';
 import { Link, Navigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useQuery, useMutation, DocumentNode, useLazyQuery } from '@apollo/client';
-import {
-  Backdrop,
-  Divider,
-  IconButton,
-  Menu,
-  MenuItem,
-  TableFooter,
-  TablePagination,
-  TableRow,
-} from '@mui/material';
-import { ListCard } from 'containers/List/ListCard/ListCard';
+import { Backdrop, Divider, IconButton, Menu, MenuItem } from '@mui/material';
+
 import { Button } from 'components/UI/Form/Button/Button';
 import { Pager } from 'components/UI/Pager/Pager';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
@@ -30,7 +21,6 @@ import { setNotification, setErrorMessage } from 'common/notification';
 import { getUpdatedList, setListSession, getLastListSessionValues } from 'services/ListService';
 import styles from './List.module.css';
 import Track from 'services/TrackService';
-import { Loading } from 'components/UI/Layout/Loading/Loading';
 import HelpIcon from 'components/UI/HelpIcon/HelpIcon';
 
 const actionListMap = (item: any, actionList: any, hasMoreOption: boolean) => {
@@ -137,7 +127,7 @@ export interface ListProps {
   searchParameter?: Array<any>;
   filters?: Object | null;
   filterList?: any;
-  displayListType?: string;
+
   editSupport?: boolean;
   additionalAction?: (listValues: any) => Array<{
     icon: any;
@@ -200,7 +190,6 @@ export const List = ({
   searchParameter = ['label'],
   filters = null,
   refreshList = false,
-  displayListType = 'list',
   additionalAction = () => [],
   backLinkButton,
   restrictedAction,
@@ -664,52 +653,20 @@ export const List = ({
     </div>
   );
 
-  let displayList;
-  if (displayListType === 'list') {
-    displayList = (
-      <Pager
-        columnStyles={columnStyles}
-        columnNames={columnNames}
-        data={itemList}
-        totalRows={itemCount}
-        handleTableChange={handleTableChange}
-        tableVals={tableVals}
-        collapseOpen={collapseOpen}
-        collapseRow={collapseRow}
-        loadingList={loadingList || loading || l || loadingCollections}
-        noItemsText={noItemsText}
-      />
-    );
-  } else if (displayListType === 'card') {
-    /* istanbul ignore next */
-    displayList = loading ? (
-      <Loading />
-    ) : (
-      <>
-        <ListCard columnStyles={columnStyles} data={itemList} />
-        <table>
-          <TableFooter className={styles.TableFooter} data-testid="tableFooter">
-            <TableRow>
-              <TablePagination
-                className={styles.FooterRow}
-                colSpan={columnNames.length}
-                count={itemCount}
-                onPageChange={(event, newPage) => {
-                  handleTableChange('pageNum', newPage);
-                }}
-                onRowsPerPageChange={(event) => {
-                  handleTableChange('pageRows', parseInt(event.target.value, 10));
-                }}
-                page={tableVals.pageNum}
-                rowsPerPage={tableVals.pageRows}
-                rowsPerPageOptions={[50, 75, 100, 150, 200]}
-              />
-            </TableRow>
-          </TableFooter>
-        </table>
-      </>
-    );
-  }
+  const displayList = (
+    <Pager
+      columnStyles={columnStyles}
+      columnNames={columnNames}
+      data={itemList}
+      totalRows={itemCount}
+      handleTableChange={handleTableChange}
+      tableVals={tableVals}
+      collapseOpen={collapseOpen}
+      collapseRow={collapseRow}
+      loadingList={loadingList || loading || l || loadingCollections}
+      noItemsText={noItemsText}
+    />
+  );
 
   const backLink = backLinkButton ? (
     <div className={styles.BackLink}>

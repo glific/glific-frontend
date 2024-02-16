@@ -30,7 +30,7 @@ export const CollectionContact = () => {
 
   const descriptionBox = (
     <div className={styles.ContactList}>
-      <CollectionDescription users={users} description={description} collectionId={collectionId} />
+      <CollectionDescription users={users} collectionId={collectionId} />
     </div>
   );
 

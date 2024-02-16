@@ -9,7 +9,7 @@ export interface Menu {
   roles: string[];
   url?: string;
   show?: boolean;
-  subMenu?: Menu[];
+  children?: Menu[];
 }
 
 // define all the menus in the system
@@ -26,7 +26,7 @@ const menus = (): Menu[] => [
     path: '/flow',
     icon: 'flow',
     type: 'sideDrawer',
-    subMenu: [
+    children: [
       {
         title: 'Flows',
         path: '/flow',
@@ -80,7 +80,7 @@ const menus = (): Menu[] => [
     icon: 'speed-send',
     type: 'sideDrawer',
     roles: ['Manager', 'Admin', 'Dynamic'],
-    subMenu: [
+    children: [
       {
         title: 'Interactive msg',
         path: '/interactive-message',
@@ -138,7 +138,7 @@ const menus = (): Menu[] => [
     icon: 'manage',
     type: 'sideDrawer',
     roles: ['Staff', 'Manager', 'Admin', 'Dynamic'],
-    subMenu: [
+    children: [
       {
         title: 'Collections',
         path: '/collection',
@@ -198,7 +198,7 @@ const menus = (): Menu[] => [
     show: true,
     type: 'sideDrawer',
     roles: ['Manager', 'Admin', 'Dynamic'],
-    subMenu: [
+    children: [
       {
         title: 'My Profile',
         path: '/user-profile',

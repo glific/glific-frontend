@@ -240,9 +240,13 @@ export const CollectionList = () => {
         restrictedAction={getRestrictedAction}
         title={t('Collections')}
         listItem="groups"
-        columnNames={[{ name: 'label', label: t('Title') }]}
+        columnNames={[
+          { name: 'label', label: t('Title') },
+          { label: t('Description') },
+          { label: t('Contacts') },
+          { label: t('Actions') },
+        ]}
         listItemName="collection"
-        displayListType="card"
         button={{
           show: userRolePermissions.manageCollections,
           label: t('Create'),

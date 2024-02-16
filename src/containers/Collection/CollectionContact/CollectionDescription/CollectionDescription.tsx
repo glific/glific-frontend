@@ -5,15 +5,10 @@ import styles from './CollectionDescription.module.css';
 
 export interface CollectionDescriptionProps {
   users: Array<any>;
-  description: string;
   collectionId?: string;
 }
 
-export const CollectionDescription = ({
-  users = [],
-  description,
-  collectionId,
-}: CollectionDescriptionProps) => {
+export const CollectionDescription = ({ users = [], collectionId }: CollectionDescriptionProps) => {
   const { t } = useTranslation();
 
   const userList = (
@@ -24,11 +19,6 @@ export const CollectionDescription = ({
   return (
     <div className={styles.DescriptionContainer} data-testid="collectionDescription">
       <div className={styles.CollectionInformation}>
-        <div className={styles.Describe}>
-          <h2 className={styles.Title}>{t('Description')}</h2>{' '}
-          <p className={styles.Description}>{description}</p>
-        </div>
-
         <CollectionInformation collectionId={collectionId} staff={false} />
       </div>
 

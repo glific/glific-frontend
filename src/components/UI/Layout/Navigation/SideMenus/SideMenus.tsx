@@ -17,7 +17,7 @@ export interface SideMenusProps {
 const AnchorLink = forwardRef((props, ref: any) => <a {...props} ref={ref} />);
 
 const SideMenus = ({ opened }: SideMenusProps) => {
-  const [subMenu, setSubMenu] = useState({ active: false, value: '' });
+  const [children, setSubMenu] = useState({ active: false, value: '' });
   const location = useLocation();
   const { t } = useTranslation();
 
@@ -41,8 +41,8 @@ const SideMenus = ({ opened }: SideMenusProps) => {
   }, []);
 
   useEffect(() => {
-    if (location.state && location.state.subMenu) {
-      setSubMenu(location.state.subMenu);
+    if (location.state && location.state.children) {
+      setSubMenu(location.state.children);
     }
   }, [location]);
   // let's get count specific to menu paths
@@ -57,10 +57,10 @@ const SideMenus = ({ opened }: SideMenusProps) => {
   let menuToDisplay = menuList;
   let subMenuTitle = '';
 
-  if (subMenu.active) {
-    const activeSubmenu = menuObj.filter((menu) => menu.path === subMenu.value);
+  if (children.active) {
+    const activeSubmenu = menuObj.filter((menu) => menu.path === children.value);
     if (activeSubmenu.length > 0) {
-      menuToDisplay = activeSubmenu[0].subMenu ? activeSubmenu[0].subMenu : [];
+      menuToDisplay = activeSubmenu[0].children ? activeSubmenu[0].children : [];
       subMenuTitle = activeSubmenu[0].title.toUpperCase();
     }
   }
@@ -137,8 +137,8 @@ const SideMenus = ({ opened }: SideMenusProps) => {
             selected: styles.SelectedItem,
           }}
           onClick={() => {
-            if (!menu.subMenu) return;
-            if (subMenu.active) {
+            if (!menu.children) return;
+            if (children.active) {
               setSubMenu({ active: false, value: menu.path });
             } else {
               setSubMenu({ active: true, value: menu.path });
@@ -167,7 +167,7 @@ const SideMenus = ({ opened }: SideMenusProps) => {
 
   return (
     <List className={styles.List} data-testid="list">
-      {subMenu.active && (
+      {children.active && (
         <>
           {backButton}
           <div className={opened ? styles.SubMenuTitleOpen : styles.SubMenuTitleClose}>
@@ -175,7 +175,7 @@ const SideMenus = ({ opened }: SideMenusProps) => {
           </div>
         </>
       )}
-      <div className={subMenu.active ? styles.Transition : ''}>{menuListDisplay}</div>
+      <div className={children.active ? styles.Transition : ''}>{menuListDisplay}</div>
       <Divider className={styles.Divider} />
       {linksDisplay}
     </List>
