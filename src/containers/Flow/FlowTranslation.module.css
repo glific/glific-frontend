@@ -3,3 +3,12 @@
   z-index: 100000;
   font-size: 20px;
 }
+
+.FormHelper {
+  padding-left: 16px;
+  margin-bottom: 10px;
+}
+
+.Radio {
+  padding: 0px 8px;
+}

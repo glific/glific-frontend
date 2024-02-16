@@ -28,6 +28,11 @@ export const GET_ORGANIZATION = gql`
           id
           label
         }
+        setting {
+          lowBalanceThreshold
+          criticalBalanceThreshold
+          sendWarningMail
+        }
         signaturePhrase
         newcontactFlowId
         optinFlowId
@@ -115,6 +120,7 @@ export const GET_ORGANIZATION_SERVICES = gql`
   query organizationServices {
     organizationServices {
       dialogflow
+      autoTranslationEnabled
       googleCloudStorage
       flowUuidDisplay
       rolesAndPermission

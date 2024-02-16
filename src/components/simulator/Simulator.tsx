@@ -13,7 +13,7 @@ import VideocamIcon from '@mui/icons-material/Videocam';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import ClearIcon from '@mui/icons-material/Clear';
 import axios from 'axios';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { v4 as uuidv4 } from 'uuid';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 
@@ -22,7 +22,7 @@ import DefaultWhatsappImage from 'assets/images/whatsappDefault.jpg';
 import SimulatorIcon from 'assets/images/icons/Simulator.svg?react';
 import ResetIcon from 'assets/images/icons/Reset/Dark.svg?react';
 import {
-  TIME_FORMAT,
+  SHORT_TIME_FORMAT,
   SAMPLE_MEDIA_FOR_SIMULATOR,
   LIST,
   QUICK_REPLY,
@@ -104,7 +104,7 @@ const getStyleForDirection = (
 const TimeComponent = ({ direction, insertedAt }: any) => (
   <>
     <span className={direction === 'received' ? styles.TimeSent : styles.TimeReceived}>
-      {moment(insertedAt).format(TIME_FORMAT)}
+      {dayjs(insertedAt).format(SHORT_TIME_FORMAT)}
       {direction === 'send' && <DoneAllIcon sx={{ fontSize: 10, ml: '2px' }} />}
     </span>
   </>
@@ -330,7 +330,7 @@ export const Simulator = ({
           <LocationRequestTemplate
             content={content}
             isSimulator
-            onSendLocationClick={(payload: any) => sendMessage(sender, payload)}
+            onSendLocationClick={(payload: any) => sendMediaMessage('location', payload)}
           />
         );
       }

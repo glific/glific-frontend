@@ -3,15 +3,15 @@ import UserEvent from '@testing-library/user-event';
 import { MockedProvider } from '@apollo/client/testing';
 import { BrowserRouter as Router } from 'react-router-dom';
 
-import { ORGANISATION_MOCKS } from '../SettingList.test.helper';
-import { OrganisationFlows } from './OrganisationFlows';
+import { ORGANIZATION_MOCKS } from '../SettingList.test.helper';
+import { OrganizationFlows } from './OrganizationFlows';
 
-const mocks = ORGANISATION_MOCKS;
+const mocks = ORGANIZATION_MOCKS;
 
 const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <Router>
-      <OrganisationFlows />
+      <OrganizationFlows />
     </Router>
   </MockedProvider>
 );
@@ -39,9 +39,9 @@ test('it renders component and clicks cancel', async () => {
 
 test('it renders component in edit mode', async () => {
   const { getByText, getByTestId } = render(
-    <MockedProvider mocks={[...ORGANISATION_MOCKS]} addTypename={false}>
+    <MockedProvider mocks={[...ORGANIZATION_MOCKS]} addTypename={false}>
       <Router>
-        <OrganisationFlows />
+        <OrganizationFlows />
       </Router>
     </MockedProvider>
   );

@@ -10,10 +10,10 @@ import { UPDATE_TICKET } from 'graphql/mutations/Ticket';
 
 import styles from './Ticket.module.css';
 import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { useQuery } from '@apollo/client';
 import { GET_USERS } from 'graphql/queries/User';
-import { setVariables } from 'common/constants';
+import { EXTENDED_DATE_TIME_FORMAT, setVariables } from 'common/constants';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import Loading from 'components/UI/Layout/Loading/Loading';
 
@@ -32,11 +32,11 @@ const TicketDetails = ({ form }: any) => {
 
       <p className={styles.Content}>
         <span className={styles.Bold}>Opened: </span>
-        {moment(values.insertedAt).format('MMMM DD, YYYY, [at] HH:mm:ss')}
+        {dayjs(values.insertedAt).format(EXTENDED_DATE_TIME_FORMAT)}
       </p>
       <p className={styles.Content}>
         <span className={styles.Bold}> Last updated: </span>
-        {moment(values.updatedAt).format('MMMM DD, YYYY, [at] HH:mm:ss')}
+        {dayjs(values.updatedAt).format(EXTENDED_DATE_TIME_FORMAT)}
       </p>
     </div>
   );

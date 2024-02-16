@@ -1,10 +1,17 @@
-import { render, fireEvent } from '@testing-library/react';
+import { render, fireEvent, waitFor } from '@testing-library/react';
 import draftJs, { EditorState, ContentState } from 'draft-js';
 import { vi } from 'vitest';
 
 import WhatsAppEditor from './WhatsAppEditor';
 
 const mockHandleKeyCommand = vi.fn();
+
+const mockObserve = vi.fn();
+global.ResizeObserver = vi.fn().mockImplementation(() => ({
+  observe: mockObserve,
+  unobserve: vi.fn(),
+  disconnect: vi.fn(),
+}));
 
 vi.spyOn(draftJs, 'Editor').mockImplementation((props: any, _context: any) => {
   const input: any = (
@@ -18,18 +25,6 @@ vi.spyOn(draftJs, 'Editor').mockImplementation((props: any, _context: any) => {
     ></input>
   );
   return input;
-});
-
-vi.mock('react-resize-detector', () => {
-  return {
-    default: (props: any) => (
-      <div>
-        <div data-testid="resizer" onClick={() => props.onResize('30', '40')}>
-          {props.children}
-        </div>
-      </div>
-    ),
-  };
 });
 
 describe('<WhatsAppEditor/>', () => {
@@ -63,10 +58,11 @@ describe('<WhatsAppEditor/>', () => {
     expect(mockHandleKeyCommand).toHaveBeenCalled();
   });
 
-  test('testing change size callback', () => {
-    const { getByTestId } = render(<WhatsAppEditor {...defaultProps(editorContent)} />);
-    fireEvent.click(getByTestId('resizer'));
-    expect(handleHeightChange).toHaveBeenCalled();
+  test('resize observer event is called', async () => {
+    render(<WhatsAppEditor {...defaultProps(editorContent)} />);
+    await waitFor(() => {
+      expect(mockObserve).toHaveBeenCalled();
+    });
   });
 
   // since we are mocking emoji mart picker we need to implement the following functionalities

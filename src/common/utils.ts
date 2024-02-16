@@ -156,7 +156,7 @@ export const getDisplayName = (conversation: any) => {
     setLogs(er, 'error');
   }
 
-  if (contactFields?.name) {
+  if (contactFields?.name && contactFields.name.value) {
     displayName = contactFields.name.value;
   } else if (conversation.contact.name) {
     displayName = conversation.contact.name;

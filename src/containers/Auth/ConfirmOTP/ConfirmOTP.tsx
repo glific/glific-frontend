@@ -18,7 +18,7 @@ import { User } from '../Registration/Registration';
 // let's define registration success message
 const successMessage = (
   <div>
-    Your account is registered successfully. Please contact your organisation admin for the
+    Your account is registered successfully. Please contact your organization admin for the
     approval. Click&nbsp;<a href="/login">here</a>&nbsp;for login.
   </div>
 );

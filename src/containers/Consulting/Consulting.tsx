@@ -2,7 +2,7 @@ import { useState } from 'react';
 import * as Yup from 'yup';
 import { useQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 import { Input } from 'components/UI/Form/Input/Input';
 import { DateTimePicker } from 'components/UI/Form/DateTimePicker/DateTimePicker';
@@ -32,7 +32,7 @@ export const Consulting = ({ organizationId, setOpenDialog }: ConsultingProps) =
   const { t } = useTranslation();
   const [participants, setParticipants] = useState('');
   const [staff, setStaff] = useState('');
-  const [when, setWhen] = useState<any>(new Date());
+  const [when, setWhen] = useState<any>(dayjs());
   const [duration, setDuration] = useState<number>();
   const [content, setContent] = useState('');
   const [isBillable, setIsBillable] = useState<any>(null);
@@ -68,7 +68,7 @@ export const Consulting = ({ organizationId, setOpenDialog }: ConsultingProps) =
   }: any) => {
     setParticipants(supportMembers);
     setStaff(staffMembers);
-    setWhen(new Date(consultingDate));
+    setWhen(dayjs(consultingDate));
     setDuration(durationInMin);
     setContent(description);
     setIsBillable(billable);
@@ -183,7 +183,7 @@ export const Consulting = ({ organizationId, setOpenDialog }: ConsultingProps) =
     }
 
     // Setting date to appropriate format
-    data.when = moment(when).toISOString();
+    data.when = dayjs(when).toISOString();
 
     if (organization) {
       data.clientId = Number(organization.id);

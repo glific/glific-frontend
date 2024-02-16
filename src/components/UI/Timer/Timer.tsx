@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import moment from 'moment';
 import { useTranslation } from 'react-i18next';
+import dayjs from 'dayjs';
 
 import ContactOptOutIcon from 'assets/images/icons/ContactOptOut.svg?react';
 import Tooltip from 'components/UI/Tooltip/Tooltip';
@@ -13,7 +13,7 @@ export interface TimerProps {
 }
 
 export const Timer = (props: TimerProps) => {
-  const [currentTime, setCurrentTime] = useState(moment(new Date()));
+  const [currentTime, setCurrentTime] = useState(dayjs());
   const { t } = useTranslation();
 
   const link = (
@@ -41,7 +41,7 @@ export const Timer = (props: TimerProps) => {
   let intervalID: any;
   useEffect(() => {
     intervalID = setInterval(() => {
-      setCurrentTime(moment(new Date()));
+      setCurrentTime(dayjs());
     }, 60000);
 
     return () => clearInterval(intervalID);
@@ -68,9 +68,9 @@ export const Timer = (props: TimerProps) => {
 
   let hours: string | number = 0;
   if (time) {
-    const lastMessageTime = moment(time);
-    const duration = moment.duration(currentTime.diff(lastMessageTime));
-    hours = Math.floor(duration.asHours());
+    const lastMessageTime = dayjs(time);
+    const duration = currentTime.diff(lastMessageTime, "hour")
+    hours = Math.floor(duration);
     if (hours < 0) hours = 0;
     hours = hours > 24 ? 0 : 24 - hours;
   }
