@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
 import ErrorBoundary from 'components/errorboundary/ErrorBoundary';
 import { ChatInterface } from 'containers/Chat/ChatInterface/ChatInterface';
@@ -123,7 +123,7 @@ const routeAdmin = (
     <Route path="template/:id/edit" element={<HSM />} />
     <Route path="ticket" element={<TicketList />} />
     <Route path="settings" element={<SettingList />}>
-      <Route path="" element={<Organization />} />
+      <Route path="" element={<Navigate to="organization" />} />
       <Route path="organization" element={<Organization />} />
       <Route path="organization-flows" element={<OrganizationFlows />} />
       <Route path="billing" element={<Billing />} />

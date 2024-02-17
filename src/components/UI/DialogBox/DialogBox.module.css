@@ -31,6 +31,7 @@
 
 .DialogActionsCenter {
   composes: DialogActions;
+  margin-left: unset;
   justify-content: center !important;
 }
 
