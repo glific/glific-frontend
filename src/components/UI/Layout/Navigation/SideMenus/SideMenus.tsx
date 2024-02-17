@@ -42,8 +42,6 @@ const AddAccordian = ({ defaultExpanded, summary, details, opened }: any) => (
 
 const AnchorLink = forwardRef((props, ref: any) => <a {...props} ref={ref} />);
 
-const menuObj = getSideDrawerMenus();
-
 const getCurrentMenu = (menus: Menu[], path: string) => {
   for (const item of menus) {
     if (item.path === path) {
@@ -61,6 +59,7 @@ const getCurrentMenu = (menus: Menu[], path: string) => {
 };
 
 const SideMenus = ({ opened }: SideMenusProps) => {
+  const menuObj = getSideDrawerMenus();
   const location = useLocation();
   const [parentMenu, setParentMenu] = useState(getCurrentMenu(menuObj, location.pathname));
 

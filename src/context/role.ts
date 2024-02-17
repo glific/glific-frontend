@@ -73,11 +73,9 @@ export const setUserRolePermissions = () => {
     /**
      * Glific admin will have additional menus along with admin menus
      */
-    sideDrawerMenu = getMenus('sideDrawer', 'Manager');
-    userAccountMenu = [
-      ...getMenus('userAccount', 'Admin'),
-      ...getMenus('userAccount', 'Glific_admin'),
-    ];
+    sideDrawerMenu = getMenus('sideDrawer', 'Glific_admin');
+
+    userAccountMenu = getMenus('userAccount', 'Admin');
 
     manageSavedSearches = true;
     manageCollections = true;

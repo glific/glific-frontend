@@ -43,7 +43,7 @@ export const UserMenu = ({ drawerOpen }: UserMenuProps) => {
       <Divider />
       <Menu menus={menus} onOpen={() => setOpen(true)} onClose={() => setOpen(false)}>
         <div className={drawerOpen ? styles.UserOpen : styles.UserClosed}>
-          <UserIcon />
+          <UserIcon className={drawerOpen ? '' : styles.UserIcon} />
           {drawerOpen && (
             <div>
               <Typography variant="body2">{slicedString(userName, 12)}</Typography>

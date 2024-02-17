@@ -1,6 +1,5 @@
 .UserMenu {
   font-size: 9px;
-
   color: #073f24;
   font-weight: 500;
 }
@@ -30,10 +29,14 @@
   align-items: center;
 }
 
+.UserIcon {
+  margin-right: 8px;
+}
 .UserClosed {
   border-right: 1px solid rgba(0, 0, 0, 0.12);
   padding: 16px;
   display: flex;
+  align-items: center;
   justify-content: center;
 }
 
