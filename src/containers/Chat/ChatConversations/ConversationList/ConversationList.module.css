@@ -73,7 +73,7 @@
 
 .ScrollToTopContacts {
   composes: ScrollButton;
-  top: 110px;
+  top: 106px;
 }
 
 .ScrollToTopCollections {

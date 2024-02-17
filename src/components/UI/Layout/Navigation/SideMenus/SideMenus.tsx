@@ -140,7 +140,10 @@ const SideMenus = ({ opened }: SideMenusProps) => {
             let redirectPath = menu.path;
 
             const listItemButton = (
-              <div className={isSelected ? styles.IconItemActiveSubmenu : styles.IconItemSubmenu}>
+              <div
+                className={isSelected ? styles.IconItemActiveSubmenu : styles.IconItemSubmenu}
+                key={'child' + menu.title}
+              >
                 <ListItemButton
                   disableRipple
                   selected={isSelected}
@@ -152,7 +155,6 @@ const SideMenus = ({ opened }: SideMenusProps) => {
                   onClick={() => {
                     setParentMenu(parentredirectPath);
                   }}
-                  key={menu.title}
                   component={NavLink}
                   to={redirectPath}
                 >
@@ -215,12 +217,14 @@ const SideMenus = ({ opened }: SideMenusProps) => {
       );
 
       listItemButton = subMenu ? (
-        <AddAccordian
-          summary={listItemButton}
-          details={subMenu}
-          defaultExpanded={isSelected}
-          opened={opened}
-        />
+        <div key={menu.title}>
+          <AddAccordian
+            summary={listItemButton}
+            details={subMenu}
+            defaultExpanded={isSelected}
+            opened={opened}
+          />
+        </div>
       ) : (
         listItemButton
       );
