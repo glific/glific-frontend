@@ -152,14 +152,13 @@ export const FlowList = () => {
       label: t('Configure'),
       icon: configureIcon,
       parameter: 'uuid',
-
       link: '/flow/configure',
     },
     {
-      label: t('Make a copy'),
+      label: t('Copy'),
       icon: <DuplicateIcon />,
       parameter: 'id',
-
+      insideMore: true,
       dialog: setDialog,
     },
     {
