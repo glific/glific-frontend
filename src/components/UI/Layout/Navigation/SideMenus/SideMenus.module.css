@@ -4,8 +4,9 @@
 }
 
 .ListItemIcon {
+  display: flex;
+  justify-content: center;
   min-width: 32px !important;
-  padding-top: inherit;
 }
 
 .IconItem {
@@ -47,32 +48,58 @@
   margin: 8px 0px;
 }
 
-@keyframes slideInFromLeft {
-  0% {
-    transform: translateX(100%);
-  }
-  100% {
-    transform: translateX(0);
-  }
+.Accordion {
+  padding: 0px;
+  margin: 0px !important;
+  border: unset;
+  box-shadow: unset;
 }
 
-.Transition {
-  animation: 0.1s ease-in 0s 1 slideInFromLeft;
+.Accordion::before {
+  height: 0px;
 }
 
-.SubMenuTitle {
-  padding-left: 24px;
-  margin-top: 20px;
-  font-size: 13px;
-  font-weight: 700;
-  margin-bottom: 20px;
-  color: #073f24;
-}
-.SubMenuTitleOpen {
-  composes: SubMenuTitle;
+.AccordionSummaryContent {
+  margin: 0px;
+  border: unset;
 }
 
-.SubMenuTitleClose {
-  composes: SubMenuTitle;
-  padding-left: 12px;
+.AccordionSummaryContentExpanded {
+  margin: 0px !important;
+  min-height: unset !important;
+}
+
+.AccordionSummary {
+  padding: 0px !important;
+  border: unset;
+  margin: 0px;
+}
+
+.AccordionDetails {
+  padding-top: 6px;
+  padding-right: 0px;
+  padding-bottom: 0px;
+  padding-left: 30px;
+  border: unset;
+}
+
+.AccordionDetailsClosed {
+  composes: AccordionDetails;
+  padding-left: 10px;
+}
+
+.IconItemSubmenu {
+  overflow: hidden;
+  border-left: 2px solid #eee;
+}
+
+.IconItemActiveSubmenu {
+  border-left: 2px solid #073f24;
+  overflow: hidden;
+}
+
+.OpenItemSubMenu {
+  composes: OpenItem;
+  margin-left: -10px;
+  padding-left: 25px;
 }

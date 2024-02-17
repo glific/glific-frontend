@@ -77,8 +77,6 @@ export interface FormLayoutProps {
   customHandler?: Function;
   copyNotification?: string;
   roleAccessSupport?: boolean;
-  showPreviewButton?: boolean;
-  onPreviewClick?: MouseEventHandler<HTMLButtonElement>;
   getQueryFetchPolicy?: any;
   saveOnPageChange?: boolean;
   entityId?: any;
@@ -130,8 +128,6 @@ export const FormLayout = ({
   customStyles = null,
   customHandler,
   copyNotification = '',
-  showPreviewButton = false,
-  onPreviewClick = () => {},
   getQueryFetchPolicy = 'cache-first',
   saveOnPageChange = true,
   entityId = null,
@@ -591,17 +587,7 @@ export const FormLayout = ({
             >
               {t('Cancel')}
             </Button>
-            {showPreviewButton && (
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={onPreviewClick}
-                className={styles.Button}
-                data-testid="previewButton"
-              >
-                {t('Preview')}
-              </Button>
-            )}
+
             {deleteButton}
           </div>
         </Form>

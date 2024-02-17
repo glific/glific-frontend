@@ -24,6 +24,7 @@ import SettingsIcon from 'assets/images/icons/SideDrawer/SettingsIcon';
 import LogoutIcon from 'assets/images/icons/SideDrawer/LogoutIcon';
 import OrganizationIcon from 'assets/images/icons/SideDrawer/OrganizationIcon';
 import ConsultingIcon from 'assets/images/icons/SideDrawer/ConsultingIcon';
+import styles from './ListIcon.module.css';
 
 export interface ListIconProps {
   icon: string | undefined;
@@ -64,7 +65,7 @@ export const ListIcon = ({ icon = '', selected = false, count }: ListIconProps) 
   };
 
   return (
-    <span data-testid="listIcon">
+    <span data-testid="listIcon" className={styles.ListIcon}>
       {stringsToIcons[icon] && (
         <RenderIcon component={stringsToIcons[icon]} color={selected ? '#073f24' : '#999999'} />
       )}

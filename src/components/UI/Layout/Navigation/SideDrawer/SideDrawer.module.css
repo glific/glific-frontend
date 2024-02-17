@@ -39,16 +39,19 @@
   flex-shrink: 0;
   white-space: nowrap;
 }
+
 .NavClose {
-  width: 72px;
+  width: 92px;
 }
 .DrawerOpen {
+  height: calc(100% - 58px);
   width: 203px;
   transition: width 255ms !important;
 }
 .DrawerClose {
+  height: calc(100% - 58px);
   transition: width 255ms !important;
-  width: 72px;
+  width: 92px;
 }
 .Toolbar {
   display: flex;

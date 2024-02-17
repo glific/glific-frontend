@@ -1,0 +1,9 @@
+.Popper {
+  z-index: 1000;
+  min-width: 180px;
+  margin-bottom: 8px;
+}
+
+.Paper {
+  border-radius: 10px;
+}

@@ -20,11 +20,6 @@ const MenuItem = ({
   title,
   spacing = true,
 }: MenuItemProps) => {
-  let menuItemClass = '';
-  if (className === 'Danger') {
-    menuItemClass = styles.Danger;
-  }
-
   let link = {};
   // check if we have a path to another page and add Link component
   if (path) {
@@ -37,7 +32,7 @@ const MenuItem = ({
   return (
     <MenuItemElement onClick={onClickHandler} {...link} data-testid="MenuItem">
       {icon}
-      <div className={`${menuItemClass} ${icon && spacing ? styles.Spacing : ''}`}>{title}</div>
+      <div className={`${className} ${icon && spacing ? styles.Spacing : ''}`}>{title}</div>
     </MenuItemElement>
   );
 };

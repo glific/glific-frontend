@@ -1,12 +1,11 @@
 import { useState } from 'react';
 import * as Yup from 'yup';
-import { Typography, IconButton } from '@mui/material';
+import { Typography } from '@mui/material';
 import { Formik, Form, Field } from 'formik';
 import { useQuery, useMutation, useApolloClient } from '@apollo/client';
 import { Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-import UserIcon from 'assets/images/icons/Contact/Profile.svg?react';
 import { UPDATE_CURRENT_USER } from 'graphql/mutations/User';
 import { GET_CURRENT_USER } from 'graphql/queries/User';
 import { USER_LANGUAGES } from 'graphql/queries/Organization';
@@ -17,7 +16,9 @@ import { ToastMessage } from 'components/UI/ToastMessage/ToastMessage';
 import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
 import { sendOTP } from 'services/AuthService';
 import { yupPasswordValidation } from 'common/constants';
+import { Heading } from 'components/UI/Heading/Heading';
 import styles from './MyAccount.module.css';
+
 
 export const MyAccount = () => {
   // set the validation / errors / success message
@@ -68,6 +69,9 @@ export const MyAccount = () => {
 
   // return loading till we fetch the data
   if (userDataLoading || organizationDataLoading) return <Loading />;
+
+  const userName = userData.currentUser.user.contact.name;
+  const userPhone = userData.currentUser.user.contact.phone;
 
   // filter languages that support localization
   const languageOptions = organizationData.currentUser.user.organization.activeLanguages
@@ -135,6 +139,38 @@ export const MyAccount = () => {
     otp: Yup.string().required(t('Input required')),
     password: yupPasswordValidation(t),
   });
+
+  const userformFields = [
+    {
+      component: Input,
+      name: 'name',
+      label: t('Name'),
+      disabled: true,
+    },
+    {
+      component: Input,
+      name: 'phone',
+      label: t('Phone number'),
+      disabled: true,
+    },
+  ];
+
+  const userForm = (
+    <Formik initialValues={{ name: userName, phone: userPhone }} onSubmit={() => {}}>
+      <Form>
+        {userformFields.map((field) => (
+          <div className={styles.UserField}>
+            {field.label && (
+              <Typography data-testid="formLabel" variant="h5" className={styles.FieldLabel}>
+                {field.label}
+              </Typography>
+            )}
+            <Field key={field.name} {...field}></Field>
+          </div>
+        ))}
+      </Form>
+    </Formik>
+  );
 
   // for configuration that needs to be rendered
   const formFields = [
@@ -269,21 +305,19 @@ export const MyAccount = () => {
   );
 
   return (
-    <div className={styles.MyAccount} data-testid="MyAccount">
-      <Typography variant="h5" className={styles.Title}>
-        <IconButton disabled className={styles.Icon}>
-          <UserIcon />
-        </IconButton>
-        {t('My Account')}
-      </Typography>
-      <Typography variant="h6" className={styles.Title}>
-        {t('Change Interface Language')}
-      </Typography>
-      {languageSwitcher}
-      <Typography variant="h6" className={styles.Title}>
-        {t('Change Password')}
-      </Typography>
-      {form}
+    <div>
+      <Heading formTitle={t('My Account')} showHeaderHelp={false} />
+      <div className={styles.MyAccount} data-testid="MyAccount">
+        {userForm}
+        <Typography variant="h6" className={styles.Title}>
+          {t('Change Interface Language')}
+        </Typography>
+        {languageSwitcher}
+        <Typography variant="h6" className={styles.Title}>
+          {t('Change Password')}
+        </Typography>
+        {form}
+      </div>
     </div>
   );
 };

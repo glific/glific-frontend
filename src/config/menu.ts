@@ -142,92 +142,75 @@ const menus = (): Menu[] => [
       {
         title: 'Collections',
         path: '/collection',
-        type: 'management',
+        type: 'sideDrawer',
         icon: 'collection',
         roles: ['Staff', 'Manager', 'Admin', 'Dynamic'],
       },
       {
         title: 'Staff',
         path: '/staff-management',
-        type: 'management',
+        type: 'sideDrawer',
         icon: 'staff',
         roles: ['Manager', 'Admin'],
       },
       {
         title: 'Contacts',
         path: '/contact-management',
-        type: 'management',
+        type: 'sideDrawer',
         icon: 'contact',
         roles: ['Admin'],
       },
       {
         title: 'Blocked contacts',
         path: '/blocked-contacts',
-        type: 'management',
+        type: 'sideDrawer',
         icon: 'block',
         roles: ['Staff', 'Manager', 'Admin', 'Dynamic'],
       },
       {
         title: 'Roles',
         path: '/role',
-        type: 'management',
+        type: 'sideDrawer',
         icon: 'speed-send',
         roles: ['Manager', 'Admin'],
       },
-      // {
-      //   title: 'Organizations',
-      //   path: '/organizations',
-      //   icon: 'organization',
-      //   type: 'management',
-      //   roles: ['Glific_admin'],
-      // },
-      // {
-      //   title: 'Consulting',
-      //   path: '/consulting-hours',
-      //   type: 'management',
-      //   icon: 'consulting',
-      //   roles: ['Glific_admin'],
-      // },
+      {
+        title: 'Organizations',
+        path: '/organizations',
+        icon: 'organization',
+        type: 'sideDrawer',
+        roles: ['Glific_admin'],
+      },
+      {
+        title: 'Consulting',
+        path: '/consulting-hours',
+        type: 'sideDrawer',
+        icon: 'consulting',
+        roles: ['Glific_admin'],
+      },
     ],
   },
 
   {
-    title: 'Account',
-    path: '/user-profile',
-    icon: 'profile',
-    show: true,
-    type: 'sideDrawer',
-    roles: ['Manager', 'Admin', 'Dynamic'],
-    children: [
-      {
-        title: 'My Profile',
-        path: '/user-profile',
-        type: 'userAccount',
-        icon: 'profile',
-        roles: ['Staff', 'Manager', 'Admin', 'Dynamic'],
-      },
-      {
-        title: 'My Account',
-        path: '/myaccount',
-        icon: 'account',
-        type: 'userAccount',
-        roles: ['Staff', 'Manager', 'Admin', 'Dynamic'],
-      },
-      {
-        title: 'Settings',
-        path: '/settings',
-        icon: 'settings',
-        type: 'userAccount',
-        roles: ['Admin'],
-      },
-      {
-        title: 'Logout',
-        path: '/logout/user',
-        icon: 'logout',
-        type: 'userAccount',
-        roles: ['Staff', 'Manager', 'Admin', 'Dynamic'],
-      },
-    ],
+    title: 'My Account',
+    path: '/myaccount',
+    icon: 'account',
+    type: 'userAccount',
+    roles: ['Staff', 'Manager', 'Admin', 'Dynamic'],
+  },
+  {
+    title: 'Settings',
+    path: '/settings',
+    icon: 'settings',
+    type: 'userAccount',
+    roles: ['Admin'],
+  },
+  {
+    title: 'Logout',
+    path: '/logout/user',
+    icon: 'logout',
+    type: 'userAccount',
+    roles: ['Staff', 'Manager', 'Admin', 'Dynamic'],
   },
   {
     title: 'Analytics',
@@ -249,7 +232,10 @@ const menus = (): Menu[] => [
 
 export const getMenus = (menuType = 'sideDrawer', role = 'Staff') =>
   menus()
-    .filter((menu: any) => menu.type === menuType && menu.roles.includes(role))
-    .map((menu: any) => menu);
+    .filter((menu) => menu.type === menuType && menu.roles.includes(role))
+    .map((menu) => {
+      menu.children = menu.children?.filter((menu) => menu.roles.includes(role));
+      return menu;
+    });
 
 export default getMenus;
