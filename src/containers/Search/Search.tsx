@@ -479,6 +479,7 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
     <>
       {dialog}
       <FormLayout
+        withDialog={type !== undefined}
         noHeading={type !== undefined}
         {...queries}
         states={states}
