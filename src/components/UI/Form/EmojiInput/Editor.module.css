@@ -102,13 +102,12 @@
   background: #fff;
   box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.3);
   border-radius: 8px;
-  position: fixed;
   list-style: none;
   margin: 0;
-  border-radius: 8px;
   max-height: 200px;
   overflow-y: scroll;
   -ms-overflow-style: none;
+  width: 250px;
   scrollbar-width: none;
 }
 
@@ -121,8 +120,8 @@
   border-radius: 8px;
 }
 
-.MentionMenu ul li.selected {
-  background: #eee;
+.Selected {
+  background: #eee !important;
 }
 
 .MentionMenu li {
@@ -157,21 +156,4 @@
 
 .MentionMenu li:hover {
   background-color: #eee;
-}
-
-.MentionMenu li .text {
-  display: flex;
-  line-height: 20px;
-  flex-grow: 1;
-  min-width: 150px;
-}
-
-.MentionMenu li .icon {
-  display: flex;
-  user-select: none;
-  margin-right: 8px;
-  line-height: 16px;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
 }

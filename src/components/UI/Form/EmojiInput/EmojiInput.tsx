@@ -1,16 +1,12 @@
 import { useState } from 'react';
 import { InputAdornment, IconButton, ClickAwayListener } from '@mui/material';
 import { EmojiPicker } from 'components/UI/EmojiPicker/EmojiPicker';
-import { Editor } from 'containers/Template/Editor';
+import { Editor } from './Editor';
 import Styles from './EmojiInput.module.css';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
 import { BeautifulMentionNode } from 'lexical-beautiful-mentions';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import {
-  $createTextNode,
-  $getSelection,
-  $isRangeSelection,
-} from 'lexical';
+import { $createTextNode, $getSelection, $isRangeSelection } from 'lexical';
 
 export interface EmojiInputProps {
   field: any;

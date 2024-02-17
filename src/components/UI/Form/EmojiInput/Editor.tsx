@@ -181,5 +181,14 @@ const CustomMenu = forwardRef<HTMLUListElement, BeautifulMentionsMenuProps>(
 );
 
 const CustomMenuItem = forwardRef<HTMLLIElement, BeautifulMentionsMenuItemProps>(
-  ({ selected, item, ...props }, ref) => <li {...props} ref={ref} />
+  ({ selected, item, ...props }, ref) => {
+    return (
+      <li
+        aria-selected={selected}
+        className={selected ? styles.Selected : ''}
+        {...props}
+        ref={ref}
+      />
+    );
+  }
 );
