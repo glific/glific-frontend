@@ -43,7 +43,6 @@ export const setUserRolePermissions = () => {
   if (!role || role.length === 0) {
     role = getUserRole();
   }
-  console.log(role);
 
   const hasDynamicRole = checkDynamicRole();
 
