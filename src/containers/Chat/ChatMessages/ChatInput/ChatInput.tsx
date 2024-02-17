@@ -29,8 +29,8 @@ import {
   $getRoot,
   $getSelection,
   $isRangeSelection,
+  CLEAR_EDITOR_COMMAND,
 } from 'lexical';
-import { getTextContent } from 'common/RichEditor';
 
 export interface ChatInputProps {
   onSendMessage(
@@ -58,6 +58,7 @@ export const ChatInput = ({
   isCollection,
   lastMessageTime,
 }: ChatInputProps) => {
+  const [editorState, setEditorState] = useState<any>('');
   const [selectedTab, setSelectedTab] = useState('');
   const [open, setOpen] = useState(false);
   const [searchVal, setSearchVal] = useState('');
@@ -87,6 +88,7 @@ export const ChatInput = ({
 
   const resetVariable = () => {
     setUpdatedEditorState(undefined);
+    setEditorState('');
     setSelectedTemplate(undefined);
     setInteractiveMessageContent({});
     setVariableParam([]);
@@ -195,10 +197,7 @@ export const ChatInput = ({
     }
 
     // Resetting the EditorState
-    editor.update(() => {
-      const root = $getRoot();
-      root.clear();
-    });
+    editor.dispatchCommand(CLEAR_EDITOR_COMMAND, undefined);
     editor.focus();
   };
 
@@ -248,6 +247,7 @@ export const ChatInput = ({
 
     setSelectedTemplate(obj);
     // Conversion from HTML text to EditorState
+    setEditorState(messageBody);
     editor.update(() => {
       const root = $getRoot();
       const paragraph = $createParagraphNode();
@@ -431,6 +431,7 @@ export const ChatInput = ({
         }`}
       >
         <WhatsAppEditor
+          setEditorState={setEditorState}
           sendMessage={submitMessage}
           handleHeightChange={handleHeightChange}
           readOnly={
@@ -512,11 +513,9 @@ export const ChatInput = ({
               color="primary"
               disableElevation
               onClick={() => {
-                submitMessage(getTextContent(editor));
+                submitMessage(editorState);
               }}
-              disabled={
-                (!getTextContent(editor) && !attachmentAdded && !recordedAudio) || uploading
-              }
+              disabled={(!editorState && !attachmentAdded && !recordedAudio) || uploading}
             >
               <SendMessageIcon className={styles.SendIcon} />
             </Button>
