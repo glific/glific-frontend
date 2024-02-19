@@ -99,6 +99,19 @@ export const AddAttachment = ({
   const input = {
     component: Input,
     name: 'attachmentURL',
+    endAdornment: (
+      <div className={styles.CrossIcon}>
+        <CrossIcon
+          data-testid="crossIcon"
+          onClick={() => {
+            setAttachmentURL('');
+            setAttachmentAdded(false);
+            setErrors(null);
+            setFileName(null);
+          }}
+        />
+      </div>
+    ),
     type: 'text',
     placeholder: t('Attachment URL'),
     helperText: verifying && helperText,
@@ -119,7 +132,7 @@ export const AddAttachment = ({
       component: Dropdown,
       options,
       name: 'attachmentType',
-      placeholder: 'Type',
+      placeholder: 'Media type',
       fieldValue: attachmentType,
       fieldChange: (event: any) => {
         setAttachmentType(event?.target.value);
@@ -200,7 +213,7 @@ export const AddAttachment = ({
             }}
             handleCancel={() => {
               setAttachment(false);
-              setAttachmentType('');
+
               setAttachmentURL('');
               setAttachmentAdded(false);
             }}
@@ -212,20 +225,6 @@ export const AddAttachment = ({
               {formFieldItems.map((field: any) => (
                 <div className={styles.AttachmentFieldWrapper} key={field.name}>
                   <Field {...field} key={field.name} validateURL={errors} />
-                  {field.name === 'attachmentURL' && attachmentType !== '' && (
-                    <div className={styles.CrossIcon}>
-                      <CrossIcon
-                        data-testid="crossIcon"
-                        onClick={() => {
-                          setAttachmentType('');
-                          setAttachmentURL('');
-                          setAttachmentAdded(false);
-                          setErrors(null);
-                          setFileName(null);
-                        }}
-                      />
-                    </div>
-                  )}
                 </div>
               ))}
               <div className={styles.FormError}>{errors}</div>
@@ -240,7 +239,7 @@ export const AddAttachment = ({
                     htmlFor="uploadFile"
                   >
                     {!uploadPermission && <AlertIcon className={styles.AlertIcon} />}
-                    <span>
+                    <span className={styles.UploadFile}>
                       {fileName !== null ? (
                         fileName
                       ) : (
