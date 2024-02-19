@@ -16,9 +16,7 @@ import { ToastMessage } from 'components/UI/ToastMessage/ToastMessage';
 import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
 import { sendOTP } from 'services/AuthService';
 import { yupPasswordValidation } from 'common/constants';
-import { Heading } from 'components/UI/Heading/Heading';
 import styles from './MyAccount.module.css';
-
 
 export const MyAccount = () => {
   // set the validation / errors / success message
@@ -159,7 +157,7 @@ export const MyAccount = () => {
     <Formik initialValues={{ name: userName, phone: userPhone }} onSubmit={() => {}}>
       <Form>
         {userformFields.map((field) => (
-          <div className={styles.UserField}>
+          <div className={styles.UserField} key={field.name}>
             {field.label && (
               <Typography data-testid="formLabel" variant="h5" className={styles.FieldLabel}>
                 {field.label}

@@ -1,4 +1,3 @@
-import { organizationHasDynamicRole } from 'common/utils';
 import { Menu, getMenus } from 'config/menu';
 import { getUserSession } from 'services/AuthService';
 

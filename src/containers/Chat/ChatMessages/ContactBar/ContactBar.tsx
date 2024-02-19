@@ -44,7 +44,6 @@ import {
 import { Timer } from 'components/UI/Timer/Timer';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { Tooltip } from 'components/UI/Tooltip/Tooltip';
-import { AvatarDisplay } from 'components/UI/AvatarDisplay/AvatarDisplay';
 import { SearchDialogBox } from 'components/UI/SearchDialogBox/SearchDialogBox';
 import { TerminateFlow } from './TerminateFlow/TerminateFlow';
 import { showChats } from 'common/responsive';

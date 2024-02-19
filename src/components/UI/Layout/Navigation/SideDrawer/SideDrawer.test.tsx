@@ -3,7 +3,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { render, fireEvent, screen, waitFor } from '@testing-library/react';
 
 import SideDrawer from './SideDrawer';
-import { Menu, getMenus } from 'config/menu';
+import { getMenus } from 'config/menu';
 import { getCurrentUserQuery } from 'mocks/User';
 import { setOrganizationServices, setUserSession } from 'services/AuthService';
 import { walletBalanceQuery, walletBalanceSubscription } from 'mocks/Organization';

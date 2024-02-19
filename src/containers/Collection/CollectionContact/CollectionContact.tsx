@@ -21,11 +21,9 @@ export const CollectionContact = () => {
   const title = collection.data ? collection.data.group.group.label : t('Collection');
 
   let users;
-  let description;
 
   if (collection.data) {
     users = collection.data.group.group.users;
-    description = collection.data.group.group.description;
   }
 
   const descriptionBox = (
