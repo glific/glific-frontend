@@ -1,3 +1,4 @@
+import { organizationHasDynamicRole } from 'common/utils';
 import { ANALYTICS_URL, GLIFIC_DOCS_URL } from 'config';
 import { getOrganizationServices } from 'services/AuthService';
 
@@ -176,6 +177,7 @@ const menus = (): Menu[] => [
         path: '/role',
         type: 'sideDrawer',
         icon: 'speed-send',
+        show: !organizationHasDynamicRole(),
         roles: ['Manager', 'Admin', 'Glific_admin'],
       },
       {

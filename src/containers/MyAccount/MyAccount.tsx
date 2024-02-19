@@ -17,6 +17,7 @@ import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
 import { sendOTP } from 'services/AuthService';
 import { yupPasswordValidation } from 'common/constants';
 import styles from './MyAccount.module.css';
+import { Heading } from 'components/UI/Heading/Heading';
 
 export const MyAccount = () => {
   // set the validation / errors / success message
