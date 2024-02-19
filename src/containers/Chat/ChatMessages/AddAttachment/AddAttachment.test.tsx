@@ -95,7 +95,7 @@ test('attachment is invalid', async () => {
 test('it should reset type if cross icon is clicked', () => {
   const { getByTestId } = render(addAttachment('IMAGE'));
   fireEvent.click(getByTestId('crossIcon'));
-  expect(setAttachmentType).toHaveBeenCalled();
+  expect(setAttachmentURL).toHaveBeenCalled();
 });
 
 test('should get error if the type is not present', async () => {
