@@ -40,6 +40,7 @@
 
 .Actions {
   width: 120px;
+  text-align: end;
   justify-content: flex-end;
   margin-left: auto;
 }

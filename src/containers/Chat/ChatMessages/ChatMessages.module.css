@@ -104,7 +104,7 @@
   color: #edf6f2;
   border-radius: 12px 12px 0 0;
   z-index: 100;
-  margin-top: 1px;
+  margin-top: -3px;
   width: fit-content;
 }
 

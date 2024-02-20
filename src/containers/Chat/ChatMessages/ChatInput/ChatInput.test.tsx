@@ -146,7 +146,7 @@ describe('<ChatInput />', () => {
   test('send an interactive message', async () => {
     const { getAllByTestId, getByTestId } = render(chatInput);
     fireEvent.click(getByTestId('shortcut-open-button'));
-    const interactiveMessages = getAllByTestId('shortcutButton')[2];
+    const interactiveMessages = getAllByTestId('shortcutButton')[1];
     fireEvent.click(interactiveMessages);
     await waitFor(() => {
       const listItem = getAllByTestId('templateItem')[0];
@@ -161,6 +161,8 @@ describe('<ChatInput />', () => {
 
     fireEvent.click(getByTestId('shortcut-open-button'));
 
+    const interactiveMessages = getAllByTestId('shortcutButton')[2];
+    fireEvent.click(interactiveMessages);
     await waitFor(() => {
       expect(getAllByTestId('templateItem')).toHaveLength(2);
     });

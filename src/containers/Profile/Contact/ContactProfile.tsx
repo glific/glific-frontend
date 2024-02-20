@@ -175,7 +175,6 @@ export const ContactProfile = () => {
     profileBodyContent = (
       <Profile
         multiProfileAttributes={switchProfile}
-        profileType="Contact"
         removePhoneField
         redirectionLink={`chat/${params.id}`}
       />

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
@@ -152,14 +152,13 @@ export const FlowList = () => {
       label: t('Configure'),
       icon: configureIcon,
       parameter: 'uuid',
-
       link: '/flow/configure',
     },
     {
-      label: t('Make a copy'),
+      label: t('Copy'),
       icon: <DuplicateIcon />,
       parameter: 'id',
-
+      insideMore: true,
       dialog: setDialog,
     },
     {
@@ -251,12 +250,13 @@ export const FlowList = () => {
     </>
   );
 
-  var filters = { isActive: filter };
-
-  filters = {
-    ...filters,
-    ...(selectedtag?.id && { tagIds: [parseInt(selectedtag?.id)] }),
-  };
+  const filters = useMemo(
+    () => ({
+      isActive: filter,
+      ...(selectedtag?.id && { tagIds: [parseInt(selectedtag?.id)] }),
+    }),
+    [filter]
+  );
 
   return (
     <>

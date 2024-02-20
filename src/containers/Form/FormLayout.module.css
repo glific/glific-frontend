@@ -26,12 +26,18 @@
 }
 
 .ItemAdd {
+  height: 100vh;
+  background-color: #ffffff;
+}
+
+.ItemAddDialog {
   background-color: #ffffff;
 }
 
 .Form {
   padding: 16px 53px;
   width: 530px;
+  padding-bottom: 40px;
 }
 
 .Buttons {

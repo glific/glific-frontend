@@ -1,4 +1,4 @@
-import { render, waitFor, fireEvent } from '@testing-library/react';
+import { render, waitFor, fireEvent, screen } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router-dom';
 
@@ -28,10 +28,17 @@ test('should load the trigger list', async () => {
 });
 
 test('click on Make a copy', async () => {
-  const { container } = render(wrapper);
+  const { getAllByTestId } = render(wrapper);
+
   await waitFor(() => {
-    expect(container.querySelector('#additionalButton-icon')).toBeInTheDocument();
-    fireEvent.click(container.querySelector('#additionalButton-icon') as SVGAElement);
+    expect(getAllByTestId('MoreIcon')[0]).toBeInTheDocument();
+  });
+
+  fireEvent.click(getAllByTestId('MoreIcon')[0]);
+
+  await waitFor(() => {
+    expect(screen.getByTestId('additionalButton')).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('additionalButton'));
   });
 });
 

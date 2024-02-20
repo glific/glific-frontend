@@ -58,6 +58,7 @@ export const SettingList = () => {
     const sortedProviders = providers.sort((first: any, second: any) =>
       first.name > second.name ? 1 : -1
     );
+
     // create setting list of Organisation & providers
     cardList = [...list, ...sortedProviders];
   }
@@ -82,20 +83,7 @@ export const SettingList = () => {
     </div>
   );
 
-  const formheading = (pathname: string) => {
-    if (pathname == '/settings') {
-      return 'Organization';
-    }
-    pathname = pathname
-      .replace(/\/settings\//gi, '')
-      .replace(/_/gi, ' ')
-      .replace(/-/gi, ' ');
-    return pathname.charAt(0).toUpperCase() + pathname.slice(1);
-  };
-
-  const formTitle = formheading(location.pathname);
-
-  const subheading = cardList.find(
+  const heading = cardList.find(
     (data: any) => data.shortcode === location.pathname.replace(/\/settings\//gi, '')
   );
 
@@ -106,8 +94,8 @@ export const SettingList = () => {
         {drawer}
         <Box className={styles.SettingBody}>
           <SettingHeading
-            formTitle={formTitle}
-            description={subheading ? subheading.description : ''}
+            formTitle={heading ? heading.name : ''}
+            description={heading ? heading.description : ''}
           />
           <Outlet />
         </Box>

@@ -1,6 +1,11 @@
+import { organizationHasDynamicRole } from 'common/utils';
 import { ANALYTICS_URL, GLIFIC_DOCS_URL } from 'config';
 import { getOrganizationServices } from 'services/AuthService';
 
+const allRoles = ['Staff', 'Manager', 'Admin', 'Dynamic', 'Glific_admin'];
+const adminLevel = ['Admin', 'Glific_admin'];
+const managerLevel = ['Manager', 'Admin', 'Dynamic', 'Glific_admin'];
+const staffLevel = ['Staff', 'Manager', 'Admin', 'Dynamic', 'Glific_admin'];
 export interface Menu {
   title: string;
   path: string;
@@ -19,7 +24,7 @@ const menus = (): Menu[] => [
     path: '/chat',
     icon: 'chat',
     type: 'sideDrawer',
-    roles: ['Staff', 'Manager', 'Admin', 'Dynamic'],
+    roles: allRoles,
   },
   {
     title: 'Whatsapp Group',
@@ -55,39 +60,39 @@ const menus = (): Menu[] => [
         path: '/flow',
         icon: 'flow',
         type: 'sideDrawer',
-        roles: ['Manager', 'Admin', 'Dynamic'],
+        roles: managerLevel,
       },
       {
         title: 'Google sheets',
         path: '/sheet-integration',
         icon: 'sheets',
         type: 'sideDrawer',
-        roles: ['Manager', 'Admin', 'Dynamic'],
+        roles: managerLevel,
       },
       {
         title: 'Webhook logs',
         path: '/webhook-logs',
         icon: 'webhook',
         type: 'sideDrawer',
-        roles: ['Manager', 'Admin', 'Dynamic'],
+        roles: managerLevel,
       },
       {
         title: 'Contact variables',
         path: '/contact-fields',
         icon: 'fields',
         type: 'sideDrawer',
-        roles: ['Manager', 'Admin', 'Dynamic'],
+        roles: managerLevel,
       },
       {
         title: 'Support tickets',
         path: '/ticket',
         icon: 'tickets',
         type: 'sideDrawer',
-        roles: ['Manager', 'Admin', 'Dynamic'],
+        roles: managerLevel,
         show: !getOrganizationServices('ticketingEnabled'),
       },
     ],
-    roles: ['Manager', 'Admin', 'Dynamic'],
+    roles: managerLevel,
   },
   {
     title: 'Support tickets',
@@ -102,49 +107,49 @@ const menus = (): Menu[] => [
     path: '/interactive-message',
     icon: 'speed-send',
     type: 'sideDrawer',
-    roles: ['Manager', 'Admin', 'Dynamic'],
+    roles: managerLevel,
     children: [
       {
         title: 'Interactive msg',
         path: '/interactive-message',
         icon: 'interactive-message',
         type: 'sideDrawer',
-        roles: ['Manager', 'Admin', 'Dynamic'],
+        roles: managerLevel,
       },
       {
         title: 'Templates',
         path: '/template',
         icon: 'template',
         type: 'sideDrawer',
-        roles: ['Manager', 'Admin', 'Dynamic'],
+        roles: managerLevel,
       },
       {
         title: 'Triggers',
         path: '/trigger',
         icon: 'trigger',
         type: 'sideDrawer',
-        roles: ['Manager', 'Admin', 'Dynamic'],
+        roles: managerLevel,
       },
       {
         title: 'Searches',
         path: '/search',
         icon: 'search',
         type: 'sideDrawer',
-        roles: ['Manager', 'Admin', 'Dynamic'],
+        roles: managerLevel,
       },
       {
         title: 'Speed Sends',
         path: '/speed-send',
         icon: 'speed-send',
         type: 'sideDrawer',
-        roles: ['Manager', 'Admin', 'Dynamic'],
+        roles: managerLevel,
       },
       {
         title: 'Tags',
         path: '/tag',
         icon: 'tag',
         type: 'sideDrawer',
-        roles: ['Manager', 'Admin', 'Dynamic'],
+        roles: managerLevel,
       },
     ],
   },
@@ -153,104 +158,88 @@ const menus = (): Menu[] => [
     path: '/notifications',
     icon: 'notification',
     type: 'sideDrawer',
-    roles: ['Manager', 'Admin', 'Dynamic'],
+    roles: managerLevel,
   },
   {
     title: 'Manage',
     path: '/collection',
     icon: 'manage',
     type: 'sideDrawer',
-    roles: ['Staff', 'Manager', 'Admin', 'Dynamic'],
+    roles: staffLevel,
     children: [
       {
         title: 'Collections',
         path: '/collection',
-        type: 'management',
+        type: 'sideDrawer',
         icon: 'collection',
-        roles: ['Staff', 'Manager', 'Admin', 'Dynamic'],
+        roles: staffLevel,
       },
       {
         title: 'Staff',
         path: '/staff-management',
-        type: 'management',
+        type: 'sideDrawer',
         icon: 'staff',
-        roles: ['Manager', 'Admin'],
+        roles: ['Manager', 'Admin', 'Glific_admin'],
       },
       {
         title: 'Contacts',
         path: '/contact-management',
-        type: 'management',
+        type: 'sideDrawer',
         icon: 'contact',
-        roles: ['Admin'],
+        roles: adminLevel,
       },
       {
         title: 'Blocked contacts',
         path: '/blocked-contacts',
-        type: 'management',
+        type: 'sideDrawer',
         icon: 'block',
-        roles: ['Staff', 'Manager', 'Admin', 'Dynamic'],
+        roles: staffLevel,
       },
       {
         title: 'Roles',
         path: '/role',
-        type: 'management',
+        type: 'sideDrawer',
         icon: 'speed-send',
-        roles: ['Manager', 'Admin'],
+        show: !organizationHasDynamicRole(),
+        roles: ['Manager', 'Admin', 'Glific_admin'],
       },
-      // {
-      //   title: 'Organizations',
-      //   path: '/organizations',
-      //   icon: 'organization',
-      //   type: 'management',
-      //   roles: ['Glific_admin'],
-      // },
-      // {
-      //   title: 'Consulting',
-      //   path: '/consulting-hours',
-      //   type: 'management',
-      //   icon: 'consulting',
-      //   roles: ['Glific_admin'],
-      // },
+      {
+        title: 'Organizations',
+        path: '/organizations',
+        icon: 'organization',
+        type: 'sideDrawer',
+        roles: ['Glific_admin'],
+      },
+      {
+        title: 'Consulting',
+        path: '/consulting-hours',
+        type: 'sideDrawer',
+        icon: 'consulting',
+        roles: ['Glific_admin'],
+      },
     ],
   },
 
   {
-    title: 'Account',
-    path: '/user-profile',
-    icon: 'profile',
-    show: true,
-    type: 'sideDrawer',
-    roles: ['Manager', 'Admin', 'Dynamic'],
-    children: [
-      {
-        title: 'My Profile',
-        path: '/user-profile',
-        type: 'userAccount',
-        icon: 'profile',
-        roles: ['Staff', 'Manager', 'Admin', 'Dynamic'],
-      },
-      {
-        title: 'My Account',
-        path: '/myaccount',
-        icon: 'account',
-        type: 'userAccount',
-        roles: ['Staff', 'Manager', 'Admin', 'Dynamic'],
-      },
-      {
-        title: 'Settings',
-        path: '/settings',
-        icon: 'settings',
-        type: 'userAccount',
-        roles: ['Admin'],
-      },
-      {
-        title: 'Logout',
-        path: '/logout/user',
-        icon: 'logout',
-        type: 'userAccount',
-        roles: ['Staff', 'Manager', 'Admin', 'Dynamic'],
-      },
-    ],
+    title: 'My Account',
+    path: '/myaccount',
+    icon: 'account',
+    type: 'userAccount',
+    roles: staffLevel,
+  },
+  {
+    title: 'Settings',
+    path: '/settings',
+    icon: 'settings',
+    type: 'userAccount',
+    roles: adminLevel,
+  },
+  {
+    title: 'Logout',
+    path: '/logout/user',
+    icon: 'logout',
+    type: 'userAccount',
+    roles: staffLevel,
   },
   {
     title: 'Analytics',
@@ -258,7 +247,7 @@ const menus = (): Menu[] => [
     url: ANALYTICS_URL,
     icon: 'analytics',
     type: 'sideDrawer',
-    roles: ['Staff', 'Manager', 'Admin', 'Dynamic'],
+    roles: staffLevel,
   },
   {
     title: 'Resources',
@@ -266,13 +255,16 @@ const menus = (): Menu[] => [
     url: GLIFIC_DOCS_URL,
     icon: 'help',
     type: 'sideDrawer',
-    roles: ['Staff', 'Manager', 'Admin', 'Dynamic'],
+    roles: staffLevel,
   },
 ];
 
 export const getMenus = (menuType = 'sideDrawer', role = 'Staff') =>
   menus()
-    .filter((menu: any) => menu.type === menuType && menu.roles.includes(role))
-    .map((menu: any) => menu);
+    .filter((menu) => menu.type === menuType && menu.roles.includes(role))
+    .map((menu) => {
+      menu.children = menu.children?.filter((menu) => menu.roles.includes(role));
+      return menu;
+    });
 
 export default getMenus;

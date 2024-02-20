@@ -24,7 +24,6 @@ import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 const profileIcon = <ProfileIcon />;
 
 export interface ProfileProps {
-  profileType: string;
   redirectionLink: string;
   afterDelete?: any;
   removePhoneField?: boolean;
@@ -32,7 +31,6 @@ export interface ProfileProps {
 }
 
 export const Profile = ({
-  profileType,
   redirectionLink,
   afterDelete,
   removePhoneField = false,
@@ -134,7 +132,7 @@ export const Profile = ({
       component: Input,
       name: 'name',
       type: 'text',
-      disabled: profileType === 'Contact',
+      disabled: true,
       label: t('Name'),
       placeholder: t('Name'),
     },
@@ -174,11 +172,7 @@ export const Profile = ({
   ];
 
   let type: any;
-  let pageTitle = t('Contact Profile');
-  if (profileType === 'User' || loggedInUserContactId === currentContactId) {
-    type = 'UserProfile';
-    pageTitle = t('My Profile');
-  }
+  const pageTitle = t('Contact Profile');
 
   const dialogMessage = hasMultipleProfiles
     ? t("You won't be able to send messages to this profile.")
@@ -202,7 +196,7 @@ export const Profile = ({
       title={pageTitle}
       entityId={hasMultipleProfiles ? multiProfileAttributes?.selectedProfileId : currentContactId}
       restrictDelete={hideRemoveBtn}
-      noHeading={profileType === 'Contact'}
+      noHeading
     />
   );
 };

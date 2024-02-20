@@ -150,7 +150,6 @@
   color: #555;
   border-radius: 5px;
   background: #ecf7f1;
-  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -197,6 +196,7 @@
 
 .ContactInfoWrapper {
   display: flex;
+  align-items: center;
   width: 100%;
   justify-content: space-between;
 }

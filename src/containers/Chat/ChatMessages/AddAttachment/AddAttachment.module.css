@@ -5,6 +5,7 @@
 }
 
 .AttachmentFieldWrapper {
+  margin-bottom: 16px;
   display: flex;
   align-items: center;
   flex-wrap: nowrap;
@@ -13,9 +14,7 @@
 .CrossIcon {
   cursor: pointer;
   display: flex;
-  height: 70px;
   align-items: center;
-  margin-left: 10px;
 }
 
 .FormHelperText {
@@ -112,5 +111,10 @@
 .HelperText {
   display: flex;
   flex-direction: row;
+  align-items: center;
+}
+
+.UploadFile {
+  display: flex;
   align-items: center;
 }

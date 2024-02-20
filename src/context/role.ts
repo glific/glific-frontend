@@ -1,14 +1,12 @@
-import { organizationHasDynamicRole } from 'common/utils';
 import { Menu, getMenus } from 'config/menu';
 import { getUserSession } from 'services/AuthService';
 
 let role: any[] = [];
 let sideDrawerMenu: Menu[] = [];
-let staffManagementMenu: Menu[] = [];
+let userAccountMenu: Menu[] = [];
 
 // we are correctly using mutable export bindings hence making an exception for below
 /* eslint-disable */
-let accessSettings: boolean = false;
 let manageSavedSearches: boolean = false;
 let manageCollections: boolean = false;
 /* eslint-enable */
@@ -49,24 +47,23 @@ export const setUserRolePermissions = () => {
 
   if (role && hasDynamicRole) {
     sideDrawerMenu = getMenus('sideDrawer', 'Dynamic');
-    staffManagementMenu = getMenus('management', 'Dynamic');
+    userAccountMenu = getMenus('userAccount', 'Dynamic');
   }
 
   if (role && role.includes('Staff')) {
     sideDrawerMenu = getMenus('sideDrawer');
-    staffManagementMenu = getMenus('management');
+    userAccountMenu = getMenus('userAccount');
   }
 
   if ((role && role.includes('Manager')) || role.includes('Admin')) {
     // gettting menus for Manager as menus are same as in Admin
     sideDrawerMenu = getMenus('sideDrawer', 'Manager');
-    staffManagementMenu = getMenus('management', 'Manager');
+    userAccountMenu = getMenus('userAccount', 'Manager');
 
     if (role.includes('Admin')) {
-      accessSettings = true;
       manageSavedSearches = true;
       manageCollections = true;
-      staffManagementMenu = getMenus('management', 'Admin');
+      userAccountMenu = getMenus('userAccount', 'Admin');
     }
   }
 
@@ -74,26 +71,18 @@ export const setUserRolePermissions = () => {
     /**
      * Glific admin will have additional menus along with admin menus
      */
-    sideDrawerMenu = getMenus('sideDrawer', 'Manager');
-    staffManagementMenu = [
-      ...getMenus('management', 'Manager'),
-      ...getMenus('management', 'Glific_admin'),
-    ];
+    sideDrawerMenu = getMenus('sideDrawer', 'Glific_admin');
 
-    accessSettings = true;
+    userAccountMenu = getMenus('userAccount', 'Admin');
+
     manageSavedSearches = true;
     manageCollections = true;
   }
-
-  staffManagementMenu = staffManagementMenu.filter(
-    (menu: any) => menu.title !== 'Role management' || organizationHasDynamicRole()
-  );
 };
 
 // function to reset user permissions
 export const resetRolePermissions = () => {
   role = [];
-  accessSettings = false;
   manageSavedSearches = false;
   manageCollections = false;
 };
@@ -105,15 +94,12 @@ export const getSideDrawerMenus = () => {
   return sideDrawerMenu;
 };
 
-// staff management menus
-export const getStaffManagementMenus = () => {
+// staff userAccount menus
+export const getUserAccountMenus = () => {
   // get the permissioned menus
   setUserRolePermissions();
-  return staffManagementMenu;
+  return userAccountMenu;
 };
-
-// users menus
-export const getUserAccountMenus = () => getMenus('userAccount');
 
 // function to return more granular permissions based on the roles
 export const getUserRolePermissions = () => {
@@ -121,7 +107,6 @@ export const getUserRolePermissions = () => {
 
   // set permission values
   userRolePermissions.manageSavedSearches = manageSavedSearches;
-  userRolePermissions.accessSettings = accessSettings;
   userRolePermissions.manageCollections = manageCollections;
 
   return userRolePermissions;

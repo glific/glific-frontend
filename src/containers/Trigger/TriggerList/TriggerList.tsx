@@ -80,10 +80,11 @@ export const TriggerList = () => {
 
   const additionalAction = () => [
     {
-      label: t('Make a copy'),
+      label: t('Copy'),
       icon: <DuplicateIcon />,
       parameter: 'id',
       dialog: setDialog,
+      insideMore: true,
     },
   ];
 

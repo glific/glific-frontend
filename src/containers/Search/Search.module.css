@@ -26,22 +26,19 @@
 
 .Form > div:nth-of-type(7) {
   display: inline;
-}
-
-.Form > div:nth-of-type(7) {
   font-weight: 400;
 }
 
-.Form > div:nth-of-type(8) {
+.CalendarLeft {
+  width: 50%;
   display: inline-block;
-  margin-right: 16px;
-  width: 48%;
-  padding: 0px;
+  padding-right: 4px;
 }
-.Form > div:nth-of-type(9) {
+
+.CalendarRight {
+  padding-left: 4px;
+  width: 50%;
   display: inline-block;
-  width: 48%;
-  padding: 0px;
 }
 
 .DateRangeLabel {

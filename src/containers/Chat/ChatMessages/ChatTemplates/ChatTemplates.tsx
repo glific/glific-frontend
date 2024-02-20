@@ -67,7 +67,7 @@ export const ChatTemplates = ({
           className={`${styles.PopperListItem}`}
         >
           <p className={styles.Text}>
-            <b style={{ marginRight: '5px' }}>{obj.label}:</b>
+            <strong style={{ marginRight: '5px' }}>{obj.label}:</strong>
             <span>{WhatsAppToJsx(tabListToShow)}</span>
           </p>
           {obj.MessageMedia ? (

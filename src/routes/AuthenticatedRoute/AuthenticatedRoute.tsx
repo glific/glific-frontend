@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
 import ErrorBoundary from 'components/errorboundary/ErrorBoundary';
 import { ChatInterface } from 'containers/Chat/ChatInterface/ChatInterface';
@@ -41,7 +41,6 @@ const StaffManagementList = lazy(
 const ContactManagement = lazy(() => import('containers/ContactManagement/ContactManagement'));
 const StaffManagement = lazy(() => import('containers/StaffManagement/StaffManagement'));
 const ContactProfile = lazy(() => import('containers/Profile/Contact/ContactProfile'));
-const UserProfile = lazy(() => import('containers/Profile/User/UserProfile'));
 const MyAccount = lazy(() => import('containers/MyAccount/MyAccount'));
 const HSMList = lazy(() => import('containers/Template/List/HSMList/HSMList'));
 const HSM = lazy(() => import('containers/Template/Form/HSM/HSM'));
@@ -76,7 +75,6 @@ const routeStaff = (
   <Routes>
     <Route path="collection" element={<CollectionList />} />
     <Route path="collection/:id/contacts" element={<CollectionContact />} />
-    <Route path="user-profile" element={<UserProfile />} />
     <Route path="ticket" element={<TicketList />} />
     <Route path="contact-profile/:id/*" element={<ContactProfile />} />
     <Route path="blocked-contacts" element={<BlockContactList />} />
@@ -120,14 +118,13 @@ const routeAdmin = (
     <Route path="contact-management" element={<ContactManagement />} />
     <Route path="staff-management/:id/edit" element={<StaffManagement />} />
     <Route path="contact-profile/:id/*" element={<ContactProfile />} />
-    <Route path="user-profile" element={<UserProfile />} />
     <Route path="myaccount" element={<MyAccount />} />
     <Route path="template" element={<HSMList />} />
     <Route path="template/add" element={<HSM />} />
     <Route path="template/:id/edit" element={<HSM />} />
     <Route path="ticket" element={<TicketList />} />
     <Route path="settings" element={<SettingList />}>
-      <Route path="" element={<Organization />} />
+      <Route path="" element={<Navigate to="organization" />} />
       <Route path="organization" element={<Organization />} />
       <Route path="organization-flows" element={<OrganizationFlows />} />
       <Route path="billing" element={<Billing />} />
