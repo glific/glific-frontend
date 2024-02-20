@@ -7,9 +7,13 @@ import { ConversationList } from '../ChatConversations/ConversationList/Conversa
 
 export interface CollectionConversationsProps {
   collectionId?: number | null;
+  groups?: boolean;
 }
 
-const CollectionConversations = ({ collectionId }: CollectionConversationsProps) => {
+const CollectionConversations = ({
+  collectionId,
+  groups = false,
+}: CollectionConversationsProps) => {
   const [selectedCollectionId, setSelectedCollectionId] = useState<any>(collectionId);
   const [searchVal, setSearchVal] = useState('');
 
@@ -39,6 +43,7 @@ const CollectionConversations = ({ collectionId }: CollectionConversationsProps)
         />
       </div>
       <ConversationList
+        groups={groups}
         searchVal={searchVal}
         searchMode={false}
         searchParam={{}}

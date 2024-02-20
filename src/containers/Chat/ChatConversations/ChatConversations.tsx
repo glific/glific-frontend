@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Container, IconButton } from '@mui/material';
+import { Container, FormControl, IconButton, MenuItem, Select } from '@mui/material';
 import CancelOutlined from '@mui/icons-material/CancelOutlined';
 import { useApolloClient, useQuery } from '@apollo/client/react';
 import { useTranslation } from 'react-i18next';
@@ -18,9 +18,17 @@ import Track from 'services/TrackService';
 
 export interface ChatConversationsProps {
   contactId?: number | string;
+  groups?: boolean;
+  setPhonenumber?: any;
+  phonenumber?: string;
 }
 
-export const ChatConversations = ({ contactId }: ChatConversationsProps) => {
+export const ChatConversations = ({
+  contactId,
+  groups = false,
+  phonenumber,
+  setPhonenumber,
+}: ChatConversationsProps) => {
   // get the conversations stored from the cache
   const [searchVal, setSearchVal] = useState<any>();
   const [searchParam, setSearchParam] = useState<any>({});
@@ -34,6 +42,12 @@ export const ChatConversations = ({ contactId }: ChatConversationsProps) => {
   const offset = useQuery(SEARCH_OFFSET);
   const client = useApolloClient();
   const { t } = useTranslation();
+
+  const MOCK_PHONENUMBERS = [
+    { label: '918657048983', value: '918657048983' },
+    { label: '918439201748', value: '918439201748' },
+    { label: '918781934028', value: '918781934028' },
+  ];
 
   // restore multi-search after conversation click
   useEffect(() => {
@@ -222,7 +236,30 @@ export const ChatConversations = ({ contactId }: ChatConversationsProps) => {
         }}
         searchMode={enableSearchMode}
       />
+      {groups && (
+        <div className={styles.DropDownContainer}>
+          <FormControl>
+            <Select
+              aria-label="maytapi-phonenumber"
+              name="maytapi-phonenumber"
+              value={phonenumber}
+              onChange={(event) => {
+                const { value } = event.target;
+                setPhonenumber(JSON.parse(value));
+              }}
+              className={styles.DropDown}
+            >
+              {MOCK_PHONENUMBERS.map((phonenumber: any) => (
+                <MenuItem key={phonenumber.label} value={phonenumber.value}>
+                  {phonenumber.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </div>
+      )}
       <ConversationList
+        groups={groups}
         searchVal={searchVal}
         searchMode={enableSearchMode}
         searchParam={searchParam}

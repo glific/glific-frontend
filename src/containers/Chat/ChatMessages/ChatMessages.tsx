@@ -28,13 +28,22 @@ import {
 import { getCachedConverations, updateConversationsCache } from '../../../services/ChatService';
 import { addLogs, getDisplayName, isSimulator } from '../../../common/utils';
 import { CollectionInformation } from '../../Collection/CollectionInformation/CollectionInformation';
+import { SEND_MESSAGE_IN_WA_GROUP } from 'graphql/mutations/Group';
+import { groupSearchQuery } from 'mocks/Groups';
 
 export interface ChatMessagesProps {
   contactId?: number | string | null;
   collectionId?: number | string | null;
+  groups?: boolean;
+  phonenumber?: string;
 }
 
-export const ChatMessages = ({ contactId, collectionId }: ChatMessagesProps) => {
+export const ChatMessages = ({
+  contactId,
+  collectionId,
+  groups = false,
+  phonenumber,
+}: ChatMessagesProps) => {
   const urlString = new URL(window.location.href);
 
   let messageParameterOffset: any = 0;
@@ -58,7 +67,14 @@ export const ChatMessages = ({ contactId, collectionId }: ChatMessagesProps) => 
   const [showJumpToLatest, setShowJumpToLatest] = useState(false);
   const [conversationInfo, setConversationInfo] = useState<any>({});
   const [collectionVariables, setCollectionVariables] = useState<any>({});
+  const [showLoading, setShowLoading] = useState(true);
   const { t } = useTranslation();
+
+  useEffect(() => {
+    setTimeout(() => {
+      setShowLoading(false);
+    }, 1000);
+  }, []);
 
   let dialogBox;
 
@@ -100,9 +116,9 @@ export const ChatMessages = ({ contactId, collectionId }: ChatMessagesProps) => 
   // Instantiate these to be used later.
 
   let conversationIndex: number = -1;
-
+  let SEND_MESSAGE_MUTATION = groups ? SEND_MESSAGE_IN_WA_GROUP : CREATE_AND_SEND_MESSAGE_MUTATION;
   // create message mutation
-  const [createAndSendMessage] = useMutation(CREATE_AND_SEND_MESSAGE_MUTATION, {
+  const [createAndSendMessage] = useMutation(SEND_MESSAGE_MUTATION, {
     onCompleted: () => {
       scrollToLatestMessage();
     },
@@ -130,6 +146,7 @@ export const ChatMessages = ({ contactId, collectionId }: ChatMessagesProps) => 
     variables: queryVariables,
     fetchPolicy: 'cache-only',
   });
+  const groupData = groupSearchQuery({ limit: DEFAULT_MESSAGE_LIMIT }, DEFAULT_CONTACT_LIMIT, {});
 
   useEffect(() => {
     const clickListener = () => setShowDropdown(null);
@@ -324,44 +341,84 @@ export const ChatMessages = ({ contactId, collectionId }: ChatMessagesProps) => 
       variableParam: any,
       interactiveTemplateId: any
     ) => {
-      const payload: any = {
-        body,
-        senderId: 1,
-        mediaId,
-        receiverId: contactId,
-        type: messageType,
-        flow: 'OUTBOUND',
-        interactiveTemplateId,
-      };
-      createAndSendMessage({
-        variables: { input: updatePayload(payload, selectedTemplate, variableParam) },
-      });
+      let payload: any;
+      if (groups) {
+        payload = {
+          message: body,
+          phone: phonenumber,
+          bsp_id: '',
+        };
+      } else {
+        payload = {
+          body,
+          senderId: 1,
+          mediaId,
+          receiverId: contactId,
+          type: messageType,
+          flow: 'OUTBOUND',
+          interactiveTemplateId,
+        };
+      }
+
+      if (groups) {
+        createAndSendMessage({
+          variables: { input: payload },
+        });
+      } else {
+        createAndSendMessage({
+          variables: { input: updatePayload(payload, selectedTemplate, variableParam) },
+        });
+      }
     },
     [createAndSendMessage, contactId]
   );
 
   // loop through the cached conversations and find if contact/Collection exists
   const updateConversationInfo = (type: string, Id: any) => {
-    allConversations.search.map((conversation: any, index: any) => {
-      if (conversation[type].id === Id.toString()) {
-        conversationIndex = index;
-        setConversationInfo(conversation);
-      }
-      return null;
-    });
-  };
-
-  const findContactInAllConversations = () => {
-    if (allConversations && allConversations.search) {
-      // loop through the cached conversations and find if contact exists
-      // need to check - updateConversationInfo('contact', contactId);
-      allConversations.search.map((conversation: any, index: any) => {
-        if (conversation.contact.id === contactId?.toString()) {
+    if (groups) {
+      groupData.result.data.search.map((conversation: any, index: any) => {
+        if (conversation[type].id === Id.toString()) {
           conversationIndex = index;
           setConversationInfo(conversation);
         }
         return null;
       });
+    } else {
+      allConversations.search.map((conversation: any, index: any) => {
+        if (conversation[type].id === Id.toString()) {
+          conversationIndex = index;
+          setConversationInfo(conversation);
+        }
+        return null;
+      });
+    }
+  };
+
+  const findContactInAllConversations = () => {
+    if (groups) {
+      if (groupData.result.data.search) {
+        // loop through the cached conversations and find if contact exists
+        // need to check - updateConversationInfo('contact', contactId);
+        groupData.result.data.search.map((conversation: any, index: any) => {
+          if (conversation.group.id === contactId?.toString()) {
+            conversationIndex = index;
+            setConversationInfo(conversation);
+          }
+          return null;
+        });
+      }
+    } else {
+      if (allConversations && allConversations.search) {
+        // loop through the cached conversations and find if contact exists
+        // need to check - updateConversationInfo('contact', contactId);
+        allConversations.search.map((conversation: any, index: any) => {
+          if (conversation.contact.id === contactId?.toString()) {
+            conversationIndex = index;
+            setConversationInfo(conversation);
+          }
+          return null;
+        });
+      }
     }
 
     // if conversation is not present then fetch for contact
@@ -510,10 +567,7 @@ export const ChatMessages = ({ contactId, collectionId }: ChatMessagesProps) => 
 
   const showDaySeparator = (currentDate: string, nextDate: string) => {
     // if it's last message and its date is greater than current date then show day separator
-    if (
-      !nextDate &&
-      dayjs(currentDate).format(ISO_DATE_FORMAT) < dayjs().format(ISO_DATE_FORMAT)
-    ) {
+    if (!nextDate && dayjs(currentDate).format(ISO_DATE_FORMAT) < dayjs().format(ISO_DATE_FORMAT)) {
       return true;
     }
 
@@ -642,8 +696,12 @@ export const ChatMessages = ({ contactId, collectionId }: ChatMessagesProps) => 
     updateConversationsCache(allConversationsCopy, queryVariables);
   };
 
+  if (showLoading && groups) {
+    return <CircularProgress className={styles.Loading} />;
+  }
+
   // conversationInfo should not be empty
-  if (!Object.prototype.hasOwnProperty.call(conversationInfo, 'contact')) {
+  if (!groups && !Object.prototype.hasOwnProperty.call(conversationInfo, 'contact')) {
     return (
       <div className={styles.LoadMore}>
         <CircularProgress className={styles.Loading} />
@@ -654,45 +712,89 @@ export const ChatMessages = ({ contactId, collectionId }: ChatMessagesProps) => 
   let topChatBar;
   let chatInputSection;
 
-  if (contactId && conversationInfo.contact) {
-    const displayName = getDisplayName(conversationInfo);
-    topChatBar = (
-      <ContactBar
-        displayName={displayName}
-        isSimulator={isSimulator(conversationInfo.contact.phone)}
-        contactId={contactId.toString()}
-        lastMessageTime={conversationInfo.contact.lastMessageAt}
-        contactStatus={conversationInfo.contact.status}
-        contactBspStatus={conversationInfo.contact.bspStatus}
-        handleAction={() => handleChatClearedAction()}
-      />
-    );
+  if (groups) {
+    if (contactId && conversationInfo.group) {
+      const displayName = conversationInfo.group.name;
+      topChatBar = (
+        <ContactBar
+          displayName={displayName}
+          isSimulator={isSimulator(conversationInfo.group.phone)}
+          contactId={contactId.toString()}
+          lastMessageTime={conversationInfo.group.lastMessageAt}
+          contactStatus={conversationInfo.group.status}
+          contactBspStatus={conversationInfo.group.bspStatus}
+          handleAction={() => handleChatClearedAction()}
+          groups={groups}
+        />
+      );
 
-    chatInputSection = (
-      <ChatInput
-        handleHeightChange={handleHeightChange}
-        onSendMessage={sendMessageHandler}
-        lastMessageTime={conversationInfo.contact.lastMessageAt}
-        contactStatus={conversationInfo.contact.status}
-        contactBspStatus={conversationInfo.contact.bspStatus}
-      />
-    );
-  } else if (collectionId && conversationInfo.group) {
-    topChatBar = (
-      <ContactBar
-        collectionId={collectionId.toString()}
-        displayName={conversationInfo.group.label}
-        handleAction={handleChatClearedAction}
-      />
-    );
+      chatInputSection = (
+        <ChatInput
+          handleHeightChange={handleHeightChange}
+          onSendMessage={sendMessageHandler}
+          lastMessageTime={conversationInfo.group.lastMessageAt}
+          contactStatus={conversationInfo.group.status}
+          contactBspStatus={conversationInfo.group.bspStatus}
+        />
+      );
+    } else if (collectionId && conversationInfo.collections) {
+      topChatBar = (
+        <ContactBar
+          collectionId={collectionId.toString()}
+          displayName={conversationInfo.group.label}
+          handleAction={handleChatClearedAction}
+        />
+      );
 
-    chatInputSection = (
-      <ChatInput
-        handleHeightChange={handleHeightChange}
-        onSendMessage={sendCollectionMessageHandler}
-        isCollection
-      />
-    );
+      chatInputSection = (
+        <ChatInput
+          handleHeightChange={handleHeightChange}
+          onSendMessage={sendCollectionMessageHandler}
+          isCollection
+        />
+      );
+    }
+  } else {
+    if (contactId && conversationInfo.contact) {
+      const displayName = getDisplayName(conversationInfo);
+      topChatBar = (
+        <ContactBar
+          displayName={displayName}
+          isSimulator={isSimulator(conversationInfo.contact.phone)}
+          contactId={contactId.toString()}
+          lastMessageTime={conversationInfo.contact.lastMessageAt}
+          contactStatus={conversationInfo.contact.status}
+          contactBspStatus={conversationInfo.contact.bspStatus}
+          handleAction={() => handleChatClearedAction()}
+        />
+      );
+
+      chatInputSection = (
+        <ChatInput
+          handleHeightChange={handleHeightChange}
+          onSendMessage={sendMessageHandler}
+          lastMessageTime={conversationInfo.contact.lastMessageAt}
+          contactStatus={conversationInfo.contact.status}
+          contactBspStatus={conversationInfo.contact.bspStatus}
+        />
+      );
+    } else if (collectionId && conversationInfo.group) {
+      topChatBar = (
+        <ContactBar
+          collectionId={collectionId.toString()}
+          displayName={conversationInfo.group.label}
+          handleAction={handleChatClearedAction}
+        />
+      );
+
+      chatInputSection = (
+        <ChatInput
+          handleHeightChange={handleHeightChange}
+          onSendMessage={sendCollectionMessageHandler}
+          isCollection
+        />
+      );
+    }
   }
 
   const showLatestMessage = () => {

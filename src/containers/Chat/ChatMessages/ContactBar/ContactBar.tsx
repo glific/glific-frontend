@@ -79,6 +79,7 @@ export interface ContactBarProps {
   contactBspStatus?: string;
   handleAction: any;
   isSimulator?: boolean;
+  groups?: boolean;
 }
 
 export const ContactBar = ({
@@ -90,6 +91,7 @@ export const ContactBar = ({
   displayName,
   handleAction,
   isSimulator,
+  groups = false,
 }: ContactBarProps) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -451,7 +453,7 @@ export const ContactBar = ({
       }}
     >
       <ProfileIcon className={styles.Icon} />
-      View contact profile
+      {groups ? 'View group details' : 'View contact profile'}
     </Button>
   ) : (
     <Button

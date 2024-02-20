@@ -1,0 +1,109 @@
+.ChatBubble {
+  border-radius: 50%;
+  height: 10px;
+  width: 10px;
+  margin-bottom: 10px;
+  margin-right: 6px;
+  margin-left: 10px;
+}
+
+.ChatBubbleRead {
+  background-color: #bbb;
+}
+
+.ChatBubbleUnread {
+  background-color: #12e88e;
+}
+
+.LastMessage {
+  display: inline;
+}
+
+.StyledListItem {
+  height: 80px;
+  margin: 8px !important;
+  display: flex;
+  border-radius: 10px !important;
+  background-color: #fff;
+  padding: 12px;
+}
+
+.ChatPicture {
+  height: 50px;
+  width: 50px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.ChatInfo {
+  width: 93%;
+  height: 75px;
+  padding: 15px 0;
+  padding-left: 10px;
+  position: relative;
+}
+
+.ChatInfoRead {
+  color: #93a29b;
+}
+
+.ChatInfoUnread {
+  font-weight: 500;
+  color: #073f24;
+}
+
+.ChatName {
+  color: #191c1a;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  letter-spacing: -0.16px;
+}
+
+.MessageContent {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: 14px;
+  color: #555;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: -0.14px;
+}
+
+.MessageContent p {
+  margin: 0px;
+}
+
+.MessageContent svg {
+  margin-right: 8px;
+}
+
+.MessageDate {
+  top: 20px;
+  right: 0;
+  color: #93a29b;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+}
+
+.SelectedColor {
+  background: #cce6d0 !important;
+}
+
+.Timer {
+  margin-left: 8px;
+  margin-top: 4px;
+}
+
+.TitleText {
+  font-size: 13px !important;
+  color: #073f24 !important;
+  font-weight: bold;
+}
+
+.ChatIcons {
+  height: 75px;
+  padding-top: 22px;
+}

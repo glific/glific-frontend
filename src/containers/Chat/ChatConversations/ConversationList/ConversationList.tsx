@@ -22,6 +22,8 @@ import { showMessages } from 'common/responsive';
 import { addLogs, getDisplayName } from 'common/utils';
 import ChatConversation from '../ChatConversation/ChatConversation';
 import styles from './ConversationList.module.css';
+import { groupCollectionSearchQuery, groupSearchQuery, mockResolver } from 'mocks/Groups';
+import GroupConversation from 'containers/WA_Groups/GroupConversations/GroupConversation';
 
 interface ConversationListProps {
   searchVal: string;
@@ -34,6 +36,7 @@ interface ConversationListProps {
   selectedCollectionId?: number;
   setSelectedCollectionId?: (i: number) => void;
   entityType?: string;
+  groups?: boolean;
 }
 
 export const ConversationList = ({
@@ -47,6 +50,7 @@ export const ConversationList = ({
   selectedCollectionId,
   setSelectedCollectionId,
   entityType = 'contact',
+  groups = false,
 }: ConversationListProps) => {
   const client = useApolloClient();
   const [loadingOffset, setLoadingOffset] = useState(DEFAULT_CONTACT_LIMIT);
@@ -89,6 +93,11 @@ export const ConversationList = ({
       });
     }
   });
+
+  const groupData =
+    entityType === 'collection'
+      ? groupCollectionSearchQuery()
+      : groupSearchQuery({ limit: DEFAULT_MESSAGE_LIMIT }, DEFAULT_CONTACT_LIMIT, {});
 
   const {
     loading: conversationLoading,
@@ -242,12 +251,12 @@ export const ConversationList = ({
   let conversations: any = null;
   // Retrieving all convos or the ones searched by.
   if (data) {
-    conversations = data.search;
+    conversations = groups ? groupData.result.data.search : data.search;
   }
 
   // If no cache, assign conversations data from search query.
   if (called && (searchVal || savedSearchCriteria || searchParam)) {
-    conversations = searchData.search;
+    conversations = groups ? groupData.result.data.search : searchData.search;
   }
 
   const buildChatConversation = (index: number, header: any, conversation: any) => {
@@ -294,7 +303,8 @@ export const ConversationList = ({
   let conversationList: any;
   // If a search term is used, use the SearchMulti API. For searches term, this is not applicable.
   if (searchVal && searchMultiData && Object.keys(searchParam).length === 0) {
-    conversations = searchMultiData.searchMulti;
+    conversations = groups ? groupData?.result?.data : searchMultiData.searchMulti;
+
     // to set search response sequence
     const searchArray = { contacts: [], messages: [], labels: [] };
     let conversationsData;
@@ -304,9 +314,13 @@ export const ConversationList = ({
           <Typography className={styles.TitleText}>{dataArray}</Typography>
         </div>
       );
-      conversationsData = conversations[dataArray].map((conversation: any, index: number) =>
-        buildChatConversation(index, header, conversation)
-      );
+      conversationsData = groups
+        ? data.search[dataArray].map((conversation: any, index: number) =>
+            buildChatConversation(index, header, conversation)
+          )
+        : conversations[dataArray].map((conversation: any, index: number) =>
+            buildChatConversation(index, header, conversation)
+          );
       // Check if its not empty
       if (conversationsData.length > 0) {
         if (!conversationList) conversationList = [];
@@ -331,6 +345,13 @@ export const ConversationList = ({
       let contactBspStatus = '';
       let contactIsOrgRead = false;
       let selectedRecord = false;
+      let groupName = '';
+      let groupId;
+      if (groups) {
+        groupName =
+          entityType === 'collection' ? conversation.group.label : conversation?.group?.name;
+        groupId = conversation?.group?.bspId;
+      }
       if (conversation.contact) {
         if (selectedContactId === conversation.contact.id) {
           selectedRecord = true;
@@ -347,9 +368,34 @@ export const ConversationList = ({
         }
         entityId = conversation.group.id;
         displayName = conversation.group.label;
+        contactIsOrgRead = conversation.group.isOrgRead;
       }
 
-      return (
+      return groups ? (
+        <GroupConversation
+          key={key}
+          selected={selectedRecord}
+          onClick={() => {
+            setSearchHeight();
+            showMessages();
+            if (entityType === 'contact' && setSelectedContactId) {
+              setSelectedContactId(conversation.contact.id);
+            } else if (entityType === 'collection' && setSelectedCollectionId) {
+              setSelectedCollectionId(conversation.group.id);
+            }
+          }}
+          index={index}
+          contactId={entityId}
+          bspId={groupId}
+          entityType={entityType}
+          groupName={groupName}
+          lastMessage={lastMessage}
+          senderLastMessage={senderLastMessage}
+          contactStatus={contactStatus}
+          contactBspStatus={contactBspStatus}
+          contactIsOrgRead={contactIsOrgRead}
+        />
+      ) : (
         <ChatConversation
           key={key}
           selected={selectedRecord}
