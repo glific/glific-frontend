@@ -36,6 +36,7 @@ export interface ChatMessagesProps {
   collectionId?: number | string | null;
   groups?: boolean;
   phonenumber?: string;
+  bspId?: string;
 }
 
 export const ChatMessages = ({
@@ -43,6 +44,7 @@ export const ChatMessages = ({
   collectionId,
   groups = false,
   phonenumber,
+  bspId,
 }: ChatMessagesProps) => {
   const urlString = new URL(window.location.href);
 
@@ -345,8 +347,8 @@ export const ChatMessages = ({
       if (groups) {
         payload = {
           message: body,
-          phone: phonenumber,
-          bsp_id: '',
+          wa_managed_phone: phonenumber,
+          wa_group_id: bspId,
         };
       } else {
         payload = {
@@ -361,6 +363,8 @@ export const ChatMessages = ({
       }
 
       if (groups) {
+        console.log(payload);
+
         createAndSendMessage({
           variables: { input: payload },
         });

@@ -135,6 +135,7 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
             groups
             contactId={simulatorId > 0 ? simulatorId : selectedContactId}
             collectionId={selectedCollectionId}
+            bspId={data.search[0].group.bspId}
           />
         </div>
 
