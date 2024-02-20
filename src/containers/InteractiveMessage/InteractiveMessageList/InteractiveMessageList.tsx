@@ -118,10 +118,11 @@ export const InteractiveMessageList = () => {
       dialog: setDialog,
     },
     {
-      label: t('Make a copy'),
+      label: t('Copy'),
       icon: <DuplicateIcon />,
       parameter: 'id',
       dialog: handleCopyInteractive,
+      insideMore: true,
     },
   ];
 

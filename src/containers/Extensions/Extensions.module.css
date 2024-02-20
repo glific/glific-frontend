@@ -20,8 +20,6 @@
 
 .DialogContent {
   padding: 0px 0px 4px 0px !important;
-  max-height: 500px;
-  overflow: hidden !important;
 }
 
 .Form input[type='text'],

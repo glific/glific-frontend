@@ -87,6 +87,7 @@ export const ChatTemplate = ({ title, body, globalButtonTitle, items }: Template
         titleAlign="left"
         handleOk={() => setShowDialog(false)}
         buttonOk="Done"
+        handleCancel={() => setShowDialog(false)}
         skipCancel
         alwaysOntop
       >

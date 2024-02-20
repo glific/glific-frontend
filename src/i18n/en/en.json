@@ -450,5 +450,8 @@
   "Critical Balance Threshold is required.": "Critical Balance Threshold is required.",
   "Recieve critical balance threshold mails every two days.": "Recieve critical balance threshold mails every two days.",
   "Recieve low balance threshold mails once a week.": "Recieve low balance threshold mails once a week.",
-  "Contacts": "Contacts"
+  "Contacts": "Contacts",
+  "Settings": "Settings",
+  "Logout": "Logout",
+  "Copy": "Copy"
 }

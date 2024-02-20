@@ -7,6 +7,7 @@ import {
   Popper,
   PopperPlacementType,
 } from '@mui/material';
+import styles from './Menu.module.css';
 
 import MenuItem from './MenuItem/MenuItem';
 
@@ -15,18 +16,29 @@ export interface MenuProps {
   eventType?: string | undefined;
   placement?: PopperPlacementType | undefined;
   children?: React.ReactNode;
+  onOpen?: Function;
+  onClose?: Function;
 }
 
-const Menu = ({ menus, children, eventType = 'Click', placement = 'top' }: MenuProps) => {
+const Menu = ({
+  menus,
+  children,
+  eventType = 'Click',
+  placement = 'top',
+  onOpen = () => {},
+  onClose = () => {},
+}: MenuProps) => {
   const [open, setOpen] = useState(false);
   const anchorRef = useRef<HTMLDivElement>(null);
 
   const handleOpen = () => {
     setOpen(true);
+    onOpen();
   };
 
   const handleClose = () => {
     setOpen(false);
+    onClose();
   };
 
   const menuList = menus.map((menu: any) => (
@@ -35,6 +47,7 @@ const Menu = ({ menus, children, eventType = 'Click', placement = 'top' }: MenuP
         onClickHandler={() => {
           if (menu.onClick) {
             menu.onClick();
+            handleClose();
           } else {
             handleClose();
           }
@@ -66,11 +79,11 @@ const Menu = ({ menus, children, eventType = 'Click', placement = 'top' }: MenuP
         transition
         disablePortal={placement === 'top'}
         placement={placement}
-        style={{ zIndex: 1000 }}
+        className={styles.Popper}
       >
         {({ TransitionProps }) => (
           <Grow {...TransitionProps}>
-            <Paper>
+            <Paper className={styles.Popper}>
               <ClickAwayListener onClickAway={handleClose}>
                 <div
                   onMouseEnter={eventType === 'MouseEnter' ? handleOpen : undefined}

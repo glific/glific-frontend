@@ -493,7 +493,6 @@ export const List = ({
           <div aria-label={t('Edit')} data-testid="EditIcon">
             <div className={styles.IconWithText}>
               <EditIcon className={styles.IconSize} />
-              <div className={styles.TextButton}>Edit</div>
             </div>
           </div>
         </Link>
@@ -517,7 +516,7 @@ export const List = ({
     const actionsInsideMore = additionalAction(item).filter((action: any) => action?.insideMore);
     const actionsOutsideMore = additionalAction(item).filter((action: any) => !action?.insideMore);
 
-    if (actionsInsideMore.length > 0 || allowedAction.edit || allowedAction.delete) {
+    if (actionsInsideMore.length > 0 || allowedAction.delete) {
       moreButton = (
         <IconButton
           data-testid="MoreIcon"
@@ -539,6 +538,9 @@ export const List = ({
       return (
         <div className={styles.Icons}>
           {actionListMap(item, actionsOutsideMore, false)}
+          {allowedAction.edit && (
+            <IconButton className={styles.additonalButton}>{editButton}</IconButton>
+          )}
 
           {/* do not display edit & delete for staff role in collection */}
           {userRolePermissions.manageCollections || item !== 'collections' ? (
@@ -563,12 +565,11 @@ export const List = ({
                     }}
                   >
                     <div>
-                      <MenuItem className={styles.MenuItem}> {editButton}</MenuItem>
-                      <Divider className={styles.Divider} />
+                      {actionListMap(item, actionsInsideMore, true)}
+                      <Divider className={styles.Divider}></Divider>
                       <MenuItem className={styles.MenuItem}>
                         {deleteButton(id, labelValue)}
                       </MenuItem>
-                      {actionListMap(item, actionsInsideMore, true)}
                     </div>
                   </Menu>
                 </Backdrop>

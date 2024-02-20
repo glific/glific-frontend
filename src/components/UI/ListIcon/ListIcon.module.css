@@ -6,3 +6,8 @@
   transform: unset !important;
   line-height: 0.3 !important;
 }
+
+.ListIcon {
+  display: flex;
+  align-items: center;
+}

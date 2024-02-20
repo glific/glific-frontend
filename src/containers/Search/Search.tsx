@@ -369,6 +369,7 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
       placeholder: t('Date from'),
       disabled: useExpression,
       label: type === 'search' ? t('Date range') : null,
+      className: styles.CalendarLeft,
     },
     {
       component: Calendar,
@@ -376,6 +377,7 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
       type: 'date',
       disabled: useExpression,
       placeholder: t('Date to'),
+      className: styles.CalendarRight,
     },
   ];
 
@@ -384,7 +386,7 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
     {
       component: Input,
       name: 'dateFromExpression',
-      placeholder: t('Date from expression'),
+      label: t('Date from expression'),
       type: 'text',
       disabled: !useExpression,
     },
@@ -392,7 +394,7 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
       component: Input,
       type: 'text',
       name: 'dateToExpression',
-      placeholder: t('Date to expression'),
+      label: t('Date to expression'),
       disabled: !useExpression,
     },
   ];
@@ -477,6 +479,7 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
     <>
       {dialog}
       <FormLayout
+        withDialog={type !== undefined}
         noHeading={type !== undefined}
         {...queries}
         states={states}

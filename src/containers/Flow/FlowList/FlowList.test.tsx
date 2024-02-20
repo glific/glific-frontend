@@ -83,10 +83,17 @@ describe('<FlowList />', () => {
   });
 
   test('click on Make a copy', async () => {
-    const { container } = render(flowList);
+    const { getAllByTestId } = render(flowList);
+
     await waitFor(() => {
-      expect(container.querySelector('#additionalButton-icon')).toBeInTheDocument();
-      fireEvent.click(container.querySelector('#additionalButton-icon') as SVGAElement);
+      expect(getAllByTestId('MoreIcon')[0]).toBeInTheDocument();
+    });
+
+    fireEvent.click(getAllByTestId('MoreIcon')[0]);
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('additionalButton')[0]).toBeInTheDocument();
+      fireEvent.click(screen.getAllByTestId('additionalButton')[0]);
     });
   });
 

@@ -259,10 +259,11 @@ export const Template = ({
   };
 
   const copyAction = {
-    label: t('Make a copy'),
+    label: t('Copy'),
     icon: <DuplicateIcon />,
     parameter: 'id',
     dialog: setCopyDialog,
+    insideMore: true,
   };
 
   let additionalAction: any = () => [

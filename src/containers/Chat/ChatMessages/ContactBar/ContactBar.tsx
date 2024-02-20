@@ -14,40 +14,39 @@ import { useMutation, useLazyQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 
 import TerminateFlowIcon from 'assets/images/icons/Automations/Terminate.svg?react';
-import ExpandIcon from '../../../../assets/images/icons/Expand.svg?react';
-import AddContactIcon from '../../../../assets/images/icons/Contact/Light.svg?react';
-import BlockIcon from '../../../../assets/images/icons/Block.svg?react';
-import BlockDisabledIcon from '../../../../assets/images/icons/BlockDisabled.svg?react';
-import ProfileIcon from '../../../../assets/images/icons/Contact/Profile.svg?react';
-import FlowIcon from '../../../../assets/images/icons/Flow/Dark.svg?react';
-import FlowUnselectedIcon from '../../../../assets/images/icons/Flow/Unselected.svg?react';
-import ClearConversation from '../../../../assets/images/icons/Chat/ClearConversation.svg?react';
-import ChatIcon from '../../../../assets/images/icons/Chat/UnselectedDark.svg?react';
-import CollectionIcon from '../../../../assets/images/icons/Chat/SelectedCollection.svg?react';
-import SavedSearchIcon from '../../../../assets/images/icons/Chat/SelectedSavedSearch.svg?react';
+import ExpandIcon from 'assets/images/icons/Expand.svg?react';
+import AddContactIcon from 'assets/images/icons/Contact/Light.svg?react';
+import BlockIcon from 'assets/images/icons/Block.svg?react';
+import BlockDisabledIcon from 'assets/images/icons/BlockDisabled.svg?react';
+import ProfileIcon from 'assets/images/icons/Contact/Profile.svg?react';
+import FlowIcon from 'assets/images/icons/Flow/Dark.svg?react';
+import FlowUnselectedIcon from 'assets/images/icons/Flow/Unselected.svg?react';
+import ClearConversation from 'assets/images/icons/Chat/ClearConversation.svg?react';
+import ChatIcon from 'assets/images/icons/Chat/UnselectedDark.svg?react';
+import CollectionIcon from 'assets/images/icons/Chat/SelectedCollection.svg?react';
+import SavedSearchIcon from 'assets/images/icons/Chat/SelectedSavedSearch.svg?react';
 
-import { GET_COLLECTIONS } from '../../../../graphql/queries/Collection';
-import { UPDATE_CONTACT_COLLECTIONS } from '../../../../graphql/mutations/Collection';
-import { GET_CONTACT_COLLECTIONS } from '../../../../graphql/queries/Contact';
-import { GET_FLOWS } from '../../../../graphql/queries/Flow';
-import { ADD_FLOW_TO_CONTACT, ADD_FLOW_TO_COLLECTION } from '../../../../graphql/mutations/Flow';
-import { UPDATE_CONTACT } from '../../../../graphql/mutations/Contact';
-import { SEARCH_QUERY } from '../../../../graphql/queries/Search';
-import { CLEAR_MESSAGES } from '../../../../graphql/mutations/Chat';
-import { setErrorMessage, setNotification } from '../../../../common/notification';
+import { GET_COLLECTIONS } from 'graphql/queries/Collection';
+import { UPDATE_CONTACT_COLLECTIONS } from 'graphql/mutations/Collection';
+import { GET_CONTACT_COLLECTIONS } from 'graphql/queries/Contact';
+import { GET_FLOWS } from 'graphql/queries/Flow';
+import { ADD_FLOW_TO_CONTACT, ADD_FLOW_TO_COLLECTION } from 'graphql/mutations/Flow';
+import { UPDATE_CONTACT } from 'graphql/mutations/Contact';
+import { SEARCH_QUERY } from 'graphql/queries/Search';
+import { CLEAR_MESSAGES } from 'graphql/mutations/Chat';
+import { setErrorMessage, setNotification } from 'common/notification';
 import {
   FLOW_STATUS_PUBLISHED,
   is24HourWindowOver,
   SEARCH_QUERY_VARIABLES,
   setVariables,
-} from '../../../../common/constants';
-import { Timer } from '../../../../components/UI/Timer/Timer';
-import { DialogBox } from '../../../../components/UI/DialogBox/DialogBox';
-import { Tooltip } from '../../../../components/UI/Tooltip/Tooltip';
-import { AvatarDisplay } from 'components/UI/AvatarDisplay/AvatarDisplay';
-import { SearchDialogBox } from '../../../../components/UI/SearchDialogBox/SearchDialogBox';
+} from 'common/constants';
+import { Timer } from 'components/UI/Timer/Timer';
+import { DialogBox } from 'components/UI/DialogBox/DialogBox';
+import { Tooltip } from 'components/UI/Tooltip/Tooltip';
+import { SearchDialogBox } from 'components/UI/SearchDialogBox/SearchDialogBox';
 import { TerminateFlow } from './TerminateFlow/TerminateFlow';
-import { showChats } from '../../../../common/responsive';
+import { showChats } from 'common/responsive';
 import { slicedString } from 'common/utils';
 import { CollectionInformation } from '../../../Collection/CollectionInformation/CollectionInformation';
 import AddContactsToCollection from '../AddContactsToCollection/AddContactsToCollection';

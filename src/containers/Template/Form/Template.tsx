@@ -737,10 +737,7 @@ const Template = ({
     onChange: (value: any) => {
       setTagId(value);
     },
-    textFieldProps: {
-      variant: 'outlined',
-      label: t('Tag'),
-    },
+    label: t('Tag'),
     helperText: t('Use this to categorize your templates.'),
   };
 

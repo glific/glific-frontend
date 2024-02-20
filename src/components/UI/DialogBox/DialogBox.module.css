@@ -2,7 +2,7 @@
   border-radius: 10px;
   margin: 0px !important;
   margin-top: 66px !important;
-  min-width: 474px;
+  width: 474px;
 }
 
 .ScrollPaper {
@@ -31,11 +31,12 @@
 
 .DialogActionsCenter {
   composes: DialogActions;
+  margin-left: unset;
   justify-content: center !important;
 }
 
 .DialogTitle {
-  padding: 32px 56px;
+  padding: 32px 56px 32px 36px;
   white-space: pre-line;
   line-height: normal;
   font-weight: 700;
