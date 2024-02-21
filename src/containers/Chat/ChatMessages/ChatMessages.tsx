@@ -347,8 +347,8 @@ export const ChatMessages = ({
       if (groups) {
         payload = {
           message: body,
-          wa_managed_phone: phonenumber,
-          wa_group_id: bspId,
+          wa_managed_phone_id: 1,
+          wa_group_id: 1,
         };
       } else {
         payload = {
@@ -363,8 +363,6 @@ export const ChatMessages = ({
       }
 
       if (groups) {
-        console.log(payload);
-
         createAndSendMessage({
           variables: { input: payload },
         });

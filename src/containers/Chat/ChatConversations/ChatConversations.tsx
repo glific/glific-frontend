@@ -44,9 +44,9 @@ export const ChatConversations = ({
   const { t } = useTranslation();
 
   const MOCK_PHONENUMBERS = [
-    { label: '918657048983', value: '918657048983' },
-    { label: '918439201748', value: '918439201748' },
-    { label: '918781934028', value: '918781934028' },
+    { label: '918657048983', value: '43876' },
+    { label: '918439201748', value: '43876' },
+    { label: '918781934028', value: '43876' },
   ];
 
   // restore multi-search after conversation click

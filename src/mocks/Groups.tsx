@@ -214,7 +214,7 @@ export const groupCollectionSearchQuery = () => {
             contact: null,
             group: {
               __typename: 'Group',
-              id: '2',
+              id: '1',
               label: 'Optout contacts',
             },
             messages: [],
@@ -224,7 +224,7 @@ export const groupCollectionSearchQuery = () => {
             contact: null,
             group: {
               __typename: 'Group',
-              id: '4',
+              id: '2',
               label: 'Default Group',
             },
             messages: [
@@ -240,7 +240,7 @@ export const groupCollectionSearchQuery = () => {
                 },
                 sender: {
                   __typename: 'Contact',
-                  id: '1',
+                  id: '2',
                 },
                 location: null,
                 type: 'TEXT',
