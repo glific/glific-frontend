@@ -159,7 +159,7 @@ const SideMenus = ({ opened }: SideMenusProps) => {
                   to={redirectPath}
                 >
                   <ListItemIcon className={styles.ListItemIcon}>
-                    <ListIcon selected={isSelected} icon={menu.icon} count={notificationCount} />
+                    <ListIcon selected={isSelected} icon={menu.icon} />
                   </ListItemIcon>
                   {opened && (
                     <ListItemText
@@ -196,7 +196,7 @@ const SideMenus = ({ opened }: SideMenusProps) => {
             <ListIcon
               selected={menu.children ? false : isSelected}
               icon={menu.icon}
-              count={notificationCount}
+              count={menu.showBadge ? notificationCount : undefined}
             />
           </ListItemIcon>
           {opened && (

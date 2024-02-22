@@ -11,6 +11,7 @@ export interface Menu {
   path: string;
   icon?: string;
   type: string;
+  showBadge?: boolean;
   roles: string[];
   url?: string;
   show?: boolean;
@@ -135,6 +136,7 @@ const menus = (): Menu[] => [
     path: '/notifications',
     icon: 'notification',
     type: 'sideDrawer',
+    showBadge: true,
     roles: managerLevel,
   },
   {
