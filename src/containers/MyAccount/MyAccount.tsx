@@ -201,7 +201,11 @@ export const MyAccount = () => {
   if (!showOTPButton) {
     formFieldLayout = formFields.map((field: any, index) => {
       const key = index;
-      return <Field key={key} {...field} />;
+      return (
+        <div className={styles.ChangePasswordField}>
+          <Field key={key} {...field} />
+        </div>
+      );
     });
   }
 

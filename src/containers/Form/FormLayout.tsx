@@ -528,6 +528,7 @@ export const FormLayout = ({
       }}
       validationSchema={validationSchema}
       onSubmit={(itemData, { setErrors }) => {
+        console.log('scs');
         // when you want to show custom error on form field and error message is not coming from api
         setCustomError({ setErrors });
         saveHandler(itemData);
@@ -643,7 +644,10 @@ export const FormLayout = ({
   ) : null;
 
   return (
-    <div className={partialPage ? styles.ItemAddDialog : styles.ItemAdd} data-testid="add-container">
+    <div
+      className={partialPage ? styles.ItemAddDialog : styles.ItemAdd}
+      data-testid="add-container"
+    >
       {dialogBox}
       {!noHeading && heading}
       {backLink}
