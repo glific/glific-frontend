@@ -13,7 +13,6 @@ import {
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
-import { useResizeDetector } from 'react-resize-detector';
 import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 import { FormHelperText } from '@mui/material';
 import {
@@ -55,11 +54,6 @@ export const Editor = ({ disabled = false, isEditing = false, ...props }: Editor
       });
     }
   }, [field.value]);
-
-  const { ref } = useResizeDetector({
-    refreshMode: 'debounce',
-    refreshRate: 1000,
-  });
 
   const Placeholder = () => {
     return <p className={styles.editorPlaceholder}>{placeholder}</p>;
@@ -103,7 +97,7 @@ export const Editor = ({ disabled = false, isEditing = false, ...props }: Editor
 
   return (
     <div className={styles.EditorWrapper}>
-      <div className={disabled ? styles?.disabled : styles.Editor} ref={ref} data-testid="resizer">
+      <div className={disabled ? styles?.disabled : styles.Editor} data-testid="resizer">
         <PlainTextPlugin
           placeholder={<Placeholder />}
           contentEditable={

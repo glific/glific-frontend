@@ -31,7 +31,6 @@ import {
   $isRangeSelection,
   CLEAR_EDITOR_COMMAND,
 } from 'lexical';
-import { useResizeDetector } from 'react-resize-detector';
 
 export interface ChatInputProps {
   onSendMessage(
@@ -393,14 +392,6 @@ export const ChatInput = ({
     };
     dialog = <AddAttachment {...dialogProps} />;
   }
-
-  const { ref } = useResizeDetector({
-    refreshMode: 'debounce',
-    refreshRate: 1000,
-    onResize: (e) => {
-      console.log(e);
-    },
-  });
 
   return (
     <Container
