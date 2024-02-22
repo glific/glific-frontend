@@ -1,6 +1,6 @@
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
-import { Box } from '@mui/material';
+import { Box, Divider } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useEffect } from 'react';
 
@@ -52,7 +52,7 @@ export const SettingList = () => {
     },
   ];
 
-  let cardList: any = [];
+  let providersList: any = [];
   if (providerData) {
     const providers = [...providerData.providers];
     const sortedProviders = providers.sort((first: any, second: any) =>
@@ -60,22 +60,30 @@ export const SettingList = () => {
     );
 
     // create setting list of Organisation & providers
-    cardList = [...list, ...sortedProviders];
+    providersList = [...sortedProviders];
   }
 
   const drawer = (
     <div className={styles.Drawer} data-testid="setting-drawer">
-      {cardList.map((data: any, index: number) => (
+      {list.map((data: any, index: number) => (
         <div
           key={index}
           onClick={() => navigate(`/settings/${data.shortcode}`)}
           className={`${styles.Tab} ${
             location.pathname == `/settings/${data.shortcode}` && styles.ActiveTab
-          }
-          ${
-            location.pathname == '/settings' && data.shortcode == 'organization' && styles.ActiveTab
-          }
-          `}
+          }`}
+        >
+          {data.name}
+        </div>
+      ))}
+      <Divider className={styles.Divider} />
+      {providersList.map((data: any, index: number) => (
+        <div
+          key={index}
+          onClick={() => navigate(`/settings/${data.shortcode}`)}
+          className={`${styles.Tab} ${
+            location.pathname == `/settings/${data.shortcode}` && styles.ActiveTab
+          }`}
         >
           {data.name}
         </div>
@@ -83,7 +91,9 @@ export const SettingList = () => {
     </div>
   );
 
-  const heading = cardList.find(
+  const completeList = [...list, ...providersList];
+
+  const heading = completeList.find(
     (data: any) => data.shortcode === location.pathname.replace(/\/settings\//gi, '')
   );
 

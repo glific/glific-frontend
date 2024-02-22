@@ -175,6 +175,7 @@ export const Providers = () => {
 
   return (
     <FormLayout
+      partialPage
       {...queries}
       title={title}
       states={stateValues}
