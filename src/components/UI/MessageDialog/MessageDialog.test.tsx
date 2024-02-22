@@ -1,4 +1,4 @@
-import '../../../matchMediaMock';
+import 'mocks/matchMediaMock';
 import { fireEvent, render } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 

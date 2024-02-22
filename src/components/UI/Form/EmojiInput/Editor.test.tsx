@@ -1,4 +1,4 @@
-import '../../../../matchMediaMock';
+import 'mocks/matchMediaMock';
 import { render } from '@testing-library/react';
 import { Editor } from './Editor';
 import { LexicalWrapper } from 'common/LexicalWrapper';
