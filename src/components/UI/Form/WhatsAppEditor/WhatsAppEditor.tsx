@@ -16,7 +16,7 @@ import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
 import { useResizeDetector } from 'react-resize-detector';
 
 import styles from './WhatsAppEditor.module.css';
-import { getTextContent, handleFormatterEvents, handleFormatting } from 'common/RichEditor';
+import { handleFormatterEvents, handleFormatting } from 'common/RichEditor';
 
 interface WhatsAppEditorProps {
   sendMessage(message: any): void;
@@ -57,7 +57,8 @@ export const WhatsAppEditor = ({
         let formatter = '';
         if (event.code === 'Enter' && !event.shiftKey) {
           event.preventDefault();
-          let textMessage = getTextContent(editor);
+          const root = $getRoot();
+          let textMessage = root.getTextContent();
           sendMessage(textMessage);
           return true;
         } else {
