@@ -64,3 +64,13 @@ export const GROUP_SEARCH_QUERY = gql`
     }
   }
 `;
+
+export const GET_WA_MANAGED_PHONES = gql`
+  query WaManagedPhones($filter: WaManagedPhoneFilter, $opts: Opts) {
+    waManagedPhones(filter: $filter, opts: $opts) {
+      id
+      phone
+      label
+    }
+  }
+`;

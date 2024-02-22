@@ -5,7 +5,7 @@ const withResult = {
     search: [
       {
         __typename: 'Conversation',
-        group: {
+        wa_group: {
           id: '1',
           bspId: '120363238069881530@g.us',
           name: 'Maytapi Testing ',
@@ -105,16 +105,11 @@ const withResult = {
             flowLabel: null,
           },
         ],
-        collections: [
-          {
-            id: '1',
-            label: 'Default Collection',
-          },
-        ],
+        group: null,
       },
       {
         __typename: 'Conversation',
-        group: {
+        wa_group: {
           id: '2',
           bspId: '120363238069881530@g.us',
           name: 'Maytapi Testing Group 2',
@@ -172,12 +167,7 @@ const withResult = {
             flowLabel: null,
           },
         ],
-        collections: [
-          {
-            id: '1',
-            label: 'Default Collection',
-          },
-        ],
+        group: null,
       },
     ],
   },
@@ -211,7 +201,7 @@ export const groupCollectionSearchQuery = () => {
         search: [
           {
             __typename: 'Conversation',
-            contact: null,
+            wa_group: null,
             group: {
               __typename: 'Group',
               id: '1',
@@ -221,7 +211,7 @@ export const groupCollectionSearchQuery = () => {
           },
           {
             __typename: 'Conversation',
-            contact: null,
+            wa_group: null,
             group: {
               __typename: 'Group',
               id: '2',
@@ -260,5 +250,5 @@ export const groupCollectionSearchQuery = () => {
 };
 
 export const mockResolver = () => {
-  return withResult?.data;
+  return withResult.data;
 };

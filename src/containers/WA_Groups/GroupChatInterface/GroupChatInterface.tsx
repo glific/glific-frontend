@@ -16,7 +16,9 @@ import ChatMessages from 'containers/Chat/ChatMessages/ChatMessages';
 import SimulatorIcon from 'assets/images/icons/Simulator.svg?react';
 import CollectionConversations from 'containers/Chat/CollectionConversations/CollectionConversations';
 import styles from './GroupChatInterface.module.css';
-import { groupSearchQuery } from 'mocks/Groups';
+import { groupCollectionSearchQuery, groupSearchQuery } from 'mocks/Groups';
+import { useQuery } from '@apollo/client';
+import { GET_WA_MANAGED_PHONES } from 'graphql/queries/WA_Groups';
 
 const tabs = [
   {
@@ -40,6 +42,21 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
   const { t } = useTranslation();
   const [value, setValue] = useState(tabs[0].link);
   const params = useParams();
+
+  const {
+    loading,
+    error,
+    data: wa_phones_list,
+  } = useQuery<any>(GET_WA_MANAGED_PHONES, {
+    variables: {
+      filter: {},
+      opts: {
+        limit: 10,
+      },
+    },
+    fetchPolicy: 'cache-only',
+  });
+
   const MOCK_PHONENUMBERS = [
     { label: '918657048983', value: '43876' },
     { label: '918439201748', value: '43876' },
@@ -60,8 +77,9 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
     selectedTab = 'collections';
   }
 
-  const data = groupSearchQuery({ limit: DEFAULT_MESSAGE_LIMIT }, DEFAULT_CONTACT_LIMIT, {})?.result
-    ?.data;
+  const data = collections
+    ? groupCollectionSearchQuery()?.result?.data
+    : groupSearchQuery({ limit: DEFAULT_MESSAGE_LIMIT }, DEFAULT_CONTACT_LIMIT, {})?.result?.data;
 
   useEffect(() => {
     if (getUserRole().includes('Staff')) {
@@ -71,18 +89,18 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
 
   // let's handle the case when the type is collection  then we set the first collection
   // as the selected collection
-  if (!selectedContactId && collections && data && data.search.length !== 0) {
-    if (data.search[0].collections) {
-      selectedCollectionId = data.search[0].collections[0].id;
+  if (!selectedContactId && collections && data && data?.search.length !== 0) {
+    if (data?.search[0].group) {
+      selectedCollectionId = data?.search[0].group.id;
       selectedContactId = '';
     }
   }
 
   // let's handle the case when contact id and collection id is not passed in the url then we set the
   // first record as selected contact
-  if (!selectedContactId && !selectedCollectionId && data && data.search.length !== 0) {
-    if (data.search[0].group) {
-      selectedContactId = data.search[0].group.id;
+  if (!selectedContactId && !selectedCollectionId && data && data?.search.length !== 0) {
+    if (data?.search[0].wa_group) {
+      selectedContactId = data?.search[0].wa_group?.id;
     }
   }
 
@@ -104,7 +122,7 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
     navigate(newValue);
   };
 
-  if (data && data.search.length === 0) {
+  if (data && data?.search.length === 0) {
     groupChatInterface = noConversations;
   } else {
     let heading = '';
@@ -135,7 +153,6 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
             groups
             contactId={simulatorId > 0 ? simulatorId : selectedContactId}
             collectionId={selectedCollectionId}
-            bspId={data.search[0].group.bspId}
           />
         </div>
 

@@ -16,7 +16,7 @@ import { AvatarDisplay } from 'components/UI/AvatarDisplay/AvatarDisplay';
 
 export interface GroupConversationProps {
   contactId: number;
-  groupName: string;
+  contactName: string;
   contactStatus?: string;
   contactBspStatus?: string;
   contactIsOrgRead: boolean;
@@ -35,7 +35,6 @@ export interface GroupConversationProps {
   messageNumber?: number;
   highlightSearch?: string | null;
   searchMode?: any;
-  bspId: string;
 }
 const updateContactCache = (client: any, id: any) => {
   const contact = client.readFragment({
@@ -123,7 +122,7 @@ const GroupConversation = ({
   lastMessage,
   selected,
   contactId,
-  groupName,
+  contactName,
   index,
   highlightSearch,
   searchMode,
@@ -133,7 +132,6 @@ const GroupConversation = ({
   contactIsOrgRead,
   entityType,
   messageNumber,
-  bspId,
   onClick,
 }: GroupConversationProps) => {
   // check if message is unread and style it differently
@@ -154,7 +152,7 @@ const GroupConversation = ({
     chatInfoClass = [styles.ChatInfo, styles.ChatInfoUnread];
   }
 
-  const name = slicedString(groupName, 20);
+  const name = slicedString(contactName, 20);
   const { type, body } = lastMessage;
   const isTextType = type === 'TEXT';
 

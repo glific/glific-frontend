@@ -29,14 +29,13 @@ import { getCachedConverations, updateConversationsCache } from '../../../servic
 import { addLogs, getDisplayName, isSimulator } from '../../../common/utils';
 import { CollectionInformation } from '../../Collection/CollectionInformation/CollectionInformation';
 import { SEND_MESSAGE_IN_WA_GROUP } from 'graphql/mutations/Group';
-import { groupSearchQuery } from 'mocks/Groups';
+import { groupCollectionSearchQuery, groupSearchQuery } from 'mocks/Groups';
 
 export interface ChatMessagesProps {
   contactId?: number | string | null;
   collectionId?: number | string | null;
   groups?: boolean;
   phonenumber?: string;
-  bspId?: string;
 }
 
 export const ChatMessages = ({
@@ -44,7 +43,6 @@ export const ChatMessages = ({
   collectionId,
   groups = false,
   phonenumber,
-  bspId,
 }: ChatMessagesProps) => {
   const urlString = new URL(window.location.href);
 
@@ -148,7 +146,9 @@ export const ChatMessages = ({
     variables: queryVariables,
     fetchPolicy: 'cache-only',
   });
-  const groupData = groupSearchQuery({ limit: DEFAULT_MESSAGE_LIMIT }, DEFAULT_CONTACT_LIMIT, {});
+  const groupData = collectionId
+    ? groupCollectionSearchQuery()
+    : groupSearchQuery({ limit: DEFAULT_MESSAGE_LIMIT }, DEFAULT_CONTACT_LIMIT, {});
 
   useEffect(() => {
     const clickListener = () => setShowDropdown(null);
@@ -348,7 +348,7 @@ export const ChatMessages = ({
         payload = {
           message: body,
           wa_managed_phone_id: 1,
-          wa_group_id: 1,
+          wa_group_id: contactId,
         };
       } else {
         payload = {
@@ -402,7 +402,7 @@ export const ChatMessages = ({
         // loop through the cached conversations and find if contact exists
         // need to check - updateConversationInfo('contact', contactId);
         groupData.result.data.search.map((conversation: any, index: any) => {
-          if (conversation.group.id === contactId?.toString()) {
+          if (conversation.wa_group?.id === contactId?.toString()) {
             conversationIndex = index;
             setConversationInfo(conversation);
           }
@@ -715,16 +715,16 @@ export const ChatMessages = ({
   let chatInputSection;
 
   if (groups) {
-    if (contactId && conversationInfo.group) {
-      const displayName = conversationInfo.group.name;
+    if (contactId && conversationInfo.wa_group) {
+      const displayName = conversationInfo.wa_group?.name;
       topChatBar = (
         <ContactBar
           displayName={displayName}
-          isSimulator={isSimulator(conversationInfo.group.phone)}
+          isSimulator={isSimulator(conversationInfo.wa_group?.phone)}
           contactId={contactId.toString()}
-          lastMessageTime={conversationInfo.group.lastMessageAt}
-          contactStatus={conversationInfo.group.status}
-          contactBspStatus={conversationInfo.group.bspStatus}
+          lastMessageTime={conversationInfo.wa_group?.lastMessageAt}
+          contactStatus={conversationInfo.wa_group?.status}
+          contactBspStatus={conversationInfo.wa_group?.bspStatus}
           handleAction={() => handleChatClearedAction()}
           groups={groups}
         />
@@ -734,12 +734,12 @@ export const ChatMessages = ({
         <ChatInput
           handleHeightChange={handleHeightChange}
           onSendMessage={sendMessageHandler}
-          lastMessageTime={conversationInfo.group.lastMessageAt}
-          contactStatus={conversationInfo.group.status}
-          contactBspStatus={conversationInfo.group.bspStatus}
+          lastMessageTime={conversationInfo.wa_group?.lastMessageAt}
+          contactStatus={conversationInfo.wa_group?.status}
+          contactBspStatus={conversationInfo.wa_group?.bspStatus}
         />
       );
-    } else if (collectionId && conversationInfo.collections) {
+    } else if (collectionId && conversationInfo.group) {
       topChatBar = (
         <ContactBar
           collectionId={collectionId.toString()}

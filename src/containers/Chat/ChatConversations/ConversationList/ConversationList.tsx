@@ -314,13 +314,9 @@ export const ConversationList = ({
           <Typography className={styles.TitleText}>{dataArray}</Typography>
         </div>
       );
-      conversationsData = groups
-        ? data.search[dataArray].map((conversation: any, index: number) =>
-            buildChatConversation(index, header, conversation)
-          )
-        : conversations[dataArray].map((conversation: any, index: number) =>
-            buildChatConversation(index, header, conversation)
-          );
+      conversationsData = conversations[dataArray].map((conversation: any, index: number) =>
+        buildChatConversation(index, header, conversation)
+      );
       // Check if its not empty
       if (conversationsData.length > 0) {
         if (!conversationList) conversationList = [];
@@ -345,14 +341,15 @@ export const ConversationList = ({
       let contactBspStatus = '';
       let contactIsOrgRead = false;
       let selectedRecord = false;
-      let groupName = '';
       let groupId;
-      if (groups) {
-        groupName =
-          entityType === 'collection' ? conversation.group.label : conversation?.group?.name;
-        groupId = conversation?.group?.bspId;
-      }
-      if (conversation.contact) {
+      if (conversation.wa_group) {
+        if (selectedContactId === conversation.wa_group?.id) {
+          selectedRecord = true;
+        }
+        entityId = conversation.wa_group?.id;
+        displayName = conversation?.wa_group?.name;
+        contactIsOrgRead = conversation.wa_group?.isOrgRead;
+      } else if (conversation.contact) {
         if (selectedContactId === conversation.contact.id) {
           selectedRecord = true;
         }
@@ -362,7 +359,9 @@ export const ConversationList = ({
         contactStatus = conversation.contact.status;
         contactBspStatus = conversation.contact.bspStatus;
         contactIsOrgRead = conversation.contact.isOrgRead;
-      } else if (conversation.group) {
+      }
+
+      if (conversation.group) {
         if (selectedCollectionId === conversation.group.id) {
           selectedRecord = true;
         }
@@ -379,16 +378,15 @@ export const ConversationList = ({
             setSearchHeight();
             showMessages();
             if (entityType === 'contact' && setSelectedContactId) {
-              setSelectedContactId(conversation.contact.id);
+              setSelectedContactId(conversation.wa_group?.id);
             } else if (entityType === 'collection' && setSelectedCollectionId) {
               setSelectedCollectionId(conversation.group.id);
             }
           }}
           index={index}
           contactId={entityId}
-          bspId={groupId}
           entityType={entityType}
-          groupName={groupName}
+          contactName={displayName}
           lastMessage={lastMessage}
           senderLastMessage={senderLastMessage}
           contactStatus={contactStatus}
