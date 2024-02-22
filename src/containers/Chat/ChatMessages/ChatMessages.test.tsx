@@ -329,7 +329,7 @@ test('Collection: click on Jump to latest', async () => {
   });
 
   fireEvent.scroll(messageContainer, { target: { scrollTop: 10 } });
-  screen.debug(undefined, Infinity);
+
   await waitFor(() => {
     fireEvent.click(getByTestId('jumpToLatest'));
   });

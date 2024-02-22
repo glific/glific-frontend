@@ -395,7 +395,6 @@ export const ChatInput = ({
 
   return (
     <Container
-      ref={ref}
       className={`${styles.ChatInput} ${additionalStyle}`}
       data-testid="message-input-container"
     >
