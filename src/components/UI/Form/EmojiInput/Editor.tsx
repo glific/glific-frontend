@@ -43,7 +43,6 @@ export const Editor = ({ disabled = false, isEditing = false, ...props }: Editor
   const suggestions = {
     '@': mentions.map((mention: string) => mention?.split('@')[1]),
   };
-  const params = useParams();
   const [editor] = useLexicalComposerContext();
 
   useEffect(() => {

@@ -82,7 +82,7 @@ export const InteractiveMessage = () => {
   const params = useParams();
 
   let isEditing = false;
-  if (params.id) {
+  if (params?.id) {
     isEditing = true;
   }
 
