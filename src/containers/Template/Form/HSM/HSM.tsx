@@ -108,6 +108,7 @@ export const HSM = () => {
       getEditorValue: (value: any) => {
         setExample(value);
       },
+      isEditing: disabled,
     },
     {
       component: AutoComplete,

@@ -1,11 +1,7 @@
 .ChatInput {
-  padding-top: 15px;
-  position: absolute;
-  bottom: 15px;
   background-color: #f9f7f4;
-  left: 0;
-  right: 0;
   margin: auto;
+  max-width: 100% !important;
 }
 
 .ChatInputElements {

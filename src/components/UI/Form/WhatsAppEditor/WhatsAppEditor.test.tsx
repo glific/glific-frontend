@@ -1,9 +1,10 @@
+import '../../../../matchMediaMock';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { vi } from 'vitest';
 
 import WhatsAppEditor from './WhatsAppEditor';
-import { LexicalComposer } from '@lexical/react/LexicalComposer';
 import { userEvent } from '@testing-library/user-event';
+import { LexicalWrapper } from 'common/LexicalWrapper';
 
 const mockObserve = vi.fn();
 global.ResizeObserver = vi.fn().mockImplementation(() => ({
@@ -27,14 +28,9 @@ describe('<WhatsAppEditor/>', () => {
 
   test('input change should trigger callBacks', async () => {
     const { getByTestId } = render(
-      <LexicalComposer
-        initialConfig={{
-          namespace: 'chat-input',
-          onError: (error: any) => console.log(error),
-        }}
-      >
+      <LexicalWrapper>
         <WhatsAppEditor {...defaultProps()} />
-      </LexicalComposer>
+      </LexicalWrapper>
     );
 
     await userEvent.click(getByTestId('editor'));
@@ -46,14 +42,9 @@ describe('<WhatsAppEditor/>', () => {
 
   test('text is changed in lexical editor', async () => {
     const { getByTestId } = render(
-      <LexicalComposer
-        initialConfig={{
-          namespace: 'chat-input',
-          onError: (error: any) => console.log(error),
-        }}
-      >
+      <LexicalWrapper>
         <WhatsAppEditor {...defaultProps()} />
-      </LexicalComposer>
+      </LexicalWrapper>
     );
 
     const editor = screen.getByTestId('editor');
@@ -69,14 +60,9 @@ describe('<WhatsAppEditor/>', () => {
 
   test('resize observer event is called', async () => {
     render(
-      <LexicalComposer
-        initialConfig={{
-          namespace: 'chat-input',
-          onError: (error: any) => console.log(error),
-        }}
-      >
+      <LexicalWrapper>
         <WhatsAppEditor {...defaultProps()} />
-      </LexicalComposer>
+      </LexicalWrapper>
     );
     await waitFor(() => {
       expect(mockObserve).toHaveBeenCalled();

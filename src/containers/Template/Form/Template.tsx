@@ -685,6 +685,7 @@ const Template = ({
       getEditorValue: (value: any) => {
         setBody(value);
       },
+      isEditing: isEditing,
     },
   ];
 

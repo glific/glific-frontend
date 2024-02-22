@@ -3,7 +3,7 @@ import { Dialog, DialogContent } from '@mui/material';
 import CrossDarkIcon from 'assets/images/icons/CrossDark.svg?react';
 import ChatInput from 'containers/Chat/ChatMessages/ChatInput/ChatInput';
 import styles from './MessageDialog.module.css';
-import { LexicalComposer } from '@lexical/react/LexicalComposer';
+import { LexicalWrapper } from 'common/LexicalWrapper';
 
 export interface MessageDialogProps {
   title: string;
@@ -22,20 +22,14 @@ export const MessageDialog = ({ title, onSendMessage, handleClose }: MessageDial
       <div className={styles.DialogTitle} data-testid="title">
         {title}
       </div>
-      <LexicalComposer
-        initialConfig={{
-          namespace: 'chat-input',
-          onError: (error: any) => console.log(error),
-        }}
-      >
+      <LexicalWrapper>
         <ChatInput
           onSendMessage={onSendMessage}
-          handleHeightChange={() => {}}
           contactStatus=""
           contactBspStatus="SESSION_AND_HSM"
           additionalStyle={styles.ChatInput}
         />
-      </LexicalComposer>
+      </LexicalWrapper>
       <CrossDarkIcon className={styles.CloseIcon} onClick={handleClose} data-testid="closeButton" />
     </DialogContent>
   </Dialog>

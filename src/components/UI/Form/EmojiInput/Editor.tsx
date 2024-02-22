@@ -22,28 +22,21 @@ import {
   BeautifulMentionsMenuItemProps,
 } from 'lexical-beautiful-mentions';
 import { useParams } from 'react-router';
+import { handleFormatterEvents, handleFormatting } from 'common/RichEditor';
 
 export interface EditorProps {
-  type?: any;
   field: { name: string; onChange?: any; value: any; onBlur: any };
   disabled?: any;
-  label: string;
   form?: { touched: any; errors: any };
-  placeholder: any;
-  rows?: number;
-  helperText?: any;
+  placeholder: string;
+  helperText?: string;
   picker?: any;
-  textArea?: boolean;
-  togglePassword?: boolean;
-  endAdornmentCallback?: any;
-  validate?: any;
-  endAdornment?: any;
   inputProp?: any;
-  translation?: string;
   onChange?: any;
+  isEditing: boolean;
 }
 
-export const Editor = ({ textArea = false, disabled = false, ...props }: EditorProps) => {
+export const Editor = ({ disabled = false, isEditing = false, ...props }: EditorProps) => {
   const [editorState, setEditorState] = useState<any>('');
   const { field, form, picker, placeholder, onChange } = props;
   const mentions = props.inputProp?.suggestions || [];
@@ -51,12 +44,6 @@ export const Editor = ({ textArea = false, disabled = false, ...props }: EditorP
     '@': mentions.map((mention: string) => mention?.split('@')[1]),
   };
   const params = useParams();
-
-  let isEditing = false;
-  if (params.id) {
-    isEditing = true;
-  }
-
   const [editor] = useLexicalComposerContext();
 
   useEffect(() => {
@@ -80,33 +67,11 @@ export const Editor = ({ textArea = false, disabled = false, ...props }: EditorP
     return <p className={styles.editorPlaceholder}>{placeholder}</p>;
   };
 
-  const handleFormatting = (text: string, formatter: string) => {
-    switch (formatter) {
-      case 'bold':
-        return `*${text}*`;
-      case 'italic':
-        return `_${text}_`;
-      case 'strikethrough':
-        return `~${text}~`;
-      default:
-        return text;
-    }
-  };
-
   useEffect(() => {
     return editor.registerCommand(
       KEY_DOWN_COMMAND,
       (event: KeyboardEvent) => {
-        let formatter = '';
-        if (event.code === 'Enter') {
-          event.preventDefault(); // Prevent line break on enter
-        } else if ((event.ctrlKey || event.metaKey) && event.code === 'KeyB') {
-          formatter = 'bold';
-        } else if ((event.ctrlKey || event.metaKey) && event.code === 'KeyI') {
-          formatter = 'italic';
-        } else if ((event.ctrlKey || event.metaKey) && event.code === 'KeyS') {
-          formatter = 'strikethrough';
-        }
+        let formatter = handleFormatterEvents(event);
 
         editor.update(() => {
           const selection = $getSelection();

@@ -1,4 +1,4 @@
-import '../../../matchMediMock'
+import '../../../matchMediaMock';
 import { render, waitFor, cleanup, fireEvent } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { BrowserRouter } from 'react-router-dom';

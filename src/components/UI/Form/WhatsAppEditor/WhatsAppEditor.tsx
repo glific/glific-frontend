@@ -16,10 +16,9 @@ import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
 import { useResizeDetector } from 'react-resize-detector';
 
 import styles from './WhatsAppEditor.module.css';
-import { getTextContent } from 'common/RichEditor';
+import { getTextContent, handleFormatterEvents, handleFormatting } from 'common/RichEditor';
 
 interface WhatsAppEditorProps {
-  handleHeightChange(newHeight: number): void;
   sendMessage(message: any): void;
   setEditorState(editorState: any): void;
   readOnly?: boolean;
@@ -28,19 +27,13 @@ interface WhatsAppEditorProps {
 export const WhatsAppEditor = ({
   setEditorState,
   sendMessage,
-  handleHeightChange,
   readOnly = false,
 }: WhatsAppEditorProps) => {
   const [editor] = useLexicalComposerContext();
 
-  const onResize = useCallback((height: any) => {
-    handleHeightChange(height - 40);
-  }, []);
-
   const { ref } = useResizeDetector({
     refreshMode: 'debounce',
     refreshRate: 1000,
-    onResize,
   });
 
   const onChange = (editorState: any) => {
@@ -50,18 +43,11 @@ export const WhatsAppEditor = ({
     });
   };
 
-  const handleFormatting = (text: string, formatter: string) => {
-    switch (formatter) {
-      case 'bold':
-        return `*${text}*`;
-      case 'italic':
-        return `_${text}_`;
-      case 'strikethrough':
-        return `~${text}~`;
-      default:
-        return text;
+  useEffect(() => {
+    if (readOnly) {
+      editor.setEditable(false);
     }
-  };
+  }, [readOnly]);
 
   useEffect(() => {
     return editor.registerCommand(
@@ -74,10 +60,8 @@ export const WhatsAppEditor = ({
           let textMessage = getTextContent(editor);
           sendMessage(textMessage);
           return true;
-        } else if ((event.ctrlKey || event.metaKey) && event.code === 'KeyB') {
-          formatter = 'bold';
-        } else if ((event.ctrlKey || event.metaKey) && event.code === 'KeyI') {
-          formatter = 'italic';
+        } else {
+          formatter = handleFormatterEvents(event);
         }
 
         editor.update(() => {

@@ -1,9 +1,8 @@
-import '../../../../matchMediMock';
+import '../../../../matchMediaMock';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Editor } from './Editor';
-import { LexicalComposer } from '@lexical/react/LexicalComposer';
-import { BeautifulMentionNode } from 'lexical-beautiful-mentions';
+import { LexicalWrapper } from 'common/LexicalWrapper';
 
 const setFieldValueMock = vi.fn();
 
@@ -19,19 +18,14 @@ const lexicalChange = vi.fn;
 (window as any).IntersectionObserver = mockIntersectionObserver;
 
 const wrapper = (
-  <LexicalComposer
-    initialConfig={{
-      namespace: 'template-input',
-      onError: (error) => console.log(error),
-      nodes: [BeautifulMentionNode],
-    }}
-  >
+  <LexicalWrapper>
     <Editor
+      isEditing={false}
       field={{ name: 'body', value: '', onBlur: () => {} }}
       placeholder={''}
       onChange={lexicalChange}
     />
-  </LexicalComposer>
+  </LexicalWrapper>
 );
 
 it('should render lexical editor', () => {

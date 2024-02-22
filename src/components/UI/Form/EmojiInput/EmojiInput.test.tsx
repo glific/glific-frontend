@@ -1,4 +1,4 @@
-import '../../../../matchMediMock';
+import '../../../../matchMediaMock';
 import { render } from '@testing-library/react';
 import { EmojiInput } from './EmojiInput';
 import userEvent from '@testing-library/user-event';

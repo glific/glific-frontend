@@ -81,6 +81,11 @@ export const InteractiveMessage = () => {
   const { t } = useTranslation();
   const params = useParams();
 
+  let isEditing = false;
+  if (params.id) {
+    isEditing = true;
+  }
+
   const isLocationRequestType = templateType === LOCATION_REQUEST;
 
   const { data: tag } = useQuery(GET_TAGS, {
@@ -528,6 +533,7 @@ export const InteractiveMessage = () => {
       inputProp: {
         suggestions: contactVariables,
       },
+      isEditing: isEditing,
     },
     {
       skip: templateType !== QUICK_REPLY,

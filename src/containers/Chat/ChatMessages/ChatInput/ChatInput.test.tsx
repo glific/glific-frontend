@@ -1,3 +1,4 @@
+import '../../../../matchMediaMock';
 import { MockedProvider } from '@apollo/client/testing';
 import { render, waitFor, fireEvent } from '@testing-library/react';
 import { vi } from 'vitest';
@@ -11,7 +12,7 @@ import {
 } from 'mocks/Attachment';
 import { searchInteractive } from 'mocks/InteractiveMessage';
 import '../VoiceRecorder/VoiceRecorder';
-import { LexicalComposer } from '@lexical/react/LexicalComposer';
+import { LexicalWrapper } from 'common/LexicalWrapper';
 
 const mocks = [
   searchInteractive,
@@ -69,14 +70,9 @@ describe('<ChatInput />', () => {
 
   const chatInput = (
     <MockedProvider mocks={mocks} addTypename={false}>
-      <LexicalComposer
-        initialConfig={{
-          namespace: 'chat-input',
-          onError: (error: any) => console.log(error),
-        }}
-      >
+      <LexicalWrapper>
         <ChatInput {...defaultProps} />
-      </LexicalComposer>
+      </LexicalWrapper>
     </MockedProvider>
   );
 
@@ -179,14 +175,9 @@ describe('<ChatInput />', () => {
     propsWithBspStatusNone.contactBspStatus = 'NONE';
     const { getByText } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
-        <LexicalComposer
-          initialConfig={{
-            namespace: 'chat-input',
-            onError: (error: any) => console.log(error),
-          }}
-        >
+        <LexicalWrapper>
           <ChatInput {...propsWithBspStatusNone} />
-        </LexicalComposer>
+        </LexicalWrapper>
       </MockedProvider>
     );
 
@@ -202,14 +193,9 @@ describe('<ChatInput />', () => {
     propsWithBspStatusHSM.contactBspStatus = 'HSM';
     const { getByText } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
-        <LexicalComposer
-          initialConfig={{
-            namespace: 'chat-input',
-            onError: (error: any) => console.log(error),
-          }}
-        >
+        <LexicalWrapper>
           <ChatInput {...propsWithBspStatusHSM} />
-        </LexicalComposer>
+        </LexicalWrapper>
       </MockedProvider>
     );
     expect(getByText('Templates')).toBeInTheDocument();
@@ -220,14 +206,9 @@ describe('<ChatInput />', () => {
     propsWithBspStatusSession.contactBspStatus = 'SESSION';
     const { getByText } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
-        <LexicalComposer
-          initialConfig={{
-            namespace: 'chat-input',
-            onError: (error: any) => console.log(error),
-          }}
-        >
+        <LexicalWrapper>
           <ChatInput {...propsWithBspStatusSession} />
-        </LexicalComposer>
+        </LexicalWrapper>
       </MockedProvider>
     );
     expect(getByText('Speed sends')).toBeInTheDocument();
@@ -241,14 +222,9 @@ describe('<ChatInput />', () => {
 
     const { getByText } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
-        <LexicalComposer
-          initialConfig={{
-            namespace: 'chat-input',
-            onError: (error: any) => console.log(error),
-          }}
-        >
+        <LexicalWrapper>
           <ChatInput {...propsWithChatWindowOver} />
-        </LexicalComposer>
+        </LexicalWrapper>
       </MockedProvider>
     );
     expect(getByText('Templates')).toBeInTheDocument();
@@ -260,14 +236,9 @@ describe('<ChatInput />', () => {
     propsWithMockSend.onSendMessage = sendMessageMock;
     const { getByText, getByTestId } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
-        <LexicalComposer
-          initialConfig={{
-            namespace: 'chat-input',
-            onError: (error: any) => console.log(error),
-          }}
-        >
+        <LexicalWrapper>
           <ChatInput {...propsWithMockSend} />
-        </LexicalComposer>
+        </LexicalWrapper>
       </MockedProvider>
     );
 

@@ -31,6 +31,7 @@ import {
   $isRangeSelection,
   CLEAR_EDITOR_COMMAND,
 } from 'lexical';
+import { useResizeDetector } from 'react-resize-detector';
 
 export interface ChatInputProps {
   onSendMessage(
@@ -41,7 +42,6 @@ export interface ChatInputProps {
     variableParam: any,
     interactiveTemplateId?: any
   ): any;
-  handleHeightChange(newHeight: number): void;
   contactStatus?: string;
   contactBspStatus?: string;
   additionalStyle?: any;
@@ -54,7 +54,6 @@ export const ChatInput = ({
   contactBspStatus,
   contactStatus,
   additionalStyle,
-  handleHeightChange,
   isCollection,
   lastMessageTime,
 }: ChatInputProps) => {
@@ -395,8 +394,17 @@ export const ChatInput = ({
     dialog = <AddAttachment {...dialogProps} />;
   }
 
+  const { ref } = useResizeDetector({
+    refreshMode: 'debounce',
+    refreshRate: 1000,
+    onResize: (e) => {
+      console.log(e);
+    },
+  });
+
   return (
     <Container
+      ref={ref}
       className={`${styles.ChatInput} ${additionalStyle}`}
       data-testid="message-input-container"
     >
@@ -433,7 +441,6 @@ export const ChatInput = ({
         <WhatsAppEditor
           setEditorState={setEditorState}
           sendMessage={submitMessage}
-          handleHeightChange={handleHeightChange}
           readOnly={
             (selectedTemplate !== undefined && selectedTemplate.isHsm) ||
             Object.keys(interactiveMessageContent).length !== 0

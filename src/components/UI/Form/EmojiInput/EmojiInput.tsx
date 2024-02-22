@@ -3,10 +3,9 @@ import { InputAdornment, IconButton, ClickAwayListener } from '@mui/material';
 import { EmojiPicker } from 'components/UI/EmojiPicker/EmojiPicker';
 import { Editor } from './Editor';
 import Styles from './EmojiInput.module.css';
-import { LexicalComposer } from '@lexical/react/LexicalComposer';
-import { BeautifulMentionNode } from 'lexical-beautiful-mentions';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { $createTextNode, $getSelection, $isRangeSelection } from 'lexical';
+import { LexicalWrapper } from 'common/LexicalWrapper';
 
 export interface EmojiInputProps {
   field: any;
@@ -19,6 +18,7 @@ export interface EmojiInputProps {
   handleBlur?: any;
   getEditorValue?: any;
   inputProp?: any;
+  isEditing?: boolean;
 }
 
 interface EmojiPickerProps {
@@ -32,6 +32,7 @@ export const EmojiInput = ({
   handleChange,
   getEditorValue,
   handleBlur,
+  isEditing = false,
   ...props
 }: EmojiInputProps) => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
@@ -60,15 +61,15 @@ export const EmojiInput = ({
   );
 
   const input = (
-    <LexicalComposer
-      initialConfig={{
-        namespace: 'template-input',
-        onError: (error) => console.log(error),
-        nodes: [BeautifulMentionNode],
-      }}
-    >
-      <Editor field={{ name, value, onBlur }} {...props} picker={picker} onChange={lexicalChange} />
-    </LexicalComposer>
+    <LexicalWrapper>
+      <Editor
+        isEditing={isEditing}
+        field={{ name, value, onBlur }}
+        {...props}
+        picker={picker}
+        onChange={lexicalChange}
+      />
+    </LexicalWrapper>
   );
 
   return input;

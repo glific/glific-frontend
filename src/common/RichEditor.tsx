@@ -9,6 +9,31 @@ const regexForLink =
 
 export const getTextContent = (editorState: any) => editorState?.getRootElement()?.textContent;
 
+export const handleFormatterEvents = (event: KeyboardEvent) => {
+  if ((event.ctrlKey || event.metaKey) && event.code === 'KeyB') {
+    return 'bold';
+  } else if ((event.ctrlKey || event.metaKey) && event.code === 'KeyI') {
+    return 'italic';
+  } else if ((event.ctrlKey || event.metaKey) && event.code === 'KeyS') {
+    return 'strikethrough';
+  }
+
+  return '';
+};
+
+export const handleFormatting = (text: string, formatter: string) => {
+  switch (formatter) {
+    case 'bold':
+      return `*${text}*`;
+    case 'italic':
+      return `_${text}_`;
+    case 'strikethrough':
+      return `~${text}~`;
+    default:
+      return text;
+  }
+};
+
 const isAlphanumeric = (c: any) => {
   const x = c.charCodeAt();
   return (x >= 65 && x <= 90) || (x >= 97 && x <= 122) || (x >= 48 && x <= 57);
