@@ -21,7 +21,6 @@ import {
   BeautifulMentionsMenuProps,
   BeautifulMentionsMenuItemProps,
 } from 'lexical-beautiful-mentions';
-import { useParams } from 'react-router';
 import { handleFormatterEvents, handleFormatting } from 'common/RichEditor';
 
 export interface EditorProps {
