@@ -26,15 +26,6 @@ export const WalletBalance = ({ fullOpen }: WalletBalanceProps) => {
 
   const balanceString = t('Wallet balance');
 
-  const nullBalance = () => (
-    <div className={`${styles.WalletBalance} ${styles.WalletBalanceHigh}`}>
-      <div className={styles.WalletBalanceText}>
-        <SelectWhiteIcon className={styles.Icon} />
-        {balanceString}
-      </div>
-    </div>
-  );
-
   const gupshupSettings = (isFullOpen: boolean) => (
     <Tooltip title={t('For any help, please contact the Glific team')} placement="top-start">
       <div className={`${styles.WalletBalance} ${styles.WalletBalanceLow}`}>
@@ -118,7 +109,7 @@ export const WalletBalance = ({ fullOpen }: WalletBalanceProps) => {
     }
   }, [subscribeToMore]);
 
-  if (loading) {
+  if (loading && !retried) {
     return (
       <div className={styles.WalletBalance} data-testid="loading">
         <Skeleton variant="rounded" width="100%" height="100%" />
@@ -127,9 +118,6 @@ export const WalletBalance = ({ fullOpen }: WalletBalanceProps) => {
   }
 
   const errorBody = () => {
-    if (displayBalance === null && !error) {
-      return nullBalance();
-    }
     return gupshupSettings(fullOpen);
   };
 
