@@ -175,6 +175,7 @@ export const ChatSubscription = ({ setDataLoaded }: ChatSubscriptionProps) => {
       // update contact last message at when receiving a new Message
       if (action === 'RECEIVED') {
         updatedConversation[0].contact.lastMessageAt = newMessage.insertedAt;
+        updatedConversation[0].contact.bspStatus = newMessage.contact.bspStatus;
       }
 
       // Add new message and move the conversation to the top

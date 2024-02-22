@@ -3,6 +3,8 @@
 }
 
 .Drawer {
+  overflow-y: auto;
+  flex: none;
   padding: 44px 40px;
   background-color: white;
   width: fit-content;
@@ -62,4 +64,8 @@
   color: #555;
   font-size: 15px;
   line-height: 20px;
+}
+
+.Divider {
+  margin: 8px 0px;
 }

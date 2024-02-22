@@ -230,6 +230,9 @@ export const messageReceivedSubscription = {
           id: '1',
           phone: '917834811114',
         },
+        contact: {
+          bspStatus: 'SESSION',
+        },
         sender: {
           id: '2',
           phone: '919090709009',

@@ -84,7 +84,7 @@ export interface FormLayoutProps {
   languageAttributes?: any;
   helpData?: HelpDataProps;
   noHeading?: boolean;
-  withDialog?: boolean;
+  partialPage?: boolean;
 }
 
 export const FormLayout = ({
@@ -135,7 +135,7 @@ export const FormLayout = ({
   restrictDelete = false,
   languageAttributes = {},
   noHeading = false,
-  withDialog = false,
+  partialPage = false,
 }: FormLayoutProps) => {
   const [showDialog, setShowDialog] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
@@ -643,7 +643,7 @@ export const FormLayout = ({
   ) : null;
 
   return (
-    <div className={withDialog ? styles.ItemAddDialog : styles.ItemAdd} data-testid="add-container">
+    <div className={partialPage ? styles.ItemAddDialog : styles.ItemAdd} data-testid="add-container">
       {dialogBox}
       {!noHeading && heading}
       {backLink}
