@@ -16,6 +16,8 @@ export const getCurrentUserQuery = {
           roles: ['admin'],
           contact: {
             id: '1',
+            name: 'Glific user',
+            phone: '9876543210',
           },
           accessRoles: [
             {
