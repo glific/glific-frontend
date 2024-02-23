@@ -4,7 +4,6 @@ import { Skeleton } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import WhiteIcon from 'assets/images/icons/White.svg?react';
-import SelectWhiteIcon from 'assets/images/icons/SelectWhite.svg?react';
 import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import { BSPBALANCE } from 'graphql/queries/Organization';
 import { BSP_BALANCE_SUBSCRIPTION } from 'graphql/subscriptions/PeriodicInfo';
