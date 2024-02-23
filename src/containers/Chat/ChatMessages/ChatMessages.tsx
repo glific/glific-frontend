@@ -720,7 +720,7 @@ export const ChatMessages = ({
       topChatBar = (
         <ContactBar
           displayName={displayName}
-          isSimulator={isSimulator(conversationInfo.wa_group?.phone)}
+          isSimulator={isSimulator(conversationInfo.wa_group.phone)}
           contactId={contactId.toString()}
           lastMessageTime={conversationInfo.wa_group?.lastMessageAt}
           contactStatus={conversationInfo.wa_group?.status}

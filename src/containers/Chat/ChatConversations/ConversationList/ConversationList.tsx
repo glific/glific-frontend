@@ -22,7 +22,7 @@ import { showMessages } from 'common/responsive';
 import { addLogs, getDisplayName } from 'common/utils';
 import ChatConversation from '../ChatConversation/ChatConversation';
 import styles from './ConversationList.module.css';
-import { groupCollectionSearchQuery, groupSearchQuery, mockResolver } from 'mocks/Groups';
+import { groupCollectionSearchQuery, groupSearchQuery } from 'mocks/Groups';
 import GroupConversation from 'containers/WA_Groups/GroupConversations/GroupConversation';
 
 interface ConversationListProps {
@@ -341,13 +341,12 @@ export const ConversationList = ({
       let contactBspStatus = '';
       let contactIsOrgRead = false;
       let selectedRecord = false;
-      let groupId;
       if (conversation.wa_group) {
         if (selectedContactId === conversation.wa_group?.id) {
           selectedRecord = true;
         }
         entityId = conversation.wa_group?.id;
-        displayName = conversation?.wa_group?.name;
+        displayName = conversation.wa_group?.name;
         contactIsOrgRead = conversation.wa_group?.isOrgRead;
       } else if (conversation.contact) {
         if (selectedContactId === conversation.contact.id) {
