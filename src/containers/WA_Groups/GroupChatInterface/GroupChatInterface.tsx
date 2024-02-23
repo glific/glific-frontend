@@ -17,8 +17,6 @@ import SimulatorIcon from 'assets/images/icons/Simulator.svg?react';
 import CollectionConversations from 'containers/Chat/CollectionConversations/CollectionConversations';
 import styles from './GroupChatInterface.module.css';
 import { groupCollectionSearchQuery, groupSearchQuery } from 'mocks/Groups';
-import { useQuery } from '@apollo/client';
-import { GET_WA_MANAGED_PHONES } from 'graphql/queries/WA_Groups';
 
 const tabs = [
   {
@@ -42,28 +40,7 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
   const { t } = useTranslation();
   const [value, setValue] = useState(tabs[0].link);
   const params = useParams();
-
-  const {
-    loading,
-    error,
-    data: wa_phones_list,
-  } = useQuery<any>(GET_WA_MANAGED_PHONES, {
-    variables: {
-      filter: {},
-      opts: {
-        limit: 10,
-      },
-    },
-    fetchPolicy: 'cache-only',
-  });
-
-  const MOCK_PHONENUMBERS = [
-    { label: '918657048983', value: '43876' },
-    { label: '918439201748', value: '43876' },
-    { label: '918781934028', value: '43876' },
-  ];
-
-  const [phonenumber, setPhonenumber] = useState<string>(MOCK_PHONENUMBERS[0].value);
+  const [phonenumber, setPhonenumber] = useState<string>('');
   let selectedContactId = params.contactId;
   let selectedCollectionId: any = params.collectionId;
 
