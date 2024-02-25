@@ -1,11 +1,11 @@
 import { MemoryRouter } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
-import { waitFor, render } from '@testing-library/react';
+import { waitFor, render, screen } from '@testing-library/react';
 import { vi, describe, it } from 'vitest';
 
 import App from 'App';
 import { CONVERSATION_MOCKS } from 'mocks/Chat';
-import { setAuthSession, setUserSession } from 'services/AuthService';
+import { setAuthSession, setUserSession, renewAuthToken } from 'services/AuthService';
 
 const mocks = CONVERSATION_MOCKS;
 import axios from 'axios';
@@ -61,4 +61,86 @@ describe('<App /> ', () => {
       expect(getByTestId('navbar')).toBeInTheDocument();
     });
   });
+
+  it('it should render <Chat /> component and renew token if token has expired', async () => {
+    vi.mock('services/AuthService', async (importOriginal) => {
+      const mod = await importOriginal<typeof import('services/AuthService')>()
+      return {
+        ...mod,
+        renewAuthToken: vi.fn(() => {
+          const tokenExpiryDate = new Date();
+          tokenExpiryDate.setDate(new Date().getDate() + 1);
+          return Promise.resolve({
+            data: {
+              data: {
+                access_token: 'access',
+                renewal_token: 'renew',
+                token_expiry_time: tokenExpiryDate
+              }
+            }
+          })
+        }),
+      }
+    })
+
+    // let's create token expiry date for yesterday
+    mockedAxios.post.mockResolvedValue(() => Promise.resolve({}));
+
+    const tokenExpiryDate = new Date();
+    tokenExpiryDate.setDate(new Date().getDate() - 1);
+
+    setAuthSession({
+      access_token: 'access',
+      renewal_token: 'renew',
+      token_expiry_time: tokenExpiryDate,
+    });
+
+    setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Staff'] }));
+
+    render(app);
+
+    await waitFor(() => {
+      expect(renewAuthToken).toHaveBeenCalled();
+    })
+
+    await waitFor(() => {
+      expect(screen.getByTestId('navbar')).toBeInTheDocument();
+    });
+  });
+
+  // it('it should render <Login /> component and try to renew token if session has expired', async () => {
+  //   vi.mock('services/AuthService', async (importOriginal) => {
+  //     const mod = await importOriginal<typeof import('services/AuthService')>()
+  //     return {
+  //       ...mod,
+  //       renewAuthToken: vi.fn(() => {
+  //         return Promise.reject(new Error('Mock error'));
+  //       }),
+  //     }
+  //   })
+
+  //   // let's create token expiry date for yesterday
+  //   mockedAxios.post.mockResolvedValue(() => Promise.resolve({}));
+
+  //   const tokenExpiryDate = new Date();
+  //   tokenExpiryDate.setDate(new Date().getDate() - 1);
+
+  //   setAuthSession({
+  //     access_token: 'access',
+  //     renewal_token: 'renew',
+  //     token_expiry_time: tokenExpiryDate,
+  //   });
+
+  //   setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Staff'] }));
+
+  //   render(app);
+
+  //   await waitFor(() => {
+  //     expect(renewAuthToken).toHaveBeenCalled();
+  //   })
+
+  //   await waitFor(() => {
+  //     expect(screen.getByTestId('AuthContainer')).toBeInTheDocument();
+  //   });
+  // });
 });
