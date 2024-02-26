@@ -16,6 +16,7 @@ import {
   DEFAULT_CONTACT_LOADMORE_LIMIT,
   DEFAULT_MESSAGE_LOADMORE_LIMIT,
   ISO_DATE_FORMAT,
+  GROUP_QUERY_VARIABLES,
 } from 'common/constants';
 import { updateConversations } from 'services/ChatService';
 import { showMessages } from 'common/responsive';
@@ -24,6 +25,7 @@ import ChatConversation from '../ChatConversation/ChatConversation';
 import styles from './ConversationList.module.css';
 import { groupCollectionSearchQuery, groupSearchQuery } from 'mocks/Groups';
 import GroupConversation from 'containers/WA_Groups/GroupConversations/GroupConversation';
+import { GROUP_SEARCH_QUERY } from 'graphql/queries/WA_Groups';
 
 interface ConversationListProps {
   searchVal: string;
@@ -61,7 +63,7 @@ export const ConversationList = ({
   const scrollHeight = useQuery(SCROLL_HEIGHT);
   const { t } = useTranslation();
 
-  let queryVariables = SEARCH_QUERY_VARIABLES;
+  let queryVariables = groups ? GROUP_QUERY_VARIABLES : SEARCH_QUERY_VARIABLES;
   if (selectedCollectionId) {
     queryVariables = COLLECTION_SEARCH_QUERY_VARIABLES;
   }
@@ -99,12 +101,14 @@ export const ConversationList = ({
       ? groupCollectionSearchQuery()
       : groupSearchQuery({ limit: DEFAULT_MESSAGE_LIMIT }, DEFAULT_CONTACT_LIMIT, {});
 
+  let search_query = groups ? GROUP_SEARCH_QUERY : SEARCH_QUERY;
+
   const {
     loading: conversationLoading,
     error: conversationError,
     data,
     refetch,
-  } = useQuery<any>(SEARCH_QUERY, {
+  } = useQuery<any>(search_query, {
     variables: queryVariables,
     fetchPolicy: 'cache-only',
   });
@@ -178,8 +182,10 @@ export const ConversationList = ({
     },
   });
 
-  const [getFilterConvos, { called, loading, error, data: searchData }] =
-    useLazyQuery<any>(SEARCH_QUERY);
+  const [getFilterConvos, { called, loading, error, data: searchData }] = useLazyQuery<any>(
+    search_query,
+    { variables: queryVariables }
+  );
 
   // fetch data when typing for search
   const [getFilterSearch] = useLazyQuery<any>(SEARCH_MULTI_QUERY, {
@@ -251,12 +257,12 @@ export const ConversationList = ({
   let conversations: any = null;
   // Retrieving all convos or the ones searched by.
   if (data) {
-    conversations = groups ? groupData.result.data.search : data.search;
+    conversations = data.search;
   }
 
   // If no cache, assign conversations data from search query.
   if (called && (searchVal || savedSearchCriteria || searchParam)) {
-    conversations = groups ? groupData.result.data.search : searchData.search;
+    conversations = searchData.search;
   }
 
   const buildChatConversation = (index: number, header: any, conversation: any) => {
@@ -341,13 +347,14 @@ export const ConversationList = ({
       let contactBspStatus = '';
       let contactIsOrgRead = false;
       let selectedRecord = false;
-      if (conversation.wa_group) {
-        if (selectedContactId === conversation.wa_group?.id) {
+      if (conversation.waGroup) {
+        if (selectedContactId === conversation.waGroup?.id) {
           selectedRecord = true;
         }
-        entityId = conversation.wa_group?.id;
-        displayName = conversation.wa_group?.name;
-        contactIsOrgRead = conversation.wa_group?.isOrgRead;
+        entityId = conversation.waGroup?.id;
+        displayName = conversation.waGroup?.label;
+        contactIsOrgRead = false;
+        senderLastMessage = conversation.waGroup.lastCommunicationAt;
       } else if (conversation.contact) {
         if (selectedContactId === conversation.contact.id) {
           selectedRecord = true;
@@ -377,7 +384,7 @@ export const ConversationList = ({
             setSearchHeight();
             showMessages();
             if (entityType === 'contact' && setSelectedContactId) {
-              setSelectedContactId(conversation.wa_group?.id);
+              setSelectedContactId(conversation.waGroup?.id);
             } else if (entityType === 'collection' && setSelectedCollectionId) {
               setSelectedCollectionId(conversation.group.id);
             }
@@ -475,7 +482,7 @@ export const ConversationList = ({
 
       client
         .query({
-          query: SEARCH_QUERY,
+          query: search_query,
           variables: conversationLoadMoreVariables,
         })
         .then(({ data: loadMoreData }) => {

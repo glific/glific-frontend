@@ -19,6 +19,7 @@ import {
   DEFAULT_CONTACT_LIMIT,
   DEFAULT_MESSAGE_LOADMORE_LIMIT,
   ISO_DATE_FORMAT,
+  GROUP_QUERY_VARIABLES,
 } from '../../../common/constants';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 import {
@@ -29,20 +30,22 @@ import { getCachedConverations, updateConversationsCache } from '../../../servic
 import { addLogs, getDisplayName, isSimulator } from '../../../common/utils';
 import { CollectionInformation } from '../../Collection/CollectionInformation/CollectionInformation';
 import { SEND_MESSAGE_IN_WA_GROUP } from 'graphql/mutations/Group';
-import { groupCollectionSearchQuery, groupSearchQuery } from 'mocks/Groups';
+import { GROUP_SEARCH_QUERY } from 'graphql/queries/WA_Groups';
 
 export interface ChatMessagesProps {
   contactId?: number | string | null;
   collectionId?: number | string | null;
   groups?: boolean;
-  phonenumber?: string;
+  phoneId?: string;
+  setPhonenumber?: any;
 }
 
 export const ChatMessages = ({
   contactId,
   collectionId,
   groups = false,
-  phonenumber,
+  phoneId,
+  setPhonenumber,
 }: ChatMessagesProps) => {
   const urlString = new URL(window.location.href);
 
@@ -67,15 +70,7 @@ export const ChatMessages = ({
   const [showJumpToLatest, setShowJumpToLatest] = useState(false);
   const [conversationInfo, setConversationInfo] = useState<any>({});
   const [collectionVariables, setCollectionVariables] = useState<any>({});
-  const [showLoading, setShowLoading] = useState(true);
   const { t } = useTranslation();
-
-  useEffect(() => {
-    setTimeout(() => {
-      setShowLoading(false);
-    }, 1000);
-  }, []);
-
   let dialogBox;
 
   useEffect(() => {
@@ -132,24 +127,22 @@ export const ChatMessages = ({
   });
 
   // get the conversations stored from the cache
-  let queryVariables = SEARCH_QUERY_VARIABLES;
+  let queryVariables = groups ? GROUP_QUERY_VARIABLES : SEARCH_QUERY_VARIABLES;
 
   if (collectionId) {
     queryVariables = COLLECTION_SEARCH_QUERY_VARIABLES;
   }
 
+  let search_query = groups ? GROUP_SEARCH_QUERY : SEARCH_QUERY;
+
   const {
     loading: conversationLoad,
     error: conversationError,
     data: allConversations,
-  }: any = useQuery(SEARCH_QUERY, {
+  }: any = useQuery(search_query, {
     variables: queryVariables,
     fetchPolicy: 'cache-only',
   });
-  const groupData = collectionId
-    ? groupCollectionSearchQuery()
-    : groupSearchQuery({ limit: DEFAULT_MESSAGE_LIMIT }, DEFAULT_CONTACT_LIMIT, {});
-
   useEffect(() => {
     const clickListener = () => setShowDropdown(null);
     if (showDropdown) {
@@ -347,8 +340,8 @@ export const ChatMessages = ({
       if (groups) {
         payload = {
           message: body,
-          wa_managed_phone_id: 1,
-          wa_group_id: contactId,
+          wa_managed_phone_id: phoneId,
+          waGroup_id: contactId,
         };
       } else {
         payload = {
@@ -372,15 +365,16 @@ export const ChatMessages = ({
         });
       }
     },
-    [createAndSendMessage, contactId]
+    [createAndSendMessage, contactId, phoneId]
   );
 
   // loop through the cached conversations and find if contact/Collection exists
   const updateConversationInfo = (type: string, Id: any) => {
     if (groups) {
-      groupData.result.data.search.map((conversation: any, index: any) => {
+      allConversations.search.map((conversation: any, index: any) => {
         if (conversation[type].id === Id.toString()) {
           conversationIndex = index;
+          setPhonenumber(conversation.waGroup?.waManagedPhone.id);
           setConversationInfo(conversation);
         }
         return null;
@@ -398,12 +392,13 @@ export const ChatMessages = ({
 
   const findContactInAllConversations = () => {
     if (groups) {
-      if (groupData.result.data.search) {
+      if (allConversations && allConversations.search) {
         // loop through the cached conversations and find if contact exists
         // need to check - updateConversationInfo('contact', contactId);
-        groupData.result.data.search.map((conversation: any, index: any) => {
-          if (conversation.wa_group?.id === contactId?.toString()) {
+        allConversations.search.map((conversation: any, index: any) => {
+          if (conversation.waGroup?.id === contactId?.toString()) {
             conversationIndex = index;
+            setPhonenumber(conversation.waGroup?.waManagedPhone.id);
             setConversationInfo(conversation);
           }
           return null;
@@ -552,7 +547,7 @@ export const ChatMessages = ({
         filter: { id: contactId?.toString() },
         contactOpts: { limit: 1 },
         messageOpts: {
-          limit: conversationInfo.messages[conversationInfo.messages.length - 1].messageNumber,
+          limit: conversationInfo.messages[conversationInfo.messages?.length - 1].messageNumber,
           offset,
         },
       };
@@ -584,23 +579,42 @@ export const ChatMessages = ({
     return false;
   };
 
-  if (conversationInfo && conversationInfo.messages && conversationInfo.messages.length > 0) {
+  if (conversationInfo && conversationInfo.messages && conversationInfo.messages?.length > 0) {
     let reverseConversation = [...conversationInfo.messages];
-    reverseConversation = reverseConversation.map((message: any, index: number) => (
-      <ChatMessage
-        {...message}
-        contactId={contactId}
-        key={message.id}
-        popup={message.id === showDropdown}
-        onClick={() => showEditDialog(message.id)}
-        focus={index === 0}
-        jumpToMessage={jumpToMessage}
-        daySeparator={showDaySeparator(
-          reverseConversation[index].insertedAt,
-          reverseConversation[index + 1] ? reverseConversation[index + 1].insertedAt : null
-        )}
-      />
-    ));
+
+    reverseConversation = reverseConversation.map((message: any, index: number) => {
+      if (groups) {
+        message = {
+          ...message,
+          receiver: {
+            __typename: 'WaConversation',
+            id: contactId,
+          },
+          sender: {
+            __typename: 'Contact',
+            id: '11',
+          },
+          interactiveContent: '{}',
+          type: 'TEXT',
+        };
+      }
+
+      return (
+        <ChatMessage
+          {...message}
+          contactId={contactId}
+          key={message.id}
+          popup={message.id === showDropdown}
+          onClick={() => showEditDialog(message.id)}
+          focus={index === 0}
+          jumpToMessage={jumpToMessage}
+          daySeparator={showDaySeparator(
+            reverseConversation[index].insertedAt,
+            reverseConversation[index + 1] ? reverseConversation[index + 1].insertedAt : null
+          )}
+        />
+      );
+    });
 
     messageList = reverseConversation
       .sort((currentMessage: any, nextMessage: any) => currentMessage.id - nextMessage.id)
@@ -608,7 +622,7 @@ export const ChatMessages = ({
   }
 
   const loadMoreMessages = () => {
-    const { messageNumber } = conversationInfo.messages[conversationInfo.messages.length - 1];
+    const { messageNumber } = conversationInfo.messages[conversationInfo.messages?.length - 1];
     const variables: any = {
       filter: { id: contactId?.toString() },
       contactOpts: { limit: 1 },
@@ -645,7 +659,7 @@ export const ChatMessages = ({
   // Check if there are conversation messages else display no messages
   if (messageList) {
     const loadMoreOption =
-      conversationInfo.messages.length > DEFAULT_MESSAGE_LIMIT - 1 ||
+      conversationInfo.messages?.length > DEFAULT_MESSAGE_LIMIT - 1 ||
       (searchMessageNumber && searchMessageNumber > 19);
     messageListContainer = (
       <Container
@@ -698,10 +712,6 @@ export const ChatMessages = ({
     updateConversationsCache(allConversationsCopy, queryVariables);
   };
 
-  if (showLoading && groups) {
-    return <CircularProgress className={styles.Loading} />;
-  }
-
   // conversationInfo should not be empty
   if (!groups && !Object.prototype.hasOwnProperty.call(conversationInfo, 'contact')) {
     return (
@@ -715,16 +725,16 @@ export const ChatMessages = ({
   let chatInputSection;
 
   if (groups) {
-    if (contactId && conversationInfo.wa_group) {
-      const displayName = conversationInfo.wa_group?.name;
+    if (contactId && conversationInfo.waGroup) {
+      const displayName = conversationInfo.waGroup?.label;
       topChatBar = (
         <ContactBar
           displayName={displayName}
-          isSimulator={isSimulator(conversationInfo.wa_group.phone)}
+          isSimulator={isSimulator(conversationInfo.waGroup.waManagedPhone.phone)}
           contactId={contactId.toString()}
-          lastMessageTime={conversationInfo.wa_group?.lastMessageAt}
-          contactStatus={conversationInfo.wa_group?.status}
-          contactBspStatus={conversationInfo.wa_group?.bspStatus}
+          lastMessageTime={conversationInfo.waGroup?.lastCommunicationAt}
+          contactStatus={conversationInfo.waGroup?.status}
+          contactBspStatus={conversationInfo.waGroup?.bspStatus}
           handleAction={() => handleChatClearedAction()}
           groups={groups}
         />
@@ -734,9 +744,9 @@ export const ChatMessages = ({
         <ChatInput
           handleHeightChange={handleHeightChange}
           onSendMessage={sendMessageHandler}
-          lastMessageTime={conversationInfo.wa_group?.lastMessageAt}
-          contactStatus={conversationInfo.wa_group?.status}
-          contactBspStatus={conversationInfo.wa_group?.bspStatus}
+          lastMessageTime={conversationInfo.waGroup?.lastCommunicationAt}
+          contactStatus={conversationInfo.waGroup?.status}
+          contactBspStatus={conversationInfo.waGroup?.bspStatus}
         />
       );
     } else if (collectionId && conversationInfo.group) {
@@ -856,7 +866,9 @@ export const ChatMessages = ({
       {topChatBar}
       <StatusBar />
       {messageListContainer}
-      {conversationInfo.messages.length && showJumpToLatest ? jumpToLatest : null}
+      {(conversationInfo.messages?.length || conversationInfo.messages?.length) && showJumpToLatest
+        ? jumpToLatest
+        : null}
       {chatInputSection}
     </Container>
   );

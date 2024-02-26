@@ -207,10 +207,15 @@ export const ChatConversations = ({
       </div>
     ) : null;
 
+  let phonesDropdown: any;
+  if (groups) {
+    phonesDropdown = <WaManagedPhones phonenumber={phonenumber} setPhonenumber={setPhonenumber} />;
+  }
+
   return (
     <Container className={styles.ChatConversations} disableGutters>
+      {phonesDropdown}
       <div className={styles.SearchBar}>
-        {groups && <WaManagedPhones phonenumber={phonenumber} setPhonenumber={setPhonenumber} />}
         <SearchBar
           handleChange={handleChange}
           handleSubmit={handleSubmit}

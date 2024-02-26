@@ -126,9 +126,6 @@ const GroupConversation = ({
   index,
   highlightSearch,
   searchMode,
-  senderLastMessage,
-  contactStatus,
-  contactBspStatus,
   contactIsOrgRead,
   entityType,
   messageNumber,
@@ -159,16 +156,16 @@ const GroupConversation = ({
   let displayMSG: any = <MessageType type={type} body={body} />;
 
   let originalText = body;
-  if (isTextType) {
-    // let's shorten the text message to display correctly
-    if (originalText.length > COMPACT_MESSAGE_LENGTH) {
-      originalText = originalText.slice(0, COMPACT_MESSAGE_LENGTH).concat('...');
-    }
-    // replace new line characters with space to come in same line
-    originalText = originalText.replace(/\n/g, ' ');
-
-    displayMSG = WhatsAppToJsx(originalText);
+  // if (isTextType) {
+  // let's shorten the text message to display correctly
+  if (originalText.length > COMPACT_MESSAGE_LENGTH) {
+    originalText = originalText.slice(0, COMPACT_MESSAGE_LENGTH).concat('...');
   }
+  // replace new line characters with space to come in same line
+  originalText = originalText.replace(/\n/g, ' ');
+
+  displayMSG = WhatsAppToJsx(originalText);
+  // }
 
   // set offset to use that in chatting window to fetch that msg
   const setSearchOffset = (apolloClient: any, offset: number = 0) => {
@@ -220,17 +217,8 @@ const GroupConversation = ({
           {isTextType && highlightSearch ? BoldedText(body, highlightSearch) : displayMSG}
         </div>
       </div>
-      <div>
-        <div className={styles.MessageDate} data-testid="date">
-          {dayjs(lastMessage.insertedAt).format(SHORT_DATE_FORMAT)}
-        </div>
-        <div className={styles.MessageDate} data-testid="timerContainer">
-          <Timer
-            time={senderLastMessage}
-            contactStatus={contactStatus}
-            contactBspStatus={contactBspStatus}
-          />
-        </div>
+      <div className={styles.MessageDate} data-testid="date">
+        {dayjs(lastMessage.insertedAt).format(SHORT_DATE_FORMAT)}
       </div>
     </ListItemButton>
   );

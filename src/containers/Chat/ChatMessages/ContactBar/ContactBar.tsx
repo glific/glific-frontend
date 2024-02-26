@@ -547,6 +547,21 @@ export const ContactBar = ({
     );
   }
 
+  let timeleft: any;
+  if (!groups) {
+    timeleft = (
+      <div className={styles.SessionTimer} data-testid="sessionTimer">
+        <span>Time left:</span>
+        <Timer
+          time={lastMessageTime}
+          contactStatus={contactStatus}
+          contactBspStatus={contactBspStatus}
+          variant="secondary"
+        />
+      </div>
+    );
+  }
+
   const getTitleAndIconForSmallScreen = (() => {
     if (location.pathname.includes('collection')) {
       return CollectionIcon;
@@ -566,15 +581,7 @@ export const ContactBar = ({
       {contactId ? (
         <div className={styles.SessionTimerContainer}>
           {contactCollections}
-          <div className={styles.SessionTimer} data-testid="sessionTimer">
-            <span>Time left:</span>
-            <Timer
-              time={lastMessageTime}
-              contactStatus={contactStatus}
-              contactBspStatus={contactBspStatus}
-              variant="secondary"
-            />
-          </div>
+          {timeleft}
         </div>
       ) : null}
       <div className={styles.Chat} onClick={() => showChats()} aria-hidden="true">

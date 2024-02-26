@@ -99,6 +99,16 @@ export const SEARCH_QUERY_VARIABLES = {
   },
 };
 
+export const GROUP_QUERY_VARIABLES = {
+  waMessageOpts: {
+    limit: DEFAULT_MESSAGE_LIMIT,
+  },
+  waGroupOpts: {
+    limit: DEFAULT_CONTACT_LIMIT,
+  },
+  filter: {},
+};
+
 export const COLLECTION_SEARCH_QUERY_VARIABLES = {
   contactOpts: {
     limit: DEFAULT_CONTACT_LIMIT,

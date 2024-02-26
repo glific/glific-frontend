@@ -18,9 +18,6 @@ export const WaManagedPhones = ({ phonenumber, setPhonenumber }: WaManagedPhones
         limit: 3,
       },
     },
-    onCompleted(data) {
-      setPhonenumber(data?.waManagedPhones[0].id);
-    },
   });
 
   return (
@@ -32,7 +29,7 @@ export const WaManagedPhones = ({ phonenumber, setPhonenumber }: WaManagedPhones
           value={phonenumber}
           onChange={(event) => {
             const { value } = event.target;
-            setPhonenumber(JSON.parse(value));
+            setPhonenumber(value);
           }}
           className={styles.DropDown}
         >

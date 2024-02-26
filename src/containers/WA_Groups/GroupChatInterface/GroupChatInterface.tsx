@@ -7,16 +7,19 @@ import { Simulator } from 'components/simulator/Simulator';
 import { getUserRole } from 'context/role';
 import {
   COLLECTION_SEARCH_QUERY_VARIABLES,
-  DEFAULT_CONTACT_LIMIT,
-  DEFAULT_MESSAGE_LIMIT,
+  GROUP_QUERY_VARIABLES,
   SEARCH_QUERY_VARIABLES,
 } from 'common/constants';
 import ChatConversations from 'containers/Chat/ChatConversations/ChatConversations';
 import ChatMessages from 'containers/Chat/ChatMessages/ChatMessages';
+import { setErrorMessage } from 'common/notification';
 import SimulatorIcon from 'assets/images/icons/Simulator.svg?react';
 import CollectionConversations from 'containers/Chat/CollectionConversations/CollectionConversations';
 import styles from './GroupChatInterface.module.css';
-import { groupCollectionSearchQuery, groupSearchQuery } from 'mocks/Groups';
+import { groupCollectionSearchQuery } from 'mocks/Groups';
+import { useQuery } from '@apollo/client';
+import { GROUP_SEARCH_QUERY } from 'graphql/queries/WA_Groups';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
 
 const tabs = [
   {
@@ -44,6 +47,14 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
   let selectedContactId = params.contactId;
   let selectedCollectionId: any = params.collectionId;
 
+  const {
+    loading,
+    error,
+    data: dataa,
+  } = useQuery<any>(GROUP_SEARCH_QUERY, {
+    variables: GROUP_QUERY_VARIABLES,
+  });
+
   // default query variables
   let queryVariables = SEARCH_QUERY_VARIABLES;
 
@@ -54,9 +65,7 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
     selectedTab = 'collections';
   }
 
-  const data = collections
-    ? groupCollectionSearchQuery()?.result?.data
-    : groupSearchQuery({ limit: DEFAULT_MESSAGE_LIMIT }, DEFAULT_CONTACT_LIMIT, {})?.result?.data;
+  const data = collections ? groupCollectionSearchQuery()?.result?.data : dataa;
 
   useEffect(() => {
     if (getUserRole().includes('Staff')) {
@@ -76,8 +85,8 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
   // let's handle the case when contact id and collection id is not passed in the url then we set the
   // first record as selected contact
   if (!selectedContactId && !selectedCollectionId && data && data?.search.length !== 0) {
-    if (data?.search[0].wa_group) {
-      selectedContactId = data?.search[0].wa_group?.id;
+    if (data?.search[0].waGroup) {
+      selectedContactId = data?.search[0].waGroup?.id;
     }
   }
 
@@ -99,7 +108,7 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
     navigate(newValue);
   };
 
-  if (data && data?.search.length === 0) {
+  if (data && (collections ? data?.search.length === 0 : data?.search.length === 0)) {
     groupChatInterface = noConversations;
   } else {
     let heading = '';
@@ -126,10 +135,11 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
       <>
         <div className={`${styles.ChatMessages} chatMessages`}>
           <ChatMessages
-            phonenumber={phonenumber}
             groups
             contactId={simulatorId > 0 ? simulatorId : selectedContactId}
             collectionId={selectedCollectionId}
+            phoneId={phonenumber}
+            setPhonenumber={setPhonenumber}
           />
         </div>
 
@@ -163,6 +173,12 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
     setShowSimulator(value);
     setSimulatorId(0);
   };
+
+  if (loading) return <Loading />;
+  if (error) {
+    setErrorMessage(error);
+    return null;
+  }
 
   return (
     <Paper>
