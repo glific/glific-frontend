@@ -55,7 +55,7 @@
   font-style: bold;
   line-height: 1;
   position: relative;
-  top: 30px;
+  top: 20px;
 }
 
 .Dot {
@@ -107,7 +107,7 @@
 .Points {
   margin-left: 24px;
   margin-right: 24px;
-  margin-top: 67px;
+  margin-top: 50px;
 }
 
 .ShareNow {
@@ -131,7 +131,7 @@
   margin-left: 54px;
   margin-right: 48px;
   margin-top: 32px;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 
 .Arrow {
