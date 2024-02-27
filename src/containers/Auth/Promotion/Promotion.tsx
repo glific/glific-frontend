@@ -5,8 +5,6 @@ import styles from './Promotion.module.css';
 
 const hostname = location.hostname.replace('.glific.com', '');
 
-const LINK = 'https://rb.gy/ywfqp';
-
 export const Promotion = () => {
   const [minimized, setMinimized] = useState(false);
 
@@ -33,7 +31,7 @@ export const Promotion = () => {
           <div className={styles.Image}>New Website Address!</div>
 
           <div className={styles.Points}>
-            <p className={styles.BodyListText}>
+            <div className={styles.BodyListText}>
               <span>{1}</span>
               <div>
                 We're Moving: <strong>tides.coloredcow.com</strong> is changing to{' '}
@@ -45,14 +43,14 @@ export const Promotion = () => {
                   .tides.coloredcow.com
                 </strong>
               </div>
-            </p>
-            <p className={styles.BodyListText}>
+            </div>
+            <div className={styles.BodyListText}>
               <span>2</span>
               <div>
                 What this means? <strong>{hostname}.tides.coloredcow.com </strong>
                 page will become inactive on 31st March. Bookmark the new Glific address right away
               </div>
-            </p>
+            </div>
           </div>
           {/* <a className={styles.Link} href={LINK} target="_blank" rel="noreferrer">
             <div className={styles.KnowMore}>
