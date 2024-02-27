@@ -1,5 +1,5 @@
 import { MemoryRouter } from 'react-router-dom';
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, render } from '@testing-library/react';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 
 import { setUserSession } from 'services/AuthService';
@@ -88,7 +88,6 @@ setUserSession(JSON.stringify({ organization: { id: '1' } }));
 describe('<GroupChatInterface />', () => {
   test('it should render <GroupChatInterface /> component correctly', async () => {
     const { findByTestId } = render(wrapper);
-    screen.debug();
 
     // check if chat conversations are displayed
     const ChatConversation = await findByTestId('beneficiaryName');
