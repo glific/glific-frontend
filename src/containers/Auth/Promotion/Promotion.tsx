@@ -51,6 +51,11 @@ export const Promotion = () => {
                 page will become inactive on 31st March. Bookmark the new Glific address right away
               </div>
             </div>
+            <div className={styles.BodyListText}>
+              <div>
+                <strong>Note: </strong> Please ignore if you already have a glific.com account
+              </div>
+            </div>
           </div>
           {/* <a className={styles.Link} href={LINK} target="_blank" rel="noreferrer">
             <div className={styles.KnowMore}>
