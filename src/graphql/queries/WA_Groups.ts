@@ -7,7 +7,7 @@ export const GROUP_SEARCH_QUERY = gql`
         bspId
         id
         label
-        lastCommunicationAt
+        lastMessageAt: lastCommunicationAt
         waManagedPhone {
           id
           label
@@ -19,7 +19,27 @@ export const GROUP_SEARCH_QUERY = gql`
         id
         body
         insertedAt
-        status
+        messageNumber
+        type
+        media {
+          url
+          caption
+        }
+        errors
+        contextMessage {
+          body
+          contextId
+          messageNumber
+          errors
+          media {
+            caption
+            sourceUrl
+            id
+            url
+          }
+          type
+          insertedAt
+        }
       }
     }
   }

@@ -5,11 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { Simulator } from 'components/simulator/Simulator';
 import { getUserRole } from 'context/role';
-import {
-  COLLECTION_SEARCH_QUERY_VARIABLES,
-  GROUP_QUERY_VARIABLES,
-  SEARCH_QUERY_VARIABLES,
-} from 'common/constants';
+import { COLLECTION_SEARCH_QUERY_VARIABLES, GROUP_QUERY_VARIABLES } from 'common/constants';
 import ChatConversations from 'containers/Chat/ChatConversations/ChatConversations';
 import ChatMessages from 'containers/Chat/ChatMessages/ChatMessages';
 import { setErrorMessage } from 'common/notification';
@@ -55,13 +51,9 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
     variables: GROUP_QUERY_VARIABLES,
   });
 
-  // default query variables
-  let queryVariables = SEARCH_QUERY_VARIABLES;
-
   // contact id === collection when the collection id is not passed in the url
   let selectedTab = 'contacts';
   if (selectedCollectionId || collections) {
-    queryVariables = COLLECTION_SEARCH_QUERY_VARIABLES;
     selectedTab = 'collections';
   }
 
@@ -108,7 +100,7 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
     navigate(newValue);
   };
 
-  if (data && (collections ? data?.search.length === 0 : data?.search.length === 0)) {
+  if (data && data?.search.length === 0) {
     groupChatInterface = noConversations;
   } else {
     let heading = '';

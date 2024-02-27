@@ -1,173 +1,41 @@
+import { GROUP_QUERY_VARIABLES } from 'common/constants';
 import { GROUP_SEARCH_QUERY } from 'graphql/queries/WA_Groups';
 
 const withResult = {
   data: {
     search: [
       {
-        __typename: 'Conversation',
-        wa_group: {
-          id: '1',
-          bspId: '120363238069881530@g.us',
-          name: 'Maytapi Testing ',
-          phone: '918657048983',
-          participants: ['Test User 1', 'Test User 2'],
-          admins: ['Test User'],
-          lastMessageAt: '2024-02-17T21:14:19Z',
-          isOrgRead: false,
-        },
+        __typename: 'WaConversation',
         messages: [
           {
-            __typename: 'Message',
-            id: '27',
-            body: 'To be, or not to be: that is the question.',
-            insertedAt: '2024-02-17T21:14:19.490693Z',
-            messageNumber: 3,
-            receiver: {
-              __typename: 'Contact',
-              id: '11',
-            },
-            sender: {
-              __typename: 'Contact',
-              id: '1',
-            },
-            location: null,
-            type: 'TEXT',
-            media: null,
-            errors: '{}',
-            contextMessage: {
-              __typename: 'Message',
-              body: 'What a piece of work is man! how noble in reason! how infinite in faculty! in form and moving how express and admirable! in action how like an angel! in apprehension how like a god! the beauty of the world, the paragon of animals! .',
-              contextId: null,
-              messageNumber: 2,
-              errors: '{}',
-              media: null,
-              type: 'TEXT',
-              insertedAt: '2024-02-17T21:14:19.489266Z',
-              location: null,
-              receiver: {
-                __typename: 'Contact',
-                id: '11',
-              },
-              sender: {
-                __typename: 'Contact',
-                id: '1',
-                name: 'NGO Main Account',
-              },
-            },
-            interactiveContent: '{}',
-            sendBy: '',
-            flowLabel: null,
-          },
-          {
-            __typename: 'Message',
+            __typename: 'WaMessage',
+            body: 'y',
             id: '26',
-            body: 'What a piece of work is man! how noble in reason! how infinite in faculty! in form and moving how express and admirable! in action how like an angel! in apprehension how like a god! the beauty of the world, the paragon of animals! .',
-            insertedAt: '2024-02-17T21:14:19.489266Z',
-            messageNumber: 2,
-            receiver: {
-              __typename: 'Contact',
-              id: '1',
-            },
-            sender: {
-              __typename: 'Contact',
-              id: '11',
-            },
-            location: null,
-            type: 'TEXT',
-            media: null,
-            errors: '{}',
-            contextMessage: null,
-            interactiveContent: '{}',
-            sendBy: '',
-            flowLabel: null,
+            insertedAt: '2024-02-26T16:51:39.405641Z',
+            status: 'sent',
           },
           {
-            __typename: 'Message',
-            id: '11',
-            body: 'Default Group message body',
-            insertedAt: '2024-02-17T21:14:19.446806Z',
-            messageNumber: 1,
-            receiver: {
-              __typename: 'Contact',
-              id: '1',
-            },
-            sender: {
-              __typename: 'Contact',
-              id: '11',
-            },
-            location: null,
-            type: 'TEXT',
-            media: null,
-            errors: '{}',
-            contextMessage: null,
-            interactiveContent: '{}',
-            sendBy: '',
-            flowLabel: null,
+            __typename: 'WaMessage',
+            body: 'test',
+            id: '20',
+            insertedAt: '2024-02-26T16:50:00.776602Z',
+            status: 'sent',
           },
         ],
-        group: null,
-      },
-      {
-        __typename: 'Conversation',
-        wa_group: {
-          id: '2',
+        waGroup: {
+          __typename: 'WaGroup',
           bspId: '120363238069881530@g.us',
-          name: 'Maytapi Testing Group 2',
-          phone: '918657048983',
-          participants: ['Test User 1', 'Test User 2'],
-          admins: ['Test User'],
-          lastMessageAt: '2024-02-17T21:14:19Z',
-          isOrgRead: true,
+          id: '3',
+          label: 'Maytapi Testing ',
+          lastCommunicationAt: '2024-02-26T16:51:39Z',
+          waManagedPhone: {
+            __typename: 'WaManagedPhone',
+            id: '3',
+            label: null,
+            phone: '918657048983',
+            phoneId: 43876,
+          },
         },
-        messages: [
-          {
-            __typename: 'Message',
-            id: '24',
-            body: "The play 's the thing wherein I'll catch the conscience of the king.",
-            insertedAt: '2024-02-17T21:14:19.482501Z',
-            messageNumber: 2,
-            receiver: {
-              __typename: 'Contact',
-              id: '1',
-            },
-            sender: {
-              __typename: 'Contact',
-              id: '2',
-            },
-            location: null,
-            type: 'TEXT',
-            media: null,
-            errors: '{}',
-            contextMessage: null,
-            interactiveContent: '{}',
-            sendBy: '',
-            flowLabel: null,
-          },
-          {
-            __typename: 'Message',
-            id: '9',
-            body: 'Default Group message body',
-            insertedAt: '2024-02-17T21:14:19.442462Z',
-            messageNumber: 1,
-            receiver: {
-              __typename: 'Contact',
-              id: '2',
-            },
-            sender: {
-              __typename: 'Contact',
-              id: '1',
-            },
-            location: null,
-            type: 'TEXT',
-            media: null,
-            errors: '{}',
-            contextMessage: null,
-            interactiveContent: '{}',
-            sendBy: '',
-            flowLabel: null,
-          },
-        ],
-        group: null,
       },
     ],
   },
@@ -185,13 +53,25 @@ export const groupSearchQuery = (
     request: {
       query: GROUP_SEARCH_QUERY,
       variables: {
-        filter,
-        messageOpts: messageLimit,
-        contactOpts: { limit: contactLimit },
+        waMessageOpts: {
+          limit: 25,
+        },
+        waGroupOpts: {
+          limit: 10,
+        },
+        filter: {},
       },
     },
     result: showResult ? withResult : noResult,
   };
+};
+
+export const groupsmockquery = {
+  request: {
+    query: GROUP_SEARCH_QUERY,
+    variables: GROUP_QUERY_VARIABLES,
+  },
+  result: withResult,
 };
 
 export const groupCollectionSearchQuery = () => {

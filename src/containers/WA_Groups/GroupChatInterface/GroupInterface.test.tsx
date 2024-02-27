@@ -1,6 +1,6 @@
 import { MemoryRouter } from 'react-router';
 import GroupChatInterface from './GroupChatInterface';
-import { render, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import { SEARCH_QUERY } from 'graphql/queries/Search';
 import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT } from 'common/constants';
@@ -15,56 +15,37 @@ cache.writeQuery({
   data: {
     search: [
       {
-        group: null,
-        contact: {
-          id: '2',
-          name: 'Effie Cormier',
-          phone: '987654321',
-          maskedPhone: '98****321',
-          lastMessageAt: '2020-06-29T09:31:47Z',
-          status: 'VALID',
-          fields: '{}',
-          bspStatus: 'SESSION_AND_HSM',
-          isOrgRead: true,
-        },
+        __typename: 'WaConversation',
         messages: [
           {
-            id: '1',
-            body: 'Hey there whats up?',
-            insertedAt: '2020-06-25T13:36:43Z',
-            location: null,
-            messageNumber: 48,
-            receiver: {
-              id: '1',
-            },
-            sender: {
-              id: '2',
-            },
-            type: 'TEXT',
-            media: null,
-            errors: '{}',
-            contextMessage: {
-              body: 'All good',
-              contextId: 1,
-              messageNumber: 10,
-              errors: '{}',
-              media: null,
-              type: 'TEXT',
-              insertedAt: '2021-04-26T06:13:03.832721Z',
-              location: null,
-              receiver: {
-                id: '1',
-              },
-              sender: {
-                id: '2',
-                name: 'User',
-              },
-            },
-            interactiveContent: '{}',
-            sendBy: 'test',
-            flowLabel: null,
+            __typename: 'WaMessage',
+            body: 'testing',
+            id: '7',
+            insertedAt: '2024-02-26T15:14:37.523972Z',
+            status: 'sent',
+          },
+          {
+            __typename: 'WaMessage',
+            body: 'Rich gifts wax poor when givers prove unkind.',
+            id: '2',
+            insertedAt: '2024-02-26T15:10:57.527307Z',
+            status: 'received',
           },
         ],
+        waGroup: {
+          __typename: 'WaGroup',
+          bspId: '512053299558654923@g.us',
+          id: '1',
+          label: 'West Virginia oracles',
+          lastCommunicationAt: '2024-02-26T16:51:19Z',
+          waManagedPhone: {
+            __typename: 'WaManagedPhone',
+            id: '1',
+            label: null,
+            phone: '6265104163',
+            phoneId: 6640,
+          },
+        },
       },
     ],
   },
@@ -89,7 +70,7 @@ describe('<GroupChatInterface />', () => {
 
     // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();
-
+    screen.debug();
     // check if group chat conversations are displayed
     await waitFor(() => {
       expect(getByText('Maytapi Testing')).toBeInTheDocument();

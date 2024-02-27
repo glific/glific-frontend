@@ -348,22 +348,23 @@ export const ContactBar = ({
 
   let flowButton: any;
 
-  const blockContactButton = contactId ? (
-    <Button
-      data-testid="blockButton"
-      className={styles.ListButtonDanger}
-      color="warning"
-      disabled={isSimulator}
-      onClick={() => setShowBlockDialog(true)}
-    >
-      {isSimulator ? (
-        <BlockDisabledIcon className={styles.Icon} />
-      ) : (
-        <BlockIcon className={styles.Icon} />
-      )}
-      Block Contact
-    </Button>
-  ) : null;
+  const blockContactButton =
+    contactId && !groups ? (
+      <Button
+        data-testid="blockButton"
+        className={styles.ListButtonDanger}
+        color="warning"
+        disabled={isSimulator}
+        onClick={() => setShowBlockDialog(true)}
+      >
+        {isSimulator ? (
+          <BlockDisabledIcon className={styles.Icon} />
+        ) : (
+          <BlockIcon className={styles.Icon} />
+        )}
+        Block Contact
+      </Button>
+    ) : null;
 
   if (collectionId) {
     flowButton = (

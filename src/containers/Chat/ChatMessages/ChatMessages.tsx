@@ -48,6 +48,10 @@ export const ChatMessages = ({
   setPhonenumber,
 }: ChatMessagesProps) => {
   const urlString = new URL(window.location.href);
+  let chatType = 'contact';
+  if (groups) {
+    chatType = 'waGroup';
+  }
 
   let messageParameterOffset: any = 0;
   let searchMessageNumber: any;
@@ -370,52 +374,30 @@ export const ChatMessages = ({
 
   // loop through the cached conversations and find if contact/Collection exists
   const updateConversationInfo = (type: string, Id: any) => {
-    if (groups) {
-      allConversations.search.map((conversation: any, index: any) => {
-        if (conversation[type].id === Id.toString()) {
-          conversationIndex = index;
-          setPhonenumber(conversation.waGroup?.waManagedPhone.id);
-          setConversationInfo(conversation);
-        }
-        return null;
-      });
-    } else {
-      allConversations.search.map((conversation: any, index: any) => {
-        if (conversation[type].id === Id.toString()) {
-          conversationIndex = index;
-          setConversationInfo(conversation);
-        }
-        return null;
-      });
-    }
+    allConversations.search.map((conversation: any, index: any) => {
+      if (conversation[type].id === Id.toString()) {
+        conversationIndex = index;
+        setPhonenumber(conversation[chatType]?.waManagedPhone.id);
+        setConversationInfo(conversation);
+      }
+      return null;
+    });
   };
 
   const findContactInAllConversations = () => {
-    if (groups) {
-      if (allConversations && allConversations.search) {
-        // loop through the cached conversations and find if contact exists
-        // need to check - updateConversationInfo('contact', contactId);
-        allConversations.search.map((conversation: any, index: any) => {
-          if (conversation.waGroup?.id === contactId?.toString()) {
-            conversationIndex = index;
-            setPhonenumber(conversation.waGroup?.waManagedPhone.id);
-            setConversationInfo(conversation);
+    if (allConversations && allConversations.search) {
+      // loop through the cached conversations and find if contact exists
+      // need to check - updateConversationInfo('contact', contactId);
+      allConversations.search.map((conversation: any, index: any) => {
+        if (conversation[chatType]?.id === contactId?.toString()) {
+          conversationIndex = index;
+          if (groups) {
+            setPhonenumber(conversation[chatType]?.waManagedPhone.id);
           }
-          return null;
-        });
-      }
-    } else {
-      if (allConversations && allConversations.search) {
-        // loop through the cached conversations and find if contact exists
-        // need to check - updateConversationInfo('contact', contactId);
-        allConversations.search.map((conversation: any, index: any) => {
-          if (conversation.contact.id === contactId?.toString()) {
-            conversationIndex = index;
-            setConversationInfo(conversation);
-          }
-          return null;
-        });
-      }
+          setConversationInfo(conversation);
+        }
+        return null;
+      });
     }
 
     // if conversation is not present then fetch for contact
@@ -595,7 +577,6 @@ export const ChatMessages = ({
             id: '11',
           },
           interactiveContent: '{}',
-          type: 'TEXT',
         };
       }
 
@@ -622,7 +603,7 @@ export const ChatMessages = ({
   }
 
   const loadMoreMessages = () => {
-    const { messageNumber } = conversationInfo.messages[conversationInfo.messages?.length - 1];
+    const { messageNumber } = conversationInfo.messages[conversationInfo.messages.length - 1];
     const variables: any = {
       filter: { id: contactId?.toString() },
       contactOpts: { limit: 1 },
@@ -725,7 +706,7 @@ export const ChatMessages = ({
   let chatInputSection;
 
   if (groups) {
-    if (contactId && conversationInfo.waGroup) {
+    if (contactId && conversationInfo[chatType]) {
       const displayName = conversationInfo.waGroup?.label;
       topChatBar = (
         <ContactBar

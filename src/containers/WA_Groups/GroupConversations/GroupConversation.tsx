@@ -4,7 +4,6 @@ import dayjs from 'dayjs';
 import { useApolloClient, useMutation } from '@apollo/client';
 
 import { COMPACT_MESSAGE_LENGTH, SHORT_DATE_FORMAT } from 'common/constants';
-import { Timer } from 'components/UI/Timer/Timer';
 import { MARK_AS_READ, CONTACT_FRAGMENT } from 'graphql/mutations/Chat';
 import { SEARCH_OFFSET } from 'graphql/queries/Search';
 import { WhatsAppToJsx } from 'common/RichEditor';

@@ -212,6 +212,22 @@ export const ChatConversations = ({
     phonesDropdown = <WaManagedPhones phonenumber={phonenumber} setPhonenumber={setPhonenumber} />;
   }
 
+  let savedSearch: any;
+  if (!groups) {
+    savedSearch = (
+      <SavedSearchToolbar
+        savedSearchCriteriaCallback={handlerSavedSearchCriteria}
+        refetchData={{ savedSearches }}
+        onSelect={() => {
+          // on select searches remove search value & disable search mode
+          setSearchVal(undefined);
+          if (enableSearchMode) setEnableSearchMode(false);
+        }}
+        searchMode={enableSearchMode}
+      />
+    );
+  }
+
   return (
     <Container className={styles.ChatConversations} disableGutters>
       {phonesDropdown}
@@ -227,16 +243,7 @@ export const ChatConversations = ({
           iconFront
         />
       </div>
-      <SavedSearchToolbar
-        savedSearchCriteriaCallback={handlerSavedSearchCriteria}
-        refetchData={{ savedSearches }}
-        onSelect={() => {
-          // on select searches remove search value & disable search mode
-          setSearchVal(undefined);
-          if (enableSearchMode) setEnableSearchMode(false);
-        }}
-        searchMode={enableSearchMode}
-      />
+      {savedSearch}
       <ConversationList
         groups={groups}
         searchVal={searchVal}
