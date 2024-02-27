@@ -87,7 +87,7 @@ export const GroupMessageSubscription = ({ setDataLoaded }: GroupMessageProps) =
         }
       }
 
-      const { newMessage, contactId, collectionId, messageStatusData } = getSubscriptionDetails(
+      const { newMessage, contactId, messageStatusData } = getSubscriptionDetails(
         action,
         subscriptionData,
         true

@@ -63,10 +63,6 @@ export const ConversationList = ({
   const [searchMultiData, setSearchMultiData] = useState<any>();
   const scrollHeight = useQuery(SCROLL_HEIGHT);
   const { t } = useTranslation();
-  let chatType = 'contact';
-  if (groups) {
-    chatType = 'waGroup';
-  }
 
   let queryVariables = groups ? GROUP_QUERY_VARIABLES : SEARCH_QUERY_VARIABLES;
   if (selectedCollectionId) {

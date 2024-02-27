@@ -1,5 +1,4 @@
 import { SUBSCRIPTION_ALLOWED_DURATION, SUBSCRIPTION_ALLOWED_NUMBER } from 'common/constants';
-import { boolean } from 'yup';
 
 let subscriptionRequests: any = [];
 

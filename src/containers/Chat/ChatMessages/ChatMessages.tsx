@@ -388,13 +388,10 @@ export const ChatMessages = ({
     },
     [createAndSendMessage, contactId, phoneId]
   );
-  console.log(allConversations);
 
   // loop through the cached conversations and find if contact/Collection exists
   const updateConversationInfo = (type: string, Id: any) => {
     allConversations.search.map((conversation: any, index: any) => {
-      console.log(conversation);
-
       if (conversation[type].id === Id.toString()) {
         conversationIndex = index;
         if (groups) {
@@ -411,13 +408,11 @@ export const ChatMessages = ({
       // loop through the cached conversations and find if contact exists
       // need to check - updateConversationInfo('contact', contactId);
       allConversations.search.map((conversation: any, index: any) => {
-        console.log(conversation);
         if (conversation[chatType]?.id === contactId?.toString()) {
           conversationIndex = index;
           if (groups) {
             setPhonenumber(conversation.waGroup.waManagedPhone.id);
           }
-          console.log(conversation);
 
           setConversationInfo(conversation);
         }
@@ -554,7 +549,7 @@ export const ChatMessages = ({
         filter: { id: contactId?.toString() },
         contactOpts: { limit: 1 },
         messageOpts: {
-          limit: conversationInfo.messages[conversationInfo.messages?.length - 1].messageNumber,
+          limit: conversationInfo.messages[conversationInfo.messages.length - 1].messageNumber,
           offset,
         },
       };
@@ -758,7 +753,7 @@ export const ChatMessages = ({
     topChatBar = (
       <ContactBar
         collectionId={collectionId.toString()}
-        displayName={conversationInfo?.group?.label}
+        displayName={conversationInfo.group.label}
         handleAction={handleChatClearedAction}
       />
     );
