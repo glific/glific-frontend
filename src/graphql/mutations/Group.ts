@@ -3,20 +3,9 @@ import { gql } from '@apollo/client';
 export const SEND_MESSAGE_IN_WA_GROUP = gql`
   mutation SendMessageInWaGroup($input: WaMessageInput!) {
     sendMessageInWaGroup(input: $input) {
-      waMessage {
-        id
-        body
-        insertedAt
-        sender {
-          id
-        }
-        receiver {
-          id
-        }
-        media {
-          url
-          caption
-        }
+      errors {
+        key
+        message
       }
     }
   }

@@ -1,4 +1,5 @@
 import { SUBSCRIPTION_ALLOWED_DURATION, SUBSCRIPTION_ALLOWED_NUMBER } from 'common/constants';
+import { boolean } from 'yup';
 
 let subscriptionRequests: any = [];
 
@@ -43,7 +44,7 @@ export const recordRequests = () => {
   }
 };
 
-export const getSubscriptionDetails = (action: string, subscriptionData: any) => {
+export const getSubscriptionDetails = (action: string, subscriptionData: any, groups?: boolean) => {
   let newMessage: any;
   let contactId: number = 0;
   let collectionId: number = 0;
@@ -52,13 +53,21 @@ export const getSubscriptionDetails = (action: string, subscriptionData: any) =>
   switch (action) {
     case 'SENT':
       // set the receiver contact id
-      newMessage = subscriptionData.data.sentMessage;
-      contactId = subscriptionData.data.sentMessage.receiver.id;
+      newMessage = groups
+        ? subscriptionData.data.sentWaGroupMessage
+        : subscriptionData.data.sentMessage;
+      contactId = groups
+        ? subscriptionData.data.sentWaGroupMessage.waGroupId
+        : subscriptionData.data.sentMessage.receiver.id;
       break;
     case 'RECEIVED':
       // set the sender contact id
-      newMessage = subscriptionData.data.receivedMessage;
-      contactId = subscriptionData.data.receivedMessage.sender.id;
+      newMessage = groups
+        ? subscriptionData.data.receivedWaGroupMessage
+        : subscriptionData.data.receivedMessage;
+      contactId = groups
+        ? subscriptionData.data.receivedWaGroupMessage.waGroupId
+        : subscriptionData.data.receivedMessage.sender.id;
       break;
     case 'COLLECTION':
       newMessage = subscriptionData.data.sentGroupMessage;

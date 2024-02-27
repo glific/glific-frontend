@@ -19,6 +19,7 @@ import {
   GROUP_QUERY_VARIABLES,
 } from 'common/constants';
 import { updateConversations } from 'services/ChatService';
+import { updateGroupConversations } from 'services/GroupMessageService';
 import { showMessages } from 'common/responsive';
 import { addLogs, getDisplayName } from 'common/utils';
 import ChatConversation from '../ChatConversation/ChatConversation';
@@ -62,6 +63,10 @@ export const ConversationList = ({
   const [searchMultiData, setSearchMultiData] = useState<any>();
   const scrollHeight = useQuery(SCROLL_HEIGHT);
   const { t } = useTranslation();
+  let chatType = 'contact';
+  if (groups) {
+    chatType = 'waGroup';
+  }
 
   let queryVariables = groups ? GROUP_QUERY_VARIABLES : SEARCH_QUERY_VARIABLES;
   if (selectedCollectionId) {
@@ -71,6 +76,9 @@ export const ConversationList = ({
     const variables = JSON.parse(savedSearchCriteria);
     queryVariables = variables;
   }
+  let search_query = groups && !selectedCollectionId ? GROUP_SEARCH_QUERY : SEARCH_QUERY;
+  let contactOptions = groups ? 'waGroupOpts' : 'contactOpts';
+  let messageOptions = groups ? 'waMessageOpts' : 'messageOpts';
 
   // check if there is a previous scroll height
   useEffect(() => {
@@ -100,8 +108,6 @@ export const ConversationList = ({
     entityType === 'collection'
       ? groupCollectionSearchQuery()
       : groupSearchQuery({ limit: DEFAULT_MESSAGE_LIMIT }, DEFAULT_CONTACT_LIMIT, {});
-
-  let search_query = groups ? GROUP_SEARCH_QUERY : SEARCH_QUERY;
 
   const {
     loading: conversationLoading,
@@ -157,25 +163,25 @@ export const ConversationList = ({
     }
 
     return {
-      contactOpts: {
+      [contactOptions]: {
         limit: DEFAULT_CONTACT_LIMIT,
       },
       filter,
-      messageOpts: {
+      [messageOptions]: {
         limit: DEFAULT_MESSAGE_LIMIT,
       },
     };
   };
 
   const filterSearch = () => ({
-    contactOpts: {
+    [contactOptions]: {
       limit: DEFAULT_CONTACT_LIMIT,
       order: 'DESC',
     },
     searchFilter: {
       term: searchVal,
     },
-    messageOpts: {
+    [messageOptions]: {
       limit: DEFAULT_MESSAGE_LIMIT,
       offset: 0,
       order: 'ASC',
@@ -440,7 +446,7 @@ export const ConversationList = ({
     // load more for multi search
     if (searchVal && !selectedCollectionId) {
       const variables = filterSearch();
-      variables.messageOpts = {
+      variables[messageOptions] = {
         limit: DEFAULT_MESSAGE_LOADMORE_LIMIT,
         offset: conversations.messages.length,
         order: 'ASC',
@@ -469,13 +475,13 @@ export const ConversationList = ({
         }
       }
 
-      const conversationLoadMoreVariables = {
-        contactOpts: {
+      const conversationLoadMoreVariables: any = {
+        [contactOptions]: {
           limit: DEFAULT_CONTACT_LOADMORE_LIMIT,
           offset: loadingOffset,
         },
         filter,
-        messageOpts: {
+        [messageOptions]: {
           limit: DEFAULT_MESSAGE_LIMIT,
         },
       };
@@ -495,7 +501,11 @@ export const ConversationList = ({
               variables.filter.groupLabel = searchVal;
             }
             // save the conversation and update cache
-            updateConversations(loadMoreData, variables);
+            if (groups) {
+              updateGroupConversations(loadMoreData, variables);
+            } else {
+              updateConversations(loadMoreData, variables);
+            }
             setShowLoadMore(true);
 
             setLoadingOffset(loadingOffset + DEFAULT_CONTACT_LOADMORE_LIMIT);

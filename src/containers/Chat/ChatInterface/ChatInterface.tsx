@@ -63,7 +63,6 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
     variables: queryVariables,
     fetchPolicy: 'cache-only',
   });
-  console.log(data);
 
   useEffect(() => {
     if (getUserRole().includes('Staff')) {

@@ -144,11 +144,6 @@ const routeAdmin = (
     <Route path="organizations/:id/extensions" element={<OrganizationList openExtensionModal />} />
     <Route path="organizations/:id/customer" element={<OrganizationList openCustomerModal />} />
 
-    <Route path="group/chat" element={<GroupChatInterface />} />
-    <Route path="group/chat/collection" element={<GroupChatInterface collections />} />
-    <Route path="group/chat/:contactId" element={<GroupChatInterface />} />
-    <Route path="group/chat/collection/:collectionId" element={<GroupChatInterface />} />
-
     <Route path="/*" element={<Chat />} />
   </Routes>
 );
@@ -162,6 +157,15 @@ export const chatRoutes = (
     <Route path="chat/:contactId" element={<ChatInterface />} />
     <Route path="chat/collection/:collectionId" element={<ChatInterface />} />
     <Route path="/*" element={<ChatInterface />} />
+  </Routes>
+);
+
+export const groupRoutes = (
+  <Routes>
+    <Route path="group/chat" element={<GroupChatInterface />} />
+    <Route path="group/chat/collection" element={<GroupChatInterface collections />} />
+    <Route path="group/chat/:contactId" element={<GroupChatInterface />} />
+    <Route path="group/chat/collection/:collectionId" element={<GroupChatInterface />} />
   </Routes>
 );
 

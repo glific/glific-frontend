@@ -21,6 +21,7 @@ export const GROUP_SEARCH_QUERY = gql`
         insertedAt
         messageNumber
         type
+        status
         media {
           url
           caption

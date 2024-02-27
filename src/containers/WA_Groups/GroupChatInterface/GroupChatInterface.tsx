@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { Simulator } from 'components/simulator/Simulator';
 import { getUserRole } from 'context/role';
-import { COLLECTION_SEARCH_QUERY_VARIABLES, GROUP_QUERY_VARIABLES } from 'common/constants';
+import { GROUP_QUERY_VARIABLES } from 'common/constants';
 import ChatConversations from 'containers/Chat/ChatConversations/ChatConversations';
 import ChatMessages from 'containers/Chat/ChatMessages/ChatMessages';
 import { setErrorMessage } from 'common/notification';
@@ -49,6 +49,7 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
     data: dataa,
   } = useQuery<any>(GROUP_SEARCH_QUERY, {
     variables: GROUP_QUERY_VARIABLES,
+    fetchPolicy: 'cache-only',
   });
 
   // contact id === collection when the collection id is not passed in the url

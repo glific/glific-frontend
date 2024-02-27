@@ -53,6 +53,8 @@ export interface ChatMessageProps {
   sendBy: string;
   flowLabel: string | null;
   daySeparator: string | null;
+  groups?: boolean;
+  status?: string;
 }
 
 export const ChatMessage = ({
@@ -75,6 +77,8 @@ export const ChatMessage = ({
   sendBy,
   flowLabel,
   daySeparator,
+  groups,
+  status,
 }: ChatMessageProps) => {
   const [showSaveMessageDialog, setShowSaveMessageDialog] = useState(false);
   const Ref = useRef(null);
@@ -139,7 +143,12 @@ export const ChatMessage = ({
     );
   }
 
-  const isSender = sender.id === contactId;
+  let isSender: boolean;
+  if (groups) {
+    isSender = status === 'received';
+  } else {
+    isSender = sender.id === contactId;
+  }
 
   if (isSender) {
     additionalClass = styles.Other;

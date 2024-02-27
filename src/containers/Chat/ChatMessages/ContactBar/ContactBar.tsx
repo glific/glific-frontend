@@ -190,7 +190,7 @@ export const ContactBar = ({
   let selectedCollectionsName;
   let selectedCollections: any = [];
 
-  if (data) {
+  if (data && !groups) {
     const { groups } = data.contact.contact;
     initialSelectedCollectionIds = groups.map((group: any) => group.id);
 
