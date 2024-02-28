@@ -1,101 +1,88 @@
-.DescriptionContainer {
-  min-height: 100vh;
-  padding: 16px 53px;
-  background-color: #fff;
-}
-
-.Description {
+.TableRow {
+  position: relative;
   display: flex;
+  background-color: white;
+  box-shadow: 0px 4px 4px 0px #0000000a;
+  border-bottom: 1px solid #efefef;
+  padding: 4px 13px;
+  padding-right: 5px;
 }
 
-.FieldLabel {
-  padding-top: 29px;
-  font-size: 16px;
-  font-weight: 400;
-  line-height: 18px;
-  letter-spacing: 0px;
+.TableCell {
+  font-size: 14px;
+  display: flex;
+  padding: 0px 10px;
+  margin: 0;
+  border: unset;
+  color: #0c1f14;
+}
+
+.TableContainer {
+  padding: 18px 56px;
+  overflow: hidden;
+  height: calc(100vh - 200px);
+}
+
+.TableText {
+  margin-right: 23px;
   text-align: left;
-  color: #777777;
-  margin-bottom: 12px;
-}
-
-.SessionTimer {
-  font-size: 10px;
-  align-content: center;
-  display: flex;
-  align-items: center;
-  padding-left: 15px;
-}
-
-.SessionTimer > span {
-  margin-right: 6px;
-  margin-top: 3px;
-}
-
-.DetailBlock {
-  margin-left: 10px;
-}
-
-.DetailBlock > div {
-  margin-bottom: 12px;
-}
-
-.DescriptionItem {
-  font-size: 16px;
-  color: #cacaca;
-  text-transform: capitalize;
-}
-
-.DescriptionItemValue {
-  color: #212121;
-  leading-trim: both;
-  text-edge: cap;
-  font-family: Heebo;
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 20px; /* 125% */
-}
-
-.Visibility {
-  color: #212121;
-  leading-trim: both;
-  text-edge: cap;
-  font-family: Heebo;
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 20px; /* 125% */
-}
-.Participants {
-  margin-left: 10px;
-}
-
-.ParticipantContainer {
-  display: flex;
-  align-items: center;
-  padding: 8px 0;
-}
-
-.ParticipantContainer > div {
-  padding-right: 1rem;
-}
-
-.PhoneSection {
-  display: flex;
-  align-items: center;
-  padding: 0;
+  padding: 12px 0px;
+  font-size: 14px;
+  color: #93a29b;
+  line-height: 1.25;
+  white-space: pre-line;
   margin: 0;
 }
 
-.PhoneField {
-  width: fit-content;
+.LabelText {
+  display: flex;
+  font-weight: 500;
+  font-size: 18px;
+  color: #073f24;
+  margin-top: 12px;
+  margin-bottom: 12px;
+  line-height: 1;
 }
 
-.Divider {
-  height: 1px;
-  flex-shrink: 0;
-  background: #efefef;
-  box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.06);
-  margin-top: 24px;
+.ActiveRow {
+  color: #073f24;
+}
+
+.InactiveRow {
+  color: #ccd4d0;
+}
+
+.Body {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.RowStyle {
+  padding: 15px 20px 15px 25px;
+}
+
+.RowHeadStyle {
+  background-color: #dfece2;
+  color: rgba(12, 31, 20, 0.57);
+  z-index: 100;
+  padding-left: 22px;
+  padding-right: 25px;
+}
+
+.HeaderColor {
+  color: rgba(12, 31, 20, 0.57);
+}
+
+.StyleForContainer {
+  height: calc(100% - 50px);
+  background: #fff;
+  overflow-y: scroll;
+  scrollbar-width: none;
+  border-radius: 10px 10px 0 0;
+}
+
+.Skeleton {
+  margin: 10px;
 }

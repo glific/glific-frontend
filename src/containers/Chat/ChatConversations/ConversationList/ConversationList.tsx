@@ -24,7 +24,6 @@ import { showMessages } from 'common/responsive';
 import { addLogs, getDisplayName } from 'common/utils';
 import ChatConversation from '../ChatConversation/ChatConversation';
 import styles from './ConversationList.module.css';
-import { groupCollectionSearchQuery, groupSearchQuery } from 'mocks/Groups';
 import GroupConversation from 'containers/WA_Groups/GroupConversations/GroupConversation';
 import { GROUP_SEARCH_MULTI_QUERY, GROUP_SEARCH_QUERY } from 'graphql/queries/WA_Groups';
 
@@ -79,7 +78,6 @@ export const ConversationList = ({
   let contactOptions = groups ? 'waGroupOpts' : 'contactOpts';
   let messageOptions = groups ? 'waMessageOpts' : 'messageOpts';
   let searchOptions = groups ? 'filter' : 'searchFilter';
-  let chatType = groups ? 'waGroup' : 'contact';
 
   // check if there is a previous scroll height
   useEffect(() => {
@@ -105,11 +103,6 @@ export const ConversationList = ({
     }
   });
 
-  const groupData =
-    entityType === 'collection'
-      ? groupCollectionSearchQuery()
-      : groupSearchQuery({ limit: DEFAULT_MESSAGE_LIMIT }, DEFAULT_CONTACT_LIMIT, {});
-
   const {
     loading: conversationLoading,
     error: conversationError,
@@ -129,7 +122,7 @@ export const ConversationList = ({
   }, [savedSearchCriteriaId]);
 
   const filterVariables = () => {
-    if (groups) {
+    if (groups && !selectedCollectionId) {
       return {
         [contactOptions]: {
           limit: DEFAULT_CONTACT_LIMIT,

@@ -7,7 +7,7 @@ export const GROUP_SEARCH_QUERY = gql`
         bspId
         id
         label
-        lastMessageAt: lastCommunicationAt
+        lastCommunicationAt
         waManagedPhone {
           id
           label
@@ -57,7 +57,7 @@ export const GROUP_SEARCH_MULTI_QUERY = gql`
         bspId
         id
         label
-        lastMessageAt: lastCommunicationAt
+        lastCommunicationAt
         waManagedPhone {
           id
           label
