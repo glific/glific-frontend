@@ -1,3 +1,4 @@
+import 'mocks/matchMediaMock';
 import { render, within, fireEvent, cleanup, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
@@ -6,12 +7,20 @@ import { SpeedSendList } from 'containers/Template/List/SpeedSendList/SpeedSendL
 import { TEMPLATE_MOCKS } from 'containers/Template/Template.test.helper';
 import { setUserSession } from 'services/AuthService';
 import { SpeedSend } from './SpeedSend';
-
 beforeEach(() => {
   cleanup();
 });
 const mocks = TEMPLATE_MOCKS;
 setUserSession(JSON.stringify({ roles: ['Admin'] }));
+
+const mockIntersectionObserver = class {
+  constructor() {}
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+};
+
+(window as any).IntersectionObserver = mockIntersectionObserver;
 
 describe('SpeedSend', () => {
   test('cancel button should redirect to SpeedSendlist page', async () => {

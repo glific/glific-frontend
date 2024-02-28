@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { EditorState, ContentState } from 'draft-js';
 import { Container, Button, ClickAwayListener, Fade, IconButton } from '@mui/material';
 import { useMutation, useQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
@@ -9,10 +8,9 @@ import AttachmentIconSelected from 'assets/images/icons/Attachment/Selected.svg?
 import VariableIcon from 'assets/images/icons/Template/Variable.svg?react';
 import CrossIcon from 'assets/images/icons/Clear.svg?react';
 import SendMessageIcon from 'assets/images/icons/SendMessage.svg?react';
-import { getPlainTextFromEditor, getEditorFromContent } from 'common/RichEditor';
 import { is24HourWindowOver, pattern } from 'common/constants';
 import SearchBar from 'components/UI/SearchBar/SearchBar';
-import WhatsAppEditor, { updatedValue } from 'components/UI/Form/WhatsAppEditor/WhatsAppEditor';
+import WhatsAppEditor from 'components/UI/Form/WhatsAppEditor/WhatsAppEditor';
 import Tooltip from 'components/UI/Tooltip/Tooltip';
 import { CREATE_MEDIA_MESSAGE, UPLOAD_MEDIA_BLOB } from 'graphql/mutations/Chat';
 import { GET_ATTACHMENT_PERMISSION } from 'graphql/queries/Settings';
@@ -24,6 +22,15 @@ import { AddAttachment } from '../AddAttachment/AddAttachment';
 import { VoiceRecorder } from '../VoiceRecorder/VoiceRecorder';
 import ChatTemplates from '../ChatTemplates/ChatTemplates';
 import styles from './ChatInput.module.css';
+import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
+import {
+  $createParagraphNode,
+  $createTextNode,
+  $getRoot,
+  $getSelection,
+  $isRangeSelection,
+  CLEAR_EDITOR_COMMAND,
+} from 'lexical';
 
 export interface ChatInputProps {
   onSendMessage(
@@ -34,7 +41,6 @@ export interface ChatInputProps {
     variableParam: any,
     interactiveTemplateId?: any
   ): any;
-  handleHeightChange(newHeight: number): void;
   contactStatus?: string;
   contactBspStatus?: string;
   additionalStyle?: any;
@@ -47,11 +53,10 @@ export const ChatInput = ({
   contactBspStatus,
   contactStatus,
   additionalStyle,
-  handleHeightChange,
   isCollection,
   lastMessageTime,
 }: ChatInputProps) => {
-  const [editorState, setEditorState] = useState(EditorState.createEmpty());
+  const [editorState, setEditorState] = useState<any>('');
   const [selectedTab, setSelectedTab] = useState('');
   const [open, setOpen] = useState(false);
   const [searchVal, setSearchVal] = useState('');
@@ -70,6 +75,8 @@ export const ChatInput = ({
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   const { t } = useTranslation();
+  const [editor] = useLexicalComposerContext();
+
   const speedSends = 'Speed sends';
   const templates = 'Templates';
   const interactiveMsg = 'Interactive msg';
@@ -79,10 +86,16 @@ export const ChatInput = ({
 
   const resetVariable = () => {
     setUpdatedEditorState(undefined);
-    setEditorState(EditorState.createEmpty());
+    setEditorState('');
     setSelectedTemplate(undefined);
     setInteractiveMessageContent({});
     setVariableParam([]);
+
+    // clear the editor state
+    editor.update(() => {
+      $getRoot().clear();
+    });
+    editor.focus();
   };
 
   const { data: permission } = useQuery(GET_ATTACHMENT_PERMISSION);
@@ -182,11 +195,8 @@ export const ChatInput = ({
     }
 
     // Resetting the EditorState
-    setEditorState(
-      EditorState.moveFocusToEnd(
-        EditorState.push(editorState, ContentState.createFromText(''), 'remove-range')
-      )
-    );
+    editor.dispatchCommand(CLEAR_EDITOR_COMMAND, undefined);
+    editor.focus();
   };
 
   const emojiStyles = {
@@ -224,7 +234,6 @@ export const ChatInput = ({
 
   const handleSelectText = (obj: any, isInteractiveMsg: boolean = false) => {
     resetVariable();
-
     // set selected template
 
     let messageBody = obj.body;
@@ -236,7 +245,13 @@ export const ChatInput = ({
 
     setSelectedTemplate(obj);
     // Conversion from HTML text to EditorState
-    setEditorState(getEditorFromContent(messageBody));
+    setEditorState(messageBody);
+    editor.update(() => {
+      const root = $getRoot();
+      const paragraph = $createParagraphNode();
+      paragraph.append($createTextNode(messageBody || ''));
+      root.append(paragraph);
+    });
 
     // Add attachment if present
     if (Object.prototype.hasOwnProperty.call(obj, 'MessageMedia') && obj.MessageMedia) {
@@ -262,7 +277,14 @@ export const ChatInput = ({
   };
 
   const updateEditorState = (body: string) => {
-    setUpdatedEditorState(body);
+    setUpdatedEditorState(true);
+    editor.update(() => {
+      const root = $getRoot();
+      root.clear();
+      const paragraph = $createParagraphNode();
+      paragraph.append($createTextNode(body));
+      root.append(paragraph);
+    });
   };
 
   const variableParams = (params: Array<any>) => {
@@ -370,6 +392,7 @@ export const ChatInput = ({
     };
     dialog = <AddAttachment {...dialogProps} />;
   }
+
   return (
     <Container
       className={`${styles.ChatInput} ${additionalStyle}`}
@@ -406,10 +429,8 @@ export const ChatInput = ({
         }`}
       >
         <WhatsAppEditor
-          editorState={updatedEditorState ? getEditorFromContent(updatedEditorState) : editorState}
           setEditorState={setEditorState}
           sendMessage={submitMessage}
-          handleHeightChange={handleHeightChange}
           readOnly={
             (selectedTemplate !== undefined && selectedTemplate.isHsm) ||
             Object.keys(interactiveMessageContent).length !== 0
@@ -468,9 +489,14 @@ export const ChatInput = ({
 
               {showEmojiPicker ? (
                 <EmojiPicker
-                  onEmojiSelect={(emoji: any) =>
-                    setEditorState(updatedValue(emoji, editorState, true))
-                  }
+                  onEmojiSelect={(emoji: any) => {
+                    editor.update(() => {
+                      const selection = $getSelection();
+                      if ($isRangeSelection(selection)) {
+                        selection.insertNodes([$createTextNode(emoji.native)]);
+                      }
+                    });
+                  }}
                   displayStyle={emojiStyles}
                 />
               ) : null}
@@ -484,18 +510,9 @@ export const ChatInput = ({
               color="primary"
               disableElevation
               onClick={() => {
-                if (updatedEditorState) {
-                  submitMessage(updatedEditorState);
-                } else {
-                  submitMessage(getPlainTextFromEditor(editorState));
-                }
+                submitMessage(editorState);
               }}
-              disabled={
-                (!editorState.getCurrentContent().hasText() &&
-                  !attachmentAdded &&
-                  !recordedAudio) ||
-                uploading
-              }
+              disabled={(!editorState && !attachmentAdded && !recordedAudio) || uploading}
             >
               <SendMessageIcon className={styles.SendIcon} />
             </Button>

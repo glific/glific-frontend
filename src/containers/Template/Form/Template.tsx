@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { EditorState } from 'draft-js';
 import Typography from '@mui/material/Typography';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -24,7 +23,6 @@ import {
   QUICK_REPLY,
   VALID_URL_REGEX,
 } from 'common/constants';
-import { getPlainTextFromEditor, getEditorFromContent } from 'common/RichEditor';
 import Loading from 'components/UI/Layout/Loading/Loading';
 import { CreateAutoComplete } from 'components/UI/Form/CreateAutoComplete/CreateAutoComplete';
 import { validateMedia } from 'common/utils';
@@ -34,7 +32,6 @@ const regexForShortcode = /^[a-z0-9_]+$/g;
 
 const HSMValidation = {
   example: Yup.string()
-    .transform((_current, original) => original.getCurrentContent().getPlainText())
     .max(1024, 'Maximum 1024 characters are allowed')
     .when('body', ([body], schema: any) =>
       schema.test({
@@ -178,8 +175,8 @@ const Template = ({
 
   const [tagId, setTagId] = useState<any>(null);
   const [label, setLabel] = useState('');
-  const [body, setBody] = useState(EditorState.createEmpty());
-  const [example, setExample] = useState(EditorState.createEmpty());
+  const [body, setBody] = useState<any>('');
+  const [example, setExample] = useState<any>('');
   const [shortcode, setShortcode] = useState('');
   const [language, setLanguageId] = useState<any>({});
   const [type, setType] = useState<any>(null);
@@ -284,7 +281,7 @@ const Template = ({
     setIsActive(isActiveValue);
 
     if (typeof bodyValue === 'string') {
-      setBody(getEditorFromContent(bodyValue));
+      setBody(bodyValue);
     }
 
     if (exampleValue) {
@@ -301,9 +298,8 @@ const Template = ({
       } else {
         exampleBody = exampleValue;
       }
-      const editorStateBody = getEditorFromContent(exampleValue);
 
-      setExample(editorStateBody);
+      setExample(exampleValue);
       onExampleChange(exampleBody);
     }
 
@@ -325,7 +321,7 @@ const Template = ({
       ) {
         const content = translationsCopy[currentLanguage];
         setLabel(content.label);
-        setBody(getEditorFromContent(content.body));
+        setBody(content.body);
       }
       setTranslations(translationsValue);
     }
@@ -359,7 +355,7 @@ const Template = ({
     setLabel(labelValue);
 
     if (typeof bodyValue === 'string') {
-      setBody(getEditorFromContent(bodyValue));
+      setBody(bodyValue);
     }
 
     if (typeValue && typeValue !== 'TEXT') {
@@ -497,7 +493,7 @@ const Template = ({
   // Removing buttons when checkbox is checked or unchecked
   useEffect(() => {
     if (getExample) {
-      const { message }: any = getTemplateAndButton(getPlainTextFromEditor(getExample));
+      const { message }: any = getTemplateAndButton(getExample);
       onExampleChange(message || '');
     }
   }, [isAddButtonChecked]);
@@ -509,7 +505,7 @@ const Template = ({
 
       const parsedText = parse.length ? `| ${parse.join(' | ')}` : null;
 
-      const { message }: any = getTemplateAndButton(getPlainTextFromEditor(example));
+      const { message }: any = getTemplateAndButton(example);
 
       const sampleText: any = parsedText && message + parsedText;
 
@@ -633,7 +629,7 @@ const Template = ({
   const onLanguageChange = (option: string, form: any) => {
     setNextLanguage(option);
     const { values } = form;
-    if (values.label || values.body.getCurrentContent().getPlainText()) {
+    if (values.label || values.body) {
       return;
     }
     handleLanguageChange(option);
@@ -689,6 +685,7 @@ const Template = ({
       getEditorValue: (value: any) => {
         setBody(value);
       },
+      isEditing: isEditing,
     },
   ];
 
@@ -775,15 +772,15 @@ const Template = ({
     }, []);
 
     // get template body
-    const templateBody = getTemplateAndButton(getPlainTextFromEditor(body));
-    const templateExample = getTemplateAndButton(getPlainTextFromEditor(example));
+    const templateBody = getTemplateAndButton(body);
+    const templateExample = getTemplateAndButton(example);
 
     return {
       hasButtons: true,
       buttons: JSON.stringify(buttons),
       buttonType: templateType,
-      body: getEditorFromContent(templateBody.message),
-      example: getEditorFromContent(templateExample.message),
+      body: templateBody.message,
+      example: templateExample.message,
     };
   };
 
@@ -839,7 +836,7 @@ const Template = ({
             status: 'approved',
             languageId: language,
             label: payloadCopy.label,
-            body: getPlainTextFromEditor(payloadCopy.body),
+            body: payloadCopy.body,
             MessageMedia: messageMedia,
             ...defaultAttribute,
           };
@@ -909,7 +906,6 @@ const Template = ({
     language: Yup.object().nullable().required('Language is required.'),
     label: Yup.string().required(t('Title is required.')).max(50, t('Title length is too long.')),
     body: Yup.string()
-      .transform((current, original) => original.getCurrentContent().getPlainText())
       .required(t('Message is required.'))
       .max(1024, 'Maximum 1024 characters are allowed'),
     type: Yup.object()

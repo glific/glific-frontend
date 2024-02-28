@@ -1,7 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import { EditorState } from 'draft-js';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useLazyQuery, useQuery } from '@apollo/client';
 import { setNotification } from 'common/notification';
@@ -24,7 +23,6 @@ import { LanguageBar } from 'components/UI/LanguageBar/LanguageBar';
 import { LIST, LOCATION_REQUEST, MEDIA_MESSAGE_TYPES, QUICK_REPLY } from 'common/constants';
 import { validateMedia } from 'common/utils';
 import Loading from 'components/UI/Layout/Loading/Loading';
-import { getPlainTextFromEditor, getEditorFromContent } from 'common/RichEditor';
 import { InteractiveOptions } from './InteractiveOptions/InteractiveOptions';
 import styles from './InteractiveMessage.module.css';
 import {
@@ -60,7 +58,7 @@ export const InteractiveMessage = () => {
   const navigate = useNavigate();
   const [title, setTitle] = useState('');
   const [footer, setFooter] = useState('');
-  const [body, setBody] = useState(EditorState.createEmpty());
+  const [body, setBody] = useState<any>();
   const [templateType, setTemplateType] = useState<string>(QUICK_REPLY);
   const [templateTypeField, setTemplateTypeField] = useState<any>(templateTypeOptions[0]);
   const [templateButtons, setTemplateButtons] = useState<Array<any>>([{ value: '' }]);
@@ -82,6 +80,11 @@ export const InteractiveMessage = () => {
   const [nextLanguage, setNextLanguage] = useState<any>('');
   const { t } = useTranslation();
   const params = useParams();
+
+  let isEditing = false;
+  if (params?.id) {
+    isEditing = true;
+  }
 
   const isLocationRequestType = templateType === LOCATION_REQUEST;
 
@@ -161,7 +164,7 @@ export const InteractiveMessage = () => {
 
     setTitle(data.title);
     setFooter(data.footer);
-    setBody(getEditorFromContent(data.body));
+    setBody(data.body);
     setTemplateType(typeValue);
     setTemplateTypeField(templateTypeOptions.find((option) => option.id === typeValue));
     setTimeout(() => setTemplateButtons(data.templateButtons), 100);
@@ -230,7 +233,7 @@ export const InteractiveMessage = () => {
 
     setTitle(titleText);
     setFooter(data.footer);
-    setBody(getEditorFromContent(data.body));
+    setBody(data.body);
     setTemplateType(typeValue);
     setTemplateTypeField(templateTypeOptions.find((option) => option.id === typeValue));
     setTimeout(() => setTemplateButtons(data.templateButtons), 100);
@@ -449,7 +452,7 @@ export const InteractiveMessage = () => {
     setNextLanguage(option);
     const { values, errors } = form;
     if (values.type?.label === 'TEXT') {
-      if (values.title || values.body.getCurrentContent().getPlainText()) {
+      if (values.title || values.body) {
         if (errors) {
           setNotification(t('Please check the errors'), 'warning');
         }
@@ -457,7 +460,7 @@ export const InteractiveMessage = () => {
         handleLanguageChange(option);
       }
     }
-    if (values.body.getCurrentContent().getPlainText()) {
+    if (values.body) {
       if (Object.keys(errors).length !== 0) {
         setNotification(t('Please check the errors'), 'warning');
       }
@@ -530,6 +533,7 @@ export const InteractiveMessage = () => {
       inputProp: {
         suggestions: contactVariables,
       },
+      isEditing: isEditing,
     },
     {
       skip: templateType !== QUICK_REPLY,
@@ -615,7 +619,7 @@ export const InteractiveMessage = () => {
     }
 
     if (templateTypeVal === LIST) {
-      const bodyText = getPlainTextFromEditor(payload.body);
+      const bodyText = payload.body;
       const items = getTemplateButtonPayload(templateTypeVal, templateButtonVal);
       const globalButtons = [{ type: 'text', title: globalButtonVal }];
 
@@ -627,7 +631,7 @@ export const InteractiveMessage = () => {
     }
 
     if (templateType === LOCATION_REQUEST) {
-      const bodyText = getPlainTextFromEditor(payload.body);
+      const bodyText = payload.body;
       const locationJson = {
         type: 'location_request_message',
         body: {
@@ -771,7 +775,7 @@ export const InteractiveMessage = () => {
   const validationScheme = Yup.object().shape(validation, [['type', 'attachmentURL']]);
 
   const getPreviewData = () => {
-    const bodyText = getPlainTextFromEditor(body);
+    const bodyText = body;
     if (!title && !bodyText && !footer) return null;
 
     const payload = {

@@ -6,10 +6,12 @@ export interface EmojiPickerProps {
   onEmojiSelect: Function;
 }
 
-export const EmojiPicker = ({ displayStyle, onEmojiSelect }: EmojiPickerProps) => (
-  <div data-testid="emoji-container" style={displayStyle}>
-    <Picker data={data} onEmojiSelect={onEmojiSelect} />
-  </div>
-);
+export const EmojiPicker = ({ displayStyle, onEmojiSelect }: EmojiPickerProps) => {
+  return (
+    <div data-testid="emoji-container" style={displayStyle}>
+      <Picker data={data} onEmojiSelect={onEmojiSelect} />
+    </div>
+  );
+};
 
 export default EmojiPicker;
