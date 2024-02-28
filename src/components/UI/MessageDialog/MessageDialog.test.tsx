@@ -1,8 +1,10 @@
+import 'mocks/matchMediaMock';
 import { fireEvent, render } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 
 import { MessageDialog } from './MessageDialog';
 import { getAttachmentPermissionMock } from 'mocks/Attachment';
+import { LexicalWrapper } from 'common/LexicalWrapper';
 
 const handleClose = vi.fn();
 
@@ -13,7 +15,9 @@ const defaultProps = {
 };
 const wrapper = (
   <MockedProvider mocks={[getAttachmentPermissionMock]}>
-    <MessageDialog {...defaultProps} />
+    <LexicalWrapper>
+      <MessageDialog {...defaultProps} />
+    </LexicalWrapper>
   </MockedProvider>
 );
 

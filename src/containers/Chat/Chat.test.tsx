@@ -1,4 +1,5 @@
 import { cleanup, render, screen, waitFor } from '@testing-library/react';
+import 'mocks/matchMediaMock';
 import { MockedProvider } from '@apollo/client/testing';
 
 import { setUserSession } from 'services/AuthService';

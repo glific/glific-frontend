@@ -21,7 +21,7 @@
 }
 
 /* 
-  Overriding draft-js mentions styles as per requirement
+  Overriding lexical mentions styles as per requirement
 */
 .mentionSuggestions {
   composes: Font;
