@@ -26,7 +26,7 @@ import ChatConversation from '../ChatConversation/ChatConversation';
 import styles from './ConversationList.module.css';
 import { groupCollectionSearchQuery, groupSearchQuery } from 'mocks/Groups';
 import GroupConversation from 'containers/WA_Groups/GroupConversations/GroupConversation';
-import { GROUP_SEARCH_QUERY } from 'graphql/queries/WA_Groups';
+import { GROUP_SEARCH_MULTI_QUERY, GROUP_SEARCH_QUERY } from 'graphql/queries/WA_Groups';
 
 interface ConversationListProps {
   searchVal: string;
@@ -40,6 +40,7 @@ interface ConversationListProps {
   setSelectedCollectionId?: (i: number) => void;
   entityType?: string;
   groups?: boolean;
+  phonenumber?: string;
 }
 
 export const ConversationList = ({
@@ -54,6 +55,7 @@ export const ConversationList = ({
   setSelectedCollectionId,
   entityType = 'contact',
   groups = false,
+  phonenumber,
 }: ConversationListProps) => {
   const client = useApolloClient();
   const [loadingOffset, setLoadingOffset] = useState(DEFAULT_CONTACT_LIMIT);
@@ -73,8 +75,11 @@ export const ConversationList = ({
     queryVariables = variables;
   }
   let search_query = groups && !selectedCollectionId ? GROUP_SEARCH_QUERY : SEARCH_QUERY;
+  let search_multi_query = groups ? GROUP_SEARCH_MULTI_QUERY : SEARCH_MULTI_QUERY;
   let contactOptions = groups ? 'waGroupOpts' : 'contactOpts';
   let messageOptions = groups ? 'waMessageOpts' : 'messageOpts';
+  let searchOptions = groups ? 'filter' : 'searchFilter';
+  let chatType = groups ? 'waGroup' : 'contact';
 
   // check if there is a previous scroll height
   useEffect(() => {
@@ -124,6 +129,19 @@ export const ConversationList = ({
   }, [savedSearchCriteriaId]);
 
   const filterVariables = () => {
+    if (groups) {
+      return {
+        [contactOptions]: {
+          limit: DEFAULT_CONTACT_LIMIT,
+        },
+        filter: {
+          waPhoneIds: [phonenumber],
+        },
+        [messageOptions]: {
+          limit: DEFAULT_MESSAGE_LIMIT,
+        },
+      };
+    }
     if (savedSearchCriteria && Object.keys(searchParam).length === 0) {
       const variables = JSON.parse(savedSearchCriteria);
       if (searchVal) variables.filter.term = searchVal;
@@ -174,7 +192,7 @@ export const ConversationList = ({
       limit: DEFAULT_CONTACT_LIMIT,
       order: 'DESC',
     },
-    searchFilter: {
+    [searchOptions]: {
       term: searchVal,
     },
     [messageOptions]: {
@@ -190,7 +208,7 @@ export const ConversationList = ({
   );
 
   // fetch data when typing for search
-  const [getFilterSearch] = useLazyQuery<any>(SEARCH_MULTI_QUERY, {
+  const [getFilterSearch] = useLazyQuery<any>(search_multi_query, {
     onCompleted: (multiSearch) => {
       setSearchMultiData(multiSearch);
     },
@@ -234,7 +252,7 @@ export const ConversationList = ({
         variables: filterVariables(),
       });
     }
-  }, [searchVal, searchParam, savedSearchCriteria]);
+  }, [searchVal, searchParam, savedSearchCriteria, phonenumber]);
 
   // Other cases
   if ((called && loading) || conversationLoading) return <Loading />;
@@ -270,8 +288,12 @@ export const ConversationList = ({
   const buildChatConversation = (index: number, header: any, conversation: any) => {
     // We don't have the contact data in the case of contacts.
     let contact = conversation;
+    let wa_group: any = conversation;
+
     if (conversation.contact) {
       contact = conversation.contact;
+    } else if (conversation.waGroup) {
+      wa_group = conversation.waGroup;
     }
 
     let selectedRecord = false;
@@ -280,30 +302,52 @@ export const ConversationList = ({
     }
 
     return (
-      <Fragment key={contact.id}>
+      <Fragment key={contact.id || wa_group.id}>
         {index === 0 ? header : null}
-        <ChatConversation
-          key={contact.id}
-          selected={selectedRecord}
-          onClick={() => {
-            setSearchHeight();
-            if (entityType === 'contact' && setSelectedContactId) {
-              setSelectedContactId(contact.id);
-            }
-          }}
-          entityType={entityType}
-          index={index}
-          contactId={contact.id}
-          contactName={contact.name || contact.maskedPhone}
-          lastMessage={conversation}
-          senderLastMessage={contact.lastMessageAt}
-          contactStatus={contact.status}
-          contactBspStatus={contact.bspStatus}
-          contactIsOrgRead={contact.isOrgRead}
-          highlightSearch={searchVal}
-          messageNumber={conversation.messageNumber}
-          searchMode={searchMode}
-        />
+        {groups ? (
+          <GroupConversation
+            selected={selectedRecord}
+            onClick={() => {
+              setSearchHeight();
+              showMessages();
+              if (entityType === 'contact' && setSelectedContactId) {
+                setSelectedContactId(conversation.waGroup?.id);
+              } else if (entityType === 'collection' && setSelectedCollectionId) {
+                setSelectedCollectionId(conversation.group.id);
+              }
+            }}
+            index={index}
+            contactId={wa_group.id}
+            entityType={entityType}
+            contactName={wa_group.label || wa_group.contact.name}
+            lastMessage={conversation}
+            highlightSearch={searchVal}
+            contactIsOrgRead={true}
+          />
+        ) : (
+          <ChatConversation
+            key={contact.id}
+            selected={selectedRecord}
+            onClick={() => {
+              setSearchHeight();
+              if (entityType === 'contact' && setSelectedContactId) {
+                setSelectedContactId(contact.id);
+              }
+            }}
+            entityType={entityType}
+            index={index}
+            contactId={contact.id}
+            contactName={contact.name || contact.maskedPhone}
+            lastMessage={conversation}
+            senderLastMessage={contact.lastMessageAt}
+            contactStatus={contact.status}
+            contactBspStatus={contact.bspStatus}
+            contactIsOrgRead={contact.isOrgRead}
+            highlightSearch={searchVal}
+            messageNumber={conversation.messageNumber}
+            searchMode={searchMode}
+          />
+        )}
       </Fragment>
     );
   };
@@ -311,10 +355,12 @@ export const ConversationList = ({
   let conversationList: any;
   // If a search term is used, use the SearchMulti API. For searches term, this is not applicable.
   if (searchVal && searchMultiData && Object.keys(searchParam).length === 0) {
-    conversations = groups ? groupData?.result?.data : searchMultiData.searchMulti;
+    conversations = searchMultiData.searchMulti;
 
     // to set search response sequence
-    const searchArray = { contacts: [], messages: [], labels: [] };
+    const searchArray = groups
+      ? { waGroups: [], waMessages: [] }
+      : { contacts: [], messages: [], labels: [] };
     let conversationsData;
     Object.keys(searchArray).forEach((dataArray: any) => {
       const header = (
@@ -396,9 +442,6 @@ export const ConversationList = ({
           entityType={entityType}
           contactName={displayName}
           lastMessage={lastMessage}
-          senderLastMessage={senderLastMessage}
-          contactStatus={contactStatus}
-          contactBspStatus={contactBspStatus}
           contactIsOrgRead={contactIsOrgRead}
         />
       ) : (

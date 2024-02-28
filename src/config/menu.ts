@@ -34,14 +34,14 @@ const menus = (): Menu[] => [
     roles: ['Staff', 'Manager', 'Admin', 'Dynamic'],
     children: [
       {
-        title: 'Chat',
+        title: 'Group Chats',
         path: '/group/chat',
         icon: 'chat',
         type: 'sideDrawer',
         roles: ['Manager', 'Admin', 'Dynamic'],
       },
       {
-        title: 'Collections',
+        title: 'Group Collections',
         path: '/group/collections',
         icon: 'collection',
         type: 'sideDrawer',

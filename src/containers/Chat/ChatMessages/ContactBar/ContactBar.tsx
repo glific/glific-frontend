@@ -449,7 +449,11 @@ export const ContactBar = ({
       className={styles.ListButtonPrimary}
       data-testid="viewProfile"
       onClick={() => {
-        navigate(`/contact-profile/${contactId}`);
+        if (groups) {
+          navigate(`/group-details/${contactId}`);
+        } else {
+          navigate(`/contact-profile/${contactId}`);
+        }
       }}
     >
       <ProfileIcon className={styles.Icon} />

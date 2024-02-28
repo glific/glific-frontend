@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 
 export const WA_MESSAGE_RECEIVED_SUBSCRIPTION = gql`
-  subscription ($organizationId: ID!) {
+  subscription ReceivedWaGroupMessage($organizationId: ID!) {
     receivedWaGroupMessage(organizationId: $organizationId) {
       id
       body
@@ -35,7 +35,7 @@ export const WA_MESSAGE_RECEIVED_SUBSCRIPTION = gql`
 `;
 
 export const WA_MESSAGE_SENT_SUBSCRIPTION = gql`
-  subscription ($organizationId: ID!) {
+  subscription SentWaGroupMessage($organizationId: ID!) {
     sentWaGroupMessage(organizationId: $organizationId) {
       id
       body

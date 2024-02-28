@@ -16,11 +16,8 @@ import { AvatarDisplay } from 'components/UI/AvatarDisplay/AvatarDisplay';
 export interface GroupConversationProps {
   contactId: number;
   contactName: string;
-  contactStatus?: string;
-  contactBspStatus?: string;
   contactIsOrgRead: boolean;
   selected: boolean;
-  senderLastMessage: any;
   entityType: string;
   onClick?: (i: any) => void;
   index: number;

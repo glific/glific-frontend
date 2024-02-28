@@ -16,6 +16,7 @@ import Billing from 'containers/SettingList/Billing/Billing';
 import Providers from 'containers/SettingList/Providers/Providers';
 import Organization from 'containers/SettingList/Organization/Organization';
 import GroupChatInterface from 'containers/WA_Groups/GroupChatInterface/GroupChatInterface';
+import GroupDetails from 'containers/WA_Groups/GroupDetails.tsx/GroupDetails';
 
 const Chat = lazy(() => import('containers/Chat/Chat'));
 const Layout = lazy(() => import('components/UI/Layout/Layout'));
@@ -143,6 +144,8 @@ const routeAdmin = (
     <Route path="contact-fields/" element={<ContactFieldList />} />
     <Route path="organizations/:id/extensions" element={<OrganizationList openExtensionModal />} />
     <Route path="organizations/:id/customer" element={<OrganizationList openCustomerModal />} />
+
+    <Route path="group-details/:id/*" element={<GroupDetails />} />
 
     <Route path="/*" element={<Chat />} />
   </Routes>
