@@ -1,5 +1,5 @@
 import 'mocks/matchMediaMock';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { EmojiInput } from './EmojiInput';
 
 import userEvent from '@testing-library/user-event';
@@ -29,8 +29,6 @@ const wrapper = (
     rows={10}
   />
 );
-
-const mockCallback = vi.fn();
 
 vi.mock('components/UI/EmojiPicker/EmojiPicker', async (importOriginal) => {
   const mod = await importOriginal<typeof import('components/UI/EmojiPicker/EmojiPicker')>();
