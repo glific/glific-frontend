@@ -749,7 +749,9 @@ export const ChatMessages = ({
         contactBspStatus={conversationInfo[chatType]?.bspStatus}
       />
     );
-  } else if (collectionId && (conversationInfo.group || groups)) {
+  } else if (collectionId && conversationInfo.group) {
+    console.log(conversationInfo);
+
     topChatBar = (
       <ContactBar
         collectionId={collectionId.toString()}
@@ -766,6 +768,7 @@ export const ChatMessages = ({
       />
     );
   }
+  console.log(conversationInfo);
 
   const showLatestMessage = () => {
     setShowJumpToLatest(false);
