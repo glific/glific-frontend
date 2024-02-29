@@ -1,88 +1,23 @@
-.TableRow {
-  position: relative;
-  display: flex;
-  background-color: white;
-  box-shadow: 0px 4px 4px 0px #0000000a;
-  border-bottom: 1px solid #efefef;
-  padding: 4px 13px;
-  padding-right: 5px;
+.Name {
+  min-width: 100px;
+  width: 25%;
 }
 
-.TableCell {
-  font-size: 14px;
-  display: flex;
-  padding: 0px 10px;
-  margin: 0;
-  border: unset;
-  color: #0c1f14;
-}
-
-.TableContainer {
-  padding: 18px 56px;
-  overflow: hidden;
-  height: calc(100vh - 200px);
-}
-
-.TableText {
-  margin-right: 23px;
-  text-align: left;
-  padding: 12px 0px;
-  font-size: 14px;
-  color: #93a29b;
-  line-height: 1.25;
-  white-space: pre-line;
-  margin: 0;
-}
-
-.LabelText {
-  display: flex;
+.Phone {
+  color: #555;
+  font-size: 13px;
   font-weight: 500;
-  font-size: 18px;
-  color: #073f24;
-  margin-top: 12px;
-  margin-bottom: 12px;
-  line-height: 1;
+  min-width: 200px;
+  width: 25%;
 }
 
-.ActiveRow {
-  color: #073f24;
+.Actions {
+  min-width: 200px;
+  text-align: end;
+  width: 60%;
 }
 
-.InactiveRow {
-  color: #ccd4d0;
-}
-
-.Body {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.RowStyle {
-  padding: 15px 20px 15px 25px;
-}
-
-.RowHeadStyle {
-  background-color: #dfece2;
-  color: rgba(12, 31, 20, 0.57);
-  z-index: 100;
-  padding-left: 22px;
-  padding-right: 25px;
-}
-
-.HeaderColor {
-  color: rgba(12, 31, 20, 0.57);
-}
-
-.StyleForContainer {
-  height: calc(100% - 50px);
-  background: #fff;
-  overflow-y: scroll;
-  scrollbar-width: none;
-  border-radius: 10px 10px 0 0;
-}
-
-.Skeleton {
-  margin: 10px;
+.CollectionIcon {
+  width: 32px;
+  height: 32px;
 }

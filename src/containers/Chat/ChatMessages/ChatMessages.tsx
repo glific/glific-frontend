@@ -361,8 +361,10 @@ export const ChatMessages = ({
       if (groups) {
         payload = {
           message: body,
-          wa_managed_phone_id: phoneId,
-          waGroup_id: contactId,
+          waManagedPhoneId: phoneId,
+          waGroupId: contactId,
+          mediaId: mediaId,
+          type: messageType,
         };
       } else {
         payload = {

@@ -285,3 +285,10 @@
   align-items: center;
   display: flex;
 }
+
+.ContactName {
+  color: #cce6d0;
+  font-size: 12px;
+  margin-bottom: 8px;
+  font-weight: bold;
+}

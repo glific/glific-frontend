@@ -26,6 +26,9 @@ export const GROUP_SEARCH_QUERY = gql`
           url
           caption
         }
+        contact {
+          name
+        }
         errors
         contextMessage {
           body
@@ -105,6 +108,20 @@ export const GET_WA_MANAGED_PHONES = gql`
       id
       phone
       label
+    }
+  }
+`;
+
+export const WA_GROUPS_CONTACT = gql`
+  query WaGroupsContact {
+    waGroupsContact {
+      contact {
+        id
+        name
+        maskedPhone
+      }
+      value
+      id
     }
   }
 `;

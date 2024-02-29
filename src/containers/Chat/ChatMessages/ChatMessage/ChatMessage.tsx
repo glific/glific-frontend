@@ -55,6 +55,7 @@ export interface ChatMessageProps {
   daySeparator: string | null;
   groups?: boolean;
   status?: string;
+  contact?: any;
 }
 
 export const ChatMessage = ({
@@ -79,6 +80,7 @@ export const ChatMessage = ({
   daySeparator,
   groups,
   status,
+  contact,
 }: ChatMessageProps) => {
   const [showSaveMessageDialog, setShowSaveMessageDialog] = useState(false);
   const Ref = useRef(null);
@@ -291,6 +293,12 @@ export const ChatMessage = ({
       ));
     }
   }
+
+  let contactName: any;
+  if (groups && isSender) {
+    contactName = <div className={styles.ContactName}>{contact?.name}</div>;
+  }
+
   return (
     <div>
       {daySeparatorContent}
@@ -342,6 +350,7 @@ export const ChatMessage = ({
                     template
                   ) : (
                     <>
+                      {contactName}
                       <ChatMessageType
                         type={type}
                         media={media}

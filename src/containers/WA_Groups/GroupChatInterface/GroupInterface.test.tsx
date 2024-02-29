@@ -1,5 +1,5 @@
 import { MemoryRouter } from 'react-router-dom';
-import { cleanup, render } from '@testing-library/react';
+import { cleanup, render, screen } from '@testing-library/react';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 
 import { setUserSession } from 'services/AuthService';
@@ -12,7 +12,9 @@ cache.writeQuery({
   query: GROUP_SEARCH_QUERY,
   variables: {
     waGroupOpts: { limit: DEFAULT_CONTACT_LIMIT },
-    filter: {},
+    filter: {
+      waPhoneIds: ['1'],
+    },
     waMessageOpts: { limit: DEFAULT_MESSAGE_LIMIT },
   },
   data: {
@@ -53,7 +55,7 @@ cache.writeQuery({
           lastMessageAt: '2024-02-27T18:53:44Z',
           waManagedPhone: {
             __typename: 'WaManagedPhone',
-            id: '3',
+            id: '1',
             label: null,
             phone: '919425010449',
             phoneId: 45702,
@@ -88,7 +90,7 @@ setUserSession(JSON.stringify({ organization: { id: '1' } }));
 describe('<GroupChatInterface />', () => {
   test('it should render <GroupChatInterface /> component correctly', async () => {
     const { findByTestId } = render(wrapper);
-
+    screen.debug(undefined, Infinity);
     // check if chat conversations are displayed
     const ChatConversation = await findByTestId('beneficiaryName');
     expect(ChatConversation).toHaveTextContent('Maytapi Testing');

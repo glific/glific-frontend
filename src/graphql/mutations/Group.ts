@@ -10,3 +10,30 @@ export const SEND_MESSAGE_IN_WA_GROUP = gql`
     }
   }
 `;
+
+export const SYNC_GROUPS = gql`
+  mutation SyncWaGroupContacts {
+    syncWaGroupContacts {
+      message
+      errors {
+        message
+      }
+    }
+  }
+`;
+
+export const UPDATE_GROUP_CONTACT = gql`
+  mutation UpdateWaGroupContacts($input: WaGroupContactsInput!) {
+    updateWaGroupContacts(input: $input) {
+      numberDeleted
+      waGroupContacts {
+        contact {
+          name
+          maskedPhone
+        }
+        id
+        value
+      }
+    }
+  }
+`;
