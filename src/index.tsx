@@ -13,29 +13,34 @@ import { APPSIGNAL_API_KEY } from './config';
 import './index.css';
 import App from './App';
 import packageInfo from '../package.json';
+import { NEW_DOMAIN, OLD_DOMAIN } from 'common/constants';
 
-let appComponent = <App />;
-if (APPSIGNAL_API_KEY) {
-  const appsignal = new Appsignal({
-    key: APPSIGNAL_API_KEY,
-    revision: packageInfo.version,
-  });
-  appsignal.use(BreadcrumbsNetwork.plugin({ xhrEnabled: true }));
-  appsignal.use(PathDecorator.plugin());
-  appsignal.use(WindowEvents.plugin({ onunhandledrejection: true, onerror: true }));
+if (location.hostname.endsWith(OLD_DOMAIN)) {
+  location.hostname = location.hostname.replace(OLD_DOMAIN, NEW_DOMAIN) + location.pathname;
+} else {
+  let appComponent = <App />;
+  if (APPSIGNAL_API_KEY) {
+    const appsignal = new Appsignal({
+      key: APPSIGNAL_API_KEY,
+      revision: packageInfo.version,
+    });
+    appsignal.use(BreadcrumbsNetwork.plugin({ xhrEnabled: true }));
+    appsignal.use(PathDecorator.plugin());
+    appsignal.use(WindowEvents.plugin({ onunhandledrejection: true, onerror: true }));
 
-  appComponent = (
-    <ErrorBoundary instance={appsignal}>
-      <App />
-    </ErrorBoundary>
+    appComponent = (
+      <ErrorBoundary instance={appsignal}>
+        <App />
+      </ErrorBoundary>
+    );
+  }
+
+  const root = createRoot(document.getElementById('root')!);
+
+  root.render(
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <BrowserRouter>{appComponent}</BrowserRouter>
+    </ThemeProvider>
   );
 }
-
-const root = createRoot(document.getElementById('root')!);
-
-root.render(
-  <ThemeProvider theme={theme}>
-    <CssBaseline />
-    <BrowserRouter>{appComponent}</BrowserRouter>
-  </ThemeProvider>
-);

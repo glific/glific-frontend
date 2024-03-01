@@ -3,12 +3,7 @@ import MinimizeIcon from 'assets/images/icons/Minimize.svg?react';
 import MaximizeIcon from 'assets/images/icons/Maximize.svg?react';
 import styles from './Promotion.module.css';
 
-const points = [
-  'Learn how to integrate ChatGPT with your chatbot to make your conversations more impactful and engaging!',
-  'Learn how TAP is using ChatGPT in their chatbot',
-];
-
-const LINK = 'https://rb.gy/ywfqp';
+const hostname = location.hostname.replace('.glific.com', '');
 
 export const Promotion = () => {
   const [minimized, setMinimized] = useState(false);
@@ -20,7 +15,7 @@ export const Promotion = () => {
         <div className={styles.HeaderText}>NEW!</div>
         {minimized ? (
           <>
-            <div className={styles.GiftCard}>Glific Webinar</div>
+            <div className={styles.GiftCard}>New Website Address!</div>
             <MaximizeIcon
               className={styles.AccordianIcon}
               onClick={() => setMinimized(!minimized)}
@@ -33,24 +28,41 @@ export const Promotion = () => {
 
       {!minimized && (
         <>
-          <div className={styles.Image}>
-            Webinar on ChatGPT integration with Glific 28th July 12 PM
-          </div>
+          <div className={styles.Image}>New Website Address!</div>
 
           <div className={styles.Points}>
-            {points.map((point, index) => (
-              <p className={styles.BodyListText} key={point}>
-                <span>{index + 1}</span>
-                {point}
-              </p>
-            ))}
+            <div className={styles.BodyListText}>
+              <span>{1}</span>
+              <div>
+                We're Moving: <strong>tides.coloredcow.com</strong> is changing to{' '}
+                <strong>glific.com</strong>! To access your Glific account use{' '}
+                <strong>{hostname}.glific.com </strong>
+                instead of{' '}
+                <strong>
+                  {hostname}
+                  .tides.coloredcow.com
+                </strong>
+              </div>
+            </div>
+            <div className={styles.BodyListText}>
+              <span>2</span>
+              <div>
+                What this means? <strong>{hostname}.tides.coloredcow.com </strong>
+                page will become inactive on 31st March. Bookmark the new Glific address right away
+              </div>
+            </div>
+            <div className={styles.BodyListText}>
+              <div>
+                <strong>Note: </strong> Please ignore if you already have a glific.com account
+              </div>
+            </div>
           </div>
-          <a className={styles.Link} href={LINK} target="_blank" rel="noreferrer">
+          {/* <a className={styles.Link} href={LINK} target="_blank" rel="noreferrer">
             <div className={styles.KnowMore}>
               <div>REGISTER NOW</div>
               <div className={styles.Arrow}> ↗</div>
             </div>
-          </a>
+          </a> */}
         </>
       )}
     </div>

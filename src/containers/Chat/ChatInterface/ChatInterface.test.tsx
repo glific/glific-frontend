@@ -1,3 +1,4 @@
+import 'mocks/matchMediaMock';
 import { MemoryRouter } from 'react-router-dom';
 import { cleanup, render } from '@testing-library/react';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';

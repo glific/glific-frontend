@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useQuery } from '@apollo/client';
-import { EditorState } from 'draft-js';
 import { useTranslation } from 'react-i18next';
 import { useParams, useLocation } from 'react-router-dom';
 import Loading from 'components/UI/Layout/Loading/Loading';
@@ -28,7 +27,7 @@ export const HSM = () => {
   });
 
   const [shortcode, setShortcode] = useState('');
-  const [example, setExample] = useState(EditorState.createEmpty());
+  const [example, setExample] = useState();
   const [category, setCategory] = useState<any>({ label: '', id: '' });
   const { t } = useTranslation();
   const params = useParams();
@@ -109,6 +108,7 @@ export const HSM = () => {
       getEditorValue: (value: any) => {
         setExample(value);
       },
+      isEditing: disabled,
     },
     {
       component: AutoComplete,

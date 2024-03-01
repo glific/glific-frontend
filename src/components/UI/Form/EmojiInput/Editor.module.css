@@ -1,0 +1,160 @@
+.HelperText {
+  margin-left: 16px !important;
+  color: #93a29b !important;
+  line-height: 1 !important;
+  font-size: 12px !important;
+  margin-top: 4px !important;
+}
+
+.Editor {
+  position: relative;
+  border: 2px solid rgba(0, 0, 0, 0.23);
+  border-radius: 12px;
+  height: 10rem;
+  position: relative;
+  padding: 1rem;
+  position: relative;
+  display: block;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+.Label {
+  font-size: 16px;
+  font-weight: 500;
+  color: #93a29b !important;
+}
+
+.DangerText {
+  margin-left: 16px !important;
+  color: #fb5c5c;
+}
+
+.EditorInput {
+  resize: none;
+  font-size: 16px;
+  width: 100%;
+  min-height: 40px;
+  height: 100%;
+  margin-top: 4px;
+  position: relative;
+  tab-size: 1;
+  outline: 0;
+}
+
+.EditorInput p {
+  overflow: scroll !important;
+  margin: 0 !important;
+}
+
+.EditorWrapper {
+  margin: 1rem 0;
+}
+
+.editorScroller {
+  border: 0;
+  display: flex;
+  position: relative;
+  outline: 0;
+  z-index: 0;
+  height: 100%;
+  overflow: auto;
+}
+
+.disabled {
+  position: relative;
+  border: 2px solid rgba(0, 0, 0, 0.23);
+  border-radius: 12px;
+  height: 10rem;
+  position: relative;
+  padding: 1rem;
+  position: relative;
+  display: block;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  color: rgba(0, 0, 0, 0.38);
+}
+
+.editor {
+  flex: auto;
+  position: relative;
+  resize: vertical;
+  z-index: -1;
+}
+
+.editorPlaceholder {
+  color: #999;
+  overflow: hidden;
+  position: absolute;
+  text-overflow: ellipsis;
+  top: 1px;
+  left: 14px;
+  font-size: 16px;
+  user-select: none;
+  display: inline-block;
+  pointer-events: none;
+}
+
+/* 
+  Overriding lexical mentions styles as per requirement
+*/
+.MentionMenu {
+  padding: 0;
+  background: #fff;
+  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  list-style: none;
+  margin: 0;
+  max-height: 200px;
+  overflow-y: scroll;
+  -ms-overflow-style: none;
+  width: 250px;
+  scrollbar-width: none;
+}
+
+.MentionMenu ul li {
+  margin: 0;
+  min-width: 180px;
+  font-size: 14px;
+  outline: none;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.Selected {
+  background: #eee !important;
+}
+
+.MentionMenu li {
+  padding: 8px;
+  color: #050505;
+  cursor: pointer;
+  line-height: 16px;
+  font-size: 15px;
+  display: flex;
+  align-content: center;
+  flex-direction: row;
+  flex-shrink: 0;
+  background-color: #fff;
+  border-radius: 8px;
+  border: 0;
+}
+
+.MentionMenu li.active {
+  display: flex;
+  width: 20px;
+  height: 20px;
+  background-size: contain;
+}
+
+.MentionMenu li:first-child {
+  border-radius: 8px 8px 0px 0px;
+}
+
+.MentionMenu li:last-child {
+  border-radius: 0px 0px 8px 8px;
+}
+
+.MentionMenu li:hover {
+  background-color: #eee;
+}
