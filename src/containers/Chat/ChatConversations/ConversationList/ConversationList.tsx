@@ -352,7 +352,7 @@ export const ConversationList = ({
 
     // to set search response sequence
     const searchArray = groups
-      ? { waGroups: [], waMessages: [] }
+      ? { groups: [], messages: [] }
       : { contacts: [], messages: [], labels: [] };
     let conversationsData;
     Object.keys(searchArray).forEach((dataArray: any) => {
@@ -462,6 +462,10 @@ export const ConversationList = ({
         />
       );
     });
+  }
+
+  if (groups && selectedCollectionId) {
+    conversationList = [];
   }
 
   if (!conversationList) {

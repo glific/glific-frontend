@@ -1,15 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Paper, Tab, Tabs, Typography } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-import { Simulator } from 'components/simulator/Simulator';
-import { getUserRole } from 'context/role';
 import { GROUP_QUERY_VARIABLES } from 'common/constants';
 import ChatConversations from 'containers/Chat/ChatConversations/ChatConversations';
 import ChatMessages from 'containers/Chat/ChatMessages/ChatMessages';
 import { setErrorMessage } from 'common/notification';
-import SimulatorIcon from 'assets/images/icons/Simulator.svg?react';
 import CollectionConversations from 'containers/Chat/CollectionConversations/CollectionConversations';
 import styles from './GroupChatInterface.module.css';
 import { groupCollectionSearchQuery } from 'mocks/Groups';
@@ -19,7 +16,7 @@ import { Loading } from 'components/UI/Layout/Loading/Loading';
 
 const tabs = [
   {
-    label: 'Contacts',
+    label: 'Groups',
     link: '/group/chat',
   },
   {
@@ -33,9 +30,6 @@ export interface GroupChatInterfaceProps {
 
 export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => {
   const navigate = useNavigate();
-  const [simulatorAccess, setSimulatorAccess] = useState(true);
-  const [showSimulator, setShowSimulator] = useState(false);
-  const [simulatorId, setSimulatorId] = useState(0);
   const { t } = useTranslation();
   const [value, setValue] = useState(tabs[0].link);
   const params = useParams();
@@ -59,12 +53,6 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
   }
 
   const data = collections ? groupCollectionSearchQuery()?.result?.data : dataa;
-
-  useEffect(() => {
-    if (getUserRole().includes('Staff')) {
-      setSimulatorAccess(false);
-    }
-  }, []);
 
   // let's handle the case when the type is collection  then we set the first collection
   // as the selected collection
@@ -92,10 +80,6 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
   let groupChatInterface: any;
   let listingContent;
 
-  const getSimulatorId = (id: any) => {
-    setSimulatorId(id);
-  };
-
   const handleTabChange = (_event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
     navigate(newValue);
@@ -111,13 +95,12 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
       heading = 'Group Collections';
     } else if (selectedContactId) {
       // let's enable simulator only when contact tab is shown
-
       listingContent = (
         <ChatConversations
           setPhonenumber={setPhonenumber}
           phonenumber={phonenumber}
           groups
-          contactId={simulatorId > 0 ? simulatorId : selectedContactId}
+          contactId={selectedContactId}
         />
       );
 
@@ -129,7 +112,7 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
         <div className={`${styles.ChatMessages} chatMessages`}>
           <ChatMessages
             groups
-            contactId={simulatorId > 0 ? simulatorId : selectedContactId}
+            contactId={selectedContactId}
             collectionId={selectedCollectionId}
             phoneId={phonenumber}
             setPhonenumber={setPhonenumber}
@@ -162,11 +145,6 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
     );
   }
 
-  const handleCloseSimulator = (value: boolean) => {
-    setShowSimulator(value);
-    setSimulatorId(0);
-  };
-
   if (loading) return <Loading />;
   if (error) {
     setErrorMessage(error);
@@ -178,21 +156,6 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
       <div className={styles.Chat} data-testid="chatContainer">
         {groupChatInterface}
       </div>
-      {selectedTab === 'contacts' && (
-        <SimulatorIcon
-          data-testid="simulatorIcon"
-          className={styles.SimulatorIcon}
-          onClick={() => {
-            setShowSimulator(!showSimulator);
-            if (showSimulator) {
-              setSimulatorId(0);
-            }
-          }}
-        />
-      )}
-      {simulatorAccess && !selectedCollectionId && showSimulator ? (
-        <Simulator setShowSimulator={handleCloseSimulator} getSimulatorId={getSimulatorId} />
-      ) : null}
     </Paper>
   );
 };

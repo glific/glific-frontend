@@ -513,6 +513,21 @@ export const ContactBar = ({
     );
   }
 
+  let options: any;
+  if (groups) {
+    options = <>{viewDetails}</>;
+  } else {
+    options = (
+      <>
+        {viewDetails}
+        {flowButton}
+        {addMember}
+        {terminateFLows}
+        {blockContactButton}
+      </>
+    );
+  }
+
   const popper = (
     <Popper
       open={open}
@@ -525,11 +540,7 @@ export const ContactBar = ({
       {({ TransitionProps }) => (
         <Fade {...TransitionProps} timeout={350}>
           <Paper elevation={3} className={styles.Container}>
-            {viewDetails}
-            {flowButton}
-            {addMember}
-            {terminateFLows}
-            {blockContactButton}
+            {options}
           </Paper>
         </Fade>
       )}

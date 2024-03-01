@@ -171,7 +171,6 @@ const GroupConversation = ({
     });
   };
 
-
   let redirectURL = `/group/chat/${contactId}`;
   if (entityType === 'collection') {
     redirectURL = `/group/chat/collection/${contactId}`;
@@ -197,13 +196,7 @@ const GroupConversation = ({
       }}
       to={redirectURL}
     >
-      <div>
-        {entityType === 'contact' ? (
-          <AvatarDisplay name={name || ''} badgeDisplay={!contactIsOrgRead} />
-        ) : (
-          ''
-        )}
-      </div>
+      <div>{entityType === 'contact' ? <AvatarDisplay name={name || ''} /> : ''}</div>
       <div className={chatInfoClass.join(' ')} data-testid="chatInfo">
         <div className={styles.ChatName} data-testid="name">
           {name}

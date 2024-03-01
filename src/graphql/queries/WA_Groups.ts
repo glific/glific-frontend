@@ -56,7 +56,7 @@ export const GROUP_SEARCH_MULTI_QUERY = gql`
       waGroupOpts: $waGroupOpts
       waMessageOpts: $waMessageOpts
     ) {
-      waGroups {
+      groups: waGroups {
         bspId
         id
         label
@@ -68,7 +68,7 @@ export const GROUP_SEARCH_MULTI_QUERY = gql`
           phoneId
         }
       }
-      waMessages {
+      messages: waMessages {
         id
         body
         insertedAt

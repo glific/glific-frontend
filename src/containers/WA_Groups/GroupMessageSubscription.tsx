@@ -131,7 +131,6 @@ export const GroupMessageSubscription = ({ setDataLoaded }: GroupMessageProps) =
           }).then(({ data: conversation }) => {
             if (conversation && conversation.search.length > 0) {
               // save the conversation and update cache
-
               // temporary fix for cache. need to check why query variables change
               saveGroupConversation(conversation, queryVariables);
             }

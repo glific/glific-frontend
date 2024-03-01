@@ -11,12 +11,13 @@ export const GroupDetails = () => {
   const params = useParams();
   const { t } = useTranslation();
 
-  const dialogTitle = 'Are you sure you want to remove contact from this group?';
+  const dialogTitle = 'Are you sure you want to remove this contact from the group?';
   const dialogMessage = 'The contact will no longer receive messages sent to this group';
 
   const columnNames = [
     { name: 'name', label: t('Name') },
     { name: 'maskedPhone', label: t('Phone number') },
+    { label: t('Actions') },
   ];
 
   const queries = {
@@ -43,12 +44,20 @@ export const GroupDetails = () => {
   });
 
   const collectionIcon = <CollectionIcon className={styles.CollectionIcon} />;
-  const columnStyles = [styles.Name, styles.Phone];
+  const columnStyles = [styles.Name, styles.Phone, styles.Actions];
 
   const columnAttributes = {
     columns: getColumns,
     columnStyles,
   };
+
+  const getDeleteQueryVariables = (id: any) => ({
+    input: {
+      addWaContactIds: [],
+      deleteWaContactIds: [id],
+      waGroupId: params.id,
+    },
+  });
 
   return (
     <List
@@ -63,8 +72,11 @@ export const GroupDetails = () => {
       pageLink="waGroupsContact"
       listIcon={collectionIcon}
       editSupport={false}
-      showActions={false}
+      showActions={true}
       dialogMessage={dialogMessage}
+      deleteModifier={{
+        variables: getDeleteQueryVariables,
+      }}
       {...queries}
       {...columnAttributes}
     />

@@ -693,6 +693,14 @@ export const ChatMessages = ({
     );
   }
 
+  if (groups && collectionId) {
+    messageListContainer = (
+      <div className={styles.NoMessages} data-testid="messageContainer">
+        {t('No messages.')}
+      </div>
+    );
+  }
+
   const handleHeightChange = (newHeight: number) => {
     setReducedHeight(newHeight);
   };
