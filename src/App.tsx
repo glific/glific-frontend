@@ -8,7 +8,12 @@ import gqlClient from 'config/apolloclient';
 import { SessionContext, SideDrawerContext } from 'context/session';
 import ErrorHandler from 'containers/ErrorHandler/ErrorHandler';
 import Loading from 'components/UI/Layout/Loading/Loading';
-import { getAuthSession, renewAuthToken, setAuthSession, checkAuthStatusService } from 'services/AuthService';
+import {
+  getAuthSession,
+  renewAuthToken,
+  setAuthSession,
+  checkAuthStatusService,
+} from 'services/AuthService';
 import { UnauthenticatedRoute } from 'routes/UnauthenticatedRoute/UnauthenticatedRoute';
 import { AuthenticatedRoute } from 'routes/AuthenticatedRoute/AuthenticatedRoute';
 import { Logout } from 'containers/Auth/Logout/Logout';
@@ -42,15 +47,13 @@ const App = () => {
       const isAccessTokenPresent = getAuthSession('accessToken') !== null;
       const isTokenAlive = checkAuthStatusService();
       let isSessionAlive = false;
-      if(!isAccessTokenPresent){
+      if (!isAccessTokenPresent) {
         // New user
         isSessionAlive = false;
-      }
-      else if(isTokenAlive){
+      } else if (isTokenAlive) {
         // Healthy Session
         isSessionAlive = true;
-      }
-      else{
+      } else {
         // Expired Token
         isSessionAlive = await checkSessionValidity();
       }

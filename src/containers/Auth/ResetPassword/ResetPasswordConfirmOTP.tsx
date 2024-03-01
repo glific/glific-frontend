@@ -13,7 +13,6 @@ import { sendOTP } from 'services/AuthService';
 import setLogs from 'config/logs';
 import { Auth } from '../Auth';
 
-
 export const ResetPasswordConfirmOTP = () => {
   const [redirect, setRedirect] = useState(false);
   const [authError, setAuthError] = useState('');

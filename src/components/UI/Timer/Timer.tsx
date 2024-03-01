@@ -69,7 +69,7 @@ export const Timer = (props: TimerProps) => {
   let hours: string | number = 0;
   if (time) {
     const lastMessageTime = dayjs(time);
-    const duration = currentTime.diff(lastMessageTime, "hour")
+    const duration = currentTime.diff(lastMessageTime, 'hour');
     hours = Math.floor(duration);
     if (hours < 0) hours = 0;
     hours = hours > 24 ? 0 : 24 - hours;

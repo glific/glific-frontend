@@ -65,7 +65,7 @@ describe('<App /> ', () => {
 
   it('it should render <Chat /> component and renew token if token has expired', async () => {
     vi.mock('services/AuthService', async (importOriginal) => {
-      const mod = await importOriginal<typeof import('services/AuthService')>()
+      const mod = await importOriginal<typeof import('services/AuthService')>();
       return {
         ...mod,
         renewAuthToken: vi.fn(() => {
@@ -76,13 +76,13 @@ describe('<App /> ', () => {
               data: {
                 access_token: 'access',
                 renewal_token: 'renew',
-                token_expiry_time: tokenExpiryDate
-              }
-            }
-          })
+                token_expiry_time: tokenExpiryDate,
+              },
+            },
+          });
         }),
-      }
-    })
+      };
+    });
 
     // let's create token expiry date for yesterday
     mockedAxios.post.mockResolvedValue(() => Promise.resolve({}));
@@ -102,7 +102,7 @@ describe('<App /> ', () => {
 
     await waitFor(() => {
       expect(renewAuthToken).toHaveBeenCalled();
-    })
+    });
 
     await waitFor(() => {
       expect(screen.getByTestId('navbar')).toBeInTheDocument();

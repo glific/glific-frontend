@@ -9,7 +9,7 @@ import { Consulting } from '../Consulting';
 import { ExportConsulting } from './ExportConsulting/ExportConsulting';
 import { GET_CONSULTING_HOURS, GET_CONSULTING_HOURS_COUNT } from 'graphql/queries/Consulting';
 import styles from './ConsultingList.module.css';
-import {  DATE_FORMAT_WITH_MONTH } from 'common/constants';
+import { DATE_FORMAT_WITH_MONTH } from 'common/constants';
 
 const ConsultingList = () => {
   const { t } = useTranslation();

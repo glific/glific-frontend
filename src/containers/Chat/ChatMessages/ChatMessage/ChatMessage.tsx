@@ -296,7 +296,10 @@ export const ChatMessage = ({
         id={`search${messageNumber}`}
       >
         {contextMessage ? (
-          <Tooltip title={dayjs(contextMessage.insertedAt).format(SHORT_DATE_FORMAT)} placement="right">
+          <Tooltip
+            title={dayjs(contextMessage.insertedAt).format(SHORT_DATE_FORMAT)}
+            placement="right"
+          >
             <div
               className={styles.ReplyMessage}
               onClick={() => jumpToMessage(contextMessage.messageNumber)}

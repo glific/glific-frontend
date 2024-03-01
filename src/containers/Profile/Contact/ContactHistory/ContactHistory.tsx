@@ -139,7 +139,9 @@ export const ContactHistory = ({ contactId, profileId }: ContactHistoryProps) =>
     return (
       <div className={styles.DetailBlock} key={key}>
         <div className={styles.LineItem}>{label}</div>
-        <div className={styles.LineItemDate}>{dayjs(insertedAt).format(STANDARD_DATE_TIME_FORMAT)}</div>
+        <div className={styles.LineItemDate}>
+          {dayjs(insertedAt).format(STANDARD_DATE_TIME_FORMAT)}
+        </div>
       </div>
     );
   });
