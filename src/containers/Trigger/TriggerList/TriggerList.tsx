@@ -34,9 +34,9 @@ const getName = ({ flow, startAt, frequency, days, isActive, nextTriggerAt }: an
       <span className={styles.TriggerIcon}>{isActive ? <ClockIcon /> : <ClockInactiveIcon />}</span>
     </Tooltip>
     <div>
-      <p className={styles.LabelText}>
+      <span className={styles.LabelText}>
         <span>{`${flow.name}_${dayjs(startAt).format(EXTENDED_DATE_TIME_FORMAT_WITH_AMPM)}`}</span>
-      </p>
+      </span>
       <div className={styles.NextTrigger}>
         {isActive ? <>Next trigger {dayjs(nextTriggerAt).fromNow()}</> : 'Trigger in inactive'}
       </div>

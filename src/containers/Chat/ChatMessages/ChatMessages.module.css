@@ -4,6 +4,16 @@
   }
 }
 
+.ChatInput {
+  padding-top: 15px;
+  position: absolute;
+  bottom: 15px;
+  left: 0;
+  right: 0;
+  margin: auto;
+  max-width: 100% !important;
+}
+
 .ChatMessages {
   display: flex;
   padding-left: 0px !important;

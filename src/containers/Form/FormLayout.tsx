@@ -11,7 +11,6 @@ import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { setNotification, setErrorMessage } from 'common/notification';
-import { getPlainTextFromEditor } from 'common/RichEditor';
 import { SEARCH_QUERY_VARIABLES } from 'common/constants';
 import { SEARCH_QUERY } from 'graphql/queries/Search';
 import { USER_LANGUAGES } from 'graphql/queries/Organization';
@@ -383,6 +382,7 @@ export const FormLayout = ({
       ...itemData,
       ...defaultAttribute,
     };
+
     payload = languageSupport
       ? { ...payload, languageId: Number(languageIdValue) }
       : { ...payload };
@@ -400,9 +400,6 @@ export const FormLayout = ({
     formFields.forEach((field: any) => {
       if (field.additionalState) {
         additionalState(payload[field.additionalState]);
-      }
-      if (field.convertToWhatsApp && payload[field.name]) {
-        payload[field.name] = getPlainTextFromEditor(payload[field.name]);
       }
       if (field.skipPayload) {
         delete payload[field.name];
@@ -643,7 +640,10 @@ export const FormLayout = ({
   ) : null;
 
   return (
-    <div className={partialPage ? styles.ItemAddDialog : styles.ItemAdd} data-testid="add-container">
+    <div
+      className={partialPage ? styles.ItemAddDialog : styles.ItemAdd}
+      data-testid="add-container"
+    >
       {dialogBox}
       {!noHeading && heading}
       {backLink}

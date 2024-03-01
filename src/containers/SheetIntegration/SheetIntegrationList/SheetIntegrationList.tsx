@@ -174,7 +174,7 @@ export const SheetIntegrationList = () => {
         title={t('Google sheets')}
         listItem="sheets"
         listItemName="Sheet"
-        pageLink="Sheet-integration"
+        pageLink="sheet-integration"
         listIcon={sheetIcon}
         dialogMessage={dialogMessage}
         {...queries}

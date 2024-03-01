@@ -4,7 +4,6 @@ import { Skeleton } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import WhiteIcon from 'assets/images/icons/White.svg?react';
-import SelectWhiteIcon from 'assets/images/icons/SelectWhite.svg?react';
 import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import { BSPBALANCE } from 'graphql/queries/Organization';
 import { BSP_BALANCE_SUBSCRIPTION } from 'graphql/subscriptions/PeriodicInfo';
@@ -25,15 +24,6 @@ export const WalletBalance = ({ fullOpen }: WalletBalanceProps) => {
   const { provider } = useContext(ProviderContext);
 
   const balanceString = t('Wallet balance');
-
-  const nullBalance = () => (
-    <div className={`${styles.WalletBalance} ${styles.WalletBalanceHigh}`}>
-      <div className={styles.WalletBalanceText}>
-        <SelectWhiteIcon className={styles.Icon} />
-        {balanceString}
-      </div>
-    </div>
-  );
 
   const gupshupSettings = (isFullOpen: boolean) => (
     <Tooltip title={t('For any help, please contact the Glific team')} placement="top-start">
@@ -118,7 +108,7 @@ export const WalletBalance = ({ fullOpen }: WalletBalanceProps) => {
     }
   }, [subscribeToMore]);
 
-  if (loading) {
+  if (loading && !retried) {
     return (
       <div className={styles.WalletBalance} data-testid="loading">
         <Skeleton variant="rounded" width="100%" height="100%" />
@@ -127,9 +117,6 @@ export const WalletBalance = ({ fullOpen }: WalletBalanceProps) => {
   }
 
   const errorBody = () => {
-    if (displayBalance === null && !error) {
-      return nullBalance();
-    }
     return gupshupSettings(fullOpen);
   };
 

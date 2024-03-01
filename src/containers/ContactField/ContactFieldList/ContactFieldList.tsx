@@ -99,7 +99,7 @@ const ContactFieldList = () => {
 
   const getName = (label: string) => (
     <div className={styles.LabelContainer}>
-      <p className={styles.LabelText}>{label}</p>
+      <span className={styles.LabelText}>{label}</span>
     </div>
   );
 
@@ -111,14 +111,14 @@ const ContactFieldList = () => {
 
     return (
       <div className={styles.OtherColumnContainer}>
-        <p className={styles.OtherColumnText} data-testid="otherColumn">
+        <span className={styles.OtherColumnText} data-testid="otherColumn">
           {label}
           <span>
             <Button onClick={() => setItemToBeEdited({ id, column })}>
               <EditIcon data-testid="edit-icon" />
             </Button>
           </span>
-        </p>
+        </span>
         {showInline ? (
           <div className={styles.OtherColumnEditContainer}>
             <InlineInput
@@ -153,14 +153,14 @@ const ContactFieldList = () => {
   const dialogMessage = ({ deleteItemID, deleteItemName, refetch, setDeleteItemID }: any) => {
     const component = (
       <div>
-        <p className={styles.DialogSubText}>
+        <span className={styles.DialogSubText}>
           <strong> Available options:-</strong>
           <br />
           1. Delete only contact field (no impact on contacts).
           <br />
           2. Delete contact field and associated data (removes "{deleteItemName}" field from all
           contacts).
-        </p>
+        </span>
       </div>
     );
 

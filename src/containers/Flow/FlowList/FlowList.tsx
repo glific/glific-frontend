@@ -255,7 +255,7 @@ export const FlowList = () => {
       isActive: filter,
       ...(selectedtag?.id && { tagIds: [parseInt(selectedtag?.id)] }),
     }),
-    [filter]
+    [filter, selectedtag]
   );
 
   return (

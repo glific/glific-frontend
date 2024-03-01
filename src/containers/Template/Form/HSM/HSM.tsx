@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useQuery } from '@apollo/client';
-import { EditorState } from 'draft-js';
 import { useTranslation } from 'react-i18next';
 import { useParams, useLocation } from 'react-router-dom';
 
@@ -29,8 +28,9 @@ export const HSM = () => {
   });
 
   const [shortcode, setShortcode] = useState('');
-  const [example, setExample] = useState(EditorState.createEmpty());
   const [category, setCategory] = useState<any>(undefined);
+  const [example, setExample] = useState();
+
   const { t } = useTranslation();
   const params = useParams();
   const location: any = useLocation();
@@ -110,6 +110,7 @@ export const HSM = () => {
       getEditorValue: (value: any) => {
         setExample(value);
       },
+      isEditing: disabled,
     },
     {
       component: AutoComplete,

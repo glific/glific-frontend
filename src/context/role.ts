@@ -55,16 +55,17 @@ export const setUserRolePermissions = () => {
     userAccountMenu = getMenus('userAccount');
   }
 
-  if ((role && role.includes('Manager')) || role.includes('Admin')) {
+  if (role && role.includes('Manager')) {
     // gettting menus for Manager as menus are same as in Admin
     sideDrawerMenu = getMenus('sideDrawer', 'Manager');
     userAccountMenu = getMenus('userAccount', 'Manager');
+  }
 
-    if (role.includes('Admin')) {
-      manageSavedSearches = true;
-      manageCollections = true;
-      userAccountMenu = getMenus('userAccount', 'Admin');
-    }
+  if (role && role.includes('Admin')) {
+    manageSavedSearches = true;
+    manageCollections = true;
+    userAccountMenu = getMenus('userAccount', 'Admin');
+    sideDrawerMenu = getMenus('sideDrawer', 'Admin');
   }
 
   if (role && role.includes('Glific_admin')) {

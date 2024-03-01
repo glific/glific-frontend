@@ -1,6 +1,8 @@
 import dayjs from 'dayjs';
 import * as Yup from 'yup';
 
+export const OLD_DOMAIN = 'tides.coloredcow.com';
+export const NEW_DOMAIN = 'glific.com';
 export const SIDE_DRAWER_WIDTH = 233;
 export const SHORT_DATE_FORMAT = 'DD/MM/YY';
 export const LONG_DATE_FORMAT = 'DD/MM/YYYY';

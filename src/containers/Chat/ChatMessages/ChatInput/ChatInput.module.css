@@ -1,17 +1,14 @@
 .ChatInput {
-  padding-top: 15px;
-  position: absolute;
-  bottom: 15px;
-  left: 0;
-  right: 0;
+  background-color: #f9f7f4;
   margin: auto;
+  max-width: 100% !important;
 }
 
 .ChatInputElements {
   display: flex;
   height: 72px;
   width: 100%;
-  padding: 10px;
+  padding: 5px;
   justify-content: space-between;
   height: fit-content;
   max-height: 200px;
@@ -172,6 +169,10 @@
   display: flex;
   justify-content: center;
   padding-top: 20px;
+}
+
+.AttachmentIcon {
+  margin: 5px 0px;
 }
 
 .AttachmentIcon svg {

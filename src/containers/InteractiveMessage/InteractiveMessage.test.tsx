@@ -1,5 +1,6 @@
 import { render, screen, waitFor, fireEvent, cleanup } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import 'mocks/matchMediaMock';
 import { MockedProvider } from '@apollo/client/testing';
 import axios from 'axios';
 import { Route, MemoryRouter, Routes } from 'react-router-dom';
@@ -14,6 +15,15 @@ import { setNotification } from 'common/notification';
 afterEach(() => {
   cleanup();
 });
+
+const mockIntersectionObserver = class {
+  constructor() {}
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+};
+
+(window as any).IntersectionObserver = mockIntersectionObserver;
 
 const mockUseLocationValue: any = {
   pathname: '/',
@@ -30,16 +40,16 @@ vi.mock('react-router-dom', async () => ({
 }));
 
 vi.mock('common/notification', async (importOriginal) => {
-  const mod = await importOriginal<typeof import('common/notification')>()
+  const mod = await importOriginal<typeof import('common/notification')>();
   return {
     ...mod,
     setNotification: vi.fn(),
-  }
-})
+  };
+});
 
 // mocking emoji picker to easily fill message field with an emoji
 vi.mock('components/UI/EmojiPicker/EmojiPicker', async (importOriginal) => {
-  const mod = await importOriginal<typeof import('components/UI/EmojiPicker/EmojiPicker')>()
+  const mod = await importOriginal<typeof import('components/UI/EmojiPicker/EmojiPicker')>();
   return {
     ...mod,
     EmojiPicker: vi.fn((props: any) => {
@@ -63,8 +73,8 @@ vi.mock('components/UI/EmojiPicker/EmojiPicker', async (importOriginal) => {
       );
       return Picker;
     }),
-  }
-})
+  };
+});
 
 const mockData = [...mocks, ...mocks];
 
@@ -143,22 +153,24 @@ test('it renders empty interactive form', async () => {
   fireEvent.click(addQuickReplyButton);
 
   await waitFor(() => {
-    expect(screen.getAllByRole('textbox')).toHaveLength(6);
+    // Get all input elements
+    const [title, lexicalEditor, quickReply1, quickReply2, , attachmentUrl] =
+      screen.getAllByRole('textbox');
+    expect(title).toBeInTheDocument();
+    expect(quickReply1).toBeInTheDocument();
+    expect(quickReply2).toBeInTheDocument();
+    expect(attachmentUrl).toBeInTheDocument();
+
+    fireEvent.change(title, { target: { value: 'new title' } });
+    userEvent.click(lexicalEditor);
+    userEvent.keyboard('Yes');
+    fireEvent.change(quickReply1, { target: { value: 'Yes' } });
+    fireEvent.change(quickReply2, { target: { value: 'No' } });
+    fireEvent.change(attachmentUrl, { target: { value: 'https://picsum.photos/200/300' } });
+    fireEvent.blur(attachmentUrl);
   });
 
-  const [title, quickReply1, quickReply2, , attachmentUrl] = screen.getAllByRole('textbox');
-  expect(title).toBeInTheDocument();
-  expect(quickReply1).toBeInTheDocument();
-  expect(quickReply2).toBeInTheDocument();
-  expect(attachmentUrl).toBeInTheDocument();
-  fireEvent.change(title, { target: { value: 'new title' } });
-  fireEvent.blur(title);
-  fireEvent.change(quickReply1, { target: { value: 'Yes' } });
-  fireEvent.change(quickReply2, { target: { value: 'No' } });
-  fireEvent.change(attachmentUrl, { target: { value: 'https://picsum.photos/200/300' } });
-  fireEvent.blur(attachmentUrl);
-
-  // Changing language to marathi
+  // // Changing language to marathi
   await waitFor(() => {
     expect(screen.getByText('Marathi')).toBeInTheDocument();
   });
@@ -180,7 +192,8 @@ test('it renders empty interactive form', async () => {
 
   await waitFor(() => {
     // Adding list data
-    const [, header, listTitle, listItemTitle, listItemDesc] = screen.getAllByRole('textbox');
+    const [, , header, listTitle, listItemTitle, listItemDesc] = screen.getAllByRole('textbox');
+
     expect(header).toBeInTheDocument();
     expect(listTitle).toBeInTheDocument();
     expect(listItemTitle).toBeInTheDocument();
