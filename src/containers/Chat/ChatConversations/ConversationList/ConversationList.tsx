@@ -465,7 +465,7 @@ export const ConversationList = ({
   }
 
   if (groups && selectedCollectionId) {
-    conversationList = [];
+    conversationList = null;
   }
 
   if (!conversationList) {

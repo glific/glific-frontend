@@ -6,7 +6,7 @@ import { getAuthSession, getOrganizationServices, getUserSession } from 'service
 import { SIMULATOR_NUMBER_START } from './constants';
 import { setNotification } from './notification';
 
-export const isSimulator = (phone: string) => phone.startsWith(SIMULATOR_NUMBER_START);
+export const isSimulator = (phone: string) => phone && phone.startsWith(SIMULATOR_NUMBER_START);
 
 export const getObject = (arr: any, data: any) => {
   const result: any = [];

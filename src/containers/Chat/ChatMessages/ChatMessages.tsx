@@ -30,6 +30,12 @@ import { getCachedConverations, updateConversationsCache } from '../../../servic
 import { addLogs, getDisplayName, isSimulator } from '../../../common/utils';
 import { CollectionInformation } from '../../Collection/CollectionInformation/CollectionInformation';
 import { LexicalWrapper } from 'common/LexicalWrapper';
+import { SEND_MESSAGE_IN_WA_GROUP } from 'graphql/mutations/Group';
+import { GROUP_SEARCH_QUERY } from 'graphql/queries/WA_Groups';
+import {
+  getCachedGroupConverations,
+  updateGroupConversationsCache,
+} from 'services/GroupMessageService';
 
 export interface ChatMessagesProps {
   contactId?: number | string | null;
@@ -687,6 +693,14 @@ export const ChatMessages = ({
     );
   }
 
+  if (groups && collectionId) {
+    messageListContainer = (
+      <div className={styles.NoMessages} data-testid="messageContainer">
+        {t('No messages.')}
+      </div>
+    );
+  }
+
   const handleChatClearedAction = () => {
     const conversationInfoCopy = JSON.parse(JSON.stringify(conversationInfo));
     conversationInfoCopy.messages = [];
@@ -757,17 +771,22 @@ export const ChatMessages = ({
   let topChatBar;
   let chatInputSection;
 
-  if (contactId && conversationInfo.contact) {
-    const displayName = getDisplayName(conversationInfo);
+  const isSimulatorProp = groups
+    ? conversationInfo[chatType]?.waManagedPhone?.phone
+    : isSimulator(conversationInfo[chatType]?.phone);
+
+  if (contactId && conversationInfo[chatType]) {
+    const displayName = groups ? conversationInfo.waGroup.label : getDisplayName(conversationInfo);
     topChatBar = (
       <ContactBar
         displayName={displayName}
-        isSimulator={isSimulator(conversationInfo.contact.phone)}
+        isSimulator={isSimulatorProp}
         contactId={contactId.toString()}
-        lastMessageTime={conversationInfo.contact.lastMessageAt}
-        contactStatus={conversationInfo.contact.status}
-        contactBspStatus={conversationInfo.contact.bspStatus}
+        lastMessageTime={conversationInfo[chatType]?.lastMessageAt}
+        contactStatus={conversationInfo[chatType]?.status}
+        contactBspStatus={conversationInfo[chatType]?.bspStatus}
         handleAction={() => handleChatClearedAction()}
+        groups={groups}
       />
     );
 
@@ -777,9 +796,10 @@ export const ChatMessages = ({
         <LexicalWrapper>
           <ChatInput
             onSendMessage={sendMessageHandler}
-            lastMessageTime={conversationInfo.contact.lastMessageAt}
-            contactStatus={conversationInfo.contact.status}
-            contactBspStatus={conversationInfo.contact.bspStatus}
+            lastMessageTime={conversationInfo[chatType]?.lastMessageAt}
+            contactStatus={conversationInfo[chatType]?.status}
+            contactBspStatus={conversationInfo[chatType]?.bspStatus}
+            showAttachmentButton={!groups}
           />
         </LexicalWrapper>
       </div>
