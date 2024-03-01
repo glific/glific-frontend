@@ -28,7 +28,7 @@ const menus = (): Menu[] => [
     roles: allRoles,
   },
   {
-    title: 'Whatsapp Group',
+    title: 'WhatsApp Groups',
     path: '/group/chat',
     icon: 'chat',
     type: 'sideDrawer',
@@ -38,13 +38,6 @@ const menus = (): Menu[] => [
         title: 'Chat',
         path: '/group/chat',
         icon: 'chat',
-        type: 'sideDrawer',
-        roles: ['Manager', 'Admin', 'Dynamic'],
-      },
-      {
-        title: 'Collections',
-        path: '/group/collections',
-        icon: 'collection',
         type: 'sideDrawer',
         roles: ['Manager', 'Admin', 'Dynamic'],
       },
