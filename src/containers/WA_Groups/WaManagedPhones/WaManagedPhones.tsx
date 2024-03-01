@@ -30,7 +30,6 @@ export const WaManagedPhones = ({ phonenumber, setPhonenumber }: WaManagedPhones
   const [syncGroups] = useMutation(SYNC_GROUPS, {
     fetchPolicy: 'network-only',
     onCompleted: (data) => {
-      console.log(data);
       setSyncLoading(false);
 
       if (data.errors) {

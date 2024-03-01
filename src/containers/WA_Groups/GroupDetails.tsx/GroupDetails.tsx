@@ -11,8 +11,8 @@ export const GroupDetails = () => {
   const params = useParams();
   const { t } = useTranslation();
 
-  const dialogTitle = t('Are you sure you want to remove contact from this collection?');
-  const dialogMessage = t('The contact will no longer receive messages sent to this collection');
+  const dialogTitle = 'Are you sure you want to remove contact from this group?';
+  const dialogMessage = 'The contact will no longer receive messages sent to this group';
 
   const columnNames = [
     { name: 'name', label: t('Name') },
@@ -25,28 +25,22 @@ export const GroupDetails = () => {
     deleteItemQuery: UPDATE_GROUP_CONTACT,
   };
 
-  const getName = (label: string) => {
-    return (
-      <div>
-        <div className={styles.NameText}>{label}</div>
-      </div>
-    );
-  };
+  const getName = (label: string) => (
+    <div>
+      <div className={styles.NameText}>{label}</div>
+    </div>
+  );
 
-  const getPhoneNumber = (phone: string) => {
-    return (
-      <div>
-        <div className={styles.Phone}>{phone}</div>
-      </div>
-    );
-  };
+  const getPhoneNumber = (phone: string) => (
+    <div>
+      <div className={styles.Phone}>{phone}</div>
+    </div>
+  );
 
-  const getColumns = (paylaod: any) => {
-    return {
-      name: getName(paylaod?.contact?.name),
-      phone: getPhoneNumber(paylaod?.contact?.maskedPhone),
-    };
-  };
+  const getColumns = (waContact: any) => ({
+    name: getName(waContact?.contact?.name),
+    phone: getPhoneNumber(waContact?.contact?.maskedPhone),
+  });
 
   const collectionIcon = <CollectionIcon className={styles.CollectionIcon} />;
   const columnStyles = [styles.Name, styles.Phone];

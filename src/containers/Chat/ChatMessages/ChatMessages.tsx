@@ -749,6 +749,7 @@ export const ChatMessages = ({
         lastMessageTime={conversationInfo[chatType]?.lastMessageAt}
         contactStatus={conversationInfo[chatType]?.status}
         contactBspStatus={conversationInfo[chatType]?.bspStatus}
+        showAttachmentButton={!groups}
       />
     );
   } else if (collectionId && conversationInfo.group) {

@@ -171,11 +171,10 @@ const GroupConversation = ({
     });
   };
 
-  const msgID = searchMode && messageNumber ? `?search=${messageNumber}` : '';
 
-  let redirectURL = `/group/chat/${contactId}${msgID}`;
+  let redirectURL = `/group/chat/${contactId}`;
   if (entityType === 'collection') {
-    redirectURL = `/group/chat/collection/${contactId}${msgID}`;
+    redirectURL = `/group/chat/collection/${contactId}`;
   }
 
   return (
@@ -200,7 +199,7 @@ const GroupConversation = ({
     >
       <div>
         {entityType === 'contact' ? (
-          <AvatarDisplay name={name} badgeDisplay={!contactIsOrgRead} />
+          <AvatarDisplay name={name || ''} badgeDisplay={!contactIsOrgRead} />
         ) : (
           ''
         )}
