@@ -25,7 +25,7 @@
 }
 
 .Assigned {
-  width: 120px;
+  width: 150px;
 }
 
 .Status {
@@ -58,7 +58,6 @@
 .TableText {
   margin-right: 23px;
   text-align: left;
-  padding: 12px 0px;
   font-size: 16px;
   color: #93a29b;
   line-height: 1.25;

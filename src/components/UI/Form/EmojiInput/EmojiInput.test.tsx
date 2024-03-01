@@ -1,22 +1,10 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import 'mocks/matchMediaMock';
+import { render, screen } from '@testing-library/react';
 import { EmojiInput } from './EmojiInput';
-import draftJs, { EditorState } from 'draft-js';
+
 import userEvent from '@testing-library/user-event';
 
 const setFieldValueMock = vi.fn();
-
-Object.defineProperty(window, 'matchMedia', {
-  writable: true,
-  value: (query: any) => {
-    return {
-      matches: false,
-      media: query,
-      onchange: null,
-      addListener: vi.fn(),
-      removeListener: vi.fn(),
-    };
-  },
-});
 
 const mockIntersectionObserver = class {
   constructor() {}
@@ -32,34 +20,18 @@ const wrapper = (
     form={{
       touched: false,
       errors: {},
-      values: { input: EditorState.createEmpty() },
+      values: { input: '' },
       setFieldValue: setFieldValueMock,
     }}
-    field={{ name: 'input', value: EditorState.createEmpty(), onChange: vi.fn() }}
+    field={{ name: 'input', value: '', onChange: vi.fn() }}
     label="Title"
     placeholder="Title"
     rows={10}
   />
 );
 
-const mockCallback = vi.fn();
-
-vi.spyOn(draftJs, 'Editor').mockImplementation((props: any, _context: any) => {
-  const input: any = (
-    <input
-      data-testid='editor'
-      onClick={() => {
-        props.handleKeyCommand('underline', EditorState.createEmpty());
-        mockCallback()
-      }}
-      onChange={() => props.onSearchChange({ value: "a" })}
-    ></input>
-  );
-  return input;
-});
-
 vi.mock('components/UI/EmojiPicker/EmojiPicker', async (importOriginal) => {
-  const mod = await importOriginal<typeof import('components/UI/EmojiPicker/EmojiPicker')>()
+  const mod = await importOriginal<typeof import('components/UI/EmojiPicker/EmojiPicker')>();
   return {
     ...mod,
     EmojiPicker: vi.fn((props: any) => {
@@ -83,15 +55,12 @@ vi.mock('components/UI/EmojiPicker/EmojiPicker', async (importOriginal) => {
       );
       return Picker;
     }),
-  }
-})
-
-const pushSpy = vi.spyOn(EditorState, 'push');
-
+  };
+});
 
 it('renders <EmojiInput /> component', () => {
   const { getByTestId } = render(wrapper);
-  expect(getByTestId('input')).toBeInTheDocument();
+  expect(getByTestId('editor-input')).toBeInTheDocument();
 });
 
 it('should have a emoji picker', () => {
@@ -115,11 +84,4 @@ test('Selecting an emoji should update in the editor', async () => {
   await user.click(getByTestId('emoji-picker'));
   const emojiContainer = screen.getByTestId('emoji-container');
   await user.click(emojiContainer);
-  expect(pushSpy).toHaveBeenCalled();
-})
-
-test('testing underline key Command', () => {
-  const { getByTestId } = render(wrapper);
-  fireEvent.click(getByTestId('editor'));
-  expect(mockCallback).toHaveBeenCalled();
-})
+});

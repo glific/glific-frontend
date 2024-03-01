@@ -1,3 +1,4 @@
+import 'mocks/matchMediaMock';
 import { MockedProvider } from '@apollo/client/testing';
 import { render, waitFor, fireEvent, screen } from '@testing-library/react';
 import { vi } from 'vitest';
@@ -11,6 +12,7 @@ import {
 } from 'mocks/Attachment';
 import { searchInteractive, searchInteractiveHi } from 'mocks/InteractiveMessage';
 import '../VoiceRecorder/VoiceRecorder';
+import { LexicalWrapper } from 'common/LexicalWrapper';
 
 const mocks = [
   searchInteractive,
@@ -70,7 +72,9 @@ describe('<ChatInput />', () => {
 
   const chatInput = (
     <MockedProvider mocks={mocks} addTypename={false}>
-      <ChatInput {...defaultProps} />
+      <LexicalWrapper>
+        <ChatInput {...defaultProps} />
+      </LexicalWrapper>
     </MockedProvider>
   );
 
@@ -149,7 +153,8 @@ describe('<ChatInput />', () => {
     const interactiveMessages = getAllByTestId('shortcutButton')[1];
     fireEvent.click(interactiveMessages);
     await waitFor(() => {
-      const listItem = getAllByTestId('templateItem')[0];
+      const listItem = getAllByTestId('templateItem')[1];
+
       fireEvent.click(listItem);
     });
     fireEvent.click(getByTestId('sendButton'));
@@ -178,7 +183,9 @@ describe('<ChatInput />', () => {
     propsWithBspStatusNone.contactBspStatus = 'NONE';
     const { getByText } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
-        <ChatInput {...propsWithBspStatusNone} />
+        <LexicalWrapper>
+          <ChatInput {...propsWithBspStatusNone} />
+        </LexicalWrapper>
       </MockedProvider>
     );
 
@@ -194,7 +201,9 @@ describe('<ChatInput />', () => {
     propsWithBspStatusHSM.contactBspStatus = 'HSM';
     const { getByText, getByTestId } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
-        <ChatInput {...propsWithBspStatusHSM} />
+        <LexicalWrapper>
+          <ChatInput {...propsWithBspStatusHSM} />
+        </LexicalWrapper>
       </MockedProvider>
     );
     fireEvent.click(getByTestId('shortcut-open-button'));
@@ -206,7 +215,9 @@ describe('<ChatInput />', () => {
     propsWithBspStatusSession.contactBspStatus = 'SESSION';
     const { getByText, getByTestId } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
-        <ChatInput {...propsWithBspStatusSession} />
+        <LexicalWrapper>
+          <ChatInput {...propsWithBspStatusSession} />
+        </LexicalWrapper>
       </MockedProvider>
     );
     fireEvent.click(getByTestId('shortcut-open-button'));
@@ -221,7 +232,9 @@ describe('<ChatInput />', () => {
 
     const { getByText, getByTestId } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
-        <ChatInput {...propsWithChatWindowOver} />
+        <LexicalWrapper>
+          <ChatInput {...propsWithChatWindowOver} />
+        </LexicalWrapper>
       </MockedProvider>
     );
     fireEvent.click(getByTestId('shortcut-open-button'));
@@ -234,7 +247,9 @@ describe('<ChatInput />', () => {
     propsWithMockSend.onSendMessage = sendMessageMock;
     const { getByText, getByTestId } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
-        <ChatInput {...propsWithMockSend} />
+        <LexicalWrapper>
+          <ChatInput {...propsWithMockSend} />
+        </LexicalWrapper>
       </MockedProvider>
     );
 

@@ -100,7 +100,7 @@ export const Extensions = ({ openDialog }: ExtensionProps) => {
     >
       <DialogContent classes={{ root: styles.DialogContent }}>
         <FormLayout
-          withDialog
+          partialPage
           {...queries}
           states={states}
           setStates={setStates}

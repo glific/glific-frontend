@@ -63,12 +63,12 @@
   text-align: center;
   margin: 0;
   font-size: 14px;
-  font-weight: 400;
+  font-weight: 600;
   color: #dd1f1f;
 }
 
 .ErrorMsgIcon {
-  vertical-align: middle;
+  margin-right: 10px;
   height: 16px;
 }
 
@@ -145,4 +145,11 @@
 .BackIcon {
   cursor: pointer;
   margin-right: 8px;
+}
+
+.ErrorMsg {
+  display: flex;
+  padding-bottom: 2px;
+  justify-content: center;
+  align-items: center;
 }

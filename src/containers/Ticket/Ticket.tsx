@@ -133,7 +133,7 @@ export const Ticket = ({ selectedTicket, setOpenDialog }: TicketProps) => {
   return (
     <div className={`${styles.Layout} ${styles.Edit}`}>
       <FormLayout
-        withDialog
+        partialPage
         {...queries}
         restrictDelete
         title={t('Update ticket')}

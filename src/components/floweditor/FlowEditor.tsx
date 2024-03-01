@@ -44,6 +44,7 @@ export const FlowEditor = () => {
   const [IsError, setIsError] = useState(false);
   const [currentEditDialogBox, setCurrentEditDialogBox] = useState(false);
   const [dialogMessage, setDialogMessage] = useState('');
+  const [publishLoading, setPublishLoading] = useState(false);
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -115,7 +116,12 @@ export const FlowEditor = () => {
       } else if (data.publishFlow.success) {
         setPublished(true);
       }
+      setPublishLoading(false);
     },
+    onError:()=>{
+      setPublishLoading(false)
+      setNotification("Sorry! An error occurred", 'warning')
+    }
   });
 
   const { data: flowName } = useQuery(GET_FLOW_DETAILS, {
@@ -231,15 +237,12 @@ export const FlowEditor = () => {
 
   const errorMsg = () => (
     <div className={styles.DialogError}>
-      Errors were detected in the flow. Would you like to continue modifying?
-      <div>
-        {flowValidation.map((message: any) => (
-          <div key={message.message}>
-            <WarningIcon className={styles.ErrorMsgIcon} />
-            {message.message}
-          </div>
-        ))}
-      </div>
+      {flowValidation.map((message: any) => (
+        <div key={message.message} className={styles.ErrorMsg}>
+          <WarningIcon className={styles.ErrorMsgIcon} />
+          {message.message}
+        </div>
+      ))}
     </div>
   );
 
@@ -273,8 +276,10 @@ export const FlowEditor = () => {
         title="Ready to publish?"
         buttonOk="Publish & stay"
         titleAlign="center"
+        buttonOkLoading={publishLoading}
         buttonMiddle="Publish & go back"
         handleOk={() => {
+          setPublishLoading(true);
           setStayOnPublish(true);
           handlePublishFlow();
         }}
@@ -295,7 +300,7 @@ export const FlowEditor = () => {
   if (IsError) {
     dialog = (
       <DialogBox
-        title=""
+        title="Errors were detected in the flow. Would you like to continue modifying?"
         buttonOk="Publish"
         handleOk={() => {
           setPublishDialog(false);

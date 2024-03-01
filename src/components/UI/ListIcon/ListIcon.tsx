@@ -25,6 +25,7 @@ import LogoutIcon from 'assets/images/icons/SideDrawer/LogoutIcon';
 import OrganizationIcon from 'assets/images/icons/SideDrawer/OrganizationIcon';
 import ConsultingIcon from 'assets/images/icons/SideDrawer/ConsultingIcon';
 import styles from './ListIcon.module.css';
+import { Badge } from '@mui/material';
 
 export interface ListIconProps {
   icon: string | undefined;
@@ -64,10 +65,18 @@ export const ListIcon = ({ icon = '', selected = false, count }: ListIconProps) 
     consulting: ConsultingIcon,
   };
 
+  const iconImage = stringsToIcons[icon] && (
+    <RenderIcon component={stringsToIcons[icon]} color={selected ? '#073f24' : '#999999'} />
+  );
+
   return (
     <span data-testid="listIcon" className={styles.ListIcon}>
-      {stringsToIcons[icon] && (
-        <RenderIcon component={stringsToIcons[icon]} color={selected ? '#073f24' : '#999999'} />
+      {count ? (
+        <Badge badgeContent={count} color="warning" classes={{ badge: styles.Badge }}>
+          {iconImage}
+        </Badge>
+      ) : (
+        iconImage
       )}
     </span>
   );

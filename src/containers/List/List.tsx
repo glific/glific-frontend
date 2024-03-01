@@ -491,11 +491,13 @@ export const List = ({
     if (editSupport) {
       editButton = allowedAction.edit && (
         <Link to={`/${pageLink}/${id}/edit`} className={styles.NoTextDecoration}>
-          <div aria-label={t('Edit')} data-testid="EditIcon">
-            <div className={styles.IconWithText}>
-              <EditIcon className={styles.IconSize} />
+          <IconButton className={styles.additonalButton}>
+            <div aria-label={t('Edit')} data-testid="EditIcon">
+              <div className={styles.IconWithText}>
+                <EditIcon className={styles.IconSize} />
+              </div>
             </div>
-          </div>
+          </IconButton>
         </Link>
       );
     }
@@ -539,9 +541,7 @@ export const List = ({
       return (
         <div className={styles.Icons}>
           {actionListMap(item, actionsOutsideMore, false)}
-          {allowedAction.edit && (
-            <IconButton className={styles.additonalButton}>{editButton}</IconButton>
-          )}
+          {allowedAction.edit && editButton}
 
           {/* do not display edit & delete for staff role in collection */}
           {userRolePermissions.manageCollections || item !== 'collections' ? (

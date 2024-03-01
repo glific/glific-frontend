@@ -11,11 +11,11 @@ import {
   getCurrentUserInvalidRoleQuery,
 } from 'mocks/User';
 
-import { getOrganizationServicesQuery } from 'mocks/Organization'
+import { getOrganizationServicesQuery } from 'mocks/Organization';
 
 import { Login } from './Login';
 
-const mocks = [getCurrentUserQuery, getOrganizationServicesQuery ];
+const mocks = [getCurrentUserQuery, getOrganizationServicesQuery];
 
 vi.mock('axios');
 vi.mock('pino-logflare', () => ({

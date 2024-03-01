@@ -1,7 +1,6 @@
 .Name {
   width: 30%;
   min-width: 150px;
-  padding-left: 12px;
 }
 
 .Actions {
@@ -32,7 +31,6 @@
 
 .LastPublished {
   font-size: 15px;
-  line-height: 20px;
   color: #555555;
   white-space: pre-line;
   margin: 0;
@@ -50,7 +48,6 @@
 }
 
 .NameText {
-  line-height: 20px;
   margin: 0;
   font-size: 17px !important;
   word-break: break-all;

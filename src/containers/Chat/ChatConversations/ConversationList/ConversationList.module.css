@@ -78,7 +78,7 @@
 
 .ScrollToTopCollections {
   composes: ScrollButton;
-  top: 67px;
+  top: 51px;
 }
 
 .ScrollToTopSearches {

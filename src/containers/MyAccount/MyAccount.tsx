@@ -199,10 +199,11 @@ export const MyAccount = () => {
   // build form fields
   let formFieldLayout: any;
   if (!showOTPButton) {
-    formFieldLayout = formFields.map((field: any, index) => {
-      const key = index;
-      return <Field key={key} {...field} />;
-    });
+    formFieldLayout = formFields.map((field: any, index) => (
+      <div className={styles.ChangePasswordField} key={index}>
+        <Field {...field} />
+      </div>
+    ));
   }
 
   // form component

@@ -29,12 +29,7 @@ import {
 import { getCachedConverations, updateConversationsCache } from '../../../services/ChatService';
 import { addLogs, getDisplayName, isSimulator } from '../../../common/utils';
 import { CollectionInformation } from '../../Collection/CollectionInformation/CollectionInformation';
-import { SEND_MESSAGE_IN_WA_GROUP } from 'graphql/mutations/Group';
-import { GROUP_SEARCH_QUERY } from 'graphql/queries/WA_Groups';
-import {
-  getCachedGroupConverations,
-  updateGroupConversationsCache,
-} from 'services/GroupMessageService';
+import { LexicalWrapper } from 'common/LexicalWrapper';
 
 export interface ChatMessagesProps {
   contactId?: number | string | null;
@@ -72,7 +67,6 @@ export const ChatMessages = ({
 
   const [dialog, setDialogbox] = useState<string>();
   const [showDropdown, setShowDropdown] = useState<any>(null);
-  const [reducedHeight, setReducedHeight] = useState(0);
   const [showLoadMore, setShowLoadMore] = useState(true);
   const [scrolledToMessage, setScrolledToMessage] = useState(false);
   const [showJumpToLatest, setShowJumpToLatest] = useState(false);
@@ -104,7 +98,7 @@ export const ChatMessages = ({
         });
       }
     }, 1000);
-  }, [setShowJumpToLatest, contactId, reducedHeight]);
+  }, [setShowJumpToLatest, contactId]);
 
   const scrollToLatestMessage = () => {
     const container: any = document.querySelector('.messageContainer');
@@ -660,7 +654,7 @@ export const ChatMessages = ({
     messageListContainer = (
       <Container
         className={`${styles.MessageList} messageContainer `}
-        style={{ height: `calc(100vh - 205px - ${reducedHeight}px)` }}
+        style={{ height: `calc(100% - 215px` }}
         maxWidth={false}
         data-testid="messageContainer"
       >
@@ -693,18 +687,6 @@ export const ChatMessages = ({
     );
   }
 
-  if (groups && collectionId) {
-    messageListContainer = (
-      <div className={styles.NoMessages} data-testid="messageContainer">
-        {t('No messages.')}
-      </div>
-    );
-  }
-
-  const handleHeightChange = (newHeight: number) => {
-    setReducedHeight(newHeight);
-  };
-
   const handleChatClearedAction = () => {
     const conversationInfoCopy = JSON.parse(JSON.stringify(conversationInfo));
     conversationInfoCopy.messages = [];
@@ -726,55 +708,6 @@ export const ChatMessages = ({
       <div className={styles.LoadMore}>
         <CircularProgress className={styles.Loading} />
       </div>
-    );
-  }
-
-  let topChatBar;
-  let chatInputSection;
-  if (contactId && conversationInfo[chatType]) {
-    const displayName = groups ? conversationInfo.waGroup.label : getDisplayName(conversationInfo);
-    const isSimulatorProp = groups
-      ? conversationInfo[chatType].waManagedPhone.phone
-      : isSimulator(conversationInfo[chatType].phone);
-
-    topChatBar = (
-      <ContactBar
-        displayName={displayName}
-        isSimulator={isSimulatorProp}
-        contactId={contactId.toString()}
-        lastMessageTime={conversationInfo[chatType]?.lastMessageAt}
-        contactStatus={conversationInfo[chatType]?.status}
-        contactBspStatus={conversationInfo[chatType]?.bspStatus}
-        handleAction={() => handleChatClearedAction()}
-        groups={groups}
-      />
-    );
-
-    chatInputSection = (
-      <ChatInput
-        handleHeightChange={handleHeightChange}
-        onSendMessage={sendMessageHandler}
-        lastMessageTime={conversationInfo[chatType]?.lastMessageAt}
-        contactStatus={conversationInfo[chatType]?.status}
-        contactBspStatus={conversationInfo[chatType]?.bspStatus}
-        showAttachmentButton={!groups}
-      />
-    );
-  } else if (collectionId && conversationInfo.group) {
-    topChatBar = (
-      <ContactBar
-        collectionId={collectionId.toString()}
-        displayName={conversationInfo.group.label}
-        handleAction={handleChatClearedAction}
-      />
-    );
-
-    chatInputSection = (
-      <ChatInput
-        handleHeightChange={handleHeightChange}
-        onSendMessage={sendCollectionMessageHandler}
-        isCollection
-      />
     );
   }
 
@@ -821,6 +754,55 @@ export const ChatMessages = ({
     </div>
   );
 
+  let topChatBar;
+  let chatInputSection;
+
+  if (contactId && conversationInfo.contact) {
+    const displayName = getDisplayName(conversationInfo);
+    topChatBar = (
+      <ContactBar
+        displayName={displayName}
+        isSimulator={isSimulator(conversationInfo.contact.phone)}
+        contactId={contactId.toString()}
+        lastMessageTime={conversationInfo.contact.lastMessageAt}
+        contactStatus={conversationInfo.contact.status}
+        contactBspStatus={conversationInfo.contact.bspStatus}
+        handleAction={() => handleChatClearedAction()}
+      />
+    );
+
+    chatInputSection = (
+      <div className={styles.ChatInput}>
+        {conversationInfo.messages.length && showJumpToLatest ? jumpToLatest : null}
+        <LexicalWrapper>
+          <ChatInput
+            onSendMessage={sendMessageHandler}
+            lastMessageTime={conversationInfo.contact.lastMessageAt}
+            contactStatus={conversationInfo.contact.status}
+            contactBspStatus={conversationInfo.contact.bspStatus}
+          />
+        </LexicalWrapper>
+      </div>
+    );
+  } else if (collectionId && conversationInfo.group) {
+    topChatBar = (
+      <ContactBar
+        collectionId={collectionId.toString()}
+        displayName={conversationInfo.group.label}
+        handleAction={handleChatClearedAction}
+      />
+    );
+
+    chatInputSection = (
+      <div className={styles.ChatInput}>
+        {conversationInfo.messages.length && showJumpToLatest ? jumpToLatest : null}
+        <LexicalWrapper>
+          <ChatInput onSendMessage={sendCollectionMessageHandler} isCollection />
+        </LexicalWrapper>
+      </div>
+    );
+  }
+
   return (
     <Container className={styles.ChatMessages} maxWidth={false} disableGutters>
       {dialogBox}
@@ -835,9 +817,6 @@ export const ChatMessages = ({
       {topChatBar}
       <StatusBar />
       {messageListContainer}
-      {(conversationInfo.messages?.length || conversationInfo.messages?.length) && showJumpToLatest
-        ? jumpToLatest
-        : null}
       {chatInputSection}
     </Container>
   );

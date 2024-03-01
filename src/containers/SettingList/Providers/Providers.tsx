@@ -61,13 +61,17 @@ export const Providers = () => {
     setStateValues(states);
   };
 
-  if (credential && !credentialId) {
-    const data = credential.credential.credential;
-    if (data) {
-      // to get credential data
-      setCredentialId(data.id);
+  useEffect(() => {
+    if (credential) {
+      const data = credential.credential.credential;
+      if (data) {
+        // to get credential data
+        setCredentialId(data.id);
+      }
+    } else {
+      setCredentialId(null);
     }
-  }
+  }, [credential]);
 
   const setPayload = (payload: any) => {
     let object: any = {};
@@ -160,6 +164,9 @@ export const Providers = () => {
   }, [providerData]);
 
   const saveHandler = (data: any) => {
+    if (data && data.createCredential) {
+      setCredentialId(data.createCredential.credential.id);
+    }
     if (data)
       // Update the details of the cache. This is required at the time of restoration
       client.writeQuery({
@@ -175,6 +182,7 @@ export const Providers = () => {
 
   return (
     <FormLayout
+      partialPage
       {...queries}
       title={title}
       states={stateValues}

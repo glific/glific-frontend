@@ -1,5 +1,6 @@
 .MyAccount {
-  width: fit-content;
+  width: 500px;
+  padding: 12px 32px;
 }
 
 .Title {
@@ -17,7 +18,6 @@
 
 .Form {
   padding: 10px 24px;
-  width: 530px;
 }
 
 .HelperText {
@@ -38,4 +38,8 @@
 
 .UserField {
   padding: 0px 20px;
+}
+
+.ChangePasswordField {
+  margin-bottom: 20px;
 }

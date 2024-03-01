@@ -10,7 +10,7 @@ import {
   GET_ORGANIZATION_PROVIDER,
   GET_QUALITY_RATING,
   GET_ORGANIZATION_PHONE,
-  GET_ORGANIZATION_SERVICES
+  GET_ORGANIZATION_SERVICES,
 } from 'graphql/queries/Organization';
 import { BSP_BALANCE_SUBSCRIPTION } from 'graphql/subscriptions/PeriodicInfo';
 
@@ -222,10 +222,11 @@ export const getOrganizationServicesQuery = {
         rolesAndPermission: true,
         contactProfileEnabled: true,
         ticketingEnabled: true,
-      }
-    }
-  }
-}
+        autoTranslationEnabled: true,
+      },
+    },
+  },
+};
 export const getProvidersQuery = [
   {
     request: {

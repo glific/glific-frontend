@@ -2,23 +2,7 @@
   overflow: auto;
   width: 100%;
   min-height: 40px;
-  margin-top: 4px;
-}
-
-.Editor :global(.public-DraftEditor-content) > div {
-  padding-top: 10px;
-  padding-bottom: 10px;
-  color: #073f24;
-  font-size: 16px;
-  line-height: 1.25;
-}
-
-.Editor :global(.public-DraftEditorPlaceholder-inner) {
-  padding-top: 10px;
-  margin-bottom: -32px;
-  pointer-events: none;
-  color: #93a29b;
-  font-size: 16px;
+  position: relative;
 }
 
 span.emoji-mart-emoji {
@@ -27,4 +11,29 @@ span.emoji-mart-emoji {
 
 .emoji-mart-emoji {
   font-size: medium;
+}
+
+.editorInput {
+  resize: none;
+  font-size: 16px;
+  overflow: auto;
+  width: 100%;
+  min-height: 40px;
+  margin-top: 4px;
+  position: relative;
+  tab-size: 1;
+  outline: 0;
+}
+
+.editorPlaceholder {
+  color: #999;
+  overflow: hidden;
+  position: absolute;
+  text-overflow: ellipsis;
+  top: 22px;
+  left: 0px;
+  font-size: 15px;
+  user-select: none;
+  display: inline-block;
+  pointer-events: none;
 }

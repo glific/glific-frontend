@@ -85,7 +85,10 @@ export const ContactHistory = ({ contactId, profileId }: ContactHistoryProps) =>
   };
 
   const columnStyles = [styles.Label, styles.DateAndTime];
-  const columnNames = [{ name: 'event_label', label: t('Title') }, { label: t('Date and Time') }];
+  const columnNames = [
+    { name: 'event_label', label: t('Title') },
+    { label: t('Date and Time'), name: 'inserted_at', sort: true, order: 'desc' },
+  ];
 
   const getColumns = ({ eventLabel, eventType, insertedAt, eventMeta }: any) => ({
     eventLabel: getEventLabel(eventLabel, eventType, eventMeta),
