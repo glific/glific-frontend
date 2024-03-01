@@ -307,6 +307,8 @@ export const List = ({
     if (tableVals.sortDirection) {
       order = tableVals.sortDirection.toUpperCase();
     }
+    console.log(filter);
+
     return {
       filter,
       opts: {

@@ -238,7 +238,7 @@ export const ChatConversations = ({
           onReset={() => resetSearch()}
           searchVal={searchVal}
           handleClick={handleClick}
-          endAdornment
+          endAdornment={!groups}
           searchMode={enableSearchMode}
           iconFront
         />

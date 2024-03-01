@@ -387,6 +387,8 @@ export const ChatInput = ({
     dialog = <AddAttachment {...dialogProps} />;
   }
 
+  let attachmentButton: any;
+
   return (
     <Container
       className={`${styles.ChatInput} ${additionalStyle}`}

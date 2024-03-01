@@ -86,6 +86,7 @@ export const GroupMessageSubscription = ({ setDataLoaded }: GroupMessageProps) =
           return cachedConversations;
         }
       }
+      console.log(subscriptionData);
 
       const { newMessage, contactId, messageStatusData } = getSubscriptionDetails(
         action,

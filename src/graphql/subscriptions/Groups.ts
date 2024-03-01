@@ -5,10 +5,19 @@ export const WA_MESSAGE_RECEIVED_SUBSCRIPTION = gql`
     receivedWaGroupMessage(organizationId: $organizationId) {
       id
       body
+      insertedAt
+      messageNumber
       flow
       type
+      status
       waGroupId
-      messageNumber
+      contact {
+        name
+      }
+      media {
+        url
+        caption
+      }
       contextMessage {
         body
         contextId
@@ -23,13 +32,8 @@ export const WA_MESSAGE_RECEIVED_SUBSCRIPTION = gql`
         type
         insertedAt
       }
-      media {
-        url
-        caption
-      }
-      insertedAt
+
       errors
-      status
     }
   }
 `;
@@ -46,6 +50,9 @@ export const WA_MESSAGE_SENT_SUBSCRIPTION = gql`
       media {
         url
         caption
+      }
+      contact {
+        name
       }
       errors
       contextMessage {

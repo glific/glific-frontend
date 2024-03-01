@@ -17,11 +17,10 @@ export const GroupDetails = () => {
   const columnNames = [
     { name: 'name', label: t('Name') },
     { name: 'maskedPhone', label: t('Phone number') },
-    { label: t('Actions') },
   ];
 
   const queries = {
-    countQuery: GET_CONTACT_COUNT,
+    countQuery: GET_CONTACT_COUNT, //TODO: Change count query and the variable below
     filterItemsQuery: WA_GROUPS_CONTACT,
     deleteItemQuery: UPDATE_GROUP_CONTACT,
   };
@@ -50,7 +49,7 @@ export const GroupDetails = () => {
   };
 
   const collectionIcon = <CollectionIcon className={styles.CollectionIcon} />;
-  const columnStyles = [styles.Name, styles.Phone, styles.Actions];
+  const columnStyles = [styles.Name, styles.Phone];
 
   const columnAttributes = {
     columns: getColumns,
@@ -70,6 +69,7 @@ export const GroupDetails = () => {
       pageLink="waGroupsContact"
       listIcon={collectionIcon}
       editSupport={false}
+      showActions={false}
       dialogMessage={dialogMessage}
       {...queries}
       {...columnAttributes}

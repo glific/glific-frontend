@@ -3,7 +3,11 @@ import { Button } from 'components/UI/Form/Button/Button';
 
 import styles from './WaManagedPhones.module.css';
 import { GET_WA_MANAGED_PHONES } from 'graphql/queries/WA_Groups';
-import { useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
+import { SYNC_GROUPS } from 'graphql/mutations/Group';
+import { setNotification } from 'common/notification';
+import { useTranslation } from 'react-i18next';
+import { useState } from 'react';
 
 interface WaManagedPhonesProps {
   phonenumber: string;
@@ -11,6 +15,9 @@ interface WaManagedPhonesProps {
 }
 
 export const WaManagedPhones = ({ phonenumber, setPhonenumber }: WaManagedPhonesProps) => {
+  const [syncLoading, setSyncLoading] = useState<boolean>(false);
+  const { t } = useTranslation();
+
   const { data } = useQuery<any>(GET_WA_MANAGED_PHONES, {
     variables: {
       filter: {},
@@ -19,6 +26,29 @@ export const WaManagedPhones = ({ phonenumber, setPhonenumber }: WaManagedPhones
       },
     },
   });
+
+  const [syncGroups] = useMutation(SYNC_GROUPS, {
+    fetchPolicy: 'network-only',
+    onCompleted: (data) => {
+      console.log(data);
+      setSyncLoading(false);
+
+      if (data.errors) {
+        setNotification(t('Sorry, failed to sync whatsapp groups.'), 'warning');
+      } else {
+        setNotification(t('Whatsapp groups synced successfully.'), 'success');
+      }
+    },
+    onError: () => {
+      setNotification(t('Sorry, failed to sync whatsapp groups.'), 'warning');
+      setSyncLoading(false);
+    },
+  });
+
+  const handleSyncGroups = () => {
+    setSyncLoading(true);
+    syncGroups();
+  };
 
   return (
     <div className={styles.DropDownContainer}>
@@ -45,8 +75,10 @@ export const WaManagedPhones = ({ phonenumber, setPhonenumber }: WaManagedPhones
         variant="outlined"
         color="primary"
         className={styles.syncButton}
-        data-testid="updateHsm"
+        loading={syncLoading}
+        data-testid="syncGroups"
         aria-hidden="true"
+        onClick={() => handleSyncGroups()}
       >
         SYNC
       </Button>
