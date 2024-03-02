@@ -771,9 +771,7 @@ export const ChatMessages = ({
   let topChatBar;
   let chatInputSection;
 
-  const isSimulatorProp = groups
-    ? conversationInfo[chatType]?.waManagedPhone?.phone
-    : isSimulator(conversationInfo[chatType]?.phone);
+  const isSimulatorProp = groups ? false : isSimulator(conversationInfo.contact?.phone);
 
   if (contactId && conversationInfo[chatType]) {
     const displayName = groups ? conversationInfo.waGroup.label : getDisplayName(conversationInfo);

@@ -437,9 +437,8 @@ export const ChatInput = ({
     >
       {dialog}
 
-
-        {open ? (
-          <div className={styles.SendsContainer} id="popup">
+      {open ? (
+        <div className={styles.SendsContainer} id="popup">
           <Fade in={open} timeout={200}>
             <div className={styles.Popup}>
               <ChatTemplates
@@ -458,9 +457,8 @@ export const ChatInput = ({
               {selectedTab && quickSendButtons(quickSendTypes)}
             </div>
           </Fade>
-          </div>
-        ) : null}
-
+        </div>
+      ) : null}
 
       <div className={styles.ChatInputElements}>
         {attachmentButton}
