@@ -592,10 +592,10 @@ export const ContactBar = ({
   // CONTACT: display session timer & Assigned to
   // COLLECTION: display contact info & Assigned to
   // GROUP: display Assigned to
-  let collectionStatusAndDetails: any;
+  let contactBarDetails: any;
 
   if (contactId) {
-    collectionStatusAndDetails = (
+    contactBarDetails = (
       <>
         {contactId ? (
           <div className={styles.SessionTimerContainer}>
@@ -611,7 +611,7 @@ export const ContactBar = ({
       </>
     );
   } else if (collectionId) {
-    collectionStatusAndDetails = <CollectionInformation collectionId={collectionId} />;
+    contactBarDetails = <CollectionInformation collectionId={collectionId} />;
   }
 
   return (
@@ -642,7 +642,7 @@ export const ContactBar = ({
                 </ClickAwayListener>
               </div>
             </div>
-            {collectionStatusAndDetails}
+            {contactBarDetails}
           </div>
         </div>
       </div>
