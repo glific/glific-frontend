@@ -79,10 +79,10 @@ export const dayList: any = [
   { id: 7, label: 'Sunday' },
 ];
 
-// default contact limit for search
+// default entity limit for search
 export const DEFAULT_ENTITY_LIMIT = 25;
 
-// load more contact limit
+// load more entity limit
 export const DEFAULT_ENTITY_LOADMORE_LIMIT = 10;
 
 // default message limit for search
