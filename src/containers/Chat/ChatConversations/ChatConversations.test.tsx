@@ -4,7 +4,7 @@ import { MockedProvider } from '@apollo/client/testing';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 
 import { SEARCH_QUERY } from 'graphql/queries/Search';
-import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT } from 'common/constants';
+import { DEFAULT_ENTITY_LIMIT, DEFAULT_MESSAGE_LIMIT } from 'common/constants';
 import ChatConversations from './ChatConversations';
 import { ChatConversationMocks } from './ChatConversations.test.helper';
 import { setUserSession } from 'services/AuthService';
@@ -14,7 +14,7 @@ const cache = new InMemoryCache({ addTypename: false });
 cache.writeQuery({
   query: SEARCH_QUERY,
   variables: {
-    contactOpts: { limit: DEFAULT_CONTACT_LIMIT },
+    contactOpts: { limit: DEFAULT_ENTITY_LIMIT },
     filter: {},
     messageOpts: { limit: DEFAULT_MESSAGE_LIMIT },
   },

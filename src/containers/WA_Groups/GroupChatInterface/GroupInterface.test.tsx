@@ -1,10 +1,10 @@
 import 'mocks/matchMediaMock';
 import { MemoryRouter } from 'react-router-dom';
-import { cleanup, render, waitFor } from '@testing-library/react';
+import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 
 import { setUserSession } from 'services/AuthService';
-import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT } from 'common/constants';
+import { DEFAULT_ENTITY_LIMIT, DEFAULT_MESSAGE_LIMIT } from 'common/constants';
 import GroupChatInterface from './GroupChatInterface';
 import { GROUP_SEARCH_QUERY } from 'graphql/queries/WA_Groups';
 
@@ -12,7 +12,7 @@ const cache = new InMemoryCache({ addTypename: false });
 cache.writeQuery({
   query: GROUP_SEARCH_QUERY,
   variables: {
-    waGroupOpts: { limit: DEFAULT_CONTACT_LIMIT },
+    waGroupOpts: { limit: DEFAULT_ENTITY_LIMIT },
     filter: {
       waPhoneIds: ['1'],
     },
@@ -284,6 +284,7 @@ describe('<GroupChatInterface />', () => {
     expect(getByText('Loading...')).toBeInTheDocument();
 
     await waitFor(() => {
+      screen.debug(undefined, Infinity);
       expect(getByText('No messages.')).toBeInTheDocument();
     });
   });

@@ -3,7 +3,7 @@ import { useLazyQuery, useQuery } from '@apollo/client';
 
 import {
   COLLECTION_SEARCH_QUERY_VARIABLES,
-  DEFAULT_CONTACT_LIMIT,
+  DEFAULT_ENTITY_LIMIT,
   DEFAULT_MESSAGE_LIMIT,
   REFETCH_RANDOM_TIME_MAX,
   REFETCH_RANDOM_TIME_MIN,
@@ -132,7 +132,7 @@ export const ChatSubscription = ({ setDataLoaded }: ChatSubscriptionProps) => {
       ) {
         const variables = {
           contactOpts: {
-            limit: DEFAULT_CONTACT_LIMIT,
+            limit: DEFAULT_ENTITY_LIMIT,
           },
           filter: { id: entityId },
           messageOpts: {

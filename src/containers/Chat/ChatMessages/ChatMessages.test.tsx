@@ -9,7 +9,7 @@ import { vi } from 'vitest';
 
 import { ChatMessages } from './ChatMessages';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
-import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT } from '../../../common/constants';
+import { DEFAULT_ENTITY_LIMIT, DEFAULT_MESSAGE_LIMIT } from '../../../common/constants';
 import { CONVERSATION_MOCKS, mocksWithConversation } from '../../../mocks/Chat';
 import * as ChatInput from '../ChatMessages/ChatInput/ChatInput';
 
@@ -64,7 +64,7 @@ export const searchQuery = {
   query: SEARCH_QUERY,
   variables: {
     filter: {},
-    contactOpts: { limit: DEFAULT_CONTACT_LIMIT },
+    contactOpts: { limit: DEFAULT_ENTITY_LIMIT },
     messageOpts: { limit: DEFAULT_MESSAGE_LIMIT },
   },
   data: {
@@ -94,7 +94,7 @@ export const contact = {
   query: SEARCH_QUERY,
   variables: {
     filter: {},
-    contactOpts: { limit: DEFAULT_CONTACT_LIMIT },
+    contactOpts: { limit: DEFAULT_ENTITY_LIMIT },
     messageOpts: { limit: DEFAULT_MESSAGE_LIMIT },
   },
   data: {
@@ -147,7 +147,7 @@ const conversationData = Array(30)
 export const collection = {
   query: SEARCH_QUERY,
   variables: {
-    contactOpts: { limit: DEFAULT_CONTACT_LIMIT },
+    contactOpts: { limit: DEFAULT_ENTITY_LIMIT },
     filter: { searchGroup: true },
 
     messageOpts: { limit: DEFAULT_MESSAGE_LIMIT },
@@ -398,7 +398,7 @@ test('Load more messages', async () => {
     query: SEARCH_QUERY,
     variables: {
       filter: {},
-      contactOpts: { limit: DEFAULT_CONTACT_LIMIT },
+      contactOpts: { limit: DEFAULT_ENTITY_LIMIT },
       messageOpts: { limit: DEFAULT_MESSAGE_LIMIT },
     },
     data: {

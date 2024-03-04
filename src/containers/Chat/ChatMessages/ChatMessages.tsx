@@ -16,7 +16,7 @@ import {
   SEARCH_QUERY_VARIABLES,
   COLLECTION_SEARCH_QUERY_VARIABLES,
   DEFAULT_MESSAGE_LIMIT,
-  DEFAULT_CONTACT_LIMIT,
+  DEFAULT_ENTITY_LIMIT,
   DEFAULT_MESSAGE_LOADMORE_LIMIT,
   ISO_DATE_FORMAT,
   GROUP_QUERY_VARIABLES,
@@ -475,7 +475,7 @@ export const ChatMessages = ({
       if ((!loading && !called) || (data && data.search[0].group.id !== collectionId)) {
         const variables = {
           filter: { id: collectionId, searchGroup: true },
-          contactOpts: { limit: DEFAULT_CONTACT_LIMIT },
+          contactOpts: { limit: DEFAULT_ENTITY_LIMIT },
           messageOpts: { limit: DEFAULT_MESSAGE_LIMIT, offset: 0 },
         };
 

@@ -1,6 +1,6 @@
 import { collectionCountQuery, savedSearchStatusQuery } from 'mocks/Chat';
 import { SEARCH_QUERY, SEARCH_MULTI_QUERY, SEARCH_OFFSET } from 'graphql/queries/Search';
-import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT } from 'common/constants';
+import { DEFAULT_ENTITY_LIMIT, DEFAULT_MESSAGE_LIMIT } from 'common/constants';
 import { collectionCountSubscription } from 'mocks/Search';
 import { getCollectionsQuery } from 'mocks/Collection';
 import { getUsersQuery } from 'mocks/User';
@@ -88,11 +88,11 @@ const searchQuery = (
 };
 
 export const chatConversationsMocks = [
-  searchQuery({ limit: DEFAULT_MESSAGE_LIMIT }, DEFAULT_CONTACT_LIMIT, {}),
-  searchQuery({ limit: DEFAULT_MESSAGE_LIMIT }, DEFAULT_CONTACT_LIMIT, { term: 'a' }, false),
-  searchQuery({ limit: DEFAULT_MESSAGE_LIMIT }, DEFAULT_CONTACT_LIMIT, { term: '' }),
+  searchQuery({ limit: DEFAULT_MESSAGE_LIMIT }, DEFAULT_ENTITY_LIMIT, {}),
+  searchQuery({ limit: DEFAULT_MESSAGE_LIMIT }, DEFAULT_ENTITY_LIMIT, { term: 'a' }, false),
+  searchQuery({ limit: DEFAULT_MESSAGE_LIMIT }, DEFAULT_ENTITY_LIMIT, { term: '' }),
   searchQuery(
-    { limit: DEFAULT_CONTACT_LIMIT },
+    { limit: DEFAULT_ENTITY_LIMIT },
     DEFAULT_MESSAGE_LIMIT,
     { includeTags: ['12'] },
     false
@@ -103,7 +103,7 @@ export const chatConversationsMocks = [
 
 export const searchMultiQuery = (
   term: string = '',
-  contactLimit: number = DEFAULT_CONTACT_LIMIT,
+  contactLimit: number = DEFAULT_ENTITY_LIMIT,
   messageLimit: number = DEFAULT_MESSAGE_LIMIT
 ) => {
   return {
@@ -278,13 +278,11 @@ export const ChatConversationMocks = [
   searchQueryForSavedSearch,
 ];
 
-export const searchQueryMock = searchQuery(
-  { limit: DEFAULT_CONTACT_LIMIT },
-  DEFAULT_MESSAGE_LIMIT,
-  { term: '' }
-);
+export const searchQueryMock = searchQuery({ limit: DEFAULT_ENTITY_LIMIT }, DEFAULT_MESSAGE_LIMIT, {
+  term: '',
+});
 export const searchQueryEmptyMock = searchQuery(
-  { limit: DEFAULT_CONTACT_LIMIT },
+  { limit: DEFAULT_ENTITY_LIMIT },
   DEFAULT_MESSAGE_LIMIT,
   {}
 );

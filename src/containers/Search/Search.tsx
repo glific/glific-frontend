@@ -18,7 +18,7 @@ import { Calendar } from 'components/UI/Form/Calendar/Calendar';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import {
-  DEFAULT_CONTACT_LIMIT,
+  DEFAULT_ENTITY_LIMIT,
   DEFAULT_MESSAGE_LIMIT,
   ISO_DATE_FORMAT,
   setVariables,
@@ -56,7 +56,7 @@ const getPayload = (payload: any) => {
   const args = {
     contactOpts: {
       offset: 0,
-      limit: DEFAULT_CONTACT_LIMIT,
+      limit: DEFAULT_ENTITY_LIMIT,
     },
     filter: {
       term,
@@ -218,7 +218,7 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
     const args = {
       contactOpts: {
         offset: 0,
-        limit: DEFAULT_CONTACT_LIMIT,
+        limit: DEFAULT_ENTITY_LIMIT,
       },
       filter: {
         term: props.searchParam.term,

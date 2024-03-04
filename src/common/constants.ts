@@ -80,10 +80,10 @@ export const dayList: any = [
 ];
 
 // default contact limit for search
-export const DEFAULT_CONTACT_LIMIT = 25;
+export const DEFAULT_ENTITY_LIMIT = 25;
 
 // load more contact limit
-export const DEFAULT_CONTACT_LOADMORE_LIMIT = 10;
+export const DEFAULT_ENTITY_LOADMORE_LIMIT = 10;
 
 // default message limit for search
 export const DEFAULT_MESSAGE_LIMIT = 20;
@@ -93,7 +93,7 @@ export const DEFAULT_MESSAGE_LOADMORE_LIMIT = 50;
 
 export const SEARCH_QUERY_VARIABLES = {
   contactOpts: {
-    limit: DEFAULT_CONTACT_LIMIT,
+    limit: DEFAULT_ENTITY_LIMIT,
   },
   filter: {},
   messageOpts: {
@@ -106,14 +106,14 @@ export const GROUP_QUERY_VARIABLES = {
     limit: DEFAULT_MESSAGE_LIMIT,
   },
   waGroupOpts: {
-    limit: DEFAULT_CONTACT_LIMIT,
+    limit: DEFAULT_ENTITY_LIMIT,
   },
   filter: {},
 };
 
 export const COLLECTION_SEARCH_QUERY_VARIABLES = {
   contactOpts: {
-    limit: DEFAULT_CONTACT_LIMIT,
+    limit: DEFAULT_ENTITY_LIMIT,
   },
   filter: { searchGroup: true },
   messageOpts: {

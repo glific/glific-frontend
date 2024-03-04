@@ -11,9 +11,9 @@ import { setErrorMessage } from 'common/notification';
 import {
   COLLECTION_SEARCH_QUERY_VARIABLES,
   SEARCH_QUERY_VARIABLES,
-  DEFAULT_CONTACT_LIMIT,
+  DEFAULT_ENTITY_LIMIT,
   DEFAULT_MESSAGE_LIMIT,
-  DEFAULT_CONTACT_LOADMORE_LIMIT,
+  DEFAULT_ENTITY_LOADMORE_LIMIT,
   DEFAULT_MESSAGE_LOADMORE_LIMIT,
   ISO_DATE_FORMAT,
   GROUP_QUERY_VARIABLES,
@@ -56,7 +56,7 @@ export const ConversationList = ({
   phonenumber,
 }: ConversationListProps) => {
   const client = useApolloClient();
-  const [loadingOffset, setLoadingOffset] = useState(DEFAULT_CONTACT_LIMIT);
+  const [loadingOffset, setLoadingOffset] = useState(DEFAULT_ENTITY_LIMIT);
   const [showJumpToLatest, setShowJumpToLatest] = useState(false);
   const [showLoadMore, setShowLoadMore] = useState(true);
   const [showLoading, setShowLoading] = useState(false);
@@ -118,7 +118,7 @@ export const ConversationList = ({
   // reset offset value on saved search changes
   useEffect(() => {
     if (savedSearchCriteriaId) {
-      setLoadingOffset(DEFAULT_CONTACT_LIMIT);
+      setLoadingOffset(DEFAULT_ENTITY_LIMIT);
       refetch(queryVariables);
     }
   }, [savedSearchCriteriaId]);
@@ -127,7 +127,7 @@ export const ConversationList = ({
     if (groups && !selectedCollectionId) {
       return {
         [contactOptions]: {
-          limit: DEFAULT_CONTACT_LIMIT,
+          limit: DEFAULT_ENTITY_LIMIT,
         },
         filter: {
           waPhoneIds: [phonenumber],
@@ -173,7 +173,7 @@ export const ConversationList = ({
 
     return {
       [contactOptions]: {
-        limit: DEFAULT_CONTACT_LIMIT,
+        limit: DEFAULT_ENTITY_LIMIT,
       },
       filter,
       [messageOptions]: {
@@ -184,7 +184,7 @@ export const ConversationList = ({
 
   const filterSearch = () => ({
     [contactOptions]: {
-      limit: DEFAULT_CONTACT_LIMIT,
+      limit: DEFAULT_ENTITY_LIMIT,
       order: 'DESC',
     },
     [searchOptions]: {
@@ -498,7 +498,7 @@ export const ConversationList = ({
 
       const conversationLoadMoreVariables: any = {
         [contactOptions]: {
-          limit: DEFAULT_CONTACT_LOADMORE_LIMIT,
+          limit: DEFAULT_ENTITY_LOADMORE_LIMIT,
           offset: loadingOffset,
         },
         filter,
@@ -529,7 +529,7 @@ export const ConversationList = ({
             }
             setShowLoadMore(true);
 
-            setLoadingOffset(loadingOffset + DEFAULT_CONTACT_LOADMORE_LIMIT);
+            setLoadingOffset(loadingOffset + DEFAULT_ENTITY_LOADMORE_LIMIT);
           }
           setShowLoading(false);
         })
@@ -598,7 +598,7 @@ export const ConversationList = ({
         {conversationList}
         {showLoadMore &&
         conversations &&
-        (conversations.length > DEFAULT_CONTACT_LIMIT - 1 ||
+        (conversations.length > DEFAULT_ENTITY_LIMIT - 1 ||
           conversations.messages?.length > DEFAULT_MESSAGE_LIMIT - 1)
           ? loadMore
           : null}
