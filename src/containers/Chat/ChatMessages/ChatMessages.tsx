@@ -372,9 +372,11 @@ export const ChatMessages = ({
           flow: 'OUTBOUND',
           interactiveTemplateId,
           type: messageType,
+          mediaId,
         };
 
         payload = updatePayload(payload, selectedTemplate, variableParam);
+        console.log(payload);
       }
 
       createAndSendMessage({
