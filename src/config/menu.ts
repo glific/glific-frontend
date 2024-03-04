@@ -40,7 +40,7 @@ const menus = (): Menu[] => [
         path: '/group/chat',
         icon: 'chat',
         type: 'sideDrawer',
-        roles: ['Manager', 'Admin', 'Dynamic'],
+        roles: allRoles,
       },
     ],
   },

@@ -59,7 +59,7 @@ export const GROUP_SEARCH_MULTI_QUERY = gql`
       groups: waGroups {
         bspId
         id
-        label
+        name: label
         lastCommunicationAt
         waManagedPhone {
           id

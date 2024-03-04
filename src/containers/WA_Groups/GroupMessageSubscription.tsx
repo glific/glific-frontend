@@ -28,7 +28,7 @@ export const GroupMessageSubscription = ({ setDataLoaded }: GroupMessageProps) =
   const queryVariables = GROUP_QUERY_VARIABLES;
   let subscriptionToRefetchSwitchHappened = false;
   let refetchTimer: any = null;
-  const contactIdsFetched: any = [];
+  const groupsFetched: any = [];
 
   const [triggerRefetch, setTriggerRefetch] = useState(false);
 
@@ -47,11 +47,11 @@ export const GroupMessageSubscription = ({ setDataLoaded }: GroupMessageProps) =
         return null;
       }
 
-      let fetchMissingContact = false;
+      let fetchMissingGroup = false;
       // let's record message sent and received subscriptions
       if (action === 'SENT' || action === 'RECEIVED') {
-        // set fetch missing contact flag
-        fetchMissingContact = true;
+        // set fetch missing group flag
+        fetchMissingGroup = true;
 
         // build the request array
         recordRequests();
@@ -87,44 +87,44 @@ export const GroupMessageSubscription = ({ setDataLoaded }: GroupMessageProps) =
         }
       }
 
-      const { newMessage, contactId, messageStatusData } = getSubscriptionDetails(
+      const { newMessage, entityId, messageStatusData } = getSubscriptionDetails(
         action,
         subscriptionData,
         true
       );
 
-      // loop through the cached conversations and find if contact exists
+      // loop through the cached conversations and find if group exists
       let conversationIndex = 0;
       let conversationFound = false;
 
       cachedConversations.search.forEach((conversation: any, index: any) => {
-        if (parseInt(conversation.waGroup.id) === contactId) {
+        if (parseInt(conversation.waGroup.id) === entityId) {
           conversationIndex = index;
           conversationFound = true;
         }
       });
 
-      // we should fetch missing contact only when we receive message subscriptions
-      // this means contact is not cached, so we need to fetch the conversations and add
+      // we should fetch missing group only when we receive message subscriptions
+      // this means group is not cached, so we need to fetch the conversations and add
       // it to the cached conversations
-      // let's also skip fetching contact when we trigger this via group subscriptions
-      // let's skip fetch contact when we switch to refetch mode from subscription
+      // let's also skip fetching group when we trigger this via group subscriptions
+      // let's skip fetch group when we switch to refetch mode from subscription
       if (
         !conversationFound &&
         newMessage &&
-        !newMessage.groupId &&
-        fetchMissingContact &&
+        !newMessage.entityId &&
+        fetchMissingGroup &&
         !triggerRefetch
       ) {
         const variables = GROUP_QUERY_VARIABLES;
 
         addLogs(
-          `${action}-contact is not cached, so we need to fetch the conversations and add to cache`,
+          `${action}-group is not cached, so we need to fetch the conversations and add to cache`,
           variables
         );
 
-        if (!contactIdsFetched.includes(contactId)) {
-          contactIdsFetched.push(contactId);
+        if (!groupsFetched.includes(entityId)) {
+          groupsFetched.push(entityId);
 
           getGroupQuery({
             variables,
@@ -146,10 +146,10 @@ export const GroupMessageSubscription = ({ setDataLoaded }: GroupMessageProps) =
       const updatedConversations = JSON.parse(JSON.stringify(cachedConversations));
       let updatedConversation = updatedConversations.search;
 
-      // get the conversation for the contact that needs to be updated
+      // get the conversation for the group that needs to be updated
       updatedConversation = updatedConversation.splice(conversationIndex, 1);
 
-      // update contact last message at when receiving a new Message
+      // update group last message at when receiving a new Message
       if (action === 'RECEIVED') {
         updatedConversation[0].waGroup.lastMessageAt = newMessage.insertedAt;
       }

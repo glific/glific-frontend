@@ -15,20 +15,18 @@ import { SEARCH_OFFSET } from 'graphql/queries/Search';
 import ConversationList from './ConversationList/ConversationList';
 import styles from './ChatConversations.module.css';
 import Track from 'services/TrackService';
-import { WaManagedPhones } from 'containers/WA_Groups/WaManagedPhones/WaManagedPhones';
+import { useLocation } from 'react-router';
 
 export interface ChatConversationsProps {
   contactId?: number | string;
-  groups?: boolean;
-  setPhonenumber?: any;
   phonenumber?: string;
+  filterComponent?: any;
 }
 
 export const ChatConversations = ({
   contactId,
-  groups = false,
   phonenumber = '',
-  setPhonenumber,
+  filterComponent,
 }: ChatConversationsProps) => {
   // get the conversations stored from the cache
   const [searchVal, setSearchVal] = useState<any>();
@@ -43,7 +41,9 @@ export const ChatConversations = ({
   const offset = useQuery(SEARCH_OFFSET);
   const client = useApolloClient();
   const { t } = useTranslation();
+  const location = useLocation();
 
+  let groups: boolean = location.pathname.includes('group');
   // restore multi-search after conversation click
   useEffect(() => {
     if (offset.data && offset.data.search) {
@@ -207,14 +207,8 @@ export const ChatConversations = ({
       </div>
     ) : null;
 
-  let phonesDropdown: any;
-  if (groups) {
-    phonesDropdown = <WaManagedPhones phonenumber={phonenumber} setPhonenumber={setPhonenumber} />;
-  }
-
-  let savedSearch: any;
-  if (!groups) {
-    savedSearch = (
+  if (!filterComponent) {
+    filterComponent = (
       <SavedSearchToolbar
         savedSearchCriteriaCallback={handlerSavedSearchCriteria}
         refetchData={{ savedSearches }}
@@ -230,7 +224,6 @@ export const ChatConversations = ({
 
   return (
     <Container className={styles.ChatConversations} disableGutters>
-      {phonesDropdown}
       <div className={styles.SearchBar}>
         <SearchBar
           handleChange={handleChange}
@@ -243,9 +236,8 @@ export const ChatConversations = ({
           iconFront
         />
       </div>
-      {savedSearch}
+      {filterComponent}
       <ConversationList
-        groups={groups}
         phonenumber={phonenumber}
         searchVal={searchVal}
         searchMode={enableSearchMode}

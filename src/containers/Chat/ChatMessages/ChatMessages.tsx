@@ -2,7 +2,7 @@ import { useCallback, useState, useEffect } from 'react';
 import { useQuery, useMutation, useLazyQuery } from '@apollo/client';
 import { CircularProgress, Container } from '@mui/material';
 import dayjs from 'dayjs';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useTranslation } from 'react-i18next';
 
@@ -40,7 +40,6 @@ import {
 export interface ChatMessagesProps {
   contactId?: number | string | null;
   collectionId?: number | string | null;
-  groups?: boolean;
   phoneId?: string;
   setPhonenumber?: any;
 }
@@ -48,15 +47,14 @@ export interface ChatMessagesProps {
 export const ChatMessages = ({
   contactId,
   collectionId,
-  groups = false,
   phoneId,
   setPhonenumber,
 }: ChatMessagesProps) => {
   const urlString = new URL(window.location.href);
-  let chatType = 'contact';
-  if (groups) {
-    chatType = 'waGroup';
-  }
+  const location = useLocation();
+
+  let groups: boolean = location.pathname.includes('group');
+  let chatType = groups ? 'waGroup' : 'contact';
 
   let messageParameterOffset: any = 0;
   let searchMessageNumber: any;
@@ -363,30 +361,25 @@ export const ChatMessages = ({
           message: body,
           waManagedPhoneId: phoneId,
           waGroupId: contactId,
-          mediaId: mediaId,
           type: messageType,
+          mediaId,
         };
       } else {
         payload = {
           body,
           senderId: 1,
-          mediaId,
           receiverId: contactId,
-          type: messageType,
           flow: 'OUTBOUND',
           interactiveTemplateId,
+          type: messageType,
         };
+
+        payload = updatePayload(payload, selectedTemplate, variableParam);
       }
 
-      if (groups) {
-        createAndSendMessage({
-          variables: { input: payload },
-        });
-      } else {
-        createAndSendMessage({
-          variables: { input: updatePayload(payload, selectedTemplate, variableParam) },
-        });
-      }
+      createAndSendMessage({
+        variables: { input: payload },
+      });
     },
     [createAndSendMessage, contactId, phoneId]
   );
@@ -587,13 +580,6 @@ export const ChatMessages = ({
     let reverseConversation = [...conversationInfo.messages];
 
     reverseConversation = reverseConversation.map((message: any, index: number) => {
-      if (groups) {
-        message = {
-          ...message,
-          interactiveContent: '{}',
-        };
-      }
-
       return (
         <ChatMessage
           groups={groups}
@@ -775,6 +761,7 @@ export const ChatMessages = ({
 
   if (contactId && conversationInfo[chatType]) {
     const displayName = groups ? conversationInfo.waGroup.label : getDisplayName(conversationInfo);
+
     topChatBar = (
       <ContactBar
         displayName={displayName}

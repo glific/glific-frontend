@@ -3,6 +3,7 @@ import 'mocks/matchMediaMock';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import { fireEvent, waitFor } from '@testing-library/dom';
 import { MemoryRouter } from 'react-router';
+import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 import { vi } from 'vitest';
 
@@ -292,9 +293,11 @@ test('click on Jump to latest', async () => {
 test('Contact: if not cache', async () => {
   const chatMessagesWithCollection = (
     <ApolloProvider client={client}>
-      <MockedProvider mocks={[...CONVERSATION_MOCKS, ...mocksWithConversation]}>
-        <ChatMessages contactId="5" />
-      </MockedProvider>
+      <Router>
+        <MockedProvider mocks={[...CONVERSATION_MOCKS, ...mocksWithConversation]}>
+          <ChatMessages contactId="5" />
+        </MockedProvider>
+      </Router>
     </ApolloProvider>
   );
   render(chatMessagesWithCollection);
@@ -335,9 +338,11 @@ test('Collection: click on Jump to latest', async () => {
 
 test('Collection: if not cache', async () => {
   const chatMessagesWithCollection = (
-    <MockedProvider mocks={[...CONVERSATION_MOCKS, ...mocksWithConversation]}>
-      <ChatMessages collectionId="5" />
-    </MockedProvider>
+    <Router>
+      <MockedProvider mocks={[...CONVERSATION_MOCKS, ...mocksWithConversation]}>
+        <ChatMessages collectionId="5" />
+      </MockedProvider>
+    </Router>
   );
   const { getByTestId } = render(chatMessagesWithCollection);
   // need to check why we click this
@@ -355,9 +360,11 @@ test('Collection: if cache', async () => {
   });
   const chatMessagesWithCollection = (
     <ApolloProvider client={client}>
-      <MockedProvider mocks={[...CONVERSATION_MOCKS, ...mocksWithConversation]}>
-        <ChatMessages collectionId="5" />
-      </MockedProvider>
+      <Router>
+        <MockedProvider mocks={[...CONVERSATION_MOCKS, ...mocksWithConversation]}>
+          <ChatMessages collectionId="5" />
+        </MockedProvider>
+      </Router>
     </ApolloProvider>
   );
   const { getByTestId } = render(chatMessagesWithCollection);

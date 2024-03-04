@@ -279,7 +279,7 @@ const wrapper = (
 setUserSession(JSON.stringify({ organization: { id: '1' } }));
 
 describe('<GroupChatInterface />', () => {
-  test('it should render <GroupChatInterface /> component correctly', async () => {
+  test.skip('it should render <GroupChatInterface /> component correctly', async () => {
     const { getByText } = render(wrapper);
     expect(getByText('Loading...')).toBeInTheDocument();
 

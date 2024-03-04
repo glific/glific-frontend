@@ -121,3 +121,19 @@
 html {
   scroll-behavior: smooth;
 }
+
+.SessionTimer {
+  display: flex;
+  align-items: center;
+}
+
+.SessionTimer + div {
+  text-align: right;
+}
+
+.SessionTimer span {
+  color: #555;
+  font-size: 12px;
+  font-weight: 400;
+  margin-right: 5px;
+}

@@ -253,7 +253,7 @@ export const ChatMessage = ({
 
   const { body: bodyText, buttons: templateButtons } = WhatsAppTemplateButton(body);
 
-  const content: any = JSON.parse(interactiveContent);
+  const content: any = interactiveContent ? JSON.parse(interactiveContent) : null;
   const isInteractiveContentPresent: Boolean = content ? !!Object.entries(content).length : false;
 
   const errorClasses = messageErrorStatus ? styles.ErrorContent : '';

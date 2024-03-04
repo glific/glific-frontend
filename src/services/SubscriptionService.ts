@@ -45,7 +45,7 @@ export const recordRequests = () => {
 
 export const getSubscriptionDetails = (action: string, subscriptionData: any, groups?: boolean) => {
   let newMessage: any;
-  let contactId: number = 0;
+  let entityId: number = 0;
   let collectionId: number = 0;
   let messageStatusData: any;
 
@@ -55,7 +55,7 @@ export const getSubscriptionDetails = (action: string, subscriptionData: any, gr
       newMessage = groups
         ? subscriptionData.data.sentWaGroupMessage
         : subscriptionData.data.sentMessage;
-      contactId = groups
+      entityId = groups
         ? subscriptionData.data.sentWaGroupMessage.waGroupId
         : subscriptionData.data.sentMessage.receiver.id;
       break;
@@ -64,7 +64,7 @@ export const getSubscriptionDetails = (action: string, subscriptionData: any, gr
       newMessage = groups
         ? subscriptionData.data.receivedWaGroupMessage
         : subscriptionData.data.receivedMessage;
-      contactId = groups
+      entityId = groups
         ? subscriptionData.data.receivedWaGroupMessage.waGroupId
         : subscriptionData.data.receivedMessage.sender.id;
       break;
@@ -75,7 +75,7 @@ export const getSubscriptionDetails = (action: string, subscriptionData: any, gr
     case 'STATUS':
       // set the receiver contact id
       messageStatusData = subscriptionData.data.updateMessageStatus;
-      contactId = subscriptionData.data.updateMessageStatus.receiver.id;
+      entityId = subscriptionData.data.updateMessageStatus.receiver.id;
       break;
     default:
       break;
@@ -83,7 +83,7 @@ export const getSubscriptionDetails = (action: string, subscriptionData: any, gr
 
   return {
     newMessage,
-    contactId,
+    entityId,
     collectionId,
     messageStatusData,
   };
@@ -104,21 +104,21 @@ export const updateSimulatorConversations = (
   }
 
   let newMessage: any;
-  let contactId: number = 0;
+  let entityId: number = 0;
 
   switch (action) {
     case 'SENT': {
       // set the receiver contact id
       const { sentSimulatorMessage } = subscriptionData.data;
       newMessage = sentSimulatorMessage;
-      contactId = sentSimulatorMessage.receiver.id;
+      entityId = sentSimulatorMessage.receiver.id;
       break;
     }
     case 'RECEIVED': {
       // set the sender contact id
       const { receivedSimulatorMessage } = subscriptionData.data;
       newMessage = receivedSimulatorMessage;
-      contactId = receivedSimulatorMessage.sender.id;
+      entityId = receivedSimulatorMessage.sender.id;
       break;
     }
     default:
@@ -129,7 +129,7 @@ export const updateSimulatorConversations = (
   const updatedConversation = updatedConversations.search[0];
 
   // Add new message and move the conversation to the top
-  if (newMessage && updatedConversation.contact.id === contactId) {
+  if (newMessage && updatedConversation.contact.id === entityId) {
     updatedConversation.messages.unshift(newMessage);
   }
   return updatedConversations;

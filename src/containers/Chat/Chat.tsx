@@ -16,8 +16,11 @@ export const Chat = () => {
 
   return (
     <>
-      <ChatSubscription setDataLoaded={setDataLoaded} />
-      <GroupMessageSubscription setDataLoaded={setDataLoaded} />
+      {isWAGroup ? (
+        <GroupMessageSubscription setDataLoaded={setDataLoaded} />
+      ) : (
+        <ChatSubscription setDataLoaded={setDataLoaded} />
+      )}
       {loaded ? routes : <Loading />}
     </>
   );

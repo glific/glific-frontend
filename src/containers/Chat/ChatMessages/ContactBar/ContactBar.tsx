@@ -348,23 +348,22 @@ export const ContactBar = ({
 
   let flowButton: any;
 
-  const blockContactButton =
-    contactId && !groups ? (
-      <Button
-        data-testid="blockButton"
-        className={styles.ListButtonDanger}
-        color="warning"
-        disabled={isSimulator}
-        onClick={() => setShowBlockDialog(true)}
-      >
-        {isSimulator ? (
-          <BlockDisabledIcon className={styles.Icon} />
-        ) : (
-          <BlockIcon className={styles.Icon} />
-        )}
-        Block Contact
-      </Button>
-    ) : null;
+  const blockContactButton = contactId ? (
+    <Button
+      data-testid="blockButton"
+      className={styles.ListButtonDanger}
+      color="warning"
+      disabled={isSimulator}
+      onClick={() => setShowBlockDialog(true)}
+    >
+      {isSimulator ? (
+        <BlockDisabledIcon className={styles.Icon} />
+      ) : (
+        <BlockIcon className={styles.Icon} />
+      )}
+      Block Contact
+    </Button>
+  ) : null;
 
   if (collectionId) {
     flowButton = (
@@ -564,19 +563,17 @@ export const ContactBar = ({
   }
 
   let timeleft: any;
-  if (!groups) {
-    timeleft = (
-      <div className={styles.SessionTimer} data-testid="sessionTimer">
-        <span>Time left:</span>
-        <Timer
-          time={lastMessageTime}
-          contactStatus={contactStatus}
-          contactBspStatus={contactBspStatus}
-          variant="secondary"
-        />
-      </div>
-    );
-  }
+  timeleft = (
+    <div className={styles.SessionTimer} data-testid="sessionTimer">
+      <span>Time left:</span>
+      <Timer
+        time={lastMessageTime}
+        contactStatus={contactStatus}
+        contactBspStatus={contactBspStatus}
+        variant="secondary"
+      />
+    </div>
+  );
 
   const getTitleAndIconForSmallScreen = (() => {
     if (location.pathname.includes('collection')) {
@@ -590,28 +587,31 @@ export const ContactBar = ({
     return ChatIcon;
   })();
 
-  // CONTACT: display session timer & Assigned to
   const IconComponent = getTitleAndIconForSmallScreen;
-  const sessionAndCollectionAssignedTo = (
-    <>
-      {contactId ? (
-        <div className={styles.SessionTimerContainer}>
-          {contactCollections}
-          {timeleft}
-        </div>
-      ) : null}
-      <div className={styles.Chat} onClick={() => showChats()} aria-hidden="true">
-        <IconButton className={styles.MobileIcon}>
-          <IconComponent data-testid="icon-component" />
-        </IconButton>
-      </div>
-    </>
-  );
 
+  // CONTACT: display session timer & Assigned to
   // COLLECTION: display contact info & Assigned to
-  let collectionStatus: any;
-  if (collectionId) {
-    collectionStatus = <CollectionInformation collectionId={collectionId} />;
+  // GROUP: display Assigned to
+  let collectionStatusAndDetails: any;
+
+  if (contactId) {
+    collectionStatusAndDetails = (
+      <>
+        {contactId ? (
+          <div className={styles.SessionTimerContainer}>
+            {contactCollections}
+            {!groups && timeleft}
+          </div>
+        ) : null}
+        <div className={styles.Chat} onClick={() => showChats()} aria-hidden="true">
+          <IconButton className={styles.MobileIcon}>
+            <IconComponent data-testid="icon-component" />
+          </IconButton>
+        </div>
+      </>
+    );
+  } else if (collectionId) {
+    collectionStatusAndDetails = <CollectionInformation collectionId={collectionId} />;
   }
 
   return (
@@ -642,8 +642,7 @@ export const ContactBar = ({
                 </ClickAwayListener>
               </div>
             </div>
-            {collectionStatus}
-            {sessionAndCollectionAssignedTo}
+            {collectionStatusAndDetails}
           </div>
         </div>
       </div>

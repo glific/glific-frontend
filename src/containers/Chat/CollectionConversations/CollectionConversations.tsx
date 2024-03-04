@@ -10,10 +10,7 @@ export interface CollectionConversationsProps {
   groups?: boolean;
 }
 
-const CollectionConversations = ({
-  collectionId,
-  groups = false,
-}: CollectionConversationsProps) => {
+const CollectionConversations = ({ collectionId }: CollectionConversationsProps) => {
   const [selectedCollectionId, setSelectedCollectionId] = useState<any>(collectionId);
   const [searchVal, setSearchVal] = useState('');
 
@@ -43,7 +40,6 @@ const CollectionConversations = ({
         />
       </div>
       <ConversationList
-        groups={groups}
         searchVal={searchVal}
         searchMode={false}
         searchParam={{}}

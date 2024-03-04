@@ -24,8 +24,9 @@ import { showMessages } from 'common/responsive';
 import { addLogs, getDisplayName } from 'common/utils';
 import ChatConversation from '../ChatConversation/ChatConversation';
 import styles from './ConversationList.module.css';
-import GroupConversation from 'containers/WA_Groups/GroupConversations/GroupConversation';
 import { GROUP_SEARCH_MULTI_QUERY, GROUP_SEARCH_QUERY } from 'graphql/queries/WA_Groups';
+import { useLocation } from 'react-router';
+import { Timer } from 'components/UI/Timer/Timer';
 
 interface ConversationListProps {
   searchVal: string;
@@ -38,7 +39,6 @@ interface ConversationListProps {
   selectedCollectionId?: number;
   setSelectedCollectionId?: (i: number) => void;
   entityType?: string;
-  groups?: boolean;
   phonenumber?: string;
 }
 
@@ -53,7 +53,6 @@ export const ConversationList = ({
   selectedCollectionId,
   setSelectedCollectionId,
   entityType = 'contact',
-  groups = false,
   phonenumber,
 }: ConversationListProps) => {
   const client = useApolloClient();
@@ -64,6 +63,9 @@ export const ConversationList = ({
   const [searchMultiData, setSearchMultiData] = useState<any>();
   const scrollHeight = useQuery(SCROLL_HEIGHT);
   const { t } = useTranslation();
+  const location = useLocation();
+
+  let groups: boolean = location.pathname.includes('group');
 
   let queryVariables = groups ? GROUP_QUERY_VARIABLES : SEARCH_QUERY_VARIABLES;
   if (selectedCollectionId) {
@@ -73,11 +75,11 @@ export const ConversationList = ({
     const variables = JSON.parse(savedSearchCriteria);
     queryVariables = variables;
   }
-  let search_query = groups && !selectedCollectionId ? GROUP_SEARCH_QUERY : SEARCH_QUERY;
-  let search_multi_query = groups ? GROUP_SEARCH_MULTI_QUERY : SEARCH_MULTI_QUERY;
-  let contactOptions = groups ? 'waGroupOpts' : 'contactOpts';
-  let messageOptions = groups ? 'waMessageOpts' : 'messageOpts';
-  let searchOptions = groups ? 'filter' : 'searchFilter';
+  let search_query: any = groups && !selectedCollectionId ? GROUP_SEARCH_QUERY : SEARCH_QUERY;
+  let search_multi_query: any = groups ? GROUP_SEARCH_MULTI_QUERY : SEARCH_MULTI_QUERY;
+  let contactOptions: string = groups ? 'waGroupOpts' : 'contactOpts';
+  let messageOptions: string = groups ? 'waMessageOpts' : 'messageOpts';
+  let searchOptions: string = groups ? 'filter' : 'searchFilter';
 
   // check if there is a previous scroll height
   useEffect(() => {
@@ -280,67 +282,64 @@ export const ConversationList = ({
 
   const buildChatConversation = (index: number, header: any, conversation: any) => {
     // We don't have the contact data in the case of contacts.
-    let contact = conversation;
-    let wa_group: any = conversation;
-
-    if (conversation.contact) {
-      contact = conversation.contact;
-    } else if (conversation.waGroup) {
-      wa_group = conversation.waGroup;
-    }
+    let chatType: any = groups ? 'waGroup' : 'contact';
+    let entity = conversation;
 
     let selectedRecord = false;
-    if (selectedContactId === contact.id) {
+    if (selectedContactId === entity.id) {
       selectedRecord = true;
+    }
+    let entityId: any = entity.id;
+    let senderLastMessage = '';
+    let displayName = entity.name || entity.maskedPhone || entity.contact.name;
+    let contactStatus = '';
+    let contactBspStatus = '';
+    let contactIsOrgRead = false;
+    let timer;
+
+    if (conversation[chatType]) {
+      entity = conversation[chatType];
+      if (selectedContactId === conversation[chatType].id) {
+        selectedRecord = true;
+      }
+    } else if (conversation.contact) {
+      contactStatus = entity.status;
+      contactBspStatus = entity.bspStatus;
+      contactIsOrgRead = entity.isOrgRead;
+      senderLastMessage = entity.lastMessageAt;
+      timer = (
+        <div className={styles.MessageDate} data-testid="timerContainer">
+          <Timer
+            time={senderLastMessage}
+            contactStatus={contactStatus}
+            contactBspStatus={contactBspStatus}
+          />
+        </div>
+      );
     }
 
     return (
-      <Fragment key={contact.id || wa_group.id}>
+      <Fragment key={entityId}>
         {index === 0 ? header : null}
-        {groups ? (
-          <GroupConversation
-            selected={selectedRecord}
-            onClick={() => {
-              setSearchHeight();
-              showMessages();
-              if (entityType === 'contact' && setSelectedContactId) {
-                setSelectedContactId(conversation.waGroup?.id);
-              } else if (entityType === 'collection' && setSelectedCollectionId) {
-                setSelectedCollectionId(conversation.group.id);
-              }
-            }}
-            index={index}
-            contactId={wa_group.id}
-            entityType={entityType}
-            contactName={wa_group.label || wa_group.contact.name}
-            lastMessage={conversation}
-            highlightSearch={searchVal}
-            contactIsOrgRead={true}
-          />
-        ) : (
-          <ChatConversation
-            key={contact.id}
-            selected={selectedRecord}
-            onClick={() => {
-              setSearchHeight();
-              if (entityType === 'contact' && setSelectedContactId) {
-                setSelectedContactId(contact.id);
-              }
-            }}
-            entityType={entityType}
-            index={index}
-            contactId={contact.id}
-            contactName={contact.name || contact.maskedPhone}
-            lastMessage={conversation}
-            senderLastMessage={contact.lastMessageAt}
-            contactStatus={contact.status}
-            contactBspStatus={contact.bspStatus}
-            contactIsOrgRead={contact.isOrgRead}
-            highlightSearch={searchVal}
-            messageNumber={conversation.messageNumber}
-            searchMode={searchMode}
-          />
-        )}
+        <ChatConversation
+          key={entityId}
+          selected={selectedRecord}
+          onClick={() => {
+            setSearchHeight();
+            if (entityType === 'contact' && setSelectedContactId) {
+              setSelectedContactId(entity.id);
+            }
+          }}
+          entityType={entityType}
+          index={index}
+          contactId={entityId}
+          contactName={displayName}
+          lastMessage={conversation}
+          contactIsOrgRead={contactIsOrgRead}
+          highlightSearch={searchVal}
+          messageNumber={conversation.messageNumber}
+          searchMode={searchMode}
+        />
       </Fragment>
     );
   };
@@ -379,8 +378,6 @@ export const ConversationList = ({
       if (conversation.messages.length > 0) {
         [lastMessage] = conversation.messages;
       }
-      const key = index;
-
       let entityId: any;
       let senderLastMessage = '';
       let displayName = '';
@@ -388,6 +385,7 @@ export const ConversationList = ({
       let contactBspStatus = '';
       let contactIsOrgRead = false;
       let selectedRecord = false;
+      let timer;
       if (conversation.waGroup) {
         if (selectedContactId === conversation.waGroup?.id) {
           selectedRecord = true;
@@ -395,7 +393,6 @@ export const ConversationList = ({
         entityId = conversation.waGroup?.id;
         displayName = conversation.waGroup?.label;
         contactIsOrgRead = false;
-        senderLastMessage = conversation.waGroup.lastCommunicationAt;
       } else if (conversation.contact) {
         if (selectedContactId === conversation.contact.id) {
           selectedRecord = true;
@@ -406,6 +403,16 @@ export const ConversationList = ({
         contactStatus = conversation.contact.status;
         contactBspStatus = conversation.contact.bspStatus;
         contactIsOrgRead = conversation.contact.isOrgRead;
+
+        timer = (
+          <div className={styles.MessageDate} data-testid="timerContainer">
+            <Timer
+              time={senderLastMessage}
+              contactStatus={contactStatus}
+              contactBspStatus={contactBspStatus}
+            />
+          </div>
+        );
       }
 
       if (conversation.group) {
@@ -417,29 +424,9 @@ export const ConversationList = ({
         contactIsOrgRead = conversation.group.isOrgRead;
       }
 
-      return groups ? (
-        <GroupConversation
-          key={key}
-          selected={selectedRecord}
-          onClick={() => {
-            setSearchHeight();
-            showMessages();
-            if (entityType === 'contact' && setSelectedContactId) {
-              setSelectedContactId(conversation.waGroup?.id);
-            } else if (entityType === 'collection' && setSelectedCollectionId) {
-              setSelectedCollectionId(conversation.group.id);
-            }
-          }}
-          index={index}
-          contactId={entityId}
-          entityType={entityType}
-          contactName={displayName}
-          lastMessage={lastMessage}
-          contactIsOrgRead={contactIsOrgRead}
-        />
-      ) : (
+      return (
         <ChatConversation
-          key={key}
+          key={entityId}
           selected={selectedRecord}
           onClick={() => {
             setSearchHeight();
@@ -455,10 +442,8 @@ export const ConversationList = ({
           entityType={entityType}
           contactName={displayName}
           lastMessage={lastMessage}
-          senderLastMessage={senderLastMessage}
-          contactStatus={contactStatus}
-          contactBspStatus={contactBspStatus}
           contactIsOrgRead={contactIsOrgRead}
+          timer={timer}
         />
       );
     });

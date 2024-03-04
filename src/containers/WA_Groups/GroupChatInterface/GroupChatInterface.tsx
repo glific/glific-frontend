@@ -13,6 +13,7 @@ import { groupCollectionSearchQuery } from 'mocks/Groups';
 import { useQuery } from '@apollo/client';
 import { GROUP_SEARCH_QUERY } from 'graphql/queries/WA_Groups';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
+import { WaManagedPhones } from '../WaManagedPhones/WaManagedPhones';
 
 const tabs = [
   {
@@ -79,6 +80,7 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
 
   let groupChatInterface: any;
   let listingContent;
+  let phonesDropDown: any;
 
   const handleTabChange = (_event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
@@ -95,11 +97,13 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
       heading = 'Group Collections';
     } else if (selectedContactId) {
       // let's enable simulator only when contact tab is shown
+      phonesDropDown = (
+        <WaManagedPhones phonenumber={phonenumber} setPhonenumber={setPhonenumber} />
+      );
       listingContent = (
         <ChatConversations
-          setPhonenumber={setPhonenumber}
           phonenumber={phonenumber}
-          groups
+          filterComponent={phonesDropDown}
           contactId={selectedContactId}
         />
       );
@@ -111,7 +115,6 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
       <>
         <div className={`${styles.ChatMessages} chatMessages`}>
           <ChatMessages
-            groups
             contactId={selectedContactId}
             collectionId={selectedCollectionId}
             phoneId={phonenumber}
