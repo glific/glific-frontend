@@ -290,10 +290,7 @@ export const ConversationList = ({
       selectedRecord = true;
     }
     let entityId: any = entity.id;
-    let senderLastMessage = '';
     let displayName = entity.name || entity.maskedPhone || entity.contact.name;
-    let contactStatus = '';
-    let contactBspStatus = '';
     let contactIsOrgRead = false;
     let timer;
 
@@ -302,17 +299,14 @@ export const ConversationList = ({
       if (selectedContactId === conversation[chatType].id) {
         selectedRecord = true;
       }
-    } else if (conversation.contact) {
-      contactStatus = entity.status;
-      contactBspStatus = entity.bspStatus;
-      contactIsOrgRead = entity.isOrgRead;
-      senderLastMessage = entity.lastMessageAt;
+    } else if (conversation.bspStatus && conversation.lastMessageAt) {
+      contactIsOrgRead = conversation.isOrgRead;
       timer = (
         <div className={styles.MessageDate} data-testid="timerContainer">
           <Timer
-            time={senderLastMessage}
-            contactStatus={contactStatus}
-            contactBspStatus={contactBspStatus}
+            time={conversation.lastMessageAt}
+            contactStatus={conversation.status}
+            contactBspStatus={conversation.bspStatus}
           />
         </div>
       );
@@ -339,6 +333,7 @@ export const ConversationList = ({
           highlightSearch={searchVal}
           messageNumber={conversation.messageNumber}
           searchMode={searchMode}
+          timer={timer}
         />
       </Fragment>
     );

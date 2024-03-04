@@ -597,16 +597,9 @@ export const ContactBar = ({
   if (contactId) {
     contactBarDetails = (
       <>
-        {contactId ? (
-          <div className={styles.SessionTimerContainer}>
-            {contactCollections}
-            {!groups && timeleft}
-          </div>
-        ) : null}
-        <div className={styles.Chat} onClick={() => showChats()} aria-hidden="true">
-          <IconButton className={styles.MobileIcon}>
-            <IconComponent data-testid="icon-component" />
-          </IconButton>
+        <div className={styles.SessionTimerContainer}>
+          {contactCollections}
+          {!groups && timeleft}
         </div>
       </>
     );
@@ -643,6 +636,11 @@ export const ContactBar = ({
               </div>
             </div>
             {contactBarDetails}
+            <div className={styles.Chat} onClick={() => showChats()}>
+              <IconButton className={styles.MobileIcon}>
+                <IconComponent data-testid="icon-component" />
+              </IconButton>
+            </div>
           </div>
         </div>
       </div>
