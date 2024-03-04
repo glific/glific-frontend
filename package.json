@@ -21,7 +21,7 @@
     "@lexical/react": "^0.13.1",
     "@mui/icons-material": "^5.15.6",
     "@mui/material": "^5.15.6",
-    "@mui/x-date-pickers": "^6.19.2",
+    "@mui/x-date-pickers": "^6.19.4",
     "@stripe/react-stripe-js": "^2.4.0",
     "@stripe/stripe-js": "^2.4.0",
     "@types/jest": "^29.5.11",
