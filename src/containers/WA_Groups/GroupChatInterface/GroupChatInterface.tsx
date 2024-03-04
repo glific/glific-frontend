@@ -35,7 +35,7 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
   const [value, setValue] = useState(tabs[0].link);
   const params = useParams();
   const [phonenumber, setPhonenumber] = useState<string>('1');
-  let selectedContactId = params.contactId;
+  let selectedGroupId = params.groupId;
   let selectedCollectionId: any = params.collectionId;
 
   const {
@@ -47,8 +47,8 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
     fetchPolicy: 'cache-only',
   });
 
-  // contact id === collection when the collection id is not passed in the url
-  let selectedTab = 'contacts';
+  // group id === collection when the collection id is not passed in the url
+  let selectedTab = 'groups';
   if (selectedCollectionId || collections) {
     selectedTab = 'collections';
   }
@@ -57,18 +57,18 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
 
   // let's handle the case when the type is collection  then we set the first collection
   // as the selected collection
-  if (!selectedContactId && collections && data && data?.search.length !== 0) {
+  if (!selectedGroupId && collections && data && data?.search.length !== 0) {
     if (data?.search[0].group) {
       selectedCollectionId = data?.search[0].group.id;
-      selectedContactId = '';
+      selectedGroupId = '';
     }
   }
 
-  // let's handle the case when contact id and collection id is not passed in the url then we set the
-  // first record as selected contact
-  if (!selectedContactId && !selectedCollectionId && data && data?.search.length !== 0) {
+  // let's handle the case when group id and collection id is not passed in the url then we set the
+  // first record as selected group
+  if (!selectedGroupId && !selectedCollectionId && data && data?.search.length !== 0) {
     if (data?.search[0].waGroup) {
-      selectedContactId = data?.search[0].waGroup?.id;
+      selectedGroupId = data?.search[0].waGroup?.id;
     }
   }
 
@@ -95,8 +95,8 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
     if (selectedCollectionId || selectedTab === 'collections') {
       listingContent = <CollectionConversations groups collectionId={selectedCollectionId} />;
       heading = 'Group Collections';
-    } else if (selectedContactId) {
-      // let's enable simulator only when contact tab is shown
+    } else if (selectedGroupId) {
+      // let's enable simulator only when group tab is shown
       phonesDropDown = (
         <WaManagedPhones phonenumber={phonenumber} setPhonenumber={setPhonenumber} />
       );
@@ -104,7 +104,7 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
         <ChatConversations
           phonenumber={phonenumber}
           filterComponent={phonesDropDown}
-          contactId={selectedContactId}
+          contactId={selectedGroupId}
         />
       );
 
@@ -115,7 +115,7 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
       <>
         <div className={`${styles.ChatMessages} chatMessages`}>
           <ChatMessages
-            contactId={selectedContactId}
+            contactId={selectedGroupId}
             collectionId={selectedCollectionId}
             phoneId={phonenumber}
             setPhonenumber={setPhonenumber}

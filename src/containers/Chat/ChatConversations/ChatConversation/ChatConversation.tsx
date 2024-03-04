@@ -186,6 +186,13 @@ const ChatConversation = ({
     redirectURL = `${redirectRoute}/saved-searches/${contactId}${msgID}`;
   }
 
+  let avatar: any = '';
+  if (groups) {
+    avatar = <AvatarDisplay name={name} />;
+  } else if (entityType === 'contact') {
+    avatar = <AvatarDisplay name={name} badgeDisplay={!contactIsOrgRead} />;
+  }
+
   let handleOnClick = () => {
     if (onClick) onClick(index);
     setSearchOffset(client, messageNumber);
@@ -210,13 +217,7 @@ const ChatConversation = ({
       onClick={handleOnClick}
       to={redirectURL}
     >
-      <div>
-        {entityType === 'contact' ? (
-          <AvatarDisplay name={name} badgeDisplay={!contactIsOrgRead} />
-        ) : (
-          ''
-        )}
-      </div>
+      <div>{avatar}</div>
       <div className={chatInfoClass.join(' ')} data-testid="chatInfo">
         <div className={styles.ChatName} data-testid="name">
           {name}

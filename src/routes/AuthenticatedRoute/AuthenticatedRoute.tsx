@@ -167,7 +167,7 @@ export const groupRoutes = (
   <Routes>
     <Route path="group/chat" element={<GroupChatInterface />} />
     <Route path="group/chat/collection" element={<GroupChatInterface collections />} />
-    <Route path="group/chat/:contactId" element={<GroupChatInterface />} />
+    <Route path="group/chat/:groupId" element={<GroupChatInterface />} />
     <Route path="group/chat/collection/:collectionId" element={<GroupChatInterface />} />
   </Routes>
 );
