@@ -3,7 +3,6 @@ import { useParams } from 'react-router-dom';
 import { List } from 'containers/List/List';
 import { useTranslation } from 'react-i18next';
 import CollectionIcon from 'assets/images/icons/Collection/Dark.svg?react';
-import { GET_CONTACT_COUNT } from 'graphql/queries/Contact';
 import styles from './GroupDetails.module.css';
 import { UPDATE_GROUP_CONTACT } from 'graphql/mutations/Group';
 
