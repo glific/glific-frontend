@@ -376,7 +376,6 @@ export const ChatMessages = ({
         };
 
         payload = updatePayload(payload, selectedTemplate, variableParam);
-        console.log(payload);
       }
 
       createAndSendMessage({

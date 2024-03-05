@@ -1,4 +1,4 @@
-import { LIST_WA_GROUP_CONTACTS, WA_GROUPS_CONTACT } from 'graphql/queries/WA_Groups';
+import { LIST_WA_GROUP_CONTACTS } from 'graphql/queries/WA_Groups';
 import { useParams } from 'react-router-dom';
 import { List } from 'containers/List/List';
 import { useTranslation } from 'react-i18next';
