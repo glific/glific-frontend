@@ -1,5 +1,6 @@
-import { FormControl, MenuItem, Select } from '@mui/material';
+import { FormControl, MenuItem } from '@mui/material';
 import { Button } from 'components/UI/Form/Button/Button';
+import Select from '@mui/material/Select';
 
 import styles from './WaManagedPhones.module.css';
 import { GET_WA_MANAGED_PHONES } from 'graphql/queries/WA_Groups';
@@ -10,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 
 interface WaManagedPhonesProps {
-  phonenumber: string;
+  phonenumber: any;
   setPhonenumber: any;
 }
 
@@ -53,8 +54,11 @@ export const WaManagedPhones = ({ phonenumber, setPhonenumber }: WaManagedPhones
     <div className={styles.DropDownContainer}>
       <FormControl className={styles.FormStyle}>
         <Select
+          multiple
           aria-label="maytapi-phonenumber"
           name="maytapi-phonenumber"
+          displayEmpty={false}
+          label="Select Phone Number"
           value={phonenumber}
           onChange={(event) => {
             const { value } = event.target;
@@ -62,9 +66,9 @@ export const WaManagedPhones = ({ phonenumber, setPhonenumber }: WaManagedPhones
           }}
           className={styles.DropDown}
         >
-          {data?.waManagedPhones?.map((phonenumber: any) => (
-            <MenuItem key={phonenumber.id} value={phonenumber.id}>
-              {phonenumber.phone}
+          {data?.waManagedPhones?.map((phone: any) => (
+            <MenuItem key={phone.id} value={phone.id}>
+              {phone.phone}
             </MenuItem>
           ))}
         </Select>

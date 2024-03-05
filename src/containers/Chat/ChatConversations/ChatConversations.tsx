@@ -19,13 +19,13 @@ import { useLocation } from 'react-router';
 
 export interface ChatConversationsProps {
   contactId?: number | string;
-  phonenumber?: string;
+  phonenumber?: any;
   filterComponent?: any;
 }
 
 export const ChatConversations = ({
   contactId,
-  phonenumber = '',
+  phonenumber,
   filterComponent,
 }: ChatConversationsProps) => {
   // get the conversations stored from the cache

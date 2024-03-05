@@ -126,12 +126,15 @@ export const ConversationList = ({
 
   const filterVariables = () => {
     if (groups && !selectedCollectionId) {
+      if (phonenumber?.length === 0 || !phonenumber) {
+        return GROUP_QUERY_VARIABLES;
+      }
       return {
         [contactOptions]: {
           limit: DEFAULT_ENTITY_LIMIT,
         },
         filter: {
-          waPhoneIds: [phonenumber],
+          waPhoneIds: phonenumber,
         },
         [messageOptions]: {
           limit: DEFAULT_MESSAGE_LIMIT,
@@ -198,10 +201,8 @@ export const ConversationList = ({
     },
   });
 
-  const [getFilterConvos, { called, loading, error, data: searchData }] = useLazyQuery<any>(
-    search_query,
-    { variables: queryVariables }
-  );
+  const [getFilterConvos, { called, loading, error, data: searchData }] =
+    useLazyQuery<any>(search_query);
 
   // fetch data when typing for search
   const [getFilterSearch] = useLazyQuery<any>(search_multi_query, {

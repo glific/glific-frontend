@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Paper, Tab, Tabs, Typography } from '@mui/material';
+import { Paper, Tab, Tabs } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
@@ -34,7 +34,7 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
   const { t } = useTranslation();
   const [value, setValue] = useState(tabs[0].link);
   const params = useParams();
-  const [phonenumber, setPhonenumber] = useState<string>('1');
+  const [phonenumber, setPhonenumber] = useState<string[]>([]);
 
   let selectedGroupId = params.groupId;
   let selectedCollectionId: any = params.collectionId;
@@ -73,10 +73,12 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
     }
   }
 
-  const noConversations = (
-    <Typography variant="h5" className={styles.NoConversations}>
-      {t('There are no chat conversations to display.')}
-    </Typography>
+  const NoConversations = (
+    <div className={styles.NoConversationsContainer}>
+      <p data-testid="empty-result" className={styles.NoConversations}>
+        {t('There are no chat conversations to display.')}
+      </p>
+    </div>
   );
 
   let groupChatInterface: any;
@@ -89,7 +91,7 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
   };
 
   if (data && data?.search.length === 0) {
-    groupChatInterface = noConversations;
+    return NoConversations;
   } else {
     let heading = '';
 

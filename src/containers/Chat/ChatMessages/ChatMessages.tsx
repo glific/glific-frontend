@@ -40,16 +40,11 @@ import {
 export interface ChatMessagesProps {
   contactId?: number | string | null;
   collectionId?: number | string | null;
-  phoneId?: string;
+  phoneId?: any;
   setPhonenumber?: any;
 }
 
-export const ChatMessages = ({
-  contactId,
-  collectionId,
-  phoneId,
-  setPhonenumber,
-}: ChatMessagesProps) => {
+export const ChatMessages = ({ contactId, collectionId, phoneId }: ChatMessagesProps) => {
   const urlString = new URL(window.location.href);
   const location = useLocation();
 
@@ -359,7 +354,7 @@ export const ChatMessages = ({
       if (groups) {
         payload = {
           message: body,
-          waManagedPhoneId: phoneId,
+          waManagedPhoneId: conversationInfo?.waGroup?.waManagedPhone?.id,
           waGroupId: contactId,
           type: messageType,
           mediaId,
@@ -382,7 +377,7 @@ export const ChatMessages = ({
         variables: { input: payload },
       });
     },
-    [createAndSendMessage, contactId, phoneId]
+    [createAndSendMessage, contactId, phoneId, conversationInfo]
   );
 
   // loop through the cached conversations and find if contact/Collection exists
@@ -390,9 +385,6 @@ export const ChatMessages = ({
     allConversations.search.map((conversation: any, index: any) => {
       if (conversation[type].id === Id.toString()) {
         conversationIndex = index;
-        if (groups) {
-          setPhonenumber(conversation.waGroup.waManagedPhone.id);
-        }
         setConversationInfo(conversation);
       }
       return null;
@@ -406,10 +398,6 @@ export const ChatMessages = ({
       allConversations.search.map((conversation: any, index: any) => {
         if (conversation[chatType]?.id === contactId?.toString()) {
           conversationIndex = index;
-          if (groups) {
-            setPhonenumber(conversation.waGroup.waManagedPhone.id);
-          }
-
           setConversationInfo(conversation);
         }
         return null;

@@ -149,11 +149,6 @@ export const GroupMessageSubscription = ({ setDataLoaded }: GroupMessageProps) =
       // get the conversation for the group that needs to be updated
       updatedConversation = updatedConversation.splice(conversationIndex, 1);
 
-      // update group last message at when receiving a new Message
-      if (action === 'RECEIVED') {
-        updatedConversation[0].waGroup.lastMessageAt = newMessage.insertedAt;
-      }
-
       // Add new message and move the conversation to the top
       if (newMessage) {
         updatedConversation[0].messages.unshift(newMessage);

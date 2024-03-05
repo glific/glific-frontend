@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Paper, Tab, Tabs, Typography } from '@mui/material';
+import { Paper, Tab, Tabs } from '@mui/material';
 import { useQuery } from '@apollo/client';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -93,10 +93,12 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
     }
   }
 
-  const noConversations = (
-    <Typography variant="h5" className={styles.NoConversations}>
-      {t('There are no chat conversations to display.')}
-    </Typography>
+  const NoConversations = (
+    <div className={styles.NoConversationsContainer}>
+      <p data-testid="empty-result" className={styles.NoConversations}>
+        {t('There are no chat conversations to display.')}
+      </p>
+    </div>
   );
 
   let chatInterface: any;
@@ -112,7 +114,7 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
   };
 
   if (data && data.search.length === 0) {
-    chatInterface = noConversations;
+    return NoConversations;
   } else {
     let heading = '';
 
