@@ -80,6 +80,7 @@ export const ConversationList = ({
   let contactOptions: string = groups ? 'waGroupOpts' : 'contactOpts';
   let messageOptions: string = groups ? 'waMessageOpts' : 'messageOpts';
   let searchOptions: string = groups ? 'filter' : 'searchFilter';
+  let chatType: string = groups ? 'waGroup' : 'contact';
 
   // check if there is a previous scroll height
   useEffect(() => {
@@ -427,7 +428,7 @@ export const ConversationList = ({
             setSearchHeight();
             showMessages();
             if (entityType === 'contact' && setSelectedContactId) {
-              setSelectedContactId(conversation.contact.id);
+              setSelectedContactId(conversation[chatType].id);
             } else if (entityType === 'collection' && setSelectedCollectionId) {
               setSelectedCollectionId(conversation.group.id);
             }

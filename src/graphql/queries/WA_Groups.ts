@@ -125,3 +125,16 @@ export const WA_GROUPS_CONTACT = gql`
     }
   }
 `;
+
+export const LIST_WA_GROUP_CONTACTS = gql`
+  query ListContactWaGroup($filter: ContactWaGroupFilter, $opts: Opts) {
+    listContactWaGroup(filter: $filter, opts: $opts) {
+      id
+      contact {
+        id
+        name
+        maskedPhone
+      }
+    }
+  }
+`;

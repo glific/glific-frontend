@@ -12,10 +12,10 @@ export const SEND_MESSAGE_IN_WA_GROUP = gql`
 `;
 
 export const SYNC_GROUPS = gql`
-  mutation SyncWaGroupContacts {
-    syncWaGroupContacts {
-      message
+  mutation SyncContactWaGroups {
+    syncContactWaGroups {
       errors {
+        key
         message
       }
     }
@@ -33,6 +33,19 @@ export const UPDATE_GROUP_CONTACT = gql`
         }
         id
         value
+      }
+    }
+  }
+`;
+
+export const CREATE_GROUP_CONTACT = gql`
+  mutation CreateContactWaGroup($input: ContactWaGroupInput!) {
+    createContactWaGroup(input: $input) {
+      contactWaGroup {
+        contact {
+          name
+        }
+        id
       }
     }
   }

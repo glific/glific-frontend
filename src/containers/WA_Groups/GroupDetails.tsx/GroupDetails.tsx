@@ -1,4 +1,4 @@
-import { WA_GROUPS_CONTACT } from 'graphql/queries/WA_Groups';
+import { LIST_WA_GROUP_CONTACTS, WA_GROUPS_CONTACT } from 'graphql/queries/WA_Groups';
 import { useParams } from 'react-router-dom';
 import { List } from 'containers/List/List';
 import { useTranslation } from 'react-i18next';
@@ -22,7 +22,7 @@ export const GroupDetails = () => {
 
   const queries = {
     countQuery: GET_CONTACT_COUNT, //TODO: Change count query and the variable below
-    filterItemsQuery: WA_GROUPS_CONTACT,
+    filterItemsQuery: LIST_WA_GROUP_CONTACTS,
     deleteItemQuery: UPDATE_GROUP_CONTACT,
   };
 
@@ -67,7 +67,7 @@ export const GroupDetails = () => {
       listItem="waGroupsContact"
       listItemName="waGroupsContact"
       searchParameter={['term']}
-      filters={{ includeGroups: params.id }}
+      filters={{ waGroupId: params.id }}
       button={{ show: false, label: '' }}
       pageLink="waGroupsContact"
       listIcon={collectionIcon}

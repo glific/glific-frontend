@@ -18,7 +18,7 @@ import { WaManagedPhones } from '../WaManagedPhones/WaManagedPhones';
 const tabs = [
   {
     label: 'Groups',
-    link: '/group/chat',
+    link: '/group/chat/',
   },
   {
     label: 'Collections',
@@ -35,6 +35,7 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
   const [value, setValue] = useState(tabs[0].link);
   const params = useParams();
   const [phonenumber, setPhonenumber] = useState<string>('1');
+
   let selectedGroupId = params.groupId;
   let selectedCollectionId: any = params.collectionId;
 
