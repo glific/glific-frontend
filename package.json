@@ -22,7 +22,7 @@
     "@mui/icons-material": "^5.15.6",
     "@mui/material": "^5.15.6",
     "@mui/x-date-pickers": "^6.19.2",
-    "@stripe/react-stripe-js": "^2.4.0",
+    "@stripe/react-stripe-js": "^2.5.0",
     "@stripe/stripe-js": "^2.4.0",
     "@types/jest": "^29.5.11",
     "@vitejs/plugin-react": "^4.2.1",
