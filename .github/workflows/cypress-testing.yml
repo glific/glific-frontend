@@ -4,7 +4,7 @@ on:
   push:
     branches: [master]
   pull_request:
-    branches: [master, next, feature/whatsapp-group]
+    branches: [master, next, whatsapp-group-chats]
 
 jobs:
   glific:
