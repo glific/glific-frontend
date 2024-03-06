@@ -20,6 +20,7 @@ import {
   DEFAULT_MESSAGE_LOADMORE_LIMIT,
   ISO_DATE_FORMAT,
   GROUP_QUERY_VARIABLES,
+  GROUP_COLLECTION_SEARCH_QUERY_VARIABLES,
 } from '../../../common/constants';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 import {
@@ -135,7 +136,9 @@ export const ChatMessages = ({ contactId, collectionId, phoneId }: ChatMessagesP
   let queryVariables = groups ? GROUP_QUERY_VARIABLES : SEARCH_QUERY_VARIABLES;
 
   if (collectionId) {
-    queryVariables = COLLECTION_SEARCH_QUERY_VARIABLES;
+    queryVariables = groups
+      ? GROUP_COLLECTION_SEARCH_QUERY_VARIABLES
+      : COLLECTION_SEARCH_QUERY_VARIABLES;
   }
 
   const {
@@ -791,7 +794,9 @@ export const ChatMessages = ({ contactId, collectionId, phoneId }: ChatMessagesP
 
     chatInputSection = (
       <div className={styles.ChatInput}>
-        {conversationInfo.messages.length && showJumpToLatest ? jumpToLatest : null}
+        {conversationInfo.messages && conversationInfo.messages.length && showJumpToLatest
+          ? jumpToLatest
+          : null}
         <LexicalWrapper>
           <ChatInput onSendMessage={sendCollectionMessageHandler} isCollection />
         </LexicalWrapper>

@@ -26,6 +26,12 @@ export const GET_COLLECTIONS_COUNT = gql`
   }
 `;
 
+export const GET_WA_GROUP_COLLECTIONS_COUNT = gql`
+  query RootQueryType($filter: WaGroupsCollectionFilter) {
+    countWaGroupsCollection(filter: $filter)
+  }
+`;
+
 export const FILTER_COLLECTIONS = gql`
   query groups($filter: GroupFilter!, $opts: Opts!) {
     groups(filter: $filter, opts: $opts) {
@@ -48,6 +54,18 @@ export const GET_COLLECTIONS = gql`
       id
       label
       isRestricted
+    }
+  }
+`;
+
+export const GROUP_GET_COLLECTION = gql`
+  query ListWaGroupsColection($filter: WaGroupsCollectionFilter, $opts: Opts) {
+    listWaGroupsColection(filter: $filter, opts: $opts) {
+      group {
+        id
+        label
+      }
+      id
     }
   }
 `;
