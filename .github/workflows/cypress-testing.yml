@@ -4,7 +4,7 @@ on:
   push:
     branches: [master]
   pull_request:
-    branches: [master, migration-from-draft-js]
+    branches: [master]
 
 jobs:
   glific:
@@ -96,8 +96,6 @@ jobs:
           git clone https://github.com/glific/cypress-testing.git
           echo done. go to dir.
           cd cypress-testing
-          git checkout lexical-editor
-          cd ..
           cp -r cypress-testing/cypress cypress
           yarn add cypress
           echo Create cypress.config.ts from example
