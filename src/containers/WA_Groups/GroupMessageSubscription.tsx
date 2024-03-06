@@ -1,5 +1,6 @@
 import { useLazyQuery, useQuery } from '@apollo/client';
 import {
+  GROUP_COLLECTION_SEARCH_QUERY_VARIABLES,
   GROUP_QUERY_VARIABLES,
   REFETCH_RANDOM_TIME_MAX,
   REFETCH_RANDOM_TIME_MIN,
@@ -96,14 +97,21 @@ export const GroupMessageSubscription = ({ setDataLoaded }: GroupMessageProps) =
       // loop through the cached conversations and find if group exists
       let conversationIndex = 0;
       let conversationFound = false;
-
-      cachedConversations.search.forEach((conversation: any, index: any) => {
-        if (parseInt(conversation.waGroup.id) === entityId) {
-          conversationIndex = index;
-          conversationFound = true;
-        }
-      });
-
+      if (action === 'COLLECTION') {
+        cachedConversations.search.forEach((conversation: any, index: any) => {
+          if (conversation.group.id === entityId) {
+            conversationIndex = index;
+            conversationFound = true;
+          }
+        });
+      } else {
+        cachedConversations.search.forEach((conversation: any, index: any) => {
+          if (parseInt(conversation.waGroup.id) === entityId) {
+            conversationIndex = index;
+            conversationFound = true;
+          }
+        });
+      }
       // we should fetch missing group only when we receive message subscriptions
       // this means group is not cached, so we need to fetch the conversations and add
       // it to the cached conversations
@@ -176,6 +184,15 @@ export const GroupMessageSubscription = ({ setDataLoaded }: GroupMessageProps) =
     fetchPolicy: 'network-only',
     nextFetchPolicy: 'cache-only',
   });
+
+  const { subscribeToMore: collectionSubscribe, data: collectionData } = useQuery<any>(
+    GROUP_SEARCH_QUERY,
+    {
+      variables: GROUP_COLLECTION_SEARCH_QUERY_VARIABLES,
+      fetchPolicy: 'network-only',
+      nextFetchPolicy: 'cache-only',
+    }
+  );
 
   useEffect(() => {
     if (subscribeToMore) {

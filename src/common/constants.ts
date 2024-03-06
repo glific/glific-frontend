@@ -111,6 +111,16 @@ export const GROUP_QUERY_VARIABLES = {
   filter: {},
 };
 
+export const GROUP_COLLECTION_SEARCH_QUERY_VARIABLES = {
+  waGroupOpts: {
+    limit: DEFAULT_ENTITY_LIMIT,
+  },
+  filter: { searchGroup: true },
+  waMessageOpts: {
+    limit: DEFAULT_MESSAGE_LIMIT,
+  },
+};
+
 export const COLLECTION_SEARCH_QUERY_VARIABLES = {
   contactOpts: {
     limit: DEFAULT_ENTITY_LIMIT,

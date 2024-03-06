@@ -42,8 +42,8 @@ export const ChatConversations = ({
   const client = useApolloClient();
   const { t } = useTranslation();
   const location = useLocation();
-
   let groups: boolean = location.pathname.includes('group');
+
   // restore multi-search after conversation click
   useEffect(() => {
     if (offset.data && offset.data.search) {

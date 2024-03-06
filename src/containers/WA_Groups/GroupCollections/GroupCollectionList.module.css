@@ -1,0 +1,23 @@
+.Name {
+  min-width: 100px;
+  width: 25%;
+}
+
+.Phone {
+  color: #555;
+  font-size: 13px;
+  font-weight: 500;
+  min-width: 200px;
+  width: 25%;
+}
+
+.Actions {
+  min-width: 200px;
+  text-align: end;
+  width: 60%;
+}
+
+.CollectionIcon {
+  width: 32px;
+  height: 32px;
+}

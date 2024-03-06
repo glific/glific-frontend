@@ -3,13 +3,12 @@ import { Paper, Tab, Tabs } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-import { GROUP_QUERY_VARIABLES } from 'common/constants';
+import { GROUP_COLLECTION_SEARCH_QUERY_VARIABLES, GROUP_QUERY_VARIABLES } from 'common/constants';
 import ChatConversations from 'containers/Chat/ChatConversations/ChatConversations';
 import ChatMessages from 'containers/Chat/ChatMessages/ChatMessages';
 import { setErrorMessage } from 'common/notification';
 import CollectionConversations from 'containers/Chat/CollectionConversations/CollectionConversations';
 import styles from './GroupChatInterface.module.css';
-import { groupCollectionSearchQuery } from 'mocks/Groups';
 import { useQuery } from '@apollo/client';
 import { GROUP_SEARCH_QUERY } from 'graphql/queries/WA_Groups';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
@@ -39,22 +38,23 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
   let selectedGroupId = params.groupId;
   let selectedCollectionId: any = params.collectionId;
 
-  const {
-    loading,
-    error,
-    data: dataa,
-  } = useQuery<any>(GROUP_SEARCH_QUERY, {
-    variables: GROUP_QUERY_VARIABLES,
-    fetchPolicy: 'cache-only',
-  });
+  let queryVariables: any = GROUP_QUERY_VARIABLES;
 
   // group id === collection when the collection id is not passed in the url
   let selectedTab = 'groups';
   if (selectedCollectionId || collections) {
+    queryVariables = GROUP_COLLECTION_SEARCH_QUERY_VARIABLES;
     selectedTab = 'collections';
   }
 
-  const data = collections ? groupCollectionSearchQuery()?.result?.data : dataa;
+  const {
+    loading,
+    error,
+    data: data,
+  } = useQuery<any>(GROUP_SEARCH_QUERY, {
+    variables: queryVariables,
+    fetchPolicy: 'cache-only',
+  });
 
   // let's handle the case when the type is collection  then we set the first collection
   // as the selected collection
