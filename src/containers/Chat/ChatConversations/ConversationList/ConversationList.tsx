@@ -39,7 +39,7 @@ interface ConversationListProps {
   selectedCollectionId?: number;
   setSelectedCollectionId?: (i: number) => void;
   entityType?: string;
-  phonenumber?: string;
+  phonenumber?: any;
 }
 
 export const ConversationList = ({
@@ -134,7 +134,7 @@ export const ConversationList = ({
           limit: DEFAULT_ENTITY_LIMIT,
         },
         filter: {
-          waPhoneIds: phonenumber,
+          waPhoneIds: phonenumber?.map((phone: any) => phone.id),
         },
         [messageOptions]: {
           limit: DEFAULT_MESSAGE_LIMIT,

@@ -1,6 +1,5 @@
-import { FormControl, MenuItem } from '@mui/material';
+import { FormControl } from '@mui/material';
 import { Button } from 'components/UI/Form/Button/Button';
-import Select from '@mui/material/Select';
 
 import styles from './WaManagedPhones.module.css';
 import { GET_WA_MANAGED_PHONES } from 'graphql/queries/WA_Groups';
@@ -9,6 +8,7 @@ import { SYNC_GROUPS } from 'graphql/mutations/Group';
 import { setNotification } from 'common/notification';
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
+import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 
 interface WaManagedPhonesProps {
   phonenumber: any;
@@ -53,25 +53,33 @@ export const WaManagedPhones = ({ phonenumber, setPhonenumber }: WaManagedPhones
   return (
     <div className={styles.DropDownContainer}>
       <FormControl className={styles.FormStyle}>
-        <Select
-          multiple
-          aria-label="maytapi-phonenumber"
-          name="maytapi-phonenumber"
-          displayEmpty={false}
-          label="Select Phone Number"
-          value={phonenumber}
-          onChange={(event) => {
-            const { value } = event.target;
-            setPhonenumber(value);
+        <AutoComplete
+          classes={{ inputRoot: styles.DropDown }}
+          isFilterType
+          placeholder="Phone Number"
+          options={
+            data?.waManagedPhones
+              ? data?.waManagedPhones?.map((phone: any) => ({
+                  label: phone.phone,
+                  id: phone.id,
+                }))
+              : []
+          }
+          multiple={false}
+          optionLabel="label"
+          onChange={(value: any) => {
+            if (value) {
+              setPhonenumber([value]);
+            } else {
+              setPhonenumber([]);
+            }
           }}
-          className={styles.DropDown}
-        >
-          {data?.waManagedPhones?.map((phone: any) => (
-            <MenuItem key={phone.id} value={phone.id}>
-              {phone.phone}
-            </MenuItem>
-          ))}
-        </Select>
+          form={{ setFieldValue: () => {} }}
+          field={{
+            name: 'phonenumber',
+            value: phonenumber?.label,
+          }}
+        />
       </FormControl>
 
       <Button

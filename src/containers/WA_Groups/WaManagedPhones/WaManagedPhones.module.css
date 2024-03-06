@@ -7,14 +7,14 @@
 }
 
 .FormStyle {
-  width: 50% !important;
+  width: 100% !important;
 }
 
 .DropDown {
   border-radius: 24px;
   border: 1px solid #cccccc;
   display: flex;
-  width: 100%;
+  width: 100% !important;
   margin: auto;
   height: 36px !important;
   background: #ffffff;
