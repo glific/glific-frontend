@@ -30,7 +30,11 @@ import { GET_COLLECTIONS } from 'graphql/queries/Collection';
 import { UPDATE_CONTACT_COLLECTIONS } from 'graphql/mutations/Collection';
 import { GET_CONTACT_COLLECTIONS } from 'graphql/queries/Contact';
 import { GET_FLOWS } from 'graphql/queries/Flow';
-import { ADD_FLOW_TO_CONTACT, ADD_FLOW_TO_COLLECTION } from 'graphql/mutations/Flow';
+import {
+  ADD_FLOW_TO_CONTACT,
+  ADD_FLOW_TO_COLLECTION,
+  ADD_FLOW_TO_WA_GROUP,
+} from 'graphql/mutations/Flow';
 import { UPDATE_CONTACT } from 'graphql/mutations/Contact';
 import { SEARCH_QUERY } from 'graphql/queries/Search';
 import { CLEAR_MESSAGES } from 'graphql/mutations/Chat';
@@ -125,7 +129,7 @@ export const ContactBar = ({
   });
 
   useEffect(() => {
-    if (contactId) {
+    if (contactId && !groups) {
       getContactCollections();
     }
   }, [contactId]);
@@ -161,6 +165,15 @@ export const ContactBar = ({
   });
 
   const [addFlow] = useMutation(ADD_FLOW_TO_CONTACT, {
+    onCompleted: () => {
+      setNotification(t('Flow started successfully.'));
+    },
+    onError: (error) => {
+      setErrorMessage(error);
+    },
+  });
+
+  const [addFlowToWaGroups] = useMutation(ADD_FLOW_TO_WA_GROUP, {
     onCompleted: () => {
       setNotification(t('Flow started successfully.'));
     },
@@ -254,10 +267,17 @@ export const ContactBar = ({
     };
 
     if (contactId) {
-      flowVariables.contactId = contactId;
-      addFlow({
-        variables: flowVariables,
-      });
+      if (groups) {
+        flowVariables.waGroupId = contactId;
+        addFlowToWaGroups({
+          variables: flowVariables,
+        });
+      } else {
+        flowVariables.contactId = contactId;
+        addFlow({
+          variables: flowVariables,
+        });
+      }
     }
 
     if (collectionId) {
@@ -380,9 +400,8 @@ export const ContactBar = ({
       </Button>
     );
   } else if (
-    contactBspStatus &&
-    status.includes(contactBspStatus) &&
-    !is24HourWindowOver(lastMessageTime)
+    groups ||
+    (contactBspStatus && status.includes(contactBspStatus) && !is24HourWindowOver(lastMessageTime))
   ) {
     flowButton = (
       <Button
@@ -514,7 +533,12 @@ export const ContactBar = ({
 
   let options: any;
   if (groups) {
-    options = <>{viewDetails}</>;
+    options = (
+      <>
+        {viewDetails}
+        {flowButton}
+      </>
+    );
   } else {
     options = (
       <>
