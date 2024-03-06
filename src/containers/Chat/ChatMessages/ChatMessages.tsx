@@ -50,6 +50,8 @@ export const ChatMessages = ({ contactId, collectionId, phoneId }: ChatMessagesP
 
   let groups: boolean = location.pathname.includes('group');
   let chatType = groups ? 'waGroup' : 'contact';
+  let contactOptions: string = groups ? 'waGroupOpts' : 'contactOpts';
+  let messageOptions: string = groups ? 'waMessageOpts' : 'messageOpts';
 
   let messageParameterOffset: any = 0;
   let searchMessageNumber: any;
@@ -216,7 +218,7 @@ export const ChatMessages = ({ contactId, collectionId, phoneId }: ChatMessagesP
     },
   });
 
-  const [getSearchQuery, { called, data, loading, error }] = useLazyQuery<any>(SEARCH_QUERY, {
+  const [getSearchQuery, { called, data, loading, error }] = useLazyQuery<any>(search_query, {
     onCompleted: (searchData) => {
       if (searchData && searchData.search.length > 0) {
         // get the conversations from cache
@@ -269,7 +271,7 @@ export const ChatMessages = ({ contactId, collectionId, phoneId }: ChatMessagesP
           updateConversationsCache(conversationsCopy, queryVariables);
         }
 
-        if (searchData.search[0].messages.length === 0) {
+        if (searchData.search.length === 0 || searchData.search[0].messages.length === 0) {
           setShowLoadMore(false);
         }
       }
@@ -409,8 +411,8 @@ export const ChatMessages = ({ contactId, collectionId, phoneId }: ChatMessagesP
       if ((!loading && !called) || (data && data.search[0][chatType].id !== contactId)) {
         const variables = {
           filter: { id: contactId },
-          contactOpts: { limit: 1 },
-          messageOpts: {
+          [contactOptions]: { limit: 1 },
+          [messageOptions]: {
             limit: DEFAULT_MESSAGE_LIMIT,
             offset: messageParameterOffset,
           },
@@ -430,8 +432,8 @@ export const ChatMessages = ({ contactId, collectionId, phoneId }: ChatMessagesP
       ) {
         const variables = {
           filter: { id: contactId },
-          contactOpts: { limit: 1 },
-          messageOpts: {
+          [contactOptions]: { limit: 1 },
+          [messageOptions]: {
             limit: DEFAULT_MESSAGE_LIMIT,
             offset: messageParameterOffset,
           },
@@ -462,8 +464,8 @@ export const ChatMessages = ({ contactId, collectionId, phoneId }: ChatMessagesP
       if ((!loading && !called) || (data && data.search[0].group.id !== collectionId)) {
         const variables = {
           filter: { id: collectionId, searchGroup: true },
-          contactOpts: { limit: DEFAULT_ENTITY_LIMIT },
-          messageOpts: { limit: DEFAULT_MESSAGE_LIMIT, offset: 0 },
+          [contactOptions]: { limit: DEFAULT_ENTITY_LIMIT },
+          [messageOptions]: { limit: DEFAULT_MESSAGE_LIMIT, offset: 0 },
         };
 
         addLogs(
@@ -531,8 +533,8 @@ export const ChatMessages = ({ contactId, collectionId, phoneId }: ChatMessagesP
       const offset = messageNumber - 10 <= 0 ? 1 : messageNumber - 10;
       const variables: any = {
         filter: { id: contactId?.toString() },
-        contactOpts: { limit: 1 },
-        messageOpts: {
+        [contactOptions]: { limit: 1 },
+        [messageOptions]: {
           limit: conversationInfo.messages[conversationInfo.messages.length - 1].messageNumber,
           offset,
         },
@@ -596,8 +598,8 @@ export const ChatMessages = ({ contactId, collectionId, phoneId }: ChatMessagesP
     const { messageNumber } = conversationInfo.messages[conversationInfo.messages.length - 1];
     const variables: any = {
       filter: { id: contactId?.toString() },
-      contactOpts: { limit: 1 },
-      messageOpts: {
+      [contactOptions]: { limit: 1 },
+      [messageOptions]: {
         limit:
           messageNumber > DEFAULT_MESSAGE_LOADMORE_LIMIT
             ? DEFAULT_MESSAGE_LOADMORE_LIMIT - 1
@@ -710,9 +712,9 @@ export const ChatMessages = ({ contactId, collectionId, phoneId }: ChatMessagesP
 
       // set variable for contact chats
       const variables: any = {
-        contactOpts: { limit: 1 },
+        [contactOptions]: { limit: 1 },
         filter: { id: contactId?.toString() },
-        messageOpts: { limit, offset: 0 },
+        [messageOptions]: { limit, offset: 0 },
       };
 
       // if collection, replace id with collection id
