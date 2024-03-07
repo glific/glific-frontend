@@ -69,13 +69,13 @@ export const ConversationList = ({
 
   let queryVariables = groups ? GROUP_QUERY_VARIABLES : SEARCH_QUERY_VARIABLES;
   if (selectedCollectionId) {
-    queryVariables = COLLECTION_SEARCH_QUERY_VARIABLES;
+    queryVariables = groups ? GROUP_QUERY_VARIABLES : COLLECTION_SEARCH_QUERY_VARIABLES;
   }
   if (savedSearchCriteria) {
     const variables = JSON.parse(savedSearchCriteria);
     queryVariables = variables;
   }
-  let search_query: any = groups && !selectedCollectionId ? GROUP_SEARCH_QUERY : SEARCH_QUERY;
+  let search_query: any = groups ? GROUP_SEARCH_QUERY : SEARCH_QUERY;
   let search_multi_query: any = groups ? GROUP_SEARCH_MULTI_QUERY : SEARCH_MULTI_QUERY;
   let contactOptions: string = groups ? 'waGroupOpts' : 'contactOpts';
   let messageOptions: string = groups ? 'waMessageOpts' : 'messageOpts';
@@ -125,22 +125,27 @@ export const ConversationList = ({
   }, [savedSearchCriteriaId]);
 
   const filterVariables = () => {
-    if (groups && !selectedCollectionId) {
-      if (phonenumber?.length === 0 || !phonenumber) {
+    if (groups) {
+      if (!selectedCollectionId) {
+        if (phonenumber?.length === 0 || !phonenumber) {
+          return GROUP_QUERY_VARIABLES;
+        }
+        return {
+          [contactOptions]: {
+            limit: DEFAULT_ENTITY_LIMIT,
+          },
+          filter: {
+            waPhoneIds: phonenumber?.map((phone: any) => phone.id),
+          },
+          [messageOptions]: {
+            limit: DEFAULT_MESSAGE_LIMIT,
+          },
+        };
+      } else {
         return GROUP_QUERY_VARIABLES;
       }
-      return {
-        [contactOptions]: {
-          limit: DEFAULT_ENTITY_LIMIT,
-        },
-        filter: {
-          waPhoneIds: phonenumber?.map((phone: any) => phone.id),
-        },
-        [messageOptions]: {
-          limit: DEFAULT_MESSAGE_LIMIT,
-        },
-      };
     }
+
     if (savedSearchCriteria && Object.keys(searchParam).length === 0) {
       const variables = JSON.parse(savedSearchCriteria);
       if (searchVal) variables.filter.term = searchVal;
