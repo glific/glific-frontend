@@ -1,5 +1,7 @@
 import { useLazyQuery, useQuery } from '@apollo/client';
 import {
+  DEFAULT_ENTITY_LIMIT,
+  DEFAULT_MESSAGE_LIMIT,
   GROUP_COLLECTION_SEARCH_QUERY_VARIABLES,
   GROUP_QUERY_VARIABLES,
   REFETCH_RANDOM_TIME_MAX,
@@ -124,7 +126,15 @@ export const GroupMessageSubscription = ({ setDataLoaded }: GroupMessageProps) =
         fetchMissingGroup &&
         !triggerRefetch
       ) {
-        const variables = GROUP_QUERY_VARIABLES;
+        const variables = {
+          waMessageOpts: {
+            limit: DEFAULT_MESSAGE_LIMIT,
+          },
+          waGroupOpts: {
+            limit: DEFAULT_ENTITY_LIMIT,
+          },
+          filter: { id: entityId?.toString() },
+        };
 
         addLogs(
           `${action}-group is not cached, so we need to fetch the conversations and add to cache`,

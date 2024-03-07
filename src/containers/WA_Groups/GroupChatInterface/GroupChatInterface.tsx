@@ -90,66 +90,69 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
     navigate(newValue);
   };
 
-  if (data && data?.search.length === 0) {
-    return NoConversations;
+  // if (data && data?.search.length === 0) {
+  // groupChatInterface = NoConversations;
+  // } else {
+  let heading = '';
+
+  if (selectedCollectionId || selectedTab === 'collections') {
+    listingContent = <CollectionConversations groups collectionId={selectedCollectionId} />;
+    heading = 'Group Collections';
   } else {
-    let heading = '';
+    // let's enable simulator only when group tab is shown
+    phonesDropDown = <WaManagedPhones phonenumber={phonenumber} setPhonenumber={setPhonenumber} />;
+    listingContent = (
+      <ChatConversations
+        phonenumber={phonenumber}
+        filterComponent={phonesDropDown}
+        contactId={selectedGroupId}
+      />
+    );
 
-    if (selectedCollectionId || selectedTab === 'collections') {
-      listingContent = <CollectionConversations groups collectionId={selectedCollectionId} />;
-      heading = 'Group Collections';
-    } else if (selectedGroupId) {
-      // let's enable simulator only when group tab is shown
-      phonesDropDown = (
-        <WaManagedPhones phonenumber={phonenumber} setPhonenumber={setPhonenumber} />
-      );
-      listingContent = (
-        <ChatConversations
-          phonenumber={phonenumber}
-          filterComponent={phonesDropDown}
-          contactId={selectedGroupId}
-        />
-      );
+    heading = 'Groups';
+  }
+  console.log(heading, selectedTab);
 
-      heading = 'Groups';
-    }
-
-    groupChatInterface = (
-      <>
-        <div className={`${styles.ChatMessages} chatMessages`}>
+  groupChatInterface = (
+    <>
+      <div className={`${styles.ChatMessages} chatMessages`}>
+        {data && data?.search.length === 0 ? (
+          NoConversations
+        ) : (
           <ChatMessages
             contactId={selectedGroupId}
             collectionId={selectedCollectionId}
             phoneId={phonenumber}
             setPhonenumber={setPhonenumber}
           />
+        )}
+      </div>
+
+      <div className={`${styles.ChatConversations} ChatConversations`}>
+        <div className={styles.Title}>
+          <div className={styles.Heading}> {heading}</div>
         </div>
 
-        <div className={`${styles.ChatConversations} ChatConversations`}>
-          <div className={styles.Title}>
-            <div className={styles.Heading}> {heading}</div>
-          </div>
-
-          <div className={styles.TabContainer}>
-            <Tabs value={value} onChange={handleTabChange} aria-label="chat tabs">
-              {tabs.map((tab) => (
-                <Tab
-                  key={tab.label}
-                  classes={{ selected: styles.TabSelected }}
-                  className={styles.Tab}
-                  label={tab.label}
-                  value={tab.link}
-                  disableRipple
-                />
-              ))}
-            </Tabs>
-          </div>
-
-          <div>{listingContent}</div>
+        <div className={styles.TabContainer}>
+          <Tabs value={value} onChange={handleTabChange} aria-label="chat tabs">
+            {tabs.map((tab) => (
+              <Tab
+                key={tab.label}
+                classes={{ selected: styles.TabSelected }}
+                className={styles.Tab}
+                label={tab.label}
+                value={tab.link}
+                disableRipple
+              />
+            ))}
+          </Tabs>
         </div>
-      </>
-    );
-  }
+
+        <div>{listingContent}</div>
+      </div>
+    </>
+  );
+  // }
 
   if (loading) return <Loading />;
   if (error) {
