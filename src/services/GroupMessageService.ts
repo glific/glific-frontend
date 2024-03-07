@@ -36,7 +36,7 @@ export const updateGroupConversations = (conversation: any, queryVariables: any)
   const conversationsCopy = JSON.parse(JSON.stringify(conversations));
 
   // add new conversation to conversations
-  conversationsCopy.search = [...conversationCopy.search, ...conversationsCopy.search];
+  conversationsCopy.search = [...conversationsCopy.search, ...conversationCopy.search];
 
   // update conversations
   updateGroupConversationsCache(conversationsCopy, queryVariables);
