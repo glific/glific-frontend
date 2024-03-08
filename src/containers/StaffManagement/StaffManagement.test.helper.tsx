@@ -30,10 +30,12 @@ const GET_USER_MOCK = {
           phone: '919999988888',
           isRestricted: false,
           roles: ['Staff'],
-          accessRoles: {
-            id: '1',
-            label: 'Admin'
-          },
+          accessRoles: [
+            {
+              id: '2',
+              label: 'Staff',
+            },
+          ],
           groups: [
             {
               id: '2',
@@ -122,7 +124,13 @@ const UPDATE_USER_MOCK = {
     query: UPDATE_USER,
     variables: {
       id: '1',
-      input: { name: 'Staff Admin', isRestricted: false, groupIds: ['2'], roles: ['Staff'] },
+      input: {
+        name: 'Staff',
+        isRestricted: false,
+        addRoleIds: ['3'],
+        deleteRoleIds: ['2'],
+        groupIds: ['2'],
+      },
     },
   },
   result: {
@@ -138,9 +146,45 @@ const UPDATE_USER_MOCK = {
           ],
           id: '1',
           isRestricted: false,
-          name: 'Staff Admin',
+          name: 'Staff',
           phone: '919999988888',
-          roles: ['Staff'],
+          roles: ['Admin'],
+        },
+      },
+    },
+  },
+};
+
+const UPDATE_USER_MULTIPLE_ROLES_MOCK = {
+  request: {
+    query: UPDATE_USER,
+    variables: {
+      id: '1',
+      input: {
+        name: 'Staff',
+        isRestricted: false,
+        addRoleIds: ['3'],
+        deleteRoleIds: [],
+        groupIds: ['2'],
+      },
+    },
+  },
+  result: {
+    data: {
+      updateUser: {
+        errors: null,
+        user: {
+          groups: [
+            {
+              id: '2',
+              label: 'Optout contacts',
+            },
+          ],
+          id: '1',
+          isRestricted: false,
+          name: 'Staff',
+          phone: '919999988888',
+          roles: ['Admin', 'Staff'],
         },
       },
     },
@@ -170,6 +214,7 @@ export const STAFF_MANAGEMENT_MOCKS = [
   GET_USER_LANGUAGE_MOCK,
   GET_GROUPS,
   UPDATE_USER_MOCK,
+  UPDATE_USER_MULTIPLE_ROLES_MOCK,
   getRoleNamesMock,
 ];
 
