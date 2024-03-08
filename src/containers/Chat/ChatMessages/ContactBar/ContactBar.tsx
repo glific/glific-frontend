@@ -514,7 +514,12 @@ export const ContactBar = ({
 
   let options: any;
   if (groups) {
-    options = <>{viewDetails}</>;
+    options = (
+      <>
+        {viewDetails}
+        {addMember}
+      </>
+    );
   } else {
     options = (
       <>

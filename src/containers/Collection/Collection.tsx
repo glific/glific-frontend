@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useQuery, useLazyQuery, useMutation } from '@apollo/client';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Input } from 'components/UI/Form/Input/Input';
 import { FormLayout } from 'containers/Form/FormLayout';
@@ -13,6 +13,7 @@ import {
   CREATE_COLLECTION,
   DELETE_COLLECTION,
   UPDATE_COLLECTION_USERS,
+  CREATE_GROUP_COLLECTION,
 } from 'graphql/mutations/Collection';
 import { getAddOrRemoveRoleIds } from 'common/utils';
 import { SEARCH_QUERY } from 'graphql/queries/Search';
@@ -34,6 +35,10 @@ export const Collection = () => {
   const [roles, setRoles] = useState([]);
   const [selected, setSelected] = useState([]);
   const { t } = useTranslation();
+  const location = useLocation();
+  let groups: boolean = location.pathname.includes('group');
+
+  const create_collection = groups ? CREATE_GROUP_COLLECTION : CREATE_COLLECTION;
 
   const [updateCollectionUsers] = useMutation(UPDATE_COLLECTION_USERS);
 
@@ -168,8 +173,12 @@ export const Collection = () => {
   };
 
   const setPayload = (payload: any) => {
-    const payloadWithRoleIds = getAddOrRemoveRoleIds(roles, payload);
-    return payloadWithRoleIds;
+    let payloadWithRoleIdsAndType = getAddOrRemoveRoleIds(roles, payload);
+    payloadWithRoleIdsAndType = {
+      ...payloadWithRoleIdsAndType,
+      groupType: groups ? 'WA' : 'WABA',
+    };
+    return payloadWithRoleIdsAndType;
   };
 
   return (

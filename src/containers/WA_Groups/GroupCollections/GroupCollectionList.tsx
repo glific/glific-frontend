@@ -15,9 +15,7 @@ export const GroupCollectionList = () => {
 
   const columnNames = [
     { name: 'id', label: t('Name') },
-    { name: 'label', label: t('Title') },
     { label: t('Description') },
-    { label: t('Contacts') },
     { label: t('Actions') },
   ];
 
@@ -29,7 +27,7 @@ export const GroupCollectionList = () => {
 
   const getName = (label: string) => (
     <div>
-      <div className={styles.NameText}>{label}</div>
+      <div className={styles.LabelText}>{label}</div>
     </div>
   );
 
@@ -39,15 +37,15 @@ export const GroupCollectionList = () => {
     </div>
   );
 
-  const getColumns = (waContact: any) => {
+  const getColumns = (waGroup: any) => {
     return {
-      name: getName(waContact?.contact?.name),
-      phone: getPhoneNumber(waContact?.contact?.phone),
+      name: getName(waGroup?.group?.label),
+      phone: getPhoneNumber(waGroup?.group?.phone),
     };
   };
 
   const collectionIcon = <CollectionIcon className={styles.CollectionIcon} />;
-  const columnStyles = [styles.Name, styles.Phone, styles.Actions];
+  const columnStyles = [styles.Label, styles.Description, styles.Actions];
 
   const columnAttributes = {
     columns: getColumns,
@@ -67,12 +65,12 @@ export const GroupCollectionList = () => {
       dialogTitle={dialogTitle}
       columnNames={columnNames}
       title={'Group Details'}
-      listItem="ContactWaGroup"
-      listItemName="ContactWaGroup"
+      listItem="WaGroupsCollection"
+      listItemName="WaGroupsCollection"
       searchParameter={['term']}
       filters={{ waGroupId: params.id }}
-      button={{ show: false, label: '' }}
-      pageLink="waGroupsContact"
+      button={{ show: true, label: 'Create' }}
+      pageLink="group/collections"
       listIcon={collectionIcon}
       editSupport={false}
       showActions={true}

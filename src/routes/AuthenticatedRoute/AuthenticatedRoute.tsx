@@ -148,6 +148,7 @@ const routeAdmin = (
 
     <Route path="group-details/:id/*" element={<GroupDetails />} />
     <Route path="group/collections" element={<GroupCollectionList />} />
+    <Route path="group/collections/add" element={<Collection />} />
 
     <Route path="/*" element={<Chat />} />
   </Routes>
