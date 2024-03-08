@@ -247,9 +247,11 @@ export const ConversationList = ({
       getFilterSearch({
         variables: filterSearch(),
       });
-    } else if (hasSearchParams || savedSearchCriteria) {
+    } else if (hasSearchParams || savedSearchCriteria || phonenumber.length > 0) {
       // This is used for filtering the searches, when you click on it, so only call it
       // when user clicks and savedSearchCriteriaId is set.
+      console.log('syes');
+
       addLogs(`filtering the searches`, filterVariables());
       getFilterConvos({
         variables: filterVariables(),
