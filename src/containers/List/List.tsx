@@ -1,27 +1,92 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, Fragment } from 'react';
 import { Link, Navigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useQuery, useMutation, DocumentNode, useLazyQuery } from '@apollo/client';
-import { IconButton, TableFooter, TablePagination, TableRow, Typography } from '@mui/material';
+import { Backdrop, Divider, IconButton, Menu, MenuItem } from '@mui/material';
 
-import { ListCard } from 'containers/List/ListCard/ListCard';
 import { Button } from 'components/UI/Form/Button/Button';
-import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { Pager } from 'components/UI/Pager/Pager';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { SearchBar } from 'components/UI/SearchBar/SearchBar';
 import { Tooltip } from 'components/UI/Tooltip/Tooltip';
+
+import MoreOptions from 'assets/images/icons/MoreOptions.svg?react';
 import DeleteIcon from 'assets/images/icons/Delete/Red.svg?react';
 import EditIcon from 'assets/images/icons/Edit.svg?react';
-import CrossIcon from 'assets/images/icons/Cross.svg?react';
 import BackIcon from 'assets/images/icons/Back.svg?react';
+import AddIcon from 'assets/images/add.svg?react';
 import { GET_CURRENT_USER } from 'graphql/queries/User';
 import { getUserRole, getUserRolePermissions } from 'context/role';
 import { setNotification, setErrorMessage } from 'common/notification';
 import { getUpdatedList, setListSession, getLastListSessionValues } from 'services/ListService';
 import styles from './List.module.css';
 import Track from 'services/TrackService';
+import HelpIcon from 'components/UI/HelpIcon/HelpIcon';
 
+const actionListMap = (item: any, actionList: any, hasMoreOption: boolean) => {
+  return actionList.map((action: any, index: number) => {
+    // check if we are dealing with nested element
+    let additionalActionParameter: any;
+    const params: any = action.parameter.split('.');
+    if (params.length > 1) {
+      additionalActionParameter = item[params[0]][params[1]];
+    } else {
+      additionalActionParameter = item[params[0]];
+    }
+    const key = index;
+
+    if (action.hidden) {
+      return null;
+    }
+    if (hasMoreOption) {
+      return (
+        <Fragment key={key}>
+          <Divider className={styles.Divider} />
+          <MenuItem className={styles.MenuItem}>
+            <div
+              data-testid="additionalButton"
+              id="additionalButton-icon"
+              onClick={() => action.dialog(additionalActionParameter, item)}
+            >
+              <div className={styles.IconWithText}>
+                {action.icon}
+                <div className={styles.TextButton}>{action.label}</div>
+              </div>
+            </div>
+          </MenuItem>
+        </Fragment>
+      );
+    }
+
+    if (action.link) {
+      return (
+        <Link to={`${action.link}/${additionalActionParameter}`} key={key}>
+          <IconButton className={styles.additonalButton} data-testid="additionalButton">
+            <Tooltip title={`${action.label}`} placement="top">
+              {action.icon}
+            </Tooltip>
+          </IconButton>
+        </Link>
+      );
+    }
+    if (action.dialog) {
+      return (
+        <IconButton
+          data-testid="additionalButton"
+          className={styles.additonalButton}
+          id="additionalButton-icon"
+          onClick={() => action.dialog(additionalActionParameter, item)}
+          key={key}
+        >
+          <Tooltip title={`${action.label}`} placement="top" key={key}>
+            {action.icon}
+          </Tooltip>
+        </IconButton>
+      );
+    }
+    return null;
+  });
+};
 export interface ColumnNames {
   name?: string;
   label: string;
@@ -29,7 +94,15 @@ export interface ColumnNames {
   order?: string;
 }
 
+export interface HelpDataProps {
+  heading: string;
+  body: JSX.Element;
+  link: string;
+}
+
 export interface ListProps {
+  descriptionBox?: any;
+  loadingList?: boolean;
   columnNames?: Array<ColumnNames>;
   countQuery: DocumentNode;
   listItem: string;
@@ -40,6 +113,7 @@ export interface ListProps {
   pageLink: string;
   columns: Function;
   listIcon: React.ReactNode;
+  helpData?: HelpDataProps;
   columnStyles: Array<any>;
   secondaryButton?: any;
   title: string;
@@ -48,14 +122,12 @@ export interface ListProps {
     label?: string;
     link?: string;
     action?: Function;
-    symbol?: string;
+    symbol?: any;
   };
   searchParameter?: Array<any>;
   filters?: Object | null;
   filterList?: any;
-  filterDropdowm?: any;
-  displayListType?: string;
-  cardLink?: Object | null;
+
   editSupport?: boolean;
   additionalAction?: (listValues: any) => Array<{
     icon: any;
@@ -66,9 +138,7 @@ export interface ListProps {
     button?: any;
   }>;
   deleteModifier?: {
-    icon: string;
     variables: any;
-    label?: string;
   };
   dialogTitle?: string;
   backLinkButton?: {
@@ -78,9 +148,11 @@ export interface ListProps {
   restrictedAction?: any;
   collapseOpen?: boolean;
   collapseRow?: string;
+  showActions?: boolean;
   defaultSortBy?: string | null;
   noItemText?: string | null;
   customStyles?: any;
+  showHeader?: boolean;
   refreshList?: boolean;
 }
 
@@ -92,14 +164,16 @@ interface TableVals {
 }
 
 export const List = ({
+  descriptionBox = <></>,
+  loadingList = false,
   columnNames = [],
   countQuery,
   listItem,
-  listIcon,
   filterItemsQuery,
   deleteItemQuery,
   listItemName,
   dialogMessage = '',
+  helpData,
   secondaryButton,
   pageLink,
   columns,
@@ -107,18 +181,15 @@ export const List = ({
   title,
   dialogTitle,
   filterList,
-  filterDropdowm = null,
   button = {
     show: true,
     label: 'Add New',
   },
-  deleteModifier = { icon: 'normal', variables: null, label: 'Delete' },
+  deleteModifier = { variables: null },
   editSupport = true,
   searchParameter = ['label'],
   filters = null,
   refreshList = false,
-  displayListType = 'list',
-  cardLink = null,
   additionalAction = () => [],
   backLinkButton,
   restrictedAction,
@@ -126,8 +197,17 @@ export const List = ({
   collapseRow = undefined,
   noItemText = null,
   customStyles,
+  showActions = true,
+  showHeader = true,
 }: ListProps) => {
   const { t } = useTranslation();
+  const [showMoreOptions, setShowMoreOptions] = useState<string>('');
+
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   // DialogBox states
   const [deleteItemID, setDeleteItemID] = useState<number | null>(null);
@@ -249,13 +329,10 @@ export const List = ({
   });
 
   // Get item data here
-  const [fetchQuery, { loading, error, data, refetch: refetchValues }] = useLazyQuery(
-    filterItemsQuery,
-    {
-      variables: filterPayload(),
-      fetchPolicy: 'cache-first',
-    }
-  );
+  const [, { loading, error, data, refetch: refetchValues }] = useLazyQuery(filterItemsQuery, {
+    variables: filterPayload(),
+    fetchPolicy: 'cache-first',
+  });
 
   // Get item data here
   const [fetchUserCollections, { loading: loadingCollections, data: userCollections }] =
@@ -266,6 +343,7 @@ export const List = ({
   };
 
   useEffect(() => {
+    // Todo: refetching values twice. Need to think of a better way to do this
     refetchValues();
     refetchCount();
   }, [searchVal, filters, refreshList]);
@@ -278,7 +356,6 @@ export const List = ({
         // if user role staff then display collections related to login user
         fetchUserCollections();
       }
-      fetchQuery();
       Track(`Visit ${listItemName}`);
     }
   }, []);
@@ -379,7 +456,6 @@ export const List = ({
     return <Navigate to={`/${pageLink}/add`} />;
   }
 
-  if (loading || l || loadingCollections) return <Loading />;
   if (error || e) {
     if (error) {
       setErrorMessage(error);
@@ -408,14 +484,18 @@ export const List = ({
     if (isReserved) {
       return null;
     }
+    let moreButton = null;
+
     let editButton = null;
     if (editSupport) {
       editButton = allowedAction.edit && (
-        <Link to={`/${pageLink}/${id}/edit`}>
-          <IconButton aria-label={t('Edit')} data-testid="EditIcon">
-            <Tooltip title={t('Edit')} placement="top">
-              <EditIcon />
-            </Tooltip>
+        <Link to={`/${pageLink}/${id}/edit`} className={styles.NoTextDecoration}>
+          <IconButton className={styles.additonalButton}>
+            <div aria-label={t('Edit')} data-testid="EditIcon">
+              <div className={styles.IconWithText}>
+                <EditIcon className={styles.IconSize} />
+              </div>
+            </div>
           </IconButton>
         </Link>
       );
@@ -423,71 +503,78 @@ export const List = ({
 
     const deleteButton = (Id: any, text: string) =>
       allowedAction.delete ? (
-        <IconButton
+        <div
           aria-label={t('Delete')}
           data-testid="DeleteIcon"
           onClick={() => showDialogHandler(Id, text)}
         >
-          <Tooltip title={`${deleteModifier.label}`} placement="top">
-            {deleteModifier.icon === 'cross' ? <CrossIcon /> : <DeleteIcon />}
+          <div className={styles.IconWithText}>
+            <DeleteIcon className={styles.IconSize} />
+            <div className={styles.TextButton}>Delete</div>
+          </div>
+        </div>
+      ) : null;
+
+    const actionsInsideMore = additionalAction(item).filter((action: any) => action?.insideMore);
+    const actionsOutsideMore = additionalAction(item).filter((action: any) => !action?.insideMore);
+
+    if (actionsInsideMore.length > 0 || allowedAction.delete) {
+      moreButton = (
+        <IconButton
+          data-testid="MoreIcon"
+          onClick={(event) => {
+            setAnchorEl(event.currentTarget);
+            setShowMoreOptions(showMoreOptions == id ? '' : id);
+          }}
+        >
+          <Tooltip title={t('More')} placement="top">
+            <div className={styles.MoreOptionsIcon}>
+              <MoreOptions />
+            </div>
           </Tooltip>
         </IconButton>
-      ) : null;
+      );
+    }
+
     if (id) {
       return (
         <div className={styles.Icons}>
-          {additionalAction(item).map((action: any, index: number) => {
-            if (allowedAction.restricted) {
-              return null;
-            }
-            // check if we are dealing with nested element
-            let additionalActionParameter: any;
-            const params: any = action.parameter.split('.');
-            if (params.length > 1) {
-              additionalActionParameter = item[params[0]][params[1]];
-            } else {
-              additionalActionParameter = item[params[0]];
-            }
-            const key = index;
-
-            if (action.link) {
-              return (
-                <Link to={`${action.link}/${additionalActionParameter}`} key={key}>
-                  <IconButton className={styles.additonalButton} data-testid="additionalButton">
-                    <Tooltip title={`${action.label}`} placement="top">
-                      {action.icon}
-                    </Tooltip>
-                  </IconButton>
-                </Link>
-              );
-            }
-            if (action.dialog) {
-              return (
-                <IconButton
-                  data-testid="additionalButton"
-                  className={styles.additonalButton}
-                  id="additionalButton-icon"
-                  onClick={() => action.dialog(additionalActionParameter, item)}
-                  key={key}
-                >
-                  <Tooltip title={`${action.label}`} placement="top" key={key}>
-                    {action.icon}
-                  </Tooltip>
-                </IconButton>
-              );
-            }
-            if (action.button) {
-              return action.button(item, action, key, fetchQuery);
-            }
-            return null;
-          })}
+          {actionListMap(item, actionsOutsideMore, false)}
+          {allowedAction.edit && editButton}
 
           {/* do not display edit & delete for staff role in collection */}
           {userRolePermissions.manageCollections || item !== 'collections' ? (
-            <>
-              {editButton}
-              {deleteButton(id, labelValue)}
-            </>
+            <div className={styles.MoreOptions}>
+              {moreButton}
+              {showMoreOptions == id && (
+                <Backdrop className={styles.Backdrop} open onClick={() => setShowMoreOptions('')}>
+                  <Menu
+                    anchorEl={anchorEl}
+                    id="account-menu"
+                    open={open}
+                    onClose={handleClose}
+                    onClick={handleClose}
+                    classes={{ list: styles.MenuList }}
+                    anchorOrigin={{
+                      vertical: 'bottom',
+                      horizontal: 'right',
+                    }}
+                    transformOrigin={{
+                      vertical: 'top',
+                      horizontal: 'right',
+                    }}
+                  >
+                    <div>
+                      {actionListMap(item, actionsInsideMore, true)}
+                      <Divider className={styles.Divider}></Divider>
+                      <MenuItem className={styles.MenuItem}>
+                        {deleteButton(id, labelValue)}
+                      </MenuItem>
+                    </div>
+                  </Menu>
+                </Backdrop>
+              )}
+            </div>
           ) : null}
         </div>
       );
@@ -496,18 +583,25 @@ export const List = ({
   }
 
   function formatList(listItems: Array<any>) {
-    return listItems.map(({ ...listItemObj }) => {
-      // display only actions allowed to the user
-      const allowedAction = restrictedAction
-        ? restrictedAction(listItemObj)
-        : { chat: true, edit: true, delete: true };
-      return {
-        ...columns(listItemObj),
-        operations: getIcons(listItemObj, allowedAction),
-        recordId: listItemObj.id,
-        isActive: listItemObj.isActive,
-      };
-    });
+    return listItems
+      ? listItems.map(({ ...listItemObj }) => {
+          // display only actions allowed to the user
+          const allowedAction = restrictedAction
+            ? restrictedAction(listItemObj)
+            : { chat: true, edit: true, delete: true };
+
+          const items = {
+            ...columns(listItemObj),
+
+            recordId: listItemObj.id,
+            isActive: listItemObj.isActive,
+          };
+          if (showActions) {
+            items.operations = getIcons(listItemObj, allowedAction);
+          }
+          return items;
+        })
+      : [];
   }
 
   const resetTableVals = () => {
@@ -546,48 +640,34 @@ export const List = ({
   if (countData) {
     itemCount = countData[`count${listItem[0].toUpperCase()}${listItem.slice(1)}`];
   }
-  let displayList;
-  if (displayListType === 'list') {
-    displayList = (
-      <Pager
-        columnStyles={columnStyles}
-        columnNames={columnNames}
-        data={itemList}
-        totalRows={itemCount}
-        handleTableChange={handleTableChange}
-        tableVals={tableVals}
-        collapseOpen={collapseOpen}
-        collapseRow={collapseRow}
-      />
-    );
-  } else if (displayListType === 'card') {
-    /* istanbul ignore next */
-    displayList = (
-      <>
-        <ListCard data={itemList} link={cardLink} />
-        <table>
-          <TableFooter className={styles.TableFooter} data-testid="tableFooter">
-            <TableRow>
-              <TablePagination
-                className={styles.FooterRow}
-                colSpan={columnNames.length}
-                count={itemCount}
-                onPageChange={(event, newPage) => {
-                  handleTableChange('pageNum', newPage);
-                }}
-                onRowsPerPageChange={(event) => {
-                  handleTableChange('pageRows', parseInt(event.target.value, 10));
-                }}
-                page={tableVals.pageNum}
-                rowsPerPage={tableVals.pageRows}
-                rowsPerPageOptions={[50, 75, 100, 150, 200]}
-              />
-            </TableRow>
-          </TableFooter>
-        </table>
-      </>
-    );
-  }
+
+  var noItemsText = (
+    <div className={styles.NoResults}>
+      {searchVal ? (
+        <div>{t('Sorry, no results found! Please try a different search.')}</div>
+      ) : (
+        <div>
+          There are no {noItemText || listItemName}s right now.{' '}
+          {button.show && t('Please create one.')}
+        </div>
+      )}
+    </div>
+  );
+
+  const displayList = (
+    <Pager
+      columnStyles={columnStyles}
+      columnNames={columnNames}
+      data={itemList}
+      totalRows={itemCount}
+      handleTableChange={handleTableChange}
+      tableVals={tableVals}
+      collapseOpen={collapseOpen}
+      collapseRow={collapseRow}
+      loadingList={loadingList || loading || l || loadingCollections}
+      noItemsText={noItemsText}
+    />
+  );
 
   const backLink = backLinkButton ? (
     <div className={styles.BackLink}>
@@ -600,6 +680,11 @@ export const List = ({
 
   let buttonDisplay;
   if (button.show) {
+    const addIcon = <AddIcon className={styles.AddIcon} />;
+    if (!button.symbol) {
+      button.symbol = addIcon;
+    }
+
     let buttonContent;
     if (button.action) {
       buttonContent = (
@@ -634,64 +719,56 @@ export const List = ({
     buttonDisplay = <div className={styles.AddButton}>{buttonContent}</div>;
   }
 
-  const noItemsText = (
-    <div className={styles.NoResults}>
-      {searchVal ? (
-        <div>{t('Sorry, no results found! Please try a different search.')}</div>
-      ) : (
-        <div>
-          There are no {noItemText || listItemName}s right now.{' '}
-          {button.show && t('Please create one.')}
-        </div>
-      )}
-    </div>
-  );
-
   return (
-    <>
-      <div className={styles.Header} data-testid="listHeader">
-        <Typography variant="h5" className={styles.Title}>
-          <IconButton disabled className={styles.Icon}>
-            {listIcon}
-          </IconButton>
-          {title}
-        </Typography>
-        <div>
-          {dialogBox}
-          <div className={styles.ButtonGroup}>
-            {buttonDisplay}
-            {secondaryButton}
+    <div className={styles.ListContainer}>
+      {showHeader && (
+        <>
+          <div className={styles.Header} data-testid="listHeader">
+            <div>
+              <div className={styles.Title}>
+                <div className={styles.TitleText}> {title}</div>
+                {helpData && <HelpIcon helpData={helpData} />}
+              </div>
+            </div>
+            <div>
+              {dialogBox}
+              <div className={styles.ButtonGroup}>
+                {secondaryButton}
+                {buttonDisplay}
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+          {/* description box */}
+          {descriptionBox}
 
-      <div className={styles.FilterFields}>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          {filterList}
-          {filterDropdowm}
-        </div>
-        <div className={styles.Buttons}>
-          <SearchBar
-            handleSubmit={handleSearch}
-            onReset={() => {
-              setSearchParams({ search: '' });
-              setSearchVal('');
-              resetTableVals();
-            }}
-            searchVal={searchVal}
-            handleChange={(err: any) => {
-              // reset value only if empty
-              if (!err.target.value) setSearchVal('');
-            }}
-            searchMode
-          />
-        </div>
-      </div>
+          <div className={styles.FilterFields}>
+            <div className={styles.FlexCenter}>
+              {filterList}
+              {backLink}
+            </div>
+            <div className={styles.Buttons}>
+              <SearchBar
+                handleSubmit={handleSearch}
+                onReset={() => {
+                  setSearchParams({ search: '' });
+                  setSearchVal('');
+                  resetTableVals();
+                }}
+                searchVal={searchVal}
+                handleChange={(err: any) => {
+                  // reset value only if empty
+                  if (!err.target.value) setSearchVal('');
+                }}
+                searchMode
+              />
+            </div>
+          </div>
+        </>
+      )}
       <div className={`${styles.Body} ${customStyles}`}>
-        {backLink}
         {/* Rendering list of items */}
-        {itemList.length > 0 ? displayList : noItemsText}
+        {displayList}
       </div>
-    </>
+    </div>
   );
 };

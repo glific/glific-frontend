@@ -1,5 +1,7 @@
 .TextField {
   width: 100%;
+  background-color: #ffffff;
+  border-radius: 12px;
 }
 
 .Font {
@@ -16,7 +18,6 @@
 
 .CallToActionWrapper > div {
   display: flex;
-  align-items: flex-end;
   justify-content: space-between;
 }
 
@@ -41,6 +42,7 @@
 
 .RadioStyles {
   composes: Font;
+  margin-bottom: 12px;
 }
 
 .RadioLabel > span:last-child {
@@ -65,8 +67,9 @@
 
 .RadioLabelWrapper {
   width: 50%;
-  align-items: center;
   display: flex;
+  align-items: center;
+  margin-top: 20px;
 }
 
 .Tooltip {
@@ -77,23 +80,12 @@
   font-weight: 400;
 }
 
-.QuickTemplateFields {
+.QuickReplyContainer {
   padding: 24px;
-  background: white;
+  background: #f8faf5;
   border-radius: 12px;
-  margin-bottom: 24px;
-}
-
-.QuickTemplateFields > div:nth-child(3) > div > div {
-  margin-bottom: 0px !important;
-}
-
-.QuickReplyContainer > div > div {
-  margin-bottom: 12px !important;
-}
-
-.QuickReplyAddButton {
-  margin-top: 12px;
+  border: 1px solid #cccccc;
+  margin-top: 18px;
 }
 
 .CallToActionAddButton {
@@ -102,8 +94,10 @@
 
 .CallToActionContainer {
   padding: 24px;
-  background: white;
+  background: #f8faf5;
   border-radius: 12px;
+  border: 1px solid #cccccc;
+  margin-top: 18px;
 }
 
 .RemoveIcon {
@@ -118,10 +112,6 @@
   margin-bottom: 24px;
 }
 
-.CallToActionTemplateFields > div:not(:nth-of-type(1)) {
-  margin-top: 6px;
-}
-
-.CallToActionTemplateFields > div:nth-child(3) > div > div {
-  margin-bottom: 0px !important;
+.Button {
+  margin-top: 7px;
 }

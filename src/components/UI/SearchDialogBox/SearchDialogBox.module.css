@@ -1,8 +1,3 @@
-.DialogBox {
-  width: 100%;
-  max-width: 347px;
-}
-
 .Form {
   padding-top: 5px;
   padding-left: 4px;
@@ -33,5 +28,6 @@
 .Description {
   font-size: 16px;
   color: #93a29b;
+  margin-top: 8px;
   margin-bottom: 8px;
 }

@@ -19,18 +19,15 @@ export const Button = ({
   disabled = false,
   ...props
 }: ButtonProps) => {
-  let buttonColor;
   const { variant, color, onClick, className, children, ...rest } = props;
-
-  if (variant === 'outlined') buttonColor = styles.ButtonColor;
 
   return (
     <ButtonElement
+      {...rest}
       variant={variant}
       color={color}
       onClick={onClick}
-      data-testid={rest['data-testid']}
-      className={`${styles.Button} ${className} ${buttonColor}`}
+      className={`${styles.Button} ${className}`}
       disabled={loading || disabled}
       type={type}
     >

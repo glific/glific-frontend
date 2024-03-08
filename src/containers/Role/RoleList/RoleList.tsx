@@ -4,6 +4,7 @@ import RoleIcon from 'assets/images/icons/Role/Role.svg?react';
 import { COUNT_ROLES, FILTER_ROLES } from 'graphql/queries/Role';
 import { DELETE_ROLE } from 'graphql/mutations/Roles';
 import styles from './RoleList.module.css';
+import { roleInfo } from 'common/HelpData';
 
 const getLabel = (text: string) => (
   <p className={`${styles.LabelText} ${styles.NameText}`}>{text}</p>
@@ -44,6 +45,7 @@ export const RoleList = () => {
 
   return (
     <List
+      helpData={roleInfo}
       title={t('Role Management')}
       listItem="accessRoles"
       listItemName="role"
@@ -51,7 +53,7 @@ export const RoleList = () => {
       listIcon={roleIcon}
       {...queries}
       {...columnAttributes}
-      button={{ show: true, label: t('Create Role'), symbol: '+' }}
+      button={{ show: true, label: t('Create') }}
     />
   );
 };

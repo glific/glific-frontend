@@ -33,10 +33,9 @@ import { LexicalWrapper } from 'common/LexicalWrapper';
 export interface ChatMessagesProps {
   contactId?: number | string | null;
   collectionId?: number | string | null;
-  startingHeight?: string;
 }
 
-export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMessagesProps) => {
+export const ChatMessages = ({ contactId, collectionId }: ChatMessagesProps) => {
   const urlString = new URL(window.location.href);
 
   let messageParameterOffset: any = 0;
@@ -592,7 +591,7 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
     messageListContainer = (
       <Container
         className={`${styles.MessageList} messageContainer `}
-        style={{ height: `calc(100% - 195px ` }}
+        style={{ height: `calc(100% - 215px` }}
         maxWidth={false}
         data-testid="messageContainer"
       >
@@ -738,14 +737,7 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
   }
 
   return (
-    <Container
-      className={styles.ChatMessages}
-      style={{
-        height: startingHeight,
-      }}
-      maxWidth={false}
-      disableGutters
-    >
+    <Container className={styles.ChatMessages} maxWidth={false} disableGutters>
       {dialogBox}
       {dialog === 'collection' ? (
         <CollectionInformation

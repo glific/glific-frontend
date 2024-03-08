@@ -8,6 +8,7 @@ import ChatIcon from 'assets/images/icons/Chat/UnselectedDark.svg?react';
 import { List } from 'containers/List/List';
 import { getUserRole } from 'context/role';
 import styles from './StaffManagementList.module.css';
+import { staffManagementInfo } from 'common/HelpData';
 
 export const StaffManagementList = () => {
   const { t } = useTranslation();
@@ -100,6 +101,7 @@ export const StaffManagementList = () => {
   return (
     <div>
       <List
+        helpData={staffManagementInfo}
         title={t('Staff Management')}
         listItem="users"
         listItemName="user"

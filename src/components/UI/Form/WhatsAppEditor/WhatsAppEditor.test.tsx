@@ -41,7 +41,7 @@ describe('<WhatsAppEditor/>', () => {
   });
 
   test('text is changed in lexical editor', async () => {
-    const { getByTestId } = render(
+    render(
       <LexicalWrapper>
         <WhatsAppEditor {...defaultProps()} />
       </LexicalWrapper>
@@ -68,21 +68,4 @@ describe('<WhatsAppEditor/>', () => {
       expect(mockObserve).toHaveBeenCalled();
     });
   });
-
-  // since we are mocking emoji mart picker we need to implement the following functionalities
-
-  // test('input an emoji in chat', () => {
-  //   const { container, getByTestId } = render(
-  //     <WhatsAppEditor
-  //       {...defaultProps(
-  //         EditorState.createWithContent(
-  //           ContentState.createFromText('*this is bold* _this is italic_')
-  //         )
-  //       )}
-  //     />
-  //   );
-  //   fireEvent.click(getByTestId('emoji-picker'));
-  //   fireEvent.click(container.querySelector('.emoji-mart-emoji') as Element);
-  //   expect(setEditorState).toBeCalled();
-  // });
 });

@@ -15,12 +15,12 @@ export interface InputProps {
   helperText: string;
   field: any;
   placeholder: string;
-  form: { errors: any; setFieldValue: any };
+  form: { touched: any; errors: any; setFieldValue: any };
 }
 
 export const PhoneInput = ({
   enableSearch = true,
-  form: { errors, setFieldValue },
+  form: { touched, errors, setFieldValue },
   field,
   inputProps = {
     name: field.name,
@@ -30,6 +30,8 @@ export const PhoneInput = ({
   placeholder,
 }: InputProps) => {
   const errorText = getIn(errors, field.name);
+  const touchedVal = getIn(touched, field.name);
+  const hasError = touchedVal && errorText !== undefined;
 
   return (
     <div className={styles.Input} data-testid="phoneInput">
@@ -49,7 +51,7 @@ export const PhoneInput = ({
             setFieldValue(field.name, event);
           }}
         />
-        {errorText ? (
+        {hasError ? (
           <FormHelperText classes={{ root: styles.FormHelperText }}>{errorText}</FormHelperText>
         ) : null}
       </FormControl>

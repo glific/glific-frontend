@@ -1,19 +1,16 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Fragment } from 'react';
 import { CardElement, useStripe, useElements, Elements } from '@stripe/react-stripe-js';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { loadStripe } from '@stripe/stripe-js';
 import { Formik, Form, Field } from 'formik';
-import { Link } from 'react-router-dom';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import { CircularProgress, IconButton, InputAdornment, Typography } from '@mui/material';
+import { CircularProgress, InputAdornment, Typography } from '@mui/material';
 import CallMadeIcon from '@mui/icons-material/CallMade';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 
 import ApprovedIcon from 'assets/images/icons/Template/Approved.svg?react';
-import Settingicon from 'assets/images/icons/Settings/Settings.svg?react';
 import PendingIcon from 'assets/images/icons/Template/Pending.svg?react';
-import BackIcon from 'assets/images/icons/Back.svg?react';
 import {
   CREATE_BILLING_SUBSCRIPTION,
   UPDATE_BILLING,
@@ -25,7 +22,7 @@ import {
   GET_COUPON_CODE,
 } from 'graphql/queries/Billing';
 import { Button } from 'components/UI/Form/Button/Button';
-import Loading from 'components/UI/Layout/Loading/Loading';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { Input } from 'components/UI/Form/Input/Input';
 import { STRIPE_PUBLISH_KEY } from 'config';
 import { setNotification } from 'common/notification';
@@ -93,14 +90,14 @@ export const BillingForm = () => {
       component: Input,
       name: 'name',
       type: 'text',
-      placeholder: 'Your Organization Name',
+      label: 'Your Organization Name',
       disabled: alreadySubscribed || pending || disable,
     },
     {
       component: Input,
       name: 'email',
       type: 'text',
-      placeholder: 'Email ID',
+      label: 'Email ID',
       disabled: alreadySubscribed || pending || disable,
     },
   ];
@@ -171,7 +168,7 @@ export const BillingForm = () => {
   });
 
   if (billLoading || portalLoading) {
-    return <Loading />;
+    return <Loading whiteBackground />;
   }
 
   // check if the organization is already subscribed or in pending state
@@ -275,17 +272,11 @@ export const BillingForm = () => {
     }
   };
 
-  const backLink = (
-    <div className={styles.BackLink}>
-      <Link to="/settings">
-        <BackIcon />
-        Back to settings
-      </Link>
-    </div>
-  );
-
   const cardElements = (
     <>
+      <Typography data-testid="formLabel" variant="h5" className={styles.FieldLabel}>
+        {'Card Details'}
+      </Typography>
       <CardElement
         options={{ hidePostalCode: true }}
         className={styles.Card}
@@ -353,145 +344,157 @@ export const BillingForm = () => {
   const processIncomplete = !alreadySubscribed && !pending && !disable;
   return (
     <div className={styles.Form}>
-      <Typography variant="h5" className={styles.Title}>
-        <IconButton disabled className={styles.Icon}>
-          <Settingicon />
-        </IconButton>
-        Billing
-      </Typography>
-      {backLink}
-      <div className={styles.Description}>
-        <div className={styles.UpperSection}>
-          <div className={styles.Setup}>
-            <div>
-              <div className={styles.Heading}>One time setup</div>
-              <div className={styles.Pricing}>
-                <span>INR 15000</span> ($220)
+      <div className={styles.Body}>
+        <div className={styles.Description}>
+          <div className={styles.UpperSection}>
+            <div className={styles.Setup}>
+              <div>
+                <div className={styles.Heading}>One time setup</div>
+                <div className={styles.Pricing}>
+                  <span>INR 15000</span> ($220)
+                </div>
+                <div className={styles.Pricing}>+ taxes</div>
+                <ul className={styles.List}>
+                  <li>5hr consulting</li>
+                  <li>1 hr onboarding session</li>
+                </ul>
               </div>
-              <div className={styles.Pricing}>+ taxes</div>
-              <ul className={styles.List}>
-                <li>5hr consulting</li>
-                <li>1 hr onboarding session</li>
-              </ul>
-            </div>
-            <div>
-              <div className={styles.Heading}>Monthly Recurring</div>
-              <div className={styles.Pricing}>
-                <span>INR 7,500</span> ($110)
+              <div>
+                <div className={styles.Heading}>Monthly Recurring</div>
+                <div className={styles.Pricing}>
+                  <span>INR 7,500</span> ($110)
+                </div>
+                <div className={styles.Pricing}>+ taxes</div>
+                <ul className={styles.List}>
+                  <li>upto 250k messages</li>
+                  <li>1-10 users</li>
+                </ul>
               </div>
-              <div className={styles.Pricing}>+ taxes</div>
-              <ul className={styles.List}>
-                <li>upto 250k messages</li>
-                <li>1-10 users</li>
-              </ul>
+            </div>
+            <div className={styles.Additional}>
+              <div className={styles.Heading}>Variable charges as usage increases</div>
+              <div>For every staff member over 10 users – INR 150 ($2)</div>
+              <div>For every 1K messages upto 1Mn messages – INR 10 ($0.14)</div>
+              <div>For every 1K messages over 1Mn messages – INR 5 ($0.07)</div>
             </div>
           </div>
-          <div className={styles.Additional}>
-            <div className={styles.Heading}>Variable charges as usage increases</div>
-            <div>For every staff member over 10 users – INR 150 ($2)</div>
-            <div>For every 1K messages upto 1Mn messages – INR 10 ($0.14)</div>
-            <div>For every 1K messages over 1Mn messages – INR 5 ($0.07)</div>
+          <div className={styles.DottedSpaced} />
+          <div className={styles.BottomSection}>
+            <div className={styles.InactiveHeading}>
+              Suspended or inactive accounts:{' '}
+              <span className={styles.Amount}> INR 4,500/mo + taxes</span>
+            </div>
           </div>
         </div>
-        <div className={styles.DottedSpaced} />
-        <div className={styles.BottomSection}>
-          <div className={styles.InactiveHeading}>
-            Suspended or inactive accounts:{' '}
-            <span className={styles.Amount}> INR 4,500/mo + taxes</span>
+
+        {couponApplied && (
+          <div className={styles.CouponDescription}>
+            <div className={styles.CouponHeading}>Coupon Applied!</div>
+            <div>{couponDescription.description}</div>
           </div>
-        </div>
-      </div>
+        )}
 
-      {couponApplied && (
-        <div className={styles.CouponDescription}>
-          <div className={styles.CouponHeading}>Coupon Applied!</div>
-          <div>{couponDescription.description}</div>
-        </div>
-      )}
+        {processIncomplete && couponError && (
+          <div className={styles.CouponError}>
+            <div>Invalid Coupon!</div>
+          </div>
+        )}
 
-      {processIncomplete && couponError && (
-        <div className={styles.CouponError}>
-          <div>Invalid Coupon!</div>
-        </div>
-      )}
-
-      <div>
-        <Formik
-          enableReinitialize
-          validateOnBlur={false}
-          initialValues={{
-            name,
-            email,
-            coupon,
-          }}
-          validationSchema={validationSchema}
-          onSubmit={(itemData) => {
-            handleSubmit(itemData);
-          }}
-        >
-          {({ values, setFieldError, setFieldTouched }) => (
-            <Form>
-              {processIncomplete && (
-                <Field
-                  component={Input}
-                  name="coupon"
-                  type="text"
-                  placeholder="Coupon Code"
-                  disabled={couponApplied}
-                  endAdornment={
-                    <InputAdornment position="end">
-                      {couponLoading ? (
-                        <CircularProgress />
-                      ) : (
-                        <div
-                          aria-hidden
-                          className={styles.Apply}
-                          onClick={() => {
-                            if (values.coupon === '') {
-                              setFieldError('coupon', 'Please input coupon code');
-                              setFieldTouched('coupon');
-                            } else {
-                              getCouponCode({ variables: { code: values.coupon } });
-                            }
-                          }}
-                        >
-                          {couponApplied ? (
-                            <CancelOutlinedIcon
-                              className={styles.CrossIcon}
-                              onClick={() => setCouponApplied(false)}
-                            />
+        <div>
+          <Formik
+            enableReinitialize
+            validateOnBlur={false}
+            initialValues={{
+              name,
+              email,
+              coupon,
+            }}
+            validationSchema={validationSchema}
+            onSubmit={(itemData) => {
+              handleSubmit(itemData);
+            }}
+          >
+            {({ values, setFieldError, setFieldTouched }) => (
+              <Form>
+                {processIncomplete && (
+                  <>
+                    <Typography data-testid="formLabel" variant="h5" className={styles.FieldLabel}>
+                      {'Coupon Code'}
+                    </Typography>
+                    <Field
+                      component={Input}
+                      name="coupon"
+                      type="text"
+                      disabled={couponApplied}
+                      endAdornment={
+                        <InputAdornment position="end">
+                          {couponLoading ? (
+                            <CircularProgress />
                           ) : (
-                            ' APPLY'
+                            <div
+                              aria-hidden
+                              className={styles.Apply}
+                              onClick={() => {
+                                if (values.coupon === '') {
+                                  setFieldError('coupon', 'Please input coupon code');
+                                  setFieldTouched('coupon');
+                                } else {
+                                  getCouponCode({ variables: { code: values.coupon } });
+                                }
+                              }}
+                            >
+                              {couponApplied ? (
+                                <CancelOutlinedIcon
+                                  className={styles.CrossIcon}
+                                  onClick={() => setCouponApplied(false)}
+                                />
+                              ) : (
+                                ' APPLY'
+                              )}
+                            </div>
                           )}
-                        </div>
+                        </InputAdornment>
+                      }
+                    />
+                  </>
+                )}
+                {formFieldItems.map((field, index) => {
+                  const key = index;
+                  return (
+                    <Fragment key={key}>
+                      {field.label && (
+                        <Typography
+                          data-testid="formLabel"
+                          variant="h5"
+                          className={styles.FieldLabel}
+                        >
+                          {field.label}
+                        </Typography>
                       )}
-                    </InputAdornment>
-                  }
-                />
-              )}
-              {formFieldItems.map((field, index) => {
-                const key = index;
-                return <Field key={key} {...field} />;
-              })}
+                      <Field key={key} {...field} />
+                    </Fragment>
+                  );
+                })}
 
-              {paymentBody}
+                {paymentBody}
 
-              {processIncomplete && (
-                <Button
-                  variant="contained"
-                  data-testid="submitButton"
-                  color="primary"
-                  type="submit"
-                  className={styles.Button}
-                  disabled={!stripe || disable}
-                  loading={loading}
-                >
-                  Subscribe for monthly billing
-                </Button>
-              )}
-            </Form>
-          )}
-        </Formik>
+                {processIncomplete && (
+                  <Button
+                    variant="contained"
+                    data-testid="submitButton"
+                    color="primary"
+                    type="submit"
+                    className={styles.Button}
+                    disabled={!stripe || disable}
+                    loading={loading}
+                  >
+                    Subscribe for monthly billing
+                  </Button>
+                )}
+              </Form>
+            )}
+          </Formik>
+        </div>
       </div>
     </div>
   );

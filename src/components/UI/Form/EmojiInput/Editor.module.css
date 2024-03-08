@@ -43,7 +43,6 @@
 }
 
 .EditorInput p {
-  overflow: scroll !important;
   margin: 0 !important;
 }
 
@@ -95,7 +94,7 @@
   pointer-events: none;
 }
 
-/* 
+/*
   Overriding lexical mentions styles as per requirement
 */
 .MentionMenu {

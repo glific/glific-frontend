@@ -1,7 +1,9 @@
 .LanguageWrapper {
   position: fixed;
-  top: 24px;
+  top: 32px;
   right: 24px;
+
+  z-index: 1000;
   max-width: 500px;
 }
 

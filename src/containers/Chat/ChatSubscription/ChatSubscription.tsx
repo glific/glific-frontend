@@ -175,6 +175,7 @@ export const ChatSubscription = ({ setDataLoaded }: ChatSubscriptionProps) => {
       // update contact last message at when receiving a new Message
       if (action === 'RECEIVED') {
         updatedConversation[0].contact.lastMessageAt = newMessage.insertedAt;
+        updatedConversation[0].contact.bspStatus = newMessage.contact.bspStatus;
       }
 
       // Add new message and move the conversation to the top
@@ -203,14 +204,14 @@ export const ChatSubscription = ({ setDataLoaded }: ChatSubscriptionProps) => {
     SEARCH_QUERY,
     {
       variables: COLLECTION_SEARCH_QUERY_VARIABLES,
-      fetchPolicy: 'network-only',
+      fetchPolicy: 'cache-first',
       nextFetchPolicy: 'cache-only',
     }
   );
 
   const { loading, error, subscribeToMore, data, refetch } = useQuery<any>(SEARCH_QUERY, {
     variables: queryVariables,
-    fetchPolicy: 'network-only',
+    fetchPolicy: 'cache-first',
     nextFetchPolicy: 'cache-only',
   });
 

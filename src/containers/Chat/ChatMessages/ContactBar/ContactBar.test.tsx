@@ -66,7 +66,7 @@ test('it should render the name correctly', async () => {
 test('it should have a session timer', async () => {
   const { getByText } = render(component);
   await waitFor(() => {
-    expect(getByText('24')).toBeInTheDocument();
+    expect(getByText('24 hrs')).toBeInTheDocument();
   });
 });
 
@@ -86,8 +86,6 @@ describe('Menu test', () => {
     fireEvent.click(screen.getByTestId('collectionButton'));
     await waitFor(() => {
       expect(screen.getByText('Add contact to collection')).toBeInTheDocument();
-      expect(screen.getAllByText('Search')[1]).toBeInTheDocument();
-      fireEvent.click(screen.getAllByText('Search')[1]);
       const button = screen.getByText('Save');
       fireEvent.click(button);
     });

@@ -1,69 +1,71 @@
-.Card {
-  width: 31%;
-  cursor: pointer;
-  position: relative !important;
-  margin-right: 24px;
-  margin-bottom: 24px;
-  border-radius: 12px !important;
-  border-color: #eaedec !important;
-  min-height: 150px;
-}
-
-.CardContainer {
+.SettingsContainer {
   display: flex;
-  padding: 16px;
-  flex-wrap: wrap;
 }
 
-.Link {
-  text-decoration: none;
-  text-transform: uppercase;
-  font-weight: 800;
-  color: #119656;
-  padding-left: 8px;
-  font-size: 16px;
-}
-.Link > p {
-  margin: 0px;
+.Drawer {
+  overflow-y: auto;
+  flex: none;
+  padding: 44px 40px;
+  background-color: white;
+  width: fit-content;
+  border-right: 1px solid #efefef;
+  height: calc(100vh - 110px) !important;
 }
 
-.Label {
-  font-weight: 500;
-  font-size: 20px;
-  margin: 0px;
-  color: #073f24;
+.Tab {
+  border-radius: 10px;
+  width: 200px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  margin: 2px 0;
+  padding: 0px !important;
+  font-weight: 400;
+  font-size: 14px;
+  color: #717971;
+  padding-left: 16px !important;
 }
 
-.CardActions > :last-child {
-  margin-left: auto !important;
+.Tab:hover {
+  background-color: #71797123;
+  cursor: pointer !important;
 }
 
-.CardActions {
-  position: absolute !important;
+.ActiveTab {
+  font-weight: 700 !important;
+  color: #073f24 !important;
+  background-color: #cce6d0 !important;
+}
+
+.SettingBody {
+  height: calc(100vh - 110px) !important;
+  overflow-y: scroll;
   width: 100%;
-  bottom: 0px !important;
 }
 
-.CardContent {
-  padding-bottom: 50px !important;
+/* setting header css */
+.SettingHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 53px 53px 0 53px;
+  background-color: #fff;
 }
 
-.Description {
-  padding-top: 12px;
-  font-size: 16px !important;
-  color: #93a29b;
-  line-height: 1.25 !important;
+.SettingTitle {
+  color: #212121;
+  display: flex;
+  font-weight: 700;
+  font-size: 24px;
 }
 
-.Title {
-  margin-left: 24px !important;
-  margin-top: 16px !important;
-  vertical-align: middle;
-  font-weight: 500 !important;
-  color: #073f24;
+.SettingTextHeader {
+  font-weight: 400;
+  color: #555;
+  font-size: 15px;
+  line-height: 20px;
 }
 
-.Icon {
-  background-color: #eaedec !important;
-  margin-right: 10px !important;
+.Divider {
+  margin: 8px 0px;
 }

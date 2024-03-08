@@ -20,25 +20,28 @@ import { setVariables } from 'common/constants';
 import { CircularProgress, Modal } from '@mui/material';
 import styles from './CollectionList.module.css';
 import { exportCsvFile } from 'common/utils';
+import { useNavigate } from 'react-router-dom';
+import { collectionInfo } from 'common/HelpData';
 
-const getLabel = (label: string, contactsCount: number) => (
-  <div>
-    <div className={styles.LabelText}>{label}</div>
-    <div className={styles.UserCount}>
-      {contactsCount} contact{contactsCount === 1 ? '' : 's'}
-    </div>
+const getLabel = (label: string) => <div className={styles.LabelText}>{label}</div>;
+
+const getDescription = (description: string) => (
+  <div className={styles.DescriptionText}>{description}</div>
+);
+
+const getContact = (contactsCount: number) => (
+  <div className={styles.UserCount}>
+    {contactsCount} contact{contactsCount === 1 ? '' : 's'}
   </div>
 );
 
-const getDescription = (text: string) => <p className={styles.CollectionDescription}>{text}</p>;
-
-const getColumns = ({ id, label, description, contactsCount }: any) => ({
-  id,
-  label: getLabel(label, contactsCount),
+const getColumns = ({ label, contactsCount, description }: any) => ({
+  label: getLabel(label),
   description: getDescription(description),
+  contacts: getContact(contactsCount),
 });
 
-const columnStyles = [styles.Label, styles.Description, styles.Actions];
+const columnStyles = [styles.Label, styles.Description, styles.Contact, styles.Actions];
 const collectionIcon = <CollectionIcon className={styles.CollectionIcon} />;
 
 const queries = {
@@ -53,6 +56,7 @@ const columnAttributes = {
 };
 
 export const CollectionList = () => {
+  const navigate = useNavigate();
   const [updateCollection, setUpdateCollection] = useState(false);
   const [addContactsDialogShow, setAddContactsDialogShow] = useState(false);
 
@@ -181,8 +185,19 @@ export const CollectionList = () => {
   }
 
   const addContactIcon = <AddContactIcon />;
+  const viewButton = <div className={styles.ViewButton}>View</div>;
+
+  const viewCollection = (id: any) => {
+    navigate(`/collection/${id}/contacts`);
+  };
 
   const additionalAction = () => [
+    {
+      label: t('View details'),
+      icon: viewButton,
+      parameter: 'id',
+      dialog: viewCollection,
+    },
     {
       label: t('Add contacts to collection'),
       icon: addContactIcon,
@@ -190,10 +205,11 @@ export const CollectionList = () => {
       dialog: setContactsDialog,
     },
     {
-      label: t('Export collection'),
+      label: t('Export'),
       icon: <ExportIcon />,
       parameter: 'id',
       dialog: exportCollection,
+      insideMore: true,
     },
   ];
 
@@ -206,10 +222,9 @@ export const CollectionList = () => {
     return action;
   };
 
-  const cardLink = { start: 'collection', end: 'contacts' };
-
   // check if the user has access to manage collections
   const userRolePermissions = getUserRolePermissions();
+
   return (
     <>
       {exportData && (
@@ -220,23 +235,26 @@ export const CollectionList = () => {
         </Modal>
       )}
       <List
+        helpData={collectionInfo}
         refreshList={updateCollection}
         restrictedAction={getRestrictedAction}
         title={t('Collections')}
         listItem="groups"
-        columnNames={[{ name: 'label', label: t('Title') }]}
+        columnNames={[
+          { name: 'label', label: t('Title') },
+          { label: t('Description') },
+          { label: t('Contacts') },
+          { label: t('Actions') },
+        ]}
         listItemName="collection"
-        displayListType="card"
         button={{
           show: userRolePermissions.manageCollections,
-          label: t('Create Collection'),
-          symbol: '+',
+          label: t('Create'),
         }}
         pageLink="collection"
         listIcon={collectionIcon}
         dialogMessage={dialogMessage}
         additionalAction={additionalAction}
-        cardLink={cardLink}
         {...queries}
         {...columnAttributes}
       />

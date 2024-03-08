@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-
 import InteractiveMessageIcon from 'assets/images/icons/InteractiveMessage/Dark.svg?react';
 import DownArrow from 'assets/images/icons/DownArrow.svg?react';
 import DuplicateIcon from 'assets/images/icons/Duplicate.svg?react';
@@ -17,6 +16,7 @@ import styles from './InteractiveMessageList.module.css';
 import { useQuery } from '@apollo/client';
 import { GET_TAGS } from 'graphql/queries/Tags';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
+import { interactiveMessageInfo } from 'common/HelpData';
 
 const getLabel = (text: string) => (
   <p data-testid="label" className={styles.LabelText}>
@@ -118,10 +118,11 @@ export const InteractiveMessageList = () => {
       dialog: setDialog,
     },
     {
-      label: t('Make a copy'),
+      label: t('Copy'),
       icon: <DuplicateIcon />,
       parameter: 'id',
       dialog: handleCopyInteractive,
+      insideMore: true,
     },
   ];
 
@@ -130,34 +131,28 @@ export const InteractiveMessageList = () => {
     fetchPolicy: 'network-only',
   });
 
-  // OnChange handler for the dropdown
-  const handleDropdownChange = (event: any) => {
-    setSelectedTag(event.target.value);
-  };
-
   const tagFilter = (
     <AutoComplete
       isFilterType
       placeholder="Select tag"
       options={tag ? tag.tags : []}
       optionLabel="label"
-      disabled={false}
-      hasCreateOption={false}
       multiple={false}
       onChange={(value: any) => {
         setSelectedTag(value);
       }}
-      form={{ setFieldValue: handleDropdownChange }}
+      form={{ setFieldValue: () => {} }}
       field={{
+        name: 'selectedtag',
         value: selectedtag,
-        onChange: handleDropdownChange,
       }}
     />
   );
 
   return (
     <List
-      title={t('Interactive msg')}
+      helpData={interactiveMessageInfo}
+      title={t('Interactive messages')}
       listItem="interactiveTemplates"
       listItemName="interactive"
       pageLink="interactive-message"
@@ -167,12 +162,12 @@ export const InteractiveMessageList = () => {
       searchParameter={['term']}
       {...queries}
       {...columnAttributes}
-      button={{ show: true, label: t('Add New'), symbol: '+' }}
+      button={{ show: true, label: t('Create') }}
       additionalAction={additionalAction}
       collapseOpen={open}
       collapseRow={selectedId}
       filters={selectedtag && selectedtag.id && { tagIds: [parseInt(selectedtag.id)] }}
-      filterDropdowm={tagFilter}
+      filterList={tagFilter}
     />
   );
 };

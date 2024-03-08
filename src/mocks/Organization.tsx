@@ -9,6 +9,8 @@ import {
   GET_ORGANIZATION_COUNT,
   GET_ORGANIZATION_PROVIDER,
   GET_QUALITY_RATING,
+  GET_ORGANIZATION_PHONE,
+  GET_ORGANIZATION_SERVICES,
 } from 'graphql/queries/Organization';
 import { BSP_BALANCE_SUBSCRIPTION } from 'graphql/subscriptions/PeriodicInfo';
 
@@ -203,6 +205,24 @@ export const getOrganizationSettings = {
             phone: 911111111111,
           },
         },
+      },
+    },
+  },
+};
+export const getOrganizationServicesQuery = {
+  request: {
+    query: GET_ORGANIZATION_SERVICES,
+  },
+  result: {
+    data: {
+      organizationServices: {
+        dialogflow: true,
+        googleCloudStorage: true,
+        flowUuidDisplay: true,
+        rolesAndPermission: true,
+        contactProfileEnabled: true,
+        ticketingEnabled: true,
+        autoTranslationEnabled: true,
       },
     },
   },
@@ -649,7 +669,21 @@ export const errorBalanceQuery = [
       query: BSPBALANCE,
       variables: { organizationId: null },
     },
-    error: new Error('An error occured'),
+    result: {
+      data: { bspbalance: null },
+    },
+    errors: [
+      {
+        message: 'Error while fetching the BSP balance',
+        path: ['bspbalance'],
+        locations: [
+          {
+            line: 2,
+            column: 3,
+          },
+        ],
+      },
+    ],
   },
 ];
 
@@ -777,6 +811,21 @@ export const getQualityRating = {
     data: {
       qualityRating: {
         currentLimit: 'TIER_1K',
+      },
+    },
+  },
+};
+
+export const getOrganizationPhone = {
+  request: {
+    query: GET_ORGANIZATION_PHONE,
+  },
+  result: {
+    data: {
+      organization: {
+        organization: {
+          contact: { phone: '91987654321' },
+        },
       },
     },
   },

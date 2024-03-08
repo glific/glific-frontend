@@ -28,8 +28,6 @@
 }
 
 .Status {
-  display: flex;
-  align-content: center;
   width: 15%;
 }
 

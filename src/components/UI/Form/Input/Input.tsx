@@ -31,9 +31,15 @@ export interface InputProps {
   inputProp?: any;
   translation?: string;
   onChange?: any;
+  inputLabel?: boolean;
 }
 
-export const Input = ({ textArea = false, disabled = false, ...props }: InputProps) => {
+export const Input = ({
+  textArea = false,
+  disabled = false,
+  inputLabel = false,
+  ...props
+}: InputProps) => {
   const {
     field,
     form,
@@ -103,21 +109,24 @@ export const Input = ({ textArea = false, disabled = false, ...props }: InputPro
       {translation && <div className={styles.Translation}>{translation}</div>}
       <div className={styles.Input} data-testid="input">
         <FormControl fullWidth error={showError}>
-          <InputLabel variant="outlined" className={styles.Label} data-testid="inputLabel">
-            {placeholder}
-          </InputLabel>
+          {inputLabel && (
+            <InputLabel variant="standard" className={styles.Label} data-testid="inputLabel">
+              {placeholder}
+            </InputLabel>
+          )}
           <OutlinedInput
+            placeholder={placeholder}
             data-testid="outlinedInput"
             inputComponent={editor ? editor.inputComponent : undefined}
             inputProps={editor ? editor.inputProps : inputProp}
             type={fieldType}
-            classes={{ multiline: styles.Multiline }}
+            classes={{ multiline: styles.Multiline, input: !textArea ? styles.OutlinedInput : '' }}
             disabled={disabled}
             error={showError}
             multiline={textArea}
             rows={rows}
             className={styles.OutlineInput}
-            label={placeholder}
+            label={inputLabel ? placeholder : ''}
             fullWidth
             {...field}
             onChange={(e) => {

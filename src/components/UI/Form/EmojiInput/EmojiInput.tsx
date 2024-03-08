@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { InputAdornment, IconButton, ClickAwayListener } from '@mui/material';
+import EmojiIcon from 'assets/images/icons/EmojiIcon.svg?react';
 import { EmojiPicker } from 'components/UI/EmojiPicker/EmojiPicker';
 import { Editor } from './Editor';
 import Styles from './EmojiInput.module.css';
@@ -101,7 +102,7 @@ const EmojiPickerComponent = ({
           onClick={() => setShowEmojiPicker(!showEmojiPicker)}
         >
           <span role="img" aria-label="pick emoji">
-            😀
+            <EmojiIcon />
           </span>
         </IconButton>
 

@@ -17,9 +17,7 @@ export const simulatorReleaseSubscription = (variables: any = { organizationId: 
   },
   result: {
     data: {
-      simulatorRelease: {
-        id: '1',
-      },
+      simulatorRelease: '{"simulator_release":{"user_id":1}}',
     },
   },
 });

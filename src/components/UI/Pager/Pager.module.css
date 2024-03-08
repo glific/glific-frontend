@@ -1,56 +1,43 @@
 .TableRow {
   position: relative;
-  display: flex !important;
+  display: flex;
   background-color: white;
-  border-radius: 12px !important;
-  margin-bottom: 12px !important;
-  border: 1px solid #eaedec !important;
+  box-shadow: 0px 4px 4px 0px #0000000a;
+  border-bottom: 1px solid #efefef;
   padding: 4px 13px;
   padding-right: 5px;
 }
 
-.CollapseTableRow {
-  composes: TableRow;
-  margin-top: -20px !important;
-  border-radius: 0 0 12px 12px !important;
-}
-
-.TableHeadRow {
-  display: flex !important;
-  margin-bottom: 4px !important;
-  padding: 0px 16px;
-  padding-right: 5px;
-  line-height: 1 !important;
-  text-transform: uppercase;
-}
-
 .TableCell {
-  font-size: 14px !important;
-  display: flex !important;
-  padding: 0px 10px !important;
-  border: unset !important;
+  font-size: 14px;
+  display: flex;
+  padding: 0px 10px;
+  margin: 0;
+  border: unset;
+  color: #0c1f14;
 }
 
 .TableContainer {
-  margin: 14px 24px;
-  margin-bottom: 50px;
-  overflow: auto;
+  padding: 18px 56px;
+  overflow: hidden;
+  height: calc(100vh - 200px);
 }
 
 .TableFooter {
-  position: fixed;
-  display: flex !important;
-  justify-content: flex-end !important;
-  width: 100%;
-  background: #f9f7f3;
+  border-radius: 0 0 10px 10px;
+  display: flex;
+  justify-content: flex-end;
+  height: 50px;
+  background: #fff;
   bottom: 0px;
   right: 4px;
+  box-shadow: 0px -4px 4px 0px rgba(0, 0, 0, 0.04);
 }
 
 .FooterRow {
-  border: 0px !important;
-  font-size: 16px !important;
-  color: #073f24 !important;
+  border: 0px;
+  font-size: 16px;
+  color: #073f24;
 }
 
 .FooterRow > div {
@@ -61,7 +48,7 @@
   margin-right: 23px;
   text-align: left;
   padding: 12px 0px;
-  font-size: 16px;
+  font-size: 14px;
   color: #93a29b;
   line-height: 1.25;
   white-space: pre-line;
@@ -71,7 +58,7 @@
 .LabelText {
   display: flex;
   font-weight: 500;
-  font-size: 20px;
+  font-size: 18px;
   color: #073f24;
   margin-top: 12px;
   margin-bottom: 12px;
@@ -83,5 +70,40 @@
 }
 
 .InactiveRow {
-  color: #ccd4d0 !important;
+  color: #ccd4d0;
+}
+
+.Body {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.RowStyle {
+  padding: 15px 20px 15px 25px;
+}
+
+.RowHeadStyle {
+  background-color: #dfece2;
+  color: rgba(12, 31, 20, 0.57);
+  z-index: 100;
+  padding-left: 22px;
+  padding-right: 25px;
+}
+
+.HeaderColor {
+  color: rgba(12, 31, 20, 0.57);
+}
+
+.StyleForContainer {
+  height: calc(100% - 50px);
+  background: #fff;
+  overflow-y: scroll;
+  scrollbar-width: none;
+  border-radius: 10px 10px 0 0;
+}
+
+.Skeleton {
+  margin: 10px;
 }

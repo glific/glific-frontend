@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+
 import { FormControl, MenuItem, Select } from '@mui/material';
 
 import FlowIcon from 'assets/images/icons/Flow/Dark.svg?react';
@@ -14,12 +15,12 @@ import { FILTER_FLOW, GET_FLOW_COUNT, EXPORT_FLOW, RELEASE_FLOW } from 'graphql/
 import { DELETE_FLOW, IMPORT_FLOW } from 'graphql/mutations/Flow';
 import { List } from 'containers/List/List';
 import { ImportButton } from 'components/UI/ImportButton/ImportButton';
-import Loading from 'components/UI/Layout/Loading/Loading';
 import { STANDARD_DATE_TIME_FORMAT } from 'common/constants';
 import { exportFlowMethod, organizationHasDynamicRole } from 'common/utils';
 import styles from './FlowList.module.css';
 import { GET_TAGS } from 'graphql/queries/Tags';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
+import { flowInfo } from 'common/HelpData';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 
 const getName = (text: string, keywordsList: any, roles: any) => {
@@ -27,14 +28,14 @@ const getName = (text: string, keywordsList: any, roles: any) => {
   const accessRoles = roles && roles.map((role: any) => role.label);
   const hasDynamicRole = organizationHasDynamicRole();
   return (
-    <p className={styles.NameText}>
+    <div className={styles.NameText}>
       {text}
       <br />
       <span className={styles.Keyword}>{keywords.join(', ')}</span>
       {hasDynamicRole && (
         <span className={styles.Roles}>{accessRoles && accessRoles.join(', ')} </span>
       )}
-    </p>
+    </div>
   );
 };
 
@@ -50,6 +51,7 @@ const getLastPublished = (date: string, fallback: string = '') =>
   ) : (
     <div className={styles.LastPublishedFallback}>{fallback}</div>
   );
+const getLabel = (tag: any) => <div className={styles.LabelButton}>{tag.label}</div>;
 
 const displayPinned = (isPinned: boolean) => {
   if (isPinned) {
@@ -62,6 +64,7 @@ const columnStyles = [
   styles.Pinned,
   styles.Name,
   styles.DateColumn,
+  styles.Label,
   styles.DateColumn,
   styles.Actions,
 ];
@@ -152,16 +155,18 @@ export const FlowList = () => {
       link: '/flow/configure',
     },
     {
-      label: t('Make a copy'),
+      label: t('Copy'),
       icon: <DuplicateIcon />,
       parameter: 'id',
+      insideMore: true,
       dialog: setDialog,
     },
     {
-      label: t('Export flow'),
-      icon: <ExportIcon data-testid="export-icon" />,
+      label: t('Export'),
+      icon: <ExportIcon data-testid="export-icon" className={styles.IconSize} />,
       parameter: 'id',
       dialog: exportFlow,
+      insideMore: true,
     },
   ];
 
@@ -170,12 +175,14 @@ export const FlowList = () => {
     keywords,
     lastChangedAt,
     lastPublishedAt,
-    isPinned,
+    tag,
     roles,
+    isPinned,
   }: any) => ({
     pin: displayPinned(isPinned),
     name: getName(name, keywords, roles),
     lastPublishedAt: getLastPublished(lastPublishedAt, t('Not published yet')),
+    label: tag ? getLabel(tag) : '',
     lastChangedAt: getDate(lastChangedAt, t('Nothing in draft')),
   });
 
@@ -183,6 +190,7 @@ export const FlowList = () => {
     { name: 'is_pinned', label: '', sort: true, order: 'desc' },
     { name: 'name', label: t('Title') },
     { label: t('Last published') },
+    { label: t('Tag') },
     { label: t('Last saved in Draft') },
     { label: t('Actions') },
   ];
@@ -204,80 +212,57 @@ export const FlowList = () => {
     fetchPolicy: 'network-only',
   });
 
-  const ITEM_HEIGHT = 48;
-  const ITEM_PADDING_TOP = 8;
-  const MenuProps = {
-    PaperProps: {
-      style: {
-        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-        width: 250,
-      },
-    },
-  };
-
-  // OnChange handler for the dropdown
-  const handleDropdownChange = (event: any) => {
-    setSelectedTag(event.target.value);
-  };
-
   const activeFilter = (
-    <FormControl sx={{ width: 150 }}>
-      <Select
-        aria-label="template-type"
-        name="template-type"
-        value={filter}
-        onChange={(event) => {
-          const { value } = event.target;
-          setFilter(JSON.parse(value));
+    <>
+      <FormControl>
+        <Select
+          aria-label="template-type"
+          name="template-type"
+          value={filter}
+          onChange={(event) => {
+            const { value } = event.target;
+            setFilter(JSON.parse(value));
+          }}
+          className={styles.SearchBar}
+        >
+          {filterList.map((filter: any) => (
+            <MenuItem key={filter.label} value={filter.value}>
+              {filter.label}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+      <AutoComplete
+        isFilterType
+        placeholder="Select tag"
+        options={tag ? tag.tags : []}
+        optionLabel="label"
+        multiple={false}
+        onChange={(value: any) => {
+          setSelectedTag(value);
         }}
-        MenuProps={MenuProps}
-        className={styles.SearchBar}
-        sx={{ '& > fieldset': { border: 'none' } }}
-      >
-        {filterList.map((filter: any) => (
-          <MenuItem key={filter.label} value={filter.value}>
-            {filter.label}
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
+        form={{ setFieldValue: () => {} }}
+        field={{
+          name: 'selectedtag',
+          value: selectedtag,
+        }}
+      />
+    </>
   );
 
-  const tagFilter = (
-    <AutoComplete
-      isFilterType
-      placeholder="Select tag"
-      options={tag ? tag.tags : []}
-      optionLabel="label"
-      disabled={false}
-      hasCreateOption={false}
-      multiple={false}
-      onChange={(value: any) => {
-        setSelectedTag(value);
-      }}
-      form={{ setFieldValue: handleDropdownChange }}
-      field={{
-        value: selectedtag,
-        onChange: handleDropdownChange,
-      }}
-    />
+  const filters = useMemo(
+    () => ({
+      isActive: filter,
+      ...(selectedtag?.id && { tagIds: [parseInt(selectedtag?.id)] }),
+    }),
+    [filter, selectedtag]
   );
-
-  var filters = { isActive: filter };
-
-  filters = {
-    ...filters,
-    ...(selectedtag?.id && { tagIds: [parseInt(selectedtag?.id)] }),
-  };
-
-  if (importing) {
-    return <Loading message="Uploading" />;
-  }
 
   return (
     <>
       {dialog}
       <List
+        helpData={flowInfo}
         title={t('Flows')}
         listItem="flows"
         listItemName="flow"
@@ -288,11 +273,11 @@ export const FlowList = () => {
         {...columnAttributes}
         searchParameter={['name_or_keyword_or_tags']}
         additionalAction={additionalAction}
-        button={{ show: true, label: t('Create Flow'), symbol: '+' }}
+        button={{ show: true, label: t('Create') }}
         secondaryButton={importButton}
         filters={filters}
         filterList={activeFilter}
-        filterDropdowm={tagFilter}
+        loadingList={importing}
       />
     </>
   );

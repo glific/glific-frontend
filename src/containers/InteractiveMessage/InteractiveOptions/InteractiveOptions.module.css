@@ -7,7 +7,6 @@
   align-items: center;
   display: flex;
   padding-top: 24px;
-  padding-bottom: 16px;
 }
 
 .RadioLabelWrapper:last-child {
@@ -15,8 +14,6 @@
 }
 
 .RadioLabelWrapper > label {
-  border: solid 2px;
-  color: #073f24;
   margin: 0px;
   padding: 0px 12px;
   border-radius: 21px;
@@ -25,18 +22,21 @@
 }
 
 .RadioLabelWrapper > label > span {
-  padding-left: 0px !important;
+  padding-left: 0px;
+  color: #555555;
+  font-weight: 500;
+  font-size: 16px;
 }
 
 .RadioLabel > span {
-  line-height: 1 !important;
-  font-weight: 500 !important;
-  font-size: 16px !important;
-  font-family: 'Heebo', sans-serif !important;
+  line-height: 1;
+  font-weight: 500;
+  font-size: 16px;
+  font-family: 'Heebo', sans-serif;
 }
 
 .SelectedLabel {
-  border-color: #073f24 !important;
+  border-color: #073f24;
 }
 
 .GlobalButton {
@@ -44,9 +44,12 @@
 }
 
 .TemplateFields {
-  padding: 24px;
-  background: white;
-  border-radius: 12px;
+  background: #f8faf5;
+  border-radius: 10px;
+  border: 1px solid #cccccc;
+  padding: 16px 24px 8px 24px;
+  margin-bottom: 25px;
+  margin-top: 15px;
 }
 
 .Translation {
@@ -56,6 +59,20 @@
   white-space: pre-line;
   color: #aa9677;
   margin-bottom: 8px;
+}
+
+.TemplateFieldsList {
+  margin-top: 5px;
+}
+
+.FieldLabel {
+  margin-top: 16px;
+  vertical-align: middle;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 18px;
+  color: #555555;
+  margin-bottom: 15px;
 }
 
 @media screen and (max-width: 768px) {

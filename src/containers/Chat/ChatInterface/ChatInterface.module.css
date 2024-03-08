@@ -8,30 +8,10 @@
 }
 
 .ChatConversations {
-  width: 339px !important;
-  min-width: 339px !important;
-  border-left: 1px solid rgba(0, 0, 0, 0.12);
-}
-
-@media only screen and (max-width: 768px) {
-  .ChatConversations {
-    width: 100% !important;
-  }
-
-  .ChatMessages {
-    display: none;
-    width: 100%;
-  }
-
-  .TabContainer {
-    display: flex !important;
-    width: 100% !important;
-    justify-content: center;
-  }
-  .ToolBar {
-    padding: 24px 16px 0 16px !important;
-    width: 100% !important;
-  }
+  width: 380px !important;
+  min-width: 380px !important;
+  border-left: 1px solid #d9d9d9;
+  background-color: #f4f7ee;
 }
 
 .NoConversations {
@@ -50,41 +30,24 @@
 }
 
 .Title {
-  display: inline-block;
-  width: 100%;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  width: calc(100% - 30px);
+  color: #191c1a;
+  font-size: 20px;
+  font-weight: 700;
+  margin: 25px 0 23px 24px;
 }
 
-/* Overriding Typography styling */
-.TitleText {
-  font-size: 16px !important;
-  margin: 4px 0px 5px 0px !important;
-  color: #93a29b;
-  cursor: pointer;
-  line-height: 1 !important;
-}
-
-.SelectedTab {
-  color: #073f24 !important;
-}
-
-.ToolBar {
-  padding: 24px 16px 0 16px !important;
-  width: 338px;
-}
 .TabContainer {
-  display: -webkit-inline-box;
-  width: 345px;
-}
-
-.TabContainer > div {
-  width: 85px;
-  margin-right: 12px;
-}
-
-.TabContainer > div:last-child {
-  width: auto;
-  margin-right: 0px;
+  display: flex;
+  justify-content: space-between;
+  padding: 4px;
+  margin: 0 16px 12px 16px;
+  border-radius: 24px;
+  background: #fff;
+  box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.08);
+  width: fit-content;
 }
 
 .Title a {
@@ -92,20 +55,55 @@
   color: inherit;
 }
 
-.LightHighLighter {
-  display: flex;
-  align-items: center;
-  background-color: #93a29b;
-  height: 1px;
-  margin: 2px -6px;
+.Tab {
+  color: #191c1a;
+  width: 110px;
+  height: 32px;
+  font-size: 13px;
+  text-decoration: none;
+  text-transform: none;
+  z-index: 1;
+  font-weight: 700;
 }
 
-.DarkHighLighter {
+.TabSelected {
+  color: #fff !important;
+}
+
+/* Overriding Typography styling */
+.TitleText {
+  color: #191c1a;
+  cursor: pointer;
+  font-size: 13px;
   display: flex;
   align-items: center;
-  background-color: #073f24;
-  height: 4px;
-  margin: 0px -6px;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
+  font-style: normal;
+  font-weight: 700;
+}
+
+@media only screen and (max-width: 768px) {
+  .ChatConversations {
+    width: 100% !important;
+  }
+
+  .ChatMessages {
+    display: none;
+    width: 100%;
+  }
+
+  .ToolBar {
+    padding: 24px 16px 0 16px !important;
+    width: 100% !important;
+  }
+}
+
+.SimulatorIcon {
+  cursor: pointer;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
+
+.Heading {
+  margin-right: 10px;
 }

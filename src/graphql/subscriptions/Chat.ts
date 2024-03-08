@@ -53,6 +53,9 @@ export const MESSAGE_RECEIVED_SUBSCRIPTION = gql`
           name
         }
       }
+      contact {
+        bspStatus
+      }
       interactiveContent
       flowLabel
       sendBy

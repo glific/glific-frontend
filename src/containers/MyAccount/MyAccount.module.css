@@ -1,10 +1,11 @@
 .MyAccount {
-  width: fit-content;
+  width: 500px;
+  padding: 12px 32px;
 }
 
 .Title {
   margin-left: 24px !important;
-  margin-top: 16px !important;
+  margin-top: 30px !important;
   vertical-align: middle;
   font-weight: 500 !important;
   color: #073f24;
@@ -16,12 +17,29 @@
 }
 
 .Form {
-  padding: 16px 24px;
-  width: 530px;
+  padding: 10px 24px;
 }
 
 .HelperText {
   padding-top: 10px;
   color: #93a29b !important;
   font-size: 14px !important;
+}
+
+.FieldLabel {
+  margin-top: 24px;
+  vertical-align: middle;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 18px;
+  color: #555555;
+  padding-bottom: 14px;
+}
+
+.UserField {
+  padding: 0px 20px;
+}
+
+.ChangePasswordField {
+  margin-bottom: 20px;
 }

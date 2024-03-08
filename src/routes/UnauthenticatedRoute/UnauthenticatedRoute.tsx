@@ -1,8 +1,8 @@
 import { lazy, Suspense } from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
-
-import Loading from 'components/UI/Layout/Loading/Loading';
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
+
+import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { RECAPTCHA_CLIENT_KEY } from 'config';
 
 export const UnauthenticatedRoute = () => {

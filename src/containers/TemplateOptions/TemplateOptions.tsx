@@ -20,6 +20,7 @@ import {
   QUICK_REPLY,
 } from 'common/constants';
 import styles from './TemplateOptions.module.css';
+import { Fragment } from 'react';
 
 export interface TemplateOptionsProps {
   isAddButtonChecked: boolean;
@@ -91,7 +92,7 @@ export const TemplateOptions = ({
 
     if (templateType === CALL_TO_ACTION) {
       template = (
-        <div className={styles.CallToActionContainer} key={index.toString()}>
+        <Fragment>
           <div className={styles.CallToActionWrapper}>
             <div>
               <div className={styles.RadioStyles}>
@@ -163,7 +164,6 @@ export const TemplateOptions = ({
                   defaultValue={value}
                   placeholder={buttonTitle}
                   variant="outlined"
-                  label={buttonTitle}
                   onBlur={(e: any) => onInputChange(e, row, index, 'title')}
                   className={styles.TextField}
                   error={isError('title')}
@@ -183,7 +183,6 @@ export const TemplateOptions = ({
                   disabled={disabled}
                   placeholder={buttonValue}
                   variant="outlined"
-                  label={buttonValue}
                   onBlur={(e: any) => onInputChange(e, row, index, 'value')}
                   className={styles.TextField}
                   error={isError('value')}
@@ -196,26 +195,25 @@ export const TemplateOptions = ({
               </FormControl>
             </div>
           </div>
-          <div>
+          <div className={styles.Button}>
             {inputFields.length === index + 1 && inputFields.length !== 2
               ? addButton(arrayHelpers, true)
               : null}
           </div>
-        </div>
+        </Fragment>
       );
     }
 
     if (templateType === QUICK_REPLY) {
       template = (
-        <div className={styles.QuickReplyContainer} key={index.toString()}>
-          <div className={styles.QuickReplyWrapper}>
+        <>
+          <div className={styles.QuickReplyWrapper} key={index.toString()}>
             <FormControl fullWidth error={isError('value')} className={styles.FormControl}>
               <TextField
                 disabled={disabled}
                 defaultValue={value}
                 title={title}
                 placeholder={`Quick reply ${index + 1} title`}
-                label={`Quick reply ${index + 1} title`}
                 variant="outlined"
                 onBlur={(e: any) => onInputChange(e, row, index, 'value')}
                 className={styles.TextField}
@@ -243,7 +241,7 @@ export const TemplateOptions = ({
               ? addButton(arrayHelpers)
               : null}
           </div>
-        </div>
+        </>
       );
     }
     return template;
@@ -283,20 +281,16 @@ export const TemplateOptions = ({
       </RadioGroup>
 
       {templateType ? (
-        <div
-          className={
-            templateType === QUICK_REPLY
-              ? styles.QuickTemplateFields
-              : styles.CallToActionTemplateFields
-          }
-        >
+        <div className={styles.CallToActionTemplateFields}>
           <FieldArray
             name="templateButtons"
-            render={(arrayHelpers: any) =>
-              values.templateButtons.map((row: any, index: any) =>
-                getButtons(row, index, arrayHelpers)
-              )
-            }
+            render={(arrayHelpers: any) => (
+              <div className={styles.QuickReplyContainer}>
+                {values.templateButtons.map((row: any, index: any) => (
+                  <div key={index}> {getButtons(row, index, arrayHelpers)}</div>
+                ))}
+              </div>
+            )}
           />
         </div>
       ) : null}

@@ -65,6 +65,13 @@ export const Auth = ({
       .catch((error) => setLogs(`orgName error ${JSON.stringify(error)}`, error));
   }, []);
 
+  useEffect(() => {
+    // Stop loading if any error
+    if (loading && errorMessage) {
+      setLoading(false);
+    }
+  }, [loading, errorMessage]);
+
   const boxClass = [styles.Box];
   const boxTitleClass = [styles.BoxTitle];
   let buttonClass = styles.AuthButton;
@@ -105,9 +112,6 @@ export const Auth = ({
   if (errorMessage) {
     displayErrorMessage = <div className={styles.ErrorMessage}>{errorMessage}</div>;
   }
-
-  // Stop loading if any error
-  if (loading && displayErrorMessage) setLoading(false);
 
   const handlePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -159,7 +163,22 @@ export const Auth = ({
                     fieldInfo = { ...field, handlePhone };
                   }
                   const key = index;
-                  return <Field key={key} {...fieldInfo} />;
+                  return (
+                    <div key={key}>
+                      {field.label ? (
+                        <Typography
+                          data-testid="formLabel"
+                          variant="h5"
+                          className={styles.FieldLabel}
+                        >
+                          {field.label}
+                        </Typography>
+                      ) : (
+                        <div className={styles.Spacing} />
+                      )}
+                      <Field {...fieldInfo} />
+                    </div>
+                  );
                 })}
                 <div className={styles.Link}>
                   <Link to={`/${linkURL}`}>{linkText}</Link>

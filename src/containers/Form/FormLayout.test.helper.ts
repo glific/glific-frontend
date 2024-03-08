@@ -9,6 +9,7 @@ import { GET_FLOW } from 'graphql/queries/Flow';
 import { filterFlowQuery, getFlowCountQuery, getFlowQuery, releaseFlow } from 'mocks/Flow';
 import { FormLayoutProps } from './FormLayout';
 import { getRoleNamesMock } from 'containers/StaffManagement/StaffManagement.test.helper';
+import { getFilterTagQuery } from 'mocks/Tag';
 
 const FormSchema = Yup.object();
 
@@ -90,4 +91,5 @@ export const LIST_ITEM_MOCKS = [
   filterFlowQuery,
   getFlowCountQuery,
   getFlowCountQuery,
+  getFilterTagQuery,
 ];

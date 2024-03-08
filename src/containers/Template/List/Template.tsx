@@ -2,7 +2,7 @@ import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
-import { Checkbox, FormControlLabel } from '@mui/material';
+import { FormControl, MenuItem, Select } from '@mui/material';
 import { useMutation, useQuery } from '@apollo/client';
 
 import { List } from 'containers/List/List';
@@ -18,21 +18,24 @@ import {
   DELETE_TEMPLATE,
   IMPORT_TEMPLATES,
 } from 'graphql/mutations/Template';
+import { GET_TAGS } from 'graphql/queries/Tags';
 import { ImportButton } from 'components/UI/ImportButton/ImportButton';
 import DownArrow from 'assets/images/icons/DownArrow.svg?react';
 import ApprovedIcon from 'assets/images/icons/Template/Approved.svg?react';
 import RejectedIcon from 'assets/images/icons/Template/Rejected.svg?react';
+import ReportIcon from 'assets/images/icons/Template/Report.svg?react';
 import PendingIcon from 'assets/images/icons/Template/Pending.svg?react';
 import DuplicateIcon from 'assets/images/icons/Duplicate.svg?react';
+import CopyAllOutlined from 'assets/images/icons/Flow/Copy.svg?react';
 import { ProviderContext } from 'context/session';
 import { copyToClipboardMethod, exportCsvFile, getFileExtension } from 'common/utils';
-import Loading from 'components/UI/Layout/Loading/Loading';
+import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { setNotification } from 'common/notification';
 import { BULK_APPLY_SAMPLE_LINK } from 'config';
+import { speedSendInfo, templateInfo } from 'common/HelpData';
 import styles from './Template.module.css';
-import { CopyAllOutlined } from '@mui/icons-material';
-import { GET_TAGS } from 'graphql/queries/Tags';
-import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
+import { RaiseToGupShup } from './RaiseToGupShup';
 
 const getLabel = (label: string) => <div className={styles.LabelText}>{label}</div>;
 
@@ -59,8 +62,9 @@ export interface TemplateProps {
   pageLink: string;
   listIcon: any;
   filters: any;
-  buttonLabel: string;
   isHSM?: boolean;
+  loading?: boolean;
+  syncHSMButton?: any;
 }
 
 const statusFilter = {
@@ -76,8 +80,9 @@ export const Template = ({
   pageLink,
   listIcon,
   filters: templateFilters,
-  buttonLabel,
   isHSM,
+  loading = false,
+  syncHSMButton,
 }: TemplateProps) => {
   const [open, setOpen] = useState(false);
   const [Id, setId] = useState('');
@@ -89,6 +94,8 @@ export const Template = ({
   const [importing, setImporting] = useState(false);
 
   const [filters, setFilters] = useState<any>({ ...statusFilter, APPROVED: true });
+
+  const [raiseToGupshupTemplate, setRaiseToGupshupTemplate] = useState<any>(null);
 
   const { data: tag } = useQuery(GET_TAGS, {
     variables: {},
@@ -132,27 +139,27 @@ export const Template = ({
     switch (status) {
       case 'APPROVED':
         statusValue = (
-          <>
+          <div className={styles.AlignCenter}>
             <ApprovedIcon />
             {t('Approved')}
-          </>
+          </div>
         );
         break;
       case 'PENDING':
         statusValue = (
-          <>
+          <div className={styles.AlignCenter}>
             <PendingIcon />
             {t('Pending')}
-          </>
+          </div>
         );
         break;
 
       case 'REJECTED':
         statusValue = (
-          <>
+          <div className={styles.AlignCenter}>
             <RejectedIcon />
             {t('Rejected')}
-          </>
+          </div>
         );
         break;
 
@@ -160,7 +167,7 @@ export const Template = ({
         statusValue = status;
     }
 
-    return <span className={styles.Status}>{statusValue}</span>;
+    return <span>{statusValue}</span>;
   };
 
   const columnNames: any = [
@@ -179,7 +186,7 @@ export const Template = ({
 
   columnNames.push({ label: t('Actions') });
 
-  let columnStyles: any = [styles.Label, styles.Body];
+  let columnStyles: any = [styles.Name, styles.Body];
 
   columnStyles = isHSM
     ? [...columnStyles, styles.Status, ...(filters.REJECTED ? [styles.Reason] : []), styles.Actions]
@@ -234,6 +241,14 @@ export const Template = ({
     navigate(`/${redirectPath}/${id}/edit`, { state: 'copy' });
   };
 
+  const showRaiseToGupShupDialog = (id: any, item: any) => {
+    setRaiseToGupshupTemplate(item);
+  };
+
+  const closeDialogBox = () => {
+    setRaiseToGupshupTemplate(null);
+  };
+
   const setDialog = (id: string) => {
     if (Id !== id) {
       setId(id);
@@ -244,10 +259,11 @@ export const Template = ({
   };
 
   const copyAction = {
-    label: t('Make a copy'),
+    label: t('Copy'),
     icon: <DuplicateIcon />,
     parameter: 'id',
     dialog: setCopyDialog,
+    insideMore: true,
   };
 
   let additionalAction: any = () => [
@@ -266,8 +282,9 @@ export const Template = ({
 
   let filterValue: any = '';
   const statusList = ['Approved', 'Pending', 'Rejected'];
+
   const handleCheckedBox = (event: any) => {
-    setFilters({ ...statusFilter, [event.target.name.toUpperCase()]: event.target.checked });
+    setFilters({ ...statusFilter, [event.target.value.toUpperCase()]: true });
   };
 
   const filterStatusName = Object.keys(filters).filter((status) => filters[status] === true);
@@ -276,57 +293,95 @@ export const Template = ({
   }
 
   const filterTemplateStatus = (
-    <div className={styles.Filters}>
-      {statusList.map((label, index) => {
-        const key = index;
-        const checked = filters[label.toUpperCase()];
-        return (
-          <FormControlLabel
-            key={key}
-            control={
-              <Checkbox
-                checked={checked}
-                color="primary"
-                onChange={handleCheckedBox}
-                name={statusList[index]}
-              />
-            }
-            label={statusList[index]}
-            classes={{
-              label: styles.FilterLabel,
-            }}
-          />
-        );
-      })}
-    </div>
+    <>
+      <FormControl className={styles.FormStyle}>
+        <Select
+          aria-label="template-type"
+          name="template-type"
+          value={statusList.filter((status) => filters[status.toUpperCase()] && status)}
+          onChange={handleCheckedBox}
+          className={styles.DropDown}
+          data-testid="dropdown-template"
+        >
+          {statusList.map((status: any) => (
+            <MenuItem data-testid="template-item" key={status} value={status}>
+              {status}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+      <AutoComplete
+        isFilterType
+        placeholder="Select tag"
+        options={tag ? tag.tags : []}
+        optionLabel="label"
+        multiple={false}
+        onChange={(value: any) => {
+          setSelectedTag(value);
+        }}
+        form={{ setFieldValue: () => {} }}
+        field={{
+          value: selectedTag,
+        }}
+      />
+      {syncHSMButton}
+    </>
   );
 
   let appliedFilters = templateFilters;
+
+  const raiseToGupshup = {
+    label: t('Report'),
+    icon: <ReportIcon />,
+    parameter: 'id',
+    dialog: showRaiseToGupShupDialog,
+    hidden: filterValue !== 'REJECTED',
+    insideMore: true,
+  };
 
   if (isHSM) {
     additionalAction = () => [
       {
         label: t('Copy UUID'),
-        icon: <CopyAllOutlined sx={{ mt: 1, color: '#073F24' }} data-testid="copy-button" />,
+        icon: <CopyAllOutlined data-testid="copy-button" />,
         parameter: 'id',
         dialog: copyUuid,
       },
       copyAction,
+      raiseToGupshup,
     ];
     defaultSortBy = 'STATUS';
     appliedFilters = { ...templateFilters, status: filterValue };
+  }
+  let dialogBox;
+  if (raiseToGupshupTemplate) {
+    dialogBox = (
+      <RaiseToGupShup
+        handleCancel={closeDialogBox}
+        templateId={raiseToGupshupTemplate?.id}
+        label={raiseToGupshupTemplate?.label}
+      />
+    );
   }
 
   if (importing) {
     return <Loading message="Please wait while we process all the templates" />;
   }
 
-  const button = { show: true, label: buttonLabel, symbol: '+' };
+  const button = { show: true, label: t('Create') };
   let secondaryButton = null;
 
   if (isHSM) {
     secondaryButton = (
       <div className={styles.ImportButton}>
+        <a
+          href={BULK_APPLY_SAMPLE_LINK}
+          target="_blank"
+          rel="noreferrer"
+          className={styles.HelperText}
+        >
+          View Sample
+        </a>
         <ImportButton
           title={t('Bulk apply')}
           onImport={() => setImporting(true)}
@@ -340,14 +395,6 @@ export const Template = ({
             }
           }}
         />
-        <a
-          href={BULK_APPLY_SAMPLE_LINK}
-          target="_blank"
-          rel="noreferrer"
-          className={styles.HelperText}
-        >
-          View Sample
-        </a>
       </div>
     );
   }
@@ -371,56 +418,35 @@ export const Template = ({
     button.show = false;
   }
 
-  // OnChange handler for the dropdown
-  const handleDropdownChange = (event: any) => {
-    setSelectedTag(event.target.value);
-  };
-
-  const tagFilter = (
-    <AutoComplete
-      isFilterType
-      placeholder="Select tag"
-      options={tag ? tag.tags : []}
-      optionLabel="label"
-      disabled={false}
-      hasCreateOption={false}
-      multiple={false}
-      onChange={(value: any) => {
-        setSelectedTag(value);
-      }}
-      form={{ setFieldValue: handleDropdownChange }}
-      field={{
-        value: selectedTag,
-        onChange: handleDropdownChange,
-      }}
-    />
-  );
-
   appliedFilters = {
     ...appliedFilters,
     ...(selectedTag?.id && { tagIds: [parseInt(selectedTag?.id)] }),
   };
 
   return (
-    <List
-      secondaryButton={secondaryButton}
-      title={title}
-      listItem={listItem}
-      listItemName={listItemName}
-      pageLink={pageLink}
-      listIcon={listIcon}
-      additionalAction={additionalAction}
-      dialogMessage={dialogMessage}
-      filters={appliedFilters}
-      defaultSortBy={defaultSortBy}
-      button={button}
-      {...columnAttributes}
-      {...queries}
-      filterList={isHSM && filterTemplateStatus}
-      collapseOpen={open}
-      collapseRow={Id}
-      filterDropdowm={isHSM && tagFilter}
-    />
+    <>
+      {dialogBox}
+      <List
+        loadingList={loading}
+        helpData={isHSM ? templateInfo : speedSendInfo}
+        secondaryButton={secondaryButton}
+        title={title}
+        listItem={listItem}
+        listItemName={listItemName}
+        pageLink={pageLink}
+        listIcon={listIcon}
+        additionalAction={additionalAction}
+        dialogMessage={dialogMessage}
+        filters={appliedFilters}
+        defaultSortBy={defaultSortBy}
+        button={button}
+        {...columnAttributes}
+        {...queries}
+        filterList={isHSM && filterTemplateStatus}
+        collapseOpen={open}
+        collapseRow={Id}
+      />
+    </>
   );
 };
 

@@ -135,7 +135,6 @@ export const OrganizationList = ({
       </div>
     );
     const isConfirmed = orgName === deleteItemName;
-    console.log(orgName, deleteItemName);
     const payload = {
       isConfirmed,
       deleteOrganizationID: deleteItemID,

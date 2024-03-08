@@ -33,7 +33,5 @@ describe('layout testing', () => {
       </MockedProvider>
     );
     fireEvent.click(getByTestId('menu-icon'));
-
-    // Todo: add an assertion here
   });
 });

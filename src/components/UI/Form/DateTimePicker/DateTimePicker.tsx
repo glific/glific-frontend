@@ -49,6 +49,12 @@ export const DateTimePicker = ({
           value={dateValue}
           slotProps={{
             textField: {
+              inputProps: {
+                className: styles.Input,
+              },
+              InputLabelProps: {
+                className: styles.Label,
+              },
               helperText: hasError ? errorText : '',
               error: hasError,
             },

@@ -20,10 +20,12 @@
 }
 
 .StyledListItem {
-  height: 76px;
-  padding: 8px 16px 8px 0px !important;
+  height: 80px;
+  margin: 8px !important;
   display: flex;
-  border-radius: 15px !important;
+  border-radius: 10px !important;
+  background-color: #fff;
+  padding: 12px;
 }
 
 .ChatPicture {
@@ -51,18 +53,22 @@
 }
 
 .ChatName {
+  color: #191c1a;
   font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  letter-spacing: -0.16px;
 }
 
 .MessageContent {
-  font-weight: 400;
-  font-size: 15px;
-  display: flex;
-  margin-top: 2px;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
   font-size: 14px;
+  color: #555;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: -0.14px;
 }
 
 .MessageContent p {
@@ -74,15 +80,16 @@
 }
 
 .MessageDate {
-  position: absolute;
-  color: gray;
   top: 20px;
   right: 0;
-  font-size: 13px;
+  color: #93a29b;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
 }
 
 .SelectedColor {
-  background-color: #e2f1ea !important;
+  background: #cce6d0 !important;
 }
 
 .Timer {

@@ -2,7 +2,6 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-
 import TriggerIcon from 'assets/images/icons/Trigger/Union.svg?react';
 import ClockIcon from 'assets/images/icons/Trigger/Clock.svg?react';
 import ClockInactiveIcon from 'assets/images/icons/Trigger/Inactive.svg?react';
@@ -13,6 +12,7 @@ import { EXTENDED_DATE_TIME_FORMAT_WITH_AMPM, LONG_DATE_FORMAT, dayList } from '
 import { List } from 'containers/List/List';
 import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import styles from './TriggerList.module.css';
+import { triggerInfo } from 'common/HelpData';
 dayjs.extend(relativeTime);
 
 const getTooltip = (frequency: any, days: any) => {
@@ -34,9 +34,9 @@ const getName = ({ flow, startAt, frequency, days, isActive, nextTriggerAt }: an
       <span className={styles.TriggerIcon}>{isActive ? <ClockIcon /> : <ClockInactiveIcon />}</span>
     </Tooltip>
     <div>
-      <p className={styles.LabelText}>
+      <span className={styles.LabelText}>
         <span>{`${flow.name}_${dayjs(startAt).format(EXTENDED_DATE_TIME_FORMAT_WITH_AMPM)}`}</span>
-      </p>
+      </span>
       <div className={styles.NextTrigger}>
         {isActive ? <>Next trigger {dayjs(nextTriggerAt).fromNow()}</> : 'Trigger in inactive'}
       </div>
@@ -80,10 +80,11 @@ export const TriggerList = () => {
 
   const additionalAction = () => [
     {
-      label: t('Make a copy'),
+      label: t('Copy'),
       icon: <DuplicateIcon />,
       parameter: 'id',
       dialog: setDialog,
+      insideMore: true,
     },
   ];
 
@@ -104,11 +105,12 @@ export const TriggerList = () => {
 
   return (
     <List
+      helpData={triggerInfo}
       title="Triggers"
       listItem="triggers"
       listItemName="trigger"
       pageLink="trigger"
-      button={{ show: true, label: t('Create Trigger'), symbol: '+' }}
+      button={{ show: true, label: t('Create') }}
       listIcon={triggerIcon}
       dialogMessage={dialogMessage}
       {...queries}

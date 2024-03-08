@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
 import ErrorBoundary from 'components/errorboundary/ErrorBoundary';
 import { ChatInterface } from 'containers/Chat/ChatInterface/ChatInterface';
@@ -9,6 +9,12 @@ import { useToast } from 'services/ToastService';
 import { ProviderContext } from 'context/session';
 import { GET_ORGANIZATION_PROVIDER } from 'graphql/queries/Organization';
 import styles from './AuthenticatedRoute.module.css';
+import Tag from 'containers/Tag/Tag';
+import TagList from 'containers/Tag/TagList/TagList';
+import OrganizationFlows from 'containers/SettingList/OrganizationFlows/OrganizationFlows';
+import Billing from 'containers/SettingList/Billing/Billing';
+import Providers from 'containers/SettingList/Providers/Providers';
+import Organization from 'containers/SettingList/Organization/Organization';
 
 const Chat = lazy(() => import('containers/Chat/Chat'));
 const Layout = lazy(() => import('components/UI/Layout/Layout'));
@@ -34,22 +40,14 @@ const StaffManagementList = lazy(
 const ContactManagement = lazy(() => import('containers/ContactManagement/ContactManagement'));
 const StaffManagement = lazy(() => import('containers/StaffManagement/StaffManagement'));
 const ContactProfile = lazy(() => import('containers/Profile/Contact/ContactProfile'));
-const UserProfile = lazy(() => import('containers/Profile/User/UserProfile'));
 const MyAccount = lazy(() => import('containers/MyAccount/MyAccount'));
 const HSMList = lazy(() => import('containers/Template/List/HSMList/HSMList'));
 const HSM = lazy(() => import('containers/Template/Form/HSM/HSM'));
 
 const TicketList = lazy(() => import('containers/Ticket/TicketList/TicketList'));
 const SettingList = lazy(() => import('containers/SettingList/SettingList'));
-const Billing = lazy(() => import('containers/SettingList/Billing/Billing'));
-
-const Providers = lazy(() => import('containers/SettingList/Providers/Providers'));
 const BlockContactList = lazy(
   () => import('containers/BlockContact/BlockContactList/BlockContactList')
-);
-const Organization = lazy(() => import('containers/SettingList/Organization/Organization'));
-const OrganizationFlows = lazy(
-  () => import('containers/SettingList/OrganizationFlows/OrganizationFlows')
 );
 const WebhookLogsList = lazy(
   () => import('containers/WebhookLogs/WebhookLogsList/WebhookLogsList')
@@ -76,9 +74,8 @@ const routeStaff = (
   <Routes>
     <Route path="collection" element={<CollectionList />} />
     <Route path="collection/:id/contacts" element={<CollectionContact />} />
-    <Route path="user-profile" element={<UserProfile />} />
     <Route path="ticket" element={<TicketList />} />
-    <Route path="contact-profile/:id" element={<ContactProfile />} />
+    <Route path="contact-profile/:id/*" element={<ContactProfile />} />
     <Route path="blocked-contacts" element={<BlockContactList />} />
     <Route path="myaccount" element={<MyAccount />} />
     <Route path="/*" element={<Chat />} />
@@ -87,6 +84,9 @@ const routeStaff = (
 
 const routeAdmin = (
   <Routes>
+    <Route path="tag" element={<TagList />} />
+    <Route path="tag/:id/edit" element={<Tag />} />
+    <Route path="tag/add" element={<Tag />} />
     <Route path="speed-send" element={<SpeedSendList />} />
     <Route path="speed-send/add" element={<SpeedSend />} />
     <Route path="speed-send/:id/edit" element={<SpeedSend />} />
@@ -116,18 +116,19 @@ const routeAdmin = (
     <Route path="staff-management" element={<StaffManagementList />} />
     <Route path="contact-management" element={<ContactManagement />} />
     <Route path="staff-management/:id/edit" element={<StaffManagement />} />
-    <Route path="contact-profile/:id" element={<ContactProfile />} />
-    <Route path="user-profile" element={<UserProfile />} />
+    <Route path="contact-profile/:id/*" element={<ContactProfile />} />
     <Route path="myaccount" element={<MyAccount />} />
     <Route path="template" element={<HSMList />} />
     <Route path="template/add" element={<HSM />} />
     <Route path="template/:id/edit" element={<HSM />} />
     <Route path="ticket" element={<TicketList />} />
-    <Route path="settings" element={<SettingList />} />
-    <Route path="settings/organization" element={<Organization />} />
-    <Route path="settings/organization-flows" element={<OrganizationFlows />} />
-    <Route path="settings/billing" element={<Billing />} />
-    <Route path="settings/:type" element={<Providers />} />
+    <Route path="settings" element={<SettingList />}>
+      <Route path="" element={<Navigate to="organization" />} />
+      <Route path="organization" element={<Organization />} />
+      <Route path="organization-flows" element={<OrganizationFlows />} />
+      <Route path="billing" element={<Billing />} />
+      <Route path=":type" element={<Providers />} />
+    </Route>
     <Route path="blocked-contacts" element={<BlockContactList />} />
     <Route path="webhook-logs" element={<WebhookLogsList />} />
     <Route path="notifications" element={<NotificationList />} />

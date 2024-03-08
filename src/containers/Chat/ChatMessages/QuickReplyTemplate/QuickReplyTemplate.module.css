@@ -5,13 +5,13 @@
 }
 
 .ButtonItem {
-  margin: 4px 0px;
+  margin: 3px 0px;
 }
 
 .ButtonItem > button {
   width: 100%;
   border-radius: 12px;
-  padding: 8px;
+  padding: 3px;
   font-size: 16px;
   box-shadow: none;
   text-transform: none !important;
