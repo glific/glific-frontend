@@ -203,13 +203,14 @@ export const ConversationList = ({
   );
 
   useEffect(() => {
+    const hasSearchParams = Object.keys(searchParam).length !== 0;
     // Use multi search when has search value and when there is no collection id
-    if (searchVal && Object.keys(searchParam).length === 0 && !selectedCollectionId) {
+    if (searchVal && !hasSearchParams && !selectedCollectionId) {
       addLogs(`Use multi search when has search value`, filterSearch());
       getFilterSearch({
         variables: filterSearch(),
       });
-    } else {
+    } else if (hasSearchParams || savedSearchCriteria) {
       // This is used for filtering the searches, when you click on it, so only call it
       // when user clicks and savedSearchCriteriaId is set.
       addLogs(`filtering the searches`, filterVariables());
