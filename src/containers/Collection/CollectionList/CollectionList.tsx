@@ -22,7 +22,6 @@ import styles from './CollectionList.module.css';
 import { exportCsvFile } from 'common/utils';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { collectionInfo } from 'common/HelpData';
-import { boolean } from 'yup';
 
 const getLabel = (label: string) => <div className={styles.LabelText}>{label}</div>;
 

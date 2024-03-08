@@ -175,7 +175,7 @@ export const ConversationList = ({
       }
     }
     // If tab is collection then add appropriate filter
-    if (selectedCollectionId && !groups) {
+    if (selectedCollectionId) {
       filter.searchGroup = true;
       if (searchVal) {
         delete filter.term;
