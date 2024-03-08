@@ -464,7 +464,7 @@ export const ChatMessages = ({ contactId, collectionId, phoneId }: ChatMessagesP
 
     // if conversation is not present then fetch the collection
     if (conversationIndex < 0) {
-      if ((!loading && !called) || (data && data.search[0].group.id !== collectionId)) {
+      if ((!groups && !loading && !called) || (data && data.search[0].group.id !== collectionId)) {
         const variables = {
           filter: { id: collectionId, searchGroup: true },
           [contactOptions]: { limit: DEFAULT_ENTITY_LIMIT },
