@@ -95,7 +95,6 @@ jobs:
           echo clone cypress repo
           git clone https://github.com/glific/cypress-testing.git
           echo done. go to dir.
-          cd cypress-testing
           cp -r cypress-testing/cypress cypress
           yarn add cypress
           echo Create cypress.config.ts from example
