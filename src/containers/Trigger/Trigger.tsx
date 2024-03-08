@@ -23,6 +23,7 @@ import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { TimePicker } from 'components/UI/Form/TimePicker/TimePicker';
 import { Calendar } from 'components/UI/Form/Calendar/Calendar';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
+import { RadioInput } from 'components/UI/Form/RadioInput/RadioInput';
 import { getAddOrRemoveRoleIds } from 'common/utils';
 import { GET_FLOWS } from 'graphql/queries/Flow';
 import { GET_COLLECTIONS } from 'graphql/queries/Collection';
@@ -54,8 +55,17 @@ const checkDateTimeValidation = (startAtValue: string, startDateValue: string) =
 const setPayload = (payload: any, roles: any) => {
   const payloadCopy = payload;
 
-  const { startDate, startTime, isActive, flowId, frequencyValues, groupIds, endDate, frequency } =
-    payloadCopy;
+  const {
+    startDate,
+    startTime,
+    isActive,
+    flowId,
+    frequencyValues,
+    groupIds,
+    endDate,
+    frequency,
+    isContact,
+  } = payloadCopy;
 
   const groups = groupIds.map((group: any) => parseInt(group.id));
   const startAtTime = dayjs(startTime).format(EXTENDED_TIME_FORMAT);
@@ -74,6 +84,7 @@ const setPayload = (payload: any, roles: any) => {
     startTime: dayjs(startAt).utc().format(EXTENDED_TIME_FORMAT),
     frequency: frequency.value,
     roles: payload.roles,
+    groupType: isContact ? 'WABA' : 'WA',
   };
 
   switch (updatedPayload.frequency) {
@@ -154,6 +165,7 @@ export const Trigger = () => {
   const [triggerFlowWarning, setTriggerFlowWarning] = useState<any>();
   const [frequencyLabel, setFrequencyLabel] = useState('Select days');
   const [frequencyOptions, setFrequencyOptions] = useState(dayList);
+  const [isContact, setIsContact] = useState<boolean>(true);
   const params = useParams();
   const location = useLocation();
   const { t } = useTranslation();
@@ -168,6 +180,7 @@ export const Trigger = () => {
     groupIds,
     isActive,
     roles,
+    isContact,
   };
 
   const triggerFrequencyOptions = [
@@ -379,6 +392,14 @@ export const Trigger = () => {
         ),
     },
     {
+      component: RadioInput,
+      name: 'isContact',
+      label: 'Select Trigger Type',
+      labelYes: 'Contacts',
+      labelNo: 'Whatsapp Groups',
+      handleChange: (value: boolean) => setIsContact(value),
+    },
+    {
       component: AutoComplete,
       name: 'groupIds',
       label: t('Select collection'),
@@ -399,6 +420,7 @@ export const Trigger = () => {
     isRepeating: isRepeatingValue,
     startAt: startAtValue,
     roles: rolesValue,
+    groupType,
   }: any) => {
     setIsRepeating(isRepeatingValue);
     setEndDate(endDateValue);
@@ -419,6 +441,7 @@ export const Trigger = () => {
     setDaysDisabled(frequencyValue !== 'weekly' && frequencyValue !== 'monthly');
 
     setRoles(rolesValue);
+    setIsContact(groupType === 'WABA' ? true : false);
 
     const getFlowId = flow.flows.filter((flows: any) => flows.id === flowValue.id);
 
