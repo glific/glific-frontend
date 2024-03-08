@@ -23,8 +23,8 @@ export const GET_CONTACT_COUNT = gql`
 `;
 
 export const GET_GROUP_COUNT = gql`
-  query countWaGroups($filter: WaGroupsCollectionFilter) {
-    countWaGroupsCollection(filter: $filter)
+  query waGroupsCount($filter: WaGroupFilter) {
+    waGroupsCount(filter: $filter)
   }
 `;
 

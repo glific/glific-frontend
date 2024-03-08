@@ -34,7 +34,7 @@ const getColumns = (fields: any) => {
   };
 };
 
-const columnStyles = [styles.Name, styles.Phone, styles.Actions];
+const columnStyles = [styles.Name, styles.Actions];
 const collectionIcon = <CollectionIcon className={styles.CollectionIcon} />;
 
 const queries = {
@@ -49,67 +49,44 @@ const columnAttributes = {
 };
 
 export const CollectionGroupList = () => {
-  const [addContactsDialogShow, setAddContactsDialogShow] = useState(false);
-  const [contactSearchTerm, setContactSearchTerm] = useState('');
-  const [selectedContacts, setSelectedContact] = useState<any>([]);
-
   const { t } = useTranslation();
   const params = useParams();
 
   const collectionId = params.id;
-  let dialog;
 
-  const [getContacts, { data: contactsData }] = useLazyQuery(CONTACT_SEARCH_QUERY, {
-    variables: setVariables({ name: contactSearchTerm, includeGroups: [collectionId] }, 50),
-  });
-
-  const [deleleCollectionContacts] = useMutation(UPDATE_COLLECTION_CONTACTS);
   const getDeleteQueryVariables = (id: any) => ({
     input: {
-      groupId: collectionId,
-      addContactIds: [],
-      deleteContactIds: [id],
+      waGroupId: collectionId,
+      addGroupIds: [],
+      deleteGroupIds: [id],
     },
   });
 
-  const columnNames = [{ name: 'name', label: t('Beneficiary') }, { label: t('Actions') }];
+  const columnNames = [{ name: 'label', label: 'Group' }, { label: t('Actions') }];
 
   const additionalAction = () => [
     {
       icon: <ArrowForwardIcon className={styles.RedirectArrow} />,
       label: t('View profile'),
-      link: '/contact-profile',
+      link: '/group-details',
       parameter: 'id',
     },
   ];
-  const removeCollectionButton = (
-    <Button
-      variant="contained"
-      color="error"
-      onClick={() => {
-        getContacts();
-        setAddContactsDialogShow(true);
-      }}
-    >
-      Remove contacts
-    </Button>
-  );
 
-  const dialogTitle = t('Are you sure you want to remove contact from this collection?');
-  const dialogMessage = t('The contact will no longer receive messages sent to this collection');
+  const dialogTitle = 'Are you sure you want to remove group from this collection?';
+  const dialogMessage = 'The group will no longer receive messages sent to this collection';
 
   return (
     <>
       <List
         dialogTitle={dialogTitle}
         columnNames={columnNames}
-        title={'Collection'}
+        title={'Group Collection'}
         additionalAction={additionalAction}
-        secondaryButton={removeCollectionButton}
-        listItem="WaGroupsCollection"
-        listItemName="WaGroupsCollection"
+        listItem="waGroups"
+        listItemName="waGroups"
         searchParameter={['term']}
-        filters={{ groupId: collectionId }}
+        filters={{ includeGroups: collectionId }}
         button={{ show: false, label: '' }}
         pageLink="contact"
         listIcon={collectionIcon}

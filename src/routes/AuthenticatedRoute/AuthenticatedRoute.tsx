@@ -147,8 +147,9 @@ const routeAdmin = (
     <Route path="organizations/:id/customer" element={<OrganizationList openCustomerModal />} />
 
     <Route path="group-details/:id/*" element={<GroupDetails />} />
-    <Route path="group/collections" element={<CollectionList />} />
+    <Route path="group/collection" element={<CollectionList />} />
     <Route path="group/collection/add" element={<Collection />} />
+    <Route path="group/collection/:id/edit" element={<Collection />} />
     <Route path="collection/:id/groups" element={<CollectionGroupList />} />
 
     <Route path="/*" element={<Chat />} />

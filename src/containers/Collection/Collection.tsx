@@ -13,7 +13,6 @@ import {
   CREATE_COLLECTION,
   DELETE_COLLECTION,
   UPDATE_COLLECTION_USERS,
-  CREATE_GROUP_COLLECTION,
 } from 'graphql/mutations/Collection';
 import { getAddOrRemoveRoleIds } from 'common/utils';
 import { SEARCH_QUERY } from 'graphql/queries/Search';
@@ -37,8 +36,6 @@ export const Collection = () => {
   const { t } = useTranslation();
   const location = useLocation();
   let groups: boolean = location.pathname.includes('group');
-
-  const create_collection = groups ? CREATE_GROUP_COLLECTION : CREATE_COLLECTION;
 
   const [updateCollectionUsers] = useMutation(UPDATE_COLLECTION_USERS);
 
@@ -196,7 +193,7 @@ export const Collection = () => {
       listItemName="collection"
       dialogMessage={dialogMessage}
       formFields={formFields}
-      redirectionLink="collection"
+      redirectionLink={`${groups ? 'group/' : ''}collection`}
       listItem="group"
       icon={collectionIcon}
       helpData={collectionInfo}

@@ -198,27 +198,30 @@ export const CollectionList = () => {
     }
   };
 
-  const additionalAction = () => [
-    {
-      label: t('View details'),
-      icon: viewButton,
-      parameter: 'id',
-      dialog: viewCollection,
-    },
-    {
-      label: t('Add contacts to collection'),
-      icon: addContactIcon,
-      parameter: 'id',
-      dialog: setContactsDialog,
-    },
-    {
-      label: t('Export'),
-      icon: <ExportIcon />,
-      parameter: 'id',
-      dialog: exportCollection,
-      insideMore: true,
-    },
-  ];
+  const viewDetails = {
+    label: t('View details'),
+    icon: viewButton,
+    parameter: 'id',
+    dialog: viewCollection,
+  };
+
+  const addContacts = {
+    label: t('Add contacts to collection'),
+    icon: addContactIcon,
+    parameter: 'id',
+    dialog: setContactsDialog,
+  };
+
+  const exportCollectionButton = {
+    label: t('Export'),
+    icon: <ExportIcon />,
+    parameter: 'id',
+    dialog: exportCollection,
+    insideMore: true,
+  };
+
+  const additionalAction = () =>
+    groups ? [viewDetails] : [viewDetails, addContacts, exportCollectionButton];
 
   const getRestrictedAction = () => {
     const action: any = { edit: true, delete: true };
@@ -264,7 +267,7 @@ export const CollectionList = () => {
         filters={{
           groupType: groups ? 'WA' : 'WABA',
         }}
-        pageLink="collection"
+        pageLink={`${groups ? 'group/' : ''}collection`}
         listIcon={collectionIcon}
         dialogMessage={dialogMessage}
         additionalAction={additionalAction}

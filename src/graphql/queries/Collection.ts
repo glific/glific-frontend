@@ -59,12 +59,12 @@ export const GET_COLLECTIONS = gql`
 `;
 
 export const GROUP_GET_COLLECTION = gql`
-  query ListWaGroupsCollection($filter: WaGroupsCollectionFilter) {
-    WaGroupsCollection: listWaGroupsCollection(filter: $filter) {
+  query WaGroups($filter: WaGroupFilter, $opts: Opts) {
+    waGroups(filter: $filter, opts: $opts) {
       bspId
       id
-      label
       lastCommunicationAt
+      label
     }
   }
 `;

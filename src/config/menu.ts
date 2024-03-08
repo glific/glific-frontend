@@ -44,7 +44,7 @@ const menus = (): Menu[] => [
       },
       {
         title: 'Group Collections',
-        path: '/group/collections',
+        path: '/group/collection',
         icon: 'chat',
         type: 'sideDrawer',
         roles: allRoles,
