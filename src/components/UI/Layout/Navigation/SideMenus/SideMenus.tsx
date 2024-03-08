@@ -23,8 +23,8 @@ export interface SideMenusProps {
   opened: boolean;
 }
 
-const AddAccordian = ({ defaultExpanded, summary, details, opened }: any) => (
-  <Accordion className={styles.Accordion} defaultExpanded={defaultExpanded}>
+const AddAccordian = ({ summary, details, opened, expanded = false }: any) => (
+  <Accordion className={styles.Accordion} expanded={expanded}>
     <AccordionSummary
       className={styles.AccordionSummary}
       classes={{
@@ -183,7 +183,7 @@ const SideMenus = ({ opened }: SideMenusProps) => {
           selected={menu.children ? false : isSelected}
           className={opened ? styles.OpenItem : styles.ClosedItem}
           onClick={() => {
-            setParentMenu(menu.path);
+            setParentMenu(menu.path === parentMenu ? undefined : menu.path);
           }}
           classes={{
             root: styles.IconItem,
@@ -221,8 +221,8 @@ const SideMenus = ({ opened }: SideMenusProps) => {
           <AddAccordian
             summary={listItemButton}
             details={subMenu}
-            defaultExpanded={isSelected}
             opened={opened}
+            expanded={isSelected}
           />
         </div>
       ) : (
