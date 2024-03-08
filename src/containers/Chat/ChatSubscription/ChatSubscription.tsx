@@ -151,8 +151,6 @@ export const ChatSubscription = ({ setDataLoaded }: ChatSubscriptionProps) => {
           getContactQuery({
             variables,
           }).then(({ data: conversation }) => {
-            console.log(conversation);
-
             if (conversation && conversation.search.length > 0) {
               // save the conversation and update cache
 

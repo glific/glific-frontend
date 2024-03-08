@@ -217,7 +217,6 @@ export const ContactBar = ({
 
     if (finalSelectedCollections.length > 0 || finalRemovedCollections.length > 0) {
       let groupVariable = groups ? 'waGroupId' : 'contactId';
-      console.log(contactId);
 
       updateContactCollections({
         variables: {

@@ -63,7 +63,6 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
       selectedGroupId = '';
     }
   }
-  console.log(selectedCollectionId, data);
 
   // let's handle the case when group id and collection id is not passed in the url then we set the
   // first record as selected group
@@ -111,7 +110,6 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
 
     heading = 'Groups';
   }
-  console.log(heading, selectedTab);
 
   groupChatInterface = (
     <>

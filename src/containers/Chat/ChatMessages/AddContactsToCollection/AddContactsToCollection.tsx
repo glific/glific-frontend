@@ -5,9 +5,8 @@ import { useTranslation } from 'react-i18next';
 import { setNotification } from 'common/notification';
 import { setVariables } from 'common/constants';
 import { CONTACT_SEARCH_QUERY, GET_COLLECTION_CONTACTS } from 'graphql/queries/Contact';
-import { UPDATE_COLLECTION_CONTACTS, UPDATE_COLLECTION_GROUPS } from 'graphql/mutations/Collection';
+import { UPDATE_COLLECTION_CONTACTS } from 'graphql/mutations/Collection';
 import { SearchDialogBox } from 'components/UI/SearchDialogBox/SearchDialogBox';
-import { useLocation } from 'react-router';
 
 interface AddContactsToCollectionProps {
   collectionId: string | undefined;
@@ -20,11 +19,6 @@ export const AddContactsToCollection = ({
 }: AddContactsToCollectionProps) => {
   const [contactSearchTerm, setContactSearchTerm] = useState('');
   const { t } = useTranslation();
-  const location = useLocation();
-  const groups: boolean = location.pathname.includes('group');
-  console.log(groups);
-
-  const update_query = groups ? UPDATE_COLLECTION_GROUPS : UPDATE_COLLECTION_CONTACTS;
 
   const { data: contactsData } = useQuery(CONTACT_SEARCH_QUERY, {
     variables: setVariables({ name: contactSearchTerm }, 50),
@@ -34,7 +28,7 @@ export const AddContactsToCollection = ({
     variables: { id: collectionId },
   });
 
-  const [updateCollectionContacts] = useMutation(update_query, {
+  const [updateCollectionContacts] = useMutation(UPDATE_COLLECTION_CONTACTS, {
     onCompleted: (data) => {
       const { numberDeleted, groupContacts } = data.updateGroupContacts;
       const numberAdded = groupContacts.length;
@@ -75,15 +69,12 @@ export const AddContactsToCollection = ({
     if (selectedContacts.length === 0 && unselectedContacts.length === 0) {
       setDialog(false);
     } else {
-      let addContactVariable = groups ? 'addGroupIds' : 'addContactIds';
-      let deleteContactVariable = groups ? 'deleteGroupIds' : 'deleteContactIds';
-      let groupVariable = groups ? 'waGroupId' : 'groupId';
       updateCollectionContacts({
         variables: {
           input: {
-            [addContactVariable]: selectedContacts,
-            [groupVariable]: collectionId,
-            [deleteContactVariable]: unselectedContacts,
+            addContactIds: selectedContacts,
+            groupId: collectionId,
+            deleteContactIds: unselectedContacts,
           },
         },
       });

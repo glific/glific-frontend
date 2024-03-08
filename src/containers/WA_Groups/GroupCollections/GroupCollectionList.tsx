@@ -1,17 +1,13 @@
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
-import { CONTACT_SEARCH_QUERY, GET_CONTACT_COUNT, GET_GROUP_COUNT } from 'graphql/queries/Contact';
-import { UPDATE_COLLECTION_CONTACTS, UPDATE_COLLECTION_GROUPS } from 'graphql/mutations/Collection';
+import { GET_GROUP_COUNT } from 'graphql/queries/Contact';
+import { UPDATE_COLLECTION_GROUPS } from 'graphql/mutations/Collection';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import CollectionIcon from 'assets/images/icons/Collection/Dark.svg?react';
 import { List } from 'containers/List/List';
 import styles from './GroupCollectionList.module.css';
-import { useLazyQuery, useMutation } from '@apollo/client';
-import { setVariables } from 'common/constants';
-import { SearchDialogBox } from 'components/UI/SearchDialogBox/SearchDialogBox';
-import { Button } from 'components/UI/Form/Button/Button';
+
 import { GROUP_GET_COLLECTION } from 'graphql/queries/Collection';
 
 export interface CollectionGroupListProps {
@@ -27,8 +23,6 @@ const getName = (label: string) => (
 
 const getColumns = (fields: any) => {
   const { label } = fields;
-  console.log(fields);
-
   return {
     label: getName(label),
   };

@@ -129,11 +129,7 @@ export const ConversationList = ({
 
   const filterVariables = () => {
     if (groups) {
-      console.log('ddd');
-
       if (!selectedCollectionId) {
-        console.log(1);
-
         if (phonenumber?.length === 0 || !phonenumber) {
           return GROUP_QUERY_VARIABLES;
         }
@@ -149,8 +145,6 @@ export const ConversationList = ({
           },
         };
       } else {
-        console.log(4);
-
         return GROUP_COLLECTION_SEARCH_QUERY_VARIABLES;
       }
     }
@@ -264,7 +258,6 @@ export const ConversationList = ({
       });
     }
   }, [searchVal, searchParam, savedSearchCriteria, phonenumber]);
-  console.log(searchData, filterVariables());
 
   // Other cases
   if ((called && loading) || conversationLoading) return <Loading />;
