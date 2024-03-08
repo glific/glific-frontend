@@ -135,7 +135,7 @@ export const StaffManagement = () => {
   }, [roles]);
   if (loading || loadingRoles) return <Loading />;
   if (!data.groups || !roleData.accessRoles) {
-    return null;
+    return <div>An error occured! Not able to fetch collections or roles</div>;
   }
 
   let rolesList: any = [];

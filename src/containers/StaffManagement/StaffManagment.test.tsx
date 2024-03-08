@@ -2,7 +2,10 @@ import { render, fireEvent, waitFor, screen } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { StaffManagement } from './StaffManagement';
-import { STAFF_MANAGEMENT_MOCKS } from './StaffManagement.test.helper';
+import {
+  STAFF_MANAGEMENT_MOCKS,
+  STAFF_MANAGEMENT_MOCKS_WITH_EMPTY_ROLES,
+} from './StaffManagement.test.helper';
 import * as Notification from 'common/notification';
 import * as Utils from 'common/utils';
 
@@ -124,5 +127,21 @@ test('can select multiple roles if dynamic roles are enabled', async () => {
 
   await waitFor(() => {
     expect(notificationSpy).toHaveBeenCalled();
+  });
+});
+
+test('return error if roles api does not have data', async () => {
+  render(
+    <MockedProvider mocks={STAFF_MANAGEMENT_MOCKS_WITH_EMPTY_ROLES} addTypename={false}>
+      <Router>
+        <StaffManagement />
+      </Router>
+    </MockedProvider>
+  );
+
+  await waitFor(() => {
+    expect(
+      screen.getByText('An error occured! Not able to fetch collections or roles')
+    ).toBeInTheDocument();
   });
 });

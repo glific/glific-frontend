@@ -208,6 +208,18 @@ export const getRoleNamesMock = {
   },
 };
 
+const emptyRolesMock = {
+  request: {
+    query: GET_ROLE_NAMES,
+    variables: {},
+  },
+  result: {
+    data: {
+      accessRoles: null,
+    },
+  },
+};
+
 export const STAFF_MANAGEMENT_MOCKS = [
   GET_USER_MOCK,
   GET_ROLES_MOCK,
@@ -216,6 +228,14 @@ export const STAFF_MANAGEMENT_MOCKS = [
   UPDATE_USER_MOCK,
   UPDATE_USER_MULTIPLE_ROLES_MOCK,
   getRoleNamesMock,
+];
+
+export const STAFF_MANAGEMENT_MOCKS_WITH_EMPTY_ROLES = [
+  GET_USER_MOCK,
+  GET_ROLES_MOCK,
+  GET_USER_LANGUAGE_MOCK,
+  GET_GROUPS,
+  emptyRolesMock,
 ];
 
 export const USER_COUNT_MOCK = {
