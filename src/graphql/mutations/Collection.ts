@@ -96,3 +96,15 @@ export const UPDATE_COLLECTION_CONTACTS = gql`
     }
   }
 `;
+
+export const UPDATE_COLLECTION_GROUPS = gql`
+  mutation UpdateWaGroupCollection($input: UpdateWaGroupsCollectionInput!) {
+    updateWaGroupCollection(input: $input) {
+      collectionWaGroups {
+        group {
+          label
+        }
+      }
+    }
+  }
+`;

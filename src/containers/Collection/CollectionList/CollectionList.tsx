@@ -20,8 +20,9 @@ import { setVariables } from 'common/constants';
 import { CircularProgress, Modal } from '@mui/material';
 import styles from './CollectionList.module.css';
 import { exportCsvFile } from 'common/utils';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { collectionInfo } from 'common/HelpData';
+import { boolean } from 'yup';
 
 const getLabel = (label: string) => <div className={styles.LabelText}>{label}</div>;
 
@@ -64,6 +65,8 @@ export const CollectionList = () => {
   const [collectionId, setCollectionId] = useState();
   const [exportData, setExportData] = useState(false);
   const { t } = useTranslation();
+  const location = useLocation();
+  const groups: boolean = location.pathname.includes('group');
 
   const [getContacts, { data: contactsData }] = useLazyQuery(CONTACT_SEARCH_QUERY, {
     variables: setVariables({ name: contactSearchTerm }, 50),
@@ -188,7 +191,11 @@ export const CollectionList = () => {
   const viewButton = <div className={styles.ViewButton}>View</div>;
 
   const viewCollection = (id: any) => {
-    navigate(`/collection/${id}/contacts`);
+    if (groups) {
+      navigate(`/collection/${id}/groups`);
+    } else {
+      navigate(`/collection/${id}/contacts`);
+    }
   };
 
   const additionalAction = () => [
@@ -250,6 +257,12 @@ export const CollectionList = () => {
         button={{
           show: userRolePermissions.manageCollections,
           label: t('Create'),
+          action: () => {
+            navigate(`/${groups ? 'group/' : ''}collection/add`);
+          },
+        }}
+        filters={{
+          groupType: groups ? 'WA' : 'WABA',
         }}
         pageLink="collection"
         listIcon={collectionIcon}

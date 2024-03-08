@@ -1,87 +1,126 @@
-import { useParams } from 'react-router-dom';
-import { List } from 'containers/List/List';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router-dom';
+
+import { CONTACT_SEARCH_QUERY, GET_CONTACT_COUNT, GET_GROUP_COUNT } from 'graphql/queries/Contact';
+import { UPDATE_COLLECTION_CONTACTS, UPDATE_COLLECTION_GROUPS } from 'graphql/mutations/Collection';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import CollectionIcon from 'assets/images/icons/Collection/Dark.svg?react';
+import { List } from 'containers/List/List';
 import styles from './GroupCollectionList.module.css';
-import { UPDATE_GROUP_CONTACT } from 'graphql/mutations/Group';
-import { GET_WA_GROUP_COLLECTIONS_COUNT, GROUP_GET_COLLECTION } from 'graphql/queries/Collection';
+import { useLazyQuery, useMutation } from '@apollo/client';
+import { setVariables } from 'common/constants';
+import { SearchDialogBox } from 'components/UI/SearchDialogBox/SearchDialogBox';
+import { Button } from 'components/UI/Form/Button/Button';
+import { GROUP_GET_COLLECTION } from 'graphql/queries/Collection';
 
-export const GroupCollectionList = () => {
-  const params = useParams();
+export interface CollectionGroupListProps {
+  title: string;
+  descriptionBox?: any;
+}
+
+const getName = (label: string) => (
+  <div>
+    <div className={styles.NameText}>{label}</div>
+  </div>
+);
+
+const getColumns = (fields: any) => {
+  const { label } = fields;
+  console.log(fields);
+
+  return {
+    label: getName(label),
+  };
+};
+
+const columnStyles = [styles.Name, styles.Phone, styles.Actions];
+const collectionIcon = <CollectionIcon className={styles.CollectionIcon} />;
+
+const queries = {
+  countQuery: GET_GROUP_COUNT,
+  filterItemsQuery: GROUP_GET_COLLECTION,
+  deleteItemQuery: UPDATE_COLLECTION_GROUPS,
+};
+
+const columnAttributes = {
+  columns: getColumns,
+  columnStyles,
+};
+
+export const CollectionGroupList = () => {
+  const [addContactsDialogShow, setAddContactsDialogShow] = useState(false);
+  const [contactSearchTerm, setContactSearchTerm] = useState('');
+  const [selectedContacts, setSelectedContact] = useState<any>([]);
+
   const { t } = useTranslation();
+  const params = useParams();
 
-  const dialogTitle = 'Are you sure you want to remove this contact from the group?';
-  const dialogMessage = 'The contact will no longer receive messages sent to this group';
+  const collectionId = params.id;
+  let dialog;
 
-  const columnNames = [
-    { name: 'id', label: t('Name') },
-    { label: t('Description') },
-    { label: t('Actions') },
-  ];
+  const [getContacts, { data: contactsData }] = useLazyQuery(CONTACT_SEARCH_QUERY, {
+    variables: setVariables({ name: contactSearchTerm, includeGroups: [collectionId] }, 50),
+  });
 
-  const queries = {
-    countQuery: GET_WA_GROUP_COLLECTIONS_COUNT,
-    filterItemsQuery: GROUP_GET_COLLECTION,
-    deleteItemQuery: UPDATE_GROUP_CONTACT,
-  };
-
-  const getName = (label: string) => (
-    <div>
-      <div className={styles.LabelText}>{label}</div>
-    </div>
-  );
-
-  const getPhoneNumber = (phone: string) => (
-    <div>
-      <div className={styles.Phone}>{phone}</div>
-    </div>
-  );
-
-  const getColumns = (waGroup: any) => {
-    return {
-      name: getName(waGroup?.group?.label),
-      phone: getPhoneNumber(waGroup?.group?.phone),
-    };
-  };
-
-  const collectionIcon = <CollectionIcon className={styles.CollectionIcon} />;
-  const columnStyles = [styles.Label, styles.Description, styles.Actions];
-
-  const columnAttributes = {
-    columns: getColumns,
-    columnStyles,
-  };
-
+  const [deleleCollectionContacts] = useMutation(UPDATE_COLLECTION_CONTACTS);
   const getDeleteQueryVariables = (id: any) => ({
     input: {
-      addWaContactIds: [],
-      deleteWaContactIds: [id],
-      waGroupId: params.id,
+      groupId: collectionId,
+      addContactIds: [],
+      deleteContactIds: [id],
     },
   });
 
-  return (
-    <List
-      dialogTitle={dialogTitle}
-      columnNames={columnNames}
-      title={'Group Details'}
-      listItem="WaGroupsCollection"
-      listItemName="WaGroupsCollection"
-      searchParameter={['term']}
-      filters={{ waGroupId: params.id }}
-      button={{ show: true, label: 'Create' }}
-      pageLink="group/collections"
-      listIcon={collectionIcon}
-      editSupport={false}
-      showActions={true}
-      dialogMessage={dialogMessage}
-      deleteModifier={{
-        variables: getDeleteQueryVariables,
+  const columnNames = [{ name: 'name', label: t('Beneficiary') }, { label: t('Actions') }];
+
+  const additionalAction = () => [
+    {
+      icon: <ArrowForwardIcon className={styles.RedirectArrow} />,
+      label: t('View profile'),
+      link: '/contact-profile',
+      parameter: 'id',
+    },
+  ];
+  const removeCollectionButton = (
+    <Button
+      variant="contained"
+      color="error"
+      onClick={() => {
+        getContacts();
+        setAddContactsDialogShow(true);
       }}
-      {...queries}
-      {...columnAttributes}
-    />
+    >
+      Remove contacts
+    </Button>
+  );
+
+  const dialogTitle = t('Are you sure you want to remove contact from this collection?');
+  const dialogMessage = t('The contact will no longer receive messages sent to this collection');
+
+  return (
+    <>
+      <List
+        dialogTitle={dialogTitle}
+        columnNames={columnNames}
+        title={'Collection'}
+        additionalAction={additionalAction}
+        secondaryButton={removeCollectionButton}
+        listItem="WaGroupsCollection"
+        listItemName="WaGroupsCollection"
+        searchParameter={['term']}
+        filters={{ groupId: collectionId }}
+        button={{ show: false, label: '' }}
+        pageLink="contact"
+        listIcon={collectionIcon}
+        deleteModifier={{
+          variables: getDeleteQueryVariables,
+        }}
+        editSupport={false}
+        dialogMessage={dialogMessage}
+        {...queries}
+        {...columnAttributes}
+      />
+    </>
   );
 };
-
-export default GroupCollectionList;

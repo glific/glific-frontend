@@ -22,6 +22,12 @@ export const GET_CONTACT_COUNT = gql`
   }
 `;
 
+export const GET_GROUP_COUNT = gql`
+  query countWaGroups($filter: WaGroupsCollectionFilter) {
+    countWaGroupsCollection(filter: $filter)
+  }
+`;
+
 export const GET_CONTACT_COLLECTIONS = gql`
   query contact($id: ID!) {
     contact(id: $id) {

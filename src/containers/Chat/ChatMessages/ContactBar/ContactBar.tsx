@@ -27,7 +27,7 @@ import CollectionIcon from 'assets/images/icons/Chat/SelectedCollection.svg?reac
 import SavedSearchIcon from 'assets/images/icons/Chat/SelectedSavedSearch.svg?react';
 
 import { GET_COLLECTIONS } from 'graphql/queries/Collection';
-import { UPDATE_CONTACT_COLLECTIONS } from 'graphql/mutations/Collection';
+import { UPDATE_COLLECTION_GROUPS, UPDATE_CONTACT_COLLECTIONS } from 'graphql/mutations/Collection';
 import { GET_CONTACT_COLLECTIONS } from 'graphql/queries/Contact';
 import { GET_FLOWS } from 'graphql/queries/Flow';
 import { ADD_FLOW_TO_CONTACT, ADD_FLOW_TO_COLLECTION } from 'graphql/mutations/Flow';
@@ -105,9 +105,7 @@ export const ContactBar = ({
   const { t } = useTranslation();
 
   // get collection list
-  const [getCollections, { data: collectionsData }] = useLazyQuery(GET_COLLECTIONS, {
-    variables: setVariables(),
-  });
+  const [getCollections, { data: collectionsData }] = useLazyQuery(GET_COLLECTIONS);
 
   // get the published flow list
   const [getFlows, { data: flowsData }] = useLazyQuery(GET_FLOWS, {
@@ -129,9 +127,10 @@ export const ContactBar = ({
       getContactCollections();
     }
   }, [contactId]);
+  const update_query = groups ? UPDATE_COLLECTION_GROUPS : UPDATE_CONTACT_COLLECTIONS;
 
   // mutation to update the contact collections
-  const [updateContactCollections] = useMutation(UPDATE_CONTACT_COLLECTIONS, {
+  const [updateContactCollections] = useMutation(update_query, {
     onCompleted: (result: any) => {
       const { numberDeleted, contactGroups } = result.updateContactGroups;
       const numberAdded = contactGroups.length;
@@ -217,10 +216,13 @@ export const ContactBar = ({
     );
 
     if (finalSelectedCollections.length > 0 || finalRemovedCollections.length > 0) {
+      let groupVariable = groups ? 'waGroupId' : 'contactId';
+      console.log(contactId);
+
       updateContactCollections({
         variables: {
           input: {
-            contactId,
+            [groupVariable]: contactId,
             addGroupIds: finalSelectedCollections,
             deleteGroupIds: finalRemovedCollections,
           },
@@ -477,7 +479,16 @@ export const ContactBar = ({
         data-testid="collectionButton"
         className={styles.ListButtonPrimary}
         onClick={() => {
-          getCollections();
+          let variables: any = setVariables();
+          variables = {
+            ...variables,
+            filter: {
+              groupType: groups ? 'WA' : 'WABA',
+            },
+          };
+          getCollections({
+            variables: variables,
+          });
           setShowCollectionDialog(true);
         }}
       >

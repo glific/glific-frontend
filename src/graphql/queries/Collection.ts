@@ -59,14 +59,12 @@ export const GET_COLLECTIONS = gql`
 `;
 
 export const GROUP_GET_COLLECTION = gql`
-  query ListWaGroupsCollection($filter: WaGroupsCollectionFilter, $opts: Opts) {
-    WaGroupsCollection: listWaGroupsCollection(filter: $filter, opts: $opts) {
-      group {
-        id
-        label
-        description
-        isRestricted
-      }
+  query ListWaGroupsCollection($filter: WaGroupsCollectionFilter) {
+    WaGroupsCollection: listWaGroupsCollection(filter: $filter) {
+      bspId
+      id
+      label
+      lastCommunicationAt
     }
   }
 `;
