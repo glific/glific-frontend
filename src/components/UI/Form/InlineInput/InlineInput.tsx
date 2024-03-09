@@ -59,7 +59,11 @@ export const InlineInput = ({
         }}
         autoFocus
       />
-      {error ? <p className={styles.ErrorText}>{error}</p> : null}
+      {error ? (
+        <p className={styles.ErrorText} data-testid="inlineInputError">
+          {error}
+        </p>
+      ) : null}
     </div>
   );
 };

@@ -30,10 +30,10 @@ const wrapper = (
 describe('<CollectionContactList />', () => {
   test('should render CollectionContactList', async () => {
     setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
-    const { getByText } = render(wrapper);
+    const { getByTestId, getByText } = render(wrapper);
 
     // loading is show initially
-    expect(getByText('Loading...')).toBeInTheDocument();
+    expect(getByTestId('loading')).toBeInTheDocument();
 
     await waitFor(() => {
       expect(getByText('Glific User')).toBeInTheDocument();

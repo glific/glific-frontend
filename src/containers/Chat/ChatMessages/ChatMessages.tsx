@@ -1,7 +1,7 @@
 import { useCallback, useState, useEffect } from 'react';
 import { useQuery, useMutation, useLazyQuery } from '@apollo/client';
 import { CircularProgress, Container } from '@mui/material';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { Navigate } from 'react-router-dom';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useTranslation } from 'react-i18next';
@@ -18,6 +18,7 @@ import {
   DEFAULT_MESSAGE_LIMIT,
   DEFAULT_CONTACT_LIMIT,
   DEFAULT_MESSAGE_LOADMORE_LIMIT,
+  ISO_DATE_FORMAT,
 } from '../../../common/constants';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 import {
@@ -27,14 +28,14 @@ import {
 import { getCachedConverations, updateConversationsCache } from '../../../services/ChatService';
 import { addLogs, getDisplayName, isSimulator } from '../../../common/utils';
 import { CollectionInformation } from '../../Collection/CollectionInformation/CollectionInformation';
+import { LexicalWrapper } from 'common/LexicalWrapper';
 
 export interface ChatMessagesProps {
   contactId?: number | string | null;
   collectionId?: number | string | null;
-  startingHeight?: string;
 }
 
-export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMessagesProps) => {
+export const ChatMessages = ({ contactId, collectionId }: ChatMessagesProps) => {
   const urlString = new URL(window.location.href);
 
   let messageParameterOffset: any = 0;
@@ -52,7 +53,6 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
 
   const [dialog, setDialogbox] = useState<string>();
   const [showDropdown, setShowDropdown] = useState<any>(null);
-  const [reducedHeight, setReducedHeight] = useState(0);
   const [showLoadMore, setShowLoadMore] = useState(true);
   const [scrolledToMessage, setScrolledToMessage] = useState(false);
   const [showJumpToLatest, setShowJumpToLatest] = useState(false);
@@ -85,7 +85,7 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
         });
       }
     }, 1000);
-  }, [setShowJumpToLatest, contactId, reducedHeight]);
+  }, [setShowJumpToLatest, contactId]);
 
   const scrollToLatestMessage = () => {
     const container: any = document.querySelector('.messageContainer');
@@ -510,14 +510,14 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
 
   const showDaySeparator = (currentDate: string, nextDate: string) => {
     // if it's last message and its date is greater than current date then show day separator
-    if (!nextDate && moment(currentDate).format('YYYY-MM-DD') < moment().format('YYYY-MM-DD')) {
+    if (!nextDate && dayjs(currentDate).format(ISO_DATE_FORMAT) < dayjs().format(ISO_DATE_FORMAT)) {
       return true;
     }
 
     // if the day is changed then show day separator
     if (
       nextDate &&
-      moment(currentDate).format('YYYY-MM-DD') > moment(nextDate).format('YYYY-MM-DD')
+      dayjs(currentDate).format(ISO_DATE_FORMAT) > dayjs(nextDate).format(ISO_DATE_FORMAT)
     ) {
       return true;
     }
@@ -591,7 +591,7 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
     messageListContainer = (
       <Container
         className={`${styles.MessageList} messageContainer `}
-        style={{ height: `calc(100% - 195px - ${reducedHeight}px)` }}
+        style={{ height: `calc(100% - 215px` }}
         maxWidth={false}
         data-testid="messageContainer"
       >
@@ -624,10 +624,6 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
     );
   }
 
-  const handleHeightChange = (newHeight: number) => {
-    setReducedHeight(newHeight);
-  };
-
   const handleChatClearedAction = () => {
     const conversationInfoCopy = JSON.parse(JSON.stringify(conversationInfo));
     conversationInfoCopy.messages = [];
@@ -645,50 +641,6 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
       <div className={styles.LoadMore}>
         <CircularProgress className={styles.Loading} />
       </div>
-    );
-  }
-
-  let topChatBar;
-  let chatInputSection;
-
-  if (contactId && conversationInfo.contact) {
-    const displayName = getDisplayName(conversationInfo);
-    topChatBar = (
-      <ContactBar
-        displayName={displayName}
-        isSimulator={isSimulator(conversationInfo.contact.phone)}
-        contactId={contactId.toString()}
-        lastMessageTime={conversationInfo.contact.lastMessageAt}
-        contactStatus={conversationInfo.contact.status}
-        contactBspStatus={conversationInfo.contact.bspStatus}
-        handleAction={() => handleChatClearedAction()}
-      />
-    );
-
-    chatInputSection = (
-      <ChatInput
-        handleHeightChange={handleHeightChange}
-        onSendMessage={sendMessageHandler}
-        lastMessageTime={conversationInfo.contact.lastMessageAt}
-        contactStatus={conversationInfo.contact.status}
-        contactBspStatus={conversationInfo.contact.bspStatus}
-      />
-    );
-  } else if (collectionId && conversationInfo.group) {
-    topChatBar = (
-      <ContactBar
-        collectionId={collectionId.toString()}
-        displayName={conversationInfo.group.label}
-        handleAction={handleChatClearedAction}
-      />
-    );
-
-    chatInputSection = (
-      <ChatInput
-        handleHeightChange={handleHeightChange}
-        onSendMessage={sendCollectionMessageHandler}
-        isCollection
-      />
     );
   }
 
@@ -735,15 +687,57 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
     </div>
   );
 
+  let topChatBar;
+  let chatInputSection;
+
+  if (contactId && conversationInfo.contact) {
+    const displayName = getDisplayName(conversationInfo);
+    topChatBar = (
+      <ContactBar
+        displayName={displayName}
+        isSimulator={isSimulator(conversationInfo.contact.phone)}
+        contactId={contactId.toString()}
+        lastMessageTime={conversationInfo.contact.lastMessageAt}
+        contactStatus={conversationInfo.contact.status}
+        contactBspStatus={conversationInfo.contact.bspStatus}
+        handleAction={() => handleChatClearedAction()}
+      />
+    );
+
+    chatInputSection = (
+      <div className={styles.ChatInput}>
+        {conversationInfo.messages.length && showJumpToLatest ? jumpToLatest : null}
+        <LexicalWrapper>
+          <ChatInput
+            onSendMessage={sendMessageHandler}
+            lastMessageTime={conversationInfo.contact.lastMessageAt}
+            contactStatus={conversationInfo.contact.status}
+            contactBspStatus={conversationInfo.contact.bspStatus}
+          />
+        </LexicalWrapper>
+      </div>
+    );
+  } else if (collectionId && conversationInfo.group) {
+    topChatBar = (
+      <ContactBar
+        collectionId={collectionId.toString()}
+        displayName={conversationInfo.group.label}
+        handleAction={handleChatClearedAction}
+      />
+    );
+
+    chatInputSection = (
+      <div className={styles.ChatInput}>
+        {conversationInfo.messages.length && showJumpToLatest ? jumpToLatest : null}
+        <LexicalWrapper>
+          <ChatInput onSendMessage={sendCollectionMessageHandler} isCollection />
+        </LexicalWrapper>
+      </div>
+    );
+  }
+
   return (
-    <Container
-      className={styles.ChatMessages}
-      style={{
-        height: startingHeight,
-      }}
-      maxWidth={false}
-      disableGutters
-    >
+    <Container className={styles.ChatMessages} maxWidth={false} disableGutters>
       {dialogBox}
       {dialog === 'collection' ? (
         <CollectionInformation
@@ -756,7 +750,6 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
       {topChatBar}
       <StatusBar />
       {messageListContainer}
-      {conversationInfo.messages.length && showJumpToLatest ? jumpToLatest : null}
       {chatInputSection}
     </Container>
   );

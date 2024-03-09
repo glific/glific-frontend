@@ -26,6 +26,11 @@ export const UPDATE_ORGANIZATION = gql`
           id
           label
         }
+        setting {
+          lowBalanceThreshold
+          criticalBalanceThreshold
+          sendWarningMail
+        }
       }
       errors {
         key
@@ -76,6 +81,7 @@ export const CREATE_CREDENTIAL = gql`
   mutation createCredential($input: CredentialInput!) {
     createCredential(input: $input) {
       credential {
+        id
         keys
         secrets
       }

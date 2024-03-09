@@ -37,32 +37,28 @@ const wrapper = (
 
 describe('<CollectionList />', () => {
   test('should render CollectionList', async () => {
-    const { getByText } = render(wrapper);
+    const { getByText, getByTestId } = render(wrapper);
 
     // loading is show initially
-    expect(getByText('Loading...')).toBeInTheDocument();
+    expect(getByTestId('loading')).toBeInTheDocument();
 
     await waitFor(() => {
       expect(getByText('Collections')).toBeInTheDocument();
     });
-
-    // TODO: test flows
-
-    // TODO: test delete
   });
 
   test('it should have add contact to collection dialog box ', async () => {
     setUserSession(JSON.stringify({ roles: ['Staff'] }));
-    const { getByText, getAllByTestId } = render(wrapper);
+    const { getByText, getByTestId, getAllByTestId } = render(wrapper);
 
     // loading is show initially
-    expect(getByText('Loading...')).toBeInTheDocument();
+    expect(getByTestId('loading')).toBeInTheDocument();
     await waitFor(() => {
-      expect(getAllByTestId('additionalButton')[0]).toBeInTheDocument();
+      expect(getAllByTestId('additionalButton')[1]).toBeInTheDocument();
     });
 
     await waitFor(() => {
-      fireEvent.click(getAllByTestId('additionalButton')[0]);
+      fireEvent.click(getAllByTestId('additionalButton')[1]);
     });
 
     expect(getByText('Add contacts to the collection')).toBeInTheDocument();
@@ -105,9 +101,9 @@ describe('<CollectionList />', () => {
     const { getByText, getAllByTestId, getByTestId } = render(wrapper);
 
     // loading is show initially
-    expect(getByText('Loading...')).toBeInTheDocument();
+    expect(getByTestId('loading')).toBeInTheDocument();
     await waitFor(() => {
-      fireEvent.click(getAllByTestId('additionalButton')[0]);
+      fireEvent.click(getAllByTestId('additionalButton')[1]);
     });
     fireEvent.click(getByTestId('searchDialogBox').querySelector('button') as HTMLElement);
   });

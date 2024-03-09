@@ -6,7 +6,7 @@ import { useLazyQuery, useMutation } from '@apollo/client';
 
 import { useTranslation } from 'react-i18next';
 import { GET_ORGANIZATION_COLLECTIONS } from 'graphql/queries/Collection';
-import Loading from 'components/UI/Layout/Loading/Loading';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { Field, Form, Formik } from 'formik';
 import UploadIcon from 'assets/images/icons/Upload.svg?react';
@@ -111,10 +111,7 @@ export const UploadContactsDialog = ({
       options: collections.organizationGroups,
       multiple: false,
       optionLabel: 'label',
-      textFieldProps: {
-        label: t('Collection'),
-        variant: 'outlined',
-      },
+      label: t('Collection'),
     },
     {
       component: Checkbox,
@@ -198,7 +195,7 @@ export const UploadContactsDialog = ({
             </div>
 
             {error && (
-              <div className={styles.Error}>
+              <div data-testid="invalidCsvFormat" className={styles.Error}>
                 1. Please make sure the file format matches the sample
               </div>
             )}

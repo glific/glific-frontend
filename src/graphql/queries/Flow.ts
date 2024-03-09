@@ -61,6 +61,10 @@ export const FILTER_FLOW = gql`
         id
         label
       }
+      tag {
+        label
+        id
+      }
     }
   }
 `;
@@ -80,17 +84,6 @@ export const EXPORT_FLOW = gql`
   query exportFlow($id: ID!) {
     exportFlow(id: $id) {
       exportData
-    }
-  }
-`;
-
-export const TERMINATE_FLOW = gql`
-  mutation TerminateContactFlows($contactId: ID!) {
-    terminateContactFlows(contactId: $contactId) {
-      success
-      errors {
-        message
-      }
     }
   }
 `;
@@ -115,6 +108,14 @@ export const RELEASE_FLOW = gql`
     flowRelease {
       id
       uuid
+    }
+  }
+`;
+
+export const EXPORT_FLOW_LOCALIZATIONS = gql`
+  query exportFlowLocalization($id: ID!, $addTranslation: Boolean) {
+    exportFlowLocalization(id: $id,  addTranslation: $addTranslation) {
+      exportData
     }
   }
 `;

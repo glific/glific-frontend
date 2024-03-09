@@ -24,7 +24,6 @@
   margin-left: 24px;
 }
 
-.FieldContainer > div {
-  padding: 0px 10px;
-  width: 100%;
+.FieldContainer {
+  padding-right: 8px;
 }

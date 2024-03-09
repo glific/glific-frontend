@@ -1,12 +1,9 @@
-import { useQuery } from '@apollo/client';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
-import { getOrganizationServices } from 'services/AuthService';
-import { Button } from 'components/UI/Form/Button/Button';
-import Loading from 'components/UI/Layout/Loading/Loading';
 import { COUNT_CONTACT_HISTORY, GET_CONTACT_HISTORY } from 'graphql/queries/Contact';
 import setLogs from 'config/logs';
-import { DATE_TIME_FORMAT } from 'common/constants';
+import { List } from 'containers/List/List';
+import { STANDARD_DATE_TIME_FORMAT } from 'common/constants';
 import styles from './ContactHistory.module.css';
 
 export interface ContactHistoryProps {
@@ -16,71 +13,6 @@ export interface ContactHistoryProps {
 
 export const ContactHistory = ({ contactId, profileId }: ContactHistoryProps) => {
   const { t } = useTranslation();
-
-  const isContactProfileEnabled = getOrganizationServices('contactProfileEnabled');
-
-  const { data: countHistory, loading: countHistoryLoading } = useQuery(COUNT_CONTACT_HISTORY, {
-    fetchPolicy: 'network-only',
-    variables: {
-      filter: {
-        contactId,
-      },
-    },
-  });
-
-  const contactHistoryVariables: any = {
-    filter: {
-      contactId,
-    },
-    opts: {
-      limit: 10,
-      offset: 0,
-      order: 'DESC',
-    },
-  };
-
-  if (isContactProfileEnabled && profileId) {
-    contactHistoryVariables.filter.profileId = profileId;
-  }
-  const { data, loading, fetchMore } = useQuery(GET_CONTACT_HISTORY, {
-    fetchPolicy: 'network-only',
-    variables: contactHistoryVariables,
-  });
-
-  if (!data || loading) {
-    return <Loading />;
-  }
-
-  if (!countHistory || countHistoryLoading) {
-    return <Loading />;
-  }
-
-  let showMoreButton;
-
-  if (data.contactHistory.length !== countHistory.countContactHistory) {
-    showMoreButton = (
-      <div className={styles.Button}>
-        <Button
-          loading={loading}
-          variant="outlined"
-          color="primary"
-          onClick={() => {
-            fetchMore({
-              variables: {
-                opts: {
-                  limit: 10,
-                  offset: data.contactHistory.length,
-                  order: 'DESC',
-                },
-              },
-            });
-          }}
-        >
-          Show more
-        </Button>
-      </div>
-    );
-  }
 
   const flowEvents = (eventLabel: string, eventMeta: string) => {
     try {
@@ -119,7 +51,7 @@ export const ContactHistory = ({ contactId, profileId }: ContactHistoryProps) =>
     return null;
   };
 
-  let items = data.contactHistory.map(({ eventLabel, eventType, insertedAt, eventMeta }: any) => {
+  const getEventLabel = (eventLabel: string, eventType: string, eventMeta: string) => {
     let label;
     switch (eventType) {
       case 'contact_flow_started':
@@ -135,24 +67,57 @@ export const ContactHistory = ({ contactId, profileId }: ContactHistoryProps) =>
         label = eventLabel;
     }
 
-    const key = `${insertedAt}-${Math.random()}`;
     return (
-      <div className={styles.DetailBlock} key={key}>
+      <div className={styles.DetailBlock} key={eventLabel}>
         <div className={styles.LineItem}>{label}</div>
-        <div className={styles.LineItemDate}>{moment(insertedAt).format(DATE_TIME_FORMAT)}</div>
       </div>
     );
+  };
+
+  const getInsertedAt = (insertedAt: string) => (
+    <div className={styles.LineItemDate}>{dayjs(insertedAt).format(STANDARD_DATE_TIME_FORMAT)}</div>
+  );
+
+  const queries = {
+    countQuery: COUNT_CONTACT_HISTORY,
+    filterItemsQuery: GET_CONTACT_HISTORY,
+    deleteItemQuery: null,
+  };
+
+  const columnStyles = [styles.Label, styles.DateAndTime];
+  const columnNames = [
+    { name: 'event_label', label: t('Title') },
+    { label: t('Date and Time'), name: 'inserted_at', sort: true, order: 'desc' },
+  ];
+
+  const getColumns = ({ eventLabel, eventType, insertedAt, eventMeta }: any) => ({
+    eventLabel: getEventLabel(eventLabel, eventType, eventMeta),
+    insertedAt: getInsertedAt(insertedAt),
   });
 
-  if (!items.length) {
-    items = <div>{t('No history')}</div>;
-  }
+  const columnAttributes = {
+    columnNames,
+    columns: getColumns,
+    columnStyles,
+  };
 
+  const restrictedAction = () => ({ delete: false, edit: false });
   return (
     <div className={styles.HistoryContainer} data-testid="ContactHistory">
-      <h2 className={styles.Title}>{t('Contact History')}</h2>
-      {items}
-      {showMoreButton}
+      <List
+        title={t('Contact History')}
+        listItem="contactHistory"
+        listItemName="contactHistory"
+        pageLink="history"
+        listIcon={null}
+        {...queries}
+        {...columnAttributes}
+        showActions={false}
+        filters={{ contactId, profileId }}
+        showHeader={false}
+        restrictedAction={restrictedAction}
+        button={{ show: false }}
+      />
     </div>
   );
 };

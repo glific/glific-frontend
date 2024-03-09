@@ -39,7 +39,7 @@ export const SheetIntegration = () => {
   const [label, setLabel] = useState('');
   const [url, setUrl] = useState('');
   const [autoSync, setAutoSync] = useState(false);
-  const [type, setType] = useState<any>({ id: '', label: '' });
+  const [type, setType] = useState<any>(typeOptions[0]);
   const { t } = useTranslation();
   const states = { label, url, type, autoSync };
   const setStates = ({
@@ -51,7 +51,6 @@ export const SheetIntegration = () => {
     setLabel(labelValue);
     setUrl(urlValue);
     const selectedOption = typeOptions.find((option) => option.id === typeValue);
-    console.log(typeValue);
     setType(selectedOption);
     setAutoSync(autoSyncValue);
   };
@@ -67,7 +66,7 @@ export const SheetIntegration = () => {
       component: Input,
       name: 'url',
       type: 'text',
-      placeholder: t('Sheet URL'),
+      label: t('URL'),
       helperText: (
         <a href={SAMPLE_SHEET_LINK} target="_blank" rel="noreferrer" className={styles.HelperText}>
           View Sample
@@ -78,21 +77,17 @@ export const SheetIntegration = () => {
       component: Input,
       name: 'label',
       type: 'text',
-      placeholder: t('Sheet name'),
+      label: t('Name'),
     },
     {
       component: AutoComplete,
       name: 'type',
-
       options: typeOptions,
       optionLabel: 'label',
       multiple: false,
-      textFieldProps: {
-        label: t('Sheet type'),
-        variant: 'outlined',
-      },
+      label: t('Allowed operations'),
+      helperText: t('What operations are allowed to be performed in the sheet?'),
     },
-
     {
       component: Checkbox,
       name: 'autoSync',
@@ -107,7 +102,7 @@ export const SheetIntegration = () => {
   const setPayload = (data: any) => {
     return {
       ...data,
-      type: data.type.id,
+      type: data.type?.id,
     };
   };
 

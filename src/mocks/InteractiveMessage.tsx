@@ -9,6 +9,7 @@ import {
   GET_INTERACTIVE_MESSAGE,
 } from 'graphql/queries/InteractiveMessage';
 import { getOrganizationLanguagesWithoutOrder } from './Organization';
+import { getFilterTagQuery } from './Tag';
 
 const filterInteractiveFunction = (filter: any, opts: any) => ({
   request: {
@@ -104,6 +105,7 @@ export const filterInteractiveQuery = filterInteractiveFunction(
 );
 
 export const searchInteractive = filterInteractiveFunction({ label: '' }, {});
+export const searchInteractiveHi = filterInteractiveFunction({ label: 'hi' }, {});
 
 export const getInteractiveCountQuery = {
   request: {
@@ -131,6 +133,22 @@ const quickReplyMock = {
     id: '1',
     label: 'English',
   },
+  tag: {
+    id: '1',
+    label: 'New tag',
+  },
+};
+
+const quickReplyMockInput = {
+  type: 'QUICK_REPLY',
+  interactiveContent:
+    '{"type":"quick_reply","content":{"type":"text","header":"Continue","text":"Do you want to continue?"},"options":[{"type":"text","title":"Yes"},{"type":"text","title":"No"}]}',
+  tag_id: '1',
+  languageId: '1',
+  label: 'Continue',
+  sendWithTitle: false,
+  translations:
+    '{"1":{"type":"quick_reply","content":{"type":"text","header":"Continue","text":"Do you want to continue?"},"options":[{"type":"text","title":"Yes"},{"type":"text","title":"No"}]}}',
 };
 
 const quickReplyMedia = {
@@ -148,10 +166,18 @@ const quickReplyMedia = {
     id: '1',
     label: 'English',
   },
+  tag: {
+    id: '1',
+    label: 'New Tag',
+  },
 };
 
 const listReplyMock = {
   sendWithTitle: false,
+  tag: {
+    id: '1',
+    label: 'New tag',
+  },
   label: 'list',
   type: 'LIST',
   translations: '{}',
@@ -180,7 +206,43 @@ const createMockByType = (body: any) => ({
   },
 });
 
-const updateMockByType = (id: string, input: any) => ({
+const createInteractiveCustomMock = () => ({
+  request: {
+    query: CREATE_INTERACTIVE,
+    variables: {
+      input: {
+        type: "LIST",
+        interactiveContent: '{"type":"list","title":"new title","body":"😀","globalButtons":[{"type":"text","title":"Section 1"}],"items":[{"title":"title","subtitle":"title","options":[{"type":"text","title":"red","description":"red is color"}]}]}',
+        languageId: "2",
+        label: "new title",
+        sendWithTitle: true,
+        translations: '{"2":{"type":"list","title":"new title","body":"😀","globalButtons":[{"type":"text","title":"Section 1"}],"items":[{"title":"title","subtitle":"title","options":[{"type":"text","title":"red","description":"red is color"}]}]}}'
+      }
+    },
+  },
+  result: {
+    data: {
+      createInteractiveTemplate: {
+        interactiveTemplate: {
+          id: 2,
+          language: {
+            id: '1',
+            label: 'English',
+          },
+          type: "LIST",
+          interactiveContent: '{"type":"list","title":"new title","body":"😀","globalButtons":[{"type":"text","title":"Section 1"}],"items":[{"title":"title","subtitle":"title","options":[{"type":"text","title":"red","description":"red is color"}]}]}',
+          languageId: "2",
+          label: "new title",
+          sendWithTitle: true,
+          translations: '{"2":{"type":"list","title":"new title","body":"😀","globalButtons":[{"type":"text","title":"Section 1"}],"items":[{"title":"title","subtitle":"title","options":[{"type":"text","title":"red","description":"red is color"}]}]}}',
+        },
+        errors: null
+      },
+    },
+  },
+});
+
+const updateMockByType = (id: string, input: any, response: any) => ({
   request: {
     query: UPDATE_INTERACTIVE,
     variables: {
@@ -195,8 +257,9 @@ const updateMockByType = (id: string, input: any) => ({
           id,
           insertedAt: '2021-07-14T11:12:42Z',
           updatedAt: '2021-07-14T11:26:00Z',
-          ...input,
+          ...response,
         },
+        errors: null,
       },
       errors: null,
     },
@@ -241,11 +304,13 @@ const deleteMock = {
 export const mocks: any = [
   createMockByType(quickReplyMock),
   createMockByType(listReplyMock),
-  updateMockByType('1', quickReplyMock),
-  updateMockByType('2', listReplyMock),
+  createInteractiveCustomMock(),
+  updateMockByType('1', quickReplyMockInput, quickReplyMock),
+  updateMockByType('2', listReplyMock, listReplyMock),
   getTemplateByType('1', quickReplyMock),
   getTemplateByType('2', listReplyMock),
   getTemplateByType('3', quickReplyMedia),
   deleteMock,
+  getFilterTagQuery,
   getOrganizationLanguagesWithoutOrder,
 ];

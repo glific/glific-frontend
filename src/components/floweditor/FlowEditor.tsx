@@ -1,27 +1,26 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useMutation, useLazyQuery, useQuery } from '@apollo/client';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
-import { IconButton } from '@mui/material';
-
-import HelpIcon from 'assets/images/icons/Help.svg?react';
-import FlowIcon from 'assets/images/icons/Flow/Dark.svg?react';
+import { Menu, MenuItem, Typography } from '@mui/material';
+import BackIconFlow from 'assets/images/icons/BackIconFlow.svg?react';
 import WarningIcon from 'assets/images/icons/Warning.svg?react';
-import ExportIcon from 'assets/images/icons/Flow/Export.svg?react';
-import ResetFlowIcon from 'assets/images/icons/Flow/ResetFlow.svg?react';
+import PreviewIcon from 'assets/images/icons/PreviewIcon.svg?react';
+import PublishIcon from 'assets/images/icons/PublishIcon.svg?react';
 import { Button } from 'components/UI/Form/Button/Button';
-import { APP_NAME, FLOWS_HELP_LINK } from 'config/index';
+import { APP_NAME } from 'config/index';
 import { Simulator } from 'components/simulator/Simulator';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { setNotification } from 'common/notification';
 import { PUBLISH_FLOW, RESET_FLOW_COUNT } from 'graphql/mutations/Flow';
 import { EXPORT_FLOW, GET_FLOW_DETAILS, GET_FREE_FLOW } from 'graphql/queries/Flow';
-import { setAuthHeaders } from 'services/AuthService';
-import { SideDrawerContext } from 'context/session';
+import { getOrganizationServices, setAuthHeaders } from 'services/AuthService';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import Track from 'services/TrackService';
 import { exportFlowMethod } from 'common/utils';
 import styles from './FlowEditor.module.css';
 import { checkElementInRegistry, loadfiles, setConfig } from './FlowEditor.helper';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import { BackdropLoader, FlowTranslation } from 'containers/Flow/FlowTranslation';
 
 declare function showFlowEditor(node: any, config: any): void;
 
@@ -32,30 +31,46 @@ export const FlowEditor = () => {
   const { uuid } = params;
   const navigate = useNavigate();
   const [publishDialog, setPublishDialog] = useState(false);
-  const [simulatorId, setSimulatorId] = useState(0);
   const [loading, setLoading] = useState(true);
   const [flowEditorLoaded, setFlowEditorLoaded] = useState(false);
   const [flowId, setFlowId] = useState();
   const config = setConfig(uuid);
   const [published, setPublished] = useState(false);
+  const [showSimulator, setShowSimulator] = useState(false);
   const [stayOnPublish, setStayOnPublish] = useState(false);
   const [showResetFlowModal, setShowResetFlowModal] = useState(false);
+  const [showTranslateFlowModal, setShowTranslateFlowModal] = useState(false);
   const [flowValidation, setFlowValidation] = useState<any>();
   const [IsError, setIsError] = useState(false);
-  const [flowKeyword, setFlowKeyword] = useState('');
   const [currentEditDialogBox, setCurrentEditDialogBox] = useState(false);
   const [dialogMessage, setDialogMessage] = useState('');
-  const { drawerOpen } = useContext(SideDrawerContext);
+  const [publishLoading, setPublishLoading] = useState(false);
+
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const isTranslationEnabled = getOrganizationServices('autoTranslationEnabled');
 
   let modal = null;
   let dialog = null;
   let flowTitle: any;
+  let flowKeywords;
+
+  const loadFlowEditor = () => {
+    showFlowEditor(document.getElementById('flow'), config);
+    setLoading(false);
+  };
 
   const [getFreeFlowForced] = useLazyQuery(GET_FREE_FLOW, {
     fetchPolicy: 'network-only',
     onCompleted: () => {
-      showFlowEditor(document.getElementById('flow'), config);
-      setLoading(false);
+      loadFlowEditor();
     },
   });
 
@@ -63,8 +78,7 @@ export const FlowEditor = () => {
     fetchPolicy: 'network-only',
     onCompleted: ({ flowGet }) => {
       if (flowGet.flow && !flowEditorLoaded) {
-        showFlowEditor(document.getElementById('flow'), config);
-        setLoading(false);
+        loadFlowEditor();
         setFlowEditorLoaded(true);
       } else if (flowGet.errors && flowGet.errors.length) {
         setDialogMessage(flowGet.errors[0].message);
@@ -73,7 +87,7 @@ export const FlowEditor = () => {
     },
   });
 
-  const [exportFlowMutation] = useLazyQuery(EXPORT_FLOW, {
+  const [exportFlowMutation, { loading: exportFlowloading }] = useLazyQuery(EXPORT_FLOW, {
     fetchPolicy: 'network-only',
     onCompleted: async ({ exportFlow }) => {
       const { exportData } = exportFlow;
@@ -102,7 +116,12 @@ export const FlowEditor = () => {
       } else if (data.publishFlow.success) {
         setPublished(true);
       }
+      setPublishLoading(false);
     },
+    onError:()=>{
+      setPublishLoading(false)
+      setNotification("Sorry! An error occurred", 'warning')
+    }
   });
 
   const { data: flowName } = useQuery(GET_FLOW_DETAILS, {
@@ -123,6 +142,7 @@ export const FlowEditor = () => {
 
   if (flowName && flowName.flows.length > 0) {
     flowTitle = flowName.flows[0].name;
+    flowKeywords = flowName.flows[0].keywords.join(', ');
   }
 
   const handleResetFlowCount = () => {
@@ -147,6 +167,16 @@ export const FlowEditor = () => {
           tracking of how many times a node was triggered for users.
         </div>
       </DialogBox>
+    );
+  }
+
+  if (showTranslateFlowModal) {
+    modal = (
+      <FlowTranslation
+        loadFlowEditor={loadFlowEditor}
+        flowId={flowId}
+        setDialog={setShowTranslateFlowModal}
+      />
     );
   }
 
@@ -207,15 +237,12 @@ export const FlowEditor = () => {
 
   const errorMsg = () => (
     <div className={styles.DialogError}>
-      Errors were detected in the flow. Would you like to continue modifying?
-      <div>
-        {flowValidation.map((message: any) => (
-          <div key={message.message}>
-            <WarningIcon className={styles.ErrorMsgIcon} />
-            {message.message}
-          </div>
-        ))}
-      </div>
+      {flowValidation.map((message: any) => (
+        <div key={message.message} className={styles.ErrorMsg}>
+          <WarningIcon className={styles.ErrorMsgIcon} />
+          {message.message}
+        </div>
+      ))}
     </div>
   );
 
@@ -247,10 +274,12 @@ export const FlowEditor = () => {
     dialog = (
       <DialogBox
         title="Ready to publish?"
-        buttonOk="Publish & Stay"
+        buttonOk="Publish & stay"
         titleAlign="center"
+        buttonOkLoading={publishLoading}
         buttonMiddle="Publish & go back"
         handleOk={() => {
+          setPublishLoading(true);
           setStayOnPublish(true);
           handlePublishFlow();
         }}
@@ -271,7 +300,7 @@ export const FlowEditor = () => {
   if (IsError) {
     dialog = (
       <DialogBox
-        title=""
+        title="Errors were detected in the flow. Would you like to continue modifying?"
         buttonOk="Publish"
         handleOk={() => {
           setPublishDialog(false);
@@ -296,114 +325,126 @@ export const FlowEditor = () => {
     setPublished(false);
   }
 
-  const resetMessage = () => {
-    setFlowKeyword('');
-  };
-
   const getFlowKeyword = () => {
     const flows = flowName ? flowName.flows : null;
     if (flows && flows.length > 0) {
       const { isActive, keywords } = flows[0];
       if (isActive && keywords.length > 0) {
-        setFlowKeyword(`draft:${keywords[0]}`);
+        return `draft:${keywords[0]}`;
       } else if (keywords.length === 0) {
-        setFlowKeyword('No keyword found');
+        return 'No keyword found';
       } else {
-        setFlowKeyword('Sorry, the flow is not active');
+        return 'Sorry, the flow is not active';
       }
     }
   };
 
   return (
     <>
+      {exportFlowloading && <BackdropLoader />}
       {dialog}
-      <div className={styles.ButtonContainer}>
-        <a
-          href={FLOWS_HELP_LINK}
-          className={styles.Link}
-          target="_blank"
-          rel="noopener noreferrer"
-          data-testid="helpButton"
-        >
-          <HelpIcon className={styles.HelpIcon} />
-        </a>
-
-        <Button
-          variant="contained"
-          className={styles.ContainedButton}
-          onClick={() => {
-            navigate('/flow');
-          }}
-        >
-          Back
-        </Button>
-
-        <div
-          className={styles.ExportIcon}
-          onClick={() => exportFlowMutation({ variables: { id: flowId } })}
-          aria-hidden="true"
-        >
-          <ExportIcon />
+      <div className={styles.Header}>
+        <div className={styles.Title}>
+          <BackIconFlow
+            onClick={() => navigate('/flow')}
+            className={styles.BackIcon}
+            data-testid="back-button"
+          />
+          <div>
+            <Typography variant="h6" data-testid="flowName">
+              {flowName ? flowTitle : 'Flow'}
+            </Typography>
+            <div>{flowKeywords}</div>
+          </div>
         </div>
 
-        <Button
-          variant="outlined"
-          color="primary"
-          data-testid="saveDraftButton"
-          className={simulatorId === 0 ? styles.Draft : styles.SimulatorDraft}
-          onClick={() => {
-            setNotification('The flow has been saved as draft');
-          }}
-        >
-          Save as draft
-        </Button>
+        <div className={styles.Actions}>
+          <Button
+            aria-controls={open ? 'demo-customized-menu' : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? 'true' : undefined}
+            variant="outlined"
+            data-testid="moreButton"
+            disableElevation
+            onClick={handleClick}
+          >
+            More <ArrowDropDownIcon />
+          </Button>
+          <Menu
+            id="demo-customized-menu"
+            MenuListProps={{
+              'aria-labelledby': 'demo-customized-button',
+            }}
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+          >
+            <MenuItem
+              onClick={() => {
+                exportFlowMutation({
+                  variables: {
+                    id: flowId,
+                  },
+                });
+                handleClose();
+              }}
+              disableRipple
+            >
+              Export flow
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                setShowResetFlowModal(true);
+                handleClose();
+              }}
+              disableRipple
+            >
+              Reset flow count
+            </MenuItem>
+            {isTranslationEnabled && (
+              <MenuItem
+                onClick={() => {
+                  setShowTranslateFlowModal(true);
+                  handleClose();
+                }}
+                disableRipple
+              >
+                Translate
+              </MenuItem>
+            )}
+          </Menu>
 
-        <Button
-          variant="contained"
-          color="primary"
-          data-testid="button"
-          className={styles.ContainedButton}
-          onClick={() => setPublishDialog(true)}
-        >
-          Publish
-        </Button>
+          <Button
+            variant="outlined"
+            color="primary"
+            data-testid="previewButton"
+            onClick={() => setShowSimulator(!showSimulator)}
+          >
+            <PreviewIcon className={styles.Icon} />
+            Preview
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            data-testid="button"
+            onClick={() => setPublishDialog(true)}
+          >
+            <PublishIcon className={styles.Icon} />
+            Publish
+          </Button>
+        </div>
       </div>
-      <Simulator
-        showSimulator={simulatorId > 0}
-        setSimulatorId={setSimulatorId}
-        hasResetButton
-        flowSimulator
-        message={flowKeyword}
-        resetMessage={resetMessage}
-        getFlowKeyword={getFlowKeyword}
-      />
+
+      {showSimulator && (
+        <Simulator
+          setShowSimulator={setShowSimulator}
+          hasResetButton
+          flowSimulator
+          message={getFlowKeyword()}
+        />
+      )}
       {modal}
       <div className={styles.FlowContainer}>
-        <div
-          className={drawerOpen ? styles.FlowName : styles.FlowNameClosed}
-          data-testid="flowName"
-        >
-          {flowName && (
-            <>
-              <IconButton disabled className={styles.Icon}>
-                <FlowIcon />
-              </IconButton>
-
-              {flowTitle}
-            </>
-          )}
-        </div>
-
-        <Button
-          variant="outlined"
-          color="primary"
-          className={drawerOpen ? styles.ResetFlow : styles.ResetClosedDrawer}
-          data-testid="resetFlow"
-          onClick={() => setShowResetFlowModal(true)}
-          aria-hidden="true"
-        >
-          <ResetFlowIcon /> Reset flow counts
-        </Button>
         <div id="flow" />
         {loading && <Loading showTip />}
       </div>

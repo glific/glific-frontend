@@ -1,4 +1,3 @@
-import { EditorState, ContentState } from 'draft-js';
 import CallIcon from '@mui/icons-material/Call';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { Interweave } from 'interweave';
@@ -8,12 +7,30 @@ import { UrlMatcher } from 'interweave-autolink';
 const regexForLink =
   /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_+.~#?&/=]*)/gi;
 
-// Convert Draft.js to WhatsApp message format.
-export const getPlainTextFromEditor = (editorState: any) =>
-  editorState.getCurrentContent().getPlainText();
+export const handleFormatterEvents = (event: KeyboardEvent) => {
+  if ((event.ctrlKey || event.metaKey) && event.code === 'KeyB') {
+    return 'bold';
+  } else if ((event.ctrlKey || event.metaKey) && event.code === 'KeyI') {
+    return 'italic';
+  } else if ((event.ctrlKey || event.metaKey) && event.code === 'KeyS') {
+    return 'strikethrough';
+  }
 
-export const getEditorFromContent = (text: string) =>
-  EditorState.createWithContent(ContentState.createFromText(text));
+  return '';
+};
+
+export const handleFormatting = (text: string, formatter: string) => {
+  switch (formatter) {
+    case 'bold':
+      return `*${text}*`;
+    case 'italic':
+      return `_${text}_`;
+    case 'strikethrough':
+      return `~${text}~`;
+    default:
+      return text;
+  }
+};
 
 const isAlphanumeric = (c: any) => {
   const x = c.charCodeAt();

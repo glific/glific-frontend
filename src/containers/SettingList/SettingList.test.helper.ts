@@ -4,7 +4,7 @@ import {
   getOrganizationLanguagesQuery,
   getOrganizationQuery,
   getProvidersQuery,
-  getOrganisationSettings,
+  getOrganizationSettings,
   getCredential,
   getQualityRating,
 } from 'mocks/Organization';
@@ -64,11 +64,11 @@ export const LIST_ITEM_MOCKS = [
   ...getOrganizationQuery,
   ...getProvidersQuery,
   ...getCredential,
-  getOrganisationSettings,
+  getOrganizationSettings,
   getOrganizationLanguagesQuery,
 ];
 
-const updateOrganisationMock = {
+const updateOrganizationMock = {
   request: {
     query: UPDATE_ORGANIZATION,
     variables: {
@@ -92,6 +92,11 @@ const updateOrganisationMock = {
         endTime: '20:00:00',
         flowId: null,
         startTime: '09:00:00',
+        setting: {
+          lowBalanceThreshold: '10',
+          criticalBalanceThreshold: '5',
+          sendWarningMail: false,
+        },
       },
     },
   },
@@ -100,6 +105,7 @@ const updateOrganisationMock = {
       updateOrganization: {
         errors: null,
         organization: {
+          defaultLanguage: { id: '1', label: 'English' },
           activeLanguages: [
             { id: '1', label: 'English' },
             { id: '2', label: 'Hindi' },
@@ -122,6 +128,11 @@ const updateOrganisationMock = {
             flowId: null,
             startTime: '09:00:00',
           },
+          setting: {
+            lowBalanceThreshold: '10',
+            criticalBalanceThreshold: '5',
+            sendWarningMail: false,
+          },
           shortcode: 'glific',
         },
       },
@@ -129,12 +140,71 @@ const updateOrganisationMock = {
   },
 };
 
-export const ORGANISATION_MOCKS = [
+const updateOrganizationMock2 = {
+  request: {
+    query: UPDATE_ORGANIZATION,
+    variables: {
+      id: 1,
+      input: {
+        name: 'Glific',
+        activeLanguageIds: ['1', '2'],
+        signaturePhrase: 'Please change me, NOW!',
+        defaultLanguageId: '1',
+        setting: {
+          lowBalanceThreshold: '10',
+          criticalBalanceThreshold: '5',
+          sendWarningMail: false,
+        },
+      },
+    },
+  },
+  result: {
+    data: {
+      updateOrganization: {
+        errors: null,
+        organization: {
+          defaultLanguage: { id: '1', label: 'English' },
+          activeLanguages: [
+            { id: '1', label: 'English' },
+            { id: '2', label: 'Hindi' },
+          ],
+          id: '1',
+          name: 'Glific',
+          outOfOffice: {
+            defaultFlowId: '7',
+            enabled: true,
+            enabledDays: [
+              { id: 1, enabled: true },
+              { id: 2, enabled: true },
+              { id: 3, enabled: true },
+              { id: 4, enabled: true },
+              { id: 5, enabled: true },
+              { id: 6, enabled: true },
+              { id: 7, enabled: true },
+            ],
+            endTime: '20:00:00',
+            flowId: null,
+            startTime: '09:00:00',
+          },
+          setting: {
+            lowBalanceThreshold: '10',
+            criticalBalanceThreshold: '5',
+            sendWarningMail: false,
+          },
+          shortcode: 'glific',
+        },
+      },
+    },
+  },
+};
+
+export const ORGANIZATION_MOCKS = [
   getRoleNamesMock,
   getQualityRating,
   languageMock,
   getOrganizationLanguagesQuery,
   flowsMock,
   ...getOrganizationQuery,
-  updateOrganisationMock,
+  updateOrganizationMock,
+  updateOrganizationMock2,
 ];

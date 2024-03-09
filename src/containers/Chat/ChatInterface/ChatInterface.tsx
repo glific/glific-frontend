@@ -1,39 +1,48 @@
 import { useState, useEffect } from 'react';
-import { Paper, Toolbar, Typography } from '@mui/material';
+import { Paper, Tab, Tabs, Typography } from '@mui/material';
 import { useQuery } from '@apollo/client';
-import { Link, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { Simulator } from 'components/simulator/Simulator';
-import Loading from 'components/UI/Layout/Loading/Loading';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { SEARCH_QUERY } from 'graphql/queries/Search';
 import { getUserRole } from 'context/role';
 import { setErrorMessage } from 'common/notification';
 import { COLLECTION_SEARCH_QUERY_VARIABLES, SEARCH_QUERY_VARIABLES } from 'common/constants';
-import selectedChatIcon from 'assets/images/icons/Chat/SelectedContact.svg';
-import unselectedChatIcon from 'assets/images/icons/Chat/Unselected.svg';
-import collectionIcon from 'assets/images/icons/Chat/Collection.svg';
-import selectedCollectionIcon from 'assets/images/icons/Chat/SelectedCollection.svg';
-import savedSearchIcon from 'assets/images/icons/Chat/SavedSearch.svg';
-import selectedSavedSearchIcon from 'assets/images/icons/Chat/SelectedSavedSearch.svg';
 import ChatConversations from '../ChatConversations/ChatConversations';
 import ChatMessages from '../ChatMessages/ChatMessages';
+import SimulatorIcon from 'assets/images/icons/Simulator.svg?react';
 import CollectionConversations from '../CollectionConversations/CollectionConversations';
 import SavedSearches from '../SavedSearches/SavedSearches';
 import styles from './ChatInterface.module.css';
 
+const tabs = [
+  {
+    label: 'Contacts',
+    link: '/chat/',
+  },
+  {
+    label: 'Collections',
+    link: '/chat/collection/',
+  },
+  {
+    label: 'Searches',
+    link: '/chat/saved-searches/',
+  },
+];
 export interface ChatInterfaceProps {
   savedSearches?: boolean;
   collectionType?: boolean;
 }
 
 export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfaceProps) => {
+  const navigate = useNavigate();
   const [simulatorAccess, setSimulatorAccess] = useState(true);
+  const [showSimulator, setShowSimulator] = useState(false);
   const [simulatorId, setSimulatorId] = useState(0);
   const { t } = useTranslation();
-  const [startingHeight] = useState(
-    window.innerWidth < 768 ? `${window.innerHeight - 46}px` : `100vh`
-  );
+  const [value, setValue] = useState(tabs[0].link);
   const params = useParams();
 
   let selectedContactId = params.contactId;
@@ -93,17 +102,23 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
   let chatInterface: any;
   let listingContent;
 
+  const getSimulatorId = (id: any) => {
+    setSimulatorId(id);
+  };
+
+  const handleTabChange = (_event: React.SyntheticEvent, newValue: string) => {
+    setValue(newValue);
+    navigate(newValue);
+  };
+
   if (data && data.search.length === 0) {
     chatInterface = noConversations;
   } else {
-    let contactSelectedClass = '';
-    let collectionSelectedClass = '';
-    let savedSearchClass = '';
+    let heading = '';
 
     if (selectedCollectionId || (selectedTab === 'collections' && !savedSearches)) {
       listingContent = <CollectionConversations collectionId={selectedCollectionId} />;
-      // set class for collections tab
-      collectionSelectedClass = `${styles.SelectedTab}`;
+      heading = 'Collections';
     } else if (selectedContactId && !savedSearches) {
       // let's enable simulator only when contact tab is shown
 
@@ -111,111 +126,40 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
         <ChatConversations contactId={simulatorId > 0 ? simulatorId : selectedContactId} />
       );
 
-      // set class for contacts tab
-      contactSelectedClass = `${styles.SelectedTab}`;
+      heading = 'Contacts';
     } else if (savedSearches) {
-      // set class for saved search
-      savedSearchClass = `${styles.SelectedTab}`;
-      // for saved search
       listingContent = <SavedSearches />;
+      heading = 'Saved searches';
     }
 
     chatInterface = (
       <>
         <div className={`${styles.ChatMessages} chatMessages`}>
           <ChatMessages
-            startingHeight={startingHeight}
             contactId={simulatorId > 0 ? simulatorId : selectedContactId}
             collectionId={selectedCollectionId}
           />
         </div>
 
         <div className={`${styles.ChatConversations} ChatConversations`}>
-          <Toolbar className={styles.ToolBar}>
-            <div className={styles.TabContainer}>
-              <div>
-                <Link to="/chat">
-                  <div className={styles.Title}>
-                    <div className={styles.IconBackground}>
-                      <img
-                        src={contactSelectedClass ? selectedChatIcon : unselectedChatIcon}
-                        height="24"
-                        className={styles.Icon}
-                        alt="Conversation"
-                      />
-                    </div>
-                    <div>
-                      <Typography
-                        className={`${styles.TitleText} ${contactSelectedClass}`}
-                        variant="h6"
-                      >
-                        {t('Contacts')}
-                      </Typography>
-                    </div>
-                  </div>
-                </Link>
-                <div
-                  className={`${
-                    contactSelectedClass ? styles.DarkHighLighter : styles.LightHighLighter
-                  }`}
+          <div className={styles.Title}>
+            <div className={styles.Heading}> {heading}</div>
+          </div>
+
+          <div className={styles.TabContainer}>
+            <Tabs value={value} onChange={handleTabChange} aria-label="chat tabs">
+              {tabs.map((tab) => (
+                <Tab
+                  key={tab.label}
+                  classes={{ selected: styles.TabSelected }}
+                  className={styles.Tab}
+                  label={tab.label}
+                  value={tab.link}
+                  disableRipple
                 />
-              </div>
-              <div>
-                <Link to="/chat/collection">
-                  <div className={styles.Title}>
-                    <div className={styles.IconBackground}>
-                      <img
-                        src={collectionSelectedClass ? selectedCollectionIcon : collectionIcon}
-                        height="24"
-                        className={styles.Icon}
-                        alt="Conversation"
-                      />
-                    </div>
-                    <div>
-                      <Typography
-                        className={`${styles.TitleText} ${collectionSelectedClass}`}
-                        variant="h6"
-                      >
-                        {t('Collections')}
-                      </Typography>
-                    </div>
-                  </div>
-                </Link>
-                <div
-                  className={`${
-                    collectionSelectedClass ? styles.DarkHighLighter : styles.LightHighLighter
-                  }`}
-                />
-              </div>
-              <div>
-                <Link to="/chat/saved-searches/">
-                  <div className={styles.Title}>
-                    <div className={styles.IconBackground}>
-                      <img
-                        src={savedSearchClass ? selectedSavedSearchIcon : savedSearchIcon}
-                        height="24"
-                        className={styles.Icon}
-                        alt="Conversation"
-                      />
-                    </div>
-                    <div>
-                      <Typography
-                        className={`${styles.TitleText} ${savedSearchClass}`}
-                        variant="h6"
-                      >
-                        {t('Saved searches')}
-                      </Typography>
-                    </div>
-                  </div>
-                </Link>
-                <div
-                  className={`${
-                    savedSearchClass ? styles.DarkHighLighter : styles.LightHighLighter
-                  }`}
-                />
-              </div>
-            </div>
-          </Toolbar>
+              ))}
+            </Tabs>
+          </div>
 
           <div>{listingContent}</div>
         </div>
@@ -223,19 +167,30 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
     );
   }
 
+  const handleCloseSimulator = (value: boolean) => {
+    setShowSimulator(value);
+    setSimulatorId(0);
+  };
+
   return (
     <Paper>
-      <div
-        className={styles.Chat}
-        style={{
-          height: startingHeight,
-        }}
-        data-testid="chatContainer"
-      >
+      <div className={styles.Chat} data-testid="chatContainer">
         {chatInterface}
       </div>
-      {simulatorAccess && !selectedCollectionId ? (
-        <Simulator setSimulatorId={setSimulatorId} showSimulator={simulatorId > 0} />
+      {selectedTab === 'contacts' && !savedSearches && (
+        <SimulatorIcon
+          data-testid="simulatorIcon"
+          className={styles.SimulatorIcon}
+          onClick={() => {
+            setShowSimulator(!showSimulator);
+            if (showSimulator) {
+              setSimulatorId(0);
+            }
+          }}
+        />
+      )}
+      {simulatorAccess && !selectedCollectionId && showSimulator ? (
+        <Simulator setShowSimulator={handleCloseSimulator} getSimulatorId={getSimulatorId} />
       ) : null}
     </Paper>
   );

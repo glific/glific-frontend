@@ -1,105 +1,101 @@
-import { RichUtils, getDefaultKeyBinding, Modifier, EditorState, Editor } from 'draft-js';
-import ReactResizeDetector from 'react-resize-detector';
-import { useTranslation } from 'react-i18next';
-
-import { getPlainTextFromEditor } from 'common/RichEditor';
+import { useEffect } from 'react';
+import { PlainTextPlugin } from '@lexical/react/LexicalPlainTextPlugin';
+import { ContentEditable } from '@lexical/react/LexicalContentEditable';
+import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
+import {
+  $getSelection,
+  $createTextNode,
+  $getRoot,
+  KEY_DOWN_COMMAND,
+  COMMAND_PRIORITY_LOW,
+} from 'lexical';
+import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
+import { ClearEditorPlugin } from '@lexical/react/LexicalClearEditorPlugin';
+import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
+import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
+import { useResizeDetector } from 'react-resize-detector';
 
 import styles from './WhatsAppEditor.module.css';
+import { handleFormatterEvents, handleFormatting } from 'common/RichEditor';
 
 interface WhatsAppEditorProps {
-  handleHeightChange(newHeight: number): void;
-  sendMessage(message: string): void;
-  editorState: any;
+  sendMessage(message: any): void;
   setEditorState(editorState: any): void;
   readOnly?: boolean;
 }
 
-export const updatedValue = (input: any, editorState: EditorState, isEmoji: boolean = false) => {
-  const editorContentState = editorState.getCurrentContent();
-  const editorSelectionState: any = editorState.getSelection();
-  const ModifiedContent = Modifier.replaceText(
-    editorContentState,
-    editorSelectionState,
-    isEmoji ? input.native : input
-  );
-  let updatedEditorState = EditorState.push(editorState, ModifiedContent, 'insert-characters');
-  if (!isEmoji) {
-    const editorSelectionStateMod = updatedEditorState.getSelection();
-    const updatedSelection = editorSelectionStateMod.merge({
-      anchorOffset: editorSelectionStateMod.getAnchorOffset() - 1,
-      focusOffset: editorSelectionStateMod.getFocusOffset() - 1,
-    });
-    updatedEditorState = EditorState.forceSelection(updatedEditorState, updatedSelection);
-  }
-
-  return updatedEditorState;
-};
-
 export const WhatsAppEditor = ({
   setEditorState,
   sendMessage,
-  editorState,
-  handleHeightChange,
   readOnly = false,
 }: WhatsAppEditorProps) => {
-  const { t } = useTranslation();
+  const [editor] = useLexicalComposerContext();
 
-  const handleChange = (editorStateChange: any) => {
-    setEditorState(editorStateChange);
+  const { ref } = useResizeDetector({
+    refreshMode: 'debounce',
+    refreshRate: 1000,
+  });
+
+  const onChange = (editorState: any) => {
+    editorState.read(() => {
+      const root = $getRoot();
+      setEditorState(root.getTextContent());
+    });
   };
 
-  const handleKeyCommand = (command: string, editorStateChange: any) => {
-    // On enter, submit. Otherwise, deal with commands like normal.
-    if (command === 'enter') {
-      // Convert Draft.js to WhatsApp
-      sendMessage(getPlainTextFromEditor(editorStateChange));
-      return 'handled';
+  useEffect(() => {
+    if (readOnly) {
+      editor.setEditable(false);
     }
+  }, [readOnly]);
 
-    if (command === 'underline') {
-      return 'handled';
-    }
+  useEffect(() => {
+    return editor.registerCommand(
+      KEY_DOWN_COMMAND,
+      (event: KeyboardEvent) => {
+        // Handle event here
+        let formatter = '';
+        if (event.code === 'Enter' && !event.shiftKey) {
+          event.preventDefault();
+          const root = $getRoot();
+          let textMessage = root.getTextContent();
+          sendMessage(textMessage);
+          return true;
+        } else {
+          formatter = handleFormatterEvents(event);
+        }
 
-    if (command === 'bold') {
-      setEditorState(updatedValue('**', editorState));
-    } else if (command === 'italic') {
-      setEditorState(updatedValue('__', editorState));
-    } else {
-      const newState = RichUtils.handleKeyCommand(editorStateChange, command);
-      if (newState) {
-        setEditorState(newState);
-        return 'handled';
-      }
-    }
-    return 'not-handled';
-  };
+        editor.update(() => {
+          const selection = $getSelection();
+          if (selection?.getTextContent() && formatter) {
+            const text = handleFormatting(selection?.getTextContent(), formatter);
+            const newNode = $createTextNode(text);
+            selection?.insertNodes([newNode]);
+          }
+        });
 
-  const keyBindingFn = (e: any) => {
-    // Shift-enter is by default supported. Only 'enter' needs to be changed.
-    if (e.keyCode === 13 && !e.nativeEvent.shiftKey) {
-      return 'enter';
-    }
-    return getDefaultKeyBinding(e);
+        return false;
+      },
+      COMMAND_PRIORITY_LOW
+    );
+  }, [editor, sendMessage]);
+
+  const Placeholder = () => {
+    return <div className={styles.editorPlaceholder}>Type a message...</div>;
   };
 
   return (
-    <ReactResizeDetector
-      data-testid="resizer"
-      handleHeight
-      onResize={(width: any, height: any) => handleHeightChange(height - 40)} // 40 is the initial height
-    >
-      <div className={styles.Editor}>
-        <Editor
-          data-testid="editor"
-          editorState={editorState}
-          onChange={handleChange}
-          handleKeyCommand={handleKeyCommand}
-          keyBindingFn={keyBindingFn}
-          placeholder={t('Type a message...')}
-          readOnly={readOnly}
-        />
-      </div>
-    </ReactResizeDetector>
+    <div className={`${styles.Editor} LexicalEditor`} ref={ref} data-testid="resizer">
+      <PlainTextPlugin
+        data-testid="editor"
+        placeholder={<Placeholder />}
+        contentEditable={<ContentEditable data-testid={'editor'} className={styles.editorInput} />}
+        ErrorBoundary={LexicalErrorBoundary}
+      />
+      <ClearEditorPlugin />
+      <HistoryPlugin />
+      <OnChangePlugin onChange={onChange} />
+    </div>
   );
 };
 

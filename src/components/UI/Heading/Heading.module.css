@@ -1,0 +1,33 @@
+.Heading {
+  position: sticky;
+  border-bottom: 1px solid #e0e0e0;
+  background: #f8faf5;
+  top: 0;
+  display: flex;
+  padding: 22px 24px 22px 10px;
+  z-index: 1000;
+  justify-content: space-between;
+  align-items: center;
+  height: 110px;
+}
+
+.HeadingTitle {
+  margin-left: 14px;
+  vertical-align: middle;
+  color: #191c1a;
+  display: flex;
+  align-items: first baseline;
+  font-weight: 700;
+  font-size: 38px;
+}
+
+.TextHeading {
+  margin: 12px 0 0 14px;
+  font-weight: 400;
+  color: #191c1a;
+  font-size: 12px;
+}
+
+.TitleText {
+  margin-right: 8px;
+}

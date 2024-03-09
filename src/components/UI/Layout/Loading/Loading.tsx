@@ -1,15 +1,17 @@
+import { useState } from 'react';
 import { CircularProgress, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+
 import { productTips } from './ProductTip';
 import styles from './Loading.module.css';
-import { useState } from 'react';
 
 export interface LoadingProps {
   message?: string;
   showTip?: boolean;
+  whiteBackground?: boolean;
 }
 
-export const Loading = ({ message, showTip = false }: LoadingProps) => {
+export const Loading = ({ message, showTip = false, whiteBackground = false }: LoadingProps) => {
   const { t } = useTranslation();
   const messageToDisplay = message || t('Loading...');
   const [selectedTip] = useState(() => productTips[Math.floor(Math.random() * productTips.length)]);
@@ -18,7 +20,7 @@ export const Loading = ({ message, showTip = false }: LoadingProps) => {
     <>
       {showTip ? (
         <div className={styles.LoadingWithTip} data-testid="loader">
-          <div style={{ padding: '12px 0' }}>
+          <div className={styles.LoadingCircularProgress}>
             <CircularProgress />
           </div>
           <div className={styles.TipBackground}>
@@ -27,7 +29,10 @@ export const Loading = ({ message, showTip = false }: LoadingProps) => {
           </div>
         </div>
       ) : (
-        <div className={styles.CenterItems} data-testid="loader">
+        <div
+          className={`${styles.CenterItems} ${whiteBackground && styles.WhiteBackground}`}
+          data-testid="loader"
+        >
           <div className={styles.LoadingPadding}>
             <CircularProgress />
           </div>
@@ -37,5 +42,3 @@ export const Loading = ({ message, showTip = false }: LoadingProps) => {
     </>
   );
 };
-
-export default Loading;

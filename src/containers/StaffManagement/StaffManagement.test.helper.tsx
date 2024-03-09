@@ -30,6 +30,10 @@ const GET_USER_MOCK = {
           phone: '919999988888',
           isRestricted: false,
           roles: ['Staff'],
+          accessRoles: {
+            id: '1',
+            label: 'Admin'
+          },
           groups: [
             {
               id: '2',
@@ -188,7 +192,7 @@ const createUserMockData = new Array(5).fill(null).map((val, idx) => {
     id: `${index}`,
     name: `NGO Main Account${index}`,
     phone: `91987654321${index}`,
-    accessRoles: [roles[idx]],
+    accessRoles: [{ label: roles[idx] }],
     groups: [],
     contact: {
       id: `${index}`,

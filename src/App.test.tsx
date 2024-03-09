@@ -1,11 +1,11 @@
+import 'mocks/matchMediaMock';
 import { MemoryRouter } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
-import { waitFor, render } from '@testing-library/react';
+import { waitFor, render, screen } from '@testing-library/react';
 import { vi, describe, it } from 'vitest';
-
+import { setAuthSession, setUserSession } from 'services/AuthService';
 import App from 'App';
 import { CONVERSATION_MOCKS } from 'mocks/Chat';
-import { setAuthSession, setUserSession } from 'services/AuthService';
 
 const mocks = CONVERSATION_MOCKS;
 import axios from 'axios';
@@ -23,6 +23,11 @@ const app = (
   </MockedProvider>
 );
 
+vi.mock('routes/AuthenticatedRoute/AuthenticatedRoute', () => ({
+  default: () => <div>Authenticated route subscription</div>,
+  AuthenticatedRoute: () => <div>Chat subscription</div>,
+}));
+
 describe('<App /> ', () => {
   it('it should render <Login /> component by default', async () => {
     mockedAxios.post.mockImplementation(() => Promise.resolve({}));
@@ -33,17 +38,15 @@ describe('<App /> ', () => {
     });
   });
 
-  it('it should render <App /> component correctly', async () => {
+  it('it should render <App /> component correctly in unauthenticated mode', async () => {
     const { container } = render(app);
     await waitFor(() => {
       expect(container).toBeInTheDocument();
+      expect(screen.getByText('Login')).toBeInTheDocument();
     });
   });
 
-  it('it should render <Chat /> component if session is active', async () => {
-    // let's create token expiry date for tomorrow
-    mockedAxios.post.mockResolvedValue(() => Promise.resolve({}));
-
+  it('it should render <App /> component correctly in authenticated mode', async () => {
     const tokenExpiryDate = new Date();
     tokenExpiryDate.setDate(new Date().getDate() + 1);
 
@@ -54,11 +57,9 @@ describe('<App /> ', () => {
     });
 
     setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Staff'] }));
-
-    const { getByTestId } = render(app);
-
+    render(app);
     await waitFor(() => {
-      expect(getByTestId('navbar')).toBeInTheDocument();
+      expect(screen.getByText('Chat subscription')).toBeInTheDocument();
     });
   });
 });

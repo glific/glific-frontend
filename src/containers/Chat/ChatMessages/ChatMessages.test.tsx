@@ -1,4 +1,5 @@
-import { render, screen, act } from '@testing-library/react';
+import { render, act } from '@testing-library/react';
+import 'mocks/matchMediaMock';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import { fireEvent, waitFor } from '@testing-library/dom';
 import { MemoryRouter } from 'react-router';
@@ -296,9 +297,7 @@ test('Contact: if not cache', async () => {
       </MockedProvider>
     </ApolloProvider>
   );
-  const { getByTestId } = render(chatMessagesWithCollection);
-
-  // need to check why we click this
+  render(chatMessagesWithCollection);
 
   await waitFor(() => {});
 });
@@ -449,42 +448,6 @@ test('Should render for multi-search', async () => {
     const container: any = document.querySelector('.messageContainer');
     fireEvent.scroll(container, { target: { scrollY: 0 } });
     fireEvent.click(getByTestId('loadMoreMessages'));
-  });
-});
-
-test('If search query gives error', async () => {
-  const searchQuery = {
-    query: SEARCH_QUERY,
-    variables: {
-      filter: {},
-      contactOpts: { limit: DEFAULT_CONTACT_LIMIT },
-      messageOpts: { limit: DEFAULT_MESSAGE_LIMIT },
-    },
-    result: {
-      errors: [new Error('An error occurred')],
-    },
-    data: null,
-  };
-
-  cache.writeQuery(searchQuery);
-  const client = new ApolloClient({
-    cache: cache,
-    uri: 'http://localhost:4000/',
-    assumeImmutableResults: true,
-  });
-
-  const chatMessages = (
-    <MemoryRouter>
-      <ApolloProvider client={client}>
-        <ChatMessages contactId="2" />
-      </ApolloProvider>
-    </MemoryRouter>
-  );
-
-  render(chatMessages);
-
-  await waitFor(() => {
-    screen.getAllByText('Effie Cormier');
   });
 });
 

@@ -1,10 +1,9 @@
 import { useContext, useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
-import { CircularProgress } from '@mui/material';
+import { Skeleton } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import WhiteIcon from 'assets/images/icons/White.svg?react';
-import SelectWhiteIcon from 'assets/images/icons/SelectWhite.svg?react';
 import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import { BSPBALANCE } from 'graphql/queries/Organization';
 import { BSP_BALANCE_SUBSCRIPTION } from 'graphql/subscriptions/PeriodicInfo';
@@ -24,23 +23,13 @@ export const WalletBalance = ({ fullOpen }: WalletBalanceProps) => {
   const { t } = useTranslation();
   const { provider } = useContext(ProviderContext);
 
-  const balanceOkayString = t('Wallet balance is okay');
-  const balanceLowString = t('Wallet balance is low');
-
-  const nullBalance = () => (
-    <div className={`${styles.WalletBalance} ${styles.WalletBalanceHigh}`}>
-      <div className={styles.WalletBalanceText}>
-        <SelectWhiteIcon className={styles.Icon} />
-        {balanceOkayString}
-      </div>
-    </div>
-  );
+  const balanceString = t('Wallet balance');
 
   const gupshupSettings = (isFullOpen: boolean) => (
     <Tooltip title={t('For any help, please contact the Glific team')} placement="top-start">
       <div className={`${styles.WalletBalance} ${styles.WalletBalanceLow}`}>
         {isFullOpen ? (
-          <div className={styles.WalletBalanceText}>
+          <div className={styles.WalletBalanceLowText}>
             <WhiteIcon className={styles.Icon} />
             {t('Verify Gupshup settings')}
           </div>
@@ -56,27 +45,24 @@ export const WalletBalance = ({ fullOpen }: WalletBalanceProps) => {
   const balanceOkay = (fullOpenFlag: boolean, displayBalanceText: any) =>
     fullOpenFlag ? (
       <div className={styles.WalletBalanceText}>
-        <SelectWhiteIcon className={styles.Icon} />
-        {balanceOkayString}: ${displayBalance}
+        {balanceString}
+        <span className={styles.Balance}> ${displayBalance}</span>
       </div>
     ) : (
       <div className={styles.WalletBalanceText}>${displayBalanceText}</div>
     );
 
   const balanceLow = (fullOpenStatus: boolean, displayBalanceMessage: any) => (
-    <Tooltip
-      title={t('You will be unable to send messages without recharge')}
-      placement="top-start"
-    >
+    <>
       {fullOpenStatus ? (
-        <div className={styles.WalletBalanceText}>
-          <WhiteIcon className={styles.Icon} />
-          {balanceLowString}: ${displayBalance}
+        <div className={styles.WalletBalanceLowText}>
+          {balanceString}
+          <span className={styles.BalanceLow}> ${displayBalance}</span>
         </div>
       ) : (
         <div className={styles.WalletBalanceText}>${displayBalanceMessage}</div>
       )}
-    </Tooltip>
+    </>
   );
 
   // get gupshup balance
@@ -122,20 +108,15 @@ export const WalletBalance = ({ fullOpen }: WalletBalanceProps) => {
     }
   }, [subscribeToMore]);
 
-  if (loading) {
+  if (loading && !retried) {
     return (
-      <div className={`${styles.WalletBalance} ${styles.WalletBalanceHigh}`} data-testid="loading">
-        <div className={styles.WalletBalanceText}>
-          <CircularProgress size={14} className={styles.Progress} />
-        </div>
+      <div className={styles.WalletBalance} data-testid="loading">
+        <Skeleton variant="rounded" width="100%" height="100%" />
       </div>
     );
   }
 
   const errorBody = () => {
-    if (displayBalance === null && !error) {
-      return nullBalance();
-    }
     return gupshupSettings(fullOpen);
   };
 

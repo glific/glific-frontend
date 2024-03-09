@@ -15,19 +15,20 @@ import { Button } from 'components/UI/Form/Button/Button';
 
 export interface CollectionContactListProps {
   title: string;
+  descriptionBox?: any;
 }
 
 const getName = (label: string, phone: string) => (
   <div>
-    <p className={styles.NameText}>{label}</p>
-    <p className={styles.Phone}>{phone}</p>
+    <div className={styles.NameText}>{label}</div>
+    <div className={styles.Phone}>{phone}</div>
   </div>
 );
 
 const getCollections = (collections: Array<any>) => (
-  <p className={styles.CollectionsText}>
+  <div className={styles.CollectionsText}>
     {collections.map((collection: any) => collection.label).join(', ')}
-  </p>
+  </div>
 );
 
 const getColumns = ({ name, maskedPhone, groups }: any) => ({
@@ -49,7 +50,10 @@ const columnAttributes = {
   columnStyles,
 };
 
-export const CollectionContactList = ({ title }: CollectionContactListProps) => {
+export const CollectionContactList = ({
+  title,
+  descriptionBox = <></>,
+}: CollectionContactListProps) => {
   const [addContactsDialogShow, setAddContactsDialogShow] = useState(false);
   const [contactSearchTerm, setContactSearchTerm] = useState('');
   const [selectedContacts, setSelectedContact] = useState<any>([]);
@@ -155,7 +159,7 @@ export const CollectionContactList = ({ title }: CollectionContactListProps) => 
     <>
       {dialog}
       <List
-        backLinkButton={{ text: t('Back to all collections'), link: '/collection' }}
+        descriptionBox={descriptionBox}
         dialogTitle={dialogTitle}
         columnNames={columnNames}
         title={title}
@@ -169,9 +173,7 @@ export const CollectionContactList = ({ title }: CollectionContactListProps) => 
         pageLink="contact"
         listIcon={collectionIcon}
         deleteModifier={{
-          icon: 'cross',
           variables: getDeleteQueryVariables,
-          label: t('Remove from this collection'),
         }}
         editSupport={false}
         dialogMessage={dialogMessage}

@@ -1,9 +1,9 @@
-import { MouseEventHandler, useState, Fragment } from 'react';
+import { useState, Fragment, useEffect } from 'react';
 import { Navigate, Link, useParams } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
 // eslint-disable-next-line no-unused-vars
 import { DocumentNode, ApolloError, useQuery, useMutation } from '@apollo/client';
-import { Typography, IconButton } from '@mui/material';
+import { Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import { Button } from 'components/UI/Form/Button/Button';
@@ -11,26 +11,23 @@ import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { setNotification, setErrorMessage } from 'common/notification';
-import { getPlainTextFromEditor } from 'common/RichEditor';
 import { SEARCH_QUERY_VARIABLES } from 'common/constants';
 import { SEARCH_QUERY } from 'graphql/queries/Search';
 import { USER_LANGUAGES } from 'graphql/queries/Organization';
 import { GET_ROLE_NAMES } from 'graphql/queries/Role';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
+import { Heading } from 'components/UI/Heading/Heading';
 import DeleteIcon from 'assets/images/icons/Delete/White.svg?react';
 import BackIcon from 'assets/images/icons/Back.svg?react';
 import { organizationHasDynamicRole } from 'common/utils';
 import { getUserRole } from 'context/role';
 import styles from './FormLayout.module.css';
 
-export const Heading = ({ icon, formTitle }: any) => (
-  <Typography variant="h5" className={styles.Title}>
-    <IconButton disabled className={styles.Icon}>
-      {icon}
-    </IconButton>
-    {formTitle}
-  </Typography>
-);
+export interface HelpDataProps {
+  heading: string;
+  body: JSX.Element;
+  link: string;
+}
 
 export interface FormLayoutProps {
   deleteItemQuery: DocumentNode;
@@ -79,13 +76,14 @@ export interface FormLayoutProps {
   customHandler?: Function;
   copyNotification?: string;
   roleAccessSupport?: boolean;
-  showPreviewButton?: boolean;
-  onPreviewClick?: MouseEventHandler<HTMLButtonElement>;
   getQueryFetchPolicy?: any;
   saveOnPageChange?: boolean;
   entityId?: any;
   restrictDelete?: boolean;
   languageAttributes?: any;
+  helpData?: HelpDataProps;
+  noHeading?: boolean;
+  partialPage?: boolean;
 }
 
 export const FormLayout = ({
@@ -113,6 +111,7 @@ export const FormLayout = ({
   languageSupport = true,
   roleAccessSupport = false,
   setPayload,
+  // Todo: lets move advanced search out of here as this is not generic
   advanceSearch,
   cancelAction,
   button = 'Save',
@@ -129,13 +128,13 @@ export const FormLayout = ({
   customStyles = null,
   customHandler,
   copyNotification = '',
-  showPreviewButton = false,
-  onPreviewClick = () => {},
   getQueryFetchPolicy = 'cache-first',
   saveOnPageChange = true,
   entityId = null,
   restrictDelete = false,
   languageAttributes = {},
+  noHeading = false,
+  partialPage = false,
 }: FormLayoutProps) => {
   const [showDialog, setShowDialog] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
@@ -151,8 +150,13 @@ export const FormLayout = ({
 
   const { t } = useTranslation();
 
-  // TODO: this query should only get triggered when roles are enabled for an organization
-  const { data: roleData } = useQuery(GET_ROLE_NAMES);
+  const { data: roleData } = useQuery(GET_ROLE_NAMES, { skip: !roleAccessSupport });
+
+  useEffect(() => {
+    if (advanceSearch) {
+      advanceSearch({});
+    }
+  }, [advanceSearch]);
 
   const capitalListItemName = listItemName[0].toUpperCase() + listItemName.slice(1);
   let item: any = null;
@@ -185,6 +189,7 @@ export const FormLayout = ({
   // get the organization for current user and have languages option set to that.
 
   const organization = useQuery(USER_LANGUAGES, {
+    skip: !languageSupport,
     onCompleted: (data: any) => {
       if (!itemId) {
         setLanguageId(data.currentUser.user.organization.defaultLanguage.id);
@@ -377,6 +382,7 @@ export const FormLayout = ({
       ...itemData,
       ...defaultAttribute,
     };
+
     payload = languageSupport
       ? { ...payload, languageId: Number(languageIdValue) }
       : { ...payload };
@@ -394,9 +400,6 @@ export const FormLayout = ({
     formFields.forEach((field: any) => {
       if (field.additionalState) {
         additionalState(payload[field.additionalState]);
-      }
-      if (field.convertToWhatsApp && payload[field.name]) {
-        payload[field.name] = getPlainTextFromEditor(payload[field.name]);
       }
       if (field.skipPayload) {
         delete payload[field.name];
@@ -466,7 +469,7 @@ export const FormLayout = ({
       ...languageAttributes,
       component: Dropdown,
       name: 'languageId',
-      placeholder: t('Language'),
+      label: t('Language'),
       options: languageOptions,
       validate: validateLanguage,
       helperText: t('For more languages check settings or connect with your admin'),
@@ -479,16 +482,12 @@ export const FormLayout = ({
     const roleAccess = {
       component: AutoComplete,
       name: 'roles',
-      placeholder: t('Roles'),
       options: roleData
         ? roleData.accessRoles.map((role: any) => ({ label: role.label, id: role.id }))
         : [],
       optionLabel: 'label',
       multiple: true,
-      textFieldProps: {
-        label: t('Roles'),
-        variant: 'outlined',
-      },
+      label: t('Roles'),
 
       helperText: t('Select roles to apply to the resource'),
     };
@@ -543,7 +542,7 @@ export const FormLayout = ({
             return (
               <Fragment key={key}>
                 {field.label && (
-                  <Typography variant="h5" className={styles.FieldLabel}>
+                  <Typography data-testid="formLabel" variant="h5" className={styles.FieldLabel}>
                     {field.label}
                   </Typography>
                 )}
@@ -580,24 +579,14 @@ export const FormLayout = ({
               </Button>
             ) : null}
             <Button
-              variant="contained"
+              variant="outlined"
               color="secondary"
               onClick={cancelHandler}
               data-testid="cancelActionButton"
             >
               {t('Cancel')}
             </Button>
-            {showPreviewButton && (
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={onPreviewClick}
-                className={styles.Button}
-                data-testid="previewButton"
-              >
-                Preview
-              </Button>
-            )}
+
             {deleteButton}
           </div>
         </Form>
@@ -639,11 +628,7 @@ export const FormLayout = ({
     formTitle = `Add a new ${listItemName}`; // case when adding a new item
   }
 
-  let heading = <Heading icon={icon} formTitle={formTitle} />;
-  if (advanceSearch) {
-    const data = advanceSearch({});
-    if (data && data.heading) heading = data.heading;
-  }
+  let heading = <Heading formTitle={formTitle} />;
 
   const backLink = backLinkButton ? (
     <div className={styles.BackLink}>
@@ -655,9 +640,12 @@ export const FormLayout = ({
   ) : null;
 
   return (
-    <div className={styles.ItemAdd} data-testid="add-container">
+    <div
+      className={partialPage ? styles.ItemAddDialog : styles.ItemAdd}
+      data-testid="add-container"
+    >
       {dialogBox}
-      {heading}
+      {!noHeading && heading}
       {backLink}
       {form}
     </div>

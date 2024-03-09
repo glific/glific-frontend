@@ -114,7 +114,7 @@ export const ChatConversations = ({ contactId }: ChatConversationsProps) => {
   const handleClick = (event: any, data: any) => {
     event.preventDefault();
     if (data) setDialogboxType(data);
-    setDialogbox(!dialog);
+    setDialogbox((dialog) => !dialog);
   };
 
   const saveHandler = (data: any) => {
@@ -125,37 +125,25 @@ export const ChatConversations = ({ contactId }: ChatConversationsProps) => {
   // create searches
   let dialogBox;
   if (dialog) {
-    let searches = (
-      <Search
-        type="saveSearch"
-        search={search}
-        searchParam={searchParam}
-        handleCancel={closeDialogBox}
-        handleSave={saveHandler}
-        searchId={savedSearchCriteriaId}
-      />
-    );
-
-    if (dialogType === 'search')
-      searches = (
-        <Search
-          type="search"
-          search={search}
-          searchParam={searchParam}
-          handleCancel={closeDialogBox}
-        />
-      );
-
+    const isearchType = dialogType === 'search';
     dialogBox = (
       <DialogBox
-        title=""
+        titleAlign="left"
+        title={isearchType ? t('Search conversations') : t('Save Search')}
         handleCancel={closeDialogBox}
         handleOk={handleSubmit}
         buttonOk={t('Search')}
         skipOk
         skipCancel
       >
-        {searches}
+        <Search
+          type={isearchType ? 'search' : 'saveSearch'}
+          search={search}
+          searchParam={searchParam}
+          handleCancel={closeDialogBox}
+          handleSave={isearchType ? undefined : saveHandler}
+          searchId={isearchType ? undefined : savedSearchCriteriaId}
+        />
       </DialogBox>
     );
   }
@@ -212,6 +200,18 @@ export const ChatConversations = ({ contactId }: ChatConversationsProps) => {
 
   return (
     <Container className={styles.ChatConversations} disableGutters>
+      <div className={styles.SearchBar}>
+        <SearchBar
+          handleChange={handleChange}
+          handleSubmit={handleSubmit}
+          onReset={() => resetSearch()}
+          searchVal={searchVal}
+          handleClick={handleClick}
+          endAdornment
+          searchMode={enableSearchMode}
+          iconFront
+        />
+      </div>
       <SavedSearchToolbar
         savedSearchCriteriaCallback={handlerSavedSearchCriteria}
         refetchData={{ savedSearches }}
@@ -221,16 +221,6 @@ export const ChatConversations = ({ contactId }: ChatConversationsProps) => {
           if (enableSearchMode) setEnableSearchMode(false);
         }}
         searchMode={enableSearchMode}
-      />
-      <SearchBar
-        handleChange={handleChange}
-        handleSubmit={handleSubmit}
-        onReset={() => resetSearch()}
-        searchVal={searchVal}
-        handleClick={handleClick}
-        endAdornment
-        searchMode={enableSearchMode}
-        className={styles.SavedSearchTopMargin}
       />
       <ConversationList
         searchVal={searchVal}

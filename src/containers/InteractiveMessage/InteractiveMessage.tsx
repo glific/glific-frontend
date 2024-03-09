@@ -1,7 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import { EditorState } from 'draft-js';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useLazyQuery, useQuery } from '@apollo/client';
 import { setNotification } from 'common/notification';
@@ -23,8 +22,7 @@ import { Simulator } from 'components/simulator/Simulator';
 import { LanguageBar } from 'components/UI/LanguageBar/LanguageBar';
 import { LIST, LOCATION_REQUEST, MEDIA_MESSAGE_TYPES, QUICK_REPLY } from 'common/constants';
 import { validateMedia } from 'common/utils';
-import Loading from 'components/UI/Layout/Loading/Loading';
-import { getPlainTextFromEditor, getEditorFromContent } from 'common/RichEditor';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { InteractiveOptions } from './InteractiveOptions/InteractiveOptions';
 import styles from './InteractiveMessage.module.css';
 import {
@@ -37,6 +35,7 @@ import {
 } from './InteractiveMessage.helper';
 import { GET_TAGS } from 'graphql/queries/Tags';
 import { CreateAutoComplete } from 'components/UI/Form/CreateAutoComplete/CreateAutoComplete';
+import { interactiveMessageInfo } from 'common/HelpData';
 
 const interactiveMessageIcon = (
   <InteractiveMessageIcon className={styles.Icon} data-testid="interactive-icon" />
@@ -60,14 +59,14 @@ export const InteractiveMessage = () => {
   const navigate = useNavigate();
   const [title, setTitle] = useState('');
   const [footer, setFooter] = useState('');
-  const [body, setBody] = useState(EditorState.createEmpty());
+  const [body, setBody] = useState<any>();
   const [templateType, setTemplateType] = useState<string>(QUICK_REPLY);
   const [templateTypeField, setTemplateTypeField] = useState<any>(templateTypeOptions[0]);
   const [templateButtons, setTemplateButtons] = useState<Array<any>>([{ value: '' }]);
   const [globalButton, setGlobalButton] = useState('');
   const [isUrlValid, setIsUrlValid] = useState<any>();
   const [type, setType] = useState<any>(null);
-  const [attachmentURL, setAttachmentURL] = useState<any>();
+  const [attachmentURL, setAttachmentURL] = useState<any>('');
   const [contactVariables, setContactVariables] = useState([]);
   const [defaultLanguage, setDefaultLanguage] = useState<any>({});
   const [sendWithTitle, setSendWithTitle] = useState<boolean>(true);
@@ -83,9 +82,14 @@ export const InteractiveMessage = () => {
   const { t } = useTranslation();
   const params = useParams();
 
+  let isEditing = false;
+  if (params?.id) {
+    isEditing = true;
+  }
+
   const isLocationRequestType = templateType === LOCATION_REQUEST;
 
-  const { data: tag } = useQuery(GET_TAGS, {
+  const { data: tag, loading: tagsLoading } = useQuery(GET_TAGS, {
     variables: {},
     fetchPolicy: 'network-only',
   });
@@ -160,8 +164,8 @@ export const InteractiveMessage = () => {
     }
 
     setTitle(data.title);
-    setFooter(data.footer);
-    setBody(getEditorFromContent(data.body));
+    setFooter(data.footer || '');
+    setBody(data.body);
     setTemplateType(typeValue);
     setTemplateTypeField(templateTypeOptions.find((option) => option.id === typeValue));
     setTimeout(() => setTemplateButtons(data.templateButtons), 100);
@@ -229,8 +233,8 @@ export const InteractiveMessage = () => {
     }
 
     setTitle(titleText);
-    setFooter(data.footer);
-    setBody(getEditorFromContent(data.body));
+    setFooter(data.footer || '');
+    setBody(data.body);
     setTemplateType(typeValue);
     setTemplateTypeField(templateTypeOptions.find((option) => option.id === typeValue));
     setTimeout(() => setTemplateButtons(data.templateButtons), 100);
@@ -449,7 +453,7 @@ export const InteractiveMessage = () => {
     setNextLanguage(option);
     const { values, errors } = form;
     if (values.type?.label === 'TEXT') {
-      if (values.title || values.body.getCurrentContent().getPlainText()) {
+      if (values.title || values.body) {
         if (errors) {
           setNotification(t('Please check the errors'), 'warning');
         }
@@ -457,7 +461,7 @@ export const InteractiveMessage = () => {
         handleLanguageChange(option);
       }
     }
-    if (values.body.getCurrentContent().getPlainText()) {
+    if (values.body) {
       if (Object.keys(errors).length !== 0) {
         setNotification(t('Please check the errors'), 'warning');
       }
@@ -490,7 +494,7 @@ export const InteractiveMessage = () => {
       options: templateTypeOptions,
       multiple: false,
       disabled: params?.id !== undefined,
-      placeholder: 'Type',
+      label: t('Type'),
       optionLabel: 'label',
     },
     {
@@ -499,7 +503,7 @@ export const InteractiveMessage = () => {
       component: Input,
       name: 'title',
       type: 'text',
-      placeholder: `${t('Title')}*`,
+      label: t('Title'),
       onChange: (value: any) => {
         setTitle(value);
       },
@@ -519,7 +523,7 @@ export const InteractiveMessage = () => {
         hasTranslations && getTranslation(templateType, 'body', translations, defaultLanguage),
       component: EmojiInput,
       name: 'body',
-      placeholder: `${t('Message')}*`,
+      label: t('Message'),
       rows: 5,
       convertToWhatsApp: true,
       textArea: true,
@@ -530,6 +534,7 @@ export const InteractiveMessage = () => {
       inputProp: {
         suggestions: contactVariables,
       },
+      isEditing: isEditing,
     },
     {
       skip: templateType !== QUICK_REPLY,
@@ -538,7 +543,7 @@ export const InteractiveMessage = () => {
       component: Input,
       name: 'footer',
       type: 'text',
-      placeholder: t('Footer'),
+      label: t('Footer'),
       onChange: (value: any) => {
         setFooter(value);
       },
@@ -615,7 +620,7 @@ export const InteractiveMessage = () => {
     }
 
     if (templateTypeVal === LIST) {
-      const bodyText = getPlainTextFromEditor(payload.body);
+      const bodyText = payload.body;
       const items = getTemplateButtonPayload(templateTypeVal, templateButtonVal);
       const globalButtons = [{ type: 'text', title: globalButtonVal }];
 
@@ -627,7 +632,7 @@ export const InteractiveMessage = () => {
     }
 
     if (templateType === LOCATION_REQUEST) {
-      const bodyText = getPlainTextFromEditor(payload.body);
+      const bodyText = payload.body;
       const locationJson = {
         type: 'location_request_message',
         body: {
@@ -714,10 +719,7 @@ export const InteractiveMessage = () => {
       options,
       optionLabel: 'label',
       multiple: false,
-      textFieldProps: {
-        variant: 'outlined',
-        label: t('Attachment type'),
-      },
+      label: t('Attachment type'),
       onChange: (event: any) => {
         const val = event || '';
         if (!event) {
@@ -730,15 +732,14 @@ export const InteractiveMessage = () => {
       component: Input,
       name: 'attachmentURL',
       type: 'text',
-      placeholder: t('Attachment URL'),
+      label: t('Attachment URL'),
       validate: () => isUrlValid,
       inputProp: {
         onBlur: (event: any) => {
           setAttachmentURL(event.target.value);
         },
         onChange: (event: any) => {
-          clearTimeout(timer);
-          timer = setTimeout(() => setAttachmentURL(event.target.value), 1000);
+          setAttachmentURL(event.target.value);
         },
       },
     },
@@ -759,10 +760,7 @@ export const InteractiveMessage = () => {
       onChange: (value: any) => {
         setTagId(value);
       },
-      textFieldProps: {
-        variant: 'outlined',
-        label: t('Tag'),
-      },
+      label: t('Tag'),
       helperText: t('Use this to categorize your interactive messages.'),
     },
   ];
@@ -771,7 +769,7 @@ export const InteractiveMessage = () => {
   const validationScheme = Yup.object().shape(validation, [['type', 'attachmentURL']]);
 
   const getPreviewData = () => {
-    const bodyText = getPlainTextFromEditor(body);
+    const bodyText = body;
     if (!title && !bodyText && !footer) return null;
 
     const payload = {
@@ -806,7 +804,7 @@ export const InteractiveMessage = () => {
     attachmentURL,
   ]);
 
-  if (languageOptions.length < 1 || loadingTemplate) {
+  if (languageOptions.length < 1 || loadingTemplate || tagsLoading) {
     return <Loading />;
   }
 
@@ -821,7 +819,7 @@ export const InteractiveMessage = () => {
         type={stateType}
         validationSchema={validationScheme}
         listItem="interactiveTemplate"
-        listItemName="interactive msg"
+        listItemName="Interactive message"
         dialogMessage={dialogMessage}
         formFields={formFields}
         redirectionLink="interactive-message"
@@ -832,11 +830,10 @@ export const InteractiveMessage = () => {
         afterSave={afterSave}
         saveOnPageChange={false}
         buttonState={{ text: t('Validating URL'), status: validatingURL }}
+        helpData={interactiveMessageInfo}
       />
       <div className={styles.Simulator}>
         <Simulator
-          setSimulatorId={0}
-          showSimulator
           isPreviewMessage
           message={{}}
           showHeader={sendWithTitle}

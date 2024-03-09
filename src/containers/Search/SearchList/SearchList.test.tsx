@@ -16,10 +16,10 @@ const wrapper = (
 );
 
 test('should load the collection list', async () => {
-  const { getByText } = render(wrapper);
+  const { getByText, getByTestId } = render(wrapper);
 
   // loading is show initially
-  expect(getByText('Loading...')).toBeInTheDocument();
+  expect(getByTestId('loading')).toBeInTheDocument();
   await waitFor(() => {
     expect(getByText('Searches')).toBeInTheDocument();
   });

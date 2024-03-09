@@ -14,7 +14,7 @@ import {
 } from 'mocks/Organization';
 import { templateCountQuery } from 'mocks/Template';
 import { CREATE_MEDIA_MESSAGE } from 'graphql/mutations/Chat';
-import { GET_TAGS } from 'graphql/queries/Tags';
+import { getFilterTagQuery } from 'mocks/Tag';
 
 const count = templateCountQuery(false, 2);
 
@@ -57,16 +57,8 @@ const speedSend = {
   request: {
     query: FILTER_SESSION_TEMPLATES,
     variables: {
-      filter: {
-        isHsm: false,
-      },
-
-      opts: {
-        limit: 50,
-        offset: 0,
-        order: 'ASC',
-        orderWith: 'label',
-      },
+      filter: { isHsm: false },
+      opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'label' },
     },
   },
   result: {
@@ -264,33 +256,14 @@ const getTemplateData = {
       buttons: null,
       buttonType: null,
       updatedAt: '2020-12-01T18:00:32Z',
+      tag: null,
     },
   },
 };
 
 export const TEMPLATE_MOCKS = [
-  {
-    request: {
-      query: GET_TAGS,
-      variables: {},
-    },
-    result: {
-      data: {
-        tags: [
-          {
-            __typename: 'Tag',
-            id: '1',
-            label: 'Messages',
-          },
-          {
-            __typename: 'Tag',
-            id: '2',
-            label: 'Contacts',
-          },
-        ],
-      },
-    },
-  },
+  getFilterTagQuery,
+  getFilterTagQuery,
   {
     request: {
       query: CREATE_TEMPLATE,
@@ -402,6 +375,8 @@ export const TEMPLATE_MOCKS = [
   filterTemplateQuery,
   filterTemplateQuery,
   count,
+  count,
+  speedSend,
   speedSend,
   HSMTemplateCount,
   HSMTemplate,
@@ -420,6 +395,7 @@ const getHSMTemplate = (id: string, status: string) => ({
   MessageMedia: null,
   body: 'You can now view your Account Balance or Mini statement for Account ending with {{1}} simply by selecting one of the options below.',
   id,
+  bspId: null,
   isActive: true,
   isHsm: true,
   isReserved: false,

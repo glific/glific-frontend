@@ -4,9 +4,12 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { vi } from 'vitest';
 
 import { getOrganizationLanguagesQuery, getOrganizationQuery } from 'mocks/Organization';
-import { getFlowQuery, filterFlowQuery } from 'mocks/Flow';
+import { getFlowQuery, filterFlowQuery, updateFlowQuery, copyFlowQuery } from 'mocks/Flow';
 import { Flow } from './Flow';
 import { setOrganizationServices } from 'services/AuthService';
+import { getFilterTagQuery } from 'mocks/Tag';
+import { getRoleNameQuery } from 'mocks/Role';
+import userEvent from '@testing-library/user-event';
 
 setOrganizationServices('{"__typename":"OrganizationServicesResult","rolesAndPermission":true}');
 
@@ -14,7 +17,11 @@ const mocks = [
   ...getOrganizationQuery,
   getFlowQuery,
   filterFlowQuery,
+  getFilterTagQuery,
+  getRoleNameQuery,
   getOrganizationLanguagesQuery,
+  updateFlowQuery,
+  copyFlowQuery,
 ];
 
 const mockUseLocationValue: any = {
@@ -47,34 +54,33 @@ it('should render Flow', async () => {
 });
 
 it('should support keywords in a separate language', async () => {
-  const { container, getByText, findByText, getByTestId } = render(flow());
+  const user = userEvent.setup();
+  const { getByText, getByTestId, container } = render(flow());
 
   await waitFor(() => {
     const nameInput = getByTestId('formLayout').querySelector('input[name="name"]');
     const keywordInput = getByTestId('formLayout').querySelector('input[name="keywords"]');
 
-    expect(nameInput).not.toBeNull();
     expect(nameInput).toBeInTheDocument();
-    expect(keywordInput).not.toBeNull();
     expect(keywordInput).toBeInTheDocument();
-
-    fireEvent.change(nameInput!, {
-      target: { value: 'New Flow' },
-    });
-    fireEvent.change(keywordInput!, {
-      target: { value: 'मदद' },
-    });
-
-    const button = getByText('Save');
-    fireEvent.click(button);
   });
 
-  // testing if we don't have element for error message
-  // expect(container.querySelectorAll('.MuiFormHelperText-root').length).toBe(1);
+  await user.type(
+    container.querySelector('input[name="name"]') as HTMLInputElement,
+    '{backspace}{backspace}{backspace}{backspace}New Flow'
+  );
+  fireEvent.change(container.querySelector('input[name="keywords"]')!, {
+    target: { value: 'मदद' },
+  });
+
+  const button = getByText('Save');
+  fireEvent.click(button);
+
+  await waitFor(() => {});
 });
 
 it('should not allow special characters in keywords', async () => {
-  const { container, getByText, getByTestId } = render(flow());
+  const { getByText, getByTestId } = render(flow());
 
   await waitFor(() => {
     const nameInput = getByTestId('formLayout').querySelector('input[name="name"]');
@@ -140,11 +146,5 @@ it('should create copy of flow', async () => {
   });
   const button = getByTestId('submitActionButton');
   fireEvent.click(button);
-  await waitFor(() => {
-    // error if a keyword with same flow already exists
-    // expect(getByTestId('dialogTitle')).toBeInTheDocument();
-    // expect(screen.getByTestId('dialogTitle')).toThrow(
-    //   'The keyword `help` was already used in the `Help Workflow` Flow.'
-    // );
-  });
+  await waitFor(() => {});
 });

@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { EditorState } from 'draft-js';
 import Typography from '@mui/material/Typography';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -13,6 +12,7 @@ import { EmojiInput } from 'components/UI/Form/EmojiInput/EmojiInput';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { LanguageBar } from 'components/UI/LanguageBar/LanguageBar';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { GET_TEMPLATE } from 'graphql/queries/Template';
 import { CREATE_MEDIA_MESSAGE } from 'graphql/mutations/Chat';
 import { USER_LANGUAGES } from 'graphql/queries/Organization';
@@ -24,8 +24,6 @@ import {
   QUICK_REPLY,
   VALID_URL_REGEX,
 } from 'common/constants';
-import { getPlainTextFromEditor, getEditorFromContent } from 'common/RichEditor';
-import Loading from 'components/UI/Layout/Loading/Loading';
 import { CreateAutoComplete } from 'components/UI/Form/CreateAutoComplete/CreateAutoComplete';
 import { validateMedia } from 'common/utils';
 import styles from './Template.module.css';
@@ -34,7 +32,6 @@ const regexForShortcode = /^[a-z0-9_]+$/g;
 
 const HSMValidation = {
   example: Yup.string()
-    .transform((_current, original) => original.getCurrentContent().getPlainText())
     .max(1024, 'Maximum 1024 characters are allowed')
     .when('body', ([body], schema: any) =>
       schema.test({
@@ -72,8 +69,8 @@ const formIsActive = {
   component: Checkbox,
   name: 'isActive',
   title: (
-    <Typography variant="h6" style={{ color: '#073f24' }}>
-      Is active?
+    <Typography variant="h6" className={styles.IsActive}>
+      Active?
     </Typography>
   ),
   darkCheckbox: true,
@@ -178,10 +175,10 @@ const Template = ({
 
   const [tagId, setTagId] = useState<any>(null);
   const [label, setLabel] = useState('');
-  const [body, setBody] = useState(EditorState.createEmpty());
-  const [example, setExample] = useState(EditorState.createEmpty());
+  const [body, setBody] = useState<any>('');
+  const [example, setExample] = useState<any>('');
   const [shortcode, setShortcode] = useState('');
-  const [language, setLanguageId] = useState<any>({});
+  const [language, setLanguageId] = useState<any>(null);
   const [type, setType] = useState<any>(null);
   const [translations, setTranslations] = useState<any>();
   const [attachmentURL, setAttachmentURL] = useState<any>('');
@@ -270,7 +267,7 @@ const Template = ({
         );
         navigate(location.pathname);
         setLanguageId(selectedLangauge);
-      } else if (!language.id) {
+      } else if (!language?.id) {
         const selectedLangauge = languageOptions.find(
           (lang: any) => lang.id === languageIdValue.id
         );
@@ -284,7 +281,7 @@ const Template = ({
     setIsActive(isActiveValue);
 
     if (typeof bodyValue === 'string') {
-      setBody(getEditorFromContent(bodyValue));
+      setBody(bodyValue);
     }
 
     if (exampleValue) {
@@ -301,9 +298,8 @@ const Template = ({
       } else {
         exampleBody = exampleValue;
       }
-      const editorStateBody = getEditorFromContent(exampleValue);
 
-      setExample(editorStateBody);
+      setExample(exampleValue);
       onExampleChange(exampleBody);
     }
 
@@ -313,11 +309,11 @@ const Template = ({
     if (typeValue && typeValue !== 'TEXT') {
       setType({ id: typeValue, label: typeValue });
     } else {
-      setType('');
+      setType(null);
     }
     if (translationsValue) {
       const translationsCopy = JSON.parse(translationsValue);
-      const currentLanguage = language.id || languageIdValue.id;
+      const currentLanguage = language?.id || languageIdValue.id;
       if (
         Object.keys(translationsCopy).length > 0 &&
         translationsCopy[currentLanguage] &&
@@ -325,7 +321,7 @@ const Template = ({
       ) {
         const content = translationsCopy[currentLanguage];
         setLabel(content.label);
-        setBody(getEditorFromContent(content.body));
+        setBody(content.body);
       }
       setTranslations(translationsValue);
     }
@@ -359,13 +355,13 @@ const Template = ({
     setLabel(labelValue);
 
     if (typeof bodyValue === 'string') {
-      setBody(getEditorFromContent(bodyValue));
+      setBody(bodyValue);
     }
 
     if (typeValue && typeValue !== 'TEXT') {
       setType({ id: typeValue, label: typeValue });
     } else {
-      setType('');
+      setType(null);
     }
 
     if (MessageMediaValue) {
@@ -497,7 +493,7 @@ const Template = ({
   // Removing buttons when checkbox is checked or unchecked
   useEffect(() => {
     if (getExample) {
-      const { message }: any = getTemplateAndButton(getPlainTextFromEditor(getExample));
+      const { message }: any = getTemplateAndButton(getExample);
       onExampleChange(message || '');
     }
   }, [isAddButtonChecked]);
@@ -509,7 +505,7 @@ const Template = ({
 
       const parsedText = parse.length ? `| ${parse.join(' | ')}` : null;
 
-      const { message }: any = getTemplateAndButton(getPlainTextFromEditor(example));
+      const { message }: any = getTemplateAndButton(example);
 
       const sampleText: any = parsedText && message + parsedText;
 
@@ -592,14 +588,11 @@ const Template = ({
       options: mediaTypes,
       optionLabel: 'label',
       multiple: false,
-      textFieldProps: {
-        variant: 'outlined',
-        label: t('Attachment Type'),
-      },
+      label: t('Attachment Type'),
       disabled: isEditing,
       helperText: warning,
       onChange: (event: any) => {
-        const val = event || '';
+        const val = event;
         if (!event) {
           setIsUrlValid(val);
         }
@@ -610,7 +603,7 @@ const Template = ({
       component: Input,
       name: 'attachmentURL',
       type: 'text',
-      placeholder: t('Attachment URL'),
+      label: t('Attachment URL'),
       validate: () => isUrlValid,
       disabled: isEditing,
       helperText: t(
@@ -633,7 +626,7 @@ const Template = ({
   const onLanguageChange = (option: string, form: any) => {
     setNextLanguage(option);
     const { values } = form;
-    if (values.label || values.body.getCurrentContent().getPlainText()) {
+    if (values.label || values.body) {
       return;
     }
     handleLanguageChange(option);
@@ -647,10 +640,7 @@ const Template = ({
           options: languageOptions,
           optionLabel: 'label',
           multiple: false,
-          textFieldProps: {
-            variant: 'outlined',
-            label: `${t('Language')}*`,
-          },
+          label: `${t('Language')}*`,
           disabled: isEditing,
           onChange: getLanguageId,
         }
@@ -662,11 +652,12 @@ const Template = ({
         };
 
   const formFields = [
+    formIsActive,
     languageComponent,
     {
       component: Input,
       name: 'label',
-      placeholder: `${t('Title')}*`,
+      label: t('Title'),
       disabled: isEditing,
       helperText: defaultAttribute.isHsm
         ? t('Define what use case does this template serve eg. OTP, optin, activity preference')
@@ -675,10 +666,11 @@ const Template = ({
         onBlur: (event: any) => setLabel(event.target.value),
       },
     },
+
     {
       component: EmojiInput,
       name: 'body',
-      placeholder: `${t('Message')}*`,
+      label: t('Message'),
       rows: 5,
       convertToWhatsApp: true,
       textArea: true,
@@ -689,6 +681,7 @@ const Template = ({
       getEditorValue: (value: any) => {
         setBody(value);
       },
+      isEditing: isEditing,
     },
   ];
 
@@ -708,7 +701,11 @@ const Template = ({
   const templateRadioOptions = [
     {
       component: Checkbox,
-      title: <Typography variant="h6">Add buttons</Typography>,
+      title: (
+        <Typography variant="h6" className={styles.IsActive}>
+          Add buttons
+        </Typography>
+      ),
       name: 'isAddButtonChecked',
       disabled: !!(defaultAttribute.isHsm && params.id && !isCopyState),
       handleChange: (value: boolean) => setIsAddButtonChecked(value),
@@ -737,10 +734,7 @@ const Template = ({
     onChange: (value: any) => {
       setTagId(value);
     },
-    textFieldProps: {
-      variant: 'outlined',
-      label: t('Tag'),
-    },
+    label: t('Tag'),
     helperText: t('Use this to categorize your templates.'),
   };
 
@@ -751,7 +745,7 @@ const Template = ({
   ];
 
   const fields = defaultAttribute.isHsm
-    ? [formIsActive, ...formFields, ...hsmFields, ...attachmentField, tags]
+    ? [...formFields, ...hsmFields, ...attachmentField, tags]
     : [...formFields, ...attachmentField];
 
   // Creating payload for button template
@@ -775,15 +769,15 @@ const Template = ({
     }, []);
 
     // get template body
-    const templateBody = getTemplateAndButton(getPlainTextFromEditor(body));
-    const templateExample = getTemplateAndButton(getPlainTextFromEditor(example));
+    const templateBody = getTemplateAndButton(body);
+    const templateExample = getTemplateAndButton(example);
 
     return {
       hasButtons: true,
       buttons: JSON.stringify(buttons),
       buttonType: templateType,
-      body: getEditorFromContent(templateBody.message),
-      example: getEditorFromContent(templateExample.message),
+      body: templateBody.message,
+      example: templateExample.message,
     };
   };
 
@@ -839,7 +833,7 @@ const Template = ({
             status: 'approved',
             languageId: language,
             label: payloadCopy.label,
-            body: getPlainTextFromEditor(payloadCopy.body),
+            body: payloadCopy.body,
             MessageMedia: messageMedia,
             ...defaultAttribute,
           };
@@ -909,7 +903,6 @@ const Template = ({
     language: Yup.object().nullable().required('Language is required.'),
     label: Yup.string().required(t('Title is required.')).max(50, t('Title length is too long.')),
     body: Yup.string()
-      .transform((current, original) => original.getCurrentContent().getPlainText())
       .required(t('Message is required.'))
       .max(1024, 'Maximum 1024 characters are allowed'),
     type: Yup.object()
@@ -953,7 +946,7 @@ const Template = ({
       validation.templateButtons = Yup.array()
         .of(
           Yup.object().shape({
-            value: Yup.string().required(t('Required')),
+            value: Yup.string().max(25, 'Only 25 characters are allowed.').required(t('Required')),
           })
         )
         .min(1)

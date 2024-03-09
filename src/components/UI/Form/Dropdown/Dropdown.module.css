@@ -1,6 +1,6 @@
 .Dropdown {
   display: flex;
-  padding: 8px 0px;
+  width: 100%;
 }
 
 .Label {
@@ -10,17 +10,29 @@
 }
 
 .InputBorder {
-  border-radius: 12px !important;
-  border-width: 2px !important;
+  border-radius: 12px;
+  border-width: 2px;
 }
 
 .HelperText {
-  margin-left: 16px !important;
-  color: #93a29b !important;
-  font-size: 12px !important;
+  margin-left: 0px;
+  color: #93a29b;
+  font-size: 12px;
 }
 
 .Paper {
-  margin-top: 55px;
-  max-height: 400px !important;
+  max-height: 400px;
+}
+
+.FieldLabel {
+  vertical-align: middle;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 18px;
+  color: #555555;
+  margin-bottom: 15px;
+}
+
+.Outlined {
+  padding: 12.5px 14px;
 }

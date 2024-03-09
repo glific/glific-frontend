@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { List, Container, CircularProgress, Typography } from '@mui/material';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { useApolloClient, useLazyQuery, useQuery } from '@apollo/client';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 
-import Loading from 'components/UI/Layout/Loading/Loading';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { SEARCH_QUERY, SEARCH_MULTI_QUERY, SCROLL_HEIGHT } from 'graphql/queries/Search';
 import { setErrorMessage } from 'common/notification';
 import {
@@ -15,6 +15,7 @@ import {
   DEFAULT_MESSAGE_LIMIT,
   DEFAULT_CONTACT_LOADMORE_LIMIT,
   DEFAULT_MESSAGE_LOADMORE_LIMIT,
+  ISO_DATE_FORMAT,
 } from 'common/constants';
 import { updateConversations } from 'services/ChatService';
 import { showMessages } from 'common/responsive';
@@ -128,8 +129,8 @@ export const ConversationList = ({
         filter.includeLabels = params.includeLabels.map((obj: any) => obj.id);
       if (params.dateFrom) {
         filter.dateRange = {
-          from: moment(params.dateFrom).format('YYYY-MM-DD'),
-          to: moment(params.dateTo).format('YYYY-MM-DD'),
+          from: dayjs(params.dateFrom).format(ISO_DATE_FORMAT),
+          to: dayjs(params.dateTo).format(ISO_DATE_FORMAT),
         };
       }
     }
@@ -202,13 +203,14 @@ export const ConversationList = ({
   );
 
   useEffect(() => {
+    const hasSearchParams = Object.keys(searchParam).length !== 0;
     // Use multi search when has search value and when there is no collection id
-    if (searchVal && Object.keys(searchParam).length === 0 && !selectedCollectionId) {
+    if (searchVal && !hasSearchParams && !selectedCollectionId) {
       addLogs(`Use multi search when has search value`, filterSearch());
       getFilterSearch({
         variables: filterSearch(),
       });
-    } else {
+    } else if (hasSearchParams || savedSearchCriteria) {
       // This is used for filtering the searches, when you click on it, so only call it
       // when user clicks and savedSearchCriteriaId is set.
       addLogs(`filtering the searches`, filterVariables());
@@ -262,7 +264,7 @@ export const ConversationList = ({
     }
 
     return (
-      <>
+      <Fragment key={contact.id}>
         {index === 0 ? header : null}
         <ChatConversation
           key={contact.id}
@@ -286,7 +288,7 @@ export const ConversationList = ({
           messageNumber={conversation.messageNumber}
           searchMode={searchMode}
         />
-      </>
+      </Fragment>
     );
   };
 
@@ -316,7 +318,6 @@ export const ConversationList = ({
 
   // build the conversation list only if there are conversations
   if (!conversationList && conversations && conversations.length > 0) {
-    // TODO: Need to check why test is not returning correct result
     conversationList = conversations.map((conversation: any, index: number) => {
       let lastMessage = [];
       if (conversation.messages.length > 0) {

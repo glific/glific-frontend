@@ -17,6 +17,7 @@ export interface ChatMessageTypeProps {
   location?: any;
   isSimulatedMessage?: boolean;
   isContextMessage?: boolean;
+  isSender?: boolean;
 }
 
 export const ChatMessageType = ({
@@ -26,6 +27,7 @@ export const ChatMessageType = ({
   location,
   isSimulatedMessage,
   isContextMessage = false,
+  isSender = false,
 }: ChatMessageTypeProps) => {
   const [showViewer, setShowViewer] = useState(false);
   let messageBody;
@@ -33,7 +35,7 @@ export const ChatMessageType = ({
   if (type !== 'LOCATION' && !media) {
     return (
       <div className={`${isContextMessage && styles.ContentMessageMaxWidth}`}>
-        <MessagesWithLinks message={body} showPreview={!isContextMessage} />
+        <MessagesWithLinks message={body} showPreview={!isContextMessage} isSender={isSender} />
       </div>
     );
   }
@@ -157,7 +159,7 @@ export const ChatMessageType = ({
       break;
 
     default:
-      messageBody = <MessagesWithLinks message={body} />;
+      messageBody = <MessagesWithLinks message={body} isSender={isSender} />;
   }
 
   return messageBody;

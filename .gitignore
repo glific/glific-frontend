@@ -4,6 +4,7 @@
 /node_modules
 /.pnp
 .pnp.js
+bun.lockb
 
 # testing
 /coverage
@@ -32,10 +33,17 @@ cypress/videos
 
 .tool-versions
 
+#Certificate files
 **/**.pem
 
 # certs
 **/**certs
+/priv
+
 
 # nginx conf file
 nginx.conf
+
+#VS Code config files
+/.vscode
+

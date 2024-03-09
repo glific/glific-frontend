@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { LIST, LOCATION_REQUEST, QUICK_REPLY } from 'common/constants';
-import { getPlainTextFromEditor } from 'common/RichEditor';
 import { FLOW_EDITOR_API } from 'config';
 import { getAuthSession } from 'services/AuthService';
 import * as Yup from 'yup';
@@ -38,13 +37,11 @@ export const validator = (templateType: any, t: any) => {
     title: Yup.string()
       .required(t('Title is required'))
       .max(60, t('Title can be at most 60 characters')),
-    body: Yup.string()
-      .transform((_current, original) => original.getCurrentContent().getPlainText())
-      .when('type', {
-        is: (val: any) => val && val.id && val.id === 'DOCUMENT',
-        then: (schema) => schema.nullable(),
-        otherwise: (schema) => schema.required(t('Message content is required.')),
-      }),
+    body: Yup.string().when('type', {
+      is: (val: any) => val && val.id && val.id === 'DOCUMENT',
+      then: (schema) => schema.nullable(),
+      otherwise: (schema) => schema.required(t('Message content is required.')),
+    }),
   };
 
   if (templateType === LIST) {
@@ -239,7 +236,7 @@ export const getVariableOptions = async (setContactVariables: any) => {
     properties.properties
       .map((i: any) => contactVariablesprefix.concat(i.key))
       .concat(fields)
-      .map((val: string) => ({ name: val }))
+      .map((val: string) => val)
       .slice(1);
 
   setContactVariables(contacts);
@@ -267,8 +264,10 @@ export const getPayloadByMediaType = (mediaType: string, payload: any) => {
       break;
   }
 
-  result.text = getPlainTextFromEditor(payload.body);
-  result.caption = payload.footer;
+  result.text = payload.body;
+  if (payload.footer) {
+    result.caption = payload.footer;
+  }
 
   return result;
 };

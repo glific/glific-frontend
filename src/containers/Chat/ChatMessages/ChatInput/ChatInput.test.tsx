@@ -1,5 +1,6 @@
+import 'mocks/matchMediaMock';
 import { MockedProvider } from '@apollo/client/testing';
-import { render, waitFor, fireEvent } from '@testing-library/react';
+import { render, waitFor, fireEvent, screen } from '@testing-library/react';
 import { vi } from 'vitest';
 
 import ChatInput from './ChatInput';
@@ -9,11 +10,14 @@ import {
   getAttachmentPermissionMock,
   uploadBlobMock,
 } from 'mocks/Attachment';
-import { searchInteractive } from 'mocks/InteractiveMessage';
+import { searchInteractive, searchInteractiveHi } from 'mocks/InteractiveMessage';
 import '../VoiceRecorder/VoiceRecorder';
+import { LexicalWrapper } from 'common/LexicalWrapper';
 
 const mocks = [
   searchInteractive,
+  searchInteractive,
+  searchInteractiveHi,
   ...TEMPLATE_MOCKS,
   getAttachmentPermissionMock,
   uploadBlobMock,
@@ -68,7 +72,9 @@ describe('<ChatInput />', () => {
 
   const chatInput = (
     <MockedProvider mocks={mocks} addTypename={false}>
-      <ChatInput {...defaultProps} />
+      <LexicalWrapper>
+        <ChatInput {...defaultProps} />
+      </LexicalWrapper>
     </MockedProvider>
   );
 
@@ -79,6 +85,7 @@ describe('<ChatInput />', () => {
 
   test('speed send, template and interactive buttons should exist', () => {
     const { getAllByTestId } = render(chatInput);
+    fireEvent.click(screen.getByTestId('shortcut-open-button'));
     expect(getAllByTestId('shortcutButton')).toHaveLength(3);
   });
 
@@ -91,27 +98,22 @@ describe('<ChatInput />', () => {
   test('chat templates should open when either speed send or templates button is clicked', async () => {
     // Speed sends button
     const { getAllByTestId, getByTestId, queryByTestId } = render(chatInput);
-    fireEvent.click(getAllByTestId('shortcutButton')[0]);
+    fireEvent.click(screen.getByTestId('shortcut-open-button'));
+
     await waitFor(() => {
+      expect(getAllByTestId('shortcutButton')).toHaveLength(3);
       expect(getByTestId('chatTemplates')).toBeInTheDocument();
     });
-    fireEvent.click(getAllByTestId('shortcutButton')[0]);
-    expect(queryByTestId('chatTemplates')).toBe(null);
 
-    // Templates button
-
-    fireEvent.click(getAllByTestId('shortcutButton')[1]);
+    fireEvent.click(getByTestId('shortcut-open-button'));
     await waitFor(() => {
-      expect(getByTestId('chatTemplates')).toBeInTheDocument();
+      expect(queryByTestId('chatTemplates')).toBe(null);
     });
-    fireEvent.click(getAllByTestId('shortcutButton')[1]);
-    expect(queryByTestId('chatTemplates')).toBe(null);
   });
 
   test('check if reset button works', async () => {
-    const { getAllByTestId, getByTestId } = render(chatInput);
-
-    fireEvent.click(getAllByTestId('shortcutButton')[0]);
+    const { getByTestId } = render(chatInput);
+    fireEvent.click(getByTestId('shortcut-open-button'));
 
     await waitFor(() => {
       fireEvent.change(getByTestId('searchInput').querySelector('input') as HTMLElement, {
@@ -125,16 +127,18 @@ describe('<ChatInput />', () => {
 
   test('Interactive message list should open is interactive msg button is clicked', async () => {
     const { getAllByTestId, getByTestId, queryByTestId } = render(chatInput);
+    fireEvent.click(getByTestId('shortcut-open-button'));
     fireEvent.click(getAllByTestId('shortcutButton')[2]);
     await waitFor(() => {
       expect(getByTestId('chatTemplates')).toBeInTheDocument();
     });
-    fireEvent.click(getAllByTestId('shortcutButton')[2]);
+    fireEvent.click(getByTestId('shortcut-open-button'));
     expect(queryByTestId('chatTemplates')).toBe(null);
   });
 
   test('clicking on a interactive msg from the list should store the value as input', async () => {
-    const { getAllByTestId } = render(chatInput);
+    const { getAllByTestId, getByTestId } = render(chatInput);
+    fireEvent.click(getByTestId('shortcut-open-button'));
     const interactiveMessages = getAllByTestId('shortcutButton')[2];
     fireEvent.click(interactiveMessages);
     await waitFor(() => {
@@ -145,10 +149,12 @@ describe('<ChatInput />', () => {
 
   test('send an interactive message', async () => {
     const { getAllByTestId, getByTestId } = render(chatInput);
-    const interactiveMessages = getAllByTestId('shortcutButton')[2];
+    fireEvent.click(getByTestId('shortcut-open-button'));
+    const interactiveMessages = getAllByTestId('shortcutButton')[1];
     fireEvent.click(interactiveMessages);
     await waitFor(() => {
-      const listItem = getAllByTestId('templateItem')[0];
+      const listItem = getAllByTestId('templateItem')[1];
+
       fireEvent.click(listItem);
     });
     fireEvent.click(getByTestId('sendButton'));
@@ -156,12 +162,19 @@ describe('<ChatInput />', () => {
   });
 
   test('clicking on a speed send from the list should store the value as input', async () => {
-    const { getAllByTestId } = render(chatInput);
-    const speedSends = getAllByTestId('shortcutButton')[0];
-    fireEvent.click(speedSends);
+    const { getAllByTestId, getByTestId, getAllByText } = render(chatInput);
+
+    fireEvent.click(getByTestId('shortcut-open-button'));
+
+    const interactiveMessages = getAllByTestId('shortcutButton')[2];
+    fireEvent.click(interactiveMessages);
     await waitFor(() => {
-      const listItem = getAllByTestId('templateItem')[0];
-      fireEvent.click(listItem);
+      expect(getAllByTestId('templateItem')).toHaveLength(2);
+    });
+    const listItem = getAllByTestId('templateItem')[0];
+    fireEvent.click(listItem);
+    await waitFor(() => {
+      expect(getAllByText('some description')).toHaveLength(1);
     });
   });
 
@@ -170,7 +183,9 @@ describe('<ChatInput />', () => {
     propsWithBspStatusNone.contactBspStatus = 'NONE';
     const { getByText } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
-        <ChatInput {...propsWithBspStatusNone} />
+        <LexicalWrapper>
+          <ChatInput {...propsWithBspStatusNone} />
+        </LexicalWrapper>
       </MockedProvider>
     );
 
@@ -184,22 +199,28 @@ describe('<ChatInput />', () => {
   test('when bsp status is HSM', async () => {
     const propsWithBspStatusHSM = { ...defaultProps };
     propsWithBspStatusHSM.contactBspStatus = 'HSM';
-    const { getByText } = render(
+    const { getByText, getByTestId } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
-        <ChatInput {...propsWithBspStatusHSM} />
+        <LexicalWrapper>
+          <ChatInput {...propsWithBspStatusHSM} />
+        </LexicalWrapper>
       </MockedProvider>
     );
+    fireEvent.click(getByTestId('shortcut-open-button'));
     expect(getByText('Templates')).toBeInTheDocument();
   });
 
   test('when bsp status is SESSION', async () => {
     const propsWithBspStatusSession = { ...defaultProps };
     propsWithBspStatusSession.contactBspStatus = 'SESSION';
-    const { getByText } = render(
+    const { getByText, getByTestId } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
-        <ChatInput {...propsWithBspStatusSession} />
+        <LexicalWrapper>
+          <ChatInput {...propsWithBspStatusSession} />
+        </LexicalWrapper>
       </MockedProvider>
     );
+    fireEvent.click(getByTestId('shortcut-open-button'));
     expect(getByText('Speed sends')).toBeInTheDocument();
   });
 
@@ -209,11 +230,14 @@ describe('<ChatInput />', () => {
     date.setDate(date.getDate() - 2);
     propsWithChatWindowOver.lastMessageTime = date;
 
-    const { getByText } = render(
+    const { getByText, getByTestId } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
-        <ChatInput {...propsWithChatWindowOver} />
+        <LexicalWrapper>
+          <ChatInput {...propsWithChatWindowOver} />
+        </LexicalWrapper>
       </MockedProvider>
     );
+    fireEvent.click(getByTestId('shortcut-open-button'));
     expect(getByText('Templates')).toBeInTheDocument();
   });
 
@@ -223,7 +247,9 @@ describe('<ChatInput />', () => {
     propsWithMockSend.onSendMessage = sendMessageMock;
     const { getByText, getByTestId } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
-        <ChatInput {...propsWithMockSend} />
+        <LexicalWrapper>
+          <ChatInput {...propsWithMockSend} />
+        </LexicalWrapper>
       </MockedProvider>
     );
 

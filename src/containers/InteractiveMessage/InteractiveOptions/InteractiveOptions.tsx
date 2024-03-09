@@ -1,4 +1,4 @@
-import { FormControl, TextField, FormHelperText } from '@mui/material';
+import { FormControl, TextField, FormHelperText, Typography } from '@mui/material';
 import { FieldArray } from 'formik';
 
 import { QUICK_REPLY, LIST, LOCATION_REQUEST } from 'common/constants';
@@ -99,10 +99,10 @@ export const InteractiveOptions = ({
             error={!!(errors.globalButton && touched.globalButton)}
             className={styles.FormControl}
           >
+            <Typography variant="h5" className={styles.FieldLabel}>
+              List header*
+            </Typography>
             <TextField
-              placeholder="List header"
-              variant="outlined"
-              label="List header*"
               className={styles.TextField}
               onChange={(e: any) => {
                 setFieldValue('globalButton', e.target.value);
@@ -117,9 +117,12 @@ export const InteractiveOptions = ({
           </FormControl>
         </div>
       )}
-
       {templateType && templateType !== LOCATION_REQUEST && (
-        <div className={templateType === QUICK_REPLY ? styles.TemplateFields : ''}>
+        <div
+          className={
+            templateType === QUICK_REPLY ? styles.TemplateFields : styles.TemplateFieldsList
+          }
+        >
           <FieldArray
             name="templateButtons"
             render={(arrayHelpers: any) =>

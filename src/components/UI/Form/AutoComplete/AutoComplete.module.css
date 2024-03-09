@@ -1,23 +1,29 @@
 .Input {
   display: flex;
-  padding: 8px 0px;
-  min-width: 180px;
+  min-width: 150px;
+}
+
+.FilterInput {
+  display: flex;
+  min-width: 150px;
 }
 
 .Input label {
-  color: #93a29b !important;
+  color: #93a29b;
+  top: -3px;
 }
 
 .Chip {
-  background-color: #e2f1ea !important;
+  background-color: #e2f1ea;
 }
 
 .HelperText {
-  margin-left: 16px !important;
-  color: #93a29b !important;
-  line-height: 1 !important;
-  font-size: 12px !important;
-  margin-top: 4px !important;
+  margin: 0px;
+  padding: 0px;
+  color: #93a29b;
+  line-height: 1;
+  font-size: 12px;
+  margin-top: 7px;
 }
 
 .HelpLink {
@@ -30,13 +36,14 @@
   cursor: pointer;
   font-size: 14px;
 }
+
 .DeleteIcon {
-  width: 8px !important;
+  width: 8px;
   margin-right: 13px !important;
 }
 
 .Paper > ul > li:hover {
-  background-color: #edf6f2 !important;
+  background-color: #edf6f2;
 }
 .Paper > ul > li {
   color: #073f24;
@@ -44,13 +51,42 @@
 
 .QuestionText {
   color: #073f24;
-  font-size: 16px;
+  font-size: 12px;
   font-weight: 400;
-  margin: 0 0 8px 16px;
+  margin: 0 0 4px 0px;
 }
 
 @media screen and (max-width: 768px) {
   .Input {
-    width: 100% !important;
+    width: 100%;
   }
+}
+
+.InputAuto {
+  z-index: 1;
+}
+
+.InputRoot {
+  width: 150px;
+  padding: 0px 10px !important;
+  padding-right: 46px !important;
+  height: 36px;
+  z-index: 1;
+}
+
+.InputRoot fieldset {
+  z-index: 0;
+  border-radius: 24px;
+  border-color: #cccccc;
+  background: #ffffff;
+  border-width: 1px;
+  border-style: solid;
+}
+
+.Adornment {
+  z-index: 1;
+}
+
+.DefaultInputRoot {
+  padding: 5px !important;
 }

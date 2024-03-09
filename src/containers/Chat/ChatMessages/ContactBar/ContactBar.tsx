@@ -10,48 +10,48 @@ import {
   IconButton,
 } from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
-
 import { useMutation, useLazyQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
-import styles from './ContactBar.module.css';
-import { SearchDialogBox } from '../../../../components/UI/SearchDialogBox/SearchDialogBox';
-import { TerminateFlow } from './TerminateFlow/TerminateFlow';
 
 import TerminateFlowIcon from 'assets/images/icons/Automations/Terminate.svg?react';
-import DropdownIcon from '../../../../assets/images/icons/BrownDropdown.svg?react';
-import AddContactIcon from '../../../../assets/images/icons/Contact/Light.svg?react';
-import BlockIcon from '../../../../assets/images/icons/Block.svg?react';
-import BlockDisabledIcon from '../../../../assets/images/icons/BlockDisabled.svg?react';
-import ProfileIcon from '../../../../assets/images/icons/Contact/Profile.svg?react';
-import FlowIcon from '../../../../assets/images/icons/Flow/Dark.svg?react';
-import FlowUnselectedIcon from '../../../../assets/images/icons/Flow/Unselected.svg?react';
-import ClearConversation from '../../../../assets/images/icons/Chat/ClearConversation.svg?react';
-import ChatIcon from '../../../../assets/images/icons/Chat/UnselectedDark.svg?react';
-import CollectionIcon from '../../../../assets/images/icons/Chat/SelectedCollection.svg?react';
-import SavedSearchIcon from '../../../../assets/images/icons/Chat/SelectedSavedSearch.svg?react';
+import ExpandIcon from 'assets/images/icons/Expand.svg?react';
+import AddContactIcon from 'assets/images/icons/Contact/Light.svg?react';
+import BlockIcon from 'assets/images/icons/Block.svg?react';
+import BlockDisabledIcon from 'assets/images/icons/BlockDisabled.svg?react';
+import ProfileIcon from 'assets/images/icons/Contact/Profile.svg?react';
+import FlowIcon from 'assets/images/icons/Flow/Dark.svg?react';
+import FlowUnselectedIcon from 'assets/images/icons/Flow/Unselected.svg?react';
+import ClearConversation from 'assets/images/icons/Chat/ClearConversation.svg?react';
+import ChatIcon from 'assets/images/icons/Chat/UnselectedDark.svg?react';
+import CollectionIcon from 'assets/images/icons/Chat/SelectedCollection.svg?react';
+import SavedSearchIcon from 'assets/images/icons/Chat/SelectedSavedSearch.svg?react';
 
-import { GET_COLLECTIONS } from '../../../../graphql/queries/Collection';
-import { UPDATE_CONTACT_COLLECTIONS } from '../../../../graphql/mutations/Collection';
-import { GET_CONTACT_COLLECTIONS } from '../../../../graphql/queries/Contact';
-import { GET_FLOWS } from '../../../../graphql/queries/Flow';
-import { ADD_FLOW_TO_CONTACT, ADD_FLOW_TO_COLLECTION } from '../../../../graphql/mutations/Flow';
-import { UPDATE_CONTACT } from '../../../../graphql/mutations/Contact';
-import { SEARCH_QUERY } from '../../../../graphql/queries/Search';
-import { setErrorMessage, setNotification } from '../../../../common/notification';
+import { GET_COLLECTIONS } from 'graphql/queries/Collection';
+import { UPDATE_CONTACT_COLLECTIONS } from 'graphql/mutations/Collection';
+import { GET_CONTACT_COLLECTIONS } from 'graphql/queries/Contact';
+import { GET_FLOWS } from 'graphql/queries/Flow';
+import { ADD_FLOW_TO_CONTACT, ADD_FLOW_TO_COLLECTION } from 'graphql/mutations/Flow';
+import { UPDATE_CONTACT } from 'graphql/mutations/Contact';
+import { SEARCH_QUERY } from 'graphql/queries/Search';
+import { CLEAR_MESSAGES } from 'graphql/mutations/Chat';
+import { setErrorMessage, setNotification } from 'common/notification';
 import {
   FLOW_STATUS_PUBLISHED,
   is24HourWindowOver,
   SEARCH_QUERY_VARIABLES,
   setVariables,
-} from '../../../../common/constants';
-import { Timer } from '../../../../components/UI/Timer/Timer';
-import { DialogBox } from '../../../../components/UI/DialogBox/DialogBox';
-import { Tooltip } from '../../../../components/UI/Tooltip/Tooltip';
-import { CLEAR_MESSAGES } from '../../../../graphql/mutations/Chat';
-import { showChats } from '../../../../common/responsive';
+} from 'common/constants';
+import { Timer } from 'components/UI/Timer/Timer';
+import { DialogBox } from 'components/UI/DialogBox/DialogBox';
+import { Tooltip } from 'components/UI/Tooltip/Tooltip';
+import { SearchDialogBox } from 'components/UI/SearchDialogBox/SearchDialogBox';
+import { TerminateFlow } from './TerminateFlow/TerminateFlow';
+import { showChats } from 'common/responsive';
 import { slicedString } from 'common/utils';
 import { CollectionInformation } from '../../../Collection/CollectionInformation/CollectionInformation';
 import AddContactsToCollection from '../AddContactsToCollection/AddContactsToCollection';
+
+import styles from './ContactBar.module.css';
 
 const status = ['SESSION', 'SESSION_AND_HSM', 'HSM'];
 
@@ -148,9 +148,14 @@ export const ContactBar = ({
 
   const [blockContact] = useMutation(UPDATE_CONTACT, {
     onCompleted: () => {
+      setShowBlockDialog(false);
       setNotification(t('Contact blocked successfully.'));
     },
     refetchQueries: [{ query: SEARCH_QUERY, variables: SEARCH_QUERY_VARIABLES }],
+    onError: () => {
+      setShowBlockDialog(false);
+      setNotification(t('Sorry! An error occurred!'), 'warning');
+    },
   });
 
   const [addFlow] = useMutation(ADD_FLOW_TO_CONTACT, {
@@ -182,7 +187,6 @@ export const ContactBar = ({
   let initialSelectedCollectionIds: Array<any> = [];
   let selectedCollectionsName;
   let selectedCollections: any = [];
-  let assignedToCollection: any = [];
 
   if (data) {
     const { groups } = data.contact.contact;
@@ -190,10 +194,6 @@ export const ContactBar = ({
 
     selectedCollections = groups.map((group: any) => group.label);
     selectedCollectionsName = shortenMultipleItems(selectedCollections);
-
-    assignedToCollection = groups.map((group: any) => group.users.map((user: any) => user.name));
-    assignedToCollection = Array.from(new Set([].concat(...assignedToCollection)));
-    assignedToCollection = shortenMultipleItems(assignedToCollection);
   }
 
   if (collectionsData) {
@@ -282,7 +282,7 @@ export const ContactBar = ({
         optionLabel="name"
         multiple={false}
         buttonOk="Start"
-        searchLabel={t('Select flow')}
+        textFieldPlaceholder={t('Select flow')}
         description={t('The contact will be responded as per the messages planned in the flow.')}
       />
     );
@@ -303,6 +303,7 @@ export const ContactBar = ({
         handleOk={handleClearChatSubmit}
         handleCancel={() => setClearChatDialog(false)}
         alignButtons="center"
+        titleAlign="left"
         buttonOk="YES, CLEAR"
         colorOk="warning"
         buttonCancel="MAYBE LATER"
@@ -511,6 +512,7 @@ export const ContactBar = ({
       anchorEl={anchorEl}
       placement="bottom-start"
       transition
+      disablePortal
       className={styles.Popper}
     >
       {({ TransitionProps }) => (
@@ -518,7 +520,6 @@ export const ContactBar = ({
           <Paper elevation={3} className={styles.Container}>
             {viewDetails}
             {flowButton}
-
             {addMember}
             {terminateFLows}
             {blockContactButton}
@@ -535,8 +536,8 @@ export const ContactBar = ({
   let contactCollections: any;
   if (selectedCollections.length > 0) {
     contactCollections = (
-      <div className={styles.ContactCollections}>
-        <span className={styles.CollectionHeading}>Collections</span>
+      <div className={styles.SessionTimer}>
+        <span>Collections:</span>
         <span className={styles.CollectionsName} data-testid="collectionNames">
           {selectedCollectionsName}
         </span>
@@ -562,21 +563,15 @@ export const ContactBar = ({
     <>
       {contactId ? (
         <div className={styles.SessionTimerContainer}>
+          {contactCollections}
           <div className={styles.SessionTimer} data-testid="sessionTimer">
-            <span>Session Timer</span>
+            <span>Time left:</span>
             <Timer
               time={lastMessageTime}
               contactStatus={contactStatus}
               contactBspStatus={contactBspStatus}
+              variant="secondary"
             />
-          </div>
-          <div>
-            {assignedToCollection ? (
-              <>
-                <span className={styles.CollectionHeading}>Assigned to</span>
-                <span className={styles.CollectionsName}>{assignedToCollection}</span>
-              </>
-            ) : null}
           </div>
         </div>
       ) : null}
@@ -601,17 +596,6 @@ export const ContactBar = ({
           <div className={styles.ContactInfoWrapper}>
             <div className={styles.InfoWrapperRight}>
               <div className={styles.ContactDetails}>
-                <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
-                  <div
-                    className={styles.Configure}
-                    data-testid="dropdownIcon"
-                    onClick={handleConfigureIconClick}
-                    onKeyPress={handleConfigureIconClick}
-                    aria-hidden
-                  >
-                    <DropdownIcon />
-                  </div>
-                </ClickAwayListener>
                 <Typography
                   className={styles.Title}
                   variant="h6"
@@ -620,8 +604,18 @@ export const ContactBar = ({
                 >
                   {slicedString(displayName, 40)}
                 </Typography>
+                <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
+                  <div
+                    className={styles.Configure}
+                    data-testid="dropdownIcon"
+                    onClick={handleConfigureIconClick}
+                    onKeyPress={handleConfigureIconClick}
+                    aria-hidden
+                  >
+                    <ExpandIcon />
+                  </div>
+                </ClickAwayListener>
               </div>
-              {contactCollections}
             </div>
             {collectionStatus}
             {sessionAndCollectionAssignedTo}

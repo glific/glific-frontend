@@ -22,7 +22,7 @@ import setLogs from 'config/logs';
 import { GET_ORGANIZATION_SERVICES } from 'graphql/queries/Organization';
 import { Auth } from '../Auth';
 
-const notApprovedMsg = 'Your account is not approved yet. Please contact your organisation admin.';
+const notApprovedMsg = 'Your account is not approved yet. Please contact your organization admin.';
 
 export const Login = () => {
   const { setAuthenticated } = useContext(SessionContext);
@@ -46,7 +46,6 @@ export const Login = () => {
   useEffect(() => {
     if (userData && organizationData) {
       const { user } = userData.currentUser;
-      // Todo: assigning this for the test cases to work with the same key name. Need to refactor it
       const userCopy = JSON.parse(JSON.stringify(user));
       userCopy.roles = user.accessRoles;
       // set the current user object

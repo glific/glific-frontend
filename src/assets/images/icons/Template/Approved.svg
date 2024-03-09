@@ -1,10 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <title>Icon/Approved</title>
-    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="Icon/Select">
-            <circle id="Oval" fill="#C8EBDC" cx="9" cy="9" r="9"></circle>
-            <path d="M6,10.3313967 L7.62215196,8.01857105 C7.93928279,7.56641346 8.56291427,7.45695264 9.01507185,7.77408347 C9.13137259,7.85565358 9.22895977,7.96106612 9.30133466,8.08330123 L12.055962,12.7356351 L12.055962,12.7356351" id="Triangle" stroke="#119656" stroke-width="2" stroke-linecap="round" transform="translate(9.027981, 9.742818) scale(1, -1) translate(-9.027981, -9.742818) "></path>
-        </g>
-    </g>
+<svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M16 8.5C16 12.6422 12.6422 16 8.5 16C4.35787 16 1 12.6422 1 8.5C1 4.35787 4.35787 1 8.5 1C12.6422 1 16 4.35787 16 8.5Z" fill="#DFECE2" stroke="#119656" stroke-width="1.5"/>
+<path d="M6 8.4987L7.40233 9.90103C7.54833 10.047 7.785 10.047 7.931 9.90103L11 6.83203" stroke="#119656" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

@@ -9,6 +9,8 @@ import {
   GET_ORGANIZATION_COUNT,
   GET_ORGANIZATION_PROVIDER,
   GET_QUALITY_RATING,
+  GET_ORGANIZATION_PHONE,
+  GET_ORGANIZATION_SERVICES,
 } from 'graphql/queries/Organization';
 import { BSP_BALANCE_SUBSCRIPTION } from 'graphql/subscriptions/PeriodicInfo';
 
@@ -46,6 +48,11 @@ export const getOrganizationQuery = [
               endTime: '12:30:27',
               flowId: 2,
               startTime: '12:31:27',
+            },
+            setting: {
+              lowBalanceThreshold: '10',
+              criticalBalanceThreshold: '5',
+              sendWarningMail: false,
             },
             name: 'Glific',
             signaturePhrase: 'Sample text',
@@ -90,6 +97,11 @@ export const getOrganizationQuery = [
               endTime: '12:30:27',
               flowId: 2,
               startTime: '12:31:27',
+            },
+            setting: {
+              lowBalanceThreshold: '10',
+              criticalBalanceThreshold: '5',
+              sendWarningMail: false,
             },
             name: 'Glific',
             signaturePhrase: 'Sample text',
@@ -136,6 +148,11 @@ export const getOrganizationQuery = [
               flowId: '1',
               startTime: '09:00:00',
             },
+            setting: {
+              lowBalanceThreshold: '10',
+              criticalBalanceThreshold: '5',
+              sendWarningMail: false,
+            },
             signaturePhrase: 'Please change me, NOW!',
           },
         },
@@ -143,7 +160,7 @@ export const getOrganizationQuery = [
     },
   },
 ];
-export const getOrganisationSettings = {
+export const getOrganizationSettings = {
   request: {
     query: GET_ORGANIZATION,
     variables: { id: '1' },
@@ -177,12 +194,35 @@ export const getOrganisationSettings = {
             flowId: 2,
             startTime: '12:31:27',
           },
+          setting: {
+            lowBalanceThreshold: '10',
+            criticalBalanceThreshold: '5',
+            sendWarningMail: false,
+          },
           name: 'Glific',
           signaturePhrase: 'Sample text',
           contact: {
             phone: 911111111111,
           },
         },
+      },
+    },
+  },
+};
+export const getOrganizationServicesQuery = {
+  request: {
+    query: GET_ORGANIZATION_SERVICES,
+  },
+  result: {
+    data: {
+      organizationServices: {
+        dialogflow: true,
+        googleCloudStorage: true,
+        flowUuidDisplay: true,
+        rolesAndPermission: true,
+        contactProfileEnabled: true,
+        ticketingEnabled: true,
+        autoTranslationEnabled: true,
       },
     },
   },
@@ -629,7 +669,21 @@ export const errorBalanceQuery = [
       query: BSPBALANCE,
       variables: { organizationId: null },
     },
-    error: new Error('An error occured'),
+    result: {
+      data: { bspbalance: null },
+    },
+    errors: [
+      {
+        message: 'Error while fetching the BSP balance',
+        path: ['bspbalance'],
+        locations: [
+          {
+            line: 2,
+            column: 3,
+          },
+        ],
+      },
+    ],
   },
 ];
 
@@ -757,6 +811,21 @@ export const getQualityRating = {
     data: {
       qualityRating: {
         currentLimit: 'TIER_1K',
+      },
+    },
+  },
+};
+
+export const getOrganizationPhone = {
+  request: {
+    query: GET_ORGANIZATION_PHONE,
+  },
+  result: {
+    data: {
+      organization: {
+        organization: {
+          contact: { phone: '91987654321' },
+        },
       },
     },
   },

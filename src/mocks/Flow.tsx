@@ -14,9 +14,13 @@ import {
   PUBLISH_FLOW,
   IMPORT_FLOW,
   RESET_FLOW_COUNT,
+  UPDATE_FLOW,
+  CREATE_FLOW_COPY,
+  AUTO_TRANSLATE_FLOW,
 } from 'graphql/mutations/Flow';
 import { GET_ORGANIZATION_SERVICES } from 'graphql/queries/Organization';
 import json from './ImportFlow.json';
+import { GET_ALL_FLOW_LABELS } from 'graphql/queries/FlowLabel';
 
 export const getFlowQuery = {
   request: {
@@ -33,6 +37,7 @@ export const getFlowQuery = {
           id: '1',
           name: 'Help',
           isActive: true,
+          description: 'Help flow',
           uuid: 'b050c652-65b5-4ccf-b62b-1e8b3f328676',
           keywords: ['help'],
           isPinned: false,
@@ -44,6 +49,10 @@ export const getFlowQuery = {
           ],
           isBackground: false,
           ignoreKeywords: false,
+          tag: {
+            id: '1',
+            label: 'New tag',
+          },
         },
       },
     },
@@ -86,6 +95,37 @@ export const addFlowToCollectionQuery = {
   },
 };
 
+const filterFlowResult = {
+  data: {
+    flows: [
+      {
+        id: '1',
+        ignoreKeywords: true,
+        isActive: true,
+        description: 'Help flow',
+        keywords: ['help', 'मदद'],
+        lastChangedAt: '2021-03-05T04:32:23Z',
+        lastPublishedAt: null,
+        name: 'Help Workflow',
+        isBackground: false,
+        updatedAt: '2021-03-05T04:32:23Z',
+        uuid: '3fa22108-f464-41e5-81d9-d8a298854429',
+        isPinned: true,
+        roles: [
+          {
+            id: '1',
+            label: 'Admin',
+          },
+        ],
+        tag: {
+          id: '1',
+          label: 'help',
+        },
+      },
+    ],
+  },
+};
+
 export const filterFlowQuery = {
   request: {
     query: FILTER_FLOW,
@@ -100,31 +140,24 @@ export const filterFlowQuery = {
     },
   },
 
-  result: {
-    data: {
-      flows: [
-        {
-          id: '1',
-          ignoreKeywords: true,
-          isActive: true,
-          keywords: ['help', 'मदद'],
-          lastChangedAt: '2021-03-05T04:32:23Z',
-          lastPublishedAt: null,
-          name: 'Help Workflow',
-          isBackground: false,
-          updatedAt: '2021-03-05T04:32:23Z',
-          uuid: '3fa22108-f464-41e5-81d9-d8a298854429',
-          isPinned: true,
-          roles: [
-            {
-              id: '1',
-              label: 'Admin',
-            },
-          ],
-        },
-      ],
+  result: filterFlowResult,
+};
+
+export const filterFlowSortQuery = {
+  request: {
+    query: FILTER_FLOW,
+    variables: {
+      filter: { isActive: true },
+      opts: {
+        limit: 50,
+        offset: 0,
+        order: 'DESC',
+        orderWith: 'name',
+      },
     },
   },
+
+  result: filterFlowResult,
 };
 
 export const filterFlowWithNameOrKeywordOrTagQuery = {
@@ -149,6 +182,7 @@ export const filterFlowWithNameOrKeywordOrTagQuery = {
           ignoreKeywords: true,
           isActive: true,
           keywords: ['help', 'मदद'],
+          description: 'Help flow',
           lastChangedAt: '2021-03-05T04:32:23Z',
           lastPublishedAt: null,
           name: 'Help Workflow',
@@ -316,7 +350,7 @@ export const publishFlow = {
   },
 };
 
-export const getOrganisationServicesQuery = {
+export const getOrganizationServicesQuery = {
   request: {
     query: GET_ORGANIZATION_SERVICES,
   },
@@ -340,8 +374,10 @@ export const importFlow = {
   result: {
     data: {
       importFlow: {
-        errors: null,
-        success: true,
+        status: {
+          flowName: 'flow 1',
+          status: 'success',
+        },
       },
     },
   },
@@ -406,6 +442,123 @@ export const resetFlowCount = {
         success: true,
         errors: [],
       },
+    },
+  },
+};
+
+export const updateFlowQuery = {
+  request: {
+    query: UPDATE_FLOW,
+    variables: {
+      id: 1,
+      input: {
+        isActive: true,
+        isPinned: false,
+        isBackground: false,
+        description: 'Help flow',
+        name: 'New Flow',
+        keywords: ['मदद'],
+        ignoreKeywords: false,
+        addRoleIds: [],
+        deleteRoleIds: [],
+        tag_id: '1',
+      },
+    },
+  },
+  result: {
+    data: {
+      updateFlow: {
+        flow: {
+          roles: null,
+          tag: null,
+          id: '1',
+          isActive: true,
+          ignoreKeywords: false,
+          description: 'Help flow',
+          keywords: ['मदद'],
+          name: 'New Flow',
+          isBackground: false,
+          updatedAt: '2021-03-05T04:32:23Z',
+          uuid: '3fa22108-f464-41e5-81d9-d8a298854429',
+          isPinned: false,
+        },
+
+        errors: null,
+      },
+    },
+  },
+};
+
+export const getFlowTranslations = {
+  request: {
+    query: AUTO_TRANSLATE_FLOW,
+    variables: { id: '1' },
+  },
+  result: {
+    data: {
+      inlineFlowLocalization: {
+        success: true,
+        errors: [],
+      },
+    },
+  },
+};
+
+export const copyFlowQuery = {
+  request: {
+    query: CREATE_FLOW_COPY,
+    variables: {
+      id: 1,
+      input: {
+        isActive: true,
+        isPinned: false,
+        isBackground: false,
+        description: 'Help flow',
+        name: 'Copy of Help',
+        keywords: ['help', 'activity'],
+        ignoreKeywords: false,
+        addRoleIds: [],
+        deleteRoleIds: [],
+        tag_id: '1',
+      },
+    },
+  },
+  result: {
+    data: {
+      copyFlow: {
+        flow: {
+          roles: [],
+          tag: { id: '1', label: 'New tag' },
+          id: '1',
+          isActive: true,
+          keywords: ['help', 'activity'],
+          description: 'Help flow',
+          name: 'Copy of Help',
+          isBackground: false,
+          updatedAt: '2021-03-05T04:32:23Z',
+          uuid: '3fa22108-f464-41e5-81d9-d8a298854429',
+          isPinned: false,
+        },
+
+        errors: null,
+      },
+    },
+  },
+};
+
+export const getAllFlowLabelsQuery = {
+  request: {
+    query: GET_ALL_FLOW_LABELS,
+    variables: { filter: {}, opts: { limit: null, offset: 0, order: 'ASC' } },
+  },
+  result: {
+    data: {
+      flowLabels: [
+        {
+          id: '1',
+          name: 'dob',
+        },
+      ],
     },
   },
 };

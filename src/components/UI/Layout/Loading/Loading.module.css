@@ -64,7 +64,14 @@
   height: 100%;
   flex-direction: column;
 }
+.WhiteBackground {
+  background-color: #fff;
+}
 
 .LoadingPadding {
   padding-top: 100px;
+}
+
+.LoadingCircularProgress {
+  padding-top: 12px 0 !important;
 }

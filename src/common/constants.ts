@@ -1,17 +1,30 @@
-import moment from 'moment';
+import dayjs from 'dayjs';
 import * as Yup from 'yup';
 
+export const OLD_DOMAIN = 'tides.coloredcow.com';
+export const NEW_DOMAIN = 'glific.com';
 export const SIDE_DRAWER_WIDTH = 233;
-export const DATE_FORMAT = 'DD/MM/YY';
-export const FULL_DATE_FORMAT = 'DD/MM/YYYY';
-export const TIME_FORMAT = 'HH:mm';
-export const DATE_TIME_FORMAT = 'DD/MM/YYYY, HH:mm:ss';
+export const SHORT_DATE_FORMAT = 'DD/MM/YY';
+export const LONG_DATE_FORMAT = 'DD/MM/YYYY';
+export const ISO_DATE_FORMAT = 'YYYY-MM-DD';
+export const ISO_DATE_FORMAT_SHORT = 'YY-MM-DD';
+export const MONTH_DATE_FORMAT = 'MM/DD/YYYY';
+export const DATE_FORMAT_WITH_MONTH = 'DD MMM YYYY';
+export const SHORT_TIME_FORMAT = 'HH:mm';
+export const LONG_TIME_FORMAT = 'HH:mm:ss';
+export const EXTENDED_TIME_FORMAT = 'THH:mm:ss';
+export const STANDARD_DATE_TIME_FORMAT = 'DD/MM/YYYY, HH:mm:ss';
+export const SHORT_DATE_TIME_FORMAT = 'DD/MM/YYYY, HH:mm';
+export const EXTENDED_DATE_TIME_FORMAT = 'MMMM DD, YYYY, [at] HH:mm:ss';
+export const EXTENDED_DATE_TIME_FORMAT_WITH_AMPM = 'DD/MM/YYYY_hh:mmA';
+export const DATE_TIME_FORMAT_WITH_AMPM_SHORT = 'DD/MM/YYYY hh:mm a';
+export const DATE_TIME_FORMAT_WITH_AMPM_LONG = 'DD MMM YYYY hh:mm a';
 export const SIMULATOR_CONTACT = '9876543210';
 export const FLOW_STATUS_PUBLISHED = 'published';
 export const SIMULATOR_NUMBER_START = '9876543210';
 export const GUPSHUP_ENTERPRISE_SHORTCODE = 'gupshup_enterprise';
 export const VALID_URL_REGEX =
-  'https?://(www.)?[-a-zA-Z0-9@:%._+~#=]{2,256}.[a-z]{2,4}([-a-zA-Z0-9@:%_+.~#?&\/=]*)';
+  'https?://(www.)?[-a-zA-Z0-9@:%._+~#=]{2,256}.[a-z]{2,4}([-a-zA-Z0-9@:%_+.~#?&/=]*)';
 // to find variables in message
 export const pattern = /[^{}]+(?=})/g;
 
@@ -112,8 +125,7 @@ export const setVariables = (
   },
 });
 
-export const is24HourWindowOver = (time: any) =>
-  moment.duration(moment(new Date()).diff(moment(time))).asHours() > 24;
+export const is24HourWindowOver = (time: any) => dayjs().diff(dayjs(time), 'hours') > 24;
 
 // connection retry attempt configuration
 export const CONNECTION_RECONNECT_ATTEMPTS = 5;

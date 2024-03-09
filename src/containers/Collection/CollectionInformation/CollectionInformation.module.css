@@ -3,16 +3,26 @@
   font-size: 12px;
   line-height: 10px;
   color: #cacaca;
-  align-items: center;
-  margin-bottom: 5px;
 }
 
 .SessionInfo {
-  padding-top: 8px;
+  color: #555;
+  font-size: 12px;
+  line-height: 20px;
 }
 
 .SessionCount {
-  color: #93a29b;
+  margin-left: 4px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  color: #555;
+  padding: 4px 8px;
+  background-color: #ecf7f1;
+  border-radius: 5px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 20px;
 }
 
 .CollectionHeading {
@@ -33,12 +43,11 @@
 }
 
 .InfoWrapper {
-  align-items: flex-end;
-  flex-direction: column;
+  display: flex;
+  align-items: center;
 }
 
 .Message {
-  width: 331px;
   line-height: 20px;
   text-align: center;
   color: #073f24;
@@ -49,14 +58,15 @@
 }
 
 .Heading {
-  font-size: 0.875rem;
-  color: #93a29b;
+  color: #555;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px; /* 142.857% */
 }
 
 .MessageInfo {
   display: flex;
-  gap: 20px;
-  margin-top: 10px;
+  gap: 0 16px;
 }
 
 @media only screen and (max-width: 768px) {

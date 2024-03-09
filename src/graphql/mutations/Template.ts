@@ -110,3 +110,15 @@ export const BULK_APPLY_TEMPLATES = gql`
     }
   }
 `;
+
+export const REPORT_TO_GUPSHUP = gql`
+  mutation ReportToGupshup($cc: Json, $templateId: ID!) {
+    reportToGupshup(cc: $cc, templateId: $templateId) {
+      errors {
+        message
+        key
+      }
+      message
+    }
+  }
+`;

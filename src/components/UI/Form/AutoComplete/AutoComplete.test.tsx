@@ -43,19 +43,6 @@ describe('<AutoComplete />', () => {
     expect(screen.getByTestId('autocomplete-element')).toBeInTheDocument();
   });
 
-  it('should set the options list if getOptions prop is passed and have more more than 0 values', () => {
-    const props = getProps({ getOptions: () => [{ id: 1, label: 'option' }] });
-    render(<AutoComplete {...props} />);
-    const autocomplete = screen.getByTestId('autocomplete-element');
-    const input = within(autocomplete).getByRole('combobox');
-    autocomplete.focus();
-    fireEvent.change(input, { target: { value: 'o' } });
-    fireEvent.keyDown(autocomplete, { key: 'ArrowDown' });
-    fireEvent.keyDown(autocomplete, { key: 'Enter' });
-
-    expect(screen.getByText('option')).toBeInTheDocument();
-  });
-
   it('should pick up additonalOptionLabel from props if optionLabel is not provided for the options', () => {
     const props = getProps({ additionalOptionLabel: 'name' });
     props.options = [

@@ -1,3 +1,7 @@
+.WrapperBackground {
+  display: flex;
+}
+
 .WrapperBackground > div > div {
   margin-bottom: 16px !important;
 }
@@ -14,10 +18,11 @@
   composes: Font;
   display: flex;
   align-items: center;
+  width: 90%;
 }
 
 .QuickReplyWrapper > div {
-  margin: 0px 4px 17px 4px;
+  margin: 0px 0 17px 0;
   cursor: pointer;
 }
 
@@ -31,6 +36,8 @@
 
 .TextField {
   width: 100%;
+  background-color: white;
+  border-radius: 12px;
 }
 
 .TextField > div > input {
@@ -43,12 +50,14 @@
   font-size: 16px;
   font-family: 'Heebo', sans-serif;
   text-transform: inherit !important;
-  padding: 0px 8px !important;
+  margin-top: 15px;
+  margin-left: 12px;
 }
 
 .AddIcon {
-  height: 16px;
-  width: 16px;
+  cursor: pointer;
+  height: 24px;
+  width: 24px;
 }
 
 .RemoveIcon {
@@ -62,4 +71,11 @@
   white-space: pre-line;
   color: #aa9677;
   margin-bottom: 8px;
+}
+
+.Heading {
+  color: #555555;
+  font-size: 16px;
+  font-weight: 500;
+  margin: 5px 0 10px 0;
 }

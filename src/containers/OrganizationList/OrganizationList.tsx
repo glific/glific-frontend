@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { OutlinedInput } from '@mui/material';
 import { useMutation } from '@apollo/client';
 
@@ -10,7 +10,7 @@ import {
   DELETE_INACTIVE_ORGANIZATIONS,
   UPDATE_ORGANIZATION_STATUS,
 } from 'graphql/mutations/Organization';
-import OrganisationIcon from 'assets/images/icons/Organisation.svg?react';
+import OrganizationIcon from 'assets/images/icons/Organization.svg?react';
 import ExtensionIcon from 'assets/images/icons/extension.svg?react';
 import CustomerDetailsIcon from 'assets/images/icons/customer_details.svg?react';
 import { setNotification } from 'common/notification';
@@ -19,6 +19,7 @@ import { Extensions } from 'containers/Extensions/Extensions';
 import { OrganizationCustomer } from 'containers/Organization/OrganizationCustomer/OrganizationCustomer';
 import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
 import styles from './OrganizationList.module.css';
+import { DATE_FORMAT_WITH_MONTH } from 'common/constants';
 
 export interface OrganizationListProps {
   openExtensionModal?: boolean;
@@ -54,7 +55,9 @@ export const OrganizationList = ({
       <p className={styles.LabelText}>
         {label}
         <br />
-        <span className={styles.SubLabelText}>{moment(insertedAt).format('DD MMM YYYY')}</span>
+        <span className={styles.SubLabelText}>
+          {dayjs(insertedAt).format(DATE_FORMAT_WITH_MONTH)}
+        </span>
       </p>
     </div>
   );
@@ -103,7 +106,7 @@ export const OrganizationList = ({
     columnStyles,
   };
 
-  const listIcon = <OrganisationIcon className={styles.OrgIcon} />;
+  const listIcon = <OrganizationIcon className={styles.OrgIcon} />;
   const extensionIcon = <ExtensionIcon className={styles.ExtensionIcon} />;
 
   const customerDetailsIcon = <CustomerDetailsIcon />;
@@ -132,7 +135,6 @@ export const OrganizationList = ({
       </div>
     );
     const isConfirmed = orgName === deleteItemName;
-    console.log(orgName, deleteItemName);
     const payload = {
       isConfirmed,
       deleteOrganizationID: deleteItemID,

@@ -4,6 +4,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useTranslation } from 'react-i18next';
 
 import searchIcon from 'assets/images/icons/Search/Desktop.svg';
+import search from 'assets/images/icons/Search/Search.svg';
 import AdvancedSearch from 'assets/images/icons/AdvancedSearch.svg?react';
 import styles from './SearchBar.module.css';
 import Track from 'services/TrackService';
@@ -12,24 +13,24 @@ export interface SearchBarProps {
   handleChange?: (e: any) => void;
   handleSubmit?: (e: React.FormEvent<HTMLFormElement>) => void;
   onReset: () => void;
-  // This is for whether or not the parent gets re-rendered on search. To checkout comparison of
-  // different functionalities, look at `ChatConversations` for without, and `TagList` with.
-  searchVal?: string; // Calvin update-- all use-cases will use searchVal?
+  searchVal?: string;
   className?: any;
   handleClick?: any;
   endAdornment?: any;
   searchMode: boolean;
+  iconFront?: boolean;
 }
 
 export const SearchBar = ({
   searchMode,
-  searchVal,
+  searchVal = '',
   onReset,
   endAdornment,
   handleClick,
   handleSubmit,
   handleChange,
   className,
+  iconFront = false,
 }: SearchBarProps) => {
   const [localSearchValue, setLocalSearchValue] = useState(searchVal);
   const { t } = useTranslation();
@@ -50,7 +51,8 @@ export const SearchBar = ({
       <IconButton
         data-testid="resetButton"
         className={styles.ResetSearch}
-        onClick={() => {
+        onClick={(event: any) => {
+          event?.stopPropagation();
           setLocalSearchValue('');
           onReset();
         }}
@@ -71,6 +73,7 @@ export const SearchBar = ({
             Track('Advanced search');
             handleClick(e, 'search', 'update');
           }}
+          className={styles.FilterIcon}
         >
           <AdvancedSearch data-testid="advanced-search-icon" />
         </IconButton>
@@ -82,7 +85,7 @@ export const SearchBar = ({
     <form onSubmit={handleSubmit} autoComplete="off" data-testid="searchForm">
       <div className={`${styles.SearchBar} ${className}`}>
         <div className={styles.IconAndText}>
-          <img src={searchIcon} className={styles.SearchIcon} alt="Search" />
+          {iconFront && <img src={search} className={styles.searchIconFilter} alt="Search" />}
           <InputBase
             data-testid="searchInput"
             className={styles.SearchField}
@@ -97,6 +100,7 @@ export const SearchBar = ({
             value={inputValue}
             endAdornment={endAdornmentInput}
           />
+          {!iconFront && <img src={searchIcon} className={styles.SearchIcon} alt="Search" />}
         </div>
         {resetButton}
       </div>

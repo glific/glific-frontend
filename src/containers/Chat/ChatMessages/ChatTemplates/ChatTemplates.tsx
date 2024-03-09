@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { List, ListItemButton, Divider, Paper, Typography } from '@mui/material';
+import { CircularProgress, List, ListItemButton, Paper, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import styles from './ChatTemplates.module.css';
@@ -9,7 +9,6 @@ import { WhatsAppToJsx } from '../../../../common/RichEditor';
 import { setVariables } from '../../../../common/constants';
 import { getInteractiveMessageBody } from '../../../../common/utils';
 import { FILTER_INTERACTIVE_MESSAGES } from '../../../../graphql/queries/InteractiveMessage';
-
 interface ChatTemplatesProps {
   searchVal: string;
   handleSelectText(obj: any, isInteractiveMsg: boolean): void;
@@ -25,7 +24,7 @@ export const ChatTemplates = ({
 }: ChatTemplatesProps) => {
   const { t } = useTranslation();
 
-  const filterVariables = () => setVariables({ term: searchVal });
+  const filterVariables = () => setVariables({ term: searchVal }, 50);
   const { loading, error, data } = useQuery<any>(FILTER_TEMPLATES, {
     variables: filterVariables(),
   });
@@ -40,7 +39,12 @@ export const ChatTemplates = ({
     },
   });
 
-  if (loading) return <div />;
+  if (loading)
+    return (
+      <div className={styles.Loading}>
+        <CircularProgress size="20px" />
+      </div>
+    );
   if (error || data.sessionTemplates === undefined) return <p>{t('Error :(')}</p>;
 
   const getListItem = (obj: any, index: number, interactiveMsg: boolean = false) => {
@@ -60,10 +64,10 @@ export const ChatTemplates = ({
           data-testid="templateItem"
           disableRipple
           onClick={() => handleSelectText(obj, interactiveMsg)}
-          className={styles.PopperListItem}
+          className={`${styles.PopperListItem}`}
         >
           <p className={styles.Text}>
-            <b style={{ marginRight: '5px' }}>{obj.label}:</b>
+            <strong style={{ marginRight: '5px' }}>{obj.label}:</strong>
             <span>{WhatsAppToJsx(tabListToShow)}</span>
           </p>
           {obj.MessageMedia ? (
@@ -72,7 +76,6 @@ export const ChatTemplates = ({
             </div>
           ) : null}
         </ListItemButton>
-        <Divider light />
       </div>
     );
   };
@@ -91,11 +94,8 @@ export const ChatTemplates = ({
 
     const templateObj = [...data.sessionTemplates, ...translationsObj];
     const interactiveObj = interactives ? [...interactives.interactiveTemplates] : [];
-    let text;
+
     let listItems;
-    if (isTemplate) text = 'templates';
-    else if (isInteractiveMsg) text = 'interactive msg';
-    else text = 'speed sends';
 
     if (!isInteractiveMsg) {
       listItems = templateObj.map((obj: any, index: number) => {
@@ -119,14 +119,16 @@ export const ChatTemplates = ({
     listItems = listItems.filter((n) => n);
 
     return listItems.length !== 0 ? (
-      <List className={styles.ShortcutList}>
-        <Paper elevation={0} className={styles.Paper}>
-          {listItems}
-        </Paper>
-      </List>
+      <div className={styles.TemplateList}>
+        <List className={styles.ShortcutList}>
+          <Paper elevation={0} className={styles.Paper}>
+            {listItems}
+          </Paper>
+        </List>
+      </div>
     ) : (
-      <Typography data-testid="no-results" align="center" variant="h6">
-        {`No ${text} for that search.`}
+      <Typography className={styles.NoResult} data-testid="no-results" align="center" variant="h6">
+        {`No results found for the search.`}
       </Typography>
     );
   };

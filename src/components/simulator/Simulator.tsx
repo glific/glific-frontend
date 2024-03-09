@@ -13,16 +13,14 @@ import VideocamIcon from '@mui/icons-material/Videocam';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import ClearIcon from '@mui/icons-material/Clear';
 import axios from 'axios';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { v4 as uuidv4 } from 'uuid';
-import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
-
-import { Button as FormButton } from 'components/UI/Form/Button/Button';
+import BackgroundPhoneImage from 'assets/images/phone.png';
 import DefaultWhatsappImage from 'assets/images/whatsappDefault.jpg';
-import SimulatorIcon from 'assets/images/icons/Simulator.svg?react';
+
 import ResetIcon from 'assets/images/icons/Reset/Dark.svg?react';
 import {
-  TIME_FORMAT,
+  SHORT_TIME_FORMAT,
   SAMPLE_MEDIA_FOR_SIMULATOR,
   LIST,
   QUICK_REPLY,
@@ -37,7 +35,7 @@ import {
   RELEASE_SIMULATOR,
   SIMULATOR_SEARCH_QUERY,
 } from 'graphql/queries/Simulator';
-import { SIMULATOR_RELEASE_SUBSCRIPTION } from 'graphql/subscriptions/PeriodicInfo';
+// import { SIMULATOR_RELEASE_SUBSCRIPTION } from 'graphql/subscriptions/PeriodicInfo';
 import { getUserSession } from 'services/AuthService';
 import { setNotification } from 'common/notification';
 import setLogs from 'config/logs';
@@ -56,19 +54,24 @@ import {
 import { updateSimulatorConversations } from 'services/SubscriptionService';
 import styles from './Simulator.module.css';
 import { LocationRequestTemplate } from 'containers/Chat/ChatMessages/ChatMessage/LocationRequestTemplate/LocationRequestTemplate';
+import { BackdropLoader } from 'containers/Flow/FlowTranslation';
+import { SIMULATOR_RELEASE_SUBSCRIPTION } from 'graphql/subscriptions/PeriodicInfo';
 
 export interface SimulatorProps {
-  showSimulator: boolean;
-  setSimulatorId: any;
+  setShowSimulator?: any;
   simulatorIcon?: boolean;
   message?: any;
   flowSimulator?: boolean;
   isPreviewMessage?: boolean;
-  resetMessage?: Function;
-  getFlowKeyword?: Function;
+  getSimulatorId?: any;
   interactiveMessage?: any;
   showHeader?: boolean;
   hasResetButton?: boolean;
+}
+
+interface Sender {
+  name: string;
+  phone: string;
 }
 
 const getStyleForDirection = (
@@ -104,8 +107,8 @@ const getStyleForDirection = (
 const TimeComponent = ({ direction, insertedAt }: any) => (
   <>
     <span className={direction === 'received' ? styles.TimeSent : styles.TimeReceived}>
-      {moment(insertedAt).format(TIME_FORMAT)}
-      {direction === 'send' && <DoneAllIcon sx={{ fontSize: 10, ml: '2px' }} />}
+      {dayjs(insertedAt).format(SHORT_TIME_FORMAT)}
+      {direction === 'send' && <DoneAllIcon className={styles.DoneAllIcon} />}
     </span>
   </>
 );
@@ -121,14 +124,10 @@ const getSimulatorVariables = (id: any) => ({
 });
 
 export const Simulator = ({
-  showSimulator,
-  setSimulatorId,
-  simulatorIcon = true,
+  setShowSimulator = () => {},
   message,
-  flowSimulator,
   isPreviewMessage,
-  resetMessage,
-  getFlowKeyword,
+  getSimulatorId = () => {},
   interactiveMessage,
   showHeader = true,
   hasResetButton = false,
@@ -147,14 +146,14 @@ export const Simulator = ({
 
   let messages: any[] = [];
   let simulatorId = '';
-  const sender = {
+  const sender: Sender = {
     name: '',
     phone: '',
   };
   // chat messages will be shown on simulator
   const isSimulatedMessage = true;
 
-  const sendMessage = (senderDetails: any, interactivePayload?: any, templateValue?: any) => {
+  const sendMessage = (senderDetails: Sender, interactivePayload?: any, templateValue?: any) => {
     const sendMessageText = inputMessage === '' && message ? message : inputMessage;
 
     // check if send message text is not empty
@@ -197,18 +196,30 @@ export const Simulator = ({
         setLogs(error, 'error');
       });
     setInputMessage('');
-    // reset the message from floweditor for the next time
-    if (resetMessage) {
-      resetMessage();
-    }
   };
 
-  const { data: simulatorSubscribe }: any = useSubscription(SIMULATOR_RELEASE_SUBSCRIPTION, {
+  useSubscription(SIMULATOR_RELEASE_SUBSCRIPTION, {
+    fetchPolicy: 'network-only',
     variables,
+    skip: isPreviewMessage || simulatorId === '',
+    onData: ({ data: simulatorSubscribe }) => {
+      if (simulatorSubscribe.data) {
+        try {
+          const userId = JSON.parse(simulatorSubscribe.data.simulatorRelease).simulator_release
+            .user_id;
+          if (userId.toString() === getUserSession('id')) {
+            setShowSimulator(false);
+          }
+        } catch (error) {
+          setLogs('simulator release error', 'error');
+        }
+      }
+    },
   });
 
   useSubscription(SIMULATOR_MESSAGE_SENT_SUBSCRIPTION, {
     variables,
+    skip: isPreviewMessage,
     onData: ({ data: sentData }) => {
       setAllConversations(updateSimulatorConversations(allConversations, sentData, 'SENT'));
     },
@@ -216,23 +227,11 @@ export const Simulator = ({
 
   useSubscription(SIMULATOR_MESSAGE_RECEIVED_SUBSCRIPTION, {
     variables,
+    skip: isPreviewMessage,
     onData: ({ data: receivedData }) => {
       setAllConversations(updateSimulatorConversations(allConversations, receivedData, 'RECEIVED'));
     },
   });
-
-  useEffect(() => {
-    if (simulatorSubscribe) {
-      try {
-        const userId = JSON.parse(simulatorSubscribe.simulatorRelease).simulator_release.user_id;
-        if (userId.toString() === getUserSession('id')) {
-          setSimulatorId(0);
-        }
-      } catch (error) {
-        setLogs('simulator release error', 'error');
-      }
-    }
-  }, [simulatorSubscribe]);
 
   const [releaseSimulator]: any = useLazyQuery(RELEASE_SIMULATOR, {
     fetchPolicy: 'network-only',
@@ -248,7 +247,7 @@ export const Simulator = ({
 
   const releaseUserSimulator = () => {
     releaseSimulator();
-    setSimulatorId(0);
+    setShowSimulator(false);
   };
 
   const handleOpenListReplyDrawer = (items: any) => {
@@ -330,7 +329,7 @@ export const Simulator = ({
           <LocationRequestTemplate
             content={content}
             isSimulator
-            onSendLocationClick={(payload: any) => sendMessage(sender, payload)}
+            onSendLocationClick={(payload: any) => sendMediaMessage('location', payload)}
           />
         );
       }
@@ -406,6 +405,12 @@ export const Simulator = ({
     }
   };
 
+  useEffect(() => {
+    if (!isPreviewMessage) {
+      handleSimulator();
+    }
+  }, []);
+
   // to display only preview for template
   useEffect(() => {
     if (isPreviewMessage) {
@@ -415,17 +420,10 @@ export const Simulator = ({
 
   // for loading conversation
   useEffect(() => {
-    if (allConversations && showSimulator) {
+    if (allConversations) {
       getChatMessage();
     }
   }, [allConversations]);
-
-  // for sending message to Gupshup
-  useEffect(() => {
-    if (!isPreviewMessage && message && showSimulator) {
-      sendMessage(sender);
-    }
-  }, [message, showSimulator]);
 
   useEffect(() => {
     if (isPreviewMessage && interactiveMessage) {
@@ -496,6 +494,7 @@ export const Simulator = ({
       <div className={styles.SimContainer}>
         <div>
           <div id="simulator" className={styles.Simulator}>
+            <img src={BackgroundPhoneImage} className={styles.BackgroundImage} draggable="false" />
             {!isPreviewMessage && (
               <>
                 <ClearIcon
@@ -510,9 +509,7 @@ export const Simulator = ({
                     data-testid="resetIcon"
                     className={styles.ResetIcon}
                     onClick={() => {
-                      if (getFlowKeyword) {
-                        getFlowKeyword();
-                      }
+                      sendMessage(sender);
                     }}
                   />
                 )}
@@ -585,10 +582,6 @@ export const Simulator = ({
   );
 
   const handleSimulator = () => {
-    // check for the flowkeyword from floweditor
-    if (getFlowKeyword) {
-      getFlowKeyword();
-    }
     client
       .query({ query: GET_SIMULATOR, fetchPolicy: 'network-only' })
       .then(({ data: simulatorData }: any) => {
@@ -601,8 +594,8 @@ export const Simulator = ({
             })
             .then(({ data: searchData }: any) => {
               setAllConversations(searchData);
-              setSimulatorId(simulatorData.simulatorGet.id);
               if (searchData?.search.length > 0) {
+                getSimulatorId(searchData.search[0].contact.id);
                 sendMessage({
                   name: searchData.search[0].contact.name,
                   phone: searchData.search[0].contact.phone,
@@ -620,43 +613,11 @@ export const Simulator = ({
         setNotification('Sorry! Failed to get simulator', 'warning');
       });
   };
-  return (
-    <>
-      {showSimulator && simulator}
-      {simulatorIcon && (
-        <SimulatorIcon
-          data-testid="simulatorIcon"
-          className={showSimulator ? styles.SimulatorIconClicked : styles.SimulatorIconNormal}
-          onClick={() => {
-            if (showSimulator) {
-              releaseUserSimulator();
-            } else {
-              handleSimulator();
-            }
-          }}
-        />
-      )}
-
-      {flowSimulator && (
-        <div className={styles.PreviewButton}>
-          <FormButton
-            variant="outlined"
-            color="primary"
-            data-testid="previewButton"
-            className={styles.Button}
-            onClick={() => {
-              if (showSimulator) {
-                releaseUserSimulator();
-              } else {
-                handleSimulator();
-              }
-            }}
-          >
-            Preview
-            {showSimulator && <CancelOutlinedIcon className={styles.CrossIcon} />}
-          </FormButton>
-        </div>
-      )}
-    </>
+  return isPreviewMessage ? (
+    simulator
+  ) : simulatorId ? (
+    simulator
+  ) : (
+    <BackdropLoader text="Please wait while the simulator is loading" />
   );
 };

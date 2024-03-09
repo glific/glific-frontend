@@ -1,13 +1,12 @@
-import { useState, useMemo, useCallback, forwardRef } from 'react';
-import { RichUtils, Modifier, EditorState, ContentState } from 'draft-js';
-import Editor from '@draft-js-plugins/editor';
-import createMentionPlugin from '@draft-js-plugins/mention';
+import { useState } from 'react';
 import { InputAdornment, IconButton, ClickAwayListener } from '@mui/material';
-
-import { getPlainTextFromEditor } from 'common/RichEditor';
+import EmojiIcon from 'assets/images/icons/EmojiIcon.svg?react';
 import { EmojiPicker } from 'components/UI/EmojiPicker/EmojiPicker';
-import { Input } from '../Input/Input';
+import { Editor } from './Editor';
 import Styles from './EmojiInput.module.css';
+import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
+import { $createTextNode, $getSelection, $isRangeSelection } from 'lexical';
+import { LexicalWrapper } from 'common/LexicalWrapper';
 
 export interface EmojiInputProps {
   field: any;
@@ -20,174 +19,80 @@ export interface EmojiInputProps {
   handleBlur?: any;
   getEditorValue?: any;
   inputProp?: any;
+  isEditing?: boolean;
 }
 
-const getMentionComponentAndPlugin = () => {
-  const mentionPlugin = createMentionPlugin({
-    theme: Styles,
-  });
-  const { MentionSuggestions } = mentionPlugin;
-  const plugins = [mentionPlugin];
-  return { plugins, MentionSuggestions };
-};
-
-const customSuggestionsFilter = (searchValue: string, suggestions: Array<any>) => {
-  const size = (list: any) => (list.constructor.name === 'List' ? list.size : list.length);
-
-  const get = (obj: any, attr: any) => (obj.get ? obj.get(attr) : obj[attr]);
-
-  const value = searchValue.toLowerCase();
-  const filteredSuggestions = suggestions.filter(
-    (suggestion) => !value || get(suggestion, 'name').toLowerCase().indexOf(value) > -1
-  );
-
-  /**
-   * We can restrict no of values from dropdown using this
-   * Currently returning all values for give dropdown
-   */
-  const length = size(filteredSuggestions);
-  return filteredSuggestions.slice(0, length);
-};
-
-const DraftField = forwardRef((inputProps: any, ref) => {
-  const {
-    component: Component,
-    open,
-    suggestions,
-    onOpenChange,
-    onSearchChange,
-    ...other
-  } = inputProps;
-
-  const { MentionSuggestions, plugins } = useMemo(getMentionComponentAndPlugin, []);
-
-  return (
-    <>
-      <Component ref={ref} editorKey="editor" plugins={plugins} {...other} />
-      <MentionSuggestions
-        open={open}
-        onOpenChange={onOpenChange}
-        suggestions={suggestions}
-        onSearchChange={onSearchChange}
-      />
-    </>
-  );
-});
+interface EmojiPickerProps {
+  handleClickAway: any;
+  showEmojiPicker: any;
+  setShowEmojiPicker: any;
+}
 
 export const EmojiInput = ({
   field: { value, name, onBlur },
   handleChange,
   getEditorValue,
   handleBlur,
+  isEditing = false,
   ...props
 }: EmojiInputProps) => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
-  const updateValue = (input: any, isEmoji = false) => {
-    const editorContentState = value.getCurrentContent();
-    const editorSelectionState: any = value.getSelection();
-    const ModifiedContent = Modifier.replaceText(
-      editorContentState,
-      editorSelectionState,
-      isEmoji ? input.native : input
-    );
-    let updatedEditorState = EditorState.push(value, ModifiedContent, 'insert-characters');
-    if (!isEmoji) {
-      const editorSelectionStateMod = updatedEditorState.getSelection();
-      const updatedSelection = editorSelectionStateMod.merge({
-        anchorOffset: editorSelectionStateMod.getAnchorOffset() - 1,
-        focusOffset: editorSelectionStateMod.getFocusOffset() - 1,
-      });
-      updatedEditorState = EditorState.forceSelection(updatedEditorState, updatedSelection);
-    }
-    props.form.setFieldValue(name, updatedEditorState);
-  };
-
-  const handleKeyCommand = (command: any, editorState: any) => {
-    if (command === 'underline') {
-      return 'handled';
-    }
-    if (command === 'bold') {
-      updateValue('**');
-    } else if (command === 'italic') {
-      updateValue('__');
-    } else {
-      const newState = RichUtils.handleKeyCommand(editorState, command);
-      if (newState) {
-        props.form.setFieldValue(name, newState);
-        return 'handled';
-      }
-    }
-    return 'not-handled';
-  };
-
-  const draftJsChange = (editorState: any) => {
+  const lexicalChange = (editorState: any) => {
     if (handleChange) {
-      handleChange(getPlainTextFromEditor(props.form.values.example));
+      handleChange(editorState);
     }
     if (getEditorValue) {
       getEditorValue(editorState);
     }
+
     props.form.setFieldValue(name, editorState);
   };
-
-  const mentions = props.inputProp?.suggestions || [];
-
-  const [open, setOpen] = useState(false);
-  const [suggestions, setSuggestions] = useState(mentions);
-
-  const onOpenChange = (_open: boolean) => {
-    setOpen(_open);
-  };
-
-  const getSuggestions = useCallback(customSuggestionsFilter, []);
-
-  const onSearchChange = ({ value: searchValue }: { value: string }) => {
-    setSuggestions(getSuggestions(searchValue, mentions));
-  };
-
-  const inputProps = {
-    component: Editor,
-    editorState: value,
-    open,
-    readOnly: props.disabled,
-    suggestions,
-    onOpenChange,
-    onSearchChange,
-    handlePastedText: (text: string, html: string, editorState: EditorState) => {
-      const pastedBlocks = ContentState.createFromText(text).getBlockMap();
-      const newState = Modifier.replaceWithFragment(
-        editorState.getCurrentContent(),
-        editorState.getSelection(),
-        pastedBlocks
-      );
-      const newEditorState = EditorState.push(editorState, newState, 'insert-fragment');
-      draftJsChange(newEditorState);
-      return 'handled';
-    },
-    handleKeyCommand,
-    onBlur: handleBlur,
-    onChange: draftJsChange,
-  };
-
-  const editor = { inputComponent: DraftField, inputProps };
-
-  const emojiPicker = showEmojiPicker ? (
-    <EmojiPicker
-      onEmojiSelect={(emojiValue: any) => updateValue(emojiValue, true)}
-      displayStyle={{ position: 'absolute', top: '10px', right: '0px', zIndex: 2 }}
-    />
-  ) : (
-    ''
-  );
 
   const handleClickAway = () => {
     setShowEmojiPicker(false);
   };
 
   const picker = (
+    <EmojiPickerComponent
+      handleClickAway={handleClickAway}
+      setShowEmojiPicker={setShowEmojiPicker}
+      showEmojiPicker={showEmojiPicker}
+    />
+  );
+
+  const input = (
+    <LexicalWrapper>
+      <Editor
+        isEditing={isEditing}
+        field={{ name, value, onBlur }}
+        {...props}
+        picker={picker}
+        onChange={lexicalChange}
+      />
+    </LexicalWrapper>
+  );
+
+  return input;
+};
+
+const EmojiPickerComponent = ({
+  showEmojiPicker,
+  setShowEmojiPicker,
+  handleClickAway,
+}: EmojiPickerProps) => {
+  const [editor] = useLexicalComposerContext();
+
+  const emojiStyles = {
+    position: 'absolute',
+    bottom: '60px',
+    right: '-150px',
+    zIndex: 100,
+  };
+
+  return (
     <ClickAwayListener onClickAway={handleClickAway}>
-      <InputAdornment position="end" className={Styles.EmojiPosition}>
+      <InputAdornment className={Styles.EmojiPosition} position="end">
         <IconButton
           color="primary"
           data-testid="emoji-picker"
@@ -197,18 +102,24 @@ export const EmojiInput = ({
           onClick={() => setShowEmojiPicker(!showEmojiPicker)}
         >
           <span role="img" aria-label="pick emoji">
-            😀
+            <EmojiIcon />
           </span>
         </IconButton>
 
-        {emojiPicker}
+        {showEmojiPicker && (
+          <EmojiPicker
+            onEmojiSelect={(emoji: any) => {
+              editor.update(() => {
+                const selection = $getSelection();
+                if ($isRangeSelection(selection)) {
+                  selection.insertNodes([$createTextNode(emoji.native)]);
+                }
+              });
+            }}
+            displayStyle={emojiStyles}
+          />
+        )}
       </InputAdornment>
     </ClickAwayListener>
   );
-
-  const input = (
-    <Input field={{ name, value, onBlur }} {...props} editor={editor} emojiPicker={picker} />
-  );
-
-  return input;
 };

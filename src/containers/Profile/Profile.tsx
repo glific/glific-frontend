@@ -7,7 +7,6 @@ import { useParams } from 'react-router-dom';
 import ProfileIcon from 'assets/images/icons/Contact/Profile.svg?react';
 import { CONTACT_STATUS, PROVIDER_STATUS } from 'common/constants';
 import { FormLayout } from 'containers/Form/FormLayout';
-import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
 import { Input } from 'components/UI/Form/Input/Input';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { GET_CONTACT } from 'graphql/queries/Contact';
@@ -20,11 +19,11 @@ import {
 import { GET_CURRENT_USER } from 'graphql/queries/User';
 import { getOrganizationServices } from 'services/AuthService';
 import { isSimulator } from 'common/utils';
+import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 
 const profileIcon = <ProfileIcon />;
 
 export interface ProfileProps {
-  profileType: string;
   redirectionLink: string;
   afterDelete?: any;
   removePhoneField?: boolean;
@@ -32,7 +31,6 @@ export interface ProfileProps {
 }
 
 export const Profile = ({
-  profileType,
   redirectionLink,
   afterDelete,
   removePhoneField = false,
@@ -40,8 +38,8 @@ export const Profile = ({
 }: ProfileProps) => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
-  const [status, setStatus] = useState('');
-  const [bspStatus, setBspStatus] = useState('');
+  const [status, setStatus] = useState(null);
+  const [bspStatus, setBspStatus] = useState(null);
   const [languageId, setLanguageId] = useState('');
   const [hideRemoveBtn, setHideRemoveBtn] = useState(false);
   const { t } = useTranslation();
@@ -134,45 +132,47 @@ export const Profile = ({
       component: Input,
       name: 'name',
       type: 'text',
-      disabled: profileType === 'Contact',
+      disabled: true,
+      label: t('Name'),
       placeholder: t('Name'),
     },
     {
       component: Input,
       name: 'phone',
       placeholder: t('Phone Number'),
+      label: t('Phone Number'),
       disabled: true,
       skip: removePhoneField,
       skipPayload: true,
     },
     {
-      component: Dropdown,
+      component: AutoComplete,
       name: 'status',
       placeholder: t('Status'),
+      label: t('Status'),
       options: CONTACT_STATUS,
+      optionLabel: 'label',
       disabled: true,
       skipPayload: true,
+      handleCreateItem: () => {},
+      multiple: false,
     },
     {
-      component: Dropdown,
+      component: AutoComplete,
       name: 'bspStatus',
       placeholder: t('Provider status'),
+      label: t('Provider status'),
       options: PROVIDER_STATUS,
+      optionLabel: 'label',
       disabled: true,
       skipPayload: true,
+      handleCreateItem: () => {},
+      multiple: false,
     },
   ];
 
-  if (isContactProfileEnabled && hasMultipleProfiles) {
-    formFields.splice(0, 0, multiProfileAttributes);
-  }
-
   let type: any;
-  let pageTitle = t('Contact Profile');
-  if (profileType === 'User' || loggedInUserContactId === currentContactId) {
-    type = 'UserProfile';
-    pageTitle = t('My Profile');
-  }
+  const pageTitle = t('Contact Profile');
 
   const dialogMessage = hasMultipleProfiles
     ? t("You won't be able to send messages to this profile.")
@@ -196,6 +196,7 @@ export const Profile = ({
       title={pageTitle}
       entityId={hasMultipleProfiles ? multiProfileAttributes?.selectedProfileId : currentContactId}
       restrictDelete={hideRemoveBtn}
+      noHeading
     />
   );
 };

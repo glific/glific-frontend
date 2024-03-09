@@ -4,7 +4,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { vi } from 'vitest';
 import axios from 'axios';
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
-
+import * as Recaptcha from 'react-google-recaptcha-v3';
 import { postRequestMock } from '../Registration/Registration.test';
 import { ConfirmOTP } from './ConfirmOTP';
 
@@ -37,6 +37,11 @@ describe('<ConfirmOTP />', () => {
   beforeEach(() => {
     vi.resetAllMocks();
     postRequestMock();
+    const useRecaptcha = vi.spyOn(Recaptcha, 'useGoogleReCaptcha');
+    const promise = () => Promise.resolve('some_fake_token');
+    useRecaptcha.mockImplementation(() => ({
+      executeRecaptcha: promise,
+    }));
   });
 
   it('renders component properly', async () => {

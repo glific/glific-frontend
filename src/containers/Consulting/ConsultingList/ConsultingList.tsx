@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import { Dialog, DialogContent } from '@mui/material';
 import EditIcon from 'assets/images/icons/Edit.svg?react';
@@ -9,6 +9,7 @@ import { Consulting } from '../Consulting';
 import { ExportConsulting } from './ExportConsulting/ExportConsulting';
 import { GET_CONSULTING_HOURS, GET_CONSULTING_HOURS_COUNT } from 'graphql/queries/Consulting';
 import styles from './ConsultingList.module.css';
+import {  DATE_FORMAT_WITH_MONTH } from 'common/constants';
 
 const ConsultingList = () => {
   const { t } = useTranslation();
@@ -55,7 +56,7 @@ const ConsultingList = () => {
   );
 
   const getOtherColumn = (label: any, isDate: boolean = false) => {
-    const text = isDate ? moment(label).format('DD MMM YYYY') : label;
+    const text = isDate ? dayjs(label).format(DATE_FORMAT_WITH_MONTH) : label;
     return (
       <div>
         <p className={styles.StatusText}>{text}</p>
@@ -121,9 +122,9 @@ const ConsultingList = () => {
 
   return (
     <>
-      <ExportConsulting setFilters={setFilters} />
       {dialog}
       <List
+        descriptionBox={<ExportConsulting setFilters={setFilters} />}
         title={t('Consulting')}
         listItem="consultingHours"
         listItemName="consultingHour"

@@ -1,9 +1,9 @@
 import { ListItemButton } from '@mui/material';
 import { Link } from 'react-router-dom';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { useApolloClient, useMutation } from '@apollo/client';
 
-import { COMPACT_MESSAGE_LENGTH, DATE_FORMAT } from 'common/constants';
+import { COMPACT_MESSAGE_LENGTH, SHORT_DATE_FORMAT } from 'common/constants';
 import { Timer } from 'components/UI/Timer/Timer';
 import { MARK_AS_READ, CONTACT_FRAGMENT } from 'graphql/mutations/Chat';
 import { SEARCH_OFFSET } from 'graphql/queries/Search';
@@ -12,6 +12,7 @@ import { MessageType } from '../MessageType/MessageType';
 import styles from './ChatConversation.module.css';
 import Track from 'services/TrackService';
 import { slicedString } from 'common/utils';
+import { AvatarDisplay } from 'components/UI/AvatarDisplay/AvatarDisplay';
 
 export interface ChatConversationProps {
   contactId: number;
@@ -136,7 +137,6 @@ const ChatConversation = ({
   // check if message is unread and style it differently
   const client = useApolloClient();
   let chatInfoClass = [styles.ChatInfo, styles.ChatInfoRead];
-  let chatBubble = [styles.ChatBubble, styles.ChatBubbleRead];
 
   const [markAsRead] = useMutation(MARK_AS_READ, {
     onCompleted: (data) => {
@@ -150,7 +150,6 @@ const ChatConversation = ({
   // a. there might be some cases when there are no conversations against the contact
   if (!contactIsOrgRead) {
     chatInfoClass = [styles.ChatInfo, styles.ChatInfoUnread];
-    chatBubble = [styles.ChatBubble, styles.ChatBubbleUnread];
   }
 
   const name = slicedString(contactName, 20);
@@ -211,16 +210,7 @@ const ChatConversation = ({
     >
       <div>
         {entityType === 'contact' ? (
-          <div className={styles.ChatIcons}>
-            <div className={chatBubble.join(' ')} />
-            <div className={styles.Timer} data-testid="timerContainer">
-              <Timer
-                time={senderLastMessage}
-                contactStatus={contactStatus}
-                contactBspStatus={contactBspStatus}
-              />
-            </div>
-          </div>
+          <AvatarDisplay name={name} badgeDisplay={!contactIsOrgRead} />
         ) : (
           ''
         )}
@@ -232,8 +222,17 @@ const ChatConversation = ({
         <div className={styles.MessageContent} data-testid="content">
           {isTextType && highlightSearch ? BoldedText(body, highlightSearch) : displayMSG}
         </div>
+      </div>
+      <div>
         <div className={styles.MessageDate} data-testid="date">
-          {moment(lastMessage.insertedAt).format(DATE_FORMAT)}
+          {dayjs(lastMessage.insertedAt).format(SHORT_DATE_FORMAT)}
+        </div>
+        <div className={styles.MessageDate} data-testid="timerContainer">
+          <Timer
+            time={senderLastMessage}
+            contactStatus={contactStatus}
+            contactBspStatus={contactBspStatus}
+          />
         </div>
       </div>
     </ListItemButton>

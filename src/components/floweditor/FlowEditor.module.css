@@ -13,33 +13,8 @@
   margin-right: 10px;
 }
 
-.FlowName {
-  position: fixed !important;
-  top: 16px;
-  left: 270px;
-  z-index: 1000;
-  color: #073f24;
-  font-weight: 500;
-  font-size: 20px;
-}
-
-.FlowNameClosed {
-  composes: FlowName;
-  left: 90px;
-}
-
-:global(.Flow_empty_flow__roKNh) {
-  margin-top: 0px !important;
-  padding-top: 60px;
-}
-
-:global(#canvas-container) > div {
-  padding-top: 80px;
-}
-
 .Icon {
-  background-color: #eaedec !important;
-  margin-right: 10px !important;
+  margin-right: 8px;
 }
 
 .FlowContainer {
@@ -88,12 +63,12 @@
   text-align: center;
   margin: 0;
   font-size: 14px;
-  font-weight: 400;
+  font-weight: 600;
   color: #dd1f1f;
 }
 
 .ErrorMsgIcon {
-  vertical-align: middle;
+  margin-right: 10px;
   height: 16px;
 }
 
@@ -112,7 +87,6 @@
 }
 
 .DialogContent {
-  max-width: 331px;
   font-size: 16px;
   font-weight: 400;
   margin-bottom: 12px;
@@ -127,23 +101,55 @@
   max-width: none !important;
 }
 
-.ResetFlow {
+.Button {
+  background-color: white !important;
+}
+
+.FlowLeftButtons {
+  display: flex;
   position: fixed !important;
   bottom: 13px;
   left: 270px;
   z-index: 1000;
   font-weight: 500;
-  display: flex;
   align-items: center;
-  background-color: white !important;
   cursor: pointer;
 }
 
-.ResetFlow svg {
-  margin-right: 6px;
+.FlowLeftButtonsClosedDrawer {
+  composes: FlowLeftButtons;
+  left: 90px;
 }
 
-.ResetClosedDrawer {
-  composes: ResetFlow;
-  left: 90px;
+.Header {
+  position: absolute;
+  width: 100%;
+  z-index: 1000;
+  height: 70px;
+  display: flex;
+  background-color: #f8faf5;
+}
+
+.Actions {
+  position: relative;
+  padding: 16px 40px;
+  margin-left: auto;
+}
+
+.Title {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+}
+
+.BackIcon {
+  cursor: pointer;
+  margin-right: 8px;
+}
+
+.ErrorMsg {
+  display: flex;
+  padding-bottom: 2px;
+  justify-content: center;
+  align-items: center;
 }

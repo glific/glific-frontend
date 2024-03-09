@@ -1,44 +1,20 @@
 .ChatInput {
-  padding-top: 15px;
-  position: absolute;
-  bottom: 15px;
-
-  left: 0;
-  right: 0;
+  background-color: #f9f7f4;
   margin: auto;
+  max-width: 100% !important;
 }
 
 .ChatInputElements {
   display: flex;
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.12);
-  height: 64px;
+  height: 72px;
   width: 100%;
-  padding: 10px;
-  background-color: #ffffff;
+  padding: 5px;
   justify-content: space-between;
   height: fit-content;
   max-height: 200px;
-}
-
-.Rounded {
-  border-radius: 15px;
-}
-
-.Unrounded {
-  border-radius: 0px 0px 15px 15px;
-}
-
-.ChatInputElements::-webkit-scrollbar {
-  width: 22px;
-}
-
-.ChatInputElements::-webkit-scrollbar-thumb {
-  border-radius: 5px;
-  background: lightgray;
-  height: 1em;
-  border: 0.5em solid rgba(0, 0, 0, 0);
-  background-clip: padding-box;
-  -webkit-border-radius: 1em;
+  border: 1px solid #e0e0e0;
+  background: #fff;
+  border-radius: 35px;
 }
 
 .InputContainer {
@@ -87,15 +63,20 @@
   height: 40px;
   min-width: unset !important;
   width: 40px !important;
-  padding: 10px !important;
+  padding: 10px 7px 5px 8px !important;
+}
+
+.SendButton:disabled {
+  background-color: rgba(17, 150, 86, 0.57);
 }
 
 .SendButtonContainer {
   padding: 0 10px;
 }
 
-.EmojiButton {
-  padding: 0px 10px !important;
+.EmojiIcon {
+  height: 30px;
+  width: 30px;
 }
 
 .Editor {
@@ -103,32 +84,36 @@
 }
 
 .SendsContainer {
+  z-index: 100;
   display: flex;
-  /* margin-top: -20px; */
+  margin-bottom: 8px;
   flex-flow: row nowrap;
   position: relative;
 }
 
 .QuickSend {
-  font-size: 0.875rem;
-  margin-left: 8px;
-  background-color: #93a29b;
-  color: #edf6f2;
-  padding: 5px 12px 5px 12px;
-  border-radius: 15px 15px 0px 0px;
   cursor: pointer;
-  position: relative;
   z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 35px;
+  border: 1px solid #119656;
+  background: #fff;
+  color: #119656;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 8px 17px;
+  gap: 8px;
 }
 
 .QuickSendSelected {
   background-color: #119656;
+  color: #fff !important;
 }
 
 .ShortcutPaper {
   width: 100%;
-  /* width: 1200px; */
-  /* height: 300px; */
   z-index: -1;
   position: relative;
   padding: 0px 0px 30px 0px;
@@ -141,38 +126,28 @@
   border-color: rgba(0, 0, 0, 0.08);
   border-width: 1px 2px 1px 2px;
   border-style: solid;
-  /* border-radius: 25px 25px 0px 0px; */
   box-sizing: border-box;
   width: 100%;
-  /* height: 500px; */
   flex: none;
   bottom: 0;
 }
 
 .ChatSearchBar {
-  border-color: #eaedec;
-  width: 95%;
+  border-radius: 24px;
+  border: 1px solid #ccc;
+  background: #fff;
   height: 40px;
-  position: absolute;
-  bottom: 40px;
-  width: 95%;
-  margin: auto;
-  left: 0;
-  right: 0;
+  margin: 16px !important;
 }
 
 .Popup {
   width: 100%;
   height: auto;
-  min-height: 160px;
   max-height: 600px;
-  background-color: white;
   position: relative;
-  border-color: rgba(0, 0, 0, 0.08);
-  border-width: 2px;
-  border-style: solid;
-  border-radius: 15px 15px 0px 0px;
-  padding-top: 10px;
+  border-radius: 24px;
+  border: 1px solid #e0e0e0;
+  background: #fff;
 }
 
 .HidePopup {
@@ -181,10 +156,11 @@
 
 .QuickSendButtons {
   width: 100%;
-  position: absolute;
   bottom: 0;
   height: 30px;
   display: flex;
+  gap: 16px;
+  margin: 16px;
 }
 
 .ContactOptOutMessage {
@@ -195,9 +171,13 @@
   padding-top: 20px;
 }
 
+.AttachmentIcon {
+  margin: 5px 0px;
+}
+
 .AttachmentIcon svg {
-  height: 24px;
-  width: 24px;
+  height: 24px !important;
+  width: 24px !important;
 }
 
 .CrossIcon svg,
@@ -207,12 +187,18 @@
 }
 
 svg.SendIcon {
-  margin-top: 2px;
+  height: 25px;
+  width: 25px;
 }
 
 .Icons {
   display: flex;
   align-items: center;
+}
+
+.Icon {
+  height: 18px;
+  width: 18px;
 }
 
 @media only screen and (max-width: 768px) {
