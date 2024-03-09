@@ -41,7 +41,7 @@
     "interweave-autolink": "^5.1.1",
     "lexical": "^0.13.1",
     "lexical-beautiful-mentions": "^0.1.30",
-    "pino": "^8.17.2",
+    "pino": "^8.19.0",
     "pino-logflare": "^0.4.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
