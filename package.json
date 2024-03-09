@@ -34,7 +34,7 @@
     "emoji-mart": "^5.5.2",
     "formik": "^2.4.5",
     "graphql": "^16.8.1",
-    "graphql-ws": "^5.14.3",
+    "graphql-ws": "^5.15.0",
     "i18next": "^23.8.1",
     "i18next-browser-languagedetector": "^7.2.0",
     "interweave": "^13.1.0",
