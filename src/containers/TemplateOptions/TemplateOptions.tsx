@@ -157,7 +157,7 @@ export const TemplateOptions = ({
                 ) : null}
               </div>
             </div>
-            <div className={styles.TextFieldWrapper}>
+            <div className={styles.TextFieldWrapper} data-testid="buttonTitle">
               <FormControl fullWidth error={isError('title')} className={styles.FormControl}>
                 <TextField
                   disabled={disabled}
@@ -176,7 +176,7 @@ export const TemplateOptions = ({
                 ) : null}
               </FormControl>
             </div>
-            <div className={styles.TextFieldWrapper}>
+            <div className={styles.TextFieldWrapper} data-testid="buttonValue">
               <FormControl fullWidth error={isError('value')} className={styles.FormControl}>
                 <TextField
                   title={value}

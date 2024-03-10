@@ -72,7 +72,7 @@ describe('Add mode', () => {
     });
   });
 
-  test('Check for validations while creating a template', async () => {
+  test('Check for message and sample message validations while creating a template', async () => {
     const notificationSpy = vi.spyOn(Notification, 'setNotification');
     render(template);
 
@@ -99,7 +99,7 @@ describe('Add mode', () => {
     // add Sample message
     await user.click(sampleMessage);
     await user.tab();
-    fireEvent.input(sampleMessage, { data: 'Hi Shamoon, How are you' });
+    fireEvent.input(sampleMessage, { data: 'Hi Glific, How are you' });
 
     // save template
     fireEvent.click(screen.getByTestId('submitActionButton'));
@@ -114,10 +114,8 @@ describe('Add mode', () => {
     });
 
     // fix Sample message
-    await user.type(
-      sampleMessage,
-      '{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}[[Shamoon], How are you'
-    );
+    const backspaceKey = '{backspace}';
+    await user.type(sampleMessage, backspaceKey.repeat(19) + '[[Glific], How are you');
 
     const [_language, category] = screen.getAllByTestId('autocomplete-element');
     category.focus();
@@ -175,9 +173,62 @@ describe('Add mode', () => {
     await user.type(quickReply2, 'Quick reply 2');
     fireEvent.blur(quickReply2);
 
+    // update category
+    const [_language, category] = screen.getAllByTestId('autocomplete-element');
+    category.focus();
+    fireEvent.keyDown(category, { key: 'ArrowDown' });
+    fireEvent.keyDown(category, { key: 'ArrowDown' });
+    fireEvent.keyDown(category, { key: 'Enter' });
+
+    fireEvent.click(screen.getByTestId('submitActionButton'));
+
     await waitFor(() => {
-      expect(screen.getByText('Call to actions')).toBeInTheDocument();
+      expect(notificationSpy).toHaveBeenCalled();
     });
+  });
+
+  test('add quick reply buttons with call to action', async () => {
+    const notificationSpy = vi.spyOn(Notification, 'setNotification');
+    render(template);
+
+    await waitFor(() => {
+      const language = screen.getAllByTestId('AutocompleteInput')[0].querySelector('input');
+      expect(language).toHaveValue('English');
+    });
+
+    const title = screen.getAllByTestId('input')[0].querySelector('input') as HTMLInputElement;
+    const elementName = document.querySelector('input[name="shortcode"]') as HTMLInputElement;
+    const message = screen.getByTestId('editor-body') as HTMLElement;
+    const sampleMessage = screen.getByTestId('editor-example') as HTMLElement;
+
+    await user.type(title, 'Hello');
+    await user.type(elementName, 'welcome');
+
+    // add message
+    await user.click(message);
+    await user.tab();
+    fireEvent.input(message, { data: 'Hi {{1}}, How are you' });
+
+    // add Sample message
+    await user.click(sampleMessage);
+    await user.tab();
+    fireEvent.input(sampleMessage, { data: 'Hi [[Glific], How are you' });
+
+    await user.click(screen.getAllByTestId('checkboxLabel')[1]);
+    await user.click(screen.getByText('Call to actions'));
+    await user.click(screen.getByText('Phone number'));
+
+    const quickReply1 = screen
+      .getByTestId('buttonTitle')
+      .querySelector('input') as HTMLInputElement;
+    const quickReply2 = screen
+      .getByTestId('buttonValue')
+      .querySelector('input') as HTMLInputElement;
+
+    await user.type(quickReply1, 'Call me');
+    fireEvent.blur(quickReply1);
+    await user.type(quickReply2, '9876543210');
+    fireEvent.blur(quickReply2);
 
     // update category
     const [_language, category] = screen.getAllByTestId('autocomplete-element');
@@ -191,5 +242,5 @@ describe('Add mode', () => {
     await waitFor(() => {
       expect(notificationSpy).toHaveBeenCalled();
     });
-  }, 10000);
+  });
 });

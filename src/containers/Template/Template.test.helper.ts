@@ -301,11 +301,61 @@ const createHsmWithButtontemplate = {
           },
           translations: '{}',
           category: 'ACCOUNT_UPDATE',
-          example: 'Hi [Shamoon], How are you',
-          hasButtons: false,
+          example: 'Hi [Glific], How are you',
+          hasButtons: true,
           buttons:
             '[{"type":"QUICK_REPLY","text":"Quick reply 1"},{"type":"QUICK_REPLY","text":"Quick reply 2"}]',
           buttonType: 'QUICK_REPLY',
+        },
+        errors: null,
+      },
+    },
+  },
+};
+
+const createHsmWithPhonetemplate = {
+  request: {
+    query: CREATE_TEMPLATE,
+    variables: {
+      input: {
+        label: 'Hello',
+        body: 'Hi {{1}}, How are you',
+        type: 'TEXT',
+        shortcode: 'welcome',
+        example: 'Hi [[Glific], How are you',
+        category: 'ACCOUNT_UPDATE',
+        tagId: null,
+        isActive: true,
+        isHsm: true,
+        languageId: '1',
+        hasButtons: true,
+        buttons: '[{"type":"PHONE_NUMBER","text":"Call me","phone_number":"9876543210"}]',
+        buttonType: 'CALL_TO_ACTION',
+        translations: '{}',
+      },
+    },
+  },
+  result: {
+    data: {
+      createSessionTemplate: {
+        sessionTemplate: {
+          id: '1',
+          label: 'Hello',
+          body: 'Hi {{1}}, How are you',
+          type: 'TEXT',
+          shortcode: 'welcome',
+          isActive: true,
+          MessageMedia: null,
+          language: {
+            label: 'English',
+            id: '1',
+          },
+          translations: '{}',
+          category: 'ACCOUNT_UPDATE',
+          example: 'Hi [Glific], How are you',
+          hasButtons: true,
+          buttons: '[{"type":"PHONE_NUMBER","text":"Call me","phone_number":"9876543210"}]',
+          buttonType: 'CALL_TO_ACTION',
         },
         errors: null,
       },
@@ -322,7 +372,7 @@ const createHSMtemplate = {
         body: 'Hi {{1}}, How are you',
         type: 'TEXT',
         shortcode: 'welcome',
-        example: 'Hi [Shamoon], How are you',
+        example: 'Hi [Glific], How are you',
         category: 'ACCOUNT_UPDATE',
         tagId: null,
         isActive: true,
@@ -349,7 +399,7 @@ const createHSMtemplate = {
           },
           translations: '{}',
           category: 'ACCOUNT_UPDATE',
-          example: 'Hi [Shamoon], How are you',
+          example: 'Hi [Glific], How are you',
           hasButtons: false,
           buttons: null,
           buttonType: null,
@@ -365,6 +415,7 @@ export const TEMPLATE_MOCKS = [
   createHSMtemplate,
   getFilterTagQuery,
   createHsmWithButtontemplate,
+  createHsmWithPhonetemplate,
   {
     request: {
       query: CREATE_TEMPLATE,
