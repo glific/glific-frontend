@@ -128,7 +128,67 @@ describe('Add mode', () => {
     fireEvent.click(screen.getByTestId('submitActionButton'));
 
     await waitFor(() => {
-      // screen.debug(document, Infinity);
+      expect(notificationSpy).toHaveBeenCalled();
+    });
+  }, 10000);
+
+  test('add quick reply buttons when adding a template', async () => {
+    const notificationSpy = vi.spyOn(Notification, 'setNotification');
+    render(template);
+
+    await waitFor(() => {
+      const language = screen.getAllByTestId('AutocompleteInput')[0].querySelector('input');
+      expect(language).toHaveValue('English');
+    });
+
+    const title = screen.getAllByTestId('input')[0].querySelector('input') as HTMLInputElement;
+    const elementName = document.querySelector('input[name="shortcode"]') as HTMLInputElement;
+    const message = screen.getByTestId('editor-body') as HTMLElement;
+    const sampleMessage = screen.getByTestId('editor-example') as HTMLElement;
+
+    await user.type(title, 'Hello');
+    await user.type(elementName, 'welcome');
+
+    // add message
+    await user.click(message);
+    await user.tab();
+    fireEvent.input(message, { data: 'Hi {{1}}, How are you' });
+
+    // add Sample message
+    await user.click(sampleMessage);
+    await user.tab();
+    fireEvent.input(sampleMessage, { data: 'Hi [[Glific], How are you' });
+
+    await user.click(screen.getAllByTestId('checkboxLabel')[1]);
+    await user.click(screen.getByText('Quick replies'));
+    await user.click(screen.getByTestId('addButton'));
+
+    const quickReply1 = screen
+      .getAllByTestId('quickReplyWrapper')[0]
+      .querySelector('input') as HTMLInputElement;
+    const quickReply2 = screen
+      .getAllByTestId('quickReplyWrapper')[1]
+      .querySelector('input') as HTMLInputElement;
+
+    await user.type(quickReply1, 'Quick reply 1');
+    fireEvent.blur(quickReply1);
+    await user.type(quickReply2, 'Quick reply 2');
+    fireEvent.blur(quickReply2);
+
+    await waitFor(() => {
+      expect(screen.getByText('Call to actions')).toBeInTheDocument();
+    });
+
+    // update category
+    const [_language, category] = screen.getAllByTestId('autocomplete-element');
+    category.focus();
+    fireEvent.keyDown(category, { key: 'ArrowDown' });
+    fireEvent.keyDown(category, { key: 'ArrowDown' });
+    fireEvent.keyDown(category, { key: 'Enter' });
+
+    fireEvent.click(screen.getByTestId('submitActionButton'));
+
+    await waitFor(() => {
       expect(notificationSpy).toHaveBeenCalled();
     });
   }, 10000);

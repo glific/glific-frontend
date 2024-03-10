@@ -71,6 +71,7 @@ export const TemplateOptions = ({
         className={buttonClass}
         variant="outlined"
         color="primary"
+        data-testid="addButton"
         onClick={() => handleAddClick(helper, type)}
       >
         Add {title}
@@ -207,7 +208,11 @@ export const TemplateOptions = ({
     if (templateType === QUICK_REPLY) {
       template = (
         <>
-          <div className={styles.QuickReplyWrapper} key={index.toString()}>
+          <div
+            className={styles.QuickReplyWrapper}
+            key={index.toString()}
+            data-testid="quickReplyWrapper"
+          >
             <FormControl fullWidth error={isError('value')} className={styles.FormControl}>
               <TextField
                 disabled={disabled}
