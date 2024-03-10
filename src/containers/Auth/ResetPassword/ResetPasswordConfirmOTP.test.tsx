@@ -1,18 +1,22 @@
 import { render, screen, waitFor } from '@testing-library/react';
-import UserEvent from '@testing-library/user-event';
-import { MemoryRouter } from 'react-router';
+import UserEvent, { userEvent } from '@testing-library/user-event';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import axios from 'axios';
 import { vi } from 'vitest';
 
 import { postRequestMock } from '../Registration/Registration.test';
 import { ResetPasswordConfirmOTP } from './ResetPasswordConfirmOTP';
+import * as AuthService from 'services/AuthService';
 
 vi.mock('axios');
 const mockedAxios = axios as any;
 
 const wrapper = (
-  <MemoryRouter>
-    <ResetPasswordConfirmOTP />
+  <MemoryRouter initialEntries={[{ state: { phoneNumber: '919967665667' } }]}>
+    <Routes>
+      <Route path="/" element={<ResetPasswordConfirmOTP />} />
+      <Route path="/login" element={<div>Login page</div>} />
+    </Routes>
   </MemoryRouter>
 );
 
@@ -20,6 +24,9 @@ describe('<ResetPasswordConfirmOTP />', () => {
   beforeEach(() => {
     postRequestMock();
   });
+
+  const user = userEvent.setup();
+
   test('it should render', async () => {
     const { findByTestId } = render(wrapper);
     const resetPassword = await findByTestId('AuthContainer');
@@ -34,23 +41,25 @@ describe('<ResetPasswordConfirmOTP />', () => {
     const responseData = { data: { data: { data: {} } } };
     mockedAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
     const { container } = render(wrapper);
+
     const inputElements = screen.getAllByRole('textbox');
-    UserEvent.type(inputElements[1], '76554');
+    await user.type(inputElements[1], '7655');
 
     const password = container.querySelector('input[type="password"]') as HTMLInputElement;
-    UserEvent.type(password, 'pass123456');
+    await user.type(password, 'Secret1234!');
 
-    // click on save button
-    await waitFor(() => {
-      const saveButton = screen.getByText('Save');
-      UserEvent.click(saveButton);
-    });
+    const saveButton = screen.getByText('Save');
+    await user.click(saveButton);
 
     //need to have an assertion here
-    await waitFor(() => {});
+    await waitFor(() => {
+      expect(screen.getByText('Login page')).toBeInTheDocument();
+    });
   });
 
   it('test successful resend functionality', async () => {
+    const sendOptMock = vi.fn();
+    vi.spyOn(AuthService, 'sendOTP').mockImplementation(sendOptMock);
     // set the mock
     const responseData = {
       data: { message: 'OTP sent successfully to 919967665667', phone: '919967665667' },
@@ -58,11 +67,14 @@ describe('<ResetPasswordConfirmOTP />', () => {
     mockedAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
     render(wrapper);
 
-    // click on resend button
     await waitFor(() => {
-      const resendButton = screen.getByTestId('resendOtp');
-      UserEvent.click(resendButton);
+      expect(screen.getByTestId('resendOtp')).toBeInTheDocument();
     });
-    await waitFor(() => {});
+    // click on resend button
+    const resendButton = screen.getByTestId('resendOtp');
+    UserEvent.click(resendButton);
+    await waitFor(() => {
+      expect(sendOptMock).toHaveBeenCalledWith('919967665667');
+    });
   });
 });
