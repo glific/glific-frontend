@@ -7,6 +7,7 @@ import {
   EXPORT_FLOW,
   RELEASE_FLOW,
   GET_FREE_FLOW,
+  EXPORT_FLOW_LOCALIZATIONS,
 } from 'graphql/queries/Flow';
 import {
   ADD_FLOW_TO_CONTACT,
@@ -501,6 +502,52 @@ export const getFlowTranslations = {
         errors: [],
       },
     },
+  },
+};
+
+export const getFlowTranslationsWithErrors = {
+  request: {
+    query: AUTO_TRANSLATE_FLOW,
+    variables: { id: '1' },
+  },
+  result: {
+    data: {
+      inlineFlowLocalization: {
+        success: false,
+        errors: [{ key: 'error', message: 'Sorry! Unable to translate flow' }],
+      },
+    },
+  },
+};
+
+export const exportFlowTranslationsMock = {
+  request: {
+    query: EXPORT_FLOW_LOCALIZATIONS,
+    variables: { id: '1', addTranslation: false },
+  },
+  result: {
+    data: {
+      exportFlowLocalization: {
+        exportData:
+          'Type,UUID,en,hi\nType,UUID,English,Hindi\naction,6e3ce9b0-f4a0-4a9d-a182-02647cdbcc80,No worries. You can always change that by sending us *help*.,चिंता न करें। आप हमेशा मदद मेनू में जाकर उसे बदल सकते हैं। आप अभी भी हमें कभी भी मैसेज कर सकते हैं।\naction,852fc451-7482-4c09-b3c6-55cad8546b6b,Thank you for giving us the permission. We really appreciate it.,हमें अनुमति देने के लिए धन्यवाद। हम वास्तव में इसकी बहुत सराहना करते हैं।\n',
+      },
+    },
+  },
+};
+
+export const exportFlowTranslationsWithErrors = {
+  request: {
+    query: EXPORT_FLOW_LOCALIZATIONS,
+    variables: { id: '1', addTranslation: false },
+  },
+  result: {
+    data: null,
+    errors: [
+      {
+        key: 'error',
+        message: 'An error occured',
+      },
+    ],
   },
 };
 
