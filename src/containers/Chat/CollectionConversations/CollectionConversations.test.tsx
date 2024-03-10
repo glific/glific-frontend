@@ -152,8 +152,8 @@ describe('<CollectionConversation />', () => {
     const listItems = screen.getAllByTestId('list');
     expect(listItems.length).toBe(5);
 
-    await waitFor(() => {
-      userEvent.click(listItems[0]);
-    });
+    userEvent.click(listItems[0]);
+
+    await waitFor(() => {});
   });
 });

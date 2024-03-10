@@ -1,65 +1,59 @@
 import 'mocks/matchMediaMock';
-import { render, waitFor, cleanup, fireEvent } from '@testing-library/react';
+import { render, waitFor, fireEvent } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
-import { BrowserRouter } from 'react-router-dom';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { vi } from 'vitest';
 
 import * as FormLayout from 'containers/Form/FormLayout';
 import Template from './Template';
 import { TEMPLATE_MOCKS } from '../Template.test.helper';
 
-vi.mock('react-router-dom', async () => {
-  return {
-    ...(await vi.importActual<any>('react-router-dom')),
-    useParams: () => ({ id: '1' }),
-  };
+beforeEach(() => {
+  vi.restoreAllMocks();
 });
-
-afterEach(cleanup);
-const mocks = [...TEMPLATE_MOCKS, ...TEMPLATE_MOCKS];
+const defaultMocks = [...TEMPLATE_MOCKS, ...TEMPLATE_MOCKS];
 
 const defaultProps = {
-  match: { params: { id: 1 } },
-  listItemName: 'HSM Template',
-  redirectionLink: 'template',
-  defaultAttribute: { isHSM: true },
+  listItemName: 'Speed sends',
+  redirectionLink: 'speed-send',
+  defaultAttribute: { isHsm: false },
   icon: null,
 };
 
-test('HSM form is loaded correctly in edit mode', async () => {
-  const { getByText } = render(
-    <MockedProvider mocks={mocks} addTypename={false}>
-      <BrowserRouter>
-        <Template {...defaultProps} />
-      </BrowserRouter>
-    </MockedProvider>
-  );
-  await waitFor(() => {
-    expect(getByText('Edit HSM Template')).toBeInTheDocument();
-  });
-});
+const templateEdit = (props: any = defaultProps, mocks: any = defaultMocks) => (
+  <MockedProvider mocks={mocks} addTypename={false}>
+    <MemoryRouter initialEntries={['/templates/1/edit']}>
+      <Routes>
+        <Route path="/templates/:id/edit" element={<Template {...props} />} />
+      </Routes>
+    </MemoryRouter>
+  </MockedProvider>
+);
 
-test('save media in template', async () => {
-  const spy = vi.spyOn(FormLayout, 'FormLayout');
-  spy.mockImplementation((props: any) => {
-    const { getMediaId } = props;
-    return (
-      <div
-        onClick={() => {
-          getMediaId({ body: 'hey', attachmentURL: 'https://glific.com' });
-        }}
-        data-testid="getMedia"
-      ></div>
-    );
+describe('speed sends', () => {
+  test('Template form is loaded correctly in edit mode', async () => {
+    const { getByText } = render(templateEdit());
+    await waitFor(() => {
+      expect(getByText('Edit Speed sends')).toBeInTheDocument();
+    });
   });
-  const { getByTestId } = render(
-    <MockedProvider mocks={mocks} addTypename={false}>
-      <BrowserRouter>
-        <Template {...defaultProps} />
-      </BrowserRouter>
-    </MockedProvider>
-  );
-  await waitFor(() => {
-    fireEvent.click(getByTestId('getMedia'));
+
+  test('save media in template', async () => {
+    const spy = vi.spyOn(FormLayout, 'FormLayout');
+    spy.mockImplementation((props: any) => {
+      const { getMediaId } = props;
+      return (
+        <div
+          onClick={() => {
+            getMediaId({ body: 'hey', attachmentURL: 'https://glific.com' });
+          }}
+          data-testid="getMedia"
+        ></div>
+      );
+    });
+    const { getByTestId } = render(templateEdit());
+    await waitFor(() => {
+      fireEvent.click(getByTestId('getMedia'));
+    });
   });
 });
