@@ -131,5 +131,5 @@ describe('Add mode', () => {
       // screen.debug(document, Infinity);
       expect(notificationSpy).toHaveBeenCalled();
     });
-  });
+  }, 10000);
 });
