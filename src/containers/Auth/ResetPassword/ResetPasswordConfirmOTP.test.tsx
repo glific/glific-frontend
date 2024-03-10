@@ -1,5 +1,5 @@
 import { render, screen, waitFor } from '@testing-library/react';
-import UserEvent, { userEvent } from '@testing-library/user-event';
+import { userEvent } from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import axios from 'axios';
 import { vi } from 'vitest';
@@ -51,7 +51,6 @@ describe('<ResetPasswordConfirmOTP />', () => {
     const saveButton = screen.getByText('Save');
     await user.click(saveButton);
 
-    //need to have an assertion here
     await waitFor(() => {
       expect(screen.getByText('Login page')).toBeInTheDocument();
     });
@@ -72,7 +71,7 @@ describe('<ResetPasswordConfirmOTP />', () => {
     });
     // click on resend button
     const resendButton = screen.getByTestId('resendOtp');
-    UserEvent.click(resendButton);
+    user.click(resendButton);
     await waitFor(() => {
       expect(sendOptMock).toHaveBeenCalledWith('919967665667');
     });
