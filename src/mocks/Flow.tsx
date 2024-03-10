@@ -18,6 +18,7 @@ import {
   UPDATE_FLOW,
   CREATE_FLOW_COPY,
   AUTO_TRANSLATE_FLOW,
+  IMPORT_FLOW_LOCALIZATIONS,
 } from 'graphql/mutations/Flow';
 import { GET_ORGANIZATION_SERVICES } from 'graphql/queries/Organization';
 import json from './ImportFlow.json';
@@ -520,10 +521,28 @@ export const getFlowTranslationsWithErrors = {
   },
 };
 
-export const exportFlowTranslationsMock = {
+export const importFlowTranslationsMock = {
+  request: {
+    query: IMPORT_FLOW_LOCALIZATIONS,
+    variables: {
+      localization:
+        'Type,UUID,en,hi\nType,UUID,English,Hindi\naction,6e3ce9b0-f4a0-4a9d-a182-02647cdbcc80,No worries. You can always change that by sending us *help*.,चिंता न करें। आप हमेशा मदद मेनू में जाकर उसे बदल सकते हैं। आप अभी भी हमें कभी भी मैसेज कर सकते हैं।\naction,852fc451-7482-4c09-b3c6-55cad8546b6b,Thank you for giving us the permission. We really appreciate it.,हमें अनुमति देने के लिए धन्यवाद। हम वास्तव में इसकी बहुत सराहना करते हैं।\n',
+      id: '1',
+    },
+  },
+  result: {
+    data: {
+      importFlowLocalization: {
+        success: true,
+      },
+    },
+  },
+};
+
+export const exportFlowTranslationsMock = (autoTranslate: boolean) => ({
   request: {
     query: EXPORT_FLOW_LOCALIZATIONS,
-    variables: { id: '1', addTranslation: false },
+    variables: { id: '1', addTranslation: autoTranslate },
   },
   result: {
     data: {
@@ -533,7 +552,7 @@ export const exportFlowTranslationsMock = {
       },
     },
   },
-};
+});
 
 export const exportFlowTranslationsWithErrors = {
   request: {
