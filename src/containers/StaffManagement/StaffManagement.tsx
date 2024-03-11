@@ -35,7 +35,7 @@ export const StaffManagement = () => {
   const hasDynamicRoles = organizationHasDynamicRole();
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
-  const [roles, setRoles] = useState<any>(undefined);
+  const [roles, setRoles] = useState<any>(null);
   const [groups, setGroups] = useState(undefined);
   const [isRestricted, setIsRestricted] = useState(false);
   const [staffRole, setStaffRole] = useState(false);
@@ -135,14 +135,12 @@ export const StaffManagement = () => {
   }, [roles]);
   if (loading || loadingRoles) return <Loading />;
   if (!data.groups || !roleData.accessRoles) {
-    return null;
+    return <div>An error occured! Not able to fetch collections or roles</div>;
   }
 
   let rolesList: any = [];
   roleData.accessRoles.forEach((role: any) => {
-    if (hasDynamicRoles) {
-      rolesList.push({ id: role.id, label: role.label });
-    } else if (role.isReserved) {
+    if (hasDynamicRoles || role.isReserved) {
       rolesList.push({ id: role.id, label: role.label });
     }
   });
@@ -285,6 +283,8 @@ export const StaffManagement = () => {
 
   const checkAfterSave = (updatedUser: any) => {
     const { id, roles: userRoles } = updatedUser.updateUser.user;
+
+    // logout if an admin demotes themselves
     if (isAdmin && getUserSession('id') === id && !userRoles.includes('Admin')) {
       navigate('/logout/user');
     }

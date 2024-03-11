@@ -6,9 +6,7 @@ import { within, fireEvent } from '@testing-library/dom';
 
 import { Flow } from 'containers/Flow/Flow';
 import { setUserSession } from 'services/AuthService';
-import ActivateIcon from 'assets/images/icons/Activate.svg?react';
-import ApprovedIcon from 'assets/images/icons/Template/Approved.svg?react';
-import { LIST_MOCKS, defaultProps, ORG_LIST_MOCK, orgProps } from './List.test.helper';
+import { LIST_MOCKS, defaultProps } from './List.test.helper';
 import { List } from './List';
 
 const mocks = LIST_MOCKS;
@@ -147,74 +145,5 @@ test('list sorting', async () => {
     const tableHead = container.querySelector('thead') as HTMLTableSectionElement;
     const { getByText } = within(tableHead);
     fireEvent.click(getByText('Title'));
-  });
-});
-
-describe('DialogMessage tests', () => {
-  test.skip('dialogMessage with custom component for delete', async () => {
-    const useCustomDialog = () => {
-      const component = (
-        <div>
-          <input type="text" placeholder="Testing custom dialog with input text" />
-        </div>
-      );
-      return {
-        component,
-        props: {
-          handleOk: vi.fn(),
-          disableOk: false,
-        },
-      };
-    };
-
-    const additionalAction = () => [
-      {
-        icon: ApprovedIcon,
-        parameter: 'id',
-        label: 'Approve',
-        button: (_item: any, _action: any, key: string) => (
-          <button key={key} onClick={() => vi.fn()}>
-            Approve
-          </button>
-        ),
-      },
-      {
-        icon: ActivateIcon,
-        parameter: 'id',
-        label: 'Activate',
-        button: (_item: any, _action: any, key: string) => (
-          <button key={key} onClick={() => vi.fn()}>
-            Activate
-          </button>
-        ),
-      },
-    ];
-
-    let organizationProps = { ...orgProps, dialogMessage: useCustomDialog, additionalAction };
-
-    window.history.replaceState({}, 'Organization', '/');
-    const organizationList = (
-      <MockedProvider mocks={ORG_LIST_MOCK} addTypename={false}>
-        <Router>
-          <Routes>
-            <Route path="/" element={<List {...organizationProps} />} />
-          </Routes>
-        </Router>
-      </MockedProvider>
-    );
-
-    const { container } = render(organizationList);
-
-    await waitFor(() => {
-      const { queryByTestId } = within(container.querySelector('tbody tr') as HTMLTableRowElement);
-      const MoreButton = queryByTestId('MoreIcon');
-
-      if (MoreButton) {
-        fireEvent.click(MoreButton);
-      }
-
-      const button = queryByTestId('DeleteIcon') as HTMLButtonElement;
-      fireEvent.click(button);
-    });
   });
 });

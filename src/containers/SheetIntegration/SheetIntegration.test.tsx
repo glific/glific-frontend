@@ -1,6 +1,6 @@
 import { render, waitFor, fireEvent } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
-import { MemoryRouter } from 'react-router';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { SheetIntegration } from './SheetIntegration';
 import {
   getSearchSheetQuery,
@@ -8,6 +8,7 @@ import {
   deleteSheetQuery,
   createSheetQuery,
   getSheetCountQuery,
+  updateSheetQuery,
 } from 'mocks/Sheet';
 
 const mocks = [
@@ -17,6 +18,7 @@ const mocks = [
   deleteSheetQuery,
   createSheetQuery,
   getSheetCountQuery,
+  updateSheetQuery,
 ];
 
 const sheetIntegration = () => (
@@ -57,6 +59,36 @@ test('sheet succesfully created and list page should open ', async () => {
     });
     const button = getByText('Save');
     fireEvent.click(button);
+    expect(getByText('Google sheet')).toBeInTheDocument();
+  });
+});
+
+test('edit sheet', async () => {
+  const { getByText, getByTestId } = render(
+    <MockedProvider mocks={mocks} addTypename={false}>
+      <MemoryRouter initialEntries={['/sheet-integration/28/edit']}>
+        <Routes>
+          <Route path="sheet-integration/:id/edit" element={<SheetIntegration />} />
+        </Routes>
+      </MemoryRouter>
+    </MockedProvider>
+  );
+
+  await waitFor(() => {
+    expect(getByTestId('formLayout').querySelector('input[name="url"]')).toHaveValue(
+      'https://docs.google.com/spreadsheets/d/1fRpFyicqrUFxd7scvdGC8UOHEtAT3rA-G2i4tvOgScw/edit'
+    );
+    expect(getByTestId('formLayout').querySelector('input[name="label"]')).toHaveValue('Sheet 1');
+  });
+
+  const labelInput = getByTestId('formLayout').querySelector('input[name="label"]');
+  fireEvent.change(labelInput!, {
+    target: { value: 'Sample sheet 1' },
+  });
+  const button = getByText('Save');
+  fireEvent.click(button);
+
+  await waitFor(() => {
     expect(getByText('Google sheet')).toBeInTheDocument();
   });
 });
