@@ -66,7 +66,7 @@ export const WaManagedPhones = ({ phonenumber, setPhonenumber }: WaManagedPhones
             if (value) {
               setPhonenumber([value]);
             } else {
-              setPhonenumber([]);
+              setPhonenumber(null);
             }
           }}
           form={{ setFieldValue: () => {} }}
