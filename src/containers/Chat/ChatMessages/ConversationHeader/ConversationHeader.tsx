@@ -52,7 +52,6 @@ import { CollectionInformation } from '../../../Collection/CollectionInformation
 import AddContactsToCollection from '../AddContactsToCollection/AddContactsToCollection';
 
 import styles from './ConversationHeader.module.css';
-import { ASTVisitorKeyMap } from 'graphql';
 
 const status = ['SESSION', 'SESSION_AND_HSM', 'HSM'];
 
