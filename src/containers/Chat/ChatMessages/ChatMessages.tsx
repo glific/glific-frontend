@@ -7,7 +7,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useTranslation } from 'react-i18next';
 
 import styles from './ChatMessages.module.css';
-import { ContactBar } from './ContactBar/ContactBar';
+import { ConversationHeader } from './ConversationHeader/ConversationHeader';
 import { ChatMessage } from './ChatMessage/ChatMessage';
 import { ChatInput } from './ChatInput/ChatInput';
 import StatusBar from './StatusBar/StatusBar';
@@ -387,6 +387,8 @@ export const ChatMessages = ({ contactId, collectionId, phoneId }: ChatMessagesP
     allConversations.search.map((conversation: any, index: any) => {
       if (conversation[type].id === Id.toString()) {
         conversationIndex = index;
+        console.log(1);
+
         setConversationInfo(conversation);
       }
       return null;
@@ -400,6 +402,8 @@ export const ChatMessages = ({ contactId, collectionId, phoneId }: ChatMessagesP
       allConversations.search.map((conversation: any, index: any) => {
         if (conversation[chatType]?.id === contactId?.toString()) {
           conversationIndex = index;
+          console.log(2);
+
           setConversationInfo(conversation);
         }
         return null;
@@ -453,6 +457,8 @@ export const ChatMessages = ({ contactId, collectionId, phoneId }: ChatMessagesP
     if (allConversations && allConversations.search) {
       if (collectionId === -1) {
         conversationIndex = 0;
+        console.log(3);
+
         setConversationInfo(allConversations.search);
       } else {
         updateConversationInfo('group', collectionId);
@@ -460,8 +466,8 @@ export const ChatMessages = ({ contactId, collectionId, phoneId }: ChatMessagesP
     }
 
     // if conversation is not present then fetch the collection
-    if (conversationIndex < 0) {
-      if ((!groups && !loading && !called) || (data && data.search[0].group.id !== collectionId)) {
+    if (conversationIndex < 0 && !groups) {
+      if ((!loading && !called) || (data && data.search[0].group.id !== collectionId)) {
         const variables = {
           filter: { id: collectionId, searchGroup: true },
           [contactOptions]: { limit: DEFAULT_ENTITY_LIMIT },
@@ -483,11 +489,17 @@ export const ChatMessages = ({ contactId, collectionId, phoneId }: ChatMessagesP
   // find if contact/Collection present in the cached
   useEffect(() => {
     if (contactId) {
+      console.log('f');
+
       findContactInAllConversations();
     } else if (collectionId) {
       findCollectionInAllConversations();
     }
   }, [contactId, collectionId, allConversations]);
+
+  useEffect(() => {
+    console.log('hjdshk');
+  }, [contactId]);
 
   useEffect(() => {
     if (searchMessageNumber) {
@@ -754,13 +766,15 @@ export const ChatMessages = ({ contactId, collectionId, phoneId }: ChatMessagesP
     const displayName = groups ? conversationInfo.waGroup.label : getDisplayName(conversationInfo);
 
     topChatBar = (
-      <ContactBar
+      <ConversationHeader
         displayName={displayName}
         isSimulator={isSimulatorProp}
-        contactId={contactId.toString()}
-        lastMessageTime={conversationInfo[chatType]?.lastMessageAt}
-        contactStatus={conversationInfo[chatType]?.status}
-        contactBspStatus={conversationInfo[chatType]?.bspStatus}
+        entityId={contactId.toString()}
+        contact={{
+          lastMessageTime: conversationInfo[chatType]?.lastMessageAt,
+          contactStatus: conversationInfo[chatType]?.status,
+          contactBspStatus: conversationInfo[chatType]?.bspStatus,
+        }}
         handleAction={() => handleChatClearedAction()}
         groups={groups}
       />
@@ -782,7 +796,7 @@ export const ChatMessages = ({ contactId, collectionId, phoneId }: ChatMessagesP
     );
   } else if (collectionId && conversationInfo.group) {
     topChatBar = (
-      <ContactBar
+      <ConversationHeader
         collectionId={collectionId.toString()}
         displayName={conversationInfo.group.label}
         handleAction={handleChatClearedAction}
