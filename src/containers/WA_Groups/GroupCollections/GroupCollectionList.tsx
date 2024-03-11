@@ -50,9 +50,9 @@ export const CollectionGroupList = () => {
 
   const getDeleteQueryVariables = (id: any) => ({
     input: {
-      waGroupId: collectionId,
+      waGroupId: id,
       addGroupIds: [],
-      deleteGroupIds: [id],
+      deleteGroupIds: [collectionId],
     },
   });
 
@@ -61,7 +61,7 @@ export const CollectionGroupList = () => {
   const additionalAction = () => [
     {
       icon: <ArrowForwardIcon className={styles.RedirectArrow} />,
-      label: t('View profile'),
+      label: t('View Group'),
       link: '/group-details',
       parameter: 'id',
     },

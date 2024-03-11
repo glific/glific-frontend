@@ -2,6 +2,7 @@ import { useLazyQuery, useQuery } from '@apollo/client';
 import {
   DEFAULT_ENTITY_LIMIT,
   DEFAULT_MESSAGE_LIMIT,
+  GROUP_COLLECTION_SEARCH_QUERY_VARIABLES,
   GROUP_QUERY_VARIABLES,
   REFETCH_RANDOM_TIME_MAX,
   REFETCH_RANDOM_TIME_MIN,
@@ -194,14 +195,14 @@ export const GroupMessageSubscription = ({ setDataLoaded }: GroupMessageProps) =
     nextFetchPolicy: 'cache-only',
   });
 
-  // const { subscribeToMore: collectionSubscribe, data: collectionData } = useQuery<any>(
-  //   GROUP_SEARCH_QUERY,
-  //   {
-  //     variables: GROUP_COLLECTION_SEARCH_QUERY_VARIABLES,
-  //     fetchPolicy: 'network-only',
-  //     nextFetchPolicy: 'cache-only',
-  //   }
-  // );
+  const { subscribeToMore: collectionSubscribe, data: collectionData } = useQuery<any>(
+    GROUP_SEARCH_QUERY,
+    {
+      variables: GROUP_COLLECTION_SEARCH_QUERY_VARIABLES,
+      fetchPolicy: 'network-only',
+      nextFetchPolicy: 'cache-only',
+    }
+  );
 
   useEffect(() => {
     if (subscribeToMore) {
