@@ -60,7 +60,7 @@ const setPayload = (payload: any, roles: any) => {
   const groups = groupIds.map((group: any) => parseInt(group.id));
   const startAtTime = dayjs(startTime).format(EXTENDED_TIME_FORMAT);
   // covert the time to UTC
-  const startAt = dayjs(`${dayjs(startDate).format(ISO_DATE_FORMAT)}${startAtTime}`).utc();
+  const startAt = dayjs(`${dayjs(startDate).format(ISO_DATE_FORMAT)}${startAtTime}`);
 
   const updatedPayload = {
     isActive,
@@ -70,7 +70,7 @@ const setPayload = (payload: any, roles: any) => {
     hours: [],
     groupIds: groups,
     startDate: dayjs(startAt).utc().format(ISO_DATE_FORMAT),
-    endDate: dayjs(endDate).utc().format(ISO_DATE_FORMAT),
+    endDate: dayjs(endDate).format(ISO_DATE_FORMAT),
     startTime: dayjs(startAt).utc().format(EXTENDED_TIME_FORMAT),
     frequency: frequency.value,
     roles: payload.roles,

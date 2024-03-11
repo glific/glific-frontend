@@ -121,7 +121,7 @@ export const createNoFrequencyTriggerQuery = {
         hours: [],
         groupIds: [1],
         startDate: '2030-09-03',
-        endDate: '2030-10-02',
+        endDate: '2030-10-03',
         startTime: 'T03:30:00',
         frequency: 'none',
         addRoleIds: [],
@@ -134,7 +134,7 @@ export const createNoFrequencyTriggerQuery = {
       createTrigger: {
         trigger: {
           days: [],
-          endDate: '2030-10-02',
+          endDate: '2030-10-03',
           flow: {
             id: '1',
           },
@@ -166,7 +166,7 @@ export const createTriggerQuery = {
         hours: [],
         groupIds: [1],
         startDate: '2029-02-28',
-        endDate: '2030-03-12',
+        endDate: '2030-03-13',
         startTime: 'T20:00:22',
         frequency: 'daily',
         addRoleIds: [],
