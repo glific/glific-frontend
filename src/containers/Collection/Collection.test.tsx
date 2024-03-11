@@ -9,6 +9,7 @@ import { getOrganizationLanguagesQuery, getOrganizationQuery } from 'mocks/Organ
 import * as FormLayout from 'containers/Form/FormLayout';
 import { Collection } from './Collection';
 import { getRoleNamesMock } from 'containers/StaffManagement/StaffManagement.test.helper';
+import { BrowserRouter } from 'react-router-dom';
 
 const mocks = [
   getRoleNamesMock,
@@ -32,7 +33,9 @@ vi.mock('react-router-dom', async () => {
 
 const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>
-    <Collection />
+    <BrowserRouter>
+      <Collection />
+    </BrowserRouter>
   </MockedProvider>
 );
 
