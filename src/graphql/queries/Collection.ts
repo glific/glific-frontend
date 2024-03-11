@@ -40,6 +40,7 @@ export const FILTER_COLLECTIONS = gql`
       description
       isRestricted
       contactsCount
+      waGroupsCount
       roles {
         id
         label

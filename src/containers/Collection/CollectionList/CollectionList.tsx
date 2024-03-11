@@ -29,30 +29,18 @@ const getDescription = (description: string) => (
   <div className={styles.DescriptionText}>{description}</div>
 );
 
-const getContact = (contactsCount: number) => (
+const getContact = (totalCount: number, groups: boolean) => (
   <div className={styles.UserCount}>
-    {contactsCount} contact{contactsCount === 1 ? '' : 's'}
+    {`${totalCount} ${groups ? 'group' : 'contact'}x${totalCount === 1 ? '' : 's'}`}
   </div>
 );
 
-const getColumns = ({ label, contactsCount, description }: any) => ({
-  label: getLabel(label),
-  description: getDescription(description),
-  contacts: getContact(contactsCount),
-});
-
-const columnStyles = [styles.Label, styles.Description, styles.Contact, styles.Actions];
 const collectionIcon = <CollectionIcon className={styles.CollectionIcon} />;
 
 const queries = {
   countQuery: GET_COLLECTIONS_COUNT,
   filterItemsQuery: FILTER_COLLECTIONS,
   deleteItemQuery: DELETE_COLLECTION,
-};
-
-const columnAttributes = {
-  columns: getColumns,
-  columnStyles,
 };
 
 export const CollectionList = () => {
@@ -66,6 +54,19 @@ export const CollectionList = () => {
   const { t } = useTranslation();
   const location = useLocation();
   const groups: boolean = location.pathname.includes('group');
+
+  const getColumns = ({ label, contactsCount, description, waGroupsCount }: any) => ({
+    label: getLabel(label),
+    description: getDescription(description),
+    contacts: getContact(groups ? waGroupsCount : contactsCount, groups),
+  });
+
+  const columnStyles = [styles.Label, styles.Description, styles.Contact, styles.Actions];
+
+  const columnAttributes = {
+    columns: getColumns,
+    columnStyles,
+  };
 
   const [getContacts, { data: contactsData }] = useLazyQuery(CONTACT_SEARCH_QUERY, {
     variables: setVariables({ name: contactSearchTerm }, 50),
@@ -233,6 +234,7 @@ export const CollectionList = () => {
 
   // check if the user has access to manage collections
   const userRolePermissions = getUserRolePermissions();
+  let TotalCountLabel = groups ? t('Groups') : t('Contacts');
 
   return (
     <>
@@ -252,7 +254,7 @@ export const CollectionList = () => {
         columnNames={[
           { name: 'label', label: t('Title') },
           { label: t('Description') },
-          { label: t('Contacts') },
+          { label: TotalCountLabel },
           { label: t('Actions') },
         ]}
         listItemName="collection"
