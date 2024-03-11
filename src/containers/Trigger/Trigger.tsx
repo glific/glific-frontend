@@ -36,6 +36,8 @@ import {
 } from 'graphql/mutations/Trigger';
 import styles from './Trigger.module.css';
 import { triggerInfo } from 'common/HelpData';
+import { getOrganizationServices } from 'services/AuthService';
+import { TriggerType } from './TriggerType/TriggerType';
 dayjs.extend(utc);
 
 const checkDateTimeValidation = (startAtValue: string, startDateValue: string) => {
@@ -166,6 +168,7 @@ export const Trigger = () => {
   const [frequencyLabel, setFrequencyLabel] = useState('Select days');
   const [frequencyOptions, setFrequencyOptions] = useState(dayList);
   const [isContact, setIsContact] = useState<boolean>(true);
+  const isWhatsAppGroupEnabled = getOrganizationServices('whatsappGroupEnabled');
   const params = useParams();
   const location = useLocation();
   const { t } = useTranslation();
@@ -260,7 +263,7 @@ export const Trigger = () => {
   });
 
   const { data: collections } = useQuery(GET_COLLECTIONS, {
-    variables: setVariables(),
+    variables: setVariables({ groupType: isContact ? 'WABA' : 'WA' }),
   });
 
   const [validateTriggerFlow, { loading }] = useMutation(VALIDATE_TRIGGER, {
@@ -392,12 +395,10 @@ export const Trigger = () => {
         ),
     },
     {
-      component: RadioInput,
-      name: 'isContact',
-      label: 'Select Trigger Type',
-      labelYes: 'Contacts',
-      labelNo: 'Whatsapp Groups',
-      handleChange: (value: boolean) => setIsContact(value),
+      component: TriggerType,
+      setIsContact: setIsContact,
+      isContact: isContact,
+      isWhatsAppGroupEnabled: isWhatsAppGroupEnabled,
     },
     {
       component: AutoComplete,

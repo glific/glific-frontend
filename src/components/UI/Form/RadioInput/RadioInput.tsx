@@ -17,6 +17,7 @@ export interface RadioInputProps {
   form: { dirty: any; touched: any; errors: any; setFieldValue: any; values: any };
   radioTitle?: string;
   handleChange?: any;
+  showField?: boolean;
 }
 
 export const RadioInput = ({
@@ -27,6 +28,7 @@ export const RadioInput = ({
   form: { touched, errors, setFieldValue, values },
   radioTitle,
   handleChange,
+  showField = true,
 }: RadioInputProps) => {
   const selectedValue = values[field.name];
 
@@ -45,37 +47,41 @@ export const RadioInput = ({
   }
 
   return (
-    <FormControl component="fieldset">
-      {radioGroupLabel}
-      <RadioGroup row={row} name="radio-buttons">
-        <FormControlLabel
-          value={1}
-          control={
-            <Radio
-              color="primary"
-              onClick={() => handleRadioChange(true)}
-              checked={isChecked(true)}
+    <>
+      {showField && (
+        <FormControl component="fieldset">
+          {radioGroupLabel}
+          <RadioGroup row={row} name="radio-buttons">
+            <FormControlLabel
+              value={1}
+              control={
+                <Radio
+                  color="primary"
+                  onClick={() => handleRadioChange(true)}
+                  checked={isChecked(true)}
+                />
+              }
+              label={labelYes}
+              className={styles.Label}
             />
-          }
-          label={labelYes}
-          className={styles.Label}
-        />
-        <FormControlLabel
-          value={0}
-          control={
-            <Radio
-              color="primary"
-              onClick={() => handleRadioChange(false)}
-              checked={isChecked(false)}
+            <FormControlLabel
+              value={0}
+              control={
+                <Radio
+                  color="primary"
+                  onClick={() => handleRadioChange(false)}
+                  checked={isChecked(false)}
+                />
+              }
+              label={labelNo}
+              className={styles.Label}
             />
-          }
-          label={labelNo}
-          className={styles.Label}
-        />
-      </RadioGroup>
-      {errors[field.name] && touched[field.name] ? (
-        <FormHelperText className={styles.DangerText}>{errors[field.name]}</FormHelperText>
-      ) : null}
-    </FormControl>
+          </RadioGroup>
+          {errors[field.name] && touched[field.name] ? (
+            <FormHelperText className={styles.DangerText}>{errors[field.name]}</FormHelperText>
+          ) : null}
+        </FormControl>
+      )}
+    </>
   );
 };
