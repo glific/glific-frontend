@@ -4,7 +4,7 @@ on:
   push:
     branches: [master]
   pull_request:
-    branches: [master, next, whatsapp-group-chats]
+    branches: [master, whatsapp-group-chats]
 jobs:
   glific:
     runs-on: ubuntu-latest
@@ -94,9 +94,6 @@ jobs:
           echo clone cypress repo
           git clone https://github.com/glific/cypress-testing.git
           echo done. go to dir.
-          cd cypress-testing
-          git checkout feature/next
-          cd ..
           cp -r cypress-testing/cypress cypress
           yarn add cypress
           echo Create cypress.config.ts from example

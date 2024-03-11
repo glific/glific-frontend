@@ -1,6 +1,6 @@
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
-import ContactBar from './ContactBar';
+import ConversationHeader from './ConversationHeader';
 import {
   blockContactQuery,
   contactCollectionsQuery,
@@ -36,17 +36,25 @@ const mocks = [
 
 const defaultProps = {
   displayName: 'Jane Doe',
-  contactId: '2',
-  lastMessageTime: new Date(),
-  contactBspStatus: 'SESSION',
+  entityId: '2',
+  contact: {
+    lastMessageTime: new Date(),
+    contactBspStatus: 'SESSION',
+  },
   handleAction: vi.fn(),
 };
-const propsWithBspStatusNone = { ...defaultProps, contactBspStatus: 'NONE' };
+const propsWithBspStatusNone = {
+  ...defaultProps,
+  contact: {
+    ...defaultProps.contact,
+    contactBspStatus: 'NONE',
+  },
+};
 
 const component = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <MemoryRouter>
-      <ContactBar {...defaultProps} />
+      <ConversationHeader {...defaultProps} />
     </MemoryRouter>
   </MockedProvider>
 );
@@ -54,8 +62,8 @@ const component = (
 test('it should render the name correctly', async () => {
   const { getByText, container } = render(component);
 
-  const contactBarComponent = screen.getByTestId('beneficiaryName');
-  expect(contactBarComponent).toBeInTheDocument();
+  const conversationHeaderComponent = screen.getByTestId('beneficiaryName');
+  expect(conversationHeaderComponent).toBeInTheDocument();
   expect(getByText('Jane Doe')).toBeInTheDocument();
 
   await waitFor(() => {
@@ -177,7 +185,7 @@ describe('Menu test', () => {
   const componentWithBspStatusNone = (
     <MockedProvider mocks={mocks} addTypename={false}>
       <MemoryRouter>
-        <ContactBar {...propsWithBspStatusNone} />
+        <ConversationHeader {...propsWithBspStatusNone} />
       </MemoryRouter>
     </MockedProvider>
   );
@@ -204,23 +212,23 @@ describe('Collection test', () => {
   const component = (
     <MockedProvider mocks={mocks} addTypename={false}>
       <MemoryRouter>
-        <ContactBar {...collectionDefaultProps} />
+        <ConversationHeader {...collectionDefaultProps} />
       </MemoryRouter>
     </MockedProvider>
   );
   test('It should render the collection name correctly', async () => {
     const { getByText } = render(component);
     await waitFor(() => {});
-    const contactBarComponent = screen.getByTestId('beneficiaryName');
-    expect(contactBarComponent).toBeInTheDocument();
+    const conversationHeaderComponent = screen.getByTestId('beneficiaryName');
+    expect(conversationHeaderComponent).toBeInTheDocument();
     expect(getByText('Default Collection')).toBeInTheDocument();
   });
 
   test('It should render the collection name correctly', async () => {
     const { getByText } = render(component);
     await waitFor(() => {});
-    const contactBarComponent = screen.getByTestId('beneficiaryName');
-    expect(contactBarComponent).toBeInTheDocument();
+    const conversationHeaderComponent = screen.getByTestId('beneficiaryName');
+    expect(conversationHeaderComponent).toBeInTheDocument();
     expect(getByText('Default Collection')).toBeInTheDocument();
   });
 

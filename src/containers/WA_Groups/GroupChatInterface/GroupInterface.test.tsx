@@ -1,33 +1,44 @@
 import 'mocks/matchMediaMock';
 import { MemoryRouter } from 'react-router-dom';
-import { cleanup, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, render, waitFor } from '@testing-library/react';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 
 import { setUserSession } from 'services/AuthService';
-import { DEFAULT_ENTITY_LIMIT, DEFAULT_MESSAGE_LIMIT } from 'common/constants';
+import { GROUP_QUERY_VARIABLES } from 'common/constants';
 import GroupChatInterface from './GroupChatInterface';
 import { GROUP_SEARCH_QUERY } from 'graphql/queries/WA_Groups';
 
 const cache = new InMemoryCache({ addTypename: false });
 cache.writeQuery({
   query: GROUP_SEARCH_QUERY,
-  variables: {
-    waGroupOpts: { limit: DEFAULT_ENTITY_LIMIT },
-    filter: {
-      waPhoneIds: ['1'],
-    },
-    waMessageOpts: { limit: DEFAULT_MESSAGE_LIMIT },
-  },
+  variables: GROUP_QUERY_VARIABLES,
   data: {
     search: [
       {
-        __typename: 'WaConversation',
+        messages: [
+          {
+            __typename: 'WaMessage',
+            body: 'hey there',
+            contact: {
+              __typename: 'Contact',
+              name: null,
+            },
+            contextMessage: null,
+            errors: null,
+            id: '45',
+            insertedAt: '2024-03-11T14:28:54.842909Z',
+            media: null,
+            messageNumber: 3,
+            status: 'sent',
+            type: 'TEXT',
+          },
+        ],
         waGroup: {
           __typename: 'WaGroup',
-          bspId: '120363247648094024@g.us',
-          id: '3',
-          label: 'test',
-          lastCommunicationAt: '2024-03-01T04:23:36Z',
+          bspId: '120363254172504067@g.us',
+          id: '6',
+          label: 'WA Group 1',
+          lastCommunicationAt: '2024-03-11T14:12:55Z',
           waManagedPhone: {
             __typename: 'WaManagedPhone',
             id: '3',
@@ -36,222 +47,92 @@ cache.writeQuery({
             phoneId: 43876,
           },
         },
-        messages: [
-          {
-            __typename: 'WaMessage',
-            id: '11',
-            body: 'hi',
-            insertedAt: '2024-03-01T04:23:35.825536Z',
-            messageNumber: 8,
-            type: 'TEXT',
-            status: 'received',
-            media: null,
-            contact: {
-              __typename: 'Contact',
-              name: 'akansha',
-            },
-            errors: null,
-            contextMessage: null,
-          },
-          {
-            __typename: 'WaMessage',
-            id: '10',
-            body: 'test',
-            insertedAt: '2024-03-01T04:23:23.255910Z',
-            messageNumber: 7,
-            type: 'TEXT',
-            status: 'sent',
-            media: null,
-            contact: {
-              __typename: 'Contact',
-              name: null,
-            },
-            errors: null,
-            contextMessage: null,
-          },
-          {
-            __typename: 'WaMessage',
-            id: '9',
-            body: 'hi',
-            insertedAt: '2024-03-01T04:22:01.025641Z',
-            messageNumber: 6,
-            type: 'TEXT',
-            status: 'sent',
-            media: null,
-            contact: {
-              __typename: 'Contact',
-              name: null,
-            },
-            errors: null,
-            contextMessage: null,
-          },
-          {
-            __typename: 'WaMessage',
-            id: '8',
-            body: 'test',
-            insertedAt: '2024-03-01T04:19:33.241361Z',
-            messageNumber: 5,
-            type: 'TEXT',
-            status: 'sent',
-            media: null,
-            contact: {
-              __typename: 'Contact',
-              name: null,
-            },
-            errors: null,
-            contextMessage: null,
-          },
-          {
-            __typename: 'WaMessage',
-            id: '7',
-            body: 'yes',
-            insertedAt: '2024-03-01T04:17:46.550821Z',
-            messageNumber: 4,
-            type: 'TEXT',
-            status: 'sent',
-            media: null,
-            contact: {
-              __typename: 'Contact',
-              name: null,
-            },
-            errors: null,
-            contextMessage: null,
-          },
-          {
-            __typename: 'WaMessage',
-            id: '6',
-            body: 'hi',
-            insertedAt: '2024-03-01T04:15:06.179437Z',
-            messageNumber: 3,
-            type: 'TEXT',
-            status: 'sent',
-            media: null,
-            contact: {
-              __typename: 'Contact',
-              name: null,
-            },
-            errors: null,
-            contextMessage: null,
-          },
-          {
-            __typename: 'WaMessage',
-            id: '5',
-            body: 'testing',
-            insertedAt: '2024-03-01T04:14:30.367679Z',
-            messageNumber: 2,
-            type: 'TEXT',
-            status: 'sent',
-            media: null,
-            contact: {
-              __typename: 'Contact',
-              name: null,
-            },
-            errors: null,
-            contextMessage: null,
-          },
-          {
-            __typename: 'WaMessage',
-            id: '4',
-            body: 'heyy',
-            insertedAt: '2024-03-01T04:14:18.374720Z',
-            messageNumber: 1,
-            type: 'TEXT',
-            status: 'received',
-            media: null,
-            contact: {
-              __typename: 'Contact',
-              name: 'akansha',
-            },
-            errors: null,
-            contextMessage: null,
-          },
-        ],
       },
       {
         __typename: 'WaConversation',
-        waGroup: {
-          __typename: 'WaGroup',
-          bspId: '973188435688999627@g.us',
-          id: '2',
-          label: 'West Virginia enchanters',
-          lastCommunicationAt: '2024-03-01T03:54:27Z',
-          waManagedPhone: {
-            __typename: 'WaManagedPhone',
-            id: '2',
-            label: null,
-            phone: '7962067080',
-            phoneId: 6462,
-          },
-        },
         messages: [
           {
             __typename: 'WaMessage',
+            body: 'hi',
+            contact: {
+              __typename: 'Contact',
+              name: null,
+            },
+            contextMessage: null,
+            errors: null,
+            id: '43',
+            insertedAt: '2024-03-11T14:28:44.617238Z',
+            media: null,
+            messageNumber: 2,
+            status: 'sent',
+            type: 'TEXT',
+          },
+        ],
+        waGroup: {
+          __typename: 'WaGroup',
+          bspId: '120363236785156570@g.us',
+          id: '9',
+          label: 'WA Group 18',
+          lastCommunicationAt: '2024-03-11T23:28:45Z',
+          waManagedPhone: {
+            __typename: 'WaManagedPhone',
             id: '3',
-            body: 'This above all: to thine own self be true.',
-            insertedAt: '2024-03-01T03:54:26.600000Z',
-            messageNumber: 1,
-            type: 'TEXT',
-            status: 'sent',
-            media: null,
-            contact: {
-              __typename: 'Contact',
-              name: 'Default receiver',
-            },
-            errors: null,
-            contextMessage: null,
+            label: null,
+            phone: '918657048983',
+            phoneId: 43876,
           },
-        ],
+        },
       },
       {
         __typename: 'WaConversation',
+        messages: [
+          {
+            __typename: 'WaMessage',
+            body: 'hey',
+            contact: {
+              __typename: 'Contact',
+              name: 'default reciever',
+            },
+            contextMessage: null,
+            errors: null,
+            id: '11',
+            insertedAt: '2024-03-11T12:49:44.406045Z',
+            media: null,
+            messageNumber: 4,
+            status: 'sent',
+            type: 'TEXT',
+          },
+          {
+            __typename: 'WaMessage',
+            body: 'hi',
+            contact: {
+              __typename: 'Contact',
+              name: 'test',
+            },
+            contextMessage: null,
+            errors: null,
+            id: '10',
+            insertedAt: '2024-03-11T12:49:39.915883Z',
+            media: null,
+            messageNumber: 3,
+            status: 'sent',
+            type: 'TEXT',
+          },
+        ],
         waGroup: {
           __typename: 'WaGroup',
-          bspId: '726520535682795020@g.us',
+          bspId: '745572428506626346@g.us',
           id: '1',
-          label: 'Maryland wolves',
-          lastCommunicationAt: '2024-03-01T03:54:27Z',
+          label: 'Oklahoma sheep',
+          lastCommunicationAt: '2024-03-12T14:12:30Z',
           waManagedPhone: {
             __typename: 'WaManagedPhone',
             id: '1',
             label: null,
-            phone: '8181403577',
-            phoneId: 1832,
+            phone: '8238389740',
+            phoneId: 8220,
           },
         },
-        messages: [
-          {
-            __typename: 'WaMessage',
-            id: '2',
-            body: "The play 's the thing wherein I'll catch the conscience of the king.",
-            insertedAt: '2024-03-01T03:54:26.600000Z',
-            messageNumber: 2,
-            type: 'TEXT',
-            status: 'received',
-            media: null,
-            contact: {
-              __typename: 'Contact',
-              name: 'Default receiver',
-            },
-            errors: null,
-            contextMessage: null,
-          },
-          {
-            __typename: 'WaMessage',
-            id: '1',
-            body: 'Rich gifts wax poor when givers prove unkind.',
-            insertedAt: '2024-03-01T03:54:26.599997Z',
-            messageNumber: 1,
-            type: 'TEXT',
-            status: 'received',
-            media: null,
-            contact: {
-              __typename: 'Contact',
-              name: 'Default receiver',
-            },
-            errors: null,
-            contextMessage: null,
-          },
-        ],
       },
     ],
   },
@@ -267,9 +148,11 @@ window.HTMLElement.prototype.scrollIntoView = function () {};
 
 afterEach(cleanup);
 
+const route = '/group/chat';
+
 const wrapper = (
   <ApolloProvider client={client}>
-    <MemoryRouter>
+    <MemoryRouter initialEntries={[route]}>
       <GroupChatInterface />
     </MemoryRouter>
   </ApolloProvider>
@@ -279,13 +162,12 @@ const wrapper = (
 setUserSession(JSON.stringify({ organization: { id: '1' } }));
 
 describe('<GroupChatInterface />', () => {
-  test.skip('it should render <GroupChatInterface /> component correctly', async () => {
-    const { getByText } = render(wrapper);
-    expect(getByText('Loading...')).toBeInTheDocument();
+  test('it should render <GroupChatInterface /> component correctly', async () => {
+    const { findByTestId } = render(wrapper);
 
-    await waitFor(() => {
-      screen.debug(undefined, Infinity);
-      expect(getByText('No messages.')).toBeInTheDocument();
+    await waitFor(async () => {
+      const conversationHeader = await findByTestId('beneficiaryName');
+      expect(conversationHeader).toHaveTextContent('WA Group 1');
     });
   });
 });
