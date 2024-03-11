@@ -1,4 +1,4 @@
-import { CREATE_TRIGGER, UPDATE_TRIGGER } from 'graphql/mutations/Trigger';
+import { CREATE_TRIGGER, UPDATE_TRIGGER, VALIDATE_TRIGGER } from 'graphql/mutations/Trigger';
 import { TRIGGER_LIST_QUERY, TRIGGER_QUERY_COUNT, GET_TRIGGER } from 'graphql/queries/Trigger';
 
 export const triggerListQuery = {
@@ -69,41 +69,88 @@ export const triggerCountQuery = {
   },
 };
 
-export const getTriggerQuery = (frequency: any) => ({
-  request: {
-    query: GET_TRIGGER,
-    variables: {
-      id: '1',
+export const getTriggerQuery = (frequency: any) => {
+  return {
+    request: {
+      query: GET_TRIGGER,
+      variables: {
+        id: '1',
+      },
     },
-  },
-  result: {
-    data: {
-      trigger: {
+    result: {
+      data: {
         trigger: {
-          days: [1, 2],
-          endDate: '2021-03-13',
-          flow: {
+          trigger: {
+            name: 'AB Test Workflow_11/3/2024_2:00PM',
+            days: [],
+            endDate: '2030-03-13',
+            flow: {
+              id: '1',
+            },
+            groups: ['Group 1'],
+            roles: [],
+            frequency,
+            hours: [],
             id: '1',
+            isActive: true,
+            isRepeating: true,
+            startAt: '2029-02-28T20:00:22Z',
           },
-          groups: [],
-          roles: [],
-          frequency,
-          hours: [],
-          id: '1',
-          isActive: true,
-          isRepeating: true,
-          startAt: '2021-02-28T20:00:22Z',
         },
       },
     },
-  },
-});
+  };
+};
 
 const hourlyTrigger = () => {
   const hourlyTrigger: any = getTriggerQuery('hourly');
   hourlyTrigger.result.data.trigger.trigger.days = [];
   hourlyTrigger.result.data.trigger.trigger.hours = [1, 13];
   return hourlyTrigger;
+};
+
+export const createNoFrequencyTriggerQuery = {
+  request: {
+    query: CREATE_TRIGGER,
+    variables: {
+      input: {
+        isActive: true,
+        isRepeating: false,
+        flowId: '1',
+        days: [],
+        hours: [],
+        groupIds: [1],
+        startDate: '2030-09-03',
+        endDate: '2030-10-02',
+        startTime: 'T03:30:00',
+        frequency: 'none',
+        addRoleIds: [],
+        deleteRoleIds: [],
+      },
+    },
+  },
+  result: {
+    data: {
+      createTrigger: {
+        trigger: {
+          days: [],
+          endDate: '2030-10-02',
+          flow: {
+            id: '1',
+          },
+          roles: [],
+          name: 'New trigger',
+          frequency: 'none',
+          hours: [],
+          groups: [],
+          id: '1',
+          isActive: true,
+          isRepeating: false,
+          startAt: '2030-02-28T20:00:22Z',
+        },
+      },
+    },
+  },
 };
 
 export const createTriggerQuery = {
@@ -117,9 +164,9 @@ export const createTriggerQuery = {
         flowId: '1',
         days: [],
         hours: [],
-        groupId: '1',
-        startDate: '2021-02-28',
-        endDate: '2021-03-13',
+        groupIds: [1],
+        startDate: '2029-02-28',
+        endDate: '2030-03-12',
         startTime: 'T20:00:22',
         frequency: 'daily',
         addRoleIds: [],
@@ -132,19 +179,19 @@ export const createTriggerQuery = {
       createTrigger: {
         trigger: {
           days: [],
-          endDate: '2021-03-13',
+          endDate: '2030-03-12',
           flow: {
             id: '1',
           },
           roles: [],
           name: 'New trigger',
-          frequency: 'none',
+          frequency: 'daily',
           hours: [],
           groups: [],
           id: '1',
           isActive: true,
           isRepeating: false,
-          startAt: '2021-02-28T20:00:22Z',
+          startAt: '2029-02-28T20:00:22Z',
         },
       },
     },
@@ -196,46 +243,16 @@ export const updateTriggerQuery = {
   },
 };
 
-export const updateTriggerWeeklyQuery = {
+export const validateTriggerQuery = {
   request: {
-    query: UPDATE_TRIGGER,
-    variables: {
-      id: '1',
-      input: {
-        isActive: true,
-        isRepeating: true,
-        flowId: '1',
-        days: [1, 2],
-        hours: [],
-        groupId: '1',
-        startDate: '2021-02-28',
-        endDate: '2021-03-13',
-        startTime: 'T20:00:22',
-        frequency: 'weekly',
-        addRoleIds: [],
-        deleteRoleIds: [],
-      },
-    },
+    query: VALIDATE_TRIGGER,
+    variables: { input: { flowId: '1' } },
   },
   result: {
     data: {
-      updateTrigger: {
-        trigger: {
-          days: [1, 2],
-          endDate: '2021-03-13',
-          flow: {
-            id: '1',
-          },
-          roles: [],
-          name: 'New trigger',
-          frequency: 'weekly',
-          hours: [],
-          groups: [],
-          id: '1',
-          isActive: true,
-          isRepeating: true,
-          startAt: '2021-02-28T20:00:22Z',
-        },
+      validateTrigger: {
+        errors: null,
+        success: true,
       },
     },
   },

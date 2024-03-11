@@ -1,31 +1,25 @@
-import { fireEvent, render, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
-import { MemoryRouter } from 'react-router';
+import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { vi } from 'vitest';
 
 import { LIST_ITEM_MOCKS } from 'containers/SettingList/SettingList.test.helper';
 import { LIST_ITEM_MOCKS as SearchMocks } from 'containers/Search/Search.test.helper';
-import * as AutoComplete from 'components/UI/Form/AutoComplete/AutoComplete';
+import * as Notification from 'common/notification';
 import {
+  createNoFrequencyTriggerQuery,
   createTriggerQuery,
   getTriggerQuery,
   hourlyTrigger,
   updateTriggerQuery,
-  updateTriggerWeeklyQuery,
+  validateTriggerQuery,
 } from 'mocks/Trigger';
 import { Trigger } from './Trigger';
 import dayjs from 'dayjs';
 import utc from 'dayjs';
 dayjs.extend(utc);
 
-vi.mock('react-router-dom', async () => {
-  return {
-    ...(await vi.importActual<any>('react-router-dom')),
-    useParams: () => ({ id: '1' }),
-  };
-});
-
-describe('trigger with daily frequency', () => {
+describe('copy triggers', () => {
   const frequencyDailyMocks = [
     getTriggerQuery('daily'),
     ...LIST_ITEM_MOCKS,
@@ -35,33 +29,42 @@ describe('trigger with daily frequency', () => {
 
   const frequencyDailyWrapper = (
     <MockedProvider mocks={frequencyDailyMocks} addTypename={false}>
-      <MemoryRouter initialEntries={[{ state: 'copy' }]}>
-        <Trigger />
+      <MemoryRouter initialEntries={[{ pathname: '/trigger/1/edit', state: 'copy' }]}>
+        <Routes>
+          <Route path="trigger/:id/edit" element={<Trigger />} />
+          <Route path="trigger" element={<div>Trigger list screen</div>} />
+        </Routes>
       </MemoryRouter>
     </MockedProvider>
   );
 
-  test('save functionality', async () => {
-    const { getByText, getAllByTestId } = render(frequencyDailyWrapper);
+  test('copy a trigger and with daily frequency and save', async () => {
+    const notificationMock = vi.fn();
+    vi.spyOn(Notification, 'setNotification').mockImplementationOnce(notificationMock);
+    const { getByText } = render(frequencyDailyWrapper);
 
     // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(getAllByTestId('autocomplete-element')).toHaveLength(4);
+      expect(getByText('Group 1')).toBeInTheDocument();
     });
 
     fireEvent.click(getByText('Save'));
-    await waitFor(() => {});
+    await waitFor(() => {
+      expect(notificationMock).toHaveBeenCalledWith('Copy of the trigger has been created!');
+      expect(getByText('Trigger list screen')).toBeInTheDocument();
+    });
   });
 });
 
-describe('trigger with no frequency', () => {
+describe('trigger validations', () => {
   const frequencyDailyMocks = [
     getTriggerQuery('none'),
     ...LIST_ITEM_MOCKS,
     ...SearchMocks,
-    updateTriggerQuery,
+    createNoFrequencyTriggerQuery,
+    validateTriggerQuery,
   ];
 
   const frequencyDailyWrapper = (
@@ -72,126 +75,77 @@ describe('trigger with no frequency', () => {
     </MockedProvider>
   );
 
-  test('save functionality', async () => {
-    const { getByText, getAllByTestId } = render(frequencyDailyWrapper);
+  test('validations while creating a trigger', async () => {
+    const notificationMock = vi.fn();
+    vi.spyOn(Notification, 'setNotification').mockImplementationOnce(notificationMock);
+    const { getByText, queryByText } = render(frequencyDailyWrapper);
 
     // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();
     await waitFor(() => {
-      expect(getAllByTestId('autocomplete-element')).toHaveLength(4);
+      expect(getByText('Select flow')).toBeInTheDocument();
     });
 
     fireEvent.click(getByText('Save'));
-    await waitFor(() => {});
-  });
-});
-
-describe('trigger with hourly frequency', () => {
-  const mocks = [hourlyTrigger(), ...LIST_ITEM_MOCKS, ...SearchMocks];
-
-  const wrapper = (
-    <MockedProvider mocks={mocks} addTypename={false}>
-      <MemoryRouter>
-        <Trigger />
-      </MemoryRouter>
-    </MockedProvider>
-  );
-
-  test('should load trigger edit form', async () => {
-    const { getByText, getByTestId } = render(wrapper);
-
-    // loading is show initially
-    expect(getByText('Loading...')).toBeInTheDocument();
     await waitFor(() => {
-      const formLayout = getByTestId('formLayout');
-      expect(formLayout).toHaveTextContent('hours');
+      expect(getByText('Flow is required')).toBeInTheDocument();
+      expect(getByText('Start date is required')).toBeInTheDocument();
+      expect(getByText('End date is required')).toBeInTheDocument();
+      expect(getByText('Time is required.')).toBeInTheDocument();
+      expect(getByText('Repeat is required')).toBeInTheDocument();
+      expect(getByText('Collection is required')).toBeInTheDocument();
     });
 
-    await waitFor(() => {
-      expect(getByText('1 AM')).toBeInTheDocument();
-      expect(getByText('1 PM')).toBeInTheDocument();
-    });
-  });
-});
-
-describe('trigger with weekly frequency', () => {
-  const mocks = [
-    getTriggerQuery('weekly'),
-    ...LIST_ITEM_MOCKS,
-    ...SearchMocks,
-    updateTriggerWeeklyQuery,
-  ];
-
-  const wrapper = (
-    <MockedProvider mocks={mocks} addTypename={false}>
-      <MemoryRouter>
-        <Trigger />
-      </MemoryRouter>
-    </MockedProvider>
-  );
-
-  test('should load trigger edit form', async () => {
-    const { getByText, getByTestId } = render(wrapper);
-
-    // loading is show initially
-    expect(getByText('Loading...')).toBeInTheDocument();
-    await waitFor(() => {
-      const formLayout = getByTestId('formLayout');
-      expect(formLayout).toHaveTextContent('days');
-    });
+    // select a flow
+    const [flows, repeat, days, collection] = screen.getAllByTestId('autocomplete-element');
+    flows.focus();
+    fireEvent.keyDown(flows, { key: 'ArrowDown' });
+    fireEvent.keyDown(flows, { key: 'ArrowDown' });
+    fireEvent.keyDown(flows, { key: 'Enter' });
 
     await waitFor(() => {
-      expect(getByText('Tuesday')).toBeInTheDocument();
+      expect(queryByText('Flow is required')).not.toBeInTheDocument();
     });
-  });
 
-  test('save functionality', async () => {
-    const { getByText, getAllByTestId } = render(wrapper);
+    const startDate = screen
+      .getAllByTestId('date-picker-inline')[0]
+      .querySelector('input') as HTMLInputElement;
+    const endDate = screen
+      .getAllByTestId('date-picker-inline')[1]
+      .querySelector('input') as HTMLInputElement;
+    const timePicker = screen.getByTestId('time-picker').querySelector('input') as HTMLInputElement;
+    fireEvent.change(startDate, { target: { value: '09/03/2030' } });
+    fireEvent.change(endDate, { target: { value: '08/03/2030' } });
 
-    // loading is show initially
-    expect(getByText('Loading...')).toBeInTheDocument();
     await waitFor(() => {
-      expect(getAllByTestId('autocomplete-element')).toHaveLength(4);
+      expect(queryByText('Start date is required')).not.toBeInTheDocument();
+      expect(getByText('End date should be greater than the start date')).toBeInTheDocument();
     });
 
-    fireEvent.click(getByText('Save'));
-    await waitFor(() => {});
-  });
+    fireEvent.change(endDate, { target: { value: '10/03/2030' } });
+    fireEvent.change(timePicker, { target: { value: '09:00 AM' } });
 
-  test('should load trigger edit form', async () => {
-    const spy = vi.spyOn(AutoComplete, 'AutoComplete');
-    spy.mockImplementation((props: any) => {
-      const { form, onChange, options } = props;
-
-      return (
-        <div key={form}>
-          <select
-            key={form}
-            data-testid="autoComplete"
-            onChange={(event) => {
-              onChange({ value: event.target.value });
-              form.setFieldValue(event.target.value);
-            }}
-          >
-            {options.map((option: any) => (
-              <option key={option.id ? option.id : option.label} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </div>
-      );
-    });
-
-    const { getByText, getAllByTestId } = render(wrapper);
-
-    // loading is show initially
-    expect(getByText('Loading...')).toBeInTheDocument();
     await waitFor(() => {
-      const formLayout = getAllByTestId('autoComplete');
+      expect(queryByText('End date should be greater than the start date')).not.toBeInTheDocument();
+      expect(queryByText('Time is required.')).not.toBeInTheDocument();
+    });
 
-      fireEvent.change(formLayout[1], { target: { value: 'weekly' } });
-      fireEvent.change(formLayout[1], { target: { value: 'daily' } });
+    // update repeat
+    repeat.focus();
+    fireEvent.keyDown(repeat, { key: 'ArrowDown' });
+    fireEvent.keyDown(repeat, { key: 'ArrowDown' });
+    fireEvent.keyDown(repeat, { key: 'Enter' });
+
+    // update collection
+    collection.focus();
+    fireEvent.keyDown(collection, { key: 'ArrowDown' });
+    fireEvent.keyDown(collection, { key: 'ArrowDown' });
+    fireEvent.keyDown(collection, { key: 'Enter' });
+
+    fireEvent.click(screen.getByTestId('submitActionButton'));
+
+    await waitFor(() => {
+      expect(notificationMock).toHaveBeenCalledWith('Trigger created successfully!');
     });
   });
 });
