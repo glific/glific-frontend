@@ -387,8 +387,6 @@ export const ChatMessages = ({ contactId, collectionId, phoneId }: ChatMessagesP
     allConversations.search.map((conversation: any, index: any) => {
       if (conversation[type].id === Id.toString()) {
         conversationIndex = index;
-        console.log(1);
-
         setConversationInfo(conversation);
       }
       return null;
@@ -402,8 +400,6 @@ export const ChatMessages = ({ contactId, collectionId, phoneId }: ChatMessagesP
       allConversations.search.map((conversation: any, index: any) => {
         if (conversation[chatType]?.id === contactId?.toString()) {
           conversationIndex = index;
-          console.log(2);
-
           setConversationInfo(conversation);
         }
         return null;
@@ -457,8 +453,6 @@ export const ChatMessages = ({ contactId, collectionId, phoneId }: ChatMessagesP
     if (allConversations && allConversations.search) {
       if (collectionId === -1) {
         conversationIndex = 0;
-        console.log(3);
-
         setConversationInfo(allConversations.search);
       } else {
         updateConversationInfo('group', collectionId);
@@ -489,17 +483,11 @@ export const ChatMessages = ({ contactId, collectionId, phoneId }: ChatMessagesP
   // find if contact/Collection present in the cached
   useEffect(() => {
     if (contactId) {
-      console.log('f');
-
       findContactInAllConversations();
     } else if (collectionId) {
       findCollectionInAllConversations();
     }
   }, [contactId, collectionId, allConversations]);
-
-  useEffect(() => {
-    console.log('hjdshk');
-  }, [contactId]);
 
   useEffect(() => {
     if (searchMessageNumber) {
