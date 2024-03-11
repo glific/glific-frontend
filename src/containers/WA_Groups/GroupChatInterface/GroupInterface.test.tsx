@@ -91,11 +91,10 @@ cache.writeQuery({
             body: 'hey',
             contact: {
               __typename: 'Contact',
-              name: 'NGO Main Account',
+              name: 'default reciever',
             },
             contextMessage: null,
-            errors:
-              '{"message":"{\\"success\\":false,\\"message\\":\\"You dont own the phone[8220]. You can find your phones from /api/5c5941f2-f083-40f4-8a67-cc5e1a8daa88/listPhones?token=a47ff095-66ff-4453-ad7f-269de7e38052\\"}"}',
+            errors: null,
             id: '11',
             insertedAt: '2024-03-11T12:49:44.406045Z',
             media: null,
@@ -108,11 +107,10 @@ cache.writeQuery({
             body: 'hi',
             contact: {
               __typename: 'Contact',
-              name: 'NGO Main Account',
+              name: 'test',
             },
             contextMessage: null,
-            errors:
-              '{"message":"{\\"success\\":false,\\"message\\":\\"You dont own the phone[8220]. You can find your phones from /api/5c5941f2-f083-40f4-8a67-cc5e1a8daa88/listPhones?token=a47ff095-66ff-4453-ad7f-269de7e38052\\"}"}',
+            errors: null,
             id: '10',
             insertedAt: '2024-03-11T12:49:39.915883Z',
             media: null,
