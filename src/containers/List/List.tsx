@@ -693,6 +693,7 @@ export const List = ({
           color="primary"
           variant="contained"
           onClick={() => button.action && button.action()}
+          data-testid="newItemButton"
         >
           {button.symbol} {button.label}
         </Button>
