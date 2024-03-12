@@ -34,7 +34,7 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
   const { t } = useTranslation();
   const [value, setValue] = useState(tabs[0].link);
   const params = useParams();
-  const [phonenumber, setPhonenumber] = useState<string[]>([]);
+  const [phonenumber, setPhonenumber] = useState<any>(null);
 
   let selectedGroupId = params.groupId;
   let selectedCollectionId: any = params.collectionId;

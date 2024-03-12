@@ -7,7 +7,6 @@ import { useMutation, useQuery } from '@apollo/client';
 import { SYNC_GROUPS } from 'graphql/mutations/Group';
 import { setNotification } from 'common/notification';
 import { useTranslation } from 'react-i18next';
-import { useState } from 'react';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 
 interface WaManagedPhonesProps {
@@ -16,7 +15,6 @@ interface WaManagedPhonesProps {
 }
 
 export const WaManagedPhones = ({ phonenumber, setPhonenumber }: WaManagedPhonesProps) => {
-  const [syncLoading, setSyncLoading] = useState<boolean>(false);
   const { t } = useTranslation();
 
   const { data } = useQuery<any>(GET_WA_MANAGED_PHONES, {
@@ -31,8 +29,6 @@ export const WaManagedPhones = ({ phonenumber, setPhonenumber }: WaManagedPhones
   const [syncGroups] = useMutation(SYNC_GROUPS, {
     fetchPolicy: 'network-only',
     onCompleted: (data) => {
-      setSyncLoading(false);
-
       if (data.errors) {
         setNotification(t('Sorry, failed to sync whatsapp groups.'), 'warning');
       } else {
@@ -41,12 +37,10 @@ export const WaManagedPhones = ({ phonenumber, setPhonenumber }: WaManagedPhones
     },
     onError: () => {
       setNotification(t('Sorry, failed to sync whatsapp groups.'), 'warning');
-      setSyncLoading(false);
     },
   });
 
   const handleSyncGroups = () => {
-    setSyncLoading(true);
     syncGroups();
   };
 
@@ -71,7 +65,7 @@ export const WaManagedPhones = ({ phonenumber, setPhonenumber }: WaManagedPhones
             if (value) {
               setPhonenumber([value]);
             } else {
-              setPhonenumber([]);
+              setPhonenumber(null);
             }
           }}
           form={{ setFieldValue: () => {} }}
@@ -86,7 +80,6 @@ export const WaManagedPhones = ({ phonenumber, setPhonenumber }: WaManagedPhones
         variant="outlined"
         color="primary"
         className={styles.syncButton}
-        loading={syncLoading}
         data-testid="syncGroups"
         aria-hidden="true"
         onClick={() => handleSyncGroups()}

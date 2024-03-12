@@ -1,4 +1,4 @@
-.ContactBar {
+.ConversationHeader {
   padding: 16px 32px !important;
   display: flex;
   flex-direction: row;
@@ -201,14 +201,14 @@
   justify-content: space-between;
 }
 
-.ContactBarWrapper {
+.ConversationHeaderWrapper {
   display: flex;
   justify-content: space-between;
   width: 100%;
 }
 
 @media only screen and (max-width: 768px) {
-  .ContactBar {
+  .ConversationHeader {
     border-bottom: unset;
     padding: 0px !important;
     flex-direction: column;
@@ -228,7 +228,7 @@
     padding: 12px !important;
   }
 
-  .ContactBarWrapper {
+  .ConversationHeaderWrapper {
     display: block;
     justify-content: space-between;
     width: 100%;
