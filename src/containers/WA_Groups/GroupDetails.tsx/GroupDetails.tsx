@@ -15,7 +15,7 @@ export const GroupDetails = () => {
 
   const columnNames = [
     { name: 'id', label: t('Name') },
-    { name: 'maskedPhone', label: t('Phone number') },
+    { label: t('Phone number') },
     { label: t('Actions') },
   ];
 

@@ -27,7 +27,10 @@ import CollectionIcon from 'assets/images/icons/Chat/SelectedCollection.svg?reac
 import SavedSearchIcon from 'assets/images/icons/Chat/SelectedSavedSearch.svg?react';
 
 import { GET_COLLECTIONS } from 'graphql/queries/Collection';
-import { UPDATE_CONTACT_COLLECTIONS } from 'graphql/mutations/Collection';
+import {
+  UPDATE_CONTACT_COLLECTIONS,
+  UPDATE_WA_GROUP_COLLECTION,
+} from 'graphql/mutations/Collection';
 import { GET_CONTACT_COLLECTIONS } from 'graphql/queries/Contact';
 import { GET_FLOWS } from 'graphql/queries/Flow';
 import { ADD_FLOW_TO_CONTACT, ADD_FLOW_TO_COLLECTION } from 'graphql/mutations/Flow';
@@ -104,9 +107,11 @@ export const ConversationHeader = ({
   const [showTerminateDialog, setShowTerminateDialog] = useState(false);
   const { t } = useTranslation();
 
+  let updateQuery = groups ? UPDATE_WA_GROUP_COLLECTION : UPDATE_CONTACT_COLLECTIONS;
+
   // get collection list
   const [getCollections, { data: collectionsData }] = useLazyQuery(GET_COLLECTIONS, {
-    variables: setVariables(),
+    variables: setVariables({ groupType: groups ? 'WA' : 'WABA' }),
   });
 
   // get the published flow list
@@ -131,9 +136,10 @@ export const ConversationHeader = ({
   }, [entityId]);
 
   // mutation to update the contact collections
-  const [updateContactCollections] = useMutation(UPDATE_CONTACT_COLLECTIONS, {
+  const [updateCollection] = useMutation(updateQuery, {
     onCompleted: (result: any) => {
-      const { numberDeleted, contactGroups } = result.updateContactGroups;
+      let resultVariable = groups ? 'updateWaGroupCollection' : 'updateContactGroups';
+      const { numberDeleted, contactGroups } = result[resultVariable];
       const numberAdded = contactGroups.length;
       let notification = `Added to ${numberAdded} collection${numberAdded === 1 ? '' : 's'}`;
       if (numberDeleted > 0 && numberAdded > 0) {
@@ -217,10 +223,11 @@ export const ConversationHeader = ({
     );
 
     if (finalSelectedCollections.length > 0 || finalRemovedCollections.length > 0) {
-      updateContactCollections({
+      let entityVariable = groups ? 'waGroupId' : 'contactId';
+      updateCollection({
         variables: {
           input: {
-            contactId: entityId,
+            [entityVariable]: entityId,
             addGroupIds: finalSelectedCollections,
             deleteGroupIds: finalRemovedCollections,
           },
@@ -463,7 +470,7 @@ export const ConversationHeader = ({
       className={styles.ListButtonPrimary}
       data-testid="viewContacts"
       onClick={() => {
-        navigate(`/collection/${collectionId}/contacts`);
+        navigate(`/collection/${collectionId}/${groups ? 'groups' : 'contacts'}`);
       }}
     >
       <ProfileIcon className={styles.Icon} />
@@ -471,28 +478,29 @@ export const ConversationHeader = ({
     </Button>
   );
 
+  const clearConversation = entityId && (
+    <Button
+      className={styles.ListButtonPrimary}
+      data-testid="clearChatButton"
+      onClick={() => setClearChatDialog(true)}
+    >
+      <ClearConversation className={styles.Icon} />
+      Clear conversation
+    </Button>
+  );
+
   const addMember = entityId ? (
-    <>
-      <Button
-        data-testid="collectionButton"
-        className={styles.ListButtonPrimary}
-        onClick={() => {
-          getCollections();
-          setShowCollectionDialog(true);
-        }}
-      >
-        <AddContactIcon className={styles.Icon} />
-        Add to collection
-      </Button>
-      <Button
-        className={styles.ListButtonPrimary}
-        data-testid="clearChatButton"
-        onClick={() => setClearChatDialog(true)}
-      >
-        <ClearConversation className={styles.Icon} />
-        Clear conversation
-      </Button>
-    </>
+    <Button
+      data-testid="collectionButton"
+      className={styles.ListButtonPrimary}
+      onClick={() => {
+        getCollections();
+        setShowCollectionDialog(true);
+      }}
+    >
+      <AddContactIcon className={styles.Icon} />
+      Add to collection
+    </Button>
   ) : (
     <Button
       data-testid="collectionButton"
@@ -502,25 +510,35 @@ export const ConversationHeader = ({
       }}
     >
       <AddContactIcon className={styles.Icon} />
-      Add contact
+      Add {groups ? 'group' : 'contact'}
     </Button>
   );
 
   if (addContactsDialogShow) {
     dialogBox = (
-      <AddContactsToCollection collectionId={collectionId} setDialog={setAddContactsDialogShow} />
+      <AddContactsToCollection
+        groups={groups}
+        collectionId={collectionId}
+        setDialog={setAddContactsDialogShow}
+      />
     );
   }
 
   let options: any;
   if (groups) {
-    options = <>{viewDetails}</>;
+    options = (
+      <>
+        {viewDetails}
+        {addMember}
+      </>
+    );
   } else {
     options = (
       <>
         {viewDetails}
         {flowButton}
         {addMember}
+        {clearConversation}
         {terminateFLows}
         {blockContactButton}
       </>
@@ -596,14 +614,12 @@ export const ConversationHeader = ({
 
   if (entityId) {
     conversationHeaderDetails = (
-      <>
-        <div className={styles.SessionTimerContainer}>
-          {contactCollections}
-          {!groups && timeleft}
-        </div>
-      </>
+      <div className={styles.SessionTimerContainer}>
+        {contactCollections}
+        {!groups && timeleft}
+      </div>
     );
-  } else if (collectionId) {
+  } else if (collectionId && !groups) {
     conversationHeaderDetails = <CollectionInformation collectionId={collectionId} />;
   }
 
