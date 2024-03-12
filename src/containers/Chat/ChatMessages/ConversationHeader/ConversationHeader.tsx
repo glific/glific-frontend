@@ -89,7 +89,7 @@ export const ConversationHeader = ({
   displayName,
   handleAction,
   isSimulator,
-  groups = false,
+  groups,
   contact,
 }: ConversationHeaderProps) => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -429,6 +429,7 @@ export const ConversationHeader = ({
       </Tooltip>
     );
   }
+  console.log('groups', groups);
 
   const terminateFLows = entityId ? (
     <Button
@@ -514,7 +515,13 @@ export const ConversationHeader = ({
 
   let options: any;
   if (groups) {
-    options = <>{viewDetails}</>;
+    options = (
+      <>
+        {viewDetails}
+        {flowButton}
+        {addMember}
+      </>
+    );
   } else {
     options = (
       <>
