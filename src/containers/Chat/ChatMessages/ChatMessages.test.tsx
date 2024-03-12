@@ -12,6 +12,7 @@ import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 import { DEFAULT_ENTITY_LIMIT, DEFAULT_MESSAGE_LIMIT } from '../../../common/constants';
 import { CONVERSATION_MOCKS, mocksWithConversation } from '../../../mocks/Chat';
 import * as ChatInput from '../ChatMessages/ChatInput/ChatInput';
+import { waGroup } from 'mocks/Groups';
 
 const defineUrl = (url: string) => {
   Object.defineProperty(window, 'location', {
@@ -478,4 +479,49 @@ test('send message to contact', async () => {
   });
 
   await waitFor(() => {});
+});
+
+const groupscache = new InMemoryCache({ addTypename: false });
+groupscache.writeQuery(waGroup);
+
+const groupClient = new ApolloClient({
+  cache: groupscache,
+  uri: 'http://localhost:4000/',
+  assumeImmutableResults: true,
+});
+let route = 'group/chat';
+
+const chatMessagesWAGroups = (
+  <MemoryRouter initialEntries={[route]}>
+    <ApolloProvider client={groupClient}>
+      <ChatMessages contactId="2" />
+    </ApolloProvider>
+  </MemoryRouter>
+);
+
+it('should have title as contact name for whatsapp groups', async () => {
+  const { getByTestId } = render(chatMessagesWAGroups);
+  await waitFor(() => {
+    expect(getByTestId('beneficiaryName')).toHaveTextContent('Oklahoma sheep');
+  });
+});
+
+test('send message to whatsapp group', async () => {
+  const spy = vi.spyOn(ChatInput, 'ChatInput');
+
+  spy.mockImplementation((props: any) => {
+    const { onSendMessage } = props;
+    return (
+      <div
+        data-testid="sendMessage"
+        onClick={() => onSendMessage('heyy', null, 'TEXT', null, null)}
+      ></div>
+    );
+  });
+
+  const { getByTestId } = render(chatMessagesWAGroups);
+
+  await waitFor(() => {
+    fireEvent.click(getByTestId('sendMessage'));
+  });
 });

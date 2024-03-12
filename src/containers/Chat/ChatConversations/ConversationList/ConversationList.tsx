@@ -17,6 +17,7 @@ import {
   DEFAULT_MESSAGE_LOADMORE_LIMIT,
   ISO_DATE_FORMAT,
   GROUP_QUERY_VARIABLES,
+  GROUP_COLLECTION_SEARCH_QUERY_VARIABLES,
 } from 'common/constants';
 import { updateConversations } from 'services/ChatService';
 import { updateGroupConversations } from 'services/GroupMessageService';
@@ -70,7 +71,9 @@ export const ConversationList = ({
 
   let queryVariables = groups ? GROUP_QUERY_VARIABLES : SEARCH_QUERY_VARIABLES;
   if (selectedCollectionId) {
-    queryVariables = groups ? GROUP_QUERY_VARIABLES : COLLECTION_SEARCH_QUERY_VARIABLES;
+    queryVariables = groups
+      ? GROUP_COLLECTION_SEARCH_QUERY_VARIABLES
+      : COLLECTION_SEARCH_QUERY_VARIABLES;
   }
   if (savedSearchCriteria) {
     const variables = JSON.parse(savedSearchCriteria);
@@ -143,7 +146,7 @@ export const ConversationList = ({
           },
         };
       } else {
-        return GROUP_QUERY_VARIABLES;
+        return GROUP_COLLECTION_SEARCH_QUERY_VARIABLES;
       }
     }
 
@@ -254,8 +257,6 @@ export const ConversationList = ({
       getFilterConvos({
         variables: filterVariables(),
       });
-    } else {
-      // refetch()
     }
   }, [searchVal, searchParam, savedSearchCriteria, phonenumber]);
 
@@ -380,7 +381,7 @@ export const ConversationList = ({
   if (!conversationList && conversations && conversations.length > 0) {
     conversationList = conversations.map((conversation: any, index: number) => {
       let lastMessage = [];
-      if (conversation.messages.length > 0) {
+      if (conversation.messages && conversation.messages.length > 0) {
         [lastMessage] = conversation.messages;
       }
       let entityId: any;
@@ -452,10 +453,6 @@ export const ConversationList = ({
         />
       );
     });
-  }
-
-  if (groups && selectedCollectionId) {
-    conversationList = null;
   }
 
   if (!conversationList) {

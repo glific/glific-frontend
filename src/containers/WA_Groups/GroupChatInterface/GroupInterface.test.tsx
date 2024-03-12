@@ -47,6 +47,7 @@ cache.writeQuery({
             phoneId: 43876,
           },
         },
+        group: null,
       },
       {
         __typename: 'WaConversation',
@@ -82,6 +83,7 @@ cache.writeQuery({
             phoneId: 43876,
           },
         },
+        group: null,
       },
       {
         __typename: 'WaConversation',
@@ -107,7 +109,7 @@ cache.writeQuery({
             body: 'hi',
             contact: {
               __typename: 'Contact',
-              name: 'default reciever',
+              name: 'test',
             },
             contextMessage: null,
             errors: null,
@@ -133,6 +135,7 @@ cache.writeQuery({
             phoneId: 8220,
           },
         },
+        group: null,
       },
     ],
   },
