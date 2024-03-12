@@ -204,14 +204,14 @@ export const ChatSubscription = ({ setDataLoaded }: ChatSubscriptionProps) => {
     SEARCH_QUERY,
     {
       variables: COLLECTION_SEARCH_QUERY_VARIABLES,
-      fetchPolicy: 'network-only',
+      fetchPolicy: 'cache-first',
       nextFetchPolicy: 'cache-only',
     }
   );
 
   const { loading, error, subscribeToMore, data, refetch } = useQuery<any>(SEARCH_QUERY, {
     variables: queryVariables,
-    fetchPolicy: 'network-only',
+    fetchPolicy: 'cache-first',
     nextFetchPolicy: 'cache-only',
   });
 

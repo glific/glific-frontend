@@ -26,12 +26,14 @@
 }
 
 .syncButton {
-  margin-left: 8px;
+  margin: 0 8px;
   cursor: pointer;
   height: 36px;
   border: 1px solid #cccccc;
+  border-radius: 27px;
   background: #ffffff;
   box-shadow: none;
-  font-size: 14px;
   color: #2ea36a;
+  font-size: 14px;
+  width: 25%;
 }

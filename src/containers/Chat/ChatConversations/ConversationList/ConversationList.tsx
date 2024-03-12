@@ -64,18 +64,19 @@ export const ConversationList = ({
   const scrollHeight = useQuery(SCROLL_HEIGHT);
   const { t } = useTranslation();
   const location = useLocation();
+  const hasSearchParams = Object.keys(searchParam).length !== 0;
 
   let groups: boolean = location.pathname.includes('group');
 
   let queryVariables = groups ? GROUP_QUERY_VARIABLES : SEARCH_QUERY_VARIABLES;
   if (selectedCollectionId) {
-    queryVariables = COLLECTION_SEARCH_QUERY_VARIABLES;
+    queryVariables = groups ? GROUP_QUERY_VARIABLES : COLLECTION_SEARCH_QUERY_VARIABLES;
   }
   if (savedSearchCriteria) {
     const variables = JSON.parse(savedSearchCriteria);
     queryVariables = variables;
   }
-  let search_query: any = groups && !selectedCollectionId ? GROUP_SEARCH_QUERY : SEARCH_QUERY;
+  let search_query: any = groups ? GROUP_SEARCH_QUERY : SEARCH_QUERY;
   let search_multi_query: any = groups ? GROUP_SEARCH_MULTI_QUERY : SEARCH_MULTI_QUERY;
   let contactOptions: string = groups ? 'waGroupOpts' : 'contactOpts';
   let messageOptions: string = groups ? 'waMessageOpts' : 'messageOpts';
@@ -125,22 +126,27 @@ export const ConversationList = ({
   }, [savedSearchCriteriaId]);
 
   const filterVariables = () => {
-    if (groups && !selectedCollectionId) {
-      if (phonenumber?.length === 0 || !phonenumber) {
+    if (groups) {
+      if (!selectedCollectionId) {
+        if (phonenumber?.length === 0 || !phonenumber) {
+          return GROUP_QUERY_VARIABLES;
+        }
+        return {
+          [contactOptions]: {
+            limit: DEFAULT_ENTITY_LIMIT,
+          },
+          filter: {
+            waPhoneIds: phonenumber?.map((phone: any) => phone.id),
+          },
+          [messageOptions]: {
+            limit: DEFAULT_MESSAGE_LIMIT,
+          },
+        };
+      } else {
         return GROUP_QUERY_VARIABLES;
       }
-      return {
-        [contactOptions]: {
-          limit: DEFAULT_ENTITY_LIMIT,
-        },
-        filter: {
-          waPhoneIds: phonenumber?.map((phone: any) => phone.id),
-        },
-        [messageOptions]: {
-          limit: DEFAULT_MESSAGE_LIMIT,
-        },
-      };
     }
+
     if (savedSearchCriteria && Object.keys(searchParam).length === 0) {
       const variables = JSON.parse(savedSearchCriteria);
       if (searchVal) variables.filter.term = searchVal;
@@ -236,18 +242,20 @@ export const ConversationList = ({
 
   useEffect(() => {
     // Use multi search when has search value and when there is no collection id
-    if (searchVal && Object.keys(searchParam).length === 0 && !selectedCollectionId) {
+    if (searchVal && !hasSearchParams && !selectedCollectionId) {
       addLogs(`Use multi search when has search value`, filterSearch());
       getFilterSearch({
         variables: filterSearch(),
       });
-    } else {
+    } else if (hasSearchParams || savedSearchCriteria || phonenumber) {
       // This is used for filtering the searches, when you click on it, so only call it
       // when user clicks and savedSearchCriteriaId is set.
       addLogs(`filtering the searches`, filterVariables());
       getFilterConvos({
         variables: filterVariables(),
       });
+    } else {
+      // refetch()
     }
   }, [searchVal, searchParam, savedSearchCriteria, phonenumber]);
 
@@ -278,7 +286,7 @@ export const ConversationList = ({
   }
 
   // If no cache, assign conversations data from search query.
-  if (called && (searchVal || savedSearchCriteria || searchParam)) {
+  if (called && (searchVal || savedSearchCriteria || hasSearchParams || phonenumber)) {
     conversations = searchData.search;
   }
 

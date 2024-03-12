@@ -1,4 +1,4 @@
-@value ListButtonPrimary, Icon from "../ContactBar.module.css";
+@value ListButtonPrimary, Icon from "../ConversationHeader.module.css";
 
 .Dialog {
   font-size: 16px;

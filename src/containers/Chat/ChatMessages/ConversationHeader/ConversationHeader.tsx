@@ -30,11 +30,7 @@ import { GET_COLLECTIONS } from 'graphql/queries/Collection';
 import { UPDATE_CONTACT_COLLECTIONS } from 'graphql/mutations/Collection';
 import { GET_CONTACT_COLLECTIONS } from 'graphql/queries/Contact';
 import { GET_FLOWS } from 'graphql/queries/Flow';
-import {
-  ADD_FLOW_TO_CONTACT,
-  ADD_FLOW_TO_COLLECTION,
-  ADD_FLOW_TO_WA_GROUP,
-} from 'graphql/mutations/Flow';
+import { ADD_FLOW_TO_CONTACT, ADD_FLOW_TO_COLLECTION } from 'graphql/mutations/Flow';
 import { UPDATE_CONTACT } from 'graphql/mutations/Contact';
 import { SEARCH_QUERY } from 'graphql/queries/Search';
 import { CLEAR_MESSAGES } from 'graphql/mutations/Chat';
@@ -55,7 +51,7 @@ import { slicedString } from 'common/utils';
 import { CollectionInformation } from '../../../Collection/CollectionInformation/CollectionInformation';
 import AddContactsToCollection from '../AddContactsToCollection/AddContactsToCollection';
 
-import styles from './ContactBar.module.css';
+import styles from './ConversationHeader.module.css';
 
 const status = ['SESSION', 'SESSION_AND_HSM', 'HSM'];
 
@@ -73,29 +69,29 @@ export const shortenMultipleItems = (multipleItems: Array<string>) => {
   return multipleItems.join(', ');
 };
 
-export interface ContactBarProps {
+export interface ConversationHeaderProps {
   displayName: string;
-  contactId?: string;
+  entityId?: string;
   collectionId?: string;
-  lastMessageTime?: any;
-  contactStatus?: string;
-  contactBspStatus?: string;
   handleAction: any;
   isSimulator?: boolean;
   groups?: boolean;
+  contact?: {
+    contactStatus?: any;
+    lastMessageTime?: any;
+    contactBspStatus?: any;
+  };
 }
 
-export const ContactBar = ({
-  contactId,
+export const ConversationHeader = ({
+  entityId,
   collectionId,
-  contactBspStatus,
-  lastMessageTime,
-  contactStatus,
   displayName,
   handleAction,
   isSimulator,
   groups = false,
-}: ContactBarProps) => {
+  contact,
+}: ConversationHeaderProps) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
@@ -124,15 +120,15 @@ export const ContactBar = ({
 
   // get contact collections
   const [getContactCollections, { data }] = useLazyQuery(GET_CONTACT_COLLECTIONS, {
-    variables: { id: contactId },
+    variables: { id: entityId },
     fetchPolicy: 'cache-and-network',
   });
 
   useEffect(() => {
-    if (contactId && !groups) {
+    if (entityId) {
       getContactCollections();
     }
-  }, [contactId]);
+  }, [entityId]);
 
   // mutation to update the contact collections
   const [updateContactCollections] = useMutation(UPDATE_CONTACT_COLLECTIONS, {
@@ -149,7 +145,7 @@ export const ContactBar = ({
       }
       setNotification(notification);
     },
-    refetchQueries: [{ query: GET_CONTACT_COLLECTIONS, variables: { id: contactId } }],
+    refetchQueries: [{ query: GET_CONTACT_COLLECTIONS, variables: { id: entityId } }],
   });
 
   const [blockContact] = useMutation(UPDATE_CONTACT, {
@@ -173,15 +169,6 @@ export const ContactBar = ({
     },
   });
 
-  const [addFlowToWaGroups] = useMutation(ADD_FLOW_TO_WA_GROUP, {
-    onCompleted: () => {
-      setNotification(t('Flow started successfully.'));
-    },
-    onError: (error) => {
-      setErrorMessage(error);
-    },
-  });
-
   const [addFlowToCollection] = useMutation(ADD_FLOW_TO_COLLECTION, {
     onCompleted: () => {
       setNotification(t('Your flow will start in a couple of minutes.'));
@@ -190,7 +177,7 @@ export const ContactBar = ({
 
   // mutation to clear the chat messages of the contact
   const [clearMessages] = useMutation(CLEAR_MESSAGES, {
-    variables: { contactId },
+    variables: { contactId: entityId },
     onCompleted: () => {
       setClearChatDialog(false);
       setNotification(t('Conversation cleared for this contact.'), 'warning');
@@ -233,7 +220,7 @@ export const ContactBar = ({
       updateContactCollections({
         variables: {
           input: {
-            contactId,
+            contactId: entityId,
             addGroupIds: finalSelectedCollections,
             deleteGroupIds: finalRemovedCollections,
           },
@@ -266,18 +253,11 @@ export const ContactBar = ({
       flowId,
     };
 
-    if (contactId) {
-      if (groups) {
-        flowVariables.waGroupId = contactId;
-        addFlowToWaGroups({
-          variables: flowVariables,
-        });
-      } else {
-        flowVariables.contactId = contactId;
-        addFlow({
-          variables: flowVariables,
-        });
-      }
+    if (entityId) {
+      flowVariables.contactId = entityId;
+      addFlow({
+        variables: flowVariables,
+      });
     }
 
     if (collectionId) {
@@ -338,7 +318,7 @@ export const ContactBar = ({
   const handleBlock = () => {
     blockContact({
       variables: {
-        id: contactId,
+        id: entityId,
         input: {
           status: 'BLOCKED',
         },
@@ -363,12 +343,12 @@ export const ContactBar = ({
   }
 
   if (showTerminateDialog) {
-    dialogBox = <TerminateFlow contactId={contactId} setDialog={setShowTerminateDialog} />;
+    dialogBox = <TerminateFlow contactId={entityId} setDialog={setShowTerminateDialog} />;
   }
 
   let flowButton: any;
 
-  const blockContactButton = contactId ? (
+  const blockContactButton = entityId ? (
     <Button
       data-testid="blockButton"
       className={styles.ListButtonDanger}
@@ -400,8 +380,9 @@ export const ContactBar = ({
       </Button>
     );
   } else if (
-    groups ||
-    (contactBspStatus && status.includes(contactBspStatus) && !is24HourWindowOver(lastMessageTime))
+    contact?.contactBspStatus &&
+    status.includes(contact?.contactBspStatus) &&
+    !is24HourWindowOver(contact?.lastMessageTime)
   ) {
     flowButton = (
       <Button
@@ -420,7 +401,7 @@ export const ContactBar = ({
     let toolTip = 'Option disabled because the 24hr window expired';
     let disabled = true;
     // if 24hr window expired & contact type HSM. we can start flow with template msg .
-    if (contactBspStatus === 'HSM') {
+    if (contact?.contactBspStatus === 'HSM') {
       toolTip =
         'Since the 24-hour window has passed, the contact will only receive a template message.';
       disabled = false;
@@ -449,7 +430,7 @@ export const ContactBar = ({
     );
   }
 
-  const terminateFLows = contactId ? (
+  const terminateFLows = entityId ? (
     <Button
       data-testid="terminateButton"
       className={styles.ListButtonPrimary}
@@ -462,15 +443,15 @@ export const ContactBar = ({
     </Button>
   ) : null;
 
-  const viewDetails = contactId ? (
+  const viewDetails = entityId ? (
     <Button
       className={styles.ListButtonPrimary}
       data-testid="viewProfile"
       onClick={() => {
         if (groups) {
-          navigate(`/group-details/${contactId}`);
+          navigate(`/group-details/${entityId}`);
         } else {
-          navigate(`/contact-profile/${contactId}`);
+          navigate(`/contact-profile/${entityId}`);
         }
       }}
     >
@@ -490,7 +471,7 @@ export const ContactBar = ({
     </Button>
   );
 
-  const addMember = contactId ? (
+  const addMember = entityId ? (
     <>
       <Button
         data-testid="collectionButton"
@@ -533,12 +514,7 @@ export const ContactBar = ({
 
   let options: any;
   if (groups) {
-    options = (
-      <>
-        {viewDetails}
-        {flowButton}
-      </>
-    );
+    options = <>{viewDetails}</>;
   } else {
     options = (
       <>
@@ -591,9 +567,9 @@ export const ContactBar = ({
     <div className={styles.SessionTimer} data-testid="sessionTimer">
       <span>Time left:</span>
       <Timer
-        time={lastMessageTime}
-        contactStatus={contactStatus}
-        contactBspStatus={contactBspStatus}
+        time={contact?.lastMessageTime}
+        contactStatus={contact?.contactStatus}
+        contactBspStatus={contact?.contactBspStatus}
         variant="secondary"
       />
     </div>
@@ -616,10 +592,10 @@ export const ContactBar = ({
   // CONTACT: display session timer & Assigned to
   // COLLECTION: display contact info & Assigned to
   // GROUP: display Assigned to
-  let contactBarDetails: any;
+  let conversationHeaderDetails: any;
 
-  if (contactId) {
-    contactBarDetails = (
+  if (entityId) {
+    conversationHeaderDetails = (
       <>
         <div className={styles.SessionTimerContainer}>
           {contactCollections}
@@ -628,12 +604,12 @@ export const ContactBar = ({
       </>
     );
   } else if (collectionId) {
-    contactBarDetails = <CollectionInformation collectionId={collectionId} />;
+    conversationHeaderDetails = <CollectionInformation collectionId={collectionId} />;
   }
 
   return (
-    <Toolbar className={styles.ContactBar} color="primary">
-      <div className={styles.ContactBarWrapper}>
+    <Toolbar className={styles.ConversationHeader} color="primary">
+      <div className={styles.ConversationHeaderWrapper}>
         <div className={styles.ContactInfoContainer}>
           <div className={styles.ContactInfoWrapper}>
             <div className={styles.InfoWrapperRight}>
@@ -659,7 +635,7 @@ export const ContactBar = ({
                 </ClickAwayListener>
               </div>
             </div>
-            {contactBarDetails}
+            {conversationHeaderDetails}
             <div className={styles.Chat} onClick={() => showChats()}>
               <IconButton className={styles.MobileIcon}>
                 <IconComponent data-testid="icon-component" />
@@ -674,4 +650,4 @@ export const ContactBar = ({
   );
 };
 
-export default ContactBar;
+export default ConversationHeader;
