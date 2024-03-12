@@ -1,14 +1,15 @@
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
-import { GET_GROUP_COUNT } from 'graphql/queries/Contact';
-import { UPDATE_COLLECTION_GROUPS } from 'graphql/mutations/Collection';
+import { GET_GROUP_COUNT } from 'graphql/queries/WA_Groups';
+import { UPDATE_WA_GROUP_COLLECTION } from 'graphql/mutations/Collection';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import CollectionIcon from 'assets/images/icons/Collection/Dark.svg?react';
 import { List } from 'containers/List/List';
 import styles from './GroupCollectionList.module.css';
 
-import { GROUP_GET_COLLECTION } from 'graphql/queries/Collection';
+import { GET_COLLECTION, GROUP_GET_COLLECTION } from 'graphql/queries/Collection';
+import { useQuery } from '@apollo/client';
 
 export interface CollectionGroupListProps {
   title: string;
@@ -34,7 +35,7 @@ const collectionIcon = <CollectionIcon className={styles.CollectionIcon} />;
 const queries = {
   countQuery: GET_GROUP_COUNT,
   filterItemsQuery: GROUP_GET_COLLECTION,
-  deleteItemQuery: UPDATE_COLLECTION_GROUPS,
+  deleteItemQuery: UPDATE_WA_GROUP_COLLECTION,
 };
 
 const columnAttributes = {
@@ -47,6 +48,12 @@ export const CollectionGroupList = () => {
   const params = useParams();
 
   const collectionId = params.id;
+  const collection = useQuery(GET_COLLECTION, {
+    variables: { id: collectionId },
+    fetchPolicy: 'cache-and-network',
+  });
+
+  const title = collection.data ? collection.data.group.group.label : t('Collection');
 
   const getDeleteQueryVariables = (id: any) => ({
     input: {
@@ -75,7 +82,7 @@ export const CollectionGroupList = () => {
       <List
         dialogTitle={dialogTitle}
         columnNames={columnNames}
-        title={'Group Collection'}
+        title={title}
         additionalAction={additionalAction}
         listItem="waGroups"
         listItemName="waGroups"

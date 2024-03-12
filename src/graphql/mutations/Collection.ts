@@ -97,13 +97,24 @@ export const UPDATE_COLLECTION_CONTACTS = gql`
   }
 `;
 
-export const UPDATE_COLLECTION_GROUPS = gql`
+export const UPDATE_WA_GROUP_COLLECTION = gql`
   mutation UpdateWaGroupCollection($input: UpdateWaGroupsCollectionInput!) {
     updateWaGroupCollection(input: $input) {
       collectionWaGroups {
         group {
           label
         }
+      }
+    }
+  }
+`;
+
+export const UPDATE_COLLECTION_WA_GROUP = gql`
+  mutation UpdateCollectionWaGroup($input: UpdateCollectionWaGroupInput!) {
+    updateCollectionWaGroup(input: $input) {
+      numberDeleted: waGroupsDeleted
+      groupContacts: collectionWaGroups {
+        id
       }
     }
   }

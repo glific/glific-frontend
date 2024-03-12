@@ -791,6 +791,7 @@ export const ChatMessages = ({ contactId, collectionId, phoneId }: ChatMessagesP
         collectionId={collectionId.toString()}
         displayName={conversationInfo.group.label}
         handleAction={handleChatClearedAction}
+        groups={groups}
       />
     );
 
@@ -800,7 +801,11 @@ export const ChatMessages = ({ contactId, collectionId, phoneId }: ChatMessagesP
           ? jumpToLatest
           : null}
         <LexicalWrapper>
-          <ChatInput onSendMessage={sendCollectionMessageHandler} isCollection />
+          <ChatInput
+            onSendMessage={sendCollectionMessageHandler}
+            isCollection
+            showAttachmentButton={!groups}
+          />
         </LexicalWrapper>
       </div>
     );

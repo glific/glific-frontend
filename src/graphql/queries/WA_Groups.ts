@@ -138,3 +138,20 @@ export const COUNT_WA_GROUP_CONTACTS = gql`
     countContactWaGroup(filter: $filter)
   }
 `;
+
+export const GET_GROUP_COUNT = gql`
+  query waGroupsCount($filter: WaGroupFilter) {
+    countWaGroups: waGroupsCount(filter: $filter)
+  }
+`;
+
+export const GET_WA_GROUPS = gql`
+  query WaGroups($filter: WaGroupFilter, $opts: Opts) {
+    waGroups(filter: $filter, opts: $opts) {
+      bspId
+      id
+      lastCommunicationAt
+      name: label
+    }
+  }
+`;

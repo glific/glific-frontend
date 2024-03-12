@@ -5,7 +5,11 @@ import { useTranslation } from 'react-i18next';
 import CollectionIcon from 'assets/images/icons/Collection/Dark.svg?react';
 import AddContactIcon from 'assets/images/icons/Contact/Add.svg?react';
 import ExportIcon from 'assets/images/icons/Flow/Export.svg?react';
-import { DELETE_COLLECTION, UPDATE_COLLECTION_CONTACTS } from 'graphql/mutations/Collection';
+import {
+  DELETE_COLLECTION,
+  UPDATE_COLLECTION_CONTACTS,
+  UPDATE_COLLECTION_WA_GROUP,
+} from 'graphql/mutations/Collection';
 import {
   GET_COLLECTIONS_COUNT,
   FILTER_COLLECTIONS,
@@ -22,6 +26,7 @@ import styles from './CollectionList.module.css';
 import { exportCsvFile } from 'common/utils';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { collectionInfo } from 'common/HelpData';
+import { GET_WA_GROUPS } from 'graphql/queries/WA_Groups';
 
 const getLabel = (label: string) => <div className={styles.LabelText}>{label}</div>;
 
@@ -54,6 +59,9 @@ export const CollectionList = () => {
   const { t } = useTranslation();
   const location = useLocation();
   const groups: boolean = location.pathname.includes('group');
+  let entity = groups ? 'waGroups' : 'contacts';
+  let searchquery = groups ? GET_WA_GROUPS : CONTACT_SEARCH_QUERY;
+  let updateMutation = groups ? UPDATE_COLLECTION_WA_GROUP : UPDATE_COLLECTION_CONTACTS;
 
   const getColumns = ({ label, contactsCount, description, waGroupsCount }: any) => ({
     label: getLabel(label),
@@ -68,8 +76,8 @@ export const CollectionList = () => {
     columnStyles,
   };
 
-  const [getContacts, { data: contactsData }] = useLazyQuery(CONTACT_SEARCH_QUERY, {
-    variables: setVariables({ name: contactSearchTerm }, 50),
+  const [getContacts, { data: entityData }] = useLazyQuery(searchquery, {
+    variables: groups ? setVariables({}, 50) : setVariables({ name: contactSearchTerm }, 50),
   });
   const [exportCollectionData] = useLazyQuery(EXPORT_COLLECTION_DATA, {
     onCompleted: (data) => {
@@ -88,20 +96,25 @@ export const CollectionList = () => {
   const [getCollectionContacts, { data: collectionContactsData }] =
     useLazyQuery(GET_COLLECTION_CONTACTS);
 
-  const [updateCollectionContacts] = useMutation(UPDATE_COLLECTION_CONTACTS, {
+  const [updateCollectionContacts] = useMutation(updateMutation, {
     onCompleted: (data) => {
-      const { numberDeleted, groupContacts } = data.updateGroupContacts;
+      let updateVariable = groups ? 'updateCollectionWaGroup' : 'updateGroupContacts';
+      const { numberDeleted, groupContacts } = data[updateVariable];
       const numberAdded = groupContacts.length;
       if (numberDeleted > 0 && numberAdded > 0) {
         setNotification(
-          `${numberDeleted} contact${
+          `${numberDeleted} ${groups ? 'group' : 'contact'}${
             numberDeleted === 1 ? '' : 's  were'
-          } removed and ${numberAdded} contact${numberAdded === 1 ? '' : 's  were'} added`
+          } removed and ${numberAdded} ${groups ? 'group' : 'contact'}${numberAdded === 1 ? '' : 's  were'} added`
         );
       } else if (numberDeleted > 0) {
-        setNotification(`${numberDeleted} contact${numberDeleted === 1 ? '' : 's  were'} removed`);
+        setNotification(
+          `${numberDeleted} ${groups ? 'group' : 'contact'}${numberDeleted === 1 ? '' : 's  were'} removed`
+        );
       } else {
-        setNotification(`${numberAdded} contact${numberAdded === 1 ? '' : 's  were'} added`);
+        setNotification(
+          `${numberAdded} ${groups ? 'group' : 'contact'}${numberAdded === 1 ? '' : 's  were'} added`
+        );
       }
       setUpdateCollection((updateCollection) => !updateCollection);
       setAddContactsDialogShow(false);
@@ -112,13 +125,13 @@ export const CollectionList = () => {
   const dialogMessage = t("You won't be able to use this collection again.");
 
   let contactOptions: any = [];
-  let collectionContacts: Array<any> = [];
+  let collectionEntities: Array<any> = [];
 
-  if (contactsData) {
-    contactOptions = contactsData.contacts;
+  if (entityData) {
+    contactOptions = entityData[entity];
   }
   if (collectionContactsData) {
-    collectionContacts = collectionContactsData.group.group.contacts;
+    collectionEntities = collectionContactsData.group.group[entity];
   }
 
   let dialog = null;
@@ -142,31 +155,37 @@ export const CollectionList = () => {
   const handleCollectionAdd = (value: any) => {
     const selectedContacts = value.filter(
       (contact: any) =>
-        !collectionContacts.map((collectionContact: any) => collectionContact.id).includes(contact)
+        !collectionEntities.map((collectionContact: any) => collectionContact.id).includes(contact)
     );
-    const unselectedContacts = collectionContacts
+    const unselectedContacts = collectionEntities
       .map((collectionContact: any) => collectionContact.id)
       .filter((contact: any) => !value.includes(contact));
 
     if (selectedContacts.length === 0 && unselectedContacts.length === 0) {
       setAddContactsDialogShow(false);
     } else {
+      const addvariable = groups ? 'addWaGroupIds' : 'addContactIds';
+      const deletevariable = groups ? 'deleteWaGroupIds' : 'deleteContactIds';
       updateCollectionContacts({
         variables: {
           input: {
-            addContactIds: selectedContacts,
+            [addvariable]: selectedContacts,
             groupId: collectionId,
-            deleteContactIds: unselectedContacts,
+            [deletevariable]: unselectedContacts,
           },
         },
       });
     }
   };
 
+  let searchDialogTitle = groups
+    ? t('Add groups to the collection')
+    : t('Add contacts to the collection');
+
   if (addContactsDialogShow) {
     dialog = (
       <SearchDialogBox
-        title={t('Add contacts to the collection')}
+        title={searchDialogTitle}
         handleOk={handleCollectionAdd}
         handleCancel={() => setAddContactsDialogShow(false)}
         options={contactOptions}
@@ -174,7 +193,7 @@ export const CollectionList = () => {
         additionalOptionLabel="phone"
         asyncSearch
         disableClearable
-        selectedOptions={collectionContacts}
+        selectedOptions={collectionEntities}
         renderTags={false}
         searchLabel="Search contacts"
         textFieldPlaceholder="Type here"
@@ -221,7 +240,7 @@ export const CollectionList = () => {
   };
 
   const additionalAction = () =>
-    groups ? [viewDetails] : [viewDetails, addContacts, exportCollectionButton];
+    groups ? [viewDetails, addContacts] : [viewDetails, addContacts, exportCollectionButton];
 
   const getRestrictedAction = () => {
     const action: any = { edit: true, delete: true };
@@ -235,6 +254,7 @@ export const CollectionList = () => {
   // check if the user has access to manage collections
   const userRolePermissions = getUserRolePermissions();
   let TotalCountLabel = groups ? t('Groups') : t('Contacts');
+  let title = groups ? t('Group Collections') : t('Collections');
 
   return (
     <>
@@ -249,7 +269,7 @@ export const CollectionList = () => {
         helpData={collectionInfo}
         refreshList={updateCollection}
         restrictedAction={getRestrictedAction}
-        title={t('Collections')}
+        title={title}
         listItem="groups"
         columnNames={[
           { name: 'label', label: t('Title') },
