@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useQuery, useLazyQuery, useMutation } from '@apollo/client';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Input } from 'components/UI/Form/Input/Input';
 import { FormLayout } from 'containers/Form/FormLayout';
@@ -34,6 +34,8 @@ export const Collection = () => {
   const [roles, setRoles] = useState([]);
   const [selected, setSelected] = useState([]);
   const { t } = useTranslation();
+  const location = useLocation();
+  let groups: boolean = location.pathname.includes('group');
 
   const [updateCollectionUsers] = useMutation(UPDATE_COLLECTION_USERS);
 
@@ -168,8 +170,12 @@ export const Collection = () => {
   };
 
   const setPayload = (payload: any) => {
-    const payloadWithRoleIds = getAddOrRemoveRoleIds(roles, payload);
-    return payloadWithRoleIds;
+    let payloadWithRoleIdsAndType = getAddOrRemoveRoleIds(roles, payload);
+    payloadWithRoleIdsAndType = {
+      ...payloadWithRoleIdsAndType,
+      groupType: groups ? 'WA' : 'WABA',
+    };
+    return payloadWithRoleIdsAndType;
   };
 
   return (
@@ -187,7 +193,7 @@ export const Collection = () => {
       listItemName="collection"
       dialogMessage={dialogMessage}
       formFields={formFields}
-      redirectionLink="collection"
+      redirectionLink={`${groups ? 'group/' : ''}collection`}
       listItem="group"
       icon={collectionIcon}
       helpData={collectionInfo}
