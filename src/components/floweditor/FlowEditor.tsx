@@ -118,10 +118,10 @@ export const FlowEditor = () => {
       }
       setPublishLoading(false);
     },
-    onError:()=>{
-      setPublishLoading(false)
-      setNotification("Sorry! An error occurred", 'warning')
-    }
+    onError: () => {
+      setPublishLoading(false);
+      setNotification('Sorry! An error occurred', 'warning');
+    },
   });
 
   const { data: flowName } = useQuery(GET_FLOW_DETAILS, {
