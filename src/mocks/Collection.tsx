@@ -149,7 +149,11 @@ export const getCollectionUsersQuery2 = {
 export const countCollectionQuery = {
   request: {
     query: GET_COLLECTIONS_COUNT,
-    variables: { filter: {} },
+    variables: {
+      filter: {
+        groupType: 'WABA',
+      },
+    },
   },
   result: {
     data: {
@@ -162,7 +166,9 @@ export const filterCollectionQuery = {
   request: {
     query: FILTER_COLLECTIONS,
     variables: {
-      filter: {},
+      filter: {
+        groupType: 'WABA',
+      },
       opts: {
         limit: 50,
         offset: 0,
@@ -181,6 +187,7 @@ export const filterCollectionQuery = {
           isRestricted: false,
           contactsCount: 2,
           roles: [],
+          waGroupsCount: 0,
         },
       ],
     },

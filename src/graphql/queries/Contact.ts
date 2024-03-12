@@ -47,6 +47,10 @@ export const GET_COLLECTION_CONTACTS = gql`
           name
           phone
         }
+        waGroups {
+          name: label
+          id
+        }
       }
     }
   }

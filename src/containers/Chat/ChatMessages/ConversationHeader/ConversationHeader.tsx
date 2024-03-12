@@ -463,7 +463,7 @@ export const ConversationHeader = ({
       className={styles.ListButtonPrimary}
       data-testid="viewContacts"
       onClick={() => {
-        navigate(`/collection/${collectionId}/contacts`);
+        navigate(`/collection/${collectionId}/${groups ? 'groups' : 'contacts'}`);
       }}
     >
       <ProfileIcon className={styles.Icon} />
@@ -471,28 +471,29 @@ export const ConversationHeader = ({
     </Button>
   );
 
+  const clearConversation = entityId && (
+    <Button
+      className={styles.ListButtonPrimary}
+      data-testid="clearChatButton"
+      onClick={() => setClearChatDialog(true)}
+    >
+      <ClearConversation className={styles.Icon} />
+      Clear conversation
+    </Button>
+  );
+
   const addMember = entityId ? (
-    <>
-      <Button
-        data-testid="collectionButton"
-        className={styles.ListButtonPrimary}
-        onClick={() => {
-          getCollections();
-          setShowCollectionDialog(true);
-        }}
-      >
-        <AddContactIcon className={styles.Icon} />
-        Add to collection
-      </Button>
-      <Button
-        className={styles.ListButtonPrimary}
-        data-testid="clearChatButton"
-        onClick={() => setClearChatDialog(true)}
-      >
-        <ClearConversation className={styles.Icon} />
-        Clear conversation
-      </Button>
-    </>
+    <Button
+      data-testid="collectionButton"
+      className={styles.ListButtonPrimary}
+      onClick={() => {
+        getCollections();
+        setShowCollectionDialog(true);
+      }}
+    >
+      <AddContactIcon className={styles.Icon} />
+      Add to collection
+    </Button>
   ) : (
     <Button
       data-testid="collectionButton"
@@ -502,25 +503,35 @@ export const ConversationHeader = ({
       }}
     >
       <AddContactIcon className={styles.Icon} />
-      Add contact
+      Add {groups ? 'group' : 'contact'}
     </Button>
   );
 
   if (addContactsDialogShow) {
     dialogBox = (
-      <AddContactsToCollection collectionId={collectionId} setDialog={setAddContactsDialogShow} />
+      <AddContactsToCollection
+        groups={groups}
+        collectionId={collectionId}
+        setDialog={setAddContactsDialogShow}
+      />
     );
   }
 
   let options: any;
   if (groups) {
-    options = <>{viewDetails}</>;
+    options = (
+      <>
+        {viewDetails}
+        {addMember}
+      </>
+    );
   } else {
     options = (
       <>
         {viewDetails}
         {flowButton}
         {addMember}
+        {clearConversation}
         {terminateFLows}
         {blockContactButton}
       </>
@@ -596,14 +607,12 @@ export const ConversationHeader = ({
 
   if (entityId) {
     conversationHeaderDetails = (
-      <>
-        <div className={styles.SessionTimerContainer}>
-          {contactCollections}
-          {!groups && timeleft}
-        </div>
-      </>
+      <div className={styles.SessionTimerContainer}>
+        {contactCollections}
+        {!groups && timeleft}
+      </div>
     );
-  } else if (collectionId) {
+  } else if (collectionId && !groups) {
     conversationHeaderDetails = <CollectionInformation collectionId={collectionId} />;
   }
 

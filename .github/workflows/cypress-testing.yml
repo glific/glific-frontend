@@ -4,8 +4,7 @@ on:
   push:
     branches: [master]
   pull_request:
-    branches: [master]
-
+    branches: [master, whatsapp-group-chats]
 jobs:
   glific:
     runs-on: ubuntu-latest
