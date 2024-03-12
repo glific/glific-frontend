@@ -1,4 +1,4 @@
-import { render, waitFor, fireEvent, screen, getAllByText } from '@testing-library/react';
+import { render, waitFor, fireEvent, screen } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router';
 import { vi } from 'vitest';

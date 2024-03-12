@@ -7,7 +7,6 @@ import {
   GET_COLLECTION_INFO,
   GET_COLLECTION_USERS,
   GET_ORGANIZATION_COLLECTIONS,
-  GET_WA_GROUP_COLLECTIONS_COUNT,
 } from 'graphql/queries/Collection';
 import { UPDATE_COLLECTION_CONTACTS } from 'graphql/mutations/Collection';
 

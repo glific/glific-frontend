@@ -1,8 +1,4 @@
-import {
-  DEFAULT_ENTITY_LIMIT,
-  DEFAULT_MESSAGE_LIMIT,
-  GROUP_QUERY_VARIABLES,
-} from 'common/constants';
+import { DEFAULT_ENTITY_LIMIT, DEFAULT_MESSAGE_LIMIT } from 'common/constants';
 import { GROUP_SEARCH_MULTI_QUERY, GROUP_SEARCH_QUERY } from 'graphql/queries/WA_Groups';
 
 export const waGroup = {
