@@ -31,7 +31,7 @@ const getDescription = (description: string) => (
 
 const getContact = (totalCount: number, groups: boolean) => (
   <div className={styles.UserCount}>
-    {`${totalCount} ${groups ? 'group' : 'contact'}x${totalCount === 1 ? '' : 's'}`}
+    {`${totalCount} ${groups ? 'group' : 'contact'}${totalCount === 1 ? '' : 's'}`}
   </div>
 );
 
