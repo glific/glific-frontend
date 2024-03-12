@@ -257,8 +257,6 @@ export const ConversationList = ({
       getFilterConvos({
         variables: filterVariables(),
       });
-    } else {
-      // refetch()
     }
   }, [searchVal, searchParam, savedSearchCriteria, phonenumber]);
 

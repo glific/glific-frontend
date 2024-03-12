@@ -246,3 +246,20 @@ describe('Collection test', () => {
     });
   });
 });
+let route = '/group/chat';
+let propsForGroups = {};
+
+let groupsComponent = (
+  <MockedProvider mocks={mocks} addTypename={false}>
+    <MemoryRouter initialEntries={[route]}>
+      <ConversationHeader {...defaultProps} />
+    </MemoryRouter>
+  </MockedProvider>
+);
+
+test.only('it should render correct options for whatsapp group', async () => {
+  render(groupsComponent);
+  await waitFor(() => {
+    fireEvent.click(screen.getByTestId('dropdownIcon')?.querySelector('svg') as SVGElement);
+  });
+});

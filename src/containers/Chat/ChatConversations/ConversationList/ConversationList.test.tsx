@@ -1,5 +1,5 @@
 import 'mocks/matchMediaMock';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { MemoryRouter, BrowserRouter as Router } from 'react-router-dom';
 import { render, waitFor, screen, fireEvent } from '@testing-library/react';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import { MockedProvider } from '@apollo/client/testing';
@@ -13,8 +13,11 @@ import {
 } from 'containers/Chat/ChatMessages/ChatMessages.test';
 import { conversationCollectionQuery } from 'mocks/Chat';
 import { cache as collectionCache } from 'config/apolloclient';
+import { searchGroupQuery, waGroup } from 'mocks/Groups';
 
 const contactCache = new InMemoryCache({ addTypename: false });
+const groupsCache = new InMemoryCache({ addTypename: false });
+
 contactCache.writeQuery(contact);
 
 const clientForContact = new ApolloClient({
@@ -166,5 +169,66 @@ test('It render contact collection with no result', async () => {
 
   await waitFor(() => {
     expect(container).toBeInTheDocument();
+  });
+});
+
+groupsCache.writeQuery(waGroup);
+
+let propsForGroups: any = {
+  searchVal: '',
+  savedSearchCriteria: '',
+  selectedContactId: 6,
+  setSelectedContactId: vi.fn(),
+  searchMode: false,
+  searchParam: {},
+  entityType: 'contact',
+};
+
+let route = '/group/chat';
+
+const clientForGroup = new ApolloClient({
+  cache: groupsCache,
+  uri: 'http://localhost:4000/',
+  assumeImmutableResults: true,
+});
+
+test('it renders whatsapp groups with phone number filter', async () => {
+  const { getByText } = render(
+    <ApolloProvider client={clientForGroup}>
+      <MockedProvider mocks={searchGroupQuery} addTypename={false}>
+        <MemoryRouter initialEntries={[route]}>
+          <ConversationList {...propsForGroups} phonenumber={[{ label: '96276736', id: '1' }]} />
+        </MemoryRouter>
+      </MockedProvider>
+    </ApolloProvider>
+  );
+
+  expect(getByText('Loading...')).toBeInTheDocument();
+
+  await waitFor(async () => {
+    const listItems = screen.getAllByTestId('list');
+    expect(listItems[0]).toHaveTextContent('Oklahoma sheep');
+  });
+});
+
+test('it renders whatsapp groups for multi search', async () => {
+  propsForGroups = {
+    ...propsForGroups,
+    searchVal: 'group 2',
+  };
+  const { getByText } = render(
+    <MockedProvider mocks={searchGroupQuery} addTypename={false}>
+      <MemoryRouter initialEntries={[route]}>
+        <ConversationList {...propsForGroups} />
+      </MemoryRouter>
+    </MockedProvider>
+  );
+
+  expect(getByText('Loading...')).toBeInTheDocument();
+
+  await waitFor(async () => {
+    const listItems = screen.getAllByTestId('list');
+    expect(listItems.length).toBe(6);
+    fireEvent.click(listItems[0]);
   });
 });
