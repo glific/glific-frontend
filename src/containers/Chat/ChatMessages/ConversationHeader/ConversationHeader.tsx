@@ -92,7 +92,7 @@ export const ConversationHeader = ({
   displayName,
   handleAction,
   isSimulator,
-  groups = false,
+  groups,
   contact,
 }: ConversationHeaderProps) => {
   const [anchorEl, setAnchorEl] = useState(null);

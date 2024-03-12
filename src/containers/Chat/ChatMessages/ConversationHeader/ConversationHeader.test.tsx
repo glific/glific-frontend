@@ -19,6 +19,7 @@ import {
   addFlowToCollectionQuery,
 } from '../../../../mocks/Flow';
 import { CONVERSATION_MOCKS } from '../../../../mocks/Chat';
+import { searchGroupQuery } from 'mocks/Groups';
 
 const mocks = [
   ...CONVERSATION_MOCKS,
@@ -244,5 +245,55 @@ describe('Collection test', () => {
       const button = screen.getByText('Start');
       fireEvent.click(button);
     });
+  });
+});
+let route = '/group/chat';
+let propsForGroups = {
+  groups: true,
+  displayName: 'Oklahoma sheep',
+  handleAction: vi.fn(),
+  entityId: '1',
+};
+let mocksForGroups = [...searchGroupQuery];
+
+let groupsComponent = (
+  <MockedProvider mocks={mocksForGroups} addTypename={false}>
+    <MemoryRouter initialEntries={[route]}>
+      <ConversationHeader {...propsForGroups} groups={true} />
+    </MemoryRouter>
+  </MockedProvider>
+);
+
+const mockedUsedNavigate = vi.fn();
+vi.mock('react-router-dom', async () => ({
+  ...(await vi.importActual('react-router-dom')),
+  useNavigate: () => mockedUsedNavigate,
+}));
+
+test('it should render correct options for whatsapp group', async () => {
+  render(groupsComponent);
+
+  await waitFor(() => {
+    fireEvent.click(screen.getByTestId('dropdownIcon')?.querySelector('svg') as SVGElement);
+  });
+
+  await waitFor(() => {
+    expect(screen.getByText('View group details')).toBeInTheDocument();
+    expect(screen.getByText('Add to collection')).toBeInTheDocument();
+    // expect(screen.getByText('Start a flow')).toBeInTheDocument();
+  });
+});
+
+test('it navigates to group details', async () => {
+  render(groupsComponent);
+
+  await waitFor(() => {
+    fireEvent.click(screen.getByTestId('dropdownIcon')?.querySelector('svg') as SVGElement);
+  });
+
+  await waitFor(() => {
+    let item = screen.getByTestId('viewProfile');
+    fireEvent.click(item);
+    expect(mockedUsedNavigate).toHaveBeenCalled();
   });
 });

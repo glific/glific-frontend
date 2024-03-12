@@ -1,11 +1,13 @@
-import { render, waitFor, fireEvent, screen } from '@testing-library/react';
+import { render, waitFor, fireEvent, screen, getAllByText } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router';
 import { vi } from 'vitest';
 
 import {
   countCollectionQuery,
+  countCollectionQueryWAGroups,
   filterCollectionQuery,
+  filterCollectionQueryWAGroups,
   getCollectionContactsQuery,
 } from 'mocks/Collection';
 import { getContactsQuery, getContactsSearchQuery } from 'mocks/Contact';
@@ -25,6 +27,8 @@ const mocks = [
   getContactsQuery,
   getContactsSearchQuery,
   getCurrentUserQuery,
+  filterCollectionQueryWAGroups,
+  countCollectionQueryWAGroups,
 ];
 
 const wrapper = (
@@ -34,6 +38,12 @@ const wrapper = (
     </MockedProvider>
   </MemoryRouter>
 );
+
+const mockedUsedNavigate = vi.fn();
+vi.mock('react-router-dom', async () => ({
+  ...(await vi.importActual('react-router-dom')),
+  useNavigate: () => mockedUsedNavigate,
+}));
 
 describe('<CollectionList />', () => {
   test('should render CollectionList', async () => {
@@ -106,5 +116,55 @@ describe('<CollectionList />', () => {
       fireEvent.click(getAllByTestId('additionalButton')[1]);
     });
     fireEvent.click(getByTestId('searchDialogBox').querySelector('button') as HTMLElement);
+  });
+
+  test('it navigates to collection contacts', async () => {
+    const { getByText, getByTestId, getAllByTestId } = render(wrapper);
+
+    expect(getByTestId('loading')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(getAllByTestId('additionalButton')[1]).toBeInTheDocument();
+    });
+
+    let viewButton = getByText('View');
+    fireEvent.click(viewButton);
+    expect(mockedUsedNavigate).toHaveBeenCalled();
+  });
+
+  test('should render CollectionList for whatsapp groups', async () => {
+    let groupWrapper = (
+      <MemoryRouter initialEntries={['group/collection']}>
+        <MockedProvider mocks={mocks} addTypename={false}>
+          <CollectionList />
+        </MockedProvider>
+      </MemoryRouter>
+    );
+    const { getByText, getByTestId } = render(groupWrapper);
+
+    expect(getByTestId('loading')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(getByText('Group Collections')).toBeInTheDocument();
+      expect(getByText('Default WA Group Collection')).toBeInTheDocument();
+    });
+  });
+
+  test('it navigates to collection groups', async () => {
+    let groupWrapper = (
+      <MemoryRouter initialEntries={['group/collection']}>
+        <MockedProvider mocks={mocks} addTypename={false}>
+          <CollectionList />
+        </MockedProvider>
+      </MemoryRouter>
+    );
+    const { getByTestId, getAllByTestId } = render(groupWrapper);
+
+    expect(getByTestId('loading')).toBeInTheDocument();
+
+    await waitFor(() => {
+      let viewButton = getAllByTestId('additionalButton')[1];
+      fireEvent.click(viewButton);
+      expect(mockedUsedNavigate).toHaveBeenCalled();
+    });
   });
 });

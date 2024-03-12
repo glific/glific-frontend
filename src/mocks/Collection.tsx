@@ -7,6 +7,7 @@ import {
   GET_COLLECTION_INFO,
   GET_COLLECTION_USERS,
   GET_ORGANIZATION_COLLECTIONS,
+  GET_WA_GROUP_COLLECTIONS_COUNT,
 } from 'graphql/queries/Collection';
 import { UPDATE_COLLECTION_CONTACTS } from 'graphql/mutations/Collection';
 
@@ -190,6 +191,65 @@ export const filterCollectionQuery = {
           waGroupsCount: 0,
         },
       ],
+    },
+  },
+};
+
+export const filterCollectionQueryWAGroups = {
+  request: {
+    query: FILTER_COLLECTIONS,
+    variables: {
+      filter: {
+        groupType: 'WA',
+      },
+      opts: {
+        limit: 50,
+        offset: 0,
+        order: 'ASC',
+        orderWith: 'label',
+      },
+    },
+  },
+  result: {
+    data: {
+      groups: [
+        {
+          __typename: 'Group',
+          contactsCount: 0,
+          description: null,
+          id: '1',
+          isRestricted: false,
+          label: 'Default WA Group Collection',
+          roles: [],
+          waGroupsCount: 4,
+        },
+        {
+          __typename: 'Group',
+          contactsCount: 0,
+          description: 'wa collection 1',
+          id: '2',
+          isRestricted: false,
+          label: 'Whatsapp Group Collection 1',
+          roles: [],
+          waGroupsCount: 1,
+        },
+      ],
+    },
+  },
+};
+
+export const countCollectionQueryWAGroups = {
+  request: {
+    query: GET_COLLECTIONS_COUNT,
+    variables: {
+      filter: {
+        groupType: 'WA',
+      },
+    },
+  },
+  result: {
+    data: {
+      countGroups: 2,
     },
   },
 };
