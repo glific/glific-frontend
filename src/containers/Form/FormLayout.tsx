@@ -22,12 +22,7 @@ import BackIcon from 'assets/images/icons/Back.svg?react';
 import { organizationHasDynamicRole } from 'common/utils';
 import { getUserRole } from 'context/role';
 import styles from './FormLayout.module.css';
-
-export interface HelpDataProps {
-  heading: string;
-  body: JSX.Element;
-  link: string;
-}
+import { HelpDataProps } from 'common/HelpData';
 
 export interface FormLayoutProps {
   deleteItemQuery: DocumentNode;

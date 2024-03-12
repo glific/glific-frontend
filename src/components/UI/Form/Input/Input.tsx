@@ -32,6 +32,7 @@ export interface InputProps {
   translation?: string;
   onChange?: any;
   inputLabel?: boolean;
+  darkMode?: boolean;
 }
 
 export const Input = ({
@@ -55,6 +56,7 @@ export const Input = ({
     inputProp,
     translation,
     onChange,
+    darkMode,
   } = props;
 
   let fieldType = type;
@@ -104,6 +106,8 @@ export const Input = ({
     showError = true;
   }
 
+  const inputStyles = darkMode ? styles.DarkOutlinedInput : styles.OutlinedInput;
+
   return (
     <>
       {translation && <div className={styles.Translation}>{translation}</div>}
@@ -120,7 +124,7 @@ export const Input = ({
             inputComponent={editor ? editor.inputComponent : undefined}
             inputProps={editor ? editor.inputProps : inputProp}
             type={fieldType}
-            classes={{ multiline: styles.Multiline, input: !textArea ? styles.OutlinedInput : '' }}
+            classes={{ multiline: styles.Multiline, input: !textArea ? inputStyles : '' }}
             disabled={disabled}
             error={showError}
             multiline={textArea}

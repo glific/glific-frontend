@@ -184,6 +184,7 @@ export const Flow = () => {
         ),
       },
       darkCheckbox: true,
+      className: styles.Checkbox,
     },
     {
       component: Checkbox,
