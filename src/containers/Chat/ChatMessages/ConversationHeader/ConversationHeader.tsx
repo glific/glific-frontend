@@ -106,7 +106,7 @@ export const ConversationHeader = ({
 
   // get collection list
   const [getCollections, { data: collectionsData }] = useLazyQuery(GET_COLLECTIONS, {
-    variables: setVariables(),
+    variables: setVariables({ groupType: groups ? 'WA' : 'WABA' }),
   });
 
   // get the published flow list
@@ -190,7 +190,7 @@ export const ConversationHeader = ({
   let selectedCollectionsName;
   let selectedCollections: any = [];
 
-  if (data && !groups) {
+  if (data) {
     const { groups } = data.contact.contact;
     initialSelectedCollectionIds = groups.map((group: any) => group.id);
 
