@@ -195,11 +195,14 @@ export const GroupMessageSubscription = ({ setDataLoaded }: GroupMessageProps) =
     nextFetchPolicy: 'cache-only',
   });
 
-  const {} = useQuery<any>(GROUP_SEARCH_QUERY, {
-    variables: GROUP_COLLECTION_SEARCH_QUERY_VARIABLES,
-    fetchPolicy: 'network-only',
-    nextFetchPolicy: 'cache-only',
-  });
+  const { subscribeToMore: collectionSubscribe, data: collectionData } = useQuery<any>(
+    GROUP_SEARCH_QUERY,
+    {
+      variables: GROUP_COLLECTION_SEARCH_QUERY_VARIABLES,
+      fetchPolicy: 'network-only',
+      nextFetchPolicy: 'cache-only',
+    }
+  );
 
   useEffect(() => {
     if (subscribeToMore) {
