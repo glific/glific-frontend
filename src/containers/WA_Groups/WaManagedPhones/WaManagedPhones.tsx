@@ -7,7 +7,6 @@ import { useMutation, useQuery } from '@apollo/client';
 import { SYNC_GROUPS } from 'graphql/mutations/Group';
 import { setNotification } from 'common/notification';
 import { useTranslation } from 'react-i18next';
-import { useState } from 'react';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 
 interface WaManagedPhonesProps {

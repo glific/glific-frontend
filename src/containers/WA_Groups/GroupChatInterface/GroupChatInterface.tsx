@@ -61,8 +61,6 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
   if (!selectedGroupId && collections && data && data?.search.length !== 0) {
     if (data?.search[0].group) {
       selectedCollectionId = data?.search[0].group.id;
-      console.log('dd');
-
       selectedGroupId = '';
     }
   }
@@ -71,8 +69,6 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
   // first record as selected group
   if (!selectedGroupId && !selectedCollectionId && data && data?.search.length !== 0) {
     if (data?.search[0].waGroup) {
-      console.log('ddd');
-
       selectedGroupId = data?.search[0].waGroup?.id;
     }
   }
