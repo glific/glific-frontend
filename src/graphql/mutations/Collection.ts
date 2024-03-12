@@ -100,10 +100,13 @@ export const UPDATE_COLLECTION_CONTACTS = gql`
 export const UPDATE_WA_GROUP_COLLECTION = gql`
   mutation UpdateWaGroupCollection($input: UpdateWaGroupsCollectionInput!) {
     updateWaGroupCollection(input: $input) {
-      collectionWaGroups {
+      numberDeleted: waGroupsDeleted
+      contactGroups: collectionWaGroups {
         group {
           label
+          id
         }
+        id
       }
     }
   }
