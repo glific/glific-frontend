@@ -30,7 +30,11 @@ import { GET_COLLECTIONS } from 'graphql/queries/Collection';
 import { UPDATE_CONTACT_COLLECTIONS } from 'graphql/mutations/Collection';
 import { GET_CONTACT_COLLECTIONS } from 'graphql/queries/Contact';
 import { GET_FLOWS } from 'graphql/queries/Flow';
-import { ADD_FLOW_TO_CONTACT, ADD_FLOW_TO_COLLECTION } from 'graphql/mutations/Flow';
+import {
+  ADD_FLOW_TO_CONTACT,
+  ADD_FLOW_TO_COLLECTION,
+  ADD_FLOW_TO_WA_GROUP,
+} from 'graphql/mutations/Flow';
 import { UPDATE_CONTACT } from 'graphql/mutations/Contact';
 import { SEARCH_QUERY } from 'graphql/queries/Search';
 import { CLEAR_MESSAGES } from 'graphql/mutations/Chat';
@@ -160,6 +164,15 @@ export const ConversationHeader = ({
     },
   });
 
+  const [addFlowToWaGroups] = useMutation(ADD_FLOW_TO_WA_GROUP, {
+    onCompleted: () => {
+      setNotification(t('Flow started successfully.'));
+    },
+    onError: (error) => {
+      setErrorMessage(error);
+    },
+  });
+
   const [addFlow] = useMutation(ADD_FLOW_TO_CONTACT, {
     onCompleted: () => {
       setNotification(t('Flow started successfully.'));
@@ -254,10 +267,17 @@ export const ConversationHeader = ({
     };
 
     if (entityId) {
-      flowVariables.contactId = entityId;
-      addFlow({
-        variables: flowVariables,
-      });
+      if (groups) {
+        flowVariables.waGroupId = entityId;
+        addFlowToWaGroups({
+          variables: flowVariables,
+        });
+      } else {
+        flowVariables.contactId = entityId;
+        addFlow({
+          variables: flowVariables,
+        });
+      }
     }
 
     if (collectionId) {
@@ -380,9 +400,10 @@ export const ConversationHeader = ({
       </Button>
     );
   } else if (
-    contact?.contactBspStatus &&
-    status.includes(contact?.contactBspStatus) &&
-    !is24HourWindowOver(contact?.lastMessageTime)
+    groups ||
+    (contact?.contactBspStatus &&
+      status.includes(contact?.contactBspStatus) &&
+      !is24HourWindowOver(contact?.lastMessageTime))
   ) {
     flowButton = (
       <Button
@@ -514,7 +535,12 @@ export const ConversationHeader = ({
 
   let options: any;
   if (groups) {
-    options = <>{viewDetails}</>;
+    options = (
+      <>
+        {viewDetails}
+        {flowButton}
+      </>
+    );
   } else {
     options = (
       <>
