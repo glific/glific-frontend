@@ -167,6 +167,17 @@ export const getDisplayName = (conversation: any) => {
   return displayName;
 };
 
+export const getDisplayNameForSearch = (conversation: any, groups?: boolean) => {
+  let displayName: string = '';
+  if (groups) {
+    displayName = conversation.name || conversation.waGroup.label;
+  } else {
+    displayName = conversation.name || conversation.maskedPhone || conversation.contact.name;
+  }
+
+  return displayName;
+};
+
 export const numberToAbbreviation = (numberString: string) => {
   const number = parseInt(numberString, 10);
   let abbreviation = '';

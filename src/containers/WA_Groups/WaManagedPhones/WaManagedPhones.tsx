@@ -1,4 +1,4 @@
-import { FormControl } from '@mui/material';
+import { CircularProgress, FormControl } from '@mui/material';
 import { Button } from 'components/UI/Form/Button/Button';
 
 import styles from './WaManagedPhones.module.css';
@@ -8,6 +8,7 @@ import { SYNC_GROUPS } from 'graphql/mutations/Group';
 import { setNotification } from 'common/notification';
 import { useTranslation } from 'react-i18next';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
+import { useState } from 'react';
 
 interface WaManagedPhonesProps {
   phonenumber: any;
@@ -16,6 +17,7 @@ interface WaManagedPhonesProps {
 
 export const WaManagedPhones = ({ phonenumber, setPhonenumber }: WaManagedPhonesProps) => {
   const { t } = useTranslation();
+  const [loading, setLoading] = useState(false);
 
   const { data } = useQuery<any>(GET_WA_MANAGED_PHONES, {
     variables: {
@@ -34,13 +36,16 @@ export const WaManagedPhones = ({ phonenumber, setPhonenumber }: WaManagedPhones
       } else {
         setNotification(t('Whatsapp groups synced successfully.'), 'success');
       }
+      setLoading(false);
     },
     onError: () => {
       setNotification(t('Sorry, failed to sync whatsapp groups.'), 'warning');
+      setLoading(false);
     },
   });
 
   const handleSyncGroups = () => {
+    setLoading(true);
     syncGroups();
   };
 
@@ -84,7 +89,7 @@ export const WaManagedPhones = ({ phonenumber, setPhonenumber }: WaManagedPhones
         aria-hidden="true"
         onClick={() => handleSyncGroups()}
       >
-        SYNC
+        {loading ? <CircularProgress size={20} /> : 'SYNC'}
       </Button>
     </div>
   );

@@ -22,7 +22,7 @@ import {
 import { updateConversations } from 'services/ChatService';
 import { updateGroupConversations } from 'services/GroupMessageService';
 import { showMessages } from 'common/responsive';
-import { addLogs, getDisplayName } from 'common/utils';
+import { addLogs, getDisplayName, getDisplayNameForSearch } from 'common/utils';
 import ChatConversation from '../ChatConversation/ChatConversation';
 import styles from './ConversationList.module.css';
 import { GROUP_SEARCH_MULTI_QUERY, GROUP_SEARCH_QUERY } from 'graphql/queries/WA_Groups';
@@ -70,7 +70,7 @@ export const ConversationList = ({
   let groups: boolean = location.pathname.includes('group');
 
   let queryVariables = groups ? GROUP_QUERY_VARIABLES : SEARCH_QUERY_VARIABLES;
-  if (selectedCollectionId) {
+  if (selectedCollectionId || entityType === 'collection') {
     queryVariables = groups
       ? GROUP_COLLECTION_SEARCH_QUERY_VARIABLES
       : COLLECTION_SEARCH_QUERY_VARIABLES;
@@ -295,15 +295,20 @@ export const ConversationList = ({
     // We don't have the contact data in the case of contacts.
     let chatType: any = groups ? 'waGroup' : 'contact';
     let entity = conversation;
-
     let selectedRecord = false;
     if (selectedContactId === entity.id) {
       selectedRecord = true;
     }
-    let entityId: any = entity.id;
-    let displayName = entity.name || entity.maskedPhone || entity.contact.name;
+    let entityId: any;
+    let displayName = getDisplayNameForSearch(entity, groups);
     let contactIsOrgRead = false;
     let timer;
+
+    if (groups) {
+      entityId = entity.id || entity.waGroup.id;
+    } else {
+      entityId = entity.id || entity.contact.id;
+    }
 
     if (conversation[chatType]) {
       entity = conversation[chatType];
@@ -456,12 +461,20 @@ export const ConversationList = ({
   }
 
   if (!conversationList) {
-    conversationList = (
-      <p data-testid="empty-result" className={styles.EmptySearch}>
-        {t(`Sorry, no results found!
+    if (data && data.search.length === 0) {
+      conversationList = (
+        <p data-testid="empty-result" className={styles.EmptySearch}>
+          {t(`No conversations found!`)}
+        </p>
+      );
+    } else {
+      conversationList = (
+        <p data-testid="empty-result" className={styles.EmptySearch}>
+          {t(`Sorry, no results found!
     Please try a different search.`)}
-      </p>
-    );
+        </p>
+      );
+    }
   }
 
   const loadMoreMessages = () => {
