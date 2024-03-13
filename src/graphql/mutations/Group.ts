@@ -12,11 +12,9 @@ export const SEND_MESSAGE_IN_WA_GROUP = gql`
 `;
 
 export const SYNC_GROUPS = gql`
-  mutation SyncContactWaGroups {
-    syncContactWaGroups {
-      errors {
-        message
-      }
+  mutation SyncWaGroupContacts {
+    syncWaGroupContacts {
+      message
     }
   }
 `;
