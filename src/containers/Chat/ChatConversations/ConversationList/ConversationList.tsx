@@ -22,7 +22,7 @@ import {
 import { updateConversations } from 'services/ChatService';
 import { updateGroupConversations } from 'services/GroupMessageService';
 import { showMessages } from 'common/responsive';
-import { addLogs, getDisplayName } from 'common/utils';
+import { addLogs, getDisplayName, getDisplayNameForSearch } from 'common/utils';
 import ChatConversation from '../ChatConversation/ChatConversation';
 import styles from './ConversationList.module.css';
 import { GROUP_SEARCH_MULTI_QUERY, GROUP_SEARCH_QUERY } from 'graphql/queries/WA_Groups';
@@ -295,15 +295,20 @@ export const ConversationList = ({
     // We don't have the contact data in the case of contacts.
     let chatType: any = groups ? 'waGroup' : 'contact';
     let entity = conversation;
-
     let selectedRecord = false;
     if (selectedContactId === entity.id) {
       selectedRecord = true;
     }
-    let entityId: any = entity.id;
-    let displayName = entity.name || entity.maskedPhone || entity.contact.name;
+    let entityId: any;
+    let displayName = getDisplayNameForSearch(entity, groups);
     let contactIsOrgRead = false;
     let timer;
+
+    if (groups) {
+      entityId = entity.id || entity.waGroup.id;
+    } else {
+      entityId = entity.id || entity.contact.id;
+    }
 
     if (conversation[chatType]) {
       entity = conversation[chatType];

@@ -73,14 +73,14 @@ export const GROUP_SEARCH_MULTI_QUERY = gql`
         }
       }
       messages: waMessages {
-        id
         body
         insertedAt
         messageNumber
         type
         status
-        contact {
-          name
+        waGroup {
+          label
+          id
         }
         media {
           url

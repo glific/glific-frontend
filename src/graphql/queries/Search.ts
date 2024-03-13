@@ -99,7 +99,6 @@ export const SEARCH_MULTI_QUERY = gql`
         isOrgRead
       }
       messages {
-        id
         body
         messageNumber
         insertedAt
