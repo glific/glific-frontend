@@ -15,7 +15,6 @@ export const SYNC_GROUPS = gql`
   mutation SyncContactWaGroups {
     syncContactWaGroups {
       errors {
-        key
         message
       }
     }

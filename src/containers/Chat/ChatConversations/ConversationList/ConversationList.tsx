@@ -70,7 +70,7 @@ export const ConversationList = ({
   let groups: boolean = location.pathname.includes('group');
 
   let queryVariables = groups ? GROUP_QUERY_VARIABLES : SEARCH_QUERY_VARIABLES;
-  if (selectedCollectionId) {
+  if (selectedCollectionId || entityType === 'collection') {
     queryVariables = groups
       ? GROUP_COLLECTION_SEARCH_QUERY_VARIABLES
       : COLLECTION_SEARCH_QUERY_VARIABLES;
@@ -456,12 +456,20 @@ export const ConversationList = ({
   }
 
   if (!conversationList) {
-    conversationList = (
-      <p data-testid="empty-result" className={styles.EmptySearch}>
-        {t(`Sorry, no results found!
+    if (data && data.search.length === 0) {
+      conversationList = (
+        <p data-testid="empty-result" className={styles.EmptySearch}>
+          {t(`No conversations found!`)}
+        </p>
+      );
+    } else {
+      conversationList = (
+        <p data-testid="empty-result" className={styles.EmptySearch}>
+          {t(`Sorry, no results found!
     Please try a different search.`)}
-      </p>
-    );
+        </p>
+      );
+    }
   }
 
   const loadMoreMessages = () => {

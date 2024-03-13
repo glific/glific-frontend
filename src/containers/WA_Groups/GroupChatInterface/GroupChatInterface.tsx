@@ -89,9 +89,6 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
     navigate(newValue);
   };
 
-  // if (data && data?.search.length === 0) {
-  // groupChatInterface = NoConversations;
-  // } else {
   let heading = '';
 
   if (selectedCollectionId || selectedTab === 'collections') {
@@ -150,7 +147,6 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
       </div>
     </>
   );
-  // }
 
   if (loading) return <Loading />;
   if (error) {
