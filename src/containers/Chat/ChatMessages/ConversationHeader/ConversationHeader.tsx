@@ -510,7 +510,7 @@ export const ConversationHeader = ({
       }}
     >
       <AddContactIcon className={styles.Icon} />
-      Add {groups ? 'group' : 'contact'}
+      Add {groups ? 'groups' : 'contacts'}
     </Button>
   );
 

@@ -208,7 +208,7 @@ export const CollectionList = () => {
 
   const addContactIcon = <AddContactIcon />;
   const viewButton = <div className={styles.ViewButton}>View</div>;
-
+  const addEntiyLabel = groups ? t('Add groups to collection') : t('Add contacts to collection');
   const viewCollection = (id: any) => {
     if (groups) {
       navigate(`/collection/${id}/groups`);
@@ -224,8 +224,8 @@ export const CollectionList = () => {
     dialog: viewCollection,
   };
 
-  const addContacts = {
-    label: t('Add contacts to collection'),
+  const addEntity = {
+    label: addEntiyLabel,
     icon: addContactIcon,
     parameter: 'id',
     dialog: setContactsDialog,
@@ -240,7 +240,7 @@ export const CollectionList = () => {
   };
 
   const additionalAction = () =>
-    groups ? [viewDetails, addContacts] : [viewDetails, addContacts, exportCollectionButton];
+    groups ? [viewDetails, addEntity] : [viewDetails, addEntity, exportCollectionButton];
 
   const getRestrictedAction = () => {
     const action: any = { edit: true, delete: true };
