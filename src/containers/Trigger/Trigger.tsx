@@ -167,7 +167,8 @@ export const Trigger = () => {
   const [triggerFlowWarning, setTriggerFlowWarning] = useState<any>();
   const [frequencyLabel, setFrequencyLabel] = useState('Select days');
   const [frequencyOptions, setFrequencyOptions] = useState(dayList);
-  const [isContact, setIsContact] = useState<boolean>(true);
+  const [groupType, setIsGroupType] = useState('WABA');
+
   const isWhatsAppGroupEnabled = getOrganizationServices('whatsappGroupEnabled');
   const params = useParams();
   const location = useLocation();
@@ -183,7 +184,7 @@ export const Trigger = () => {
     groupIds,
     isActive,
     roles,
-    isContact,
+    groupType,
   };
 
   const triggerFrequencyOptions = [
@@ -263,7 +264,7 @@ export const Trigger = () => {
   });
 
   const { data: collections } = useQuery(GET_COLLECTIONS, {
-    variables: setVariables({ groupType: isContact ? 'WABA' : 'WA' }),
+    variables: setVariables({ groupType }),
   });
 
   const [validateTriggerFlow, { loading }] = useMutation(VALIDATE_TRIGGER, {
@@ -274,7 +275,7 @@ export const Trigger = () => {
     },
   });
 
-  if (!flow || !collections) return <Loading />;
+  if (!flow) return <Loading />;
 
   const handleFlowChange = (flow: any) => {
     setTriggerFlowWarning(undefined);
@@ -396,15 +397,16 @@ export const Trigger = () => {
     },
     {
       component: TriggerType,
-      setIsContact: setIsContact,
-      isContact: isContact,
+      handleOnChange: (value: any) => setIsGroupType(value),
+      name: 'isContact',
+      groupType: groupType,
       isWhatsAppGroupEnabled: isWhatsAppGroupEnabled,
     },
     {
       component: AutoComplete,
       name: 'groupIds',
       label: t('Select collection'),
-      options: collections.groups,
+      options: collections?.groups,
       disabled: isEditing,
       optionLabel: 'label',
     },
@@ -427,6 +429,7 @@ export const Trigger = () => {
     setEndDate(endDateValue);
     setIsActive(isCopyState ? true : isActiveValue);
     setEndDate(dayjs(endDateValue));
+    setIsGroupType(groupType);
 
     const { values, options, label } = getFrequencyDetails(frequencyValue, daysValue, hoursValue);
     setFrequencyValues(values);
@@ -442,7 +445,6 @@ export const Trigger = () => {
     setDaysDisabled(frequencyValue !== 'weekly' && frequencyValue !== 'monthly');
 
     setRoles(rolesValue);
-    setIsContact(groupType === 'WABA' ? true : false);
 
     const getFlowId = flow.flows.filter((flows: any) => flows.id === flowValue.id);
 
@@ -450,8 +452,8 @@ export const Trigger = () => {
       setFlowId(getFlowId[0]);
     }
 
-    if (groupValue && collections.groups && groupValue.length > 0) {
-      const selectedGroups = collections.groups.filter((group: any) =>
+    if (groupValue && collections?.groups && groupValue.length > 0) {
+      const selectedGroups = collections?.groups.filter((group: any) =>
         groupValue.includes(group.label)
       );
       setGroupIds(selectedGroups);

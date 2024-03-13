@@ -2,16 +2,16 @@ import { RadioGroup, FormControlLabel, Radio, Typography } from '@mui/material';
 import styles from './TriggerType.module.css';
 
 export interface TriggerTypeProps {
-  isContact: boolean;
-  setIsContact: any;
+  groupType: string;
   isWhatsAppGroupEnabled: boolean;
+  handleOnChange?: any;
 }
 export const TriggerType = ({
-  isContact,
-  setIsContact,
+  groupType,
   isWhatsAppGroupEnabled,
+  handleOnChange,
 }: TriggerTypeProps) => {
-  const isChecked = (value: boolean) => isContact === value;
+  const isChecked = (value: string) => groupType === value;
 
   const selectTriggerType = (
     <div>
@@ -25,33 +25,23 @@ export const TriggerType = ({
           aria-label="trigger-type"
           name="trigger-type"
           row
-          value={isContact}
-          onChange={(event) => console.log(event.target.value)}
+          value={groupType}
+          onChange={(event) => handleOnChange(event.target.value)}
         >
           <div className={styles.RadioLabelWrapper}>
             <FormControlLabel
-              value={1}
-              control={
-                <Radio
-                  color="primary"
-                  onClick={() => setIsContact(true)}
-                  checked={isChecked(true)}
-                />
-              }
+              value={'WABA'}
+              checked={isChecked('WABA')}
+              control={<Radio color="primary" />}
               label={'Contact'}
               className={styles.Label}
             />
           </div>
           <div className={styles.RadioLabelWrapper}>
             <FormControlLabel
-              value={0}
-              control={
-                <Radio
-                  color="primary"
-                  onClick={() => setIsContact(false)}
-                  checked={isChecked(false)}
-                />
-              }
+              value={'WA'}
+              checked={isChecked('WA')}
+              control={<Radio color="primary" />}
               label={'WhatsApp Group'}
               className={styles.Label}
             />
