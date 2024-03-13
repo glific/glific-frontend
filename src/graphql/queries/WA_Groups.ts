@@ -3,6 +3,10 @@ import { gql } from '@apollo/client';
 export const GROUP_SEARCH_QUERY = gql`
   query WaSearch($filter: WaSearchFilter!, $waGroupOpts: Opts!, $waMessageOpts: Opts!) {
     search: waSearch(filter: $filter, waGroupOpts: $waGroupOpts, waMessageOpts: $waMessageOpts) {
+      group {
+        id
+        label
+      }
       waGroup {
         bspId
         id
@@ -132,5 +136,22 @@ export const LIST_WA_GROUP_CONTACTS = gql`
 export const COUNT_WA_GROUP_CONTACTS = gql`
   query countContactWaGroup($filter: ContactWaGroupFilter) {
     countContactWaGroup(filter: $filter)
+  }
+`;
+
+export const GET_GROUP_COUNT = gql`
+  query waGroupsCount($filter: WaGroupFilter) {
+    countWaGroups: waGroupsCount(filter: $filter)
+  }
+`;
+
+export const GET_WA_GROUPS = gql`
+  query WaGroups($filter: WaGroupFilter, $opts: Opts) {
+    waGroups(filter: $filter, opts: $opts) {
+      bspId
+      id
+      lastCommunicationAt
+      name: label
+    }
   }
 `;

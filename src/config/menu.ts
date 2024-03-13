@@ -42,6 +42,13 @@ const menus = (): Menu[] => [
         type: 'sideDrawer',
         roles: allRoles,
       },
+      {
+        title: 'Group Collections',
+        path: '/group/collection',
+        icon: 'chat',
+        type: 'sideDrawer',
+        roles: allRoles,
+      },
     ],
   },
   {
