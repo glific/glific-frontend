@@ -35,8 +35,8 @@ import {
 } from 'graphql/mutations/Trigger';
 import styles from './Trigger.module.css';
 import { triggerInfo } from 'common/HelpData';
-import { getOrganizationServices } from 'services/AuthService';
 import { TriggerType } from './TriggerType/TriggerType';
+import { getOrganizationServices } from 'services/AuthService';
 dayjs.extend(utc);
 
 const checkDateTimeValidation = (startAtValue: string, startDateValue: string) => {
@@ -65,7 +65,7 @@ const setPayload = (payload: any, roles: any) => {
     groupIds,
     endDate,
     frequency,
-    isContact,
+    groupType,
   } = payloadCopy;
 
   const groups = groupIds.map((group: any) => parseInt(group.id));
@@ -85,7 +85,7 @@ const setPayload = (payload: any, roles: any) => {
     startTime: dayjs(startAt).utc().format(EXTENDED_TIME_FORMAT),
     frequency: frequency.value,
     roles: payload.roles,
-    groupType: isContact ? 'WABA' : 'WA',
+    groupType: groupType,
   };
 
   switch (updatedPayload.frequency) {
@@ -166,9 +166,9 @@ export const Trigger = () => {
   const [triggerFlowWarning, setTriggerFlowWarning] = useState<any>();
   const [frequencyLabel, setFrequencyLabel] = useState('Select days');
   const [frequencyOptions, setFrequencyOptions] = useState(dayList);
-  const [groupType, setIsGroupType] = useState('WABA');
-
+  const [groupType, setGroupType] = useState('WABA');
   const isWhatsAppGroupEnabled = getOrganizationServices('whatsappGroupEnabled');
+
   const params = useParams();
   const location = useLocation();
   const { t } = useTranslation();
@@ -183,7 +183,6 @@ export const Trigger = () => {
     groupIds,
     isActive,
     roles,
-    groupType,
   };
 
   const triggerFrequencyOptions = [
@@ -381,6 +380,7 @@ export const Trigger = () => {
       multiple: false,
       onChange: handleFrequencyChange,
     },
+
     {
       component: AutoComplete,
       name: 'frequencyValues',
@@ -396,8 +396,8 @@ export const Trigger = () => {
     },
     {
       component: TriggerType,
-      handleOnChange: (value: any) => setIsGroupType(value),
-      name: 'isContact',
+      name: 'groupType',
+      handleOnChange: (value: any) => setGroupType(value),
       groupType: groupType,
       isWhatsAppGroupEnabled: isWhatsAppGroupEnabled,
     },
@@ -428,7 +428,7 @@ export const Trigger = () => {
     setEndDate(endDateValue);
     setIsActive(isCopyState ? true : isActiveValue);
     setEndDate(dayjs(endDateValue));
-    setIsGroupType(groupType);
+    setGroupType(groupType);
 
     const { values, options, label } = getFrequencyDetails(frequencyValue, daysValue, hoursValue);
     setFrequencyValues(values);
@@ -456,6 +456,7 @@ export const Trigger = () => {
         groupValue.includes(group.label)
       );
       setGroupIds(selectedGroups);
+      console.log(collections?.groups, selectedGroups);
     }
   };
 
