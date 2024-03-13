@@ -45,7 +45,7 @@ export const GET_TRIGGER = gql`
         isActive
         isRepeating
         startAt
-        waGroups
+        groupType
       }
     }
   }
