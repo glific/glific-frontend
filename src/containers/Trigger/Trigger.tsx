@@ -23,7 +23,6 @@ import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { TimePicker } from 'components/UI/Form/TimePicker/TimePicker';
 import { Calendar } from 'components/UI/Form/Calendar/Calendar';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
-import { RadioInput } from 'components/UI/Form/RadioInput/RadioInput';
 import { getAddOrRemoveRoleIds } from 'common/utils';
 import { GET_FLOWS } from 'graphql/queries/Flow';
 import { GET_COLLECTIONS } from 'graphql/queries/Collection';
