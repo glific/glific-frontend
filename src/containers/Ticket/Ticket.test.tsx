@@ -7,6 +7,7 @@ import { getTicketQuery } from 'mocks/Ticket';
 import { getUsersQuery } from 'mocks/User';
 import { getRoleNamesMock } from 'containers/StaffManagement/StaffManagement.test.helper';
 import { getOrganizationLanguagesQuery } from 'mocks/Organization';
+import { MemoryRouter } from 'react-router';
 
 afterEach(cleanup);
 
@@ -17,9 +18,11 @@ const mocks = [getTicketQuery, getUsersQuery, getRoleNamesMock, getOrganizationL
 test('Render component correctly with the values', async () => {
   const setOpenDialogMock = vi.fn();
   render(
-    <MockedProvider mocks={mocks}>
-      <Ticket selectedTicket={'1'} setOpenDialog={setOpenDialogMock} />
-    </MockedProvider>
+    <MemoryRouter>
+      <MockedProvider mocks={mocks}>
+        <Ticket selectedTicket={'1'} setOpenDialog={setOpenDialogMock} />
+      </MockedProvider>
+    </MemoryRouter>
   );
 
   expect(screen.getByText('Loading...')).toBeInTheDocument();
