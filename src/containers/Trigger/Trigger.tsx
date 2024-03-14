@@ -253,7 +253,7 @@ export const Trigger = () => {
   });
 
   const { data: collections } = useQuery(GET_COLLECTIONS, {
-    variables: setVariables({ groupType }),
+    variables: isEditing ? setVariables() : setVariables({ groupType }),
   });
 
   const [validateTriggerFlow, { loading }] = useMutation(VALIDATE_TRIGGER, {
