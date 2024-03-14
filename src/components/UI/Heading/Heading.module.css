@@ -12,7 +12,6 @@
 }
 
 .HeadingTitle {
-  margin-left: 14px;
   vertical-align: middle;
   color: #191c1a;
   display: flex;
@@ -21,8 +20,11 @@
   font-size: 38px;
 }
 
+.HeadingWrapper {
+  margin-left: 46px;
+}
+
 .TextHeading {
-  margin: 12px 0 0 14px;
   font-weight: 400;
   color: #191c1a;
   font-size: 12px;

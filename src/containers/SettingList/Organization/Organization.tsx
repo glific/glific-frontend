@@ -261,6 +261,7 @@ export const Organization = () => {
 
   return (
     <FormLayout
+      partialPage
       {...queries}
       title="Organization settings"
       states={States}

@@ -25,6 +25,7 @@ import LogoutIcon from 'assets/images/icons/SideDrawer/LogoutIcon';
 import OrganizationIcon from 'assets/images/icons/SideDrawer/OrganizationIcon';
 import ConsultingIcon from 'assets/images/icons/SideDrawer/ConsultingIcon';
 import styles from './ListIcon.module.css';
+import FiberNewIcon from '@mui/icons-material/FiberNew';
 import { Badge } from '@mui/material';
 
 export interface ListIconProps {
@@ -63,6 +64,7 @@ export const ListIcon = ({ icon = '', selected = false, count }: ListIconProps) 
     logout: LogoutIcon,
     organization: OrganizationIcon,
     consulting: ConsultingIcon,
+    new: FiberNewIcon,
   };
 
   const iconImage = stringsToIcons[icon] && (

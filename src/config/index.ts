@@ -63,3 +63,5 @@ export const SAMPLE_SHEET_LINK =
   'https://docs.google.com/spreadsheets/d/1fRpFyicqrUFxd79u_dGC8UOHEtAT3rA-G2i4tvOgScw';
 export const BULK_APPLY_SAMPLE_LINK =
   'https://docs.google.com/spreadsheets/d/1x04wI9palh1Ag11TrdBbUj9pnyNOw8-I4834qN3idik';
+
+export const NEW_UI_BLOG = 'https://glific.org/glific-new-interface-changes/';

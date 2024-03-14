@@ -1,4 +1,5 @@
 .Container {
+  overflow: auto;
   width: 100%;
   background: #f8faf5;
   height: 100vh;
@@ -230,7 +231,7 @@
 .RegistrationBox input:hover,
 .OTPBox input,
 .OTPBox input:hover {
-  color: #93a29b;
+  color: #93a29b !important;
 }
 
 .RegistrationBox fieldset,

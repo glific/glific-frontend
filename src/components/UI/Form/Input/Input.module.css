@@ -70,7 +70,16 @@
   color: #aa9677;
 }
 
-.OutlinedInput {
+.OutlinedInput,
+.DarkOutlinedInput {
+  padding: 12.5px 14px;
+}
+
+.DarkOutlinedInput::placeholder {
+  color: #ece9e3;
+}
+
+.DarkOutlinedInput {
   padding: 12.5px 14px;
 }
 
