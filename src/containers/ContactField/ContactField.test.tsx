@@ -3,13 +3,16 @@ import { MockedProvider } from '@apollo/client/testing';
 
 import { setUserSession } from 'services/AuthService';
 import { ContactField } from './ContactField';
+import { MemoryRouter } from 'react-router';
 
 setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
 
 const wrapper = (
-  <MockedProvider mocks={[]} addTypename={false}>
-    <ContactField setOpenDialog={vi.fn()} />
-  </MockedProvider>
+  <MemoryRouter>
+    <MockedProvider mocks={[]} addTypename={false}>
+      <ContactField setOpenDialog={vi.fn()} />
+    </MockedProvider>
+  </MemoryRouter>
 );
 
 test('it renders contact form successfully', async () => {

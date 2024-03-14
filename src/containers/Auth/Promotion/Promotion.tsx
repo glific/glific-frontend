@@ -3,8 +3,6 @@ import MinimizeIcon from 'assets/images/icons/Minimize.svg?react';
 import MaximizeIcon from 'assets/images/icons/Maximize.svg?react';
 import styles from './Promotion.module.css';
 
-const hostname = location.hostname.replace('.glific.com', '');
-
 export const Promotion = () => {
   const [minimized, setMinimized] = useState(false);
 
@@ -15,7 +13,7 @@ export const Promotion = () => {
         <div className={styles.HeaderText}>NEW!</div>
         {minimized ? (
           <>
-            <div className={styles.GiftCard}>New Website Address!</div>
+            <div className={styles.GiftCard}>New Look Alert!</div>
             <MaximizeIcon
               className={styles.AccordianIcon}
               onClick={() => setMinimized(!minimized)}
@@ -34,27 +32,19 @@ export const Promotion = () => {
             <div className={styles.BodyListText}>
               <span>{1}</span>
               <div>
-                We're Moving: <strong>tides.coloredcow.com</strong> is changing to{' '}
-                <strong>glific.com</strong>! To access your Glific account use{' '}
-                <strong>{hostname}.glific.com </strong>
-                instead of{' '}
-                <strong>
-                  {hostname}
-                  .tides.coloredcow.com
-                </strong>
+                <strong>Big News:</strong> Glific gets a fresh interface starting March 12th! We've
+                improved our design for a better experience.
               </div>
             </div>
             <div className={styles.BodyListText}>
               <span>2</span>
               <div>
-                What this means? <strong>{hostname}.tides.coloredcow.com </strong>
-                page will become inactive on 31st March. Bookmark the new Glific address right away
+                <strong>What It Means:</strong> From March 12th, enjoy Glific's sleek, modern look,
+                making navigation smoother.
               </div>
             </div>
             <div className={styles.BodyListText}>
-              <div>
-                <strong>Note: </strong> Please ignore if you already have a glific.com account
-              </div>
+              <div>Discover the new Glific. We're excited for you to see the updates!</div>
             </div>
           </div>
           {/* <a className={styles.Link} href={LINK} target="_blank" rel="noreferrer">
