@@ -207,22 +207,18 @@ export const ChatConversations = ({
       </div>
     ) : null;
 
-  let filter: any = filterComponent;
-
-  if (!filter) {
-    filter = (
-      <SavedSearchToolbar
-        savedSearchCriteriaCallback={handlerSavedSearchCriteria}
-        refetchData={{ savedSearches }}
-        onSelect={() => {
-          // on select searches remove search value & disable search mode
-          setSearchVal(undefined);
-          if (enableSearchMode) setEnableSearchMode(false);
-        }}
-        searchMode={enableSearchMode}
-      />
-    );
-  }
+  let filter: any = filterComponent || (
+    <SavedSearchToolbar
+      savedSearchCriteriaCallback={handlerSavedSearchCriteria}
+      refetchData={{ savedSearches }}
+      onSelect={() => {
+        // on select searches remove search value & disable search mode
+        setSearchVal(undefined);
+        if (enableSearchMode) setEnableSearchMode(false);
+      }}
+      searchMode={enableSearchMode}
+    />
+  );
 
   return (
     <Container className={styles.ChatConversations} disableGutters>

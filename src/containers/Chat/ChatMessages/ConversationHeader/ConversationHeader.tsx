@@ -602,8 +602,7 @@ export const ConversationHeader = ({
     );
   }
 
-  let timeleft: any;
-  timeleft = (
+  const timeleft: any = (
     <div className={styles.SessionTimer} data-testid="sessionTimer">
       <span>Time left:</span>
       <Timer
@@ -674,7 +673,12 @@ export const ConversationHeader = ({
               </div>
             </div>
             {conversationHeaderDetails}
-            <div className={styles.Chat} onKeyDown={() => showChats()} onClick={() => showChats()}>
+            <div
+              role="button"
+              className={styles.Chat}
+              onKeyDown={() => showChats()}
+              onClick={() => showChats()}
+            >
               <IconButton className={styles.MobileIcon}>
                 <IconComponent data-testid="icon-component" />
               </IconButton>
