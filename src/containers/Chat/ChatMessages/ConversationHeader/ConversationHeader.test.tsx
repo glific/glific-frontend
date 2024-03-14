@@ -280,7 +280,7 @@ test('it should render correct options for whatsapp group', async () => {
   await waitFor(() => {
     expect(screen.getByText('View group details')).toBeInTheDocument();
     expect(screen.getByText('Add to collection')).toBeInTheDocument();
-    // expect(screen.getByText('Start a flow')).toBeInTheDocument();
+    expect(screen.getByText('Start a flow')).toBeInTheDocument();
   });
 });
 

@@ -86,6 +86,17 @@ export const ADD_FLOW_TO_CONTACT = gql`
   }
 `;
 
+export const ADD_FLOW_TO_WA_GROUP = gql`
+  mutation StartWaGroupFlow($flowId: ID!, $waGroupId: ID!) {
+    startWaGroupFlow(flowId: $flowId, waGroupId: $waGroupId) {
+      errors {
+        message
+      }
+      success
+    }
+  }
+`;
+
 export const CREATE_FLOW_COPY = gql`
   mutation copyFlow($id: ID!, $input: FlowInput!) {
     copyFlow(id: $id, input: $input) {
