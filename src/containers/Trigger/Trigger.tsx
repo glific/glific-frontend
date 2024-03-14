@@ -53,20 +53,11 @@ const checkDateTimeValidation = (startAtValue: string, startDateValue: string) =
   return true;
 };
 
-const setPayload = (payload: any, roles: any) => {
+const setPayload = (payload: any, roles: any, groupType: any) => {
   const payloadCopy = payload;
 
-  const {
-    startDate,
-    startTime,
-    isActive,
-    flowId,
-    frequencyValues,
-    groupIds,
-    endDate,
-    frequency,
-    groupType,
-  } = payloadCopy;
+  const { startDate, startTime, isActive, flowId, frequencyValues, groupIds, endDate, frequency } =
+    payloadCopy;
 
   const groups = groupIds.map((group: any) => parseInt(group.id));
   const startAtTime = dayjs(startTime).format(EXTENDED_TIME_FORMAT);
@@ -456,7 +447,6 @@ export const Trigger = () => {
         groupValue.includes(group.label)
       );
       setGroupIds(selectedGroups);
-      console.log(collections?.groups, selectedGroups);
     }
   };
 
@@ -466,7 +456,7 @@ export const Trigger = () => {
       states={states}
       roleAccessSupport
       setStates={setStates}
-      setPayload={(payload: any) => setPayload(payload, roles)}
+      setPayload={(payload: any) => setPayload(payload, roles, groupType)}
       validationSchema={FormSchema}
       languageSupport={false}
       listItemName="trigger"

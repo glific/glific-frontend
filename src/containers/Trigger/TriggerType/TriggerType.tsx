@@ -5,11 +5,13 @@ export interface TriggerTypeProps {
   groupType: string;
   isWhatsAppGroupEnabled: boolean;
   handleOnChange?: any;
+  form: { dirty: any; touched: any; errors: any; setFieldValue: any; values: any };
 }
 export const TriggerType = ({
   groupType,
   isWhatsAppGroupEnabled,
   handleOnChange,
+  form: { setFieldValue },
 }: TriggerTypeProps) => {
   const isChecked = (value: string) => groupType === value;
 
@@ -26,7 +28,10 @@ export const TriggerType = ({
           name="trigger-type"
           row
           value={groupType}
-          onChange={(event) => handleOnChange(event.target.value)}
+          onChange={(event) => {
+            handleOnChange(event.target.value);
+            setFieldValue(event.target.value);
+          }}
         >
           <div className={styles.RadioLabelWrapper}>
             <FormControlLabel
