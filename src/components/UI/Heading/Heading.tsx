@@ -10,7 +10,7 @@ export interface HeadingProps {
 export const Heading = ({ formTitle, helpData, showHeaderHelp = true }: HeadingProps) => {
   return (
     <div className={styles.Heading} data-testid="heading">
-      <div>
+      <div className={styles.HeadingWrapper}>
         <div className={styles.HeadingTitle}>
           <div className={styles.TitleText}>{formTitle}</div>
           {helpData ? <HelpIcon helpData={helpData} /> : ''}

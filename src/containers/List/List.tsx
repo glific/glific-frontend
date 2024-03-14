@@ -22,6 +22,7 @@ import { getUpdatedList, setListSession, getLastListSessionValues } from 'servic
 import styles from './List.module.css';
 import Track from 'services/TrackService';
 import HelpIcon from 'components/UI/HelpIcon/HelpIcon';
+import { HelpDataProps } from 'common/HelpData';
 
 const actionListMap = (item: any, actionList: any, hasMoreOption: boolean) => {
   return actionList.map((action: any, index: number) => {
@@ -92,12 +93,6 @@ export interface ColumnNames {
   label: string;
   sort?: boolean;
   order?: string;
-}
-
-export interface HelpDataProps {
-  heading: string;
-  body: JSX.Element;
-  link: string;
 }
 
 export interface ListProps {

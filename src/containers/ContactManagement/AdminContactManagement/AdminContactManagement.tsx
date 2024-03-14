@@ -12,6 +12,7 @@ import { MOVE_CONTACTS } from 'graphql/mutations/Contact';
 import { exportCsvFile, slicedString } from 'common/utils';
 import { setNotification } from 'common/notification';
 import styles from './AdminContactManagement.module.css';
+import { contactVariablesInfo } from 'common/HelpData';
 
 export const AdminContactManagement = () => {
   const [fileName, setFileName] = useState<string>('');
@@ -56,14 +57,13 @@ export const AdminContactManagement = () => {
     };
   };
 
-  const helpData = {
-    heading: '',
-    body: '',
-    link: 'https://glific.github.io/docs/docs/FAQ/Update%20collection%20with%20bulk%20contacts%20or%20contact%20fields/',
-  };
   return (
     <div>
-      <Heading formTitle="Contact Management" showHeaderHelp={false} helpData={helpData} />
+      <Heading
+        formTitle="Contact Management"
+        showHeaderHelp={false}
+        helpData={contactVariablesInfo}
+      />
       <div className={styles.Container}>
         <div className={styles.Instructions}>
           You can move contacts to collections in bulk or update their contact information. Please
