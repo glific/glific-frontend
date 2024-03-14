@@ -29,7 +29,7 @@ import { LocationRequestTemplate } from './LocationRequestTemplate/LocationReque
 export interface ChatMessageProps {
   id: number;
   body: string;
-  contactId: number;
+  entityId: number;
   receiver: {
     id: number;
   };
@@ -63,7 +63,7 @@ export const ChatMessage = ({
   popup,
   focus,
   sender,
-  contactId,
+  entityId,
   insertedAt,
   onClick,
   type,
@@ -149,7 +149,7 @@ export const ChatMessage = ({
   if (groups) {
     isSender = status === 'received';
   } else {
-    isSender = sender.id === contactId;
+    isSender = sender.id === entityId;
   }
 
   if (isSender) {
@@ -322,7 +322,7 @@ export const ChatMessage = ({
               <div className={styles.ReplyMainWrap}>
                 <div>
                   <div className={styles.ReplyContact}>
-                    {contextMessage.sender.id === contactId ? contextMessage.sender.name : 'You'}
+                    {contextMessage.sender.id === entityId ? contextMessage.sender.name : 'You'}
                   </div>
                   <div className={styles.ReplyMessageBody}>
                     <ChatMessageType

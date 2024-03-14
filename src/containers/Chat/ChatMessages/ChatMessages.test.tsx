@@ -230,7 +230,7 @@ window.HTMLElement.prototype.scrollIntoView = vi.fn();
 const chatMessages = (
   <MemoryRouter>
     <ApolloProvider client={client}>
-      <ChatMessages contactId="2" />
+      <ChatMessages entityId="2" />
     </ApolloProvider>
   </MemoryRouter>
 );
@@ -296,7 +296,7 @@ test('Contact: if not cache', async () => {
     <ApolloProvider client={client}>
       <Router>
         <MockedProvider mocks={[...CONVERSATION_MOCKS, ...mocksWithConversation]}>
-          <ChatMessages contactId="5" />
+          <ChatMessages entityId="5" />
         </MockedProvider>
       </Router>
     </ApolloProvider>
@@ -379,7 +379,7 @@ test('click on Clear conversation', async () => {
   const chatMessages = (
     <MemoryRouter>
       <ApolloProvider client={client}>
-        <ChatMessages contactId="2" />
+        <ChatMessages entityId="2" />
       </ApolloProvider>
     </MemoryRouter>
   );
@@ -433,7 +433,7 @@ test('Load more messages', async () => {
   const chatMessages = (
     <MemoryRouter>
       <ApolloProvider client={client}>
-        <ChatMessages contactId="2" />
+        <ChatMessages entityId="2" />
       </ApolloProvider>
     </MemoryRouter>
   );
@@ -494,7 +494,7 @@ let route = 'group/chat';
 const chatMessagesWAGroups = (
   <MemoryRouter initialEntries={[route]}>
     <ApolloProvider client={groupClient}>
-      <ChatMessages contactId="2" />
+      <ChatMessages entityId="2" />
     </ApolloProvider>
   </MemoryRouter>
 );

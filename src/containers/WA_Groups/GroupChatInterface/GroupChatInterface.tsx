@@ -100,7 +100,7 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
       <ChatConversations
         phonenumber={phonenumber}
         filterComponent={phonesDropDown}
-        contactId={selectedGroupId}
+        entityId={selectedGroupId}
       />
     );
 
@@ -114,7 +114,7 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
           NoConversations
         ) : (
           <ChatMessages
-            contactId={selectedGroupId}
+            entityId={selectedGroupId}
             collectionId={selectedCollectionId}
             phoneId={phonenumber}
             setPhonenumber={setPhonenumber}

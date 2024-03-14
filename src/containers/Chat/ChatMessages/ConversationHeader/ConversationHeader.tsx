@@ -56,7 +56,7 @@ import { TerminateFlow } from './TerminateFlow/TerminateFlow';
 import { showChats } from 'common/responsive';
 import { slicedString } from 'common/utils';
 import { CollectionInformation } from '../../../Collection/CollectionInformation/CollectionInformation';
-import AddContactsToCollection from '../AddContactsToCollection/AddContactsToCollection';
+import AddToCollection from '../AddToCollection/AddToCollection';
 
 import styles from './ConversationHeader.module.css';
 
@@ -537,7 +537,7 @@ export const ConversationHeader = ({
 
   if (addContactsDialogShow) {
     dialogBox = (
-      <AddContactsToCollection
+      <AddToCollection
         groups={groups}
         collectionId={collectionId}
         setDialog={setAddContactsDialogShow}

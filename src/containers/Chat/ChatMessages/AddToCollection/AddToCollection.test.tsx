@@ -1,4 +1,4 @@
-import { AddContactsToCollection } from './AddContactsToCollection';
+import { AddToCollection } from './AddToCollection';
 import { render, cleanup, waitFor, fireEvent } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { vi } from 'vitest';
@@ -28,7 +28,7 @@ afterEach(cleanup);
 
 const addContacts = (
   <MockedProvider mocks={mocks} addTypename={false}>
-    <AddContactsToCollection {...defaultProps} />
+    <AddToCollection {...defaultProps} />
   </MockedProvider>
 );
 

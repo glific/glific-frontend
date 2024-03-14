@@ -341,7 +341,7 @@ export const ConversationList = ({
           }}
           entityType={entityType}
           index={index}
-          contactId={entityId}
+          entityId={entityId}
           contactName={displayName}
           lastMessage={conversation}
           contactIsOrgRead={contactIsOrgRead}
@@ -448,7 +448,7 @@ export const ConversationList = ({
             }
           }}
           index={index}
-          contactId={entityId}
+          entityId={entityId}
           entityType={entityType}
           contactName={displayName}
           lastMessage={lastMessage}

@@ -125,7 +125,7 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
       // let's enable simulator only when contact tab is shown
 
       listingContent = (
-        <ChatConversations contactId={simulatorId > 0 ? simulatorId : selectedContactId} />
+        <ChatConversations entityId={simulatorId > 0 ? simulatorId : selectedContactId} />
       );
 
       heading = 'Contacts';
@@ -138,7 +138,7 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
       <>
         <div className={`${styles.ChatMessages} chatMessages`}>
           <ChatMessages
-            contactId={simulatorId > 0 ? simulatorId : selectedContactId}
+            entityId={simulatorId > 0 ? simulatorId : selectedContactId}
             collectionId={selectedCollectionId}
           />
         </div>
