@@ -10,7 +10,9 @@ export const WA_MESSAGE_RECEIVED_SUBSCRIPTION = gql`
       flow
       type
       status
-      waGroupId
+      waGroup {
+        id
+      }
       contact {
         name
       }
@@ -47,6 +49,9 @@ export const WA_MESSAGE_SENT_SUBSCRIPTION = gql`
       type
       messageNumber
       insertedAt
+      waGroup {
+        id
+      }
       media {
         url
         caption
@@ -70,7 +75,6 @@ export const WA_MESSAGE_SENT_SUBSCRIPTION = gql`
         insertedAt
       }
       status
-      waGroupId
     }
   }
 `;
