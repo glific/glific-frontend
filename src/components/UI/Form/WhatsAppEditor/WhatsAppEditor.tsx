@@ -44,9 +44,7 @@ export const WhatsAppEditor = ({
   };
 
   useEffect(() => {
-    if (readOnly) {
-      editor.setEditable(false);
-    }
+    editor.setEditable(!readOnly);
   }, [readOnly]);
 
   useEffect(() => {

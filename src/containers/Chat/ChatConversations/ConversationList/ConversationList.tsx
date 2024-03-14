@@ -264,7 +264,7 @@ export const ConversationList = ({
     }
 
     return (
-      <Fragment key={contact.id}>
+      <Fragment>
         {index === 0 ? header : null}
         <ChatConversation
           key={contact.id}
