@@ -1,7 +1,7 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { GET_WA_MANAGED_PHONES } from 'graphql/queries/WA_Groups';
 import WaManagedPhones from './WaManagedPhones';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, waitFor } from '@testing-library/react';
 import { setNotification } from 'common/notification';
 import { SYNC_GROUPS } from 'graphql/mutations/Group';
 
