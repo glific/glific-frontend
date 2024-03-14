@@ -7,7 +7,6 @@ import { ConversationList } from '../ChatConversations/ConversationList/Conversa
 
 export interface CollectionConversationsProps {
   collectionId?: number | null;
-  groups?: boolean;
 }
 
 const CollectionConversations = ({ collectionId }: CollectionConversationsProps) => {

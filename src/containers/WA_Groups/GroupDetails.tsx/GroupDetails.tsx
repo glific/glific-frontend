@@ -37,12 +37,10 @@ export const GroupDetails = () => {
     </div>
   );
 
-  const getColumns = (contact: any) => {
-    return {
-      name: getName(contact?.name),
-      phone: getPhoneNumber(contact?.phone),
-    };
-  };
+  const getColumns = (contact: any) => ({
+    name: getName(contact?.name),
+    phone: getPhoneNumber(contact?.phone),
+  });
 
   const collectionIcon = <CollectionIcon className={styles.CollectionIcon} />;
   const columnStyles = [styles.Name, styles.Phone, styles.Actions];

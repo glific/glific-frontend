@@ -207,8 +207,10 @@ export const ChatConversations = ({
       </div>
     ) : null;
 
-  if (!filterComponent) {
-    filterComponent = (
+  let filter: any = filterComponent;
+
+  if (!filter) {
+    filter = (
       <SavedSearchToolbar
         savedSearchCriteriaCallback={handlerSavedSearchCriteria}
         refetchData={{ savedSearches }}
@@ -236,7 +238,7 @@ export const ChatConversations = ({
           iconFront
         />
       </div>
-      {filterComponent}
+      {filter}
       <ConversationList
         phonenumber={phonenumber}
         searchVal={searchVal}

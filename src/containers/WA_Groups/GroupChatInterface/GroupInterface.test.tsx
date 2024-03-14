@@ -147,7 +147,7 @@ const client = new ApolloClient({
   assumeImmutableResults: true,
 });
 
-window.HTMLElement.prototype.scrollIntoView = function () {};
+window.HTMLElement.prototype.scrollIntoView = function scrollIntoViewMock() {};
 
 afterEach(cleanup);
 

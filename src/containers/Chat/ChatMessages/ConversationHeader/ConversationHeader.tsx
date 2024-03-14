@@ -674,7 +674,7 @@ export const ConversationHeader = ({
               </div>
             </div>
             {conversationHeaderDetails}
-            <div className={styles.Chat} onClick={() => showChats()}>
+            <div className={styles.Chat} onKeyDown={() => showChats()} onClick={() => showChats()}>
               <IconButton className={styles.MobileIcon}>
                 <IconComponent data-testid="icon-component" />
               </IconButton>

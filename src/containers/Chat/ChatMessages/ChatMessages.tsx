@@ -23,6 +23,8 @@ import {
   GROUP_COLLECTION_SEARCH_QUERY_VARIABLES,
 } from '../../../common/constants';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
+import { GROUP_SEARCH_QUERY } from 'graphql/queries/WA_Groups';
+import { SEND_MESSAGE_IN_WA_GROUP } from 'graphql/mutations/Group';
 import {
   CREATE_AND_SEND_MESSAGE_MUTATION,
   CREATE_AND_SEND_MESSAGE_TO_COLLECTION_MUTATION,
@@ -31,8 +33,6 @@ import { getCachedConverations, updateConversationsCache } from '../../../servic
 import { addLogs, getDisplayName, isSimulator } from '../../../common/utils';
 import { CollectionInformation } from '../../Collection/CollectionInformation/CollectionInformation';
 import { LexicalWrapper } from 'common/LexicalWrapper';
-import { SEND_MESSAGE_IN_WA_GROUP } from 'graphql/mutations/Group';
-import { GROUP_SEARCH_QUERY } from 'graphql/queries/WA_Groups';
 import {
   getCachedGroupConverations,
   updateGroupConversationsCache,
@@ -130,7 +130,7 @@ export const ChatMessages = ({ contactId, collectionId, phoneId }: ChatMessagesP
     },
   });
 
-  let search_query = groups ? GROUP_SEARCH_QUERY : SEARCH_QUERY;
+  let searchQuery = groups ? GROUP_SEARCH_QUERY : SEARCH_QUERY;
 
   // get the conversations stored from the cache
   let queryVariables = groups ? GROUP_QUERY_VARIABLES : SEARCH_QUERY_VARIABLES;
@@ -145,7 +145,7 @@ export const ChatMessages = ({ contactId, collectionId, phoneId }: ChatMessagesP
     loading: conversationLoad,
     error: conversationError,
     data: allConversations,
-  }: any = useQuery(search_query, {
+  }: any = useQuery(searchQuery, {
     variables: queryVariables,
     fetchPolicy: 'cache-only',
   });
@@ -221,7 +221,7 @@ export const ChatMessages = ({ contactId, collectionId, phoneId }: ChatMessagesP
     },
   });
 
-  const [getSearchQuery, { called, data, loading, error }] = useLazyQuery<any>(search_query, {
+  const [getSearchQuery, { called, data, loading, error }] = useLazyQuery<any>(searchQuery, {
     onCompleted: (searchData) => {
       if (searchData && searchData.search.length > 0) {
         // get the conversations from cache
@@ -573,24 +573,22 @@ export const ChatMessages = ({ contactId, collectionId, phoneId }: ChatMessagesP
   if (conversationInfo && conversationInfo.messages && conversationInfo.messages?.length > 0) {
     let reverseConversation = [...conversationInfo.messages];
 
-    reverseConversation = reverseConversation.map((message: any, index: number) => {
-      return (
-        <ChatMessage
-          groups={groups}
-          {...message}
-          contactId={contactId}
-          key={message.id}
-          popup={message.id === showDropdown}
-          onClick={() => showEditDialog(message.id)}
-          focus={index === 0}
-          jumpToMessage={jumpToMessage}
-          daySeparator={showDaySeparator(
-            reverseConversation[index].insertedAt,
-            reverseConversation[index + 1] ? reverseConversation[index + 1].insertedAt : null
-          )}
-        />
-      );
-    });
+    reverseConversation = reverseConversation.map((message: any, index: number) => (
+      <ChatMessage
+        groups={groups}
+        {...message}
+        contactId={contactId}
+        key={message.id}
+        popup={message.id === showDropdown}
+        onClick={() => showEditDialog(message.id)}
+        focus={index === 0}
+        jumpToMessage={jumpToMessage}
+        daySeparator={showDaySeparator(
+          reverseConversation[index].insertedAt,
+          reverseConversation[index + 1] ? reverseConversation[index + 1].insertedAt : null
+        )}
+      />
+    ));
 
     messageList = reverseConversation
       .sort((currentMessage: any, nextMessage: any) => currentMessage.id - nextMessage.id)

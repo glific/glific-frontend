@@ -78,27 +78,25 @@ export const CollectionGroupList = () => {
   const dialogMessage = 'The group will no longer receive messages sent to this collection';
 
   return (
-    <>
-      <List
-        dialogTitle={dialogTitle}
-        columnNames={columnNames}
-        title={title}
-        additionalAction={additionalAction}
-        listItem="waGroups"
-        listItemName="waGroups"
-        searchParameter={['term']}
-        filters={{ includeGroups: collectionId }}
-        button={{ show: false, label: '' }}
-        pageLink="contact"
-        listIcon={collectionIcon}
-        deleteModifier={{
-          variables: getDeleteQueryVariables,
-        }}
-        editSupport={false}
-        dialogMessage={dialogMessage}
-        {...queries}
-        {...columnAttributes}
-      />
-    </>
+    <List
+      dialogTitle={dialogTitle}
+      columnNames={columnNames}
+      title={title}
+      additionalAction={additionalAction}
+      listItem="waGroups"
+      listItemName="waGroups"
+      searchParameter={['term']}
+      filters={{ includeGroups: collectionId }}
+      button={{ show: false, label: '' }}
+      pageLink="contact"
+      listIcon={collectionIcon}
+      deleteModifier={{
+        variables: getDeleteQueryVariables,
+      }}
+      editSupport={false}
+      dialogMessage={dialogMessage}
+      {...queries}
+      {...columnAttributes}
+    />
   );
 };

@@ -14,8 +14,7 @@ interface WaManagedPhonesProps {
   phonenumber: any;
   setPhonenumber: any;
 }
-
-export const WaManagedPhones = ({ phonenumber, setPhonenumber }: WaManagedPhonesProps) => {
+const WaManagedPhones = ({ phonenumber, setPhonenumber }: WaManagedPhonesProps) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
 
@@ -30,8 +29,8 @@ export const WaManagedPhones = ({ phonenumber, setPhonenumber }: WaManagedPhones
 
   const [syncGroups] = useMutation(SYNC_GROUPS, {
     fetchPolicy: 'network-only',
-    onCompleted: (data) => {
-      if (data.errors) {
+    onCompleted: (responseData) => {
+      if (responseData.errors) {
         setNotification(t('Sorry, failed to sync whatsapp groups.'), 'warning');
       } else {
         setNotification(t('Whatsapp groups synced successfully.'), 'success');
@@ -94,3 +93,5 @@ export const WaManagedPhones = ({ phonenumber, setPhonenumber }: WaManagedPhones
     </div>
   );
 };
+
+export default WaManagedPhones;

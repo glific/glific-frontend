@@ -26,7 +26,7 @@ import { addLogs, getDisplayName, getDisplayNameForSearch } from 'common/utils';
 import ChatConversation from '../ChatConversation/ChatConversation';
 import styles from './ConversationList.module.css';
 import { GROUP_SEARCH_MULTI_QUERY, GROUP_SEARCH_QUERY } from 'graphql/queries/WA_Groups';
-import { useLocation } from 'react-router';
+import { useLocation } from 'react-router-dom';
 import { Timer } from 'components/UI/Timer/Timer';
 
 interface ConversationListProps {
@@ -79,8 +79,8 @@ export const ConversationList = ({
     const variables = JSON.parse(savedSearchCriteria);
     queryVariables = variables;
   }
-  let search_query: any = groups ? GROUP_SEARCH_QUERY : SEARCH_QUERY;
-  let search_multi_query: any = groups ? GROUP_SEARCH_MULTI_QUERY : SEARCH_MULTI_QUERY;
+  let searchQuery: any = groups ? GROUP_SEARCH_QUERY : SEARCH_QUERY;
+  let searchMultiQuery: any = groups ? GROUP_SEARCH_MULTI_QUERY : SEARCH_MULTI_QUERY;
   let contactOptions: string = groups ? 'waGroupOpts' : 'contactOpts';
   let messageOptions: string = groups ? 'waMessageOpts' : 'messageOpts';
   let searchOptions: string = groups ? 'filter' : 'searchFilter';
@@ -115,7 +115,7 @@ export const ConversationList = ({
     error: conversationError,
     data,
     refetch,
-  } = useQuery<any>(search_query, {
+  } = useQuery<any>(searchQuery, {
     variables: queryVariables,
     fetchPolicy: 'cache-only',
   });
@@ -211,10 +211,10 @@ export const ConversationList = ({
   });
 
   const [getFilterConvos, { called, loading, error, data: searchData }] =
-    useLazyQuery<any>(search_query);
+    useLazyQuery<any>(searchQuery);
 
   // fetch data when typing for search
-  const [getFilterSearch] = useLazyQuery<any>(search_multi_query, {
+  const [getFilterSearch] = useLazyQuery<any>(searchMultiQuery, {
     onCompleted: (multiSearch) => {
       setSearchMultiData(multiSearch);
     },
@@ -293,7 +293,6 @@ export const ConversationList = ({
 
   const buildChatConversation = (index: number, header: any, conversation: any) => {
     // We don't have the contact data in the case of contacts.
-    let chatType: any = groups ? 'waGroup' : 'contact';
     let entity = conversation;
     let selectedRecord = false;
     if (selectedContactId === entity.id) {
@@ -524,7 +523,7 @@ export const ConversationList = ({
 
       client
         .query({
-          query: search_query,
+          query: searchQuery,
           variables: conversationLoadMoreVariables,
         })
         .then(({ data: loadMoreData }) => {
