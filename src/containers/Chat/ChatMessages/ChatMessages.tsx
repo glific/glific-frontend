@@ -24,7 +24,10 @@ import {
 } from '../../../common/constants';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 import { GROUP_SEARCH_QUERY } from 'graphql/queries/WA_Groups';
-import { SEND_MESSAGE_IN_WA_GROUP } from 'graphql/mutations/Group';
+import {
+  SEND_MESSAGE_IN_WA_GROUP,
+  SEND_MESSAGE_IN_WA_GROUP_COLLECTION,
+} from 'graphql/mutations/Group';
 import {
   CREATE_AND_SEND_MESSAGE_MUTATION,
   CREATE_AND_SEND_MESSAGE_TO_COLLECTION_MUTATION,
@@ -116,6 +119,9 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
 
   let conversationIndex: number = -1;
   let SEND_MESSAGE_MUTATION = groups ? SEND_MESSAGE_IN_WA_GROUP : CREATE_AND_SEND_MESSAGE_MUTATION;
+  let SEND_MESSAGE_MUTATION_COLLECTION = groups
+    ? SEND_MESSAGE_IN_WA_GROUP_COLLECTION
+    : CREATE_AND_SEND_MESSAGE_TO_COLLECTION_MUTATION;
   // create message mutation
   const [createAndSendMessage] = useMutation(SEND_MESSAGE_MUTATION, {
     onCompleted: () => {
@@ -288,7 +294,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
 
   let messageList: any;
 
-  const [sendMessageToCollection] = useMutation(CREATE_AND_SEND_MESSAGE_TO_COLLECTION_MUTATION, {
+  const [sendMessageToCollection] = useMutation(SEND_MESSAGE_MUTATION_COLLECTION, {
     refetchQueries: [{ query: SEARCH_QUERY, variables: SEARCH_QUERY_VARIABLES }],
     onCompleted: () => {
       scrollToLatestMessage();

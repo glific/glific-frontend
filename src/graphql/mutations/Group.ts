@@ -42,3 +42,14 @@ export const CREATE_GROUP_CONTACT = gql`
     }
   }
 `;
+
+export const SEND_MESSAGE_IN_WA_GROUP_COLLECTION = gql`
+  mutation SendMessageToWaGroupCollection($groupId: ID!, $input: CollectionWaMessageInput!) {
+    sendMessageToWaGroupCollection(groupId: $groupId, input: $input) {
+      errors {
+        message
+      }
+      success
+    }
+  }
+`;
