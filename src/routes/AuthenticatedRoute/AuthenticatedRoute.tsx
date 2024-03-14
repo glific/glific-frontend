@@ -17,7 +17,7 @@ import Providers from 'containers/SettingList/Providers/Providers';
 import Organization from 'containers/SettingList/Organization/Organization';
 import GroupChatInterface from 'containers/WA_Groups/GroupChatInterface/GroupChatInterface';
 import GroupDetails from 'containers/WA_Groups/GroupDetails.tsx/GroupDetails';
-import { CollectionGroupList } from 'containers/WA_Groups/GroupCollections/GroupCollectionList';
+import { GroupCollectionList } from 'containers/WA_Groups/GroupCollections/GroupCollectionList';
 
 const Chat = lazy(() => import('containers/Chat/Chat'));
 const Layout = lazy(() => import('components/UI/Layout/Layout'));
@@ -150,7 +150,7 @@ const routeAdmin = (
     <Route path="group/collection" element={<CollectionList />} />
     <Route path="group/collection/add" element={<Collection />} />
     <Route path="group/collection/:id/edit" element={<Collection />} />
-    <Route path="collection/:id/groups" element={<CollectionGroupList />} />
+    <Route path="collection/:id/groups" element={<GroupCollectionList />} />
 
     <Route path="/*" element={<Chat />} />
   </Routes>

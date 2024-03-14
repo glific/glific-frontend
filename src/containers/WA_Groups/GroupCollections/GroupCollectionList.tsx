@@ -11,11 +11,6 @@ import styles from './GroupCollectionList.module.css';
 import { GET_COLLECTION, GROUP_GET_COLLECTION } from 'graphql/queries/Collection';
 import { useQuery } from '@apollo/client';
 
-export interface CollectionGroupListProps {
-  title: string;
-  descriptionBox?: any;
-}
-
 const getName = (label: string) => (
   <div>
     <div className={styles.NameText}>{label}</div>
@@ -43,7 +38,7 @@ const columnAttributes = {
   columnStyles,
 };
 
-export const CollectionGroupList = () => {
+export const GroupCollectionList = () => {
   const { t } = useTranslation();
   const params = useParams();
 

@@ -88,7 +88,7 @@ const WaManagedPhones = ({ phonenumber, setPhonenumber }: WaManagedPhonesProps) 
         aria-hidden="true"
         onClick={() => handleSyncGroups()}
       >
-        {loading ? <CircularProgress size={20} /> : 'SYNC'}
+        {loading ? <CircularProgress data-testid="loading" size={20} /> : 'SYNC'}
       </Button>
     </div>
   );
