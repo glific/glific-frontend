@@ -73,7 +73,7 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
 
   useEffect(() => {
     const currentTab = tabs.filter((tab) => location.pathname === tab.link);
-    if (currentTab && currentTab.length) {
+    if (currentTab.length) {
       setValue(currentTab[0].link);
     }
   }, [location]);

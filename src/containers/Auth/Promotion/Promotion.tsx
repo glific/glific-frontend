@@ -3,8 +3,6 @@ import MinimizeIcon from 'assets/images/icons/Minimize.svg?react';
 import MaximizeIcon from 'assets/images/icons/Maximize.svg?react';
 import styles from './Promotion.module.css';
 
-const hostname = location.hostname.replace('.glific.com', '');
-
 export const Promotion = () => {
   const [minimized, setMinimized] = useState(false);
 
