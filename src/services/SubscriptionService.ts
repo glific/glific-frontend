@@ -69,8 +69,12 @@ export const getSubscriptionDetails = (action: string, subscriptionData: any, gr
         : subscriptionData.data.receivedMessage.sender.id;
       break;
     case 'COLLECTION':
-      newMessage = subscriptionData.data.sentGroupMessage;
-      collectionId = subscriptionData.data.sentGroupMessage.groupId.toString();
+      newMessage = groups
+        ? subscriptionData.data.sentWaGroupCollectionMessage
+        : subscriptionData.data.sentGroupMessage;
+      collectionId = groups
+        ? subscriptionData.data.sentWaGroupCollectionMessage.groupId
+        : subscriptionData.data.sentGroupMessage.groupId.toString();
       break;
     case 'STATUS':
       // set the receiver contact id

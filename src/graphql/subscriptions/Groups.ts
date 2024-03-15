@@ -78,3 +78,42 @@ export const WA_MESSAGE_SENT_SUBSCRIPTION = gql`
     }
   }
 `;
+
+export const SENT_MESSAGE_WA_GROUP_COLLECTION = gql`
+  subscription SentWaGroupCollectionMessage($organizationId: ID!) {
+    sentWaGroupCollectionMessage(organizationId: $organizationId) {
+      id
+      body
+      flow
+      type
+      messageNumber
+      insertedAt
+      media {
+        url
+        caption
+      }
+      errors
+      contextMessage {
+        body
+        contextId
+        messageNumber
+        errors
+        media {
+          caption
+          sourceUrl
+          id
+          url
+        }
+        type
+        insertedAt
+      }
+      contact {
+        name
+      }
+      waGroup {
+        id
+      }
+      status
+    }
+  }
+`;

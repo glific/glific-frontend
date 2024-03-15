@@ -11,6 +11,7 @@ import { setErrorMessage } from 'common/notification';
 import { randomIntFromInterval, addLogs } from 'common/utils';
 import { GROUP_SEARCH_QUERY } from 'graphql/queries/WA_Groups';
 import {
+  SENT_MESSAGE_WA_GROUP_COLLECTION,
   WA_MESSAGE_RECEIVED_SUBSCRIPTION,
   WA_MESSAGE_SENT_SUBSCRIPTION,
 } from 'graphql/subscriptions/Groups';
@@ -89,7 +90,7 @@ export const GroupMessageSubscription = ({ setDataLoaded }: GroupMessageProps) =
           return cachedConversations;
         }
       }
-      const { newMessage, entityId, messageStatusData } = getSubscriptionDetails(
+      const { newMessage, entityId, collectionId, messageStatusData } = getSubscriptionDetails(
         action,
         subscriptionData,
         true
@@ -99,8 +100,12 @@ export const GroupMessageSubscription = ({ setDataLoaded }: GroupMessageProps) =
       let conversationIndex = 0;
       let conversationFound = false;
       if (action === 'COLLECTION') {
+        console.log(collectionId, cachedConversations);
+
         cachedConversations.search.forEach((conversation: any, index: any) => {
-          if (conversation.group.id === entityId) {
+          console.log(conversation.group.id);
+
+          if (conversation.group.id === collectionId) {
             conversationIndex = index;
             conversationFound = true;
           }
@@ -163,6 +168,7 @@ export const GroupMessageSubscription = ({ setDataLoaded }: GroupMessageProps) =
 
       // get the conversation for the group that needs to be updated
       updatedConversation = updatedConversation.splice(conversationIndex, 1);
+      console.log(updatedConversation, updatedConversations);
 
       // Add new message and move the conversation to the top
       if (newMessage) {
@@ -192,11 +198,14 @@ export const GroupMessageSubscription = ({ setDataLoaded }: GroupMessageProps) =
     nextFetchPolicy: 'cache-only',
   });
 
-  const {} = useQuery<any>(GROUP_SEARCH_QUERY, {
-    variables: GROUP_COLLECTION_SEARCH_QUERY_VARIABLES,
-    fetchPolicy: 'network-only',
-    nextFetchPolicy: 'cache-only',
-  });
+  const { subscribeToMore: collectionSubscribe, data: collectionData } = useQuery<any>(
+    GROUP_SEARCH_QUERY,
+    {
+      variables: GROUP_COLLECTION_SEARCH_QUERY_VARIABLES,
+      fetchPolicy: 'network-only',
+      nextFetchPolicy: 'cache-only',
+    }
+  );
 
   useEffect(() => {
     if (subscribeToMore) {
@@ -220,10 +229,23 @@ export const GroupMessageSubscription = ({ setDataLoaded }: GroupMessageProps) =
   }, [subscribeToMore]);
 
   useEffect(() => {
-    if (data) {
+    if (collectionSubscribe) {
+      const subscriptionVariables = { organizationId: getUserSession('organizationId') };
+      // collection sent subscription
+      collectionSubscribe({
+        document: SENT_MESSAGE_WA_GROUP_COLLECTION,
+        variables: subscriptionVariables,
+        updateQuery: (prev, { subscriptionData }) =>
+          updateConversations(prev, subscriptionData, 'COLLECTION'),
+      });
+    }
+  }, [collectionSubscribe]);
+
+  useEffect(() => {
+    if (data && collectionData) {
       setDataLoaded(true);
     }
-  }, [data]);
+  }, [data, collectionData]);
 
   if (loading) return <div />;
 

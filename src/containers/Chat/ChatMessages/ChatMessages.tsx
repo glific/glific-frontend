@@ -335,19 +335,36 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
     variableParam: any
   ) => {
     // display collection info popup
-    setDialogbox('collection');
 
-    const payload: any = {
-      body,
-      senderId: 1,
-      mediaId,
-      type: messageType,
-      flow: 'OUTBOUND',
-    };
+    let payload: any;
+
+    if (groups) {
+      payload = {
+        mediaId: mediaId,
+        message: body,
+        type: messageType,
+      };
+      sendMessageToCollection({
+        variables: {
+          groupId: collectionId,
+          input: payload,
+        },
+      });
+    } else {
+      setDialogbox('collection');
+      payload = {
+        body,
+        senderId: 1,
+        mediaId,
+        type: messageType,
+        flow: 'OUTBOUND',
+      };
+      payload = updatePayload(payload, selectedTemplate, variableParam);
+    }
 
     setCollectionVariables({
       groupId: collectionId,
-      input: updatePayload(payload, selectedTemplate, variableParam),
+      input: payload,
     });
   };
 
