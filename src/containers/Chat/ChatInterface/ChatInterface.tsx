@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Paper, Tab, Tabs } from '@mui/material';
 import { useQuery } from '@apollo/client';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { Simulator } from 'components/simulator/Simulator';
@@ -20,15 +20,15 @@ import styles from './ChatInterface.module.css';
 const tabs = [
   {
     label: 'Contacts',
-    link: '/chat/',
+    link: '/chat',
   },
   {
     label: 'Collections',
-    link: '/chat/collection/',
+    link: '/chat/collection',
   },
   {
     label: 'Searches',
-    link: '/chat/saved-searches/',
+    link: '/chat/saved-searches',
   },
 ];
 export interface ChatInterfaceProps {
@@ -42,8 +42,9 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
   const [showSimulator, setShowSimulator] = useState(false);
   const [simulatorId, setSimulatorId] = useState(0);
   const { t } = useTranslation();
-  const [value, setValue] = useState(tabs[0].link);
+  const location = useLocation();
   const params = useParams();
+  const [value, setValue] = useState(tabs[0].link);
 
   let selectedContactId = params.contactId;
   let selectedCollectionId: any = params.collectionId;
@@ -69,6 +70,13 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
       setSimulatorAccess(false);
     }
   }, []);
+
+  useEffect(() => {
+    const currentTab = tabs.filter((tab) => location.pathname === tab.link);
+    if (currentTab.length) {
+      setValue(currentTab[0].link);
+    }
+  }, [location]);
 
   if (loading) return <Loading />;
   if (error) {
@@ -125,7 +133,7 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
       // let's enable simulator only when contact tab is shown
 
       listingContent = (
-        <ChatConversations contactId={simulatorId > 0 ? simulatorId : selectedContactId} />
+        <ChatConversations entityId={simulatorId > 0 ? simulatorId : selectedContactId} />
       );
 
       heading = 'Contacts';
@@ -138,7 +146,7 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
       <>
         <div className={`${styles.ChatMessages} chatMessages`}>
           <ChatMessages
-            contactId={simulatorId > 0 ? simulatorId : selectedContactId}
+            entityId={simulatorId > 0 ? simulatorId : selectedContactId}
             collectionId={selectedCollectionId}
           />
         </div>

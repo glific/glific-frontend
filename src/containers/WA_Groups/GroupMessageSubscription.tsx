@@ -89,7 +89,6 @@ export const GroupMessageSubscription = ({ setDataLoaded }: GroupMessageProps) =
           return cachedConversations;
         }
       }
-
       const { newMessage, entityId, messageStatusData } = getSubscriptionDetails(
         action,
         subscriptionData,
@@ -108,7 +107,7 @@ export const GroupMessageSubscription = ({ setDataLoaded }: GroupMessageProps) =
         });
       } else {
         cachedConversations.search.forEach((conversation: any, index: any) => {
-          if (parseInt(conversation.waGroup.id) === entityId) {
+          if (conversation.waGroup.id === entityId) {
             conversationIndex = index;
             conversationFound = true;
           }
@@ -148,8 +147,6 @@ export const GroupMessageSubscription = ({ setDataLoaded }: GroupMessageProps) =
             variables,
           }).then(({ data: conversation }) => {
             if (conversation && conversation.search.length > 0) {
-              // save the conversation and update cache
-              // temporary fix for cache. need to check why query variables change
               saveGroupConversation(conversation, queryVariables);
             }
           });

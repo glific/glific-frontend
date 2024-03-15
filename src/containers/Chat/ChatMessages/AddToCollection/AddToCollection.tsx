@@ -12,17 +12,13 @@ import {
 import { SearchDialogBox } from 'components/UI/SearchDialogBox/SearchDialogBox';
 import { GET_WA_GROUPS } from 'graphql/queries/WA_Groups';
 
-interface AddContactsToCollectionProps {
+interface AddToCollectionProps {
   collectionId: string | undefined;
   setDialog: Function;
   groups?: boolean;
 }
 
-export const AddContactsToCollection = ({
-  collectionId,
-  setDialog,
-  groups,
-}: AddContactsToCollectionProps) => {
+export const AddToCollection = ({ collectionId, setDialog, groups }: AddToCollectionProps) => {
   const [contactSearchTerm, setContactSearchTerm] = useState('');
   const { t } = useTranslation();
 
@@ -123,4 +119,4 @@ export const AddContactsToCollection = ({
   );
 };
 
-export default AddContactsToCollection;
+export default AddToCollection;

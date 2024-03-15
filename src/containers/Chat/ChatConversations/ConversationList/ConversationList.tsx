@@ -26,7 +26,7 @@ import { addLogs, getDisplayName, getDisplayNameForSearch } from 'common/utils';
 import ChatConversation from '../ChatConversation/ChatConversation';
 import styles from './ConversationList.module.css';
 import { GROUP_SEARCH_MULTI_QUERY, GROUP_SEARCH_QUERY } from 'graphql/queries/WA_Groups';
-import { useLocation } from 'react-router';
+import { useLocation } from 'react-router-dom';
 import { Timer } from 'components/UI/Timer/Timer';
 
 interface ConversationListProps {
@@ -79,8 +79,8 @@ export const ConversationList = ({
     const variables = JSON.parse(savedSearchCriteria);
     queryVariables = variables;
   }
-  let search_query: any = groups ? GROUP_SEARCH_QUERY : SEARCH_QUERY;
-  let search_multi_query: any = groups ? GROUP_SEARCH_MULTI_QUERY : SEARCH_MULTI_QUERY;
+  let searchQuery: any = groups ? GROUP_SEARCH_QUERY : SEARCH_QUERY;
+  let searchMultiQuery: any = groups ? GROUP_SEARCH_MULTI_QUERY : SEARCH_MULTI_QUERY;
   let contactOptions: string = groups ? 'waGroupOpts' : 'contactOpts';
   let messageOptions: string = groups ? 'waMessageOpts' : 'messageOpts';
   let searchOptions: string = groups ? 'filter' : 'searchFilter';
@@ -115,7 +115,7 @@ export const ConversationList = ({
     error: conversationError,
     data,
     refetch,
-  } = useQuery<any>(search_query, {
+  } = useQuery<any>(searchQuery, {
     variables: queryVariables,
     fetchPolicy: 'cache-only',
   });
@@ -129,25 +129,23 @@ export const ConversationList = ({
   }, [savedSearchCriteriaId]);
 
   const filterVariables = () => {
-    if (groups) {
-      if (!selectedCollectionId) {
-        if (phonenumber?.length === 0 || !phonenumber) {
-          return GROUP_QUERY_VARIABLES;
-        }
-        return {
-          [contactOptions]: {
-            limit: DEFAULT_ENTITY_LIMIT,
-          },
-          filter: {
-            waPhoneIds: phonenumber?.map((phone: any) => phone.id),
-          },
-          [messageOptions]: {
-            limit: DEFAULT_MESSAGE_LIMIT,
-          },
-        };
-      } else {
-        return GROUP_COLLECTION_SEARCH_QUERY_VARIABLES;
+    if (groups && selectedCollectionId) {
+      return GROUP_COLLECTION_SEARCH_QUERY_VARIABLES;
+    } else if (groups) {
+      if (phonenumber?.length === 0 || !phonenumber) {
+        return GROUP_QUERY_VARIABLES;
       }
+      return {
+        [contactOptions]: {
+          limit: DEFAULT_ENTITY_LIMIT,
+        },
+        filter: {
+          waPhoneIds: phonenumber?.map((phone: any) => phone.id),
+        },
+        [messageOptions]: {
+          limit: DEFAULT_MESSAGE_LIMIT,
+        },
+      };
     }
 
     if (savedSearchCriteria && Object.keys(searchParam).length === 0) {
@@ -211,10 +209,10 @@ export const ConversationList = ({
   });
 
   const [getFilterConvos, { called, loading, error, data: searchData }] =
-    useLazyQuery<any>(search_query);
+    useLazyQuery<any>(searchQuery);
 
   // fetch data when typing for search
-  const [getFilterSearch] = useLazyQuery<any>(search_multi_query, {
+  const [getFilterSearch] = useLazyQuery<any>(searchMultiQuery, {
     onCompleted: (multiSearch) => {
       setSearchMultiData(multiSearch);
     },
@@ -293,7 +291,6 @@ export const ConversationList = ({
 
   const buildChatConversation = (index: number, header: any, conversation: any) => {
     // We don't have the contact data in the case of contacts.
-    let chatType: any = groups ? 'waGroup' : 'contact';
     let entity = conversation;
     let selectedRecord = false;
     if (selectedContactId === entity.id) {
@@ -329,7 +326,7 @@ export const ConversationList = ({
     }
 
     return (
-      <Fragment key={entityId}>
+      <Fragment>
         {index === 0 ? header : null}
         <ChatConversation
           key={entityId}
@@ -342,7 +339,7 @@ export const ConversationList = ({
           }}
           entityType={entityType}
           index={index}
-          contactId={entityId}
+          entityId={entityId}
           contactName={displayName}
           lastMessage={conversation}
           contactIsOrgRead={contactIsOrgRead}
@@ -449,7 +446,7 @@ export const ConversationList = ({
             }
           }}
           index={index}
-          contactId={entityId}
+          entityId={entityId}
           entityType={entityType}
           contactName={displayName}
           lastMessage={lastMessage}
@@ -524,7 +521,7 @@ export const ConversationList = ({
 
       client
         .query({
-          query: search_query,
+          query: searchQuery,
           variables: conversationLoadMoreVariables,
         })
         .then(({ data: loadMoreData }) => {

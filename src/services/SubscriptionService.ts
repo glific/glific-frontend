@@ -56,7 +56,7 @@ export const getSubscriptionDetails = (action: string, subscriptionData: any, gr
         ? subscriptionData.data.sentWaGroupMessage
         : subscriptionData.data.sentMessage;
       entityId = groups
-        ? subscriptionData.data.sentWaGroupMessage.waGroupId
+        ? subscriptionData.data.sentWaGroupMessage.waGroup.id
         : subscriptionData.data.sentMessage.receiver.id;
       break;
     case 'RECEIVED':
@@ -65,7 +65,7 @@ export const getSubscriptionDetails = (action: string, subscriptionData: any, gr
         ? subscriptionData.data.receivedWaGroupMessage
         : subscriptionData.data.receivedMessage;
       entityId = groups
-        ? subscriptionData.data.receivedWaGroupMessage.waGroupId
+        ? subscriptionData.data.receivedWaGroupMessage.waGroup.id
         : subscriptionData.data.receivedMessage.sender.id;
       break;
     case 'COLLECTION':

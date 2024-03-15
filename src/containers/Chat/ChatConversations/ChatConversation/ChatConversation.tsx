@@ -14,7 +14,7 @@ import { slicedString } from 'common/utils';
 import { AvatarDisplay } from 'components/UI/AvatarDisplay/AvatarDisplay';
 
 export interface ChatConversationProps {
-  contactId: number;
+  entityId: number;
   contactName: string;
   contactIsOrgRead: boolean;
   selected: boolean;
@@ -118,7 +118,7 @@ const BoldedText = (originalText: string, highlight: any) => {
 const ChatConversation = ({
   lastMessage,
   selected,
-  contactId,
+  entityId,
   contactName,
   index,
   highlightSearch,
@@ -138,7 +138,7 @@ const ChatConversation = ({
   const [markAsRead] = useMutation(MARK_AS_READ, {
     onCompleted: (data) => {
       if (data.markContactMessagesAsRead) {
-        updateContactCache(client, contactId);
+        updateContactCache(client, entityId);
       }
     },
   });
@@ -179,11 +179,11 @@ const ChatConversation = ({
   const msgID = searchMode && messageNumber ? `?search=${messageNumber}` : '';
   let redirectRoute: string = groups ? '/group/chat' : '/chat';
 
-  let redirectURL = `${redirectRoute}/${contactId}${msgID}`;
+  let redirectURL = `${redirectRoute}/${entityId}${msgID}`;
   if (entityType === 'collection') {
-    redirectURL = `${redirectRoute}/collection/${contactId}${msgID}`;
+    redirectURL = `${redirectRoute}/collection/${entityId}${msgID}`;
   } else if (entityType === 'savedSearch') {
-    redirectURL = `${redirectRoute}/saved-searches/${contactId}${msgID}`;
+    redirectURL = `${redirectRoute}/saved-searches/${entityId}${msgID}`;
   }
 
   let avatar: any = '';
@@ -200,7 +200,7 @@ const ChatConversation = ({
       Track(groups ? 'View Group Details' : 'View contact');
       if (!groups) {
         markAsRead({
-          variables: { contactId: contactId.toString() },
+          variables: { contactId: entityId.toString() },
         });
       }
     }

@@ -14,24 +14,20 @@ interface WaManagedPhonesProps {
   phonenumber: any;
   setPhonenumber: any;
 }
-
-export const WaManagedPhones = ({ phonenumber, setPhonenumber }: WaManagedPhonesProps) => {
+const WaManagedPhones = ({ phonenumber, setPhonenumber }: WaManagedPhonesProps) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
 
   const { data } = useQuery<any>(GET_WA_MANAGED_PHONES, {
     variables: {
       filter: {},
-      opts: {
-        limit: 3,
-      },
     },
   });
 
   const [syncGroups] = useMutation(SYNC_GROUPS, {
     fetchPolicy: 'network-only',
-    onCompleted: (data) => {
-      if (data.errors) {
+    onCompleted: (responseData) => {
+      if (responseData.errors) {
         setNotification(t('Sorry, failed to sync whatsapp groups.'), 'warning');
       } else {
         setNotification(t('Whatsapp groups synced successfully.'), 'success');
@@ -52,33 +48,35 @@ export const WaManagedPhones = ({ phonenumber, setPhonenumber }: WaManagedPhones
   return (
     <div className={styles.DropDownContainer}>
       <FormControl className={styles.FormStyle}>
-        <AutoComplete
-          classes={{ inputRoot: styles.DropDown }}
-          isFilterType
-          placeholder="Phone Number"
-          options={
-            data?.waManagedPhones
-              ? data?.waManagedPhones?.map((phone: any) => ({
-                  label: phone.phone,
-                  id: phone.id,
-                }))
-              : []
-          }
-          multiple={false}
-          optionLabel="label"
-          onChange={(value: any) => {
-            if (value) {
-              setPhonenumber([value]);
-            } else {
-              setPhonenumber(null);
+        <div className={styles.Autocomplete}>
+          <AutoComplete
+            classes={{ inputRoot: styles.DropDown }}
+            isFilterType
+            placeholder="Phone Number"
+            options={
+              data?.waManagedPhones
+                ? data?.waManagedPhones?.map((phone: any) => ({
+                    label: phone.phone,
+                    id: phone.id,
+                  }))
+                : []
             }
-          }}
-          form={{ setFieldValue: () => {} }}
-          field={{
-            name: 'phonenumber',
-            value: phonenumber?.label,
-          }}
-        />
+            multiple={false}
+            optionLabel="label"
+            onChange={(value: any) => {
+              if (value) {
+                setPhonenumber([value]);
+              } else {
+                setPhonenumber(null);
+              }
+            }}
+            form={{ setFieldValue: () => {} }}
+            field={{
+              name: 'phonenumber',
+              value: phonenumber?.label,
+            }}
+          />
+        </div>
       </FormControl>
 
       <Button
@@ -89,8 +87,10 @@ export const WaManagedPhones = ({ phonenumber, setPhonenumber }: WaManagedPhones
         aria-hidden="true"
         onClick={() => handleSyncGroups()}
       >
-        {loading ? <CircularProgress size={20} /> : 'SYNC'}
+        {loading ? <CircularProgress data-testid="loading" size={20} /> : 'SYNC'}
       </Button>
     </div>
   );
 };
+
+export default WaManagedPhones;

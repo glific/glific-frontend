@@ -33,7 +33,11 @@ import {
 } from 'graphql/mutations/Collection';
 import { GET_CONTACT_COLLECTIONS } from 'graphql/queries/Contact';
 import { GET_FLOWS } from 'graphql/queries/Flow';
-import { ADD_FLOW_TO_CONTACT, ADD_FLOW_TO_COLLECTION } from 'graphql/mutations/Flow';
+import {
+  ADD_FLOW_TO_CONTACT,
+  ADD_FLOW_TO_COLLECTION,
+  ADD_FLOW_TO_WA_GROUP,
+} from 'graphql/mutations/Flow';
 import { UPDATE_CONTACT } from 'graphql/mutations/Contact';
 import { SEARCH_QUERY } from 'graphql/queries/Search';
 import { CLEAR_MESSAGES } from 'graphql/mutations/Chat';
@@ -52,7 +56,7 @@ import { TerminateFlow } from './TerminateFlow/TerminateFlow';
 import { showChats } from 'common/responsive';
 import { slicedString } from 'common/utils';
 import { CollectionInformation } from '../../../Collection/CollectionInformation/CollectionInformation';
-import AddContactsToCollection from '../AddContactsToCollection/AddContactsToCollection';
+import AddToCollection from '../AddToCollection/AddToCollection';
 
 import styles from './ConversationHeader.module.css';
 
@@ -166,6 +170,15 @@ export const ConversationHeader = ({
     },
   });
 
+  const [addFlowToWaGroups] = useMutation(ADD_FLOW_TO_WA_GROUP, {
+    onCompleted: () => {
+      setNotification(t('Flow started successfully.'));
+    },
+    onError: (error) => {
+      setErrorMessage(error);
+    },
+  });
+
   const [addFlow] = useMutation(ADD_FLOW_TO_CONTACT, {
     onCompleted: () => {
       setNotification(t('Flow started successfully.'));
@@ -261,10 +274,17 @@ export const ConversationHeader = ({
     };
 
     if (entityId) {
-      flowVariables.contactId = entityId;
-      addFlow({
-        variables: flowVariables,
-      });
+      if (groups) {
+        flowVariables.waGroupId = entityId;
+        addFlowToWaGroups({
+          variables: flowVariables,
+        });
+      } else {
+        flowVariables.contactId = entityId;
+        addFlow({
+          variables: flowVariables,
+        });
+      }
     }
 
     if (collectionId) {
@@ -387,9 +407,10 @@ export const ConversationHeader = ({
       </Button>
     );
   } else if (
-    contact?.contactBspStatus &&
-    status.includes(contact?.contactBspStatus) &&
-    !is24HourWindowOver(contact?.lastMessageTime)
+    groups ||
+    (contact?.contactBspStatus &&
+      status.includes(contact?.contactBspStatus) &&
+      !is24HourWindowOver(contact?.lastMessageTime))
   ) {
     flowButton = (
       <Button
@@ -516,7 +537,7 @@ export const ConversationHeader = ({
 
   if (addContactsDialogShow) {
     dialogBox = (
-      <AddContactsToCollection
+      <AddToCollection
         groups={groups}
         collectionId={collectionId}
         setDialog={setAddContactsDialogShow}
@@ -530,6 +551,7 @@ export const ConversationHeader = ({
       <>
         {viewDetails}
         {addMember}
+        {flowButton}
       </>
     );
   } else {
@@ -580,8 +602,7 @@ export const ConversationHeader = ({
     );
   }
 
-  let timeleft: any;
-  timeleft = (
+  const timeleft: any = (
     <div className={styles.SessionTimer} data-testid="sessionTimer">
       <span>Time left:</span>
       <Timer
@@ -652,7 +673,12 @@ export const ConversationHeader = ({
               </div>
             </div>
             {conversationHeaderDetails}
-            <div className={styles.Chat} onClick={() => showChats()}>
+            <div
+              role="button"
+              className={styles.Chat}
+              onKeyDown={() => showChats()}
+              onClick={() => showChats()}
+            >
               <IconButton className={styles.MobileIcon}>
                 <IconComponent data-testid="icon-component" />
               </IconButton>

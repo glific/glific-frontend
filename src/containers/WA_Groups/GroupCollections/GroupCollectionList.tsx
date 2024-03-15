@@ -11,11 +11,6 @@ import styles from './GroupCollectionList.module.css';
 import { GET_COLLECTION, GROUP_GET_COLLECTION } from 'graphql/queries/Collection';
 import { useQuery } from '@apollo/client';
 
-export interface CollectionGroupListProps {
-  title: string;
-  descriptionBox?: any;
-}
-
 const getName = (label: string) => (
   <div>
     <div className={styles.NameText}>{label}</div>
@@ -43,7 +38,7 @@ const columnAttributes = {
   columnStyles,
 };
 
-export const CollectionGroupList = () => {
+export const GroupCollectionList = () => {
   const { t } = useTranslation();
   const params = useParams();
 
@@ -78,27 +73,25 @@ export const CollectionGroupList = () => {
   const dialogMessage = 'The group will no longer receive messages sent to this collection';
 
   return (
-    <>
-      <List
-        dialogTitle={dialogTitle}
-        columnNames={columnNames}
-        title={title}
-        additionalAction={additionalAction}
-        listItem="waGroups"
-        listItemName="waGroups"
-        searchParameter={['term']}
-        filters={{ includeGroups: collectionId }}
-        button={{ show: false, label: '' }}
-        pageLink="contact"
-        listIcon={collectionIcon}
-        deleteModifier={{
-          variables: getDeleteQueryVariables,
-        }}
-        editSupport={false}
-        dialogMessage={dialogMessage}
-        {...queries}
-        {...columnAttributes}
-      />
-    </>
+    <List
+      dialogTitle={dialogTitle}
+      columnNames={columnNames}
+      title={title}
+      additionalAction={additionalAction}
+      listItem="waGroups"
+      listItemName="waGroups"
+      searchParameter={['term']}
+      filters={{ includeGroups: collectionId }}
+      button={{ show: false, label: '' }}
+      pageLink="contact"
+      listIcon={collectionIcon}
+      deleteModifier={{
+        variables: getDeleteQueryVariables,
+      }}
+      editSupport={false}
+      dialogMessage={dialogMessage}
+      {...queries}
+      {...columnAttributes}
+    />
   );
 };

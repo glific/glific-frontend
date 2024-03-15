@@ -12,10 +12,9 @@
 }
 
 .HeadingTitle {
-  vertical-align: middle;
   color: #191c1a;
   display: flex;
-  align-items: first baseline;
+  align-items: center;
   font-weight: 700;
   font-size: 38px;
 }
@@ -32,4 +31,10 @@
 
 .TitleText {
   margin-right: 8px;
+}
+
+.BackIcon {
+  margin-left: -10px;
+  margin-right: 10px;
+  cursor: pointer;
 }

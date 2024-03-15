@@ -201,7 +201,11 @@ export const ContactProfile = () => {
 
   return (
     <>
-      <Heading formTitle={t('Contact Profile')} showHeaderHelp={false} />
+      <Heading
+        formTitle={t('Contact Profile')}
+        showHeaderHelp={false}
+        backLink={`/chat/${params.id}`}
+      />
       <Box className={styles.ContactProfile}>
         {drawer}
         <Box className={styles.ProfileBody}>{profileBodyContent}</Box>

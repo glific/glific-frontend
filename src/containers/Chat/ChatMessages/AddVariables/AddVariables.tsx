@@ -95,6 +95,7 @@ export const AddVariables = ({
             syncInitialValuesWithFormik(newInputValue, index);
           },
           label: `Variable ${index}`,
+          placeholder: `Variable ${index}`,
         });
       }
 
@@ -143,7 +144,9 @@ export const AddVariables = ({
             <div className={styles.TemplateText}> {template?.body}</div>
             <div data-testid="variablesDialog">
               {formFieldItems.map((field: any) => (
-                <Field {...field} key={field.name} />
+                <div key={field.name} className={styles.Field}>
+                  <Field {...field} />
+                </div>
               ))}
             </div>
           </DialogBox>

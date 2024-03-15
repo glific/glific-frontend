@@ -1,10 +1,10 @@
-import { COUNT_WA_GROUP_CONTACTS, LIST_WA_GROUP_CONTACTS } from 'graphql/queries/WA_Groups';
 import { useParams } from 'react-router-dom';
 import { List } from 'containers/List/List';
 import { useTranslation } from 'react-i18next';
 import CollectionIcon from 'assets/images/icons/Collection/Dark.svg?react';
 import styles from './GroupDetails.module.css';
 import { UPDATE_GROUP_CONTACT } from 'graphql/mutations/Group';
+import { CONTACT_SEARCH_QUERY, GET_CONTACT_COUNT } from 'graphql/queries/Contact';
 
 export const GroupDetails = () => {
   const params = useParams();
@@ -14,14 +14,14 @@ export const GroupDetails = () => {
   const dialogMessage = 'The contact will no longer receive messages sent to this group';
 
   const columnNames = [
-    { name: 'id', label: t('Name') },
+    { name: 'name', label: t('Name') },
     { label: t('Phone number') },
     { label: t('Actions') },
   ];
 
   const queries = {
-    countQuery: COUNT_WA_GROUP_CONTACTS,
-    filterItemsQuery: LIST_WA_GROUP_CONTACTS,
+    countQuery: GET_CONTACT_COUNT,
+    filterItemsQuery: CONTACT_SEARCH_QUERY,
     deleteItemQuery: UPDATE_GROUP_CONTACT,
   };
 
@@ -37,12 +37,10 @@ export const GroupDetails = () => {
     </div>
   );
 
-  const getColumns = (waContact: any) => {
-    return {
-      name: getName(waContact?.contact?.name),
-      phone: getPhoneNumber(waContact?.contact?.phone),
-    };
-  };
+  const getColumns = (contact: any) => ({
+    name: getName(contact?.name),
+    phone: getPhoneNumber(contact?.phone),
+  });
 
   const collectionIcon = <CollectionIcon className={styles.CollectionIcon} />;
   const columnStyles = [styles.Name, styles.Phone, styles.Actions];
@@ -65,10 +63,10 @@ export const GroupDetails = () => {
       dialogTitle={dialogTitle}
       columnNames={columnNames}
       title={'Group Details'}
-      listItem="ContactWaGroup"
-      listItemName="ContactWaGroup"
+      listItem="contacts"
+      listItemName="contacts"
       searchParameter={['term']}
-      filters={{ waGroupId: params.id }}
+      filters={{ includeWaGroups: params.id }}
       button={{ show: false, label: '' }}
       pageLink="waGroupsContact"
       listIcon={collectionIcon}

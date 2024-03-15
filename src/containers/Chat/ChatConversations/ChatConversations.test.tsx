@@ -85,7 +85,7 @@ const client = new ApolloClient({
 afterEach(cleanup);
 
 const simulatorParams = {
-  contactId: 1,
+  entityId: 1,
   simulatorId: 1,
   setShowSimulator: vi.fn(),
 };

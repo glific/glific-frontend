@@ -18,20 +18,20 @@ import Track from 'services/TrackService';
 import { useLocation } from 'react-router';
 
 export interface ChatConversationsProps {
-  contactId?: number | string;
+  entityId?: number | string;
   phonenumber?: any;
   filterComponent?: any;
 }
 
 export const ChatConversations = ({
-  contactId,
+  entityId,
   phonenumber,
   filterComponent,
 }: ChatConversationsProps) => {
   // get the conversations stored from the cache
   const [searchVal, setSearchVal] = useState<any>();
   const [searchParam, setSearchParam] = useState<any>({});
-  const [selectedContactId, setSelectedContactId] = useState<any>(contactId);
+  const [selectedContactId, setSelectedContactId] = useState<any>(entityId);
   const [savedSearchCriteria, setSavedSearchCriteria] = useState<string>('');
   const [savedSearchCriteriaId, setSavedSearchCriteriaId] = useState(null);
   const [savedSearches, setSavedSearches] = useState(null);
@@ -53,8 +53,8 @@ export const ChatConversations = ({
   }, [offset.data]);
 
   useEffect(() => {
-    setSelectedContactId(contactId?.toString());
-  }, [contactId]);
+    setSelectedContactId(entityId?.toString());
+  }, [entityId]);
 
   let timer: any = null;
 
@@ -207,20 +207,18 @@ export const ChatConversations = ({
       </div>
     ) : null;
 
-  if (!filterComponent) {
-    filterComponent = (
-      <SavedSearchToolbar
-        savedSearchCriteriaCallback={handlerSavedSearchCriteria}
-        refetchData={{ savedSearches }}
-        onSelect={() => {
-          // on select searches remove search value & disable search mode
-          setSearchVal(undefined);
-          if (enableSearchMode) setEnableSearchMode(false);
-        }}
-        searchMode={enableSearchMode}
-      />
-    );
-  }
+  let filter: any = filterComponent || (
+    <SavedSearchToolbar
+      savedSearchCriteriaCallback={handlerSavedSearchCriteria}
+      refetchData={{ savedSearches }}
+      onSelect={() => {
+        // on select searches remove search value & disable search mode
+        setSearchVal(undefined);
+        if (enableSearchMode) setEnableSearchMode(false);
+      }}
+      searchMode={enableSearchMode}
+    />
+  );
 
   return (
     <Container className={styles.ChatConversations} disableGutters>
@@ -236,7 +234,7 @@ export const ChatConversations = ({
           iconFront
         />
       </div>
-      {filterComponent}
+      {filter}
       <ConversationList
         phonenumber={phonenumber}
         searchVal={searchVal}

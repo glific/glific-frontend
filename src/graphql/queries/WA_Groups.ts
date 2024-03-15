@@ -116,29 +116,6 @@ export const GET_WA_MANAGED_PHONES = gql`
   }
 `;
 
-export const LIST_WA_GROUP_CONTACTS = gql`
-  query ListContactWaGroup($opts: Opts, $filter: ContactWaGroupFilter) {
-    ContactWaGroup: listContactWaGroup(opts: $opts, filter: $filter) {
-      id
-      contact {
-        id
-        name
-        phone
-      }
-      waGroup {
-        id
-        label
-      }
-    }
-  }
-`;
-
-export const COUNT_WA_GROUP_CONTACTS = gql`
-  query countContactWaGroup($filter: ContactWaGroupFilter) {
-    countContactWaGroup(filter: $filter)
-  }
-`;
-
 export const GET_GROUP_COUNT = gql`
   query waGroupsCount($filter: WaGroupFilter) {
     countWaGroups: waGroupsCount(filter: $filter)

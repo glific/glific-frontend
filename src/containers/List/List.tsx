@@ -62,27 +62,27 @@ const actionListMap = (item: any, actionList: any, hasMoreOption: boolean) => {
     if (action.link) {
       return (
         <Link to={`${action.link}/${additionalActionParameter}`} key={key}>
-          <IconButton className={styles.additonalButton} data-testid="additionalButton">
-            <Tooltip title={`${action.label}`} placement="top">
+          <Tooltip title={`${action.label}`} placement="top">
+            <IconButton className={styles.additonalButton} data-testid="additionalButton">
               {action.icon}
-            </Tooltip>
-          </IconButton>
+            </IconButton>
+          </Tooltip>
         </Link>
       );
     }
     if (action.dialog) {
       return (
-        <IconButton
-          data-testid="additionalButton"
-          className={styles.additonalButton}
-          id="additionalButton-icon"
-          onClick={() => action.dialog(additionalActionParameter, item)}
-          key={key}
-        >
-          <Tooltip title={`${action.label}`} placement="top" key={key}>
+        <Tooltip title={`${action.label}`} placement="top" key={key}>
+          <IconButton
+            data-testid="additionalButton"
+            className={styles.additonalButton}
+            id="additionalButton-icon"
+            onClick={() => action.dialog(additionalActionParameter, item)}
+            key={key}
+          >
             {action.icon}
-          </Tooltip>
-        </IconButton>
+          </IconButton>{' '}
+        </Tooltip>
       );
     }
     return null;
@@ -486,13 +486,15 @@ export const List = ({
     if (editSupport) {
       editButton = allowedAction.edit && (
         <Link to={`/${pageLink}/${id}/edit`} className={styles.NoTextDecoration}>
-          <IconButton className={styles.additonalButton}>
-            <div aria-label={t('Edit')} data-testid="EditIcon">
-              <div className={styles.IconWithText}>
-                <EditIcon className={styles.IconSize} />
+          <Tooltip title="Edit" placement="top">
+            <IconButton className={styles.additonalButton}>
+              <div aria-label={t('Edit')} data-testid="EditIcon">
+                <div className={styles.IconWithText}>
+                  <EditIcon className={styles.IconSize} />
+                </div>
               </div>
-            </div>
-          </IconButton>
+            </IconButton>
+          </Tooltip>
         </Link>
       );
     }

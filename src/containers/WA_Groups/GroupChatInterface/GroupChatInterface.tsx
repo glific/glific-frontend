@@ -12,7 +12,7 @@ import styles from './GroupChatInterface.module.css';
 import { useQuery } from '@apollo/client';
 import { GROUP_SEARCH_QUERY } from 'graphql/queries/WA_Groups';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
-import { WaManagedPhones } from '../WaManagedPhones/WaManagedPhones';
+import WaManagedPhones from '../WaManagedPhones/WaManagedPhones';
 
 const tabs = [
   {
@@ -80,7 +80,6 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
     </div>
   );
 
-  let groupChatInterface: any;
   let listingContent;
   let phonesDropDown: any;
 
@@ -92,7 +91,7 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
   let heading = '';
 
   if (selectedCollectionId || selectedTab === 'collections') {
-    listingContent = <CollectionConversations groups collectionId={selectedCollectionId} />;
+    listingContent = <CollectionConversations collectionId={selectedCollectionId} />;
     heading = 'Group Collections';
   } else {
     // let's enable simulator only when group tab is shown
@@ -101,21 +100,21 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
       <ChatConversations
         phonenumber={phonenumber}
         filterComponent={phonesDropDown}
-        contactId={selectedGroupId}
+        entityId={selectedGroupId}
       />
     );
 
     heading = 'Groups';
   }
 
-  groupChatInterface = (
+  const groupChatInterface: any = (
     <>
       <div className={`${styles.ChatMessages} chatMessages`}>
         {data && data?.search.length === 0 ? (
           NoConversations
         ) : (
           <ChatMessages
-            contactId={selectedGroupId}
+            entityId={selectedGroupId}
             collectionId={selectedCollectionId}
             phoneId={phonenumber}
             setPhonenumber={setPhonenumber}
