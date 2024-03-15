@@ -1,0 +1,21 @@
+.FieldLabel {
+  margin-top: 24px;
+  vertical-align: middle;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 18px;
+  color: #555555;
+  padding-bottom: 14px;
+}
+
+.Label {
+  color: #93a29b;
+  line-height: 1;
+  font-weight: 500;
+}
+
+.RadioLabelWrapper {
+  width: 50%;
+  display: flex;
+  align-items: center;
+}

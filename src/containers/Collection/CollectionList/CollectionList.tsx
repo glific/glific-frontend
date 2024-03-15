@@ -20,7 +20,7 @@ import { List } from 'containers/List/List';
 import { SearchDialogBox } from 'components/UI/SearchDialogBox/SearchDialogBox';
 import { getUserRolePermissions, getUserRole } from 'context/role';
 import { setNotification } from 'common/notification';
-import { setVariables } from 'common/constants';
+import { CONTACTS_COLLECTION, WA_GROUPS_COLLECTION, setVariables } from 'common/constants';
 import { CircularProgress, Modal } from '@mui/material';
 import styles from './CollectionList.module.css';
 import { exportCsvFile } from 'common/utils';
@@ -286,7 +286,7 @@ export const CollectionList = () => {
           },
         }}
         filters={{
-          groupType: groups ? 'WA' : 'WABA',
+          groupType: groups ? WA_GROUPS_COLLECTION : CONTACTS_COLLECTION,
         }}
         pageLink={`${groups ? 'group/' : ''}collection`}
         listIcon={collectionIcon}

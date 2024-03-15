@@ -43,10 +43,12 @@ import { SEARCH_QUERY } from 'graphql/queries/Search';
 import { CLEAR_MESSAGES } from 'graphql/mutations/Chat';
 import { setErrorMessage, setNotification } from 'common/notification';
 import {
+  CONTACTS_COLLECTION,
   FLOW_STATUS_PUBLISHED,
   is24HourWindowOver,
   SEARCH_QUERY_VARIABLES,
   setVariables,
+  WA_GROUPS_COLLECTION,
 } from 'common/constants';
 import { Timer } from 'components/UI/Timer/Timer';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
@@ -115,7 +117,9 @@ export const ConversationHeader = ({
 
   // get collection list
   const [getCollections, { data: collectionsData }] = useLazyQuery(GET_COLLECTIONS, {
-    variables: setVariables({ groupType: groups ? 'WA' : 'WABA' }),
+    variables: setVariables({
+      groupType: groups ? WA_GROUPS_COLLECTION : CONTACTS_COLLECTION,
+    }),
   });
 
   // get the published flow list
