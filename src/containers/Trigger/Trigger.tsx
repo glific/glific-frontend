@@ -16,6 +16,7 @@ import {
   hourList,
   setVariables,
   EXTENDED_TIME_FORMAT,
+  CONTACTS_COLLECTION,
 } from 'common/constants';
 import { FormLayout } from 'containers/Form/FormLayout';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
@@ -157,7 +158,7 @@ export const Trigger = () => {
   const [triggerFlowWarning, setTriggerFlowWarning] = useState<any>();
   const [frequencyLabel, setFrequencyLabel] = useState('Select days');
   const [frequencyOptions, setFrequencyOptions] = useState(dayList);
-  const [groupType, setGroupType] = useState('WABA');
+  const [groupType, setGroupType] = useState(CONTACTS_COLLECTION);
   const isWhatsAppGroupEnabled = getOrganizationServices('whatsappGroupEnabled');
 
   const params = useParams();

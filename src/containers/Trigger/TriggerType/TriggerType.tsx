@@ -1,5 +1,6 @@
 import { RadioGroup, FormControlLabel, Radio, Typography } from '@mui/material';
 import styles from './TriggerType.module.css';
+import { CONTACTS_COLLECTION, WA_GROUPS_COLLECTION } from 'common/constants';
 
 export interface TriggerTypeProps {
   groupType: string;
@@ -35,8 +36,8 @@ export const TriggerType = ({
         >
           <div className={styles.RadioLabelWrapper}>
             <FormControlLabel
-              value={'WABA'}
-              checked={isChecked('WABA')}
+              value={CONTACTS_COLLECTION}
+              checked={isChecked(CONTACTS_COLLECTION)}
               control={<Radio color="primary" />}
               label={'Contact'}
               className={styles.Label}
@@ -44,8 +45,8 @@ export const TriggerType = ({
           </div>
           <div className={styles.RadioLabelWrapper}>
             <FormControlLabel
-              value={'WA'}
-              checked={isChecked('WA')}
+              value={WA_GROUPS_COLLECTION}
+              checked={isChecked(WA_GROUPS_COLLECTION)}
               control={<Radio color="primary" />}
               label={'WhatsApp Group'}
               className={styles.Label}

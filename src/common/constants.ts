@@ -244,3 +244,6 @@ export const yupPasswordValidation = (t: any) =>
     )
     .min(10, t('Password must be at least 10 characters long.'))
     .required(t('Input required'));
+
+export const WA_GROUPS_COLLECTION = 'WA';
+export const CONTACTS_COLLECTION = 'WABA';

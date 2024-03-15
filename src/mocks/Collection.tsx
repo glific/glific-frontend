@@ -9,6 +9,7 @@ import {
   GET_ORGANIZATION_COLLECTIONS,
 } from 'graphql/queries/Collection';
 import { UPDATE_COLLECTION_CONTACTS } from 'graphql/mutations/Collection';
+import { CONTACTS_COLLECTION, WA_GROUPS_COLLECTION } from 'common/constants';
 
 export const getCollectionQuery = {
   request: {
@@ -151,7 +152,7 @@ export const countCollectionQuery = {
     query: GET_COLLECTIONS_COUNT,
     variables: {
       filter: {
-        groupType: 'WABA',
+        groupType: CONTACTS_COLLECTION,
       },
     },
   },
@@ -167,7 +168,7 @@ export const filterCollectionQuery = {
     query: FILTER_COLLECTIONS,
     variables: {
       filter: {
-        groupType: 'WABA',
+        groupType: CONTACTS_COLLECTION,
       },
       opts: {
         limit: 50,
@@ -199,7 +200,7 @@ export const filterCollectionQueryWAGroups = {
     query: FILTER_COLLECTIONS,
     variables: {
       filter: {
-        groupType: 'WA',
+        groupType: WA_GROUPS_COLLECTION,
       },
       opts: {
         limit: 50,
@@ -242,7 +243,7 @@ export const countCollectionQueryWAGroups = {
     query: GET_COLLECTIONS_COUNT,
     variables: {
       filter: {
-        groupType: 'WA',
+        groupType: WA_GROUPS_COLLECTION,
       },
     },
   },

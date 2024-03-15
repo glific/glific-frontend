@@ -18,7 +18,12 @@ import { getAddOrRemoveRoleIds } from 'common/utils';
 import { SEARCH_QUERY } from 'graphql/queries/Search';
 import CollectionIcon from 'assets/images/icons/StaffManagement/Active.svg?react';
 import ContactIcon from 'assets/images/icons/Contact/View.svg?react';
-import { COLLECTION_SEARCH_QUERY_VARIABLES, setVariables } from 'common/constants';
+import {
+  COLLECTION_SEARCH_QUERY_VARIABLES,
+  CONTACTS_COLLECTION,
+  WA_GROUPS_COLLECTION,
+  setVariables,
+} from 'common/constants';
 import styles from './Collection.module.css';
 import { collectionInfo } from 'common/HelpData';
 
@@ -173,7 +178,7 @@ export const Collection = () => {
     let payloadWithRoleIdsAndType = getAddOrRemoveRoleIds(roles, payload);
     payloadWithRoleIdsAndType = {
       ...payloadWithRoleIdsAndType,
-      groupType: groups ? 'WA' : 'WABA',
+      groupType: groups ? WA_GROUPS_COLLECTION : CONTACTS_COLLECTION,
     };
     return payloadWithRoleIdsAndType;
   };
