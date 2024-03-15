@@ -88,6 +88,7 @@ export const SENT_MESSAGE_WA_GROUP_COLLECTION = gql`
       type
       messageNumber
       insertedAt
+      groupId
       media {
         url
         caption

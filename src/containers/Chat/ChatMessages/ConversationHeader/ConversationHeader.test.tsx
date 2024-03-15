@@ -1,5 +1,6 @@
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
+import { setNotification } from 'common/notification';
 import ConversationHeader from './ConversationHeader';
 import {
   blockContactQuery,
@@ -60,6 +61,14 @@ const component = (
   </MockedProvider>
 );
 
+vi.mock('common/notification', async (importOriginal) => {
+  const mod = await importOriginal<typeof import('common/notification')>();
+  return {
+    ...mod,
+    setNotification: vi.fn(),
+  };
+});
+
 test('it should render the name correctly', async () => {
   const { getByText, container } = render(component);
 
@@ -109,7 +118,15 @@ describe('Menu test', () => {
     });
   });
 
-  test('clicking on Start flow should open up a dialog box', async () => {
+  vi.mock('common/notification', async (importOriginal) => {
+    const mod = await importOriginal<typeof import('common/notification')>();
+    return {
+      ...mod,
+      setNotification: vi.fn(),
+    };
+  });
+
+  test.only('clicking on Start flow should open up a dialog box', async () => {
     fireEvent.click(screen.getByTestId('flowButton'));
     await waitFor(() => {
       expect(screen.getAllByText('Select flow')[0]).toBeInTheDocument();
@@ -117,6 +134,10 @@ describe('Menu test', () => {
     await waitFor(() => {
       const button = screen.getByText('Start');
       fireEvent.click(button);
+    });
+
+    await waitFor(() => {
+      expect(setNotification).toHaveBeenCalled();
     });
   });
 
@@ -240,23 +261,26 @@ describe('Collection test', () => {
     });
     fireEvent.click(screen.getByTestId('flowButton'));
 
+    expect(screen.getAllByText('Select flow')[0]).toBeInTheDocument();
+    const button = screen.getByText('Start');
+    fireEvent.click(button);
+
     await waitFor(() => {
-      expect(screen.getAllByText('Select flow')[0]).toBeInTheDocument();
-      const button = screen.getByText('Start');
-      fireEvent.click(button);
+      expect(setNotification).toHaveBeenCalled();
     });
   });
 });
-let route = '/group/chat';
-let propsForGroups = {
+
+const route = '/group/chat';
+const propsForGroups = {
   groups: true,
   displayName: 'Oklahoma sheep',
   handleAction: vi.fn(),
   entityId: '1',
 };
-let mocksForGroups = [...searchGroupQuery];
+const mocksForGroups = [...searchGroupQuery];
 
-let groupsComponent = (
+const groupsComponent = (
   <MockedProvider mocks={mocksForGroups} addTypename={false}>
     <MemoryRouter initialEntries={[route]}>
       <ConversationHeader {...propsForGroups} groups={true} />

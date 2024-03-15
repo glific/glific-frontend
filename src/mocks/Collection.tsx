@@ -268,6 +268,10 @@ export const getCollectionContactsQuery = {
               id: '1',
               name: 'Glific User',
               phone: '987654321',
+              waGroups: {
+                name: null,
+                id: null,
+              },
             },
           ],
         },

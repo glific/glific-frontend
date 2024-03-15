@@ -100,11 +100,7 @@ export const GroupMessageSubscription = ({ setDataLoaded }: GroupMessageProps) =
       let conversationIndex = 0;
       let conversationFound = false;
       if (action === 'COLLECTION') {
-        console.log(collectionId, cachedConversations);
-
         cachedConversations.search.forEach((conversation: any, index: any) => {
-          console.log(conversation.group.id);
-
           if (conversation.group.id === collectionId) {
             conversationIndex = index;
             conversationFound = true;
@@ -168,7 +164,6 @@ export const GroupMessageSubscription = ({ setDataLoaded }: GroupMessageProps) =
 
       // get the conversation for the group that needs to be updated
       updatedConversation = updatedConversation.splice(conversationIndex, 1);
-      console.log(updatedConversation, updatedConversations);
 
       // Add new message and move the conversation to the top
       if (newMessage) {

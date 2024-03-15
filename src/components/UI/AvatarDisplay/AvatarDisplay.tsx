@@ -14,7 +14,7 @@ export const AvatarDisplay = ({ name, type, badgeDisplay = false }: AvatarDispla
 
   const avatarClasses = [styles.Default];
   if (type === 'large') {
-    avatarClasses.push(styles.Large);
+    avatarClasses.push(styles.Large, 'large');
   }
   let avatarContent = <Avatar className={avatarClasses.join(' ')}>{nameInitials}</Avatar>;
 

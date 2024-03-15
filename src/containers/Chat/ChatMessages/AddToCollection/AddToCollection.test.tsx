@@ -1,5 +1,5 @@
 import { AddToCollection } from './AddToCollection';
-import { render, cleanup, waitFor, fireEvent } from '@testing-library/react';
+import { render, cleanup, waitFor, fireEvent, screen } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { vi } from 'vitest';
 
@@ -31,6 +31,14 @@ const addContacts = (
     <AddToCollection {...defaultProps} />
   </MockedProvider>
 );
+
+vi.mock('common/notification', async (importOriginal) => {
+  const mod = await importOriginal<typeof import('common/notification')>();
+  return {
+    ...mod,
+    setNotification: vi.fn(),
+  };
+});
 
 test('it should have add contact to collection dialog box ', async () => {
   const { getByText } = render(addContacts);
@@ -81,4 +89,10 @@ test('change value in dialog box', () => {
   });
 
   fireEvent.click(getByText('Save'));
+});
+
+test.only('', () => {
+  const { getByText, getByTestId } = render(addContacts);
+  fireEvent.click(getByTestId('AutocompleteInput'));
+  screen.debug();
 });
