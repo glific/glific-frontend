@@ -256,7 +256,7 @@ export const CollectionList = () => {
         </Modal>
       )}
       <List
-        helpData={collectionInfo}
+        helpData={groups ? undefined : collectionInfo}
         refreshList={updateCollection}
         restrictedAction={getRestrictedAction}
         title={title}

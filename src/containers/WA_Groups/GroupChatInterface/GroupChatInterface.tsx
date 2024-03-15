@@ -124,7 +124,10 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
 
       <div className={`${styles.ChatConversations} ChatConversations`}>
         <div className={styles.Title}>
-          <div className={styles.Heading}> {heading}</div>
+          <div data-testid="heading" className={styles.Heading}>
+            {' '}
+            {heading}
+          </div>
         </div>
 
         <div className={styles.TabContainer}>

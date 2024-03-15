@@ -1,6 +1,6 @@
 import 'mocks/matchMediaMock';
 import { MemoryRouter } from 'react-router-dom';
-import { cleanup, render, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent, render, waitFor } from '@testing-library/react';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 
 import { setUserSession } from 'services/AuthService';
@@ -141,6 +141,12 @@ cache.writeQuery({
   },
 });
 
+const mockedUsedNavigate = vi.fn();
+vi.mock('react-router-dom', async () => ({
+  ...(await vi.importActual('react-router-dom')),
+  useNavigate: () => mockedUsedNavigate,
+}));
+
 const client = new ApolloClient({
   cache: cache,
   uri: 'http://localhost:4000/',
@@ -171,6 +177,60 @@ describe('<GroupChatInterface />', () => {
     await waitFor(async () => {
       const conversationHeader = await findByTestId('beneficiaryName');
       expect(conversationHeader).toHaveTextContent('WA Group 1');
+    });
+  });
+
+  test('should navigate to collections', () => {
+    const { getByText } = render(wrapper);
+    // expect(getByText('Loading...')).toBeInTheDocument();
+
+    fireEvent.click(getByText('Collections'));
+
+    expect(mockedUsedNavigate).toHaveBeenCalled();
+  });
+
+  test('should have Collections as heading', async () => {
+    const { getByText, getByTestId } = render(
+      <ApolloProvider client={client}>
+        <MemoryRouter>
+          <GroupChatInterface collections={true} />
+        </MemoryRouter>
+      </ApolloProvider>
+    );
+    expect(getByText('Loading...')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(getByTestId('heading')).toHaveTextContent('Group Collections');
+    });
+  });
+
+  const emptyCache = new InMemoryCache({ addTypename: false });
+
+  emptyCache.writeQuery({
+    query: GROUP_SEARCH_QUERY,
+    variables: GROUP_QUERY_VARIABLES,
+    data: {
+      search: [],
+    },
+  });
+
+  const clientForEmptyCache = new ApolloClient({
+    cache: emptyCache,
+    uri: 'http://localhost:4000/',
+    assumeImmutableResults: true,
+  });
+
+  test('should render no conversations if there are no conversations', async () => {
+    const { getByText, getByTestId } = render(
+      <ApolloProvider client={clientForEmptyCache}>
+        <MemoryRouter>
+          <GroupChatInterface />
+        </MemoryRouter>
+      </ApolloProvider>
+    );
+
+    await waitFor(() => {
+      expect(getByTestId('empty-result')).toBeInTheDocument();
     });
   });
 });

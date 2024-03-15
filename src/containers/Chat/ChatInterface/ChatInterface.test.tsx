@@ -1,6 +1,6 @@
 import 'mocks/matchMediaMock';
 import { MemoryRouter } from 'react-router-dom';
-import { cleanup, render } from '@testing-library/react';
+import { cleanup, fireEvent, render, waitFor } from '@testing-library/react';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 
 import { setUserSession } from 'services/AuthService';
@@ -85,6 +85,12 @@ window.HTMLElement.prototype.scrollIntoView = function () {};
 
 afterEach(cleanup);
 
+const mockedUsedNavigate = vi.fn();
+vi.mock('react-router-dom', async () => ({
+  ...(await vi.importActual('react-router-dom')),
+  useNavigate: () => mockedUsedNavigate,
+}));
+
 const wrapper = (
   <ApolloProvider client={client}>
     <MemoryRouter>
@@ -115,6 +121,88 @@ describe('<ChatInterface />', () => {
 
     const ChatConversation = await findByTestId('beneficiaryName');
     expect(ChatConversation).toHaveTextContent('Effie Cormier');
+  });
+
+  test('should navigate to collections', () => {
+    const { getByText } = render(wrapper);
+    expect(getByText('Loading...')).toBeInTheDocument();
+
+    fireEvent.click(getByText('Collections'));
+
+    expect(mockedUsedNavigate).toHaveBeenCalled();
+  });
+
+  test('should navigate to saved searches', () => {
+    const { getByText } = render(wrapper);
+    expect(getByText('Loading...')).toBeInTheDocument();
+
+    fireEvent.click(getByText('Searches'));
+
+    expect(mockedUsedNavigate).toHaveBeenCalled();
+  });
+
+  test('should have Collections as heading', async () => {
+    const { getByText, getByTestId } = render(
+      <ApolloProvider client={client}>
+        <MemoryRouter>
+          <ChatInterface collectionType={true} />
+        </MemoryRouter>
+      </ApolloProvider>
+    );
+    expect(getByText('Loading...')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(getByTestId('heading')).toHaveTextContent('Collections');
+    });
+  });
+
+  test('should have Saved searches as heading', async () => {
+    const { getByText, getByTestId } = render(
+      <ApolloProvider client={client}>
+        <MemoryRouter>
+          <ChatInterface savedSearches={true} />
+        </MemoryRouter>
+      </ApolloProvider>
+    );
+    expect(getByText('Loading...')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(getByTestId('heading')).toHaveTextContent('Saved searches');
+    });
+  });
+
+  const emptyCache = new InMemoryCache({ addTypename: false });
+
+  emptyCache.writeQuery({
+    query: SEARCH_QUERY,
+    variables: {
+      contactOpts: { limit: DEFAULT_ENTITY_LIMIT },
+      filter: {},
+      messageOpts: { limit: DEFAULT_MESSAGE_LIMIT },
+    },
+    data: {
+      search: [],
+    },
+  });
+
+  const clientForEmptyCache = new ApolloClient({
+    cache: emptyCache,
+    uri: 'http://localhost:4000/',
+    assumeImmutableResults: true,
+  });
+
+  test('should render no conversations if there are no conversations', async () => {
+    const { getByText, getByTestId } = render(
+      <ApolloProvider client={clientForEmptyCache}>
+        <MemoryRouter>
+          <ChatInterface />
+        </MemoryRouter>
+      </ApolloProvider>
+    );
+
+    await waitFor(() => {
+      expect(getByTestId('empty-result')).toBeInTheDocument();
+    });
   });
 });
 
