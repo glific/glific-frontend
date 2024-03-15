@@ -306,13 +306,18 @@ export const getCollectionInfo2 = {
 export const updateCollectionContactsQuery = {
   request: {
     query: UPDATE_COLLECTION_CONTACTS,
-    variables: { input: { addContactIds: [], groupId: '1', deleteContactIds: ['1'] } },
+    variables: { input: { addContactIds: ['3'], groupId: '1', deleteContactIds: [] } },
   },
   result: {
     data: {
       updateGroupContacts: {
-        groupContacts: [],
-        numberDeleted: 1,
+        groupContacts: [
+          {
+            id: '19',
+            value: null,
+          },
+        ],
+        numberDeleted: 0,
       },
     },
   },

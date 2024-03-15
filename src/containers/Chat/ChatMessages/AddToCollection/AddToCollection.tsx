@@ -11,6 +11,7 @@ import {
 } from 'graphql/mutations/Collection';
 import { SearchDialogBox } from 'components/UI/SearchDialogBox/SearchDialogBox';
 import { GET_WA_GROUPS } from 'graphql/queries/WA_Groups';
+import { CircularProgress } from '@mui/material';
 
 interface AddToCollectionProps {
   collectionId: string | undefined;
@@ -26,7 +27,7 @@ export const AddToCollection = ({ collectionId, setDialog, groups }: AddToCollec
   let updateMutation = groups ? UPDATE_COLLECTION_WA_GROUP : UPDATE_COLLECTION_CONTACTS;
   let entity = groups ? 'waGroups' : 'contacts';
 
-  const { data: entityData } = useQuery(searchquery, {
+  const { data: entityData, loading } = useQuery(searchquery, {
     variables: groups ? setVariables({}, 50) : setVariables({ name: contactSearchTerm }, 50),
   });
 
@@ -83,6 +84,7 @@ export const AddToCollection = ({ collectionId, setDialog, groups }: AddToCollec
     } else {
       const addvariable = groups ? 'addWaGroupIds' : 'addContactIds';
       const deletevariable = groups ? 'deleteWaGroupIds' : 'deleteContactIds';
+
       updateCollection({
         variables: {
           input: {
@@ -98,6 +100,10 @@ export const AddToCollection = ({ collectionId, setDialog, groups }: AddToCollec
   let searchDialogTitle = groups
     ? t('Add groups to the collection')
     : t('Add contacts to the collection');
+
+  if (loading) {
+    return <CircularProgress data-testid="loading" />;
+  }
 
   return (
     <SearchDialogBox

@@ -64,11 +64,11 @@ describe('<CollectionList />', () => {
     // loading is show initially
     expect(getByTestId('loading')).toBeInTheDocument();
     await waitFor(() => {
-      expect(getAllByTestId('additionalButton')[1]).toBeInTheDocument();
+      expect(getAllByTestId('additionalButton')[0]).toBeInTheDocument();
     });
 
     await waitFor(() => {
-      fireEvent.click(getAllByTestId('additionalButton')[1]);
+      fireEvent.click(getAllByTestId('additionalButton')[0]);
     });
 
     expect(getByText('Add contacts to the collection')).toBeInTheDocument();
@@ -113,22 +113,21 @@ describe('<CollectionList />', () => {
     // loading is show initially
     expect(getByTestId('loading')).toBeInTheDocument();
     await waitFor(() => {
-      fireEvent.click(getAllByTestId('additionalButton')[1]);
+      fireEvent.click(getAllByTestId('additionalButton')[0]);
     });
     fireEvent.click(getByTestId('searchDialogBox').querySelector('button') as HTMLElement);
   });
 
-  test('it navigates to collection contacts', async () => {
+  test('it has number of contacts', async () => {
     const { getByText, getByTestId, getAllByTestId } = render(wrapper);
 
     expect(getByTestId('loading')).toBeInTheDocument();
+
     await waitFor(() => {
-      expect(getAllByTestId('additionalButton')[1]).toBeInTheDocument();
+      expect(getAllByTestId('additionalButton')[0]).toBeInTheDocument();
     });
 
-    let viewButton = getByText('View');
-    fireEvent.click(viewButton);
-    expect(mockedUsedNavigate).toHaveBeenCalled();
+    expect(getByText('2 contacts')).toBeInTheDocument();
   });
 
   test('should render CollectionList for whatsapp groups', async () => {
@@ -149,7 +148,7 @@ describe('<CollectionList />', () => {
     });
   });
 
-  test('it navigates to collection groups', async () => {
+  test('it has number of groups', async () => {
     let groupWrapper = (
       <MemoryRouter initialEntries={['group/collection']}>
         <MockedProvider mocks={mocks} addTypename={false}>
@@ -157,14 +156,14 @@ describe('<CollectionList />', () => {
         </MockedProvider>
       </MemoryRouter>
     );
-    const { getByTestId, getAllByTestId } = render(groupWrapper);
+    const { getByTestId, getAllByTestId, getByText } = render(groupWrapper);
 
     expect(getByTestId('loading')).toBeInTheDocument();
 
     await waitFor(() => {
-      let viewButton = getAllByTestId('additionalButton')[1];
+      const viewButton = getAllByTestId('additionalButton')[0];
       fireEvent.click(viewButton);
-      expect(mockedUsedNavigate).toHaveBeenCalled();
+      expect(getByText('1 group')).toBeInTheDocument();
     });
   });
 });

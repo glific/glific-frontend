@@ -257,11 +257,15 @@ export const ConversationHeader = ({
     setShowCollectionDialog(false);
   };
 
+  const searchDialogBoxTitle = groups
+    ? t('Add group to collection')
+    : t('Add contact to collection');
+
   if (showCollectionDialog) {
     dialogBox = (
       <SearchDialogBox
         selectedOptions={initialSelectedCollectionIds}
-        title={t('Add contact to collection')}
+        title={searchDialogBoxTitle}
         handleOk={handleCollectionDialogOk}
         handleCancel={handleCollectionDialogCancel}
         options={collectionOptions}

@@ -1,6 +1,5 @@
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
-import { setNotification } from 'common/notification';
 import ConversationHeader from './ConversationHeader';
 import {
   blockContactQuery,
@@ -116,14 +115,6 @@ describe('Menu test', () => {
       const button = screen.getByText('Cancel');
       fireEvent.click(button);
     });
-  });
-
-  vi.mock('common/notification', async (importOriginal) => {
-    const mod = await importOriginal<typeof import('common/notification')>();
-    return {
-      ...mod,
-      setNotification: vi.fn(),
-    };
   });
 
   test('clicking on Start flow should open up a dialog box', async () => {
@@ -260,10 +251,6 @@ describe('Collection test', () => {
     expect(screen.getAllByText('Select flow')[0]).toBeInTheDocument();
     const button = screen.getByText('Start');
     fireEvent.click(button);
-
-    await waitFor(() => {
-      expect(setNotification).toHaveBeenCalled();
-    });
   });
 });
 

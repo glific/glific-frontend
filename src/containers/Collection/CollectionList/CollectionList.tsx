@@ -24,7 +24,7 @@ import { CONTACTS_COLLECTION, WA_GROUPS_COLLECTION, setVariables } from 'common/
 import { CircularProgress, Modal } from '@mui/material';
 import styles from './CollectionList.module.css';
 import { exportCsvFile } from 'common/utils';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { collectionInfo } from 'common/HelpData';
 import { GET_WA_GROUPS } from 'graphql/queries/WA_Groups';
 
@@ -34,10 +34,14 @@ const getDescription = (description: string) => (
   <div className={styles.DescriptionText}>{description}</div>
 );
 
-const getContact = (totalCount: number, groups: boolean) => (
-  <div className={styles.UserCount}>
+const getContact = (totalCount: number, groups: boolean, id: any) => (
+  <Link
+    data-testid="view"
+    to={`/collection/${id}/${groups ? 'groups' : 'contacts'}`}
+    className={styles.UserCount}
+  >
     {`${totalCount} ${groups ? 'group' : 'contact'}${totalCount === 1 ? '' : 's'}`}
-  </div>
+  </Link>
 );
 
 const collectionIcon = <CollectionIcon className={styles.CollectionIcon} />;
@@ -63,11 +67,13 @@ export const CollectionList = () => {
   let searchquery = groups ? GET_WA_GROUPS : CONTACT_SEARCH_QUERY;
   let updateMutation = groups ? UPDATE_COLLECTION_WA_GROUP : UPDATE_COLLECTION_CONTACTS;
 
-  const getColumns = ({ label, contactsCount, description, waGroupsCount }: any) => ({
-    label: getLabel(label),
-    description: getDescription(description),
-    contacts: getContact(groups ? waGroupsCount : contactsCount, groups),
-  });
+  const getColumns = ({ label, contactsCount, description, waGroupsCount, id }: any) => {
+    return {
+      label: getLabel(label),
+      description: getDescription(description),
+      contacts: getContact(groups ? waGroupsCount : contactsCount, groups, id),
+    };
+  };
 
   const columnStyles = [styles.Label, styles.Description, styles.Contact, styles.Actions];
 
@@ -207,22 +213,7 @@ export const CollectionList = () => {
   }
 
   const addContactIcon = <AddContactIcon />;
-  const viewButton = <div className={styles.ViewButton}>View</div>;
   const addEntiyLabel = groups ? t('Add groups to collection') : t('Add contacts to collection');
-  const viewCollection = (id: any) => {
-    if (groups) {
-      navigate(`/collection/${id}/groups`);
-    } else {
-      navigate(`/collection/${id}/contacts`);
-    }
-  };
-
-  const viewDetails = {
-    label: t('View details'),
-    icon: viewButton,
-    parameter: 'id',
-    dialog: viewCollection,
-  };
 
   const addEntity = {
     label: addEntiyLabel,
@@ -239,8 +230,7 @@ export const CollectionList = () => {
     insideMore: true,
   };
 
-  const additionalAction = () =>
-    groups ? [viewDetails, addEntity] : [viewDetails, addEntity, exportCollectionButton];
+  const additionalAction = () => (groups ? [addEntity] : [addEntity, exportCollectionButton]);
 
   const getRestrictedAction = () => {
     const action: any = { edit: true, delete: true };

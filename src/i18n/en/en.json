@@ -456,11 +456,12 @@
   "Copy": "Copy",
   "Groups": "Groups",
   "Group Details": "Group Details",
-  "View Group": "View Group",
+  "View contacts": "View contacts",
   "Sorry, failed to sync whatsapp groups.": "Sorry, failed to sync whatsapp groups.",
   "Whatsapp groups synced successfully.": "Whatsapp groups synced successfully.",
   "Add groups to the collection": "Add groups to the collection",
   "Group Collections": "Group Collections",
   "Add groups to collection": "Add groups to collection",
-  "No conversations found!": "No conversations found!"
+  "No conversations found!": "No conversations found!",
+  "Add group to collection": "Add group to collection"
 }

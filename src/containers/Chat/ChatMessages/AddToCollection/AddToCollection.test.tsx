@@ -6,7 +6,8 @@ import { vi } from 'vitest';
 import { setUserSession } from 'services/AuthService';
 import { getCollectionContactsQuery, updateCollectionContactsQuery } from 'mocks/Collection';
 import { getContactsQuery, getContactsSearchQuery } from 'mocks/Contact';
-import * as AutoComplete from 'components/UI/Form/AutoComplete/AutoComplete';
+import { setNotification } from 'common/notification';
+import { getGroupsQuery, getGroupsSearchQuery, updateCollectionWaGroupQuery } from 'mocks/Groups';
 
 const mocks = [
   getCollectionContactsQuery,
@@ -41,8 +42,13 @@ vi.mock('common/notification', async (importOriginal) => {
 });
 
 test('it should have add contact to collection dialog box ', async () => {
-  const { getByText } = render(addContacts);
+  const { getByText, getByTestId } = render(addContacts);
 
+  expect(getByTestId('loading')).toBeInTheDocument();
+
+  await waitFor(() => {
+    expect(getByTestId('autocomplete-element')).toBeInTheDocument();
+  });
   expect(getByText('Add contacts to the collection')).toBeInTheDocument();
   await waitFor(() => {
     expect(getByText('Glific User')).toBeInTheDocument();
@@ -50,7 +56,13 @@ test('it should have add contact to collection dialog box ', async () => {
 });
 
 test('click on cancel button ', async () => {
-  const { getByText } = render(addContacts);
+  const { getByText, getByTestId } = render(addContacts);
+
+  expect(getByTestId('loading')).toBeInTheDocument();
+
+  await waitFor(() => {
+    expect(getByTestId('autocomplete-element')).toBeInTheDocument();
+  });
 
   fireEvent.click(getByText('Cancel'));
 
@@ -60,6 +72,12 @@ test('click on cancel button ', async () => {
 test('save without changing anything', async () => {
   const { getByText, getByTestId } = render(addContacts);
 
+  expect(getByTestId('loading')).toBeInTheDocument();
+
+  await waitFor(() => {
+    expect(getByTestId('autocomplete-element')).toBeInTheDocument();
+  });
+
   await waitFor(() => {
     expect(getByText('Glific User')).toBeInTheDocument();
   });
@@ -67,26 +85,84 @@ test('save without changing anything', async () => {
   fireEvent.click(getByText('Save'));
 });
 
-test('change value in dialog box', () => {
-  const spy = vi.spyOn(AutoComplete, 'AutoComplete');
-  spy.mockImplementation((props: any) => {
-    const { form, onChange } = props;
+test('change value in dialog box', async () => {
+  const { getByTestId, getAllByTestId } = render(addContacts);
 
-    return (
-      <div data-testid="searchDialogBox">
-        <input
-          onChange={(value) => {
-            onChange('glific');
-            form.setFieldValue(value);
-          }}
-        />
-      </div>
-    );
+  expect(getByTestId('loading')).toBeInTheDocument();
+
+  await waitFor(() => {
+    expect(getByTestId('autocomplete-element')).toBeInTheDocument();
   });
+
+  const autocomplete = getByTestId('autocomplete-element');
+  autocomplete.focus();
+  fireEvent.keyDown(autocomplete, { key: 'ArrowDown' });
+
+  fireEvent.keyDown(autocomplete, { key: 'Enter' });
+
+  await waitFor(() => {
+    expect(getAllByTestId('searchChip')[0]).toHaveTextContent('Glific User');
+  });
+});
+
+test('should add contact to collection', async () => {
   const { getByTestId, getByText } = render(addContacts);
-  fireEvent.change(getByTestId('searchDialogBox').querySelector('input') as HTMLElement, {
-    target: { value: 'change' },
+
+  expect(getByTestId('loading')).toBeInTheDocument();
+
+  await waitFor(() => {
+    expect(getByTestId('autocomplete-element')).toBeInTheDocument();
   });
 
+  const autocomplete = getByTestId('autocomplete-element');
+  autocomplete.focus();
+  fireEvent.keyDown(autocomplete, { key: 'ArrowDown' });
+
+  fireEvent.click(getByText('Glific User 2'), { key: 'Enter' });
   fireEvent.click(getByText('Save'));
+
+  await waitFor(() => {
+    expect(setNotification).toHaveBeenCalled();
+  });
+});
+
+const groupsmocks = [getGroupsSearchQuery, getGroupsQuery, updateCollectionWaGroupQuery];
+
+const addGroups = (
+  <MockedProvider mocks={groupsmocks} addTypename={false}>
+    <AddToCollection {...defaultProps} groups={true} />
+  </MockedProvider>
+);
+
+test('it should have add group to collection dialog box ', async () => {
+  const { getByText, getByTestId } = render(addGroups);
+
+  expect(getByTestId('loading')).toBeInTheDocument();
+
+  await waitFor(() => {
+    expect(getByTestId('autocomplete-element')).toBeInTheDocument();
+  });
+
+  expect(getByText('Add groups to the collection')).toBeInTheDocument();
+});
+
+test('should add whatsapp group to collection', async () => {
+  const { getByTestId, getByText } = render(addGroups);
+
+  expect(getByTestId('loading')).toBeInTheDocument();
+
+  await waitFor(() => {
+    expect(getByTestId('autocomplete-element')).toBeInTheDocument();
+  });
+
+  const autocomplete = getByTestId('autocomplete-element');
+  autocomplete.focus();
+  fireEvent.keyDown(autocomplete, { key: 'ArrowDown' });
+
+  fireEvent.click(getByText('Group 1'), { key: 'Enter' });
+  fireEvent.click(getByText('Save'));
+
+  await waitFor(() => {
+    expect(setNotification).toHaveBeenCalled();
+  });
 });

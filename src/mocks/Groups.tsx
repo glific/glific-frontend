@@ -1,5 +1,10 @@
-import { DEFAULT_ENTITY_LIMIT, DEFAULT_MESSAGE_LIMIT } from 'common/constants';
-import { GROUP_SEARCH_MULTI_QUERY, GROUP_SEARCH_QUERY } from 'graphql/queries/WA_Groups';
+import { DEFAULT_ENTITY_LIMIT, DEFAULT_MESSAGE_LIMIT, setVariables } from 'common/constants';
+import { UPDATE_COLLECTION_WA_GROUP } from 'graphql/mutations/Collection';
+import {
+  GET_WA_GROUPS,
+  GROUP_SEARCH_MULTI_QUERY,
+  GROUP_SEARCH_QUERY,
+} from 'graphql/queries/WA_Groups';
 
 export const waGroup = {
   query: GROUP_SEARCH_QUERY,
@@ -368,3 +373,74 @@ export const searchGroupQuery = [
     },
   },
 ];
+
+export const getGroupsSearchQuery = {
+  request: {
+    query: GET_WA_GROUPS,
+    variables: setVariables({}, 50),
+  },
+  result: {
+    data: {
+      waGroups: [
+        {
+          bspId: '120363242907663810@g.us',
+          id: '5',
+          lastCommunicationAt: '2024-03-15T10:53:48Z',
+          name: 'Group 1',
+        },
+      ],
+    },
+  },
+};
+
+export const getGroupsQuery = {
+  request: {
+    query: GET_WA_GROUPS,
+    variables: setVariables({ name: '' }, 50, 0, 'ASC'),
+  },
+  result: {
+    data: {
+      waGroups: [
+        {
+          bspId: '120363242907663810@g.us',
+          id: '1',
+          lastCommunicationAt: '2024-03-15T10:53:48Z',
+          name: 'Group 1',
+        },
+        {
+          bspId: '120363242907663810@g.us',
+          id: '2',
+          lastCommunicationAt: '2024-03-15T10:53:48Z',
+          name: 'Group 2',
+        },
+        {
+          bspId: '120363242907663810@g.us',
+          id: '3',
+          lastCommunicationAt: '2024-03-15T10:53:48Z',
+          name: 'Group 3',
+        },
+      ],
+    },
+  },
+};
+
+export const updateCollectionWaGroupQuery = {
+  request: {
+    query: UPDATE_COLLECTION_WA_GROUP,
+    variables: { input: { addWaGroupIds: ['5'], groupId: '1', deleteWaGroupIds: [] } },
+  },
+  result: {
+    data: {
+      updateCollectionWaGroup: {
+        __typename: 'CollectionWaGroupResult',
+        groupContacts: [
+          {
+            __typename: 'WaGroupsCollection',
+            id: '5',
+          },
+        ],
+        numberDeleted: 0,
+      },
+    },
+  },
+};

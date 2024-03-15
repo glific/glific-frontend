@@ -63,7 +63,7 @@ export const GroupCollectionList = () => {
   const additionalAction = () => [
     {
       icon: <ArrowForwardIcon className={styles.RedirectArrow} />,
-      label: t('View Group'),
+      label: t('View contacts'),
       link: '/group-details',
       parameter: 'id',
     },

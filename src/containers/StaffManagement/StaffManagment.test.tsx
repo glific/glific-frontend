@@ -267,7 +267,6 @@ test('unset all roles and then set admin role', async () => {
     expect(screen.getByPlaceholderText('Phone Number')).toHaveValue('919999988888');
   });
 
-  // screen.debug(document, Infinity);
   await waitFor(() => {
     expect(screen.getAllByTestId('AutocompleteInput')[0].querySelector('input')).toHaveValue(
       'Staff'

@@ -523,7 +523,6 @@ test('send message to whatsapp group', async () => {
   fireEvent.click(getByTestId('sendMessage'));
 
   await waitFor(() => {
-    screen.debug(undefined, Infinity);
     expect(screen.getByText('hey')).toBeInTheDocument();
   });
 });
