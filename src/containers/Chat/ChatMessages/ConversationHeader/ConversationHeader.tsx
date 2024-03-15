@@ -394,7 +394,9 @@ export const ConversationHeader = ({
     </Button>
   ) : null;
 
-  if (collectionId) {
+  if (groups && collectionId) {
+    flowButton = '';
+  } else if (collectionId) {
     flowButton = (
       <Button
         data-testid="flowButton"

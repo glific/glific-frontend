@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router';
 import { vi } from 'vitest';
@@ -90,6 +90,14 @@ const mocks = [
     result: {},
   },
 ];
+
+vi.mock('react-router-dom', async () => {
+  return {
+    ...(await vi.importActual<any>('react-router-dom')),
+    useParams: () => ({ id: '1' }),
+  };
+});
+
 const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <MemoryRouter initialEntries={['/collection/1/groups']}>
@@ -99,10 +107,23 @@ const wrapper = (
 );
 
 describe('<GroupCollectionList />', () => {
-  test('should render GroupCollectionList', async () => {
-    const { getByTestId } = render(wrapper);
+  test('should render Group label', async () => {
+    const { getByTestId, getByText } = render(wrapper);
 
-    // loading is show initially
     expect(getByTestId('loading')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(getByText('Default WA Group Collection')).toBeInTheDocument();
+    });
+  });
+
+  test('should render GroupCollectionList', async () => {
+    const { getByTestId, getByText } = render(wrapper);
+
+    expect(getByTestId('loading')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(getByText('Group 12')).toBeInTheDocument();
+    });
   });
 });

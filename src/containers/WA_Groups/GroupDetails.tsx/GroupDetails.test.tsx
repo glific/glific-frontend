@@ -25,7 +25,7 @@ const mocks = [
             groups: [],
             id: '21',
             maskedPhone: '9185******17',
-            name: 'default reciever',
+            name: 'Default reciever',
             phone: '918547689517',
             status: 'VALID',
           },
@@ -62,6 +62,13 @@ const mocks = [
   },
 ];
 
+vi.mock('react-router-dom', async () => {
+  return {
+    ...(await vi.importActual<any>('react-router-dom')),
+    useParams: () => ({ id: '1' }),
+  };
+});
+
 const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <MemoryRouter>
@@ -70,15 +77,12 @@ const wrapper = (
   </MockedProvider>
 );
 
-describe('<CollectionContactList />', () => {
-  test('should render CollectionContactList', async () => {
-    const { getByTestId, getByText } = render(wrapper);
+test('should render Group details', async () => {
+  const { getByTestId, getByText } = render(wrapper);
 
-    // loading is show initially
-    expect(getByTestId('loading')).toBeInTheDocument();
+  expect(getByTestId('loading')).toBeInTheDocument();
 
-    await waitFor(() => {
-      expect(getByText('Glific User')).toBeInTheDocument();
-    });
+  await waitFor(() => {
+    expect(getByText('Default reciever')).toBeInTheDocument();
   });
 });

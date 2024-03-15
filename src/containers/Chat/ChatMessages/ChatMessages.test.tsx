@@ -1,4 +1,4 @@
-import { render, act } from '@testing-library/react';
+import { render, act, screen } from '@testing-library/react';
 import 'mocks/matchMediaMock';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import { fireEvent, waitFor } from '@testing-library/dom';
@@ -514,14 +514,16 @@ test('send message to whatsapp group', async () => {
     return (
       <div
         data-testid="sendMessage"
-        onClick={() => onSendMessage('heyy', null, 'TEXT', null, null)}
+        onClick={() => onSendMessage('hey', null, 'TEXT', null, null)}
       ></div>
     );
   });
 
   const { getByTestId } = render(chatMessagesWAGroups);
+  fireEvent.click(getByTestId('sendMessage'));
 
   await waitFor(() => {
-    fireEvent.click(getByTestId('sendMessage'));
+    screen.debug(undefined, Infinity);
+    expect(screen.getByText('hey')).toBeInTheDocument();
   });
 });
