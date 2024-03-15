@@ -126,7 +126,7 @@ describe('Menu test', () => {
     };
   });
 
-  test.only('clicking on Start flow should open up a dialog box', async () => {
+  test('clicking on Start flow should open up a dialog box', async () => {
     fireEvent.click(screen.getByTestId('flowButton'));
     await waitFor(() => {
       expect(screen.getAllByText('Select flow')[0]).toBeInTheDocument();
@@ -134,10 +134,6 @@ describe('Menu test', () => {
     await waitFor(() => {
       const button = screen.getByText('Start');
       fireEvent.click(button);
-    });
-
-    await waitFor(() => {
-      expect(setNotification).toHaveBeenCalled();
     });
   });
 

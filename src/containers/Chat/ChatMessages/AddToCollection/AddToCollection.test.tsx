@@ -1,5 +1,5 @@
 import { AddToCollection } from './AddToCollection';
-import { render, cleanup, waitFor, fireEvent, screen } from '@testing-library/react';
+import { render, cleanup, waitFor, fireEvent } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { vi } from 'vitest';
 
@@ -89,10 +89,4 @@ test('change value in dialog box', () => {
   });
 
   fireEvent.click(getByText('Save'));
-});
-
-test.only('', () => {
-  const { getByText, getByTestId } = render(addContacts);
-  fireEvent.click(getByTestId('AutocompleteInput'));
-  screen.debug();
 });
