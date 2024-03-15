@@ -129,25 +129,23 @@ export const ConversationList = ({
   }, [savedSearchCriteriaId]);
 
   const filterVariables = () => {
-    if (groups) {
-      if (!selectedCollectionId) {
-        if (phonenumber?.length === 0 || !phonenumber) {
-          return GROUP_QUERY_VARIABLES;
-        }
-        return {
-          [contactOptions]: {
-            limit: DEFAULT_ENTITY_LIMIT,
-          },
-          filter: {
-            waPhoneIds: phonenumber?.map((phone: any) => phone.id),
-          },
-          [messageOptions]: {
-            limit: DEFAULT_MESSAGE_LIMIT,
-          },
-        };
-      } else {
-        return GROUP_COLLECTION_SEARCH_QUERY_VARIABLES;
+    if (groups && selectedCollectionId) {
+      return GROUP_COLLECTION_SEARCH_QUERY_VARIABLES;
+    } else if (groups) {
+      if (phonenumber?.length === 0 || !phonenumber) {
+        return GROUP_QUERY_VARIABLES;
       }
+      return {
+        [contactOptions]: {
+          limit: DEFAULT_ENTITY_LIMIT,
+        },
+        filter: {
+          waPhoneIds: phonenumber?.map((phone: any) => phone.id),
+        },
+        [messageOptions]: {
+          limit: DEFAULT_MESSAGE_LIMIT,
+        },
+      };
     }
 
     if (savedSearchCriteria && Object.keys(searchParam).length === 0) {

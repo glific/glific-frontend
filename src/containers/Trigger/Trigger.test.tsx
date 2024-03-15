@@ -173,7 +173,7 @@ describe('trigger with weekly frequency', () => {
               form.setFieldValue(event.target.value);
             }}
           >
-            {options.map((option: any) => (
+            {options?.map((option: any) => (
               <option key={option.id ? option.id : option.label} value={option.value}>
                 {option.label}
               </option>

@@ -37,3 +37,7 @@
   font-size: 14px;
   width: 25%;
 }
+
+.Autocomplete {
+  max-width: 180px;
+}

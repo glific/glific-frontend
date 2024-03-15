@@ -21,9 +21,6 @@ const WaManagedPhones = ({ phonenumber, setPhonenumber }: WaManagedPhonesProps) 
   const { data } = useQuery<any>(GET_WA_MANAGED_PHONES, {
     variables: {
       filter: {},
-      opts: {
-        limit: 3,
-      },
     },
   });
 
@@ -51,33 +48,35 @@ const WaManagedPhones = ({ phonenumber, setPhonenumber }: WaManagedPhonesProps) 
   return (
     <div className={styles.DropDownContainer}>
       <FormControl className={styles.FormStyle}>
-        <AutoComplete
-          classes={{ inputRoot: styles.DropDown }}
-          isFilterType
-          placeholder="Phone Number"
-          options={
-            data?.waManagedPhones
-              ? data?.waManagedPhones?.map((phone: any) => ({
-                  label: phone.phone,
-                  id: phone.id,
-                }))
-              : []
-          }
-          multiple={false}
-          optionLabel="label"
-          onChange={(value: any) => {
-            if (value) {
-              setPhonenumber([value]);
-            } else {
-              setPhonenumber(null);
+        <div className={styles.Autocomplete}>
+          <AutoComplete
+            classes={{ inputRoot: styles.DropDown }}
+            isFilterType
+            placeholder="Phone Number"
+            options={
+              data?.waManagedPhones
+                ? data?.waManagedPhones?.map((phone: any) => ({
+                    label: phone.phone,
+                    id: phone.id,
+                  }))
+                : []
             }
-          }}
-          form={{ setFieldValue: () => {} }}
-          field={{
-            name: 'phonenumber',
-            value: phonenumber?.label,
-          }}
-        />
+            multiple={false}
+            optionLabel="label"
+            onChange={(value: any) => {
+              if (value) {
+                setPhonenumber([value]);
+              } else {
+                setPhonenumber(null);
+              }
+            }}
+            form={{ setFieldValue: () => {} }}
+            field={{
+              name: 'phonenumber',
+              value: phonenumber?.label,
+            }}
+          />
+        </div>
       </FormControl>
 
       <Button
