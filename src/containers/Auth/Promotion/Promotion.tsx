@@ -26,7 +26,7 @@ export const Promotion = () => {
 
       {!minimized && (
         <>
-          <div className={styles.Image}>New Website Address!</div>
+          <div className={styles.Image}>New Look Alert!</div>
 
           <div className={styles.Points}>
             <div className={styles.BodyListText}>
