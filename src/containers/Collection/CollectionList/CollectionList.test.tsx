@@ -6,6 +6,7 @@ import { vi } from 'vitest';
 import {
   countCollectionQuery,
   countCollectionQueryWAGroups,
+  exportCollectionsQuery,
   filterCollectionQuery,
   filterCollectionQueryWAGroups,
   getCollectionContactsQuery,
@@ -16,6 +17,7 @@ import { getPublishedFlowQuery } from 'mocks/Flow';
 import { setUserSession } from 'services/AuthService';
 import * as SearchDialogBox from 'components/UI/SearchDialogBox/SearchDialogBox';
 import { CollectionList } from './CollectionList';
+import * as utils from 'common/utils';
 
 const mocks = [
   countCollectionQuery,
@@ -27,8 +29,7 @@ const mocks = [
   getContactsQuery,
   getContactsSearchQuery,
   getCurrentUserQuery,
-  filterCollectionQueryWAGroups,
-  countCollectionQueryWAGroups,
+  exportCollectionsQuery,
 ];
 
 const wrapper = (
@@ -108,7 +109,7 @@ describe('<CollectionList />', () => {
       );
     });
 
-    const { getByText, getAllByTestId, getByTestId } = render(wrapper);
+    const { getAllByTestId, getByTestId } = render(wrapper);
 
     // loading is show initially
     expect(getByTestId('loading')).toBeInTheDocument();
@@ -131,9 +132,12 @@ describe('<CollectionList />', () => {
   });
 
   test('should render CollectionList for whatsapp groups', async () => {
-    let groupWrapper = (
+    const groupWrapper = (
       <MemoryRouter initialEntries={['group/collection']}>
-        <MockedProvider mocks={mocks} addTypename={false}>
+        <MockedProvider
+          mocks={[...mocks, filterCollectionQueryWAGroups, countCollectionQueryWAGroups]}
+          addTypename={false}
+        >
           <CollectionList />
         </MockedProvider>
       </MemoryRouter>
@@ -148,10 +152,13 @@ describe('<CollectionList />', () => {
     });
   });
 
-  test('it has number of groups', async () => {
-    let groupWrapper = (
+  test('it has number of whatsapp groups', async () => {
+    const groupWrapper = (
       <MemoryRouter initialEntries={['group/collection']}>
-        <MockedProvider mocks={mocks} addTypename={false}>
+        <MockedProvider
+          mocks={[...mocks, filterCollectionQueryWAGroups, countCollectionQueryWAGroups]}
+          addTypename={false}
+        >
           <CollectionList />
         </MockedProvider>
       </MemoryRouter>
@@ -164,6 +171,23 @@ describe('<CollectionList />', () => {
       const viewButton = getAllByTestId('additionalButton')[0];
       fireEvent.click(viewButton);
       expect(getByText('1 group')).toBeInTheDocument();
+    });
+  });
+
+  test('should export collection', async () => {
+    const { getByTestId, getAllByRole } = render(wrapper);
+    expect(getByTestId('loading')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(getByTestId('additionalButton')).toBeInTheDocument();
+    });
+
+    fireEvent.click(getByTestId('MoreIcon'));
+    fireEvent.click(screen.getByText('Export'));
+    const spy = vi.spyOn(utils, 'exportCsvFile');
+
+    await waitFor(() => {
+      expect(spy).toHaveBeenCalled();
     });
   });
 });

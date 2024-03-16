@@ -1,5 +1,6 @@
 import { GET_COLLECTION_CONTACTS } from 'graphql/queries/Contact';
 import {
+  EXPORT_COLLECTION_DATA,
   FILTER_COLLECTIONS,
   GET_COLLECTION,
   GET_COLLECTIONS,
@@ -344,6 +345,22 @@ export const updateCollectionContactsQuery = {
           },
         ],
         numberDeleted: 0,
+      },
+    },
+  },
+};
+
+export const exportCollectionsQuery = {
+  request: {
+    query: EXPORT_COLLECTION_DATA,
+    variables: { exportCollectionId: '1' },
+  },
+  result: {
+    data: {
+      exportCollection: {
+        errors: null,
+        status:
+          'Name,Phone\r\nAdelle Cavin,2629678404\r\nMargarita Quinteros,5799461148\r\nChrissy Cron,8105438990\r\nNGO Staff,919820112345\r\nNGO Manager,9101234567890\r\nNGO Admin,919999988888\r\nNGO Person who left,919988776655\r\n',
       },
     },
   },
