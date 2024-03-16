@@ -45,8 +45,6 @@ export const GroupMessageSubscription = ({ setDataLoaded }: GroupMessageProps) =
         return cachedConversations;
       }
 
-      // let's return early incase we don't have cached conversations
-      // TODO: Need to investigate why this happens
       if (!cachedConversations) {
         return null;
       }

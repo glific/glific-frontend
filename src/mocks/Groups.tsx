@@ -7,6 +7,11 @@ import {
   GROUP_SEARCH_MULTI_QUERY,
   GROUP_SEARCH_QUERY,
 } from 'graphql/queries/WA_Groups';
+import {
+  SENT_MESSAGE_WA_GROUP_COLLECTION,
+  WA_MESSAGE_RECEIVED_SUBSCRIPTION,
+  WA_MESSAGE_SENT_SUBSCRIPTION,
+} from 'graphql/subscriptions/Groups';
 
 export const waGroup = {
   query: GROUP_SEARCH_QUERY,
@@ -347,7 +352,7 @@ export const searchGroupQuery = [
               id: '7',
               label: 'Whatsapp Group Collection 1',
             },
-            messages: null,
+            messages: [],
             waGroup: null,
           },
           {
@@ -357,7 +362,7 @@ export const searchGroupQuery = [
               id: '8',
               label: 'Whatsapp Group Collection 2',
             },
-            messages: null,
+            messages: [],
             waGroup: null,
           },
           {
@@ -367,7 +372,7 @@ export const searchGroupQuery = [
               id: '6',
               label: 'Default WA Group Collection',
             },
-            messages: null,
+            messages: [],
             waGroup: null,
           },
         ],
@@ -605,7 +610,7 @@ export const searchCollectionGroupQuery = [
               id: '7',
               label: 'Whatsapp Group Collection 1',
             },
-            messages: null,
+            messages: [],
             waGroup: null,
           },
           {
@@ -615,7 +620,7 @@ export const searchCollectionGroupQuery = [
               id: '8',
               label: 'Whatsapp Group Collection 2',
             },
-            messages: null,
+            messages: [],
             waGroup: null,
           },
           {
@@ -625,7 +630,7 @@ export const searchCollectionGroupQuery = [
               id: '6',
               label: 'Default WA Group Collection',
             },
-            messages: null,
+            messages: [],
             waGroup: null,
           },
         ],
@@ -772,3 +777,100 @@ export const syncWaGroupContactsQueryWithError = {
     ],
   },
 };
+
+export const waMessageReceivedSubscription = {
+  request: {
+    query: WA_MESSAGE_RECEIVED_SUBSCRIPTION,
+    variables: { organizationId: '1' },
+  },
+  result: {
+    data: {
+      receivedWaGroupMessage: {
+        __typename: 'WaMessage',
+        body: 'hi',
+        contact: {
+          __typename: 'Contact',
+          name: 'akansha',
+        },
+        contextMessage: null,
+        errors: null,
+        flow: 'INBOUND',
+        id: '27',
+        insertedAt: '2024-03-16T18:10:40.990907Z',
+        media: null,
+        messageNumber: 2,
+        status: 'received',
+        type: 'TEXT',
+        waGroup: {
+          __typename: 'WaGroup',
+          id: '1',
+        },
+      },
+    },
+  },
+};
+
+export const waMessageSendSubscription = {
+  request: {
+    query: WA_MESSAGE_SENT_SUBSCRIPTION,
+    variables: { organizationId: '1' },
+  },
+  result: {
+    data: {
+      sentWaGroupMessage: {
+        __typename: 'WaMessage',
+        body: 'hi',
+        contact: {
+          __typename: 'Contact',
+          name: null,
+        },
+        contextMessage: null,
+        errors: null,
+        flow: 'INBOUND',
+        id: '28',
+        insertedAt: '2024-03-16T18:11:46.277657Z',
+        media: null,
+        messageNumber: 3,
+        status: 'enqueued',
+        type: 'TEXT',
+        waGroup: {
+          __typename: 'WaGroup',
+          id: '1',
+        },
+      },
+    },
+  },
+};
+
+export const waSentMessageCollectionQuery = {
+  request: {
+    query: SENT_MESSAGE_WA_GROUP_COLLECTION,
+    variables: { organizationId: '1' },
+  },
+  result: {
+    data: {
+      sentWaGroupCollectionMessage: {
+        id: '1',
+        body: 'hi',
+        flow: 'INBOUND',
+        type: 'TEXT',
+        messageNumber: 1,
+        insertedAt: '2024-03-16T18:12:34.735467Z',
+        groupId: '1',
+        media: null,
+        errors: null,
+        status: 'sent',
+        contact: null,
+        contextMessage: null,
+        waGroup: null,
+      },
+    },
+  },
+};
+
+export const GROUP_CONVERSATION_MOCKS = [
+  ...searchGroupQuery,
+  waMessageSendSubscription,
+  waMessageReceivedSubscription,
+  waSentMessageCollectionQuery,
+];
