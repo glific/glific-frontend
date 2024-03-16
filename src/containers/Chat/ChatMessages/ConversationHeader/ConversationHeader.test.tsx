@@ -90,6 +90,7 @@ test('it should have a session timer', async () => {
 describe('Menu test', () => {
   beforeEach(async () => {
     render(component);
+
     await waitFor(() => {
       fireEvent.click(screen.getByTestId('dropdownIcon')?.querySelector('svg') as SVGElement);
     });
@@ -241,16 +242,16 @@ describe('Collection test', () => {
     expect(getByText('Default Collection')).toBeInTheDocument();
   });
 
-  test('clicking on Start flow should open up a dialog box', async () => {
+  test('clicking on start a flow shoul open dialog box', async () => {
     render(component);
     await waitFor(() => {
       fireEvent.click(screen.getByTestId('dropdownIcon')?.querySelector('svg') as SVGElement);
     });
     fireEvent.click(screen.getByTestId('flowButton'));
 
-    expect(screen.getAllByText('Select flow')[0]).toBeInTheDocument();
-    const button = screen.getByText('Start');
-    fireEvent.click(button);
+    await waitFor(() => {
+      expect(screen.getByTestId('dialogBox')).toBeInTheDocument();
+    });
   });
 });
 

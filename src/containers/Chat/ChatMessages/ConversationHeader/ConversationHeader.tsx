@@ -32,19 +32,12 @@ import {
   UPDATE_WA_GROUP_COLLECTION,
 } from 'graphql/mutations/Collection';
 import { GET_CONTACT_COLLECTIONS } from 'graphql/queries/Contact';
-import { GET_FLOWS } from 'graphql/queries/Flow';
-import {
-  ADD_FLOW_TO_CONTACT,
-  ADD_FLOW_TO_COLLECTION,
-  ADD_FLOW_TO_WA_GROUP,
-} from 'graphql/mutations/Flow';
 import { UPDATE_CONTACT } from 'graphql/mutations/Contact';
 import { SEARCH_QUERY } from 'graphql/queries/Search';
 import { CLEAR_MESSAGES } from 'graphql/mutations/Chat';
-import { setErrorMessage, setNotification } from 'common/notification';
+import { setNotification } from 'common/notification';
 import {
   CONTACTS_COLLECTION,
-  FLOW_STATUS_PUBLISHED,
   is24HourWindowOver,
   SEARCH_QUERY_VARIABLES,
   setVariables,
@@ -59,6 +52,7 @@ import { showChats } from 'common/responsive';
 import { slicedString } from 'common/utils';
 import { CollectionInformation } from '../../../Collection/CollectionInformation/CollectionInformation';
 import AddToCollection from '../AddToCollection/AddToCollection';
+import StartAFlow from '../StartFlow/StartFlow';
 
 import styles from './ConversationHeader.module.css';
 
@@ -120,15 +114,6 @@ export const ConversationHeader = ({
     variables: setVariables({ groupType: groups ? WA_GROUPS_COLLECTION : CONTACTS_COLLECTION }),
   });
 
-  // get the published flow list
-  const [getFlows, { data: flowsData }] = useLazyQuery(GET_FLOWS, {
-    variables: setVariables({
-      status: FLOW_STATUS_PUBLISHED,
-      isActive: true,
-    }),
-    fetchPolicy: 'network-only', // set for now, need to check cache issue
-  });
-
   // get contact collections
   const [getContactCollections, { data }] = useLazyQuery(GET_CONTACT_COLLECTIONS, {
     variables: { id: entityId },
@@ -172,30 +157,6 @@ export const ConversationHeader = ({
     },
   });
 
-  const [addFlowToWaGroups] = useMutation(ADD_FLOW_TO_WA_GROUP, {
-    onCompleted: () => {
-      setNotification(t('Flow started successfully.'));
-    },
-    onError: (error) => {
-      setErrorMessage(error);
-    },
-  });
-
-  const [addFlow] = useMutation(ADD_FLOW_TO_CONTACT, {
-    onCompleted: () => {
-      setNotification(t('Flow started successfully.'));
-    },
-    onError: (error) => {
-      setErrorMessage(error);
-    },
-  });
-
-  const [addFlowToCollection] = useMutation(ADD_FLOW_TO_COLLECTION, {
-    onCompleted: () => {
-      setNotification(t('Your flow will start in a couple of minutes.'));
-    },
-  });
-
   // mutation to clear the chat messages of the contact
   const [clearMessages] = useMutation(CLEAR_MESSAGES, {
     variables: { contactId: entityId },
@@ -206,7 +167,6 @@ export const ConversationHeader = ({
   });
 
   let collectionOptions = [];
-  let flowOptions = [];
   let initialSelectedCollectionIds: Array<any> = [];
   let selectedCollectionsName;
   let selectedCollections: any = [];
@@ -221,10 +181,6 @@ export const ConversationHeader = ({
 
   if (collectionsData) {
     collectionOptions = collectionsData.groups;
-  }
-
-  if (flowsData) {
-    flowOptions = flowsData.flows;
   }
 
   let dialogBox = null;
@@ -273,52 +229,13 @@ export const ConversationHeader = ({
     );
   }
 
-  const handleFlowSubmit = (flowId: any) => {
-    if (!flowId) return;
-    const flowVariables: any = {
-      flowId,
-    };
-
-    if (entityId) {
-      if (groups) {
-        flowVariables.waGroupId = entityId;
-        addFlowToWaGroups({
-          variables: flowVariables,
-        });
-      } else {
-        flowVariables.contactId = entityId;
-        addFlow({
-          variables: flowVariables,
-        });
-      }
-    }
-
-    if (collectionId) {
-      flowVariables.groupId = collectionId;
-      addFlowToCollection({
-        variables: flowVariables,
-      });
-    }
-
-    setShowFlowDialog(false);
-  };
-
-  const closeFlowDialogBox = () => {
-    setShowFlowDialog(false);
-  };
-
   if (showFlowDialog) {
     dialogBox = (
-      <SearchDialogBox
-        title={t('Select flow')}
-        handleOk={handleFlowSubmit}
-        handleCancel={closeFlowDialogBox}
-        options={flowOptions}
-        optionLabel="name"
-        multiple={false}
-        buttonOk="Start"
-        textFieldPlaceholder={t('Select flow')}
-        description={t('The contact will be responded as per the messages planned in the flow.')}
+      <StartAFlow
+        collectionId={collectionId}
+        entityId={entityId}
+        setShowFlowDialog={setShowFlowDialog}
+        groups={groups}
       />
     );
   }
@@ -406,7 +323,6 @@ export const ConversationHeader = ({
         data-testid="flowButton"
         className={styles.ListButtonPrimary}
         onClick={() => {
-          getFlows();
           setShowFlowDialog(true);
         }}
       >
@@ -425,7 +341,6 @@ export const ConversationHeader = ({
         data-testid="flowButton"
         className={styles.ListButtonPrimary}
         onClick={() => {
-          getFlows();
           setShowFlowDialog(true);
         }}
       >
@@ -450,7 +365,6 @@ export const ConversationHeader = ({
             className={styles.ListButtonPrimary}
             disabled={disabled}
             onClick={() => {
-              getFlows();
               setShowFlowDialog(true);
             }}
           >
