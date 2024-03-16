@@ -1,7 +1,9 @@
 import { DEFAULT_ENTITY_LIMIT, DEFAULT_MESSAGE_LIMIT, setVariables } from 'common/constants';
 import { UPDATE_COLLECTION_WA_GROUP } from 'graphql/mutations/Collection';
+import { SYNC_GROUPS } from 'graphql/mutations/Group';
 import {
   GET_WA_GROUPS,
+  GET_WA_MANAGED_PHONES,
   GROUP_SEARCH_MULTI_QUERY,
   GROUP_SEARCH_QUERY,
 } from 'graphql/queries/WA_Groups';
@@ -700,5 +702,73 @@ export const updateCollectionWaGroupQuery = {
         numberDeleted: 0,
       },
     },
+  },
+};
+
+export const waManagedPhonesQuery = {
+  request: {
+    query: GET_WA_MANAGED_PHONES,
+    variables: {
+      filter: {},
+    },
+  },
+  response: {
+    waManagedPhones: [
+      {
+        __typename: 'WaManagedPhone',
+        id: '1',
+        label: null,
+        phone: '7535988655',
+      },
+      {
+        __typename: 'WaManagedPhone',
+        id: '2',
+        label: null,
+        phone: '411395483',
+      },
+      {
+        __typename: 'WaManagedPhone',
+        id: '3',
+        label: null,
+        phone: '2666135435',
+      },
+    ],
+  },
+};
+
+export const syncWaGroupContactsQuery = {
+  request: {
+    query: SYNC_GROUPS,
+  },
+  result: {
+    data: {
+      syncWaGroupContacts: {
+        __typename: 'SyncWaContacts',
+        message: 'successfully synced',
+      },
+    },
+  },
+};
+
+export const syncWaGroupContactsQueryWithError = {
+  request: {
+    query: SYNC_GROUPS,
+  },
+  result: {
+    data: {
+      syncWaGroupContacts: null,
+    },
+    errors: [
+      {
+        message: 'some error',
+        path: ['syncWaGroupContacts'],
+        locations: [
+          {
+            line: 2,
+            column: 3,
+          },
+        ],
+      },
+    ],
   },
 };
