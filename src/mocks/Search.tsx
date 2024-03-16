@@ -4,6 +4,7 @@ import {
   SEARCH_QUERY_COUNT,
   GET_SEARCH,
   SEARCH_MULTI_QUERY,
+  SEARCH_QUERY,
 } from 'graphql/queries/Search';
 import { COLLECTION_COUNT_SUBSCRIPTION } from 'graphql/subscriptions/PeriodicInfo';
 import { MARK_AS_READ } from 'graphql/mutations/Chat';
@@ -400,3 +401,46 @@ export const searchGroupCollection = [
     },
   },
 ];
+
+export const getSearchCollectionQuery = {
+  request: {
+    query: SEARCH_QUERY,
+    variables: {
+      contactOpts: {
+        limit: 25,
+      },
+      filter: {
+        searchGroup: true,
+      },
+      messageOpts: {
+        limit: 20,
+      },
+    },
+  },
+  result: {
+    data: {
+      search: [
+        {
+          __typename: 'Conversation',
+          contact: null,
+          group: {
+            __typename: 'Group',
+            id: '1',
+            label: 'qwe',
+          },
+          messages: [],
+        },
+        {
+          __typename: 'Conversation',
+          contact: null,
+          group: {
+            __typename: 'Group',
+            id: '2',
+            label: 'Sample Collection 1710520853056',
+          },
+          messages: [],
+        },
+      ],
+    },
+  },
+};

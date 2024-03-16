@@ -26,6 +26,7 @@ import {
 } from 'common/constants';
 import styles from './Collection.module.css';
 import { collectionInfo } from 'common/HelpData';
+import { CircularProgress } from '@mui/material';
 
 export const Collection = () => {
   const [selectedUsers, { data: collectionUsers }] = useLazyQuery(GET_COLLECTION_USERS, {
@@ -71,7 +72,7 @@ export const Collection = () => {
     variables: setVariables(),
   });
 
-  const { data: collectionList } = useQuery(GET_COLLECTIONS);
+  const { data: collectionList, loading } = useQuery(GET_COLLECTIONS);
 
   useEffect(() => {
     if (collectionId) {
@@ -182,6 +183,8 @@ export const Collection = () => {
     };
     return payloadWithRoleIdsAndType;
   };
+
+  if (loading) return <CircularProgress data-testid="loading" />;
 
   return (
     <FormLayout

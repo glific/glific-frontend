@@ -1,15 +1,20 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 import { MockedProvider } from '@apollo/client/testing';
 import { vi } from 'vitest';
-
-import { getCollectionQuery, getCollectionsQuery, getCollectionUsersQuery } from 'mocks/Collection';
+import {
+  createCollectionQuery,
+  getCollectionQuery,
+  getCollectionsQuery,
+  getCollectionUsersQuery,
+} from 'mocks/Collection';
 import { getUsersQuery } from 'mocks/User';
 import { getOrganizationLanguagesQuery, getOrganizationQuery } from 'mocks/Organization';
-import * as FormLayout from 'containers/Form/FormLayout';
 import { Collection } from './Collection';
+import * as FormLayout from 'containers/Form/FormLayout';
 import { getRoleNamesMock } from 'containers/StaffManagement/StaffManagement.test.helper';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter, MemoryRouter, Routes, Route } from 'react-router-dom';
+import { getSearchCollectionQuery } from 'mocks/Search';
 
 const mocks = [
   getRoleNamesMock,
@@ -22,14 +27,9 @@ const mocks = [
   getCollectionUsersQuery,
   getCollectionUsersQuery,
   ...getCollectionsQuery,
+  createCollectionQuery,
+  getSearchCollectionQuery,
 ];
-
-vi.mock('react-router-dom', async () => {
-  return {
-    ...(await vi.importActual<any>('react-router-dom')),
-    useParams: () => ({ id: '1' }),
-  };
-});
 
 const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>
@@ -39,12 +39,40 @@ const wrapper = (
   </MockedProvider>
 );
 
-describe('<Collection />', () => {
+vi.mock('common/notification', async (importOriginal) => {
+  const mod = await importOriginal<typeof import('common/notification')>();
+  return {
+    ...mod,
+    setNotification: vi.fn((...args) => {
+      return args[1];
+    }),
+  };
+});
+
+const mockedUsedNavigate = vi.fn();
+vi.mock('react-router-dom', async () => ({
+  ...(await vi.importActual('react-router-dom')),
+  useNavigate: () => mockedUsedNavigate,
+}));
+
+describe('collection', () => {
+  beforeEach(() => {
+    cleanup();
+  });
+
   test('should render Collection and hit save', async () => {
-    const { getByText, getAllByTestId } = render(wrapper);
+    const { getByText, getAllByTestId, getByTestId } = render(
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <MemoryRouter initialEntries={['/collection/1/edit']}>
+          <Routes>
+            <Route path="collection/:id/edit" element={<Collection />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
 
     // loading is show initially
-    expect(getByText('Loading...')).toBeInTheDocument();
+    expect(getByTestId('loading')).toBeInTheDocument();
 
     await waitFor(() => {
       expect(getByText('Edit collection')).toBeInTheDocument();
@@ -57,11 +85,56 @@ describe('<Collection />', () => {
     // remove first user
     const removeUser = getAllByTestId('deleteIcon');
     UserEvent.click(removeUser[0]);
-
     // click on SAVE
-    const saveButton = screen.getByText('Save');
+    const saveButton = getByTestId('submitActionButton');
     await waitFor(() => {
       UserEvent.click(saveButton);
+    });
+  });
+
+  test('should render add Collection ', async () => {
+    const { getByText } = render(wrapper);
+
+    await waitFor(() => {
+      expect(getByText('Add a new collection')).toBeInTheDocument();
+    });
+  });
+
+  test('should be able to create a collection', async () => {
+    const { getByText, getAllByRole, getByTestId } = render(wrapper);
+
+    expect(getByTestId('loading')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(getByText('Title')).toBeInTheDocument();
+    });
+
+    const collectionInputs = getAllByRole('textbox');
+
+    fireEvent.change(collectionInputs[0], { target: { value: 'Sample Collection Title' } });
+    fireEvent.change(collectionInputs[1], { target: { value: 'Sample Collection Description' } });
+
+    fireEvent.click(getByText('Save'));
+  });
+
+  test('should be able to check for existing collections', async () => {
+    const { getByText, getAllByRole, getByTestId } = render(wrapper);
+
+    expect(getByTestId('loading')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(getByText('Title')).toBeInTheDocument();
+    });
+
+    const collectionInputs = getAllByRole('textbox');
+
+    fireEvent.change(collectionInputs[0], { target: { value: 'Staff group' } });
+    fireEvent.click(collectionInputs[1]);
+
+    fireEvent.click(getByText('Save'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Title already exists.')).toBeInTheDocument();
     });
   });
 
@@ -84,6 +157,12 @@ describe('<Collection />', () => {
     });
 
     const { getByTestId } = render(wrapper);
+    expect(getByTestId('loading')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(getByTestId('collection')).toBeInTheDocument();
+    });
+
     fireEvent.click(getByTestId('collection'));
 
     await waitFor(() => {

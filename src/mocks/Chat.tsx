@@ -21,7 +21,7 @@ import { searchQueryEmptyMock as searchEmptyQuery } from 'containers/Chat/ChatCo
 import { contactCollectionsQuery } from './Contact';
 import { getOrganizationLanguagesQuery } from './Organization';
 
-const getConversationQuery = (data: any) => {
+export const getConversationQuery = (data: any) => {
   return {
     request: {
       query: SEARCH_QUERY,

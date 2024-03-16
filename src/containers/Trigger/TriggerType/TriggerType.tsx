@@ -27,6 +27,7 @@ export const TriggerType = ({
         <RadioGroup
           aria-label="trigger-type"
           name="trigger-type"
+          data-testid="triggerGroupType"
           row
           value={groupType}
           onChange={(event) => {
@@ -36,6 +37,7 @@ export const TriggerType = ({
         >
           <div className={styles.RadioLabelWrapper}>
             <FormControlLabel
+              data-testid="radio-btn"
               value={CONTACTS_COLLECTION}
               checked={isChecked(CONTACTS_COLLECTION)}
               control={<Radio color="primary" />}
@@ -45,6 +47,7 @@ export const TriggerType = ({
           </div>
           <div className={styles.RadioLabelWrapper}>
             <FormControlLabel
+              data-testid="radio-btn"
               value={WA_GROUPS_COLLECTION}
               checked={isChecked(WA_GROUPS_COLLECTION)}
               control={<Radio color="primary" />}

@@ -8,7 +8,7 @@ import {
   GET_COLLECTION_USERS,
   GET_ORGANIZATION_COLLECTIONS,
 } from 'graphql/queries/Collection';
-import { UPDATE_COLLECTION_CONTACTS } from 'graphql/mutations/Collection';
+import { CREATE_COLLECTION, UPDATE_COLLECTION_CONTACTS } from 'graphql/mutations/Collection';
 import { CONTACTS_COLLECTION, WA_GROUPS_COLLECTION } from 'common/constants';
 
 export const getCollectionQuery = {
@@ -141,6 +141,32 @@ export const getCollectionUsersQuery2 = {
               name: 'Jane Doe',
             },
           ],
+        },
+      },
+    },
+  },
+};
+
+export const createCollectionQuery = {
+  request: {
+    query: CREATE_COLLECTION,
+    variables: {
+      input: {
+        label: 'Sample Collection Title',
+        description: 'Sample Collection Description',
+        addRoleIds: [],
+        deleteRoleIds: [],
+        groupType: 'WABA',
+      },
+    },
+  },
+  result: {
+    data: {
+      createGroup: {
+        group: {
+          description: 'Sample Collection Description',
+          id: '23',
+          label: 'Sample Collection Title',
         },
       },
     },
