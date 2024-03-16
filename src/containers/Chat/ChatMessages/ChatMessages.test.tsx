@@ -10,9 +10,20 @@ import { vi } from 'vitest';
 import { ChatMessages } from './ChatMessages';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 import { DEFAULT_ENTITY_LIMIT, DEFAULT_MESSAGE_LIMIT } from '../../../common/constants';
-import { CONVERSATION_MOCKS, mocksWithConversation } from '../../../mocks/Chat';
-import * as ChatInput from '../ChatMessages/ChatInput/ChatInput';
+import { CONVERSATION_MOCKS, mocksWithConversation, sendMessageMock } from '../../../mocks/Chat';
 import { waGroup } from 'mocks/Groups';
+import { userEvent } from '@testing-library/user-event';
+import { setNotification } from 'common/notification';
+
+vi.mock('common/notification', async (importOriginal) => {
+  const mod = await importOriginal<typeof import('common/notification')>();
+  return {
+    ...mod,
+    setNotification: vi.fn((...args) => {
+      return args[1];
+    }),
+  };
+});
 
 const defineUrl = (url: string) => {
   Object.defineProperty(window, 'location', {
@@ -460,25 +471,22 @@ test('Should render for multi-search', async () => {
 });
 
 test('send message to contact', async () => {
-  const spy = vi.spyOn(ChatInput, 'ChatInput');
-
-  spy.mockImplementation((props: any) => {
-    const { onSendMessage } = props;
-    return (
-      <div
-        data-testid="sendMessage"
-        onClick={() => onSendMessage('hey', null, 'TEXT', null, null)}
-      ></div>
-    );
-  });
-
   const { getByTestId } = render(chatMessages);
+  const editor = screen.getByTestId('editor');
+
+  await userEvent.click(editor);
+  await userEvent.tab();
+  fireEvent.input(editor, { data: 'hey' });
 
   await waitFor(() => {
-    fireEvent.click(getByTestId('sendMessage'));
+    expect(editor).toHaveTextContent('hey');
   });
 
-  await waitFor(() => {});
+  fireEvent.click(getByTestId('sendButton'), { force: true });
+
+  await waitFor(() => {
+    expect(screen.getByText('hey')).toBeInTheDocument();
+  });
 });
 
 const groupscache = new InMemoryCache({ addTypename: false });
@@ -507,22 +515,46 @@ it('should have title as contact name for whatsapp groups', async () => {
 });
 
 test('send message to whatsapp group', async () => {
-  const spy = vi.spyOn(ChatInput, 'ChatInput');
+  const { getByTestId } = render(chatMessagesWAGroups);
+  const editor = screen.getByTestId('editor');
 
-  spy.mockImplementation((props: any) => {
-    const { onSendMessage } = props;
-    return (
-      <div
-        data-testid="sendMessage"
-        onClick={() => onSendMessage('hey', null, 'TEXT', null, null)}
-      ></div>
-    );
+  await userEvent.click(editor);
+  await userEvent.tab();
+  fireEvent.input(editor, { data: 'hey' });
+
+  await waitFor(() => {
+    expect(editor).toHaveTextContent('hey');
   });
 
-  const { getByTestId } = render(chatMessagesWAGroups);
-  fireEvent.click(getByTestId('sendMessage'));
+  fireEvent.click(getByTestId('sendButton'), { force: true });
 
   await waitFor(() => {
     expect(screen.getByText('hey')).toBeInTheDocument();
   });
+});
+
+test('should show error if send message fails', async () => {
+  const { getByTestId } = render(
+    <MemoryRouter>
+      <MockedProvider mocks={[sendMessageMock]}>
+        <ApolloProvider client={client}>
+          <ChatMessages entityId="2" />
+        </ApolloProvider>
+      </MockedProvider>
+    </MemoryRouter>
+  );
+
+  const editor = screen.getByTestId('editor');
+
+  await userEvent.click(editor);
+  await userEvent.tab();
+  fireEvent.input(editor, { data: 'test' });
+
+  await waitFor(() => {
+    expect(editor).toHaveTextContent('test');
+  });
+
+  fireEvent.click(getByTestId('sendButton'), { force: true });
+
+  expect(setNotification).toHaveBeenCalled();
 });

@@ -668,7 +668,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
         {showLoadMore && loadMoreOption && (
           <div className={styles.LoadMore}>
             {(called && loading) || conversationLoad ? (
-              <CircularProgress className={styles.Loading} />
+              <CircularProgress data-testid="loading" className={styles.Loading} />
             ) : (
               <div
                 className={styles.LoadMoreButton}
@@ -721,7 +721,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
   if (!groups && !Object.prototype.hasOwnProperty.call(conversationInfo, 'contact')) {
     return (
       <div className={styles.LoadMore}>
-        <CircularProgress className={styles.Loading} />
+        <CircularProgress data-testid="loading" className={styles.Loading} />
       </div>
     );
   }
@@ -833,7 +833,12 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
   }
 
   return (
-    <Container className={styles.ChatMessages} maxWidth={false} disableGutters>
+    <Container
+      data-testid="message-container"
+      className={styles.ChatMessages}
+      maxWidth={false}
+      disableGutters
+    >
       {dialogBox}
       {dialog === 'collection' ? (
         <CollectionInformation

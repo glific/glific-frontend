@@ -870,3 +870,40 @@ export const mocksWithMultipleMessages = [
   ...chatMessagesMocks,
   getConversationQuery(conversationWithMultipleMessages),
 ];
+
+export const sendMessageMock = {
+  request: {
+    query: CREATE_AND_SEND_MESSAGE_MUTATION,
+    variables: {
+      input: {
+        body: 'test',
+        senderId: 1,
+        receiverId: '2',
+        flow: 'OUTBOUND',
+        type: 'TEXT',
+        mediaId: null,
+      },
+    },
+  },
+  result: {
+    data: {
+      createAndSendMessage: {
+        __typename: 'MessageResult',
+        message: {
+          body: 'test',
+          id: '74',
+          insertedAt: '2024-03-16T19:38:25.749178Z',
+          media: null,
+          receiver: {
+            __typename: 'Contact',
+            id: '2',
+          },
+          sender: {
+            __typename: 'Contact',
+            id: '1',
+          },
+        },
+      },
+    },
+  },
+};
