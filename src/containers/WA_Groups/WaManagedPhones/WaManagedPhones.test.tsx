@@ -1,19 +1,16 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { GET_WA_MANAGED_PHONES } from 'graphql/queries/WA_Groups';
 import WaManagedPhones from './WaManagedPhones';
-import { fireEvent, render, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { setNotification } from 'common/notification';
 import { SYNC_GROUPS } from 'graphql/mutations/Group';
 
-const mock = [
+const mock: any = [
   {
     request: {
       query: GET_WA_MANAGED_PHONES,
       variables: {
         filter: {},
-        opts: {
-          limit: 3,
-        },
       },
     },
     response: {
@@ -37,19 +34,6 @@ const mock = [
           phone: '2666135435',
         },
       ],
-    },
-  },
-  {
-    request: {
-      query: SYNC_GROUPS,
-    },
-    result: {
-      data: {
-        syncWaGroupContacts: {
-          __typename: 'SyncWaContacts',
-          message: 'successfully synced',
-        },
-      },
     },
   },
 ];
@@ -79,8 +63,29 @@ test('it should render the sync button correctly', async () => {
 });
 
 test('it should render loading inside sync button on click', async () => {
-  const { getByTestId } = render(wrapper);
-  let syncButton = getByTestId('syncGroups');
+  const { getByTestId } = render(
+    <MockedProvider
+      mocks={[
+        ...mock,
+        {
+          request: {
+            query: SYNC_GROUPS,
+          },
+          result: {
+            data: {
+              syncWaGroupContacts: {
+                __typename: 'SyncWaContacts',
+                message: 'successfully synced',
+              },
+            },
+          },
+        },
+      ]}
+    >
+      <WaManagedPhones phonenumber={[]} setPhonenumber={vi.fn()} />
+    </MockedProvider>
+  );
+  const syncButton = getByTestId('syncGroups');
 
   fireEvent.click(syncButton);
 
@@ -90,9 +95,70 @@ test('it should render loading inside sync button on click', async () => {
 });
 
 test('it should sync groups contacts', async () => {
-  const { getByTestId } = render(wrapper);
-  let syncButton = getByTestId('syncGroups');
+  const { getByTestId } = render(
+    <MockedProvider
+      mocks={[
+        ...mock,
+        {
+          request: {
+            query: SYNC_GROUPS,
+          },
+          result: {
+            data: {
+              syncWaGroupContacts: {
+                __typename: 'SyncWaContacts',
+                message: 'successfully synced',
+              },
+            },
+          },
+        },
+      ]}
+    >
+      <WaManagedPhones phonenumber={[]} setPhonenumber={vi.fn()} />
+    </MockedProvider>
+  );
+  const syncButton = getByTestId('syncGroups');
 
+  fireEvent.click(syncButton);
+
+  await waitFor(() => {
+    expect(setNotification).toHaveBeenCalled();
+  });
+});
+
+test('it shows error message', async () => {
+  const { getByTestId } = render(
+    <MockedProvider
+      mocks={[
+        ...mock,
+        {
+          request: {
+            query: SYNC_GROUPS,
+          },
+          result: {
+            data: {
+              syncWaGroupContacts: null,
+            },
+            errors: [
+              {
+                message: 'some error',
+                path: ['syncWaGroupContacts'],
+                locations: [
+                  {
+                    line: 2,
+                    column: 3,
+                  },
+                ],
+              },
+            ],
+          },
+        },
+      ]}
+    >
+      <WaManagedPhones phonenumber={[]} setPhonenumber={vi.fn()} />
+    </MockedProvider>
+  );
+  const syncButton = getByTestId('syncGroups');
   fireEvent.click(syncButton);
 
   await waitFor(() => {
