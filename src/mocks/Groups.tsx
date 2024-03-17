@@ -656,6 +656,12 @@ export const getGroupsSearchQuery = {
     data: {
       waGroups: [
         {
+          bspId: '120363242907663820@g.us',
+          id: '1',
+          lastCommunicationAt: '2024-03-15T10:53:48Z',
+          name: 'Group test 1',
+        },
+        {
           bspId: '120363242907663810@g.us',
           id: '5',
           lastCommunicationAt: '2024-03-15T10:53:48Z',

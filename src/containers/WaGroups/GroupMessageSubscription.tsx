@@ -1,4 +1,4 @@
-import { useApolloClient, useLazyQuery, useQuery } from '@apollo/client';
+import { useLazyQuery, useQuery } from '@apollo/client';
 import {
   DEFAULT_ENTITY_LIMIT,
   DEFAULT_MESSAGE_LIMIT,
@@ -32,7 +32,7 @@ export const GroupMessageSubscription = ({ setDataLoaded }: GroupMessageProps) =
   const queryVariables = GROUP_QUERY_VARIABLES;
   let subscriptionToRefetchSwitchHappened = false;
   let refetchTimer: any = null;
-  const client = useApolloClient();
+
   const groupsFetched: any = [];
 
   const [triggerRefetch, setTriggerRefetch] = useState(false);

@@ -45,7 +45,7 @@ export const getCollectionsQuery = [
   {
     request: {
       query: GET_COLLECTIONS,
-      variables: { filter: {}, opts: { limit: null, offset: 0, order: 'ASC' } },
+      variables: { filter: { groupType: 'WABA' }, opts: { limit: null, offset: 0, order: 'ASC' } },
     },
     result: {
       data: {
@@ -295,10 +295,12 @@ export const getCollectionContactsQuery = {
               id: '1',
               name: 'Glific User',
               phone: '987654321',
-              waGroups: {
-                name: null,
-                id: null,
-              },
+            },
+          ],
+          waGroups: [
+            {
+              name: 'Group 1',
+              id: '1',
             },
           ],
         },

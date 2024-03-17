@@ -53,6 +53,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
   const location = useLocation();
 
   let groups: boolean = location.pathname.includes('group');
+
   let chatType = groups ? 'waGroup' : 'contact';
   let contactOptions: string = groups ? 'waGroupOpts' : 'contactOpts';
   let messageOptions: string = groups ? 'waMessageOpts' : 'messageOpts';

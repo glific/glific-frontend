@@ -121,7 +121,7 @@ export const ConversationHeader = ({
   });
 
   useEffect(() => {
-    if (entityId) {
+    if (entityId && !groups) {
       getContactCollections();
     }
   }, [entityId]);

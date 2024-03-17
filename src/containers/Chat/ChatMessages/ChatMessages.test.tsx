@@ -2,7 +2,7 @@ import { render, act, screen } from '@testing-library/react';
 import 'mocks/matchMediaMock';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import { fireEvent, waitFor } from '@testing-library/dom';
-import { MemoryRouter } from 'react-router';
+import { MemoryRouter, Route, Routes } from 'react-router';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 import { vi } from 'vitest';
@@ -497,12 +497,14 @@ const groupClient = new ApolloClient({
   uri: 'http://localhost:4000/',
   assumeImmutableResults: true,
 });
-let route = 'group/chat';
+let route = '/group/chat';
 
 const chatMessagesWAGroups = (
   <MemoryRouter initialEntries={[route]}>
     <ApolloProvider client={groupClient}>
-      <ChatMessages entityId="2" />
+      <Routes>
+        <Route path="group/chat" element={<ChatMessages entityId="2" />} />
+      </Routes>
     </ApolloProvider>
   </MemoryRouter>
 );

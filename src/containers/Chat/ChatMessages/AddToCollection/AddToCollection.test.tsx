@@ -126,7 +126,12 @@ test('should add contact to collection', async () => {
   });
 });
 
-const groupsmocks = [getGroupsSearchQuery, getGroupsQuery, updateCollectionWaGroupQuery];
+const groupsmocks = [
+  getCollectionContactsQuery,
+  getGroupsSearchQuery,
+  getGroupsQuery,
+  updateCollectionWaGroupQuery,
+];
 
 const addGroups = (
   <MockedProvider mocks={groupsmocks} addTypename={false}>
@@ -158,8 +163,8 @@ test('should add whatsapp group to collection', async () => {
   const autocomplete = getByTestId('autocomplete-element');
   autocomplete.focus();
   fireEvent.keyDown(autocomplete, { key: 'ArrowDown' });
+  fireEvent.click(autocomplete, { key: 'Enter' });
 
-  fireEvent.click(getByText('Group 1'), { key: 'Enter' });
   fireEvent.click(getByText('Save'));
 
   await waitFor(() => {
