@@ -326,9 +326,10 @@ export const ConversationList = ({
     }
 
     return (
-      <div key={entityId}>
+      <Fragment>
         {index === 0 ? header : null}
         <ChatConversation
+          key={entityId}
           selected={selectedRecord}
           onClick={() => {
             setSearchHeight();
@@ -347,7 +348,7 @@ export const ConversationList = ({
           searchMode={searchMode}
           timer={timer}
         />
-      </div>
+      </Fragment>
     );
   };
 
