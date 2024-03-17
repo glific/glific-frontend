@@ -1,6 +1,6 @@
 import { render, waitFor, fireEvent, screen } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
-import { MemoryRouter } from 'react-router';
+import { MemoryRouter, Route, Routes } from 'react-router';
 import { vi } from 'vitest';
 
 import {
@@ -18,9 +18,13 @@ import { setUserSession } from 'services/AuthService';
 import * as SearchDialogBox from 'components/UI/SearchDialogBox/SearchDialogBox';
 import { CollectionList } from './CollectionList';
 import * as utils from 'common/utils';
+import { getGroupsSearchQuery } from 'mocks/Groups';
 
 const mocks = [
   countCollectionQuery,
+  countCollectionQuery,
+  countCollectionQuery,
+  filterCollectionQuery,
   filterCollectionQuery,
   filterCollectionQuery,
   getPublishedFlowQuery,
@@ -68,26 +72,24 @@ describe('<CollectionList />', () => {
       expect(getAllByTestId('additionalButton')[0]).toBeInTheDocument();
     });
 
+    fireEvent.click(getAllByTestId('additionalButton')[0]);
+
     await waitFor(() => {
-      fireEvent.click(getAllByTestId('additionalButton')[0]);
+      expect(getByText('Add contacts to the collection')).toBeInTheDocument();
     });
 
-    expect(getByText('Add contacts to the collection')).toBeInTheDocument();
     const autocomplete = screen.getByTestId('autocomplete-element');
-    expect(autocomplete).toBeInTheDocument();
 
     await waitFor(() => {
-      const input = screen.getByRole('combobox');
-      fireEvent.change(input, { target: { value: 'glific' } });
+      expect(autocomplete).toBeInTheDocument();
     });
+
+    const input = screen.getByRole('combobox');
+    fireEvent.change(input, { target: { value: 'glific' } });
 
     autocomplete.focus();
     fireEvent.keyDown(autocomplete, { key: 'ArrowDown' });
-    await waitFor(() => {});
-
-    // select the first item
     fireEvent.keyDown(autocomplete, { key: 'Enter' });
-    await waitFor(() => {});
 
     const save = screen.getByRole('button', { name: 'Save' });
     fireEvent.click(save);
@@ -131,17 +133,27 @@ describe('<CollectionList />', () => {
     expect(getByText('2 contacts')).toBeInTheDocument();
   });
 
+  const groupWrapper = (
+    <MemoryRouter initialEntries={['/group/collection']}>
+      <MockedProvider
+        mocks={[
+          ...mocks,
+          filterCollectionQueryWAGroups,
+          filterCollectionQueryWAGroups,
+          countCollectionQueryWAGroups,
+          countCollectionQueryWAGroups,
+          getGroupsSearchQuery,
+        ]}
+        addTypename={false}
+      >
+        <Routes>
+          <Route path="group/collection" element={<CollectionList />} />
+        </Routes>
+      </MockedProvider>
+    </MemoryRouter>
+  );
+
   test('should render CollectionList for whatsapp groups', async () => {
-    const groupWrapper = (
-      <MemoryRouter initialEntries={['group/collection']}>
-        <MockedProvider
-          mocks={[...mocks, filterCollectionQueryWAGroups, countCollectionQueryWAGroups]}
-          addTypename={false}
-        >
-          <CollectionList />
-        </MockedProvider>
-      </MemoryRouter>
-    );
     const { getByText, getByTestId } = render(groupWrapper);
 
     expect(getByTestId('loading')).toBeInTheDocument();
@@ -153,29 +165,24 @@ describe('<CollectionList />', () => {
   });
 
   test('it has number of whatsapp groups', async () => {
-    const groupWrapper = (
-      <MemoryRouter initialEntries={['group/collection']}>
-        <MockedProvider
-          mocks={[...mocks, filterCollectionQueryWAGroups, countCollectionQueryWAGroups]}
-          addTypename={false}
-        >
-          <CollectionList />
-        </MockedProvider>
-      </MemoryRouter>
-    );
     const { getByTestId, getAllByTestId, getByText } = render(groupWrapper);
 
     expect(getByTestId('loading')).toBeInTheDocument();
 
     await waitFor(() => {
-      const viewButton = getAllByTestId('additionalButton')[0];
-      fireEvent.click(viewButton);
+      expect(getAllByTestId('additionalButton')[0]).toBeInTheDocument();
+    });
+
+    const viewButton = getAllByTestId('additionalButton')[0];
+    fireEvent.click(viewButton);
+
+    await waitFor(() => {
       expect(getByText('1 group')).toBeInTheDocument();
     });
   });
 
   test('should export collection', async () => {
-    const { getByTestId, getAllByRole } = render(wrapper);
+    const { getByTestId } = render(wrapper);
     expect(getByTestId('loading')).toBeInTheDocument();
 
     await waitFor(() => {

@@ -21,6 +21,7 @@ cache.writeQuery({
   data: {
     search: [
       {
+        id: 'contact_2',
         group: null,
         contact: {
           id: '2',

@@ -23,7 +23,7 @@ import {
   GROUP_COLLECTION_SEARCH_QUERY_VARIABLES,
 } from '../../../common/constants';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
-import { GROUP_SEARCH_QUERY } from 'graphql/queries/WA_Groups';
+import { GROUP_SEARCH_QUERY } from 'graphql/queries/WaGroups';
 import {
   SEND_MESSAGE_IN_WA_GROUP,
   SEND_MESSAGE_IN_WA_GROUP_COLLECTION,
@@ -53,6 +53,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
   const location = useLocation();
 
   let groups: boolean = location.pathname.includes('group');
+
   let chatType = groups ? 'waGroup' : 'contact';
   let contactOptions: string = groups ? 'waGroupOpts' : 'contactOpts';
   let messageOptions: string = groups ? 'waMessageOpts' : 'messageOpts';

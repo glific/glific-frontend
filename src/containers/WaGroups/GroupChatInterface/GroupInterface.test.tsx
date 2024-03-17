@@ -6,7 +6,7 @@ import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import { setUserSession } from 'services/AuthService';
 import { GROUP_QUERY_VARIABLES } from 'common/constants';
 import GroupChatInterface from './GroupChatInterface';
-import { GROUP_SEARCH_QUERY } from 'graphql/queries/WA_Groups';
+import { GROUP_SEARCH_QUERY } from 'graphql/queries/WaGroups';
 
 const cache = new InMemoryCache({ addTypename: false });
 cache.writeQuery({
@@ -15,6 +15,7 @@ cache.writeQuery({
   data: {
     search: [
       {
+        id: 'waGroup_6',
         messages: [
           {
             __typename: 'WaMessage',
@@ -50,6 +51,7 @@ cache.writeQuery({
         group: null,
       },
       {
+        id: 'waGroup_9',
         __typename: 'WaConversation',
         messages: [
           {
@@ -86,6 +88,7 @@ cache.writeQuery({
         group: null,
       },
       {
+        id: 'waGroup_1',
         __typename: 'WaConversation',
         messages: [
           {
@@ -180,13 +183,15 @@ describe('<GroupChatInterface />', () => {
     });
   });
 
-  test('should navigate to collections', () => {
+  test('should navigate to collections', async () => {
     const { getByText } = render(wrapper);
     // expect(getByText('Loading...')).toBeInTheDocument();
 
     fireEvent.click(getByText('Collections'));
 
-    expect(mockedUsedNavigate).toHaveBeenCalled();
+    await waitFor(() => {
+      expect(mockedUsedNavigate).toHaveBeenCalled();
+    });
   });
 
   test('should have Collections as heading', async () => {
@@ -221,7 +226,7 @@ describe('<GroupChatInterface />', () => {
   });
 
   test('should render no conversations if there are no conversations', async () => {
-    const { getByText, getByTestId } = render(
+    const { getByTestId } = render(
       <ApolloProvider client={clientForEmptyCache}>
         <MemoryRouter>
           <GroupChatInterface />

@@ -54,6 +54,7 @@ export const conversationMessageQuery = (
     data: {
       search: [
         {
+          id: 'contact_2',
           group: null,
           contact: {
             id: '2',
@@ -131,6 +132,7 @@ export const conversationCollectionQuery = (
     data: {
       search: [
         {
+          id: `group_${collectionId.toString()}`,
           contact: null,
           group: {
             id: collectionId.toString(),
@@ -482,6 +484,7 @@ export const collectionCountQuery = {
 export const conversationQuery = getConversationQuery({
   search: [
     {
+      id: 'contact_2',
       group: null,
       contact: {
         id: '2',

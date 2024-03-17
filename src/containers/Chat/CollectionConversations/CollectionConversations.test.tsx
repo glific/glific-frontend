@@ -18,6 +18,7 @@ cache.writeQuery({
   data: {
     search: [
       {
+        id: 'group_2',
         group: {
           id: '2',
           label: 'Default Collection',
@@ -63,6 +64,7 @@ cache.writeQuery({
         ],
       },
       {
+        id: 'group_3',
         group: {
           id: '3',
           label: 'Optin Collection',
@@ -71,6 +73,7 @@ cache.writeQuery({
         messages: [],
       },
       {
+        id: 'group_4',
         group: {
           id: '4',
           label: 'Optout Collection',
@@ -79,6 +82,7 @@ cache.writeQuery({
         messages: [],
       },
       {
+        id: 'group_5',
         group: {
           id: '5',
           label: 'Glific Collection',
@@ -87,6 +91,7 @@ cache.writeQuery({
         messages: [],
       },
       {
+        id: 'group_1',
         group: {
           id: '1',
           label: 'Test Collection',

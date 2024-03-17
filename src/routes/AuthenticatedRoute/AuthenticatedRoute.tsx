@@ -15,9 +15,9 @@ import OrganizationFlows from 'containers/SettingList/OrganizationFlows/Organiza
 import Billing from 'containers/SettingList/Billing/Billing';
 import Providers from 'containers/SettingList/Providers/Providers';
 import Organization from 'containers/SettingList/Organization/Organization';
-import GroupChatInterface from 'containers/WA_Groups/GroupChatInterface/GroupChatInterface';
-import GroupDetails from 'containers/WA_Groups/GroupDetails.tsx/GroupDetails';
-import { GroupCollectionList } from 'containers/WA_Groups/GroupCollections/GroupCollectionList';
+import GroupChatInterface from 'containers/WaGroups/GroupChatInterface/GroupChatInterface';
+import GroupDetails from 'containers/WaGroups/GroupDetails.tsx/GroupDetails';
+import { GroupCollectionList } from 'containers/WaGroups/GroupCollections/GroupCollectionList';
 
 const Chat = lazy(() => import('containers/Chat/Chat'));
 const Layout = lazy(() => import('components/UI/Layout/Layout'));

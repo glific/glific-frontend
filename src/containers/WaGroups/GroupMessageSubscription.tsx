@@ -9,7 +9,7 @@ import {
 } from 'common/constants';
 import { setErrorMessage } from 'common/notification';
 import { randomIntFromInterval, addLogs } from 'common/utils';
-import { GROUP_SEARCH_QUERY } from 'graphql/queries/WA_Groups';
+import { GROUP_SEARCH_QUERY } from 'graphql/queries/WaGroups';
 import {
   SENT_MESSAGE_WA_GROUP_COLLECTION,
   WA_MESSAGE_RECEIVED_SUBSCRIPTION,
@@ -32,6 +32,7 @@ export const GroupMessageSubscription = ({ setDataLoaded }: GroupMessageProps) =
   const queryVariables = GROUP_QUERY_VARIABLES;
   let subscriptionToRefetchSwitchHappened = false;
   let refetchTimer: any = null;
+
   const groupsFetched: any = [];
 
   const [triggerRefetch, setTriggerRefetch] = useState(false);
@@ -187,7 +188,7 @@ export const GroupMessageSubscription = ({ setDataLoaded }: GroupMessageProps) =
 
   const { loading, error, subscribeToMore, data, refetch } = useQuery<any>(GROUP_SEARCH_QUERY, {
     variables: queryVariables,
-    fetchPolicy: 'network-only',
+    fetchPolicy: 'cache-first',
     nextFetchPolicy: 'cache-only',
   });
 
@@ -195,7 +196,7 @@ export const GroupMessageSubscription = ({ setDataLoaded }: GroupMessageProps) =
     GROUP_SEARCH_QUERY,
     {
       variables: GROUP_COLLECTION_SEARCH_QUERY_VARIABLES,
-      fetchPolicy: 'network-only',
+      fetchPolicy: 'cache-first',
       nextFetchPolicy: 'cache-only',
     }
   );

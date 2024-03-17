@@ -2,7 +2,7 @@ import { CircularProgress, FormControl } from '@mui/material';
 import { Button } from 'components/UI/Form/Button/Button';
 
 import styles from './WaManagedPhones.module.css';
-import { GET_WA_MANAGED_PHONES } from 'graphql/queries/WA_Groups';
+import { GET_WA_MANAGED_PHONES } from 'graphql/queries/WaGroups';
 import { useMutation, useQuery } from '@apollo/client';
 import { SYNC_GROUPS } from 'graphql/mutations/Group';
 import { setNotification } from 'common/notification';

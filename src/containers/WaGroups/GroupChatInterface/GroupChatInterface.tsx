@@ -10,7 +10,7 @@ import { setErrorMessage } from 'common/notification';
 import CollectionConversations from 'containers/Chat/CollectionConversations/CollectionConversations';
 import styles from './GroupChatInterface.module.css';
 import { useQuery } from '@apollo/client';
-import { GROUP_SEARCH_QUERY } from 'graphql/queries/WA_Groups';
+import { GROUP_SEARCH_QUERY } from 'graphql/queries/WaGroups';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import WaManagedPhones from '../WaManagedPhones/WaManagedPhones';
 

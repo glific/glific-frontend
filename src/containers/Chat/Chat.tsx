@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { chatRoutes, groupRoutes } from 'routes/AuthenticatedRoute/AuthenticatedRoute';
 import { ChatSubscription } from './ChatSubscription/ChatSubscription';
-import { GroupMessageSubscription } from 'containers/WA_Groups/GroupMessageSubscription';
+import { GroupMessageSubscription } from 'containers/WaGroups/GroupMessageSubscription';
 import { useLocation } from 'react-router';
 
 export const Chat = () => {

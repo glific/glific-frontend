@@ -128,10 +128,12 @@ test('it should render conversation collection list with searched value', async 
   });
 });
 
+const setSelectedContactIdMock = vi.fn();
+
 const contactProps: any = {
   searchVal: 'III',
   selectedContactId: 216,
-  setSelectedContactId: vi.fn(),
+  setSelectedContactId: setSelectedContactIdMock,
   searchMode: false,
   searchParam: {},
   entityType: 'contact',
@@ -148,12 +150,18 @@ test('It render contact collection with multi-search', async () => {
 
   await waitFor(() => {
     expect(container).toBeInTheDocument();
+    expect(screen.getAllByTestId('list')[0]).toBeInTheDocument();
   });
+  const listItems = screen.getAllByTestId('list');
 
   await waitFor(() => {
-    const listItems = screen.getAllByTestId('list');
     expect(listItems.length).toBe(35);
-    fireEvent.click(listItems[0]);
+  });
+
+  fireEvent.click(listItems[0]);
+
+  await waitFor(() => {
+    expect(setSelectedContactIdMock).toHaveBeenCalled();
   });
 });
 

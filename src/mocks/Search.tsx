@@ -156,7 +156,7 @@ export const collectionCountSubscription = {
 };
 
 const contactsMock = new Array(30).fill(null).map((val: any, index: number) => ({
-  id: `${index}`,
+  id: `${index + 1}`,
   name: `Test ${index}`,
   phone: '448-917-4013',
   maskedPhone: '448-******13',
@@ -220,7 +220,7 @@ export const searchContactCollection = [
               messageNumber: 2,
               insertedAt: '2021-05-05T05:40:02.434957Z',
               contact: {
-                id: '31',
+                id: '3145',
                 name: 'Test',
                 phone: '+919090909090',
                 maskedPhone: '9090******90',
@@ -247,7 +247,7 @@ export const searchContactCollection = [
               messageNumber: 2,
               insertedAt: '2021-05-05T05:40:02.434957Z',
               contact: {
-                id: '34',
+                id: '3456',
                 name: 'Test',
                 phone: '+919090909090',
                 maskedPhone: '9090******90',
