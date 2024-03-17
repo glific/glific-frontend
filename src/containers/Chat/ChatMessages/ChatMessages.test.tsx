@@ -15,12 +15,6 @@ import { waGroup } from 'mocks/Groups';
 import { userEvent } from '@testing-library/user-event';
 import { setNotification } from 'common/notification';
 
-import { loadErrorMessages, loadDevMessages } from '@apollo/client/dev';
-
-// Adds messages only in a dev environment
-loadDevMessages();
-loadErrorMessages();
-
 vi.mock('common/notification', async (importOriginal) => {
   const mod = await importOriginal<typeof import('common/notification')>();
   return {
