@@ -20,6 +20,7 @@ cache.writeQuery({
   data: {
     search: [
       {
+        id: 'contact_2',
         group: null,
         contact: {
           id: '2',
@@ -123,22 +124,26 @@ describe('<ChatInterface />', () => {
     expect(ChatConversation).toHaveTextContent('Effie Cormier');
   });
 
-  test('should navigate to collections', () => {
+  test('should navigate to collections', async () => {
     const { getByText } = render(wrapper);
     expect(getByText('Loading...')).toBeInTheDocument();
 
     fireEvent.click(getByText('Collections'));
 
-    expect(mockedUsedNavigate).toHaveBeenCalled();
+    await waitFor(() => {
+      expect(mockedUsedNavigate).toHaveBeenCalled();
+    });
   });
 
-  test('should navigate to saved searches', () => {
+  test('should navigate to saved searches', async () => {
     const { getByText } = render(wrapper);
     expect(getByText('Loading...')).toBeInTheDocument();
 
     fireEvent.click(getByText('Searches'));
 
-    expect(mockedUsedNavigate).toHaveBeenCalled();
+    await waitFor(() => {
+      expect(mockedUsedNavigate).toHaveBeenCalled();
+    });
   });
 
   test('should have Collections as heading', async () => {
@@ -205,23 +210,3 @@ describe('<ChatInterface />', () => {
     });
   });
 });
-
-// need to add mock for this
-
-// test('it should render <Chat-collection/> component correctly', async () => {
-//   const wrapper = (
-//     <MemoryRouter>
-//       <MockedProvider mocks={[...CONVERSATION_MOCKS, ...mocksWithConversation]}>
-//         <Chat collectionId={2} />
-//       </MockedProvider>
-//     </MemoryRouter>
-//   );
-//   const { getByText } = render(wrapper);
-
-//   // loading is show initially
-//   expect(getByText('Loading...')).toBeInTheDocument();
-//   // check if chat conversations are displayed
-
-//   // await waitFor(() => {});
-//   // await waitFor(() => {});
-// });

@@ -6,7 +6,7 @@ import {
   GET_WA_MANAGED_PHONES,
   GROUP_SEARCH_MULTI_QUERY,
   GROUP_SEARCH_QUERY,
-} from 'graphql/queries/WA_Groups';
+} from 'graphql/queries/WaGroups';
 import {
   SENT_MESSAGE_WA_GROUP_COLLECTION,
   WA_MESSAGE_RECEIVED_SUBSCRIPTION,
@@ -27,6 +27,7 @@ export const waGroup = {
   data: {
     search: [
       {
+        id: 'wa_group_2',
         group: null,
         waGroup: {
           __typename: 'WaGroup',
@@ -78,6 +79,7 @@ export const waGroup = {
         ],
       },
       {
+        id: 'wa_group_1',
         group: null,
         waGroup: {
           __typename: 'WaGroup',
@@ -117,6 +119,7 @@ export const searchGroupQuery = [
       data: {
         search: [
           {
+            id: 'wa_group_1',
             __typename: 'WaConversation',
             group: null,
             messages: [
@@ -288,6 +291,7 @@ export const searchGroupQuery = [
       data: {
         search: [
           {
+            id: 'wa_group_1',
             __typename: 'WaConversation',
             group: null,
             messages: [
@@ -546,6 +550,7 @@ export const searchCollectionGroupQuery = [
       data: {
         search: [
           {
+            id: 'wa_group_1',
             __typename: 'WaConversation',
             group: null,
             messages: [
@@ -604,6 +609,7 @@ export const searchCollectionGroupQuery = [
       data: {
         search: [
           {
+            id: 'group_7',
             __typename: 'WaConversation',
             group: {
               __typename: 'Group',
@@ -615,6 +621,7 @@ export const searchCollectionGroupQuery = [
           },
           {
             __typename: 'WaConversation',
+            id: 'group_8',
             group: {
               __typename: 'Group',
               id: '8',
@@ -625,6 +632,7 @@ export const searchCollectionGroupQuery = [
           },
           {
             __typename: 'WaConversation',
+            id: 'group_6',
             group: {
               __typename: 'Group',
               id: '6',

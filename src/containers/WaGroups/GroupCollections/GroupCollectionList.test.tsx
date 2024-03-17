@@ -4,7 +4,7 @@ import { MemoryRouter } from 'react-router';
 import { vi } from 'vitest';
 
 import { GroupCollectionList } from './GroupCollectionList';
-import { GET_GROUP_COUNT } from 'graphql/queries/WA_Groups';
+import { GET_GROUP_COUNT } from 'graphql/queries/WaGroups';
 import { GET_COLLECTION, GROUP_GET_COLLECTION } from 'graphql/queries/Collection';
 import { UPDATE_WA_GROUP_COLLECTION } from 'graphql/mutations/Collection';
 

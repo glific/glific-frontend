@@ -1,7 +1,7 @@
 // This service includes all the actions related to conversations storing
 
 import { cache } from 'config/apolloclient';
-import { GROUP_SEARCH_QUERY } from 'graphql/queries/WA_Groups';
+import { GROUP_SEARCH_QUERY } from 'graphql/queries/WaGroups';
 
 // read the conversation from cache
 export const getCachedGroupConverations = (queryVariables: any) => {

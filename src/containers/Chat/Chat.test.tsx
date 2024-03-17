@@ -13,7 +13,7 @@ vi.mock('containers/Chat/ChatSubscription/ChatSubscription', () => ({
   ChatSubscription: () => <div>Chat subscription</div>,
 }));
 
-vi.mock('containers/WA_Groups/GroupMessageSubscription', () => ({
+vi.mock('containers/WaGroups/GroupMessageSubscription', () => ({
   default: () => <div>Group Message subscription</div>,
   GroupMessageSubscription: () => <div>Group Message subscription</div>,
 }));

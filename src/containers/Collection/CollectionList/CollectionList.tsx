@@ -26,7 +26,7 @@ import styles from './CollectionList.module.css';
 import { exportCsvFile } from 'common/utils';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { collectionInfo } from 'common/HelpData';
-import { GET_WA_GROUPS } from 'graphql/queries/WA_Groups';
+import { GET_WA_GROUPS } from 'graphql/queries/WaGroups';
 
 const getLabel = (label: string) => <div className={styles.LabelText}>{label}</div>;
 

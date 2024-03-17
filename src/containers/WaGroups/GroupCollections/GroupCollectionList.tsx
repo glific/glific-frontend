@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
-import { GET_GROUP_COUNT } from 'graphql/queries/WA_Groups';
+import { GET_GROUP_COUNT } from 'graphql/queries/WaGroups';
 import { UPDATE_WA_GROUP_COLLECTION } from 'graphql/mutations/Collection';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import CollectionIcon from 'assets/images/icons/Collection/Dark.svg?react';

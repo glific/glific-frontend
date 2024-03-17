@@ -25,7 +25,7 @@ import { showMessages } from 'common/responsive';
 import { addLogs, getDisplayName, getDisplayNameForSearch } from 'common/utils';
 import ChatConversation from '../ChatConversation/ChatConversation';
 import styles from './ConversationList.module.css';
-import { GROUP_SEARCH_MULTI_QUERY, GROUP_SEARCH_QUERY } from 'graphql/queries/WA_Groups';
+import { GROUP_SEARCH_MULTI_QUERY, GROUP_SEARCH_QUERY } from 'graphql/queries/WaGroups';
 import { useLocation } from 'react-router-dom';
 import { Timer } from 'components/UI/Timer/Timer';
 

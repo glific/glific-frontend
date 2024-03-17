@@ -15,6 +15,12 @@ import { waGroup } from 'mocks/Groups';
 import { userEvent } from '@testing-library/user-event';
 import { setNotification } from 'common/notification';
 
+import { loadErrorMessages, loadDevMessages } from '@apollo/client/dev';
+
+// Adds messages only in a dev environment
+loadDevMessages();
+loadErrorMessages();
+
 vi.mock('common/notification', async (importOriginal) => {
   const mod = await importOriginal<typeof import('common/notification')>();
   return {
@@ -82,6 +88,7 @@ export const searchQuery = {
   data: {
     search: [
       {
+        id: 'contact_2',
         group: null,
         contact: {
           id: '2',
@@ -112,6 +119,7 @@ export const contact = {
   data: {
     search: [
       {
+        id: 'contact_2',
         group: null,
         contact: {
           id: 2,
@@ -127,6 +135,7 @@ export const contact = {
         messages: [body],
       },
       {
+        id: 'contact_1',
         group: null,
         contact: {
           id: 1,
@@ -148,6 +157,7 @@ export const contact = {
 const conversationData = Array(30)
   .fill(null)
   .map((val: any, index: number) => ({
+    id: `group_${index + 3}`,
     group: {
       id: `${index + 3}`,
       label: `Test ${index + 3}`,
@@ -167,6 +177,7 @@ export const collection = {
   data: {
     search: [
       {
+        id: 'group_2',
         group: {
           id: '2',
           label: 'Default Group',
@@ -275,18 +286,6 @@ test('focus on the latest message', async () => {
   });
 });
 
-// test('cancel after dialog box open', async () => {
-//   const { getByText, getByTestId } = render(chatMessages);
-//   await waitFor(() => {
-//     fireEvent.click(getByTestId('messageOptions'));
-//     fireEvent.click(getByTestId('dialogButton'));
-//   });
-
-//   fireEvent.click(getByText('Cancel'));
-// });
-
-// Need to first scroll up
-
 test('click on Jump to latest', async () => {
   const { getByTestId } = render(chatMessages);
   const messageContainer: any = document.querySelector('.messageContainer');
@@ -379,7 +378,7 @@ test('Collection: if cache', async () => {
       </Router>
     </ApolloProvider>
   );
-  const { getByTestId } = render(chatMessagesWithCollection);
+  render(chatMessagesWithCollection);
 
   // need to check why we click this
 
@@ -416,6 +415,7 @@ test('Load more messages', async () => {
     data: {
       search: [
         {
+          id: 'contact_2',
           group: null,
           contact: {
             id: '2',
@@ -555,6 +555,7 @@ test('should show error if send message fails', async () => {
   });
 
   fireEvent.click(getByTestId('sendButton'), { force: true });
-
-  expect(setNotification).toHaveBeenCalled();
+  await waitFor(() => {
+    expect(setNotification).toHaveBeenCalled();
+  });
 });

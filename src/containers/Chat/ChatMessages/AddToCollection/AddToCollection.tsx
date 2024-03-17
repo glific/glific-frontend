@@ -10,7 +10,7 @@ import {
   UPDATE_COLLECTION_WA_GROUP,
 } from 'graphql/mutations/Collection';
 import { SearchDialogBox } from 'components/UI/SearchDialogBox/SearchDialogBox';
-import { GET_WA_GROUPS } from 'graphql/queries/WA_Groups';
+import { GET_WA_GROUPS } from 'graphql/queries/WaGroups';
 import { CircularProgress } from '@mui/material';
 
 interface AddToCollectionProps {
