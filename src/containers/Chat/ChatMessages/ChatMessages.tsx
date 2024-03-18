@@ -21,6 +21,7 @@ import {
   ISO_DATE_FORMAT,
   GROUP_QUERY_VARIABLES,
   GROUP_COLLECTION_SEARCH_QUERY_VARIABLES,
+  getVariables,
 } from '../../../common/constants';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 import { GROUP_SEARCH_QUERY } from 'graphql/queries/WaGroups';
@@ -52,11 +53,8 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
   const urlString = new URL(window.location.href);
   const location = useLocation();
 
-  let groups: boolean = location.pathname.includes('group');
-
-  let chatType = groups ? 'waGroup' : 'contact';
-  let contactOptions: string = groups ? 'waGroupOpts' : 'contactOpts';
-  let messageOptions: string = groups ? 'waMessageOpts' : 'messageOpts';
+  const groups: boolean = location.pathname.includes('group');
+  const chatType = groups ? 'waGroup' : 'contact';
 
   let messageParameterOffset: any = 0;
   let searchMessageNumber: any;
@@ -436,14 +434,15 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
     // if conversation is not present then fetch for contact
     if (conversationIndex < 0) {
       if ((!loading && !called) || (data && data.search[0][chatType].id !== entityId)) {
-        const variables = {
-          filter: { id: entityId },
-          [contactOptions]: { limit: 1 },
-          [messageOptions]: {
+        const variables = getVariables(
+          { limit: 1 },
+          {
             limit: DEFAULT_MESSAGE_LIMIT,
             offset: messageParameterOffset,
           },
-        };
+          { filter: { id: entityId } },
+          groups
+        );
 
         addLogs(`if conversation is not present then search for contact-${entityId}`, variables);
 
@@ -457,14 +456,12 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
         (!parameterLoading && !parameterCalled) ||
         (parameterdata && parameterdata.search[0][chatType].id !== entityId)
       ) {
-        const variables = {
-          filter: { id: entityId },
-          [contactOptions]: { limit: 1 },
-          [messageOptions]: {
-            limit: DEFAULT_MESSAGE_LIMIT,
-            offset: messageParameterOffset,
-          },
-        };
+        const variables = getVariables(
+          { limit: 1 },
+          { limit: DEFAULT_MESSAGE_LIMIT, offset: messageParameterOffset },
+          { filter: { id: entityId } },
+          groups
+        );
 
         addLogs(`if search message is not present then search for contact-${entityId}`, variables);
 
@@ -489,11 +486,12 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
     // if conversation is not present then fetch the collection
     if (conversationIndex < 0 && !groups) {
       if ((!loading && !called) || (data && data.search[0].group.id !== collectionId)) {
-        const variables = {
-          filter: { id: collectionId, searchGroup: true },
-          [contactOptions]: { limit: DEFAULT_ENTITY_LIMIT },
-          [messageOptions]: { limit: DEFAULT_MESSAGE_LIMIT, offset: 0 },
-        };
+        const variables = getVariables(
+          { limit: DEFAULT_ENTITY_LIMIT },
+          { limit: DEFAULT_MESSAGE_LIMIT, offset: 0 },
+          { filter: { id: collectionId, searchGroup: true } },
+          groups
+        );
 
         addLogs(
           `if conversation is not present then search for collection-${collectionId}`,
@@ -558,14 +556,15 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
       element.scrollIntoView();
     } else {
       const offset = messageNumber - 10 <= 0 ? 1 : messageNumber - 10;
-      const variables: any = {
-        filter: { id: entityId?.toString() },
-        [contactOptions]: { limit: 1 },
-        [messageOptions]: {
+      const variables: any = getVariables(
+        { limit: 1 },
+        {
           limit: conversationInfo.messages[conversationInfo.messages.length - 1].messageNumber,
           offset,
         },
-      };
+        { filter: { id: entityId?.toString() } },
+        groups
+      );
 
       addLogs(`fetch reply message`, variables);
 
@@ -621,10 +620,9 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
 
   const loadMoreMessages = () => {
     const { messageNumber } = conversationInfo.messages[conversationInfo.messages.length - 1];
-    const variables: any = {
-      filter: { id: entityId?.toString() },
-      [contactOptions]: { limit: 1 },
-      [messageOptions]: {
+    const variables: any = getVariables(
+      { limit: 1 },
+      {
         limit:
           messageNumber > DEFAULT_MESSAGE_LOADMORE_LIMIT
             ? DEFAULT_MESSAGE_LOADMORE_LIMIT - 1
@@ -634,7 +632,9 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
             ? 1
             : messageNumber - DEFAULT_MESSAGE_LOADMORE_LIMIT,
       },
-    };
+      { filter: { id: entityId?.toString() } },
+      groups
+    );
 
     if (collectionId) {
       variables.filter = { id: collectionId.toString(), searchGroup: true };
@@ -736,11 +736,12 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
       const limit = DEFAULT_MESSAGE_LIMIT;
 
       // set variable for contact chats
-      const variables: any = {
-        [contactOptions]: { limit: 1 },
-        filter: { id: entityId?.toString() },
-        [messageOptions]: { limit, offset: 0 },
-      };
+      const variables: any = getVariables(
+        { limit: 1 },
+        { limit, offset: 0 },
+        { filter: { id: entityId?.toString() } },
+        groups
+      );
 
       // if collection, replace id with collection id
       if (collectionId) {

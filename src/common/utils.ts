@@ -169,10 +169,11 @@ export const getDisplayName = (conversation: any) => {
 
 export const getDisplayNameForSearch = (conversation: any, groups?: boolean) => {
   let displayName: string = '';
+
   if (groups) {
-    displayName = conversation.name || conversation.waGroup.label;
+    displayName = conversation.name || conversation.waGroup?.label || '';
   } else {
-    displayName = conversation.name || conversation.maskedPhone || conversation.contact.name;
+    displayName = conversation.name || conversation.maskedPhone || conversation.contact?.name || '';
   }
 
   return displayName;

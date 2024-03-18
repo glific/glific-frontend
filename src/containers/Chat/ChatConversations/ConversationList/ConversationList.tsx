@@ -18,16 +18,18 @@ import {
   ISO_DATE_FORMAT,
   GROUP_QUERY_VARIABLES,
   GROUP_COLLECTION_SEARCH_QUERY_VARIABLES,
+  getVariables,
+  getConversationForSearchMulti,
+  getConversation,
 } from 'common/constants';
 import { updateConversations } from 'services/ChatService';
 import { updateGroupConversations } from 'services/GroupMessageService';
 import { showMessages } from 'common/responsive';
-import { addLogs, getDisplayName, getDisplayNameForSearch } from 'common/utils';
+import { addLogs } from 'common/utils';
 import ChatConversation from '../ChatConversation/ChatConversation';
 import styles from './ConversationList.module.css';
 import { GROUP_SEARCH_MULTI_QUERY, GROUP_SEARCH_QUERY } from 'graphql/queries/WaGroups';
 import { useLocation } from 'react-router-dom';
-import { Timer } from 'components/UI/Timer/Timer';
 
 interface ConversationListProps {
   searchVal: string;
@@ -79,12 +81,11 @@ export const ConversationList = ({
     const variables = JSON.parse(savedSearchCriteria);
     queryVariables = variables;
   }
-  let searchQuery: any = groups ? GROUP_SEARCH_QUERY : SEARCH_QUERY;
-  let searchMultiQuery: any = groups ? GROUP_SEARCH_MULTI_QUERY : SEARCH_MULTI_QUERY;
-  let contactOptions: string = groups ? 'waGroupOpts' : 'contactOpts';
-  let messageOptions: string = groups ? 'waMessageOpts' : 'messageOpts';
-  let searchOptions: string = groups ? 'filter' : 'searchFilter';
-  let chatType: string = groups ? 'waGroup' : 'contact';
+  const searchQuery: any = groups ? GROUP_SEARCH_QUERY : SEARCH_QUERY;
+  const searchMultiQuery: any = groups ? GROUP_SEARCH_MULTI_QUERY : SEARCH_MULTI_QUERY;
+  const messageOptions: string = groups ? 'waMessageOpts' : 'messageOpts';
+  const searchOptions: string = groups ? 'filter' : 'searchFilter';
+  const chatType: string = groups ? 'waGroup' : 'contact';
 
   // check if there is a previous scroll height
   useEffect(() => {
@@ -135,17 +136,20 @@ export const ConversationList = ({
       if (phonenumber?.length === 0 || !phonenumber) {
         return GROUP_QUERY_VARIABLES;
       }
-      return {
-        [contactOptions]: {
+      return getVariables(
+        {
           limit: DEFAULT_ENTITY_LIMIT,
         },
-        filter: {
-          waPhoneIds: phonenumber?.map((phone: any) => phone.id),
-        },
-        [messageOptions]: {
+        {
           limit: DEFAULT_MESSAGE_LIMIT,
         },
-      };
+        {
+          filter: {
+            waPhoneIds: phonenumber?.map((phone: any) => phone.id),
+          },
+        },
+        groups
+      );
     }
 
     if (savedSearchCriteria && Object.keys(searchParam).length === 0) {
@@ -182,31 +186,36 @@ export const ConversationList = ({
       }
     }
 
-    return {
-      [contactOptions]: {
+    return getVariables(
+      {
         limit: DEFAULT_ENTITY_LIMIT,
       },
-      filter,
-      [messageOptions]: {
+      {
         limit: DEFAULT_MESSAGE_LIMIT,
       },
-    };
+      { filter },
+      groups
+    );
   };
 
-  const filterSearch = () => ({
-    [contactOptions]: {
-      limit: DEFAULT_ENTITY_LIMIT,
-      order: 'DESC',
-    },
-    [searchOptions]: {
-      term: searchVal,
-    },
-    [messageOptions]: {
-      limit: DEFAULT_MESSAGE_LIMIT,
-      offset: 0,
-      order: 'ASC',
-    },
-  });
+  const filterSearch = () =>
+    getVariables(
+      {
+        limit: DEFAULT_ENTITY_LIMIT,
+        order: 'DESC',
+      },
+      {
+        limit: DEFAULT_MESSAGE_LIMIT,
+        offset: 0,
+        order: 'ASC',
+      },
+      {
+        [searchOptions]: {
+          term: searchVal,
+        },
+      },
+      groups
+    );
 
   const [getFilterConvos, { called, loading, error, data: searchData }] =
     useLazyQuery<any>(searchQuery);
@@ -291,40 +300,8 @@ export const ConversationList = ({
 
   const buildChatConversation = (index: number, header: any, conversation: any) => {
     // We don't have the contact data in the case of contacts.
-    let entity = conversation;
-    let selectedRecord = false;
-    if (selectedContactId === entity.id) {
-      selectedRecord = true;
-    }
-    let entityId: any;
-    let displayName = getDisplayNameForSearch(entity, groups);
-    let contactIsOrgRead = false;
-    let timer;
-
-    if (groups) {
-      entityId = entity.id || entity.waGroup.id;
-    } else {
-      entityId = entity.id || entity.contact.id;
-    }
-
-    if (conversation[chatType]) {
-      entity = conversation[chatType];
-      if (selectedContactId === conversation[chatType].id) {
-        selectedRecord = true;
-      }
-    } else if (conversation.bspStatus && conversation.lastMessageAt) {
-      contactIsOrgRead = conversation.isOrgRead;
-      timer = (
-        <div className={styles.MessageDate} data-testid="timerContainer">
-          <Timer
-            time={conversation.lastMessageAt}
-            contactStatus={conversation.status}
-            contactBspStatus={conversation.bspStatus}
-          />
-        </div>
-      );
-    }
-
+    const { displayName, contactIsOrgRead, selectedRecord, entityId, entity, timer } =
+      getConversationForSearchMulti(conversation, selectedContactId, groups);
     return (
       <Fragment>
         {index === 0 ? header : null}
@@ -382,55 +359,8 @@ export const ConversationList = ({
   // build the conversation list only if there are conversations
   if (!conversationList && conversations && conversations.length > 0) {
     conversationList = conversations.map((conversation: any, index: number) => {
-      let lastMessage = [];
-      if (conversation.messages && conversation.messages.length > 0) {
-        [lastMessage] = conversation.messages;
-      }
-      let entityId: any;
-      let senderLastMessage = '';
-      let displayName = '';
-      let contactStatus = '';
-      let contactBspStatus = '';
-      let contactIsOrgRead = false;
-      let selectedRecord = false;
-      let timer;
-      if (conversation.waGroup) {
-        if (selectedContactId === conversation.waGroup?.id) {
-          selectedRecord = true;
-        }
-        entityId = conversation.waGroup?.id;
-        displayName = conversation.waGroup?.label;
-        contactIsOrgRead = false;
-      } else if (conversation.contact) {
-        if (selectedContactId === conversation.contact.id) {
-          selectedRecord = true;
-        }
-        entityId = conversation.contact.id;
-        displayName = getDisplayName(conversation);
-        senderLastMessage = conversation.contact.lastMessageAt;
-        contactStatus = conversation.contact.status;
-        contactBspStatus = conversation.contact.bspStatus;
-        contactIsOrgRead = conversation.contact.isOrgRead;
-
-        timer = (
-          <div className={styles.MessageDate} data-testid="timerContainer">
-            <Timer
-              time={senderLastMessage}
-              contactStatus={contactStatus}
-              contactBspStatus={contactBspStatus}
-            />
-          </div>
-        );
-      }
-
-      if (conversation.group) {
-        if (selectedCollectionId === conversation.group.id) {
-          selectedRecord = true;
-        }
-        entityId = conversation.group.id;
-        displayName = conversation.group.label;
-        contactIsOrgRead = conversation.group.isOrgRead;
-      }
+      const { lastMessage, entityId, displayName, contactIsOrgRead, selectedRecord, timer } =
+        getConversation(conversation, selectedContactId, selectedCollectionId);
 
       return (
         <ChatConversation
@@ -508,16 +438,17 @@ export const ConversationList = ({
         }
       }
 
-      const conversationLoadMoreVariables: any = {
-        [contactOptions]: {
+      const conversationLoadMoreVariables: any = getVariables(
+        {
           limit: DEFAULT_ENTITY_LOADMORE_LIMIT,
           offset: loadingOffset,
         },
-        filter,
-        [messageOptions]: {
+        {
           limit: DEFAULT_MESSAGE_LIMIT,
         },
-      };
+        { filter },
+        groups
+      );
 
       client
         .query({

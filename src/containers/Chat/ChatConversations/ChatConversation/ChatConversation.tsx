@@ -12,6 +12,7 @@ import styles from './ChatConversation.module.css';
 import Track from 'services/TrackService';
 import { slicedString } from 'common/utils';
 import { AvatarDisplay } from 'components/UI/AvatarDisplay/AvatarDisplay';
+import { Timer } from 'components/UI/Timer/Timer';
 
 export interface ChatConversationProps {
   entityId: number;
@@ -187,7 +188,7 @@ const ChatConversation = ({
   }
 
   let avatar: any = '';
-  if (groups) {
+  if (groups && entityType === 'contact') {
     avatar = <AvatarDisplay name={name} />;
   } else if (entityType === 'contact') {
     avatar = <AvatarDisplay name={name} badgeDisplay={!contactIsOrgRead} />;
@@ -230,7 +231,7 @@ const ChatConversation = ({
         <div className={styles.MessageDate} data-testid="date">
           {dayjs(lastMessage.insertedAt).format(SHORT_DATE_FORMAT)}
         </div>
-        {timer}
+        <Timer {...timer} />
       </div>
     </ListItemButton>
   );
