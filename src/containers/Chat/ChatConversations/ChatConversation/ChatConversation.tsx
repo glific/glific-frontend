@@ -231,7 +231,9 @@ const ChatConversation = ({
         <div className={styles.MessageDate} data-testid="date">
           {dayjs(lastMessage.insertedAt).format(SHORT_DATE_FORMAT)}
         </div>
-        <Timer {...timer} />
+        <div className={styles.MessageDate} data-testid="timerContainer">
+          <Timer {...timer} />
+        </div>
       </div>
     </ListItemButton>
   );
