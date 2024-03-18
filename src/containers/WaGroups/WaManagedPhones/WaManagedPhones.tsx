@@ -22,6 +22,7 @@ const WaManagedPhones = ({ phonenumber, setPhonenumber }: WaManagedPhonesProps) 
     variables: {
       filter: {},
     },
+    fetchPolicy: 'cache-and-network',
   });
 
   const [syncGroups] = useMutation(SYNC_GROUPS, {
