@@ -48,7 +48,7 @@ export const HelpIcon = ({
       }
       arrow
     >
-      <span className={styles.InfoIconContainer}>
+      <span data-testid="help-icon" className={styles.InfoIconContainer}>
         <InfoIcon className={styles.InfoIcon} />
       </span>
     </Tooltip>
