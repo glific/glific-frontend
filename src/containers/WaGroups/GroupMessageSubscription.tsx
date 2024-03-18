@@ -100,7 +100,7 @@ export const GroupMessageSubscription = ({ setDataLoaded }: GroupMessageProps) =
       let conversationFound = false;
       if (action === 'COLLECTION') {
         cachedConversations.search.forEach((conversation: any, index: any) => {
-          if (conversation.group.id === collectionId) {
+          if (conversation.group.id === collectionId.toString()) {
             conversationIndex = index;
             conversationFound = true;
           }

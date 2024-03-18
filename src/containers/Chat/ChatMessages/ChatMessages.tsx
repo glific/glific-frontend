@@ -695,14 +695,6 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
     );
   }
 
-  if (groups && collectionId) {
-    messageListContainer = (
-      <div className={styles.NoMessages} data-testid="messageContainer">
-        {t('No messages.')}
-      </div>
-    );
-  }
-
   const handleChatClearedAction = () => {
     const conversationInfoCopy = JSON.parse(JSON.stringify(conversationInfo));
     conversationInfoCopy.messages = [];
