@@ -117,12 +117,14 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
   // Instantiate these to be used later.
 
   let conversationIndex: number = -1;
-  let SEND_MESSAGE_MUTATION = groups ? SEND_MESSAGE_IN_WA_GROUP : CREATE_AND_SEND_MESSAGE_MUTATION;
-  let SEND_MESSAGE_MUTATION_COLLECTION = groups
+  const sendChatMessageMutation = groups
+    ? SEND_MESSAGE_IN_WA_GROUP
+    : CREATE_AND_SEND_MESSAGE_MUTATION;
+  const sendCollectionMessageMutation = groups
     ? SEND_MESSAGE_IN_WA_GROUP_COLLECTION
     : CREATE_AND_SEND_MESSAGE_TO_COLLECTION_MUTATION;
   // create message mutation
-  const [createAndSendMessage] = useMutation(SEND_MESSAGE_MUTATION, {
+  const [createAndSendMessage] = useMutation(sendChatMessageMutation, {
     onCompleted: () => {
       scrollToLatestMessage();
     },
@@ -293,7 +295,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
 
   let messageList: any;
 
-  const [sendMessageToCollection] = useMutation(SEND_MESSAGE_MUTATION_COLLECTION, {
+  const [sendMessageToCollection] = useMutation(sendCollectionMessageMutation, {
     refetchQueries: [{ query: SEARCH_QUERY, variables: SEARCH_QUERY_VARIABLES }],
     onCompleted: () => {
       scrollToLatestMessage();
@@ -336,7 +338,6 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
     // display collection info popup
 
     let payload: any;
-
     if (groups) {
       payload = {
         mediaId: mediaId,
@@ -360,7 +361,6 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
       };
       payload = updatePayload(payload, selectedTemplate, variableParam);
     }
-
     setCollectionVariables({
       groupId: collectionId,
       input: payload,

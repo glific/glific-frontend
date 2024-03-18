@@ -1,4 +1,9 @@
-import { DEFAULT_ENTITY_LIMIT, DEFAULT_MESSAGE_LIMIT, setVariables } from 'common/constants';
+import {
+  DEFAULT_ENTITY_LIMIT,
+  DEFAULT_MESSAGE_LIMIT,
+  GROUP_COLLECTION_SEARCH_QUERY_VARIABLES,
+  setVariables,
+} from 'common/constants';
 import { UPDATE_COLLECTION_WA_GROUP } from 'graphql/mutations/Collection';
 import { SYNC_GROUPS } from 'graphql/mutations/Group';
 import {
@@ -96,6 +101,33 @@ export const waGroup = {
           },
         },
         messages: [],
+      },
+    ],
+  },
+};
+
+export const waGroupcollection = {
+  query: GROUP_SEARCH_QUERY,
+  variables: GROUP_COLLECTION_SEARCH_QUERY_VARIABLES,
+  data: {
+    search: [
+      {
+        group: {
+          id: '1',
+          label: 'Default WA Group Collection',
+        },
+        id: 'group_6',
+        messages: [],
+        waGroup: null,
+      },
+      {
+        group: {
+          id: '1',
+          label: 'Sample Group Collection 1710521137960',
+        },
+        id: 'group_19',
+        messages: [],
+        waGroup: null,
       },
     ],
   },

@@ -11,7 +11,7 @@ import { ChatMessages } from './ChatMessages';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 import { DEFAULT_ENTITY_LIMIT, DEFAULT_MESSAGE_LIMIT } from '../../../common/constants';
 import { CONVERSATION_MOCKS, mocksWithConversation, sendMessageMock } from '../../../mocks/Chat';
-import { waGroup } from 'mocks/Groups';
+import { waGroup, waGroupcollection } from 'mocks/Groups';
 import { userEvent } from '@testing-library/user-event';
 import { setNotification } from 'common/notification';
 
@@ -341,6 +341,25 @@ test('Collection: click on Jump to latest', async () => {
   });
 });
 
+test('should send message to contact collections', async () => {
+  const { getByTestId } = render(chatMessagesWithCollection);
+  const editor = screen.getByTestId('editor');
+
+  await userEvent.click(editor);
+  await userEvent.tab();
+  fireEvent.input(editor, { data: 'hey' });
+
+  await waitFor(() => {
+    expect(editor).toHaveTextContent('hey');
+  });
+
+  fireEvent.click(getByTestId('sendButton'), { force: true });
+
+  await waitFor(() => {
+    expect(screen.getByText('hey')).toBeInTheDocument();
+  });
+});
+
 test('Collection: if not cache', async () => {
   const chatMessagesWithCollection = (
     <Router>
@@ -485,6 +504,7 @@ test('send message to contact', async () => {
 
 const groupscache = new InMemoryCache({ addTypename: false });
 groupscache.writeQuery(waGroup);
+groupscache.writeQuery(waGroupcollection);
 
 const groupClient = new ApolloClient({
   cache: groupscache,
@@ -512,6 +532,35 @@ it('should have title as contact name for whatsapp groups', async () => {
 
 test('send message to whatsapp group', async () => {
   const { getByTestId } = render(chatMessagesWAGroups);
+  const editor = screen.getByTestId('editor');
+
+  await userEvent.click(editor);
+  await userEvent.tab();
+  fireEvent.input(editor, { data: 'hey' });
+
+  await waitFor(() => {
+    expect(editor).toHaveTextContent('hey');
+  });
+
+  fireEvent.click(getByTestId('sendButton'), { force: true });
+
+  await waitFor(() => {
+    expect(screen.getByText('hey')).toBeInTheDocument();
+  });
+});
+
+const collectionMessagesWAGroups = (
+  <MemoryRouter initialEntries={[route]}>
+    <ApolloProvider client={groupClient}>
+      <Routes>
+        <Route path="group/chat" element={<ChatMessages collectionId="1" />} />
+      </Routes>
+    </ApolloProvider>
+  </MemoryRouter>
+);
+
+test('should send message to whatsapp group collections', async () => {
+  const { getByTestId } = render(collectionMessagesWAGroups);
   const editor = screen.getByTestId('editor');
 
   await userEvent.click(editor);
