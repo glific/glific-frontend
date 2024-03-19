@@ -44,6 +44,7 @@ export const Collection = () => {
   const { t } = useTranslation();
   const location = useLocation();
   const groups: boolean = location.pathname.includes('group');
+  const groupType = groups ? WA_GROUPS_COLLECTION : CONTACTS_COLLECTION;
   const searchQuery = groups ? GROUP_SEARCH_QUERY : SEARCH_QUERY;
   const searchVariables = groups
     ? GROUP_COLLECTION_SEARCH_QUERY_VARIABLES
@@ -109,7 +110,7 @@ export const Collection = () => {
   const refetchQueries = [
     {
       query: GET_COLLECTIONS,
-      variables: setVariables(),
+      variables: setVariables({ groupType }),
     },
     {
       query: searchQuery,
