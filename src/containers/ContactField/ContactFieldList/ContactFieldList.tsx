@@ -210,7 +210,6 @@ const ContactFieldList = () => {
         dialogMessage={dialogMessage}
         dialogTitle={dialogTitle}
         editSupport={false}
-        backLinkButton={{ text: t('Back to flows'), link: '/flow' }}
         {...queries}
         {...columnAttributes}
       />

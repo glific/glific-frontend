@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import * as Yup from 'yup';
+import { getDisplayName, getDisplayNameForSearch } from './utils';
 
 export const OLD_DOMAIN = 'tides.coloredcow.com';
 export const NEW_DOMAIN = 'glific.com';
@@ -79,11 +80,11 @@ export const dayList: any = [
   { id: 7, label: 'Sunday' },
 ];
 
-// default contact limit for search
-export const DEFAULT_CONTACT_LIMIT = 25;
+// default entity limit for search
+export const DEFAULT_ENTITY_LIMIT = 25;
 
-// load more contact limit
-export const DEFAULT_CONTACT_LOADMORE_LIMIT = 10;
+// load more entity limit
+export const DEFAULT_ENTITY_LOADMORE_LIMIT = 10;
 
 // default message limit for search
 export const DEFAULT_MESSAGE_LIMIT = 20;
@@ -93,7 +94,7 @@ export const DEFAULT_MESSAGE_LOADMORE_LIMIT = 50;
 
 export const SEARCH_QUERY_VARIABLES = {
   contactOpts: {
-    limit: DEFAULT_CONTACT_LIMIT,
+    limit: DEFAULT_ENTITY_LIMIT,
   },
   filter: {},
   messageOpts: {
@@ -101,12 +102,32 @@ export const SEARCH_QUERY_VARIABLES = {
   },
 };
 
+export const GROUP_QUERY_VARIABLES = {
+  waMessageOpts: {
+    limit: DEFAULT_MESSAGE_LIMIT,
+  },
+  waGroupOpts: {
+    limit: DEFAULT_ENTITY_LIMIT,
+  },
+  filter: {},
+};
+
 export const COLLECTION_SEARCH_QUERY_VARIABLES = {
   contactOpts: {
-    limit: DEFAULT_CONTACT_LIMIT,
+    limit: DEFAULT_ENTITY_LIMIT,
   },
   filter: { searchGroup: true },
   messageOpts: {
+    limit: DEFAULT_MESSAGE_LIMIT,
+  },
+};
+
+export const GROUP_COLLECTION_SEARCH_QUERY_VARIABLES = {
+  waGroupOpts: {
+    limit: DEFAULT_ENTITY_LIMIT,
+  },
+  filter: { searchGroup: true },
+  waMessageOpts: {
     limit: DEFAULT_MESSAGE_LIMIT,
   },
 };
@@ -224,3 +245,122 @@ export const yupPasswordValidation = (t: any) =>
     )
     .min(10, t('Password must be at least 10 characters long.'))
     .required(t('Input required'));
+
+export const WA_GROUPS_COLLECTION = 'WA';
+export const CONTACTS_COLLECTION = 'WABA';
+
+export const getVariables = (
+  contactOptions: any,
+  messageOptions: any,
+  variables: any,
+  groups?: boolean
+) => {
+  const contactVariable: string = groups ? 'waGroupOpts' : 'contactOpts';
+  const messageVariable: string = groups ? 'waMessageOpts' : 'messageOpts';
+  return {
+    [contactVariable]: contactOptions,
+    [messageVariable]: messageOptions,
+    ...variables,
+  };
+};
+
+export const getConversationForSearchMulti = (
+  conversation: any,
+  selectedContactId: any,
+  groups: boolean
+) => {
+  const chatType: string = groups ? 'waGroup' : 'contact';
+
+  let entity = conversation;
+  let selectedRecord = false;
+  let timer;
+  if (selectedContactId == entity.id) {
+    selectedRecord = true;
+  }
+  let entityId: any;
+  const displayName = getDisplayNameForSearch(entity, groups);
+  let contactIsOrgRead: boolean = false;
+
+  if (groups) {
+    entityId = entity.id || entity.waGroup?.id;
+  } else {
+    entityId = entity.id || entity.contact?.id;
+  }
+
+  if (conversation[chatType]) {
+    entity = conversation[chatType];
+    if (selectedContactId == conversation[chatType]?.id) {
+      selectedRecord = true;
+    }
+  } else if (conversation.bspStatus && conversation.lastMessageAt) {
+    contactIsOrgRead = conversation.isOrgRead;
+    timer = {
+      time: conversation.lastMessageAt,
+      contactStatus: conversation.status,
+      contactBspStatus: conversation.bspStatus,
+    };
+  }
+
+  return {
+    displayName,
+    contactIsOrgRead,
+    selectedRecord,
+    entityId,
+    entity,
+    timer,
+  };
+};
+
+export const getConversation = (
+  conversation: any,
+  selectedContactId: any,
+  selectedCollectionId: any
+) => {
+  let lastMessage = [];
+  if (conversation.messages && conversation.messages.length > 0) {
+    [lastMessage] = conversation.messages;
+  }
+  let entityId: any;
+  let displayName = '';
+  let contactIsOrgRead = false;
+  let selectedRecord = false;
+  let timer;
+  if (conversation.waGroup) {
+    if (selectedContactId === conversation.waGroup?.id) {
+      selectedRecord = true;
+    }
+    entityId = conversation.waGroup?.id;
+    displayName = conversation.waGroup?.label;
+    contactIsOrgRead = false;
+  } else if (conversation.contact) {
+    if (selectedContactId === conversation.contact.id) {
+      selectedRecord = true;
+    }
+    entityId = conversation.contact.id;
+    displayName = getDisplayName(conversation);
+    contactIsOrgRead = conversation.contact.isOrgRead;
+    timer = {
+      contactStatus: conversation.contact.status,
+      contactBspStatus: conversation.contact.bspStatus,
+      time: conversation.contact.lastMessageAt,
+    };
+  }
+
+  if (conversation.group) {
+    if (selectedCollectionId === conversation.group.id) {
+      selectedRecord = true;
+    }
+    entityId = conversation.group.id;
+    displayName = conversation.group.label;
+    contactIsOrgRead = conversation.group.isOrgRead;
+  }
+
+  return {
+    lastMessage,
+    entityId,
+    displayName,
+    contactIsOrgRead,
+    selectedRecord,
+    timer,
+  };
+};

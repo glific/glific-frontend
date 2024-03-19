@@ -46,6 +46,22 @@ export const CREATE_COLLECTION = gql`
   }
 `;
 
+export const CREATE_GROUP_COLLECTION = gql`
+  mutation CreateWaGroupsCollection($input: WaGroupsCollectionInput!) {
+    createWaGroupsCollection(input: $input) {
+      errors {
+        message
+      }
+      waGroupsCollection {
+        group {
+          label
+          id
+        }
+      }
+    }
+  }
+`;
+
 export const UPDATE_COLLECTION = gql`
   mutation updateGroup($id: ID!, $input: GroupInput!) {
     updateGroup(id: $id, input: $input) {
@@ -77,6 +93,32 @@ export const UPDATE_COLLECTION_CONTACTS = gql`
         value
       }
       numberDeleted
+    }
+  }
+`;
+
+export const UPDATE_WA_GROUP_COLLECTION = gql`
+  mutation UpdateWaGroupCollection($input: UpdateWaGroupsCollectionInput!) {
+    updateWaGroupCollection(input: $input) {
+      numberDeleted: waGroupsDeleted
+      contactGroups: collectionWaGroups {
+        group {
+          label
+          id
+        }
+        id
+      }
+    }
+  }
+`;
+
+export const UPDATE_COLLECTION_WA_GROUP = gql`
+  mutation UpdateCollectionWaGroup($input: UpdateCollectionWaGroupInput!) {
+    updateCollectionWaGroup(input: $input) {
+      numberDeleted: waGroupsDeleted
+      groupContacts: collectionWaGroups {
+        id
+      }
     }
   }
 `;

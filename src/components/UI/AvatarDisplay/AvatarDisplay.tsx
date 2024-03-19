@@ -10,11 +10,11 @@ export interface AvatarDisplayProps {
 }
 
 export const AvatarDisplay = ({ name, type, badgeDisplay = false }: AvatarDisplayProps) => {
-  const nameInitials = name.split(' ')[0][0];
+  const nameInitials = name?.split(' ')[0][0] || '';
 
   const avatarClasses = [styles.Default];
   if (type === 'large') {
-    avatarClasses.push(styles.Large);
+    avatarClasses.push(styles.Large, 'large');
   }
   let avatarContent = <Avatar className={avatarClasses.join(' ')}>{nameInitials}</Avatar>;
 

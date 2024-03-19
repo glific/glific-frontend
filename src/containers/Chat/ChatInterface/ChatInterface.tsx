@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Paper, Tab, Tabs, Typography } from '@mui/material';
+import { Paper, Tab, Tabs } from '@mui/material';
 import { useQuery } from '@apollo/client';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -101,10 +101,12 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
     }
   }
 
-  const noConversations = (
-    <Typography variant="h5" className={styles.NoConversations}>
-      {t('There are no chat conversations to display.')}
-    </Typography>
+  const NoConversations = (
+    <div className={styles.NoConversationsContainer}>
+      <p data-testid="empty-result" className={styles.NoConversations}>
+        {t('There are no chat conversations to display.')}
+      </p>
+    </div>
   );
 
   let chatInterface: any;
@@ -120,7 +122,7 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
   };
 
   if (data && data.search.length === 0) {
-    chatInterface = noConversations;
+    return NoConversations;
   } else {
     let heading = '';
 
@@ -131,7 +133,7 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
       // let's enable simulator only when contact tab is shown
 
       listingContent = (
-        <ChatConversations contactId={simulatorId > 0 ? simulatorId : selectedContactId} />
+        <ChatConversations entityId={simulatorId > 0 ? simulatorId : selectedContactId} />
       );
 
       heading = 'Contacts';
@@ -144,14 +146,17 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
       <>
         <div className={`${styles.ChatMessages} chatMessages`}>
           <ChatMessages
-            contactId={simulatorId > 0 ? simulatorId : selectedContactId}
+            entityId={simulatorId > 0 ? simulatorId : selectedContactId}
             collectionId={selectedCollectionId}
           />
         </div>
 
         <div className={`${styles.ChatConversations} ChatConversations`}>
           <div className={styles.Title}>
-            <div className={styles.Heading}> {heading}</div>
+            <div data-testid="heading" className={styles.Heading}>
+              {' '}
+              {heading}
+            </div>
           </div>
 
           <div className={styles.TabContainer}>

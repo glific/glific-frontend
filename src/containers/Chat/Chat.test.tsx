@@ -13,6 +13,11 @@ vi.mock('containers/Chat/ChatSubscription/ChatSubscription', () => ({
   ChatSubscription: () => <div>Chat subscription</div>,
 }));
 
+vi.mock('containers/WaGroups/GroupMessageSubscription', () => ({
+  default: () => <div>Group Message subscription</div>,
+  GroupMessageSubscription: () => <div>Group Message subscription</div>,
+}));
+
 const mocks: any = CONVERSATION_MOCKS;
 
 setUserSession(JSON.stringify({ roles: ['Admin'], organization: { id: '1' } }));
@@ -34,6 +39,21 @@ describe('<Chat />', () => {
     // there is nothing to assert here just waiting for all the mock calls working
     await waitFor(() => {
       expect(screen.getByText('Chat subscription')).toBeInTheDocument();
+    });
+  });
+
+  test('it should render <Chat /> component correctly', async () => {
+    render(
+      <MemoryRouter initialEntries={['/group/chat']}>
+        <MockedProvider mocks={mocks} addTypename={false}>
+          <Chat />
+        </MockedProvider>
+      </MemoryRouter>
+    );
+
+    // there is nothing to assert here just waiting for all the mock calls working
+    await waitFor(() => {
+      expect(screen.getByText('Group Message subscription')).toBeInTheDocument();
     });
   });
 });

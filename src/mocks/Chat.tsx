@@ -12,7 +12,7 @@ import {
 } from 'graphql/queries/Search';
 import { CREATE_AND_SEND_MESSAGE_MUTATION } from 'graphql/mutations/Chat';
 import {
-  DEFAULT_CONTACT_LIMIT,
+  DEFAULT_ENTITY_LIMIT,
   DEFAULT_MESSAGE_LIMIT,
   SEARCH_QUERY_VARIABLES as queryVariables,
 } from 'common/constants';
@@ -21,7 +21,7 @@ import { searchQueryEmptyMock as searchEmptyQuery } from 'containers/Chat/ChatCo
 import { contactCollectionsQuery } from './Contact';
 import { getOrganizationLanguagesQuery } from './Organization';
 
-const getConversationQuery = (data: any) => {
+export const getConversationQuery = (data: any) => {
   return {
     request: {
       query: SEARCH_QUERY,
@@ -37,7 +37,7 @@ export const conversationMessageQuery = (
   filter: any,
   contactName: string,
   contactNumber: string,
-  contactLimit: number = DEFAULT_CONTACT_LIMIT,
+  contactLimit: number = DEFAULT_ENTITY_LIMIT,
   messageLimit: object = { limit: DEFAULT_MESSAGE_LIMIT }
 ) => ({
   request: {
@@ -54,6 +54,7 @@ export const conversationMessageQuery = (
     data: {
       search: [
         {
+          id: 'contact_2',
           group: null,
           contact: {
             id: '2',
@@ -114,7 +115,7 @@ export const conversationCollectionQuery = (
   collectionId: any,
   collectionName: string,
   filter: object = { searchGroup: true },
-  contactLimit: number = DEFAULT_CONTACT_LIMIT,
+  contactLimit: number = DEFAULT_ENTITY_LIMIT,
   messageLimit: object = { limit: DEFAULT_MESSAGE_LIMIT }
 ) => ({
   request: {
@@ -131,6 +132,7 @@ export const conversationCollectionQuery = (
     data: {
       search: [
         {
+          id: `group_${collectionId.toString()}`,
           contact: null,
           group: {
             id: collectionId.toString(),
@@ -482,6 +484,7 @@ export const collectionCountQuery = {
 export const conversationQuery = getConversationQuery({
   search: [
     {
+      id: 'contact_2',
       group: null,
       contact: {
         id: '2',
@@ -574,7 +577,7 @@ export const conversationQuery = getConversationQuery({
 
 export const searchMultiQuery = (
   term: string = '',
-  contactLimit: number = DEFAULT_CONTACT_LIMIT,
+  contactLimit: number = DEFAULT_ENTITY_LIMIT,
   messageLimit: number = DEFAULT_MESSAGE_LIMIT
 ) => {
   return {
@@ -649,10 +652,10 @@ export const CONVERSATION_MOCKS = [
   messageStatusSubscription,
   savedSearchQuery,
   getOrganizationLanguagesQuery,
-  conversationMessageQuery({ id: '2' }, 'Jane Doe', '919090909009', DEFAULT_CONTACT_LIMIT, {
+  conversationMessageQuery({ id: '2' }, 'Jane Doe', '919090909009', DEFAULT_ENTITY_LIMIT, {
     limit: DEFAULT_MESSAGE_LIMIT,
   }),
-  conversationMessageQuery({ id: '3' }, 'Jane Monroe', '919090709009', DEFAULT_CONTACT_LIMIT, {
+  conversationMessageQuery({ id: '3' }, 'Jane Monroe', '919090709009', DEFAULT_ENTITY_LIMIT, {
     limit: DEFAULT_MESSAGE_LIMIT,
   }),
   conversationMessageQuery({ id: '2' }, 'Jane Doe', '919090909009', 1, {
@@ -837,7 +840,7 @@ export const searchQuerywithFilter = {
   request: {
     query: SEARCH_QUERY,
     variables: {
-      contactOpts: { limit: DEFAULT_CONTACT_LIMIT },
+      contactOpts: { limit: DEFAULT_ENTITY_LIMIT },
       filter: { id: '2' },
       messageOpts: { limit: DEFAULT_MESSAGE_LIMIT },
     },
@@ -849,7 +852,7 @@ export const searchQuerywithFilterOffset = {
   request: {
     query: SEARCH_QUERY,
     variables: {
-      contactOpts: { limit: DEFAULT_CONTACT_LIMIT },
+      contactOpts: { limit: DEFAULT_ENTITY_LIMIT },
       filter: { id: '2' },
       messageOpts: { limit: DEFAULT_MESSAGE_LIMIT, offset: DEFAULT_MESSAGE_LIMIT },
     },
@@ -870,3 +873,40 @@ export const mocksWithMultipleMessages = [
   ...chatMessagesMocks,
   getConversationQuery(conversationWithMultipleMessages),
 ];
+
+export const sendMessageMock = {
+  request: {
+    query: CREATE_AND_SEND_MESSAGE_MUTATION,
+    variables: {
+      input: {
+        body: 'test',
+        senderId: 1,
+        receiverId: '2',
+        flow: 'OUTBOUND',
+        type: 'TEXT',
+        mediaId: null,
+      },
+    },
+  },
+  result: {
+    data: {
+      createAndSendMessage: {
+        __typename: 'MessageResult',
+        message: {
+          body: 'test',
+          id: '74',
+          insertedAt: '2024-03-16T19:38:25.749178Z',
+          media: null,
+          receiver: {
+            __typename: 'Contact',
+            id: '2',
+          },
+          sender: {
+            __typename: 'Contact',
+            id: '1',
+          },
+        },
+      },
+    },
+  },
+};

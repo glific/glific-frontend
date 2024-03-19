@@ -92,3 +92,12 @@
   font-size: 16px;
   text-align: center;
 }
+
+.MessageDate {
+  top: 20px;
+  right: 0;
+  color: #93a29b;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+}

@@ -1,5 +1,6 @@
 import { GET_COLLECTION_CONTACTS } from 'graphql/queries/Contact';
 import {
+  EXPORT_COLLECTION_DATA,
   FILTER_COLLECTIONS,
   GET_COLLECTION,
   GET_COLLECTIONS,
@@ -8,7 +9,8 @@ import {
   GET_COLLECTION_USERS,
   GET_ORGANIZATION_COLLECTIONS,
 } from 'graphql/queries/Collection';
-import { UPDATE_COLLECTION_CONTACTS } from 'graphql/mutations/Collection';
+import { CREATE_COLLECTION, UPDATE_COLLECTION_CONTACTS } from 'graphql/mutations/Collection';
+import { CONTACTS_COLLECTION, WA_GROUPS_COLLECTION } from 'common/constants';
 
 export const getCollectionQuery = {
   request: {
@@ -43,7 +45,7 @@ export const getCollectionsQuery = [
   {
     request: {
       query: GET_COLLECTIONS,
-      variables: { filter: {}, opts: { limit: null, offset: 0, order: 'ASC' } },
+      variables: { filter: { groupType: 'WABA' }, opts: { limit: null, offset: 0, order: 'ASC' } },
     },
     result: {
       data: {
@@ -146,10 +148,40 @@ export const getCollectionUsersQuery2 = {
   },
 };
 
+export const createCollectionQuery = {
+  request: {
+    query: CREATE_COLLECTION,
+    variables: {
+      input: {
+        label: 'Sample Collection Title',
+        description: 'Sample Collection Description',
+        addRoleIds: [],
+        deleteRoleIds: [],
+        groupType: 'WABA',
+      },
+    },
+  },
+  result: {
+    data: {
+      createGroup: {
+        group: {
+          description: 'Sample Collection Description',
+          id: '23',
+          label: 'Sample Collection Title',
+        },
+      },
+    },
+  },
+};
+
 export const countCollectionQuery = {
   request: {
     query: GET_COLLECTIONS_COUNT,
-    variables: { filter: {} },
+    variables: {
+      filter: {
+        groupType: CONTACTS_COLLECTION,
+      },
+    },
   },
   result: {
     data: {
@@ -162,7 +194,9 @@ export const filterCollectionQuery = {
   request: {
     query: FILTER_COLLECTIONS,
     variables: {
-      filter: {},
+      filter: {
+        groupType: CONTACTS_COLLECTION,
+      },
       opts: {
         limit: 50,
         offset: 0,
@@ -181,8 +215,68 @@ export const filterCollectionQuery = {
           isRestricted: false,
           contactsCount: 2,
           roles: [],
+          waGroupsCount: 0,
         },
       ],
+    },
+  },
+};
+
+export const filterCollectionQueryWAGroups = {
+  request: {
+    query: FILTER_COLLECTIONS,
+    variables: {
+      filter: {
+        groupType: WA_GROUPS_COLLECTION,
+      },
+      opts: {
+        limit: 50,
+        offset: 0,
+        order: 'ASC',
+        orderWith: 'label',
+      },
+    },
+  },
+  result: {
+    data: {
+      groups: [
+        {
+          __typename: 'Group',
+          contactsCount: 0,
+          description: null,
+          id: '1',
+          isRestricted: false,
+          label: 'Default WA Group Collection',
+          roles: [],
+          waGroupsCount: 4,
+        },
+        {
+          __typename: 'Group',
+          contactsCount: 0,
+          description: 'wa collection 1',
+          id: '2',
+          isRestricted: false,
+          label: 'Whatsapp Group Collection 1',
+          roles: [],
+          waGroupsCount: 1,
+        },
+      ],
+    },
+  },
+};
+
+export const countCollectionQueryWAGroups = {
+  request: {
+    query: GET_COLLECTIONS_COUNT,
+    variables: {
+      filter: {
+        groupType: WA_GROUPS_COLLECTION,
+      },
+    },
+  },
+  result: {
+    data: {
+      countGroups: 2,
     },
   },
 };
@@ -201,6 +295,12 @@ export const getCollectionContactsQuery = {
               id: '1',
               name: 'Glific User',
               phone: '987654321',
+            },
+          ],
+          waGroups: [
+            {
+              name: 'Group 1',
+              id: '1',
             },
           ],
         },
@@ -235,13 +335,34 @@ export const getCollectionInfo2 = {
 export const updateCollectionContactsQuery = {
   request: {
     query: UPDATE_COLLECTION_CONTACTS,
-    variables: { input: { addContactIds: [], groupId: '1', deleteContactIds: ['1'] } },
+    variables: { input: { addContactIds: ['3'], groupId: '1', deleteContactIds: [] } },
   },
   result: {
     data: {
       updateGroupContacts: {
-        groupContacts: [],
-        numberDeleted: 1,
+        groupContacts: [
+          {
+            id: '19',
+            value: null,
+          },
+        ],
+        numberDeleted: 0,
+      },
+    },
+  },
+};
+
+export const exportCollectionsQuery = {
+  request: {
+    query: EXPORT_COLLECTION_DATA,
+    variables: { exportCollectionId: '1' },
+  },
+  result: {
+    data: {
+      exportCollection: {
+        errors: null,
+        status:
+          'Name,Phone\r\nAdelle Cavin,2629678404\r\nMargarita Quinteros,5799461148\r\nChrissy Cron,8105438990\r\nNGO Staff,919820112345\r\nNGO Manager,9101234567890\r\nNGO Admin,919999988888\r\nNGO Person who left,919988776655\r\n',
       },
     },
   },

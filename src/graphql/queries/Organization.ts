@@ -126,6 +126,7 @@ export const GET_ORGANIZATION_SERVICES = gql`
       rolesAndPermission
       contactProfileEnabled
       ticketingEnabled
+      whatsappGroupEnabled
     }
   }
 `;

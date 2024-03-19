@@ -29,7 +29,7 @@ import { LocationRequestTemplate } from './LocationRequestTemplate/LocationReque
 export interface ChatMessageProps {
   id: number;
   body: string;
-  contactId: number;
+  entityId: number;
   receiver: {
     id: number;
   };
@@ -53,6 +53,9 @@ export interface ChatMessageProps {
   sendBy: string;
   flowLabel: string | null;
   daySeparator: string | null;
+  groups?: boolean;
+  status?: string;
+  contact?: any;
 }
 
 export const ChatMessage = ({
@@ -60,7 +63,7 @@ export const ChatMessage = ({
   popup,
   focus,
   sender,
-  contactId,
+  entityId,
   insertedAt,
   onClick,
   type,
@@ -75,6 +78,9 @@ export const ChatMessage = ({
   sendBy,
   flowLabel,
   daySeparator,
+  groups,
+  status,
+  contact,
 }: ChatMessageProps) => {
   const [showSaveMessageDialog, setShowSaveMessageDialog] = useState(false);
   const Ref = useRef(null);
@@ -139,7 +145,12 @@ export const ChatMessage = ({
     );
   }
 
-  const isSender = sender.id === contactId;
+  let isSender: boolean;
+  if (groups) {
+    isSender = status === 'received';
+  } else {
+    isSender = sender.id === entityId;
+  }
 
   if (isSender) {
     additionalClass = styles.Other;
@@ -242,7 +253,7 @@ export const ChatMessage = ({
 
   const { body: bodyText, buttons: templateButtons } = WhatsAppTemplateButton(body);
 
-  const content: any = JSON.parse(interactiveContent);
+  const content: any = interactiveContent ? JSON.parse(interactiveContent) : null;
   const isInteractiveContentPresent: Boolean = content ? !!Object.entries(content).length : false;
 
   const errorClasses = messageErrorStatus ? styles.ErrorContent : '';
@@ -282,6 +293,12 @@ export const ChatMessage = ({
       ));
     }
   }
+
+  let contactName: any;
+  if (groups && isSender) {
+    contactName = <div className={styles.ContactName}>{contact?.name}</div>;
+  }
+
   return (
     <div>
       {daySeparatorContent}
@@ -305,7 +322,7 @@ export const ChatMessage = ({
               <div className={styles.ReplyMainWrap}>
                 <div>
                   <div className={styles.ReplyContact}>
-                    {contextMessage.sender.id === contactId ? contextMessage.sender.name : 'You'}
+                    {contextMessage.sender.id === entityId ? contextMessage.sender.name : 'You'}
                   </div>
                   <div className={styles.ReplyMessageBody}>
                     <ChatMessageType
@@ -333,6 +350,7 @@ export const ChatMessage = ({
                     template
                   ) : (
                     <>
+                      {contactName}
                       <ChatMessageType
                         type={type}
                         media={media}

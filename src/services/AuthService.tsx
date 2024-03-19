@@ -16,7 +16,8 @@ type ServiceType =
   | 'flowUuidDisplay'
   | 'rolesAndPermission'
   | 'contactProfileEnabled'
-  | 'ticketingEnabled';
+  | 'ticketingEnabled'
+  | 'whatsappGroupEnabled';
 
 // get the current authentication session
 export const getAuthSession = (element?: string) => {

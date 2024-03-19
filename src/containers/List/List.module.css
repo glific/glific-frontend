@@ -13,7 +13,7 @@
   vertical-align: middle;
   color: #191c1a;
   display: flex;
-  align-items: first baseline;
+  align-items: center;
   font-weight: 700;
   font-size: 38px;
 }
@@ -87,20 +87,9 @@
 }
 
 .BackLink {
-  font-weight: 800;
-  font-size: 16px;
-  margin: 24px;
-  margin-top: 12px;
-  margin-bottom: 20px;
-}
-
-.BackLink a {
-  color: #93a29b;
-  text-decoration: none;
-}
-
-.BackLink svg {
-  margin-right: 6px;
+  margin-left: -10px;
+  margin-right: 10px;
+  cursor: pointer;
 }
 
 .TableFooter {
@@ -188,8 +177,6 @@
 .NoTextDecoration {
   text-decoration: none;
 }
-
-
 
 .TextButton {
   display: flex;

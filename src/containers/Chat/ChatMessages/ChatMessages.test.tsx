@@ -1,16 +1,29 @@
-import { render, act } from '@testing-library/react';
+import { render, act, screen } from '@testing-library/react';
 import 'mocks/matchMediaMock';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import { fireEvent, waitFor } from '@testing-library/dom';
-import { MemoryRouter } from 'react-router';
+import { MemoryRouter, Route, Routes } from 'react-router';
+import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 import { vi } from 'vitest';
 
 import { ChatMessages } from './ChatMessages';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
-import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT } from '../../../common/constants';
-import { CONVERSATION_MOCKS, mocksWithConversation } from '../../../mocks/Chat';
-import * as ChatInput from '../ChatMessages/ChatInput/ChatInput';
+import { DEFAULT_ENTITY_LIMIT, DEFAULT_MESSAGE_LIMIT } from '../../../common/constants';
+import { CONVERSATION_MOCKS, mocksWithConversation, sendMessageMock } from '../../../mocks/Chat';
+import { waGroup, waGroupcollection } from 'mocks/Groups';
+import { userEvent } from '@testing-library/user-event';
+import { setNotification } from 'common/notification';
+
+vi.mock('common/notification', async (importOriginal) => {
+  const mod = await importOriginal<typeof import('common/notification')>();
+  return {
+    ...mod,
+    setNotification: vi.fn((...args) => {
+      return args[1];
+    }),
+  };
+});
 
 const defineUrl = (url: string) => {
   Object.defineProperty(window, 'location', {
@@ -63,12 +76,13 @@ export const searchQuery = {
   query: SEARCH_QUERY,
   variables: {
     filter: {},
-    contactOpts: { limit: DEFAULT_CONTACT_LIMIT },
+    contactOpts: { limit: DEFAULT_ENTITY_LIMIT },
     messageOpts: { limit: DEFAULT_MESSAGE_LIMIT },
   },
   data: {
     search: [
       {
+        id: 'contact_2',
         group: null,
         contact: {
           id: '2',
@@ -93,12 +107,13 @@ export const contact = {
   query: SEARCH_QUERY,
   variables: {
     filter: {},
-    contactOpts: { limit: DEFAULT_CONTACT_LIMIT },
+    contactOpts: { limit: DEFAULT_ENTITY_LIMIT },
     messageOpts: { limit: DEFAULT_MESSAGE_LIMIT },
   },
   data: {
     search: [
       {
+        id: 'contact_2',
         group: null,
         contact: {
           id: 2,
@@ -114,6 +129,7 @@ export const contact = {
         messages: [body],
       },
       {
+        id: 'contact_1',
         group: null,
         contact: {
           id: 1,
@@ -135,6 +151,7 @@ export const contact = {
 const conversationData = Array(30)
   .fill(null)
   .map((val: any, index: number) => ({
+    id: `group_${index + 3}`,
     group: {
       id: `${index + 3}`,
       label: `Test ${index + 3}`,
@@ -146,7 +163,7 @@ const conversationData = Array(30)
 export const collection = {
   query: SEARCH_QUERY,
   variables: {
-    contactOpts: { limit: DEFAULT_CONTACT_LIMIT },
+    contactOpts: { limit: DEFAULT_ENTITY_LIMIT },
     filter: { searchGroup: true },
 
     messageOpts: { limit: DEFAULT_MESSAGE_LIMIT },
@@ -154,6 +171,7 @@ export const collection = {
   data: {
     search: [
       {
+        id: 'group_2',
         group: {
           id: '2',
           label: 'Default Group',
@@ -228,7 +246,7 @@ window.HTMLElement.prototype.scrollIntoView = vi.fn();
 const chatMessages = (
   <MemoryRouter>
     <ApolloProvider client={client}>
-      <ChatMessages contactId="2" />
+      <ChatMessages entityId="2" />
     </ApolloProvider>
   </MemoryRouter>
 );
@@ -262,18 +280,6 @@ test('focus on the latest message', async () => {
   });
 });
 
-// test('cancel after dialog box open', async () => {
-//   const { getByText, getByTestId } = render(chatMessages);
-//   await waitFor(() => {
-//     fireEvent.click(getByTestId('messageOptions'));
-//     fireEvent.click(getByTestId('dialogButton'));
-//   });
-
-//   fireEvent.click(getByText('Cancel'));
-// });
-
-// Need to first scroll up
-
 test('click on Jump to latest', async () => {
   const { getByTestId } = render(chatMessages);
   const messageContainer: any = document.querySelector('.messageContainer');
@@ -292,9 +298,11 @@ test('click on Jump to latest', async () => {
 test('Contact: if not cache', async () => {
   const chatMessagesWithCollection = (
     <ApolloProvider client={client}>
-      <MockedProvider mocks={[...CONVERSATION_MOCKS, ...mocksWithConversation]}>
-        <ChatMessages contactId="5" />
-      </MockedProvider>
+      <Router>
+        <MockedProvider mocks={[...CONVERSATION_MOCKS, ...mocksWithConversation]}>
+          <ChatMessages entityId="5" />
+        </MockedProvider>
+      </Router>
     </ApolloProvider>
   );
   render(chatMessagesWithCollection);
@@ -333,11 +341,32 @@ test('Collection: click on Jump to latest', async () => {
   });
 });
 
+test('should send message to contact collections', async () => {
+  const { getByTestId } = render(chatMessagesWithCollection);
+  const editor = screen.getByTestId('editor');
+
+  await userEvent.click(editor);
+  await userEvent.tab();
+  fireEvent.input(editor, { data: 'hey' });
+
+  await waitFor(() => {
+    expect(editor).toHaveTextContent('hey');
+  });
+
+  fireEvent.click(getByTestId('sendButton'), { force: true });
+
+  await waitFor(() => {
+    expect(screen.getByText('hey')).toBeInTheDocument();
+  });
+});
+
 test('Collection: if not cache', async () => {
   const chatMessagesWithCollection = (
-    <MockedProvider mocks={[...CONVERSATION_MOCKS, ...mocksWithConversation]}>
-      <ChatMessages collectionId="5" />
-    </MockedProvider>
+    <Router>
+      <MockedProvider mocks={[...CONVERSATION_MOCKS, ...mocksWithConversation]}>
+        <ChatMessages collectionId="5" />
+      </MockedProvider>
+    </Router>
   );
   const { getByTestId } = render(chatMessagesWithCollection);
   // need to check why we click this
@@ -355,12 +384,14 @@ test('Collection: if cache', async () => {
   });
   const chatMessagesWithCollection = (
     <ApolloProvider client={client}>
-      <MockedProvider mocks={[...CONVERSATION_MOCKS, ...mocksWithConversation]}>
-        <ChatMessages collectionId="5" />
-      </MockedProvider>
+      <Router>
+        <MockedProvider mocks={[...CONVERSATION_MOCKS, ...mocksWithConversation]}>
+          <ChatMessages collectionId="5" />
+        </MockedProvider>
+      </Router>
     </ApolloProvider>
   );
-  const { getByTestId } = render(chatMessagesWithCollection);
+  render(chatMessagesWithCollection);
 
   // need to check why we click this
 
@@ -371,7 +402,7 @@ test('click on Clear conversation', async () => {
   const chatMessages = (
     <MemoryRouter>
       <ApolloProvider client={client}>
-        <ChatMessages contactId="2" />
+        <ChatMessages entityId="2" />
       </ApolloProvider>
     </MemoryRouter>
   );
@@ -391,12 +422,13 @@ test('Load more messages', async () => {
     query: SEARCH_QUERY,
     variables: {
       filter: {},
-      contactOpts: { limit: DEFAULT_CONTACT_LIMIT },
+      contactOpts: { limit: DEFAULT_ENTITY_LIMIT },
       messageOpts: { limit: DEFAULT_MESSAGE_LIMIT },
     },
     data: {
       search: [
         {
+          id: 'contact_2',
           group: null,
           contact: {
             id: '2',
@@ -425,7 +457,7 @@ test('Load more messages', async () => {
   const chatMessages = (
     <MemoryRouter>
       <ApolloProvider client={client}>
-        <ChatMessages contactId="2" />
+        <ChatMessages entityId="2" />
       </ApolloProvider>
     </MemoryRouter>
   );
@@ -452,23 +484,123 @@ test('Should render for multi-search', async () => {
 });
 
 test('send message to contact', async () => {
-  const spy = vi.spyOn(ChatInput, 'ChatInput');
-
-  spy.mockImplementation((props: any) => {
-    const { onSendMessage } = props;
-    return (
-      <div
-        data-testid="sendMessage"
-        onClick={() => onSendMessage('hey', null, 'TEXT', null, null)}
-      ></div>
-    );
-  });
-
   const { getByTestId } = render(chatMessages);
+  const editor = screen.getByTestId('editor');
+
+  await userEvent.click(editor);
+  await userEvent.tab();
+  fireEvent.input(editor, { data: 'hey' });
 
   await waitFor(() => {
-    fireEvent.click(getByTestId('sendMessage'));
+    expect(editor).toHaveTextContent('hey');
   });
 
-  await waitFor(() => {});
+  fireEvent.click(getByTestId('sendButton'), { force: true });
+
+  await waitFor(() => {
+    expect(screen.getByText('hey')).toBeInTheDocument();
+  });
+});
+
+const groupscache = new InMemoryCache({ addTypename: false });
+groupscache.writeQuery(waGroup);
+groupscache.writeQuery(waGroupcollection);
+
+const groupClient = new ApolloClient({
+  cache: groupscache,
+  uri: 'http://localhost:4000/',
+  assumeImmutableResults: true,
+});
+let route = '/group/chat';
+
+const chatMessagesWAGroups = (
+  <MemoryRouter initialEntries={[route]}>
+    <ApolloProvider client={groupClient}>
+      <Routes>
+        <Route path="group/chat" element={<ChatMessages entityId="2" />} />
+      </Routes>
+    </ApolloProvider>
+  </MemoryRouter>
+);
+
+it('should have title as contact name for whatsapp groups', async () => {
+  const { getByTestId } = render(chatMessagesWAGroups);
+  await waitFor(() => {
+    expect(getByTestId('beneficiaryName')).toHaveTextContent('Oklahoma sheep');
+  });
+});
+
+test('send message to whatsapp group', async () => {
+  const { getByTestId } = render(chatMessagesWAGroups);
+  const editor = screen.getByTestId('editor');
+
+  await userEvent.click(editor);
+  await userEvent.tab();
+  fireEvent.input(editor, { data: 'hey' });
+
+  await waitFor(() => {
+    expect(editor).toHaveTextContent('hey');
+  });
+
+  fireEvent.click(getByTestId('sendButton'), { force: true });
+
+  await waitFor(() => {
+    expect(screen.getByText('hey')).toBeInTheDocument();
+  });
+});
+
+const collectionMessagesWAGroups = (
+  <MemoryRouter initialEntries={[route]}>
+    <ApolloProvider client={groupClient}>
+      <Routes>
+        <Route path="group/chat" element={<ChatMessages collectionId="1" />} />
+      </Routes>
+    </ApolloProvider>
+  </MemoryRouter>
+);
+
+test('should send message to whatsapp group collections', async () => {
+  const { getByTestId } = render(collectionMessagesWAGroups);
+  const editor = screen.getByTestId('editor');
+
+  await userEvent.click(editor);
+  await userEvent.tab();
+  fireEvent.input(editor, { data: 'hey' });
+
+  await waitFor(() => {
+    expect(editor).toHaveTextContent('hey');
+  });
+
+  fireEvent.click(getByTestId('sendButton'), { force: true });
+
+  await waitFor(() => {
+    expect(screen.getByText('hey')).toBeInTheDocument();
+  });
+});
+
+test('should show error if send message fails', async () => {
+  const { getByTestId } = render(
+    <MemoryRouter>
+      <MockedProvider mocks={[sendMessageMock]}>
+        <ApolloProvider client={client}>
+          <ChatMessages entityId="2" />
+        </ApolloProvider>
+      </MockedProvider>
+    </MemoryRouter>
+  );
+
+  const editor = screen.getByTestId('editor');
+
+  await userEvent.click(editor);
+  await userEvent.tab();
+  fireEvent.input(editor, { data: 'test' });
+
+  await waitFor(() => {
+    expect(editor).toHaveTextContent('test');
+  });
+
+  fireEvent.click(getByTestId('sendButton'), { force: true });
+  await waitFor(() => {
+    expect(setNotification).toHaveBeenCalled();
+  });
 });

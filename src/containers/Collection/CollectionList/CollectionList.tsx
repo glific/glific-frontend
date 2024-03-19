@@ -5,7 +5,11 @@ import { useTranslation } from 'react-i18next';
 import CollectionIcon from 'assets/images/icons/Collection/Dark.svg?react';
 import AddContactIcon from 'assets/images/icons/Contact/Add.svg?react';
 import ExportIcon from 'assets/images/icons/Flow/Export.svg?react';
-import { DELETE_COLLECTION, UPDATE_COLLECTION_CONTACTS } from 'graphql/mutations/Collection';
+import {
+  DELETE_COLLECTION,
+  UPDATE_COLLECTION_CONTACTS,
+  UPDATE_COLLECTION_WA_GROUP,
+} from 'graphql/mutations/Collection';
 import {
   GET_COLLECTIONS_COUNT,
   FILTER_COLLECTIONS,
@@ -16,12 +20,20 @@ import { List } from 'containers/List/List';
 import { SearchDialogBox } from 'components/UI/SearchDialogBox/SearchDialogBox';
 import { getUserRolePermissions, getUserRole } from 'context/role';
 import { setNotification } from 'common/notification';
-import { setVariables } from 'common/constants';
+import {
+  COLLECTION_SEARCH_QUERY_VARIABLES,
+  CONTACTS_COLLECTION,
+  GROUP_COLLECTION_SEARCH_QUERY_VARIABLES,
+  WA_GROUPS_COLLECTION,
+  setVariables,
+} from 'common/constants';
 import { CircularProgress, Modal } from '@mui/material';
 import styles from './CollectionList.module.css';
 import { exportCsvFile } from 'common/utils';
-import { useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { collectionInfo } from 'common/HelpData';
+import { GET_WA_GROUPS, GROUP_SEARCH_QUERY } from 'graphql/queries/WaGroups';
+import { SEARCH_QUERY } from 'graphql/queries/Search';
 
 const getLabel = (label: string) => <div className={styles.LabelText}>{label}</div>;
 
@@ -29,30 +41,22 @@ const getDescription = (description: string) => (
   <div className={styles.DescriptionText}>{description}</div>
 );
 
-const getContact = (contactsCount: number) => (
-  <div className={styles.UserCount}>
-    {contactsCount} contact{contactsCount === 1 ? '' : 's'}
-  </div>
+const getContact = (totalCount: number, groups: boolean, id: any) => (
+  <Link
+    data-testid="view"
+    to={`/collection/${id}/${groups ? 'groups' : 'contacts'}`}
+    className={styles.UserCount}
+  >
+    {`${totalCount} ${groups ? 'group' : 'contact'}${totalCount === 1 ? '' : 's'}`}
+  </Link>
 );
 
-const getColumns = ({ label, contactsCount, description }: any) => ({
-  label: getLabel(label),
-  description: getDescription(description),
-  contacts: getContact(contactsCount),
-});
-
-const columnStyles = [styles.Label, styles.Description, styles.Contact, styles.Actions];
 const collectionIcon = <CollectionIcon className={styles.CollectionIcon} />;
 
 const queries = {
   countQuery: GET_COLLECTIONS_COUNT,
   filterItemsQuery: FILTER_COLLECTIONS,
   deleteItemQuery: DELETE_COLLECTION,
-};
-
-const columnAttributes = {
-  columns: getColumns,
-  columnStyles,
 };
 
 export const CollectionList = () => {
@@ -64,9 +68,34 @@ export const CollectionList = () => {
   const [collectionId, setCollectionId] = useState();
   const [exportData, setExportData] = useState(false);
   const { t } = useTranslation();
+  const location = useLocation();
+  const groups: boolean = location.pathname.includes('group');
+  const entity = groups ? 'waGroups' : 'contacts';
+  const entityQuery = groups ? GET_WA_GROUPS : CONTACT_SEARCH_QUERY;
 
-  const [getContacts, { data: contactsData }] = useLazyQuery(CONTACT_SEARCH_QUERY, {
-    variables: setVariables({ name: contactSearchTerm }, 50),
+  const searchQuery = groups ? GROUP_SEARCH_QUERY : SEARCH_QUERY;
+  const searchVariables = groups
+    ? GROUP_COLLECTION_SEARCH_QUERY_VARIABLES
+    : COLLECTION_SEARCH_QUERY_VARIABLES;
+  const updateMutation = groups ? UPDATE_COLLECTION_WA_GROUP : UPDATE_COLLECTION_CONTACTS;
+
+  const getColumns = ({ label, contactsCount, description, waGroupsCount, id }: any) => {
+    return {
+      label: getLabel(label),
+      description: getDescription(description),
+      contacts: getContact(groups ? waGroupsCount : contactsCount, groups, id),
+    };
+  };
+
+  const columnStyles = [styles.Label, styles.Description, styles.Contact, styles.Actions];
+
+  const columnAttributes = {
+    columns: getColumns,
+    columnStyles,
+  };
+
+  const [getContacts, { data: entityData }] = useLazyQuery(entityQuery, {
+    variables: groups ? setVariables({}, 50) : setVariables({ name: contactSearchTerm }, 50),
   });
   const [exportCollectionData] = useLazyQuery(EXPORT_COLLECTION_DATA, {
     onCompleted: (data) => {
@@ -85,20 +114,25 @@ export const CollectionList = () => {
   const [getCollectionContacts, { data: collectionContactsData }] =
     useLazyQuery(GET_COLLECTION_CONTACTS);
 
-  const [updateCollectionContacts] = useMutation(UPDATE_COLLECTION_CONTACTS, {
+  const [updateCollectionContacts] = useMutation(updateMutation, {
     onCompleted: (data) => {
-      const { numberDeleted, groupContacts } = data.updateGroupContacts;
+      let updateVariable = groups ? 'updateCollectionWaGroup' : 'updateGroupContacts';
+      const { numberDeleted, groupContacts } = data[updateVariable];
       const numberAdded = groupContacts.length;
       if (numberDeleted > 0 && numberAdded > 0) {
         setNotification(
-          `${numberDeleted} contact${
+          `${numberDeleted} ${groups ? 'group' : 'contact'}${
             numberDeleted === 1 ? '' : 's  were'
-          } removed and ${numberAdded} contact${numberAdded === 1 ? '' : 's  were'} added`
+          } removed and ${numberAdded} ${groups ? 'group' : 'contact'}${numberAdded === 1 ? '' : 's  were'} added`
         );
       } else if (numberDeleted > 0) {
-        setNotification(`${numberDeleted} contact${numberDeleted === 1 ? '' : 's  were'} removed`);
+        setNotification(
+          `${numberDeleted} ${groups ? 'group' : 'contact'}${numberDeleted === 1 ? '' : 's  were'} removed`
+        );
       } else {
-        setNotification(`${numberAdded} contact${numberAdded === 1 ? '' : 's  were'} added`);
+        setNotification(
+          `${numberAdded} ${groups ? 'group' : 'contact'}${numberAdded === 1 ? '' : 's  were'} added`
+        );
       }
       setUpdateCollection((updateCollection) => !updateCollection);
       setAddContactsDialogShow(false);
@@ -109,13 +143,13 @@ export const CollectionList = () => {
   const dialogMessage = t("You won't be able to use this collection again.");
 
   let contactOptions: any = [];
-  let collectionContacts: Array<any> = [];
+  let collectionEntities: Array<any> = [];
 
-  if (contactsData) {
-    contactOptions = contactsData.contacts;
+  if (entityData) {
+    contactOptions = entityData[entity];
   }
   if (collectionContactsData) {
-    collectionContacts = collectionContactsData.group.group.contacts;
+    collectionEntities = collectionContactsData.group.group[entity];
   }
 
   let dialog = null;
@@ -139,31 +173,37 @@ export const CollectionList = () => {
   const handleCollectionAdd = (value: any) => {
     const selectedContacts = value.filter(
       (contact: any) =>
-        !collectionContacts.map((collectionContact: any) => collectionContact.id).includes(contact)
+        !collectionEntities.map((collectionContact: any) => collectionContact.id).includes(contact)
     );
-    const unselectedContacts = collectionContacts
+    const unselectedContacts = collectionEntities
       .map((collectionContact: any) => collectionContact.id)
       .filter((contact: any) => !value.includes(contact));
 
     if (selectedContacts.length === 0 && unselectedContacts.length === 0) {
       setAddContactsDialogShow(false);
     } else {
+      const addvariable = groups ? 'addWaGroupIds' : 'addContactIds';
+      const deletevariable = groups ? 'deleteWaGroupIds' : 'deleteContactIds';
       updateCollectionContacts({
         variables: {
           input: {
-            addContactIds: selectedContacts,
+            [addvariable]: selectedContacts,
             groupId: collectionId,
-            deleteContactIds: unselectedContacts,
+            [deletevariable]: unselectedContacts,
           },
         },
       });
     }
   };
 
+  let searchDialogTitle = groups
+    ? t('Add groups to the collection')
+    : t('Add contacts to the collection');
+
   if (addContactsDialogShow) {
     dialog = (
       <SearchDialogBox
-        title={t('Add contacts to the collection')}
+        title={searchDialogTitle}
         handleOk={handleCollectionAdd}
         handleCancel={() => setAddContactsDialogShow(false)}
         options={contactOptions}
@@ -171,7 +211,7 @@ export const CollectionList = () => {
         additionalOptionLabel="phone"
         asyncSearch
         disableClearable
-        selectedOptions={collectionContacts}
+        selectedOptions={collectionEntities}
         renderTags={false}
         searchLabel="Search contacts"
         textFieldPlaceholder="Type here"
@@ -185,33 +225,24 @@ export const CollectionList = () => {
   }
 
   const addContactIcon = <AddContactIcon />;
-  const viewButton = <div className={styles.ViewButton}>View</div>;
+  const addEntiyLabel = groups ? t('Add groups to collection') : t('Add contacts to collection');
 
-  const viewCollection = (id: any) => {
-    navigate(`/collection/${id}/contacts`);
+  const addEntity = {
+    label: addEntiyLabel,
+    icon: addContactIcon,
+    parameter: 'id',
+    dialog: setContactsDialog,
   };
 
-  const additionalAction = () => [
-    {
-      label: t('View details'),
-      icon: viewButton,
-      parameter: 'id',
-      dialog: viewCollection,
-    },
-    {
-      label: t('Add contacts to collection'),
-      icon: addContactIcon,
-      parameter: 'id',
-      dialog: setContactsDialog,
-    },
-    {
-      label: t('Export'),
-      icon: <ExportIcon />,
-      parameter: 'id',
-      dialog: exportCollection,
-      insideMore: true,
-    },
-  ];
+  const exportCollectionButton = {
+    label: t('Export'),
+    icon: <ExportIcon />,
+    parameter: 'id',
+    dialog: exportCollection,
+    insideMore: true,
+  };
+
+  const additionalAction = () => (groups ? [addEntity] : [addEntity, exportCollectionButton]);
 
   const getRestrictedAction = () => {
     const action: any = { edit: true, delete: true };
@@ -224,6 +255,15 @@ export const CollectionList = () => {
 
   // check if the user has access to manage collections
   const userRolePermissions = getUserRolePermissions();
+  let TotalCountLabel = groups ? t('Groups') : t('Contacts');
+  let title = groups ? t('Group Collections') : t('Collections');
+
+  const refetchQueries = [
+    {
+      query: searchQuery,
+      variables: searchVariables,
+    },
+  ];
 
   return (
     <>
@@ -235,28 +275,35 @@ export const CollectionList = () => {
         </Modal>
       )}
       <List
-        helpData={collectionInfo}
+        helpData={groups ? undefined : collectionInfo}
         refreshList={updateCollection}
         restrictedAction={getRestrictedAction}
-        title={t('Collections')}
+        title={title}
         listItem="groups"
         columnNames={[
           { name: 'label', label: t('Title') },
           { label: t('Description') },
-          { label: t('Contacts') },
+          { label: TotalCountLabel },
           { label: t('Actions') },
         ]}
         listItemName="collection"
         button={{
           show: userRolePermissions.manageCollections,
           label: t('Create'),
+          action: () => {
+            navigate(`/${groups ? 'group/' : ''}collection/add`);
+          },
         }}
-        pageLink="collection"
+        filters={{
+          groupType: groups ? WA_GROUPS_COLLECTION : CONTACTS_COLLECTION,
+        }}
+        pageLink={`${groups ? 'group/' : ''}collection`}
         listIcon={collectionIcon}
         dialogMessage={dialogMessage}
         additionalAction={additionalAction}
         {...queries}
         {...columnAttributes}
+        refetchQueries={refetchQueries}
       />
       {dialog}
     </>

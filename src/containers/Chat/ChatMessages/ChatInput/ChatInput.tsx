@@ -54,6 +54,7 @@ export interface ChatInputProps {
   additionalStyle?: any;
   isCollection?: any;
   lastMessageTime?: any;
+  showAttachmentButton?: boolean;
 }
 
 export const ChatInput = ({
@@ -63,6 +64,7 @@ export const ChatInput = ({
   additionalStyle,
   isCollection,
   lastMessageTime,
+  showAttachmentButton = true,
 }: ChatInputProps) => {
   const [editorState, setEditorState] = useState<any>('');
   const [selectedTab, setSelectedTab] = useState('');
@@ -409,6 +411,25 @@ export const ChatInput = ({
     dialog = <AddAttachment {...dialogProps} />;
   }
 
+  let attachmentButton: any;
+  if (showAttachmentButton) {
+    attachmentButton = (
+      <ClickAwayListener onClickAway={handleClickAway}>
+        <IconButton
+          data-testid="shortcut-open-button"
+          className={styles.AttachmentIcon}
+          onClick={() => {
+            setOpen((open) => !open);
+            handleClick(quickSendTypes[0].type);
+          }}
+          aria-hidden="true"
+        >
+          <DownIcon />
+        </IconButton>
+      </ClickAwayListener>
+    );
+  }
+
   return (
     <Container
       className={`${styles.ChatInput} ${additionalStyle}`}
@@ -440,19 +461,7 @@ export const ChatInput = ({
       ) : null}
 
       <div className={styles.ChatInputElements}>
-        <ClickAwayListener onClickAway={handleClickAway}>
-          <IconButton
-            data-testid="shortcut-open-button"
-            className={styles.AttachmentIcon}
-            onClick={() => {
-              setOpen((open) => !open);
-              handleClick(quickSendTypes[0].type);
-            }}
-            aria-hidden="true"
-          >
-            <DownIcon />
-          </IconButton>
-        </ClickAwayListener>
+        {attachmentButton}
         <IconButton
           data-testid="attachmentIcon"
           className={styles.AttachmentIcon}
