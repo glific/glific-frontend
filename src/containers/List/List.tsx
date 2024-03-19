@@ -148,6 +148,8 @@ export interface ListProps {
   showHeader?: boolean;
   refreshList?: boolean;
   showSearch?: boolean;
+
+  refetchQueries?: any;
 }
 
 interface TableVals {
@@ -195,6 +197,8 @@ export const List = ({
   showActions = true,
   showHeader = true,
   showSearch = true,
+
+  refetchQueries,
 }: ListProps) => {
   const { t } = useTranslation();
   const [showMoreOptions, setShowMoreOptions] = useState<string>('');
@@ -371,6 +375,14 @@ export const List = ({
         if (refetchValues) {
           refetchValues(filterPayload());
         }
+      },
+      refetchQueries: () => {
+        if (refetchQueries)
+          return refetchQueries.map((refetchQuery: any) => ({
+            query: refetchQuery.query,
+            variables: refetchQuery.variables,
+          }));
+        return [];
       },
       onError: () => {
         setNotification(`Sorry! An error occurred!`, 'warning');

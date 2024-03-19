@@ -20,13 +20,20 @@ import { List } from 'containers/List/List';
 import { SearchDialogBox } from 'components/UI/SearchDialogBox/SearchDialogBox';
 import { getUserRolePermissions, getUserRole } from 'context/role';
 import { setNotification } from 'common/notification';
-import { CONTACTS_COLLECTION, WA_GROUPS_COLLECTION, setVariables } from 'common/constants';
+import {
+  COLLECTION_SEARCH_QUERY_VARIABLES,
+  CONTACTS_COLLECTION,
+  GROUP_COLLECTION_SEARCH_QUERY_VARIABLES,
+  WA_GROUPS_COLLECTION,
+  setVariables,
+} from 'common/constants';
 import { CircularProgress, Modal } from '@mui/material';
 import styles from './CollectionList.module.css';
 import { exportCsvFile } from 'common/utils';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { collectionInfo } from 'common/HelpData';
-import { GET_WA_GROUPS } from 'graphql/queries/WaGroups';
+import { GET_WA_GROUPS, GROUP_SEARCH_QUERY } from 'graphql/queries/WaGroups';
+import { SEARCH_QUERY } from 'graphql/queries/Search';
 
 const getLabel = (label: string) => <div className={styles.LabelText}>{label}</div>;
 
@@ -63,9 +70,14 @@ export const CollectionList = () => {
   const { t } = useTranslation();
   const location = useLocation();
   const groups: boolean = location.pathname.includes('group');
-  let entity = groups ? 'waGroups' : 'contacts';
-  let searchquery = groups ? GET_WA_GROUPS : CONTACT_SEARCH_QUERY;
-  let updateMutation = groups ? UPDATE_COLLECTION_WA_GROUP : UPDATE_COLLECTION_CONTACTS;
+  const entity = groups ? 'waGroups' : 'contacts';
+  const entityQuery = groups ? GET_WA_GROUPS : CONTACT_SEARCH_QUERY;
+
+  const searchQuery = groups ? GROUP_SEARCH_QUERY : SEARCH_QUERY;
+  const searchVariables = groups
+    ? GROUP_COLLECTION_SEARCH_QUERY_VARIABLES
+    : COLLECTION_SEARCH_QUERY_VARIABLES;
+  const updateMutation = groups ? UPDATE_COLLECTION_WA_GROUP : UPDATE_COLLECTION_CONTACTS;
 
   const getColumns = ({ label, contactsCount, description, waGroupsCount, id }: any) => {
     return {
@@ -82,7 +94,7 @@ export const CollectionList = () => {
     columnStyles,
   };
 
-  const [getContacts, { data: entityData }] = useLazyQuery(searchquery, {
+  const [getContacts, { data: entityData }] = useLazyQuery(entityQuery, {
     variables: groups ? setVariables({}, 50) : setVariables({ name: contactSearchTerm }, 50),
   });
   const [exportCollectionData] = useLazyQuery(EXPORT_COLLECTION_DATA, {
@@ -246,6 +258,13 @@ export const CollectionList = () => {
   let TotalCountLabel = groups ? t('Groups') : t('Contacts');
   let title = groups ? t('Group Collections') : t('Collections');
 
+  const refetchQueries = [
+    {
+      query: searchQuery,
+      variables: searchVariables,
+    },
+  ];
+
   return (
     <>
       {exportData && (
@@ -284,6 +303,7 @@ export const CollectionList = () => {
         additionalAction={additionalAction}
         {...queries}
         {...columnAttributes}
+        refetchQueries={refetchQueries}
       />
       {dialog}
     </>

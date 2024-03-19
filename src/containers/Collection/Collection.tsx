@@ -21,12 +21,14 @@ import ContactIcon from 'assets/images/icons/Contact/View.svg?react';
 import {
   COLLECTION_SEARCH_QUERY_VARIABLES,
   CONTACTS_COLLECTION,
+  GROUP_COLLECTION_SEARCH_QUERY_VARIABLES,
   WA_GROUPS_COLLECTION,
   setVariables,
 } from 'common/constants';
 import styles from './Collection.module.css';
 import { collectionInfo } from 'common/HelpData';
 import { CircularProgress } from '@mui/material';
+import { GROUP_SEARCH_QUERY } from 'graphql/queries/WaGroups';
 
 export const Collection = () => {
   const [selectedUsers, { data: collectionUsers }] = useLazyQuery(GET_COLLECTION_USERS, {
@@ -41,7 +43,11 @@ export const Collection = () => {
   const [selected, setSelected] = useState([]);
   const { t } = useTranslation();
   const location = useLocation();
-  let groups: boolean = location.pathname.includes('group');
+  const groups: boolean = location.pathname.includes('group');
+  const searchQuery = groups ? GROUP_SEARCH_QUERY : SEARCH_QUERY;
+  const searchVariables = groups
+    ? GROUP_COLLECTION_SEARCH_QUERY_VARIABLES
+    : COLLECTION_SEARCH_QUERY_VARIABLES;
 
   const [updateCollectionUsers] = useMutation(UPDATE_COLLECTION_USERS);
 
@@ -106,8 +112,8 @@ export const Collection = () => {
       variables: setVariables(),
     },
     {
-      query: SEARCH_QUERY,
-      variables: COLLECTION_SEARCH_QUERY_VARIABLES,
+      query: searchQuery,
+      variables: searchVariables,
     },
   ];
 

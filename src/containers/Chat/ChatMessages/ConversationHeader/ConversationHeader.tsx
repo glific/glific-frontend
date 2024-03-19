@@ -112,6 +112,7 @@ export const ConversationHeader = ({
   // get collection list
   const [getCollections, { data: collectionsData }] = useLazyQuery(GET_COLLECTIONS, {
     variables: setVariables({ groupType: groups ? WA_GROUPS_COLLECTION : CONTACTS_COLLECTION }),
+    fetchPolicy: 'cache-and-network',
   });
 
   // get contact collections
