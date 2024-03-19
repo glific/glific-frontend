@@ -50,7 +50,9 @@ export const GroupDetails = () => {
         <div className={styles.NameText}>
           {maytapiNumber === contactPhone ? 'Maytapi Number' : label || contactPhone}
         </div>
-        {label && <div className={styles.Phone}>{contactPhone}</div>}
+        {(maytapiNumber === contactPhone || label) && (
+          <div className={styles.Phone}>{contactPhone}</div>
+        )}
       </div>
     </div>
   );
