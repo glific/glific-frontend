@@ -76,10 +76,6 @@ export const GroupDetails = () => {
     }
   };
 
-  const getAdmin = (isAdmin: boolean) => (
-    <div>{isAdmin ? <span className={styles.AdminTag}>Admin</span> : null}</div>
-  );
-
   const getColumns = (waGroupContact: any) => {
     const { isAdmin, contact, waGroup } = waGroupContact;
 
