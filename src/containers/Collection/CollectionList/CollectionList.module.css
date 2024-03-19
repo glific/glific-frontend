@@ -30,6 +30,7 @@
 .DescriptionText {
   composes: UserCount;
   padding: 10px 0px;
+  color: #555;
 }
 
 .ExportPopup {
