@@ -55,7 +55,7 @@ export const GroupDetails = () => {
     </div>
   );
 
-  const getCollections = (groups: Array<any>) => {
+  const getGroups = (groups: Array<any>) => {
     if (groups.length > 4) {
       return (
         <div className={styles.CollectionsText}>
@@ -85,7 +85,7 @@ export const GroupDetails = () => {
     return {
       admin: getAdmin(isAdmin),
       name: getName(contact.name, waGroup.waManagedPhone.phone, contact.phone),
-      groups: getCollections(contact.waGroups),
+      groups: getGroups(contact.waGroups),
     };
   };
 
