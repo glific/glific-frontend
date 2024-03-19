@@ -44,7 +44,7 @@ export const GroupDetails = () => {
     deleteItemQuery: UPDATE_GROUP_CONTACT,
   };
 
-  const getName = (label: string, maytapiNumber?: any, contactPhone?: any, isAdmin?: boolean) => (
+  const getName = (label: string, maytapiNumber?: any, contactPhone?: any) => (
     <div className={styles.Contact}>
       <div className={styles.NameContainer}>
         <div className={styles.NameText}>
@@ -57,14 +57,22 @@ export const GroupDetails = () => {
 
   const getCollections = (groups: Array<any>) => {
     if (groups.length > 4) {
-      groups = [...groups.slice(0, 4), { label: `+ ${groups.length - 4} groups` }];
+      return (
+        <div className={styles.CollectionsText}>
+          {groups
+            .slice(0, 4)
+            .map((group: any) => group.label)
+            .join(', ')}
+          {` + ${groups.length - 4} groups`}
+        </div>
+      );
+    } else {
+      return (
+        <div className={styles.CollectionsText}>
+          {groups.map((group: any) => group.label).join(', ')}
+        </div>
+      );
     }
-
-    return (
-      <div className={styles.CollectionsText}>
-        {groups.map((group: any) => group.label).join(', ')}
-      </div>
-    );
   };
 
   const getAdmin = (isAdmin: boolean) => (
@@ -76,8 +84,8 @@ export const GroupDetails = () => {
 
     return {
       admin: getAdmin(isAdmin),
-      name: getName(contact?.name, waGroup?.waManagedPhone?.phone, contact?.phone, isAdmin),
-      groups: getCollections(contact?.waGroups),
+      name: getName(contact.name, waGroup.waManagedPhone.phone, contact.phone),
+      groups: getCollections(contact.waGroups),
     };
   };
 
