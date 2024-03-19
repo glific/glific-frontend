@@ -15,16 +15,23 @@ import { SEARCH_OFFSET } from 'graphql/queries/Search';
 import ConversationList from './ConversationList/ConversationList';
 import styles from './ChatConversations.module.css';
 import Track from 'services/TrackService';
+import { useLocation } from 'react-router';
 
 export interface ChatConversationsProps {
-  contactId?: number | string;
+  entityId?: number | string;
+  phonenumber?: any;
+  filterComponent?: any;
 }
 
-export const ChatConversations = ({ contactId }: ChatConversationsProps) => {
+export const ChatConversations = ({
+  entityId,
+  phonenumber,
+  filterComponent,
+}: ChatConversationsProps) => {
   // get the conversations stored from the cache
   const [searchVal, setSearchVal] = useState<any>();
   const [searchParam, setSearchParam] = useState<any>({});
-  const [selectedContactId, setSelectedContactId] = useState<any>(contactId);
+  const [selectedContactId, setSelectedContactId] = useState<any>(entityId);
   const [savedSearchCriteria, setSavedSearchCriteria] = useState<string>('');
   const [savedSearchCriteriaId, setSavedSearchCriteriaId] = useState(null);
   const [savedSearches, setSavedSearches] = useState(null);
@@ -34,7 +41,9 @@ export const ChatConversations = ({ contactId }: ChatConversationsProps) => {
   const offset = useQuery(SEARCH_OFFSET);
   const client = useApolloClient();
   const { t } = useTranslation();
+  const location = useLocation();
 
+  let groups: boolean = location.pathname.includes('group');
   // restore multi-search after conversation click
   useEffect(() => {
     if (offset.data && offset.data.search) {
@@ -44,8 +53,8 @@ export const ChatConversations = ({ contactId }: ChatConversationsProps) => {
   }, [offset.data]);
 
   useEffect(() => {
-    setSelectedContactId(contactId?.toString());
-  }, [contactId]);
+    setSelectedContactId(entityId?.toString());
+  }, [entityId]);
 
   let timer: any = null;
 
@@ -198,6 +207,19 @@ export const ChatConversations = ({ contactId }: ChatConversationsProps) => {
       </div>
     ) : null;
 
+  let filter: any = filterComponent || (
+    <SavedSearchToolbar
+      savedSearchCriteriaCallback={handlerSavedSearchCriteria}
+      refetchData={{ savedSearches }}
+      onSelect={() => {
+        // on select searches remove search value & disable search mode
+        setSearchVal(undefined);
+        if (enableSearchMode) setEnableSearchMode(false);
+      }}
+      searchMode={enableSearchMode}
+    />
+  );
+
   return (
     <Container className={styles.ChatConversations} disableGutters>
       <div className={styles.SearchBar}>
@@ -207,22 +229,14 @@ export const ChatConversations = ({ contactId }: ChatConversationsProps) => {
           onReset={() => resetSearch()}
           searchVal={searchVal}
           handleClick={handleClick}
-          endAdornment
+          endAdornment={!groups}
           searchMode={enableSearchMode}
           iconFront
         />
       </div>
-      <SavedSearchToolbar
-        savedSearchCriteriaCallback={handlerSavedSearchCriteria}
-        refetchData={{ savedSearches }}
-        onSelect={() => {
-          // on select searches remove search value & disable search mode
-          setSearchVal(undefined);
-          if (enableSearchMode) setEnableSearchMode(false);
-        }}
-        searchMode={enableSearchMode}
-      />
+      {filter}
       <ConversationList
+        phonenumber={phonenumber}
         searchVal={searchVal}
         searchMode={enableSearchMode}
         searchParam={searchParam}

@@ -195,19 +195,19 @@ export const moveContacts = {
   request: {
     query: MOVE_CONTACTS,
     variables: {
-      type: "DATA",
-      data: "name,phone,collection\n  John Doe,919876543210,\"Optin collection,Optout Collection\"\n  Virat Kohli,919876543220,Cricket"
-    }
+      type: 'DATA',
+      data: 'name,phone,collection\n  John Doe,919876543210,"Optin collection,Optout Collection"\n  Virat Kohli,919876543220,Cricket',
+    },
   },
   result: {
     data: {
       moveContacts: {
         errors: null,
-        csvRows: "Test Row"
-      }
-    }
-  }
-}
+        csvRows: 'Test Row',
+      },
+    },
+  },
+};
 
 export const countCollectionContactsQuery = {
   request: {
@@ -232,6 +232,22 @@ export const getContactsQuery = {
         {
           id: '1',
           name: 'Glific User',
+          phone: '9876543211',
+          maskedPhone: '9876**3211',
+          groups: [],
+          status: 'hsm',
+        },
+        {
+          id: '2',
+          name: 'Glific User 1',
+          phone: '9876543211',
+          maskedPhone: '9876**3211',
+          groups: [],
+          status: 'hsm',
+        },
+        {
+          id: '3',
+          name: 'Glific User 2',
           phone: '9876543211',
           maskedPhone: '9876**3211',
           groups: [],

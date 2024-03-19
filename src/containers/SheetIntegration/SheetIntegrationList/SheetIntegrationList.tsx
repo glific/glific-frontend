@@ -14,6 +14,7 @@ import { STANDARD_DATE_TIME_FORMAT } from 'common/constants';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import styles from './SheetIntegrationList.module.css';
+import { googleSheetsInfo } from 'common/HelpData';
 
 export enum SheetTypes {
   Read = 'READ',
@@ -171,6 +172,7 @@ export const SheetIntegrationList = () => {
     <>
       {dialog}
       <List
+        helpData={googleSheetsInfo}
         title={t('Google sheets')}
         listItem="sheets"
         listItemName="Sheet"

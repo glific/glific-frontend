@@ -1,11 +1,12 @@
 import { organizationHasDynamicRole } from 'common/utils';
-import { ANALYTICS_URL, GLIFIC_DOCS_URL } from 'config';
+import { ANALYTICS_URL, GLIFIC_DOCS_URL, NEW_UI_BLOG } from 'config';
 import { getOrganizationServices } from 'services/AuthService';
 
 const allRoles = ['Staff', 'Manager', 'Admin', 'Dynamic', 'Glific_admin'];
 const adminLevel = ['Admin', 'Glific_admin'];
 const managerLevel = ['Manager', 'Admin', 'Dynamic', 'Glific_admin'];
 const staffLevel = ['Staff', 'Manager', 'Admin', 'Dynamic', 'Glific_admin'];
+
 export interface Menu {
   title: string;
   path: string;
@@ -26,6 +27,30 @@ const menus = (): Menu[] => [
     icon: 'chat',
     type: 'sideDrawer',
     roles: allRoles,
+  },
+  {
+    title: 'WhatsApp Groups',
+    path: '/group/chat',
+    icon: 'waGroup',
+    type: 'sideDrawer',
+    roles: allRoles,
+    show: !getOrganizationServices('whatsappGroupEnabled'),
+    children: [
+      {
+        title: 'Group Chats',
+        path: '/group/chat',
+        icon: 'waGroupChat',
+        type: 'sideDrawer',
+        roles: allRoles,
+      },
+      {
+        title: 'Group Collections',
+        path: '/group/collection',
+        icon: 'waGroupCollection',
+        type: 'sideDrawer',
+        roles: allRoles,
+      },
+    ],
   },
   {
     title: 'Flows',
@@ -233,6 +258,15 @@ const menus = (): Menu[] => [
     path: '/help',
     url: GLIFIC_DOCS_URL,
     icon: 'help',
+    type: 'sideDrawer',
+    roles: staffLevel,
+  },
+
+  {
+    title: "What's new",
+    path: '/changelog',
+    url: NEW_UI_BLOG,
+    icon: 'new',
     type: 'sideDrawer',
     roles: staffLevel,
   },

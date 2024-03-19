@@ -26,6 +26,7 @@ import { getUserSession } from 'services/AuthService';
 import styles from './TicketList.module.css';
 import { BulkAction } from './BulkAction/BulkAction';
 import { SHORT_DATE_TIME_FORMAT } from 'common/constants';
+import { ticketsInfo } from 'common/HelpData';
 
 const getId = (id: any) => <div className={styles.TableText}>{id}</div>;
 const getBody = (body: any) => <div className={styles.TableText}>{body}</div>;
@@ -218,6 +219,7 @@ export const TicketList = () => {
     <>
       {dialog}
       <List
+        helpData={ticketsInfo}
         restrictedAction={getRestrictedAction}
         title="Tickets"
         listItem="tickets"

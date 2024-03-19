@@ -181,6 +181,7 @@ export const Profile = ({
   return (
     <FormLayout
       {...queries}
+      partialPage
       states={states}
       setStates={setStates}
       validationSchema={FormSchema}

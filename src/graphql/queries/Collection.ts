@@ -26,6 +26,12 @@ export const GET_COLLECTIONS_COUNT = gql`
   }
 `;
 
+export const GET_WA_GROUP_COLLECTIONS_COUNT = gql`
+  query CountWaGroupsCollection($filter: WaGroupsCollectionFilter) {
+    countWaGroupsCollection(filter: $filter)
+  }
+`;
+
 export const FILTER_COLLECTIONS = gql`
   query groups($filter: GroupFilter!, $opts: Opts!) {
     groups(filter: $filter, opts: $opts) {
@@ -34,6 +40,7 @@ export const FILTER_COLLECTIONS = gql`
       description
       isRestricted
       contactsCount
+      waGroupsCount
       roles {
         id
         label
@@ -48,6 +55,17 @@ export const GET_COLLECTIONS = gql`
       id
       label
       isRestricted
+    }
+  }
+`;
+
+export const GROUP_GET_COLLECTION = gql`
+  query WaGroups($filter: WaGroupFilter, $opts: Opts) {
+    waGroups(filter: $filter, opts: $opts) {
+      bspId
+      id
+      lastCommunicationAt
+      label
     }
   }
 `;

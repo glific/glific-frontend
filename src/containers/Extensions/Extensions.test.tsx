@@ -9,6 +9,7 @@ import {
 } from 'mocks/Extension';
 import { setUserSession } from 'services/AuthService';
 import { Extensions } from './Extensions';
+import { MemoryRouter } from 'react-router';
 
 vi.mock('react-router-dom', async () => {
   return {
@@ -26,9 +27,11 @@ const props = {
 };
 
 const wrapper = (
-  <MockedProvider mocks={createMocks} addTypename={false}>
-    <Extensions {...props} />
-  </MockedProvider>
+  <MemoryRouter>
+    <MockedProvider mocks={createMocks} addTypename={false}>
+      <Extensions {...props} />
+    </MockedProvider>
+  </MemoryRouter>
 );
 test('it should render form correctly', async () => {
   render(wrapper);
@@ -65,9 +68,11 @@ test('it should render form correctly', async () => {
 
 test('it should render filled form with extension details', async () => {
   render(
-    <MockedProvider mocks={updateMocks} addTypename={false}>
-      <Extensions {...props} />
-    </MockedProvider>
+    <MemoryRouter>
+      <MockedProvider mocks={updateMocks} addTypename={false}>
+        <Extensions {...props} />
+      </MockedProvider>
+    </MemoryRouter>
   );
   await waitFor(() => {});
 

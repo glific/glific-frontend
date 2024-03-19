@@ -12,6 +12,7 @@ import EditIcon from 'assets/images/icons/GreenEdit.svg?react';
 import { ContactField } from '../ContactField';
 import styles from './ContactFieldList.module.css';
 import { setNotification } from 'common/notification';
+import { contactVariablesInfo } from 'common/HelpData';
 
 interface EditItemShape {
   id: any;
@@ -192,6 +193,7 @@ const ContactFieldList = () => {
     <div className={styles.Container}>
       {dialog}
       <List
+        helpData={contactVariablesInfo}
         title={t('Contact Variables')}
         listItem="contactsFields"
         listItemName="contactField"
@@ -208,7 +210,6 @@ const ContactFieldList = () => {
         dialogMessage={dialogMessage}
         dialogTitle={dialogTitle}
         editSupport={false}
-        backLinkButton={{ text: t('Back to flows'), link: '/flow' }}
         {...queries}
         {...columnAttributes}
       />

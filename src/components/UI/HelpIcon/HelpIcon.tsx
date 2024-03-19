@@ -1,12 +1,7 @@
 import styles from './HelpIcon.module.css';
 import InfoIcon from 'assets/images/info.svg?react';
 import { Tooltip } from '@mui/material';
-
-export interface HelpDataProps {
-  heading: string;
-  body: JSX.Element;
-  link: string;
-}
+import { HelpDataProps } from 'common/HelpData';
 
 export interface HelpIconProps {
   helpData?: HelpDataProps;
@@ -15,7 +10,6 @@ export interface HelpIconProps {
 export const HelpIcon = ({
   helpData = {
     heading: '',
-    body: <></>,
     link: '',
   },
 }: HelpIconProps) => {
@@ -32,7 +26,6 @@ export const HelpIcon = ({
             <div>
               <div className={styles.HoverPopUpText}>
                 {helpData.heading}
-                {helpData.body}
                 <div
                   className={styles.HoverLink}
                   onClick={() => {

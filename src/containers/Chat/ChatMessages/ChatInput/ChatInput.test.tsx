@@ -152,13 +152,18 @@ describe('<ChatInput />', () => {
     fireEvent.click(getByTestId('shortcut-open-button'));
     const interactiveMessages = getAllByTestId('shortcutButton')[1];
     fireEvent.click(interactiveMessages);
-    await waitFor(() => {
-      const listItem = getAllByTestId('templateItem')[1];
 
-      fireEvent.click(listItem);
+    await waitFor(() => {
+      expect(getAllByTestId('templateItem')).toHaveLength(5);
     });
+    const listItem = getAllByTestId('templateItem')[1];
+
+    fireEvent.click(listItem);
     fireEvent.click(getByTestId('sendButton'));
-    expect(inputSubmitted).toBe(true);
+
+    await waitFor(() => {
+      expect(inputSubmitted).toBe(true);
+    });
   });
 
   test('clicking on a speed send from the list should store the value as input', async () => {

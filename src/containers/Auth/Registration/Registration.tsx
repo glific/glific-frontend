@@ -8,7 +8,6 @@ import { PhoneInput } from 'components/UI/Form/PhoneInput/PhoneInput';
 import { sendOTP } from 'services/AuthService';
 import { Auth } from '../Auth';
 
-
 export interface User {
   name: string;
   phone: string;
@@ -54,6 +53,7 @@ export const Registration = () => {
       name: 'name',
       type: 'text',
       placeholder: t('Your full name'),
+      darkMode: true,
     },
     {
       component: PhoneInput,
@@ -67,6 +67,7 @@ export const Registration = () => {
       name: 'password',
       type: 'password',
       placeholder: t('Password'),
+      darkMode: true,
     },
   ];
 

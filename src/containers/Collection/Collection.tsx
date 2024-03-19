@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useQuery, useLazyQuery, useMutation } from '@apollo/client';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Input } from 'components/UI/Form/Input/Input';
 import { FormLayout } from 'containers/Form/FormLayout';
@@ -18,9 +18,17 @@ import { getAddOrRemoveRoleIds } from 'common/utils';
 import { SEARCH_QUERY } from 'graphql/queries/Search';
 import CollectionIcon from 'assets/images/icons/StaffManagement/Active.svg?react';
 import ContactIcon from 'assets/images/icons/Contact/View.svg?react';
-import { COLLECTION_SEARCH_QUERY_VARIABLES, setVariables } from 'common/constants';
+import {
+  COLLECTION_SEARCH_QUERY_VARIABLES,
+  CONTACTS_COLLECTION,
+  GROUP_COLLECTION_SEARCH_QUERY_VARIABLES,
+  WA_GROUPS_COLLECTION,
+  setVariables,
+} from 'common/constants';
 import styles from './Collection.module.css';
 import { collectionInfo } from 'common/HelpData';
+import { CircularProgress } from '@mui/material';
+import { GROUP_SEARCH_QUERY } from 'graphql/queries/WaGroups';
 
 export const Collection = () => {
   const [selectedUsers, { data: collectionUsers }] = useLazyQuery(GET_COLLECTION_USERS, {
@@ -34,6 +42,13 @@ export const Collection = () => {
   const [roles, setRoles] = useState([]);
   const [selected, setSelected] = useState([]);
   const { t } = useTranslation();
+  const location = useLocation();
+  const groups: boolean = location.pathname.includes('group');
+  const groupType = groups ? WA_GROUPS_COLLECTION : CONTACTS_COLLECTION;
+  const searchQuery = groups ? GROUP_SEARCH_QUERY : SEARCH_QUERY;
+  const searchVariables = groups
+    ? GROUP_COLLECTION_SEARCH_QUERY_VARIABLES
+    : COLLECTION_SEARCH_QUERY_VARIABLES;
 
   const [updateCollectionUsers] = useMutation(UPDATE_COLLECTION_USERS);
 
@@ -64,7 +79,7 @@ export const Collection = () => {
     variables: setVariables(),
   });
 
-  const { data: collectionList } = useQuery(GET_COLLECTIONS);
+  const { data: collectionList, loading } = useQuery(GET_COLLECTIONS);
 
   useEffect(() => {
     if (collectionId) {
@@ -95,11 +110,11 @@ export const Collection = () => {
   const refetchQueries = [
     {
       query: GET_COLLECTIONS,
-      variables: setVariables(),
+      variables: setVariables({ groupType }),
     },
     {
-      query: SEARCH_QUERY,
-      variables: COLLECTION_SEARCH_QUERY_VARIABLES,
+      query: searchQuery,
+      variables: searchVariables,
     },
   ];
 
@@ -168,9 +183,15 @@ export const Collection = () => {
   };
 
   const setPayload = (payload: any) => {
-    const payloadWithRoleIds = getAddOrRemoveRoleIds(roles, payload);
-    return payloadWithRoleIds;
+    let payloadWithRoleIdsAndType = getAddOrRemoveRoleIds(roles, payload);
+    payloadWithRoleIdsAndType = {
+      ...payloadWithRoleIdsAndType,
+      groupType: groups ? WA_GROUPS_COLLECTION : CONTACTS_COLLECTION,
+    };
+    return payloadWithRoleIdsAndType;
   };
+
+  if (loading) return <CircularProgress data-testid="loading" />;
 
   return (
     <FormLayout
@@ -187,7 +208,7 @@ export const Collection = () => {
       listItemName="collection"
       dialogMessage={dialogMessage}
       formFields={formFields}
-      redirectionLink="collection"
+      redirectionLink={`${groups ? 'group/' : ''}collection`}
       listItem="group"
       icon={collectionIcon}
       helpData={collectionInfo}

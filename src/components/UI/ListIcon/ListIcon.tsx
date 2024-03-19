@@ -24,7 +24,11 @@ import SettingsIcon from 'assets/images/icons/SideDrawer/SettingsIcon';
 import LogoutIcon from 'assets/images/icons/SideDrawer/LogoutIcon';
 import OrganizationIcon from 'assets/images/icons/SideDrawer/OrganizationIcon';
 import ConsultingIcon from 'assets/images/icons/SideDrawer/ConsultingIcon';
+import WaChatIcon from 'assets/images/icons/SideDrawer/WaGroupChat';
+import WaCollectionIcon from 'assets/images/icons/SideDrawer/WaGroupCollection';
+import WaGroupIcon from 'assets/images/icons/SideDrawer/WhatsAppGroupIcon';
 import styles from './ListIcon.module.css';
+import FiberNewIcon from '@mui/icons-material/FiberNew';
 import { Badge } from '@mui/material';
 
 export interface ListIconProps {
@@ -63,6 +67,10 @@ export const ListIcon = ({ icon = '', selected = false, count }: ListIconProps) 
     logout: LogoutIcon,
     organization: OrganizationIcon,
     consulting: ConsultingIcon,
+    new: FiberNewIcon,
+    waGroupCollection: WaCollectionIcon,
+    waGroupChat: WaChatIcon,
+    waGroup: WaGroupIcon,
   };
 
   const iconImage = stringsToIcons[icon] && (

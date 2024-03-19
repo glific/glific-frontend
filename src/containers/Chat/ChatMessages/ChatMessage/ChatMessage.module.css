@@ -73,11 +73,11 @@
 }
 
 .Content {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 400;
   line-height: 20px;
   color: #073f24;
-  padding: 12px;
+  padding: 8px;
   word-wrap: break-word;
   /* Supports breaklines without need for text conversions. */
   white-space: pre-line;
@@ -284,4 +284,11 @@
 .Icon {
   align-items: center;
   display: flex;
+}
+
+.ContactName {
+  color: #cce6d0;
+  font-size: 12px;
+  padding-bottom: 8px;
+  font-weight: bold;
 }

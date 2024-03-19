@@ -48,6 +48,70 @@ const GET_USER_MOCK = {
   },
 };
 
+const MANAGER_USER_MOCK = {
+  request: {
+    query: GET_USERS_QUERY,
+    variables: { id: '1' },
+  },
+  result: {
+    data: {
+      user: {
+        user: {
+          id: '1',
+          name: 'Manager',
+          phone: '919999988777',
+          isRestricted: false,
+          roles: ['manager'],
+          accessRoles: [
+            {
+              id: '3',
+              label: 'Manager',
+            },
+          ],
+          groups: [
+            {
+              id: '2',
+              label: 'Optout contacts',
+            },
+          ],
+        },
+      },
+    },
+  },
+};
+
+const ADMIN_USER_MOCK = {
+  request: {
+    query: GET_USERS_QUERY,
+    variables: { id: '1' },
+  },
+  result: {
+    data: {
+      user: {
+        user: {
+          id: '1',
+          name: 'Admin',
+          phone: '919999984444',
+          isRestricted: false,
+          roles: ['admin'],
+          accessRoles: [
+            {
+              id: '4',
+              label: 'Admin',
+            },
+          ],
+          groups: [
+            {
+              id: '2',
+              label: 'Optout contacts',
+            },
+          ],
+        },
+      },
+    },
+  },
+};
+
 const GET_USER_LANGUAGE_MOCK = {
   request: {
     query: USER_LANGUAGES,
@@ -155,6 +219,42 @@ const UPDATE_USER_MOCK = {
   },
 };
 
+const UPDATE_USER_DEMOTE_ADMIN_MOCK = {
+  request: {
+    query: UPDATE_USER,
+    variables: {
+      id: '1',
+      input: {
+        name: 'Admin',
+        isRestricted: false,
+        addRoleIds: ['1'],
+        deleteRoleIds: ['4'],
+        groupIds: ['2'],
+      },
+    },
+  },
+  result: {
+    data: {
+      updateUser: {
+        errors: null,
+        user: {
+          groups: [
+            {
+              id: '2',
+              label: 'Optout contacts',
+            },
+          ],
+          id: '1',
+          isRestricted: false,
+          name: 'Admin',
+          phone: '91999994444',
+          roles: ['Staff'],
+        },
+      },
+    },
+  },
+};
+
 const UPDATE_USER_MULTIPLE_ROLES_MOCK = {
   request: {
     query: UPDATE_USER,
@@ -236,6 +336,24 @@ export const STAFF_MANAGEMENT_MOCKS_WITH_EMPTY_ROLES = [
   GET_USER_LANGUAGE_MOCK,
   GET_GROUPS,
   emptyRolesMock,
+];
+
+export const STAFF_MANAGEMENT_MOCKS_MANAGER_ROLE = [
+  GET_ROLES_MOCK,
+  GET_USER_LANGUAGE_MOCK,
+  GET_GROUPS,
+  MANAGER_USER_MOCK,
+  UPDATE_USER_MULTIPLE_ROLES_MOCK,
+  getRoleNamesMock,
+];
+
+export const STAFF_MANAGEMENT_MOCKS_ADMIN_ROLE = [
+  GET_ROLES_MOCK,
+  GET_USER_LANGUAGE_MOCK,
+  GET_GROUPS,
+  UPDATE_USER_DEMOTE_ADMIN_MOCK,
+  ADMIN_USER_MOCK,
+  getRoleNamesMock,
 ];
 
 export const USER_COUNT_MOCK = {

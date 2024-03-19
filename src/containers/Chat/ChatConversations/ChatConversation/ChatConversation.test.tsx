@@ -27,7 +27,7 @@ const mocks = [
 
 const insertedAt = '2020-06-19T18:44:02Z';
 const defaultProps = {
-  contactId: 1,
+  entityId: 1,
   contactName: 'Jane Doe',
   contactIsOrgRead: true,
   selected: true,

@@ -4,6 +4,7 @@ import { MockedProvider } from '@apollo/client/testing';
 import { setUserSession } from 'services/AuthService';
 import { organizationCustomerMock } from 'mocks/Billing';
 import { OrganizationCustomer } from './OrganizationCustomer';
+import { MemoryRouter } from 'react-router';
 
 const mocks = [...organizationCustomerMock];
 
@@ -17,9 +18,11 @@ setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Glific_admin
 
 test('it renders organization-customer component successfully without form data', async () => {
   const app = (
-    <MockedProvider mocks={mocks} addTypename={false}>
-      <OrganizationCustomer openDialog />
-    </MockedProvider>
+    <MemoryRouter>
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <OrganizationCustomer openDialog />
+      </MockedProvider>
+    </MemoryRouter>
   );
   render(app);
   await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 0)));
@@ -42,9 +45,11 @@ test('it renders organization-customer component successfully without form data'
 
 test('it renders organization-customer component successfully with form data', async () => {
   render(
-    <MockedProvider mocks={mocks} addTypename={false}>
-      <OrganizationCustomer openDialog />
-    </MockedProvider>
+    <MemoryRouter>
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <OrganizationCustomer openDialog />
+      </MockedProvider>
+    </MemoryRouter>
   );
   await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 0)));
 

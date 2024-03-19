@@ -165,6 +165,7 @@
 
 .ContactOptOutMessage {
   color: #93a29b;
+  margin-bottom: 20px;
   font-size: 16px;
   display: flex;
   justify-content: center;
