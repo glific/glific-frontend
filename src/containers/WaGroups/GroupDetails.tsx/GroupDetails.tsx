@@ -28,10 +28,7 @@ export const GroupDetails = () => {
   ];
 
   const [removeContact, { loading }] = useMutation(UPDATE_GROUP_CONTACT, {
-    onCompleted: (data: any) => {
-      if (data.erros) {
-        return;
-      }
+    onCompleted: () => {
       setNotification('Removed Contact from Group', 'success');
       setShowDeleteDialog(false);
     },
