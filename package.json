@@ -17,7 +17,7 @@
     "@emoji-mart/react": "^1.1.1",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.0",
-    "@glific/flow-editor": "^1.19.3-6",
+    "@glific/flow-editor": "1.19.3-5",
     "@lexical/react": "^0.13.1",
     "@mui/icons-material": "^5.15.12",
     "@mui/material": "^5.15.12",
