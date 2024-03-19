@@ -124,7 +124,24 @@ export const waGroupcollection = {
           label: 'Default WA Group Collection',
         },
         id: 'group_6',
-        messages: [],
+        messages: [
+          {
+            __typename: 'WaMessage',
+            body: 'I will speak daggers to her, but use none.',
+            contact: {
+              __typename: 'Contact',
+              name: 'Default receiver',
+            },
+            contextMessage: null,
+            errors: null,
+            id: '1',
+            insertedAt: '2024-03-11T04:39:56.772383Z',
+            media: null,
+            messageNumber: 1,
+            status: 'received',
+            type: 'TEXT',
+          },
+        ],
         waGroup: null,
       },
       {

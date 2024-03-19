@@ -7,6 +7,7 @@ import { setUserSession } from 'services/AuthService';
 import { GROUP_QUERY_VARIABLES } from 'common/constants';
 import GroupChatInterface from './GroupChatInterface';
 import { GROUP_SEARCH_QUERY } from 'graphql/queries/WaGroups';
+import { waGroupcollection } from 'mocks/Groups';
 
 const cache = new InMemoryCache({ addTypename: false });
 cache.writeQuery({
@@ -144,6 +145,8 @@ cache.writeQuery({
   },
 });
 
+cache.writeQuery(waGroupcollection);
+
 const mockedUsedNavigate = vi.fn();
 vi.mock('react-router-dom', async () => ({
   ...(await vi.importActual('react-router-dom')),
@@ -206,6 +209,21 @@ describe('<GroupChatInterface />', () => {
 
     await waitFor(() => {
       expect(getByTestId('heading')).toHaveTextContent('Group Collections');
+    });
+  });
+
+  test.only('it should render the first collection', async () => {
+    const { getByText } = render(
+      <ApolloProvider client={client}>
+        <MemoryRouter>
+          <GroupChatInterface collections={true} />
+        </MemoryRouter>
+      </ApolloProvider>
+    );
+    expect(getByText('Loading...')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(getByText('Default WA Group Collection')).toBeInTheDocument();
     });
   });
 
