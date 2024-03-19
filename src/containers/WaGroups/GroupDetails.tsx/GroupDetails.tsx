@@ -28,10 +28,7 @@ export const GroupDetails = () => {
   ];
 
   const [removeContact, { loading }] = useMutation(UPDATE_GROUP_CONTACT, {
-    onCompleted: (data: any) => {
-      if (data.erros) {
-        return;
-      }
+    onCompleted: () => {
       setNotification('Removed Contact from Group', 'success');
       setShowDeleteDialog(false);
     },
@@ -46,11 +43,15 @@ export const GroupDetails = () => {
   const getName = (contact: any, maytapiNumber: any, isAdmin: boolean) => (
     <div className={styles.Contact}>
       <div className={styles.NameContainer}>
-        <div className={styles.NameText}>
+        <div data-testid="contact-name" className={styles.NameText}>
           {maytapiNumber === contact.phone ? 'Maytapi Number' : contact.name || contact.phone}{' '}
           {isAdmin ? <span className={styles.AdminTag}>Admin</span> : null}
         </div>
-        {contact.name && <div className={styles.Phone}>{contact.phone}</div>}
+        {contact.name && (
+          <div data-testid="phone-number" className={styles.Phone}>
+            {contact.phone}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -58,7 +59,7 @@ export const GroupDetails = () => {
   const getGroups = (groups: Array<any>) => {
     if (groups.length > 4) {
       return (
-        <div className={styles.CollectionsText}>
+        <div data-testid="contact-groups" className={styles.GroupText}>
           {groups
             .slice(0, 4)
             .map((group: any) => group.label)
@@ -68,7 +69,7 @@ export const GroupDetails = () => {
       );
     } else {
       return (
-        <div className={styles.CollectionsText}>
+        <div data-testid="contact-groups" className={styles.GroupText}>
           {groups.map((group: any) => group.label).join(', ')}
         </div>
       );
@@ -94,7 +95,7 @@ export const GroupDetails = () => {
 
   const additionalActions = () => [
     {
-      icon: <DeleteIcon />,
+      icon: <DeleteIcon data-testid="removeContact" />,
       parameter: 'contact',
       label: t('Remove Contact'),
       dialog: handleDialogOpen,
@@ -129,7 +130,9 @@ export const GroupDetails = () => {
         alignButtons="center"
         buttonOkLoading={loading}
       >
-        <div>The contact will no longer receive messages sent to this group</div>
+        <div className={styles.dialogText}>
+          The contact will no longer receive messages sent to this group
+        </div>
       </DialogBox>
     );
   }
