@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Paper, Tab, Tabs } from '@mui/material';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { GROUP_COLLECTION_SEARCH_QUERY_VARIABLES, GROUP_QUERY_VARIABLES } from 'common/constants';
@@ -17,11 +17,11 @@ import WaManagedPhones from '../WaManagedPhones/WaManagedPhones';
 const tabs = [
   {
     label: 'Groups',
-    link: '/group/chat/',
+    link: '/group/chat',
   },
   {
     label: 'Collections',
-    link: '/group/chat/collection/',
+    link: '/group/chat/collection',
   },
 ];
 export interface GroupChatInterfaceProps {
@@ -33,7 +33,15 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
   const { t } = useTranslation();
   const [value, setValue] = useState(tabs[0].link);
   const params = useParams();
+  const location = useLocation();
   const [phonenumber, setPhonenumber] = useState<any>(null);
+
+  useEffect(() => {
+    const currentTab = tabs.filter((tab) => location.pathname === tab.link);
+    if (currentTab.length) {
+      setValue(currentTab[0].link);
+    }
+  }, [location]);
 
   let selectedGroupId = params.groupId;
   let selectedCollectionId: any = params.collectionId;

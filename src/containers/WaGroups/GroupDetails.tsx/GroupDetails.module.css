@@ -33,6 +33,11 @@
   line-height: 20px;
 }
 
+.dialogText {
+  text-align: center;
+  color: #555;
+}
+
 .Actions {
   min-width: 200px;
   text-align: end;
