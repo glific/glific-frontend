@@ -139,7 +139,7 @@ const addGroups = (
   </MockedProvider>
 );
 
-test('it should have add group to collection dialog box ', async () => {
+test('it should have "add group to collection" dialog box ', async () => {
   const { getByText, getByTestId } = render(addGroups);
 
   expect(getByTestId('loading')).toBeInTheDocument();

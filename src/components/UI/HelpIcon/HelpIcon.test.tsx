@@ -5,11 +5,6 @@ const wrapper = (
   <HelpIcon
     helpData={{
       heading: 'Test heading',
-      body: (
-        <>
-          <p>description</p>
-        </>
-      ),
       link: 'http://test.com',
     }}
   />

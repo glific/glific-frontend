@@ -367,3 +367,23 @@ export const exportCollectionsQuery = {
     },
   },
 };
+
+export const addContactToCollection = {
+  request: {
+    query: UPDATE_COLLECTION_CONTACTS,
+    variables: { input: { addContactIds: ['2'], groupId: '1', deleteContactIds: [] } },
+  },
+  result: {
+    data: {
+      updateGroupContacts: {
+        groupContacts: [
+          {
+            id: '43',
+            value: null,
+          },
+        ],
+        numberDeleted: 0,
+      },
+    },
+  },
+};
