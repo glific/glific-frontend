@@ -149,6 +149,7 @@ export interface ListProps {
   customStyles?: any;
   showHeader?: boolean;
   refreshList?: boolean;
+  showSearch?: boolean;
 }
 
 interface TableVals {
@@ -194,6 +195,7 @@ export const List = ({
   customStyles,
   showActions = true,
   showHeader = true,
+  showSearch = true,
 }: ListProps) => {
   const { t } = useTranslation();
   const [showMoreOptions, setShowMoreOptions] = useState<string>('');
@@ -718,6 +720,25 @@ export const List = ({
     buttonDisplay = <div className={styles.AddButton}>{buttonContent}</div>;
   }
 
+  const searchBar = showSearch ? (
+    <div className={styles.Buttons}>
+      <SearchBar
+        handleSubmit={handleSearch}
+        onReset={() => {
+          setSearchParams({ search: '' });
+          setSearchVal('');
+          resetTableVals();
+        }}
+        searchVal={searchVal}
+        handleChange={(err: any) => {
+          // reset value only if empty
+          if (!err.target.value) setSearchVal('');
+        }}
+        searchMode
+      />
+    </div>
+  ) : null;
+
   return (
     <div className={styles.ListContainer}>
       {showHeader && (
@@ -745,22 +766,7 @@ export const List = ({
               {filterList}
               {backLink}
             </div>
-            <div className={styles.Buttons}>
-              <SearchBar
-                handleSubmit={handleSearch}
-                onReset={() => {
-                  setSearchParams({ search: '' });
-                  setSearchVal('');
-                  resetTableVals();
-                }}
-                searchVal={searchVal}
-                handleChange={(err: any) => {
-                  // reset value only if empty
-                  if (!err.target.value) setSearchVal('');
-                }}
-                searchMode
-              />
-            </div>
+            {searchBar}
           </div>
         </>
       )}

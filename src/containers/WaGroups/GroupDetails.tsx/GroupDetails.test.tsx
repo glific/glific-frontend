@@ -1,49 +1,80 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { render, waitFor } from '@testing-library/react';
-import { CONTACT_SEARCH_QUERY, GET_CONTACT_COUNT } from 'graphql/queries/Contact';
 import { MemoryRouter } from 'react-router';
 import GroupDetails from './GroupDetails';
+import { COUNT_COUNTACTS_WA_GROUPS, LIST_CONTACTS_WA_GROUPS } from 'graphql/queries/WaGroups';
 
 const mocks = [
   {
     request: {
-      query: CONTACT_SEARCH_QUERY,
+      query: LIST_CONTACTS_WA_GROUPS,
       variables: {
-        filter: { includeWaGroups: '1' },
+        filter: {
+          waGroupId: '1',
+        },
         opts: {
           limit: 50,
           offset: 0,
           order: 'ASC',
-          orderWith: 'name',
+          orderWith: undefined,
         },
       },
     },
     result: {
       data: {
-        contacts: [
+        waGroupContact: [
           {
-            groups: [],
-            id: '21',
-            maskedPhone: '9185******17',
-            name: 'Default reciever',
-            phone: '918547689517',
-            status: 'VALID',
+            contact: {
+              id: '18',
+              name: 'User 1',
+              phone: '918416933261',
+              waGroups: [
+                {
+                  label: 'Random',
+                },
+                {
+                  label: 'Group 7',
+                },
+                {
+                  label: 'Group 3',
+                },
+              ],
+            },
+            id: '792',
+            isAdmin: false,
+            waGroup: {
+              id: '20',
+              label: 'Group 12',
+              waManagedPhone: {
+                phone: '918657048983',
+              },
+            },
           },
           {
-            groups: [],
-            id: '22',
-            maskedPhone: '9185******17',
-            name: null,
-            phone: '918547689517',
-            status: 'VALID',
-          },
-          {
-            groups: [],
-            id: '23',
-            maskedPhone: '9185******17',
-            name: null,
-            phone: '918547689517',
-            status: 'VALID',
+            contact: {
+              id: '16',
+              name: null,
+              phone: '918657048983',
+              waGroups: [
+                {
+                  label: 'Maytapi Testing ',
+                },
+                {
+                  label: 'Random2',
+                },
+              ],
+            },
+            id: '793',
+            isAdmin: true,
+            waGroup: {
+              __typename: 'WaGroup',
+              id: '20',
+              label: 'Group 12',
+              waManagedPhone: {
+                __typename: 'WaManagedPhone',
+                phone: '918657048983',
+              },
+            },
           },
         ],
       },
@@ -51,12 +82,12 @@ const mocks = [
   },
   {
     request: {
-      query: GET_CONTACT_COUNT,
-      variables: { filter: { includeWaGroups: '1' } },
+      query: COUNT_COUNTACTS_WA_GROUPS,
+      variables: { filter: { waGroupId: '1' } },
     },
     result: {
       data: {
-        countContacts: 3,
+        countWaGroupContact: 2,
       },
     },
   },
@@ -83,6 +114,16 @@ test('should render Group details', async () => {
   expect(getByTestId('loading')).toBeInTheDocument();
 
   await waitFor(() => {
-    expect(getByText('Default reciever')).toBeInTheDocument();
+    expect(getByText('User 1')).toBeInTheDocument();
+  });
+});
+
+test('should render admin tag for admins', async () => {
+  const { getByTestId, getByText } = render(wrapper);
+
+  expect(getByTestId('loading')).toBeInTheDocument();
+
+  await waitFor(() => {
+    expect(getByText('Admin')).toBeInTheDocument();
   });
 });

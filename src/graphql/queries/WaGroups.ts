@@ -133,3 +133,33 @@ export const GET_WA_GROUPS = gql`
     }
   }
 `;
+
+export const LIST_CONTACTS_WA_GROUPS = gql`
+  query ListContactWaGroup($filter: ContactWaGroupFilter) {
+    waGroupContact: listContactWaGroup(filter: $filter) {
+      id
+      isAdmin
+      contact {
+        id
+        name
+        phone
+        waGroups {
+          label
+        }
+      }
+      waGroup {
+        id
+        label
+        waManagedPhone {
+          phone
+        }
+      }
+    }
+  }
+`;
+
+export const COUNT_COUNTACTS_WA_GROUPS = gql`
+  query CountContactWaGroup($filter: ContactWaGroupFilter) {
+    countWaGroupContact: countContactWaGroup(filter: $filter)
+  }
+`;

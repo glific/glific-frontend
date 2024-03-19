@@ -1,6 +1,14 @@
-.Name {
+.NameContainer {
   min-width: 100px;
-  width: 25%;
+  gap: 2px 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.Contact {
+  gap: 0 8px;
+  display: flex;
+  align-items: center;
 }
 
 .Phone {
@@ -8,16 +16,47 @@
   font-size: 13px;
   font-weight: 500;
   min-width: 200px;
+}
+
+.Groups {
+  color: #555;
+  font-size: 13px;
+  font-weight: 500;
+  min-width: 200px;
   width: 25%;
+}
+
+.CollectionsText {
+  color: #555;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 20px;
 }
 
 .Actions {
   min-width: 200px;
   text-align: end;
-  width: 60%;
+  width: 50%;
 }
 
 .CollectionIcon {
   width: 32px;
   height: 32px;
+}
+
+.NameText {
+  padding: 0px 0px;
+  width: 100%;
+  line-height: 20px;
+  margin: 0;
+  font-size: 17px !important;
+  color: #191c1a !important;
+}
+
+.AdminTag {
+  font-size: 12px;
+  color: #555555 !important;
+  background-color: #dfece2;
+  padding: 2px 8px;
+  border-radius: 8px;
 }
