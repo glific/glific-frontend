@@ -47,11 +47,13 @@ export const GroupDetails = () => {
   const getName = (label: string, maytapiNumber?: any, contactPhone?: any) => (
     <div className={styles.Contact}>
       <div className={styles.NameContainer}>
-        <div className={styles.NameText}>
+        <div data-testid="contact-name" className={styles.NameText}>
           {maytapiNumber === contactPhone ? 'Maytapi Number' : label || contactPhone}
         </div>
         {(maytapiNumber === contactPhone || label) && (
-          <div className={styles.Phone}>{contactPhone}</div>
+          <div data-testid="phone-number" className={styles.Phone}>
+            {contactPhone}
+          </div>
         )}
       </div>
     </div>
@@ -60,7 +62,7 @@ export const GroupDetails = () => {
   const getGroups = (groups: Array<any>) => {
     if (groups.length > 4) {
       return (
-        <div className={styles.CollectionsText}>
+        <div data-testid="contact-groups" className={styles.GroupText}>
           {groups
             .slice(0, 4)
             .map((group: any) => group.label)
@@ -70,7 +72,7 @@ export const GroupDetails = () => {
       );
     } else {
       return (
-        <div className={styles.CollectionsText}>
+        <div data-testid="contact-groups" className={styles.GroupText}>
           {groups.map((group: any) => group.label).join(', ')}
         </div>
       );
@@ -101,7 +103,7 @@ export const GroupDetails = () => {
 
   const additionalActions = () => [
     {
-      icon: <DeleteIcon />,
+      icon: <DeleteIcon data-testid="removeContact" />,
       parameter: 'contact',
       label: t('Remove Contact'),
       dialog: handleDialogOpen,

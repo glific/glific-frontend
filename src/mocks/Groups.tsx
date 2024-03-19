@@ -5,12 +5,14 @@ import {
   setVariables,
 } from 'common/constants';
 import { UPDATE_COLLECTION_WA_GROUP } from 'graphql/mutations/Collection';
-import { SYNC_GROUPS } from 'graphql/mutations/Group';
+import { SYNC_GROUPS, UPDATE_GROUP_CONTACT } from 'graphql/mutations/Group';
 import {
+  COUNT_COUNTACTS_WA_GROUPS,
   GET_WA_GROUPS,
   GET_WA_MANAGED_PHONES,
   GROUP_SEARCH_MULTI_QUERY,
   GROUP_SEARCH_QUERY,
+  LIST_CONTACTS_WA_GROUPS,
 } from 'graphql/queries/WaGroups';
 import {
   SENT_MESSAGE_WA_GROUP_COLLECTION,
@@ -920,3 +922,104 @@ export const GROUP_CONVERSATION_MOCKS = [
   waMessageReceivedSubscription,
   waSentMessageCollectionQuery,
 ];
+
+const groups = Array(30)
+  .fill(null)
+  .map((val: any, index: number) => ({
+    label: `Group ${index + 1}`,
+  }));
+
+export const waGroupContacts = {
+  request: {
+    query: LIST_CONTACTS_WA_GROUPS,
+    variables: {
+      filter: {
+        waGroupId: '1',
+      },
+      opts: {
+        limit: 50,
+        offset: 0,
+        order: 'ASC',
+        orderWith: undefined,
+      },
+    },
+  },
+  result: {
+    data: {
+      waGroupContact: [
+        {
+          contact: {
+            id: '18',
+            name: 'User 1',
+            phone: '918416933261',
+            waGroups: groups,
+          },
+          id: '792',
+          isAdmin: false,
+          waGroup: {
+            id: '20',
+            label: 'Group 12',
+            waManagedPhone: {
+              phone: '918657048983',
+            },
+          },
+        },
+        {
+          contact: {
+            id: '16',
+            name: null,
+            phone: '918657048983',
+            waGroups: [
+              {
+                label: 'Maytapi Testing',
+              },
+              {
+                label: 'Random2',
+              },
+            ],
+          },
+          id: '793',
+          isAdmin: true,
+          waGroup: {
+            __typename: 'WaGroup',
+            id: '20',
+            label: 'Group 12',
+            waManagedPhone: {
+              __typename: 'WaManagedPhone',
+              phone: '918657048983',
+            },
+          },
+        },
+      ],
+    },
+  },
+};
+
+export const countWaGroupContacts = {
+  request: {
+    query: COUNT_COUNTACTS_WA_GROUPS,
+    variables: { filter: { waGroupId: '1' } },
+  },
+  result: {
+    data: {
+      countWaGroupContact: 2,
+    },
+  },
+};
+
+export const removeContactQuery = {
+  request: {
+    query: UPDATE_GROUP_CONTACT,
+    variables: {
+      input: { addWaContactIds: [], deleteWaContactIds: ['18'], waGroupId: '1' },
+    },
+  },
+  result: {
+    data: {
+      updateContactWaGroups: {
+        numberDeleted: 1,
+        waGroupContacts: [],
+      },
+    },
+  },
+};

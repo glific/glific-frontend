@@ -1,97 +1,29 @@
 import { MockedProvider } from '@apollo/client/testing';
-import { render, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 import GroupDetails from './GroupDetails';
-import { COUNT_COUNTACTS_WA_GROUPS, LIST_CONTACTS_WA_GROUPS } from 'graphql/queries/WaGroups';
+import { countWaGroupContacts, removeContactQuery, waGroupContacts } from 'mocks/Groups';
+import { setNotification } from 'common/notification';
 
 const mocks = [
-  {
-    request: {
-      query: LIST_CONTACTS_WA_GROUPS,
-      variables: {
-        filter: {
-          waGroupId: '1',
-        },
-        opts: {
-          limit: 50,
-          offset: 0,
-          order: 'ASC',
-          orderWith: undefined,
-        },
-      },
-    },
-    result: {
-      data: {
-        waGroupContact: [
-          {
-            contact: {
-              id: '18',
-              name: 'User 1',
-              phone: '918416933261',
-              waGroups: [
-                {
-                  label: 'Random',
-                },
-                {
-                  label: 'Group 7',
-                },
-                {
-                  label: 'Group 3',
-                },
-              ],
-            },
-            id: '792',
-            isAdmin: false,
-            waGroup: {
-              id: '20',
-              label: 'Group 12',
-              waManagedPhone: {
-                phone: '918657048983',
-              },
-            },
-          },
-          {
-            contact: {
-              id: '16',
-              name: null,
-              phone: '918657048983',
-              waGroups: [
-                {
-                  label: 'Maytapi Testing ',
-                },
-                {
-                  label: 'Random2',
-                },
-              ],
-            },
-            id: '793',
-            isAdmin: true,
-            waGroup: {
-              __typename: 'WaGroup',
-              id: '20',
-              label: 'Group 12',
-              waManagedPhone: {
-                __typename: 'WaManagedPhone',
-                phone: '918657048983',
-              },
-            },
-          },
-        ],
-      },
-    },
-  },
-  {
-    request: {
-      query: COUNT_COUNTACTS_WA_GROUPS,
-      variables: { filter: { waGroupId: '1' } },
-    },
-    result: {
-      data: {
-        countWaGroupContact: 2,
-      },
-    },
-  },
+  waGroupContacts,
+  countWaGroupContacts,
+  waGroupContacts,
+  countWaGroupContacts,
+  removeContactQuery,
+  waGroupContacts,
+  countWaGroupContacts,
 ];
+
+vi.mock('common/notification', async (importOriginal) => {
+  const mod = await importOriginal<typeof import('common/notification')>();
+  return {
+    ...mod,
+    setNotification: vi.fn((...args) => {
+      return args[1];
+    }),
+  };
+});
 
 vi.mock('react-router-dom', async () => {
   return {
@@ -109,12 +41,13 @@ const wrapper = (
 );
 
 test('should render Group details', async () => {
-  const { getByTestId, getByText } = render(wrapper);
+  const { getByTestId, getAllByTestId } = render(wrapper);
 
   expect(getByTestId('loading')).toBeInTheDocument();
 
   await waitFor(() => {
-    expect(getByText('User 1')).toBeInTheDocument();
+    expect(getAllByTestId('contact-name')[0]).toHaveTextContent('User 1');
+    expect(getAllByTestId('phone-number')[0]).toHaveTextContent('918416933261');
   });
 });
 
@@ -125,5 +58,79 @@ test('should render admin tag for admins', async () => {
 
   await waitFor(() => {
     expect(getByText('Admin')).toBeInTheDocument();
+  });
+});
+
+test('should render Maytapi Numer for maytapi managed numbers', async () => {
+  const { getByTestId, getAllByTestId } = render(wrapper);
+
+  expect(getByTestId('loading')).toBeInTheDocument();
+
+  await waitFor(() => {
+    expect(getAllByTestId('contact-name')[1]).toHaveTextContent('Maytapi Number');
+  });
+});
+
+test('if number of groups exceed 4 it should show + n groups ', async () => {
+  const { getByTestId, getAllByTestId } = render(wrapper);
+
+  expect(getByTestId('loading')).toBeInTheDocument();
+
+  await waitFor(() => {
+    expect(getAllByTestId('contact-name')[0]).toHaveTextContent('User 1');
+
+    // when number of groups is more than 4
+    expect(getAllByTestId('contact-groups')[0]).toHaveTextContent(
+      'Group 1, Group 2, Group 3, Group 4 + 26 groups'
+    );
+
+    // when number of groups is less than 4
+    expect(getAllByTestId('contact-groups')[1]).toHaveTextContent('Maytapi Testing, Random2');
+  });
+});
+
+test('should remove contact', async () => {
+  const { getByTestId, getAllByTestId } = render(wrapper);
+
+  expect(getByTestId('loading')).toBeInTheDocument();
+
+  await waitFor(() => {
+    expect(getAllByTestId('contact-name')[0]).toHaveTextContent('User 1');
+  });
+
+  fireEvent.click(getAllByTestId('removeContact')[0]);
+
+  await waitFor(() => {
+    expect(screen.getByTestId('dialogBox')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('ok-button'));
+
+  await waitFor(() => {
+    expect(setNotification).toHaveBeenCalled();
+  });
+});
+
+test('should close dialog box', async () => {
+  const { getByTestId, getAllByTestId } = render(wrapper);
+
+  expect(getByTestId('loading')).toBeInTheDocument();
+
+  await waitFor(() => {
+    expect(getAllByTestId('contact-name')[0]).toHaveTextContent('User 1');
+  });
+
+  fireEvent.click(getAllByTestId('removeContact')[0]);
+
+  const dialogBox = screen.getByTestId('dialogBox');
+
+  await waitFor(() => {
+    expect(dialogBox).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('cancel-button'));
+
+  await waitFor(() => {
+    expect(dialogBox).not.toBeInTheDocument();
   });
 });
