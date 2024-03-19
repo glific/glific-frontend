@@ -69,3 +69,8 @@
   line-height: 20px;
   border-radius: 16px;
 }
+
+.RedirectArrow {
+  width: 15px;
+  color: #777;
+}

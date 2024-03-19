@@ -22,9 +22,8 @@ export const GroupDetails = () => {
   const dialogMessage = 'The contact will no longer receive messages sent to this group';
 
   const columnNames = [
-    { label: '' },
     { label: t('Contact') },
-    { label: 'WhatsApp Groups' },
+    { label: 'All WhatsApp Groups' },
     { label: t('Actions') },
   ];
 
@@ -44,13 +43,14 @@ export const GroupDetails = () => {
     deleteItemQuery: UPDATE_GROUP_CONTACT,
   };
 
-  const getName = (label: string, maytapiNumber?: any, contactPhone?: any) => (
+  const getName = (contact: any, maytapiNumber: any, isAdmin: boolean) => (
     <div className={styles.Contact}>
       <div className={styles.NameContainer}>
         <div className={styles.NameText}>
-          {maytapiNumber === contactPhone ? 'Maytapi Number' : label || contactPhone}
+          {maytapiNumber === contact.phone ? 'Maytapi Number' : contact.name || contact.phone}{' '}
+          {isAdmin ? <span className={styles.AdminTag}>Admin</span> : null}
         </div>
-        {label && <div className={styles.Phone}>{contactPhone}</div>}
+        {contact.name && <div className={styles.Phone}>{contact.phone}</div>}
       </div>
     </div>
   );
@@ -75,22 +75,17 @@ export const GroupDetails = () => {
     }
   };
 
-  const getAdmin = (isAdmin: boolean) => (
-    <div>{isAdmin ? <span className={styles.AdminTag}>Admin</span> : null}</div>
-  );
-
   const getColumns = (waGroupContact: any) => {
     const { isAdmin, contact, waGroup } = waGroupContact;
 
     return {
-      admin: getAdmin(isAdmin),
-      name: getName(contact.name, waGroup.waManagedPhone.phone, contact.phone),
+      name: getName(contact, waGroup.waManagedPhone.phone, isAdmin),
       groups: getGroups(contact.waGroups),
     };
   };
 
   const collectionIcon = <CollectionIcon className={styles.CollectionIcon} />;
-  const columnStyles = [styles.Admin, styles.Name, styles.Groups, styles.Actions];
+  const columnStyles = [styles.Name, styles.Groups, styles.Actions];
 
   const columnAttributes = {
     columns: getColumns,
@@ -127,14 +122,14 @@ export const GroupDetails = () => {
   if (showDeleteDialog) {
     dialog = (
       <DialogBox
-        title={`Are you sure you want to remove contact from this collection?`}
+        title={`Are you sure you want to remove contact from this group?`}
         handleOk={handleRemoveContact}
         handleCancel={() => setShowDeleteDialog(false)}
         colorOk="warning"
         alignButtons="center"
         buttonOkLoading={loading}
       >
-        <p>The contact will no longer receive messages sent to this group</p>
+        <div>The contact will no longer receive messages sent to this group</div>
       </DialogBox>
     );
   }
@@ -142,6 +137,7 @@ export const GroupDetails = () => {
   return (
     <>
       <List
+        backLink={`/group/chat/${params.id}`}
         dialogTitle={dialogTitle}
         columnNames={columnNames}
         title={'Group Details'}

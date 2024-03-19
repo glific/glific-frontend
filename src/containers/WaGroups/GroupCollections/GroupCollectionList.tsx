@@ -74,6 +74,7 @@ export const GroupCollectionList = () => {
 
   return (
     <List
+      backLink="/group/collection"
       dialogTitle={dialogTitle}
       columnNames={columnNames}
       title={title}

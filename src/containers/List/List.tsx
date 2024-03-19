@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, Fragment } from 'react';
-import { Link, Navigate, useSearchParams } from 'react-router-dom';
+import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useQuery, useMutation, DocumentNode, useLazyQuery } from '@apollo/client';
 import { Backdrop, Divider, IconButton, Menu, MenuItem } from '@mui/material';
@@ -13,7 +13,7 @@ import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import MoreOptions from 'assets/images/icons/MoreOptions.svg?react';
 import DeleteIcon from 'assets/images/icons/Delete/Red.svg?react';
 import EditIcon from 'assets/images/icons/Edit.svg?react';
-import BackIcon from 'assets/images/icons/Back.svg?react';
+import BackIcon from 'assets/images/icons/BackIconFlow.svg?react';
 import AddIcon from 'assets/images/add.svg?react';
 import { GET_CURRENT_USER } from 'graphql/queries/User';
 import { getUserRole, getUserRolePermissions } from 'context/role';
@@ -136,10 +136,8 @@ export interface ListProps {
     variables: any;
   };
   dialogTitle?: string;
-  backLinkButton?: {
-    text: string;
-    link: string;
-  };
+  backLink?: string;
+
   restrictedAction?: any;
   collapseOpen?: boolean;
   collapseRow?: string;
@@ -187,7 +185,8 @@ export const List = ({
   filters = null,
   refreshList = false,
   additionalAction = () => [],
-  backLinkButton,
+  backLink,
+
   restrictedAction,
   collapseOpen = false,
   collapseRow = undefined,
@@ -205,6 +204,8 @@ export const List = ({
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const navigate = useNavigate();
 
   // DialogBox states
   const [deleteItemID, setDeleteItemID] = useState<number | null>(null);
@@ -669,15 +670,6 @@ export const List = ({
     />
   );
 
-  const backLink = backLinkButton ? (
-    <div className={styles.BackLink}>
-      <Link to={backLinkButton.link}>
-        <BackIcon />
-        {backLinkButton.text}
-      </Link>
-    </div>
-  ) : null;
-
   let buttonDisplay;
   if (button.show) {
     const addIcon = <AddIcon className={styles.AddIcon} />;
@@ -746,6 +738,13 @@ export const List = ({
           <div className={styles.Header} data-testid="listHeader">
             <div>
               <div className={styles.Title}>
+                {backLink && (
+                  <BackIcon
+                    onClick={() => navigate(backLink)}
+                    className={styles.BackLink}
+                    data-testid="back-button"
+                  />
+                )}
                 <div className={styles.TitleText}> {title}</div>
                 {helpData && <HelpIcon helpData={helpData} />}
               </div>
@@ -762,10 +761,7 @@ export const List = ({
           {descriptionBox}
 
           <div className={styles.FilterFields}>
-            <div className={styles.FlexCenter}>
-              {filterList}
-              {backLink}
-            </div>
+            <div className={styles.FlexCenter}>{filterList}</div>
             {searchBar}
           </div>
         </>

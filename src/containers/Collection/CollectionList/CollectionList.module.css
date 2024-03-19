@@ -22,8 +22,9 @@
   font-size: 15px;
   font-weight: 400;
   display: flex;
+  text-underline-offset: 2px;
   align-items: center;
-  color: #555;
+  color: green;
 }
 
 .DescriptionText {

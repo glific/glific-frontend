@@ -114,23 +114,6 @@
   margin-top: 8px;
 }
 
-.BackLink {
-  font-weight: 800;
-  font-size: 16px;
-  margin: 24px;
-  margin-top: 12px;
-  margin-bottom: 0px;
-}
-
-.BackLink a {
-  color: #93a29b;
-  text-decoration: none;
-}
-
-.BackLink svg {
-  margin-right: 6px;
-}
-
 @media screen and (max-width: 768px) {
   .Form,
   .ItemAdd,
