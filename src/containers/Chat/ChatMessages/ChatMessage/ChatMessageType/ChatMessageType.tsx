@@ -72,7 +72,7 @@ export const ChatMessageType = ({
               zIndex={1501} // greater than tooltips
             />
           </div>
-          <MessagesWithLinks message={media.caption || media.text} />
+          <MessagesWithLinks isSender={isSender} message={media.caption || media.text} />
         </div>
       );
 
@@ -130,7 +130,9 @@ export const ChatMessageType = ({
         <div data-testid="documentMessage" className={styles.Document}>
           <div>
             <DocumentIconDark className={styles.DocumentIcon} />
-            {media.caption}
+            <span className={isSender ? styles.CaptionSender : styles.CaptionReciever}>
+              {media.caption}
+            </span>
           </div>
           <a
             href={mediaUrl}
