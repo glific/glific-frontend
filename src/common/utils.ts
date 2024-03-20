@@ -6,7 +6,8 @@ import { getAuthSession, getOrganizationServices, getUserSession } from 'service
 import { SIMULATOR_NUMBER_START } from './constants';
 import { setNotification } from './notification';
 
-export const isSimulator = (phone: string) => phone.startsWith(SIMULATOR_NUMBER_START);
+export const isSimulator = (phone: string) =>
+  phone ? phone.startsWith(SIMULATOR_NUMBER_START) : false;
 
 export const getObject = (arr: any, data: any) => {
   const result: any = [];
@@ -163,6 +164,18 @@ export const getDisplayName = (conversation: any) => {
   } else {
     displayName = conversation.contact.maskedPhone;
   }
+  return displayName;
+};
+
+export const getDisplayNameForSearch = (conversation: any, groups?: boolean) => {
+  let displayName: string = '';
+
+  if (groups) {
+    displayName = conversation.name || conversation.waGroup?.label || '';
+  } else {
+    displayName = conversation.name || conversation.maskedPhone || conversation.contact?.name || '';
+  }
+
   return displayName;
 };
 

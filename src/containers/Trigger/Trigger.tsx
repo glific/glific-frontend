@@ -16,6 +16,7 @@ import {
   hourList,
   setVariables,
   EXTENDED_TIME_FORMAT,
+  CONTACTS_COLLECTION,
 } from 'common/constants';
 import { FormLayout } from 'containers/Form/FormLayout';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
@@ -35,6 +36,8 @@ import {
 } from 'graphql/mutations/Trigger';
 import styles from './Trigger.module.css';
 import { triggerInfo } from 'common/HelpData';
+import { TriggerType } from './TriggerType/TriggerType';
+import { getOrganizationServices } from 'services/AuthService';
 dayjs.extend(utc);
 
 const checkDateTimeValidation = (startAtValue: string, startDateValue: string) => {
@@ -51,7 +54,7 @@ const checkDateTimeValidation = (startAtValue: string, startDateValue: string) =
   return true;
 };
 
-const setPayload = (payload: any, roles: any) => {
+const setPayload = (payload: any, roles: any, groupType: any) => {
   const payloadCopy = payload;
 
   const { startDate, startTime, isActive, flowId, frequencyValues, groupIds, endDate, frequency } =
@@ -74,6 +77,7 @@ const setPayload = (payload: any, roles: any) => {
     startTime: dayjs(startAt).utc().format(EXTENDED_TIME_FORMAT),
     frequency: frequency.value,
     roles: payload.roles,
+    groupType: groupType,
   };
 
   switch (updatedPayload.frequency) {
@@ -154,6 +158,9 @@ export const Trigger = () => {
   const [triggerFlowWarning, setTriggerFlowWarning] = useState<any>();
   const [frequencyLabel, setFrequencyLabel] = useState('Select days');
   const [frequencyOptions, setFrequencyOptions] = useState(dayList);
+  const [groupType, setGroupType] = useState(CONTACTS_COLLECTION);
+  const isWhatsAppGroupEnabled = getOrganizationServices('whatsappGroupEnabled');
+
   const params = useParams();
   const location = useLocation();
   const { t } = useTranslation();
@@ -247,7 +254,7 @@ export const Trigger = () => {
   });
 
   const { data: collections } = useQuery(GET_COLLECTIONS, {
-    variables: setVariables(),
+    variables: isEditing ? setVariables() : setVariables({ groupType }),
   });
 
   const [validateTriggerFlow, { loading }] = useMutation(VALIDATE_TRIGGER, {
@@ -258,7 +265,7 @@ export const Trigger = () => {
     },
   });
 
-  if (!flow || !collections) return <Loading />;
+  if (!flow) return <Loading />;
 
   const handleFlowChange = (flow: any) => {
     setTriggerFlowWarning(undefined);
@@ -365,6 +372,7 @@ export const Trigger = () => {
       multiple: false,
       onChange: handleFrequencyChange,
     },
+
     {
       component: AutoComplete,
       name: 'frequencyValues',
@@ -379,10 +387,17 @@ export const Trigger = () => {
         ),
     },
     {
+      component: TriggerType,
+      name: 'groupType',
+      handleOnChange: (value: any) => setGroupType(value),
+      groupType: groupType,
+      isWhatsAppGroupEnabled: isWhatsAppGroupEnabled,
+    },
+    {
       component: AutoComplete,
       name: 'groupIds',
       label: t('Select collection'),
-      options: collections.groups,
+      options: collections?.groups,
       disabled: isEditing,
       optionLabel: 'label',
     },
@@ -399,11 +414,13 @@ export const Trigger = () => {
     isRepeating: isRepeatingValue,
     startAt: startAtValue,
     roles: rolesValue,
+    groupType,
   }: any) => {
     setIsRepeating(isRepeatingValue);
     setEndDate(endDateValue);
     setIsActive(isCopyState ? true : isActiveValue);
     setEndDate(dayjs(endDateValue));
+    setGroupType(groupType);
 
     const { values, options, label } = getFrequencyDetails(frequencyValue, daysValue, hoursValue);
     setFrequencyValues(values);
@@ -426,8 +443,8 @@ export const Trigger = () => {
       setFlowId(getFlowId[0]);
     }
 
-    if (groupValue && collections.groups && groupValue.length > 0) {
-      const selectedGroups = collections.groups.filter((group: any) =>
+    if (groupValue && collections?.groups && groupValue.length > 0) {
+      const selectedGroups = collections?.groups.filter((group: any) =>
         groupValue.includes(group.label)
       );
       setGroupIds(selectedGroups);
@@ -440,7 +457,7 @@ export const Trigger = () => {
       states={states}
       roleAccessSupport
       setStates={setStates}
-      setPayload={(payload: any) => setPayload(payload, roles)}
+      setPayload={(payload: any) => setPayload(payload, roles, groupType)}
       validationSchema={FormSchema}
       languageSupport={false}
       listItemName="trigger"

@@ -19,6 +19,7 @@ import {
   CREATE_FLOW_COPY,
   AUTO_TRANSLATE_FLOW,
   IMPORT_FLOW_LOCALIZATIONS,
+  ADD_FLOW_TO_WA_GROUP,
 } from 'graphql/mutations/Flow';
 import { GET_ORGANIZATION_SERVICES } from 'graphql/queries/Organization';
 import json from './ImportFlow.json';
@@ -82,10 +83,7 @@ export const addFlowToContactQuery = {
 export const addFlowToCollectionQuery = {
   request: {
     query: ADD_FLOW_TO_COLLECTION,
-    variables: {
-      flowId: '',
-      groupId: '2',
-    },
+    variables: { flowId: '1', groupId: '1' },
   },
 
   result: {
@@ -93,6 +91,19 @@ export const addFlowToCollectionQuery = {
       startGroupFlow: {
         success: true,
       },
+    },
+  },
+};
+
+export const addFlowToWAGroupQuery = {
+  request: {
+    query: ADD_FLOW_TO_WA_GROUP,
+    variables: { flowId: '1', waGroupId: '1' },
+  },
+
+  result: {
+    data: {
+      startWaGroupFlow: { errors: null, success: true },
     },
   },
 };
@@ -282,6 +293,11 @@ export const getPublishedFlowQuery = {
           id: '1',
           name: 'Help Workflow',
           uuid: '3fa22108-f464-41e5-81d9-d8a298854429',
+        },
+        {
+          id: '2',
+          name: 'AB Test Workflow',
+          uuid: '5f3fd8c6-2ec3-4945-8e7c-314db8c04c31',
         },
       ],
     },

@@ -6,30 +6,33 @@ import { createSearchQuery, countSearchesQuery, getSearchesQuery, getSearch } fr
 import { setVariables } from 'common/constants';
 import { GET_ALL_FLOW_LABELS } from 'graphql/queries/FlowLabel';
 
+const getCollectionMock = (variables: any) => ({
+  request: {
+    query: GET_COLLECTIONS,
+    variables: variables,
+  },
+  result: {
+    data: {
+      groups: [
+        {
+          id: '1',
+          isRestricted: false,
+          label: 'Group 1',
+        },
+      ],
+    },
+  },
+});
+
 export const LIST_ITEM_MOCKS = [
   createSearchQuery,
   countSearchesQuery,
   countSearchesQuery,
   ...getSearchesQuery,
   getSearch,
-  {
-    request: {
-      query: GET_COLLECTIONS,
-      variables: setVariables(),
-    },
-    result: {
-      data: {
-        groups: [
-          {
-            id: '1',
-            isRestricted: false,
-            label: 'Group 1',
-          },
-        ],
-      },
-    },
-  },
-
+  getCollectionMock(setVariables()),
+  getCollectionMock(setVariables({ groupType: 'WA' })),
+  getCollectionMock(setVariables({ groupType: 'WABA' })),
   {
     request: {
       query: GET_LANGUAGES,

@@ -5,6 +5,9 @@ import { MockedProvider } from '@apollo/client/testing';
 import { getCollectionInfo, getCollectionUsersQuery } from 'mocks/Collection';
 import { GET_COLLECTION_USERS } from 'graphql/queries/Collection';
 
+const handleSendMessageMock = vi.fn();
+const setDisplayPopupMock = vi.fn();
+
 const wrapper = (
   <MockedProvider mocks={[getCollectionInfo, getCollectionUsersQuery]} addTypename={false}>
     <CollectionInformation collectionId={'1'} />
@@ -90,8 +93,8 @@ describe('render collection info popup', () => {
       <CollectionInformation
         collectionId={'1'}
         displayPopup
-        setDisplayPopup={() => Function}
-        handleSendMessage={() => Function}
+        setDisplayPopup={setDisplayPopupMock}
+        handleSendMessage={handleSendMessageMock}
       />
     </MockedProvider>
   );
@@ -123,5 +126,19 @@ describe('render collection info popup', () => {
 
       fireEvent.click(await cancel);
     });
+  });
+
+  test('should call handleSendMessage function on okay', () => {
+    const { getByText } = render(wrapper);
+    fireEvent.click(getByText('Ok, Send'));
+
+    expect(handleSendMessageMock).toHaveBeenCalled();
+  });
+
+  test('should call setDisplayPopup function on cancel', () => {
+    const { getByText } = render(wrapper);
+    fireEvent.click(getByText('Cancel'));
+
+    expect(setDisplayPopupMock).toHaveBeenCalled();
   });
 });

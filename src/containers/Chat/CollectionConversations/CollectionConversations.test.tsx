@@ -4,20 +4,21 @@ import userEvent from '@testing-library/user-event';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 
 import { SEARCH_QUERY } from 'graphql/queries/Search';
-import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT } from 'common/constants';
+import { DEFAULT_ENTITY_LIMIT, DEFAULT_MESSAGE_LIMIT } from 'common/constants';
 import CollectionConversations from './CollectionConversations';
 
 const cache = new InMemoryCache({ addTypename: false });
 cache.writeQuery({
   query: SEARCH_QUERY,
   variables: {
-    contactOpts: { limit: DEFAULT_CONTACT_LIMIT },
+    contactOpts: { limit: DEFAULT_ENTITY_LIMIT },
     filter: { searchGroup: true },
     messageOpts: { limit: DEFAULT_MESSAGE_LIMIT },
   },
   data: {
     search: [
       {
+        id: 'group_2',
         group: {
           id: '2',
           label: 'Default Collection',
@@ -63,6 +64,7 @@ cache.writeQuery({
         ],
       },
       {
+        id: 'group_3',
         group: {
           id: '3',
           label: 'Optin Collection',
@@ -71,6 +73,7 @@ cache.writeQuery({
         messages: [],
       },
       {
+        id: 'group_4',
         group: {
           id: '4',
           label: 'Optout Collection',
@@ -79,6 +82,7 @@ cache.writeQuery({
         messages: [],
       },
       {
+        id: 'group_5',
         group: {
           id: '5',
           label: 'Glific Collection',
@@ -87,6 +91,7 @@ cache.writeQuery({
         messages: [],
       },
       {
+        id: 'group_1',
         group: {
           id: '1',
           label: 'Test Collection',

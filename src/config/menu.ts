@@ -29,6 +29,30 @@ const menus = (): Menu[] => [
     roles: allRoles,
   },
   {
+    title: 'WhatsApp Groups',
+    path: '/group/chat',
+    icon: 'waGroup',
+    type: 'sideDrawer',
+    roles: allRoles,
+    show: !getOrganizationServices('whatsappGroupEnabled'),
+    children: [
+      {
+        title: 'Group Chats',
+        path: '/group/chat',
+        icon: 'waGroupChat',
+        type: 'sideDrawer',
+        roles: allRoles,
+      },
+      {
+        title: 'Group Collections',
+        path: '/group/collection',
+        icon: 'waGroupCollection',
+        type: 'sideDrawer',
+        roles: allRoles,
+      },
+    ],
+  },
+  {
     title: 'Flows',
     path: '/flow',
     icon: 'flow',

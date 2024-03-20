@@ -11,17 +11,25 @@ import { setErrorMessage } from 'common/notification';
 import {
   COLLECTION_SEARCH_QUERY_VARIABLES,
   SEARCH_QUERY_VARIABLES,
-  DEFAULT_CONTACT_LIMIT,
+  DEFAULT_ENTITY_LIMIT,
   DEFAULT_MESSAGE_LIMIT,
-  DEFAULT_CONTACT_LOADMORE_LIMIT,
+  DEFAULT_ENTITY_LOADMORE_LIMIT,
   DEFAULT_MESSAGE_LOADMORE_LIMIT,
   ISO_DATE_FORMAT,
+  GROUP_QUERY_VARIABLES,
+  GROUP_COLLECTION_SEARCH_QUERY_VARIABLES,
+  getVariables,
+  getConversationForSearchMulti,
+  getConversation,
 } from 'common/constants';
 import { updateConversations } from 'services/ChatService';
+import { updateGroupConversations } from 'services/GroupMessageService';
 import { showMessages } from 'common/responsive';
-import { addLogs, getDisplayName } from 'common/utils';
+import { addLogs } from 'common/utils';
 import ChatConversation from '../ChatConversation/ChatConversation';
 import styles from './ConversationList.module.css';
+import { GROUP_SEARCH_MULTI_QUERY, GROUP_SEARCH_QUERY } from 'graphql/queries/WaGroups';
+import { useLocation } from 'react-router-dom';
 
 interface ConversationListProps {
   searchVal: string;
@@ -34,6 +42,7 @@ interface ConversationListProps {
   selectedCollectionId?: number;
   setSelectedCollectionId?: (i: number) => void;
   entityType?: string;
+  phonenumber?: any;
 }
 
 export const ConversationList = ({
@@ -47,24 +56,36 @@ export const ConversationList = ({
   selectedCollectionId,
   setSelectedCollectionId,
   entityType = 'contact',
+  phonenumber,
 }: ConversationListProps) => {
   const client = useApolloClient();
-  const [loadingOffset, setLoadingOffset] = useState(DEFAULT_CONTACT_LIMIT);
+  const [loadingOffset, setLoadingOffset] = useState(DEFAULT_ENTITY_LIMIT);
   const [showJumpToLatest, setShowJumpToLatest] = useState(false);
   const [showLoadMore, setShowLoadMore] = useState(true);
   const [showLoading, setShowLoading] = useState(false);
   const [searchMultiData, setSearchMultiData] = useState<any>();
   const scrollHeight = useQuery(SCROLL_HEIGHT);
   const { t } = useTranslation();
+  const location = useLocation();
+  const hasSearchParams = Object.keys(searchParam).length !== 0;
 
-  let queryVariables = SEARCH_QUERY_VARIABLES;
-  if (selectedCollectionId) {
-    queryVariables = COLLECTION_SEARCH_QUERY_VARIABLES;
+  let groups: boolean = location.pathname.includes('group');
+
+  let queryVariables = groups ? GROUP_QUERY_VARIABLES : SEARCH_QUERY_VARIABLES;
+  if (selectedCollectionId || entityType === 'collection') {
+    queryVariables = groups
+      ? GROUP_COLLECTION_SEARCH_QUERY_VARIABLES
+      : COLLECTION_SEARCH_QUERY_VARIABLES;
   }
   if (savedSearchCriteria) {
     const variables = JSON.parse(savedSearchCriteria);
     queryVariables = variables;
   }
+  const searchQuery: any = groups ? GROUP_SEARCH_QUERY : SEARCH_QUERY;
+  const searchMultiQuery: any = groups ? GROUP_SEARCH_MULTI_QUERY : SEARCH_MULTI_QUERY;
+  const messageOptions: string = groups ? 'waMessageOpts' : 'messageOpts';
+  const searchOptions: string = groups ? 'filter' : 'searchFilter';
+  const chatType: string = groups ? 'waGroup' : 'contact';
 
   // check if there is a previous scroll height
   useEffect(() => {
@@ -95,7 +116,7 @@ export const ConversationList = ({
     error: conversationError,
     data,
     refetch,
-  } = useQuery<any>(SEARCH_QUERY, {
+  } = useQuery<any>(searchQuery, {
     variables: queryVariables,
     fetchPolicy: 'cache-only',
   });
@@ -103,12 +124,34 @@ export const ConversationList = ({
   // reset offset value on saved search changes
   useEffect(() => {
     if (savedSearchCriteriaId) {
-      setLoadingOffset(DEFAULT_CONTACT_LIMIT);
+      setLoadingOffset(DEFAULT_ENTITY_LIMIT);
       refetch(queryVariables);
     }
   }, [savedSearchCriteriaId]);
 
   const filterVariables = () => {
+    if (groups && selectedCollectionId) {
+      return GROUP_COLLECTION_SEARCH_QUERY_VARIABLES;
+    } else if (groups) {
+      if (phonenumber?.length === 0 || !phonenumber) {
+        return GROUP_QUERY_VARIABLES;
+      }
+      return getVariables(
+        {
+          limit: DEFAULT_ENTITY_LIMIT,
+        },
+        {
+          limit: DEFAULT_MESSAGE_LIMIT,
+        },
+        {
+          filter: {
+            waPhoneIds: phonenumber?.map((phone: any) => phone.id),
+          },
+        },
+        groups
+      );
+    }
+
     if (savedSearchCriteria && Object.keys(searchParam).length === 0) {
       const variables = JSON.parse(savedSearchCriteria);
       if (searchVal) variables.filter.term = searchVal;
@@ -143,37 +186,42 @@ export const ConversationList = ({
       }
     }
 
-    return {
-      contactOpts: {
-        limit: DEFAULT_CONTACT_LIMIT,
+    return getVariables(
+      {
+        limit: DEFAULT_ENTITY_LIMIT,
       },
-      filter,
-      messageOpts: {
+      {
         limit: DEFAULT_MESSAGE_LIMIT,
       },
-    };
+      { filter },
+      groups
+    );
   };
 
-  const filterSearch = () => ({
-    contactOpts: {
-      limit: DEFAULT_CONTACT_LIMIT,
-      order: 'DESC',
-    },
-    searchFilter: {
-      term: searchVal,
-    },
-    messageOpts: {
-      limit: DEFAULT_MESSAGE_LIMIT,
-      offset: 0,
-      order: 'ASC',
-    },
-  });
+  const filterSearch = () =>
+    getVariables(
+      {
+        limit: DEFAULT_ENTITY_LIMIT,
+        order: 'DESC',
+      },
+      {
+        limit: DEFAULT_MESSAGE_LIMIT,
+        offset: 0,
+        order: 'ASC',
+      },
+      {
+        [searchOptions]: {
+          term: searchVal,
+        },
+      },
+      groups
+    );
 
   const [getFilterConvos, { called, loading, error, data: searchData }] =
-    useLazyQuery<any>(SEARCH_QUERY);
+    useLazyQuery<any>(searchQuery);
 
   // fetch data when typing for search
-  const [getFilterSearch] = useLazyQuery<any>(SEARCH_MULTI_QUERY, {
+  const [getFilterSearch] = useLazyQuery<any>(searchMultiQuery, {
     onCompleted: (multiSearch) => {
       setSearchMultiData(multiSearch);
     },
@@ -203,14 +251,13 @@ export const ConversationList = ({
   );
 
   useEffect(() => {
-    const hasSearchParams = Object.keys(searchParam).length !== 0;
     // Use multi search when has search value and when there is no collection id
     if (searchVal && !hasSearchParams && !selectedCollectionId) {
       addLogs(`Use multi search when has search value`, filterSearch());
       getFilterSearch({
         variables: filterSearch(),
       });
-    } else if (hasSearchParams || savedSearchCriteria) {
+    } else if (hasSearchParams || savedSearchCriteria || phonenumber) {
       // This is used for filtering the searches, when you click on it, so only call it
       // when user clicks and savedSearchCriteriaId is set.
       addLogs(`filtering the searches`, filterVariables());
@@ -218,7 +265,7 @@ export const ConversationList = ({
         variables: filterVariables(),
       });
     }
-  }, [searchVal, searchParam, savedSearchCriteria]);
+  }, [searchVal, searchParam, savedSearchCriteria, phonenumber]);
 
   // Other cases
   if ((called && loading) || conversationLoading) return <Loading />;
@@ -247,46 +294,36 @@ export const ConversationList = ({
   }
 
   // If no cache, assign conversations data from search query.
-  if (called && (searchVal || savedSearchCriteria || searchParam)) {
+  if (called && (searchVal || savedSearchCriteria || hasSearchParams || phonenumber)) {
     conversations = searchData.search;
   }
 
   const buildChatConversation = (index: number, header: any, conversation: any) => {
     // We don't have the contact data in the case of contacts.
-    let contact = conversation;
-    if (conversation.contact) {
-      contact = conversation.contact;
-    }
-
-    let selectedRecord = false;
-    if (selectedContactId === contact.id) {
-      selectedRecord = true;
-    }
-
+    const { displayName, contactIsOrgRead, selectedRecord, entityId, entity, timer } =
+      getConversationForSearchMulti(conversation, selectedContactId, groups);
     return (
       <Fragment>
         {index === 0 ? header : null}
         <ChatConversation
-          key={contact.id}
+          key={entityId}
           selected={selectedRecord}
           onClick={() => {
             setSearchHeight();
             if (entityType === 'contact' && setSelectedContactId) {
-              setSelectedContactId(contact.id);
+              setSelectedContactId(entity.id);
             }
           }}
           entityType={entityType}
           index={index}
-          contactId={contact.id}
-          contactName={contact.name || contact.maskedPhone}
+          entityId={entityId}
+          contactName={displayName}
           lastMessage={conversation}
-          senderLastMessage={contact.lastMessageAt}
-          contactStatus={contact.status}
-          contactBspStatus={contact.bspStatus}
-          contactIsOrgRead={contact.isOrgRead}
+          contactIsOrgRead={contactIsOrgRead}
           highlightSearch={searchVal}
           messageNumber={conversation.messageNumber}
           searchMode={searchMode}
+          timer={timer}
         />
       </Fragment>
     );
@@ -296,8 +333,11 @@ export const ConversationList = ({
   // If a search term is used, use the SearchMulti API. For searches term, this is not applicable.
   if (searchVal && searchMultiData && Object.keys(searchParam).length === 0) {
     conversations = searchMultiData.searchMulti;
+
     // to set search response sequence
-    const searchArray = { contacts: [], messages: [], labels: [] };
+    const searchArray = groups
+      ? { groups: [], messages: [] }
+      : { contacts: [], messages: [], labels: [] };
     let conversationsData;
     Object.keys(searchArray).forEach((dataArray: any) => {
       const header = (
@@ -319,71 +359,49 @@ export const ConversationList = ({
   // build the conversation list only if there are conversations
   if (!conversationList && conversations && conversations.length > 0) {
     conversationList = conversations.map((conversation: any, index: number) => {
-      let lastMessage = [];
-      if (conversation.messages.length > 0) {
-        [lastMessage] = conversation.messages;
-      }
-      const key = index;
-
-      let entityId: any;
-      let senderLastMessage = '';
-      let displayName = '';
-      let contactStatus = '';
-      let contactBspStatus = '';
-      let contactIsOrgRead = false;
-      let selectedRecord = false;
-      if (conversation.contact) {
-        if (selectedContactId === conversation.contact.id) {
-          selectedRecord = true;
-        }
-        entityId = conversation.contact.id;
-        displayName = getDisplayName(conversation);
-        senderLastMessage = conversation.contact.lastMessageAt;
-        contactStatus = conversation.contact.status;
-        contactBspStatus = conversation.contact.bspStatus;
-        contactIsOrgRead = conversation.contact.isOrgRead;
-      } else if (conversation.group) {
-        if (selectedCollectionId === conversation.group.id) {
-          selectedRecord = true;
-        }
-        entityId = conversation.group.id;
-        displayName = conversation.group.label;
-      }
+      const { lastMessage, entityId, displayName, contactIsOrgRead, selectedRecord, timer } =
+        getConversation(conversation, selectedContactId, selectedCollectionId);
 
       return (
         <ChatConversation
-          key={key}
+          key={entityId}
           selected={selectedRecord}
           onClick={() => {
             setSearchHeight();
             showMessages();
             if (entityType === 'contact' && setSelectedContactId) {
-              setSelectedContactId(conversation.contact.id);
+              setSelectedContactId(conversation[chatType].id);
             } else if (entityType === 'collection' && setSelectedCollectionId) {
               setSelectedCollectionId(conversation.group.id);
             }
           }}
           index={index}
-          contactId={entityId}
+          entityId={entityId}
           entityType={entityType}
           contactName={displayName}
           lastMessage={lastMessage}
-          senderLastMessage={senderLastMessage}
-          contactStatus={contactStatus}
-          contactBspStatus={contactBspStatus}
           contactIsOrgRead={contactIsOrgRead}
+          timer={timer}
         />
       );
     });
   }
 
   if (!conversationList) {
-    conversationList = (
-      <p data-testid="empty-result" className={styles.EmptySearch}>
-        {t(`Sorry, no results found!
+    if (data && data.search.length === 0) {
+      conversationList = (
+        <p data-testid="empty-result" className={styles.EmptySearch}>
+          {t(`No conversations found!`)}
+        </p>
+      );
+    } else {
+      conversationList = (
+        <p data-testid="empty-result" className={styles.EmptySearch}>
+          {t(`Sorry, no results found!
     Please try a different search.`)}
-      </p>
-    );
+        </p>
+      );
+    }
   }
 
   const loadMoreMessages = () => {
@@ -391,7 +409,7 @@ export const ConversationList = ({
     // load more for multi search
     if (searchVal && !selectedCollectionId) {
       const variables = filterSearch();
-      variables.messageOpts = {
+      variables[messageOptions] = {
         limit: DEFAULT_MESSAGE_LOADMORE_LIMIT,
         offset: conversations.messages.length,
         order: 'ASC',
@@ -420,20 +438,21 @@ export const ConversationList = ({
         }
       }
 
-      const conversationLoadMoreVariables = {
-        contactOpts: {
-          limit: DEFAULT_CONTACT_LOADMORE_LIMIT,
+      const conversationLoadMoreVariables: any = getVariables(
+        {
+          limit: DEFAULT_ENTITY_LOADMORE_LIMIT,
           offset: loadingOffset,
         },
-        filter,
-        messageOpts: {
+        {
           limit: DEFAULT_MESSAGE_LIMIT,
         },
-      };
+        { filter },
+        groups
+      );
 
       client
         .query({
-          query: SEARCH_QUERY,
+          query: searchQuery,
           variables: conversationLoadMoreVariables,
         })
         .then(({ data: loadMoreData }) => {
@@ -446,10 +465,14 @@ export const ConversationList = ({
               variables.filter.groupLabel = searchVal;
             }
             // save the conversation and update cache
-            updateConversations(loadMoreData, variables);
+            if (groups) {
+              updateGroupConversations(loadMoreData, variables);
+            } else {
+              updateConversations(loadMoreData, variables);
+            }
             setShowLoadMore(true);
 
-            setLoadingOffset(loadingOffset + DEFAULT_CONTACT_LOADMORE_LIMIT);
+            setLoadingOffset(loadingOffset + DEFAULT_ENTITY_LOADMORE_LIMIT);
           }
           setShowLoading(false);
         })
@@ -518,7 +541,7 @@ export const ConversationList = ({
         {conversationList}
         {showLoadMore &&
         conversations &&
-        (conversations.length > DEFAULT_CONTACT_LIMIT - 1 ||
+        (conversations.length > DEFAULT_ENTITY_LIMIT - 1 ||
           conversations.messages?.length > DEFAULT_MESSAGE_LIMIT - 1)
           ? loadMore
           : null}
