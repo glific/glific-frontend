@@ -131,7 +131,7 @@ export const ChatInput = ({
         setAttachmentAdded(false);
         setAttachmentURL('');
         setAttachmentType('');
-        resetVariable();
+        // resetVariable();
       }
     },
   });

@@ -47,7 +47,7 @@ export const GroupDetails = () => {
           {maytapiNumber === contact.phone ? 'Maytapi Number' : contact.name || contact.phone}{' '}
           {isAdmin ? <span className={styles.AdminTag}>Admin</span> : null}
         </div>
-        {contact.name && (
+        {(contact.name || maytapiNumber === contact.phone) && (
           <div data-testid="phone-number" className={styles.Phone}>
             {contact.phone}
           </div>
