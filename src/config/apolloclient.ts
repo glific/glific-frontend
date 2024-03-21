@@ -37,6 +37,25 @@ export const cache = new InMemoryCache({
         },
       },
     },
+    WaConversation: {
+      fields: {
+        waMessages: {
+          merge(existing = [], incoming) {
+            // Replace the existing messages with the incoming messages
+            return [...existing, ...incoming];
+          },
+        },
+      },
+    },
+    Conversation: {
+      fields: {
+        messages: {
+          merge(existing = [], incoming) {
+            return [...existing, ...incoming];
+          },
+        },
+      },
+    },
   },
 });
 
