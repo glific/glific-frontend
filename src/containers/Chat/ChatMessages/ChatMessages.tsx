@@ -646,8 +646,6 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
       variables,
     });
 
-    console.log(messageNumber);
-
     // keep scroll at last message
     const element = document.querySelector(`#search${messageNumber}`);
     if (element) {
