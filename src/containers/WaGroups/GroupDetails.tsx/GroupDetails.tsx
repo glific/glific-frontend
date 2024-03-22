@@ -6,7 +6,7 @@ import styles from './GroupDetails.module.css';
 import { UPDATE_GROUP_CONTACT } from 'graphql/mutations/Group';
 import {
   COUNT_COUNTACTS_WA_GROUPS,
-  GET_WA_GROUPS,
+  GROUP_SEARCH_QUERY,
   LIST_CONTACTS_WA_GROUPS,
 } from 'graphql/queries/WaGroups';
 import DeleteIcon from 'assets/images/icons/Delete/Red.svg?react';
@@ -14,7 +14,7 @@ import { useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import { setNotification } from 'common/notification';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
-import { CircularProgress } from '@mui/material';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
 
 export const GroupDetails = () => {
   const params = useParams();
@@ -24,10 +24,22 @@ export const GroupDetails = () => {
   const [deleteVariables, setDeleteVariables] = useState<any>();
   const [groupDetails, setGroupDetails] = useState<any>();
 
-  const { loading: groupDataLoading } = useQuery(GET_WA_GROUPS, {
+  const { loading: groupDataLoading } = useQuery(GROUP_SEARCH_QUERY, {
+    variables: {
+      waGroupOpts: {
+        limit: 1,
+      },
+      waMessageOpts: {
+        limit: 0,
+        offset: 0,
+      },
+      filter: {
+        id: params.id,
+      },
+    },
     onCompleted: (data) => {
-      if (data.waGroups) {
-        setGroupDetails(data.waGroups.find((group: any) => group.id === params.id));
+      if (data.search) {
+        setGroupDetails(data.search[0].waGroup);
       }
     },
   });
@@ -152,7 +164,7 @@ export const GroupDetails = () => {
   }
 
   if (groupDataLoading) {
-    return <CircularProgress data-testid="loading" />;
+    return <Loading />;
   }
 
   return (
@@ -161,7 +173,7 @@ export const GroupDetails = () => {
         backLink={`/group/chat/${params.id}`}
         dialogTitle={dialogTitle}
         columnNames={columnNames}
-        title={groupDetails?.name}
+        title={groupDetails?.label}
         listItem="waGroupContact"
         listItemName="waGroupContact"
         searchParameter={['term']}
