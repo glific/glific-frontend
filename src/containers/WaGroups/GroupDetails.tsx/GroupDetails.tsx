@@ -24,6 +24,7 @@ export const GroupDetails = () => {
   const [deleteVariables, setDeleteVariables] = useState<any>();
   const [groupDetails, setGroupDetails] = useState<any>();
 
+  // we should use wa_group api with filter by id here
   const { loading: groupDataLoading } = useQuery(GROUP_SEARCH_QUERY, {
     variables: {
       waGroupOpts: {
