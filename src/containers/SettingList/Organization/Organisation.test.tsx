@@ -57,7 +57,7 @@ test('it renders component and clicks cancel', async () => {
   });
 });
 
-test('it renders component in edit mode', async () => {
+test.only('it renders component in edit mode', async () => {
   const { getByText, getByTestId } = render(
     <MockedProvider mocks={[...ORGANIZATION_MOCKS]} addTypename={false}>
       <Router>

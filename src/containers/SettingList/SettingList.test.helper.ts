@@ -105,33 +105,63 @@ const updateOrganizationMock = {
       updateOrganization: {
         errors: null,
         organization: {
-          defaultLanguage: { id: '1', label: 'English' },
           activeLanguages: [
-            { id: '1', label: 'English' },
-            { id: '2', label: 'Hindi' },
+            {
+              id: '1',
+              label: 'English',
+            },
+            {
+              id: '2',
+              label: 'Hindi',
+            },
           ],
+          defaultLanguage: {
+            id: '1',
+            label: 'English',
+          },
           id: '1',
           name: 'Glific',
           outOfOffice: {
-            defaultFlowId: '7',
+            defaultFlowId: null,
             enabled: true,
             enabledDays: [
-              { id: 1, enabled: true },
-              { id: 2, enabled: true },
-              { id: 3, enabled: true },
-              { id: 4, enabled: true },
-              { id: 5, enabled: true },
-              { id: 6, enabled: true },
-              { id: 7, enabled: true },
+              {
+                enabled: true,
+                id: 1,
+              },
+              {
+                enabled: true,
+                id: 2,
+              },
+              {
+                enabled: true,
+                id: 3,
+              },
+              {
+                enabled: true,
+                id: 4,
+              },
+              {
+                enabled: true,
+                id: 5,
+              },
+              {
+                enabled: false,
+                id: 6,
+              },
+              {
+                enabled: false,
+                id: 7,
+              },
             ],
             endTime: '20:00:00',
             flowId: null,
             startTime: '09:00:00',
           },
           setting: {
+            criticalBalanceThreshold: '3',
             lowBalanceThreshold: '10',
-            criticalBalanceThreshold: '5',
-            sendWarningMail: false,
+            sendWarningMail: true,
           },
           shortcode: 'glific',
         },
@@ -163,33 +193,63 @@ const updateOrganizationMock2 = {
       updateOrganization: {
         errors: null,
         organization: {
-          defaultLanguage: { id: '1', label: 'English' },
           activeLanguages: [
-            { id: '1', label: 'English' },
-            { id: '2', label: 'Hindi' },
+            {
+              id: '1',
+              label: 'English',
+            },
+            {
+              id: '2',
+              label: 'Hindi',
+            },
           ],
+          defaultLanguage: {
+            id: '1',
+            label: 'English',
+          },
           id: '1',
           name: 'Glific',
           outOfOffice: {
-            defaultFlowId: '7',
+            defaultFlowId: null,
             enabled: true,
             enabledDays: [
-              { id: 1, enabled: true },
-              { id: 2, enabled: true },
-              { id: 3, enabled: true },
-              { id: 4, enabled: true },
-              { id: 5, enabled: true },
-              { id: 6, enabled: true },
-              { id: 7, enabled: true },
+              {
+                enabled: true,
+                id: 1,
+              },
+              {
+                enabled: true,
+                id: 2,
+              },
+              {
+                enabled: true,
+                id: 3,
+              },
+              {
+                enabled: true,
+                id: 4,
+              },
+              {
+                enabled: true,
+                id: 5,
+              },
+              {
+                enabled: false,
+                id: 6,
+              },
+              {
+                enabled: false,
+                id: 7,
+              },
             ],
             endTime: '20:00:00',
             flowId: null,
             startTime: '09:00:00',
           },
           setting: {
+            criticalBalanceThreshold: '3',
             lowBalanceThreshold: '10',
-            criticalBalanceThreshold: '5',
-            sendWarningMail: false,
+            sendWarningMail: true,
           },
           shortcode: 'glific',
         },

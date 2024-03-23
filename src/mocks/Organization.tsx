@@ -223,6 +223,7 @@ export const getOrganizationServicesQuery = {
         contactProfileEnabled: true,
         ticketingEnabled: true,
         autoTranslationEnabled: true,
+        whatsappGroupEnabled: true,
       },
     },
   },

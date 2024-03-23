@@ -77,6 +77,42 @@ export const getCollectionsQuery = [
   },
 ];
 
+export const getAllCollectionsQuery = [
+  {
+    request: {
+      query: GET_COLLECTIONS,
+      variables: { filter: {}, opts: { limit: null, offset: 0, order: 'ASC' } },
+    },
+    result: {
+      data: {
+        groups: [
+          {
+            id: '1',
+            label: 'Staff group',
+            isRestricted: true,
+          },
+        ],
+      },
+    },
+  },
+  {
+    request: {
+      query: GET_COLLECTIONS,
+    },
+    result: {
+      data: {
+        groups: [
+          {
+            id: '1',
+            label: 'Staff group',
+            isRestricted: true,
+          },
+        ],
+      },
+    },
+  },
+];
+
 export const getOrganizationCollections = {
   request: {
     query: GET_ORGANIZATION_COLLECTIONS,
