@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { startTransition, useState, useEffect, useMemo } from 'react';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import { ApolloProvider } from '@apollo/client';
 import 'i18n/config';
@@ -7,10 +7,15 @@ import 'assets/fonts/fonts.css';
 import gqlClient from 'config/apolloclient';
 import { SessionContext, SideDrawerContext } from 'context/session';
 import ErrorHandler from 'containers/ErrorHandler/ErrorHandler';
-import { checkAuthStatusService, getAuthSession } from 'services/AuthService';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
+import {
+  getAuthSession,
+  checkAuthStatusService,
+} from 'services/AuthService';
 import { UnauthenticatedRoute } from 'routes/UnauthenticatedRoute/UnauthenticatedRoute';
 import { AuthenticatedRoute } from 'routes/AuthenticatedRoute/AuthenticatedRoute';
 import { Logout } from 'containers/Auth/Logout/Logout';
+import { checkSessionValidity } from 'common/utils';
 
 const App = () => {
   const navigate = useNavigate();
@@ -20,9 +25,25 @@ const App = () => {
   const [drawerOpen, setDrawerOpen] = useState(true);
 
   useEffect(() => {
-    const isAccessTokenPresent = getAuthSession('accessToken') !== null;
-    const isTokenExpired = checkAuthStatusService();
-    setAuthenticated(isTokenExpired || isAccessTokenPresent);
+    const checkAuth = async () => {
+      const isAccessTokenPresent = getAuthSession('accessToken') !== null;
+      const isTokenAlive = checkAuthStatusService();
+      let isSessionAlive = false;
+      if (!isAccessTokenPresent) {
+        // New user
+        isSessionAlive = false;
+      } else if (isTokenAlive) {
+        // Healthy Session
+        isSessionAlive = true;
+      } else {
+        // Expired Token
+        isSessionAlive = await checkSessionValidity();
+      }
+      startTransition(() => {
+        setAuthenticated(isSessionAlive);
+      });
+    };
+    checkAuth();
   }, []);
 
   const sideDrawerValues = useMemo(
@@ -67,7 +88,9 @@ const App = () => {
     <SessionContext.Provider value={values}>
       <ApolloProvider client={gqlClient(navigate)}>
         <ErrorHandler />
-        <SideDrawerContext.Provider value={sideDrawerValues}>{routes}</SideDrawerContext.Provider>
+        <SideDrawerContext.Provider value={sideDrawerValues}>
+          {routes ? routes : <Loading />}
+        </SideDrawerContext.Provider>
       </ApolloProvider>
     </SessionContext.Provider>
   );
