@@ -72,7 +72,7 @@ describe('collection', () => {
     );
 
     // loading is show initially
-    expect(getByTestId('loading')).toBeInTheDocument();
+    expect(getByTestId('loader')).toBeInTheDocument();
 
     await waitFor(() => {
       expect(getByText('Edit collection')).toBeInTheDocument();
@@ -103,7 +103,7 @@ describe('collection', () => {
   test('should be able to create a collection', async () => {
     const { getByText, getAllByRole, getByTestId } = render(wrapper);
 
-    expect(getByTestId('loading')).toBeInTheDocument();
+    expect(getByTestId('loader')).toBeInTheDocument();
 
     await waitFor(() => {
       expect(getByText('Title')).toBeInTheDocument();
@@ -120,7 +120,7 @@ describe('collection', () => {
   test('should be able to check for existing collections', async () => {
     const { getByText, getAllByRole, getByTestId } = render(wrapper);
 
-    expect(getByTestId('loading')).toBeInTheDocument();
+    expect(getByTestId('loader')).toBeInTheDocument();
 
     await waitFor(() => {
       expect(getByText('Title')).toBeInTheDocument();
@@ -157,7 +157,7 @@ describe('collection', () => {
     });
 
     const { getByTestId } = render(wrapper);
-    expect(getByTestId('loading')).toBeInTheDocument();
+    expect(getByTestId('loader')).toBeInTheDocument();
 
     await waitFor(() => {
       expect(getByTestId('collection')).toBeInTheDocument();

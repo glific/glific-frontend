@@ -39,7 +39,7 @@ export const MessagesWithLinks = ({
   return (
     <>
       {showPreview && linkPreview}
-      <div className={`${styles.Message} ${isSender && styles.MessageOther} `}>{messagebody}</div>
+      <div className={`${styles.Caption} ${isSender && styles.MessageOther} `}>{messagebody}</div>
     </>
   );
 };

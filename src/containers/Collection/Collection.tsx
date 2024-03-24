@@ -27,8 +27,8 @@ import {
 } from 'common/constants';
 import styles from './Collection.module.css';
 import { collectionInfo } from 'common/HelpData';
-import { CircularProgress } from '@mui/material';
 import { GROUP_SEARCH_QUERY } from 'graphql/queries/WaGroups';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
 
 export const Collection = () => {
   const [selectedUsers, { data: collectionUsers }] = useLazyQuery(GET_COLLECTION_USERS, {
@@ -191,7 +191,7 @@ export const Collection = () => {
     return payloadWithRoleIdsAndType;
   };
 
-  if (loading) return <CircularProgress data-testid="loading" />;
+  if (loading) return <Loading />;
 
   return (
     <FormLayout
