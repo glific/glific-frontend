@@ -282,9 +282,9 @@ export const getConversationForSearchMulti = (
   let contactIsOrgRead: boolean = false;
 
   if (groups) {
-    entityId = entity.id || entity.waGroup?.id;
+    entityId = entity.waGroup?.id || entity.id;
   } else {
-    entityId = entity.id || entity.contact?.id;
+    entityId = entity.contact?.id || entity.id;
   }
 
   if (conversation[chatType]) {

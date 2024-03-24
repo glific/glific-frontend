@@ -3,6 +3,7 @@ import { gql } from '@apollo/client';
 export const GROUP_SEARCH_QUERY = gql`
   query WaSearch($filter: WaSearchFilter!, $waGroupOpts: Opts!, $waMessageOpts: Opts!) {
     search: waSearch(filter: $filter, waGroupOpts: $waGroupOpts, waMessageOpts: $waMessageOpts) {
+      id
       group {
         id
         label
@@ -73,6 +74,7 @@ export const GROUP_SEARCH_MULTI_QUERY = gql`
         }
       }
       messages: waMessages {
+        id
         body
         insertedAt
         messageNumber

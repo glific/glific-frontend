@@ -73,6 +73,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
   const [showDropdown, setShowDropdown] = useState<any>(null);
   const [showLoadMore, setShowLoadMore] = useState(true);
   const [scrolledToMessage, setScrolledToMessage] = useState(false);
+  const [scrollToMessageNumber, setScrollToMessageNumber] = useState();
   const [showJumpToLatest, setShowJumpToLatest] = useState(false);
   const [conversationInfo, setConversationInfo] = useState<any>({});
   const [collectionVariables, setCollectionVariables] = useState<any>({});
@@ -152,6 +153,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
     loading: conversationLoad,
     error: conversationError,
     data: allConversations,
+    fetchMore,
   }: any = useQuery(searchQuery, {
     variables: queryVariables,
     fetchPolicy: 'cache-only',
@@ -601,7 +603,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
         groups={groups}
         {...message}
         entityId={entityId}
-        key={message.id}
+        key={message.messageNumber}
         popup={message.id === showDropdown}
         onClick={() => showEditDialog(message.id)}
         focus={index === 0}
@@ -642,16 +644,40 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
 
     addLogs(`load More Messages-${collectionId}`, variables);
 
-    getSearchQuery({
+    fetchMore({
       variables,
-    });
+      updateQuery: (prev: any, { fetchMoreResult }: any) => {
+        const cachedConversations = JSON.parse(JSON.stringify(prev));
+        const newMessages = fetchMoreResult.search[0].messages;
+        let updatedConversation = cachedConversations.search;
 
-    // keep scroll at last message
-    const element = document.querySelector(`#search${messageNumber}`);
+        updatedConversation.find((conversation: any) => {
+          if (conversation[chatType].id === entityId?.toString()) {
+            conversation.messages = [...conversation.messages, ...newMessages];
+          }
+        });
+
+        cachedConversations.search = [...updatedConversation, ...cachedConversations.search];
+        return { ...prev, ...cachedConversations };
+      },
+    }).then((fetchMoreResult: any) => {
+      const conversationData = fetchMoreResult.data;
+      if (
+        (conversationData && conversationData.search.length === 0) ||
+        conversationData.search[0].messages.length === 0
+      ) {
+        setShowLoadMore(false);
+      }
+      setScrollToMessageNumber(messageNumber);
+    });
+  };
+
+  useEffect(() => {
+    const element = document.querySelector(`#search${scrollToMessageNumber}`);
     if (element) {
       element.scrollIntoView();
     }
-  };
+  }, [scrollToMessageNumber]);
 
   let messageListContainer;
   // Check if there are conversation messages else display no messages
