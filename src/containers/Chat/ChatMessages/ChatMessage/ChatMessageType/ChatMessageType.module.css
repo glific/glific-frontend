@@ -118,3 +118,11 @@
 .DocumentIcon {
   margin-right: 8px;
 }
+
+.CaptionSender {
+  color: #fff !important;
+}
+
+.CaptionReciever {
+  color: #073f24 !important;
+}

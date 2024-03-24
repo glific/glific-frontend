@@ -43,7 +43,7 @@ const wrapper = (
 test('should render Group details', async () => {
   const { getByTestId, getAllByTestId } = render(wrapper);
 
-  expect(getByTestId('loading')).toBeInTheDocument();
+  expect(getByTestId('loader')).toBeInTheDocument();
 
   await waitFor(() => {
     expect(getAllByTestId('contact-name')[0]).toHaveTextContent('User 1');
@@ -54,7 +54,7 @@ test('should render Group details', async () => {
 test('should render admin tag for admins', async () => {
   const { getByTestId, getByText } = render(wrapper);
 
-  expect(getByTestId('loading')).toBeInTheDocument();
+  expect(getByTestId('loader')).toBeInTheDocument();
 
   await waitFor(() => {
     expect(getByText('Admin')).toBeInTheDocument();
@@ -64,7 +64,7 @@ test('should render admin tag for admins', async () => {
 test('should render Maytapi Numer for maytapi managed numbers', async () => {
   const { getByTestId, getAllByTestId } = render(wrapper);
 
-  expect(getByTestId('loading')).toBeInTheDocument();
+  expect(getByTestId('loader')).toBeInTheDocument();
 
   await waitFor(() => {
     expect(getAllByTestId('contact-name')[1]).toHaveTextContent('Maytapi Number');
@@ -74,7 +74,7 @@ test('should render Maytapi Numer for maytapi managed numbers', async () => {
 test('if number of groups exceed 4 it should show + n groups ', async () => {
   const { getByTestId, getAllByTestId } = render(wrapper);
 
-  expect(getByTestId('loading')).toBeInTheDocument();
+  expect(getByTestId('loader')).toBeInTheDocument();
 
   await waitFor(() => {
     expect(getAllByTestId('contact-name')[0]).toHaveTextContent('User 1');
@@ -92,7 +92,7 @@ test('if number of groups exceed 4 it should show + n groups ', async () => {
 test('should remove contact', async () => {
   const { getByTestId, getAllByTestId } = render(wrapper);
 
-  expect(getByTestId('loading')).toBeInTheDocument();
+  expect(getByTestId('loader')).toBeInTheDocument();
 
   await waitFor(() => {
     expect(getAllByTestId('contact-name')[0]).toHaveTextContent('User 1');
@@ -114,7 +114,7 @@ test('should remove contact', async () => {
 test('should close dialog box', async () => {
   const { getByTestId, getAllByTestId } = render(wrapper);
 
-  expect(getByTestId('loading')).toBeInTheDocument();
+  expect(getByTestId('loader')).toBeInTheDocument();
 
   await waitFor(() => {
     expect(getAllByTestId('contact-name')[0]).toHaveTextContent('User 1');
