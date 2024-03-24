@@ -7,7 +7,7 @@ import 'assets/fonts/fonts.css';
 import gqlClient from 'config/apolloclient';
 import { SessionContext, SideDrawerContext } from 'context/session';
 import ErrorHandler from 'containers/ErrorHandler/ErrorHandler';
-import Loading from 'components/UI/Layout/Loading/Loading';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
 import {
   getAuthSession,
   checkAuthStatusService,
@@ -15,7 +15,7 @@ import {
 import { UnauthenticatedRoute } from 'routes/UnauthenticatedRoute/UnauthenticatedRoute';
 import { AuthenticatedRoute } from 'routes/AuthenticatedRoute/AuthenticatedRoute';
 import { Logout } from 'containers/Auth/Logout/Logout';
-import { isGreaterThanLgBreakpoint, checkSessionValidity } from 'common/utils';
+import { checkSessionValidity } from 'common/utils';
 
 const App = () => {
   const navigate = useNavigate();
@@ -88,7 +88,7 @@ const App = () => {
     <SessionContext.Provider value={values}>
       <ApolloProvider client={gqlClient(navigate)}>
         <ErrorHandler />
-        <SideDrawerContext.Provider value={sideDraawerValues}>
+        <SideDrawerContext.Provider value={sideDrawerValues}>
           {routes ? routes : <Loading />}
         </SideDrawerContext.Provider>
       </ApolloProvider>

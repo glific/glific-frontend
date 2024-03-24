@@ -63,7 +63,7 @@ describe('<App /> ', () => {
     });
   });
 
-  it('it should render <Chat /> component and renew token if token has expired', async () => {
+  it('it should renew token and render <App /> component in authenticated mode if token has expired', async () => {
     vi.mock('services/AuthService', async (importOriginal) => {
       const mod = await importOriginal<typeof import('services/AuthService')>();
       return {
@@ -105,7 +105,7 @@ describe('<App /> ', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByTestId('navbar')).toBeInTheDocument();
+      expect(screen.getByText('Chat subscription')).toBeInTheDocument();
     });
   });
 
