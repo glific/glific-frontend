@@ -10,30 +10,12 @@ import ErrorHandler from 'containers/ErrorHandler/ErrorHandler';
 import Loading from 'components/UI/Layout/Loading/Loading';
 import {
   getAuthSession,
-  renewAuthToken,
-  setAuthSession,
   checkAuthStatusService,
 } from 'services/AuthService';
 import { UnauthenticatedRoute } from 'routes/UnauthenticatedRoute/UnauthenticatedRoute';
 import { AuthenticatedRoute } from 'routes/AuthenticatedRoute/AuthenticatedRoute';
 import { Logout } from 'containers/Auth/Logout/Logout';
-import { isGreaterThanLgBreakpoint } from 'common/utils';
-
-const checkSessionValidity = async function () {
-  try {
-    // renew access token
-    const response = await renewAuthToken();
-    if (response.data) {
-      // set the session
-      setAuthSession(response.data.data);
-      return true;
-    }
-    return false;
-  } catch (_err) {
-    // error indicates session has expired or invalid tokens
-    return false;
-  }
-};
+import { isGreaterThanLgBreakpoint, checkSessionValidity } from 'common/utils';
 
 const App = () => {
   const navigate = useNavigate();
