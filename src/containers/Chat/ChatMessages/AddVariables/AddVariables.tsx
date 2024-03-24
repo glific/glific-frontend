@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Formik, Form, Field } from 'formik';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
-
+import styles from './AddVariables.module.css';
 import { FLOW_EDITOR_API } from 'config';
 import { getAuthSession } from 'services/AuthService';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
@@ -26,7 +26,11 @@ export const AddVariables = ({
   variableParam,
 }: AddVariablesPropTypes) => {
   const [formFieldItems, setFormFieldItems] = useState<any>([]);
-  const [initialValues, setInitialValues] = useState<any>({});
+  const initialValue: any = {};
+  variableParam.forEach((value: any, i: any) => {
+    initialValue[`variable${i + 1}`] = value;
+  });
+  const [initialValues, setInitialValues] = useState<any>(initialValue);
   const { t } = useTranslation();
   const [contactVariables, setContactVariables] = useState<any>([]);
 
@@ -90,24 +94,14 @@ export const AddVariables = ({
           onInputChange: (event: any, newInputValue: any) => {
             syncInitialValuesWithFormik(newInputValue, index);
           },
-          textFieldProps: {
-            variant: 'outlined',
-            label: `Variable ${index}`,
-          },
+          label: `Variable ${index}`,
+          placeholder: `Variable ${index}`,
         });
       }
 
       setFormFieldItems(formFieldItem);
     }
   }, [template, contactVariables, initialValues]);
-
-  useEffect(() => {
-    const initialValue: any = {};
-    variableParam.forEach((value: any, i: any) => {
-      initialValue[`variable${i + 1}`] = value;
-    });
-    setInitialValues(initialValue);
-  }, [variableParam]);
 
   const updateText = (variable: any) => {
     let body = template?.body;
@@ -137,7 +131,6 @@ export const AddVariables = ({
           <DialogBox
             titleAlign="left"
             title={t('Select variables for the message')}
-            contentText={template?.body}
             handleOk={() => {
               submitForm();
             }}
@@ -148,9 +141,12 @@ export const AddVariables = ({
             buttonOk={t('Done')}
             alignButtons="left"
           >
+            <div className={styles.TemplateText}> {template?.body}</div>
             <div data-testid="variablesDialog">
               {formFieldItems.map((field: any) => (
-                <Field {...field} key={field.name} />
+                <div key={field.name} className={styles.Field}>
+                  <Field {...field} />
+                </div>
               ))}
             </div>
           </DialogBox>

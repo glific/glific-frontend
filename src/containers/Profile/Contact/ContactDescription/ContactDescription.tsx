@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { IconButton } from '@mui/material';
+import { IconButton, Typography } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 
@@ -112,19 +112,25 @@ export const ContactDescription = ({
 
   return (
     <div className={styles.DescriptionContainer} data-testid="contactDescription">
-      <h2 className={styles.Title}>{t('Details')}</h2>
-      <div className={styles.Description}>
-        {phoneDisplay}
-        <div className={styles.SessionTimer}>
-          <span>{t('Session Timer')}</span>
-          <Timer time={lastMessage} />
+      <div className={styles.DetailBlock}>
+        <Typography data-testid="formLabel" variant="h5" className={styles.FieldLabel}>
+          Number
+        </Typography>
+        <div className={styles.Description}>
+          {phoneDisplay}
+          <div className={styles.SessionTimer}>
+            <span>{t('Session Timer')}</span>
+            <Timer time={lastMessage} variant="secondary" />
+          </div>
         </div>
       </div>
+
+      <div className={styles.Divider} />
 
       <div className={styles.DetailBlock}>
         {collectionDetails.map((collectionItem: any) => (
           <div key={collectionItem.label}>
-            <div className={styles.DescriptionItem}>{collectionItem.label}</div>
+            <div className={styles.FieldLabel}>{collectionItem.label}</div>
             <div className={styles.DescriptionItemValue} data-testid="collections">
               {collectionItem.value}
             </div>
@@ -132,31 +138,36 @@ export const ContactDescription = ({
         ))}
       </div>
 
+      <div className={styles.Divider} />
+
       <div className={styles.DetailBlock}>
         <div>
-          <div className={styles.DescriptionItem}>Status</div>
+          <div className={styles.FieldLabel}>Status</div>
           <div className={styles.DescriptionItemValue}>{statusMessage}</div>
         </div>
+        <div className={styles.Divider} />
         {settingsValue &&
           typeof settingsValue === 'object' &&
           Object.keys(settingsValue).map((key) => (
             <div key={key}>
-              <div className={styles.DescriptionItem}>{key}</div>
+              <div className={styles.FieldLabel}>{key}</div>
               <div className={styles.DescriptionItemValue}>
                 {Object.keys(settingsValue[key])
                   .filter((settingKey) => settingsValue[key][settingKey] === true)
                   .join(', ')}
               </div>
+              <div className={styles.Divider} />
             </div>
           ))}
         {fieldsValue &&
           typeof fieldsValue === 'object' &&
           Object.keys(fieldsValue).map((key) => (
             <div key={key}>
-              <div className={styles.DescriptionItem}>
+              <div className={styles.FieldLabel}>
                 {fieldsValue[key].label ? fieldsValue[key].label : key.replace('_', ' ')}
               </div>
               <div className={styles.DescriptionItemValue}>{fieldsValue[key].value}</div>
+              <div className={styles.Divider} />
             </div>
           ))}
       </div>

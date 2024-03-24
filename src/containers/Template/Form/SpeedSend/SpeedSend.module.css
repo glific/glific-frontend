@@ -2,18 +2,3 @@
   width: 29px;
   height: 29px;
 }
-
-.AttachmentFields {
-  display: block;
-}
-
-.AttachmentFields > div:nth-child(4) {
-  width: 39%;
-  margin-right: 9px;
-  display: inline-block !important;
-}
-
-.AttachmentFields > div:nth-child(5) {
-  display: inline-block !important;
-  width: 59%;
-}

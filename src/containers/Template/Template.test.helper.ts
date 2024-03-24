@@ -14,7 +14,7 @@ import {
 } from 'mocks/Organization';
 import { templateCountQuery } from 'mocks/Template';
 import { CREATE_MEDIA_MESSAGE } from 'graphql/mutations/Chat';
-import { GET_TAGS } from 'graphql/queries/Tags';
+import { getFilterTagQuery } from 'mocks/Tag';
 
 const count = templateCountQuery(false, 2);
 
@@ -57,16 +57,8 @@ const speedSend = {
   request: {
     query: FILTER_SESSION_TEMPLATES,
     variables: {
-      filter: {
-        isHsm: false,
-      },
-
-      opts: {
-        limit: 50,
-        offset: 0,
-        order: 'ASC',
-        orderWith: 'label',
-      },
+      filter: { isHsm: false },
+      opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'label' },
     },
   },
   result: {
@@ -264,33 +256,166 @@ const getTemplateData = {
       buttons: null,
       buttonType: null,
       updatedAt: '2020-12-01T18:00:32Z',
+      tag: null,
+    },
+  },
+};
+
+const createHsmWithButtontemplate = {
+  request: {
+    query: CREATE_TEMPLATE,
+    variables: {
+      input: {
+        label: 'Hello',
+        body: 'Hi {{1}}, How are you',
+        type: 'TEXT',
+        shortcode: 'welcome',
+        example: 'Hi [[Glific], How are you',
+        category: 'ACCOUNT_UPDATE',
+        tagId: null,
+        isActive: true,
+        isHsm: true,
+        languageId: '1',
+        hasButtons: true,
+        buttons:
+          '[{"type":"QUICK_REPLY","text":"Quick reply 1"},{"type":"QUICK_REPLY","text":"Quick reply 2"}]',
+        buttonType: 'QUICK_REPLY',
+        translations: '{}',
+      },
+    },
+  },
+  result: {
+    data: {
+      createSessionTemplate: {
+        sessionTemplate: {
+          id: '1',
+          label: 'Hello',
+          body: 'Hi {{1}}, How are you',
+          type: 'TEXT',
+          shortcode: 'welcome',
+          isActive: true,
+          MessageMedia: null,
+          language: {
+            label: 'English',
+            id: '1',
+          },
+          translations: '{}',
+          category: 'ACCOUNT_UPDATE',
+          example: 'Hi [Glific], How are you',
+          hasButtons: true,
+          buttons:
+            '[{"type":"QUICK_REPLY","text":"Quick reply 1"},{"type":"QUICK_REPLY","text":"Quick reply 2"}]',
+          buttonType: 'QUICK_REPLY',
+        },
+        errors: null,
+      },
+    },
+  },
+};
+
+const createHsmWithPhonetemplate = {
+  request: {
+    query: CREATE_TEMPLATE,
+    variables: {
+      input: {
+        label: 'Hello',
+        body: 'Hi {{1}}, How are you',
+        type: 'TEXT',
+        shortcode: 'welcome',
+        example: 'Hi [[Glific], How are you',
+        category: 'ACCOUNT_UPDATE',
+        tagId: null,
+        isActive: true,
+        isHsm: true,
+        languageId: '1',
+        hasButtons: true,
+        buttons: '[{"type":"PHONE_NUMBER","text":"Call me","phone_number":"9876543210"}]',
+        buttonType: 'CALL_TO_ACTION',
+        translations: '{}',
+      },
+    },
+  },
+  result: {
+    data: {
+      createSessionTemplate: {
+        sessionTemplate: {
+          id: '1',
+          label: 'Hello',
+          body: 'Hi {{1}}, How are you',
+          type: 'TEXT',
+          shortcode: 'welcome',
+          isActive: true,
+          MessageMedia: null,
+          language: {
+            label: 'English',
+            id: '1',
+          },
+          translations: '{}',
+          category: 'ACCOUNT_UPDATE',
+          example: 'Hi [Glific], How are you',
+          hasButtons: true,
+          buttons: '[{"type":"PHONE_NUMBER","text":"Call me","phone_number":"9876543210"}]',
+          buttonType: 'CALL_TO_ACTION',
+        },
+        errors: null,
+      },
+    },
+  },
+};
+
+const createHSMtemplate = {
+  request: {
+    query: CREATE_TEMPLATE,
+    variables: {
+      input: {
+        label: 'Hello',
+        body: 'Hi {{1}}, How are you',
+        type: 'TEXT',
+        shortcode: 'welcome',
+        example: 'Hi [Glific], How are you',
+        category: 'ACCOUNT_UPDATE',
+        tagId: null,
+        isActive: true,
+        isHsm: true,
+        languageId: '1',
+        translations: '{}',
+      },
+    },
+  },
+  result: {
+    data: {
+      createSessionTemplate: {
+        sessionTemplate: {
+          id: '1',
+          label: 'Hello',
+          body: 'Hi {{1}}, How are you',
+          type: 'TEXT',
+          shortcode: 'welcome',
+          isActive: true,
+          MessageMedia: null,
+          language: {
+            label: 'English',
+            id: '1',
+          },
+          translations: '{}',
+          category: 'ACCOUNT_UPDATE',
+          example: 'Hi [Glific], How are you',
+          hasButtons: false,
+          buttons: null,
+          buttonType: null,
+        },
+        errors: null,
+      },
     },
   },
 };
 
 export const TEMPLATE_MOCKS = [
-  {
-    request: {
-      query: GET_TAGS,
-      variables: {},
-    },
-    result: {
-      data: {
-        tags: [
-          {
-            __typename: 'Tag',
-            id: '1',
-            label: 'Messages',
-          },
-          {
-            __typename: 'Tag',
-            id: '2',
-            label: 'Contacts',
-          },
-        ],
-      },
-    },
-  },
+  getFilterTagQuery,
+  createHSMtemplate,
+  getFilterTagQuery,
+  createHsmWithButtontemplate,
+  createHsmWithPhonetemplate,
   {
     request: {
       query: CREATE_TEMPLATE,
@@ -402,6 +527,8 @@ export const TEMPLATE_MOCKS = [
   filterTemplateQuery,
   filterTemplateQuery,
   count,
+  count,
+  speedSend,
   speedSend,
   HSMTemplateCount,
   HSMTemplate,
@@ -420,6 +547,7 @@ const getHSMTemplate = (id: string, status: string) => ({
   MessageMedia: null,
   body: 'You can now view your Account Balance or Mini statement for Account ending with {{1}} simply by selecting one of the options below.',
   id,
+  bspId: null,
   isActive: true,
   isHsm: true,
   isReserved: false,

@@ -1,101 +1,92 @@
-import { useLocation } from 'react-router-dom';
+import ChatIcon from 'assets/images/icons/SideDrawer/ChatIcon';
+import FlowIcon from 'assets/images/icons/SideDrawer/FlowIcon';
+import SearchIcon from 'assets/images/icons/SideDrawer/SearchIcon';
+import AnalyticsIcon from 'assets/images/icons/Analytics/Unselected.svg?react';
+import SpeedSendIcon from 'assets/images/icons/SideDrawer/SpeedSendIcon';
+import TemplateIcon from 'assets/images/icons/SideDrawer/TemplateIcon';
+import InteractiveMessageIcon from 'assets/images/icons/SideDrawer/InteractiveIcon';
+import TriggerIcon from 'assets/images/icons/SideDrawer/TriggerIcon';
+import NotificationIcon from 'assets/images/icons/SideDrawer/NotificationIcon';
+import SheetsIcon from 'assets/images/icons/SideDrawer/SheetsIcon';
+import ContactVariableIcon from 'assets/images/icons/SideDrawer/ContactVariableIcon';
+import WebhookLogsIcon from 'assets/images/icons/SideDrawer/WebhookIcon';
+import SupportAgentIcon from 'assets/images/icons/SideDrawer/TicketIcon';
+import ManageIcon from 'assets/images/icons/SideDrawer/ManageIcon';
+import CollectionIcon from 'assets/images/icons/SideDrawer/CollectionIcon';
+import StaffManagementIcon from 'assets/images/icons/SideDrawer/StaffIcon';
+import ContactIcon from 'assets/images/icons/SideDrawer/ContactIcon';
+import BlockIcon from 'assets/images/icons/SideDrawer/BlockIcon';
+import TagIcon from 'assets/images/icons/SideDrawer/TagIcon';
+import HelpIcon from 'assets/images/icons/SideDrawer/HelpIcon';
+import ProfileIcon from 'assets/images/icons/SideDrawer/ProfileIcon';
+import AcoountIcon from 'assets/images/icons/SideDrawer/AccountIcon';
+import SettingsIcon from 'assets/images/icons/SideDrawer/SettingsIcon';
+import LogoutIcon from 'assets/images/icons/SideDrawer/LogoutIcon';
+import OrganizationIcon from 'assets/images/icons/SideDrawer/OrganizationIcon';
+import ConsultingIcon from 'assets/images/icons/SideDrawer/ConsultingIcon';
+import WaChatIcon from 'assets/images/icons/SideDrawer/WaGroupChat';
+import WaCollectionIcon from 'assets/images/icons/SideDrawer/WaGroupCollection';
+import WaGroupIcon from 'assets/images/icons/SideDrawer/WhatsAppGroupIcon';
+import styles from './ListIcon.module.css';
+import FiberNewIcon from '@mui/icons-material/FiberNew';
 import { Badge } from '@mui/material';
 
-import chatIcon from 'assets/images/icons/Chat/Unselected.svg';
-import broadcastIcon from 'assets/images/icons/Broadcast/Unselected.svg';
-import flowIcon from 'assets/images/icons/Flow/Unselected.svg';
-import searchIcon from 'assets/images/icons/Search/Unselected.svg';
-import goalsIcon from 'assets/images/icons/Goals/Unselected.svg';
-import analyticsIcon from 'assets/images/icons/Analytics/Unselected.svg';
-import speedSendIcon from 'assets/images/icons/SpeedSend/Unselected.svg';
-import templateIcon from 'assets/images/icons/Template/Unselected.svg';
-import chatSelectedIcon from 'assets/images/icons/Chat/Selected.svg';
-import broadcastSelectedIcon from 'assets/images/icons/Broadcast/Selected.svg';
-import flowSelectedIcon from 'assets/images/icons/Flow/Selected.svg';
-import searchSelectedIcon from 'assets/images/icons/Search/Selected.svg';
-import analyticsSelectedIcon from 'assets/images/icons/Analytics/Selected.svg';
-import interactiveMessageIcon from 'assets/images/icons/InteractiveMessage/Unselected.svg';
-import interactiveMessageSelectedIcon from 'assets/images/icons/InteractiveMessage/Selected.svg';
-import speedSendSelectedIcon from 'assets/images/icons/SpeedSend/Selected.svg';
-import templateSelectedIcon from 'assets/images/icons/Template/Selected.svg';
-import triggerSelectedIcon from 'assets/images/icons/Trigger/Selected.svg';
-import triggerIcon from 'assets/images/icons/Trigger/Unselected.svg';
-import notificationIcon from 'assets/images/icons/Notification/Unselected.svg';
-import notificationSelectedIcon from 'assets/images/icons/Notification/Selected.svg';
-import sheetsIcon from 'assets/images/icons/Sheets/Light.svg';
-import contactVariableIcon from 'assets/images/icons/ContactVariable.svg';
-import webhookLogsIcon from 'assets/images/icons/Webhook/WebhookLight.svg';
-import supportAgentIcon from 'assets/images/icons/Ticket/Ticket.svg';
-import helpIcon from 'assets/images/icons/Help.svg';
-import styles from './ListIcon.module.css';
-
 export interface ListIconProps {
-  icon: string;
+  icon: string | undefined;
   count?: number;
-  showBadge?: boolean;
+  selected?: boolean;
 }
 
-export const ListIcon = ({ icon, count, showBadge }: ListIconProps) => {
-  const location = useLocation();
-  const stringsToIcons: { [iconName: string]: string } = {
-    chat: chatIcon,
-    broadcast: broadcastIcon,
-    flow: flowIcon,
-    search: searchIcon,
-    goal: goalsIcon,
-    analytics: analyticsIcon,
-    'speed-send': speedSendIcon,
-    template: templateIcon,
-    trigger: triggerIcon,
-    notification: notificationIcon,
-    'interactive-message': interactiveMessageIcon,
-    help: helpIcon,
-    sheets: sheetsIcon,
-    tickets: supportAgentIcon,
-    webhook: webhookLogsIcon,
-    fields: contactVariableIcon,
+const RenderIcon = ({ component: Component, color }: any) => <Component color={color} />;
+
+export const ListIcon = ({ icon = '', selected = false, count }: ListIconProps) => {
+  const stringsToIcons: { [iconName: string]: any } = {
+    chat: ChatIcon,
+    flow: FlowIcon,
+    search: SearchIcon,
+    analytics: AnalyticsIcon,
+    'speed-send': SpeedSendIcon,
+    template: TemplateIcon,
+    trigger: TriggerIcon,
+    notification: NotificationIcon,
+    'interactive-message': InteractiveMessageIcon,
+    help: HelpIcon,
+    sheets: SheetsIcon,
+    tickets: SupportAgentIcon,
+    webhook: WebhookLogsIcon,
+    fields: ContactVariableIcon,
+    manage: ManageIcon,
+    collection: CollectionIcon,
+    staff: StaffManagementIcon,
+    contact: ContactIcon,
+    block: BlockIcon,
+    tag: TagIcon,
+    profile: ProfileIcon,
+    account: AcoountIcon,
+    settings: SettingsIcon,
+    logout: LogoutIcon,
+    organization: OrganizationIcon,
+    consulting: ConsultingIcon,
+    new: FiberNewIcon,
+    waGroupCollection: WaCollectionIcon,
+    waGroupChat: WaChatIcon,
+    waGroup: WaGroupIcon,
   };
 
-  const stringsToSelectedIcons: { [iconName: string]: string } = {
-    chat: chatSelectedIcon,
-    broadcast: broadcastSelectedIcon,
-    flow: flowSelectedIcon,
-    search: searchSelectedIcon,
-    analytics: analyticsSelectedIcon,
-    'speed-send': speedSendSelectedIcon,
-    template: templateSelectedIcon,
-    trigger: triggerSelectedIcon,
-    notification: notificationSelectedIcon,
-    'interactive-message': interactiveMessageSelectedIcon,
-    sheets: sheetsIcon,
-    tickets: supportAgentIcon,
-    webhook: webhookLogsIcon,
-    fields: contactVariableIcon,
-  };
-
-  const iconImage = (
-    <img
-      src={
-        location.pathname.startsWith(`/${icon}`)
-          ? stringsToSelectedIcons[icon]
-          : stringsToIcons[icon]
-      }
-      alt={'Selected '.concat(icon)}
-      data-testid="listIcon"
-      style={{ marginRight: 0 }}
-    />
+  const iconImage = stringsToIcons[icon] && (
+    <RenderIcon component={stringsToIcons[icon]} color={selected ? '#073f24' : '#999999'} />
   );
 
   return (
-    <div>
-      {showBadge && count ? (
+    <span data-testid="listIcon" className={styles.ListIcon}>
+      {count ? (
         <Badge badgeContent={count} color="warning" classes={{ badge: styles.Badge }}>
           {iconImage}
         </Badge>
       ) : (
         iconImage
       )}
-    </div>
+    </span>
   );
 };
 

@@ -10,7 +10,7 @@ import {
 } from 'graphql/queries/Contact';
 import { addFlowToContactQuery } from 'mocks/Flow';
 import { getOrganizationLanguagesQuery, getOrganizationQuery } from 'mocks/Organization';
-import { UPDATE_CONTACT } from 'graphql/mutations/Contact';
+import { UPDATE_CONTACT, MOVE_CONTACTS } from 'graphql/mutations/Contact';
 import { UPDATE_CONTACT_COLLECTIONS } from 'graphql/mutations/Collection';
 import { CLEAR_MESSAGES } from 'graphql/mutations/Chat';
 import { setVariables } from 'common/constants';
@@ -76,6 +76,7 @@ export const getContactQuery = {
         contact: {
           id: '1',
           name: 'Default User',
+          activeProfile: null,
           phone: '+919820198765',
           language: { id: '1', label: 'English' },
           groups: [],
@@ -118,6 +119,7 @@ export const getContactDetailsQuery = (attributes: any = {}) => ({
       contact: {
         contact: {
           ...attributes,
+          activeProfile: null,
           phone: '+919820198765',
           maskedPhone: '+919820198765',
           lastMessageAt: date.toISOString(),
@@ -189,6 +191,24 @@ export const updateContactStatusQuery = {
   },
 };
 
+export const moveContacts = {
+  request: {
+    query: MOVE_CONTACTS,
+    variables: {
+      type: 'DATA',
+      data: 'name,phone,collection\n  John Doe,919876543210,"Optin collection,Optout Collection"\n  Virat Kohli,919876543220,Cricket',
+    },
+  },
+  result: {
+    data: {
+      moveContacts: {
+        errors: null,
+        csvRows: 'Test Row',
+      },
+    },
+  },
+};
+
 export const countCollectionContactsQuery = {
   request: {
     query: GET_CONTACT_COUNT,
@@ -212,6 +232,22 @@ export const getContactsQuery = {
         {
           id: '1',
           name: 'Glific User',
+          phone: '9876543211',
+          maskedPhone: '9876**3211',
+          groups: [],
+          status: 'hsm',
+        },
+        {
+          id: '2',
+          name: 'Glific User 1',
+          phone: '9876543211',
+          maskedPhone: '9876**3211',
+          groups: [],
+          status: 'hsm',
+        },
+        {
+          id: '3',
+          name: 'Glific User 2',
           phone: '9876543211',
           maskedPhone: '9876**3211',
           groups: [],
@@ -305,11 +341,7 @@ export const contactHistoryQuery = {
     query: GET_CONTACT_HISTORY,
     variables: {
       filter: { contactId: '1' },
-      opts: {
-        limit: 10,
-        offset: 0,
-        order: 'DESC',
-      },
+      opts: { limit: 50, offset: 0, order: 'DESC', orderWith: 'inserted_at' },
     },
   },
   result: {
@@ -421,6 +453,8 @@ export const getContactProfiles = {
 
 export const LOGGED_IN_USER_MOCK = [
   getCurrentUserQuery,
+  getCurrentUserQuery,
+  getContactProfiles,
   getContactDetailsQuery(),
   getOrganizationLanguagesQuery,
   getOrganizationLanguagesQuery,

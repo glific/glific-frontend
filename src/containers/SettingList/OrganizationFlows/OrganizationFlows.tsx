@@ -87,7 +87,12 @@ export const OrganizationFlows = () => {
     setEnabledDays(getEnabledDays(data.enabledDays));
   };
 
-  const getFlow = (id: string) => flow.flows.filter((option: any) => option.id === id)[0];
+  const getFlow = (id: string) => {
+    const flowFound = flow.flows.filter((option: any) => option.id === id);
+    if (flowFound.length > 0) {
+      return flowFound[0];
+    } else return null;
+  };
 
   const setStates = ({
     outOfOffice: outOfOfficeValue,
@@ -139,7 +144,7 @@ export const OrganizationFlows = () => {
     }
   }, [orgData]);
 
-  if (!flow) return <Loading />;
+  if (!flow) return <Loading whiteBackground />;
 
   const handleChange = (value: any) => {
     setIsDisable(!value);
@@ -205,6 +210,7 @@ export const OrganizationFlows = () => {
   let defaultFlowFields: any = [
     {
       component: Checkbox,
+      className: styles.Checkbox,
       name: 'hours',
       title: <Typography className={styles.CheckboxLabel}>{t('Default flow')}</Typography>,
       handleChange,
@@ -216,10 +222,7 @@ export const OrganizationFlows = () => {
       options: flow.flows,
       optionLabel: 'name',
       multiple: false,
-      textFieldProps: {
-        variant: 'outlined',
-        label: t('Select flow'),
-      },
+      label: t('Select flow'),
       disabled: isDisabled,
       helperText: t(
         'The selected flow will trigger when end-users aren’t in any flow, their message doesn’t match any keyword, and the time of their message is as defined below.'
@@ -232,10 +235,7 @@ export const OrganizationFlows = () => {
       name: 'enabledDays',
       options: dayList,
       optionLabel: 'label',
-      textFieldProps: {
-        variant: 'outlined',
-        label: t('Select days'),
-      },
+      label: t('Select days'),
       disabled: isDisabled,
       onChange: handleChangeInDays,
       validate: validateDaysSelection,
@@ -246,20 +246,20 @@ export const OrganizationFlows = () => {
       name: 'allDayCheck',
       title: <Typography className={styles.AddDayLabel}>{t('All day')}</Typography>,
       handleChange: handleAllDayCheck,
-      className: styles.AllDayCheck,
+      className: styles.Checkbox,
     },
 
     {
       component: TimePicker,
       name: 'startTime',
-      placeholder: t('Start'),
+      label: t('Start'),
       disabled: isDisabled || allDayCheck,
       helperText: t('Note: The next day begins after 12AM.'),
     },
     {
       component: TimePicker,
       name: 'endTime',
-      placeholder: t('Stop'),
+      label: t('Stop'),
       disabled: isDisabled || allDayCheck,
     },
   ];
@@ -273,10 +273,7 @@ export const OrganizationFlows = () => {
         options: flow.flows,
         optionLabel: 'name',
         multiple: false,
-        textFieldProps: {
-          variant: 'outlined',
-          label: t('Select flow'),
-        },
+        label: t('Select flow'),
         disabled: isDisabled,
         questionText: t('Would you like to trigger a flow for all the other days & times?'),
       },
@@ -288,6 +285,7 @@ export const OrganizationFlows = () => {
     {
       component: Checkbox,
       name: 'newcontactFlowEnabled',
+      className: styles.Checkbox,
       title: <Typography className={styles.CheckboxLabel}>{t('New contact flow')}</Typography>,
       handleChange: setNewcontactFlowEnabled,
     },
@@ -298,16 +296,14 @@ export const OrganizationFlows = () => {
       optionLabel: 'name',
       multiple: false,
       disabled: !newcontactFlowEnabled,
-      textFieldProps: {
-        variant: 'outlined',
-        label: t('Select flow'),
-      },
+      label: t('Select flow'),
       helperText: t('For new contacts messaging your chatbot for the first time'),
     },
 
     {
       component: Checkbox,
       name: 'optinFlowEnabled',
+      className: styles.Checkbox,
       title: <Typography className={styles.CheckboxLabel}>{t('Optin flow')}</Typography>,
       handleChange: setOptinFlowEnabled,
     },
@@ -318,10 +314,7 @@ export const OrganizationFlows = () => {
       optionLabel: 'name',
       multiple: false,
       disabled: !optinFlowEnabled,
-      textFieldProps: {
-        variant: 'outlined',
-        label: t('Select flow'),
-      },
+      label: t('Select flow'),
     },
   ];
 
@@ -376,9 +369,8 @@ export const OrganizationFlows = () => {
 
   return (
     <FormLayout
-      backLinkButton={{ text: t('Back to settings'), link: '/settings' }}
       {...queries}
-      title="organization flows"
+      title="Organization flows"
       states={States}
       setStates={setStates}
       validationSchema={FormSchema}
@@ -394,10 +386,11 @@ export const OrganizationFlows = () => {
       icon={SettingIcon}
       languageSupport={false}
       type="settings"
-      redirect
+      redirect={false}
       afterSave={saveHandler}
       customStyles={styles.organization}
       entityId={organizationId}
+      noHeading
     />
   );
 };

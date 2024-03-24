@@ -11,7 +11,6 @@ const dialogBox = (
     handleCancel={mockCallbackCancel}
     titleAlign="left"
     alignButtons="center"
-    contentText="This is context text"
   />
 );
 

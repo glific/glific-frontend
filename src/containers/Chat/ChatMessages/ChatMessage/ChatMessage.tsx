@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 
 import LabelIcon from 'assets/images/icons/Label/Filled.svg?react';
 import WarningIcon from 'assets/images/icons/Warning.svg?react';
-import MessageIcon from 'assets/images/icons/Dropdown.svg?react';
 import {
   SHORT_DATE_FORMAT,
   SHORT_TIME_FORMAT,
@@ -14,6 +13,7 @@ import {
   VALID_URL_REGEX,
   LOCATION_REQUEST,
 } from 'common/constants';
+import MessageIcon from 'assets/images/icons/Dropdown.svg?react';
 import { WhatsAppToJsx, WhatsAppTemplateButton } from 'common/RichEditor';
 import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import { parseTextMethod } from 'common/utils';
@@ -29,7 +29,7 @@ import { LocationRequestTemplate } from './LocationRequestTemplate/LocationReque
 export interface ChatMessageProps {
   id: number;
   body: string;
-  contactId: number;
+  entityId: number;
   receiver: {
     id: number;
   };
@@ -53,6 +53,9 @@ export interface ChatMessageProps {
   sendBy: string;
   flowLabel: string | null;
   daySeparator: string | null;
+  groups?: boolean;
+  status?: string;
+  contact?: any;
 }
 
 export const ChatMessage = ({
@@ -60,7 +63,7 @@ export const ChatMessage = ({
   popup,
   focus,
   sender,
-  contactId,
+  entityId,
   insertedAt,
   onClick,
   type,
@@ -75,6 +78,9 @@ export const ChatMessage = ({
   sendBy,
   flowLabel,
   daySeparator,
+  groups,
+  status,
+  contact,
 }: ChatMessageProps) => {
   const [showSaveMessageDialog, setShowSaveMessageDialog] = useState(false);
   const Ref = useRef(null);
@@ -139,7 +145,12 @@ export const ChatMessage = ({
     );
   }
 
-  const isSender = sender.id === contactId;
+  let isSender: boolean;
+  if (groups) {
+    isSender = status === 'received';
+  } else {
+    isSender = sender.id === entityId;
+  }
 
   if (isSender) {
     additionalClass = styles.Other;
@@ -203,13 +214,9 @@ export const ChatMessage = ({
     );
   }
 
-  const sendByLabel = !isSender && sendBy;
   let messageFooter;
-  if (sendByLabel) {
-    messageFooter = `${sendBy} | ${dayjs(insertedAt).format(SHORT_TIME_FORMAT)}`;
-  } else {
-    messageFooter = dayjs(insertedAt).format(SHORT_TIME_FORMAT);
-  }
+
+  messageFooter = dayjs(insertedAt).format(SHORT_TIME_FORMAT);
 
   const dateAndSendBy = messageFooter && (
     <div className={`${styles.Date} ${datePlacement}`} data-testid="date">
@@ -246,7 +253,7 @@ export const ChatMessage = ({
 
   const { body: bodyText, buttons: templateButtons } = WhatsAppTemplateButton(body);
 
-  const content: any = JSON.parse(interactiveContent);
+  const content: any = interactiveContent ? JSON.parse(interactiveContent) : null;
   const isInteractiveContentPresent: Boolean = content ? !!Object.entries(content).length : false;
 
   const errorClasses = messageErrorStatus ? styles.ErrorContent : '';
@@ -286,6 +293,12 @@ export const ChatMessage = ({
       ));
     }
   }
+
+  let contactName: any;
+  if (groups && isSender) {
+    contactName = <div className={styles.ContactName}>{contact?.name}</div>;
+  }
+
   return (
     <div>
       {daySeparatorContent}
@@ -309,7 +322,7 @@ export const ChatMessage = ({
               <div className={styles.ReplyMainWrap}>
                 <div>
                   <div className={styles.ReplyContact}>
-                    {contextMessage.sender.id === contactId ? contextMessage.sender.name : 'You'}
+                    {contextMessage.sender.id === entityId ? contextMessage.sender.name : 'You'}
                   </div>
                   <div className={styles.ReplyMessageBody}>
                     <ChatMessageType
@@ -327,7 +340,7 @@ export const ChatMessage = ({
         ) : null}
 
         <div className={styles.Inline}>
-          {iconLeft ? icon : null}
+          {iconLeft && icon}
           {ErrorIcon}
           <div className={chatMessageClasses.join(' ')}>
             <Tooltip title={tooltipTitle} placement={isSender ? 'right' : 'left'}>
@@ -336,12 +349,17 @@ export const ChatMessage = ({
                   {isInteractiveContentPresent && !isSender ? (
                     template
                   ) : (
-                    <ChatMessageType
-                      type={type}
-                      media={media}
-                      body={bodyText}
-                      location={location}
-                    />
+                    <>
+                      {contactName}
+                      <ChatMessageType
+                        type={type}
+                        media={media}
+                        body={bodyText}
+                        location={location}
+                        isSender={isSender}
+                      />
+                      {dateAndSendBy}
+                    </>
                   )}
                 </div>
               </div>
@@ -393,6 +411,7 @@ export const ChatMessage = ({
           </div>
           {iconLeft ? null : icon}
         </div>
+        <div className={styles.SendBy}>{sendBy}</div>
 
         {saveTemplateMessage}
 
@@ -400,7 +419,7 @@ export const ChatMessage = ({
           <div className={`${messageErrorStatus ? styles.TemplateButtonOnError : ''}`}>
             {templateButtons && <TemplateButtons template={templateButtons} />}
           </div>
-          {dateAndSendBy}
+
           {displayLabel ? (
             <div className={`${styles.LabelContainer} ${labelContainer}`}>{displayLabel}</div>
           ) : null}

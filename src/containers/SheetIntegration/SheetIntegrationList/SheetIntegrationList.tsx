@@ -1,18 +1,20 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useMutation } from '@apollo/client';
+import dayjs from 'dayjs';
+
 import SheetIcon from 'assets/images/icons/Sheets/Sheet.svg?react';
 import UpdatesheetIcon from 'assets/images/icons/Sheets/Updatesheet.svg?react';
 import LinkIcon from 'assets/images/icons/Sheets/Link.svg?react';
 import { GET_SHEET_COUNT, GET_SHEETS } from 'graphql/queries/Sheet';
 import { DELETE_SHEET, SYNC_SHEET } from 'graphql/mutations/Sheet';
 import { setNotification } from 'common/notification';
-import { useMutation } from '@apollo/client';
 import { List } from 'containers/List/List';
-import dayjs from 'dayjs';
 import { STANDARD_DATE_TIME_FORMAT } from 'common/constants';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
 import styles from './SheetIntegrationList.module.css';
-import Loading from 'components/UI/Layout/Loading/Loading';
+import { googleSheetsInfo } from 'common/HelpData';
 
 export enum SheetTypes {
   Read = 'READ',
@@ -170,16 +172,17 @@ export const SheetIntegrationList = () => {
     <>
       {dialog}
       <List
+        helpData={googleSheetsInfo}
         title={t('Google sheets')}
         listItem="sheets"
         listItemName="Sheet"
-        pageLink="Sheet-integration"
+        pageLink="sheet-integration"
         listIcon={sheetIcon}
         dialogMessage={dialogMessage}
         {...queries}
         {...columnAttributes}
         additionalAction={additionalAction}
-        button={{ show: true, label: t('Add Sheet'), symbol: '+' }}
+        button={{ show: true, label: t('Create') }}
       />
     </>
   );

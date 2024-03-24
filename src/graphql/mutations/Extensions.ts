@@ -46,8 +46,6 @@ export const UPDATE_EXTENSION = gql`
       Extension {
         code
         id
-        insertedAt
-        updatedAt
         isActive
         isValid
         name

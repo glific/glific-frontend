@@ -18,11 +18,15 @@ import testJSON from 'mocks/ImportFlow.json';
 import { setUserSession } from 'services/AuthService';
 import { FlowList } from './FlowList';
 import { Flow } from '../Flow';
+import { getFilterTagQuery } from 'mocks/Tag';
+import { getRoleNameQuery } from 'mocks/Role';
 
 const mocks = [
   getFlowCountQuery,
   getFlowCountQuery,
   getFlowCountQuery,
+  getFlowCountQuery,
+  filterFlowQuery,
   filterFlowQuery,
   filterFlowQuery,
   filterFlowQuery,
@@ -32,6 +36,8 @@ const mocks = [
   importFlow,
   releaseFlow,
   exportFlow,
+  getFilterTagQuery,
+  getRoleNameQuery,
   ...getOrganizationQuery,
 ];
 
@@ -57,8 +63,8 @@ setUserSession(JSON.stringify({ roles: ['Admin'] }));
 
 describe('<FlowList />', () => {
   test('should render Flow', async () => {
-    const { getByText } = render(flowList);
-    expect(getByText('Loading...')).toBeInTheDocument();
+    const { getByText, getByTestId } = render(flowList);
+    expect(getByTestId('loading')).toBeInTheDocument();
     await waitFor(() => {
       expect(getByText('Flows'));
     });
@@ -77,10 +83,17 @@ describe('<FlowList />', () => {
   });
 
   test('click on Make a copy', async () => {
-    const { container } = render(flowList);
+    const { getAllByTestId } = render(flowList);
+
     await waitFor(() => {
-      expect(container.querySelector('#additionalButton-icon')).toBeInTheDocument();
-      fireEvent.click(container.querySelector('#additionalButton-icon') as SVGAElement);
+      expect(getAllByTestId('MoreIcon')[0]).toBeInTheDocument();
+    });
+
+    fireEvent.click(getAllByTestId('MoreIcon')[0]);
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('additionalButton')[0]).toBeInTheDocument();
+      fireEvent.click(screen.getAllByTestId('additionalButton')[0]);
     });
   });
 
@@ -102,13 +115,12 @@ describe('<FlowList />', () => {
   test('should import flow using json file', async () => {
     render(flowList);
 
-    await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 0)));
-
     await waitFor(() => {
-      const importFlowButton = screen.getByTestId('import-icon');
-      expect(importFlowButton).toBeInTheDocument();
-      fireEvent.click(importFlowButton);
+      expect(screen.getByTestId('import-icon')).toBeInTheDocument();
     });
+
+    const importFlowButton = screen.getByTestId('import-icon');
+    fireEvent.click(importFlowButton);
 
     await waitFor(() => {
       const json = JSON.stringify(testJSON);
@@ -119,25 +131,27 @@ describe('<FlowList />', () => {
       Object.defineProperty(input, 'files', {
         value: [file],
       });
-
-      setTimeout(() => {
-        fireEvent.change(input);
-      }, 100);
     });
 
-    await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 0)));
+    const input = screen.getByTestId('import');
+    fireEvent.change(input);
+
     await waitFor(() => {});
   });
 
   test('should export flow to json file', async () => {
     global.URL.createObjectURL = vi.fn();
     render(flowList);
-    await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 0)));
+
+    await waitFor(() => {
+      screen.getByTestId('MoreIcon');
+    });
+    const moreButton = screen.getByTestId('MoreIcon');
+    fireEvent.click(moreButton);
 
     await waitFor(() => {
       const exportButton = screen.getByTestId('export-icon');
       expect(exportButton).toBeInTheDocument();
-
       fireEvent.click(exportButton);
     });
   });

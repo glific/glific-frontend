@@ -5,8 +5,15 @@ import { MockedProvider } from '@apollo/client/testing';
 import { setUserSession } from 'services/AuthService';
 import { StaffManagementList } from './StaffManagementList';
 import { FILTER_USER_MOCK, USER_COUNT_MOCK } from '../StaffManagement.test.helper';
+import { getOrganizationPhone } from 'mocks/Organization';
+import axios from 'axios';
 
-const mocks = [USER_COUNT_MOCK, FILTER_USER_MOCK];
+vi.mock('axios');
+const mockedAxios = axios as any;
+
+const mocks = [USER_COUNT_MOCK, FILTER_USER_MOCK, getOrganizationPhone];
+
+mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
 
 const staffManagement = (
   <MockedProvider mocks={mocks} addTypename={false}>

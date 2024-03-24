@@ -16,7 +16,8 @@ type ServiceType =
   | 'flowUuidDisplay'
   | 'rolesAndPermission'
   | 'contactProfileEnabled'
-  | 'ticketingEnabled';
+  | 'ticketingEnabled'
+  | 'whatsappGroupEnabled';
 
 // get the current authentication session
 export const getAuthSession = (element?: string) => {
@@ -170,6 +171,9 @@ export const getUserSession = (element?: string) => {
       break;
     case 'language':
       returnValue = JSON.parse(user).language.locale;
+      break;
+    case 'name':
+      returnValue = JSON.parse(user).name;
       break;
     default:
       returnValue = JSON.parse(user);

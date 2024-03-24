@@ -18,8 +18,9 @@
   display: flex;
   padding-left: 0px !important;
   flex-flow: column;
-  background-color: #f9f7f4;
+  background-color: #f8faf5;
   position: relative;
+  height: 100vh;
 }
 
 .DialogBox {
@@ -28,8 +29,6 @@
 }
 
 .MessageList {
-  display: block;
-  flex: 2;
   padding-top: 11.5px !important;
   overflow-y: auto;
   padding-left: 0px !important;
@@ -115,10 +114,26 @@
   color: #edf6f2;
   border-radius: 12px 12px 0 0;
   z-index: 100;
-  margin-top: 1px;
+  margin-top: -3px;
   width: fit-content;
 }
 
 html {
   scroll-behavior: smooth;
+}
+
+.SessionTimer {
+  display: flex;
+  align-items: center;
+}
+
+.SessionTimer + div {
+  text-align: right;
+}
+
+.SessionTimer span {
+  color: #555;
+  font-size: 12px;
+  font-weight: 400;
+  margin-right: 5px;
 }

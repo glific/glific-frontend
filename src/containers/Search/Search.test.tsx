@@ -11,6 +11,8 @@ const defaultProps = (type = 'search') => ({
   handleSave: vi.fn(),
   searchParam: {
     term: 'hi',
+    label: '',
+    shortcode: '',
   },
   setState: vi.fn(),
   searchId: '1',
@@ -37,6 +39,8 @@ test('should load the search edit', async () => {
     ],
     dateFrom: new Date(),
     dateTo: new Date(),
+    shortcode: 'search',
+    label: 'search',
   };
 
   const props: any = defaultProps();
@@ -71,18 +75,18 @@ test('it renders component with saveSearch params', async () => {
     </MockedProvider>
   );
 
-  const { getByText, getByTestId, container } = render(wrapper);
+  const { getByText, getByTestId } = render(wrapper);
 
   // loading is show initially
   expect(getByText('Loading...')).toBeInTheDocument();
 
   await waitFor(() => {
     const formLayout = getByTestId('formLayout');
-    expect(formLayout).toHaveTextContent('Search');
+    expect(formLayout).toHaveTextContent('Title');
   });
 
-  await waitFor(() => {
-    const [input] = screen.getAllByRole('textbox');
-    fireEvent.change(input, { target: { value: 'test' } });
-  });
+  const [shortcode, label] = screen.getAllByRole('textbox');
+
+  fireEvent.change(shortcode, { target: { value: 'test' } });
+  fireEvent.change(label, { target: { value: 'test' } });
 });

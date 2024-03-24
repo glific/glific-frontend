@@ -22,7 +22,7 @@ import { Simulator } from 'components/simulator/Simulator';
 import { LanguageBar } from 'components/UI/LanguageBar/LanguageBar';
 import { LIST, LOCATION_REQUEST, MEDIA_MESSAGE_TYPES, QUICK_REPLY } from 'common/constants';
 import { validateMedia } from 'common/utils';
-import Loading from 'components/UI/Layout/Loading/Loading';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { InteractiveOptions } from './InteractiveOptions/InteractiveOptions';
 import styles from './InteractiveMessage.module.css';
 import {
@@ -35,6 +35,7 @@ import {
 } from './InteractiveMessage.helper';
 import { GET_TAGS } from 'graphql/queries/Tags';
 import { CreateAutoComplete } from 'components/UI/Form/CreateAutoComplete/CreateAutoComplete';
+import { interactiveMessageInfo } from 'common/HelpData';
 
 const interactiveMessageIcon = (
   <InteractiveMessageIcon className={styles.Icon} data-testid="interactive-icon" />
@@ -65,7 +66,7 @@ export const InteractiveMessage = () => {
   const [globalButton, setGlobalButton] = useState('');
   const [isUrlValid, setIsUrlValid] = useState<any>();
   const [type, setType] = useState<any>(null);
-  const [attachmentURL, setAttachmentURL] = useState<any>();
+  const [attachmentURL, setAttachmentURL] = useState<any>('');
   const [contactVariables, setContactVariables] = useState([]);
   const [defaultLanguage, setDefaultLanguage] = useState<any>({});
   const [sendWithTitle, setSendWithTitle] = useState<boolean>(true);
@@ -88,7 +89,7 @@ export const InteractiveMessage = () => {
 
   const isLocationRequestType = templateType === LOCATION_REQUEST;
 
-  const { data: tag } = useQuery(GET_TAGS, {
+  const { data: tag, loading: tagsLoading } = useQuery(GET_TAGS, {
     variables: {},
     fetchPolicy: 'network-only',
   });
@@ -163,7 +164,7 @@ export const InteractiveMessage = () => {
     }
 
     setTitle(data.title);
-    setFooter(data.footer);
+    setFooter(data.footer || '');
     setBody(data.body);
     setTemplateType(typeValue);
     setTemplateTypeField(templateTypeOptions.find((option) => option.id === typeValue));
@@ -232,7 +233,7 @@ export const InteractiveMessage = () => {
     }
 
     setTitle(titleText);
-    setFooter(data.footer);
+    setFooter(data.footer || '');
     setBody(data.body);
     setTemplateType(typeValue);
     setTemplateTypeField(templateTypeOptions.find((option) => option.id === typeValue));
@@ -493,7 +494,7 @@ export const InteractiveMessage = () => {
       options: templateTypeOptions,
       multiple: false,
       disabled: params?.id !== undefined,
-      placeholder: 'Type',
+      label: t('Type'),
       optionLabel: 'label',
     },
     {
@@ -502,7 +503,7 @@ export const InteractiveMessage = () => {
       component: Input,
       name: 'title',
       type: 'text',
-      placeholder: `${t('Title')}*`,
+      label: t('Title'),
       onChange: (value: any) => {
         setTitle(value);
       },
@@ -522,7 +523,7 @@ export const InteractiveMessage = () => {
         hasTranslations && getTranslation(templateType, 'body', translations, defaultLanguage),
       component: EmojiInput,
       name: 'body',
-      placeholder: `${t('Message')}*`,
+      label: t('Message'),
       rows: 5,
       convertToWhatsApp: true,
       textArea: true,
@@ -542,7 +543,7 @@ export const InteractiveMessage = () => {
       component: Input,
       name: 'footer',
       type: 'text',
-      placeholder: t('Footer'),
+      label: t('Footer'),
       onChange: (value: any) => {
         setFooter(value);
       },
@@ -718,10 +719,7 @@ export const InteractiveMessage = () => {
       options,
       optionLabel: 'label',
       multiple: false,
-      textFieldProps: {
-        variant: 'outlined',
-        label: t('Attachment type'),
-      },
+      label: t('Attachment type'),
       onChange: (event: any) => {
         const val = event || '';
         if (!event) {
@@ -734,15 +732,14 @@ export const InteractiveMessage = () => {
       component: Input,
       name: 'attachmentURL',
       type: 'text',
-      placeholder: t('Attachment URL'),
+      label: t('Attachment URL'),
       validate: () => isUrlValid,
       inputProp: {
         onBlur: (event: any) => {
           setAttachmentURL(event.target.value);
         },
         onChange: (event: any) => {
-          clearTimeout(timer);
-          timer = setTimeout(() => setAttachmentURL(event.target.value), 1000);
+          setAttachmentURL(event.target.value);
         },
       },
     },
@@ -763,10 +760,7 @@ export const InteractiveMessage = () => {
       onChange: (value: any) => {
         setTagId(value);
       },
-      textFieldProps: {
-        variant: 'outlined',
-        label: t('Tag'),
-      },
+      label: t('Tag'),
       helperText: t('Use this to categorize your interactive messages.'),
     },
   ];
@@ -810,7 +804,7 @@ export const InteractiveMessage = () => {
     attachmentURL,
   ]);
 
-  if (languageOptions.length < 1 || loadingTemplate) {
+  if (languageOptions.length < 1 || loadingTemplate || tagsLoading) {
     return <Loading />;
   }
 
@@ -825,7 +819,7 @@ export const InteractiveMessage = () => {
         type={stateType}
         validationSchema={validationScheme}
         listItem="interactiveTemplate"
-        listItemName="interactive msg"
+        listItemName="Interactive message"
         dialogMessage={dialogMessage}
         formFields={formFields}
         redirectionLink="interactive-message"
@@ -836,11 +830,10 @@ export const InteractiveMessage = () => {
         afterSave={afterSave}
         saveOnPageChange={false}
         buttonState={{ text: t('Validating URL'), status: validatingURL }}
+        helpData={interactiveMessageInfo}
       />
       <div className={styles.Simulator}>
         <Simulator
-          setSimulatorId={0}
-          showSimulator
           isPreviewMessage
           message={{}}
           showHeader={sendWithTitle}

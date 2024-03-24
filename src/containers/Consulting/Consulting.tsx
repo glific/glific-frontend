@@ -33,7 +33,7 @@ export const Consulting = ({ organizationId, setOpenDialog }: ConsultingProps) =
   const [participants, setParticipants] = useState('');
   const [staff, setStaff] = useState('');
   const [when, setWhen] = useState<any>(dayjs());
-  const [duration, setDuration] = useState<number>();
+  const [duration, setDuration] = useState<number>(0);
   const [content, setContent] = useState('');
   const [isBillable, setIsBillable] = useState<any>(null);
   const [organization, setOrganization] = useState<any>(null);
@@ -110,21 +110,17 @@ export const Consulting = ({ organizationId, setOpenDialog }: ConsultingProps) =
     {
       component: AutoComplete,
       name: 'organization',
-      placeholder: t('Select Organization'),
       options: organizationOptions,
       optionLabel: 'name',
       multiple: false,
-      textFieldProps: {
-        label: t('Select Organization'),
-        variant: 'outlined',
-      },
+      label: t('Select Organization'),
       onChange: (val: any) => setOrganization(val),
     },
     {
       component: Input,
       name: 'participants',
       type: 'text',
-      placeholder: t('Participants'),
+      label: t('Participants'),
       inputProp: {
         onChange: (event: any) => setParticipants(event.target.value),
       },
@@ -132,14 +128,15 @@ export const Consulting = ({ organizationId, setOpenDialog }: ConsultingProps) =
     {
       component: DateTimePicker,
       name: 'when',
-      placeholder: t('Select date'),
+      label: t('Select date'),
       onChange: (val: any) => setWhen(val),
+
     },
     {
       component: Input,
       name: 'duration',
       type: 'text',
-      placeholder: t('Enter time (in mins)'),
+      label: t('Enter time (in mins)'),
       inputProp: {
         onChange: (event: any) => setDuration(Number(event.target.value)),
       },
@@ -155,7 +152,7 @@ export const Consulting = ({ organizationId, setOpenDialog }: ConsultingProps) =
       component: Input,
       name: 'staff',
       type: 'text',
-      placeholder: t('Support team'),
+      label: t('Support team'),
       inputProp: {
         onChange: (event: any) => setStaff(event.target.value),
       },
@@ -166,7 +163,7 @@ export const Consulting = ({ organizationId, setOpenDialog }: ConsultingProps) =
       type: 'text',
       rows: 3,
       textArea: true,
-      placeholder: t('Notes'),
+      label: t('Notes'),
       inputProp: {
         onChange: (event: any) => setContent(event.target.value),
       },

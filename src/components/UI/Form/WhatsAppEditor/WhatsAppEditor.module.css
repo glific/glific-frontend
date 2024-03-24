@@ -5,7 +5,6 @@
   position: relative;
 }
 
-/* TODO: Override emoji-mart-emoji font-size to make it medium. */
 span.emoji-mart-emoji {
   font-size: medium;
 }

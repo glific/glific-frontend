@@ -11,7 +11,8 @@ export const getTicketQuery = {
         ticket: {
           body: 'Please resolve this issue',
           contact: {
-            id: '1',
+            id: '2',
+            name: 'Glific contact',
           },
           id: '1',
           insertedAt: '2021-06-16T09:00:00.000Z',
@@ -21,6 +22,7 @@ export const getTicketQuery = {
           updatedAt: '2021-06-16T09:00:00.000Z',
           user: {
             id: '1',
+            name: 'John Doe',
           },
         },
       },
@@ -47,6 +49,7 @@ export const ticketListQuery = {
             name: 'NGO support',
           },
           id: '1',
+          messageNumber: 23,
           insertedAt: '2021-06-16T09:00:00.000Z',
           remarks: 'This issue is resolved',
           status: 'open',

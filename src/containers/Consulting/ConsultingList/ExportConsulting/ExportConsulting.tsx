@@ -46,10 +46,7 @@ export const ExportConsulting = ({ setFilters }: ExportConsultingPropTypes) => {
       options: organizationList ? organizationList.organizations : [],
       optionLabel: 'name',
       multiple: false,
-      textFieldProps: {
-        label: t('Select Organization'),
-        variant: 'outlined',
-      },
+      label: t('Select Organization'),
     },
     {
       component: Calendar,
@@ -70,7 +67,7 @@ export const ExportConsulting = ({ setFilters }: ExportConsultingPropTypes) => {
     organization: Yup.object().test(
       'organization',
       'Organization is required',
-      (val: any) => val.name !== undefined
+      (val: any) => val && val.name !== undefined
     ),
 
     dateTo: Yup.string().when('dateFrom', ([dateFrom], schema: any) =>
@@ -85,7 +82,7 @@ export const ExportConsulting = ({ setFilters }: ExportConsultingPropTypes) => {
   return (
     <div className={styles.FilterContainer}>
       <Formik
-        initialValues={{ organization: { name: '', id: '' }, dateFrom: '', dateTo: '' }}
+        initialValues={{ organization: undefined, dateFrom: '', dateTo: '' } as any}
         onSubmit={(values) => {
           const organizationFilter: any = { organizationName: values.organization.name };
 
@@ -102,7 +99,9 @@ export const ExportConsulting = ({ setFilters }: ExportConsultingPropTypes) => {
           <div className={styles.FormContainer}>
             <Form className={styles.Form}>
               {formFields.map((field) => (
-                <Field className={styles.Field} {...field} key={field.name} />
+                <div className={styles.Field} key={field.name}>
+                  <Field {...field} />
+                </div>
               ))}
 
               <div className={styles.Buttons}>

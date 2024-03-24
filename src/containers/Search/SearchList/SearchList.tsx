@@ -1,10 +1,10 @@
 import { useTranslation } from 'react-i18next';
-
 import SearchIcon from 'assets/images/icons/Search/Dark.svg?react';
 import { List } from 'containers/List/List';
 import { SEARCH_LIST_QUERY, SEARCH_QUERY_COUNT } from 'graphql/queries/Search';
 import { DELETE_SEARCH } from 'graphql/mutations/Search';
 import styles from './SearchList.module.css';
+import { searchInfo } from 'common/HelpData';
 
 const getShortcode = (shortcode: string) => <p className={styles.LabelText}>{shortcode}</p>;
 const getLabel = (text: string) => <p className={styles.TableText}>{text}</p>;
@@ -43,11 +43,12 @@ export const SearchList = () => {
 
   return (
     <List
+      helpData={searchInfo}
       title="Searches"
       listItem="savedSearches"
       listItemName="Search"
       pageLink="search"
-      button={{ show: true, label: t('Create Search'), symbol: '+' }}
+      button={{ show: true, label: t('Create') }}
       listIcon={searchIcon}
       dialogMessage={dialogMessage}
       {...queries}

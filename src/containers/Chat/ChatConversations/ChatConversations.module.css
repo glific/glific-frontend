@@ -1,6 +1,6 @@
 .ChatConversations {
   width: 100%;
-  height: calc(100vh - 79px);
+  height: calc(100vh - 130px);
   overflow-y: hidden;
   position: relative;
 }
@@ -57,4 +57,30 @@
 
 .SavedSearchTopMargin {
   margin-top: 0px !important;
+}
+
+.SearchBar {
+  padding: 8px 0px;
+}
+
+.DropDownContainer {
+  padding: 8px 18px;
+  width: 100%;
+  display: flex;
+  justify-content: end;
+}
+
+.DropDown {
+  border-radius: 24px;
+  border: 1px solid #cccccc;
+  display: flex;
+  margin-right: 8px;
+  height: 36px !important;
+  background: #ffffff;
+  min-height: 36px !important;
+  /* width: 50%; */
+}
+
+.DropDown > fieldset {
+  border: none !important;
 }

@@ -1,0 +1,71 @@
+.UserMenu {
+  font-size: 9px;
+  color: #073f24;
+  font-weight: 500;
+}
+
+.UserAccount {
+  z-index: 4000;
+  width: 203px;
+  cursor: pointer;
+  background-color: white;
+  position: absolute;
+  bottom: 0px;
+}
+
+.UserAccountClosed {
+  composes: UserAccount;
+  width: 92px;
+}
+
+.UserAccount:hover {
+  background-color: #f0f7f1;
+}
+
+.UserOpen {
+  border-right: 1px solid rgba(0, 0, 0, 0.12);
+  padding: 12px 6px;
+  display: flex;
+  align-items: center;
+}
+
+.UserIcon {
+  margin-right: 8px;
+}
+.UserClosed {
+  border-right: 1px solid rgba(0, 0, 0, 0.12);
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.UserOpen svg {
+  margin-right: 8px;
+}
+
+.UserOpen p {
+  width: 130px;
+  overflow: auto;
+}
+
+.Settings {
+  padding: 4px 0px;
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 500;
+  color: #717971;
+}
+
+.RotatableSvg {
+  transition: transform 0.5s ease; /* Add a smooth transition effect */
+}
+
+.Rotate0 {
+  transform: rotate(0deg);
+}
+
+.Rotate180 {
+  transform: rotate(180deg);
+}

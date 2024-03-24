@@ -9,6 +9,7 @@
   background-color: white;
   box-shadow: -2px 0px 6px rgba(0, 0, 0, 0.06);
 }
+
 .ContactProfile {
   display: flex;
 }
@@ -20,4 +21,69 @@
 
 .FormControl {
   margin-bottom: 10px;
+}
+
+.Drawer {
+  background-color: #ffffff;
+  width: fit-content;
+  min-width: 260px;
+  border-right: 1px solid #efefef;
+  height: calc(100vh - 110px) !important;
+}
+
+.Tab {
+  border-radius: 10px;
+  width: 200px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  margin: 2px 0;
+  padding: 0px !important;
+  font-weight: 400;
+  font-size: 14px;
+  color: #717971;
+  padding-left: 16px !important;
+}
+
+.Tab:hover {
+  background-color: #71797123;
+  cursor: pointer !important;
+}
+
+.ActiveTab {
+  font-weight: 700 !important;
+  color: #073f24 !important;
+  background-color: #cce6d0 !important;
+}
+
+.ProfileBody {
+  height: calc(100vh - 110px) !important;
+  overflow-y: scroll;
+  width: 100%;
+}
+
+.ProfileHeader {
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+  box-shadow: 0px 1px 1px 0px #00000029;
+  padding: 15px;
+  align-items: center;
+}
+
+.ProfileHeaderTitle {
+  font-size: 16px;
+  font-weight: 500;
+  color: #717971;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.SelectedProfile {
+  color: #191c1a;
+}
+
+.ProfileHeaderElements {
+  padding: 10px;
 }

@@ -22,7 +22,7 @@ const App = () => {
   // by default, do not assign any value to assume login or logout
   // let's checkAuthStatusService allocate it on useEffect
   const [authenticated, setAuthenticated] = useState<any>();
-  const [drawerOpen, setDrawerOpen] = useState(isGreaterThanLgBreakpoint());
+  const [drawerOpen, setDrawerOpen] = useState(true);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -46,7 +46,7 @@ const App = () => {
     checkAuth();
   }, []);
 
-  const sideDraawerValues = useMemo(
+  const sideDrawerValues = useMemo(
     () => ({
       drawerOpen,
       setDrawerOpen: (value: any) => {

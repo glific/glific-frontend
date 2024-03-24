@@ -30,7 +30,7 @@ const props = {
   },
 };
 
-test('it should render component and show error messages', () => {
+test('it should render component and show error messages', async () => {
   render(
     <MockedProvider addTypename={false}>
       <MemoryRouter>
@@ -77,14 +77,15 @@ test('Organization with success onboarding', () => {
   const captcha = screen.getByTestId('captcha-button');
   expect(captcha).toBeInTheDocument();
 
+  const inputElements = screen.getAllByRole('textbox');
+
+  UserEvent.type(inputElements[0], 'JaneDoe');
+
+  // click on continue
+  const button = screen.getByText('Get Started');
+  fireEvent.click(button);
+
   waitFor(() => {
-    const inputElements = screen.getAllByRole('textbox');
-
-    UserEvent.type(inputElements[0], 'JaneDoe');
-
-    // click on continue
-    const button = screen.getByText('Get Started');
-    fireEvent.click(button);
     expect(props.saveHandler).toHaveBeenCalledWith({ name: 'test' }, true, vi.fn(), vi.fn());
   });
 });

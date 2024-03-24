@@ -7,6 +7,7 @@ import {
   EXPORT_FLOW,
   RELEASE_FLOW,
   GET_FREE_FLOW,
+  EXPORT_FLOW_LOCALIZATIONS,
 } from 'graphql/queries/Flow';
 import {
   ADD_FLOW_TO_CONTACT,
@@ -14,10 +15,15 @@ import {
   PUBLISH_FLOW,
   IMPORT_FLOW,
   RESET_FLOW_COUNT,
+  UPDATE_FLOW,
+  CREATE_FLOW_COPY,
   AUTO_TRANSLATE_FLOW,
+  IMPORT_FLOW_LOCALIZATIONS,
+  ADD_FLOW_TO_WA_GROUP,
 } from 'graphql/mutations/Flow';
 import { GET_ORGANIZATION_SERVICES } from 'graphql/queries/Organization';
 import json from './ImportFlow.json';
+import { GET_ALL_FLOW_LABELS } from 'graphql/queries/FlowLabel';
 
 export const getFlowQuery = {
   request: {
@@ -34,6 +40,7 @@ export const getFlowQuery = {
           id: '1',
           name: 'Help',
           isActive: true,
+          description: 'Help flow',
           uuid: 'b050c652-65b5-4ccf-b62b-1e8b3f328676',
           keywords: ['help'],
           isPinned: false,
@@ -45,6 +52,10 @@ export const getFlowQuery = {
           ],
           isBackground: false,
           ignoreKeywords: false,
+          tag: {
+            id: '1',
+            label: 'New tag',
+          },
         },
       },
     },
@@ -72,10 +83,7 @@ export const addFlowToContactQuery = {
 export const addFlowToCollectionQuery = {
   request: {
     query: ADD_FLOW_TO_COLLECTION,
-    variables: {
-      flowId: '',
-      groupId: '2',
-    },
+    variables: { flowId: '1', groupId: '1' },
   },
 
   result: {
@@ -84,6 +92,50 @@ export const addFlowToCollectionQuery = {
         success: true,
       },
     },
+  },
+};
+
+export const addFlowToWAGroupQuery = {
+  request: {
+    query: ADD_FLOW_TO_WA_GROUP,
+    variables: { flowId: '1', waGroupId: '1' },
+  },
+
+  result: {
+    data: {
+      startWaGroupFlow: { errors: null, success: true },
+    },
+  },
+};
+
+const filterFlowResult = {
+  data: {
+    flows: [
+      {
+        id: '1',
+        ignoreKeywords: true,
+        isActive: true,
+        description: 'Help flow',
+        keywords: ['help', 'मदद'],
+        lastChangedAt: '2021-03-05T04:32:23Z',
+        lastPublishedAt: null,
+        name: 'Help Workflow',
+        isBackground: false,
+        updatedAt: '2021-03-05T04:32:23Z',
+        uuid: '3fa22108-f464-41e5-81d9-d8a298854429',
+        isPinned: true,
+        roles: [
+          {
+            id: '1',
+            label: 'Admin',
+          },
+        ],
+        tag: {
+          id: '1',
+          label: 'help',
+        },
+      },
+    ],
   },
 };
 
@@ -101,31 +153,24 @@ export const filterFlowQuery = {
     },
   },
 
-  result: {
-    data: {
-      flows: [
-        {
-          id: '1',
-          ignoreKeywords: true,
-          isActive: true,
-          keywords: ['help', 'मदद'],
-          lastChangedAt: '2021-03-05T04:32:23Z',
-          lastPublishedAt: null,
-          name: 'Help Workflow',
-          isBackground: false,
-          updatedAt: '2021-03-05T04:32:23Z',
-          uuid: '3fa22108-f464-41e5-81d9-d8a298854429',
-          isPinned: true,
-          roles: [
-            {
-              id: '1',
-              label: 'Admin',
-            },
-          ],
-        },
-      ],
+  result: filterFlowResult,
+};
+
+export const filterFlowSortQuery = {
+  request: {
+    query: FILTER_FLOW,
+    variables: {
+      filter: { isActive: true },
+      opts: {
+        limit: 50,
+        offset: 0,
+        order: 'DESC',
+        orderWith: 'name',
+      },
     },
   },
+
+  result: filterFlowResult,
 };
 
 export const filterFlowWithNameOrKeywordOrTagQuery = {
@@ -150,6 +195,7 @@ export const filterFlowWithNameOrKeywordOrTagQuery = {
           ignoreKeywords: true,
           isActive: true,
           keywords: ['help', 'मदद'],
+          description: 'Help flow',
           lastChangedAt: '2021-03-05T04:32:23Z',
           lastPublishedAt: null,
           name: 'Help Workflow',
@@ -248,6 +294,11 @@ export const getPublishedFlowQuery = {
           name: 'Help Workflow',
           uuid: '3fa22108-f464-41e5-81d9-d8a298854429',
         },
+        {
+          id: '2',
+          name: 'AB Test Workflow',
+          uuid: '5f3fd8c6-2ec3-4945-8e7c-314db8c04c31',
+        },
       ],
     },
   },
@@ -341,8 +392,10 @@ export const importFlow = {
   result: {
     data: {
       importFlow: {
-        errors: null,
-        success: true,
+        status: {
+          flowName: 'flow 1',
+          status: 'success',
+        },
       },
     },
   },
@@ -411,6 +464,49 @@ export const resetFlowCount = {
   },
 };
 
+export const updateFlowQuery = {
+  request: {
+    query: UPDATE_FLOW,
+    variables: {
+      id: 1,
+      input: {
+        isActive: true,
+        isPinned: false,
+        isBackground: false,
+        description: 'Help flow',
+        name: 'New Flow',
+        keywords: ['मदद'],
+        ignoreKeywords: false,
+        addRoleIds: [],
+        deleteRoleIds: [],
+        tag_id: '1',
+      },
+    },
+  },
+  result: {
+    data: {
+      updateFlow: {
+        flow: {
+          roles: null,
+          tag: null,
+          id: '1',
+          isActive: true,
+          ignoreKeywords: false,
+          description: 'Help flow',
+          keywords: ['मदद'],
+          name: 'New Flow',
+          isBackground: false,
+          updatedAt: '2021-03-05T04:32:23Z',
+          uuid: '3fa22108-f464-41e5-81d9-d8a298854429',
+          isPinned: false,
+        },
+
+        errors: null,
+      },
+    },
+  },
+};
+
 export const getFlowTranslations = {
   request: {
     query: AUTO_TRANSLATE_FLOW,
@@ -422,6 +518,129 @@ export const getFlowTranslations = {
         success: true,
         errors: [],
       },
+    },
+  },
+};
+
+export const getFlowTranslationsWithErrors = {
+  request: {
+    query: AUTO_TRANSLATE_FLOW,
+    variables: { id: '1' },
+  },
+  result: {
+    data: {
+      inlineFlowLocalization: {
+        success: false,
+        errors: [{ key: 'error', message: 'Sorry! Unable to translate flow' }],
+      },
+    },
+  },
+};
+
+export const importFlowTranslationsMock = {
+  request: {
+    query: IMPORT_FLOW_LOCALIZATIONS,
+    variables: {
+      localization:
+        'Type,UUID,en,hi\nType,UUID,English,Hindi\naction,6e3ce9b0-f4a0-4a9d-a182-02647cdbcc80,No worries. You can always change that by sending us *help*.,चिंता न करें। आप हमेशा मदद मेनू में जाकर उसे बदल सकते हैं। आप अभी भी हमें कभी भी मैसेज कर सकते हैं।\naction,852fc451-7482-4c09-b3c6-55cad8546b6b,Thank you for giving us the permission. We really appreciate it.,हमें अनुमति देने के लिए धन्यवाद। हम वास्तव में इसकी बहुत सराहना करते हैं।\n',
+      id: '1',
+    },
+  },
+  result: {
+    data: {
+      importFlowLocalization: {
+        success: true,
+      },
+    },
+  },
+};
+
+export const exportFlowTranslationsMock = (autoTranslate: boolean) => ({
+  request: {
+    query: EXPORT_FLOW_LOCALIZATIONS,
+    variables: { id: '1', addTranslation: autoTranslate },
+  },
+  result: {
+    data: {
+      exportFlowLocalization: {
+        exportData:
+          'Type,UUID,en,hi\nType,UUID,English,Hindi\naction,6e3ce9b0-f4a0-4a9d-a182-02647cdbcc80,No worries. You can always change that by sending us *help*.,चिंता न करें। आप हमेशा मदद मेनू में जाकर उसे बदल सकते हैं। आप अभी भी हमें कभी भी मैसेज कर सकते हैं।\naction,852fc451-7482-4c09-b3c6-55cad8546b6b,Thank you for giving us the permission. We really appreciate it.,हमें अनुमति देने के लिए धन्यवाद। हम वास्तव में इसकी बहुत सराहना करते हैं।\n',
+      },
+    },
+  },
+});
+
+export const exportFlowTranslationsWithErrors = {
+  request: {
+    query: EXPORT_FLOW_LOCALIZATIONS,
+    variables: { id: '1', addTranslation: false },
+  },
+  result: {
+    data: null,
+    errors: [
+      {
+        key: 'error',
+        message: 'An error occured',
+      },
+    ],
+  },
+};
+
+export const copyFlowQuery = {
+  request: {
+    query: CREATE_FLOW_COPY,
+    variables: {
+      id: 1,
+      input: {
+        isActive: true,
+        isPinned: false,
+        isBackground: false,
+        description: 'Help flow',
+        name: 'Copy of Help',
+        keywords: ['help', 'activity'],
+        ignoreKeywords: false,
+        addRoleIds: [],
+        deleteRoleIds: [],
+        tag_id: '1',
+      },
+    },
+  },
+  result: {
+    data: {
+      copyFlow: {
+        flow: {
+          roles: [],
+          tag: { id: '1', label: 'New tag' },
+          id: '1',
+          isActive: true,
+          keywords: ['help', 'activity'],
+          description: 'Help flow',
+          name: 'Copy of Help',
+          isBackground: false,
+          updatedAt: '2021-03-05T04:32:23Z',
+          uuid: '3fa22108-f464-41e5-81d9-d8a298854429',
+          isPinned: false,
+        },
+
+        errors: null,
+      },
+    },
+  },
+};
+
+export const getAllFlowLabelsQuery = {
+  request: {
+    query: GET_ALL_FLOW_LABELS,
+    variables: { filter: {}, opts: { limit: null, offset: 0, order: 'ASC' } },
+  },
+  result: {
+    data: {
+      flowLabels: [
+        {
+          id: '1',
+          name: 'dob',
+        },
+      ],
     },
   },
 };

@@ -1,8 +1,9 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
-import { MemoryRouter } from 'react-router';
+import { MemoryRouter, Route, Routes } from 'react-router';
 import axios from 'axios';
 import { vi } from 'vitest';
+import * as Recaptcha from 'react-google-recaptcha-v3';
 import { ResetPasswordPhone } from './ResetPasswordPhone';
 
 vi.mock('axios');
@@ -16,7 +17,10 @@ export const postRequestMock = () => {
 
 const wrapper = (
   <MemoryRouter>
-    <ResetPasswordPhone />
+    <Routes>
+      <Route path="/" element={<ResetPasswordPhone />} />
+      <Route path="/resetpassword-confirmotp" element={<div>Confirm OTP</div>} />
+    </Routes>
   </MemoryRouter>
 );
 
@@ -62,7 +66,16 @@ describe('<ResetPasswordPhone />', () => {
   });
 
   test('test the form submission with phone', async () => {
+    const useRecaptcha = vi.spyOn(Recaptcha, 'useGoogleReCaptcha');
+    const promise = () => Promise.resolve('some_fake_token');
+    useRecaptcha.mockImplementation(() => ({
+      executeRecaptcha: promise,
+    }));
     postRequestMock();
+
+    // let's mock successful login submission
+    const responseData = { data: { data: { data: {} } } };
+    mockedAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
     const { container } = render(wrapper);
 
     // enter the phone
@@ -71,19 +84,13 @@ describe('<ResetPasswordPhone />', () => {
 
     // click on continue
     await waitFor(() => {
-      const continueButton = screen.getByText('Generate OTP to confirm');
-      // UserEvent.click(continueButton);
+      expect(screen.getByText('Generate OTP to confirm')).toBeInTheDocument();
     });
+    const continueButton = screen.getByText('Generate OTP to confirm');
+    await UserEvent.click(continueButton);
 
-    // let's mock successful login submission
-    const responseData = { data: { data: { data: {} } } };
-    mockedAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
-
-    // TODOS: need to fix for successful response
-    // await waitFor(() => {
-    //   const resetPassword = screen.getByTestId('AuthContainer');
-    //   expect(resetPassword).toHaveTextContent('Reset your password');
-    //   expect(resetPassword).toHaveTextContent('New Password');
-    // });
+    await waitFor(() => {
+      expect(screen.getByText('Confirm OTP')).toBeInTheDocument();
+    });
   });
 });

@@ -13,6 +13,7 @@ import { FILTER_WEBHOOK_LOGS, GET_WEBHOOK_LOGS_COUNT } from 'graphql/queries/Web
 import { copyToClipboard, slicedString } from 'common/utils';
 import { STANDARD_DATE_TIME_FORMAT } from 'common/constants';
 import styles from './WebhookLogsList.module.css';
+import { webhookLogsInfo } from 'common/HelpData';
 
 const getTime = (time: string) => (
   <div className={styles.TableText}>{dayjs(time).format(STANDARD_DATE_TIME_FORMAT)}</div>
@@ -183,6 +184,7 @@ export const WebhookLogsList = () => {
   return (
     <div className={styles.Container}>
       <List
+        helpData={webhookLogsInfo}
         title={t('Webhook Logs')}
         listItem="webhookLogs"
         listItemName="webhookLog"
@@ -191,6 +193,7 @@ export const WebhookLogsList = () => {
         searchParameter={['contact_phone', 'url']}
         button={{ show: false }}
         {...queries}
+        showActions={false}
         dialogMessage=""
         restrictedAction={restrictedAction}
         {...columnAttributes}

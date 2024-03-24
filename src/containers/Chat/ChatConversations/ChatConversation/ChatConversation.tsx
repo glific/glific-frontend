@@ -1,10 +1,9 @@
 import { ListItemButton } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { useApolloClient, useMutation } from '@apollo/client';
 
 import { COMPACT_MESSAGE_LENGTH, SHORT_DATE_FORMAT } from 'common/constants';
-import { Timer } from 'components/UI/Timer/Timer';
 import { MARK_AS_READ, CONTACT_FRAGMENT } from 'graphql/mutations/Chat';
 import { SEARCH_OFFSET } from 'graphql/queries/Search';
 import { WhatsAppToJsx } from 'common/RichEditor';
@@ -12,15 +11,14 @@ import { MessageType } from '../MessageType/MessageType';
 import styles from './ChatConversation.module.css';
 import Track from 'services/TrackService';
 import { slicedString } from 'common/utils';
+import { AvatarDisplay } from 'components/UI/AvatarDisplay/AvatarDisplay';
+import { Timer } from 'components/UI/Timer/Timer';
 
 export interface ChatConversationProps {
-  contactId: number;
+  entityId: number;
   contactName: string;
-  contactStatus?: string;
-  contactBspStatus?: string;
   contactIsOrgRead: boolean;
   selected: boolean;
-  senderLastMessage: any;
   entityType: string;
   onClick?: (i: any) => void;
   index: number;
@@ -34,6 +32,7 @@ export interface ChatConversationProps {
   messageNumber?: number;
   highlightSearch?: string | null;
   searchMode?: any;
+  timer?: any;
 }
 const updateContactCache = (client: any, id: any) => {
   const contact = client.readFragment({
@@ -120,28 +119,27 @@ const BoldedText = (originalText: string, highlight: any) => {
 const ChatConversation = ({
   lastMessage,
   selected,
-  contactId,
+  entityId,
   contactName,
   index,
   highlightSearch,
   searchMode,
-  senderLastMessage,
-  contactStatus,
-  contactBspStatus,
   contactIsOrgRead,
   entityType,
   messageNumber,
   onClick,
+  timer,
 }: ChatConversationProps) => {
   // check if message is unread and style it differently
   const client = useApolloClient();
   let chatInfoClass = [styles.ChatInfo, styles.ChatInfoRead];
-  let chatBubble = [styles.ChatBubble, styles.ChatBubbleRead];
+  const location = useLocation();
 
+  let groups: boolean = location.pathname.includes('group');
   const [markAsRead] = useMutation(MARK_AS_READ, {
     onCompleted: (data) => {
       if (data.markContactMessagesAsRead) {
-        updateContactCache(client, contactId);
+        updateContactCache(client, entityId);
       }
     },
   });
@@ -150,7 +148,6 @@ const ChatConversation = ({
   // a. there might be some cases when there are no conversations against the contact
   if (!contactIsOrgRead) {
     chatInfoClass = [styles.ChatInfo, styles.ChatInfoUnread];
-    chatBubble = [styles.ChatBubble, styles.ChatBubbleUnread];
   }
 
   const name = slicedString(contactName, 20);
@@ -181,13 +178,34 @@ const ChatConversation = ({
   };
 
   const msgID = searchMode && messageNumber ? `?search=${messageNumber}` : '';
+  let redirectRoute: string = groups ? '/group/chat' : '/chat';
 
-  let redirectURL = `/chat/${contactId}${msgID}`;
+  let redirectURL = `${redirectRoute}/${entityId}${msgID}`;
   if (entityType === 'collection') {
-    redirectURL = `/chat/collection/${contactId}${msgID}`;
+    redirectURL = `${redirectRoute}/collection/${entityId}${msgID}`;
   } else if (entityType === 'savedSearch') {
-    redirectURL = `/chat/saved-searches/${contactId}${msgID}`;
+    redirectURL = `${redirectRoute}/saved-searches/${entityId}${msgID}`;
   }
+
+  let avatar: any = '';
+  if (groups && entityType === 'contact') {
+    avatar = <AvatarDisplay name={name} />;
+  } else if (entityType === 'contact') {
+    avatar = <AvatarDisplay name={name} badgeDisplay={!contactIsOrgRead} />;
+  }
+
+  let handleOnClick = () => {
+    if (onClick) onClick(index);
+    setSearchOffset(client, messageNumber);
+    if (entityType === 'contact') {
+      Track(groups ? 'View Group Details' : 'View contact');
+      if (!groups) {
+        markAsRead({
+          variables: { contactId: entityId.toString() },
+        });
+      }
+    }
+  };
 
   return (
     <ListItemButton
@@ -197,34 +215,10 @@ const ChatConversation = ({
       className={`${styles.StyledListItem} ${selected ? styles.SelectedColor : ''}`}
       component={Link}
       selected={selected}
-      onClick={() => {
-        if (onClick) onClick(index);
-        setSearchOffset(client, messageNumber);
-        if (entityType === 'contact') {
-          Track('View contact');
-          markAsRead({
-            variables: { contactId: contactId.toString() },
-          });
-        }
-      }}
+      onClick={handleOnClick}
       to={redirectURL}
     >
-      <div>
-        {entityType === 'contact' ? (
-          <div className={styles.ChatIcons}>
-            <div className={chatBubble.join(' ')} />
-            <div className={styles.Timer} data-testid="timerContainer">
-              <Timer
-                time={senderLastMessage}
-                contactStatus={contactStatus}
-                contactBspStatus={contactBspStatus}
-              />
-            </div>
-          </div>
-        ) : (
-          ''
-        )}
-      </div>
+      <div>{avatar}</div>
       <div className={chatInfoClass.join(' ')} data-testid="chatInfo">
         <div className={styles.ChatName} data-testid="name">
           {name}
@@ -232,8 +226,13 @@ const ChatConversation = ({
         <div className={styles.MessageContent} data-testid="content">
           {isTextType && highlightSearch ? BoldedText(body, highlightSearch) : displayMSG}
         </div>
+      </div>
+      <div>
         <div className={styles.MessageDate} data-testid="date">
           {dayjs(lastMessage.insertedAt).format(SHORT_DATE_FORMAT)}
+        </div>
+        <div className={styles.MessageDate} data-testid="timerContainer">
+          <Timer {...timer} />
         </div>
       </div>
     </ListItemButton>

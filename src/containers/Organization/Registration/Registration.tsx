@@ -90,6 +90,7 @@ export const Registration = ({ title, buttonText, handleStep }: RegistrationProp
       name: 'name',
       type: 'text',
       placeholder: 'NGO name',
+      darkMode: true,
     },
     {
       component: PhoneInput,
@@ -103,6 +104,7 @@ export const Registration = ({ title, buttonText, handleStep }: RegistrationProp
       name: 'app_name',
       type: 'text',
       placeholder: 'App name',
+      darkMode: true,
     },
     {
       component: Input,
@@ -110,6 +112,7 @@ export const Registration = ({ title, buttonText, handleStep }: RegistrationProp
       type: 'text',
       placeholder: 'GupShup API keys',
       helperText: HelperLink,
+      darkMode: true,
     },
     {
       component: Input,
@@ -117,6 +120,7 @@ export const Registration = ({ title, buttonText, handleStep }: RegistrationProp
       type: 'text',
       placeholder: 'URL Shortcode',
       endAdornment: InfoAdornment,
+      darkMode: true,
       helperText: `www.${shortcode}.tides.coloredcow.com`,
       inputProp: {
         onChange: (event: any) => {
@@ -131,6 +135,7 @@ export const Registration = ({ title, buttonText, handleStep }: RegistrationProp
       component: Input,
       name: 'email',
       type: 'text',
+      darkMode: true,
       placeholder: 'Your email id',
     },
     {

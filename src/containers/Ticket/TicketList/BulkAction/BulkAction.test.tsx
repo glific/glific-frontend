@@ -5,8 +5,9 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { setUserSession } from 'services/AuthService';
 import { BulkAction } from './BulkAction';
 import { getAllOrganizations } from 'mocks/Organization';
+import { getAllFlowLabelsQuery } from 'mocks/Flow';
 
-const mocks = getAllOrganizations;
+const mocks = [...getAllOrganizations, getAllFlowLabelsQuery];
 setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
 
 const bulkUpdate = (

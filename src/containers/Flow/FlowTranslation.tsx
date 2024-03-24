@@ -25,7 +25,7 @@ export interface FlowTranslationProps {
   loadFlowEditor: any;
 }
 
-const BackdropLoader = ({ text }: any) => (
+export const BackdropLoader = ({ text }: any) => (
   <Backdrop className={styles.BackDrop} open>
     {text} <CircularProgress color="inherit" />
   </Backdrop>

@@ -24,30 +24,34 @@
 }
 
 .GlificLogo {
-  padding-top: 10px;
+  display: flex;
+  align-items: center;
   width: 52px;
 }
 
 .AnotherToolBar {
-  padding: 0px 12px !important;
+  padding: 12px 16px;
 }
 
 .Drawer {
   z-index: 1000;
-  width: 233px;
+  width: 203px;
   flex-shrink: 0;
   white-space: nowrap;
 }
+
 .NavClose {
-  width: 72px;
+  width: 92px;
 }
 .DrawerOpen {
-  width: 233px;
+  height: calc(100% - 58px);
+  width: 203px;
   transition: width 255ms !important;
 }
 .DrawerClose {
+  height: calc(100% - 58px);
   transition: width 255ms !important;
-  width: 72px;
+  width: 92px;
 }
 .Toolbar {
   display: flex;
@@ -65,12 +69,8 @@
 
 .Title {
   align-self: center;
-  margin: 0 0 0 15px;
 }
-.IconButton {
-  margin: 0 10px 0 0;
-  padding: 12px !important;
-}
+
 .ClosedIcon {
   margin: 12px 12px 12px 15px;
 }

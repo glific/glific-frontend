@@ -54,6 +54,12 @@
   background: transparent;
 }
 
+.BackgroundImage {
+  position: absolute;
+  top: 0px;
+  right: 38px;
+}
+
 .TimeSent {
   display: flex;
   align-items: center;
@@ -103,25 +109,18 @@
 
 .SimContainer {
   position: fixed;
-  right: 0;
+  right: 20px;
   top: 100px;
   z-index: 10000;
 }
 
-.Simulator {
-  background-image: url('../../assets/images/phone.png');
-  background-repeat: no-repeat;
-  -webkit-filter: drop-shadow(0px 0px 10px #222);
-  filter: drop-shadow(0px 0px 10px #222);
-  border-radius: 12px;
-  right: 50px;
-  top: -50px;
+.ImageBackground {
   position: absolute;
   height: 576px;
   width: 304px;
-  padding: 0px 16px;
+}
 
-  z-index: 1000;
+.Simulator {
   transition: right 400ms cubic-bezier(0.175, 0.885, 0.32, 1.075);
   transition-delay: 100ms;
 }
@@ -144,22 +143,25 @@
 }
 
 .Simulator .Screen {
-  top: 53px;
-  height: 464px;
-  border: 1px solid black;
-  position: relative;
+  top: 12px;
+  right: 50px;
+  width: 269px;
+  height: 554px;
+  border-radius: 30px;
+  position: absolute;
   margin: 0px 5px;
   cursor: default;
   background-image: url('../../assets/images/whatsappBackground.jpg');
   background-size: contain;
 }
+
 .Simulator .Screen .Header {
   color: #eee;
   background: #2c6157;
   height: 50px;
   display: flex;
   align-items: center;
-  border-top: 10px solid black;
+  border-radius: 28px 28px 0px 0px;
 }
 
 .Simulator .Screen .Header img {
@@ -188,7 +190,7 @@
 }
 
 .Simulator .Screen .Messages {
-  height: 368px;
+  height: 460px;
   user-select: none;
   padding: 10px;
   overflow-y: auto;
@@ -201,7 +203,7 @@
   z-index: 100;
   display: flex;
   bottom: 0px;
-  padding: 5px;
+  padding: 10px;
   position: absolute;
 }
 
@@ -264,14 +266,14 @@
   position: absolute;
   top: -3px;
   color: #073f24;
-  right: -20px;
+  right: 0px;
   cursor: pointer;
 }
 
 .ResetIcon {
   position: absolute;
   top: 30px;
-  right: -18px;
+  right: 2px;
   cursor: pointer;
 }
 
@@ -333,6 +335,7 @@
   left: 0;
   width: 100%;
   height: 100%;
+  border-radius: 25px;
   background-color: rgba(0, 0, 0, 0.5);
   content: '';
 }
@@ -340,4 +343,9 @@
 .InteractiveReceivedMessage {
   background: transparent !important;
   padding: 0px !important;
+}
+
+.DoneAllIcon {
+  font-size: 10px;
+  margin-left: 2px;
 }

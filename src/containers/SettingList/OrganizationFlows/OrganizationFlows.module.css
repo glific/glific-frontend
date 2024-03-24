@@ -7,14 +7,14 @@
 }
 
 .CheckboxLabel {
-  font-size: 20px;
-  font-weight: 800;
-  color: '#073f24';
-  line-height: 1;
+  color: #555555;
+  font-weight: 400;
+  line-height: 18px;
+  font-size: 16px;
 }
 
-.AllDayCheck {
-  margin-left: 4px;
+.Checkbox {
+  margin-top: 16px;
 }
 
 .AddDayLabel {

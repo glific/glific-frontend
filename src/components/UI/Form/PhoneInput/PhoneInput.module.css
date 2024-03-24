@@ -1,10 +1,9 @@
 .PhoneNumber {
   width: 334px !important;
-  padding-top: 18.5px !important;
-  padding-bottom: 18.5px !important;
+  padding-top: 13px !important;
+  padding-bottom: 13px !important;
   padding-left: 48px !important;
   padding-right: 14px !important;
-  /* border-color: rgba(0, 0, 0, 0.23) !important; */
   border-radius: 12px !important;
   border-width: 2px !important;
   background: inherit !important;
@@ -12,8 +11,7 @@
 }
 
 .PhoneNumber:focus {
-  border-color: rgba(0, 0, 0, 0.23) !important;
-  /* border-color: inherit !important; */
+  border-color: #119656 !important;
   box-shadow: none !important;
 }
 

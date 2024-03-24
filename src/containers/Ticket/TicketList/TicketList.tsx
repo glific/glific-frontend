@@ -1,6 +1,15 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dialog, DialogContent, FormControlLabel, Radio, RadioGroup } from '@mui/material';
+import {
+  Dialog,
+  DialogContent,
+  FormControl,
+  FormControlLabel,
+  MenuItem,
+  Radio,
+  RadioGroup,
+  Select,
+} from '@mui/material';
 import { SupportAgent } from '@mui/icons-material';
 import dayjs from 'dayjs';
 
@@ -13,11 +22,11 @@ import { List } from 'containers/List/List';
 import { Button } from 'components/UI/Form/Button/Button';
 import { ExportTicket } from './ExportTicket/ExportTicket';
 import Ticket from 'containers/Ticket/Ticket';
-import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
 import { getUserSession } from 'services/AuthService';
 import styles from './TicketList.module.css';
 import { BulkAction } from './BulkAction/BulkAction';
 import { SHORT_DATE_TIME_FORMAT } from 'common/constants';
+import { ticketsInfo } from 'common/HelpData';
 
 const getId = (id: any) => <div className={styles.TableText}>{id}</div>;
 const getBody = (body: any) => <div className={styles.TableText}>{body}</div>;
@@ -60,6 +69,10 @@ const filterList = [
   { label: 'My tickets', value: true },
 ];
 
+const statusOptions = [
+  { id: 'open', label: 'Open' },
+  { id: 'closed', label: 'Closed' },
+];
 export const TicketList = () => {
   const [showExportDialog, setShowExportDialog] = useState(false);
   const [showBulkClose, setShowBulkClose] = useState(false);
@@ -142,6 +155,24 @@ export const TicketList = () => {
 
   const activeFilter = (
     <div className={styles.Filters}>
+      <div>
+        <FormControl>
+          <Select
+            name="ticket-status"
+            value={status}
+            onChange={(event) => {
+              setStatus(event.target.value);
+            }}
+            className={styles.SearchBar}
+          >
+            {statusOptions.map((status) => (
+              <MenuItem key={status.id} value={status.id}>
+                {status.label}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </div>
       <RadioGroup
         aria-label="ticket-type"
         name="ticket-type"
@@ -164,16 +195,6 @@ export const TicketList = () => {
           </div>
         ))}
       </RadioGroup>
-      <div className={styles.DropdownContainer}>
-        <Dropdown
-          options={[
-            { id: 'open', label: 'Open' },
-            { id: 'closed', label: 'Closed' },
-          ]}
-          placeholder="Status"
-          field={{ value: status, onChange: (event: any) => setStatus(event.target.value) }}
-        ></Dropdown>
-      </div>
     </div>
   );
 
@@ -198,6 +219,7 @@ export const TicketList = () => {
     <>
       {dialog}
       <List
+        helpData={ticketsInfo}
         restrictedAction={getRestrictedAction}
         title="Tickets"
         listItem="tickets"

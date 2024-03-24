@@ -54,7 +54,7 @@ describe('<ChatTemplates />', () => {
   });
 
   test('no results should return text', async () => {
-    defaultProps.searchVal = 'this should not return anything';
+    defaultProps.searchVal = 'hi';
     const wrapper = render(chatTemplates());
     await waitFor(() => {
       expect(wrapper.getByTestId('no-results')).toBeTruthy();

@@ -3,7 +3,7 @@ import { useLazyQuery, useQuery } from '@apollo/client';
 
 import {
   COLLECTION_SEARCH_QUERY_VARIABLES,
-  DEFAULT_CONTACT_LIMIT,
+  DEFAULT_ENTITY_LIMIT,
   DEFAULT_MESSAGE_LIMIT,
   REFETCH_RANDOM_TIME_MAX,
   REFETCH_RANDOM_TIME_MIN,
@@ -32,7 +32,7 @@ export interface ChatSubscriptionProps {
 
 export const ChatSubscription = ({ setDataLoaded }: ChatSubscriptionProps) => {
   const queryVariables = SEARCH_QUERY_VARIABLES;
-  const contactIdsFetched: any = [];
+  const entityIdsFetched: any = [];
 
   let refetchTimer: any = null;
   const [triggerRefetch, setTriggerRefetch] = useState(false);
@@ -93,7 +93,7 @@ export const ChatSubscription = ({ setDataLoaded }: ChatSubscriptionProps) => {
         }
       }
 
-      const { newMessage, contactId, collectionId, messageStatusData } = getSubscriptionDetails(
+      const { newMessage, entityId, collectionId, messageStatusData } = getSubscriptionDetails(
         action,
         subscriptionData
       );
@@ -111,7 +111,7 @@ export const ChatSubscription = ({ setDataLoaded }: ChatSubscriptionProps) => {
         });
       } else {
         cachedConversations.search.forEach((conversation: any, index: any) => {
-          if (conversation.contact.id === contactId) {
+          if (conversation.contact.id === entityId) {
             conversationIndex = index;
             conversationFound = true;
           }
@@ -132,9 +132,9 @@ export const ChatSubscription = ({ setDataLoaded }: ChatSubscriptionProps) => {
       ) {
         const variables = {
           contactOpts: {
-            limit: DEFAULT_CONTACT_LIMIT,
+            limit: DEFAULT_ENTITY_LIMIT,
           },
-          filter: { id: contactId },
+          filter: { id: entityId },
           messageOpts: {
             limit: DEFAULT_MESSAGE_LIMIT,
           },
@@ -145,8 +145,8 @@ export const ChatSubscription = ({ setDataLoaded }: ChatSubscriptionProps) => {
           variables
         );
 
-        if (!contactIdsFetched.includes(contactId)) {
-          contactIdsFetched.push(contactId);
+        if (!entityIdsFetched.includes(entityId)) {
+          entityIdsFetched.push(entityId);
 
           getContactQuery({
             variables,
@@ -175,6 +175,7 @@ export const ChatSubscription = ({ setDataLoaded }: ChatSubscriptionProps) => {
       // update contact last message at when receiving a new Message
       if (action === 'RECEIVED') {
         updatedConversation[0].contact.lastMessageAt = newMessage.insertedAt;
+        updatedConversation[0].contact.bspStatus = newMessage.contact.bspStatus;
       }
 
       // Add new message and move the conversation to the top
@@ -203,14 +204,14 @@ export const ChatSubscription = ({ setDataLoaded }: ChatSubscriptionProps) => {
     SEARCH_QUERY,
     {
       variables: COLLECTION_SEARCH_QUERY_VARIABLES,
-      fetchPolicy: 'network-only',
+      fetchPolicy: 'cache-first',
       nextFetchPolicy: 'cache-only',
     }
   );
 
   const { loading, error, subscribeToMore, data, refetch } = useQuery<any>(SEARCH_QUERY, {
     variables: queryVariables,
-    fetchPolicy: 'network-only',
+    fetchPolicy: 'cache-first',
     nextFetchPolicy: 'cache-only',
   });
 

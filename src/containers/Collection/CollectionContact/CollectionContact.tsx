@@ -21,26 +21,18 @@ export const CollectionContact = () => {
   const title = collection.data ? collection.data.group.group.label : t('Collection');
 
   let users;
-  let description;
 
   if (collection.data) {
     users = collection.data.group.group.users;
-    description = collection.data.group.group.description;
   }
-  return (
-    <div className={styles.CollectionContactContainer}>
-      <div className={styles.ContactList}>
-        <CollectionContactList title={title} />
-      </div>
-      <div className={styles.CollectionDescription}>
-        <CollectionDescription
-          users={users}
-          description={description}
-          collectionId={collectionId}
-        />
-      </div>
+
+  const descriptionBox = (
+    <div className={styles.ContactList}>
+      <CollectionDescription users={users} collectionId={collectionId} />
     </div>
   );
+
+  return <CollectionContactList title={title} descriptionBox={descriptionBox} />;
 };
 
 export default CollectionContact;

@@ -12,6 +12,7 @@ import { EmojiInput } from 'components/UI/Form/EmojiInput/EmojiInput';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { LanguageBar } from 'components/UI/LanguageBar/LanguageBar';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { GET_TEMPLATE } from 'graphql/queries/Template';
 import { CREATE_MEDIA_MESSAGE } from 'graphql/mutations/Chat';
 import { USER_LANGUAGES } from 'graphql/queries/Organization';
@@ -23,7 +24,6 @@ import {
   QUICK_REPLY,
   VALID_URL_REGEX,
 } from 'common/constants';
-import Loading from 'components/UI/Layout/Loading/Loading';
 import { CreateAutoComplete } from 'components/UI/Form/CreateAutoComplete/CreateAutoComplete';
 import { validateMedia } from 'common/utils';
 import styles from './Template.module.css';
@@ -69,8 +69,8 @@ const formIsActive = {
   component: Checkbox,
   name: 'isActive',
   title: (
-    <Typography variant="h6" style={{ color: '#073f24' }}>
-      Is active?
+    <Typography variant="h6" className={styles.IsActive}>
+      Active?
     </Typography>
   ),
   darkCheckbox: true,
@@ -178,7 +178,7 @@ const Template = ({
   const [body, setBody] = useState<any>('');
   const [example, setExample] = useState<any>('');
   const [shortcode, setShortcode] = useState('');
-  const [language, setLanguageId] = useState<any>({});
+  const [language, setLanguageId] = useState<any>(null);
   const [type, setType] = useState<any>(null);
   const [translations, setTranslations] = useState<any>();
   const [attachmentURL, setAttachmentURL] = useState<any>('');
@@ -267,7 +267,7 @@ const Template = ({
         );
         navigate(location.pathname);
         setLanguageId(selectedLangauge);
-      } else if (!language.id) {
+      } else if (!language?.id) {
         const selectedLangauge = languageOptions.find(
           (lang: any) => lang.id === languageIdValue.id
         );
@@ -309,11 +309,11 @@ const Template = ({
     if (typeValue && typeValue !== 'TEXT') {
       setType({ id: typeValue, label: typeValue });
     } else {
-      setType('');
+      setType(null);
     }
     if (translationsValue) {
       const translationsCopy = JSON.parse(translationsValue);
-      const currentLanguage = language.id || languageIdValue.id;
+      const currentLanguage = language?.id || languageIdValue.id;
       if (
         Object.keys(translationsCopy).length > 0 &&
         translationsCopy[currentLanguage] &&
@@ -361,7 +361,7 @@ const Template = ({
     if (typeValue && typeValue !== 'TEXT') {
       setType({ id: typeValue, label: typeValue });
     } else {
-      setType('');
+      setType(null);
     }
 
     if (MessageMediaValue) {
@@ -588,14 +588,11 @@ const Template = ({
       options: mediaTypes,
       optionLabel: 'label',
       multiple: false,
-      textFieldProps: {
-        variant: 'outlined',
-        label: t('Attachment Type'),
-      },
+      label: t('Attachment Type'),
       disabled: isEditing,
       helperText: warning,
       onChange: (event: any) => {
-        const val = event || '';
+        const val = event;
         if (!event) {
           setIsUrlValid(val);
         }
@@ -606,7 +603,7 @@ const Template = ({
       component: Input,
       name: 'attachmentURL',
       type: 'text',
-      placeholder: t('Attachment URL'),
+      label: t('Attachment URL'),
       validate: () => isUrlValid,
       disabled: isEditing,
       helperText: t(
@@ -643,10 +640,7 @@ const Template = ({
           options: languageOptions,
           optionLabel: 'label',
           multiple: false,
-          textFieldProps: {
-            variant: 'outlined',
-            label: `${t('Language')}*`,
-          },
+          label: `${t('Language')}*`,
           disabled: isEditing,
           onChange: getLanguageId,
         }
@@ -658,11 +652,12 @@ const Template = ({
         };
 
   const formFields = [
+    formIsActive,
     languageComponent,
     {
       component: Input,
       name: 'label',
-      placeholder: `${t('Title')}*`,
+      label: t('Title'),
       disabled: isEditing,
       helperText: defaultAttribute.isHsm
         ? t('Define what use case does this template serve eg. OTP, optin, activity preference')
@@ -671,10 +666,11 @@ const Template = ({
         onBlur: (event: any) => setLabel(event.target.value),
       },
     },
+
     {
       component: EmojiInput,
       name: 'body',
-      placeholder: `${t('Message')}*`,
+      label: t('Message'),
       rows: 5,
       convertToWhatsApp: true,
       textArea: true,
@@ -705,7 +701,11 @@ const Template = ({
   const templateRadioOptions = [
     {
       component: Checkbox,
-      title: <Typography variant="h6">Add buttons</Typography>,
+      title: (
+        <Typography variant="h6" className={styles.IsActive}>
+          Add buttons
+        </Typography>
+      ),
       name: 'isAddButtonChecked',
       disabled: !!(defaultAttribute.isHsm && params.id && !isCopyState),
       handleChange: (value: boolean) => setIsAddButtonChecked(value),
@@ -734,10 +734,7 @@ const Template = ({
     onChange: (value: any) => {
       setTagId(value);
     },
-    textFieldProps: {
-      variant: 'outlined',
-      label: t('Tag'),
-    },
+    label: t('Tag'),
     helperText: t('Use this to categorize your templates.'),
   };
 
@@ -748,7 +745,7 @@ const Template = ({
   ];
 
   const fields = defaultAttribute.isHsm
-    ? [formIsActive, ...formFields, ...hsmFields, ...attachmentField, tags]
+    ? [...formFields, ...hsmFields, ...attachmentField, tags]
     : [...formFields, ...attachmentField];
 
   // Creating payload for button template

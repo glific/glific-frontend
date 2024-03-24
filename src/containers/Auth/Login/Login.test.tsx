@@ -10,9 +10,12 @@ import {
   getCurrentUserErrorQuery,
   getCurrentUserInvalidRoleQuery,
 } from 'mocks/User';
+
+import { getOrganizationServicesQuery } from 'mocks/Organization';
+
 import { Login } from './Login';
 
-const mocks = [getCurrentUserQuery];
+const mocks = [getCurrentUserQuery, getOrganizationServicesQuery];
 
 vi.mock('axios');
 vi.mock('pino-logflare', () => ({
@@ -64,6 +67,9 @@ describe('<Login />', () => {
     // let's mock successful registration submission
     const responseData = { data: { data: { data: {} } } };
 
+    // setAuthToken uses localStorage.setItem
+    const localStorageSpy = vi.spyOn(Storage.prototype, 'setItem');
+
     const successPromise = vi.fn(() => Promise.resolve(responseData));
     mockedAxios.post.mockImplementation(() => successPromise());
     const { container } = render(wrapper);
@@ -72,6 +78,7 @@ describe('<Login />', () => {
 
     await waitFor(() => {
       expect(successPromise).toHaveBeenCalled();
+      expect(localStorageSpy).toHaveBeenCalled();
     });
   });
 
@@ -79,7 +86,7 @@ describe('<Login />', () => {
     // set the mock error case while login
     const errorMessage = 'Cannot login';
     const rejectPromise = vi.fn(() => Promise.reject(errorMessage));
-
+    const localStorageSpy = vi.spyOn(Storage.prototype, 'setItem');
     mockedAxios.post.mockImplementationOnce(() => rejectPromise());
     const { container } = render(wrapper);
 
@@ -87,6 +94,7 @@ describe('<Login />', () => {
 
     await waitFor(() => {
       expect(rejectPromise).toHaveBeenCalled();
+      expect(localStorageSpy).not.toHaveBeenCalled();
     });
   });
 
@@ -95,10 +103,10 @@ describe('<Login />', () => {
     const responseData = { data: { data: { data: {} } } };
 
     const successPromise = vi.fn(() => Promise.resolve(responseData));
-
+    const localStorageSpy = vi.spyOn(Storage.prototype, 'setItem');
     mockedAxios.post.mockImplementationOnce(() => successPromise());
     const { container } = render(
-      <MockedProvider mocks={[getCurrentUserErrorQuery]}>
+      <MockedProvider mocks={[getCurrentUserErrorQuery, getOrganizationServicesQuery]}>
         <MemoryRouter>
           <Login />
         </MemoryRouter>
@@ -109,6 +117,7 @@ describe('<Login />', () => {
 
     await waitFor(() => {
       expect(successPromise).toHaveBeenCalled();
+      expect(localStorageSpy).not.toHaveBeenCalled();
     });
   });
 
@@ -117,7 +126,7 @@ describe('<Login />', () => {
     const responseData = { data: { data: { data: {} } } };
 
     const successPromise = vi.fn(() => Promise.resolve(responseData));
-
+    const localStorageSpy = vi.spyOn(Storage.prototype, 'setItem');
     mockedAxios.post.mockImplementationOnce(() => successPromise());
     const { container } = render(
       <MockedProvider mocks={[getCurrentUserInvalidRoleQuery]}>
@@ -131,6 +140,7 @@ describe('<Login />', () => {
 
     await waitFor(() => {
       expect(successPromise).toHaveBeenCalled();
+      expect(localStorageSpy).not.toHaveBeenCalled();
     });
   });
 });

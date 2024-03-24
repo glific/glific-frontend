@@ -14,6 +14,13 @@ vi.mock('react-tiny-link', () => {
   };
 });
 
+// mock react player
+vi.mock('react-player', () => {
+  return {
+    default: () => <video></video>,
+  };
+});
+
 HTMLAnchorElement.prototype.click = vi.fn();
 
 const insertedAt = '2020-06-19T18:44:02Z';
@@ -21,7 +28,7 @@ const getProps: any = (type: any) => {
   return {
     id: 1,
     body: '*Hello there!* visit https://www.google.com',
-    contactId: 2,
+    entityId: 2,
     receiver: {
       id: 1,
     },
@@ -223,7 +230,7 @@ describe('<ChatMessage />', () => {
   const receivedProps = {
     id: 93,
     body: 'test',
-    contactId: 4,
+    entityId: 4,
     receiver: {
       id: 4,
     },

@@ -26,53 +26,62 @@
 }
 
 .ItemAdd {
-  width: fit-content;
+  height: 100vh;
+  background-color: #ffffff;
+}
+
+.ItemAddDialog {
+  background-color: #ffffff;
 }
 
 .Form {
-  padding: 16px 24px;
+  padding: 16px 53px;
   width: 530px;
+  padding-bottom: 40px;
 }
 
 .Buttons {
-  margin-top: 24px;
+  margin-top: 35px;
   display: flex;
   justify-content: flex-start;
 }
 
 .Buttons > :not(:last-child) {
-  margin-right: 16px !important;
+  margin-right: 16px;
 }
 
 .Title {
-  margin-left: 24px !important;
-  margin-top: 16px !important;
+  margin-left: 14px;
   vertical-align: middle;
-  font-weight: 500 !important;
-  color: #073f24;
-  text-transform: capitalize;
+  height: 40px;
+  color: #191c1a;
+  display: flex;
+  align-items: first baseline;
+  font-weight: 700;
+  font-size: 38px;
 }
 
 .FieldLabel {
-  margin-left: 12px !important;
-  margin-top: 16px !important;
+  margin-top: 24px;
   vertical-align: middle;
-  font-weight: 500 !important;
-  font-size: 20px !important;
-  color: #073f24;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 18px;
+  color: #555555;
+  padding-bottom: 14px;
 }
 
 .Icon {
-  background-color: #eaedec !important;
-  margin-right: 10px !important;
+  background-color: #eaedec;
+  margin-right: 10px;
 }
 
 .DeleteIcon {
-  margin-right: 9px !important;
+  margin-right: 9px;
 }
 
 .DeleteButton {
-  margin-left: auto !important;
+  margin-left: auto;
 }
 
 .CheckHeader {
@@ -96,7 +105,7 @@
 }
 
 .CheckBox {
-  color: blue !important;
+  color: blue;
 }
 
 .Select {
@@ -105,27 +114,10 @@
   margin-top: 8px;
 }
 
-.BackLink {
-  font-weight: 800;
-  font-size: 16px;
-  margin: 24px;
-  margin-top: 12px;
-  margin-bottom: 0px;
-}
-
-.BackLink a {
-  color: #93a29b;
-  text-decoration: none;
-}
-
-.BackLink svg {
-  margin-right: 6px;
-}
-
 @media screen and (max-width: 768px) {
   .Form,
   .ItemAdd,
   .Buttons {
-    width: 100% !important;
+    width: 100%;
   }
 }

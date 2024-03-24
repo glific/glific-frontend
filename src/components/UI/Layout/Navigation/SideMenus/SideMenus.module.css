@@ -4,17 +4,18 @@
 }
 
 .ListItemIcon {
+  display: flex;
+  justify-content: center;
   min-width: 32px !important;
-  padding-top: inherit;
 }
 
 .IconItem {
   border-radius: 12px !important;
-  margin: auto !important;
+  margin: auto;
 }
 
 .SelectedItem {
-  background: #e2f1ea !important;
+  background: #cce6d0 !important;
 }
 
 .SelectedItem:hover {
@@ -22,8 +23,8 @@
 }
 
 .OpenItem {
-  width: 90% !important;
-  padding: 6px 8px !important;
+  margin: 0px 8px;
+  padding: 6px 16px;
 }
 
 .ClosedItem {
@@ -32,11 +33,74 @@
 }
 
 .SelectedText {
-  font-size: 0.875rem;
-  color: #119656;
+  font-size: 13px;
+  font-weight: 700;
+  color: #073f24;
 }
 
 .UnselectedText {
-  font-size: 0.875rem;
-  color: #93a29b;
+  font-size: 13px;
+  font-weight: 500;
+  color: #717971;
+}
+
+.Divider {
+  margin: 8px 0px;
+}
+
+.Accordion {
+  padding: 0px;
+  margin: 0px !important;
+  border: unset;
+  box-shadow: unset;
+}
+
+.Accordion::before {
+  height: 0px;
+}
+
+.AccordionSummaryContent {
+  margin: 0px;
+  border: unset;
+}
+
+.AccordionSummaryContentExpanded {
+  margin: 0px !important;
+  min-height: unset !important;
+}
+
+.AccordionSummary {
+  padding: 0px !important;
+  border: unset;
+  margin: 0px;
+  min-height: unset;
+}
+
+.AccordionDetails {
+  padding-top: 6px;
+  padding-right: 0px;
+  padding-bottom: 6px;
+  padding-left: 30px;
+  border: unset;
+}
+
+.AccordionDetailsClosed {
+  composes: AccordionDetails;
+  padding-left: 10px;
+}
+
+.IconItemSubmenu {
+  overflow: hidden;
+  border-left: 2px solid #eee;
+}
+
+.IconItemActiveSubmenu {
+  border-left: 2px solid #073f24;
+  overflow: hidden;
+}
+
+.OpenItemSubMenu {
+  composes: OpenItem;
+  margin-left: -10px;
+  padding-left: 25px;
 }

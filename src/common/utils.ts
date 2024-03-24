@@ -6,7 +6,8 @@ import { getAuthSession, getOrganizationServices, getUserSession, setAuthSession
 import { SIMULATOR_NUMBER_START } from './constants';
 import { setNotification } from './notification';
 
-export const isSimulator = (phone: string) => phone.startsWith(SIMULATOR_NUMBER_START);
+export const isSimulator = (phone: string) =>
+  phone ? phone.startsWith(SIMULATOR_NUMBER_START) : false;
 
 export const getObject = (arr: any, data: any) => {
   const result: any = [];
@@ -184,6 +185,18 @@ export const getDisplayName = (conversation: any) => {
   return displayName;
 };
 
+export const getDisplayNameForSearch = (conversation: any, groups?: boolean) => {
+  let displayName: string = '';
+
+  if (groups) {
+    displayName = conversation.name || conversation.waGroup?.label || '';
+  } else {
+    displayName = conversation.name || conversation.maskedPhone || conversation.contact?.name || '';
+  }
+
+  return displayName;
+};
+
 export const numberToAbbreviation = (numberString: string) => {
   const number = parseInt(numberString, 10);
   let abbreviation = '';
@@ -220,9 +233,6 @@ export const getAddOrRemoveRoleIds = (roles: any, payload: any) => {
 
   return { ...rest, addRoleIds, deleteRoleIds };
 };
-
-// lg breakpoint is 1200px for MUI
-export const isGreaterThanLgBreakpoint = () => window.innerWidth > 1200;
 
 export const slicedString = (string: string, length: number) =>
   string?.length > length ? `${string.slice(0, length)}...` : string;

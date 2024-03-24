@@ -4,24 +4,28 @@ import { MockedProvider } from '@apollo/client/testing';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 
 import { SEARCH_QUERY } from 'graphql/queries/Search';
-import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT } from 'common/constants';
+import { DEFAULT_ENTITY_LIMIT, DEFAULT_MESSAGE_LIMIT } from 'common/constants';
 import ChatConversations from './ChatConversations';
 import { ChatConversationMocks } from './ChatConversations.test.helper';
+import { setUserSession } from 'services/AuthService';
 
+setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
 const cache = new InMemoryCache({ addTypename: false });
 cache.writeQuery({
   query: SEARCH_QUERY,
   variables: {
-    contactOpts: { limit: DEFAULT_CONTACT_LIMIT },
+    contactOpts: { limit: DEFAULT_ENTITY_LIMIT },
     filter: {},
     messageOpts: { limit: DEFAULT_MESSAGE_LIMIT },
   },
   data: {
     search: [
       {
+        id: 'contact_2',
         group: null,
         contact: {
           id: '2',
+          fields: '{}',
           name: 'Effie Cormier',
           phone: '987654321',
           maskedPhone: '98****321',
@@ -82,7 +86,7 @@ const client = new ApolloClient({
 afterEach(cleanup);
 
 const simulatorParams = {
-  contactId: 1,
+  entityId: 1,
   simulatorId: 1,
   setShowSimulator: vi.fn(),
 };

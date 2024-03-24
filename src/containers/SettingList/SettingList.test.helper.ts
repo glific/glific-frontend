@@ -105,6 +105,7 @@ const updateOrganizationMock = {
       updateOrganization: {
         errors: null,
         organization: {
+          defaultLanguage: { id: '1', label: 'English' },
           activeLanguages: [
             { id: '1', label: 'English' },
             { id: '2', label: 'Hindi' },
@@ -162,6 +163,7 @@ const updateOrganizationMock2 = {
       updateOrganization: {
         errors: null,
         organization: {
+          defaultLanguage: { id: '1', label: 'English' },
           activeLanguages: [
             { id: '1', label: 'English' },
             { id: '2', label: 'Hindi' },

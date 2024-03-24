@@ -48,6 +48,20 @@ class ResizeObserver {
   disconnect() {}
 }
 
+vi.mock('services/TrackService', () => {
+  return {
+    default: () => vi.fn(),
+    Track: () => vi.fn(),
+  };
+});
+
+vi.mock('config/logs', () => {
+  return {
+    default: () => vi.fn(),
+    setLogs: () => vi.fn(),
+  };
+});
+
 window.ResizeObserver = ResizeObserver;
 window.HTMLDocument = Document;
 window.fetch = vi.fn() as any;

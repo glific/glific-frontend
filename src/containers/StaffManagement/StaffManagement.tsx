@@ -20,6 +20,7 @@ import { getUserSession } from 'services/AuthService';
 import { GET_ROLE_NAMES } from 'graphql/queries/Role';
 import { organizationHasDynamicRole } from 'common/utils';
 import styles from './StaffManagement.module.css';
+import { staffManagementInfo } from 'common/HelpData';
 
 const staffManagementIcon = <StaffManagementIcon />;
 
@@ -34,8 +35,8 @@ export const StaffManagement = () => {
   const hasDynamicRoles = organizationHasDynamicRole();
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
-  const [roles, setRoles] = useState<any>([]);
-  const [groups, setGroups] = useState(null);
+  const [roles, setRoles] = useState<any>(null);
+  const [groups, setGroups] = useState(undefined);
   const [isRestricted, setIsRestricted] = useState(false);
   const [staffRole, setStaffRole] = useState(false);
   const [helpDialog, setHelpDialog] = useState(false);
@@ -134,33 +135,27 @@ export const StaffManagement = () => {
   }, [roles]);
   if (loading || loadingRoles) return <Loading />;
   if (!data.groups || !roleData.accessRoles) {
-    return null;
+    return <div>An error occured! Not able to fetch collections or roles</div>;
   }
 
-  const rolesList: any = [];
+  let rolesList: any = [];
   roleData.accessRoles.forEach((role: any) => {
-    if (hasDynamicRoles) {
-      rolesList.push({ id: role.id, label: role.label });
-    } else if (role.isReserved) {
+    if (hasDynamicRoles || role.isReserved) {
       rolesList.push({ id: role.id, label: role.label });
     }
   });
 
-  const getOptions = () => {
-    let options: any = [];
-    if (rolesList.length > 0) {
-      if (isManager) {
-        // should not display Admin role to manager.
-        options = rolesList.filter(
-          (item: any) => item.label !== 'Admin' && item.label !== 'Glific admin'
-        );
-      }
-      if (isAdmin) {
-        options = rolesList.filter((item: any) => item.label !== 'Glific admin');
-      }
+  if (rolesList.length > 0) {
+    if (isManager) {
+      // should not display Admin role to manager.
+      rolesList = rolesList.filter(
+        (item: any) => item.label !== 'Admin' && item.label !== 'Glific admin'
+      );
     }
-    return options;
-  };
+    if (isAdmin) {
+      rolesList = rolesList.filter((item: any) => item.label !== 'Glific admin');
+    }
+  }
 
   let formFields: any = [];
 
@@ -193,11 +188,13 @@ export const StaffManagement = () => {
       name: 'name',
       type: 'text',
       placeholder: t('Username'),
+      label: t('Username'),
     },
     {
       component: Input,
       name: 'phone',
       placeholder: t('Phone Number'),
+      label: t('Phone Number'),
       disabled: true,
       skipPayload: true,
     },
@@ -208,14 +205,10 @@ export const StaffManagement = () => {
       placeholder: t('Roles'),
       options: rolesList,
       onChange: handleRolesChange,
-      getOptions,
       multiple: hasDynamicRoles,
       helpLink: { label: 'help?', handleClick: handleHelpClick },
       optionLabel: 'label',
-      textFieldProps: {
-        label: t('Roles'),
-        variant: 'outlined',
-      },
+      label: t('Roles'),
     },
     {
       component: AutoComplete,
@@ -223,10 +216,7 @@ export const StaffManagement = () => {
       placeholder: t('Assigned to collection(s)'),
       options: data.groups,
       optionLabel: 'label',
-      textFieldProps: {
-        label: t('Assigned to collection(s)'),
-        variant: 'outlined',
-      },
+      label: t('Assigned to collection(s)'),
     },
   ];
 
@@ -293,6 +283,8 @@ export const StaffManagement = () => {
 
   const checkAfterSave = (updatedUser: any) => {
     const { id, roles: userRoles } = updatedUser.updateUser.user;
+
+    // logout if an admin demotes themselves
     if (isAdmin && getUserSession('id') === id && !userRoles.includes('Admin')) {
       navigate('/logout/user');
     }
@@ -317,6 +309,7 @@ export const StaffManagement = () => {
         listItem="user"
         icon={staffManagementIcon}
         languageSupport={false}
+        helpData={staffManagementInfo}
       />
     </>
   );

@@ -10,6 +10,7 @@ export interface TimerProps {
   time: any;
   contactStatus?: string;
   contactBspStatus?: string;
+  variant?: 'primary' | 'secondary';
 }
 
 export const Timer = (props: TimerProps) => {
@@ -36,7 +37,7 @@ export const Timer = (props: TimerProps) => {
     </>
   );
 
-  const { contactStatus, contactBspStatus, time } = props;
+  const { contactStatus, contactBspStatus, time, variant = 'primary' } = props;
 
   let intervalID: any;
   useEffect(() => {
@@ -46,6 +47,10 @@ export const Timer = (props: TimerProps) => {
 
     return () => clearInterval(intervalID);
   }, []);
+
+  if (!contactBspStatus && !contactStatus && !time) {
+    return null;
+  }
 
   if ((contactStatus && contactStatus === 'INVALID') || contactBspStatus === 'NONE') {
     return (
@@ -103,8 +108,11 @@ export const Timer = (props: TimerProps) => {
       placement="bottom"
       interactive
     >
-      <div className={timerStyle} data-testid="timerCount">
-        {hours}
+      <div
+        className={timerStyle + ' ' + (variant === 'secondary' && styles.SecondaryTimer)}
+        data-testid="timerCount"
+      >
+        {hours} hrs
       </div>
     </Tooltip>
   );

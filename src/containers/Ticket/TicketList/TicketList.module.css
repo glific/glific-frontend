@@ -25,7 +25,7 @@
 }
 
 .Assigned {
-  width: 120px;
+  width: 150px;
 }
 
 .Status {
@@ -40,6 +40,7 @@
 
 .Actions {
   width: 120px;
+  text-align: end;
   justify-content: flex-end;
   margin-left: auto;
 }
@@ -57,7 +58,6 @@
 .TableText {
   margin-right: 23px;
   text-align: left;
-  padding: 12px 0px;
   font-size: 16px;
   color: #93a29b;
   line-height: 1.25;
@@ -68,12 +68,6 @@
 .Filters {
   display: flex;
   align-items: center;
-  margin-left: 50px;
-}
-
-.DropdownContainer {
-  min-width: 150px;
-  margin: 0 20px;
 }
 
 .Icon {
@@ -106,4 +100,18 @@
 
 .RadioLabel {
   margin-right: 24px;
+}
+
+.SearchBar {
+  border-radius: 24px;
+  border: 1px solid #cccccc;
+  display: flex;
+  margin-right: 24px;
+  height: 36px !important;
+  background: #ffffff;
+  min-height: 36px !important;
+}
+
+.SearchBar > fieldset {
+  border: none !important;
 }

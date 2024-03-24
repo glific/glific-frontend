@@ -1,13 +1,13 @@
 .Title {
-  margin-left: 36px !important;
-  margin-top: 16px !important;
+  margin-left: 36px;
+  margin-top: 16px;
   vertical-align: middle;
-  font-weight: 500 !important;
+  font-weight: 500;
   color: #073f24;
 }
 
 .Subtext {
-  margin-left: 36px !important;
+  margin-left: 36px;
   vertical-align: middle;
   color: #afbbb6;
 }
@@ -17,30 +17,32 @@
   width: 29px;
 }
 
-.Form > h5:nth-of-type(4),
+.Form > h5:nth-of-type(7) {
+  display: inline-block;
+  margin-right: 173px;
+  margin-top: 24px;
+  margin-bottom: 15px;
+}
+
 .Form > div:nth-of-type(7) {
   display: inline;
+  font-weight: 400;
 }
 
-.Form > div:nth-of-type(7) {
-  font-weight: 400 !important;
-  margin-left: 195px;
+.CalendarLeft {
+  width: 50%;
+  display: inline-block;
+  padding-right: 4px;
 }
 
-.Form > div:nth-of-type(8) {
+.CalendarRight {
+  padding-left: 4px;
+  width: 50%;
   display: inline-block;
-  margin-right: 18px;
-  width: 48%;
-  padding: 0px;
-}
-.Form > div:nth-of-type(9) {
-  display: inline-block;
-  width: 48%;
-  padding: 0px;
 }
 
 .DateRangeLabel {
-  margin-right: 12px;
+  width: fit-content;
 }
 
 .DialogTitleText {
@@ -49,11 +51,11 @@
 
 .DialogContent {
   white-space: pre-line;
-  max-width: 347px;
   font-size: 14px;
   color: #073f24;
 }
 
-.FormSearch > div:nth-of-type(5) {
-  margin-right: 18px;
+.FormSearch {
+  padding: 0px;
+  width: 100%;
 }

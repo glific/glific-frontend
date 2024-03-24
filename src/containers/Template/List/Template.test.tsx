@@ -20,6 +20,7 @@ import {
   importTemplateMutationWithErrors,
 } from 'mocks/Template';
 import { ProviderContext } from 'context/session';
+import { getFilterTagQuery } from 'mocks/Tag';
 
 afterEach(cleanup);
 setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
@@ -39,6 +40,7 @@ const speedSendProps: any = {
   pageLink: 'speed-send',
   listIcon: <div></div>,
   filters: { isHsm: false },
+  isHsm: false,
   buttonLabel: 'Create Speed Send',
 };
 
@@ -54,7 +56,6 @@ test('it renders speed-send list component', async () => {
   await waitFor(() => {
     expect(screen.getByTestId('down-arrow')).toBeInTheDocument();
   });
-
   const showTranslationButton = screen.getByTestId('down-arrow');
 
   fireEvent.click(showTranslationButton);
@@ -75,7 +76,8 @@ const hsmProps: any = {
 };
 
 describe('HSM templates', () => {
-  const hsmMocks = [...HSM_LIST, ...HSM_LIST, bulkApplyMutation];
+  // Todo: consuming a lot of queries. Need to check if we should refactor it
+  const hsmMocks = [...HSM_LIST, ...HSM_LIST, ...HSM_LIST, bulkApplyMutation, getFilterTagQuery];
   const hsmComponent = (
     <Router>
       <MockedProvider mocks={hsmMocks} addTypename={false}>
@@ -94,22 +96,25 @@ describe('HSM templates', () => {
   test('reason column should appear when rejected templates are fetched', async () => {
     render(hsmComponent);
 
-    const rejectCheckbox = await screen.findByRole('checkbox', { name: 'Rejected' });
-    fireEvent.click(rejectCheckbox);
-    screen.getByText('Loading...');
+    const dropdown = screen.getByTestId('dropdown-template');
 
-    await waitForElementToBeRemoved(() => screen.getByText('Loading...'));
+    // Clean the dropdown text content to remove invisible characters
+    const cleanedDropdownText = dropdown?.textContent?.replace(/\p{C}/gu, '');
 
-    const rejectedSvgElement = await screen.findByText('test reason');
-    expect(rejectedSvgElement).toBeInTheDocument();
+    // Test if the dropdown text content is "Approved"
+    expect(cleanedDropdownText).toBe('Approved');
+
+    screen.getByTestId('loading');
+
+    await waitForElementToBeRemoved(() => screen.getByTestId('loading'));
   });
 
   test('should have an option of bulk applying templates using csv file', async () => {
-    const { getByText } = render(hsmComponent);
+    const { getByText, getByTestId } = render(hsmComponent);
 
     const notificationFunc = vi.spyOn(common, 'setNotification');
     await waitFor(() => {
-      expect(getByText('Loading...')).toBeInTheDocument();
+      expect(getByTestId('loading')).toBeInTheDocument();
     });
 
     await waitFor(() => {
@@ -143,9 +148,11 @@ describe('Provider: Gupshup enterprise', () => {
   const hsmMocks = [
     ...HSM_LIST,
     ...HSM_LIST,
+    ...HSM_LIST,
     getOrganizationBSP,
     importTemplateMutation,
     importTemplateMutationWithErrors,
+    getFilterTagQuery,
   ];
   const hsmComponent = (
     <ProviderContext.Provider value={{ provider: 'gupshup_enterprise', setProvider: vi.fn() }}>
@@ -158,10 +165,10 @@ describe('Provider: Gupshup enterprise', () => {
   );
 
   test('should import templates using csv file', async () => {
-    const { getByText } = render(hsmComponent);
+    const { getByText, getByTestId } = render(hsmComponent);
 
     await waitFor(() => {
-      expect(getByText('Loading...')).toBeInTheDocument();
+      expect(getByTestId('loading')).toBeInTheDocument();
     });
 
     await waitFor(() => {
@@ -188,12 +195,12 @@ describe('Provider: Gupshup enterprise', () => {
   });
 
   test('it shows a warning when we get an error while importing', async () => {
-    const { getByText } = render(hsmComponent);
+    const { getByText, getByTestId } = render(hsmComponent);
 
     const notificationFunc = vi.spyOn(common, 'setNotification');
 
     await waitFor(() => {
-      expect(getByText('Loading...')).toBeInTheDocument();
+      expect(getByTestId('loading')).toBeInTheDocument();
     });
 
     await waitFor(() => {

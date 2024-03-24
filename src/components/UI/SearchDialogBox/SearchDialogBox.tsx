@@ -39,7 +39,6 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
     handleCancel,
     onChange,
     disableClearable,
-    searchLabel = 'Search',
     renderTags = true,
     textFieldPlaceholder = '',
     multiple = true,
@@ -48,7 +47,7 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
     colorOk,
   } = props;
 
-  const [selectedOption, setSelectedOptions] = useState<any>(multiple ? [] : '');
+  const [selectedOption, setSelectedOptions] = useState<any>(multiple ? [] : null);
   const [asyncSelectedOptions, setAsyncSelectedOptions] = useState<Array<any>>([]);
 
   useEffect(() => {
@@ -88,7 +87,7 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
       colorOk={colorOk}
       buttonOk={buttonOk}
     >
-      <div className={styles.DialogBox}>
+      <div>
         <FormControl fullWidth>
           <AutoComplete
             disableClearable={disableClearable}
@@ -105,7 +104,6 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
             }}
             form={{ setFieldValue: changeValue }}
             textFieldProps={{
-              label: searchLabel,
               variant: 'outlined',
               placeholder: textFieldPlaceholder,
             }}

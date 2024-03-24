@@ -2,12 +2,12 @@ import { useCallback, useState, useEffect } from 'react';
 import { useQuery, useMutation, useLazyQuery } from '@apollo/client';
 import { CircularProgress, Container } from '@mui/material';
 import dayjs from 'dayjs';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useTranslation } from 'react-i18next';
 
 import styles from './ChatMessages.module.css';
-import { ContactBar } from './ContactBar/ContactBar';
+import { ConversationHeader } from './ConversationHeader/ConversationHeader';
 import { ChatMessage } from './ChatMessage/ChatMessage';
 import { ChatInput } from './ChatInput/ChatInput';
 import StatusBar from './StatusBar/StatusBar';
@@ -16,11 +16,19 @@ import {
   SEARCH_QUERY_VARIABLES,
   COLLECTION_SEARCH_QUERY_VARIABLES,
   DEFAULT_MESSAGE_LIMIT,
-  DEFAULT_CONTACT_LIMIT,
+  DEFAULT_ENTITY_LIMIT,
   DEFAULT_MESSAGE_LOADMORE_LIMIT,
   ISO_DATE_FORMAT,
+  GROUP_QUERY_VARIABLES,
+  GROUP_COLLECTION_SEARCH_QUERY_VARIABLES,
+  getVariables,
 } from '../../../common/constants';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
+import { GROUP_SEARCH_QUERY } from 'graphql/queries/WaGroups';
+import {
+  SEND_MESSAGE_IN_WA_GROUP,
+  SEND_MESSAGE_IN_WA_GROUP_COLLECTION,
+} from 'graphql/mutations/Group';
 import {
   CREATE_AND_SEND_MESSAGE_MUTATION,
   CREATE_AND_SEND_MESSAGE_TO_COLLECTION_MUTATION,
@@ -29,15 +37,24 @@ import { getCachedConverations, updateConversationsCache } from '../../../servic
 import { addLogs, getDisplayName, isSimulator } from '../../../common/utils';
 import { CollectionInformation } from '../../Collection/CollectionInformation/CollectionInformation';
 import { LexicalWrapper } from 'common/LexicalWrapper';
+import {
+  getCachedGroupConverations,
+  updateGroupConversationsCache,
+} from 'services/GroupMessageService';
 
 export interface ChatMessagesProps {
-  contactId?: number | string | null;
+  entityId?: number | string | null;
   collectionId?: number | string | null;
-  startingHeight?: string;
+  phoneId?: any;
+  setPhonenumber?: any;
 }
 
-export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMessagesProps) => {
+export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesProps) => {
   const urlString = new URL(window.location.href);
+  const location = useLocation();
+
+  const groups: boolean = location.pathname.includes('group');
+  const chatType = groups ? 'waGroup' : 'contact';
 
   let messageParameterOffset: any = 0;
   let searchMessageNumber: any;
@@ -60,14 +77,13 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
   const [conversationInfo, setConversationInfo] = useState<any>({});
   const [collectionVariables, setCollectionVariables] = useState<any>({});
   const { t } = useTranslation();
-
   let dialogBox;
 
   useEffect(() => {
     setShowLoadMore(true);
     setScrolledToMessage(false);
     setShowJumpToLatest(false);
-  }, [contactId]);
+  }, [entityId]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -86,7 +102,7 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
         });
       }
     }, 1000);
-  }, [setShowJumpToLatest, contactId]);
+  }, [setShowJumpToLatest, entityId]);
 
   const scrollToLatestMessage = () => {
     const container: any = document.querySelector('.messageContainer');
@@ -101,9 +117,14 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
   // Instantiate these to be used later.
 
   let conversationIndex: number = -1;
-
+  const sendChatMessageMutation = groups
+    ? SEND_MESSAGE_IN_WA_GROUP
+    : CREATE_AND_SEND_MESSAGE_MUTATION;
+  const sendCollectionMessageMutation = groups
+    ? SEND_MESSAGE_IN_WA_GROUP_COLLECTION
+    : CREATE_AND_SEND_MESSAGE_TO_COLLECTION_MUTATION;
   // create message mutation
-  const [createAndSendMessage] = useMutation(CREATE_AND_SEND_MESSAGE_MUTATION, {
+  const [createAndSendMessage] = useMutation(sendChatMessageMutation, {
     onCompleted: () => {
       scrollToLatestMessage();
     },
@@ -116,18 +137,22 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
     },
   });
 
+  let searchQuery = groups ? GROUP_SEARCH_QUERY : SEARCH_QUERY;
+
   // get the conversations stored from the cache
-  let queryVariables = SEARCH_QUERY_VARIABLES;
+  let queryVariables = groups ? GROUP_QUERY_VARIABLES : SEARCH_QUERY_VARIABLES;
 
   if (collectionId) {
-    queryVariables = COLLECTION_SEARCH_QUERY_VARIABLES;
+    queryVariables = groups
+      ? GROUP_COLLECTION_SEARCH_QUERY_VARIABLES
+      : COLLECTION_SEARCH_QUERY_VARIABLES;
   }
 
   const {
     loading: conversationLoad,
     error: conversationError,
     data: allConversations,
-  }: any = useQuery(SEARCH_QUERY, {
+  }: any = useQuery(searchQuery, {
     variables: queryVariables,
     fetchPolicy: 'cache-only',
   });
@@ -166,7 +191,9 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
     onCompleted: (searchData) => {
       if (searchData && searchData.search.length > 0) {
         // get the conversations from cache
-        const conversations = getCachedConverations(queryVariables);
+        const conversations = groups
+          ? getCachedGroupConverations(queryVariables)
+          : getCachedConverations(queryVariables);
 
         const conversationCopy = JSON.parse(JSON.stringify(searchData));
         conversationCopy.search[0].messages
@@ -182,14 +209,18 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
               conversationObj.messages = conversationCopy.search[0].messages;
             }
             // If the contact is present in the cache
-          } else if (conversationObj.contact?.id === contactId?.toString()) {
+          } else if (conversationObj[chatType]?.id === entityId?.toString()) {
             conversationObj.messages = conversationCopy.search[0].messages;
           }
           return conversationObj;
         });
 
         // update the conversation cache
-        updateConversationsCache(conversationsCopy, queryVariables);
+        if (groups) {
+          updateGroupConversationsCache(conversationsCopy, queryVariables);
+        } else {
+          updateConversationsCache(conversationsCopy, queryVariables);
+        }
 
         // need to display Load more messages button
         setShowLoadMore(true);
@@ -197,11 +228,13 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
     },
   });
 
-  const [getSearchQuery, { called, data, loading, error }] = useLazyQuery<any>(SEARCH_QUERY, {
+  const [getSearchQuery, { called, data, loading, error }] = useLazyQuery<any>(searchQuery, {
     onCompleted: (searchData) => {
       if (searchData && searchData.search.length > 0) {
         // get the conversations from cache
-        const conversations = getCachedConverations(queryVariables);
+        const conversations = groups
+          ? getCachedGroupConverations(queryVariables)
+          : getCachedConverations(queryVariables);
 
         const conversationCopy = JSON.parse(JSON.stringify(searchData));
         conversationCopy.search[0].messages
@@ -227,7 +260,7 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
             }
           }
           // If the contact is present in the cache
-          else if (conversationObj.contact?.id === contactId?.toString()) {
+          else if (conversationObj[chatType]?.id === entityId?.toString()) {
             isContactCached = true;
             conversationObj.messages = [
               ...conversationObj.messages,
@@ -242,9 +275,13 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
           conversationsCopy.search = [...conversationsCopy.search, searchData.search[0]];
         }
         // update the conversation cache
-        updateConversationsCache(conversationsCopy, queryVariables);
+        if (groups) {
+          updateGroupConversationsCache(conversationsCopy, queryVariables);
+        } else {
+          updateConversationsCache(conversationsCopy, queryVariables);
+        }
 
-        if (searchData.search[0].messages.length === 0) {
+        if (searchData.search.length === 0 || searchData.search[0].messages.length === 0) {
           setShowLoadMore(false);
         }
       }
@@ -258,7 +295,7 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
 
   let messageList: any;
 
-  const [sendMessageToCollection] = useMutation(CREATE_AND_SEND_MESSAGE_TO_COLLECTION_MUTATION, {
+  const [sendMessageToCollection] = useMutation(sendCollectionMessageMutation, {
     refetchQueries: [{ query: SEARCH_QUERY, variables: SEARCH_QUERY_VARIABLES }],
     onCompleted: () => {
       scrollToLatestMessage();
@@ -299,19 +336,34 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
     variableParam: any
   ) => {
     // display collection info popup
-    setDialogbox('collection');
 
-    const payload: any = {
-      body,
-      senderId: 1,
-      mediaId,
-      type: messageType,
-      flow: 'OUTBOUND',
-    };
-
+    let payload: any;
+    if (groups) {
+      payload = {
+        mediaId: mediaId,
+        message: body,
+        type: messageType,
+      };
+      sendMessageToCollection({
+        variables: {
+          groupId: collectionId,
+          input: payload,
+        },
+      });
+    } else {
+      setDialogbox('collection');
+      payload = {
+        body,
+        senderId: 1,
+        mediaId,
+        type: messageType,
+        flow: 'OUTBOUND',
+      };
+      payload = updatePayload(payload, selectedTemplate, variableParam);
+    }
     setCollectionVariables({
       groupId: collectionId,
-      input: updatePayload(payload, selectedTemplate, variableParam),
+      input: payload,
     });
   };
 
@@ -325,20 +377,34 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
       variableParam: any,
       interactiveTemplateId: any
     ) => {
-      const payload: any = {
-        body,
-        senderId: 1,
-        mediaId,
-        receiverId: contactId,
-        type: messageType,
-        flow: 'OUTBOUND',
-        interactiveTemplateId,
-      };
+      let payload: any;
+      if (groups) {
+        payload = {
+          message: body,
+          waManagedPhoneId: conversationInfo?.waGroup?.waManagedPhone?.id,
+          waGroupId: entityId,
+          type: messageType,
+          mediaId,
+        };
+      } else {
+        payload = {
+          body,
+          senderId: 1,
+          receiverId: entityId,
+          flow: 'OUTBOUND',
+          interactiveTemplateId,
+          type: messageType,
+          mediaId,
+        };
+
+        payload = updatePayload(payload, selectedTemplate, variableParam);
+      }
+
       createAndSendMessage({
-        variables: { input: updatePayload(payload, selectedTemplate, variableParam) },
+        variables: { input: payload },
       });
     },
-    [createAndSendMessage, contactId]
+    [createAndSendMessage, entityId, phoneId, conversationInfo]
   );
 
   // loop through the cached conversations and find if contact/Collection exists
@@ -355,9 +421,9 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
   const findContactInAllConversations = () => {
     if (allConversations && allConversations.search) {
       // loop through the cached conversations and find if contact exists
-      // need to check - updateConversationInfo('contact', contactId);
+      // need to check - updateConversationInfo('contact', entityId);
       allConversations.search.map((conversation: any, index: any) => {
-        if (conversation.contact.id === contactId?.toString()) {
+        if (conversation[chatType]?.id === entityId?.toString()) {
           conversationIndex = index;
           setConversationInfo(conversation);
         }
@@ -367,17 +433,18 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
 
     // if conversation is not present then fetch for contact
     if (conversationIndex < 0) {
-      if ((!loading && !called) || (data && data.search[0].contact.id !== contactId)) {
-        const variables = {
-          filter: { id: contactId },
-          contactOpts: { limit: 1 },
-          messageOpts: {
+      if ((!loading && !called) || (data && data.search[0][chatType].id !== entityId)) {
+        const variables = getVariables(
+          { limit: 1 },
+          {
             limit: DEFAULT_MESSAGE_LIMIT,
             offset: messageParameterOffset,
           },
-        };
+          { filter: { id: entityId } },
+          groups
+        );
 
-        addLogs(`if conversation is not present then search for contact-${contactId}`, variables);
+        addLogs(`if conversation is not present then search for contact-${entityId}`, variables);
 
         getSearchQuery({
           variables,
@@ -387,18 +454,16 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
     } else if (conversationIndex > -1 && messageParameterOffset) {
       if (
         (!parameterLoading && !parameterCalled) ||
-        (parameterdata && parameterdata.search[0].contact.id !== contactId)
+        (parameterdata && parameterdata.search[0][chatType].id !== entityId)
       ) {
-        const variables = {
-          filter: { id: contactId },
-          contactOpts: { limit: 1 },
-          messageOpts: {
-            limit: DEFAULT_MESSAGE_LIMIT,
-            offset: messageParameterOffset,
-          },
-        };
+        const variables = getVariables(
+          { limit: 1 },
+          { limit: DEFAULT_MESSAGE_LIMIT, offset: messageParameterOffset },
+          { filter: { id: entityId } },
+          groups
+        );
 
-        addLogs(`if search message is not present then search for contact-${contactId}`, variables);
+        addLogs(`if search message is not present then search for contact-${entityId}`, variables);
 
         getSearchParameterQuery({
           variables,
@@ -419,13 +484,14 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
     }
 
     // if conversation is not present then fetch the collection
-    if (conversationIndex < 0) {
+    if (conversationIndex < 0 && !groups) {
       if ((!loading && !called) || (data && data.search[0].group.id !== collectionId)) {
-        const variables = {
-          filter: { id: collectionId, searchGroup: true },
-          contactOpts: { limit: DEFAULT_CONTACT_LIMIT },
-          messageOpts: { limit: DEFAULT_MESSAGE_LIMIT, offset: 0 },
-        };
+        const variables = getVariables(
+          { limit: DEFAULT_ENTITY_LIMIT },
+          { limit: DEFAULT_MESSAGE_LIMIT, offset: 0 },
+          { filter: { id: collectionId, searchGroup: true } },
+          groups
+        );
 
         addLogs(
           `if conversation is not present then search for collection-${collectionId}`,
@@ -441,12 +507,12 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
 
   // find if contact/Collection present in the cached
   useEffect(() => {
-    if (contactId) {
+    if (entityId) {
       findContactInAllConversations();
     } else if (collectionId) {
       findCollectionInAllConversations();
     }
-  }, [contactId, collectionId, allConversations]);
+  }, [entityId, collectionId, allConversations]);
 
   useEffect(() => {
     if (searchMessageNumber) {
@@ -473,8 +539,8 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
   }
 
   // check if the search API results nothing for a particular contact ID and redirect to chat
-  if (contactId && data) {
-    if (data.search.length === 0 || data.search[0]?.contact?.status === 'BLOCKED') {
+  if (entityId && data) {
+    if (data.search.length === 0 || data.search[0][chatType]?.status === 'BLOCKED') {
       return <Navigate to="/chat" />;
     }
   }
@@ -490,14 +556,15 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
       element.scrollIntoView();
     } else {
       const offset = messageNumber - 10 <= 0 ? 1 : messageNumber - 10;
-      const variables: any = {
-        filter: { id: contactId?.toString() },
-        contactOpts: { limit: 1 },
-        messageOpts: {
+      const variables: any = getVariables(
+        { limit: 1 },
+        {
           limit: conversationInfo.messages[conversationInfo.messages.length - 1].messageNumber,
           offset,
         },
-      };
+        { filter: { id: entityId?.toString() } },
+        groups
+      );
 
       addLogs(`fetch reply message`, variables);
 
@@ -526,12 +593,14 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
     return false;
   };
 
-  if (conversationInfo && conversationInfo.messages && conversationInfo.messages.length > 0) {
+  if (conversationInfo && conversationInfo.messages && conversationInfo.messages?.length > 0) {
     let reverseConversation = [...conversationInfo.messages];
+
     reverseConversation = reverseConversation.map((message: any, index: number) => (
       <ChatMessage
+        groups={groups}
         {...message}
-        contactId={contactId}
+        entityId={entityId}
         key={message.id}
         popup={message.id === showDropdown}
         onClick={() => showEditDialog(message.id)}
@@ -551,10 +620,9 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
 
   const loadMoreMessages = () => {
     const { messageNumber } = conversationInfo.messages[conversationInfo.messages.length - 1];
-    const variables: any = {
-      filter: { id: contactId?.toString() },
-      contactOpts: { limit: 1 },
-      messageOpts: {
+    const variables: any = getVariables(
+      { limit: 1 },
+      {
         limit:
           messageNumber > DEFAULT_MESSAGE_LOADMORE_LIMIT
             ? DEFAULT_MESSAGE_LOADMORE_LIMIT - 1
@@ -564,7 +632,9 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
             ? 1
             : messageNumber - DEFAULT_MESSAGE_LOADMORE_LIMIT,
       },
-    };
+      { filter: { id: entityId?.toString() } },
+      groups
+    );
 
     if (collectionId) {
       variables.filter = { id: collectionId.toString(), searchGroup: true };
@@ -587,19 +657,19 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
   // Check if there are conversation messages else display no messages
   if (messageList) {
     const loadMoreOption =
-      conversationInfo.messages.length > DEFAULT_MESSAGE_LIMIT - 1 ||
+      conversationInfo.messages?.length > DEFAULT_MESSAGE_LIMIT - 1 ||
       (searchMessageNumber && searchMessageNumber > 19);
     messageListContainer = (
       <Container
         className={`${styles.MessageList} messageContainer `}
-        style={{ height: `calc(100% - 195px ` }}
+        style={{ height: `calc(100% - 215px` }}
         maxWidth={false}
         data-testid="messageContainer"
       >
         {showLoadMore && loadMoreOption && (
           <div className={styles.LoadMore}>
             {(called && loading) || conversationLoad ? (
-              <CircularProgress className={styles.Loading} />
+              <CircularProgress data-testid="loading" className={styles.Loading} />
             ) : (
               <div
                 className={styles.LoadMoreButton}
@@ -633,14 +703,18 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
     const index = conversationIndex === -1 ? 0 : conversationIndex;
     allConversationsCopy.search[index] = conversationInfoCopy;
     // update allConversations in the cache
-    updateConversationsCache(allConversationsCopy, queryVariables);
+    if (groups) {
+      updateGroupConversationsCache(allConversationsCopy, queryVariables);
+    } else {
+      updateConversationsCache(allConversationsCopy, queryVariables);
+    }
   };
 
   // conversationInfo should not be empty
-  if (!Object.prototype.hasOwnProperty.call(conversationInfo, 'contact')) {
+  if (!groups && !Object.prototype.hasOwnProperty.call(conversationInfo, 'contact')) {
     return (
       <div className={styles.LoadMore}>
-        <CircularProgress className={styles.Loading} />
+        <CircularProgress data-testid="loading" className={styles.Loading} />
       </div>
     );
   }
@@ -654,18 +728,19 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
       const limit = DEFAULT_MESSAGE_LIMIT;
 
       // set variable for contact chats
-      const variables: any = {
-        contactOpts: { limit: 1 },
-        filter: { id: contactId?.toString() },
-        messageOpts: { limit, offset: 0 },
-      };
+      const variables: any = getVariables(
+        { limit: 1 },
+        { limit, offset: 0 },
+        { filter: { id: entityId?.toString() } },
+        groups
+      );
 
       // if collection, replace id with collection id
       if (collectionId) {
         variables.filter = { id: collectionId.toString(), searchGroup: true };
       }
 
-      addLogs(`show Latest Message for contact-${contactId}`, variables);
+      addLogs(`show Latest Message for contact-${entityId}`, variables);
 
       getSearchParameterQuery({
         variables,
@@ -691,17 +766,23 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
   let topChatBar;
   let chatInputSection;
 
-  if (contactId && conversationInfo.contact) {
-    const displayName = getDisplayName(conversationInfo);
+  const isSimulatorProp = groups ? false : isSimulator(conversationInfo.contact?.phone);
+
+  if (entityId && conversationInfo[chatType]) {
+    const displayName = groups ? conversationInfo.waGroup.label : getDisplayName(conversationInfo);
+
     topChatBar = (
-      <ContactBar
+      <ConversationHeader
         displayName={displayName}
-        isSimulator={isSimulator(conversationInfo.contact.phone)}
-        contactId={contactId.toString()}
-        lastMessageTime={conversationInfo.contact.lastMessageAt}
-        contactStatus={conversationInfo.contact.status}
-        contactBspStatus={conversationInfo.contact.bspStatus}
+        isSimulator={isSimulatorProp}
+        entityId={entityId.toString()}
+        contact={{
+          lastMessageTime: conversationInfo[chatType]?.lastMessageAt,
+          contactStatus: conversationInfo[chatType]?.status,
+          contactBspStatus: conversationInfo[chatType]?.bspStatus,
+        }}
         handleAction={() => handleChatClearedAction()}
+        groups={groups}
       />
     );
 
@@ -711,27 +792,35 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
         <LexicalWrapper>
           <ChatInput
             onSendMessage={sendMessageHandler}
-            lastMessageTime={conversationInfo.contact.lastMessageAt}
-            contactStatus={conversationInfo.contact.status}
-            contactBspStatus={conversationInfo.contact.bspStatus}
+            lastMessageTime={conversationInfo[chatType]?.lastMessageAt}
+            contactStatus={conversationInfo[chatType]?.status}
+            contactBspStatus={conversationInfo[chatType]?.bspStatus}
+            showAttachmentButton={!groups}
           />
         </LexicalWrapper>
       </div>
     );
   } else if (collectionId && conversationInfo.group) {
     topChatBar = (
-      <ContactBar
+      <ConversationHeader
         collectionId={collectionId.toString()}
         displayName={conversationInfo.group.label}
         handleAction={handleChatClearedAction}
+        groups={groups}
       />
     );
 
     chatInputSection = (
       <div className={styles.ChatInput}>
-        {conversationInfo.messages.length && showJumpToLatest ? jumpToLatest : null}
+        {conversationInfo.messages && conversationInfo.messages.length && showJumpToLatest
+          ? jumpToLatest
+          : null}
         <LexicalWrapper>
-          <ChatInput onSendMessage={sendCollectionMessageHandler} isCollection />
+          <ChatInput
+            onSendMessage={sendCollectionMessageHandler}
+            isCollection
+            showAttachmentButton={!groups}
+          />
         </LexicalWrapper>
       </div>
     );
@@ -739,10 +828,8 @@ export const ChatMessages = ({ contactId, collectionId, startingHeight }: ChatMe
 
   return (
     <Container
+      data-testid="message-container"
       className={styles.ChatMessages}
-      style={{
-        height: startingHeight,
-      }}
       maxWidth={false}
       disableGutters
     >

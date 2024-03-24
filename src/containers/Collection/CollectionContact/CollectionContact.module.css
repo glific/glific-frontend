@@ -1,13 +1,4 @@
 .ContactList {
-  width: 68%;
-}
-
-.CollectionDescription {
-  width: 32%;
-  background-color: white;
-  box-shadow: -2px 0px 6px rgba(0, 0, 0, 0.06);
-}
-
-.CollectionContactContainer {
-  display: flex;
+  width: calc(100% - 112px);
+  margin: 18px 56px;
 }

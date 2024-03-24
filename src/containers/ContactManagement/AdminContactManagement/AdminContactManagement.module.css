@@ -4,6 +4,7 @@
 }
 
 .Instructions {
+  max-width: 500px;
   color: #93a29b;
   font-size: 16px;
 }

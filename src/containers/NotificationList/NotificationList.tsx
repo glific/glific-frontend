@@ -78,16 +78,33 @@ export const NotificationList = () => {
   }, []);
 
   const setDialog = (id: any, item: any) => {
-    if (item.category === 'Message') {
-      const chatID = JSON.parse(item.entity).id;
-      navigate(`/chat/${chatID}`);
-    } else if (item.category === 'Flow') {
-      const uuidFlow = JSON.parse(item.entity).flow_uuid;
-      navigate(`/flow/configure/${uuidFlow}`);
-    } else {
-      // this is item.category == Partner
-      // need to figure out what should be done
+    const category = item.category;
+    const entity = JSON.parse(item.entity);
+
+    let destination = '';
+
+    switch (category) {
+      case 'Message':
+        destination = `/chat/${entity.id}`;
+        break;
+      case 'Flow':
+        destination = `/flow/configure/${entity.flow_uuid}`;
+        break;
+      case 'Templates':
+        destination = `/template/${item.id}/edit`;
+        break;
+      case 'Partner':
+        destination = `/settings/${entity.shortcode}`;
+        break;
+      case 'Ticket':
+        destination = `/tickets`;
+        break;
+      default:
+        // Handle unknown category
+        return;
     }
+
+    navigate(destination);
   };
 
   const additionalAction = () => [

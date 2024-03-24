@@ -16,6 +16,7 @@ import {
   hourList,
   setVariables,
   EXTENDED_TIME_FORMAT,
+  CONTACTS_COLLECTION,
 } from 'common/constants';
 import { FormLayout } from 'containers/Form/FormLayout';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
@@ -34,6 +35,9 @@ import {
   VALIDATE_TRIGGER,
 } from 'graphql/mutations/Trigger';
 import styles from './Trigger.module.css';
+import { triggerInfo } from 'common/HelpData';
+import { TriggerType } from './TriggerType/TriggerType';
+import { getOrganizationServices } from 'services/AuthService';
 dayjs.extend(utc);
 
 const checkDateTimeValidation = (startAtValue: string, startDateValue: string) => {
@@ -50,7 +54,7 @@ const checkDateTimeValidation = (startAtValue: string, startDateValue: string) =
   return true;
 };
 
-const setPayload = (payload: any, roles: any) => {
+const setPayload = (payload: any, roles: any, groupType: any) => {
   const payloadCopy = payload;
 
   const { startDate, startTime, isActive, flowId, frequencyValues, groupIds, endDate, frequency } =
@@ -73,6 +77,7 @@ const setPayload = (payload: any, roles: any) => {
     startTime: dayjs(startAt).utc().format(EXTENDED_TIME_FORMAT),
     frequency: frequency.value,
     roles: payload.roles,
+    groupType: groupType,
   };
 
   switch (updatedPayload.frequency) {
@@ -106,7 +111,7 @@ const getFrequencyDetails = (
   const frequencyDetails = {
     values: [],
     options: dayList,
-    placeholder: 'Select days',
+    label: 'Select days',
   };
   switch (frequencyValue) {
     case 'weekly':
@@ -115,12 +120,12 @@ const getFrequencyDetails = (
     case 'monthly':
       frequencyDetails.values = dateList.filter((day: any) => daysValue.includes(day.id));
       frequencyDetails.options = dateList;
-      frequencyDetails.placeholder = 'Select dates';
+      frequencyDetails.label = 'Select dates';
       break;
     case 'hourly':
       frequencyDetails.values = hourList.filter((day: any) => hoursValue.includes(day.id));
       frequencyDetails.options = hourList;
-      frequencyDetails.placeholder = 'Select hours';
+      frequencyDetails.label = 'Select hours';
       break;
     default:
   }
@@ -144,15 +149,18 @@ export const Trigger = () => {
   const [startDate, setStartDate] = useState<any>('');
   const [frequency, setfrequency] = useState<any>(null);
   const [endDate, setEndDate] = useState<any>('');
-  const [isRepeating, setIsRepeating] = useState('');
+  const [isRepeating, setIsRepeating] = useState(null);
   const [frequencyValues, setFrequencyValues] = useState([]);
   const [roles, setRoles] = useState([]);
   const [daysDisabled, setDaysDisabled] = useState(true);
   const [groupIds, setGroupIds] = useState<any>(null);
   const [minDate, setMinDate] = useState<any>(dayjs());
   const [triggerFlowWarning, setTriggerFlowWarning] = useState<any>();
-  const [frequencyPlaceholder, setFrequencyPlaceholder] = useState('Select days');
+  const [frequencyLabel, setFrequencyLabel] = useState('Select days');
   const [frequencyOptions, setFrequencyOptions] = useState(dayList);
+  const [groupType, setGroupType] = useState(CONTACTS_COLLECTION);
+  const isWhatsAppGroupEnabled = getOrganizationServices('whatsappGroupEnabled');
+
   const params = useParams();
   const location = useLocation();
   const { t } = useTranslation();
@@ -246,7 +254,7 @@ export const Trigger = () => {
   });
 
   const { data: collections } = useQuery(GET_COLLECTIONS, {
-    variables: setVariables(),
+    variables: isEditing ? setVariables() : setVariables({ groupType }),
   });
 
   const [validateTriggerFlow, { loading }] = useMutation(VALIDATE_TRIGGER, {
@@ -257,7 +265,7 @@ export const Trigger = () => {
     },
   });
 
-  if (!flow || !collections) return <Loading />;
+  if (!flow) return <Loading />;
 
   const handleFlowChange = (flow: any) => {
     setTriggerFlowWarning(undefined);
@@ -279,15 +287,15 @@ export const Trigger = () => {
 
     switch (value) {
       case 'weekly':
-        setFrequencyPlaceholder(t('Select days'));
+        setFrequencyLabel(t('Select days'));
         setFrequencyOptions(dayList);
         break;
       case 'monthly':
-        setFrequencyPlaceholder(t('Select dates'));
+        setFrequencyLabel(t('Select dates'));
         setFrequencyOptions(dateList);
         break;
       case 'hourly':
-        setFrequencyPlaceholder(t('Select hours'));
+        setFrequencyLabel(t('Select hours'));
         setFrequencyOptions(hourList);
         break;
       default:
@@ -302,7 +310,7 @@ export const Trigger = () => {
       name: 'isActive',
       title: (
         <Typography variant="h6" className={styles.IsActive}>
-          Is active?
+          Active?
         </Typography>
       ),
       darkCheckbox: true,
@@ -314,10 +322,7 @@ export const Trigger = () => {
       optionLabel: 'name',
       disabled: isEditing,
       multiple: false,
-      textFieldProps: {
-        variant: 'outlined',
-        label: t('Select flow'),
-      },
+      label: t('Select flow'),
       onChange: handleFlowChange,
       helperText: loading ? (
         <>
@@ -336,49 +341,45 @@ export const Trigger = () => {
       type: 'date',
       name: 'startDate',
       disabled: isEditing,
+      label: t('Date range'),
       placeholder: t('Start date'),
       minDate,
+      className: styles.CalendarLeft,
     },
     {
       component: Calendar,
       type: 'date',
       name: 'endDate',
-      disabled: isEditing,
       placeholder: t('End date'),
+      disabled: isEditing,
       minDate,
+      className: styles.CalendarRight,
     },
     {
       component: TimePicker,
       name: 'startTime',
       disabled: isEditing,
-      placeholder: t('Time'),
+      label: t('Time'),
     },
     {
       component: AutoComplete,
       name: 'frequency',
-      placeholder: t('Repeat'),
+      label: t('Repeat'),
       options: triggerFrequencyOptions,
       optionLabel: 'label',
       disabled: isEditing,
       valueElementName: 'value',
       multiple: false,
-      textFieldProps: {
-        label: t('Repeat'),
-        variant: 'outlined',
-      },
       onChange: handleFrequencyChange,
     },
+
     {
       component: AutoComplete,
       name: 'frequencyValues',
-      placeholder: frequencyPlaceholder,
+      label: frequencyLabel,
       options: frequencyOptions,
       disabled: isEditing || daysDisabled,
       optionLabel: 'label',
-      textFieldProps: {
-        label: frequencyPlaceholder,
-        variant: 'outlined',
-      },
       helperText:
         frequency === 'monthly' &&
         t(
@@ -386,16 +387,19 @@ export const Trigger = () => {
         ),
     },
     {
+      component: TriggerType,
+      name: 'groupType',
+      handleOnChange: (value: any) => setGroupType(value),
+      groupType: groupType,
+      isWhatsAppGroupEnabled: isWhatsAppGroupEnabled,
+    },
+    {
       component: AutoComplete,
       name: 'groupIds',
-      placeholder: t('Select collection'),
-      options: collections.groups,
+      label: t('Select collection'),
+      options: collections?.groups,
       disabled: isEditing,
       optionLabel: 'label',
-      textFieldProps: {
-        label: t('Select collection'),
-        variant: 'outlined',
-      },
     },
   ];
 
@@ -410,19 +414,18 @@ export const Trigger = () => {
     isRepeating: isRepeatingValue,
     startAt: startAtValue,
     roles: rolesValue,
+    groupType,
   }: any) => {
     setIsRepeating(isRepeatingValue);
+    setEndDate(endDateValue);
     setIsActive(isCopyState ? true : isActiveValue);
     setEndDate(dayjs(endDateValue));
+    setGroupType(groupType);
 
-    const { values, options, placeholder } = getFrequencyDetails(
-      frequencyValue,
-      daysValue,
-      hoursValue
-    );
+    const { values, options, label } = getFrequencyDetails(frequencyValue, daysValue, hoursValue);
     setFrequencyValues(values);
     setFrequencyOptions(options);
-    setFrequencyPlaceholder(placeholder);
+    setFrequencyLabel(label);
     setStartDate(dayjs(startAtValue));
     // If a user wants to update the trigger
     if (dayjs().isAfter(startAtValue, 'days')) {
@@ -440,8 +443,8 @@ export const Trigger = () => {
       setFlowId(getFlowId[0]);
     }
 
-    if (groupValue && collections.groups && groupValue.length > 0) {
-      const selectedGroups = collections.groups.filter((group: any) =>
+    if (groupValue && collections?.groups && groupValue.length > 0) {
+      const selectedGroups = collections?.groups.filter((group: any) =>
         groupValue.includes(group.label)
       );
       setGroupIds(selectedGroups);
@@ -454,7 +457,7 @@ export const Trigger = () => {
       states={states}
       roleAccessSupport
       setStates={setStates}
-      setPayload={(payload: any) => setPayload(payload, roles)}
+      setPayload={(payload: any) => setPayload(payload, roles, groupType)}
       validationSchema={FormSchema}
       languageSupport={false}
       listItemName="trigger"
@@ -466,6 +469,7 @@ export const Trigger = () => {
       copyNotification={t('Copy of the trigger has been created!')}
       icon={triggerIcon}
       customStyles={styles.Triggers}
+      helpData={triggerInfo}
     />
   );
 };

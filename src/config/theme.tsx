@@ -15,7 +15,7 @@ const theme = createTheme({
       main: '#DD1F1F',
     },
     secondary: {
-      main: '#CACACA',
+      main: '#777777',
     },
   },
   typography: {
@@ -29,10 +29,27 @@ const theme = createTheme({
         },
       },
     },
-    MuiBackdrop: {
+    MuiTabs: {
       styleOverrides: {
         root: {
-          backgroundColor: 'rgba(147,162,155,0.84)',
+          height: '32px',
+          minHeight: '32px',
+        },
+      },
+    },
+    MuiTab: {
+      styleOverrides: {
+        root: {
+          height: '32px',
+          minHeight: '32px',
+        },
+      },
+    },
+    MuiDivider: {
+      styleOverrides: {
+        root: {
+          borderColor: '#EFEFEF',
+          boxShadow: '0px 0px 4px 0px rgba(0, 0, 0, 0.06)',
         },
       },
     },
@@ -41,16 +58,7 @@ const theme = createTheme({
         root: { padding: '12px' },
       },
     },
-    MuiButton: {
-      styleOverrides: {
-        outlinedPrimary: {
-          border: '2px solid',
-          '&:hover': {
-            border: '2px solid',
-          },
-        },
-      },
-    },
+
     MuiTablePagination: {
       styleOverrides: {
         selectLabel: {
@@ -64,6 +72,13 @@ const theme = createTheme({
         notchedOutline: {
           borderRadius: '12px',
           borderWidth: '2px',
+        },
+      },
+    },
+    MuiListItemIcon: {
+      styleOverrides: {
+        root: {
+          minWidth: '32px',
         },
       },
     },
@@ -90,7 +105,7 @@ const theme = createTheme({
     MuiListItem: {
       styleOverrides: {
         root: {
-          color: '073F24',
+          color: '#073F24',
         },
       },
     },

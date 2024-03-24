@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useLazyQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 
-import { GET_COLLECTION_INFO, GET_COLLECTION_USERS } from 'graphql/queries/Collection';
+import { GET_COLLECTION_INFO } from 'graphql/queries/Collection';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import styles from './CollectionInformation.module.css';
 
@@ -27,14 +27,9 @@ export const CollectionInformation = ({
 
   const [getCollectionInfo, { data: collectionInfo }] = useLazyQuery(GET_COLLECTION_INFO);
 
-  const [selectedUsers, { data: collectionUsers }] = useLazyQuery(GET_COLLECTION_USERS, {
-    fetchPolicy: 'cache-and-network',
-  });
-
   useEffect(() => {
     if (collectionId) {
       getCollectionInfo({ variables: { id: collectionId } });
-      selectedUsers({ variables: { id: collectionId } });
       // reset to zero on collection change
       setDisplay({ 'Session messages': 0, 'Only templates': 0, 'No messages': 0 });
     }
@@ -59,20 +54,6 @@ export const CollectionInformation = ({
       setDisplay(displayCopy);
     }
   }, [collectionInfo]);
-
-  let assignedToCollection: any = [];
-  if (collectionUsers) {
-    assignedToCollection = collectionUsers.group.group.users.map((user: any) => user.name);
-
-    assignedToCollection = Array.from(new Set([].concat(...assignedToCollection)));
-    if (assignedToCollection.length > 2) {
-      assignedToCollection = `${assignedToCollection.slice(0, 2).join(', ')} +${(
-        assignedToCollection.length - 2
-      ).toString()}`;
-    } else {
-      assignedToCollection = assignedToCollection.join(', ');
-    }
-  }
 
   // display collection contact status before sending message to a collection
   if (displayPopup) {
@@ -111,22 +92,13 @@ export const CollectionInformation = ({
   return (
     <div className={styles.InfoWrapper}>
       <div className={styles.CollectionInformation} data-testid="CollectionInformation">
-        <div className={styles.Heading}>{t('Contacts qualified for')}</div>
         <div className={styles.MessageInfo}>
           {Object.keys(display).map((data: any) => (
             <div key={data} className={styles.SessionInfo}>
-              {data}: <span className={styles.SessionCount}> {display[data]}</span>
+              {data}:<span className={styles.SessionCount}> {display[data]}</span>
             </div>
           ))}
         </div>
-      </div>
-      <div className={styles.CollectionAssigned}>
-        {assignedToCollection && staff ? (
-          <>
-            <span className={styles.CollectionHeading}>{t('Assigned to')}</span>
-            <span className={styles.CollectionsName}>{assignedToCollection}</span>
-          </>
-        ) : null}
       </div>
     </div>
   );

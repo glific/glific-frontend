@@ -1,27 +1,25 @@
 .DescriptionContainer {
-  min-height: 100vh;
-  padding: 24px;
-}
-
-.Title {
-  color: #073f24;
-  font-weight: 500;
-  margin-bottom: 12px;
-  margin-top: 0px;
+  padding: 16px 53px;
+  background-color: #fff;
 }
 
 .Description {
-  font-size: 16px;
   display: flex;
-  margin-top: 0px;
-  color: #93a29b;
-  line-height: 1.25;
-  padding-bottom: 22px;
+}
+
+.FieldLabel {
+  padding-top: 29px;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 18px;
+  letter-spacing: 0px;
+  text-align: left;
+  color: #777777;
+  margin-bottom: 12px;
 }
 
 .SessionTimer {
   font-size: 10px;
-  margin-left: auto;
   align-content: center;
   display: flex;
   align-items: center;
@@ -34,9 +32,7 @@
 }
 
 .DetailBlock {
-  padding-top: 22px;
-  border-top: 1px solid #eaedec;
-  padding-bottom: 16px;
+  margin-left: 10px;
 }
 
 .DetailBlock > div {
@@ -50,19 +46,42 @@
 }
 
 .DescriptionItemValue {
+  color: #212121;
+  leading-trim: both;
+  text-edge: cap;
+  font-family: Heebo;
   font-size: 16px;
-  color: #073f24;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px; /* 125% */
 }
 
 .Visibility {
-  color: #93a29b;
+  color: #212121;
+  leading-trim: both;
+  text-edge: cap;
+  font-family: Heebo;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px; /* 125% */
 }
 
 .PhoneSection {
   display: flex;
   align-items: center;
+  padding: 0;
+  margin: 0;
 }
 
 .PhoneField {
-  width: 115px;
+  width: fit-content;
+}
+
+.Divider {
+  height: 1px;
+  flex-shrink: 0;
+  background: #efefef;
+  box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.06);
+  margin-top: 24px;
 }

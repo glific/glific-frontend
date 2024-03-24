@@ -6,7 +6,13 @@ import { vi } from 'vitest';
 import { LIST_ITEM_MOCKS } from 'containers/SettingList/SettingList.test.helper';
 import { LIST_ITEM_MOCKS as SearchMocks } from 'containers/Search/Search.test.helper';
 import * as AutoComplete from 'components/UI/Form/AutoComplete/AutoComplete';
-import { getTriggerQuery, hourlyTrigger } from 'mocks/Trigger';
+import {
+  createTriggerQuery,
+  getTriggerQuery,
+  hourlyTrigger,
+  updateTriggerQuery,
+  updateTriggerWeeklyQuery,
+} from 'mocks/Trigger';
 import { Trigger } from './Trigger';
 import dayjs from 'dayjs';
 import utc from 'dayjs';
@@ -20,7 +26,12 @@ vi.mock('react-router-dom', async () => {
 });
 
 describe('trigger with daily frequency', () => {
-  const frequencyDailyMocks = [getTriggerQuery('daily'), ...LIST_ITEM_MOCKS, ...SearchMocks];
+  const frequencyDailyMocks = [
+    getTriggerQuery('daily'),
+    ...LIST_ITEM_MOCKS,
+    ...SearchMocks,
+    createTriggerQuery,
+  ];
 
   const frequencyDailyWrapper = (
     <MockedProvider mocks={frequencyDailyMocks} addTypename={false}>
@@ -35,9 +46,9 @@ describe('trigger with daily frequency', () => {
 
     // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();
-    await waitFor(() => {});
+
     await waitFor(() => {
-      const autoComplete = getAllByTestId('autocomplete-element');
+      expect(getAllByTestId('autocomplete-element')).toHaveLength(4);
     });
 
     fireEvent.click(getByText('Save'));
@@ -46,7 +57,12 @@ describe('trigger with daily frequency', () => {
 });
 
 describe('trigger with no frequency', () => {
-  const frequencyDailyMocks = [getTriggerQuery('none'), ...LIST_ITEM_MOCKS, ...SearchMocks];
+  const frequencyDailyMocks = [
+    getTriggerQuery('none'),
+    ...LIST_ITEM_MOCKS,
+    ...SearchMocks,
+    updateTriggerQuery,
+  ];
 
   const frequencyDailyWrapper = (
     <MockedProvider mocks={frequencyDailyMocks} addTypename={false}>
@@ -61,9 +77,8 @@ describe('trigger with no frequency', () => {
 
     // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();
-    await waitFor(() => {});
     await waitFor(() => {
-      const autoComplete = getAllByTestId('autocomplete-element');
+      expect(getAllByTestId('autocomplete-element')).toHaveLength(4);
     });
 
     fireEvent.click(getByText('Save'));
@@ -100,7 +115,12 @@ describe('trigger with hourly frequency', () => {
 });
 
 describe('trigger with weekly frequency', () => {
-  const mocks = [getTriggerQuery('weekly'), ...LIST_ITEM_MOCKS, ...SearchMocks];
+  const mocks = [
+    getTriggerQuery('weekly'),
+    ...LIST_ITEM_MOCKS,
+    ...SearchMocks,
+    updateTriggerWeeklyQuery,
+  ];
 
   const wrapper = (
     <MockedProvider mocks={mocks} addTypename={false}>
@@ -131,7 +151,7 @@ describe('trigger with weekly frequency', () => {
     // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();
     await waitFor(() => {
-      const autoComplete = getAllByTestId('autocomplete-element');
+      expect(getAllByTestId('autocomplete-element')).toHaveLength(4);
     });
 
     fireEvent.click(getByText('Save'));
@@ -153,7 +173,7 @@ describe('trigger with weekly frequency', () => {
               form.setFieldValue(event.target.value);
             }}
           >
-            {options.map((option: any) => (
+            {options?.map((option: any) => (
               <option key={option.id ? option.id : option.label} value={option.value}>
                 {option.label}
               </option>

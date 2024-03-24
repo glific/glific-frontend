@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { BrowserRouter as Router } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
@@ -7,6 +7,10 @@ import { vi } from 'vitest';
 import { setUserSession } from 'services/AuthService';
 import { mocks, contactFieldErrorMock } from 'mocks/ContactFields';
 import ContactFieldList from './ContactFieldList';
+
+afterEach(() => {
+  cleanup();
+});
 
 vi.mock('react-router-dom', async () => ({
   ...((await vi.importActual<any>('react-router-dom')) as {}),
@@ -25,7 +29,7 @@ const list = (
 
 test('it renders list successfully', async () => {
   render(list);
-  expect(screen.getByText('Loading...')).toBeInTheDocument();
+  expect(screen.getByTestId('loading')).toBeInTheDocument();
   await waitFor(() => {
     const variableNameLabel = screen.getByText('Variable name');
     const inputNameLabel = screen.getByText('Input name');
@@ -38,27 +42,32 @@ test('it renders list successfully', async () => {
     expect(actionLabel).toBeInTheDocument();
   });
 
-  const editButtons = screen.getAllByTestId('edit-icon');
-
   await waitFor(() => {
-    expect(editButtons[0]).toBeInTheDocument();
-    fireEvent.click(editButtons[0]);
-    // Edit, clears value and click save
-    const inputFields = screen.getAllByRole('textbox');
-    userEvent.type(inputFields[1], '{selectall}{backspace}');
-
-    const saveButton = screen.getByTestId('save-button');
-    fireEvent.click(saveButton);
-
-    userEvent.type(inputFields[1], '{selectall}{backspace}Age Group Name');
-    fireEvent.click(saveButton);
+    expect(screen.getByText('age_group')).toBeInTheDocument();
+    expect(screen.getAllByTestId('edit-icon')).toBeDefined();
   });
 
-  await waitFor(() => {});
+  const editButtons = screen.getAllByTestId('edit-icon');
+
+  fireEvent.click(editButtons[0]);
+
+  await waitFor(() => {
+    expect(screen.getByTestId('inline-input')).toBeInTheDocument();
+  });
+
+  const inputFields = screen.getByTestId('inline-input') as HTMLElement;
+
+  await userEvent.click(inputFields);
+  await userEvent.type(inputFields.querySelector('input') as HTMLElement, ' Name');
+
+  const saveButton = screen.getByTestId('save-button');
+  fireEvent.click(saveButton);
+  await waitFor(() => {
+    expect(screen.getByText('Age Group Name')).toBeInTheDocument();
+  });
 });
 
-const errorMock: any = [...mocks, ...mocks];
-errorMock.push(contactFieldErrorMock);
+const errorMock: any = [contactFieldErrorMock, ...mocks, ...mocks];
 
 const listError = (
   <MockedProvider mocks={errorMock}>
@@ -70,7 +79,7 @@ const listError = (
 
 test('it renders component, edits field, saves and error occurs', async () => {
   render(listError);
-  expect(screen.getByText('Loading...')).toBeInTheDocument();
+  expect(screen.getByTestId('loading')).toBeInTheDocument();
 
   await waitFor(() => {
     const editButtons = screen.getAllByTestId('edit-icon');
@@ -80,9 +89,12 @@ test('it renders component, edits field, saves and error occurs', async () => {
     // Edit, clears value and click save
     const inputFields = screen.getAllByRole('textbox');
     userEvent.type(inputFields[1], '{selectall}{backspace}age_group');
-    const saveButton = screen.getByTestId('save-button');
-    fireEvent.click(saveButton);
   });
 
-  await waitFor(() => {});
+  const saveButton = screen.getByTestId('save-button');
+  fireEvent.click(saveButton);
+
+  await waitFor(() => {
+    expect(screen.getByTestId('inlineInputError')).toBeInTheDocument();
+  });
 });

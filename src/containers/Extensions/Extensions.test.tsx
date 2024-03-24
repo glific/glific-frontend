@@ -1,25 +1,44 @@
 import { render, waitFor, screen, fireEvent } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 
-import { getOrganizationExtension, createExtension, updateExtension } from 'mocks/Extension';
+import {
+  getOrganizationExtension,
+  createExtension,
+  updateExtension,
+  getEmptyOrganizationExtension,
+} from 'mocks/Extension';
 import { setUserSession } from 'services/AuthService';
 import { Extensions } from './Extensions';
+import { MemoryRouter } from 'react-router';
+
+vi.mock('react-router-dom', async () => {
+  return {
+    ...(await vi.importActual<any>('react-router-dom')),
+    useParams: () => ({ id: '1' }),
+  };
+});
 
 setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
-const mocks = [getOrganizationExtension, createExtension, updateExtension];
+const mocks = [createExtension, updateExtension];
+const createMocks = [...mocks, getEmptyOrganizationExtension, getEmptyOrganizationExtension];
+const updateMocks = [getOrganizationExtension, getOrganizationExtension, ...mocks];
 const props = {
-  match: { params: {} },
   openDialog: true,
 };
+
 const wrapper = (
-  <MockedProvider mocks={mocks} addTypename={false}>
-    <Extensions {...props} />
-  </MockedProvider>
+  <MemoryRouter>
+    <MockedProvider mocks={createMocks} addTypename={false}>
+      <Extensions {...props} />
+    </MockedProvider>
+  </MemoryRouter>
 );
 test('it should render form correctly', async () => {
   render(wrapper);
-  await waitFor(() => {});
-  expect(screen.getByText('Add extension code')).toBeInTheDocument();
+  await waitFor(() => {
+    expect(screen.getByText('Add extension code')).toBeInTheDocument();
+  });
+
   const inputElements = screen.getAllByRole('textbox');
 
   await waitFor(() => {
@@ -48,12 +67,12 @@ test('it should render form correctly', async () => {
 });
 
 test('it should render filled form with extension details', async () => {
-  const editProps = { ...props };
-  editProps.match.params = { id: '1' };
   render(
-    <MockedProvider mocks={mocks} addTypename={false}>
-      <Extensions {...editProps} />
-    </MockedProvider>
+    <MemoryRouter>
+      <MockedProvider mocks={updateMocks} addTypename={false}>
+        <Extensions {...props} />
+      </MockedProvider>
+    </MemoryRouter>
   );
   await waitFor(() => {});
 

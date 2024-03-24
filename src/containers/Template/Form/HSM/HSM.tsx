@@ -2,12 +2,13 @@ import { useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 import { useParams, useLocation } from 'react-router-dom';
-import Loading from 'components/UI/Layout/Loading/Loading';
+
 import TemplateIcon from 'assets/images/icons/Template/UnselectedDark.svg?react';
 import { GET_HSM_CATEGORIES } from 'graphql/queries/Template';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Input } from 'components/UI/Form/Input/Input';
 import { EmojiInput } from 'components/UI/Form/EmojiInput/EmojiInput';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { Simulator } from 'components/simulator/Simulator';
 import Template from '../Template';
 import styles from './HSM.module.css';
@@ -27,8 +28,9 @@ export const HSM = () => {
   });
 
   const [shortcode, setShortcode] = useState('');
+  const [category, setCategory] = useState<any>(undefined);
   const [example, setExample] = useState();
-  const [category, setCategory] = useState<any>({ label: '', id: '' });
+
   const { t } = useTranslation();
   const params = useParams();
   const location: any = useLocation();
@@ -97,7 +99,7 @@ export const HSM = () => {
     {
       component: EmojiInput,
       name: 'example',
-      placeholder: `${t('Sample message')}*`,
+      label: `${t('Sample message')}*`,
       rows: 5,
       convertToWhatsApp: true,
       textArea: true,
@@ -116,10 +118,8 @@ export const HSM = () => {
       options: categoryOpn,
       optionLabel: 'label',
       multiple: false,
-      textFieldProps: {
-        variant: 'outlined',
-        label: `${t('Category')}*`,
-      },
+      label: `${t('Category')}*`,
+      placeholder: `${t('Category')}*`,
       disabled,
       helperText: t('Select the most relevant category'),
       onChange: (event: any) => {
@@ -130,6 +130,7 @@ export const HSM = () => {
       component: Input,
       name: 'shortcode',
       placeholder: `${t('Element name')}*`,
+      label: `${t('Element name')}*`,
       disabled,
       inputProp: {
         onBlur: (event: any) => setShortcode(event.target.value),
@@ -152,13 +153,7 @@ export const HSM = () => {
         category={category}
         onExampleChange={addButtonsToSampleMessage}
       />
-      <Simulator
-        setSimulatorId={0}
-        showSimulator
-        isPreviewMessage
-        message={sampleMessages}
-        simulatorIcon={false}
-      />
+      <Simulator isPreviewMessage message={sampleMessages} simulatorIcon={false} />
     </div>
   );
 };

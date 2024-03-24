@@ -1,0 +1,241 @@
+.ConversationHeader {
+  padding: 16px 32px !important;
+  display: flex;
+  flex-direction: row;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  min-height: 97px !important;
+  background-color: #fff;
+}
+
+.ContactInfoContainer {
+  display: flex;
+  width: 100%;
+  align-items: flex-end;
+}
+
+.Chat {
+  padding: 12px !important;
+  padding-right: 40px !important;
+  padding-left: 8px !important ;
+  display: none;
+  align-items: center;
+  margin-left: auto;
+  background-color: white;
+  border-radius: 0 0 0 12px;
+}
+
+.Chat svg {
+  height: 22px;
+  width: 25px;
+}
+
+.TitleText {
+  color: #073f24;
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.MobileIcon {
+  background-color: #eaedec !important;
+  margin-right: 10px !important;
+}
+
+.IconBackground {
+  background-color: #eaedec;
+  border-radius: 50%;
+  display: flex;
+}
+
+.ContactName {
+  line-height: 56px;
+}
+
+.Container {
+  margin-left: auto;
+  text-align: right;
+}
+
+.Title {
+  color: #191c1a;
+  font-size: 22px;
+  font-weight: 700;
+  padding-left: 12px;
+  margin-right: 8px;
+}
+
+.Configure {
+  cursor: pointer;
+  margin-right: 8px;
+  margin-top: 4px;
+}
+
+.Popper {
+  z-index: 1500;
+}
+
+.Popper button {
+  padding: 12px !important;
+  text-transform: none !important;
+}
+
+.ListButton {
+  width: 100% !important;
+  color: #717971;
+  font-family: Heebo;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 18px;
+  border-radius: 10px;
+}
+
+.ListButton:hover {
+  background-color: #edf6f2 !important;
+}
+
+.ListButton:disabled {
+  color: #93a29b !important;
+  pointer-events: auto !important;
+}
+
+.Link {
+  text-decoration: none;
+}
+
+.Icon {
+  width: 18px;
+  height: 18px;
+  color: #999999 !important;
+  margin-right: 17px;
+}
+
+.ListButtonPrimary {
+  composes: ListButton;
+  color: #717971;
+  display: flex;
+  justify-content: start;
+}
+.ListButtonDanger {
+  composes: ListButton;
+  display: flex;
+  justify-content: start;
+}
+
+.ListButtonDanger:hover {
+  background-color: #ffebee !important;
+}
+
+.Container {
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.08);
+  width: 196px;
+}
+
+.ContactCollections {
+  flex-direction: row;
+  margin-right: 12px;
+}
+
+.CollectionHeading {
+  font-weight: 500;
+  line-height: 1;
+  color: #cacaca;
+  font-size: 12px;
+}
+
+.CollectionsName {
+  font-size: 12px;
+  font-weight: 700 !important;
+  color: #555;
+  border-radius: 5px;
+  background: #ecf7f1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+}
+
+.ContactDetails {
+  display: flex;
+  align-items: center;
+}
+
+.SessionTimerContainer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-left: auto;
+  width: 50%;
+  gap: 26px;
+}
+
+.SessionTimer {
+  display: flex;
+  align-items: center;
+}
+
+.SessionTimer + div {
+  text-align: right;
+}
+
+.SessionTimer span {
+  color: #555;
+  font-size: 12px;
+  font-weight: 400;
+  margin-right: 5px;
+}
+
+.DialogText {
+  margin-top: 0px;
+  text-align: center;
+  font-size: 14px;
+  color: #073f24;
+  text-align: justify;
+}
+
+.ContactInfoWrapper {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.ConversationHeaderWrapper {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+@media only screen and (max-width: 768px) {
+  .ConversationHeader {
+    border-bottom: unset;
+    padding: 0px !important;
+    flex-direction: column;
+  }
+
+  .ContactDetails {
+    padding: 12px !important;
+    padding-bottom: 0px !important;
+  }
+
+  .SessionTimerContainer {
+    display: none;
+  }
+
+  .Chat {
+    display: flex !important;
+    padding: 12px !important;
+  }
+
+  .ConversationHeaderWrapper {
+    display: block;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .MobileIcon {
+    background-color: #eaedec !important;
+    margin-right: 0px !important;
+  }
+}

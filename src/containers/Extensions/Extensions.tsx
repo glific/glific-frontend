@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { Dialog, DialogContent } from '@mui/material';
-import Typography from '@mui/material/Typography';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
@@ -28,6 +27,7 @@ export const Extensions = ({ openDialog }: ExtensionProps) => {
   const [code, setCode] = useState('');
   const [isActive, setIsActive] = useState(false);
   const { t } = useTranslation();
+
   const params = useParams();
 
   const states = { name, code, isActive };
@@ -53,10 +53,16 @@ export const Extensions = ({ openDialog }: ExtensionProps) => {
   const dialogMessage = t("You won't be able to use this extension again.");
   const formFields = [
     {
+      component: Checkbox,
+      name: 'isActive',
+      title: t('Is active?'),
+      handleChange: (value: any) => setIsActive(value),
+    },
+    {
       component: Input,
       name: 'name',
       type: 'text',
-      placeholder: t('Title'),
+      label: t('Title'),
       inputProp: {
         onChange: (event: any) => setName(event.target.value),
       },
@@ -68,20 +74,10 @@ export const Extensions = ({ openDialog }: ExtensionProps) => {
       type: 'text',
       rows: 3,
       textArea: true,
-      placeholder: t('Code snippet'),
+      label: t('Code snippet'),
       inputProp: {
         onChange: (event: any) => setCode(event.target.value),
       },
-    },
-    {
-      component: Checkbox,
-      name: 'isActive',
-      title: (
-        <Typography variant="body2" style={{ color: '#93A29B' }}>
-          {t('Is active?')}
-        </Typography>
-      ),
-      handleChange: (value: any) => setIsActive(value),
     },
   ];
 
@@ -104,6 +100,7 @@ export const Extensions = ({ openDialog }: ExtensionProps) => {
     >
       <DialogContent classes={{ root: styles.DialogContent }}>
         <FormLayout
+          partialPage
           {...queries}
           states={states}
           setStates={setStates}

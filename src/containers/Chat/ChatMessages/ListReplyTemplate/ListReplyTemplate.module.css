@@ -6,8 +6,8 @@
 
 .GlobalButton {
   width: 100%;
-  background-color: #eaedec !important;
-  margin: 6px 0px !important;
+  color: #1690cf;
+  background-color: white !important;
 }
 
 .SimulatorButton {
@@ -16,25 +16,29 @@
 }
 
 .List {
-  height: calc(100% - 60px);
+  height: calc(100% - 70px);
   overflow-y: auto;
 }
+
 .ListItemChat {
+  justify-content: left;
   padding: 0 !important;
   font-size: 16px !important;
   color: #93a29b !important;
   width: 100%;
 }
 
-.ListItemChat > span {
-  justify-content: space-between;
-  text-transform: none !important;
-  font-weight: 400 !important;
+.OptionTitle {
   text-align: left;
 }
+.OptionDescription {
+  text-align: right;
+  margin-left: auto;
+  font-size: 8px;
+}
 
-.ListItemChat > span > div > :last-child {
-  font-size: 12px;
+.RadioButton {
+  margin-left: auto;
 }
 
 .ListItem {
@@ -67,7 +71,7 @@
   width: 100%;
   padding: 8px;
   height: 360px;
-  border-radius: 12px 12px 0px 0px;
+  border-radius: 12px 12px 25px 25px;
 }
 
 .DrawerHeading {
@@ -143,7 +147,7 @@
 
 .ListItemTitle {
   color: #073f24;
-  font-weight: 400;
+  font-weight: 600;
   font-size: 16px;
   margin-bottom: 10px;
 }
@@ -152,18 +156,26 @@
   margin-bottom: 10px;
 }
 
-.DialogContent {
-  width: 370px;
-}
-
 .SectionTitle {
   color: #073f24;
   font-size: 14px;
   font-weight: 400;
   padding: 4px 8px;
-  background-color: #edf6f2;
 }
 
 .Options > button:hover {
   background-color: #edf6f2;
+}
+
+.ListItemText {
+  width: 100%;
+  color: #000;
+  text-align: left;
+}
+
+.ListItemRadio {
+  width: 100%;
+}
+.ListItemTextTitle {
+  font-weight: 500;
 }

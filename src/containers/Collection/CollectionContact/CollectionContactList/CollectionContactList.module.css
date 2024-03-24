@@ -1,27 +1,27 @@
 .Name {
-  width: 300px;
+  min-width: 100px;
+  width: 25%;
 }
 
 .Phone {
-  width: 200px;
-  color: #93a29b;
-  margin-top: 6px;
+  color: #555;
+  font-size: 13px;
+  font-weight: 500;
+  min-width: 200px;
+  width: 25%;
 }
 
 .Actions {
-  justify-content: flex-end;
-  align-items: center;
-  margin-left: auto;
+  min-width: 200px;
+  text-align: end;
+  width: 60%;
 }
 
 .NameText {
-  display: flex;
+  color: #191c1a;
+  font-size: 17px;
   font-weight: 500;
-  font-size: 20px;
-  margin-top: 12px;
-  margin-bottom: 0px;
-  color: #073f24;
-  line-height: 1;
+  margin-bottom: 6px;
 }
 
 .CollectionIcon {
@@ -30,6 +30,13 @@
 }
 
 .RedirectArrow {
-  width: 20px;
-  color: #119656;
+  width: 15px;
+  color: #777;
+}
+
+.CollectionsText {
+  color: #555;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 20px;
 }

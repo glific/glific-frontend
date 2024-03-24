@@ -47,6 +47,10 @@ export const GET_COLLECTION_CONTACTS = gql`
           name
           phone
         }
+        waGroups {
+          name: label
+          id
+        }
       }
     }
   }
@@ -120,11 +124,11 @@ export const GET_CONTACT_DETAILS = gql`
 export const GET_CONTACT_HISTORY = gql`
   query ContactHistory($filter: ContactsHistoryFilter, $opts: Opts) {
     contactHistory(filter: $filter, opts: $opts) {
+      id
       eventDatetime
       eventLabel
       eventMeta
       eventType
-      id
       insertedAt
       updatedAt
     }

@@ -103,7 +103,7 @@ export const Organization = () => {
     }
   }, [orgData]);
 
-  if (!languages) return <Loading />;
+  if (!languages) return <Loading whiteBackground />;
 
   let activeLanguage: any = [];
   const validateActiveLanguages = (value: any) => {
@@ -152,16 +152,14 @@ export const Organization = () => {
       name: 'name',
       type: 'text',
       placeholder: t('Organization name'),
+      label: t('Organization name'),
     },
     {
       component: AutoComplete,
       name: 'activeLanguages',
       options: languages.languages,
       optionLabel: 'label',
-      textFieldProps: {
-        variant: 'outlined',
-        label: t('Supported languages'),
-      },
+      label: t('Supported languages'),
       validate: validateActiveLanguages,
     },
     {
@@ -170,10 +168,7 @@ export const Organization = () => {
       options: languages.languages,
       optionLabel: 'label',
       multiple: false,
-      textFieldProps: {
-        variant: 'outlined',
-        label: t('Default language'),
-      },
+      label: t('Default language'),
       validate: validateDefaultLanguage,
     },
     {
@@ -181,13 +176,14 @@ export const Organization = () => {
       name: 'signaturePhrase',
       type: 'text',
       placeholder: t('Webhook signature'),
+      label: t('Webhook signature'),
     },
 
     {
       component: Input,
       name: 'phone',
       type: 'text',
-      placeholder: t('Organization phone number'),
+      label: t('Organization phone number'),
       disabled: true,
       endAdornment: (
         <InputAdornment position="end">
@@ -207,11 +203,13 @@ export const Organization = () => {
       name: 'tier',
       type: 'text',
       placeholder: t('WhatsApp tier'),
+      label: t('WhatsApp tier'),
       skip: !tier,
       disabled: true,
     },
     {
       component: Checkbox,
+      className: styles.Checkbox,
       name: 'sendWarningMail',
       handleChange: handleSendWarningMails,
       title: t('Recieve warning mails?'),
@@ -220,7 +218,7 @@ export const Organization = () => {
       component: Input,
       name: 'lowBalanceThreshold',
       type: 'number',
-      placeholder: t('Low balance threshold for warning emails'),
+      label: t('Low balance threshold for warning emails'),
       disabled: !sendWarningMail,
       helperText: t('Recieve low balance threshold mails once a week.'),
     },
@@ -228,7 +226,7 @@ export const Organization = () => {
       component: Input,
       name: 'criticalBalanceThreshold',
       type: 'number',
-      placeholder: t('Critical balance threshold for warning emails'),
+      label: t('Critical balance threshold for warning emails'),
       disabled: !sendWarningMail,
       helperText: t('Recieve critical balance threshold mails every two days.'),
     },
@@ -263,9 +261,9 @@ export const Organization = () => {
 
   return (
     <FormLayout
-      backLinkButton={{ text: t('Back to settings'), link: '/settings' }}
+      partialPage
       {...queries}
-      title="organization settings"
+      title="Organization settings"
       states={States}
       setStates={setStates}
       validationSchema={FormSchema}
@@ -281,10 +279,11 @@ export const Organization = () => {
       icon={SettingIcon}
       languageSupport={false}
       type="settings"
-      redirect
+      redirect={false}
       afterSave={saveHandler}
       customStyles={styles.organization}
       entityId={organizationId}
+      noHeading
     />
   );
 };

@@ -1,59 +1,101 @@
-import { ANALYTICS_URL, GLIFIC_DOCS_URL } from 'config';
+import { organizationHasDynamicRole } from 'common/utils';
+import { ANALYTICS_URL, GLIFIC_DOCS_URL, NEW_UI_BLOG } from 'config';
 import { getOrganizationServices } from 'services/AuthService';
 
+const allRoles = ['Staff', 'Manager', 'Admin', 'Dynamic', 'Glific_admin'];
+const adminLevel = ['Admin', 'Glific_admin'];
+const managerLevel = ['Manager', 'Admin', 'Dynamic', 'Glific_admin'];
+const staffLevel = ['Staff', 'Manager', 'Admin', 'Dynamic', 'Glific_admin'];
+
+export interface Menu {
+  title: string;
+  path: string;
+  icon?: string;
+  type: string;
+  showBadge?: boolean;
+  roles: string[];
+  url?: string;
+  show?: boolean;
+  children?: Menu[];
+}
+
 // define all the menus in the system
-const menus = () => [
+const menus = (): Menu[] => [
   {
     title: 'Chats',
     path: '/chat',
     icon: 'chat',
     type: 'sideDrawer',
-    roles: ['Staff', 'Manager', 'Admin', 'Dynamic'],
+    roles: allRoles,
   },
   {
-    title: 'Speed Sends',
-    path: '/speed-send',
-    icon: 'speed-send',
+    title: 'WhatsApp Groups',
+    path: '/group/chat',
+    icon: 'waGroup',
     type: 'sideDrawer',
-    roles: ['Manager', 'Admin', 'Dynamic'],
+    roles: allRoles,
+    show: !getOrganizationServices('whatsappGroupEnabled'),
+    children: [
+      {
+        title: 'Group Chats',
+        path: '/group/chat',
+        icon: 'waGroupChat',
+        type: 'sideDrawer',
+        roles: allRoles,
+      },
+      {
+        title: 'Group Collections',
+        path: '/group/collection',
+        icon: 'waGroupCollection',
+        type: 'sideDrawer',
+        roles: allRoles,
+      },
+    ],
   },
   {
     title: 'Flows',
     path: '/flow',
     icon: 'flow',
     type: 'sideDrawer',
-    subMenu: [
+    children: [
+      {
+        title: 'Flows',
+        path: '/flow',
+        icon: 'flow',
+        type: 'sideDrawer',
+        roles: managerLevel,
+      },
       {
         title: 'Google sheets',
         path: '/sheet-integration',
         icon: 'sheets',
         type: 'sideDrawer',
-        roles: ['Manager', 'Admin', 'Dynamic'],
+        roles: managerLevel,
       },
       {
         title: 'Webhook logs',
         path: '/webhook-logs',
         icon: 'webhook',
         type: 'sideDrawer',
-        roles: ['Manager', 'Admin', 'Dynamic'],
+        roles: managerLevel,
       },
       {
         title: 'Contact variables',
         path: '/contact-fields',
         icon: 'fields',
         type: 'sideDrawer',
-        roles: ['Manager', 'Admin', 'Dynamic'],
+        roles: managerLevel,
       },
       {
         title: 'Support tickets',
         path: '/ticket',
         icon: 'tickets',
         type: 'sideDrawer',
-        roles: ['Manager', 'Admin', 'Dynamic'],
+        roles: managerLevel,
         show: !getOrganizationServices('ticketingEnabled'),
       },
     ],
-    roles: ['Manager', 'Admin', 'Dynamic'],
+    roles: managerLevel,
   },
   {
     title: 'Support tickets',
@@ -64,124 +106,178 @@ const menus = () => [
     show: !getOrganizationServices('ticketingEnabled'),
   },
   {
-    title: 'Triggers',
-    path: '/trigger',
-    icon: 'trigger',
-    type: 'sideDrawer',
-    roles: ['Manager', 'Admin', 'Dynamic'],
-  },
-  {
-    title: 'Searches',
-    path: '/search',
-    icon: 'search',
-    type: 'sideDrawer',
-    roles: ['Manager', 'Admin', 'Dynamic'],
-  },
-  {
-    title: 'Templates',
-    path: '/template',
-    icon: 'template',
-    type: 'sideDrawer',
-    roles: ['Manager', 'Admin', 'Dynamic'],
-  },
-  {
-    title: 'Interactive msg',
+    title: 'Quick tools',
     path: '/interactive-message',
-    icon: 'interactive-message',
+    icon: 'speed-send',
     type: 'sideDrawer',
-    roles: ['Manager', 'Admin', 'Dynamic'],
+    roles: managerLevel,
+    children: [
+      {
+        title: 'Interactive msg',
+        path: '/interactive-message',
+        icon: 'interactive-message',
+        type: 'sideDrawer',
+        roles: managerLevel,
+      },
+      {
+        title: 'Templates',
+        path: '/template',
+        icon: 'template',
+        type: 'sideDrawer',
+        roles: managerLevel,
+      },
+      {
+        title: 'Triggers',
+        path: '/trigger',
+        icon: 'trigger',
+        type: 'sideDrawer',
+        roles: managerLevel,
+      },
+      {
+        title: 'Searches',
+        path: '/search',
+        icon: 'search',
+        type: 'sideDrawer',
+        roles: managerLevel,
+      },
+      {
+        title: 'Speed Sends',
+        path: '/speed-send',
+        icon: 'speed-send',
+        type: 'sideDrawer',
+        roles: managerLevel,
+      },
+      {
+        title: 'Tags',
+        path: '/tag',
+        icon: 'tag',
+        type: 'sideDrawer',
+        roles: managerLevel,
+      },
+    ],
   },
   {
     title: 'Notifications',
     path: '/notifications',
     icon: 'notification',
     type: 'sideDrawer',
-    badge: true,
-    roles: ['Manager', 'Admin', 'Dynamic'],
+    showBadge: true,
+    roles: managerLevel,
   },
   {
-    title: 'Analytics (Beta)',
-    path: '/analytics',
-    url: ANALYTICS_URL,
-    icon: 'analytics',
+    title: 'Manage',
+    path: '/collection',
+    icon: 'manage',
     type: 'sideDrawer',
-    roles: ['Staff', 'Manager', 'Admin', 'Dynamic'],
-  },
-  {
-    title: 'Help',
-    path: '/help',
-    url: GLIFIC_DOCS_URL,
-    icon: 'help',
-    type: 'sideDrawer',
-    roles: ['Staff', 'Manager', 'Admin', 'Dynamic'],
+    roles: staffLevel,
+    children: [
+      {
+        title: 'Collections',
+        path: '/collection',
+        type: 'sideDrawer',
+        icon: 'collection',
+        roles: staffLevel,
+      },
+      {
+        title: 'Staff',
+        path: '/staff-management',
+        type: 'sideDrawer',
+        icon: 'staff',
+        roles: ['Manager', 'Admin', 'Glific_admin'],
+      },
+      {
+        title: 'Contacts',
+        path: '/contact-management',
+        type: 'sideDrawer',
+        icon: 'contact',
+        roles: adminLevel,
+      },
+      {
+        title: 'Blocked contacts',
+        path: '/blocked-contacts',
+        type: 'sideDrawer',
+        icon: 'block',
+        roles: staffLevel,
+      },
+      {
+        title: 'Roles',
+        path: '/role',
+        type: 'sideDrawer',
+        icon: 'speed-send',
+        show: !organizationHasDynamicRole(),
+        roles: ['Manager', 'Admin', 'Glific_admin'],
+      },
+      {
+        title: 'Organizations',
+        path: '/organizations',
+        icon: 'organization',
+        type: 'sideDrawer',
+        roles: ['Glific_admin'],
+      },
+      {
+        title: 'Consulting',
+        path: '/consulting-hours',
+        type: 'sideDrawer',
+        icon: 'consulting',
+        roles: ['Glific_admin'],
+      },
+    ],
   },
 
   {
-    title: 'Manage collections',
-    path: '/collection',
-    type: 'management',
-    roles: ['Staff', 'Manager', 'Admin', 'Dynamic'],
-  },
-  {
-    title: 'Role management',
-    path: '/role',
-    type: 'management',
-    roles: ['Manager', 'Admin'],
-  },
-  {
-    title: 'Staff management',
-    path: '/staff-management',
-    type: 'management',
-    roles: ['Manager', 'Admin'],
-  },
-  {
-    title: 'Contact management',
-    path: '/contact-management',
-    type: 'management',
-    roles: ['Glific_admin', 'Admin'],
-  },
-  {
-    title: 'Organizations',
-    path: '/organizations',
-    type: 'management',
-    roles: ['Glific_admin'],
-  },
-  {
-    title: 'Consulting',
-    path: '/consulting-hours',
-    type: 'management',
-    roles: ['Glific_admin'],
-  },
-  {
-    title: 'Blocked contacts',
-    path: '/blocked-contacts',
-    type: 'management',
-    roles: ['Staff', 'Manager', 'Admin', 'Dynamic'],
-  },
-  {
-    title: 'My Profile',
-    path: '/user-profile',
-    type: 'userAccount',
-    roles: ['Staff', 'Manager', 'Admin', 'Dynamic'],
-  },
-  {
     title: 'My Account',
     path: '/myaccount',
+    icon: 'account',
     type: 'userAccount',
-    roles: ['Staff', 'Manager', 'Admin', 'Dynamic'],
+    roles: staffLevel,
+  },
+  {
+    title: 'Settings',
+    path: '/settings',
+    icon: 'settings',
+    type: 'userAccount',
+    roles: adminLevel,
   },
   {
     title: 'Logout',
     path: '/logout/user',
-    className: 'Danger',
+    icon: 'logout',
     type: 'userAccount',
-    roles: ['Staff', 'Manager', 'Admin', 'Dynamic'],
+    roles: staffLevel,
+  },
+  {
+    title: 'Analytics',
+    path: '/analytics',
+    url: ANALYTICS_URL,
+    icon: 'analytics',
+    type: 'sideDrawer',
+    roles: staffLevel,
+  },
+  {
+    title: 'Resources',
+    path: '/help',
+    url: GLIFIC_DOCS_URL,
+    icon: 'help',
+    type: 'sideDrawer',
+    roles: staffLevel,
+  },
+
+  {
+    title: "What's new",
+    path: '/changelog',
+    url: NEW_UI_BLOG,
+    icon: 'new',
+    type: 'sideDrawer',
+    roles: staffLevel,
   },
 ];
 
 export const getMenus = (menuType = 'sideDrawer', role = 'Staff') =>
   menus()
-    .filter((menu: any) => menu.type === menuType && menu.roles.includes(role))
-    .map((menu: any) => menu);
+    .filter((menu) => menu.type === menuType && menu.roles.includes(role))
+    .map((menu) => {
+      menu.children = menu.children?.filter((menu) => menu.roles.includes(role));
+      return menu;
+    });
 
 export default getMenus;

@@ -21,7 +21,7 @@ const list = (
 it('Renders ConsultingList component successfully', async () => {
   render(list);
 
-  expect(screen.getByText('Loading...')).toBeInTheDocument();
+  expect(screen.getByTestId('loading')).toBeInTheDocument();
   await waitFor(() => {
     const nameLabel = screen.getByText('Name');
     const dateLabel = screen.getByText('Date');
@@ -38,13 +38,15 @@ it('Renders ConsultingList component successfully', async () => {
 });
 
 it('Renders dialog box on clicking add new button', async () => {
-  const { getByText } = render(list);
+  const { getByText, getByTestId } = render(list);
 
-  expect(getByText('Loading...')).toBeInTheDocument();
+  expect(getByTestId('loading')).toBeInTheDocument();
 
   await waitFor(() => {
-    fireEvent.click(getByText('Add Consulting Hours'));
+    expect(getByText('Add Consulting Hours')).toBeInTheDocument();
   });
+
+  fireEvent.click(getByText('Add Consulting Hours'));
 
   await waitFor(() => {
     expect(screen.getByText('Add consulting record')).toBeInTheDocument();

@@ -53,6 +53,7 @@ export const Registration = () => {
       name: 'name',
       type: 'text',
       placeholder: t('Your full name'),
+      darkMode: true,
     },
     {
       component: PhoneInput,
@@ -66,6 +67,7 @@ export const Registration = () => {
       name: 'password',
       type: 'password',
       placeholder: t('Password'),
+      darkMode: true,
     },
   ];
 
