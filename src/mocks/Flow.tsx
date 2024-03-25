@@ -20,16 +20,18 @@ import {
   AUTO_TRANSLATE_FLOW,
   IMPORT_FLOW_LOCALIZATIONS,
   ADD_FLOW_TO_WA_GROUP,
+  CREATE_FLOW,
 } from 'graphql/mutations/Flow';
 import { GET_ORGANIZATION_SERVICES } from 'graphql/queries/Organization';
 import json from './ImportFlow.json';
 import { GET_ALL_FLOW_LABELS } from 'graphql/queries/FlowLabel';
+import { CREATE_LABEL } from 'graphql/mutations/Tags';
 
 export const getFlowQuery = {
   request: {
     query: GET_FLOW,
     variables: {
-      id: 1,
+      id: '1',
     },
   },
 
@@ -500,14 +502,14 @@ export const updateFlowQuery = {
   request: {
     query: UPDATE_FLOW,
     variables: {
-      id: 1,
+      id: '1',
       input: {
         isActive: true,
         isPinned: false,
         isBackground: false,
+        name: 'Help',
+        keywords: ['help'],
         description: 'Help flow',
-        name: 'New Flow',
-        keywords: ['मदद'],
         ignoreKeywords: false,
         addRoleIds: [],
         deleteRoleIds: [],
@@ -534,6 +536,40 @@ export const updateFlowQuery = {
         },
 
         errors: null,
+      },
+    },
+  },
+};
+
+export const updateFlowQueryWithError = {
+  request: {
+    query: UPDATE_FLOW,
+    variables: {
+      id: '1',
+      input: {
+        isActive: true,
+        isPinned: false,
+        isBackground: false,
+        name: 'Help',
+        keywords: ['help'],
+        description: 'Help flow',
+        ignoreKeywords: false,
+        addRoleIds: [],
+        deleteRoleIds: [],
+        tag_id: '1',
+      },
+    },
+  },
+  result: {
+    data: {
+      updateFlow: {
+        errors: [
+          {
+            key: 'keywords',
+            message: 'Keywords: The keyword `help` was already used in the `Help Workflow` Flow.',
+          },
+        ],
+        flow: null,
       },
     },
   },
@@ -622,14 +658,14 @@ export const copyFlowQuery = {
   request: {
     query: CREATE_FLOW_COPY,
     variables: {
-      id: 1,
+      id: '1',
       input: {
         isActive: true,
         isPinned: false,
         isBackground: false,
-        description: 'Help flow',
         name: 'Copy of Help',
         keywords: ['help', 'activity'],
+        description: 'Help flow',
         ignoreKeywords: false,
         addRoleIds: [],
         deleteRoleIds: [],
@@ -660,6 +696,40 @@ export const copyFlowQuery = {
   },
 };
 
+export const createFlowQuery = {
+  request: {
+    query: CREATE_FLOW,
+    variables: {
+      input: {
+        isActive: true,
+        isPinned: false,
+        isBackground: false,
+        name: 'New Flow',
+        keywords: ['मदद'],
+        description: '',
+        ignoreKeywords: false,
+        addRoleIds: [],
+        deleteRoleIds: [],
+      },
+    },
+    result: {
+      data: {
+        createFlow: {
+          errors: null,
+          flow: {
+            description: '',
+            id: '4',
+            isActive: true,
+            name: 'New Flow',
+            roles: [],
+            uuid: 'c18190b4-5f14-47f3-acfd-c301e5edf3a0',
+          },
+        },
+      },
+    },
+  },
+};
+
 export const getAllFlowLabelsQuery = {
   request: {
     query: GET_ALL_FLOW_LABELS,
@@ -673,6 +743,24 @@ export const getAllFlowLabelsQuery = {
           name: 'dob',
         },
       ],
+    },
+  },
+};
+
+export const createTagQuery = {
+  request: {
+    query: CREATE_LABEL,
+    variables: { input: { label: 'test', languageId: '1' } },
+  },
+  result: {
+    data: {
+      createTag: {
+        errors: null,
+        tag: {
+          id: '4',
+          label: 'test',
+        },
+      },
     },
   },
 };
