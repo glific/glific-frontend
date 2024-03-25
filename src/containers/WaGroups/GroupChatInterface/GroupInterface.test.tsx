@@ -212,21 +212,6 @@ describe('<GroupChatInterface />', () => {
     });
   });
 
-  test.only('it should render the first collection', async () => {
-    const { getByText } = render(
-      <ApolloProvider client={client}>
-        <MemoryRouter>
-          <GroupChatInterface collections={true} />
-        </MemoryRouter>
-      </ApolloProvider>
-    );
-    expect(getByText('Loading...')).toBeInTheDocument();
-
-    await waitFor(() => {
-      expect(getByText('Default WA Group Collection')).toBeInTheDocument();
-    });
-  });
-
   const emptyCache = new InMemoryCache({ addTypename: false });
 
   emptyCache.writeQuery({

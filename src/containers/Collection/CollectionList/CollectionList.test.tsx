@@ -11,6 +11,7 @@ import {
   filterCollectionQueryWAGroups,
   getCollectionContactsQuery,
   addContactToCollection,
+  exportCollectionsQueryWithErrors,
 } from 'mocks/Collection';
 import { getContactsQuery, getContactsSearchQuery } from 'mocks/Contact';
 import { getCurrentUserQuery } from 'mocks/User';
@@ -34,7 +35,6 @@ const mocks = [
   getContactsQuery,
   getContactsSearchQuery,
   getCurrentUserQuery,
-  exportCollectionsQuery,
   addContactToCollection,
   getCollectionContactsQuery,
 ];
@@ -60,6 +60,7 @@ vi.mock('common/notification', async (importOriginal) => {
     setNotification: vi.fn(),
   };
 });
+
 describe('<CollectionList />', () => {
   test('should render CollectionList', async () => {
     const { getByText, getByTestId } = render(wrapper);
@@ -151,7 +152,13 @@ describe('<CollectionList />', () => {
   });
 
   test('should export collection', async () => {
-    const { getByTestId } = render(wrapper);
+    const { getByTestId } = render(
+      <MemoryRouter>
+        <MockedProvider mocks={[...mocks, exportCollectionsQuery]} addTypename={false}>
+          <CollectionList />
+        </MockedProvider>
+      </MemoryRouter>
+    );
     expect(getByTestId('loading')).toBeInTheDocument();
 
     await waitFor(() => {
@@ -164,6 +171,28 @@ describe('<CollectionList />', () => {
 
     await waitFor(() => {
       expect(spy).toHaveBeenCalled();
+    });
+  });
+
+  test('should show error if export collection failed', async () => {
+    const { getByTestId } = render(
+      <MemoryRouter>
+        <MockedProvider mocks={[...mocks, exportCollectionsQueryWithErrors]} addTypename={false}>
+          <CollectionList />
+        </MockedProvider>
+      </MemoryRouter>
+    );
+    expect(getByTestId('loading')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(getByTestId('additionalButton')).toBeInTheDocument();
+    });
+
+    fireEvent.click(getByTestId('MoreIcon'));
+    fireEvent.click(screen.getByText('Export'));
+
+    await waitFor(() => {
+      expect(setNotification).toHaveBeenCalled();
     });
   });
 
@@ -219,7 +248,7 @@ describe('<CollectionList />', () => {
   });
 
   test('add groups to collection', async () => {
-    setUserSession(JSON.stringify({ roles: ['Admin'] }));
+    setUserSession(JSON.stringify({ roles: ['Staff'] }));
     const { getAllByTestId, getByTestId, getByText } = render(groupWrapper);
 
     // loading is show initially
@@ -246,6 +275,31 @@ describe('<CollectionList />', () => {
 
     await waitFor(() => {
       expect(setNotification).toHaveBeenCalled();
+    });
+  });
+
+  test('closes the dialog box', async () => {
+    const { getAllByTestId, getByTestId, getByText } = render(groupWrapper);
+
+    // loading is show initially
+    expect(getByTestId('loading')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(getByText('Group Collections')).toBeInTheDocument();
+    });
+
+    fireEvent.click(getAllByTestId('additionalButton')[0]);
+
+    const dialog = screen.getByTestId('dialogBox');
+
+    await waitFor(() => {
+      expect(dialog).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('cancel-button'));
+
+    await waitFor(() => {
+      expect(dialog).not.toBeInTheDocument();
     });
   });
 });

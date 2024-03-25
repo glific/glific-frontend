@@ -116,10 +116,10 @@ describe('<FlowList />', () => {
     render(flowList);
 
     await waitFor(() => {
-      expect(screen.getByTestId('import-icon')).toBeInTheDocument();
+      expect(screen.getAllByTestId('import-icon')[0]).toBeInTheDocument();
     });
 
-    const importFlowButton = screen.getByTestId('import-icon');
+    const importFlowButton = screen.getAllByTestId('import-icon')[0];
     fireEvent.click(importFlowButton);
 
     await waitFor(() => {
@@ -144,15 +144,15 @@ describe('<FlowList />', () => {
     render(flowList);
 
     await waitFor(() => {
-      screen.getByTestId('MoreIcon');
+      screen.getAllByTestId('MoreIcon');
     });
-    const moreButton = screen.getByTestId('MoreIcon');
-    fireEvent.click(moreButton);
+    const moreButton = screen.getAllByTestId('MoreIcon');
+    fireEvent.click(moreButton[0]);
 
     await waitFor(() => {
-      const exportButton = screen.getByTestId('export-icon');
-      expect(exportButton).toBeInTheDocument();
-      fireEvent.click(exportButton);
+      const exportButton = screen.getAllByTestId('export-icon');
+      expect(exportButton[0]).toBeInTheDocument();
+      fireEvent.click(exportButton[0]);
     });
   });
 });

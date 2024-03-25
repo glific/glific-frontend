@@ -2,6 +2,7 @@ import {
   GET_CONSULTING_HOURS,
   GET_CONSULTING_HOURS_COUNT,
   GET_CONSULTING_HOURS_BY_ID,
+  EXPORT_CONSULTING_HOURS,
 } from 'graphql/queries/Consulting';
 import { CREATE_CONSULTING_HOUR, UPDATE_CONSULTING_HOURS } from 'graphql/mutations/Consulting';
 import { FILTER_ORGANIZATIONS } from 'graphql/queries/Organization';
@@ -57,6 +58,31 @@ export const getOrganizationList = {
   },
 };
 
+export const getConsultingHour = {
+  request: {
+    query: GET_CONSULTING_HOURS_BY_ID,
+    variables: { id: '1' },
+  },
+  result: {
+    data: {
+      consultingHour: {
+        consultingHour: {
+          content: 'test',
+          duration: 15,
+          id: '1',
+          insertedAt: '2021-08-04T14:13:24Z',
+          isBillable: false,
+          organizationName: 'Glific',
+          participants: 'John Doe',
+          staff: 'Glific test',
+          updatedAt: '2021-08-04T14:16:01Z',
+          when: '2021-08-04T14:13:09Z',
+        },
+      },
+    },
+  },
+};
+
 export const listingMock = [
   {
     request: {
@@ -89,32 +115,8 @@ export const listingMock = [
     },
   },
   getOrganizationList,
+  getConsultingHour,
 ];
-
-export const getConsultingHour = {
-  request: {
-    query: GET_CONSULTING_HOURS_BY_ID,
-    variables: { id: '1' },
-  },
-  result: {
-    data: {
-      consultingHour: {
-        consultingHour: {
-          content: 'test',
-          duration: 15,
-          id: '1',
-          insertedAt: '2021-08-04T14:13:24Z',
-          isBillable: false,
-          organizationName: 'Glific',
-          participants: 'John Doe',
-          staff: 'Glific test',
-          updatedAt: '2021-08-04T14:16:01Z',
-          when: '2021-08-04T14:13:09Z',
-        },
-      },
-    },
-  },
-};
 
 export const createConsultingHour = {
   request: {
@@ -185,6 +187,18 @@ export const updateConsultingHour = {
         },
         errors: null,
       },
+    },
+  },
+};
+
+export const exportConsulting = {
+  request: {
+    query: EXPORT_CONSULTING_HOURS,
+    variables: { filter: { clientId: '2', startDate: '2020-09-03', endDate: '2020-09-04' } },
+  },
+  result: {
+    data: {
+      fetchConsultingHours: {},
     },
   },
 };

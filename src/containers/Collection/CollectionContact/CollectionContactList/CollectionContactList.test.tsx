@@ -17,10 +17,50 @@ vi.mock('react-router-dom', async () => {
 
 const mocks = [
   countCollectionContactsQuery,
-  getCollectionContactsQuery,
-  getCollectionContactsQuery,
+  getCollectionContactsQuery({
+    filter: { includeGroups: '1' },
+    opts: {
+      limit: 50,
+      offset: 0,
+      order: 'ASC',
+      orderWith: 'name',
+    },
+  }),
+  getCollectionContactsQuery({
+    filter: { includeGroups: '1' },
+    opts: {
+      limit: 50,
+      offset: 0,
+      order: 'ASC',
+      orderWith: 'name',
+    },
+  }),
   deleteContactFromCollection,
   countCollectionContactsQuery,
+  countCollectionContactsQuery,
+  countCollectionContactsQuery,
+  getCollectionContactsQuery({
+    filter: { name: '', includeGroups: ['1'] },
+    opts: { limit: 50, offset: 0, order: 'ASC' },
+  }),
+  getCollectionContactsQuery({
+    filter: { includeGroups: '1' },
+    opts: {
+      limit: 50,
+      offset: 0,
+      order: 'ASC',
+      orderWith: 'name',
+    },
+  }),
+  getCollectionContactsQuery({
+    filter: { includeGroups: '1' },
+    opts: {
+      limit: 50,
+      offset: 0,
+      order: 'ASC',
+      orderWith: 'name',
+    },
+  }),
 ];
 const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>
@@ -44,7 +84,7 @@ describe('<CollectionContactList />', () => {
   });
 
   test('delete contact from collection', async () => {
-    const { getAllByTestId, getByTestId, getByText } = render(wrapper);
+    const { getByTestId, getByText, getAllByTestId } = render(wrapper);
 
     // loading is show initially
     expect(getByTestId('loading')).toBeInTheDocument();
@@ -53,7 +93,7 @@ describe('<CollectionContactList />', () => {
       expect(getByText('Glific User')).toBeInTheDocument();
     });
 
-    fireEvent.click(getByTestId('MoreIcon'));
+    fireEvent.click(getAllByTestId('MoreIcon')[0]);
     fireEvent.click(screen.getByText('Delete'));
 
     await waitFor(() => {
@@ -64,6 +104,62 @@ describe('<CollectionContactList />', () => {
 
     await waitFor(() => {
       // expect(setNotification).toHaveBeenCalled();
+    });
+  });
+
+  test('remove contacts', async () => {
+    const { getByTestId, getByText } = render(wrapper);
+
+    expect(getByTestId('loading')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(getByText('Glific User')).toBeInTheDocument();
+    });
+
+    fireEvent.click(getByTestId('removeBtn'));
+
+    const dialog = screen.getByTestId('dialogBox');
+
+    await waitFor(() => {
+      expect(dialog).toBeInTheDocument();
+    });
+
+    const autocomplete = getByTestId('autocomplete-element');
+    autocomplete.focus();
+    fireEvent.keyDown(autocomplete, { key: 'ArrowDown' });
+    fireEvent.keyDown(autocomplete, { key: 'Enter' });
+
+    fireEvent.keyDown(autocomplete, { key: 'ArrowDown' });
+    fireEvent.keyDown(autocomplete, { key: 'Enter' });
+
+    fireEvent.click(getByTestId('ok-button'));
+
+    await waitFor(() => {
+      expect(dialog).not.toBeInTheDocument();
+    });
+  });
+
+  test('closes dialog box', async () => {
+    const { getByTestId, getByText } = render(wrapper);
+
+    expect(getByTestId('loading')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(getByText('Glific User')).toBeInTheDocument();
+    });
+
+    fireEvent.click(getByTestId('removeBtn'));
+
+    const dialog = screen.getByTestId('dialogBox');
+
+    await waitFor(() => {
+      expect(dialog).toBeInTheDocument();
+    });
+
+    fireEvent.click(getByTestId('cancel-button'));
+
+    await waitFor(() => {
+      expect(dialog).not.toBeInTheDocument();
     });
   });
 });

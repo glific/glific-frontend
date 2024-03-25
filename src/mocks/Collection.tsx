@@ -404,6 +404,26 @@ export const exportCollectionsQuery = {
   },
 };
 
+export const exportCollectionsQueryWithErrors = {
+  request: {
+    query: EXPORT_COLLECTION_DATA,
+    variables: { exportCollectionId: '1' },
+  },
+  result: {
+    data: {
+      exportCollection: {
+        errors: [
+          {
+            message: 'An error occured',
+            key: 0,
+          },
+        ],
+        status: null,
+      },
+    },
+  },
+};
+
 export const addContactToCollection = {
   request: {
     query: UPDATE_COLLECTION_CONTACTS,
