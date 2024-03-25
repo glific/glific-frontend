@@ -107,7 +107,7 @@ export const CollectionList = () => {
     onCompleted: (data) => {
       if (data.exportCollection.errors) {
         setNotification(data.exportCollection.errors[0].message, 'warning');
-      } else if (data.exportCollection) {
+      } else if (data.exportCollection.status) {
         exportCsvFile(data.exportCollection.status, 'collection');
       }
       setExportData(false);
