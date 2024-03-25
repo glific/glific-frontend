@@ -19,7 +19,11 @@ import { getPublishedFlowQuery } from 'mocks/Flow';
 import { setUserSession } from 'services/AuthService';
 import { CollectionList } from './CollectionList';
 import * as utils from 'common/utils';
-import { addGroupToCollectionList, getGroupsSearchQuery } from 'mocks/Groups';
+import {
+  addGroupToCollectionList,
+  getGroupsSearchQuery,
+  getGroupsSearchQuery2,
+} from 'mocks/Groups';
 import { setNotification } from 'common/notification';
 
 const mocks = [
@@ -206,6 +210,7 @@ describe('<CollectionList />', () => {
           countCollectionQueryWAGroups,
           countCollectionQueryWAGroups,
           getGroupsSearchQuery,
+          getGroupsSearchQuery2,
           addGroupToCollectionList,
           filterCollectionQueryWAGroups,
           countCollectionQueryWAGroups,

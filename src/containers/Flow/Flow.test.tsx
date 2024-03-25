@@ -12,6 +12,7 @@ import {
   createFlowQuery,
   createTagQuery,
   updateFlowQueryWithError,
+  getFlowQuery2,
 } from 'mocks/Flow';
 import { Flow } from './Flow';
 import { setOrganizationServices } from 'services/AuthService';
@@ -25,6 +26,7 @@ setOrganizationServices('{"__typename":"OrganizationServicesResult","rolesAndPer
 const mocks = [
   ...getOrganizationQuery,
   getFlowQuery,
+  getFlowQuery2,
   filterFlowQuery,
   getFilterTagQuery,
   getRoleNameQuery,

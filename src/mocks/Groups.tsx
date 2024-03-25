@@ -703,28 +703,40 @@ export const searchCollectionGroupQuery = [
   },
 ];
 
+const groupsData = {
+  waGroups: [
+    {
+      bspId: '120363242907663820@g.us',
+      id: '1',
+      lastCommunicationAt: '2024-03-15T10:53:48Z',
+      name: 'Group test 1',
+    },
+    {
+      bspId: '120363242907663810@g.us',
+      id: '5',
+      lastCommunicationAt: '2024-03-15T10:53:48Z',
+      name: 'Group 1',
+    },
+  ],
+};
+
 export const getGroupsSearchQuery = {
   request: {
     query: GET_WA_GROUPS,
     variables: setVariables({}, 50),
   },
   result: {
-    data: {
-      waGroups: [
-        {
-          bspId: '120363242907663820@g.us',
-          id: '1',
-          lastCommunicationAt: '2024-03-15T10:53:48Z',
-          name: 'Group test 1',
-        },
-        {
-          bspId: '120363242907663810@g.us',
-          id: '5',
-          lastCommunicationAt: '2024-03-15T10:53:48Z',
-          name: 'Group 1',
-        },
-      ],
-    },
+    data: groupsData,
+  },
+};
+
+export const getGroupsSearchQuery2 = {
+  request: {
+    query: GET_WA_GROUPS,
+    variables: setVariables({ label: '' }, 50),
+  },
+  result: {
+    data: groupsData,
   },
 };
 
@@ -1153,4 +1165,58 @@ export const updateWaGroupCollection = {
     variables: {},
   },
   result: {},
+};
+
+export const searchFilterQuery = {
+  request: {
+    query: GROUP_SEARCH_QUERY,
+    variables: {
+      waGroupOpts: { limit: 1 },
+      waMessageOpts: { limit: 0, offset: 0 },
+      filter: { id: '1' },
+    },
+  },
+  result: {
+    data: {
+      search: [
+        {
+          id: 'wa_group_1',
+          __typename: 'WaConversation',
+          group: null,
+          messages: [
+            {
+              __typename: 'WaMessage',
+              body: 'I will speak daggers to her, but use none.',
+              contact: {
+                __typename: 'Contact',
+                name: 'Default receiver',
+              },
+              contextMessage: null,
+              errors: null,
+              id: '1',
+              insertedAt: '2024-03-11T04:39:56.772383Z',
+              media: null,
+              messageNumber: 1,
+              status: 'received',
+              type: 'TEXT',
+            },
+          ],
+          waGroup: {
+            __typename: 'WaGroup',
+            bspId: '745572428506626346@g.us',
+            id: '1',
+            label: 'Oklahoma sheep',
+            lastCommunicationAt: '2024-03-12T14:12:30Z',
+            waManagedPhone: {
+              __typename: 'WaManagedPhone',
+              id: '1',
+              label: null,
+              phone: '8238389740',
+              phoneId: 8220,
+            },
+          },
+        },
+      ],
+    },
+  },
 };

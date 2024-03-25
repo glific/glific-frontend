@@ -2,7 +2,12 @@ import { MockedProvider } from '@apollo/client/testing';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 import GroupDetails from './GroupDetails';
-import { countWaGroupContacts, removeContactQuery, waGroupContacts } from 'mocks/Groups';
+import {
+  countWaGroupContacts,
+  removeContactQuery,
+  searchFilterQuery,
+  waGroupContacts,
+} from 'mocks/Groups';
 import { setNotification } from 'common/notification';
 
 const mocks = [
@@ -13,6 +18,7 @@ const mocks = [
   removeContactQuery,
   waGroupContacts,
   countWaGroupContacts,
+  searchFilterQuery,
 ];
 
 vi.mock('common/notification', async (importOriginal) => {
