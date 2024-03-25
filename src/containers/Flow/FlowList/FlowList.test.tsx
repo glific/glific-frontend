@@ -12,6 +12,7 @@ import {
   importFlow,
   exportFlow,
   releaseFlow,
+  getFlowQuery2,
 } from 'mocks/Flow';
 import { getOrganizationQuery } from 'mocks/Organization';
 import testJSON from 'mocks/ImportFlow.json';
@@ -33,6 +34,7 @@ const mocks = [
   filterFlowNewQuery,
   getFlowCountNewQuery,
   getFlowQuery,
+  getFlowQuery2,
   importFlow,
   releaseFlow,
   exportFlow,
@@ -82,21 +84,6 @@ describe('<FlowList />', () => {
     });
   });
 
-  test('click on Make a copy', async () => {
-    const { getAllByTestId } = render(flowList);
-
-    await waitFor(() => {
-      expect(getAllByTestId('MoreIcon')[0]).toBeInTheDocument();
-    });
-
-    fireEvent.click(getAllByTestId('MoreIcon')[0]);
-
-    await waitFor(() => {
-      expect(screen.getAllByTestId('additionalButton')[0]).toBeInTheDocument();
-      fireEvent.click(screen.getAllByTestId('additionalButton')[0]);
-    });
-  });
-
   test('should redirect to make a copy', async () => {
     const copyFlow = () => (
       <MockedProvider mocks={mocks} addTypename={false}>
@@ -109,6 +96,21 @@ describe('<FlowList />', () => {
     await waitFor(() => {
       const inputElement = container.querySelector('input[name="name"]') as HTMLInputElement;
       expect(inputElement?.value).toBe('Copy of Help');
+    });
+  });
+
+  test('click on Make a copy', async () => {
+    const { getAllByTestId } = render(flowList);
+
+    await waitFor(() => {
+      expect(getAllByTestId('MoreIcon')[0]).toBeInTheDocument();
+    });
+
+    fireEvent.click(getAllByTestId('MoreIcon')[0]);
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('additionalButton')[0]).toBeInTheDocument();
+      fireEvent.click(screen.getAllByTestId('additionalButton')[0]);
     });
   });
 

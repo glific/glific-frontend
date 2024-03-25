@@ -27,40 +27,53 @@ import json from './ImportFlow.json';
 import { GET_ALL_FLOW_LABELS } from 'graphql/queries/FlowLabel';
 import { CREATE_LABEL } from 'graphql/mutations/Tags';
 
+const flowData = {
+  flow: {
+    flow: {
+      id: '1',
+      name: 'Help',
+      isActive: true,
+      description: 'Help flow',
+      uuid: 'b050c652-65b5-4ccf-b62b-1e8b3f328676',
+      keywords: ['help'],
+      isPinned: false,
+      roles: [
+        {
+          id: '1',
+          label: 'Admin',
+        },
+      ],
+      isBackground: false,
+      ignoreKeywords: false,
+      tag: {
+        id: '1',
+        label: 'New tag',
+      },
+    },
+  },
+};
+
 export const getFlowQuery = {
+  request: {
+    query: GET_FLOW,
+    variables: {
+      id: 1,
+    },
+  },
+  result: {
+    data: flowData,
+  },
+};
+
+export const getFlowQuery2 = {
   request: {
     query: GET_FLOW,
     variables: {
       id: '1',
     },
   },
-
   result: {
-    data: {
-      flow: {
-        flow: {
-          id: '1',
-          name: 'Help',
-          isActive: true,
-          description: 'Help flow',
-          uuid: 'b050c652-65b5-4ccf-b62b-1e8b3f328676',
-          keywords: ['help'],
-          isPinned: false,
-          roles: [
-            {
-              id: '1',
-              label: 'Admin',
-            },
-          ],
-          isBackground: false,
-          ignoreKeywords: false,
-          tag: {
-            id: '1',
-            label: 'New tag',
-          },
-        },
-      },
-    },
+    data: flowData,
   },
 };
 
