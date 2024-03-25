@@ -114,7 +114,7 @@ export const RELEASE_FLOW = gql`
 
 export const EXPORT_FLOW_LOCALIZATIONS = gql`
   query exportFlowLocalization($id: ID!, $addTranslation: Boolean) {
-    exportFlowLocalization(id: $id,  addTranslation: $addTranslation) {
+    exportFlowLocalization(id: $id, addTranslation: $addTranslation) {
       exportData
     }
   }

@@ -4,12 +4,17 @@ import { useTranslation } from 'react-i18next';
 import CollectionIcon from 'assets/images/icons/Collection/Dark.svg?react';
 import styles from './GroupDetails.module.css';
 import { UPDATE_GROUP_CONTACT } from 'graphql/mutations/Group';
-import { COUNT_COUNTACTS_WA_GROUPS, LIST_CONTACTS_WA_GROUPS } from 'graphql/queries/WaGroups';
+import {
+  COUNT_COUNTACTS_WA_GROUPS,
+  GROUP_SEARCH_QUERY,
+  LIST_CONTACTS_WA_GROUPS,
+} from 'graphql/queries/WaGroups';
 import DeleteIcon from 'assets/images/icons/Delete/Red.svg?react';
 import { useState } from 'react';
-import { useMutation } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { setNotification } from 'common/notification';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
 
 export const GroupDetails = () => {
   const params = useParams();
@@ -17,6 +22,28 @@ export const GroupDetails = () => {
 
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [deleteVariables, setDeleteVariables] = useState<any>();
+  const [groupDetails, setGroupDetails] = useState<any>();
+
+  // we should use wa_group api with filter by id here
+  const { loading: groupDataLoading } = useQuery(GROUP_SEARCH_QUERY, {
+    variables: {
+      waGroupOpts: {
+        limit: 1,
+      },
+      waMessageOpts: {
+        limit: 0,
+        offset: 0,
+      },
+      filter: {
+        id: params.id,
+      },
+    },
+    onCompleted: (data) => {
+      if (data.search) {
+        setGroupDetails(data.search[0].waGroup);
+      }
+    },
+  });
 
   const dialogTitle = 'Are you sure you want to remove this contact from the group?';
   const dialogMessage = 'The contact will no longer receive messages sent to this group';
@@ -47,7 +74,7 @@ export const GroupDetails = () => {
           {maytapiNumber === contact.phone ? 'Maytapi Number' : contact.name || contact.phone}{' '}
           {isAdmin ? <span className={styles.AdminTag}>Admin</span> : null}
         </div>
-        {contact.name && (
+        {(contact.name || maytapiNumber === contact.phone) && (
           <div data-testid="phone-number" className={styles.Phone}>
             {contact.phone}
           </div>
@@ -137,13 +164,17 @@ export const GroupDetails = () => {
     );
   }
 
+  if (groupDataLoading) {
+    return <Loading />;
+  }
+
   return (
     <>
       <List
         backLink={`/group/chat/${params.id}`}
         dialogTitle={dialogTitle}
         columnNames={columnNames}
-        title={'Group Details'}
+        title={groupDetails?.label}
         listItem="waGroupContact"
         listItemName="waGroupContact"
         searchParameter={['term']}
