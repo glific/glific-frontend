@@ -174,8 +174,8 @@ export const getDisplayNameForSearch = (conversation: any, groups?: boolean) => 
     displayName = conversation.name || conversation.waGroup?.label || '';
   } else {
     displayName =
-      conversation.name ||
-      conversation.maskedPhone ||
+      conversation?.name ||
+      conversation?.maskedPhone ||
       conversation?.contact?.maskedPhone ||
       conversation?.contact?.name ||
       '';

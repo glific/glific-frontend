@@ -485,11 +485,6 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
     return null;
   }
 
-  if (conversationError) {
-    setErrorMessage(conversationError);
-    return null;
-  }
-
   // check if the search API results nothing for a particular contact ID and redirect to chat
   if (entityId && allConversations) {
     if (
