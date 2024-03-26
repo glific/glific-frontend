@@ -2,7 +2,7 @@ import axios from 'axios';
 import { FLOW_EDITOR_API } from 'config';
 import setLogs from 'config/logs';
 import { checkDynamicRole } from 'context/role';
-import { getAuthSession, getOrganizationServices, getUserSession } from 'services/AuthService';
+import { getAuthSession, getOrganizationServices, getUserSession, setAuthSession, renewAuthToken } from 'services/AuthService';
 import { SIMULATOR_NUMBER_START } from './constants';
 import { setNotification } from './notification';
 
@@ -66,6 +66,24 @@ const validateMediaMethod = (URL: string, attachmentType: string, allowStickers:
   });
 
 export { validateMediaMethod as validateMedia };
+
+const checkSessionValidityMethod = async () => {
+  try {
+    // renew access token
+    const response = await renewAuthToken();
+    if (response.data) {
+      // set the session
+      setAuthSession(response.data.data);
+      return true;
+    }
+    return false;
+  } catch (_err) {
+    // error indicates session has expired or invalid tokens
+    return false;
+  }
+};
+
+export { checkSessionValidityMethod as checkSessionValidity };
 
 // function to get the random number with min and max
 export const randomIntFromInterval = (min: number, max: number) =>
