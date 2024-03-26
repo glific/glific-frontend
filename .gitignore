@@ -33,5 +33,17 @@ cypress/videos
 
 .tool-versions
 
+#Certificate files
+**/**.pem
+
+# certs
+**/**certs
 /priv
+
+
+# nginx conf file
+nginx.conf
+
+#VS Code config files
 /.vscode
+
