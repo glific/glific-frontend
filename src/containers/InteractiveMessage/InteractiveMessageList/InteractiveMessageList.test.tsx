@@ -58,7 +58,7 @@ test('Interactive message list renders correctly', async () => {
   });
 });
 
-test('All languages are shown', async () => {
+test('Translation is shown', async () => {
   render(list);
   expect(screen.getByTestId('loading')).toBeInTheDocument();
 
@@ -73,7 +73,7 @@ test('All languages are shown', async () => {
   });
 });
 
-test('It changes Tag value ', async () => {
+test('It navigates to edit on clicking copy ', async () => {
   render(list);
   expect(screen.getByTestId('loading')).toBeInTheDocument();
 
@@ -89,7 +89,7 @@ test('It changes Tag value ', async () => {
   });
 });
 
-test('All languages are shown', async () => {
+test('It changes tag filter value', async () => {
   render(list);
   expect(screen.getByTestId('loading')).toBeInTheDocument();
 
@@ -105,6 +105,6 @@ test('All languages are shown', async () => {
   fireEvent.keyDown(autoComplete, { key: 'Enter' });
 
   await waitFor(() => {
-    // expect(screen.getByText('ग्लिफ़िक सभी नई सुविधाओं के साथ आता है')).toBeInTheDocument();
+    expect(autoComplete).toHaveValue('Messages');
   });
 });

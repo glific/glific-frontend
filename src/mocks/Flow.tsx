@@ -57,18 +57,6 @@ export const getFlowQuery = {
   request: {
     query: GET_FLOW,
     variables: {
-      id: 1,
-    },
-  },
-  result: {
-    data: flowData,
-  },
-};
-
-export const getFlowQuery2 = {
-  request: {
-    query: GET_FLOW,
-    variables: {
       id: '1',
     },
   },

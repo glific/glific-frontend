@@ -7,6 +7,7 @@ import { countCollectionContactsQuery, getCollectionContactsQuery } from 'mocks/
 import { setUserSession } from 'services/AuthService';
 import { CollectionContactList } from './CollectionContactList';
 import { deleteContactFromCollection } from 'mocks/Collection';
+import { setNotification } from 'common/notification';
 
 vi.mock('react-router-dom', async () => {
   return {
@@ -70,6 +71,16 @@ const wrapper = (
   </MockedProvider>
 );
 
+vi.mock('common/notification', async (importOriginal) => {
+  const mod = await importOriginal<typeof import('common/notification')>();
+  return {
+    ...mod,
+    setNotification: vi.fn((...args) => {
+      return args[1];
+    }),
+  };
+});
+
 describe('<CollectionContactList />', () => {
   test('should render CollectionContactList', async () => {
     setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
@@ -103,7 +114,7 @@ describe('<CollectionContactList />', () => {
     fireEvent.click(screen.getByTestId('ok-button'));
 
     await waitFor(() => {
-      // expect(setNotification).toHaveBeenCalled();
+      expect(setNotification).toHaveBeenCalled();
     });
   });
 

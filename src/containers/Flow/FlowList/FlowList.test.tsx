@@ -12,7 +12,6 @@ import {
   importFlow,
   exportFlow,
   releaseFlow,
-  getFlowQuery2,
 } from 'mocks/Flow';
 import { getOrganizationQuery } from 'mocks/Organization';
 import testJSON from 'mocks/ImportFlow.json';
@@ -34,7 +33,7 @@ const mocks = [
   filterFlowNewQuery,
   getFlowCountNewQuery,
   getFlowQuery,
-  getFlowQuery2,
+  getFlowQuery,
   importFlow,
   releaseFlow,
   exportFlow,
