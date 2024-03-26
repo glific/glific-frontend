@@ -53,16 +53,16 @@ const flowData = {
   },
 };
 
-export const getFlowQuery = {
-  request: {
-    query: GET_FLOW,
-    variables: {
-      id: '1',
+export const getFlowQuery = (variables: any) => {
+  return {
+    request: {
+      query: GET_FLOW,
+      variables: variables,
     },
-  },
-  result: {
-    data: flowData,
-  },
+    result: {
+      data: flowData,
+    },
+  };
 };
 
 export const addFlowToContactQuery = {

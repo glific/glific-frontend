@@ -24,8 +24,8 @@ setOrganizationServices('{"__typename":"OrganizationServicesResult","rolesAndPer
 
 const mocks = [
   ...getOrganizationQuery,
-  getFlowQuery,
-  getFlowQuery,
+  getFlowQuery({ id: 1 }),
+  getFlowQuery({ id: '1' }),
   filterFlowQuery,
   getFilterTagQuery,
   getRoleNameQuery,
