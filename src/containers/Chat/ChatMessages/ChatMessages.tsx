@@ -509,7 +509,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
       const variables: any = getVariables(
         { limit: 1 },
         {
-          limit: conversationInfo.messages[conversationInfo.messages.length - 1].messageNumber,
+          limit: conversationInfo.messages[0].messageNumber,
           offset,
         },
         { filter: { id: entityId?.toString() } },
@@ -520,8 +520,6 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
 
       fetchMore({
         variables,
-        updateQuery: (prev: any, { fetchMoreResult }: any) =>
-          updateCacheQuery(prev, fetchMoreResult, entityId, collectionId, chatType),
       });
 
       scrollToMessage(messageNumber);
@@ -597,7 +595,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
     fetchMore({
       variables,
       updateQuery: (prev: any, { fetchMoreResult }: any) =>
-        updateCacheQuery(prev, fetchMoreResult, entityId, collectionId, chatType),
+        updateCacheQuery(prev, fetchMoreResult, entityId, collectionId, chatType, true),
     }).then((fetchMoreResult: any) => {
       const conversationData = fetchMoreResult.data;
       if (

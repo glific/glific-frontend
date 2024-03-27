@@ -58,7 +58,8 @@ export const updateCacheQuery = (
   fetchMoreResult: any,
   entityId: any,
   collectionId: any,
-  chatType: string
+  chatType: string,
+  updateMessage?: boolean
 ) => {
   const conversations = JSON.parse(JSON.stringify(cacheConversations));
 
@@ -68,38 +69,42 @@ export const updateCacheQuery = (
     .reverse();
 
   let conversationsCopy: any = { search: [] };
-  // check for the cache
   if (JSON.parse(JSON.stringify(conversations))) {
     conversationsCopy = JSON.parse(JSON.stringify(conversations));
   }
   let isContactCached = false;
+
+  // update messages cache
   conversationsCopy.search = conversationsCopy.search.map((conversation: any) => {
     const conversationObj = conversation;
     // If the collection(group) is present in the cache
     if (collectionId) {
       if (conversationObj.group?.id === collectionId.toString()) {
         isContactCached = true;
+        if (updateMessage) {
+          conversationObj.messages = [
+            ...conversationObj.messages,
+            ...conversationCopy.search[0].messages,
+          ];
+        }
+      }
+    }
+    // If the contact is present in the cache
+    else if (conversationObj[chatType]?.id === entityId?.toString()) {
+      isContactCached = true;
+      if (updateMessage) {
         conversationObj.messages = [
           ...conversationObj.messages,
           ...conversationCopy.search[0].messages,
         ];
       }
     }
-    // If the contact is present in the cache
-    else if (conversationObj[chatType]?.id === entityId?.toString()) {
-      isContactCached = true;
-      conversationObj.messages = [
-        ...conversationObj.messages,
-        ...conversationCopy.search[0].messages,
-      ];
-    }
     return conversationObj;
   });
 
-  // If the contact is NOT present in the cache
+  // update cache with new entity
   if (!isContactCached) {
     conversationsCopy.search = [...conversationsCopy.search, fetchMoreResult.search[0]];
   }
-  // update the conversation cache
   return conversationsCopy;
 };
