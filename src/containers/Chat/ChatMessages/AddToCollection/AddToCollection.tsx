@@ -11,7 +11,7 @@ import {
 } from 'graphql/mutations/Collection';
 import { SearchDialogBox } from 'components/UI/SearchDialogBox/SearchDialogBox';
 import { GET_WA_GROUPS } from 'graphql/queries/WaGroups';
-import { CircularProgress } from '@mui/material';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
 
 interface AddToCollectionProps {
   collectionId: string | undefined;
@@ -102,7 +102,7 @@ export const AddToCollection = ({ collectionId, setDialog, groups }: AddToCollec
     : t('Add contacts to the collection');
 
   if (loading) {
-    return <CircularProgress data-testid="loading" />;
+    return <Loading />;
   }
 
   return (
