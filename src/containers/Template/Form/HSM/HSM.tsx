@@ -30,6 +30,7 @@ export const HSM = () => {
   const [shortcode, setShortcode] = useState('');
   const [category, setCategory] = useState<any>(undefined);
   const [example, setExample] = useState();
+  const [editorState, setEditorState] = useState<any>('');
 
   const { t } = useTranslation();
   const params = useParams();
@@ -109,8 +110,11 @@ export const HSM = () => {
       handleChange: getSimulatorMessage,
       getEditorValue: (value: any) => {
         setExample(value);
+        setEditorState(value);
       },
       isEditing: disabled,
+      initialState: example,
+      editorState: editorState,
     },
     {
       component: AutoComplete,

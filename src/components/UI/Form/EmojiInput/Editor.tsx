@@ -6,7 +6,6 @@ import {
   $getSelection,
   $createTextNode,
   $getRoot,
-  $createParagraphNode,
   KEY_DOWN_COMMAND,
   COMMAND_PRIORITY_LOW,
 } from 'lexical';
@@ -20,7 +19,7 @@ import {
   BeautifulMentionsMenuProps,
   BeautifulMentionsMenuItemProps,
 } from 'lexical-beautiful-mentions';
-import { handleFormatterEvents, handleFormatting } from 'common/RichEditor';
+import { handleFormatterEvents, handleFormatting, setInitialState } from 'common/RichEditor';
 
 export interface EditorProps {
   field: { name: string; onChange?: any; value: any; onBlur: any };
@@ -32,10 +31,17 @@ export interface EditorProps {
   inputProp?: any;
   onChange?: any;
   isEditing: boolean;
+  initialState?: any;
+  editorState?: any;
 }
 
-export const Editor = ({ disabled = false, isEditing = false, ...props }: EditorProps) => {
-  const [editorState, setEditorState] = useState<any>('');
+export const Editor = ({
+  disabled = false,
+  isEditing = false,
+  initialState,
+  editorState,
+  ...props
+}: EditorProps) => {
   const { field, form, picker, placeholder, onChange } = props;
   const mentions = props.inputProp?.suggestions || [];
   const suggestions = {
@@ -44,16 +50,14 @@ export const Editor = ({ disabled = false, isEditing = false, ...props }: Editor
   const [editor] = useLexicalComposerContext();
 
   useEffect(() => {
-    if (field.value && isEditing && !editorState) {
-      editor.update(() => {
-        const root = $getRoot();
-        root.clear();
-        const paragraph = $createParagraphNode();
-        paragraph.append($createTextNode(field.value || ''));
-        root.append(paragraph);
-      });
+    if (!editorState && isEditing) {
+      if (initialState) {
+        setInitialState(editor, initialState);
+      } else if (field.value) {
+        setInitialState(editor, field.value);
+      }
     }
-  }, [field.value]);
+  }, [initialState, field.value]);
 
   const Placeholder = () => {
     return <p className={styles.editorPlaceholder}>{placeholder}</p>;
@@ -90,7 +94,6 @@ export const Editor = ({ disabled = false, isEditing = false, ...props }: Editor
       const root = $getRoot();
       if (!disabled) {
         onChange(root.getTextContent());
-        setEditorState(root.getTextContent());
       }
     });
   };
