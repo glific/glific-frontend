@@ -22,6 +22,7 @@ const ConsultingList = () => {
   if (openDialog) {
     dialog = (
       <Dialog
+        data-testid="dialogBox"
         open
         classes={{
           paper: styles.Dialogbox,
@@ -113,7 +114,7 @@ const ConsultingList = () => {
 
   const additionalActions = () => [
     {
-      icon: <EditIcon />,
+      icon: <EditIcon data-testid="edit" />,
       parameter: 'id',
       label: t('Edit'),
       dialog: editConsulting,

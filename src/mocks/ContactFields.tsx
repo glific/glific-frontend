@@ -1,5 +1,9 @@
-import { COUNT_CONTACT_FIELDS, GET_ALL_CONTACT_FIELDS } from 'graphql/queries/ContactFields';
-import { UPDATE_CONTACT_FIELDS } from 'graphql/mutations/ContactFields';
+import {
+  COUNT_CONTACT_FIELDS,
+  GET_ALL_CONTACT_FIELDS,
+  GET_CONTACT_FIELD_BY_ID,
+} from 'graphql/queries/ContactFields';
+import { CREATE_CONTACT_FIELDS, UPDATE_CONTACT_FIELDS } from 'graphql/mutations/ContactFields';
 
 const contactFieldsListMock = [
   {
@@ -36,7 +40,40 @@ const contactFieldsListMock = [
   },
 ];
 
-export const mocks = [
+export const getContactField = {
+  request: {
+    query: GET_CONTACT_FIELD_BY_ID,
+    variables: {
+      id: '1',
+    },
+  },
+  result: {
+    data: {
+      contactsField: {
+        __typename: 'ContactsFieldResult',
+        contactsField: {
+          __typename: 'ContactsField',
+          id: '1',
+          insertedAt: '2024-03-22T08:49:27Z',
+          name: 'Namew',
+          organization: {
+            __typename: 'Organization',
+            isActive: true,
+            isApproved: true,
+            shortcode: 'glific',
+          },
+          scope: 'CONTACT',
+          shortcode: 'name',
+          updatedAt: '2024-03-25T09:13:28Z',
+          valueType: 'TEXT',
+          variable: null,
+        },
+      },
+    },
+  },
+};
+
+export const contactFieldMocks = [
   {
     request: {
       query: COUNT_CONTACT_FIELDS,
@@ -176,6 +213,7 @@ export const mocks = [
       },
     },
   },
+  getContactField,
 ];
 
 export const contactFieldErrorMock = {
@@ -188,6 +226,35 @@ export const contactFieldErrorMock = {
       updateContactsField: {
         contactsField: null,
         errors: [{ key: 'shortcode', message: 'has already been taken' }],
+      },
+    },
+  },
+};
+
+export const createContactField = {
+  request: {
+    query: CREATE_CONTACT_FIELDS,
+    variables: { input: { name: 'Age Group', shortcode: 'age_group' } },
+  },
+  result: {
+    data: {
+      createContactsField: {
+        contactsField: {
+          id: '8',
+          insertedAt: '2024-03-25T08:58:11Z',
+          name: 'Age Group',
+          organization: {
+            isActive: true,
+            isApproved: true,
+            shortcode: 'glific',
+          },
+          scope: 'CONTACT',
+          shortcode: 'age_group',
+          updatedAt: '2024-03-25T08:58:11Z',
+          valueType: 'TEXT',
+          variable: '@contact.fields.age_group',
+        },
+        errors: null,
       },
     },
   },

@@ -1,27 +1,38 @@
 import { MockedProvider } from '@apollo/client/testing';
-import { render, waitFor, fireEvent } from '@testing-library/react';
+import { render, waitFor, fireEvent, screen, cleanup } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { vi } from 'vitest';
 
 import { getOrganizationLanguagesQuery, getOrganizationQuery } from 'mocks/Organization';
-import { getFlowQuery, filterFlowQuery, updateFlowQuery, copyFlowQuery } from 'mocks/Flow';
+import {
+  getFlowQuery,
+  filterFlowQuery,
+  updateFlowQuery,
+  copyFlowQuery,
+  createFlowQuery,
+  createTagQuery,
+  updateFlowQueryWithError,
+} from 'mocks/Flow';
 import { Flow } from './Flow';
 import { setOrganizationServices } from 'services/AuthService';
 import { getFilterTagQuery } from 'mocks/Tag';
 import { getRoleNameQuery } from 'mocks/Role';
 import userEvent from '@testing-library/user-event';
+import { setErrorMessage, setNotification } from 'common/notification';
 
 setOrganizationServices('{"__typename":"OrganizationServicesResult","rolesAndPermission":true}');
 
 const mocks = [
   ...getOrganizationQuery,
-  getFlowQuery,
+  getFlowQuery({ id: 1 }),
+  getFlowQuery({ id: '1' }),
   filterFlowQuery,
   getFilterTagQuery,
   getRoleNameQuery,
   getOrganizationLanguagesQuery,
-  updateFlowQuery,
   copyFlowQuery,
+  createFlowQuery,
+  createTagQuery,
 ];
 
 const mockUseLocationValue: any = {
@@ -35,8 +46,24 @@ vi.mock('react-router-dom', async () => ({
   useLocation: () => {
     return mockUseLocationValue;
   },
-  useParams: () => ({ id: 1 }),
 }));
+
+vi.mock('common/notification', async (importOriginal) => {
+  const mod = await importOriginal<typeof import('common/notification')>();
+  return {
+    ...mod,
+    setErrorMessage: vi.fn((...args) => {
+      return args[1];
+    }),
+    setNotification: vi.fn((...args) => {
+      return args[1];
+    }),
+  };
+});
+
+beforeEach(() => {
+  cleanup();
+});
 
 const flow = () => (
   <MockedProvider mocks={mocks} addTypename={false}>
@@ -51,6 +78,24 @@ it('should render Flow', async () => {
   await waitFor(() => {
     expect(wrapper.container).toBeInTheDocument();
   });
+});
+
+it('should create tag', async () => {
+  const { getByText, getByRole } = render(flow());
+
+  await waitFor(() => {
+    expect(getByText('Add a new flow')).toBeInTheDocument();
+  });
+
+  const autoComplete = getByRole('combobox');
+  autoComplete.focus();
+
+  fireEvent.change(autoComplete, { target: { value: 'test' } });
+
+  fireEvent.keyDown(autoComplete, { key: 'ArrowDown' });
+  fireEvent.keyDown(autoComplete, { key: 'Enter' });
+
+  // nothing to expect here, just to check if tag was created
 });
 
 it('should support keywords in a separate language', async () => {
@@ -107,7 +152,7 @@ it('should not allow special characters in keywords', async () => {
 
 it('should edit the flow', async () => {
   const editFlow = () => (
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={[...mocks, updateFlowQuery]} addTypename={false}>
       <MemoryRouter initialEntries={[`/flow/1/edit`]}>
         <Routes>
           <Route path="flow/:id/edit" element={<Flow />} />
@@ -115,10 +160,53 @@ it('should edit the flow', async () => {
       </MemoryRouter>
     </MockedProvider>
   );
-  const { container } = render(editFlow());
+  const { container, getByText } = render(editFlow());
+
+  expect(getByText('Loading...')).toBeInTheDocument();
+
+  await waitFor(() => {
+    expect(getByText('Edit flow')).toBeInTheDocument();
+  });
+
   await waitFor(() => {
     const inputElement = container.querySelector('input[name="name"]') as HTMLInputElement;
     expect(inputElement?.value).toBe('Help');
+  });
+
+  fireEvent.click(screen.getByText('Save'));
+
+  await waitFor(() => {
+    expect(setNotification).toHaveBeenCalled();
+  });
+});
+
+it('should edit the flow and show error if exists', async () => {
+  const editFlow = () => (
+    <MockedProvider mocks={[...mocks, updateFlowQueryWithError]} addTypename={false}>
+      <MemoryRouter initialEntries={[`/flow/1/edit`]}>
+        <Routes>
+          <Route path="flow/:id/edit" element={<Flow />} />
+        </Routes>
+      </MemoryRouter>
+    </MockedProvider>
+  );
+  const { container, getByText } = render(editFlow());
+
+  expect(getByText('Loading...')).toBeInTheDocument();
+
+  await waitFor(() => {
+    expect(getByText('Edit flow')).toBeInTheDocument();
+  });
+
+  await waitFor(() => {
+    const inputElement = container.querySelector('input[name="name"]') as HTMLInputElement;
+    expect(inputElement?.value).toBe('Help');
+  });
+
+  fireEvent.click(screen.getByText('Save'));
+
+  await waitFor(() => {
+    expect(setErrorMessage).toHaveBeenCalled();
   });
 });
 

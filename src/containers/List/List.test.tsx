@@ -69,13 +69,13 @@ describe('<List />', () => {
     render(list);
     // Wait for the MoreIcon to appear and become clickable
     await waitFor(() => {
-      expect(screen.getByTestId('MoreIcon')).toBeInTheDocument();
+      expect(screen.getAllByTestId('MoreIcon')[0]).toBeInTheDocument();
     });
-    const moreButton = screen.getByTestId('MoreIcon');
-    fireEvent.click(moreButton);
+    const moreButton = screen.getAllByTestId('MoreIcon');
+    fireEvent.click(moreButton[0]);
     await waitFor(() => {
-      expect(screen.getByTestId('EditIcon')).toBeInTheDocument();
-      expect(screen.getByTestId('DeleteIcon')).toBeInTheDocument();
+      expect(screen.getAllByTestId('EditIcon')[0]).toBeInTheDocument();
+      expect(screen.getAllByTestId('DeleteIcon')[0]).toBeInTheDocument();
     });
   });
 });
@@ -109,8 +109,8 @@ describe('<List /> actions', () => {
   test('click on delete button opens dialog box', async () => {
     const { queryByTestId } = render(list);
     // Wait for the MoreIcon to appear and become clickable
-    const moreButton = await screen.findByTestId('MoreIcon', {}, { timeout: 5000 });
-    fireEvent.click(moreButton);
+    const moreButton = await screen.findAllByTestId('MoreIcon', {}, { timeout: 5000 });
+    fireEvent.click(moreButton[0]);
     await waitFor(() => {
       const button = queryByTestId('DeleteIcon') as HTMLButtonElement;
       fireEvent.click(button);
@@ -122,8 +122,8 @@ describe('<List /> actions', () => {
 
   test('click on agree button shows alert', async () => {
     const { getAllByTestId } = render(list);
-    const moreButton = await screen.findByTestId('MoreIcon', {}, { timeout: 5000 });
-    fireEvent.click(moreButton);
+    const moreButton = await screen.findAllByTestId('MoreIcon', {}, { timeout: 5000 });
+    fireEvent.click(moreButton[0]);
 
     await waitFor(() => {
       const button = getAllByTestId('DeleteIcon')[0];

@@ -94,7 +94,6 @@ export const CollectionContactList = ({
 
   if (addContactsDialogShow) {
     let contactOptions: any = [];
-
     if (contactsData) {
       contactOptions = contactsData.contacts;
     }
@@ -143,6 +142,7 @@ export const CollectionContactList = ({
     <Button
       variant="contained"
       color="error"
+      data-testid="removeBtn"
       onClick={() => {
         getContacts();
         setAddContactsDialogShow(true);

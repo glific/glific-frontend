@@ -52,3 +52,19 @@ it('Renders dialog box on clicking add new button', async () => {
     expect(screen.getByText('Add consulting record')).toBeInTheDocument();
   });
 });
+
+it('should open dialog box', async () => {
+  const { getByText, getByTestId, getAllByTestId } = render(list);
+
+  expect(getByTestId('loading')).toBeInTheDocument();
+
+  await waitFor(() => {
+    expect(getByText('Add Consulting Hours')).toBeInTheDocument();
+  });
+
+  fireEvent.click(getAllByTestId('edit')[1]);
+
+  await waitFor(() => {
+    expect(screen.getByTestId('dialogBox')).toBeInTheDocument();
+  });
+});

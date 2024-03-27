@@ -297,6 +297,25 @@ test('it renders interactive quick reply with media in edit mode', async () => {
   // vi.spyOn(axios, 'get').mockResolvedValueOnce(responseMock3);
 });
 
+test('it validates url', async () => {
+  const { getByText, getAllByRole } = render(interactiveMessage);
+
+  await waitFor(() => {
+    expect(getByText('Add a new Interactive message')).toBeInTheDocument();
+  });
+
+  const autoCompletes = getAllByRole('combobox');
+
+  const attachmentType = autoCompletes[1];
+
+  attachmentType.focus();
+  fireEvent.keyDown(attachmentType, { key: 'ArrowDown' });
+  fireEvent.keyDown(attachmentType, { key: 'ArrowDown' });
+  fireEvent.keyDown(attachmentType, { key: 'Enter' });
+
+  fireEvent.change(getAllByRole('textbox')[4], { target: { value: 'bhhdhds' } });
+});
+
 describe('copy interactive message', () => {
   test('it renders copy interactive quick reply message', async () => {
     mockUseLocationValue.state = 'copy';

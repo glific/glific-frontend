@@ -10,15 +10,21 @@ import {
   filterCollectionQuery,
   filterCollectionQueryWAGroups,
   getCollectionContactsQuery,
+  addContactToCollection,
+  exportCollectionsQueryWithErrors,
 } from 'mocks/Collection';
 import { getContactsQuery, getContactsSearchQuery } from 'mocks/Contact';
 import { getCurrentUserQuery } from 'mocks/User';
 import { getPublishedFlowQuery } from 'mocks/Flow';
 import { setUserSession } from 'services/AuthService';
-import * as SearchDialogBox from 'components/UI/SearchDialogBox/SearchDialogBox';
 import { CollectionList } from './CollectionList';
 import * as utils from 'common/utils';
-import { getGroupsSearchQuery } from 'mocks/Groups';
+import {
+  addGroupToCollectionList,
+  getGroupsSearchQuery,
+  getGroupsSearchQuery2,
+} from 'mocks/Groups';
+import { setNotification } from 'common/notification';
 
 const mocks = [
   countCollectionQuery,
@@ -33,7 +39,8 @@ const mocks = [
   getContactsQuery,
   getContactsSearchQuery,
   getCurrentUserQuery,
-  exportCollectionsQuery,
+  addContactToCollection,
+  getCollectionContactsQuery,
 ];
 
 const wrapper = (
@@ -49,6 +56,14 @@ vi.mock('react-router-dom', async () => ({
   ...(await vi.importActual('react-router-dom')),
   useNavigate: () => mockedUsedNavigate,
 }));
+
+vi.mock('common/notification', async (importOriginal) => {
+  const mod = await importOriginal<typeof import('common/notification')>();
+  return {
+    ...mod,
+    setNotification: vi.fn(),
+  };
+});
 
 describe('<CollectionList />', () => {
   test('should render CollectionList', async () => {
@@ -99,26 +114,33 @@ describe('<CollectionList />', () => {
 
   test('add contacts to collection', async () => {
     setUserSession(JSON.stringify({ roles: ['Admin'] }));
-
-    const spy = vi.spyOn(SearchDialogBox, 'SearchDialogBox');
-    spy.mockImplementation((props: any) => {
-      const { handleCancel, onChange } = props;
-      return (
-        <div data-testid="searchDialogBox">
-          <input onChange={(value) => onChange(value)} />
-          <button onClick={() => handleCancel()} />
-        </div>
-      );
-    });
-
-    const { getAllByTestId, getByTestId } = render(wrapper);
+    const { getAllByTestId, getByTestId, getByText } = render(wrapper);
 
     // loading is show initially
     expect(getByTestId('loading')).toBeInTheDocument();
+
     await waitFor(() => {
-      fireEvent.click(getAllByTestId('additionalButton')[0]);
+      expect(getByText('Staff group')).toBeInTheDocument();
     });
-    fireEvent.click(getByTestId('searchDialogBox').querySelector('button') as HTMLElement);
+
+    fireEvent.click(getAllByTestId('additionalButton')[0]);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('dialogBox')).toBeInTheDocument();
+    });
+
+    const autocomplete = getByTestId('autocomplete-element');
+    autocomplete.focus();
+    fireEvent.keyDown(autocomplete, { key: 'ArrowDown' });
+    fireEvent.keyDown(autocomplete, { key: 'ArrowDown' });
+
+    fireEvent.keyDown(autocomplete, { key: 'Enter' });
+
+    fireEvent.click(screen.getByTestId('ok-button'));
+
+    await waitFor(() => {
+      expect(setNotification).toHaveBeenCalled();
+    });
   });
 
   test('it has number of contacts', async () => {
@@ -133,6 +155,51 @@ describe('<CollectionList />', () => {
     expect(getByText('2 contacts')).toBeInTheDocument();
   });
 
+  test('should export collection', async () => {
+    const { getByTestId } = render(
+      <MemoryRouter>
+        <MockedProvider mocks={[...mocks, exportCollectionsQuery]} addTypename={false}>
+          <CollectionList />
+        </MockedProvider>
+      </MemoryRouter>
+    );
+    expect(getByTestId('loading')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(getByTestId('additionalButton')).toBeInTheDocument();
+    });
+
+    fireEvent.click(getByTestId('MoreIcon'));
+    fireEvent.click(screen.getByText('Export'));
+    const spy = vi.spyOn(utils, 'exportCsvFile');
+
+    await waitFor(() => {
+      expect(spy).toHaveBeenCalled();
+    });
+  });
+
+  test('should show error if export collection failed', async () => {
+    const { getByTestId } = render(
+      <MemoryRouter>
+        <MockedProvider mocks={[...mocks, exportCollectionsQueryWithErrors]} addTypename={false}>
+          <CollectionList />
+        </MockedProvider>
+      </MemoryRouter>
+    );
+    expect(getByTestId('loading')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(getByTestId('additionalButton')).toBeInTheDocument();
+    });
+
+    fireEvent.click(getByTestId('MoreIcon'));
+    fireEvent.click(screen.getByText('Export'));
+
+    await waitFor(() => {
+      expect(setNotification).toHaveBeenCalled();
+    });
+  });
+
   const groupWrapper = (
     <MemoryRouter initialEntries={['/group/collection']}>
       <MockedProvider
@@ -143,6 +210,10 @@ describe('<CollectionList />', () => {
           countCollectionQueryWAGroups,
           countCollectionQueryWAGroups,
           getGroupsSearchQuery,
+          getGroupsSearchQuery2,
+          addGroupToCollectionList,
+          filterCollectionQueryWAGroups,
+          countCollectionQueryWAGroups,
         ]}
         addTypename={false}
       >
@@ -181,20 +252,59 @@ describe('<CollectionList />', () => {
     });
   });
 
-  test('should export collection', async () => {
-    const { getByTestId } = render(wrapper);
+  test('add groups to collection', async () => {
+    setUserSession(JSON.stringify({ roles: ['Staff'] }));
+    const { getAllByTestId, getByTestId, getByText } = render(groupWrapper);
+
+    // loading is show initially
     expect(getByTestId('loading')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(getByTestId('additionalButton')).toBeInTheDocument();
+      expect(getByText('Group Collections')).toBeInTheDocument();
     });
 
-    fireEvent.click(getByTestId('MoreIcon'));
-    fireEvent.click(screen.getByText('Export'));
-    const spy = vi.spyOn(utils, 'exportCsvFile');
+    fireEvent.click(getAllByTestId('additionalButton')[0]);
 
     await waitFor(() => {
-      expect(spy).toHaveBeenCalled();
+      expect(screen.getByTestId('dialogBox')).toBeInTheDocument();
+    });
+
+    const autocomplete = getByTestId('autocomplete-element');
+    autocomplete.focus();
+    fireEvent.keyDown(autocomplete, { key: 'ArrowDown' });
+    fireEvent.keyDown(autocomplete, { key: 'ArrowDown' });
+
+    fireEvent.keyDown(autocomplete, { key: 'Enter' });
+
+    fireEvent.click(screen.getByTestId('ok-button'));
+
+    await waitFor(() => {
+      expect(setNotification).toHaveBeenCalled();
+    });
+  });
+
+  test('closes the dialog box', async () => {
+    const { getAllByTestId, getByTestId, getByText } = render(groupWrapper);
+
+    // loading is show initially
+    expect(getByTestId('loading')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(getByText('Group Collections')).toBeInTheDocument();
+    });
+
+    fireEvent.click(getAllByTestId('additionalButton')[0]);
+
+    const dialog = screen.getByTestId('dialogBox');
+
+    await waitFor(() => {
+      expect(dialog).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('cancel-button'));
+
+    await waitFor(() => {
+      expect(dialog).not.toBeInTheDocument();
     });
   });
 });

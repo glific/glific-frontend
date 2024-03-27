@@ -89,6 +89,7 @@ export const TicketList = () => {
   if (openDialog) {
     dialog = (
       <Dialog
+        data-testid="dialogBox"
         open
         classes={{
           paper: styles.Dialogbox,
@@ -143,7 +144,7 @@ export const TicketList = () => {
       label: t('Send Message'),
     },
     {
-      icon: <EditIcon />,
+      icon: <EditIcon data-testid="edit-icon" />,
       parameter: 'id',
       dialog: (id: any) => {
         setSelectedTicket(id);
