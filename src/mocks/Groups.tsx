@@ -113,6 +113,23 @@ export const waGroup = {
   },
 };
 
+const sampleMessage = {
+  __typename: 'WaMessage',
+  body: 'I will speak daggers to her, but use none.',
+  contact: {
+    __typename: 'Contact',
+    name: 'Default receiver',
+  },
+  contextMessage: null,
+  errors: null,
+  id: '1',
+  insertedAt: '2024-03-11T04:39:56.772383Z',
+  media: null,
+  messageNumber: 1,
+  status: 'received',
+  type: 'TEXT',
+};
+
 export const waGroupcollection = {
   query: GROUP_SEARCH_QUERY,
   variables: GROUP_COLLECTION_SEARCH_QUERY_VARIABLES,
@@ -124,24 +141,7 @@ export const waGroupcollection = {
           label: 'Default WA Group Collection',
         },
         id: 'group_6',
-        messages: [
-          {
-            __typename: 'WaMessage',
-            body: 'I will speak daggers to her, but use none.',
-            contact: {
-              __typename: 'Contact',
-              name: 'Default receiver',
-            },
-            contextMessage: null,
-            errors: null,
-            id: '1',
-            insertedAt: '2024-03-11T04:39:56.772383Z',
-            media: null,
-            messageNumber: 1,
-            status: 'received',
-            type: 'TEXT',
-          },
-        ],
+        messages: [sampleMessage],
         waGroup: null,
       },
       {
@@ -178,24 +178,7 @@ export const searchGroupQuery = [
             id: 'wa_group_1',
             __typename: 'WaConversation',
             group: null,
-            messages: [
-              {
-                __typename: 'WaMessage',
-                body: 'I will speak daggers to her, but use none.',
-                contact: {
-                  __typename: 'Contact',
-                  name: 'Default receiver',
-                },
-                contextMessage: null,
-                errors: null,
-                id: '1',
-                insertedAt: '2024-03-11T04:39:56.772383Z',
-                media: null,
-                messageNumber: 1,
-                status: 'received',
-                type: 'TEXT',
-              },
-            ],
+            messages: [sampleMessage],
             waGroup: {
               __typename: 'WaGroup',
               bspId: '745572428506626346@g.us',
@@ -350,24 +333,7 @@ export const searchGroupQuery = [
             id: 'wa_group_1',
             __typename: 'WaConversation',
             group: null,
-            messages: [
-              {
-                __typename: 'WaMessage',
-                body: 'I will speak daggers to her, but use none.',
-                contact: {
-                  __typename: 'Contact',
-                  name: 'Default receiver',
-                },
-                contextMessage: null,
-                errors: null,
-                id: '1',
-                insertedAt: '2024-03-11T04:39:56.772383Z',
-                media: null,
-                messageNumber: 1,
-                status: 'received',
-                type: 'TEXT',
-              },
-            ],
+            messages: [sampleMessage],
             waGroup: {
               __typename: 'WaGroup',
               bspId: '745572428506626346@g.us',
@@ -609,24 +575,7 @@ export const searchCollectionGroupQuery = [
             id: 'wa_group_1',
             __typename: 'WaConversation',
             group: null,
-            messages: [
-              {
-                __typename: 'WaMessage',
-                body: 'I will speak daggers to her, but use none.',
-                contact: {
-                  __typename: 'Contact',
-                  name: 'Default receiver',
-                },
-                contextMessage: null,
-                errors: null,
-                id: '1',
-                insertedAt: '2024-03-11T04:39:56.772383Z',
-                media: null,
-                messageNumber: 1,
-                status: 'received',
-                type: 'TEXT',
-              },
-            ],
+            messages: [sampleMessage],
             waGroup: {
               __typename: 'WaGroup',
               bspId: '745572428506626346@g.us',
@@ -1183,24 +1132,7 @@ export const searchFilterQuery = {
           id: 'wa_group_1',
           __typename: 'WaConversation',
           group: null,
-          messages: [
-            {
-              __typename: 'WaMessage',
-              body: 'I will speak daggers to her, but use none.',
-              contact: {
-                __typename: 'Contact',
-                name: 'Default receiver',
-              },
-              contextMessage: null,
-              errors: null,
-              id: '1',
-              insertedAt: '2024-03-11T04:39:56.772383Z',
-              media: null,
-              messageNumber: 1,
-              status: 'received',
-              type: 'TEXT',
-            },
-          ],
+          messages: [sampleMessage],
           waGroup: {
             __typename: 'WaGroup',
             bspId: '745572428506626346@g.us',

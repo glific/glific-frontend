@@ -499,25 +499,27 @@ export const resetFlowCount = {
   },
 };
 
-export const updateFlowQuery = {
-  request: {
-    query: UPDATE_FLOW,
-    variables: {
-      id: '1',
-      input: {
-        isActive: true,
-        isPinned: false,
-        isBackground: false,
-        name: 'Help',
-        keywords: ['help'],
-        description: 'Help flow',
-        ignoreKeywords: false,
-        addRoleIds: [],
-        deleteRoleIds: [],
-        tag_id: '1',
-      },
+const updateFlowQueryRequest = {
+  query: UPDATE_FLOW,
+  variables: {
+    id: '1',
+    input: {
+      isActive: true,
+      isPinned: false,
+      isBackground: false,
+      name: 'Help',
+      keywords: ['help'],
+      description: 'Help flow',
+      ignoreKeywords: false,
+      addRoleIds: [],
+      deleteRoleIds: [],
+      tag_id: '1',
     },
   },
+};
+
+export const updateFlowQuery = {
+  request: updateFlowQueryRequest,
   result: {
     data: {
       updateFlow: {
@@ -543,24 +545,7 @@ export const updateFlowQuery = {
 };
 
 export const updateFlowQueryWithError = {
-  request: {
-    query: UPDATE_FLOW,
-    variables: {
-      id: '1',
-      input: {
-        isActive: true,
-        isPinned: false,
-        isBackground: false,
-        name: 'Help',
-        keywords: ['help'],
-        description: 'Help flow',
-        ignoreKeywords: false,
-        addRoleIds: [],
-        deleteRoleIds: [],
-        tag_id: '1',
-      },
-    },
-  },
+  request: updateFlowQueryRequest,
   result: {
     data: {
       updateFlow: {
