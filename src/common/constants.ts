@@ -301,7 +301,7 @@ export const getConversationForSearchMulti = (
     };
   }
 
-  displayName = getDisplayNameForSearch(entity, groups);
+  displayName = getDisplayNameForSearch(entity);
 
   return {
     displayName,

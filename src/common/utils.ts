@@ -191,15 +191,9 @@ export const getDisplayName = (conversation: any) => {
   return displayName;
 };
 
-export const getDisplayNameForSearch = (entity: any, groups?: boolean) => {
+export const getDisplayNameForSearch = (entity: any) => {
   let displayName: string = '';
-
-  if (groups) {
-    displayName = entity.name || '';
-  } else {
-    displayName = entity?.name || entity?.maskedPhone || entity?.phone || '';
-  }
-
+  displayName = entity?.name || entity?.maskedPhone || entity?.phone || '';
   return displayName;
 };
 
