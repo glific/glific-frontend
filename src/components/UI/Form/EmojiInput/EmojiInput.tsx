@@ -21,7 +21,6 @@ export interface EmojiInputProps {
   inputProp?: any;
   isEditing?: boolean;
   translation?: string;
-  initialState?: any;
   editorState?: any;
 }
 
@@ -38,7 +37,6 @@ export const EmojiInput = ({
   handleBlur,
   isEditing = false,
   translation,
-  initialState,
   editorState,
   ...props
 }: EmojiInputProps) => {
@@ -71,7 +69,6 @@ export const EmojiInput = ({
     <LexicalWrapper>
       <Editor
         isEditing={isEditing}
-        initialState={initialState}
         editorState={editorState}
         field={{ name, value, onBlur }}
         {...props}

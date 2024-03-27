@@ -538,7 +538,6 @@ export const InteractiveMessage = () => {
         suggestions: contactVariables,
       },
       isEditing: isEditing,
-      initialState: body,
       editorState: editorState,
     },
     {

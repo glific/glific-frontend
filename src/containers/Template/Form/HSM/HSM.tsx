@@ -113,7 +113,6 @@ export const HSM = () => {
         setEditorState(value);
       },
       isEditing: disabled,
-      initialState: example,
       editorState: editorState,
     },
     {

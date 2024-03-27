@@ -31,14 +31,12 @@ export interface EditorProps {
   inputProp?: any;
   onChange?: any;
   isEditing: boolean;
-  initialState?: any;
   editorState?: any;
 }
 
 export const Editor = ({
   disabled = false,
   isEditing = false,
-  initialState,
   editorState,
   ...props
 }: EditorProps) => {
@@ -50,14 +48,10 @@ export const Editor = ({
   const [editor] = useLexicalComposerContext();
 
   useEffect(() => {
-    if (!editorState && isEditing) {
-      if (initialState) {
-        setInitialState(editor, initialState);
-      } else if (field.value) {
-        setInitialState(editor, field.value);
-      }
+    if (field.value && !editorState && isEditing) {
+      setInitialState(editor, field.value);
     }
-  }, [initialState, field.value]);
+  }, [field.value]);
 
   const Placeholder = () => {
     return <p className={styles.editorPlaceholder}>{placeholder}</p>;

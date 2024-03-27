@@ -685,7 +685,6 @@ const Template = ({
         setEditorState(value);
       },
       isEditing: isEditing,
-      initialState: body,
       editorState: editorState,
     },
   ];
