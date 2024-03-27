@@ -81,7 +81,7 @@ export const GROUP_SEARCH_MULTI_QUERY = gql`
         type
         status
         waGroup {
-          label
+          name: label
           id
         }
         media {

@@ -910,3 +910,59 @@ export const sendMessageMock = {
     },
   },
 };
+
+export const loadMoreChats = {
+  request: {
+    query: SEARCH_QUERY,
+    variables: {
+      contactOpts: { limit: 1 },
+      messageOpts: { limit: 46, offset: 1 },
+      filter: { id: '2' },
+    },
+  },
+  result: {
+    data: {
+      search: [
+        {
+          id: 'contact_2',
+          contact: {
+            bspStatus: 'HSM',
+            fields: '{}',
+            id: '2',
+            isOrgRead: true,
+            lastMessageAt: '2024-03-23T14:39:08Z',
+            maskedPhone: '4977******79',
+            name: 'Chrissy Cron',
+            phone: '497735079',
+            status: 'VALID',
+          },
+          group: null,
+          messages: [
+            {
+              body: '1',
+              contextMessage: null,
+              errors: null,
+              flowLabel: 'Help',
+              id: '45619',
+              insertedAt: '2024-03-18T16:03:02.430862Z',
+              interactiveContent: '{}',
+              location: null,
+              media: null,
+              messageNumber: 46,
+              receiver: {
+                __typename: 'Contact',
+                id: '1',
+              },
+              sendBy: '',
+              sender: {
+                __typename: 'Contact',
+                id: '2',
+              },
+              type: 'TEXT',
+            },
+          ],
+        },
+      ],
+    },
+  },
+};

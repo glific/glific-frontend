@@ -596,20 +596,8 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
 
     fetchMore({
       variables,
-      updateQuery: (prev: any, { fetchMoreResult }: any) => {
-        const cachedConversations = JSON.parse(JSON.stringify(prev));
-        const newMessages = fetchMoreResult.search[0].messages;
-        let updatedConversation = cachedConversations.search;
-
-        updatedConversation.find((conversation: any) => {
-          if (conversation[chatType].id === entityId?.toString()) {
-            conversation.messages = [...conversation.messages, ...newMessages];
-          }
-        });
-
-        cachedConversations.search = [...updatedConversation, ...cachedConversations.search];
-        return { ...prev, ...cachedConversations };
-      },
+      updateQuery: (prev: any, { fetchMoreResult }: any) =>
+        updateCacheQuery(prev, fetchMoreResult, entityId, collectionId, chatType),
     }).then((fetchMoreResult: any) => {
       const conversationData = fetchMoreResult.data;
       if (

@@ -2,7 +2,13 @@ import axios from 'axios';
 import { FLOW_EDITOR_API } from 'config';
 import setLogs from 'config/logs';
 import { checkDynamicRole } from 'context/role';
-import { getAuthSession, getOrganizationServices, getUserSession, setAuthSession, renewAuthToken } from 'services/AuthService';
+import {
+  getAuthSession,
+  getOrganizationServices,
+  getUserSession,
+  setAuthSession,
+  renewAuthToken,
+} from 'services/AuthService';
 import { SIMULATOR_NUMBER_START } from './constants';
 import { setNotification } from './notification';
 
@@ -185,18 +191,13 @@ export const getDisplayName = (conversation: any) => {
   return displayName;
 };
 
-export const getDisplayNameForSearch = (conversation: any, groups?: boolean) => {
+export const getDisplayNameForSearch = (entity: any, groups?: boolean) => {
   let displayName: string = '';
 
   if (groups) {
-    displayName = conversation.name || conversation.waGroup?.label || '';
+    displayName = entity.name || '';
   } else {
-    displayName =
-      conversation?.name ||
-      conversation?.maskedPhone ||
-      conversation?.contact?.maskedPhone ||
-      conversation?.contact?.name ||
-      '';
+    displayName = entity?.name || entity?.maskedPhone || entity?.phone || '';
   }
 
   return displayName;

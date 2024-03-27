@@ -278,7 +278,7 @@ export const getConversationForSearchMulti = (
     selectedRecord = true;
   }
   let entityId: any;
-  const displayName = getDisplayNameForSearch(entity, groups);
+  let displayName: string;
   let contactIsOrgRead: boolean = false;
 
   if (groups) {
@@ -300,6 +300,8 @@ export const getConversationForSearchMulti = (
       contactBspStatus: conversation.bspStatus,
     };
   }
+
+  displayName = getDisplayNameForSearch(entity, groups);
 
   return {
     displayName,
