@@ -1,5 +1,5 @@
 import styles from './Editor.module.css';
-import { forwardRef, useState, useEffect } from 'react';
+import { forwardRef, useEffect } from 'react';
 import { PlainTextPlugin } from '@lexical/react/LexicalPlainTextPlugin';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import {
