@@ -130,6 +130,29 @@ const sampleMessage = {
   type: 'TEXT',
 };
 
+const sampleSearchQueryResult = [
+  {
+    id: 'wa_group_1',
+    __typename: 'WaConversation',
+    group: null,
+    messages: [sampleMessage],
+    waGroup: {
+      __typename: 'WaGroup',
+      bspId: '745572428506626346@g.us',
+      id: '1',
+      label: 'Oklahoma sheep',
+      lastCommunicationAt: '2024-03-12T14:12:30Z',
+      waManagedPhone: {
+        __typename: 'WaManagedPhone',
+        id: '1',
+        label: null,
+        phone: '8238389740',
+        phoneId: 8220,
+      },
+    },
+  },
+];
+
 export const waGroupcollection = {
   query: GROUP_SEARCH_QUERY,
   variables: GROUP_COLLECTION_SEARCH_QUERY_VARIABLES,
@@ -173,28 +196,7 @@ export const searchGroupQuery = [
     },
     result: {
       data: {
-        search: [
-          {
-            id: 'wa_group_1',
-            __typename: 'WaConversation',
-            group: null,
-            messages: [sampleMessage],
-            waGroup: {
-              __typename: 'WaGroup',
-              bspId: '745572428506626346@g.us',
-              id: '1',
-              label: 'Oklahoma sheep',
-              lastCommunicationAt: '2024-03-12T14:12:30Z',
-              waManagedPhone: {
-                __typename: 'WaManagedPhone',
-                id: '1',
-                label: null,
-                phone: '8238389740',
-                phoneId: 8220,
-              },
-            },
-          },
-        ],
+        search: sampleSearchQueryResult,
       },
     },
   },
@@ -328,28 +330,7 @@ export const searchGroupQuery = [
     },
     result: {
       data: {
-        search: [
-          {
-            id: 'wa_group_1',
-            __typename: 'WaConversation',
-            group: null,
-            messages: [sampleMessage],
-            waGroup: {
-              __typename: 'WaGroup',
-              bspId: '745572428506626346@g.us',
-              id: '1',
-              label: 'Oklahoma sheep',
-              lastCommunicationAt: '2024-03-12T14:12:30Z',
-              waManagedPhone: {
-                __typename: 'WaManagedPhone',
-                id: '1',
-                label: null,
-                phone: '8238389740',
-                phoneId: 8220,
-              },
-            },
-          },
-        ],
+        search: sampleSearchQueryResult,
       },
     },
   },
@@ -570,28 +551,7 @@ export const searchCollectionGroupQuery = [
     },
     result: {
       data: {
-        search: [
-          {
-            id: 'wa_group_1',
-            __typename: 'WaConversation',
-            group: null,
-            messages: [sampleMessage],
-            waGroup: {
-              __typename: 'WaGroup',
-              bspId: '745572428506626346@g.us',
-              id: '1',
-              label: 'Oklahoma sheep',
-              lastCommunicationAt: '2024-03-12T14:12:30Z',
-              waManagedPhone: {
-                __typename: 'WaManagedPhone',
-                id: '1',
-                label: null,
-                phone: '8238389740',
-                phoneId: 8220,
-              },
-            },
-          },
-        ],
+        search: sampleSearchQueryResult,
       },
     },
   },
@@ -1127,28 +1087,7 @@ export const searchFilterQuery = {
   },
   result: {
     data: {
-      search: [
-        {
-          id: 'wa_group_1',
-          __typename: 'WaConversation',
-          group: null,
-          messages: [sampleMessage],
-          waGroup: {
-            __typename: 'WaGroup',
-            bspId: '745572428506626346@g.us',
-            id: '1',
-            label: 'Oklahoma sheep',
-            lastCommunicationAt: '2024-03-12T14:12:30Z',
-            waManagedPhone: {
-              __typename: 'WaManagedPhone',
-              id: '1',
-              label: null,
-              phone: '8238389740',
-              phoneId: 8220,
-            },
-          },
-        },
-      ],
+      search: sampleSearchQueryResult,
     },
   },
 };
