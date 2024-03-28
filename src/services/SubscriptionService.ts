@@ -82,8 +82,8 @@ export const getSubscriptionDetails = (action: string, subscriptionData: any, gr
         ? subscriptionData.data.updateWaMessageStatus
         : subscriptionData.data.updateMessageStatus;
       entityId = groups
-        ? subscriptionData.data.updateWaMessageStatus
-        : subscriptionData.data.updateMessageStatus.waGroup.id;
+        ? subscriptionData.data.updateWaMessageStatus.waGroup.id
+        : subscriptionData.data.updateMessageStatus.receiver.id;
       break;
     default:
       break;
