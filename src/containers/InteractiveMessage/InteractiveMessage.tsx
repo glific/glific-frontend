@@ -74,6 +74,7 @@ export const InteractiveMessage = () => {
   const [tagId, setTagId] = useState<any>(null);
   const [language, setLanguage] = useState<any>({});
   const [languageOptions, setLanguageOptions] = useState<any>([]);
+  const [editorState, setEditorState] = useState<any>('');
 
   const [translations, setTranslations] = useState<any>('{}');
 
@@ -166,6 +167,7 @@ export const InteractiveMessage = () => {
     setTitle(data.title);
     setFooter(data.footer || '');
     setBody(data.body);
+    setEditorState(null);
     setTemplateType(typeValue);
     setTemplateTypeField(templateTypeOptions.find((option) => option.id === typeValue));
     setTimeout(() => setTemplateButtons(data.templateButtons), 100);
@@ -530,11 +532,13 @@ export const InteractiveMessage = () => {
       helperText: t('You can also use variables in message enter @ to see the available list'),
       getEditorValue: (value: any) => {
         setBody(value);
+        setEditorState(value);
       },
       inputProp: {
         suggestions: contactVariables,
       },
       isEditing: isEditing,
+      editorState: editorState,
     },
     {
       skip: templateType !== QUICK_REPLY,

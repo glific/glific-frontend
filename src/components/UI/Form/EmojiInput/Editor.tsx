@@ -1,12 +1,11 @@
 import styles from './Editor.module.css';
-import { forwardRef, useState, useEffect } from 'react';
+import { forwardRef, useEffect } from 'react';
 import { PlainTextPlugin } from '@lexical/react/LexicalPlainTextPlugin';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import {
   $getSelection,
   $createTextNode,
   $getRoot,
-  $createParagraphNode,
   KEY_DOWN_COMMAND,
   COMMAND_PRIORITY_LOW,
 } from 'lexical';
@@ -20,7 +19,7 @@ import {
   BeautifulMentionsMenuProps,
   BeautifulMentionsMenuItemProps,
 } from 'lexical-beautiful-mentions';
-import { handleFormatterEvents, handleFormatting } from 'common/RichEditor';
+import { handleFormatterEvents, handleFormatting, setInitialState } from 'common/RichEditor';
 
 export interface EditorProps {
   field: { name: string; onChange?: any; value: any; onBlur: any };
@@ -32,10 +31,15 @@ export interface EditorProps {
   inputProp?: any;
   onChange?: any;
   isEditing: boolean;
+  editorState?: any;
 }
 
-export const Editor = ({ disabled = false, isEditing = false, ...props }: EditorProps) => {
-  const [editorState, setEditorState] = useState<any>('');
+export const Editor = ({
+  disabled = false,
+  isEditing = false,
+  editorState,
+  ...props
+}: EditorProps) => {
   const { field, form, picker, placeholder, onChange } = props;
   const mentions = props.inputProp?.suggestions || [];
   const suggestions = {
@@ -44,14 +48,8 @@ export const Editor = ({ disabled = false, isEditing = false, ...props }: Editor
   const [editor] = useLexicalComposerContext();
 
   useEffect(() => {
-    if (field.value && isEditing && !editorState) {
-      editor.update(() => {
-        const root = $getRoot();
-        root.clear();
-        const paragraph = $createParagraphNode();
-        paragraph.append($createTextNode(field.value || ''));
-        root.append(paragraph);
-      });
+    if (field.value && !editorState && isEditing) {
+      setInitialState(editor, field.value);
     }
   }, [field.value]);
 
@@ -90,7 +88,6 @@ export const Editor = ({ disabled = false, isEditing = false, ...props }: Editor
       const root = $getRoot();
       if (!disabled) {
         onChange(root.getTextContent());
-        setEditorState(root.getTextContent());
       }
     });
   };
