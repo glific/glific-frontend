@@ -78,8 +78,12 @@ export const getSubscriptionDetails = (action: string, subscriptionData: any, gr
       break;
     case 'STATUS':
       // set the receiver contact id
-      messageStatusData = subscriptionData.data.updateMessageStatus;
-      entityId = subscriptionData.data.updateMessageStatus.receiver.id;
+      messageStatusData = groups
+        ? subscriptionData.data.updateWaMessageStatus
+        : subscriptionData.data.updateMessageStatus;
+      entityId = groups
+        ? subscriptionData.data.updateWaMessageStatus
+        : subscriptionData.data.updateMessageStatus.waGroup.id;
       break;
     default:
       break;
