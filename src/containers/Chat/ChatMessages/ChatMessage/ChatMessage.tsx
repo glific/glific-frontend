@@ -129,7 +129,6 @@ export const ChatMessage = ({
     );
   } else if (Object.prototype.hasOwnProperty.call(messageError, 'message')) {
     messageErrorStatus = parseTextMethod(messageError.message);
-
     if (Object.prototype.hasOwnProperty.call(messageErrorStatus, 'message')) {
       const messageStatus = messageErrorStatus.message;
       tooltipTitle = (

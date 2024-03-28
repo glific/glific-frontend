@@ -48,7 +48,7 @@ export const Editor = ({
   const [editor] = useLexicalComposerContext();
 
   useEffect(() => {
-    if (!editorState && isEditing) {
+    if (field.value && !editorState && isEditing) {
       setInitialState(editor, field.value);
     }
   }, [field.value]);
