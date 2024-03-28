@@ -129,22 +129,20 @@ export const ChatMessage = ({
     );
   } else if (Object.prototype.hasOwnProperty.call(messageError, 'message')) {
     messageErrorStatus = parseTextMethod(messageError.message);
+    let messageStatus: any;
+
     if (Object.prototype.hasOwnProperty.call(messageErrorStatus, 'message')) {
-      const messageStatus = messageErrorStatus.message;
-      tooltipTitle = (
-        <>
-          {tooltipTitle}
-          <div className={styles.ErrorMessage}>{messageStatus}</div>
-        </>
-      );
+      messageStatus = messageErrorStatus.message;
     } else {
-      tooltipTitle = (
-        <>
-          {tooltipTitle}
-          <div className={styles.ErrorMessage}>{messageErrorStatus[0]}</div>
-        </>
-      );
+      messageStatus = messageErrorStatus[0];
     }
+
+    tooltipTitle = (
+      <>
+        {tooltipTitle}
+        <div className={styles.ErrorMessage}>{messageStatus}</div>
+      </>
+    );
   } else if (Object.keys(messageError).length !== 0) {
     messageErrorStatus = true;
     tooltipTitle = (
