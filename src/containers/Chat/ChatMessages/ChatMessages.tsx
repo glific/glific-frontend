@@ -373,6 +373,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
         return null;
       });
     }
+    console.log(conversationIndex, allConversations);
 
     // if conversation is not present then fetch for contact
     if (conversationIndex < 0) {
@@ -389,6 +390,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
           { filter: { id: entityId } },
           groups
         );
+        console.log(variables);
 
         addLogs(`if conversation is not present then search for contact-${entityId}`, variables);
 
@@ -546,22 +548,24 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
   if (conversationInfo && conversationInfo.messages && conversationInfo.messages?.length > 0) {
     let reverseConversation = [...conversationInfo.messages];
 
-    reverseConversation = reverseConversation.map((message: any, index: number) => (
-      <ChatMessage
-        groups={groups}
-        {...message}
-        entityId={entityId}
-        key={message.messageNumber}
-        popup={message.id === showDropdown}
-        onClick={() => showEditDialog(message.id)}
-        focus={index === 0}
-        jumpToMessage={jumpToMessage}
-        daySeparator={showDaySeparator(
-          reverseConversation[index].insertedAt,
-          reverseConversation[index + 1] ? reverseConversation[index + 1].insertedAt : null
-        )}
-      />
-    ));
+    reverseConversation = reverseConversation.map((message: any, index: number) => {
+      return (
+        <ChatMessage
+          groups={groups}
+          {...message}
+          entityId={entityId}
+          key={message.messageNumber}
+          popup={message.id === showDropdown}
+          onClick={() => showEditDialog(message.id)}
+          focus={index === 0}
+          jumpToMessage={jumpToMessage}
+          daySeparator={showDaySeparator(
+            reverseConversation[index].insertedAt,
+            reverseConversation[index + 1] ? reverseConversation[index + 1].insertedAt : null
+          )}
+        />
+      );
+    });
 
     messageList = reverseConversation
       .sort((currentMessage: any, nextMessage: any) => currentMessage.id - nextMessage.id)

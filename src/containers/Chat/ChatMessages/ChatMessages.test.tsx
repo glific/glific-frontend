@@ -425,7 +425,7 @@ test('click on Clear conversation', async () => {
 });
 
 const messages = new Array(20).fill(body).map((b, index) => ({ ...b, id: `${index}` }));
-test.skip('Load more messages', async () => {
+test.only('Load more messages', async () => {
   const searchQuery = {
     query: SEARCH_QUERY,
     variables: {
@@ -481,7 +481,7 @@ test.skip('Load more messages', async () => {
   });
 });
 
-test.skip('Should render for multi-search', async () => {
+test('Should render for multi-search', async () => {
   defineUrl('http://localhost:3000/chat/2?search=48');
 
   const { getByTestId } = render(chatMessages);

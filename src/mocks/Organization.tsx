@@ -11,6 +11,7 @@ import {
   GET_QUALITY_RATING,
   GET_ORGANIZATION_PHONE,
   GET_ORGANIZATION_SERVICES,
+  GET_ORGANIZATION_STATUS,
 } from 'graphql/queries/Organization';
 import { BSP_BALANCE_SUBSCRIPTION } from 'graphql/subscriptions/PeriodicInfo';
 
@@ -825,6 +826,22 @@ export const getOrganizationPhone = {
       organization: {
         organization: {
           contact: { phone: '91987654321' },
+        },
+      },
+    },
+  },
+};
+
+export const OrganizationStateMock = {
+  request: {
+    query: GET_ORGANIZATION_STATUS,
+    variables: {},
+  },
+  result: {
+    data: {
+      organization: {
+        organization: {
+          isSuspended: false,
         },
       },
     },

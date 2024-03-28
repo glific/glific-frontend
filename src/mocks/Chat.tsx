@@ -20,6 +20,10 @@ import { searchQueryMock as searchQuery } from 'containers/Chat/ChatConversation
 import { searchQueryEmptyMock as searchEmptyQuery } from 'containers/Chat/ChatConversations/ChatConversations.test.helper';
 import { contactCollectionsQuery } from './Contact';
 import { getOrganizationLanguagesQuery } from './Organization';
+import {
+  SEND_MESSAGE_IN_WA_GROUP,
+  SEND_MESSAGE_IN_WA_GROUP_COLLECTION,
+} from 'graphql/mutations/Group';
 
 export const getConversationQuery = (data: any) => {
   return {
@@ -671,6 +675,10 @@ export const CONVERSATION_MOCKS = [
     limit: 20,
     offset: 0,
   }),
+  conversationMessageQuery({ id: '5' }, 'Jane Doe', '919090909009', 1, {
+    limit: 20,
+    offset: 0,
+  }),
 ];
 
 const conversation = {
@@ -750,7 +758,7 @@ const conversationWithMultipleMessages = {
   ],
 };
 
-const createAndSendMessageMutation = {
+export const createAndSendMessageMutation = {
   request: {
     query: CREATE_AND_SEND_MESSAGE_MUTATION,
     variables: {
@@ -777,6 +785,78 @@ const createAndSendMessageMutation = {
             id: '1',
           },
         },
+      },
+    },
+  },
+};
+
+export const createAndSendMessageMutation2 = {
+  request: {
+    query: CREATE_AND_SEND_MESSAGE_MUTATION,
+    variables: {
+      input: {
+        body: 'hey',
+        senderId: 1,
+        receiverId: '2',
+        flow: 'OUTBOUND',
+        interactiveTemplateId: undefined,
+        type: 'TEXT',
+        mediaId: null,
+      },
+    },
+  },
+  result: {
+    data: {
+      createAndSendMessage: {
+        message: {
+          body: 'hey',
+          insertedAt: '2020-06-25T13:36:43Z',
+          id: '10388',
+          receiver: {
+            id: '2',
+          },
+          sender: {
+            id: '1',
+          },
+          media: null,
+        },
+      },
+    },
+  },
+};
+
+export const sendMessageInWaGroup = {
+  request: {
+    query: SEND_MESSAGE_IN_WA_GROUP,
+    variables: {
+      input: {
+        message: 'hey',
+        waManagedPhoneId: '1',
+        waGroupId: '2',
+        type: 'TEXT',
+        mediaId: null,
+      },
+    },
+  },
+  result: {
+    data: {
+      sendMessageInWaGroup: {
+        errors: null,
+      },
+    },
+  },
+};
+
+export const sendMessageInWaGroupCollection = {
+  request: {
+    query: SEND_MESSAGE_IN_WA_GROUP_COLLECTION,
+    variables: { groupId: '1', input: { mediaId: null, message: 'hey', type: 'TEXT' } },
+  },
+  result: {
+    data: {
+      sendMessageToWaGroupCollection: {
+        errors: null,
+        success: true,
       },
     },
   },
