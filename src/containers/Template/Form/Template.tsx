@@ -282,7 +282,8 @@ const Template = ({
     setIsActive(isActiveValue);
 
     if (typeof bodyValue === 'string') {
-      setBody(bodyValue);
+      setBody(bodyValue || '');
+      setEditorState(null);
     }
 
     if (exampleValue) {
@@ -322,7 +323,7 @@ const Template = ({
       ) {
         const content = translationsCopy[currentLanguage];
         setLabel(content.label);
-        setBody(content.body);
+        setBody(content.body || '');
         setEditorState(null);
       }
       setTranslations(translationsValue);
@@ -357,7 +358,8 @@ const Template = ({
     setLabel(labelValue);
 
     if (typeof bodyValue === 'string') {
-      setBody(bodyValue);
+      setBody(bodyValue || '');
+      setEditorState(null);
     }
 
     if (typeValue && typeValue !== 'TEXT') {

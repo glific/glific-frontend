@@ -12,6 +12,7 @@ import { randomIntFromInterval, addLogs } from 'common/utils';
 import { GROUP_SEARCH_QUERY } from 'graphql/queries/WaGroups';
 import {
   SENT_MESSAGE_WA_GROUP_COLLECTION,
+  UPDATE_WA_MESSAGE_STATUS,
   WA_MESSAGE_RECEIVED_SUBSCRIPTION,
   WA_MESSAGE_SENT_SUBSCRIPTION,
 } from 'graphql/subscriptions/Groups';
@@ -218,6 +219,14 @@ export const GroupMessageSubscription = ({ setDataLoaded }: GroupMessageProps) =
         variables: subscriptionVariables,
         updateQuery: (prev, { subscriptionData }) =>
           updateConversations(prev, subscriptionData, 'SENT'),
+      });
+
+      subscribeToMore({
+        document: UPDATE_WA_MESSAGE_STATUS,
+        variables: subscriptionVariables,
+        onError: (error) => console.log(error),
+        updateQuery: (prev, { subscriptionData }) =>
+          updateConversations(prev, subscriptionData, 'STATUS'),
       });
     }
   }, [subscribeToMore]);

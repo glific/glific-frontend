@@ -166,7 +166,7 @@ export const InteractiveMessage = () => {
 
     setTitle(data.title);
     setFooter(data.footer || '');
-    setBody(data.body);
+    setBody(data.body || '');
     setEditorState(null);
     setTemplateType(typeValue);
     setTemplateTypeField(templateTypeOptions.find((option) => option.id === typeValue));
@@ -236,7 +236,8 @@ export const InteractiveMessage = () => {
 
     setTitle(titleText);
     setFooter(data.footer || '');
-    setBody(data.body);
+    setBody(data.body || '');
+    setEditorState(null);
     setTemplateType(typeValue);
     setTemplateTypeField(templateTypeOptions.find((option) => option.id === typeValue));
     setTimeout(() => setTemplateButtons(data.templateButtons), 100);

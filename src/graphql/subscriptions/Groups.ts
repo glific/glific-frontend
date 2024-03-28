@@ -118,3 +118,16 @@ export const SENT_MESSAGE_WA_GROUP_COLLECTION = gql`
     }
   }
 `;
+
+export const UPDATE_WA_MESSAGE_STATUS = gql`
+  subscription UpdateWaMessageStatus($organizationId: ID!) {
+    updateWaMessageStatus(organizationId: $organizationId) {
+      id
+      messageNumber
+      errors
+      waGroup {
+        id
+      }
+    }
+  }
+`;
