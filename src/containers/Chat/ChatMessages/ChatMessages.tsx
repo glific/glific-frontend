@@ -39,6 +39,7 @@ import { CollectionInformation } from '../../Collection/CollectionInformation/Co
 import { LexicalWrapper } from 'common/LexicalWrapper';
 import {
   getCachedGroupConverations,
+  updateCacheQuery,
   updateGroupConversationsCache,
 } from 'services/GroupMessageService';
 
@@ -73,6 +74,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
   const [showDropdown, setShowDropdown] = useState<any>(null);
   const [showLoadMore, setShowLoadMore] = useState(true);
   const [scrolledToMessage, setScrolledToMessage] = useState(false);
+  const [scrollToMessageNumber, setScrollToMessageNumber] = useState();
   const [showJumpToLatest, setShowJumpToLatest] = useState(false);
   const [conversationInfo, setConversationInfo] = useState<any>({});
   const [collectionVariables, setCollectionVariables] = useState<any>({});
@@ -152,6 +154,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
     loading: conversationLoad,
     error: conversationError,
     data: allConversations,
+    fetchMore,
   }: any = useQuery(searchQuery, {
     variables: queryVariables,
     fetchPolicy: 'cache-only',
@@ -228,70 +231,10 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
     },
   });
 
-  const [getSearchQuery, { called, data, loading, error }] = useLazyQuery<any>(searchQuery, {
-    onCompleted: (searchData) => {
-      if (searchData && searchData.search.length > 0) {
-        // get the conversations from cache
-        const conversations = groups
-          ? getCachedGroupConverations(queryVariables)
-          : getCachedConverations(queryVariables);
-
-        const conversationCopy = JSON.parse(JSON.stringify(searchData));
-        conversationCopy.search[0].messages
-          .sort((currentMessage: any, nextMessage: any) => currentMessage.id - nextMessage.id)
-          .reverse();
-
-        let conversationsCopy: any = { search: [] };
-        // check for the cache
-        if (JSON.parse(JSON.stringify(conversations))) {
-          conversationsCopy = JSON.parse(JSON.stringify(conversations));
-        }
-        let isContactCached = false;
-        conversationsCopy.search = conversationsCopy.search.map((conversation: any) => {
-          const conversationObj = conversation;
-          // If the collection(group) is present in the cache
-          if (collectionId) {
-            if (conversationObj.group?.id === collectionId.toString()) {
-              isContactCached = true;
-              conversationObj.messages = [
-                ...conversationObj.messages,
-                ...conversationCopy.search[0].messages,
-              ];
-            }
-          }
-          // If the contact is present in the cache
-          else if (conversationObj[chatType]?.id === entityId?.toString()) {
-            isContactCached = true;
-            conversationObj.messages = [
-              ...conversationObj.messages,
-              ...conversationCopy.search[0].messages,
-            ];
-          }
-          return conversationObj;
-        });
-
-        // If the contact is NOT present in the cache
-        if (!isContactCached) {
-          conversationsCopy.search = [...conversationsCopy.search, searchData.search[0]];
-        }
-        // update the conversation cache
-        if (groups) {
-          updateGroupConversationsCache(conversationsCopy, queryVariables);
-        } else {
-          updateConversationsCache(conversationsCopy, queryVariables);
-        }
-
-        if (searchData.search.length === 0 || searchData.search[0].messages.length === 0) {
-          setShowLoadMore(false);
-        }
-      }
-    },
-  });
-
   useEffect(() => {
     // scroll to the particular message after loading
-    if (data || parameterdata) getScrollToMessage();
-  }, [data, parameterdata]);
+    if (allConversations || parameterdata) getScrollToMessage();
+  }, [allConversations, parameterdata]);
 
   let messageList: any;
 
@@ -433,7 +376,10 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
 
     // if conversation is not present then fetch for contact
     if (conversationIndex < 0) {
-      if ((!loading && !called) || (data && data.search[0][chatType].id !== entityId)) {
+      if (
+        !conversationLoad ||
+        (allConversations && allConversations.search[0][chatType].id !== entityId)
+      ) {
         const variables = getVariables(
           { limit: 1 },
           {
@@ -446,8 +392,10 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
 
         addLogs(`if conversation is not present then search for contact-${entityId}`, variables);
 
-        getSearchQuery({
+        fetchMore({
           variables,
+          updateQuery: (prev: any, { fetchMoreResult }: any) =>
+            updateCacheQuery(prev, fetchMoreResult, entityId, collectionId, chatType),
         });
       }
       // lets not get from cache if parameter is present
@@ -485,7 +433,10 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
 
     // if conversation is not present then fetch the collection
     if (conversationIndex < 0 && !groups) {
-      if ((!loading && !called) || (data && data.search[0].group.id !== collectionId)) {
+      if (
+        !conversationLoad ||
+        (allConversations && allConversations.search[0].group.id !== collectionId)
+      ) {
         const variables = getVariables(
           { limit: DEFAULT_ENTITY_LIMIT },
           { limit: DEFAULT_MESSAGE_LIMIT, offset: 0 },
@@ -497,9 +448,10 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
           `if conversation is not present then search for collection-${collectionId}`,
           variables
         );
-
-        getSearchQuery({
+        fetchMore({
           variables,
+          updateQuery: (prev: any, { fetchMoreResult }: any) =>
+            updateCacheQuery(prev, fetchMoreResult, entityId, collectionId, chatType),
         });
       }
     }
@@ -528,19 +480,17 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
   // HOOKS ESTABLISHED ABOVE
 
   // Run through these cases to ensure data always exists
-  if (called && error) {
-    setErrorMessage(error);
-    return null;
-  }
-
   if (conversationError) {
     setErrorMessage(conversationError);
     return null;
   }
 
   // check if the search API results nothing for a particular contact ID and redirect to chat
-  if (entityId && data) {
-    if (data.search.length === 0 || data.search[0][chatType]?.status === 'BLOCKED') {
+  if (entityId && allConversations) {
+    if (
+      allConversations.search.length === 0 ||
+      allConversations.search[0][chatType]?.status === 'BLOCKED'
+    ) {
       return <Navigate to="/chat" />;
     }
   }
@@ -559,7 +509,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
       const variables: any = getVariables(
         { limit: 1 },
         {
-          limit: conversationInfo.messages[conversationInfo.messages.length - 1].messageNumber,
+          limit: conversationInfo.messages[0].messageNumber,
           offset,
         },
         { filter: { id: entityId?.toString() } },
@@ -568,7 +518,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
 
       addLogs(`fetch reply message`, variables);
 
-      getSearchQuery({
+      fetchMore({
         variables,
       });
 
@@ -596,22 +546,24 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
   if (conversationInfo && conversationInfo.messages && conversationInfo.messages?.length > 0) {
     let reverseConversation = [...conversationInfo.messages];
 
-    reverseConversation = reverseConversation.map((message: any, index: number) => (
-      <ChatMessage
-        groups={groups}
-        {...message}
-        entityId={entityId}
-        key={message.id}
-        popup={message.id === showDropdown}
-        onClick={() => showEditDialog(message.id)}
-        focus={index === 0}
-        jumpToMessage={jumpToMessage}
-        daySeparator={showDaySeparator(
-          reverseConversation[index].insertedAt,
-          reverseConversation[index + 1] ? reverseConversation[index + 1].insertedAt : null
-        )}
-      />
-    ));
+    reverseConversation = reverseConversation.map((message: any, index: number) => {
+      return (
+        <ChatMessage
+          groups={groups}
+          {...message}
+          entityId={entityId}
+          key={message.messageNumber}
+          popup={message.id === showDropdown}
+          onClick={() => showEditDialog(message.id)}
+          focus={index === 0}
+          jumpToMessage={jumpToMessage}
+          daySeparator={showDaySeparator(
+            reverseConversation[index].insertedAt,
+            reverseConversation[index + 1] ? reverseConversation[index + 1].insertedAt : null
+          )}
+        />
+      );
+    });
 
     messageList = reverseConversation
       .sort((currentMessage: any, nextMessage: any) => currentMessage.id - nextMessage.id)
@@ -642,16 +594,28 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
 
     addLogs(`load More Messages-${collectionId}`, variables);
 
-    getSearchQuery({
+    fetchMore({
       variables,
+      updateQuery: (prev: any, { fetchMoreResult }: any) =>
+        updateCacheQuery(prev, fetchMoreResult, entityId, collectionId, chatType, true),
+    }).then((fetchMoreResult: any) => {
+      const conversationData = fetchMoreResult.data;
+      if (
+        (conversationData && conversationData.search.length === 0) ||
+        conversationData.search[0].messages.length === 0
+      ) {
+        setShowLoadMore(false);
+      }
+      setScrollToMessageNumber(messageNumber);
     });
+  };
 
-    // keep scroll at last message
-    const element = document.querySelector(`#search${messageNumber}`);
+  useEffect(() => {
+    const element = document.querySelector(`#search${scrollToMessageNumber}`);
     if (element) {
       element.scrollIntoView();
     }
-  };
+  }, [scrollToMessageNumber]);
 
   let messageListContainer;
   // Check if there are conversation messages else display no messages
@@ -668,7 +632,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
       >
         {showLoadMore && loadMoreOption && (
           <div className={styles.LoadMore}>
-            {(called && loading) || conversationLoad ? (
+            {conversationLoad ? (
               <CircularProgress data-testid="loading" className={styles.Loading} />
             ) : (
               <div

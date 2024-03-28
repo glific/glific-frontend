@@ -278,13 +278,13 @@ export const getConversationForSearchMulti = (
     selectedRecord = true;
   }
   let entityId: any;
-  const displayName = getDisplayNameForSearch(entity, groups);
+  let displayName: string;
   let contactIsOrgRead: boolean = false;
 
   if (groups) {
-    entityId = entity.id || entity.waGroup?.id;
+    entityId = entity.waGroup?.id || entity.id;
   } else {
-    entityId = entity.id || entity.contact?.id;
+    entityId = entity.contact?.id || entity.id;
   }
 
   if (conversation[chatType]) {
@@ -300,6 +300,8 @@ export const getConversationForSearchMulti = (
       contactBspStatus: conversation.bspStatus,
     };
   }
+
+  displayName = getDisplayNameForSearch(entity);
 
   return {
     displayName,

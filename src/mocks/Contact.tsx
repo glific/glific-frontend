@@ -16,11 +16,11 @@ import { CLEAR_MESSAGES } from 'graphql/mutations/Chat';
 import { setVariables } from 'common/constants';
 import { getCurrentUserQuery } from './User';
 
-export const contactCollectionsQuery = {
+export const contactCollectionsQuery = (id: number) => ({
   request: {
     query: GET_CONTACT_COLLECTIONS,
     variables: {
-      id: '2',
+      id: id.toString(),
     },
   },
   result: {
@@ -43,7 +43,7 @@ export const contactCollectionsQuery = {
       },
     },
   },
-};
+});
 
 export const updateContactCollectionQuery = {
   request: {
@@ -65,30 +65,34 @@ export const updateContactCollectionQuery = {
   },
 };
 
-export const getContactQuery = {
-  request: {
-    query: GET_CONTACT,
-    variables: { id: '1' },
-  },
-  result: {
-    data: {
-      contact: {
+export const getContactSampleQuery = (variables: any) => {
+  return {
+    request: {
+      query: GET_CONTACT,
+      variables,
+    },
+    result: {
+      data: {
         contact: {
-          id: '1',
-          name: 'Default User',
-          activeProfile: null,
-          phone: '+919820198765',
-          language: { id: '1', label: 'English' },
-          groups: [],
-          status: 'VALID',
-          bspStatus: 'SESSION_AND_HSM',
-          settings: {},
-          fields: {},
+          contact: {
+            id: '1',
+            name: 'Default User',
+            activeProfile: null,
+            phone: '+919820198765',
+            language: { id: '1', label: 'English' },
+            groups: [],
+            status: 'VALID',
+            bspStatus: 'SESSION_AND_HSM',
+            settings: {},
+            fields: {},
+          },
         },
       },
     },
-  },
+  };
 };
+
+export const getContactQuery = getContactSampleQuery({ id: '1' });
 
 export const clearMessagesQuery = {
   request: {

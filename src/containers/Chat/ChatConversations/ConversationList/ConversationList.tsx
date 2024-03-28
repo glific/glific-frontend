@@ -306,7 +306,7 @@ export const ConversationList = ({
       <Fragment>
         {index === 0 ? header : null}
         <ChatConversation
-          key={entityId}
+          key={entity.id}
           selected={selectedRecord}
           onClick={() => {
             setSearchHeight();
@@ -342,7 +342,9 @@ export const ConversationList = ({
     Object.keys(searchArray).forEach((dataArray: any) => {
       const header = (
         <div className={styles.Title}>
-          <Typography className={styles.TitleText}>{dataArray}</Typography>
+          <Typography key="header" className={styles.TitleText}>
+            {dataArray}
+          </Typography>
         </div>
       );
       conversationsData = conversations[dataArray].map((conversation: any, index: number) =>

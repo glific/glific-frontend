@@ -52,3 +52,59 @@ export const updateGroupConversations = (
 export const saveGroupConversation = (conversation: any, queryVariables: any) => {
   updateGroupConversations(conversation, queryVariables, true);
 };
+
+export const updateCacheQuery = (
+  cacheConversations: any,
+  fetchMoreResult: any,
+  entityId: any,
+  collectionId: any,
+  chatType: string,
+  updateMessage?: boolean
+) => {
+  const conversations = JSON.parse(JSON.stringify(cacheConversations));
+
+  const conversationCopy = JSON.parse(JSON.stringify(fetchMoreResult));
+  conversationCopy.search[0].messages
+    .sort((currentMessage: any, nextMessage: any) => currentMessage.id - nextMessage.id)
+    .reverse();
+
+  let conversationsCopy: any = { search: [] };
+  if (JSON.parse(JSON.stringify(conversations))) {
+    conversationsCopy = JSON.parse(JSON.stringify(conversations));
+  }
+  let isContactCached = false;
+
+  // update messages cache
+  conversationsCopy.search = conversationsCopy.search.map((conversation: any) => {
+    const conversationObj = conversation;
+    // If the collection(group) is present in the cache
+    if (collectionId) {
+      if (conversationObj.group?.id === collectionId.toString()) {
+        isContactCached = true;
+        if (updateMessage) {
+          conversationObj.messages = [
+            ...conversationObj.messages,
+            ...conversationCopy.search[0].messages,
+          ];
+        }
+      }
+    }
+    // If the contact is present in the cache
+    else if (conversationObj[chatType]?.id === entityId?.toString()) {
+      isContactCached = true;
+      if (updateMessage) {
+        conversationObj.messages = [
+          ...conversationObj.messages,
+          ...conversationCopy.search[0].messages,
+        ];
+      }
+    }
+    return conversationObj;
+  });
+
+  // update cache with new entity
+  if (!isContactCached) {
+    conversationsCopy.search = [...conversationsCopy.search, fetchMoreResult.search[0]];
+  }
+  return conversationsCopy;
+};

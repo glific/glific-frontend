@@ -19,7 +19,7 @@ const mocks = [
   countCollectionContactsQuery,
   getCollectionQuery,
   getCollectionQuery,
-  getCollectionInfo,
+  getCollectionInfo({ id: '1' }),
   getCollectionUsersQuery,
   getCollectionContactsQuery({
     filter: { includeGroups: '1' },
