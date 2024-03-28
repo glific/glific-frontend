@@ -645,8 +645,8 @@ export const searchMultiQuery = (
 
 export const CONVERSATION_MOCKS = [
   conversationQuery,
-  contactCollectionsQuery,
-  contactCollectionsQuery,
+  contactCollectionsQuery(2),
+  contactCollectionsQuery(2),
   searchQuery,
   searchEmptyQuery,
   conversationQuery,
@@ -941,7 +941,7 @@ export const searchQuerywithFilterOffset = {
 };
 
 const chatMessagesMocks = [
-  contactCollectionsQuery,
+  contactCollectionsQuery(2),
   searchQuerywithFilter,
   searchQuerywithFilterOffset,
   searchQuerywithFilterOffset,

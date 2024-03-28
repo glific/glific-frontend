@@ -23,8 +23,8 @@ import { searchGroupQuery } from 'mocks/Groups';
 
 const mocks = [
   ...CONVERSATION_MOCKS,
-  contactCollectionsQuery,
-  getCollectionInfo({id:"2"}),
+  contactCollectionsQuery(2),
+  getCollectionInfo({ id: '2' }),
   ...getCollectionsQuery,
   getPublishedFlowQuery,
   blockContactQuery,

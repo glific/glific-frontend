@@ -373,7 +373,6 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
         return null;
       });
     }
-    console.log(conversationIndex, allConversations);
 
     // if conversation is not present then fetch for contact
     if (conversationIndex < 0) {
@@ -390,7 +389,6 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
           { filter: { id: entityId } },
           groups
         );
-        console.log(variables);
 
         addLogs(`if conversation is not present then search for contact-${entityId}`, variables);
 

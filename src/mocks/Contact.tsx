@@ -16,11 +16,11 @@ import { CLEAR_MESSAGES } from 'graphql/mutations/Chat';
 import { setVariables } from 'common/constants';
 import { getCurrentUserQuery } from './User';
 
-export const contactCollectionsQuery = {
+export const contactCollectionsQuery = (id: number) => ({
   request: {
     query: GET_CONTACT_COLLECTIONS,
     variables: {
-      id: '2',
+      id: id.toString(),
     },
   },
   result: {
@@ -43,7 +43,7 @@ export const contactCollectionsQuery = {
       },
     },
   },
-};
+});
 
 export const updateContactCollectionQuery = {
   request: {
