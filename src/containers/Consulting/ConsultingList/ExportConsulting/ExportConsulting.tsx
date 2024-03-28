@@ -116,6 +116,7 @@ export const ExportConsulting = ({ setFilters }: ExportConsultingPropTypes) => {
                 </Button>
                 <ExportIcon
                   className={styles.ExportIcon}
+                  data-testid="export"
                   onClick={() => {
                     getConsultingDetails({
                       variables: {

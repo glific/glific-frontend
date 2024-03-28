@@ -24,17 +24,18 @@ const filterInteractiveFunction = (filter: any, opts: any) => ({
       interactiveTemplates: [
         {
           id: '1',
-          label: 'list',
-          type: 'LIST',
-          translations:
-            '{"1": {"body": "this is message", "type": "list", "items": [{"title": "list header 1", "options": [{"type": "text", "title": "red", "description": ""}, {"type": "text", "title": "blue", "description": ""}], "subtitle": "list header 1"}], "title": "Interactive list in english yay", "globalButtons": [{"type": "text", "title": "list"}]}, "2": {"body": "यह संदेश है ", "type": "list", "items": [{"title": "सूची शीर्षक १", "options": [{"type": "text", "title": "लाल", "description": ""}, {"type": "text", "title": "नीला", "description": ""}], "subtitle": "सूची शीर्षक १"}], "title": "इंटरेक्टिव लिस्ट हिंदी में", "globalButtons": [{"type": "text", "title": "सूची"}]}}',
+          interactiveContent:
+            '{"type":"quick_reply","options":[{"type":"text","title":"yes"},{"type":"text","title":"no"}],"content":{"type":"text","text":"Glific comes with all new features","header":"Are you excited for *Glific*?"}}',
+          label: 'Are you excited for Glific?',
           language: {
+            __typename: 'Language',
             id: '1',
             label: 'English',
           },
           sendWithTitle: true,
-          interactiveContent:
-            '{"body": "यह संदेश है ", "type": "list", "items": [{"title": "सूची शीर्षक १", "options": [{"type": "text", "title": "लाल", "description": ""}, {"type": "text", "title": "नीला", "description": ""}], "subtitle": "सूची शीर्षक १"}], "title": "इंटरेक्टिव लिस्ट हिंदी में", "globalButtons": [{"type": "text", "title": "सूची"}]}',
+          translations:
+            '{"2":{"type":"quick_reply","options":[{"type":"text","title":"हाँ"},{"type":"text","title":"ना"}],"content":{"type":"text","text":"ग्लिफ़िक सभी नई सुविधाओं के साथ आता है","header":"आप ग्लिफ़िक के लिए कितने उत्साहित हैं?"}},"1":{"type":"quick_reply","options":[{"type":"text","title":"yes"},{"type":"text","title":"no"}],"content":{"type":"text","text":"Glific comes with all new features","header":"Are you excited for *Glific*?"}}}',
+          type: 'QUICK_REPLY',
         },
         {
           id: '2',
@@ -103,6 +104,25 @@ export const filterInteractiveQuery = filterInteractiveFunction(
     orderWith: 'label',
   }
 );
+
+export const filterByTagInteractiveQuery = filterInteractiveFunction(
+  { tagIds: [1] },
+  { limit: 50, offset: 0, order: 'ASC', orderWith: 'label' }
+);
+
+export const getFilterInteractiveCountQuery = {
+  request: {
+    query: GET_INTERACTIVE_MESSAGES_COUNT,
+    variables: {
+      filter: { tagIds: [1] },
+    },
+  },
+  result: {
+    data: {
+      countInteractiveTemplates: 3,
+    },
+  },
+};
 
 export const searchInteractive = filterInteractiveFunction({ label: '' }, {});
 export const searchInteractiveHi = filterInteractiveFunction({ label: 'hi' }, {});
@@ -211,13 +231,15 @@ const createInteractiveCustomMock = () => ({
     query: CREATE_INTERACTIVE,
     variables: {
       input: {
-        type: "LIST",
-        interactiveContent: '{"type":"list","title":"new title","body":"😀","globalButtons":[{"type":"text","title":"Section 1"}],"items":[{"title":"title","subtitle":"title","options":[{"type":"text","title":"red","description":"red is color"}]}]}',
-        languageId: "2",
-        label: "new title",
+        type: 'LIST',
+        interactiveContent:
+          '{"type":"list","title":"new title","body":"😀","globalButtons":[{"type":"text","title":"Section 1"}],"items":[{"title":"title","subtitle":"title","options":[{"type":"text","title":"red","description":"red is color"}]}]}',
+        languageId: '2',
+        label: 'new title',
         sendWithTitle: true,
-        translations: '{"2":{"type":"list","title":"new title","body":"😀","globalButtons":[{"type":"text","title":"Section 1"}],"items":[{"title":"title","subtitle":"title","options":[{"type":"text","title":"red","description":"red is color"}]}]}}'
-      }
+        translations:
+          '{"2":{"type":"list","title":"new title","body":"😀","globalButtons":[{"type":"text","title":"Section 1"}],"items":[{"title":"title","subtitle":"title","options":[{"type":"text","title":"red","description":"red is color"}]}]}}',
+      },
     },
   },
   result: {
@@ -229,14 +251,16 @@ const createInteractiveCustomMock = () => ({
             id: '1',
             label: 'English',
           },
-          type: "LIST",
-          interactiveContent: '{"type":"list","title":"new title","body":"😀","globalButtons":[{"type":"text","title":"Section 1"}],"items":[{"title":"title","subtitle":"title","options":[{"type":"text","title":"red","description":"red is color"}]}]}',
-          languageId: "2",
-          label: "new title",
+          type: 'LIST',
+          interactiveContent:
+            '{"type":"list","title":"new title","body":"😀","globalButtons":[{"type":"text","title":"Section 1"}],"items":[{"title":"title","subtitle":"title","options":[{"type":"text","title":"red","description":"red is color"}]}]}',
+          languageId: '2',
+          label: 'new title',
           sendWithTitle: true,
-          translations: '{"2":{"type":"list","title":"new title","body":"😀","globalButtons":[{"type":"text","title":"Section 1"}],"items":[{"title":"title","subtitle":"title","options":[{"type":"text","title":"red","description":"red is color"}]}]}}',
+          translations:
+            '{"2":{"type":"list","title":"new title","body":"😀","globalButtons":[{"type":"text","title":"Section 1"}],"items":[{"title":"title","subtitle":"title","options":[{"type":"text","title":"red","description":"red is color"}]}]}}',
         },
-        errors: null
+        errors: null,
       },
     },
   },

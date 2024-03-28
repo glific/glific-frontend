@@ -1,5 +1,5 @@
 import { UPDATE_CURRENT_USER } from 'graphql/mutations/User';
-import { GET_CURRENT_USER, GET_USERS } from 'graphql/queries/User';
+import { FILTER_USERS, GET_CURRENT_USER, GET_USERS } from 'graphql/queries/User';
 import { setVariables } from 'common/constants';
 
 export const getCurrentUserQuery = {
@@ -165,6 +165,33 @@ export const getCurrentUserInvalidRoleQuery = {
           },
         },
       },
+    },
+  },
+};
+
+export const getUsers = {
+  request: {
+    query: FILTER_USERS,
+    variables: { filter: {}, opts: { limit: null, offset: 0, order: 'ASC' } },
+  },
+  result: {
+    data: {
+      users: [
+        {
+          accessRoles: [
+            {
+              label: 'Admin',
+            },
+          ],
+          contact: {
+            id: '14',
+          },
+          groups: [],
+          id: '1',
+          name: 'NGO Admin',
+          phone: '919999988888',
+        },
+      ],
     },
   },
 };

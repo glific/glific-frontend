@@ -27,6 +27,7 @@ const mocks: any = [
   markAllNotificationAsRead,
   getFilteredNotificationsQuery,
   getInfoNotificationsQuery({ severity: '' }),
+  getInfoNotificationsQuery({ severity: '' }),
   getInfoNotificationsQuery({ severity: 'Critical' }),
   getInfoNotificationsQuery({ severity: '' }),
   getInfoNotificationsQuery(),
@@ -39,6 +40,12 @@ const notifications = (
     </Router>
   </MockedProvider>
 );
+
+const mockedUsedNavigate = vi.fn();
+vi.mock('react-router-dom', async () => ({
+  ...(await vi.importActual('react-router-dom')),
+  useNavigate: () => mockedUsedNavigate,
+}));
 
 test('It should load notifications', async () => {
   render(notifications);
@@ -67,19 +74,33 @@ test('It should load notifications', async () => {
 
 test('click on forward arrrow', async () => {
   render(notifications);
+
   await waitFor(() => {
-    const arrow = screen.getAllByTestId('tooltip');
-    fireEvent.click(arrow[0]);
+    expect(screen.getByTestId('loading')).toBeInTheDocument();
+  });
+
+  await waitFor(() => {
+    expect(screen.getByText('Notifications')).toBeInTheDocument();
+  });
+
+  const arrowButtons = screen.getAllByTestId('ArrowForwardIcon');
+
+  arrowButtons.forEach(async (button) => {
+    fireEvent.click(button);
+
+    await waitFor(() => {
+      expect(mockedUsedNavigate).toHaveBeenCalled();
+    });
   });
 });
 
 test('it should show copy text and view option on clicking entity ', async () => {
   const { getByTestId, getByText } = render(notifications);
   await waitFor(() => {
-    const entityMenu = screen.getByTestId('NotificationRowMenu');
-    expect(entityMenu).toBeInTheDocument();
+    const entityMenu = screen.getAllByTestId('NotificationRowMenu');
+    expect(entityMenu[0]).toBeInTheDocument();
 
-    fireEvent.click(entityMenu);
+    fireEvent.click(entityMenu[0]);
     const viewButton = screen.getAllByTestId('MenuItem');
 
     // copy text option

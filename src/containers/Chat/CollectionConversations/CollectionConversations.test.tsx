@@ -1,5 +1,5 @@
 import { BrowserRouter as Router } from 'react-router-dom';
-import { render, cleanup, waitFor, screen } from '@testing-library/react';
+import { render, cleanup, waitFor, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 
@@ -134,7 +134,7 @@ describe('<CollectionConversation />', () => {
   });
 
   test('It should render search bar and perform its actions', async () => {
-    const { container } = render(collectionConversation);
+    const { container, getByTestId } = render(collectionConversation);
     await waitFor(() => {
       expect(container).toBeInTheDocument();
     });
@@ -145,6 +145,7 @@ describe('<CollectionConversation />', () => {
       const searchInput = screen.getByRole('textbox');
       expect(searchInput).toBeInTheDocument();
       userEvent.type(searchInput, 'opt');
+      fireEvent.submit(getByTestId('searchForm'));
 
       // type optin then press enter
       userEvent.type(searchInput, 'optin{enter}');

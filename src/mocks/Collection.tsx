@@ -77,6 +77,42 @@ export const getCollectionsQuery = [
   },
 ];
 
+export const getAllCollectionsQuery = [
+  {
+    request: {
+      query: GET_COLLECTIONS,
+      variables: { filter: {}, opts: { limit: null, offset: 0, order: 'ASC' } },
+    },
+    result: {
+      data: {
+        groups: [
+          {
+            id: '1',
+            label: 'Staff group',
+            isRestricted: true,
+          },
+        ],
+      },
+    },
+  },
+  {
+    request: {
+      query: GET_COLLECTIONS,
+    },
+    result: {
+      data: {
+        groups: [
+          {
+            id: '1',
+            label: 'Staff group',
+            isRestricted: true,
+          },
+        ],
+      },
+    },
+  },
+];
+
 export const getOrganizationCollections = {
   request: {
     query: GET_ORGANIZATION_COLLECTIONS,
@@ -363,6 +399,66 @@ export const exportCollectionsQuery = {
         errors: null,
         status:
           'Name,Phone\r\nAdelle Cavin,2629678404\r\nMargarita Quinteros,5799461148\r\nChrissy Cron,8105438990\r\nNGO Staff,919820112345\r\nNGO Manager,9101234567890\r\nNGO Admin,919999988888\r\nNGO Person who left,919988776655\r\n',
+      },
+    },
+  },
+};
+
+export const exportCollectionsQueryWithErrors = {
+  request: {
+    query: EXPORT_COLLECTION_DATA,
+    variables: { exportCollectionId: '1' },
+  },
+  result: {
+    data: {
+      exportCollection: {
+        errors: [
+          {
+            message: 'An error occured',
+            key: 0,
+          },
+        ],
+        status: null,
+      },
+    },
+  },
+};
+
+export const addContactToCollection = {
+  request: {
+    query: UPDATE_COLLECTION_CONTACTS,
+    variables: { input: { addContactIds: ['2'], groupId: '1', deleteContactIds: [] } },
+  },
+  result: {
+    data: {
+      updateGroupContacts: {
+        groupContacts: [
+          {
+            id: '43',
+            value: null,
+          },
+        ],
+        numberDeleted: 0,
+      },
+    },
+  },
+};
+
+export const deleteContactFromCollection = {
+  request: {
+    query: UPDATE_COLLECTION_CONTACTS,
+    variables: { input: { addContactIds: [], groupId: '1', deleteContactIds: ['1'] } },
+  },
+  result: {
+    data: {
+      updateGroupContacts: {
+        groupContacts: [
+          {
+            id: '43',
+            value: null,
+          },
+        ],
+        numberDeleted: 1,
       },
     },
   },

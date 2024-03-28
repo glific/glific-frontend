@@ -193,6 +193,7 @@ const Template = ({
   >([]);
   const [isAddButtonChecked, setIsAddButtonChecked] = useState(false);
   const [nextLanguage, setNextLanguage] = useState<any>('');
+  const [editorState, setEditorState] = useState<any>('');
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location: any = useLocation();
@@ -322,6 +323,7 @@ const Template = ({
         const content = translationsCopy[currentLanguage];
         setLabel(content.label);
         setBody(content.body);
+        setEditorState(null);
       }
       setTranslations(translationsValue);
     }
@@ -680,8 +682,10 @@ const Template = ({
         : null,
       getEditorValue: (value: any) => {
         setBody(value);
+        setEditorState(value);
       },
       isEditing: isEditing,
+      editorState: editorState,
     },
   ];
 

@@ -103,7 +103,7 @@ const BoldedText = (originalText: string, highlight: any) => {
           string.toLowerCase() === texts.toLowerCase() ? (
             // it is ok to use "i" as index as we are not altering sequence etc. and alphabets can repeat etc.
             // eslint-disable-next-line
-            <span key={i} className={styles.TitleText}>
+            <span key={i} data-testid="highlightText" className={styles.TitleText}>
               {string}
             </span>
           ) : (

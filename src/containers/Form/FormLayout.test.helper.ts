@@ -86,7 +86,7 @@ export const LIST_ITEM_MOCKS = [
   releaseFlow,
   ...getOrganizationQuery,
   getOrganizationLanguagesQuery,
-  getFlowQuery,
+  getFlowQuery({ id: 1 }),
   filterFlowQuery,
   filterFlowQuery,
   getFlowCountQuery,

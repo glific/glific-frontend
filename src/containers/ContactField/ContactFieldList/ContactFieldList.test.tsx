@@ -5,7 +5,7 @@ import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
 
 import { setUserSession } from 'services/AuthService';
-import { mocks, contactFieldErrorMock } from 'mocks/ContactFields';
+import { contactFieldMocks, contactFieldErrorMock } from 'mocks/ContactFields';
 import ContactFieldList from './ContactFieldList';
 
 afterEach(() => {
@@ -20,7 +20,7 @@ vi.mock('react-router-dom', async () => ({
 setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
 
 const list = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={contactFieldMocks} addTypename={false}>
     <Router>
       <ContactFieldList />
     </Router>
@@ -67,7 +67,7 @@ test('it renders list successfully', async () => {
   });
 });
 
-const errorMock: any = [contactFieldErrorMock, ...mocks, ...mocks];
+const errorMock: any = [contactFieldErrorMock, ...contactFieldMocks, ...contactFieldMocks];
 
 const listError = (
   <MockedProvider mocks={errorMock}>
@@ -97,4 +97,18 @@ test('it renders component, edits field, saves and error occurs', async () => {
   await waitFor(() => {
     expect(screen.getByTestId('inlineInputError')).toBeInTheDocument();
   });
+});
+
+test('it opens contact field dialog box', async () => {
+  const { getByTestId } = render(list);
+  expect(screen.getByTestId('loading')).toBeInTheDocument();
+
+  fireEvent.click(getByTestId('newItemButton'));
+  const dialogTitle = await screen.findByText('Add a new Contact field');
+
+  await waitFor(() => {
+    expect(dialogTitle).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('cancelActionButton'));
 });

@@ -105,9 +105,9 @@ export const CollectionList = () => {
   });
   const [exportCollectionData] = useLazyQuery(EXPORT_COLLECTION_DATA, {
     onCompleted: (data) => {
-      if (data.errors) {
-        setNotification(data.errors[0].message, 'warning');
-      } else if (data.exportCollection) {
+      if (data.exportCollection.errors) {
+        setNotification(data.exportCollection.errors[0].message, 'warning');
+      } else if (data.exportCollection.status) {
         exportCsvFile(data.exportCollection.status, 'collection');
       }
       setExportData(false);
