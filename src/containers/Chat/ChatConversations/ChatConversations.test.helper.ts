@@ -2,7 +2,7 @@ import { collectionCountQuery, savedSearchStatusQuery } from 'mocks/Chat';
 import { SEARCH_QUERY, SEARCH_MULTI_QUERY, SEARCH_OFFSET } from 'graphql/queries/Search';
 import { DEFAULT_ENTITY_LIMIT, DEFAULT_MESSAGE_LIMIT } from 'common/constants';
 import { collectionCountSubscription } from 'mocks/Search';
-import { getCollectionsQuery } from 'mocks/Collection';
+import { getAllCollectionsQuery, getCollectionsQuery } from 'mocks/Collection';
 import { getUsersQuery } from 'mocks/User';
 import { getAllFlowLabelsQuery } from 'mocks/Flow';
 
@@ -276,6 +276,7 @@ export const ChatConversationMocks = [
   ...SearchConversationsMocks,
   searchOffset,
   searchQueryForSavedSearch,
+  ...getAllCollectionsQuery,
 ];
 
 export const searchQueryMock = searchQuery({ limit: DEFAULT_ENTITY_LIMIT }, DEFAULT_MESSAGE_LIMIT, {

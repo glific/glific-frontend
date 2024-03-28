@@ -4,10 +4,15 @@ import {
   GROUP_COLLECTION_SEARCH_QUERY_VARIABLES,
   setVariables,
 } from 'common/constants';
-import { UPDATE_COLLECTION_WA_GROUP } from 'graphql/mutations/Collection';
+import {
+  UPDATE_COLLECTION_WA_GROUP,
+  UPDATE_WA_GROUP_COLLECTION,
+} from 'graphql/mutations/Collection';
 import { SYNC_GROUPS, UPDATE_GROUP_CONTACT } from 'graphql/mutations/Group';
+import { GET_COLLECTION, GROUP_GET_COLLECTION } from 'graphql/queries/Collection';
 import {
   COUNT_COUNTACTS_WA_GROUPS,
+  GET_GROUP_COUNT,
   GET_WA_GROUPS,
   GET_WA_MANAGED_PHONES,
   GROUP_SEARCH_MULTI_QUERY,
@@ -108,6 +113,46 @@ export const waGroup = {
   },
 };
 
+const sampleMessage = {
+  __typename: 'WaMessage',
+  body: 'I will speak daggers to her, but use none.',
+  contact: {
+    __typename: 'Contact',
+    name: 'Default receiver',
+  },
+  contextMessage: null,
+  errors: null,
+  id: '1',
+  insertedAt: '2024-03-11T04:39:56.772383Z',
+  media: null,
+  messageNumber: 1,
+  status: 'received',
+  type: 'TEXT',
+};
+
+const sampleSearchQueryResult = [
+  {
+    id: 'wa_group_1',
+    __typename: 'WaConversation',
+    group: null,
+    messages: [sampleMessage],
+    waGroup: {
+      __typename: 'WaGroup',
+      bspId: '745572428506626346@g.us',
+      id: '1',
+      label: 'Oklahoma sheep',
+      lastCommunicationAt: '2024-03-12T14:12:30Z',
+      waManagedPhone: {
+        __typename: 'WaManagedPhone',
+        id: '1',
+        label: null,
+        phone: '8238389740',
+        phoneId: 8220,
+      },
+    },
+  },
+];
+
 export const waGroupcollection = {
   query: GROUP_SEARCH_QUERY,
   variables: GROUP_COLLECTION_SEARCH_QUERY_VARIABLES,
@@ -119,7 +164,7 @@ export const waGroupcollection = {
           label: 'Default WA Group Collection',
         },
         id: 'group_6',
-        messages: [],
+        messages: [sampleMessage],
         waGroup: null,
       },
       {
@@ -151,45 +196,7 @@ export const searchGroupQuery = [
     },
     result: {
       data: {
-        search: [
-          {
-            id: 'wa_group_1',
-            __typename: 'WaConversation',
-            group: null,
-            messages: [
-              {
-                __typename: 'WaMessage',
-                body: 'I will speak daggers to her, but use none.',
-                contact: {
-                  __typename: 'Contact',
-                  name: 'Default receiver',
-                },
-                contextMessage: null,
-                errors: null,
-                id: '1',
-                insertedAt: '2024-03-11T04:39:56.772383Z',
-                media: null,
-                messageNumber: 1,
-                status: 'received',
-                type: 'TEXT',
-              },
-            ],
-            waGroup: {
-              __typename: 'WaGroup',
-              bspId: '745572428506626346@g.us',
-              id: '1',
-              label: 'Oklahoma sheep',
-              lastCommunicationAt: '2024-03-12T14:12:30Z',
-              waManagedPhone: {
-                __typename: 'WaManagedPhone',
-                id: '1',
-                label: null,
-                phone: '8238389740',
-                phoneId: 8220,
-              },
-            },
-          },
-        ],
+        search: sampleSearchQueryResult,
       },
     },
   },
@@ -323,45 +330,7 @@ export const searchGroupQuery = [
     },
     result: {
       data: {
-        search: [
-          {
-            id: 'wa_group_1',
-            __typename: 'WaConversation',
-            group: null,
-            messages: [
-              {
-                __typename: 'WaMessage',
-                body: 'I will speak daggers to her, but use none.',
-                contact: {
-                  __typename: 'Contact',
-                  name: 'Default receiver',
-                },
-                contextMessage: null,
-                errors: null,
-                id: '1',
-                insertedAt: '2024-03-11T04:39:56.772383Z',
-                media: null,
-                messageNumber: 1,
-                status: 'received',
-                type: 'TEXT',
-              },
-            ],
-            waGroup: {
-              __typename: 'WaGroup',
-              bspId: '745572428506626346@g.us',
-              id: '1',
-              label: 'Oklahoma sheep',
-              lastCommunicationAt: '2024-03-12T14:12:30Z',
-              waManagedPhone: {
-                __typename: 'WaManagedPhone',
-                id: '1',
-                label: null,
-                phone: '8238389740',
-                phoneId: 8220,
-              },
-            },
-          },
-        ],
+        search: sampleSearchQueryResult,
       },
     },
   },
@@ -582,45 +551,7 @@ export const searchCollectionGroupQuery = [
     },
     result: {
       data: {
-        search: [
-          {
-            id: 'wa_group_1',
-            __typename: 'WaConversation',
-            group: null,
-            messages: [
-              {
-                __typename: 'WaMessage',
-                body: 'I will speak daggers to her, but use none.',
-                contact: {
-                  __typename: 'Contact',
-                  name: 'Default receiver',
-                },
-                contextMessage: null,
-                errors: null,
-                id: '1',
-                insertedAt: '2024-03-11T04:39:56.772383Z',
-                media: null,
-                messageNumber: 1,
-                status: 'received',
-                type: 'TEXT',
-              },
-            ],
-            waGroup: {
-              __typename: 'WaGroup',
-              bspId: '745572428506626346@g.us',
-              id: '1',
-              label: 'Oklahoma sheep',
-              lastCommunicationAt: '2024-03-12T14:12:30Z',
-              waManagedPhone: {
-                __typename: 'WaManagedPhone',
-                id: '1',
-                label: null,
-                phone: '8238389740',
-                phoneId: 8220,
-              },
-            },
-          },
-        ],
+        search: sampleSearchQueryResult,
       },
     },
   },
@@ -681,28 +612,40 @@ export const searchCollectionGroupQuery = [
   },
 ];
 
+const groupsData = {
+  waGroups: [
+    {
+      bspId: '120363242907663820@g.us',
+      id: '1',
+      lastCommunicationAt: '2024-03-15T10:53:48Z',
+      name: 'Group test 1',
+    },
+    {
+      bspId: '120363242907663810@g.us',
+      id: '5',
+      lastCommunicationAt: '2024-03-15T10:53:48Z',
+      name: 'Group 1',
+    },
+  ],
+};
+
 export const getGroupsSearchQuery = {
   request: {
     query: GET_WA_GROUPS,
     variables: setVariables({}, 50),
   },
   result: {
-    data: {
-      waGroups: [
-        {
-          bspId: '120363242907663820@g.us',
-          id: '1',
-          lastCommunicationAt: '2024-03-15T10:53:48Z',
-          name: 'Group test 1',
-        },
-        {
-          bspId: '120363242907663810@g.us',
-          id: '5',
-          lastCommunicationAt: '2024-03-15T10:53:48Z',
-          name: 'Group 1',
-        },
-      ],
-    },
+    data: groupsData,
+  },
+};
+
+export const getGroupsSearchQuery2 = {
+  request: {
+    query: GET_WA_GROUPS,
+    variables: setVariables({ label: '' }, 50),
+  },
+  result: {
+    data: groupsData,
   },
 };
 
@@ -1020,6 +963,131 @@ export const removeContactQuery = {
         numberDeleted: 1,
         waGroupContacts: [],
       },
+    },
+  },
+};
+
+export const addGroupToCollectionList = {
+  request: {
+    query: UPDATE_COLLECTION_WA_GROUP,
+    variables: {
+      input: {
+        addWaGroupIds: ['5'],
+        groupId: '1',
+        deleteWaGroupIds: [],
+      },
+    },
+  },
+  result: {
+    data: {
+      updateCollectionWaGroup: {
+        groupContacts: [
+          {
+            id: '17',
+          },
+        ],
+        numberDeleted: 0,
+      },
+    },
+  },
+};
+
+export const countGroups = {
+  request: {
+    query: GET_GROUP_COUNT,
+    variables: { filter: { includeGroups: '1' } },
+  },
+  result: { data: { countWaGroups: 5 } },
+};
+
+export const getGroups = {
+  request: {
+    query: GROUP_GET_COLLECTION,
+    variables: {
+      filter: { includeGroups: '1' },
+      opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'label' },
+    },
+  },
+  result: {
+    data: {
+      waGroups: [
+        {
+          bspId: '120363255034755395@g.us',
+          id: '19',
+          label: 'Group 12',
+          lastCommunicationAt: '2024-03-14T05:31:46Z',
+        },
+        {
+          bspId: '120363254553139323@g.us',
+          id: '24',
+          label: 'Group 7',
+          lastCommunicationAt: '2024-03-14T03:57:42Z',
+        },
+        {
+          bspId: '120363255430686472@g.us',
+          id: '23',
+          label: 'Group 8',
+          lastCommunicationAt: '2024-03-14T03:57:42Z',
+        },
+        {
+          bspId: '493920286032891462@g.us',
+          id: '1',
+          label: 'Indiana foes',
+          lastCommunicationAt: '2024-03-14T03:55:33Z',
+        },
+        {
+          bspId: '112887777270950553@g.us',
+          id: '3',
+          label: 'Oklahoma banshees',
+          lastCommunicationAt: '2024-03-14T04:55:24Z',
+        },
+      ],
+    },
+  },
+};
+
+export const getGroupsCollections = {
+  request: {
+    query: GET_COLLECTION,
+    variables: { id: '1' },
+  },
+  result: {
+    data: {
+      group: {
+        __typename: 'GroupResult',
+        group: {
+          __typename: 'Group',
+          description: null,
+          id: '2',
+          label: 'Default WA Group Collection',
+          roles: [],
+          users: [],
+        },
+      },
+    },
+  },
+};
+
+export const updateWaGroupCollection = {
+  request: {
+    query: UPDATE_WA_GROUP_COLLECTION,
+    variables: {},
+  },
+  result: {},
+};
+
+export const searchFilterQuery = {
+  request: {
+    query: GROUP_SEARCH_QUERY,
+    variables: {
+      waGroupOpts: { limit: 1 },
+      waMessageOpts: { limit: 0, offset: 0 },
+      filter: { id: '1' },
+    },
+  },
+  result: {
+    data: {
+      search: sampleSearchQueryResult,
     },
   },
 };

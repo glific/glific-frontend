@@ -62,6 +62,13 @@ test('it should render the message content correctly', () => {
   expect(getByTestId('content')).toHaveTextContent('Hello there!');
 });
 
+test('it should render the message content correctly on search', () => {
+  const props: any = { ...defaultProps, highlightSearch: 'Hello' };
+
+  const { getByTestId } = render(wrapperContainer(props));
+  expect(getByTestId('highlightText')).toHaveTextContent('Hello');
+});
+
 test('it should render the message date correctly', () => {
   const { getByTestId } = render(wrapperContainer(defaultProps));
   expect(getByTestId('date')).toHaveTextContent(dayjs(insertedAt).format(SHORT_DATE_FORMAT));

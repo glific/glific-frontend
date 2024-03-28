@@ -113,7 +113,7 @@ export const InteractiveMessageList = () => {
   const additionalAction = () => [
     {
       label: t('Show all languages'),
-      icon: <DownArrow />,
+      icon: <DownArrow data-testid="down-arrow" />,
       parameter: 'id',
       dialog: setDialog,
     },

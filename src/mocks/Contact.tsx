@@ -278,38 +278,58 @@ export const getContactsSearchQuery = {
   },
 };
 
-export const getCollectionContactsQuery = {
-  request: {
-    query: CONTACT_SEARCH_QUERY,
-    variables: {
-      filter: { includeGroups: '1' },
-      opts: {
-        limit: 50,
-        offset: 0,
-        order: 'ASC',
-        orderWith: 'name',
+export const getCollectionContactsQuery = (variables: any) => {
+  return {
+    request: {
+      query: CONTACT_SEARCH_QUERY,
+      variables: { ...variables },
+    },
+    result: {
+      data: {
+        contacts: [
+          {
+            id: '1',
+            name: 'Glific User',
+            phone: '9876543211',
+            maskedPhone: '987******11',
+            groups: [
+              {
+                id: '1',
+                label: 'Default Collection',
+              },
+            ],
+            status: 'SESSION',
+          },
+          {
+            id: '2',
+            name: 'Glific User 1',
+            phone: '9876543211',
+            maskedPhone: '987******11',
+            groups: [
+              {
+                id: '1',
+                label: 'Default Collection',
+              },
+            ],
+            status: 'SESSION',
+          },
+          {
+            id: '3',
+            name: 'Glific User 2',
+            phone: '9876543211',
+            maskedPhone: '987******11',
+            groups: [
+              {
+                id: '1',
+                label: 'Default Collection',
+              },
+            ],
+            status: 'SESSION',
+          },
+        ],
       },
     },
-  },
-  result: {
-    data: {
-      contacts: [
-        {
-          id: '1',
-          name: 'Glific User',
-          phone: '9876543211',
-          maskedPhone: '987******11',
-          groups: [
-            {
-              id: '1',
-              label: 'Default Collection',
-            },
-          ],
-          status: 'SESSION',
-        },
-      ],
-    },
-  },
+  };
 };
 
 export const blockContactQuery = {

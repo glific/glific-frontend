@@ -7,6 +7,7 @@ import { setUserSession } from 'services/AuthService';
 import { GROUP_QUERY_VARIABLES } from 'common/constants';
 import GroupChatInterface from './GroupChatInterface';
 import { GROUP_SEARCH_QUERY } from 'graphql/queries/WaGroups';
+import { waGroupcollection } from 'mocks/Groups';
 
 const cache = new InMemoryCache({ addTypename: false });
 cache.writeQuery({
@@ -143,6 +144,8 @@ cache.writeQuery({
     ],
   },
 });
+
+cache.writeQuery(waGroupcollection);
 
 const mockedUsedNavigate = vi.fn();
 vi.mock('react-router-dom', async () => ({

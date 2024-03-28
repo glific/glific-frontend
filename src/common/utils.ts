@@ -2,7 +2,13 @@ import axios from 'axios';
 import { FLOW_EDITOR_API } from 'config';
 import setLogs from 'config/logs';
 import { checkDynamicRole } from 'context/role';
-import { getAuthSession, getOrganizationServices, getUserSession, setAuthSession, renewAuthToken } from 'services/AuthService';
+import {
+  getAuthSession,
+  getOrganizationServices,
+  getUserSession,
+  setAuthSession,
+  renewAuthToken,
+} from 'services/AuthService';
 import { SIMULATOR_NUMBER_START } from './constants';
 import { setNotification } from './notification';
 

@@ -130,7 +130,6 @@ export const Consulting = ({ organizationId, setOpenDialog }: ConsultingProps) =
       name: 'when',
       label: t('Select date'),
       onChange: (val: any) => setWhen(val),
-
     },
     {
       component: Input,

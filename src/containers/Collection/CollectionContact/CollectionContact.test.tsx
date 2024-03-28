@@ -21,8 +21,24 @@ const mocks = [
   getCollectionQuery,
   getCollectionInfo,
   getCollectionUsersQuery,
-  getCollectionContactsQuery,
-  getCollectionContactsQuery,
+  getCollectionContactsQuery({
+    filter: { includeGroups: '1' },
+    opts: {
+      limit: 50,
+      offset: 0,
+      order: 'ASC',
+      orderWith: 'name',
+    },
+  }),
+  getCollectionContactsQuery({
+    filter: { includeGroups: '1' },
+    opts: {
+      limit: 50,
+      offset: 0,
+      order: 'ASC',
+      orderWith: 'name',
+    },
+  }),
 ];
 
 const wrapper = (
