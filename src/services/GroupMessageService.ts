@@ -78,15 +78,13 @@ export const updateCacheQuery = (
   conversationsCopy.search = conversationsCopy.search.map((conversation: any) => {
     const conversationObj = conversation;
     // If the collection(group) is present in the cache
-    if (collectionId) {
-      if (conversationObj.group?.id === collectionId.toString()) {
-        isContactCached = true;
-        if (updateMessage) {
-          conversationObj.messages = [
-            ...conversationObj.messages,
-            ...conversationCopy.search[0].messages,
-          ];
-        }
+    if (collectionId && conversationObj.group?.id === collectionId.toString()) {
+      isContactCached = true;
+      if (updateMessage) {
+        conversationObj.messages = [
+          ...conversationObj.messages,
+          ...conversationCopy.search[0].messages,
+        ];
       }
     }
     // If the contact is present in the cache
