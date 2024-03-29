@@ -353,6 +353,7 @@ export const searchGroupQuery = [
       data: {
         search: [
           {
+            __typename: 'WaConversation',
             id: 'group_7',
             group: {
               __typename: 'Group',
@@ -363,6 +364,7 @@ export const searchGroupQuery = [
             waGroup: null,
           },
           {
+            __typename: 'WaConversation',
             id: 'group_8',
             group: {
               __typename: 'Group',
@@ -373,6 +375,7 @@ export const searchGroupQuery = [
             waGroup: null,
           },
           {
+            __typename: 'WaConversation',
             id: 'group_6',
             group: {
               __typename: 'Group',
