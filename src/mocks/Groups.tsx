@@ -163,7 +163,7 @@ export const waGroupcollection = {
           id: '1',
           label: 'Default WA Group Collection',
         },
-        id: 'group_6',
+        id: 'group_1',
         messages: [sampleMessage],
         waGroup: null,
       },
@@ -172,7 +172,7 @@ export const waGroupcollection = {
           id: '1',
           label: 'Sample Group Collection 1710521137960',
         },
-        id: 'group_19',
+        id: 'group_2',
         messages: [],
         waGroup: null,
       },
@@ -353,7 +353,7 @@ export const searchGroupQuery = [
       data: {
         search: [
           {
-            __typename: 'WaConversation',
+            id: 'group_7',
             group: {
               __typename: 'Group',
               id: '7',
@@ -363,7 +363,7 @@ export const searchGroupQuery = [
             waGroup: null,
           },
           {
-            __typename: 'WaConversation',
+            id: 'group_8',
             group: {
               __typename: 'Group',
               id: '8',
@@ -373,7 +373,7 @@ export const searchGroupQuery = [
             waGroup: null,
           },
           {
-            __typename: 'WaConversation',
+            id: 'group_6',
             group: {
               __typename: 'Group',
               id: '6',
@@ -402,6 +402,7 @@ export const searchCollectionGroupQuery = [
       data: {
         search: [
           {
+            id: 'group_1',
             group: {
               id: '1',
               label: 'Default WA Group Collection',
@@ -410,6 +411,7 @@ export const searchCollectionGroupQuery = [
             waGroup: null,
           },
           {
+            id: 'group_2',
             group: {
               id: '2',
               label: 'Sample Group Collection ',

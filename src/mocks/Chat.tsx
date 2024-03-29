@@ -709,6 +709,7 @@ const conversation = {
           media: null,
         },
       ],
+      id: 'contact_2',
     },
   ],
 };
@@ -716,6 +717,7 @@ const conversation = {
 const conversationWithMultipleMessages = {
   search: [
     {
+      id: 'contact_2',
       contact: {
         id: '2',
         name: 'Effie Cormier',
@@ -1046,3 +1048,69 @@ export const loadMoreChats = {
     },
   },
 };
+
+export const conversationMock = (variables: any) => ({
+  request: {
+    query: SEARCH_QUERY,
+    variables,
+  },
+  result: {
+    data: {
+      search: [
+        {
+          id: 'contact_2',
+          group: null,
+          contact: {
+            id: '2',
+            name: 'Jane Doe',
+            phone: '9857274829',
+            maskedPhone: '974****678',
+            lastMessageAt: '2020-06-25T13:36:43Z',
+            status: 'VALID',
+            bspStatus: 'SESSION_AND_HSM',
+            isOrgRead: true,
+            fields: '{}',
+          },
+          messages: [
+            {
+              id: '1',
+              body: 'Hello',
+              insertedAt: '2020-06-25T13:36:43Z',
+              receiver: {
+                id: '1',
+              },
+              sender: {
+                id: '2',
+              },
+              type: 'TEXT',
+              media: null,
+              location: null,
+              errors: null,
+              messageNumber: 2,
+              contextMessage: {
+                body: 'All good',
+                contextId: 1,
+                messageNumber: 10,
+                errors: '{}',
+                media: null,
+                type: 'TEXT',
+                insertedAt: '2021-04-26T06:13:03.832721Z',
+                location: null,
+                receiver: {
+                  id: '1',
+                },
+                sender: {
+                  id: '2',
+                  name: 'User',
+                },
+              },
+              sendBy: 'Glific User',
+              interactiveContent: '{}',
+              flowLabel: null,
+            },
+          ],
+        },
+      ],
+    },
+  },
+});

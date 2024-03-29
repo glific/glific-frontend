@@ -82,6 +82,7 @@ export const searchQuery = {
     search: [
       {
         group: null,
+        id: 'contact_2',
         contact: {
           id: '2',
           fields: '{}',

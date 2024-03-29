@@ -12,6 +12,7 @@ import { clearMessagesQuery, contactCollectionsQuery } from 'mocks/Contact';
 import { OrganizationStateMock } from 'mocks/Organization';
 import {
   CONVERSATION_MOCKS,
+  conversationMock,
   createAndSendMessageMutation2,
   mocksWithConversation,
   sendMessageInWaGroup,
@@ -22,6 +23,8 @@ import { getCollectionInfo } from 'mocks/Collection';
 import { userEvent } from '@testing-library/user-event';
 import { setNotification } from 'common/notification';
 import { waGroup, waGroupcollection } from 'mocks/Groups';
+import { getContactSearchQuery } from 'mocks/Search';
+import { sampleMessage } from '../ChatConversations/ChatConversations.test.helper';
 
 vi.mock('common/notification', async (importOriginal) => {
   const mod = await importOriginal<typeof import('common/notification')>();
@@ -213,124 +216,21 @@ export const collection = {
           label: 'Default Group',
         },
         contact: null,
-        messages: [
-          {
-            id: '1',
-            body: 'Hey there whats up?',
-            insertedAt: '2020-06-25T13:36:43Z',
-            location: null,
-            messageNumber: 48,
-            receiver: {
-              id: '1',
-            },
-            sender: {
-              id: '1',
-            },
-            type: 'TEXT',
-            media: null,
-            errors: '{}',
-            contextMessage: {
-              body: 'All good',
-              contextId: 1,
-              messageNumber: 10,
-              errors: '{}',
-              media: null,
-              type: 'TEXT',
-              insertedAt: '2021-04-26T06:13:03.832721Z',
-              location: null,
-              receiver: {
-                id: '1',
-              },
-              sender: {
-                id: '2',
-                name: 'User',
-              },
-            },
-            interactiveContent: '{}',
-            sendBy: 'test',
-            flowLabel: null,
-          },
-        ],
+        messages: [sampleMessage],
       },
       ...conversationData,
     ],
   },
 };
 
-const coversationMock = (variables: any) => ({
-  request: {
-    query: SEARCH_QUERY,
-    variables,
-  },
-  result: {
-    data: {
-      search: [
-        {
-          id: 'contact_2',
-          group: null,
-          contact: {
-            id: '2',
-            name: 'Jane Doe',
-            phone: '9857274829',
-            maskedPhone: '974****678',
-            lastMessageAt: '2020-06-25T13:36:43Z',
-            status: 'VALID',
-            bspStatus: 'SESSION_AND_HSM',
-            isOrgRead: true,
-            fields: '{}',
-          },
-          messages: [
-            {
-              id: '1',
-              body: 'Hello',
-              insertedAt: '2020-06-25T13:36:43Z',
-              receiver: {
-                id: '1',
-              },
-              sender: {
-                id: '2',
-              },
-              type: 'TEXT',
-              media: null,
-              location: null,
-              errors: null,
-              messageNumber: 2,
-              contextMessage: {
-                body: 'All good',
-                contextId: 1,
-                messageNumber: 10,
-                errors: '{}',
-                media: null,
-                type: 'TEXT',
-                insertedAt: '2021-04-26T06:13:03.832721Z',
-                location: null,
-                receiver: {
-                  id: '1',
-                },
-                sender: {
-                  id: '2',
-                  name: 'User',
-                },
-              },
-              sendBy: 'Glific User',
-              interactiveContent: '{}',
-              flowLabel: null,
-            },
-          ],
-        },
-      ],
-    },
-  },
-});
-
 const mocks = [
+  ...CONVERSATION_MOCKS,
+  ...mocksWithConversation,
   getAttachmentPermissionMock,
   contactCollectionsQuery(2),
   contactCollectionsQuery(3),
   OrganizationStateMock,
-  ...CONVERSATION_MOCKS,
-  ...mocksWithConversation,
-  coversationMock({
+  conversationMock({
     contactOpts: { limit: 1 },
     filter: { id: '5' },
     messageOpts: { limit: 20, offset: 0 },
@@ -339,89 +239,21 @@ const mocks = [
   loadMoreQuery,
   getCollectionInfo({ id: '2' }),
   getCollectionInfo({ id: '5' }),
-  coversationMock({
+  conversationMock({
     contactOpts: { limit: 1 },
     messageOpts: { limit: 20, offset: 0 },
     filter: { id: '2' },
   }),
-  coversationMock({
+  conversationMock({
     contactOpts: { limit: 1 },
     messageOpts: { limit: 20, offset: 0 },
     filter: { id: '2', searchGroup: true },
   }),
-  {
-    request: {
-      query: SEARCH_QUERY,
-      variables: {
-        contactOpts: { limit: 1 },
-        messageOpts: { limit: 20, offset: 0 },
-        filter: { id: '3' },
-      },
-    },
-    result: {
-      data: {
-        search: [
-          {
-            id: 'contact_3',
-            contact: {
-              id: '3',
-              name: 'New Contact',
-              phone: '9857274829',
-              maskedPhone: '974****678',
-              lastMessageAt: '2020-06-25T13:36:43Z',
-              status: 'VALID',
-              bspStatus: 'SESSION_AND_HSM',
-              isOrgRead: true,
-              fields: '{}',
-            },
-            group: null,
-            messages: [
-              {
-                id: '1',
-                body: 'Hello',
-                insertedAt: '2020-06-25T13:36:43Z',
-                receiver: {
-                  id: '1',
-                },
-                sender: {
-                  id: '3',
-                },
-                type: 'TEXT',
-                media: null,
-                location: null,
-                errors: null,
-                messageNumber: 2,
-                contextMessage: {
-                  body: 'All good',
-                  contextId: 1,
-                  messageNumber: 10,
-                  errors: '{}',
-                  media: null,
-                  type: 'TEXT',
-                  insertedAt: '2021-04-26T06:13:03.832721Z',
-                  location: null,
-                  receiver: {
-                    id: '1',
-                  },
-                  sender: {
-                    id: '3',
-                    name: 'User',
-                  },
-                },
-                sendBy: 'Glific User',
-                interactiveContent: '{}',
-                flowLabel: null,
-              },
-            ],
-          },
-        ],
-      },
-    },
-  },
   createAndSendMessageMutation2,
   sendMessageMock,
   sendMessageInWaGroup,
   sendMessageInWaGroupCollection,
+  getContactSearchQuery,
 ];
 
 export const collectionWithLoadMore = {

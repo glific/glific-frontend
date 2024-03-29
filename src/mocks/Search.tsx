@@ -444,3 +444,73 @@ export const getSearchCollectionQuery = {
     },
   },
 };
+
+export const getContactSearchQuery = {
+  request: {
+    query: SEARCH_QUERY,
+    variables: {
+      contactOpts: { limit: 1 },
+      messageOpts: { limit: 20, offset: 0 },
+      filter: { id: '3' },
+    },
+  },
+  result: {
+    data: {
+      search: [
+        {
+          id: 'contact_3',
+          contact: {
+            id: '3',
+            name: 'New Contact',
+            phone: '9857274829',
+            maskedPhone: '974****678',
+            lastMessageAt: '2020-06-25T13:36:43Z',
+            status: 'VALID',
+            bspStatus: 'SESSION_AND_HSM',
+            isOrgRead: true,
+            fields: '{}',
+          },
+          group: null,
+          messages: [
+            {
+              id: '1',
+              body: 'Hello',
+              insertedAt: '2020-06-25T13:36:43Z',
+              receiver: {
+                id: '1',
+              },
+              sender: {
+                id: '3',
+              },
+              type: 'TEXT',
+              media: null,
+              location: null,
+              errors: null,
+              messageNumber: 2,
+              contextMessage: {
+                body: 'All good',
+                contextId: 1,
+                messageNumber: 10,
+                errors: '{}',
+                media: null,
+                type: 'TEXT',
+                insertedAt: '2021-04-26T06:13:03.832721Z',
+                location: null,
+                receiver: {
+                  id: '1',
+                },
+                sender: {
+                  id: '3',
+                  name: 'User',
+                },
+              },
+              sendBy: 'Glific User',
+              interactiveContent: '{}',
+              flowLabel: null,
+            },
+          ],
+        },
+      ],
+    },
+  },
+};

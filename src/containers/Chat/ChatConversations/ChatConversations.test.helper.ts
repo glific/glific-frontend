@@ -12,6 +12,7 @@ const withResult = {
       {
         __typename: 'Conversation',
         group: null,
+        id: 'contact_6',
         contact: {
           id: '6',
           fields: '{}',
@@ -194,6 +195,43 @@ export const SearchConversationsMocks = [
   searchMultiQuery('a'),
 ];
 
+export const sampleMessage = {
+  id: '1',
+  body: 'Hello',
+  insertedAt: '2020-06-25T13:36:43Z',
+  receiver: {
+    id: '1',
+  },
+  sender: {
+    id: '2',
+  },
+  type: 'TEXT',
+  media: null,
+  location: null,
+  errors: null,
+  messageNumber: 2,
+  contextMessage: {
+    body: 'All good',
+    contextId: 1,
+    messageNumber: 10,
+    errors: '{}',
+    media: null,
+    type: 'TEXT',
+    insertedAt: '2021-04-26T06:13:03.832721Z',
+    location: null,
+    receiver: {
+      id: '1',
+    },
+    sender: {
+      id: '2',
+      name: 'User',
+    },
+  },
+  sendBy: 'Glific User',
+  interactiveContent: '{}',
+  flowLabel: null,
+};
+
 export const searchQueryForSavedSearch = {
   request: {
     query: SEARCH_QUERY,
@@ -207,6 +245,7 @@ export const searchQueryForSavedSearch = {
     data: {
       search: [
         {
+          id: 'contact_2',
           group: null,
           contact: {
             id: '2',
@@ -219,44 +258,7 @@ export const searchQueryForSavedSearch = {
             isOrgRead: true,
             fields: '{}',
           },
-          messages: [
-            {
-              id: '1',
-              body: 'Hello',
-              insertedAt: '2020-06-25T13:36:43Z',
-              receiver: {
-                id: '1',
-              },
-              sender: {
-                id: '2',
-              },
-              type: 'TEXT',
-              media: null,
-              location: null,
-              errors: null,
-              messageNumber: 2,
-              contextMessage: {
-                body: 'All good',
-                contextId: 1,
-                messageNumber: 10,
-                errors: '{}',
-                media: null,
-                type: 'TEXT',
-                insertedAt: '2021-04-26T06:13:03.832721Z',
-                location: null,
-                receiver: {
-                  id: '1',
-                },
-                sender: {
-                  id: '2',
-                  name: 'User',
-                },
-              },
-              sendBy: 'Glific User',
-              interactiveContent: '{}',
-              flowLabel: null,
-            },
-          ],
+          messages: [sampleMessage],
         },
       ],
     },
