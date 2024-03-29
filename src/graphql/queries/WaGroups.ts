@@ -162,3 +162,20 @@ export const COUNT_COUNTACTS_WA_GROUPS = gql`
     countWaGroupContact: countContactWaGroup(filter: $filter)
   }
 `;
+
+export const GET_WA_GROUP = gql`
+  query WaGroup($waGroupId: ID!) {
+    waGroup(id: $waGroupId) {
+      waGroup {
+        label
+        id
+        lastCommunicationAt
+        bspId
+        waManagedPhone {
+          phone
+          id
+        }
+      }
+    }
+  }
+`;
