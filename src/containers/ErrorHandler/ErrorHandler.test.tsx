@@ -17,6 +17,14 @@ const resolvers = {
   },
 };
 
+const resolversWithNullError = {
+  Query: {
+    errorMessage: () => {
+      return '';
+    },
+  },
+};
+
 describe('<ErrorHandler />', () => {
   afterEach(cleanup);
 
@@ -78,4 +86,43 @@ test('it should render <ErrorHandler /> component with custom message', async ()
 
   //need to assert something here
   await waitFor(() => {});
+});
+
+test('it should render <ErrorHandler /> component with custom title', async () => {
+  const resolvers = {
+    Query: {
+      errorMessage: () => {
+        return {
+          title: 'Error Title',
+          message: [{ message: 'An error has occurred!' }],
+          type: 'Error',
+          networkError: 'Unable to fetch',
+          graphqlError: null,
+        };
+      },
+    },
+  };
+  render(
+    <MockedProvider resolvers={resolvers} addTypename={false}>
+      <ErrorHandler />
+    </MockedProvider>
+  );
+
+  await waitFor(() => {
+    expect(screen.queryByRole('dialog')).toBeInTheDocument();
+  });
+
+  expect(screen.getByTestId('dialogTitle')).toHaveTextContent('Error Title');
+});
+
+test('it should render <ErrorHandler /> component with no error message', async () => {
+  render(
+    <MockedProvider resolvers={resolversWithNullError} addTypename={false}>
+      <ErrorHandler />
+    </MockedProvider>
+  );
+
+  await waitFor(() => {
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  });
 });
