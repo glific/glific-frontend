@@ -70,9 +70,6 @@ export const CollectionList = () => {
   const { t } = useTranslation();
   const location = useLocation();
   const groups: boolean = location.pathname.includes('group');
-  const [filter] = useState({
-    groupType: groups ? WA_GROUPS_COLLECTION : CONTACTS_COLLECTION,
-  });
 
   const entity = groups ? 'waGroups' : 'contacts';
   const entityQuery = groups ? GET_WA_GROUPS : CONTACT_SEARCH_QUERY;
@@ -300,7 +297,9 @@ export const CollectionList = () => {
             navigate(`/${groups ? 'group/' : ''}collection/add`);
           },
         }}
-        filters={filter}
+        filters={{
+          groupType: groups ? WA_GROUPS_COLLECTION : CONTACTS_COLLECTION,
+        }}
         pageLink={`${groups ? 'group/' : ''}collection`}
         listIcon={collectionIcon}
         dialogMessage={dialogMessage}

@@ -170,6 +170,7 @@ export const Collection = () => {
       helperText: t(
         'Assigned staff members will be responsible to chat with contacts in this collection'
       ),
+      skip: groups,
     },
   ];
 
