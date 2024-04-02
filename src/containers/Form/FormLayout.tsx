@@ -1,5 +1,5 @@
 import { useState, Fragment, useEffect } from 'react';
-import { Navigate, Link, useParams } from 'react-router-dom';
+import { Navigate, useParams } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
 // eslint-disable-next-line no-unused-vars
 import { DocumentNode, ApolloError, useQuery, useMutation } from '@apollo/client';
@@ -18,7 +18,6 @@ import { GET_ROLE_NAMES } from 'graphql/queries/Role';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Heading } from 'components/UI/Heading/Heading';
 import DeleteIcon from 'assets/images/icons/Delete/White.svg?react';
-import BackIcon from 'assets/images/icons/BackIconFlow.svg?react';
 import { organizationHasDynamicRole } from 'common/utils';
 import { getUserRole } from 'context/role';
 import styles from './FormLayout.module.css';

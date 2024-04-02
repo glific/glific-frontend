@@ -209,7 +209,7 @@ export const Collection = () => {
       listItemName="collection"
       dialogMessage={dialogMessage}
       formFields={formFields}
-      redirectionLink={`${groups ? 'group/' : ''}collection`}
+      redirectionLink={redirectLink}
       listItem="group"
       icon={collectionIcon}
       helpData={collectionInfo}
