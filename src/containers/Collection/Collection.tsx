@@ -44,6 +44,7 @@ export const Collection = () => {
   const { t } = useTranslation();
   const location = useLocation();
   const groups: boolean = location.pathname.includes('group');
+  const redirectLink = groups ? '/group/collection' : '/collection';
   const groupType = groups ? WA_GROUPS_COLLECTION : CONTACTS_COLLECTION;
   const searchQuery = groups ? GROUP_SEARCH_QUERY : SEARCH_QUERY;
   const searchVariables = groups
@@ -212,6 +213,7 @@ export const Collection = () => {
       listItem="group"
       icon={collectionIcon}
       helpData={collectionInfo}
+      backLinkButton={redirectLink}
     />
   );
 };
