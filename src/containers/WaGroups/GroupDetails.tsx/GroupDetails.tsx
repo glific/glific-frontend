@@ -22,14 +22,10 @@ export const GroupDetails = () => {
 
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [deleteVariables, setDeleteVariables] = useState<any>();
-  const [groupDetails, setGroupDetails] = useState<any>();
 
-  const { loading: groupDataLoading } = useQuery(GET_WA_GROUP, {
+  const { loading: groupDataLoading, data: groupData } = useQuery(GET_WA_GROUP, {
     variables: {
       waGroupId: params.id,
-    },
-    onCompleted: (data: any) => {
-      setGroupDetails(data?.waGroup?.waGroup);
     },
   });
 
@@ -162,7 +158,7 @@ export const GroupDetails = () => {
         backLink={`/group/chat/${params.id}`}
         dialogTitle={dialogTitle}
         columnNames={columnNames}
-        title={groupDetails?.label}
+        title={groupData?.waGroup?.waGroup?.label}
         listItem="waGroupContact"
         listItemName="waGroupContact"
         searchParameter={['term']}
