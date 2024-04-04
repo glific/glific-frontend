@@ -434,6 +434,7 @@ export const getSearchCollectionQuery = {
         {
           __typename: 'Conversation',
           contact: null,
+          id: 'group_2',
           group: {
             __typename: 'Group',
             id: '2',
