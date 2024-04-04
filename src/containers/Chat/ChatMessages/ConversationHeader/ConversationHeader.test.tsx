@@ -9,7 +9,7 @@ import {
 } from '../../../../mocks/Contact';
 import { MemoryRouter } from 'react-router';
 import {
-  getCollectionInfo2,
+  getCollectionInfo,
   getCollectionUsersQuery2,
   getCollectionsQuery,
 } from '../../../../mocks/Collection';
@@ -23,8 +23,8 @@ import { searchGroupQuery } from 'mocks/Groups';
 
 const mocks = [
   ...CONVERSATION_MOCKS,
-  contactCollectionsQuery,
-  getCollectionInfo2,
+  contactCollectionsQuery(2),
+  getCollectionInfo({ id: '2' }),
   ...getCollectionsQuery,
   getPublishedFlowQuery,
   blockContactQuery,

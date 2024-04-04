@@ -9,7 +9,7 @@ const defaultProps = {
   description: 'Default collection',
 };
 
-const mocks = [getCollectionInfo, getCollectionUsersQuery];
+const mocks = [getCollectionInfo({ id: '1' }), getCollectionUsersQuery];
 
 const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>

@@ -422,23 +422,84 @@ export const getSearchCollectionQuery = {
       search: [
         {
           __typename: 'Conversation',
+          id: 'group_1',
           contact: null,
           group: {
             __typename: 'Group',
             id: '1',
-            label: 'qwe',
+            label: 'Sample Collection',
           },
           messages: [],
         },
         {
           __typename: 'Conversation',
           contact: null,
+          id: 'group_2',
           group: {
             __typename: 'Group',
             id: '2',
-            label: 'Sample Collection 1710520853056',
+            label: 'Sample Collection 2',
           },
           messages: [],
+        },
+      ],
+    },
+  },
+};
+
+export const getContactSearchQuery = {
+  request: {
+    query: SEARCH_QUERY,
+    variables: {
+      contactOpts: { limit: 1 },
+      messageOpts: { limit: 20, offset: 0 },
+      filter: { id: '3' },
+    },
+  },
+  result: {
+    data: {
+      search: [
+        {
+          __typename: 'Conversation',
+          contact: {
+            __typename: 'Contact',
+            bspStatus: 'SESSION_AND_HSM',
+            fields: '{}',
+            id: '3',
+            isOrgRead: false,
+            lastMessageAt: '2024-03-28T15:12:27Z',
+            maskedPhone: '9876******_2',
+            name: 'New Contact',
+            phone: '9876543210_2',
+            status: 'VALID',
+          },
+          group: null,
+          id: 'contact_3',
+          messages: [
+            {
+              __typename: 'Message',
+              body: 'Thank you for your response',
+              contextMessage: null,
+              errors: null,
+              flowLabel: null,
+              id: '5529',
+              insertedAt: '2024-03-26T16:43:54.779634Z',
+              interactiveContent: '{}',
+              location: null,
+              media: null,
+              messageNumber: 87,
+              receiver: {
+                __typename: 'Contact',
+                id: '3',
+              },
+              sendBy: '',
+              sender: {
+                __typename: 'Contact',
+                id: '1',
+              },
+              type: 'TEXT',
+            },
+          ],
         },
       ],
     },
