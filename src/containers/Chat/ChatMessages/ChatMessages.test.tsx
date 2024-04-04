@@ -24,7 +24,6 @@ import { userEvent } from '@testing-library/user-event';
 import { setNotification } from 'common/notification';
 import { waGroup, waGroupcollection } from 'mocks/Groups';
 import { getContactSearchQuery } from 'mocks/Search';
-import { sampleMessage } from '../ChatConversations/ChatConversations.test.helper';
 
 vi.mock('common/notification', async (importOriginal) => {
   const mod = await importOriginal<typeof import('common/notification')>();
