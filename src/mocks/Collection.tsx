@@ -62,6 +62,7 @@ export const getCollectionsQuery = [
   {
     request: {
       query: GET_COLLECTIONS,
+      variables: { groupType: 'WABA' },
     },
     result: {
       data: {

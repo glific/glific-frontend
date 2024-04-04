@@ -40,7 +40,7 @@ const messages = (limit: number, skip: number) =>
   new Array(limit).fill(null).map((val: any, index: number) => ({
     id: `${index + skip}`,
     body: 'Hey there whats up?',
-    insertedAt: '2020-06-25T13:36:43Z',
+    insertedAt: `2020-${index}-25T13:36:43Z`,
     location: null,
     messageNumber: index + skip + 4,
     receiver: {
@@ -77,12 +77,12 @@ const messages = (limit: number, skip: number) =>
     flowLabel: null,
   }));
 
-const loadMoreQuery = {
+const loadMoreQuery = (length: number, skip: number, filter: any) => ({
   request: {
     query: SEARCH_QUERY,
     variables: {
       contactOpts: { limit: 1 },
-      filter: { id: '2' },
+      filter: filter,
       messageOpts: { limit: 22, offset: 1 },
     },
   },
@@ -103,12 +103,12 @@ const loadMoreQuery = {
           },
           group: null,
           id: 'contact_2',
-          messages: messages(20, 20),
+          messages: messages(length, skip),
         },
       ],
     },
   },
-};
+});
 
 const cache = new InMemoryCache({ addTypename: false });
 export const searchQuery = {
@@ -216,7 +216,7 @@ export const collection = {
           label: 'Default Group',
         },
         contact: null,
-        messages: [sampleMessage],
+        messages: messages(20, 1),
       },
       ...conversationData,
     ],
@@ -236,7 +236,7 @@ const mocks = [
     messageOpts: { limit: 20, offset: 0 },
   }),
   clearMessagesQuery,
-  loadMoreQuery,
+  loadMoreQuery(20, 20, { id: '2' }),
   getCollectionInfo({ id: '2' }),
   getCollectionInfo({ id: '5' }),
   conversationMock({
@@ -254,6 +254,8 @@ const mocks = [
   sendMessageInWaGroup,
   sendMessageInWaGroupCollection,
   getContactSearchQuery,
+  loadMoreQuery(0, 40, { id: '2' }),
+  loadMoreQuery(0, 40, { id: '2', searchGroup: true }),
 ];
 
 export const collectionWithLoadMore = {
@@ -301,6 +303,16 @@ it('should contain the mock message', async () => {
   await waitFor(() => {
     expect(getAllByText('Hey there whats up?')[0]).toBeInTheDocument();
   });
+});
+
+test('it should open dropdown on clicking the message', () => {
+  const { getAllByTestId } = render(chatMessages);
+
+  const allMessageIcons = getAllByTestId('messageOptions');
+
+  fireEvent.click(allMessageIcons[0]);
+
+  expect(screen.getByTestId('popup')).toBeInTheDocument();
 });
 
 test('focus on the latest message', async () => {
@@ -382,6 +394,11 @@ test('Collection: click on Jump to latest', async () => {
   await waitFor(() => {
     fireEvent.click(getByTestId('jumpToLatest'));
   });
+});
+
+test('it should click on context message ', () => {
+  const { getAllByTestId } = render(chatMessages);
+  fireEvent.click(getAllByTestId('reply-message')[0]);
 });
 
 test('should send message to contact collections', async () => {
@@ -474,11 +491,31 @@ test('send message to contact', async () => {
 
 test('Load more messages', async () => {
   const { getByTestId } = render(chatMessages);
+  const container: any = document.querySelector('.messageContainer');
+  const loadmore = getByTestId('loadMoreMessages');
+  await waitFor(() => {
+    fireEvent.scroll(container, { target: { scrollY: 0 } });
+    fireEvent.click(loadmore);
+  });
 
   await waitFor(() => {
-    const container: any = document.querySelector('.messageContainer');
     fireEvent.scroll(container, { target: { scrollY: 0 } });
-    fireEvent.click(getByTestId('loadMoreMessages'));
+    fireEvent.click(loadmore);
+  });
+
+  await waitFor(() => {
+    expect(loadmore).not.toBeInTheDocument();
+  });
+});
+
+test('Load more messages for collections', async () => {
+  const { getByTestId } = render(chatMessagesWithCollection);
+  const container: any = document.querySelector('.messageContainer');
+  const loadmore = getByTestId('loadMoreMessages');
+
+  await waitFor(() => {
+    fireEvent.scroll(container, { target: { scrollY: 0 } });
+    fireEvent.click(loadmore);
   });
 });
 

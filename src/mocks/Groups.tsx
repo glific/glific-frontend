@@ -21,6 +21,7 @@ import {
 } from 'graphql/queries/WaGroups';
 import {
   SENT_MESSAGE_WA_GROUP_COLLECTION,
+  UPDATE_WA_MESSAGE_STATUS,
   WA_MESSAGE_RECEIVED_SUBSCRIPTION,
   WA_MESSAGE_SENT_SUBSCRIPTION,
 } from 'graphql/subscriptions/Groups';
@@ -863,12 +864,34 @@ export const waSentMessageCollectionQuery = {
     },
   },
 };
+const updateWaSatatusMock = {
+  request: {
+    query: UPDATE_WA_MESSAGE_STATUS,
+    variables: { organizationId: '1' },
+  },
+  result: {
+    data: {
+      updateWaMessageStatus: {
+        __typename: 'WaMessage',
+        errors:
+          '{"message":"{\\"success\\":false,\\"message\\":\\"You dont own the phone[8310]. \\"}"}',
+        id: '26',
+        messageNumber: 21,
+        waGroup: {
+          __typename: 'WaGroup',
+          id: '4',
+        },
+      },
+    },
+  },
+};
 
 export const GROUP_CONVERSATION_MOCKS = [
   ...searchGroupQuery,
   waMessageSendSubscription,
   waMessageReceivedSubscription,
   waSentMessageCollectionQuery,
+  updateWaSatatusMock,
 ];
 
 const groups = Array(30)

@@ -422,11 +422,12 @@ export const getSearchCollectionQuery = {
       search: [
         {
           __typename: 'Conversation',
+          id: 'group_1',
           contact: null,
           group: {
             __typename: 'Group',
             id: '1',
-            label: 'qwe',
+            label: 'Sample Collection',
           },
           messages: [],
         },
@@ -436,7 +437,7 @@ export const getSearchCollectionQuery = {
           group: {
             __typename: 'Group',
             id: '2',
-            label: 'Sample Collection 1710520853056',
+            label: 'Sample Collection 2',
           },
           messages: [],
         },

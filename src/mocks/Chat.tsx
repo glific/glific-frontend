@@ -869,6 +869,7 @@ const searchQueryResult = {
   data: {
     search: [
       {
+        id: 'contact_1',
         contact: {
           id: '2',
           name: 'Vaibhav',
