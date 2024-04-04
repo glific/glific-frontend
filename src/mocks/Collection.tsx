@@ -345,17 +345,6 @@ export const getCollectionContactsQuery = {
   },
 };
 
-// export const getCollectionInfo = {
-//   request: {
-//     query: GET_COLLECTION_INFO,
-//     variables: { id: '1' },
-//   },
-//   result: {
-//     data: {
-//       groupInfo: '{"total":3,"session_and_hsm":1,"session":1,"none":1, "hsm":0}',
-//     },
-//   },
-// };
 export const getCollectionInfo = (variables: any) => ({
   request: {
     query: GET_COLLECTION_INFO,
