@@ -15,19 +15,21 @@ export const Heading = ({ formTitle, helpData, showHeaderHelp = true, backLink }
   return (
     <div className={styles.Heading} data-testid="heading">
       <div className={styles.HeadingWrapper}>
-        <div className={styles.HeadingTitle}>
-          {backLink && (
-            <BackIcon
-              onClick={() => navigate(backLink)}
-              className={styles.BackIcon}
-              data-testid="back-button"
-            />
-          )}
-          <div className={styles.TitleText}>{formTitle}</div>
-          {helpData ? <HelpIcon helpData={helpData} /> : ''}
-        </div>
-        <div className={styles.TextHeading}>
-          {showHeaderHelp ? `Please enter below details.` : ''}
+        {backLink && (
+          <BackIcon
+            onClick={() => navigate(backLink)}
+            className={styles.BackIcon}
+            data-testid="back-button"
+          />
+        )}
+        <div>
+          <div className={styles.HeadingTitle}>
+            <div className={styles.TitleText}>{formTitle}</div>
+            {!helpData ? <HelpIcon helpData={helpData} /> : ''}
+          </div>
+          <div className={styles.TextHeading}>
+            {showHeaderHelp ? `Please enter below details.` : ''}
+          </div>
         </div>
       </div>
     </div>
