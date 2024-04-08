@@ -22,6 +22,7 @@ import {
 } from 'graphql/queries/WaGroups';
 import {
   SENT_MESSAGE_WA_GROUP_COLLECTION,
+  UPDATE_WA_MESSAGE_STATUS,
   WA_MESSAGE_RECEIVED_SUBSCRIPTION,
   WA_MESSAGE_SENT_SUBSCRIPTION,
 } from 'graphql/subscriptions/Groups';
@@ -164,7 +165,7 @@ export const waGroupcollection = {
           id: '1',
           label: 'Default WA Group Collection',
         },
-        id: 'group_6',
+        id: 'group_1',
         messages: [sampleMessage],
         waGroup: null,
       },
@@ -173,7 +174,7 @@ export const waGroupcollection = {
           id: '1',
           label: 'Sample Group Collection 1710521137960',
         },
-        id: 'group_19',
+        id: 'group_2',
         messages: [],
         waGroup: null,
       },
@@ -355,6 +356,7 @@ export const searchGroupQuery = [
         search: [
           {
             __typename: 'WaConversation',
+            id: 'group_7',
             group: {
               __typename: 'Group',
               id: '7',
@@ -365,6 +367,7 @@ export const searchGroupQuery = [
           },
           {
             __typename: 'WaConversation',
+            id: 'group_8',
             group: {
               __typename: 'Group',
               id: '8',
@@ -375,6 +378,7 @@ export const searchGroupQuery = [
           },
           {
             __typename: 'WaConversation',
+            id: 'group_6',
             group: {
               __typename: 'Group',
               id: '6',
@@ -403,6 +407,7 @@ export const searchCollectionGroupQuery = [
       data: {
         search: [
           {
+            id: 'group_1',
             group: {
               id: '1',
               label: 'Default WA Group Collection',
@@ -411,6 +416,7 @@ export const searchCollectionGroupQuery = [
             waGroup: null,
           },
           {
+            id: 'group_2',
             group: {
               id: '2',
               label: 'Sample Group Collection ',
@@ -859,12 +865,34 @@ export const waSentMessageCollectionQuery = {
     },
   },
 };
+const updateWaSatatusMock = {
+  request: {
+    query: UPDATE_WA_MESSAGE_STATUS,
+    variables: { organizationId: '1' },
+  },
+  result: {
+    data: {
+      updateWaMessageStatus: {
+        __typename: 'WaMessage',
+        errors:
+          '{"message":"{\\"success\\":false,\\"message\\":\\"You dont own the phone[8310]. \\"}"}',
+        id: '26',
+        messageNumber: 21,
+        waGroup: {
+          __typename: 'WaGroup',
+          id: '4',
+        },
+      },
+    },
+  },
+};
 
 export const GROUP_CONVERSATION_MOCKS = [
   ...searchGroupQuery,
   waMessageSendSubscription,
   waMessageReceivedSubscription,
   waSentMessageCollectionQuery,
+  updateWaSatatusMock,
 ];
 
 const groups = Array(30)

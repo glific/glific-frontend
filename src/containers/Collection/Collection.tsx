@@ -79,7 +79,9 @@ export const Collection = () => {
     variables: setVariables(),
   });
 
-  const { data: collectionList, loading } = useQuery(GET_COLLECTIONS);
+  const { data: collectionList, loading } = useQuery(GET_COLLECTIONS, {
+    variables: { groupType },
+  });
 
   useEffect(() => {
     if (collectionId) {

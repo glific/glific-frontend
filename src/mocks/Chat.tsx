@@ -20,6 +20,10 @@ import { searchQueryMock as searchQuery } from 'containers/Chat/ChatConversation
 import { searchQueryEmptyMock as searchEmptyQuery } from 'containers/Chat/ChatConversations/ChatConversations.test.helper';
 import { contactCollectionsQuery } from './Contact';
 import { getOrganizationLanguagesQuery } from './Organization';
+import {
+  SEND_MESSAGE_IN_WA_GROUP,
+  SEND_MESSAGE_IN_WA_GROUP_COLLECTION,
+} from 'graphql/mutations/Group';
 
 export const getConversationQuery = (data: any) => {
   return {
@@ -31,6 +35,44 @@ export const getConversationQuery = (data: any) => {
       data: data,
     },
   };
+};
+
+export const sampleMessages = {
+  __typename: 'Message',
+  id: '1',
+  body: 'Hello',
+  insertedAt: '2020-06-25T13:36:43Z',
+  receiver: {
+    id: '1',
+  },
+  sender: {
+    id: '2',
+  },
+  type: 'TEXT',
+  media: null,
+  location: null,
+  errors: null,
+  messageNumber: 2,
+  contextMessage: {
+    body: 'All good',
+    contextId: 1,
+    messageNumber: 10,
+    errors: '{}',
+    media: null,
+    type: 'TEXT',
+    insertedAt: '2021-04-26T06:13:03.832721Z',
+    location: null,
+    receiver: {
+      id: '1',
+    },
+    sender: {
+      id: '2',
+      name: 'User',
+    },
+  },
+  sendBy: 'Glific User',
+  interactiveContent: '{}',
+  flowLabel: null,
 };
 
 export const conversationMessageQuery = (
@@ -67,44 +109,7 @@ export const conversationMessageQuery = (
             isOrgRead: true,
             fields: '{}',
           },
-          messages: [
-            {
-              id: '1',
-              body: 'Hello',
-              insertedAt: '2020-06-25T13:36:43Z',
-              receiver: {
-                id: '1',
-              },
-              sender: {
-                id: '2',
-              },
-              type: 'TEXT',
-              media: null,
-              location: null,
-              errors: null,
-              messageNumber: 2,
-              contextMessage: {
-                body: 'All good',
-                contextId: 1,
-                messageNumber: 10,
-                errors: '{}',
-                media: null,
-                type: 'TEXT',
-                insertedAt: '2021-04-26T06:13:03.832721Z',
-                location: null,
-                receiver: {
-                  id: '1',
-                },
-                sender: {
-                  id: '2',
-                  name: 'User',
-                },
-              },
-              sendBy: 'Glific User',
-              interactiveContent: '{}',
-              flowLabel: null,
-            },
-          ],
+          messages: [sampleMessages],
         },
       ],
     },
@@ -641,8 +646,8 @@ export const searchMultiQuery = (
 
 export const CONVERSATION_MOCKS = [
   conversationQuery,
-  contactCollectionsQuery,
-  contactCollectionsQuery,
+  contactCollectionsQuery(2),
+  contactCollectionsQuery(2),
   searchQuery,
   searchEmptyQuery,
   conversationQuery,
@@ -668,6 +673,10 @@ export const CONVERSATION_MOCKS = [
   }),
   conversationCollectionQuery('2', 'Default collection'),
   conversationCollectionQuery(5, 'Test collection', { id: '5', searchGroup: true }, 25, {
+    limit: 20,
+    offset: 0,
+  }),
+  conversationMessageQuery({ id: '5' }, 'Jane Doe', '919090909009', 1, {
     limit: 20,
     offset: 0,
   }),
@@ -701,6 +710,7 @@ const conversation = {
           media: null,
         },
       ],
+      id: 'contact_2',
     },
   ],
 };
@@ -708,6 +718,7 @@ const conversation = {
 const conversationWithMultipleMessages = {
   search: [
     {
+      id: 'contact_2',
       contact: {
         id: '2',
         name: 'Effie Cormier',
@@ -750,7 +761,7 @@ const conversationWithMultipleMessages = {
   ],
 };
 
-const createAndSendMessageMutation = {
+export const createAndSendMessageMutation = {
   request: {
     query: CREATE_AND_SEND_MESSAGE_MUTATION,
     variables: {
@@ -782,10 +793,83 @@ const createAndSendMessageMutation = {
   },
 };
 
+export const createAndSendMessageMutation2 = {
+  request: {
+    query: CREATE_AND_SEND_MESSAGE_MUTATION,
+    variables: {
+      input: {
+        body: 'hey',
+        senderId: 1,
+        receiverId: '2',
+        flow: 'OUTBOUND',
+        interactiveTemplateId: undefined,
+        type: 'TEXT',
+        mediaId: null,
+      },
+    },
+  },
+  result: {
+    data: {
+      createAndSendMessage: {
+        message: {
+          body: 'hey',
+          insertedAt: '2020-06-25T13:36:43Z',
+          id: '10388',
+          receiver: {
+            id: '2',
+          },
+          sender: {
+            id: '1',
+          },
+          media: null,
+        },
+      },
+    },
+  },
+};
+
+export const sendMessageInWaGroup = {
+  request: {
+    query: SEND_MESSAGE_IN_WA_GROUP,
+    variables: {
+      input: {
+        message: 'hey',
+        waManagedPhoneId: '1',
+        waGroupId: '2',
+        type: 'TEXT',
+        mediaId: null,
+      },
+    },
+  },
+  result: {
+    data: {
+      sendMessageInWaGroup: {
+        errors: null,
+      },
+    },
+  },
+};
+
+export const sendMessageInWaGroupCollection = {
+  request: {
+    query: SEND_MESSAGE_IN_WA_GROUP_COLLECTION,
+    variables: { groupId: '1', input: { mediaId: null, message: 'hey', type: 'TEXT' } },
+  },
+  result: {
+    data: {
+      sendMessageToWaGroupCollection: {
+        errors: null,
+        success: true,
+      },
+    },
+  },
+};
+
 const searchQueryResult = {
   data: {
     search: [
       {
+        id: 'contact_1',
         contact: {
           id: '2',
           name: 'Vaibhav',
@@ -861,7 +945,7 @@ export const searchQuerywithFilterOffset = {
 };
 
 const chatMessagesMocks = [
-  contactCollectionsQuery,
+  contactCollectionsQuery(2),
   searchQuerywithFilter,
   searchQuerywithFilterOffset,
   searchQuerywithFilterOffset,
@@ -910,3 +994,88 @@ export const sendMessageMock = {
     },
   },
 };
+
+export const loadMoreChats = {
+  request: {
+    query: SEARCH_QUERY,
+    variables: {
+      contactOpts: { limit: 1 },
+      messageOpts: { limit: 46, offset: 1 },
+      filter: { id: '2' },
+    },
+  },
+  result: {
+    data: {
+      search: [
+        {
+          id: 'contact_2',
+          contact: {
+            bspStatus: 'HSM',
+            fields: '{}',
+            id: '2',
+            isOrgRead: true,
+            lastMessageAt: '2024-03-23T14:39:08Z',
+            maskedPhone: '4977******79',
+            name: 'Chrissy Cron',
+            phone: '497735079',
+            status: 'VALID',
+          },
+          group: null,
+          messages: [
+            {
+              body: '1',
+              contextMessage: null,
+              errors: null,
+              flowLabel: 'Help',
+              id: '45619',
+              insertedAt: '2024-03-18T16:03:02.430862Z',
+              interactiveContent: '{}',
+              location: null,
+              media: null,
+              messageNumber: 46,
+              receiver: {
+                __typename: 'Contact',
+                id: '1',
+              },
+              sendBy: '',
+              sender: {
+                __typename: 'Contact',
+                id: '2',
+              },
+              type: 'TEXT',
+            },
+          ],
+        },
+      ],
+    },
+  },
+};
+
+export const conversationMock = (variables: any) => ({
+  request: {
+    query: SEARCH_QUERY,
+    variables,
+  },
+  result: {
+    data: {
+      search: [
+        {
+          id: 'contact_2',
+          group: null,
+          contact: {
+            id: '2',
+            name: 'Jane Doe',
+            phone: '9857274829',
+            maskedPhone: '974****678',
+            lastMessageAt: '2020-06-25T13:36:43Z',
+            status: 'VALID',
+            bspStatus: 'SESSION_AND_HSM',
+            isOrgRead: true,
+            fields: '{}',
+          },
+          messages: [sampleMessages],
+        },
+      ],
+    },
+  },
+});

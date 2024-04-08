@@ -6,14 +6,15 @@ import { MockedProvider } from '@apollo/client/testing';
 
 import { searchContactCollection } from 'mocks/Search';
 import ConversationList from './ConversationList';
-import {
-  contact,
-  collection,
-  collectionWithLoadMore,
-} from 'containers/Chat/ChatMessages/ChatMessages.test';
+
 import { conversationCollectionQuery } from 'mocks/Chat';
 import { cache as collectionCache } from 'config/apolloclient';
 import { searchGroupQuery, waGroup } from 'mocks/Groups';
+import {
+  collection,
+  collectionWithLoadMore,
+  contact,
+} from 'containers/Chat/ChatMessages/ChatMessages.test';
 
 const contactCache = new InMemoryCache({ addTypename: false });
 const groupsCache = new InMemoryCache({ addTypename: false });
