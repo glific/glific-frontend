@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 
@@ -71,6 +71,8 @@ export const CollectionList = () => {
   const location = useLocation();
   const groups: boolean = location.pathname.includes('group');
 
+  const [filter, setFilter] = useState<string>('');
+
   const entity = groups ? 'waGroups' : 'contacts';
   const entityQuery = groups ? GET_WA_GROUPS : CONTACT_SEARCH_QUERY;
 
@@ -79,6 +81,10 @@ export const CollectionList = () => {
     ? GROUP_COLLECTION_SEARCH_QUERY_VARIABLES
     : COLLECTION_SEARCH_QUERY_VARIABLES;
   const updateMutation = groups ? UPDATE_COLLECTION_WA_GROUP : UPDATE_COLLECTION_CONTACTS;
+
+  useEffect(() => {
+    setFilter(groups ? WA_GROUPS_COLLECTION : CONTACTS_COLLECTION);
+  }, [location]);
 
   const getColumns = ({ label, contactsCount, description, waGroupsCount, id }: any) => {
     return {
@@ -298,7 +304,7 @@ export const CollectionList = () => {
           },
         }}
         filters={{
-          groupType: groups ? WA_GROUPS_COLLECTION : CONTACTS_COLLECTION,
+          groupType: filter,
         }}
         pageLink={`${groups ? 'group/' : ''}collection`}
         listIcon={collectionIcon}
