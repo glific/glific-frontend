@@ -32,20 +32,14 @@ const getCollections = (collections: Array<any>) => (
   </div>
 );
 
-const getColumns = ({
-  name,
-  maskedPhone,
-  groups,
-  optinTime,
-  optoutTime,
-  optinMethod,
-  optoutMethod,
-  status,
-}: any) => ({
-  label: getName(name, maskedPhone),
-  status: getContactStatus(optinTime, optoutTime, optinMethod, optoutMethod, status),
-  groups: getCollections(groups),
-});
+const getColumns = (contact: any) => {
+  const { name, maskedPhone, groups } = contact;
+  return {
+    label: getName(name, maskedPhone),
+    status: getContactStatus(contact),
+    groups: getCollections(groups),
+  };
+};
 
 const columnStyles = [styles.Name, styles.Phone, styles.Status, styles.Actions];
 const collectionIcon = <CollectionIcon className={styles.CollectionIcon} />;

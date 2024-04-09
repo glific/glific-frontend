@@ -240,13 +240,15 @@ export const slicedString = (string: string, length: number) =>
 
 export default getObject;
 
-export const getContactStatus = (
-  optinTime: any,
-  optoutTime: any,
-  optinMethod: any,
-  optoutMethod: any,
-  status: string
-) => {
+export const getContactStatus = (contact: {
+  optinTime: any;
+  optoutTime: any;
+  optinMethod: any;
+  optoutMethod: any;
+  status: string;
+}) => {
+  const { optinTime, optoutTime, optinMethod, optoutMethod, status } = contact;
+
   let optin = typeof optinTime === 'string';
   let optout = typeof optoutTime === 'string';
 

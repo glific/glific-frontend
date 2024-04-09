@@ -47,7 +47,7 @@ export const ContactProfile = () => {
 
   const { contact } = data;
   const contactData = contact.contact;
-  const { phone, maskedPhone, status, groups, lastMessage, settings, activeProfile } = contactData;
+  const { phone, maskedPhone, groups, lastMessage, settings, activeProfile } = contactData;
   let { fields } = contactData;
 
   const contactDisplayName = getDisplayName(contact);
@@ -65,13 +65,7 @@ export const ContactProfile = () => {
     }
   }
 
-  const statusMessage = getContactStatus(
-    contactData.optinTime,
-    contactData.optoutTime,
-    contactData.optinMethod,
-    contactData.optoutMethod,
-    status
-  );
+  const statusMessage = getContactStatus(contactData);
 
   const switchProfile = {
     selectedProfileId,
