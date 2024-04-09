@@ -836,6 +836,7 @@ export const InteractiveMessage = () => {
         saveOnPageChange={false}
         buttonState={{ text: t('Validating URL'), status: validatingURL }}
         helpData={interactiveMessageInfo}
+        backLinkButton={'/interactive-message'}
       />
       <div className={styles.Simulator}>
         <Simulator
