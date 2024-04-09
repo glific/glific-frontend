@@ -21,6 +21,9 @@
 
 .HeadingWrapper {
   margin-left: 46px;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
 }
 
 .TextHeading {
@@ -34,7 +37,6 @@
 }
 
 .BackIcon {
-  margin-left: -10px;
-  margin-right: 10px;
   cursor: pointer;
+  margin-top: 10px;
 }

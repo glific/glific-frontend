@@ -1007,6 +1007,7 @@ const Template = ({
       afterSave={!defaultAttribute.isHsm ? afterSave : undefined}
       type={mode}
       copyNotification={copyMessage}
+      backLinkButton={`/${redirectionLink}`}
     />
   );
 };
