@@ -501,6 +501,7 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
         type={type}
         afterSave={saveHandler}
         helpData={searchInfo}
+        backLinkButton="/search"
       />
     </>
   );
