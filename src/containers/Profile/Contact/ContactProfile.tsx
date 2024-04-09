@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { useParams } from 'react-router-dom';
-import dayjs from 'dayjs';
 import { Box, Collapse } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import CollapseIcon from '../../../assets/images/icons/Collapse.svg?react';
 import ExpandIcon from '../../../assets/images/icons/Expand.svg?react';
-import { STANDARD_DATE_TIME_FORMAT } from 'common/constants';
-import { getDisplayName } from 'common/utils';
+import { getContactStatus, getDisplayName } from 'common/utils';
 import { getOrganizationServices } from 'services/AuthService';
 import { GET_CONTACT_DETAILS, GET_CONTACT_PROFILES } from 'graphql/queries/Contact';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
@@ -67,29 +65,13 @@ export const ContactProfile = () => {
     }
   }
 
-  optin = typeof contactData.optinTime === 'string';
-  optout = typeof contactData.optoutTime === 'string';
-
-  let optinMethod = '';
-  if (contactData.optinMethod) {
-    optinMethod = `via ${contactData.optinMethod} on ${dayjs(contactData.optinTime).format(
-      STANDARD_DATE_TIME_FORMAT
-    )}`;
-  }
-
-  let optoutMethod = '';
-  if (contactData.optoutMethod) {
-    optoutMethod = `via ${contactData.optoutMethod} on ${dayjs(contactData.optoutTime).format(
-      STANDARD_DATE_TIME_FORMAT
-    )}`;
-  }
-
-  let statusMessage = 'No optin or optout';
-  if (optout && status === 'INVALID') {
-    statusMessage = `Optout ${optoutMethod}`;
-  } else if (optin) {
-    statusMessage = `Optin ${optinMethod}`;
-  }
+  const statusMessage = getContactStatus(
+    contactData.optinTime,
+    contactData.optoutTime,
+    contactData.optinMethod,
+    contactData.optoutMethod,
+    status
+  );
 
   const switchProfile = {
     selectedProfileId,
