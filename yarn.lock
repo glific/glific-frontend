@@ -4392,10 +4392,10 @@ lexical-beautiful-mentions@^0.1.32:
   resolved "https://registry.yarnpkg.com/lexical-beautiful-mentions/-/lexical-beautiful-mentions-0.1.32.tgz#2f7260df07c70d148223a71703806e2d7e0cc389"
   integrity sha512-BkbMNVudgQ0mo4FUSGsT311lYkikdqxzOrOo49IyJgoQtVgYDmigT7NV95aufveaBWygVWMaPzEO0AdLsCHQ+w==
 
-lexical@^0.13.1:
-  version "0.13.1"
-  resolved "https://registry.yarnpkg.com/lexical/-/lexical-0.13.1.tgz#0abffe9bc05a7a9da8a6128ea478bf08c11654db"
-  integrity sha512-jaqRYzVEfBKbX4FwYpd/g+MyOjRaraAel0iQsTrwvx3hyN0bswUZuzb6H6nGlFSjcdrc77wKpyKwoWj4aUd+Bw==
+lexical@^0.14.2:
+  version "0.14.3"
+  resolved "https://registry.yarnpkg.com/lexical/-/lexical-0.14.3.tgz#81c41a4c585100192f6d330e81cc6013bf326f5e"
+  integrity sha512-LaWSKj6OpvJ+bdfQA2AybEzho0YoWfAdRGkuCtPNYd/uf7IHyoEwCFQsIBvWCQF23saDgE1NONR4uiwl6iaJ9g==
 
 lilconfig@^3.0.0:
   version "3.0.0"
