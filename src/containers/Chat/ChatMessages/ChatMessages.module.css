@@ -34,12 +34,14 @@
   padding-left: 0px !important;
   padding-right: 0px !important;
   height: calc(100% - 175px);
+  position: relative;
 }
 
 .NoMessages {
-  padding-top: 11.5px !important;
-  padding-left: 24px !important;
-  height: calc(100% - 175px);
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .Chip {
@@ -50,6 +52,7 @@
   background-color: #eaedec !important;
   padding-right: 3px !important;
 }
+
 .Form {
   height: 18vh !important;
   width: 100%;
@@ -69,11 +72,12 @@
   width: 8px !important;
   margin-right: 13px !important;
 }
-.Paper > ul > li:hover {
+
+.Paper>ul>li:hover {
   background-color: #edf6f2 !important;
 }
 
-.Paper > ul > li {
+.Paper>ul>li {
   color: #073f24;
 }
 
@@ -127,7 +131,7 @@ html {
   align-items: center;
 }
 
-.SessionTimer + div {
+.SessionTimer+div {
   text-align: right;
 }
 
