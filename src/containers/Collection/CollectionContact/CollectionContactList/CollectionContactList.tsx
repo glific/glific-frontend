@@ -9,9 +9,10 @@ import CollectionIcon from 'assets/images/icons/Collection/Dark.svg?react';
 import { List } from 'containers/List/List';
 import styles from './CollectionContactList.module.css';
 import { useLazyQuery, useMutation } from '@apollo/client';
-import { setVariables } from 'common/constants';
+import { STANDARD_DATE_TIME_FORMAT, setVariables } from 'common/constants';
 import { SearchDialogBox } from 'components/UI/SearchDialogBox/SearchDialogBox';
 import { Button } from 'components/UI/Form/Button/Button';
+import dayjs from 'dayjs';
 
 export interface CollectionContactListProps {
   title: string;
@@ -30,13 +31,53 @@ const getCollections = (collections: Array<any>) => (
     {collections.map((collection: any) => collection.label).join(', ')}
   </div>
 );
+const getStatus = (
+  optinTime: any,
+  optoutTime: any,
+  optinMethod: any,
+  optoutMethod: any,
+  status: string
+) => {
+  let optin = typeof optinTime === 'string';
+  let optout = typeof optoutTime === 'string';
 
-const getColumns = ({ name, maskedPhone, groups }: any) => ({
+  let optoutMethodString = '';
+  let optinMethodString = '';
+
+  if (optinMethod) {
+    optinMethodString = `via ${optinMethod} on ${dayjs(optinTime).format(STANDARD_DATE_TIME_FORMAT)}`;
+  }
+
+  if (optoutMethod) {
+    optoutMethodString = `via ${optoutMethod} on ${dayjs(optoutTime).format(STANDARD_DATE_TIME_FORMAT)}`;
+  }
+
+  let statusMessage = 'No optin or optout';
+  if (optout && status === 'INVALID') {
+    statusMessage = `Optout ${optoutMethodString}`;
+  } else if (optin) {
+    statusMessage = `Optin ${optinMethodString}`;
+  }
+
+  return statusMessage;
+};
+
+const getColumns = ({
+  name,
+  maskedPhone,
+  groups,
+  optinTime,
+  optoutTime,
+  optinMethod,
+  optoutMethod,
+  status,
+}: any) => ({
   label: getName(name, maskedPhone),
+  status: getStatus(optinTime, optoutTime, optinMethod, optoutMethod, status),
   groups: getCollections(groups),
 });
 
-const columnStyles = [styles.Name, styles.Phone, styles.Actions];
+const columnStyles = [styles.Name, styles.Phone, styles.Status, styles.Actions];
 const collectionIcon = <CollectionIcon className={styles.CollectionIcon} />;
 
 const queries = {
@@ -126,6 +167,7 @@ export const CollectionContactList = ({
 
   const columnNames = [
     { name: 'name', label: t('Beneficiary') },
+    { label: 'Status' },
     { label: t('All Collections') },
     { label: t('Actions') },
   ];
