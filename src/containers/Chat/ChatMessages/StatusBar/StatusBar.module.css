@@ -2,9 +2,10 @@
   background-color: #dd1f1f;
   color: #edf6f2;
   padding: 12px 36px;
-  position: absolute;
+  position: sticky;
   width: 100%;
   z-index: 1;
+  top: -12px;
 }
 
 .StatusTitle {
