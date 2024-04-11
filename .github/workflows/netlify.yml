@@ -12,7 +12,7 @@ jobs:
       - name: Install Dependencies
         run: |
           cp .env.example .env
-          sed -i "s/VITE_GLIFIC_BACKEND_URL=''/VITE_GLIFIC_BACKEND_URL='api.staging.tides.coloredcow.com'/g" .env
+          sed -i "s/VITE_GLIFIC_BACKEND_URL=''/VITE_GLIFIC_BACKEND_URL='api.staging.glific.com'/g" .env
           yarn build
 
       - name: Deploy to Netlify
