@@ -62,6 +62,7 @@ export const getCollectionsQuery = [
   {
     request: {
       query: GET_COLLECTIONS,
+      variables: { groupType: 'WABA' },
     },
     result: {
       data: {
@@ -345,28 +346,17 @@ export const getCollectionContactsQuery = {
   },
 };
 
-export const getCollectionInfo = {
+export const getCollectionInfo = (variables: any) => ({
   request: {
     query: GET_COLLECTION_INFO,
-    variables: { id: '1' },
+    variables,
   },
   result: {
     data: {
       groupInfo: '{"total":3,"session_and_hsm":1,"session":1,"none":1, "hsm":0}',
     },
   },
-};
-export const getCollectionInfo2 = {
-  request: {
-    query: GET_COLLECTION_INFO,
-    variables: { id: '2' },
-  },
-  result: {
-    data: {
-      groupInfo: '{"total":3,"session_and_hsm":1,"session":1,"none":1, "hsm":0}',
-    },
-  },
-};
+});
 
 export const updateCollectionContactsQuery = {
   request: {

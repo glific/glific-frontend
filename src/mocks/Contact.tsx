@@ -16,11 +16,11 @@ import { CLEAR_MESSAGES } from 'graphql/mutations/Chat';
 import { setVariables } from 'common/constants';
 import { getCurrentUserQuery } from './User';
 
-export const contactCollectionsQuery = {
+export const contactCollectionsQuery = (id: number) => ({
   request: {
     query: GET_CONTACT_COLLECTIONS,
     variables: {
-      id: '2',
+      id: id.toString(),
     },
   },
   result: {
@@ -43,7 +43,7 @@ export const contactCollectionsQuery = {
       },
     },
   },
-};
+});
 
 export const updateContactCollectionQuery = {
   request: {
@@ -65,30 +65,34 @@ export const updateContactCollectionQuery = {
   },
 };
 
-export const getContactQuery = {
-  request: {
-    query: GET_CONTACT,
-    variables: { id: '1' },
-  },
-  result: {
-    data: {
-      contact: {
+export const getContactSampleQuery = (variables: any) => {
+  return {
+    request: {
+      query: GET_CONTACT,
+      variables,
+    },
+    result: {
+      data: {
         contact: {
-          id: '1',
-          name: 'Default User',
-          activeProfile: null,
-          phone: '+919820198765',
-          language: { id: '1', label: 'English' },
-          groups: [],
-          status: 'VALID',
-          bspStatus: 'SESSION_AND_HSM',
-          settings: {},
-          fields: {},
+          contact: {
+            id: '1',
+            name: 'Default User',
+            activeProfile: null,
+            phone: '+919820198765',
+            language: { id: '1', label: 'English' },
+            groups: [],
+            status: 'VALID',
+            bspStatus: 'SESSION_AND_HSM',
+            settings: {},
+            fields: {},
+          },
         },
       },
     },
-  },
+  };
 };
+
+export const getContactQuery = getContactSampleQuery({ id: '1' });
 
 export const clearMessagesQuery = {
   request: {
@@ -236,6 +240,10 @@ export const getContactsQuery = {
           maskedPhone: '9876**3211',
           groups: [],
           status: 'hsm',
+          optinMethod: 'BSP',
+          optinTime: '2024-04-04T12:13:30Z',
+          optoutMethod: null,
+          optoutTime: null,
         },
         {
           id: '2',
@@ -244,6 +252,10 @@ export const getContactsQuery = {
           maskedPhone: '9876**3211',
           groups: [],
           status: 'hsm',
+          optinMethod: 'BSP',
+          optinTime: '2024-04-04T12:13:30Z',
+          optoutMethod: null,
+          optoutTime: null,
         },
         {
           id: '3',
@@ -252,6 +264,10 @@ export const getContactsQuery = {
           maskedPhone: '9876**3211',
           groups: [],
           status: 'hsm',
+          optinMethod: 'BSP',
+          optinTime: '2024-04-04T12:13:30Z',
+          optoutMethod: null,
+          optoutTime: null,
         },
       ],
     },
@@ -272,6 +288,10 @@ export const getContactsSearchQuery = {
           maskedPhone: '9876**3211',
           groups: [],
           status: 'hsm',
+          optinMethod: 'BSP',
+          optinTime: '2024-04-04T12:13:30Z',
+          optoutMethod: null,
+          optoutTime: null,
         },
       ],
     },
@@ -299,6 +319,10 @@ export const getCollectionContactsQuery = (variables: any) => {
               },
             ],
             status: 'SESSION',
+            optinMethod: 'BSP',
+            optinTime: '2024-04-04T12:13:30Z',
+            optoutMethod: null,
+            optoutTime: null,
           },
           {
             id: '2',
@@ -311,7 +335,11 @@ export const getCollectionContactsQuery = (variables: any) => {
                 label: 'Default Collection',
               },
             ],
-            status: 'SESSION',
+            status: 'INVALID',
+            optinMethod: 'BSP',
+            optinTime: null,
+            optoutMethod: null,
+            optoutTime: '2024-04-04T12:13:30Z',
           },
           {
             id: '3',
@@ -325,6 +353,10 @@ export const getCollectionContactsQuery = (variables: any) => {
               },
             ],
             status: 'SESSION',
+            optinMethod: '',
+            optinTime: '2024-04-04T12:13:30Z',
+            optoutMethod: null,
+            optoutTime: null,
           },
         ],
       },

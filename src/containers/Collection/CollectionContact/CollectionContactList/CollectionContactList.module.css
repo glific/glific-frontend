@@ -3,7 +3,8 @@
   width: 25%;
 }
 
-.Phone {
+.Phone,
+.Status {
   color: #555;
   font-size: 13px;
   font-weight: 500;

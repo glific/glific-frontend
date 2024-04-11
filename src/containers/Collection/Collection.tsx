@@ -44,6 +44,7 @@ export const Collection = () => {
   const { t } = useTranslation();
   const location = useLocation();
   const groups: boolean = location.pathname.includes('group');
+  const redirectLink = groups ? 'group/collection' : 'collection';
   const groupType = groups ? WA_GROUPS_COLLECTION : CONTACTS_COLLECTION;
   const searchQuery = groups ? GROUP_SEARCH_QUERY : SEARCH_QUERY;
   const searchVariables = groups
@@ -79,7 +80,9 @@ export const Collection = () => {
     variables: setVariables(),
   });
 
-  const { data: collectionList, loading } = useQuery(GET_COLLECTIONS);
+  const { data: collectionList, loading } = useQuery(GET_COLLECTIONS, {
+    variables: { groupType },
+  });
 
   useEffect(() => {
     if (collectionId) {
@@ -208,10 +211,11 @@ export const Collection = () => {
       listItemName="collection"
       dialogMessage={dialogMessage}
       formFields={formFields}
-      redirectionLink={`${groups ? 'group/' : ''}collection`}
+      redirectionLink={redirectLink}
       listItem="group"
       icon={collectionIcon}
       helpData={collectionInfo}
+      backLinkButton={`/${redirectLink}`}
     />
   );
 };

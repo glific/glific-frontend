@@ -281,6 +281,7 @@ export const Flow = () => {
       copyNotification={t('Copy of the flow has been created!')}
       customHandler={customHandler}
       helpData={flowInfo}
+      backLinkButton="/flow"
     />
   );
 };
