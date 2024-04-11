@@ -617,19 +617,14 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
     }
   }, [scrollToMessageNumber]);
 
-  let messageListContainer;
+  let chatMessages;
   // Check if there are conversation messages else display no messages
   if (messageList) {
     const loadMoreOption =
       conversationInfo.messages?.length > DEFAULT_MESSAGE_LIMIT - 1 ||
       (searchMessageNumber && searchMessageNumber > 19);
-    messageListContainer = (
-      <Container
-        className={`${styles.MessageList} messageContainer `}
-        style={{ height: `calc(100% - 215px` }}
-        maxWidth={false}
-        data-testid="messageContainer"
-      >
+    chatMessages = (
+      <>
         {showLoadMore && loadMoreOption && (
           <div className={styles.LoadMore}>
             {conversationLoad ? (
@@ -649,15 +644,27 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
         )}
 
         {messageList}
-      </Container>
+      </>
     );
   } else {
-    messageListContainer = (
+    chatMessages = (
       <div className={styles.NoMessages} data-testid="messageContainer">
         {t('No messages.')}
       </div>
     );
   }
+
+  const messageListContainr = (
+    <Container
+      className={`${styles.MessageList} messageContainer `}
+      style={{ height: `calc(100% - 215px` }}
+      maxWidth={false}
+      data-testid="messageContainer"
+    >
+      <StatusBar />
+      {chatMessages}
+    </Container>
+  );
 
   const handleChatClearedAction = () => {
     const conversationInfoCopy = JSON.parse(JSON.stringify(conversationInfo));
@@ -807,8 +814,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
         />
       ) : null}
       {topChatBar}
-      <StatusBar />
-      {messageListContainer}
+      {messageListContainr}
       {chatInputSection}
     </Container>
   );

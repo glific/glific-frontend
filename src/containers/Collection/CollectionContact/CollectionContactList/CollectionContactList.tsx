@@ -12,6 +12,7 @@ import { useLazyQuery, useMutation } from '@apollo/client';
 import { setVariables } from 'common/constants';
 import { SearchDialogBox } from 'components/UI/SearchDialogBox/SearchDialogBox';
 import { Button } from 'components/UI/Form/Button/Button';
+import { getContactStatus } from 'common/utils';
 
 export interface CollectionContactListProps {
   title: string;
@@ -31,12 +32,16 @@ const getCollections = (collections: Array<any>) => (
   </div>
 );
 
-const getColumns = ({ name, maskedPhone, groups }: any) => ({
-  label: getName(name, maskedPhone),
-  groups: getCollections(groups),
-});
+const getColumns = (contact: any) => {
+  const { name, maskedPhone, groups } = contact;
+  return {
+    label: getName(name, maskedPhone),
+    status: getContactStatus(contact),
+    groups: getCollections(groups),
+  };
+};
 
-const columnStyles = [styles.Name, styles.Phone, styles.Actions];
+const columnStyles = [styles.Name, styles.Phone, styles.Status, styles.Actions];
 const collectionIcon = <CollectionIcon className={styles.CollectionIcon} />;
 
 const queries = {
@@ -126,6 +131,7 @@ export const CollectionContactList = ({
 
   const columnNames = [
     { name: 'name', label: t('Beneficiary') },
+    { label: 'Status' },
     { label: t('All Collections') },
     { label: t('Actions') },
   ];
