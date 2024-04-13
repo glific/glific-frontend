@@ -237,7 +237,6 @@ export const List = ({
     // if nothing is set assume first column is for sorting and order is 'asc'
     return [columnNames[0].name, 'asc'];
   };
-  console.log(filters);
 
   const [defaultColumnSort, defaultColumnSortOrder] = getDefaultSortColumn(columnNames);
 
