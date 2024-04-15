@@ -1,5 +1,5 @@
 import 'mocks/matchMediaMock';
-import { render, waitFor, fireEvent } from '@testing-library/react';
+import { render, waitFor, fireEvent, screen } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { vi } from 'vitest';
@@ -7,6 +7,7 @@ import { vi } from 'vitest';
 import * as FormLayout from 'containers/Form/FormLayout';
 import Template from './Template';
 import { TEMPLATE_MOCKS } from '../Template.test.helper';
+import { HSM_TEMPLATE_MOCKS, templateFormHSMFormFields } from './Template.test.helper';
 
 beforeEach(() => {
   vi.restoreAllMocks();
@@ -55,5 +56,74 @@ describe('speed sends', () => {
     await waitFor(() => {
       fireEvent.click(getByTestId('getMedia'));
     });
+  });
+});
+
+const hsmProps = {
+  listItemName: 'HSM Template',
+  redirectionLink: 'template',
+  defaultAttribute: {
+    isHsm: true,
+  },
+  icon: null,
+  getShortcode: '',
+  category: {
+    label: 'ACCOUNT_UPDATE',
+    id: 'ACCOUNT_UPDATE',
+  },
+  languageStyle: 'dropdown',
+  formField: templateFormHSMFormFields,
+  setCategory: vi.fn(),
+};
+
+const hsmTemplateEdit = (templateId: string) => (
+  <MockedProvider mocks={HSM_TEMPLATE_MOCKS}>
+    <MemoryRouter initialEntries={[`/templates/${templateId}/edit`]}>
+      <Routes>
+        <Route path="/templates/:id/edit" element={<Template {...hsmProps} />} />
+      </Routes>
+    </MemoryRouter>
+  </MockedProvider>
+);
+
+describe('hsm templates in edit mode', () => {
+  test('Template is loaded correctly in edit mode', async () => {
+    const { getByText } = render(hsmTemplateEdit('1'));
+
+    expect(getByText('Loading...')).toBeInTheDocument();
+
+    await waitFor(() => expect(getByText('Edit HSM Template')).toBeInTheDocument());
+  });
+
+  test('Template is loaded with correct buttons', async () => {
+    const { getByText, getAllByRole } = render(hsmTemplateEdit('2'));
+
+    expect(getByText('Loading...')).toBeInTheDocument();
+
+    await waitFor(() => expect(getByText('Edit HSM Template')).toBeInTheDocument());
+
+    const radioButtons = getAllByRole('radio');
+
+    await waitFor(() => {
+      expect(radioButtons[0]).toHaveAttribute('checked', '');
+    });
+  });
+});
+
+const hsmTemplate = (
+  <MockedProvider mocks={HSM_TEMPLATE_MOCKS}>
+    <MemoryRouter initialEntries={[`/template/add`]}>
+      <Template {...hsmProps} />
+    </MemoryRouter>
+  </MockedProvider>
+);
+
+describe('hsm templates create mode', () => {
+  test('Template Form is loaded correctly in create mode', async () => {
+    const { getByText } = render(hsmTemplate);
+
+    expect(getByText('Loading...')).toBeInTheDocument();
+
+    await waitFor(() => expect(getByText('Add a new HSM Template')).toBeInTheDocument());
   });
 });
