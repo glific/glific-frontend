@@ -71,7 +71,9 @@ export const CollectionList = () => {
   const location = useLocation();
   const groups: boolean = location.pathname.includes('group');
 
-  const [filter, setFilter] = useState<string>('');
+  const [filter, setFilter] = useState<{
+    groupType: string;
+  }>({ groupType: 'WABA' });
 
   const entity = groups ? 'waGroups' : 'contacts';
   const entityQuery = groups ? GET_WA_GROUPS : CONTACT_SEARCH_QUERY;
@@ -83,7 +85,7 @@ export const CollectionList = () => {
   const updateMutation = groups ? UPDATE_COLLECTION_WA_GROUP : UPDATE_COLLECTION_CONTACTS;
 
   useEffect(() => {
-    setFilter(groups ? WA_GROUPS_COLLECTION : CONTACTS_COLLECTION);
+    setFilter({ groupType: groups ? WA_GROUPS_COLLECTION : CONTACTS_COLLECTION });
   }, [location]);
 
   const getColumns = ({ label, contactsCount, description, waGroupsCount, id }: any) => {
@@ -303,9 +305,7 @@ export const CollectionList = () => {
             navigate(`/${groups ? 'group/' : ''}collection/add`);
           },
         }}
-        filters={{
-          groupType: filter,
-        }}
+        filters={filter}
         pageLink={`${groups ? 'group/' : ''}collection`}
         listIcon={collectionIcon}
         dialogMessage={dialogMessage}
