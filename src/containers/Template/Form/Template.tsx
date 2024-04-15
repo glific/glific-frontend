@@ -376,7 +376,7 @@ const Template = ({
 
   const HSMValidation = {
     example: Yup.string()
-      .max(1024, 'Maximum 1024 characters are allowed')
+      .max(1024, t('Maximum 1024 characters are allowed'))
       .when('body', ([body], schema: any) =>
         schema.test({
           test: (exampleValue: any) => {
@@ -390,9 +390,9 @@ const Template = ({
         })
       )
       .required('Example is required.'),
-    category: Yup.object().nullable().required('Category is required.'),
+    category: Yup.object().nullable().required(t('Category is required.')),
     shortcode: Yup.string()
-      .required('Element name is required.')
+      .required(t('Element name is required.'))
       .matches(
         regexForShortcode,
         'Only lowercase alphanumeric characters and underscores are allowed.'
