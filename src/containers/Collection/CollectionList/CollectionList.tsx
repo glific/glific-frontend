@@ -300,9 +300,7 @@ export const CollectionList = () => {
             navigate(`/${groups ? 'group/' : ''}collection/add`);
           },
         }}
-        filters={{
-          groupType: groups ? WA_GROUPS_COLLECTION : CONTACTS_COLLECTION,
-        }}
+        filters={filter}
         pageLink={`${groups ? 'group/' : ''}collection`}
         listIcon={collectionIcon}
         dialogMessage={dialogMessage}
