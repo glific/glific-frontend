@@ -5,7 +5,6 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { setUserSession } from 'services/AuthService';
 import { ExportTicket } from './ExportTicket';
 import { getAllOrganizations } from 'mocks/Organization';
-import { EXPORT_SUPPORT_TICKETS } from 'graphql/queries/Ticket';
 import * as utils from 'common/utils';
 import { exportTicketsMock } from 'mocks/Ticket';
 
