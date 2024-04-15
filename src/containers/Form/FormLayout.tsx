@@ -491,6 +491,7 @@ export const FormLayout = ({
       <Button
         variant="contained"
         color="warning"
+        data-testid="remove-icon"
         className={styles.DeleteButton}
         onClick={() => setShowDialog(true)}
       >

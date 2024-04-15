@@ -1,4 +1,4 @@
-import { CREATE_TRIGGER, UPDATE_TRIGGER } from 'graphql/mutations/Trigger';
+import { CREATE_TRIGGER, DELETE_TRIGGER, UPDATE_TRIGGER } from 'graphql/mutations/Trigger';
 import { TRIGGER_LIST_QUERY, TRIGGER_QUERY_COUNT, GET_TRIGGER } from 'graphql/queries/Trigger';
 
 export const triggerListQuery = {
@@ -237,6 +237,23 @@ export const updateTriggerWeeklyQuery = {
           isRepeating: true,
           startAt: '2021-02-28T20:00:22Z',
         },
+      },
+    },
+  },
+};
+
+export const deleteTriggerQuery = {
+  request: {
+    query: DELETE_TRIGGER,
+    variables: {
+      id: '1',
+    },
+  },
+  result: {
+    data: {
+      deleteTrigger: {
+        __typename: 'TriggerResult',
+        errors: null,
       },
     },
   },
