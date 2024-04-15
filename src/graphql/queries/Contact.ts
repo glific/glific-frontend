@@ -12,6 +12,10 @@ export const CONTACT_SEARCH_QUERY = gql`
         label
       }
       status
+      optinTime
+      optoutTime
+      optinMethod
+      optoutMethod
     }
   }
 `;
