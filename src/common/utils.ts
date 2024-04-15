@@ -9,8 +9,9 @@ import {
   setAuthSession,
   renewAuthToken,
 } from 'services/AuthService';
-import { SIMULATOR_NUMBER_START } from './constants';
+import { SIMULATOR_NUMBER_START, STANDARD_DATE_TIME_FORMAT } from './constants';
 import { setNotification } from './notification';
+import dayjs from 'dayjs';
 
 export const isSimulator = (phone: string) =>
   phone ? phone.startsWith(SIMULATOR_NUMBER_START) : false;
@@ -238,3 +239,36 @@ export const slicedString = (string: string, length: number) =>
   string?.length > length ? `${string.slice(0, length)}...` : string;
 
 export default getObject;
+
+export const getContactStatus = (contact: {
+  optinTime: any;
+  optoutTime: any;
+  optinMethod: any;
+  optoutMethod: any;
+  status: string;
+}) => {
+  const { optinTime, optoutTime, optinMethod, optoutMethod, status } = contact;
+
+  let optin = typeof optinTime === 'string';
+  let optout = typeof optoutTime === 'string';
+
+  let optoutMethodString = '';
+  let optinMethodString = '';
+  let statusMessage = 'No optin or optout';
+
+  if (optinMethod) {
+    optinMethodString = `via ${optinMethod} on ${dayjs(optinTime).format(STANDARD_DATE_TIME_FORMAT)}`;
+  }
+
+  if (optoutMethod) {
+    optoutMethodString = `via ${optoutMethod} on ${dayjs(optoutTime).format(STANDARD_DATE_TIME_FORMAT)}`;
+  }
+
+  if (optout && status === 'INVALID') {
+    statusMessage = `Optout ${optoutMethodString}`;
+  } else if (optin) {
+    statusMessage = `Optin ${optinMethodString}`;
+  }
+
+  return statusMessage;
+};

@@ -470,6 +470,7 @@ export const Trigger = () => {
       icon={triggerIcon}
       customStyles={styles.Triggers}
       helpData={triggerInfo}
+      backLinkButton="/trigger"
     />
   );
 };

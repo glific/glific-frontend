@@ -123,6 +123,7 @@ export const SheetIntegration = () => {
       listItem="sheet"
       icon={sheetIcon}
       languageSupport={false}
+      backLinkButton="/sheet-integration"
     />
   );
 };
