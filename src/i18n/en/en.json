@@ -465,5 +465,6 @@
   "No conversations found!": "No conversations found!",
   "Add group to collection": "Add group to collection",
   "Contact": "Contact",
-  "Remove Contact": "Remove Contact"
+  "Remove Contact": "Remove Contact",
+  "Message and sample look different. You have to replace variables eg. {{1}} with actual values enclosed in [ ] eg. Replace {{1}} with [Monica].": "Message and sample look different. You have to replace variables eg. {{1}} with actual values enclosed in [ ] eg. Replace {{1}} with [Monica]."
 }
