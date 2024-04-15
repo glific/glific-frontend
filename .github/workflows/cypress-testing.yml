@@ -96,10 +96,10 @@ jobs:
           git clone https://github.com/glific/cypress-testing.git
           echo done. go to dir.
           cd cypress-testing
-          git checkout test_cases_wa_group
+          git checkout main
           cd ..
           cp -r cypress-testing/cypress cypress
-          yarn add cypress
+          yarn add cypress@13.6.2
           echo Create cypress.config.ts from example
           cp cypress-testing/cypress.config.ts.example cypress.config.ts
 
