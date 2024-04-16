@@ -73,7 +73,7 @@ export const CollectionList = () => {
 
   const [filter, setFilter] = useState<{
     groupType: string;
-  }>({ groupType: 'WABA' });
+  }>({ groupType: groups ? WA_GROUPS_COLLECTION : CONTACTS_COLLECTION });
 
   const entity = groups ? 'waGroups' : 'contacts';
   const entityQuery = groups ? GET_WA_GROUPS : CONTACT_SEARCH_QUERY;
