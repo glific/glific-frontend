@@ -8,6 +8,7 @@ import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { TimePicker } from 'components/UI/Form/TimePicker/TimePicker';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
+import { Input } from 'components/UI/Form/Input/Input';
 import { FormLayout } from 'containers/Form/FormLayout';
 import { GET_FLOWS } from 'graphql/queries/Flow';
 import { GET_ORGANIZATION, USER_LANGUAGES } from 'graphql/queries/Organization';
@@ -49,6 +50,10 @@ export const OrganizationFlows = () => {
   const [organizationId, setOrganizationId] = useState(null);
   const [newcontactFlowId, setNewcontactFlowId] = useState(null);
   const [newcontactFlowEnabled, setNewcontactFlowEnabled] = useState(false);
+  const [regxFlowId, setRegxFlowId] = useState(null);
+  const [regxFlowExpr, setRegxFlowExpr] = useState<string>('');
+  const [regxFlowOpt, setRegxFlowOpt] = useState<string>('');
+  const [regxFlowEnabled, setRegxFlowEnabled] = useState(false);
   const [optinFlowId, setOptinFlowId] = useState(null);
   const [optinFlowEnabled, setOptinFlowEnabled] = useState(false);
   const [allDayCheck, setAllDayCheck] = useState(false);
@@ -62,10 +67,14 @@ export const OrganizationFlows = () => {
     enabledDays,
     defaultFlowId,
     flowId,
-    optinFlowId,
-    newcontactFlowEnabled,
-    optinFlowEnabled,
     newcontactFlowId,
+    newcontactFlowEnabled,
+    regxFlowId,
+    regxFlowExpr,
+    regxFlowOpt,
+    regxFlowEnabled,
+    optinFlowId,
+    optinFlowEnabled,
     allDayCheck,
   };
 
@@ -97,6 +106,7 @@ export const OrganizationFlows = () => {
   const setStates = ({
     outOfOffice: outOfOfficeValue,
     newcontactFlowId: newcontactFlowIdValue,
+    regxFlow: regxFlowValue,
     optinFlowId: optinFlowIdValue,
   }: any) => {
     setHours(outOfOfficeValue.enabled);
@@ -114,6 +124,12 @@ export const OrganizationFlows = () => {
     if (newcontactFlowIdValue) {
       setNewcontactFlowEnabled(true);
       setNewcontactFlowId(getFlow(newcontactFlowIdValue));
+    }
+    if (regxFlowValue) {
+      setRegxFlowEnabled(true);
+      setRegxFlowId(getFlow(regxFlowValue.flowId));
+      setRegxFlowExpr(regxFlowValue.regx);
+      setRegxFlowOpt(regxFlowValue.regxOpt);
     }
     if (optinFlowIdValue) {
       setOptinFlowEnabled(true);
@@ -203,6 +219,20 @@ export const OrganizationFlows = () => {
         is: (val: string) => val,
         then: (schema) => schema.nullable().required(t('Optin flow is required.')),
       }),
+    regxFlowId: Yup.object()
+      .nullable()
+      .when('regxFlowEnabled', {
+        is: (val: string) => val,
+        then: (schema) => schema.nullable().required(t('Regex flow is required.')),
+      }),
+    regxFlowExpr: Yup.string()
+      .nullable()
+      .when('regxFlowEnabled', {
+        is: (val: string) => val,
+        then: (schema) => schema.nullable().required(t('Regex expression is required.')),
+      }),
+    regxFlowOpt: Yup.string()
+      .nullable()
   };
 
   const FormSchema = Yup.object().shape(validation);
@@ -316,6 +346,40 @@ export const OrganizationFlows = () => {
       disabled: !optinFlowEnabled,
       label: t('Select flow'),
     },
+
+    {
+      component: Checkbox,
+      name: 'regxFlowEnabled',
+      className: styles.Checkbox,
+      title: <Typography className={styles.CheckboxLabel}>{t('Regex flow')}</Typography>,
+      handleChange: setRegxFlowEnabled,
+    },
+    {
+      component: AutoComplete,
+      name: 'regxFlowId',
+      options: flow.flows,
+      optionLabel: 'name',
+      multiple: false,
+      disabled: !regxFlowEnabled,
+      label: t('Select flow'),
+      helperText: t('The selected flow will trigger when end-users aren’t in any flow, their message doesn’t match any keyword, and their message matches the regex expression defined below.'),
+    },
+    {
+      component: Input,
+      name: 'regxFlowExpr',
+      type: 'text',
+      placeholder: t('Regex expression'),
+      label: t('Regex expression'),
+      disabled: !regxFlowEnabled
+    },
+    {
+      component: Input,
+      name: 'regxFlowOpt',
+      type: 'text',
+      placeholder: t('Regex modifiers'),
+      label: t('Regex modifiers'),
+      disabled: !regxFlowEnabled
+    }
   ];
 
   const assignDays = (enabledDay: any) => {
@@ -344,6 +408,7 @@ export const OrganizationFlows = () => {
     // set active Language Ids
     let newContactFlowId = null;
     let optinFlowId = null;
+    let regxFlow = null;
 
     if (newcontactFlowEnabled) {
       newContactFlowId = payload.newcontactFlowId.id;
@@ -351,6 +416,14 @@ export const OrganizationFlows = () => {
 
     if (optinFlowEnabled) {
       optinFlowId = payload.optinFlowId.id;
+    }
+
+    if (regxFlowEnabled) {
+      regxFlow = {
+        flowId: payload.regxFlowId.id,
+        regx: payload.regxFlowExpr,
+        regxOpt: payload.regxFlowOpt
+      }
     }
     object = {
       outOfOffice: {
@@ -361,6 +434,7 @@ export const OrganizationFlows = () => {
         flowId: payload.flowId ? payload.flowId.id : null,
         startTime: dayjs(payload.startTime).format(EXTENDED_TIME_FORMAT),
       },
+      regxFlow: regxFlow,
       newcontactFlowId: newContactFlowId,
       optinFlowId,
     };

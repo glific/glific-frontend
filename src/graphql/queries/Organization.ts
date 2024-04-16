@@ -33,6 +33,11 @@ export const GET_ORGANIZATION = gql`
           criticalBalanceThreshold
           sendWarningMail
         }
+        regxFlow {
+          flowId
+          regx
+          regxOpt
+        }
         signaturePhrase
         newcontactFlowId
         optinFlowId
