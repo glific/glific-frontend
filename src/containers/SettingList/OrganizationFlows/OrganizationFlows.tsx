@@ -231,8 +231,7 @@ export const OrganizationFlows = () => {
         is: (val: string) => val,
         then: (schema) => schema.nullable().required(t('Regex expression is required.')),
       }),
-    regxFlowOpt: Yup.string()
-      .nullable()
+    regxFlowOpt: Yup.string().nullable(),
   };
 
   const FormSchema = Yup.object().shape(validation);
@@ -362,7 +361,9 @@ export const OrganizationFlows = () => {
       multiple: false,
       disabled: !regxFlowEnabled,
       label: t('Select flow'),
-      helperText: t('The selected flow will trigger when end-users aren’t in any flow, their message doesn’t match any keyword, and their message matches the regex expression defined below.'),
+      helperText: t(
+        'The selected flow will trigger when end-users aren’t in any flow, their message doesn’t match any keyword, and their message matches the regex expression defined below.'
+      ),
     },
     {
       component: Input,
@@ -370,7 +371,7 @@ export const OrganizationFlows = () => {
       type: 'text',
       placeholder: t('Regex expression'),
       label: t('Regex expression'),
-      disabled: !regxFlowEnabled
+      disabled: !regxFlowEnabled,
     },
     {
       component: Input,
@@ -378,8 +379,8 @@ export const OrganizationFlows = () => {
       type: 'text',
       placeholder: t('Regex modifiers'),
       label: t('Regex modifiers'),
-      disabled: !regxFlowEnabled
-    }
+      disabled: !regxFlowEnabled,
+    },
   ];
 
   const assignDays = (enabledDay: any) => {
@@ -422,8 +423,8 @@ export const OrganizationFlows = () => {
       regxFlow = {
         flowId: payload.regxFlowId.id,
         regx: payload.regxFlowExpr,
-        regxOpt: payload.regxFlowOpt
-      }
+        regxOpt: payload.regxFlowOpt,
+      };
     }
     object = {
       outOfOffice: {
