@@ -99,7 +99,7 @@ jobs:
           git checkout test_cases_wa_group
           cd ..
           cp -r cypress-testing/cypress cypress
-          yarn add cypress
+          yarn add cypress@13.6.2
           echo Create cypress.config.ts from example
           cp cypress-testing/cypress.config.ts.example cypress.config.ts
 

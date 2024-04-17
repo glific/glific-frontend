@@ -13,6 +13,7 @@ import { GET_COLLECTION, GROUP_GET_COLLECTION } from 'graphql/queries/Collection
 import {
   COUNT_COUNTACTS_WA_GROUPS,
   GET_GROUP_COUNT,
+  GET_WA_GROUP,
   GET_WA_GROUPS,
   GET_WA_MANAGED_PHONES,
   GROUP_SEARCH_MULTI_QUERY,
@@ -1116,6 +1117,29 @@ export const searchFilterQuery = {
   result: {
     data: {
       search: sampleSearchQueryResult,
+    },
+  },
+};
+
+export const getWaGroupQuery = {
+  request: {
+    query: GET_WA_GROUP,
+    variables: { waGroupId: '1' },
+  },
+  result: {
+    data: {
+      waGroup: {
+        waGroup: {
+          bspId: '221976952534635194@g.us',
+          id: '1',
+          label: 'Arkansas ducks',
+          lastCommunicationAt: '2024-03-28T10:41:18Z',
+          waManagedPhone: {
+            id: '1',
+            phone: '468/236-8754',
+          },
+        },
+      },
     },
   },
 };
