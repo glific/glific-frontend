@@ -99,6 +99,9 @@ export const NotificationList = () => {
       case 'Ticket':
         destination = `/tickets`;
         break;
+      case 'WA Group':
+        destination = `/group/chat/${entity.id}`;
+        break;
       default:
         // Handle unknown category
         return;

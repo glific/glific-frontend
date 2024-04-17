@@ -22,6 +22,7 @@ import { GET_TAGS } from 'graphql/queries/Tags';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { flowInfo } from 'common/HelpData';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
+import { setNotification } from 'common/notification';
 
 const getName = (text: string, keywordsList: any, roles: any) => {
   const keywords = keywordsList.map((keyword: any) => keyword);
@@ -99,6 +100,10 @@ export const FlowList = () => {
       setImportStatus(status);
       setImporting(false);
     },
+    onError: (error: any) => {
+      setNotification('An error occured while importing the flow', 'warning');
+      setImporting(false);
+    },
   });
 
   const [exportFlowMutation] = useLazyQuery(EXPORT_FLOW, {
@@ -106,6 +111,10 @@ export const FlowList = () => {
     onCompleted: async ({ exportFlow }) => {
       const { exportData } = exportFlow;
       await exportFlowMethod(exportData, flowName);
+      setNotification('Flow exported successfully');
+    },
+    onError: (error: any) => {
+      setNotification('An error occured while exporting the flow', 'warning');
     },
   });
 

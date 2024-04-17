@@ -5,7 +5,7 @@ import GroupDetails from './GroupDetails';
 import {
   countWaGroupContacts,
   removeContactQuery,
-  searchFilterQuery,
+  getWaGroupQuery,
   waGroupContacts,
 } from 'mocks/Groups';
 import { setNotification } from 'common/notification';
@@ -18,7 +18,7 @@ const mocks = [
   removeContactQuery,
   waGroupContacts,
   countWaGroupContacts,
-  searchFilterQuery,
+  getWaGroupQuery,
 ];
 
 vi.mock('common/notification', async (importOriginal) => {
