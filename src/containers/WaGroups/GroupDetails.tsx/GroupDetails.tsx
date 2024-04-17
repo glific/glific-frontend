@@ -6,7 +6,7 @@ import styles from './GroupDetails.module.css';
 import { UPDATE_GROUP_CONTACT } from 'graphql/mutations/Group';
 import {
   COUNT_COUNTACTS_WA_GROUPS,
-  GROUP_SEARCH_QUERY,
+  GET_WA_GROUP,
   LIST_CONTACTS_WA_GROUPS,
 } from 'graphql/queries/WaGroups';
 import DeleteIcon from 'assets/images/icons/Delete/Red.svg?react';
@@ -22,26 +22,10 @@ export const GroupDetails = () => {
 
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [deleteVariables, setDeleteVariables] = useState<any>();
-  const [groupDetails, setGroupDetails] = useState<any>();
 
-  // we should use wa_group api with filter by id here
-  const { loading: groupDataLoading } = useQuery(GROUP_SEARCH_QUERY, {
+  const { loading: groupDataLoading, data: groupData } = useQuery(GET_WA_GROUP, {
     variables: {
-      waGroupOpts: {
-        limit: 1,
-      },
-      waMessageOpts: {
-        limit: 0,
-        offset: 0,
-      },
-      filter: {
-        id: params.id,
-      },
-    },
-    onCompleted: (data) => {
-      if (data.search) {
-        setGroupDetails(data.search[0].waGroup);
-      }
+      waGroupId: params.id,
     },
   });
 
@@ -174,7 +158,7 @@ export const GroupDetails = () => {
         backLink={`/group/chat/${params.id}`}
         dialogTitle={dialogTitle}
         columnNames={columnNames}
-        title={groupDetails?.label}
+        title={groupData?.waGroup?.waGroup?.label}
         listItem="waGroupContact"
         listItemName="waGroupContact"
         searchParameter={['term']}
