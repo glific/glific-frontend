@@ -108,7 +108,7 @@ const updateOrganizationMock = {
           activeLanguages: [
             {
               id: '1',
-              label: 'English',
+              label: 'Engrlish',
             },
             {
               id: '2',
