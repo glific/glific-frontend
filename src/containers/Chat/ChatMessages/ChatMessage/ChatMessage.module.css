@@ -232,6 +232,7 @@
 
 .InteractiveContent {
   padding: 0px !important;
+  min-width: 284px;
 }
 
 .Label {
