@@ -30,30 +30,6 @@ import styles from './Template.module.css';
 
 const regexForShortcode = /^[a-z0-9_]+$/g;
 
-const HSMValidation = {
-  example: Yup.string()
-    .max(1024, 'Maximum 1024 characters are allowed')
-    .when('body', ([body], schema: any) =>
-      schema.test({
-        test: (exampleValue: any) => {
-          const finalmessageValue = body && body.replace(/\{\{([1-9]|1[0-9])\}\}/g, '[]');
-          const finalExampleValue = exampleValue && exampleValue.replace(/\[[^\]]*\]/g, '[]');
-          return finalExampleValue === finalmessageValue;
-        },
-        message:
-          'Message and sample look different. Please check for any characters, extra spaces or new lines.',
-      })
-    )
-    .required('Example is required.'),
-  category: Yup.object().nullable().required('Category is required.'),
-  shortcode: Yup.string()
-    .required('Element name is required.')
-    .matches(
-      regexForShortcode,
-      'Only lowercase alphanumeric characters and underscores are allowed.'
-    ),
-};
-
 const dialogMessage = ' It will stop showing when you are drafting a customized message.';
 
 const queries = {
@@ -396,6 +372,31 @@ const Template = ({
     } else {
       setWarning(null);
     }
+  };
+
+  const HSMValidation = {
+    example: Yup.string()
+      .max(1024, t('Maximum 1024 characters are allowed'))
+      .when('body', ([body], schema: any) =>
+        schema.test({
+          test: (exampleValue: any) => {
+            const finalmessageValue = body && body.replace(/\{\{([1-9]|1[0-9])\}\}/g, '[]');
+            const finalExampleValue = exampleValue && exampleValue.replace(/\[[^\]]*\]/g, '[]');
+            return finalExampleValue === finalmessageValue;
+          },
+          message: t(
+            'Message and sample look different. You have to replace variables eg. {{1}} with actual values enclosed in [ ] eg. Replace {{1}} with [Monica].'
+          ),
+        })
+      )
+      .required('Example is required.'),
+    category: Yup.object().nullable().required(t('Category is required.')),
+    shortcode: Yup.string()
+      .required(t('Element name is required.'))
+      .matches(
+        regexForShortcode,
+        'Only lowercase alphanumeric characters and underscores are allowed.'
+      ),
   };
 
   const validateURL = (value: string) => {
