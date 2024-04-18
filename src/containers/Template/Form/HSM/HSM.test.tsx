@@ -123,7 +123,7 @@ describe('Add mode', () => {
     await waitFor(() => {
       expect(notificationSpy).toHaveBeenCalled();
     });
-  }, 20000);
+  });
 
   test('it should check sample and body', async () => {
     render(template);
@@ -164,7 +164,7 @@ describe('Add mode', () => {
         )
       ).toBeInTheDocument();
     });
-  }, 10000);
+  });
 
   test('add quick reply buttons when adding a template', async () => {
     const notificationSpy = vi.spyOn(Notification, 'setNotification');
@@ -221,7 +221,7 @@ describe('Add mode', () => {
     await waitFor(() => {
       expect(notificationSpy).toHaveBeenCalled();
     });
-  }, 10000);
+  });
 
   test('add quick reply buttons with call to action', async () => {
     const notificationSpy = vi.spyOn(Notification, 'setNotification');
