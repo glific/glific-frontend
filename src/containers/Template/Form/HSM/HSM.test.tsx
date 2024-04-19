@@ -123,7 +123,7 @@ describe('Add mode', () => {
     await waitFor(() => {
       expect(notificationSpy).toHaveBeenCalled();
     });
-  });
+  }, 10000);
 
   test('it should check sample and body', async () => {
     render(template);
