@@ -28,7 +28,7 @@ export const Promotion = () => {
 
       {!minimized && (
         <>
-          <div className={styles.Image}>Glific payment timelines & late payment consequences</div>
+          <div className={styles.Image}>Glific payment timelines & late payment policy</div>
 
           <div className={styles.Points}>
             <div className={styles.BodyListText}>
