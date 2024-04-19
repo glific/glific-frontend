@@ -41,7 +41,7 @@ export const TriggerType = ({
               value={CONTACTS_COLLECTION}
               checked={isChecked(CONTACTS_COLLECTION)}
               control={<Radio color="primary" />}
-              label={'Contact'}
+              label={'WABA Collections'}
               className={styles.Label}
             />
           </div>
@@ -51,7 +51,7 @@ export const TriggerType = ({
               value={WA_GROUPS_COLLECTION}
               checked={isChecked(WA_GROUPS_COLLECTION)}
               control={<Radio color="primary" />}
-              label={'WhatsApp Group'}
+              label={'WhatsApp Group Collections'}
               className={styles.Label}
             />
           </div>
