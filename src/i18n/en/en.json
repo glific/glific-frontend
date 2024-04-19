@@ -465,5 +465,9 @@
   "No conversations found!": "No conversations found!",
   "Add group to collection": "Add group to collection",
   "Contact": "Contact",
-  "Remove Contact": "Remove Contact"
+  "Remove Contact": "Remove Contact",
+  "Message and sample look different. You have to replace variables eg. {{1}} with actual values enclosed in [ ] eg. Replace {{1}} with [Monica].": "Message and sample look different. You have to replace variables eg. {{1}} with actual values enclosed in [ ] eg. Replace {{1}} with [Monica].",
+  "Maximum 1024 characters are allowed": "Maximum 1024 characters are allowed",
+  "Element name is required.": "Element name is required.",
+  "Category is required.": "Category is required."
 }

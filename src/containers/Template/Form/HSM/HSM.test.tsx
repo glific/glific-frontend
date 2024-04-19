@@ -108,7 +108,7 @@ describe('Add mode', () => {
       // expect an error
       expect(
         screen.getByText(
-          'Message and sample look different. Please check for any characters, extra spaces or new lines.'
+          'Message and sample look different. You have to replace variables eg. {{1}} with actual values enclosed in [ ] eg. Replace {{1}} with [Monica].'
         )
       ).toBeInTheDocument();
     });
