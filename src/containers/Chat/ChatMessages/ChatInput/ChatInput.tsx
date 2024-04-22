@@ -131,7 +131,6 @@ export const ChatInput = ({
         setAttachmentAdded(false);
         setAttachmentURL('');
         setAttachmentType('');
-        resetVariable();
       }
     },
   });
@@ -205,14 +204,13 @@ export const ChatInput = ({
         null,
         Number(selectedTemplate.id)
       );
-      resetVariable();
       // else the type will by default be text
     } else {
       onSendMessage(message, null, 'TEXT', selectedTemplate, variableParam);
-      resetVariable();
     }
 
     // Resetting the EditorState
+    resetVariable();
     editor.dispatchCommand(CLEAR_EDITOR_COMMAND, undefined);
     editor.focus();
   };
@@ -291,6 +289,8 @@ export const ChatInput = ({
   const handleCancel = () => {
     resetAttachment();
     resetVariable();
+    editor.dispatchCommand(CLEAR_EDITOR_COMMAND, undefined);
+    editor.focus();
   };
 
   const updateEditorState = (body: string) => {
@@ -486,10 +486,7 @@ export const ChatInput = ({
             <Tooltip title={t('Remove message')} placement="top">
               <IconButton
                 className={updatedEditorState ? styles.CrossIcon : styles.CrossIconWithVariable}
-                onClick={() => {
-                  resetVariable();
-                  resetAttachment();
-                }}
+                onClick={handleCancel}
               >
                 <CrossIcon />
               </IconButton>
