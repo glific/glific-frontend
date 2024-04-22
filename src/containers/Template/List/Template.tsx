@@ -35,7 +35,7 @@ import { setNotification } from 'common/notification';
 import { BULK_APPLY_SAMPLE_LINK } from 'config';
 import { speedSendInfo, templateInfo } from 'common/HelpData';
 import styles from './Template.module.css';
-import { RaiseToGupShup } from './RaiseToGupShup';
+import { RaiseToGupShup } from './RaiseToGupshupDialog/RaiseToGupShup';
 
 const getLabel = (label: string) => <div className={styles.LabelText}>{label}</div>;
 

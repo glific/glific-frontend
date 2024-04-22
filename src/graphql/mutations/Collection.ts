@@ -46,22 +46,6 @@ export const CREATE_COLLECTION = gql`
   }
 `;
 
-export const CREATE_GROUP_COLLECTION = gql`
-  mutation CreateWaGroupsCollection($input: WaGroupsCollectionInput!) {
-    createWaGroupsCollection(input: $input) {
-      errors {
-        message
-      }
-      waGroupsCollection {
-        group {
-          label
-          id
-        }
-      }
-    }
-  }
-`;
-
 export const UPDATE_COLLECTION = gql`
   mutation updateGroup($id: ID!, $input: GroupInput!) {
     updateGroup(id: $id, input: $input) {

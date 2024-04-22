@@ -72,8 +72,60 @@ describe('Add mode', () => {
     });
   });
 
-  test('Check for message and sample message validations while creating a template', async () => {
+  test('it should create a template message', async () => {
     const notificationSpy = vi.spyOn(Notification, 'setNotification');
+    render(template);
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('AutocompleteInput')[0].querySelector('input')).toHaveValue(
+        'English'
+      );
+    });
+
+    const title = screen.getAllByTestId('input')[0].querySelector('input') as HTMLInputElement;
+    const elementName = document.querySelector('input[name="shortcode"]') as HTMLInputElement;
+    const attachmentUrl = document.querySelector('input[name="attachmentURL"]') as HTMLInputElement;
+    const message = screen.getByTestId('editor-body') as HTMLElement;
+    const sampleMessage = screen.getByTestId('editor-example') as HTMLElement;
+
+    await user.type(title, 'Hello');
+
+    await user.type(elementName, 'welcome');
+
+    // add message
+    await user.click(message);
+    await user.tab();
+    fireEvent.input(message, { data: 'Hi {{1}}, How are you' });
+
+    // add Sample message
+    await user.click(sampleMessage);
+    await user.tab();
+    fireEvent.input(sampleMessage, { data: 'Hi [Glific], How are you' });
+
+    const [_language, category, attachmentType] = screen.getAllByTestId('autocomplete-element');
+    category.focus();
+    fireEvent.keyDown(category, { key: 'ArrowDown' });
+    fireEvent.keyDown(category, { key: 'ArrowDown' });
+    fireEvent.keyDown(category, { key: 'Enter' });
+
+    attachmentType.focus();
+    fireEvent.keyDown(attachmentType, { key: 'ArrowDown' });
+    fireEvent.keyDown(attachmentType, { key: 'ArrowDown' });
+    fireEvent.keyDown(attachmentType, { key: 'Enter' });
+
+    await user.type(
+      attachmentUrl,
+      'https://www.buildquickbots.com/whatsapp/media/sample/jpg/sample02.jpg'
+    );
+
+    fireEvent.click(screen.getByTestId('submitActionButton'));
+
+    await waitFor(() => {
+      expect(notificationSpy).toHaveBeenCalled();
+    });
+  }, 10000);
+
+  test('it should check sample and body', async () => {
     render(template);
 
     await waitFor(() => {
@@ -112,23 +164,7 @@ describe('Add mode', () => {
         )
       ).toBeInTheDocument();
     });
-
-    // fix Sample message
-    const backspaceKey = '{backspace}';
-    await user.type(sampleMessage, backspaceKey.repeat(19) + '[[Glific], How are you');
-
-    const [_language, category] = screen.getAllByTestId('autocomplete-element');
-    category.focus();
-    fireEvent.keyDown(category, { key: 'ArrowDown' });
-    fireEvent.keyDown(category, { key: 'ArrowDown' });
-    fireEvent.keyDown(category, { key: 'Enter' });
-
-    fireEvent.click(screen.getByTestId('submitActionButton'));
-
-    await waitFor(() => {
-      expect(notificationSpy).toHaveBeenCalled();
-    });
-  }, 10000);
+  });
 
   test('add quick reply buttons when adding a template', async () => {
     const notificationSpy = vi.spyOn(Notification, 'setNotification');
@@ -155,7 +191,7 @@ describe('Add mode', () => {
     // add Sample message
     await user.click(sampleMessage);
     await user.tab();
-    fireEvent.input(sampleMessage, { data: 'Hi [[Glific], How are you' });
+    fireEvent.input(sampleMessage, { data: 'Hi [Glific], How are you' });
 
     await user.click(screen.getAllByTestId('checkboxLabel')[1]);
     await user.click(screen.getByText('Quick replies'));

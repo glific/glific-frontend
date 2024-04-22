@@ -169,7 +169,7 @@ export const syncSheetMutation = {
     data: {
       syncSheet: {
         sheet: {
-          id: '3',
+          id: '1',
           insertedAt: '2022-10-14T06:06:23.141322Z',
           isActive: true,
           sheetDataCount: 4,
@@ -178,6 +178,34 @@ export const syncSheetMutation = {
           updatedAt: '2022-10-14T06:06:23.141322Z',
           url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ6L9eu5zCfiCQiULhy_yrw7VYDoMDnb8pNi3E4l226iH865Z8Nv-6XWaZ-CStITlT3EmiCZ_RnHzof/pub?gid=0&single=true&output=csv',
           warnings: '{}',
+          type: 'READ',
+        },
+        errors: null,
+      },
+    },
+  },
+};
+
+export const syncSheetMutationWithWarnings = {
+  request: {
+    query: SYNC_SHEET,
+    variables: { id: '2' },
+  },
+  result: {
+    data: {
+      syncSheet: {
+        sheet: {
+          id: '2',
+          insertedAt: '2022-10-14T06:06:23.141322Z',
+          isActive: true,
+          sheetDataCount: 4,
+          label: 'sheet1',
+          lastSyncedAt: '2022-10-14T06:06:23Z',
+          updatedAt: '2022-10-14T06:06:23.141322Z',
+          url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ6L9eu5zCfiCQiULhy_yrw7VYDoMDnb8pNi3E4l226iH865Z8Nv-6XWaZ-CStITlT3EmiCZ_RnHzof/pub?gid=0&single=true&output=csv',
+          warnings:
+            '{"Warning 1":"This is the first mock warning message","Warning 2":"This is the second mock warning message","Warning 3":"This is the third mock warning message"}',
+          type: 'READ',
         },
         errors: null,
       },

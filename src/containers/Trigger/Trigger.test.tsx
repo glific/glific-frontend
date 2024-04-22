@@ -1,4 +1,4 @@
-import { fireEvent, render, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router';
 import { vi } from 'vitest';
@@ -6,8 +6,10 @@ import { vi } from 'vitest';
 import { LIST_ITEM_MOCKS } from 'containers/SettingList/SettingList.test.helper';
 import { LIST_ITEM_MOCKS as SearchMocks } from 'containers/Search/Search.test.helper';
 import * as AutoComplete from 'components/UI/Form/AutoComplete/AutoComplete';
+import * as Notification from 'common/notification';
 import {
   createTriggerQuery,
+  deleteTriggerQuery,
   getTriggerQuery,
   hourlyTrigger,
   updateTriggerQuery,
@@ -16,6 +18,7 @@ import {
 import { Trigger } from './Trigger';
 import dayjs from 'dayjs';
 import utc from 'dayjs';
+import { conversationMock } from 'mocks/Chat';
 dayjs.extend(utc);
 
 vi.mock('react-router-dom', async () => {
@@ -120,6 +123,8 @@ describe('trigger with weekly frequency', () => {
     ...LIST_ITEM_MOCKS,
     ...SearchMocks,
     updateTriggerWeeklyQuery,
+    deleteTriggerQuery,
+    conversationMock({ contactOpts: { limit: 25 }, filter: {}, messageOpts: { limit: 20 } }),
   ];
 
   const wrapper = (
@@ -192,6 +197,26 @@ describe('trigger with weekly frequency', () => {
 
       fireEvent.change(formLayout[1], { target: { value: 'weekly' } });
       fireEvent.change(formLayout[1], { target: { value: 'daily' } });
+    });
+  });
+
+  test('it should remove the trigger in edit mode', async () => {
+    const notificationSpy = vi.spyOn(Notification, 'setNotification');
+
+    const { getByText, getByTestId } = render(wrapper);
+    expect(getByText('Loading...')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(getByText('Edit trigger')).toBeInTheDocument();
+    });
+
+    fireEvent.click(getByTestId('remove-icon'));
+    expect(screen.getByText('Are you sure you want to delete the trigger?')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('ok-button'));
+
+    await waitFor(() => {
+      expect(notificationSpy).toHaveBeenCalledWith('Trigger deleted successfully');
     });
   });
 });

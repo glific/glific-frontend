@@ -1,4 +1,10 @@
-import { GET_TICKET, TICKET_COUNT_QUERY, TICKET_LIST_QUERY } from 'graphql/queries/Ticket';
+import {
+  EXPORT_SUPPORT_TICKETS,
+  GET_TICKET,
+  TICKET_COUNT_QUERY,
+  TICKET_LIST_QUERY,
+  UPDATE_TICKETS_STATUS,
+} from 'graphql/queries/Ticket';
 
 export const getTicketQuery = {
   request: {
@@ -74,6 +80,34 @@ export const ticketCountQuery = {
   result: {
     data: {
       countTickets: 1,
+    },
+  },
+};
+
+export const bulkActionQuery = {
+  request: {
+    query: UPDATE_TICKETS_STATUS,
+    variables: { input: { status: 'closed', topic: 'dob' } },
+  },
+  result: {
+    data: {
+      updateTicketStatusBasedOnTopic: {
+        __typename: 'BulkTicketResult',
+        message: 'Updated successfully',
+        success: true,
+      },
+    },
+  },
+};
+
+export const exportTicketsMock = {
+  request: {
+    query: EXPORT_SUPPORT_TICKETS,
+    variables: { filter: { startDate: '2024-01-15', endDate: '2024-04-15' } },
+  },
+  result: {
+    data: {
+      fetchSupportTickets: 'status,body,inserted_at,topic,opened_by,assigned_to\n',
     },
   },
 };
