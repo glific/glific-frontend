@@ -270,7 +270,7 @@ const createHsmWithButtontemplate = {
         body: 'Hi {{1}}, How are you',
         type: 'TEXT',
         shortcode: 'welcome',
-        example: 'Hi [[Glific], How are you',
+        example: 'Hi [Glific], How are you',
         category: 'ACCOUNT_UPDATE',
         tagId: null,
         isActive: true,
@@ -370,7 +370,7 @@ const createHSMtemplate = {
       input: {
         label: 'Hello',
         body: 'Hi {{1}}, How are you',
-        type: 'TEXT',
+        type: 'IMAGE',
         shortcode: 'welcome',
         example: 'Hi [Glific], How are you',
         category: 'ACCOUNT_UPDATE',
@@ -379,6 +379,7 @@ const createHSMtemplate = {
         isHsm: true,
         languageId: '1',
         translations: '{}',
+        messageMediaId: 5,
       },
     },
   },
@@ -410,12 +411,37 @@ const createHSMtemplate = {
   },
 };
 
+const createMediaMessage = {
+  request: {
+    query: CREATE_MEDIA_MESSAGE,
+    variables: {
+      input: {
+        caption: 'Hi {{1}}, How are you',
+        sourceUrl: 'https://www.buildquickbots.com/whatsapp/media/sample/jpg/sample02.jpg',
+        url: 'https://www.buildquickbots.com/whatsapp/media/sample/jpg/sample02.jpg',
+      },
+    },
+  },
+  result: {
+    data: {
+      createMessageMedia: {
+        __typename: 'MessageMediaResult',
+        messageMedia: {
+          __typename: 'MessageMedia',
+          id: '5',
+        },
+      },
+    },
+  },
+};
+
 export const TEMPLATE_MOCKS = [
   getFilterTagQuery,
   createHSMtemplate,
   getFilterTagQuery,
   createHsmWithButtontemplate,
   createHsmWithPhonetemplate,
+  createMediaMessage,
   {
     request: {
       query: CREATE_TEMPLATE,

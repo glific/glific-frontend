@@ -113,6 +113,7 @@ cache.writeQuery({
   data: {
     search: [
       {
+        id: 'group_2',
         group: {
           id: '2',
           label: 'Default Group',

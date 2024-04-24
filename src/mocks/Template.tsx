@@ -1,6 +1,6 @@
 import { setVariables } from 'common/constants';
 import { BULK_APPLY_TEMPLATES, IMPORT_TEMPLATES } from 'graphql/mutations/Template';
-import { FILTER_TEMPLATES, GET_TEMPLATES_COUNT } from 'graphql/queries/Template';
+import { FILTER_TEMPLATES, GET_TEMPLATE, GET_TEMPLATES_COUNT } from 'graphql/queries/Template';
 import { searchInteractive, searchInteractiveHi } from './InteractiveMessage';
 
 export const filterTemplatesQuery = (term: any, data: any) => {
@@ -241,3 +241,45 @@ export const bulkApplyMutation = {
     },
   },
 };
+
+export const templateEditMock = (templateId: string, buttons: any) => ({
+  request: {
+    query: GET_TEMPLATE,
+    variables: {
+      id: templateId,
+    },
+  },
+  result: {
+    data: {
+      sessionTemplate: {
+        __typename: 'SessionTemplateResult',
+        sessionTemplate: {
+          MessageMedia: null,
+          __typename: 'SessionTemplate',
+          body: 'You can now view your Account Balance or Mini statement for Account ending with {{1}} simply by selecting one of the options below.',
+
+          category: 'ACCOUNT_UPDATE',
+          example:
+            'You can now view your Account Balance or Mini statement for Account ending with [003] simply by selecting one of the options below.',
+          hasButtons: true,
+          id: templateId,
+          isActive: true,
+          isHsm: true,
+          label: 'Account Balance',
+          language: {
+            __typename: 'Language',
+            id: '1',
+            label: 'English',
+          },
+          shortcode: 'account_balance',
+          tag: null,
+          translations:
+            '{"2":{"uuid":"0de5b294-0385-48d0-bdc0-53cc833a31c5","status":"APPROVED","number_parameters":1,"language_id":2,"label":"Account Balance","example":" अब आप नीचे दिए विकल्पों में से एक का चयन करके [003] के साथ समाप्त होने वाले खाते के लिए अपना खाता शेष या मिनी स्टेटमेंट देख सकते हैं। | [अकाउंट बैलेंस देखें] | [देखें मिनी स्टेटमेंट]","body":" अब आप नीचे दिए विकल्पों में से एक का चयन करके {{1}} के साथ समाप्त होने वाले खाते के लिए अपना खाता शेष या मिनी स्टेटमेंट देख सकते हैं। | [अकाउंट बैलेंस देखें] | [देखें मिनी स्टेटमेंट]"}}',
+          type: 'TEXT',
+          updatedAt: '2024-03-28T10:41:16Z',
+          ...buttons,
+        },
+      },
+    },
+  },
+});
