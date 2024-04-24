@@ -99,7 +99,7 @@ export interface ListProps {
   descriptionBox?: any;
   loadingList?: boolean;
   columnNames?: Array<ColumnNames>;
-  countQuery: DocumentNode;
+  countQuery?: DocumentNode;
   listItem: string;
   filterItemsQuery: DocumentNode;
   deleteItemQuery: DocumentNode | null;
@@ -322,14 +322,20 @@ export const List = ({
   }, [searchVal, tableVals, filters]);
 
   // Get the total number of items here
-  const {
-    loading: l,
-    error: e,
-    data: countData,
-    refetch: refetchCount,
-  } = useQuery(countQuery, {
-    variables: { filter },
-  });
+
+  let refetchCount: any;
+  let countData;
+  let e;
+  let l;
+
+  if (countQuery) {
+    [, { data: countData, error: e, loading: l, refetch: refetchCount }] = useLazyQuery(
+      countQuery,
+      {
+        variables: { filter },
+      }
+    );
+  }
 
   // Get item data here
   const [, { loading, error, data, refetch: refetchValues }] = useLazyQuery(filterItemsQuery, {
@@ -348,7 +354,9 @@ export const List = ({
   useEffect(() => {
     // Todo: refetching values twice. Need to think of a better way to do this
     refetchValues();
-    refetchCount();
+    if (countQuery) {
+      refetchCount();
+    }
   }, [searchVal, filters, refreshList]);
 
   useEffect(() => {
@@ -371,7 +379,7 @@ export const List = ({
       onCompleted: () => {
         setNotification(`${capitalListItemName} deleted successfully`);
         checkUserRole();
-        refetchCount();
+        countQuery && refetchCount();
         if (refetchValues) {
           refetchValues(filterPayload());
         }
@@ -640,6 +648,8 @@ export const List = ({
   // Get item data and total number of items.
   let itemList: any = [];
   if (data) {
+    console.log(data, listItem);
+
     itemList = formatList(data[listItem]);
   }
 
@@ -679,6 +689,7 @@ export const List = ({
       collapseRow={collapseRow}
       loadingList={loadingList || loading || l || loadingCollections}
       noItemsText={noItemsText}
+      showPagination={countQuery ? true : false}
     />
   );
 
