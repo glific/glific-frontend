@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, Fragment } from 'react';
 import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useQuery, useMutation, DocumentNode, useLazyQuery } from '@apollo/client';
+import { useMutation, DocumentNode, useLazyQuery } from '@apollo/client';
 import { Backdrop, Divider, IconButton, Menu, MenuItem } from '@mui/material';
 
 import { Button } from 'components/UI/Form/Button/Button';

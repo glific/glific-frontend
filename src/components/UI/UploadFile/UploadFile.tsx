@@ -4,28 +4,22 @@ import styles from './UploadFile.module.css';
 import { slicedString } from 'common/utils';
 import { useState } from 'react';
 import { Formik, Form } from 'formik';
-import { useTranslation } from 'react-i18next';
-import { Loading } from '../Layout/Loading/Loading';
-import { CircularProgress } from '@mui/material';
 
 export const UploadFile = ({ setFile }: any) => {
   const [errors, setErrors] = useState<string>('');
   const [fileName, setFileName] = useState<null | string>(null);
 
-  const { t } = useTranslation();
-
   const addAttachment = (event: any) => {
     const media = event.target.files[0];
-
-    if (media.size / 1000000 > 10) {
-      setErrors('File size should be less than 10MB');
-      return;
-    } else if (media.type !== 'application/pdf') {
-      setErrors('File type should be PDF');
-      return;
-    }
-
     if (media) {
+      if (media.size / 1000000 > 10) {
+        setErrors('File size should be less than 10MB');
+        return;
+      } else if (media.type !== 'application/pdf') {
+        setErrors('File type should be PDF');
+        return;
+      }
+
       const mediaName = media.name;
       const slicedName = slicedString(mediaName, 25);
       setFileName(slicedName);
