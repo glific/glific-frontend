@@ -233,7 +233,7 @@ export const AddAttachment = ({
               <>
                 <div className={styles.UploadContainer}>
                   <label
-                    className={`${!uploadDisabled ? styles.UploadDisabled : styles.UploadEnabled} ${
+                    className={`${uploadDisabled ? styles.UploadDisabled : styles.UploadEnabled} ${
                       fileName && attachmentURL ? styles.Uploaded : ''
                     }`}
                     htmlFor="uploadFile"
@@ -253,7 +253,7 @@ export const AddAttachment = ({
                         id="uploadFile"
                         data-testid="uploadFile"
                         onClick={(event) => {
-                          if (!uploadDisabled) {
+                          if (uploadDisabled) {
                             event.preventDefault();
                           }
                         }}
