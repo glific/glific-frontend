@@ -7,3 +7,11 @@ export const UPLOAD_KNOWLEDGE_BASE = gql`
     }
   }
 `;
+
+export const DELETE_KNOWLEDGE_BASE = gql`
+  mutation DeleteKnowledgeBase($uuid: UUID4!) {
+    deleteKnowledgeBase(uuid: $uuid) {
+      msg
+    }
+  }
+`;

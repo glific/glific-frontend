@@ -222,7 +222,7 @@ const menus = (): Menu[] => [
         roles: ['Glific_admin'],
       },
       {
-        title: 'Knowledge Base',
+        title: 'Knowledge base',
         path: '/knowledge-base',
         type: 'sideDrawer',
         icon: 'knowledgeBase',

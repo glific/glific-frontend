@@ -1,19 +1,23 @@
-.UUID {
+.ID {
   color: #555;
   font-size: 13px;
   font-weight: 500;
-  min-width: 200px;
-  width: 60%;
+  /* min-width: 200px; */
+}
+
+.IdContainer {
   display: flex;
   align-items: flex-start;
   column-gap: 0.5rem;
-  cursor: pointer;
 }
 
 .Actions {
   min-width: 200px;
   text-align: end;
-  width: 60%;
+  color: #555;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 6px;
 }
 
 .Label,
@@ -22,11 +26,18 @@
   font-size: 13px;
   font-weight: 500;
   margin-bottom: 6px;
-  width: 40%;
 }
 
 .CopyIcon {
   color: #555;
   width: 1rem;
   height: 1rem;
+  cursor: pointer;
+}
+
+.DialogBox {
+  display: flex;
+  /* align-items: center; */
+  justify-content: center;
+  width: 100%;
 }

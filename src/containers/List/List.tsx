@@ -648,8 +648,6 @@ export const List = ({
   // Get item data and total number of items.
   let itemList: any = [];
   if (data) {
-    console.log(data, listItem);
-
     itemList = formatList(data[listItem]);
   }
 

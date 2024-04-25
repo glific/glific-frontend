@@ -9,6 +9,16 @@ export const GET_KNOWLEDGE_BASE = gql`
         uuid
       }
       name
+      id: uuid
+    }
+  }
+`;
+
+export const GET_CATEGORIES = gql`
+  query Categories {
+    categories {
+      id
+      name
       uuid
     }
   }

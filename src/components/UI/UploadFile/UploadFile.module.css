@@ -7,6 +7,7 @@
   border-style: dashed;
   width: 100%;
 }
+
 .FormError {
   color: #f44336;
   font-size: 0.75rem;
@@ -44,4 +45,22 @@
 .WaitUpload {
   font-size: 14px;
   margin-left: 16px;
+}
+
+.FormField {
+  margin-top: 24px;
+  vertical-align: middle;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 18px;
+  color: #555555;
+  padding-bottom: 14px;
+}
+
+.Loading {
+  text-align: center;
+}
+
+.Form {
+  width: 100%;
 }

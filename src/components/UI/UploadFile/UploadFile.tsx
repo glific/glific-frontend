@@ -3,11 +3,44 @@ import UploadIcon from 'assets/images/icons/UploadIcon.svg?react';
 import styles from './UploadFile.module.css';
 import { slicedString } from 'common/utils';
 import { useState } from 'react';
-import { Formik, Form } from 'formik';
+import { Formik, Form, Field } from 'formik';
+import { Dropdown } from '../Form/Dropdown/Dropdown';
+import { useQuery } from '@apollo/client';
+import { GET_CATEGORIES } from 'graphql/queries/KnowledgeBase';
+import { CircularProgress } from '@mui/material';
 
-export const UploadFile = ({ setFile }: any) => {
+interface UploadFileProps {
+  setFile: any;
+  category: string | null;
+  setCategory: any;
+}
+
+export const UploadFile = ({ setFile, category, setCategory }: UploadFileProps) => {
   const [errors, setErrors] = useState<string>('');
   const [fileName, setFileName] = useState<null | string>(null);
+  const [options, setOptions] = useState([]);
+
+  const { loading } = useQuery(GET_CATEGORIES, {
+    onCompleted: (data) => {
+      setOptions(
+        data.categories.map((category: any) => ({ id: category.id, label: category.name }))
+      );
+    },
+  });
+
+  let formFieldItems: any = [
+    {
+      component: Dropdown,
+      options,
+      name: 'category',
+      placeholder: 'Select Category',
+      fieldValue: category,
+      fieldChange: (event: any) => {
+        setCategory(event?.target.value);
+        setErrors('');
+      },
+    },
+  ];
 
   const addAttachment = (event: any) => {
     const media = event.target.files[0];
@@ -27,6 +60,10 @@ export const UploadFile = ({ setFile }: any) => {
     }
   };
 
+  if (loading) {
+    return <CircularProgress className={styles.Loading} />;
+  }
+
   return (
     <Formik
       initialValues={{
@@ -35,6 +72,16 @@ export const UploadFile = ({ setFile }: any) => {
       onSubmit={() => {}}
     >
       <Form className={styles.Form} data-testid="formLayout" encType="multipart/form-data">
+        <div className={styles.DialogContent} data-testid="">
+          {formFieldItems.map((field: any) => (
+            <div className={styles.AttachmentFieldWrapper} key={field.name}>
+              <Field {...field} key={field.name} validateURL={errors} />
+            </div>
+          ))}
+          <div className={styles.FormError}>{errors}</div>
+        </div>
+
+        <div className={styles.FormField}>Document</div>
         <Button
           className="Container"
           fullWidth={true}
@@ -45,7 +92,7 @@ export const UploadFile = ({ setFile }: any) => {
         >
           <div className={styles.Container}>
             {fileName !== null ? (
-              fileName
+              <span className={styles.FileName}>{fileName}</span>
             ) : (
               <div>
                 <UploadIcon className={styles.UploadIcon} />
