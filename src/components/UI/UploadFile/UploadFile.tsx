@@ -111,7 +111,9 @@ export const UploadFile = ({ setFile, category, setCategory }: UploadFileProps) 
             />
           </div>
         </Button>
-        <p className={styles.HelperText}>Upload PDF files less than 10 MB.</p>
+        <p className={styles.HelperText}>
+          Upload PDF files less than 1 MB. <br /> If there are multiple pages please split the PDF.
+        </p>
         <p className={styles.FormError}> {errors}</p>
       </Form>
     </Formik>

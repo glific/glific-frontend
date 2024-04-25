@@ -41,3 +41,10 @@
   justify-content: center;
   width: 100%;
 }
+
+.DialogText {
+  margin-top: 0px;
+  text-align: center;
+  font-size: 14px;
+  color: #073f24;
+}

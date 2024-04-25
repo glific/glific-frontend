@@ -1,6 +1,7 @@
 import { List } from 'containers/List/List';
 import { useTranslation } from 'react-i18next';
 import CollectionIcon from 'assets/images/icons/Collection/Dark.svg?react';
+import DeleteIcon from 'assets/images/icons/Delete/Red.svg?react';
 import CopyIcon from 'assets/images/icons/Flow/Copy.svg?react';
 import { GET_KNOWLEDGE_BASE } from 'graphql/queries/KnowledgeBase';
 import styles from './Knowledgebase.module.css';
@@ -19,6 +20,7 @@ export const KnowledgeBase = () => {
   };
 
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [deleteItemId, setDeleteItemID] = useState<string | null>(null);
   const [file, setFile] = useState<null | string>(null);
   const [category, setCategory] = useState<null | string>(null);
   const [uploading, setUploading] = useState(false);
@@ -35,6 +37,17 @@ export const KnowledgeBase = () => {
       setFile(null);
       setUploading(false);
       setNotification(t('An error occured while uploading the file'), 'warning');
+    },
+  });
+
+  const [deleteKnowledgeBase, { loading: deleteLoading }] = useMutation(DELETE_KNOWLEDGE_BASE, {
+    onCompleted: (data: any) => {
+      setNotification('Successfully deleted the knowledge base!', 'success');
+      setDeleteItemID(null);
+    },
+    onError: () => {
+      setNotification('An error occured while deleteing the knowledge base.', 'warning');
+      setDeleteItemID(null);
     },
   });
 
@@ -75,6 +88,14 @@ export const KnowledgeBase = () => {
     });
   };
 
+  const handleDelete = () => {
+    deleteKnowledgeBase({
+      variables: {
+        uuid: deleteItemId,
+      },
+    });
+  };
+
   const dialog = (
     <DialogBox
       title={'Upload Document'}
@@ -90,9 +111,29 @@ export const KnowledgeBase = () => {
     </DialogBox>
   );
 
-  const getDeleteQueryVariables = (id: any) => ({
-    uuid: id,
-  });
+  const Deletedialog = (
+    <DialogBox
+      title={'Do you want to delete this knowledge base?'}
+      handleOk={handleDelete}
+      handleCancel={() => setDeleteItemID(null)}
+      alignButtons="center"
+      buttonOkLoading={deleteLoading}
+    >
+      <p className={styles.DialogText}>{'This knowledge base will be deleted permanently.'}</p>
+    </DialogBox>
+  );
+
+  const additionalAction = () => [
+    {
+      label: t('Delete'),
+      icon: <DeleteIcon />,
+      parameter: 'id',
+      dialog: (id: any) => setDeleteItemID(id),
+      insideMore: false,
+    },
+  ];
+
+  const restrictedAction = () => ({ delete: false, edit: false });
 
   return (
     <>
@@ -108,17 +149,17 @@ export const KnowledgeBase = () => {
         listItemName="knowledgeBases"
         button={{ show: true, label: 'Upload', action: () => setDialogOpen(true) }}
         filters={{}}
-        deleteModifier={{
-          variables: getDeleteQueryVariables,
-        }}
         pageLink={`knowledge-base`}
+        additionalAction={additionalAction}
         listIcon={collectionIcon}
         editSupport={false}
         showSearch={false}
+        restrictedAction={restrictedAction}
         {...queries}
         {...columnAttributes}
       />
       {dialogOpen && dialog}
+      {deleteItemId !== null && Deletedialog}
     </>
   );
 };
