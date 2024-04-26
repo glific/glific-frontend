@@ -8,12 +8,14 @@ import { useMutation, useQuery } from '@apollo/client';
 import { GET_CATEGORIES } from 'graphql/queries/KnowledgeBase';
 import { CircularProgress } from '@mui/material';
 import { CREATE_CATEGORY } from 'graphql/mutations/KnowledgeBase';
-import { AutoComplete } from '../Form/AutoComplete/AutoComplete';
+import { AutoComplete } from '../../../components/UI/Form/AutoComplete/AutoComplete';
+import * as Yup from 'yup';
 
 interface UploadFileProps {
   setFile: any;
   category: string | null;
   setCategory: any;
+  file: any;
 }
 
 export const UploadFile = ({ setFile, setCategory }: UploadFileProps) => {
@@ -21,7 +23,7 @@ export const UploadFile = ({ setFile, setCategory }: UploadFileProps) => {
   const [fileName, setFileName] = useState<null | string>(null);
   const [options, setOptions] = useState([]);
 
-  const { loading, refetch: refetchcCategories } = useQuery(GET_CATEGORIES, {
+  const { loading, refetch: refetchCategories } = useQuery(GET_CATEGORIES, {
     onCompleted: (data) => {
       setOptions(
         data.categories.map((category: any) => ({ id: category.id, label: category.name }))
@@ -37,7 +39,7 @@ export const UploadFile = ({ setFile, setCategory }: UploadFileProps) => {
         name: value,
       },
     }).then((value) => {
-      refetchcCategories();
+      refetchCategories();
       setCategory(value.data.createCategory?.id);
       return value.data.createCategory;
     });
@@ -79,13 +81,14 @@ export const UploadFile = ({ setFile, setCategory }: UploadFileProps) => {
   };
 
   if (loading) {
-    return <CircularProgress className={styles.Loading} />;
+    return <CircularProgress data-testid="loading" className={styles.Loading} />;
   }
 
   return (
     <Formik
       initialValues={{
-        files: '',
+        file: '',
+        categoryId: '',
       }}
       onSubmit={() => {}}
     >

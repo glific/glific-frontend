@@ -7,7 +7,7 @@ import { GET_KNOWLEDGE_BASE } from 'graphql/queries/KnowledgeBase';
 import styles from './Knowledgebase.module.css';
 import { useState } from 'react';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
-import { UploadFile } from 'components/UI/UploadFile/UploadFile';
+import { UploadFile } from 'containers/KnowledgeBase/UploadFile/UploadFile';
 import { copyToClipboard } from 'common/utils';
 import { useMutation } from '@apollo/client';
 import { DELETE_KNOWLEDGE_BASE, UPLOAD_KNOWLEDGE_BASE } from 'graphql/mutations/KnowledgeBase';
@@ -57,7 +57,7 @@ export const KnowledgeBase = () => {
       <div className={styles.IdContainer}>
         <span>{category?.id}</span>
         <div onClick={() => copyToClipboard(category.id)}>
-          <CopyIcon className={styles.CopyIcon} />
+          <CopyIcon data-testid="copy-icon" className={styles.CopyIcon} />
         </div>
       </div>
     </div>
@@ -79,13 +79,15 @@ export const KnowledgeBase = () => {
   const collectionIcon = <CollectionIcon />;
 
   const uploadFile = async () => {
-    setUploading(true);
-    await uploadMedia({
-      variables: {
-        categoryId: category,
-        media: file,
-      },
-    });
+    if (file && category) {
+      setUploading(true);
+      await uploadMedia({
+        variables: {
+          categoryId: category,
+          media: file,
+        },
+      });
+    }
   };
 
   const handleDelete = () => {
@@ -105,8 +107,8 @@ export const KnowledgeBase = () => {
       buttonOkLoading={uploading}
       alignButtons="center"
     >
-      <div className={styles.DialogBox} data-testid="description">
-        <UploadFile setCategory={setCategory} category={category} setFile={setFile} />
+      <div className={styles.DialogBox} data-testid="upload-dialog">
+        <UploadFile file={file} setCategory={setCategory} category={category} setFile={setFile} />
       </div>
     </DialogBox>
   );
@@ -119,14 +121,16 @@ export const KnowledgeBase = () => {
       alignButtons="center"
       buttonOkLoading={deleteLoading}
     >
-      <p className={styles.DialogText}>{'This knowledge base will be deleted permanently.'}</p>
+      <p data-testid="delete-dialog" className={styles.DialogText}>
+        {'This knowledge base will be deleted permanently.'}
+      </p>
     </DialogBox>
   );
 
   const additionalAction = () => [
     {
       label: t('Delete'),
-      icon: <DeleteIcon />,
+      icon: <DeleteIcon data-testid="delete-icon" />,
       parameter: 'id',
       dialog: (id: any) => setDeleteItemID(id),
       insideMore: false,
