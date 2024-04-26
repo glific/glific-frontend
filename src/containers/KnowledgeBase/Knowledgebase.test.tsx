@@ -42,7 +42,7 @@ test('It copies the category id.', async () => {
   });
 });
 
-test('It deletes the knowledge base', async () => {
+test('It deletes the knowledge base and closes the dialog box', async () => {
   const { getByText, getByTestId, getAllByTestId } = render(wrapper);
   const notificationSpy = vi.spyOn(notification, 'setNotification');
 
@@ -54,8 +54,10 @@ test('It deletes the knowledge base', async () => {
 
   fireEvent.click(getAllByTestId('delete-icon')[0]);
 
+  const dialog = screen.getByTestId('delete-dialog');
+
   await waitFor(() => {
-    expect(screen.getByTestId('delete-dialog')).toBeInTheDocument();
+    expect(dialog).toBeInTheDocument();
   });
 
   fireEvent.click(screen.getByTestId('ok-button'));
@@ -63,9 +65,16 @@ test('It deletes the knowledge base', async () => {
   await waitFor(() => {
     expect(notificationSpy).toHaveBeenCalled();
   });
+
+  fireEvent.click(getAllByTestId('delete-icon')[0]);
+  fireEvent.click(getByTestId('cancel-button'));
+
+  await waitFor(() => {
+    expect(dialog).not.toBeInTheDocument();
+  });
 });
 
-test('It opens upload dialog box', async () => {
+test('It opens and closes upload dialog box', async () => {
   const { getByText, getByTestId } = render(wrapper);
 
   expect(getByTestId('loading')).toBeInTheDocument();
@@ -76,8 +85,16 @@ test('It opens upload dialog box', async () => {
 
   fireEvent.click(getByTestId('newItemButton'));
 
+  const dialog = screen.getByTestId('upload-dialog');
+
   await waitFor(() => {
-    expect(screen.getByTestId('upload-dialog')).toBeInTheDocument();
+    expect(dialog).toBeInTheDocument();
+  });
+
+  fireEvent.click(getByTestId('cancel-button'));
+
+  await waitFor(() => {
+    expect(dialog).not.toBeInTheDocument();
   });
 });
 

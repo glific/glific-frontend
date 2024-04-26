@@ -39,7 +39,7 @@ export const UploadFile = ({ setFile, setCategory }: UploadFileProps) => {
       },
     }).then((value) => {
       refetchCategories();
-      setCategory(value.data.createCategory?.id);
+      setCategory(value.data.createCategory.id);
       return { id: value.data.createCategory.id, label: value.data.createCategory.name };
     });
   };

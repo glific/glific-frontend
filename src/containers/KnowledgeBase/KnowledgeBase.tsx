@@ -29,9 +29,8 @@ export const KnowledgeBase = () => {
 
   const [uploadMedia] = useMutation(UPLOAD_KNOWLEDGE_BASE, {
     onCompleted: (data: any) => {
-      setUploading(false);
       setNotification('Successfully uploaded the file!', 'success');
-      setDialogOpen(false);
+      handleClose();
     },
     onError: () => {
       setFile(null);
@@ -90,6 +89,13 @@ export const KnowledgeBase = () => {
     }
   };
 
+  const handleClose = () => {
+    setFile(null);
+    setCategory(null);
+    setDialogOpen(false);
+    setUploading(false);
+  };
+
   const handleDelete = () => {
     deleteKnowledgeBase({
       variables: {
@@ -101,7 +107,7 @@ export const KnowledgeBase = () => {
   const dialog = (
     <DialogBox
       title={'Upload Document'}
-      handleCancel={() => setDialogOpen(false)}
+      handleCancel={handleClose}
       handleOk={uploadFile}
       buttonOk={t('Upload')}
       buttonOkLoading={uploading}
