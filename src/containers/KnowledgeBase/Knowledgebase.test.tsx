@@ -81,7 +81,7 @@ test('It opens upload dialog box', async () => {
   });
 });
 
-test.only('it uploads the file', async () => {
+test('it uploads the file', async () => {
   const { getByTestId } = render(wrapper);
   const notificationSpy = vi.spyOn(notification, 'setNotification');
 
