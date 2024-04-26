@@ -15,3 +15,13 @@ export const DELETE_KNOWLEDGE_BASE = gql`
     }
   }
 `;
+
+export const CREATE_CATEGORY = gql`
+  mutation CreateCategory($name: String!) {
+    createCategory(name: $name) {
+      id
+      name
+      uuid
+    }
+  }
+`;

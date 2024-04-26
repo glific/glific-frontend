@@ -227,6 +227,7 @@ const menus = (): Menu[] => [
         type: 'sideDrawer',
         icon: 'knowledgeBase',
         roles: allRoles,
+        show: !getOrganizationServices('llm4devEnabled'),
       },
     ],
   },

@@ -4,10 +4,11 @@ import styles from './UploadFile.module.css';
 import { slicedString } from 'common/utils';
 import { useState } from 'react';
 import { Formik, Form, Field } from 'formik';
-import { Dropdown } from '../Form/Dropdown/Dropdown';
-import { useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { GET_CATEGORIES } from 'graphql/queries/KnowledgeBase';
 import { CircularProgress } from '@mui/material';
+import { CREATE_CATEGORY } from 'graphql/mutations/KnowledgeBase';
+import { AutoComplete } from '../Form/AutoComplete/AutoComplete';
 
 interface UploadFileProps {
   setFile: any;
@@ -15,12 +16,12 @@ interface UploadFileProps {
   setCategory: any;
 }
 
-export const UploadFile = ({ setFile, category, setCategory }: UploadFileProps) => {
+export const UploadFile = ({ setFile, setCategory }: UploadFileProps) => {
   const [errors, setErrors] = useState<string>('');
   const [fileName, setFileName] = useState<null | string>(null);
   const [options, setOptions] = useState([]);
 
-  const { loading } = useQuery(GET_CATEGORIES, {
+  const { loading, refetch: refetchcCategories } = useQuery(GET_CATEGORIES, {
     onCompleted: (data) => {
       setOptions(
         data.categories.map((category: any) => ({ id: category.id, label: category.name }))
@@ -28,16 +29,33 @@ export const UploadFile = ({ setFile, category, setCategory }: UploadFileProps) 
     },
   });
 
+  const [createCategory] = useMutation(CREATE_CATEGORY);
+
+  const handleCreateCategory = async (value: string) => {
+    return createCategory({
+      variables: {
+        name: value,
+      },
+    }).then((value) => {
+      refetchcCategories();
+      setCategory(value.data.createCategory?.id);
+      return value.data.createCategory;
+    });
+  };
+
   let formFieldItems: any = [
     {
-      component: Dropdown,
-      options,
-      name: 'category',
-      placeholder: 'Select Category',
-      fieldValue: category,
-      fieldChange: (event: any) => {
-        setCategory(event?.target.value);
-        setErrors('');
+      component: AutoComplete,
+      name: 'categoryId',
+      options: options,
+      optionLabel: 'label',
+      disabled: false,
+      handleCreateItem: handleCreateCategory,
+      hasCreateOption: true,
+      multiple: false,
+      label: 'Category',
+      onChange: (value: any) => {
+        setCategory(value?.id);
       },
     },
   ];
@@ -74,46 +92,49 @@ export const UploadFile = ({ setFile, category, setCategory }: UploadFileProps) 
       <Form className={styles.Form} data-testid="formLayout" encType="multipart/form-data">
         <div className={styles.DialogContent} data-testid="">
           {formFieldItems.map((field: any) => (
-            <div className={styles.AttachmentFieldWrapper} key={field.name}>
+            <div className={styles.Wrapper} key={field.name}>
+              <div className={styles.FormField}>{field.label}</div>
               <Field {...field} key={field.name} validateURL={errors} />
             </div>
           ))}
           <div className={styles.FormError}>{errors}</div>
         </div>
-
-        <div className={styles.FormField}>Document</div>
-        <Button
-          className="Container"
-          fullWidth={true}
-          component="label"
-          role={undefined}
-          variant="text"
-          tabIndex={-1}
-        >
-          <div className={styles.Container}>
-            {fileName !== null ? (
-              <span className={styles.FileName}>{fileName}</span>
-            ) : (
-              <div>
-                <UploadIcon className={styles.UploadIcon} />
-                <span>Upload File</span>
-              </div>
-            )}
-            <input
-              type="file"
-              id="uploadFile"
-              accept=".pdf"
-              data-testid="uploadFile"
-              name="file"
-              onChange={(event) => {
-                addAttachment(event);
-              }}
-            />
-          </div>
-        </Button>
-        <p className={styles.HelperText}>
-          Upload PDF files less than 1 MB. <br /> If there are multiple pages please split the PDF.
-        </p>
+        <div className={styles.Wrapper}>
+          <div className={styles.FormField}>Document</div>
+          <Button
+            className="Container"
+            fullWidth={true}
+            component="label"
+            role={undefined}
+            variant="text"
+            tabIndex={-1}
+          >
+            <div className={styles.Container}>
+              {fileName !== null ? (
+                <span className={styles.FileName}>{fileName}</span>
+              ) : (
+                <div>
+                  <UploadIcon className={styles.UploadIcon} />
+                  <span>Upload File</span>
+                </div>
+              )}
+              <input
+                type="file"
+                id="uploadFile"
+                accept=".pdf"
+                data-testid="uploadFile"
+                name="file"
+                onChange={(event) => {
+                  addAttachment(event);
+                }}
+              />
+            </div>
+          </Button>
+          <p className={styles.HelperText}>
+            Upload PDF files less than 1 MB. <br /> If there are multiple pages please split the
+            PDF.
+          </p>
+        </div>
         <p className={styles.FormError}> {errors}</p>
       </Form>
     </Formik>
