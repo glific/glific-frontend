@@ -9,7 +9,6 @@ import { GET_CATEGORIES } from 'graphql/queries/KnowledgeBase';
 import { CircularProgress } from '@mui/material';
 import { CREATE_CATEGORY } from 'graphql/mutations/KnowledgeBase';
 import { AutoComplete } from '../../../components/UI/Form/AutoComplete/AutoComplete';
-import * as Yup from 'yup';
 
 interface UploadFileProps {
   setFile: any;
@@ -41,7 +40,7 @@ export const UploadFile = ({ setFile, setCategory }: UploadFileProps) => {
     }).then((value) => {
       refetchCategories();
       setCategory(value.data.createCategory?.id);
-      return value.data.createCategory;
+      return { id: value.data.createCategory.id, label: value.data.createCategory.name };
     });
   };
 
@@ -62,11 +61,11 @@ export const UploadFile = ({ setFile, setCategory }: UploadFileProps) => {
     },
   ];
 
-  const addAttachment = (event: any) => {
+  const addFile = (event: any) => {
     const media = event.target.files[0];
     if (media) {
-      if (media.size / 1000000 > 10) {
-        setErrors('File size should be less than 10MB');
+      if (media.size / 1000000 > 1) {
+        setErrors('File size should be less than 1MB');
         return;
       } else if (media.type !== 'application/pdf') {
         setErrors('File type should be PDF');
@@ -100,7 +99,6 @@ export const UploadFile = ({ setFile, setCategory }: UploadFileProps) => {
               <Field {...field} key={field.name} validateURL={errors} />
             </div>
           ))}
-          <div className={styles.FormError}>{errors}</div>
         </div>
         <div className={styles.Wrapper}>
           <div className={styles.FormField}>Document</div>
@@ -128,7 +126,8 @@ export const UploadFile = ({ setFile, setCategory }: UploadFileProps) => {
                 data-testid="uploadFile"
                 name="file"
                 onChange={(event) => {
-                  addAttachment(event);
+                  setErrors('');
+                  addFile(event);
                 }}
               />
             </div>
@@ -138,7 +137,9 @@ export const UploadFile = ({ setFile, setCategory }: UploadFileProps) => {
             PDF.
           </p>
         </div>
-        <p className={styles.FormError}> {errors}</p>
+        <p data-testid="form-error" className={styles.FormError}>
+          {errors}
+        </p>
       </Form>
     </Formik>
   );

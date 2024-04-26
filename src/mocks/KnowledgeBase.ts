@@ -1,4 +1,8 @@
-import { DELETE_KNOWLEDGE_BASE, UPLOAD_KNOWLEDGE_BASE } from 'graphql/mutations/KnowledgeBase';
+import {
+  CREATE_CATEGORY,
+  DELETE_KNOWLEDGE_BASE,
+  UPLOAD_KNOWLEDGE_BASE,
+} from 'graphql/mutations/KnowledgeBase';
 import { GET_CATEGORIES, GET_KNOWLEDGE_BASE } from 'graphql/queries/KnowledgeBase';
 
 const getKnowledgeBase = {
@@ -87,6 +91,26 @@ const uploadKnowledgeBase = {
   },
   variableMatcher: (variables: any) => true,
 };
+
+const createCategory = {
+  request: {
+    query: CREATE_CATEGORY,
+    variables: {
+      name: 'Support2',
+    },
+  },
+  result: {
+    data: {
+      createCategory: {
+        id: '2',
+        name: 'Support2',
+        uuid: '3fa22108-f464-41e5-81d9-d8a298854429',
+      },
+    },
+  },
+};
+
+export const categoryMocks = [createCategory, getCategories, getCategories];
 
 export const knowledgeBaseMocks = [
   getKnowledgeBase,
