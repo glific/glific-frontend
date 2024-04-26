@@ -27,6 +27,7 @@ import ConsultingIcon from 'assets/images/icons/SideDrawer/ConsultingIcon';
 import WaChatIcon from 'assets/images/icons/SideDrawer/WaGroupChat';
 import WaCollectionIcon from 'assets/images/icons/SideDrawer/WaGroupCollection';
 import WaGroupIcon from 'assets/images/icons/SideDrawer/WhatsAppGroupIcon';
+import KnowledgeBaseIcon from 'assets/images/icons/SideDrawer/KnowledgeBaseIcon';
 import styles from './ListIcon.module.css';
 import FiberNewIcon from '@mui/icons-material/FiberNew';
 import { Badge } from '@mui/material';
@@ -71,7 +72,7 @@ export const ListIcon = ({ icon = '', selected = false, count }: ListIconProps) 
     waGroupCollection: WaCollectionIcon,
     waGroupChat: WaChatIcon,
     waGroup: WaGroupIcon,
-    knowledgeBase: SheetsIcon,
+    knowledgeBase: KnowledgeBaseIcon,
   };
 
   const iconImage = stringsToIcons[icon] && (
