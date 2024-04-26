@@ -80,6 +80,10 @@
   align-items: center;
 }
 
+.BodyFull {
+  height: 100%;
+}
+
 .RowStyle {
   padding: 15px 20px 15px 25px;
 }
@@ -97,11 +101,19 @@
 }
 
 .StyleForContainer {
-  height: calc(100% - 50px);
   background: #fff;
   overflow-y: scroll;
   scrollbar-width: none;
   border-radius: 10px 10px 0 0;
+}
+
+.HeightFull {
+  height: 100%;
+  border-radius: 10px;
+}
+
+.HeightShort {
+  height: calc(100% - 50px);
 }
 
 .Skeleton {
