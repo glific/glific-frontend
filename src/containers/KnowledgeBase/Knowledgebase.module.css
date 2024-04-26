@@ -2,7 +2,8 @@
   color: #555;
   font-size: 13px;
   font-weight: 500;
-  /* min-width: 200px; */
+  width: 14%;
+  min-width: 200px;
 }
 
 .IdContainer {
@@ -12,6 +13,7 @@
 }
 
 .Actions {
+  width: 15%;
   min-width: 200px;
   text-align: end;
   color: #555;
@@ -26,6 +28,8 @@
   font-size: 13px;
   font-weight: 500;
   margin-bottom: 6px;
+  width: 40%;
+  min-width: 200px;
 }
 
 .CopyIcon {
