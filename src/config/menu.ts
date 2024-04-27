@@ -221,6 +221,14 @@ const menus = (): Menu[] => [
         icon: 'consulting',
         roles: ['Glific_admin'],
       },
+      {
+        title: 'Knowledge base',
+        path: '/knowledge-base',
+        type: 'sideDrawer',
+        icon: 'knowledgeBase',
+        roles: allRoles,
+        show: !getOrganizationServices('llm4devEnabled'),
+      },
     ],
   },
 
