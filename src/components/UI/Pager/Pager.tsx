@@ -30,6 +30,7 @@ interface PagerProps {
   loadingList?: boolean;
   collapseRow: string | undefined;
   noItemsText?: any;
+  showPagination?: boolean;
 }
 
 // TODO: cleanup the translations code
@@ -191,6 +192,7 @@ export const Pager = ({
   collapseRow,
   loadingList = false,
   noItemsText,
+  showPagination = true,
 }: PagerProps) => {
   const rows = createRows(data, columnStyles, collapseRow, collapseOpen);
   const tableHead = tableHeadColumns(columnNames, columnStyles, tableVals, handleTableChange);
@@ -198,7 +200,9 @@ export const Pager = ({
 
   return (
     <div className={styles.TableContainer}>
-      <TableContainer className={styles.StyleForContainer}>
+      <TableContainer
+        className={`${styles.StyleForContainer} ${!showPagination ? styles.HeightFull : styles.HeightShort}`}
+      >
         <Table stickyHeader aria-label="sticky table" data-testid="table">
           <TableHead data-testid="tableHead">{tableHead}</TableHead>
           <TableBody data-testid="tableBody">{!loadingList && data.length > 0 && rows}</TableBody>
@@ -216,11 +220,13 @@ export const Pager = ({
             ))}
           </div>
         )}
-        {!loadingList && data.length == 0 && <div className={styles.Body}>{noItemsText}</div>}
+        {!loadingList && data.length == 0 && <div className={`${styles.Body} `}>{noItemsText}</div>}
       </TableContainer>
-      <div className={styles.TableFooter} data-testid="tableFooter">
-        <div>{tablePagination}</div>
-      </div>
+      {showPagination && (
+        <div className={styles.TableFooter} data-testid="tableFooter">
+          <div>{tablePagination}</div>
+        </div>
+      )}
     </div>
   );
 };
