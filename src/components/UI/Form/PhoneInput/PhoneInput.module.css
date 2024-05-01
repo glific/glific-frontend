@@ -21,3 +21,11 @@
   line-height: 1.2 !important;
   margin-left: 16px !important;
 }
+
+.Label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #111111;
+  line-height: 22px;
+  margin: 6px 0;
+}

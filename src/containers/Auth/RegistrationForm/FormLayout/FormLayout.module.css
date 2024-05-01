@@ -26,3 +26,11 @@
   color: #9a9a9a;
   font-size: 14px;
 }
+
+.Form {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  grid-column-gap: 64px;
+  grid-row-gap: 24px;
+}

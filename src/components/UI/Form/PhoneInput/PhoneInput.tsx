@@ -1,4 +1,4 @@
-import { FormControl, FormHelperText } from '@mui/material';
+import { FormControl, FormHelperText, Typography } from '@mui/material';
 import 'react-phone-input-2/lib/bootstrap.css';
 import { getIn } from 'formik';
 import ReactPhoneInput from 'react-phone-input-2';
@@ -16,6 +16,7 @@ export interface InputProps {
   field: any;
   placeholder: string;
   form: { touched: any; errors: any; setFieldValue: any };
+  inputLabel?: string | null;
 }
 
 export const PhoneInput = ({
@@ -28,6 +29,7 @@ export const PhoneInput = ({
     autoFocus: false,
   },
   placeholder,
+  inputLabel = null,
 }: InputProps) => {
   const errorText = getIn(errors, field.name);
   const touchedVal = getIn(touched, field.name);
@@ -36,6 +38,11 @@ export const PhoneInput = ({
   return (
     <div className={styles.Input} data-testid="phoneInput">
       <FormControl>
+        {inputLabel && (
+          <Typography variant="caption" className={styles.Label} data-testid="inputLabel">
+            {inputLabel}
+          </Typography>
+        )}
         <ReactPhoneInput
           containerClass={styles.Container}
           inputClass={styles.PhoneNumber}

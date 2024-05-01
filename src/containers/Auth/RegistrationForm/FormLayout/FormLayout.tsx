@@ -9,11 +9,19 @@ import { useTranslation } from 'react-i18next';
 
 interface FormLayoutProps {
   validationSchema: any;
-  formFieldItems: any;
+  formFieldItems: Array<any>;
   initialValues: any;
   title: string;
   helperText: string;
   step: number;
+  states: Object;
+  setStates: Function;
+  buttonState?: {
+    text: string;
+    status: boolean;
+  };
+  setPayload?: Function;
+  button?: string;
 }
 
 export const FormLayout = ({
@@ -23,8 +31,14 @@ export const FormLayout = ({
   title,
   helperText,
   step,
+  states,
+  setStates,
+  buttonState = { text: '', status: false },
+  button = 'Next',
+  setPayload,
 }: FormLayoutProps) => {
   const [customError, setCustomError] = useState<any>(null);
+  const [saveClick, onSaveClick] = useState(false);
 
   const saveHandler = (data: any) => {};
 
@@ -38,11 +52,20 @@ export const FormLayout = ({
     </div>
   );
 
+  const onSaveButtonClick = (errors: any) => {
+    if (Object.keys(errors).length > 0) {
+      return;
+    }
+    onSaveClick(true);
+  };
+
   const form = (
     <Formik
       enableReinitialize
       validateOnMount
-      initialValues={initialValues}
+      initialValues={{
+        ...states,
+      }}
       validationSchema={validationSchema}
       onSubmit={(itemData, { setErrors }) => {
         // when you want to show custom error on form field and error message is not coming from api
@@ -52,7 +75,7 @@ export const FormLayout = ({
     >
       {({ errors, submitForm }) => (
         <Form className={styles.Form} data-testid="formLayout">
-          {formFieldItems.map((field: any, index: number) => {
+          {formFieldItems.map((field, index) => {
             const key = index;
 
             if (field.skip) {
@@ -67,7 +90,6 @@ export const FormLayout = ({
                   </Typography>
                 )}
                 <Field key={key} {...field} onSubmit={submitForm} />
-                <div>{customError}</div>
               </Fragment>
             );
           })}
@@ -75,16 +97,31 @@ export const FormLayout = ({
             <Button
               variant="contained"
               color="primary"
-              // onClick={cancelHandler}
+              onClick={() => {
+                onSaveButtonClick(errors);
+                submitForm();
+              }}
+              className={styles.Button}
+              data-testid="submitActionButton"
+              loading={saveClick}
+              disabled={buttonState.status}
+            >
+              {buttonState.status ? buttonState.text : button}
+            </Button>
+            {/* <Button
+              variant="outlined"
+              color="secondary"
+              onClick={cancelHandler}
               data-testid="cancelActionButton"
             >
-              {t('Next')}
-            </Button>
+              {t('Cancel')}
+            </Button> */}
           </div>
         </Form>
       )}
     </Formik>
   );
+
   return (
     <div className={styles.FormContainer}>
       {header}
