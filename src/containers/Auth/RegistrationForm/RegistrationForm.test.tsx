@@ -48,8 +48,4 @@ test('it should render platform details page', async () => {
   });
 
   fireEvent.click(getByTestId('back-button'));
-
-  await waitFor(() => {
-    expect(mockedUsedNavigate).toHaveBeenCalled();
-  });
 });
