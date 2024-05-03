@@ -2,7 +2,6 @@ import {
   FormControl,
   OutlinedInput,
   FormHelperText,
-  InputLabel,
   InputAdornment,
   IconButton,
   Typography,
@@ -34,7 +33,6 @@ export interface InputProps {
   onChange?: any;
   inputLabel?: string | null;
   darkMode?: boolean;
-  pop: string;
 }
 
 export const Input = ({
@@ -59,8 +57,9 @@ export const Input = ({
     translation,
     onChange,
     darkMode,
-    pop,
   } = props;
+
+  console.log(form);
 
   let fieldType = type;
   let fieldEndAdorment = null;

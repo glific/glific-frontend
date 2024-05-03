@@ -1,19 +1,24 @@
 import { Input } from 'components/UI/Form/Input/Input';
 import { useTranslation } from 'react-i18next';
-import { FormLayout } from './FormLayout/FormLayout';
-import { yupPasswordValidation } from 'common/constants';
 import * as Yup from 'yup';
 import { PhoneInput } from 'components/UI/Form/PhoneInput/PhoneInput';
+import { FormLayout } from '../FormLayout/FormLayout';
+import { useState } from 'react';
 
-export const Form = () => {
+export const PlatformDetails = () => {
   const { t } = useTranslation();
+  const [appName, setAppName] = useState<string>('');
+  const [apiKeys, setApiKeys] = useState<string>('');
+  const [shortcode, setShortcode] = useState<string>('');
+  const [phoneNumber, setPhoneNumber] = useState<string>('');
 
   const FormSchema = Yup.object().shape({
-    name: Yup.string().required(t('Input required')),
-    phone: Yup.string().required(t('Input required')),
-    password: yupPasswordValidation(t),
+    appName: Yup.string().required(t('Input required')),
+    apiKeys: Yup.string().required(t('Input required')),
+    shortcode: Yup.string().required(t('Input required')),
+    phoneNumber: Yup.string(),
   });
-  const initialFormValues: any = { name: '', phone: '', password: '', captcha: '' };
+  const initialFormValues: any = { appName, apiKeys, shortcode, phoneNumber };
 
   const formFields = [
     // {
@@ -49,7 +54,7 @@ export const Form = () => {
     },
     {
       component: Input,
-      name: 'apiKeys',
+      name: 'shortcode',
       type: 'text',
       inputLabel: 'URL shortcode',
       placeholder: 'Atleast 7-8 characters',
@@ -64,26 +69,24 @@ export const Form = () => {
     return object;
   };
 
-  const States = {
-    name: '',
-  };
-
   const setStates = (states: any) => {
-    console.log(states);
+    const { appName, shortcode, apiKeys, phoneNumber } = states;
+    setAppName(appName);
+    setShortcode(shortcode);
+    setApiKeys(apiKeys);
+    setPhoneNumber(phoneNumber);
   };
 
   return (
-    <div>
-      <FormLayout
-        validationSchema={FormSchema}
-        formFieldItems={formFields}
-        initialValues={initialFormValues}
-        step={1}
-        title="About the Organization"
-        helperText="Note : To be filled by the signing authority of your organization"
-        setStates={setStates}
-        setPayload={setPayload}
-      />
-    </div>
+    <FormLayout
+      validationSchema={FormSchema}
+      formFieldItems={formFields}
+      initialValues={initialFormValues}
+      step={1}
+      title="Glific platform details"
+      helperText="Add platform details and information based on the data queries."
+      setStates={setStates}
+      setPayload={setPayload}
+    />
   );
 };

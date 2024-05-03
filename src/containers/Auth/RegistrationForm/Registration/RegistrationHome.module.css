@@ -1,0 +1,128 @@
+.Container {
+  width: 100vw;
+  height: 100vh;
+  background-color: #e9f4ee;
+  display: flex;
+  padding: 48px 56px;
+}
+
+.LeftContainer {
+  width: 50%;
+  height: 100%;
+  padding: 64px 68px;
+  background-color: #fff;
+  border-radius: 20px;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.GlificLogo {
+  width: 120px;
+  margin-bottom: 32px;
+}
+
+.Header {
+  display: flex;
+  flex-direction: column;
+}
+
+.Header h4 {
+  color: #111111;
+  font-size: 28px;
+  margin: 0;
+}
+
+.Header p {
+  color: #636363;
+  font-size: 15px;
+  line-height: 24px;
+  margin: 0;
+}
+
+.DetailsContainer {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  grid-column-gap: 8px;
+  grid-row-gap: 8px;
+  width: 100%;
+}
+
+.Box {
+  padding: 8px 0px;
+}
+
+.Box h4 {
+  color: #111111;
+  font-size: 14px;
+}
+
+.Box ul {
+  color: #636363;
+  font-size: 14px;
+  list-style-position: inside;
+  margin: 0 !important;
+  padding-left: 10px !important;
+}
+
+.RightContainer {
+  width: 50%;
+  height: 100%;
+  background-color: #fff;
+  border-radius: 20px;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  padding: 64px 68px;
+  display: flex;
+  flex-direction: column;
+  column-gap: 16px;
+  justify-content: space-between;
+}
+
+.RightHeader {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.RightHeader h1 {
+  color: #111111;
+  font-size: 32px;
+  margin: 0;
+}
+
+.RightHeader p {
+  color: #636363;
+  font-size: 18px;
+  margin: 0;
+}
+
+.RegistrationImage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.RegistrationImage img {
+  height: 280px;
+}
+
+.GetStarted .Button {
+  background-color: #119656;
+  color: #fff;
+  font-size: 24px;
+  border-radius: 12px;
+  width: 100%;
+  display: flex;
+  justify-self: center;
+  align-items: center;
+}
+
+.GetStarted p {
+  font-size: 15px;
+  color: #636363;
+  text-align: center;
+}

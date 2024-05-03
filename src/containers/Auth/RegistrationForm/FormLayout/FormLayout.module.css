@@ -20,6 +20,7 @@
   color: #111111;
   font-size: 24px;
   font-weight: bold;
+  margin: 0;
 }
 
 .HelperText {
@@ -27,10 +28,28 @@
   font-size: 14px;
 }
 
-.Form {
+.FormFields {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: repeat(5, 1fr);
   grid-column-gap: 64px;
   grid-row-gap: 24px;
+}
+
+.Form {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.Buttons {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.Button {
+  padding: 10px 64px;
+  border-radius: 8px;
+  line-height: 30px;
 }

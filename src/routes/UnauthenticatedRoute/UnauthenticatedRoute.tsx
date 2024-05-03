@@ -4,6 +4,7 @@ import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { RECAPTCHA_CLIENT_KEY } from 'config';
+import { RegistrationHome } from 'containers/Auth/RegistrationForm/Registration/RegistrationHome';
 
 export const UnauthenticatedRoute = () => {
   const location = useLocation();
@@ -24,7 +25,8 @@ export const UnauthenticatedRoute = () => {
         <Routes>
           <Route index element={<Navigate to="/logout/user" replace state={location.pathname} />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/registration" element={<Registration />} />
+          <Route path="/registration" element={<RegistrationHome />} />
+          <Route path="/registration/:step" element={<Registration />} />
           <Route path="/confirmotp" element={<ConfirmOTP />} />
           <Route path="/resetpassword-phone" element={<ResetPasswordPhone />} />
           <Route path="/resetpassword-confirmotp" element={<ResetPasswordConfirmOTP />} />
