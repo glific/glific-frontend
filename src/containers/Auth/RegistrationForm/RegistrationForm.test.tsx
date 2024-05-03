@@ -1,6 +1,12 @@
 import { MemoryRouter, Route, Routes } from 'react-router';
 import RegistrationForm from './ResgistrationForm';
-import { render, waitFor } from '@testing-library/react';
+import { fireEvent, render, waitFor } from '@testing-library/react';
+
+const mockedUsedNavigate = vi.fn();
+vi.mock('react-router-dom', async () => ({
+  ...(await vi.importActual('react-router-dom')),
+  useNavigate: () => mockedUsedNavigate,
+}));
 
 const renderForm = (id: number) => (
   <MemoryRouter initialEntries={[`/registration/${id}`]}>
@@ -39,5 +45,11 @@ test('it should render platform details page', async () => {
 
   await waitFor(() => {
     expect(getByTestId('heading')).toHaveTextContent('Submitter & Signing authority details');
+  });
+
+  fireEvent.click(getByTestId('back-button'));
+
+  await waitFor(() => {
+    expect(mockedUsedNavigate).toHaveBeenCalled();
   });
 });

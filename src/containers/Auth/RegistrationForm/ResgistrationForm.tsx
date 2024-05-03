@@ -49,22 +49,22 @@ export const RegistrationForm = () => {
         return <PaymentDetails />;
       case 3:
         return <SigningAuthority />;
-      default:
-        return <div>In progress</div>;
     }
   };
 
   return (
     <div className={styles.Container}>
       <div className={styles.LeftContainer}>
-        <div className={styles.BackButton}>
-          <BackButton
-            onClick={() => {
-              params.step &&
-                parseInt(params.step) > 1 &&
-                navigate(`/registration/${parseInt(params.step) - 1}`);
-            }}
-          />
+        <div
+          onClick={() => {
+            if (params.step && parseInt(params.step) > 1) {
+              navigate(`/registration/${parseInt(params.step) - 1}`);
+            }
+          }}
+          data-testid="back-button"
+          className={styles.BackButton}
+        >
+          <BackButton />
         </div>
         <div>
           <img src={GlificLogo} className={styles.GlificLogo} alt="Glific" />
