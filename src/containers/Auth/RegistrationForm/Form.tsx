@@ -64,10 +64,6 @@ export const Form = () => {
     return object;
   };
 
-  const States = {
-    name: '',
-  };
-
   const setStates = (states: any) => {
     console.log(states);
   };

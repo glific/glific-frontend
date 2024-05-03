@@ -42,7 +42,9 @@ export const FormLayout = ({
   const header = (
     <div className={styles.Header}>
       <span className={styles.Step}>STEP {step} of 4</span>
-      <h1 className={styles.Title}>{title}</h1>
+      <h1 data-testid="heading" className={styles.Title}>
+        {title}
+      </h1>
       <div className={styles.HelperText}>{helperText}</div>
     </div>
   );

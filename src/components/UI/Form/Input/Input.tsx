@@ -59,8 +59,6 @@ export const Input = ({
     darkMode,
   } = props;
 
-  console.log(form);
-
   let fieldType = type;
   let fieldEndAdorment = null;
   if (type === 'password') {
