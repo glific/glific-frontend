@@ -3,23 +3,37 @@ import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
 import { FormLayout } from '../FormLayout/FormLayout';
 import { useState } from 'react';
+import styles from '../FormLayout/FormLayout.module.css';
+import { PaymentOptions } from '../PaymentType/PaymentOptions';
 
 export const PaymentDetails = () => {
   const { t } = useTranslation();
+  const [paymentType, setPaymentType] = useState<string>('yearly');
   const [name, setName] = useState<string>('');
   const [designation, setDesignation] = useState<string>('');
   const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [email, setEmail] = useState<string>('');
 
   const FormSchema = Yup.object().shape({
-    name: Yup.string().required(t('Input required')),
-    designation: Yup.string().required(t('Input required')),
-    phoneNumber: Yup.string().required(t('Input required')),
-    email: Yup.string().required(t('Input required')),
+    name: Yup.string().required(t('This Field is required.')),
+    designation: Yup.string().required(t('This Field is required.')),
+    phoneNumber: Yup.string().required(t('This Field is required.')),
+    email: Yup.string().required(t('This Field is required.')),
   });
   const initialFormValues: any = { name, designation, phoneNumber, email };
 
   const formFields = [
+    {
+      label: 'Preferred billing frequency.',
+      children: [
+        {
+          component: PaymentOptions,
+          name: 'paymentOption',
+          handleOnChange: (value: any) => setPaymentType(value),
+          paymentType: paymentType,
+        },
+      ],
+    },
     {
       component: Input,
       name: 'name',
@@ -47,13 +61,17 @@ export const PaymentDetails = () => {
       type: 'text',
       inputLabel: 'Email address',
       placeholder: 'Enter your email address.',
+      inputLabelSubtext: (
+        <span className={styles.SubText}>(Invoice will be sent to this email)</span>
+      ),
     },
   ];
 
   const setPayload = (payload: any) => {
-    let object: any = {};
-    console.log(payload);
-
+    const object = {
+      ...payload,
+      paymentType: paymentType,
+    };
     return object;
   };
 

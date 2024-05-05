@@ -1,5 +1,8 @@
 .FormContainer {
   padding: 2rem 4rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .Header {
@@ -31,12 +34,12 @@
 .FormFields {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(5, 1fr);
   grid-column-gap: 64px;
   grid-row-gap: 24px;
 }
 
 .Form {
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -52,4 +55,23 @@
   padding: 10px 64px;
   border-radius: 8px;
   line-height: 30px;
+}
+
+.SectionHeading {
+  color: #616161;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.FormSection {
+  grid-column-start: 1;
+  grid-column-end: 3;
+  display: flex;
+  flex-direction: column;
+}
+
+.SubText {
+  padding: 0;
+  margin: 0;
+  color: #616161;
 }

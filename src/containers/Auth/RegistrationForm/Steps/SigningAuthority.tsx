@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
 import { FormLayout } from '../FormLayout/FormLayout';
 import { useState } from 'react';
+import styles from '../FormLayout/FormLayout.module.css';
 
 export const SigningAuthority = () => {
   const { t } = useTranslation();
@@ -13,11 +14,11 @@ export const SigningAuthority = () => {
   const [signingAuthorityEmail, setSigningAuthorityEmail] = useState<string>('');
 
   const FormSchema = Yup.object().shape({
-    submitterName: Yup.string().required(t('Input required')),
-    submitterEmail: Yup.string().required(t('Input required')),
-    signingAuthorityName: Yup.string().required(t('Input required')),
-    signingAuthorityDesignation: Yup.string().required(t('Input required')),
-    signingAuthorityEmail: Yup.string().required(t('Input required')),
+    submitterName: Yup.string().required(t('This Field is required.')),
+    submitterEmail: Yup.string().required(t('This Field is required.')),
+    signingAuthorityName: Yup.string().required(t('This Field is required.')),
+    signingAuthorityDesignation: Yup.string().required(t('This Field is required.')),
+    signingAuthorityEmail: Yup.string().required(t('This Field is required.')),
   });
   const initialFormValues: any = {
     submitterName,
@@ -29,47 +30,54 @@ export const SigningAuthority = () => {
 
   const formFields = [
     {
-      component: Input,
-      name: 'submitterName',
-      type: 'text',
-      inputLabel: 'Name',
-      placeholder: 'Enter full name.',
+      label: 'SUBMITTER DETAILS',
+      children: [
+        {
+          component: Input,
+          name: 'submitterName',
+          type: 'text',
+          inputLabel: 'Name',
+          placeholder: 'Enter full name.',
+        },
+        {
+          component: Input,
+          name: 'submitterEmail',
+          type: 'text',
+          inputLabel: 'Email address',
+          placeholder: 'Enter your email address.',
+        },
+      ],
     },
     {
-      component: Input,
-      name: 'submitterEmail',
-      type: 'text',
-      inputLabel: 'Email address',
-      placeholder: 'Enter your email address.',
-    },
-    {
-      component: Input,
-      name: 'signingAuthorityName',
-      type: 'text',
-      inputLabel: 'Name',
-      placeholder: 'Enter full name.',
-    },
-    {
-      component: Input,
-      name: 'signingAuthorityDesignation',
-      type: 'text',
-      inputLabel: 'Designation',
-      placeholder: 'Enter your designation',
-    },
-    {
-      component: Input,
-      name: 'signingAuthorityEmail',
-      type: 'text',
-      inputLabel: 'Email address',
-      placeholder: 'Enter your email address.',
+      label: 'SIGNING AUTHORITY DETAILS',
+      children: [
+        {
+          component: Input,
+          name: 'signingAuthorityName',
+          type: 'text',
+          inputLabel: 'Name',
+          placeholder: 'Enter full name.',
+        },
+        {
+          component: Input,
+          name: 'signingAuthorityDesignation',
+          type: 'text',
+          inputLabel: 'Designation',
+          placeholder: 'Enter your designation',
+        },
+        {
+          component: Input,
+          name: 'signingAuthorityEmail',
+          type: 'text',
+          inputLabel: 'Email address',
+          placeholder: 'Enter your email address.',
+        },
+      ],
     },
   ];
 
   const setPayload = (payload: any) => {
-    let object: any = {};
-    console.log(payload);
-
-    return object;
+    return payload;
   };
 
   const setStates = (states: any) => {

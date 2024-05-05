@@ -4,6 +4,8 @@ import * as Yup from 'yup';
 import { FormLayout } from '../FormLayout/FormLayout';
 import { useState } from 'react';
 
+import styles from '../FormLayout/FormLayout.module.css';
+
 export const OrgDetails = () => {
   const { t } = useTranslation();
   const [orgName, setOrgName] = useState<string>('');
@@ -12,11 +14,12 @@ export const OrgDetails = () => {
   const [currentAddress, setCurrentAddress] = useState<string>('');
 
   const FormSchema = Yup.object().shape({
-    orgName: Yup.string().required(t('Input required')),
-    gstNumber: Yup.string().required(t('Input required')),
-    registeredAddress: Yup.string().required(t('Input required')),
-    currentAddress: Yup.string().required(t('Input required')),
+    orgName: Yup.string().required(t('This Field is required.')).max(40),
+    gstNumber: Yup.string().required(t('This Field is required.')).length(15, 'Invalid gst number'),
+    registeredAddress: Yup.string().required(t('This Field is required.')).max(300),
+    currentAddress: Yup.string().required(t('This Field is required.')).max(300),
   });
+
   const initialFormValues: any = { orgName, gstNumber, registeredAddress, currentAddress };
 
   const formFields = [
@@ -31,16 +34,18 @@ export const OrgDetails = () => {
       component: Input,
       name: 'gstNumber',
       type: 'text',
-      inputLabel: 'GSTIN number (optional)',
+      inputLabel: 'GSTIN number',
       placeholder: 'Enter the 15 digit code.',
+      inputLabelSubtext: <span className={styles.SubText}>(optional)</span>,
     },
     {
       component: Input,
       name: 'registeredAddress',
       type: 'text',
-      inputLabel: 'Registered address (As per your documentation)',
+      inputLabel: 'Registered address',
       placeholder: 'Enter the organization’s registered address.',
       textArea: true,
+      inputLabelSubtext: <span className={styles.SubText}>(As per your documentation)</span>,
     },
     {
       component: Input,
@@ -53,10 +58,7 @@ export const OrgDetails = () => {
   ];
 
   const setPayload = (payload: any) => {
-    let object: any = {};
-    console.log(payload);
-
-    return object;
+    return payload;
   };
 
   const setStates = (states: any) => {

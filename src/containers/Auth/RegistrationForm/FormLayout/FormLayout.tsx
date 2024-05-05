@@ -5,6 +5,7 @@ import styles from './FormLayout.module.css';
 import { Typography } from '@mui/material';
 
 import { Button } from 'components/UI/Form/Button/Button';
+import { useNavigate } from 'react-router';
 
 interface FormLayoutProps {
   validationSchema: any;
@@ -18,7 +19,7 @@ interface FormLayoutProps {
     text: string;
     status: boolean;
   };
-  setPayload?: Function;
+  setPayload: Function;
   button?: string;
 }
 
@@ -35,8 +36,15 @@ export const FormLayout = ({
   setPayload,
 }: FormLayoutProps) => {
   const [saveClick, onSaveClick] = useState(false);
-  const saveHandler = (data: any) => {
-    console.log(data);
+  const navigate = useNavigate();
+
+  const saveHandler = (itemData: any) => {
+    const payload = setPayload(itemData);
+
+    if (payload) {
+      console.log(payload);
+      navigate(`/registration/${step + 1}`);
+    }
   };
 
   const header = (
@@ -50,8 +58,6 @@ export const FormLayout = ({
   );
 
   const onSaveButtonClick = (errors: any) => {
-    console.log(errors);
-
     if (Object.keys(errors).length > 0) {
       return;
     }
@@ -67,7 +73,6 @@ export const FormLayout = ({
       }}
       validationSchema={validationSchema}
       onSubmit={(itemData, { setErrors }) => {
-        console.log(itemData);
         saveHandler(itemData);
       }}
     >
@@ -77,8 +82,36 @@ export const FormLayout = ({
             {formFieldItems.map((field, index) => {
               const key = index;
 
-              if (field.skip) {
-                return null;
+              if (field.children) {
+                return (
+                  <div className={styles.FormSection} key={key}>
+                    <Typography
+                      data-testid="formLabel"
+                      variant="h5"
+                      className={styles.SectionHeading}
+                    >
+                      {field.label}
+                    </Typography>
+                    <div className={styles.FormFields}>
+                      {field.children.map((child: any, i: number) => {
+                        return (
+                          <Fragment key={i}>
+                            {child.label && (
+                              <Typography
+                                data-testid="formLabel"
+                                variant="h5"
+                                className={styles.FieldLabel}
+                              >
+                                {child.label}
+                              </Typography>
+                            )}
+                            <Field key={i} {...child} onSubmit={submitForm} />
+                          </Fragment>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
               }
 
               return (
@@ -100,8 +133,6 @@ export const FormLayout = ({
               color="primary"
               onClick={() => {
                 onSaveButtonClick(errors);
-                console.log(errors);
-
                 submitForm();
               }}
               className={styles.Button}

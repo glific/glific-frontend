@@ -33,6 +33,7 @@ export interface InputProps {
   onChange?: any;
   inputLabel?: string | null;
   darkMode?: boolean;
+  inputLabelSubtext?: any;
 }
 
 export const Input = ({
@@ -57,6 +58,7 @@ export const Input = ({
     translation,
     onChange,
     darkMode,
+    inputLabelSubtext,
   } = props;
 
   let fieldType = type;
@@ -116,6 +118,7 @@ export const Input = ({
           {inputLabel && (
             <Typography variant="caption" className={styles.Label} data-testid="inputLabel">
               {inputLabel}
+              {inputLabelSubtext}
             </Typography>
           )}
           <OutlinedInput

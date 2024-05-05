@@ -1,0 +1,45 @@
+.Wrapper {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  margin: 16px 0;
+}
+
+.PaymentTypeSection {
+  grid-column-start: 1;
+  grid-column-end: 3;
+}
+
+.RadioLabelWrapper {
+  border: 1px solid #616161;
+  border-radius: 8px;
+  padding: 12px 24px;
+  width: 28%;
+  position: relative;
+  background-color: #fff;
+  z-index: 1;
+}
+
+.Selectedlabel span {
+  color: #119656 !important;
+  font-weight: bold;
+}
+
+.Label span {
+  color: #616161 !important;
+}
+
+.Recommended {
+  width: 100%;
+  position: absolute;
+  font-size: 12px;
+  bottom: -37px;
+  left: 0;
+  background-color: #1fa12c1f;
+  line-height: 24px;
+  padding: 6px 0;
+  border-radius: 4px;
+  text-align: center;
+  color: #111111;
+  z-index: -1;
+}

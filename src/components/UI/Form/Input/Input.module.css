@@ -14,6 +14,8 @@
   color: #111111;
   line-height: 22px;
   margin: 6px 0;
+  display: flex;
+  column-gap: 4px;
 }
 
 .HelperText {

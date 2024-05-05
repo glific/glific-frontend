@@ -5,6 +5,8 @@ import { PhoneInput } from 'components/UI/Form/PhoneInput/PhoneInput';
 import { FormLayout } from '../FormLayout/FormLayout';
 import { useState } from 'react';
 
+import styles from '../FormLayout/FormLayout.module.css';
+
 export const PlatformDetails = () => {
   const { t } = useTranslation();
   const [appName, setAppName] = useState<string>('');
@@ -13,21 +15,14 @@ export const PlatformDetails = () => {
   const [phoneNumber, setPhoneNumber] = useState<string>('');
 
   const FormSchema = Yup.object().shape({
-    appName: Yup.string().required(t('Input required')),
-    apiKeys: Yup.string().required(t('Input required')),
-    shortcode: Yup.string().required(t('Input required')),
+    appName: Yup.string().required(t('This Field is required.')),
+    apiKeys: Yup.string().required(t('This Field is required.')),
+    shortcode: Yup.string().required(t('This Field is required.')),
     phoneNumber: Yup.string(),
   });
   const initialFormValues: any = { appName, apiKeys, shortcode, phoneNumber };
 
   const formFields = [
-    // {
-    //   component: Input,
-    //   name: 'chatBotNumber',
-    //   type: 'number',
-    //   placeholder: 'New whatsapp chatbot number',
-    //   inputLabel: 'Chatbot number',
-    // },
     {
       component: PhoneInput,
       name: 'phoneNumber',
@@ -42,7 +37,11 @@ export const PlatformDetails = () => {
       type: 'text',
       inputLabel: 'App name',
       placeholder: 'Enter the bot name',
-      helperText: 'Name of your bot on Gupshup. Find it here',
+      inputLabelSubtext: (
+        <p className={styles.SubText}>
+          (Name of your bot on Gupshup. <a href="gupshup.com">Find it here</a>)
+        </p>
+      ),
     },
     {
       component: Input,
@@ -50,7 +49,11 @@ export const PlatformDetails = () => {
       type: 'text',
       inputLabel: 'Gupshup API keys',
       placeholder: 'Enter the api keys',
-      helperText: 'Click here to get the API keys',
+      inputLabelSubtext: (
+        <span className={styles.SubText}>
+          (<a>Click here</a> to get the API keys)
+        </span>
+      ),
     },
     {
       component: Input,
@@ -58,15 +61,14 @@ export const PlatformDetails = () => {
       type: 'text',
       inputLabel: 'URL shortcode',
       placeholder: 'Atleast 7-8 characters',
-      helperText: 'Name you want to give your Glific platform',
+      inputLabelSubtext: (
+        <span className={styles.SubText}>(Name you want to give your Glific platform)</span>
+      ),
     },
   ];
 
   const setPayload = (payload: any) => {
-    let object: any = {};
-    console.log(payload);
-
-    return object;
+    return payload;
   };
 
   const setStates = (states: any) => {
