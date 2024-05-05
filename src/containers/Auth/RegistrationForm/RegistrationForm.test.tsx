@@ -50,7 +50,7 @@ test('it should render platform details page', async () => {
   fireEvent.click(getByTestId('back-button'));
 });
 
-test.only('it should fill the form', async () => {
+test('it should fill the form', async () => {
   const { getByTestId, getAllByRole, getAllByTestId } = render(renderForm(1));
 
   await waitFor(() => {
