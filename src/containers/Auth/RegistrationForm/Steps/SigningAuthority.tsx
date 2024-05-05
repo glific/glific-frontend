@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
 import { FormLayout } from '../FormLayout/FormLayout';
 import { useState } from 'react';
-import styles from '../FormLayout/FormLayout.module.css';
 
 export const SigningAuthority = () => {
   const { t } = useTranslation();
