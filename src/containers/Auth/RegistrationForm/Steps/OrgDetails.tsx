@@ -6,6 +6,7 @@ import { useState } from 'react';
 
 import styles from '../FormLayout/FormLayout.module.css';
 import { UploadDocument } from '../UploadDocument/UploadDocument';
+import { ONBOARD_URL } from 'config';
 
 export const OrgDetails = () => {
   const { t } = useTranslation();
@@ -87,6 +88,8 @@ export const OrgDetails = () => {
       helperText="Note : To be filled by the signing authority of your organization."
       setStates={setStates}
       setPayload={setPayload}
+      apiUrl={ONBOARD_URL}
+      identifier="orgDetails"
     />
   );
 };

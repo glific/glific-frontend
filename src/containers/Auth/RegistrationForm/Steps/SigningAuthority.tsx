@@ -110,6 +110,7 @@ export const SigningAuthority = () => {
       helperText="Details and information of the applicant and concerned signing authority of the organization"
       setStates={setStates}
       setPayload={setPayload}
+      identifier="submitterDetails"
     />
   );
 };

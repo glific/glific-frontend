@@ -92,6 +92,7 @@ export const ReachOutToUs = ({ open, setOpen, handleCancel }: ReachOutToUsProps)
           align: 'left',
         }}
         okButtonHelperText="If you have any further queries regarding the T&C, kindly write to this email user@glificqueries.com. Feel free to contact us if you have any more questions. "
+        identifier="reachOutToUs"
       />
     </Dialog>
   );

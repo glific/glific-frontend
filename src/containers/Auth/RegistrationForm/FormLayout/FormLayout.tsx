@@ -1,11 +1,12 @@
 import { Field, Form, Formik } from 'formik';
-import { Fragment, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 
 import styles from './FormLayout.module.css';
 import { Typography } from '@mui/material';
 
 import { Button } from 'components/UI/Form/Button/Button';
 import { useNavigate } from 'react-router';
+import axios from 'axios';
 
 interface FormLayoutProps {
   validationSchema: any;
@@ -23,6 +24,8 @@ interface FormLayoutProps {
   setPayload: Function;
   showStep?: boolean;
   okButtonHelperText?: string;
+  apiUrl?: any;
+  identifier: string;
 }
 
 export const FormLayout = ({
@@ -37,16 +40,57 @@ export const FormLayout = ({
   setPayload,
   showStep = true,
   okButtonHelperText,
+  apiUrl,
+  identifier,
 }: FormLayoutProps) => {
-  const [saveClick, onSaveClick] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  const saveData = (registrationData: any) => {
+    if (!step) return;
+    const existingData = localStorage.getItem('registrationData');
+
+    let data = {
+      [identifier]: registrationData,
+    };
+
+    if (existingData) {
+      data = {
+        ...data,
+        ...JSON.parse(existingData),
+      };
+    }
+
+    localStorage.setItem('registrationData', JSON.stringify(data));
+  };
+
+  useEffect(() => {
+    const registrationData = localStorage.getItem('registrationData');
+    console.log(registrationData);
+    if (registrationData) {
+      const data = JSON.parse(registrationData);
+      setStates(data[identifier]);
+    }
+  }, []);
 
   const saveHandler = (itemData: any) => {
     const payload = setPayload(itemData);
 
+    // axios.post(apiUrl, payload).then(({ data }: { data: any }) => {
+    //   setLoading(false);
+
+    //   if (data.is_valid) {
+    //     step && navigate(`/registration/${step + 1}`);
+    //   } else {
+    //     console.log(data);
+    //   }
+    // });
+
     if (payload) {
       console.log(payload);
-      // navigate(`/registration/${step + 1}`);
+      saveData(payload);
+
+      if (step) navigate(`/registration/${step + 1}`);
     }
   };
 
@@ -64,7 +108,7 @@ export const FormLayout = ({
     if (Object.keys(errors).length > 0) {
       return;
     }
-    onSaveClick(true);
+    setLoading(true);
   };
 
   const form = (
@@ -142,7 +186,7 @@ export const FormLayout = ({
               }}
               className={styles.Button}
               data-testid="submitActionButton"
-              loading={saveClick}
+              loading={loading}
               disabled={buttonState.status}
             >
               {buttonState.text ? buttonState.text : 'Next'}

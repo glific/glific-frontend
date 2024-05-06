@@ -78,11 +78,12 @@ export const PaymentDetails = () => {
   };
 
   const setStates = (states: any) => {
-    const { name, designation, phoneNumber, email } = states;
+    const { name, designation, phoneNumber, email, paymentType } = states;
     setName(name);
     setDesignation(designation);
     setPhoneNumber(phoneNumber);
     setEmail(email);
+    setPaymentType(paymentType);
   };
 
   return (
@@ -95,6 +96,7 @@ export const PaymentDetails = () => {
       helperText="Add payment information and choose the billing frequency"
       setStates={setStates}
       setPayload={setPayload}
+      identifier="payemntDetails"
     />
   );
 };

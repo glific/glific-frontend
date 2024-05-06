@@ -68,15 +68,22 @@ export const PlatformDetails = () => {
   ];
 
   const setPayload = (payload: any) => {
-    return payload;
+    const { appName, shortcode, apiKeys, phoneNumber } = payload;
+    return {
+      api_key: apiKeys,
+      app_name: appName,
+      phone: phoneNumber,
+      shortcode,
+    };
   };
 
   const setStates = (states: any) => {
-    const { appName, shortcode, apiKeys, phoneNumber } = states;
-    setAppName(appName);
+    const { app_name, shortcode, api_key, phone } = states;
+
+    setAppName(app_name);
     setShortcode(shortcode);
-    setApiKeys(apiKeys);
-    setPhoneNumber(phoneNumber);
+    setApiKeys(api_key);
+    setPhoneNumber(phone);
   };
 
   return (
@@ -89,6 +96,7 @@ export const PlatformDetails = () => {
       helperText="Add platform details and information based on the data queries."
       setStates={setStates}
       setPayload={setPayload}
+      identifier="platformDetails"
     />
   );
 };
