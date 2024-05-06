@@ -1,6 +1,6 @@
-import { MemoryRouter, Route, Routes } from 'react-router';
+import { MemoryRouter } from 'react-router';
 import RegistrationForm from './ResgistrationForm';
-import { fireEvent, render, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 import axios from 'axios';
@@ -65,7 +65,12 @@ test('it should fill the form', async () => {
   fireEvent.change(gstNumber, { target: { value: '123456789000000' } });
   fireEvent.change(registeredAddress, { target: { value: 'add 1' } });
   fireEvent.change(currentAddress, { target: { value: 'add 2' } });
-  // screen.debug(document, Infinity);
+
+  fireEvent.change(screen.getByTestId('uploadFile'), {
+    target: {
+      files: [new File(['(⌐□_□)'], 'file.pdf', { type: 'application/pdf' })],
+    },
+  });
 
   fireEvent.click(getByTestId('submitActionButton'));
 
@@ -107,4 +112,18 @@ test('it should fill the form', async () => {
   fireEvent.change(signingAuthorityEmail, { target: { value: 'signing@email.com' } });
 
   fireEvent.click(getByTestId('submitActionButton'));
+});
+
+test('it opens reach out to us dialog', async () => {
+  render(renderForm);
+
+  await waitFor(() => {
+    expect(screen.getByText('Reach out here')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByText('Reach out here'));
+
+  await waitFor(() => {
+    expect(screen.getByText('Write to us')).toBeInTheDocument();
+  });
 });

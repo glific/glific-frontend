@@ -3,9 +3,6 @@ import { Button, Typography } from '@mui/material';
 
 import styles from './UploadDocument.module.css';
 import UploadIcon from 'assets/images/icons/UploadIcon.svg?react';
-import { useMutation } from '@apollo/client';
-import { UPLOAD_MEDIA } from 'graphql/mutations/Chat';
-import { setNotification } from 'common/notification';
 import { slicedString } from 'common/utils';
 
 interface UploadDocumentProps {
@@ -15,21 +12,9 @@ interface UploadDocumentProps {
 
 export const UploadDocument = ({ inputLabel, helperText }: UploadDocumentProps) => {
   const [fileName, setFileName] = useState<null | string>(null);
-  const [attachmentUrl, setAttachmentUrl] = useState<null | string>(null);
+  // const [attachmentUrl, setAttachmentUrl] = useState<null | string>(null);
   const [errors, setErrors] = useState<string>('');
   const [loading, setLoading] = useState(false);
-
-  const [uploadMedia] = useMutation(UPLOAD_MEDIA, {
-    onCompleted: (data: any) => {
-      setAttachmentUrl(data.uploadMedia);
-      setLoading(false);
-    },
-    onError: () => {
-      setFileName(null);
-      setLoading(false);
-      setNotification('An error occured while uploading the file', 'warning');
-    },
-  });
 
   const addAttachment = (event: any) => {
     const media = event.target.files[0];
@@ -84,6 +69,7 @@ export const UploadDocument = ({ inputLabel, helperText }: UploadDocumentProps) 
               addAttachment(event);
             }}
           />
+          {errors}
         </div>
       </Button>
     </div>
