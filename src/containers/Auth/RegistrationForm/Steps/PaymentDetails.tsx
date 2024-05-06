@@ -5,8 +5,9 @@ import { FormLayout } from '../FormLayout/FormLayout';
 import { useState } from 'react';
 import styles from '../FormLayout/FormLayout.module.css';
 import { PaymentOptions } from '../PaymentType/PaymentOptions';
+import { FormStepProps } from './OrgDetails';
 
-export const PaymentDetails = () => {
+export const PaymentDetails = ({ handleStepChange }: FormStepProps) => {
   const { t } = useTranslation();
   const [paymentType, setPaymentType] = useState<string>('yearly');
   const [name, setName] = useState<string>('');
@@ -97,6 +98,7 @@ export const PaymentDetails = () => {
       setStates={setStates}
       setPayload={setPayload}
       identifier="payemntDetails"
+      handleStepChange={handleStepChange}
     />
   );
 };

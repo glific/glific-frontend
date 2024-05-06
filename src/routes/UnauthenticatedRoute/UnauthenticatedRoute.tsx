@@ -26,7 +26,7 @@ export const UnauthenticatedRoute = () => {
           <Route index element={<Navigate to="/logout/user" replace state={location.pathname} />} />
           <Route path="/login" element={<Login />} />
           <Route path="/registration" element={<RegistrationHome />} />
-          <Route path="/registration/:step" element={<Registration />} />
+          <Route path="/registration/setup" element={<Registration />} />
           <Route path="/confirmotp" element={<ConfirmOTP />} />
           <Route path="/resetpassword-phone" element={<ResetPasswordPhone />} />
           <Route path="/resetpassword-confirmotp" element={<ResetPasswordConfirmOTP />} />

@@ -3,8 +3,9 @@ import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
 import { FormLayout } from '../FormLayout/FormLayout';
 import { useState } from 'react';
+import { FormStepProps } from './OrgDetails';
 
-export const SigningAuthority = () => {
+export const SigningAuthority = ({ handleStepChange }: FormStepProps) => {
   const { t } = useTranslation();
   const [submitterName, setSubmitterName] = useState<string>('');
   const [submitterEmail, setSubmitterEmail] = useState<string>('');
@@ -111,6 +112,7 @@ export const SigningAuthority = () => {
       setStates={setStates}
       setPayload={setPayload}
       identifier="submitterDetails"
+      handleStepChange={handleStepChange}
     />
   );
 };

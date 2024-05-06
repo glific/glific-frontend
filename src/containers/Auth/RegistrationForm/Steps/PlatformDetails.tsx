@@ -6,8 +6,9 @@ import { FormLayout } from '../FormLayout/FormLayout';
 import { useState } from 'react';
 
 import styles from '../FormLayout/FormLayout.module.css';
+import { FormStepProps } from './OrgDetails';
 
-export const PlatformDetails = () => {
+export const PlatformDetails = ({ handleStepChange }: FormStepProps) => {
   const { t } = useTranslation();
   const [appName, setAppName] = useState<string>('');
   const [apiKeys, setApiKeys] = useState<string>('');
@@ -97,6 +98,7 @@ export const PlatformDetails = () => {
       setStates={setStates}
       setPayload={setPayload}
       identifier="platformDetails"
+      handleStepChange={handleStepChange}
     />
   );
 };

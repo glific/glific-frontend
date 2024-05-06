@@ -13,14 +13,7 @@ import { ReachOutToUs } from './ReachOutToUs/ReachOutToUs';
 export const RegistrationForm = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [openDialog, setDialogOpen] = useState(false);
-  const params = useParams();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (params.step) {
-      setActiveStep(parseInt(params.step) - 1);
-    }
-  }, [params]);
 
   const steps = [
     {
@@ -41,16 +34,43 @@ export const RegistrationForm = () => {
     },
   ];
 
+  const handleStepChange = (forward: boolean = true) => {
+    if (activeStep === 0 && !forward) return navigate('/registration');
+
+    if (activeStep === 3 && forward) return navigate('/registration/complete');
+
+    if (forward) setActiveStep(activeStep + 1);
+    else setActiveStep(activeStep - 1);
+
+    const existingData = localStorage.getItem('registrationData');
+
+    if (existingData) {
+      let data = {
+        ...JSON.parse(existingData),
+        activeStep,
+      };
+      localStorage.setItem('registrationData', JSON.stringify(data));
+    }
+  };
+
+  useEffect(() => {
+    const existingData = localStorage.getItem('registrationData');
+    if (existingData) {
+      const data = JSON.parse(existingData);
+      setActiveStep(data.activeStep + 1 || 0);
+    }
+  }, []);
+
   const getForm = (step: number) => {
     switch (step) {
       case 0:
-        return <PlatformDetails />;
+        return <PlatformDetails handleStepChange={handleStepChange} />;
       case 1:
-        return <OrgDetails />;
+        return <OrgDetails handleStepChange={handleStepChange} />;
       case 2:
-        return <PaymentDetails />;
+        return <PaymentDetails handleStepChange={handleStepChange} />;
       case 3:
-        return <SigningAuthority />;
+        return <SigningAuthority handleStepChange={handleStepChange} />;
     }
   };
 
@@ -59,9 +79,7 @@ export const RegistrationForm = () => {
       <div className={styles.LeftContainer}>
         <div
           onClick={() => {
-            if (params.step && parseInt(params.step) > 1) {
-              navigate(`/registration/${parseInt(params.step) - 1}`);
-            }
+            handleStepChange(false);
           }}
           data-testid="back-button"
           className={styles.BackButton}
@@ -98,6 +116,7 @@ export const RegistrationForm = () => {
 
       {openDialog && (
         <ReachOutToUs
+          handleStepChange={handleStepChange}
           open={openDialog}
           setOpen={setDialogOpen}
           handleCancel={() => setDialogOpen(false)}

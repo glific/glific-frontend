@@ -7,6 +7,7 @@ import { Typography } from '@mui/material';
 import { Button } from 'components/UI/Form/Button/Button';
 import { useNavigate } from 'react-router';
 import axios from 'axios';
+import { Captcha } from 'components/UI/Form/Captcha/Captcha';
 
 interface FormLayoutProps {
   validationSchema: any;
@@ -26,6 +27,7 @@ interface FormLayoutProps {
   okButtonHelperText?: string;
   apiUrl?: any;
   identifier: string;
+  handleStepChange: Function;
 }
 
 export const FormLayout = ({
@@ -42,11 +44,11 @@ export const FormLayout = ({
   okButtonHelperText,
   apiUrl,
   identifier,
+  handleStepChange,
 }: FormLayoutProps) => {
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
-  const saveData = (registrationData: any) => {
+  const saveData = (registrationData: any, identifier: string) => {
     if (!step) return;
     const existingData = localStorage.getItem('registrationData');
 
@@ -66,32 +68,31 @@ export const FormLayout = ({
 
   useEffect(() => {
     const registrationData = localStorage.getItem('registrationData');
-    console.log(registrationData);
+
     if (registrationData) {
       const data = JSON.parse(registrationData);
-      setStates(data[identifier]);
+      if (data[identifier]) setStates(data[identifier]);
     }
   }, []);
 
   const saveHandler = (itemData: any) => {
     const payload = setPayload(itemData);
+    saveData(payload, identifier);
 
-    // axios.post(apiUrl, payload).then(({ data }: { data: any }) => {
-    //   setLoading(false);
-
-    //   if (data.is_valid) {
-    //     step && navigate(`/registration/${step + 1}`);
-    //   } else {
-    //     console.log(data);
-    //   }
-    // });
-
-    if (payload) {
-      console.log(payload);
-      saveData(payload);
-
-      if (step) navigate(`/registration/${step + 1}`);
+    if (apiUrl) {
+      axios.post(apiUrl, payload).then(({ data }: { data: any }) => {
+        setLoading(false);
+        if (data.registration_id) {
+          saveData(data, 'registrationDetails');
+        }
+        if (data.is_valid) {
+        } else {
+          return;
+        }
+      });
     }
+
+    handleStepChange();
   };
 
   const header = (
@@ -123,7 +124,7 @@ export const FormLayout = ({
         saveHandler(itemData);
       }}
     >
-      {({ errors, submitForm }) => (
+      {({ errors, submitForm, setFieldValue, values }) => (
         <Form className={styles.Form} data-testid="formLayout">
           <div className={styles.FormFields}>
             {formFieldItems.map((field, index) => {
@@ -177,20 +178,41 @@ export const FormLayout = ({
           <div
             className={`${styles.Buttons} ${buttonState.align === 'right' && styles.RightButton}`}
           >
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => {
-                onSaveButtonClick(errors);
-                submitForm();
-              }}
-              className={styles.Button}
-              data-testid="submitActionButton"
-              loading={loading}
-              disabled={buttonState.status}
-            >
-              {buttonState.text ? buttonState.text : 'Next'}
-            </Button>
+            {identifier === 'orgDetails' ? (
+              <Captcha
+                component={Button}
+                variant="contained"
+                color="primary"
+                onClick={submitForm}
+                className={styles.Button}
+                data-testid="SubmitButton"
+                loading={loading}
+                onTokenUpdate={(token: string) => {
+                  console.log(token);
+
+                  setFieldValue('token', token);
+                }}
+                // disabled={!values.captcha}
+                action="register"
+              >
+                Next
+              </Captcha>
+            ) : (
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  onSaveButtonClick(errors);
+                  submitForm();
+                }}
+                className={styles.Button}
+                data-testid="submitActionButton"
+                loading={loading}
+                disabled={buttonState.status}
+              >
+                {buttonState.text ? buttonState.text : 'Next'}
+              </Button>
+            )}
 
             <p className={styles.OkButtonHelperText}>{okButtonHelperText}</p>
           </div>

@@ -114,23 +114,6 @@ export const DialogBox = ({
     dialogActionStyle = styles.DialogActionsCenter;
   }
 
-  let classStyles: any = {
-    container: styles.Dialogbox,
-    paper: styles.DialogboxPaper,
-    scrollPaper: styles.ScrollPaper,
-    root: alwaysOntop ? styles.DialogboxRoot : '',
-  };
-
-  if (additionalstyles) {
-    for (const key in additionalstyles) {
-      if (classStyles[key]) {
-        classStyles[key] += ' ' + additionalstyles[key];
-      } else {
-        classStyles[key] = additionalstyles[key];
-      }
-    }
-  }
-
   return (
     <Dialog
       slotProps={{
@@ -142,7 +125,12 @@ export const DialogBox = ({
       }}
       data-testid="dialogBox"
       open={open}
-      classes={classStyles}
+      classes={{
+        container: styles.Dialogbox,
+        paper: styles.DialogboxPaper,
+        scrollPaper: styles.ScrollPaper,
+        root: alwaysOntop ? styles.DialogboxRoot : '',
+      }}
       onClose={() => handleCancel()}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"

@@ -11,9 +11,10 @@ interface ReachOutToUsProps {
   open: boolean;
   setOpen: Function;
   handleCancel: Function;
+  handleStepChange: Function;
 }
 
-export const ReachOutToUs = ({ open, setOpen, handleCancel }: ReachOutToUsProps) => {
+export const ReachOutToUs = ({ open, setOpen, handleStepChange }: ReachOutToUsProps) => {
   const { t } = useTranslation();
   const [name, setName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
@@ -93,6 +94,7 @@ export const ReachOutToUs = ({ open, setOpen, handleCancel }: ReachOutToUsProps)
         }}
         okButtonHelperText="If you have any further queries regarding the T&C, kindly write to this email user@glificqueries.com. Feel free to contact us if you have any more questions. "
         identifier="reachOutToUs"
+        handleStepChange={handleStepChange}
       />
     </Dialog>
   );

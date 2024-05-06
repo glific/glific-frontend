@@ -7,13 +7,19 @@ import { useState } from 'react';
 import styles from '../FormLayout/FormLayout.module.css';
 import { UploadDocument } from '../UploadDocument/UploadDocument';
 import { ONBOARD_URL } from 'config';
+import { Captcha } from 'components/UI/Form/Captcha/Captcha';
 
-export const OrgDetails = () => {
+export interface FormStepProps {
+  handleStepChange: Function;
+}
+
+export const OrgDetails = ({ handleStepChange }: FormStepProps) => {
   const { t } = useTranslation();
   const [orgName, setOrgName] = useState<string>('');
   const [gstNumber, setGstNumber] = useState<string>('');
   const [registeredAddress, setRegisteredAddress] = useState<string>('');
   const [currentAddress, setCurrentAddress] = useState<string>('');
+  const [token, setToken] = useState(null);
 
   const FormSchema = Yup.object().shape({
     orgName: Yup.string().required(t('This Field is required.')).max(40),
@@ -67,7 +73,23 @@ export const OrgDetails = () => {
   ];
 
   const setPayload = (payload: any) => {
-    return payload;
+    console.log(payload);
+
+    const { orgName, gstNumber, registeredAddress, currentAddress, token } = payload;
+    let updatedPayload;
+    const registrationData = localStorage.getItem('registrationData');
+    if (registrationData) {
+      const data = JSON.parse(registrationData);
+      updatedPayload = {
+        ...data.platformDetails,
+        token: token,
+        name: orgName,
+        gstin: gstNumber,
+        registered_address: registeredAddress,
+        current_address: currentAddress,
+      };
+    }
+    return updatedPayload;
   };
 
   const setStates = (states: any) => {
@@ -90,6 +112,7 @@ export const OrgDetails = () => {
       setPayload={setPayload}
       apiUrl={ONBOARD_URL}
       identifier="orgDetails"
+      handleStepChange={handleStepChange}
     />
   );
 };
