@@ -31,6 +31,11 @@
   font-size: 14px;
 }
 
+.OkButtonHelperText {
+  composes: HelperText;
+  width: 50%;
+}
+
 .FormFields {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -48,13 +53,19 @@
 .Buttons {
   width: 100%;
   display: flex;
-  justify-content: flex-end;
+  flex-direction: column;
+  margin: 1rem 0;
+}
+
+.RightButton {
+  align-items: flex-end;
 }
 
 .Button {
   padding: 10px 64px;
   border-radius: 8px;
   line-height: 30px;
+  width: 25%;
 }
 
 .SectionHeading {
@@ -68,6 +79,11 @@
   grid-column-end: 3;
   display: flex;
   flex-direction: column;
+}
+
+.FullWidth {
+  grid-column-start: 1;
+  grid-column-end: 3;
 }
 
 .SubText {

@@ -37,7 +37,7 @@ export const PhoneInput = ({
 
   return (
     <div className={styles.Input} data-testid="phoneInput">
-      <FormControl>
+      <FormControl className={styles.Input}>
         {inputLabel && (
           <Typography variant="caption" className={styles.Label} data-testid="inputLabel">
             {inputLabel}

@@ -1,0 +1,16 @@
+.DialogboxPaper {
+  width: 100%;
+  height: 90%;
+  margin-left: 25%;
+  border-radius: 20px;
+  padding: 2rem 4rem;
+}
+
+.MessageField {
+  grid-column-start: 1;
+  grid-column-end: 3;
+}
+
+.MessageField textarea {
+  min-height: 120px;
+}

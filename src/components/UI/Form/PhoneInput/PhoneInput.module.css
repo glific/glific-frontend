@@ -1,5 +1,5 @@
 .PhoneNumber {
-  width: 334px !important;
+  width: 100% !important;
   padding-top: 13px !important;
   padding-bottom: 13px !important;
   padding-left: 48px !important;
@@ -8,6 +8,10 @@
   border-width: 2px !important;
   background: inherit !important;
   border-color: #93a29b !important;
+}
+
+.Input {
+  width: 100%;
 }
 
 .PhoneNumber:focus {

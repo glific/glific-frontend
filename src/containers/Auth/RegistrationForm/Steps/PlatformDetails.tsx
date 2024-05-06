@@ -18,7 +18,7 @@ export const PlatformDetails = () => {
     appName: Yup.string().required(t('This Field is required.')),
     apiKeys: Yup.string().required(t('This Field is required.')),
     shortcode: Yup.string().required(t('This Field is required.')),
-    phoneNumber: Yup.string(),
+    phoneNumber: Yup.string().required(t('This Field is required.')),
   });
   const initialFormValues: any = { appName, apiKeys, shortcode, phoneNumber };
 

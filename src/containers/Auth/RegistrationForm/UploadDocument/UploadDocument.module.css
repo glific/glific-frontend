@@ -1,0 +1,76 @@
+.Container {
+  padding: 1rem 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  border: 1px solid #119656;
+  border-style: dashed;
+  width: 100%;
+  text-transform: capitalize;
+}
+
+.Container input {
+  display: none;
+}
+
+.UploadContainer {
+  padding-top: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  column-gap: 0.8rem;
+  font-size: 15px;
+}
+
+.Label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #111111;
+  line-height: 22px;
+  margin: 6px 0;
+  display: flex;
+  column-gap: 4px;
+}
+
+.helperText {
+  margin: 0px;
+  padding: 0px;
+  color: #93a29b;
+  line-height: 1.5;
+  font-size: 12px;
+  margin-top: 7px;
+  padding: 0 8px;
+}
+
+.WaitUpload {
+  font-size: 14px;
+  margin-left: 16px;
+}
+
+.FormField {
+  margin-top: 24px;
+  vertical-align: middle;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 18px;
+  color: #555555;
+  padding-bottom: 14px;
+}
+
+.FormError {
+  color: #f44336;
+  font-size: 0.75rem;
+  text-align: left;
+  font-weight: 400;
+  margin: 0;
+  padding: 0 8px;
+}
+
+.Loading {
+  text-align: center;
+}
+
+.Form {
+  width: 100%;
+}

@@ -25,6 +25,7 @@ export interface DialogProps {
   buttonMiddle?: string | null;
   additionalTitleStyles?: string | null;
   buttonOkLoading?: boolean;
+  additionalstyles?: any;
 }
 
 export const DialogBox = ({
@@ -48,6 +49,7 @@ export const DialogBox = ({
   alwaysOntop = false,
   buttonMiddle,
   buttonOkLoading = false,
+  additionalstyles,
 }: DialogProps) => {
   let cancelButtonDisplay = null;
   if (!skipCancel) {
@@ -111,6 +113,24 @@ export const DialogBox = ({
   if (alignButtons === 'center') {
     dialogActionStyle = styles.DialogActionsCenter;
   }
+
+  let classStyles: any = {
+    container: styles.Dialogbox,
+    paper: styles.DialogboxPaper,
+    scrollPaper: styles.ScrollPaper,
+    root: alwaysOntop ? styles.DialogboxRoot : '',
+  };
+
+  if (additionalstyles) {
+    for (const key in additionalstyles) {
+      if (classStyles[key]) {
+        classStyles[key] += ' ' + additionalstyles[key];
+      } else {
+        classStyles[key] = additionalstyles[key];
+      }
+    }
+  }
+
   return (
     <Dialog
       slotProps={{
@@ -122,12 +142,7 @@ export const DialogBox = ({
       }}
       data-testid="dialogBox"
       open={open}
-      classes={{
-        container: styles.Dialogbox,
-        paper: styles.DialogboxPaper,
-        scrollPaper: styles.ScrollPaper,
-        root: alwaysOntop ? styles.DialogboxRoot : '',
-      }}
+      classes={classStyles}
       onClose={() => handleCancel()}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"

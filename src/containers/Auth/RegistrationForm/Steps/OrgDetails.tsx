@@ -5,6 +5,7 @@ import { FormLayout } from '../FormLayout/FormLayout';
 import { useState } from 'react';
 
 import styles from '../FormLayout/FormLayout.module.css';
+import { UploadDocument } from '../UploadDocument/UploadDocument';
 
 export const OrgDetails = () => {
   const { t } = useTranslation();
@@ -54,6 +55,13 @@ export const OrgDetails = () => {
       inputLabel: 'Current address',
       placeholder: 'Enter the organization’s current address.',
       textArea: true,
+    },
+    {
+      component: UploadDocument,
+      name: 'orgDocs',
+      inputLabel: 'Registration document / certificate (PDF/PNG/JPEG)',
+      additionalStyles: styles.FullWidth,
+      helperText: 'Maximum file size upload limit : 20MB',
     },
   ];
 

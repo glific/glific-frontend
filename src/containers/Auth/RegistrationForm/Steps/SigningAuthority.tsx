@@ -14,10 +14,14 @@ export const SigningAuthority = () => {
 
   const FormSchema = Yup.object().shape({
     submitterName: Yup.string().required(t('This Field is required.')),
-    submitterEmail: Yup.string().required(t('This Field is required.')),
+    submitterEmail: Yup.string()
+      .required(t('This Field is required.'))
+      .email('Enter a valid email.'),
     signingAuthorityName: Yup.string().required(t('This Field is required.')),
     signingAuthorityDesignation: Yup.string().required(t('This Field is required.')),
-    signingAuthorityEmail: Yup.string().required(t('This Field is required.')),
+    signingAuthorityEmail: Yup.string()
+      .required(t('This Field is required.'))
+      .email('Enter a valid email.'),
   });
   const initialFormValues: any = {
     submitterName,

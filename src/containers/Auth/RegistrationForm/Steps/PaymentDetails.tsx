@@ -17,8 +17,10 @@ export const PaymentDetails = () => {
   const FormSchema = Yup.object().shape({
     name: Yup.string().required(t('This Field is required.')),
     designation: Yup.string().required(t('This Field is required.')),
-    phoneNumber: Yup.string().required(t('This Field is required.')),
-    email: Yup.string().required(t('This Field is required.')),
+    phoneNumber: Yup.string()
+      .required(t('This Field is required.'))
+      .length(10, 'Enter a valid phone number.'),
+    email: Yup.string().required(t('This Field is required.')).email('Enter a valid email.'),
   });
   const initialFormValues: any = { name, designation, phoneNumber, email };
 

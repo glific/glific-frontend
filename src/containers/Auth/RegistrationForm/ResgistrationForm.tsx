@@ -8,9 +8,11 @@ import { PlatformDetails } from './Steps/PlatformDetails';
 import { OrgDetails } from './Steps/OrgDetails';
 import { PaymentDetails } from './Steps/PaymentDetails';
 import { SigningAuthority } from './Steps/SigningAuthority';
+import { ReachOutToUs } from './ReachOutToUs/ReachOutToUs';
 
 export const RegistrationForm = () => {
   const [activeStep, setActiveStep] = useState(0);
+  const [openDialog, setDialogOpen] = useState(false);
   const params = useParams();
   const navigate = useNavigate();
 
@@ -84,12 +86,23 @@ export const RegistrationForm = () => {
 
           <div className={styles.LeftFooter}>
             <p>
-              Have a question? <span className={styles.ReachOut}>Reach out here</span>
+              Have a question?{' '}
+              <span onClick={() => setDialogOpen(true)} className={styles.ReachOut}>
+                Reach out here
+              </span>
             </p>
           </div>
         </div>
       </div>
       <div className={styles.RightContainer}>{getForm(activeStep)}</div>
+
+      {openDialog && (
+        <ReachOutToUs
+          open={openDialog}
+          setOpen={setDialogOpen}
+          handleCancel={() => setDialogOpen(false)}
+        />
+      )}
     </div>
   );
 };

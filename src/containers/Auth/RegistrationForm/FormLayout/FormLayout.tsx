@@ -13,14 +13,16 @@ interface FormLayoutProps {
   initialValues: any;
   title: string;
   helperText: string;
-  step: number;
+  step?: number;
   setStates: Function;
   buttonState?: {
     text: string;
-    status: boolean;
+    status?: boolean;
+    align?: string;
   };
   setPayload: Function;
-  button?: string;
+  showStep?: boolean;
+  okButtonHelperText?: string;
 }
 
 export const FormLayout = ({
@@ -31,9 +33,10 @@ export const FormLayout = ({
   helperText,
   step,
   setStates,
-  buttonState = { text: '', status: false },
-  button = 'Next',
+  buttonState = { text: '', status: false, align: 'right' },
   setPayload,
+  showStep = true,
+  okButtonHelperText,
 }: FormLayoutProps) => {
   const [saveClick, onSaveClick] = useState(false);
   const navigate = useNavigate();
@@ -43,13 +46,13 @@ export const FormLayout = ({
 
     if (payload) {
       console.log(payload);
-      navigate(`/registration/${step + 1}`);
+      // navigate(`/registration/${step + 1}`);
     }
   };
 
   const header = (
     <div className={styles.Header}>
-      <span className={styles.Step}>STEP {step} of 4</span>
+      {showStep && <span className={styles.Step}>STEP {step} of 4</span>}
       <h1 data-testid="heading" className={styles.Title}>
         {title}
       </h1>
@@ -115,19 +118,21 @@ export const FormLayout = ({
               }
 
               return (
-                <Fragment key={key}>
+                <div key={key} className={field?.additionalStyles}>
                   {field.label && (
                     <Typography data-testid="formLabel" variant="h5" className={styles.FieldLabel}>
                       {field.label}
                     </Typography>
                   )}
                   <Field key={key} {...field} onSubmit={submitForm} />
-                </Fragment>
+                </div>
               );
             })}
           </div>
 
-          <div className={styles.Buttons}>
+          <div
+            className={`${styles.Buttons} ${buttonState.align === 'right' && styles.RightButton}`}
+          >
             <Button
               variant="contained"
               color="primary"
@@ -140,8 +145,10 @@ export const FormLayout = ({
               loading={saveClick}
               disabled={buttonState.status}
             >
-              {buttonState.status ? buttonState.text : button}
+              {buttonState.text ? buttonState.text : 'Next'}
             </Button>
+
+            <p className={styles.OkButtonHelperText}>{okButtonHelperText}</p>
           </div>
         </Form>
       )}
