@@ -25,7 +25,6 @@ export interface DialogProps {
   buttonMiddle?: string | null;
   additionalTitleStyles?: string | null;
   buttonOkLoading?: boolean;
-  additionalstyles?: any;
 }
 
 export const DialogBox = ({
@@ -49,7 +48,6 @@ export const DialogBox = ({
   alwaysOntop = false,
   buttonMiddle,
   buttonOkLoading = false,
-  additionalstyles,
 }: DialogProps) => {
   let cancelButtonDisplay = null;
   if (!skipCancel) {

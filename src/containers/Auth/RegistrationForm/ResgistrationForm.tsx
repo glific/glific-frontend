@@ -3,7 +3,7 @@ import styles from './ResgistrationForm.module.css';
 import { Step, StepLabel, Stepper } from '@mui/material';
 import GlificLogo from 'assets/images/logo/Logo.svg';
 import BackButton from 'assets/images/icons/BackIconFlow.svg?react';
-import { useNavigate, useParams } from 'react-router';
+import { useNavigate } from 'react-router';
 import { PlatformDetails } from './Steps/PlatformDetails';
 import { OrgDetails } from './Steps/OrgDetails';
 import { PaymentDetails } from './Steps/PaymentDetails';

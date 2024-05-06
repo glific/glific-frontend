@@ -7,7 +7,6 @@ import { useState } from 'react';
 import styles from '../FormLayout/FormLayout.module.css';
 import { UploadDocument } from '../UploadDocument/UploadDocument';
 import { ONBOARD_URL } from 'config';
-import { Captcha } from 'components/UI/Form/Captcha/Captcha';
 
 export interface FormStepProps {
   handleStepChange: Function;

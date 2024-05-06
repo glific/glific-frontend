@@ -5,7 +5,6 @@ import styles from './FormLayout.module.css';
 import { Typography } from '@mui/material';
 
 import { Button } from 'components/UI/Form/Button/Button';
-import { useNavigate } from 'react-router';
 import axios from 'axios';
 import { Captcha } from 'components/UI/Form/Captcha/Captcha';
 
@@ -82,10 +81,9 @@ export const FormLayout = ({
     if (apiUrl) {
       axios.post(apiUrl, payload).then(({ data }: { data: any }) => {
         setLoading(false);
-        if (data.registration_id) {
-          saveData(data, 'registrationDetails');
-        }
+
         if (data.is_valid) {
+          saveData(data, 'registrationDetails');
         } else {
           return;
         }
@@ -163,7 +161,7 @@ export const FormLayout = ({
               }
 
               return (
-                <div key={key} className={field?.additionalStyles}>
+                <div key={key} className={field.additionalStyles}>
                   {field.label && (
                     <Typography data-testid="formLabel" variant="h5" className={styles.FieldLabel}>
                       {field.label}
@@ -185,7 +183,7 @@ export const FormLayout = ({
                 color="primary"
                 onClick={submitForm}
                 className={styles.Button}
-                data-testid="SubmitButton"
+                data-testid="submitActionButton"
                 loading={loading}
                 onTokenUpdate={(token: string) => {
                   console.log(token);

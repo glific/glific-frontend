@@ -1,6 +1,9 @@
 import { MemoryRouter, Route, Routes } from 'react-router';
 import RegistrationForm from './ResgistrationForm';
 import { fireEvent, render, waitFor } from '@testing-library/react';
+import { MockedProvider } from '@apollo/client/testing';
+import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
+import axios from 'axios';
 
 const mockedUsedNavigate = vi.fn();
 vi.mock('react-router-dom', async () => ({
@@ -8,50 +11,34 @@ vi.mock('react-router-dom', async () => ({
   useNavigate: () => mockedUsedNavigate,
 }));
 
-const renderForm = (id: number) => (
-  <MemoryRouter initialEntries={[`/registration/${id}`]}>
-    <Routes>
-      <Route path="/registration/:step" element={<RegistrationForm />} />
-    </Routes>
-  </MemoryRouter>
+vi.mock('axios');
+const mockedAxios = axios as any;
+mockedAxios.post.mockResolvedValue({
+  data: {
+    is_valid: true,
+  },
+});
+
+const renderForm = (
+  <GoogleReCaptchaProvider reCaptchaKey="test key">
+    <MockedProvider>
+      <MemoryRouter initialEntries={[`/registration/setup`]}>
+        <RegistrationForm />
+      </MemoryRouter>
+    </MockedProvider>
+  </GoogleReCaptchaProvider>
 );
 
 test('it should render platform details page', async () => {
-  const { getByTestId } = render(renderForm(1));
+  const { getByTestId } = render(renderForm);
 
   await waitFor(() => {
     expect(getByTestId('heading')).toHaveTextContent('Glific platform details');
   });
 });
 
-test('it should render platform details page', async () => {
-  const { getByTestId } = render(renderForm(2));
-
-  await waitFor(() => {
-    expect(getByTestId('heading')).toHaveTextContent('About the organization');
-  });
-});
-
-test('it should render platform details page', async () => {
-  const { getByTestId } = render(renderForm(3));
-
-  await waitFor(() => {
-    expect(getByTestId('heading')).toHaveTextContent('Payment details');
-  });
-});
-
-test('it should render platform details page', async () => {
-  const { getByTestId } = render(renderForm(4));
-
-  await waitFor(() => {
-    expect(getByTestId('heading')).toHaveTextContent('Submitter & Signing authority details');
-  });
-
-  fireEvent.click(getByTestId('back-button'));
-});
-
 test('it should fill the form', async () => {
-  const { getByTestId, getAllByRole, getAllByTestId } = render(renderForm(1));
+  const { getByTestId, getAllByRole, getAllByTestId } = render(renderForm);
 
   await waitFor(() => {
     expect(getByTestId('heading')).toHaveTextContent('Glific platform details');
@@ -78,6 +65,7 @@ test('it should fill the form', async () => {
   fireEvent.change(gstNumber, { target: { value: '123456789000000' } });
   fireEvent.change(registeredAddress, { target: { value: 'add 1' } });
   fireEvent.change(currentAddress, { target: { value: 'add 2' } });
+  // screen.debug(document, Infinity);
 
   fireEvent.click(getByTestId('submitActionButton'));
 
