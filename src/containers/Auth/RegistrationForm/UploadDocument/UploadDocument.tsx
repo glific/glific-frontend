@@ -34,7 +34,7 @@ export const UploadDocument = ({
       const shortenedName = slicedString(mediaName, 15);
       setFileName(shortenedName);
       setLoading(true);
-      form.setFieldValue('registration_docs', media);
+      form.setFieldValue('registration_doc', media);
     }
   };
 

@@ -7,9 +7,9 @@ import styles from '../FormLayout/FormLayout.module.css';
 import { PaymentOptions } from '../PaymentType/PaymentOptions';
 import { FormStepProps } from './OrgDetails';
 
-export const PaymentDetails = ({ handleStepChange }: FormStepProps) => {
+export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) => {
   const { t } = useTranslation();
-  const [paymentType, setPaymentType] = useState<string>('yearly');
+  const [billing_frequency, setPaymentType] = useState<string>('yearly');
   const [name, setName] = useState<string>('');
   const [designation, setDesignation] = useState<string>('');
   const [phone, setPhone] = useState<string>('');
@@ -23,7 +23,7 @@ export const PaymentDetails = ({ handleStepChange }: FormStepProps) => {
       .length(10, 'Enter a valid phone number.'),
     email: Yup.string().required(t('This Field is required.')).email('Enter a valid email.'),
   });
-  const initialFormValues: any = { name, designation, phone, email };
+  const initialFormValues: any = { name, designation, phone, email, billing_frequency };
 
   const formFields = [
     {
@@ -33,7 +33,7 @@ export const PaymentDetails = ({ handleStepChange }: FormStepProps) => {
           component: PaymentOptions,
           name: 'paymentOption',
           handleOnChange: (value: any) => setPaymentType(value),
-          paymentType: paymentType,
+          billing_frequency: billing_frequency,
           additionalStyles: styles.FullWidth,
         },
       ],
@@ -74,18 +74,18 @@ export const PaymentDetails = ({ handleStepChange }: FormStepProps) => {
   const setPayload = (payload: any) => {
     const object = {
       ...payload,
-      paymentType: paymentType,
+      billing_frequency: billing_frequency,
     };
     return object;
   };
 
   const setStates = (states: any) => {
-    const { name, designation, phone, email, paymentType } = states;
+    const { name, designation, phone, email, billing_frequency } = states;
     setName(name);
     setDesignation(designation);
     setPhone(phone);
     setEmail(email);
-    setPaymentType(paymentType);
+    setPaymentType(billing_frequency);
   };
 
   return (
@@ -100,6 +100,7 @@ export const PaymentDetails = ({ handleStepChange }: FormStepProps) => {
       setPayload={setPayload}
       identifier="payemntDetails"
       handleStepChange={handleStepChange}
+      saveData={saveData}
     />
   );
 };

@@ -8,25 +8,25 @@ import { useState } from 'react';
 import styles from '../FormLayout/FormLayout.module.css';
 import { FormStepProps } from './OrgDetails';
 
-export const PlatformDetails = ({ handleStepChange }: FormStepProps) => {
+export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) => {
   const { t } = useTranslation();
-  const [appName, setAppName] = useState<string>('');
-  const [apiKeys, setApiKeys] = useState<string>('');
+  const [app_name, setAppName] = useState<string>('');
+  const [api_key, setApiKeys] = useState<string>('');
   const [shortcode, setShortcode] = useState<string>('');
-  const [phoneNumber, setPhoneNumber] = useState<string>('');
+  const [phone, setPhone] = useState<string>('');
 
   const FormSchema = Yup.object().shape({
-    appName: Yup.string().required(t('This Field is required.')),
-    apiKeys: Yup.string().required(t('This Field is required.')),
+    app_name: Yup.string().required(t('This Field is required.')),
+    api_key: Yup.string().required(t('This Field is required.')),
     shortcode: Yup.string().required(t('This Field is required.')),
-    phoneNumber: Yup.string().required(t('This Field is required.')),
+    phone: Yup.string().required(t('This Field is required.')),
   });
-  const initialFormValues: any = { appName, apiKeys, shortcode, phoneNumber };
+  const initialFormValues: any = { app_name, api_key, shortcode, phone };
 
   const formFields = [
     {
       component: PhoneInput,
-      name: 'phoneNumber',
+      name: 'phone',
       type: 'phone',
       placeholder: 'New whatsapp chatbot number',
       inputLabel: 'Chatbot number',
@@ -34,19 +34,20 @@ export const PlatformDetails = ({ handleStepChange }: FormStepProps) => {
     },
     {
       component: Input,
-      name: 'appName',
+      name: 'app_name',
       type: 'text',
       inputLabel: 'App name',
       placeholder: 'Enter the bot name',
       inputLabelSubtext: (
         <p className={styles.SubText}>
-          (Name of your bot on Gupshup. <a href="gupshup.com">Find it here</a>)
+          (Name of your bot on Gupshup.{' '}
+          <a href="https://www.gupshup.io/whatsapp/dashboard/?lang=en">Find it here</a>)
         </p>
       ),
     },
     {
       component: Input,
-      name: 'apiKeys',
+      name: 'api_key',
       type: 'text',
       inputLabel: 'Gupshup API keys',
       placeholder: 'Enter the api keys',
@@ -69,12 +70,12 @@ export const PlatformDetails = ({ handleStepChange }: FormStepProps) => {
   ];
 
   const setPayload = (payload: any) => {
-    const { appName, shortcode, apiKeys, phoneNumber } = payload;
+    const { app_name, shortcode, api_key, phone } = payload;
 
     return {
-      api_key: apiKeys,
-      app_name: appName,
-      phone: phoneNumber,
+      api_key,
+      app_name,
+      phone,
       shortcode,
     };
   };
@@ -85,7 +86,7 @@ export const PlatformDetails = ({ handleStepChange }: FormStepProps) => {
     setAppName(app_name);
     setShortcode(shortcode);
     setApiKeys(api_key);
-    setPhoneNumber(phone);
+    setPhone(phone);
   };
 
   return (
@@ -100,6 +101,7 @@ export const PlatformDetails = ({ handleStepChange }: FormStepProps) => {
       setPayload={setPayload}
       identifier="platformDetails"
       handleStepChange={handleStepChange}
+      saveData={saveData}
     />
   );
 };

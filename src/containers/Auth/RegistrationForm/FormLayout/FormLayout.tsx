@@ -5,8 +5,8 @@ import styles from './FormLayout.module.css';
 import { Typography } from '@mui/material';
 
 import { Button } from 'components/UI/Form/Button/Button';
-import axios from 'axios';
 import { Captcha } from 'components/UI/Form/Captcha/Captcha';
+import { useNavigate } from 'react-router';
 
 interface FormLayoutProps {
   validationSchema: any;
@@ -28,6 +28,11 @@ interface FormLayoutProps {
   identifier: string;
   handleStepChange: Function;
   setToken?: Function;
+  headers?: any;
+  setErrorOpen?: Function;
+  submitData?: Function;
+  saveData: Function;
+  loading?: boolean;
 }
 
 export const FormLayout = ({
@@ -42,29 +47,14 @@ export const FormLayout = ({
   setPayload,
   showStep = true,
   okButtonHelperText,
-  apiUrl,
   identifier,
+  submitData,
   handleStepChange,
+  saveData,
+  loading,
 }: FormLayoutProps) => {
-  const [loading, setLoading] = useState(false);
-
-  const saveData = (registrationData: any, identifier: string) => {
-    if (!step) return;
-    const existingData = localStorage.getItem('registrationData');
-
-    let data = {
-      [identifier]: registrationData,
-    };
-
-    if (existingData) {
-      data = {
-        ...data,
-        ...JSON.parse(existingData),
-      };
-    }
-
-    localStorage.setItem('registrationData', JSON.stringify(data));
-  };
+  const [customErrors, setCustomErrors] = useState();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const registrationData = localStorage.getItem('registrationData');
@@ -75,31 +65,22 @@ export const FormLayout = ({
     }
   }, []);
 
-  const saveHandler = (itemData: any) => {
+  const saveHandler = async (itemData: any, setFieldValue: Function) => {
     const payload = setPayload(itemData);
     saveData(payload, identifier);
 
-    if (apiUrl) {
-      console.log(payload);
-
-      axios
-        .post(apiUrl, payload, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        })
-        .then(({ data }: { data: any }) => {
-          setLoading(false);
-
-          if (data.is_valid) {
-            saveData(data, 'registrationDetails');
-          } else {
-            return;
-          }
-        });
+    if (submitData) {
+      await submitData(payload).then((data: any) => {
+        if (identifier === 'orgDetails') {
+          console.log(data);
+          handleStepChange();
+        } else {
+          navigate('/login');
+        }
+      });
+    } else {
+      handleStepChange();
     }
-
-    handleStepChange();
   };
 
   const header = (
@@ -112,13 +93,6 @@ export const FormLayout = ({
     </div>
   );
 
-  const onSaveButtonClick = (errors: any) => {
-    if (Object.keys(errors).length > 0) {
-      return;
-    }
-    setLoading(true);
-  };
-
   const form = (
     <Formik
       enableReinitialize
@@ -128,7 +102,7 @@ export const FormLayout = ({
       }}
       validationSchema={validationSchema}
       onSubmit={(itemData, { setErrors }) => {
-        saveHandler(itemData);
+        saveHandler(itemData, setErrors);
       }}
     >
       {({ errors, submitForm, setFieldValue, values }) => {
@@ -198,11 +172,10 @@ export const FormLayout = ({
                   onClick={submitForm}
                   className={styles.Button}
                   data-testid="submitActionButton"
-                  loading={loading}
                   onTokenUpdate={(token: string) => {
                     setFieldValue('token', token);
                   }}
-                  // disabled={!values.captcha}
+                  disabled={!values.token}
                   action="register"
                 >
                   Next
@@ -212,13 +185,15 @@ export const FormLayout = ({
                   variant="contained"
                   color="primary"
                   onClick={() => {
-                    onSaveButtonClick(errors);
+                    if (Object.keys(errors).length > 0) {
+                      return;
+                    }
                     submitForm();
                   }}
                   className={styles.Button}
                   data-testid="submitActionButton"
-                  loading={loading}
                   disabled={buttonState.status}
+                  loading={loading}
                 >
                   {buttonState.text ? buttonState.text : 'Next'}
                 </Button>

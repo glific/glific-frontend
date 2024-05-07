@@ -8,8 +8,14 @@ import { ONBOARD_URL_UPDATE } from 'config';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import styles from '../FormLayout/FormLayout.module.css';
 import { TermsAndConditions } from '../TermsAndConditions/TermsAndCondition';
+import axios from 'axios';
 
-export const SigningAuthority = ({ handleStepChange, openReachOutToUs }: FormStepProps) => {
+export const SigningAuthority = ({
+  handleStepChange,
+  openReachOutToUs,
+  saveData,
+  setErrorOpen,
+}: FormStepProps) => {
   const { t } = useTranslation();
   const [submitterName, setSubmitterName] = useState<string>('');
   const [submitterEmail, setSubmitterEmail] = useState<string>('');
@@ -21,6 +27,8 @@ export const SigningAuthority = ({ handleStepChange, openReachOutToUs }: FormSte
   const [support_staff_account, setSupportStaffAccount] = useState<boolean>(false);
 
   const [dialogOpen, setDialogOpen] = useState(false);
+
+  const [loading, setLoading] = useState(false);
 
   const FormSchema = Yup.object().shape({
     submitterName: Yup.string().required(t('This Field is required.')),
@@ -132,12 +140,15 @@ export const SigningAuthority = ({ handleStepChange, openReachOutToUs }: FormSte
 
     let updatedPayload = payload;
     if (data) {
+      console.log(payload);
+
       registrationData = JSON.parse(data);
       updatedPayload = {
         finance_poc: {
           name: registrationData.payemntDetails.name,
           email: registrationData.payemntDetails.email,
           designation: registrationData.payemntDetails.designation,
+          phone: registrationData.payemntDetails.phone,
         },
         submitter: {
           name: payload.submitterName,
@@ -149,9 +160,10 @@ export const SigningAuthority = ({ handleStepChange, openReachOutToUs }: FormSte
           email: payload.signingAuthorityEmail,
         },
         has_submitted: true,
-        billing_frequency: registrationData.payemntDetails.paymentType,
+        billing_frequency: registrationData.payemntDetails.billing_frequency,
         terms_agreed: payload.terms_agreed,
         support_staff_account: payload.support_staff_account,
+        ...registrationData.registration_details,
       };
     }
 
@@ -174,6 +186,31 @@ export const SigningAuthority = ({ handleStepChange, openReachOutToUs }: FormSte
     setSigningAuthorityEmail(signingAuthorityEmail);
   };
 
+  const handleSubmit = async (payload: any) => {
+    setLoading(true);
+    await axios
+      .post(ONBOARD_URL_UPDATE, payload, {
+        headers: {
+          'Content-Type': 'application/json ',
+        },
+      })
+      .then(({ data }) => {
+        setLoading(false);
+
+        if (data.is_valid) {
+          return data;
+        } else {
+          const errors = Object.keys(data.messages).map((key) => {
+            return data.messages[key];
+          });
+
+          if (setErrorOpen) setErrorOpen(errors);
+
+          saveData(data.messages, 'errors');
+        }
+      });
+  };
+
   return (
     <>
       <FormLayout
@@ -187,7 +224,11 @@ export const SigningAuthority = ({ handleStepChange, openReachOutToUs }: FormSte
         setPayload={setPayload}
         identifier="submitterDetails"
         handleStepChange={handleStepChange}
+        headers={{ 'Content-Type': 'application/json' }}
         apiUrl={ONBOARD_URL_UPDATE}
+        saveData={saveData}
+        loading={loading}
+        submitData={handleSubmit}
       />
       {dialogOpen && (
         <TermsAndConditions

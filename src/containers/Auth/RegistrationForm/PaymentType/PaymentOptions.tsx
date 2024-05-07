@@ -4,15 +4,15 @@ import styles from './PaymentOptions.module.css';
 export interface PaymentOptionsProps {
   form: { dirty: any; touched: any; errors: any; setFieldValue: any; values: any };
   handleOnChange: any;
-  paymentType: any;
+  billing_frequency: any;
 }
 
 export const PaymentOptions = ({
   handleOnChange,
-  paymentType,
+  billing_frequency,
   form: { setFieldValue },
 }: PaymentOptionsProps) => {
-  const isChecked = (value: string) => paymentType === value;
+  const isChecked = (value: string) => billing_frequency === value;
 
   return (
     <div className={styles.PaymentTypeSection}>
@@ -22,7 +22,7 @@ export const PaymentOptions = ({
           name="trigger-type"
           data-testid="triggerGroupType"
           row
-          value={paymentType}
+          value={billing_frequency}
           onChange={(event) => {
             handleOnChange(event.target.value);
             setFieldValue(event.target.value);
@@ -43,11 +43,11 @@ export const PaymentOptions = ({
           <div className={styles.RadioLabelWrapper}>
             <FormControlLabel
               data-testid="radio-btn"
-              value={'quaterly'}
-              checked={isChecked('quaterly')}
+              value={'quarterly'}
+              checked={isChecked('quarterly')}
               control={<Radio color="primary" />}
-              label={'Quaterly'}
-              className={isChecked('quaterly') ? styles.Selectedlabel : styles.Label}
+              label={'Quarterly'}
+              className={isChecked('quarterly') ? styles.Selectedlabel : styles.Label}
             />
           </div>
           <div className={styles.RadioLabelWrapper}>

@@ -9,10 +9,12 @@ import { OrgDetails } from './Steps/OrgDetails';
 import { PaymentDetails } from './Steps/PaymentDetails';
 import { SigningAuthority } from './Steps/SigningAuthority';
 import { ReachOutToUs } from './ReachOutToUs/ReachOutToUs';
+import { ErrorMessage } from '../Registration/ErrorMessage/ErrorMessage';
 
 export const RegistrationForm = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [openDialog, setDialogOpen] = useState(false);
+  const [errorOpen, setErrorOpen] = useState<Array<string> | null>(null);
   const navigate = useNavigate();
 
   const steps = [
@@ -53,6 +55,24 @@ export const RegistrationForm = () => {
     }
   };
 
+  const saveData = (registrationData: any, identifier: string) => {
+    const existingData = localStorage.getItem('registrationData');
+
+    let data = {
+      [identifier]: registrationData,
+    };
+
+    if (existingData) {
+      data = {
+        ...JSON.parse(existingData),
+        ...data,
+      };
+      console.log(data);
+    }
+
+    localStorage.setItem('registrationData', JSON.stringify(data));
+  };
+
   useEffect(() => {
     const existingData = localStorage.getItem('registrationData');
     if (existingData) {
@@ -64,14 +84,25 @@ export const RegistrationForm = () => {
   const getForm = (step: number) => {
     switch (step) {
       case 0:
-        return <PlatformDetails handleStepChange={handleStepChange} />;
+        return <PlatformDetails saveData={saveData} handleStepChange={handleStepChange} />;
       case 1:
-        return <OrgDetails handleStepChange={handleStepChange} />;
+        return (
+          <OrgDetails
+            saveData={saveData}
+            setErrorOpen={setErrorOpen}
+            handleStepChange={handleStepChange}
+          />
+        );
       case 2:
-        return <PaymentDetails handleStepChange={handleStepChange} />;
+        return <PaymentDetails saveData={saveData} handleStepChange={handleStepChange} />;
       case 3:
         return (
-          <SigningAuthority openReachOutToUs={setDialogOpen} handleStepChange={handleStepChange} />
+          <SigningAuthority
+            saveData={saveData}
+            setErrorOpen={setErrorOpen}
+            openReachOutToUs={setDialogOpen}
+            handleStepChange={handleStepChange}
+          />
         );
     }
   };
@@ -122,8 +153,11 @@ export const RegistrationForm = () => {
           open={openDialog}
           setOpen={setDialogOpen}
           handleCancel={() => setDialogOpen(false)}
+          saveData={saveData}
         />
       )}
+
+      {errorOpen && <ErrorMessage errors={errorOpen} />}
     </div>
   );
 };
