@@ -6,10 +6,11 @@ import { useState } from 'react';
 
 import styles from '../FormLayout/FormLayout.module.css';
 import { UploadDocument } from '../UploadDocument/UploadDocument';
-import { ONBOARD_URL } from 'config';
+import { ONBOARD_URL_SETUP } from 'config';
 
 export interface FormStepProps {
   handleStepChange: Function;
+  openReachOutToUs?: Function;
 }
 
 export const OrgDetails = ({ handleStepChange }: FormStepProps) => {
@@ -92,11 +93,11 @@ export const OrgDetails = ({ handleStepChange }: FormStepProps) => {
   };
 
   const setStates = (states: any) => {
-    const { orgName, gstNumber, registeredAddress, currentAddress } = states;
-    setOrgName(orgName);
-    setGstNumber(gstNumber);
-    setRegisteredAddress(registeredAddress);
-    setCurrentAddress(currentAddress);
+    const { name, gstin, registered_address, current_address } = states;
+    setOrgName(name);
+    setGstNumber(gstin);
+    setRegisteredAddress(registered_address);
+    setCurrentAddress(current_address);
   };
 
   return (
@@ -109,7 +110,7 @@ export const OrgDetails = ({ handleStepChange }: FormStepProps) => {
       helperText="Note : To be filled by the signing authority of your organization."
       setStates={setStates}
       setPayload={setPayload}
-      apiUrl={ONBOARD_URL}
+      apiUrl={ONBOARD_URL_SETUP}
       identifier="orgDetails"
       handleStepChange={handleStepChange}
     />

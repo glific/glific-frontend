@@ -67,6 +67,7 @@ export const FormLayout = ({
 
   useEffect(() => {
     const registrationData = localStorage.getItem('registrationData');
+    // console.log(registrationData);
 
     if (registrationData) {
       const data = JSON.parse(registrationData);
@@ -141,7 +142,7 @@ export const FormLayout = ({
                     <div className={styles.FormFields}>
                       {field.children.map((child: any, i: number) => {
                         return (
-                          <Fragment key={i}>
+                          <div className={child.additionalStyles} key={i}>
                             {child.label && (
                               <Typography
                                 data-testid="formLabel"
@@ -152,7 +153,7 @@ export const FormLayout = ({
                               </Typography>
                             )}
                             <Field key={i} {...child} onSubmit={submitForm} />
-                          </Fragment>
+                          </div>
                         );
                       })}
                     </div>

@@ -70,6 +70,8 @@ export const PlatformDetails = ({ handleStepChange }: FormStepProps) => {
 
   const setPayload = (payload: any) => {
     const { appName, shortcode, apiKeys, phoneNumber } = payload;
+    // console.log(payload);
+
     return {
       api_key: apiKeys,
       app_name: appName,
@@ -79,7 +81,7 @@ export const PlatformDetails = ({ handleStepChange }: FormStepProps) => {
   };
 
   const setStates = (states: any) => {
-    const { app_name, shortcode, api_key, phone } = states;
+    const { api_key, app_name, phone, shortcode } = states;
 
     setAppName(app_name);
     setShortcode(shortcode);

@@ -70,7 +70,9 @@ export const RegistrationForm = () => {
       case 2:
         return <PaymentDetails handleStepChange={handleStepChange} />;
       case 3:
-        return <SigningAuthority handleStepChange={handleStepChange} />;
+        return (
+          <SigningAuthority openReachOutToUs={setDialogOpen} handleStepChange={handleStepChange} />
+        );
     }
   };
 

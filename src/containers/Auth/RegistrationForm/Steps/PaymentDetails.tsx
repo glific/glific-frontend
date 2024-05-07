@@ -12,18 +12,18 @@ export const PaymentDetails = ({ handleStepChange }: FormStepProps) => {
   const [paymentType, setPaymentType] = useState<string>('yearly');
   const [name, setName] = useState<string>('');
   const [designation, setDesignation] = useState<string>('');
-  const [phoneNumber, setPhoneNumber] = useState<string>('');
+  const [phone, setPhone] = useState<string>('');
   const [email, setEmail] = useState<string>('');
 
   const FormSchema = Yup.object().shape({
     name: Yup.string().required(t('This Field is required.')),
     designation: Yup.string().required(t('This Field is required.')),
-    phoneNumber: Yup.string()
+    phone: Yup.string()
       .required(t('This Field is required.'))
       .length(10, 'Enter a valid phone number.'),
     email: Yup.string().required(t('This Field is required.')).email('Enter a valid email.'),
   });
-  const initialFormValues: any = { name, designation, phoneNumber, email };
+  const initialFormValues: any = { name, designation, phone, email };
 
   const formFields = [
     {
@@ -53,7 +53,7 @@ export const PaymentDetails = ({ handleStepChange }: FormStepProps) => {
     },
     {
       component: Input,
-      name: 'phoneNumber',
+      name: 'phone',
       type: 'text',
       inputLabel: 'Phone Number',
       placeholder: 'Enter 10-digit phone number.',
@@ -79,10 +79,10 @@ export const PaymentDetails = ({ handleStepChange }: FormStepProps) => {
   };
 
   const setStates = (states: any) => {
-    const { name, designation, phoneNumber, email, paymentType } = states;
+    const { name, designation, phone, email, paymentType } = states;
     setName(name);
     setDesignation(designation);
-    setPhoneNumber(phoneNumber);
+    setPhone(phone);
     setEmail(email);
     setPaymentType(paymentType);
   };
