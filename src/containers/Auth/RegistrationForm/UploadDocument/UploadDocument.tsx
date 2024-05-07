@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, Typography } from '@mui/material';
+import { Button, FormHelperText, Typography } from '@mui/material';
 
 import styles from './UploadDocument.module.css';
 import UploadIcon from 'assets/images/icons/UploadIcon.svg?react';
@@ -8,13 +8,23 @@ import { slicedString } from 'common/utils';
 interface UploadDocumentProps {
   inputLabel: string;
   helperText: string;
+  setFile: Function;
+  form: { dirty: any; touched: any; errors: any; setFieldValue: any };
+  field: any;
 }
 
-export const UploadDocument = ({ inputLabel, helperText }: UploadDocumentProps) => {
+export const UploadDocument = ({
+  inputLabel,
+  helperText,
+  setFile,
+  form,
+  field,
+}: UploadDocumentProps) => {
   const [fileName, setFileName] = useState<null | string>(null);
   // const [attachmentUrl, setAttachmentUrl] = useState<null | string>(null);
   const [errors, setErrors] = useState<string>('');
   const [loading, setLoading] = useState(false);
+  console.log(form && form.errors[field.name]);
 
   const addAttachment = (event: any) => {
     const media = event.target.files[0];
@@ -23,16 +33,10 @@ export const UploadDocument = ({ inputLabel, helperText }: UploadDocumentProps) 
       const mediaName = media.name;
       console.log(media);
 
-      const extension = mediaName.slice((Math.max(0, mediaName.lastIndexOf('.')) || Infinity) + 1);
       const shortenedName = slicedString(mediaName, 15);
       setFileName(shortenedName);
       setLoading(true);
-      console.log({
-        variables: {
-          media,
-          extension,
-        },
-      });
+      form.setFieldValue('registration_docs', media);
     }
   };
 
@@ -69,9 +73,11 @@ export const UploadDocument = ({ inputLabel, helperText }: UploadDocumentProps) 
               addAttachment(event);
             }}
           />
-          {errors}
         </div>
       </Button>
+      {form && form.errors[field.name] && form.touched[field.name] ? (
+        <FormHelperText className={styles.DangerText}>{form.errors[field.name]}</FormHelperText>
+      ) : null}{' '}
     </div>
   );
 };

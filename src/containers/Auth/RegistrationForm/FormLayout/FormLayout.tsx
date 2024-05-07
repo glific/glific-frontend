@@ -27,6 +27,7 @@ interface FormLayoutProps {
   apiUrl?: any;
   identifier: string;
   handleStepChange: Function;
+  setToken?: Function;
 }
 
 export const FormLayout = ({
@@ -76,19 +77,27 @@ export const FormLayout = ({
   }, []);
 
   const saveHandler = (itemData: any) => {
+    console.log(itemData);
+
     const payload = setPayload(itemData);
     saveData(payload, identifier);
 
     if (apiUrl) {
-      axios.post(apiUrl, payload).then(({ data }: { data: any }) => {
-        setLoading(false);
+      axios
+        .post(apiUrl, payload, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
+        .then(({ data }: { data: any }) => {
+          setLoading(false);
 
-        if (data.is_valid) {
-          saveData(data, 'registrationDetails');
-        } else {
-          return;
-        }
-      });
+          if (data.is_valid) {
+            saveData(data, 'registrationDetails');
+          } else {
+            return;
+          }
+        });
     }
 
     handleStepChange();
@@ -123,100 +132,105 @@ export const FormLayout = ({
         saveHandler(itemData);
       }}
     >
-      {({ errors, submitForm, setFieldValue, values }) => (
-        <Form className={styles.Form} data-testid="formLayout">
-          <div className={styles.FormFields}>
-            {formFieldItems.map((field, index) => {
-              const key = index;
+      {({ errors, submitForm, setFieldValue, values }) => {
+        return (
+          <Form className={styles.Form} data-testid="formLayout">
+            <div className={styles.FormFields}>
+              {formFieldItems.map((field, index) => {
+                const key = index;
 
-              if (field.children) {
-                return (
-                  <div className={styles.FormSection} key={key}>
-                    <Typography
-                      data-testid="formLabel"
-                      variant="h5"
-                      className={styles.SectionHeading}
-                    >
-                      {field.label}
-                    </Typography>
-                    <div className={styles.FormFields}>
-                      {field.children.map((child: any, i: number) => {
-                        return (
-                          <div className={child.additionalStyles} key={i}>
-                            {child.label && (
-                              <Typography
-                                data-testid="formLabel"
-                                variant="h5"
-                                className={styles.FieldLabel}
-                              >
-                                {child.label}
-                              </Typography>
-                            )}
-                            <Field key={i} {...child} onSubmit={submitForm} />
-                          </div>
-                        );
-                      })}
+                if (field.children) {
+                  return (
+                    <div className={styles.FormSection} key={key}>
+                      <Typography
+                        data-testid="formLabel"
+                        variant="h5"
+                        className={styles.SectionHeading}
+                      >
+                        {field.label}
+                      </Typography>
+                      <div className={styles.FormFields}>
+                        {field.children.map((child: any, i: number) => {
+                          return (
+                            <div className={child.additionalStyles} key={i}>
+                              {child.label && (
+                                <Typography
+                                  data-testid="formLabel"
+                                  variant="h5"
+                                  className={styles.FieldLabel}
+                                >
+                                  {child.label}
+                                </Typography>
+                              )}
+                              <Field key={i} {...child} onSubmit={submitForm} />
+                            </div>
+                          );
+                        })}
+                      </div>
                     </div>
+                  );
+                }
+
+                return (
+                  <div key={key} className={field.additionalStyles}>
+                    {field.label && (
+                      <Typography
+                        data-testid="formLabel"
+                        variant="h5"
+                        className={styles.FieldLabel}
+                      >
+                        {field.label}
+                      </Typography>
+                    )}
+                    <Field key={key} {...field} onSubmit={submitForm} />
                   </div>
                 );
-              }
+              })}
+            </div>
 
-              return (
-                <div key={key} className={field.additionalStyles}>
-                  {field.label && (
-                    <Typography data-testid="formLabel" variant="h5" className={styles.FieldLabel}>
-                      {field.label}
-                    </Typography>
-                  )}
-                  <Field key={key} {...field} onSubmit={submitForm} />
-                </div>
-              );
-            })}
-          </div>
+            <div
+              className={`${styles.Buttons} ${buttonState.align === 'right' && styles.RightButton}`}
+            >
+              {identifier === 'orgDetails' ? (
+                <Captcha
+                  component={Button}
+                  variant="contained"
+                  color="primary"
+                  onClick={submitForm}
+                  className={styles.Button}
+                  data-testid="submitActionButton"
+                  loading={loading}
+                  onTokenUpdate={(token: string) => {
+                    console.log(token);
+                    setFieldValue('token', token);
+                  }}
+                  // disabled={!values.captcha}
+                  action="register"
+                >
+                  Next
+                </Captcha>
+              ) : (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => {
+                    onSaveButtonClick(errors);
+                    submitForm();
+                  }}
+                  className={styles.Button}
+                  data-testid="submitActionButton"
+                  loading={loading}
+                  disabled={buttonState.status}
+                >
+                  {buttonState.text ? buttonState.text : 'Next'}
+                </Button>
+              )}
 
-          <div
-            className={`${styles.Buttons} ${buttonState.align === 'right' && styles.RightButton}`}
-          >
-            {identifier === 'orgDetails' ? (
-              <Captcha
-                component={Button}
-                variant="contained"
-                color="primary"
-                onClick={submitForm}
-                className={styles.Button}
-                data-testid="submitActionButton"
-                loading={loading}
-                onTokenUpdate={(token: string) => {
-                  console.log(token);
-
-                  setFieldValue('token', token);
-                }}
-                // disabled={!values.captcha}
-                action="register"
-              >
-                Next
-              </Captcha>
-            ) : (
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => {
-                  onSaveButtonClick(errors);
-                  submitForm();
-                }}
-                className={styles.Button}
-                data-testid="submitActionButton"
-                loading={loading}
-                disabled={buttonState.status}
-              >
-                {buttonState.text ? buttonState.text : 'Next'}
-              </Button>
-            )}
-
-            <p className={styles.OkButtonHelperText}>{okButtonHelperText}</p>
-          </div>
-        </Form>
-      )}
+              <p className={styles.OkButtonHelperText}>{okButtonHelperText}</p>
+            </div>
+          </Form>
+        );
+      }}
     </Formik>
   );
 

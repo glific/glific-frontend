@@ -26,9 +26,16 @@ export const OrgDetails = ({ handleStepChange }: FormStepProps) => {
     gstNumber: Yup.string().required(t('This Field is required.')).length(15, 'Invalid gst number'),
     registeredAddress: Yup.string().required(t('This Field is required.')).max(300),
     currentAddress: Yup.string().required(t('This Field is required.')).max(300),
+    registration_docs: Yup.mixed().required(t('This Field is required.')),
   });
 
-  const initialFormValues: any = { orgName, gstNumber, registeredAddress, currentAddress };
+  const initialFormValues: any = {
+    orgName,
+    gstNumber,
+    registeredAddress,
+    currentAddress,
+    token,
+  };
 
   const formFields = [
     {
@@ -73,22 +80,25 @@ export const OrgDetails = ({ handleStepChange }: FormStepProps) => {
   ];
 
   const setPayload = (payload: any) => {
-    console.log(payload);
-
-    const { orgName, gstNumber, registeredAddress, currentAddress, token } = payload;
+    const { orgName, gstNumber, registeredAddress, currentAddress, registration_docs, token } =
+      payload;
     let updatedPayload;
     const registrationData = localStorage.getItem('registrationData');
     if (registrationData) {
       const data = JSON.parse(registrationData);
       updatedPayload = {
         ...data.platformDetails,
-        token: token,
+        token,
         name: orgName,
         gstin: gstNumber,
         registered_address: registeredAddress,
         current_address: currentAddress,
+        registration_docs,
       };
     }
+
+    console.log(updatedPayload);
+
     return updatedPayload;
   };
 
@@ -113,6 +123,7 @@ export const OrgDetails = ({ handleStepChange }: FormStepProps) => {
       apiUrl={ONBOARD_URL_SETUP}
       identifier="orgDetails"
       handleStepChange={handleStepChange}
+      // setToken={setToken}
     />
   );
 };

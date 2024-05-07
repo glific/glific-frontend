@@ -34,6 +34,7 @@ export const PaymentDetails = ({ handleStepChange }: FormStepProps) => {
           name: 'paymentOption',
           handleOnChange: (value: any) => setPaymentType(value),
           paymentType: paymentType,
+          additionalStyles: styles.FullWidth,
         },
       ],
     },
