@@ -1,5 +1,5 @@
 import { Field, Form, Formik } from 'formik';
-import { Fragment, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import styles from './FormLayout.module.css';
 import { Typography } from '@mui/material';
@@ -68,7 +68,6 @@ export const FormLayout = ({
 
   useEffect(() => {
     const registrationData = localStorage.getItem('registrationData');
-    // console.log(registrationData);
 
     if (registrationData) {
       const data = JSON.parse(registrationData);
@@ -77,12 +76,12 @@ export const FormLayout = ({
   }, []);
 
   const saveHandler = (itemData: any) => {
-    console.log(itemData);
-
     const payload = setPayload(itemData);
     saveData(payload, identifier);
 
     if (apiUrl) {
+      console.log(payload);
+
       axios
         .post(apiUrl, payload, {
           headers: {
@@ -201,7 +200,6 @@ export const FormLayout = ({
                   data-testid="submitActionButton"
                   loading={loading}
                   onTokenUpdate={(token: string) => {
-                    console.log(token);
                     setFieldValue('token', token);
                   }}
                   // disabled={!values.captcha}

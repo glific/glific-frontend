@@ -129,7 +129,6 @@ export const SigningAuthority = ({ handleStepChange, openReachOutToUs }: FormSte
   const setPayload = (payload: any) => {
     const data = localStorage.getItem('registrationData');
     let registrationData;
-    console.log(payload);
 
     let updatedPayload = payload;
     if (data) {
@@ -160,7 +159,6 @@ export const SigningAuthority = ({ handleStepChange, openReachOutToUs }: FormSte
   };
 
   const setStates = (states: any) => {
-    console.log(states);
     const {
       submitterName,
       submitterEmail,

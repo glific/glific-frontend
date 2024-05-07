@@ -1,7 +1,6 @@
 import { Dialog } from '@mui/material';
 
 import styles from './TermsAndConditions.module.css';
-import { useTranslation } from 'react-i18next';
 import { Button } from 'components/UI/Form/Button/Button';
 
 interface TermsAndConditionsProps {
@@ -17,8 +16,6 @@ export const TermsAndConditions = ({
   setTermsAgreed,
   openReachOutToUs,
 }: TermsAndConditionsProps) => {
-  const { t } = useTranslation();
-
   const handleClose = () => {
     setOpen(false);
   };

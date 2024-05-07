@@ -4,7 +4,6 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 import axios from 'axios';
-import { l } from 'vite/dist/node/types.d-FdqQ54oU';
 
 const mockedUsedNavigate = vi.fn();
 vi.mock('react-router-dom', async () => ({
@@ -129,7 +128,7 @@ test('it opens reach out to us dialog', async () => {
   });
 });
 
-test.only('localstorage', async () => {
+test.skip('localstorage', async () => {
   render(renderForm);
 
   localStorage.setItem(

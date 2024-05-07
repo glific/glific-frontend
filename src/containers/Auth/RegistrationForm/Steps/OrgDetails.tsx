@@ -97,8 +97,6 @@ export const OrgDetails = ({ handleStepChange }: FormStepProps) => {
       };
     }
 
-    console.log(updatedPayload);
-
     return updatedPayload;
   };
 

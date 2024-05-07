@@ -24,14 +24,12 @@ export const UploadDocument = ({
   // const [attachmentUrl, setAttachmentUrl] = useState<null | string>(null);
   const [errors, setErrors] = useState<string>('');
   const [loading, setLoading] = useState(false);
-  console.log(form && form.errors[field.name]);
 
   const addAttachment = (event: any) => {
     const media = event.target.files[0];
 
     if (media) {
       const mediaName = media.name;
-      console.log(media);
 
       const shortenedName = slicedString(mediaName, 15);
       setFileName(shortenedName);
