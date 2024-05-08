@@ -50,7 +50,7 @@ test('shows errors for invalid file', async () => {
 
   fireEvent.change(screen.getByTestId('uploadFile'), {
     target: {
-      files: [mockFile('application/pdf', 1700000)],
+      files: [mockFile('application/pdf', 21000000)],
     },
   });
 
