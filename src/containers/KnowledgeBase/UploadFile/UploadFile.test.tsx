@@ -55,7 +55,7 @@ test('shows errors for invalid file', async () => {
   });
 
   await waitFor(() => {
-    expect(screen.getAllByText('File size should be less than 1MB')[0]).toBeInTheDocument();
+    expect(screen.getAllByText('File size should be less than 20MB')[0]).toBeInTheDocument();
   });
 
   fireEvent.change(screen.getByTestId('uploadFile'), {
