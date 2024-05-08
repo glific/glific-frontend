@@ -5,6 +5,7 @@ import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { RECAPTCHA_CLIENT_KEY } from 'config';
 import { RegistrationHome } from 'containers/Auth/RegistrationForm/Registration/RegistrationHome';
+import { Success } from 'containers/Auth/Registration/Success/Success';
 
 export const UnauthenticatedRoute = () => {
   const location = useLocation();

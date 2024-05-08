@@ -4,6 +4,7 @@
   background-color: #e9f4ee;
   display: flex;
   padding: 48px 56px;
+  position: relative;
 }
 
 .LeftContainer {
@@ -60,4 +61,16 @@
   background-color: #fff;
   border-radius: 20px;
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  z-index: 999;
+}
+
+.Hide {
+  display: none;
+}
+
+.FullWidth {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
 }

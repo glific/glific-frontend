@@ -6,6 +6,8 @@ import { FormLayout } from '../FormLayout/FormLayout';
 import { Input } from 'components/UI/Form/Input/Input';
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
+import axios from 'axios';
+import { ONBOARD_URL_REACT_OUT } from 'config';
 
 interface ReachOutToUsProps {
   open: boolean;
@@ -20,6 +22,7 @@ export const ReachOutToUs = ({ open, setOpen, handleStepChange, saveData }: Reac
   const [name, setName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [message, setMessage] = useState<string>('');
+  const [loading, setLoading] = useState(false);
 
   const handleClose = () => {
     setOpen(false);
@@ -70,6 +73,26 @@ export const ReachOutToUs = ({ open, setOpen, handleStepChange, saveData }: Reac
     setMessage(message);
   };
 
+  const handleSubmit = async (payload: any, setErrors: Function) => {
+    setLoading(true);
+    await axios
+      .post(ONBOARD_URL_REACT_OUT, payload, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then(({ data }) => {
+        setLoading(false);
+
+        if (data.is_valid) {
+          return true;
+        } else {
+          setErrors(data.messages);
+          return false;
+        }
+      });
+  };
+
   return (
     <Dialog
       classes={{
@@ -97,6 +120,7 @@ export const ReachOutToUs = ({ open, setOpen, handleStepChange, saveData }: Reac
         identifier="reachOutToUs"
         handleStepChange={handleStepChange}
         saveData={saveData}
+        submitData={handleSubmit}
       />
     </Dialog>
   );

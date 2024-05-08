@@ -12,15 +12,15 @@ import InfoIcon from 'assets/images/info.svg?react';
 import axios from 'axios';
 import { ONBOARD_URL_SETUP } from 'config';
 
-export const PlatformDetails = ({ handleStepChange, saveData, setErrorOpen }: FormStepProps) => {
+export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) => {
   const { t } = useTranslation();
   const [name, setOrgName] = useState<string>('');
   const [app_name, setAppName] = useState<string>('');
   const [api_key, setApiKeys] = useState<string>('');
   const [shortcode, setShortcode] = useState<string>('');
   const [phone, setPhone] = useState<string>('');
-  const [isDisabled, setIsDisabled] = useState(false);
 
+  const [isDisabled, setIsDisabled] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const FormSchema = Yup.object().shape({
@@ -102,9 +102,7 @@ export const PlatformDetails = ({ handleStepChange, saveData, setErrorOpen }: Fo
       inputLabel: 'Gupshup API keys',
       placeholder: 'Enter the api keys',
       inputLabelSubtext: (
-        <span className={styles.SubText}>
-          (<a>Click here</a> to get the API keys)
-        </span>
+        <span className={styles.SubText}>(Click here to get the API keys) {apiTooltip}</span>
       ),
       disabled: isDisabled,
     },
@@ -115,9 +113,7 @@ export const PlatformDetails = ({ handleStepChange, saveData, setErrorOpen }: Fo
       inputLabel: 'URL shortcode',
       placeholder: 'Atleast 7-8 characters',
       inputLabelSubtext: (
-        <span className={styles.SubText}>
-          (Name you want to give your Glific platform){appNameTooltip}
-        </span>
+        <span className={styles.SubText}>(Name you want to give your Glific platform)</span>
       ),
       disabled: isDisabled,
     },
@@ -207,6 +203,8 @@ export const PlatformDetails = ({ handleStepChange, saveData, setErrorOpen }: Fo
       saveData={saveData}
       loading={loading}
       submitData={handleSubmit}
+      showModal={true}
+      isDisabled={isDisabled}
     />
   );
 };

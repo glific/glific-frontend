@@ -1,34 +1,34 @@
-import { Dialog } from '@mui/material';
+import { Checkbox, Dialog, FormControlLabel } from '@mui/material';
 
 import styles from './TermsAndConditions.module.css';
 import { Button } from 'components/UI/Form/Button/Button';
+import { useState } from 'react';
 
 interface TermsAndConditionsProps {
-  open: boolean;
-  setOpen: Function;
-  setTermsAgreed: Function;
   openReachOutToUs?: Function;
+  field: any;
+  form: { dirty: any; touched: any; errors: any; setFieldValue: any; values: any };
 }
 
 export const TermsAndConditions = ({
-  open,
-  setOpen,
-  setTermsAgreed,
   openReachOutToUs,
+  field,
+  form: { setFieldValue },
 }: TermsAndConditionsProps) => {
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const [dialogOpen, setDialogOpen] = useState(false);
+  console.log(field);
 
-  return (
+  const { terms_agreed, support_staff_account } = field.value;
+
+  const dialog = (
     <Dialog
       classes={{
         paper: styles.DialogboxPaper,
       }}
       maxWidth="lg"
       fullWidth={true}
-      open={open}
-      onClose={handleClose}
+      open={dialogOpen}
+      onClose={() => setDialogOpen(false)}
     >
       <div className={styles.Container}>
         <h1 className={styles.Heading}>Terms and conditions</h1>
@@ -40,6 +40,10 @@ export const TermsAndConditions = ({
             variant="outlined"
             color="primary"
             onClick={() => {
+              setFieldValue('permissions', {
+                terms_agreed: false,
+                support_staff_account,
+              });
               if (openReachOutToUs) openReachOutToUs(true);
             }}
           >
@@ -50,8 +54,11 @@ export const TermsAndConditions = ({
             color="primary"
             data-testid="previewButton"
             onClick={() => {
-              setTermsAgreed(true);
-              setOpen(false);
+              setFieldValue('permissions', {
+                terms_agreed: true,
+                support_staff_account,
+              });
+              setDialogOpen(false);
             }}
           >
             I Agree
@@ -59,5 +66,61 @@ export const TermsAndConditions = ({
         </div>
       </div>
     </Dialog>
+  );
+
+  const handleChange = () => {};
+
+  return (
+    <div>
+      <FormControlLabel
+        control={
+          <Checkbox
+            data-testid="checkboxLabel"
+            {...field}
+            color="primary"
+            checked={terms_agreed || false}
+            onChange={() => setDialogOpen(true)}
+          />
+        }
+        labelPlacement="end"
+        label={
+          <span>
+            I agree to{' '}
+            <span onClick={() => setDialogOpen(true)} className={styles.TermsAndConditions}>
+              Glific Terms & conditions
+            </span>
+          </span>
+        }
+        classes={{
+          label: styles.Label,
+          root: styles.Root,
+        }}
+      />
+
+      <FormControlLabel
+        control={
+          <Checkbox
+            data-testid="checkboxLabel"
+            {...field}
+            color="primary"
+            checked={support_staff_account || false}
+            onChange={(value) => {
+              setFieldValue('permissions', {
+                terms_agreed,
+                support_staff_account: value.target.checked,
+              });
+            }}
+          />
+        }
+        labelPlacement="end"
+        label={'I agree to let the Glific team create a support staff account on my Glific setup'}
+        classes={{
+          label: styles.Label,
+          root: styles.Root,
+        }}
+      />
+
+      {dialogOpen && dialog}
+    </div>
   );
 };

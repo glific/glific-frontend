@@ -5,7 +5,6 @@ import { FormLayout } from '../FormLayout/FormLayout';
 import { useState } from 'react';
 import { FormStepProps } from './OrgDetails';
 import { ONBOARD_URL_UPDATE } from 'config';
-import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import styles from '../FormLayout/FormLayout.module.css';
 import { TermsAndConditions } from '../TermsAndConditions/TermsAndCondition';
 import axios from 'axios';
@@ -14,7 +13,6 @@ export const SigningAuthority = ({
   handleStepChange,
   openReachOutToUs,
   saveData,
-  setErrorOpen,
 }: FormStepProps) => {
   const { t } = useTranslation();
   const [submitterName, setSubmitterName] = useState<string>('');
@@ -23,10 +21,10 @@ export const SigningAuthority = ({
   const [signingAuthorityDesignation, setSigningAuthorityDesignation] = useState<string>('');
   const [signingAuthorityEmail, setSigningAuthorityEmail] = useState<string>('');
 
-  const [terms_agreed, setTermsAgreed] = useState<boolean>(false);
-  const [support_staff_account, setSupportStaffAccount] = useState<boolean>(false);
-
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [permissions, setPermissions] = useState({
+    terms_agreed: false,
+    support_staff_account: false,
+  });
 
   const [loading, setLoading] = useState(false);
 
@@ -40,12 +38,6 @@ export const SigningAuthority = ({
     signingAuthorityEmail: Yup.string()
       .required(t('This Field is required.'))
       .email('Enter a valid email.'),
-    terms_agreed: Yup.boolean()
-      .oneOf([true], 'Please agree to the terms and conditions or contact us   .')
-      .required(),
-    support_staff_account: Yup.boolean()
-      .oneOf([true], 'Please agree to creation or support staff account.')
-      .required(),
   });
 
   const initialFormValues: any = {
@@ -54,8 +46,7 @@ export const SigningAuthority = ({
     signingAuthorityName,
     signingAuthorityDesignation,
     signingAuthorityEmail,
-    terms_agreed,
-    support_staff_account,
+    permissions,
   };
 
   const formFields = [
@@ -105,31 +96,10 @@ export const SigningAuthority = ({
       ],
     },
     {
-      label: '',
-      children: [
-        {
-          component: Checkbox,
-          name: 'terms_agreed',
-          title: (
-            <span>
-              I agree to{' '}
-              <span onClick={() => setDialogOpen(true)} className={styles.TermsAndConditions}>
-                Glific Terms & conditions
-              </span>
-            </span>
-          ),
-          darkCheckbox: true,
-          additionalStyles: styles.FullWidth,
-          // handleChange: (value: any) => value && setDialogOpen(true),
-        },
-        {
-          component: Checkbox,
-          name: 'support_staff_account',
-          title: 'I agree to let the Glific team create a support staff account on my Glific setup',
-          additionalStyles: styles.FullWidth,
-          darkCheckbox: true,
-        },
-      ],
+      component: TermsAndConditions,
+      openReachOutToUs: openReachOutToUs,
+      name: 'permissions',
+      additionalStyles: styles.FullWidth,
     },
   ];
 
@@ -148,8 +118,11 @@ export const SigningAuthority = ({
           designation: payload.signingAuthorityDesignation,
           email: payload.signingAuthorityEmail,
         },
+        terms_agreed: payload.permissions.terms_agreed,
+        support_staff_account: payload.permissions.support_staff_account,
         registration_id: registrationData.registration_details.registration_id,
         org_id: registrationData.registration_details.org_id,
+
         has_submitted: true,
       };
 
@@ -164,8 +137,7 @@ export const SigningAuthority = ({
       signingAuthorityName,
       signingAuthorityDesignation,
       signingAuthorityEmail,
-      support_staff_account,
-      terms_agreed,
+      permissions,
     } = states;
 
     setSubmitterName(submitterName);
@@ -173,8 +145,7 @@ export const SigningAuthority = ({
     setSigningAuthorityName(signingAuthorityName);
     setSigningAuthorityDesignation(signingAuthorityDesignation);
     setSigningAuthorityEmail(signingAuthorityEmail);
-    setTermsAgreed(terms_agreed);
-    setSupportStaffAccount(support_staff_account);
+    setPermissions(permissions);
   };
 
   const handleSubmit = async (payload: any, setErrors: any) => {
@@ -198,30 +169,20 @@ export const SigningAuthority = ({
   };
 
   return (
-    <>
-      <FormLayout
-        validationSchema={FormSchema}
-        formFieldItems={formFields}
-        initialValues={initialFormValues}
-        step={4}
-        title="Submitter & Signing authority details"
-        helperText="Details and information of the applicant and concerned signing authority of the organization"
-        setStates={setStates}
-        setPayload={setPayload}
-        identifier="submitterDetails"
-        handleStepChange={handleStepChange}
-        saveData={saveData}
-        loading={loading}
-        submitData={handleSubmit}
-      />
-      {dialogOpen && (
-        <TermsAndConditions
-          openReachOutToUs={openReachOutToUs}
-          open={dialogOpen}
-          setOpen={setDialogOpen}
-          setTermsAgreed={setTermsAgreed}
-        />
-      )}
-    </>
+    <FormLayout
+      validationSchema={FormSchema}
+      formFieldItems={formFields}
+      initialValues={initialFormValues}
+      step={4}
+      title="Submitter & Signing authority details"
+      helperText="Details and information of the applicant and concerned signing authority of the organization"
+      setStates={setStates}
+      setPayload={setPayload}
+      identifier="submitterDetails"
+      handleStepChange={handleStepChange}
+      saveData={saveData}
+      loading={loading}
+      submitData={handleSubmit}
+    />
   );
 };

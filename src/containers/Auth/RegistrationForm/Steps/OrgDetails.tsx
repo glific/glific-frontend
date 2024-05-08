@@ -11,11 +11,10 @@ import axios from 'axios';
 export interface FormStepProps {
   handleStepChange: Function;
   openReachOutToUs?: Function;
-  setErrorOpen?: Function;
   saveData: Function;
 }
 
-export const OrgDetails = ({ handleStepChange, setErrorOpen, saveData }: FormStepProps) => {
+export const OrgDetails = ({ handleStepChange, saveData }: FormStepProps) => {
   const { t } = useTranslation();
   const [gstin, setGstNumber] = useState<string>('');
   const [registered_address, setRegisteredAddress] = useState<string>('');

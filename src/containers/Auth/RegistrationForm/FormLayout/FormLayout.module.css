@@ -106,11 +106,11 @@
   margin: 0;
   color: #616161;
   display: flex;
-  align-items: center;
+  align-items: start;
 }
 
-.SubText p {
-  margin: 0;
+.SubText span {
+  margin: 2px 0 0 6px;
 }
 
 .TermsAndConditions {
@@ -138,4 +138,20 @@
 
 .MessageField textarea {
   min-height: 110px;
+}
+
+.Modal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #111111;
+}
+
+.Modal h4,
+.Modal p {
+  margin: 0;
+}
+
+.Modal p {
+  color: #616161;
 }

@@ -9,12 +9,11 @@ import { OrgDetails } from './Steps/OrgDetails';
 import { PaymentDetails } from './Steps/PaymentDetails';
 import { SigningAuthority } from './Steps/SigningAuthority';
 import { ReachOutToUs } from './ReachOutToUs/ReachOutToUs';
-import { ErrorMessage } from '../Registration/ErrorMessage/ErrorMessage';
+import { Success } from '../Registration/Success/Success';
 
 export const RegistrationForm = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [openDialog, setDialogOpen] = useState(false);
-  const [errorOpen, setErrorOpen] = useState<Array<string> | null>(null);
   const navigate = useNavigate();
 
   const steps = [
@@ -39,7 +38,7 @@ export const RegistrationForm = () => {
   const handleStepChange = (forward: boolean = true) => {
     if (activeStep === 0 && !forward) return navigate('/registration');
 
-    if (activeStep === 3 && forward) return navigate('/registration/complete');
+    if (activeStep === 4 && forward) return navigate('/login');
 
     if (forward) setActiveStep(activeStep + 1);
     else setActiveStep(activeStep - 1);
@@ -83,38 +82,27 @@ export const RegistrationForm = () => {
   const getForm = (step: number) => {
     switch (step) {
       case 0:
-        return (
-          <PlatformDetails
-            saveData={saveData}
-            handleStepChange={handleStepChange}
-            setErrorOpen={setErrorOpen}
-          />
-        );
+        return <PlatformDetails saveData={saveData} handleStepChange={handleStepChange} />;
       case 1:
-        return (
-          <OrgDetails
-            saveData={saveData}
-            setErrorOpen={setErrorOpen}
-            handleStepChange={handleStepChange}
-          />
-        );
+        return <OrgDetails saveData={saveData} handleStepChange={handleStepChange} />;
       case 2:
         return <PaymentDetails saveData={saveData} handleStepChange={handleStepChange} />;
       case 3:
         return (
           <SigningAuthority
             saveData={saveData}
-            setErrorOpen={setErrorOpen}
             openReachOutToUs={setDialogOpen}
             handleStepChange={handleStepChange}
           />
         );
+      case 4:
+        return <Success />;
     }
   };
 
   return (
     <div className={styles.Container}>
-      <div className={styles.LeftContainer}>
+      <div className={activeStep === 4 ? styles.Hide : styles.LeftContainer}>
         <div
           onClick={() => {
             handleStepChange(false);
@@ -150,7 +138,9 @@ export const RegistrationForm = () => {
           </div>
         </div>
       </div>
-      <div className={styles.RightContainer}>{getForm(activeStep)}</div>
+      <div className={activeStep === 4 ? styles.FullWidth : styles.RightContainer}>
+        {getForm(activeStep)}
+      </div>
 
       {openDialog && (
         <ReachOutToUs
@@ -161,8 +151,6 @@ export const RegistrationForm = () => {
           saveData={saveData}
         />
       )}
-
-      {errorOpen && <ErrorMessage errors={errorOpen} />}
     </div>
   );
 };

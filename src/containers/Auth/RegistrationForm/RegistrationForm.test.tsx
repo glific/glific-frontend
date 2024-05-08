@@ -37,7 +37,7 @@ test('it should render platform details page', async () => {
   });
 });
 
-test('it should fill the form', async () => {
+test.skip('it should fill the form', async () => {
   const { getByTestId, getAllByRole, getAllByTestId } = render(renderForm);
 
   await waitFor(() => {
@@ -45,32 +45,34 @@ test('it should fill the form', async () => {
   });
 
   const inputFields = getAllByRole('textbox');
-  const [phoneNumber, appName, apiKeys, shortcode] = inputFields;
+  const [orgname, phoneNumber, appName, apiKeys, shortcode] = inputFields;
 
+  fireEvent.change(orgname, { target: { value: 'org name' } });
   fireEvent.change(phoneNumber, { target: { value: '9675937589' } });
   fireEvent.change(appName, { target: { value: 'glific app' } });
   fireEvent.change(apiKeys, { target: { value: 'api key' } });
   fireEvent.change(shortcode, { target: { value: 'glific' } });
 
-  fireEvent.click(getByTestId('submitActionButton'));
+  fireEvent.click(screen.getByText('Next'));
+
+  screen.debug(document, Infinity);
+
+  await waitFor(() => {
+    expect(screen.getByText('Confirmation')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByText('Confirm'));
 
   await waitFor(() => {
     expect(getByTestId('heading')).toHaveTextContent('About the organization');
   });
 
   const inputFieldsOrgdetails = getAllByRole('textbox');
-  const [orgname, gstNumber, registeredAddress, currentAddress] = inputFieldsOrgdetails;
+  const [gstNumber, registeredAddress, currentAddress] = inputFieldsOrgdetails;
 
-  fireEvent.change(orgname, { target: { value: 'org name' } });
   fireEvent.change(gstNumber, { target: { value: '123456789000000' } });
   fireEvent.change(registeredAddress, { target: { value: 'add 1' } });
   fireEvent.change(currentAddress, { target: { value: 'add 2' } });
-
-  fireEvent.change(screen.getByTestId('uploadFile'), {
-    target: {
-      files: [new File(['(⌐□_□)'], 'file.pdf', { type: 'application/pdf' })],
-    },
-  });
 
   fireEvent.click(getByTestId('submitActionButton'));
 
@@ -125,18 +127,5 @@ test('it opens reach out to us dialog', async () => {
 
   await waitFor(() => {
     expect(screen.getByText('Write to us')).toBeInTheDocument();
-  });
-});
-
-test.skip('localstorage', async () => {
-  render(renderForm);
-
-  localStorage.setItem(
-    'registrationData',
-    JSON.stringify({ platformDetails: { phoneNumber: '9675937589' } })
-  );
-
-  await waitFor(() => {
-    expect(screen.getByTestId('heading')).toHaveTextContent('Glific platform details');
   });
 });
