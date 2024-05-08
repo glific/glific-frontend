@@ -6,6 +6,12 @@
   padding: 2rem 4rem;
 }
 
+.TermsAndConditions {
+  color: #4495df;
+  font-weight: bold;
+  cursor: pointer;
+}
+
 .Container {
   display: flex;
   flex-direction: column;

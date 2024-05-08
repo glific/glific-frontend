@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import axios from 'axios';
 import { ONBOARD_URL_REACT_OUT } from 'config';
+import { useNavigate } from 'react-router';
 
 interface ReachOutToUsProps {
   open: boolean;
@@ -23,6 +24,7 @@ export const ReachOutToUs = ({ open, setOpen, handleStepChange, saveData }: Reac
   const [email, setEmail] = useState<string>('');
   const [message, setMessage] = useState<string>('');
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleClose = () => {
     setOpen(false);
@@ -85,6 +87,7 @@ export const ReachOutToUs = ({ open, setOpen, handleStepChange, saveData }: Reac
         setLoading(false);
 
         if (data.is_valid) {
+          navigate('/login');
           return true;
         } else {
           setErrors(data.messages);
