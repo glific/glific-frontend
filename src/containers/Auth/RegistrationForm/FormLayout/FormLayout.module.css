@@ -5,6 +5,13 @@
   flex-direction: column;
 }
 
+.FormContainer form {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
 .Header {
   display: flex;
   flex-direction: column;
@@ -50,11 +57,19 @@
   justify-content: space-between;
 }
 
+.FormFieldContainer {
+  height: 70%;
+  overflow-y: scroll;
+}
+
 .Buttons {
   width: 100%;
   display: flex;
   flex-direction: column;
   margin: 1rem 0;
+  height: 20%;
+  justify-content: end;
+  align-items: end;
 }
 
 .RightButton {
@@ -90,9 +105,37 @@
   padding: 0;
   margin: 0;
   color: #616161;
+  display: flex;
+  align-items: center;
+}
+
+.SubText p {
+  margin: 0;
 }
 
 .TermsAndConditions {
   color: #4495df;
   font-weight: bold;
+}
+
+.InfoIcon {
+  height: 18px;
+  width: 18px;
+  cursor: pointer;
+}
+
+.Tooltip {
+  border-radius: 5px;
+}
+
+.Tooltip a {
+  color: #4495df;
+}
+
+.TooltipArrow {
+  color: inherit !important;
+}
+
+.MessageField textarea {
+  min-height: 110px;
 }

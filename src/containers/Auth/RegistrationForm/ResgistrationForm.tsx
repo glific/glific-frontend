@@ -67,7 +67,6 @@ export const RegistrationForm = () => {
         ...JSON.parse(existingData),
         ...data,
       };
-      console.log(data);
     }
 
     localStorage.setItem('registrationData', JSON.stringify(data));
@@ -84,7 +83,13 @@ export const RegistrationForm = () => {
   const getForm = (step: number) => {
     switch (step) {
       case 0:
-        return <PlatformDetails saveData={saveData} handleStepChange={handleStepChange} />;
+        return (
+          <PlatformDetails
+            saveData={saveData}
+            handleStepChange={handleStepChange}
+            setErrorOpen={setErrorOpen}
+          />
+        );
       case 1:
         return (
           <OrgDetails

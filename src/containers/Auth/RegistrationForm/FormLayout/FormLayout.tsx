@@ -1,5 +1,5 @@
 import { Field, Form, Formik } from 'formik';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import styles from './FormLayout.module.css';
 import { Typography } from '@mui/material';
@@ -50,6 +50,7 @@ export const FormLayout = ({
   loading,
 }: FormLayoutProps) => {
   const navigate = useNavigate();
+  const [saveClick, onSaveClick] = useState(false);
 
   useEffect(() => {
     const registrationData = localStorage.getItem('registrationData');
@@ -60,19 +61,14 @@ export const FormLayout = ({
     }
   }, []);
 
-  const saveHandler = async (itemData: any, setFieldValue: Function) => {
+  const saveHandler = async (itemData: any, setErrors: Function) => {
     const payload = setPayload(itemData);
     saveData(payload, identifier);
 
     if (submitData) {
-      await submitData(payload).then((data: any) => {
-        if (identifier === 'orgDetails') {
-          console.log(data);
-          handleStepChange();
-        } else {
-          navigate('/login');
-        }
-      });
+      console.log(payload);
+
+      await submitData(payload, setErrors);
     } else handleStepChange();
   };
 
@@ -85,7 +81,12 @@ export const FormLayout = ({
       <div className={styles.HelperText}>{helperText}</div>
     </div>
   );
-
+  const onSaveButtonClick = (errors: any) => {
+    if (Object.keys(errors).length > 0) {
+      return;
+    }
+    onSaveClick(true);
+  };
   const form = (
     <Formik
       enableReinitialize
@@ -95,69 +96,73 @@ export const FormLayout = ({
       }}
       validationSchema={validationSchema}
       onSubmit={(itemData, { setErrors }) => {
+        console.log(itemData);
+
         saveHandler(itemData, setErrors);
       }}
     >
       {({ errors, submitForm, setFieldValue, values }) => {
         return (
           <Form className={styles.Form} data-testid="formLayout">
-            <div className={styles.FormFields}>
-              {formFieldItems.map((field, index) => {
-                const key = index;
+            <div className={styles.FormFieldContainer}>
+              <div className={styles.FormFields}>
+                {formFieldItems.map((field, index) => {
+                  const key = index;
 
-                if (field.children) {
-                  return (
-                    <div className={styles.FormSection} key={key}>
-                      <Typography
-                        data-testid="formLabel"
-                        variant="h5"
-                        className={styles.SectionHeading}
-                      >
-                        {field.label}
-                      </Typography>
-                      <div className={styles.FormFields}>
-                        {field.children.map((child: any, i: number) => {
-                          return (
-                            <div className={child.additionalStyles} key={i}>
-                              {child.label && (
-                                <Typography
-                                  data-testid="formLabel"
-                                  variant="h5"
-                                  className={styles.FieldLabel}
-                                >
-                                  {child.label}
-                                </Typography>
-                              )}
-                              <Field key={i} {...child} onSubmit={submitForm} />
-                            </div>
-                          );
-                        })}
+                  if (field.children) {
+                    return (
+                      <div className={styles.FormSection} key={key}>
+                        <Typography
+                          data-testid="formLabel"
+                          variant="h5"
+                          className={styles.SectionHeading}
+                        >
+                          {field.label}
+                        </Typography>
+                        <div className={styles.FormFields}>
+                          {field.children.map((child: any, i: number) => {
+                            return (
+                              <div className={child.additionalStyles} key={i}>
+                                {child.label && (
+                                  <Typography
+                                    data-testid="formLabel"
+                                    variant="h5"
+                                    className={styles.FieldLabel}
+                                  >
+                                    {child.label}
+                                  </Typography>
+                                )}
+                                <Field key={i} {...child} onSubmit={submitForm} />
+                              </div>
+                            );
+                          })}
+                        </div>
                       </div>
+                    );
+                  }
+
+                  return (
+                    <div key={key} className={field.additionalStyles}>
+                      {field.label && (
+                        <Typography
+                          data-testid="formLabel"
+                          variant="h5"
+                          className={styles.FieldLabel}
+                        >
+                          {field.label}
+                        </Typography>
+                      )}
+                      <Field key={key} {...field} onSubmit={submitForm} />
                     </div>
                   );
-                }
-
-                return (
-                  <div key={key} className={field.additionalStyles}>
-                    {field.label && (
-                      <Typography
-                        data-testid="formLabel"
-                        variant="h5"
-                        className={styles.FieldLabel}
-                      >
-                        {field.label}
-                      </Typography>
-                    )}
-                    <Field key={key} {...field} onSubmit={submitForm} />
-                  </div>
-                );
-              })}
+                })}
+              </div>
             </div>
 
             <div
               className={`${styles.Buttons} ${buttonState.align === 'right' && styles.RightButton}`}
             >
-              {identifier === 'orgDetails' ? (
+              {identifier === 'platformDetails' ? (
                 <Captcha
                   component={Button}
                   variant="contained"
@@ -178,9 +183,7 @@ export const FormLayout = ({
                   variant="contained"
                   color="primary"
                   onClick={() => {
-                    if (Object.keys(errors).length > 0) {
-                      return;
-                    }
+                    onSaveButtonClick(errors);
                     submitForm();
                   }}
                   className={styles.Button}

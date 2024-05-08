@@ -17,6 +17,7 @@ export interface InputProps {
   placeholder: string;
   form: { touched: any; errors: any; setFieldValue: any };
   inputLabel?: string | null;
+  disabled?: boolean;
 }
 
 export const PhoneInput = ({
@@ -30,6 +31,7 @@ export const PhoneInput = ({
   },
   placeholder,
   inputLabel = null,
+  disabled = false,
 }: InputProps) => {
   const errorText = getIn(errors, field.name);
   const touchedVal = getIn(touched, field.name);
@@ -44,6 +46,7 @@ export const PhoneInput = ({
           </Typography>
         )}
         <ReactPhoneInput
+          disabled={disabled}
           containerClass={styles.Container}
           inputClass={styles.PhoneNumber}
           data-testid="phoneNumber"

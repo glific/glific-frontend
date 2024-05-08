@@ -40,14 +40,12 @@ export const SigningAuthority = ({
     signingAuthorityEmail: Yup.string()
       .required(t('This Field is required.'))
       .email('Enter a valid email.'),
-    terms_agreed: Yup.boolean().oneOf(
-      [true],
-      'Please agree to the terms and conditions or contact us   .'
-    ),
-    support_staff_account: Yup.boolean().oneOf(
-      [true],
-      'Please agree to creation or support staff account.'
-    ),
+    terms_agreed: Yup.boolean()
+      .oneOf([true], 'Please agree to the terms and conditions or contact us   .')
+      .required(),
+    support_staff_account: Yup.boolean()
+      .oneOf([true], 'Please agree to creation or support staff account.')
+      .required(),
   });
 
   const initialFormValues: any = {
@@ -115,11 +113,14 @@ export const SigningAuthority = ({
           title: (
             <span>
               I agree to{' '}
-              <span className={styles.TermsAndConditions}>Glific Terms & conditions</span>
+              <span onClick={() => setDialogOpen(true)} className={styles.TermsAndConditions}>
+                Glific Terms & conditions
+              </span>
             </span>
           ),
           darkCheckbox: true,
           additionalStyles: styles.FullWidth,
+          // handleChange: (value: any) => value && setDialogOpen(true),
         },
         {
           component: Checkbox,
@@ -134,28 +135,10 @@ export const SigningAuthority = ({
 
   const setPayload = (payload: any) => {
     const data = localStorage.getItem('registrationData');
-    let registrationData;
-    const {
-      submitterName,
-      submitterEmail,
-      signingAuthorityName,
-      signingAuthorityDesignation,
-      terms_agreed,
-      support_staff_account,
-    } = payload;
-
-    let updatedPayload = payload;
     if (data) {
-      console.log(payload);
+      let registrationData = JSON.parse(data);
 
-      registrationData = JSON.parse(data);
-      updatedPayload = {
-        finance_poc: {
-          name: registrationData.payemntDetails.name,
-          email: registrationData.payemntDetails.email,
-          designation: registrationData.payemntDetails.designation,
-          phone: registrationData.payemntDetails.phone,
-        },
+      const updatedPayload = {
         submitter: {
           name: payload.submitterName,
           email: payload.submitterEmail,
@@ -165,15 +148,13 @@ export const SigningAuthority = ({
           designation: payload.signingAuthorityDesignation,
           email: payload.signingAuthorityEmail,
         },
+        registration_id: registrationData.registration_details.registration_id,
+        org_id: registrationData.registration_details.org_id,
         has_submitted: true,
-        billing_frequency: registrationData.payemntDetails.billing_frequency,
-        terms_agreed: payload.terms_agreed,
-        support_staff_account: payload.support_staff_account,
-        ...registrationData.registration_details,
       };
-    }
 
-    return updatedPayload;
+      return updatedPayload;
+    }
   };
 
   const setStates = (states: any) => {
@@ -196,27 +177,22 @@ export const SigningAuthority = ({
     setSupportStaffAccount(support_staff_account);
   };
 
-  const handleSubmit = async (payload: any) => {
+  const handleSubmit = async (payload: any, setErrors: any) => {
     setLoading(true);
+
     await axios
       .post(ONBOARD_URL_UPDATE, payload, {
         headers: {
-          'Content-Type': 'application/json ',
+          'Content-Type': 'multipart/form-data',
         },
       })
       .then(({ data }) => {
         setLoading(false);
-
         if (data.is_valid) {
-          return data;
+          handleStepChange();
+          localStorage.removeItem('registrationData');
         } else {
-          const errors = Object.keys(data.messages).map((key) => {
-            return data.messages[key];
-          });
-
-          if (setErrorOpen) setErrorOpen(errors);
-
-          saveData(data.messages, 'errors');
+          setErrors(data.messages);
         }
       });
   };
