@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import styles from './Success.module.css';
 
 import Check from 'assets/images/Check.svg';
-import Circles from 'assets/images/Circles.png';
+// import Circles from 'assets/images/Circles.png';
 
 export const Success = () => {
   const date = dayjs().format('MMM, DD YYYY');

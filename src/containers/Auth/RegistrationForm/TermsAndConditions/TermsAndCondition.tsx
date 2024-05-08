@@ -32,8 +32,6 @@ export const TermsAndConditions = ({
       onClose={() => setDialogOpen(false)}
     >
       <div className={styles.Container}>
-        {/* <h1 className={styles.Heading}>Terms and conditions</h1> */}
-
         <div className={styles.TermsAndCondition}>
           <TermsAndConditionsText />
         </div>
@@ -70,8 +68,6 @@ export const TermsAndConditions = ({
       </div>
     </Dialog>
   );
-
-  const handleChange = () => {};
 
   return (
     <div>
