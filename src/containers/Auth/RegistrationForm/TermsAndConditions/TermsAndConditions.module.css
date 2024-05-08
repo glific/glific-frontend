@@ -10,22 +10,24 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  align-items: center;
+  /* align-items: center; */
   width: 100%;
   height: 100%;
-  row-gap: 20px;
+  /* row-gap: 12px; */
 }
 
 .Heading {
-  color: #111111;
+  color: #119656;
   font-size: 24px;
   margin: 0;
 }
 
 .TermsAndCondition {
   height: 100%;
+  max-height: 480px;
   width: 100%;
-  background-color: #ededed;
+  /* background-color: #ededed; */
+  /* padding: 1rem; */
 }
 
 .Buttons button {
@@ -40,4 +42,33 @@
   display: flex;
   justify-content: space-between;
   width: 100%;
+}
+
+.Main {
+  max-height: 100%;
+  width: 100%;
+  overflow-y: scroll;
+  font-size: 15px;
+}
+
+.Main h5 {
+  margin: 0;
+  /* text-align: center; */
+  font-size: 16px;
+}
+
+.Main ul {
+  padding-left: 15px;
+}
+
+.Main ol {
+  padding-left: 18px;
+}
+
+.Main ul li {
+  margin-top: 1rem 0;
+}
+
+.Main ol li {
+  margin: 1rem 0;
 }

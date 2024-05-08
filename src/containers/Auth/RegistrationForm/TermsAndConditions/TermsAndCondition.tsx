@@ -3,6 +3,7 @@ import { Checkbox, Dialog, FormControlLabel } from '@mui/material';
 import styles from './TermsAndConditions.module.css';
 import { Button } from 'components/UI/Form/Button/Button';
 import { useState } from 'react';
+import { TermsAndConditionsText } from './TermsAndConditionsText';
 
 interface TermsAndConditionsProps {
   openReachOutToUs?: Function;
@@ -31,9 +32,11 @@ export const TermsAndConditions = ({
       onClose={() => setDialogOpen(false)}
     >
       <div className={styles.Container}>
-        <h1 className={styles.Heading}>Terms and conditions</h1>
+        {/* <h1 className={styles.Heading}>Terms and conditions</h1> */}
 
-        <div className={styles.TermsAndCondition}></div>
+        <div className={styles.TermsAndCondition}>
+          <TermsAndConditionsText />
+        </div>
 
         <div className={styles.Buttons}>
           <Button
