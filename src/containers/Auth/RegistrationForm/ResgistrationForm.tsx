@@ -77,7 +77,7 @@ export const RegistrationForm = () => {
     const existingData = localStorage.getItem('registrationData');
     if (existingData) {
       const data = JSON.parse(existingData);
-      setActiveStep(data.activeStep + 1 || 0);
+      setActiveStep(data.activeStep || 0);
     }
   }, []);
 

@@ -120,7 +120,6 @@ export const SigningAuthority = ({
           ),
           darkCheckbox: true,
           additionalStyles: styles.FullWidth,
-          handleChange: () => setDialogOpen(true),
         },
         {
           component: Checkbox,
@@ -128,7 +127,6 @@ export const SigningAuthority = ({
           title: 'I agree to let the Glific team create a support staff account on my Glific setup',
           additionalStyles: styles.FullWidth,
           darkCheckbox: true,
-          handleChange: () => setSupportStaffAccount(true),
         },
       ],
     },
@@ -137,6 +135,14 @@ export const SigningAuthority = ({
   const setPayload = (payload: any) => {
     const data = localStorage.getItem('registrationData');
     let registrationData;
+    const {
+      submitterName,
+      submitterEmail,
+      signingAuthorityName,
+      signingAuthorityDesignation,
+      terms_agreed,
+      support_staff_account,
+    } = payload;
 
     let updatedPayload = payload;
     if (data) {
@@ -177,6 +183,8 @@ export const SigningAuthority = ({
       signingAuthorityName,
       signingAuthorityDesignation,
       signingAuthorityEmail,
+      support_staff_account,
+      terms_agreed,
     } = states;
 
     setSubmitterName(submitterName);
@@ -184,6 +192,8 @@ export const SigningAuthority = ({
     setSigningAuthorityName(signingAuthorityName);
     setSigningAuthorityDesignation(signingAuthorityDesignation);
     setSigningAuthorityEmail(signingAuthorityEmail);
+    setTermsAgreed(terms_agreed);
+    setSupportStaffAccount(support_staff_account);
   };
 
   const handleSubmit = async (payload: any) => {
@@ -224,8 +234,6 @@ export const SigningAuthority = ({
         setPayload={setPayload}
         identifier="submitterDetails"
         handleStepChange={handleStepChange}
-        headers={{ 'Content-Type': 'application/json' }}
-        apiUrl={ONBOARD_URL_UPDATE}
         saveData={saveData}
         loading={loading}
         submitData={handleSubmit}

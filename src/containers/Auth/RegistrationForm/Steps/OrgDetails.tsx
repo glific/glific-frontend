@@ -147,11 +147,8 @@ export const OrgDetails = ({ handleStepChange, setErrorOpen, saveData }: FormSte
       helperText="Note : To be filled by the signing authority of your organization."
       setStates={setStates}
       setPayload={setPayload}
-      apiUrl={ONBOARD_URL_SETUP}
-      headers={{ 'Content-Type': 'multipart/form-data' }}
       identifier="orgDetails"
       handleStepChange={handleStepChange}
-      setErrorOpen={setErrorOpen}
       submitData={handleSubmit}
       saveData={saveData}
     />

@@ -1,5 +1,5 @@
 import { Field, Form, Formik } from 'formik';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 import styles from './FormLayout.module.css';
 import { Typography } from '@mui/material';
@@ -24,12 +24,8 @@ interface FormLayoutProps {
   setPayload: Function;
   showStep?: boolean;
   okButtonHelperText?: string;
-  apiUrl?: any;
   identifier: string;
   handleStepChange: Function;
-  setToken?: Function;
-  headers?: any;
-  setErrorOpen?: Function;
   submitData?: Function;
   saveData: Function;
   loading?: boolean;
@@ -53,7 +49,6 @@ export const FormLayout = ({
   saveData,
   loading,
 }: FormLayoutProps) => {
-  const [customErrors, setCustomErrors] = useState();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -78,9 +73,7 @@ export const FormLayout = ({
           navigate('/login');
         }
       });
-    } else {
-      handleStepChange();
-    }
+    } else handleStepChange();
   };
 
   const header = (
