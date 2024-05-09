@@ -241,24 +241,24 @@ export const TermsAndConditionsText = () => {
               it/ you solely for the purposes set forth in these Glific SaaS Terms and Conditions
               and will return or destroy such Confidential Information forthwith after the Services
               are discontinued under these Glific SaaS Terms and Conditions.
-              <li>
-                Notwithstanding anything else set out in these Glific SaaS Terms and Conditions,
-                information and materials shall not be deemed confidential if such information and
-                material (a) become publicly available through no wrongful act or breach of any
-                obligation of confidentiality on the receiving party’s part, or (b) are, at the time
-                of disclosure, lawfully known to the receiving party without restriction on
-                disclosure, or (c) are required to be disclosed by applicable law or (d) the
-                Disclosing Party hereby grants explicit consent to the Receiving Party to disclose
-                the information provided under this agreement.
-              </li>
-              <li>
-                We agree to not retain any copies of the Customer Data after you terminate the
-                Services availed from the Company and agree to remove and delete all copies of
-                Customer Data from its servers and computers as soon as reasonably practicable upon
-                such termination. The Company and you agree that the terms contained in this
-                paragraph 8 (Data) of the Glific SaaS Terms and Conditions will be applicable on the
-                Company and you in the event the Services are terminated.
-              </li>
+            </li>
+            <li>
+              Notwithstanding anything else set out in these Glific SaaS Terms and Conditions,
+              information and materials shall not be deemed confidential if such information and
+              material (a) become publicly available through no wrongful act or breach of any
+              obligation of confidentiality on the receiving party’s part, or (b) are, at the time
+              of disclosure, lawfully known to the receiving party without restriction on
+              disclosure, or (c) are required to be disclosed by applicable law or (d) the
+              Disclosing Party hereby grants explicit consent to the Receiving Party to disclose the
+              information provided under this agreement.
+            </li>
+            <li>
+              We agree to not retain any copies of the Customer Data after you terminate the
+              Services availed from the Company and agree to remove and delete all copies of
+              Customer Data from its servers and computers as soon as reasonably practicable upon
+              such termination. The Company and you agree that the terms contained in this paragraph
+              8 (Data) of the Glific SaaS Terms and Conditions will be applicable on the Company and
+              you in the event the Services are terminated.
             </li>
           </ul>
         </li>
