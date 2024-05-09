@@ -4,6 +4,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 import axios from 'axios';
+import { get } from 'http';
 
 const mockedUsedNavigate = vi.fn();
 vi.mock('react-router-dom', async () => ({
@@ -45,25 +46,38 @@ test('it should render platform details page', async () => {
   });
 });
 
-test.skip('it should fill the form', async () => {
-  const { getByTestId, getAllByRole, getAllByTestId } = render(renderForm);
+test('it opens reach out to us dialog', async () => {
+  render(renderForm);
+
+  await waitFor(() => {
+    expect(screen.getByText('Reach out here')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByText('Reach out here'));
+
+  await waitFor(() => {
+    expect(screen.getByText('Write to us')).toBeInTheDocument();
+  });
+});
+
+test('it should submit the form', async () => {
+  const { getByTestId, getAllByRole, getAllByTestId, getByText } = render(renderForm);
 
   await waitFor(() => {
     expect(getByTestId('heading')).toHaveTextContent('Glific platform details');
   });
 
-  const inputFields = getAllByRole('textbox');
-  const [orgname, phoneNumber, appName, apiKeys, shortcode] = inputFields;
+  const inputFieldsPlatformDetails = getAllByRole('textbox');
 
-  fireEvent.change(orgname, { target: { value: 'org name' } });
-  fireEvent.change(phoneNumber, { target: { value: '9675937589' } });
-  fireEvent.change(appName, { target: { value: 'glific app' } });
-  fireEvent.change(apiKeys, { target: { value: 'api key' } });
+  const [orgName, phoneNumber, appName, apiKey, shortcode] = inputFieldsPlatformDetails;
+
+  fireEvent.change(orgName, { target: { value: 'org name' } });
+  fireEvent.change(phoneNumber, { target: { value: '7834811114' } });
+  fireEvent.change(appName, { target: { value: 'app name' } });
+  fireEvent.change(apiKey, { target: { value: 'api-key' } });
   fireEvent.change(shortcode, { target: { value: 'glific' } });
 
-  fireEvent.click(screen.getByText('Next'));
-
-  screen.debug(document, Infinity);
+  fireEvent.click(getByTestId('submitActionButton'));
 
   await waitFor(() => {
     expect(screen.getByText('Confirmation')).toBeInTheDocument();
@@ -76,11 +90,12 @@ test.skip('it should fill the form', async () => {
   });
 
   const inputFieldsOrgdetails = getAllByRole('textbox');
-  const [gstNumber, registeredAddress, currentAddress] = inputFieldsOrgdetails;
 
-  fireEvent.change(gstNumber, { target: { value: '123456789000000' } });
-  fireEvent.change(registeredAddress, { target: { value: 'add 1' } });
-  fireEvent.change(currentAddress, { target: { value: 'add 2' } });
+  const [registeredAddress, currentAddress, gstin] = inputFieldsOrgdetails;
+
+  fireEvent.change(registeredAddress, { target: { value: 'address' } });
+  fireEvent.change(currentAddress, { target: { value: 'current address' } });
+  fireEvent.change(gstin, { target: { value: '123456789012345' } });
 
   fireEvent.click(getByTestId('submitActionButton'));
 
@@ -115,25 +130,27 @@ test.skip('it should fill the form', async () => {
   ] = inputFieldssigningdetails;
 
   fireEvent.change(submitterName, { target: { value: 'Default submitter name' } });
-  fireEvent.change(submitterEmail, { target: { value: 'submitter' } });
+  fireEvent.change(submitterEmail, { target: { value: 'submitter@email.com' } });
 
   fireEvent.change(signingAuthorityName, { target: { value: 'Default signing authority name' } });
   fireEvent.change(signingAuthorityDesignation, { target: { value: 'signing authority' } });
   fireEvent.change(signingAuthorityEmail, { target: { value: 'signing@email.com' } });
 
-  fireEvent.click(getByTestId('submitActionButton'));
-});
+  const checkboxes = getAllByRole('checkbox');
 
-test('it opens reach out to us dialog', async () => {
-  render(renderForm);
+  fireEvent.click(checkboxes[0]);
 
   await waitFor(() => {
-    expect(screen.getByText('Reach out here')).toBeInTheDocument();
+    expect(screen.getByText('Terms and conditions')).toBeInTheDocument();
   });
 
-  fireEvent.click(screen.getByText('Reach out here'));
+  fireEvent.click(screen.getByText('I Agree'));
+
+  fireEvent.click(checkboxes[1]);
+
+  fireEvent.click(getByTestId('submitActionButton'));
 
   await waitFor(() => {
-    expect(screen.getByText('Write to us')).toBeInTheDocument();
+    expect(getByText('Success!')).toBeInTheDocument();
   });
 });

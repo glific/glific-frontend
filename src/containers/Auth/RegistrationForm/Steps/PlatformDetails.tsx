@@ -147,7 +147,6 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
             },
             'registration_details'
           );
-          console.log('yes');
 
           handleStepChange();
 

@@ -72,8 +72,6 @@ export const FormLayout = ({
     validationSchema,
     enableReinitialize: true,
     onSubmit: (values, { setErrors }) => {
-      console.log(identifier, showModal);
-
       if (showModal && !isDisabled) setIsModalOpen(true);
       else saveHandler(values, setErrors);
     },

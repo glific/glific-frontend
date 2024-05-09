@@ -36,8 +36,6 @@ export const RegistrationForm = () => {
   ];
 
   const handleStepChange = (forward: boolean = true) => {
-    console.log('activeStep', activeStep, forward);
-
     if (activeStep === 0 && !forward) return navigate('/organization-registration');
 
     if (activeStep === 4 && forward) return navigate('/login');
