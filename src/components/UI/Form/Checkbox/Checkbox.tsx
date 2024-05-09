@@ -70,9 +70,6 @@ export const Checkbox = ({
           onClick={() => handleInfoClick()}
         />
       )}
-      {form && form.errors[field.name] && form.touched[field.name] ? (
-        <FormHelperText className={styles.DangerText}>{form.errors[field.name]}</FormHelperText>
-      ) : null}
     </div>
   );
 };

@@ -176,6 +176,8 @@ export const FormLayout = ({
             variant="contained"
             color="primary"
             onClick={() => {
+              console.log(formik.errors);
+
               onSaveButtonClick(formik.errors);
               formik.submitForm();
             }}

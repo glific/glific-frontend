@@ -71,6 +71,8 @@ export const RegistrationHome = () => {
             variant="contained"
             color="primary"
             onClick={() => {
+              console.log('fff');
+
               navigate('/organization-registration/setup');
             }}
             className={styles.Button}

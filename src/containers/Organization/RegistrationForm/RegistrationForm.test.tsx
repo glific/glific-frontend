@@ -58,7 +58,7 @@ test('it opens and closes dialog box', async () => {
   });
 });
 
-test('it sends message to support', async () => {
+test('it sends email to support', async () => {
   render(renderForm);
 
   await waitFor(() => {
@@ -156,6 +156,8 @@ test('it should submit the form', async () => {
   fireEvent.change(signingAuthorityName, { target: { value: 'Default signing authority name' } });
   fireEvent.change(signingAuthorityDesignation, { target: { value: 'signing authority' } });
   fireEvent.change(signingAuthorityEmail, { target: { value: 'signing@email.com' } });
+
+  fireEvent.click(getByTestId('submitActionButton'));
 
   const checkboxes = getAllByRole('checkbox');
   fireEvent.click(checkboxes[0]);
