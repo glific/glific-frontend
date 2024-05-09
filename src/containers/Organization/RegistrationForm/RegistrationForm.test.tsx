@@ -1,5 +1,5 @@
 import { MemoryRouter } from 'react-router';
-import RegistrationForm from './ResgistrationForm';
+import RegistrationForm from './RegistrationForm';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
@@ -158,7 +158,9 @@ test('it should submit the form', async () => {
   fireEvent.change(signingAuthorityEmail, { target: { value: 'signing@email.com' } });
 
   const checkboxes = getAllByRole('checkbox');
+  fireEvent.click(checkboxes[0]);
 
+  fireEvent.keyDown(screen.getByText('Terms and conditions'), { key: 'Escape', code: 'excape' });
   fireEvent.click(checkboxes[0]);
 
   await waitFor(() => {
@@ -173,5 +175,41 @@ test('it should submit the form', async () => {
 
   await waitFor(() => {
     expect(getByText('Success!')).toBeInTheDocument();
+  });
+});
+
+test('it should navigate back', async () => {
+  const { getByTestId, getAllByRole } = render(renderForm);
+
+  await waitFor(() => {
+    expect(getByTestId('heading')).toHaveTextContent('Glific platform details');
+  });
+
+  const inputFieldsPlatformDetails = getAllByRole('textbox');
+
+  const [orgName, phoneNumber, appName, apiKey, shortcode] = inputFieldsPlatformDetails;
+
+  fireEvent.change(orgName, { target: { value: 'org name' } });
+  fireEvent.change(phoneNumber, { target: { value: '7834811114' } });
+  fireEvent.change(appName, { target: { value: 'app name' } });
+  fireEvent.change(apiKey, { target: { value: 'api-key' } });
+  fireEvent.change(shortcode, { target: { value: 'glific' } });
+
+  fireEvent.click(getByTestId('submitActionButton'));
+
+  await waitFor(() => {
+    expect(screen.getByText('Confirmation')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByText('Confirm'));
+
+  await waitFor(() => {
+    expect(getByTestId('heading')).toHaveTextContent('About the organization');
+  });
+
+  fireEvent.click(getByTestId('back-button'));
+
+  await waitFor(() => {
+    expect(getByTestId('heading')).toHaveTextContent('Glific platform details');
   });
 });

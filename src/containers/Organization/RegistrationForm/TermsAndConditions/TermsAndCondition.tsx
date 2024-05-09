@@ -19,7 +19,6 @@ export const TermsAndConditions = ({
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const { terms_agreed, support_staff_account } = field.value;
-  console.log(errors);
 
   const dialog = (
     <Dialog

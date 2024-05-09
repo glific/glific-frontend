@@ -16,12 +16,11 @@ export const UnauthenticatedRoute = () => {
     () => import('containers/Auth/ResetPassword/ResetPasswordConfirmOTP')
   );
   const OrganizationRegistration = lazy(
-    () => import('containers/Organization/RegistrationForm/ResgistrationForm')
+    () => import('containers/Organization/RegistrationForm/RegistrationForm')
   );
   const OrganizationRegistrationHome = lazy(
     () => import('containers/Organization/RegistrationForm/Registration/RegistrationHome')
   );
-  // const OrganizationRegistration = lazy(() => import('containers/Organization/RouteSetupSteps'));
 
   return (
     <Suspense fallback={<Loading />}>

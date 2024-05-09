@@ -111,7 +111,6 @@ export const DialogBox = ({
   if (alignButtons === 'center') {
     dialogActionStyle = styles.DialogActionsCenter;
   }
-
   return (
     <Dialog
       slotProps={{
