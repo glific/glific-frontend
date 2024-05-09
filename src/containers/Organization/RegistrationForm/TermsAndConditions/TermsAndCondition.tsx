@@ -14,7 +14,7 @@ interface TermsAndConditionsProps {
 export const TermsAndConditions = ({
   openReachOutToUs,
   field,
-  form: { setFieldValue, errors },
+  form: { setFieldValue, errors, touched },
 }: TermsAndConditionsProps) => {
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -94,7 +94,7 @@ export const TermsAndConditions = ({
           root: styles.Root,
         }}
       />
-      {errors && errors.permissions && errors.permissions.terms_agreed && (
+      {touched.permissions && errors?.permissions?.terms_agreed && (
         <p className={styles.Error}>{errors.permissions.terms_agreed}</p>
       )}
 
@@ -121,7 +121,7 @@ export const TermsAndConditions = ({
         }}
       />
 
-      {errors && errors.permissions && errors.permissions.support_staff_account && (
+      {touched.permissions && errors?.permissions?.support_staff_account && (
         <p className={styles.Error}>{errors.permissions.support_staff_account}</p>
       )}
 
