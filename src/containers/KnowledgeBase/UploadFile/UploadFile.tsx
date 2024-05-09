@@ -64,8 +64,8 @@ export const UploadFile = ({ setFile, setCategory }: UploadFileProps) => {
   const addFile = (event: any) => {
     const media = event.target.files[0];
     if (media) {
-      if (media.size / 1000000 > 1) {
-        setErrors('File size should be less than 1MB');
+      if (media.size / 1000000 > 20) {
+        setErrors('File size should be less than 20MB');
         return;
       } else if (media.type !== 'application/pdf') {
         setErrors('File type should be PDF');
@@ -137,7 +137,7 @@ export const UploadFile = ({ setFile, setCategory }: UploadFileProps) => {
           </p>
           <p className={styles.HelperText}>
             Please upload a single page PDF. <br />
-            Size should not exceed 1MB.
+            Size should not exceed 20MB.
           </p>
         </div>
       </Form>

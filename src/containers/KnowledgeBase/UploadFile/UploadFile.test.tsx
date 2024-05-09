@@ -50,12 +50,12 @@ test('shows errors for invalid file', async () => {
 
   fireEvent.change(screen.getByTestId('uploadFile'), {
     target: {
-      files: [mockFile('application/pdf', 1700000)],
+      files: [mockFile('application/pdf', 21000000)],
     },
   });
 
   await waitFor(() => {
-    expect(screen.getAllByText('File size should be less than 1MB')[0]).toBeInTheDocument();
+    expect(screen.getAllByText('File size should be less than 20MB')[0]).toBeInTheDocument();
   });
 
   fireEvent.change(screen.getByTestId('uploadFile'), {
