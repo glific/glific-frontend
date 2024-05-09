@@ -17,7 +17,6 @@ export const TermsAndConditions = ({
   form: { setFieldValue },
 }: TermsAndConditionsProps) => {
   const [dialogOpen, setDialogOpen] = useState(false);
-  console.log(field);
 
   const { terms_agreed, support_staff_account } = field.value;
 

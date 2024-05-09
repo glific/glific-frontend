@@ -29,14 +29,12 @@ export const SigningAuthority = ({
   const [loading, setLoading] = useState(false);
 
   const FormSchema = Yup.object().shape({
-    submitterName: Yup.string().required(t('This Field is required.')),
-    submitterEmail: Yup.string()
-      .required(t('This Field is required.'))
-      .email('Enter a valid email.'),
-    signingAuthorityName: Yup.string().required(t('This Field is required.')),
-    signingAuthorityDesignation: Yup.string().required(t('This Field is required.')),
+    submitterName: Yup.string().required(t('Name is required.')),
+    submitterEmail: Yup.string().required('Email is required.').email('Enter a valid email.'),
+    signingAuthorityName: Yup.string().required('Name is required.'),
+    signingAuthorityDesignation: Yup.string().required('Designation is required.'),
     signingAuthorityEmail: Yup.string()
-      .required(t('This Field is required.'))
+      .required(t('Email is required.'))
       .email('Enter a valid email.'),
   });
 
@@ -58,14 +56,12 @@ export const SigningAuthority = ({
           name: 'submitterName',
           type: 'text',
           inputLabel: 'Name',
-          placeholder: 'Enter full name.',
         },
         {
           component: Input,
           name: 'submitterEmail',
           type: 'text',
           inputLabel: 'Email address',
-          placeholder: 'Enter your email address.',
         },
       ],
     },
@@ -77,21 +73,18 @@ export const SigningAuthority = ({
           name: 'signingAuthorityName',
           type: 'text',
           inputLabel: 'Name',
-          placeholder: 'Enter full name.',
         },
         {
           component: Input,
           name: 'signingAuthorityDesignation',
           type: 'text',
           inputLabel: 'Designation',
-          placeholder: 'Enter your designation',
         },
         {
           component: Input,
           name: 'signingAuthorityEmail',
           type: 'text',
           inputLabel: 'Email address',
-          placeholder: 'Enter your email address.',
         },
       ],
     },

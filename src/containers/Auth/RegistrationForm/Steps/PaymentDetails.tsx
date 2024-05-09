@@ -20,12 +20,12 @@ export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) =>
   const [loading, setLoading] = useState(false);
 
   const FormSchema = Yup.object().shape({
-    name: Yup.string().required(t('This Field is required.')),
-    designation: Yup.string().required(t('This Field is required.')),
+    name: Yup.string().required('Name is required.'),
+    designation: Yup.string().required('Designation is required.'),
     phone: Yup.string()
-      .required(t('This Field is required.'))
+      .required('Phone number is required.')
       .length(10, 'Enter a valid phone number.'),
-    email: Yup.string().required(t('This Field is required.')).email('Enter a valid email.'),
+    email: Yup.string().required(t('Email is required.')).email('Enter a valid email.'),
   });
   const initialFormValues: any = { name, designation, phone, email, billing_frequency };
 
@@ -47,28 +47,24 @@ export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) =>
       name: 'name',
       type: 'text',
       inputLabel: 'Name',
-      placeholder: 'Enter full name.',
     },
     {
       component: Input,
       name: 'designation',
       type: 'text',
       inputLabel: 'Designation',
-      placeholder: 'Enter the designation.',
     },
     {
       component: Input,
       name: 'phone',
       type: 'text',
       inputLabel: 'Phone Number',
-      placeholder: 'Enter 10-digit phone number.',
     },
     {
       component: Input,
       name: 'email',
       type: 'text',
       inputLabel: 'Email address',
-      placeholder: 'Enter your email address.',
       inputLabelSubtext: (
         <span className={styles.SubText}>(Invoice will be sent to this email)</span>
       ),
@@ -105,7 +101,6 @@ export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) =>
 
   const handleSubmit = async (payload: any, setErrors: any) => {
     setLoading(true);
-    console.log(payload);
 
     await axios
       .post(ONBOARD_URL_UPDATE, payload, {

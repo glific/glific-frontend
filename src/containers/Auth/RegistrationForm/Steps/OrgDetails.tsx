@@ -1,5 +1,4 @@
 import { Input } from 'components/UI/Form/Input/Input';
-import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
 import { FormLayout } from '../FormLayout/FormLayout';
 import { useState } from 'react';
@@ -15,7 +14,6 @@ export interface FormStepProps {
 }
 
 export const OrgDetails = ({ handleStepChange, saveData }: FormStepProps) => {
-  const { t } = useTranslation();
   const [gstin, setGstNumber] = useState<string>('');
   const [registered_address, setRegisteredAddress] = useState<string>('');
   const [current_address, setCurrentAddress] = useState<string>('');
@@ -24,8 +22,8 @@ export const OrgDetails = ({ handleStepChange, saveData }: FormStepProps) => {
 
   const FormSchema = Yup.object().shape({
     gstin: Yup.string().length(15, 'Invalid gst number'),
-    registered_address: Yup.string().required(t('This Field is required.')).max(300),
-    current_address: Yup.string().required(t('This Field is required.')).max(300),
+    registered_address: Yup.string().required('Registered address is required.').max(300),
+    current_address: Yup.string().required('Current address is required.').max(300),
   });
 
   const initialFormValues: any = {
@@ -40,7 +38,6 @@ export const OrgDetails = ({ handleStepChange, saveData }: FormStepProps) => {
       name: 'registered_address',
       type: 'text',
       inputLabel: 'Registered address',
-      placeholder: 'Enter the organization’s registered address.',
       textArea: true,
       inputLabelSubtext: <span className={styles.SubText}>(As per your documentation)</span>,
       additionalStyles: styles.MessageField,
@@ -50,7 +47,6 @@ export const OrgDetails = ({ handleStepChange, saveData }: FormStepProps) => {
       name: 'current_address',
       type: 'text',
       inputLabel: 'Current address',
-      placeholder: 'Enter the organization’s current address.',
       textArea: true,
       additionalStyles: styles.MessageField,
     },
@@ -59,7 +55,6 @@ export const OrgDetails = ({ handleStepChange, saveData }: FormStepProps) => {
       name: 'gstin',
       type: 'text',
       inputLabel: 'GSTIN number',
-      placeholder: 'Enter the 15 digit code.',
       inputLabelSubtext: <span className={styles.SubText}>(optional)</span>,
     },
   ];

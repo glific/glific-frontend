@@ -24,11 +24,11 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
   const [loading, setLoading] = useState(false);
 
   const FormSchema = Yup.object().shape({
-    name: Yup.string().required(t('This Field is required.')).max(40),
-    app_name: Yup.string().required(t('This Field is required.')),
-    api_key: Yup.string().required(t('This Field is required.')),
-    shortcode: Yup.string().required(t('This Field is required.')),
-    phone: Yup.string().required(t('This Field is required.')),
+    name: Yup.string().required('Organisation Name is required.').max(40),
+    app_name: Yup.string().required('App name is required.'),
+    api_key: Yup.string().required('API key is required.'),
+    shortcode: Yup.string().required('Shortcode is required.'),
+    phone: Yup.string().required('Phone number is required.'),
   });
 
   const initialFormValues: any = { name, app_name, api_key, shortcode, phone };
@@ -72,14 +72,12 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
       name: 'name',
       type: 'text',
       inputLabel: 'Organization registered name',
-      placeholder: 'Enter the organization name.',
       disabled: isDisabled,
     },
     {
       component: PhoneInput,
       name: 'phone',
       type: 'phone',
-      placeholder: 'New whatsapp chatbot number',
       inputLabel: 'Chatbot number',
       helperText: t('Please enter a phone number.'),
       disabled: isDisabled,
@@ -89,7 +87,6 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
       name: 'app_name',
       type: 'text',
       inputLabel: 'App name',
-      placeholder: 'Enter the bot name',
       inputLabelSubtext: (
         <p className={styles.SubText}>(Name of your bot on Gupshup.){appNameTooltip}</p>
       ),
@@ -100,7 +97,6 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
       name: 'api_key',
       type: 'text',
       inputLabel: 'Gupshup API keys',
-      placeholder: 'Enter the api keys',
       inputLabelSubtext: (
         <span className={styles.SubText}>(Click here to get the API keys) {apiTooltip}</span>
       ),
@@ -111,7 +107,6 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
       name: 'shortcode',
       type: 'text',
       inputLabel: 'URL shortcode',
-      placeholder: 'Atleast 7-8 characters',
       inputLabelSubtext: (
         <span className={styles.SubText}>(Name you want to give your Glific platform)</span>
       ),
@@ -143,11 +138,7 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
       })
       .then(({ data }) => {
         setLoading(false);
-        console.log(data);
-
         if (data.is_valid) {
-          console.log('yes');
-
           saveData(
             {
               registration_id: data.registration_id,
@@ -156,7 +147,6 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
             },
             'registration_details'
           );
-          console.log('yeees');
           handleStepChange();
 
           return true;

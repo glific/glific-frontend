@@ -73,8 +73,6 @@ export const FormLayout = ({
     validationSchema,
     enableReinitialize: true,
     onSubmit: (values, { setErrors }) => {
-      console.log('yes');
-
       if (showModal && !isDisabled) setIsModalOpen(true);
       else saveHandler(values, setErrors);
     },
@@ -181,9 +179,6 @@ export const FormLayout = ({
             variant="contained"
             color="primary"
             onClick={() => {
-              console.log('YAYYY');
-              console.log(formik.errors);
-
               onSaveButtonClick(formik.errors);
               formik.submitForm();
             }}
