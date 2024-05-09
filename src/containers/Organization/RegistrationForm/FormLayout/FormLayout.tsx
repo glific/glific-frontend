@@ -176,6 +176,8 @@ export const FormLayout = ({
             variant="contained"
             color="primary"
             onClick={() => {
+              console.log(formik.errors);
+
               onSaveButtonClick(formik.errors);
               formik.submitForm();
             }}
@@ -188,7 +190,7 @@ export const FormLayout = ({
           </Button>
         )}
 
-        <p className={styles.OkButtonHelperText}>{okButtonHelperText}</p>
+        {okButtonHelperText && <p className={styles.OkButtonHelperText}>{okButtonHelperText}</p>}
       </div>
     </form>
   );

@@ -105,6 +105,7 @@ export const ReachOutToUs = ({ open, setOpen, handleStepChange, saveData }: Reac
       fullWidth={true}
       open={open}
       onClose={handleClose}
+      data-testid="dialogBox"
     >
       <FormLayout
         validationSchema={FormSchema}

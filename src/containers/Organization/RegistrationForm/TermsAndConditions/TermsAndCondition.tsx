@@ -14,11 +14,12 @@ interface TermsAndConditionsProps {
 export const TermsAndConditions = ({
   openReachOutToUs,
   field,
-  form: { setFieldValue },
+  form: { setFieldValue, errors },
 }: TermsAndConditionsProps) => {
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const { terms_agreed, support_staff_account } = field.value;
+  console.log(errors);
 
   const dialog = (
     <Dialog
@@ -94,6 +95,9 @@ export const TermsAndConditions = ({
           root: styles.Root,
         }}
       />
+      {errors && errors.permissions && errors.permissions.terms_agreed && (
+        <p className={styles.Error}>{errors.permissions.terms_agreed}</p>
+      )}
 
       <FormControlLabel
         control={
@@ -117,6 +121,10 @@ export const TermsAndConditions = ({
           root: styles.Root,
         }}
       />
+
+      {errors && errors.permissions && errors.permissions.support_staff_account && (
+        <p className={styles.Error}>{errors.permissions.support_staff_account}</p>
+      )}
 
       {dialogOpen && dialog}
     </div>

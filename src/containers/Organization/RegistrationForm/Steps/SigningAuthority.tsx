@@ -36,6 +36,14 @@ export const SigningAuthority = ({
     signingAuthorityEmail: Yup.string()
       .required(t('Email is required.'))
       .email('Enter a valid email.'),
+    permissions: Yup.object({
+      terms_agreed: Yup.boolean()
+        .oneOf([true], 'Please agree to the terms and conditions.')
+        .required(),
+      support_staff_account: Yup.boolean()
+        .oneOf([true], 'Please agree to the creation a support staff account.')
+        .required(),
+    }),
   });
 
   const initialFormValues: any = {

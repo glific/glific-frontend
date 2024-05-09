@@ -16,10 +16,10 @@ export const UnauthenticatedRoute = () => {
     () => import('containers/Auth/ResetPassword/ResetPasswordConfirmOTP')
   );
   const OrganizationRegistration = lazy(
-    () => import('containers/Auth/RegistrationForm/ResgistrationForm')
+    () => import('containers/Organization/RegistrationForm/ResgistrationForm')
   );
   const OrganizationRegistrationHome = lazy(
-    () => import('containers/Auth/RegistrationForm/Registration/RegistrationHome')
+    () => import('containers/Organization/RegistrationForm/Registration/RegistrationHome')
   );
   // const OrganizationRegistration = lazy(() => import('containers/Organization/RouteSetupSteps'));
 

@@ -10,6 +10,7 @@
   flex-direction: column;
   justify-content: space-between;
   height: 100%;
+  overflow-y: auto;
 }
 
 .Header {
@@ -57,17 +58,15 @@
   justify-content: space-between;
 }
 
-/* .FormFieldContainer {
-  height: 70%;
+.FormFieldContainer {
+  height: 85%;
   overflow-y: scroll;
-} */
+}
 
 .Buttons {
   width: 100%;
   display: flex;
   flex-direction: column;
-  margin: 1rem 0;
-  /* height: 20%; */
   justify-content: end;
   align-items: end;
 }

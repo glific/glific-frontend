@@ -5,12 +5,6 @@ import { MockedProvider } from '@apollo/client/testing';
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 import axios from 'axios';
 
-const mockedUsedNavigate = vi.fn();
-vi.mock('react-router-dom', async () => ({
-  ...(await vi.importActual('react-router-dom')),
-  useNavigate: () => mockedUsedNavigate,
-}));
-
 vi.mock('axios');
 const mockedAxios = axios as any;
 mockedAxios.post.mockResolvedValue({
@@ -19,13 +13,11 @@ mockedAxios.post.mockResolvedValue({
   },
 });
 
-vi.mock('./Captcha', () => {
-  return ({ onTokenUpdate }: any) => {
-    // Call onTokenUpdate immediately with a fake token
-    onTokenUpdate('fake-token');
-    return <button data-testid="submitActionButton">Next</button>;
-  };
-});
+const mockedUsedNavigate = vi.fn();
+vi.mock('react-router-dom', async () => ({
+  ...(await vi.importActual('react-router-dom')),
+  useNavigate: () => mockedUsedNavigate,
+}));
 
 const renderForm = (
   <GoogleReCaptchaProvider reCaptchaKey={'test key'}>
@@ -45,7 +37,28 @@ test('it should render platform details page', async () => {
   });
 });
 
-test('it opens reach out to us dialog', async () => {
+test('it opens and closes dialog box', async () => {
+  render(renderForm);
+
+  await waitFor(() => {
+    expect(screen.getByText('Reach out here')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByText('Reach out here'));
+  const dialogBox = screen.getByTestId('dialogBox');
+
+  await waitFor(() => {
+    expect(dialogBox).toBeInTheDocument();
+  });
+
+  fireEvent.keyDown(dialogBox, { key: 'Escape', code: 'Escape' });
+
+  await waitFor(() => {
+    expect(dialogBox).not.toBeInTheDocument();
+  });
+});
+
+test('it sends message to support', async () => {
   render(renderForm);
 
   await waitFor(() => {
@@ -57,6 +70,15 @@ test('it opens reach out to us dialog', async () => {
   await waitFor(() => {
     expect(screen.getByText('Write to us')).toBeInTheDocument();
   });
+
+  const inputFields = screen.getAllByRole('textbox');
+  const [name, email, message] = inputFields;
+
+  fireEvent.change(name, { target: { value: 'name' } });
+  fireEvent.change(email, { target: { value: 'random@email.com' } });
+  fireEvent.change(message, { target: { value: 'message' } });
+
+  fireEvent.click(screen.getByText('Send'));
 });
 
 test('it should submit the form', async () => {
