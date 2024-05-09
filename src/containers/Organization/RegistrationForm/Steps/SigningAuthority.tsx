@@ -132,21 +132,14 @@ export const SigningAuthority = ({
   };
 
   const setStates = (states: any) => {
-    const {
-      submitterName,
-      submitterEmail,
-      signingAuthorityName,
-      signingAuthorityDesignation,
-      signingAuthorityEmail,
-      permissions,
-    } = states;
+    const { signing_authority, submitter } = states;
 
-    setSubmitterName(submitterName);
-    setSubmitterEmail(submitterEmail);
-    setSigningAuthorityName(signingAuthorityName);
-    setSigningAuthorityDesignation(signingAuthorityDesignation);
-    setSigningAuthorityEmail(signingAuthorityEmail);
-    setPermissions(permissions);
+    setSubmitterName(submitter?.name);
+    setSubmitterEmail(submitter?.email);
+    setSigningAuthorityName(signing_authority?.name);
+    setSigningAuthorityDesignation(signing_authority?.designation);
+    setSigningAuthorityEmail(signing_authority?.email);
+    setPermissions({ support_staff_account: false, terms_agreed: false });
   };
 
   const handleSubmit = async (payload: any, setErrors: any) => {
