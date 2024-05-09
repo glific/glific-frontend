@@ -4,7 +4,6 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 import axios from 'axios';
-import { get } from 'http';
 
 const mockedUsedNavigate = vi.fn();
 vi.mock('react-router-dom', async () => ({
