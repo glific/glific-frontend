@@ -28,7 +28,7 @@
 
 .Header h4 {
   color: #111111;
-  font-size: 28px;
+  font-size: 32px;
   margin: 0;
 }
 
@@ -58,7 +58,7 @@
 }
 
 .Box ul {
-  color: #636363;
+  color: #111111;
   font-size: 14px;
   list-style-position: inside;
   margin: 0 !important;

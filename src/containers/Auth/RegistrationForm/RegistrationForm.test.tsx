@@ -19,10 +19,18 @@ mockedAxios.post.mockResolvedValue({
   },
 });
 
+vi.mock('./Captcha', () => {
+  return ({ onTokenUpdate }: any) => {
+    // Call onTokenUpdate immediately with a fake token
+    onTokenUpdate('fake-token');
+    return <button data-testid="submitActionButton">Next</button>;
+  };
+});
+
 const renderForm = (
-  <GoogleReCaptchaProvider reCaptchaKey="test key">
+  <GoogleReCaptchaProvider reCaptchaKey={'test key'}>
     <MockedProvider>
-      <MemoryRouter initialEntries={[`/registration/setup`]}>
+      <MemoryRouter initialEntries={[`/organization-registration/setup`]}>
         <RegistrationForm />
       </MemoryRouter>
     </MockedProvider>

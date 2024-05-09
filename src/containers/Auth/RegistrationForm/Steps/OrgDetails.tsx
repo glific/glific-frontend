@@ -88,6 +88,8 @@ export const OrgDetails = ({ handleStepChange, saveData }: FormStepProps) => {
   };
 
   const handleSubmit = async (payload: any, setErrors: any) => {
+    console.log('called');
+
     setLoading(true);
     await axios
       .post(ONBOARD_URL_UPDATE, payload, {

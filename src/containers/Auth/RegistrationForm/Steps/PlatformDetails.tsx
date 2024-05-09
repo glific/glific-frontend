@@ -142,11 +142,13 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
           saveData(
             {
               registration_id: data.registration_id,
-              org_id: data.organization.id,
+              org_id: data.organization?.id,
               submitted: true,
             },
             'registration_details'
           );
+          console.log('yes');
+
           handleStepChange();
 
           return true;

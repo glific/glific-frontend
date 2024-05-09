@@ -9,7 +9,7 @@ import { OrgDetails } from './Steps/OrgDetails';
 import { PaymentDetails } from './Steps/PaymentDetails';
 import { SigningAuthority } from './Steps/SigningAuthority';
 import { ReachOutToUs } from './ReachOutToUs/ReachOutToUs';
-import { Success } from '../Registration/Success/Success';
+import { Success } from './Success/Success';
 
 export const RegistrationForm = () => {
   const [activeStep, setActiveStep] = useState(0);
@@ -36,7 +36,9 @@ export const RegistrationForm = () => {
   ];
 
   const handleStepChange = (forward: boolean = true) => {
-    if (activeStep === 0 && !forward) return navigate('/registration');
+    console.log('activeStep', activeStep, forward);
+
+    if (activeStep === 0 && !forward) return navigate('/organization-registration');
 
     if (activeStep === 4 && forward) return navigate('/login');
 

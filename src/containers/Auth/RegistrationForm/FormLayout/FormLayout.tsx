@@ -53,13 +53,12 @@ export const FormLayout = ({
   showModal,
   isDisabled,
 }: FormLayoutProps) => {
-  const [saveClick, onSaveClick] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const saveHandler = async (itemData: any, setErrors: Function) => {
     const payload = setPayload(itemData);
 
-    saveData(payload, identifier);
+    if (identifier !== 'reachOutToUs') saveData(payload, identifier);
 
     if (submitData) {
       await submitData(payload, setErrors);
@@ -73,6 +72,8 @@ export const FormLayout = ({
     validationSchema,
     enableReinitialize: true,
     onSubmit: (values, { setErrors }) => {
+      console.log(identifier, showModal);
+
       if (showModal && !isDisabled) setIsModalOpen(true);
       else saveHandler(values, setErrors);
     },
@@ -101,7 +102,6 @@ export const FormLayout = ({
     if (Object.keys(errors).length > 0) {
       return;
     }
-    onSaveClick(true);
   };
 
   const form = (
@@ -169,7 +169,6 @@ export const FormLayout = ({
             onTokenUpdate={(token: string) => {
               formik.setFieldValue('token', token);
             }}
-            disabled={!formik.values.token}
             action="register"
           >
             Next
@@ -185,7 +184,7 @@ export const FormLayout = ({
             className={styles.Button}
             data-testid="submitActionButton"
             disabled={buttonState.status}
-            loading={loading || saveClick}
+            loading={loading}
           >
             {buttonState.text ? buttonState.text : 'Next'}
           </Button>

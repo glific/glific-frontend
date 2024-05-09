@@ -43,31 +43,36 @@ export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) =>
       ],
     },
     {
-      component: Input,
-      name: 'name',
-      type: 'text',
-      inputLabel: 'Name',
-    },
-    {
-      component: Input,
-      name: 'designation',
-      type: 'text',
-      inputLabel: 'Designation',
-    },
-    {
-      component: Input,
-      name: 'phone',
-      type: 'text',
-      inputLabel: 'Phone Number',
-    },
-    {
-      component: Input,
-      name: 'email',
-      type: 'text',
-      inputLabel: 'Email address',
-      inputLabelSubtext: (
-        <span className={styles.SubText}>(Invoice will be sent to this email)</span>
-      ),
+      label: 'Finance POC Details',
+      children: [
+        {
+          component: Input,
+          name: 'name',
+          type: 'text',
+          inputLabel: 'Name',
+        },
+        {
+          component: Input,
+          name: 'designation',
+          type: 'text',
+          inputLabel: 'Designation',
+        },
+        {
+          component: Input,
+          name: 'phone',
+          type: 'text',
+          inputLabel: 'Phone Number',
+        },
+        {
+          component: Input,
+          name: 'email',
+          type: 'text',
+          inputLabel: 'Email address',
+          inputLabelSubtext: (
+            <span className={styles.SubText}>(Invoice will be sent to this email)</span>
+          ),
+        },
+      ],
     },
   ];
 

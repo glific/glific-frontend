@@ -71,7 +71,7 @@ export const RegistrationHome = () => {
             variant="contained"
             color="primary"
             onClick={() => {
-              navigate('/registration/setup');
+              navigate('/organization-registration/setup');
             }}
             className={styles.Button}
             data-testid="submitActionButton"
@@ -88,3 +88,5 @@ export const RegistrationHome = () => {
     </div>
   );
 };
+
+export default RegistrationHome;

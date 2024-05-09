@@ -11,6 +11,7 @@ export const TermsAndConditionsText = () => {
         platform (Services). There will be no force or effect to any contrary terms contained in a
         related purchase order for the Services.
       </p>
+
       <ol>
         <li>
           <h5>Services and Support</h5>
@@ -25,10 +26,11 @@ export const TermsAndConditionsText = () => {
             </li>
             <li>
               The obligations and specifications of the Services and support provided by the Company
-              shall be morefully outlined below in Addendum-A “Services and Support”.{' '}
+              shall be morefully outlined below in Addendum-A “Services and Support”.
             </li>
           </ul>
         </li>
+
         <li>
           <h5>Customer Data</h5>
           <ul>
@@ -85,6 +87,7 @@ export const TermsAndConditionsText = () => {
             </li>
           </ul>
         </li>
+
         <li>
           <h5>Restrictions and Responsibilities</h5>
           <ul>
@@ -185,6 +188,7 @@ export const TermsAndConditionsText = () => {
             </li>
           </ul>
         </li>
+
         <li>
           <h5>Prohibited Organisation and Use</h5>
           <ul>
@@ -202,79 +206,180 @@ export const TermsAndConditionsText = () => {
             </li>
           </ul>
         </li>
+
         <li>
           <h5>Representations and Warranties</h5>
-          <p>
-            You confirm that the following representations and warranties are true and correct as of
-            the date you agree to these terms to avail the services (Effective Date) and will
-            continue to be true and correct during the course the Services are availed:
-          </p>
-          <ol>
+          <ul>
             <li>
-              You have all relevant, valid registrations as required under applicable laws to
-              undertake your activities.
-            </li>
-            <li>
-              There are no judicial or administrative actions, proceedings or investigations pending
-              or threatened, which would have a material adverse effect on your capacity to perform
-              your obligations under these terms and conditions.
-            </li>
-            <li>
-              All activities undertaken by you pursuant to agreeing to these terms and conditions
-              are free from any political, religious, or racial references or connotation (in any
-              form or manner).
-            </li>
-            <li>
-              You are not, and are not affiliated with any political party, politician, political
-              candidate, political campaign, or entities that offer services related to politics,
-              political candidates, political campaign strategy, political campaigning services and
-              exclusive government service providers.
-            </li>
-            <li>
-              You are in compliance with all policies of WhatsApp and are eligible under relevant
+              You confirm that the following representations and warranties are true and correct as
+              of the date you agree to these terms to avail the services (Effective Date) and will
+              continue to be true and correct during the course the Services are availed: (a) You
+              have all relevant, valid registrations as required under applicable laws to undertake
+              your activities, (b) that there are no judicial or administrative actions, proceedings
+              or investigations pending or threatened, which would have a material adverse effect on
+              the your capacity to perform your obligations under these terms and conditions, (c)
+              that all activities undertaken by you pursuant to agreeing to these terms and
+              conditions are free from any political, religious, or racial references or connotation
+              (in any form or manner), (d) you are not, and are not affiliated with any political
+              party, politician, political candidate, political campaign, or entities that offer
+              services related to politics, political candidates, political campaign strategy,
+              political campaigning services and exclusive government service providers, and (e) you
+              are in compliance with all policies of WhatsApp and are eligible under relevant
               policies of WhatsApp to avail the Services.
             </li>
-          </ol>
+          </ul>
         </li>
+
         <li>
           <h5>Data</h5>
-          <p>
-            Both the Company and you agree to maintain utmost confidentiality of any information
-            that is conveyed or provided in relation to these Glific SaaS Terms and Conditions or at
-            the time of disclosure, designated in writing as confidential (Confidential
-            Information). Company and you agree to use the Confidential Information received by it/
-            you solely for the purposes set forth in these Glific SaaS Terms and Conditions and will
-            return or destroy such Confidential Information forthwith after the Services are
-            discontinued under these Glific SaaS Terms and Conditions.
-          </p>
-          <p>
-            Notwithstanding anything else set out in these Glific SaaS Terms and Conditions,
-            information and materials shall not be deemed confidential if such information and
-            material:
-          </p>
-          <ol type="a">
+          <ul>
             <li>
-              Become publicly available through no wrongful act or breach of any obligation of
-              confidentiality on the receiving party’s part.
+              Both the Company and you agree to maintain utmost confidentiality of any information
+              that is conveyed or provided in relation to these Glific SaaS Terms and Conditions or
+              at the time of disclosure, designated in writing as confidential (Confidential
+              Information). Company and you agree to use the Confidential Information received by
+              it/ you solely for the purposes set forth in these Glific SaaS Terms and Conditions
+              and will return or destroy such Confidential Information forthwith after the Services
+              are discontinued under these Glific SaaS Terms and Conditions.
+              <li>
+                Notwithstanding anything else set out in these Glific SaaS Terms and Conditions,
+                information and materials shall not be deemed confidential if such information and
+                material (a) become publicly available through no wrongful act or breach of any
+                obligation of confidentiality on the receiving party’s part, or (b) are, at the time
+                of disclosure, lawfully known to the receiving party without restriction on
+                disclosure, or (c) are required to be disclosed by applicable law or (d) the
+                Disclosing Party hereby grants explicit consent to the Receiving Party to disclose
+                the information provided under this agreement.
+              </li>
+              <li>
+                We agree to not retain any copies of the Customer Data after you terminate the
+                Services availed from the Company and agree to remove and delete all copies of
+                Customer Data from its servers and computers as soon as reasonably practicable upon
+                such termination. The Company and you agree that the terms contained in this
+                paragraph 8 (Data) of the Glific SaaS Terms and Conditions will be applicable on the
+                Company and you in the event the Services are terminated.
+              </li>
+            </li>
+          </ul>
+        </li>
+
+        <li>
+          <h5>Warranty and Disclaimer</h5>
+          <ul>
+            <li>
+              Company will use reasonable efforts consistent with prevailing industry standards to
+              maintain the Services in a manner which minimizes errors and interruptions in the
+              Services. Services may be temporarily unavailable for scheduled maintenance or for
+              unscheduled emergency maintenance, either by Company or by third-party providers, or
+              because of other causes beyond Company’s reasonable control, but the Company agrees to
+              use reasonable efforts to provide advance notice in writing or by e-mail of any
+              scheduled service disruption.
             </li>
             <li>
-              Are, at the time of disclosure, lawfully known to the receiving party without
-              restriction on disclosure.
+              WE DO NOT WARRANT THAT ANY INFORMATION PROVIDED BY US IS ACCURATE, COMPLETE OR USEFUL;
+              THAT OUR SERVICES OR ANY OTHER SERVICES WILL BE OPERATIONAL, ERROR FREE, SECURE, OR
+              SAFE; OR THAT THE SERVICES WILL FUNCTION WITHOUT DISRUPTIONS, DELAYS, OR
+              IMPERFECTIONS. WE DO NOT CONTROL, AND ARE NOT RESPONSIBLE FOR CONTROLLING, HOW OR WHEN
+              OUR USERS USE OUR SERVICES OR OTHER SERVICES, OR THE FUNCTIONALITIES. EXCEPT AS
+              EXPRESSLY SET FORTH IN THIS SECTION, THE SERVICES ARE PROVIDED “AS IS” AND COMPANY
+              DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, IMPLIED
+              WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE AND
+              NON-INFRINGEMENT.
             </li>
-            <li>Are required to be disclosed by applicable law.</li>
+          </ul>
+        </li>
+
+        <li>
+          <h5>Indemnity</h5>
+          <ul>
             <li>
-              The Disclosing Party hereby grants explicit consent to the Receiving Party to disclose
-              the information provided under this agreement.
+              You agree to indemnify the Company in respect of any losses, damages, costs,
+              liabilities, penalties or claims arising from your or your employees’,
+              representatives’, any external organisation or its employee to whom you will be
+              sharing the your right of using the Glific software (External User) and/or
+              subcontractors’/substitutes’ or breach of any of the terms and conditions contained
+              herein or from the usage of the Services.
             </li>
-          </ol>
-          <p>
-            We agree to not retain any copies of the Customer Data after you terminate the Services
-            availed from the Company and agree to remove and delete all copies of Customer Data from
-            its servers and computers as soon as reasonably practicable upon such termination. The
-            Company and you agree that the terms contained in this paragraph 8 (Data) of the Glific
-            SaaS Terms and Conditions will be applicable on the Company and you in the event the
-            Services are terminated.
-          </p>
+          </ul>
+        </li>
+
+        <li>
+          <h5>Limitations of Liability</h5>
+          <ul>
+            <li>
+              Notwithstanding anything to the contrary, except for bodily injury of a person, the
+              Company and its suppliers (including but not limited to all equipment and technology
+              suppliers), officers, affiliates, representatives, contractors,
+              subcontractors’/substitutes’, external user and employees shall not be responsible or
+              liable to you with respect to any subject matter of these terms and conditions or
+              otherwise under any contract, negligence, strict liability or other theory.
+            </li>
+            <li>
+              You agree that the Company is not liable for any activities undertaken by you pursuant
+              to the use of the Services.
+            </li>
+          </ul>
+        </li>
+
+        <li>
+          <h5>Severability</h5>
+          <ul>
+            <li>
+              If any term of this Glific Saas Terms and Conditions is deemed unlawful, void or for
+              any reason unenforceable, then that term shall be deemed severable from the Glific
+              Saas Terms and Conditions and shall not affect the validity and enforceability the
+              remaining terms.
+            </li>
+          </ul>
+        </li>
+
+        <li>
+          <h5>Assignment</h5>
+          <ul>
+            <li>
+              You agree that all the rights and obligations under these Glific SaaS Terms and
+              Conditions are not assignable, transferable, or sublicensable by you without the prior
+              written consent of the Company. You agree that the Company can transfer and assign any
+              of its rights and obligations under these Glific Saas Terms and Conditions without
+              your consent.
+            </li>
+          </ul>
+        </li>
+
+        <li>
+          <h5>Amendment</h5>
+          <ul>
+            <li>
+              We reserve the right to amend these Glific Saas Terms and Conditions from time to time
+              upon 15 (fifteen) business days prior notice to you (which will be sent by email).
+            </li>
+          </ul>
+        </li>
+
+        <li>
+          <h5>Governing Law and Jurisdiction</h5>
+          <ul>
+            <li>
+              These Glific Saas Terms and Conditions will be governed by the laws of India without
+              regard to its conflict of law provisions. The Company and you agree to submit to the
+              exclusive jurisdiction of the courts of Mumbai, India.
+            </li>
+          </ul>
+        </li>
+
+        <li>
+          <h5>Miscellaneous</h5>
+          <ul>
+            <li>
+              Unless mutually agreed between the Company and you, this Glific Saas Terms and
+              Conditions and the Apache Open Source License (or other open source license that the
+              Company elects) is the complete agreement between you and the Company and supersedes
+              and cancels all previous written and oral agreements, and communications. Your
+              acceptance of the Glific Saas Terms and Conditions does not establish any agency,
+              partnership, joint venture, or employment and you agree that you do not have the
+              authority to bind the Company in any respect whatsoever.
+            </li>
+          </ul>
         </li>
       </ol>
     </div>
