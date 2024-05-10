@@ -35,7 +35,7 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
           // choosing istanbul for now because of this https://github.com/vitest-dev/vitest/issues/1252
           provider: 'istanbul', // or 'c8',
           include: ['src/**/**'],
-          exclude: ['node_modules/', '**/*.test.tsx'],
+          exclude: ['node_modules/', '**/*.test.tsx', './src/assets/**'],
         },
         css: true,
       },
