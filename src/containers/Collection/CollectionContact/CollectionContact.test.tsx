@@ -5,7 +5,7 @@ import { vi } from 'vitest';
 
 import { countCollectionContactsQuery, getCollectionContactsQuery } from 'mocks/Contact';
 import { getCollectionInfo, getCollectionQuery, getCollectionUsersQuery } from 'mocks/Collection';
-import { CollectionContact } from './CollectionContact';
+import { CollectionContact } from '.';
 
 vi.mock('react-router-dom', async () => {
   return {

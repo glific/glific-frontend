@@ -12,9 +12,7 @@ export const UnauthenticatedRoute = () => {
   const Registration = lazy(() => import('containers/Auth/Registration/Registration'));
   const ConfirmOTP = lazy(() => import('containers/Auth/ConfirmOTP/ConfirmOTP'));
   const ResetPasswordPhone = lazy(() => import('containers/Auth/ResetPassword/ResetPasswordPhone'));
-  const ResetPasswordConfirmOTP = lazy(
-    () => import('containers/Auth/ResetPassword/ResetPasswordConfirmOTP')
-  );
+  const ResetPasswordConfirmOTP = lazy(() => import('containers/Auth/ResetPassword'));
   const OrganizationRegistration = lazy(() => import('containers/Organization/RouteSetupSteps'));
 
   return (

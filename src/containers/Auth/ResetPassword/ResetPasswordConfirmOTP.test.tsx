@@ -5,7 +5,7 @@ import axios from 'axios';
 import { vi } from 'vitest';
 
 import { postRequestMock } from '../Registration/Registration.test';
-import { ResetPasswordConfirmOTP } from './ResetPasswordConfirmOTP';
+import { ResetPasswordConfirmOTP } from '.';
 import * as AuthService from 'services/AuthService';
 
 vi.mock('axios');

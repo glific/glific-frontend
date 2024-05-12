@@ -2,7 +2,7 @@ import { render, waitFor, fireEvent, screen, cleanup } from '@testing-library/re
 import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router';
 import { setUserSession } from 'services/AuthService';
-import { SheetIntegrationList } from './SheetIntegrationList';
+import { SheetIntegrationList } from '.';
 import * as Notification from 'common/notification';
 import {
   getSearchSheetQuery,

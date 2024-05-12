@@ -3,7 +3,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 
 import { setUserSession } from 'services/AuthService';
-import { StaffManagementList } from './StaffManagementList';
+import { StaffManagementList } from '.';
 import { FILTER_USER_MOCK, USER_COUNT_MOCK } from '../StaffManagement.test.helper';
 import { getOrganizationPhone } from 'mocks/Organization';
 import axios from 'axios';

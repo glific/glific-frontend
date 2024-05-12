@@ -4,7 +4,7 @@ import { MockedProvider } from '@apollo/client/testing';
 
 import { conversationQuery } from 'mocks/Chat';
 import { setUserSession } from 'services/AuthService';
-import { BlockContactList } from './BlockContactList';
+import { BlockContactList } from '.';
 import { CONTACT_LIST_MOCKS } from './BlockContact.test.helper';
 
 const mocks = [...CONTACT_LIST_MOCKS, conversationQuery];

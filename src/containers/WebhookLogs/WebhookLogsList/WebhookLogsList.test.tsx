@@ -5,7 +5,7 @@ import { vi } from 'vitest';
 
 import { getWebhookLogsQuery, getWebhookLogsCountQuery } from 'mocks/WebhookLogs';
 import { setUserSession } from 'services/AuthService';
-import { WebhookLogsList } from './WebhookLogsList';
+import { WebhookLogsList } from '.';
 
 setUserSession(JSON.stringify({ roles: ['Admin'] }));
 

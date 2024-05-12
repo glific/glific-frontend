@@ -9,7 +9,7 @@ import {
   getInteractiveCountQuery,
 } from 'mocks/InteractiveMessage';
 import { setUserSession } from 'services/AuthService';
-import InteractiveMessageList from './InteractiveMessageList';
+import InteractiveMessageList from '.';
 import { getFilterTagQuery } from 'mocks/Tag';
 
 const mocks = [
