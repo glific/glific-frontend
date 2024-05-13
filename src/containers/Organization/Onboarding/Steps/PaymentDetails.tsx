@@ -21,7 +21,9 @@ export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) =>
   const [loading, setLoading] = useState(false);
 
   const FormSchema = Yup.object().shape({
-    name: Yup.string().required('Name is required.'),
+    name: Yup.string()
+      .required('Name is required.')
+      .length(25, 'Please enter not more than 25 characters'),
     designation: Yup.string().required('Designation is required.'),
     phone: Yup.string().required('Phone number is required.'),
     email: Yup.string().required(t('Email is required.')).email('Enter a valid email.'),
