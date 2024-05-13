@@ -61,6 +61,7 @@ export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) =>
           name: 'phone',
           type: 'phone',
           inputLabel: 'Phone Number',
+          placeholder: 'Enter 10-digit mobile number',
         },
         {
           component: Input,
