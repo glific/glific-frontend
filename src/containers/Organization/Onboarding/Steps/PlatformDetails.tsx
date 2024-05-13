@@ -48,9 +48,9 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
     <p>
       Login to your{' '}
       <a href="https://www.gupshup.io/" target="_blank">
-        Gupshup Account
+        gupshup account
       </a>{' '}
-      <br /> Click on Dashboard page the App Name & BOT number will appear there.
+      <br /> Go to the dashboard section to find your bot name & number.
     </p>
   );
 
@@ -58,11 +58,12 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
     <p>
       Login to your{' '}
       <a href="https://www.gupshup.io/" target="_blank">
-        Gupshup Account
+        gupshup account
       </a>
       <br />
-      Go to Dashboard <br /> Then profile settings on Gupshup page and click on your profile image
-      to get your API key.
+      Go to the dashboard section
+      <br />
+      Click on account icon on top right to find API keys.
     </p>
   );
 
@@ -185,7 +186,7 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
       formFieldItems={formFields}
       initialValues={initialFormValues}
       step={1}
-      title="Glific platform details"
+      title="Bot details"
       helperText="Add platform details and information based on the data queries."
       setStates={setStates}
       setPayload={setPayload}

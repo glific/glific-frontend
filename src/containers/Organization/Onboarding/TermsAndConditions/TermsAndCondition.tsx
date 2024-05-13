@@ -4,6 +4,8 @@ import styles from './TermsAndConditions.module.css';
 import { Button } from 'components/UI/Form/Button/Button';
 import { useState } from 'react';
 import { TermsAndConditionsText } from './TermsAndConditionsText';
+import axios from 'axios';
+import { ONBOARD_URL_UPDATE } from 'config';
 
 interface TermsAndConditionsProps {
   openReachOutToUs?: Function;
@@ -20,6 +22,34 @@ export const TermsAndConditions = ({
 
   const { terms_agreed, support_staff_account } = field.value;
 
+  const handleDisagree = async () => {
+    setFieldValue('permissions', {
+      terms_agreed: false,
+      support_staff_account,
+    });
+
+    const data = localStorage.getItem('registrationData');
+    if (data) {
+      let registrationData = JSON.parse(data);
+      const payload = {
+        registration_id: registrationData.registration_details.registration_id,
+        org_id: registrationData.registration_details.org_id,
+        terms_agreed: false,
+        has_submitted: false,
+      };
+
+      await axios
+        .post(ONBOARD_URL_UPDATE, payload, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
+        .then(() => {
+          if (openReachOutToUs) openReachOutToUs(true);
+        });
+    }
+  };
+
   const dialog = (
     <Dialog
       classes={{
@@ -30,23 +60,10 @@ export const TermsAndConditions = ({
       open={dialogOpen}
       onClose={() => setDialogOpen(false)}
     >
-      <div className={styles.Container}>
-        <div className={styles.TermsAndCondition}>
-          <TermsAndConditionsText />
-        </div>
-
+      <div className={styles.TermsAndCondition}>
+        <TermsAndConditionsText />
         <div className={styles.Buttons}>
-          <Button
-            variant="outlined"
-            color="primary"
-            onClick={() => {
-              setFieldValue('permissions', {
-                terms_agreed: false,
-                support_staff_account,
-              });
-              if (openReachOutToUs) openReachOutToUs(true);
-            }}
-          >
+          <Button variant="outlined" color="primary" onClick={handleDisagree}>
             I Disagree
           </Button>
           <Button
@@ -69,7 +86,7 @@ export const TermsAndConditions = ({
   );
 
   return (
-    <div>
+    <div className={styles.Wrapper}>
       <FormControlLabel
         control={
           <Checkbox
@@ -77,7 +94,14 @@ export const TermsAndConditions = ({
             {...field}
             color="primary"
             checked={terms_agreed || false}
-            onChange={() => setDialogOpen(true)}
+            onChange={(event) => {
+              if (event.target.checked) setDialogOpen(true);
+              else
+                setFieldValue('permissions', {
+                  terms_agreed: false,
+                  support_staff_account,
+                });
+            }}
           />
         }
         labelPlacement="end"
@@ -120,11 +144,6 @@ export const TermsAndConditions = ({
           root: styles.Root,
         }}
       />
-
-      {touched.permissions && errors?.permissions?.support_staff_account && (
-        <p className={styles.Error}>{errors.permissions.support_staff_account}</p>
-      )}
-
       {dialogOpen && dialog}
     </div>
   );

@@ -3,16 +3,10 @@ import styles from './PaymentOptions.module.css';
 
 export interface PaymentOptionsProps {
   form: { dirty: any; touched: any; errors: any; setFieldValue: any; values: any };
-  handleOnChange: any;
-  billing_frequency: any;
 }
 
-export const PaymentOptions = ({
-  handleOnChange,
-  billing_frequency,
-  form: { setFieldValue },
-}: PaymentOptionsProps) => {
-  const isChecked = (value: string) => billing_frequency === value;
+export const PaymentOptions = ({ form: { setFieldValue, values } }: PaymentOptionsProps) => {
+  const isChecked = (value: string) => values.billing_frequency === value;
 
   return (
     <div className={styles.PaymentTypeSection}>
@@ -22,10 +16,9 @@ export const PaymentOptions = ({
           name="trigger-type"
           data-testid="triggerGroupType"
           row
-          value={billing_frequency}
+          value={values.billing_frequency}
           onChange={(event) => {
-            handleOnChange(event.target.value);
-            setFieldValue(event.target.value);
+            setFieldValue('billing_frequency', event.target.value);
           }}
           className={styles.Wrapper}
         >

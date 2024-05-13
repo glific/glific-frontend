@@ -41,7 +41,7 @@
 
 .OkButtonHelperText {
   composes: HelperText;
-  width: 50%;
+  width: 100%;
 }
 
 .FormFields {
@@ -66,9 +66,15 @@
 .Buttons {
   width: 100%;
   display: flex;
-  flex-direction: column;
   justify-content: end;
   align-items: end;
+}
+
+.SpacedOutButtons {
+  width: 100%;
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
 }
 
 .RightButton {
@@ -79,7 +85,7 @@
   padding: 10px 64px;
   border-radius: 8px;
   line-height: 30px;
-  width: 25%;
+  width: 30%;
 }
 
 .SectionHeading {
@@ -139,13 +145,26 @@
   flex-direction: column;
   align-items: center;
   color: #111111;
+  row-gap: 1rem;
 }
 
-.Modal h4,
 .Modal p {
+  text-align: center;
   margin: 0;
+  color: #616161;
 }
 
-.Modal p {
-  color: #616161;
+.Wait {
+  font-weight: bold;
+}
+
+.Checkbox {
+  display: flex;
+  align-items: center;
+}
+
+.CheckboxLabel {
+  margin: 0;
+  color: #1f1f1f;
+  font-size: 14px;
 }

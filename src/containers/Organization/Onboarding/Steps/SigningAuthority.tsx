@@ -23,7 +23,7 @@ export const SigningAuthority = ({
 
   const [permissions, setPermissions] = useState({
     terms_agreed: false,
-    support_staff_account: false,
+    support_staff_account: true,
   });
 
   const [loading, setLoading] = useState(false);
@@ -40,9 +40,7 @@ export const SigningAuthority = ({
       terms_agreed: Yup.boolean()
         .oneOf([true], 'Please agree to the terms and conditions.')
         .required(),
-      support_staff_account: Yup.boolean()
-        .oneOf([true], 'Please agree to the creation a support staff account.')
-        .required(),
+      support_staff_account: Yup.boolean(),
     }),
   });
 

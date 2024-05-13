@@ -3,21 +3,17 @@
   height: 80%;
   margin-left: 25%;
   border-radius: 20px;
-  padding: 2rem 4rem;
+}
+
+.Wrapper {
+  display: flex;
+  flex-direction: column;
 }
 
 .TermsAndConditions {
   color: #4495df;
   font-weight: bold;
   cursor: pointer;
-}
-
-.Container {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  width: 100%;
-  height: 100%;
 }
 
 .Heading {
@@ -27,8 +23,6 @@
 }
 
 .TermsAndCondition {
-  height: 100%;
-  max-height: 480px;
   width: 100%;
 }
 
@@ -44,18 +38,16 @@
   display: flex;
   justify-content: space-between;
   width: 100%;
+  border-top: 2px solid #e0e0e0;
+  padding: 0.5rem 4rem 2rem 4rem;
 }
 
 .Main {
-  max-height: 100%;
-  width: 100%;
-  overflow-y: scroll;
-  font-size: 15px;
+  padding: 2rem 4rem;
 }
 
 .Main h5 {
   margin: 0;
-  /* text-align: center; */
   font-size: 16px;
 }
 

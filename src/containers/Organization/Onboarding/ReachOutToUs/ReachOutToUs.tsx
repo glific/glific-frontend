@@ -11,7 +11,7 @@ import { ONBOARD_URL_REACT_OUT } from 'config';
 import { useNavigate } from 'react-router';
 
 interface ReachOutToUsProps {
-  open: boolean;
+  open: boolean | any;
   setOpen: Function;
   handleCancel: Function;
   handleStepChange: Function;
@@ -25,10 +25,6 @@ export const ReachOutToUs = ({ open, setOpen, handleStepChange, saveData }: Reac
   const [message, setMessage] = useState<string>('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
-  const handleClose = () => {
-    setOpen(false);
-  };
 
   const formFields = [
     {
@@ -87,7 +83,9 @@ export const ReachOutToUs = ({ open, setOpen, handleStepChange, saveData }: Reac
         setLoading(false);
 
         if (data.is_valid) {
-          navigate('/login');
+          if (open === 'reachOut') {
+            setOpen(false);
+          } else navigate('/login');
           return true;
         } else {
           setErrors(data.messages);
@@ -104,7 +102,7 @@ export const ReachOutToUs = ({ open, setOpen, handleStepChange, saveData }: Reac
       maxWidth="lg"
       fullWidth={true}
       open={open}
-      onClose={handleClose}
+      onClose={() => setOpen(false)}
       data-testid="dialogBox"
     >
       <FormLayout
@@ -125,6 +123,8 @@ export const ReachOutToUs = ({ open, setOpen, handleStepChange, saveData }: Reac
         handleStepChange={handleStepChange}
         saveData={saveData}
         submitData={handleSubmit}
+        loading={loading}
+        cancelButton={{ show: true, action: () => setOpen(false) }}
       />
     </Dialog>
   );

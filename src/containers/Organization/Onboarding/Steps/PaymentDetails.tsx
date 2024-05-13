@@ -8,6 +8,7 @@ import { PaymentOptions } from '../PaymentType/PaymentOptions';
 import { FormStepProps } from './OrgDetails';
 import axios from 'axios';
 import { ONBOARD_URL_UPDATE } from 'config';
+import { PhoneInput } from 'components/UI/Form/PhoneInput/PhoneInput';
 
 export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) => {
   const { t } = useTranslation();
@@ -22,9 +23,7 @@ export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) =>
   const FormSchema = Yup.object().shape({
     name: Yup.string().required('Name is required.'),
     designation: Yup.string().required('Designation is required.'),
-    phone: Yup.string()
-      .required('Phone number is required.')
-      .length(10, 'Enter a valid phone number.'),
+    phone: Yup.string().required('Phone number is required.'),
     email: Yup.string().required(t('Email is required.')).email('Enter a valid email.'),
   });
   const initialFormValues: any = { name, designation, phone, email, billing_frequency };
@@ -36,8 +35,6 @@ export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) =>
         {
           component: PaymentOptions,
           name: 'paymentOption',
-          handleOnChange: (value: any) => setPaymentType(value),
-          billing_frequency: billing_frequency,
           additionalStyles: styles.FullWidth,
         },
       ],
@@ -58,9 +55,9 @@ export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) =>
           inputLabel: 'Designation',
         },
         {
-          component: Input,
+          component: PhoneInput,
           name: 'phone',
-          type: 'text',
+          type: 'phone',
           inputLabel: 'Phone Number',
         },
         {

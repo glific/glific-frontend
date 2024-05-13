@@ -7,9 +7,9 @@ export const TermsAndConditionsText = () => {
       <h1 className={styles.Heading}>Terms and conditions</h1>
       <p>
         By using the Glific software, you agree to these terms and conditions prescribed by Tech4Dev
-        Project Private Limited (Company) in relation to the Glific software as a service (SaaS)
-        platform (Services). There will be no force or effect to any contrary terms contained in a
-        related purchase order for the Services.
+        Project Private Limited (<b>Company</b>) in relation to the Glific software as a service
+        (SaaS) platform (<b>Services</b>). There will be no force or effect to any contrary terms
+        contained in a related purchase order for the Services.
       </p>
 
       <ol>
@@ -36,10 +36,10 @@ export const TermsAndConditionsText = () => {
           <ul>
             <li>
               You will own all right, title and interest in and to all data, in any form or medium,
-              that you provide to the Company for use in connection with the Services (Customer
-              Data). You will be responsible for obtaining and maintaining all rights and licences
-              to all Customer Data and for ensuring adequate security for any Customer Data provided
-              to the Company.
+              that you provide to the Company for use in connection with the Services (
+              <b>Customer Data</b>). You will be responsible for obtaining and maintaining all
+              rights and licences to all Customer Data and for ensuring adequate security for any
+              Customer Data provided to the Company.
             </li>
             <li>
               You agree that the Company has no responsibility for Customer Data except the deletion
@@ -54,7 +54,11 @@ export const TermsAndConditionsText = () => {
               You agree and acknowledge that the Company may share your contact and other relevant
               Customer Data with WhatsApp which may be necessary to enable the Company to
               communicate with you via the WhatsApp and Gupshup service using this information as
-              applicable in WhatsApp privacy-protections and Gupshup privacy-policy.
+              applicable in{' '}
+              <a href="https://business.whatsapp.com/privacy-protections">
+                WhatsApp privacy-protections
+              </a>{' '}
+              and <a href="https://www.gupshup.io/privacy-policy">Gupshup privacy-policy</a>.
             </li>
           </ul>
         </li>
@@ -95,9 +99,10 @@ export const TermsAndConditionsText = () => {
               You agree that all rights, title, and interest (including all patent, copyright, trade
               secret, trademark, and other intellectual property rights) in and to the Services and
               any modifications thereto (Software IPR) will be treated as open source, as
-              applicable, according to the terms of the Apache Open Source License (or other open
-              source license that the Company elects) and all terms of such licenses will be
-              complied with.
+              applicable, according to the terms of the{' '}
+              <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache Open Source License</a>{' '}
+              (or other open source license that the Company elects) and all terms of such licenses
+              will be complied with.
             </li>
             <li>
               You represent, covenant, warrant that you have all rights to provide the Company with
@@ -185,6 +190,14 @@ export const TermsAndConditionsText = () => {
             <li>
               You agree that all payments shall be made in favour of “TECH4DEV PROJECT PRIVATE
               LIMITED” in the bank account described below:
+              <p>
+                Name of Bank: Axis Bank Limited <br />
+                Address of Bank: Kandivali (E), Mumbai (MH), 400101
+                <br />
+                Account Name: TECH4DEV PROJECT PRIVATE LIMITED
+                <br /> Account Number: 923020002250601 <br />
+                IFSC Code: UTIB0000455
+              </p>
             </li>
           </ul>
         </li>

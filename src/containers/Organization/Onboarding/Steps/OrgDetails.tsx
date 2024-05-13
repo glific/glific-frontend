@@ -6,6 +6,7 @@ import { useState } from 'react';
 import styles from '../FormLayout/FormLayout.module.css';
 import { ONBOARD_URL_UPDATE } from 'config';
 import axios from 'axios';
+import { Checkbox } from '@mui/material';
 
 export interface FormStepProps {
   handleStepChange: Function;
@@ -22,14 +23,41 @@ export const OrgDetails = ({ handleStepChange, saveData }: FormStepProps) => {
 
   const FormSchema = Yup.object().shape({
     gstin: Yup.string().length(15, 'Invalid gst number'),
-    registered_address: Yup.string().required('Registered address is required.').max(300),
-    current_address: Yup.string().required('Current address is required.').max(300),
+    registered_address: Yup.string()
+      .required('Registered address is required.')
+      .max(300, 'Address should not exceed 300 characters'),
+    current_address: Yup.string()
+      .required('Current address is required.')
+      .max(300, 'Address should not exceed 300 characters'),
   });
 
   const initialFormValues: any = {
     gstin,
     registered_address,
     current_address,
+  };
+
+  const inputendAdornment = (formik: any) => {
+    return (
+      <div className={styles.Checkbox}>
+        <Checkbox
+          data-testid="checkboxLabel"
+          color="primary"
+          checked={
+            formik.values.registered_address &&
+            formik.values.current_address === formik.values.registered_address
+          }
+          onChange={(event) => {
+            if (event.target.checked) {
+              formik.setFieldValue('current_address', formik.values.registered_address);
+            } else {
+              formik.setFieldValue('current_address', '');
+            }
+          }}
+        />
+        <p className={styles.CheckboxLabel}>Same as registered address</p>
+      </div>
+    );
   };
 
   const formFields = [
@@ -49,6 +77,7 @@ export const OrgDetails = ({ handleStepChange, saveData }: FormStepProps) => {
       inputLabel: 'Current address',
       textArea: true,
       additionalStyles: styles.MessageField,
+      fieldEndAdornment: { show: true, component: inputendAdornment },
     },
     {
       component: Input,
@@ -111,7 +140,7 @@ export const OrgDetails = ({ handleStepChange, saveData }: FormStepProps) => {
       formFieldItems={formFields}
       initialValues={initialFormValues}
       step={2}
-      title="About the organization"
+      title="Organization details"
       helperText="Note: To be filled by the signing authority of your organization."
       setStates={setStates}
       setPayload={setPayload}

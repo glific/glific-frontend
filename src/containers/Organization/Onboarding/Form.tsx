@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import styles from './ResgistrationForm.module.css';
+import styles from './Form.module.css';
 import { Step, StepLabel, Stepper } from '@mui/material';
 import GlificLogo from 'assets/images/logo/Logo.svg';
 import BackButton from 'assets/images/icons/BackIconFlow.svg?react';
@@ -13,7 +13,7 @@ import { Success } from './Success/Success';
 
 export const RegistrationForm = () => {
   const [activeStep, setActiveStep] = useState(0);
-  const [openDialog, setDialogOpen] = useState(false);
+  const [openDialog, setDialogOpen] = useState<string | boolean>(false);
   const navigate = useNavigate();
 
   const steps = [
@@ -119,7 +119,7 @@ export const RegistrationForm = () => {
           <Stepper className={styles.Stepper} activeStep={activeStep} orientation="vertical">
             {steps.map((step, index) => (
               <Step key={step.label}>
-                <StepLabel>
+                <StepLabel onClick={() => setActiveStep(step._id)}>
                   <p className={`${styles.Step} ${activeStep === index && styles.Active}`}>
                     {step.label}
                   </p>
@@ -131,7 +131,7 @@ export const RegistrationForm = () => {
           <div className={styles.LeftFooter}>
             <p>
               Have a question?{' '}
-              <span onClick={() => setDialogOpen(true)} className={styles.ReachOut}>
+              <span onClick={() => setDialogOpen('reachOut')} className={styles.ReachOut}>
                 Reach out here
               </span>
             </p>

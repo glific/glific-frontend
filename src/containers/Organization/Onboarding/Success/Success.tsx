@@ -14,15 +14,11 @@ export const Success = () => {
         <div>
           <h1>Success!</h1>
           <p>
-            Your form has been successfully submitted. Your Glific instance will now be created and
-            shared with you within 1 working day. Your subscription has started on{' '}
-            <span className={styles.Date}>{date}</span>.
+            Your form has been submitted successfully. We will create the account and share with you
+            in 2 working days. Please note- Start date of your billing would be{' '}
+            <span className={styles.Date}>{date}</span>.{' '}
           </p>
-          <p>
-            Your account will continue to be billed unless informed by you at{' '}
-            <span className={styles.Email}>glific.user@gmail.com</span>
-            for cancellation/pausing. Enjoy a hassle-free service from us, thank you!
-          </p>
+          <p>Enjoy a hassle-free service from us. Thank you!</p>
         </div>
       </div>
     </div>

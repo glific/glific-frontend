@@ -31,6 +31,7 @@ interface FormLayoutProps {
   loading?: boolean;
   showModal?: boolean;
   isDisabled?: boolean;
+  cancelButton?: { text?: string; show: Boolean; action: any };
 }
 
 export const FormLayout = ({
@@ -52,8 +53,10 @@ export const FormLayout = ({
   loading,
   showModal,
   isDisabled,
+  cancelButton,
 }: FormLayoutProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [disableSubmission, setDisableSubmission] = useState(true);
 
   const saveHandler = async (itemData: any, setErrors: Function) => {
     const payload = setPayload(itemData);
@@ -80,9 +83,15 @@ export const FormLayout = ({
   useEffect(() => {
     const registrationData = localStorage.getItem('registrationData');
 
-    if (registrationData) {
+    if (registrationData && identifier !== 'reachOutToUs') {
       const data = JSON.parse(registrationData);
       if (data[identifier]) setStates(data[identifier]);
+
+      if (data.registration_details) {
+        setDisableSubmission(false);
+      } else {
+        setDisableSubmission(true);
+      }
     }
   }, []);
 
@@ -148,14 +157,31 @@ export const FormLayout = ({
                     {field.label}
                   </Typography>
                 )}
+
                 <Field key={key} {...field} onSubmit={formik.submitForm} />
+                {field.fieldEndAdornment &&
+                  field.fieldEndAdornment.show &&
+                  field.fieldEndAdornment.component(formik)}
               </div>
             );
           })}
         </div>
       </div>
 
-      <div className={`${styles.Buttons} ${buttonState.align === 'right' && styles.RightButton}`}>
+      <div
+        className={`${cancelButton ? styles.SpacedOutButtons : styles.Buttons} ${buttonState.align === 'right' && styles.RightButton}`}
+      >
+        {cancelButton && cancelButton.show && (
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={() => cancelButton.action()}
+            className={styles.Button}
+            data-testid="cancelActionButton"
+          >
+            {cancelButton.text || 'Cancel'}
+          </Button>
+        )}
         {identifier === 'platformDetails' ? (
           <Captcha
             component={Button}
@@ -181,15 +207,14 @@ export const FormLayout = ({
             }}
             className={styles.Button}
             data-testid="submitActionButton"
-            disabled={buttonState.status}
+            disabled={identifier !== 'reachOutToUs' && (buttonState.status || disableSubmission)}
             loading={loading}
           >
             {buttonState.text ? buttonState.text : 'Next'}
           </Button>
         )}
-
-        {okButtonHelperText && <p className={styles.OkButtonHelperText}>{okButtonHelperText}</p>}
       </div>
+      {okButtonHelperText && <p className={styles.OkButtonHelperText}>{okButtonHelperText}</p>}
     </form>
   );
 
@@ -204,11 +229,14 @@ export const FormLayout = ({
         }}
         title={'Confirmation'}
         buttonOk={'Confirm'}
+        buttonCancel="Edit Details"
         buttonOkLoading={loading}
       >
         <div className={styles.Modal}>
-          <h4>Are you sure you want to submit?</h4>
-          <p>Once submitted, the details cannot be edited.</p>
+          <p>
+            You wont be able to make changes to this page once confirmed. Do you want to go ahead?
+          </p>
+          {loading && <p className={styles.Wait}>Please wait, this might take a few seconds.</p>}
         </div>
       </DialogBox>
     );

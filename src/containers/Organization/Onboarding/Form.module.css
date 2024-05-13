@@ -21,6 +21,11 @@
 
 .Stepper p {
   margin: 0 !important;
+  cursor: pointer;
+}
+
+.Step:hover {
+  color: #073f24;
 }
 
 .GlificLogo {
