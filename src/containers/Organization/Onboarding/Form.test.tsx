@@ -33,7 +33,7 @@ test('it should render platform details page', async () => {
   const { getByTestId } = render(renderForm);
 
   await waitFor(() => {
-    expect(getByTestId('heading')).toHaveTextContent('Glific platform details');
+    expect(getByTestId('heading')).toHaveTextContent('Bot details');
   });
 });
 
@@ -85,7 +85,7 @@ test('it should submit the form', async () => {
   const { getByTestId, getAllByRole, getAllByTestId, getByText } = render(renderForm);
 
   await waitFor(() => {
-    expect(getByTestId('heading')).toHaveTextContent('Glific platform details');
+    expect(getByTestId('heading')).toHaveTextContent('Bot details');
   });
 
   const inputFieldsPlatformDetails = getAllByRole('textbox');
@@ -107,7 +107,7 @@ test('it should submit the form', async () => {
   fireEvent.click(screen.getByText('Confirm'));
 
   await waitFor(() => {
-    expect(getByTestId('heading')).toHaveTextContent('About the organization');
+    expect(getByTestId('heading')).toHaveTextContent('Organization details');
   });
 
   const inputFieldsOrgdetails = getAllByRole('textbox');
@@ -184,7 +184,7 @@ test('it should navigate back', async () => {
   const { getByTestId, getAllByRole } = render(renderForm);
 
   await waitFor(() => {
-    expect(getByTestId('heading')).toHaveTextContent('Glific platform details');
+    expect(getByTestId('heading')).toHaveTextContent('Bot details');
   });
 
   const inputFieldsPlatformDetails = getAllByRole('textbox');
@@ -206,12 +206,12 @@ test('it should navigate back', async () => {
   fireEvent.click(screen.getByText('Confirm'));
 
   await waitFor(() => {
-    expect(getByTestId('heading')).toHaveTextContent('About the organization');
+    expect(getByTestId('heading')).toHaveTextContent('Organization details');
   });
 
   fireEvent.click(getByTestId('back-button'));
 
   await waitFor(() => {
-    expect(getByTestId('heading')).toHaveTextContent('Glific platform details');
+    expect(getByTestId('heading')).toHaveTextContent('Bot details');
   });
 });

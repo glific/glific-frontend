@@ -18,11 +18,11 @@ export const RegistrationForm = () => {
 
   const steps = [
     {
-      label: 'About the organization',
+      label: 'Organization details',
       _id: 0,
     },
     {
-      label: 'Glific platform details',
+      label: 'Bot details',
       _id: 1,
     },
     {
