@@ -65,7 +65,7 @@
   height: 100%;
   background-color: #fff;
   border-radius: 20px;
-  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  box-shadow: #959da533 0px 8px 24px;
   z-index: 999;
 }
 

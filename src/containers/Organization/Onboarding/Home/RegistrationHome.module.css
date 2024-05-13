@@ -27,7 +27,7 @@
 }
 
 .Header h4 {
-  color: #111111;
+  color: #111;
   font-size: 32px;
   margin: 0;
 }
@@ -43,22 +43,21 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: repeat(2, 1fr);
-  grid-column-gap: 8px;
-  grid-row-gap: 8px;
+  grid-gap: 8px;
   width: 100%;
 }
 
 .Box {
-  padding: 8px 0px;
+  padding: 8px 0;
 }
 
 .Box h4 {
-  color: #111111;
+  color: #111;
   font-size: 14px;
 }
 
 .Box ul {
-  color: #111111;
+  color: #111;
   font-size: 14px;
   list-style-position: inside;
   margin: 0 !important;
@@ -70,7 +69,7 @@
   height: 100%;
   background-color: #fff;
   border-radius: 20px;
-  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  box-shadow: #959da533 0px 8px 24px;
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
   padding: 64px 68px;
@@ -89,7 +88,7 @@
 }
 
 .RightHeader h1 {
-  color: #111111;
+  color: #111;
   font-size: 32px;
   margin: 0;
 }

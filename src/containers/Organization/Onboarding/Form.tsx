@@ -147,7 +147,6 @@ export const RegistrationForm = () => {
           handleStepChange={handleStepChange}
           open={openDialog}
           setOpen={setDialogOpen}
-          handleCancel={() => setDialogOpen(false)}
           saveData={saveData}
         />
       )}

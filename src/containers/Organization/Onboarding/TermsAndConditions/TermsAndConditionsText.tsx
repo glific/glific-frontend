@@ -3,7 +3,6 @@ import styles from './TermsAndConditions.module.css';
 export const TermsAndConditionsText = () => {
   return (
     <div className={styles.Main}>
-      {/* <h4>Glific SaaS Application Terms and Conditions </h4> */}
       <h1 className={styles.Heading}>Terms and conditions</h1>
       <p>
         By using the Glific software, you agree to these terms and conditions prescribed by Tech4Dev

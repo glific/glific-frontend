@@ -13,7 +13,6 @@ import { useNavigate } from 'react-router';
 interface ReachOutToUsProps {
   open: boolean | any;
   setOpen: Function;
-  handleCancel: Function;
   handleStepChange: Function;
   saveData: Function;
 }

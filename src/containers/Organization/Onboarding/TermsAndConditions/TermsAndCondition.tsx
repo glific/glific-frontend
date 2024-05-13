@@ -10,7 +10,7 @@ import { ONBOARD_URL_UPDATE } from 'config';
 interface TermsAndConditionsProps {
   openReachOutToUs?: Function;
   field: any;
-  form: { dirty: any; touched: any; errors: any; setFieldValue: any; values: any };
+  form: { dirty?: any; touched: any; errors: any; setFieldValue: any; values?: any };
 }
 
 export const TermsAndConditions = ({

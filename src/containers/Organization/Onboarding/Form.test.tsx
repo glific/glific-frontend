@@ -51,7 +51,7 @@ test('it opens and closes dialog box', async () => {
     expect(dialogBox).toBeInTheDocument();
   });
 
-  fireEvent.keyDown(dialogBox, { key: 'Escape', code: 'Escape' });
+  fireEvent.click(screen.getByText('Cancel'));
 
   await waitFor(() => {
     expect(dialogBox).not.toBeInTheDocument();
@@ -115,7 +115,7 @@ test('it should submit the form', async () => {
   const [registeredAddress, currentAddress, gstin] = inputFieldsOrgdetails;
 
   fireEvent.change(registeredAddress, { target: { value: 'address' } });
-  fireEvent.change(currentAddress, { target: { value: 'current address' } });
+  fireEvent.click(screen.getByRole('checkbox'));
   fireEvent.change(gstin, { target: { value: '123456789012345' } });
 
   fireEvent.click(getByTestId('submitActionButton'));
