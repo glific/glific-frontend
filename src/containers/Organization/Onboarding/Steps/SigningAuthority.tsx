@@ -31,11 +31,11 @@ export const SigningAuthority = ({
   const FormSchema = Yup.object().shape({
     submitterName: Yup.string()
       .required(t('Name is required.'))
-      .length(25, 'Please enter not more than 25 characters'),
+      .max(25, 'Please enter not more than 25 characters'),
     submitterEmail: Yup.string().required('Email is required.').email('Enter a valid email.'),
     signingAuthorityName: Yup.string()
       .required('Name is required.')
-      .length(25, 'Please enter not more than 25 characters'),
+      .max(25, 'Please enter not more than 25 characters'),
 
     signingAuthorityDesignation: Yup.string().required('Designation is required.'),
     signingAuthorityEmail: Yup.string()

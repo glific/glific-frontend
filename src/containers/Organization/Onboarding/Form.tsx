@@ -18,11 +18,11 @@ export const RegistrationForm = () => {
 
   const steps = [
     {
-      label: 'Organization details',
+      label: 'Bot details',
       _id: 0,
     },
     {
-      label: 'Bot details',
+      label: 'Organization details',
       _id: 1,
     },
     {

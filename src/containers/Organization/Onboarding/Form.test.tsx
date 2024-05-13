@@ -132,7 +132,7 @@ test('it should submit the form', async () => {
 
   fireEvent.change(name, { target: { value: 'Default finance poc name' } });
   fireEvent.change(designation, { target: { value: 'finance' } });
-  fireEvent.change(phone, { target: { value: '9758365738' } });
+  fireEvent.change(phone, { target: { value: '09421050449' } });
   fireEvent.change(email, { target: { value: 'finance@email.com' } });
 
   fireEvent.click(getByTestId('submitActionButton'));
@@ -150,10 +150,10 @@ test('it should submit the form', async () => {
     signingAuthorityEmail,
   ] = inputFieldssigningdetails;
 
-  fireEvent.change(submitterName, { target: { value: 'Default submitter name' } });
+  fireEvent.change(submitterName, { target: { value: 'Default submitter' } });
   fireEvent.change(submitterEmail, { target: { value: 'submitter@email.com' } });
 
-  fireEvent.change(signingAuthorityName, { target: { value: 'Default signing authority name' } });
+  fireEvent.change(signingAuthorityName, { target: { value: 'Default signing' } });
   fireEvent.change(signingAuthorityDesignation, { target: { value: 'signing authority' } });
   fireEvent.change(signingAuthorityEmail, { target: { value: 'signing@email.com' } });
 
@@ -162,7 +162,7 @@ test('it should submit the form', async () => {
   const checkboxes = getAllByRole('checkbox');
   fireEvent.click(checkboxes[0]);
 
-  fireEvent.keyDown(screen.getByText('Terms and conditions'), { key: 'Escape', code: 'excape' });
+  fireEvent.keyDown(screen.getByText('Terms and conditions'), { key: 'Escape', code: 'escape' });
   fireEvent.click(checkboxes[0]);
 
   await waitFor(() => {
@@ -170,8 +170,6 @@ test('it should submit the form', async () => {
   });
 
   fireEvent.click(screen.getByText('I Agree'));
-
-  fireEvent.click(checkboxes[1]);
 
   fireEvent.click(getByTestId('submitActionButton'));
 
