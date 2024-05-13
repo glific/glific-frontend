@@ -1,5 +1,5 @@
 import { MemoryRouter } from 'react-router';
-import RegistrationForm from './RegistrationForm';
+import RegistrationForm from './Form';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';

@@ -12,9 +12,9 @@ export const UnauthenticatedRoute = () => {
   const Registration = lazy(() => import('containers/Auth/Registration/Registration'));
   const ConfirmOTP = lazy(() => import('containers/Auth/ConfirmOTP/ConfirmOTP'));
   const ResetPasswordPhone = lazy(() => import('containers/Auth/ResetPassword/ResetPasswordPhone'));
-  const ResetPasswordConfirmOTP = lazy(() => import('containers/Auth/ResetPassword/ResetPasswordConfirmOTP'));
-  const OrganizationRegistration = lazy(() => import('containers/Organization/RegistrationForm/RegistrationForm'));
-  const OrganizationRegistrationHome = lazy(() => import('containers/Organization/RegistrationForm/Registration/RegistrationHome'));
+  const ResetPassOTP = lazy(() => import('containers/Auth/ResetPassword/ResetPasswordConfirmOTP'));
+  const OnboardingForm = lazy(() => import('containers/Organization/Onboarding/Form'));
+  const OnboardingHome = lazy(() => import('containers/Organization/Onboarding/Home'));
 
   return (
     <Suspense fallback={<Loading />}>
@@ -25,9 +25,9 @@ export const UnauthenticatedRoute = () => {
           <Route path="/registration" element={<Registration />} />
           <Route path="/confirmotp" element={<ConfirmOTP />} />
           <Route path="/resetpassword-phone" element={<ResetPasswordPhone />} />
-          <Route path="/resetpassword-confirmotp" element={<ResetPasswordConfirmOTP />} />
-          <Route path="/organization-registration" element={<OrganizationRegistrationHome />} />
-          <Route path="/organization-registration/setup" element={<OrganizationRegistration />} />
+          <Route path="/resetpassword-confirmotp" element={<ResetPassOTP />} />
+          <Route path="/organization-registration" element={<OnboardingHome />} />
+          <Route path="/organization-registration/setup" element={<OnboardingForm />} />
           <Route
             path="/*"
             element={<Navigate to="/logout/user" replace state={location.pathname} />}
