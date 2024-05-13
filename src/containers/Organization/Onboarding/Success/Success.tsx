@@ -2,13 +2,11 @@ import dayjs from 'dayjs';
 import styles from './Success.module.css';
 
 import Check from 'assets/images/Check.svg';
-// import Circles from 'assets/images/Circles.png';
 
 export const Success = () => {
   const date = dayjs().format('MMM, DD YYYY');
   return (
     <div className={styles.Container}>
-      {/* <img className={styles.Cirlce} src={Circles} /> */}
       <div className={styles.Main}>
         <img className={styles.Check} src={Check} />
         <div>

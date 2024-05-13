@@ -27,6 +27,7 @@ export const TermsAndConditions = ({
       terms_agreed: false,
       support_staff_account,
     });
+    if (openReachOutToUs) openReachOutToUs(true);
 
     const data = localStorage.getItem('registrationData');
     if (data) {
@@ -38,15 +39,11 @@ export const TermsAndConditions = ({
         has_submitted: false,
       };
 
-      await axios
-        .post(ONBOARD_URL_UPDATE, payload, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        })
-        .then(() => {
-          if (openReachOutToUs) openReachOutToUs(true);
-        });
+      await axios.post(ONBOARD_URL_UPDATE, payload, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
     }
   };
 
