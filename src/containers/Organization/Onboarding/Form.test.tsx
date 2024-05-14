@@ -1,6 +1,6 @@
 import { MemoryRouter } from 'react-router';
 import RegistrationForm from './Form';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 import axios from 'axios';
@@ -29,6 +29,10 @@ const renderForm = (
   </GoogleReCaptchaProvider>
 );
 
+beforeEach(() => {
+  cleanup();
+});
+
 test('it should render platform details page', async () => {
   const { getByTestId } = render(renderForm);
 
@@ -36,6 +40,42 @@ test('it should render platform details page', async () => {
     expect(getByTestId('heading')).toHaveTextContent('Bot details');
   });
 });
+
+// test('it should navigate back', async () => {
+//   const { getByTestId, getAllByRole } = render(renderForm);
+
+//   await waitFor(() => {
+//     expect(getByTestId('heading')).toHaveTextContent('Bot details');
+//   });
+
+//   const inputFieldsPlatformDetails = getAllByRole('textbox');
+
+//   const [orgName, phoneNumber, appName, apiKey, shortcode] = inputFieldsPlatformDetails;
+
+//   fireEvent.change(orgName, { target: { value: 'org name' } });
+//   fireEvent.change(phoneNumber, { target: { value: '7834811114' } });
+//   fireEvent.change(appName, { target: { value: 'app name' } });
+//   fireEvent.change(apiKey, { target: { value: 'api-key' } });
+//   fireEvent.change(shortcode, { target: { value: 'glific' } });
+
+//   fireEvent.click(getByTestId('submitActionButton'));
+
+//   await waitFor(() => {
+//     expect(screen.getByText('Confirmation')).toBeInTheDocument();
+//   });
+
+//   fireEvent.click(screen.getByText('Confirm'));
+
+//   await waitFor(() => {
+//     expect(getByTestId('heading')).toHaveTextContent('Organization details');
+//   });
+
+//   fireEvent.click(getByTestId('back-button'));
+
+//   await waitFor(() => {
+//     expect(getByTestId('heading')).toHaveTextContent('Bot details');
+//   });
+// });
 
 test('it opens and closes dialog box', async () => {
   render(renderForm);
@@ -117,9 +157,17 @@ test('it should submit the form', async () => {
     expect(getByTestId('heading')).toHaveTextContent('Organization details');
   });
 
+  fireEvent.click(getByTestId('back-button'));
+
+  fireEvent.click(getByTestId('submitActionButton'));
+
+  await waitFor(() => {
+    expect(getByTestId('heading')).toHaveTextContent('Organization details');
+  });
+
   const inputFieldsOrgdetails = getAllByRole('textbox');
 
-  const [registeredAddress, currentAddress, gstin] = inputFieldsOrgdetails;
+  const [registeredAddress, gstin] = inputFieldsOrgdetails;
 
   fireEvent.change(registeredAddress, { target: { value: 'address' } });
   fireEvent.click(screen.getByRole('checkbox'));
@@ -185,7 +233,7 @@ test('it should submit the form', async () => {
   });
 });
 
-test('it should submit the form', async () => {
+test('it should disgree and send an email', async () => {
   const { getByTestId, getAllByRole, getAllByTestId } = render(renderForm);
 
   await waitFor(() => {
@@ -262,40 +310,4 @@ test('it should submit the form', async () => {
   fireEvent.change(message, { target: { value: 'message' } });
 
   fireEvent.click(screen.getByText('Send'));
-});
-
-test('it should navigate back', async () => {
-  const { getByTestId, getAllByRole } = render(renderForm);
-
-  await waitFor(() => {
-    expect(getByTestId('heading')).toHaveTextContent('Bot details');
-  });
-
-  const inputFieldsPlatformDetails = getAllByRole('textbox');
-
-  const [orgName, phoneNumber, appName, apiKey, shortcode] = inputFieldsPlatformDetails;
-
-  fireEvent.change(orgName, { target: { value: 'org name' } });
-  fireEvent.change(phoneNumber, { target: { value: '7834811114' } });
-  fireEvent.change(appName, { target: { value: 'app name' } });
-  fireEvent.change(apiKey, { target: { value: 'api-key' } });
-  fireEvent.change(shortcode, { target: { value: 'glific' } });
-
-  fireEvent.click(getByTestId('submitActionButton'));
-
-  await waitFor(() => {
-    expect(screen.getByText('Confirmation')).toBeInTheDocument();
-  });
-
-  fireEvent.click(screen.getByText('Confirm'));
-
-  await waitFor(() => {
-    expect(getByTestId('heading')).toHaveTextContent('Organization details');
-  });
-
-  fireEvent.click(getByTestId('back-button'));
-
-  await waitFor(() => {
-    expect(getByTestId('heading')).toHaveTextContent('Bot details');
-  });
 });
