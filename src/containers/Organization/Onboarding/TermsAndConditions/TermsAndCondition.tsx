@@ -8,7 +8,7 @@ import axios from 'axios';
 import { ONBOARD_URL_UPDATE } from 'config';
 
 interface TermsAndConditionsProps {
-  openReachOutToUs?: Function;
+  openReachOutToUs: Function;
   field: any;
   form: { dirty?: any; touched: any; errors: any; setFieldValue: any; values?: any };
 }
@@ -27,7 +27,7 @@ export const TermsAndConditions = ({
       terms_agreed: false,
       support_staff_account,
     });
-    if (openReachOutToUs) openReachOutToUs(true);
+    openReachOutToUs(true);
 
     const data = localStorage.getItem('registrationData');
     if (data) {

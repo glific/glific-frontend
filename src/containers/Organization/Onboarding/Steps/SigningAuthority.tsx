@@ -9,11 +9,15 @@ import styles from '../FormLayout/FormLayout.module.css';
 import { TermsAndConditions } from '../TermsAndConditions/TermsAndCondition';
 import axios from 'axios';
 
+interface SigningAuthorityProps extends FormStepProps {
+  openReachOutToUs?: Function;
+}
+
 export const SigningAuthority = ({
   handleStepChange,
   openReachOutToUs,
   saveData,
-}: FormStepProps) => {
+}: SigningAuthorityProps) => {
   const { t } = useTranslation();
   const [submitterName, setSubmitterName] = useState<string>('');
   const [submitterEmail, setSubmitterEmail] = useState<string>('');

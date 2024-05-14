@@ -67,9 +67,16 @@ test('it sends email to support', async () => {
 
   fireEvent.click(screen.getByText('Reach out here'));
 
+  const dialog = screen.getByText('Write to us');
+
   await waitFor(() => {
-    expect(screen.getByText('Write to us')).toBeInTheDocument();
+    expect(dialog).toBeInTheDocument();
   });
+
+  //checking if it closes the dialog
+  fireEvent.click(screen.getByText('Cancel'));
+
+  fireEvent.click(screen.getByText('Reach out here'));
 
   const inputFields = screen.getAllByRole('textbox');
   const [name, email, message] = inputFields;
@@ -176,6 +183,85 @@ test('it should submit the form', async () => {
   await waitFor(() => {
     expect(getByText('Success!')).toBeInTheDocument();
   });
+});
+
+test('it should submit the form', async () => {
+  const { getByTestId, getAllByRole, getAllByTestId } = render(renderForm);
+
+  await waitFor(() => {
+    expect(getByTestId('heading')).toHaveTextContent('Bot details');
+  });
+
+  const inputFieldsPlatformDetails = getAllByRole('textbox');
+
+  const [orgName, phoneNumber, appName, apiKey, shortcode] = inputFieldsPlatformDetails;
+
+  fireEvent.change(orgName, { target: { value: 'org name' } });
+  fireEvent.change(phoneNumber, { target: { value: '7834811114' } });
+  fireEvent.change(appName, { target: { value: 'app name' } });
+  fireEvent.change(apiKey, { target: { value: 'api-key' } });
+  fireEvent.change(shortcode, { target: { value: 'glific' } });
+
+  fireEvent.click(getByTestId('submitActionButton'));
+
+  await waitFor(() => {
+    expect(screen.getByText('Confirmation')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByText('Confirm'));
+
+  await waitFor(() => {
+    expect(getByTestId('heading')).toHaveTextContent('Organization details');
+  });
+
+  const inputFieldsOrgdetails = getAllByRole('textbox');
+
+  const [registeredAddress, gstin] = inputFieldsOrgdetails;
+
+  fireEvent.change(registeredAddress, { target: { value: 'address' } });
+  fireEvent.click(screen.getByRole('checkbox'));
+  fireEvent.change(gstin, { target: { value: '123456789012345' } });
+
+  fireEvent.click(getByTestId('submitActionButton'));
+
+  await waitFor(() => {
+    expect(getByTestId('heading')).toHaveTextContent('Payment details');
+  });
+
+  const inputFieldsPaymentdetails = getAllByRole('textbox');
+  const [name, designation, phone, email] = inputFieldsPaymentdetails;
+
+  const radioButtons = getAllByTestId('radio-btn');
+  fireEvent.click(radioButtons[1]);
+
+  fireEvent.change(name, { target: { value: 'Default finance poc name' } });
+  fireEvent.change(designation, { target: { value: 'finance' } });
+  fireEvent.change(phone, { target: { value: '09421050449' } });
+  fireEvent.change(email, { target: { value: 'finance@email.com' } });
+
+  fireEvent.click(getByTestId('submitActionButton'));
+
+  await waitFor(() => {
+    expect(getByTestId('heading')).toHaveTextContent('Submitter & Signing authority details');
+  });
+
+  const checkboxes = getAllByRole('checkbox');
+  fireEvent.click(checkboxes[0]);
+
+  await waitFor(() => {
+    expect(screen.getByText('Terms and conditions')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByText('I Disagree'));
+
+  const inputFields = screen.getAllByRole('textbox');
+  const [senderName, senderEmail, message] = inputFields;
+
+  fireEvent.change(senderName, { target: { value: 'name' } });
+  fireEvent.change(senderEmail, { target: { value: 'random@email.com' } });
+  fireEvent.change(message, { target: { value: 'message' } });
+
+  fireEvent.click(screen.getByText('Send'));
 });
 
 test('it should navigate back', async () => {

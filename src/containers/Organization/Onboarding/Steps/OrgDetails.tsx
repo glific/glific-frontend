@@ -10,7 +10,6 @@ import { Checkbox } from '@mui/material';
 
 export interface FormStepProps {
   handleStepChange: Function;
-  openReachOutToUs?: Function;
   saveData: Function;
 }
 
