@@ -79,6 +79,15 @@ export const FormLayout = ({
     },
   });
 
+  useEffect(() => {
+    const registrationData = localStorage.getItem('registrationData');
+
+    if (registrationData && identifier !== 'reachOutToUs') {
+      const data = JSON.parse(registrationData);
+      if (data[identifier]) setStates(data[identifier]);
+    }
+  }, []);
+
   const header = (
     <div className={styles.Header}>
       {showStep && <span className={styles.Step}>STEP {step} of 4</span>}

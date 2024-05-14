@@ -152,21 +152,15 @@ export const SigningAuthority = ({
   const handleSubmit = async (payload: any, setErrors: any) => {
     setLoading(true);
 
-    await axios
-      .post(ONBOARD_URL_UPDATE, payload, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      })
-      .then(({ data }) => {
-        setLoading(false);
-        if (data.is_valid) {
-          handleStepChange();
-          localStorage.removeItem('registrationData');
-        } else {
-          setErrors(data.messages);
-        }
-      });
+    await axios.post(ONBOARD_URL_UPDATE, payload).then(({ data }) => {
+      setLoading(false);
+      if (data.is_valid) {
+        handleStepChange();
+        localStorage.removeItem('registrationData');
+      } else {
+        setErrors(data.messages);
+      }
+    });
   };
 
   return (

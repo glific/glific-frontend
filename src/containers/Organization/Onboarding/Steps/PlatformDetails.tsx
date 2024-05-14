@@ -134,33 +134,27 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
   const handleSubmit = async (payload: any, setErrors: Function) => {
     if (isDisabled) handleStepChange();
     setLoading(true);
-    await axios
-      .post(ONBOARD_URL_SETUP, payload, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-      .then(({ data }) => {
-        setLoading(false);
-        if (data.is_valid) {
-          saveData(
-            {
-              registration_id: data.registration_id,
-              org_id: data.organization?.id,
-              submitted: true,
-            },
-            'registration_details'
-          );
+    await axios.post(ONBOARD_URL_SETUP, payload).then(({ data }) => {
+      setLoading(false);
+      if (data.is_valid) {
+        saveData(
+          {
+            registration_id: data.registration_id,
+            org_id: data.organization?.id,
+            submitted: true,
+          },
+          'registration_details'
+        );
 
-          handleStepChange();
+        handleStepChange();
 
-          return true;
-        } else {
-          setErrors(data.messages);
-          saveData(data.messages, 'errors');
-          return false;
-        }
-      });
+        return true;
+      } else {
+        setErrors(data.messages);
+        saveData(data.messages, 'errors');
+        return false;
+      }
+    });
   };
 
   const setStates = (states: any) => {
