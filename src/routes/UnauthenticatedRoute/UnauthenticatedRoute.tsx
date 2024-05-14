@@ -14,7 +14,9 @@ export const UnauthenticatedRoute = () => {
   const ResetPasswordPhone = lazy(() => import('containers/Auth/ResetPassword/ResetPasswordPhone'));
   const ResetPassOTP = lazy(() => import('containers/Auth/ResetPassword/ResetPasswordConfirmOTP'));
   const OnboardingForm = lazy(() => import('containers/Organization/Onboarding/Form'));
-  const OnboardingHome = lazy(() => import('containers/Organization/Onboarding/Home'));
+  const OnboardingHome = lazy(
+    () => import('containers/Organization/Onboarding/Home/RegistrationHome')
+  );
 
   return (
     <Suspense fallback={<Loading />}>

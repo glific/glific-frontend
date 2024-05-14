@@ -20,20 +20,21 @@ export const RegistrationHome = () => {
 
         <div className={styles.DetailsContainer}>
           <div className={styles.Box}>
-            <h4>About the organization</h4>
+            <h4>Glific platform details</h4>
             <ul>
-              <li>Organization registered name and the address </li>
-              <li> GSTIN number (optional) </li>
-              <li> Organization registration document and the certificate</li>
+              <li>Organization registered name </li>
+              <li> Chatbot number (New WhatsApp chatbot number) </li>
+              <li> App name (Gupshup bot) </li>
+              <li> Gupshup API keys (Generated)</li>
             </ul>
           </div>
 
           <div className={styles.Box}>
-            <h4>Glific platform details</h4>
+            <h4>About the organization</h4>
             <ul>
-              <li> Chatbot number (New WhatsApp chatbot number) </li>
-              <li> App name (Gupshup bot) </li>
-              <li> Gupshup API keys (Generated)</li>
+              <li>Organization registered address </li>
+              <li> GSTIN number (optional) </li>
+              <li> Organization registration document and the certificate</li>
             </ul>
           </div>
 
