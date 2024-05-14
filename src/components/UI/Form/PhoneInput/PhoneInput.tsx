@@ -32,6 +32,7 @@ export const PhoneInput = ({
   placeholder,
   inputLabel = null,
   disabled = false,
+  helperText,
 }: InputProps) => {
   const errorText = getIn(errors, field.name);
   const touchedVal = getIn(touched, field.name);
@@ -61,8 +62,11 @@ export const PhoneInput = ({
             setFieldValue(field.name, event);
           }}
         />
+        {helperText && (
+          <FormHelperText classes={{ root: styles.FormHelperText }}>{helperText}</FormHelperText>
+        )}
         {hasError ? (
-          <FormHelperText classes={{ root: styles.FormHelperText }}>{errorText}</FormHelperText>
+          <FormHelperText classes={{ root: styles.ErrorText }}>{errorText}</FormHelperText>
         ) : null}
       </FormControl>
     </div>

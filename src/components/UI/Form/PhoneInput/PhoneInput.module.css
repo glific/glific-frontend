@@ -20,10 +20,15 @@
 }
 
 .FormHelperText {
-  color: #f44336 !important;
+  color: #999999;
   margin-top: 3px !important;
   line-height: 1.2 !important;
   margin-left: 16px !important;
+}
+
+.ErrorText {
+  composes: FormHelperText;
+  color: #f44336 !important;
 }
 
 .Label {

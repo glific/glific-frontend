@@ -75,7 +75,6 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
       name: 'name',
       type: 'text',
       inputLabel: 'Organization registered name',
-      placeholder: 'Enter the organization name',
       disabled: isDisabled,
     },
     {
@@ -83,8 +82,7 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
       name: 'phone',
       type: 'phone',
       inputLabel: 'Chatbot number',
-      placeholder: 'New whatsapp chatbot number',
-      helperText: t('Please enter a phone number.'),
+      helperText: 'New whatsapp chatbot number',
       disabled: isDisabled,
     },
     {
@@ -92,7 +90,6 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
       name: 'app_name',
       type: 'text',
       inputLabel: 'App name',
-      placeholder: 'Enter the bot name',
       inputLabelSubtext: (
         <p className={styles.SubText}>(Name of your bot on Gupshup.){appNameTooltip}</p>
       ),
@@ -103,7 +100,6 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
       name: 'api_key',
       type: 'text',
       inputLabel: 'Gupshup API keys',
-      placeholder: 'Enter gupshup api keys',
       inputLabelSubtext: (
         <span className={styles.SubText}>(Click here to get the API keys) {apiTooltip}</span>
       ),
@@ -114,7 +110,7 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
       name: 'shortcode',
       type: 'text',
       inputLabel: 'URL shortcode',
-      placeholder: 'Atleast 7-8 characters',
+      helperText: 'Atleast 7-8 characters',
       inputLabelSubtext: (
         <span className={styles.SubText}>(Name you want to give your Glific platform)</span>
       ),

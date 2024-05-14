@@ -56,7 +56,6 @@ export const FormLayout = ({
   cancelButton,
 }: FormLayoutProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [disableSubmission, setDisableSubmission] = useState(true);
 
   const saveHandler = async (itemData: any, setErrors: Function) => {
     const payload = setPayload(itemData);
@@ -79,21 +78,6 @@ export const FormLayout = ({
       else saveHandler(values, setErrors);
     },
   });
-
-  useEffect(() => {
-    const registrationData = localStorage.getItem('registrationData');
-
-    if (registrationData && identifier !== 'reachOutToUs') {
-      const data = JSON.parse(registrationData);
-      if (data[identifier]) setStates(data[identifier]);
-
-      if (data.registration_details) {
-        setDisableSubmission(false);
-      } else {
-        setDisableSubmission(true);
-      }
-    }
-  }, []);
 
   const header = (
     <div className={styles.Header}>
@@ -207,7 +191,7 @@ export const FormLayout = ({
             }}
             className={styles.Button}
             data-testid="submitActionButton"
-            disabled={identifier !== 'reachOutToUs' && (buttonState.status || disableSubmission)}
+            disabled={buttonState.status}
             loading={loading}
           >
             {buttonState.text ? buttonState.text : 'Next'}

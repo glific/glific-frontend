@@ -119,7 +119,7 @@ export const RegistrationForm = () => {
           <Stepper className={styles.Stepper} activeStep={activeStep} orientation="vertical">
             {steps.map((step, index) => (
               <Step key={step.label}>
-                <StepLabel onClick={() => setActiveStep(step._id)}>
+                <StepLabel>
                   <p className={`${styles.Step} ${activeStep === index && styles.Active}`}>
                     {step.label}
                   </p>
