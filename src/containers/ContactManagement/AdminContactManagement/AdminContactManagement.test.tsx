@@ -25,12 +25,12 @@ const contactManagement = (
 
 // let's mock setNotification function that's called upon successful upload
 vi.mock('common/notification', async (importOriginal) => {
-  const mod = await importOriginal<typeof import('common/notification')>()
+  const mod = await importOriginal<typeof import('common/notification')>();
   return {
     ...mod,
     setNotification: vi.fn(),
-  }
-})
+  };
+});
 
 test('Admin contact management form renders correctly', async () => {
   render(contactManagement);
@@ -48,18 +48,20 @@ test('the page should have a disabled upload button by default', async () => {
   expect(uploadButton).toHaveAttribute('disabled');
 });
 
-test('Files other than .csv should raise a warning message upon upload', async() => {
+test('Files other than .csv should raise a warning message upon upload', async () => {
   render(contactManagement);
 
-  const nonCSVFile = new File(['This is not a CSV File'], 'test.pdf', {type: 'application/pdf'});
+  const nonCSVFile = new File(['This is not a CSV File'], 'test.pdf', { type: 'application/pdf' });
   await waitFor(() => {
     const fileInput = screen.getByTestId('uploadFile');
     userEvent.upload(fileInput, nonCSVFile);
-  })
+  });
   await waitFor(() => {
-    expect(screen.getByText(/Please make sure the file format matches the sample/)).toBeInTheDocument();
-  })
-})
+    expect(
+      screen.getByText(/Please make sure the file format matches the sample/)
+    ).toBeInTheDocument();
+  });
+});
 
 test('Success Notification should be called upon successful CSV upload', async () => {
   render(contactManagement);
@@ -68,21 +70,21 @@ test('Success Notification should be called upon successful CSV upload', async (
   const csvContent = `name,phone,collection
   John Doe,919876543210,"Optin collection,Optout Collection"
   Virat Kohli,919876543220,Cricket`;
-  const file = new File([csvContent], 'test.csv', {type: 'text/csv'});
+  const file = new File([csvContent], 'test.csv', { type: 'text/csv' });
 
   await waitFor(() => {
     const fileInput = screen.getByTestId('uploadFile');
     userEvent.upload(fileInput, file);
-  })
+  });
   await waitFor(() => {
     // the filename should be visible instead of Select .csv after upload
     expect(screen.getByText('test.csv')).toBeInTheDocument();
-  })
+  });
 
   const uploadBtn = screen.getByTestId('uploadButton');
-  userEvent.click(uploadBtn)
+  userEvent.click(uploadBtn);
 
   await waitFor(() => {
     expect(setNotification).toHaveBeenCalled();
-  })
-})
+  });
+});
