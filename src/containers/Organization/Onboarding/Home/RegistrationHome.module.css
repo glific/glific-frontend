@@ -59,9 +59,8 @@
 .Box ul {
   color: #111;
   font-size: 14px;
-  list-style-position: inside;
   margin: 0 !important;
-  padding-left: 10px !important;
+  padding-left: 14px !important;
 }
 
 .RightContainer {
