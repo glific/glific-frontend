@@ -13,7 +13,6 @@ import axios from 'axios';
 import { ONBOARD_URL_SETUP } from 'config';
 
 export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) => {
-  const { t } = useTranslation();
   const [name, setOrgName] = useState<string>('');
   const [app_name, setAppName] = useState<string>('');
   const [api_key, setApiKeys] = useState<string>('');
