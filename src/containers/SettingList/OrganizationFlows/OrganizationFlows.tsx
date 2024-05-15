@@ -223,13 +223,13 @@ export const OrganizationFlows = () => {
       .nullable()
       .when('regxFlowEnabled', {
         is: (val: string) => val,
-        then: (schema) => schema.nullable().required(t('Regex flow is required.')),
+        then: (schema) => schema.nullable().required(t('Regular expression flow is required.')),
       }),
     regxFlowExpr: Yup.string()
       .nullable()
       .when('regxFlowEnabled', {
         is: (val: string) => val,
-        then: (schema) => schema.nullable().required(t('Regex expression is required.')),
+        then: (schema) => schema.nullable().required(t('Regular expression is required.')),
       }),
     regxFlowOpt: Yup.string().nullable(),
   };
@@ -350,7 +350,9 @@ export const OrganizationFlows = () => {
       component: Checkbox,
       name: 'regxFlowEnabled',
       className: styles.Checkbox,
-      title: <Typography className={styles.CheckboxLabel}>{t('Regex flow')}</Typography>,
+      title: (
+        <Typography className={styles.CheckboxLabel}>{t('Regular expression flow')}</Typography>
+      ),
       handleChange: setRegxFlowEnabled,
     },
     {
@@ -362,23 +364,24 @@ export const OrganizationFlows = () => {
       disabled: !regxFlowEnabled,
       label: t('Select flow'),
       helperText: t(
-        'The selected flow will trigger when end-users aren’t in any flow, their message doesn’t match any keyword, and their message matches the regex expression defined below.'
+        'The selected flow will trigger when end-users aren’t in any flow, their message doesn’t match any keyword, and their message matches the regular expression defined below.'
       ),
     },
     {
       component: Input,
       name: 'regxFlowExpr',
       type: 'text',
-      placeholder: t('Regex expression'),
-      label: t('Regex expression'),
+      label: t('Regular expression'),
       disabled: !regxFlowEnabled,
+      helperText: t(
+        'A pattern that the regular expression engine attempts to match in input text.'
+      ),
     },
     {
       component: Input,
       name: 'regxFlowOpt',
       type: 'text',
-      placeholder: t('Regex modifiers'),
-      label: t('Regex modifiers'),
+      label: t('Regular expression modifiers'),
       disabled: !regxFlowEnabled,
     },
   ];
