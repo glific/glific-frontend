@@ -23,37 +23,37 @@ export const RegistrationHome = () => {
           <div className={styles.Box}>
             <h4>Glific platform details</h4>
             <ul>
-              <li>Organization registered name </li>
-              <li> Chatbot number (New WhatsApp chatbot number) </li>
-              <li> App name (Gupshup bot) </li>
-              <li> Gupshup API keys (Generated)</li>
+              <li>Registered organization name</li>
+              <li>Chatbot number (New WhatsApp chatbot number)</li>
+              <li>App name (Gupshup bot)</li>
+              <li>Gupshup API keys (Generated)</li>
             </ul>
           </div>
 
           <div className={styles.Box}>
             <h4>About the organization</h4>
             <ul>
-              <li>Organization registered address </li>
-              <li> GSTIN number (optional) </li>
-              <li> Organization registration document and the certificate</li>
+              <li>Registered organization address</li>
+              <li>GSTIN number (optional)</li>
+              <li>Organization registration document and the certificate</li>
             </ul>
           </div>
 
           <div className={styles.Box}>
             <h4>Payment details</h4>
             <ul>
-              <li> Preferred billing frequency </li>
-              <li> Finance POC name and designation </li>
-              <li> Finance POC phone number and the email address</li>
+              <li>Preferred billing frequency</li>
+              <li>Finance POC name and designation</li>
+              <li>Finance POC phone number and the email address</li>
             </ul>
           </div>
 
           <div className={styles.Box}>
             <h4>Submitter/authority info</h4>
             <ul>
-              <li> Submitter’s name and address </li>
-              <li> Signing authority’s name and the email address </li>
-              <li> Signing authority’s designation</li>
+              <li>Submitter’s name and address</li>
+              <li>Signing authority’s name and the email address</li>
+              <li>Signing authority’s designation</li>
             </ul>
           </div>
         </div>

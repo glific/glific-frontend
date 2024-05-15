@@ -13,6 +13,7 @@ import axios from 'axios';
 import { ONBOARD_URL_SETUP } from 'config';
 
 export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) => {
+  const { t } = useTranslation();
   const [name, setOrgName] = useState<string>('');
   const [app_name, setAppName] = useState<string>('');
   const [api_key, setApiKeys] = useState<string>('');
@@ -73,7 +74,7 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
       component: Input,
       name: 'name',
       type: 'text',
-      inputLabel: 'Organization registered name',
+      inputLabel: 'Registered organization name',
       disabled: isDisabled,
     },
     {
@@ -81,7 +82,7 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
       name: 'phone',
       type: 'phone',
       inputLabel: 'Chatbot number',
-      helperText: 'New whatsapp chatbot number',
+      helperText: 'WhatsApp number that will be used for chatbot',
       disabled: isDisabled,
     },
     {
@@ -89,8 +90,8 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
       name: 'app_name',
       type: 'text',
       inputLabel: 'App name',
-      inputLabelSubtext: (
-        <p className={styles.SubText}>(Name of your bot on Gupshup.){appNameTooltip}</p>
+      helperText: (
+        <span className={styles.FormHelperText}>Name of your bot on Gupshup. {appNameTooltip}</span>
       ),
       disabled: isDisabled,
     },
@@ -98,9 +99,9 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
       component: Input,
       name: 'api_key',
       type: 'text',
-      inputLabel: 'Gupshup API keys',
-      inputLabelSubtext: (
-        <span className={styles.SubText}>(Click here to get the API keys) {apiTooltip}</span>
+      inputLabel: 'Gupshup API key',
+      helperText: (
+        <span className={styles.FormHelperText}>Click here to get the API key. {apiTooltip}</span>
       ),
       disabled: isDisabled,
     },
@@ -109,9 +110,10 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
       name: 'shortcode',
       type: 'text',
       inputLabel: 'URL shortcode',
-      helperText: 'Atleast 7-8 characters',
-      inputLabelSubtext: (
-        <span className={styles.SubText}>(Name you want to give your Glific platform)</span>
+      helperText: (
+        <span className={styles.FormHelperText}>
+          Name for your Glific platform. Atleast 7-8 characters without spaces.
+        </span>
       ),
       disabled: isDisabled,
     },
@@ -183,7 +185,7 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
       initialValues={initialFormValues}
       step={1}
       title="Bot details"
-      helperText="Add platform details and information based on the data queries."
+      helperText="Enter platform details and information based on the data queries."
       setStates={setStates}
       setPayload={setPayload}
       identifier="platformDetails"
