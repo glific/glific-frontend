@@ -17,7 +17,7 @@ export const CREATE_LABEL = gql`
 
 export const UPDATE_TAG = gql`
   mutation UpdateTag($id: ID!, $input: TagInput!) {
-    updateTag(id: $id,input: $input) {
+    updateTag(id: $id, input: $input) {
       tag {
         label
       }

@@ -38,12 +38,12 @@ const addAttachment = (attachmentType = '', attachmentURL = '') => {
 };
 
 vi.mock('common/notification', async (importOriginal) => {
-  const mod = await importOriginal<typeof import('common/notification')>()
+  const mod = await importOriginal<typeof import('common/notification')>();
   return {
     ...mod,
-    setNotification: vi.fn((...args) => { return args[1] }),
-  }
-})
+    setNotification: vi.fn((...args) => args[1]),
+  };
+});
 
 beforeEach(() => {
   mockedAxios.get.mockImplementation(() =>
@@ -134,9 +134,11 @@ test('should get error notification if uploading media fails', async () => {
     attachmentType: 'IMAGE',
     uploadPermission: true,
   };
-  render(<MockedProvider mocks={[uploadMediaErrorMock]}>
-    <AddAttachment {...defaultProps} />
-  </MockedProvider>)
+  render(
+    <MockedProvider mocks={[uploadMediaErrorMock]}>
+      <AddAttachment {...defaultProps} />
+    </MockedProvider>
+  );
 
   const file = { name: 'photo.png' };
 
@@ -145,7 +147,7 @@ test('should get error notification if uploading media fails', async () => {
   await waitFor(() => {
     expect(setNotification).toHaveReturnedWith('warning');
   });
-})
+});
 
 test('successful media submission', async () => {
   const responseData = { data: { is_valid: true } };
@@ -156,15 +158,17 @@ test('successful media submission', async () => {
 
   // let url validation complete
   await waitFor(() => {
-    expect(screen.queryByText('Please wait for the attachment URL verification')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText('Please wait for the attachment URL verification')
+    ).not.toBeInTheDocument();
   });
 
   await waitFor(() => {
     fireEvent.click(screen.getByTestId('ok-button'));
-  })
+  });
   await waitFor(() => {
     expect(setAttachmentType).toHaveBeenCalledWith('IMAGE');
-    expect(setAttachmentURL).toHaveBeenCalledWith('https://glific.com')
+    expect(setAttachmentURL).toHaveBeenCalledWith('https://glific.com');
     expect(setAttachment).toHaveBeenCalledWith(false);
-  })
-})
+  });
+});
