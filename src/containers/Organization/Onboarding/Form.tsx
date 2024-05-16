@@ -14,7 +14,7 @@ import { ReachOutToUs } from './ReachOutToUs/ReachOutToUs';
 import { Success } from './Success/Success';
 
 export const RegistrationForm = () => {
-  const [activeStep, setActiveStep] = useState(4);
+  const [activeStep, setActiveStep] = useState(0);
   const [openDialog, setDialogOpen] = useState<string | boolean>(false);
   const navigate = useNavigate();
 
@@ -77,7 +77,7 @@ export const RegistrationForm = () => {
     const existingData = localStorage.getItem('registrationData');
     if (existingData) {
       const data = JSON.parse(existingData);
-      // setActiveStep(data.activeStep || 0);
+      setActiveStep(data.activeStep || 0);
     }
   }, []);
 
