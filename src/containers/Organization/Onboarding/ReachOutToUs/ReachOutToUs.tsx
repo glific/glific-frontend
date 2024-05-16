@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
-import { Dialog } from '@mui/material';
+import { Dialog, IconButton } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import * as Yup from 'yup';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
@@ -101,6 +102,11 @@ export const ReachOutToUs = ({ open, setOpen, handleStepChange, saveData }: Reac
       onClose={() => setOpen(false)}
       data-testid="dialogBox"
     >
+      <div className={styles.CloseButton}>
+        <IconButton aria-label="close" className={styles.CloseIcon} onClick={() => setOpen(false)}>
+          <CloseIcon />
+        </IconButton>
+      </div>
       <FormLayout
         validationSchema={FormSchema}
         formFieldItems={formFields}
@@ -114,13 +120,12 @@ export const ReachOutToUs = ({ open, setOpen, handleStepChange, saveData }: Reac
           text: 'Send',
           align: 'left',
         }}
-        okButtonHelperText="You can also directly reachout to us via email. Please write to this email user@glificqueries.com."
+        okButtonHelperText="You can also reachout to us on support@glific.org."
         identifier="reachOutToUs"
         handleStepChange={handleStepChange}
         saveData={saveData}
         submitData={handleSubmit}
         loading={loading}
-        cancelButton={{ show: true, action: () => setOpen(false) }}
       />
     </Dialog>
   );

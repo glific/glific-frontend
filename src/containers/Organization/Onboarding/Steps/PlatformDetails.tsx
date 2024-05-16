@@ -29,8 +29,13 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
       .max(40, t('Name should not exceed 40 characters')),
     app_name: Yup.string().required(t('App name is required.')),
     api_key: Yup.string().required(t('API key is required.')),
-    shortcode: Yup.string().required(t('Shortcode is required.')),
-    phone: Yup.string().required(t('Phone number is required.')),
+    shortcode: Yup.string()
+      .required(t('Shortcode is required.'))
+      .max(8, 'Shortcode cannot be more than 8 characters.')
+      .matches(/^\S*$/, 'Shortcode cannot contain spaces.'),
+    phone: Yup.string()
+      .required(t('Phone number is required.'))
+      .min(4, t('Enter a valid phone number.')),
   });
 
   const initialFormValues: any = { name, app_name, api_key, shortcode, phone };
@@ -101,7 +106,7 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
       type: 'text',
       inputLabel: 'Gupshup API key',
       helperText: (
-        <span className={styles.FormHelperText}>Click here to get the API key. {apiTooltip}</span>
+        <span className={styles.FormHelperText}>API key generated on Gupshup {apiTooltip}</span>
       ),
       disabled: isDisabled,
     },
@@ -112,7 +117,7 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
       inputLabel: 'URL shortcode',
       helperText: (
         <span className={styles.FormHelperText}>
-          Name for your Glific platform. Atleast 7-8 characters without spaces.
+          Name you want to give your Glific platform (3 to 7 characters)
         </span>
       ),
       disabled: isDisabled,
@@ -185,7 +190,7 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
       initialValues={initialFormValues}
       step={1}
       title="Bot details"
-      helperText="Enter platform details and information based on the data queries."
+      helperText="Form to be filled by Signing authority of your organization."
       setStates={setStates}
       setPayload={setPayload}
       identifier="platformDetails"

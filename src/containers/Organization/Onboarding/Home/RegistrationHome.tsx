@@ -35,7 +35,6 @@ export const RegistrationHome = () => {
             <ul>
               <li>Registered organization address</li>
               <li>GSTIN number (optional)</li>
-              <li>Organization registration document and the certificate</li>
             </ul>
           </div>
 
@@ -51,7 +50,7 @@ export const RegistrationHome = () => {
           <div className={styles.Box}>
             <h4>Submitter/authority info</h4>
             <ul>
-              <li>Submitter’s name and address</li>
+              <li>Submitter’s name and email address</li>
               <li>Signing authority’s name and the email address</li>
               <li>Signing authority’s designation</li>
             </ul>

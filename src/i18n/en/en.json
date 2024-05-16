@@ -490,5 +490,6 @@
   "Name should not exceed 40 characters": "Name should not exceed 40 characters",
   "App name is required.": "App name is required.",
   "API key is required.": "API key is required.",
-  "Please agree to the terms and conditions.": "Please agree to the terms and conditions."
+  "Please agree to the terms and conditions.": "Please agree to the terms and conditions.",
+  "Enter a valid phone number.": "Enter a valid phone number."
 }

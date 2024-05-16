@@ -25,11 +25,21 @@ export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) =>
     name: Yup.string()
       .required(t('Name is required.'))
       .max(25, t('Please enter not more than 25 characters')),
-    designation: Yup.string().required(t('Designation is required.')),
-    phone: Yup.string().required(t('Phone number is required.')),
+    designation: Yup.string()
+      .required(t('Designation is required.'))
+      .max(25, t('Please enter not more than 25 characters')),
+    phone: Yup.string()
+      .required(t('Phone number is required.'))
+      .min(4, t('Enter a valid phone number.')),
     email: Yup.string().required(t('Email is required.')).email(t('Enter a valid email.')),
   });
-  const initialFormValues: any = { name, designation, phone, email, billing_frequency };
+  const initialFormValues: any = {
+    name,
+    designation,
+    phone,
+    email,
+    billing_frequency,
+  };
 
   const formFields = [
     {
@@ -43,7 +53,7 @@ export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) =>
       ],
     },
     {
-      label: 'Point of Contact',
+      label: 'Finance POC details',
       children: [
         {
           component: Input,
@@ -112,7 +122,12 @@ export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) =>
       if (data.is_valid) {
         handleStepChange();
       } else {
-        setErrors(data.messages);
+        const errors = Object.keys(data.messages).reduce((acc, key) => {
+          const newKey = key.replace('finance_poc_', '');
+          return { ...acc, [newKey]: data.messages[key] };
+        }, {});
+
+        setErrors(errors);
       }
     });
   };

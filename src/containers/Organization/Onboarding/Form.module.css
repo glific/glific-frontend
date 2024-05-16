@@ -53,6 +53,7 @@
   color: #119656;
   text-decoration: underline;
   font-weight: bold;
+  cursor: pointer;
 }
 
 .RightContainer {

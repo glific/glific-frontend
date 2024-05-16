@@ -4,6 +4,7 @@
   margin-left: 25%;
   border-radius: 20px;
   padding: 2rem 4rem;
+  position: relative;
 }
 
 .MessageField {
@@ -13,4 +14,13 @@
 
 .MessageField textarea {
   min-height: 120px;
+}
+
+.CloseButton {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
 }

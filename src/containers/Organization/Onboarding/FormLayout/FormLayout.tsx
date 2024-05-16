@@ -29,7 +29,6 @@ interface FormLayoutProps {
   loading?: boolean;
   showModal?: boolean;
   isDisabled?: boolean;
-  cancelButton?: { text?: string; show: Boolean; action: any };
 }
 
 export const FormLayout = ({
@@ -51,7 +50,6 @@ export const FormLayout = ({
   loading,
   showModal,
   isDisabled,
-  cancelButton,
 }: FormLayoutProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -159,20 +157,7 @@ export const FormLayout = ({
         </div>
       </div>
 
-      <div
-        className={`${cancelButton ? styles.SpacedOutButtons : styles.Buttons} ${buttonState.align === 'right' && styles.RightButton}`}
-      >
-        {cancelButton && cancelButton.show && (
-          <Button
-            variant="outlined"
-            color="primary"
-            onClick={() => cancelButton.action()}
-            className={styles.Button}
-            data-testid="cancelActionButton"
-          >
-            {cancelButton.text || 'Cancel'}
-          </Button>
-        )}
+      <div className={`${styles.Buttons} ${buttonState.align === 'right' && styles.RightButton}`}>
         {identifier === 'platformDetails' ? (
           <Captcha
             component={Button}
