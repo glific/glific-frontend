@@ -1,16 +1,16 @@
+import { useEffect, useState } from 'react';
 import { Input } from 'components/UI/Form/Input/Input';
 import { useTranslation } from 'react-i18next';
+import axios from 'axios';
 import * as Yup from 'yup';
+
+import { ONBOARD_URL_SETUP } from 'config';
+import styles from '../FormLayout/FormLayout.module.css';
 import { PhoneInput } from 'components/UI/Form/PhoneInput/PhoneInput';
 import { FormLayout } from '../FormLayout/FormLayout';
-import { useEffect, useState } from 'react';
-
-import styles from '../FormLayout/FormLayout.module.css';
 import { FormStepProps } from './OrgDetails';
 import Tooltip from 'components/UI/Tooltip/Tooltip';
 import InfoIcon from 'assets/images/info.svg?react';
-import axios from 'axios';
-import { ONBOARD_URL_SETUP } from 'config';
 
 export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) => {
   const { t } = useTranslation();
@@ -25,12 +25,12 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
 
   const FormSchema = Yup.object().shape({
     name: Yup.string()
-      .required('Organisation Name is required.')
-      .max(40, 'Name should not exceed 40 characters'),
-    app_name: Yup.string().required('App name is required.'),
-    api_key: Yup.string().required('API key is required.'),
-    shortcode: Yup.string().required('Shortcode is required.'),
-    phone: Yup.string().required('Phone number is required.'),
+      .required(t('Name is required.'))
+      .max(40, t('Name should not exceed 40 characters')),
+    app_name: Yup.string().required(t('App name is required.')),
+    api_key: Yup.string().required(t('API key is required.')),
+    shortcode: Yup.string().required(t('Shortcode is required.')),
+    phone: Yup.string().required(t('Phone number is required.')),
   });
 
   const initialFormValues: any = { name, app_name, api_key, shortcode, phone };

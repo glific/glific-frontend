@@ -1,12 +1,13 @@
-import { Input } from 'components/UI/Form/Input/Input';
-import * as Yup from 'yup';
-import { FormLayout } from '../FormLayout/FormLayout';
 import { useState } from 'react';
-
-import styles from '../FormLayout/FormLayout.module.css';
-import { ONBOARD_URL_UPDATE } from 'config';
 import axios from 'axios';
 import { Checkbox } from '@mui/material';
+import * as Yup from 'yup';
+
+import { ONBOARD_URL_UPDATE } from 'config';
+import styles from '../FormLayout/FormLayout.module.css';
+import { Input } from 'components/UI/Form/Input/Input';
+import { FormLayout } from '../FormLayout/FormLayout';
+import { useTranslation } from 'react-i18next';
 
 export interface FormStepProps {
   handleStepChange: Function;
@@ -20,14 +21,16 @@ export const OrgDetails = ({ handleStepChange, saveData }: FormStepProps) => {
 
   const [loading, setLoading] = useState(false);
 
+  const { t } = useTranslation();
+
   const FormSchema = Yup.object().shape({
-    gstin: Yup.string().length(15, 'Invalid gst number'),
+    gstin: Yup.string().length(15, t('Invalid gst number')),
     registered_address: Yup.string()
-      .required('Registered address is required.')
-      .max(300, 'Address should not exceed 300 characters'),
+      .required(t('Registered address is required.'))
+      .max(300, t('Address should not exceed 300 characters')),
     current_address: Yup.string()
-      .required('Current address is required.')
-      .max(300, 'Address should not exceed 300 characters'),
+      .required(t('Current address is required.'))
+      .max(300, t('Address should not exceed 300 characters')),
   });
 
   const initialFormValues: any = {

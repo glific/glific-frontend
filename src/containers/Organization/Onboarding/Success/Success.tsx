@@ -1,6 +1,5 @@
 import dayjs from 'dayjs';
 import styles from './Success.module.css';
-
 import Check from 'assets/images/Check.svg';
 
 export const Success = () => {

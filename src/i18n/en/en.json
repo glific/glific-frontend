@@ -478,5 +478,17 @@
   "Element name is required.": "Element name is required.",
   "Category is required.": "Category is required.",
   "Next": "Next",
-  "This Field is required.": "This Field is required."
+  "This Field is required.": "This Field is required.",
+  "Invalid gst number": "Invalid gst number",
+  "Registered address is required.": "Registered address is required.",
+  "Address should not exceed 300 characters": "Address should not exceed 300 characters",
+  "Current address is required.": "Current address is required.",
+  "Please enter not more than 25 characters": "Please enter not more than 25 characters",
+  "Designation is required.": "Designation is required.",
+  "Phone number is required.": "Phone number is required.",
+  "Enter a valid email.": "Enter a valid email.",
+  "Name should not exceed 40 characters": "Name should not exceed 40 characters",
+  "App name is required.": "App name is required.",
+  "API key is required.": "API key is required.",
+  "Please agree to the terms and conditions.": "Please agree to the terms and conditions."
 }

@@ -1,9 +1,9 @@
 import { useNavigate } from 'react-router';
 
-import { Button } from 'components/UI/Form/Button/Button';
 import styles from './RegistrationHome.module.css';
 import GlificLogo from 'assets/images/logo/Logo.svg';
 import RegistrationImage from 'assets/images/registrationFormImage.png';
+import { Button } from 'components/UI/Form/Button/Button';
 
 export const RegistrationHome = () => {
   const navigate = useNavigate();

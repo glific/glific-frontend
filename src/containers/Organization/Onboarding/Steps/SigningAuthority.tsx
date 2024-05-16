@@ -1,13 +1,14 @@
-import { Input } from 'components/UI/Form/Input/Input';
-import { useTranslation } from 'react-i18next';
-import * as Yup from 'yup';
-import { FormLayout } from '../FormLayout/FormLayout';
 import { useState } from 'react';
-import { FormStepProps } from './OrgDetails';
+import * as Yup from 'yup';
+import axios from 'axios';
+import { useTranslation } from 'react-i18next';
+
 import { ONBOARD_URL_UPDATE } from 'config';
 import styles from '../FormLayout/FormLayout.module.css';
+import { Input } from 'components/UI/Form/Input/Input';
+import { FormLayout } from '../FormLayout/FormLayout';
+import { FormStepProps } from './OrgDetails';
 import { TermsAndConditions } from '../TermsAndConditions/TermsAndCondition';
-import axios from 'axios';
 
 interface SigningAuthorityProps extends FormStepProps {
   openReachOutToUs?: Function;
@@ -35,11 +36,11 @@ export const SigningAuthority = ({
   const FormSchema = Yup.object().shape({
     submitterName: Yup.string()
       .required(t('Name is required.'))
-      .max(25, 'Please enter not more than 25 characters'),
-    submitterEmail: Yup.string().required('Email is required.').email('Enter a valid email.'),
+      .max(25, t('Please enter not more than 25 characters')),
+    submitterEmail: Yup.string().required(t('Email is required.')).email(t('Enter a valid email.')),
     signingAuthorityName: Yup.string()
-      .required('Name is required.')
-      .max(25, 'Please enter not more than 25 characters'),
+      .required(t('Name is required.'))
+      .max(25, t('Please enter not more than 25 characters')),
 
     signingAuthorityDesignation: Yup.string().required('Designation is required.'),
     signingAuthorityEmail: Yup.string()

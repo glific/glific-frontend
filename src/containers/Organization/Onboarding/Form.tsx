@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
-import styles from './Form.module.css';
+import { useNavigate } from 'react-router';
 import { Step, StepLabel, Stepper } from '@mui/material';
+
 import GlificLogo from 'assets/images/logo/Logo.svg';
 import BackButton from 'assets/images/icons/BackIconFlow.svg?react';
-import { useNavigate } from 'react-router';
+
+import styles from './Form.module.css';
 import { PlatformDetails } from './Steps/PlatformDetails';
 import { OrgDetails } from './Steps/OrgDetails';
 import { PaymentDetails } from './Steps/PaymentDetails';

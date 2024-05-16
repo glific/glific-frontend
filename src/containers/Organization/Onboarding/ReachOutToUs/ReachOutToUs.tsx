@@ -1,14 +1,14 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router';
 import { Dialog } from '@mui/material';
 import * as Yup from 'yup';
+import axios from 'axios';
+import { useTranslation } from 'react-i18next';
 
+import { ONBOARD_URL_REACT_OUT } from 'config';
 import styles from './ReachOutToUs.module.css';
 import { FormLayout } from '../FormLayout/FormLayout';
 import { Input } from 'components/UI/Form/Input/Input';
-import { useTranslation } from 'react-i18next';
-import { useState } from 'react';
-import axios from 'axios';
-import { ONBOARD_URL_REACT_OUT } from 'config';
-import { useNavigate } from 'react-router';
 
 interface ReachOutToUsProps {
   open: boolean | any;

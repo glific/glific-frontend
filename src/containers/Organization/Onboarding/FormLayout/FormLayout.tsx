@@ -1,9 +1,7 @@
 import { Field, FormikProvider, useFormik } from 'formik';
 import { useEffect, useState } from 'react';
-
-import styles from './FormLayout.module.css';
 import { Typography } from '@mui/material';
-
+import styles from './FormLayout.module.css';
 import { Button } from 'components/UI/Form/Button/Button';
 import { Captcha } from 'components/UI/Form/Captcha/Captcha';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';

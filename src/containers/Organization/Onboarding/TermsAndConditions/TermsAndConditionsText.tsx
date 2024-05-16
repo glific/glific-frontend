@@ -6,9 +6,9 @@ export const TermsAndConditionsText = () => {
       <h1 className={styles.Heading}>Terms and conditions</h1>
       <p>
         By using the Glific software, you agree to these terms and conditions prescribed by Tech4Dev
-        Project Private Limited (<b>Company</b>) in relation to the Glific software as a service
-        (SaaS) platform (<b>Services</b>). There will be no force or effect to any contrary terms
-        contained in a related purchase order for the Services.
+        Project Private Limited (Company) in relation to the Glific software as a service (SaaS)
+        platform (Services). There will be no force or effect to any contrary terms contained in a
+        related purchase order for the Services.
       </p>
 
       <ol>
@@ -25,7 +25,7 @@ export const TermsAndConditionsText = () => {
             </li>
             <li>
               The obligations and specifications of the Services and support provided by the Company
-              shall be morefully outlined below in Addendum-A “Services and Support”.
+              shall be fully outlined below in Addendum-A “Services and Support”.
             </li>
           </ul>
         </li>
@@ -44,10 +44,9 @@ export const TermsAndConditionsText = () => {
               You agree that the Company has no responsibility for Customer Data except the deletion
               obligation set out below in the event the Services are discontinued. You agree to
               grant to the Company and its agents a non-exclusive, worldwide, royalty-free right and
-              license to use Customer Data to provide the Services and develop and/or improve
-              Company products and services, and, on an aggregate basis, to use Customer Data to
-              make improvements to the Services, and for reporting purposes. No rights or licences
-              are granted except as expressly set forth herein.
+              licence to use Customer Data solely to provide the Services and, on an aggregate
+              basis, to use Customer Data to make improvements to the Services, and for reporting
+              purposes. No rights or licences are granted except as expressly set forth herein.
             </li>
             <li>
               You agree and acknowledge that the Company may share your contact and other relevant
@@ -66,11 +65,10 @@ export const TermsAndConditionsText = () => {
           <h5>Termination</h5>
           <ul>
             <li>
-              Company may terminate your access to or use of our Services by providing a prior
-              notice of 15 (fifteen) business days (or with/without notice on the case to case
-              basis, in the event of your failure to pay consecutive 12 months the requisite fee).
-              You agree to pay in full for the Services up to and including the last day on which
-              the Services are provided.
+              Company or you may terminate your account or use of our Services by providing the
+              other party a prior notice of 15 (fifteen) business days with or without reason. You
+              agree to pay in full for the Services up to and including the last day on which the
+              Services are provided.
             </li>
             <li>
               In the event of any breach of the terms of these Glific SaaS Terms and Conditions by
@@ -97,7 +95,7 @@ export const TermsAndConditionsText = () => {
             <li>
               You agree that all rights, title, and interest (including all patent, copyright, trade
               secret, trademark, and other intellectual property rights) in and to the Services and
-              any modifications thereto (Software IPR) will be treated as open source, as
+              any modifications thereto (<b>Software IPR</b>) will be treated as open source, as
               applicable, according to the terms of the{' '}
               <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache Open Source License</a>{' '}
               (or other open source license that the Company elects) and all terms of such licenses
@@ -125,7 +123,7 @@ export const TermsAndConditionsText = () => {
               With respect to maintenance, you will be responsible for obtaining and maintaining any
               equipment and ancillary services needed to connect to, access or otherwise use the
               Services, including, without limitation, modems, hardware, servers, software,
-              operating systems, networking, web servers and the like (Equipment).
+              operating systems, networking, web servers and the like (<b>Equipment</b>).
             </li>
             <li>
               You agree that you will also be responsible for maintaining the security of the
@@ -140,18 +138,18 @@ export const TermsAndConditionsText = () => {
           <h5>Payment of Fees</h5>
           <ul>
             <li>
-              You are required to pay the Company the applicable fees as set out in the Pricing
-              Sheet (Fees). In the event, your use of the Services exceeds the service capacity set
-              forth in the Pricing Sheet or otherwise requires the payment of additional fees (per
-              these terms and conditions or any other written understanding between you and the
-              Company), you agree to be billed for such usage and to pay the additional fees in the
-              manner provided herein.
+              You are required to pay the Company the applicable fees as set out in the{' '}
+              <a href="https://glific.org/pricing/">Pricing Sheet</a> (<b>Fees</b>) regardless of
+              your platform usage. In the event, your use of the Services exceeds the service
+              capacity set forth in the <a href="https://glific.org/pricing/">Pricing Sheet</a> or
+              otherwise requires the payment of additional fees (per these terms and conditions or
+              any other written understanding between you and the Company), you agree to be billed
+              for such usage and to pay the additional fees in the manner provided herein.
             </li>
             <li>
-              You acknowledge that the Company reserves the right to change the Fees or applicable
-              charges and to institute new charges and Fees at the end of every quarter (commencing
-              from the date on which you start using the software), upon 30 (fifteen) business days
-              prior notice to you (which may be sent by email).
+              You acknowledge that the Company reserves the right to change the fees or applicable
+              charges and to institute new charges and fees upon 30 business days' prior notice to
+              you (which may also be sent by email).
             </li>
             <li>
               If you believe that the Company has billed you incorrectly, you must contact the
@@ -162,29 +160,27 @@ export const TermsAndConditionsText = () => {
             <li>
               You agree that the Company may choose to bill through an invoice, in which case, full
               payment for invoices issued in any given month must be received by the Company within
-              15 (fifteen) business days of the mailing date of the invoice. Unpaid amounts are
-              subject to a finance charge of 1.5% per month on any outstanding balance on case to
-              case basis, or the maximum permitted by law, whichever is lower, plus all expenses of
-              collection and may result in immediate termination of Service in the event of your
-              failure to pay consecutive two months the requisite fee as mentioned in clause 3
-              above. You agree that the Company may choose to bill through an invoice, in which
-              case, full payment for invoices issued in any given month must be received by the
-              Company within 15 (fifteen) business days of the mailing date of the invoice. Unpaid
-              amounts for 2 consecutive months may subject to Suspension of account (which means
-              your staff will not be able to access the account, and the bot will stop sending and
-              receiving messages from the users) and in the event of your failure to pay consecutive
-              12 months the requisite fee as mentioned in clause 3 above.
+              15 (fifteen) business days of the mailing date of the invoice. Unpaid amounts for 2
+              consecutive months may subject to Suspension of account (which means your staff will
+              not be able to access the account, and the bot will stop sending and receiving
+              messages from the users) and in the event of your failure to pay consecutive 12 months
+              the requisite fee, the account would be terminated as mentioned in clause 3 above.
+            </li>
+            <li>
+              You may request the company to suspend the account for the specified time limit with a
+              prior written notice. In such cases, suspension charges would be applicable as per the{' '}
+              <a href="https://glific.org/pricing/">Pricing Sheet</a>.
             </li>
             <li>
               All fees and charges payable in relation to the Services will be exclusive of
-              applicable national, state, or local indirect taxes (Taxes) that Company is legally
-              obligated to charge under Indian tax laws. For the purpose of this clause, local
-              indirect taxes include Goods and Services Tax (GST), which includes the Central Goods
-              and Services Tax (Central Tax), the State Goods and Services Tax (State Tax), the
-              Union Territory Goods and Services Tax (UT Tax), the Integrated Goods and Services Tax
-              (Integrated Tax) as may be applicable. You will pay the fees and charges in our
-              invoice in full by applying any withholding taxes, if any applicable as per Indian
-              Law.
+              applicable national, state, or local indirect taxes (<b>Taxes</b>) that Company is
+              legally obligated to charge under Indian tax laws. For the purpose of this clause,
+              local indirect taxes include Goods and Services Tax (<b>GST</b>), which includes the
+              Central Goods and Services Tax (<b>Central Tax</b>), the State Goods and Services Tax
+              (<b>State Tax</b>), the Union Territory Goods and Services Tax (<b>UT Tax</b>), the
+              Integrated Goods and Services Tax (<b>Integrated Tax</b>) as may be applicable. You
+              will pay the fees and charges in our invoice in full by applying any withholding
+              taxes, if any applicable as per Indian Law.
             </li>
             <li>
               You agree that all payments shall be made in favour of “TECH4DEV PROJECT PRIVATE
@@ -213,8 +209,12 @@ export const TermsAndConditionsText = () => {
             <li>
               You agree to not engage in or abet any activity that may be construed as
               unconstitutional, anti-government, political, or religious in nature. During the
-              period for which the Services are availed by you, you agree to comply with the App
-              Business Messaging Policy and all applicable policies of the Company.
+              period for which the Services are availed by you, you agree to comply with the
+              <a href="https://business.whatsapp.com/policy">
+                {' '}
+                WhatsApp Business Messaging Policy
+              </a>{' '}
+              and all applicable policies of the Company.
             </li>
           </ul>
         </li>
@@ -224,20 +224,21 @@ export const TermsAndConditionsText = () => {
           <ul>
             <li>
               You confirm that the following representations and warranties are true and correct as
-              of the date you agree to these terms to avail the services (Effective Date) and will
-              continue to be true and correct during the course the Services are availed: (a) You
-              have all relevant, valid registrations as required under applicable laws to undertake
-              your activities, (b) that there are no judicial or administrative actions, proceedings
-              or investigations pending or threatened, which would have a material adverse effect on
-              the your capacity to perform your obligations under these terms and conditions, (c)
-              that all activities undertaken by you pursuant to agreeing to these terms and
-              conditions are free from any political, religious, or racial references or connotation
-              (in any form or manner), (d) you are not, and are not affiliated with any political
-              party, politician, political candidate, political campaign, or entities that offer
-              services related to politics, political candidates, political campaign strategy,
+              of the date you agree to these terms to avail the services (<b>Effective Date</b>) and
+              will continue to be true and correct during the course the Services are availed: (a)
+              You have all relevant, valid registrations as required under applicable laws to
+              undertake your activities, (b) that there are no judicial or administrative actions,
+              proceedings or investigations pending or threatened, which would have a material
+              adverse effect on the your capacity to perform your obligations under these terms and
+              conditions, (c) that all activities undertaken by you pursuant to agreeing to these
+              terms and conditions are free from any political, religious, or racial references or
+              connotation (in any form or manner), (d) you are not, and are not affiliated with any
+              political party, politician, political candidate, political campaign, or entities that
+              offer services related to politics, political candidates, political campaign strategy,
               political campaigning services and exclusive government service providers, and (e) you
-              are in compliance with all policies of WhatsApp and are eligible under relevant
-              policies of WhatsApp to avail the Services.
+              are in compliance with all policies of{' '}
+              <a href="https://business.whatsapp.com/privacy-protections">WhatsApp</a> and are
+              eligible under relevant policies of WhatsApp to avail the Services.
             </li>
           </ul>
         </li>
@@ -248,11 +249,12 @@ export const TermsAndConditionsText = () => {
             <li>
               Both the Company and you agree to maintain utmost confidentiality of any information
               that is conveyed or provided in relation to these Glific SaaS Terms and Conditions or
-              at the time of disclosure, designated in writing as confidential (Confidential
-              Information). Company and you agree to use the Confidential Information received by
-              it/ you solely for the purposes set forth in these Glific SaaS Terms and Conditions
-              and will return or destroy such Confidential Information forthwith after the Services
-              are discontinued under these Glific SaaS Terms and Conditions.
+              at the time of disclosure, designated in writing as confidential (
+              <b>Confidential Information</b>). Company and you agree to use the Confidential
+              Information received by it/ you solely for the purposes set forth in these Glific SaaS
+              Terms and Conditions and will return or destroy such Confidential Information
+              forthwith after the Services are discontinued under these Glific SaaS Terms and
+              Conditions.
             </li>
             <li>
               Notwithstanding anything else set out in these Glific SaaS Terms and Conditions,
@@ -280,7 +282,7 @@ export const TermsAndConditionsText = () => {
           <ul>
             <li>
               Company will use reasonable efforts consistent with prevailing industry standards to
-              maintain the Services in a manner which minimizes errors and interruptions in the
+              maintain the Services in a manner which minimises errors and interruptions in the
               Services. Services may be temporarily unavailable for scheduled maintenance or for
               unscheduled emergency maintenance, either by Company or by third-party providers, or
               because of other causes beyond Company’s reasonable control, but the Company agrees to
@@ -308,7 +310,7 @@ export const TermsAndConditionsText = () => {
               You agree to indemnify the Company in respect of any losses, damages, costs,
               liabilities, penalties or claims arising from your or your employees’,
               representatives’, any external organisation or its employee to whom you will be
-              sharing the your right of using the Glific software (External User) and/or
+              sharing the your right of using the Glific software (<b>External User</b>) and/or
               subcontractors’/substitutes’ or breach of any of the terms and conditions contained
               herein or from the usage of the Services.
             </li>
@@ -339,7 +341,7 @@ export const TermsAndConditionsText = () => {
             <li>
               If any term of this Glific Saas Terms and Conditions is deemed unlawful, void or for
               any reason unenforceable, then that term shall be deemed severable from the Glific
-              Saas Terms and Conditions and shall not affect the validity and enforceability the
+              Saas Terms and Conditions and shall not affect the validity and enforceability of the
               remaining terms.
             </li>
           </ul>
@@ -384,16 +386,100 @@ export const TermsAndConditionsText = () => {
           <ul>
             <li>
               Unless mutually agreed between the Company and you, this Glific Saas Terms and
-              Conditions and the Apache Open Source License (or other open source license that the
-              Company elects) is the complete agreement between you and the Company and supersedes
-              and cancels all previous written and oral agreements, and communications. Your
-              acceptance of the Glific Saas Terms and Conditions does not establish any agency,
+              Conditions and the{' '}
+              <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache Open Source License</a>{' '}
+              (or other open source license that the Company elects) is the complete agreement
+              between you and the Company and supersedes and cancels all previous written and oral
+              agreements, and communications.
+            </li>
+            <li>
+              Your acceptance of the Glific Saas Terms and Conditions does not establish any agency,
               partnership, joint venture, or employment and you agree that you do not have the
-              authority to bind the Company in any respect whatsoever.
+              authority to bind the Company in any respect whatsoever.Your acceptance of the Glific
+              Saas Terms and Conditions does not establish any agency, partnership, joint venture,
+              or employment and you agree that you do not have the authority to bind the Company in
+              any respect whatsoever.
             </li>
           </ul>
         </li>
       </ol>
+
+      <div className={styles.Addendum}>
+        <h5>Addendum-A</h5>
+        <ol>
+          <li>
+            <h6>Statement of service:</h6>
+            <p>
+              Glific (“Glific,” “we,” “our,” “us”, “Company”) is a software as a service based
+              platform that allows customers to create whatsapp based chatbots based on their use
+              case (the “Service”).
+            </p>
+          </li>
+          <li>
+            <h6>Service Availability Level</h6>
+            <p>
+              Company will maintain a target Service Availability Level of 99% during each Company
+              Fiscal Year.
+              <br />
+              <br />
+              The following definitions apply to Company’s Service Availability Level obligations:
+              <br />“<b>Company Fiscal Year</b>” means the following twelve-month period: (i) April
+              1 through March 31 of the following year. <br />
+              <br />
+              <b>“Downtime”</b> means the time in minutes that the Service is not available to the
+              Customer. Downtime excludes beta, trial, proof of concept, and sandbox versions of the
+              Service or periods when the Service may not be available due to: (i) Service
+              Maintenance; (ii) a failure or defect arising out of Third Party Services; or (iii)
+              Company’s failure to fulfill its obligations due to causes beyond its control. Company
+              measures Downtime based on server-side error rate.
+              <br />
+              <br /> “<b>Service Availability Level</b>” means the percentage of total possible
+              minutes the Service was available to Customer during an Company Fiscal Year and is
+              calculated according to the following formula: [(total minutes in Company Fiscal Year
+              – Downtime) / total minutes in Company Fiscal Year]
+              <br />
+              <br />“<b>Service Maintenance</b>” means the time that the Service is not accessible
+              due to the maintenance, repairs, improvements, changes, and upgrading of the software
+              and hardware used by the Company to provide the service. Service Maintenance includes
+              scheduled maintenance and unscheduled, emergency maintenance requiring prompt action
+              to protect the integrity and/or security of Customer Data or the Service.
+            </p>
+          </li>
+          <li>
+            <h6>Support Services and Timelines:</h6>
+            <p>
+              Company will respond to Customer support inquiries filed via{' '}
+              <a href="https://discord.com/invite/ZK5xS9gHuW"> Discord Community Server</a> within 1
+              working day of receipt of such inquiry. <br />
+              <br />
+              “Business Hours” means 10:00 to 18:00 Indian Standard Time (Monday-Friday). <br />
+              <br />
+              Company’s ability to provide support depends on Customer’s compliance with the
+              Agreement, Customer’s provision of accurate and detailed information sufficient for
+              Company to reproduce the reported error, and Customer’s response to Company
+              communications in a timely manner. Company is not obligated to provide support for
+              issues related to network unavailability due to reasons beyond its control such as
+              emergency updates to address security, privacy, legal, regulatory, or third party
+              hardware or software issues not reasonably foreseeable by Company or within Company’s
+              control. Company is also not responsible for configuring or diagnosing problems in any
+              other part of Customer’s technical infrastructure. Professional Services or other
+              requests for functional assistance not directly related to the usage of the Service
+              are not included within the scope of Company’s support under the Agreement.
+            </p>
+          </li>
+          <li>
+            <h6>Escalation Matrix</h6>
+            <p>
+              To report an Issue, Customers shall raise a support ticket in Discord (support and
+              community system for service). In case, the issue has not been resolved according to
+              the Agreement, the issue can be escalated by reporting it via email.
+              <br />
+              <br />
+              Email: support@projecttech4dev.org
+            </p>
+          </li>
+        </ol>
+      </div>
     </div>
   );
 };

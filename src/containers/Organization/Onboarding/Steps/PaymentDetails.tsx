@@ -1,14 +1,15 @@
-import { Input } from 'components/UI/Form/Input/Input';
-import { useTranslation } from 'react-i18next';
-import * as Yup from 'yup';
-import { FormLayout } from '../FormLayout/FormLayout';
 import { useState } from 'react';
+import * as Yup from 'yup';
+import axios from 'axios';
+import { useTranslation } from 'react-i18next';
+
+import { ONBOARD_URL_UPDATE } from 'config';
 import styles from '../FormLayout/FormLayout.module.css';
+import { Input } from 'components/UI/Form/Input/Input';
+import { PhoneInput } from 'components/UI/Form/PhoneInput/PhoneInput';
+import { FormLayout } from '../FormLayout/FormLayout';
 import { PaymentOptions } from '../PaymentType/PaymentOptions';
 import { FormStepProps } from './OrgDetails';
-import axios from 'axios';
-import { ONBOARD_URL_UPDATE } from 'config';
-import { PhoneInput } from 'components/UI/Form/PhoneInput/PhoneInput';
 
 export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) => {
   const { t } = useTranslation();
@@ -22,11 +23,11 @@ export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) =>
 
   const FormSchema = Yup.object().shape({
     name: Yup.string()
-      .required('Name is required.')
-      .max(25, 'Please enter not more than 25 characters'),
-    designation: Yup.string().required('Designation is required.'),
-    phone: Yup.string().required('Phone number is required.'),
-    email: Yup.string().required(t('Email is required.')).email('Enter a valid email.'),
+      .required(t('Name is required.'))
+      .max(25, t('Please enter not more than 25 characters')),
+    designation: Yup.string().required(t('Designation is required.')),
+    phone: Yup.string().required(t('Phone number is required.')),
+    email: Yup.string().required(t('Email is required.')).email(t('Enter a valid email.')),
   });
   const initialFormValues: any = { name, designation, phone, email, billing_frequency };
 

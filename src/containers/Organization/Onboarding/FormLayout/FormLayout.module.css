@@ -167,3 +167,9 @@
   color: #1f1f1f;
   font-size: 14px;
 }
+
+.FormHelperText {
+  display: flex;
+  align-items: center;
+  column-gap: 0.5rem;
+}

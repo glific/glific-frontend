@@ -53,6 +53,7 @@
 
 .Main ul {
   padding-left: 15px;
+  list-style: disc;
 }
 
 .Main ol {
@@ -74,4 +75,20 @@
   line-height: 18px;
   font-weight: 400;
   color: #fb5c5c;
+}
+
+.Addendum {
+  margin-top: 2.5rem;
+  padding: 0 3rem;
+  font-size: 14px !important;
+}
+
+.Addendum h5 {
+  text-align: center;
+  text-decoration: underline;
+}
+
+.Addendum h6 {
+  font-size: 14px;
+  margin: 0;
 }
