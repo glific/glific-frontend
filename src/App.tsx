@@ -8,10 +8,7 @@ import gqlClient from 'config/apolloclient';
 import { SessionContext, SideDrawerContext } from 'context/session';
 import ErrorHandler from 'containers/ErrorHandler/ErrorHandler';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
-import {
-  getAuthSession,
-  checkAuthStatusService,
-} from 'services/AuthService';
+import { getAuthSession, checkAuthStatusService } from 'services/AuthService';
 import { UnauthenticatedRoute } from 'routes/UnauthenticatedRoute/UnauthenticatedRoute';
 import { AuthenticatedRoute } from 'routes/AuthenticatedRoute/AuthenticatedRoute';
 import { Logout } from 'containers/Auth/Logout/Logout';

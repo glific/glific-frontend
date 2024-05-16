@@ -222,12 +222,13 @@ export const FormLayout = ({
         }}
         title={'Confirmation'}
         buttonOk={'Confirm'}
-        buttonCancel="Edit Details"
+        buttonCancel="Cancel"
         buttonOkLoading={loading}
       >
         <div className={styles.Modal}>
           <p>
-            You wont be able to make changes to this page once confirmed. Do you want to go ahead?
+            The information listed on this form cannot be changed once confirmed. Do you want to
+            proceed?
           </p>
           {loading && <p className={styles.Wait}>Please wait, this might take a few seconds.</p>}
         </div>

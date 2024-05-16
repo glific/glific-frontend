@@ -31,21 +31,18 @@ export const ReachOutToUs = ({ open, setOpen, handleStepChange, saveData }: Reac
       name: 'name',
       type: 'text',
       inputLabel: 'Full Name',
-      placeholder: 'Enter full name',
     },
     {
       component: Input,
       name: 'email',
       type: 'text',
       inputLabel: 'Email address',
-      placeholder: 'Enter your email address',
     },
     {
       component: Input,
       name: 'message',
       type: 'text',
       inputLabel: 'Message',
-      placeholder: 'Your message here',
       textArea: true,
       additionalStyles: styles.MessageField,
     },
@@ -110,14 +107,14 @@ export const ReachOutToUs = ({ open, setOpen, handleStepChange, saveData }: Reac
         initialValues={initialFormValues}
         showStep={false}
         title="Write to us"
-        helperText="If you require any more clarifications to the T&C, contact us"
+        helperText="Please enter your details and the query."
         setStates={setStates}
         setPayload={setPayload}
         buttonState={{
           text: 'Send',
           align: 'left',
         }}
-        okButtonHelperText="If you have any further queries regarding the T&C, kindly write to this email user@glificqueries.com. Feel free to contact us if you have any more questions. "
+        okButtonHelperText="You can also directly reachout to us via email. Please write to this email user@glificqueries.com."
         identifier="reachOutToUs"
         handleStepChange={handleStepChange}
         saveData={saveData}

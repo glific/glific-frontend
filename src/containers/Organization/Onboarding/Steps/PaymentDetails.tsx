@@ -42,7 +42,7 @@ export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) =>
       ],
     },
     {
-      label: 'Finance POC Details',
+      label: 'Point of Contact',
       children: [
         {
           component: Input,
@@ -61,15 +61,14 @@ export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) =>
           name: 'phone',
           type: 'phone',
           inputLabel: 'Phone Number',
-          placeholder: 'Enter 10-digit mobile number',
         },
         {
           component: Input,
           name: 'email',
           type: 'text',
           inputLabel: 'Email address',
-          inputLabelSubtext: (
-            <span className={styles.SubText}>(Invoice will be sent to this email)</span>
+          helperText: (
+            <span className={styles.FormHelperText}>Invoice will be sent to this email</span>
           ),
         },
       ],
@@ -124,7 +123,7 @@ export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) =>
       initialValues={initialFormValues}
       step={3}
       title="Payment details"
-      helperText="Add payment information and choose the billing frequency"
+      helperText="Enter payment information and choose the billing frequency"
       setStates={setStates}
       setPayload={setPayload}
       identifier="payemntDetails"
