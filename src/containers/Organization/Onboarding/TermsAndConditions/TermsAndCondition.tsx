@@ -39,12 +39,9 @@ export const TermsAndConditions = ({
         has_submitted: false,
       };
 
-      await axios.post(ONBOARD_URL_UPDATE, payload, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      await axios.post(ONBOARD_URL_UPDATE, payload);
     }
+    setDialogOpen(false);
   };
 
   const dialog = (

@@ -80,9 +80,7 @@ export const ReachOutToUs = ({ open, setOpen, handleStepChange, saveData }: Reac
         setLoading(false);
 
         if (data.is_valid) {
-          if (open === 'reachOut') {
-            setOpen(false);
-          } else navigate('/login');
+          setOpen(false);
           return true;
         } else {
           setErrors(data.messages);
