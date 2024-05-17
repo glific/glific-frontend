@@ -29,18 +29,6 @@ export const TermsAndConditions = ({
     });
     openReachOutToUs(true);
 
-    const data = localStorage.getItem('registrationData');
-    if (data) {
-      let registrationData = JSON.parse(data);
-      const payload = {
-        registration_id: registrationData.registration_details.registration_id,
-        org_id: registrationData.registration_details.org_id,
-        terms_agreed: false,
-        has_submitted: false,
-      };
-
-      await axios.post(ONBOARD_URL_UPDATE, payload);
-    }
     setDialogOpen(false);
   };
 
