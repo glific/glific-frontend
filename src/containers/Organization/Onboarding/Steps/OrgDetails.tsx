@@ -18,6 +18,7 @@ export const OrgDetails = ({ handleStepChange, saveData }: FormStepProps) => {
   const [gstin, setGstNumber] = useState<string>('');
   const [registered_address, setRegisteredAddress] = useState<string>('');
   const [current_address, setCurrentAddress] = useState<string>('');
+  const [same_address, setSameAddress] = useState(false);
 
   const [loading, setLoading] = useState(false);
 
@@ -37,6 +38,7 @@ export const OrgDetails = ({ handleStepChange, saveData }: FormStepProps) => {
     gstin,
     registered_address,
     current_address,
+    same_address,
   };
 
   const inputendAdornment = (formik: any) => {
@@ -52,8 +54,7 @@ export const OrgDetails = ({ handleStepChange, saveData }: FormStepProps) => {
           onChange={(event) => {
             if (event.target.checked) {
               formik.setFieldValue('current_address', formik.values.registered_address);
-            } else {
-              formik.setFieldValue('current_address', '');
+              formik.setFieldValue('same_address', true);
             }
           }}
         />
@@ -117,6 +118,9 @@ export const OrgDetails = ({ handleStepChange, saveData }: FormStepProps) => {
     setGstNumber(gstin);
     setRegisteredAddress(registered_address);
     setCurrentAddress(current_address);
+    if (current_address === registered_address) {
+      setSameAddress(true);
+    }
   };
 
   const handleSubmit = async (payload: any, setErrors: any) => {

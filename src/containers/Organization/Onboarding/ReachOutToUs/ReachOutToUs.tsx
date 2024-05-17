@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router';
+import { useEffect, useState } from 'react';
 import { Dialog, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import * as Yup from 'yup';
@@ -24,7 +23,7 @@ export const ReachOutToUs = ({ open, setOpen, handleStepChange, saveData }: Reac
   const [email, setEmail] = useState<string>('');
   const [message, setMessage] = useState<string>('');
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+  const [success, setSuccess] = useState(false);
 
   const formFields = [
     {
@@ -80,7 +79,7 @@ export const ReachOutToUs = ({ open, setOpen, handleStepChange, saveData }: Reac
         setLoading(false);
 
         if (data.is_valid) {
-          setOpen(false);
+          setSuccess(true);
           return true;
         } else {
           setErrors(data.messages);
@@ -88,6 +87,14 @@ export const ReachOutToUs = ({ open, setOpen, handleStepChange, saveData }: Reac
         }
       });
   };
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (success) {
+        setOpen(false);
+      }
+    }, 3000);
+  }, [success]);
 
   return (
     <Dialog
@@ -110,26 +117,32 @@ export const ReachOutToUs = ({ open, setOpen, handleStepChange, saveData }: Reac
           <CloseIcon />
         </IconButton>
       </div>
-      <FormLayout
-        validationSchema={FormSchema}
-        formFieldItems={formFields}
-        initialValues={initialFormValues}
-        showStep={false}
-        title="Write to us"
-        helperText="Please enter your details and the query."
-        setStates={setStates}
-        setPayload={setPayload}
-        buttonState={{
-          text: 'Send',
-          align: 'left',
-        }}
-        okButtonHelperText="You can also reachout to us on support@glific.org."
-        identifier="reachOutToUs"
-        handleStepChange={handleStepChange}
-        saveData={saveData}
-        submitData={handleSubmit}
-        loading={loading}
-      />
+      {success ? (
+        <div className={styles.Success}>
+          <h2>Thankyou for reaching out to us! We will get back to you shortly.</h2>
+        </div>
+      ) : (
+        <FormLayout
+          validationSchema={FormSchema}
+          formFieldItems={formFields}
+          initialValues={initialFormValues}
+          showStep={false}
+          title="Write to us"
+          helperText="Please enter your details and the query."
+          setStates={setStates}
+          setPayload={setPayload}
+          buttonState={{
+            text: 'Send',
+            align: 'left',
+          }}
+          okButtonHelperText="You can also reachout to us on support@glific.org."
+          identifier="reachOutToUs"
+          handleStepChange={handleStepChange}
+          saveData={saveData}
+          submitData={handleSubmit}
+          loading={loading}
+        />
+      )}
     </Dialog>
   );
 };

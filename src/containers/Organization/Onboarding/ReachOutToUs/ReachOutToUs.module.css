@@ -24,3 +24,16 @@
   top: 1rem;
   right: 1rem;
 }
+
+.Success {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.Success h2 {
+  color: #119656;
+}

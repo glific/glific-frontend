@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router';
 import { Step, StepLabel, Stepper } from '@mui/material';
 
 import GlificLogo from 'assets/images/logo/Logo.svg';
-import BackButton from 'assets/images/icons/BackIconFlow.svg?react';
 
 import styles from './Form.module.css';
 import { PlatformDetails } from './Steps/PlatformDetails';
@@ -77,7 +76,7 @@ export const RegistrationForm = () => {
     const existingData = localStorage.getItem('registrationData');
     if (existingData) {
       const data = JSON.parse(existingData);
-      setActiveStep(data.activeStep || 0);
+      setActiveStep(data.activeStep + 1 || 0);
     }
   }, []);
 
@@ -105,15 +104,6 @@ export const RegistrationForm = () => {
   return (
     <div className={styles.Container}>
       <div className={activeStep === 4 ? styles.Hide : styles.LeftContainer}>
-        <div
-          onClick={() => {
-            handleStepChange(false);
-          }}
-          data-testid="back-button"
-          className={styles.BackButton}
-        >
-          <BackButton />
-        </div>
         <div>
           <img src={GlificLogo} className={styles.GlificLogo} alt="Glific" />
         </div>

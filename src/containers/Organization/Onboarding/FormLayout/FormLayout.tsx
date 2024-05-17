@@ -158,6 +158,19 @@ export const FormLayout = ({
       </div>
 
       <div className={`${styles.Buttons} ${buttonState.align === 'right' && styles.RightButton}`}>
+        {identifier !== 'reachOutToUs' && (
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={() => {
+              handleStepChange(false);
+            }}
+            className={styles.Button}
+            data-testid="back-button"
+          >
+            Previous
+          </Button>
+        )}
         {identifier === 'platformDetails' ? (
           <Captcha
             component={Button}
@@ -210,8 +223,7 @@ export const FormLayout = ({
       >
         <div className={styles.Modal}>
           <p>
-            The information listed on this form cannot be changed once confirmed. Do you want to
-            proceed?
+            You wont be able to make changes to this page once confirmed. Do you want to go ahead?
           </p>
           {loading && <p className={styles.Wait}>Please wait, this might take a few seconds.</p>}
         </div>

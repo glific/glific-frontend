@@ -63,7 +63,7 @@ export const SigningAuthority = ({
 
   const formFields = [
     {
-      label: 'Form submitter',
+      label: 'Your details',
       children: [
         {
           component: Input,

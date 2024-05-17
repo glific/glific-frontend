@@ -14,6 +14,7 @@ import { FormStepProps } from './OrgDetails';
 export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) => {
   const { t } = useTranslation();
   const [billing_frequency, setPaymentType] = useState<string>('yearly');
+
   const [name, setName] = useState<string>('');
   const [designation, setDesignation] = useState<string>('');
   const [phone, setPhone] = useState<string>('');
@@ -30,7 +31,7 @@ export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) =>
       .max(25, t('Please enter not more than 25 characters')),
     phone: Yup.string()
       .required(t('Phone number is required.'))
-      .min(4, t('Enter a valid phone number.')),
+      .min(7, t('Enter a valid phone number.')),
     email: Yup.string().required(t('Email is required.')).email(t('Enter a valid email.')),
   });
   const initialFormValues: any = {
@@ -53,7 +54,7 @@ export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) =>
       ],
     },
     {
-      label: 'Finance POC details',
+      label: 'Finance team details',
       children: [
         {
           component: Input,

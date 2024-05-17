@@ -31,7 +31,7 @@ export const PaymentOptions = ({ form: { setFieldValue, values } }: PaymentOptio
               label={'Yearly'}
               className={isChecked('yearly') ? styles.Selectedlabel : styles.Label}
             />
-            <div className={styles.Recommended}>Enjoy a whole month free! Fee waived off!</div>
+            <div className={styles.Recommended}>One month fee waived off!</div>
           </div>
           <div className={styles.RadioLabelWrapper}>
             <FormControlLabel

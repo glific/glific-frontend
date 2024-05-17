@@ -35,7 +35,7 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
       .matches(/^\S*$/, 'Shortcode cannot contain spaces.'),
     phone: Yup.string()
       .required(t('Phone number is required.'))
-      .min(4, t('Enter a valid phone number.')),
+      .min(7, t('Enter a valid phone number.')),
   });
 
   const initialFormValues: any = { name, app_name, api_key, shortcode, phone };
@@ -114,7 +114,7 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
       component: Input,
       name: 'shortcode',
       type: 'text',
-      inputLabel: 'URL shortcode',
+      inputLabel: 'Platform URL',
       helperText: (
         <span className={styles.FormHelperText}>
           Name you want to give your Glific platform (3 to 7 characters)
