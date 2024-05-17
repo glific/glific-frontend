@@ -41,42 +41,6 @@ test('it should render platform details page', async () => {
   });
 });
 
-// test('it should navigate back', async () => {
-//   const { getByTestId, getAllByRole } = render(renderForm);
-
-//   await waitFor(() => {
-//     expect(getByTestId('heading')).toHaveTextContent('Bot details');
-//   });
-
-//   const inputFieldsPlatformDetails = getAllByRole('textbox');
-
-//   const [orgName, phoneNumber, appName, apiKey, shortcode] = inputFieldsPlatformDetails;
-
-//   fireEvent.change(orgName, { target: { value: 'org name' } });
-//   fireEvent.change(phoneNumber, { target: { value: '7834811114' } });
-//   fireEvent.change(appName, { target: { value: 'app name' } });
-//   fireEvent.change(apiKey, { target: { value: 'api-key' } });
-//   fireEvent.change(shortcode, { target: { value: 'glific' } });
-
-//   fireEvent.click(getByTestId('submitActionButton'));
-
-//   await waitFor(() => {
-//     expect(screen.getByText('Confirmation')).toBeInTheDocument();
-//   });
-
-//   fireEvent.click(screen.getByText('Confirm'));
-
-//   await waitFor(() => {
-//     expect(getByTestId('heading')).toHaveTextContent('Organization details');
-//   });
-
-//   fireEvent.click(getByTestId('back-button'));
-
-//   await waitFor(() => {
-//     expect(getByTestId('heading')).toHaveTextContent('Bot details');
-//   });
-// });
-
 test('it opens and closes dialog box', async () => {
   render(renderForm);
 
@@ -91,7 +55,7 @@ test('it opens and closes dialog box', async () => {
     expect(dialogBox).toBeInTheDocument();
   });
 
-  fireEvent.click(screen.getByText('Cancel'));
+  fireEvent.click(screen.getByTestId('close-button'));
 
   await waitFor(() => {
     expect(dialogBox).not.toBeInTheDocument();
@@ -114,7 +78,7 @@ test('it sends email to support', async () => {
   });
 
   //checking if it closes the dialog
-  fireEvent.click(screen.getByText('Cancel'));
+  fireEvent.click(screen.getByTestId('close-button'));
 
   fireEvent.click(screen.getByText('Reach out here'));
 
@@ -211,8 +175,6 @@ test('it should submit the form', async () => {
   fireEvent.change(signingAuthorityName, { target: { value: 'Default signing' } });
   fireEvent.change(signingAuthorityDesignation, { target: { value: 'signing authority' } });
   fireEvent.change(signingAuthorityEmail, { target: { value: 'signing@email.com' } });
-
-  fireEvent.click(getByTestId('submitActionButton'));
 
   const checkboxes = getAllByRole('checkbox');
   fireEvent.click(checkboxes[0]);

@@ -101,7 +101,12 @@ export const ReachOutToUs = ({ open, setOpen, handleStepChange, saveData }: Reac
       data-testid="dialogBox"
     >
       <div className={styles.CloseButton}>
-        <IconButton aria-label="close" className={styles.CloseIcon} onClick={() => setOpen(false)}>
+        <IconButton
+          aria-label="close"
+          data-testid="close-button"
+          className={styles.CloseIcon}
+          onClick={() => setOpen(false)}
+        >
           <CloseIcon />
         </IconButton>
       </div>

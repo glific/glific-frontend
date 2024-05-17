@@ -14,7 +14,7 @@ import { ReachOutToUs } from './ReachOutToUs/ReachOutToUs';
 import { Success } from './Success/Success';
 
 export const RegistrationForm = () => {
-  const [activeStep, setActiveStep] = useState(3);
+  const [activeStep, setActiveStep] = useState(0);
   const [openDialog, setDialogOpen] = useState<string | boolean>(false);
   const navigate = useNavigate();
 
