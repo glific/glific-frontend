@@ -4,31 +4,29 @@
   background-color: #e9f4ee;
   display: flex;
   padding: 48px 56px;
-}
-
-.LeftContainer {
-  width: 50%;
-  height: 100%;
-  padding: 64px 68px;
-  background-color: #fff;
-  border-radius: 20px;
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
+  justify-content: center;
 }
 
 .GlificLogo {
-  width: 120px;
-  margin-bottom: 32px;
+  width: 100px;
+}
+
+.Main {
+  display: flex;
+  flex-direction: column;
+  row-gap: 10px;
 }
 
 .Header {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .Header h4 {
   color: #111;
-  font-size: 32px;
+  font-size: 28px;
   margin: 0;
 }
 
@@ -63,14 +61,12 @@
   padding-left: 14px !important;
 }
 
-.RightContainer {
-  width: 50%;
+.Main {
+  width: 60%;
   height: 100%;
   background-color: #fff;
   border-radius: 20px;
   box-shadow: #959da533 0px 8px 24px;
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
   padding: 64px 68px;
   display: flex;
   flex-direction: column;
@@ -80,22 +76,27 @@
 
 .RightHeader {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   width: 100%;
 }
 
 .RightHeader h1 {
   color: #111;
-  font-size: 32px;
+  font-size: 24px;
   margin: 0;
 }
 
 .RightHeader p {
   color: #636363;
-  font-size: 18px;
+  font-size: 14px;
   margin: 0;
+}
+
+.RightHeader div {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 }
 
 .RegistrationImage {
@@ -108,12 +109,20 @@
   height: 280px;
 }
 
+.GetStarted {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 .GetStarted .Button {
   background-color: #119656;
   color: #fff;
   font-size: 24px;
   border-radius: 12px;
-  width: 100%;
+  width: 50%;
   display: flex;
   justify-self: center;
   align-items: center;
