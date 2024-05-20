@@ -182,6 +182,7 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
     setOrgName(name);
     setAppName(app_name);
     setShortcode(shortcode);
+    setCode(shortcode);
     setApiKeys(api_key);
     setPhone(phone);
   };

@@ -134,7 +134,7 @@ export const OrgDetails = ({ handleStepChange, saveData }: FormStepProps) => {
 
   const handleAutoUpdateAddress = (identifier: string, formik: any) => {
     if (identifier === 'orgDetails') {
-      const { same_address, registered_address, current_address } = formik.values;
+      const { same_address, registered_address } = formik.values;
       if (same_address) {
         formik.setFieldValue('current_address', registered_address);
       }
