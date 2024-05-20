@@ -122,6 +122,7 @@ export const Input = ({
             </Typography>
           )}
           <OutlinedInput
+            id={field.name}
             placeholder={placeholder}
             data-testid="outlinedInput"
             inputComponent={editor ? editor.inputComponent : undefined}
