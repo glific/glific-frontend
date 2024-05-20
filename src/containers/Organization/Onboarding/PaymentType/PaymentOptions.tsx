@@ -22,7 +22,7 @@ export const PaymentOptions = ({ form: { setFieldValue, values } }: PaymentOptio
           }}
           className={styles.Wrapper}
         >
-          <div className={styles.RadioLabelWrapper}>
+          <div className={`${styles.RadioLabelWrapper} ${styles.Year}`}>
             <FormControlLabel
               data-testid="radio-btn"
               value={'yearly'}

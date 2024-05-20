@@ -132,6 +132,12 @@ export const RegistrationForm = () => {
       </div>
       <div className={activeStep === 4 ? styles.FullWidth : styles.RightContainer}>
         {getForm(activeStep)}
+        <p className={styles.SmallReachOutToUs}>
+          Have a question?{' '}
+          <span onClick={() => setDialogOpen('reachOut')} className={styles.ReachOut}>
+            Reach out here
+          </span>
+        </p>
       </div>
 
       {openDialog && (

@@ -44,3 +44,22 @@
   color: #111;
   z-index: -1;
 }
+
+@media only screen and (max-width: 768px) {
+  .Wrapper {
+    flex-direction: column;
+    row-gap: 10px;
+  }
+
+  .RadioLabelWrapper {
+    width: 100%;
+  }
+
+  .Year {
+    margin-bottom: 2.5rem;
+  }
+
+  .PaymentTypeSection {
+    padding: 0;
+  }
+}

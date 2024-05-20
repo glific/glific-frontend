@@ -59,7 +59,7 @@ export const RegistrationHome = () => {
                 <li>Signing authority’s designation</li>
               </ul>
             </div>
-          </div>{' '}
+          </div>
         </div>
 
         <div className={styles.GetStarted}>

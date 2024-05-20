@@ -92,3 +92,22 @@
   font-size: 14px;
   margin: 0;
 }
+
+@media only screen and (max-width: 768px) {
+  .DialogboxPaper {
+    width: 80%;
+    margin: 0;
+  }
+
+  .Main {
+    padding: 1rem 2rem;
+  }
+
+  .Addendum {
+    padding: 0 1rem;
+  }
+
+  .Buttons button {
+    width: 50%;
+  }
+}

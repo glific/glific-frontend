@@ -76,3 +76,29 @@
   align-items: center;
   z-index: 999;
 }
+
+.SmallReachOutToUs {
+  display: none;
+}
+
+@media only screen and (max-width: 768px) {
+  .Container {
+    flex-direction: column;
+    height: 100%;
+    padding: 1rem 3rem;
+  }
+
+  .LeftContainer {
+    display: none;
+  }
+
+  .RightContainer {
+    width: 100%;
+  }
+
+  .SmallReachOutToUs {
+    display: flex;
+    justify-content: center;
+    column-gap: 10px;
+  }
+}
