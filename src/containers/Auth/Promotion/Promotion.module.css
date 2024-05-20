@@ -59,6 +59,9 @@
   line-height: 1;
   position: relative;
   top: 20px;
+  display: flex;
+  flex-direction: column;
+  row-gap: 1rem;
 }
 
 .Header {
