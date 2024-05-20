@@ -88,7 +88,12 @@ export const FormLayout = ({
 
   useEffect(() => {
     if (handleEffect) handleEffect(identifier, formik);
-  }, [formik.values, formik.touched]);
+  }, [
+    formik.touched?.name,
+    formik.values.name,
+    formik.values.registered_address,
+    formik.values.same_address,
+  ]);
 
   const header = (
     <div className={styles.Header}>

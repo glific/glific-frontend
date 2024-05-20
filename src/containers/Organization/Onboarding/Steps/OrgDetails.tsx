@@ -19,6 +19,7 @@ export const OrgDetails = ({ handleStepChange, saveData }: FormStepProps) => {
   const [registered_address, setRegisteredAddress] = useState<string>('');
   const [current_address, setCurrentAddress] = useState<string>('');
   const [same_address, setSameAddress] = useState(false);
+  const [disable, setDisable] = useState(false);
 
   const [loading, setLoading] = useState(false);
 
@@ -50,6 +51,7 @@ export const OrgDetails = ({ handleStepChange, saveData }: FormStepProps) => {
           checked={formik.values.same_address}
           onChange={(event) => {
             formik.setFieldValue('same_address', event.target.checked);
+            setDisable(event.target.checked);
           }}
         />
         <p className={styles.CheckboxLabel}>Same as registered address</p>
@@ -75,6 +77,7 @@ export const OrgDetails = ({ handleStepChange, saveData }: FormStepProps) => {
       textArea: true,
       additionalStyles: styles.MessageField,
       fieldEndAdornment: { show: true, component: inputendAdornment },
+      disabled: disable,
     },
     {
       component: Input,
@@ -131,7 +134,7 @@ export const OrgDetails = ({ handleStepChange, saveData }: FormStepProps) => {
 
   const handleAutoUpdateAddress = (identifier: string, formik: any) => {
     if (identifier === 'orgDetails') {
-      const { same_address, registered_address } = formik.values;
+      const { same_address, registered_address, current_address } = formik.values;
       if (same_address) {
         formik.setFieldValue('current_address', registered_address);
       }
