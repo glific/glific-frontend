@@ -1,8 +1,6 @@
 import { useState } from 'react';
 import { Checkbox, Dialog, FormControlLabel } from '@mui/material';
-import axios from 'axios';
 
-import { ONBOARD_URL_UPDATE } from 'config';
 import styles from './TermsAndConditions.module.css';
 import { Button } from 'components/UI/Form/Button/Button';
 import { TermsAndConditionsText } from './TermsAndConditionsText';
