@@ -29,6 +29,7 @@ interface FormLayoutProps {
   loading?: boolean;
   showModal?: boolean;
   isDisabled?: boolean;
+  handleEffect?: Function;
 }
 
 export const FormLayout = ({
@@ -50,6 +51,7 @@ export const FormLayout = ({
   loading,
   showModal,
   isDisabled,
+  handleEffect,
 }: FormLayoutProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -83,6 +85,10 @@ export const FormLayout = ({
       if (data[identifier]) setStates(data[identifier]);
     }
   }, []);
+
+  useEffect(() => {
+    if (handleEffect) handleEffect(identifier, formik);
+  }, [formik.values, formik.touched]);
 
   const header = (
     <div className={styles.Header}>

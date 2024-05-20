@@ -19,6 +19,7 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
   const [api_key, setApiKeys] = useState<string>('');
   const [shortcode, setShortcode] = useState<string>('');
   const [phone, setPhone] = useState<string>('');
+  const [code, setCode] = useState('shortcode');
 
   const [isDisabled, setIsDisabled] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -74,7 +75,7 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
     </p>
   );
 
-  const formFields = [
+  const formFields = (shortcode: string) => [
     {
       component: Input,
       name: 'name',
@@ -117,10 +118,22 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
       inputLabel: 'Platform URL',
       helperText: (
         <span className={styles.FormHelperText}>
-          Name you want to give your Glific platform (3 to 7 characters)
+          <span>
+            Name you want to give your Glific platform (3 to 8 characters)
+            <br />
+            <span>www.{shortcode}.glific.com</span>
+          </span>
         </span>
       ),
       disabled: isDisabled,
+      inputProp: {
+        onChange: (event: any) => {
+          const { value } = event.target;
+          let text = 'shortcode';
+          if (value) text = value;
+          setCode(text);
+        },
+      },
     },
   ];
 
@@ -183,10 +196,28 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
     }
   }, []);
 
+  const generateShortcode = (identifier: string, formik: any) => {
+    if (identifier === 'platformDetails') {
+      const { name, shortcode } = formik.values;
+      if (formik.touched.name && !shortcode) {
+        const words = name.split(' ');
+        let generatedName = '';
+
+        if (words.length > 1) {
+          generatedName = words.map((word: any) => word[0]).join('');
+        } else {
+          generatedName = name.slice(0, 8);
+        }
+        setCode(generatedName);
+        formik.setFieldValue('shortcode', generatedName);
+      }
+    }
+  };
+
   return (
     <FormLayout
       validationSchema={FormSchema}
-      formFieldItems={formFields}
+      formFieldItems={formFields(code)}
       initialValues={initialFormValues}
       step={1}
       title="Bot details"
@@ -200,6 +231,7 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
       submitData={handleSubmit}
       showModal={true}
       isDisabled={isDisabled}
+      handleEffect={generateShortcode}
     />
   );
 };

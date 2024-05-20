@@ -166,3 +166,8 @@
   align-items: center;
   column-gap: 0.5rem;
 }
+
+.FormHelperText span {
+  display: flex;
+  flex-direction: column;
+}

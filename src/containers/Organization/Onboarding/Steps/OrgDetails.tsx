@@ -47,15 +47,9 @@ export const OrgDetails = ({ handleStepChange, saveData }: FormStepProps) => {
         <Checkbox
           data-testid="checkboxLabel"
           color="primary"
-          checked={
-            formik.values.registered_address &&
-            formik.values.current_address === formik.values.registered_address
-          }
+          checked={formik.values.same_address}
           onChange={(event) => {
-            if (event.target.checked) {
-              formik.setFieldValue('current_address', formik.values.registered_address);
-              formik.setFieldValue('same_address', true);
-            }
+            formik.setFieldValue('same_address', event.target.checked);
           }}
         />
         <p className={styles.CheckboxLabel}>Same as registered address</p>
@@ -135,6 +129,15 @@ export const OrgDetails = ({ handleStepChange, saveData }: FormStepProps) => {
     });
   };
 
+  const handleAutoUpdateAddress = (identifier: string, formik: any) => {
+    if (identifier === 'orgDetails') {
+      const { same_address, registered_address } = formik.values;
+      if (same_address) {
+        formik.setFieldValue('current_address', registered_address);
+      }
+    }
+  };
+
   return (
     <FormLayout
       validationSchema={FormSchema}
@@ -150,6 +153,7 @@ export const OrgDetails = ({ handleStepChange, saveData }: FormStepProps) => {
       saveData={saveData}
       submitData={handleSubmit}
       loading={loading}
+      handleEffect={handleAutoUpdateAddress}
     />
   );
 };
