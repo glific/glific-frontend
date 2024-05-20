@@ -5,10 +5,19 @@
   display: flex;
   padding: 36px 56px;
   justify-content: center;
+  font-size: 1rem;
 }
 
 .GlificLogo {
-  width: 80px;
+  width: 8rem;
+}
+
+.HeaderSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #636363;
+  text-align: center;
 }
 
 .Header {
@@ -19,15 +28,13 @@
   text-align: center;
 }
 
-.Header h4 {
+.Header h1 {
   color: #111;
-  font-size: 28px;
   margin: 0;
 }
 
 .Header p {
   color: #636363;
-  font-size: 15px;
   line-height: 24px;
   margin: 0;
 }
@@ -36,7 +43,7 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: repeat(2, 1fr);
-  grid-gap: 8px;
+  grid-gap: 1rem;
   width: 100%;
 }
 
@@ -45,16 +52,10 @@
   flex-direction: column;
   height: 100%;
   padding: 8px 0;
-}
-
-.Box h4 {
   color: #111;
-  font-size: 14px;
 }
 
 .Box ul {
-  color: #111;
-  font-size: 14px;
   margin: 0 !important;
   padding-left: 14px !important;
 }
@@ -68,44 +69,7 @@
   padding: 54px 68px;
   display: flex;
   flex-direction: column;
-  row-gap: 16px;
-  justify-content: space-between;
-}
-
-.RightHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-}
-
-.RightHeader h1 {
-  color: #111;
-  font-size: 20px;
-  margin: 0;
-}
-
-.RightHeader p {
-  color: #636363;
-  font-size: 14px;
-  margin: 0;
-}
-
-.RightHeader div {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  text-align: end;
-}
-
-.RegistrationImage {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.RegistrationImage img {
-  height: 280px;
+  row-gap: 2rem;
 }
 
 .GetStarted {
@@ -128,7 +92,6 @@
 }
 
 .GetStarted p {
-  font-size: 12px;
   color: #636363;
   text-align: center;
 }
@@ -155,22 +118,5 @@
 
   .GetStarted .Button {
     width: 100%;
-  }
-
-  .RightHeader h1 {
-    font-size: 1rem;
-  }
-
-  .RightHeader p {
-    font-size: 0.8rem;
-  }
-
-  .Header h4 {
-    font-size: 1.2rem;
-  }
-
-  .Header p {
-    font-size: 0.8rem;
-    line-height: normal;
   }
 }
