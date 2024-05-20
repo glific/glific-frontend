@@ -37,6 +37,7 @@ export const RegistrationHome = () => {
               <h4>About the organization</h4>
               <ul>
                 <li>Registered organization address</li>
+                <li>Current organization address</li>
                 <li>GSTIN number (optional)</li>
               </ul>
             </div>
