@@ -170,6 +170,10 @@ export const AutoComplete = ({
   if (getValue && options.length === 0) {
     renderedOption = multiple ? getValue : [getValue];
   }
+  if (multiple) {
+    renderedOption = [{ name: 'Select All', id: 'all' }, ...renderedOption];
+  }
+  console.log(renderedOption);
 
   return (
     <div className={styles.Input}>
@@ -273,6 +277,7 @@ export const AutoComplete = ({
           }}
           noOptionsText={noOptionsText}
           ListboxProps={listBoxProps}
+          limitTags={3}
         />
         {helperText && <FormHelperText className={styles.HelperText}>{helperText}</FormHelperText>}
 
