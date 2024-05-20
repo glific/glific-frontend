@@ -199,8 +199,7 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
 
   const generateShortcode = (identifier: string, formik: any) => {
     if (identifier === 'platformDetails') {
-      const { name, shortcode } = formik.values;
-      console.log(formik.touched);
+      const { name } = formik.values;
 
       if (name.trim() !== '' && formik.touched.name) {
         const text = name.split(' ');

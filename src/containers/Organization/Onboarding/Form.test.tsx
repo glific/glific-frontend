@@ -45,10 +45,10 @@ test('it opens and closes dialog box', async () => {
   render(renderForm);
 
   await waitFor(() => {
-    expect(screen.getByText('Reach out here')).toBeInTheDocument();
+    expect(screen.getAllByText('Reach out here')[0]).toBeInTheDocument();
   });
 
-  fireEvent.click(screen.getByText('Reach out here'));
+  fireEvent.click(screen.getAllByText('Reach out here')[0]);
   const dialogBox = screen.getByTestId('dialogBox');
 
   await waitFor(() => {
@@ -66,10 +66,10 @@ test('it sends email to support', async () => {
   render(renderForm);
 
   await waitFor(() => {
-    expect(screen.getByText('Reach out here')).toBeInTheDocument();
+    expect(screen.getAllByText('Reach out here')[0]).toBeInTheDocument();
   });
 
-  fireEvent.click(screen.getByText('Reach out here'));
+  fireEvent.click(screen.getAllByText('Reach out here')[0]);
 
   const dialog = screen.getByText('Write to us');
 
@@ -80,7 +80,7 @@ test('it sends email to support', async () => {
   //checking if it closes the dialog
   fireEvent.click(screen.getByTestId('close-button'));
 
-  fireEvent.click(screen.getByText('Reach out here'));
+  fireEvent.click(screen.getAllByText('Reach out here')[0]);
 
   const inputFields = screen.getAllByRole('textbox');
   const [name, email, message] = inputFields;
