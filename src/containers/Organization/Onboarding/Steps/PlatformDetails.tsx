@@ -198,18 +198,16 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
 
   const generateShortcode = (identifier: string, formik: any) => {
     if (identifier === 'platformDetails') {
-      const { name } = formik.values;
-      const activeElement = document.activeElement as HTMLElement;
+      const { name, shortcode } = formik.values;
+      if (formik.touched.name) {
+        const text = name.split(' ');
+        let code = '';
 
-      if (formik.touched.name && name && activeElement.id !== 'shortcode') {
-        const code = name
-          .split(' ')
-          .map((word: any) => word[0])
-          .join('');
+        if (text.length > 1) code = text.map((word: any) => word[0]).join('');
+        else code = name.slice(0, 8);
+
         formik.setFieldValue('shortcode', code);
         setCode(code);
-      } else if (!name && activeElement.id !== 'shortcode') {
-        formik.setFieldValue('shortcode', '');
       }
     }
   };
