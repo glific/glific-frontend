@@ -8,7 +8,7 @@
 }
 
 .GlificLogo {
-  width: 100px;
+  width: 80px;
 }
 
 .Main {
@@ -67,7 +67,7 @@
   background-color: #fff;
   border-radius: 20px;
   box-shadow: #959da533 0px 8px 24px;
-  padding: 64px 68px;
+  padding: 54px 68px;
   display: flex;
   flex-direction: column;
   column-gap: 16px;
@@ -83,7 +83,7 @@
 
 .RightHeader h1 {
   color: #111;
-  font-size: 24px;
+  font-size: 20px;
   margin: 0;
 }
 
