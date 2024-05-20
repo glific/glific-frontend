@@ -5,17 +5,18 @@ import styles from './Promotion.module.css';
 
 export const Promotion = () => {
   const [minimized, setMinimized] = useState(false);
+  const LINK = 'https://us06web.zoom.us/meeting/register/tZYof-yrrD4sHtCHskNq0feuOcCEi5vQ-Sxd';
 
   return (
     <div className={minimized ? styles.ContainerMin : styles.ContainerMax}>
       <div className={styles.CardHeader}>
         <div className={styles.Header}>
           <div className={styles.Dot} />
-          <div className={styles.HeaderText}>ALERT!</div>
+          <div className={styles.HeaderText}>NEW!</div>
         </div>
         {minimized ? (
           <>
-            <div className={styles.GiftCard}>Glific payment timelines</div>
+            <div className={styles.GiftCard}>Level up with Glific</div>
             <MaximizeIcon
               className={styles.AccordianIcon}
               onClick={() => setMinimized(!minimized)}
@@ -28,33 +29,38 @@ export const Promotion = () => {
 
       {!minimized && (
         <>
-          <div className={styles.Image}>Glific payment timelines & late payment policy</div>
+          <div className={styles.Image}>
+            <span>Level up with Glific</span>
+            <span>
+              Whatsapp groups automation <br /> 23rd May 3-4PM
+            </span>
+          </div>
 
           <div className={styles.Points}>
             <div className={styles.BodyListText}>
               <span>{1}</span>
               <div>
-                Glific will send invoice on 1st of every month and you will have 15-day payment
-                window.
+                Learn how this feature will enable you to{' '}
+                <b>
+                  send or schedule messages/ media to Whatsapp groups and gain insights into group
+                  activity.
+                </b>
               </div>
             </div>
             <div className={styles.BodyListText}>
               <span>2</span>
-              <div>
-                Starting May 1st, 2024, Failure to pay for two consecutive months leads to account
-                suspension, halting staff access and messaging bot functionality.
-              </div>
+              <div>Learn through a demo, and explore possibilities.</div>
             </div>
-            <div className={styles.BodyListText}>
+            {/* <div className={styles.BodyListText}>
               <div>Reach out to Glific team if you have questions/concerns.</div>
-            </div>
+            </div> */}
           </div>
-          {/* <a className={styles.Link} href={LINK} target="_blank" rel="noreferrer">
+          <a className={styles.Link} href={LINK} target="_blank" rel="noreferrer">
             <div className={styles.KnowMore}>
               <div>REGISTER NOW</div>
               <div className={styles.Arrow}> ↗</div>
             </div>
-          </a> */}
+          </a>
         </>
       )}
     </div>
