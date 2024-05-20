@@ -19,7 +19,7 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
   const [api_key, setApiKeys] = useState<string>('');
   const [shortcode, setShortcode] = useState<string>('');
   const [phone, setPhone] = useState<string>('');
-  const [code, setCode] = useState('shortcode');
+  const [code, setCode] = useState('[shortcode]');
 
   const [isDisabled, setIsDisabled] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -121,7 +121,7 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
           <span>
             Name you want to give your Glific platform (3 to 8 characters)
             <br />
-            <span>www.{shortcode}.glific.com</span>
+            <span className={styles.PlatformURL}>www.{shortcode}.glific.com</span>
           </span>
         </span>
       ),
@@ -199,15 +199,23 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
 
   const generateShortcode = (identifier: string, formik: any) => {
     if (identifier === 'platformDetails') {
-      const { name } = formik.values;
+      const { name, shortcode } = formik.values;
+
+      if (shortcode.length) {
+        return;
+      }
 
       if (name.trim() !== '' && formik.touched.name) {
         const text = name.split(' ');
         let code = '';
 
-        if (text.length > 1) code = text.map((word: any) => word[0]).join('');
-        else code = name.slice(0, 8);
+        if (text.length > 1) {
+          code = text.map((word: any) => word[0]).join('');
+        } else {
+          code = name.slice(0, 8);
+        }
 
+        code = code.toLowerCase();
         formik.setFieldValue('shortcode', code);
         setCode(code);
       }
