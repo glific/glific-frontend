@@ -31,6 +31,7 @@ interface PagerProps {
   collapseRow: string | undefined;
   noItemsText?: any;
   showPagination?: boolean;
+  showAction?: boolean;
 }
 
 // TODO: cleanup the translations code
@@ -120,7 +121,8 @@ const tableHeadColumns = (
   columnNames: Array<any>,
   columnStyles: any,
   tableVals: any,
-  handleTableChange: Function
+  handleTableChange: Function,
+  showAction?: boolean
 ) => {
   const headerRow = (
     <TableRow className={styles.TableHeadRow}>
@@ -155,7 +157,14 @@ const tableHeadColumns = (
       ))}
     </TableRow>
   );
-  return headerRow;
+  return showAction ? (
+    <TableRow>
+      <TableCell>{columnNames[0].label}</TableCell>
+      <TableCell></TableCell>
+    </TableRow>
+  ) : (
+    headerRow
+  );
 };
 
 const pagination = (
@@ -193,9 +202,16 @@ export const Pager = ({
   loadingList = false,
   noItemsText,
   showPagination = true,
+  showAction,
 }: PagerProps) => {
   const rows = createRows(data, columnStyles, collapseRow, collapseOpen);
-  const tableHead = tableHeadColumns(columnNames, columnStyles, tableVals, handleTableChange);
+  const tableHead = tableHeadColumns(
+    columnNames,
+    columnStyles,
+    tableVals,
+    handleTableChange,
+    showAction
+  );
   const tablePagination = pagination(columnNames, totalRows, handleTableChange, tableVals);
 
   return (

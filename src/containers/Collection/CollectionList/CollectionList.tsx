@@ -231,6 +231,7 @@ export const CollectionList = () => {
             setContactSearchTerm(value);
           }
         }}
+        fullWidth={true}
       />
     );
   }

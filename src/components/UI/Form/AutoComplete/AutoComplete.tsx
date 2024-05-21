@@ -173,7 +173,6 @@ export const AutoComplete = ({
   if (multiple) {
     renderedOption = [{ name: 'Select All', id: 'all' }, ...renderedOption];
   }
-  console.log(renderedOption);
 
   return (
     <div className={styles.Input}>
@@ -198,6 +197,10 @@ export const AutoComplete = ({
             return false;
           }}
           onChange={(_event, value: any) => {
+            if (value.some((item: any) => item.id === 'all')) {
+              value = renderedOption.filter((item: any) => item.id !== 'all');
+            }
+
             if (asyncSearch && value.length > 0) {
               asyncValues.setValue([...value]);
               setSearchTerm('');
@@ -277,7 +280,7 @@ export const AutoComplete = ({
           }}
           noOptionsText={noOptionsText}
           ListboxProps={listBoxProps}
-          limitTags={3}
+          limitTags={4}
         />
         {helperText && <FormHelperText className={styles.HelperText}>{helperText}</FormHelperText>}
 

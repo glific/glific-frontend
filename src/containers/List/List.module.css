@@ -273,3 +273,8 @@
   height: 100vh;
   background-color: #f8faf5;
 }
+
+.Checkbox {
+  min-width: 50px;
+  /* width: 25%; */
+}

@@ -24,6 +24,7 @@ export interface SearchDialogBoxProps {
   buttonOk?: string;
   description?: string;
   colorOk?: string;
+  fullWidth?: boolean;
 }
 
 export const SearchDialogBox = (props: SearchDialogBoxProps) => {
@@ -45,6 +46,7 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
     buttonOk = 'Save',
     description = '',
     colorOk,
+    fullWidth = false,
   } = props;
 
   const [optionss, setOptions] = useState(options);
@@ -99,6 +101,7 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
       titleAlign="left"
       colorOk={colorOk}
       buttonOk={buttonOk}
+      fullWidth={fullWidth}
     >
       <div>
         <FormControl fullWidth>

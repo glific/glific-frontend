@@ -183,6 +183,7 @@ export const CollectionContactList = ({
         }}
         editSupport={false}
         dialogMessage={dialogMessage}
+        checkbox={{ show: true, action: () => {} }}
         {...queries}
         {...columnAttributes}
       />
