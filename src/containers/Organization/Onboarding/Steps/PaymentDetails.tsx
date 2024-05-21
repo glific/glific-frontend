@@ -44,7 +44,7 @@ export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) =>
 
   const formFields = [
     {
-      label: 'Preferred billing frequency.',
+      label: 'Preferred billing frequency',
       children: [
         {
           component: PaymentOptions,

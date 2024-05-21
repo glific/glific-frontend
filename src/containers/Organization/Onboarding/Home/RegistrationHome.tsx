@@ -9,22 +9,19 @@ export const RegistrationHome = () => {
   return (
     <div className={styles.Container}>
       <div className={styles.Main}>
-        <div className={styles.RightHeader}>
+        <div className={styles.HeaderSection}>
           <img src={GlificLogo} className={styles.GlificLogo} alt="Glific" />
-          <div>
-            <h1>Set up your NGO on Glific</h1>
-            <p>An open source, two way communication based platform</p>
-          </div>
+          <p>An open source, two-way communication platform</p>
         </div>
 
         <div className={styles.MainBox}>
           <div className={styles.Header}>
-            <h4>Important instructions</h4>
+            <h1>Important instructions</h1>
             <p>We recommend to have the information listed below before you advance</p>
           </div>
           <div className={styles.DetailsContainer}>
             <div className={styles.Box}>
-              <h4>Glific platform details</h4>
+              <h3>Glific platform details</h3>
               <ul>
                 <li>Registered organization name</li>
                 <li>Chatbot number (New WhatsApp chatbot number)</li>
@@ -34,7 +31,7 @@ export const RegistrationHome = () => {
             </div>
 
             <div className={styles.Box}>
-              <h4>About the organization</h4>
+              <h3>About the organization</h3>
               <ul>
                 <li>Registered organization address</li>
                 <li>Current organization address</li>
@@ -43,7 +40,7 @@ export const RegistrationHome = () => {
             </div>
 
             <div className={styles.Box}>
-              <h4>Payment details</h4>
+              <h3>Payment details</h3>
               <ul>
                 <li>Preferred billing frequency</li>
                 <li>Finance POC name and designation</li>
@@ -52,7 +49,7 @@ export const RegistrationHome = () => {
             </div>
 
             <div className={styles.Box}>
-              <h4>Submitter/authority info</h4>
+              <h3>Submitter/authority info</h3>
               <ul>
                 <li>Submitter’s name and email address</li>
                 <li>Signing authority’s name and the email address</li>

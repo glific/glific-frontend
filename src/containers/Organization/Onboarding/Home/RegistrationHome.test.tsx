@@ -10,7 +10,7 @@ test('it should render registration home page', async () => {
   );
 
   await waitFor(() => {
-    expect(getByText('Set up your NGO on Glific')).toBeInTheDocument();
+    expect(getByText('Important instructions')).toBeInTheDocument();
   });
 
   fireEvent.click(getByText('Get started'));
