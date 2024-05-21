@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router';
 
-import styles from './RegistrationHome.module.css';
+import styles from './Home.module.css';
 import GlificLogo from 'assets/images/logo/Logo.svg';
 import { Button } from 'components/UI/Form/Button/Button';
 
