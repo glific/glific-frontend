@@ -1,5 +1,5 @@
 import { fireEvent, render, waitFor } from '@testing-library/react';
-import { RegistrationHome } from './RegistrationHome';
+import { RegistrationHome } from './Home';
 import { MemoryRouter } from 'react-router';
 
 test('it should render registration home page', async () => {

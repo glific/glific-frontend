@@ -99,6 +99,12 @@ test('it should submit the form', async () => {
     expect(getByTestId('heading')).toHaveTextContent('Bot details');
   });
 
+  fireEvent.click(getByTestId('submitActionButton'));
+
+  await waitFor(() => {
+    expect(getByText('Name is required.')).toBeInTheDocument();
+  });
+
   const inputFieldsPlatformDetails = getAllByRole('textbox');
 
   const [orgName, phoneNumber, appName, apiKey, shortcode] = inputFieldsPlatformDetails;
@@ -115,6 +121,14 @@ test('it should submit the form', async () => {
     expect(screen.getByText('Confirmation')).toBeInTheDocument();
   });
 
+  // closes the dialog box
+  fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape', code: 'Escape' });
+  fireEvent.click(getByTestId('submitActionButton'));
+
+  await waitFor(() => {
+    expect(screen.getByText('Confirmation')).toBeInTheDocument();
+  });
+
   fireEvent.click(screen.getByText('Confirm'));
 
   await waitFor(() => {
@@ -122,7 +136,6 @@ test('it should submit the form', async () => {
   });
 
   fireEvent.click(getByTestId('back-button'));
-
   fireEvent.click(getByTestId('submitActionButton'));
 
   await waitFor(() => {
@@ -143,6 +156,13 @@ test('it should submit the form', async () => {
     expect(getByTestId('heading')).toHaveTextContent('Payment details');
   });
 
+  fireEvent.click(getByTestId('back-button'));
+  fireEvent.click(getByTestId('submitActionButton'));
+
+  await waitFor(() => {
+    expect(getByTestId('heading')).toHaveTextContent('Payment details');
+  });
+
   const inputFieldsPaymentdetails = getAllByRole('textbox');
   const [name, designation, phone, email] = inputFieldsPaymentdetails;
 
@@ -154,6 +174,13 @@ test('it should submit the form', async () => {
   fireEvent.change(phone, { target: { value: '09421050449' } });
   fireEvent.change(email, { target: { value: 'finance@email.com' } });
 
+  fireEvent.click(getByTestId('submitActionButton'));
+
+  await waitFor(() => {
+    expect(getByTestId('heading')).toHaveTextContent('Submitter & Signing authority details');
+  });
+
+  fireEvent.click(getByTestId('back-button'));
   fireEvent.click(getByTestId('submitActionButton'));
 
   await waitFor(() => {

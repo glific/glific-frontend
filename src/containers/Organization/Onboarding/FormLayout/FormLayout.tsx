@@ -24,7 +24,7 @@ interface FormLayoutProps {
   okButtonHelperText?: string;
   identifier: string;
   handleStepChange: Function;
-  submitData?: Function;
+  submitData: Function;
   saveData: Function;
   loading?: boolean;
   showModal?: boolean;
@@ -60,9 +60,7 @@ export const FormLayout = ({
 
     if (identifier !== 'reachOutToUs') saveData(payload, identifier);
 
-    if (submitData) {
-      await submitData(payload, setErrors);
-    } else handleStepChange();
+    await submitData(payload, setErrors);
 
     setIsModalOpen(false);
   };
