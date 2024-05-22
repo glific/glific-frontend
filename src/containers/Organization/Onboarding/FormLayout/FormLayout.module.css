@@ -5,14 +5,6 @@
   flex-direction: column;
 }
 
-.FormContainer form {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 100%;
-  overflow-y: auto;
-}
-
 .Header {
   display: flex;
   flex-direction: column;
@@ -56,6 +48,7 @@
   flex-direction: column;
   justify-content: space-between;
   row-gap: 1rem;
+  overflow-y: auto;
 }
 
 .FormFieldContainer {
@@ -68,10 +61,6 @@
   display: flex;
   justify-content: space-between;
   align-items: end;
-}
-
-.RightButton {
-  align-items: flex-end;
 }
 
 .Button {
