@@ -64,7 +64,7 @@ export const OrgDetails = ({ handleStepChange, saveData }: FormStepProps) => {
       component: Input,
       name: 'registered_address',
       type: 'text',
-      inputLabel: 'Registered address',
+      inputLabel: 'Registered Address',
       textArea: true,
       inputLabelSubtext: <span className={styles.SubText}>(As per your documentation)</span>,
       additionalStyles: styles.MessageField,
@@ -73,7 +73,7 @@ export const OrgDetails = ({ handleStepChange, saveData }: FormStepProps) => {
       component: Input,
       name: 'current_address',
       type: 'text',
-      inputLabel: 'Current address',
+      inputLabel: 'Current Address',
       textArea: true,
       additionalStyles: styles.MessageField,
       fieldEndAdornment: { show: true, component: inputendAdornment },
@@ -83,7 +83,7 @@ export const OrgDetails = ({ handleStepChange, saveData }: FormStepProps) => {
       component: Input,
       name: 'gstin',
       type: 'text',
-      inputLabel: 'GSTIN number',
+      inputLabel: 'GSTIN Number',
       helperText: 'Enter the 15 digit code',
       inputLabelSubtext: <span className={styles.SubText}>(optional)</span>,
     },
@@ -147,7 +147,7 @@ export const OrgDetails = ({ handleStepChange, saveData }: FormStepProps) => {
       formFieldItems={formFields}
       initialValues={initialFormValues}
       step={2}
-      title="Organization details"
+      title="Organization Details"
       helperText="To be filled by the signing authority of your organization."
       setStates={setStates}
       setPayload={setPayload}

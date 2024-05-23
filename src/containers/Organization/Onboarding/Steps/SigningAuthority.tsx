@@ -75,7 +75,7 @@ export const SigningAuthority = ({
           component: Input,
           name: 'submitterEmail',
           type: 'text',
-          inputLabel: 'Email address',
+          inputLabel: 'Email Address',
         },
       ],
     },
@@ -98,7 +98,7 @@ export const SigningAuthority = ({
           component: Input,
           name: 'signingAuthorityEmail',
           type: 'text',
-          inputLabel: 'Email address',
+          inputLabel: 'Email Address',
         },
       ],
     },
@@ -168,7 +168,7 @@ export const SigningAuthority = ({
       formFieldItems={formFields}
       initialValues={initialFormValues}
       step={4}
-      title="Submitter & Signing authority details"
+      title="Submitter & Signing Authority Details"
       helperText="Details and information of the applicant and the signing authority of the organization"
       setStates={setStates}
       setPayload={setPayload}

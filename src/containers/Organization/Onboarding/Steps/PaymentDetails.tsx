@@ -78,7 +78,7 @@ export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) =>
           component: Input,
           name: 'email',
           type: 'text',
-          inputLabel: 'Email address',
+          inputLabel: 'Email Address',
           helperText: (
             <span className={styles.FormHelperText}>Invoice will be sent to this email</span>
           ),
@@ -139,7 +139,7 @@ export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) =>
       formFieldItems={formFields}
       initialValues={initialFormValues}
       step={3}
-      title="Payment details"
+      title="Payment Details"
       helperText="Enter payment information and choose the billing frequency"
       setStates={setStates}
       setPayload={setPayload}

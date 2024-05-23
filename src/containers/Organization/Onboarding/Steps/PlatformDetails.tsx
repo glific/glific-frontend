@@ -54,20 +54,14 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
 
   const appNameTooltip = createTooltip(
     <p>
-      Login to your{' '}
-      <a href="https://www.gupshup.io/" target="_blank">
-        gupshup account
-      </a>{' '}
+      Login to your Gupshup Account
       <br /> Go to the dashboard section to find your bot name & number.
     </p>
   );
 
   const apiTooltip = createTooltip(
     <p>
-      Login to your{' '}
-      <a href="https://www.gupshup.io/" target="_blank">
-        gupshup account
-      </a>
+      Login to your Gupshup Account
       <br />
       Go to the dashboard section
       <br />
@@ -80,14 +74,14 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
       component: Input,
       name: 'name',
       type: 'text',
-      inputLabel: 'Registered organization name',
+      inputLabel: 'Registered Organization Name',
       disabled: isDisabled,
     },
     {
       component: PhoneInput,
       name: 'phone',
       type: 'phone',
-      inputLabel: 'Chatbot number',
+      inputLabel: 'Chatbot Number',
       helperText: 'WhatsApp number that will be used for chatbot',
       disabled: isDisabled,
     },
@@ -95,7 +89,7 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
       component: Input,
       name: 'app_name',
       type: 'text',
-      inputLabel: 'App name',
+      inputLabel: 'App Name',
       helperText: (
         <span className={styles.FormHelperText}>Name of your bot on Gupshup. {appNameTooltip}</span>
       ),
@@ -105,7 +99,7 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
       component: Input,
       name: 'api_key',
       type: 'text',
-      inputLabel: 'Gupshup API key',
+      inputLabel: 'Gupshup API Key',
       helperText: (
         <span className={styles.FormHelperText}>API key generated on Gupshup {apiTooltip}</span>
       ),
@@ -228,7 +222,7 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
       formFieldItems={formFields(code)}
       initialValues={initialFormValues}
       step={1}
-      title="Bot details"
+      title="Bot Details"
       helperText="Form to be filled by Signing authority of your organization."
       setStates={setStates}
       setPayload={setPayload}
