@@ -43,13 +43,13 @@ export const RegistrationHome = () => {
               <h3>Payment details</h3>
               <ul>
                 <li>Preferred billing frequency</li>
-                <li>Finance POC name and designation</li>
-                <li>Finance POC phone number and the email address</li>
+                <li>Finance point of contact name and designation</li>
+                <li>Finance point of contact phone number and the email address</li>
               </ul>
             </div>
 
             <div className={styles.Box}>
-              <h3>Submitter/authority info</h3>
+              <h3>Submitter/authority information</h3>
               <ul>
                 <li>Submitter’s name and email address</li>
                 <li>Signing authority’s name and the email address</li>
