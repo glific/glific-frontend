@@ -148,7 +148,7 @@ export const OrgDetails = ({ handleStepChange, saveData }: FormStepProps) => {
       initialValues={initialFormValues}
       step={2}
       title="Organization Details"
-      helperText="To be filled by the signing authority of your organization."
+      helperText="Please fill your organization details."
       setStates={setStates}
       setPayload={setPayload}
       identifier="orgDetails"
