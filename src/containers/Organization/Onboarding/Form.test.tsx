@@ -33,11 +33,11 @@ beforeEach(() => {
   cleanup();
 });
 
-test('it should render platform details page', async () => {
+test('it should render platform Details page', async () => {
   const { getByTestId } = render(renderForm);
 
   await waitFor(() => {
-    expect(getByTestId('heading')).toHaveTextContent('Bot details');
+    expect(getByTestId('heading')).toHaveTextContent('Bot Details');
   });
 });
 
@@ -96,7 +96,7 @@ test('it should submit the form', async () => {
   const { getByTestId, getAllByRole, getAllByTestId, getByText } = render(renderForm);
 
   await waitFor(() => {
-    expect(getByTestId('heading')).toHaveTextContent('Bot details');
+    expect(getByTestId('heading')).toHaveTextContent('Bot Details');
   });
 
   fireEvent.click(getByTestId('submitActionButton'));
@@ -132,14 +132,14 @@ test('it should submit the form', async () => {
   fireEvent.click(screen.getByText('Confirm'));
 
   await waitFor(() => {
-    expect(getByTestId('heading')).toHaveTextContent('Organization details');
+    expect(getByTestId('heading')).toHaveTextContent('Organization Details');
   });
 
   fireEvent.click(getByTestId('back-button'));
   fireEvent.click(getByTestId('submitActionButton'));
 
   await waitFor(() => {
-    expect(getByTestId('heading')).toHaveTextContent('Organization details');
+    expect(getByTestId('heading')).toHaveTextContent('Organization Details');
   });
 
   const inputFieldsOrgdetails = getAllByRole('textbox');
@@ -153,14 +153,14 @@ test('it should submit the form', async () => {
   fireEvent.click(getByTestId('submitActionButton'));
 
   await waitFor(() => {
-    expect(getByTestId('heading')).toHaveTextContent('Payment details');
+    expect(getByTestId('heading')).toHaveTextContent('Payment Details');
   });
 
   fireEvent.click(getByTestId('back-button'));
   fireEvent.click(getByTestId('submitActionButton'));
 
   await waitFor(() => {
-    expect(getByTestId('heading')).toHaveTextContent('Payment details');
+    expect(getByTestId('heading')).toHaveTextContent('Payment Details');
   });
 
   const inputFieldsPaymentdetails = getAllByRole('textbox');
@@ -177,14 +177,14 @@ test('it should submit the form', async () => {
   fireEvent.click(getByTestId('submitActionButton'));
 
   await waitFor(() => {
-    expect(getByTestId('heading')).toHaveTextContent('Submitter & Signing authority details');
+    expect(getByTestId('heading')).toHaveTextContent('Submitter & Signing Authority Details');
   });
 
   fireEvent.click(getByTestId('back-button'));
   fireEvent.click(getByTestId('submitActionButton'));
 
   await waitFor(() => {
-    expect(getByTestId('heading')).toHaveTextContent('Submitter & Signing authority details');
+    expect(getByTestId('heading')).toHaveTextContent('Submitter & Signing Authority Details');
   });
 
   const inputFieldssigningdetails = getAllByRole('textbox');
@@ -226,7 +226,7 @@ test('it should disgree and send an email', async () => {
   const { getByTestId, getAllByRole, getAllByTestId } = render(renderForm);
 
   await waitFor(() => {
-    expect(getByTestId('heading')).toHaveTextContent('Bot details');
+    expect(getByTestId('heading')).toHaveTextContent('Bot Details');
   });
 
   const inputFieldsPlatformDetails = getAllByRole('textbox');
@@ -248,7 +248,7 @@ test('it should disgree and send an email', async () => {
   fireEvent.click(screen.getByText('Confirm'));
 
   await waitFor(() => {
-    expect(getByTestId('heading')).toHaveTextContent('Organization details');
+    expect(getByTestId('heading')).toHaveTextContent('Organization Details');
   });
 
   const inputFieldsOrgdetails = getAllByRole('textbox');
@@ -262,7 +262,7 @@ test('it should disgree and send an email', async () => {
   fireEvent.click(getByTestId('submitActionButton'));
 
   await waitFor(() => {
-    expect(getByTestId('heading')).toHaveTextContent('Payment details');
+    expect(getByTestId('heading')).toHaveTextContent('Payment Details');
   });
 
   const inputFieldsPaymentdetails = getAllByRole('textbox');
@@ -279,7 +279,7 @@ test('it should disgree and send an email', async () => {
   fireEvent.click(getByTestId('submitActionButton'));
 
   await waitFor(() => {
-    expect(getByTestId('heading')).toHaveTextContent('Submitter & Signing authority details');
+    expect(getByTestId('heading')).toHaveTextContent('Submitter & Signing Authority Details');
   });
 
   const checkboxes = getAllByRole('checkbox');
