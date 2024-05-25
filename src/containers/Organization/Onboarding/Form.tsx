@@ -31,7 +31,7 @@ export const RegistrationForm = () => {
       _id: 2,
     },
     {
-      label: 'Submitter & Authority',
+      label: 'Submitter & Signing Authority',
       _id: 3,
     },
   ];
