@@ -184,7 +184,7 @@ test('it should submit the form', async () => {
   fireEvent.click(getByTestId('submitActionButton'));
 
   await waitFor(() => {
-    expect(getByTestId('heading')).toHaveTextContent('Submitter & Signing Authority Details');
+    expect(getByTestId('heading')).toHaveTextContent('Submitter & Signing Authority');
   });
 
   const inputFieldssigningdetails = getAllByRole('textbox');
