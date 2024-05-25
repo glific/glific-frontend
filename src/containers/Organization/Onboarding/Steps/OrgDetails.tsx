@@ -147,7 +147,7 @@ export const OrgDetails = ({ handleStepChange, saveData }: FormStepProps) => {
       formFieldItems={formFields}
       initialValues={initialFormValues}
       step={2}
-      title="Organization Details"
+      title="Organization"
       helperText="Please fill your organization details."
       setStates={setStates}
       setPayload={setPayload}
