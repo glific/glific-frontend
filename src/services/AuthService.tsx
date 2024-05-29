@@ -294,7 +294,7 @@ export const setAuthHeaders = () => {
 };
 
 export const checkOrgStatus = (status: any) => {
-  if (status) {
+  if (status === 'SUSPENDED') {
     setErrorMessage(
       {
         message:
