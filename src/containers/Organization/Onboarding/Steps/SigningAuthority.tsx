@@ -63,7 +63,7 @@ export const SigningAuthority = ({
 
   const formFields = [
     {
-      label: 'Your details',
+      label: 'Your Details',
       children: [
         {
           component: Input,
@@ -80,7 +80,7 @@ export const SigningAuthority = ({
       ],
     },
     {
-      label: 'Signing Authority details',
+      label: 'Signing Authority',
       children: [
         {
           component: Input,
@@ -168,8 +168,8 @@ export const SigningAuthority = ({
       formFieldItems={formFields}
       initialValues={initialFormValues}
       step={4}
-      title="Submitter & Signing Authority Details"
-      helperText="Details and information of the applicant and the signing authority of the organization"
+      title="Submitter & Signing Authority"
+      helperText="Applicant and the Signing Authority details for the organization"
       setStates={setStates}
       setPayload={setPayload}
       identifier="submitterDetails"

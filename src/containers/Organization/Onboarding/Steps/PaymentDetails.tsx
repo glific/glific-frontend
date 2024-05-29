@@ -44,7 +44,7 @@ export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) =>
 
   const formFields = [
     {
-      label: 'Preferred billing frequency',
+      label: 'Preferred Billing Frequency',
       children: [
         {
           component: PaymentOptions,
@@ -54,7 +54,7 @@ export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) =>
       ],
     },
     {
-      label: 'Finance team details',
+      label: 'Finance Team Details',
       children: [
         {
           component: Input,
@@ -139,8 +139,8 @@ export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) =>
       formFieldItems={formFields}
       initialValues={initialFormValues}
       step={3}
-      title="Payment Details"
-      helperText="Enter payment information and choose the billing frequency"
+      title="Billing Plan"
+      helperText="Select the billing frequency and enter the billing information"
       setStates={setStates}
       setPayload={setPayload}
       identifier="payemntDetails"

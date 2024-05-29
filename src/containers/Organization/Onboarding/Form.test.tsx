@@ -132,14 +132,14 @@ test('it should submit the form', async () => {
   fireEvent.click(screen.getByText('Confirm'));
 
   await waitFor(() => {
-    expect(getByTestId('heading')).toHaveTextContent('Organization Details');
+    expect(getByTestId('heading')).toHaveTextContent('Organization');
   });
 
   fireEvent.click(getByTestId('back-button'));
   fireEvent.click(getByTestId('submitActionButton'));
 
   await waitFor(() => {
-    expect(getByTestId('heading')).toHaveTextContent('Organization Details');
+    expect(getByTestId('heading')).toHaveTextContent('Organization');
   });
 
   const inputFieldsOrgdetails = getAllByRole('textbox');
@@ -153,14 +153,14 @@ test('it should submit the form', async () => {
   fireEvent.click(getByTestId('submitActionButton'));
 
   await waitFor(() => {
-    expect(getByTestId('heading')).toHaveTextContent('Payment Details');
+    expect(getByTestId('heading')).toHaveTextContent('Billing Plan');
   });
 
   fireEvent.click(getByTestId('back-button'));
   fireEvent.click(getByTestId('submitActionButton'));
 
   await waitFor(() => {
-    expect(getByTestId('heading')).toHaveTextContent('Payment Details');
+    expect(getByTestId('heading')).toHaveTextContent('Billing Plan');
   });
 
   const inputFieldsPaymentdetails = getAllByRole('textbox');
@@ -177,14 +177,14 @@ test('it should submit the form', async () => {
   fireEvent.click(getByTestId('submitActionButton'));
 
   await waitFor(() => {
-    expect(getByTestId('heading')).toHaveTextContent('Submitter & Signing Authority Details');
+    expect(getByTestId('heading')).toHaveTextContent('Submitter & Signing Authority');
   });
 
   fireEvent.click(getByTestId('back-button'));
   fireEvent.click(getByTestId('submitActionButton'));
 
   await waitFor(() => {
-    expect(getByTestId('heading')).toHaveTextContent('Submitter & Signing Authority Details');
+    expect(getByTestId('heading')).toHaveTextContent('Submitter & Signing Authority');
   });
 
   const inputFieldssigningdetails = getAllByRole('textbox');
@@ -248,7 +248,7 @@ test('it should disgree and send an email', async () => {
   fireEvent.click(screen.getByText('Confirm'));
 
   await waitFor(() => {
-    expect(getByTestId('heading')).toHaveTextContent('Organization Details');
+    expect(getByTestId('heading')).toHaveTextContent('Organization');
   });
 
   const inputFieldsOrgdetails = getAllByRole('textbox');
@@ -262,7 +262,7 @@ test('it should disgree and send an email', async () => {
   fireEvent.click(getByTestId('submitActionButton'));
 
   await waitFor(() => {
-    expect(getByTestId('heading')).toHaveTextContent('Payment Details');
+    expect(getByTestId('heading')).toHaveTextContent('Billing Plan');
   });
 
   const inputFieldsPaymentdetails = getAllByRole('textbox');
@@ -279,7 +279,7 @@ test('it should disgree and send an email', async () => {
   fireEvent.click(getByTestId('submitActionButton'));
 
   await waitFor(() => {
-    expect(getByTestId('heading')).toHaveTextContent('Submitter & Signing Authority Details');
+    expect(getByTestId('heading')).toHaveTextContent('Submitter & Signing Authority');
   });
 
   const checkboxes = getAllByRole('checkbox');
