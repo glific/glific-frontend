@@ -20,10 +20,17 @@ interface ReachOutToUsProps {
 export const ReachOutToUs = ({ open, setOpen, handleStepChange, saveData }: ReachOutToUsProps) => {
   const { t } = useTranslation();
   const [name, setName] = useState<string>('');
+  const [org_name, setOrgName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [message, setMessage] = useState<string>('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+
+  const helperText = (
+    <p>
+      You can also reachout to us on <a href="mailto:support@glific.org">support@glific.org</a>.
+    </p>
+  );
 
   const formFields = [
     {
@@ -40,6 +47,12 @@ export const ReachOutToUs = ({ open, setOpen, handleStepChange, saveData }: Reac
     },
     {
       component: Input,
+      name: 'org_name',
+      type: 'text',
+      inputLabel: 'Organization Name',
+    },
+    {
+      component: Input,
       name: 'message',
       type: 'text',
       inputLabel: 'Message',
@@ -51,20 +64,22 @@ export const ReachOutToUs = ({ open, setOpen, handleStepChange, saveData }: Reac
   const FormSchema = Yup.object().shape({
     name: Yup.string().required(t('This Field is required.')).max(40),
     email: Yup.string().required(t('This Field is required.')).email('Enter a valid email.'),
+    org_name: Yup.string(),
     message: Yup.string().required(t('This Field is required.')),
   });
 
-  const initialFormValues: any = { name, email, message };
+  const initialFormValues: any = { name, email, message, org_name };
 
   const setPayload = (payload: any) => {
     return payload;
   };
 
   const setStates = (states: any) => {
-    const { name, email, message } = states;
+    const { name, email, message, org_name } = states;
     setName(name);
     setEmail(email);
     setMessage(message);
+    setOrgName(org_name);
   };
 
   const handleSubmit = async (payload: any, setErrors: Function) => {
@@ -135,7 +150,7 @@ export const ReachOutToUs = ({ open, setOpen, handleStepChange, saveData }: Reac
             text: 'Send',
             align: 'left',
           }}
-          okButtonHelperText="You can also reachout to us on support@glific.org."
+          okButtonHelperText={helperText}
           identifier="reachOutToUs"
           handleStepChange={handleStepChange}
           saveData={saveData}

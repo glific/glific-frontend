@@ -47,7 +47,9 @@ export const SigningAuthority = ({
       .required(t('Email is required.'))
       .email('Enter a valid email.'),
     permissions: Yup.object({
-      terms_agreed: Yup.boolean(),
+      terms_agreed: Yup.boolean()
+        .oneOf([true], 'Please agree to the terms and conditions.')
+        .required('Please agree to the terms and conditions.'),
       support_staff_account: Yup.boolean(),
     }),
   });
@@ -168,7 +170,7 @@ export const SigningAuthority = ({
       formFieldItems={formFields}
       initialValues={initialFormValues}
       step={4}
-      title="Submitter & Signing Authority"
+      title="Confirmation"
       helperText="Applicant and the Signing Authority details for the organization"
       setStates={setStates}
       setPayload={setPayload}
@@ -177,6 +179,7 @@ export const SigningAuthority = ({
       saveData={saveData}
       loading={loading}
       submitData={handleSubmit}
+      buttonState={{ text: 'Submit' }}
     />
   );
 };

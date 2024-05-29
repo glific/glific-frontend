@@ -109,7 +109,7 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
       component: Input,
       name: 'shortcode',
       type: 'text',
-      inputLabel: 'Platform URL',
+      inputLabel: 'Your Glific Platform Name',
       helperText: (
         <span className={styles.FormHelperText}>
           <span>
@@ -222,7 +222,7 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
       formFieldItems={formFields(code)}
       initialValues={initialFormValues}
       step={1}
-      title="Bot Details"
+      title="Chatbot Details"
       helperText="Form to be filled by Signing authority of your organization."
       setStates={setStates}
       setPayload={setPayload}

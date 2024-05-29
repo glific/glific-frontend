@@ -21,17 +21,17 @@ export const RegistrationHome = () => {
           </div>
           <div className={styles.DetailsContainer}>
             <div className={styles.Box}>
-              <h3>Glific platform details</h3>
+              <h3>Chatbot details</h3>
               <ul>
                 <li>Registered organization name</li>
-                <li>Chatbot number (New WhatsApp chatbot number)</li>
+                <li>Whatsapp chatbot number</li>
                 <li>App name (Gupshup bot)</li>
-                <li>Gupshup API keys (Generated)</li>
+                <li>Gupshup API key</li>
               </ul>
             </div>
 
             <div className={styles.Box}>
-              <h3>About the organization</h3>
+              <h3>Organization</h3>
               <ul>
                 <li>Registered organization address</li>
                 <li>Current organization address</li>
@@ -40,20 +40,18 @@ export const RegistrationHome = () => {
             </div>
 
             <div className={styles.Box}>
-              <h3>Payment details</h3>
+              <h3>Billing</h3>
               <ul>
                 <li>Preferred billing frequency</li>
-                <li>Finance point of contact name and designation</li>
-                <li>Finance point of contact phone number and the email address</li>
+                <li>Finance point of contact name, designation, phone number and email address</li>
               </ul>
             </div>
 
             <div className={styles.Box}>
-              <h3>Submitter/authority information</h3>
+              <h3>Submitter & Signing Authority Information</h3>
               <ul>
                 <li>Submitter’s name and email address</li>
-                <li>Signing authority’s name and the email address</li>
-                <li>Signing authority’s designation</li>
+                <li>Signing authority’s name, designation and email address</li>
               </ul>
             </div>
           </div>

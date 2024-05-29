@@ -4,6 +4,8 @@ import { Checkbox, Dialog, FormControlLabel } from '@mui/material';
 import styles from './TermsAndConditions.module.css';
 import { Button } from 'components/UI/Form/Button/Button';
 import { TermsAndConditionsText } from './TermsAndConditionsText';
+import axios from 'axios';
+import { ONBOARD_URL_UPDATE } from 'config';
 
 interface TermsAndConditionsProps {
   openReachOutToUs: Function;
@@ -21,13 +23,26 @@ export const TermsAndConditions = ({
   const { terms_agreed, support_staff_account } = field.value;
 
   const handleDisagree = async () => {
-    setFieldValue('permissions', {
-      terms_agreed: false,
-      support_staff_account,
-    });
-    openReachOutToUs(true);
+    const data = localStorage.getItem('registrationData');
+    if (data) {
+      let registrationData = JSON.parse(data);
 
-    setDialogOpen(false);
+      axios
+        .post(ONBOARD_URL_UPDATE, {
+          terms_agreed: false,
+          registration_id: registrationData.registration_details.registration_id,
+          org_id: registrationData.registration_details.org_id,
+        })
+        .then(({ data }) => {
+          setFieldValue('permissions', {
+            terms_agreed: false,
+            support_staff_account,
+          });
+          openReachOutToUs(true);
+
+          setDialogOpen(false);
+        });
+    }
   };
 
   const dialog = (

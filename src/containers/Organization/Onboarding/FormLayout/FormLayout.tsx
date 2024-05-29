@@ -21,7 +21,7 @@ interface FormLayoutProps {
   };
   setPayload: Function;
   showStep?: boolean;
-  okButtonHelperText?: string;
+  okButtonHelperText?: any;
   identifier: string;
   handleStepChange: Function;
   submitData: Function;

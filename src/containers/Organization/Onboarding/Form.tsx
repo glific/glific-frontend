@@ -19,7 +19,7 @@ export const RegistrationForm = () => {
 
   const steps = [
     {
-      label: 'Bot Details',
+      label: 'Chatbot Details',
       _id: 0,
     },
     {
@@ -27,11 +27,11 @@ export const RegistrationForm = () => {
       _id: 1,
     },
     {
-      label: 'Billing Plan',
+      label: 'Billing',
       _id: 2,
     },
     {
-      label: 'Submitter & Signing Authority',
+      label: 'Confirmation',
       _id: 3,
     },
   ];

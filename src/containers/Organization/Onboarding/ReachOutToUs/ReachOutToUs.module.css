@@ -11,10 +11,6 @@
   grid-column-end: 3;
 }
 
-.MessageField textarea {
-  min-height: 120px;
-}
-
 .CloseButton {
   width: 100%;
   display: flex;

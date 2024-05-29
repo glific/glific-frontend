@@ -139,7 +139,7 @@ export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) =>
       formFieldItems={formFields}
       initialValues={initialFormValues}
       step={3}
-      title="Billing Plan"
+      title="Billing"
       helperText="Select the billing frequency and enter the billing information"
       setStates={setStates}
       setPayload={setPayload}
