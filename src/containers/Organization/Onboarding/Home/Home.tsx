@@ -21,7 +21,7 @@ export const RegistrationHome = () => {
           </div>
           <div className={styles.DetailsContainer}>
             <div className={styles.Box}>
-              <h3>Chatbot details</h3>
+              <h3>Chatbot Details</h3>
               <ul>
                 <li>Registered organization name</li>
                 <li>Whatsapp chatbot number</li>
