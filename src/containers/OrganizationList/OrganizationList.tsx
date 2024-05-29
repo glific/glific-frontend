@@ -73,6 +73,7 @@ export const OrganizationList = ({
       { id: 'INACTIVE', label: <div className={styles.Inactive}>Inactive</div> },
       { id: 'APPROVED', label: 'Approved' },
       { id: 'ACTIVE', label: 'Active' },
+      { id: 'FORCED_SUSPENSION', label: 'Forced Suspension' },
       { id: 'SUSPENDED', label: 'Suspended' },
       { id: 'READY_TO_DELETE', label: <div className={styles.Delete}>Ready to delete</div> },
     ];

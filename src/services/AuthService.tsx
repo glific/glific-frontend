@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { setErrorMessage } from 'common/notification';
 
 import { RENEW_TOKEN, VITE_GLIFIC_AUTHENTICATION_API } from 'config';
 import setLogs from 'config/logs';
@@ -290,4 +291,28 @@ export const setAuthHeaders = () => {
   })(XMLHttpRequest.prototype.send);
 
   return { xmlSend, fetch, xmlOpen };
+};
+
+export const checkOrgStatus = (status: any) => {
+  if (status) {
+    setErrorMessage(
+      {
+        message:
+          'Your account is suspended/ paused by your team. In case of any concerns/ queries, please reach out to us on sangeeta@glific.org.',
+      },
+      'Account Suspended'
+    );
+    return false;
+  } else if (status === 'FORCED_SUSPENSION') {
+    setErrorMessage(
+      {
+        message:
+          "Your account is suspended/paused as payment isn't done by your team. Please make the payment as soon as possible to resume using the account. In case of any concerns/ queries, please reach out to us on sangeeta@glific.org.",
+      },
+      'Account Suspended'
+    );
+    return false;
+  }
+
+  return true;
 };
