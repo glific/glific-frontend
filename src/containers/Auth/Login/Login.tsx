@@ -47,8 +47,6 @@ export const Login = () => {
   const [getOrganization, { data: organizationData }] = useLazyQuery(GET_ORGANIZATION);
 
   useEffect(() => {
-    console.log(userData, organizationServicesData, organizationData);
-
     if (userData && organizationServicesData && organizationData) {
       //checking if org status is suspended
       if (!checkOrgStatus(organizationData.organization.organization.status)) return;
