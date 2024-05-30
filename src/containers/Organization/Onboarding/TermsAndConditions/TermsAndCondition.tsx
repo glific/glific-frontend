@@ -139,6 +139,9 @@ export const TermsAndConditions = ({
           root: styles.Root,
         }}
       />
+      {touched.permissions && errors?.permissions?.support_staff_account && (
+        <p className={styles.Error}>{errors.permissions.support_staff_account}</p>
+      )}
       {dialogOpen && dialog}
     </div>
   );

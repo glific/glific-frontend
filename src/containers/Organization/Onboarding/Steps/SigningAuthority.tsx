@@ -50,7 +50,9 @@ export const SigningAuthority = ({
       terms_agreed: Yup.boolean()
         .oneOf([true], 'Please agree to the terms and conditions.')
         .required('Please agree to the terms and conditions.'),
-      support_staff_account: Yup.boolean(),
+      support_staff_account: Yup.boolean()
+        .oneOf([true], 'Please agree to the creation of staff account.')
+        .required('Please agree to the creation of staff account.'),
     }),
   });
 
