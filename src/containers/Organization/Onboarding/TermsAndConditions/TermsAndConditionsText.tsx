@@ -475,7 +475,7 @@ export const TermsAndConditionsText = () => {
               the Agreement, the issue can be escalated by reporting it via email.
               <br />
               <br />
-              Email: support@projecttech4dev.org
+              Email: support@glific.org
             </p>
           </li>
         </ol>

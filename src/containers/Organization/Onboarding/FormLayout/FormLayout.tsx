@@ -232,7 +232,7 @@ export const FormLayout = ({
       >
         <div className={styles.Modal}>
           <p>
-            You wont be able to make changes to this form once confirmed. Do you want to go ahead?
+            You wont be able to make changes to this page once confirmed. Do you want to go ahead?
           </p>
           {loading && <p className={styles.Wait}>Please wait, this might take a few seconds.</p>}
         </div>
