@@ -56,7 +56,7 @@ export const FlowEditor = () => {
     setAnchorEl(null);
   };
 
-  const isTranslationEnabled = !getOrganizationServices('autoTranslationEnabled');
+  const isTranslationEnabled = getOrganizationServices('autoTranslationEnabled');
 
   let modal = null;
   let dialog = null;
