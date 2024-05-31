@@ -11,11 +11,12 @@ import {
   getCurrentUserInvalidRoleQuery,
 } from 'mocks/User';
 
-import { getOrganizationServicesQuery } from 'mocks/Organization';
+import { getOrganizationServicesQuery, getOrganizationStatus } from 'mocks/Organization';
+import { setErrorMessage } from 'common/notification';
 
 import { Login } from './Login';
 
-const mocks = [getCurrentUserQuery, getOrganizationServicesQuery];
+const mocks = [getCurrentUserQuery, getOrganizationServicesQuery, getOrganizationStatus('ACTIVE')];
 
 vi.mock('axios');
 vi.mock('pino-logflare', () => ({
@@ -23,8 +24,17 @@ vi.mock('pino-logflare', () => ({
   createPinoBrowserSend: vi.fn(),
 }));
 const mockedAxios = axios as any;
+vi.mock('common/notification', async (importOriginal) => {
+  const mod = await importOriginal<typeof import('common/notification')>();
+  return {
+    ...mod,
+    setErrorMessage: vi.fn((...args) => {
+      return args[1];
+    }),
+  };
+});
 
-const wrapper = (
+const wrapper = (mocks: any) => (
   <MockedProvider mocks={mocks}>
     <MemoryRouter>
       <Login />
@@ -58,7 +68,7 @@ describe('<Login />', () => {
 
     const successPromise = vi.fn(() => Promise.resolve(responseData));
     mockedAxios.post.mockImplementation(() => successPromise());
-    const { findByTestId } = render(wrapper);
+    const { findByTestId } = render(wrapper(mocks));
     const authContainer = await findByTestId('AuthContainer');
     expect(authContainer).toHaveTextContent('Login to your account');
   });
@@ -72,7 +82,7 @@ describe('<Login />', () => {
 
     const successPromise = vi.fn(() => Promise.resolve(responseData));
     mockedAxios.post.mockImplementation(() => successPromise());
-    const { container } = render(wrapper);
+    const { container } = render(wrapper(mocks));
 
     await userAction(container);
 
@@ -88,7 +98,7 @@ describe('<Login />', () => {
     const rejectPromise = vi.fn(() => Promise.reject(errorMessage));
     const localStorageSpy = vi.spyOn(Storage.prototype, 'setItem');
     mockedAxios.post.mockImplementationOnce(() => rejectPromise());
-    const { container } = render(wrapper);
+    const { container } = render(wrapper(mocks));
 
     await userAction(container);
 
@@ -141,6 +151,52 @@ describe('<Login />', () => {
     await waitFor(() => {
       expect(successPromise).toHaveBeenCalled();
       expect(localStorageSpy).not.toHaveBeenCalled();
+    });
+  });
+
+  it('test popup if org is force suspended', async () => {
+    const responseData = { data: { data: { data: {} } } };
+
+    // setAuthToken uses localStorage.setItem
+    const localStorageSpy = vi.spyOn(Storage.prototype, 'setItem');
+
+    const successPromise = vi.fn(() => Promise.resolve(responseData));
+    mockedAxios.post.mockImplementation(() => successPromise());
+
+    const { container } = render(
+      wrapper([
+        getCurrentUserQuery,
+        getCurrentUserQuery,
+        getOrganizationServicesQuery,
+        getOrganizationStatus('FORCED_SUSPENSION'),
+      ])
+    );
+    await userAction(container);
+
+    await waitFor(() => {
+      expect(setErrorMessage).toHaveBeenCalled();
+    });
+  });
+
+  it('test popup if org is suspended', async () => {
+    const responseData = { data: { data: { data: {} } } };
+
+    // setAuthToken uses localStorage.setItem
+    const successPromise = vi.fn(() => Promise.resolve(responseData));
+    mockedAxios.post.mockImplementation(() => successPromise());
+
+    const { container } = render(
+      wrapper([
+        getCurrentUserQuery,
+        getCurrentUserQuery,
+        getOrganizationServicesQuery,
+        getOrganizationStatus('SUSPENDED'),
+      ])
+    );
+    await userAction(container);
+
+    await waitFor(() => {
+      expect(setErrorMessage).toHaveBeenCalled();
     });
   });
 });

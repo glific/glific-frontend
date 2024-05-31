@@ -298,7 +298,7 @@ export const checkOrgStatus = (status: any) => {
     setErrorMessage(
       {
         message:
-          'Your account is suspended/ paused by your team. In case of any concerns/ queries, please reach out to us on sangeeta@glific.org.',
+          'Your account is suspended/ paused by your team. In case of any concerns/ queries, please reach out to us on support@glific.org.',
       },
       'Account Suspended'
     );
@@ -307,7 +307,7 @@ export const checkOrgStatus = (status: any) => {
     setErrorMessage(
       {
         message:
-          "Your account is suspended/paused as payment isn't done by your team. Please make the payment as soon as possible to resume using the account. In case of any concerns/ queries, please reach out to us on sangeeta@glific.org.",
+          "Your account is suspended/paused as payment isn't done by your team. Please make the payment as soon as possible to resume using the account. In case of any concerns/ queries, please reach out to us on support@glific.org.",
       },
       'Account Suspended'
     );
