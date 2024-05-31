@@ -1,0 +1,113 @@
+.DialogboxPaper {
+  width: 60%;
+  height: 80%;
+  margin-left: 25%;
+  border-radius: 20px;
+}
+
+.Wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.TermsAndConditions {
+  color: #4495df;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.Heading {
+  color: #119656;
+  font-size: 24px;
+  margin: 0;
+}
+
+.TermsAndCondition {
+  width: 100%;
+}
+
+.Buttons button {
+  width: 40%;
+  padding: 8px 0;
+  display: flex;
+  justify-content: center;
+  border-radius: 8px;
+}
+
+.Buttons {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  border-top: 2px solid #e0e0e0;
+  padding: 1.5rem;
+}
+
+.Main {
+  padding: 2rem 4rem;
+}
+
+.Main h5 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.Main ul {
+  padding-left: 15px;
+  list-style: disc;
+}
+
+.Main ol {
+  padding-left: 18px;
+}
+
+.Main ul li {
+  margin-top: 1rem 0;
+}
+
+.Main ol li {
+  margin: 1rem 0;
+}
+
+.Error {
+  margin-left: 14px;
+  font-size: 12px;
+  margin: 0;
+  line-height: 18px;
+  font-weight: 400;
+  color: #fb5c5c;
+}
+
+.Addendum {
+  margin-top: 2.5rem;
+  padding: 0 3rem;
+  font-size: 14px !important;
+}
+
+.Addendum h5 {
+  text-align: center;
+  text-decoration: underline;
+}
+
+.Addendum h6 {
+  font-size: 14px;
+  margin: 0;
+}
+
+@media only screen and (max-width: 768px) {
+  .DialogboxPaper {
+    width: 80%;
+    margin: 0;
+  }
+
+  .Main {
+    padding: 1rem 2rem;
+  }
+
+  .Addendum {
+    padding: 0 1rem;
+  }
+
+  .Buttons button {
+    width: 50%;
+  }
+}
