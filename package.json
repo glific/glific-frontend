@@ -73,7 +73,7 @@
     "serve": "vite preview",
     "cy:run": "cypress run",
     "format": "prettier \"**/*.{ts,tsx,css,graphql}\" --write",
-    "floweditor": "cp -r node_modules/@glific/flow-editor/build/static public && rm -rf public/sitestatic && cp -r node_modules/@glific/flow-editor/build/sitestatic public",
+    "floweditor": "cp -r node_modules/@glific/flow-editor/build/static public",
     "extract-translations": "i18next",
     "test": "vitest watch",
     "test:no-watch": "vitest run",
