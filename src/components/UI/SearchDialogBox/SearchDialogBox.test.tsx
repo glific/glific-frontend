@@ -1,4 +1,4 @@
-import { render, fireEvent } from '@testing-library/react';
+import { render, fireEvent, screen, getByRole, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { vi } from 'vitest';
 
@@ -15,6 +15,7 @@ const defaultProps: any = {
   onChange: mockHandleChange,
   options: [{ id: '1', label: 'something' }],
   selectedOptions: ['1'],
+  multiple: false,
 };
 
 const asyncSearchProps = {
@@ -37,9 +38,16 @@ test('it should render the title correctly', () => {
   expect(getByTestId('dialogTitle')).toHaveTextContent('Search Box');
 });
 
-test('it should contain the selected option', () => {
-  const { getByTestId } = render(searchDialog());
-  expect(getByTestId('searchChip').querySelector('span')).toHaveTextContent('something');
+test('it should contain the selected option', async () => {
+  const { getByRole } = render(searchDialog());
+  const [interactiveType] = screen.getAllByTestId('autocomplete-element');
+  interactiveType.focus();
+  fireEvent.keyDown(interactiveType, { key: 'ArrowDown' });
+  fireEvent.keyDown(interactiveType, { key: 'Enter' });
+
+  await waitFor(() => {
+    expect(getByRole('option')).toHaveTextContent('something');
+  });
 });
 
 test('save with normal props', () => {
@@ -54,26 +62,14 @@ test('save with async prop', () => {
   // need assertions here
 });
 
-test('change value in dialog box', () => {
-  const spy = vi.spyOn(AutoComplete, 'AutoComplete');
-  spy.mockImplementation((props: any) => {
-    const { form, onChange } = props;
+test('change value in dialog box', async () => {
+  render(searchDialog(defaultProps));
+  const [interactiveType] = screen.getAllByTestId('autocomplete-element');
+  interactiveType.focus();
+  fireEvent.keyDown(interactiveType, { key: 'ArrowDown' });
+  fireEvent.keyDown(interactiveType, { key: 'Enter' });
 
-    return (
-      <div data-testid="searchDialogBox">
-        <input
-          onChange={(value) => {
-            onChange(value);
-            form.setFieldValue(value);
-          }}
-        />
-      </div>
-    );
+  await waitFor(() => {
+    expect(screen.getByRole('option')).toHaveTextContent('something');
   });
-  const { getByTestId } = render(searchDialog(defaultProps));
-  fireEvent.change(getByTestId('searchDialogBox').querySelector('input') as Element, {
-    target: { value: 'change' },
-  });
-
-  // need assertions here
 });

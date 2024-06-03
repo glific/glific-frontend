@@ -125,6 +125,7 @@ export const AutoComplete = ({
     }
     return option;
   };
+  console.log(showTags);
 
   const getRenderTags = (value: Array<any>, getTagProps: any) => {
     if (!showTags) return null;
