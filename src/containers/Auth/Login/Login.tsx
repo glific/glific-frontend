@@ -15,13 +15,13 @@ import {
   setUserSession,
   clearUserSession,
   setOrganizationServices,
-  checkOrgStatus,
 } from 'services/AuthService';
 import { GET_CURRENT_USER } from 'graphql/queries/User';
 import { setUserRolePermissions } from 'context/role';
 import setLogs from 'config/logs';
-import { GET_ORGANIZATION, GET_ORGANIZATION_SERVICES } from 'graphql/queries/Organization';
+import { GET_ORGANIZATION_SERVICES } from 'graphql/queries/Organization';
 import { Auth } from '../Auth';
+import { setErrorMessage } from 'common/notification';
 
 const notApprovedMsg = 'Your account is not approved yet. Please contact your organization admin.';
 
@@ -44,13 +44,8 @@ export const Login = () => {
   const [getOrganizationServices, { data: organizationServicesData }] =
     useLazyQuery(GET_ORGANIZATION_SERVICES);
 
-  const [getOrganization, { data: organizationData }] = useLazyQuery(GET_ORGANIZATION);
-
   useEffect(() => {
-    if (userData && organizationServicesData && organizationData) {
-      //checking if org status is suspended
-      if (!checkOrgStatus(organizationData.organization.organization.status)) return;
-
+    if (userData && organizationServicesData) {
       const { user } = userData.currentUser;
       const userCopy = JSON.parse(JSON.stringify(user));
       userCopy.roles = user.accessRoles;
@@ -92,7 +87,7 @@ export const Login = () => {
     if (userError) {
       accessDenied();
     }
-  }, [userData, userError, setAuthenticated, organizationServicesData, organizationData]);
+  }, [userData, userError, setAuthenticated, organizationServicesData]);
 
   const formFields = [
     {
@@ -127,12 +122,15 @@ export const Login = () => {
         },
       })
       .then((response: any) => {
-        getOrganization();
         getCurrentUser();
         getOrganizationServices();
         setAuthSession(response.data.data);
       })
       .catch((error) => {
+        if (error?.response?.data?.error?.message !== 'Invalid phone or password') {
+          setErrorMessage(error?.response?.data?.error);
+        }
+
         setAuthError(t('Invalid phone or password.'));
         // add log's
         setLogs(`phoneNumber:${values.phoneNumber} URL:${USER_SESSION}`, 'info');

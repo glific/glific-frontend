@@ -294,7 +294,7 @@ export const setAuthHeaders = () => {
 };
 
 export const checkOrgStatus = (status: any) => {
-  if (status === 'SUSPENDED') {
+  if (status === 'suspended') {
     setErrorMessage(
       {
         message:
@@ -303,7 +303,7 @@ export const checkOrgStatus = (status: any) => {
       'Account Suspended'
     );
     return false;
-  } else if (status === 'FORCED_SUSPENSION') {
+  } else if (status === 'forced_suspension') {
     setErrorMessage(
       {
         message:
