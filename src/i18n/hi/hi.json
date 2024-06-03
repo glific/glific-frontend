@@ -448,5 +448,18 @@
   "Message and sample look different. You have to replace variables eg. {{1}} with actual values enclosed in [ ] eg. Replace {{1}} with [Monica].": "संदेश और नमूना अलग दिखते हैं. आपको वेरिएबल्स को बदलना होगा जैसे। {{1}} उदाहरण के लिए [ ] में संलग्न वास्तविक मानों के साथ। {{1}} को [मोनिका] से बदलें।",
   "Maximum 1024 characters are allowed": "अधिकतम 1024 वर्णों की अनुमति है",
   "Element name is required.": "तत्व का नाम आवश्यक है.",
-  "Category is required.": "श्रेणी आवश्यक है."
+  "Category is required.": "श्रेणी आवश्यक है.",
+  "This Field is required.": "This Field is required.",
+  "Invalid gst number": "अमान्य जीएसटी नंबर",
+  "Registered address is required.": "पंजीकृत पता आवश्यक है.",
+  "Address should not exceed 300 characters": "पता 300 अक्षरों से अधिक नहीं होना चाहिए",
+  "Current address is required.": "वर्तमान पता आवश्यक है।",
+  "Please enter not more than 25 characters": "कृपया 25 से अधिक अक्षर दर्ज न करें",
+  "Designation is required.": "पदनाम आवश्यक है.",
+  "Phone number is required.": "फ़ोन नंबर आवश्यक है.",
+  "Enter a valid email.": "एक वैध ईमेल प्रविष्ट करें।",
+  "Name should not exceed 40 characters": "नाम 40 अक्षरों से अधिक नहीं होना चाहिए",
+  "App name is required.": "ऐप का नाम आवश्यक है.",
+  "API key is required.": "एपीआई कुंजी आवश्यक है.",
+  "Please agree to the terms and conditions.": "कृपया नियम व शर्तों की सहमति दें।"
 }
