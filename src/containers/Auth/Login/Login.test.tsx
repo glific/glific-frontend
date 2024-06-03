@@ -12,7 +12,6 @@ import {
 } from 'mocks/User';
 
 import { getOrganizationServicesQuery, getOrganizationStatus } from 'mocks/Organization';
-import { setErrorMessage } from 'common/notification';
 
 import { Login } from './Login';
 
@@ -24,15 +23,6 @@ vi.mock('pino-logflare', () => ({
   createPinoBrowserSend: vi.fn(),
 }));
 const mockedAxios = axios as any;
-vi.mock('common/notification', async (importOriginal) => {
-  const mod = await importOriginal<typeof import('common/notification')>();
-  return {
-    ...mod,
-    setErrorMessage: vi.fn((...args) => {
-      return args[1];
-    }),
-  };
-});
 
 const wrapper = (mocks: any) => (
   <MockedProvider mocks={mocks}>
