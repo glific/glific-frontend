@@ -46,7 +46,7 @@ vi.mock('common/notification', async (importOriginal) => {
   };
 });
 
-test.only('it should have start a flow dialog box ', async () => {
+test('it should have start a flow dialog box ', async () => {
   const { getByText, getByTestId } = render(renderWrapper());
 
   expect(getByTestId('loading')).toBeInTheDocument();

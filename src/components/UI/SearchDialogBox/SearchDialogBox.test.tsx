@@ -1,9 +1,8 @@
-import { render, fireEvent, screen, getByRole, waitFor } from '@testing-library/react';
+import { render, fireEvent, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { vi } from 'vitest';
 
 import { SearchDialogBox } from './SearchDialogBox';
-import * as AutoComplete from '../Form/AutoComplete/AutoComplete';
 
 const mockHandleOk = vi.fn();
 const mockHandleCancel = vi.fn();

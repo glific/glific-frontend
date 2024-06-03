@@ -60,7 +60,7 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
 
   useEffect(() => {
     if (multiple) {
-      const selectedIds = selectedOptions?.map((option: any) => option.id);
+      const selectedIds = selectedOptions.map((option: any) => option.id);
       setSortedOptions([
         ...selectedOptions,
         ...options.filter((option: any) => !selectedIds.includes(option.id)),
@@ -87,8 +87,7 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
   const changeValue = (event: any, value: any) => {
     setSelectedOptions(value);
     if (multiple) {
-      const selectedIds = value?.map((option: any) => option.id);
-      console.log(value);
+      const selectedIds = value.map((option: any) => option.id);
 
       setSortedOptions([
         ...value,
