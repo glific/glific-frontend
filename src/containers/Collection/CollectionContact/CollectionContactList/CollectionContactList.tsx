@@ -2,9 +2,14 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
-import { CONTACT_SEARCH_QUERY, GET_CONTACT_COUNT } from 'graphql/queries/Contact';
+import {
+  CONTACT_SEARCH_QUERY,
+  GET_COLLECTION_CONTACTS,
+  GET_CONTACT_COUNT,
+} from 'graphql/queries/Contact';
 import { UPDATE_COLLECTION_CONTACTS } from 'graphql/mutations/Collection';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import DeleteIcon from 'assets/images/icons/Delete/Red.svg?react';
 import CollectionIcon from 'assets/images/icons/Collection/Dark.svg?react';
 import { List } from 'containers/List/List';
 import styles from './CollectionContactList.module.css';
@@ -13,6 +18,7 @@ import { setVariables } from 'common/constants';
 import { SearchDialogBox } from 'components/UI/SearchDialogBox/SearchDialogBox';
 import { Button } from 'components/UI/Form/Button/Button';
 import { getContactStatus } from 'common/utils';
+import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 
 export interface CollectionContactListProps {
   title: string;
@@ -60,8 +66,10 @@ export const CollectionContactList = ({
   descriptionBox = <></>,
 }: CollectionContactListProps) => {
   const [addContactsDialogShow, setAddContactsDialogShow] = useState(false);
+  const [removeContactsDialogShow, setRemoveContactsDialogShow] = useState(false);
   const [contactSearchTerm, setContactSearchTerm] = useState('');
   const [selectedContacts, setSelectedContact] = useState<any>([]);
+  const [contactsToRemove, setContactsToRemove] = useState<any>([]);
 
   const { t } = useTranslation();
   const params = useParams();
@@ -70,21 +78,46 @@ export const CollectionContactList = ({
   let dialog;
 
   const [getContacts, { data: contactsData }] = useLazyQuery(CONTACT_SEARCH_QUERY, {
-    variables: setVariables({ name: contactSearchTerm, includeGroups: [collectionId] }, 50),
+    variables: setVariables({ name: contactSearchTerm }, 50),
   });
 
-  const [deleleCollectionContacts] = useMutation(UPDATE_COLLECTION_CONTACTS);
-  const getDeleteQueryVariables = (id: any) => ({
-    input: {
-      groupId: collectionId,
-      addContactIds: [],
-      deleteContactIds: [id],
-    },
-  });
+  const [getCollectionContacts, { data: collectionContactsData }] =
+    useLazyQuery(GET_COLLECTION_CONTACTS);
+
+  const [updateCollectionContacts] = useMutation(UPDATE_COLLECTION_CONTACTS);
+
+  let collectionContacts: Array<any> = [];
+  if (collectionContactsData) {
+    collectionContacts = collectionContactsData.group.group.contacts;
+  }
+
+  const handleCollectionAdd = (value: any) => {
+    const selectedContacts = value.filter(
+      (contact: any) =>
+        !collectionContactsData.group.group.contacts
+          .map((collectionContact: any) => collectionContact.id)
+          .includes(contact)
+    );
+
+    if (selectedContacts.length === 0) {
+      setAddContactsDialogShow(false);
+    } else {
+      updateCollectionContacts({
+        variables: {
+          input: {
+            addContactIds: selectedContacts,
+            groupId: collectionId,
+            deleteContactIds: [],
+          },
+        },
+      });
+    }
+    setAddContactsDialogShow(false);
+  };
 
   const handleCollectionRemove = () => {
     const idsToRemove = selectedContacts.map((collection: any) => collection.id);
-    deleleCollectionContacts({
+    updateCollectionContacts({
       variables: {
         input: {
           groupId: collectionId,
@@ -93,8 +126,13 @@ export const CollectionContactList = ({
         },
       },
     });
-    setAddContactsDialogShow(false);
-    setSelectedContact([]);
+    setRemoveContactsDialogShow(false);
+    setContactsToRemove([]);
+  };
+
+  const setDialogBox = (selectedContacts: any) => {
+    setRemoveContactsDialogShow(true);
+    setSelectedContact(selectedContacts);
   };
 
   if (addContactsDialogShow) {
@@ -105,17 +143,16 @@ export const CollectionContactList = ({
 
     dialog = (
       <SearchDialogBox
-        title={t('Remove contacts from collection')}
-        handleOk={handleCollectionRemove}
+        title={t('Add contacts to collection')}
+        handleOk={handleCollectionAdd}
         handleCancel={() => setAddContactsDialogShow(false)}
-        options={[...contactOptions]}
+        options={contactOptions}
         optionLabel="name"
         additionalOptionLabel="phone"
         asyncSearch
-        colorOk="warning"
-        buttonOk="Remove"
+        colorOk="primary"
+        buttonOk="Add"
         disableClearable={false}
-        selectedOptions={selectedContacts}
         searchLabel="Search contacts"
         textFieldPlaceholder="Type here"
         onChange={(value: any) => {
@@ -125,6 +162,10 @@ export const CollectionContactList = ({
             setSelectedContact(value);
           }
         }}
+        selectedOptions={collectionContacts}
+        fullWidth={true}
+        showTags={false}
+        placeholder="Select contacts"
       />
     );
   }
@@ -144,33 +185,51 @@ export const CollectionContactList = ({
       parameter: 'id',
     },
   ];
-  const removeCollectionButton = (
+
+  const getRestrictedAction = () => {
+    const action: any = { edit: false, delete: false };
+    return action;
+  };
+
+  const addContactsButton = (
     <Button
       variant="contained"
-      color="error"
-      data-testid="removeBtn"
+      color="primary"
+      data-testid="addBtn"
       onClick={() => {
         getContacts();
         setAddContactsDialogShow(true);
+        getCollectionContacts({ variables: { id: collectionId } });
       }}
     >
-      Remove contacts
+      Add contacts
     </Button>
   );
 
-  const dialogTitle = t('Are you sure you want to remove contact from this collection?');
-  const dialogMessage = t('The contact will no longer receive messages sent to this collection');
+  const removeDialogBox = (
+    <DialogBox
+      title={t('Are you sure you want to remove contact from this collection?')}
+      handleCancel={() => setRemoveContactsDialogShow(false)}
+      colorOk="warning"
+      alignButtons="center"
+      handleOk={handleCollectionRemove}
+    >
+      <div className={styles.DialogText}>
+        <div>{t('The contact will no longer receive messages sent to this collection')}</div>
+      </div>
+    </DialogBox>
+  );
 
   return (
     <>
       {dialog}
+      {removeContactsDialogShow && removeDialogBox}
       <List
         descriptionBox={descriptionBox}
-        dialogTitle={dialogTitle}
         columnNames={columnNames}
         title={title}
         additionalAction={additionalAction}
-        secondaryButton={removeCollectionButton}
+        secondaryButton={addContactsButton}
         listItem="contacts"
         listItemName="contact"
         searchParameter={['term']}
@@ -178,12 +237,15 @@ export const CollectionContactList = ({
         button={{ show: false, label: '' }}
         pageLink="contact"
         listIcon={collectionIcon}
-        deleteModifier={{
-          variables: getDeleteQueryVariables,
-        }}
         editSupport={false}
-        dialogMessage={dialogMessage}
-        checkbox={{ show: true, action: () => {} }}
+        restrictedAction={getRestrictedAction}
+        checkbox={{
+          show: true,
+          action: setDialogBox,
+          selectedItems: contactsToRemove,
+          setSelectedItems: setContactsToRemove,
+          icon: <DeleteIcon data-testid="deleteBtn" />,
+        }}
         {...queries}
         {...columnAttributes}
       />

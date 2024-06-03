@@ -151,7 +151,7 @@ export interface ListProps {
 
   refetchQueries?: any;
 
-  checkbox?: { show: boolean; action: any };
+  checkbox?: { show: boolean; action: any; selectedItems: any[]; setSelectedItems: any; icon: any };
 }
 
 interface TableVals {
@@ -243,8 +243,6 @@ export const List = ({
   };
 
   const [defaultColumnSort, defaultColumnSortOrder] = getDefaultSortColumn(columnNames);
-
-  const [selectedItems, setSelectedItems] = useState<Array<any>>([]);
 
   // get the last sort column value from local storage if exist else set the default column
   const getSortColumn = (listItemNameValue: string) => {
@@ -615,12 +613,15 @@ export const List = ({
         checkbox: (
           <div className={styles.Checkbox}>
             <Checkbox
-              checked={selectedItems.some((item: any) => item.id === listItem.id)}
+              data-testid="checkbox"
+              checked={checkbox?.selectedItems.some((item: any) => item.id === listItem.id)}
               onChange={(event: any) => {
                 if (event.target.checked) {
-                  setSelectedItems([...selectedItems, listItem]);
+                  checkbox?.setSelectedItems([...checkbox?.selectedItems, listItem]);
                 } else {
-                  setSelectedItems(selectedItems.filter((item: any) => item.id !== listItem.id));
+                  checkbox?.setSelectedItems(
+                    checkbox?.selectedItems.filter((item: any) => item.id !== listItem.id)
+                  );
                 }
               }}
             />
@@ -701,7 +702,6 @@ export const List = ({
       )}
     </div>
   );
-  // console.log(selectedItems);
 
   if (checkbox && checkbox.show) {
     columnStyles = [styles.Checkbox, ...columnStyles];
@@ -709,12 +709,15 @@ export const List = ({
       {
         label: (
           <Checkbox
-            checked={selectedItems.length === itemList.length}
+            checked={
+              checkbox?.selectedItems.length !== 0 &&
+              checkbox?.selectedItems.length === itemList.length
+            }
             onChange={(event) => {
               if (event.target.checked) {
-                setSelectedItems(data[listItem]);
+                checkbox?.setSelectedItems(data[listItem]);
               } else {
-                setSelectedItems([]);
+                checkbox?.setSelectedItems([]);
               }
             }}
           />
@@ -723,6 +726,10 @@ export const List = ({
       ...columnNames,
     ];
   }
+
+  const handleCheckBoxAction = () => {
+    checkbox?.action(checkbox?.selectedItems);
+  };
 
   const displayList = (
     <Pager
@@ -737,11 +744,16 @@ export const List = ({
       loadingList={loadingList || loading || l || loadingCollections}
       noItemsText={noItemsText}
       showPagination={countQuery ? true : false}
-      showAction={selectedItems.length > 0}
+      checkboxSupport={{
+        icon: checkbox?.icon,
+        action: handleCheckBoxAction,
+        selectedItems: checkbox?.selectedItems,
+      }}
     />
   );
 
   let buttonDisplay;
+
   if (button.show) {
     const addIcon = <AddIcon className={styles.AddIcon} />;
     if (!button.symbol) {

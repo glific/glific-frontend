@@ -47,6 +47,7 @@ export interface AutocompleteProps {
   hasCreateOption?: boolean;
   handleCreateItem?: any;
   isFilterType?: boolean;
+  showTags?: boolean;
 }
 
 export const AutoComplete = ({
@@ -82,6 +83,7 @@ export const AutoComplete = ({
   handleCreateItem = () => {},
   placeholder = '',
   isFilterType = false,
+  showTags = true,
 }: AutocompleteProps) => {
   const errorText = getIn(errors, field.name);
   const touchedVal = getIn(touched, field.name);
@@ -125,6 +127,7 @@ export const AutoComplete = ({
   };
 
   const getRenderTags = (value: Array<any>, getTagProps: any) => {
+    if (!showTags) return null;
     let tagsToRender = value;
 
     /**
@@ -170,9 +173,6 @@ export const AutoComplete = ({
   if (getValue && options.length === 0) {
     renderedOption = multiple ? getValue : [getValue];
   }
-  if (multiple) {
-    renderedOption = [{ name: 'Select All', id: 'all' }, ...renderedOption];
-  }
 
   return (
     <div className={styles.Input}>
@@ -197,14 +197,8 @@ export const AutoComplete = ({
             return false;
           }}
           onChange={(_event, value: any) => {
-            if (value.some((item: any) => item.id === 'all')) {
-              value = renderedOption.filter((item: any) => item.id !== 'all');
-            }
-
             if (asyncSearch && value.length > 0) {
               asyncValues.setValue([...value]);
-              setSearchTerm('');
-              onChange('');
             } else if (asyncSearch && value.length === 0) {
               asyncValues.setValue([]);
             }
@@ -280,7 +274,6 @@ export const AutoComplete = ({
           }}
           noOptionsText={noOptionsText}
           ListboxProps={listBoxProps}
-          limitTags={4}
         />
         {helperText && <FormHelperText className={styles.HelperText}>{helperText}</FormHelperText>}
 

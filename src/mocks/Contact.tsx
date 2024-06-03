@@ -7,6 +7,7 @@ import {
   GET_CONTACT_HISTORY,
   COUNT_CONTACT_HISTORY,
   GET_CONTACT_PROFILES,
+  GET_COLLECTION_CONTACTS,
 } from 'graphql/queries/Contact';
 import { addFlowToContactQuery } from 'mocks/Flow';
 import { getOrganizationLanguagesQuery, getOrganizationQuery } from 'mocks/Organization';
@@ -526,3 +527,31 @@ export const LOGGED_IN_USER_MULTIPLE_PROFILES = [
   getContactQuery,
   getContactProfiles,
 ];
+
+export const getGroupContact = {
+  request: {
+    query: GET_COLLECTION_CONTACTS,
+    variables: { id: '1' },
+  },
+  result: {
+    data: {
+      group: {
+        group: {
+          contacts: [
+            {
+              id: '1',
+              name: 'Glific User',
+              phone: '987654321',
+            },
+          ],
+          waGroups: [
+            {
+              name: 'Group 1',
+              id: '1',
+            },
+          ],
+        },
+      },
+    },
+  },
+};

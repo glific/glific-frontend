@@ -31,7 +31,7 @@ interface PagerProps {
   collapseRow: string | undefined;
   noItemsText?: any;
   showPagination?: boolean;
-  showAction?: boolean;
+  checkboxSupport?: { action: any; icon: any; selectedItems: any };
 }
 
 // TODO: cleanup the translations code
@@ -122,49 +122,66 @@ const tableHeadColumns = (
   columnStyles: any,
   tableVals: any,
   handleTableChange: Function,
-  showAction?: boolean
+  totalRows: number,
+  checkboxSupport?: { action: any; icon: any; selectedItems: any }
 ) => {
-  const headerRow = (
-    <TableRow className={styles.TableHeadRow}>
-      {columnNames.map((field: any, i: number) => (
-        <TableCell
-          key={field.label}
-          className={`${columnStyles && columnStyles[i]} ${styles.RowHeadStyle}`}
-        >
-          {i !== columnNames.length - 1 && field.name ? (
-            <TableSortLabel
-              active={field.name === tableVals.sortCol}
-              direction={tableVals.sortDirection}
-              onClick={() => {
-                if (field.name !== tableVals.sortCol) {
-                  handleTableChange('sortCol', field.name);
-                } else {
-                  handleTableChange('sortCol', field.name);
-                  handleTableChange(
-                    'sortDirection',
-                    tableVals.sortDirection === 'asc' ? 'desc' : 'asc'
-                  );
-                }
-              }}
-              className={styles.HeaderColor}
-            >
-              {field.label}
-            </TableSortLabel>
-          ) : (
-            field.label
-          )}
+  let headerRow;
+
+  if (checkboxSupport?.selectedItems && checkboxSupport?.selectedItems.length > 0) {
+    headerRow = (
+      <TableRow className={styles.TableHeadRow}>
+        <TableCell className={styles.RowHeadStyle}>{columnNames[0].label}</TableCell>
+        <TableCell className={styles.SelectedItems}>
+          {checkboxSupport?.selectedItems.length} of {totalRows} selected
         </TableCell>
-      ))}
-    </TableRow>
-  );
-  return showAction ? (
-    <TableRow>
-      <TableCell>{columnNames[0].label}</TableCell>
-      <TableCell></TableCell>
-    </TableRow>
-  ) : (
-    headerRow
-  );
+        <TableCell colSpan={3} className={styles.Icon}>
+          <span
+            onClick={() => {
+              checkboxSupport?.action();
+            }}
+          >
+            {checkboxSupport?.icon}
+          </span>
+        </TableCell>
+      </TableRow>
+    );
+  } else {
+    headerRow = (
+      <TableRow className={styles.TableHeadRow}>
+        {columnNames.map((field: any, i: number) => (
+          <TableCell
+            key={field.label}
+            className={`${columnStyles && columnStyles[i]} ${styles.RowHeadStyle}`}
+          >
+            {i !== columnNames.length - 1 && field.name ? (
+              <TableSortLabel
+                active={field.name === tableVals.sortCol}
+                direction={tableVals.sortDirection}
+                onClick={() => {
+                  if (field.name !== tableVals.sortCol) {
+                    handleTableChange('sortCol', field.name);
+                  } else {
+                    handleTableChange('sortCol', field.name);
+                    handleTableChange(
+                      'sortDirection',
+                      tableVals.sortDirection === 'asc' ? 'desc' : 'asc'
+                    );
+                  }
+                }}
+                className={styles.HeaderColor}
+              >
+                {field.label}
+              </TableSortLabel>
+            ) : (
+              field.label
+            )}
+          </TableCell>
+        ))}
+      </TableRow>
+    );
+  }
+
+  return headerRow;
 };
 
 const pagination = (
@@ -202,7 +219,7 @@ export const Pager = ({
   loadingList = false,
   noItemsText,
   showPagination = true,
-  showAction,
+  checkboxSupport,
 }: PagerProps) => {
   const rows = createRows(data, columnStyles, collapseRow, collapseOpen);
   const tableHead = tableHeadColumns(
@@ -210,7 +227,8 @@ export const Pager = ({
     columnStyles,
     tableVals,
     handleTableChange,
-    showAction
+    totalRows,
+    checkboxSupport
   );
   const tablePagination = pagination(columnNames, totalRows, handleTableChange, tableVals);
 

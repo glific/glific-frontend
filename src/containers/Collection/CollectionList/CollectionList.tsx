@@ -157,7 +157,7 @@ export const CollectionList = () => {
   let collectionEntities: Array<any> = [];
 
   if (entityData) {
-    contactOptions = entityData[entity];
+    contactOptions = [...entityData[entity]];
   }
   if (collectionContactsData) {
     collectionEntities = collectionContactsData.group.group[entity];
@@ -232,6 +232,8 @@ export const CollectionList = () => {
           }
         }}
         fullWidth={true}
+        showTags={false}
+        placeholder="Select contacts"
       />
     );
   }
