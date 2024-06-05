@@ -1,0 +1,122 @@
+.Container {
+  width: 100vw;
+  height: 100%;
+  min-height: 100vh;
+  background-color: #e9f4ee;
+  display: flex;
+  padding: 36px 56px;
+  justify-content: center;
+  font-size: 1rem;
+}
+
+.GlificLogo {
+  width: 8rem;
+}
+
+.HeaderSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #636363;
+  text-align: center;
+}
+
+.Header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.Header h1 {
+  color: #111;
+  margin: 0;
+}
+
+.Header p {
+  color: #636363;
+  line-height: 24px;
+  margin: 0;
+}
+
+.DetailsContainer {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  grid-gap: 0.5rem 1rem;
+  width: 100%;
+}
+
+.Box {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  color: #111;
+}
+
+.Box ul {
+  margin: 0 !important;
+  padding-left: 14px !important;
+}
+
+.Main {
+  width: 60%;
+  height: 100%;
+  background-color: #fff;
+  border-radius: 20px;
+  box-shadow: #959da533 0px 8px 24px;
+  padding: 54px 68px;
+  display: flex;
+  flex-direction: column;
+  row-gap: 2rem;
+}
+
+.GetStarted {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.GetStarted .Button {
+  background-color: #119656;
+  color: #fff;
+  font-size: 24px;
+  border-radius: 12px;
+  width: 50%;
+  display: flex;
+  justify-self: center;
+  align-items: center;
+}
+
+.GetStarted p {
+  color: #636363;
+  text-align: center;
+}
+
+@media only screen and (max-width: 768px) {
+  .Container {
+    height: 100%;
+    padding: 1rem 3rem;
+  }
+
+  .Main {
+    padding: 1rem 2rem;
+    width: 100%;
+  }
+
+  .DetailsContainer {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .Box {
+    padding: 0;
+  }
+
+  .GetStarted .Button {
+    width: 100%;
+  }
+}

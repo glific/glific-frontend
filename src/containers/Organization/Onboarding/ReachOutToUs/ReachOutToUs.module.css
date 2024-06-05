@@ -1,0 +1,42 @@
+.DialogboxPaper {
+  width: 60%;
+  height: 80%;
+  margin-left: 25%;
+  border-radius: 20px;
+  position: relative;
+}
+
+.MessageField {
+  grid-column-start: 1;
+  grid-column-end: 3;
+}
+
+.CloseButton {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+}
+
+.Success {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.Success h2 {
+  color: #119656;
+}
+
+@media only screen and (max-width: 768px) {
+  .DialogboxPaper {
+    width: 80%;
+    margin: 0;
+    padding: 1rem;
+  }
+}

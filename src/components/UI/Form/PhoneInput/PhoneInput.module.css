@@ -1,5 +1,5 @@
 .PhoneNumber {
-  width: 334px !important;
+  width: 100% !important;
   padding-top: 13px !important;
   padding-bottom: 13px !important;
   padding-left: 48px !important;
@@ -10,14 +10,31 @@
   border-color: #93a29b !important;
 }
 
+.Input {
+  width: 100%;
+}
+
 .PhoneNumber:focus {
   border-color: #119656 !important;
   box-shadow: none !important;
 }
 
 .FormHelperText {
-  color: #f44336 !important;
+  color: #999999;
   margin-top: 3px !important;
   line-height: 1.2 !important;
   margin-left: 16px !important;
+}
+
+.ErrorText {
+  composes: FormHelperText;
+  color: #f44336 !important;
+}
+
+.Label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #111;
+  line-height: 22px;
+  margin: 6px 0;
 }

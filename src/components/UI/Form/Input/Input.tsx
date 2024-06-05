@@ -2,9 +2,9 @@ import {
   FormControl,
   OutlinedInput,
   FormHelperText,
-  InputLabel,
   InputAdornment,
   IconButton,
+  Typography,
 } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
@@ -31,14 +31,15 @@ export interface InputProps {
   inputProp?: any;
   translation?: string;
   onChange?: any;
-  inputLabel?: boolean;
+  inputLabel?: string | null;
   darkMode?: boolean;
+  inputLabelSubtext?: any;
 }
 
 export const Input = ({
   textArea = false,
   disabled = false,
-  inputLabel = false,
+  inputLabel = null,
   ...props
 }: InputProps) => {
   const {
@@ -57,6 +58,7 @@ export const Input = ({
     translation,
     onChange,
     darkMode,
+    inputLabelSubtext,
   } = props;
 
   let fieldType = type;
@@ -114,9 +116,10 @@ export const Input = ({
       <div className={styles.Input} data-testid="input">
         <FormControl fullWidth error={showError}>
           {inputLabel && (
-            <InputLabel variant="standard" className={styles.Label} data-testid="inputLabel">
-              {placeholder}
-            </InputLabel>
+            <Typography variant="caption" className={styles.Label} data-testid="inputLabel">
+              {inputLabel}
+              {inputLabelSubtext}
+            </Typography>
           )}
           <OutlinedInput
             placeholder={placeholder}
@@ -130,7 +133,7 @@ export const Input = ({
             multiline={textArea}
             rows={rows}
             className={styles.OutlineInput}
-            label={inputLabel ? placeholder : ''}
+            label={placeholder}
             fullWidth
             {...field}
             onChange={(e) => {
@@ -142,6 +145,7 @@ export const Input = ({
               }
             }}
             endAdornment={endAdornment || fieldEndAdorment}
+            notched={false}
           />
           {form && form.errors[field.name] && form.touched[field.name] ? (
             <FormHelperText className={styles.DangerText}>{form.errors[field.name]}</FormHelperText>

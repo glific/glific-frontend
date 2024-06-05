@@ -6,9 +6,8 @@ describe('<Input />', () => {
   const getProps: any = () => ({
     form: { touched: false, errors: {} },
     field: { name: 'input', value: 'default', onBlur: vi.fn() },
-    label: 'Title',
+    inputLabel: 'Title',
     placeholder: 'Title',
-    inputLabel: true,
   });
   const input = <Input {...getProps()} />;
   it('renders <Input /> component', () => {
