@@ -144,20 +144,6 @@ export const loadfiles = (startFlowEditor: any) => {
   document.body.appendChild(files[2]);
   document.body.appendChild(files[1]);
 
-  // document.addEventListener('DOMContentLoaded', () => {
-  //   var body = document.querySelector('body');
-  //   if (body) {
-  //     var componentsExist =
-  //       body.innerHTML.indexOf('temba-components') > -1 ||
-  //       body.innerHTML.indexOf('temba-modules') > -1;
-  //     if (!componentsExist) {
-  //       import('@nyaruka/temba-components/dist/').then(() => {
-  //         console.log('Loading temba components');
-  //       });
-  //     }
-  //   }
-  // });
-
   return files;
 };
 
