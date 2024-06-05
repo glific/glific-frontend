@@ -95,9 +95,7 @@ export const CollectionContactList = ({
   const handleCollectionAdd = (value: any) => {
     const selectedContacts = value.filter(
       (contact: any) =>
-        !collectionContactsData.group.group.contacts
-          .map((collectionContact: any) => collectionContact.id)
-          .includes(contact)
+        !collectionContacts.map((collectionContact: any) => collectionContact.id).includes(contact)
     );
 
     if (selectedContacts.length === 0) {
