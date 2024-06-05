@@ -27,6 +27,7 @@ import {
 import { CreateAutoComplete } from 'components/UI/Form/CreateAutoComplete/CreateAutoComplete';
 import { validateMedia } from 'common/utils';
 import styles from './Template.module.css';
+import { TemplateVariables } from './TemplateVariables';
 
 const regexForShortcode = /^[a-z0-9_]+$/g;
 
@@ -671,7 +672,6 @@ const Template = ({
         onBlur: (event: any) => setLabel(event.target.value),
       },
     },
-
     {
       component: EmojiInput,
       name: 'body',
@@ -689,6 +689,9 @@ const Template = ({
       },
       isEditing: isEditing,
       editorState: editorState,
+    },
+    {
+      component: TemplateVariables,
     },
   ];
 

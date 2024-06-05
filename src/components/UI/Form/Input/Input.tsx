@@ -14,7 +14,7 @@ import styles from './Input.module.css';
 
 export interface InputProps {
   type?: any;
-  field: { name: string; onChange?: any; value: any; onBlur: any };
+  field: { name: string; onChange?: any; value: any; onBlur?: any };
   disabled?: any;
   editor?: any;
   label: string;

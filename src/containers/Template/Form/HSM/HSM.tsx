@@ -98,6 +98,16 @@ export const HSM = () => {
 
   const formFields = [
     {
+      component: Input,
+      name: 'shortcode',
+      placeholder: `${t('Element name')}*`,
+      label: `${t('Element name')}*`,
+      disabled,
+      inputProp: {
+        onBlur: (event: any) => setShortcode(event.target.value),
+      },
+    },
+    {
       component: EmojiInput,
       name: 'example',
       label: `${t('Sample message')}*`,
@@ -127,16 +137,6 @@ export const HSM = () => {
       helperText: t('Select the most relevant category'),
       onChange: (event: any) => {
         setCategory(event);
-      },
-    },
-    {
-      component: Input,
-      name: 'shortcode',
-      placeholder: `${t('Element name')}*`,
-      label: `${t('Element name')}*`,
-      disabled,
-      inputProp: {
-        onBlur: (event: any) => setShortcode(event.target.value),
       },
     },
   ];
