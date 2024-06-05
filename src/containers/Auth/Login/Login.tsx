@@ -127,7 +127,7 @@ export const Login = () => {
         setAuthSession(response.data.data);
       })
       .catch((error) => {
-        if (error?.response?.data?.error?.message !== 'Invalid phone or password') {
+        if (error?.response?.status === 403) {
           setErrorMessage(error?.response?.data?.error);
         }
 
