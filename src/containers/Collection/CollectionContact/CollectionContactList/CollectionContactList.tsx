@@ -19,6 +19,7 @@ import { SearchDialogBox } from 'components/UI/SearchDialogBox/SearchDialogBox';
 import { Button } from 'components/UI/Form/Button/Button';
 import { getContactStatus } from 'common/utils';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
+import { setNotification } from 'common/notification';
 
 export interface CollectionContactListProps {
   title: string;
@@ -110,6 +111,9 @@ export const CollectionContactList = ({
             deleteContactIds: [],
           },
         },
+        onCompleted: () => {
+          setNotification('Contact added successfully', 'success');
+        },
       });
     }
     setAddContactsDialogShow(false);
@@ -124,6 +128,9 @@ export const CollectionContactList = ({
           addContactIds: [],
           deleteContactIds: idsToRemove,
         },
+      },
+      onCompleted: () => {
+        setNotification('Contact deleted successfully', 'success');
       },
     });
     setRemoveContactsDialogShow(false);
