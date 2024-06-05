@@ -3,6 +3,7 @@ import AddIcon from 'assets/images/add.svg?react';
 import { useState } from 'react';
 import { Input } from 'components/UI/Form/Input/Input';
 import styles from './TemplateVariable.module.css';
+import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 
 export interface TemplateOptionsProps {
   inputFields: Array<any>;
@@ -11,7 +12,6 @@ export interface TemplateOptionsProps {
 
 export const TemplateVariables = ({ form }: TemplateOptionsProps) => {
   const [variables, setVariables] = useState<any>([{ new: '' }]);
-  console.log(form.values);
 
   const handleAddVariable = () => {
     form.setFieldValue('body', 'dhshd');
