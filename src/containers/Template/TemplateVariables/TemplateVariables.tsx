@@ -2,7 +2,7 @@ import { Button } from 'components/UI/Form/Button/Button';
 import AddIcon from 'assets/images/add.svg?react';
 import { useState } from 'react';
 import { Input } from 'components/UI/Form/Input/Input';
-import styles from './Template.module.css';
+import styles from './TemplateVariable.module.css';
 
 export interface TemplateOptionsProps {
   inputFields: Array<any>;
@@ -19,8 +19,13 @@ export const TemplateVariables = ({ form }: TemplateOptionsProps) => {
 
   return (
     <div>
-      <Button onClick={handleAddVariable} variant="outlined" color="primary">
-        <AddIcon />
+      <Button
+        className={styles.AddVariable}
+        onClick={handleAddVariable}
+        variant="outlined"
+        color="primary"
+      >
+        <AddIcon className={styles.AddIcon} />
         Add Variable
       </Button>
       <div>
