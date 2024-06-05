@@ -207,9 +207,13 @@ export const CollectionList = () => {
     }
   };
 
-  let searchDialogTitle = groups
-    ? t('Add groups to the collection')
-    : t('Add contacts to the collection');
+  let searchDialogTitle = t('Add contacts to the collection');
+  let selectPlaceHolder = t('Select contacts');
+
+  if (groups) {
+    searchDialogTitle = t('Add groups to the collection');
+    selectPlaceHolder = t('Select groups');
+  }
 
   if (addContactsDialogShow) {
     dialog = (
@@ -233,7 +237,7 @@ export const CollectionList = () => {
         }}
         fullWidth={true}
         showTags={false}
-        placeholder="Select contacts"
+        placeholder={selectPlaceHolder}
       />
     );
   }
