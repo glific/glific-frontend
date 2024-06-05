@@ -1,5 +1,6 @@
 import Manifest from '@glific/flow-editor/build/asset-manifest.json';
 import { FLOW_EDITOR_CONFIGURE_LINK, FLOW_EDITOR_API, CONTACT_CHAT_LINK } from 'config/index';
+import '@nyaruka/temba-components/dist/temba-components.js';
 
 const glificBase = FLOW_EDITOR_API;
 
@@ -142,6 +143,20 @@ export const loadfiles = (startFlowEditor: any) => {
   document.body.appendChild(files[0]);
   document.body.appendChild(files[2]);
   document.body.appendChild(files[1]);
+
+  // document.addEventListener('DOMContentLoaded', () => {
+  //   var body = document.querySelector('body');
+  //   if (body) {
+  //     var componentsExist =
+  //       body.innerHTML.indexOf('temba-components') > -1 ||
+  //       body.innerHTML.indexOf('temba-modules') > -1;
+  //     if (!componentsExist) {
+  //       import('@nyaruka/temba-components/dist/').then(() => {
+  //         console.log('Loading temba components');
+  //       });
+  //     }
+  //   }
+  // });
 
   return files;
 };

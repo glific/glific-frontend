@@ -205,6 +205,8 @@ export const FlowEditor = () => {
 
       Track('Flow opened');
 
+      //TODO: on exiting the editor the code breaks here
+
       return () => {
         Object.keys(files).forEach((node: any) => {
           if (files[node]) {
