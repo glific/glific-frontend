@@ -203,6 +203,12 @@ export const Providers = () => {
       afterSave={saveHandler}
       entityId={credentialId}
       noHeading
+      confirmationState={{
+        show: true,
+        title: 'Are you sure you want to change these credentials?',
+        message:
+          'All information related to this account will be deleted. All data has already been backed up in BigQuery.',
+      }}
     />
   );
 };

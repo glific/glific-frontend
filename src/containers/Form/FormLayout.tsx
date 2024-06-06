@@ -1,6 +1,6 @@
 import { useState, Fragment, useEffect } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
-import { Formik, Form, Field } from 'formik';
+import { Formik, Form, Field, useFormik, FormikProvider } from 'formik';
 // eslint-disable-next-line no-unused-vars
 import { DocumentNode, ApolloError, useQuery, useMutation } from '@apollo/client';
 import { Typography } from '@mui/material';
@@ -75,6 +75,11 @@ export interface FormLayoutProps {
   helpData?: HelpDataProps;
   noHeading?: boolean;
   partialPage?: boolean;
+  confirmationState?: {
+    show: boolean;
+    title: string;
+    message: string;
+  };
 }
 
 export const FormLayout = ({
@@ -126,6 +131,7 @@ export const FormLayout = ({
   languageAttributes = {},
   noHeading = false,
   partialPage = false,
+  confirmationState,
 }: FormLayoutProps) => {
   const [showDialog, setShowDialog] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
@@ -137,7 +143,23 @@ export const FormLayout = ({
   const [saveClick, onSaveClick] = useState(false);
   const [isLoadedData, setIsLoadedData] = useState(false);
   const [customError, setCustomError] = useState<any>(null);
+  const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
   const params = useParams();
+
+  const formik = useFormik({
+    initialValues: {
+      languageId,
+      ...states,
+    },
+    validationSchema: validationSchema,
+    enableReinitialize: true,
+    onSubmit: (values, { setErrors }) => {
+      setCustomError({ setErrors });
+
+      if (showConfirmationDialog) setShowConfirmationDialog(true);
+      else saveHandler(values);
+    },
+  });
 
   const { t } = useTranslation();
 
@@ -501,6 +523,8 @@ export const FormLayout = ({
     ) : null;
 
   const onSaveButtonClick = (errors: any) => {
+    console.log(formik);
+
     if (Object.keys(errors).length > 0) {
       return;
     }
@@ -508,82 +532,67 @@ export const FormLayout = ({
   };
 
   const form = (
-    <Formik
-      enableReinitialize
-      validateOnMount
-      initialValues={{
-        languageId,
-        ...states,
-      }}
-      validationSchema={validationSchema}
-      onSubmit={(itemData, { setErrors }) => {
-        // when you want to show custom error on form field and error message is not coming from api
-        setCustomError({ setErrors });
-        saveHandler(itemData);
-      }}
-    >
-      {({ errors, submitForm }) => (
-        <Form className={[styles.Form, customStyles].join(' ')} data-testid="formLayout">
-          {formFieldItems.map((field, index) => {
-            const key = index;
+    <form onSubmit={formik.handleSubmit}>
+      <div className={[styles.Form, customStyles].join(' ')} data-testid="formLayout">
+        {formFieldItems.map((field, index) => {
+          const key = index;
 
-            if (field.skip) {
-              return null;
-            }
+          if (field.skip) {
+            return null;
+          }
 
-            return (
-              <Fragment key={key}>
-                {field.label && (
-                  <Typography data-testid="formLabel" variant="h5" className={styles.FieldLabel}>
-                    {field.label}
-                  </Typography>
-                )}
-                <Field key={key} {...field} onSubmit={submitForm} />
-              </Fragment>
-            );
-          })}
-          <div className={styles.Buttons}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => {
-                onSaveButtonClick(errors);
-                submitForm();
-              }}
-              className={styles.Button}
-              data-testid="submitActionButton"
-              loading={saveClick}
-              disabled={buttonState.status}
-            >
-              {buttonState.status ? buttonState.text : button}
-            </Button>
-            {additionalAction ? (
-              <Button
-                variant="outlined"
-                color="primary"
-                onClick={() => {
-                  submitForm();
-                  setAction(true);
-                }}
-                data-testid="additionalActionButton"
-              >
-                {additionalAction.label}
-              </Button>
-            ) : null}
+          return (
+            <Fragment key={key}>
+              {field.label && (
+                <Typography data-testid="formLabel" variant="h5" className={styles.FieldLabel}>
+                  {field.label}
+                </Typography>
+              )}
+              <Field key={key} {...field} onSubmit={formik.submitForm} />
+            </Fragment>
+          );
+        })}
+        <div className={styles.Buttons}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => {
+              onSaveButtonClick(formik.errors);
+              formik.submitForm();
+            }}
+            className={styles.Button}
+            data-testid="submitActionButton"
+            loading={saveClick}
+            disabled={buttonState.status}
+          >
+            {buttonState.status ? buttonState.text : button}
+          </Button>
+          {additionalAction ? (
             <Button
               variant="outlined"
-              color="secondary"
-              onClick={cancelHandler}
-              data-testid="cancelActionButton"
+              color="primary"
+              onClick={() => {
+                formik.submitForm();
+                setAction(true);
+              }}
+              data-testid="additionalActionButton"
             >
-              {t('Cancel')}
+              {additionalAction.label}
             </Button>
+          ) : null}
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={cancelHandler}
+            data-testid="cancelActionButton"
+          >
+            {t('Cancel')}
+          </Button>
 
-            {deleteButton}
-          </div>
-        </Form>
-      )}
-    </Formik>
+          {deleteButton}
+        </div>
+      </div>
+    </form>
   );
 
   const handleDeleteItem = () => {
@@ -622,14 +631,33 @@ export const FormLayout = ({
 
   let heading = <Heading backLink={backLinkButton} formTitle={formTitle} />;
 
+  let confirmationDialog;
+  if (showConfirmationDialog) {
+    confirmationDialog = (
+      <DialogBox
+        title={confirmationState?.title || 'Are you sure you want to proceed?'}
+        handleOk={() => {
+          saveHandler(formik.values);
+        }}
+        handleCancel={() => setShowConfirmationDialog(false)}
+        colorOk="warning"
+        alignButtons="center"
+        contentAlign="center"
+      >
+        {confirmationState?.message}
+      </DialogBox>
+    );
+  }
   return (
-    <div
-      className={partialPage ? styles.ItemAddDialog : styles.ItemAdd}
-      data-testid="add-container"
-    >
-      {dialogBox}
-      {!noHeading && heading}
-      {form}
-    </div>
+    <FormikProvider value={formik}>
+      <div
+        className={partialPage ? styles.ItemAddDialog : styles.ItemAdd}
+        data-testid="add-container"
+      >
+        {dialogBox}
+        {!noHeading && heading}
+        {form}
+      </div>
+    </FormikProvider>
   );
 };
