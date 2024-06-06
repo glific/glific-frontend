@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import CollectionIcon from 'assets/images/icons/Collection/Dark.svg?react';
 import AddContactIcon from 'assets/images/icons/Contact/Add.svg?react';
+import AddGroupIcon from 'assets/images/icons/AddGroupIcon.svg?react';
 import ExportIcon from 'assets/images/icons/Flow/Export.svg?react';
 import {
   DELETE_COLLECTION,
@@ -242,7 +243,7 @@ export const CollectionList = () => {
     );
   }
 
-  const addContactIcon = <AddContactIcon />;
+  const addContactIcon = groups ? <AddGroupIcon /> : <AddContactIcon />;
   const addEntiyLabel = groups ? t('Add groups to collection') : t('Add contacts to collection');
 
   const addEntity = {

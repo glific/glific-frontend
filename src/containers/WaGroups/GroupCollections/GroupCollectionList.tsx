@@ -68,8 +68,12 @@ export const GroupCollectionList = () => {
     variables: setVariables({}, 50),
   });
 
-  const [getCollectionGroups, { data: collectionGroupsData }] =
-    useLazyQuery(GET_COLLECTION_CONTACTS);
+  const [getCollectionGroups, { data: collectionGroupsData }] = useLazyQuery(
+    GET_COLLECTION_CONTACTS,
+    {
+      fetchPolicy: 'network-only',
+    }
+  );
 
   const [updateCollectionGroups] = useMutation(UPDATE_COLLECTION_WA_GROUP);
 
@@ -187,7 +191,7 @@ export const GroupCollectionList = () => {
       handleOk={handleCollectionRemove}
     >
       <div className={styles.DialogText}>
-        <div>{'The group will no longer receive messages sent to this collection'}</div>
+        <p>{'The group will no longer receive messages sent to this collection'}</p>
       </div>
     </DialogBox>
   );

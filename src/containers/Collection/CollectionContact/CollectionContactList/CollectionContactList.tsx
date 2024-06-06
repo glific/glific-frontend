@@ -82,8 +82,12 @@ export const CollectionContactList = ({
     variables: setVariables({ name: contactSearchTerm }, 50),
   });
 
-  const [getCollectionContacts, { data: collectionContactsData }] =
-    useLazyQuery(GET_COLLECTION_CONTACTS);
+  const [getCollectionContacts, { data: collectionContactsData }] = useLazyQuery(
+    GET_COLLECTION_CONTACTS,
+    {
+      fetchPolicy: 'network-only',
+    }
+  );
 
   const [updateCollectionContacts] = useMutation(UPDATE_COLLECTION_CONTACTS);
 
@@ -220,7 +224,7 @@ export const CollectionContactList = ({
       handleOk={handleCollectionRemove}
     >
       <div className={styles.DialogText}>
-        <div>{t('The contact will no longer receive messages sent to this collection')}</div>
+        <p>{t('The contact will no longer receive messages sent to this collection')}</p>
       </div>
     </DialogBox>
   );

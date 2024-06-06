@@ -611,7 +611,7 @@ export const List = ({
     if (checkbox && checkbox.show)
       return {
         checkbox: (
-          <div className={styles.Checkbox}>
+          <div className={styles.CheckboxLabel}>
             <Checkbox
               data-testid="checkbox"
               checked={checkbox?.selectedItems.some((item: any) => item.id === listItem.id)}
