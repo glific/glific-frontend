@@ -17,11 +17,9 @@ export interface EmojiInputProps {
   rows: number;
   handleChange?: any;
   handleBlur?: any;
-  getEditorValue?: any;
   inputProp?: any;
   isEditing?: boolean;
   translation?: string;
-  editorState?: any;
 }
 
 interface EmojiPickerProps {
@@ -33,11 +31,9 @@ interface EmojiPickerProps {
 export const EmojiInput = ({
   field: { value, name, onBlur },
   handleChange,
-  getEditorValue,
   handleBlur,
   isEditing = false,
   translation,
-  editorState,
   ...props
 }: EmojiInputProps) => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
@@ -46,11 +42,6 @@ export const EmojiInput = ({
     if (handleChange) {
       handleChange(editorState);
     }
-    if (getEditorValue) {
-      getEditorValue(editorState);
-    }
-
-    props.form.setFieldValue(name, editorState);
   };
 
   const handleClickAway = () => {
@@ -69,11 +60,10 @@ export const EmojiInput = ({
     <LexicalWrapper>
       <Editor
         isEditing={isEditing}
-        editorState={editorState}
         field={{ name, value, onBlur }}
         {...props}
         picker={picker}
-        onChange={lexicalChange}
+        onChange={handleChange}
       />
     </LexicalWrapper>
   );

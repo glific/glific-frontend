@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 import { useParams, useLocation } from 'react-router-dom';
@@ -110,24 +110,6 @@ export const HSM = () => {
       },
     },
     {
-      component: EmojiInput,
-      name: 'example',
-      label: `${t('Sample message')}*`,
-      rows: 5,
-      convertToWhatsApp: true,
-      textArea: true,
-      disabled,
-      helperText:
-        'Replace variables eg. {{1}} with actual values enclosed in [ ] eg. [12345] to show a complete message with meaningful word/statement/numbers/ special characters.',
-      handleChange: getSimulatorMessage,
-      getEditorValue: (value: any) => {
-        setExample(value);
-        setEditorState(value);
-      },
-      isEditing: disabled,
-      editorState: editorState,
-    },
-    {
       component: AutoComplete,
       name: 'category',
       options: categoryOpn,
@@ -135,7 +117,7 @@ export const HSM = () => {
       multiple: false,
       label: `${t('Category')}*`,
       placeholder: `${t('Category')}*`,
-      disabled,
+      // disabled,
       helperText: t('Select the most relevant category'),
       onChange: (event: any) => {
         setCategory(event);

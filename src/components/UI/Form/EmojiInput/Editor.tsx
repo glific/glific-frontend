@@ -24,22 +24,16 @@ import { handleFormatterEvents, handleFormatting, setInitialState } from 'common
 export interface EditorProps {
   field: { name: string; onChange?: any; value: any; onBlur: any };
   disabled?: any;
-  form?: { touched: any; errors: any };
+  form?: { touched: any; errors: any; values?: any };
   placeholder: string;
   helperText?: string;
   picker?: any;
   inputProp?: any;
   onChange?: any;
   isEditing: boolean;
-  editorState?: any;
 }
 
-export const Editor = ({
-  disabled = false,
-  isEditing = false,
-  editorState,
-  ...props
-}: EditorProps) => {
+export const Editor = ({ disabled = false, isEditing = false, ...props }: EditorProps) => {
   const { field, form, picker, placeholder, onChange } = props;
   const mentions = props.inputProp?.suggestions || [];
   const suggestions = {
@@ -48,9 +42,7 @@ export const Editor = ({
   const [editor] = useLexicalComposerContext();
 
   useEffect(() => {
-    if ((field.value || field.value === '') && !editorState && isEditing) {
-      setInitialState(editor, field.value);
-    }
+    setInitialState(editor, field.value);
   }, [field.value]);
 
   const Placeholder = () => {
@@ -77,11 +69,11 @@ export const Editor = ({
     );
   }, [editor]);
 
-  useEffect(() => {
-    if (disabled) {
-      editor.setEditable(false);
-    }
-  }, [disabled]);
+  // useEffect(() => {
+  //   if (disabled) {
+  //     editor.setEditable(false);
+  //   }
+  // }, [disabled]);
 
   const handleChange = (editorState: any) => {
     editorState.read(() => {

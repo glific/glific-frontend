@@ -170,7 +170,7 @@ const Template = ({
   >([]);
   const [isAddButtonChecked, setIsAddButtonChecked] = useState(false);
   const [nextLanguage, setNextLanguage] = useState<any>('');
-  const [editorState, setEditorState] = useState<any>('');
+  const [editorValue, setEditorValue] = useState('');
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location: any = useLocation();
@@ -214,12 +214,13 @@ const Template = ({
     type,
     attachmentURL,
     shortcode,
-    example,
     category,
+    example,
     tagId,
     isActive,
     templateButtons,
     isAddButtonChecked,
+    getShortcode,
   };
 
   const setStates = ({
@@ -260,7 +261,6 @@ const Template = ({
 
     if (typeof bodyValue === 'string') {
       setBody(bodyValue || '');
-      setEditorState(null);
     }
 
     if (exampleValue) {
@@ -301,7 +301,6 @@ const Template = ({
         const content = translationsCopy[currentLanguage];
         setLabel(content.label);
         setBody(content.body || '');
-        setEditorState(null);
       }
       setTranslations(translationsValue);
     }
@@ -313,8 +312,9 @@ const Template = ({
     if (shortcodeValue) {
       setTimeout(() => setShortcode(shortcodeValue), 0);
     }
+
     if (categoryValue) {
-      setCategory({ label: categoryValue, id: categoryValue });
+      setTimeout(() => setCategory({ label: categoryValue, id: categoryValue }), 0);
     }
     if (tagIdValue) {
       setTagId(tagIdValue);
@@ -336,7 +336,6 @@ const Template = ({
 
     if (typeof bodyValue === 'string') {
       setBody(bodyValue || '');
-      setEditorState(null);
     }
 
     if (typeValue && typeValue !== 'TEXT') {
@@ -376,21 +375,6 @@ const Template = ({
   };
 
   const HSMValidation = {
-    example: Yup.string()
-      .max(1024, t('Maximum 1024 characters are allowed'))
-      .when('body', ([body], schema: any) =>
-        schema.test({
-          test: (exampleValue: any) => {
-            const finalmessageValue = body && body.replace(/\{\{([1-9]|1[0-9])\}\}/g, '[]');
-            const finalExampleValue = exampleValue && exampleValue.replace(/\[[^\]]*\]/g, '[]');
-            return finalExampleValue === finalmessageValue;
-          },
-          message: t(
-            'Message and sample look different. You have to replace variables eg. {{1}} with actual values enclosed in [ ] eg. Replace {{1}} with [Monica].'
-          ),
-        })
-      )
-      .required('Example is required.'),
     category: Yup.object().nullable().required(t('Category is required.')),
     shortcode: Yup.string()
       .required(t('Element name is required.'))
@@ -683,12 +667,10 @@ const Template = ({
       helperText: defaultAttribute.isHsm
         ? 'You can also use variable and interactive actions. Variable format: {{1}}, Button format: [Button text,Value] Value can be a URL or a phone number.'
         : null,
-      getEditorValue: (value: any) => {
-        setBody(value);
-        setEditorState(value);
+      handleChange: (value: any) => {
+        setEditorValue(value);
       },
       isEditing: isEditing,
-      editorState: editorState,
     },
   ];
 
@@ -840,7 +822,7 @@ const Template = ({
             status: 'approved',
             languageId: language,
             label: payloadCopy.label,
-            body: payloadCopy.body,
+            body: editorValue,
             MessageMedia: messageMedia,
             ...defaultAttribute,
           };
@@ -888,6 +870,7 @@ const Template = ({
     if (tagId) {
       payloadCopy.tagId = payload.tagId.id;
     }
+    delete payloadCopy.getShortcode;
 
     return payloadCopy;
   };
@@ -909,9 +892,6 @@ const Template = ({
   const validation: any = {
     language: Yup.object().nullable().required('Language is required.'),
     label: Yup.string().required(t('Title is required.')).max(50, t('Title length is too long.')),
-    body: Yup.string()
-      .required(t('Message is required.'))
-      .max(1024, 'Maximum 1024 characters are allowed'),
     type: Yup.object()
       .nullable()
       .when('attachmentURL', {

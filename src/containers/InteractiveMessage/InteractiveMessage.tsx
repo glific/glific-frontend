@@ -74,7 +74,7 @@ export const InteractiveMessage = () => {
   const [tagId, setTagId] = useState<any>(null);
   const [language, setLanguage] = useState<any>({});
   const [languageOptions, setLanguageOptions] = useState<any>([]);
-  const [editorState, setEditorState] = useState<any>('');
+  const [editorValue, setEditorValue] = useState('');
 
   const [translations, setTranslations] = useState<any>('{}');
 
@@ -158,6 +158,8 @@ export const InteractiveMessage = () => {
     const content = JSON.parse(interactiveContentValue);
     const data = convertJSONtoStateData(content, typeValue, title);
 
+    console.log(content, data);
+
     if (languageOptions.length > 0 && languageVal) {
       const selectedLangauge = languageOptions.find((lang: any) => lang.id === languageVal.id);
 
@@ -167,7 +169,6 @@ export const InteractiveMessage = () => {
     setTitle(data.title);
     setFooter(data.footer || '');
     setBody(data.body || '');
-    setEditorState(null);
     setTemplateType(typeValue);
     setTemplateTypeField(templateTypeOptions.find((option) => option.id === typeValue));
     setTimeout(() => setTemplateButtons(data.templateButtons), 100);
@@ -237,7 +238,6 @@ export const InteractiveMessage = () => {
     setTitle(titleText);
     setFooter(data.footer || '');
     setBody(data.body || '');
-    setEditorState(null);
     setTemplateType(typeValue);
     setTemplateTypeField(templateTypeOptions.find((option) => option.id === typeValue));
     setTimeout(() => setTemplateButtons(data.templateButtons), 100);
@@ -384,10 +384,12 @@ export const InteractiveMessage = () => {
   };
 
   const updateTranslation = (value: any) => {
+    console.log('update');
     const Id = value.id;
     // restore if selected language is same as template
     if (translations) {
       const translationsCopy = JSON.parse(translations);
+      console.log(translationsCopy);
       // restore if translations present for selected language
       if (Object.keys(translationsCopy).length > 0 && translationsCopy[Id]) {
         updateStates({
@@ -420,8 +422,11 @@ export const InteractiveMessage = () => {
   const handleLanguageChange = (value: any) => {
     const selected = languageOptions.find(({ label }: any) => label === value);
     if (selected && Object.prototype.hasOwnProperty.call(params, 'id')) {
+      console.log('if');
+
       updateTranslation(selected);
     } else if (selected) {
+      console.log('else', params, Object.prototype.hasOwnProperty.call(params, 'id'));
       setLanguage(selected);
     }
   };
@@ -453,6 +458,8 @@ export const InteractiveMessage = () => {
   const langOptions = languageOptions && languageOptions.map(({ label }: any) => label);
 
   const onLanguageChange = (option: string, form: any) => {
+    console.log(option);
+
     setNextLanguage(option);
     const { values, errors } = form;
     if (values.type?.label === 'TEXT') {
@@ -531,15 +538,13 @@ export const InteractiveMessage = () => {
       convertToWhatsApp: true,
       textArea: true,
       helperText: t('You can also use variables in message enter @ to see the available list'),
-      getEditorValue: (value: any) => {
-        setBody(value);
-        setEditorState(value);
+      handleChange: (value: any) => {
+        setEditorValue(value);
       },
       inputProp: {
         suggestions: contactVariables,
       },
       isEditing: isEditing,
-      editorState: editorState,
     },
     {
       skip: templateType !== QUICK_REPLY,
@@ -593,6 +598,7 @@ export const InteractiveMessage = () => {
   const convertStateDataToJSON = (
     payload: any,
     titleVal: string,
+    bodyVal: any,
     templateTypeVal: string,
     templateButtonVal: Array<any>,
     globalButtonVal: any
@@ -613,7 +619,7 @@ export const InteractiveMessage = () => {
     }
 
     if (templateTypeVal === QUICK_REPLY) {
-      const content = getPayloadByMediaType(type?.id, payload);
+      const content = getPayloadByMediaType(type?.id, payload, bodyVal);
       const quickReplyOptions = getTemplateButtonPayload(templateTypeVal, templateButtonVal);
 
       const quickReplyJSON = { type: 'quick_reply', content, options: quickReplyOptions };
@@ -625,11 +631,10 @@ export const InteractiveMessage = () => {
     }
 
     if (templateTypeVal === LIST) {
-      const bodyText = payload.body;
       const items = getTemplateButtonPayload(templateTypeVal, templateButtonVal);
       const globalButtons = [{ type: 'text', title: globalButtonVal }];
 
-      const listJSON = { type: 'list', title: titleVal, body: bodyText, globalButtons, items };
+      const listJSON = { type: 'list', title: titleVal, body: bodyVal, globalButtons, items };
       Object.assign(updatedPayload, {
         type: LIST,
         interactiveContent: JSON.stringify(listJSON),
@@ -637,12 +642,11 @@ export const InteractiveMessage = () => {
     }
 
     if (templateType === LOCATION_REQUEST) {
-      const bodyText = payload.body;
       const locationJson = {
         type: 'location_request_message',
         body: {
           type: 'text',
-          text: bodyText,
+          text: bodyVal,
         },
         action: {
           name: 'send_location',
@@ -673,6 +677,7 @@ export const InteractiveMessage = () => {
     const payloadData: any = convertStateDataToJSON(
       payload,
       titleVal,
+      editorValue,
       templateTypeVal,
       templateButtonVal,
       globalButtonVal
@@ -774,8 +779,9 @@ export const InteractiveMessage = () => {
   const validationScheme = Yup.object().shape(validation, [['type', 'attachmentURL']]);
 
   const getPreviewData = () => {
-    const bodyText = body;
-    if (!title && !bodyText && !footer) return null;
+    const body = editorValue;
+
+    if (!title && !body && !footer) return null;
 
     const payload = {
       title,
@@ -789,6 +795,7 @@ export const InteractiveMessage = () => {
     const { interactiveContent } = convertStateDataToJSON(
       payload,
       title,
+      body,
       templateType,
       templateButtons,
       globalButton
@@ -800,7 +807,7 @@ export const InteractiveMessage = () => {
 
   const previewData = useMemo(getPreviewData, [
     title,
-    body,
+    editorValue,
     footer,
     templateType,
     templateButtons,
