@@ -101,10 +101,6 @@ export const AddToCollection = ({ collectionId, setDialog, groups }: AddToCollec
     ? t('Add groups to the collection')
     : 'Add contacts to the collection';
 
-  if (loading) {
-    return <Loading />;
-  }
-
   return (
     <SearchDialogBox
       title={searchDialogTitle}

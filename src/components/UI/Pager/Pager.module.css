@@ -140,3 +140,7 @@
   margin-left: auto;
   cursor: pointer;
 }
+
+.Checkbox {
+  padding: 1rem;
+}

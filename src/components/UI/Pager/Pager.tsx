@@ -130,7 +130,9 @@ const tableHeadColumns = (
   if (checkboxSupport?.selectedItems && checkboxSupport?.selectedItems.length > 0) {
     headerRow = (
       <TableRow className={styles.TableHeadRow}>
-        <TableCell className={styles.RowHeadStyle}>{columnNames[0].label}</TableCell>
+        <TableCell className={`${styles.Checkbox} ${styles.RowHeadStyle}`}>
+          {columnNames[0].label}
+        </TableCell>
         <TableCell className={styles.SelectedItems}>
           {checkboxSupport?.selectedItems.length} of {totalRows} selected
         </TableCell>
