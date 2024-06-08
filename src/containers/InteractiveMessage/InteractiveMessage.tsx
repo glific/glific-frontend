@@ -99,6 +99,7 @@ export const InteractiveMessage = () => {
   let header;
 
   const stateType = location.state;
+  console.log(stateType);
 
   if (stateType === 'copy') {
     queries.updateItemQuery = COPY_INTERACTIVE;

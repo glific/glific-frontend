@@ -26,6 +26,7 @@ export const LanguageBar = ({
           color="primary"
           onClick={() => {
             onLanguageChange(option, form);
+            console.log((form?.errors))
             onSubmit();
           }}
           className={`${isSelected(option) && styles.Selected} `}
