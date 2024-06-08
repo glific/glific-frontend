@@ -108,9 +108,9 @@ export const setConfig = (uuid: any) => {
 };
 
 export const loadfiles = (startFlowEditor: any) => {
-  (window as any).static_url = '/static/';
   const files: Array<HTMLScriptElement | HTMLLinkElement> = [];
   const filesToLoad: any = Manifest.files;
+
   let index = 0;
   Object.keys(filesToLoad).forEach((fileName) => {
     if (filesToLoad[fileName].startsWith('/static')) {

@@ -206,6 +206,11 @@ export const FlowEditor = () => {
       Track('Flow opened');
 
       return () => {
+        Object.keys(files).forEach((node: any) => {
+          if (files[node] && document.body.contains(files[node])) {
+            document.body.removeChild(files[node]);
+          }
+        });
         // clearing all timeouts when component unmounts
         const highestTimeoutId: any = setTimeout(() => {});
         for (let timeoutId = 0; timeoutId < highestTimeoutId; timeoutId += 1) {
