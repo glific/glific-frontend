@@ -672,6 +672,10 @@ const Template = ({
       },
       isEditing: isEditing,
     },
+    {
+      component: TemplateVariables,
+      editorValue: editorValue,
+    },
   ];
 
   const handeInputChange = (event: any, row: any, index: any, eventType: any) => {

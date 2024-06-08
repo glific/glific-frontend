@@ -9,14 +9,15 @@ import { OutlinedInput } from '@mui/material';
 export interface TemplateOptionsProps {
   inputFields: Array<any>;
   form: { touched: any; errors: any; values: any; setFieldValue: any };
+  editorValue: any;
 }
 
-export const TemplateVariables = ({ form }: TemplateOptionsProps) => {
-  const [variables, setVariables] = useState<any>([{ new: '' }]);
+export const TemplateVariables = ({ form, editorValue }: TemplateOptionsProps) => {
+  const [variables, setVariables] = useState<any>([]);
 
   const handleAddVariable = () => {
     setVariables([...variables, { new: '' }]);
-    form.setFieldValue('body', '{{1}}');
+    form.setFieldValue('body', `${editorValue} {{${variables.length + 1}}}`);
   };
 
   return (

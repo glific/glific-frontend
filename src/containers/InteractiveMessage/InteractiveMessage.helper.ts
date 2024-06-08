@@ -37,11 +37,6 @@ export const validator = (templateType: any, t: any) => {
     title: Yup.string()
       .required(t('Title is required'))
       .max(60, t('Title can be at most 60 characters')),
-    // body: Yup.string().when('type', {
-    //   is: (val: any) => val && val.id && val.id === 'DOCUMENT',
-    //   then: (schema) => schema.nullable(),
-    //   otherwise: (schema) => schema.required(t('Message content is required.')),
-    // }),
   };
 
   if (templateType === LIST) {
@@ -110,7 +105,12 @@ export const validator = (templateType: any, t: any) => {
   return validation;
 };
 
-export const convertJSONtoStateData = (JSONData: any, interactiveType: string, label: string) => {
+export const convertJSONtoStateData = (
+  JSONData: any,
+  interactiveType: string,
+  label: string,
+  editorValue: any
+) => {
   const data = { ...JSONData };
   const { title, body, items, content, options, globalButtons } = data;
 
@@ -135,7 +135,7 @@ export const convertJSONtoStateData = (JSONData: any, interactiveType: string, l
         default:
           result.type = null;
       }
-      result.body = text;
+      result.body = text || '';
       result.footer = caption;
       break;
     }
@@ -242,7 +242,7 @@ export const getVariableOptions = async (setContactVariables: any) => {
   setContactVariables(contacts);
 };
 
-export const getPayloadByMediaType = (mediaType: string, payload: any, bodyVal: any) => {
+export const getPayloadByMediaType = (mediaType: string, payload: any, body: any) => {
   const result: any = {};
 
   switch (mediaType) {
@@ -264,7 +264,7 @@ export const getPayloadByMediaType = (mediaType: string, payload: any, bodyVal: 
       break;
   }
 
-  result.text = bodyVal;
+  result.text = body;
   if (payload.footer) {
     result.caption = payload.footer;
   }

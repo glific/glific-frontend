@@ -74,7 +74,7 @@ export const InteractiveMessage = () => {
   const [tagId, setTagId] = useState<any>(null);
   const [language, setLanguage] = useState<any>({});
   const [languageOptions, setLanguageOptions] = useState<any>([]);
-  const [editorValue, setEditorValue] = useState('');
+  const [editorValue, setEditorValue] = useState<any>('');
 
   const [translations, setTranslations] = useState<any>('{}');
 
@@ -99,7 +99,6 @@ export const InteractiveMessage = () => {
   let header;
 
   const stateType = location.state;
-  console.log(stateType);
 
   if (stateType === 'copy') {
     queries.updateItemQuery = COPY_INTERACTIVE;
@@ -157,9 +156,7 @@ export const InteractiveMessage = () => {
     interactiveContent: interactiveContentValue,
   }: any) => {
     const content = JSON.parse(interactiveContentValue);
-    const data = convertJSONtoStateData(content, typeValue, title);
-
-    console.log(content, data);
+    const data = convertJSONtoStateData(content, typeValue, title, editorValue);
 
     if (languageOptions.length > 0 && languageVal) {
       const selectedLangauge = languageOptions.find((lang: any) => lang.id === languageVal.id);
@@ -212,7 +209,7 @@ export const InteractiveMessage = () => {
       }
     }
 
-    const data = convertJSONtoStateData(content, typeValue, labelValue);
+    const data = convertJSONtoStateData(content, typeValue, labelValue, editorValue);
     setDefaultLanguage(languageVal);
 
     if (languageOptions.length > 0 && languageVal) {
@@ -385,12 +382,10 @@ export const InteractiveMessage = () => {
   };
 
   const updateTranslation = (value: any) => {
-    console.log('update');
     const Id = value.id;
     // restore if selected language is same as template
     if (translations) {
       const translationsCopy = JSON.parse(translations);
-      console.log(translationsCopy);
       // restore if translations present for selected language
       if (Object.keys(translationsCopy).length > 0 && translationsCopy[Id]) {
         updateStates({
@@ -423,11 +418,8 @@ export const InteractiveMessage = () => {
   const handleLanguageChange = (value: any) => {
     const selected = languageOptions.find(({ label }: any) => label === value);
     if (selected && Object.prototype.hasOwnProperty.call(params, 'id')) {
-      console.log('if');
-
       updateTranslation(selected);
     } else if (selected) {
-      console.log('else', params, Object.prototype.hasOwnProperty.call(params, 'id'));
       setLanguage(selected);
     }
   };
@@ -459,12 +451,10 @@ export const InteractiveMessage = () => {
   const langOptions = languageOptions && languageOptions.map(({ label }: any) => label);
 
   const onLanguageChange = (option: string, form: any) => {
-    console.log(option);
-
     setNextLanguage(option);
     const { values, errors } = form;
     if (values.type?.label === 'TEXT') {
-      if (values.title || values.body) {
+      if (values.title || editorValue) {
         if (errors) {
           setNotification(t('Please check the errors'), 'warning');
         }
@@ -472,7 +462,7 @@ export const InteractiveMessage = () => {
         handleLanguageChange(option);
       }
     }
-    if (values.body) {
+    if (editorValue) {
       if (Object.keys(errors).length !== 0) {
         setNotification(t('Please check the errors'), 'warning');
       }
@@ -780,13 +770,11 @@ export const InteractiveMessage = () => {
   const validationScheme = Yup.object().shape(validation, [['type', 'attachmentURL']]);
 
   const getPreviewData = () => {
-    const body = editorValue;
-
-    if (!title && !body && !footer) return null;
+    if (!title && !editorValue && !footer) return null;
 
     const payload = {
       title,
-      body,
+      body: editorValue,
       tagId,
       footer,
       attachmentURL,
@@ -796,7 +784,7 @@ export const InteractiveMessage = () => {
     const { interactiveContent } = convertStateDataToJSON(
       payload,
       title,
-      body,
+      editorValue,
       templateType,
       templateButtons,
       globalButton

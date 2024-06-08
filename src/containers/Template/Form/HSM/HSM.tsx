@@ -117,14 +117,11 @@ export const HSM = () => {
       multiple: false,
       label: `${t('Category')}*`,
       placeholder: `${t('Category')}*`,
-      // disabled,
+      disabled,
       helperText: t('Select the most relevant category'),
       onChange: (event: any) => {
         setCategory(event);
       },
-    },
-    {
-      component: TemplateVariables,
     },
   ];
 
