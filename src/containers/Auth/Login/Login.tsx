@@ -129,11 +129,12 @@ export const Login = () => {
       .catch((error) => {
         if (error?.response?.status === 403) {
           setErrorMessage(error?.response?.data?.error);
+          setAuthError(' ');
         } else if (error?.response?.data?.error) {
           setAuthError(error?.response?.data?.error?.message);
         }
         // add log's
-        setLogs(`phoneNumber:${values.phoneNumber} URL:${USER_SESSION}`, 'info');
+        // setLogs(`phoneNumber:${values.phoneNumber} URL:${USER_SESSION}`, 'info');
         setLogs(error, 'error');
       });
   };
