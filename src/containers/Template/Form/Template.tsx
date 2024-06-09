@@ -671,6 +671,7 @@ const Template = ({
         onBlur: (event: any) => setLabel(event.target.value),
       },
     },
+
     {
       component: EmojiInput,
       name: 'body',

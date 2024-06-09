@@ -98,16 +98,6 @@ export const HSM = () => {
 
   const formFields = [
     {
-      component: Input,
-      name: 'shortcode',
-      placeholder: `${t('Element name')}*`,
-      label: `${t('Element name')}*`,
-      disabled,
-      inputProp: {
-        onBlur: (event: any) => setShortcode(event.target.value),
-      },
-    },
-    {
       component: EmojiInput,
       name: 'example',
       label: `${t('Sample message')}*`,
@@ -124,6 +114,16 @@ export const HSM = () => {
       },
       isEditing: disabled,
       editorState: editorState,
+    },
+    {
+      component: Input,
+      name: 'shortcode',
+      placeholder: `${t('Element name')}*`,
+      label: `${t('Element name')}*`,
+      disabled,
+      inputProp: {
+        onBlur: (event: any) => setShortcode(event.target.value),
+      },
     },
     {
       component: AutoComplete,
