@@ -522,11 +522,10 @@ export const FormLayout = ({
         saveHandler(itemData);
       }}
     >
-      {({ errors, submitForm }) => (
+      {({ errors, submitForm, values }) => (
         <Form className={[styles.Form, customStyles].join(' ')} data-testid="formLayout">
           {formFieldItems.map((field, index) => {
             const key = index;
-
             if (field.skip) {
               return null;
             }
@@ -547,6 +546,8 @@ export const FormLayout = ({
               variant="contained"
               color="primary"
               onClick={() => {
+                console.log(errors);
+                console.log(values);
                 onSaveButtonClick(errors);
                 submitForm();
               }}

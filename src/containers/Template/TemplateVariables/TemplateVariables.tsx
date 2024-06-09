@@ -10,13 +10,18 @@ export interface TemplateOptionsProps {
   inputFields: Array<any>;
   form: { touched: any; errors: any; values: any; setFieldValue: any };
   editorValue: any;
+  variables: Array<any>;
+  setVariables: any;
 }
 
-export const TemplateVariables = ({ form, editorValue }: TemplateOptionsProps) => {
-  const [variables, setVariables] = useState<any>([]);
-
+export const TemplateVariables = ({
+  form,
+  editorValue,
+  variables,
+  setVariables,
+}: TemplateOptionsProps) => {
   const handleAddVariable = () => {
-    setVariables([...variables, { new: '' }]);
+    setVariables([...variables, { text: '', id: variables.length + 1 }]);
     form.setFieldValue('body', `${editorValue} {{${variables.length + 1}}}`);
   };
 
@@ -32,11 +37,10 @@ export const TemplateVariables = ({ form, editorValue }: TemplateOptionsProps) =
         <span> Add Variable</span>
       </Button>
       <div>
-        <h2>Set custom variable values for the message</h2>
         <div className={styles.Variables}>
+          {variables.length !== 0 && <h2>Set custom variable values for the message</h2>}
           {variables.map((variable: any, index: number) => (
             <div className={styles.Variable} key={index}>
-              {/* <div className={styles.VariableNumber}>{`{{${index}}}`}</div> */}
               <OutlinedInput
                 sx={{
                   '& input': {
@@ -48,6 +52,11 @@ export const TemplateVariables = ({ form, editorValue }: TemplateOptionsProps) =
                 label="Name"
                 placeholder={'Define value '}
                 notched={false}
+                onChange={(event) => {
+                  let updatedVariables = variables;
+                  updatedVariables[index].text = event.target.value;
+                  setVariables(updatedVariables);
+                }}
               />
             </div>
           ))}

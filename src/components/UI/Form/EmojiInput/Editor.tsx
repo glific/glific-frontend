@@ -42,7 +42,9 @@ export const Editor = ({ disabled = false, isEditing = false, ...props }: Editor
   const [editor] = useLexicalComposerContext();
 
   useEffect(() => {
-    setInitialState(editor, field.value);
+    if (field.value || field.value !== '') {
+      setInitialState(editor, field.value);
+    }
   }, [field.value]);
 
   const Placeholder = () => {

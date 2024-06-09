@@ -80,3 +80,10 @@ export const GET_HSM_CATEGORIES = gql`
     whatsappHsmCategories
   }
 `;
+export const GET_SHORTCODES = gql`
+  query SessionTemplates {
+    sessionTemplates {
+      shortcode
+    }
+  }
+`;

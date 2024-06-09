@@ -103,6 +103,17 @@ const getTemplateAndButtons = (templateType: string, message: string, buttons: s
   return { buttons: result, template };
 };
 
+const getExampleFromBody = (body: string, variables: Array<any>, preview: boolean = false) => {
+  return body.replace(/{{(\d+)}}/g, (match, number) => {
+    let index = parseInt(number) - 1;
+    return variables[index].text
+      ? variables[index]
+        ? `[${variables[index].text}]`
+        : match
+      : `{{${number}}}`;
+  });
+};
+
 export interface TemplateProps {
   listItemName: string;
   redirectionLink: string;
@@ -117,6 +128,10 @@ export interface TemplateProps {
   category?: any;
   onExampleChange?: any;
   languageStyle?: string;
+  getSimulatorMessage?: any;
+  languageVariant?: boolean;
+  newShortCode?: any;
+  existingShortCode?: any;
 }
 
 interface CallToActionTemplate {
@@ -143,6 +158,10 @@ const Template = ({
   category,
   onExampleChange = () => {},
   languageStyle = 'dropdown',
+  getSimulatorMessage,
+  languageVariant,
+  newShortCode,
+  existingShortCode,
 }: TemplateProps) => {
   // "Audio" option is removed in case of HSM Template
   const mediaTypes =
@@ -171,6 +190,7 @@ const Template = ({
   const [isAddButtonChecked, setIsAddButtonChecked] = useState(false);
   const [nextLanguage, setNextLanguage] = useState<any>('');
   const [editorValue, setEditorValue] = useState('');
+  const [variables, setVariables] = useState<any>([]);
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location: any = useLocation();
@@ -213,14 +233,14 @@ const Template = ({
     body,
     type,
     attachmentURL,
-    shortcode,
     category,
     example,
     tagId,
     isActive,
     templateButtons,
     isAddButtonChecked,
-    getShortcode,
+    newShortCode,
+    existingShortCode,
   };
 
   const setStates = ({
@@ -374,14 +394,19 @@ const Template = ({
     }
   };
 
+  const shortCode = languageVariant ? 'exisitingShortCode' : 'newShortCode';
+  const shortCodeValidation = languageVariant
+    ? Yup.object().nullable().required(t('Category is required.'))
+    : Yup.string()
+        .required(t('Element name is required.'))
+        .matches(
+          regexForShortcode,
+          'Only lowercase alphanumeric characters and underscores are allowed.'
+        );
+
   const HSMValidation = {
     category: Yup.object().nullable().required(t('Category is required.')),
-    shortcode: Yup.string()
-      .required(t('Element name is required.'))
-      .matches(
-        regexForShortcode,
-        'Only lowercase alphanumeric characters and underscores are allowed.'
-      ),
+    [shortCode]: shortCodeValidation,
   };
 
   const validateURL = (value: string) => {
@@ -504,6 +529,10 @@ const Template = ({
       }
     }
   }, [templateButtons]);
+
+  useEffect(() => {
+    getSimulatorMessage(getExampleFromBody(editorValue, variables, true));
+  }, [editorValue, variables]);
 
   if (languageLoading || templateLoading || tagLoading) {
     return <Loading />;
@@ -641,8 +670,20 @@ const Template = ({
           onLanguageChange,
         };
 
+  const handeInputChange = (event: any, row: any, index: any, eventType: any) => {
+    const { value } = event.target;
+    const obj = { ...row };
+    obj[eventType] = value;
+
+    const result = templateButtons.map((val: any, idx: number) => {
+      if (idx === index) return obj;
+      return val;
+    });
+
+    setTemplateButtons(result);
+  };
+
   const formFields = [
-    formIsActive,
     languageComponent,
     {
       component: Input,
@@ -656,6 +697,7 @@ const Template = ({
         onBlur: (event: any) => setLabel(event.target.value),
       },
     },
+    formIsActive,
     {
       component: EmojiInput,
       name: 'body',
@@ -672,24 +714,7 @@ const Template = ({
       },
       isEditing: isEditing,
     },
-    {
-      component: TemplateVariables,
-      editorValue: editorValue,
-    },
   ];
-
-  const handeInputChange = (event: any, row: any, index: any, eventType: any) => {
-    const { value } = event.target;
-    const obj = { ...row };
-    obj[eventType] = value;
-
-    const result = templateButtons.map((val: any, idx: number) => {
-      if (idx === index) return obj;
-      return val;
-    });
-
-    setTemplateButtons(result);
-  };
 
   const templateRadioOptions = [
     {
@@ -731,15 +756,28 @@ const Template = ({
     helperText: t('Use this to categorize your templates.'),
   };
 
-  const hsmFields = formField && [
-    ...formField.slice(0, 1),
-    ...templateRadioOptions,
-    ...formField.slice(1),
+  const templateVariables = [
+    {
+      component: TemplateVariables,
+      editorValue: editorValue,
+      variables: variables,
+      setVariables: setVariables,
+    },
   ];
 
-  const fields = defaultAttribute.isHsm
-    ? [...formFields, ...hsmFields, ...attachmentField, tags]
-    : [...formFields, ...attachmentField];
+  const hsmFields = formField && [
+    ...formFields.slice(0, 1),
+    ...formField.slice(0, 1),
+    ...formField.slice(1, 3),
+    ...formFields.slice(1),
+    ...templateVariables,
+    ...templateRadioOptions,
+    ...formField.slice(3),
+    ...attachmentField,
+    tags,
+  ];
+
+  const fields = defaultAttribute.isHsm ? hsmFields : [...formFields, ...attachmentField];
 
   // Creating payload for button template
   const getButtonTemplatePayload = () => {
@@ -773,11 +811,14 @@ const Template = ({
       example: templateExample.message,
     };
   };
+  console.log(category);
 
   const setPayload = (payload: any) => {
     let payloadCopy = payload;
-    let translationsCopy: any = {};
+    payloadCopy.body = editorValue;
+    console.log(payloadCopy);
 
+    let translationsCopy: any = {};
     if (template) {
       if (template.sessionTemplate.sessionTemplate.language.id === language.id) {
         payloadCopy.languageId = language.id;
@@ -793,7 +834,6 @@ const Template = ({
 
         delete payloadCopy.language;
         if (payloadCopy.isHsm) {
-          payloadCopy.category = payloadCopy.category.label;
           if (isAddButtonChecked && templateType) {
             const templateButtonData = getButtonTemplatePayload();
             Object.assign(payloadCopy, { ...templateButtonData });
@@ -848,8 +888,15 @@ const Template = ({
         payloadCopy.type = 'TEXT';
       }
       if (payloadCopy.isHsm) {
-        payloadCopy.category = payloadCopy.category.label;
-
+        payloadCopy.category = category.label;
+        if (editorValue) {
+          payloadCopy.example = getExampleFromBody(editorValue, variables);
+        }
+        if (languageVariant) {
+          payloadCopy.shortcode = payloadCopy.existingShortcode.label;
+        } else {
+          payloadCopy.shortcode = payloadCopy.newShortcode;
+        }
         if (isAddButtonChecked && templateType) {
           const templateButtonData = getButtonTemplatePayload();
           Object.assign(payloadCopy, { ...templateButtonData });
@@ -860,7 +907,8 @@ const Template = ({
         delete payloadCopy.shortcode;
         delete payloadCopy.category;
       }
-
+      delete payloadCopy.languageVarinat;
+      delete payloadCopy.getShortcode;
       delete payloadCopy.isAddButtonChecked;
       delete payloadCopy.templateButtons;
       delete payloadCopy.language;
@@ -874,8 +922,7 @@ const Template = ({
     if (tagId) {
       payloadCopy.tagId = payload.tagId.id;
     }
-    delete payloadCopy.getShortcode;
-
+    console.log(payloadCopy);
     return payloadCopy;
   };
 

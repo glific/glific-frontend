@@ -1,19 +1,18 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 import { useParams, useLocation } from 'react-router-dom';
 
 import TemplateIcon from 'assets/images/icons/Template/UnselectedDark.svg?react';
-import { GET_HSM_CATEGORIES } from 'graphql/queries/Template';
+import { GET_HSM_CATEGORIES, GET_SHORTCODES } from 'graphql/queries/Template';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Input } from 'components/UI/Form/Input/Input';
-import { EmojiInput } from 'components/UI/Form/EmojiInput/EmojiInput';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { Simulator } from 'components/simulator/Simulator';
 import Template from '../Template';
 import styles from './HSM.module.css';
-import { TemplateVariables } from '../../TemplateVariables/TemplateVariables';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
+import { Typography } from '@mui/material';
 
 const defaultAttribute = {
   isHsm: true,
@@ -30,15 +29,18 @@ export const HSM = () => {
   });
 
   const [shortcode, setShortcode] = useState('');
+  const [exisitingShortCode, setExistingShortcode] = useState('');
+  const [newShortcode, setNewShortcode] = useState('');
   const [category, setCategory] = useState<any>(undefined);
   const [example, setExample] = useState();
-  const [editorState, setEditorState] = useState<any>('');
+  const [languageVariant, setLanguageVariant] = useState<boolean>(false);
 
   const { t } = useTranslation();
   const params = useParams();
   const location: any = useLocation();
 
   const { data: categoryList, loading } = useQuery(GET_HSM_CATEGORIES);
+  const { data: shortCodes } = useQuery(GET_SHORTCODES);
 
   if (loading) {
     return <Loading />;
@@ -48,6 +50,13 @@ export const HSM = () => {
   if (categoryList) {
     categoryList.whatsappHsmCategories.forEach((categories: any, index: number) => {
       categoryOpn.push({ label: categories, id: index });
+    });
+  }
+
+  const shortCodeOptions: any = [];
+  if (shortCodes) {
+    shortCodes.sessionTemplates.forEach((value: any, index: number) => {
+      shortCodeOptions.push({ label: value?.shortcode, id: index });
     });
   }
 
@@ -98,17 +107,64 @@ export const HSM = () => {
     disabled = true;
   }
 
+  const elementNameInput = {
+    component: Input,
+    name: 'newShortCode',
+    placeholder: `${t('Element name')}*`,
+    label: `${t('Element name')}*`,
+    disabled,
+  };
+
+  const elementNameDropDown = {
+    component: AutoComplete,
+    name: 'existingShortCode',
+    options: shortCodeOptions,
+    optionLabel: 'label',
+    multiple: false,
+    label: `${t('Element name')}*`,
+    placeholder: `${t('Element name')}*`,
+    disabled,
+    onChange: (event: any) => {
+      setCategory(event);
+    },
+  };
+
+  const elementName = languageVariant ? elementNameDropDown : elementNameInput;
+
   const formFields = [
     {
+      component: Checkbox,
+      name: 'languageVarinat',
+      title: (
+        <Typography variant="h6" className={styles.Checkbox}>
+          Translate existing HSM?
+        </Typography>
+      ),
+      handleChange: (value: any) => setLanguageVariant(value),
+    },
+    {
       component: Input,
-      name: 'shortcode',
+      name: 'newShortCode',
       placeholder: `${t('Element name')}*`,
       label: `${t('Element name')}*`,
       disabled,
-      inputProp: {
-        onBlur: (event: any) => setShortcode(event.target.value),
-      },
+      skip: languageVariant ? true : false,
     },
+    {
+      component: AutoComplete,
+      name: 'existingShortCode',
+      options: shortCodeOptions,
+      optionLabel: 'label',
+      multiple: false,
+      label: `${t('Element name')}*`,
+      placeholder: `${t('Element name')}*`,
+      disabled,
+      onChange: (event: any) => {
+        setCategory(event);
+      },
+      skip: !languageVariant ? true : false,
+    },
+
     {
       component: AutoComplete,
       name: 'category',
@@ -139,6 +195,10 @@ export const HSM = () => {
         setCategory={setCategory}
         category={category}
         onExampleChange={addButtonsToSampleMessage}
+        languageVariant={languageVariant}
+        getSimulatorMessage={getSimulatorMessage}
+        newShortCode={newShortcode}
+        existingShortCode={exisitingShortCode}
       />
       <Simulator isPreviewMessage message={sampleMessages} simulatorIcon={false} />
     </div>
