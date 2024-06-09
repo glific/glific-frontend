@@ -116,16 +116,6 @@ export const HSM = () => {
       editorState: editorState,
     },
     {
-      component: Input,
-      name: 'shortcode',
-      placeholder: `${t('Element name')}*`,
-      label: `${t('Element name')}*`,
-      disabled,
-      inputProp: {
-        onBlur: (event: any) => setShortcode(event.target.value),
-      },
-    },
-    {
       component: AutoComplete,
       name: 'category',
       options: categoryOpn,
@@ -137,6 +127,16 @@ export const HSM = () => {
       helperText: t('Select the most relevant category'),
       onChange: (event: any) => {
         setCategory(event);
+      },
+    },
+    {
+      component: Input,
+      name: 'shortcode',
+      placeholder: `${t('Element name')}*`,
+      label: `${t('Element name')}*`,
+      disabled,
+      inputProp: {
+        onBlur: (event: any) => setShortcode(event.target.value),
       },
     },
   ];
