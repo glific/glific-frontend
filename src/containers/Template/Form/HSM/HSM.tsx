@@ -12,8 +12,6 @@ import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { Simulator } from 'components/simulator/Simulator';
 import Template from '../Template';
 import styles from './HSM.module.css';
-import { TemplateVariables } from '../../TemplateVariables/TemplateVariables';
-import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 
 const defaultAttribute = {
   isHsm: true,
@@ -140,9 +138,6 @@ export const HSM = () => {
       onChange: (event: any) => {
         setCategory(event);
       },
-    },
-    {
-      component: TemplateVariables,
     },
   ];
 
