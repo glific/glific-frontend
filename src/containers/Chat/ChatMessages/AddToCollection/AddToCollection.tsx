@@ -11,7 +11,6 @@ import {
 } from 'graphql/mutations/Collection';
 import { SearchDialogBox } from 'components/UI/SearchDialogBox/SearchDialogBox';
 import { GET_WA_GROUPS } from 'graphql/queries/WaGroups';
-import { Loading } from 'components/UI/Layout/Loading/Loading';
 
 interface AddToCollectionProps {
   collectionId: string | undefined;
@@ -27,7 +26,7 @@ export const AddToCollection = ({ collectionId, setDialog, groups }: AddToCollec
   let updateMutation = groups ? UPDATE_COLLECTION_WA_GROUP : UPDATE_COLLECTION_CONTACTS;
   let entity = groups ? 'waGroups' : 'contacts';
 
-  const { data: entityData, loading } = useQuery(searchquery, {
+  const { data: entityData } = useQuery(searchquery, {
     variables: groups ? setVariables({}, 50) : setVariables({ name: contactSearchTerm }, 50),
   });
 
