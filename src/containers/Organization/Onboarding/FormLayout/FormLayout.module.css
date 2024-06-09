@@ -1,0 +1,191 @@
+.FormContainer {
+  padding: 2rem 4rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.Header {
+  display: flex;
+  flex-direction: column;
+  column-gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.Step {
+  color: #9a9a9a;
+  font-size: 12px;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+.Title {
+  color: #111;
+  font-size: 24px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.HelperText {
+  color: #9a9a9a;
+  font-size: 14px;
+}
+
+.OkButtonHelperText {
+  composes: HelperText;
+  width: 100%;
+}
+
+.FormFields {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 24px 64px;
+}
+
+.Form {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  row-gap: 1rem;
+  overflow-y: auto;
+}
+
+.FormFieldContainer {
+  height: 85%;
+  overflow-y: auto;
+}
+
+.Buttons {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+}
+
+.Button {
+  padding: 10px 64px;
+  border-radius: 8px;
+  line-height: 30px;
+  width: 30%;
+}
+
+.SectionHeading {
+  color: #616161;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.FormSection {
+  grid-column-start: 1;
+  grid-column-end: 3;
+  display: flex;
+  flex-direction: column;
+}
+
+.FullWidth {
+  grid-column-start: 1;
+  grid-column-end: 3;
+}
+
+.SubText {
+  padding: 0;
+  margin: 0;
+  color: #616161;
+  display: flex;
+  align-items: start;
+}
+
+.SubText span {
+  margin: 2px 0 0 6px;
+}
+
+.InfoIcon {
+  height: 18px;
+  width: 18px;
+  cursor: pointer;
+}
+
+.Tooltip {
+  border-radius: 5px;
+}
+
+.Tooltip a {
+  color: #4495df;
+}
+
+.TooltipArrow {
+  color: inherit !important;
+}
+
+.MessageField textarea {
+  min-height: 110px;
+}
+
+.Modal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #111;
+  row-gap: 1rem;
+}
+
+.Modal p {
+  text-align: center;
+  margin: 0;
+  color: #616161;
+}
+
+.Wait {
+  font-weight: bold;
+}
+
+.Checkbox {
+  display: flex;
+  align-items: center;
+}
+
+.CheckboxLabel {
+  margin: 0;
+  color: #1f1f1f;
+  font-size: 14px;
+}
+
+.FormHelperText {
+  display: flex;
+  align-items: center;
+  column-gap: 0.5rem;
+}
+
+.FormHelperText span {
+  display: flex;
+  flex-direction: column;
+}
+
+.PlatformURL {
+  color: #073f24;
+}
+
+@media only screen and (max-width: 768px) {
+  .FormContainer {
+    padding: 1.5rem 2rem;
+  }
+
+  .Title {
+    font-size: 1rem;
+  }
+  .HelperText {
+    font-size: 0.8rem;
+    line-height: normal;
+  }
+
+  .FormFields {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .Button {
+    font-size: 1rem;
+    width: 50%;
+  }
+}

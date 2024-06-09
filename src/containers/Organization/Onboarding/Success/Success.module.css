@@ -1,0 +1,46 @@
+.Cirlce {
+  position: absolute;
+  z-index: -1;
+}
+
+.Container {
+  height: 100%;
+  width: 50%;
+  background-color: #fff;
+  border-radius: 20px;
+  padding: 4rem;
+  z-index: 9999;
+}
+
+.Main {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.Check {
+  height: 12rem;
+}
+
+.Main h1 {
+  color: #119656;
+  font-size: 2.5rem;
+  text-align: center;
+}
+
+.Main p {
+  color: #2b2b2b;
+  font-size: 1rem;
+  text-align: justify;
+}
+
+.Date {
+  color: #119656;
+  font-weight: 700;
+}
+
+.Email {
+  font-weight: 700;
+}
