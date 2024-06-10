@@ -156,7 +156,10 @@ export const FormLayout = ({
     onSubmit: (values, { setErrors }) => {
       setCustomError({ setErrors });
       if (confirmationState?.show) setShowConfirmationDialog(true);
-      else saveHandler(values);
+      else {
+        onSaveButtonClick(formik.errors);
+        saveHandler(values);
+      }
     },
   });
 
@@ -522,8 +525,6 @@ export const FormLayout = ({
     ) : null;
 
   const onSaveButtonClick = (errors: any) => {
-    console.log(formik);
-
     if (Object.keys(errors).length > 0) {
       return;
     }
@@ -556,7 +557,6 @@ export const FormLayout = ({
             variant="contained"
             color="primary"
             onClick={() => {
-              onSaveButtonClick(formik.errors);
               formik.submitForm();
             }}
             className={styles.Button}
@@ -636,6 +636,7 @@ export const FormLayout = ({
       <DialogBox
         title={confirmationState?.title || 'Are you sure you want to proceed?'}
         handleOk={() => {
+          onSaveButtonClick(formik.errors);
           saveHandler(formik.values);
         }}
         handleCancel={() => setShowConfirmationDialog(false)}
