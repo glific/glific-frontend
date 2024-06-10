@@ -149,6 +149,9 @@ export const HSM = () => {
       label: `${t('Element name')}*`,
       disabled,
       skip: languageVariant ? true : false,
+      onChange: (value: any) => {
+        setNewShortcode(value);
+      },
     },
     {
       component: AutoComplete,
@@ -160,7 +163,7 @@ export const HSM = () => {
       placeholder: `${t('Element name')}*`,
       disabled,
       onChange: (event: any) => {
-        setCategory(event);
+        setExistingShortcode(event);
       },
       skip: !languageVariant ? true : false,
     },

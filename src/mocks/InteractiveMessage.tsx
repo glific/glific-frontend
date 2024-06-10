@@ -233,12 +233,12 @@ const createInteractiveCustomMock = () => ({
       input: {
         type: 'LIST',
         interactiveContent:
-          '{"type":"list","title":"new title","body":"😀","globalButtons":[{"type":"text","title":"Section 1"}],"items":[{"title":"title","subtitle":"title","options":[{"type":"text","title":"red","description":"red is color"}]}]}',
+          '{"type":"list","title":"new title","body":"😀\\n\\n","globalButtons":[{"type":"text","title":"Section 1"}],"items":[{"title":"title","subtitle":"title","options":[{"type":"text","title":"red","description":"red is color"}]}]}',
         languageId: '2',
         label: 'new title',
         sendWithTitle: true,
         translations:
-          '{"2":{"type":"list","title":"new title","body":"😀","globalButtons":[{"type":"text","title":"Section 1"}],"items":[{"title":"title","subtitle":"title","options":[{"type":"text","title":"red","description":"red is color"}]}]}}',
+          '{"2":{"type":"list","title":"new title","body":"😀\\n\\n","globalButtons":[{"type":"text","title":"Section 1"}],"items":[{"title":"title","subtitle":"title","options":[{"type":"text","title":"red","description":"red is color"}]}]}}',
       },
     },
   },

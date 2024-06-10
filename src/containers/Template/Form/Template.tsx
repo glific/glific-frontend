@@ -239,8 +239,7 @@ const Template = ({
     isActive,
     templateButtons,
     isAddButtonChecked,
-    newShortCode,
-    existingShortCode,
+    languageVariant,
   };
 
   const setStates = ({
@@ -406,7 +405,7 @@ const Template = ({
 
   const HSMValidation = {
     category: Yup.object().nullable().required(t('Category is required.')),
-    [shortCode]: shortCodeValidation,
+    // [shortCode]: shortCodeValidation,
   };
 
   const validateURL = (value: string) => {
@@ -811,12 +810,10 @@ const Template = ({
       example: templateExample.message,
     };
   };
-  console.log(category);
 
   const setPayload = (payload: any) => {
     let payloadCopy = payload;
     payloadCopy.body = editorValue;
-    console.log(payloadCopy);
 
     let translationsCopy: any = {};
     if (template) {
@@ -893,9 +890,9 @@ const Template = ({
           payloadCopy.example = getExampleFromBody(editorValue, variables);
         }
         if (languageVariant) {
-          payloadCopy.shortcode = payloadCopy.existingShortcode.label;
+          payloadCopy.shortcode = existingShortCode.label;
         } else {
-          payloadCopy.shortcode = payloadCopy.newShortcode;
+          payloadCopy.shortcode = newShortCode;
         }
         if (isAddButtonChecked && templateType) {
           const templateButtonData = getButtonTemplatePayload();
@@ -922,7 +919,6 @@ const Template = ({
     if (tagId) {
       payloadCopy.tagId = payload.tagId.id;
     }
-    console.log(payloadCopy);
     return payloadCopy;
   };
 
