@@ -161,7 +161,7 @@ export const CollectionContactList = ({
         asyncSearch
         colorOk="primary"
         buttonOk="Add"
-        disableClearable={false}
+        disableClearable={true}
         searchLabel="Search contacts"
         textFieldPlaceholder="Type here"
         onChange={(value: any) => {

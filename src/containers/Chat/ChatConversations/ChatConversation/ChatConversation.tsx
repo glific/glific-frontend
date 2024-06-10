@@ -210,7 +210,7 @@ const ChatConversation = ({
   return (
     <ListItemButton
       key={index}
-      data-testid="list"
+      data-testid="contact-list"
       disableRipple
       className={`${styles.StyledListItem} ${selected ? styles.SelectedColor : ''}`}
       component={Link}

@@ -140,7 +140,7 @@ export const GroupCollectionList = () => {
 
     dialog = (
       <SearchDialogBox
-        title={t('Add contacts to collection')}
+        title={t('Add groups to collection')}
         handleOk={handleCollectionAdd}
         handleCancel={() => setAddGroupsDialogShow(false)}
         options={groupsOptions}
@@ -149,7 +149,7 @@ export const GroupCollectionList = () => {
         asyncSearch
         colorOk="primary"
         buttonOk="Add"
-        disableClearable={false}
+        disableClearable={true}
         searchLabel="Search groups"
         textFieldPlaceholder="Type here"
         onChange={(value: any) => {
@@ -167,7 +167,7 @@ export const GroupCollectionList = () => {
     );
   }
 
-  const addContactsButton = (
+  const addGroupsButton = (
     <Button
       variant="contained"
       color="primary"
@@ -226,10 +226,10 @@ export const GroupCollectionList = () => {
         listItem="waGroups"
         listItemName="waGroups"
         searchParameter={['term']}
-        secondaryButton={addContactsButton}
+        secondaryButton={addGroupsButton}
         filters={{ includeGroups: collectionId }}
         button={{ show: false, label: '' }}
-        pageLink="contact"
+        pageLink="group"
         listIcon={collectionIcon}
         editSupport={false}
         restrictedAction={getRestrictedAction}
