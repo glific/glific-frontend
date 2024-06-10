@@ -1,6 +1,6 @@
 import { useState, Fragment, useEffect } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
-import { Formik, Form, Field, useFormik, FormikProvider } from 'formik';
+import { Field, useFormik, FormikProvider } from 'formik';
 // eslint-disable-next-line no-unused-vars
 import { DocumentNode, ApolloError, useQuery, useMutation } from '@apollo/client';
 import { Typography } from '@mui/material';
@@ -155,8 +155,7 @@ export const FormLayout = ({
     enableReinitialize: true,
     onSubmit: (values, { setErrors }) => {
       setCustomError({ setErrors });
-
-      if (showConfirmationDialog) setShowConfirmationDialog(true);
+      if (confirmationState?.show) setShowConfirmationDialog(true);
       else saveHandler(values);
     },
   });
@@ -655,6 +654,7 @@ export const FormLayout = ({
         data-testid="add-container"
       >
         {dialogBox}
+        {confirmationDialog}
         {!noHeading && heading}
         {form}
       </div>

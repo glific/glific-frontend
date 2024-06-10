@@ -37,6 +37,8 @@ export const Providers = () => {
   const [secrets, setSecrets] = useState({});
   const params = useParams();
   const type = params.type ? params.type : null;
+  console.log(type);
+
   const states: any = {};
 
   const { data: providerData } = useQuery(GET_PROVIDERS, {
@@ -146,6 +148,7 @@ export const Providers = () => {
     setStateValues(states);
     setFormFields(formField);
   };
+
   useEffect(() => {
     if (providerData) {
       providerData.providers.forEach((provider: any) => {
@@ -204,7 +207,7 @@ export const Providers = () => {
       entityId={credentialId}
       noHeading
       confirmationState={{
-        show: true,
+        show: type === 'maytapi',
         title: 'Are you sure you want to change these credentials?',
         message:
           'All information related to this account will be deleted. All data has already been backed up in BigQuery.',
