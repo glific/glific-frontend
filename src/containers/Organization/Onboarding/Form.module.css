@@ -1,0 +1,104 @@
+.Container {
+  width: 100vw;
+  height: 100vh;
+  background-color: #e9f4ee;
+  display: flex;
+  padding: 48px 56px;
+  position: relative;
+}
+
+.LeftContainer {
+  width: 25%;
+  height: 100%;
+  padding: 0 2rem 0 1rem;
+}
+
+.Content {
+  display: flex;
+  flex-direction: column;
+  row-gap: 1rem;
+}
+
+.Stepper p {
+  margin: 0 !important;
+}
+
+.GlificLogo {
+  width: 64px;
+  margin-bottom: 1rem;
+}
+
+.BackButton {
+  margin-bottom: 2rem;
+}
+
+.Step {
+  font-size: 1rem;
+  color: #878787;
+}
+
+.Active {
+  color: #073f24;
+  font-weight: bold;
+}
+
+.LeftFooter {
+  font-size: 14px;
+  color: #000;
+  padding-top: 1rem;
+  border-top: solid 1px #e0e0e0;
+}
+
+.ReachOut {
+  color: #119656;
+  text-decoration: underline;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.RightContainer {
+  width: 75%;
+  height: 100%;
+  background-color: #fff;
+  border-radius: 20px;
+  box-shadow: #959da533 0px 8px 24px;
+  z-index: 999;
+}
+
+.Hide {
+  display: none;
+}
+
+.FullWidth {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.SmallReachOutToUs {
+  display: none;
+}
+
+@media only screen and (max-width: 768px) {
+  .Container {
+    flex-direction: column;
+    height: 100%;
+    padding: 1rem 3rem;
+  }
+
+  .LeftContainer {
+    display: none;
+  }
+
+  .RightContainer {
+    width: 100%;
+  }
+
+  .SmallReachOutToUs {
+    display: flex;
+    justify-content: center;
+    column-gap: 10px;
+  }
+}

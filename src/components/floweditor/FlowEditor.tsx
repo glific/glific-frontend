@@ -5,6 +5,7 @@ import { Menu, MenuItem, Typography } from '@mui/material';
 import BackIconFlow from 'assets/images/icons/BackIconFlow.svg?react';
 import WarningIcon from 'assets/images/icons/Warning.svg?react';
 import PreviewIcon from 'assets/images/icons/PreviewIcon.svg?react';
+import TranslateIcon from 'assets/images/icons/LanguageTranslation.svg?react';
 import PublishIcon from 'assets/images/icons/PublishIcon.svg?react';
 import { Button } from 'components/UI/Form/Button/Button';
 import { APP_NAME } from 'config/index';
@@ -401,17 +402,6 @@ export const FlowEditor = () => {
             >
               Reset flow count
             </MenuItem>
-            {isTranslationEnabled && (
-              <MenuItem
-                onClick={() => {
-                  setShowTranslateFlowModal(true);
-                  handleClose();
-                }}
-                disableRipple
-              >
-                Translate
-              </MenuItem>
-            )}
           </Menu>
 
           <Button
@@ -423,6 +413,20 @@ export const FlowEditor = () => {
             <PreviewIcon className={styles.Icon} />
             Preview
           </Button>
+          {isTranslationEnabled && (
+            <Button
+              variant="outlined"
+              color="primary"
+              data-testid="previewButton"
+              onClick={() => {
+                setShowTranslateFlowModal(true);
+                handleClose();
+              }}
+            >
+              <TranslateIcon className={styles.Icon} />
+              Translate
+            </Button>
+          )}
           <Button
             variant="contained"
             color="primary"
