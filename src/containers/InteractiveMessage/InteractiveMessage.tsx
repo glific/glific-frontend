@@ -748,7 +748,7 @@ export const InteractiveMessage = () => {
       name: 'attachmentURL',
       type: 'text',
       label: t('Attachment URL'),
-      validate: () => isUrlValid,
+      validate: () => !dynamicInteractiveMessage && isUrlValid,
       inputProp: {
         onBlur: (event: any) => {
           setAttachmentURL(event.target.value);
