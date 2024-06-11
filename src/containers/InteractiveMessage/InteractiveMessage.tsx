@@ -194,7 +194,6 @@ export const InteractiveMessage = () => {
     sendWithTitle: sendInteractiveTitleValue,
   }: any) => {
     let content;
-    let dynamicInteractiveMessageValue = false;
 
     if (translationsVal) {
       const translationsCopy = JSON.parse(translationsVal);
@@ -237,10 +236,6 @@ export const InteractiveMessage = () => {
       titleText = `Copy of ${data.title}`;
     }
 
-    if (data.attachmentURL.startsWith('@')) {
-      dynamicInteractiveMessageValue = true;
-    }
-
     setTitle(titleText);
     setFooter(data.footer || '');
     setBody(data.body || '');
@@ -248,7 +243,6 @@ export const InteractiveMessage = () => {
     setTemplateType(typeValue);
     setTemplateTypeField(templateTypeOptions.find((option) => option.id === typeValue));
     setTimeout(() => setTemplateButtons(data.templateButtons), 100);
-    setDynamicInteractiveMessage(dynamicInteractiveMessageValue);
 
     if (typeValue === LIST) {
       setGlobalButton(data.globalButton);
