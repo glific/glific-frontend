@@ -76,7 +76,6 @@ export const InteractiveMessage = () => {
   const [languageOptions, setLanguageOptions] = useState<any>([]);
   const [editorState, setEditorState] = useState<any>('');
   const [dynamicInteractiveMessage, setDynamicInteractiveMessage] = useState<boolean>(false);
-  const [shouldValidateUrl, setShouldValidateUrl] = useState<boolean>(true);
 
   const [translations, setTranslations] = useState<any>('{}');
 
@@ -286,7 +285,7 @@ export const InteractiveMessage = () => {
   };
 
   useEffect(() => {
-    if (shouldValidateUrl && (type === '' || type) && attachmentURL) {
+    if (!dynamicInteractiveMessage && (type === '' || type) && attachmentURL) {
       validateURL(attachmentURL);
     }
   }, [type, attachmentURL]);
@@ -732,7 +731,6 @@ export const InteractiveMessage = () => {
       title: 'Dynamic Interactive Message',
       name: 'dynamicInteractiveMessage',
       handleChange: (value: boolean) => {
-        setShouldValidateUrl(!value);
         setDynamicInteractiveMessage(value);
       },
     },
@@ -765,6 +763,9 @@ export const InteractiveMessage = () => {
           setAttachmentURL(event.target.value);
         },
       },
+      helperText:
+        dynamicInteractiveMessage &&
+        'Please ensure that the media you are submitting is valid. Using incorrect media can cause errors as we cannot pre-validate media files.',
     },
   ];
 
