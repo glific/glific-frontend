@@ -253,6 +253,10 @@ export const InteractiveMessage = () => {
       setAttachmentURL(data.attachmentURL);
     }
 
+    if (isEditing && data.attachmentURL) {
+      setDynamicMedia(!isUrlValid);
+    }
+
     if (translationsVal) {
       setTranslations(translationsVal);
     }
