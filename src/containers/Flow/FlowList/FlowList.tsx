@@ -22,7 +22,7 @@ import { GET_TAGS } from 'graphql/queries/Tags';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { flowInfo } from 'common/HelpData';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
-import { setNotification } from 'common/notification';
+import { setErrorMessage, setNotification } from 'common/notification';
 
 const getName = (text: string, keywordsList: any, roles: any) => {
   const keywords = keywordsList.map((keyword: any) => keyword);
@@ -114,7 +114,7 @@ export const FlowList = () => {
       setNotification('Flow exported successfully');
     },
     onError: (error: any) => {
-      setNotification('An error occured while exporting the flow', 'warning');
+      setErrorMessage(error);
     },
   });
 
