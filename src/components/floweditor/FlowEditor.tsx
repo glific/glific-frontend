@@ -208,7 +208,7 @@ export const FlowEditor = () => {
 
       return () => {
         Object.keys(files).forEach((node: any) => {
-          if (files[node]) {
+          if (files[node] && document.body.contains(files[node])) {
             document.body.removeChild(files[node]);
           }
         });
@@ -403,16 +403,6 @@ export const FlowEditor = () => {
               Reset flow count
             </MenuItem>
           </Menu>
-
-          <Button
-            variant="outlined"
-            color="primary"
-            data-testid="previewButton"
-            onClick={() => setShowSimulator(!showSimulator)}
-          >
-            <PreviewIcon className={styles.Icon} />
-            Preview
-          </Button>
           {isTranslationEnabled && (
             <Button
               variant="outlined"
@@ -427,6 +417,15 @@ export const FlowEditor = () => {
               Translate
             </Button>
           )}
+          <Button
+            variant="outlined"
+            color="primary"
+            data-testid="previewButton"
+            onClick={() => setShowSimulator(!showSimulator)}
+          >
+            <PreviewIcon className={styles.Icon} />
+            Preview
+          </Button>
           <Button
             variant="contained"
             color="primary"
