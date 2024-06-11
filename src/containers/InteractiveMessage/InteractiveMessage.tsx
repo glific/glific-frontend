@@ -75,6 +75,8 @@ export const InteractiveMessage = () => {
   const [language, setLanguage] = useState<any>({});
   const [languageOptions, setLanguageOptions] = useState<any>([]);
   const [editorState, setEditorState] = useState<any>('');
+  const [dynamicInteractiveMessage, setDynamicInteractiveMessage] = useState<boolean>(false);
+  const [shouldValidateUrl, setShouldValidateUrl] = useState<boolean>(true);
 
   const [translations, setTranslations] = useState<any>('{}');
 
@@ -148,6 +150,7 @@ export const InteractiveMessage = () => {
     templateTypeField,
     type,
     attachmentURL,
+    dynamicInteractiveMessage,
   };
 
   const updateStates = ({
@@ -192,6 +195,7 @@ export const InteractiveMessage = () => {
     sendWithTitle: sendInteractiveTitleValue,
   }: any) => {
     let content;
+    let dynamicInteractiveMessageValue = false;
 
     if (translationsVal) {
       const translationsCopy = JSON.parse(translationsVal);
@@ -234,6 +238,10 @@ export const InteractiveMessage = () => {
       titleText = `Copy of ${data.title}`;
     }
 
+    if (data.attachmentURL.startsWith('@')) {
+      dynamicInteractiveMessageValue = true;
+    }
+
     setTitle(titleText);
     setFooter(data.footer || '');
     setBody(data.body || '');
@@ -241,6 +249,7 @@ export const InteractiveMessage = () => {
     setTemplateType(typeValue);
     setTemplateTypeField(templateTypeOptions.find((option) => option.id === typeValue));
     setTimeout(() => setTemplateButtons(data.templateButtons), 100);
+    setDynamicInteractiveMessage(dynamicInteractiveMessageValue);
 
     if (typeValue === LIST) {
       setGlobalButton(data.globalButton);
@@ -277,7 +286,7 @@ export const InteractiveMessage = () => {
   };
 
   useEffect(() => {
-    if ((type === '' || type) && attachmentURL) {
+    if (shouldValidateUrl && (type === '' || type) && attachmentURL) {
       validateURL(attachmentURL);
     }
   }, [type, attachmentURL]);
@@ -718,6 +727,15 @@ export const InteractiveMessage = () => {
   };
 
   const attachmentInputs = [
+    {
+      component: Checkbox,
+      title: 'Dynamic Interactive Message',
+      name: 'dynamicInteractiveMessage',
+      handleChange: (value: boolean) => {
+        setShouldValidateUrl(!value);
+        setDynamicInteractiveMessage(value);
+      },
+    },
     {
       component: AutoComplete,
       name: 'type',
