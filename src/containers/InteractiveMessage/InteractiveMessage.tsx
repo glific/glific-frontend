@@ -251,6 +251,11 @@ export const InteractiveMessage = () => {
     if (typeValue === QUICK_REPLY && data.type && data.attachmentURL) {
       setType({ id: data.type, label: data.type });
       setAttachmentURL(data.attachmentURL);
+      if (data.attachmentURL.startsWith('@')) {
+        console.log('ddnj');
+
+        setDynamicInteractiveMessage(true);
+      }
     }
 
     if (translationsVal) {
