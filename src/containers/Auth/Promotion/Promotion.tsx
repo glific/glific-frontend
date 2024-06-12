@@ -5,7 +5,7 @@ import styles from './Promotion.module.css';
 
 export const Promotion = () => {
   const [minimized, setMinimized] = useState(false);
-  const LINK = 'https://us06web.zoom.us/meeting/register/tZYof-yrrD4sHtCHskNq0feuOcCEi5vQ-Sxd';
+  const LINK = 'https://us06web.zoom.us/meeting/register/tZYpceqqrzIqGd3W7dSrHS2VGzFhdSq2exYR';
 
   return (
     <div className={minimized ? styles.ContainerMin : styles.ContainerMax}>
@@ -30,26 +30,24 @@ export const Promotion = () => {
       {!minimized && (
         <>
           <div className={styles.Image}>
-            <span>Level up with Glific</span>
             <span>
-              Whatsapp groups automation <br /> 23rd May 3-4PM
+              Level up with Glific <br />
+              Q&A with Gupshup
             </span>
+            <span>19th June, 3-4PM</span>
           </div>
 
           <div className={styles.Points}>
             <div className={styles.BodyListText}>
               <span>{1}</span>
               <div>
-                Learn how this feature will enable you to{' '}
-                <b>
-                  send or schedule messages/ media to Whatsapp groups and gain insights into group
-                  activity.
-                </b>
+                Get answers on commonly asked questions- Message categories, gupshup wallet &
+                costing, message delivery etc.
               </div>
             </div>
             <div className={styles.BodyListText}>
               <span>2</span>
-              <div>Learn through a demo, and explore possibilities.</div>
+              <div>Open session to ask questions to Gupshup team directly.</div>
             </div>
             {/* <div className={styles.BodyListText}>
               <div>Reach out to Glific team if you have questions/concerns.</div>
