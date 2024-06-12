@@ -75,6 +75,7 @@ export const InteractiveMessage = () => {
   const [language, setLanguage] = useState<any>({});
   const [languageOptions, setLanguageOptions] = useState<any>([]);
   const [editorState, setEditorState] = useState<any>('');
+  const [dynamicMedia, setDynamicMedia] = useState<boolean>(false);
 
   const [translations, setTranslations] = useState<any>('{}');
 
@@ -148,6 +149,7 @@ export const InteractiveMessage = () => {
     templateTypeField,
     type,
     attachmentURL,
+    dynamicMedia,
   };
 
   const updateStates = ({
@@ -251,6 +253,10 @@ export const InteractiveMessage = () => {
       setAttachmentURL(data.attachmentURL);
     }
 
+    if (isEditing && data.attachmentURL) {
+      setDynamicMedia(!isUrlValid);
+    }
+
     if (translationsVal) {
       setTranslations(translationsVal);
     }
@@ -277,7 +283,7 @@ export const InteractiveMessage = () => {
   };
 
   useEffect(() => {
-    if ((type === '' || type) && attachmentURL) {
+    if (!dynamicMedia && (type === '' || type) && attachmentURL) {
       validateURL(attachmentURL);
     }
   }, [type, attachmentURL]);
@@ -738,7 +744,7 @@ export const InteractiveMessage = () => {
       name: 'attachmentURL',
       type: 'text',
       label: t('Attachment URL'),
-      validate: () => isUrlValid,
+      validate: () => !dynamicMedia && isUrlValid,
       inputProp: {
         onBlur: (event: any) => {
           setAttachmentURL(event.target.value);
@@ -746,6 +752,19 @@ export const InteractiveMessage = () => {
         onChange: (event: any) => {
           setAttachmentURL(event.target.value);
         },
+      },
+      helperText:
+        dynamicMedia &&
+        t(
+          'Please ensure that the entered media is valid as we cannot pre-validate dynamic media files and it may lead to errors.'
+        ),
+    },
+    {
+      component: Checkbox,
+      title: t('Allow dynamic media'),
+      name: 'dynamicMedia',
+      handleChange: (value: boolean) => {
+        setDynamicMedia(value);
       },
     },
   ];
