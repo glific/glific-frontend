@@ -41,6 +41,7 @@ export const GET_ORGANIZATION = gql`
         signaturePhrase
         newcontactFlowId
         optinFlowId
+        status
       }
     }
   }

@@ -11,11 +11,11 @@ import {
   getCurrentUserInvalidRoleQuery,
 } from 'mocks/User';
 
-import { getOrganizationServicesQuery } from 'mocks/Organization';
+import { getOrganizationServicesQuery, getOrganizationStatus } from 'mocks/Organization';
 
 import { Login } from './Login';
 
-const mocks = [getCurrentUserQuery, getOrganizationServicesQuery];
+const mocks = [getCurrentUserQuery, getOrganizationServicesQuery, getOrganizationStatus('ACTIVE')];
 
 vi.mock('axios');
 vi.mock('pino-logflare', () => ({
@@ -24,7 +24,7 @@ vi.mock('pino-logflare', () => ({
 }));
 const mockedAxios = axios as any;
 
-const wrapper = (
+const wrapper = (mocks: any) => (
   <MockedProvider mocks={mocks}>
     <MemoryRouter>
       <Login />
@@ -58,7 +58,7 @@ describe('<Login />', () => {
 
     const successPromise = vi.fn(() => Promise.resolve(responseData));
     mockedAxios.post.mockImplementation(() => successPromise());
-    const { findByTestId } = render(wrapper);
+    const { findByTestId } = render(wrapper(mocks));
     const authContainer = await findByTestId('AuthContainer');
     expect(authContainer).toHaveTextContent('Login to your account');
   });
@@ -72,7 +72,7 @@ describe('<Login />', () => {
 
     const successPromise = vi.fn(() => Promise.resolve(responseData));
     mockedAxios.post.mockImplementation(() => successPromise());
-    const { container } = render(wrapper);
+    const { container } = render(wrapper(mocks));
 
     await userAction(container);
 
@@ -88,7 +88,7 @@ describe('<Login />', () => {
     const rejectPromise = vi.fn(() => Promise.reject(errorMessage));
     const localStorageSpy = vi.spyOn(Storage.prototype, 'setItem');
     mockedAxios.post.mockImplementationOnce(() => rejectPromise());
-    const { container } = render(wrapper);
+    const { container } = render(wrapper(mocks));
 
     await userAction(container);
 
