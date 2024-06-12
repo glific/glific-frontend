@@ -155,8 +155,9 @@ export const FormLayout = ({
     enableReinitialize: true,
     onSubmit: (values, { setErrors }) => {
       setCustomError({ setErrors });
-      if (confirmationState?.show) setShowConfirmationDialog(true);
-      else {
+      if (confirmationState?.show) {
+        setShowConfirmationDialog(true);
+      } else {
         onSaveButtonClick(formik.errors);
         saveHandler(values);
       }
