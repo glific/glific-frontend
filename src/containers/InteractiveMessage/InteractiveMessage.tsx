@@ -75,7 +75,7 @@ export const InteractiveMessage = () => {
   const [language, setLanguage] = useState<any>({});
   const [languageOptions, setLanguageOptions] = useState<any>([]);
   const [editorState, setEditorState] = useState<any>('');
-  const [dynamicInteractiveMessage, setDynamicInteractiveMessage] = useState<boolean>(false);
+  const [dynamicMedia, setDynamicMedia] = useState<boolean>(false);
 
   const [translations, setTranslations] = useState<any>('{}');
 
@@ -149,7 +149,7 @@ export const InteractiveMessage = () => {
     templateTypeField,
     type,
     attachmentURL,
-    dynamicInteractiveMessage,
+    dynamicMedia,
   };
 
   const updateStates = ({
@@ -258,6 +258,10 @@ export const InteractiveMessage = () => {
       }
     }
 
+    if (isEditing && data.attachmentURL) {
+      setDynamicMedia(!isUrlValid);
+    }
+
     if (translationsVal) {
       setTranslations(translationsVal);
     }
@@ -284,7 +288,7 @@ export const InteractiveMessage = () => {
   };
 
   useEffect(() => {
-    if (!dynamicInteractiveMessage && (type === '' || type) && attachmentURL) {
+    if (!dynamicMedia && (type === '' || type) && attachmentURL) {
       validateURL(attachmentURL);
     }
   }, [type, attachmentURL]);
@@ -726,14 +730,6 @@ export const InteractiveMessage = () => {
 
   const attachmentInputs = [
     {
-      component: Checkbox,
-      title: 'Dynamic Interactive Message',
-      name: 'dynamicInteractiveMessage',
-      handleChange: (value: boolean) => {
-        setDynamicInteractiveMessage(value);
-      },
-    },
-    {
       component: AutoComplete,
       name: 'type',
       options,
@@ -753,7 +749,7 @@ export const InteractiveMessage = () => {
       name: 'attachmentURL',
       type: 'text',
       label: t('Attachment URL'),
-      validate: () => !dynamicInteractiveMessage && isUrlValid,
+      validate: () => !dynamicMedia && isUrlValid,
       inputProp: {
         onBlur: (event: any) => {
           setAttachmentURL(event.target.value);
@@ -763,8 +759,18 @@ export const InteractiveMessage = () => {
         },
       },
       helperText:
-        dynamicInteractiveMessage &&
-        'Please ensure that the media you are submitting is valid. Using incorrect media can cause errors as we cannot pre-validate media files.',
+        dynamicMedia &&
+        t(
+          'Please ensure that the entered media is valid as we cannot pre-validate dynamic media files and it may lead to errors.'
+        ),
+    },
+    {
+      component: Checkbox,
+      title: t('Allow dynamic media'),
+      name: 'dynamicMedia',
+      handleChange: (value: boolean) => {
+        setDynamicMedia(value);
+      },
     },
   ];
 
