@@ -286,7 +286,7 @@ export const InteractiveMessage = () => {
     if (!dynamicMedia && (type === '' || type) && attachmentURL) {
       validateURL(attachmentURL);
     }
-  }, [type, attachmentURL]);
+  }, [type, attachmentURL, dynamicMedia]);
 
   const handleAddInteractiveTemplate = (
     addFromTemplate: boolean,
