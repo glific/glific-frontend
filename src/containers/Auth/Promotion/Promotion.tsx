@@ -41,7 +41,7 @@ export const Promotion = () => {
             <div className={styles.BodyListText}>
               <span>{1}</span>
               <div>
-                Get answers on commonly asked questions- Message categories, gupshup wallet &
+                Get answers to commonly asked questions- Message categories, gupshup wallet &
                 costing, message delivery etc.
               </div>
             </div>
