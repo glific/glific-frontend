@@ -11,7 +11,7 @@ import { Button } from 'components/UI/Form/Button/Button';
 import { APP_NAME } from 'config/index';
 import { Simulator } from 'components/simulator/Simulator';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
-import { setNotification } from 'common/notification';
+import { setErrorMessage, setNotification } from 'common/notification';
 import { PUBLISH_FLOW, RESET_FLOW_COUNT } from 'graphql/mutations/Flow';
 import { EXPORT_FLOW, GET_FLOW_DETAILS, GET_FREE_FLOW } from 'graphql/queries/Flow';
 import { getOrganizationServices, setAuthHeaders } from 'services/AuthService';
@@ -93,6 +93,9 @@ export const FlowEditor = () => {
     onCompleted: async ({ exportFlow }) => {
       const { exportData } = exportFlow;
       exportFlowMethod(exportData, flowTitle);
+    },
+    onError: (error) => {
+      setErrorMessage(error);
     },
   });
   const [resetFlowCountMethod] = useMutation(RESET_FLOW_COUNT, {
@@ -208,7 +211,7 @@ export const FlowEditor = () => {
 
       return () => {
         Object.keys(files).forEach((node: any) => {
-          if (files[node]) {
+          if (files[node] && document.body.contains(files[node])) {
             document.body.removeChild(files[node]);
           }
         });
@@ -403,16 +406,6 @@ export const FlowEditor = () => {
               Reset flow count
             </MenuItem>
           </Menu>
-
-          <Button
-            variant="outlined"
-            color="primary"
-            data-testid="previewButton"
-            onClick={() => setShowSimulator(!showSimulator)}
-          >
-            <PreviewIcon className={styles.Icon} />
-            Preview
-          </Button>
           {isTranslationEnabled && (
             <Button
               variant="outlined"
@@ -427,6 +420,15 @@ export const FlowEditor = () => {
               Translate
             </Button>
           )}
+          <Button
+            variant="outlined"
+            color="primary"
+            data-testid="previewButton"
+            onClick={() => setShowSimulator(!showSimulator)}
+          >
+            <PreviewIcon className={styles.Icon} />
+            Preview
+          </Button>
           <Button
             variant="contained"
             color="primary"
