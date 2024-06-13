@@ -37,7 +37,6 @@ export const Providers = () => {
   const [secrets, setSecrets] = useState({});
   const params = useParams();
   const type = params.type ? params.type : null;
-  console.log(type);
 
   const states: any = {};
 
