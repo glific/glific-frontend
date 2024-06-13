@@ -50,6 +50,12 @@ export const getOrganizationQuery = [
               flowId: 2,
               startTime: '12:31:27',
             },
+            regxFlow: {
+              __typename: 'RegxFlow',
+              flowId: '1',
+              regx: 'unique_regex',
+              regxOpt: null,
+            },
             setting: {
               lowBalanceThreshold: '10',
               criticalBalanceThreshold: '5',
@@ -60,6 +66,7 @@ export const getOrganizationQuery = [
             contact: {
               phone: 911111111111,
             },
+            status: 'ACTIVE',
           },
         },
       },
@@ -99,6 +106,12 @@ export const getOrganizationQuery = [
               flowId: 2,
               startTime: '12:31:27',
             },
+            regxFlow: {
+              __typename: 'RegxFlow',
+              flowId: '1',
+              regx: 'unique_regex',
+              regxOpt: null,
+            },
             setting: {
               lowBalanceThreshold: '10',
               criticalBalanceThreshold: '5',
@@ -109,6 +122,7 @@ export const getOrganizationQuery = [
             contact: {
               phone: 911111111111,
             },
+            status: 'ACTIVE',
           },
         },
       },
@@ -154,7 +168,14 @@ export const getOrganizationQuery = [
               criticalBalanceThreshold: '5',
               sendWarningMail: false,
             },
+            regxFlow: {
+              __typename: 'RegxFlow',
+              flowId: '1',
+              regx: 'unique_regex',
+              regxOpt: null,
+            },
             signaturePhrase: 'Please change me, NOW!',
+            status: 'ACTIVE',
           },
         },
       },
@@ -200,11 +221,18 @@ export const getOrganizationSettings = {
             criticalBalanceThreshold: '5',
             sendWarningMail: false,
           },
+          regxFlow: {
+            __typename: 'RegxFlow',
+            flowId: '1',
+            regx: 'unique_regex',
+            regxOpt: null,
+          },
           name: 'Glific',
           signaturePhrase: 'Sample text',
           contact: {
             phone: 911111111111,
           },
+          status: 'ACTIVE',
         },
       },
     },
@@ -225,6 +253,7 @@ export const getOrganizationServicesQuery = {
         ticketingEnabled: true,
         autoTranslationEnabled: true,
         whatsappGroupEnabled: true,
+        llm4devEnabled: true,
       },
     },
   },
@@ -848,3 +877,60 @@ export const OrganizationStateMock = {
     },
   },
 };
+
+export const getOrganizationStatus = (status: string) => ({
+  request: {
+    query: GET_ORGANIZATION,
+  },
+  result: {
+    data: {
+      organization: {
+        organization: {
+          defaultLanguage: { id: 1, label: 'English (United States)' },
+          activeLanguages: [
+            {
+              id: 1,
+              label: 'English (United States)',
+            },
+          ],
+          id: 1,
+          newcontactFlowId: '5',
+          optinFlowId: '2',
+          outOfOffice: {
+            enabled: true,
+            defaultFlowId: 1,
+            enabledDays: [
+              { enabled: true, id: 1 },
+              { enabled: true, id: 2 },
+              { enabled: true, id: 3 },
+              { enabled: true, id: 4 },
+              { enabled: true, id: 5 },
+              { enabled: false, id: 6 },
+              { enabled: false, id: 7 },
+            ],
+            endTime: '12:30:27',
+            flowId: 2,
+            startTime: '12:31:27',
+          },
+          regxFlow: {
+            __typename: 'RegxFlow',
+            flowId: '1',
+            regx: 'unique_regex',
+            regxOpt: null,
+          },
+          setting: {
+            lowBalanceThreshold: '10',
+            criticalBalanceThreshold: '5',
+            sendWarningMail: false,
+          },
+          name: 'Glific',
+          signaturePhrase: 'Sample text',
+          contact: {
+            phone: 911111111111,
+          },
+          status,
+        },
+      },
+    },
+  },
+});
