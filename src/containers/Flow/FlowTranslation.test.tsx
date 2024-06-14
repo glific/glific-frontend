@@ -1,4 +1,4 @@
-import { render, waitFor, fireEvent } from '@testing-library/react';
+import { render, waitFor, fireEvent, screen } from '@testing-library/react';
 import { vi } from 'vitest';
 import { MockedProvider } from '@apollo/client/testing';
 import * as Notification from 'common/notification';
@@ -37,6 +37,13 @@ describe('Testing Translation flows', () => {
 
     const button = getByText('Submit');
     fireEvent.click(button);
+
+    await waitFor(() => {
+      expect(screen.getByText('Please Note')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Continue'));
+
     await waitFor(() => {
       expect(notificationSpy).toHaveBeenCalledWith('Flow has been translated successfully');
     });
@@ -48,6 +55,11 @@ describe('Testing Translation flows', () => {
 
     const button = getByText('Submit');
     fireEvent.click(button);
+    await waitFor(() => {
+      expect(screen.getByText('Please Note')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Continue'));
     await waitFor(() => {
       expect(notificationSpy).toHaveBeenCalledWith('Sorry! Unable to translate flow', 'warning');
     });
@@ -70,6 +82,13 @@ describe('Testing Translation flows', () => {
     fireEvent.click(getByText('Export with auto translate'));
     const submitButton = getByText('Submit');
     fireEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(screen.getByText('Please Note')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Continue'));
+
     await waitFor(() => {
       expect(mockSetDialog).toHaveBeenCalledWith(false);
     });

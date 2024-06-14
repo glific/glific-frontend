@@ -46,6 +46,7 @@ export const FlowEditor = () => {
   const [currentEditDialogBox, setCurrentEditDialogBox] = useState(false);
   const [dialogMessage, setDialogMessage] = useState('');
   const [publishLoading, setPublishLoading] = useState(false);
+  const [showTranslationWarning, setShowTranslationWarning] = useState(false);
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -406,7 +407,7 @@ export const FlowEditor = () => {
               Reset flow count
             </MenuItem>
           </Menu>
-          {isTranslationEnabled && (
+          {!isTranslationEnabled && (
             <Button
               variant="outlined"
               color="primary"

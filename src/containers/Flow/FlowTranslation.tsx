@@ -34,6 +34,7 @@ export const BackdropLoader = ({ text }: any) => (
 export const FlowTranslation = ({ flowId, setDialog, loadFlowEditor }: FlowTranslationProps) => {
   const [action, setAction] = useState('auto');
   const [importing, setImporting] = useState(false);
+  const [autoTranslate, setAutoTranslate] = useState<any>(null);
 
   const { t } = useTranslation();
 
@@ -91,17 +92,23 @@ export const FlowTranslation = ({ flowId, setDialog, loadFlowEditor }: FlowTrans
   };
 
   const handleOk = () => {
-    if (action === 'auto') {
-      handleAuto();
-    } else if (action === 'export') {
+    if (action === 'auto' || action === 'export-auto') {
+      setAutoTranslate(action);
+    } else {
       handleExport();
-    } else if (action === 'export-auto') {
-      handleAutoExport();
     }
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAction((event.target as HTMLInputElement).value);
+  };
+
+  const handleAutoTranslate = () => {
+    if (autoTranslate === 'auto') {
+      handleAuto();
+    } else if (autoTranslate === 'export-auto') {
+      handleAutoExport();
+    }
   };
 
   const importButton = (
@@ -175,7 +182,29 @@ export const FlowTranslation = ({ flowId, setDialog, loadFlowEditor }: FlowTrans
     </div>
   );
 
-  return (
+  let autoTranslateWarningDialog;
+  if (autoTranslate) {
+    autoTranslateWarningDialog = (
+      <DialogBox
+        title="Please Note"
+        alignButtons="center"
+        buttonOk="Continue"
+        buttonCancel="Cancel"
+        handleOk={handleAutoTranslate}
+        handleCancel={() => {
+          setDialog(false);
+        }}
+      >
+        <p className={styles.DialogContent}>
+          Auto translate only adds translation in languages nodes which are empty. To get the latest
+          translations of updated content in your default language flow, please clear the nodes in
+          the language nodes.
+        </p>
+      </DialogBox>
+    );
+  }
+
+  let flowTranslationDialog = (
     <DialogBox
       title="Translate Options"
       alignButtons="center"
@@ -189,6 +218,13 @@ export const FlowTranslation = ({ flowId, setDialog, loadFlowEditor }: FlowTrans
     >
       {dialogContent}
     </DialogBox>
+  );
+
+  return (
+    <>
+      {flowTranslationDialog}
+      {autoTranslateWarningDialog}
+    </>
   );
 };
 
