@@ -407,7 +407,7 @@ export const FlowEditor = () => {
               Reset flow count
             </MenuItem>
           </Menu>
-          {!isTranslationEnabled && (
+          {isTranslationEnabled && (
             <Button
               variant="outlined"
               color="primary"
