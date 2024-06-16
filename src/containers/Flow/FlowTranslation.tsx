@@ -192,7 +192,7 @@ export const FlowTranslation = ({ flowId, setDialog, loadFlowEditor }: FlowTrans
         buttonCancel="Cancel"
         handleOk={handleAutoTranslate}
         handleCancel={() => {
-          setDialog(false);
+          setAutoTranslate(null);
         }}
       >
         <p className={styles.DialogContent}>

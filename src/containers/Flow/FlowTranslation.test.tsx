@@ -125,4 +125,28 @@ describe('Testing Translation flows', () => {
       expect(mockSetDialog).toHaveBeenCalledWith(false);
     });
   });
+  it('it closes the warning dialog box', async () => {
+    const { getByText, container } = render(flowTranslation());
+    await waitFor(() => {
+      expect(container).toBeInTheDocument();
+    });
+
+    const button = getByText('Submit');
+    fireEvent.click(button);
+
+    await waitFor(() => {
+      expect(screen.getByText('Please Note')).toBeInTheDocument();
+    });
+
+    fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape', code: 'esc' });
+  });
+
+  it('closes the translation dialog box', async () => {
+    const wrapper = render(flowTranslation());
+    await waitFor(() => {
+      expect(wrapper.container).toBeInTheDocument();
+    });
+
+    fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape', code: 'esc' });
+  });
 });
