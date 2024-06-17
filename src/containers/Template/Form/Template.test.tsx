@@ -19,6 +19,7 @@ const defaultProps = {
   redirectionLink: 'speed-send',
   defaultAttribute: { isHsm: false },
   icon: null,
+  getSimulatorMessage: vi.fn(),
 };
 
 const templateEdit = (props: any = defaultProps, mocks: any = defaultMocks) => (
@@ -74,6 +75,7 @@ const hsmProps = {
   languageStyle: 'dropdown',
   formField: templateFormHSMFormFields,
   setCategory: vi.fn(),
+  getSimulatorMessage: vi.fn(),
 };
 
 const hsmTemplateEdit = (templateId: string) => (

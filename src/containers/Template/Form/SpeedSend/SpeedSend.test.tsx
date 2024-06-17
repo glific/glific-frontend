@@ -71,7 +71,7 @@ describe('SpeedSend', () => {
     });
 
     await waitFor(() => {
-      expect(queryByText('Message is required.')).toBeInTheDocument();
+      expect(queryByText('Title is required.')).toBeInTheDocument();
     });
   });
 });

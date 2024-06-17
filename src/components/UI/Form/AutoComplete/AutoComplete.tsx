@@ -21,7 +21,7 @@ export interface AutocompleteProps {
   icon?: any;
   freeSolo?: boolean;
   autoSelect?: boolean;
-  form: { dirty?: any; touched?: any; errors?: any; setFieldValue: any; values?: any };
+  form: { dirty?: any; touched?: any; errors?: any; setFieldValue: any };
   textFieldProps?: any;
   helperText?: any;
   questionText?: any;
@@ -56,7 +56,7 @@ export const AutoComplete = ({
   field,
   icon,
   chipIcon,
-  form: { touched, errors, setFieldValue, values },
+  form: { touched, errors, setFieldValue },
   textFieldProps,
   helperText,
   questionText,

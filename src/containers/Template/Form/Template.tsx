@@ -530,7 +530,9 @@ const Template = ({
   }, [templateButtons]);
 
   useEffect(() => {
-    getSimulatorMessage(getExampleFromBody(editorValue, variables, true));
+    if (getSimulatorMessage) {
+      getSimulatorMessage(getExampleFromBody(editorValue, variables, true));
+    }
   }, [editorValue, variables]);
 
   if (languageLoading || templateLoading || tagLoading) {

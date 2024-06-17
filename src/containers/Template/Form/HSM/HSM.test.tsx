@@ -70,21 +70,25 @@ describe('Add mode', () => {
     });
   });
 
-  test.skip('it should create a template message', async () => {
+  test('it should create a template message', async () => {
     const notificationSpy = vi.spyOn(Notification, 'setNotification');
     render(template);
+
+    await waitFor(() => {
+      expect(screen.getByText('Loading...')).toBeInTheDocument();
+    });
 
     await waitFor(() => {
       expect(screen.getAllByTestId('AutocompleteInput')[0].querySelector('input')).toHaveValue(
         'English'
       );
     });
+    screen.debug(document, Infinity);
 
     const title = screen.getAllByTestId('input')[0].querySelector('input') as HTMLInputElement;
-    const elementName = document.querySelector('input[name="shortcode"]') as HTMLInputElement;
+    const elementName = document.querySelector('input[name="newShortCode"]') as HTMLInputElement;
     const attachmentUrl = document.querySelector('input[name="attachmentURL"]') as HTMLInputElement;
     const message = screen.getByTestId('editor-body') as HTMLElement;
-    const sampleMessage = screen.getByTestId('editor-example') as HTMLElement;
 
     await user.type(title, 'Hello');
 
@@ -93,12 +97,7 @@ describe('Add mode', () => {
     // add message
     await user.click(message);
     await user.tab();
-    fireEvent.input(message, { data: 'Hi {{1}}, How are you' });
-
-    // add Sample message
-    await user.click(sampleMessage);
-    await user.tab();
-    fireEvent.input(sampleMessage, { data: 'Hi [Glific], How are you' });
+    fireEvent.input(message, { data: 'Hi' });
 
     const [_language, category, attachmentType] = screen.getAllByTestId('autocomplete-element');
     category.focus();
@@ -123,47 +122,6 @@ describe('Add mode', () => {
     });
   }, 10000);
 
-  test('it should check sample and body', async () => {
-    render(template);
-
-    await waitFor(() => {
-      expect(screen.getAllByTestId('AutocompleteInput')[0].querySelector('input')).toHaveValue(
-        'English'
-      );
-    });
-
-    const title = screen.getAllByTestId('input')[0].querySelector('input') as HTMLInputElement;
-    const elementName = document.querySelector('input[name="shortcode"]') as HTMLInputElement;
-    const message = screen.getByTestId('editor-body') as HTMLElement;
-    const sampleMessage = screen.getByTestId('editor-example') as HTMLElement;
-
-    await user.type(title, 'Hello');
-
-    await user.type(elementName, 'welcome');
-
-    // add message
-    await user.click(message);
-    await user.tab();
-    fireEvent.input(message, { data: 'Hi {{1}}, How are you' });
-
-    // add Sample message
-    await user.click(sampleMessage);
-    await user.tab();
-    fireEvent.input(sampleMessage, { data: 'Hi Glific, How are you' });
-
-    // save template
-    fireEvent.click(screen.getByTestId('submitActionButton'));
-
-    await waitFor(() => {
-      // expect an error
-      expect(
-        screen.getByText(
-          'Message and sample look different. You have to replace variables eg. {{1}} with actual values enclosed in [ ] eg. Replace {{1}} with [Monica].'
-        )
-      ).toBeInTheDocument();
-    });
-  });
-
   test('add quick reply buttons when adding a template', async () => {
     const notificationSpy = vi.spyOn(Notification, 'setNotification');
     render(template);
@@ -174,9 +132,8 @@ describe('Add mode', () => {
     });
 
     const title = screen.getAllByTestId('input')[0].querySelector('input') as HTMLInputElement;
-    const elementName = document.querySelector('input[name="shortcode"]') as HTMLInputElement;
+    const elementName = document.querySelector('input[name="newShortCode"]') as HTMLInputElement;
     const message = screen.getByTestId('editor-body') as HTMLElement;
-    const sampleMessage = screen.getByTestId('editor-example') as HTMLElement;
 
     await user.type(title, 'Hello');
     await user.type(elementName, 'welcome');
@@ -184,12 +141,7 @@ describe('Add mode', () => {
     // add message
     await user.click(message);
     await user.tab();
-    fireEvent.input(message, { data: 'Hi {{1}}, How are you' });
-
-    // add Sample message
-    await user.click(sampleMessage);
-    await user.tab();
-    fireEvent.input(sampleMessage, { data: 'Hi [Glific], How are you' });
+    fireEvent.input(message, { data: 'Hi, How are you' });
 
     await user.click(screen.getAllByTestId('checkboxLabel')[1]);
     await user.click(screen.getByText('Quick replies'));
@@ -231,9 +183,8 @@ describe('Add mode', () => {
     });
 
     const title = screen.getAllByTestId('input')[0].querySelector('input') as HTMLInputElement;
-    const elementName = document.querySelector('input[name="shortcode"]') as HTMLInputElement;
+    const elementName = document.querySelector('input[name="newShortCode"]') as HTMLInputElement;
     const message = screen.getByTestId('editor-body') as HTMLElement;
-    const sampleMessage = screen.getByTestId('editor-example') as HTMLElement;
 
     await user.type(title, 'Hello');
     await user.type(elementName, 'welcome');
@@ -241,12 +192,7 @@ describe('Add mode', () => {
     // add message
     await user.click(message);
     await user.tab();
-    fireEvent.input(message, { data: 'Hi {{1}}, How are you' });
-
-    // add Sample message
-    await user.click(sampleMessage);
-    await user.tab();
-    fireEvent.input(sampleMessage, { data: 'Hi [[Glific], How are you' });
+    fireEvent.input(message, { data: 'Hi, How are you' });
 
     await user.click(screen.getAllByTestId('checkboxLabel')[1]);
     await user.click(screen.getByText('Call to actions'));

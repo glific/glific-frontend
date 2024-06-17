@@ -71,11 +71,11 @@ export const Editor = ({ disabled = false, isEditing = false, ...props }: Editor
     );
   }, [editor]);
 
-  // useEffect(() => {
-  //   if (disabled) {
-  //     editor.setEditable(false);
-  //   }
-  // }, [disabled]);
+  useEffect(() => {
+    if (disabled) {
+      editor.setEditable(false);
+    }
+  }, [disabled]);
 
   const handleChange = (editorState: any) => {
     editorState.read(() => {
