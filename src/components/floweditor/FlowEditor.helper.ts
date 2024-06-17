@@ -1,5 +1,6 @@
 import Manifest from '@glific/flow-editor/build/asset-manifest.json';
 import { FLOW_EDITOR_CONFIGURE_LINK, FLOW_EDITOR_API, CONTACT_CHAT_LINK } from 'config/index';
+import '@nyaruka/temba-components/dist/temba-components.js';
 
 const glificBase = FLOW_EDITOR_API;
 
@@ -13,7 +14,7 @@ export const setConfig = (uuid: any) => {
     mutable: true,
     showNodeLabel: false,
     attachmentsEnabled: false,
-    filters: ['whatsapp', 'classifier', 'profile'],
+    filters: ['whatsapp', 'classifier', 'profile', 'optins', 'ticketer'],
 
     excludeTypes: [
       'add_contact_urn',
@@ -81,6 +82,7 @@ export const setConfig = (uuid: any) => {
       validateMedia: `${glificBase}validate-media`,
       interactives: `${glificBase}interactive-templates`,
       contact: CONTACT_CHAT_LINK,
+      optins: `${glificBase}optins`,
     },
   };
 
@@ -106,9 +108,9 @@ export const setConfig = (uuid: any) => {
 };
 
 export const loadfiles = (startFlowEditor: any) => {
-  (window as any).static_url = '/sitestatic/';
   const files: Array<HTMLScriptElement | HTMLLinkElement> = [];
   const filesToLoad: any = Manifest.files;
+
   let index = 0;
   Object.keys(filesToLoad).forEach((fileName) => {
     if (filesToLoad[fileName].startsWith('/static')) {

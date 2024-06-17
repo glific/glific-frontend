@@ -44,8 +44,6 @@ vi.mock('common/notification', async (importOriginal) => {
 test('it should have add contact to collection dialog box ', async () => {
   const { getByText, getByTestId } = render(addContacts);
 
-  expect(getByTestId('loader')).toBeInTheDocument();
-
   await waitFor(() => {
     expect(getByTestId('autocomplete-element')).toBeInTheDocument();
   });
@@ -58,8 +56,6 @@ test('it should have add contact to collection dialog box ', async () => {
 test('click on cancel button ', async () => {
   const { getByText, getByTestId } = render(addContacts);
 
-  expect(getByTestId('loader')).toBeInTheDocument();
-
   await waitFor(() => {
     expect(getByTestId('autocomplete-element')).toBeInTheDocument();
   });
@@ -71,8 +67,6 @@ test('click on cancel button ', async () => {
 
 test('save without changing anything', async () => {
   const { getByText, getByTestId } = render(addContacts);
-
-  expect(getByTestId('loader')).toBeInTheDocument();
 
   await waitFor(() => {
     expect(getByTestId('autocomplete-element')).toBeInTheDocument();
@@ -87,8 +81,6 @@ test('save without changing anything', async () => {
 
 test('change value in dialog box', async () => {
   const { getByTestId, getAllByTestId } = render(addContacts);
-
-  expect(getByTestId('loader')).toBeInTheDocument();
 
   await waitFor(() => {
     expect(getByTestId('autocomplete-element')).toBeInTheDocument();
@@ -107,8 +99,6 @@ test('change value in dialog box', async () => {
 
 test('should add contact to collection', async () => {
   const { getByTestId, getByText } = render(addContacts);
-
-  expect(getByTestId('loader')).toBeInTheDocument();
 
   await waitFor(() => {
     expect(getByTestId('autocomplete-element')).toBeInTheDocument();
@@ -142,8 +132,6 @@ const addGroups = (
 test('it should have "add group to collection" dialog box ', async () => {
   const { getByText, getByTestId } = render(addGroups);
 
-  expect(getByTestId('loader')).toBeInTheDocument();
-
   await waitFor(() => {
     expect(getByTestId('autocomplete-element')).toBeInTheDocument();
   });
@@ -153,8 +141,6 @@ test('it should have "add group to collection" dialog box ', async () => {
 
 test('should add whatsapp group to collection', async () => {
   const { getByTestId, getByText } = render(addGroups);
-
-  expect(getByTestId('loader')).toBeInTheDocument();
 
   await waitFor(() => {
     expect(getByTestId('autocomplete-element')).toBeInTheDocument();

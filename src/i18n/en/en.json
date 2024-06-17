@@ -491,5 +491,7 @@
   "App name is required.": "App name is required.",
   "API key is required.": "API key is required.",
   "Please agree to the terms and conditions.": "Please agree to the terms and conditions.",
-  "Enter a valid phone number.": "Enter a valid phone number."
+  "Enter a valid phone number.": "Enter a valid phone number.",
+  "Allow dynamic media": "Allow dynamic media",
+  "Please ensure that the entered media is valid as we cannot pre-validate dynamic media files and it may lead to errors.": "Please ensure that the entered media is valid as we cannot pre-validate dynamic media files and it may lead to errors."
 }
