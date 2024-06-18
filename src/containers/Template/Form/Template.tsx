@@ -187,7 +187,7 @@ const Template = ({
   }
 
   // disable fields in edit mode for hsm template
-  if (params.id && !isCopyState && defaultAttribute.isHsm) {
+  if (params.id && !isCopyState) {
     isEditing = true;
   }
 
