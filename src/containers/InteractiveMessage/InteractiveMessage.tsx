@@ -20,7 +20,13 @@ import { EmojiInput } from 'components/UI/Form/EmojiInput/EmojiInput';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Simulator } from 'components/simulator/Simulator';
 import { LanguageBar } from 'components/UI/LanguageBar/LanguageBar';
-import { LIST, LOCATION_REQUEST, MEDIA_MESSAGE_TYPES, QUICK_REPLY } from 'common/constants';
+import {
+  LIST,
+  LOCATION_REQUEST,
+  MEDIA_MESSAGE_TYPES,
+  QUICK_REPLY,
+  VALID_URL_REGEX,
+} from 'common/constants';
 import { validateMedia } from 'common/utils';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { InteractiveOptions } from './InteractiveOptions/InteractiveOptions';
@@ -254,7 +260,10 @@ export const InteractiveMessage = () => {
     }
 
     if (isEditing && data.attachmentURL) {
-      setDynamicMedia(!isUrlValid);
+      const testForValidUrl = new RegExp(VALID_URL_REGEX, 'gi');
+      if (!testForValidUrl.test(data.attachmentURL)) {
+        setDynamicMedia(true);
+      }
     }
 
     if (translationsVal) {
@@ -286,7 +295,7 @@ export const InteractiveMessage = () => {
     if (!dynamicMedia && (type === '' || type) && attachmentURL) {
       validateURL(attachmentURL);
     }
-  }, [type, attachmentURL]);
+  }, [type, attachmentURL, dynamicMedia]);
 
   const handleAddInteractiveTemplate = (
     addFromTemplate: boolean,
