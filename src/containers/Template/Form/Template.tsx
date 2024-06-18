@@ -921,6 +921,7 @@ const Template = ({
     if (tagId) {
       payloadCopy.tagId = payload.tagId.id;
     }
+    console.log(payloadCopy);
     return payloadCopy;
   };
 

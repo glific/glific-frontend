@@ -5,6 +5,7 @@ import {
   GET_HSM_CATEGORIES,
   GET_TEMPLATES_COUNT,
   FILTER_SESSION_TEMPLATES,
+  GET_SHORTCODES,
 } from 'graphql/queries/Template';
 import { DELETE_TEMPLATE, CREATE_TEMPLATE } from 'graphql/mutations/Template';
 import {
@@ -435,6 +436,59 @@ const createMediaMessage = {
   },
 };
 
+const getShortCodeQuery = {
+  request: {
+    query: GET_SHORTCODES,
+    variables: {},
+  },
+  result: {
+    data: {
+      sessionTemplates: [
+        {
+          __typename: 'SessionTemplate',
+          shortcode: 'account_balance',
+        },
+        {
+          __typename: 'SessionTemplate',
+          shortcode: 'movie_ticket',
+        },
+        {
+          __typename: 'SessionTemplate',
+          shortcode: 'movie_ticket',
+        },
+        {
+          __typename: 'SessionTemplate',
+          shortcode: 'personalized_bill',
+        },
+        {
+          __typename: 'SessionTemplate',
+          shortcode: 'account_update',
+        },
+        {
+          __typename: 'SessionTemplate',
+          shortcode: 'bill',
+        },
+        {
+          __typename: 'SessionTemplate',
+          shortcode: 'file_update',
+        },
+        {
+          __typename: 'SessionTemplate',
+          shortcode: 'missed_message',
+        },
+        {
+          __typename: 'SessionTemplate',
+          shortcode: 'otp',
+        },
+        {
+          __typename: 'SessionTemplate',
+          shortcode: 'user-registration',
+        },
+      ],
+    },
+  },
+};
+
 export const TEMPLATE_MOCKS = [
   getFilterTagQuery,
   createHSMtemplate,
@@ -442,6 +496,7 @@ export const TEMPLATE_MOCKS = [
   createHsmWithButtontemplate,
   createHsmWithPhonetemplate,
   createMediaMessage,
+  getShortCodeQuery,
   {
     request: {
       query: CREATE_TEMPLATE,

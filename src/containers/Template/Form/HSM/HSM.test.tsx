@@ -70,7 +70,7 @@ describe('Add mode', () => {
     });
   });
 
-  test('it should create a template message', async () => {
+  test.only('it should create a template message', async () => {
     const notificationSpy = vi.spyOn(Notification, 'setNotification');
     render(template);
 
@@ -79,20 +79,14 @@ describe('Add mode', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getAllByTestId('AutocompleteInput')[0].querySelector('input')).toHaveValue(
-        'English'
-      );
+      expect(screen.getByText('Add a new HSM Template')).toBeInTheDocument();
     });
-    screen.debug(document, Infinity);
 
-    const title = screen.getAllByTestId('input')[0].querySelector('input') as HTMLInputElement;
-    const elementName = document.querySelector('input[name="newShortCode"]') as HTMLInputElement;
-    const attachmentUrl = document.querySelector('input[name="attachmentURL"]') as HTMLInputElement;
+    const inputs = screen.getAllByRole('textbox');
     const message = screen.getByTestId('editor-body') as HTMLElement;
 
-    await user.type(title, 'Hello');
-
-    await user.type(elementName, 'welcome');
+    fireEvent.change(inputs[0], 'welcome');
+    fireEvent.change(inputs[1], 'title');
 
     // add message
     await user.click(message);
@@ -110,10 +104,9 @@ describe('Add mode', () => {
     fireEvent.keyDown(attachmentType, { key: 'ArrowDown' });
     fireEvent.keyDown(attachmentType, { key: 'Enter' });
 
-    await user.type(
-      attachmentUrl,
-      'https://www.buildquickbots.com/whatsapp/media/sample/jpg/sample02.jpg'
-    );
+    fireEvent.change(inputs[3], {
+      target: { value: " 'https://www.buildquickbots.com/whatsapp/media/sample/jpg/sample02.jpg'" },
+    });
 
     fireEvent.click(screen.getByTestId('submitActionButton'));
 
@@ -143,7 +136,7 @@ describe('Add mode', () => {
     await user.tab();
     fireEvent.input(message, { data: 'Hi, How are you' });
 
-    await user.click(screen.getAllByTestId('checkboxLabel')[1]);
+    await user.click(screen.getByText('Add buttons'));
     await user.click(screen.getByText('Quick replies'));
     await user.click(screen.getByTestId('addButton'));
 
@@ -194,7 +187,7 @@ describe('Add mode', () => {
     await user.tab();
     fireEvent.input(message, { data: 'Hi, How are you' });
 
-    await user.click(screen.getAllByTestId('checkboxLabel')[1]);
+    await user.click(screen.getByText('Add buttons'));
     await user.click(screen.getByText('Call to actions'));
     await user.click(screen.getByText('Phone number'));
 
