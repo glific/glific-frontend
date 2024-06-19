@@ -39,7 +39,7 @@ describe('Testing Translation flows', () => {
     fireEvent.click(button);
 
     await waitFor(() => {
-      expect(screen.getByText('Please Note')).toBeInTheDocument();
+      expect(screen.getByText('Note')).toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByText('Continue'));
@@ -56,7 +56,7 @@ describe('Testing Translation flows', () => {
     const button = getByText('Submit');
     fireEvent.click(button);
     await waitFor(() => {
-      expect(screen.getByText('Please Note')).toBeInTheDocument();
+      expect(screen.getByText('Note')).toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByText('Continue'));
@@ -84,7 +84,7 @@ describe('Testing Translation flows', () => {
     fireEvent.click(submitButton);
 
     await waitFor(() => {
-      expect(screen.getByText('Please Note')).toBeInTheDocument();
+      expect(screen.getByText('Note')).toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByText('Continue'));
@@ -135,7 +135,7 @@ describe('Testing Translation flows', () => {
     fireEvent.click(button);
 
     await waitFor(() => {
-      expect(screen.getByText('Please Note')).toBeInTheDocument();
+      expect(screen.getByText('Note')).toBeInTheDocument();
     });
 
     fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape', code: 'esc' });

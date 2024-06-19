@@ -186,7 +186,7 @@ export const FlowTranslation = ({ flowId, setDialog, loadFlowEditor }: FlowTrans
   if (autoTranslate) {
     autoTranslateWarningDialog = (
       <DialogBox
-        title="Please Note"
+        title="Note"
         alignButtons="center"
         buttonOk="Continue"
         buttonCancel="Cancel"
