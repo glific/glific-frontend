@@ -546,7 +546,6 @@ export const FormLayout = ({
               variant="contained"
               color="primary"
               onClick={() => {
-                console.log(error);
                 onSaveButtonClick(errors);
                 submitForm();
               }}

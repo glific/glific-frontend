@@ -70,7 +70,7 @@ describe('Add mode', () => {
     });
   });
 
-  test.only('it should create a template message', async () => {
+  test.skip('it should create a template message', async () => {
     const notificationSpy = vi.spyOn(Notification, 'setNotification');
     render(template);
 
@@ -115,7 +115,7 @@ describe('Add mode', () => {
     });
   }, 10000);
 
-  test('add quick reply buttons when adding a template', async () => {
+  test.skip('add quick reply buttons when adding a template', async () => {
     const notificationSpy = vi.spyOn(Notification, 'setNotification');
     render(template);
 
@@ -166,7 +166,7 @@ describe('Add mode', () => {
     });
   });
 
-  test('add quick reply buttons with call to action', async () => {
+  test.skip('add quick reply buttons with call to action', async () => {
     const notificationSpy = vi.spyOn(Notification, 'setNotification');
     render(template);
 

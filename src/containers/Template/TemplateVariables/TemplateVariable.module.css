@@ -22,6 +22,7 @@
 
 .Variable {
   display: flex;
+  flex-direction: column;
   align-items: stretch;
   border-radius: 4px;
   font-size: 14px;
@@ -36,4 +37,13 @@
   display: flex;
   align-items: center;
   justify-items: center;
+}
+
+.DangerText {
+  margin-left: 14px;
+  font-size: 12px;
+  margin-top: 4px;
+  line-height: 18px;
+  font-weight: 400;
+  color: #fb5c5c;
 }

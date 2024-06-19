@@ -134,7 +134,7 @@ export const HSM = () => {
   const formFields = [
     {
       component: Checkbox,
-      name: 'languageVarinat',
+      name: 'languageVariant',
       title: (
         <Typography variant="h6" className={styles.Checkbox}>
           Translate existing HSM?

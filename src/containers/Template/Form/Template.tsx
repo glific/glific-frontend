@@ -171,7 +171,7 @@ const Template = ({
 
   const [tagId, setTagId] = useState<any>(null);
   const [label, setLabel] = useState('');
-  const [body, setBody] = useState<any>('');
+  const [body, setBody] = useState<any>();
   const [example, setExample] = useState<any>('');
   const [shortcode, setShortcode] = useState('');
   const [language, setLanguageId] = useState<any>(null);
@@ -240,6 +240,7 @@ const Template = ({
     templateButtons,
     isAddButtonChecked,
     languageVariant,
+    variables,
   };
 
   const setStates = ({
@@ -393,19 +394,13 @@ const Template = ({
     }
   };
 
-  const shortCode = languageVariant ? 'exisitingShortCode' : 'newShortCode';
-  const shortCodeValidation = languageVariant
-    ? Yup.object().nullable().required(t('Category is required.'))
-    : Yup.string()
-        .required(t('Element name is required.'))
-        .matches(
-          regexForShortcode,
-          'Only lowercase alphanumeric characters and underscores are allowed.'
-        );
-
   const HSMValidation = {
     category: Yup.object().nullable().required(t('Category is required.')),
-    // [shortCode]: shortCodeValidation,
+    variables: Yup.array().of(
+      Yup.object().shape({
+        text: Yup.string().required('Variable is required').min(1, 'Text cannot be empty'),
+      })
+    ),
   };
 
   const validateURL = (value: string) => {
@@ -906,11 +901,12 @@ const Template = ({
         delete payloadCopy.shortcode;
         delete payloadCopy.category;
       }
-      delete payloadCopy.languageVarinat;
+      delete payloadCopy.languageVariant;
       delete payloadCopy.getShortcode;
       delete payloadCopy.isAddButtonChecked;
       delete payloadCopy.templateButtons;
       delete payloadCopy.language;
+      delete payloadCopy.variables;
 
       if (payloadCopy.type === 'TEXT') {
         delete payloadCopy.attachmentURL;
@@ -921,7 +917,6 @@ const Template = ({
     if (tagId) {
       payloadCopy.tagId = payload.tagId.id;
     }
-    console.log(payloadCopy);
     return payloadCopy;
   };
 

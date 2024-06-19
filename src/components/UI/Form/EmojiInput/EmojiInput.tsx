@@ -76,7 +76,7 @@ export const EmojiInput = ({
   );
 };
 
-const EmojiPickerComponent = ({
+export const EmojiPickerComponent = ({
   showEmojiPicker,
   setShowEmojiPicker,
   handleClickAway,

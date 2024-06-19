@@ -1,10 +1,7 @@
 import { Button } from 'components/UI/Form/Button/Button';
 import AddIcon from 'assets/images/AddGreenIcon.svg?react';
-import { useState } from 'react';
-// import { Input } from 'components/UI/Form/Input/Input';
 import styles from './TemplateVariable.module.css';
-import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import { OutlinedInput } from '@mui/material';
+import { FormHelperText, OutlinedInput } from '@mui/material';
 
 export interface TemplateOptionsProps {
   inputFields: Array<any>;
@@ -12,6 +9,7 @@ export interface TemplateOptionsProps {
   editorValue: any;
   variables: Array<any>;
   setVariables: any;
+  field: { name: string; value: any };
 }
 
 export const TemplateVariables = ({
@@ -19,11 +17,13 @@ export const TemplateVariables = ({
   editorValue,
   variables,
   setVariables,
+  field,
 }: TemplateOptionsProps) => {
   const handleAddVariable = () => {
     setVariables([...variables, { text: '', id: variables.length + 1 }]);
-    form.setFieldValue('body', `${editorValue} {{${variables.length + 1}}}`);
+    form.setFieldValue('body', `${editorValue?.trim(' ')} {{${variables.length + 1}}}`);
   };
+  console.log(form.touched);
 
   return (
     <div className={styles.AddVariablesContainer}>
@@ -58,6 +58,13 @@ export const TemplateVariables = ({
                   setVariables(updatedVariables);
                 }}
               />
+              <FormHelperText className={styles.DangerText}>
+                {form &&
+                  form.errors.variables &&
+                  form.touched.variables &&
+                  form.touched.variables[index]?.text &&
+                  form.errors?.variables[index]?.text}
+              </FormHelperText>
             </div>
           ))}
         </div>
