@@ -16,7 +16,7 @@ import {
   FILTER_COLLECTIONS,
   EXPORT_COLLECTION_DATA,
 } from 'graphql/queries/Collection';
-import { CONTACT_SEARCH_QUERY, GET_COLLECTION_CONTACTS } from 'graphql/queries/Contact';
+import { GET_COLLECTION_CONTACTS, GET_CONTACTS_LIST } from 'graphql/queries/Contact';
 import { List } from 'containers/List/List';
 import { SearchDialogBox } from 'components/UI/SearchDialogBox/SearchDialogBox';
 import { getUserRolePermissions, getUserRole } from 'context/role';
@@ -77,7 +77,7 @@ export const CollectionList = () => {
   }>({ groupType: groups ? WA_GROUPS_COLLECTION : CONTACTS_COLLECTION });
 
   const entity = groups ? 'waGroups' : 'contacts';
-  const entityQuery = groups ? GET_WA_GROUPS : CONTACT_SEARCH_QUERY;
+  const entityQuery = groups ? GET_WA_GROUPS : GET_CONTACTS_LIST;
 
   const searchQuery = groups ? GROUP_SEARCH_QUERY : SEARCH_QUERY;
   const searchVariables = groups
@@ -105,9 +105,7 @@ export const CollectionList = () => {
   };
 
   const [getContacts, { data: entityData }] = useLazyQuery(entityQuery, {
-    variables: groups
-      ? setVariables({ label: contactSearchTerm }, 50)
-      : setVariables({ name: contactSearchTerm }, 50),
+    fetchPolicy: 'cache-and-network',
   });
   const [exportCollectionData] = useLazyQuery(EXPORT_COLLECTION_DATA, {
     onCompleted: (data) => {
@@ -122,9 +120,6 @@ export const CollectionList = () => {
       setNotification('An error occured while exporting the collection', 'warning');
     },
   });
-
-  const [getCollectionContacts, { data: collectionContactsData }] =
-    useLazyQuery(GET_COLLECTION_CONTACTS);
 
   const [updateCollectionContacts] = useMutation(updateMutation, {
     onCompleted: (data) => {
@@ -158,17 +153,17 @@ export const CollectionList = () => {
   let collectionEntities: Array<any> = [];
 
   if (entityData) {
-    contactOptions = [...entityData[entity]];
-  }
-  if (collectionContactsData) {
-    collectionEntities = collectionContactsData.group.group[entity];
+    contactOptions = ...entityData[entity];
   }
 
   let dialog = null;
 
   const setContactsDialog = (id: any) => {
-    getCollectionContacts({ variables: { id } });
-    getContacts();
+    getContacts({
+      variables: groups
+        ? setVariables({ label: contactSearchTerm }, 50)
+        : setVariables({ name: contactSearchTerm, excludeGroups: id }, 50),
+    });
     setCollectionId(id);
     setAddContactsDialogShow(true);
   };
@@ -182,16 +177,8 @@ export const CollectionList = () => {
     });
   };
 
-  const handleCollectionAdd = (value: any) => {
-    const selectedContacts = value.filter(
-      (contact: any) =>
-        !collectionEntities.map((collectionContact: any) => collectionContact.id).includes(contact)
-    );
-    const unselectedContacts = collectionEntities
-      .map((collectionContact: any) => collectionContact.id)
-      .filter((contact: any) => !value.includes(contact));
-
-    if (selectedContacts.length === 0 && unselectedContacts.length === 0) {
+  const handleCollectionAdd = (selectedContacts: any) => {
+    if (selectedContacts.length === 0) {
       setAddContactsDialogShow(false);
     } else {
       const addvariable = groups ? 'addWaGroupIds' : 'addContactIds';
@@ -201,7 +188,7 @@ export const CollectionList = () => {
           input: {
             [addvariable]: selectedContacts,
             groupId: collectionId,
-            [deletevariable]: unselectedContacts,
+            [deletevariable]: [],
           },
         },
       });

@@ -4,7 +4,11 @@ import { useTranslation } from 'react-i18next';
 
 import { setNotification } from 'common/notification';
 import { setVariables } from 'common/constants';
-import { CONTACT_SEARCH_QUERY, GET_COLLECTION_CONTACTS } from 'graphql/queries/Contact';
+import {
+  CONTACT_SEARCH_QUERY,
+  GET_COLLECTION_CONTACTS,
+  GET_CONTACTS_LIST,
+} from 'graphql/queries/Contact';
 import {
   UPDATE_COLLECTION_CONTACTS,
   UPDATE_COLLECTION_WA_GROUP,
@@ -22,12 +26,14 @@ export const AddToCollection = ({ collectionId, setDialog, groups }: AddToCollec
   const [contactSearchTerm, setContactSearchTerm] = useState('');
   const { t } = useTranslation();
 
-  let searchquery = groups ? GET_WA_GROUPS : CONTACT_SEARCH_QUERY;
+  let searchquery = groups ? GET_WA_GROUPS : GET_CONTACTS_LIST;
   let updateMutation = groups ? UPDATE_COLLECTION_WA_GROUP : UPDATE_COLLECTION_CONTACTS;
   let entity = groups ? 'waGroups' : 'contacts';
 
   const { data: entityData } = useQuery(searchquery, {
-    variables: groups ? setVariables({}, 50) : setVariables({ name: contactSearchTerm }, 50),
+    variables: groups
+      ? setVariables({}, 50)
+      : setVariables({ name: contactSearchTerm, excludeGroups: collectionId }, 50),
   });
 
   const { data: collectionContactsData } = useQuery(GET_COLLECTION_CONTACTS, {

@@ -58,6 +58,8 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
 
   const [sortedOptions, setSortedOptions] = useState<any>(options);
 
+  console.log(sortedOptions);
+
   useEffect(() => {
     if (multiple) {
       const selectedIds = selectedOptions.map((option: any) => option.id);

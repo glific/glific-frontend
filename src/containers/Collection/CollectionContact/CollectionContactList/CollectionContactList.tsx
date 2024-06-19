@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom';
 import {
   CONTACT_SEARCH_QUERY,
   GET_COLLECTION_CONTACTS,
+  GET_CONTACTS_LIST,
   GET_CONTACT_COUNT,
 } from 'graphql/queries/Contact';
 import { UPDATE_COLLECTION_CONTACTS } from 'graphql/mutations/Collection';
@@ -78,10 +79,9 @@ export const CollectionContactList = ({
   const collectionId = params.id;
   let dialog;
 
-  const [getContacts, { data: contactsData }] = useLazyQuery(CONTACT_SEARCH_QUERY, {
-    variables: setVariables({ name: contactSearchTerm }, 50),
+  const [getContacts, { data: contactsData }] = useLazyQuery(GET_CONTACTS_LIST, {
+    fetchPolicy: 'cache-and-network',
   });
-
   const [getCollectionContacts, { data: collectionContactsData }] = useLazyQuery(
     GET_COLLECTION_CONTACTS,
     {
@@ -97,6 +97,8 @@ export const CollectionContactList = ({
   }
 
   const handleCollectionAdd = (value: any) => {
+    console.log(value);
+
     const selectedContacts = value.filter(
       (contact: any) =>
         !collectionContacts.map((collectionContact: any) => collectionContact.id).includes(contact)
@@ -148,6 +150,7 @@ export const CollectionContactList = ({
     let contactOptions: any = [];
     if (contactsData) {
       contactOptions = contactsData.contacts;
+      console.log(contactsData);
     }
 
     dialog = (
@@ -206,9 +209,11 @@ export const CollectionContactList = ({
       color="primary"
       data-testid="addBtn"
       onClick={() => {
-        getContacts();
+        getContacts({
+          variables: setVariables({ name: contactSearchTerm, excludeGroups: collectionId }, 50),
+        });
         setAddContactsDialogShow(true);
-        getCollectionContacts({ variables: { id: collectionId } });
+        // getCollectionContacts({ variables: { id: collectionId } });
       }}
     >
       Add contacts
