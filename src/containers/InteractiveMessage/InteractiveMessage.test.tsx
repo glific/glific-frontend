@@ -363,3 +363,24 @@ describe('location request message', () => {
     });
   });
 });
+
+test('It creates a interactive message with dynamic content', async () => {
+  const { getByTestId, getAllByRole, getByText } = render(interactiveMessage);
+  await waitFor(() => {
+    expect(getByText('Marathi')).toBeInTheDocument();
+  });
+
+  fireEvent.click(getAllByRole('checkbox')[1]);
+
+  const autoCompletes = getAllByRole('combobox');
+
+  const attachmentType = autoCompletes[1];
+
+  attachmentType.focus();
+  fireEvent.keyDown(attachmentType, { key: 'ArrowDown' });
+  fireEvent.keyDown(attachmentType, { key: 'ArrowDown' });
+  fireEvent.keyDown(attachmentType, { key: 'Enter' });
+
+  fireEvent.change(getAllByRole('textbox')[4], { target: { value: '@results.result_1' } });
+  fireEvent.click(getByTestId('submitActionButton'));
+});

@@ -3,6 +3,7 @@ import { useQuery, useApolloClient } from '@apollo/client';
 import Typography from '@mui/material/Typography';
 import * as Yup from 'yup';
 import { useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import { FormLayout } from 'containers/Form/FormLayout';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
@@ -37,6 +38,7 @@ export const Providers = () => {
   const [secrets, setSecrets] = useState({});
   const params = useParams();
   const type = params.type ? params.type : null;
+  const { t } = useTranslation();
 
   const states: any = {};
 
@@ -210,9 +212,10 @@ export const Providers = () => {
       noHeading
       confirmationState={{
         show: type === 'maytapi',
-        title: 'Are you sure you want to change these credentials?',
-        message:
-          'All information related to this account will be deleted. All data has already been backed up in BigQuery.',
+        title: t('Are you sure you want to change these credentials?'),
+        message: t(
+          'All information related to this account will be deleted. All data has already been backed up in BigQuery.'
+        ),
       }}
     />
   );

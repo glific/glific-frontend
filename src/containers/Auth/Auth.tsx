@@ -9,11 +9,12 @@ import WhatsAppIcon from 'assets/images/icons/Social/Whatsapp.svg?react';
 import { termsOfUse } from 'containers/Organization/Organization';
 import { Button } from 'components/UI/Form/Button/Button';
 import GlificLogo from 'assets/images/logo/Logo.svg';
-// import { Promotion } from './Promotion/Promotion';
+import { Promotion } from './Promotion/Promotion';
 import styles from './Auth.module.css';
 import axios from 'axios';
 import { ORGANIZATION_NAME } from 'config';
 import setLogs from 'config/logs';
+import { checkOrgStatus } from 'services/AuthService';
 
 export interface AuthProps {
   pageTitle: string;
@@ -57,11 +58,15 @@ export const Auth = ({
   const [loading, setLoading] = useState(false);
   const { t } = useTranslation();
   const [orgName, setOrgName] = useState('Glific');
+  const [status, setStatus] = useState('');
 
   useEffect(() => {
     axios
       .post(ORGANIZATION_NAME)
-      .then(({ data }) => setOrgName(data?.data?.name))
+      .then(({ data }) => {
+        setOrgName(data?.data?.name);
+        setStatus(data?.data?.status);
+      })
       .catch((error) => setLogs(`orgName error ${JSON.stringify(error)}`, error));
   }, []);
 
@@ -71,6 +76,10 @@ export const Auth = ({
       setLoading(false);
     }
   }, [loading, errorMessage]);
+
+  useEffect(() => {
+    checkOrgStatus(status);
+  }, [status]);
 
   const boxClass = [styles.Box];
   const boxTitleClass = [styles.BoxTitle];
@@ -259,7 +268,7 @@ export const Auth = ({
         ) : null}
       </div>
 
-      {/* {mode === 'login' && <Promotion />} */}
+      {mode === 'login' && <Promotion />}
     </div>
   );
 };

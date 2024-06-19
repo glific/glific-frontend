@@ -21,6 +21,7 @@ import { setUserRolePermissions } from 'context/role';
 import setLogs from 'config/logs';
 import { GET_ORGANIZATION_SERVICES } from 'graphql/queries/Organization';
 import { Auth } from '../Auth';
+import { setErrorMessage } from 'common/notification';
 
 const notApprovedMsg = 'Your account is not approved yet. Please contact your organization admin.';
 
@@ -40,17 +41,17 @@ export const Login = () => {
 
   // get the information on current user
   const [getCurrentUser, { data: userData, error: userError }] = useLazyQuery(GET_CURRENT_USER);
-  const [getOrganizationServices, { data: organizationData }] =
+  const [getOrganizationServices, { data: organizationServicesData }] =
     useLazyQuery(GET_ORGANIZATION_SERVICES);
 
   useEffect(() => {
-    if (userData && organizationData) {
+    if (userData && organizationServicesData) {
       const { user } = userData.currentUser;
       const userCopy = JSON.parse(JSON.stringify(user));
       userCopy.roles = user.accessRoles;
       // set the current user object
       setUserSession(JSON.stringify(userCopy));
-      setOrganizationServices(JSON.stringify(organizationData.organizationServices));
+      setOrganizationServices(JSON.stringify(organizationServicesData.organizationServices));
 
       // get the roles
       const { accessRoles } = userData.currentUser.user;
@@ -86,7 +87,7 @@ export const Login = () => {
     if (userError) {
       accessDenied();
     }
-  }, [userData, userError, setAuthenticated, organizationData]);
+  }, [userData, userError, setAuthenticated, organizationServicesData]);
 
   const formFields = [
     {
@@ -126,9 +127,14 @@ export const Login = () => {
         setAuthSession(response.data.data);
       })
       .catch((error) => {
-        setAuthError(t('Invalid phone or password.'));
+        if (error?.response?.status === 403) {
+          setErrorMessage(error?.response?.data?.error);
+          setAuthError(' ');
+        } else if (error?.response?.data?.error) {
+          setAuthError(error?.response?.data?.error?.message);
+        }
         // add log's
-        setLogs(`phoneNumber:${values.phoneNumber} URL:${USER_SESSION}`, 'info');
+        // setLogs(`phoneNumber:${values.phoneNumber} URL:${USER_SESSION}`, 'info');
         setLogs(error, 'error');
       });
   };
