@@ -129,8 +129,6 @@ export const HSM = () => {
     },
   };
 
-  const elementName = languageVariant ? elementNameDropDown : elementNameInput;
-
   const formFields = [
     {
       component: Checkbox,

@@ -63,7 +63,7 @@ export const TemplateVariables = ({
                   form.errors.variables &&
                   form.touched.variables &&
                   form.touched.variables[index]?.text &&
-                  form.errors?.variables[index]?.text}
+                  form.errors.variables[index]?.text}
               </FormHelperText>
             </div>
           ))}

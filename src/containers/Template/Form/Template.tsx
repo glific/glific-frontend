@@ -29,7 +29,7 @@ import { validateMedia } from 'common/utils';
 import styles from './Template.module.css';
 import { TemplateVariables } from '../TemplateVariables/TemplateVariables';
 
-const regexForShortcode = /^[a-z0-9_]+$/g;
+// const regexForShortcode = /^[a-z0-9_]+$/g;
 
 const dialogMessage = ' It will stop showing when you are drafting a customized message.';
 

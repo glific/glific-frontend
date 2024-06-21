@@ -38,12 +38,6 @@ export const EmojiInput = ({
 }: EmojiInputProps) => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
-  const lexicalChange = (editorState: any) => {
-    if (handleChange) {
-      handleChange(editorState);
-    }
-  };
-
   const handleClickAway = () => {
     setShowEmojiPicker(false);
   };
