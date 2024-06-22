@@ -4,11 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { setNotification } from 'common/notification';
 import { setVariables } from 'common/constants';
-import {
-  CONTACT_SEARCH_QUERY,
-  GET_COLLECTION_CONTACTS,
-  GET_CONTACTS_LIST,
-} from 'graphql/queries/Contact';
+import { GET_COLLECTION_CONTACTS, GET_CONTACTS_LIST } from 'graphql/queries/Contact';
 import {
   UPDATE_COLLECTION_CONTACTS,
   UPDATE_COLLECTION_WA_GROUP,

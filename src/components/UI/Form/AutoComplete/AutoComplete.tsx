@@ -226,7 +226,7 @@ export const AutoComplete = ({
           disableCloseOnSelect={multiple}
           renderTags={getRenderTags}
           renderOption={(props, option, { selected }) => (
-            <li key={option?.id} {...props}>
+            <li key={option.id} {...props}>
               {multiple && (
                 <Checkbox
                   icon={icon}
