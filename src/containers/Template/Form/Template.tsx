@@ -594,7 +594,7 @@ const Template = ({
       optionLabel: 'label',
       multiple: false,
       label: t('Attachment Type'),
-      disabled: isEditing,
+      disabled: defaultAttribute.isHsm && isEditing,
       helperText: warning,
       onChange: (event: any) => {
         const val = event;
@@ -610,7 +610,7 @@ const Template = ({
       type: 'text',
       label: t('Attachment URL'),
       validate: () => isUrlValid,
-      disabled: isEditing,
+      disabled: defaultAttribute.isHsm && isEditing,
       helperText: t(
         'Please provide a sample attachment for approval purpose. You may send a similar but different attachment when sending the HSM to users.'
       ),
@@ -663,7 +663,7 @@ const Template = ({
       component: Input,
       name: 'label',
       label: t('Title'),
-      disabled: isEditing,
+      disabled: defaultAttribute.isHsm && isEditing,
       helperText: defaultAttribute.isHsm
         ? t('Define what use case does this template serve eg. OTP, optin, activity preference')
         : null,
@@ -679,7 +679,7 @@ const Template = ({
       rows: 5,
       convertToWhatsApp: true,
       textArea: true,
-      disabled: isEditing,
+      disabled: defaultAttribute.isHsm && isEditing,
       helperText: defaultAttribute.isHsm
         ? 'You can also use variable and interactive actions. Variable format: {{1}}, Button format: [Button text,Value] Value can be a URL or a phone number.'
         : null,
@@ -870,7 +870,6 @@ const Template = ({
         }
       } else {
         delete payloadCopy.example;
-        delete payloadCopy.isActive;
         delete payloadCopy.shortcode;
         delete payloadCopy.category;
       }

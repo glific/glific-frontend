@@ -48,6 +48,8 @@ export const Editor = ({
   const [editor] = useLexicalComposerContext();
 
   useEffect(() => {
+    console.log(field.value, editorState, isEditing);
+
     if ((field.value || field.value === '') && !editorState && isEditing) {
       setInitialState(editor, field.value);
     }
@@ -86,7 +88,7 @@ export const Editor = ({
   const handleChange = (editorState: any) => {
     editorState.read(() => {
       const root = $getRoot();
-      if (!disabled) {
+      if (!disabled && !isEditing) {
         onChange(root.getTextContent());
       }
     });
