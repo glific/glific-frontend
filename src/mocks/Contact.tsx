@@ -8,6 +8,7 @@ import {
   COUNT_CONTACT_HISTORY,
   GET_CONTACT_PROFILES,
   GET_COLLECTION_CONTACTS,
+  GET_CONTACTS_LIST,
 } from 'graphql/queries/Contact';
 import { addFlowToContactQuery } from 'mocks/Flow';
 import { getOrganizationLanguagesQuery, getOrganizationQuery } from 'mocks/Organization';
@@ -555,3 +556,65 @@ export const getGroupContact = {
     },
   },
 };
+
+export const getExcludedContactsQuery = (excludeGroups: any) => ({
+  request: {
+    query: GET_CONTACTS_LIST,
+    variables: {
+      filter: { name: '', excludeGroups },
+      opts: { limit: 50, offset: 0, order: 'ASC' },
+    },
+  },
+  result: {
+    data: {
+      contacts: [
+        {
+          __typename: 'Contact',
+          groups: [
+            {
+              __typename: 'Group',
+              id: '4',
+              label: 'Default Group',
+            },
+            {
+              __typename: 'Group',
+              id: '2',
+              label: 'Optout contacts',
+            },
+          ],
+          id: '2',
+          name: 'NGO Admin',
+        },
+        {
+          __typename: 'Contact',
+          groups: [
+            {
+              __typename: 'Group',
+              id: '2',
+              label: 'Optout contacts',
+            },
+          ],
+          id: '1',
+          name: 'NGO Main Account',
+        },
+        {
+          __typename: 'Contact',
+          groups: [
+            {
+              __typename: 'Group',
+              id: '2',
+              label: 'Optout contacts',
+            },
+            {
+              __typename: 'Group',
+              id: '4',
+              label: 'Default Group',
+            },
+          ],
+          id: '3',
+          name: 'NGO Manager',
+        },
+      ],
+    },
+  },
+});

@@ -5,7 +5,7 @@ import { vi } from 'vitest';
 
 import { setUserSession } from 'services/AuthService';
 import { getCollectionContactsQuery, updateCollectionContactsQuery } from 'mocks/Collection';
-import { getContactsQuery, getContactsSearchQuery } from 'mocks/Contact';
+import { getContactsQuery, getContactsSearchQuery, getExcludedContactsQuery } from 'mocks/Contact';
 import { setNotification } from 'common/notification';
 import { getGroupsQuery, getGroupsSearchQuery, updateCollectionWaGroupQuery } from 'mocks/Groups';
 
@@ -15,6 +15,7 @@ const mocks = [
   getContactsSearchQuery,
   getContactsQuery,
   updateCollectionContactsQuery,
+  getExcludedContactsQuery('1'),
 ];
 
 setUserSession(JSON.stringify({ roles: ['Admin'] }));
@@ -108,7 +109,7 @@ test('should add contact to collection', async () => {
   autocomplete.focus();
   fireEvent.keyDown(autocomplete, { key: 'ArrowDown' });
 
-  fireEvent.click(getByText('Glific User 2'), { key: 'Enter' });
+  fireEvent.click(getByText('NGO Manager'), { key: 'Enter' });
   fireEvent.click(getByText('Save'));
 
   await waitFor(() => {
@@ -120,7 +121,9 @@ const groupsmocks = [
   getCollectionContactsQuery,
   getGroupsSearchQuery,
   getGroupsQuery,
-  updateCollectionWaGroupQuery,
+  updateCollectionWaGroupQuery({
+    input: { addWaGroupIds: ['5'], groupId: '1', deleteWaGroupIds: [] },
+  }),
 ];
 
 const addGroups = (

@@ -13,7 +13,7 @@ import {
   addContactToCollection,
   exportCollectionsQueryWithErrors,
 } from 'mocks/Collection';
-import { getContactsQuery, getContactsSearchQuery } from 'mocks/Contact';
+import { getContactsQuery, getContactsSearchQuery, getExcludedContactsQuery } from 'mocks/Contact';
 import { getCurrentUserQuery } from 'mocks/User';
 import { getPublishedFlowQuery } from 'mocks/Flow';
 import { setUserSession } from 'services/AuthService';
@@ -23,6 +23,7 @@ import {
   addGroupToCollectionList,
   getGroupsSearchQuery,
   getGroupsSearchQuery2,
+  updateCollectionWaGroupQuery,
 } from 'mocks/Groups';
 import { setNotification } from 'common/notification';
 
@@ -41,6 +42,10 @@ const mocks = [
   getCurrentUserQuery,
   addContactToCollection,
   getCollectionContactsQuery,
+  updateCollectionWaGroupQuery({
+    input: { addWaGroupIds: ['1'], groupId: '1', deleteWaGroupIds: [] },
+  }),
+  getExcludedContactsQuery('1'),
 ];
 
 const wrapper = (

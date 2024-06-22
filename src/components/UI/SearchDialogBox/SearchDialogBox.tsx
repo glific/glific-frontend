@@ -55,19 +55,10 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
 
   const [selectedOption, setSelectedOptions] = useState<any>(multiple ? [] : null);
   const [asyncSelectedOptions, setAsyncSelectedOptions] = useState<Array<any>>([]);
-
-  const [sortedOptions, setSortedOptions] = useState<any>(options);
-
-  console.log(sortedOptions);
+  const [optionsData, setOptionsData] = useState<any>(options);
 
   useEffect(() => {
-    if (multiple) {
-      const selectedIds = selectedOptions.map((option: any) => option.id);
-      setSortedOptions([
-        ...selectedOptions,
-        ...options.filter((option: any) => !selectedIds.includes(option.id)),
-      ]);
-    }
+    setOptionsData(options);
   }, [options]);
 
   useEffect(() => {
@@ -90,8 +81,7 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
     setSelectedOptions(value);
     if (multiple) {
       const selectedIds = value.map((option: any) => option.id);
-
-      setSortedOptions([
+      setOptionsData([
         ...value,
         ...options.filter((option: any) => !selectedIds.includes(option.id)),
       ]);
@@ -122,7 +112,7 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
             disableClearable={disableClearable}
             asyncSearch={asyncSearch}
             asyncValues={{ value: asyncSelectedOptions, setValue: setAsyncSelectedOptions }}
-            options={sortedOptions}
+            options={optionsData}
             optionLabel={optionLabel || 'label'}
             additionalOptionLabel={additionalOptionLabel}
             field={{ value: selectedOption }}

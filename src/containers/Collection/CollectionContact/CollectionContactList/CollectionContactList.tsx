@@ -1,10 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
 import {
   CONTACT_SEARCH_QUERY,
-  GET_COLLECTION_CONTACTS,
   GET_CONTACTS_LIST,
   GET_CONTACT_COUNT,
 } from 'graphql/queries/Contact';
@@ -72,6 +71,7 @@ export const CollectionContactList = ({
   const [contactSearchTerm, setContactSearchTerm] = useState('');
   const [selectedContacts, setSelectedContact] = useState<any>([]);
   const [contactsToRemove, setContactsToRemove] = useState<any>([]);
+  const [contactOptions, setContactOptions] = useState<any>([]);
 
   const { t } = useTranslation();
   const params = useParams();
@@ -82,28 +82,10 @@ export const CollectionContactList = ({
   const [getContacts, { data: contactsData }] = useLazyQuery(GET_CONTACTS_LIST, {
     fetchPolicy: 'cache-and-network',
   });
-  const [getCollectionContacts, { data: collectionContactsData }] = useLazyQuery(
-    GET_COLLECTION_CONTACTS,
-    {
-      fetchPolicy: 'network-only',
-    }
-  );
 
   const [updateCollectionContacts] = useMutation(UPDATE_COLLECTION_CONTACTS);
 
-  let collectionContacts: Array<any> = [];
-  if (collectionContactsData) {
-    collectionContacts = collectionContactsData.group.group.contacts;
-  }
-
-  const handleCollectionAdd = (value: any) => {
-    console.log(value);
-
-    const selectedContacts = value.filter(
-      (contact: any) =>
-        !collectionContacts.map((collectionContact: any) => collectionContact.id).includes(contact)
-    );
-
+  const handleCollectionAdd = (selectedContacts: any) => {
     if (selectedContacts.length === 0) {
       setAddContactsDialogShow(false);
     } else {
@@ -146,13 +128,13 @@ export const CollectionContactList = ({
     setSelectedContact(selectedContacts);
   };
 
-  if (addContactsDialogShow) {
-    let contactOptions: any = [];
+  useEffect(() => {
     if (contactsData) {
-      contactOptions = contactsData.contacts;
-      console.log(contactsData);
+      setContactOptions(contactsData.contacts);
     }
+  }, [contactsData]);
 
+  if (addContactsDialogShow) {
     dialog = (
       <SearchDialogBox
         title={t('Add contacts to collection')}
@@ -164,17 +146,15 @@ export const CollectionContactList = ({
         asyncSearch
         colorOk="primary"
         buttonOk="Add"
-        disableClearable={true}
+        disableClearable
         searchLabel="Search contacts"
         textFieldPlaceholder="Type here"
         onChange={(value: any) => {
           if (typeof value === 'string') {
             setContactSearchTerm(value);
-          } else if (typeof value === 'object') {
-            setSelectedContact(value);
           }
         }}
-        selectedOptions={collectionContacts}
+        selectedOptions={[]}
         fullWidth={true}
         showTags={false}
         placeholder="Select contacts"
@@ -213,7 +193,6 @@ export const CollectionContactList = ({
           variables: setVariables({ name: contactSearchTerm, excludeGroups: collectionId }, 50),
         });
         setAddContactsDialogShow(true);
-        // getCollectionContacts({ variables: { id: collectionId } });
       }}
     >
       Add contacts

@@ -16,7 +16,7 @@ import {
   FILTER_COLLECTIONS,
   EXPORT_COLLECTION_DATA,
 } from 'graphql/queries/Collection';
-import { GET_COLLECTION_CONTACTS, GET_CONTACTS_LIST } from 'graphql/queries/Contact';
+import { GET_CONTACTS_LIST } from 'graphql/queries/Contact';
 import { List } from 'containers/List/List';
 import { SearchDialogBox } from 'components/UI/SearchDialogBox/SearchDialogBox';
 import { getUserRolePermissions, getUserRole } from 'context/role';
@@ -144,16 +144,14 @@ export const CollectionList = () => {
       setUpdateCollection((updateCollection) => !updateCollection);
       setAddContactsDialogShow(false);
     },
-    refetchQueries: [{ query: GET_COLLECTION_CONTACTS, variables: { id: collectionId } }],
   });
 
   const dialogMessage = t("You won't be able to use this collection again.");
 
   let contactOptions: any = [];
-  let collectionEntities: Array<any> = [];
 
   if (entityData) {
-    contactOptions = ...entityData[entity];
+    contactOptions = entityData[entity];
   }
 
   let dialog = null;
@@ -214,7 +212,7 @@ export const CollectionList = () => {
         additionalOptionLabel="phone"
         asyncSearch
         disableClearable
-        selectedOptions={collectionEntities}
+        selectedOptions={[]}
         renderTags={false}
         searchLabel="Search contacts"
         textFieldPlaceholder="Type here"

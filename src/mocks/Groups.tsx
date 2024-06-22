@@ -687,10 +687,10 @@ export const getGroupsQuery = {
   },
 };
 
-export const updateCollectionWaGroupQuery = {
+export const updateCollectionWaGroupQuery = (variables: any) => ({
   request: {
     query: UPDATE_COLLECTION_WA_GROUP,
-    variables: { input: { addWaGroupIds: ['5'], groupId: '1', deleteWaGroupIds: [] } },
+    variables,
   },
   result: {
     data: {
@@ -706,7 +706,7 @@ export const updateCollectionWaGroupQuery = {
       },
     },
   },
-};
+});
 
 export const waManagedPhonesQuery = {
   request: {
