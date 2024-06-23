@@ -847,7 +847,7 @@ const Template = ({
 
   const setPayload = (payload: any) => {
     let payloadCopy = payload;
-    payloadCopy.body = editorValue;
+    Object.assign(payloadCopy, { body: editorValue });
 
     let translationsCopy: any = {};
     if (template) {
@@ -944,6 +944,8 @@ const Template = ({
       delete payloadCopy.templateButtons;
       delete payloadCopy.language;
       delete payloadCopy.variables;
+      delete payloadCopy.existingShortCode;
+      delete payloadCopy.newShortCode;
 
       if (payloadCopy.type === 'TEXT') {
         delete payloadCopy.attachmentURL;
