@@ -80,8 +80,6 @@ const convertButtonsToTemplate = (templateButtons: Array<any>, templateType: str
  * so that you can see preview in simulator
  */
 const getTemplateAndButtons = (templateType: string, message: string, buttons: string) => {
-  console.log(message);
-
   const templateButtons = JSON.parse(buttons);
   let result: any;
   if (templateType === CALL_TO_ACTION) {
@@ -338,7 +336,6 @@ const Template = ({
       }
 
       // setExample(getExampleFromBody(bodyValue, variables));
-      console.log('1');
       onExampleChange(getExampleFromBody(bodyValue, variables));
     }
 
@@ -543,15 +540,13 @@ const Template = ({
   useEffect(() => {
     if (getExample) {
       const { message }: any = getTemplateAndButton(getExampleFromBody(editorValue, variables));
-      console.log('1');
-
       onExampleChange(message || '');
     }
   }, [isAddButtonChecked]);
 
   // Converting buttons to template and vice-versa to show realtime update on simulator
   useEffect(() => {
-    if (templateButtons.length > 0) {
+    if (templateButtons.length > 0 && !isEditing) {
       const parse = convertButtonsToTemplate(templateButtons, templateType);
 
       const parsedText = parse.length ? `| ${parse.join(' | ')}` : null;
@@ -559,17 +554,14 @@ const Template = ({
       const { message }: any = getTemplateAndButton(getExampleFromBody(editorValue, variables));
 
       const sampleText: any = parsedText && message + parsedText;
-
       if (sampleText) {
-        console.log('1', sampleText);
-
         onExampleChange(sampleText);
       }
     }
   }, [templateButtons]);
 
   useEffect(() => {
-    if (getSimulatorMessage) {
+    if (getSimulatorMessage && !isEditing) {
       getSimulatorMessage(getExampleFromBody(editorValue, variables));
     }
   }, [editorValue, variables]);

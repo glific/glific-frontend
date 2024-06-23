@@ -121,7 +121,7 @@ export const AutoComplete = ({
     if (additionalOptionLabel) {
       return option[additionalOptionLabel];
     }
-    return option;
+    return '';
   };
 
   const getRenderTags = (value: Array<any>, getTagProps: any) => {
