@@ -334,8 +334,6 @@ const Template = ({
       } else {
         exampleBody = exampleValue;
       }
-
-      // setExample(getExampleFromBody(bodyValue, variables));
       onExampleChange(getExampleFromBody(bodyValue, variables));
     }
 

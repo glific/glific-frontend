@@ -8,9 +8,6 @@ import * as FormLayout from 'containers/Form/FormLayout';
 import Template from './Template';
 import { TEMPLATE_MOCKS } from '../Template.test.helper';
 import { HSM_TEMPLATE_MOCKS, templateFormHSMFormFields } from './Template.test.helper';
-import { LexicalWrapper } from 'common/LexicalWrapper';
-import { LexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import { LexicalComposer } from '@lexical/react/LexicalComposer';
 
 beforeEach(() => {
   vi.restoreAllMocks();
@@ -82,15 +79,13 @@ const hsmProps = {
 };
 
 const hsmTemplateEdit = (templateId: string) => (
-  <LexicalWrapper>
-    <MockedProvider mocks={HSM_TEMPLATE_MOCKS}>
-      <MemoryRouter initialEntries={[`/templates/${templateId}/edit`]}>
-        <Routes>
-          <Route path="/templates/:id/edit" element={<Template {...hsmProps} />} />
-        </Routes>
-      </MemoryRouter>
-    </MockedProvider>
-  </LexicalWrapper>
+  <MockedProvider mocks={HSM_TEMPLATE_MOCKS}>
+    <MemoryRouter initialEntries={[`/templates/${templateId}/edit`]}>
+      <Routes>
+        <Route path="/templates/:id/edit" element={<Template {...hsmProps} />} />
+      </Routes>
+    </MemoryRouter>
+  </MockedProvider>
 );
 
 describe('hsm templates in edit mode', () => {
@@ -118,18 +113,11 @@ describe('hsm templates in edit mode', () => {
 });
 
 const hsmTemplate = (
-  <LexicalComposer
-    initialConfig={{
-      namespace: 'template-input',
-      onError: (error: any) => console.log(error),
-    }}
-  >
-    <MockedProvider mocks={HSM_TEMPLATE_MOCKS}>
-      <MemoryRouter initialEntries={[`/template/add`]}>
-        <Template {...hsmProps} />
-      </MemoryRouter>
-    </MockedProvider>
-  </LexicalComposer>
+  <MockedProvider mocks={HSM_TEMPLATE_MOCKS}>
+    <MemoryRouter initialEntries={[`/template/add`]}>
+      <Template {...hsmProps} />
+    </MemoryRouter>
+  </MockedProvider>
 );
 
 describe('hsm templates create mode', () => {

@@ -6,7 +6,6 @@ import { Editor } from './Editor';
 import Styles from './EmojiInput.module.css';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { $createTextNode, $getSelection, $isRangeSelection } from 'lexical';
-import { LexicalWrapper } from 'common/LexicalWrapper';
 
 export interface EmojiInputProps {
   field: any;
@@ -68,7 +67,7 @@ export const EmojiInput = ({
   );
 };
 
-export const EmojiPickerComponent = ({
+const EmojiPickerComponent = ({
   showEmojiPicker,
   setShowEmojiPicker,
   handleClickAway,
