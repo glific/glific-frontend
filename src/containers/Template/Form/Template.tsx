@@ -80,6 +80,8 @@ const convertButtonsToTemplate = (templateButtons: Array<any>, templateType: str
  * so that you can see preview in simulator
  */
 const getTemplateAndButtons = (templateType: string, message: string, buttons: string) => {
+  console.log(message);
+
   const templateButtons = JSON.parse(buttons);
   let result: any;
   if (templateType === CALL_TO_ACTION) {
@@ -106,7 +108,6 @@ const getTemplateAndButtons = (templateType: string, message: string, buttons: s
 const getExampleFromBody = (body: string, variables: Array<any>) => {
   return body.replace(/{{(\d+)}}/g, (match, number) => {
     let index = parseInt(number) - 1;
-    console.log(variables);
 
     return variables[index]?.text
       ? variables[index]
@@ -114,6 +115,40 @@ const getExampleFromBody = (body: string, variables: Array<any>) => {
         : match
       : `{{${number}}}`;
   });
+};
+
+const getVariables = (body: string, example?: string) => {
+  const variablePattern = /\{\{(\d+)\}\}/g;
+  const examplePattern = /\[([^\]]+)\]/g;
+  let match;
+  let foundIds = new Set();
+  let examples = [];
+  let variables: any = [];
+
+  // Extract {{id}} patterns from body
+  while ((match = variablePattern.exec(body)) !== null) {
+    foundIds.add(parseInt(match[1], 10));
+  }
+
+  // Extract example values if example string is provided
+  if (example) {
+    while ((match = examplePattern.exec(example)) !== null) {
+      examples.push(match[1]);
+    }
+  }
+
+  // Sort the IDs
+  let sortedIds = Array.from(foundIds).sort((a: any, b: any) => a - b);
+
+  // Create variables array with ids and examples or empty text
+  sortedIds.forEach((id, index) => {
+    variables.push({
+      text: examples[index] || '',
+      id: index + 1,
+    });
+  });
+
+  return variables;
 };
 
 export interface TemplateProps {
@@ -280,8 +315,10 @@ const Template = ({
 
     setLabel(labelValue);
     setIsActive(isActiveValue);
-
-    if (typeof bodyValue === 'string') {
+    let variables: any = [];
+    if (typeof bodyValue === 'string' && exampleValue) {
+      variables = getVariables(bodyValue, exampleValue);
+      setVariables(variables);
       setBody(bodyValue || '');
     }
 
@@ -291,7 +328,7 @@ const Template = ({
         setTemplateType(templateButtonType);
         const { buttons: buttonsVal, template } = getTemplateAndButtons(
           templateButtonType,
-          exampleValue,
+          getExampleFromBody(bodyValue, variables),
           buttons
         );
         exampleBody = template;
@@ -300,8 +337,9 @@ const Template = ({
         exampleBody = exampleValue;
       }
 
-      setExample(exampleValue);
-      onExampleChange(exampleBody);
+      // setExample(getExampleFromBody(bodyValue, variables));
+      console.log('1');
+      onExampleChange(getExampleFromBody(bodyValue, variables));
     }
 
     if (hasButtons) {
@@ -504,7 +542,9 @@ const Template = ({
   // Removing buttons when checkbox is checked or unchecked
   useEffect(() => {
     if (getExample) {
-      const { message }: any = getTemplateAndButton(getExample);
+      const { message }: any = getTemplateAndButton(getExampleFromBody(editorValue, variables));
+      console.log('1');
+
       onExampleChange(message || '');
     }
   }, [isAddButtonChecked]);
@@ -516,12 +556,13 @@ const Template = ({
 
       const parsedText = parse.length ? `| ${parse.join(' | ')}` : null;
 
-      const { message }: any = getTemplateAndButton(example);
+      const { message }: any = getTemplateAndButton(getExampleFromBody(editorValue, variables));
 
       const sampleText: any = parsedText && message + parsedText;
-      console.log(parse, parsedText, message, sampleText);
 
       if (sampleText) {
+        console.log('1', sampleText);
+
         onExampleChange(sampleText);
       }
     }
@@ -712,6 +753,7 @@ const Template = ({
         setEditorValue(value);
       },
       isEditing: isEditing,
+      initialState: isEditing && body,
     },
   ];
 
@@ -761,6 +803,8 @@ const Template = ({
       editorValue: editorValue,
       variables: variables,
       setVariables: setVariables,
+      getVariables: getVariables,
+      isEditing: isEditing,
     },
   ];
 
@@ -799,8 +843,8 @@ const Template = ({
     }, []);
 
     // get template body
-    const templateBody = getTemplateAndButton(body);
-    const templateExample = getTemplateAndButton(example);
+    const templateBody = getTemplateAndButton(editorValue);
+    const templateExample = getTemplateAndButton(getExampleFromBody(editorValue, variables));
 
     return {
       hasButtons: true,

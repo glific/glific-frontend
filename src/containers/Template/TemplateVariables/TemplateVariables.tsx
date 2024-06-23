@@ -14,6 +14,8 @@ export interface TemplateOptionsProps {
   variables: Array<any>;
   setVariables: any;
   field: { name: string; value: any };
+  getVariables: any;
+  isEditing: boolean;
 }
 
 export const TemplateVariables = ({
@@ -21,6 +23,8 @@ export const TemplateVariables = ({
   editorValue,
   variables,
   setVariables,
+  getVariables,
+  isEditing = false,
 }: TemplateOptionsProps) => {
   const [editor] = useLexicalComposerContext();
 
@@ -29,35 +33,6 @@ export const TemplateVariables = ({
     setLexicalState(editor, `${editorValue?.trim(' ')} {{${variables.length + 1}}}`);
     editor.focus();
   };
-
-  const updateVariablesArray = () => {
-    const variablePattern = /\{\{(\d+)\}\}/g;
-    let match;
-    let foundIds = [];
-
-    while ((match = variablePattern.exec(editorValue)) !== null) {
-      foundIds.push(parseInt(match[1], 10));
-    }
-
-    foundIds.sort((a, b) => a - b);
-
-    // Create new variables array based on foundIds
-    const newVariables = foundIds.map((id, index) => ({
-      text: '',
-      id: index + 1,
-    }));
-
-    // Update editorValue to maintain the sequence
-    let newEditorValue = editorValue;
-    foundIds.forEach((id, index) => {
-      const regex = new RegExp(`\\{\\{${id}\\}\\}`, 'g');
-      newEditorValue = newEditorValue.replace(regex, `{{${index + 1}}}`);
-    });
-
-    // setLexicalState(editor, newEditorValue);
-    setVariables(newVariables);
-  };
-  console.log('1');
 
   const handleRemoveVariable = (id: number) => {
     // Remove variable from editorValue
@@ -73,9 +48,8 @@ export const TemplateVariables = ({
   };
 
   useEffect(() => {
-    updateVariablesArray();
+    setVariables(getVariables(editorValue));
   }, [editorValue]);
-  console.log(variables);
 
   return (
     <div className={styles.AddVariablesContainer}>
@@ -107,6 +81,8 @@ export const TemplateVariables = ({
                   label="Name"
                   placeholder={'Define value '}
                   notched={false}
+                  disabled={isEditing}
+                  defaultValue={isEditing ? variable.text : ''}
                   onChange={(event) => {
                     let currentVariable = variables.find((v) => v.id === variable.id);
                     currentVariable.text = event.target.value;

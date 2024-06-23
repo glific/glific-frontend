@@ -31,21 +31,22 @@ export interface EditorProps {
   inputProp?: any;
   onChange?: any;
   isEditing: boolean;
+  initialState?: string;
 }
 
 export const Editor = ({ disabled = false, isEditing = false, ...props }: EditorProps) => {
-  const { field, form, picker, placeholder, onChange } = props;
+  const { field, form, picker, placeholder, onChange, initialState } = props;
   const mentions = props.inputProp?.suggestions || [];
   const suggestions = {
     '@': mentions.map((mention: string) => mention?.split('@')[1]),
   };
   const [editor] = useLexicalComposerContext();
 
-  // useEffect(() => {
-  //   if (field.value) {
-  //     setLexicalState(editor, field.value);
-  //   }
-  // }, [field.value]);
+  useEffect(() => {
+    if (initialState) {
+      setLexicalState(editor, initialState);
+    }
+  }, [initialState]);
 
   const Placeholder = () => {
     return <p className={styles.editorPlaceholder}>{placeholder}</p>;
