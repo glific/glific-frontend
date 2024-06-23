@@ -2,7 +2,7 @@ import CallIcon from '@mui/icons-material/Call';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { Interweave } from 'interweave';
 import { UrlMatcher } from 'interweave-autolink';
-import { $createParagraphNode, $createTextNode, $getRoot } from 'lexical';
+import { $createParagraphNode, $createTextNode, $getRoot, $getSelection } from 'lexical';
 
 // Indicates how to replace different parts of the text from WhatsApp to HTML.
 const regexForLink =
@@ -33,7 +33,7 @@ export const handleFormatting = (text: string, formatter: string) => {
   }
 };
 
-export const setInitialState = (editor: any, initialValue: any) => {
+export const setLexicalState = (editor: any, initialValue: any) => {
   editor.update(() => {
     const root = $getRoot();
     root.clear();

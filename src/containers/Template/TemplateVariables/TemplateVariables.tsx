@@ -2,6 +2,10 @@ import { Button } from 'components/UI/Form/Button/Button';
 import AddIcon from 'assets/images/AddGreenIcon.svg?react';
 import styles from './TemplateVariable.module.css';
 import { FormHelperText, OutlinedInput } from '@mui/material';
+import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
+import { setLexicalState } from 'common/RichEditor';
+import DeleteIcon from 'assets/images/icons/Delete/Red.svg?react';
+import { useEffect } from 'react';
 
 export interface TemplateOptionsProps {
   inputFields: Array<any>;
@@ -17,13 +21,61 @@ export const TemplateVariables = ({
   editorValue,
   variables,
   setVariables,
-  field,
 }: TemplateOptionsProps) => {
+  const [editor] = useLexicalComposerContext();
+
   const handleAddVariable = () => {
     setVariables([...variables, { text: '', id: variables.length + 1 }]);
-    form.setFieldValue('body', `${editorValue?.trim(' ')} {{${variables.length + 1}}}`);
+    setLexicalState(editor, `${editorValue?.trim(' ')} {{${variables.length + 1}}}`);
+    editor.focus();
   };
-  console.log(form.touched);
+
+  const updateVariablesArray = () => {
+    const variablePattern = /\{\{(\d+)\}\}/g;
+    let match;
+    let foundIds = [];
+
+    while ((match = variablePattern.exec(editorValue)) !== null) {
+      foundIds.push(parseInt(match[1], 10));
+    }
+
+    foundIds.sort((a, b) => a - b);
+
+    // Create new variables array based on foundIds
+    const newVariables = foundIds.map((id, index) => ({
+      text: '',
+      id: index + 1,
+    }));
+
+    // Update editorValue to maintain the sequence
+    let newEditorValue = editorValue;
+    foundIds.forEach((id, index) => {
+      const regex = new RegExp(`\\{\\{${id}\\}\\}`, 'g');
+      newEditorValue = newEditorValue.replace(regex, `{{${index + 1}}}`);
+    });
+
+    // setLexicalState(editor, newEditorValue);
+    setVariables(newVariables);
+  };
+  console.log('1');
+
+  const handleRemoveVariable = (id: number) => {
+    // Remove variable from editorValue
+    const regex = new RegExp(`\\{\\{${id}\\}\\}`, 'g');
+
+    // Replace the matched pattern with an empty string
+    const newEditorValue = editorValue.replace(regex, '').trim();
+    setLexicalState(editor, newEditorValue);
+
+    // Remove variable from variables array
+    const newVariables = variables.filter((variable) => variable.id !== id);
+    setVariables(newVariables);
+  };
+
+  useEffect(() => {
+    updateVariablesArray();
+  }, [editorValue]);
+  console.log(variables);
 
   return (
     <div className={styles.AddVariablesContainer}>
@@ -40,31 +92,41 @@ export const TemplateVariables = ({
         <div className={styles.Variables}>
           {variables.length !== 0 && <h2>Set custom variable values for the message</h2>}
           {variables.map((variable: any, index: number) => (
-            <div className={styles.Variable} key={index}>
-              <OutlinedInput
-                sx={{
-                  '& input': {
-                    paddingLeft: '14px',
-                  },
-                }}
-                startAdornment={<div className={styles.VariableNumber}>{`{{${index + 1}}}`}</div>}
-                fullWidth
-                label="Name"
-                placeholder={'Define value '}
-                notched={false}
-                onChange={(event) => {
-                  let updatedVariables = variables;
-                  updatedVariables[index].text = event.target.value;
-                  setVariables(updatedVariables);
-                }}
+            <div className={styles.VariableContainer}>
+              <div className={styles.Variable} key={index}>
+                <OutlinedInput
+                  sx={{
+                    '& input': {
+                      paddingLeft: '14px',
+                    },
+                  }}
+                  startAdornment={
+                    <div className={styles.VariableNumber}>{`{{${variable.id}}}`}</div>
+                  }
+                  fullWidth
+                  label="Name"
+                  placeholder={'Define value '}
+                  notched={false}
+                  onChange={(event) => {
+                    let currentVariable = variables.find((v) => v.id === variable.id);
+                    currentVariable.text = event.target.value;
+                    setVariables(
+                      variables.map((v) => (v.id === variable.id ? currentVariable : v))
+                    );
+                  }}
+                />
+                <FormHelperText className={styles.DangerText}>
+                  {form &&
+                    form.errors.variables &&
+                    form.touched.variables &&
+                    form.touched.variables[index]?.text &&
+                    form.errors.variables[index]?.text}
+                </FormHelperText>
+              </div>
+              <DeleteIcon
+                onClick={() => handleRemoveVariable(variable.id)}
+                data-testid="delete-icon"
               />
-              <FormHelperText className={styles.DangerText}>
-                {form &&
-                  form.errors.variables &&
-                  form.touched.variables &&
-                  form.touched.variables[index]?.text &&
-                  form.errors.variables[index]?.text}
-              </FormHelperText>
             </div>
           ))}
         </div>

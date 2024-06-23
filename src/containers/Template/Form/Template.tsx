@@ -103,12 +103,14 @@ const getTemplateAndButtons = (templateType: string, message: string, buttons: s
   return { buttons: result, template };
 };
 
-const getExampleFromBody = (body: string, variables: Array<any>, preview: boolean = false) => {
+const getExampleFromBody = (body: string, variables: Array<any>) => {
   return body.replace(/{{(\d+)}}/g, (match, number) => {
     let index = parseInt(number) - 1;
-    return variables[index].text
+    console.log(variables);
+
+    return variables[index]?.text
       ? variables[index]
-        ? `[${variables[index].text}]`
+        ? `[${variables[index]?.text}]`
         : match
       : `{{${number}}}`;
   });
@@ -517,6 +519,7 @@ const Template = ({
       const { message }: any = getTemplateAndButton(example);
 
       const sampleText: any = parsedText && message + parsedText;
+      console.log(parse, parsedText, message, sampleText);
 
       if (sampleText) {
         onExampleChange(sampleText);
@@ -526,7 +529,7 @@ const Template = ({
 
   useEffect(() => {
     if (getSimulatorMessage) {
-      getSimulatorMessage(getExampleFromBody(editorValue, variables, true));
+      getSimulatorMessage(getExampleFromBody(editorValue, variables));
     }
   }, [editorValue, variables]);
 
@@ -703,7 +706,7 @@ const Template = ({
       textArea: true,
       disabled: isEditing,
       helperText: defaultAttribute.isHsm
-        ? 'You can also use variable and interactive actions. Variable format: {{1}}, Button format: [Button text,Value] Value can be a URL or a phone number.'
+        ? 'You can provide variable values in your HSM templates to personalize the message. To add: click on the variable button and provide an example value for the variable in the field provided below'
         : null,
       handleChange: (value: any) => {
         setEditorValue(value);

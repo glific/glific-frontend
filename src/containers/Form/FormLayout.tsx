@@ -22,6 +22,7 @@ import { organizationHasDynamicRole } from 'common/utils';
 import { getUserRole } from 'context/role';
 import styles from './FormLayout.module.css';
 import { HelpDataProps } from 'common/HelpData';
+import { LexicalWrapper } from 'common/LexicalWrapper';
 
 export interface FormLayoutProps {
   deleteItemQuery: DocumentNode;
@@ -508,81 +509,83 @@ export const FormLayout = ({
   };
 
   const form = (
-    <Formik
-      enableReinitialize
-      validateOnMount
-      initialValues={{
-        languageId,
-        ...states,
-      }}
-      validationSchema={validationSchema}
-      onSubmit={(itemData, { setErrors }) => {
-        // when you want to show custom error on form field and error message is not coming from api
-        setCustomError({ setErrors });
-        saveHandler(itemData);
-      }}
-    >
-      {({ errors, submitForm, values }) => (
-        <Form className={[styles.Form, customStyles].join(' ')} data-testid="formLayout">
-          {formFieldItems.map((field, index) => {
-            const key = index;
-            if (field.skip) {
-              return null;
-            }
+    <LexicalWrapper>
+      <Formik
+        enableReinitialize
+        validateOnMount
+        initialValues={{
+          languageId,
+          ...states,
+        }}
+        validationSchema={validationSchema}
+        onSubmit={(itemData, { setErrors }) => {
+          // when you want to show custom error on form field and error message is not coming from api
+          setCustomError({ setErrors });
+          saveHandler(itemData);
+        }}
+      >
+        {({ errors, submitForm, values }) => (
+          <Form className={[styles.Form, customStyles].join(' ')} data-testid="formLayout">
+            {formFieldItems.map((field, index) => {
+              const key = index;
+              if (field.skip) {
+                return null;
+              }
 
-            return (
-              <Fragment key={key}>
-                {field.label && (
-                  <Typography data-testid="formLabel" variant="h5" className={styles.FieldLabel}>
-                    {field.label}
-                  </Typography>
-                )}
-                <Field key={key} {...field} onSubmit={submitForm} />
-              </Fragment>
-            );
-          })}
-          <div className={styles.Buttons}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => {
-                onSaveButtonClick(errors);
-                submitForm();
-              }}
-              className={styles.Button}
-              data-testid="submitActionButton"
-              loading={saveClick}
-              disabled={buttonState.status}
-            >
-              {buttonState.status ? buttonState.text : button}
-            </Button>
-            {additionalAction ? (
+              return (
+                <Fragment key={key}>
+                  {field.label && (
+                    <Typography data-testid="formLabel" variant="h5" className={styles.FieldLabel}>
+                      {field.label}
+                    </Typography>
+                  )}
+                  <Field key={key} {...field} onSubmit={submitForm} />
+                </Fragment>
+              );
+            })}
+            <div className={styles.Buttons}>
               <Button
-                variant="outlined"
+                variant="contained"
                 color="primary"
                 onClick={() => {
+                  onSaveButtonClick(errors);
                   submitForm();
-                  setAction(true);
                 }}
-                data-testid="additionalActionButton"
+                className={styles.Button}
+                data-testid="submitActionButton"
+                loading={saveClick}
+                disabled={buttonState.status}
               >
-                {additionalAction.label}
+                {buttonState.status ? buttonState.text : button}
               </Button>
-            ) : null}
-            <Button
-              variant="outlined"
-              color="secondary"
-              onClick={cancelHandler}
-              data-testid="cancelActionButton"
-            >
-              {t('Cancel')}
-            </Button>
+              {additionalAction ? (
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={() => {
+                    submitForm();
+                    setAction(true);
+                  }}
+                  data-testid="additionalActionButton"
+                >
+                  {additionalAction.label}
+                </Button>
+              ) : null}
+              <Button
+                variant="outlined"
+                color="secondary"
+                onClick={cancelHandler}
+                data-testid="cancelActionButton"
+              >
+                {t('Cancel')}
+              </Button>
 
-            {deleteButton}
-          </div>
-        </Form>
-      )}
-    </Formik>
+              {deleteButton}
+            </div>
+          </Form>
+        )}
+      </Formik>
+    </LexicalWrapper>
   );
 
   const handleDeleteItem = () => {

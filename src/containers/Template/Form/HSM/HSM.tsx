@@ -107,28 +107,6 @@ export const HSM = () => {
     disabled = true;
   }
 
-  const elementNameInput = {
-    component: Input,
-    name: 'newShortCode',
-    placeholder: `${t('Element name')}*`,
-    label: `${t('Element name')}*`,
-    disabled,
-  };
-
-  const elementNameDropDown = {
-    component: AutoComplete,
-    name: 'existingShortCode',
-    options: shortCodeOptions,
-    optionLabel: 'label',
-    multiple: false,
-    label: `${t('Element name')}*`,
-    placeholder: `${t('Element name')}*`,
-    disabled,
-    onChange: (event: any) => {
-      setCategory(event);
-    },
-  };
-
   const formFields = [
     {
       component: Checkbox,

@@ -51,15 +51,13 @@ export const EmojiInput = ({
   );
 
   const input = (
-    <LexicalWrapper>
-      <Editor
-        isEditing={isEditing}
-        field={{ name, value, onBlur }}
-        {...props}
-        picker={picker}
-        onChange={handleChange}
-      />
-    </LexicalWrapper>
+    <Editor
+      isEditing={isEditing}
+      field={{ name, value, onBlur }}
+      picker={picker}
+      onChange={handleChange}
+      {...props}
+    />
   );
 
   return (

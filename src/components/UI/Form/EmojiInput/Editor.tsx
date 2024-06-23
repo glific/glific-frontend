@@ -19,12 +19,12 @@ import {
   BeautifulMentionsMenuProps,
   BeautifulMentionsMenuItemProps,
 } from 'lexical-beautiful-mentions';
-import { handleFormatterEvents, handleFormatting, setInitialState } from 'common/RichEditor';
+import { handleFormatterEvents, handleFormatting, setLexicalState } from 'common/RichEditor';
 
 export interface EditorProps {
   field: { name: string; onChange?: any; value: any; onBlur: any };
   disabled?: any;
-  form?: { touched: any; errors: any; values?: any };
+  form?: { touched: any; errors: any; values?: any; setFieldValue?: any };
   placeholder: string;
   helperText?: string;
   picker?: any;
@@ -41,11 +41,11 @@ export const Editor = ({ disabled = false, isEditing = false, ...props }: Editor
   };
   const [editor] = useLexicalComposerContext();
 
-  useEffect(() => {
-    if (field.value) {
-      setInitialState(editor, field.value);
-    }
-  }, [field.value]);
+  // useEffect(() => {
+  //   if (field.value) {
+  //     setLexicalState(editor, field.value);
+  //   }
+  // }, [field.value]);
 
   const Placeholder = () => {
     return <p className={styles.editorPlaceholder}>{placeholder}</p>;
@@ -82,6 +82,7 @@ export const Editor = ({ disabled = false, isEditing = false, ...props }: Editor
       const root = $getRoot();
       if (!disabled) {
         onChange(root.getTextContent());
+        form?.setFieldValue('body', root.getTextContent());
       }
     });
   };

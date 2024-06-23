@@ -20,6 +20,12 @@
   width: 100%;
 }
 
+.VariableContainer {
+  display: flex;
+  align-items: center;
+  column-gap: 1rem;
+}
+
 .Variable {
   display: flex;
   flex-direction: column;
