@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { setNotification } from 'common/notification';
 import { setVariables } from 'common/constants';
-import { GET_COLLECTION_CONTACTS, GET_CONTACTS_LIST } from 'graphql/queries/Contact';
+import { GET_CONTACTS_LIST } from 'graphql/queries/Contact';
 import {
   UPDATE_COLLECTION_CONTACTS,
   UPDATE_COLLECTION_WA_GROUP,
@@ -28,12 +28,9 @@ export const AddToCollection = ({ collectionId, setDialog, groups }: AddToCollec
 
   const { data: entityData } = useQuery(searchquery, {
     variables: groups
-      ? setVariables({}, 50)
+      ? setVariables({ excludeGroups: collectionId }, 50)
       : setVariables({ name: contactSearchTerm, excludeGroups: collectionId }, 50),
-  });
-
-  const { data: collectionContactsData } = useQuery(GET_COLLECTION_CONTACTS, {
-    variables: { id: collectionId },
+    fetchPolicy: 'cache-and-network',
   });
 
   const [updateCollection] = useMutation(updateMutation, {
@@ -59,28 +56,15 @@ export const AddToCollection = ({ collectionId, setDialog, groups }: AddToCollec
       }
       setDialog(false);
     },
-    refetchQueries: [{ query: GET_COLLECTION_CONTACTS, variables: { id: collectionId } }],
   });
   let entityOptions = [];
-  let collectionEntities: Array<any> = [];
 
   if (entityData) {
     entityOptions = entityData[entity];
   }
-  if (collectionContactsData) {
-    collectionEntities = collectionContactsData.group.group[entity];
-  }
 
-  const handleCollectionAdd = (value: any) => {
-    const selectedContacts = value.filter(
-      (contact: any) =>
-        !collectionEntities.map((collectionContact: any) => collectionContact.id).includes(contact)
-    );
-    const unselectedContacts = collectionEntities
-      .map((collectionContact: any) => collectionContact.id)
-      .filter((contact: any) => !value.includes(contact));
-
-    if (selectedContacts.length === 0 && unselectedContacts.length === 0) {
+  const handleCollectionAdd = (selectedContacts: any) => {
+    if (selectedContacts.length === 0) {
       setDialog(false);
     } else {
       const addvariable = groups ? 'addWaGroupIds' : 'addContactIds';
@@ -91,7 +75,7 @@ export const AddToCollection = ({ collectionId, setDialog, groups }: AddToCollec
           input: {
             [addvariable]: selectedContacts,
             groupId: collectionId,
-            [deletevariable]: unselectedContacts,
+            [deletevariable]: [],
           },
         },
       });
@@ -111,8 +95,9 @@ export const AddToCollection = ({ collectionId, setDialog, groups }: AddToCollec
       additionalOptionLabel="phone"
       asyncSearch
       disableClearable
-      selectedOptions={collectionEntities}
+      selectedOptions={[]}
       fullWidth={true}
+      showTags={false}
       onChange={(value: any) => {
         if (typeof value === 'string') {
           setContactSearchTerm(value);

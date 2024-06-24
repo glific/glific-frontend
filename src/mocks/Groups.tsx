@@ -646,16 +646,6 @@ export const getGroupsSearchQuery = (variables: any) => ({
   },
 });
 
-export const getGroupsSearchQuery2 = {
-  request: {
-    query: GET_WA_GROUPS,
-    variables: setVariables({ label: '' }, 50),
-  },
-  result: {
-    data: groupsData,
-  },
-};
-
 export const getGroupsQuery = {
   request: {
     query: GET_WA_GROUPS,

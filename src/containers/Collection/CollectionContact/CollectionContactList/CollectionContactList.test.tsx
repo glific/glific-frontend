@@ -7,11 +7,13 @@ import {
   countCollectionContactsQuery,
   getCollectionContactsQuery,
   getContactsQuery,
+  getExcludedContactsQuery,
   getGroupContact,
 } from 'mocks/Contact';
 import { setUserSession } from 'services/AuthService';
 import { CollectionContactList } from './CollectionContactList';
 import { addContactToCollection, deleteContactFromCollection } from 'mocks/Collection';
+import { setNotification } from 'common/notification';
 
 vi.mock('react-router-dom', async () => {
   return {
@@ -69,6 +71,7 @@ const mocks = [
       orderWith: 'name',
     },
   }),
+  getExcludedContactsQuery('1'),
 ];
 const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>
@@ -141,6 +144,30 @@ describe('<CollectionContactList />', () => {
       expect(dialog).toBeInTheDocument();
     });
 
+    fireEvent.click(getByTestId('ok-button'));
+
+    await waitFor(() => {
+      expect(setNotification).toHaveBeenCalled();
+    });
+  });
+
+  test('add contacts', async () => {
+    const { getByTestId, getByText } = render(wrapper);
+
+    expect(getByTestId('loading')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(getByText('Glific User')).toBeInTheDocument();
+    });
+
+    fireEvent.click(getByTestId('addBtn'));
+
+    const dialog = screen.getByTestId('dialogBox');
+
+    await waitFor(() => {
+      expect(dialog).toBeInTheDocument();
+    });
+
     const autocomplete = getByTestId('autocomplete-element');
     autocomplete.focus();
     fireEvent.keyDown(autocomplete, { key: 'ArrowDown' });
@@ -152,7 +179,7 @@ describe('<CollectionContactList />', () => {
     fireEvent.click(getByTestId('ok-button'));
 
     await waitFor(() => {
-      expect(dialog).not.toBeInTheDocument();
+      expect(setNotification).toHaveBeenCalled();
     });
   });
 
