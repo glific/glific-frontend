@@ -166,7 +166,6 @@ export interface TemplateProps {
   newShortCode?: any;
   setNewShortcode?: any;
   existingShortCode?: any;
-  setExistingShortcode?: any;
 }
 
 interface CallToActionTemplate {
@@ -195,7 +194,6 @@ const Template = ({
   languageVariant,
   setNewShortcode,
   newShortCode,
-  setExistingShortcode,
   existingShortCode,
 }: TemplateProps) => {
   // "Audio" option is removed in case of HSM Template
@@ -319,7 +317,16 @@ const Template = ({
       setEditorValue(bodyValue || '');
     }
 
-    if (exampleValue && bodyValue) {
+    if (exampleValue) {
+      if (hasButtons) {
+        setTemplateType(templateButtonType);
+        const { buttons: buttonsVal } = getTemplateAndButtons(
+          templateButtonType,
+          exampleValue,
+          buttons
+        );
+        setTemplateButtons(buttonsVal);
+      }
       onExampleChange(getExampleFromBody(bodyValue, variables));
     }
 
