@@ -164,7 +164,9 @@ export interface TemplateProps {
   getSimulatorMessage?: any;
   languageVariant?: boolean;
   newShortCode?: any;
+  setNewShortcode?: any;
   existingShortCode?: any;
+  setExistingShortcode?: any;
 }
 
 interface CallToActionTemplate {
@@ -191,7 +193,9 @@ const Template = ({
   languageStyle = 'dropdown',
   getSimulatorMessage,
   languageVariant,
+  setNewShortcode,
   newShortCode,
+  setExistingShortcode,
   existingShortCode,
 }: TemplateProps) => {
   // "Audio" option is removed in case of HSM Template
@@ -269,6 +273,7 @@ const Template = ({
     isAddButtonChecked,
     languageVariant,
     variables,
+    newShortCode,
   };
 
   const setStates = ({
@@ -314,21 +319,12 @@ const Template = ({
       setEditorValue(bodyValue || '');
     }
 
-    if (exampleValue) {
-      let exampleBody: any;
-      if (hasButtons) {
-        setTemplateType(templateButtonType);
-        const { buttons: buttonsVal, template } = getTemplateAndButtons(
-          templateButtonType,
-          getExampleFromBody(bodyValue, variables),
-          buttons
-        );
-        exampleBody = template;
-        setTemplateButtons(buttonsVal);
-      } else {
-        exampleBody = exampleValue;
-      }
+    if (exampleValue && bodyValue) {
       onExampleChange(getExampleFromBody(bodyValue, variables));
+    }
+
+    if (shortcodeValue) {
+      setNewShortcode(shortcodeValue);
     }
 
     if (hasButtons) {
@@ -359,7 +355,7 @@ const Template = ({
       setAttachmentURL('');
     }
     if (categoryValue) {
-      setTimeout(() => setCategory({ label: categoryValue, id: categoryValue }), 0);
+      setCategory(categoryValue);
     }
     if (tagIdValue) {
       setTagId(tagIdValue);

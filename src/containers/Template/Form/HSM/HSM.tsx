@@ -115,6 +115,7 @@ export const HSM = () => {
         </Typography>
       ),
       handleChange: (value: any) => setLanguageVariant(value),
+      skip: disabled,
     },
     {
       component: Input,
@@ -141,7 +142,6 @@ export const HSM = () => {
       },
       skip: !languageVariant ? true : false,
     },
-
     {
       component: AutoComplete,
       name: 'category',
@@ -155,6 +155,17 @@ export const HSM = () => {
       onChange: (event: any) => {
         setCategory(event);
       },
+      skip: disabled,
+    },
+    {
+      component: Input,
+      name: 'category',
+      type: 'text',
+      label: `${t('Category')}*`,
+      placeholder: `${t('Category')}*`,
+      disabled,
+      helperText: t('Select the most relevant category'),
+      skip: !disabled,
     },
   ];
 
@@ -172,6 +183,7 @@ export const HSM = () => {
         onExampleChange={addButtonsToSampleMessage}
         languageVariant={languageVariant}
         getSimulatorMessage={getSimulatorMessage}
+        setNewShortcode={setNewShortcode}
         newShortCode={newShortcode}
         existingShortCode={exisitingShortCode}
       />
