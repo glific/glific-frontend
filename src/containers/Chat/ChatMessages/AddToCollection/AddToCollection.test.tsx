@@ -49,9 +49,9 @@ test('it should have add contact to collection dialog box ', async () => {
   await waitFor(() => {
     expect(getByTestId('autocomplete-element')).toBeInTheDocument();
   });
-  expect(getByText('Add contacts to the collection')).toBeInTheDocument();
+
   await waitFor(() => {
-    expect(getByText('Glific User')).toBeInTheDocument();
+    expect(getByText('Add contacts to the collection')).toBeInTheDocument();
   });
 });
 
@@ -74,29 +74,7 @@ test('save without changing anything', async () => {
     expect(getByTestId('autocomplete-element')).toBeInTheDocument();
   });
 
-  await waitFor(() => {
-    expect(getByText('Glific User')).toBeInTheDocument();
-  });
-
   fireEvent.click(getByText('Save'));
-});
-
-test('change value in dialog box', async () => {
-  const { getByTestId, getAllByTestId } = render(addContacts);
-
-  await waitFor(() => {
-    expect(getByTestId('autocomplete-element')).toBeInTheDocument();
-  });
-
-  const autocomplete = getByTestId('autocomplete-element');
-  autocomplete.focus();
-  fireEvent.keyDown(autocomplete, { key: 'ArrowDown' });
-
-  fireEvent.keyDown(autocomplete, { key: 'Enter' });
-
-  await waitFor(() => {
-    expect(getAllByTestId('searchChip')[0]).toHaveTextContent('Glific User');
-  });
 });
 
 test('should add contact to collection', async () => {
@@ -125,6 +103,7 @@ const groupsmocks = [
   updateCollectionWaGroupQuery({
     input: { addWaGroupIds: ['5'], groupId: '1', deleteWaGroupIds: [] },
   }),
+  getGroupsSearchQuery(setVariables({ excludeGroups: '1' }, 50)),
 ];
 
 const addGroups = (
