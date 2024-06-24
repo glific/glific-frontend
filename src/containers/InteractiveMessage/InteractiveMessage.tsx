@@ -75,7 +75,7 @@ export const InteractiveMessage = () => {
   const [attachmentURL, setAttachmentURL] = useState<any>('');
   const [contactVariables, setContactVariables] = useState([]);
   const [defaultLanguage, setDefaultLanguage] = useState<any>({});
-  const [sendWithTitle, setSendWithTitle] = useState<boolean>(true);
+  const [sendWithTitle, setSendWithTitle] = useState<boolean>(false);
   const [validatingURL, setValidatingURL] = useState<boolean>(false);
   const [tagId, setTagId] = useState<any>(null);
   const [language, setLanguage] = useState<any>({});
