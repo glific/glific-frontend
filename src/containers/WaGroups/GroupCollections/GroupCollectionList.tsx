@@ -16,7 +16,6 @@ import { GET_COLLECTION, GROUP_GET_COLLECTION } from 'graphql/queries/Collection
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { useState } from 'react';
 import { setVariables } from 'common/constants';
-import { GET_COLLECTION_CONTACTS } from 'graphql/queries/Contact';
 import { setNotification } from 'common/notification';
 import { SearchDialogBox } from 'components/UI/SearchDialogBox/SearchDialogBox';
 import { Button } from 'components/UI/Form/Button/Button';
@@ -58,36 +57,19 @@ export const GroupCollectionList = () => {
   const { t } = useTranslation();
   const params = useParams();
 
-  const collectionId = params.id;
+  const collectionId: any = params.id;
   const collection = useQuery(GET_COLLECTION, {
     variables: { id: collectionId },
     fetchPolicy: 'cache-and-network',
   });
 
   const [getGroups, { data: groupsData }] = useLazyQuery(GET_WA_GROUPS, {
-    variables: setVariables({}, 50),
+    fetchPolicy: 'cache-and-network',
   });
-
-  const [getCollectionGroups, { data: collectionGroupsData }] = useLazyQuery(
-    GET_COLLECTION_CONTACTS,
-    {
-      fetchPolicy: 'network-only',
-    }
-  );
 
   const [updateCollectionGroups] = useMutation(UPDATE_COLLECTION_WA_GROUP);
 
-  let collectionGroups: Array<any> = [];
-  if (collectionGroupsData) {
-    collectionGroups = collectionGroupsData.group.group.waGroups;
-  }
-
-  const handleCollectionAdd = (value: any) => {
-    const selectedGroups = value.filter(
-      (group: any) =>
-        !collectionGroups.map((collectionGroup: any) => collectionGroup.id).includes(group)
-    );
-
+  const handleCollectionAdd = (selectedGroups: any) => {
     if (selectedGroups.length === 0) {
       setAddGroupsDialogShow(false);
     } else {
@@ -155,11 +137,9 @@ export const GroupCollectionList = () => {
         onChange={(value: any) => {
           if (typeof value === 'string') {
             setGroupSearchTerm(value);
-          } else if (typeof value === 'object') {
-            setSelectedGroup(value);
           }
         }}
-        selectedOptions={collectionGroups}
+        selectedOptions={[]}
         fullWidth={true}
         showTags={false}
         placeholder="Select groups"
@@ -173,9 +153,10 @@ export const GroupCollectionList = () => {
       color="primary"
       data-testid="addBtn"
       onClick={() => {
-        getGroups();
+        getGroups({
+          variables: setVariables({ excludeGroups: collectionId }, 50),
+        });
         setAddGroupsDialogShow(true);
-        getCollectionGroups({ variables: { id: collectionId } });
       }}
     >
       Add groups

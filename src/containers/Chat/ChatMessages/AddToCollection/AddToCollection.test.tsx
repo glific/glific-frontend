@@ -8,6 +8,7 @@ import { getCollectionContactsQuery, updateCollectionContactsQuery } from 'mocks
 import { getContactsQuery, getContactsSearchQuery, getExcludedContactsQuery } from 'mocks/Contact';
 import { setNotification } from 'common/notification';
 import { getGroupsQuery, getGroupsSearchQuery, updateCollectionWaGroupQuery } from 'mocks/Groups';
+import { setVariables } from 'common/constants';
 
 const mocks = [
   getCollectionContactsQuery,
@@ -119,7 +120,7 @@ test('should add contact to collection', async () => {
 
 const groupsmocks = [
   getCollectionContactsQuery,
-  getGroupsSearchQuery,
+  getGroupsSearchQuery(setVariables({}, 50)),
   getGroupsQuery,
   updateCollectionWaGroupQuery({
     input: { addWaGroupIds: ['5'], groupId: '1', deleteWaGroupIds: [] },

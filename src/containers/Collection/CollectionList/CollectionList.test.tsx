@@ -22,10 +22,10 @@ import * as utils from 'common/utils';
 import {
   addGroupToCollectionList,
   getGroupsSearchQuery,
-  getGroupsSearchQuery2,
   updateCollectionWaGroupQuery,
 } from 'mocks/Groups';
 import { setNotification } from 'common/notification';
+import { setVariables } from 'common/constants';
 
 const mocks = [
   countCollectionQuery,
@@ -214,8 +214,8 @@ describe('<CollectionList />', () => {
           filterCollectionQueryWAGroups,
           countCollectionQueryWAGroups,
           countCollectionQueryWAGroups,
-          getGroupsSearchQuery,
-          getGroupsSearchQuery2,
+          getGroupsSearchQuery(setVariables({}, 50)),
+          getGroupsSearchQuery(setVariables({ label: '', excludeGroups: '1' }, 50)),
           addGroupToCollectionList,
           filterCollectionQueryWAGroups,
           countCollectionQueryWAGroups,

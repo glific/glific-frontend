@@ -159,7 +159,7 @@ export const CollectionList = () => {
   const setContactsDialog = (id: any) => {
     getContacts({
       variables: groups
-        ? setVariables({ label: contactSearchTerm }, 50)
+        ? setVariables({ label: contactSearchTerm, excludeGroups: id }, 50)
         : setVariables({ name: contactSearchTerm, excludeGroups: id }, 50),
     });
     setCollectionId(id);

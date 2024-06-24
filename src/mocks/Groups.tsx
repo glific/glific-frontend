@@ -636,15 +636,15 @@ const groupsData = {
   ],
 };
 
-export const getGroupsSearchQuery = {
+export const getGroupsSearchQuery = (variables: any) => ({
   request: {
     query: GET_WA_GROUPS,
-    variables: setVariables({}, 50),
+    variables,
   },
   result: {
     data: groupsData,
   },
-};
+});
 
 export const getGroupsSearchQuery2 = {
   request: {
