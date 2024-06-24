@@ -157,8 +157,6 @@ export interface TemplateProps {
   formField?: any;
   customStyle?: any;
   getUrlAttachmentAndType?: any;
-  getShortcode?: any;
-  getExample?: any;
   setCategory?: any;
   category?: any;
   onExampleChange?: any;
@@ -187,8 +185,6 @@ const Template = ({
   formField,
   customStyle,
   getUrlAttachmentAndType,
-  getShortcode,
-  getExample,
   setCategory,
   category,
   onExampleChange = () => {},
@@ -207,8 +203,6 @@ const Template = ({
   const [tagId, setTagId] = useState<any>(null);
   const [label, setLabel] = useState('');
   const [body, setBody] = useState<any>();
-  const [example, setExample] = useState<any>('');
-  const [shortcode, setShortcode] = useState('');
   const [language, setLanguageId] = useState<any>(null);
   const [type, setType] = useState<any>(null);
   const [translations, setTranslations] = useState<any>();
@@ -269,7 +263,6 @@ const Template = ({
     type,
     attachmentURL,
     category,
-    example,
     tagId,
     isActive,
     templateButtons,
@@ -318,6 +311,7 @@ const Template = ({
       variables = getVariables(bodyValue, exampleValue);
       setVariables(variables);
       setBody(bodyValue || '');
+      setEditorValue(bodyValue || '');
     }
 
     if (exampleValue) {
@@ -364,10 +358,6 @@ const Template = ({
     } else {
       setAttachmentURL('');
     }
-    if (shortcodeValue) {
-      setTimeout(() => setShortcode(shortcodeValue), 0);
-    }
-
     if (categoryValue) {
       setTimeout(() => setCategory({ label: categoryValue, id: categoryValue }), 0);
     }
@@ -474,6 +464,8 @@ const Template = ({
   };
 
   const getTemplateAndButton = (text: string) => {
+    console.log(text);
+
     const exp = /(\|\s\[)|(\|\[)/;
     const areButtonsPresent = text.search(exp);
 
@@ -506,16 +498,6 @@ const Template = ({
   }, [languages]);
 
   useEffect(() => {
-    setShortcode(getShortcode);
-  }, [getShortcode]);
-
-  useEffect(() => {
-    if (getExample) {
-      setExample(getExample);
-    }
-  }, [getExample]);
-
-  useEffect(() => {
     if ((type === '' || type) && attachmentURL) {
       validateURL(attachmentURL);
       if (getUrlAttachmentAndType) {
@@ -536,7 +518,7 @@ const Template = ({
 
   // Removing buttons when checkbox is checked or unchecked
   useEffect(() => {
-    if (getExample) {
+    if (isEditing) {
       const { message }: any = getTemplateAndButton(getExampleFromBody(editorValue, variables));
       onExampleChange(message || '');
     }
@@ -740,6 +722,8 @@ const Template = ({
         ? 'You can provide variable values in your HSM templates to personalize the message. To add: click on the variable button and provide an example value for the variable in the field provided below'
         : null,
       handleChange: (value: any) => {
+        console.log('h');
+
         setEditorValue(value);
       },
       isEditing: isEditing,

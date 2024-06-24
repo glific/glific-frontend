@@ -28,11 +28,9 @@ export const HSM = () => {
     body: '',
   });
 
-  const [shortcode, setShortcode] = useState('');
   const [exisitingShortCode, setExistingShortcode] = useState('');
   const [newShortcode, setNewShortcode] = useState('');
   const [category, setCategory] = useState<any>(undefined);
-  const [example, setExample] = useState();
   const [languageVariant, setLanguageVariant] = useState<boolean>(false);
 
   const { t } = useTranslation();
@@ -85,6 +83,8 @@ export const HSM = () => {
     const media: any = { ...sampleMessages.media };
     const text = getTemplate(message);
     media.caption = text;
+    console.log(1);
+
     setSampleMessages((val) => ({ ...val, body: text, media }));
   };
 
@@ -92,12 +92,15 @@ export const HSM = () => {
     const mediaBody = { ...media };
     const mediaObj: any = sampleMessages.media;
     mediaBody.caption = mediaObj.caption;
+    console.log(1);
     setSampleMessages((val) => ({ ...val, type, media: mediaBody }));
   };
+  console.log(sampleMessages);
 
   const addButtonsToSampleMessage = (buttonTemplate: string) => {
     const message: any = { ...sampleMessages };
     message.body = buttonTemplate;
+    console.log(3);
     setSampleMessages(message);
   };
 
@@ -169,8 +172,6 @@ export const HSM = () => {
         defaultAttribute={defaultAttribute}
         formField={formFields}
         getUrlAttachmentAndType={getAttachmentUrl}
-        getShortcode={shortcode}
-        getExample={example}
         setCategory={setCategory}
         category={category}
         onExampleChange={addButtonsToSampleMessage}
