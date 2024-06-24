@@ -31,16 +31,10 @@ export interface EditorProps {
   inputProp?: any;
   onChange?: any;
   isEditing: boolean;
-  editorState?: any;
   initialState?: any;
 }
 
-export const Editor = ({
-  disabled = false,
-  isEditing = false,
-  editorState,
-  ...props
-}: EditorProps) => {
+export const Editor = ({ disabled = false, isEditing = false, ...props }: EditorProps) => {
   const { field, form, picker, placeholder, onChange, initialState } = props;
   const mentions = props.inputProp?.suggestions || [];
   const suggestions = {

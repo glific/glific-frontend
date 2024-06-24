@@ -69,7 +69,6 @@ export const EmojiInput = ({
     <LexicalWrapper>
       <Editor
         isEditing={isEditing}
-        editorState={editorState}
         field={{ name, value, onBlur }}
         {...props}
         picker={picker}
