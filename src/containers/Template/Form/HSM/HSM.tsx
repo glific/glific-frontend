@@ -110,7 +110,6 @@ export const HSM = () => {
       handleChange: getSimulatorMessage,
       getEditorValue: (value: any) => {
         setExample(value);
-        setEditorState(value);
       },
       isEditing: disabled,
       editorState: editorState,

@@ -32,6 +32,7 @@ export interface EditorProps {
   onChange?: any;
   isEditing: boolean;
   editorState?: any;
+  initialState?: any;
 }
 
 export const Editor = ({
@@ -40,7 +41,7 @@ export const Editor = ({
   editorState,
   ...props
 }: EditorProps) => {
-  const { field, form, picker, placeholder, onChange } = props;
+  const { field, form, picker, placeholder, onChange, initialState } = props;
   const mentions = props.inputProp?.suggestions || [];
   const suggestions = {
     '@': mentions.map((mention: string) => mention?.split('@')[1]),
@@ -48,12 +49,10 @@ export const Editor = ({
   const [editor] = useLexicalComposerContext();
 
   useEffect(() => {
-    console.log(field.value, editorState, isEditing);
-
-    if ((field.value || field.value === '') && !editorState && isEditing) {
-      setInitialState(editor, field.value);
+    if (initialState) {
+      setInitialState(editor, initialState);
     }
-  }, [field.value]);
+  }, [initialState]);
 
   const Placeholder = () => {
     return <p className={styles.editorPlaceholder}>{placeholder}</p>;
@@ -88,7 +87,7 @@ export const Editor = ({
   const handleChange = (editorState: any) => {
     editorState.read(() => {
       const root = $getRoot();
-      if (!disabled && !isEditing) {
+      if (!disabled) {
         onChange(root.getTextContent());
       }
     });
