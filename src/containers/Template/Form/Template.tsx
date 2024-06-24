@@ -464,8 +464,6 @@ const Template = ({
   };
 
   const getTemplateAndButton = (text: string) => {
-    console.log(text);
-
     const exp = /(\|\s\[)|(\|\[)/;
     const areButtonsPresent = text.search(exp);
 
@@ -722,8 +720,6 @@ const Template = ({
         ? 'You can provide variable values in your HSM templates to personalize the message. To add: click on the variable button and provide an example value for the variable in the field provided below'
         : null,
       handleChange: (value: any) => {
-        console.log('h');
-
         setEditorValue(value);
       },
       isEditing: isEditing,

@@ -83,8 +83,6 @@ export const HSM = () => {
     const media: any = { ...sampleMessages.media };
     const text = getTemplate(message);
     media.caption = text;
-    console.log(1);
-
     setSampleMessages((val) => ({ ...val, body: text, media }));
   };
 
@@ -92,15 +90,12 @@ export const HSM = () => {
     const mediaBody = { ...media };
     const mediaObj: any = sampleMessages.media;
     mediaBody.caption = mediaObj.caption;
-    console.log(1);
     setSampleMessages((val) => ({ ...val, type, media: mediaBody }));
   };
-  console.log(sampleMessages);
 
   const addButtonsToSampleMessage = (buttonTemplate: string) => {
     const message: any = { ...sampleMessages };
     message.body = buttonTemplate;
-    console.log(3);
     setSampleMessages(message);
   };
 
