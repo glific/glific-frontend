@@ -20,7 +20,13 @@ import { EmojiInput } from 'components/UI/Form/EmojiInput/EmojiInput';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Simulator } from 'components/simulator/Simulator';
 import { LanguageBar } from 'components/UI/LanguageBar/LanguageBar';
-import { LIST, LOCATION_REQUEST, MEDIA_MESSAGE_TYPES, QUICK_REPLY } from 'common/constants';
+import {
+  LIST,
+  LOCATION_REQUEST,
+  MEDIA_MESSAGE_TYPES,
+  QUICK_REPLY,
+  VALID_URL_REGEX,
+} from 'common/constants';
 import { validateMedia } from 'common/utils';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { InteractiveOptions } from './InteractiveOptions/InteractiveOptions';
@@ -75,6 +81,7 @@ export const InteractiveMessage = () => {
   const [language, setLanguage] = useState<any>({});
   const [languageOptions, setLanguageOptions] = useState<any>([]);
   const [editorState, setEditorState] = useState<any>('');
+  const [dynamicMedia, setDynamicMedia] = useState<boolean>(false);
 
   const [translations, setTranslations] = useState<any>('{}');
 
@@ -148,6 +155,7 @@ export const InteractiveMessage = () => {
     templateTypeField,
     type,
     attachmentURL,
+    dynamicMedia,
   };
 
   const updateStates = ({
@@ -251,6 +259,13 @@ export const InteractiveMessage = () => {
       setAttachmentURL(data.attachmentURL);
     }
 
+    if (isEditing && data.attachmentURL) {
+      const testForValidUrl = new RegExp(VALID_URL_REGEX, 'gi');
+      if (!testForValidUrl.test(data.attachmentURL)) {
+        setDynamicMedia(true);
+      }
+    }
+
     if (translationsVal) {
       setTranslations(translationsVal);
     }
@@ -277,10 +292,10 @@ export const InteractiveMessage = () => {
   };
 
   useEffect(() => {
-    if ((type === '' || type) && attachmentURL) {
+    if (!dynamicMedia && (type === '' || type) && attachmentURL) {
       validateURL(attachmentURL);
     }
-  }, [type, attachmentURL]);
+  }, [type, attachmentURL, dynamicMedia]);
 
   const handleAddInteractiveTemplate = (
     addFromTemplate: boolean,
@@ -738,7 +753,7 @@ export const InteractiveMessage = () => {
       name: 'attachmentURL',
       type: 'text',
       label: t('Attachment URL'),
-      validate: () => isUrlValid,
+      validate: () => !dynamicMedia && isUrlValid,
       inputProp: {
         onBlur: (event: any) => {
           setAttachmentURL(event.target.value);
@@ -746,6 +761,19 @@ export const InteractiveMessage = () => {
         onChange: (event: any) => {
           setAttachmentURL(event.target.value);
         },
+      },
+      helperText:
+        dynamicMedia &&
+        t(
+          'Please ensure that the entered media is valid as we cannot pre-validate dynamic media files and it may lead to errors.'
+        ),
+    },
+    {
+      component: Checkbox,
+      title: t('Allow dynamic media'),
+      name: 'dynamicMedia',
+      handleChange: (value: boolean) => {
+        setDynamicMedia(value);
       },
     },
   ];
