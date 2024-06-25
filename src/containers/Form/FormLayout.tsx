@@ -538,7 +538,7 @@ export const FormLayout = ({
                     {field.label}
                   </Typography>
                 )}
-                <Field key={key} {...field} onSubmit={submitForm} />
+                <Field key={key} {...field} onSubmit={submitForm} errors={errors} />
               </Fragment>
             );
           })}

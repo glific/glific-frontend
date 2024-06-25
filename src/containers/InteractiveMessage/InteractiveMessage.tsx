@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { useLazyQuery, useQuery } from '@apollo/client';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { setNotification } from 'common/notification';
 import InteractiveMessageIcon from 'assets/images/icons/InteractiveMessage/Dark.svg?react';
 import {
@@ -10,6 +10,8 @@ import {
   UPDATE_INTERACTIVE,
   DELETE_INTERACTIVE,
   COPY_INTERACTIVE,
+  TRANSLATE_INTERACTIVE,
+  EXPORT_INTERACTIVE,
 } from 'graphql/mutations/InteractiveMessage';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { USER_LANGUAGES } from 'graphql/queries/Organization';
@@ -42,6 +44,7 @@ import {
 import { GET_TAGS } from 'graphql/queries/Tags';
 import { CreateAutoComplete } from 'components/UI/Form/CreateAutoComplete/CreateAutoComplete';
 import { interactiveMessageInfo } from 'common/HelpData';
+import { TranslateButton } from './TransslateButton/TranslateButton';
 
 const interactiveMessageIcon = (
   <InteractiveMessageIcon className={styles.Icon} data-testid="interactive-icon" />
@@ -82,6 +85,7 @@ export const InteractiveMessage = () => {
   const [languageOptions, setLanguageOptions] = useState<any>([]);
   const [editorState, setEditorState] = useState<any>('');
   const [dynamicMedia, setDynamicMedia] = useState<boolean>(false);
+  const [autoTranslate, setAutoTranslate] = useState<null | string>(null);
 
   const [translations, setTranslations] = useState<any>('{}');
 
@@ -94,6 +98,8 @@ export const InteractiveMessage = () => {
   if (params?.id) {
     isEditing = true;
   }
+
+  const hasTranslations = params?.id && defaultLanguage?.id !== language?.id;
 
   const isLocationRequestType = templateType === LOCATION_REQUEST;
 
@@ -118,6 +124,18 @@ export const InteractiveMessage = () => {
 
   const [getInteractiveTemplateById, { data: template, loading: loadingTemplate }] =
     useLazyQuery<any>(GET_INTERACTIVE_MESSAGE);
+
+  const [translateInteractiveMessage, { loading }] = useMutation(TRANSLATE_INTERACTIVE, {
+    onCompleted: (data) => {
+      console.log(data);
+    },
+  });
+
+  const [exportInteractiveMessage, { loading: exportLoading }] = useMutation(EXPORT_INTERACTIVE, {
+    onCompleted: (data) => {
+      console.log(data);
+    },
+  });
 
   useEffect(() => {
     getVariableOptions(setContactVariables);
@@ -458,6 +476,18 @@ export const InteractiveMessage = () => {
     handleAddInteractiveTemplate(false, QUICK_REPLY);
   }, []);
 
+  useEffect(() => {
+    if (hasTranslations && autoTranslate) {
+      if (autoTranslate === 'translate') {
+        translateInteractiveMessage({ variables: { translateInteractiveTemplateId: params.id } });
+      } else if (autoTranslate === 'export') {
+        exportInteractiveMessage({ variables: { exportInteractiveTemplateId: params.id } });
+      } else {
+        console.log('import');
+      }
+    }
+  }, [hasTranslations]);
+
   const dialogMessage = t("You won't be able to use this again.");
 
   const options = MEDIA_MESSAGE_TYPES.filter(
@@ -488,9 +518,8 @@ export const InteractiveMessage = () => {
     }
   };
 
-  const hasTranslations = params?.id && defaultLanguage?.id !== language?.id;
-
   const fields = [
+    { component: TranslateButton, field: 'translate', setTranslateType: setAutoTranslate },
     {
       field: 'languageBar',
       component: LanguageBar,

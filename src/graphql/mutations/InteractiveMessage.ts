@@ -75,3 +75,40 @@ export const COPY_INTERACTIVE = gql`
     }
   }
 `;
+
+export const TRANSLATE_INTERACTIVE = gql`
+  mutation TranslateInteractiveTemplate($translateInteractiveTemplateId: ID!) {
+    translateInteractiveTemplate(id: $translateInteractiveTemplateId) {
+      errors {
+        key
+        message
+      }
+      interactiveTemplate {
+        id
+        insertedAt
+        interactiveContent
+        label
+        language {
+          id
+          label
+        }
+        sendWithTitle
+        tag {
+          id
+          label
+        }
+        translations
+        type
+        updatedAt
+      }
+    }
+  }
+`;
+
+export const EXPORT_INTERACTIVE = gql`
+  mutation ExportInteractiveTemplate($exportInteractiveTemplateId: ID!) {
+    exportInteractiveTemplate(id: $exportInteractiveTemplateId) {
+      exportData
+    }
+  }
+`;
