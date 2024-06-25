@@ -126,8 +126,16 @@ export const InteractiveMessage = () => {
     useLazyQuery<any>(GET_INTERACTIVE_MESSAGE);
 
   const [translateInteractiveMessage, { loading }] = useMutation(TRANSLATE_INTERACTIVE, {
-    onCompleted: (data) => {
-      console.log(data);
+    onCompleted: ({ translateInteractiveTemplate }: any) => {
+      const interactiveMessage = translateInteractiveTemplate?.interactiveTemplate;
+      setTranslations(interactiveMessage?.translations);
+      console.log(JSON.parse(interactiveMessage?.translations));
+
+      updateStates({
+        language: interactiveMessage?.language,
+        type: interactiveMessage?.type,
+        interactiveContent: interactiveMessage?.interactiveContent,
+      });
     },
   });
 
@@ -417,12 +425,20 @@ export const InteractiveMessage = () => {
   };
 
   const updateTranslation = (value: any) => {
+    console.log(value);
+
     const Id = value.id;
     // restore if selected language is same as template
     if (translations) {
       const translationsCopy = JSON.parse(translations);
       // restore if translations present for selected language
       if (Object.keys(translationsCopy).length > 0 && translationsCopy[Id]) {
+        console.log({
+          language: value,
+          type: template.interactiveTemplate.interactiveTemplate.type,
+          interactiveContent: JSON.stringify(translationsCopy[Id]),
+        });
+
         updateStates({
           language: value,
           type: template.interactiveTemplate.interactiveTemplate.type,
@@ -486,7 +502,7 @@ export const InteractiveMessage = () => {
         console.log('import');
       }
     }
-  }, [hasTranslations]);
+  }, [hasTranslations, autoTranslate]);
 
   const dialogMessage = t("You won't be able to use this again.");
 
