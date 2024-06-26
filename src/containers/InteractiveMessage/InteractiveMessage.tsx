@@ -204,7 +204,6 @@ export const InteractiveMessage = () => {
     sendWithTitle: sendInteractiveTitleValue,
   }: any) => {
     let content;
-
     if (translationsVal) {
       const translationsCopy = JSON.parse(translationsVal);
 

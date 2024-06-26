@@ -62,8 +62,11 @@ export const TranslateButton = ({
     IMPORT_INTERACTIVE_TEMPLATE,
     {
       onCompleted: ({ importInteractiveTemplate }) => {
-        console.log(importInteractiveTemplate);
+        const interactiveMessage = importInteractiveTemplate?.interactiveTemplate;
+        setStates(interactiveMessage);
         setImporting(false);
+        setShowTranslateFlowModal(false);
+        setSaveClicked(false);
       },
     }
   );
@@ -85,6 +88,9 @@ export const TranslateButton = ({
         translateInteractiveMessage({ variables: { translateInteractiveTemplateId: templateId } });
       } else if (translateOption === 'export') {
         exportInteractiveMessage({ variables: { exportInteractiveTemplateId: templateId } });
+      } else {
+        setShowTranslateFlowModal(false);
+        setSaveClicked(false);
       }
     }
   }, [saveClicked]);
@@ -136,6 +142,7 @@ export const TranslateButton = ({
       handleCancel={() => {
         setShowTranslateFlowModal(false);
       }}
+      disableOk={translateOption === 'import' || importingLoad}
     >
       <div>
         <FormControl>
