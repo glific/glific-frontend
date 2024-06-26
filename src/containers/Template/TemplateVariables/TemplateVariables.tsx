@@ -10,7 +10,7 @@ import { useEffect } from 'react';
 export interface TemplateOptionsProps {
   inputFields: Array<any>;
   form: { touched: any; errors: any; values: any; setFieldValue: any };
-  editorValue: any;
+  message: any;
   variables: Array<any>;
   setVariables: any;
   field: { name: string; value: any };
@@ -20,7 +20,7 @@ export interface TemplateOptionsProps {
 
 export const TemplateVariables = ({
   form,
-  editorValue,
+  message,
   variables,
   setVariables,
   getVariables,
@@ -30,26 +30,23 @@ export const TemplateVariables = ({
 
   const handleAddVariable = () => {
     setVariables([...variables, { text: '', id: variables.length + 1 }]);
-    setLexicalState(editor, `${editorValue?.trim(' ')} {{${variables.length + 1}}}`);
+    setLexicalState(editor, `${message?.trim(' ')} {{${variables.length + 1}}}`);
     editor.focus();
   };
 
   const handleRemoveVariable = (id: number) => {
-    // Remove variable from editorValue
     const regex = new RegExp(`\\{\\{${id}\\}\\}`, 'g');
 
-    // Replace the matched pattern with an empty string
-    const newEditorValue = editorValue.replace(regex, '').trim();
-    setLexicalState(editor, newEditorValue);
+    const updatedMessage = message.replace(regex, '').trim();
+    setLexicalState(editor, updatedMessage);
 
-    // Remove variable from variables array
     const newVariables = variables.filter((variable) => variable.id !== id);
     setVariables(newVariables);
   };
 
   useEffect(() => {
-    setVariables(getVariables(editorValue));
-  }, [editorValue]);
+    setVariables(getVariables(message));
+  }, [message]);
 
   return (
     <div className={styles.AddVariablesContainer}>

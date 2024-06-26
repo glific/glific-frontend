@@ -80,7 +80,6 @@ export const InteractiveMessage = () => {
   const [tagId, setTagId] = useState<any>(null);
   const [language, setLanguage] = useState<any>({});
   const [languageOptions, setLanguageOptions] = useState<any>([]);
-  const [editorValue, setEditorValue] = useState<any>('');
   const [dynamicMedia, setDynamicMedia] = useState<boolean>(false);
 
   const [translations, setTranslations] = useState<any>('{}');
@@ -164,7 +163,7 @@ export const InteractiveMessage = () => {
     interactiveContent: interactiveContentValue,
   }: any) => {
     const content = JSON.parse(interactiveContentValue);
-    const data = convertJSONtoStateData(content, typeValue, title, editorValue);
+    const data = convertJSONtoStateData(content, typeValue, title);
 
     if (languageOptions.length > 0 && languageVal) {
       const selectedLangauge = languageOptions.find((lang: any) => lang.id === languageVal.id);
@@ -217,7 +216,7 @@ export const InteractiveMessage = () => {
       }
     }
 
-    const data = convertJSONtoStateData(content, typeValue, labelValue, editorValue);
+    const data = convertJSONtoStateData(content, typeValue, labelValue);
     setDefaultLanguage(languageVal);
 
     if (languageOptions.length > 0 && languageVal) {
@@ -469,7 +468,7 @@ export const InteractiveMessage = () => {
     setNextLanguage(option);
     const { values, errors } = form;
     if (values.type?.label === 'TEXT') {
-      if (values.title || editorValue) {
+      if (values.title || values.body) {
         if (errors) {
           setNotification(t('Please check the errors'), 'warning');
         }
@@ -477,7 +476,7 @@ export const InteractiveMessage = () => {
         handleLanguageChange(option);
       }
     }
-    if (editorValue) {
+    if (values.body) {
       if (Object.keys(errors).length !== 0) {
         setNotification(t('Please check the errors'), 'warning');
       }
@@ -545,7 +544,7 @@ export const InteractiveMessage = () => {
       textArea: true,
       helperText: t('You can also use variables in message enter @ to see the available list'),
       handleChange: (value: any) => {
-        setEditorValue(value);
+        setBody(value);
       },
       inputProp: {
         suggestions: contactVariables,
@@ -605,7 +604,6 @@ export const InteractiveMessage = () => {
   const convertStateDataToJSON = (
     payload: any,
     titleVal: string,
-    bodyVal: any,
     templateTypeVal: string,
     templateButtonVal: Array<any>,
     globalButtonVal: any
@@ -626,7 +624,7 @@ export const InteractiveMessage = () => {
     }
 
     if (templateTypeVal === QUICK_REPLY) {
-      const content = getPayloadByMediaType(type?.id, payload, bodyVal);
+      const content = getPayloadByMediaType(type?.id, payload);
       const quickReplyOptions = getTemplateButtonPayload(templateTypeVal, templateButtonVal);
 
       const quickReplyJSON = { type: 'quick_reply', content, options: quickReplyOptions };
@@ -638,10 +636,11 @@ export const InteractiveMessage = () => {
     }
 
     if (templateTypeVal === LIST) {
+      const bodyText = payload.body;
       const items = getTemplateButtonPayload(templateTypeVal, templateButtonVal);
       const globalButtons = [{ type: 'text', title: globalButtonVal }];
 
-      const listJSON = { type: 'list', title: titleVal, body: bodyVal, globalButtons, items };
+      const listJSON = { type: 'list', title: titleVal, body: bodyText, globalButtons, items };
       Object.assign(updatedPayload, {
         type: LIST,
         interactiveContent: JSON.stringify(listJSON),
@@ -649,11 +648,12 @@ export const InteractiveMessage = () => {
     }
 
     if (templateType === LOCATION_REQUEST) {
+      const bodyText = payload.body;
       const locationJson = {
         type: 'location_request_message',
         body: {
           type: 'text',
-          text: bodyVal,
+          text: bodyText,
         },
         action: {
           name: 'send_location',
@@ -684,7 +684,6 @@ export const InteractiveMessage = () => {
     const payloadData: any = convertStateDataToJSON(
       payload,
       titleVal,
-      editorValue,
       templateTypeVal,
       templateButtonVal,
       globalButtonVal
@@ -799,11 +798,12 @@ export const InteractiveMessage = () => {
   const validationScheme = Yup.object().shape(validation, [['type', 'attachmentURL']]);
 
   const getPreviewData = () => {
-    if (!title && !editorValue && !footer) return null;
+    const bodyText = body;
+    if (!title && !bodyText && !footer) return null;
 
     const payload = {
       title,
-      body: editorValue,
+      body,
       tagId,
       footer,
       attachmentURL,
@@ -813,7 +813,6 @@ export const InteractiveMessage = () => {
     const { interactiveContent } = convertStateDataToJSON(
       payload,
       title,
-      editorValue,
       templateType,
       templateButtons,
       globalButton
@@ -825,7 +824,7 @@ export const InteractiveMessage = () => {
 
   const previewData = useMemo(getPreviewData, [
     title,
-    editorValue,
+    body,
     footer,
     templateType,
     templateButtons,

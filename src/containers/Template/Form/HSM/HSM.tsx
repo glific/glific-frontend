@@ -140,7 +140,7 @@ export const HSM = () => {
       onChange: (event: any) => {
         setExistingShortcode(event);
       },
-      skip: !languageVariant ? true : false,
+      skip: languageVariant ? false : true,
     },
     {
       component: AutoComplete,

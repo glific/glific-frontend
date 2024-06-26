@@ -34,8 +34,8 @@ export interface EditorProps {
   initialState?: string;
 }
 
-export const Editor = ({ disabled = false, isEditing = false, ...props }: EditorProps) => {
-  const { field, form, picker, placeholder, onChange, initialState } = props;
+export const Editor = ({ disabled = false, isEditing = false, form, ...props }: EditorProps) => {
+  const { field, picker, placeholder, onChange, initialState } = props;
   const mentions = props.inputProp?.suggestions || [];
   const suggestions = {
     '@': mentions.map((mention: string) => mention?.split('@')[1]),
@@ -83,7 +83,7 @@ export const Editor = ({ disabled = false, isEditing = false, ...props }: Editor
       const root = $getRoot();
       if (!disabled) {
         onChange(root.getTextContent());
-        form?.setFieldValue('body', root.getTextContent());
+        form?.setFieldValue(field.name, root.getTextContent());
       }
     });
   };

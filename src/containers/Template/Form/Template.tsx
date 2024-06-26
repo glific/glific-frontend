@@ -204,7 +204,7 @@ const Template = ({
 
   const [tagId, setTagId] = useState<any>(null);
   const [label, setLabel] = useState('');
-  const [body, setBody] = useState<any>();
+  const [body, setBody] = useState<any>('');
   const [language, setLanguageId] = useState<any>(null);
   const [type, setType] = useState<any>(null);
   const [translations, setTranslations] = useState<any>();
@@ -220,7 +220,6 @@ const Template = ({
   >([]);
   const [isAddButtonChecked, setIsAddButtonChecked] = useState(false);
   const [nextLanguage, setNextLanguage] = useState<any>('');
-  const [editorValue, setEditorValue] = useState('');
   const [variables, setVariables] = useState<any>([]);
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -314,7 +313,6 @@ const Template = ({
       variables = getVariables(bodyValue, exampleValue);
       setVariables(variables);
       setBody(bodyValue || '');
-      setEditorValue(bodyValue || '');
     }
 
     if (exampleValue) {
@@ -429,6 +427,16 @@ const Template = ({
         text: Yup.string().required('Variable is required').min(1, 'Text cannot be empty'),
       })
     ),
+    newShortCode: Yup.string().when('languageVariant', {
+      is: (val: any) => val === true,
+      then: (schema) => schema.nullable(),
+      otherwise: (schema) => schema.required(t('Shortcode is required.')),
+    }),
+    existingShortCode: Yup.string().when('languageVariant', {
+      is: (val: any) => val === true,
+      then: (schema) => schema.nullable().required(t('Shortcode is required.')),
+      otherwise: (schema) => schema.nullable(),
+    }),
   };
 
   const validateURL = (value: string) => {
@@ -520,7 +528,7 @@ const Template = ({
   // Removing buttons when checkbox is checked or unchecked
   useEffect(() => {
     if (isEditing) {
-      const { message }: any = getTemplateAndButton(getExampleFromBody(editorValue, variables));
+      const { message }: any = getTemplateAndButton(getExampleFromBody(body, variables));
       onExampleChange(message || '');
     }
   }, [isAddButtonChecked]);
@@ -532,7 +540,7 @@ const Template = ({
 
       const parsedText = parse.length ? `| ${parse.join(' | ')}` : null;
 
-      const { message }: any = getTemplateAndButton(getExampleFromBody(editorValue, variables));
+      const { message }: any = getTemplateAndButton(getExampleFromBody(body, variables));
 
       const sampleText: any = parsedText && message + parsedText;
       if (sampleText) {
@@ -543,9 +551,9 @@ const Template = ({
 
   useEffect(() => {
     if (getSimulatorMessage && !isEditing) {
-      getSimulatorMessage(getExampleFromBody(editorValue, variables));
+      getSimulatorMessage(getExampleFromBody(body, variables));
     }
-  }, [editorValue, variables]);
+  }, [body, variables]);
 
   if (languageLoading || templateLoading || tagLoading) {
     return <Loading />;
@@ -723,10 +731,10 @@ const Template = ({
         ? 'You can provide variable values in your HSM templates to personalize the message. To add: click on the variable button and provide an example value for the variable in the field provided below'
         : null,
       handleChange: (value: any) => {
-        setEditorValue(value);
+        setBody(value);
       },
       isEditing: isEditing,
-      initialState: isEditing && body,
+      // initialState: isEditing && body,
     },
   ];
 
@@ -773,7 +781,7 @@ const Template = ({
   const templateVariables = [
     {
       component: TemplateVariables,
-      editorValue: editorValue,
+      message: body,
       variables: variables,
       setVariables: setVariables,
       getVariables: getVariables,
@@ -816,8 +824,8 @@ const Template = ({
     }, []);
 
     // get template body
-    const templateBody = getTemplateAndButton(editorValue);
-    const templateExample = getTemplateAndButton(getExampleFromBody(editorValue, variables));
+    const templateBody = getTemplateAndButton(body);
+    const templateExample = getTemplateAndButton(getExampleFromBody(body, variables));
 
     return {
       hasButtons: true,
@@ -830,7 +838,6 @@ const Template = ({
 
   const setPayload = (payload: any) => {
     let payloadCopy = payload;
-    Object.assign(payloadCopy, { body: editorValue });
 
     let translationsCopy: any = {};
     if (template) {
@@ -880,7 +887,7 @@ const Template = ({
             status: 'approved',
             languageId: language,
             label: payloadCopy.label,
-            body: editorValue,
+            body: payloadCopy.body,
             MessageMedia: messageMedia,
             ...defaultAttribute,
           };
@@ -903,8 +910,8 @@ const Template = ({
       }
       if (payloadCopy.isHsm) {
         payloadCopy.category = category.label;
-        if (editorValue) {
-          payloadCopy.example = getExampleFromBody(editorValue, variables);
+        if (payloadCopy.body) {
+          payloadCopy.example = getExampleFromBody(payloadCopy.body, variables);
         }
         if (languageVariant) {
           payloadCopy.shortcode = existingShortCode.label;
@@ -971,6 +978,9 @@ const Template = ({
         is: (val: any) => val && val.id,
         then: (schema) => schema.required(t('Attachment URL is required.')),
       }),
+    body: Yup.string()
+      .required(t('Message is required.'))
+      .max(1024, 'Maximum 1024 characters are allowed'),
   };
 
   if (defaultAttribute.isHsm && isAddButtonChecked) {
