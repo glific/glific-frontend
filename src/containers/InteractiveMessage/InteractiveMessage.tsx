@@ -86,6 +86,8 @@ export const InteractiveMessage = () => {
 
   const [previousState, setPreviousState] = useState<any>({});
   const [nextLanguage, setNextLanguage] = useState<any>('');
+  const [initialEditoValue, setInitialEditoValue] = useState<any>('');
+
   const { t } = useTranslation();
   const params = useParams();
 
@@ -174,6 +176,7 @@ export const InteractiveMessage = () => {
     setTitle(data.title);
     setFooter(data.footer || '');
     setBody(data.body || '');
+    setInitialEditoValue(data.body || '');
     setTemplateType(typeValue);
     setTemplateTypeField(templateTypeOptions.find((option) => option.id === typeValue));
     setTimeout(() => setTemplateButtons(data.templateButtons), 100);
@@ -243,6 +246,7 @@ export const InteractiveMessage = () => {
     setTitle(titleText);
     setFooter(data.footer || '');
     setBody(data.body || '');
+    setInitialEditoValue(data.body || '');
     setTemplateType(typeValue);
     setTemplateTypeField(templateTypeOptions.find((option) => option.id === typeValue));
     setTimeout(() => setTemplateButtons(data.templateButtons), 100);
@@ -550,7 +554,7 @@ export const InteractiveMessage = () => {
         suggestions: contactVariables,
       },
       isEditing: isEditing,
-      initialState: isEditing && body,
+      initialState: isEditing && initialEditoValue,
     },
     {
       skip: templateType !== QUICK_REPLY,
