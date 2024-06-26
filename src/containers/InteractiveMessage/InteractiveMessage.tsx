@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import { useLazyQuery, useQuery } from '@apollo/client';
 import { setNotification } from 'common/notification';
 import InteractiveMessageIcon from 'assets/images/icons/InteractiveMessage/Dark.svg?react';
 import {
@@ -27,7 +27,7 @@ import {
   QUICK_REPLY,
   VALID_URL_REGEX,
 } from 'common/constants';
-import { exportCsvFile, validateMedia } from 'common/utils';
+import { validateMedia } from 'common/utils';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { InteractiveOptions } from './InteractiveOptions/InteractiveOptions';
 import styles from './InteractiveMessage.module.css';
@@ -498,7 +498,7 @@ export const InteractiveMessage = () => {
       component: TranslateButton,
       field: 'translate',
       setStates: setStates,
-      templateId: params.id,
+      templateId: params?.id,
       saveClicked,
       setSaveClicked,
     },
