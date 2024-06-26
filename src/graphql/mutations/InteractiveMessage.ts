@@ -106,8 +106,8 @@ export const TRANSLATE_INTERACTIVE_TEMPLATE = gql`
 `;
 
 export const EXPORT_INTERACTIVE_TEMPLATE = gql`
-  mutation ExportInteractiveTemplate($exportInteractiveTemplateId: ID!) {
-    exportInteractiveTemplate(id: $exportInteractiveTemplateId) {
+  mutation ExportInteractiveTemplate($exportInteractiveTemplateId: ID!, $addTranslation: Boolean) {
+    exportInteractiveTemplate(id: $exportInteractiveTemplateId, addTranslation: $addTranslation) {
       exportData
     }
   }

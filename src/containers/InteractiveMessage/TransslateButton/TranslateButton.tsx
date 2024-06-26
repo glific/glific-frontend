@@ -13,6 +13,7 @@ import {
   TRANSLATE_INTERACTIVE_TEMPLATE,
 } from 'graphql/mutations/InteractiveMessage';
 import { exportCsvFile } from 'common/utils';
+import { setErrorMessage } from 'common/notification';
 
 export interface TranslateButtonProps {
   onSubmit: Function;
@@ -36,6 +37,43 @@ export const TranslateButton = ({
   const [importing, setImporting] = useState(false);
 
   const { t } = useTranslation();
+
+  const translationOptions = [
+    {
+      value: 'translate',
+      label: t('Translate Interactive Message'),
+      description: t('Translate the content of the Interactive Message.'),
+    },
+    {
+      value: 'export-translate',
+      label: t('Export Interactive Template With Translations'),
+      description: t('Export the translated content of templates as a csv.'),
+    },
+    {
+      value: 'export',
+      label: t('Export Interactive Template Without Translations'),
+      description: t('Export the content without any translations.'),
+    },
+    {
+      value: 'import',
+      label: t('Import Interactive Template'),
+      description: t('Import templates from a CSV file into the application.'),
+    },
+  ];
+
+  const importButton = (
+    <ImportButton
+      title={t('Import translations')}
+      onImport={() => {
+        setImporting(true);
+      }}
+      afterImport={(result: string) => {
+        importInteractiveTemplate({
+          variables: { translation: result, importInteractiveTemplateId: templateId },
+        });
+      }}
+    />
+  );
 
   const [translateInteractiveMessage, { loading }] = useMutation(TRANSLATE_INTERACTIVE_TEMPLATE, {
     onCompleted: ({ translateInteractiveTemplate }: any) => {
@@ -68,6 +106,12 @@ export const TranslateButton = ({
         setShowTranslateFlowModal(false);
         setSaveClicked(false);
       },
+      onError: (error: any) => {
+        setImporting(false);
+        setShowTranslateFlowModal(false);
+        setSaveClicked(false);
+        setErrorMessage(error);
+      },
     }
   );
 
@@ -78,6 +122,10 @@ export const TranslateButton = ({
     setShowTranslateFlowModal(true);
   };
 
+  const handleChange = (event: any) => {
+    setTranslateOption(event.target.value);
+  };
+
   const handleTranslate = async () => {
     await onSubmit();
   };
@@ -86,50 +134,17 @@ export const TranslateButton = ({
     if (saveClicked) {
       if (translateOption === 'translate') {
         translateInteractiveMessage({ variables: { translateInteractiveTemplateId: templateId } });
+      } else if (translateOption === 'export-translate') {
+        exportInteractiveMessage({
+          variables: { exportInteractiveTemplateId: templateId, addTranslation: true },
+        });
       } else if (translateOption === 'export') {
-        exportInteractiveMessage({ variables: { exportInteractiveTemplateId: templateId } });
-      } else {
-        setShowTranslateFlowModal(false);
-        setSaveClicked(false);
+        exportInteractiveMessage({
+          variables: { exportInteractiveTemplateId: templateId, addTranslation: false },
+        });
       }
     }
   }, [saveClicked]);
-
-  const handleChange = (event: any) => {
-    setTranslateOption(event.target.value);
-  };
-
-  const translationOptions = [
-    {
-      value: 'translate',
-      label: t('Translate Interactive Message'),
-      description: t('Translate the content of the Interactive Message.'),
-    },
-    {
-      value: 'export',
-      label: t('Export Interactive Template'),
-      description: t('Export the content of templates.'),
-    },
-    {
-      value: 'import',
-      label: t('Import Interactive Template'),
-      description: t('Import templates from a CSV file into the application.'),
-    },
-  ];
-
-  const importButton = (
-    <ImportButton
-      title={t('Import translations')}
-      onImport={() => {
-        setImporting(true);
-      }}
-      afterImport={(result: string) => {
-        importInteractiveTemplate({
-          variables: { translation: result, importInteractiveTemplateId: templateId },
-        });
-      }}
-    />
-  );
 
   const dialog = (
     <DialogBox

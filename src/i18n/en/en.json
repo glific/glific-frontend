@@ -496,8 +496,10 @@
   "Please ensure that the entered media is valid as we cannot pre-validate dynamic media files and it may lead to errors.": "Please ensure that the entered media is valid as we cannot pre-validate dynamic media files and it may lead to errors.",
   "Translate Interactive Message": "Translate Interactive Message",
   "Translate the content of the Interactive Message.": "Translate the content of the Interactive Message.",
-  "Export Interactive Template": "Export Interactive Template",
-  "Export the content of templates.": "Export the content of templates.",
+  "Export Interactive Template Without Translations": "Export Interactive Template Without Translations",
+  "Export Interactive Template With Translations": "Export Interactive Template With Translations",
+  "Export the translated content of templates as a csv.": "Export the translated content of templates as a csv.",
+  "Export the content without any translations.": "Export the content without any translations.",
   "Import Interactive Template": "Import Interactive Template",
   "Import templates from a CSV file into the application.": "Import templates from a CSV file into the application."
 }
