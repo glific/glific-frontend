@@ -2,7 +2,10 @@ import { fireEvent, screen, waitFor } from '@testing-library/dom';
 import { TranslateButton } from './TranslateButton';
 import { render } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
-import { translateInteractiveTemplateMock } from 'mocks/InteractiveMessage';
+import {
+  importInteractiveTemplateMock,
+  translateInteractiveTemplateMock,
+} from 'mocks/InteractiveMessage';
 
 const setStatesMock = vi.fn();
 const onSumbitMock = vi.fn();
@@ -16,7 +19,10 @@ const defaultProps = {
 };
 
 const wrapper = (props?: any) => (
-  <MockedProvider mocks={[translateInteractiveTemplateMock]} addTypename={false}>
+  <MockedProvider
+    mocks={[translateInteractiveTemplateMock, importInteractiveTemplateMock]}
+    addTypename={false}
+  >
     <TranslateButton {...props} {...defaultProps} />
   </MockedProvider>
 );
@@ -63,4 +69,20 @@ test('it translates the template', async () => {
   await waitFor(() => {
     expect(setStatesMock).toHaveBeenCalled();
   });
+});
+
+test('it imports the template', async () => {
+  render(wrapper({ saveClicked: false }));
+
+  fireEvent.click(screen.getByText('Translate'));
+
+  await waitFor(() => {
+    expect(screen.getByText('Translate Options')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByText('Import Interactive Template'));
+
+  const file = new File(['content'], 'template.csv', { type: 'text/csv' });
+  const input = screen.getByTestId('import');
+  fireEvent.change(input, { target: { files: [file] } });
 });

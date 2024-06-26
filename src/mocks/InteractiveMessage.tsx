@@ -1,6 +1,7 @@
 import {
   CREATE_INTERACTIVE,
   DELETE_INTERACTIVE,
+  IMPORT_INTERACTIVE_TEMPLATE,
   TRANSLATE_INTERACTIVE_TEMPLATE,
   UPDATE_INTERACTIVE,
 } from 'graphql/mutations/InteractiveMessage';
@@ -375,4 +376,19 @@ export const translateInteractiveTemplateMock = {
       },
     },
   },
+};
+
+export const importInteractiveTemplateMock = {
+  request: {
+    query: IMPORT_INTERACTIVE_TEMPLATE,
+  },
+  result: {
+    data: {
+      translateInteractiveTemplate: {
+        interactiveTemplate: { ...quickReplyResult, tag: null, id: '1' },
+        errors: null,
+      },
+    },
+  },
+  variableMatcher: (variables: any) => true,
 };
