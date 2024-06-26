@@ -10,8 +10,6 @@ import {
   UPDATE_INTERACTIVE,
   DELETE_INTERACTIVE,
   COPY_INTERACTIVE,
-  TRANSLATE_INTERACTIVE,
-  EXPORT_INTERACTIVE,
 } from 'graphql/mutations/InteractiveMessage';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { USER_LANGUAGES } from 'graphql/queries/Organization';
@@ -29,7 +27,7 @@ import {
   QUICK_REPLY,
   VALID_URL_REGEX,
 } from 'common/constants';
-import { validateMedia } from 'common/utils';
+import { exportCsvFile, validateMedia } from 'common/utils';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { InteractiveOptions } from './InteractiveOptions/InteractiveOptions';
 import styles from './InteractiveMessage.module.css';
@@ -85,7 +83,7 @@ export const InteractiveMessage = () => {
   const [languageOptions, setLanguageOptions] = useState<any>([]);
   const [editorState, setEditorState] = useState<any>('');
   const [dynamicMedia, setDynamicMedia] = useState<boolean>(false);
-  const [autoTranslate, setAutoTranslate] = useState<null | string>(null);
+  const [saveClicked, setSaveClicked] = useState<boolean>(false);
 
   const [translations, setTranslations] = useState<any>('{}');
 
@@ -93,8 +91,8 @@ export const InteractiveMessage = () => {
   const [nextLanguage, setNextLanguage] = useState<any>('');
   const { t } = useTranslation();
   const params = useParams();
-
   let isEditing = false;
+
   if (params?.id) {
     isEditing = true;
   }
@@ -124,26 +122,6 @@ export const InteractiveMessage = () => {
 
   const [getInteractiveTemplateById, { data: template, loading: loadingTemplate }] =
     useLazyQuery<any>(GET_INTERACTIVE_MESSAGE);
-
-  const [translateInteractiveMessage, { loading }] = useMutation(TRANSLATE_INTERACTIVE, {
-    onCompleted: ({ translateInteractiveTemplate }: any) => {
-      const interactiveMessage = translateInteractiveTemplate?.interactiveTemplate;
-      setTranslations(interactiveMessage?.translations);
-      console.log(JSON.parse(interactiveMessage?.translations));
-
-      updateStates({
-        language: interactiveMessage?.language,
-        type: interactiveMessage?.type,
-        interactiveContent: interactiveMessage?.interactiveContent,
-      });
-    },
-  });
-
-  const [exportInteractiveMessage, { loading: exportLoading }] = useMutation(EXPORT_INTERACTIVE, {
-    onCompleted: (data) => {
-      console.log(data);
-    },
-  });
 
   useEffect(() => {
     getVariableOptions(setContactVariables);
@@ -425,20 +403,12 @@ export const InteractiveMessage = () => {
   };
 
   const updateTranslation = (value: any) => {
-    console.log(value);
-
     const Id = value.id;
     // restore if selected language is same as template
     if (translations) {
       const translationsCopy = JSON.parse(translations);
       // restore if translations present for selected language
       if (Object.keys(translationsCopy).length > 0 && translationsCopy[Id]) {
-        console.log({
-          language: value,
-          type: template.interactiveTemplate.interactiveTemplate.type,
-          interactiveContent: JSON.stringify(translationsCopy[Id]),
-        });
-
         updateStates({
           language: value,
           type: template.interactiveTemplate.interactiveTemplate.type,
@@ -476,6 +446,7 @@ export const InteractiveMessage = () => {
   };
 
   const afterSave = (data: any, saveClick: boolean) => {
+    setSaveClicked(true);
     if (!saveClick) {
       if (params.id) {
         handleLanguageChange(nextLanguage);
@@ -491,18 +462,6 @@ export const InteractiveMessage = () => {
   useEffect(() => {
     handleAddInteractiveTemplate(false, QUICK_REPLY);
   }, []);
-
-  useEffect(() => {
-    if (hasTranslations && autoTranslate) {
-      if (autoTranslate === 'translate') {
-        translateInteractiveMessage({ variables: { translateInteractiveTemplateId: params.id } });
-      } else if (autoTranslate === 'export') {
-        exportInteractiveMessage({ variables: { exportInteractiveTemplateId: params.id } });
-      } else {
-        console.log('import');
-      }
-    }
-  }, [hasTranslations, autoTranslate]);
 
   const dialogMessage = t("You won't be able to use this again.");
 
@@ -535,7 +494,14 @@ export const InteractiveMessage = () => {
   };
 
   const fields = [
-    { component: TranslateButton, field: 'translate', setTranslateType: setAutoTranslate },
+    {
+      component: TranslateButton,
+      field: 'translate',
+      setStates: setStates,
+      templateId: params.id,
+      saveClicked,
+      setSaveClicked,
+    },
     {
       field: 'languageBar',
       component: LanguageBar,
