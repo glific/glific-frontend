@@ -1,6 +1,7 @@
 import {
   CREATE_INTERACTIVE,
   DELETE_INTERACTIVE,
+  TRANSLATE_INTERACTIVE_TEMPLATE,
   UPDATE_INTERACTIVE,
 } from 'graphql/mutations/InteractiveMessage';
 import {
@@ -326,12 +327,33 @@ const deleteMock = {
   },
 };
 
+const quickReply = {
+  type: 'QUICK_REPLY',
+  interactiveContent:
+    '{"type":"quick_reply","content":{"type":"image","url":"https://storage.glific.png","text":"What activity would you like?\\n"},"options":[{"type":"text","title":"Visual Arts"},{"type":"text","title":"Poetry"},{"type":"text","title":"Theatre"}]}',
+  tag_id: '1',
+  languageId: '1',
+  label: 'A quick reply mock',
+  sendWithTitle: true,
+  translations:
+    '{"1":{"type":"quick_reply","content":{"type":"image","url":"https://storage.glific.png","text":"What activity would you like?\\n"},"options":[{"type":"text","title":"Visual Arts"},{"type":"text","title":"Poetry"},{"type":"text","title":"Theatre"}]}}',
+};
+
+const quickReplyResult = {
+  ...quickReply,
+  language: {
+    id: '1',
+    label: 'English',
+  },
+};
+
 export const mocks: any = [
   createMockByType(quickReplyMock),
   createMockByType(listReplyMock),
   createInteractiveCustomMock(),
   updateMockByType('1', quickReplyMockInput, quickReplyMock),
   updateMockByType('2', listReplyMock, listReplyMock),
+  updateMockByType('3', quickReply, quickReplyResult),
   getTemplateByType('1', quickReplyMock),
   getTemplateByType('2', listReplyMock),
   getTemplateByType('3', quickReplyMedia),
@@ -339,3 +361,18 @@ export const mocks: any = [
   getFilterTagQuery,
   getOrganizationLanguagesWithoutOrder,
 ];
+
+export const translateInteractiveTemplateMock = {
+  request: {
+    query: TRANSLATE_INTERACTIVE_TEMPLATE,
+    variables: { translateInteractiveTemplateId: '1' },
+  },
+  result: {
+    data: {
+      translateInteractiveTemplate: {
+        interactiveTemplate: { ...quickReplyResult, tag: null, id: '1' },
+        errors: null,
+      },
+    },
+  },
+};
