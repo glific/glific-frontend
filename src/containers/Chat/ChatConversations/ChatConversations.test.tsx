@@ -1,3 +1,4 @@
+import 'mocks/matchMediaMock';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { render, waitFor, fireEvent, cleanup, screen } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';

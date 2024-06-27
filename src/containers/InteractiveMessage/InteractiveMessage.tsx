@@ -86,7 +86,7 @@ export const InteractiveMessage = () => {
 
   const [previousState, setPreviousState] = useState<any>({});
   const [nextLanguage, setNextLanguage] = useState<any>('');
-  const [initialEditoValue, setInitialEditoValue] = useState<any>('');
+  const [initialEditorValue, setInitialEditorValue] = useState<any>('');
 
   const { t } = useTranslation();
   const params = useParams();
@@ -176,7 +176,7 @@ export const InteractiveMessage = () => {
     setTitle(data.title);
     setFooter(data.footer || '');
     setBody(data.body || '');
-    setInitialEditoValue(data.body || '');
+    setInitialEditorValue(data.body || '');
     setTemplateType(typeValue);
     setTemplateTypeField(templateTypeOptions.find((option) => option.id === typeValue));
     setTimeout(() => setTemplateButtons(data.templateButtons), 100);
@@ -246,7 +246,7 @@ export const InteractiveMessage = () => {
     setTitle(titleText);
     setFooter(data.footer || '');
     setBody(data.body || '');
-    setInitialEditoValue(data.body || '');
+    setInitialEditorValue(data.body || '');
     setTemplateType(typeValue);
     setTemplateTypeField(templateTypeOptions.find((option) => option.id === typeValue));
     setTimeout(() => setTemplateButtons(data.templateButtons), 100);
@@ -554,7 +554,7 @@ export const InteractiveMessage = () => {
         suggestions: contactVariables,
       },
       isEditing: isEditing,
-      initialState: isEditing && initialEditoValue,
+      initialState: isEditing && initialEditorValue,
     },
     {
       skip: templateType !== QUICK_REPLY,

@@ -76,6 +76,7 @@ const hsmProps = {
   formField: templateFormHSMFormFields,
   setCategory: vi.fn(),
   getSimulatorMessage: vi.fn(),
+  setNewShortcode: vi.fn(),
 };
 
 const hsmTemplateEdit = (templateId: string) => (

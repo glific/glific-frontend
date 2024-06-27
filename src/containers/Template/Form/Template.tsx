@@ -221,7 +221,7 @@ const Template = ({
   const [isAddButtonChecked, setIsAddButtonChecked] = useState(false);
   const [nextLanguage, setNextLanguage] = useState<any>('');
   const [variables, setVariables] = useState<any>([]);
-  const [initialEditoValue, setInitialEditoValue] = useState<any>('');
+  const [initialEditorValue, setInitialEditorValue] = useState<any>('');
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location: any = useLocation();
@@ -314,7 +314,7 @@ const Template = ({
       variables = getVariables(bodyValue, exampleValue);
       setVariables(variables);
       setBody(bodyValue || '');
-      setInitialEditoValue(bodyValue || '');
+      setInitialEditorValue(bodyValue || '');
     }
 
     if (exampleValue) {
@@ -353,7 +353,7 @@ const Template = ({
         const content = translationsCopy[currentLanguage];
         setLabel(content.label);
         setBody(content.body || '');
-        setInitialEditoValue(content.body || '');
+        setInitialEditorValue(content.body || '');
       }
       setTranslations(translationsValue);
     }
@@ -385,7 +385,7 @@ const Template = ({
 
     if (typeof bodyValue === 'string') {
       setBody(bodyValue || '');
-      setInitialEditoValue(bodyValue || '');
+      setInitialEditorValue(bodyValue || '');
     }
 
     if (typeValue && typeValue !== 'TEXT') {
@@ -738,7 +738,7 @@ const Template = ({
         setBody(value);
       },
       isEditing: isEditing,
-      initialState: isEditing && initialEditoValue,
+      initialState: isEditing && initialEditorValue,
     },
   ];
 
