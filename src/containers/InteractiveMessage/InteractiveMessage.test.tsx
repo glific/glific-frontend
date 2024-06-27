@@ -250,7 +250,7 @@ test('it renders empty interactive form', async () => {
   });
 });
 
-test.skip('it renders interactive quick reply in edit mode', async () => {
+test('it renders interactive quick reply in edit mode', async () => {
   render(renderInteractiveMessage('1'));
 
   await waitFor(() => {

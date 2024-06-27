@@ -193,20 +193,14 @@ const quickReplyMedia = {
 };
 
 const listReplyMock = {
-  sendWithTitle: false,
-  tag: {
-    id: '1',
-    label: 'New tag',
-  },
-  label: 'list',
   type: 'LIST',
-  translations: '{}',
-  language: {
-    id: '1',
-    label: 'English',
-  },
   interactiveContent:
-    '{"type":"list","title":"Glific","items":[{"title":"Glific Features","subtitle":"first Subtitle","options":[{"type":"text","title":"Custom flows for automating conversation","description":"Flow Editor for creating flows"},{"type":"text","title":"Custom reports for  analytics","description":"DataStudio for report generation"},{"type":"text","title":"ML/AI","description":"Dialogflow for AI/ML"}]},{"title":"Glific Usecases","subtitle":"some usecases of Glific","options":[{"type":"text","title":"Educational programs","description":"Sharing education content with school student"}]},{"title":"Onboarded NGOs","subtitle":"List of NGOs onboarded","options":[{"type":"text","title":"SOL","description":"Slam Out Loud is an Indian for mission, non-profit that envisions that every individual will have a voice that empowers them to change lives."}]}],"globalButtons":[{"type":"text","title":"button text"}],"body":"Glific"}',
+    '{"type":"list","title":"new title","body":"😀","globalButtons":[{"type":"text","title":"Section 1"}],"items":[{"title":"title","subtitle":"title","options":[{"type":"text","title":"red","description":"red is color"}]}]}',
+  languageId: '2',
+  label: 'new title',
+  sendWithTitle: true,
+  translations:
+    '{"2":{"type":"list","title":"new title","body":"😀","globalButtons":[{"type":"text","title":"Section 1"}],"items":[{"title":"title","subtitle":"title","options":[{"type":"text","title":"red","description":"red is color"}]}]}}',
 };
 
 const createMockByType = (body: any) => ({
@@ -219,7 +213,13 @@ const createMockByType = (body: any) => ({
   result: {
     data: {
       createInteractiveTemplate: {
-        interactiveTemplate: body,
+        interactiveTemplate: {
+          id: '1',
+          language: { id: '1', label: 'English' },
+          tag: null,
+          ...body,
+        },
+        errors: null,
       },
       errors: null,
     },
@@ -237,6 +237,7 @@ const createInteractiveCustomMock = () => ({
         languageId: '2',
         label: 'new title',
         sendWithTitle: true,
+        tag: null,
         translations:
           '{"2":{"type":"list","title":"new title","body":"😀\\n\\n","globalButtons":[{"type":"text","title":"Section 1"}],"items":[{"title":"title","subtitle":"title","options":[{"type":"text","title":"red","description":"red is color"}]}]}}',
       },
@@ -281,6 +282,8 @@ const updateMockByType = (id: string, input: any, response: any) => ({
           id,
           insertedAt: '2021-07-14T11:12:42Z',
           updatedAt: '2021-07-14T11:26:00Z',
+          language: { id: '1', label: 'English' },
+          tag: null,
           ...response,
         },
         errors: null,
@@ -302,6 +305,8 @@ const getTemplateByType = (id: string, body: any) => ({
       interactiveTemplate: {
         interactiveTemplate: {
           id,
+          tag: null,
+          language: { id: '1', label: 'English' },
           ...body,
         },
       },
