@@ -115,13 +115,13 @@ export const AutoComplete = ({
   })();
 
   const getLabel = (option: any) => {
-    if (option[optionLabel]) {
+    if (option[optionLabel] || option[optionLabel] === '') {
       return option[optionLabel];
     }
     if (additionalOptionLabel) {
       return option[additionalOptionLabel];
     }
-    return '';
+    return option;
   };
 
   const getRenderTags = (value: Array<any>, getTagProps: any) => {

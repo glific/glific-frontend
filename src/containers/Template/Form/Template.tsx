@@ -29,7 +29,7 @@ import { validateMedia } from 'common/utils';
 import styles from './Template.module.css';
 import { TemplateVariables } from '../TemplateVariables/TemplateVariables';
 
-// const regexForShortcode = /^[a-z0-9_]+$/g;
+const regexForShortcode = /^[a-z0-9_]+$/g;
 
 const dialogMessage = ' It will stop showing when you are drafting a customized message.';
 
@@ -272,6 +272,7 @@ const Template = ({
     languageVariant,
     variables,
     newShortCode,
+    existingShortCode,
   };
 
   const setStates = ({
@@ -434,9 +435,15 @@ const Template = ({
     newShortCode: Yup.string().when('languageVariant', {
       is: (val: any) => val === true,
       then: (schema) => schema.nullable(),
-      otherwise: (schema) => schema.required(t('Shortcode is required.')),
+      otherwise: (schema) =>
+        schema
+          .required(t('Shortcode is required.'))
+          .matches(
+            regexForShortcode,
+            'Only lowercase alphanumeric characters and underscores are allowed.'
+          ),
     }),
-    existingShortCode: Yup.string().when('languageVariant', {
+    existingShortCode: Yup.object().when('languageVariant', {
       is: (val: any) => val === true,
       then: (schema) => schema.nullable().required(t('Shortcode is required.')),
       otherwise: (schema) => schema.nullable(),
