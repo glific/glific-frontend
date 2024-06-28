@@ -1,24 +1,29 @@
-import { Button } from 'components/UI/Form/Button/Button';
-import styles from './TranslateButton.module.css';
-import TranslateIcon from 'assets/images/icons/LanguageTranslation.svg?react';
 import { useEffect, useState } from 'react';
-import { DialogBox } from 'components/UI/DialogBox/DialogBox';
-import { FormControl, FormControlLabel, FormHelperText, Radio, RadioGroup } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { ImportButton } from 'components/UI/ImportButton/ImportButton';
+import { FormControl, FormControlLabel, FormHelperText, Radio, RadioGroup } from '@mui/material';
 import { useMutation } from '@apollo/client';
+
 import {
   EXPORT_INTERACTIVE_TEMPLATE,
   IMPORT_INTERACTIVE_TEMPLATE,
   TRANSLATE_INTERACTIVE_TEMPLATE,
 } from 'graphql/mutations/InteractiveMessage';
+
 import { exportCsvFile } from 'common/utils';
 import { setErrorMessage } from 'common/notification';
 
+import TranslateIcon from 'assets/images/icons/LanguageTranslation.svg?react';
+
+import { Button } from 'components/UI/Form/Button/Button';
+import { DialogBox } from 'components/UI/DialogBox/DialogBox';
+import { ImportButton } from 'components/UI/ImportButton/ImportButton';
+
+import styles from './TranslateButton.module.css';
+
 export interface TranslateButtonProps {
-  onSubmit: Function;
+  onSubmit: () => Promise<void>;
   errors: any;
-  setStates: Function;
+  setStates: (interactiveMessage: any) => {};
   templateId: string;
   saveClicked: boolean;
   setSaveClicked: any;
@@ -61,20 +66,6 @@ export const TranslateButton = ({
     },
   ];
 
-  const importButton = (
-    <ImportButton
-      title={t('Import translations')}
-      onImport={() => {
-        setImporting(true);
-      }}
-      afterImport={(result: string) => {
-        importInteractiveTemplate({
-          variables: { translation: result, importInteractiveTemplateId: templateId },
-        });
-      }}
-    />
-  );
-
   const [translateInteractiveMessage, { loading }] = useMutation(TRANSLATE_INTERACTIVE_TEMPLATE, {
     onCompleted: ({ translateInteractiveTemplate }: any) => {
       const interactiveMessage = translateInteractiveTemplate?.interactiveTemplate;
@@ -96,7 +87,7 @@ export const TranslateButton = ({
     }
   );
 
-  const [importInteractiveTemplate, { loading: importingLoad }] = useMutation(
+  const [importInteractiveMessage, { loading: importingLoad }] = useMutation(
     IMPORT_INTERACTIVE_TEMPLATE,
     {
       onCompleted: ({ importInteractiveTemplate }) => {
@@ -115,6 +106,20 @@ export const TranslateButton = ({
     }
   );
 
+  const importButton = (
+    <ImportButton
+      title={t('Import translations')}
+      onImport={() => {
+        setImporting(true);
+      }}
+      afterImport={(result: string) => {
+        importInteractiveMessage({
+          variables: { translation: result, importInteractiveTemplateId: templateId },
+        });
+      }}
+    />
+  );
+
   const handleClick = () => {
     if (Object.keys(errors).length > 0) {
       return;
@@ -127,7 +132,9 @@ export const TranslateButton = ({
   };
 
   const handleTranslate = async () => {
-    await onSubmit();
+    await onSubmit().then(() => {
+      console.log('yaay');
+    });
   };
 
   useEffect(() => {
