@@ -100,9 +100,9 @@ export const HSM = () => {
   };
 
   const isCopyState = location.state === 'copy';
-  let disabled = false;
+  let isEditing = false;
   if (params.id && !isCopyState) {
-    disabled = true;
+    isEditing = true;
   }
 
   const formFields = [
@@ -115,14 +115,14 @@ export const HSM = () => {
         </Typography>
       ),
       handleChange: (value: any) => setLanguageVariant(value),
-      skip: disabled,
+      skip: isEditing,
     },
     {
       component: Input,
       name: 'newShortCode',
       placeholder: `${t('Element name')}*`,
       label: `${t('Element name')}*`,
-      disabled,
+      disabled: isEditing,
       skip: languageVariant ? true : false,
       onChange: (value: any) => {
         setNewShortcode(value);
@@ -136,7 +136,7 @@ export const HSM = () => {
       multiple: false,
       label: `${t('Element name')}*`,
       placeholder: `${t('Element name')}*`,
-      disabled,
+      disabled: isEditing,
       onChange: (event: any) => {
         setExistingShortcode(event);
       },
@@ -150,12 +150,12 @@ export const HSM = () => {
       multiple: false,
       label: `${t('Category')}*`,
       placeholder: `${t('Category')}*`,
-      disabled,
+      disabled: isEditing,
       helperText: t('Select the most relevant category'),
       onChange: (event: any) => {
         setCategory(event);
       },
-      skip: disabled,
+      skip: isEditing,
     },
     {
       component: Input,
@@ -163,9 +163,9 @@ export const HSM = () => {
       type: 'text',
       label: `${t('Category')}*`,
       placeholder: `${t('Category')}*`,
-      disabled,
+      disabled: isEditing,
       helperText: t('Select the most relevant category'),
-      skip: !disabled,
+      skip: !isEditing,
     },
   ];
 

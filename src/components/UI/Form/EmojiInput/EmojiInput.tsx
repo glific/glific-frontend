@@ -9,7 +9,7 @@ import { $createTextNode, $getSelection, $isRangeSelection } from 'lexical';
 
 export interface EmojiInputProps {
   field: any;
-  form?: { touched: any; errors: any; values?: any; setFieldValue?: any };
+  form?: { touched: any; errors: any; setFieldValue: any; values: any };
   label: string;
   placeholder: string;
   disabled?: boolean;
@@ -17,7 +17,6 @@ export interface EmojiInputProps {
   handleChange?: any;
   handleBlur?: any;
   inputProp?: any;
-  isEditing?: boolean;
   translation?: string;
 }
 
@@ -31,7 +30,6 @@ export const EmojiInput = ({
   field: { value, name, onBlur },
   handleChange,
   handleBlur,
-  isEditing = false,
   translation,
   form,
   ...props
@@ -51,14 +49,7 @@ export const EmojiInput = ({
   );
 
   const input = (
-    <Editor
-      isEditing={isEditing}
-      field={{ name, value, onBlur }}
-      picker={picker}
-      onChange={handleChange}
-      form={form}
-      {...props}
-    />
+    <Editor field={{ name, value, onBlur }} picker={picker} onChange={handleChange} {...props} />
   );
 
   return (

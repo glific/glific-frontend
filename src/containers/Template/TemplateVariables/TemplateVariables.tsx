@@ -3,7 +3,7 @@ import AddIcon from 'assets/images/AddGreenIcon.svg?react';
 import styles from './TemplateVariable.module.css';
 import { FormHelperText, OutlinedInput } from '@mui/material';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import { setLexicalState } from 'common/RichEditor';
+import { setDefaultValue } from 'common/RichEditor';
 import DeleteIcon from 'assets/images/icons/Delete/Red.svg?react';
 import { useEffect } from 'react';
 
@@ -30,7 +30,7 @@ export const TemplateVariables = ({
 
   const handleAddVariable = () => {
     setVariables([...variables, { text: '', id: variables.length + 1 }]);
-    setLexicalState(editor, `${message?.trim(' ')} {{${variables.length + 1}}}`);
+    setDefaultValue(editor, `${message?.trim(' ')} {{${variables.length + 1}}}`);
     editor.focus();
   };
 
@@ -38,7 +38,7 @@ export const TemplateVariables = ({
     const regex = new RegExp(`\\{\\{${id}\\}\\}`, 'g');
 
     const updatedMessage = message.replace(regex, '').trim();
-    setLexicalState(editor, updatedMessage);
+    setDefaultValue(editor, updatedMessage);
 
     const newVariables = variables.filter((variable) => variable.id !== id);
     setVariables(newVariables);
@@ -51,6 +51,7 @@ export const TemplateVariables = ({
   return (
     <div className={styles.AddVariablesContainer}>
       <Button
+        disabled={isEditing}
         className={styles.AddVariable}
         onClick={handleAddVariable}
         variant="outlined"

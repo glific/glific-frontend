@@ -221,7 +221,7 @@ const Template = ({
   const [isAddButtonChecked, setIsAddButtonChecked] = useState(false);
   const [nextLanguage, setNextLanguage] = useState<any>('');
   const [variables, setVariables] = useState<any>([]);
-  const [initialEditorValue, setInitialEditorValue] = useState<any>('');
+  const [editorState, setEditorState] = useState<any>('');
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location: any = useLocation();
@@ -239,7 +239,7 @@ const Template = ({
   }
 
   // disable fields in edit mode for hsm template
-  if (params.id && !isCopyState && defaultAttribute.isHsm) {
+  if (params.id && !isCopyState) {
     isEditing = true;
   }
 
@@ -311,11 +311,9 @@ const Template = ({
     setLabel(labelValue);
     setIsActive(isActiveValue);
     let variables: any = [];
-    if (typeof bodyValue === 'string' && exampleValue) {
-      variables = getVariables(bodyValue, exampleValue);
-      setVariables(variables);
+    if (typeof bodyValue === 'string') {
       setBody(bodyValue || '');
-      setInitialEditorValue(bodyValue || '');
+      setEditorState(bodyValue || '');
     }
 
     if (exampleValue) {
@@ -328,6 +326,8 @@ const Template = ({
         );
         setTemplateButtons(buttonsVal);
       }
+      variables = getVariables(bodyValue, exampleValue);
+      setVariables(variables);
       onExampleChange(getExampleFromBody(bodyValue, variables));
     }
 
@@ -354,7 +354,9 @@ const Template = ({
         const content = translationsCopy[currentLanguage];
         setLabel(content.label);
         setBody(content.body || '');
-        setInitialEditorValue(content.body || '');
+        console.log(content.body);
+
+        setEditorState(content.body || '');
       }
       setTranslations(translationsValue);
     }
@@ -363,7 +365,7 @@ const Template = ({
     } else {
       setAttachmentURL('');
     }
-    if (categoryValue) {
+    if (categoryValue && setCategory) {
       setCategory(categoryValue);
     }
     if (tagIdValue) {
@@ -386,7 +388,8 @@ const Template = ({
 
     if (typeof bodyValue === 'string') {
       setBody(bodyValue || '');
-      setInitialEditorValue(bodyValue || '');
+
+      setEditorState(bodyValue || '');
     }
 
     if (typeValue && typeValue !== 'TEXT') {
@@ -640,7 +643,7 @@ const Template = ({
       optionLabel: 'label',
       multiple: false,
       label: t('Attachment Type'),
-      disabled: isEditing,
+      disabled: defaultAttribute.isHsm && isEditing,
       helperText: warning,
       onChange: (event: any) => {
         const val = event;
@@ -656,7 +659,7 @@ const Template = ({
       type: 'text',
       label: t('Attachment URL'),
       validate: () => isUrlValid,
-      disabled: isEditing,
+      disabled: defaultAttribute.isHsm && isEditing,
       helperText: t(
         'Please provide a sample attachment for approval purpose. You may send a similar but different attachment when sending the HSM to users.'
       ),
@@ -721,7 +724,7 @@ const Template = ({
       component: Input,
       name: 'label',
       label: t('Title'),
-      disabled: isEditing,
+      disabled: defaultAttribute.isHsm && isEditing,
       helperText: defaultAttribute.isHsm
         ? t('Define what use case does this template serve eg. OTP, optin, activity preference')
         : null,
@@ -737,15 +740,14 @@ const Template = ({
       rows: 5,
       convertToWhatsApp: true,
       textArea: true,
-      disabled: isEditing,
+      disabled: defaultAttribute.isHsm && isEditing,
       helperText: defaultAttribute.isHsm
         ? 'You can provide variable values in your HSM templates to personalize the message. To add: click on the variable button and provide an example value for the variable in the field provided below'
         : null,
       handleChange: (value: any) => {
         setBody(value);
       },
-      isEditing: isEditing,
-      initialState: isEditing && initialEditorValue,
+      defaultValue: isEditing && editorState,
     },
   ];
 
@@ -872,9 +874,9 @@ const Template = ({
           }
         } else {
           delete payloadCopy.example;
-          delete payloadCopy.isActive;
           delete payloadCopy.shortcode;
           delete payloadCopy.category;
+          delete payloadCopy.variables;
         }
         if (payloadCopy.type === 'TEXT') {
           delete payloadCopy.attachmentURL;
@@ -939,6 +941,7 @@ const Template = ({
         delete payloadCopy.shortcode;
         delete payloadCopy.category;
       }
+
       delete payloadCopy.languageVariant;
       delete payloadCopy.getShortcode;
       delete payloadCopy.isAddButtonChecked;

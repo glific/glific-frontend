@@ -80,13 +80,14 @@ export const InteractiveMessage = () => {
   const [tagId, setTagId] = useState<any>(null);
   const [language, setLanguage] = useState<any>({});
   const [languageOptions, setLanguageOptions] = useState<any>([]);
+  const [editorState, setEditorState] = useState<any>('');
+
   const [dynamicMedia, setDynamicMedia] = useState<boolean>(false);
 
   const [translations, setTranslations] = useState<any>('{}');
 
   const [previousState, setPreviousState] = useState<any>({});
   const [nextLanguage, setNextLanguage] = useState<any>('');
-  const [initialEditorValue, setInitialEditorValue] = useState<any>('');
 
   const { t } = useTranslation();
   const params = useParams();
@@ -176,7 +177,7 @@ export const InteractiveMessage = () => {
     setTitle(data.title);
     setFooter(data.footer || '');
     setBody(data.body || '');
-    setInitialEditorValue(data.body || '');
+    setEditorState(data.body || '');
     setTemplateType(typeValue);
     setTemplateTypeField(templateTypeOptions.find((option) => option.id === typeValue));
     setTimeout(() => setTemplateButtons(data.templateButtons), 100);
@@ -246,7 +247,7 @@ export const InteractiveMessage = () => {
     setTitle(titleText);
     setFooter(data.footer || '');
     setBody(data.body || '');
-    setInitialEditorValue(data.body || '');
+    setEditorState(data.body || '');
     setTemplateType(typeValue);
     setTemplateTypeField(templateTypeOptions.find((option) => option.id === typeValue));
     setTimeout(() => setTemplateButtons(data.templateButtons), 100);
@@ -553,8 +554,7 @@ export const InteractiveMessage = () => {
       inputProp: {
         suggestions: contactVariables,
       },
-      isEditing: isEditing,
-      initialState: isEditing && initialEditorValue,
+      defaultValue: isEditing && editorState,
     },
     {
       skip: templateType !== QUICK_REPLY,
