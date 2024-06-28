@@ -552,8 +552,7 @@ export const InteractiveMessage = () => {
       inputProp: {
         suggestions: contactVariables,
       },
-      isEditing: isEditing,
-      initialState: isEditing && editorState,
+      defaultValue: isEditing && editorState,
     },
     {
       skip: templateType !== QUICK_REPLY,

@@ -283,8 +283,11 @@ const Template = ({
       setExampleState(exampleValue);
       onExampleChange(exampleBody);
     }
+    console.log('yes', hasButtons);
 
     if (hasButtons) {
+      console.log('yes');
+
       setIsAddButtonChecked(hasButtons);
     }
     if (typeValue && typeValue !== 'TEXT') {
@@ -689,9 +692,7 @@ const Template = ({
       handleChange: (value: any) => {
         setBody(value);
       },
-      isEditing: isEditing,
-      editorState: editorState,
-      initialState: isEditing && editorState,
+      defaultValue: isEditing && editorState,
     },
   ];
 

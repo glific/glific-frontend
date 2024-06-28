@@ -19,7 +19,7 @@ import {
   BeautifulMentionsMenuProps,
   BeautifulMentionsMenuItemProps,
 } from 'lexical-beautiful-mentions';
-import { handleFormatterEvents, handleFormatting, setInitialState } from 'common/RichEditor';
+import { handleFormatterEvents, handleFormatting, setDefaultValue } from 'common/RichEditor';
 
 export interface EditorProps {
   field: { name: string; onChange?: any; value: any; onBlur?: any };
@@ -30,11 +30,11 @@ export interface EditorProps {
   picker?: any;
   inputProp?: any;
   onChange?: any;
-  initialState?: any;
+  defaultValue?: any;
 }
 
 export const Editor = ({ disabled = false, ...props }: EditorProps) => {
-  const { field, form, picker, placeholder, onChange, initialState } = props;
+  const { field, form, picker, placeholder, onChange, defaultValue } = props;
   const mentions = props.inputProp?.suggestions || [];
   const suggestions = {
     '@': mentions.map((mention: string) => mention?.split('@')[1]),
@@ -42,10 +42,10 @@ export const Editor = ({ disabled = false, ...props }: EditorProps) => {
   const [editor] = useLexicalComposerContext();
 
   useEffect(() => {
-    if (initialState) {
-      setInitialState(editor, initialState);
+    if (defaultValue) {
+      setDefaultValue(editor, defaultValue);
     }
-  }, [initialState]);
+  }, [defaultValue]);
 
   const Placeholder = () => {
     return <p className={styles.editorPlaceholder}>{placeholder}</p>;

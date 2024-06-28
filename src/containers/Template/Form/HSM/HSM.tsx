@@ -111,9 +111,7 @@ export const HSM = () => {
         setExample(value);
         getSimulatorMessage(value);
       },
-      isEditing: isEditing,
-      editorState: editorState,
-      initialState: isEditing && editorState,
+      defaultValue: isEditing && editorState,
     },
     {
       component: AutoComplete,
