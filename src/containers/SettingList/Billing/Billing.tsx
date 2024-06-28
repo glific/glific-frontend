@@ -362,7 +362,7 @@ export const BillingForm = () => {
               <div>
                 <div className={styles.Heading}>Monthly Recurring</div>
                 <div className={styles.Pricing}>
-                  <span>INR 7,500</span> ($110)
+                  <span>INR 9,500</span> ($114)
                 </div>
                 <div className={styles.Pricing}>+ taxes</div>
                 <ul className={styles.List}>
