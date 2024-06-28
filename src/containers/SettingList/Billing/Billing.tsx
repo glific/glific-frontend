@@ -382,7 +382,7 @@ export const BillingForm = () => {
           <div className={styles.BottomSection}>
             <div className={styles.InactiveHeading}>
               Suspended or inactive accounts:{' '}
-              <span className={styles.Amount}> INR 4,500/mo + taxes</span>
+              <span className={styles.Amount}> INR 1,500/mo + taxes</span>
             </div>
           </div>
         </div>
