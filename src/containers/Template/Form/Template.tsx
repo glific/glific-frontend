@@ -279,15 +279,13 @@ const Template = ({
         exampleBody = exampleValue;
       }
 
+      if (setExampleState) {
+        setExampleState(exampleValue);
+      }
       setExample(exampleValue);
-      setExampleState(exampleValue);
       onExampleChange(exampleBody);
     }
-    console.log('yes', hasButtons);
-
     if (hasButtons) {
-      console.log('yes');
-
       setIsAddButtonChecked(hasButtons);
     }
     if (typeValue && typeValue !== 'TEXT') {
@@ -318,7 +316,7 @@ const Template = ({
     if (shortcodeValue) {
       setTimeout(() => setShortcode(shortcodeValue), 0);
     }
-    if (categoryValue) {
+    if (categoryValue && setCategory) {
       setCategory({ label: categoryValue, id: categoryValue });
     }
     if (tagIdValue) {
