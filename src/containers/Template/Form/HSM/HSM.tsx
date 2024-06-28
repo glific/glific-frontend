@@ -92,8 +92,10 @@ export const HSM = () => {
 
   const isCopyState = location.state === 'copy';
   let disabled = false;
+  let isEditing = false;
   if (params.id && !isCopyState) {
     disabled = true;
+    isEditing = true;
   }
 
   const formFields = [
@@ -107,13 +109,13 @@ export const HSM = () => {
       disabled,
       helperText:
         'Replace variables eg. {{1}} with actual values enclosed in [ ] eg. [12345] to show a complete message with meaningful word/statement/numbers/ special characters.',
-      handleChange: getSimulatorMessage,
-      getEditorValue: (value: any) => {
+      handleChange: (value: any) => {
         setExample(value);
-        setEditorState(value);
+        getSimulatorMessage(value);
       },
       isEditing: disabled,
       editorState: editorState,
+      initialState: isEditing && editorState,
     },
     {
       component: AutoComplete,
@@ -155,6 +157,7 @@ export const HSM = () => {
         setCategory={setCategory}
         category={category}
         onExampleChange={addButtonsToSampleMessage}
+        setExampleState={setEditorState}
       />
       <Simulator isPreviewMessage message={sampleMessages} simulatorIcon={false} />
     </div>

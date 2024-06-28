@@ -22,24 +22,18 @@ import {
 import { handleFormatterEvents, handleFormatting, setInitialState } from 'common/RichEditor';
 
 export interface EditorProps {
-  field: { name: string; onChange?: any; value: any; onBlur: any };
+  field: { name: string; onChange?: any; value: any; onBlur?: any };
   disabled?: any;
-  form?: { touched: any; errors: any };
+  form?: { touched: any; errors: any; setFieldValue: any; values: any };
   placeholder: string;
   helperText?: string;
   picker?: any;
   inputProp?: any;
   onChange?: any;
-  isEditing: boolean;
-  editorState?: any;
+  initialState?: any;
 }
 
-export const Editor = ({
-  disabled = false,
-  isEditing = false,
-  editorState,
-  ...props
-}: EditorProps) => {
+export const Editor = ({ disabled = false, initialState, ...props }: EditorProps) => {
   const { field, form, picker, placeholder, onChange } = props;
   const mentions = props.inputProp?.suggestions || [];
   const suggestions = {
@@ -48,10 +42,10 @@ export const Editor = ({
   const [editor] = useLexicalComposerContext();
 
   useEffect(() => {
-    if ((field.value || field.value === '') && !editorState && isEditing) {
-      setInitialState(editor, field.value);
+    if (initialState) {
+      setInitialState(editor, initialState);
     }
-  }, [field.value]);
+  }, [initialState]);
 
   const Placeholder = () => {
     return <p className={styles.editorPlaceholder}>{placeholder}</p>;
@@ -88,6 +82,7 @@ export const Editor = ({
       const root = $getRoot();
       if (!disabled) {
         onChange(root.getTextContent());
+        form?.setFieldValue(field?.name, root.getTextContent());
       }
     });
   };
