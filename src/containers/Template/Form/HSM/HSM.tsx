@@ -91,10 +91,8 @@ export const HSM = () => {
   };
 
   const isCopyState = location.state === 'copy';
-  let disabled = false;
   let isEditing = false;
   if (params.id && !isCopyState) {
-    disabled = true;
     isEditing = true;
   }
 
@@ -106,16 +104,14 @@ export const HSM = () => {
       rows: 5,
       convertToWhatsApp: true,
       textArea: true,
-      disabled,
+      disabled: isEditing,
       helperText:
         'Replace variables eg. {{1}} with actual values enclosed in [ ] eg. [12345] to show a complete message with meaningful word/statement/numbers/ special characters.',
       handleChange: (value: any) => {
         setExample(value);
         getSimulatorMessage(value);
       },
-      isEditing: disabled,
-      editorState: editorState,
-      initialState: isEditing && editorState,
+      defaultValue: isEditing && editorState,
     },
     {
       component: AutoComplete,
@@ -125,7 +121,7 @@ export const HSM = () => {
       multiple: false,
       label: `${t('Category')}*`,
       placeholder: `${t('Category')}*`,
-      disabled,
+      disabled: isEditing,
       helperText: t('Select the most relevant category'),
       onChange: (event: any) => {
         setCategory(event);
@@ -136,7 +132,7 @@ export const HSM = () => {
       name: 'shortcode',
       placeholder: `${t('Element name')}*`,
       label: `${t('Element name')}*`,
-      disabled,
+      disabled: isEditing,
       inputProp: {
         onBlur: (event: any) => setShortcode(event.target.value),
       },

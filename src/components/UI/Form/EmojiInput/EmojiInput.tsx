@@ -17,7 +17,6 @@ export interface EmojiInputProps {
   rows: number;
   handleChange?: any;
   handleBlur?: any;
-  getEditorValue?: any;
   inputProp?: any;
   translation?: string;
 }
@@ -31,7 +30,6 @@ interface EmojiPickerProps {
 export const EmojiInput = ({
   field: { value, name, onBlur },
   handleChange,
-  getEditorValue,
   handleBlur,
   translation,
   ...props

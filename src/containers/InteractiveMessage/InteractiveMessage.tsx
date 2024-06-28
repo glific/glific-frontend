@@ -556,15 +556,13 @@ export const InteractiveMessage = () => {
       convertToWhatsApp: true,
       textArea: true,
       helperText: t('You can also use variables in message enter @ to see the available list'),
-      getEditorValue: (value: any) => {
+      handleChange: (value: any) => {
         setBody(value);
       },
       inputProp: {
         suggestions: contactVariables,
       },
-      isEditing: isEditing,
-      editorState: editorState,
-      initialState: isEditing && editorState,
+      defaultValue: isEditing && editorState,
     },
     {
       skip: templateType !== QUICK_REPLY,
