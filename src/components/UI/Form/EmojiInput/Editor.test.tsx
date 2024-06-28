@@ -10,17 +10,16 @@ const mockIntersectionObserver = class {
   disconnect() {}
 };
 
-const lexicalChange = vi.fn;
+const handleChange = vi.fn;
 
 (window as any).IntersectionObserver = mockIntersectionObserver;
 
 const wrapper = (
   <LexicalWrapper>
     <Editor
-      isEditing={false}
       field={{ name: 'body', value: '', onBlur: () => {} }}
       placeholder={''}
-      onChange={lexicalChange}
+      onChange={handleChange}
     />
   </LexicalWrapper>
 );

@@ -116,6 +116,7 @@ export interface TemplateProps {
   category?: any;
   onExampleChange?: any;
   languageStyle?: string;
+  setExampleState?: any;
 }
 
 interface CallToActionTemplate {
@@ -142,6 +143,7 @@ const Template = ({
   category,
   onExampleChange = () => {},
   languageStyle = 'dropdown',
+  setExampleState,
 }: TemplateProps) => {
   // "Audio" option is removed in case of HSM Template
   const mediaTypes =
@@ -278,6 +280,7 @@ const Template = ({
       }
 
       setExample(exampleValue);
+      setExampleState(exampleValue);
       onExampleChange(exampleBody);
     }
 
@@ -683,7 +686,7 @@ const Template = ({
       helperText: defaultAttribute.isHsm
         ? 'You can also use variable and interactive actions. Variable format: {{1}}, Button format: [Button text,Value] Value can be a URL or a phone number.'
         : null,
-      getEditorValue: (value: any) => {
+      handleChange: (value: any) => {
         setBody(value);
       },
       isEditing: isEditing,

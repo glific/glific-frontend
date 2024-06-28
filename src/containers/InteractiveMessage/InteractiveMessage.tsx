@@ -546,7 +546,7 @@ export const InteractiveMessage = () => {
       convertToWhatsApp: true,
       textArea: true,
       helperText: t('You can also use variables in message enter @ to see the available list'),
-      getEditorValue: (value: any) => {
+      handleChange: (value: any) => {
         setBody(value);
       },
       inputProp: {

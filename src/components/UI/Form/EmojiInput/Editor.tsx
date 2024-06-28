@@ -22,19 +22,18 @@ import {
 import { handleFormatterEvents, handleFormatting, setInitialState } from 'common/RichEditor';
 
 export interface EditorProps {
-  field: { name: string; onChange?: any; value: any; onBlur: any };
+  field: { name: string; onChange?: any; value: any; onBlur?: any };
   disabled?: any;
-  form?: { touched: any; errors: any };
+  form?: { touched: any; errors: any; setFieldValue: any; values: any };
   placeholder: string;
   helperText?: string;
   picker?: any;
   inputProp?: any;
   onChange?: any;
-  isEditing: boolean;
   initialState?: any;
 }
 
-export const Editor = ({ disabled = false, isEditing = false, ...props }: EditorProps) => {
+export const Editor = ({ disabled = false, ...props }: EditorProps) => {
   const { field, form, picker, placeholder, onChange, initialState } = props;
   const mentions = props.inputProp?.suggestions || [];
   const suggestions = {
@@ -83,6 +82,7 @@ export const Editor = ({ disabled = false, isEditing = false, ...props }: Editor
       const root = $getRoot();
       if (!disabled) {
         onChange(root.getTextContent());
+        form?.setFieldValue(field?.name, root.getTextContent());
       }
     });
   };
