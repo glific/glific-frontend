@@ -351,7 +351,7 @@ export const BillingForm = () => {
               <div>
                 <div className={styles.Heading}>One time setup</div>
                 <div className={styles.Pricing}>
-                  <span>INR 15000</span> ($220)
+                  <span>INR 15,000</span> ($220)
                 </div>
                 <div className={styles.Pricing}>+ taxes</div>
                 <ul className={styles.List}>
