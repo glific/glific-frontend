@@ -2,6 +2,7 @@ import { fireEvent, screen, waitFor } from '@testing-library/dom';
 import { render } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import {
+  exportInteractiveTemplateMock,
   importInteractiveTemplateMock,
   translateInteractiveTemplateMock,
 } from 'mocks/InteractiveMessage';
@@ -12,15 +13,20 @@ const onSumbitMock = vi.fn();
 
 const defaultProps = {
   onSubmit: onSumbitMock,
+  form: { errors: {} },
   setStates: setStatesMock,
-  errors: {},
   templateId: '1',
   setSaveClicked: vi.fn(),
+  saveClicked: false,
 };
 
 const wrapper = (props?: any) => (
   <MockedProvider
-    mocks={[translateInteractiveTemplateMock, importInteractiveTemplateMock]}
+    mocks={[
+      translateInteractiveTemplateMock,
+      importInteractiveTemplateMock,
+      exportInteractiveTemplateMock,
+    ]}
     addTypename={false}
   >
     <TranslateButton {...props} {...defaultProps} />

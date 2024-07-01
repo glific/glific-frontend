@@ -1,6 +1,7 @@
 import {
   CREATE_INTERACTIVE,
   DELETE_INTERACTIVE,
+  EXPORT_INTERACTIVE_TEMPLATE,
   IMPORT_INTERACTIVE_TEMPLATE,
   TRANSLATE_INTERACTIVE_TEMPLATE,
   UPDATE_INTERACTIVE,
@@ -391,4 +392,19 @@ export const importInteractiveTemplateMock = {
     },
   },
   variableMatcher: (variables: any) => true,
+};
+
+export const exportInteractiveTemplateMock = {
+  request: {
+    query: EXPORT_INTERACTIVE_TEMPLATE,
+    variables: { exportInteractiveTemplateId: '1', addTranslation: true },
+  },
+  result: {
+    data: {
+      exportInteractiveTemplate: {
+        exportData:
+          'Attribute,en,hi\nHeader,test,परीक्षा\nText,test,परीक्षा\nOptionTitle 1,test,परीक्षा\n',
+      },
+    },
+  },
 };
