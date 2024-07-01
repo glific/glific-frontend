@@ -448,7 +448,6 @@ export const InteractiveMessage = () => {
   };
 
   const afterSave = (data: any, saveClick: boolean) => {
-    setSaveClicked(true);
     if (!saveClick) {
       if (params.id) {
         handleLanguageChange(nextLanguage);
@@ -503,8 +502,6 @@ export const InteractiveMessage = () => {
       templateId: params?.id,
       saveClicked,
       setSaveClicked,
-      defaultLanguage,
-      language,
     },
     {
       field: 'languageBar',

@@ -21,32 +21,27 @@ import { ImportButton } from 'components/UI/ImportButton/ImportButton';
 import styles from './TranslateButton.module.css';
 
 export interface TranslateButtonProps {
-  form: { setTouched: any; errors: any };
   onSubmit: () => Promise<void>;
+  form: { setTouched: any; errors: any };
   setStates: (interactiveMessage: any) => {};
   templateId: string;
-  saveClicked: boolean;
+  saveClicked: any;
   setSaveClicked: any;
-  defaultLanguage: any;
-  language: any;
 }
 
 export const TranslateButton = ({
+  form: { errors, setTouched },
   onSubmit,
   setStates,
   templateId,
   saveClicked,
   setSaveClicked,
-  form: { setTouched, errors },
-  defaultLanguage,
-  language,
 }: TranslateButtonProps) => {
-  const [showTranslateFlowModal, setShowTranslateFlowModal] = useState(false);
+  const [showTranslateModal, setShowTranslateModal] = useState(false);
   const [translateOption, setTranslateOption] = useState('translate');
   const [importing, setImporting] = useState(false);
 
   const { t } = useTranslation();
-  console.log(defaultLanguage?.id, language?.id);
 
   const translationOptions = [
     {
@@ -71,12 +66,17 @@ export const TranslateButton = ({
     },
   ];
 
+  const handleClose = () => {
+    setShowTranslateModal(false);
+    setSaveClicked(false);
+    setImporting(false);
+  };
+
   const [translateInteractiveMessage, { loading }] = useMutation(TRANSLATE_INTERACTIVE_TEMPLATE, {
     onCompleted: ({ translateInteractiveTemplate }: any) => {
       const interactiveMessage = translateInteractiveTemplate?.interactiveTemplate;
       setStates(interactiveMessage);
-      setShowTranslateFlowModal(false);
-      setSaveClicked(false);
+      handleClose();
     },
   });
 
@@ -86,8 +86,10 @@ export const TranslateButton = ({
       onCompleted: ({ exportInteractiveTemplate }) => {
         const { exportData } = exportInteractiveTemplate;
         exportCsvFile(exportData, `Interactive_Message_Translations_${templateId}`);
-        setShowTranslateFlowModal(false);
-        setSaveClicked(false);
+        handleClose();
+      },
+      onError(error: any) {
+        handleClose();
       },
     }
   );
@@ -98,15 +100,11 @@ export const TranslateButton = ({
       onCompleted: ({ importInteractiveTemplate }) => {
         const interactiveMessage = importInteractiveTemplate?.interactiveTemplate;
         setStates(interactiveMessage);
-        setImporting(false);
-        setShowTranslateFlowModal(false);
-        setSaveClicked(false);
+        handleClose();
       },
       onError: (error: any) => {
-        setImporting(false);
-        setShowTranslateFlowModal(false);
-        setSaveClicked(false);
         setErrorMessage(error);
+        handleClose();
       },
     }
   );
@@ -126,45 +124,49 @@ export const TranslateButton = ({
   );
 
   const handleClick = () => {
-    setSaveClicked(false);
-    if (Object.keys(errors).length > 0 && defaultLanguage?.id === language?.id) {
-      const touched = {};
-      Object.keys(errors).forEach((key) => Object.assign(touched, { [key]: true }));
+    if (!templateId && Object.keys(errors).length > 0) {
+      let touched = {};
+      Object.keys(errors).map((key) => Object.assign(touched, { [key]: true }));
       setTouched(touched);
       return;
     }
-    setShowTranslateFlowModal(true);
+    setShowTranslateModal(true);
   };
 
   const handleChange = (event: any) => {
     setTranslateOption(event.target.value);
   };
 
+  const handleTranslateOptions = () => {
+    if (translateOption === 'translate') {
+      translateInteractiveMessage({
+        variables: { translateInteractiveTemplateId: templateId },
+      });
+    } else if (translateOption === 'export-translate') {
+      exportInteractiveMessage({
+        variables: { exportInteractiveTemplateId: templateId, addTranslation: true },
+      });
+    } else if (translateOption === 'export') {
+      exportInteractiveMessage({
+        variables: { exportInteractiveTemplateId: templateId, addTranslation: false },
+      });
+    }
+  };
+
   const handleTranslate = async () => {
-    if (defaultLanguage?.id !== language?.id && templateId) {
-      setSaveClicked(true);
+    if (templateId) {
+      handleTranslateOptions();
     } else {
+      setSaveClicked(true);
       await onSubmit();
     }
   };
 
   useEffect(() => {
-    if (saveClicked && showTranslateFlowModal) {
-      if (translateOption === 'translate') {
-        translateInteractiveMessage({
-          variables: { translateInteractiveTemplateId: templateId },
-        });
-      } else if (translateOption === 'export-translate') {
-        exportInteractiveMessage({
-          variables: { exportInteractiveTemplateId: templateId, addTranslation: true },
-        });
-      } else if (translateOption === 'export') {
-        exportInteractiveMessage({
-          variables: { exportInteractiveTemplateId: templateId, addTranslation: false },
-        });
-      }
+    if (templateId && saveClicked) {
+      handleTranslateOptions();
     }
-  }, [saveClicked]);
+  }, [saveClicked, templateId]);
 
   const dialog = (
     <DialogBox
@@ -175,7 +177,7 @@ export const TranslateButton = ({
       buttonOkLoading={loading || exportLoading || importing || importingLoad}
       buttonCancel="Cancel"
       handleCancel={() => {
-        setShowTranslateFlowModal(false);
+        setShowTranslateModal(false);
       }}
       disableOk={translateOption === 'import' || importingLoad}
     >
@@ -211,7 +213,7 @@ export const TranslateButton = ({
         <TranslateIcon className={styles.Icon} />
         Translate
       </Button>
-      {showTranslateFlowModal ? dialog : ''}
+      {showTranslateModal ? dialog : ''}
     </div>
   );
 };
