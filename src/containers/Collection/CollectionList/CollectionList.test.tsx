@@ -26,6 +26,7 @@ import {
 } from 'mocks/Groups';
 import { setNotification } from 'common/notification';
 import { setVariables } from 'common/constants';
+import { setUserRolePermissions } from 'context/role';
 
 const mocks = [
   countCollectionQuery,
@@ -70,6 +71,20 @@ vi.mock('common/notification', async (importOriginal) => {
   };
 });
 
+beforeEach(() => {
+  setUserSession(
+    JSON.stringify({
+      roles: [
+        {
+          label: 'Admin',
+        },
+      ],
+      organization: { id: '1' },
+    })
+  );
+  setUserRolePermissions();
+});
+
 describe('<CollectionList />', () => {
   test('should render CollectionList', async () => {
     const { getByText, getByTestId } = render(wrapper);
@@ -83,7 +98,6 @@ describe('<CollectionList />', () => {
   });
 
   test('it should have add contact to collection dialog box ', async () => {
-    setUserSession(JSON.stringify({ roles: ['Staff'] }));
     const { getByText, getByTestId, getAllByTestId } = render(wrapper);
 
     // loading is show initially
@@ -118,7 +132,6 @@ describe('<CollectionList />', () => {
   });
 
   test('add contacts to collection', async () => {
-    setUserSession(JSON.stringify({ roles: ['Admin'] }));
     const { getAllByTestId, getByTestId, getByText } = render(wrapper);
 
     // loading is show initially
@@ -258,7 +271,6 @@ describe('<CollectionList />', () => {
   });
 
   test('add groups to collection', async () => {
-    setUserSession(JSON.stringify({ roles: ['Staff'] }));
     const { getAllByTestId, getByTestId, getByText } = render(groupWrapper);
 
     // loading is show initially
@@ -310,6 +322,23 @@ describe('<CollectionList />', () => {
 
     await waitFor(() => {
       expect(dialog).not.toBeInTheDocument();
+    });
+  });
+
+  test('it should navigate to create page on clicking create button', async () => {
+    const { getByText, getByTestId } = render(groupWrapper);
+
+    expect(getByTestId('loading')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(getByText('Group Collections')).toBeInTheDocument();
+      expect(getByText('Default WA Group Collection')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('newItemButton'));
+
+    await waitFor(() => {
+      expect(mockedUsedNavigate).toHaveBeenCalled();
     });
   });
 });

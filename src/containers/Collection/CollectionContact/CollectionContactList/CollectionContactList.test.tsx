@@ -120,6 +120,10 @@ describe('<CollectionContactList />', () => {
 
     fireEvent.click(getByTestId('deleteBtn'));
 
+    fireEvent.click(getByTestId('CloseIcon'));
+
+    fireEvent.click(getByTestId('deleteBtn'));
+
     await waitFor(() => {
       expect(screen.getByTestId('dialogBox')).toBeInTheDocument();
     });

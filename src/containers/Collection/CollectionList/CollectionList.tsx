@@ -124,19 +124,9 @@ export const CollectionList = () => {
   const [updateCollectionContacts] = useMutation(updateMutation, {
     onCompleted: (data) => {
       let updateVariable = groups ? 'updateCollectionWaGroup' : 'updateGroupContacts';
-      const { numberDeleted, groupContacts } = data[updateVariable];
+      const { groupContacts } = data[updateVariable];
       const numberAdded = groupContacts.length;
-      if (numberDeleted > 0 && numberAdded > 0) {
-        setNotification(
-          `${numberDeleted} ${groups ? 'group' : 'contact'}${
-            numberDeleted === 1 ? '' : 's  were'
-          } removed and ${numberAdded} ${groups ? 'group' : 'contact'}${numberAdded === 1 ? '' : 's  were'} added`
-        );
-      } else if (numberDeleted > 0) {
-        setNotification(
-          `${numberDeleted} ${groups ? 'group' : 'contact'}${numberDeleted === 1 ? '' : 's  were'} removed`
-        );
-      } else {
+      if (numberAdded > 0) {
         setNotification(
           `${numberAdded} ${groups ? 'group' : 'contact'}${numberAdded === 1 ? '' : 's  were'} added`
         );

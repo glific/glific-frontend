@@ -646,6 +646,31 @@ export const getGroupsSearchQuery = (variables: any) => ({
   },
 });
 
+export const getGroupsCollectionList = (variables: any) => ({
+  request: {
+    query: GROUP_GET_COLLECTION,
+    variables,
+  },
+  result: {
+    data: {
+      waGroups: [
+        {
+          bspId: '120367628910663820@g.us',
+          id: '1',
+          lastCommunicationAt: '2024-06-15T10:53:48Z',
+          label: 'Group test 1',
+        },
+        {
+          bspId: '120363244264973810@g.us',
+          id: '5',
+          lastCommunicationAt: '2024-07-15T10:53:48Z',
+          label: 'Group 1',
+        },
+      ],
+    },
+  },
+});
+
 export const getGroupsQuery = {
   request: {
     query: GET_WA_GROUPS,

@@ -132,11 +132,28 @@ test('should add whatsapp group to collection', async () => {
   const autocomplete = getByTestId('autocomplete-element');
   autocomplete.focus();
   fireEvent.keyDown(autocomplete, { key: 'ArrowDown' });
-  fireEvent.click(autocomplete, { key: 'Enter' });
+
+  fireEvent.click(getByText('Group 1'), { key: 'Enter' });
 
   fireEvent.click(getByText('Save'));
 
   await waitFor(() => {
     expect(setNotification).toHaveBeenCalled();
+  });
+});
+
+test('should close dialog box if nothing is selected', async () => {
+  const { getByTestId, getByText } = render(addGroups);
+
+  let dialog = getByTestId('autocomplete-element');
+
+  await waitFor(() => {
+    expect(dialog).toBeInTheDocument();
+  });
+
+  fireEvent.click(getByText('Save'));
+
+  await waitFor(() => {
+    expect(setDialogMock).toHaveBeenCalledWith(false);
   });
 });

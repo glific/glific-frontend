@@ -7,6 +7,7 @@ import { GroupCollectionList } from './GroupCollectionList';
 import {
   countGroups,
   getGroups,
+  getGroupsCollectionList,
   getGroupsCollections,
   getGroupsSearchQuery,
   updateCollectionWaGroupQuery,
@@ -14,6 +15,11 @@ import {
 } from 'mocks/Groups';
 import { setVariables } from 'common/constants';
 import { setNotification } from 'common/notification';
+
+let getCollectionsVariables = {
+  filter: { includeGroups: '1' },
+  opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'label' },
+};
 
 const mocks = [
   countGroups,
@@ -23,6 +29,9 @@ const mocks = [
   countGroups,
   getGroups,
   countGroups,
+  countGroups,
+  getGroupsCollectionList(getCollectionsVariables),
+  getGroupsCollectionList(getCollectionsVariables),
   getGroupsSearchQuery(setVariables({ excludeGroups: '1' }, 50)),
   getGroupsSearchQuery(setVariables({ excludeGroups: '1' }, 50)),
   updateCollectionWaGroupQuery({
@@ -96,7 +105,7 @@ describe('<GroupCollectionList />', () => {
       expect(dialog).toBeInTheDocument();
     });
 
-    fireEvent.click(getByTestId('ok-button'));
+    fireEvent.click(getByTestId('CloseIcon'));
 
     await waitFor(() => {
       expect(dialog).not.toBeInTheDocument();
@@ -149,6 +158,8 @@ describe('<GroupCollectionList />', () => {
 
     fireEvent.click(checkboxes[1]);
 
+    fireEvent.click(getByTestId('deleteBtn'));
+    fireEvent.click(getByTestId('CloseIcon'));
     fireEvent.click(getByTestId('deleteBtn'));
 
     await waitFor(() => {
