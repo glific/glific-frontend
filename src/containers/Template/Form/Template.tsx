@@ -283,7 +283,6 @@ const Template = ({
         setExampleState(exampleValue);
       }
       setExample(exampleValue);
-      setExampleState(exampleValue);
       onExampleChange(exampleBody);
     }
     if (hasButtons) {

@@ -23,7 +23,7 @@ import styles from './TranslateButton.module.css';
 export interface TranslateButtonProps {
   onSubmit: () => Promise<void>;
   form: { setTouched: any; errors: any };
-  setStates: (interactiveMessage: any) => {};
+  setStates: (interactiveMessage: any) => object;
   templateId: string;
   saveClicked: any;
   setSaveClicked: any;
@@ -78,6 +78,10 @@ export const TranslateButton = ({
       setStates(interactiveMessage);
       handleClose();
     },
+    onError(error: any) {
+      handleClose();
+      setErrorMessage(error);
+    },
   });
 
   const [exportInteractiveMessage, { loading: exportLoading }] = useMutation(
@@ -90,6 +94,7 @@ export const TranslateButton = ({
       },
       onError(error: any) {
         handleClose();
+        setErrorMessage(error);
       },
     }
   );
@@ -125,7 +130,7 @@ export const TranslateButton = ({
 
   const handleClick = () => {
     if (!templateId && Object.keys(errors).length > 0) {
-      let touched = {};
+      const touched = {};
       Object.keys(errors).map((key) => Object.assign(touched, { [key]: true }));
       setTouched(touched);
       return;

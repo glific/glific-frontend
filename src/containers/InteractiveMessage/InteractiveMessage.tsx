@@ -137,9 +137,6 @@ export const InteractiveMessage = () => {
       if (!Object.prototype.hasOwnProperty.call(params, 'id')) {
         setLanguage(lang[0]);
       }
-
-      const defaultLang = languages.currentUser.user.organization.defaultLanguage;
-      setDefaultLanguage(defaultLang);
     }
   }, [languages]);
 

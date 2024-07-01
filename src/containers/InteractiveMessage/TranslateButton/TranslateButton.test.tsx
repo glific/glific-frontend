@@ -1,11 +1,11 @@
 import { fireEvent, screen, waitFor } from '@testing-library/dom';
-import { TranslateButton } from './TranslateButton';
 import { render } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import {
   importInteractiveTemplateMock,
   translateInteractiveTemplateMock,
 } from 'mocks/InteractiveMessage';
+import { TranslateButton } from './TranslateButton';
 
 const setStatesMock = vi.fn();
 const onSumbitMock = vi.fn();
