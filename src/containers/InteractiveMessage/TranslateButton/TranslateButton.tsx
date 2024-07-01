@@ -21,27 +21,32 @@ import { ImportButton } from 'components/UI/ImportButton/ImportButton';
 import styles from './TranslateButton.module.css';
 
 export interface TranslateButtonProps {
+  form: { setTouched: any; errors: any };
   onSubmit: () => Promise<void>;
-  errors: any;
   setStates: (interactiveMessage: any) => {};
   templateId: string;
   saveClicked: boolean;
   setSaveClicked: any;
+  defaultLanguage: any;
+  language: any;
 }
 
 export const TranslateButton = ({
-  errors,
   onSubmit,
   setStates,
   templateId,
   saveClicked,
   setSaveClicked,
+  form: { setTouched, errors },
+  defaultLanguage,
+  language,
 }: TranslateButtonProps) => {
   const [showTranslateFlowModal, setShowTranslateFlowModal] = useState(false);
   const [translateOption, setTranslateOption] = useState('translate');
   const [importing, setImporting] = useState(false);
 
   const { t } = useTranslation();
+  console.log(defaultLanguage?.id, language?.id);
 
   const translationOptions = [
     {
@@ -121,7 +126,11 @@ export const TranslateButton = ({
   );
 
   const handleClick = () => {
-    if (Object.keys(errors).length > 0) {
+    setSaveClicked(false);
+    if (Object.keys(errors).length > 0 && defaultLanguage?.id === language?.id) {
+      const touched = {};
+      Object.keys(errors).forEach((key) => Object.assign(touched, { [key]: true }));
+      setTouched(touched);
       return;
     }
     setShowTranslateFlowModal(true);
@@ -132,15 +141,19 @@ export const TranslateButton = ({
   };
 
   const handleTranslate = async () => {
-    await onSubmit().then(() => {
-      console.log('yaay');
-    });
+    if (defaultLanguage?.id !== language?.id && templateId) {
+      setSaveClicked(true);
+    } else {
+      await onSubmit();
+    }
   };
 
   useEffect(() => {
-    if (saveClicked) {
+    if (saveClicked && showTranslateFlowModal) {
       if (translateOption === 'translate') {
-        translateInteractiveMessage({ variables: { translateInteractiveTemplateId: templateId } });
+        translateInteractiveMessage({
+          variables: { translateInteractiveTemplateId: templateId },
+        });
       } else if (translateOption === 'export-translate') {
         exportInteractiveMessage({
           variables: { exportInteractiveTemplateId: templateId, addTranslation: true },

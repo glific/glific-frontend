@@ -42,7 +42,7 @@ import {
 import { GET_TAGS } from 'graphql/queries/Tags';
 import { CreateAutoComplete } from 'components/UI/Form/CreateAutoComplete/CreateAutoComplete';
 import { interactiveMessageInfo } from 'common/HelpData';
-import { TranslateButton } from './TransslateButton/TranslateButton';
+import { TranslateButton } from './TranslateButton/TranslateButton';
 
 const interactiveMessageIcon = (
   <InteractiveMessageIcon className={styles.Icon} data-testid="interactive-icon" />
@@ -137,6 +137,9 @@ export const InteractiveMessage = () => {
       if (!Object.prototype.hasOwnProperty.call(params, 'id')) {
         setLanguage(lang[0]);
       }
+
+      const defaultLang = languages.currentUser.user.organization.defaultLanguage;
+      setDefaultLanguage(defaultLang);
     }
   }, [languages]);
 
@@ -500,6 +503,8 @@ export const InteractiveMessage = () => {
       templateId: params?.id,
       saveClicked,
       setSaveClicked,
+      defaultLanguage,
+      language,
     },
     {
       field: 'languageBar',
