@@ -4,22 +4,20 @@ import styles from './TemplateVariable.module.css';
 import { FormHelperText, OutlinedInput } from '@mui/material';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { setDefaultValue } from 'common/RichEditor';
-import DeleteIcon from 'assets/images/icons/Delete/Red.svg?react';
+import DeleteIcon from 'assets/images/icons/CrossIcon.svg?react';
 import { useEffect } from 'react';
 
 export interface TemplateOptionsProps {
-  inputFields: Array<any>;
   form: { touched: any; errors: any; values: any; setFieldValue: any };
   message: any;
   variables: Array<any>;
   setVariables: any;
-  field: { name: string; value: any };
   getVariables: any;
   isEditing: boolean;
 }
 
 export const TemplateVariables = ({
-  form,
+  form: { touched, errors },
   message,
   variables,
   setVariables,
@@ -89,15 +87,15 @@ export const TemplateVariables = ({
                     );
                   }}
                 />
-                <FormHelperText className={styles.DangerText}>
-                  {form &&
-                    form.errors.variables &&
-                    form.touched.variables &&
-                    form.touched.variables[index]?.text &&
-                    form.errors.variables[index]?.text}
-                </FormHelperText>
+
+                {errors.variables && touched.variables && touched.variables[index] ? (
+                  <FormHelperText className={styles.DangerText}>
+                    {errors.variables[index]?.text}
+                  </FormHelperText>
+                ) : null}
               </div>
               <DeleteIcon
+                className={styles.DeleteIcon}
                 onClick={() => handleRemoveVariable(variable.id)}
                 data-testid="delete-icon"
               />
