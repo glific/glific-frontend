@@ -63,20 +63,6 @@ test('it changes the translate option', async () => {
   fireEvent.click(screen.getByText('Continue'));
 });
 
-test('it translates the template', async () => {
-  render(wrapper({ saveClicked: true }));
-
-  fireEvent.click(screen.getByText('Translate'));
-
-  await waitFor(() => {
-    expect(screen.getByText('Translate Options')).toBeInTheDocument();
-  });
-
-  await waitFor(() => {
-    expect(setStatesMock).toHaveBeenCalled();
-  });
-});
-
 test('it imports the template', async () => {
   render(wrapper({ saveClicked: false }));
 

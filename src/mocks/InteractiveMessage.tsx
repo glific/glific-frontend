@@ -349,21 +349,6 @@ const quickReplyResult = {
   },
 };
 
-export const mocks: any = [
-  createMockByType(quickReplyMock),
-  createMockByType(listReplyMock),
-  createInteractiveCustomMock(),
-  updateMockByType('1', quickReplyMockInput, quickReplyMock),
-  updateMockByType('2', listReplyMock, listReplyMock),
-  updateMockByType('3', quickReply, quickReplyResult),
-  getTemplateByType('1', quickReplyMock),
-  getTemplateByType('2', listReplyMock),
-  getTemplateByType('3', quickReplyMedia),
-  deleteMock,
-  getFilterTagQuery,
-  getOrganizationLanguagesWithoutOrder,
-];
-
 export const translateInteractiveTemplateMock = {
   request: {
     query: TRANSLATE_INTERACTIVE_TEMPLATE,
@@ -408,3 +393,21 @@ export const exportInteractiveTemplateMock = {
     },
   },
 };
+
+export const mocks: any = [
+  createMockByType(quickReplyMock),
+  createMockByType(listReplyMock),
+  createInteractiveCustomMock(),
+  updateMockByType('1', quickReplyMockInput, quickReplyMock),
+  updateMockByType('2', listReplyMock, listReplyMock),
+  updateMockByType('3', quickReply, quickReplyResult),
+  getTemplateByType('1', quickReplyMock),
+  getTemplateByType('2', listReplyMock),
+  getTemplateByType('3', quickReplyMedia),
+  deleteMock,
+  getFilterTagQuery,
+  getOrganizationLanguagesWithoutOrder,
+  translateInteractiveTemplateMock,
+  importInteractiveTemplateMock,
+  exportInteractiveTemplateMock,
+];

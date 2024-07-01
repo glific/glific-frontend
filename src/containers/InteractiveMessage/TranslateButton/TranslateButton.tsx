@@ -10,7 +10,7 @@ import {
 } from 'graphql/mutations/InteractiveMessage';
 
 import { exportCsvFile } from 'common/utils';
-import { setErrorMessage } from 'common/notification';
+import { setErrorMessage, setNotification } from 'common/notification';
 
 import TranslateIcon from 'assets/images/icons/LanguageTranslation.svg?react';
 
@@ -76,6 +76,7 @@ export const TranslateButton = ({
     onCompleted: ({ translateInteractiveTemplate }: any) => {
       const interactiveMessage = translateInteractiveTemplate?.interactiveTemplate;
       setStates(interactiveMessage);
+      setNotification('Interactive Message Translated Successfully', 'success');
       handleClose();
     },
     onError(error: any) {

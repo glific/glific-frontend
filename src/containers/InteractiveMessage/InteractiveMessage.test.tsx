@@ -384,3 +384,23 @@ test('It creates a interactive message with dynamic content', async () => {
   fireEvent.change(getAllByRole('textbox')[4], { target: { value: '@results.result_1' } });
   fireEvent.click(getByTestId('submitActionButton'));
 });
+
+describe('translates the template', () => {
+  test('it translates the template', async () => {
+    render(renderInteractiveMessage('1'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Edit Interactive message')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('previewButton'));
+
+    fireEvent.click(screen.getByText('Translate Interactive Message'));
+
+    fireEvent.click(screen.getByText('Continue'));
+
+    await waitFor(() => {
+      expect(setNotification).toHaveBeenCalled();
+    });
+  });
+});
