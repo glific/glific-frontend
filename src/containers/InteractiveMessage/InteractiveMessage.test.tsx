@@ -316,21 +316,6 @@ test('it validates url', async () => {
   fireEvent.change(getAllByRole('textbox')[4], { target: { value: 'bhhdhds' } });
 });
 
-describe('copy interactive message', () => {
-  test('it renders copy interactive quick reply message', async () => {
-    mockUseLocationValue.state = 'copy';
-
-    const { getByText, getAllByTestId } = render(renderInteractiveMessage('1'));
-    // vi.spyOn(axios, 'get').mockResolvedValueOnce(responseMock1);
-
-    await waitFor(() => {
-      expect(getByText('Copy Interactive Message')).toBeInTheDocument();
-      const input = getAllByTestId('input');
-      expect(input[0]?.querySelector('input')).toHaveValue('Copy of Continue');
-    });
-  });
-});
-
 describe('location request message', () => {
   test('it renders empty location request message', async () => {
     render(interactiveMessage);
@@ -401,6 +386,21 @@ describe('translates the template', () => {
 
     await waitFor(() => {
       expect(setNotification).toHaveBeenCalled();
+    });
+  });
+});
+
+describe('copy interactive message', () => {
+  test('it renders copy interactive quick reply message', async () => {
+    mockUseLocationValue.state = 'copy';
+
+    const { getByText, getAllByTestId } = render(renderInteractiveMessage('1'));
+    // vi.spyOn(axios, 'get').mockResolvedValueOnce(responseMock1);
+
+    await waitFor(() => {
+      expect(getByText('Copy Interactive Message')).toBeInTheDocument();
+      const input = getAllByTestId('input');
+      expect(input[0]?.querySelector('input')).toHaveValue('Copy of Continue');
     });
   });
 });

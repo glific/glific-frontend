@@ -31,7 +31,6 @@ const filterInteractiveFunction = (filter: any, opts: any) => ({
             '{"type":"quick_reply","options":[{"type":"text","title":"yes"},{"type":"text","title":"no"}],"content":{"type":"text","text":"Glific comes with all new features","header":"Are you excited for *Glific*?"}}',
           label: 'Are you excited for Glific?',
           language: {
-            __typename: 'Language',
             id: '1',
             label: 'English',
           },
@@ -285,6 +284,8 @@ const updateMockByType = (id: string, input: any, response: any) => ({
           id,
           insertedAt: '2021-07-14T11:12:42Z',
           updatedAt: '2021-07-14T11:26:00Z',
+          tag: null,
+          language: { id: '1', label: 'English' },
           ...response,
         },
         errors: null,
@@ -306,6 +307,8 @@ const getTemplateByType = (id: string, body: any) => ({
       interactiveTemplate: {
         interactiveTemplate: {
           id,
+          language: { id: '1', label: 'English' },
+          tag: null,
           ...body,
         },
       },
@@ -370,7 +373,7 @@ export const importInteractiveTemplateMock = {
   },
   result: {
     data: {
-      translateInteractiveTemplate: {
+      importInteractiveTemplate: {
         interactiveTemplate: { ...quickReplyResult, tag: null, id: '1' },
         errors: null,
       },
