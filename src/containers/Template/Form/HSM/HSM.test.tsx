@@ -3,7 +3,6 @@ import { render, waitFor, within, fireEvent, screen } from '@testing-library/rea
 import { MockedProvider } from '@apollo/client/testing';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
-import * as Notification from 'common/notification';
 import { HSM } from './HSM';
 import { TEMPLATE_MOCKS } from 'containers/Template/Template.test.helper';
 
@@ -70,150 +69,42 @@ describe('Add mode', () => {
     });
   });
 
-  test.skip('it should create a template message', async () => {
-    const notificationSpy = vi.spyOn(Notification, 'setNotification');
+  test('it should create a template message', async () => {
     render(template);
-
-    await waitFor(() => {
-      expect(screen.getByText('Loading...')).toBeInTheDocument();
-    });
 
     await waitFor(() => {
       expect(screen.getByText('Add a new HSM Template')).toBeInTheDocument();
     });
 
     const inputs = screen.getAllByRole('textbox');
-    const message = screen.getByTestId('editor-body') as HTMLElement;
 
-    fireEvent.change(inputs[0], 'welcome');
-    fireEvent.change(inputs[1], 'title');
+    fireEvent.change(inputs[0], { target: { value: 'element_name' } });
+    fireEvent.change(inputs[1], { target: { value: 'element_name' } });
+    const lexicalEditor = inputs[2];
 
-    // add message
-    await user.click(message);
+    await user.click(lexicalEditor);
     await user.tab();
-    fireEvent.input(message, { data: 'Hi' });
+    fireEvent.input(lexicalEditor, { data: 'Hi, How are you' });
 
-    const [_language, category, attachmentType] = screen.getAllByTestId('autocomplete-element');
-    category.focus();
-    fireEvent.keyDown(category, { key: 'ArrowDown' });
-    fireEvent.keyDown(category, { key: 'ArrowDown' });
-    fireEvent.keyDown(category, { key: 'Enter' });
+    const autocompletes = screen.getAllByTestId('autocomplete-element');
+    autocompletes[1].focus();
+    fireEvent.keyDown(autocompletes[1], { key: 'ArrowDown' });
 
-    attachmentType.focus();
-    fireEvent.keyDown(attachmentType, { key: 'ArrowDown' });
-    fireEvent.keyDown(attachmentType, { key: 'ArrowDown' });
-    fireEvent.keyDown(attachmentType, { key: 'Enter' });
+    fireEvent.click(screen.getByText('ACCOUNT_UPDATE'), { key: 'Enter' });
 
-    fireEvent.change(inputs[3], {
-      target: { value: " 'https://www.buildquickbots.com/whatsapp/media/sample/jpg/sample02.jpg'" },
+    await waitFor(() => {
+      expect(screen.getByText('Hi, How are you')).toBeInTheDocument();
     });
+
+    fireEvent.click(screen.getByText('Add Variable'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Hi, How are you {{1}}')).toBeInTheDocument();
+    });
+    fireEvent.change(inputs[1], { target: { value: 'element_name' } });
+
+    fireEvent.change(screen.getByPlaceholderText('Define value'), { target: { value: 'User' } });
 
     fireEvent.click(screen.getByTestId('submitActionButton'));
-
-    await waitFor(() => {
-      expect(notificationSpy).toHaveBeenCalled();
-    });
-  }, 10000);
-
-  test.skip('add quick reply buttons when adding a template', async () => {
-    const notificationSpy = vi.spyOn(Notification, 'setNotification');
-    render(template);
-
-    await waitFor(() => {
-      const language = screen.getAllByTestId('AutocompleteInput')[0].querySelector('input');
-      expect(language).toHaveValue('English');
-    });
-
-    const title = screen.getAllByTestId('input')[0].querySelector('input') as HTMLInputElement;
-    const elementName = document.querySelector('input[name="newShortCode"]') as HTMLInputElement;
-    const message = screen.getByTestId('editor-body') as HTMLElement;
-
-    await user.type(title, 'Hello');
-    await user.type(elementName, 'welcome');
-
-    // add message
-    await user.click(message);
-    await user.tab();
-    fireEvent.input(message, { data: 'Hi, How are you' });
-
-    await user.click(screen.getByText('Add buttons'));
-    await user.click(screen.getByText('Quick replies'));
-    await user.click(screen.getByTestId('addButton'));
-
-    const quickReply1 = screen
-      .getAllByTestId('quickReplyWrapper')[0]
-      .querySelector('input') as HTMLInputElement;
-    const quickReply2 = screen
-      .getAllByTestId('quickReplyWrapper')[1]
-      .querySelector('input') as HTMLInputElement;
-
-    await user.type(quickReply1, 'Quick reply 1');
-    fireEvent.blur(quickReply1);
-    await user.type(quickReply2, 'Quick reply 2');
-    fireEvent.blur(quickReply2);
-
-    // update category
-    const [_language, category] = screen.getAllByTestId('autocomplete-element');
-    category.focus();
-    fireEvent.keyDown(category, { key: 'ArrowDown' });
-    fireEvent.keyDown(category, { key: 'ArrowDown' });
-    fireEvent.keyDown(category, { key: 'Enter' });
-
-    fireEvent.click(screen.getByTestId('submitActionButton'));
-
-    await waitFor(() => {
-      expect(notificationSpy).toHaveBeenCalled();
-    });
-  });
-
-  test.skip('add quick reply buttons with call to action', async () => {
-    const notificationSpy = vi.spyOn(Notification, 'setNotification');
-    render(template);
-
-    await waitFor(() => {
-      const language = screen.getAllByTestId('AutocompleteInput')[0].querySelector('input');
-      expect(language).toHaveValue('English');
-    });
-
-    const title = screen.getAllByTestId('input')[0].querySelector('input') as HTMLInputElement;
-    const elementName = document.querySelector('input[name="newShortCode"]') as HTMLInputElement;
-    const message = screen.getByTestId('editor-body') as HTMLElement;
-
-    await user.type(title, 'Hello');
-    await user.type(elementName, 'welcome');
-
-    // add message
-    await user.click(message);
-    await user.tab();
-    fireEvent.input(message, { data: 'Hi, How are you' });
-
-    await user.click(screen.getByText('Add buttons'));
-    await user.click(screen.getByText('Call to actions'));
-    await user.click(screen.getByText('Phone number'));
-
-    const quickReply1 = screen
-      .getByTestId('buttonTitle')
-      .querySelector('input') as HTMLInputElement;
-    const quickReply2 = screen
-      .getByTestId('buttonValue')
-      .querySelector('input') as HTMLInputElement;
-
-    await user.type(quickReply1, 'Call me');
-    fireEvent.blur(quickReply1);
-    await user.type(quickReply2, '9876543210');
-    fireEvent.blur(quickReply2);
-
-    // update category
-    const [_language, category] = screen.getAllByTestId('autocomplete-element');
-    category.focus();
-    fireEvent.keyDown(category, { key: 'ArrowDown' });
-    fireEvent.keyDown(category, { key: 'ArrowDown' });
-    fireEvent.keyDown(category, { key: 'Enter' });
-
-    fireEvent.click(screen.getByTestId('submitActionButton'));
-
-    await waitFor(() => {
-      expect(notificationSpy).toHaveBeenCalled();
-    });
   });
 });
