@@ -351,7 +351,7 @@ export const BillingForm = () => {
               <div>
                 <div className={styles.Heading}>One time setup</div>
                 <div className={styles.Pricing}>
-                  <span>INR 15000</span> ($220)
+                  <span>INR 15,000</span> ($200)
                 </div>
                 <div className={styles.Pricing}>+ taxes</div>
                 <ul className={styles.List}>
@@ -362,12 +362,11 @@ export const BillingForm = () => {
               <div>
                 <div className={styles.Heading}>Monthly Recurring</div>
                 <div className={styles.Pricing}>
-                  <span>INR 7,500</span> ($110)
+                  <span>INR 9,500</span> ($120)
                 </div>
                 <div className={styles.Pricing}>+ taxes</div>
                 <ul className={styles.List}>
                   <li>upto 250k messages</li>
-                  <li>1-10 users</li>
                 </ul>
               </div>
             </div>
@@ -382,7 +381,7 @@ export const BillingForm = () => {
           <div className={styles.BottomSection}>
             <div className={styles.InactiveHeading}>
               Suspended or inactive accounts:{' '}
-              <span className={styles.Amount}> INR 4,500/mo + taxes</span>
+              <span className={styles.Amount}> INR 1,500/mo + taxes</span>
             </div>
           </div>
         </div>
