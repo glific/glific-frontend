@@ -129,6 +129,7 @@ const completionMock = {
     ],
   },
 };
+const user = userEvent.setup();
 
 // Getting contact variables
 vi.spyOn(axios, 'get').mockImplementation((url: string) => {
@@ -371,14 +372,67 @@ test('It creates a interactive message with dynamic content', async () => {
 });
 
 describe('translates the template', () => {
-  test('it translates the template', async () => {
+  test('it shows error if clicked on translation without filling details', async () => {
+    const { getByText } = render(interactiveMessage);
+
+    await waitFor(() => {
+      expect(getByText('Add a new Interactive message')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('translateBtn'));
+
+    await waitFor(() => {
+      expect(getByText('Message content is required.')).toBeInTheDocument();
+    });
+  });
+
+  test('it translates a new template', async () => {
+    const { getByText } = render(interactiveMessage);
+
+    await waitFor(() => {
+      expect(getByText('Add a new Interactive message')).toBeInTheDocument();
+    });
+
+    const [title, lexicalEditor, , buttonText] = screen.getAllByRole('textbox');
+
+    fireEvent.change(title, { target: { value: 'new title' } });
+    fireEvent.change(buttonText, {
+      target: { value: 'new button text' },
+    });
+    await user.click(lexicalEditor);
+    await user.tab();
+
+    fireEvent.input(lexicalEditor, { data: 'Hi, How are you' });
+
+    await waitFor(() => {
+      expect(getByText('Hi, How are you')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('translateBtn'));
+
+    await waitFor(() => {
+      expect(getByText('Translate Options')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Continue'));
+
+    await waitFor(() => {
+      expect(setNotification).toHaveBeenCalled();
+    });
+  });
+
+  test('it translates an already exisiting template', async () => {
     render(renderInteractiveMessage('1'));
 
     await waitFor(() => {
       expect(screen.getByText('Edit Interactive message')).toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getByTestId('previewButton'));
+    fireEvent.click(screen.getByTestId('translateBtn'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Translate Options')).toBeInTheDocument();
+    });
 
     fireEvent.click(screen.getByText('Translate Interactive Message'));
 

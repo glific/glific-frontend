@@ -91,6 +91,7 @@ export const TranslateButton = ({
       onCompleted: ({ exportInteractiveTemplate }) => {
         const { exportData } = exportInteractiveTemplate;
         exportCsvFile(exportData, `Interactive_Message_Translations_${templateId}`);
+        setNotification('Interactive Message Exported Successfully', 'success');
         handleClose();
       },
       onError(error: any) {
@@ -215,7 +216,7 @@ export const TranslateButton = ({
 
   return (
     <div className={styles.Wrapper}>
-      <Button variant="outlined" color="primary" data-testid="previewButton" onClick={handleClick}>
+      <Button variant="outlined" color="primary" data-testid="translateBtn" onClick={handleClick}>
         <TranslateIcon className={styles.Icon} />
         Translate
       </Button>

@@ -120,7 +120,6 @@ export const IMPORT_INTERACTIVE_TEMPLATE = gql`
       }
       interactiveTemplate {
         id
-        insertedAt
         interactiveContent
         label
         language {
@@ -134,7 +133,6 @@ export const IMPORT_INTERACTIVE_TEMPLATE = gql`
         }
         translations
         type
-        updatedAt
       }
     }
   }

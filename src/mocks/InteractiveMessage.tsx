@@ -352,49 +352,83 @@ const quickReplyResult = {
   },
 };
 
-export const translateInteractiveTemplateMock = {
+export const translateInteractiveTemplateMock = (error: boolean = false) => ({
   request: {
     query: TRANSLATE_INTERACTIVE_TEMPLATE,
     variables: { translateInteractiveTemplateId: '1' },
   },
-  result: {
-    data: {
-      translateInteractiveTemplate: {
-        interactiveTemplate: { ...quickReplyResult, tag: null, id: '1' },
-        errors: null,
+  [error ? 'error' : 'result']: error
+    ? new Error('An error occured')
+    : {
+        data: {
+          translateInteractiveTemplate: {
+            interactiveTemplate: { ...quickReplyResult, tag: null, id: '1' },
+            errors: null,
+          },
+        },
       },
-    },
-  },
-};
+});
 
-export const importInteractiveTemplateMock = {
+export const importInteractiveTemplateMock = (error: boolean = false) => ({
   request: {
     query: IMPORT_INTERACTIVE_TEMPLATE,
   },
-  result: {
-    data: {
-      importInteractiveTemplate: {
-        interactiveTemplate: { ...quickReplyResult, tag: null, id: '1' },
-        errors: null,
+  [error ? 'error' : 'result']: error
+    ? new Error('An error occured')
+    : {
+        data: {
+          importInteractiveTemplate: {
+            interactiveTemplate: { ...quickReplyResult, tag: null, id: '1' },
+            errors: null,
+          },
+        },
       },
-    },
-  },
   variableMatcher: (variables: any) => true,
-};
+});
 
-export const exportInteractiveTemplateMock = {
+export const exportInteractiveTemplateMock = (error: boolean = false) => ({
   request: {
     query: EXPORT_INTERACTIVE_TEMPLATE,
     variables: { exportInteractiveTemplateId: '1', addTranslation: true },
   },
-  result: {
-    data: {
-      exportInteractiveTemplate: {
-        exportData:
-          'Attribute,en,hi\nHeader,test,परीक्षा\nText,test,परीक्षा\nOptionTitle 1,test,परीक्षा\n',
+  [error ? 'error' : 'result']: error
+    ? new Error('An error occured')
+    : {
+        data: {
+          exportInteractiveTemplate: {
+            exportData:
+              'Attribute,en,hi\nHeader,test,परीक्षा\nText,test,परीक्षा\nOptionTitle 1,test,परीक्षा\n',
+          },
+        },
       },
-    },
+});
+
+export const exportInteractiveTemplateMockWithoutTranslation = (error: boolean = false) => ({
+  request: {
+    query: EXPORT_INTERACTIVE_TEMPLATE,
+    variables: { exportInteractiveTemplateId: '1', addTranslation: false },
   },
+  [error ? 'error' : 'result']: error
+    ? new Error('An error occured')
+    : {
+        data: {
+          exportInteractiveTemplate: {
+            exportData:
+              'Attribute,en,hi\nHeader,test,परीक्षा\nText,test,परीक्षा\nOptionTitle 1,test,परीक्षा\n',
+          },
+        },
+      },
+});
+
+const quick_reply = {
+  type: 'QUICK_REPLY',
+  interactiveContent:
+    '{"type":"quick_reply","content":{"type":"text","header":"new title","text":"Hi, How are you"},"options":[{"type":"text","title":"new button text"}]}',
+  languageId: '1',
+  label: 'new title',
+  sendWithTitle: false,
+  translations:
+    '{"1":{"type":"quick_reply","content":{"type":"text","header":"new title","text":"Hi, How are you"},"options":[{"type":"text","title":"new button text"}]}}',
 };
 
 export const mocks: any = [
@@ -407,10 +441,12 @@ export const mocks: any = [
   getTemplateByType('1', quickReplyMock),
   getTemplateByType('2', listReplyMock),
   getTemplateByType('3', quickReplyMedia),
+  createMockByType(quick_reply),
   deleteMock,
   getFilterTagQuery,
   getOrganizationLanguagesWithoutOrder,
-  translateInteractiveTemplateMock,
-  importInteractiveTemplateMock,
-  exportInteractiveTemplateMock,
+  translateInteractiveTemplateMock(),
+  importInteractiveTemplateMock(),
+  exportInteractiveTemplateMock(),
+  exportInteractiveTemplateMockWithoutTranslation(),
 ];
