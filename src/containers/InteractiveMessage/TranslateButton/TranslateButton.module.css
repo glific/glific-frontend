@@ -1,0 +1,20 @@
+.Wrapper {
+  position: fixed;
+  right: 0;
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 2rem;
+}
+
+.FormHelper {
+  padding-left: 16px;
+  margin-bottom: 10px;
+}
+
+.Radio {
+  padding: 0 8px;
+}
+
+.DialogContent {
+  text-align: center;
+}

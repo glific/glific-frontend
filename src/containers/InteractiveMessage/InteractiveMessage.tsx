@@ -42,6 +42,7 @@ import {
 import { GET_TAGS } from 'graphql/queries/Tags';
 import { CreateAutoComplete } from 'components/UI/Form/CreateAutoComplete/CreateAutoComplete';
 import { interactiveMessageInfo } from 'common/HelpData';
+import { TranslateButton } from './TranslateButton/TranslateButton';
 
 const interactiveMessageIcon = (
   <InteractiveMessageIcon className={styles.Icon} data-testid="interactive-icon" />
@@ -75,13 +76,14 @@ export const InteractiveMessage = () => {
   const [attachmentURL, setAttachmentURL] = useState<any>('');
   const [contactVariables, setContactVariables] = useState([]);
   const [defaultLanguage, setDefaultLanguage] = useState<any>({});
-  const [sendWithTitle, setSendWithTitle] = useState<boolean>(true);
+  const [sendWithTitle, setSendWithTitle] = useState<boolean>(false);
   const [validatingURL, setValidatingURL] = useState<boolean>(false);
   const [tagId, setTagId] = useState<any>(null);
   const [language, setLanguage] = useState<any>({});
   const [languageOptions, setLanguageOptions] = useState<any>([]);
   const [editorState, setEditorState] = useState<any>('');
   const [dynamicMedia, setDynamicMedia] = useState<boolean>(false);
+  const [saveClicked, setSaveClicked] = useState<boolean>(false);
 
   const [translations, setTranslations] = useState<any>('{}');
 
@@ -89,11 +91,13 @@ export const InteractiveMessage = () => {
   const [nextLanguage, setNextLanguage] = useState<any>('');
   const { t } = useTranslation();
   const params = useParams();
-
   let isEditing = false;
+
   if (params?.id) {
     isEditing = true;
   }
+
+  const hasTranslations = params?.id && defaultLanguage?.id !== language?.id;
 
   const isLocationRequestType = templateType === LOCATION_REQUEST;
 
@@ -200,7 +204,6 @@ export const InteractiveMessage = () => {
     sendWithTitle: sendInteractiveTitleValue,
   }: any) => {
     let content;
-
     if (translationsVal) {
       const translationsCopy = JSON.parse(translationsVal);
 
@@ -488,9 +491,15 @@ export const InteractiveMessage = () => {
     }
   };
 
-  const hasTranslations = params?.id && defaultLanguage?.id !== language?.id;
-
   const fields = [
+    {
+      component: TranslateButton,
+      field: 'translate',
+      setStates: setStates,
+      templateId: params?.id,
+      saveClicked,
+      setSaveClicked,
+    },
     {
       field: 'languageBar',
       component: LanguageBar,

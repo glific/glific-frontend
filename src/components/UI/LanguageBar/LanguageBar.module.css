@@ -2,13 +2,14 @@
   position: fixed;
   top: 32px;
   right: 24px;
-
   z-index: 1000;
   max-width: 500px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
 }
 
 .LanguageWrapper > button {
-  justify-content: unset !important;
   font-weight: 400 !important;
   font-size: 16px !important;
   line-height: 1 !important;
@@ -16,6 +17,7 @@
   padding: 6px !important;
   text-transform: none !important;
   text-decoration: underline;
+  min-width: auto !important;
 }
 
 .LanguageWrapper > button:hover {
