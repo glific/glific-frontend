@@ -20,6 +20,19 @@ export const CONTACT_SEARCH_QUERY = gql`
   }
 `;
 
+export const GET_CONTACTS_LIST = gql`
+  query contacts($filter: ContactFilter!, $opts: Opts!) {
+    contacts(filter: $filter, opts: $opts) {
+      id
+      name
+      groups {
+        id
+        label
+      }
+    }
+  }
+`;
+
 export const GET_CONTACT_COUNT = gql`
   query countContacts($filter: ContactFilter!) {
     countContacts(filter: $filter)

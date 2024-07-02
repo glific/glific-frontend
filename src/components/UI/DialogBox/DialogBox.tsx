@@ -25,6 +25,7 @@ export interface DialogProps {
   buttonMiddle?: string | null;
   additionalTitleStyles?: string | null;
   buttonOkLoading?: boolean;
+  fullWidth?: boolean;
 }
 
 export const DialogBox = ({
@@ -48,6 +49,7 @@ export const DialogBox = ({
   alwaysOntop = false,
   buttonMiddle,
   buttonOkLoading = false,
+  fullWidth = false,
 }: DialogProps) => {
   let cancelButtonDisplay = null;
   if (!skipCancel) {
@@ -124,7 +126,7 @@ export const DialogBox = ({
       open={open}
       classes={{
         container: styles.Dialogbox,
-        paper: styles.DialogboxPaper,
+        paper: `${styles.DialogboxPaper} ${fullWidth && styles.FullWidth}`,
         scrollPaper: styles.ScrollPaper,
         root: alwaysOntop ? styles.DialogboxRoot : '',
       }}

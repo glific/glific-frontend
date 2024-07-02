@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import CollectionIcon from 'assets/images/icons/Collection/Dark.svg?react';
 import AddContactIcon from 'assets/images/icons/Contact/Add.svg?react';
+import AddGroupIcon from 'assets/images/icons/AddGroupIcon.svg?react';
 import ExportIcon from 'assets/images/icons/Flow/Export.svg?react';
 import {
   DELETE_COLLECTION,
@@ -15,7 +16,7 @@ import {
   FILTER_COLLECTIONS,
   EXPORT_COLLECTION_DATA,
 } from 'graphql/queries/Collection';
-import { CONTACT_SEARCH_QUERY, GET_COLLECTION_CONTACTS } from 'graphql/queries/Contact';
+import { GET_CONTACTS_LIST } from 'graphql/queries/Contact';
 import { List } from 'containers/List/List';
 import { SearchDialogBox } from 'components/UI/SearchDialogBox/SearchDialogBox';
 import { getUserRolePermissions, getUserRole } from 'context/role';
@@ -76,7 +77,7 @@ export const CollectionList = () => {
   }>({ groupType: groups ? WA_GROUPS_COLLECTION : CONTACTS_COLLECTION });
 
   const entity = groups ? 'waGroups' : 'contacts';
-  const entityQuery = groups ? GET_WA_GROUPS : CONTACT_SEARCH_QUERY;
+  const entityQuery = groups ? GET_WA_GROUPS : GET_CONTACTS_LIST;
 
   const searchQuery = groups ? GROUP_SEARCH_QUERY : SEARCH_QUERY;
   const searchVariables = groups
@@ -104,9 +105,7 @@ export const CollectionList = () => {
   };
 
   const [getContacts, { data: entityData }] = useLazyQuery(entityQuery, {
-    variables: groups
-      ? setVariables({ label: contactSearchTerm }, 50)
-      : setVariables({ name: contactSearchTerm }, 50),
+    fetchPolicy: 'cache-and-network',
   });
   const [exportCollectionData] = useLazyQuery(EXPORT_COLLECTION_DATA, {
     onCompleted: (data) => {
@@ -122,25 +121,12 @@ export const CollectionList = () => {
     },
   });
 
-  const [getCollectionContacts, { data: collectionContactsData }] =
-    useLazyQuery(GET_COLLECTION_CONTACTS);
-
   const [updateCollectionContacts] = useMutation(updateMutation, {
     onCompleted: (data) => {
       let updateVariable = groups ? 'updateCollectionWaGroup' : 'updateGroupContacts';
-      const { numberDeleted, groupContacts } = data[updateVariable];
+      const { groupContacts } = data[updateVariable];
       const numberAdded = groupContacts.length;
-      if (numberDeleted > 0 && numberAdded > 0) {
-        setNotification(
-          `${numberDeleted} ${groups ? 'group' : 'contact'}${
-            numberDeleted === 1 ? '' : 's  were'
-          } removed and ${numberAdded} ${groups ? 'group' : 'contact'}${numberAdded === 1 ? '' : 's  were'} added`
-        );
-      } else if (numberDeleted > 0) {
-        setNotification(
-          `${numberDeleted} ${groups ? 'group' : 'contact'}${numberDeleted === 1 ? '' : 's  were'} removed`
-        );
-      } else {
+      if (numberAdded > 0) {
         setNotification(
           `${numberAdded} ${groups ? 'group' : 'contact'}${numberAdded === 1 ? '' : 's  were'} added`
         );
@@ -148,26 +134,24 @@ export const CollectionList = () => {
       setUpdateCollection((updateCollection) => !updateCollection);
       setAddContactsDialogShow(false);
     },
-    refetchQueries: [{ query: GET_COLLECTION_CONTACTS, variables: { id: collectionId } }],
   });
 
   const dialogMessage = t("You won't be able to use this collection again.");
 
   let contactOptions: any = [];
-  let collectionEntities: Array<any> = [];
 
   if (entityData) {
     contactOptions = entityData[entity];
-  }
-  if (collectionContactsData) {
-    collectionEntities = collectionContactsData.group.group[entity];
   }
 
   let dialog = null;
 
   const setContactsDialog = (id: any) => {
-    getCollectionContacts({ variables: { id } });
-    getContacts();
+    getContacts({
+      variables: groups
+        ? setVariables({ label: contactSearchTerm, excludeGroups: id }, 50)
+        : setVariables({ name: contactSearchTerm, excludeGroups: id }, 50),
+    });
     setCollectionId(id);
     setAddContactsDialogShow(true);
   };
@@ -181,16 +165,8 @@ export const CollectionList = () => {
     });
   };
 
-  const handleCollectionAdd = (value: any) => {
-    const selectedContacts = value.filter(
-      (contact: any) =>
-        !collectionEntities.map((collectionContact: any) => collectionContact.id).includes(contact)
-    );
-    const unselectedContacts = collectionEntities
-      .map((collectionContact: any) => collectionContact.id)
-      .filter((contact: any) => !value.includes(contact));
-
-    if (selectedContacts.length === 0 && unselectedContacts.length === 0) {
+  const handleCollectionAdd = (selectedContacts: any) => {
+    if (selectedContacts.length === 0) {
       setAddContactsDialogShow(false);
     } else {
       const addvariable = groups ? 'addWaGroupIds' : 'addContactIds';
@@ -200,16 +176,20 @@ export const CollectionList = () => {
           input: {
             [addvariable]: selectedContacts,
             groupId: collectionId,
-            [deletevariable]: unselectedContacts,
+            [deletevariable]: [],
           },
         },
       });
     }
   };
 
-  let searchDialogTitle = groups
-    ? t('Add groups to the collection')
-    : t('Add contacts to the collection');
+  let searchDialogTitle = t('Add contacts to the collection');
+  let selectPlaceHolder = t('Select contacts');
+
+  if (groups) {
+    searchDialogTitle = t('Add groups to the collection');
+    selectPlaceHolder = t('Select groups');
+  }
 
   if (addContactsDialogShow) {
     dialog = (
@@ -222,7 +202,7 @@ export const CollectionList = () => {
         additionalOptionLabel="phone"
         asyncSearch
         disableClearable
-        selectedOptions={collectionEntities}
+        selectedOptions={[]}
         renderTags={false}
         searchLabel="Search contacts"
         textFieldPlaceholder="Type here"
@@ -231,11 +211,14 @@ export const CollectionList = () => {
             setContactSearchTerm(value);
           }
         }}
+        fullWidth={true}
+        showTags={false}
+        placeholder={selectPlaceHolder}
       />
     );
   }
 
-  const addContactIcon = <AddContactIcon />;
+  const addContactIcon = groups ? <AddGroupIcon /> : <AddContactIcon />;
   const addEntiyLabel = groups ? t('Add groups to collection') : t('Add contacts to collection');
 
   const addEntity = {

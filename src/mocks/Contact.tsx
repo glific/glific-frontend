@@ -7,6 +7,8 @@ import {
   GET_CONTACT_HISTORY,
   COUNT_CONTACT_HISTORY,
   GET_CONTACT_PROFILES,
+  GET_COLLECTION_CONTACTS,
+  GET_CONTACTS_LIST,
 } from 'graphql/queries/Contact';
 import { addFlowToContactQuery } from 'mocks/Flow';
 import { getOrganizationLanguagesQuery, getOrganizationQuery } from 'mocks/Organization';
@@ -526,3 +528,93 @@ export const LOGGED_IN_USER_MULTIPLE_PROFILES = [
   getContactQuery,
   getContactProfiles,
 ];
+
+export const getGroupContact = {
+  request: {
+    query: GET_COLLECTION_CONTACTS,
+    variables: { id: '1' },
+  },
+  result: {
+    data: {
+      group: {
+        group: {
+          contacts: [
+            {
+              id: '1',
+              name: 'Glific User',
+              phone: '987654321',
+            },
+          ],
+          waGroups: [
+            {
+              name: 'Group 1',
+              id: '1',
+            },
+          ],
+        },
+      },
+    },
+  },
+};
+
+export const getExcludedContactsQuery = (excludeGroups: any) => ({
+  request: {
+    query: GET_CONTACTS_LIST,
+    variables: {
+      filter: { name: '', excludeGroups },
+      opts: { limit: 50, offset: 0, order: 'ASC' },
+    },
+  },
+  result: {
+    data: {
+      contacts: [
+        {
+          __typename: 'Contact',
+          groups: [
+            {
+              __typename: 'Group',
+              id: '4',
+              label: 'Default Group',
+            },
+            {
+              __typename: 'Group',
+              id: '2',
+              label: 'Optout contacts',
+            },
+          ],
+          id: '2',
+          name: 'NGO Admin',
+        },
+        {
+          __typename: 'Contact',
+          groups: [
+            {
+              __typename: 'Group',
+              id: '2',
+              label: 'Optout contacts',
+            },
+          ],
+          id: '1',
+          name: 'NGO Main Account',
+        },
+        {
+          __typename: 'Contact',
+          groups: [
+            {
+              __typename: 'Group',
+              id: '2',
+              label: 'Optout contacts',
+            },
+            {
+              __typename: 'Group',
+              id: '4',
+              label: 'Default Group',
+            },
+          ],
+          id: '3',
+          name: 'NGO Manager',
+        },
+      ],
+    },
+  },
+});

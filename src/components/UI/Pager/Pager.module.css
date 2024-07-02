@@ -119,3 +119,28 @@
 .Skeleton {
   margin: 10px;
 }
+
+.SelectedItems {
+  composes: RowHeadStyle;
+  font-weight: 700;
+  text-align: left;
+}
+
+.Icon {
+  composes: RowHeadStyle;
+}
+
+.Icon span {
+  background-color: #fff;
+  border-radius: 100%;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  width: 30px;
+  margin-left: auto;
+  cursor: pointer;
+}
+
+.Checkbox {
+  padding: 1rem;
+}
