@@ -1,4 +1,8 @@
-import { DELETE_INACTIVE_ORGANIZATIONS, UPDATE_CREDENTIAL } from 'graphql/mutations/Organization';
+import {
+  CREATE_CREDENTIAL,
+  DELETE_INACTIVE_ORGANIZATIONS,
+  UPDATE_CREDENTIAL,
+} from 'graphql/mutations/Organization';
 import {
   GET_ORGANIZATION,
   USER_LANGUAGES,
@@ -934,3 +938,71 @@ export const getOrganizationStatus = (status: string) => ({
     },
   },
 });
+
+const getCredentials = {
+  request: {
+    query: GET_CREDENTIAL,
+    variables: { shortcode: 'maytapi' },
+  },
+  result: {
+    data: {
+      credential: {
+        __typename: 'CredentialResult',
+        credential: null,
+      },
+    },
+  },
+};
+
+export const getMaytapiProvider = [
+  getCredentials,
+  getCredentials,
+  {
+    request: {
+      query: GET_PROVIDERS,
+      variables: { filter: { shortcode: 'maytapi' } },
+    },
+    result: {
+      data: {
+        providers: [
+          {
+            description: 'Third party application to send message to WhatsApp group',
+            group: null,
+            id: '12',
+            isRequired: false,
+            keys: '{}',
+            name: 'Maytapi',
+            secrets:
+              '{"token":{"view_only":false,"type":"string","label":"Token","is_required":true,"default":null},"product_id":{"view_only":false,"type":"string","label":"Product ID","default":null}}',
+            shortcode: 'maytapi',
+          },
+        ],
+      },
+    },
+  },
+  {
+    request: {
+      query: CREATE_CREDENTIAL,
+      variables: {
+        input: {
+          shortcode: 'maytapi',
+          isActive: true,
+          keys: '{}',
+          secrets: '{"token":"token","product_id":"product_id"}',
+        },
+      },
+    },
+    result: {
+      data: {
+        createCredential: {
+          credential: {
+            id: '3',
+            keys: '{}',
+            secrets: '{"token":"token","product_id":"product_id"}',
+          },
+          errors: null,
+        },
+      },
+    },
+  },
+];

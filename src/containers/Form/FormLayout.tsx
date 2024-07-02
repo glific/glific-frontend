@@ -237,6 +237,7 @@ export const FormLayout = ({
 
   const [updateItem] = useMutation(updateItemQuery, {
     onCompleted: (data) => {
+      setShowConfirmationDialog(false);
       let itemUpdatedObject: any = Object.keys(data)[0];
       itemUpdatedObject = data[itemUpdatedObject];
       const updatedItem = itemUpdatedObject[listItem];
@@ -279,6 +280,7 @@ export const FormLayout = ({
       onSaveClick(false);
     },
     onError: (e: ApolloError) => {
+      setShowConfirmationDialog(false);
       onSaveClick(false);
       setErrorMessage(e);
       return null;
@@ -295,6 +297,7 @@ export const FormLayout = ({
 
   const [createItem] = useMutation(createItemQuery, {
     onCompleted: (data) => {
+      setShowConfirmationDialog(false);
       let itemCreatedObject: any = `create${camelCaseItem}`;
       itemCreatedObject = data[itemCreatedObject];
       const itemCreated = itemCreatedObject[listItem];
@@ -341,6 +344,7 @@ export const FormLayout = ({
       return [];
     },
     onError: (e: ApolloError) => {
+      setShowConfirmationDialog(false);
       onSaveClick(false);
       setErrorMessage(e);
       return null;
@@ -353,6 +357,8 @@ export const FormLayout = ({
     return null;
   }
   const performTask = (payload: any) => {
+    console.log(payload);
+
     if (itemId) {
       if (isLoadedData) {
         let idKey = idType;
@@ -644,6 +650,7 @@ export const FormLayout = ({
         colorOk="warning"
         alignButtons="center"
         contentAlign="center"
+        data-testid="confirmation-dialog"
       >
         {confirmationState?.message}
       </DialogBox>

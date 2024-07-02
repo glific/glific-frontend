@@ -7,6 +7,7 @@ import {
   getOrganizationSettings,
   getCredential,
   getQualityRating,
+  getMaytapiProvider,
 } from 'mocks/Organization';
 import { FLOW_STATUS_PUBLISHED, setVariables } from 'common/constants';
 import { UPDATE_ORGANIZATION } from 'graphql/mutations/Organization';
@@ -66,6 +67,7 @@ export const LIST_ITEM_MOCKS = [
   ...getCredential,
   getOrganizationSettings,
   getOrganizationLanguagesQuery,
+  ...getMaytapiProvider,
 ];
 
 const updateOrganizationMock = {
