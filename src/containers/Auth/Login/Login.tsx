@@ -133,8 +133,6 @@ export const Login = () => {
         } else if (error?.response?.data?.error) {
           setAuthError(error?.response?.data?.error?.message);
         }
-        // add log's
-        // setLogs(`phoneNumber:${values.phoneNumber} URL:${USER_SESSION}`, 'info');
         setLogs(error, 'error');
       });
   };
