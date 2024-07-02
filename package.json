@@ -40,7 +40,7 @@
     "i18next-browser-languagedetector": "^8.0.0",
     "interweave": "^13.1.0",
     "interweave-autolink": "^5.1.1",
-    "lexical": "^0.13.1",
+    "lexical": "^0.15.0",
     "lexical-beautiful-mentions": "^0.1.35",
     "pino": "^9.2.0",
     "pino-logflare": "^0.4.2",
