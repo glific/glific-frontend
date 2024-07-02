@@ -40,6 +40,7 @@ export const setDefaultValue = (editor: any, initialValue: any) => {
     const paragraph = $createParagraphNode();
     paragraph.append($createTextNode(initialValue || ''));
     root.append(paragraph);
+    paragraph.selectEnd();
   });
 };
 

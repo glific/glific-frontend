@@ -1,0 +1,59 @@
+.AddVariablesContainer {
+  margin: 1rem 0;
+}
+
+.AddVariable {
+  display: flex;
+  column-gap: 0.8rem;
+  border-radius: 8px;
+}
+
+.AddVariablesContainer h2 {
+  font-size: 1rem;
+  color: #555555;
+}
+
+.Variables {
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.5rem;
+  width: 100%;
+}
+
+.VariableContainer {
+  display: flex;
+  align-items: center;
+  column-gap: 12px;
+}
+
+.Variable {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  border-radius: 4px;
+  font-size: 14px;
+  width: 100%;
+}
+
+.VariableNumber {
+  font-size: 14.5px;
+  padding-right: 14px;
+  border-right: 2px solid #999999;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-items: center;
+}
+
+.DangerText {
+  margin-left: 14px;
+  font-size: 12px;
+  margin-top: 4px;
+  line-height: 18px;
+  font-weight: 400;
+  color: #fb5c5c;
+}
+
+.DeleteIcon {
+  cursor: pointer;
+}

@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { EmojiInput } from './EmojiInput';
 
 import userEvent from '@testing-library/user-event';
+import { LexicalWrapper } from 'common/LexicalWrapper';
 
 const setFieldValueMock = vi.fn();
 
@@ -16,18 +17,20 @@ const mockIntersectionObserver = class {
 (window as any).IntersectionObserver = mockIntersectionObserver;
 
 const wrapper = (
-  <EmojiInput
-    form={{
-      touched: false,
-      errors: {},
-      values: { input: '' },
-      setFieldValue: setFieldValueMock,
-    }}
-    field={{ name: 'input', value: '', onChange: vi.fn() }}
-    label="Title"
-    placeholder="Title"
-    rows={10}
-  />
+  <LexicalWrapper>
+    <EmojiInput
+      form={{
+        touched: false,
+        errors: {},
+        values: { input: '' },
+        setFieldValue: setFieldValueMock,
+      }}
+      field={{ name: 'input', value: '', onChange: vi.fn() }}
+      label="Title"
+      placeholder="Title"
+      rows={10}
+    />
+  </LexicalWrapper>
 );
 
 vi.mock('components/UI/EmojiPicker/EmojiPicker', async (importOriginal) => {

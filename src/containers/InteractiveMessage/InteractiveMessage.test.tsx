@@ -273,7 +273,6 @@ test('it renders interactive quick reply in edit mode', async () => {
   });
   const saveButton = screen.getByText('Save');
   fireEvent.click(saveButton);
-
   await waitFor(() => {
     expect(screen.getByText('Navigated to /interactive-message')).toBeInTheDocument();
   });
