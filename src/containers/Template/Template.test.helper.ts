@@ -243,7 +243,7 @@ const getTemplateData = {
       body: 'important template',
       example: 'important template',
       category: null,
-      shortcode: 'important template',
+      shortcode: 'important_template',
       isActive: true,
       translations: '{}',
       type: 'TEXT',

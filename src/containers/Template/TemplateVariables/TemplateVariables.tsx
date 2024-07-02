@@ -22,7 +22,7 @@ export const TemplateVariables = ({
   variables,
   setVariables,
   getVariables,
-  isEditing = false,
+  isEditing,
 }: TemplateOptionsProps) => {
   const [editor] = useLexicalComposerContext();
 
@@ -97,7 +97,7 @@ export const TemplateVariables = ({
               <DeleteIcon
                 className={styles.DeleteIcon}
                 onClick={() => handleRemoveVariable(variable.id)}
-                data-testid="delete-icon"
+                data-testid="delete-variable"
               />
             </div>
           ))}
