@@ -116,6 +116,7 @@ export interface TemplateProps {
   category?: any;
   onExampleChange?: any;
   languageStyle?: string;
+  setExampleState?: any;
 }
 
 interface CallToActionTemplate {
@@ -142,6 +143,7 @@ const Template = ({
   category,
   onExampleChange = () => {},
   languageStyle = 'dropdown',
+  setExampleState,
 }: TemplateProps) => {
   // "Audio" option is removed in case of HSM Template
   const mediaTypes =
@@ -187,7 +189,7 @@ const Template = ({
   }
 
   // disable fields in edit mode for hsm template
-  if (params.id && !isCopyState && defaultAttribute.isHsm) {
+  if (params.id && !isCopyState) {
     isEditing = true;
   }
 
@@ -259,7 +261,7 @@ const Template = ({
 
     if (typeof bodyValue === 'string') {
       setBody(bodyValue || '');
-      setEditorState(null);
+      setEditorState(bodyValue || '');
     }
 
     if (exampleValue) {
@@ -277,10 +279,12 @@ const Template = ({
         exampleBody = exampleValue;
       }
 
+      if (setExampleState) {
+        setExampleState(exampleValue);
+      }
       setExample(exampleValue);
       onExampleChange(exampleBody);
     }
-
     if (hasButtons) {
       setIsAddButtonChecked(hasButtons);
     }
@@ -300,7 +304,7 @@ const Template = ({
         const content = translationsCopy[currentLanguage];
         setLabel(content.label);
         setBody(content.body || '');
-        setEditorState(null);
+        setEditorState(bodyValue || '');
       }
       setTranslations(translationsValue);
     }
@@ -312,7 +316,7 @@ const Template = ({
     if (shortcodeValue) {
       setTimeout(() => setShortcode(shortcodeValue), 0);
     }
-    if (categoryValue) {
+    if (categoryValue && setCategory) {
       setCategory({ label: categoryValue, id: categoryValue });
     }
     if (tagIdValue) {
@@ -335,7 +339,7 @@ const Template = ({
 
     if (typeof bodyValue === 'string') {
       setBody(bodyValue || '');
-      setEditorState(null);
+      setEditorState(bodyValue || '');
     }
 
     if (typeValue && typeValue !== 'TEXT') {
@@ -594,7 +598,7 @@ const Template = ({
       optionLabel: 'label',
       multiple: false,
       label: t('Attachment Type'),
-      disabled: isEditing,
+      disabled: defaultAttribute.isHsm && isEditing,
       helperText: warning,
       onChange: (event: any) => {
         const val = event;
@@ -610,7 +614,7 @@ const Template = ({
       type: 'text',
       label: t('Attachment URL'),
       validate: () => isUrlValid,
-      disabled: isEditing,
+      disabled: defaultAttribute.isHsm && isEditing,
       helperText: t(
         'Please provide a sample attachment for approval purpose. You may send a similar but different attachment when sending the HSM to users.'
       ),
@@ -663,7 +667,7 @@ const Template = ({
       component: Input,
       name: 'label',
       label: t('Title'),
-      disabled: isEditing,
+      disabled: defaultAttribute.isHsm && isEditing,
       helperText: defaultAttribute.isHsm
         ? t('Define what use case does this template serve eg. OTP, optin, activity preference')
         : null,
@@ -679,16 +683,14 @@ const Template = ({
       rows: 5,
       convertToWhatsApp: true,
       textArea: true,
-      disabled: isEditing,
+      disabled: defaultAttribute.isHsm && isEditing,
       helperText: defaultAttribute.isHsm
         ? 'You can also use variable and interactive actions. Variable format: {{1}}, Button format: [Button text,Value] Value can be a URL or a phone number.'
         : null,
-      getEditorValue: (value: any) => {
+      handleChange: (value: any) => {
         setBody(value);
-        setEditorState(value);
       },
-      isEditing: isEditing,
-      editorState: editorState,
+      defaultValue: isEditing && editorState,
     },
   ];
 
@@ -870,7 +872,6 @@ const Template = ({
         }
       } else {
         delete payloadCopy.example;
-        delete payloadCopy.isActive;
         delete payloadCopy.shortcode;
         delete payloadCopy.category;
       }

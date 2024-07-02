@@ -175,7 +175,7 @@ export const InteractiveMessage = () => {
     setTitle(data.title);
     setFooter(data.footer || '');
     setBody(data.body || '');
-    setEditorState(null);
+    setEditorState(data.body || '');
     setTemplateType(typeValue);
     setTemplateTypeField(templateTypeOptions.find((option) => option.id === typeValue));
     setTimeout(() => setTemplateButtons(data.templateButtons), 100);
@@ -245,7 +245,7 @@ export const InteractiveMessage = () => {
     setTitle(titleText);
     setFooter(data.footer || '');
     setBody(data.body || '');
-    setEditorState(null);
+    setEditorState(data.body || '');
     setTemplateType(typeValue);
     setTemplateTypeField(templateTypeOptions.find((option) => option.id === typeValue));
     setTimeout(() => setTemplateButtons(data.templateButtons), 100);
@@ -546,15 +546,13 @@ export const InteractiveMessage = () => {
       convertToWhatsApp: true,
       textArea: true,
       helperText: t('You can also use variables in message enter @ to see the available list'),
-      getEditorValue: (value: any) => {
+      handleChange: (value: any) => {
         setBody(value);
-        setEditorState(value);
       },
       inputProp: {
         suggestions: contactVariables,
       },
-      isEditing: isEditing,
-      editorState: editorState,
+      defaultValue: isEditing && editorState,
     },
     {
       skip: templateType !== QUICK_REPLY,

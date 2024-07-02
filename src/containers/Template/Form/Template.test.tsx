@@ -74,6 +74,7 @@ const hsmProps = {
   languageStyle: 'dropdown',
   formField: templateFormHSMFormFields,
   setCategory: vi.fn(),
+  setExampleState: vi.fn(),
 };
 
 const hsmTemplateEdit = (templateId: string) => (

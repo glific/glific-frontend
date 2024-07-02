@@ -33,7 +33,7 @@ export const handleFormatting = (text: string, formatter: string) => {
   }
 };
 
-export const setInitialState = (editor: any, initialValue: any) => {
+export const setDefaultValue = (editor: any, initialValue: any) => {
   editor.update(() => {
     const root = $getRoot();
     root.clear();
