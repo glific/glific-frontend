@@ -357,8 +357,6 @@ export const FormLayout = ({
     return null;
   }
   const performTask = (payload: any) => {
-    console.log(payload);
-
     if (itemId) {
       if (isLoadedData) {
         let idKey = idType;
