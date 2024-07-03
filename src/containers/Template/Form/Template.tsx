@@ -354,8 +354,6 @@ const Template = ({
         const content = translationsCopy[currentLanguage];
         setLabel(content.label);
         setBody(content.body || '');
-        console.log(content.body);
-
         setEditorState(content.body || '');
       }
       setTranslations(translationsValue);
@@ -804,8 +802,7 @@ const Template = ({
 
   const hsmFields = formField && [
     ...formFields.slice(0, 1),
-    ...formField.slice(0, 1),
-    ...formField.slice(1, 3),
+    ...formField.slice(0, 3),
     ...formFields.slice(1),
     ...templateVariables,
     ...templateRadioOptions,

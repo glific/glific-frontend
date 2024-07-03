@@ -1,5 +1,5 @@
 import 'mocks/matchMediaMock';
-import { render, waitFor, within, fireEvent, screen, getAllByRole } from '@testing-library/react';
+import { render, waitFor, within, fireEvent, screen } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
@@ -28,7 +28,7 @@ describe('Edit mode', () => {
     });
 
     await waitFor(() => {
-      expect(getAllByRole('textbox')[0]).toHaveValue('important_template');
+      expect(getAllByRole('textbox')[0]).toHaveValue('account_balance');
     });
   });
 });
@@ -223,6 +223,9 @@ describe('Add mode', () => {
       target: { value: '9876543210' },
     });
 
+    fireEvent.click(screen.getByText('Add Call to action'));
+    fireEvent.click(screen.getAllByTestId('delete-icon')[1]);
+
     const autocompletes = screen.getAllByTestId('autocomplete-element');
     autocompletes[1].focus();
     fireEvent.keyDown(autocompletes[1], { key: 'ArrowDown' });
@@ -231,5 +234,46 @@ describe('Add mode', () => {
 
     fireEvent.click(screen.getByTestId('submitActionButton'));
     fireEvent.click(screen.getByTestId('submitActionButton'));
+  });
+
+  test('adding attachments', async () => {
+    render(template);
+
+    await waitFor(() => {
+      expect(screen.getByText('Add a new HSM Template')).toBeInTheDocument();
+    });
+
+    const autocompletes = screen.getAllByTestId('autocomplete-element');
+    const inputs = screen.getAllByRole('textbox');
+
+    autocompletes[2].focus();
+    fireEvent.keyDown(autocompletes[2], { key: 'ArrowDown' });
+    fireEvent.click(screen.getByText('IMAGE'), { key: 'Enter' });
+
+    fireEvent.change(inputs[3], { target: { value: 'https://example.com/image.jpg' } });
+
+    await waitFor(() => {
+      expect(inputs[3]).toHaveValue('https://example.com/image.jpg');
+    });
+  });
+
+  test('it creates a translation of hsm template', async () => {
+    render(template);
+
+    await waitFor(() => {
+      expect(screen.getByText('Add a new HSM Template')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Translate existing HSM?'));
+
+    const autocompletes = screen.getAllByTestId('autocomplete-element');
+    autocompletes[1].focus();
+    fireEvent.keyDown(autocompletes[1], { key: 'ArrowDown' });
+
+    fireEvent.click(screen.getByText('account_balance'), { key: 'Enter' });
+
+    await waitFor(() => {
+      expect(screen.getAllByRole('combobox')[1]).toHaveValue('account_balance');
+    });
   });
 });

@@ -239,25 +239,29 @@ const getTemplateData = {
   sessionTemplate: {
     sessionTemplate: {
       id: '1',
-      label: 'important',
-      body: 'important template',
-      example: 'important template',
-      category: null,
-      shortcode: 'important_template',
-      isActive: true,
-      translations: '{}',
+      body: 'You can now view your Account Balance or Mini statement for Account ending with {{1}} simply by selecting one of the options below.',
+      label: 'Account Balance',
+      isHsm: true,
+      updatedAt: '2024-06-25T12:25:27Z',
+      translations:
+        '{"2":{"uuid":"cc584565-8d3a-4d64-838a-4601578189f4","status":"APPROVED","number_parameters":1,"language_id":2,"label":"Account Balance","example":" अब आप नीचे दिए विकल्पों में से एक का चयन करके [003] के साथ समाप्त होने वाले खाते के लिए अपना खाता शेष या मिनी स्टेटमेंट देख सकते हैं। | [अकाउंट बैलेंस देखें] | [देखें मिनी स्टेटमेंट]","body":" अब आप नीचे दिए विकल्पों में से एक का चयन करके {{1}} के साथ समाप्त होने वाले खाते के लिए अपना खाता शेष या मिनी स्टेटमेंट देख सकते हैं। | [अकाउंट बैलेंस देखें] | [देखें मिनी स्टेटमेंट]"}}',
       type: 'TEXT',
-      isHsm: false,
       language: {
+        __typename: 'Language',
         id: '1',
         label: 'English',
       },
+      isActive: true,
       MessageMedia: null,
-      hasButtons: false,
-      buttons: null,
-      buttonType: null,
-      updatedAt: '2020-12-01T18:00:32Z',
       tag: null,
+      category: 'ACCOUNT_UPDATE',
+      shortcode: 'account_balance',
+      example:
+        'You can now view your Account Balance or Mini statement for Account ending with [003] simply by selecting one of the options below.',
+      hasButtons: true,
+      buttons:
+        '[{"type":"QUICK_REPLY","text":"View Account Balance"},{"type":"QUICK_REPLY","text":"View Mini Statement"}]',
+      buttonType: 'QUICK_REPLY',
     },
   },
 };
