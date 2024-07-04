@@ -11,6 +11,7 @@ import DuplicateIcon from 'assets/images/icons/Duplicate.svg?react';
 import ExportIcon from 'assets/images/icons/Flow/Export.svg?react';
 import ConfigureIcon from 'assets/images/icons/Configure/UnselectedDark.svg?react';
 import PinIcon from 'assets/images/icons/Pin/Active.svg?react';
+import ViewIcon from 'assets/images/icons/ViewLight.svg?react';
 import { FILTER_FLOW, GET_FLOW_COUNT, EXPORT_FLOW, RELEASE_FLOW } from 'graphql/queries/Flow';
 import { DELETE_FLOW, IMPORT_FLOW } from 'graphql/mutations/Flow';
 import { List } from 'containers/List/List';
@@ -78,6 +79,7 @@ const queries = {
 };
 
 const configureIcon = <ConfigureIcon />;
+const viewIcon = <ViewIcon />;
 
 export const FlowList = () => {
   const navigate = useNavigate();
@@ -156,7 +158,24 @@ export const FlowList = () => {
     />
   );
 
-  const additionalAction = () => [
+  const templateFlowActions = [
+    {
+      label: 'View it',
+      icon: viewIcon,
+      parameter: 'uuid',
+      insideMore: false,
+      link: '/flow/view',
+    },
+    {
+      label: 'Use it',
+      icon: configureIcon,
+      parameter: 'uuid',
+      insideMore: false,
+      link: '/flow/configure',
+    },
+  ];
+
+  const actions = [
     {
       label: t('Configure'),
       icon: configureIcon,
@@ -178,6 +197,8 @@ export const FlowList = () => {
       insideMore: true,
     },
   ];
+
+  const additionalAction = () => (filter === 'isTemplate' ? templateFlowActions : actions);
 
   const getColumns = ({
     name,
@@ -215,6 +236,7 @@ export const FlowList = () => {
   const filterList = [
     { label: 'Active', value: true },
     { label: 'Inactive', value: false },
+    { label: 'Template Flows', value: 'isTemplate' },
   ];
   const { data: tag } = useQuery(GET_TAGS, {
     variables: {},
@@ -230,7 +252,7 @@ export const FlowList = () => {
           value={filter}
           onChange={(event) => {
             const { value } = event.target;
-            setFilter(JSON.parse(value));
+            setFilter(value);
           }}
           className={styles.SearchBar}
         >
@@ -259,13 +281,20 @@ export const FlowList = () => {
     </>
   );
 
-  const filters = useMemo(
-    () => ({
-      isActive: filter,
+  const filters = useMemo(() => {
+    let filters = {
       ...(selectedtag?.id && { tagIds: [parseInt(selectedtag?.id)] }),
-    }),
-    [filter, selectedtag, importing]
-  );
+    };
+    if (filter === 'isTemplate') {
+      filters = { ...filters, isTemplate: true };
+    } else {
+      filters = { ...filters, isActive: filter };
+    }
+    return filters;
+  }, [filter, selectedtag, importing]);
+
+  const restrictedAction = () =>
+    filter === 'isTemplate' ? { delete: false, edit: false } : { edit: true, delete: true };
 
   return (
     <>
@@ -287,6 +316,7 @@ export const FlowList = () => {
         filters={filters}
         filterList={activeFilter}
         loadingList={importing}
+        restrictedAction={restrictedAction}
       />
     </>
   );

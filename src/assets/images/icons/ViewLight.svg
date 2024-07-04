@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>View</title>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Icon/View-Dark" fill-rule="nonzero" stroke="#777" stroke-width="2">
+            <g id="Icon/View" transform="translate(0.000000, 2.000000)">
+                <circle id="Oval" cx="9" cy="7" r="3"></circle>
+                <path
+                    d="M9,1.5 C11.900431,1.5 14.4718451,3.41491734 16.8144426,7.00053069 C14.4715162,10.5853276 11.9002455,12.5 9,12.5 C6.09956895,12.5 3.52815491,10.5850827 1.18555744,6.99946931 C3.52848384,3.41467239 6.09975446,1.5 9,1.5 Z"
+                    id="Oval"></path>
+            </g>
+        </g>
+    </g>
+</svg>

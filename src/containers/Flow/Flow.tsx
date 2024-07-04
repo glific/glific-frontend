@@ -44,6 +44,10 @@ export const Flow = () => {
   const [ignoreKeywords, setIgnoreKeywords] = useState(false);
   const { t } = useTranslation();
 
+  let isViewing = false;
+  if (location) {
+    console.log(location);
+  }
   const { data: tag } = useQuery(GET_TAGS, {
     variables: {},
     fetchPolicy: 'network-only',
