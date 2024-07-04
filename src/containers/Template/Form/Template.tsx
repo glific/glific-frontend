@@ -747,15 +747,16 @@ const Template = ({
     helperText: t('Use this to categorize your templates.'),
   };
 
-  const hsmFields = formField && [
+  const hsmFields = [
+    ...formFields,
     ...formField.slice(0, 1),
     ...templateRadioOptions,
     ...formField.slice(1),
+    ...attachmentField,
+    tags,
   ];
 
-  const fields = defaultAttribute.isHsm
-    ? [...formFields, ...hsmFields, ...attachmentField, tags]
-    : [...formFields, ...attachmentField];
+  const fields = defaultAttribute.isHsm ? hsmFields : [...formFields, ...attachmentField];
 
   // Creating payload for button template
   const getButtonTemplatePayload = () => {
@@ -792,6 +793,8 @@ const Template = ({
 
   const setPayload = (payload: any) => {
     let payloadCopy = payload;
+    console.log(payloadCopy);
+
     let translationsCopy: any = {};
 
     if (template) {

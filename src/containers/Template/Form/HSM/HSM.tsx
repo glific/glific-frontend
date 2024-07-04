@@ -12,6 +12,8 @@ import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { Simulator } from 'components/simulator/Simulator';
 import Template from '../Template';
 import styles from './HSM.module.css';
+import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
+import { Typography } from '@mui/material';
 
 const defaultAttribute = {
   isHsm: true,
@@ -126,6 +128,16 @@ export const HSM = () => {
       onChange: (event: any) => {
         setCategory(event);
       },
+    },
+    {
+      component: Checkbox,
+      name: 'allowTemplateCategoryChange',
+      title: (
+        <Typography variant="h6" className={styles.IsActive}>
+          Allow meta to re-categorize template?
+        </Typography>
+      ),
+      darkCheckbox: true,
     },
     {
       component: Input,
