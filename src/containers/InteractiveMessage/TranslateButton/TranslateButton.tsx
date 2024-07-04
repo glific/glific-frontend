@@ -106,6 +106,7 @@ export const TranslateButton = ({
     {
       onCompleted: ({ importInteractiveTemplate }) => {
         const interactiveMessage = importInteractiveTemplate?.interactiveTemplate;
+        setNotification('Interactive Message Imported Successfully!', 'success');
         setStates(interactiveMessage);
         handleClose();
       },
