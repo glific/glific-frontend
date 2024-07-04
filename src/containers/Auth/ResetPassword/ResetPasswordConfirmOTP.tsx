@@ -90,12 +90,6 @@ export const ResetPasswordConfirmOTP = () => {
       })
       .catch((error) => {
         setAuthError(t('We are unable to update your password, please enter the correct OTP.'));
-        // add log's
-        setLogs(
-          `phoneNumber:${values.phoneNumber} otp: ${values.OTP} URL:${RESET_PASSWORD}`,
-          'info'
-        );
-        setLogs(error, 'error');
       });
   };
 
