@@ -113,17 +113,6 @@ export const ConfirmOTP = () => {
       })
       .catch((error) => {
         setAuthError(t('We are unable to register, kindly contact your technical team.'));
-        // add log's
-        setLogs(
-          `onSubmitOTP:${{
-            user: {
-              name: userObject.name,
-              phone: userObject.phone,
-              otp: values.OTP,
-            },
-          }} URL:${VITE_GLIFIC_REGISTRATION_API}`,
-          'info'
-        );
         setLogs(error, 'error');
       });
   };
