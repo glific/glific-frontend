@@ -264,7 +264,9 @@ const Template = ({
 
     setLabel(labelValue);
     setIsActive(isActiveValue);
-    setAllowTemplateCategoryChange(allowCategoryChangeValue);
+    if (setAllowTemplateCategoryChange) {
+      setAllowTemplateCategoryChange(allowCategoryChangeValue);
+    }
 
     if (typeof bodyValue === 'string') {
       setBody(bodyValue || '');
@@ -754,7 +756,7 @@ const Template = ({
     helperText: t('Use this to categorize your templates.'),
   };
 
-  const hsmFields = [
+  const hsmFields = formField && [
     ...formFields,
     ...formField.slice(0, 1),
     ...templateRadioOptions,
