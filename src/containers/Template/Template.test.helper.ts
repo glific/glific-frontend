@@ -507,11 +507,11 @@ const getShortCodeQuery = {
         },
         {
           __typename: 'SessionTemplate',
-          shortcode: 'file_update',
+          shortcode: '',
         },
         {
           __typename: 'SessionTemplate',
-          shortcode: 'missed_message',
+          shortcode: '',
         },
         {
           __typename: 'SessionTemplate',

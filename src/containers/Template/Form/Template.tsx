@@ -438,7 +438,7 @@ const Template = ({
       then: (schema) => schema.nullable(),
       otherwise: (schema) =>
         schema
-          .required(t('Shortcode is required.'))
+          .required(t('Element name is required.'))
           .matches(
             regexForShortcode,
             'Only lowercase alphanumeric characters and underscores are allowed.'
@@ -446,7 +446,7 @@ const Template = ({
     }),
     existingShortCode: Yup.object().when('languageVariant', {
       is: (val: any) => val === true,
-      then: (schema) => schema.nullable().required(t('Shortcode is required.')),
+      then: (schema) => schema.nullable().required(t('Element name is required.')),
       otherwise: (schema) => schema.nullable(),
     }),
   };

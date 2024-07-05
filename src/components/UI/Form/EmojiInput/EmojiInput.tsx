@@ -49,7 +49,13 @@ export const EmojiInput = ({
   );
 
   const input = (
-    <Editor field={{ name, value, onBlur }} picker={picker} onChange={handleChange} {...props} />
+    <Editor
+      field={{ name, value, onBlur }}
+      picker={picker}
+      onChange={handleChange}
+      form={form}
+      {...props}
+    />
   );
 
   return (
