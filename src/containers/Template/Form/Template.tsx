@@ -117,8 +117,8 @@ export interface TemplateProps {
   onExampleChange?: any;
   languageStyle?: string;
   setExampleState?: any;
-  allowTemplateCategoryChange: boolean;
-  setAllowTemplateCategoryChange: any;
+  allowTemplateCategoryChange?: boolean;
+  setAllowTemplateCategoryChange?: any;
 }
 
 interface CallToActionTemplate {
