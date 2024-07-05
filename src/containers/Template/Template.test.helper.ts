@@ -550,6 +550,47 @@ export const getHSMTemplateTypeMedia = {
   },
 };
 
+export const getSpeendSendTemplate = {
+  request: {
+    query: GET_TEMPLATE,
+    variables: {
+      id: '1',
+    },
+  },
+  result: {
+    data: {
+      sessionTemplate: {
+        sessionTemplate: {
+          MessageMedia: null,
+          __typename: 'SessionTemplate',
+          body: 'Please click on the link to register with the phone number @contact.phone\n@global.registration.url\n',
+          buttonType: null,
+          buttons: '[]',
+          category: 'UTILITY',
+          example:
+            'Please click on the link to register with the phone number @contact.phone\n[https://www.gupshup.io/developer/register]\n',
+          hasButtons: false,
+          id: '10',
+          isActive: false,
+          isHsm: false,
+          label: 'User Registration',
+          language: {
+            __typename: 'Language',
+            id: '1',
+            label: 'English',
+          },
+          shortcode: 'user-registration',
+          tag: null,
+          translations:
+            '{"2":{"number_parameters":0,"language_id":2,"body":" कृपया फोन नंबर @ contact.phone के साथ पंजीकरण करने के लिए लिंक पर क्लिक करें @ global.registration.url"}}',
+          type: 'TEXT',
+          updatedAt: '2024-07-03T08:17:28Z',
+        },
+      },
+    },
+  },
+};
+
 export const TEMPLATE_MOCKS = [
   getFilterTagQuery,
   createHSMtemplate,

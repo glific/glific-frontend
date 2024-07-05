@@ -331,7 +331,7 @@ const Template = ({
       onExampleChange(getExampleFromBody(bodyValue, variables));
     }
 
-    if (shortcodeValue) {
+    if (shortcodeValue && setNewShortcode) {
       setNewShortcode(shortcodeValue);
     }
 

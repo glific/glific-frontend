@@ -6,13 +6,18 @@ import { vi } from 'vitest';
 
 import * as FormLayout from 'containers/Form/FormLayout';
 import Template from './Template';
-import { TEMPLATE_MOCKS } from '../Template.test.helper';
+import { TEMPLATE_MOCKS, getSpeendSendTemplate } from '../Template.test.helper';
 import { HSM_TEMPLATE_MOCKS, templateFormHSMFormFields } from './Template.test.helper';
 
 beforeEach(() => {
   vi.restoreAllMocks();
 });
-const defaultMocks = [...TEMPLATE_MOCKS, ...TEMPLATE_MOCKS];
+const defaultMocks = [
+  ...TEMPLATE_MOCKS,
+  ...TEMPLATE_MOCKS,
+  getSpeendSendTemplate,
+  getSpeendSendTemplate,
+];
 
 const defaultProps = {
   listItemName: 'Speed sends',
