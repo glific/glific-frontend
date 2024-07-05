@@ -10,7 +10,7 @@ const mockIntersectionObserver = class {
   disconnect() {}
 };
 
-const handleChange = vi.fn;
+const handleChange = vi.fn();
 
 (window as any).IntersectionObserver = mockIntersectionObserver;
 

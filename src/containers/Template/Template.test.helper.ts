@@ -235,7 +235,7 @@ export const whatsappHsmCategories = [
   },
 ];
 
-const getTemplateData = {
+const getTemplateDataTypeText = {
   sessionTemplate: {
     sessionTemplate: {
       id: '1',
@@ -244,7 +244,7 @@ const getTemplateData = {
       isHsm: true,
       updatedAt: '2024-06-25T12:25:27Z',
       translations:
-        '{"2":{"uuid":"cc584565-8d3a-4d64-838a-4601578189f4","status":"APPROVED","number_parameters":1,"language_id":2,"label":"Account Balance","example":" अब आप नीचे दिए विकल्पों में से एक का चयन करके [003] के साथ समाप्त होने वाले खाते के लिए अपना खाता शेष या मिनी स्टेटमेंट देख सकते हैं। | [अकाउंट बैलेंस देखें] | [देखें मिनी स्टेटमेंट]","body":" अब आप नीचे दिए विकल्पों में से एक का चयन करके {{1}} के साथ समाप्त होने वाले खाते के लिए अपना खाता शेष या मिनी स्टेटमेंट देख सकते हैं। | [अकाउंट बैलेंस देखें] | [देखें मिनी स्टेटमेंट]"}}',
+        '{"1":{"uuid":"cc584565-8d3a-4d64-838a-4601578189f4","status":"APPROVED","number_parameters":1,"language_id":2,"label":"Account Balance","example":" अब आप नीचे दिए विकल्पों में से एक का चयन करके [003] के साथ समाप्त होने वाले खाते के लिए अपना खाता शेष या मिनी स्टेटमेंट देख सकते हैं। | [अकाउंट बैलेंस देखें] | [देखें मिनी स्टेटमेंट]","body":" अब आप नीचे दिए विकल्पों में से एक का चयन करके {{1}} के साथ समाप्त होने वाले खाते के लिए अपना खाता शेष या मिनी स्टेटमेंट देख सकते हैं। | [अकाउंट बैलेंस देखें] | [देखें मिनी स्टेटमेंट]"}}',
       type: 'TEXT',
       language: {
         __typename: 'Language',
@@ -253,7 +253,10 @@ const getTemplateData = {
       },
       isActive: true,
       MessageMedia: null,
-      tag: null,
+      tag: {
+        id: '1',
+        label: 'Messages',
+      },
       category: 'ACCOUNT_UPDATE',
       shortcode: 'account_balance',
       example:
@@ -262,6 +265,36 @@ const getTemplateData = {
       buttons:
         '[{"type":"QUICK_REPLY","text":"View Account Balance"},{"type":"QUICK_REPLY","text":"View Mini Statement"}]',
       buttonType: 'QUICK_REPLY',
+    },
+  },
+};
+
+const getTemplateDataTypeMedia = {
+  sessionTemplate: {
+    sessionTemplate: {
+      MessageMedia: null,
+      body: 'Hi {{1}},\n\nYour account image was updated on {{2}} by {{3}} with above.  | [Visit Website,https://www.gupshup.io/developer/[message]]',
+      buttonType: null,
+      buttons: '[]',
+      category: 'UTILITY',
+      example:
+        'Hi [Anil],\n\nYour account image was updated on [19th December] by [Saurav] with above.  | [Visit Website,https://www.gupshup.io/developer/[message]]',
+      hasButtons: false,
+      id: '5',
+      isActive: false,
+      isHsm: true,
+      label: 'Account Update',
+      language: {
+        __typename: 'Language',
+        id: '1',
+        label: 'English',
+      },
+      shortcode: 'account_update',
+      tag: null,
+      translations:
+        '{"2":{"number_parameters":3,"language_id":2,"body":"हाय {{1}},  n  n आपके खाते की छवि {{2}} पर {{3}} द्वारा अद्यतन की गई थी।"}}',
+      type: 'IMAGE',
+      updatedAt: '2024-07-03T08:17:28Z',
     },
   },
 };
@@ -493,6 +526,30 @@ const getShortCodeQuery = {
   },
 };
 
+export const getHSMTemplateTypeText = {
+  request: {
+    query: GET_TEMPLATE,
+    variables: {
+      id: '1',
+    },
+  },
+  result: {
+    data: getTemplateDataTypeText,
+  },
+};
+
+export const getHSMTemplateTypeMedia = {
+  request: {
+    query: GET_TEMPLATE,
+    variables: {
+      id: '1',
+    },
+  },
+  result: {
+    data: getTemplateDataTypeMedia,
+  },
+};
+
 export const TEMPLATE_MOCKS = [
   getFilterTagQuery,
   createHSMtemplate,
@@ -540,28 +597,6 @@ export const TEMPLATE_MOCKS = [
           },
         },
       },
-    },
-  },
-  {
-    request: {
-      query: GET_TEMPLATE,
-      variables: {
-        id: '1',
-      },
-    },
-    result: {
-      data: getTemplateData,
-    },
-  },
-  {
-    request: {
-      query: GET_TEMPLATE,
-      variables: {
-        id: '1',
-      },
-    },
-    result: {
-      data: getTemplateData,
     },
   },
   {

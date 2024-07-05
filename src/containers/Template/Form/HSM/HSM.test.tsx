@@ -4,7 +4,11 @@ import { MockedProvider } from '@apollo/client/testing';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { HSM } from './HSM';
-import { TEMPLATE_MOCKS } from 'containers/Template/Template.test.helper';
+import {
+  TEMPLATE_MOCKS,
+  getHSMTemplateTypeMedia,
+  getHSMTemplateTypeText,
+} from 'containers/Template/Template.test.helper';
 
 const mocks = TEMPLATE_MOCKS;
 
@@ -14,8 +18,9 @@ beforeEach(() => {
 
 describe('Edit mode', () => {
   test('HSM form is loaded correctly in edit mode', async () => {
+    const MOCKS = [...mocks, getHSMTemplateTypeText, getHSMTemplateTypeText];
     const { getByText, getAllByRole } = render(
-      <MockedProvider mocks={mocks} addTypename={false}>
+      <MockedProvider mocks={MOCKS} addTypename={false}>
         <MemoryRouter initialEntries={['/templates/1/edit']}>
           <Routes>
             <Route path="/templates/:id/edit" element={<HSM />} />
@@ -29,6 +34,31 @@ describe('Edit mode', () => {
 
     await waitFor(() => {
       expect(getAllByRole('textbox')[0]).toHaveValue('account_balance');
+    });
+  });
+
+  test('HSM templates with media', async () => {
+    const MOCKS = [...mocks, getHSMTemplateTypeMedia, getHSMTemplateTypeMedia];
+    const { getByText, getAllByRole } = render(
+      <MockedProvider mocks={MOCKS} addTypename={false}>
+        <MemoryRouter initialEntries={['/templates/1/edit']}>
+          <Routes>
+            <Route path="/templates/:id/edit" element={<HSM />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(getByText('Edit HSM Template')).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(getAllByRole('textbox')[0]).toHaveValue('account_update');
+    });
+
+    await waitFor(() => {
+      expect(screen.getAllByRole('combobox')[1]).toHaveValue('IMAGE');
     });
   });
 });
