@@ -117,6 +117,8 @@ export interface TemplateProps {
   onExampleChange?: any;
   languageStyle?: string;
   setExampleState?: any;
+  allowTemplateCategoryChange: boolean;
+  setAllowTemplateCategoryChange: any;
 }
 
 interface CallToActionTemplate {
@@ -144,6 +146,8 @@ const Template = ({
   onExampleChange = () => {},
   languageStyle = 'dropdown',
   setExampleState,
+  allowTemplateCategoryChange,
+  setAllowTemplateCategoryChange,
 }: TemplateProps) => {
   // "Audio" option is removed in case of HSM Template
   const mediaTypes =
@@ -221,6 +225,7 @@ const Template = ({
     isActive,
     templateButtons,
     isAddButtonChecked,
+    allowTemplateCategoryChange,
   };
 
   const setStates = ({
@@ -238,6 +243,7 @@ const Template = ({
     buttonType: templateButtonType,
     buttons,
     hasButtons,
+    allowTemplateCategoryChange: allowCategoryChangeValue,
   }: any) => {
     if (languageOptions.length > 0 && languageIdValue) {
       if (location.state && location.state !== 'copy') {
@@ -258,6 +264,7 @@ const Template = ({
 
     setLabel(labelValue);
     setIsActive(isActiveValue);
+    setAllowTemplateCategoryChange(allowCategoryChangeValue);
 
     if (typeof bodyValue === 'string') {
       setBody(bodyValue || '');
@@ -793,8 +800,6 @@ const Template = ({
 
   const setPayload = (payload: any) => {
     let payloadCopy = payload;
-    console.log(payloadCopy);
-
     let translationsCopy: any = {};
 
     if (template) {
@@ -819,9 +824,9 @@ const Template = ({
           }
         } else {
           delete payloadCopy.example;
-          delete payloadCopy.isActive;
           delete payloadCopy.shortcode;
           delete payloadCopy.category;
+          delete payloadCopy.allowTemplateCategoryChange;
         }
         if (payloadCopy.type === 'TEXT') {
           delete payloadCopy.attachmentURL;
@@ -877,6 +882,7 @@ const Template = ({
         delete payloadCopy.example;
         delete payloadCopy.shortcode;
         delete payloadCopy.category;
+        delete payloadCopy.allowTemplateCategoryChange;
       }
 
       delete payloadCopy.isAddButtonChecked;

@@ -33,6 +33,7 @@ export const HSM = () => {
   const [category, setCategory] = useState<any>(undefined);
   const [example, setExample] = useState();
   const [editorState, setEditorState] = useState<any>('');
+  const [allowTemplateCategoryChange, setAllowTemplateCategoryChange] = useState<boolean>(false);
 
   const { t } = useTranslation();
   const params = useParams();
@@ -138,6 +139,8 @@ export const HSM = () => {
         </Typography>
       ),
       darkCheckbox: true,
+      disabled: isEditing,
+      handleChange: (value: boolean) => setAllowTemplateCategoryChange(value),
     },
     {
       component: Input,
@@ -166,6 +169,8 @@ export const HSM = () => {
         category={category}
         onExampleChange={addButtonsToSampleMessage}
         setExampleState={setEditorState}
+        allowTemplateCategoryChange={allowTemplateCategoryChange}
+        setAllowTemplateCategoryChange={setAllowTemplateCategoryChange}
       />
       <Simulator isPreviewMessage message={sampleMessages} simulatorIcon={false} />
     </div>

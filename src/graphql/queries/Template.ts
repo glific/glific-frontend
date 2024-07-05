@@ -70,6 +70,7 @@ export const GET_TEMPLATE = gql`
         hasButtons
         buttons
         buttonType
+        allowTemplateCategoryChange
       }
     }
   }

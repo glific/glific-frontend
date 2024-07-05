@@ -36,6 +36,7 @@ export const CREATE_TEMPLATE = gql`
         hasButtons
         buttons
         buttonType
+        allowTemplateCategoryChange
       }
       errors {
         key
@@ -70,6 +71,7 @@ export const UPDATE_TEMPLATE = gql`
         hasButtons
         buttons
         buttonType
+        allowTemplateCategoryChange
       }
     }
   }

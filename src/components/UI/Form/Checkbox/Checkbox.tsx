@@ -37,7 +37,7 @@ export const Checkbox = ({
   };
 
   return (
-    <div className={`${styles.Checkbox} ${className}`}>
+    <div className={`${styles.Checkbox} ${className} ${disabled && styles.Disabled}`}>
       <FormControlLabel
         control={
           <CheckboxElement
