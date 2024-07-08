@@ -44,9 +44,9 @@ export const Flow = () => {
   const [ignoreKeywords, setIgnoreKeywords] = useState(false);
   const { t } = useTranslation();
 
-  let isViewing = false;
-  if (location) {
-    console.log(location);
+  let isTemplate = false;
+  if (location.state === 'template') {
+    isTemplate = true;
   }
   const { data: tag } = useQuery(GET_TAGS, {
     variables: {},
@@ -142,7 +142,11 @@ export const Flow = () => {
 
   const dialogMessage = t("You won't be able to use this flow again.");
 
-  const additionalAction = { label: t('Configure'), link: '/flow/configure' };
+  const additionalAction = {
+    label: isTemplate ? t('View') : t('Configure'),
+    link: '/flow/configure',
+    state: isTemplate && 'template',
+  };
 
   const formFields = [
     {
@@ -150,6 +154,7 @@ export const Flow = () => {
       name: 'name',
       type: 'text',
       label: t('Name'),
+      disabled: isTemplate,
     },
     {
       component: Input,
@@ -157,6 +162,7 @@ export const Flow = () => {
       type: 'text',
       label: t('Keywords'),
       helperText: t('Enter comma separated keywords that trigger this flow.'),
+      disabled: isTemplate,
     },
     {
       component: Input,
@@ -165,13 +171,14 @@ export const Flow = () => {
       textArea: true,
       rows: 2,
       label: t('Description'),
+      disabled: isTemplate,
     },
     {
       component: AutoComplete,
       name: 'tagId',
       options: tag ? tag.tags : [],
       optionLabel: 'label',
-      disabled: false,
+      disabled: isTemplate,
       handleCreateItem: handleCreateLabel,
       hasCreateOption: true,
       multiple: false,
@@ -189,25 +196,28 @@ export const Flow = () => {
       },
       darkCheckbox: true,
       className: styles.Checkbox,
+      disabled: isTemplate,
     },
     {
       component: Checkbox,
       name: 'isActive',
       title: t('Is active?'),
       darkCheckbox: true,
+      disabled: isTemplate,
     },
     {
       component: Checkbox,
       name: 'isPinned',
       title: t('Is pinned?'),
       darkCheckbox: !isPinnedDisable,
-      disabled: isPinnedDisable,
+      disabled: isPinnedDisable || isTemplate,
     },
     {
       component: Checkbox,
       name: 'isBackground',
       title: t('Run this flow in the background'),
       darkCheckbox: true,
+      disabled: isTemplate,
     },
   ];
 
@@ -286,6 +296,8 @@ export const Flow = () => {
       customHandler={customHandler}
       helpData={flowInfo}
       backLinkButton="/flow"
+      buttonState={{ text: 'Save', status: isTemplate }}
+      restrictButtonStatus={{ status: isTemplate }}
     />
   );
 };

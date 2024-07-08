@@ -162,16 +162,18 @@ export const FlowList = () => {
     {
       label: 'View it',
       icon: viewIcon,
-      parameter: 'uuid',
+      parameter: 'id',
       insideMore: false,
-      link: '/flow/view',
+      dialog: (id: any) => {
+        navigate(`/flow/${id}/edit`, { state: 'template' });
+      },
     },
     {
       label: 'Use it',
       icon: configureIcon,
       parameter: 'uuid',
       insideMore: false,
-      link: '/flow/configure',
+      link: '/flow/configure?template=true',
     },
   ];
 

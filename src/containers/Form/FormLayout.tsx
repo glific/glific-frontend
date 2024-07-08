@@ -1,5 +1,5 @@
 import { useState, Fragment, useEffect } from 'react';
-import { Navigate, useParams } from 'react-router-dom';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
 // eslint-disable-next-line no-unused-vars
 import { DocumentNode, ApolloError, useQuery, useMutation } from '@apollo/client';
@@ -75,6 +75,10 @@ export interface FormLayoutProps {
   helpData?: HelpDataProps;
   noHeading?: boolean;
   partialPage?: boolean;
+  restrictButtonStatus?: {
+    text?: string;
+    status?: boolean;
+  };
 }
 
 export const FormLayout = ({
@@ -126,6 +130,7 @@ export const FormLayout = ({
   languageAttributes = {},
   noHeading = false,
   partialPage = false,
+  restrictButtonStatus,
 }: FormLayoutProps) => {
   const [showDialog, setShowDialog] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
@@ -138,6 +143,7 @@ export const FormLayout = ({
   const [isLoadedData, setIsLoadedData] = useState(false);
   const [customError, setCustomError] = useState<any>(null);
   const params = useParams();
+  const navigate = useNavigate();
 
   const { t } = useTranslation();
 
@@ -494,9 +500,10 @@ export const FormLayout = ({
         data-testid="remove-icon"
         className={styles.DeleteButton}
         onClick={() => setShowDialog(true)}
+        disabled={restrictButtonStatus?.status}
       >
         <DeleteIcon className={styles.DeleteIcon} />
-        Remove
+        {restrictButtonStatus?.text || 'Remove'}
       </Button>
     ) : null;
 
@@ -562,6 +569,11 @@ export const FormLayout = ({
                 variant="outlined"
                 color="primary"
                 onClick={() => {
+                  if (additionalAction?.state === 'template') {
+                    navigate(`${additionalAction.link}/${link}`, {
+                      state: additionalAction?.state,
+                    });
+                  }
                   submitForm();
                   setAction(true);
                 }}
