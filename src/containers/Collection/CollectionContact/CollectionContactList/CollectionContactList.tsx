@@ -98,7 +98,7 @@ export const CollectionContactList = ({
           },
         },
         onCompleted: () => {
-          setNotification('Contact added successfully', 'success');
+          setNotification(t('Contact has been added successfully to the collection.'), 'success');
         },
       });
     }
@@ -116,7 +116,7 @@ export const CollectionContactList = ({
         },
       },
       onCompleted: () => {
-        setNotification('Contact deleted successfully', 'success');
+        setNotification(t('Contact has been removed successfully from the collection.'), 'success');
       },
     });
     setRemoveContactsDialogShow(false);

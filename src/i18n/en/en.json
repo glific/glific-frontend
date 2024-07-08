@@ -499,5 +499,7 @@
   "Are you sure you want to change these credentials?": "Are you sure you want to change these credentials?",
   "All information related to this account will be deleted. All data has already been backed up in BigQuery.": "All information related to this account will be deleted. All data has already been backed up in BigQuery.",
   "Group has been added successfully to the collection.": "Group has been added successfully to the collection.",
-  "Group has been removed successfully from the collection.": "Group has been removed successfully from the collection."
+  "Group has been removed successfully from the collection.": "Group has been removed successfully from the collection.",
+  "Contact has been added successfully to the collection.": "Contact has been added successfully to the collection.",
+  "Contact has been removed successfully from the collection.": "Contact has been removed successfully from the collection."
 }
