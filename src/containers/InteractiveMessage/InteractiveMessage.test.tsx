@@ -382,6 +382,12 @@ describe('translates the template', () => {
     fireEvent.click(screen.getByTestId('translateBtn'));
 
     await waitFor(() => {
+      expect(screen.getByTestId('dialogBox')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('ok-button'));
+
+    await waitFor(() => {
       expect(getByText('Message content is required.')).toBeInTheDocument();
     });
   });
