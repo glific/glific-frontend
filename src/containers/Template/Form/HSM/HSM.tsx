@@ -12,6 +12,8 @@ import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { Simulator } from 'components/simulator/Simulator';
 import Template from '../Template';
 import styles from './HSM.module.css';
+import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
+import { Typography } from '@mui/material';
 
 const defaultAttribute = {
   isHsm: true,
@@ -31,6 +33,7 @@ export const HSM = () => {
   const [category, setCategory] = useState<any>(undefined);
   const [example, setExample] = useState();
   const [editorState, setEditorState] = useState<any>('');
+  const [allowTemplateCategoryChange, setAllowTemplateCategoryChange] = useState<boolean>(false);
 
   const { t } = useTranslation();
   const params = useParams();
@@ -128,6 +131,18 @@ export const HSM = () => {
       },
     },
     {
+      component: Checkbox,
+      name: 'allowTemplateCategoryChange',
+      title: (
+        <Typography variant="h6" className={styles.IsActive}>
+          Allow meta to re-categorize template?
+        </Typography>
+      ),
+      darkCheckbox: true,
+      disabled: isEditing,
+      handleChange: (value: boolean) => setAllowTemplateCategoryChange(value),
+    },
+    {
       component: Input,
       name: 'shortcode',
       placeholder: `${t('Element name')}*`,
@@ -154,6 +169,8 @@ export const HSM = () => {
         category={category}
         onExampleChange={addButtonsToSampleMessage}
         setExampleState={setEditorState}
+        allowTemplateCategoryChange={allowTemplateCategoryChange}
+        setAllowTemplateCategoryChange={setAllowTemplateCategoryChange}
       />
       <Simulator isPreviewMessage message={sampleMessages} simulatorIcon={false} />
     </div>

@@ -108,6 +108,8 @@ describe('Add mode', () => {
     fireEvent.keyDown(category, { key: 'ArrowDown' });
     fireEvent.keyDown(category, { key: 'Enter' });
 
+    fireEvent.click(screen.getByText('Allow meta to re-categorize template?'));
+
     attachmentType.focus();
     fireEvent.keyDown(attachmentType, { key: 'ArrowDown' });
     fireEvent.keyDown(attachmentType, { key: 'ArrowDown' });

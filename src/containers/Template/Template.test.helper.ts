@@ -257,6 +257,7 @@ const getTemplateData = {
       buttonType: null,
       updatedAt: '2020-12-01T18:00:32Z',
       tag: null,
+      allowTemplateCategoryChange: false,
     },
   },
 };
@@ -281,6 +282,7 @@ const createHsmWithButtontemplate = {
           '[{"type":"QUICK_REPLY","text":"Quick reply 1"},{"type":"QUICK_REPLY","text":"Quick reply 2"}]',
         buttonType: 'QUICK_REPLY',
         translations: '{}',
+        allowTemplateCategoryChange: false,
       },
     },
   },
@@ -306,6 +308,7 @@ const createHsmWithButtontemplate = {
           buttons:
             '[{"type":"QUICK_REPLY","text":"Quick reply 1"},{"type":"QUICK_REPLY","text":"Quick reply 2"}]',
           buttonType: 'QUICK_REPLY',
+          allowTemplateCategoryChange: true,
         },
         errors: null,
       },
@@ -332,6 +335,7 @@ const createHsmWithPhonetemplate = {
         buttons: '[{"type":"PHONE_NUMBER","text":"Call me","phone_number":"9876543210"}]',
         buttonType: 'CALL_TO_ACTION',
         translations: '{}',
+        allowTemplateCategoryChange: false,
       },
     },
   },
@@ -356,6 +360,7 @@ const createHsmWithPhonetemplate = {
           hasButtons: true,
           buttons: '[{"type":"PHONE_NUMBER","text":"Call me","phone_number":"9876543210"}]',
           buttonType: 'CALL_TO_ACTION',
+          allowTemplateCategoryChange: false,
         },
         errors: null,
       },
@@ -380,6 +385,7 @@ const createHSMtemplate = {
         languageId: '1',
         translations: '{}',
         messageMediaId: 5,
+        allowTemplateCategoryChange: true,
       },
     },
   },
@@ -404,6 +410,7 @@ const createHSMtemplate = {
           hasButtons: false,
           buttons: null,
           buttonType: null,
+          allowTemplateCategoryChange: true,
         },
         errors: null,
       },
@@ -587,6 +594,7 @@ const getHSMTemplate = (id: string, status: string) => ({
   type: 'TEXT',
   numberParameters: 2,
   updatedAt: '2021-07-28T08:00:24Z',
+  allowTemplateCategoryChange: true,
 });
 
 export const HSM_LIST = [
