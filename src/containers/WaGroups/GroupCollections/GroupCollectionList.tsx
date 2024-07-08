@@ -82,7 +82,7 @@ export const GroupCollectionList = () => {
           },
         },
         onCompleted: () => {
-          setNotification('Group added successfully', 'success');
+          setNotification(t('Group has been added successfully to the collection.'), 'success');
         },
       });
     }
@@ -100,7 +100,7 @@ export const GroupCollectionList = () => {
         },
       },
       onCompleted: () => {
-        setNotification('Group deleted successfully', 'success');
+        setNotification(t('Group has been removed successfully from the collection.'), 'success');
       },
     });
     setRemoveGroupsDialogShow(false);
