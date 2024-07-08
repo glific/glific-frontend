@@ -8,8 +8,8 @@ import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext
 import { $createTextNode, $getSelection, $isRangeSelection } from 'lexical';
 
 export interface EmojiInputProps {
-  field: any;
-  form?: { touched: any; errors: any; setFieldValue: any; values: any };
+  field: { name: string; onChange?: any; value: any; onBlur?: any };
+  form: { touched: any; errors: any; setFieldValue: any; values: any };
   label: string;
   placeholder: string;
   disabled?: boolean;

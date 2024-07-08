@@ -495,5 +495,13 @@
   "Allow dynamic media": "Allow dynamic media",
   "Please ensure that the entered media is valid as we cannot pre-validate dynamic media files and it may lead to errors.": "Please ensure that the entered media is valid as we cannot pre-validate dynamic media files and it may lead to errors.",
   "Are you sure you want to change these credentials?": "Are you sure you want to change these credentials?",
-  "All information related to this account will be deleted. All data has already been backed up in BigQuery.": "All information related to this account will be deleted. All data has already been backed up in BigQuery."
+  "All information related to this account will be deleted. All data has already been backed up in BigQuery.": "All information related to this account will be deleted. All data has already been backed up in BigQuery.",
+  "Translate Interactive Message": "Translate Interactive Message",
+  "Translate the content of the Interactive Message.": "Translate the content of the Interactive Message.",
+  "Export Interactive Template Without Translations": "Export Interactive Template Without Translations",
+  "Export Interactive Template With Translations": "Export Interactive Template With Translations",
+  "Export the translated content of templates as a csv.": "Export the translated content of templates as a csv.",
+  "Export the content without any translations.": "Export the content without any translations.",
+  "Import Interactive Template": "Import Interactive Template",
+  "Import templates from a CSV file into the application.": "Import templates from a CSV file into the application."
 }

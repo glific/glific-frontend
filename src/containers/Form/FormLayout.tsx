@@ -155,11 +155,10 @@ export const FormLayout = ({
     validationSchema: validationSchema,
     enableReinitialize: true,
     onSubmit: (values, { setErrors }) => {
-      setCustomError({ setErrors });
       if (confirmationState?.show) {
         setShowConfirmationDialog(true);
       } else {
-        onSaveButtonClick(formik.errors);
+        setCustomError({ setErrors });
         saveHandler(values);
       }
     },
@@ -564,6 +563,7 @@ export const FormLayout = ({
               variant="contained"
               color="primary"
               onClick={() => {
+                onSaveButtonClick(formik.errors);
                 formik.submitForm();
               }}
               className={styles.Button}
@@ -644,7 +644,6 @@ export const FormLayout = ({
       <DialogBox
         title={confirmationState?.title || 'Are you sure you want to proceed?'}
         handleOk={() => {
-          onSaveButtonClick(formik.errors);
           saveHandler(formik.values);
         }}
         handleCancel={() => setShowConfirmationDialog(false)}

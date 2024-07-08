@@ -1,6 +1,9 @@
 import {
   CREATE_INTERACTIVE,
   DELETE_INTERACTIVE,
+  EXPORT_INTERACTIVE_TEMPLATE,
+  IMPORT_INTERACTIVE_TEMPLATE,
+  TRANSLATE_INTERACTIVE_TEMPLATE,
   UPDATE_INTERACTIVE,
 } from 'graphql/mutations/InteractiveMessage';
 import {
@@ -28,7 +31,6 @@ const filterInteractiveFunction = (filter: any, opts: any) => ({
             '{"type":"quick_reply","options":[{"type":"text","title":"yes"},{"type":"text","title":"no"}],"content":{"type":"text","text":"Glific comes with all new features","header":"Are you excited for *Glific*?"}}',
           label: 'Are you excited for Glific?',
           language: {
-            __typename: 'Language',
             id: '1',
             label: 'English',
           },
@@ -198,7 +200,7 @@ const listReplyMock = {
     '{"type":"list","title":"new title","body":"😀","globalButtons":[{"type":"text","title":"Section 1"}],"items":[{"title":"title","subtitle":"title","options":[{"type":"text","title":"red","description":"red is color"}]}]}',
   languageId: '2',
   label: 'new title',
-  sendWithTitle: true,
+  sendWithTitle: false,
   translations:
     '{"2":{"type":"list","title":"new title","body":"😀","globalButtons":[{"type":"text","title":"Section 1"}],"items":[{"title":"title","subtitle":"title","options":[{"type":"text","title":"red","description":"red is color"}]}]}}',
 };
@@ -215,13 +217,14 @@ const createMockByType = (body: any) => ({
       createInteractiveTemplate: {
         interactiveTemplate: {
           id: '1',
-          language: { id: '1', label: 'English' },
-          tag: null,
+          language: {
+            id: '1',
+            label: 'English',
+          },
           ...body,
         },
         errors: null,
       },
-      errors: null,
     },
   },
 });
@@ -282,8 +285,8 @@ const updateMockByType = (id: string, input: any, response: any) => ({
           id,
           insertedAt: '2021-07-14T11:12:42Z',
           updatedAt: '2021-07-14T11:26:00Z',
-          language: { id: '1', label: 'English' },
           tag: null,
+          language: { id: '1', label: 'English' },
           ...response,
         },
         errors: null,
@@ -305,8 +308,8 @@ const getTemplateByType = (id: string, body: any) => ({
       interactiveTemplate: {
         interactiveTemplate: {
           id,
-          tag: null,
           language: { id: '1', label: 'English' },
+          tag: null,
           ...body,
         },
       },
@@ -330,16 +333,121 @@ const deleteMock = {
   },
 };
 
+const quickReply = {
+  type: 'QUICK_REPLY',
+  interactiveContent:
+    '{"type":"quick_reply","content":{"type":"image","url":"https://storage.glific.png","text":"What activity would you like?\\n"},"options":[{"type":"text","title":"Visual Arts"},{"type":"text","title":"Poetry"},{"type":"text","title":"Theatre"}]}',
+  tag_id: '1',
+  languageId: '1',
+  label: 'A quick reply mock',
+  sendWithTitle: true,
+  translations:
+    '{"1":{"type":"quick_reply","content":{"type":"image","url":"https://storage.glific.png","text":"What activity would you like?\\n"},"options":[{"type":"text","title":"Visual Arts"},{"type":"text","title":"Poetry"},{"type":"text","title":"Theatre"}]}}',
+};
+
+const quickReplyResult = {
+  ...quickReply,
+  language: {
+    id: '1',
+    label: 'English',
+  },
+};
+
+export const translateInteractiveTemplateMock = (error: boolean = false) => ({
+  request: {
+    query: TRANSLATE_INTERACTIVE_TEMPLATE,
+    variables: { translateInteractiveTemplateId: '1' },
+  },
+  [error ? 'error' : 'result']: error
+    ? new Error('An error occured')
+    : {
+        data: {
+          translateInteractiveTemplate: {
+            interactiveTemplate: { ...quickReplyResult, tag: null, id: '1' },
+            errors: null,
+          },
+        },
+      },
+});
+
+export const importInteractiveTemplateMock = (error: boolean = false) => ({
+  request: {
+    query: IMPORT_INTERACTIVE_TEMPLATE,
+  },
+  [error ? 'error' : 'result']: error
+    ? new Error('An error occured')
+    : {
+        data: {
+          importInteractiveTemplate: {
+            interactiveTemplate: { ...quickReplyResult, tag: null, id: '1' },
+            errors: null,
+          },
+        },
+      },
+  variableMatcher: (variables: any) => true,
+});
+
+export const exportInteractiveTemplateMock = (error: boolean = false) => ({
+  request: {
+    query: EXPORT_INTERACTIVE_TEMPLATE,
+    variables: { exportInteractiveTemplateId: '1', addTranslation: true },
+  },
+  [error ? 'error' : 'result']: error
+    ? new Error('An error occured')
+    : {
+        data: {
+          exportInteractiveTemplate: {
+            exportData:
+              'Attribute,en,hi\nHeader,test,परीक्षा\nText,test,परीक्षा\nOptionTitle 1,test,परीक्षा\n',
+          },
+        },
+      },
+});
+
+export const exportInteractiveTemplateMockWithoutTranslation = (error: boolean = false) => ({
+  request: {
+    query: EXPORT_INTERACTIVE_TEMPLATE,
+    variables: { exportInteractiveTemplateId: '1', addTranslation: false },
+  },
+  [error ? 'error' : 'result']: error
+    ? new Error('An error occured')
+    : {
+        data: {
+          exportInteractiveTemplate: {
+            exportData:
+              'Attribute,en,hi\nHeader,test,परीक्षा\nText,test,परीक्षा\nOptionTitle 1,test,परीक्षा\n',
+          },
+        },
+      },
+});
+
+const quick_reply = {
+  type: 'QUICK_REPLY',
+  interactiveContent:
+    '{"type":"quick_reply","content":{"type":"text","header":"new title","text":"Hi, How are you"},"options":[{"type":"text","title":"new button text"}]}',
+  languageId: '1',
+  label: 'new title',
+  sendWithTitle: false,
+  translations:
+    '{"1":{"type":"quick_reply","content":{"type":"text","header":"new title","text":"Hi, How are you"},"options":[{"type":"text","title":"new button text"}]}}',
+};
+
 export const mocks: any = [
   createMockByType(quickReplyMock),
   createMockByType(listReplyMock),
   createInteractiveCustomMock(),
   updateMockByType('1', quickReplyMockInput, quickReplyMock),
   updateMockByType('2', listReplyMock, listReplyMock),
+  updateMockByType('3', quickReply, quickReplyResult),
   getTemplateByType('1', quickReplyMock),
   getTemplateByType('2', listReplyMock),
   getTemplateByType('3', quickReplyMedia),
+  createMockByType(quick_reply),
   deleteMock,
   getFilterTagQuery,
   getOrganizationLanguagesWithoutOrder,
+  translateInteractiveTemplateMock(),
+  importInteractiveTemplateMock(),
+  exportInteractiveTemplateMock(),
+  exportInteractiveTemplateMockWithoutTranslation(),
 ];
