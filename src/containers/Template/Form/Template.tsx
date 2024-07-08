@@ -162,6 +162,8 @@ export interface TemplateProps {
   onExampleChange?: any;
   languageStyle?: string;
   getSimulatorMessage?: any;
+  allowTemplateCategoryChange?: boolean;
+  setAllowTemplateCategoryChange?: any;
   languageVariant?: boolean;
   newShortCode?: any;
   setNewShortcode?: any;
@@ -189,6 +191,8 @@ const Template = ({
   setCategory,
   category,
   onExampleChange = () => {},
+  allowTemplateCategoryChange,
+  setAllowTemplateCategoryChange,
   languageStyle = 'dropdown',
   getSimulatorMessage,
   languageVariant,
@@ -273,6 +277,7 @@ const Template = ({
     variables,
     newShortCode,
     existingShortCode,
+    allowTemplateCategoryChange,
   };
 
   const setStates = ({
@@ -290,6 +295,7 @@ const Template = ({
     buttonType: templateButtonType,
     buttons,
     hasButtons,
+    allowTemplateCategoryChange: allowCategoryChangeValue,
   }: any) => {
     if (languageOptions.length > 0 && languageIdValue) {
       if (location.state && location.state !== 'copy') {
@@ -368,6 +374,9 @@ const Template = ({
     }
     if (tagIdValue) {
       setTagId(tagIdValue);
+    }
+    if (setAllowTemplateCategoryChange) {
+      setAllowTemplateCategoryChange(allowCategoryChangeValue);
     }
   };
 
@@ -874,6 +883,7 @@ const Template = ({
           delete payloadCopy.shortcode;
           delete payloadCopy.category;
           delete payloadCopy.variables;
+          delete payloadCopy.allowTemplateCategoryChange;
         }
         if (payloadCopy.type === 'TEXT') {
           delete payloadCopy.attachmentURL;
@@ -937,6 +947,7 @@ const Template = ({
         delete payloadCopy.isActive;
         delete payloadCopy.shortcode;
         delete payloadCopy.category;
+        delete payloadCopy.allowTemplateCategoryChange;
       }
 
       delete payloadCopy.languageVariant;

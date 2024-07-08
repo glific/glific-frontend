@@ -70,6 +70,7 @@ export const GET_TEMPLATE = gql`
         hasButtons
         buttons
         buttonType
+        allowTemplateCategoryChange
       }
     }
   }
@@ -81,8 +82,8 @@ export const GET_HSM_CATEGORIES = gql`
   }
 `;
 export const GET_SHORTCODES = gql`
-  query sessionTemplates($filter: SessionTemplateFilter!, $opts: Opts!) {
-    sessionTemplates(filter: $filter, opts: $opts) {
+  query sessionTemplates($filter: SessionTemplateFilter!) {
+    sessionTemplates(filter: $filter) {
       shortcode
     }
   }

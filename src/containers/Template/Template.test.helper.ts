@@ -265,6 +265,7 @@ const getTemplateDataTypeText = {
       buttons:
         '[{"type":"QUICK_REPLY","text":"View Account Balance"},{"type":"QUICK_REPLY","text":"View Mini Statement"}]',
       buttonType: 'QUICK_REPLY',
+      allowTemplateCategoryChange: false,
     },
   },
 };
@@ -295,6 +296,7 @@ const getTemplateDataTypeMedia = {
         '{"2":{"number_parameters":3,"language_id":2,"body":"हाय {{1}},  n  n आपके खाते की छवि {{2}} पर {{3}} द्वारा अद्यतन की गई थी।"}}',
       type: 'IMAGE',
       updatedAt: '2024-07-03T08:17:28Z',
+      allowTemplateCategoryChange: true,
     },
   },
 };
@@ -319,6 +321,7 @@ const createHsmWithButtontemplate = {
           '[{"type":"QUICK_REPLY","text":"Quick reply 1"},{"type":"QUICK_REPLY","text":"Quick reply 2"}]',
         buttonType: 'QUICK_REPLY',
         translations: '{}',
+        allowTemplateCategoryChange: false,
       },
     },
   },
@@ -344,6 +347,7 @@ const createHsmWithButtontemplate = {
           buttons:
             '[{"type":"QUICK_REPLY","text":"Quick reply 1"},{"type":"QUICK_REPLY","text":"Quick reply 2"}]',
           buttonType: 'QUICK_REPLY',
+          allowTemplateCategoryChange: false,
         },
         errors: null,
       },
@@ -370,6 +374,7 @@ const createHsmWithPhonetemplate = {
         buttons: '[{"type":"PHONE_NUMBER","text":"Call me","phone_number":"9876543210"}]',
         buttonType: 'CALL_TO_ACTION',
         translations: '{}',
+        allowTemplateCategoryChange: false,
       },
     },
   },
@@ -394,6 +399,7 @@ const createHsmWithPhonetemplate = {
           hasButtons: true,
           buttons: '[{"type":"PHONE_NUMBER","text":"Call me","phone_number":"9876543210"}]',
           buttonType: 'CALL_TO_ACTION',
+          allowTemplateCategoryChange: false,
         },
         errors: null,
       },
@@ -418,6 +424,7 @@ const createHSMtemplate = {
         languageId: '1',
         translations: '{}',
         messageMediaId: 5,
+        allowTemplateCategoryChange: true,
       },
     },
   },
@@ -442,6 +449,7 @@ const createHSMtemplate = {
           hasButtons: false,
           buttons: null,
           buttonType: null,
+          allowTemplateCategoryChange: true,
         },
         errors: null,
       },
@@ -476,7 +484,7 @@ const createMediaMessage = {
 const getShortCodeQuery = {
   request: {
     query: GET_SHORTCODES,
-    variables: {},
+    variables: { filter: { isHsm: true } },
   },
   result: {
     data: {

@@ -125,6 +125,8 @@ describe('Add mode', () => {
 
     fireEvent.click(screen.getByText('ACCOUNT_UPDATE'), { key: 'Enter' });
 
+    fireEvent.click(screen.getByText('Allow meta to re-categorize template?'));
+
     await waitFor(() => {
       expect(screen.getByText('Hi, How are you')).toBeInTheDocument();
     });

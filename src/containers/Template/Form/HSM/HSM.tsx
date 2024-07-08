@@ -32,6 +32,7 @@ export const HSM = () => {
   const [newShortcode, setNewShortcode] = useState('');
   const [category, setCategory] = useState<any>(undefined);
   const [languageVariant, setLanguageVariant] = useState<boolean>(false);
+  const [allowTemplateCategoryChange, setAllowTemplateCategoryChange] = useState<boolean>(false);
 
   const { t } = useTranslation();
   const params = useParams();
@@ -164,6 +165,18 @@ export const HSM = () => {
       skip: isEditing,
     },
     {
+      component: Checkbox,
+      name: 'allowTemplateCategoryChange',
+      title: (
+        <Typography variant="h6" className={styles.Checkbox}>
+          Allow meta to re-categorize template?
+        </Typography>
+      ),
+      darkCheckbox: true,
+      disabled: isEditing,
+      handleChange: (value: boolean) => setAllowTemplateCategoryChange(value),
+    },
+    {
       component: Input,
       name: 'category',
       type: 'text',
@@ -187,6 +200,8 @@ export const HSM = () => {
         setCategory={setCategory}
         category={category}
         onExampleChange={addButtonsToSampleMessage}
+        allowTemplateCategoryChange={allowTemplateCategoryChange}
+        setAllowTemplateCategoryChange={setAllowTemplateCategoryChange}
         languageVariant={languageVariant}
         getSimulatorMessage={getSimulatorMessage}
         setNewShortcode={setNewShortcode}
