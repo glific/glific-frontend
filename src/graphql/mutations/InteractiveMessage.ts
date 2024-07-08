@@ -75,3 +75,65 @@ export const COPY_INTERACTIVE = gql`
     }
   }
 `;
+
+export const TRANSLATE_INTERACTIVE_TEMPLATE = gql`
+  mutation TranslateInteractiveTemplate($translateInteractiveTemplateId: ID!) {
+    translateInteractiveTemplate(id: $translateInteractiveTemplateId) {
+      errors {
+        key
+        message
+      }
+      interactiveTemplate {
+        id
+        interactiveContent
+        label
+        language {
+          id
+          label
+        }
+        sendWithTitle
+        tag {
+          id
+          label
+        }
+        translations
+        type
+      }
+    }
+  }
+`;
+
+export const EXPORT_INTERACTIVE_TEMPLATE = gql`
+  mutation ExportInteractiveTemplate($exportInteractiveTemplateId: ID!, $addTranslation: Boolean) {
+    exportInteractiveTemplate(id: $exportInteractiveTemplateId, addTranslation: $addTranslation) {
+      exportData
+    }
+  }
+`;
+
+export const IMPORT_INTERACTIVE_TEMPLATE = gql`
+  mutation ImportInteractiveTemplate($importInteractiveTemplateId: ID!, $translation: String) {
+    importInteractiveTemplate(id: $importInteractiveTemplateId, translation: $translation) {
+      errors {
+        key
+        message
+      }
+      interactiveTemplate {
+        id
+        interactiveContent
+        label
+        language {
+          id
+          label
+        }
+        sendWithTitle
+        tag {
+          id
+          label
+        }
+        translations
+        type
+      }
+    }
+  }
+`;

@@ -9,8 +9,8 @@ import { $createTextNode, $getSelection, $isRangeSelection } from 'lexical';
 import { LexicalWrapper } from 'common/LexicalWrapper';
 
 export interface EmojiInputProps {
-  field: any;
-  form: any;
+  field: { name: string; onChange?: any; value: any; onBlur?: any };
+  form: { touched: any; errors: any; setFieldValue: any; values: any };
   label: string;
   placeholder: string;
   disabled?: boolean;
@@ -19,7 +19,6 @@ export interface EmojiInputProps {
   handleBlur?: any;
   inputProp?: any;
   translation?: string;
-  editorState?: any;
 }
 
 interface EmojiPickerProps {
@@ -33,7 +32,6 @@ export const EmojiInput = ({
   handleChange,
   handleBlur,
   translation,
-  editorState,
   ...props
 }: EmojiInputProps) => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);

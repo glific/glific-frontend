@@ -129,6 +129,7 @@ const completionMock = {
     ],
   },
 };
+const user = userEvent.setup();
 
 // Getting contact variables
 vi.spyOn(axios, 'get').mockImplementation((url: string) => {
@@ -316,21 +317,6 @@ test('it validates url', async () => {
   fireEvent.change(getAllByRole('textbox')[4], { target: { value: 'bhhdhds' } });
 });
 
-describe('copy interactive message', () => {
-  test('it renders copy interactive quick reply message', async () => {
-    mockUseLocationValue.state = 'copy';
-
-    const { getByText, getAllByTestId } = render(renderInteractiveMessage('1'));
-    // vi.spyOn(axios, 'get').mockResolvedValueOnce(responseMock1);
-
-    await waitFor(() => {
-      expect(getByText('Copy Interactive Message')).toBeInTheDocument();
-      const input = getAllByTestId('input');
-      expect(input[0]?.querySelector('input')).toHaveValue('Copy of Continue');
-    });
-  });
-});
-
 describe('location request message', () => {
   test('it renders empty location request message', async () => {
     render(interactiveMessage);
@@ -383,4 +369,98 @@ test('It creates a interactive message with dynamic content', async () => {
 
   fireEvent.change(getAllByRole('textbox')[4], { target: { value: '@results.result_1' } });
   fireEvent.click(getByTestId('submitActionButton'));
+});
+
+describe('translates the template', () => {
+  test('it shows error if clicked on translation without filling details', async () => {
+    const { getByText } = render(interactiveMessage);
+
+    await waitFor(() => {
+      expect(getByText('Add a new Interactive message')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('translateBtn'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('dialogBox')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('ok-button'));
+
+    await waitFor(() => {
+      expect(getByText('Message content is required.')).toBeInTheDocument();
+    });
+  });
+
+  test('it translates a new template', async () => {
+    const { getByText } = render(interactiveMessage);
+
+    await waitFor(() => {
+      expect(getByText('Add a new Interactive message')).toBeInTheDocument();
+    });
+
+    const [title, lexicalEditor, , buttonText] = screen.getAllByRole('textbox');
+
+    fireEvent.change(title, { target: { value: 'new title' } });
+    fireEvent.change(buttonText, {
+      target: { value: 'new button text' },
+    });
+    await user.click(lexicalEditor);
+    await user.tab();
+
+    fireEvent.input(lexicalEditor, { data: 'Hi, How are you' });
+
+    await waitFor(() => {
+      expect(getByText('Hi, How are you')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('translateBtn'));
+
+    await waitFor(() => {
+      expect(getByText('Translate Options')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Continue'));
+
+    await waitFor(() => {
+      expect(setNotification).toHaveBeenCalled();
+    });
+  });
+
+  test('it translates an already exisiting template', async () => {
+    render(renderInteractiveMessage('1'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Edit Interactive message')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('translateBtn'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Translate Options')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Translate Interactive Message'));
+
+    fireEvent.click(screen.getByText('Continue'));
+
+    await waitFor(() => {
+      expect(setNotification).toHaveBeenCalled();
+    });
+  });
+});
+
+describe('copy interactive message', () => {
+  test('it renders copy interactive quick reply message', async () => {
+    mockUseLocationValue.state = 'copy';
+
+    const { getByText, getAllByTestId } = render(renderInteractiveMessage('1'));
+    // vi.spyOn(axios, 'get').mockResolvedValueOnce(responseMock1);
+
+    await waitFor(() => {
+      expect(getByText('Copy Interactive Message')).toBeInTheDocument();
+      const input = getAllByTestId('input');
+      expect(input[0]?.querySelector('input')).toHaveValue('Copy of Continue');
+    });
+  });
 });
