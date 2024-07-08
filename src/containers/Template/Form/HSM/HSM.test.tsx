@@ -47,8 +47,7 @@ describe('Add mode', () => {
     });
 
     const { queryByText } = within(container.querySelector('form') as HTMLElement);
-    const button: any = queryByText('Submit for Approval');
-    await user.click(button);
+    fireEvent.click(screen.getByTestId('submitActionButton'));
 
     // we should have 2 errors
     await waitFor(() => {
@@ -63,7 +62,7 @@ describe('Add mode', () => {
       },
     });
 
-    await user.click(button);
+    fireEvent.click(screen.getByTestId('submitActionButton'));
 
     // we should still have 2 errors
     await waitFor(() => {
