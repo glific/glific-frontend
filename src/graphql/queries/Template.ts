@@ -81,8 +81,8 @@ export const GET_HSM_CATEGORIES = gql`
   }
 `;
 export const GET_SHORTCODES = gql`
-  query SessionTemplates {
-    sessionTemplates {
+  query sessionTemplates($filter: SessionTemplateFilter!, $opts: Opts!) {
+    sessionTemplates(filter: $filter, opts: $opts) {
       shortcode
     }
   }

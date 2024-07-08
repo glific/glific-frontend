@@ -1,4 +1,3 @@
-import 'mocks/matchMediaMock';
 import { render, screen } from '@testing-library/react';
 import { EmojiInput } from './EmojiInput';
 

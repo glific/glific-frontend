@@ -38,7 +38,13 @@ export const HSM = () => {
   const location: any = useLocation();
 
   const { data: categoryList, loading } = useQuery(GET_HSM_CATEGORIES);
-  const { data: shortCodes } = useQuery(GET_SHORTCODES);
+  const { data: shortCodes } = useQuery(GET_SHORTCODES, {
+    variables: {
+      filter: {
+        isHsm: true,
+      },
+    },
+  });
 
   if (loading) {
     return <Loading />;
