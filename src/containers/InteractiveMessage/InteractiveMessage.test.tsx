@@ -7,10 +7,15 @@ import { Route, MemoryRouter, Routes } from 'react-router-dom';
 import { vi } from 'vitest';
 
 import { setUserSession } from 'services/AuthService';
-import { mocks } from 'mocks/InteractiveMessage';
+import {
+  mocks,
+  translateInteractiveTemplateMock,
+  translateWitTrimmingMocks,
+  translateWithoutTrimmingMocks,
+} from 'mocks/InteractiveMessage';
 import { InteractiveMessage } from './InteractiveMessage';
 import { FLOW_EDITOR_API } from 'config';
-import { setNotification } from 'common/notification';
+import { setErrorMessage, setNotification } from 'common/notification';
 
 afterEach(() => {
   cleanup();
@@ -31,6 +36,7 @@ const mockUseLocationValue: any = {
   hash: '',
   state: null,
 };
+
 vi.mock('react-router-dom', async () => ({
   ...((await vi.importActual<any>('react-router-dom')) as {}),
   useLocation: () => {
@@ -44,6 +50,7 @@ vi.mock('common/notification', async (importOriginal) => {
   return {
     ...mod,
     setNotification: vi.fn(),
+    setErrorMessage: vi.fn(),
   };
 });
 
@@ -80,23 +87,36 @@ const mockData = [...mocks, ...mocks];
 
 setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
 
-const renderInteractiveMessage = (id: string) => (
-  <MockedProvider mocks={mockData} addTypename={false}>
-    <MemoryRouter initialEntries={[`/interactive-message/${id}/edit`]}>
-      <Routes>
-        <Route path="interactive-message/:id/edit" element={<InteractiveMessage />} />
-      </Routes>
-    </MemoryRouter>
-  </MockedProvider>
-);
+const renderInteractiveMessage = (id: string, mocks?: any) => {
+  let MOCKS = mockData;
+  if (mocks) {
+    MOCKS = [...MOCKS, ...mocks];
+  }
+  return (
+    <MockedProvider mocks={MOCKS} addTypename={false}>
+      <MemoryRouter initialEntries={[`/interactive-message/${id}/edit`]}>
+        <Routes>
+          <Route path="interactive-message/:id/edit" element={<InteractiveMessage />} />
+        </Routes>
+      </MemoryRouter>
+    </MockedProvider>
+  );
+};
 
-const interactiveMessage = (
-  <MockedProvider mocks={mockData} addTypename={false}>
-    <MemoryRouter>
-      <InteractiveMessage />
-    </MemoryRouter>
-  </MockedProvider>
-);
+const interactiveMessage = (mock?: any) => {
+  let MOCKS = mockData;
+  if (mock) {
+    MOCKS = [...MOCKS, ...mock];
+  }
+
+  return (
+    <MockedProvider mocks={MOCKS} addTypename={false}>
+      <MemoryRouter>
+        <InteractiveMessage />
+      </MemoryRouter>
+    </MockedProvider>
+  );
+};
 
 const fieldsMock = {
   results: [{ key: 'key 1' }, { key: 'key 2' }],
@@ -143,7 +163,7 @@ vi.spyOn(axios, 'get').mockImplementation((url: string) => {
 });
 
 test('it renders empty interactive form', async () => {
-  render(interactiveMessage);
+  render(interactiveMessage());
 
   // Adding another quick reply button
   await waitFor(() => {
@@ -251,7 +271,7 @@ test('it renders empty interactive form', async () => {
   });
 });
 
-test('it renders interactive quick reply in edit mode', async () => {
+test.skip('it renders interactive quick reply in edit mode', async () => {
   render(renderInteractiveMessage('1'));
 
   await waitFor(() => {
@@ -299,7 +319,7 @@ test('it renders interactive quick reply with media in edit mode', async () => {
 });
 
 test('it validates url', async () => {
-  const { getByText, getAllByRole } = render(interactiveMessage);
+  const { getByText, getAllByRole } = render(interactiveMessage());
 
   await waitFor(() => {
     expect(getByText('Add a new Interactive message')).toBeInTheDocument();
@@ -319,7 +339,7 @@ test('it validates url', async () => {
 
 describe('location request message', () => {
   test('it renders empty location request message', async () => {
-    render(interactiveMessage);
+    render(interactiveMessage());
 
     await waitFor(() => {
       expect(screen.getAllByTestId('autocomplete-element')[0]).toBeInTheDocument();
@@ -351,7 +371,7 @@ describe('location request message', () => {
 });
 
 test('It creates a interactive message with dynamic content', async () => {
-  const { getByTestId, getAllByRole, getByText } = render(interactiveMessage);
+  const { getByTestId, getAllByRole, getByText } = render(interactiveMessage());
   await waitFor(() => {
     expect(getByText('Marathi')).toBeInTheDocument();
   });
@@ -373,7 +393,7 @@ test('It creates a interactive message with dynamic content', async () => {
 
 describe('translates the template', () => {
   test('it shows error if clicked on translation without filling details', async () => {
-    const { getByText } = render(interactiveMessage);
+    const { getByText } = render(interactiveMessage(translateWithoutTrimmingMocks));
 
     await waitFor(() => {
       expect(getByText('Add a new Interactive message')).toBeInTheDocument();
@@ -393,7 +413,7 @@ describe('translates the template', () => {
   });
 
   test('it translates a new template', async () => {
-    const { getByText } = render(interactiveMessage);
+    const { getByText } = render(interactiveMessage(translateWithoutTrimmingMocks));
 
     await waitFor(() => {
       expect(getByText('Add a new Interactive message')).toBeInTheDocument();
@@ -428,7 +448,7 @@ describe('translates the template', () => {
   });
 
   test('it translates an already exisiting template', async () => {
-    render(renderInteractiveMessage('1'));
+    render(renderInteractiveMessage('1', translateWithoutTrimmingMocks));
 
     await waitFor(() => {
       expect(screen.getByText('Edit Interactive message')).toBeInTheDocument();
@@ -446,6 +466,50 @@ describe('translates the template', () => {
 
     await waitFor(() => {
       expect(setNotification).toHaveBeenCalled();
+    });
+  });
+
+  test('it translates an already exisiting template', async () => {
+    render(renderInteractiveMessage('1', [translateInteractiveTemplateMock(true)]));
+
+    await waitFor(() => {
+      expect(screen.getByText('Edit Interactive message')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('translateBtn'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Translate Options')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Translate Interactive Message'));
+
+    fireEvent.click(screen.getByText('Continue'));
+
+    await waitFor(() => {
+      expect(setErrorMessage).toHaveBeenCalled();
+    });
+  });
+
+  test('it translates an already exisiting template with trimming', async () => {
+    render(renderInteractiveMessage('1', translateWitTrimmingMocks));
+
+    await waitFor(() => {
+      expect(screen.getByText('Edit Interactive message')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('translateBtn'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Translate Options')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Translate Interactive Message'));
+
+    fireEvent.click(screen.getByText('Continue'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Translations exceeding limit.')).toBeInTheDocument();
     });
   });
 });

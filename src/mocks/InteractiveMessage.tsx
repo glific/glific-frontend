@@ -364,10 +364,28 @@ export const translateInteractiveTemplateMock = (error: boolean = false) => ({
           translateInteractiveTemplate: {
             interactiveTemplate: { ...quickReplyResult, tag: null, id: '1' },
             errors: null,
+            message: null,
           },
         },
       },
 });
+
+export const translateInteractiveTemplateWithTrimMock = {
+  request: {
+    query: TRANSLATE_INTERACTIVE_TEMPLATE,
+    variables: { translateInteractiveTemplateId: '1' },
+  },
+  result: {
+    data: {
+      translateInteractiveTemplate: {
+        interactiveTemplate: { ...quickReplyResult, tag: null, id: '1' },
+        errors: null,
+        message:
+          'Trimming has been done for the following languages due to exceeding character limits: Hindi. Please verify the content before saving.',
+      },
+    },
+  },
+};
 
 export const importInteractiveTemplateMock = (error: boolean = false) => ({
   request: {
@@ -380,11 +398,29 @@ export const importInteractiveTemplateMock = (error: boolean = false) => ({
           importInteractiveTemplate: {
             interactiveTemplate: { ...quickReplyResult, tag: null, id: '1' },
             errors: null,
+            message: null,
           },
         },
       },
   variableMatcher: (variables: any) => true,
 });
+
+export const importInteractiveTemplateWithTrimmingMock = {
+  request: {
+    query: IMPORT_INTERACTIVE_TEMPLATE,
+  },
+  result: {
+    data: {
+      importInteractiveTemplate: {
+        interactiveTemplate: { ...quickReplyResult, tag: null, id: '1' },
+        errors: null,
+        message:
+          'Trimming has been done for the following languages due to exceeding character limits: Hindi. Please verify the content before saving.',
+      },
+    },
+  },
+  variableMatcher: (variables: any) => true,
+};
 
 export const exportInteractiveTemplateMock = (error: boolean = false) => ({
   request: {
@@ -445,8 +481,16 @@ export const mocks: any = [
   deleteMock,
   getFilterTagQuery,
   getOrganizationLanguagesWithoutOrder,
+];
+
+export const translateWithoutTrimmingMocks = [
   translateInteractiveTemplateMock(),
   importInteractiveTemplateMock(),
   exportInteractiveTemplateMock(),
   exportInteractiveTemplateMockWithoutTranslation(),
+];
+
+export const translateWitTrimmingMocks = [
+  translateInteractiveTemplateWithTrimMock,
+  importInteractiveTemplateWithTrimmingMock,
 ];
