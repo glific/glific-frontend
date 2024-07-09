@@ -47,23 +47,23 @@ export const TranslateButton = ({
   const translationOptions = [
     {
       value: 'translate',
-      label: t('Translate Interactive Message'),
-      description: t('Translate the content of the Interactive Message.'),
+      label: t('Auto translate'),
+      description: t('Translate the content of interactive message.'),
     },
     {
       value: 'export-translate',
-      label: t('Export Interactive Template With Translations'),
-      description: t('Export the translated content of templates as a csv.'),
+      label: t('Export with translations'),
+      description: t('Export the translated content of the message as a csv.'),
     },
     {
       value: 'export',
-      label: t('Export Interactive Template Without Translations'),
-      description: t('Export the content without any translations.'),
+      label: t('Export without translations'),
+      description: t('Export the content of the message as a csv.'),
     },
     {
       value: 'import',
-      label: t('Import Interactive Template'),
-      description: t('Import templates from a CSV file into the application.'),
+      label: t('Import translations'),
+      description: t('Import the csv with translations for interactive message.'),
     },
   ];
 
