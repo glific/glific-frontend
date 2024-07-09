@@ -240,7 +240,7 @@ export const FormLayout = ({
       let itemUpdatedObject: any = Object.keys(data)[0];
       itemUpdatedObject = data[itemUpdatedObject];
       const updatedItem = itemUpdatedObject[listItem];
-      const { errors } = itemUpdatedObject;
+      const { errors, message } = itemUpdatedObject;
 
       if (errors) {
         if (customHandler) {
@@ -273,7 +273,7 @@ export const FormLayout = ({
         }
         // emit data after save
         if (afterSave) {
-          afterSave(data, saveClick);
+          afterSave(data, saveClick, message);
         }
       }
       onSaveClick(false);

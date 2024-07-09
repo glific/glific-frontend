@@ -40,6 +40,7 @@ export const TranslateButton = ({
   const [showTranslateModal, setShowTranslateModal] = useState(false);
   const [translateOption, setTranslateOption] = useState('translate');
   const [importing, setImporting] = useState(false);
+  const [translateMessage, setTranslateMessage] = useState(null);
 
   const { t } = useTranslation();
 
@@ -74,9 +75,15 @@ export const TranslateButton = ({
 
   const [translateInteractiveMessage, { loading }] = useMutation(TRANSLATE_INTERACTIVE_TEMPLATE, {
     onCompleted: ({ translateInteractiveTemplate }: any) => {
-      const interactiveMessage = translateInteractiveTemplate?.interactiveTemplate;
-      setStates(interactiveMessage);
-      setNotification('Interactive Message Translated Successfully', 'success');
+      const { interactiveTemplate, message } = translateInteractiveTemplate;
+      setStates(interactiveTemplate);
+
+      if (message) {
+        setTranslateMessage(message);
+      } else {
+        setNotification('Interactive Message Translated Successfully', 'success');
+      }
+
       handleClose();
     },
     onError(error: any) {
@@ -105,9 +112,14 @@ export const TranslateButton = ({
     IMPORT_INTERACTIVE_TEMPLATE,
     {
       onCompleted: ({ importInteractiveTemplate }) => {
-        const interactiveMessage = importInteractiveTemplate?.interactiveTemplate;
-        setNotification('Interactive Message Imported Successfully!', 'success');
-        setStates(interactiveMessage);
+        const { interactiveTemplate, message } = importInteractiveTemplate;
+        setStates(interactiveTemplate);
+
+        if (message) {
+          setTranslateMessage(message);
+        } else {
+          setNotification('Interactive Message Imported Successfully!', 'success');
+        }
         handleClose();
       },
       onError: (error: any) => {
@@ -215,6 +227,21 @@ export const TranslateButton = ({
     </DialogBox>
   );
 
+  let messageDialog;
+  if (translateMessage) {
+    messageDialog = (
+      <DialogBox
+        title="Translations exceeding limit."
+        buttonOk="Okay"
+        alignButtons="center"
+        handleOk={() => setTranslateMessage(null)}
+        skipCancel
+      >
+        <div className={styles.DialogContent}>{translateMessage}</div>
+      </DialogBox>
+    );
+  }
+
   return (
     <div className={styles.Wrapper}>
       <Button variant="outlined" color="primary" data-testid="translateBtn" onClick={handleClick}>
@@ -222,6 +249,7 @@ export const TranslateButton = ({
         Translate
       </Button>
       {showTranslateModal ? dialog : ''}
+      {translateMessage && messageDialog}
     </div>
   );
 };
