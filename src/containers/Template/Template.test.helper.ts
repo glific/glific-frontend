@@ -7,7 +7,7 @@ import {
   FILTER_SESSION_TEMPLATES,
   GET_SHORTCODES,
 } from 'graphql/queries/Template';
-import { DELETE_TEMPLATE, CREATE_TEMPLATE } from 'graphql/mutations/Template';
+import { DELETE_TEMPLATE, CREATE_TEMPLATE, UPDATE_TEMPLATE } from 'graphql/mutations/Template';
 import {
   getOrganizationLanguagesQuery,
   getOrganizationLanguagesQueryByOrder,
@@ -558,7 +558,7 @@ export const getHSMTemplateTypeMedia = {
   },
 };
 
-export const getSpeendSendTemplate = {
+export const getSpendSendTemplate = {
   request: {
     query: GET_TEMPLATE,
     variables: {
@@ -569,30 +569,84 @@ export const getSpeendSendTemplate = {
     data: {
       sessionTemplate: {
         sessionTemplate: {
-          MessageMedia: null,
+          MessageMedia: {
+            __typename: 'MessageMedia',
+            caption: 'message',
+            id: '5',
+            sourceUrl:
+              'https://images.ctfassets.net/hrltx12pl8hq/28ECAQiPJZ78hxatLTa7Ts/2f695d869736ae3b0de3e56ceaca3958/free-nature-images.jpg?fit=fill&w=1200&h=630',
+          },
           __typename: 'SessionTemplate',
-          body: 'Please click on the link to register with the phone number @contact.phone\n@global.registration.url\n',
+          allowTemplateCategoryChange: true,
+          body: 'message',
           buttonType: null,
           buttons: '[]',
-          category: 'UTILITY',
-          example:
-            'Please click on the link to register with the phone number @contact.phone\n[https://www.gupshup.io/developer/register]\n',
+          category: null,
+          example: null,
           hasButtons: false,
-          id: '10',
-          isActive: false,
+          id: '11',
+          isActive: true,
           isHsm: false,
-          label: 'User Registration',
+          label: 'title',
+          language: {
+            id: '1',
+            label: 'English',
+          },
+          shortcode: null,
+          tag: null,
+          translations:
+            '{"2":{"status":"approved","languageId":{"localized":true,"locale":"hi","label":"Hindi","id":"2","__typename":"Language"},"label":"hey","isHsm":false,"body":"hindi translations","MessageMedia":null}}',
+          type: 'IMAGE',
+          updatedAt: '2024-07-10T09:43:25Z',
+        },
+      },
+    },
+  },
+};
+
+export const updateSessiontemplate = {
+  request: {
+    query: UPDATE_TEMPLATE,
+    variables: {
+      id: '1',
+      input: {
+        translations:
+          '{"2":{"status":"approved","languageId":{"localized":true,"locale":"hi","label":"Hindi","id":"2","__typename":"Language"},"label":"hey","isHsm":false,"body":"hindi translations","MessageMedia":null},"undefined":{"status":"approved","languageId":null,"label":"title","body":"message","MessageMedia":{"type":"IMAGE","sourceUrl":"https://images.ctfassets.net/hrltx12pl8hq/28ECAQiPJZ78hxatLTa7Ts/2f695d869736ae3b0de3e56ceaca3958/free-nature-images.jpg?fit=fill&w=1200&h=630"},"isHsm":false}}',
+      },
+    },
+  },
+  result: {
+    data: {
+      updateSessionTemplate: {
+        __typename: 'SessionTemplateResult',
+        sessionTemplate: {
+          MessageMedia: {
+            __typename: 'MessageMedia',
+            caption: 'message',
+            id: '5',
+            sourceUrl:
+              'https://images.ctfassets.net/hrltx12pl8hq/28ECAQiPJZ78hxatLTa7Ts/2f695d869736ae3b0de3e56ceaca3958/free-nature-images.jpg?fit=fill&w=1200&h=630',
+          },
+          __typename: 'SessionTemplate',
+          allowTemplateCategoryChange: true,
+          body: 'message',
+          buttonType: null,
+          buttons: '[]',
+          category: null,
+          example: null,
+          hasButtons: false,
+          id: '11',
+          isActive: true,
+          label: 'title',
           language: {
             __typename: 'Language',
             id: '1',
             label: 'English',
           },
-          shortcode: 'user-registration',
-          tag: null,
+          shortcode: null,
           translations:
-            '{"2":{"number_parameters":0,"language_id":2,"body":" कृपया फोन नंबर @ contact.phone के साथ पंजीकरण करने के लिए लिंक पर क्लिक करें @ global.registration.url"}}',
-          type: 'TEXT',
-          updatedAt: '2024-07-03T08:17:28Z',
+            '{"2":{"status":"approved","languageId":{"localized":true,"locale":"hi","label":"Hindi","id":"2","__typename":"Language"},"label":"hey","isHsm":false,"body":"hindi translations","MessageMedia":null}}',
+          type: 'IMAGE',
         },
       },
     },
@@ -710,6 +764,10 @@ export const TEMPLATE_MOCKS = [
   ...whatsappHsmCategories,
   speedSendOrderWith,
   speedSendOrderWith,
+  getSpendSendTemplate,
+  updateSessiontemplate,
+  getOrganizationLanguagesQuery,
+  getOrganizationLanguagesQuery,
 ];
 
 const getHSMTemplate = (id: string, status: string) => ({
@@ -815,4 +873,38 @@ export const HSM_LIST = [
       },
     },
   },
+];
+
+const getTemplatesCount = {
+  request: {
+    query: GET_TEMPLATES_COUNT,
+    variables: { filter: { isHsm: false } },
+  },
+  result: {
+    data: {
+      countSessionTemplates: 3,
+    },
+  },
+};
+
+export const SPEED_SENDS_MOCKS = [
+  getSpendSendTemplate,
+  getSpendSendTemplate,
+  getSpendSendTemplate,
+  speedSendOrderWith,
+  speedSendOrderWith,
+  speedSend,
+  speedSend,
+  filterTemplateQuery,
+  getTemplatesCount,
+  getTemplatesCount,
+  updateSessiontemplate,
+  getOrganizationLanguagesQuery,
+  getOrganizationLanguagesQueryByOrder,
+  getOrganizationLanguagesQueryByOrder,
+  getOrganizationLanguagesQueryByOrder,
+  getFilterTagQuery,
+  getFilterTagQuery,
+  getFilterTagQuery,
+  updateSessiontemplate,
 ];

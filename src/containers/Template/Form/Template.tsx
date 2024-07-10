@@ -395,7 +395,6 @@ const Template = ({
 
     if (typeof bodyValue === 'string') {
       setBody(bodyValue || '');
-
       setEditorState(bodyValue || '');
     }
 
@@ -860,8 +859,8 @@ const Template = ({
 
     let translationsCopy: any = {};
     if (template) {
-      if (template.sessionTemplate.sessionTemplate.language.id === language.id) {
-        payloadCopy.languageId = language.id;
+      if (template.sessionTemplate.sessionTemplate.language.id === language?.id) {
+        payloadCopy.languageId = language?.id;
         if (payloadCopy.type) {
           payloadCopy.type = payloadCopy.type.id;
           // STICKER is a type of IMAGE
@@ -903,7 +902,7 @@ const Template = ({
         // Update template translation
         if (translations) {
           translationsCopy = JSON.parse(translations);
-          translationsCopy[language.id] = {
+          translationsCopy[language?.id] = {
             status: 'approved',
             languageId: language,
             label: payloadCopy.label,
