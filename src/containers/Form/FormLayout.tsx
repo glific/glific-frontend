@@ -22,6 +22,7 @@ import { organizationHasDynamicRole } from 'common/utils';
 import { getUserRole } from 'context/role';
 import styles from './FormLayout.module.css';
 import { HelpDataProps } from 'common/HelpData';
+import { LexicalWrapper } from 'common/LexicalWrapper';
 
 export interface FormLayoutProps {
   deleteItemQuery: DocumentNode;
@@ -536,67 +537,69 @@ export const FormLayout = ({
   };
 
   const form = (
-    <form onSubmit={formik.handleSubmit}>
-      <div className={[styles.Form, customStyles].join(' ')} data-testid="formLayout">
-        {formFieldItems.map((field, index) => {
-          const key = index;
+    <LexicalWrapper>
+      <form onSubmit={formik.handleSubmit}>
+        <div className={[styles.Form, customStyles].join(' ')} data-testid="formLayout">
+          {formFieldItems.map((field, index) => {
+            const key = index;
 
-          if (field.skip) {
-            return null;
-          }
+            if (field.skip) {
+              return null;
+            }
 
-          return (
-            <Fragment key={key}>
-              {field.label && (
-                <Typography data-testid="formLabel" variant="h5" className={styles.FieldLabel}>
-                  {field.label}
-                </Typography>
-              )}
-              <Field key={key} {...field} onSubmit={formik.submitForm} />
-            </Fragment>
-          );
-        })}
-        <div className={styles.Buttons}>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => {
-              onSaveButtonClick(formik.errors);
-              formik.submitForm();
-            }}
-            className={styles.Button}
-            data-testid="submitActionButton"
-            loading={saveClick}
-            disabled={buttonState.status}
-          >
-            {buttonState.status ? buttonState.text : button}
-          </Button>
-          {additionalAction ? (
+            return (
+              <Fragment key={key}>
+                {field.label && (
+                  <Typography data-testid="formLabel" variant="h5" className={styles.FieldLabel}>
+                    {field.label}
+                  </Typography>
+                )}
+                <Field key={key} {...field} onSubmit={formik.submitForm} />
+              </Fragment>
+            );
+          })}
+          <div className={styles.Buttons}>
             <Button
-              variant="outlined"
+              variant="contained"
               color="primary"
               onClick={() => {
+                onSaveButtonClick(formik.errors);
                 formik.submitForm();
-                setAction(true);
               }}
-              data-testid="additionalActionButton"
+              className={styles.Button}
+              data-testid="submitActionButton"
+              loading={saveClick}
+              disabled={buttonState.status}
             >
-              {additionalAction.label}
+              {buttonState.status ? buttonState.text : button}
             </Button>
-          ) : null}
-          <Button
-            variant="outlined"
-            color="secondary"
-            onClick={cancelHandler}
-            data-testid="cancelActionButton"
-          >
-            {t('Cancel')}
-          </Button>
+            {additionalAction ? (
+              <Button
+                variant="outlined"
+                color="primary"
+                onClick={() => {
+                  formik.submitForm();
+                  setAction(true);
+                }}
+                data-testid="additionalActionButton"
+              >
+                {additionalAction.label}
+              </Button>
+            ) : null}
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={cancelHandler}
+              data-testid="cancelActionButton"
+            >
+              {t('Cancel')}
+            </Button>
 
-          {deleteButton}
+            {deleteButton}
+          </div>
         </div>
-      </div>
-    </form>
+      </form>
+    </LexicalWrapper>
   );
 
   const handleDeleteItem = () => {

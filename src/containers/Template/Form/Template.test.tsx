@@ -1,4 +1,3 @@
-import 'mocks/matchMediaMock';
 import { render, waitFor, fireEvent } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
@@ -6,19 +5,25 @@ import { vi } from 'vitest';
 
 import * as FormLayout from 'containers/Form/FormLayout';
 import Template from './Template';
-import { TEMPLATE_MOCKS } from '../Template.test.helper';
+import { TEMPLATE_MOCKS, getSpendSendTemplate } from '../Template.test.helper';
 import { HSM_TEMPLATE_MOCKS, templateFormHSMFormFields } from './Template.test.helper';
 
 beforeEach(() => {
   vi.restoreAllMocks();
 });
-const defaultMocks = [...TEMPLATE_MOCKS, ...TEMPLATE_MOCKS];
+const defaultMocks = [
+  ...TEMPLATE_MOCKS,
+  ...TEMPLATE_MOCKS,
+  getSpendSendTemplate,
+  getSpendSendTemplate,
+];
 
 const defaultProps = {
   listItemName: 'Speed sends',
   redirectionLink: 'speed-send',
   defaultAttribute: { isHsm: false },
   icon: null,
+  getSimulatorMessage: vi.fn(),
 };
 
 const templateEdit = (props: any = defaultProps, mocks: any = defaultMocks) => (
@@ -74,7 +79,8 @@ const hsmProps = {
   languageStyle: 'dropdown',
   formField: templateFormHSMFormFields,
   setCategory: vi.fn(),
-  setExampleState: vi.fn(),
+  getSimulatorMessage: vi.fn(),
+  setNewShortcode: vi.fn(),
 };
 
 const hsmTemplateEdit = (templateId: string) => (

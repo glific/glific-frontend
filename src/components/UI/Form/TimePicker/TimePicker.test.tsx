@@ -3,6 +3,10 @@ import UserEvent from '@testing-library/user-event';
 
 import { TimePicker } from './TimePicker';
 
+afterEach(() => {
+  (window as any).matchMedia = null;
+});
+
 const setFieldValueMock = vi.fn();
 const timePickerProps: any = (disabled: boolean) => {
   return {

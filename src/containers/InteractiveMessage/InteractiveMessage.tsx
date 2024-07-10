@@ -83,6 +83,7 @@ export const InteractiveMessage = () => {
   const [language, setLanguage] = useState<any>({});
   const [languageOptions, setLanguageOptions] = useState<any>([]);
   const [editorState, setEditorState] = useState<any>('');
+
   const [dynamicMedia, setDynamicMedia] = useState<boolean>(false);
   const [saveClicked, setSaveClicked] = useState<boolean>(false);
 

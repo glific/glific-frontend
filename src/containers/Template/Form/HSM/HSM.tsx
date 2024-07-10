@@ -4,10 +4,9 @@ import { useTranslation } from 'react-i18next';
 import { useParams, useLocation } from 'react-router-dom';
 
 import TemplateIcon from 'assets/images/icons/Template/UnselectedDark.svg?react';
-import { GET_HSM_CATEGORIES } from 'graphql/queries/Template';
+import { GET_HSM_CATEGORIES, GET_SHORTCODES } from 'graphql/queries/Template';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Input } from 'components/UI/Form/Input/Input';
-import { EmojiInput } from 'components/UI/Form/EmojiInput/EmojiInput';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { Simulator } from 'components/simulator/Simulator';
 import Template from '../Template';
@@ -29,10 +28,10 @@ export const HSM = () => {
     body: '',
   });
 
-  const [shortcode, setShortcode] = useState('');
+  const [exisitingShortCode, setExistingShortcode] = useState('');
+  const [newShortcode, setNewShortcode] = useState('');
   const [category, setCategory] = useState<any>(undefined);
-  const [example, setExample] = useState();
-  const [editorState, setEditorState] = useState<any>('');
+  const [languageVariant, setLanguageVariant] = useState<boolean>(false);
   const [allowTemplateCategoryChange, setAllowTemplateCategoryChange] = useState<boolean>(false);
 
   const { t } = useTranslation();
@@ -40,6 +39,13 @@ export const HSM = () => {
   const location: any = useLocation();
 
   const { data: categoryList, loading } = useQuery(GET_HSM_CATEGORIES);
+  const { data: shortCodes } = useQuery(GET_SHORTCODES, {
+    variables: {
+      filter: {
+        isHsm: true,
+      },
+    },
+  });
 
   if (loading) {
     return <Loading />;
@@ -49,6 +55,13 @@ export const HSM = () => {
   if (categoryList) {
     categoryList.whatsappHsmCategories.forEach((categories: any, index: number) => {
       categoryOpn.push({ label: categories, id: index });
+    });
+  }
+
+  const shortCodeOptions: any = [];
+  if (shortCodes) {
+    shortCodes.sessionTemplates.forEach((value: any, index: number) => {
+      shortCodeOptions.push({ label: value?.shortcode, id: index });
     });
   }
 
@@ -101,20 +114,40 @@ export const HSM = () => {
 
   const formFields = [
     {
-      component: EmojiInput,
-      name: 'example',
-      label: `${t('Sample message')}*`,
-      rows: 5,
-      convertToWhatsApp: true,
-      textArea: true,
+      component: Checkbox,
+      name: 'languageVariant',
+      title: (
+        <Typography variant="h6" className={styles.Checkbox}>
+          Translate existing HSM?
+        </Typography>
+      ),
+      handleChange: (value: any) => setLanguageVariant(value),
+      skip: isEditing,
+    },
+    {
+      component: Input,
+      name: 'newShortCode',
+      placeholder: `${t('Element name')}*`,
+      label: `${t('Element name')}*`,
       disabled: isEditing,
-      helperText:
-        'Replace variables eg. {{1}} with actual values enclosed in [ ] eg. [12345] to show a complete message with meaningful word/statement/numbers/ special characters.',
-      handleChange: (value: any) => {
-        setExample(value);
-        getSimulatorMessage(value);
+      skip: languageVariant ? true : false,
+      onChange: (value: any) => {
+        setNewShortcode(value);
       },
-      defaultValue: isEditing && editorState,
+    },
+    {
+      component: AutoComplete,
+      name: 'existingShortCode',
+      options: shortCodeOptions,
+      optionLabel: 'label',
+      multiple: false,
+      label: `${t('Element name')}*`,
+      placeholder: `${t('Element name')}*`,
+      disabled: isEditing,
+      onChange: (event: any) => {
+        setExistingShortcode(event);
+      },
+      skip: languageVariant ? false : true,
     },
     {
       component: AutoComplete,
@@ -129,12 +162,13 @@ export const HSM = () => {
       onChange: (event: any) => {
         setCategory(event);
       },
+      skip: isEditing,
     },
     {
       component: Checkbox,
       name: 'allowTemplateCategoryChange',
       title: (
-        <Typography variant="h6" className={styles.IsActive}>
+        <Typography variant="h6" className={styles.Checkbox}>
           Allow meta to re-categorize template?
         </Typography>
       ),
@@ -144,13 +178,13 @@ export const HSM = () => {
     },
     {
       component: Input,
-      name: 'shortcode',
-      placeholder: `${t('Element name')}*`,
-      label: `${t('Element name')}*`,
+      name: 'category',
+      type: 'text',
+      label: `${t('Category')}*`,
+      placeholder: `${t('Category')}*`,
       disabled: isEditing,
-      inputProp: {
-        onBlur: (event: any) => setShortcode(event.target.value),
-      },
+      helperText: t('Select the most relevant category'),
+      skip: !isEditing,
     },
   ];
 
@@ -163,14 +197,16 @@ export const HSM = () => {
         defaultAttribute={defaultAttribute}
         formField={formFields}
         getUrlAttachmentAndType={getAttachmentUrl}
-        getShortcode={shortcode}
-        getExample={example}
         setCategory={setCategory}
         category={category}
         onExampleChange={addButtonsToSampleMessage}
-        setExampleState={setEditorState}
         allowTemplateCategoryChange={allowTemplateCategoryChange}
         setAllowTemplateCategoryChange={setAllowTemplateCategoryChange}
+        languageVariant={languageVariant}
+        getSimulatorMessage={getSimulatorMessage}
+        setNewShortcode={setNewShortcode}
+        newShortCode={newShortcode}
+        existingShortCode={exisitingShortCode}
       />
       <Simulator isPreviewMessage message={sampleMessages} simulatorIcon={false} />
     </div>

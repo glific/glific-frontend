@@ -1,4 +1,3 @@
-import 'mocks/matchMediaMock';
 import { MockedProvider } from '@apollo/client/testing';
 import { render, waitFor, fireEvent, screen } from '@testing-library/react';
 import { vi } from 'vitest';

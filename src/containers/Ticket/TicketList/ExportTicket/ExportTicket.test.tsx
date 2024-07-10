@@ -8,6 +8,10 @@ import { getAllOrganizations } from 'mocks/Organization';
 import * as utils from 'common/utils';
 import { exportTicketsMock } from 'mocks/Ticket';
 
+afterEach(() => {
+  (window as any).matchMedia = null;
+});
+
 const mocks = [...getAllOrganizations, exportTicketsMock];
 setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
 

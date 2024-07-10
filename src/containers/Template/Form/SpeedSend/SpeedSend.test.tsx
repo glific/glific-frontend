@@ -1,17 +1,16 @@
-import 'mocks/matchMediaMock';
-import { render, within, fireEvent, cleanup, waitFor } from '@testing-library/react';
+import { render, within, fireEvent, cleanup, waitFor, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 import { Routes, Route } from 'react-router-dom';
 import { SpeedSendList } from 'containers/Template/List/SpeedSendList/SpeedSendList';
-import { TEMPLATE_MOCKS } from 'containers/Template/Template.test.helper';
+import { SPEED_SENDS_MOCKS } from 'containers/Template/Template.test.helper';
 import { setUserSession } from 'services/AuthService';
 import { SpeedSend } from './SpeedSend';
-beforeEach(() => {
-  cleanup();
-});
-const mocks = [...TEMPLATE_MOCKS, ...TEMPLATE_MOCKS];
+import * as Notification from 'common/notification';
+
 setUserSession(JSON.stringify({ roles: ['Admin'] }));
+
+const mocks = SPEED_SENDS_MOCKS;
 
 const mockIntersectionObserver = class {
   constructor() {}
@@ -21,6 +20,10 @@ const mockIntersectionObserver = class {
 };
 
 (window as any).IntersectionObserver = mockIntersectionObserver;
+
+afterEach(() => {
+  cleanup();
+});
 
 describe('SpeedSend', () => {
   test('cancel button should redirect to SpeedSendlist page', async () => {
@@ -71,7 +74,40 @@ describe('SpeedSend', () => {
     });
 
     await waitFor(() => {
-      expect(queryByText('Message is required.')).toBeInTheDocument();
+      expect(queryByText('Title is required.')).toBeInTheDocument();
+    });
+  });
+
+  test('should test translations', async () => {
+    const notificationSpy = vi.spyOn(Notification, 'setNotification');
+    render(
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <MemoryRouter initialEntries={['/speed-send/1/edit']}>
+          <Routes>
+            <Route path="speed-send/:id/edit" element={<SpeedSend />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Title')).toBeInTheDocument();
+      expect(screen.getByText('Marathi')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Marathi'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Title')).toBeInTheDocument();
+      expect(screen.getByText('English')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('English'));
+
+    fireEvent.click(screen.getByTestId('submitActionButton'));
+
+    await waitFor(() => {
+      expect(notificationSpy).toHaveBeenCalled();
     });
   });
 });

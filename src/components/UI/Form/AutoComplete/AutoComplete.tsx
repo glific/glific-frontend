@@ -117,7 +117,7 @@ export const AutoComplete = ({
   })();
 
   const getLabel = (option: any) => {
-    if (option[optionLabel]) {
+    if (option[optionLabel] || option[optionLabel] === '') {
       return option[optionLabel];
     }
     if (additionalOptionLabel) {
