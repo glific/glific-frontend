@@ -343,7 +343,7 @@ describe('Edit mode', () => {
     });
   });
 
-  test('it renders interactive list in edit mode and shows warning if auto trimmed', async () => {
+  test('it renders interactive list in edit mode', async () => {
     render(renderInteractiveMessage('2'));
 
     await waitFor(() => {
@@ -513,6 +513,28 @@ describe('translates the template', () => {
     await waitFor(() => {
       expect(screen.getByText('Translations exceeding limit.')).toBeInTheDocument();
     });
+  });
+
+  test('it shows warning if contents are trimmed', async () => {
+    render(renderInteractiveMessage('4'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Title')).toBeInTheDocument();
+      expect(screen.getByText('Details Confirmation')).toBeInTheDocument();
+      expect(screen.getByText('Marathi')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Marathi'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Details Confirmation')).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Translations exceeding limit.')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('ok-button'));
   });
 });
 

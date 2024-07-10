@@ -277,7 +277,7 @@ const createInteractiveCustomMock = () => ({
   },
 });
 
-const updateMockByType = (id: string, input: any, response: any) => ({
+const updateMockByType = (id: string, input: any, response: any, message: any = null) => ({
   request: {
     query: UPDATE_INTERACTIVE,
     variables: {
@@ -297,7 +297,7 @@ const updateMockByType = (id: string, input: any, response: any) => ({
           ...response,
         },
         errors: null,
-        message: null,
+        message,
       },
       errors: null,
     },
@@ -379,6 +379,9 @@ export const translateInteractiveTemplateMock = (error: boolean = false) => ({
       },
 });
 
+const trimmingMessage =
+  'Trimming has been done for the following languages due to exceeding character limits: Hindi. Please verify the content before saving.';
+
 export const translateInteractiveTemplateWithTrimMock = {
   request: {
     query: TRANSLATE_INTERACTIVE_TEMPLATE,
@@ -389,8 +392,7 @@ export const translateInteractiveTemplateWithTrimMock = {
       translateInteractiveTemplate: {
         interactiveTemplate: { ...quickReplyResult, tag: null, id: '1' },
         errors: null,
-        message:
-          'Trimming has been done for the following languages due to exceeding character limits: Hindi. Please verify the content before saving.',
+        message: trimmingMessage,
       },
     },
   },
@@ -423,8 +425,7 @@ export const importInteractiveTemplateWithTrimmingMock = {
       importInteractiveTemplate: {
         interactiveTemplate: { ...quickReplyResult, tag: null, id: '1' },
         errors: null,
-        message:
-          'Trimming has been done for the following languages due to exceeding character limits: Hindi. Please verify the content before saving.',
+        message: trimmingMessage,
       },
     },
   },
@@ -487,6 +488,8 @@ export const mocks: any = [
   getTemplateByType('1', quickReplyMock),
   getTemplateByType('2', listReplyMock),
   getTemplateByType('3', quickReplyMedia),
+  getTemplateByType('4', quickReplyMock),
+  updateMockByType('4', quickReplyMockInput, quickReplyMock, trimmingMessage),
   createMockByType(quick_reply),
   deleteMock,
   getFilterTagQuery,
