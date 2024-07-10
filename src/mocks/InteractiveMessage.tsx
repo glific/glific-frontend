@@ -144,33 +144,41 @@ export const getInteractiveCountQuery = {
 };
 
 const quickReplyMock = {
-  sendWithTitle: false,
+  id: '1',
   interactiveContent:
-    '{"type":"quick_reply","options":[{"type":"text","title":"Yes"},{"type":"text","title":"No"}],"content":{"type":"text","text":"Do you want to continue?","header":"Continue"}}',
-  label: 'Continue',
-  translations:
-    '{"1":{"type":"quick_reply","options":[{"type":"text","title":"Yes"},{"type":"text","title":"No"}],"content":{"type":"text","text":"Do you want to continue?","header":"Continue"}}}',
-  type: 'QUICK_REPLY',
+    '{"type":"quick_reply","options":[{"type":"text","title":"Correct"},{"type":"text","title":"Re-enter details"}],"content":{"type":"text","text":"Please *confirm* if the below details are correct-\\n\\n*Name:* @results.name\\n*Profile of:* @results.role","header":"Details Confirmation"}}',
+  label: 'Details Confirmation',
   language: {
+    __typename: 'Language',
     id: '1',
     label: 'English',
   },
-  tag: {
-    id: '1',
-    label: 'New tag',
-  },
+  sendWithTitle: true,
+  tag: null,
+  translations:
+    '{"2":{"type":"quick_reply","options":[{"type":"text","title":"सही"},{"type":"text","title":"विवरण प"}],"content":{"type":"text","text":"कृपया पुष्टि करें कि नीचे दी गई जानकारी सही है या नहीं-\\n\\n*नाम:* @results.name\\n*प्रोफ़ाइल:* @results.role","header":"विवरण पुष्टि"}},"1":{"type":"quick_reply","options":[{"type":"text","title":"Correct"},{"type":"text","title":"Re-enter details"}],"content":{"type":"text","text":"Please *confirm* if the below details are correct-\\n\\n*Name:* @results.name\\n*Profile of:* @results.role","header":"Details Confirmation"}}}',
+  type: 'QUICK_REPLY',
 };
 
 const quickReplyMockInput = {
   type: 'QUICK_REPLY',
   interactiveContent:
-    '{"type":"quick_reply","content":{"type":"text","header":"Continue","text":"Do you want to continue?"},"options":[{"type":"text","title":"Yes"},{"type":"text","title":"No"}]}',
-  tag_id: '1',
+    '{"type":"quick_reply","content":{"type":"text","header":"Details Confirmation","text":"Please *confirm* if the below details are correct-\\n\\n*Name:* @results.name\\n*Profile of:* @results.role"},"options":[{"type":"text","title":"Correct"},{"type":"text","title":"Re-enter details"}]}',
   languageId: '1',
-  label: 'Continue',
-  sendWithTitle: false,
+  label: 'Details Confirmation',
+  sendWithTitle: true,
   translations:
-    '{"1":{"type":"quick_reply","content":{"type":"text","header":"Continue","text":"Do you want to continue?"},"options":[{"type":"text","title":"Yes"},{"type":"text","title":"No"}]}}',
+    '{"1":{"type":"quick_reply","content":{"type":"text","header":"Details Confirmation","text":"Please *confirm* if the below details are correct-\\n\\n*Name:* @results.name\\n*Profile of:* @results.role"},"options":[{"type":"text","title":"Correct"},{"type":"text","title":"Re-enter details"}]},"2":{"type":"quick_reply","options":[{"type":"text","title":"सही"},{"type":"text","title":"विवरण प"}],"content":{"type":"text","text":"कृपया पुष्टि करें कि नीचे दी गई जानकारी सही है या नहीं-\\n\\n*नाम:* @results.name\\n*प्रोफ़ाइल:* @results.role","header":"विवरण पुष्टि"}}}',
+};
+
+const quickReplyMockInput2 = {
+  type: 'QUICK_REPLY',
+  interactiveContent:
+    '{"type":"quick_reply","options":[{"type":"text","title":"Correct"},{"type":"text","title":"Re-enter details"}],"content":{"type":"text","text":"Please *confirm* if the below details are correct-\\n\\n*Name:* @results.name\\n*Profile of:* @results.role","header":"Details Confirmation"}}',
+  languageId: '1',
+  sendWithTitle: true,
+  translations:
+    '{"1":{"type":"quick_reply","content":{"type":"text","header":"Details Confirmation","text":"Please *confirm* if the below details are correct-\\n\\n*Name:* @results.name\\n*Profile of:* @results.role"},"options":[{"type":"text","title":"Correct"},{"type":"text","title":"Re-enter details"}]},"2":{"type":"quick_reply","content":{"type":"text","header":"विवरण पुष्टि","text":"कृपया पुष्टि करें कि नीचे दी गई जानकारी सही है या नहीं-\\n\\n*नाम:* @results.name\\n*प्रोफ़ाइल:* @results.role"},"options":[{"type":"text","title":"सही"},{"type":"text","title":"विवरण प"}]}}',
 };
 
 const quickReplyMedia = {
@@ -289,6 +297,7 @@ const updateMockByType = (id: string, input: any, response: any) => ({
           ...response,
         },
         errors: null,
+        message: null,
       },
       errors: null,
     },
@@ -472,6 +481,7 @@ export const mocks: any = [
   createMockByType(listReplyMock),
   createInteractiveCustomMock(),
   updateMockByType('1', quickReplyMockInput, quickReplyMock),
+  updateMockByType('1', quickReplyMockInput2, quickReplyMock),
   updateMockByType('2', listReplyMock, listReplyMock),
   updateMockByType('3', quickReply, quickReplyResult),
   getTemplateByType('1', quickReplyMock),
