@@ -59,7 +59,7 @@ test('it exports the translation with translations', async () => {
     expect(screen.getByText('Translate Options')).toBeInTheDocument();
   });
 
-  fireEvent.click(screen.getByText('Export Interactive Template With Translations'));
+  fireEvent.click(screen.getByText('Export with translations'));
 
   fireEvent.click(screen.getByText('Continue'));
 
@@ -78,7 +78,7 @@ test('it exports the translation without translations', async () => {
     expect(screen.getByText('Translate Options')).toBeInTheDocument();
   });
 
-  fireEvent.click(screen.getByText('Export Interactive Template Without Translations'));
+  fireEvent.click(screen.getByText('Export without translations'));
 
   fireEvent.click(screen.getByText('Continue'));
 
@@ -96,7 +96,7 @@ test('it imports the template', async () => {
     expect(screen.getByText('Translate Options')).toBeInTheDocument();
   });
 
-  fireEvent.click(screen.getByText('Import Interactive Template'));
+  fireEvent.click(screen.getByText('Import translations'));
 
   const file = new File(['content'], 'template.csv', { type: 'text/csv' });
   const input = screen.getByTestId('import');
@@ -127,7 +127,7 @@ test('should throw error for failed translations', async () => {
     expect(screen.getByText('Translate Options')).toBeInTheDocument();
   });
 
-  fireEvent.click(screen.getByText('Export Interactive Template Without Translations'));
+  fireEvent.click(screen.getByText('Export without translations'));
 
   fireEvent.click(screen.getByText('Continue'));
 
@@ -145,7 +145,7 @@ test('should throw error for failed import', async () => {
     expect(screen.getByText('Translate Options')).toBeInTheDocument();
   });
 
-  fireEvent.click(screen.getByText('Import Interactive Template'));
+  fireEvent.click(screen.getByText('Import translations'));
 
   const file = new File(['content'], 'template.csv', { type: 'text/csv' });
   const input = screen.getByTestId('import');
@@ -165,7 +165,7 @@ test('it should show warning if message exceeds limit', async () => {
     expect(screen.getByText('Translate Options')).toBeInTheDocument();
   });
 
-  fireEvent.click(screen.getByText('Import Interactive Template'));
+  fireEvent.click(screen.getByText('Import translations'));
 
   const file = new File(['content'], 'template.csv', { type: 'text/csv' });
   const input = screen.getByTestId('import');
