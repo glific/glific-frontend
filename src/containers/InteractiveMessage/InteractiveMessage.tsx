@@ -43,6 +43,7 @@ import { GET_TAGS } from 'graphql/queries/Tags';
 import { CreateAutoComplete } from 'components/UI/Form/CreateAutoComplete/CreateAutoComplete';
 import { interactiveMessageInfo } from 'common/HelpData';
 import { TranslateButton } from './TranslateButton/TranslateButton';
+import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 
 const interactiveMessageIcon = (
   <InteractiveMessageIcon className={styles.Icon} data-testid="interactive-icon" />
@@ -89,6 +90,8 @@ export const InteractiveMessage = () => {
 
   const [previousState, setPreviousState] = useState<any>({});
   const [nextLanguage, setNextLanguage] = useState<any>('');
+  const [translateMessage, setTranslateMessage] = useState(null);
+
   const { t } = useTranslation();
   const params = useParams();
   let isEditing = false;
@@ -444,7 +447,7 @@ export const InteractiveMessage = () => {
     }
   };
 
-  const afterSave = (data: any, saveClick: boolean) => {
+  const afterSave = (data: any, saveClick: boolean, message?: any) => {
     if (!saveClick) {
       if (params.id) {
         handleLanguageChange(nextLanguage);
@@ -453,6 +456,10 @@ export const InteractiveMessage = () => {
         navigate(`/interactive-message/${interactiveTemplate.id}/edit`, {
           state: { language: nextLanguage },
         });
+      }
+
+      if (message) {
+        setTranslateMessage(message);
       }
     }
   };
@@ -844,6 +851,21 @@ export const InteractiveMessage = () => {
     attachmentURL,
   ]);
 
+  let messageDialog;
+  if (translateMessage) {
+    messageDialog = (
+      <DialogBox
+        title="Translations exceeding limit."
+        buttonOk="Okay"
+        alignButtons="center"
+        handleOk={() => setTranslateMessage(null)}
+        skipCancel
+      >
+        <div className={styles.DialogContent}>{translateMessage}</div>
+      </DialogBox>
+    );
+  }
+
   if (languageOptions.length < 1 || loadingTemplate || tagsLoading) {
     return <Loading />;
   }
@@ -882,6 +904,7 @@ export const InteractiveMessage = () => {
           simulatorIcon={false}
         />
       </div>
+      {translateMessage && messageDialog}
     </>
   );
 };

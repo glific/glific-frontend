@@ -40,29 +40,30 @@ export const TranslateButton = ({
   const [showTranslateModal, setShowTranslateModal] = useState(false);
   const [translateOption, setTranslateOption] = useState('translate');
   const [importing, setImporting] = useState(false);
+  const [translateMessage, setTranslateMessage] = useState(null);
 
   const { t } = useTranslation();
 
   const translationOptions = [
     {
       value: 'translate',
-      label: t('Translate Interactive Message'),
-      description: t('Translate the content of the Interactive Message.'),
+      label: t('Auto translate'),
+      description: t('Translate the content of interactive message.'),
     },
     {
       value: 'export-translate',
-      label: t('Export Interactive Template With Translations'),
-      description: t('Export the translated content of templates as a csv.'),
+      label: t('Export with translations'),
+      description: t('Export the translated content of the message as a csv.'),
     },
     {
       value: 'export',
-      label: t('Export Interactive Template Without Translations'),
-      description: t('Export the content without any translations.'),
+      label: t('Export without translations'),
+      description: t('Export the content of the message as a csv.'),
     },
     {
       value: 'import',
-      label: t('Import Interactive Template'),
-      description: t('Import templates from a CSV file into the application.'),
+      label: t('Import translations'),
+      description: t('Import the csv with translations for interactive message.'),
     },
   ];
 
@@ -74,9 +75,15 @@ export const TranslateButton = ({
 
   const [translateInteractiveMessage, { loading }] = useMutation(TRANSLATE_INTERACTIVE_TEMPLATE, {
     onCompleted: ({ translateInteractiveTemplate }: any) => {
-      const interactiveMessage = translateInteractiveTemplate?.interactiveTemplate;
-      setStates(interactiveMessage);
-      setNotification('Interactive Message Translated Successfully', 'success');
+      const { interactiveTemplate, message } = translateInteractiveTemplate;
+      setStates(interactiveTemplate);
+
+      if (message) {
+        setTranslateMessage(message);
+      } else {
+        setNotification('Interactive Message Translated Successfully', 'success');
+      }
+
       handleClose();
     },
     onError(error: any) {
@@ -105,9 +112,14 @@ export const TranslateButton = ({
     IMPORT_INTERACTIVE_TEMPLATE,
     {
       onCompleted: ({ importInteractiveTemplate }) => {
-        const interactiveMessage = importInteractiveTemplate?.interactiveTemplate;
-        setNotification('Interactive Message Imported Successfully!', 'success');
-        setStates(interactiveMessage);
+        const { interactiveTemplate, message } = importInteractiveTemplate;
+        setStates(interactiveTemplate);
+
+        if (message) {
+          setTranslateMessage(message);
+        } else {
+          setNotification('Interactive Message Imported Successfully!', 'success');
+        }
         handleClose();
       },
       onError: (error: any) => {
@@ -215,6 +227,21 @@ export const TranslateButton = ({
     </DialogBox>
   );
 
+  let messageDialog;
+  if (translateMessage) {
+    messageDialog = (
+      <DialogBox
+        title="Translations exceeding limit."
+        buttonOk="Okay"
+        alignButtons="center"
+        handleOk={() => setTranslateMessage(null)}
+        skipCancel
+      >
+        <div className={styles.DialogContent}>{translateMessage}</div>
+      </DialogBox>
+    );
+  }
+
   return (
     <div className={styles.Wrapper}>
       <Button variant="outlined" color="primary" data-testid="translateBtn" onClick={handleClick}>
@@ -222,6 +249,7 @@ export const TranslateButton = ({
         Translate
       </Button>
       {showTranslateModal ? dialog : ''}
+      {translateMessage && messageDialog}
     </div>
   );
 };

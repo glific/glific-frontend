@@ -7,10 +7,15 @@ import { Route, MemoryRouter, Routes } from 'react-router-dom';
 import { vi } from 'vitest';
 
 import { setUserSession } from 'services/AuthService';
-import { mocks } from 'mocks/InteractiveMessage';
+import {
+  mocks,
+  translateInteractiveTemplateMock,
+  translateWitTrimmingMocks,
+  translateWithoutTrimmingMocks,
+} from 'mocks/InteractiveMessage';
 import { InteractiveMessage } from './InteractiveMessage';
 import { FLOW_EDITOR_API } from 'config';
-import { setNotification } from 'common/notification';
+import { setErrorMessage, setNotification } from 'common/notification';
 
 afterEach(() => {
   cleanup();
@@ -31,6 +36,7 @@ const mockUseLocationValue: any = {
   hash: '',
   state: null,
 };
+
 vi.mock('react-router-dom', async () => ({
   ...((await vi.importActual<any>('react-router-dom')) as {}),
   useLocation: () => {
@@ -44,6 +50,7 @@ vi.mock('common/notification', async (importOriginal) => {
   return {
     ...mod,
     setNotification: vi.fn(),
+    setErrorMessage: vi.fn(),
   };
 });
 
@@ -80,23 +87,36 @@ const mockData = [...mocks, ...mocks];
 
 setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
 
-const renderInteractiveMessage = (id: string) => (
-  <MockedProvider mocks={mockData} addTypename={false}>
-    <MemoryRouter initialEntries={[`/interactive-message/${id}/edit`]}>
-      <Routes>
-        <Route path="interactive-message/:id/edit" element={<InteractiveMessage />} />
-      </Routes>
-    </MemoryRouter>
-  </MockedProvider>
-);
+const renderInteractiveMessage = (id: string, mocks?: any) => {
+  let MOCKS = mockData;
+  if (mocks) {
+    MOCKS = [...MOCKS, ...mocks];
+  }
+  return (
+    <MockedProvider mocks={MOCKS} addTypename={false}>
+      <MemoryRouter initialEntries={[`/interactive-message/${id}/edit`]}>
+        <Routes>
+          <Route path="interactive-message/:id/edit" element={<InteractiveMessage />} />
+        </Routes>
+      </MemoryRouter>
+    </MockedProvider>
+  );
+};
 
-const interactiveMessage = (
-  <MockedProvider mocks={mockData} addTypename={false}>
-    <MemoryRouter>
-      <InteractiveMessage />
-    </MemoryRouter>
-  </MockedProvider>
-);
+const interactiveMessage = (mock?: any) => {
+  let MOCKS = mockData;
+  if (mock) {
+    MOCKS = [...MOCKS, ...mock];
+  }
+
+  return (
+    <MockedProvider mocks={MOCKS} addTypename={false}>
+      <MemoryRouter>
+        <InteractiveMessage />
+      </MemoryRouter>
+    </MockedProvider>
+  );
+};
 
 const fieldsMock = {
   results: [{ key: 'key 1' }, { key: 'key 2' }],
@@ -142,184 +162,207 @@ vi.spyOn(axios, 'get').mockImplementation((url: string) => {
   }
 });
 
-test('it renders empty interactive form', async () => {
-  render(interactiveMessage);
+describe('Add mode', () => {
+  test('it renders empty interactive form', async () => {
+    render(interactiveMessage());
 
-  // Adding another quick reply button
-  await waitFor(() => {
-    expect(screen.getByTestId('addButton')).toBeInTheDocument();
-  });
+    // Adding another quick reply button
+    await waitFor(() => {
+      expect(screen.getByTestId('addButton')).toBeInTheDocument();
+    });
 
-  const addQuickReplyButton = screen.getByTestId('addButton');
-  fireEvent.click(addQuickReplyButton);
+    const addQuickReplyButton = screen.getByTestId('addButton');
+    fireEvent.click(addQuickReplyButton);
 
-  await waitFor(() => {
-    // Get all input elements
-    const [title, lexicalEditor, quickReply1, quickReply2, , attachmentUrl] =
-      screen.getAllByRole('textbox');
-    expect(title).toBeInTheDocument();
-    expect(quickReply1).toBeInTheDocument();
-    expect(quickReply2).toBeInTheDocument();
-    expect(attachmentUrl).toBeInTheDocument();
+    await waitFor(() => {
+      // Get all input elements
+      const [title, lexicalEditor, quickReply1, quickReply2, , attachmentUrl] =
+        screen.getAllByRole('textbox');
+      expect(title).toBeInTheDocument();
+      expect(quickReply1).toBeInTheDocument();
+      expect(quickReply2).toBeInTheDocument();
+      expect(attachmentUrl).toBeInTheDocument();
 
-    fireEvent.change(title, { target: { value: 'new title' } });
-    userEvent.click(lexicalEditor);
-    userEvent.keyboard('Yes');
-    fireEvent.change(quickReply1, { target: { value: 'Yes' } });
-    fireEvent.change(quickReply2, { target: { value: 'No' } });
-    fireEvent.change(attachmentUrl, { target: { value: 'https://picsum.photos/200/300' } });
-    fireEvent.blur(attachmentUrl);
-  });
+      fireEvent.change(title, { target: { value: 'new title' } });
+      userEvent.click(lexicalEditor);
+      userEvent.keyboard('Yes');
+      fireEvent.change(quickReply1, { target: { value: 'Yes' } });
+      fireEvent.change(quickReply2, { target: { value: 'No' } });
+      fireEvent.change(attachmentUrl, { target: { value: 'https://picsum.photos/200/300' } });
+      fireEvent.blur(attachmentUrl);
+    });
 
-  // // Changing language to marathi
-  await waitFor(() => {
-    expect(screen.getByText('Marathi')).toBeInTheDocument();
-  });
+    // // Changing language to marathi
+    await waitFor(() => {
+      expect(screen.getByText('Marathi')).toBeInTheDocument();
+    });
 
-  const language = screen.getByText('Marathi');
-  fireEvent.click(language);
+    const language = screen.getByText('Marathi');
+    fireEvent.click(language);
 
-  await waitFor(() => {
+    await waitFor(() => {
+      const [interactiveType] = screen.getAllByTestId('autocomplete-element');
+      expect(interactiveType).toBeInTheDocument();
+    });
+
+    // Switiching to list
     const [interactiveType] = screen.getAllByTestId('autocomplete-element');
-    expect(interactiveType).toBeInTheDocument();
+    interactiveType.focus();
+    fireEvent.keyDown(interactiveType, { key: 'ArrowDown' });
+    fireEvent.keyDown(interactiveType, { key: 'ArrowDown' });
+    fireEvent.keyDown(interactiveType, { key: 'Enter' });
+
+    await waitFor(() => {
+      // Adding list data
+      const [, , header, listTitle, listItemTitle, listItemDesc] = screen.getAllByRole('textbox');
+
+      expect(header).toBeInTheDocument();
+      expect(listTitle).toBeInTheDocument();
+      expect(listItemTitle).toBeInTheDocument();
+      expect(listItemDesc).toBeInTheDocument();
+
+      fireEvent.change(header, { target: { value: 'Section 1' } });
+      fireEvent.blur(header);
+      fireEvent.change(listTitle, { target: { value: 'title' } });
+      fireEvent.change(listItemTitle, { target: { value: 'red' } });
+      fireEvent.change(listItemDesc, { target: { value: 'red is color' } });
+    });
+
+    await waitFor(() => {
+      // Adding another list item
+      const addAnotherListItemButton = screen.getByText('Add item');
+      expect(addAnotherListItemButton);
+      fireEvent.click(addAnotherListItemButton);
+    });
+
+    await waitFor(() => {
+      // Adding another list
+      const addAnotherListButton = screen.getByText('Add list');
+      expect(addAnotherListButton);
+      fireEvent.click(addAnotherListButton);
+    });
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('delete-icon')).toHaveLength(2);
+    });
+    // Deleting list
+    const deleteListButton = screen.getAllByTestId('delete-icon')[1];
+    fireEvent.click(deleteListButton);
+    await waitFor(() => {
+      // Deleting list item
+      const deleteListItemButton = screen.getByTestId('cross-icon');
+      expect(deleteListItemButton).toBeInTheDocument();
+      fireEvent.click(deleteListItemButton);
+    });
+
+    // Fill Message field with an emoji (as it's a required field)
+    await userEvent.click(screen.getByTestId('emoji-picker'));
+    const emojiContainer = screen.getByTestId('emoji-container');
+    await userEvent.click(emojiContainer);
+
+    await waitFor(() => {
+      const saveButton = screen.getByText('Save');
+      expect(saveButton).toBeInTheDocument();
+      fireEvent.click(saveButton);
+    });
+
+    // successful save
+    await waitFor(() => {
+      expect(setNotification).toHaveBeenCalledWith('Interactive message created successfully!');
+    });
   });
 
-  // Switiching to list
-  const [interactiveType] = screen.getAllByTestId('autocomplete-element');
-  interactiveType.focus();
-  fireEvent.keyDown(interactiveType, { key: 'ArrowDown' });
-  fireEvent.keyDown(interactiveType, { key: 'ArrowDown' });
-  fireEvent.keyDown(interactiveType, { key: 'Enter' });
+  test('it validates url', async () => {
+    const { getByText, getAllByRole } = render(interactiveMessage());
 
-  await waitFor(() => {
-    // Adding list data
-    const [, , header, listTitle, listItemTitle, listItemDesc] = screen.getAllByRole('textbox');
+    await waitFor(() => {
+      expect(getByText('Add a new Interactive message')).toBeInTheDocument();
+    });
 
-    expect(header).toBeInTheDocument();
-    expect(listTitle).toBeInTheDocument();
-    expect(listItemTitle).toBeInTheDocument();
-    expect(listItemDesc).toBeInTheDocument();
+    const autoCompletes = getAllByRole('combobox');
 
-    fireEvent.change(header, { target: { value: 'Section 1' } });
-    fireEvent.blur(header);
-    fireEvent.change(listTitle, { target: { value: 'title' } });
-    fireEvent.change(listItemTitle, { target: { value: 'red' } });
-    fireEvent.change(listItemDesc, { target: { value: 'red is color' } });
+    const attachmentType = autoCompletes[1];
+
+    attachmentType.focus();
+    fireEvent.keyDown(attachmentType, { key: 'ArrowDown' });
+    fireEvent.keyDown(attachmentType, { key: 'ArrowDown' });
+    fireEvent.keyDown(attachmentType, { key: 'Enter' });
+
+    fireEvent.change(getAllByRole('textbox')[4], { target: { value: 'bhhdhds' } });
   });
 
-  await waitFor(() => {
-    // Adding another list item
-    const addAnotherListItemButton = screen.getByText('Add item');
-    expect(addAnotherListItemButton);
-    fireEvent.click(addAnotherListItemButton);
-  });
+  test('It creates a interactive message with dynamic content', async () => {
+    const { getByTestId, getAllByRole, getByText } = render(interactiveMessage());
+    await waitFor(() => {
+      expect(getByText('Marathi')).toBeInTheDocument();
+    });
 
-  await waitFor(() => {
-    // Adding another list
-    const addAnotherListButton = screen.getByText('Add list');
-    expect(addAnotherListButton);
-    fireEvent.click(addAnotherListButton);
-  });
+    fireEvent.click(getAllByRole('checkbox')[1]);
 
-  await waitFor(() => {
-    expect(screen.getAllByTestId('delete-icon')).toHaveLength(2);
-  });
-  // Deleting list
-  const deleteListButton = screen.getAllByTestId('delete-icon')[1];
-  fireEvent.click(deleteListButton);
-  await waitFor(() => {
-    // Deleting list item
-    const deleteListItemButton = screen.getByTestId('cross-icon');
-    expect(deleteListItemButton).toBeInTheDocument();
-    fireEvent.click(deleteListItemButton);
-  });
+    const autoCompletes = getAllByRole('combobox');
 
-  // Fill Message field with an emoji (as it's a required field)
-  await userEvent.click(screen.getByTestId('emoji-picker'));
-  const emojiContainer = screen.getByTestId('emoji-container');
-  await userEvent.click(emojiContainer);
+    const attachmentType = autoCompletes[1];
 
-  await waitFor(() => {
-    const saveButton = screen.getByText('Save');
-    expect(saveButton).toBeInTheDocument();
-    fireEvent.click(saveButton);
-  });
+    attachmentType.focus();
+    fireEvent.keyDown(attachmentType, { key: 'ArrowDown' });
+    fireEvent.keyDown(attachmentType, { key: 'ArrowDown' });
+    fireEvent.keyDown(attachmentType, { key: 'Enter' });
 
-  // successful save
-  await waitFor(() => {
-    expect(setNotification).toHaveBeenCalledWith('Interactive message created successfully!');
-  });
-});
-
-test('it renders interactive quick reply in edit mode', async () => {
-  render(renderInteractiveMessage('1'));
-
-  await waitFor(() => {
-    // Changing language to marathi to see translations
-    expect(screen.getByText('Marathi')).toBeInTheDocument();
-  });
-
-  const marathi = screen.getByText('Marathi');
-  fireEvent.click(marathi);
-
-  await waitFor(() => {
-    expect(screen.getByText('English')).toBeInTheDocument();
-  });
-  // Changing back to English
-  const english = screen.getByText('English');
-  fireEvent.click(english);
-
-  await waitFor(() => {
-    expect(screen.getByText('Save')).toBeInTheDocument();
-  });
-  const saveButton = screen.getByText('Save');
-  fireEvent.click(saveButton);
-
-  await waitFor(() => {
-    expect(screen.getByText('Navigated to /interactive-message')).toBeInTheDocument();
-  });
-});
-
-test('it renders interactive list in edit mode', async () => {
-  render(renderInteractiveMessage('2'));
-
-  // vi.spyOn(axios, 'get').mockResolvedValueOnce(responseMock1);
-
-  await waitFor(() => {
-    const saveButton = screen.getByText('Save');
-    expect(saveButton).toBeInTheDocument();
-    fireEvent.click(saveButton);
+    fireEvent.change(getAllByRole('textbox')[4], { target: { value: '@results.result_1' } });
+    fireEvent.click(getByTestId('submitActionButton'));
   });
 });
 
-test('it renders interactive quick reply with media in edit mode', async () => {
-  render(renderInteractiveMessage('3'));
+describe('Edit mode', () => {
+  test('it renders quick reply in edit mode and changes language', async () => {
+    render(renderInteractiveMessage('1'));
 
-  // vi.spyOn(axios, 'get').mockResolvedValueOnce(responseMock3);
-});
+    await waitFor(() => {
+      expect(screen.getByText('Title')).toBeInTheDocument();
+      expect(screen.getByText('Details Confirmation')).toBeInTheDocument();
+      expect(screen.getByText('Marathi')).toBeInTheDocument();
+    });
 
-test('it validates url', async () => {
-  const { getByText, getAllByRole } = render(interactiveMessage);
+    fireEvent.click(screen.getByText('Marathi'));
 
-  await waitFor(() => {
-    expect(getByText('Add a new Interactive message')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('Title')).toBeInTheDocument();
+      expect(screen.getByText('सही')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('English'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Details Confirmation')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('submitActionButton'));
+
+    await waitFor(() => {
+      expect(setNotification).toHaveBeenCalled();
+    });
   });
 
-  const autoCompletes = getAllByRole('combobox');
+  test('it renders interactive list in edit mode', async () => {
+    render(renderInteractiveMessage('2'));
 
-  const attachmentType = autoCompletes[1];
+    await waitFor(() => {
+      const saveButton = screen.getByText('Save');
+      expect(saveButton).toBeInTheDocument();
+      fireEvent.click(saveButton);
+    });
+  });
 
-  attachmentType.focus();
-  fireEvent.keyDown(attachmentType, { key: 'ArrowDown' });
-  fireEvent.keyDown(attachmentType, { key: 'ArrowDown' });
-  fireEvent.keyDown(attachmentType, { key: 'Enter' });
+  test('it renders interactive quick reply with media in edit mode', async () => {
+    render(renderInteractiveMessage('3'));
 
-  fireEvent.change(getAllByRole('textbox')[4], { target: { value: 'bhhdhds' } });
+    // vi.spyOn(axios, 'get').mockResolvedValueOnce(responseMock3);
+  });
 });
 
 describe('location request message', () => {
   test('it renders empty location request message', async () => {
-    render(interactiveMessage);
+    render(interactiveMessage());
 
     await waitFor(() => {
       expect(screen.getAllByTestId('autocomplete-element')[0]).toBeInTheDocument();
@@ -350,30 +393,9 @@ describe('location request message', () => {
   });
 });
 
-test('It creates a interactive message with dynamic content', async () => {
-  const { getByTestId, getAllByRole, getByText } = render(interactiveMessage);
-  await waitFor(() => {
-    expect(getByText('Marathi')).toBeInTheDocument();
-  });
-
-  fireEvent.click(getAllByRole('checkbox')[1]);
-
-  const autoCompletes = getAllByRole('combobox');
-
-  const attachmentType = autoCompletes[1];
-
-  attachmentType.focus();
-  fireEvent.keyDown(attachmentType, { key: 'ArrowDown' });
-  fireEvent.keyDown(attachmentType, { key: 'ArrowDown' });
-  fireEvent.keyDown(attachmentType, { key: 'Enter' });
-
-  fireEvent.change(getAllByRole('textbox')[4], { target: { value: '@results.result_1' } });
-  fireEvent.click(getByTestId('submitActionButton'));
-});
-
 describe('translates the template', () => {
   test('it shows error if clicked on translation without filling details', async () => {
-    const { getByText } = render(interactiveMessage);
+    const { getByText } = render(interactiveMessage(translateWithoutTrimmingMocks));
 
     await waitFor(() => {
       expect(getByText('Add a new Interactive message')).toBeInTheDocument();
@@ -393,7 +415,7 @@ describe('translates the template', () => {
   });
 
   test('it translates a new template', async () => {
-    const { getByText } = render(interactiveMessage);
+    const { getByText } = render(interactiveMessage(translateWithoutTrimmingMocks));
 
     await waitFor(() => {
       expect(getByText('Add a new Interactive message')).toBeInTheDocument();
@@ -428,7 +450,7 @@ describe('translates the template', () => {
   });
 
   test('it translates an already exisiting template', async () => {
-    render(renderInteractiveMessage('1'));
+    render(renderInteractiveMessage('1', translateWithoutTrimmingMocks));
 
     await waitFor(() => {
       expect(screen.getByText('Edit Interactive message')).toBeInTheDocument();
@@ -440,13 +462,79 @@ describe('translates the template', () => {
       expect(screen.getByText('Translate Options')).toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getByText('Translate Interactive Message'));
+    fireEvent.click(screen.getByText('Auto translate'));
 
     fireEvent.click(screen.getByText('Continue'));
 
     await waitFor(() => {
       expect(setNotification).toHaveBeenCalled();
     });
+  });
+
+  test('it translates an already exisiting template', async () => {
+    render(renderInteractiveMessage('1', [translateInteractiveTemplateMock(true)]));
+
+    await waitFor(() => {
+      expect(screen.getByText('Edit Interactive message')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('translateBtn'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Translate Options')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Auto translate'));
+
+    fireEvent.click(screen.getByText('Continue'));
+
+    await waitFor(() => {
+      expect(setErrorMessage).toHaveBeenCalled();
+    });
+  });
+
+  test('it translates an already exisiting template with trimming', async () => {
+    render(renderInteractiveMessage('1', translateWitTrimmingMocks));
+
+    await waitFor(() => {
+      expect(screen.getByText('Edit Interactive message')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('translateBtn'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Translate Options')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Auto translate'));
+
+    fireEvent.click(screen.getByText('Continue'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Translations exceeding limit.')).toBeInTheDocument();
+    });
+  });
+
+  test('it shows warning if contents are trimmed', async () => {
+    render(renderInteractiveMessage('4'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Title')).toBeInTheDocument();
+      expect(screen.getByText('Details Confirmation')).toBeInTheDocument();
+      expect(screen.getByText('Marathi')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Marathi'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Details Confirmation')).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Translations exceeding limit.')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('ok-button'));
   });
 });
 
@@ -460,7 +548,7 @@ describe('copy interactive message', () => {
     await waitFor(() => {
       expect(getByText('Copy Interactive Message')).toBeInTheDocument();
       const input = getAllByTestId('input');
-      expect(input[0]?.querySelector('input')).toHaveValue('Copy of Continue');
+      expect(input[0]?.querySelector('input')).toHaveValue('Copy of Details Confirmation');
     });
   });
 });
