@@ -146,7 +146,7 @@ export const getInteractiveCountQuery = {
 const quickReplyMock = {
   id: '1',
   interactiveContent:
-    '{"type":"quick_reply","options":[{"type":"text","title":"Correct"},{"type":"text","title":"Re-enter details"}],"content":{"type":"text","text":"Please *confirm* if the below details are correct-\\n\\n*Name:* @results.name\\n*Profile of:* @results.role","header":"Details Confirmation"}}',
+    '{"type":"quick_reply","options":[{"type":"text","title":"Correct"},{"type":"text","title":"Re-enter details"}],"content":{"type":"text","text":"Please *confirm* if the below details are correct-\\n\\n*Name:* results.name\\n*Profile of:* results.role","header":"Details Confirmation"}}',
   label: 'Details Confirmation',
   language: {
     __typename: 'Language',
@@ -156,29 +156,29 @@ const quickReplyMock = {
   sendWithTitle: true,
   tag: null,
   translations:
-    '{"2":{"type":"quick_reply","options":[{"type":"text","title":"सही"},{"type":"text","title":"विवरण प"}],"content":{"type":"text","text":"कृपया पुष्टि करें कि नीचे दी गई जानकारी सही है या नहीं-\\n\\n*नाम:* @results.name\\n*प्रोफ़ाइल:* @results.role","header":"विवरण पुष्टि"}},"1":{"type":"quick_reply","options":[{"type":"text","title":"Correct"},{"type":"text","title":"Re-enter details"}],"content":{"type":"text","text":"Please *confirm* if the below details are correct-\\n\\n*Name:* @results.name\\n*Profile of:* @results.role","header":"Details Confirmation"}}}',
+    '{"2":{"type":"quick_reply","options":[{"type":"text","title":"सही"},{"type":"text","title":"विवरण प"}],"content":{"type":"text","text":"कृपया पुष्टि करें कि नीचे दी गई जानकारी सही है या नहीं-\\n\\n*नाम:* results.name\\n*प्रोफ़ाइल:* results.role","header":"विवरण पुष्टि"}},"1":{"type":"quick_reply","options":[{"type":"text","title":"Correct"},{"type":"text","title":"Re-enter details"}],"content":{"type":"text","text":"Please *confirm* if the below details are correct-\\n\\n*Name:* results.name\\n*Profile of:* results.role","header":"Details Confirmation"}}}',
   type: 'QUICK_REPLY',
 };
 
 const quickReplyMockInput = {
   type: 'QUICK_REPLY',
   interactiveContent:
-    '{"type":"quick_reply","content":{"type":"text","header":"Details Confirmation","text":"Please *confirm* if the below details are correct-\\n\\n*Name:* @results.name\\n*Profile of:* @results.role"},"options":[{"type":"text","title":"Correct"},{"type":"text","title":"Re-enter details"}]}',
+    '{"type":"quick_reply","content":{"type":"text","header":"Details Confirmation","text":"Please *confirm* if the below details are correct-\\n\\n*Name:* results.name\\n*Profile of:* results.role"},"options":[{"type":"text","title":"Correct"},{"type":"text","title":"Re-enter details"}]}',
   languageId: '1',
   label: 'Details Confirmation',
   sendWithTitle: true,
   translations:
-    '{"1":{"type":"quick_reply","content":{"type":"text","header":"Details Confirmation","text":"Please *confirm* if the below details are correct-\\n\\n*Name:* @results.name\\n*Profile of:* @results.role"},"options":[{"type":"text","title":"Correct"},{"type":"text","title":"Re-enter details"}]},"2":{"type":"quick_reply","options":[{"type":"text","title":"सही"},{"type":"text","title":"विवरण प"}],"content":{"type":"text","text":"कृपया पुष्टि करें कि नीचे दी गई जानकारी सही है या नहीं-\\n\\n*नाम:* @results.name\\n*प्रोफ़ाइल:* @results.role","header":"विवरण पुष्टि"}}}',
+    '{"1":{"type":"quick_reply","content":{"type":"text","header":"Details Confirmation","text":"Please *confirm* if the below details are correct-\\n\\n*Name:* results.name\\n*Profile of:* results.role"},"options":[{"type":"text","title":"Correct"},{"type":"text","title":"Re-enter details"}]},"2":{"type":"quick_reply","options":[{"type":"text","title":"सही"},{"type":"text","title":"विवरण प"}],"content":{"type":"text","text":"कृपया पुष्टि करें कि नीचे दी गई जानकारी सही है या नहीं-\\n\\n*नाम:* results.name\\n*प्रोफ़ाइल:* results.role","header":"विवरण पुष्टि"}}}',
 };
 
 const quickReplyMockInput2 = {
   type: 'QUICK_REPLY',
   interactiveContent:
-    '{"type":"quick_reply","options":[{"type":"text","title":"Correct"},{"type":"text","title":"Re-enter details"}],"content":{"type":"text","text":"Please *confirm* if the below details are correct-\\n\\n*Name:* @results.name\\n*Profile of:* @results.role","header":"Details Confirmation"}}',
+    '{"type":"quick_reply","options":[{"type":"text","title":"Correct"},{"type":"text","title":"Re-enter details"}],"content":{"type":"text","text":"Please *confirm* if the below details are correct-\\n\\n*Name:* results.name\\n*Profile of:* results.role","header":"Details Confirmation"}}',
   languageId: '1',
   sendWithTitle: true,
   translations:
-    '{"1":{"type":"quick_reply","content":{"type":"text","header":"Details Confirmation","text":"Please *confirm* if the below details are correct-\\n\\n*Name:* @results.name\\n*Profile of:* @results.role"},"options":[{"type":"text","title":"Correct"},{"type":"text","title":"Re-enter details"}]},"2":{"type":"quick_reply","content":{"type":"text","header":"विवरण पुष्टि","text":"कृपया पुष्टि करें कि नीचे दी गई जानकारी सही है या नहीं-\\n\\n*नाम:* @results.name\\n*प्रोफ़ाइल:* @results.role"},"options":[{"type":"text","title":"सही"},{"type":"text","title":"विवरण प"}]}}',
+    '{"1":{"type":"quick_reply","content":{"type":"text","header":"Details Confirmation","text":"Please *confirm* if the below details are correct-\\n\\n*Name:* results.name\\n*Profile of:* results.role"},"options":[{"type":"text","title":"Correct"},{"type":"text","title":"Re-enter details"}]},"2":{"type":"quick_reply","content":{"type":"text","header":"विवरण पुष्टि","text":"कृपया पुष्टि करें कि नीचे दी गई जानकारी सही है या नहीं-\\n\\n*नाम:* results.name\\n*प्रोफ़ाइल:* results.role"},"options":[{"type":"text","title":"सही"},{"type":"text","title":"विवरण प"}]}}',
 };
 
 const quickReplyMedia = {
