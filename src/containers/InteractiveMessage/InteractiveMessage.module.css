@@ -11,3 +11,7 @@
 .Simulator > div {
   top: 200px !important;
 }
+
+.DialogContent {
+  text-align: center;
+}

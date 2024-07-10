@@ -502,12 +502,11 @@
   "Group has been removed successfully from the collection.": "Group has been removed successfully from the collection.",
   "Contact has been added successfully to the collection.": "Contact has been added successfully to the collection.",
   "Contact has been removed successfully from the collection.": "Contact has been removed successfully from the collection.",
-  "Translate Interactive Message": "Translate Interactive Message",
-  "Translate the content of the Interactive Message.": "Translate the content of the Interactive Message.",
-  "Export Interactive Template Without Translations": "Export Interactive Template Without Translations",
-  "Export Interactive Template With Translations": "Export Interactive Template With Translations",
-  "Export the translated content of templates as a csv.": "Export the translated content of templates as a csv.",
-  "Export the content without any translations.": "Export the content without any translations.",
-  "Import Interactive Template": "Import Interactive Template",
-  "Import templates from a CSV file into the application.": "Import templates from a CSV file into the application."
+  "Auto translate": "Auto translate",
+  "Translate the content of interactive message.": "Translate the content of interactive message.",
+  "Export with translations": "Export with translations",
+  "Export without translations": "Export without translations",
+  "Export the translated content of the message as a csv.": "Export the translated content of the message as a csv.",
+  "Export the content of the message as a csv.": "Export the content of the message as a csv.",
+  "Import the csv with translations for interactive message.": "Import the csv with translations for interactive message."
 }

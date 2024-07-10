@@ -25,6 +25,7 @@ export const CREATE_INTERACTIVE = gql`
 export const UPDATE_INTERACTIVE = gql`
   mutation updateInteractiveTemplate($id: ID!, $input: InteractiveTemplateInput!) {
     updateInteractiveTemplate(id: $id, input: $input) {
+      message
       interactiveTemplate {
         id
         label
@@ -79,6 +80,7 @@ export const COPY_INTERACTIVE = gql`
 export const TRANSLATE_INTERACTIVE_TEMPLATE = gql`
   mutation TranslateInteractiveTemplate($translateInteractiveTemplateId: ID!) {
     translateInteractiveTemplate(id: $translateInteractiveTemplateId) {
+      message
       errors {
         key
         message
@@ -114,6 +116,7 @@ export const EXPORT_INTERACTIVE_TEMPLATE = gql`
 export const IMPORT_INTERACTIVE_TEMPLATE = gql`
   mutation ImportInteractiveTemplate($importInteractiveTemplateId: ID!, $translation: String) {
     importInteractiveTemplate(id: $importInteractiveTemplateId, translation: $translation) {
+      message
       errors {
         key
         message

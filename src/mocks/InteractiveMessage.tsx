@@ -144,33 +144,41 @@ export const getInteractiveCountQuery = {
 };
 
 const quickReplyMock = {
-  sendWithTitle: false,
+  id: '1',
   interactiveContent:
-    '{"type":"quick_reply","options":[{"type":"text","title":"Yes"},{"type":"text","title":"No"}],"content":{"type":"text","text":"Do you want to continue?","header":"Continue"}}',
-  label: 'Continue',
-  translations:
-    '{"1":{"type":"quick_reply","options":[{"type":"text","title":"Yes"},{"type":"text","title":"No"}],"content":{"type":"text","text":"Do you want to continue?","header":"Continue"}}}',
-  type: 'QUICK_REPLY',
+    '{"type":"quick_reply","options":[{"type":"text","title":"Correct"},{"type":"text","title":"Re-enter details"}],"content":{"type":"text","text":"Please *confirm* if the below details are correct-\\n\\n*Name:* @results.name\\n*Profile of:* @results.role","header":"Details Confirmation"}}',
+  label: 'Details Confirmation',
   language: {
+    __typename: 'Language',
     id: '1',
     label: 'English',
   },
-  tag: {
-    id: '1',
-    label: 'New tag',
-  },
+  sendWithTitle: true,
+  tag: null,
+  translations:
+    '{"2":{"type":"quick_reply","options":[{"type":"text","title":"सही"},{"type":"text","title":"विवरण प"}],"content":{"type":"text","text":"कृपया पुष्टि करें कि नीचे दी गई जानकारी सही है या नहीं-\\n\\n*नाम:* @results.name\\n*प्रोफ़ाइल:* @results.role","header":"विवरण पुष्टि"}},"1":{"type":"quick_reply","options":[{"type":"text","title":"Correct"},{"type":"text","title":"Re-enter details"}],"content":{"type":"text","text":"Please *confirm* if the below details are correct-\\n\\n*Name:* @results.name\\n*Profile of:* @results.role","header":"Details Confirmation"}}}',
+  type: 'QUICK_REPLY',
 };
 
 const quickReplyMockInput = {
   type: 'QUICK_REPLY',
   interactiveContent:
-    '{"type":"quick_reply","content":{"type":"text","header":"Continue","text":"Do you want to continue?"},"options":[{"type":"text","title":"Yes"},{"type":"text","title":"No"}]}',
-  tag_id: '1',
+    '{"type":"quick_reply","content":{"type":"text","header":"Details Confirmation","text":"Please *confirm* if the below details are correct-\\n\\n*Name:* @results.name\\n*Profile of:* @results.role"},"options":[{"type":"text","title":"Correct"},{"type":"text","title":"Re-enter details"}]}',
   languageId: '1',
-  label: 'Continue',
-  sendWithTitle: false,
+  label: 'Details Confirmation',
+  sendWithTitle: true,
   translations:
-    '{"1":{"type":"quick_reply","content":{"type":"text","header":"Continue","text":"Do you want to continue?"},"options":[{"type":"text","title":"Yes"},{"type":"text","title":"No"}]}}',
+    '{"1":{"type":"quick_reply","content":{"type":"text","header":"Details Confirmation","text":"Please *confirm* if the below details are correct-\\n\\n*Name:* @results.name\\n*Profile of:* @results.role"},"options":[{"type":"text","title":"Correct"},{"type":"text","title":"Re-enter details"}]},"2":{"type":"quick_reply","options":[{"type":"text","title":"सही"},{"type":"text","title":"विवरण प"}],"content":{"type":"text","text":"कृपया पुष्टि करें कि नीचे दी गई जानकारी सही है या नहीं-\\n\\n*नाम:* @results.name\\n*प्रोफ़ाइल:* @results.role","header":"विवरण पुष्टि"}}}',
+};
+
+const quickReplyMockInput2 = {
+  type: 'QUICK_REPLY',
+  interactiveContent:
+    '{"type":"quick_reply","options":[{"type":"text","title":"Correct"},{"type":"text","title":"Re-enter details"}],"content":{"type":"text","text":"Please *confirm* if the below details are correct-\\n\\n*Name:* @results.name\\n*Profile of:* @results.role","header":"Details Confirmation"}}',
+  languageId: '1',
+  sendWithTitle: true,
+  translations:
+    '{"1":{"type":"quick_reply","content":{"type":"text","header":"Details Confirmation","text":"Please *confirm* if the below details are correct-\\n\\n*Name:* @results.name\\n*Profile of:* @results.role"},"options":[{"type":"text","title":"Correct"},{"type":"text","title":"Re-enter details"}]},"2":{"type":"quick_reply","content":{"type":"text","header":"विवरण पुष्टि","text":"कृपया पुष्टि करें कि नीचे दी गई जानकारी सही है या नहीं-\\n\\n*नाम:* @results.name\\n*प्रोफ़ाइल:* @results.role"},"options":[{"type":"text","title":"सही"},{"type":"text","title":"विवरण प"}]}}',
 };
 
 const quickReplyMedia = {
@@ -270,7 +278,7 @@ const createInteractiveCustomMock = () => ({
   },
 });
 
-const updateMockByType = (id: string, input: any, response: any) => ({
+const updateMockByType = (id: string, input: any, response: any, message: any = null) => ({
   request: {
     query: UPDATE_INTERACTIVE,
     variables: {
@@ -290,6 +298,7 @@ const updateMockByType = (id: string, input: any, response: any) => ({
           ...response,
         },
         errors: null,
+        message,
       },
       errors: null,
     },
@@ -365,10 +374,30 @@ export const translateInteractiveTemplateMock = (error: boolean = false) => ({
           translateInteractiveTemplate: {
             interactiveTemplate: { ...quickReplyResult, tag: null, id: '1' },
             errors: null,
+            message: null,
           },
         },
       },
 });
+
+const trimmingMessage =
+  'Trimming has been done for the following languages due to exceeding character limits: Hindi. Please verify the content before saving.';
+
+export const translateInteractiveTemplateWithTrimMock = {
+  request: {
+    query: TRANSLATE_INTERACTIVE_TEMPLATE,
+    variables: { translateInteractiveTemplateId: '1' },
+  },
+  result: {
+    data: {
+      translateInteractiveTemplate: {
+        interactiveTemplate: { ...quickReplyResult, tag: null, id: '1' },
+        errors: null,
+        message: trimmingMessage,
+      },
+    },
+  },
+};
 
 export const importInteractiveTemplateMock = (error: boolean = false) => ({
   request: {
@@ -381,11 +410,28 @@ export const importInteractiveTemplateMock = (error: boolean = false) => ({
           importInteractiveTemplate: {
             interactiveTemplate: { ...quickReplyResult, tag: null, id: '1' },
             errors: null,
+            message: null,
           },
         },
       },
   variableMatcher: (variables: any) => true,
 });
+
+export const importInteractiveTemplateWithTrimmingMock = {
+  request: {
+    query: IMPORT_INTERACTIVE_TEMPLATE,
+  },
+  result: {
+    data: {
+      importInteractiveTemplate: {
+        interactiveTemplate: { ...quickReplyResult, tag: null, id: '1' },
+        errors: null,
+        message: trimmingMessage,
+      },
+    },
+  },
+  variableMatcher: (variables: any) => true,
+};
 
 export const exportInteractiveTemplateMock = (error: boolean = false) => ({
   request: {
@@ -437,17 +483,28 @@ export const mocks: any = [
   createMockByType(listReplyMock),
   createInteractiveCustomMock(),
   updateMockByType('1', quickReplyMockInput, quickReplyMock),
+  updateMockByType('1', quickReplyMockInput2, quickReplyMock),
   updateMockByType('2', listReplyMock, listReplyMock),
   updateMockByType('3', quickReply, quickReplyResult),
   getTemplateByType('1', quickReplyMock),
   getTemplateByType('2', listReplyMock),
   getTemplateByType('3', quickReplyMedia),
+  getTemplateByType('4', quickReplyMock),
+  updateMockByType('4', quickReplyMockInput, quickReplyMock, trimmingMessage),
   createMockByType(quick_reply),
   deleteMock,
   getFilterTagQuery,
   getOrganizationLanguagesWithoutOrder,
+];
+
+export const translateWithoutTrimmingMocks = [
   translateInteractiveTemplateMock(),
   importInteractiveTemplateMock(),
   exportInteractiveTemplateMock(),
   exportInteractiveTemplateMockWithoutTranslation(),
+];
+
+export const translateWitTrimmingMocks = [
+  translateInteractiveTemplateWithTrimMock,
+  importInteractiveTemplateWithTrimmingMock,
 ];
