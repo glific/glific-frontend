@@ -5,7 +5,7 @@ import { vi } from 'vitest';
 
 import * as FormLayout from 'containers/Form/FormLayout';
 import Template from './Template';
-import { TEMPLATE_MOCKS, getSpeendSendTemplate } from '../Template.test.helper';
+import { TEMPLATE_MOCKS, getSpendSendTemplate } from '../Template.test.helper';
 import { HSM_TEMPLATE_MOCKS, templateFormHSMFormFields } from './Template.test.helper';
 
 beforeEach(() => {
@@ -14,8 +14,8 @@ beforeEach(() => {
 const defaultMocks = [
   ...TEMPLATE_MOCKS,
   ...TEMPLATE_MOCKS,
-  getSpeendSendTemplate,
-  getSpeendSendTemplate,
+  getSpendSendTemplate,
+  getSpendSendTemplate,
 ];
 
 const defaultProps = {

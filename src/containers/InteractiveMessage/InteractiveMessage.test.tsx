@@ -1,6 +1,5 @@
 import { render, screen, waitFor, fireEvent, cleanup } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-
 import { MockedProvider } from '@apollo/client/testing';
 import axios from 'axios';
 import { Route, MemoryRouter, Routes } from 'react-router-dom';
@@ -471,7 +470,7 @@ describe('translates the template', () => {
     });
   });
 
-  test('it translates an already exisiting template', async () => {
+  test('it shows error on translating an already exisiting template', async () => {
     render(renderInteractiveMessage('1', [translateInteractiveTemplateMock(true)]));
 
     await waitFor(() => {
