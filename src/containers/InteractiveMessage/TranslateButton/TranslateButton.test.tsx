@@ -5,6 +5,7 @@ import {
   exportInteractiveTemplateMock,
   exportInteractiveTemplateMockWithoutTranslation,
   importInteractiveTemplateMock,
+  importInteractiveTemplateWithTrimmingMock,
   translateInteractiveTemplateMock,
 } from 'mocks/InteractiveMessage';
 import { TranslateButton } from './TranslateButton';
@@ -22,13 +23,13 @@ const defaultProps = {
   saveClicked: false,
 };
 
-const wrapper = (props?: any) => (
+const wrapper = (props?: any, mocks: any = []) => (
   <MockedProvider
     mocks={[
       translateInteractiveTemplateMock(),
-      importInteractiveTemplateMock(),
       exportInteractiveTemplateMock(),
       exportInteractiveTemplateMockWithoutTranslation(),
+      ...mocks,
     ]}
     addTypename={false}
   >
@@ -58,7 +59,7 @@ test('it exports the translation with translations', async () => {
     expect(screen.getByText('Translate Options')).toBeInTheDocument();
   });
 
-  fireEvent.click(screen.getByText('Export Interactive Template With Translations'));
+  fireEvent.click(screen.getByText('Export with translations'));
 
   fireEvent.click(screen.getByText('Continue'));
 
@@ -77,7 +78,7 @@ test('it exports the translation without translations', async () => {
     expect(screen.getByText('Translate Options')).toBeInTheDocument();
   });
 
-  fireEvent.click(screen.getByText('Export Interactive Template Without Translations'));
+  fireEvent.click(screen.getByText('Export without translations'));
 
   fireEvent.click(screen.getByText('Continue'));
 
@@ -87,7 +88,7 @@ test('it exports the translation without translations', async () => {
 });
 
 test('it imports the template', async () => {
-  render(wrapper({ saveClicked: false }));
+  render(wrapper({ saveClicked: false }, [importInteractiveTemplateMock()]));
 
   fireEvent.click(screen.getByText('Translate'));
 
@@ -95,7 +96,7 @@ test('it imports the template', async () => {
     expect(screen.getByText('Translate Options')).toBeInTheDocument();
   });
 
-  fireEvent.click(screen.getByText('Import Interactive Template'));
+  fireEvent.click(screen.getByText('Import translations'));
 
   const file = new File(['content'], 'template.csv', { type: 'text/csv' });
   const input = screen.getByTestId('import');
@@ -126,7 +127,7 @@ test('should throw error for failed translations', async () => {
     expect(screen.getByText('Translate Options')).toBeInTheDocument();
   });
 
-  fireEvent.click(screen.getByText('Export Interactive Template Without Translations'));
+  fireEvent.click(screen.getByText('Export without translations'));
 
   fireEvent.click(screen.getByText('Continue'));
 
@@ -144,7 +145,7 @@ test('should throw error for failed import', async () => {
     expect(screen.getByText('Translate Options')).toBeInTheDocument();
   });
 
-  fireEvent.click(screen.getByText('Import Interactive Template'));
+  fireEvent.click(screen.getByText('Import translations'));
 
   const file = new File(['content'], 'template.csv', { type: 'text/csv' });
   const input = screen.getByTestId('import');
@@ -152,5 +153,25 @@ test('should throw error for failed import', async () => {
 
   await waitFor(() => {
     expect(errormessagespy).toHaveBeenCalled();
+  });
+});
+
+test('it should show warning if message exceeds limit', async () => {
+  render(wrapper({ saveClicked: false }, [importInteractiveTemplateWithTrimmingMock]));
+
+  fireEvent.click(screen.getByText('Translate'));
+
+  await waitFor(() => {
+    expect(screen.getByText('Translate Options')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByText('Import translations'));
+
+  const file = new File(['content'], 'template.csv', { type: 'text/csv' });
+  const input = screen.getByTestId('import');
+  fireEvent.change(input, { target: { files: [file] } });
+
+  await waitFor(() => {
+    expect(screen.getByText('Translations exceeding limit.')).toBeInTheDocument();
   });
 });
