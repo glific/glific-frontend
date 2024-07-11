@@ -1,4 +1,3 @@
-import 'mocks/matchMediaMock';
 import { InMemoryCache } from '@apollo/client';
 import { MockedProvider } from '@apollo/client/testing';
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';

@@ -3,10 +3,16 @@ import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router';
 import { vi } from 'vitest';
 
-import { countCollectionContactsQuery, getCollectionContactsQuery } from 'mocks/Contact';
+import {
+  countCollectionContactsQuery,
+  getCollectionContactsQuery,
+  getContactsQuery,
+  getExcludedContactsQuery,
+  getGroupContact,
+} from 'mocks/Contact';
 import { setUserSession } from 'services/AuthService';
 import { CollectionContactList } from './CollectionContactList';
-import { deleteContactFromCollection } from 'mocks/Collection';
+import { addContactToCollection, deleteContactFromCollection } from 'mocks/Collection';
 import { setNotification } from 'common/notification';
 
 vi.mock('react-router-dom', async () => {
@@ -40,6 +46,9 @@ const mocks = [
   countCollectionContactsQuery,
   countCollectionContactsQuery,
   countCollectionContactsQuery,
+  getContactsQuery,
+  getGroupContact,
+  addContactToCollection,
   getCollectionContactsQuery({
     filter: { name: '', includeGroups: ['1'] },
     opts: { limit: 50, offset: 0, order: 'ASC' },
@@ -62,6 +71,7 @@ const mocks = [
       orderWith: 'name',
     },
   }),
+  getExcludedContactsQuery('1'),
 ];
 const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>
@@ -104,21 +114,24 @@ describe('<CollectionContactList />', () => {
       expect(getByText('Glific User')).toBeInTheDocument();
     });
 
-    fireEvent.click(getAllByTestId('MoreIcon')[0]);
-    fireEvent.click(screen.getByText('Delete'));
+    const checkboxes = screen.getAllByRole('checkbox');
+
+    fireEvent.click(checkboxes[1]);
+
+    fireEvent.click(getByTestId('deleteBtn'));
+
+    fireEvent.click(getByTestId('CloseIcon'));
+
+    fireEvent.click(getByTestId('deleteBtn'));
 
     await waitFor(() => {
       expect(screen.getByTestId('dialogBox')).toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByTestId('ok-button'));
-
-    await waitFor(() => {
-      expect(setNotification).toHaveBeenCalled();
-    });
   });
 
-  test('remove contacts', async () => {
+  test('add contacts', async () => {
     const { getByTestId, getByText } = render(wrapper);
 
     expect(getByTestId('loading')).toBeInTheDocument();
@@ -127,7 +140,31 @@ describe('<CollectionContactList />', () => {
       expect(getByText('Glific User')).toBeInTheDocument();
     });
 
-    fireEvent.click(getByTestId('removeBtn'));
+    fireEvent.click(getByTestId('addBtn'));
+
+    const dialog = screen.getByTestId('dialogBox');
+
+    await waitFor(() => {
+      expect(dialog).toBeInTheDocument();
+    });
+
+    fireEvent.click(getByTestId('ok-button'));
+
+    await waitFor(() => {
+      expect(setNotification).toHaveBeenCalled();
+    });
+  });
+
+  test('add contacts', async () => {
+    const { getByTestId, getByText } = render(wrapper);
+
+    expect(getByTestId('loading')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(getByText('Glific User')).toBeInTheDocument();
+    });
+
+    fireEvent.click(getByTestId('addBtn'));
 
     const dialog = screen.getByTestId('dialogBox');
 
@@ -146,7 +183,7 @@ describe('<CollectionContactList />', () => {
     fireEvent.click(getByTestId('ok-button'));
 
     await waitFor(() => {
-      expect(dialog).not.toBeInTheDocument();
+      expect(setNotification).toHaveBeenCalled();
     });
   });
 
@@ -159,7 +196,7 @@ describe('<CollectionContactList />', () => {
       expect(getByText('Glific User')).toBeInTheDocument();
     });
 
-    fireEvent.click(getByTestId('removeBtn'));
+    fireEvent.click(getByTestId('addBtn'));
 
     const dialog = screen.getByTestId('dialogBox');
 

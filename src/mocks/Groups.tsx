@@ -636,25 +636,40 @@ const groupsData = {
   ],
 };
 
-export const getGroupsSearchQuery = {
+export const getGroupsSearchQuery = (variables: any) => ({
   request: {
     query: GET_WA_GROUPS,
-    variables: setVariables({}, 50),
+    variables,
   },
   result: {
     data: groupsData,
   },
-};
+});
 
-export const getGroupsSearchQuery2 = {
+export const getGroupsCollectionList = (variables: any) => ({
   request: {
-    query: GET_WA_GROUPS,
-    variables: setVariables({ label: '' }, 50),
+    query: GROUP_GET_COLLECTION,
+    variables,
   },
   result: {
-    data: groupsData,
+    data: {
+      waGroups: [
+        {
+          bspId: '120367628910663820@g.us',
+          id: '1',
+          lastCommunicationAt: '2024-06-15T10:53:48Z',
+          label: 'Group test 1',
+        },
+        {
+          bspId: '120363244264973810@g.us',
+          id: '5',
+          lastCommunicationAt: '2024-07-15T10:53:48Z',
+          label: 'Group 1',
+        },
+      ],
+    },
   },
-};
+});
 
 export const getGroupsQuery = {
   request: {
@@ -687,10 +702,10 @@ export const getGroupsQuery = {
   },
 };
 
-export const updateCollectionWaGroupQuery = {
+export const updateCollectionWaGroupQuery = (variables: any) => ({
   request: {
     query: UPDATE_COLLECTION_WA_GROUP,
-    variables: { input: { addWaGroupIds: ['5'], groupId: '1', deleteWaGroupIds: [] } },
+    variables,
   },
   result: {
     data: {
@@ -706,7 +721,7 @@ export const updateCollectionWaGroupQuery = {
       },
     },
   },
-};
+});
 
 export const waManagedPhonesQuery = {
   request: {

@@ -24,6 +24,9 @@ export interface SearchDialogBoxProps {
   buttonOk?: string;
   description?: string;
   colorOk?: string;
+  fullWidth?: boolean;
+  placeholder?: string;
+  showTags?: boolean;
 }
 
 export const SearchDialogBox = (props: SearchDialogBoxProps) => {
@@ -45,10 +48,18 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
     buttonOk = 'Save',
     description = '',
     colorOk,
+    fullWidth = false,
+    showTags = true,
+    placeholder,
   } = props;
 
   const [selectedOption, setSelectedOptions] = useState<any>(multiple ? [] : null);
   const [asyncSelectedOptions, setAsyncSelectedOptions] = useState<Array<any>>([]);
+  const [optionsData, setOptionsData] = useState<any>(options);
+
+  useEffect(() => {
+    setOptionsData(options);
+  }, [options]);
 
   useEffect(() => {
     if (!asyncSearch) {
@@ -68,6 +79,13 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
 
   const changeValue = (event: any, value: any) => {
     setSelectedOptions(value);
+    if (multiple) {
+      const selectedIds = value.map((option: any) => option.id);
+      setOptionsData([
+        ...value,
+        ...options.filter((option: any) => !selectedIds.includes(option.id)),
+      ]);
+    }
   };
 
   const selectedOptionsIds = multiple
@@ -86,6 +104,7 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
       titleAlign="left"
       colorOk={colorOk}
       buttonOk={buttonOk}
+      fullWidth={fullWidth}
     >
       <div>
         <FormControl fullWidth>
@@ -93,7 +112,7 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
             disableClearable={disableClearable}
             asyncSearch={asyncSearch}
             asyncValues={{ value: asyncSelectedOptions, setValue: setAsyncSelectedOptions }}
-            options={options}
+            options={optionsData}
             optionLabel={optionLabel || 'label'}
             additionalOptionLabel={additionalOptionLabel}
             field={{ value: selectedOption }}
@@ -111,6 +130,8 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
             renderTags={renderTags}
             selectedOptionsIds={selectedOptionsIds}
             multiple={multiple}
+            placeholder={placeholder}
+            showTags={showTags}
           />
         </FormControl>
         <div className={styles.Description} data-testid="description">

@@ -160,6 +160,8 @@
   "Contacts have been uploaded": "Contacts have been uploaded",
   "Collection is required": "Collection is required",
   "Select collection": "Select collection",
+  "Select contacts": "Select contacts",
+  "Select groups": "Select groups",
   "Are these contacts opted in?": "Are these contacts opted in?",
   "Upload": "Upload",
   "An error has occurred!": "An error has occurred!",
@@ -493,5 +495,18 @@
   "Please agree to the terms and conditions.": "Please agree to the terms and conditions.",
   "Enter a valid phone number.": "Enter a valid phone number.",
   "Allow dynamic media": "Allow dynamic media",
-  "Please ensure that the entered media is valid as we cannot pre-validate dynamic media files and it may lead to errors.": "Please ensure that the entered media is valid as we cannot pre-validate dynamic media files and it may lead to errors."
+  "Please ensure that the entered media is valid as we cannot pre-validate dynamic media files and it may lead to errors.": "Please ensure that the entered media is valid as we cannot pre-validate dynamic media files and it may lead to errors.",
+  "Are you sure you want to change these credentials?": "Are you sure you want to change these credentials?",
+  "All information related to this account will be deleted. All data has already been backed up in BigQuery.": "All information related to this account will be deleted. All data has already been backed up in BigQuery.",
+  "Group has been added successfully to the collection.": "Group has been added successfully to the collection.",
+  "Group has been removed successfully from the collection.": "Group has been removed successfully from the collection.",
+  "Contact has been added successfully to the collection.": "Contact has been added successfully to the collection.",
+  "Contact has been removed successfully from the collection.": "Contact has been removed successfully from the collection.",
+  "Auto translate": "Auto translate",
+  "Translate the content of interactive message.": "Translate the content of interactive message.",
+  "Export with translations": "Export with translations",
+  "Export without translations": "Export without translations",
+  "Export the translated content of the message as a csv.": "Export the translated content of the message as a csv.",
+  "Export the content of the message as a csv.": "Export the content of the message as a csv.",
+  "Import the csv with translations for interactive message.": "Import the csv with translations for interactive message."
 }

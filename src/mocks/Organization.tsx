@@ -1,4 +1,8 @@
-import { DELETE_INACTIVE_ORGANIZATIONS, UPDATE_CREDENTIAL } from 'graphql/mutations/Organization';
+import {
+  CREATE_CREDENTIAL,
+  DELETE_INACTIVE_ORGANIZATIONS,
+  UPDATE_CREDENTIAL,
+} from 'graphql/mutations/Organization';
 import {
   GET_ORGANIZATION,
   USER_LANGUAGES,
@@ -934,3 +938,126 @@ export const getOrganizationStatus = (status: string) => ({
     },
   },
 });
+
+const getCredentials = {
+  request: {
+    query: GET_CREDENTIAL,
+    variables: { shortcode: 'maytapi' },
+  },
+  result: {
+    data: {
+      credential: {
+        __typename: 'CredentialResult',
+        credential: null,
+      },
+    },
+  },
+};
+
+export const createMaytapiCredentialsMock = (error: boolean = false) => ({
+  request: {
+    query: CREATE_CREDENTIAL,
+    variables: {
+      input: {
+        shortcode: 'maytapi',
+        isActive: true,
+        keys: '{}',
+        secrets: '{"token":"token","product_id":"product_id"}',
+      },
+    },
+  },
+  result: {
+    data: {
+      createCredential: {
+        credential: error
+          ? null
+          : {
+              id: '3',
+              keys: '{}',
+              secrets: '{"token":"token","product_id":"product_id"}',
+            },
+        errors: error ? new Error('Something went wrong') : null,
+      },
+    },
+  },
+});
+
+export const getSavedCredentials = {
+  request: {
+    query: GET_CREDENTIAL,
+    variables: { shortcode: 'maytapi' },
+  },
+  result: {
+    data: {
+      credential: {
+        credential: {
+          id: '3',
+          isActive: true,
+          keys: '{}',
+          provider: {
+            shortcode: 'maytapi',
+          },
+          secrets: '{"token":"token","product_id":"product_id"}',
+        },
+      },
+    },
+  },
+};
+
+export const getMaytapiProvider = {
+  request: {
+    query: GET_PROVIDERS,
+    variables: { filter: { shortcode: 'maytapi' } },
+  },
+  result: {
+    data: {
+      providers: [
+        {
+          description: 'Third party application to send message to WhatsApp group',
+          group: null,
+          id: '12',
+          isRequired: false,
+          keys: '{}',
+          name: 'Maytapi',
+          secrets:
+            '{"token":{"view_only":false,"type":"string","label":"Token","is_required":true,"default":null},"product_id":{"view_only":false,"type":"string","label":"Product ID","default":null}}',
+          shortcode: 'maytapi',
+        },
+      ],
+    },
+  },
+};
+
+export const updateMaytapiCredentials = (error: boolean = false) => ({
+  request: {
+    query: UPDATE_CREDENTIAL,
+    variables: {
+      id: '3',
+      input: {
+        shortcode: 'maytapi',
+        isActive: true,
+        keys: '{}',
+        secrets: '{"token":"token2","product_id":"product_id2"}',
+      },
+    },
+  },
+  result: {
+    data: {
+      updateCredential: {
+        credential: error
+          ? null
+          : {
+              id: '3',
+              provider: {
+                shortcode: 'maytapi',
+              },
+              keys: '{}',
+              secrets: '{"token":"token2","product_id":"product_id2"}',
+            },
+        errors: error ? new Error('Something went wrong') : null,
+      },
+    },
+  },
+});
+
+export const getMaytapiProviderMock = [getCredentials, getCredentials, getMaytapiProvider];

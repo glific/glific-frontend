@@ -5,7 +5,7 @@ import styles from './Promotion.module.css';
 
 export const Promotion = () => {
   const [minimized, setMinimized] = useState(false);
-  const LINK = 'https://us06web.zoom.us/meeting/register/tZYpceqqrzIqGd3W7dSrHS2VGzFhdSq2exYR';
+  const LINK = 'https://us06web.zoom.us/meeting/register/tZErfuyqqTopEtMrq4kRM7_a0G7VqgzaFL5H';
 
   return (
     <div className={minimized ? styles.ContainerMin : styles.ContainerMax}>
@@ -32,26 +32,30 @@ export const Promotion = () => {
           <div className={styles.Image}>
             <span>
               Level up with Glific <br />
-              Q&A with Gupshup
+              <br />
+              Glific Integrations & Possibilities
             </span>
-            <span>19th June, 3-4PM</span>
+            <span>23rd July, 3-4PM</span>
           </div>
 
           <div className={styles.Points}>
-            <div className={styles.BodyListText}>
+            {/* <div className={styles.BodyListText}>
               <span>{1}</span>
               <div>
-                Get answers to commonly asked questions- Message categories, gupshup wallet &
-                costing, message delivery etc.
+                Learn about the powerful integrations NGOs have done with Glific to create
+                interconnected experience for their beneficiaries.
               </div>
-            </div>
-            <div className={styles.BodyListText}>
+            </div> */}
+            {/* <div className={styles.BodyListText}>
               <span>2</span>
               <div>Open session to ask questions to Gupshup team directly.</div>
-            </div>
-            {/* <div className={styles.BodyListText}>
-              <div>Reach out to Glific team if you have questions/concerns.</div>
             </div> */}
+            <div className={styles.BodyListText}>
+              <div>
+                Learn about the powerful integrations NGOs have done with Glific to create
+                interconnected experience for their beneficiaries.
+              </div>
+            </div>
           </div>
           <a className={styles.Link} href={LINK} target="_blank" rel="noreferrer">
             <div className={styles.KnowMore}>

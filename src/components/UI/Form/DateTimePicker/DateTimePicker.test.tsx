@@ -4,6 +4,10 @@ import { DateTimePicker } from './DateTimePicker';
 import dayjs from 'dayjs';
 import { userEvent } from '@testing-library/user-event';
 
+afterEach(() => {
+  (window as any).matchMedia = null;
+});
+
 describe('<DateTimePicker />', () => {
   const onChangeMock = vi.fn();
   const setFieldMock = vi.fn();

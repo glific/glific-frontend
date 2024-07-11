@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, Fragment } from 'react';
 import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useMutation, DocumentNode, useLazyQuery } from '@apollo/client';
-import { Backdrop, Divider, IconButton, Menu, MenuItem } from '@mui/material';
+import { Backdrop, Checkbox, Divider, IconButton, Menu, MenuItem } from '@mui/material';
 
 import { Button } from 'components/UI/Form/Button/Button';
 import { Pager } from 'components/UI/Pager/Pager';
@@ -90,7 +90,7 @@ const actionListMap = (item: any, actionList: any, hasMoreOption: boolean) => {
 };
 export interface ColumnNames {
   name?: string;
-  label: string;
+  label: any;
   sort?: boolean;
   order?: string;
 }
@@ -150,6 +150,8 @@ export interface ListProps {
   showSearch?: boolean;
 
   refetchQueries?: any;
+
+  checkbox?: { show: boolean; action: any; selectedItems: any[]; setSelectedItems: any; icon: any };
 }
 
 interface TableVals {
@@ -199,6 +201,8 @@ export const List = ({
   showSearch = true,
 
   refetchQueries,
+
+  checkbox,
 }: ListProps) => {
   const { t } = useTranslation();
   const [showMoreOptions, setShowMoreOptions] = useState<string>('');
@@ -603,6 +607,29 @@ export const List = ({
     return null;
   }
 
+  const getCheckbox = (listItem: any) => {
+    if (checkbox && checkbox.show)
+      return {
+        checkbox: (
+          <div className={styles.CheckboxLabel}>
+            <Checkbox
+              data-testid="checkbox"
+              checked={checkbox?.selectedItems.some((item: any) => item.id === listItem.id)}
+              onChange={(event: any) => {
+                if (event.target.checked) {
+                  checkbox?.setSelectedItems([...checkbox?.selectedItems, listItem]);
+                } else {
+                  checkbox?.setSelectedItems(
+                    checkbox?.selectedItems.filter((item: any) => item.id !== listItem.id)
+                  );
+                }
+              }}
+            />
+          </div>
+        ),
+      };
+  };
+
   function formatList(listItems: Array<any>) {
     return listItems
       ? listItems.map(({ ...listItemObj }) => {
@@ -612,6 +639,7 @@ export const List = ({
             : { chat: true, edit: true, delete: true };
 
           const items = {
+            ...getCheckbox(listItemObj),
             ...columns(listItemObj),
 
             recordId: listItemObj.id,
@@ -675,6 +703,34 @@ export const List = ({
     </div>
   );
 
+  if (checkbox && checkbox.show) {
+    columnStyles = [styles.Checkbox, ...columnStyles];
+    columnNames = [
+      {
+        label: (
+          <Checkbox
+            checked={
+              checkbox?.selectedItems.length !== 0 &&
+              checkbox?.selectedItems.length === itemList.length
+            }
+            onChange={(event) => {
+              if (event.target.checked) {
+                checkbox?.setSelectedItems(data[listItem]);
+              } else {
+                checkbox?.setSelectedItems([]);
+              }
+            }}
+          />
+        ),
+      },
+      ...columnNames,
+    ];
+  }
+
+  const handleCheckBoxAction = () => {
+    checkbox?.action(checkbox?.selectedItems);
+  };
+
   const displayList = (
     <Pager
       columnStyles={columnStyles}
@@ -688,10 +744,16 @@ export const List = ({
       loadingList={loadingList || loading || l || loadingCollections}
       noItemsText={noItemsText}
       showPagination={countQuery ? true : false}
+      checkboxSupport={{
+        icon: checkbox?.icon,
+        action: handleCheckBoxAction,
+        selectedItems: checkbox?.selectedItems,
+      }}
     />
   );
 
   let buttonDisplay;
+
   if (button.show) {
     const addIcon = <AddIcon className={styles.AddIcon} />;
     if (!button.symbol) {

@@ -27,6 +27,7 @@ import {
 import { CreateAutoComplete } from 'components/UI/Form/CreateAutoComplete/CreateAutoComplete';
 import { validateMedia } from 'common/utils';
 import styles from './Template.module.css';
+import { TemplateVariables } from '../TemplateVariables/TemplateVariables';
 
 const regexForShortcode = /^[a-z0-9_]+$/g;
 
@@ -102,6 +103,52 @@ const getTemplateAndButtons = (templateType: string, message: string, buttons: s
   return { buttons: result, template };
 };
 
+const getExampleFromBody = (body: string, variables: Array<any>) => {
+  return body.replace(/{{(\d+)}}/g, (match, number) => {
+    let index = parseInt(number) - 1;
+
+    return variables[index]?.text
+      ? variables[index]
+        ? `[${variables[index]?.text}]`
+        : match
+      : `{{${number}}}`;
+  });
+};
+
+const getVariables = (body: string, example?: string) => {
+  const variablePattern = /\{\{(\d+)\}\}/g;
+  const examplePattern = /\[([^\]]+)\]/g;
+  let match;
+  let foundIds = new Set();
+  let examples = [];
+  let variables: any = [];
+
+  // Extract {{id}} patterns from body
+  while ((match = variablePattern.exec(body)) !== null) {
+    foundIds.add(parseInt(match[1], 10));
+  }
+
+  // Extract example values if example string is provided
+  if (example) {
+    while ((match = examplePattern.exec(example)) !== null) {
+      examples.push(match[1]);
+    }
+  }
+
+  // Sort the IDs
+  let sortedIds = Array.from(foundIds).sort((a: any, b: any) => a - b);
+
+  // Create variables array with ids and examples or empty text
+  sortedIds.forEach((id, index) => {
+    variables.push({
+      text: examples[index] || '',
+      id: index + 1,
+    });
+  });
+
+  return variables;
+};
+
 export interface TemplateProps {
   listItemName: string;
   redirectionLink: string;
@@ -110,13 +157,17 @@ export interface TemplateProps {
   formField?: any;
   customStyle?: any;
   getUrlAttachmentAndType?: any;
-  getShortcode?: any;
-  getExample?: any;
   setCategory?: any;
   category?: any;
   onExampleChange?: any;
   languageStyle?: string;
-  setExampleState?: any;
+  getSimulatorMessage?: any;
+  allowTemplateCategoryChange?: boolean;
+  setAllowTemplateCategoryChange?: any;
+  languageVariant?: boolean;
+  newShortCode?: any;
+  setNewShortcode?: any;
+  existingShortCode?: any;
 }
 
 interface CallToActionTemplate {
@@ -137,13 +188,17 @@ const Template = ({
   formField,
   customStyle,
   getUrlAttachmentAndType,
-  getShortcode,
-  getExample,
   setCategory,
   category,
   onExampleChange = () => {},
+  allowTemplateCategoryChange,
+  setAllowTemplateCategoryChange,
   languageStyle = 'dropdown',
-  setExampleState,
+  getSimulatorMessage,
+  languageVariant,
+  setNewShortcode,
+  newShortCode,
+  existingShortCode,
 }: TemplateProps) => {
   // "Audio" option is removed in case of HSM Template
   const mediaTypes =
@@ -154,8 +209,6 @@ const Template = ({
   const [tagId, setTagId] = useState<any>(null);
   const [label, setLabel] = useState('');
   const [body, setBody] = useState<any>('');
-  const [example, setExample] = useState<any>('');
-  const [shortcode, setShortcode] = useState('');
   const [language, setLanguageId] = useState<any>(null);
   const [type, setType] = useState<any>(null);
   const [translations, setTranslations] = useState<any>();
@@ -171,6 +224,7 @@ const Template = ({
   >([]);
   const [isAddButtonChecked, setIsAddButtonChecked] = useState(false);
   const [nextLanguage, setNextLanguage] = useState<any>('');
+  const [variables, setVariables] = useState<any>([]);
   const [editorState, setEditorState] = useState<any>('');
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -214,13 +268,16 @@ const Template = ({
     body,
     type,
     attachmentURL,
-    shortcode,
-    example,
     category,
     tagId,
     isActive,
     templateButtons,
     isAddButtonChecked,
+    languageVariant,
+    variables,
+    newShortCode,
+    existingShortCode,
+    allowTemplateCategoryChange,
   };
 
   const setStates = ({
@@ -238,6 +295,7 @@ const Template = ({
     buttonType: templateButtonType,
     buttons,
     hasButtons,
+    allowTemplateCategoryChange: allowCategoryChangeValue,
   }: any) => {
     if (languageOptions.length > 0 && languageIdValue) {
       if (location.state && location.state !== 'copy') {
@@ -258,33 +316,31 @@ const Template = ({
 
     setLabel(labelValue);
     setIsActive(isActiveValue);
-
+    let variables: any = [];
     if (typeof bodyValue === 'string') {
       setBody(bodyValue || '');
       setEditorState(bodyValue || '');
     }
 
     if (exampleValue) {
-      let exampleBody: any;
       if (hasButtons) {
         setTemplateType(templateButtonType);
-        const { buttons: buttonsVal, template } = getTemplateAndButtons(
+        const { buttons: buttonsVal } = getTemplateAndButtons(
           templateButtonType,
           exampleValue,
           buttons
         );
-        exampleBody = template;
         setTemplateButtons(buttonsVal);
-      } else {
-        exampleBody = exampleValue;
       }
-
-      if (setExampleState) {
-        setExampleState(exampleValue);
-      }
-      setExample(exampleValue);
-      onExampleChange(exampleBody);
+      variables = getVariables(bodyValue, exampleValue);
+      setVariables(variables);
+      onExampleChange(getExampleFromBody(bodyValue, variables));
     }
+
+    if (shortcodeValue && setNewShortcode) {
+      setNewShortcode(shortcodeValue);
+    }
+
     if (hasButtons) {
       setIsAddButtonChecked(hasButtons);
     }
@@ -304,7 +360,7 @@ const Template = ({
         const content = translationsCopy[currentLanguage];
         setLabel(content.label);
         setBody(content.body || '');
-        setEditorState(bodyValue || '');
+        setEditorState(content.body || '');
       }
       setTranslations(translationsValue);
     }
@@ -313,14 +369,14 @@ const Template = ({
     } else {
       setAttachmentURL('');
     }
-    if (shortcodeValue) {
-      setTimeout(() => setShortcode(shortcodeValue), 0);
-    }
     if (categoryValue && setCategory) {
-      setCategory({ label: categoryValue, id: categoryValue });
+      setCategory(categoryValue);
     }
     if (tagIdValue) {
       setTagId(tagIdValue);
+    }
+    if (setAllowTemplateCategoryChange) {
+      setAllowTemplateCategoryChange(allowCategoryChangeValue);
     }
   };
 
@@ -379,28 +435,28 @@ const Template = ({
   };
 
   const HSMValidation = {
-    example: Yup.string()
-      .max(1024, t('Maximum 1024 characters are allowed'))
-      .when('body', ([body], schema: any) =>
-        schema.test({
-          test: (exampleValue: any) => {
-            const finalmessageValue = body && body.replace(/\{\{([1-9]|1[0-9])\}\}/g, '[]');
-            const finalExampleValue = exampleValue && exampleValue.replace(/\[[^\]]*\]/g, '[]');
-            return finalExampleValue === finalmessageValue;
-          },
-          message: t(
-            'Message and sample look different. You have to replace variables eg. {{1}} with actual values enclosed in [ ] eg. Replace {{1}} with [Monica].'
-          ),
-        })
-      )
-      .required('Example is required.'),
     category: Yup.object().nullable().required(t('Category is required.')),
-    shortcode: Yup.string()
-      .required(t('Element name is required.'))
-      .matches(
-        regexForShortcode,
-        'Only lowercase alphanumeric characters and underscores are allowed.'
-      ),
+    variables: Yup.array().of(
+      Yup.object().shape({
+        text: Yup.string().required('Variable is required').min(1, 'Text cannot be empty'),
+      })
+    ),
+    newShortCode: Yup.string().when('languageVariant', {
+      is: (val: any) => val === true,
+      then: (schema) => schema.nullable(),
+      otherwise: (schema) =>
+        schema
+          .required(t('Element name is required.'))
+          .matches(
+            regexForShortcode,
+            'Only lowercase alphanumeric characters and underscores are allowed.'
+          ),
+    }),
+    existingShortCode: Yup.object().when('languageVariant', {
+      is: (val: any) => val === true,
+      then: (schema) => schema.nullable().required(t('Element name is required.')),
+      otherwise: (schema) => schema.nullable(),
+    }),
   };
 
   const validateURL = (value: string) => {
@@ -471,16 +527,6 @@ const Template = ({
   }, [languages]);
 
   useEffect(() => {
-    setShortcode(getShortcode);
-  }, [getShortcode]);
-
-  useEffect(() => {
-    if (getExample) {
-      setExample(getExample);
-    }
-  }, [getExample]);
-
-  useEffect(() => {
     if ((type === '' || type) && attachmentURL) {
       validateURL(attachmentURL);
       if (getUrlAttachmentAndType) {
@@ -501,28 +547,33 @@ const Template = ({
 
   // Removing buttons when checkbox is checked or unchecked
   useEffect(() => {
-    if (getExample) {
-      const { message }: any = getTemplateAndButton(getExample);
+    if (isEditing) {
+      const { message }: any = getTemplateAndButton(getExampleFromBody(body, variables));
       onExampleChange(message || '');
     }
   }, [isAddButtonChecked]);
 
   // Converting buttons to template and vice-versa to show realtime update on simulator
   useEffect(() => {
-    if (templateButtons.length > 0) {
+    if (templateButtons.length > 0 && !isEditing) {
       const parse = convertButtonsToTemplate(templateButtons, templateType);
 
       const parsedText = parse.length ? `| ${parse.join(' | ')}` : null;
 
-      const { message }: any = getTemplateAndButton(example);
+      const { message }: any = getTemplateAndButton(getExampleFromBody(body, variables));
 
       const sampleText: any = parsedText && message + parsedText;
-
       if (sampleText) {
         onExampleChange(sampleText);
       }
     }
   }, [templateButtons]);
+
+  useEffect(() => {
+    if (getSimulatorMessage && !isEditing) {
+      getSimulatorMessage(getExampleFromBody(body, variables));
+    }
+  }, [body, variables]);
 
   if (languageLoading || templateLoading || tagLoading) {
     return <Loading />;
@@ -660,8 +711,20 @@ const Template = ({
           onLanguageChange,
         };
 
+  const handeInputChange = (event: any, row: any, index: any, eventType: any) => {
+    const { value } = event.target;
+    const obj = { ...row };
+    obj[eventType] = value;
+
+    const result = templateButtons.map((val: any, idx: number) => {
+      if (idx === index) return obj;
+      return val;
+    });
+
+    setTemplateButtons(result);
+  };
+
   const formFields = [
-    formIsActive,
     languageComponent,
     {
       component: Input,
@@ -675,7 +738,7 @@ const Template = ({
         onBlur: (event: any) => setLabel(event.target.value),
       },
     },
-
+    formIsActive,
     {
       component: EmojiInput,
       name: 'body',
@@ -685,7 +748,7 @@ const Template = ({
       textArea: true,
       disabled: defaultAttribute.isHsm && isEditing,
       helperText: defaultAttribute.isHsm
-        ? 'You can also use variable and interactive actions. Variable format: {{1}}, Button format: [Button text,Value] Value can be a URL or a phone number.'
+        ? 'You can provide variable values in your HSM templates to personalize the message. To add: click on the variable button and provide an example value for the variable in the field provided below'
         : null,
       handleChange: (value: any) => {
         setBody(value);
@@ -693,19 +756,6 @@ const Template = ({
       defaultValue: isEditing && editorState,
     },
   ];
-
-  const handeInputChange = (event: any, row: any, index: any, eventType: any) => {
-    const { value } = event.target;
-    const obj = { ...row };
-    obj[eventType] = value;
-
-    const result = templateButtons.map((val: any, idx: number) => {
-      if (idx === index) return obj;
-      return val;
-    });
-
-    setTemplateButtons(result);
-  };
 
   const templateRadioOptions = [
     {
@@ -747,15 +797,29 @@ const Template = ({
     helperText: t('Use this to categorize your templates.'),
   };
 
-  const hsmFields = formField && [
-    ...formField.slice(0, 1),
-    ...templateRadioOptions,
-    ...formField.slice(1),
+  const templateVariables = [
+    {
+      component: TemplateVariables,
+      message: body,
+      variables: variables,
+      setVariables: setVariables,
+      getVariables: getVariables,
+      isEditing: isEditing,
+    },
   ];
 
-  const fields = defaultAttribute.isHsm
-    ? [...formFields, ...hsmFields, ...attachmentField, tags]
-    : [...formFields, ...attachmentField];
+  const hsmFields = formField && [
+    ...formFields.slice(0, 1),
+    ...formField.slice(0, 3),
+    ...formFields.slice(1),
+    ...templateVariables,
+    ...templateRadioOptions,
+    ...formField.slice(3),
+    ...attachmentField,
+    tags,
+  ];
+
+  const fields = defaultAttribute.isHsm ? hsmFields : [...formFields, ...attachmentField];
 
   // Creating payload for button template
   const getButtonTemplatePayload = () => {
@@ -779,7 +843,7 @@ const Template = ({
 
     // get template body
     const templateBody = getTemplateAndButton(body);
-    const templateExample = getTemplateAndButton(example);
+    const templateExample = getTemplateAndButton(getExampleFromBody(body, variables));
 
     return {
       hasButtons: true,
@@ -792,11 +856,11 @@ const Template = ({
 
   const setPayload = (payload: any) => {
     let payloadCopy = payload;
-    let translationsCopy: any = {};
 
+    let translationsCopy: any = {};
     if (template) {
-      if (template.sessionTemplate.sessionTemplate.language.id === language.id) {
-        payloadCopy.languageId = language.id;
+      if (template.sessionTemplate.sessionTemplate.language.id === language?.id) {
+        payloadCopy.languageId = language?.id;
         if (payloadCopy.type) {
           payloadCopy.type = payloadCopy.type.id;
           // STICKER is a type of IMAGE
@@ -809,16 +873,16 @@ const Template = ({
 
         delete payloadCopy.language;
         if (payloadCopy.isHsm) {
-          payloadCopy.category = payloadCopy.category.label;
           if (isAddButtonChecked && templateType) {
             const templateButtonData = getButtonTemplatePayload();
             Object.assign(payloadCopy, { ...templateButtonData });
           }
         } else {
           delete payloadCopy.example;
-          delete payloadCopy.isActive;
           delete payloadCopy.shortcode;
           delete payloadCopy.category;
+          delete payloadCopy.variables;
+          delete payloadCopy.allowTemplateCategoryChange;
         }
         if (payloadCopy.type === 'TEXT') {
           delete payloadCopy.attachmentURL;
@@ -838,7 +902,7 @@ const Template = ({
         // Update template translation
         if (translations) {
           translationsCopy = JSON.parse(translations);
-          translationsCopy[language.id] = {
+          translationsCopy[language?.id] = {
             status: 'approved',
             languageId: language,
             label: payloadCopy.label,
@@ -864,21 +928,35 @@ const Template = ({
         payloadCopy.type = 'TEXT';
       }
       if (payloadCopy.isHsm) {
-        payloadCopy.category = payloadCopy.category.label;
-
+        payloadCopy.category = category.label;
+        if (payloadCopy.body) {
+          payloadCopy.example = getExampleFromBody(payloadCopy.body, variables);
+        }
+        if (languageVariant) {
+          payloadCopy.shortcode = existingShortCode.label;
+        } else {
+          payloadCopy.shortcode = newShortCode;
+        }
         if (isAddButtonChecked && templateType) {
           const templateButtonData = getButtonTemplatePayload();
           Object.assign(payloadCopy, { ...templateButtonData });
         }
       } else {
         delete payloadCopy.example;
+        delete payloadCopy.isActive;
         delete payloadCopy.shortcode;
         delete payloadCopy.category;
+        delete payloadCopy.allowTemplateCategoryChange;
       }
 
+      delete payloadCopy.languageVariant;
+      delete payloadCopy.getShortcode;
       delete payloadCopy.isAddButtonChecked;
       delete payloadCopy.templateButtons;
       delete payloadCopy.language;
+      delete payloadCopy.variables;
+      delete payloadCopy.existingShortCode;
+      delete payloadCopy.newShortCode;
 
       if (payloadCopy.type === 'TEXT') {
         delete payloadCopy.attachmentURL;
@@ -889,7 +967,6 @@ const Template = ({
     if (tagId) {
       payloadCopy.tagId = payload.tagId.id;
     }
-
     return payloadCopy;
   };
 
@@ -910,9 +987,6 @@ const Template = ({
   const validation: any = {
     language: Yup.object().nullable().required('Language is required.'),
     label: Yup.string().required(t('Title is required.')).max(50, t('Title length is too long.')),
-    body: Yup.string()
-      .required(t('Message is required.'))
-      .max(1024, 'Maximum 1024 characters are allowed'),
     type: Yup.object()
       .nullable()
       .when('attachmentURL', {
@@ -925,6 +999,9 @@ const Template = ({
         is: (val: any) => val && val.id,
         then: (schema) => schema.required(t('Attachment URL is required.')),
       }),
+    body: Yup.string()
+      .required(t('Message is required.'))
+      .max(1024, 'Maximum 1024 characters are allowed'),
   };
 
   if (defaultAttribute.isHsm && isAddButtonChecked) {

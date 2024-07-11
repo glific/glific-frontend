@@ -3,6 +3,10 @@ import { backspace } from 'common/test-utils';
 import { Calendar } from './Calendar';
 import dayjs from 'dayjs';
 
+afterEach(() => {
+  (window as any).matchMedia = null;
+});
+
 const setFieldValueMock = vi.fn();
 describe('<Calendar />', () => {
   const getProps = () => ({
