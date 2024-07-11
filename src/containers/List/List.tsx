@@ -700,6 +700,7 @@ export const List = ({
 
     let buttonContent;
     if (button.action) {
+      console.log('if');
       buttonContent = (
         <Button
           color="primary"
@@ -711,6 +712,8 @@ export const List = ({
         </Button>
       );
     } else if (!button.link) {
+      console.log('else');
+
       buttonContent = (
         <Button
           color="primary"

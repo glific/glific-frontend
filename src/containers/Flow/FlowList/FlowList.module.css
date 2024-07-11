@@ -191,3 +191,7 @@
 .ImportDialog {
   max-width: 395px;
 }
+
+.DialogContent {
+  text-align: center;
+}

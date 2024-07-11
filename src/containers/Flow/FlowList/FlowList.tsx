@@ -24,6 +24,7 @@ import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { flowInfo } from 'common/HelpData';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { setErrorMessage, setNotification } from 'common/notification';
+import { Button } from 'components/UI/Form/Button/Button';
 
 const getName = (text: string, keywordsList: any, roles: any) => {
   const keywords = keywordsList.map((keyword: any) => keyword);
@@ -89,6 +90,7 @@ export const FlowList = () => {
   const [flowName, setFlowName] = useState('');
   const [importing, setImporting] = useState(false);
   const [importStatus, setImportStatus] = useState([]);
+  const [showDialog, setShowDialog] = useState(false);
 
   const [releaseFlow] = useLazyQuery(RELEASE_FLOW);
 
@@ -298,9 +300,34 @@ export const FlowList = () => {
   const restrictedAction = () =>
     filter === 'isTemplate' ? { delete: false, edit: false } : { edit: true, delete: true };
 
+  let dialogBox: any;
+  if (showDialog) {
+    dialogBox = (
+      <DialogBox
+        title="Create flow"
+        buttonOk="Create from Scratch"
+        buttonMiddle="Create from Template"
+        alignButtons="center"
+        skipCancel
+        handleMiddle={() => {
+          setFilter('isTemplate');
+          setShowDialog(false);
+        }}
+        handleOk={() => {
+          navigate('/flow/add');
+        }}
+      >
+        <div className={styles.DialogContent}>
+          Do you want to create a flow from scratch or use a template flow?
+        </div>
+      </DialogBox>
+    );
+  }
+
   return (
     <>
       {dialog}
+      {dialogBox}
       <List
         helpData={flowInfo}
         title={t('Flows')}
@@ -313,7 +340,7 @@ export const FlowList = () => {
         {...columnAttributes}
         searchParameter={['name_or_keyword_or_tags']}
         additionalAction={additionalAction}
-        button={{ show: true, label: t('Create') }}
+        button={{ show: true, label: t('Create'), action: () => setShowDialog(true) }}
         secondaryButton={importButton}
         filters={filters}
         filterList={activeFilter}
