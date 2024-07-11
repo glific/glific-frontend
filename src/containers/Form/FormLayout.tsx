@@ -590,7 +590,7 @@ export const FormLayout = ({
                       state: additionalAction?.state,
                     });
                   }
-                  submitForm();
+                  formik.submitForm();
                   setAction(true);
                 }}
                 data-testid="additionalActionButton"
