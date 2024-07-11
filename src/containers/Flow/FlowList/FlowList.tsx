@@ -24,7 +24,6 @@ import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { flowInfo } from 'common/HelpData';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { setErrorMessage, setNotification } from 'common/notification';
-import { Button } from 'components/UI/Form/Button/Button';
 
 const getName = (text: string, keywordsList: any, roles: any) => {
   const keywords = keywordsList.map((keyword: any) => keyword);
@@ -122,7 +121,7 @@ export const FlowList = () => {
     },
   });
 
-  const setDialog = (id: any) => {
+  const handleCopy = (id: any) => {
     navigate(`/flow/${id}/edit`, { state: 'copy' });
   };
 
@@ -175,9 +174,7 @@ export const FlowList = () => {
       icon: configureIcon,
       parameter: 'id',
       insideMore: false,
-      dialog: (id: any) => {
-        navigate(`/flow/${id}/edit`, { state: 'copyTemplate' });
-      },
+      dialog: handleCopy,
     },
   ];
 
@@ -193,7 +190,7 @@ export const FlowList = () => {
       icon: <DuplicateIcon />,
       parameter: 'id',
       insideMore: true,
-      dialog: setDialog,
+      dialog: handleCopy,
     },
     {
       label: t('Export'),
