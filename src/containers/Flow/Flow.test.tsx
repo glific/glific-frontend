@@ -12,6 +12,8 @@ import {
   createFlowQuery,
   createTagQuery,
   updateFlowQueryWithError,
+  getFlowCountQuery,
+  releaseFlow,
 } from 'mocks/Flow';
 import { Flow } from './Flow';
 import { setOrganizationServices } from 'services/AuthService';
@@ -19,6 +21,7 @@ import { getFilterTagQuery } from 'mocks/Tag';
 import { getRoleNameQuery } from 'mocks/Role';
 import userEvent from '@testing-library/user-event';
 import { setErrorMessage, setNotification } from 'common/notification';
+import FlowList from './FlowList/FlowList';
 
 setOrganizationServices('{"__typename":"OrganizationServicesResult","rolesAndPermission":true}');
 
@@ -33,6 +36,9 @@ const mocks = [
   copyFlowQuery,
   createFlowQuery,
   createTagQuery,
+  getFlowCountQuery,
+  releaseFlow,
+  getFilterTagQuery,
 ];
 
 const mockUseLocationValue: any = {
@@ -155,6 +161,7 @@ it('should edit the flow', async () => {
     <MockedProvider mocks={[...mocks, updateFlowQuery]} addTypename={false}>
       <MemoryRouter initialEntries={[`/flow/1/edit`]}>
         <Routes>
+          <Route path="flow" element={<FlowList />} />
           <Route path="flow/:id/edit" element={<Flow />} />
         </Routes>
       </MemoryRouter>

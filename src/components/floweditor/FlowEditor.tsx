@@ -57,7 +57,6 @@ export const FlowEditor = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-  console.log(location?.state);
 
   const isTranslationEnabled = getOrganizationServices('autoTranslationEnabled');
 

@@ -173,9 +173,11 @@ export const FlowList = () => {
     {
       label: 'Use it',
       icon: configureIcon,
-      parameter: 'uuid',
+      parameter: 'id',
       insideMore: false,
-      link: '/flow/configure?template=true',
+      dialog: (id: any) => {
+        navigate(`/flow/${id}/edit`, { state: 'copyTemplate' });
+      },
     },
   ];
 
@@ -305,16 +307,19 @@ export const FlowList = () => {
     dialogBox = (
       <DialogBox
         title="Create flow"
+        alignButtons="center"
         buttonOk="Create from Scratch"
         buttonMiddle="Create from Template"
-        alignButtons="center"
         skipCancel
+        handleOk={() => {
+          navigate('/flow/add');
+        }}
         handleMiddle={() => {
           setFilter('isTemplate');
           setShowDialog(false);
         }}
-        handleOk={() => {
-          navigate('/flow/add');
+        handleCancel={() => {
+          setShowDialog(false);
         }}
       >
         <div className={styles.DialogContent}>
