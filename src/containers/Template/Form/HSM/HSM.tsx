@@ -165,6 +165,16 @@ export const HSM = () => {
       skip: isEditing,
     },
     {
+      component: Input,
+      name: 'category',
+      type: 'text',
+      label: `${t('Category')}*`,
+      placeholder: `${t('Category')}*`,
+      disabled: isEditing,
+      helperText: t('Select the most relevant category'),
+      skip: !isEditing,
+    },
+    {
       component: Checkbox,
       name: 'allowTemplateCategoryChange',
       title: (
@@ -175,16 +185,6 @@ export const HSM = () => {
       darkCheckbox: true,
       disabled: isEditing,
       handleChange: (value: boolean) => setAllowTemplateCategoryChange(value),
-    },
-    {
-      component: Input,
-      name: 'category',
-      type: 'text',
-      label: `${t('Category')}*`,
-      placeholder: `${t('Category')}*`,
-      disabled: isEditing,
-      helperText: t('Select the most relevant category'),
-      skip: !isEditing,
     },
   ];
 
