@@ -404,6 +404,7 @@ export const FlowEditor = () => {
                 handleClose();
               }}
               disableRipple
+              disabled={isTemplate}
             >
               Reset flow count
             </MenuItem>
@@ -413,6 +414,7 @@ export const FlowEditor = () => {
               variant="outlined"
               color="primary"
               data-testid="previewButton"
+              disabled={isTemplate}
               onClick={() => {
                 setShowTranslateFlowModal(true);
                 handleClose();
@@ -435,6 +437,7 @@ export const FlowEditor = () => {
             variant="contained"
             color="primary"
             data-testid="button"
+            disabled={isTemplate}
             onClick={() => setPublishDialog(true)}
           >
             <PublishIcon className={styles.Icon} />
