@@ -291,7 +291,7 @@ export const FlowList = () => {
     if (filter === 'isTemplate') {
       filters = { ...filters, isTemplate: true };
     } else {
-      filters = { ...filters, isActive: filter };
+      filters = { ...filters, isActive: filter, isTemplate: false };
     }
     return filters;
   }, [filter, selectedtag, importing]);
