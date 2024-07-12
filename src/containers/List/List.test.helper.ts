@@ -46,10 +46,10 @@ export const defaultProps = {
 export const LIST_MOCKS = [
   getCurrentUserQuery,
   filterFlowQuery,
-  getFlowCountQuery,
+  getFlowCountQuery(),
   filterFlowQuery,
   filterFlowSortQuery,
-  getFlowCountQuery,
+  getFlowCountQuery(),
   filterFlowWithNameOrKeywordOrTagQuery,
   getFlowCountWithFilterQuery,
   getCurrentUserQuery,

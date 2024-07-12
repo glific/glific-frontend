@@ -79,7 +79,7 @@ const queries = {
 };
 
 const configureIcon = <ConfigureIcon />;
-const viewIcon = <ViewIcon />;
+const viewIcon = <ViewIcon data-testid="viewIt" />;
 
 export const FlowList = () => {
   const navigate = useNavigate();

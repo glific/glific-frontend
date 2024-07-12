@@ -191,6 +191,23 @@ export const filterFlowQuery = {
   result: filterFlowResult,
 };
 
+export const filterTemplateFlows = {
+  request: {
+    query: FILTER_FLOW,
+    variables: {
+      filter: { isTemplate: true },
+      opts: {
+        limit: 50,
+        offset: 0,
+        order: 'DESC',
+        orderWith: 'is_pinned',
+      },
+    },
+  },
+
+  result: filterFlowResult,
+};
+
 export const filterFlowSortQuery = {
   request: {
     query: FILTER_FLOW,
@@ -279,11 +296,11 @@ export const getActiveFlow = getFlowDetails();
 export const getInactiveFlow = getFlowDetails(false);
 export const getFlowWithoutKeyword = getFlowDetails(true, []);
 
-export const getFlowCountQuery = {
+export const getFlowCountQuery = (filter: string = 'isActive') => ({
   request: {
     query: GET_FLOW_COUNT,
     variables: {
-      filter: { isActive: true },
+      filter: { [filter]: true },
     },
   },
 
@@ -292,7 +309,7 @@ export const getFlowCountQuery = {
       countFlows: 1,
     },
   },
-};
+});
 
 export const getFlowCountWithFilterQuery = {
   request: {
@@ -427,10 +444,16 @@ export const importFlow = {
   result: {
     data: {
       importFlow: {
-        status: {
-          flowName: 'flow 1',
-          status: 'success',
-        },
+        status: [
+          {
+            flowName: 'Registration flow',
+            status: 'Successfully imported',
+          },
+          {
+            flowName: 'Optin',
+            status: 'Successfully imported',
+          },
+        ],
       },
     },
   },

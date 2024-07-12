@@ -36,7 +36,7 @@ const mocks = [
   copyFlowQuery,
   createFlowQuery,
   createTagQuery,
-  getFlowCountQuery,
+  getFlowCountQuery(),
   releaseFlow,
   getFilterTagQuery,
 ];
@@ -242,4 +242,29 @@ it('should create copy of flow', async () => {
   const button = getByTestId('submitActionButton');
   fireEvent.click(button);
   await waitFor(() => {});
+});
+
+it('buttons should be disabled in template state', async () => {
+  mockUseLocationValue.state = 'template';
+
+  render(
+    <MockedProvider mocks={mocks} addTypename={false}>
+      <MemoryRouter initialEntries={[`/flow/1/edit`]}>
+        <Routes>
+          <Route path="flow/:id/edit" element={<Flow />} />
+        </Routes>
+      </MemoryRouter>
+    </MockedProvider>
+  );
+
+  await waitFor(() => {
+    expect(screen.getByText('Edit flow')).toBeInTheDocument();
+  });
+
+  screen.debug(document, Infinity);
+
+  await waitFor(() => {
+    expect(screen.getByTestId('submitActionButton')).toBeDisabled();
+    expect(screen.getByTestId('remove-icon')).toBeDisabled();
+  });
 });
