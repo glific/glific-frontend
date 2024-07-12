@@ -29,7 +29,7 @@ const mocks = [
   ...getOrganizationQuery,
   getFlowQuery({ id: 1 }),
   getFlowQuery({ id: '1' }),
-  filterFlowQuery,
+  filterFlowQuery({ isActive: true, isTemplate: false }),
   getFilterTagQuery,
   getRoleNameQuery,
   getOrganizationLanguagesQuery,
@@ -260,8 +260,6 @@ it('buttons should be disabled in template state', async () => {
   await waitFor(() => {
     expect(screen.getByText('Edit flow')).toBeInTheDocument();
   });
-
-  screen.debug(document, Infinity);
 
   await waitFor(() => {
     expect(screen.getByTestId('submitActionButton')).toBeDisabled();

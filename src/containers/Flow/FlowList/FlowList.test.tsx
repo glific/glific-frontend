@@ -22,15 +22,17 @@ import { Flow } from '../Flow';
 import { getFilterTagQuery } from 'mocks/Tag';
 import { getRoleNameQuery } from 'mocks/Role';
 
+const isActiveFilter = { isActive: true, isTemplate: false };
+
 const mocks = [
-  getFlowCountQuery({ isActive: true, isTemplate: false }),
-  getFlowCountQuery({ isActive: true, isTemplate: false }),
-  getFlowCountQuery({ isActive: true, isTemplate: false }),
-  getFlowCountQuery({ isActive: true, isTemplate: false }),
-  filterFlowQuery,
-  filterFlowQuery,
-  filterFlowQuery,
-  filterFlowQuery,
+  getFlowCountQuery(isActiveFilter),
+  getFlowCountQuery(isActiveFilter),
+  getFlowCountQuery(isActiveFilter),
+  getFlowCountQuery(isActiveFilter),
+  filterFlowQuery(isActiveFilter),
+  filterFlowQuery(isActiveFilter),
+  filterFlowQuery(isActiveFilter),
+  filterFlowQuery(isActiveFilter),
   filterFlowNewQuery,
   getFlowCountNewQuery,
   getFlowQuery({ id: 1 }),

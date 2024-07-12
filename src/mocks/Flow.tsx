@@ -174,11 +174,11 @@ const filterFlowResult = {
   },
 };
 
-export const filterFlowQuery = {
+export const filterFlowQuery = (filter: any) => ({
   request: {
     query: FILTER_FLOW,
     variables: {
-      filter: { isActive: true, isTemplate: false },
+      filter,
       opts: {
         limit: 50,
         offset: 0,
@@ -189,7 +189,7 @@ export const filterFlowQuery = {
   },
 
   result: filterFlowResult,
-};
+});
 
 export const filterTemplateFlows = {
   request: {
