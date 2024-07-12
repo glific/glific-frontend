@@ -178,7 +178,7 @@ export const filterFlowQuery = {
   request: {
     query: FILTER_FLOW,
     variables: {
-      filter: { isActive: true },
+      filter: { isActive: true, isTemplate: false },
       opts: {
         limit: 50,
         offset: 0,
@@ -296,11 +296,11 @@ export const getActiveFlow = getFlowDetails();
 export const getInactiveFlow = getFlowDetails(false);
 export const getFlowWithoutKeyword = getFlowDetails(true, []);
 
-export const getFlowCountQuery = (filter: string = 'isActive') => ({
+export const getFlowCountQuery = (filter: any) => ({
   request: {
     query: GET_FLOW_COUNT,
     variables: {
-      filter: { [filter]: true },
+      filter,
     },
   },
 

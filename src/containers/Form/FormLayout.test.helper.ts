@@ -89,7 +89,7 @@ export const LIST_ITEM_MOCKS = [
   getFlowQuery({ id: 1 }),
   filterFlowQuery,
   filterFlowQuery,
-  getFlowCountQuery(),
-  getFlowCountQuery(),
+  getFlowCountQuery({ isTemplate: false, isActive: true }),
+  getFlowCountQuery({ isTemplate: false, isActive: true }),
   getFilterTagQuery,
 ];

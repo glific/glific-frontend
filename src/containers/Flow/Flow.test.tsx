@@ -36,7 +36,7 @@ const mocks = [
   copyFlowQuery,
   createFlowQuery,
   createTagQuery,
-  getFlowCountQuery(),
+  getFlowCountQuery({ isActive: true, isTemplate: false }),
   releaseFlow,
   getFilterTagQuery,
 ];

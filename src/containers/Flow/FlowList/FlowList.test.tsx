@@ -23,10 +23,10 @@ import { getFilterTagQuery } from 'mocks/Tag';
 import { getRoleNameQuery } from 'mocks/Role';
 
 const mocks = [
-  getFlowCountQuery(),
-  getFlowCountQuery(),
-  getFlowCountQuery(),
-  getFlowCountQuery(),
+  getFlowCountQuery({ isActive: true, isTemplate: false }),
+  getFlowCountQuery({ isActive: true, isTemplate: false }),
+  getFlowCountQuery({ isActive: true, isTemplate: false }),
+  getFlowCountQuery({ isActive: true, isTemplate: false }),
   filterFlowQuery,
   filterFlowQuery,
   filterFlowQuery,
@@ -40,7 +40,7 @@ const mocks = [
   exportFlow,
   getFilterTagQuery,
   getRoleNameQuery,
-  getFlowCountQuery('isTemplate'),
+  getFlowCountQuery({ isTemplate: true }),
   filterTemplateFlows,
   ...getOrganizationQuery,
 ];
