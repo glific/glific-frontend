@@ -589,6 +589,7 @@ export const FormLayout = ({
                     navigate(`${additionalAction.link}/${link}`, {
                       state: additionalAction?.state,
                     });
+                    return;
                   }
                   formik.submitForm();
                   setAction(true);
