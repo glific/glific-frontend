@@ -115,36 +115,29 @@ const getExampleFromBody = (body: string, variables: Array<any>) => {
   });
 };
 
-const getVariables = (body: string, example?: string) => {
-  const variablePattern = /\{\{(\d+)\}\}/g;
-  const examplePattern = /\[([^\]]+)\]/g;
+const getVariables = (message: string, variables: any) => {
+  const regex = /{{\d+}}/g;
+  const matches = message.match(regex);
+
+  if (!matches) {
+    return [];
+  }
+
+  return matches.map((match, index) =>
+    variables[index]?.text ? variables[index] : { text: '', id: index + 1 }
+  );
+};
+
+const getExampleValue = (example: string) => {
+  const regex = /\[([^\]]+)\]/g;
   let match;
-  let foundIds = new Set();
-  let examples = [];
-  let variables: any = [];
+  const variables = [];
+  let id = 1;
 
-  // Extract {{id}} patterns from body
-  while ((match = variablePattern.exec(body)) !== null) {
-    foundIds.add(parseInt(match[1], 10));
+  while ((match = regex.exec(example)) !== null) {
+    variables.push({ text: match[1], id });
+    id++;
   }
-
-  // Extract example values if example string is provided
-  if (example) {
-    while ((match = examplePattern.exec(example)) !== null) {
-      examples.push(match[1]);
-    }
-  }
-
-  // Sort the IDs
-  let sortedIds = Array.from(foundIds).sort((a: any, b: any) => a - b);
-
-  // Create variables array with ids and examples or empty text
-  sortedIds.forEach((id, index) => {
-    variables.push({
-      text: examples[index] || '',
-      id: index + 1,
-    });
-  });
 
   return variables;
 };
@@ -324,15 +317,15 @@ const Template = ({
 
     if (exampleValue) {
       if (hasButtons) {
-        setTemplateType(templateButtonType);
         const { buttons: buttonsVal } = getTemplateAndButtons(
           templateButtonType,
           exampleValue,
           buttons
         );
         setTemplateButtons(buttonsVal);
+        setTemplateType(templateButtonType);
       }
-      variables = getVariables(bodyValue, exampleValue);
+      variables = getExampleValue(exampleValue);
       setVariables(variables);
       onExampleChange(getExampleFromBody(bodyValue, variables));
     }
@@ -540,22 +533,20 @@ const Template = ({
   }, [type]);
 
   useEffect(() => {
-    if (templateType) {
+    if (templateType && !isEditing) {
       addTemplateButtons(false);
     }
   }, [templateType]);
 
   // Removing buttons when checkbox is checked or unchecked
   useEffect(() => {
-    if (isEditing) {
-      const { message }: any = getTemplateAndButton(getExampleFromBody(body, variables));
-      onExampleChange(message || '');
-    }
+    const { message }: any = getTemplateAndButton(getExampleFromBody(body, variables));
+    onExampleChange(message || '');
   }, [isAddButtonChecked]);
 
   // Converting buttons to template and vice-versa to show realtime update on simulator
   useEffect(() => {
-    if (templateButtons.length > 0 && !isEditing) {
+    if (templateButtons.length > 0) {
       const parse = convertButtonsToTemplate(templateButtons, templateType);
 
       const parsedText = parse.length ? `| ${parse.join(' | ')}` : null;
@@ -574,6 +565,10 @@ const Template = ({
       getSimulatorMessage(getExampleFromBody(body, variables));
     }
   }, [body, variables]);
+
+  useEffect(() => {
+    setVariables(getVariables(body, variables));
+  }, [body]);
 
   if (languageLoading || templateLoading || tagLoading) {
     return <Loading />;
@@ -803,7 +798,6 @@ const Template = ({
       message: body,
       variables: variables,
       setVariables: setVariables,
-      getVariables: getVariables,
       isEditing: isEditing,
     },
   ];
@@ -877,6 +871,7 @@ const Template = ({
             const templateButtonData = getButtonTemplatePayload();
             Object.assign(payloadCopy, { ...templateButtonData });
           }
+          payloadCopy.shortcode = newShortCode;
         } else {
           delete payloadCopy.example;
           delete payloadCopy.shortcode;
@@ -943,20 +938,14 @@ const Template = ({
         }
       } else {
         delete payloadCopy.example;
-        delete payloadCopy.isActive;
         delete payloadCopy.shortcode;
         delete payloadCopy.category;
         delete payloadCopy.allowTemplateCategoryChange;
       }
 
-      delete payloadCopy.languageVariant;
-      delete payloadCopy.getShortcode;
       delete payloadCopy.isAddButtonChecked;
       delete payloadCopy.templateButtons;
       delete payloadCopy.language;
-      delete payloadCopy.variables;
-      delete payloadCopy.existingShortCode;
-      delete payloadCopy.newShortCode;
 
       if (payloadCopy.type === 'TEXT') {
         delete payloadCopy.attachmentURL;
@@ -967,6 +956,12 @@ const Template = ({
     if (tagId) {
       payloadCopy.tagId = payload.tagId.id;
     }
+
+    delete payloadCopy.languageVariant;
+    delete payloadCopy.variables;
+    delete payloadCopy.existingShortCode;
+    delete payloadCopy.newShortCode;
+
     return payloadCopy;
   };
 
