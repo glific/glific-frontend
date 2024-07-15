@@ -71,7 +71,6 @@ const hsmProps = {
     isHsm: true,
   },
   icon: null,
-  getShortcode: '',
   category: {
     label: 'ACCOUNT_UPDATE',
     id: 'ACCOUNT_UPDATE',
