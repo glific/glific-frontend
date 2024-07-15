@@ -32,7 +32,7 @@ export const HSM = () => {
   const [newShortcode, setNewShortcode] = useState('');
   const [category, setCategory] = useState<any>(undefined);
   const [languageVariant, setLanguageVariant] = useState<boolean>(false);
-  const [allowTemplateCategoryChange, setAllowTemplateCategoryChange] = useState<boolean>(false);
+  const [allowTemplateCategoryChange, setAllowTemplateCategoryChange] = useState<boolean>(true);
 
   const { t } = useTranslation();
   const params = useParams();
