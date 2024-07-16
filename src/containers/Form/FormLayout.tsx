@@ -1,5 +1,5 @@
 import { useState, Fragment, useEffect } from 'react';
-import { Navigate, useParams, useNavigate } from 'react-router-dom';
+import { Navigate, useParams } from 'react-router-dom';
 import { Field, useFormik, FormikProvider } from 'formik';
 // eslint-disable-next-line no-unused-vars
 import { DocumentNode, ApolloError, useQuery, useMutation } from '@apollo/client';
@@ -152,7 +152,6 @@ export const FormLayout = ({
   const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
   const params = useParams();
 
-  const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
       languageId,
@@ -585,10 +584,8 @@ export const FormLayout = ({
                 variant="outlined"
                 color="primary"
                 onClick={() => {
-                  if (additionalAction?.state === 'template') {
-                    navigate(`${additionalAction.link}/${link}`, {
-                      state: additionalAction?.state,
-                    });
+                  if (additionalAction?.action) {
+                    additionalAction.action(`${additionalAction.link}/${link}`);
                     return;
                   }
                   formik.submitForm();

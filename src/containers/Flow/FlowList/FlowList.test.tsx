@@ -199,6 +199,7 @@ describe('Template flows', () => {
       expect(mockedUsedNavigate).toHaveBeenCalled();
     });
   });
+
   test('it shows and creates a template flows', async () => {
     render(flowList);
 
@@ -212,7 +213,7 @@ describe('Template flows', () => {
       expect(screen.getByText('Create flow')).toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getByTestId('middle-button'));
+    fireEvent.click(screen.getByTestId('ok-button'));
 
     await waitFor(() => {
       expect(screen.getByText('Template Flows')).toBeInTheDocument();

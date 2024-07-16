@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/client';
 
 import { FormLayout } from 'containers/Form/FormLayout';
@@ -31,6 +31,7 @@ const queries = {
 
 export const Flow = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const params = useParams();
   const [name, setName] = useState('');
   const [isPinnedDisable, setIsPinnedDisable] = useState(false);
@@ -156,7 +157,11 @@ export const Flow = () => {
   const additionalAction = {
     label: isTemplate ? t('View') : t('Configure'),
     link: '/flow/configure',
-    state: isTemplate && 'template',
+    action: (link: any) => {
+      navigate(link, {
+        state: isTemplate && 'template',
+      });
+    },
   };
 
   const formFields = [
@@ -302,7 +307,7 @@ export const Flow = () => {
       dialogMessage={dialogMessage}
       formFields={formFields}
       redirectionLink="flow"
-      cancelLink={`flow?isTemplate=${isTemplate}`}
+      cancelLink={cancelLink}
       linkParameter="uuid"
       listItem="flow"
       icon={flowIcon}

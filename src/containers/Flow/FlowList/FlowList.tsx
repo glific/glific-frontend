@@ -240,7 +240,7 @@ export const FlowList = () => {
   const filterList = [
     { label: 'Active', value: true },
     { label: 'Inactive', value: false },
-    { label: 'Template Flows', value: 'isTemplate' },
+    { label: 'Template', value: 'isTemplate' },
   ];
   const { data: tag } = useQuery(GET_TAGS, {
     variables: {},
