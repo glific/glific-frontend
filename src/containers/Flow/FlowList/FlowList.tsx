@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
@@ -83,6 +83,7 @@ const viewIcon = <ViewIcon data-testid="viewIt" />;
 
 export const FlowList = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { t } = useTranslation();
   const [filter, setFilter] = useState<any>(true);
   const [selectedtag, setSelectedTag] = useState<any>(null);
@@ -121,8 +122,8 @@ export const FlowList = () => {
     },
   });
 
-  const handleCopy = (id: any) => {
-    navigate(`/flow/${id}/edit`, { state: 'copy' });
+  const handleCopy = (id: any, template: boolean = false) => {
+    navigate(`/flow/${id}/edit`, { state: template ? 'copyTemplate' : 'copy' });
   };
 
   const exportFlow = (id: any, item: any) => {
@@ -171,7 +172,7 @@ export const FlowList = () => {
     },
     {
       label: 'Use it',
-      icon: configureIcon,
+      icon: <DuplicateIcon />,
       parameter: 'id',
       insideMore: false,
       dialog: handleCopy,
@@ -305,13 +306,13 @@ export const FlowList = () => {
       <DialogBox
         title="Create flow"
         alignButtons="center"
-        buttonOk="Create from Scratch"
-        buttonMiddle="Create from Template"
+        buttonMiddle="Create from Scratch"
+        buttonOk="Create from Template"
         skipCancel
-        handleOk={() => {
+        handleMiddle={() => {
           navigate('/flow/add');
         }}
-        handleMiddle={() => {
+        handleOk={() => {
           setFilter('isTemplate');
           setShowDialog(false);
         }}
@@ -319,12 +320,21 @@ export const FlowList = () => {
           setShowDialog(false);
         }}
       >
-        <div className={styles.DialogContent}>
-          Do you want to create a flow from scratch or use a template flow?
-        </div>
+        <div className={styles.DialogContent}>How do you want to create a flow?</div>
       </DialogBox>
     );
   }
+
+  useEffect(() => {
+    if (location.search) {
+      const isTemplate = new URLSearchParams(location.search).get('isTemplate');
+      if (isTemplate === 'true') {
+        setFilter('isTemplate');
+      }
+    }
+  }, [location]);
+
+  const title = filter === 'isTemplate' ? t('Template Flows') : t('Flows');
 
   return (
     <>
@@ -332,7 +342,7 @@ export const FlowList = () => {
       {dialogBox}
       <List
         helpData={flowInfo}
-        title={t('Flows')}
+        title={title}
         listItem="flows"
         listItemName="flow"
         pageLink="flow"

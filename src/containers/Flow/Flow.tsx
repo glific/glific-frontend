@@ -98,11 +98,15 @@ export const Flow = () => {
     // Override name & keywords when creating Flow Copy
     let fieldName = nameValue;
     let fieldKeywords = keywordsValue;
+    let description = descriptionValue;
+    let tags = tagValue;
     if (location.state === 'copy') {
       fieldName = `Copy of ${nameValue}`;
       fieldKeywords = '';
+    } else if (location.state === 'copyTemplate') {
+      description = '';
+      tags = null;
     }
-
     const {
       organization: {
         organization: { newcontactFlowId },
@@ -118,7 +122,7 @@ export const Flow = () => {
     setIsPinned(isPinnedValue);
     setIsBackground(isBackgroundValue);
     setRoles(rolesValue);
-    setDescription(descriptionValue);
+    setDescription(description);
 
     // we are receiving keywords as an array object
     if (fieldKeywords.length > 0) {
@@ -126,7 +130,8 @@ export const Flow = () => {
       setKeywords(fieldKeywords.join(','));
     }
     setIgnoreKeywords(ignoreKeywordsValue);
-    const getTagId = tag && tag.tags.filter((tags: any) => tags.id === tagValue?.id);
+    const getTagId = tag && tag.tags.filter((t: any) => t.id === tags?.id);
+
     if (getTagId.length > 0) {
       setTagId(getTagId[0]);
     }
@@ -141,6 +146,12 @@ export const Flow = () => {
   });
 
   const dialogMessage = t("You won't be able to use this flow again.");
+  let backLink = '/flow';
+  let cancelLink = 'flow';
+  if (isTemplate || location.state === 'copyTemplate') {
+    backLink = '/flow?isTemplate=true';
+    cancelLink = 'flow?isTemplate=true';
+  }
 
   const additionalAction = {
     label: isTemplate ? t('View') : t('Configure'),
@@ -251,10 +262,17 @@ export const Flow = () => {
   // alter header & update/copy queries
   let title;
   let type;
+  let copyNotification;
   if (location.state === 'copy') {
     queries.updateItemQuery = CREATE_FLOW_COPY;
     title = t('Copy flow');
     type = 'copy';
+    copyNotification = t('Copy of the flow has been created!');
+  } else if (location.state === 'copyTemplate') {
+    queries.updateItemQuery = CREATE_FLOW_COPY;
+    title = t('Template flow copy');
+    type = 'copy';
+    copyNotification = t('Flow created successfully from template!');
   } else {
     queries.updateItemQuery = UPDATE_FLOW;
   }
@@ -284,7 +302,7 @@ export const Flow = () => {
       dialogMessage={dialogMessage}
       formFields={formFields}
       redirectionLink="flow"
-      cancelLink="flow"
+      cancelLink={`flow?isTemplate=${isTemplate}`}
       linkParameter="uuid"
       listItem="flow"
       icon={flowIcon}
@@ -292,10 +310,10 @@ export const Flow = () => {
       languageSupport={false}
       title={title}
       type={type}
-      copyNotification={t('Copy of the flow has been created!')}
+      copyNotification={copyNotification}
       customHandler={customHandler}
       helpData={flowInfo}
-      backLinkButton="/flow"
+      backLinkButton={backLink}
       buttonState={{ text: 'Save', status: isTemplate }}
       restrictButtonStatus={{ status: isTemplate }}
     />
