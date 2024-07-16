@@ -449,6 +449,8 @@ export const InteractiveMessage = () => {
   };
 
   const afterSave = (data: any, saveClick: boolean, message?: any) => {
+    console.log('called');
+
     if (!saveClick) {
       if (params.id) {
         handleLanguageChange(nextLanguage);
