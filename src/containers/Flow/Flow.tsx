@@ -273,6 +273,7 @@ export const Flow = () => {
   let title;
   let type;
   let copyNotification;
+
   if (location.state === 'copy') {
     queries.updateItemQuery = CREATE_FLOW_COPY;
     title = t('Copy flow');

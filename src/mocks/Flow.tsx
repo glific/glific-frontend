@@ -663,46 +663,53 @@ export const exportFlowTranslationsWithErrors = {
   },
 };
 
-export const copyFlowQuery = {
-  request: {
-    query: CREATE_FLOW_COPY,
-    variables: {
-      id: '1',
-      input: {
-        isActive: true,
-        isPinned: false,
-        isBackground: false,
-        name: 'Copy of Help',
-        keywords: ['help', 'activity'],
-        description: 'Help flow',
-        ignoreKeywords: false,
-        addRoleIds: [],
-        deleteRoleIds: [],
-        tag_id: '1',
-      },
-    },
-  },
-  result: {
-    data: {
-      copyFlow: {
-        flow: {
-          roles: [],
-          tag: { id: '1', label: 'New tag' },
-          id: '1',
-          isActive: true,
-          keywords: ['help', 'activity'],
-          description: 'Help flow',
-          name: 'Copy of Help',
-          isBackground: false,
-          updatedAt: '2021-03-05T04:32:23Z',
-          uuid: '3fa22108-f464-41e5-81d9-d8a298854429',
-          isPinned: false,
-        },
+export const copyFlowQuery = (template: boolean = false) => {
+  let input = {
+    isActive: true,
+    isPinned: false,
+    isBackground: false,
+    name: 'Copy of Help',
+    keywords: template ? [] : ['help', 'activity'],
+    description: template ? '' : 'Help flow',
+    ignoreKeywords: false,
+    addRoleIds: [],
+    deleteRoleIds: [],
+  };
 
-        errors: null,
+  if (!template) {
+    Object.assign(input, { tag_id: '1' });
+  }
+
+  return {
+    request: {
+      query: CREATE_FLOW_COPY,
+      variables: {
+        id: '1',
+        input,
       },
     },
-  },
+    result: {
+      data: {
+        copyFlow: {
+          flow: {
+            roles: [],
+            tag: { id: '1', label: 'New tag' },
+            id: '1',
+            isActive: true,
+            keywords: ['help', 'activity'],
+            description: 'Help flow',
+            name: 'Copy of Help',
+            isBackground: false,
+            updatedAt: '2021-03-05T04:32:23Z',
+            uuid: '3fa22108-f464-41e5-81d9-d8a298854429',
+            isPinned: false,
+          },
+
+          errors: null,
+        },
+      },
+    },
+  };
 };
 
 export const createFlowQuery = {

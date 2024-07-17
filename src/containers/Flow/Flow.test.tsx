@@ -33,7 +33,8 @@ const mocks = [
   getFilterTagQuery,
   getRoleNameQuery,
   getOrganizationLanguagesQuery,
-  copyFlowQuery,
+  copyFlowQuery(),
+  copyFlowQuery(true),
   createFlowQuery,
   createTagQuery,
   getFlowCountQuery({ isActive: true, isTemplate: false }),
@@ -47,11 +48,14 @@ const mockUseLocationValue: any = {
   hash: '',
   state: null,
 };
+const mockedUsedNavigate = vi.fn();
+
 vi.mock('react-router-dom', async () => ({
   ...((await vi.importActual<any>('react-router-dom')) as {}),
   useLocation: () => {
     return mockUseLocationValue;
   },
+  useNavigate: () => mockedUsedNavigate,
 }));
 
 vi.mock('common/notification', async (importOriginal) => {
@@ -187,6 +191,32 @@ it('should edit the flow', async () => {
   });
 });
 
+it('should configure the flow', async () => {
+  const editFlow = () => (
+    <MockedProvider mocks={[...mocks, updateFlowQuery]} addTypename={false}>
+      <MemoryRouter initialEntries={[`/flow/1/edit`]}>
+        <Routes>
+          <Route path="flow" element={<FlowList />} />
+          <Route path="flow/:id/edit" element={<Flow />} />
+        </Routes>
+      </MemoryRouter>
+    </MockedProvider>
+  );
+  const { getByText } = render(editFlow());
+
+  expect(getByText('Loading...')).toBeInTheDocument();
+
+  await waitFor(() => {
+    expect(getByText('Edit flow')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByText('Configure'));
+
+  await waitFor(() => {
+    expect(setNotification).toHaveBeenCalled();
+  });
+});
+
 it('should edit the flow and show error if exists', async () => {
   const editFlow = () => (
     <MockedProvider mocks={[...mocks, updateFlowQueryWithError]} addTypename={false}>
@@ -265,4 +295,34 @@ it('buttons should be disabled in template state', async () => {
     expect(screen.getByTestId('submitActionButton')).toBeDisabled();
     expect(screen.getByTestId('remove-icon')).toBeDisabled();
   });
+
+  fireEvent.click(screen.getByText('View'));
+
+  await waitFor(() => {
+    expect(mockedUsedNavigate).toHaveBeenCalled();
+  });
+});
+
+it('should create copy of a template flow', async () => {
+  mockUseLocationValue.state = 'copyTemplate';
+
+  const copyFlow = () => (
+    <MockedProvider mocks={mocks} addTypename={false}>
+      <MemoryRouter initialEntries={[`/flow/1/edit`]}>
+        <Routes>
+          <Route path="flow/:id/edit" element={<Flow />} />
+        </Routes>
+      </MemoryRouter>
+    </MockedProvider>
+  );
+
+  const { container, getByTestId } = render(copyFlow());
+  await waitFor(() => {
+    const inputElement = container.querySelector('input[name="name"]') as HTMLInputElement;
+    expect(inputElement?.value).toBe('Copy of Help');
+  });
+
+  const button = getByTestId('submitActionButton');
+  fireEvent.click(button);
+  await waitFor(() => {});
 });
