@@ -5,7 +5,6 @@ import { FormHelperText, OutlinedInput } from '@mui/material';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { setDefaultValue } from 'common/RichEditor';
 import DeleteIcon from 'assets/images/icons/CrossIcon.svg?react';
-import { useEffect } from 'react';
 
 export interface TemplateOptionsProps {
   form: { touched: any; errors: any; values: any; setFieldValue: any };
@@ -21,7 +20,6 @@ export const TemplateVariables = ({
   message,
   variables,
   setVariables,
-  getVariables,
   isEditing,
 }: TemplateOptionsProps) => {
   const [editor] = useLexicalComposerContext();
@@ -41,10 +39,6 @@ export const TemplateVariables = ({
     const newVariables = variables.filter((variable) => variable.id !== id);
     setVariables(newVariables);
   };
-
-  useEffect(() => {
-    setVariables(getVariables(message));
-  }, [message]);
 
   return (
     <div className={styles.AddVariablesContainer}>
