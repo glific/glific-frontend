@@ -39,6 +39,7 @@ const SpeedSendsSessionTemplates = [
     isActive: false,
     updatedAt: '2020-12-01T18:00:28Z',
     numberParameters: 0,
+    cateory: null,
     quality: null,
     translations:
       '{"2":{"status":"approved","languageId":{"localized":true,"locale":"hi","label":"Hindi","id":"2","__typename":"Language"},"label":"आप ग्लिफ़िक के लिए कितने उत्साहित हैं?","isHsm":false,"body":"यह संदेश है\\n","MessageMedia":null}}',
@@ -99,6 +100,7 @@ const HSMSessionTemplates = [
     type: 'TEXT',
     numberParameters: 2,
     quality: 'high',
+    cateory: 'MARKETING',
     language: {
       id: '1',
       label: 'Hindi',
@@ -144,6 +146,7 @@ const sessionTemplates = [
     translations: '{}',
     type: 'TEXT',
     quality: null,
+    cateory: null,
     language: {
       id: '1',
       label: 'Hindi',
@@ -207,6 +210,7 @@ const filterTemplateQuery = {
           updatedAt: '2020-12-01T18:00:32Z',
           translations: '{}',
           quality: null,
+          cateory: null,
         },
       ],
     },
