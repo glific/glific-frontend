@@ -122,8 +122,8 @@ export const FlowList = () => {
     },
   });
 
-  const handleCopy = (id: any, template: boolean = false) => {
-    navigate(`/flow/${id}/edit`, { state: template ? 'copyTemplate' : 'copy' });
+  const handleCopy = (id: any) => {
+    navigate(`/flow/${id}/edit`, { state: 'copy' });
   };
 
   const exportFlow = (id: any, item: any) => {
@@ -175,7 +175,9 @@ export const FlowList = () => {
       icon: <DuplicateIcon />,
       parameter: 'id',
       insideMore: false,
-      dialog: handleCopy,
+      dialog: (id: any) => {
+        navigate(`/flow/${id}/edit`, { state: 'copyTemplate' });
+      },
     },
   ];
 
