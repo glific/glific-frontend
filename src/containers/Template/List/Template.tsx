@@ -37,7 +37,12 @@ import { speedSendInfo, templateInfo } from 'common/HelpData';
 import styles from './Template.module.css';
 import { RaiseToGupShup } from './RaiseToGupshupDialog/RaiseToGupShup';
 
-const getLabel = (label: string) => <div className={styles.LabelText}>{label}</div>;
+const getLabel = (label: string, quality?: string) => (
+  <div className={styles.LabelContainer}>
+    <div className={styles.LabelText}>{label}</div>
+    <div className={styles.Quality}>{quality || 'Not Rated'}</div>
+  </div>
+);
 
 const getBody = (text: string) => <p className={styles.TableText}>{WhatsAppToJsx(text)}</p>;
 
@@ -201,12 +206,14 @@ export const Template = ({
     translations,
     status,
     reason,
+    quality,
   }: any) => {
     const columns: any = {
       id,
-      label: getLabel(label),
+      label: getLabel(label, quality),
       body: getBody(body),
     };
+
     if (isHSM) {
       columns.status = getStatus(status);
       if (filters.REJECTED) {

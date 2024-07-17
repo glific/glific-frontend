@@ -26,10 +26,25 @@
   text-align: end;
 }
 
+.LabelContainer {
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.5rem;
+}
+
 .LabelText {
   font-weight: 500;
   font-size: 17px;
   word-break: break-all;
+}
+
+.Quality {
+  font-size: 12px;
+  width: fit-content;
+  padding: 2px 6px;
+  background: #f0f7f1;
+  color: #555555;
+  border-radius: 8px;
 }
 
 .TableText {
