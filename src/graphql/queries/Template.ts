@@ -9,6 +9,7 @@ const templateFields = `
     translations
     type
     quality
+    category
     language {
       id
       label

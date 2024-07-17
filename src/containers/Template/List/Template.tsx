@@ -60,6 +60,8 @@ const getTranslations = (language: any, data: string) => {
   return JSON.stringify(dataObj);
 };
 
+const getCategory = (category: string) => <p className={styles.TableText}>{category}</p>;
+
 export interface TemplateProps {
   title: string;
   listItem: string;
@@ -181,6 +183,7 @@ export const Template = ({
   ];
 
   if (isHSM) {
+    columnNames.push({ name: 'category', label: t('Category') });
     columnNames.push({ name: 'status', label: t('Status') });
     if (filters.REJECTED) {
       columnNames.push({ label: t('Reason') });
@@ -194,7 +197,13 @@ export const Template = ({
   let columnStyles: any = [styles.Name, styles.Body];
 
   columnStyles = isHSM
-    ? [...columnStyles, styles.Status, ...(filters.REJECTED ? [styles.Reason] : []), styles.Actions]
+    ? [
+        ...columnStyles,
+        styles.Category,
+        styles.Status,
+        ...(filters.REJECTED ? [styles.Reason] : []),
+        styles.Actions,
+      ]
     : [...columnStyles, styles.LastModified, styles.Actions];
 
   const getColumns = ({
@@ -207,6 +216,7 @@ export const Template = ({
     status,
     reason,
     quality,
+    category,
   }: any) => {
     const columns: any = {
       id,
@@ -215,6 +225,7 @@ export const Template = ({
     };
 
     if (isHSM) {
+      columns.category = getCategory(category);
       columns.status = getStatus(status);
       if (filters.REJECTED) {
         columns.reason = getReason(reason);

@@ -144,3 +144,8 @@
 .FormStyle {
   width: 150px !important;
 }
+
+.Category {
+  width: 20%;
+  min-width: 100px;
+}
