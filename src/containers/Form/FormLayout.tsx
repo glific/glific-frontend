@@ -584,12 +584,11 @@ export const FormLayout = ({
                 variant="outlined"
                 color="primary"
                 onClick={() => {
-                  if (additionalAction?.action) {
-                    additionalAction.action(`${additionalAction.link}/${link}`);
-                    return;
-                  }
-                  formik.submitForm();
                   setAction(true);
+
+                  if (additionalAction?.action) {
+                    additionalAction.action(`${additionalAction.link}/${link}`, formik.submitForm);
+                  }
                 }}
                 data-testid="additionalActionButton"
               >

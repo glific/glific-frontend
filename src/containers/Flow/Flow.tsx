@@ -105,8 +105,10 @@ export const Flow = () => {
       fieldName = `Copy of ${nameValue}`;
       fieldKeywords = '';
     } else if (location.state === 'copyTemplate') {
+      fieldName = `Copy of ${nameValue}`;
       description = '';
       tags = null;
+      fieldKeywords = '';
     }
     const {
       organization: {
@@ -157,10 +159,13 @@ export const Flow = () => {
   const additionalAction = {
     label: isTemplate ? t('View') : t('Configure'),
     link: '/flow/configure',
-    action: (link: any) => {
+    action: (link: any, submitForm?: any) => {
       navigate(link, {
         state: isTemplate && 'template',
       });
+      if (!isTemplate) {
+        submitForm();
+      }
     },
   };
 
