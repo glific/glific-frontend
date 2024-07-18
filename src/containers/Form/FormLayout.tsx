@@ -587,7 +587,9 @@ export const FormLayout = ({
                   setAction(true);
 
                   if (additionalAction?.action) {
-                    additionalAction.action(`${additionalAction.link}/${link}`, formik.submitForm);
+                    additionalAction.action(`${additionalAction.link}/${link}`);
+                  } else {
+                    formik.submitForm();
                   }
                 }}
                 data-testid="additionalActionButton"
