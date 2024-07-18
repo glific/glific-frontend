@@ -6,22 +6,18 @@ import { Editor } from './Editor';
 import Styles from './EmojiInput.module.css';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { $createTextNode, $getSelection, $isRangeSelection } from 'lexical';
-import { LexicalWrapper } from 'common/LexicalWrapper';
 
 export interface EmojiInputProps {
-  field: any;
-  form: any;
+  field: { name: string; onChange?: any; value: any; onBlur?: any };
+  form: { touched: any; errors: any; setFieldValue: any; values: any };
   label: string;
   placeholder: string;
   disabled?: boolean;
   rows: number;
   handleChange?: any;
   handleBlur?: any;
-  getEditorValue?: any;
   inputProp?: any;
-  isEditing?: boolean;
   translation?: string;
-  editorState?: any;
 }
 
 interface EmojiPickerProps {
@@ -33,25 +29,12 @@ interface EmojiPickerProps {
 export const EmojiInput = ({
   field: { value, name, onBlur },
   handleChange,
-  getEditorValue,
   handleBlur,
-  isEditing = false,
   translation,
-  editorState,
+  form,
   ...props
 }: EmojiInputProps) => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-
-  const lexicalChange = (editorState: any) => {
-    if (handleChange) {
-      handleChange(editorState);
-    }
-    if (getEditorValue) {
-      getEditorValue(editorState);
-    }
-
-    props.form.setFieldValue(name, editorState);
-  };
 
   const handleClickAway = () => {
     setShowEmojiPicker(false);
@@ -66,16 +49,13 @@ export const EmojiInput = ({
   );
 
   const input = (
-    <LexicalWrapper>
-      <Editor
-        isEditing={isEditing}
-        editorState={editorState}
-        field={{ name, value, onBlur }}
-        {...props}
-        picker={picker}
-        onChange={lexicalChange}
-      />
-    </LexicalWrapper>
+    <Editor
+      field={{ name, value, onBlur }}
+      picker={picker}
+      onChange={handleChange}
+      form={form}
+      {...props}
+    />
   );
 
   return (

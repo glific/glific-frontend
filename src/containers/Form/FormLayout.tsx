@@ -1,6 +1,6 @@
 import { useState, Fragment, useEffect } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
-import { Formik, Form, Field } from 'formik';
+import { Field, useFormik, FormikProvider } from 'formik';
 // eslint-disable-next-line no-unused-vars
 import { DocumentNode, ApolloError, useQuery, useMutation } from '@apollo/client';
 import { Typography } from '@mui/material';
@@ -22,6 +22,7 @@ import { organizationHasDynamicRole } from 'common/utils';
 import { getUserRole } from 'context/role';
 import styles from './FormLayout.module.css';
 import { HelpDataProps } from 'common/HelpData';
+import { LexicalWrapper } from 'common/LexicalWrapper';
 
 export interface FormLayoutProps {
   deleteItemQuery: DocumentNode;
@@ -75,6 +76,11 @@ export interface FormLayoutProps {
   helpData?: HelpDataProps;
   noHeading?: boolean;
   partialPage?: boolean;
+  confirmationState?: {
+    show: boolean;
+    title: string;
+    message: string;
+  };
 }
 
 export const FormLayout = ({
@@ -126,6 +132,7 @@ export const FormLayout = ({
   languageAttributes = {},
   noHeading = false,
   partialPage = false,
+  confirmationState,
 }: FormLayoutProps) => {
   const [showDialog, setShowDialog] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
@@ -137,7 +144,25 @@ export const FormLayout = ({
   const [saveClick, onSaveClick] = useState(false);
   const [isLoadedData, setIsLoadedData] = useState(false);
   const [customError, setCustomError] = useState<any>(null);
+  const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
   const params = useParams();
+
+  const formik = useFormik({
+    initialValues: {
+      languageId,
+      ...states,
+    },
+    validationSchema: validationSchema,
+    enableReinitialize: true,
+    onSubmit: (values, { setErrors }) => {
+      if (confirmationState?.show) {
+        setShowConfirmationDialog(true);
+      } else {
+        setCustomError({ setErrors });
+        saveHandler(values);
+      }
+    },
+  });
 
   const { t } = useTranslation();
 
@@ -212,10 +237,11 @@ export const FormLayout = ({
 
   const [updateItem] = useMutation(updateItemQuery, {
     onCompleted: (data) => {
+      setShowConfirmationDialog(false);
       let itemUpdatedObject: any = Object.keys(data)[0];
       itemUpdatedObject = data[itemUpdatedObject];
       const updatedItem = itemUpdatedObject[listItem];
-      const { errors } = itemUpdatedObject;
+      const { errors, message } = itemUpdatedObject;
 
       if (errors) {
         if (customHandler) {
@@ -248,12 +274,13 @@ export const FormLayout = ({
         }
         // emit data after save
         if (afterSave) {
-          afterSave(data, saveClick);
+          afterSave(data, saveClick, message);
         }
       }
       onSaveClick(false);
     },
     onError: (e: ApolloError) => {
+      setShowConfirmationDialog(false);
       onSaveClick(false);
       setErrorMessage(e);
       return null;
@@ -270,6 +297,7 @@ export const FormLayout = ({
 
   const [createItem] = useMutation(createItemQuery, {
     onCompleted: (data) => {
+      setShowConfirmationDialog(false);
       let itemCreatedObject: any = `create${camelCaseItem}`;
       itemCreatedObject = data[itemCreatedObject];
       const itemCreated = itemCreatedObject[listItem];
@@ -316,6 +344,7 @@ export const FormLayout = ({
       return [];
     },
     onError: (e: ApolloError) => {
+      setShowConfirmationDialog(false);
       onSaveClick(false);
       setErrorMessage(e);
       return null;
@@ -508,22 +537,9 @@ export const FormLayout = ({
   };
 
   const form = (
-    <Formik
-      enableReinitialize
-      validateOnMount
-      initialValues={{
-        languageId,
-        ...states,
-      }}
-      validationSchema={validationSchema}
-      onSubmit={(itemData, { setErrors }) => {
-        // when you want to show custom error on form field and error message is not coming from api
-        setCustomError({ setErrors });
-        saveHandler(itemData);
-      }}
-    >
-      {({ errors, submitForm }) => (
-        <Form className={[styles.Form, customStyles].join(' ')} data-testid="formLayout">
+    <LexicalWrapper>
+      <form onSubmit={formik.handleSubmit}>
+        <div className={[styles.Form, customStyles].join(' ')} data-testid="formLayout">
           {formFieldItems.map((field, index) => {
             const key = index;
 
@@ -538,7 +554,7 @@ export const FormLayout = ({
                     {field.label}
                   </Typography>
                 )}
-                <Field key={key} {...field} onSubmit={submitForm} />
+                <Field key={key} {...field} onSubmit={formik.submitForm} />
               </Fragment>
             );
           })}
@@ -547,8 +563,8 @@ export const FormLayout = ({
               variant="contained"
               color="primary"
               onClick={() => {
-                onSaveButtonClick(errors);
-                submitForm();
+                onSaveButtonClick(formik.errors);
+                formik.submitForm();
               }}
               className={styles.Button}
               data-testid="submitActionButton"
@@ -562,7 +578,7 @@ export const FormLayout = ({
                 variant="outlined"
                 color="primary"
                 onClick={() => {
-                  submitForm();
+                  formik.submitForm();
                   setAction(true);
                 }}
                 data-testid="additionalActionButton"
@@ -581,9 +597,9 @@ export const FormLayout = ({
 
             {deleteButton}
           </div>
-        </Form>
-      )}
-    </Formik>
+        </div>
+      </form>
+    </LexicalWrapper>
   );
 
   const handleDeleteItem = () => {
@@ -622,14 +638,35 @@ export const FormLayout = ({
 
   let heading = <Heading backLink={backLinkButton} formTitle={formTitle} />;
 
+  let confirmationDialog;
+  if (showConfirmationDialog) {
+    confirmationDialog = (
+      <DialogBox
+        title={confirmationState?.title || 'Are you sure you want to proceed?'}
+        handleOk={() => {
+          saveHandler(formik.values);
+        }}
+        handleCancel={() => setShowConfirmationDialog(false)}
+        colorOk="warning"
+        alignButtons="center"
+        contentAlign="center"
+        data-testid="confirmation-dialog"
+      >
+        {confirmationState?.message}
+      </DialogBox>
+    );
+  }
   return (
-    <div
-      className={partialPage ? styles.ItemAddDialog : styles.ItemAdd}
-      data-testid="add-container"
-    >
-      {dialogBox}
-      {!noHeading && heading}
-      {form}
-    </div>
+    <FormikProvider value={formik}>
+      <div
+        className={partialPage ? styles.ItemAddDialog : styles.ItemAdd}
+        data-testid="add-container"
+      >
+        {dialogBox}
+        {confirmationDialog}
+        {!noHeading && heading}
+        {form}
+      </div>
+    </FormikProvider>
   );
 };

@@ -96,6 +96,7 @@
   line-height: 1.25;
   align-items: baseline;
   display: flex;
+  text-align: justify;
 }
 
 .BodyListText > span {

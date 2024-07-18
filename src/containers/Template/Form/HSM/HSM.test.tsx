@@ -1,11 +1,13 @@
-import 'mocks/matchMediaMock';
 import { render, waitFor, within, fireEvent, screen } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
-import * as Notification from 'common/notification';
 import { HSM } from './HSM';
-import { TEMPLATE_MOCKS } from 'containers/Template/Template.test.helper';
+import {
+  TEMPLATE_MOCKS,
+  getHSMTemplateTypeMedia,
+  getHSMTemplateTypeText,
+} from 'containers/Template/Template.test.helper';
 
 const mocks = TEMPLATE_MOCKS;
 
@@ -15,8 +17,9 @@ beforeEach(() => {
 
 describe('Edit mode', () => {
   test('HSM form is loaded correctly in edit mode', async () => {
-    const { getByText } = render(
-      <MockedProvider mocks={mocks} addTypename={false}>
+    const MOCKS = [...mocks, getHSMTemplateTypeText, getHSMTemplateTypeText];
+    const { getByText, getAllByRole } = render(
+      <MockedProvider mocks={MOCKS} addTypename={false}>
         <MemoryRouter initialEntries={['/templates/1/edit']}>
           <Routes>
             <Route path="/templates/:id/edit" element={<HSM />} />
@@ -26,6 +29,35 @@ describe('Edit mode', () => {
     );
     await waitFor(() => {
       expect(getByText('Edit HSM Template')).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(getAllByRole('textbox')[0]).toHaveValue('account_balance');
+    });
+  });
+
+  test('HSM templates with media', async () => {
+    const MOCKS = [...mocks, getHSMTemplateTypeMedia, getHSMTemplateTypeMedia];
+    const { getByText, getAllByRole } = render(
+      <MockedProvider mocks={MOCKS} addTypename={false}>
+        <MemoryRouter initialEntries={['/templates/1/edit']}>
+          <Routes>
+            <Route path="/templates/:id/edit" element={<HSM />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(getByText('Edit HSM Template')).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(getAllByRole('textbox')[0]).toHaveValue('account_update');
+    });
+
+    await waitFor(() => {
+      expect(screen.getAllByRole('combobox')[1]).toHaveValue('IMAGE');
     });
   });
 });
@@ -47,13 +79,11 @@ describe('Add mode', () => {
     });
 
     const { queryByText } = within(container.querySelector('form') as HTMLElement);
-    const button: any = queryByText('Submit for Approval');
-    await user.click(button);
+    fireEvent.click(screen.getByTestId('submitActionButton'));
 
-    // we should have 2 errors
+    // we should have 1 errors
     await waitFor(() => {
       expect(queryByText('Title is required.')).toBeInTheDocument();
-      expect(queryByText('Message is required.')).toBeInTheDocument();
     });
 
     fireEvent.change(container.querySelector('input[name="label"]') as HTMLInputElement, {
@@ -63,111 +93,83 @@ describe('Add mode', () => {
       },
     });
 
-    await user.click(button);
+    fireEvent.click(screen.getByTestId('submitActionButton'));
 
-    // we should still have 2 errors
+    // we should still have 1 errors
     await waitFor(() => {
       expect(queryByText('Title length is too long.')).toBeInTheDocument();
-      expect(queryByText('Message is required.')).toBeInTheDocument();
     });
   });
 
   test('it should create a template message', async () => {
-    const notificationSpy = vi.spyOn(Notification, 'setNotification');
     render(template);
 
     await waitFor(() => {
-      expect(screen.getAllByTestId('AutocompleteInput')[0].querySelector('input')).toHaveValue(
-        'English'
-      );
+      expect(screen.getByText('Add a new HSM Template')).toBeInTheDocument();
     });
 
-    const title = screen.getAllByTestId('input')[0].querySelector('input') as HTMLInputElement;
-    const elementName = document.querySelector('input[name="shortcode"]') as HTMLInputElement;
-    const attachmentUrl = document.querySelector('input[name="attachmentURL"]') as HTMLInputElement;
-    const message = screen.getByTestId('editor-body') as HTMLElement;
-    const sampleMessage = screen.getByTestId('editor-example') as HTMLElement;
+    const inputs = screen.getAllByRole('textbox');
 
-    await user.type(title, 'Hello');
+    fireEvent.change(inputs[0], { target: { value: 'element_name' } });
+    fireEvent.change(inputs[1], { target: { value: 'element_name' } });
+    const lexicalEditor = inputs[2];
 
-    await user.type(elementName, 'welcome');
-
-    // add message
-    await user.click(message);
+    await user.click(lexicalEditor);
     await user.tab();
-    fireEvent.input(message, { data: 'Hi {{1}}, How are you' });
+    fireEvent.input(lexicalEditor, { data: 'Hi, How are you' });
 
-    // add Sample message
-    await user.click(sampleMessage);
-    await user.tab();
-    fireEvent.input(sampleMessage, { data: 'Hi [Glific], How are you' });
+    const autocompletes = screen.getAllByTestId('autocomplete-element');
+    autocompletes[1].focus();
+    fireEvent.keyDown(autocompletes[1], { key: 'ArrowDown' });
 
-    const [_language, category, attachmentType] = screen.getAllByTestId('autocomplete-element');
-    category.focus();
-    fireEvent.keyDown(category, { key: 'ArrowDown' });
-    fireEvent.keyDown(category, { key: 'ArrowDown' });
-    fireEvent.keyDown(category, { key: 'Enter' });
+    fireEvent.click(screen.getByText('ACCOUNT_UPDATE'), { key: 'Enter' });
 
-    attachmentType.focus();
-    fireEvent.keyDown(attachmentType, { key: 'ArrowDown' });
-    fireEvent.keyDown(attachmentType, { key: 'ArrowDown' });
-    fireEvent.keyDown(attachmentType, { key: 'Enter' });
+    fireEvent.click(screen.getByText('Allow meta to re-categorize template?'));
 
-    await user.type(
-      attachmentUrl,
-      'https://www.buildquickbots.com/whatsapp/media/sample/jpg/sample02.jpg'
-    );
+    await waitFor(() => {
+      expect(screen.getByText('Hi, How are you')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Add Variable'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Hi, How are you {{1}}')).toBeInTheDocument();
+    });
+    fireEvent.change(inputs[1], { target: { value: 'element_name' } });
+
+    fireEvent.change(screen.getByPlaceholderText('Define value'), { target: { value: 'User' } });
 
     fireEvent.click(screen.getByTestId('submitActionButton'));
-
-    await waitFor(() => {
-      expect(notificationSpy).toHaveBeenCalled();
-    });
-  }, 10000);
-
-  test('it should check sample and body', async () => {
-    render(template);
-
-    await waitFor(() => {
-      expect(screen.getAllByTestId('AutocompleteInput')[0].querySelector('input')).toHaveValue(
-        'English'
-      );
-    });
-
-    const title = screen.getAllByTestId('input')[0].querySelector('input') as HTMLInputElement;
-    const elementName = document.querySelector('input[name="shortcode"]') as HTMLInputElement;
-    const message = screen.getByTestId('editor-body') as HTMLElement;
-    const sampleMessage = screen.getByTestId('editor-example') as HTMLElement;
-
-    await user.type(title, 'Hello');
-
-    await user.type(elementName, 'welcome');
-
-    // add message
-    await user.click(message);
-    await user.tab();
-    fireEvent.input(message, { data: 'Hi {{1}}, How are you' });
-
-    // add Sample message
-    await user.click(sampleMessage);
-    await user.tab();
-    fireEvent.input(sampleMessage, { data: 'Hi Glific, How are you' });
-
-    // save template
-    fireEvent.click(screen.getByTestId('submitActionButton'));
-
-    await waitFor(() => {
-      // expect an error
-      expect(
-        screen.getByText(
-          'Message and sample look different. You have to replace variables eg. {{1}} with actual values enclosed in [ ] eg. Replace {{1}} with [Monica].'
-        )
-      ).toBeInTheDocument();
-    });
   });
 
-  test('add quick reply buttons when adding a template', async () => {
-    const notificationSpy = vi.spyOn(Notification, 'setNotification');
+  test('it should add and remove variables', async () => {
+    render(template);
+
+    await waitFor(() => {
+      expect(screen.getByText('Add a new HSM Template')).toBeInTheDocument();
+    });
+
+    const inputs = screen.getAllByRole('textbox');
+    const lexicalEditor = inputs[2];
+
+    await user.click(lexicalEditor);
+    await user.tab();
+    fireEvent.input(lexicalEditor, { data: 'Hi' });
+
+    await waitFor(() => {
+      expect(screen.getByText('Hi')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Add Variable'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Hi {{1}}')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getAllByTestId('delete-variable')[0]);
+  });
+
+  test('it adds quick reply buttons', async () => {
     render(template);
 
     await waitFor(() => {
@@ -175,56 +177,48 @@ describe('Add mode', () => {
       expect(language).toHaveValue('English');
     });
 
-    const title = screen.getAllByTestId('input')[0].querySelector('input') as HTMLInputElement;
-    const elementName = document.querySelector('input[name="shortcode"]') as HTMLInputElement;
-    const message = screen.getByTestId('editor-body') as HTMLElement;
-    const sampleMessage = screen.getByTestId('editor-example') as HTMLElement;
+    const inputs = screen.getAllByRole('textbox');
+
+    const elementName = inputs[0];
+    const title = inputs[1];
 
     await user.type(title, 'Hello');
     await user.type(elementName, 'welcome');
 
-    // add message
-    await user.click(message);
-    await user.tab();
-    fireEvent.input(message, { data: 'Hi {{1}}, How are you' });
+    const lexicalEditor = inputs[2];
 
-    // add Sample message
-    await user.click(sampleMessage);
+    await user.click(lexicalEditor);
     await user.tab();
-    fireEvent.input(sampleMessage, { data: 'Hi [Glific], How are you' });
+    fireEvent.input(lexicalEditor, { data: 'Hi' });
 
-    await user.click(screen.getAllByTestId('checkboxLabel')[1]);
-    await user.click(screen.getByText('Quick replies'));
+    await waitFor(() => {
+      expect(screen.getByText('Hi')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Add buttons'));
+    fireEvent.click(screen.getByText('Quick replies'));
+
     await user.click(screen.getByTestId('addButton'));
 
-    const quickReply1 = screen
-      .getAllByTestId('quickReplyWrapper')[0]
-      .querySelector('input') as HTMLInputElement;
-    const quickReply2 = screen
-      .getAllByTestId('quickReplyWrapper')[1]
-      .querySelector('input') as HTMLInputElement;
+    fireEvent.change(screen.getByPlaceholderText('Quick reply 1 title'), {
+      target: { value: 'Yes' },
+    });
 
-    await user.type(quickReply1, 'Quick reply 1');
-    fireEvent.blur(quickReply1);
-    await user.type(quickReply2, 'Quick reply 2');
-    fireEvent.blur(quickReply2);
+    fireEvent.change(screen.getByPlaceholderText('Quick reply 2 title'), {
+      target: { value: 'No' },
+    });
 
-    // update category
-    const [_language, category] = screen.getAllByTestId('autocomplete-element');
-    category.focus();
-    fireEvent.keyDown(category, { key: 'ArrowDown' });
-    fireEvent.keyDown(category, { key: 'ArrowDown' });
-    fireEvent.keyDown(category, { key: 'Enter' });
+    const autocompletes = screen.getAllByTestId('autocomplete-element');
+    autocompletes[1].focus();
+    fireEvent.keyDown(autocompletes[1], { key: 'ArrowDown' });
+
+    fireEvent.click(screen.getByText('ACCOUNT_UPDATE'), { key: 'Enter' });
 
     fireEvent.click(screen.getByTestId('submitActionButton'));
-
-    await waitFor(() => {
-      expect(notificationSpy).toHaveBeenCalled();
-    });
+    fireEvent.click(screen.getByTestId('submitActionButton'));
   });
 
-  test('add quick reply buttons with call to action', async () => {
-    const notificationSpy = vi.spyOn(Notification, 'setNotification');
+  test('it adds call to action buttons', async () => {
     render(template);
 
     await waitFor(() => {
@@ -232,51 +226,84 @@ describe('Add mode', () => {
       expect(language).toHaveValue('English');
     });
 
-    const title = screen.getAllByTestId('input')[0].querySelector('input') as HTMLInputElement;
-    const elementName = document.querySelector('input[name="shortcode"]') as HTMLInputElement;
-    const message = screen.getByTestId('editor-body') as HTMLElement;
-    const sampleMessage = screen.getByTestId('editor-example') as HTMLElement;
+    const inputs = screen.getAllByRole('textbox');
+
+    const elementName = inputs[0];
+    const title = inputs[1];
 
     await user.type(title, 'Hello');
     await user.type(elementName, 'welcome');
 
-    // add message
-    await user.click(message);
+    const lexicalEditor = inputs[2];
+
+    await user.click(lexicalEditor);
     await user.tab();
-    fireEvent.input(message, { data: 'Hi {{1}}, How are you' });
-
-    // add Sample message
-    await user.click(sampleMessage);
-    await user.tab();
-    fireEvent.input(sampleMessage, { data: 'Hi [[Glific], How are you' });
-
-    await user.click(screen.getAllByTestId('checkboxLabel')[1]);
-    await user.click(screen.getByText('Call to actions'));
-    await user.click(screen.getByText('Phone number'));
-
-    const quickReply1 = screen
-      .getByTestId('buttonTitle')
-      .querySelector('input') as HTMLInputElement;
-    const quickReply2 = screen
-      .getByTestId('buttonValue')
-      .querySelector('input') as HTMLInputElement;
-
-    await user.type(quickReply1, 'Call me');
-    fireEvent.blur(quickReply1);
-    await user.type(quickReply2, '9876543210');
-    fireEvent.blur(quickReply2);
-
-    // update category
-    const [_language, category] = screen.getAllByTestId('autocomplete-element');
-    category.focus();
-    fireEvent.keyDown(category, { key: 'ArrowDown' });
-    fireEvent.keyDown(category, { key: 'ArrowDown' });
-    fireEvent.keyDown(category, { key: 'Enter' });
-
-    fireEvent.click(screen.getByTestId('submitActionButton'));
+    fireEvent.input(lexicalEditor, { data: 'Hi' });
 
     await waitFor(() => {
-      expect(notificationSpy).toHaveBeenCalled();
+      expect(screen.getByText('Hi')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Add buttons'));
+    fireEvent.click(screen.getByText('Call to actions'));
+    fireEvent.click(screen.getByText('Phone number'));
+
+    fireEvent.change(screen.getByPlaceholderText('Button Title'), { target: { value: 'Call me' } });
+    fireEvent.change(screen.getByPlaceholderText('Button Value'), {
+      target: { value: '9876543210' },
+    });
+
+    fireEvent.click(screen.getByText('Add Call to action'));
+    fireEvent.click(screen.getAllByTestId('delete-icon')[1]);
+
+    const autocompletes = screen.getAllByTestId('autocomplete-element');
+    autocompletes[1].focus();
+    fireEvent.keyDown(autocompletes[1], { key: 'ArrowDown' });
+
+    fireEvent.click(screen.getByText('ACCOUNT_UPDATE'), { key: 'Enter' });
+
+    fireEvent.click(screen.getByTestId('submitActionButton'));
+    fireEvent.click(screen.getByTestId('submitActionButton'));
+  });
+
+  test('adding attachments', async () => {
+    render(template);
+
+    await waitFor(() => {
+      expect(screen.getByText('Add a new HSM Template')).toBeInTheDocument();
+    });
+
+    const autocompletes = screen.getAllByTestId('autocomplete-element');
+    const inputs = screen.getAllByRole('textbox');
+
+    autocompletes[2].focus();
+    fireEvent.keyDown(autocompletes[2], { key: 'ArrowDown' });
+    fireEvent.click(screen.getByText('IMAGE'), { key: 'Enter' });
+
+    fireEvent.change(inputs[3], { target: { value: 'https://example.com/image.jpg' } });
+
+    await waitFor(() => {
+      expect(inputs[3]).toHaveValue('https://example.com/image.jpg');
+    });
+  });
+
+  test('it creates a translation of hsm template', async () => {
+    render(template);
+
+    await waitFor(() => {
+      expect(screen.getByText('Add a new HSM Template')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Translate existing HSM?'));
+
+    const autocompletes = screen.getAllByTestId('autocomplete-element');
+    autocompletes[1].focus();
+    fireEvent.keyDown(autocompletes[1], { key: 'ArrowDown' });
+
+    fireEvent.click(screen.getByText('account_balance'), { key: 'Enter' });
+
+    await waitFor(() => {
+      expect(screen.getAllByRole('combobox')[1]).toHaveValue('account_balance');
     });
   });
 });

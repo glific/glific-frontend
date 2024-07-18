@@ -62,9 +62,6 @@ export const renewAuthToken = () => {
     .post(RENEW_TOKEN)
     .then((response: any) => response)
     .catch((error: any) => {
-      // add log's
-      setLogs(`renewalToken:${renewalToken} URL:${RENEW_TOKEN}`, 'info');
-      setLogs(error, 'error');
       // if we are not able to renew the token for some weird reason or if refresh token
       throw error;
     });
@@ -125,12 +122,6 @@ export const sendOTP = (phoneNumber: string, registrationToken?: string) => {
     })
     .then((response) => response)
     .catch((error) => {
-      // add log's
-      setLogs(
-        `phoneNumber:${phoneNumber} registration:${user.registration} URL:${VITE_GLIFIC_AUTHENTICATION_API}`,
-        'info'
-      );
-      setLogs(error, 'error');
       throw error;
     });
 };

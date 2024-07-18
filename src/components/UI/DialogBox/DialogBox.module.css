@@ -5,6 +5,10 @@
   width: 474px;
 }
 
+.FullWidth {
+  width: 600px !important;
+}
+
 .ScrollPaper {
   align-items: unset !important;
 }

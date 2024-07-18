@@ -19,28 +19,22 @@ import {
   BeautifulMentionsMenuProps,
   BeautifulMentionsMenuItemProps,
 } from 'lexical-beautiful-mentions';
-import { handleFormatterEvents, handleFormatting, setInitialState } from 'common/RichEditor';
+import { handleFormatterEvents, handleFormatting, setDefaultValue } from 'common/RichEditor';
 
 export interface EditorProps {
-  field: { name: string; onChange?: any; value: any; onBlur: any };
+  field: { name: string; onChange?: any; value: any; onBlur?: any };
   disabled?: any;
-  form?: { touched: any; errors: any };
+  form?: { touched: any; errors: any; setFieldValue: any; values: any };
   placeholder: string;
   helperText?: string;
   picker?: any;
   inputProp?: any;
   onChange?: any;
-  isEditing: boolean;
-  editorState?: any;
+  defaultValue?: any;
 }
 
-export const Editor = ({
-  disabled = false,
-  isEditing = false,
-  editorState,
-  ...props
-}: EditorProps) => {
-  const { field, form, picker, placeholder, onChange } = props;
+export const Editor = ({ disabled = false, ...props }: EditorProps) => {
+  const { field, form, picker, placeholder, onChange, defaultValue } = props;
   const mentions = props.inputProp?.suggestions || [];
   const suggestions = {
     '@': mentions.map((mention: string) => mention?.split('@')[1]),
@@ -48,10 +42,10 @@ export const Editor = ({
   const [editor] = useLexicalComposerContext();
 
   useEffect(() => {
-    if ((field.value || field.value === '') && !editorState && isEditing) {
-      setInitialState(editor, field.value);
+    if (defaultValue || defaultValue === '') {
+      setDefaultValue(editor, defaultValue);
     }
-  }, [field.value]);
+  }, [defaultValue]);
 
   const Placeholder = () => {
     return <p className={styles.editorPlaceholder}>{placeholder}</p>;
@@ -88,6 +82,7 @@ export const Editor = ({
       const root = $getRoot();
       if (!disabled) {
         onChange(root.getTextContent());
+        form?.setFieldValue(field?.name, root.getTextContent());
       }
     });
   };

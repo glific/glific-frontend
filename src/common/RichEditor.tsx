@@ -33,13 +33,14 @@ export const handleFormatting = (text: string, formatter: string) => {
   }
 };
 
-export const setInitialState = (editor: any, initialValue: any) => {
+export const setDefaultValue = (editor: any, initialValue: any) => {
   editor.update(() => {
     const root = $getRoot();
     root.clear();
     const paragraph = $createParagraphNode();
     paragraph.append($createTextNode(initialValue || ''));
     root.append(paragraph);
+    paragraph.selectEnd();
   });
 };
 
