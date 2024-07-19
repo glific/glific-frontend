@@ -510,6 +510,7 @@
   "Export the content of the message as a csv.": "Export the content of the message as a csv.",
   "Import the csv with translations for interactive message.": "Import the csv with translations for interactive message.",
   "Template Flows": "Template Flows",
+  "Template Flow": "Template Flow",
   "Template flow copy": "Template flow copy",
   "Flow created successfully from template!": "Flow created successfully from template!"
 }

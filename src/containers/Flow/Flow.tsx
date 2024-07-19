@@ -288,6 +288,8 @@ export const Flow = () => {
     title = t('Template flow copy');
     type = 'copy';
     copyNotification = t('Flow created successfully from template!');
+  } else if (location.state === 'template') {
+    title = t('Template Flow');
   } else {
     queries.updateItemQuery = UPDATE_FLOW;
   }

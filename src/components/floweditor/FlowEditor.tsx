@@ -352,7 +352,7 @@ export const FlowEditor = () => {
       <div className={styles.Header}>
         <div className={styles.Title}>
           <BackIconFlow
-            onClick={() => navigate('/flow')}
+            onClick={() => (isTemplate ? navigate('/flow?isTemplate=true') : navigate('/flow'))}
             className={styles.BackIcon}
             data-testid="back-button"
           />
