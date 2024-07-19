@@ -25,7 +25,7 @@ jobs:
           python-version: '3.9'
 
       # configure the gigalixir-actions with our credentials and app name
-      - uses: gigalixir/gigalixir-action@v0.6.1
+      - uses: gigalixir/gigalixir-action@v0.6.2
         with:
           GIGALIXIR_USERNAME: ${{ secrets.GIGALIXIR_USERNAME }}
           GIGALIXIR_PASSWORD: ${{ secrets.GIGALIXIR_PASSWORD }}
