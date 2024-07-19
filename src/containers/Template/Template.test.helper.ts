@@ -787,6 +787,7 @@ const getHSMTemplate = (id: string, status: string) => ({
   isHsm: true,
   isReserved: false,
   label: 'Account Balance',
+  category: 'ACCOUNT_UPDATE',
   language: { id: '1', label: 'English' },
   shortcode: 'account_balance',
   status,
