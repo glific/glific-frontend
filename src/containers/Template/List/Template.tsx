@@ -8,6 +8,7 @@ import { useMutation, useQuery } from '@apollo/client';
 import { List } from 'containers/List/List';
 import { WhatsAppToJsx } from 'common/RichEditor';
 import { STANDARD_DATE_TIME_FORMAT, GUPSHUP_ENTERPRISE_SHORTCODE } from 'common/constants';
+import { capitalizeFirstLetter } from 'common/utils';
 import {
   GET_TEMPLATES_COUNT,
   FILTER_TEMPLATES,
@@ -60,7 +61,11 @@ const getTranslations = (language: any, data: string) => {
   return JSON.stringify(dataObj);
 };
 
-const getCategory = (category: string) => <p className={styles.TableText}>{category}</p>;
+const getCategory = (category: string) => {
+  // let's make category more user friendly
+  let categoryName = category.split('_').join(' ').toLowerCase();
+  return <p className={styles.TableText}>{capitalizeFirstLetter(categoryName)}</p>;
+};
 
 export interface TemplateProps {
   title: string;
