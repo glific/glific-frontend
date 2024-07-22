@@ -107,7 +107,9 @@ export const ChatTemplates = ({
 
   const popperItems = () => {
     const translationsObj: any = [];
-    data?.sessionTemplates.forEach((obj: any) => {
+    const sessionTemplates = data?.sessionTemplates;
+
+    sessionTemplates.forEach((obj: any) => {
       const translations = JSON.parse(obj.translations);
       // add translation in list
       if (Object.keys(translations).length > 0) {
@@ -117,7 +119,7 @@ export const ChatTemplates = ({
       }
     });
 
-    const templateObj = [...data?.sessionTemplates, ...translationsObj];
+    const templateObj = [...sessionTemplates, ...translationsObj];
     const interactiveObj = interactives ? [...interactives?.interactiveTemplates] : [];
 
     let listItems;
