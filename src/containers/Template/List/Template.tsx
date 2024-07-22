@@ -41,7 +41,7 @@ import { RaiseToGupShup } from './RaiseToGupshupDialog/RaiseToGupShup';
 const getLabel = (label: string, quality?: string) => (
   <div className={styles.LabelContainer}>
     <div className={styles.LabelText}>{label}</div>
-    <div className={styles.Quality}>{quality || 'Not Rated'}</div>
+    <div className={styles.Quality}>{quality && quality !== 'UNKNOWN' ? quality : 'Not Rated'}</div>
   </div>
 );
 
