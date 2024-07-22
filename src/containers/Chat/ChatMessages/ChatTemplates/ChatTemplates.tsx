@@ -117,7 +117,7 @@ export const ChatTemplates = ({
       }
     });
 
-    const templateObj = [...data.sessionTemplates, ...translationsObj];
+    const templateObj = [...data?.sessionTemplates, ...translationsObj];
     const interactiveObj = interactives ? [...interactives?.interactiveTemplates] : [];
 
     let listItems;

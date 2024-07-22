@@ -429,7 +429,6 @@ export const ChatInput = ({
       </ClickAwayListener>
     );
   }
-  console.log({ selectedTab });
 
   return (
     <Container
