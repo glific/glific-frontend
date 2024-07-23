@@ -1,0 +1,42 @@
+.MainContainer {
+  display: flex;
+  justify-content: center;
+  align-items: start;
+  height: 100vh !important;
+  width: 100% !important;
+  background-color: #f8faf5;
+  padding: 1rem;
+}
+
+.Container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 50%;
+  background-color: #fff;
+  border-radius: 20px;
+  box-shadow: #959da533 0px 8px 24px;
+  padding: 1.5rem 2rem;
+}
+
+.Buttons {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.Buttons button {
+  border-radius: 8px;
+  width: 50%;
+}
+
+.Buttons a {
+  font-size: 0.8rem;
+  color: #119656;
+  text-decoration: underline;
+  cursor: pointer;
+  line-height: 1.75rem;
+}

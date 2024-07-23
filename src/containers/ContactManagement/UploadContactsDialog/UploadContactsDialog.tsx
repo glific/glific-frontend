@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
-import { useLazyQuery, useMutation } from '@apollo/client';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 
 import { useTranslation } from 'react-i18next';
 import { GET_ORGANIZATION_COLLECTIONS } from 'graphql/queries/Collection';
@@ -18,7 +18,7 @@ import { setNotification } from 'common/notification';
 import styles from './UploadContactsDialog.module.css';
 
 export interface UploadContactsDialogProps {
-  organizationDetails: any;
+  organizationDetails?: any;
   setDialog: Function;
 }
 
@@ -35,19 +35,7 @@ export const UploadContactsDialog = ({
   const [collection] = useState();
   const [optedIn] = useState(false);
 
-  const [getCollections, { data: collections, loading }] = useLazyQuery(
-    GET_ORGANIZATION_COLLECTIONS
-  );
-
-  useEffect(() => {
-    if (organizationDetails.id) {
-      getCollections({
-        variables: {
-          organizationGroupsId: organizationDetails.id,
-        },
-      });
-    }
-  }, [organizationDetails]);
+  const { data: collections, loading } = useQuery(GET_ORGANIZATION_COLLECTIONS);
 
   const [importContacts] = useMutation(IMPORT_CONTACTS, {
     onCompleted: (data: any) => {
