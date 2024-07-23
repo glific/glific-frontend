@@ -288,7 +288,7 @@ it('buttons should be disabled in template state', async () => {
   );
 
   await waitFor(() => {
-    expect(screen.getByText('Edit flow')).toBeInTheDocument();
+    expect(screen.getByText('Template Flow')).toBeInTheDocument();
   });
 
   await waitFor(() => {
