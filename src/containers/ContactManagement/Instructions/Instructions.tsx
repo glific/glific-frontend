@@ -17,6 +17,7 @@ export const Instructions = () => {
           <li>Further detailed instructions here.</li>
         </ul>
       </div>
+
       <div>
         <h5>Disclaimer</h5>
         <ul>

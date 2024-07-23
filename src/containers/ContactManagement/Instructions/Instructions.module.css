@@ -1,14 +1,16 @@
-.Instructions {
-}
-
 .Instructions h5 {
   font-size: 1rem;
-  line-height: 1rem;
+  line-height: 2rem;
   margin: 0;
+}
+
+.Instructions div {
+  margin-bottom: 1rem;
 }
 
 .Instructions ul {
   padding-left: 1rem;
+  margin: 0;
 }
 
 .Instructions ul li {

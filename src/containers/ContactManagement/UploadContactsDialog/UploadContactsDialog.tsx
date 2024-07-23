@@ -1,11 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import * as Yup from 'yup';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 
 import { useTranslation } from 'react-i18next';
-import { GET_ORGANIZATION_COLLECTIONS } from 'graphql/queries/Collection';
+import { FILTER_COLLECTIONS } from 'graphql/queries/Collection';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { Field, Form, Formik } from 'formik';
@@ -13,6 +13,7 @@ import UploadIcon from 'assets/images/icons/Upload.svg?react';
 import CrossIcon from 'assets/images/icons/Cross.svg?react';
 import { UPLOAD_CONTACTS_SAMPLE } from 'config';
 import { IMPORT_CONTACTS } from 'graphql/mutations/Contact';
+import { getUserSession } from 'services/AuthService';
 import { slicedString } from 'common/utils';
 import { setNotification } from 'common/notification';
 import styles from './UploadContactsDialog.module.css';
@@ -22,20 +23,29 @@ export interface UploadContactsDialogProps {
   setDialog: Function;
 }
 
-export const UploadContactsDialog = ({
-  organizationDetails,
-  setDialog,
-}: UploadContactsDialogProps) => {
+export const UploadContactsDialog = ({ setDialog }: UploadContactsDialogProps) => {
   const [error, setError] = useState<any>(false);
   const [csvContent, setCsvContent] = useState<String | null | ArrayBuffer>('');
   const [uploadingContacts, setUploadingContacts] = useState(false);
   const [fileName, setFileName] = useState<string>('');
+  const orgId = getUserSession('organizationId');
 
   const { t } = useTranslation();
   const [collection] = useState();
   const [optedIn] = useState(false);
 
-  const { data: collections, loading } = useQuery(GET_ORGANIZATION_COLLECTIONS);
+  const { data: collections, loading } = useQuery(FILTER_COLLECTIONS, {
+    variables: {
+      filter: {
+        groupType: 'WABA',
+      },
+      opts: {
+        limit: 50,
+        offset: 0,
+        order: 'ASC',
+      },
+    },
+  });
 
   const [importContacts] = useMutation(IMPORT_CONTACTS, {
     onCompleted: (data: any) => {
@@ -78,7 +88,7 @@ export const UploadContactsDialog = ({
         type: 'DATA',
         data: csvContent,
         groupLabel: details.collection.label,
-        importContactsId: organizationDetails.id,
+        importContactsId: orgId,
       },
     });
   };
@@ -96,7 +106,7 @@ export const UploadContactsDialog = ({
       component: AutoComplete,
       name: 'collection',
       placeholder: t('Select collection'),
-      options: collections.organizationGroups,
+      options: collections.groups,
       multiple: false,
       optionLabel: 'label',
       label: t('Collection'),
@@ -123,7 +133,7 @@ export const UploadContactsDialog = ({
         <Form data-testid="formLayout">
           <DialogBox
             titleAlign="left"
-            title={`${t('Upload contacts')}: ${organizationDetails.name}`}
+            title={`${t('Upload contacts')}: `}
             handleOk={() => {
               submitForm();
             }}
