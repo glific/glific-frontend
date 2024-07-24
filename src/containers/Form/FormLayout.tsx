@@ -81,6 +81,10 @@ export interface FormLayoutProps {
     title: string;
     message: string;
   };
+  restrictButtonStatus?: {
+    text?: string;
+    status?: boolean;
+  };
 }
 
 export const FormLayout = ({
@@ -133,6 +137,7 @@ export const FormLayout = ({
   noHeading = false,
   partialPage = false,
   confirmationState,
+  restrictButtonStatus,
 }: FormLayoutProps) => {
   const [showDialog, setShowDialog] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
@@ -523,9 +528,10 @@ export const FormLayout = ({
         data-testid="remove-icon"
         className={styles.DeleteButton}
         onClick={() => setShowDialog(true)}
+        disabled={restrictButtonStatus?.status}
       >
         <DeleteIcon className={styles.DeleteIcon} />
-        Remove
+        {restrictButtonStatus?.text || 'Remove'}
       </Button>
     ) : null;
 
@@ -578,8 +584,13 @@ export const FormLayout = ({
                 variant="outlined"
                 color="primary"
                 onClick={() => {
-                  formik.submitForm();
                   setAction(true);
+
+                  if (additionalAction?.action) {
+                    additionalAction.action(`${additionalAction.link}/${link}`);
+                  } else {
+                    formik.submitForm();
+                  }
                 }}
                 data-testid="additionalActionButton"
               >

@@ -38,10 +38,14 @@ import { speedSendInfo, templateInfo } from 'common/HelpData';
 import styles from './Template.module.css';
 import { RaiseToGupShup } from './RaiseToGupshupDialog/RaiseToGupShup';
 
-const getLabel = (label: string, quality?: string) => (
+const getLabel = (label: string, quality?: string, isHsm?: boolean) => (
   <div className={styles.LabelContainer}>
     <div className={styles.LabelText}>{label}</div>
-    <div className={styles.Quality}>{quality && quality !== 'UNKNOWN' ? quality : 'Not Rated'}</div>
+    {isHsm && (
+      <div className={styles.Quality}>
+        {quality && quality !== 'UNKNOWN' ? quality : 'Not Rated'}
+      </div>
+    )}
   </div>
 );
 
@@ -225,7 +229,7 @@ export const Template = ({
   }: any) => {
     const columns: any = {
       id,
-      label: getLabel(label, quality),
+      label: getLabel(label, quality, isHSM),
       body: getBody(body),
     };
 
