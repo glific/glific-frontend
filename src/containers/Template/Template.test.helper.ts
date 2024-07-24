@@ -778,7 +778,7 @@ export const TEMPLATE_MOCKS = [
   getOrganizationLanguagesQuery,
 ];
 
-const getHSMTemplate = (id: string, status: string) => ({
+const getHSMTemplate = (id: string, status: string, quality: any = null) => ({
   MessageMedia: null,
   body: 'You can now view your Account Balance or Mini statement for Account ending with {{1}} simply by selecting one of the options below.',
   id,
@@ -792,7 +792,7 @@ const getHSMTemplate = (id: string, status: string) => ({
   shortcode: 'account_balance',
   status,
   reason: 'test reason',
-  quality: null,
+  quality,
   translations:
     '{"2":{"number_parameters":1,"language_id":2,"body":" अब आप नीचे दिए विकल्पों में से एक का चयन करके {{1}} के साथ समाप्त होने वाले खाते के लिए अपना खाता शेष या मिनी स्टेटमेंट देख सकते हैं। | [अकाउंट बैलेंस देखें] | [देखें मिनी स्टेटमेंट]"}}',
   type: 'TEXT',
@@ -828,7 +828,7 @@ export const HSM_LIST = [
     result: {
       data: {
         sessionTemplates: [
-          getHSMTemplate('1', 'APPROVED'),
+          getHSMTemplate('1', 'APPROVED', 'UNKNOWN'),
           getHSMTemplate('2', 'PENDING'),
           getHSMTemplate('3', 'REJECTED'),
         ],
@@ -846,8 +846,8 @@ export const HSM_LIST = [
     result: {
       data: {
         sessionTemplates: [
-          getHSMTemplate('1', 'APPROVED'),
-          getHSMTemplate('2', 'APPROVED'),
+          getHSMTemplate('1', 'APPROVED', 'UNKNOWN'),
+          getHSMTemplate('2', 'APPROVED', 'rating'),
           getHSMTemplate('3', 'APPROVED'),
         ],
       },
