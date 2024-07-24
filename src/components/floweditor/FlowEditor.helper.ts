@@ -14,7 +14,7 @@ export const setConfig = (uuid: any, isTemplate: boolean) => {
     mutable: !isTemplate,
     showNodeLabel: false,
     attachmentsEnabled: false,
-    filters: ['whatsapp', 'classifier', 'ticketer'],
+    filters: ['whatsapp', 'classifier'],
 
     excludeTypes: [
       'add_contact_urn',
@@ -22,7 +22,6 @@ export const setConfig = (uuid: any, isTemplate: boolean) => {
       'call_resthook',
       'transfer_airtime',
       'split_by_scheme',
-      'split_by_random',
     ],
 
     excludeOperators: [
