@@ -436,7 +436,6 @@ export const ChatInput = ({
       data-testid="message-input-container"
     >
       {dialog}
-
       {open ? (
         <div className={styles.SendsContainer} id="popup">
           <Fade in={open} timeout={200}>
@@ -446,6 +445,7 @@ export const ChatInput = ({
                 isInteractiveMsg={selectedTab === interactiveMsg.type}
                 searchVal={searchVal}
                 handleSelectText={handleSelectText}
+                selectedTab={selectedTab}
               />
               <SearchBar
                 className={styles.ChatSearchBar}

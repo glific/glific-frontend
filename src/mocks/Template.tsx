@@ -3,11 +3,14 @@ import { BULK_APPLY_TEMPLATES, IMPORT_TEMPLATES } from 'graphql/mutations/Templa
 import { FILTER_TEMPLATES, GET_TEMPLATE, GET_TEMPLATES_COUNT } from 'graphql/queries/Template';
 import { searchInteractive, searchInteractiveHi } from './InteractiveMessage';
 
-export const filterTemplatesQuery = (term: any, data: any) => {
+export const filterTemplatesQuery = (term: any, data: any, filter?: any) => {
   return {
     request: {
       query: FILTER_TEMPLATES,
-      variables: setVariables({ term: term }, 50),
+      variables: {
+        ...setVariables({ term: term }, 50),
+        ...filter,
+      },
     },
     result: {
       data: {
@@ -17,10 +20,9 @@ export const filterTemplatesQuery = (term: any, data: any) => {
   };
 };
 
-export const TEMPLATE_MOCKS = [
-  searchInteractive,
-  searchInteractiveHi,
-  filterTemplatesQuery('', [
+const filterQuery = filterTemplatesQuery(
+  '',
+  [
     {
       id: '87',
       bspId: null,
@@ -38,6 +40,7 @@ export const TEMPLATE_MOCKS = [
       translations:
         '{"2":{"status":"approved","languageId":{"label":"Hindi","id":"2"},"label":"now","isHsm":false,"body":"hey","MessageMedia":null}}',
       type: 'TEXT',
+      quality: null,
       language: {
         id: '1',
         label: 'Hindi',
@@ -67,97 +70,118 @@ export const TEMPLATE_MOCKS = [
         id: '1',
         label: 'Hindi',
       },
-      MessageMedia: {
-        id: 1,
-        caption: 'Test',
-        sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
-      },
-    },
-  ]),
-  filterTemplatesQuery('', [
-    {
-      id: '87',
-      bspId: null,
-      label: 'Good message',
-      body: 'Hey there',
       category: 'ACCOUNT_UPDATE',
-      shortcode: 'test',
-      isReserved: true,
-      isHsm: true,
-      isActive: true,
-      status: 'APPROVED',
-      reason: 'test reason',
-      updatedAt: '2020-12-01T18:00:32Z',
-      numberParameters: 0,
-      translations: '{}',
-      type: 'TEXT',
-      language: {
-        id: '1',
-        label: 'Hindi',
-      },
+      quality: null,
       MessageMedia: {
         id: 1,
         caption: 'Test',
         sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
       },
     },
-    {
-      id: '94',
-      label: 'Message',
-      bspId: null,
-      body: 'some description',
-      shortcode: 'test',
-      category: 'ACCOUNT_UPDATE',
-      isReserved: true,
-      isHsm: false,
-      isActive: true,
-      status: null,
-      reason: 'test reason',
-      updatedAt: '2020-12-01T18:00:32Z',
-      numberParameters: 0,
-      translations: '{}',
-      type: 'TEXT',
-      language: {
-        id: '1',
-        label: 'Hindi',
-      },
-      MessageMedia: {
-        id: 1,
-        caption: 'Test',
-        sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
-      },
-    },
-  ]),
+  ],
+  { isHsm: true }
+);
 
+export const TEMPLATE_MOCKS = [
+  searchInteractive,
+  searchInteractiveHi,
+  filterTemplatesQuery(
+    '',
+    [
+      {
+        id: '87',
+        bspId: null,
+        label: 'Good message',
+        body: 'Hey there',
+        shortcode: 'test',
+        category: 'ACCOUNT_UPDATE',
+        isReserved: true,
+        status: 'APPROVED',
+        reason: 'test reason',
+        isHsm: true,
+        isActive: true,
+        updatedAt: '2020-12-01T18:00:32Z',
+        numberParameters: 0,
+        translations:
+          '{"2":{"status":"approved","languageId":{"label":"Hindi","id":"2"},"label":"now","isHsm":false,"body":"hey","MessageMedia":null}}',
+        type: 'TEXT',
+        quality: null,
+        language: {
+          id: '1',
+          label: 'Hindi',
+        },
+        MessageMedia: {
+          id: 1,
+          caption: 'Test',
+          sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
+        },
+      },
+      {
+        id: '94',
+        label: 'Message',
+        bspId: null,
+        body: 'some description',
+        shortcode: 'test',
+        isReserved: true,
+        isHsm: false,
+        isActive: true,
+        status: null,
+        reason: 'test reason',
+        updatedAt: '2020-12-01T18:00:32Z',
+        numberParameters: 0,
+        translations: '{}',
+        type: 'TEXT',
+        language: {
+          id: '1',
+          label: 'Hindi',
+        },
+        category: 'ACCOUNT_UPDATE',
+        quality: null,
+        MessageMedia: {
+          id: 1,
+          caption: 'Test',
+          sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
+        },
+      },
+    ],
+    { isHsm: false }
+  ),
+  filterQuery,
+  filterQuery,
   filterTemplatesQuery('this should not return anything', []),
-  filterTemplatesQuery('hi', [
-    {
-      id: '87',
-      label: 'Good message',
-      bspId: null,
-      body: 'hi can you help!',
-      category: 'ACCOUNT_UPDATE',
-      shortcode: 'test',
-      isReserved: true,
-      isHsm: true,
-      isActive: true,
-      status: 'APPROVED',
-      reason: 'test reason',
-      updatedAt: '2020-12-01T18:00:32Z',
-      numberParameters: 0,
-      translations: '{}',
-      type: 'TEXT',
-      language: {
-        id: '1',
-        label: 'Hindi',
+  filterTemplatesQuery(
+    'hi',
+    [
+      {
+        id: '87',
+        label: 'Good message',
+        bspId: null,
+        body: 'hi can you help!',
+        category: 'ACCOUNT_UPDATE',
+        shortcode: 'test',
+        isReserved: true,
+        isHsm: true,
+        isActive: true,
+        status: 'APPROVED',
+        reason: 'test reason',
+        updatedAt: '2020-12-01T18:00:32Z',
+        numberParameters: 0,
+        translations: '{}',
+        type: 'TEXT',
+        quality: null,
+        language: {
+          id: '1',
+          label: 'Hindi',
+        },
+        MessageMedia: {
+          id: 1,
+          caption: 'Test',
+          sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
+        },
       },
-      MessageMedia: {
-        id: 1,
-        caption: 'Test',
-        sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
-      },
-    },
-  ]),
+    ],
+    { isHsm: true }
+  ),
 ];
 
 export const templateCountQuery = (isHsm: boolean, count: number = 3) => {
