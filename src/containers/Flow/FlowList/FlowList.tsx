@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
@@ -11,6 +11,7 @@ import DuplicateIcon from 'assets/images/icons/Duplicate.svg?react';
 import ExportIcon from 'assets/images/icons/Flow/Export.svg?react';
 import ConfigureIcon from 'assets/images/icons/Configure/UnselectedDark.svg?react';
 import PinIcon from 'assets/images/icons/Pin/Active.svg?react';
+import ViewIcon from 'assets/images/icons/ViewLight.svg?react';
 import { FILTER_FLOW, GET_FLOW_COUNT, EXPORT_FLOW, RELEASE_FLOW } from 'graphql/queries/Flow';
 import { DELETE_FLOW, IMPORT_FLOW } from 'graphql/mutations/Flow';
 import { List } from 'containers/List/List';
@@ -78,15 +79,18 @@ const queries = {
 };
 
 const configureIcon = <ConfigureIcon />;
+const viewIcon = <ViewIcon data-testid="viewIt" />;
 
 export const FlowList = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { t } = useTranslation();
   const [filter, setFilter] = useState<any>(true);
   const [selectedtag, setSelectedTag] = useState<any>(null);
   const [flowName, setFlowName] = useState('');
   const [importing, setImporting] = useState(false);
   const [importStatus, setImportStatus] = useState([]);
+  const [showDialog, setShowDialog] = useState(false);
 
   const [releaseFlow] = useLazyQuery(RELEASE_FLOW);
 
@@ -118,7 +122,7 @@ export const FlowList = () => {
     },
   });
 
-  const setDialog = (id: any) => {
+  const handleCopy = (id: any) => {
     navigate(`/flow/${id}/edit`, { state: 'copy' });
   };
 
@@ -156,7 +160,28 @@ export const FlowList = () => {
     />
   );
 
-  const additionalAction = () => [
+  const templateFlowActions = [
+    {
+      label: 'View it',
+      icon: viewIcon,
+      parameter: 'id',
+      insideMore: false,
+      dialog: (id: any) => {
+        navigate(`/flow/${id}/edit`, { state: 'template' });
+      },
+    },
+    {
+      label: 'Use it',
+      icon: <DuplicateIcon />,
+      parameter: 'id',
+      insideMore: false,
+      dialog: (id: any) => {
+        navigate(`/flow/${id}/edit`, { state: 'copyTemplate' });
+      },
+    },
+  ];
+
+  const actions = [
     {
       label: t('Configure'),
       icon: configureIcon,
@@ -168,7 +193,7 @@ export const FlowList = () => {
       icon: <DuplicateIcon />,
       parameter: 'id',
       insideMore: true,
-      dialog: setDialog,
+      dialog: handleCopy,
     },
     {
       label: t('Export'),
@@ -178,6 +203,8 @@ export const FlowList = () => {
       insideMore: true,
     },
   ];
+
+  const additionalAction = () => (filter === 'isTemplate' ? templateFlowActions : actions);
 
   const getColumns = ({
     name,
@@ -215,6 +242,7 @@ export const FlowList = () => {
   const filterList = [
     { label: 'Active', value: true },
     { label: 'Inactive', value: false },
+    { label: 'Template', value: 'isTemplate' },
   ];
   const { data: tag } = useQuery(GET_TAGS, {
     variables: {},
@@ -230,7 +258,7 @@ export const FlowList = () => {
           value={filter}
           onChange={(event) => {
             const { value } = event.target;
-            setFilter(JSON.parse(value));
+            setFilter(value);
           }}
           className={styles.SearchBar}
         >
@@ -259,20 +287,64 @@ export const FlowList = () => {
     </>
   );
 
-  const filters = useMemo(
-    () => ({
-      isActive: filter,
+  const filters = useMemo(() => {
+    let filters = {
       ...(selectedtag?.id && { tagIds: [parseInt(selectedtag?.id)] }),
-    }),
-    [filter, selectedtag, importing]
-  );
+    };
+    if (filter === 'isTemplate') {
+      filters = { ...filters, isTemplate: true };
+    } else {
+      filters = { ...filters, isActive: filter, isTemplate: false };
+    }
+    return filters;
+  }, [filter, selectedtag, importing]);
+
+  const restrictedAction = () =>
+    filter === 'isTemplate' ? { delete: false, edit: false } : { edit: true, delete: true };
+
+  let dialogBox: any;
+  if (showDialog) {
+    dialogBox = (
+      <DialogBox
+        title="Create flow"
+        alignButtons="center"
+        buttonMiddle="Create from Scratch"
+        buttonOk="Create from Template"
+        skipCancel
+        handleMiddle={() => {
+          navigate('/flow/add');
+        }}
+        handleOk={() => {
+          setFilter('isTemplate');
+          setShowDialog(false);
+        }}
+        handleCancel={() => {
+          setShowDialog(false);
+        }}
+      >
+        <div className={styles.DialogContent}>How do you want to create a flow?</div>
+      </DialogBox>
+    );
+  }
+
+  useEffect(() => {
+    if (location.search) {
+      const isTemplate = new URLSearchParams(location.search).get('isTemplate');
+      if (isTemplate === 'true') {
+        setFilter('isTemplate');
+      }
+    }
+  }, [location]);
+
+  const title = filter === 'isTemplate' ? t('Template Flows') : t('Flows');
 
   return (
     <>
       {dialog}
+      {dialogBox}
       <List
         helpData={flowInfo}
-        title={t('Flows')}
+        title={title}
         listItem="flows"
         listItemName="flow"
         pageLink="flow"
@@ -282,11 +354,12 @@ export const FlowList = () => {
         {...columnAttributes}
         searchParameter={['name_or_keyword_or_tags']}
         additionalAction={additionalAction}
-        button={{ show: true, label: t('Create') }}
+        button={{ show: true, label: t('Create'), action: () => setShowDialog(true) }}
         secondaryButton={importButton}
         filters={filters}
         filterList={activeFilter}
         loadingList={importing}
+        restrictedAction={restrictedAction}
       />
     </>
   );

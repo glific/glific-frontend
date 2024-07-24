@@ -1,5 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
+import { BrowserRouter as Router } from 'react-router-dom';
 
 import { Search } from './Search';
 import { LIST_ITEM_MOCKS } from './Search.test.helper';
@@ -48,7 +49,9 @@ test('should load the search edit', async () => {
 
   const wrapper = (
     <MockedProvider mocks={mocks} addTypename={false}>
-      <Search {...props} />
+      <Router>
+        <Search {...props} />
+      </Router>
     </MockedProvider>
   );
 
@@ -71,7 +74,9 @@ test('should load the search edit', async () => {
 test('it renders component with saveSearch params', async () => {
   const wrapper = (
     <MockedProvider mocks={mocks} addTypename={false}>
-      <Search {...defaultProps('saveSearch')} />
+      <Router>
+        <Search {...defaultProps('saveSearch')} />
+      </Router>
     </MockedProvider>
   );
 
