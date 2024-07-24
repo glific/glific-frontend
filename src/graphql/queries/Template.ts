@@ -8,6 +8,8 @@ const templateFields = `
     updatedAt
     translations
     type
+    quality
+    category
     language {
       id
       label

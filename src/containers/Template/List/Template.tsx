@@ -8,6 +8,7 @@ import { useMutation, useQuery } from '@apollo/client';
 import { List } from 'containers/List/List';
 import { WhatsAppToJsx } from 'common/RichEditor';
 import { STANDARD_DATE_TIME_FORMAT, GUPSHUP_ENTERPRISE_SHORTCODE } from 'common/constants';
+import { capitalizeFirstLetter } from 'common/utils';
 import {
   GET_TEMPLATES_COUNT,
   FILTER_TEMPLATES,
@@ -37,7 +38,12 @@ import { speedSendInfo, templateInfo } from 'common/HelpData';
 import styles from './Template.module.css';
 import { RaiseToGupShup } from './RaiseToGupshupDialog/RaiseToGupShup';
 
-const getLabel = (label: string) => <div className={styles.LabelText}>{label}</div>;
+const getLabel = (label: string, quality?: string) => (
+  <div className={styles.LabelContainer}>
+    <div className={styles.LabelText}>{label}</div>
+    <div className={styles.Quality}>{quality && quality !== 'UNKNOWN' ? quality : 'Not Rated'}</div>
+  </div>
+);
 
 const getBody = (text: string) => <p className={styles.TableText}>{WhatsAppToJsx(text)}</p>;
 
@@ -53,6 +59,12 @@ const getTranslations = (language: any, data: string) => {
     delete dataObj[language.id];
   }
   return JSON.stringify(dataObj);
+};
+
+const getCategory = (category: string) => {
+  // let's make category more user friendly
+  let categoryName = category.split('_').join(' ').toLowerCase();
+  return <p className={styles.TableText}>{capitalizeFirstLetter(categoryName)}</p>;
 };
 
 export interface TemplateProps {
@@ -176,6 +188,7 @@ export const Template = ({
   ];
 
   if (isHSM) {
+    columnNames.push({ name: 'category', label: t('Category') });
     columnNames.push({ name: 'status', label: t('Status') });
     if (filters.REJECTED) {
       columnNames.push({ label: t('Reason') });
@@ -189,7 +202,13 @@ export const Template = ({
   let columnStyles: any = [styles.Name, styles.Body];
 
   columnStyles = isHSM
-    ? [...columnStyles, styles.Status, ...(filters.REJECTED ? [styles.Reason] : []), styles.Actions]
+    ? [
+        ...columnStyles,
+        styles.Category,
+        styles.Status,
+        ...(filters.REJECTED ? [styles.Reason] : []),
+        styles.Actions,
+      ]
     : [...columnStyles, styles.LastModified, styles.Actions];
 
   const getColumns = ({
@@ -201,13 +220,17 @@ export const Template = ({
     translations,
     status,
     reason,
+    quality,
+    category,
   }: any) => {
     const columns: any = {
       id,
-      label: getLabel(label),
+      label: getLabel(label, quality),
       body: getBody(body),
     };
+
     if (isHSM) {
+      columns.category = getCategory(category);
       columns.status = getStatus(status);
       if (filters.REJECTED) {
         columns.reason = getReason(reason);

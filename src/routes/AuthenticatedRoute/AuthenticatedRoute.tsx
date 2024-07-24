@@ -97,6 +97,7 @@ const routeAdmin = (
     <Route path="flow" element={<FlowList />} />
     <Route path="flow/add" element={<Flow />} />
     <Route path="flow/:id/edit" element={<Flow />} />
+    <Route path="flow/:id/view" element={<Flow />} />
     <Route path="role" element={<RoleList />} />
     <Route path="role/add" element={<Role />} />
     <Route path="role/:id/edit" element={<Role />} />
