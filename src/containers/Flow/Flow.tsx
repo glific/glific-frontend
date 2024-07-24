@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/client';
 
 import { FormLayout } from 'containers/Form/FormLayout';
@@ -31,6 +31,7 @@ const queries = {
 
 export const Flow = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const params = useParams();
   const [name, setName] = useState('');
   const [isPinnedDisable, setIsPinnedDisable] = useState(false);
@@ -44,6 +45,10 @@ export const Flow = () => {
   const [ignoreKeywords, setIgnoreKeywords] = useState(false);
   const { t } = useTranslation();
 
+  let isTemplate = false;
+  if (location.state === 'template') {
+    isTemplate = true;
+  }
   const { data: tag } = useQuery(GET_TAGS, {
     variables: {},
     fetchPolicy: 'network-only',
@@ -94,11 +99,17 @@ export const Flow = () => {
     // Override name & keywords when creating Flow Copy
     let fieldName = nameValue;
     let fieldKeywords = keywordsValue;
+    let description = descriptionValue;
+    let tags = tagValue;
     if (location.state === 'copy') {
       fieldName = `Copy of ${nameValue}`;
       fieldKeywords = '';
+    } else if (location.state === 'copyTemplate') {
+      fieldName = `Copy of ${nameValue}`;
+      description = '';
+      tags = null;
+      fieldKeywords = '';
     }
-
     const {
       organization: {
         organization: { newcontactFlowId },
@@ -114,7 +125,7 @@ export const Flow = () => {
     setIsPinned(isPinnedValue);
     setIsBackground(isBackgroundValue);
     setRoles(rolesValue);
-    setDescription(descriptionValue);
+    setDescription(description);
 
     // we are receiving keywords as an array object
     if (fieldKeywords.length > 0) {
@@ -122,7 +133,8 @@ export const Flow = () => {
       setKeywords(fieldKeywords.join(','));
     }
     setIgnoreKeywords(ignoreKeywordsValue);
-    const getTagId = tag && tag.tags.filter((tags: any) => tags.id === tagValue?.id);
+    const getTagId = tag && tag.tags.filter((t: any) => t.id === tags?.id);
+
     if (getTagId.length > 0) {
       setTagId(getTagId[0]);
     }
@@ -137,8 +149,29 @@ export const Flow = () => {
   });
 
   const dialogMessage = t("You won't be able to use this flow again.");
+  let backLink = '/flow';
+  let cancelLink = 'flow';
+  if (isTemplate || location.state === 'copyTemplate') {
+    backLink = '/flow?isTemplate=true';
+    cancelLink = 'flow?isTemplate=true';
+  }
 
-  const additionalAction = { label: t('Configure'), link: '/flow/configure' };
+  const configureAction = {
+    label: t('Configure'),
+    link: '/flow/configure',
+  };
+
+  const viewAction = {
+    label: t('View'),
+    link: '/flow/configure',
+    action: (link: any) => {
+      navigate(link, {
+        state: 'template',
+      });
+    },
+  };
+
+  const additionalAction = isTemplate ? viewAction : configureAction;
 
   const formFields = [
     {
@@ -146,6 +179,7 @@ export const Flow = () => {
       name: 'name',
       type: 'text',
       label: t('Name'),
+      disabled: isTemplate,
     },
     {
       component: Input,
@@ -153,6 +187,7 @@ export const Flow = () => {
       type: 'text',
       label: t('Keywords'),
       helperText: t('Enter comma separated keywords that trigger this flow.'),
+      disabled: isTemplate,
     },
     {
       component: Input,
@@ -161,13 +196,14 @@ export const Flow = () => {
       textArea: true,
       rows: 2,
       label: t('Description'),
+      disabled: isTemplate,
     },
     {
       component: AutoComplete,
       name: 'tagId',
       options: tag ? tag.tags : [],
       optionLabel: 'label',
-      disabled: false,
+      disabled: isTemplate,
       handleCreateItem: handleCreateLabel,
       hasCreateOption: true,
       multiple: false,
@@ -185,25 +221,28 @@ export const Flow = () => {
       },
       darkCheckbox: true,
       className: styles.Checkbox,
+      disabled: isTemplate,
     },
     {
       component: Checkbox,
       name: 'isActive',
       title: t('Is active?'),
       darkCheckbox: true,
+      disabled: isTemplate,
     },
     {
       component: Checkbox,
       name: 'isPinned',
       title: t('Is pinned?'),
       darkCheckbox: !isPinnedDisable,
-      disabled: isPinnedDisable,
+      disabled: isPinnedDisable || isTemplate,
     },
     {
       component: Checkbox,
       name: 'isBackground',
       title: t('Run this flow in the background'),
       darkCheckbox: true,
+      disabled: isTemplate,
     },
   ];
 
@@ -237,10 +276,20 @@ export const Flow = () => {
   // alter header & update/copy queries
   let title;
   let type;
+  let copyNotification;
+
   if (location.state === 'copy') {
     queries.updateItemQuery = CREATE_FLOW_COPY;
     title = t('Copy flow');
     type = 'copy';
+    copyNotification = t('Copy of the flow has been created!');
+  } else if (location.state === 'copyTemplate') {
+    queries.updateItemQuery = CREATE_FLOW_COPY;
+    title = t('Template flow copy');
+    type = 'copy';
+    copyNotification = t('Flow created successfully from template!');
+  } else if (location.state === 'template') {
+    title = t('Template Flow');
   } else {
     queries.updateItemQuery = UPDATE_FLOW;
   }
@@ -270,7 +319,7 @@ export const Flow = () => {
       dialogMessage={dialogMessage}
       formFields={formFields}
       redirectionLink="flow"
-      cancelLink="flow"
+      cancelLink={cancelLink}
       linkParameter="uuid"
       listItem="flow"
       icon={flowIcon}
@@ -278,10 +327,12 @@ export const Flow = () => {
       languageSupport={false}
       title={title}
       type={type}
-      copyNotification={t('Copy of the flow has been created!')}
+      copyNotification={copyNotification}
       customHandler={customHandler}
       helpData={flowInfo}
-      backLinkButton="/flow"
+      backLinkButton={backLink}
+      buttonState={{ text: 'Save', status: isTemplate }}
+      restrictButtonStatus={{ status: isTemplate }}
     />
   );
 };
