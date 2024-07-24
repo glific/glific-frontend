@@ -14,7 +14,7 @@ export const setConfig = (uuid: any, isTemplate: boolean) => {
     mutable: !isTemplate,
     showNodeLabel: false,
     attachmentsEnabled: false,
-    filters: ['whatsapp', 'classifier', 'profile', 'optins', 'ticketer'],
+    filters: ['whatsapp', 'classifier'],
 
     excludeTypes: [
       'add_contact_urn',
