@@ -1,18 +1,14 @@
 import { Instructions } from './Instructions/Instructions';
 import styles from './ContactManagement.module.css';
-import AdminContactManagement from './AdminContactManagement/AdminContactManagement';
 import { Heading } from 'components/UI/Heading/Heading';
 import { useState } from 'react';
 import UploadContactsDialog from './UploadContactsDialog/UploadContactsDialog';
 import { Button } from 'components/UI/Form/Button/Button';
-import SuperAdminContactManagement from './SuperAdminContactManagement/SuperAdminContactManagement';
 import { getUserRole } from 'context/role';
 import { UPLOAD_CONTACTS_SAMPLE } from 'config';
 
 export const ContactManagement = () => {
   const role = getUserRole();
-
-  console.log(role);
 
   const [showUploadDialog, setShowUploadDialog] = useState(false);
 
