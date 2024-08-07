@@ -36,7 +36,7 @@ const languageMock = {
 const flowsMock = {
   request: {
     query: GET_FLOWS,
-    variables: setVariables({ status: FLOW_STATUS_PUBLISHED }),
+    variables: setVariables({ status: FLOW_STATUS_PUBLISHED, isTemplate: false }),
   },
   result: {
     data: {
