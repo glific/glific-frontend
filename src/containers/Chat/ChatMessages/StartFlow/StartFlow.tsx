@@ -31,6 +31,7 @@ export const StartAFlow = ({
     variables: setVariables({
       status: FLOW_STATUS_PUBLISHED,
       isActive: true,
+      isTemplate: false,
     }),
     fetchPolicy: 'network-only', // set for now, need to check cache issue
   });
