@@ -249,6 +249,7 @@ export const Trigger = () => {
   const { data: flow } = useQuery(GET_FLOWS, {
     variables: setVariables({
       status: FLOW_STATUS_PUBLISHED,
+      isTemplate: false,
     }),
     fetchPolicy: 'network-only', // set for now, need to check cache issue
   });
