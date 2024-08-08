@@ -4,7 +4,6 @@ import { useMutation } from '@apollo/client';
 
 import { CONTACT_MANAGE_HELP_LINK, UPLOAD_CONTACTS_ADMIN_SAMPLE } from 'config';
 import { Button } from 'components/UI/Form/Button/Button';
-import { Heading } from 'components/UI/Heading/Heading';
 import UploadIcon from 'assets/images/icons/UploadLight.svg?react';
 import FileIcon from 'assets/images/icons/Document/Light.svg?react';
 import CrossIcon from 'assets/images/icons/Cross.svg?react';
@@ -12,7 +11,6 @@ import { MOVE_CONTACTS } from 'graphql/mutations/Contact';
 import { exportCsvFile, slicedString } from 'common/utils';
 import { setNotification } from 'common/notification';
 import styles from './AdminContactManagement.module.css';
-import { contactVariablesInfo } from 'common/HelpData';
 
 export const AdminContactManagement = () => {
   const [fileName, setFileName] = useState<string>('');
@@ -58,69 +56,61 @@ export const AdminContactManagement = () => {
   };
 
   return (
-    <div>
-      <Heading
-        formTitle="Contact Management"
-        showHeaderHelp={false}
-        helpData={contactVariablesInfo}
-      />
-      <div className={styles.Container}>
-        <div className={styles.Instructions}>
-          You can move contacts to collections in bulk or update their contact information. Please
-          create csv file that exactly matches the sample. Here are the &nbsp;
-          <a
-            href={CONTACT_MANAGE_HELP_LINK}
-            target="_blank"
-            rel="noreferrer"
-            className={styles.Link}
-          >
-            detailed instructions.
-          </a>
-        </div>
-        <div className={styles.UploadContainer}>
-          <label className={styles.UploadEnabled} htmlFor="uploadFile">
-            <span>
-              <FileIcon className={styles.FileIcon} />
-              {fileName !== '' ? (
-                <>
-                  <span>{fileName}</span>
-                  <CrossIcon
-                    className={styles.CrossIcon}
-                    onClick={(event: any) => {
-                      event.preventDefault();
-                      setFileName('');
-                      setCsvContent('');
-                    }}
-                  />
-                </>
-              ) : (
-                'Select file'
-              )}
+    <div className={styles.Container}>
+      <h1>Move contacts</h1>
 
-              <input
-                type="file"
-                id="uploadFile"
-                disabled={fileName !== ''}
-                data-testid="uploadFile"
-                onChange={(event) => {
-                  setErrors([]);
-                  addAttachment(event);
-                }}
-              />
-            </span>
-          </label>
-          <div className={styles.Sample}>
-            <a href={UPLOAD_CONTACTS_ADMIN_SAMPLE}>Download Sample</a>
-          </div>
+      <div className={styles.Instructions}>
+        You can move contacts to collections in bulk or update their contact information. Please
+        create csv file that exactly matches the sample. Here are the &nbsp;
+        <a href={CONTACT_MANAGE_HELP_LINK} target="_blank" rel="noreferrer" className={styles.Link}>
+          detailed instructions.
+        </a>
+      </div>
+      <div className={styles.UploadContainer}>
+        <label className={styles.UploadEnabled} htmlFor="uploadFile">
+          <span>
+            <FileIcon className={styles.FileIcon} />
+            {fileName !== '' ? (
+              <>
+                <span>{fileName}</span>
+                <CrossIcon
+                  className={styles.CrossIcon}
+                  onClick={(event: any) => {
+                    event.preventDefault();
+                    setFileName('');
+                    setCsvContent('');
+                  }}
+                />
+              </>
+            ) : (
+              'Select file'
+            )}
 
-          {errors &&
-            errors.length > 0 &&
-            errors.map((error: any, index: number) => (
-              <div className={styles.Error} key={error.message}>
-                {index + 1}. {error.message}
-              </div>
-            ))}
+            <input
+              type="file"
+              id="uploadFile"
+              disabled={fileName !== ''}
+              data-testid="uploadFile"
+              onChange={(event) => {
+                setErrors([]);
+                addAttachment(event);
+              }}
+            />
+          </span>
+        </label>
+        <div className={styles.Sample}>
+          <a href={UPLOAD_CONTACTS_ADMIN_SAMPLE}>Download Sample</a>
         </div>
+
+        {errors &&
+          errors.length > 0 &&
+          errors.map((error: any, index: number) => (
+            <div className={styles.Error} key={error.message}>
+              {index + 1}. {error.message}
+            </div>
+          ))}
+      </div>
+      <div className={styles.Buttons}>
         <Button
           data-testid="uploadButton"
           variant="contained"

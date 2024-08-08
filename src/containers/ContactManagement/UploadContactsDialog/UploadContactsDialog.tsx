@@ -156,6 +156,7 @@ export const UploadContactsDialog = ({ setDialog }: UploadContactsDialogProps) =
               <label
                 className={`${styles.UploadEnabled} ${fileName ? styles.Uploaded : ''}`}
                 htmlFor="uploadFile"
+                data-testid="uploadFile"
               >
                 <span>
                   {fileName !== '' ? (
@@ -180,7 +181,6 @@ export const UploadContactsDialog = ({ setDialog }: UploadContactsDialogProps) =
                     type="file"
                     id="uploadFile"
                     disabled={fileName !== ''}
-                    data-testid="uploadFile"
                     onChange={(event) => {
                       setError(false);
                       addAttachment(event);

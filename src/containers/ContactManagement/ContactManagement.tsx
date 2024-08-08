@@ -4,14 +4,10 @@ import { Heading } from 'components/UI/Heading/Heading';
 import { useState } from 'react';
 import UploadContactsDialog from './UploadContactsDialog/UploadContactsDialog';
 import { Button } from 'components/UI/Form/Button/Button';
-import { getUserRole } from 'context/role';
-import { UPLOAD_CONTACTS_SAMPLE } from 'config';
+import AdminContactManagement from './AdminContactManagement/AdminContactManagement';
 
 export const ContactManagement = () => {
-  const role = getUserRole();
-
   const [showUploadDialog, setShowUploadDialog] = useState(false);
-
   let dialog;
 
   if (showUploadDialog) {
@@ -23,15 +19,21 @@ export const ContactManagement = () => {
       <Heading formTitle="Contact Management" showHeaderHelp={false} />
       <div className={styles.MainContainer}>
         <div className={styles.Container}>
+          <h1>Bulk contacts upload</h1>
           <Instructions />
 
           <div className={styles.Buttons}>
-            <Button variant="contained" onClick={() => setShowUploadDialog(true)}>
+            <Button
+              data-testid="uploadContactsBtn"
+              variant="contained"
+              onClick={() => setShowUploadDialog(true)}
+            >
               Upload Contacts
             </Button>
-            <a href={UPLOAD_CONTACTS_SAMPLE}>Download Sample</a>
           </div>
         </div>
+
+        <AdminContactManagement />
       </div>
 
       {dialog}
