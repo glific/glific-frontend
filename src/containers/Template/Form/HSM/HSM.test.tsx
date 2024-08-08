@@ -15,6 +15,16 @@ beforeEach(() => {
   vi.restoreAllMocks();
 });
 
+vi.mock('lexical-beautiful-mentions', async (importOriginal) => {
+  const actual = (await importOriginal()) as typeof import('lexical-beautiful-mentions');
+  return {
+    ...actual,
+    BeautifulMentionsPlugin: ({ children }: any) => <div>{children}</div>,
+    BeautifulMentionsMenuProps: {},
+    BeautifulMentionsMenuItemProps: {},
+  };
+});
+
 describe('Edit mode', () => {
   test('HSM form is loaded correctly in edit mode', async () => {
     const MOCKS = [...mocks, getHSMTemplateTypeText, getHSMTemplateTypeText];

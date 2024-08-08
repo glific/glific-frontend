@@ -11,6 +11,17 @@ import { HSM_TEMPLATE_MOCKS, templateFormHSMFormFields } from './Template.test.h
 beforeEach(() => {
   vi.restoreAllMocks();
 });
+
+vi.mock('lexical-beautiful-mentions', async (importOriginal) => {
+  const actual = (await importOriginal()) as typeof import('lexical-beautiful-mentions');
+  return {
+    ...actual,
+    BeautifulMentionsPlugin: ({ children }: any) => <div>{children}</div>,
+    BeautifulMentionsMenuProps: {},
+    BeautifulMentionsMenuItemProps: {},
+  };
+});
+
 const defaultMocks = [
   ...TEMPLATE_MOCKS,
   ...TEMPLATE_MOCKS,

@@ -82,6 +82,16 @@ vi.mock('components/UI/EmojiPicker/EmojiPicker', async (importOriginal) => {
   };
 });
 
+vi.mock('lexical-beautiful-mentions', async (importOriginal) => {
+  const actual = (await importOriginal()) as typeof import('lexical-beautiful-mentions');
+  return {
+    ...actual,
+    BeautifulMentionsPlugin: ({ children }: any) => <div>{children}</div>,
+    BeautifulMentionsMenuProps: {},
+    BeautifulMentionsMenuItemProps: {},
+  };
+});
+
 const mockData = [...mocks, ...mocks];
 
 setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
