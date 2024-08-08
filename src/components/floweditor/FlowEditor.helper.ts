@@ -4,17 +4,17 @@ import '@nyaruka/temba-components/dist/temba-components.js';
 
 const glificBase = FLOW_EDITOR_API;
 
-export const setConfig = (uuid: any) => {
+export const setConfig = (uuid: any, isTemplate: boolean) => {
   const services = JSON.parse(localStorage.getItem('organizationServices') || '{}');
 
   const config = {
     flow: uuid,
     flowType: 'messaging',
     localStorage: true,
-    mutable: true,
+    mutable: !isTemplate,
     showNodeLabel: false,
     attachmentsEnabled: false,
-    filters: ['whatsapp', 'classifier', 'profile', 'optins', 'ticketer'],
+    filters: ['whatsapp', 'classifier'],
 
     excludeTypes: [
       'add_contact_urn',

@@ -87,9 +87,9 @@ export const LIST_ITEM_MOCKS = [
   ...getOrganizationQuery,
   getOrganizationLanguagesQuery,
   getFlowQuery({ id: 1 }),
-  filterFlowQuery,
-  filterFlowQuery,
-  getFlowCountQuery,
-  getFlowCountQuery,
+  filterFlowQuery({ isActive: true, isTemplate: false }),
+  filterFlowQuery({ isActive: true, isTemplate: false }),
+  getFlowCountQuery({ isTemplate: false, isActive: true }),
+  getFlowCountQuery({ isTemplate: false, isActive: true }),
   getFilterTagQuery,
 ];

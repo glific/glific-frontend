@@ -1,4 +1,5 @@
-import { useQuery } from '@apollo/client';
+import { useEffect } from 'react';
+import { useLazyQuery } from '@apollo/client';
 import { CircularProgress, List, ListItemButton, Paper, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
@@ -14,6 +15,7 @@ interface ChatTemplatesProps {
   handleSelectText(obj: any, isInteractiveMsg: boolean): void;
   isTemplate: boolean; // Will need to change if search won't be just by 'speed send' or 'template'.
   isInteractiveMsg: boolean;
+  selectedTab: string;
 }
 
 export const ChatTemplates = ({
@@ -21,23 +23,46 @@ export const ChatTemplates = ({
   handleSelectText,
   isTemplate,
   isInteractiveMsg,
+  selectedTab,
 }: ChatTemplatesProps) => {
   const { t } = useTranslation();
 
   const filterVariables = () => setVariables({ term: searchVal }, 50);
-  const { loading, error, data } = useQuery<any>(FILTER_TEMPLATES, {
-    variables: filterVariables(),
-  });
+  const [getSessionTemplates, { loading, error, data }] = useLazyQuery<any>(FILTER_TEMPLATES);
 
-  const { data: interactives } = useQuery<any>(FILTER_INTERACTIVE_MESSAGES, {
-    fetchPolicy: 'network-only',
-    variables: {
-      filter: {
-        label: searchVal,
-      },
-      opts: {},
-    },
-  });
+  const [getInteractiveMessages, { data: interactives }] = useLazyQuery<any>(
+    FILTER_INTERACTIVE_MESSAGES,
+    {
+      fetchPolicy: 'network-only',
+    }
+  );
+
+  useEffect(() => {
+    if (selectedTab === 'Templates') {
+      getSessionTemplates({
+        variables: {
+          ...filterVariables(),
+          isHsm: true,
+        },
+      });
+    } else if (selectedTab === 'Interactive msg') {
+      getInteractiveMessages({
+        variables: {
+          filter: {
+            label: searchVal,
+          },
+          opts: {},
+        },
+      });
+    } else {
+      getSessionTemplates({
+        variables: {
+          ...filterVariables(),
+          isHsm: false,
+        },
+      });
+    }
+  }, [searchVal, selectedTab]);
 
   if (loading)
     return (
@@ -45,7 +70,7 @@ export const ChatTemplates = ({
         <CircularProgress size="20px" />
       </div>
     );
-  if (error || data.sessionTemplates === undefined) return <p>{t('Error :(')}</p>;
+  if (error || data?.sessionTemplates === undefined) return <p>{t('Error :(')}</p>;
 
   const getListItem = (obj: any, index: number, interactiveMsg: boolean = false) => {
     const key = index;
@@ -82,7 +107,9 @@ export const ChatTemplates = ({
 
   const popperItems = () => {
     const translationsObj: any = [];
-    data.sessionTemplates.forEach((obj: any) => {
+    const sessionTemplates = data?.sessionTemplates;
+
+    sessionTemplates?.forEach((obj: any) => {
       const translations = JSON.parse(obj.translations);
       // add translation in list
       if (Object.keys(translations).length > 0) {
@@ -92,8 +119,8 @@ export const ChatTemplates = ({
       }
     });
 
-    const templateObj = [...data.sessionTemplates, ...translationsObj];
-    const interactiveObj = interactives ? [...interactives.interactiveTemplates] : [];
+    const templateObj = sessionTemplates ? [...sessionTemplates, ...translationsObj] : [];
+    const interactiveObj = interactives ? [...interactives?.interactiveTemplates] : [];
 
     let listItems;
 

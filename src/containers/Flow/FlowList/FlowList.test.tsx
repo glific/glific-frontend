@@ -12,6 +12,7 @@ import {
   importFlow,
   exportFlow,
   releaseFlow,
+  filterTemplateFlows,
 } from 'mocks/Flow';
 import { getOrganizationQuery } from 'mocks/Organization';
 import testJSON from 'mocks/ImportFlow.json';
@@ -21,15 +22,17 @@ import { Flow } from '../Flow';
 import { getFilterTagQuery } from 'mocks/Tag';
 import { getRoleNameQuery } from 'mocks/Role';
 
+const isActiveFilter = { isActive: true, isTemplate: false };
+
 const mocks = [
-  getFlowCountQuery,
-  getFlowCountQuery,
-  getFlowCountQuery,
-  getFlowCountQuery,
-  filterFlowQuery,
-  filterFlowQuery,
-  filterFlowQuery,
-  filterFlowQuery,
+  getFlowCountQuery(isActiveFilter),
+  getFlowCountQuery(isActiveFilter),
+  getFlowCountQuery(isActiveFilter),
+  getFlowCountQuery(isActiveFilter),
+  filterFlowQuery(isActiveFilter),
+  filterFlowQuery(isActiveFilter),
+  filterFlowQuery(isActiveFilter),
+  filterFlowQuery(isActiveFilter),
   filterFlowNewQuery,
   getFlowCountNewQuery,
   getFlowQuery({ id: 1 }),
@@ -39,6 +42,8 @@ const mocks = [
   exportFlow,
   getFilterTagQuery,
   getRoleNameQuery,
+  getFlowCountQuery({ isTemplate: true }),
+  filterTemplateFlows,
   ...getOrganizationQuery,
 ];
 
@@ -52,11 +57,13 @@ const flowList = (
 
 HTMLAnchorElement.prototype.click = vi.fn();
 
+const mockedUsedNavigate = vi.fn();
 vi.mock('react-router-dom', async () => {
   return {
     ...(await vi.importActual<any>('react-router-dom')),
     useLocation: () => ({ state: 'copy', pathname: '/flow/1/edit' }),
     useParams: () => ({ id: 1 }),
+    useNavigate: () => mockedUsedNavigate,
   };
 });
 
@@ -108,8 +115,13 @@ describe('<FlowList />', () => {
     fireEvent.click(getAllByTestId('MoreIcon')[0]);
 
     await waitFor(() => {
-      expect(screen.getAllByTestId('additionalButton')[0]).toBeInTheDocument();
-      fireEvent.click(screen.getAllByTestId('additionalButton')[0]);
+      expect(screen.getByText('Copy')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Copy'));
+
+    await waitFor(() => {
+      expect(mockedUsedNavigate).toHaveBeenCalled();
     });
   });
 
@@ -137,7 +149,11 @@ describe('<FlowList />', () => {
     const input = screen.getByTestId('import');
     fireEvent.change(input);
 
-    await waitFor(() => {});
+    await waitFor(() => {
+      expect(screen.getByText('Import flow Status')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('ok-button'));
   });
 
   test('should export flow to json file', async () => {
@@ -154,6 +170,59 @@ describe('<FlowList />', () => {
       const exportButton = screen.getAllByTestId('export-icon');
       expect(exportButton[0]).toBeInTheDocument();
       fireEvent.click(exportButton[0]);
+    });
+  });
+});
+
+describe('Template flows', () => {
+  test('it opens and closes dialog box', async () => {
+    render(flowList);
+
+    await waitFor(() => {
+      expect(screen.getByText('Flows')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('newItemButton'));
+
+    // test if it closes the dialog
+    fireEvent.click(screen.getByTestId('CloseIcon'));
+
+    fireEvent.click(screen.getByTestId('newItemButton'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Create flow')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('ok-button'));
+
+    await waitFor(() => {
+      expect(mockedUsedNavigate).toHaveBeenCalled();
+    });
+  });
+
+  test('it shows and creates a template flows', async () => {
+    render(flowList);
+
+    await waitFor(() => {
+      expect(screen.getByText('Flows')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('newItemButton'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Create flow')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('ok-button'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Template Flows')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getAllByTestId('viewIt')[0]);
+
+    await waitFor(() => {
+      expect(mockedUsedNavigate).toHaveBeenCalled();
     });
   });
 });

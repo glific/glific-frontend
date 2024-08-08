@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useMutation, useLazyQuery, useQuery } from '@apollo/client';
-import { Navigate, useNavigate, useParams } from 'react-router-dom';
+import { Navigate, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Menu, MenuItem, Typography } from '@mui/material';
 import BackIconFlow from 'assets/images/icons/BackIconFlow.svg?react';
 import WarningIcon from 'assets/images/icons/Warning.svg?react';
@@ -31,11 +31,13 @@ export const FlowEditor = () => {
   const params = useParams();
   const { uuid } = params;
   const navigate = useNavigate();
+  const location = useLocation();
   const [publishDialog, setPublishDialog] = useState(false);
   const [loading, setLoading] = useState(true);
   const [flowEditorLoaded, setFlowEditorLoaded] = useState(false);
   const [flowId, setFlowId] = useState();
-  const config = setConfig(uuid);
+  const isTemplate = location?.state === 'template';
+  const config = setConfig(uuid, isTemplate);
   const [published, setPublished] = useState(false);
   const [showSimulator, setShowSimulator] = useState(false);
   const [stayOnPublish, setStayOnPublish] = useState(false);
@@ -350,7 +352,7 @@ export const FlowEditor = () => {
       <div className={styles.Header}>
         <div className={styles.Title}>
           <BackIconFlow
-            onClick={() => navigate('/flow')}
+            onClick={() => (isTemplate ? navigate('/flow?isTemplate=true') : navigate('/flow'))}
             className={styles.BackIcon}
             data-testid="back-button"
           />
@@ -402,6 +404,7 @@ export const FlowEditor = () => {
                 handleClose();
               }}
               disableRipple
+              disabled={isTemplate}
             >
               Reset flow count
             </MenuItem>
@@ -411,6 +414,7 @@ export const FlowEditor = () => {
               variant="outlined"
               color="primary"
               data-testid="previewButton"
+              disabled={isTemplate}
               onClick={() => {
                 setShowTranslateFlowModal(true);
                 handleClose();
@@ -433,6 +437,7 @@ export const FlowEditor = () => {
             variant="contained"
             color="primary"
             data-testid="button"
+            disabled={isTemplate}
             onClick={() => setPublishDialog(true)}
           >
             <PublishIcon className={styles.Icon} />

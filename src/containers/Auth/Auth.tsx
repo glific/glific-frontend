@@ -9,12 +9,13 @@ import WhatsAppIcon from 'assets/images/icons/Social/Whatsapp.svg?react';
 import { termsOfUse } from 'containers/Organization/Organization';
 import { Button } from 'components/UI/Form/Button/Button';
 import GlificLogo from 'assets/images/logo/Logo.svg';
-import { Promotion } from './Promotion/Promotion';
 import styles from './Auth.module.css';
 import axios from 'axios';
 import { ORGANIZATION_NAME } from 'config';
 import setLogs from 'config/logs';
 import { checkOrgStatus } from 'services/AuthService';
+
+// import { Promotion } from './Promotion/Promotion';
 
 export interface AuthProps {
   pageTitle: string;
@@ -268,7 +269,7 @@ export const Auth = ({
         ) : null}
       </div>
 
-      {mode === 'login' && <Promotion />}
+      {/* {mode === 'login' && <Promotion />} */}
     </div>
   );
 };

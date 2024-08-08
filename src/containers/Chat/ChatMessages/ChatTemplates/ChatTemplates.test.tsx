@@ -11,6 +11,7 @@ describe('<ChatTemplates />', () => {
     handleSelectText: vi.fn(),
     isTemplate: false,
     isInteractiveMsg: false,
+    selectedTab: 'Templates',
   };
 
   beforeEach(() => {
@@ -19,6 +20,7 @@ describe('<ChatTemplates />', () => {
       handleSelectText: vi.fn(),
       isTemplate: false,
       isInteractiveMsg: false,
+      selectedTab: 'Templates',
     };
   });
 
