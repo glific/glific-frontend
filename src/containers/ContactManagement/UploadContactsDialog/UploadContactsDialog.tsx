@@ -9,14 +9,12 @@ import { FILTER_COLLECTIONS } from 'graphql/queries/Collection';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { Field, Form, Formik } from 'formik';
-import UploadIcon from 'assets/images/icons/Upload.svg?react';
-import CrossIcon from 'assets/images/icons/Cross.svg?react';
 import { UPLOAD_CONTACTS_SAMPLE } from 'config';
 import { IMPORT_CONTACTS } from 'graphql/mutations/Contact';
 import { getUserSession } from 'services/AuthService';
-import { slicedString } from 'common/utils';
 import { setNotification } from 'common/notification';
 import styles from './UploadContactsDialog.module.css';
+import { ImportButton } from 'components/UI/ImportButton/ImportButton';
 
 export interface UploadContactsDialogProps {
   organizationDetails?: any;
@@ -27,8 +25,8 @@ export const UploadContactsDialog = ({ setDialog }: UploadContactsDialogProps) =
   const [error, setError] = useState<any>(false);
   const [csvContent, setCsvContent] = useState<String | null | ArrayBuffer>('');
   const [uploadingContacts, setUploadingContacts] = useState(false);
-  const [fileName, setFileName] = useState<string>('');
   const orgId = getUserSession('organizationId');
+  const [importing, setImporting] = useState(false);
 
   const { t } = useTranslation();
   const [collection] = useState();
@@ -64,24 +62,6 @@ export const UploadContactsDialog = ({ setDialog }: UploadContactsDialogProps) =
       setUploadingContacts(false);
     },
   });
-
-  const addAttachment = (event: any) => {
-    const media = event.target.files[0];
-    const reader = new FileReader();
-    reader.readAsText(media);
-
-    reader.onload = () => {
-      const mediaName = media.name;
-      const extension = mediaName.slice((Math.max(0, mediaName.lastIndexOf('.')) || Infinity) + 1);
-      if (extension !== 'csv') {
-        setError(true);
-      } else {
-        const shortenedName = slicedString(mediaName, 15);
-        setFileName(shortenedName);
-        setCsvContent(reader.result);
-      }
-    };
-  };
 
   const uploadContacts = (details: any) => {
     importContacts({
@@ -153,41 +133,16 @@ export const UploadContactsDialog = ({ setDialog }: UploadContactsDialogProps) =
             </div>
 
             <div className={styles.UploadContainer}>
-              <label
-                className={`${styles.UploadEnabled} ${fileName ? styles.Uploaded : ''}`}
-                htmlFor="uploadFile"
-                data-testid="uploadFile"
-              >
-                <span>
-                  {fileName !== '' ? (
-                    <>
-                      <span>{fileName}</span>
-                      <CrossIcon
-                        className={styles.CrossIcon}
-                        onClick={(event) => {
-                          event.preventDefault();
-                          setFileName('');
-                        }}
-                      />
-                    </>
-                  ) : (
-                    <>
-                      <UploadIcon className={styles.UploadIcon} />
-                      Select .csv
-                    </>
-                  )}
-
-                  <input
-                    type="file"
-                    id="uploadFile"
-                    disabled={fileName !== ''}
-                    onChange={(event) => {
-                      setError(false);
-                      addAttachment(event);
-                    }}
-                  />
-                </span>
-              </label>
+              <ImportButton
+                id={'uploadcontacts'}
+                title={'Upload contacts'}
+                onImport={() => {
+                  setImporting(true);
+                }}
+                afterImport={(result: string) => {
+                  setCsvContent(result);
+                }}
+              />
             </div>
             <div className={styles.Sample}>
               <a href={UPLOAD_CONTACTS_SAMPLE}>Download Sample</a>

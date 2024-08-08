@@ -57,62 +57,70 @@ export const AdminContactManagement = () => {
 
   return (
     <div className={styles.Container}>
-      <h1>Move contacts</h1>
+      <div>
+        <h2>Move contacts</h2>
 
-      <div className={styles.Instructions}>
-        You can move contacts to collections in bulk or update their contact information. Please
-        create csv file that exactly matches the sample. Here are the &nbsp;
-        <a href={CONTACT_MANAGE_HELP_LINK} target="_blank" rel="noreferrer" className={styles.Link}>
-          detailed instructions.
-        </a>
-      </div>
-      <div className={styles.UploadContainer}>
-        <label className={styles.UploadEnabled} htmlFor="uploadFile">
-          <span>
-            <FileIcon className={styles.FileIcon} />
-            {fileName !== '' ? (
-              <>
-                <span>{fileName}</span>
-                <CrossIcon
-                  className={styles.CrossIcon}
-                  onClick={(event: any) => {
-                    event.preventDefault();
-                    setFileName('');
-                    setCsvContent('');
-                  }}
-                />
-              </>
-            ) : (
-              'Select file'
-            )}
-
-            <input
-              type="file"
-              id="uploadFile"
-              disabled={fileName !== ''}
-              data-testid="uploadFile"
-              onChange={(event) => {
-                setErrors([]);
-                addAttachment(event);
-              }}
-            />
-          </span>
-        </label>
-        <div className={styles.Sample}>
-          <a href={UPLOAD_CONTACTS_ADMIN_SAMPLE}>Download Sample</a>
+        <div className={styles.Instructions}>
+          You can move contacts to collections in bulk or update their contact information. Please
+          create csv file that exactly matches the sample. Here are the &nbsp;
+          <a
+            href={CONTACT_MANAGE_HELP_LINK}
+            target="_blank"
+            rel="noreferrer"
+            className={styles.Link}
+          >
+            detailed instructions.
+          </a>
         </div>
+        <div className={styles.UploadContainer}>
+          <label className={styles.UploadEnabled} htmlFor="uploadFile">
+            <span>
+              <FileIcon className={styles.FileIcon} />
+              {fileName !== '' ? (
+                <>
+                  <span>{fileName}</span>
+                  <CrossIcon
+                    className={styles.CrossIcon}
+                    onClick={(event: any) => {
+                      event.preventDefault();
+                      setFileName('');
+                      setCsvContent('');
+                    }}
+                  />
+                </>
+              ) : (
+                'Select file'
+              )}
 
-        {errors &&
-          errors.length > 0 &&
-          errors.map((error: any, index: number) => (
-            <div className={styles.Error} key={error.message}>
-              {index + 1}. {error.message}
-            </div>
-          ))}
+              <input
+                type="file"
+                id="uploadFile"
+                disabled={fileName !== ''}
+                data-testid="uploadFile"
+                onChange={(event) => {
+                  setErrors([]);
+                  addAttachment(event);
+                }}
+              />
+            </span>
+          </label>
+          <div className={styles.Sample}>
+            <a href={UPLOAD_CONTACTS_ADMIN_SAMPLE}>Download Sample</a>
+          </div>
+
+          {errors &&
+            errors.length > 0 &&
+            errors.map((error: any, index: number) => (
+              <div className={styles.Error} key={error.message}>
+                {index + 1}. {error.message}
+              </div>
+            ))}
+        </div>
       </div>
+
       <div className={styles.Buttons}>
         <Button
-          data-testid="uploadButton"
+          data-testid="moveContactsBtn"
           variant="contained"
           color="primary"
           disabled={fileName === ''}

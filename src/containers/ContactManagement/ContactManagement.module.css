@@ -1,20 +1,24 @@
 .MainContainer {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  row-gap: 1rem;
+  column-gap: 1rem;
   width: 100% !important;
+  height: 100vh !important;
   background-color: #f8faf5;
   padding: 1rem;
   color: #000;
 }
 
+.MainContainer h2 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
 .Container {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  width: 80%;
+  justify-content: space-between;
+  width: 50%;
+  height: 60%;
   background-color: #fff;
   border-radius: 15px;
   padding: 1.5rem 2rem;

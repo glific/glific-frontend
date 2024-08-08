@@ -1,11 +1,12 @@
 .Container {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  width: 80%;
+  justify-content: space-between;
+  width: 50%;
+  height: 60%;
   background-color: #fff;
   border-radius: 15px;
-  padding: 1.5rem 2rem;
+  padding: 1rem 2rem;
 }
 
 .Instructions {

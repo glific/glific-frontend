@@ -19,8 +19,10 @@ export const ContactManagement = () => {
       <Heading formTitle="Contact Management" showHeaderHelp={false} />
       <div className={styles.MainContainer}>
         <div className={styles.Container}>
-          <h1>Bulk contacts upload</h1>
-          <Instructions />
+          <div>
+            <h2>Bulk contacts upload</h2>
+            <Instructions />
+          </div>
 
           <div className={styles.Buttons}>
             <Button
