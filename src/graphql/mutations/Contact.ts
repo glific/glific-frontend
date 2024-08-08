@@ -81,3 +81,12 @@ export const DELETE_CONTACT_PROFILE = gql`
     }
   }
 `;
+
+export const GET_CONTACT_IMPORT_STATUS = gql`
+  mutation GetContactUploadReport($userJobId: ID) {
+    getContactUploadReport(userJobId: $userJobId) {
+      csvRows
+      error
+    }
+  }
+`;
