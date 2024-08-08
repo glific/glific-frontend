@@ -22,7 +22,6 @@ export interface UploadContactsDialogProps {
 }
 
 export const UploadContactsDialog = ({ setDialog }: UploadContactsDialogProps) => {
-  const [error, setError] = useState<any>(false);
   const [csvContent, setCsvContent] = useState<String | null | ArrayBuffer>('');
   const [uploadingContacts, setUploadingContacts] = useState(false);
   const orgId = getUserSession('organizationId');
@@ -122,9 +121,10 @@ export const UploadContactsDialog = ({ setDialog }: UploadContactsDialogProps) =
               setDialog(false);
             }}
             skipCancel
-            buttonOkLoading={uploadingContacts}
+            buttonOkLoading={uploadingContacts || importing}
             buttonOk={t('Upload')}
             alignButtons="left"
+            disableOk={!csvContent}
           >
             <div className={styles.Fields}>
               {formFieldItems.map((field: any) => (
@@ -140,6 +140,7 @@ export const UploadContactsDialog = ({ setDialog }: UploadContactsDialogProps) =
                   setImporting(true);
                 }}
                 afterImport={(result: string) => {
+                  setImporting(false);
                   setCsvContent(result);
                 }}
               />
@@ -147,12 +148,6 @@ export const UploadContactsDialog = ({ setDialog }: UploadContactsDialogProps) =
             <div className={styles.Sample}>
               <a href={UPLOAD_CONTACTS_SAMPLE}>Download Sample</a>
             </div>
-
-            {error && (
-              <div data-testid="invalidCsvFormat" className={styles.Error}>
-                1. Please make sure the file format matches the sample
-              </div>
-            )}
           </DialogBox>
         </Form>
       )}
