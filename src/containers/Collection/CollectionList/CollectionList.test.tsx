@@ -25,16 +25,28 @@ import {
   updateCollectionWaGroupQuery,
 } from 'mocks/Groups';
 import { setNotification } from 'common/notification';
-import { setVariables } from 'common/constants';
+import { CONTACTS_COLLECTION, setVariables } from 'common/constants';
 import { setUserRolePermissions } from 'context/role';
+
+const variables = {
+  filter: {
+    groupType: CONTACTS_COLLECTION,
+  },
+  opts: {
+    limit: 50,
+    offset: 0,
+    order: 'ASC',
+    orderWith: 'label',
+  },
+};
 
 const mocks = [
   countCollectionQuery,
   countCollectionQuery,
   countCollectionQuery,
-  filterCollectionQuery,
-  filterCollectionQuery,
-  filterCollectionQuery,
+  filterCollectionQuery(variables),
+  filterCollectionQuery(variables),
+  filterCollectionQuery(variables),
   getPublishedFlowQuery,
   getPublishedFlowQuery,
   getCollectionContactsQuery,

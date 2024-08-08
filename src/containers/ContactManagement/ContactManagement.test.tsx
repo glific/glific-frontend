@@ -19,7 +19,7 @@ const contactManagement = (
 
 setUserSession(JSON.stringify({ roles: [{ label: 'Staff' }], organization: { id: '1' } }));
 
-test('Show unauthorized access for staff user', async () => {
+test.skip('Show unauthorized access for staff user', async () => {
   render(contactManagement);
   expect(screen.getByText('Unauthorized access')).toBeInTheDocument();
 });

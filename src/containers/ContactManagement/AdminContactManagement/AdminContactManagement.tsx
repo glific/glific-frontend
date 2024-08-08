@@ -120,7 +120,7 @@ export const AdminContactManagement = () => {
 
       <div className={styles.Buttons}>
         <Button
-          data-testid="moveContactsBtn"
+          data-testid="uploadButton"
           variant="contained"
           color="primary"
           disabled={fileName === ''}

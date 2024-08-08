@@ -22,6 +22,7 @@ export interface UploadContactsDialogProps {
 }
 
 export const UploadContactsDialog = ({ setDialog }: UploadContactsDialogProps) => {
+  const [fileName, setFileName] = useState<string>('');
   const [csvContent, setCsvContent] = useState<String | null | ArrayBuffer>('');
   const [uploadingContacts, setUploadingContacts] = useState(false);
   const orgId = getUserSession('organizationId');
@@ -113,7 +114,7 @@ export const UploadContactsDialog = ({ setDialog }: UploadContactsDialogProps) =
         <Form data-testid="formLayout">
           <DialogBox
             titleAlign="left"
-            title={`${t('Upload contacts')}: `}
+            title={t('Upload Contacts')}
             handleOk={() => {
               submitForm();
             }}
@@ -132,16 +133,17 @@ export const UploadContactsDialog = ({ setDialog }: UploadContactsDialogProps) =
               ))}
             </div>
 
-            <div className={styles.UploadContainer}>
+            <div className={styles.ImportContainer}>
               <ImportButton
                 id={'uploadcontacts'}
-                title={'Upload contacts'}
+                title={fileName || 'Upload contacts'}
                 onImport={() => {
                   setImporting(true);
                 }}
-                afterImport={(result: string) => {
-                  setImporting(false);
+                afterImport={(result: string, media: any) => {
+                  setFileName(media.name);
                   setCsvContent(result);
+                  setImporting(false);
                 }}
               />
             </div>

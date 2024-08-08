@@ -67,7 +67,7 @@ export const SuperAdminContactManagement = () => {
     {
       icon: extensionIcon,
       parameter: 'id',
-      label: t('Upload contacts'),
+      label: t('Upload Contacts'),
       dialog: uploadContacts,
     },
   ];
