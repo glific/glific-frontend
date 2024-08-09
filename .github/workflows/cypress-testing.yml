@@ -86,7 +86,7 @@ jobs:
           echo start mix setup
           echo done. start installing inotify-tools
           sudo apt-get install inotify-tools
-          git checkout feat/contact-upload-report
+          git checkout importContact
           mix setup
           cd ../glific-frontend/
 
