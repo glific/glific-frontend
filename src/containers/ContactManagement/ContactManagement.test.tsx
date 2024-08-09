@@ -1,13 +1,24 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 
 import { BrowserRouter as Router } from 'react-router-dom';
 
-import { getAllOrganizations } from 'mocks/Organization';
-import { setUserSession } from 'services/AuthService';
 import ContactManagement from './ContactManagement';
+import { filterCollectionQuery } from 'mocks/Collection';
+import { CONTACTS_COLLECTION } from 'common/constants';
 
-const mocks = getAllOrganizations;
+const mocks = [
+  filterCollectionQuery({
+    filter: {
+      groupType: CONTACTS_COLLECTION,
+    },
+    opts: {
+      limit: 50,
+      offset: 0,
+      order: 'ASC',
+    },
+  }),
+];
 
 const contactManagement = (
   <MockedProvider mocks={mocks} addTypename={false}>
@@ -17,9 +28,16 @@ const contactManagement = (
   </MockedProvider>
 );
 
-setUserSession(JSON.stringify({ roles: [{ label: 'Staff' }], organization: { id: '1' } }));
-
-test.skip('Show unauthorized access for staff user', async () => {
+test('it opens contact upload dialog', async () => {
   render(contactManagement);
-  expect(screen.getByText('Unauthorized access')).toBeInTheDocument();
+
+  await waitFor(() => {
+    expect(screen.getByText('Contact Management')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('uploadContactsBtn'));
+
+  await waitFor(() => {
+    expect(screen.getByText('Upload Contacts')).toBeInTheDocument();
+  });
 });

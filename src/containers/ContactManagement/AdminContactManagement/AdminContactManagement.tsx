@@ -79,6 +79,7 @@ export const AdminContactManagement = () => {
                 <>
                   <span>{fileName}</span>
                   <CrossIcon
+                    data-testid="cross-icon"
                     className={styles.CrossIcon}
                     onClick={(event: any) => {
                       event.preventDefault();

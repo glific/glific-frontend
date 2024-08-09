@@ -52,19 +52,6 @@ test('Upload contact dialog renders correctly', async () => {
   });
 });
 
-test.skip('Files other than .csv should raise a warning message upon upload', async () => {
-  render(dialogBox);
-
-  const nonCSVFile = new File(['This is not a CSV File'], 'test.pdf', { type: 'application/pdf' });
-  await waitFor(() => {
-    const fileInput = screen.getByTestId('uploadFile');
-    userEvent.upload(fileInput, nonCSVFile);
-  });
-  await waitFor(() => {
-    expect(screen.getByTestId('invalidCsvFormat')).toBeInTheDocument();
-  });
-});
-
 test('Should be able to upload valid CSV', async () => {
   render(dialogBox);
 
