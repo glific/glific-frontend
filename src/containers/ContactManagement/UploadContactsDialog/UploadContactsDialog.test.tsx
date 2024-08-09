@@ -7,7 +7,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { getAllOrganizations } from 'mocks/Organization';
 
 import UploadContactsDialog from './UploadContactsDialog';
-import { filterCollectionQuery, getOrganizationCollections } from 'mocks/Collection';
+import { filterCollectionQuery } from 'mocks/Collection';
 import { CONTACTS_COLLECTION } from 'common/constants';
 
 const mocks = [

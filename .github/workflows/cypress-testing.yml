@@ -112,6 +112,7 @@ jobs:
       - name: Run glific backend
         run: |
           cd ../glific/
+          git checkout feat/contact-upload-report
           mix phx.server &
           cd ../glific-frontend/
 
