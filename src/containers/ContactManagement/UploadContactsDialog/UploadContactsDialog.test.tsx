@@ -1,4 +1,4 @@
-import { render, waitFor, screen } from '@testing-library/react';
+import { render, waitFor, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MockedProvider } from '@apollo/client/testing';
 
@@ -9,6 +9,7 @@ import { getAllOrganizations } from 'mocks/Organization';
 import UploadContactsDialog from './UploadContactsDialog';
 import { filterCollectionQuery } from 'mocks/Collection';
 import { CONTACTS_COLLECTION } from 'common/constants';
+import { importContacts } from 'mocks/Contact';
 
 const mocks = [
   ...getAllOrganizations,
@@ -22,6 +23,7 @@ const mocks = [
       order: 'ASC',
     },
   }),
+  importContacts,
 ];
 
 const setDialogMock = vi.fn();
@@ -80,4 +82,20 @@ test('Should be able to upload valid CSV', async () => {
     // the filename should be visible instead of Select .csv after upload
     expect(screen.getByText('test.csv')).toBeInTheDocument();
   });
+
+  const autocomplete = screen.getByTestId('autocomplete-element');
+
+  fireEvent.click(autocomplete);
+  fireEvent.keyDown(autocomplete, { key: 'ArrowDown' });
+  fireEvent.click(screen.getByText('Staff group'));
+
+  fireEvent.click(screen.getByTestId('ok-button'));
+  fireEvent.click(screen.getByText('Are these contacts opted in?'));
+  fireEvent.click(screen.getByTestId('ok-button'));
+
+  await waitFor(() => {
+    expect(screen.getByText('Contact import is in progress.')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByText('Go to notifications'));
 });

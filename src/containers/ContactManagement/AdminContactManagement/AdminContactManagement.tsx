@@ -8,7 +8,7 @@ import UploadIcon from 'assets/images/icons/UploadLight.svg?react';
 import FileIcon from 'assets/images/icons/Document/Light.svg?react';
 import CrossIcon from 'assets/images/icons/Cross.svg?react';
 import { MOVE_CONTACTS } from 'graphql/mutations/Contact';
-import { exportCsvFile, slicedString } from 'common/utils';
+import { slicedString } from 'common/utils';
 import { setNotification } from 'common/notification';
 import styles from './AdminContactManagement.module.css';
 
@@ -17,7 +17,6 @@ export const AdminContactManagement = () => {
   const [errors, setErrors] = useState<any>([]);
   const [csvContent, setCsvContent] = useState<String | null | ArrayBuffer>('');
   const [uploadingContacts, setUploadingContacts] = useState(false);
-  const { t } = useTranslation();
 
   const [moveContacts] = useMutation(MOVE_CONTACTS, {
     onCompleted: ({ moveContacts }) => {

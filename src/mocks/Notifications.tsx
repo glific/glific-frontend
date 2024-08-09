@@ -1,5 +1,6 @@
 import { FILTER_NOTIFICATIONS, GET_NOTIFICATIONS_COUNT } from 'graphql/queries/Notifications';
 import { MARK_NOTIFICATIONS_AS_READ } from 'graphql/mutations/Notifications';
+import { GET_CONTACT_IMPORT_STATUS } from 'graphql/mutations/Contact';
 
 export const getNotificationsQuery = {
   request: {
@@ -69,6 +70,15 @@ export const getNotificationsQuery = {
           message: 'Error sending message: You dont own the phone[3446].',
           severity: '"Critical"',
           updatedAt: '2024-03-29T11:14:13Z',
+        },
+        {
+          category: 'Contact Upload',
+          entity: '{"user_job_id":1}',
+          id: '60',
+          isRead: true,
+          message: 'Contact upload completed',
+          severity: '"Information"',
+          updatedAt: '2024-08-09T05:50:00Z',
         },
       ],
     },
@@ -197,6 +207,23 @@ export const markAllNotificationAsRead = {
   result: {
     data: {
       markNotificationAsRead: true,
+    },
+  },
+};
+
+export const getStatus = {
+  request: {
+    query: GET_CONTACT_IMPORT_STATUS,
+    variables: {
+      userJobId: 1,
+    },
+  },
+  result: {
+    data: {
+      getContactUploadReport: {
+        csvRows: '',
+        error: null,
+      },
     },
   },
 };

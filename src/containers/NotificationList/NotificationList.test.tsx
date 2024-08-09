@@ -10,6 +10,7 @@ import {
   getCountWithEmptyFilter,
   markAllNotificationAsRead,
   getInfoNotificationsQuery,
+  getStatus,
 } from 'mocks/Notifications';
 import { setUserSession } from 'services/AuthService';
 import { NotificationList } from './NotificationList';
@@ -31,6 +32,7 @@ const mocks: any = [
   getInfoNotificationsQuery({ severity: 'Critical' }),
   getInfoNotificationsQuery({ severity: '' }),
   getInfoNotificationsQuery(),
+  getStatus,
 ];
 
 const notifications = (

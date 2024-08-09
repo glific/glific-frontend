@@ -50,7 +50,7 @@ export const UploadContactsDialog = ({ setDialog }: UploadContactsDialogProps) =
 
   const [importContacts] = useMutation(IMPORT_CONTACTS, {
     onCompleted: (data: any) => {
-      const { errors, status } = data.importContacts;
+      const { errors } = data.importContacts;
       if (errors) {
         setNotification(data.errors[0].message, 'warning');
       } else {
