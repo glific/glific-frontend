@@ -12,7 +12,7 @@ import {
 } from 'graphql/queries/Contact';
 import { addFlowToContactQuery } from 'mocks/Flow';
 import { getOrganizationLanguagesQuery, getOrganizationQuery } from 'mocks/Organization';
-import { UPDATE_CONTACT, MOVE_CONTACTS } from 'graphql/mutations/Contact';
+import { UPDATE_CONTACT, MOVE_CONTACTS, IMPORT_CONTACTS } from 'graphql/mutations/Contact';
 import { UPDATE_CONTACT_COLLECTIONS } from 'graphql/mutations/Collection';
 import { CLEAR_MESSAGES } from 'graphql/mutations/Chat';
 import { setVariables } from 'common/constants';
@@ -618,3 +618,18 @@ export const getExcludedContactsQuery = (excludeGroups: any) => ({
     },
   },
 });
+
+export const importContacts = {
+  request: {
+    query: IMPORT_CONTACTS,
+  },
+  result: {
+    data: {
+      importContacts: {
+        errors: null,
+        status: 'Test Row',
+      },
+    },
+  },
+  variableMatcher: (variables: any) => true,
+};

@@ -21,7 +21,7 @@ export const Heading = ({ formTitle, helpData, showHeaderHelp = true, backLink }
         <div>
           <div className={styles.HeadingTitle}>
             <div className={styles.TitleText}>{formTitle}</div>
-            {!helpData ? <HelpIcon helpData={helpData} /> : ''}
+            {helpData ? <HelpIcon helpData={helpData} /> : ''}
           </div>
           <div className={styles.TextHeading}>
             {showHeaderHelp ? `Please enter below details.` : ''}

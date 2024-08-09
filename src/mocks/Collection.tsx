@@ -227,20 +227,10 @@ export const countCollectionQuery = {
   },
 };
 
-export const filterCollectionQuery = {
+export const filterCollectionQuery = (variables: any) => ({
   request: {
     query: FILTER_COLLECTIONS,
-    variables: {
-      filter: {
-        groupType: CONTACTS_COLLECTION,
-      },
-      opts: {
-        limit: 50,
-        offset: 0,
-        order: 'ASC',
-        orderWith: 'label',
-      },
-    },
+    variables,
   },
   result: {
     data: {
@@ -257,7 +247,7 @@ export const filterCollectionQuery = {
       ],
     },
   },
-};
+});
 
 export const filterCollectionQueryWAGroups = {
   request: {

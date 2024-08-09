@@ -1,11 +1,16 @@
 .Container {
-  padding-left: 40px;
-  margin-top: 36px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 50%;
+  height: 60%;
+  background-color: #fff;
+  border-radius: 15px;
+  padding: 1rem 2rem;
 }
 
 .Instructions {
   max-width: 500px;
-  color: #93a29b;
   font-size: 16px;
 }
 
@@ -104,4 +109,18 @@
 .CrossIcon {
   position: absolute;
   right: 12px;
+}
+
+.Buttons {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+  justify-content: end;
+  width: 100%;
+}
+
+.Buttons button {
+  border-radius: 8px;
+  width: 30%;
 }
