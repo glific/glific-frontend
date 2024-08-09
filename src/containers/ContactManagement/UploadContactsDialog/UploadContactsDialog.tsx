@@ -15,6 +15,7 @@ import { getUserSession } from 'services/AuthService';
 import { setNotification } from 'common/notification';
 import styles from './UploadContactsDialog.module.css';
 import { ImportButton } from 'components/UI/ImportButton/ImportButton';
+import { useNavigate } from 'react-router';
 
 export interface UploadContactsDialogProps {
   organizationDetails?: any;
@@ -25,8 +26,10 @@ export const UploadContactsDialog = ({ setDialog }: UploadContactsDialogProps) =
   const [fileName, setFileName] = useState<string>('');
   const [csvContent, setCsvContent] = useState<String | null | ArrayBuffer>('');
   const [uploadingContacts, setUploadingContacts] = useState(false);
-  const orgId = getUserSession('organizationId');
   const [importing, setImporting] = useState(false);
+  const [showStatus, setShowStatus] = useState(false);
+  const orgId = getUserSession('organizationId');
+  const navigate = useNavigate();
 
   const { t } = useTranslation();
   const [collection] = useState();
@@ -52,9 +55,8 @@ export const UploadContactsDialog = ({ setDialog }: UploadContactsDialogProps) =
         setNotification(data.errors[0].message, 'warning');
       } else {
         setUploadingContacts(false);
-        setNotification(status);
+        setShowStatus(true);
       }
-      setDialog(false);
     },
     onError: (errors) => {
       setDialog(false);
@@ -80,6 +82,7 @@ export const UploadContactsDialog = ({ setDialog }: UploadContactsDialogProps) =
 
   const validationSchema = Yup.object().shape({
     collection: Yup.object().nullable().required(t('Collection is required')),
+    optedIn: Yup.boolean().oneOf([true]).required(),
   });
 
   const formFieldItems: any = [
@@ -110,12 +113,19 @@ export const UploadContactsDialog = ({ setDialog }: UploadContactsDialogProps) =
         setUploadingContacts(true);
       }}
     >
-      {({ submitForm }) => (
+      {({ submitForm, errors }) => (
         <Form data-testid="formLayout">
           <DialogBox
             titleAlign="left"
             title={t('Upload Contacts')}
             handleOk={() => {
+              if (errors?.optedIn) {
+                setNotification(
+                  'Please obtain prior consent from contacts to message them on WhatsApp',
+                  'warning'
+                );
+                return;
+              }
               submitForm();
             }}
             handleCancel={() => {
@@ -156,7 +166,31 @@ export const UploadContactsDialog = ({ setDialog }: UploadContactsDialogProps) =
     </Formik>
   );
 
-  return form;
+  const dialog = (
+    <DialogBox
+      titleAlign="center"
+      title={'Contact import is in progress.'}
+      handleOk={() => {
+        navigate('/notifications');
+        setShowStatus(false);
+        setDialog(false);
+      }}
+      skipCancel
+      buttonOk={'Go to notifications'}
+      alignButtons="left"
+    >
+      <div className={styles.DialogContent}>
+        Please check notifications to see the status of import.
+      </div>
+    </DialogBox>
+  );
+
+  return (
+    <>
+      {form}
+      {!showStatus && dialog}
+    </>
+  );
 };
 
 export default UploadContactsDialog;

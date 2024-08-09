@@ -20,13 +20,13 @@ export const AdminContactManagement = () => {
   const { t } = useTranslation();
 
   const [moveContacts] = useMutation(MOVE_CONTACTS, {
-    onCompleted: (data: any) => {
-      if (data.errors) {
-        setErrors(data.errors);
+    onCompleted: ({ moveContacts }) => {
+      const { errors, status } = moveContacts;
+      if (errors) {
+        setErrors(errors);
       } else {
-        exportCsvFile(data.moveContacts.csvRows, 'results');
         setUploadingContacts(false);
-        setNotification(t('Contacts have been updated'));
+        setNotification(status);
       }
       setFileName('');
     },

@@ -50,7 +50,7 @@ export const MOVE_CONTACTS = gql`
         message
         key
       }
-      csvRows
+      status
     }
   }
 `;
