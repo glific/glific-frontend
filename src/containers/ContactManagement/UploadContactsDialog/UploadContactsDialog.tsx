@@ -188,7 +188,7 @@ export const UploadContactsDialog = ({ setDialog }: UploadContactsDialogProps) =
   return (
     <>
       {form}
-      {!showStatus && dialog}
+      {showStatus && dialog}
     </>
   );
 };
