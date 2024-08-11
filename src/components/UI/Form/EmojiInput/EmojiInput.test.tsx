@@ -15,6 +15,16 @@ const mockIntersectionObserver = class {
 
 (window as any).IntersectionObserver = mockIntersectionObserver;
 
+vi.mock('lexical-beautiful-mentions', async (importOriginal) => {
+  const actual = (await importOriginal()) as typeof import('lexical-beautiful-mentions');
+  return {
+    ...actual,
+    BeautifulMentionsPlugin: ({ children }: any) => <div>{children}</div>,
+    BeautifulMentionsMenuProps: {},
+    BeautifulMentionsMenuItemProps: {},
+  };
+});
+
 const wrapper = (
   <LexicalWrapper>
     <EmojiInput
