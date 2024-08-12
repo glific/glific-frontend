@@ -1,7 +1,5 @@
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useMutation } from '@apollo/client';
-
 import { CONTACT_MANAGE_HELP_LINK, UPLOAD_CONTACTS_ADMIN_SAMPLE } from 'config';
 import { Button } from 'components/UI/Form/Button/Button';
 import UploadIcon from 'assets/images/icons/UploadLight.svg?react';

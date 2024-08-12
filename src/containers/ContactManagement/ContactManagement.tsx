@@ -5,6 +5,7 @@ import { useState } from 'react';
 import UploadContactsDialog from './UploadContactsDialog/UploadContactsDialog';
 import { Button } from 'components/UI/Form/Button/Button';
 import AdminContactManagement from './AdminContactManagement/AdminContactManagement';
+import { contactVariablesInfo } from 'common/HelpData';
 
 export const ContactManagement = () => {
   const [showUploadDialog, setShowUploadDialog] = useState(false);
@@ -16,7 +17,11 @@ export const ContactManagement = () => {
 
   return (
     <>
-      <Heading formTitle="Contact Management" showHeaderHelp={false} />
+      <Heading
+        formTitle="Contact Management"
+        showHeaderHelp={false}
+        helpData={contactVariablesInfo}
+      />
       <div className={styles.MainContainer}>
         <div className={styles.Container}>
           <div>
