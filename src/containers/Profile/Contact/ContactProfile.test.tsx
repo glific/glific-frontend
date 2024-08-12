@@ -27,9 +27,22 @@ describe('contact profile', () => {
   );
 
   test('contact profile should render', async () => {
-    const { getByText } = render(contactProfile);
+    const { getByText, getAllByRole } = render(contactProfile);
     await waitFor(() => {
       expect(getByText('Profile')).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(getByText('Loading...')).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(getByText('Provider status')).toBeInTheDocument();
+    });
+
+    // shows field name for contact
+    await waitFor(() => {
+      expect(getAllByRole('textbox')[0]).toHaveValue('fieldName');
     });
   });
 });

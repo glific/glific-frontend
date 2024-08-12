@@ -123,6 +123,8 @@ export const Profile = ({
       displayName = contactFields.name.value;
     } else if (nameValue) {
       displayName = nameValue;
+    } else {
+      displayName = 'N/A';
     }
 
     setName(displayName);
