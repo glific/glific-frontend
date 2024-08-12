@@ -58,8 +58,6 @@ export const FlowEditor = () => {
     setAnchorEl(null);
   };
 
-  const isTranslationEnabled = getOrganizationServices('autoTranslationEnabled');
-
   let modal = null;
   let dialog = null;
   let flowTitle: any;
@@ -409,21 +407,19 @@ export const FlowEditor = () => {
               Reset flow count
             </MenuItem>
           </Menu>
-          {isTranslationEnabled && (
-            <Button
-              variant="outlined"
-              color="primary"
-              data-testid="previewButton"
-              disabled={isTemplate}
-              onClick={() => {
-                setShowTranslateFlowModal(true);
-                handleClose();
-              }}
-            >
-              <TranslateIcon className={styles.Icon} />
-              Translate
-            </Button>
-          )}
+          <Button
+            variant="outlined"
+            color="primary"
+            data-testid="previewButton"
+            disabled={isTemplate}
+            onClick={() => {
+              setShowTranslateFlowModal(true);
+              handleClose();
+            }}
+          >
+            <TranslateIcon className={styles.Icon} />
+            Translate
+          </Button>
           <Button
             variant="outlined"
             color="primary"
