@@ -3,14 +3,14 @@ import { Link, useLocation } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { useApolloClient, useMutation } from '@apollo/client';
 
-import { COMPACT_MESSAGE_LENGTH, SHORT_DATE_FORMAT, updateContactCache } from 'common/constants';
+import { COMPACT_MESSAGE_LENGTH, SHORT_DATE_FORMAT } from 'common/constants';
 import { MARK_AS_READ } from 'graphql/mutations/Chat';
 import { SEARCH_OFFSET } from 'graphql/queries/Search';
 import { WhatsAppToJsx } from 'common/RichEditor';
 import { MessageType } from '../MessageType/MessageType';
 import styles from './ChatConversation.module.css';
 import Track from 'services/TrackService';
-import { slicedString } from 'common/utils';
+import { slicedString, updateContactCache } from 'common/utils';
 import { AvatarDisplay } from 'components/UI/AvatarDisplay/AvatarDisplay';
 import { Timer } from 'components/UI/Timer/Timer';
 

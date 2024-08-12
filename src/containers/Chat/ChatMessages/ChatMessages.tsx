@@ -22,7 +22,6 @@ import {
   GROUP_QUERY_VARIABLES,
   GROUP_COLLECTION_SEARCH_QUERY_VARIABLES,
   getVariables,
-  updateContactCache,
 } from '../../../common/constants';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 import { GROUP_SEARCH_QUERY } from 'graphql/queries/WaGroups';
@@ -36,7 +35,7 @@ import {
   MARK_AS_READ,
 } from '../../../graphql/mutations/Chat';
 import { getCachedConverations, updateConversationsCache } from '../../../services/ChatService';
-import { addLogs, getDisplayName, isSimulator } from '../../../common/utils';
+import { addLogs, getDisplayName, isSimulator, updateContactCache } from '../../../common/utils';
 import { CollectionInformation } from '../../Collection/CollectionInformation/CollectionInformation';
 import { LexicalWrapper } from 'common/LexicalWrapper';
 import {
