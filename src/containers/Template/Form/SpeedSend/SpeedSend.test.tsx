@@ -7,6 +7,8 @@ import { SPEED_SENDS_MOCKS } from 'containers/Template/Template.test.helper';
 import { setUserSession } from 'services/AuthService';
 import { SpeedSend } from './SpeedSend';
 import * as Notification from 'common/notification';
+import { LexicalComposer } from '@lexical/react/LexicalComposer';
+import { BeautifulMentionNode } from 'lexical-beautiful-mentions';
 
 setUserSession(JSON.stringify({ roles: ['Admin'] }));
 
@@ -23,6 +25,16 @@ const mockIntersectionObserver = class {
 
 afterEach(() => {
   cleanup();
+});
+
+vi.mock('lexical-beautiful-mentions', async (importOriginal) => {
+  const actual = (await importOriginal()) as typeof import('lexical-beautiful-mentions');
+  return {
+    ...actual,
+    BeautifulMentionsPlugin: ({ children }: any) => <div>{children}</div>,
+    BeautifulMentionsMenuProps: {},
+    BeautifulMentionsMenuItemProps: {},
+  };
 });
 
 describe('SpeedSend', () => {
@@ -53,10 +65,18 @@ describe('SpeedSend', () => {
     const { container } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
         <MemoryRouter>
-          <Routes>
-            <Route path="/" element={<SpeedSend />} />
-            <Route path="/speed-send" element={<SpeedSendList />} />
-          </Routes>
+          <LexicalComposer
+            initialConfig={{
+              namespace: 'template-input',
+              onError: (error) => console.log(error),
+              nodes: [BeautifulMentionNode],
+            }}
+          >
+            <Routes>
+              <Route path="/" element={<SpeedSend />} />
+              <Route path="/speed-send" element={<SpeedSendList />} />
+            </Routes>
+          </LexicalComposer>
         </MemoryRouter>
       </MockedProvider>
     );
