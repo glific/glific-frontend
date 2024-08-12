@@ -102,10 +102,12 @@ export const Profile = ({
     status: statusValue,
     bspStatus: bspStatusValue,
     language: languageIdValue,
+    fields: fieldsValue,
   }: any) => {
-    setName(nameValue);
     updateName();
     let hideDeleteButton = false;
+    let contactFields = JSON.parse(fieldsValue);
+    let displayName = '';
 
     if (phoneValue) {
       setPhone(phoneValue);
@@ -117,6 +119,13 @@ export const Profile = ({
       hideDeleteButton = organizationPhone === currentUserPhone;
     }
 
+    if (contactFields?.name?.value) {
+      displayName = contactFields.name.value;
+    } else if (nameValue) {
+      displayName = nameValue;
+    }
+
+    setName(displayName);
     setStatus(statusValue);
     setBspStatus(bspStatusValue);
     setHideRemoveBtn(hideDeleteButton);
