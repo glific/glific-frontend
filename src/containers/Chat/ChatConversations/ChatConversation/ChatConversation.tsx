@@ -3,8 +3,8 @@ import { Link, useLocation } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { useApolloClient, useMutation } from '@apollo/client';
 
-import { COMPACT_MESSAGE_LENGTH, SHORT_DATE_FORMAT } from 'common/constants';
-import { MARK_AS_READ, CONTACT_FRAGMENT } from 'graphql/mutations/Chat';
+import { COMPACT_MESSAGE_LENGTH, SHORT_DATE_FORMAT, updateContactCache } from 'common/constants';
+import { MARK_AS_READ } from 'graphql/mutations/Chat';
 import { SEARCH_OFFSET } from 'graphql/queries/Search';
 import { WhatsAppToJsx } from 'common/RichEditor';
 import { MessageType } from '../MessageType/MessageType';
@@ -34,25 +34,6 @@ export interface ChatConversationProps {
   searchMode?: any;
   timer?: any;
 }
-const updateContactCache = (client: any, id: any) => {
-  const contact = client.readFragment({
-    id: `Contact:${id}`,
-    fragment: CONTACT_FRAGMENT,
-  });
-
-  if (contact) {
-    const contactCopy = JSON.parse(JSON.stringify(contact));
-
-    contactCopy.isOrgRead = true;
-    client.writeFragment({
-      id: `Contact:${id}`,
-      fragment: CONTACT_FRAGMENT,
-      data: contactCopy,
-    });
-  }
-
-  return null;
-};
 
 // display highlighted search message
 const BoldedText = (originalText: string, highlight: any) => {

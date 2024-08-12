@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import * as Yup from 'yup';
 import { getDisplayName, getDisplayNameForSearch } from './utils';
+import { CONTACT_FRAGMENT } from 'graphql/mutations/Chat';
 
 export const OLD_DOMAIN = 'tides.coloredcow.com';
 export const NEW_DOMAIN = 'glific.com';
@@ -365,4 +366,24 @@ export const getConversation = (
     selectedRecord,
     timer,
   };
+};
+
+export const updateContactCache = (client: any, id: any) => {
+  const contact = client.readFragment({
+    id: `Contact:${id}`,
+    fragment: CONTACT_FRAGMENT,
+  });
+
+  if (contact) {
+    const contactCopy = JSON.parse(JSON.stringify(contact));
+
+    contactCopy.isOrgRead = true;
+    client.writeFragment({
+      id: `Contact:${id}`,
+      fragment: CONTACT_FRAGMENT,
+      data: contactCopy,
+    });
+  }
+
+  return null;
 };
