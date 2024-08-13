@@ -103,9 +103,10 @@ test('it should display name of the flow', async () => {
 // });
 
 test('it should have a preview button', async () => {
-  const { getByTestId } = render(defaultWrapper);
+  const { getAllByTestId } = render(defaultWrapper);
   await waitFor(() => {
-    expect(getByTestId('previewButton')).toBeInTheDocument();
+    expect(getAllByTestId('previewButton')[0]).toHaveTextContent('Translate');
+    expect(getAllByTestId('previewButton')[1]).toHaveTextContent('Preview');
   });
 });
 
@@ -193,7 +194,7 @@ test('start with a keyword message if the simulator opens in floweditor screen',
   await waitFor(() => {
     expect(screen.findByText('help workflow'));
   });
-  fireEvent.click(screen.getByTestId('previewButton'));
+  fireEvent.click(screen.getAllByTestId('previewButton')[1]);
   await waitFor(() => {
     expect(screen.findByTestId('beneficiaryName'));
   });
@@ -208,7 +209,7 @@ test('if the flow the inactive', async () => {
   await waitFor(() => {
     expect(screen.findByText('help workflow'));
   });
-  fireEvent.click(screen.getByTestId('previewButton'));
+  fireEvent.click(screen.getAllByTestId('previewButton')[1]);
   await waitFor(() => {
     expect(screen.findByTestId('beneficiaryName'));
   });
@@ -223,7 +224,7 @@ test('flow with no keywords', async () => {
   await waitFor(() => {
     expect(screen.findByText('help workflow'));
   });
-  fireEvent.click(screen.getByTestId('previewButton'));
+  fireEvent.click(screen.getAllByTestId('previewButton')[1]);
   await waitFor(() => {
     expect(screen.findByTestId('beneficiaryName'));
   });
