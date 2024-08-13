@@ -54,7 +54,7 @@
     "react-phone-input-2": "^2.15.1",
     "react-player": "^2.16.0",
     "react-resize-detector": "^11.0.1",
-    "react-router-dom": "^6.23.1",
+    "react-router-dom": "^6.25.1",
     "react-tiny-link": "^3.6.1",
     "react-viewer": "^3.2.2",
     "rollup-plugin-polyfill-node": "^0.13.0",
