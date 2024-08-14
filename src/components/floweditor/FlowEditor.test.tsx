@@ -199,7 +199,7 @@ test('start with a keyword message if the simulator opens in floweditor screen',
   });
   fireEvent.click(screen.getByTestId('previewButton'));
   await waitFor(() => {
-    expect(screen.findByTestId('beneficiaryName'));
+    expect(screen.getByTestId('simulator-container'));
   });
 
   // need some assertion
