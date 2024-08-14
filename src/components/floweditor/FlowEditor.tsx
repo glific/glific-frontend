@@ -410,7 +410,7 @@ export const FlowEditor = () => {
           <Button
             variant="outlined"
             color="primary"
-            data-testid="previewButton"
+            data-testid="translateButton"
             disabled={isTemplate}
             onClick={() => {
               setShowTranslateFlowModal(true);

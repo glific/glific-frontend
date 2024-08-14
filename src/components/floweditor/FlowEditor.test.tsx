@@ -106,10 +106,10 @@ test('it should display name of the flow', async () => {
 // });
 
 test('it should have a preview button', async () => {
-  const { getAllByTestId } = render(defaultWrapper);
+  const { getByTestId } = render(defaultWrapper);
   await waitFor(() => {
-    expect(getAllByTestId('previewButton')[0]).toHaveTextContent('Translate');
-    expect(getAllByTestId('previewButton')[1]).toHaveTextContent('Preview');
+    expect(getByTestId('translateButton')).toBeInTheDocument();
+    expect(getByTestId('previewButton')).toBeInTheDocument();
   });
 });
 
@@ -197,7 +197,7 @@ test('start with a keyword message if the simulator opens in floweditor screen',
   await waitFor(() => {
     expect(screen.findByText('help workflow'));
   });
-  fireEvent.click(screen.getAllByTestId('previewButton')[1]);
+  fireEvent.click(screen.getByTestId('previewButton'));
   await waitFor(() => {
     expect(screen.findByTestId('beneficiaryName'));
   });
@@ -212,7 +212,7 @@ test('if the flow the inactive', async () => {
   await waitFor(() => {
     expect(screen.findByText('help workflow'));
   });
-  fireEvent.click(screen.getAllByTestId('previewButton')[1]);
+  fireEvent.click(screen.getByTestId('previewButton'));
   await waitFor(() => {
     expect(screen.findByTestId('beneficiaryName'));
   });
@@ -227,7 +227,7 @@ test('flow with no keywords', async () => {
   await waitFor(() => {
     expect(screen.findByText('help workflow'));
   });
-  fireEvent.click(screen.getAllByTestId('previewButton')[1]);
+  fireEvent.click(screen.getByTestId('previewButton'));
   await waitFor(() => {
     expect(screen.findByTestId('beneficiaryName'));
   });
@@ -269,10 +269,10 @@ test('it translates the flow', async () => {
     expect(screen.findByText('help workflow'));
   });
 
-  fireEvent.click(screen.getAllByTestId('previewButton')[0]);
+  fireEvent.click(screen.getByTestId('translateButton'));
   fireEvent.click(getByTestId('cancel-button'));
 
-  fireEvent.click(screen.getAllByTestId('previewButton')[0]);
+  fireEvent.click(screen.getByTestId('translateButton'));
 
   await waitFor(() => {
     expect(getByText('Translate Options')).toBeInTheDocument();
