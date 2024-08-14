@@ -29,7 +29,7 @@
     "@vitejs/plugin-react": "^4.3.1",
     "apollo-absinthe-upload-link": "^1.7.0",
     "apollo-link-token-refresh": "^0.7.0",
-    "axios": "^1.7.3",
+    "axios": "^1.7.4",
     "buffer": "^6.0.3",
     "dayjs": "^1.11.12",
     "emoji-mart": "^5.6.0",
