@@ -2,6 +2,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 import { render, waitFor, fireEvent, screen } from '@testing-library/react';
 import { vi } from 'vitest';
+import axios from 'axios';
 
 import { FlowEditor } from './FlowEditor';
 import {
@@ -12,6 +13,7 @@ import {
   publishFlow,
   getFreeFlow,
   resetFlowCount,
+  getFlowTranslations,
 } from 'mocks/Flow';
 import { conversationQuery } from 'mocks/Chat';
 import {
@@ -22,7 +24,7 @@ import {
   simulatorReleaseSubscription,
   simulatorSearchQuery,
 } from 'mocks/Simulator';
-import axios from 'axios';
+import * as Notification from 'common/notification';
 
 window.location = { assign: vi.fn() } as any;
 
@@ -50,6 +52,7 @@ const mocks = [
   getOrganizationServicesQuery,
   getFreeFlow,
   getFreeFlow,
+  getFlowTranslations,
 ];
 
 const activeFlowMocks = [...mocks, getActiveFlow];
@@ -254,5 +257,39 @@ test('reset flow counts', async () => {
 
   await waitFor(() => {
     // need to have an assertion after the query ran
+  });
+});
+
+test('it translates the flow', async () => {
+  const notificationSpy = vi.spyOn(Notification, 'setNotification');
+  mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
+  const { getByTestId, getByText } = render(defaultWrapper);
+
+  await waitFor(() => {
+    expect(screen.findByText('help workflow'));
+  });
+
+  fireEvent.click(screen.getAllByTestId('previewButton')[0]);
+  fireEvent.click(getByTestId('cancel-button'));
+
+  fireEvent.click(screen.getAllByTestId('previewButton')[0]);
+
+  await waitFor(() => {
+    expect(getByText('Translate Options')).toBeInTheDocument();
+  });
+
+  fireEvent.click(getByTestId('ok-button'));
+
+  fireEvent.keyDown(getByText('Note'), { key: 'Esc', code: 'Esc' });
+  fireEvent.click(getByTestId('ok-button'));
+
+  await waitFor(() => {
+    expect(getByText('Note')).toBeInTheDocument();
+  });
+
+  fireEvent.click(getByText('Continue'));
+
+  await waitFor(() => {
+    expect(notificationSpy).toHaveBeenCalled();
   });
 });
