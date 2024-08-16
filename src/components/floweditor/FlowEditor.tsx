@@ -14,7 +14,7 @@ import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { setErrorMessage, setNotification } from 'common/notification';
 import { PUBLISH_FLOW, RESET_FLOW_COUNT } from 'graphql/mutations/Flow';
 import { EXPORT_FLOW, GET_FLOW_DETAILS, GET_FREE_FLOW } from 'graphql/queries/Flow';
-import { getOrganizationServices, setAuthHeaders } from 'services/AuthService';
+import { setAuthHeaders } from 'services/AuthService';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import Track from 'services/TrackService';
 import { exportFlowMethod } from 'common/utils';
@@ -57,8 +57,6 @@ export const FlowEditor = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-
-  const isTranslationEnabled = getOrganizationServices('autoTranslationEnabled');
 
   let modal = null;
   let dialog = null;
@@ -409,21 +407,19 @@ export const FlowEditor = () => {
               Reset flow count
             </MenuItem>
           </Menu>
-          {isTranslationEnabled && (
-            <Button
-              variant="outlined"
-              color="primary"
-              data-testid="previewButton"
-              disabled={isTemplate}
-              onClick={() => {
-                setShowTranslateFlowModal(true);
-                handleClose();
-              }}
-            >
-              <TranslateIcon className={styles.Icon} />
-              Translate
-            </Button>
-          )}
+          <Button
+            variant="outlined"
+            color="primary"
+            data-testid="translateButton"
+            disabled={isTemplate}
+            onClick={() => {
+              setShowTranslateFlowModal(true);
+              handleClose();
+            }}
+          >
+            <TranslateIcon className={styles.Icon} />
+            Translate
+          </Button>
           <Button
             variant="outlined"
             color="primary"
