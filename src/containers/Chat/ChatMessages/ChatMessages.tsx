@@ -222,7 +222,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
           .reverse();
         const conversationsCopy = JSON.parse(JSON.stringify(conversations));
 
-        conversationsCopy.search = conversationsCopy.search.map((conversation: any) => {
+        conversationsCopy.search = conversationsCopy?.search?.map((conversation: any) => {
           const conversationObj = conversation;
           if (collectionId) {
             // If the collection(group) is present in the cache
