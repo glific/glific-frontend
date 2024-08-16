@@ -339,7 +339,7 @@ export const getConversation = (
       selectedRecord = true;
     }
     entityId = conversation.contact.id;
-    displayName = getDisplayName(conversation?.contact);
+    displayName = getDisplayName(conversation.contact);
     contactIsOrgRead = conversation.contact.isOrgRead;
     timer = {
       contactStatus: conversation.contact.status,

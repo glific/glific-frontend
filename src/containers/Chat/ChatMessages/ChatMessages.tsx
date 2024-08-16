@@ -742,7 +742,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
   if (entityId && conversationInfo[chatType]) {
     const displayName = groups
       ? conversationInfo.waGroup.label
-      : getDisplayName(conversationInfo?.contact);
+      : getDisplayName(conversationInfo[chatType]);
 
     topChatBar = (
       <ConversationHeader

@@ -50,7 +50,7 @@ export const ContactProfile = () => {
   const { phone, maskedPhone, groups, lastMessage, settings, activeProfile } = contactData;
   let { fields } = contactData;
 
-  const contactDisplayName = getDisplayName(contact?.contact);
+  const contactDisplayName = getDisplayName(contactData);
 
   let selectedProfile;
 
