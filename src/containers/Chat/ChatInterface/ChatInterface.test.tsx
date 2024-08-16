@@ -7,10 +7,6 @@ import { SEARCH_QUERY } from 'graphql/queries/Search';
 import { DEFAULT_ENTITY_LIMIT, DEFAULT_MESSAGE_LIMIT } from 'common/constants';
 
 import { ChatInterface } from './ChatInterface';
-import { MockedProvider } from '@apollo/client/testing';
-import { chatMocks } from '../ChatMessages/ChatMessages.test';
-import { collectionCountSubscription } from 'mocks/Search';
-import { collectionCountQuery, markAsReadMock, savedSearchStatusQuery } from 'mocks/Chat';
 
 const cache = new InMemoryCache({ addTypename: false });
 cache.writeQuery({
@@ -95,24 +91,12 @@ vi.mock('react-router-dom', async () => ({
   useNavigate: () => mockedUsedNavigate,
 }));
 
-const mocks = [
-  ...chatMocks,
-  collectionCountSubscription,
-  collectionCountQuery,
-  savedSearchStatusQuery,
-  markAsReadMock('2'),
-];
-
-beforeEach(() => {
-  vi.resetAllMocks();
-});
-
 const wrapper = (
-  <MemoryRouter>
-    <MockedProvider mocks={mocks} cache={cache}>
+  <ApolloProvider client={client}>
+    <MemoryRouter>
       <ChatInterface />
-    </MockedProvider>
-  </MemoryRouter>
+    </MemoryRouter>
+  </ApolloProvider>
 );
 
 // set user session
@@ -131,7 +115,9 @@ describe('<ChatInterface />', () => {
   });
 
   test('check condition when no subscription data provided', async () => {
-    const { findByTestId } = render(wrapper);
+    const { getByText, findByTestId } = render(wrapper);
+
+    expect(getByText('Loading...')).toBeInTheDocument();
 
     const ChatConversation = await findByTestId('beneficiaryName');
     expect(ChatConversation).toHaveTextContent('Effie Cormier');
@@ -150,6 +136,7 @@ describe('<ChatInterface />', () => {
 
   test('should navigate to saved searches', async () => {
     const { getByText } = render(wrapper);
+    expect(getByText('Loading...')).toBeInTheDocument();
 
     fireEvent.click(getByText('Searches'));
 
@@ -159,13 +146,14 @@ describe('<ChatInterface />', () => {
   });
 
   test('should have Collections as heading', async () => {
-    const { getByTestId } = render(
+    const { getByText, getByTestId } = render(
       <ApolloProvider client={client}>
         <MemoryRouter>
           <ChatInterface collectionType={true} />
         </MemoryRouter>
       </ApolloProvider>
     );
+    expect(getByText('Loading...')).toBeInTheDocument();
 
     await waitFor(() => {
       expect(getByTestId('heading')).toHaveTextContent('Collections');
