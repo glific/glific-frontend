@@ -740,7 +740,9 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
   const isSimulatorProp = groups ? false : isSimulator(conversationInfo.contact?.phone);
 
   if (entityId && conversationInfo[chatType]) {
-    const displayName = groups ? conversationInfo.waGroup.label : getDisplayName(conversationInfo);
+    const displayName = groups
+      ? conversationInfo.waGroup.label
+      : getDisplayName(conversationInfo?.contact);
 
     topChatBar = (
       <ConversationHeader

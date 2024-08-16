@@ -107,7 +107,9 @@ export const Profile = ({
     updateName();
     let hideDeleteButton = false;
     let displayName = getDisplayName({
-      contact: { name: nameValue, fields: fieldsValue, phone: phoneValue },
+      name: nameValue,
+      fields: fieldsValue,
+      phone: phoneValue,
     });
 
     if (!displayName) {
