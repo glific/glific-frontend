@@ -332,8 +332,10 @@ export const FlowEditor = () => {
   const getFlowKeyword = () => {
     const flows = flowName ? flowName.flows : null;
     if (flows && flows.length > 0) {
-      const { isActive, keywords } = flows[0];
-      if (isActive && keywords.length > 0) {
+      const { isActive, keywords, isTemplate } = flows[0];
+      if (isTemplate) {
+        return 'temp:';
+      } else if (isActive && keywords.length > 0) {
         return `draft:${keywords[0]}`;
       } else if (keywords.length === 0) {
         return 'No keyword found';
@@ -448,6 +450,7 @@ export const FlowEditor = () => {
           hasResetButton
           flowSimulator
           message={getFlowKeyword()}
+          flowId={flowId}
         />
       )}
       {modal}
