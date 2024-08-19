@@ -491,7 +491,7 @@ export const Simulator = ({
 
   const simulator = (
     <Draggable>
-      <div className={styles.SimContainer}>
+      <div data-testid="simulator-container" className={styles.SimContainer}>
         <div>
           <div id="simulator" className={styles.Simulator}>
             <img src={BackgroundPhoneImage} className={styles.BackgroundImage} draggable="false" />
