@@ -40,9 +40,9 @@ describe('contact profile', () => {
       expect(getByText('Provider status')).toBeInTheDocument();
     });
 
-    // shows field name for contact
+    // shows N/A when no name
     await waitFor(() => {
-      expect(getAllByRole('textbox')[0]).toHaveValue('fieldName');
+      expect(getAllByRole('textbox')[0]).toHaveValue('N/A');
     });
   });
 });

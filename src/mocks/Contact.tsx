@@ -78,7 +78,7 @@ export const getContactSampleQuery = (variables: any) => {
         contact: {
           contact: {
             id: '1',
-            name: 'Default User',
+            name: null,
             activeProfile: null,
             phone: '+919820198765',
             language: { id: '1', label: 'English' },
@@ -86,8 +86,7 @@ export const getContactSampleQuery = (variables: any) => {
             status: 'VALID',
             bspStatus: 'SESSION_AND_HSM',
             settings: {},
-            fields:
-              '{"name":{"value":"fieldName","type":"string","label":"name","inserted_at":"2024-08-12T04:40:25.098162Z"}}',
+            fields: '{}',
           },
         },
       },

@@ -123,12 +123,13 @@ export const searchQuery = {
         group: null,
         contact: {
           id: '2',
-          name: 'Effie Cormier',
+          name: null,
           phone: '987654321',
           maskedPhone: '98****321',
           lastMessageAt: new Date(),
           status: 'VALID',
-          fields: '{}',
+          fields:
+            '{"name":{"value":"Effie Cormier","type":"string","label":"name","inserted_at":"2024-08-12T04:40:25.098162Z"}}',
           bspStatus: 'SESSION_AND_HSM',
           isOrgRead: true,
         },
