@@ -1,12 +1,31 @@
-import { MemoryRouter } from 'react-router-dom';
-import { cleanup, fireEvent, render, waitFor } from '@testing-library/react';
-import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
+import { MemoryRouter } from 'react-router';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { describe, expect } from 'vitest';
+import { MockedProvider } from '@apollo/client/testing';
+import { InMemoryCache } from '@apollo/client';
 
-import { setUserSession } from 'services/AuthService';
-import { SEARCH_QUERY } from 'graphql/queries/Search';
 import { DEFAULT_ENTITY_LIMIT, DEFAULT_MESSAGE_LIMIT } from 'common/constants';
+import { SEARCH_QUERY } from 'graphql/queries/Search';
+import { setUserSession } from 'services/AuthService';
 
-import { ChatInterface } from './ChatInterface';
+import { getAttachmentPermissionMock } from 'mocks/Attachment';
+import {
+  collectionCountQuery,
+  markAsReadMock,
+  savedSearchQuery,
+  savedSearchStatusQuery,
+} from 'mocks/Chat';
+import { contactCollectionsQuery } from 'mocks/Contact';
+import { OrganizationStateMock } from 'mocks/Organization';
+import { collectionCountSubscription } from 'mocks/Search';
+
+import ChatInterface from './ChatInterface';
+
+const mockedUsedNavigate = vi.fn();
+vi.mock('react-router-dom', async () => ({
+  ...(await vi.importActual('react-router-dom')),
+  useNavigate: () => mockedUsedNavigate,
+}));
 
 const cache = new InMemoryCache({ addTypename: false });
 cache.writeQuery({
@@ -75,57 +94,43 @@ cache.writeQuery({
   },
 });
 
-const client = new ApolloClient({
-  cache: cache,
-  uri: 'http://localhost:4000/',
-  assumeImmutableResults: true,
-});
-
-window.HTMLElement.prototype.scrollIntoView = function () {};
-
-afterEach(cleanup);
-
-const mockedUsedNavigate = vi.fn();
-vi.mock('react-router-dom', async () => ({
-  ...(await vi.importActual('react-router-dom')),
-  useNavigate: () => mockedUsedNavigate,
-}));
+const mocks = [
+  collectionCountSubscription,
+  collectionCountQuery,
+  savedSearchStatusQuery,
+  contactCollectionsQuery(2),
+  OrganizationStateMock,
+  getAttachmentPermissionMock,
+  savedSearchQuery,
+  markAsReadMock('2'),
+];
 
 const wrapper = (
-  <ApolloProvider client={client}>
+  <MockedProvider cache={cache} mocks={mocks}>
     <MemoryRouter>
       <ChatInterface />
     </MemoryRouter>
-  </ApolloProvider>
+  </MockedProvider>
 );
 
-// set user session
 setUserSession(JSON.stringify({ organization: { id: '1' } }));
+window.HTMLElement.prototype.scrollIntoView = function () {};
 
-describe('<ChatInterface />', () => {
-  test('it should render <ChatInterface /> component correctly', async () => {
-    const { getByText, findByTestId } = render(wrapper);
+describe('Chat interface', () => {
+  test('it should render chat interface component correctly', async () => {
+    render(wrapper);
 
-    // loading is show initially
-    expect(getByText('Loading...')).toBeInTheDocument();
-
-    // check if chat conversations are displayed
-    const ChatConversation = await findByTestId('beneficiaryName');
-    expect(ChatConversation).toHaveTextContent('Effie Cormier');
-  });
-
-  test('check condition when no subscription data provided', async () => {
-    const { getByText, findByTestId } = render(wrapper);
-
-    expect(getByText('Loading...')).toBeInTheDocument();
-
-    const ChatConversation = await findByTestId('beneficiaryName');
-    expect(ChatConversation).toHaveTextContent('Effie Cormier');
+    await waitFor(() => {
+      expect(screen.getByTestId('beneficiaryName')).toHaveTextContent('Effie Cormier');
+    });
   });
 
   test('should navigate to collections', async () => {
     const { getByText } = render(wrapper);
-    expect(getByText('Loading...')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(screen.getByTestId('beneficiaryName')).toHaveTextContent('Effie Cormier');
+    });
 
     fireEvent.click(getByText('Collections'));
 
@@ -136,7 +141,6 @@ describe('<ChatInterface />', () => {
 
   test('should navigate to saved searches', async () => {
     const { getByText } = render(wrapper);
-    expect(getByText('Loading...')).toBeInTheDocument();
 
     fireEvent.click(getByText('Searches'));
 
@@ -144,16 +148,14 @@ describe('<ChatInterface />', () => {
       expect(mockedUsedNavigate).toHaveBeenCalled();
     });
   });
-
   test('should have Collections as heading', async () => {
-    const { getByText, getByTestId } = render(
-      <ApolloProvider client={client}>
+    const { getByTestId } = render(
+      <MockedProvider cache={cache} mocks={mocks}>
         <MemoryRouter>
           <ChatInterface collectionType={true} />
         </MemoryRouter>
-      </ApolloProvider>
+      </MockedProvider>
     );
-    expect(getByText('Loading...')).toBeInTheDocument();
 
     await waitFor(() => {
       expect(getByTestId('heading')).toHaveTextContent('Collections');
@@ -161,48 +163,44 @@ describe('<ChatInterface />', () => {
   });
 
   test('should have Saved searches as heading', async () => {
-    const { getByText, getByTestId } = render(
-      <ApolloProvider client={client}>
+    const { getByTestId } = render(
+      <MockedProvider cache={cache} mocks={mocks}>
         <MemoryRouter>
           <ChatInterface savedSearches={true} />
         </MemoryRouter>
-      </ApolloProvider>
+      </MockedProvider>
     );
-    expect(getByText('Loading...')).toBeInTheDocument();
-
     await waitFor(() => {
       expect(getByTestId('heading')).toHaveTextContent('Saved searches');
     });
   });
+});
 
-  const emptyCache = new InMemoryCache({ addTypename: false });
+const emptyCache = new InMemoryCache({ addTypename: false });
 
-  emptyCache.writeQuery({
-    query: SEARCH_QUERY,
-    variables: {
-      contactOpts: { limit: DEFAULT_ENTITY_LIMIT },
-      filter: {},
-      messageOpts: { limit: DEFAULT_MESSAGE_LIMIT },
-    },
-    data: {
-      search: [],
-    },
-  });
+emptyCache.writeQuery({
+  query: SEARCH_QUERY,
+  variables: {
+    contactOpts: { limit: DEFAULT_ENTITY_LIMIT },
+    filter: {},
+    messageOpts: { limit: DEFAULT_MESSAGE_LIMIT },
+  },
+  data: {
+    search: [],
+  },
+});
 
-  const clientForEmptyCache = new ApolloClient({
-    cache: emptyCache,
-    uri: 'http://localhost:4000/',
-    assumeImmutableResults: true,
-  });
+const emptyWrapper = (
+  <MockedProvider cache={emptyCache} mocks={mocks}>
+    <MemoryRouter>
+      <ChatInterface />
+    </MemoryRouter>
+  </MockedProvider>
+);
 
+describe('Chat interface for empty cache', () => {
   test('should render no conversations if there are no conversations', async () => {
-    const { getByText, getByTestId } = render(
-      <ApolloProvider client={clientForEmptyCache}>
-        <MemoryRouter>
-          <ChatInterface />
-        </MemoryRouter>
-      </ApolloProvider>
-    );
+    const { getByTestId } = render(emptyWrapper);
 
     await waitFor(() => {
       expect(getByTestId('empty-result')).toBeInTheDocument();
