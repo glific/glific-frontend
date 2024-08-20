@@ -2,6 +2,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 import { render, waitFor, fireEvent, screen } from '@testing-library/react';
 import { vi } from 'vitest';
+import axios from 'axios';
 
 import { FlowEditor } from './FlowEditor';
 import {
@@ -12,6 +13,7 @@ import {
   publishFlow,
   getFreeFlow,
   resetFlowCount,
+  getFlowTranslations,
 } from 'mocks/Flow';
 import { conversationQuery } from 'mocks/Chat';
 import {
@@ -22,7 +24,7 @@ import {
   simulatorReleaseSubscription,
   simulatorSearchQuery,
 } from 'mocks/Simulator';
-import axios from 'axios';
+import * as Notification from 'common/notification';
 
 window.location = { assign: vi.fn() } as any;
 
@@ -50,6 +52,7 @@ const mocks = [
   getOrganizationServicesQuery,
   getFreeFlow,
   getFreeFlow,
+  getFlowTranslations,
 ];
 
 const activeFlowMocks = [...mocks, getActiveFlow];
@@ -105,6 +108,7 @@ test('it should display name of the flow', async () => {
 test('it should have a preview button', async () => {
   const { getByTestId } = render(defaultWrapper);
   await waitFor(() => {
+    expect(getByTestId('translateButton')).toBeInTheDocument();
     expect(getByTestId('previewButton')).toBeInTheDocument();
   });
 });
@@ -195,7 +199,7 @@ test('start with a keyword message if the simulator opens in floweditor screen',
   });
   fireEvent.click(screen.getByTestId('previewButton'));
   await waitFor(() => {
-    expect(screen.findByTestId('beneficiaryName'));
+    expect(screen.getByTestId('simulator-container'));
   });
 
   // need some assertion
@@ -253,5 +257,39 @@ test('reset flow counts', async () => {
 
   await waitFor(() => {
     // need to have an assertion after the query ran
+  });
+});
+
+test('it translates the flow', async () => {
+  const notificationSpy = vi.spyOn(Notification, 'setNotification');
+  mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
+  const { getByTestId, getByText } = render(defaultWrapper);
+
+  await waitFor(() => {
+    expect(screen.findByText('help workflow'));
+  });
+
+  fireEvent.click(screen.getByTestId('translateButton'));
+  fireEvent.click(getByTestId('cancel-button'));
+
+  fireEvent.click(screen.getByTestId('translateButton'));
+
+  await waitFor(() => {
+    expect(getByText('Translate Options')).toBeInTheDocument();
+  });
+
+  fireEvent.click(getByTestId('ok-button'));
+
+  fireEvent.keyDown(getByText('Note'), { key: 'Esc', code: 'Esc' });
+  fireEvent.click(getByTestId('ok-button'));
+
+  await waitFor(() => {
+    expect(getByText('Note')).toBeInTheDocument();
+  });
+
+  fireEvent.click(getByText('Continue'));
+
+  await waitFor(() => {
+    expect(notificationSpy).toHaveBeenCalled();
   });
 });

@@ -113,6 +113,7 @@ export const GET_CONTACT_DETAILS = gql`
   query getContact($id: ID!) {
     contact(id: $id) {
       contact {
+        name
         activeProfile {
           id
         }

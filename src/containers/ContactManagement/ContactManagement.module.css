@@ -24,15 +24,6 @@
   padding: 1.5rem 2rem;
 }
 
-.Buttons {
-  margin-top: 1rem;
-  display: flex;
-  flex-direction: column;
-  align-items: end;
-  justify-content: end;
-  width: 100%;
-}
-
 .Buttons button {
   border-radius: 8px;
   width: 30%;
