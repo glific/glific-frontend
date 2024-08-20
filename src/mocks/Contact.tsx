@@ -78,7 +78,7 @@ export const getContactSampleQuery = (variables: any) => {
         contact: {
           contact: {
             id: '1',
-            name: 'Default User',
+            name: null,
             activeProfile: null,
             phone: '+919820198765',
             language: { id: '1', label: 'English' },
@@ -86,7 +86,7 @@ export const getContactSampleQuery = (variables: any) => {
             status: 'VALID',
             bspStatus: 'SESSION_AND_HSM',
             settings: {},
-            fields: {},
+            fields: '{}',
           },
         },
       },
@@ -125,6 +125,7 @@ export const getContactDetailsQuery = (attributes: any = {}) => ({
       contact: {
         contact: {
           ...attributes,
+          name: 'Default User',
           activeProfile: null,
           phone: '+919820198765',
           maskedPhone: '+919820198765',
@@ -509,6 +510,7 @@ export const LOGGED_IN_USER_MOCK = [
   getCurrentUserQuery,
   getCurrentUserQuery,
   getContactProfiles,
+  getContactDetailsQuery(),
   getContactDetailsQuery(),
   getOrganizationLanguagesQuery,
   getOrganizationLanguagesQuery,
