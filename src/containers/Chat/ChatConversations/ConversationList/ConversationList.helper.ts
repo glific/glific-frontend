@@ -10,7 +10,7 @@ export const getConversationForSearchMulti = (
   let entity = conversation;
   let selectedRecord = false;
   let timer;
-  if (selectedContactId == entity.id) {
+  if (selectedContactId === entity.id) {
     selectedRecord = true;
   }
   let entityId: any;
@@ -25,7 +25,7 @@ export const getConversationForSearchMulti = (
 
   if (conversation[chatType]) {
     entity = conversation[chatType];
-    if (selectedContactId == conversation[chatType]?.id) {
+    if (selectedContactId === conversation[chatType]?.id) {
       selectedRecord = true;
     }
   } else if (conversation.bspStatus && conversation.lastMessageAt) {

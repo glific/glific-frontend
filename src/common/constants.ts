@@ -1,6 +1,5 @@
 import dayjs from 'dayjs';
 import * as Yup from 'yup';
-import { getDisplayName, getDisplayNameForSearch } from './utils';
 
 export const OLD_DOMAIN = 'tides.coloredcow.com';
 export const NEW_DOMAIN = 'glific.com';
