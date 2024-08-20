@@ -14,7 +14,6 @@ export const Instructions = () => {
             Ensure the first message being sent to the newly onboarded contacts is the opt-in
             message
           </li>
-          <li>Further detailed instructions here.</li>
         </ul>
       </div>
 

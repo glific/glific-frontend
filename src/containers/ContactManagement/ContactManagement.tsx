@@ -25,7 +25,7 @@ export const ContactManagement = () => {
       <div className={styles.MainContainer}>
         <div className={styles.Container}>
           <div>
-            <h2>Bulk contacts upload</h2>
+            <h2>Import contacts</h2>
             <Instructions />
           </div>
 
@@ -35,7 +35,7 @@ export const ContactManagement = () => {
               variant="contained"
               onClick={() => setShowUploadDialog(true)}
             >
-              Upload Contacts
+              Continue
             </Button>
           </div>
         </div>
