@@ -18,7 +18,7 @@ import {
 } from 'graphql/mutations/Contact';
 import { GET_CURRENT_USER } from 'graphql/queries/User';
 import { getOrganizationServices } from 'services/AuthService';
-import { isSimulator } from 'common/utils';
+import { getDisplayName, isSimulator } from 'common/utils';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 
 const profileIcon = <ProfileIcon />;
@@ -102,10 +102,19 @@ export const Profile = ({
     status: statusValue,
     bspStatus: bspStatusValue,
     language: languageIdValue,
+    fields: fieldsValue,
   }: any) => {
-    setName(nameValue);
     updateName();
     let hideDeleteButton = false;
+    let displayName = getDisplayName({
+      name: nameValue,
+      fields: fieldsValue,
+      phone: phoneValue,
+    });
+
+    if (!displayName) {
+      displayName = 'N/A';
+    }
 
     if (phoneValue) {
       setPhone(phoneValue);
@@ -117,6 +126,7 @@ export const Profile = ({
       hideDeleteButton = organizationPhone === currentUserPhone;
     }
 
+    setName(displayName);
     setStatus(statusValue);
     setBspStatus(bspStatusValue);
     setHideRemoveBtn(hideDeleteButton);

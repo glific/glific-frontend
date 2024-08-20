@@ -167,27 +167,27 @@ export const getInteractiveMessageBody = (interactiveJSON: any) => {
   return messageBody;
 };
 
-export const getDisplayName = (conversation: any) => {
+export const getDisplayName = (contact: any) => {
   // let's return early with default simulator name if we are looking at simulator contact
-  const isSimulatorContact = isSimulator(conversation.contact.phone);
+  const isSimulatorContact = isSimulator(contact.phone);
   if (isSimulatorContact) {
-    return conversation.contact.name || conversation.contact.maskedPhone;
+    return contact.name || contact.maskedPhone;
   }
 
   let displayName = '';
   let contactFields: any = {};
   try {
-    contactFields = JSON.parse(conversation.contact.fields);
+    contactFields = JSON.parse(contact.fields);
   } catch (er) {
     setLogs(er, 'error');
   }
 
-  if (contactFields?.name && contactFields.name.value) {
+  if (contactFields?.name?.value) {
     displayName = contactFields.name.value;
-  } else if (conversation.contact.name) {
-    displayName = conversation.contact.name;
+  } else if (contact.name) {
+    displayName = contact.name;
   } else {
-    displayName = conversation.contact.maskedPhone;
+    displayName = contact.maskedPhone;
   }
   return displayName;
 };
