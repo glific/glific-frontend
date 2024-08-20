@@ -82,7 +82,9 @@ export const UploadContactsDialog = ({ setDialog }: UploadContactsDialogProps) =
 
   const validationSchema = Yup.object().shape({
     collection: Yup.object().nullable().required(t('Collection is required')),
-    optedIn: Yup.boolean().oneOf([true]).required(),
+    optedIn: Yup.boolean()
+      .oneOf([true], 'Please confirm if contacts are opted in.')
+      .required('Please confirm if contacts are opted in.'),
   });
 
   const formFieldItems: any = [
@@ -100,6 +102,9 @@ export const UploadContactsDialog = ({ setDialog }: UploadContactsDialogProps) =
       name: 'optedIn',
       title: t('Are these contacts opted in?'),
       darkCheckbox: true,
+      info: {
+        title: 'Please obtain prior consent from contacts to message them on WhatsApp',
+      },
     },
   ];
 
