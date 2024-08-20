@@ -19,14 +19,13 @@ import {
   GROUP_QUERY_VARIABLES,
   GROUP_COLLECTION_SEARCH_QUERY_VARIABLES,
   getVariables,
-  getConversationForSearchMulti,
-  getConversation,
 } from 'common/constants';
 import { updateConversations } from 'services/ChatService';
 import { updateGroupConversations } from 'services/GroupMessageService';
 import { showMessages } from 'common/responsive';
 import { addLogs } from 'common/utils';
 import ChatConversation from '../ChatConversation/ChatConversation';
+import { getConversationForSearchMulti, getConversation } from './ConversationList.helper';
 import styles from './ConversationList.module.css';
 import { GROUP_SEARCH_MULTI_QUERY, GROUP_SEARCH_QUERY } from 'graphql/queries/WaGroups';
 import { useLocation } from 'react-router-dom';
