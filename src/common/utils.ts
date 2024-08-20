@@ -1,4 +1,6 @@
 import axios from 'axios';
+import dayjs from 'dayjs';
+
 import { FLOW_EDITOR_API } from 'config';
 import setLogs from 'config/logs';
 import { checkDynamicRole } from 'context/role';
@@ -9,9 +11,9 @@ import {
   setAuthSession,
   renewAuthToken,
 } from 'services/AuthService';
+import { CONTACT_FRAGMENT } from 'graphql/mutations/Chat';
 import { SIMULATOR_NUMBER_START, STANDARD_DATE_TIME_FORMAT } from './constants';
 import { setNotification } from './notification';
-import dayjs from 'dayjs';
 
 export const isSimulator = (phone: string) =>
   phone ? phone.startsWith(SIMULATOR_NUMBER_START) : false;
@@ -275,4 +277,24 @@ export const getContactStatus = (contact: {
 
 export const capitalizeFirstLetter = (string: string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
+};
+
+export const updateContactCache = (client: any, id: any) => {
+  const contact = client.readFragment({
+    id: `Contact:${id}`,
+    fragment: CONTACT_FRAGMENT,
+  });
+
+  if (contact) {
+    const contactCopy = JSON.parse(JSON.stringify(contact));
+
+    contactCopy.isOrgRead = true;
+    client.writeFragment({
+      id: `Contact:${id}`,
+      fragment: CONTACT_FRAGMENT,
+      data: contactCopy,
+    });
+  }
+
+  return null;
 };
