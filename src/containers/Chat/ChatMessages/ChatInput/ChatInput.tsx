@@ -105,7 +105,6 @@ export const ChatInput = ({
   const resetVariable = () => {
     setUpdatedEditorState(undefined);
     setEditorState('');
-    setSelectedTemplate(undefined);
     setInteractiveMessageContent({});
     setVariableParam([]);
 
