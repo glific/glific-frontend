@@ -161,6 +161,7 @@ export interface TemplateProps {
   newShortCode?: any;
   setNewShortcode?: any;
   existingShortCode?: any;
+  updateSimulatorMessage?: any;
 }
 
 interface CallToActionTemplate {
@@ -192,6 +193,7 @@ const Template = ({
   setNewShortcode,
   newShortCode,
   existingShortCode,
+  updateSimulatorMessage,
 }: TemplateProps) => {
   // "Audio" option is removed in case of HSM Template
   const mediaTypes =
@@ -327,7 +329,9 @@ const Template = ({
       }
       variables = getExampleValue(exampleValue);
       setVariables(variables);
-      onExampleChange(getExampleFromBody(bodyValue, variables));
+      console.log(1);
+
+      updateSimulatorMessage(getExampleFromBody(bodyValue, variables), type, MessageMediaValue);
     }
 
     if (shortcodeValue && setNewShortcode) {
@@ -520,8 +524,10 @@ const Template = ({
   }, [languages]);
 
   useEffect(() => {
-    if ((type === '' || type) && attachmentURL) {
-      validateURL(attachmentURL);
+    if (type === '' || type) {
+      if (attachmentURL) {
+        validateURL(attachmentURL);
+      }
       if (getUrlAttachmentAndType) {
         getUrlAttachmentAndType(type.id || 'TEXT', { url: attachmentURL });
       }
@@ -541,7 +547,9 @@ const Template = ({
   // Removing buttons when checkbox is checked or unchecked
   useEffect(() => {
     const { message }: any = getTemplateAndButton(getExampleFromBody(body, variables));
-    onExampleChange(message || '');
+    console.log(message);
+
+    updateSimulatorMessage(message || '', type, {});
   }, [isAddButtonChecked]);
 
   // Converting buttons to template and vice-versa to show realtime update on simulator
@@ -555,6 +563,8 @@ const Template = ({
 
       const sampleText: any = parsedText && message + parsedText;
       if (sampleText) {
+        console.log(3);
+
         onExampleChange(sampleText);
       }
     }

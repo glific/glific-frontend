@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 import { useParams, useLocation } from 'react-router-dom';
@@ -33,7 +33,9 @@ export const HSM = () => {
   const [category, setCategory] = useState<any>(undefined);
   const [languageVariant, setLanguageVariant] = useState<boolean>(false);
   const [allowTemplateCategoryChange, setAllowTemplateCategoryChange] = useState<boolean>(true);
-
+  useEffect(() => {
+    console.log(sampleMessages);
+  }, [sampleMessages]);
   const { t } = useTranslation();
   const params = useParams();
   const location: any = useLocation();
@@ -90,19 +92,35 @@ export const HSM = () => {
     const media: any = { ...sampleMessages.media };
     const text = getTemplate(message);
     media.caption = text;
+    console.log(sampleMessages, { body: text, media });
+
     setSampleMessages((val) => ({ ...val, body: text, media }));
   };
 
   const getAttachmentUrl = (type: any, media: any) => {
-    const mediaBody = { ...media };
-    const mediaObj: any = sampleMessages.media;
-    mediaBody.caption = mediaObj.caption;
-    setSampleMessages((val) => ({ ...val, type, media: mediaBody }));
+    const message: any = { ...sampleMessages };
+
+    message.media = media;
+    message.type = type;
+    console.log(message);
+
+    setSampleMessages(message);
   };
 
   const addButtonsToSampleMessage = (buttonTemplate: string) => {
     const message: any = { ...sampleMessages };
     message.body = buttonTemplate;
+    console.log(sampleMessages, message);
+
+    setSampleMessages(message);
+  };
+
+  const updateSimulatorMessage = (body: any, type: any, media: any) => {
+    const message: any = { ...sampleMessages };
+    message.body = body;
+    message.type = type;
+    message.media = media;
+
     setSampleMessages(message);
   };
 
@@ -207,6 +225,7 @@ export const HSM = () => {
         setNewShortcode={setNewShortcode}
         newShortCode={newShortcode}
         existingShortCode={exisitingShortCode}
+        updateSimulatorMessage={updateSimulatorMessage}
       />
       <Simulator isPreviewMessage message={sampleMessages} simulatorIcon={false} />
     </div>

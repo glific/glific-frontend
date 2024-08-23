@@ -13,7 +13,7 @@ const ImgFallback = ({ src, alt, ...rest }: ImgProps) => {
   const imgRef: any = useRef<HTMLImageElement>();
 
   useEffect(() => {
-    setImgSrc(src);
+    setImgSrc(src || FallbackImage);
   }, [src]);
 
   return (
