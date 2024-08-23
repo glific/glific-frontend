@@ -1,5 +1,5 @@
 import { useCallback, useState, useEffect } from 'react';
-import { useQuery, useMutation, useLazyQuery } from '@apollo/client';
+import { useQuery, useMutation, useLazyQuery, useApolloClient } from '@apollo/client';
 import { CircularProgress, Container } from '@mui/material';
 import dayjs from 'dayjs';
 import { Navigate, useLocation } from 'react-router-dom';
@@ -32,9 +32,10 @@ import {
 import {
   CREATE_AND_SEND_MESSAGE_MUTATION,
   CREATE_AND_SEND_MESSAGE_TO_COLLECTION_MUTATION,
+  MARK_AS_READ,
 } from '../../../graphql/mutations/Chat';
 import { getCachedConverations, updateConversationsCache } from '../../../services/ChatService';
-import { addLogs, getDisplayName, isSimulator } from '../../../common/utils';
+import { addLogs, getDisplayName, isSimulator, updateContactCache } from '../../../common/utils';
 import { CollectionInformation } from '../../Collection/CollectionInformation/CollectionInformation';
 import { LexicalWrapper } from 'common/LexicalWrapper';
 import {
@@ -53,6 +54,7 @@ export interface ChatMessagesProps {
 export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesProps) => {
   const urlString = new URL(window.location.href);
   const location = useLocation();
+  const client = useApolloClient();
 
   const groups: boolean = location.pathname.includes('group');
   const chatType = groups ? 'waGroup' : 'contact';
@@ -80,6 +82,11 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
   const [collectionVariables, setCollectionVariables] = useState<any>({});
   const { t } = useTranslation();
   let dialogBox;
+
+  let searchQuery = groups ? GROUP_SEARCH_QUERY : SEARCH_QUERY;
+
+  // get the conversations stored from the cache
+  let queryVariables = groups ? GROUP_QUERY_VARIABLES : SEARCH_QUERY_VARIABLES;
 
   useEffect(() => {
     setShowLoadMore(true);
@@ -139,10 +146,21 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
     },
   });
 
-  let searchQuery = groups ? GROUP_SEARCH_QUERY : SEARCH_QUERY;
+  const [markAsRead] = useMutation(MARK_AS_READ, {
+    onCompleted: (data) => {
+      if (data.markContactMessagesAsRead) {
+        updateContactCache(client, entityId);
+      }
+    },
+  });
 
-  // get the conversations stored from the cache
-  let queryVariables = groups ? GROUP_QUERY_VARIABLES : SEARCH_QUERY_VARIABLES;
+  useEffect(() => {
+    if (!groups && entityId) {
+      markAsRead({
+        variables: { contactId: entityId.toString() },
+      });
+    }
+  }, []);
 
   if (collectionId) {
     queryVariables = groups
@@ -740,7 +758,9 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
   const isSimulatorProp = groups ? false : isSimulator(conversationInfo.contact?.phone);
 
   if (entityId && conversationInfo[chatType]) {
-    const displayName = groups ? conversationInfo.waGroup.label : getDisplayName(conversationInfo);
+    const displayName = groups
+      ? conversationInfo.waGroup.label
+      : getDisplayName(conversationInfo[chatType]);
 
     topChatBar = (
       <ConversationHeader

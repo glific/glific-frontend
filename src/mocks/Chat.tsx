@@ -10,7 +10,7 @@ import {
   SEARCH_MULTI_QUERY,
   SEARCHES_COUNT,
 } from 'graphql/queries/Search';
-import { CREATE_AND_SEND_MESSAGE_MUTATION } from 'graphql/mutations/Chat';
+import { CREATE_AND_SEND_MESSAGE_MUTATION, MARK_AS_READ } from 'graphql/mutations/Chat';
 import {
   DEFAULT_ENTITY_LIMIT,
   DEFAULT_MESSAGE_LIMIT,
@@ -1076,6 +1076,18 @@ export const conversationMock = (variables: any) => ({
           messages: [sampleMessages],
         },
       ],
+    },
+  },
+});
+
+export const markAsReadMock = (contactId: string) => ({
+  request: {
+    query: MARK_AS_READ,
+    variables: { contactId },
+  },
+  result: {
+    data: {
+      markContactMessagesAsRead: contactId,
     },
   },
 });

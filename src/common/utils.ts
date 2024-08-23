@@ -1,4 +1,6 @@
 import axios from 'axios';
+import dayjs from 'dayjs';
+
 import { FLOW_EDITOR_API } from 'config';
 import setLogs from 'config/logs';
 import { checkDynamicRole } from 'context/role';
@@ -9,9 +11,9 @@ import {
   setAuthSession,
   renewAuthToken,
 } from 'services/AuthService';
+import { CONTACT_FRAGMENT } from 'graphql/mutations/Chat';
 import { SIMULATOR_NUMBER_START, STANDARD_DATE_TIME_FORMAT } from './constants';
 import { setNotification } from './notification';
-import dayjs from 'dayjs';
 
 export const isSimulator = (phone: string) =>
   phone ? phone.startsWith(SIMULATOR_NUMBER_START) : false;
@@ -167,27 +169,27 @@ export const getInteractiveMessageBody = (interactiveJSON: any) => {
   return messageBody;
 };
 
-export const getDisplayName = (conversation: any) => {
+export const getDisplayName = (contact: any) => {
   // let's return early with default simulator name if we are looking at simulator contact
-  const isSimulatorContact = isSimulator(conversation.contact.phone);
+  const isSimulatorContact = isSimulator(contact.phone);
   if (isSimulatorContact) {
-    return conversation.contact.name || conversation.contact.maskedPhone;
+    return contact.name || contact.maskedPhone;
   }
 
   let displayName = '';
   let contactFields: any = {};
   try {
-    contactFields = JSON.parse(conversation.contact.fields);
+    contactFields = JSON.parse(contact.fields);
   } catch (er) {
     setLogs(er, 'error');
   }
 
-  if (contactFields?.name && contactFields.name.value) {
+  if (contactFields?.name?.value) {
     displayName = contactFields.name.value;
-  } else if (conversation.contact.name) {
-    displayName = conversation.contact.name;
+  } else if (contact.name) {
+    displayName = contact.name;
   } else {
-    displayName = conversation.contact.maskedPhone;
+    displayName = contact.maskedPhone;
   }
   return displayName;
 };
@@ -275,4 +277,24 @@ export const getContactStatus = (contact: {
 
 export const capitalizeFirstLetter = (string: string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
+};
+
+export const updateContactCache = (client: any, id: any) => {
+  const contact = client.readFragment({
+    id: `Contact:${id}`,
+    fragment: CONTACT_FRAGMENT,
+  });
+
+  if (contact) {
+    const contactCopy = JSON.parse(JSON.stringify(contact));
+
+    contactCopy.isOrgRead = true;
+    client.writeFragment({
+      id: `Contact:${id}`,
+      fragment: CONTACT_FRAGMENT,
+      data: contactCopy,
+    });
+  }
+
+  return null;
 };

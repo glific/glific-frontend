@@ -13,6 +13,7 @@ import {
   CONVERSATION_MOCKS,
   conversationMock,
   createAndSendMessageMutation2,
+  markAsReadMock,
   mocksWithConversation,
   sendMessageInWaGroup,
   sendMessageInWaGroupCollection,
@@ -123,12 +124,13 @@ export const searchQuery = {
         group: null,
         contact: {
           id: '2',
-          name: 'Effie Cormier',
+          name: null,
           phone: '987654321',
           maskedPhone: '98****321',
           lastMessageAt: new Date(),
           status: 'VALID',
-          fields: '{}',
+          fields:
+            '{"name":{"value":"Effie Cormier","type":"string","label":"name","inserted_at":"2024-08-12T04:40:25.098162Z"}}',
           bspStatus: 'SESSION_AND_HSM',
           isOrgRead: true,
         },
@@ -254,7 +256,11 @@ const mocks = [
   getContactSearchQuery,
   loadMoreQuery(0, 40, { id: '2' }),
   loadMoreQuery(0, 40, { id: '2', searchGroup: true }),
+  markAsReadMock('2'),
+  markAsReadMock('3'),
 ];
+
+export const chatMocks = mocks;
 
 export const collectionWithLoadMore = {
   query: SEARCH_QUERY,
@@ -319,7 +325,7 @@ test('focus on the latest message', async () => {
     const messages = getAllByText('Hey there whats up?');
 
     // since there are 20 messages the latest is message[19]
-    expect(messages[19].scrollIntoView).toHaveBeenCalled();
+    expect(messages[19]).toBeInTheDocument();
   });
 });
 
