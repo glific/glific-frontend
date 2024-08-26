@@ -39,9 +39,6 @@ const getInsertedAt = (insertedAt: string) => (
 
 const getUser = (user: any) => {
   let displayName = getDisplayName(user);
-  if (!displayName) {
-    displayName = user?.maskedPhone;
-  }
   return <div className={styles.TableText}>{displayName}</div>;
 };
 
