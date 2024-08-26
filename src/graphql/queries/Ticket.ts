@@ -7,6 +7,8 @@ export const TICKET_LIST_QUERY = gql`
       contact {
         id
         name
+        fields
+        maskedPhone
       }
       id
       insertedAt

@@ -27,6 +27,7 @@ import styles from './TicketList.module.css';
 import { BulkAction } from './BulkAction/BulkAction';
 import { SHORT_DATE_TIME_FORMAT } from 'common/constants';
 import { ticketsInfo } from 'common/HelpData';
+import { getDisplayName } from 'common/utils';
 
 const getId = (id: any) => <div className={styles.TableText}>{id}</div>;
 const getBody = (body: any) => <div className={styles.TableText}>{body}</div>;
@@ -36,7 +37,13 @@ const getInsertedAt = (insertedAt: string) => (
   <div className={styles.TableText}>{dayjs(insertedAt).format(SHORT_DATE_TIME_FORMAT)}</div>
 );
 
-const getUser = (user: any) => <div className={styles.TableText}>{user?.name}</div>;
+const getUser = (user: any) => {
+  let displayName = getDisplayName(user);
+  if (!displayName) {
+    displayName = user?.maskedPhone;
+  }
+  return <div className={styles.TableText}>{displayName}</div>;
+};
 
 const getColumns = ({ id, body, status, insertedAt, user, contact, topic }: any) => ({
   ticketId: getId(id),
