@@ -82,72 +82,76 @@ const filterQuery = filterTemplatesQuery(
   { isHsm: true }
 );
 
+const filterQueryMock = filterTemplatesQuery(
+  '',
+  [
+    {
+      id: '87',
+      bspId: null,
+      label: 'Good message',
+      body: 'Hey there',
+      shortcode: 'test',
+      category: 'ACCOUNT_UPDATE',
+      isReserved: true,
+      status: 'APPROVED',
+      reason: 'test reason',
+      isHsm: true,
+      isActive: true,
+      updatedAt: '2020-12-01T18:00:32Z',
+      numberParameters: 0,
+      translations:
+        '{"2":{"status":"approved","languageId":{"label":"Hindi","id":"2"},"label":"now","isHsm":false,"body":"hey","MessageMedia":null}}',
+      type: 'TEXT',
+      quality: null,
+      language: {
+        id: '1',
+        label: 'Hindi',
+      },
+      MessageMedia: {
+        id: 1,
+        caption: 'Test',
+        sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
+      },
+    },
+    {
+      id: '94',
+      label: 'Message',
+      bspId: null,
+      body: 'some description',
+      shortcode: 'test',
+      isReserved: true,
+      isHsm: false,
+      isActive: true,
+      status: null,
+      reason: 'test reason',
+      updatedAt: '2020-12-01T18:00:32Z',
+      numberParameters: 0,
+      translations: '{}',
+      type: 'TEXT',
+      language: {
+        id: '1',
+        label: 'Hindi',
+      },
+      category: 'ACCOUNT_UPDATE',
+      quality: null,
+      MessageMedia: {
+        id: 1,
+        caption: 'Test',
+        sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
+      },
+    },
+  ],
+  { isHsm: false }
+);
+
 export const TEMPLATE_MOCKS = [
   searchInteractive,
   searchInteractiveHi,
-  filterTemplatesQuery(
-    '',
-    [
-      {
-        id: '87',
-        bspId: null,
-        label: 'Good message',
-        body: 'Hey there',
-        shortcode: 'test',
-        category: 'ACCOUNT_UPDATE',
-        isReserved: true,
-        status: 'APPROVED',
-        reason: 'test reason',
-        isHsm: true,
-        isActive: true,
-        updatedAt: '2020-12-01T18:00:32Z',
-        numberParameters: 0,
-        translations:
-          '{"2":{"status":"approved","languageId":{"label":"Hindi","id":"2"},"label":"now","isHsm":false,"body":"hey","MessageMedia":null}}',
-        type: 'TEXT',
-        quality: null,
-        language: {
-          id: '1',
-          label: 'Hindi',
-        },
-        MessageMedia: {
-          id: 1,
-          caption: 'Test',
-          sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
-        },
-      },
-      {
-        id: '94',
-        label: 'Message',
-        bspId: null,
-        body: 'some description',
-        shortcode: 'test',
-        isReserved: true,
-        isHsm: false,
-        isActive: true,
-        status: null,
-        reason: 'test reason',
-        updatedAt: '2020-12-01T18:00:32Z',
-        numberParameters: 0,
-        translations: '{}',
-        type: 'TEXT',
-        language: {
-          id: '1',
-          label: 'Hindi',
-        },
-        category: 'ACCOUNT_UPDATE',
-        quality: null,
-        MessageMedia: {
-          id: 1,
-          caption: 'Test',
-          sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
-        },
-      },
-    ],
-    { isHsm: false }
-  ),
+  filterQueryMock,
+  filterQueryMock,
   filterQuery,
   filterQuery,
+  filterTemplatesQuery('', []),
   filterTemplatesQuery('this should not return anything', []),
   filterTemplatesQuery(
     'hi',
@@ -306,6 +310,7 @@ export const templateEditMock = (templateId: string, buttons: any) => ({
           type: 'TEXT',
           updatedAt: '2024-03-28T10:41:16Z',
           allowTemplateCategoryChange: true,
+          quality: null,
           ...buttons,
         },
       },

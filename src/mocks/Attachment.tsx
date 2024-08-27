@@ -27,15 +27,11 @@ export const uploadBlobMock = {
   },
 };
 
-export const createMediaMessageMock = {
+export const createMediaMessageMock = (input: any) => ({
   request: {
     query: CREATE_MEDIA_MESSAGE,
     variables: {
-      input: {
-        caption: '',
-        sourceUrl: 'https://test.wav',
-        url: 'https://test.wav',
-      },
+      input,
     },
   },
   result: {
@@ -47,7 +43,7 @@ export const createMediaMessageMock = {
       },
     },
   },
-};
+});
 
 export const uploadMediaMock = {
   request: {

@@ -115,6 +115,7 @@ export const categoryMocks = [createCategory, getCategories, getCategories];
 export const knowledgeBaseMocks = [
   getKnowledgeBase,
   getKnowledgeBase,
+  getKnowledgeBase,
   deleteKnowledgeBase,
   getKnowledgeBase,
   getCategories,
