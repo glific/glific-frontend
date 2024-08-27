@@ -33,9 +33,7 @@ export const HSM = () => {
   const [category, setCategory] = useState<any>(undefined);
   const [languageVariant, setLanguageVariant] = useState<boolean>(false);
   const [allowTemplateCategoryChange, setAllowTemplateCategoryChange] = useState<boolean>(true);
-  useEffect(() => {
-    console.log(sampleMessages);
-  }, [sampleMessages]);
+
   const { t } = useTranslation();
   const params = useParams();
   const location: any = useLocation();
@@ -87,41 +85,23 @@ export const HSM = () => {
     return text;
   };
 
-  const getSimulatorMessage = (messages: any) => {
+  const getSimulatorMessage = (messages: any, mediaa?: any) => {
     const message = removeFirstLineBreak(messages);
-    const media: any = { ...sampleMessages.media };
     const text = getTemplate(message);
-    media.caption = text;
-    console.log(sampleMessages, { body: text, media });
+
+    const media = {
+      ...sampleMessages.media,
+      caption: text,
+    };
 
     setSampleMessages((val) => ({ ...val, body: text, media }));
   };
 
   const getAttachmentUrl = (type: any, media: any) => {
-    const message: any = { ...sampleMessages };
-
-    message.media = media;
-    message.type = type;
-    console.log(message);
-
-    setSampleMessages(message);
-  };
-
-  const addButtonsToSampleMessage = (buttonTemplate: string) => {
-    const message: any = { ...sampleMessages };
-    message.body = buttonTemplate;
-    console.log(sampleMessages, message);
-
-    setSampleMessages(message);
-  };
-
-  const updateSimulatorMessage = (body: any, type: any, media: any) => {
-    const message: any = { ...sampleMessages };
-    message.body = body;
-    message.type = type;
-    message.media = media;
-
-    setSampleMessages(message);
+    const mediaBody = { ...media };
+    const mediaObj: any = sampleMessages.media;
+    mediaBody.caption = mediaObj.caption;
+    setSampleMessages((val) => ({ ...val, type, media: mediaBody }));
   };
 
   const isCopyState = location.state === 'copy';
@@ -217,7 +197,6 @@ export const HSM = () => {
         getUrlAttachmentAndType={getAttachmentUrl}
         setCategory={setCategory}
         category={category}
-        onExampleChange={addButtonsToSampleMessage}
         allowTemplateCategoryChange={allowTemplateCategoryChange}
         setAllowTemplateCategoryChange={setAllowTemplateCategoryChange}
         languageVariant={languageVariant}
@@ -225,7 +204,6 @@ export const HSM = () => {
         setNewShortcode={setNewShortcode}
         newShortCode={newShortcode}
         existingShortCode={exisitingShortCode}
-        updateSimulatorMessage={updateSimulatorMessage}
       />
       <Simulator isPreviewMessage message={sampleMessages} simulatorIcon={false} />
     </div>

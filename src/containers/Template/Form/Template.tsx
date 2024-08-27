@@ -152,7 +152,6 @@ export interface TemplateProps {
   getUrlAttachmentAndType?: any;
   setCategory?: any;
   category?: any;
-  onExampleChange?: any;
   languageStyle?: string;
   getSimulatorMessage?: any;
   allowTemplateCategoryChange?: boolean;
@@ -161,7 +160,6 @@ export interface TemplateProps {
   newShortCode?: any;
   setNewShortcode?: any;
   existingShortCode?: any;
-  updateSimulatorMessage?: any;
 }
 
 interface CallToActionTemplate {
@@ -184,7 +182,6 @@ const Template = ({
   getUrlAttachmentAndType,
   setCategory,
   category,
-  onExampleChange = () => {},
   allowTemplateCategoryChange,
   setAllowTemplateCategoryChange,
   languageStyle = 'dropdown',
@@ -193,7 +190,6 @@ const Template = ({
   setNewShortcode,
   newShortCode,
   existingShortCode,
-  updateSimulatorMessage,
 }: TemplateProps) => {
   // "Audio" option is removed in case of HSM Template
   const mediaTypes =
@@ -329,9 +325,7 @@ const Template = ({
       }
       variables = getExampleValue(exampleValue);
       setVariables(variables);
-      console.log(1);
-
-      updateSimulatorMessage(getExampleFromBody(bodyValue, variables), type, MessageMediaValue);
+      getSimulatorMessage(getExampleFromBody(bodyValue, variables));
     }
 
     if (shortcodeValue && setNewShortcode) {
@@ -363,6 +357,7 @@ const Template = ({
     }
     if (MessageMediaValue) {
       setAttachmentURL(MessageMediaValue.sourceUrl);
+      getUrlAttachmentAndType(typeValue || 'TEXT', { url: MessageMediaValue.sourceUrl });
     } else {
       setAttachmentURL('');
     }
@@ -545,12 +540,10 @@ const Template = ({
   }, [templateType]);
 
   // Removing buttons when checkbox is checked or unchecked
-  useEffect(() => {
-    const { message }: any = getTemplateAndButton(getExampleFromBody(body, variables));
-    console.log(message);
-
-    updateSimulatorMessage(message || '', type, {});
-  }, [isAddButtonChecked]);
+  // useEffect(() => {
+  //   const { message }: any = getTemplateAndButton(getExampleFromBody(body, variables));
+  //   onExampleChange(message || '');
+  // }, [isAddButtonChecked]);
 
   // Converting buttons to template and vice-versa to show realtime update on simulator
   useEffect(() => {
@@ -563,9 +556,7 @@ const Template = ({
 
       const sampleText: any = parsedText && message + parsedText;
       if (sampleText) {
-        console.log(3);
-
-        onExampleChange(sampleText);
+        getSimulatorMessage(sampleText);
       }
     }
   }, [templateButtons]);
