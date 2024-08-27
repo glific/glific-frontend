@@ -20,7 +20,11 @@ const mocks = [
   ...TEMPLATE_MOCKS,
   getAttachmentPermissionMock,
   uploadBlobMock,
-  createMediaMessageMock,
+  createMediaMessageMock({
+    caption: '',
+    sourceUrl: 'https://test.wav',
+    url: 'https://test.wav',
+  }),
 ];
 
 const blob = () => new Blob();
