@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 import { useParams, useLocation } from 'react-router-dom';
@@ -85,7 +85,7 @@ export const HSM = () => {
     return text;
   };
 
-  const getSimulatorMessage = (messages: any, mediaa?: any) => {
+  const getSimulatorMessage = (messages: any) => {
     const message = removeFirstLineBreak(messages);
     const text = getTemplate(message);
 
