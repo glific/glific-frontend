@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useApolloClient, useLazyQuery, useSubscription } from '@apollo/client';
+import { useApolloClient, useLazyQuery, useMutation, useSubscription } from '@apollo/client';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { Button, ClickAwayListener } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -56,6 +56,7 @@ import styles from './Simulator.module.css';
 import { LocationRequestTemplate } from 'containers/Chat/ChatMessages/ChatMessage/LocationRequestTemplate/LocationRequestTemplate';
 import { BackdropLoader } from 'containers/Flow/FlowTranslation';
 import { SIMULATOR_RELEASE_SUBSCRIPTION } from 'graphql/subscriptions/PeriodicInfo';
+import { ADD_FLOW_TO_CONTACT } from 'graphql/mutations/Flow';
 
 export interface SimulatorProps {
   setShowSimulator?: any;
@@ -67,11 +68,13 @@ export interface SimulatorProps {
   interactiveMessage?: any;
   showHeader?: boolean;
   hasResetButton?: boolean;
+  flowId?: string;
 }
 
 interface Sender {
   name: string;
   phone: string;
+  id: string;
 }
 
 const getStyleForDirection = (
@@ -131,6 +134,7 @@ export const Simulator = ({
   interactiveMessage,
   showHeader = true,
   hasResetButton = false,
+  flowId = '',
 }: SimulatorProps) => {
   const [inputMessage, setInputMessage] = useState('');
   const [simulatedMessages, setSimulatedMessage] = useState<any>();
@@ -149,9 +153,12 @@ export const Simulator = ({
   const sender: Sender = {
     name: '',
     phone: '',
+    id: '',
   };
   // chat messages will be shown on simulator
   const isSimulatedMessage = true;
+
+  const [addFlow] = useMutation(ADD_FLOW_TO_CONTACT);
 
   const sendMessage = (senderDetails: Sender, interactivePayload?: any, templateValue?: any) => {
     const sendMessageText = inputMessage === '' && message ? message : inputMessage;
@@ -174,6 +181,15 @@ export const Simulator = ({
       payload.text = templateValue;
     } else {
       payload.text = sendMessageText;
+    }
+    if (sendMessageText.startsWith('temp:')) {
+      addFlow({
+        variables: {
+          flowId: flowId,
+          contactId: senderDetails.id,
+        },
+      });
+      return;
     }
 
     axios
@@ -243,6 +259,7 @@ export const Simulator = ({
     simulatorId = simulatedContact[0].contact.id;
     sender.name = simulatedContact[0].contact.name;
     sender.phone = simulatedContact[0].contact.phone;
+    sender.id = simulatedContact[0].contact.id;
   }
 
   const releaseUserSimulator = () => {
@@ -599,6 +616,7 @@ export const Simulator = ({
                 sendMessage({
                   name: searchData.search[0].contact.name,
                   phone: searchData.search[0].contact.phone,
+                  id: searchData.search[0].contact.id,
                 });
               }
             });
