@@ -39,7 +39,7 @@ const SpeedSendsSessionTemplates = [
     isActive: false,
     updatedAt: '2020-12-01T18:00:28Z',
     numberParameters: 0,
-    cateory: null,
+    category: null,
     quality: null,
     translations:
       '{"2":{"status":"approved","languageId":{"localized":true,"locale":"hi","label":"Hindi","id":"2","__typename":"Language"},"label":"आप ग्लिफ़िक के लिए कितने उत्साहित हैं?","isHsm":false,"body":"यह संदेश है\\n","MessageMedia":null}}',
@@ -274,6 +274,7 @@ const getTemplateDataTypeText = {
         '[{"type":"QUICK_REPLY","text":"View Account Balance"},{"type":"QUICK_REPLY","text":"View Mini Statement"}]',
       buttonType: 'QUICK_REPLY',
       allowTemplateCategoryChange: false,
+      quality: null,
     },
   },
 };
@@ -305,6 +306,7 @@ const getTemplateDataTypeMedia = {
       type: 'IMAGE',
       updatedAt: '2024-07-03T08:17:28Z',
       allowTemplateCategoryChange: true,
+      quality: null,
     },
   },
 };
@@ -606,6 +608,7 @@ export const getSpendSendTemplate = {
             '{"2":{"status":"approved","languageId":{"localized":true,"locale":"hi","label":"Hindi","id":"2","__typename":"Language"},"label":"hey","isHsm":false,"body":"hindi translations","MessageMedia":null}}',
           type: 'IMAGE',
           updatedAt: '2024-07-10T09:43:25Z',
+          quality: null,
         },
       },
     },
@@ -655,6 +658,7 @@ export const updateSessiontemplate = {
           translations:
             '{"2":{"status":"approved","languageId":{"localized":true,"locale":"hi","label":"Hindi","id":"2","__typename":"Language"},"label":"hey","isHsm":false,"body":"hindi translations","MessageMedia":null}}',
           type: 'IMAGE',
+          quality: null,
         },
       },
     },
