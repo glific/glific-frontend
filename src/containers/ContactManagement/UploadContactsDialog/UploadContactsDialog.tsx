@@ -151,7 +151,7 @@ export const UploadContactsDialog = ({ setDialog }: UploadContactsDialogProps) =
             <div className={styles.ImportContainer}>
               <ImportButton
                 id={'uploadcontacts'}
-                title={fileName || 'Upload contacts'}
+                title={fileName || 'Select file'}
                 onImport={() => {
                   setImporting(true);
                 }}
