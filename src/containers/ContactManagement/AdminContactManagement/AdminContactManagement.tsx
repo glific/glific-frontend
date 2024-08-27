@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { CONTACT_MANAGE_HELP_LINK, UPLOAD_CONTACTS_ADMIN_SAMPLE } from 'config';
 import { Button } from 'components/UI/Form/Button/Button';
-import UploadIcon from 'assets/images/icons/UploadLight.svg?react';
 import FileIcon from 'assets/images/icons/Document/Light.svg?react';
 import CrossIcon from 'assets/images/icons/Cross.svg?react';
 import { MOVE_CONTACTS } from 'graphql/mutations/Contact';

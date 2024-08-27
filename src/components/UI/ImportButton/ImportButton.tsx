@@ -39,7 +39,7 @@ export const ImportButton = ({ title, onImport, afterImport, id }: ImportButtonP
         variant="outlined"
         color="secondary"
       >
-        <FileIcon data-testid="import-icon" className={styles.ImportIcon} />
+        <FileIcon data-testid="import-icon" className={styles.FileIcon} />
         {title}
       </Button>
     </span>
