@@ -133,7 +133,7 @@ export const AdminContactManagement = () => {
             });
           }}
         >
-          <UploadIcon className={styles.FileIcon} /> Upload
+          Upload
         </Button>
       </div>
     </div>
