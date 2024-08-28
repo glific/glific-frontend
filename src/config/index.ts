@@ -55,7 +55,8 @@ export const ONBOARD_URL_UPDATE = `${GLIFIC_API_URL}/v1/onboard/update-registrat
 export const ONBOARD_URL_REACT_OUT = `${GLIFIC_API_URL}/v1/onboard/reachout`;
 export const ONBOARD_URL = `${GLIFIC_API_URL}/v1/onboard/setup`;
 export const RECAPTCHA_CLIENT_KEY = envVariables.VITE_RECAPTCHA_CLIENT_KEY;
-export const UPLOAD_CONTACTS_SAMPLE = 'https://storage.googleapis.com/cc-tides/sample_import.csv';
+export const UPLOAD_CONTACTS_SAMPLE =
+  'https://storage.googleapis.com/cc-tides/sample_contacts_import.csv';
 export const UPLOAD_CONTACTS_ADMIN_SAMPLE =
   'https://storage.googleapis.com/cc-tides/sample_import_admin.csv';
 export const REGISTRATION_HELP_LINK =

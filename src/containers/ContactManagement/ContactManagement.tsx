@@ -6,13 +6,43 @@ import UploadContactsDialog from './UploadContactsDialog/UploadContactsDialog';
 import { Button } from 'components/UI/Form/Button/Button';
 import AdminContactManagement from './AdminContactManagement/AdminContactManagement';
 import { contactVariablesInfo } from 'common/HelpData';
+import { DialogBox } from 'components/UI/DialogBox/DialogBox';
+import { useNavigate } from 'react-router';
 
 export const ContactManagement = () => {
   const [showUploadDialog, setShowUploadDialog] = useState(false);
+  const [showStatus, setShowStatus] = useState(false);
+  const navigate = useNavigate();
   let dialog;
+  let statusDialog;
 
   if (showUploadDialog) {
-    dialog = <UploadContactsDialog setDialog={setShowUploadDialog} />;
+    dialog = <UploadContactsDialog setShowStatus={setShowStatus} setDialog={setShowUploadDialog} />;
+  }
+
+  if (showStatus) {
+    statusDialog = (
+      <DialogBox
+        titleAlign="center"
+        title={'Contact import is in progress.'}
+        handleOk={() => {
+          navigate('/notifications');
+          setShowStatus(false);
+          setShowUploadDialog(false);
+        }}
+        handleCancel={() => {
+          setShowStatus(false);
+          setShowUploadDialog(false);
+        }}
+        skipCancel
+        buttonOk={'Go to notifications'}
+        alignButtons="left"
+      >
+        <div className={styles.DialogContent}>
+          Please check notifications to see the status of import.
+        </div>
+      </DialogBox>
+    );
   }
 
   return (
@@ -40,10 +70,11 @@ export const ContactManagement = () => {
           </div>
         </div>
 
-        <AdminContactManagement />
+        <AdminContactManagement setShowStatus={setShowStatus} />
       </div>
 
       {dialog}
+      {statusDialog}
     </>
   );
 };

@@ -18,7 +18,7 @@ setUserSession(JSON.stringify({ roles: [{ label: 'Admin' }], organization: { id:
 const contactManagement = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <Router>
-      <AdminContactManagement />
+      <AdminContactManagement setShowStatus={vi.fn()} />
     </Router>
   </MockedProvider>
 );

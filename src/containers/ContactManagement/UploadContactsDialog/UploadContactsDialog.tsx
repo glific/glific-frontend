@@ -15,21 +15,18 @@ import { getUserSession } from 'services/AuthService';
 import { setNotification } from 'common/notification';
 import styles from './UploadContactsDialog.module.css';
 import { ImportButton } from 'components/UI/ImportButton/ImportButton';
-import { useNavigate } from 'react-router';
 
 export interface UploadContactsDialogProps {
   organizationDetails?: any;
   setDialog: Function;
+  setShowStatus: any;
 }
 
-export const UploadContactsDialog = ({ setDialog }: UploadContactsDialogProps) => {
+export const UploadContactsDialog = ({ setDialog, setShowStatus }: UploadContactsDialogProps) => {
   const [fileName, setFileName] = useState<string>('');
   const [csvContent, setCsvContent] = useState<String | null | ArrayBuffer>('');
   const [uploadingContacts, setUploadingContacts] = useState(false);
-  const [importing, setImporting] = useState(false);
-  const [showStatus, setShowStatus] = useState(false);
   const orgId = getUserSession('organizationId');
-  const navigate = useNavigate();
 
   const { t } = useTranslation();
   const [collection] = useState();
@@ -118,26 +115,19 @@ export const UploadContactsDialog = ({ setDialog }: UploadContactsDialogProps) =
         setUploadingContacts(true);
       }}
     >
-      {({ submitForm, errors }) => (
+      {({ submitForm }) => (
         <Form data-testid="formLayout">
           <DialogBox
             titleAlign="left"
             title={t('Upload Contacts')}
             handleOk={() => {
-              if (errors?.optedIn) {
-                setNotification(
-                  'Please obtain prior consent from contacts to message them on WhatsApp',
-                  'warning'
-                );
-                return;
-              }
               submitForm();
             }}
             handleCancel={() => {
               setDialog(false);
             }}
             skipCancel
-            buttonOkLoading={uploadingContacts || importing}
+            buttonOkLoading={uploadingContacts}
             buttonOk={t('Upload')}
             alignButtons="left"
             disableOk={!csvContent}
@@ -152,13 +142,9 @@ export const UploadContactsDialog = ({ setDialog }: UploadContactsDialogProps) =
               <ImportButton
                 id={'uploadcontacts'}
                 title={fileName || 'Select file'}
-                onImport={() => {
-                  setImporting(true);
-                }}
                 afterImport={(result: string, media: any) => {
                   setFileName(media.name);
                   setCsvContent(result);
-                  setImporting(false);
                 }}
               />
             </div>
@@ -171,32 +157,7 @@ export const UploadContactsDialog = ({ setDialog }: UploadContactsDialogProps) =
     </Formik>
   );
 
-  const dialog = (
-    <DialogBox
-      titleAlign="center"
-      title={'Contact import is in progress.'}
-      handleOk={() => {
-        navigate('/notifications');
-        setShowStatus(false);
-        setDialog(false);
-      }}
-      handleCancel={() => setDialog(false)}
-      skipCancel
-      buttonOk={'Go to notifications'}
-      alignButtons="left"
-    >
-      <div className={styles.DialogContent}>
-        Please check notifications to see the status of import.
-      </div>
-    </DialogBox>
-  );
-
-  return (
-    <>
-      {form}
-      {showStatus && dialog}
-    </>
-  );
+  return <>{form}</>;
 };
 
 export default UploadContactsDialog;

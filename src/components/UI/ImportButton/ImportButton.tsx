@@ -5,7 +5,7 @@ import styles from './ImportButton.module.css';
 
 export interface ImportButtonProps {
   title: string;
-  onImport: any;
+  onImport?: any;
   afterImport: any;
   id?: string;
 }
@@ -18,7 +18,9 @@ export const ImportButton = ({ title, onImport, afterImport, id }: ImportButtonP
     fileReader.onload = function setImport() {
       afterImport(fileReader.result, media);
     };
-    onImport();
+    if (onImport) {
+      onImport();
+    }
     fileReader.readAsText(media);
   };
   return (

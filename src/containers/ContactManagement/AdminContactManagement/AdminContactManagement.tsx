@@ -9,7 +9,11 @@ import { slicedString } from 'common/utils';
 import { setNotification } from 'common/notification';
 import styles from './AdminContactManagement.module.css';
 
-export const AdminContactManagement = () => {
+export interface AdminContactManagementProps {
+  setShowStatus: any;
+}
+
+export const AdminContactManagement = ({ setShowStatus }: AdminContactManagementProps) => {
   const [fileName, setFileName] = useState<string>('');
   const [errors, setErrors] = useState<any>([]);
   const [csvContent, setCsvContent] = useState<String | null | ArrayBuffer>('');
@@ -22,7 +26,7 @@ export const AdminContactManagement = () => {
         setErrors(errors);
       } else {
         setUploadingContacts(false);
-        setNotification(status);
+        setShowStatus(true);
       }
       setFileName('');
     },

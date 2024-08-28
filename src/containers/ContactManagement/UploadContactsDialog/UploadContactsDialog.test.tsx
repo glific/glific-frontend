@@ -33,6 +33,7 @@ const props = {
     name: 'Glific',
   },
   setDialog: setDialogMock,
+  setShowStatus: vi.fn(),
 };
 
 const dialogBox = (
