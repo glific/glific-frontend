@@ -231,8 +231,10 @@ export const FormLayout = ({
         if (item) {
           setIsLoadedData(true);
           setLink(data[listItem] ? data[listItem][listItem][linkParameter] : item.linkParameter);
-          setStates(item);
           setLanguageId(languageSupport ? item.language.id : null);
+          if (setStates) {
+            setStates(item);
+          }
         }
       }
     },

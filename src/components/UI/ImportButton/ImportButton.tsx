@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import ImportIcon from 'assets/images/icons/Flow/Import.svg?react';
+import FileIcon from 'assets/images/icons/Document/Light.svg?react';
 import { Button } from 'components/UI/Form/Button/Button';
 import styles from './ImportButton.module.css';
 
@@ -37,9 +37,9 @@ export const ImportButton = ({ title, onImport, afterImport, id }: ImportButtonP
           inputRef.current?.click();
         }}
         variant="outlined"
-        color="primary"
+        color="secondary"
       >
-        <ImportIcon data-testid="import-icon" className={styles.ImportIcon} />
+        <FileIcon data-testid="import-icon" className={styles.FileIcon} />
         {title}
       </Button>
     </span>
