@@ -180,6 +180,7 @@ export const UploadContactsDialog = ({ setDialog }: UploadContactsDialogProps) =
         setShowStatus(false);
         setDialog(false);
       }}
+      handleCancel={() => setDialog(false)}
       skipCancel
       buttonOk={'Go to notifications'}
       alignButtons="left"
