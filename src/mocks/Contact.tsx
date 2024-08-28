@@ -211,6 +211,7 @@ export const moveContacts = {
       moveContacts: {
         errors: null,
         csvRows: 'Test Row',
+        status: 'Import contacts done successfully',
       },
     },
   },

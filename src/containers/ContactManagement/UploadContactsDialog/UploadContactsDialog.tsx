@@ -146,6 +146,7 @@ export const UploadContactsDialog = ({ setDialog, setShowStatus }: UploadContact
                   setFileName(media.name);
                   setCsvContent(result);
                 }}
+                fileType=".csv"
               />
             </div>
             <div className={styles.Sample}>
