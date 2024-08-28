@@ -1,24 +1,22 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MockedProvider } from '@apollo/client/testing';
 
 import { BrowserRouter as Router } from 'react-router-dom';
 
 import { getAllOrganizations } from 'mocks/Organization';
-import { moveContacts } from 'mocks/Contact';
 
 import { setUserSession } from 'services/AuthService';
-import { setNotification } from 'common/notification';
 import { AdminContactManagement } from './AdminContactManagement';
 
-const mocks = [...getAllOrganizations, moveContacts];
+const mocks = getAllOrganizations;
 
 setUserSession(JSON.stringify({ roles: [{ label: 'Admin' }], organization: { id: '1' } }));
 
 const contactManagement = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <Router>
-      <AdminContactManagement />
+      <AdminContactManagement setShowStatus={vi.fn()} />
     </Router>
   </MockedProvider>
 );
@@ -43,7 +41,7 @@ test('Admin contact management form renders correctly', async () => {
 test('the page should have a disabled upload button by default', async () => {
   render(contactManagement);
 
-  const uploadButton = await screen.getByTestId('uploadButton');
+  const uploadButton = await screen.getByTestId('moveContactsBtn');
   expect(uploadButton).toBeInTheDocument();
   expect(uploadButton).toHaveAttribute('disabled');
 });
@@ -63,10 +61,11 @@ test('Files other than .csv should raise a warning message upon upload', async (
   });
 });
 
-test('Success Notification should be called upon successful CSV upload', async () => {
+test('it removes the selected file', async () => {
   render(contactManagement);
 
-  // Valid CSV
+  fireEvent.click(screen.getByTestId('uploadFile'));
+
   const csvContent = `name,phone,collection
   John Doe,919876543210,"Optin collection,Optout Collection"
   Virat Kohli,919876543220,Cricket`;
@@ -76,15 +75,15 @@ test('Success Notification should be called upon successful CSV upload', async (
     const fileInput = screen.getByTestId('uploadFile');
     userEvent.upload(fileInput, file);
   });
+
   await waitFor(() => {
     // the filename should be visible instead of Select .csv after upload
     expect(screen.getByText('test.csv')).toBeInTheDocument();
   });
 
-  const uploadBtn = screen.getByTestId('uploadButton');
-  userEvent.click(uploadBtn);
+  fireEvent.click(screen.getByTestId('cross-icon'));
 
   await waitFor(() => {
-    expect(setNotification).toHaveBeenCalled();
+    expect(screen.queryByText('test.csv')).not.toBeInTheDocument();
   });
 });

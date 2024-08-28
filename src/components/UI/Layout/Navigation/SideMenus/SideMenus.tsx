@@ -71,7 +71,6 @@ const SideMenus = ({ opened }: SideMenusProps) => {
     variables: {
       filter: {
         is_read: false,
-        severity: 'critical',
       },
     },
     fetchPolicy: 'cache-and-network',

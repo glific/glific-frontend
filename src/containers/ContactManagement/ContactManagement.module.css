@@ -1,0 +1,30 @@
+.MainContainer {
+  display: flex;
+  column-gap: 1rem;
+  width: 100% !important;
+  height: 100vh !important;
+  background-color: #f8faf5;
+  padding: 1rem;
+  color: #000;
+}
+
+.MainContainer h2 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+.Container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 50%;
+  max-height: 65%;
+  background-color: #fff;
+  border-radius: 15px;
+  padding: 1.5rem 2rem;
+}
+
+.Buttons button {
+  border-radius: 8px;
+  width: 30%;
+}

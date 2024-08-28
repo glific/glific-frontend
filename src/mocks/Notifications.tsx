@@ -1,5 +1,6 @@
 import { FILTER_NOTIFICATIONS, GET_NOTIFICATIONS_COUNT } from 'graphql/queries/Notifications';
 import { MARK_NOTIFICATIONS_AS_READ } from 'graphql/mutations/Notifications';
+import { GET_CONTACT_IMPORT_STATUS } from 'graphql/mutations/Contact';
 
 export const getNotificationsQuery = {
   request: {
@@ -69,6 +70,24 @@ export const getNotificationsQuery = {
           message: 'Error sending message: You dont own the phone[3446].',
           severity: '"Critical"',
           updatedAt: '2024-03-29T11:14:13Z',
+        },
+        {
+          category: 'Contact Upload',
+          entity: '{"user_job_id":1}',
+          id: '7',
+          isRead: true,
+          message: 'Contact upload completed',
+          severity: '"Information"',
+          updatedAt: '2024-08-09T05:50:00Z',
+        },
+        {
+          category: 'unknown category',
+          entity: '{}',
+          id: '8',
+          isRead: true,
+          message: '',
+          severity: '',
+          updatedAt: '2024-08-09T05:50:00Z',
         },
       ],
     },
@@ -147,7 +166,7 @@ export const getNotificationCountQuery = {
   request: {
     query: GET_NOTIFICATIONS_COUNT,
     variables: {
-      filter: { is_read: false, severity: 'critical' },
+      filter: { is_read: false },
     },
   },
   result: {
@@ -197,6 +216,40 @@ export const markAllNotificationAsRead = {
   result: {
     data: {
       markNotificationAsRead: true,
+    },
+  },
+};
+
+export const getStatus = {
+  request: {
+    query: GET_CONTACT_IMPORT_STATUS,
+    variables: {
+      userJobId: 1,
+    },
+  },
+  result: {
+    data: {
+      getContactUploadReport: {
+        csvRows: 'Contact import done',
+        error: null,
+      },
+    },
+  },
+};
+
+export const getStatusWithError = {
+  request: {
+    query: GET_CONTACT_IMPORT_STATUS,
+    variables: {
+      userJobId: 1,
+    },
+  },
+  result: {
+    data: {
+      getContactUploadReport: {
+        csvRows: null,
+        error: 'Contact upload is in progress',
+      },
     },
   },
 };

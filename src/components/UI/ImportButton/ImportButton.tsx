@@ -1,15 +1,23 @@
 import { useRef } from 'react';
-import ImportIcon from 'assets/images/icons/Flow/Import.svg?react';
+import FileIcon from 'assets/images/icons/Document/Light.svg?react';
 import { Button } from 'components/UI/Form/Button/Button';
 import styles from './ImportButton.module.css';
 
 export interface ImportButtonProps {
   title: string;
-  onImport: any;
+  onImport?: any;
   afterImport: any;
+  id?: string;
+  fileType?: string;
 }
 
-export const ImportButton = ({ title, onImport, afterImport }: ImportButtonProps) => {
+export const ImportButton = ({
+  title,
+  onImport,
+  afterImport,
+  id,
+  fileType = '*',
+}: ImportButtonProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const changeHandler = (event: any) => {
     const media = event.target.files[0];
@@ -17,7 +25,9 @@ export const ImportButton = ({ title, onImport, afterImport }: ImportButtonProps
     fileReader.onload = function setImport() {
       afterImport(fileReader.result, media);
     };
-    onImport();
+    if (onImport) {
+      onImport();
+    }
     fileReader.readAsText(media);
   };
   return (
@@ -29,15 +39,17 @@ export const ImportButton = ({ title, onImport, afterImport }: ImportButtonProps
         name="file"
         onChange={changeHandler}
         data-testid="import"
+        id={id}
+        accept={fileType}
       />
       <Button
         onClick={() => {
           inputRef.current?.click();
         }}
         variant="outlined"
-        color="primary"
+        color="secondary"
       >
-        <ImportIcon data-testid="import-icon" className={styles.ImportIcon} />
+        <FileIcon data-testid="import-icon" className={styles.FileIcon} />
         {title}
       </Button>
     </span>

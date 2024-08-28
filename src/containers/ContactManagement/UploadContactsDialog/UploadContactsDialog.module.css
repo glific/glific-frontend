@@ -78,3 +78,17 @@
   position: absolute;
   right: 12px;
 }
+
+.ImportContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.FileName {
+  font-size: 12px;
+  margin: 0;
+}
+
+.DialogContent {
+  text-align: center;
+}

@@ -12,11 +12,13 @@ import CopyIcon from 'assets/images/icons/Copy.png';
 import { List } from 'containers/List/List';
 import Menu from 'components/UI/Menu/Menu';
 import { Button } from 'components/UI/Form/Button/Button';
-import { copyToClipboard } from 'common/utils';
+import { copyToClipboard, exportCsvFile } from 'common/utils';
 import { FILTER_NOTIFICATIONS, GET_NOTIFICATIONS_COUNT } from 'graphql/queries/Notifications';
 import MARK_NOTIFICATIONS_AS_READ from 'graphql/mutations/Notifications';
 import styles from './NotificationList.module.css';
 import { SHORT_DATE_TIME_FORMAT } from 'common/constants';
+import { GET_CONTACT_IMPORT_STATUS } from 'graphql/mutations/Contact';
+import { setErrorMessage, setNotification } from 'common/notification';
 
 const getDot = (isRead: boolean) => <div>{!isRead ? <div className={styles.Dot} /> : null}</div>;
 
@@ -71,6 +73,21 @@ export const NotificationList = () => {
     },
   });
 
+  const [getStatus] = useMutation(GET_CONTACT_IMPORT_STATUS, {
+    onCompleted: ({ getContactUploadReport }) => {
+      const { csvRows, error } = getContactUploadReport;
+      if (error) {
+        setNotification(error, 'warning');
+        return;
+      }
+      exportCsvFile(csvRows, `Contact_Upload_Status`);
+      setNotification('Downloaded the status of the contact upload', 'success');
+    },
+    onError: (error) => {
+      setErrorMessage(error);
+    },
+  });
+
   useEffect(() => {
     setTimeout(() => {
       markNotificationAsRead();
@@ -102,6 +119,14 @@ export const NotificationList = () => {
       case 'WA Group':
         destination = `/group/chat/${entity.id}`;
         break;
+      case 'Contact Upload':
+        getStatus({
+          variables: {
+            userJobId: entity?.user_job_id,
+          },
+        });
+        break;
+
       default:
         // Handle unknown category
         return;

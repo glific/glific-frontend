@@ -1,34 +1,31 @@
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useMutation } from '@apollo/client';
-
 import { CONTACT_MANAGE_HELP_LINK, UPLOAD_CONTACTS_ADMIN_SAMPLE } from 'config';
 import { Button } from 'components/UI/Form/Button/Button';
-import { Heading } from 'components/UI/Heading/Heading';
-import UploadIcon from 'assets/images/icons/UploadLight.svg?react';
 import FileIcon from 'assets/images/icons/Document/Light.svg?react';
 import CrossIcon from 'assets/images/icons/Cross.svg?react';
 import { MOVE_CONTACTS } from 'graphql/mutations/Contact';
-import { exportCsvFile, slicedString } from 'common/utils';
-import { setNotification } from 'common/notification';
+import { slicedString } from 'common/utils';
 import styles from './AdminContactManagement.module.css';
-import { contactVariablesInfo } from 'common/HelpData';
 
-export const AdminContactManagement = () => {
+export interface AdminContactManagementProps {
+  setShowStatus: any;
+}
+
+export const AdminContactManagement = ({ setShowStatus }: AdminContactManagementProps) => {
   const [fileName, setFileName] = useState<string>('');
   const [errors, setErrors] = useState<any>([]);
   const [csvContent, setCsvContent] = useState<String | null | ArrayBuffer>('');
   const [uploadingContacts, setUploadingContacts] = useState(false);
-  const { t } = useTranslation();
 
   const [moveContacts] = useMutation(MOVE_CONTACTS, {
-    onCompleted: (data: any) => {
-      if (data.errors) {
-        setErrors(data.errors);
+    onCompleted: ({ moveContacts }) => {
+      const { errors } = moveContacts;
+      if (errors) {
+        setErrors(errors);
       } else {
-        exportCsvFile(data.moveContacts.csvRows, 'results');
         setUploadingContacts(false);
-        setNotification(t('Contacts have been updated'));
+        setShowStatus(true);
       }
       setFileName('');
     },
@@ -58,13 +55,10 @@ export const AdminContactManagement = () => {
   };
 
   return (
-    <div>
-      <Heading
-        formTitle="Contact Management"
-        showHeaderHelp={false}
-        helpData={contactVariablesInfo}
-      />
-      <div className={styles.Container}>
+    <div className={styles.Container}>
+      <div>
+        <h2>Move contacts</h2>
+
         <div className={styles.Instructions}>
           You can move contacts to collections in bulk or update their contact information. Please
           create csv file that exactly matches the sample. Here are the &nbsp;
@@ -85,6 +79,7 @@ export const AdminContactManagement = () => {
                 <>
                   <span>{fileName}</span>
                   <CrossIcon
+                    data-testid="cross-icon"
                     className={styles.CrossIcon}
                     onClick={(event: any) => {
                       event.preventDefault();
@@ -121,8 +116,11 @@ export const AdminContactManagement = () => {
               </div>
             ))}
         </div>
+      </div>
+
+      <div className={styles.Buttons}>
         <Button
-          data-testid="uploadButton"
+          data-testid="moveContactsBtn"
           variant="contained"
           color="primary"
           disabled={fileName === ''}
@@ -137,7 +135,7 @@ export const AdminContactManagement = () => {
             });
           }}
         >
-          <UploadIcon className={styles.FileIcon} /> Upload
+          Upload
         </Button>
       </div>
     </div>
