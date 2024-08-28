@@ -11,9 +11,11 @@ import {
   markAllNotificationAsRead,
   getInfoNotificationsQuery,
   getStatus,
+  getStatusWithError,
 } from 'mocks/Notifications';
 import { setUserSession } from 'services/AuthService';
 import { NotificationList } from './NotificationList';
+import * as Notification from 'common/notification';
 
 setUserSession(JSON.stringify({ roles: ['Admin'] }));
 
@@ -32,16 +34,21 @@ const mocks: any = [
   getInfoNotificationsQuery({ severity: 'Critical' }),
   getInfoNotificationsQuery({ severity: '' }),
   getInfoNotificationsQuery(),
-  getStatus,
 ];
 
-const notifications = (
-  <MockedProvider mocks={mocks} addTypename={false}>
-    <Router>
-      <NotificationList />
-    </Router>
-  </MockedProvider>
-);
+const notifications = (mock?: any) => {
+  let MOCKS = mocks;
+  if (mock) {
+    MOCKS = [...MOCKS, mock];
+  }
+  return (
+    <MockedProvider mocks={MOCKS} addTypename={false}>
+      <Router>
+        <NotificationList />
+      </Router>
+    </MockedProvider>
+  );
+};
 
 const mockedUsedNavigate = vi.fn();
 vi.mock('react-router-dom', async () => ({
@@ -50,7 +57,7 @@ vi.mock('react-router-dom', async () => ({
 }));
 
 test('It should load notifications', async () => {
-  render(notifications);
+  render(notifications());
 
   await waitFor(() => {
     expect(screen.getByTestId('loading')).toBeInTheDocument();
@@ -75,7 +82,7 @@ test('It should load notifications', async () => {
 });
 
 test('click on forward arrrow', async () => {
-  render(notifications);
+  render(notifications(getStatus));
 
   await waitFor(() => {
     expect(screen.getByTestId('loading')).toBeInTheDocument();
@@ -97,7 +104,7 @@ test('click on forward arrrow', async () => {
 });
 
 test('it should show copy text and view option on clicking entity ', async () => {
-  const { getByTestId, getByText } = render(notifications);
+  const { getByTestId, getByText } = render(notifications());
   await waitFor(() => {
     const entityMenu = screen.getAllByTestId('NotificationRowMenu');
     expect(entityMenu[0]).toBeInTheDocument();
@@ -126,7 +133,7 @@ test('it should show copy text and view option on clicking entity ', async () =>
 });
 
 test('it should show filter radio button', async () => {
-  render(notifications);
+  render(notifications());
 
   await waitFor(() => {
     const checkboxInput = screen.getAllByTestId('radio');
@@ -135,7 +142,7 @@ test('it should show filter radio button', async () => {
 });
 
 test('it should have Info, Warning and critical checkbox', async () => {
-  render(notifications);
+  render(notifications());
 
   await waitFor(() => {
     const checkboxInput = screen.getAllByTestId('radio');
@@ -143,5 +150,28 @@ test('it should have Info, Warning and critical checkbox', async () => {
     expect(checkboxInput[1]).toHaveTextContent('Warning');
     expect(checkboxInput[2]).toHaveTextContent('Info');
     expect(checkboxInput[3]).toHaveTextContent('All');
+  });
+});
+
+test('it should show "Contact import is in progress" message', async () => {
+  const notificationSpy = vi.spyOn(Notification, 'setNotification');
+  render(notifications(getStatusWithError));
+
+  await waitFor(() => {
+    expect(screen.getByTestId('loading')).toBeInTheDocument();
+  });
+
+  await waitFor(() => {
+    expect(screen.getByText('Notifications')).toBeInTheDocument();
+  });
+
+  const arrowButtons = screen.getAllByTestId('ArrowForwardIcon');
+
+  arrowButtons.forEach(async (button) => {
+    fireEvent.click(button);
+
+    await waitFor(() => {
+      expect(notificationSpy).toHaveBeenCalledWith();
+    });
   });
 });

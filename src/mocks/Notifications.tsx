@@ -74,10 +74,19 @@ export const getNotificationsQuery = {
         {
           category: 'Contact Upload',
           entity: '{"user_job_id":1}',
-          id: '60',
+          id: '7',
           isRead: true,
           message: 'Contact upload completed',
           severity: '"Information"',
+          updatedAt: '2024-08-09T05:50:00Z',
+        },
+        {
+          category: 'unknown category',
+          entity: '{}',
+          id: '8',
+          isRead: true,
+          message: '',
+          severity: '',
           updatedAt: '2024-08-09T05:50:00Z',
         },
       ],
@@ -221,8 +230,25 @@ export const getStatus = {
   result: {
     data: {
       getContactUploadReport: {
-        csvRows: '',
+        csvRows: 'Contact import done',
         error: null,
+      },
+    },
+  },
+};
+
+export const getStatusWithError = {
+  request: {
+    query: GET_CONTACT_IMPORT_STATUS,
+    variables: {
+      userJobId: 1,
+    },
+  },
+  result: {
+    data: {
+      getContactUploadReport: {
+        csvRows: null,
+        error: 'Contact upload is in progress',
       },
     },
   },
