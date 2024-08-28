@@ -539,12 +539,6 @@ const Template = ({
     }
   }, [templateType]);
 
-  // Removing buttons when checkbox is checked or unchecked
-  // useEffect(() => {
-  //   const { message }: any = getTemplateAndButton(getExampleFromBody(body, variables));
-  //   onExampleChange(message || '');
-  // }, [isAddButtonChecked]);
-
   // Converting buttons to template and vice-versa to show realtime update on simulator
   useEffect(() => {
     if (templateButtons.length > 0) {
@@ -565,7 +559,7 @@ const Template = ({
     if (getSimulatorMessage && !isEditing) {
       getSimulatorMessage(getExampleFromBody(body, variables));
     }
-  }, [body, variables]);
+  }, [body, variables, isAddButtonChecked]);
 
   useEffect(() => {
     setVariables(getVariables(body, variables));
@@ -851,10 +845,18 @@ const Template = ({
 
   const setPayload = (payload: any) => {
     let payloadCopy = payload;
-
     let translationsCopy: any = {};
+    console.log(payloadCopy);
+
     if (template) {
+      if (payloadCopy.isHsm) {
+        payloadCopy.category = category.label || category;
+        payloadCopy.example = getExampleFromBody(payloadCopy.body, variables);
+      }
+
       if (template.sessionTemplate.sessionTemplate.language.id === language?.id) {
+        console.log(2);
+
         payloadCopy.languageId = language?.id;
         if (payloadCopy.type) {
           payloadCopy.type = payloadCopy.type.id;
@@ -888,6 +890,8 @@ const Template = ({
         delete payloadCopy.isAddButtonChecked;
         delete payloadCopy.templateButtons;
       } else if (!defaultAttribute.isHsm) {
+        console.log(2);
+
         let messageMedia = null;
         if (payloadCopy.type && payloadCopy.attachmentURL) {
           messageMedia = {
@@ -962,6 +966,7 @@ const Template = ({
     delete payloadCopy.variables;
     delete payloadCopy.existingShortCode;
     delete payloadCopy.newShortCode;
+    console.log(payloadCopy);
 
     return payloadCopy;
   };
