@@ -6,7 +6,6 @@ import FileIcon from 'assets/images/icons/Document/Light.svg?react';
 import CrossIcon from 'assets/images/icons/Cross.svg?react';
 import { MOVE_CONTACTS } from 'graphql/mutations/Contact';
 import { slicedString } from 'common/utils';
-import { setNotification } from 'common/notification';
 import styles from './AdminContactManagement.module.css';
 
 export interface AdminContactManagementProps {
@@ -21,7 +20,7 @@ export const AdminContactManagement = ({ setShowStatus }: AdminContactManagement
 
   const [moveContacts] = useMutation(MOVE_CONTACTS, {
     onCompleted: ({ moveContacts }) => {
-      const { errors, status } = moveContacts;
+      const { errors } = moveContacts;
       if (errors) {
         setErrors(errors);
       } else {
