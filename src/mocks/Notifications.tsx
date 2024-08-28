@@ -166,7 +166,7 @@ export const getNotificationCountQuery = {
   request: {
     query: GET_NOTIFICATIONS_COUNT,
     variables: {
-      filter: { is_read: false, severity: 'critical' },
+      filter: { is_read: false },
     },
   },
   result: {
