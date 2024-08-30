@@ -101,7 +101,14 @@ export const HSM = () => {
     const mediaBody = { ...media };
     const mediaObj: any = sampleMessages.media;
     mediaBody.caption = mediaObj.caption;
+
     setSampleMessages((val) => ({ ...val, type, media: mediaBody }));
+  };
+
+  const addButtonsToSampleMessage = (buttonTemplate: string) => {
+    const message: any = { ...sampleMessages };
+    message.body = buttonTemplate;
+    setSampleMessages(message);
   };
 
   const isCopyState = location.state === 'copy';
@@ -197,6 +204,7 @@ export const HSM = () => {
         getUrlAttachmentAndType={getAttachmentUrl}
         setCategory={setCategory}
         category={category}
+        onExampleChange={addButtonsToSampleMessage}
         allowTemplateCategoryChange={allowTemplateCategoryChange}
         setAllowTemplateCategoryChange={setAllowTemplateCategoryChange}
         languageVariant={languageVariant}

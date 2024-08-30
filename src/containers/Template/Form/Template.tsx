@@ -152,6 +152,7 @@ export interface TemplateProps {
   getUrlAttachmentAndType?: any;
   setCategory?: any;
   category?: any;
+  onExampleChange?: any;
   languageStyle?: string;
   getSimulatorMessage?: any;
   allowTemplateCategoryChange?: boolean;
@@ -182,6 +183,7 @@ const Template = ({
   getUrlAttachmentAndType,
   setCategory,
   category,
+  onExampleChange = () => {},
   allowTemplateCategoryChange,
   setAllowTemplateCategoryChange,
   languageStyle = 'dropdown',
@@ -312,6 +314,8 @@ const Template = ({
       setBody(bodyValue || '');
       setEditorState(bodyValue || '');
     }
+    variables = getExampleValue(exampleValue);
+    setVariables(variables);
 
     if (exampleValue) {
       if (hasButtons) {
@@ -322,10 +326,12 @@ const Template = ({
         );
         setTemplateButtons(buttonsVal);
         setTemplateType(templateButtonType);
+        const parse = convertButtonsToTemplate(buttonsVal, templateButtonType);
+        const parsedText = parse.length ? `| ${parse.join(' | ')}` : null;
+        const { message }: any = getTemplateAndButton(getExampleFromBody(bodyValue, variables));
+        const sampleText: any = parsedText && message + parsedText;
+        onExampleChange(sampleText);
       }
-      variables = getExampleValue(exampleValue);
-      setVariables(variables);
-      getSimulatorMessage(getExampleFromBody(bodyValue, variables));
     }
 
     if (shortcodeValue && setNewShortcode) {
@@ -539,9 +545,17 @@ const Template = ({
     }
   }, [templateType]);
 
+  // Removing buttons when checkbox is checked or unchecked
+  useEffect(() => {
+    if (!isEditing) {
+      const { message }: any = getTemplateAndButton(getExampleFromBody(body, variables));
+      onExampleChange(message || '');
+    }
+  }, [isAddButtonChecked]);
+
   // Converting buttons to template and vice-versa to show realtime update on simulator
   useEffect(() => {
-    if (templateButtons.length > 0) {
+    if (templateButtons.length > 0 && !isEditing) {
       const parse = convertButtonsToTemplate(templateButtons, templateType);
 
       const parsedText = parse.length ? `| ${parse.join(' | ')}` : null;
@@ -550,7 +564,7 @@ const Template = ({
 
       const sampleText: any = parsedText && message + parsedText;
       if (sampleText) {
-        getSimulatorMessage(sampleText);
+        onExampleChange(sampleText);
       }
     }
   }, [templateButtons]);
@@ -559,7 +573,7 @@ const Template = ({
     if (getSimulatorMessage && !isEditing) {
       getSimulatorMessage(getExampleFromBody(body, variables));
     }
-  }, [body, variables, isAddButtonChecked]);
+  }, [body, variables]);
 
   useEffect(() => {
     setVariables(getVariables(body, variables));
@@ -845,18 +859,14 @@ const Template = ({
 
   const setPayload = (payload: any) => {
     let payloadCopy = payload;
-    let translationsCopy: any = {};
-    console.log(payloadCopy);
 
+    let translationsCopy: any = {};
     if (template) {
       if (payloadCopy.isHsm) {
         payloadCopy.category = category.label || category;
         payloadCopy.example = getExampleFromBody(payloadCopy.body, variables);
       }
-
       if (template.sessionTemplate.sessionTemplate.language.id === language?.id) {
-        console.log(2);
-
         payloadCopy.languageId = language?.id;
         if (payloadCopy.type) {
           payloadCopy.type = payloadCopy.type.id;
@@ -890,8 +900,6 @@ const Template = ({
         delete payloadCopy.isAddButtonChecked;
         delete payloadCopy.templateButtons;
       } else if (!defaultAttribute.isHsm) {
-        console.log(2);
-
         let messageMedia = null;
         if (payloadCopy.type && payloadCopy.attachmentURL) {
           messageMedia = {
@@ -966,7 +974,6 @@ const Template = ({
     delete payloadCopy.variables;
     delete payloadCopy.existingShortCode;
     delete payloadCopy.newShortCode;
-    console.log(payloadCopy);
 
     return payloadCopy;
   };
