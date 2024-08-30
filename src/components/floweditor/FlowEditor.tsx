@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useMutation, useLazyQuery, useQuery } from '@apollo/client';
-import { Navigate, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { Menu, MenuItem, Typography } from '@mui/material';
 import BackIconFlow from 'assets/images/icons/BackIconFlow.svg?react';
 import WarningIcon from 'assets/images/icons/Warning.svg?react';
@@ -31,7 +31,6 @@ export const FlowEditor = () => {
   const params = useParams();
   const { uuid } = params;
   const navigate = useNavigate();
-  const location = useLocation();
   const [publishDialog, setPublishDialog] = useState(false);
   const [loading, setLoading] = useState(true);
   const [flowEditorLoaded, setFlowEditorLoaded] = useState(false);
