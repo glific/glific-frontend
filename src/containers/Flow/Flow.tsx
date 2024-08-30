@@ -156,10 +156,22 @@ export const Flow = () => {
     cancelLink = 'flow?isTemplate=true';
   }
 
-  const additionalAction = {
-    label: isTemplate ? t('View') : t('Configure'),
+  const configureAction = {
+    label: t('Configure'),
     link: '/flow/configure',
   };
+
+  const viewAction = {
+    label: t('View'),
+    link: '/flow/configure',
+    action: (link: any) => {
+      navigate(link, {
+        state: 'template',
+      });
+    },
+  };
+
+  const additionalAction = isTemplate ? viewAction : configureAction;
 
   const formFields = [
     {
