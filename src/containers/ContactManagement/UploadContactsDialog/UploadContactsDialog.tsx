@@ -1,63 +1,59 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import * as Yup from 'yup';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
-import { useLazyQuery, useMutation } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 
 import { useTranslation } from 'react-i18next';
-import { GET_ORGANIZATION_COLLECTIONS } from 'graphql/queries/Collection';
+import { FILTER_COLLECTIONS } from 'graphql/queries/Collection';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { Field, Form, Formik } from 'formik';
-import UploadIcon from 'assets/images/icons/Upload.svg?react';
-import CrossIcon from 'assets/images/icons/Cross.svg?react';
 import { UPLOAD_CONTACTS_SAMPLE } from 'config';
 import { IMPORT_CONTACTS } from 'graphql/mutations/Contact';
-import { slicedString } from 'common/utils';
+import { getUserSession } from 'services/AuthService';
 import { setNotification } from 'common/notification';
 import styles from './UploadContactsDialog.module.css';
+import { ImportButton } from 'components/UI/ImportButton/ImportButton';
 
 export interface UploadContactsDialogProps {
-  organizationDetails: any;
+  organizationDetails?: any;
   setDialog: Function;
+  setShowStatus: any;
 }
 
-export const UploadContactsDialog = ({
-  organizationDetails,
-  setDialog,
-}: UploadContactsDialogProps) => {
-  const [error, setError] = useState<any>(false);
+export const UploadContactsDialog = ({ setDialog, setShowStatus }: UploadContactsDialogProps) => {
+  const [fileName, setFileName] = useState<string>('');
   const [csvContent, setCsvContent] = useState<String | null | ArrayBuffer>('');
   const [uploadingContacts, setUploadingContacts] = useState(false);
-  const [fileName, setFileName] = useState<string>('');
+  const orgId = getUserSession('organizationId');
 
   const { t } = useTranslation();
   const [collection] = useState();
   const [optedIn] = useState(false);
 
-  const [getCollections, { data: collections, loading }] = useLazyQuery(
-    GET_ORGANIZATION_COLLECTIONS
-  );
-
-  useEffect(() => {
-    if (organizationDetails.id) {
-      getCollections({
-        variables: {
-          organizationGroupsId: organizationDetails.id,
-        },
-      });
-    }
-  }, [organizationDetails]);
+  const { data: collections, loading } = useQuery(FILTER_COLLECTIONS, {
+    variables: {
+      filter: {
+        groupType: 'WABA',
+      },
+      opts: {
+        limit: 50,
+        offset: 0,
+        order: 'ASC',
+      },
+    },
+  });
 
   const [importContacts] = useMutation(IMPORT_CONTACTS, {
     onCompleted: (data: any) => {
-      if (data.errors) {
+      const { errors } = data.importContacts;
+      if (errors) {
         setNotification(data.errors[0].message, 'warning');
       } else {
         setUploadingContacts(false);
-        setNotification(t('Contacts have been uploaded'));
+        setShowStatus(true);
       }
-      setDialog(false);
     },
     onError: (errors) => {
       setDialog(false);
@@ -66,31 +62,13 @@ export const UploadContactsDialog = ({
     },
   });
 
-  const addAttachment = (event: any) => {
-    const media = event.target.files[0];
-    const reader = new FileReader();
-    reader.readAsText(media);
-
-    reader.onload = () => {
-      const mediaName = media.name;
-      const extension = mediaName.slice((Math.max(0, mediaName.lastIndexOf('.')) || Infinity) + 1);
-      if (extension !== 'csv') {
-        setError(true);
-      } else {
-        const shortenedName = slicedString(mediaName, 15);
-        setFileName(shortenedName);
-        setCsvContent(reader.result);
-      }
-    };
-  };
-
   const uploadContacts = (details: any) => {
     importContacts({
       variables: {
         type: 'DATA',
         data: csvContent,
         groupLabel: details.collection.label,
-        importContactsId: organizationDetails.id,
+        importContactsId: orgId,
       },
     });
   };
@@ -101,6 +79,9 @@ export const UploadContactsDialog = ({
 
   const validationSchema = Yup.object().shape({
     collection: Yup.object().nullable().required(t('Collection is required')),
+    optedIn: Yup.boolean()
+      .oneOf([true], 'Please confirm if contacts are opted in.')
+      .required('Please confirm if contacts are opted in.'),
   });
 
   const formFieldItems: any = [
@@ -108,7 +89,7 @@ export const UploadContactsDialog = ({
       component: AutoComplete,
       name: 'collection',
       placeholder: t('Select collection'),
-      options: collections.organizationGroups,
+      options: collections.groups,
       multiple: false,
       optionLabel: 'label',
       label: t('Collection'),
@@ -118,6 +99,9 @@ export const UploadContactsDialog = ({
       name: 'optedIn',
       title: t('Are these contacts opted in?'),
       darkCheckbox: true,
+      info: {
+        title: 'Please obtain prior consent from contacts to message them on WhatsApp',
+      },
     },
   ];
 
@@ -135,7 +119,7 @@ export const UploadContactsDialog = ({
         <Form data-testid="formLayout">
           <DialogBox
             titleAlign="left"
-            title={`${t('Upload contacts')}: ${organizationDetails.name}`}
+            title={t('Upload Contacts')}
             handleOk={() => {
               submitForm();
             }}
@@ -146,6 +130,7 @@ export const UploadContactsDialog = ({
             buttonOkLoading={uploadingContacts}
             buttonOk={t('Upload')}
             alignButtons="left"
+            disableOk={!csvContent}
           >
             <div className={styles.Fields}>
               {formFieldItems.map((field: any) => (
@@ -153,59 +138,27 @@ export const UploadContactsDialog = ({
               ))}
             </div>
 
-            <div className={styles.UploadContainer}>
-              <label
-                className={`${styles.UploadEnabled} ${fileName ? styles.Uploaded : ''}`}
-                htmlFor="uploadFile"
-              >
-                <span>
-                  {fileName !== '' ? (
-                    <>
-                      <span>{fileName}</span>
-                      <CrossIcon
-                        className={styles.CrossIcon}
-                        onClick={(event) => {
-                          event.preventDefault();
-                          setFileName('');
-                        }}
-                      />
-                    </>
-                  ) : (
-                    <>
-                      <UploadIcon className={styles.UploadIcon} />
-                      Select .csv
-                    </>
-                  )}
-
-                  <input
-                    type="file"
-                    id="uploadFile"
-                    disabled={fileName !== ''}
-                    data-testid="uploadFile"
-                    onChange={(event) => {
-                      setError(false);
-                      addAttachment(event);
-                    }}
-                  />
-                </span>
-              </label>
+            <div className={styles.ImportContainer}>
+              <ImportButton
+                id={'uploadcontacts'}
+                title={fileName || 'Select file'}
+                afterImport={(result: string, media: any) => {
+                  setFileName(media.name);
+                  setCsvContent(result);
+                }}
+                fileType=".csv"
+              />
             </div>
             <div className={styles.Sample}>
               <a href={UPLOAD_CONTACTS_SAMPLE}>Download Sample</a>
             </div>
-
-            {error && (
-              <div data-testid="invalidCsvFormat" className={styles.Error}>
-                1. Please make sure the file format matches the sample
-              </div>
-            )}
           </DialogBox>
         </Form>
       )}
     </Formik>
   );
 
-  return form;
+  return <>{form}</>;
 };
 
 export default UploadContactsDialog;

@@ -5,7 +5,7 @@
 .Checkbox {
   margin-bottom: -10px;
   display: flex;
-  align-items: center;
+  flex-direction: column;
 }
 
 .Label {
@@ -32,4 +32,13 @@
 
 .Disabled {
   opacity: 60%;
+}
+
+.DangerText {
+  margin-left: 30px;
+  font-size: 12px;
+  margin-top: -12px;
+  line-height: 18px;
+  font-weight: 400;
+  color: #fb5c5c;
 }

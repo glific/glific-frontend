@@ -1,11 +1,16 @@
 .Container {
-  padding-left: 40px;
-  margin-top: 36px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 50%;
+  max-height: 65%;
+  background-color: #fff;
+  border-radius: 15px;
+  padding: 1rem 2rem;
 }
 
 .Instructions {
   max-width: 500px;
-  color: #93a29b;
   font-size: 16px;
 }
 
@@ -67,10 +72,6 @@
   cursor: not-allowed;
 }
 
-.FileIcon {
-  margin-right: 10px;
-}
-
 .WaitUpload {
   font-size: 14px;
   margin-left: 16px;
@@ -104,4 +105,9 @@
 .CrossIcon {
   position: absolute;
   right: 12px;
+}
+
+.Buttons button {
+  border-radius: 8px;
+  width: 30%;
 }
