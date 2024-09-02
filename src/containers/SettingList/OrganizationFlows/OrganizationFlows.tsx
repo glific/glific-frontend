@@ -430,19 +430,22 @@ export const OrganizationFlows = () => {
         regxOpt: payload.regxFlowOpt,
       };
     }
+    let startTimeValue = dayjs(payload.startTime);
+    let endTimeValue = dayjs(payload.endTime);
     object = {
       outOfOffice: {
         defaultFlowId: payload.defaultFlowId ? payload.defaultFlowId.id : null,
         enabled: payload.hours,
         enabledDays: assignDays(payload.enabledDays),
-        endTime: dayjs(payload.endTime).format(EXTENDED_TIME_FORMAT),
+        endTime: endTimeValue.isValid() ? endTimeValue.format(EXTENDED_TIME_FORMAT) : null,
         flowId: payload.flowId ? payload.flowId.id : null,
-        startTime: dayjs(payload.startTime).format(EXTENDED_TIME_FORMAT),
+        startTime: startTimeValue.isValid() ? startTimeValue.format(EXTENDED_TIME_FORMAT) : null,
       },
       regxFlow: regxFlow,
       newcontactFlowId: newContactFlowId,
       optinFlowId,
     };
+
     return object;
   };
 
