@@ -213,7 +213,6 @@ export const AddAttachment = ({
             }}
             handleCancel={() => {
               setAttachment(false);
-
               setAttachmentURL('');
               setAttachmentAdded(false);
             }}

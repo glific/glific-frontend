@@ -182,6 +182,17 @@ export const ChatInput = ({
     // check for an empty message or message with just spaces
     if ((!message || /^\s*$/.test(message)) && !attachmentAdded) return;
 
+    //check if it has media if the template type is image
+    if (
+      selectedTemplate &&
+      selectedTemplate.isHsm &&
+      selectedTemplate.type === 'IMAGE' &&
+      !attachmentAdded
+    ) {
+      setAttachment(!attachment);
+      return;
+    }
+
     // check if there is any attachment
     if (attachmentAdded) {
       createMediaMessage({
@@ -288,6 +299,7 @@ export const ChatInput = ({
   const handleCancel = () => {
     resetAttachment();
     resetVariable();
+    setSelectedTemplate(undefined);
     editor.dispatchCommand(CLEAR_EDITOR_COMMAND, undefined);
     editor.focus();
   };
