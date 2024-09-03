@@ -314,6 +314,8 @@ const Template = ({
       setBody(bodyValue || '');
       setEditorState(bodyValue || '');
     }
+    variables = getExampleValue(exampleValue);
+    setVariables(variables);
 
     if (exampleValue) {
       if (hasButtons) {
@@ -324,10 +326,12 @@ const Template = ({
         );
         setTemplateButtons(buttonsVal);
         setTemplateType(templateButtonType);
+        const parse = convertButtonsToTemplate(buttonsVal, templateButtonType);
+        const parsedText = parse.length ? `| ${parse.join(' | ')}` : null;
+        const { message }: any = getTemplateAndButton(getExampleFromBody(bodyValue, variables));
+        const sampleText: any = parsedText && message + parsedText;
+        onExampleChange(sampleText);
       }
-      variables = getExampleValue(exampleValue);
-      setVariables(variables);
-      onExampleChange(getExampleFromBody(bodyValue, variables));
     }
 
     if (shortcodeValue && setNewShortcode) {
@@ -359,6 +363,7 @@ const Template = ({
     }
     if (MessageMediaValue) {
       setAttachmentURL(MessageMediaValue.sourceUrl);
+      getUrlAttachmentAndType(typeValue || 'TEXT', { url: MessageMediaValue.sourceUrl });
     } else {
       setAttachmentURL('');
     }
@@ -520,8 +525,10 @@ const Template = ({
   }, [languages]);
 
   useEffect(() => {
-    if ((type === '' || type) && attachmentURL) {
-      validateURL(attachmentURL);
+    if (type === '' || type) {
+      if (attachmentURL) {
+        validateURL(attachmentURL);
+      }
       if (getUrlAttachmentAndType) {
         getUrlAttachmentAndType(type.id || 'TEXT', { url: attachmentURL });
       }
@@ -540,13 +547,15 @@ const Template = ({
 
   // Removing buttons when checkbox is checked or unchecked
   useEffect(() => {
-    const { message }: any = getTemplateAndButton(getExampleFromBody(body, variables));
-    onExampleChange(message || '');
+    if (!isEditing) {
+      const { message }: any = getTemplateAndButton(getExampleFromBody(body, variables));
+      onExampleChange(message || '');
+    }
   }, [isAddButtonChecked]);
 
   // Converting buttons to template and vice-versa to show realtime update on simulator
   useEffect(() => {
-    if (templateButtons.length > 0) {
+    if (templateButtons.length > 0 && !isEditing) {
       const parse = convertButtonsToTemplate(templateButtons, templateType);
 
       const parsedText = parse.length ? `| ${parse.join(' | ')}` : null;

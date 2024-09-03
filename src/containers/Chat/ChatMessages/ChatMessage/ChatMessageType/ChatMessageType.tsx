@@ -35,7 +35,7 @@ export const ChatMessageType = ({
   if (type !== 'LOCATION' && !media) {
     return (
       <div className={`${isContextMessage && styles.ContentMessageMaxWidth}`}>
-        <MessagesWithLinks message={body} showPreview={!isContextMessage} isSender={isSender} />
+        <MessagesWithLinks isSender={isSender} message={media.caption || media.text || body} />{' '}
       </div>
     );
   }
