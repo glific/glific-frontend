@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useMutation, useLazyQuery, useQuery } from '@apollo/client';
-import { Navigate, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { Menu, MenuItem, Typography } from '@mui/material';
 import BackIconFlow from 'assets/images/icons/BackIconFlow.svg?react';
 import WarningIcon from 'assets/images/icons/Warning.svg?react';
@@ -31,13 +31,10 @@ export const FlowEditor = () => {
   const params = useParams();
   const { uuid } = params;
   const navigate = useNavigate();
-  const location = useLocation();
   const [publishDialog, setPublishDialog] = useState(false);
   const [loading, setLoading] = useState(true);
   const [flowEditorLoaded, setFlowEditorLoaded] = useState(false);
   const [flowId, setFlowId] = useState();
-  const isTemplate = location?.state === 'template';
-  const config = setConfig(uuid, isTemplate);
   const [published, setPublished] = useState(false);
   const [showSimulator, setShowSimulator] = useState(false);
   const [stayOnPublish, setStayOnPublish] = useState(false);
@@ -48,6 +45,8 @@ export const FlowEditor = () => {
   const [currentEditDialogBox, setCurrentEditDialogBox] = useState(false);
   const [dialogMessage, setDialogMessage] = useState('');
   const [publishLoading, setPublishLoading] = useState(false);
+  const [isTemplate, setIsTemplate] = useState(false);
+  const config = setConfig(uuid, isTemplate);
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -141,6 +140,7 @@ export const FlowEditor = () => {
   useEffect(() => {
     if (flowName && flowName.flows.length > 0) {
       setFlowId(flowName.flows[0].id);
+      setIsTemplate(flowName.flows[0].isTemplate);
     }
   }, [flowName]);
 
