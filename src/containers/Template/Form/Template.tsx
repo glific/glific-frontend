@@ -853,6 +853,11 @@ const Template = ({
 
     let translationsCopy: any = {};
     if (template) {
+      if (payloadCopy.isHsm) {
+        payloadCopy.category = category.label || category;
+        payloadCopy.example = getExampleFromBody(payloadCopy.body, variables);
+      }
+
       if (template.sessionTemplate.sessionTemplate.language.id === language?.id) {
         payloadCopy.languageId = language?.id;
         if (payloadCopy.type) {
