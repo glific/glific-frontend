@@ -186,7 +186,7 @@ export const ChatInput = ({
     if (
       selectedTemplate &&
       selectedTemplate.isHsm &&
-      selectedTemplate.type === 'IMAGE' &&
+      selectedTemplate.type !== 'TEXT' &&
       !attachmentAdded
     ) {
       setAttachment(!attachment);
