@@ -663,23 +663,7 @@ export const exportFlowTranslationsWithErrors = {
   },
 };
 
-export const copyFlowQuery = (template: boolean = false) => {
-  let input = {
-    isActive: true,
-    isPinned: false,
-    isBackground: false,
-    name: 'Copy of Help',
-    keywords: template ? [] : ['help', 'activity'],
-    description: template ? '' : 'Help flow',
-    ignoreKeywords: false,
-    addRoleIds: [],
-    deleteRoleIds: [],
-  };
-
-  if (!template) {
-    Object.assign(input, { tag_id: '1' });
-  }
-
+export const copyFlowQuery = (input: any) => {
   return {
     request: {
       query: CREATE_FLOW_COPY,
