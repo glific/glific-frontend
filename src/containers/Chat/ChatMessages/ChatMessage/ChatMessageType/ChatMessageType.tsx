@@ -35,7 +35,7 @@ export const ChatMessageType = ({
   if (type !== 'LOCATION' && !media) {
     return (
       <div className={`${isContextMessage && styles.ContentMessageMaxWidth}`}>
-        <MessagesWithLinks isSender={isSender} message={media.caption || media.text || body} />{' '}
+        <MessagesWithLinks message={body} showPreview={!isContextMessage} isSender={isSender} />
       </div>
     );
   }
@@ -72,7 +72,7 @@ export const ChatMessageType = ({
               zIndex={1501} // greater than tooltips
             />
           </div>
-          <MessagesWithLinks isSender={isSender} message={media.caption || media.text} />
+          <MessagesWithLinks isSender={isSender} message={media.caption || media.text || body} />
         </div>
       );
 

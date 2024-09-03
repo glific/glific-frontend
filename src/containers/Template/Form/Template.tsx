@@ -314,11 +314,14 @@ const Template = ({
       setBody(bodyValue || '');
       setEditorState(bodyValue || '');
     }
-    variables = getExampleValue(exampleValue);
-    setVariables(variables);
 
     if (exampleValue) {
+      variables = getExampleValue(exampleValue);
+      setVariables(variables);
+
       if (hasButtons) {
+        setIsAddButtonChecked(hasButtons);
+
         const { buttons: buttonsVal } = getTemplateAndButtons(
           templateButtonType,
           exampleValue,
@@ -331,6 +334,8 @@ const Template = ({
         const { message }: any = getTemplateAndButton(getExampleFromBody(bodyValue, variables));
         const sampleText: any = parsedText && message + parsedText;
         onExampleChange(sampleText);
+      } else {
+        onExampleChange(getExampleFromBody(bodyValue, variables));
       }
     }
 
@@ -338,9 +343,6 @@ const Template = ({
       setNewShortcode(shortcodeValue);
     }
 
-    if (hasButtons) {
-      setIsAddButtonChecked(hasButtons);
-    }
     if (typeValue && typeValue !== 'TEXT') {
       setType({ id: typeValue, label: typeValue });
     } else {
@@ -363,7 +365,6 @@ const Template = ({
     }
     if (MessageMediaValue) {
       setAttachmentURL(MessageMediaValue.sourceUrl);
-      getUrlAttachmentAndType(typeValue || 'TEXT', { url: MessageMediaValue.sourceUrl });
     } else {
       setAttachmentURL('');
     }
@@ -376,6 +377,7 @@ const Template = ({
     if (setAllowTemplateCategoryChange) {
       setAllowTemplateCategoryChange(allowCategoryChangeValue);
     }
+    getUrlAttachmentAndType(typeValue || 'TEXT', { url: MessageMediaValue?.sourceUrl });
   };
 
   const updateStates = ({
@@ -525,17 +527,6 @@ const Template = ({
   }, [languages]);
 
   useEffect(() => {
-    if (type === '' || type) {
-      if (attachmentURL) {
-        validateURL(attachmentURL);
-      }
-      if (getUrlAttachmentAndType) {
-        getUrlAttachmentAndType(type.id || 'TEXT', { url: attachmentURL });
-      }
-    }
-  }, [type, attachmentURL]);
-
-  useEffect(() => {
     displayWarning();
   }, [type]);
 
@@ -552,6 +543,17 @@ const Template = ({
       onExampleChange(message || '');
     }
   }, [isAddButtonChecked]);
+
+  useEffect(() => {
+    if (type === '' || (type && !isEditing)) {
+      if (attachmentURL) {
+        validateURL(attachmentURL);
+      }
+      if (getUrlAttachmentAndType) {
+        getUrlAttachmentAndType(type.id || 'TEXT', { url: attachmentURL });
+      }
+    }
+  }, [type, attachmentURL]);
 
   // Converting buttons to template and vice-versa to show realtime update on simulator
   useEffect(() => {

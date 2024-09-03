@@ -87,12 +87,9 @@ export const HSM = () => {
 
   const getSimulatorMessage = (messages: any) => {
     const message = removeFirstLineBreak(messages);
+    const media: any = { ...sampleMessages.media };
     const text = getTemplate(message);
-
-    const media = {
-      ...sampleMessages.media,
-      caption: text,
-    };
+    media.caption = text;
 
     setSampleMessages((val) => ({ ...val, body: text, media }));
   };
