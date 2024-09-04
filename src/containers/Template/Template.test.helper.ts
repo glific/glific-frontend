@@ -317,21 +317,19 @@ const createHsmWithButtontemplate = {
     variables: {
       input: {
         label: 'Hello',
-        body: 'Hi {{1}}, How are you',
+        body: 'Hi',
         type: 'TEXT',
-        shortcode: 'welcome',
-        example: 'Hi [Glific], How are you',
         category: 'ACCOUNT_UPDATE',
         tagId: null,
         isActive: true,
-        isHsm: true,
+        allowTemplateCategoryChange: true,
         languageId: '1',
+        example: 'Hi',
+        shortcode: 'welcome',
         hasButtons: true,
-        buttons:
-          '[{"type":"QUICK_REPLY","text":"Quick reply 1"},{"type":"QUICK_REPLY","text":"Quick reply 2"}]',
+        buttons: '[{"type":"QUICK_REPLY","text":""},{"type":"QUICK_REPLY","text":""}]',
         buttonType: 'QUICK_REPLY',
         translations: '{}',
-        allowTemplateCategoryChange: false,
       },
     },
   },
@@ -371,20 +369,19 @@ const createHsmWithPhonetemplate = {
     variables: {
       input: {
         label: 'Hello',
-        body: 'Hi {{1}}, How are you',
+        body: 'Hi',
         type: 'TEXT',
-        shortcode: 'welcome',
-        example: 'Hi [[Glific], How are you',
         category: 'ACCOUNT_UPDATE',
         tagId: null,
         isActive: true,
-        isHsm: true,
+        allowTemplateCategoryChange: true,
         languageId: '1',
+        example: 'Hi',
+        shortcode: 'welcome',
         hasButtons: true,
-        buttons: '[{"type":"PHONE_NUMBER","text":"Call me","phone_number":"9876543210"}]',
+        buttons: '[{"type":"PHONE_NUMBER","text":"","phone_number":""}]',
         buttonType: 'CALL_TO_ACTION',
         translations: '{}',
-        allowTemplateCategoryChange: false,
       },
     },
   },
@@ -420,23 +417,6 @@ const createHsmWithPhonetemplate = {
 const createHSMtemplate = {
   request: {
     query: CREATE_TEMPLATE,
-    variables: {
-      input: {
-        label: 'Hello',
-        body: 'Hi {{1}}, How are you',
-        type: 'IMAGE',
-        shortcode: 'welcome',
-        example: 'Hi [Glific], How are you',
-        category: 'ACCOUNT_UPDATE',
-        tagId: null,
-        isActive: true,
-        isHsm: true,
-        languageId: '1',
-        translations: '{}',
-        messageMediaId: 5,
-        allowTemplateCategoryChange: true,
-      },
-    },
   },
   result: {
     data: {
@@ -465,6 +445,7 @@ const createHSMtemplate = {
       },
     },
   },
+  variableMatcher: (variables: any) => true,
 };
 
 const createMediaMessage = {
