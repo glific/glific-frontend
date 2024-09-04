@@ -171,7 +171,8 @@ export const getInteractiveMessageBody = (interactiveJSON: any) => {
 
 export const getDisplayName = (contact: any) => {
   // let's return early with default simulator name if we are looking at simulator contact
-  const isSimulatorContact = isSimulator(contact.phone);
+  const isSimulatorContact = isSimulator(contact?.phone);
+
   if (isSimulatorContact) {
     return contact.name || contact.maskedPhone;
   }
@@ -183,6 +184,7 @@ export const getDisplayName = (contact: any) => {
   } catch (er) {
     setLogs(er, 'error');
   }
+  console.log(contactFields);
 
   if (contactFields?.name?.value) {
     displayName = contactFields.name.value;

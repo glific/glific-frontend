@@ -971,6 +971,8 @@ const Template = ({
     delete payloadCopy.existingShortCode;
     delete payloadCopy.newShortCode;
 
+    console.log(payloadCopy);
+
     return payloadCopy;
   };
 
