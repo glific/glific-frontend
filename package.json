@@ -1,6 +1,6 @@
 {
   "name": "glific-frontend",
-  "version": "6.1.4",
+  "version": "6.1.5",
   "private": true,
   "type": "module",
   "dependencies": {
