@@ -38,7 +38,7 @@ export const UploadContactsDialog = ({ setDialog, setShowStatus }: UploadContact
         groupType: 'WABA',
       },
       opts: {
-        limit: 50,
+        limit: null,
         offset: 0,
         order: 'ASC',
       },

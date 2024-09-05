@@ -16,7 +16,7 @@ const mocks = [
       groupType: CONTACTS_COLLECTION,
     },
     opts: {
-      limit: 50,
+      limit: null,
       offset: 0,
       order: 'ASC',
     },
