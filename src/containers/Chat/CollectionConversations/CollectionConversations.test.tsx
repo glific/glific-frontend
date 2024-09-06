@@ -6,108 +6,80 @@ import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import { SEARCH_QUERY } from 'graphql/queries/Search';
 import { DEFAULT_ENTITY_LIMIT, DEFAULT_MESSAGE_LIMIT } from 'common/constants';
 import CollectionConversations from './CollectionConversations';
+import { MockedProvider } from '@apollo/client/testing';
+import { searchCollectionsQuery } from 'mocks/Chat';
 
-const cache = new InMemoryCache({ addTypename: false });
-cache.writeQuery({
-  query: SEARCH_QUERY,
-  variables: {
-    contactOpts: { limit: DEFAULT_ENTITY_LIMIT },
-    filter: { searchGroup: true },
-    messageOpts: { limit: DEFAULT_MESSAGE_LIMIT },
+const searchQueryMock = {
+  request: {
+    query: SEARCH_QUERY,
+    variables: {
+      contactOpts: { limit: DEFAULT_ENTITY_LIMIT },
+      filter: { searchGroup: true },
+      messageOpts: { limit: DEFAULT_MESSAGE_LIMIT },
+    },
   },
-  data: {
-    search: [
-      {
-        id: 'group_2',
-        group: {
-          id: '2',
-          label: 'Default Collection',
-        },
-        contact: null,
-        messages: [
-          {
-            id: '1',
-            body: 'Hey there whats up?',
-            insertedAt: '2020-06-25T13:36:43Z',
-            messageNumber: 0,
-            location: null,
-            receiver: {
+  result: {
+    data: {
+      search: [
+        {
+          id: 'group_2',
+          group: {
+            id: '2',
+            label: 'Default Collection',
+          },
+          contact: null,
+          messages: [
+            {
               id: '1',
-            },
-            sender: {
-              id: '2',
-            },
-            type: 'TEXT',
-            media: null,
-            errors: null,
-            contextMessage: {
-              body: 'All good',
-              contextId: 1,
-              messageNumber: 10,
-              errors: '{}',
-              media: null,
-              type: 'TEXT',
-              insertedAt: '2021-04-26T06:13:03.832721Z',
+              body: 'Hey there whats up?',
+              insertedAt: '2020-06-25T13:36:43Z',
+              messageNumber: 0,
               location: null,
               receiver: {
                 id: '1',
               },
               sender: {
                 id: '2',
-                name: 'User',
               },
+              type: 'TEXT',
+              media: null,
+              errors: null,
+              contextMessage: {
+                body: 'All good',
+                contextId: 1,
+                messageNumber: 10,
+                errors: '{}',
+                media: null,
+                type: 'TEXT',
+                insertedAt: '2021-04-26T06:13:03.832721Z',
+                location: null,
+                receiver: {
+                  id: '1',
+                },
+                sender: {
+                  id: '2',
+                  name: 'User',
+                },
+              },
+              interactiveContent: '{}',
+              sendBy: 'test',
+              flowLabel: null,
             },
-            interactiveContent: '{}',
-            sendBy: 'test',
-            flowLabel: null,
+          ],
+        },
+        {
+          id: 'group_3',
+          group: {
+            id: '3',
+            label: 'Optin Collection',
           },
-        ],
-      },
-      {
-        id: 'group_3',
-        group: {
-          id: '3',
-          label: 'Optin Collection',
+          contact: null,
+          messages: [],
         },
-        contact: null,
-        messages: [],
-      },
-      {
-        id: 'group_4',
-        group: {
-          id: '4',
-          label: 'Optout Collection',
-        },
-        contact: null,
-        messages: [],
-      },
-      {
-        id: 'group_5',
-        group: {
-          id: '5',
-          label: 'Glific Collection',
-        },
-        contact: null,
-        messages: [],
-      },
-      {
-        id: 'group_1',
-        group: {
-          id: '1',
-          label: 'Test Collection',
-        },
-        contact: null,
-        messages: [],
-      },
-    ],
+      ],
+    },
   },
-});
-
-const client = new ApolloClient({
-  cache: cache,
-  uri: 'http://localhost:4000/',
-  assumeImmutableResults: true,
-});
+};
 
 afterEach(cleanup);
 
@@ -118,11 +90,11 @@ const props = {
 };
 
 const collectionConversation = (
-  <ApolloProvider client={client}>
+  <MockedProvider mocks={[searchQueryMock, searchCollectionsQuery]}>
     <Router>
       <CollectionConversations collectionId={3} {...props} />
     </Router>
-  </ApolloProvider>
+  </MockedProvider>
 );
 
 describe('<CollectionConversation />', () => {
@@ -139,27 +111,16 @@ describe('<CollectionConversation />', () => {
       expect(container).toBeInTheDocument();
     });
 
-    expect(screen.getByTestId('searchForm')).toBeInTheDocument();
-
     await waitFor(() => {
-      const searchInput = screen.getByRole('textbox');
-      expect(searchInput).toBeInTheDocument();
-      userEvent.type(searchInput, 'opt');
-      fireEvent.submit(getByTestId('searchForm'));
-
-      // type optin then press enter
-      userEvent.type(searchInput, 'optin{enter}');
-
-      const resetButton = screen.getByTestId('resetButton');
-      expect(resetButton).toBeInTheDocument();
-      userEvent.click(resetButton);
+      expect(screen.getByTestId('searchForm')).toBeInTheDocument();
     });
 
-    const listItems = screen.getAllByTestId('list');
-    expect(listItems.length).toBe(5);
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'optin' } });
+    fireEvent.keyDown(screen.getByRole('textbox'), { key: 'Enter', code: 'Enter' });
 
-    userEvent.click(listItems[0]);
-
-    await waitFor(() => {});
+    await waitFor(() => {
+      expect(screen.getAllByRole('list')).toHaveLength(1);
+      expect(screen.getByText('New optin')).toBeInTheDocument();
+    });
   });
 });
