@@ -56,12 +56,33 @@ const mocks = [
     deleteRoleIds: [],
     tag_id: '1',
   }),
-  createFlowQuery,
+  createFlowQuery({
+    isActive: true,
+    isPinned: false,
+    isBackground: false,
+    name: 'New Flow',
+    keywords: ['मदद'],
+    description: '',
+    ignoreKeywords: false,
+    addRoleIds: [],
+    deleteRoleIds: [],
+  }),
   createTagQuery,
   getFlowCountQuery({ isActive: true, isTemplate: false }),
   releaseFlow,
   getFilterTagQuery,
   updateFlowQuery,
+  createFlowQuery({
+    isActive: true,
+    isPinned: false,
+    isBackground: false,
+    name: 'New Flow',
+    keywords: [],
+    description: '',
+    ignoreKeywords: false,
+    addRoleIds: [],
+    deleteRoleIds: [],
+  }),
 ];
 
 const mockUseLocationValue: any = {
@@ -347,4 +368,26 @@ it('should create copy of a template flow', async () => {
   const button = getByTestId('submitActionButton');
   fireEvent.click(button);
   await waitFor(() => {});
+});
+
+it('should show validate the form and show errors', async () => {
+  mockUseLocationValue.state = null;
+
+  render(flow());
+  await waitFor(() => {
+    expect(screen.getByText('Add a new flow')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByText('Save'));
+
+  await waitFor(() => {
+    expect(screen.getByText('Name is required.')).toBeInTheDocument();
+  });
+
+  fireEvent.change(screen.getAllByRole('textbox')[0], { target: { value: 'New Flow' } });
+  fireEvent.click(screen.getByText('Save'));
+
+  await waitFor(() => {
+    expect(screen.getByTestId('loadingBtn')).toBeInTheDocument();
+  });
 });

@@ -571,8 +571,10 @@ export const FormLayout = ({
               variant="contained"
               color="primary"
               onClick={() => {
-                onSaveButtonClick(formik.errors);
-                formik.submitForm();
+                formik.validateForm().then((errors) => {
+                  onSaveButtonClick(errors);
+                  formik.submitForm();
+                });
               }}
               className={styles.Button}
               data-testid="submitActionButton"
