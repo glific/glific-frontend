@@ -1,7 +1,5 @@
 import { BrowserRouter as Router } from 'react-router-dom';
 import { render, cleanup, waitFor, screen, fireEvent } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 
 import { SEARCH_QUERY } from 'graphql/queries/Search';
 import { DEFAULT_ENTITY_LIMIT, DEFAULT_MESSAGE_LIMIT } from 'common/constants';
