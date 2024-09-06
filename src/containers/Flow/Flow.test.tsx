@@ -372,8 +372,8 @@ it('should create copy of a template flow', async () => {
 
 it('should show validate the form and show errors', async () => {
   mockUseLocationValue.state = null;
-
   render(flow());
+
   await waitFor(() => {
     expect(screen.getByText('Add a new flow')).toBeInTheDocument();
   });
