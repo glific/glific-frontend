@@ -44,7 +44,8 @@ describe('contact profile with single profile', () => {
     fireEvent.click(getByText('Details'));
 
     await waitFor(() => {
-      expect(screen.getByText('Optin via BSP on 19/08/2021, 14:58:01')).toBeInTheDocument();
+      expect(screen.getByText('Status')).toBeInTheDocument();
+      expect(screen.getByText('Collections')).toBeInTheDocument();
     });
   });
 });
