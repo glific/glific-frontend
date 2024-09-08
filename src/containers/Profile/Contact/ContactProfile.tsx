@@ -102,6 +102,7 @@ export const ContactProfile = () => {
         return (
           <React.Fragment key={id}>
             <div
+              data-testid="profileHeader"
               className={styles.ProfileHeader}
               onClick={() => {
                 setSelectedProfileId(`${id}`);
