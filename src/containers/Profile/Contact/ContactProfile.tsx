@@ -7,7 +7,6 @@ import { useTranslation } from 'react-i18next';
 import CollapseIcon from '../../../assets/images/icons/Collapse.svg?react';
 import ExpandIcon from '../../../assets/images/icons/Expand.svg?react';
 import { getContactStatus, getDisplayName } from 'common/utils';
-import { getOrganizationServices } from 'services/AuthService';
 import { GET_CONTACT_DETAILS, GET_CONTACT_PROFILES } from 'graphql/queries/Contact';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { AvatarDisplay } from 'components/UI/AvatarDisplay/AvatarDisplay';

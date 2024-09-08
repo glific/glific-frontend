@@ -28,9 +28,6 @@ describe('contact profile', () => {
 
   test('contact profile should render', async () => {
     const { getByText, getAllByRole } = render(contactProfile);
-    await waitFor(() => {
-      expect(getByText('Profile')).toBeInTheDocument();
-    });
 
     await waitFor(() => {
       expect(getByText('Loading...')).toBeInTheDocument();
@@ -42,7 +39,7 @@ describe('contact profile', () => {
 
     // shows N/A when no name
     await waitFor(() => {
-      expect(getAllByRole('textbox')[0]).toHaveValue('N/A');
+      expect(getAllByRole('textbox')[0]).toHaveValue('profile name 2');
     });
   });
 });

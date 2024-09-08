@@ -9,6 +9,7 @@ import {
   GET_CONTACT_PROFILES,
   GET_COLLECTION_CONTACTS,
   GET_CONTACTS_LIST,
+  GET_PROFILE,
 } from 'graphql/queries/Contact';
 import { addFlowToContactQuery } from 'mocks/Flow';
 import { getOrganizationLanguagesQuery, getOrganizationQuery } from 'mocks/Organization';
@@ -507,6 +508,32 @@ export const getContactProfiles = {
   },
 };
 
+export const getProfileMock = {
+  request: {
+    query: GET_PROFILE,
+    variables: {
+      id: '1',
+    },
+  },
+  result: {
+    data: {
+      profile: {
+        profile: {
+          fields:
+            '{"role":{"value":"Parent","type":"string","label":"role","inserted_at":"2024-09-08T12:14:25.625321Z"},"name":{"value":"profile name 2","type":"string","label":"Name","inserted_at":"2024-09-08T12:14:25.619652Z"}}',
+          id: '3',
+          language: {
+            id: '1',
+            label: 'English',
+          },
+          name: 'profile name 2',
+          type: 'Parent',
+        },
+      },
+    },
+  },
+};
+
 export const LOGGED_IN_USER_MOCK = [
   getCurrentUserQuery,
   getCurrentUserQuery,
@@ -516,6 +543,7 @@ export const LOGGED_IN_USER_MOCK = [
   getOrganizationLanguagesQuery,
   getOrganizationLanguagesQuery,
   getContactQuery,
+  getProfileMock,
   addFlowToContactQuery,
   clearMessagesQuery,
   ...getOrganizationQuery,
