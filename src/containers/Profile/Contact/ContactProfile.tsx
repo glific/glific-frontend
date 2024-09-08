@@ -23,12 +23,10 @@ export const ContactProfile = () => {
   const [showProfileSection, setShowProfileSection] = useState('profile');
   const { t } = useTranslation();
 
-  const isContactProfileEnabled = getOrganizationServices('contactProfileEnabled');
   const { loading, data } = useQuery(GET_CONTACT_DETAILS, { variables: { id: params.id } });
 
   const { loading: profileLoading, data: profileData } = useQuery(GET_CONTACT_PROFILES, {
     variables: { filter: { contactId: params.id } },
-    skip: !isContactProfileEnabled,
     fetchPolicy: 'network-only',
   });
 
@@ -54,7 +52,7 @@ export const ContactProfile = () => {
 
   let selectedProfile;
 
-  if (isContactProfileEnabled && profileData && profileData.profiles.length > 0) {
+  if (profileData && profileData.profiles.length > 0) {
     selectedProfile = profileData.profiles.filter(
       (profile: any) => profile.id === selectedProfileId
     );

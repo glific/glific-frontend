@@ -172,3 +172,20 @@ export const GET_CONTACT_PROFILES = gql`
     }
   }
 `;
+
+export const GET_PROFILE = gql`
+  query getContact($id: ID!) {
+    profile(id: $id) {
+      profile {
+        id
+        name
+        fields
+        type
+        language {
+          label
+          id
+        }
+      }
+    }
+  }
+`;

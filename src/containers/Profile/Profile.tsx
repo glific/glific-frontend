@@ -9,7 +9,7 @@ import { CONTACT_STATUS, PROVIDER_STATUS } from 'common/constants';
 import { FormLayout } from 'containers/Form/FormLayout';
 import { Input } from 'components/UI/Form/Input/Input';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
-import { GET_CONTACT } from 'graphql/queries/Contact';
+import { GET_CONTACT, GET_PROFILE } from 'graphql/queries/Contact';
 import {
   CREATE_CONTACT,
   UPDATE_CONTACT,
@@ -17,7 +17,6 @@ import {
   DELETE_CONTACT_PROFILE,
 } from 'graphql/mutations/Contact';
 import { GET_CURRENT_USER } from 'graphql/queries/User';
-import { getOrganizationServices } from 'services/AuthService';
 import { getDisplayName, isSimulator } from 'common/utils';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 
@@ -43,11 +42,10 @@ export const Profile = ({
   const [languageId, setLanguageId] = useState('');
   const [hideRemoveBtn, setHideRemoveBtn] = useState(false);
   const { t } = useTranslation();
-  const isContactProfileEnabled = getOrganizationServices('contactProfileEnabled');
   const hasMultipleProfiles = multiProfileAttributes?.selectedProfile;
 
   const queries = {
-    getItemQuery: GET_CONTACT,
+    getItemQuery: hasMultipleProfiles ? GET_PROFILE : GET_CONTACT,
     createItemQuery: CREATE_CONTACT,
     updateItemQuery: UPDATE_CONTACT,
     deleteItemQuery: hasMultipleProfiles ? DELETE_CONTACT_PROFILE : DELETE_CONTACT,
@@ -58,16 +56,16 @@ export const Profile = ({
   const { data, loading } = useQuery(GET_CURRENT_USER);
 
   const updateName = () => {
-    if (!isContactProfileEnabled || !hasMultipleProfiles) {
+    if (!hasMultipleProfiles) {
       return;
     }
-    const { selectedProfile } = multiProfileAttributes;
+    const { selectedProfile, selectedProfileId } = multiProfileAttributes;
 
     if (!selectedProfile) {
       return;
     }
 
-    if (selectedProfile.id === multiProfileAttributes.activeProfileId) {
+    if (selectedProfileId === multiProfileAttributes.activeProfileId) {
       setName(`${selectedProfile.name} (currently active)`);
     } else {
       setName(selectedProfile.name);
@@ -199,7 +197,7 @@ export const Profile = ({
       dialogMessage={dialogMessage}
       formFields={formFields}
       redirectionLink={redirectionLink}
-      listItem="contact"
+      listItem={hasMultipleProfiles ? 'profile' : 'contact'}
       icon={profileIcon}
       afterDelete={afterDelete}
       type={type}
