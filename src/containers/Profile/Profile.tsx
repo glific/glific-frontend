@@ -61,10 +61,6 @@ export const Profile = ({
     }
     const { selectedProfile, selectedProfileId } = multiProfileAttributes;
 
-    if (!selectedProfile) {
-      return;
-    }
-
     if (selectedProfileId === multiProfileAttributes.activeProfileId) {
       setName(`${selectedProfile.name} (currently active)`);
     } else {
