@@ -97,6 +97,7 @@ export const Profile = ({
     bspStatus: bspStatusValue,
     language: languageIdValue,
     fields: fieldsValue,
+    contact: contactDetails,
   }: any) => {
     updateName();
     let hideDeleteButton = false;
@@ -120,9 +121,15 @@ export const Profile = ({
       hideDeleteButton = organizationPhone === currentUserPhone;
     }
 
+    if (hasMultipleProfiles) {
+      setStatus(contactDetails?.status);
+      setBspStatus(contactDetails?.bspStatus);
+    } else {
+      setStatus(statusValue);
+      setBspStatus(bspStatusValue);
+    }
+
     setName(displayName);
-    setStatus(statusValue);
-    setBspStatus(bspStatusValue);
     setHideRemoveBtn(hideDeleteButton);
     setLanguageId(languageIdValue.id);
   };

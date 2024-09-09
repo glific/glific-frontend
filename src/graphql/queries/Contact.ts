@@ -185,6 +185,11 @@ export const GET_PROFILE = gql`
           label
           id
         }
+        contact {
+          status
+          bspStatus
+          settings
+        }
       }
     }
   }

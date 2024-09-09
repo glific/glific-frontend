@@ -541,6 +541,11 @@ export const getProfileMock = (id: string, profileDetails?: any) => ({
             id: '1',
             label: 'English',
           },
+          contact: {
+            status: 'VALID',
+            bspStatus: 'SESSION_AND_HSM',
+            settings: {},
+          },
           ...profileDetails,
         },
       },
