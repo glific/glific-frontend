@@ -38,12 +38,17 @@ export const UploadContactsDialog = ({ setDialog, setShowStatus }: UploadContact
         groupType: 'WABA',
       },
       opts: {
-        limit: 50,
+        limit: null,
         offset: 0,
         order: 'ASC',
       },
     },
   });
+
+  let groupOptions = [];
+  if (collections && collections.groups) {
+    groupOptions = collections.groups;
+  }
 
   const [importContacts] = useMutation(IMPORT_CONTACTS, {
     onCompleted: (data: any) => {
@@ -73,10 +78,6 @@ export const UploadContactsDialog = ({ setDialog, setShowStatus }: UploadContact
     });
   };
 
-  if (loading || !collections) {
-    return <Loading />;
-  }
-
   const validationSchema = Yup.object().shape({
     collection: Yup.object().nullable().required(t('Collection is required')),
     optedIn: Yup.boolean()
@@ -89,7 +90,7 @@ export const UploadContactsDialog = ({ setDialog, setShowStatus }: UploadContact
       component: AutoComplete,
       name: 'collection',
       placeholder: t('Select collection'),
-      options: collections.groups,
+      options: groupOptions,
       multiple: false,
       optionLabel: 'label',
       label: t('Collection'),
@@ -105,7 +106,7 @@ export const UploadContactsDialog = ({ setDialog, setShowStatus }: UploadContact
     },
   ];
 
-  const form = (
+  return (
     <Formik
       enableReinitialize
       validationSchema={validationSchema}
@@ -132,33 +133,37 @@ export const UploadContactsDialog = ({ setDialog, setShowStatus }: UploadContact
             alignButtons="left"
             disableOk={!csvContent}
           >
-            <div className={styles.Fields}>
-              {formFieldItems.map((field: any) => (
-                <Field {...field} key={field.name} />
-              ))}
-            </div>
+            {loading ? (
+              <Loading />
+            ) : (
+              <>
+                <div className={styles.Fields}>
+                  {formFieldItems.map((field: any) => (
+                    <Field {...field} key={field.name} />
+                  ))}
+                </div>
 
-            <div className={styles.ImportContainer}>
-              <ImportButton
-                id={'uploadcontacts'}
-                title={fileName || 'Select file'}
-                afterImport={(result: string, media: any) => {
-                  setFileName(media.name);
-                  setCsvContent(result);
-                }}
-                fileType=".csv"
-              />
-            </div>
-            <div className={styles.Sample}>
-              <a href={UPLOAD_CONTACTS_SAMPLE}>Download Sample</a>
-            </div>
+                <div className={styles.ImportContainer}>
+                  <ImportButton
+                    id={'uploadcontacts'}
+                    title={fileName || 'Select file'}
+                    afterImport={(result: string, media: any) => {
+                      setFileName(media.name);
+                      setCsvContent(result);
+                    }}
+                    fileType=".csv"
+                  />
+                </div>
+                <div className={styles.Sample}>
+                  <a href={UPLOAD_CONTACTS_SAMPLE}>Download Sample</a>
+                </div>
+              </>
+            )}
           </DialogBox>
         </Form>
       )}
     </Formik>
   );
-
-  return <>{form}</>;
 };
 
 export default UploadContactsDialog;

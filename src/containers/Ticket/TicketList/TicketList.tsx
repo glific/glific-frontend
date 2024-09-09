@@ -27,7 +27,7 @@ import styles from './TicketList.module.css';
 import { BulkAction } from './BulkAction/BulkAction';
 import { SHORT_DATE_TIME_FORMAT } from 'common/constants';
 import { ticketsInfo } from 'common/HelpData';
-import { getDisplayName } from 'common/utils';
+import setLogs from 'config/logs';
 
 const getId = (id: any) => <div className={styles.TableText}>{id}</div>;
 const getBody = (body: any) => <div className={styles.TableText}>{body}</div>;
@@ -38,7 +38,13 @@ const getInsertedAt = (insertedAt: string) => (
 );
 
 const getUser = (user: any) => {
-  let displayName = getDisplayName(user);
+  let contactFields: any = {};
+  try {
+    contactFields = JSON.parse(user.fields);
+  } catch (er) {
+    setLogs(er, 'error');
+  }
+  const displayName = contactFields?.name?.value || user?.name || user?.maskedPhone || '';
   return <div className={styles.TableText}>{displayName}</div>;
 };
 
