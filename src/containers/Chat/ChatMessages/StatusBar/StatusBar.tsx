@@ -3,6 +3,7 @@ import { useQuery } from '@apollo/client';
 import { getUserSession } from 'services/AuthService';
 import { BSPBALANCE, GET_ORGANIZATION_STATUS } from 'graphql/queries/Organization';
 import styles from './StatusBar.module.css';
+import { GET_WA_MANAGED_PHONES, GET_WA_MANAGED_PHONES_STATUS } from 'graphql/queries/WaGroups';
 
 const StatusBar = () => {
   const variables = { organizationId: getUserSession('organizationId') };
@@ -14,6 +15,9 @@ const StatusBar = () => {
     variables,
     fetchPolicy: 'cache-only',
   });
+
+  const { data } = useQuery(GET_WA_MANAGED_PHONES_STATUS);
+  console.log(data);
 
   if (!balanceData && !orgStatus) {
     return null;
