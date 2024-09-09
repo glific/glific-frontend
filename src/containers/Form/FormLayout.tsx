@@ -547,6 +547,7 @@ export const FormLayout = ({
     if (Object.keys(errors).length > 0) {
       return;
     }
+    onSaveClick(true);
   };
 
   const form = (
@@ -581,7 +582,7 @@ export const FormLayout = ({
               }}
               className={styles.Button}
               data-testid="submitActionButton"
-              loading={formik.isSubmitting || formik.isValidating}
+              loading={saveClick}
               disabled={buttonState.status}
             >
               {buttonState.status ? buttonState.text : button}
