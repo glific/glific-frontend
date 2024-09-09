@@ -24,6 +24,7 @@
 
 .TermsAndCondition {
   width: 100%;
+  overflow-y: scroll;
 }
 
 .Buttons button {

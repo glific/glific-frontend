@@ -4,25 +4,11 @@ import { MockedProvider } from '@apollo/client/testing';
 import { BrowserRouter as Router } from 'react-router-dom';
 
 import ContactManagement from './ContactManagement';
-import { filterCollectionQuery } from 'mocks/Collection';
-import { CONTACTS_COLLECTION } from 'common/constants';
+import { getCollectionsList } from 'mocks/Collection';
 import userEvent from '@testing-library/user-event';
 import { importContacts, moveContacts } from 'mocks/Contact';
 
-const mocks = [
-  filterCollectionQuery({
-    filter: {
-      groupType: CONTACTS_COLLECTION,
-    },
-    opts: {
-      limit: 50,
-      offset: 0,
-      order: 'ASC',
-    },
-  }),
-  importContacts,
-  moveContacts,
-];
+const mocks = [getCollectionsList(''), importContacts, moveContacts];
 
 const contactManagement = (
   <MockedProvider mocks={mocks} addTypename={false}>

@@ -853,40 +853,49 @@ const Template = ({
 
     let translationsCopy: any = {};
     if (template) {
-      if (template.sessionTemplate.sessionTemplate.language.id === language?.id) {
-        payloadCopy.languageId = language?.id;
-        if (payloadCopy.type) {
-          payloadCopy.type = payloadCopy.type.id;
-          // STICKER is a type of IMAGE
-          if (payloadCopy.type.id === 'STICKER') {
-            payloadCopy.type = 'IMAGE';
-          }
-        } else {
-          payloadCopy.type = 'TEXT';
-        }
+      if (payloadCopy.isHsm) {
+        payloadCopy.category = category.label || category;
+        payloadCopy.example = getExampleFromBody(payloadCopy.body, variables);
+      }
 
-        delete payloadCopy.language;
-        if (payloadCopy.isHsm) {
-          if (isAddButtonChecked && templateType) {
-            const templateButtonData = getButtonTemplatePayload();
-            Object.assign(payloadCopy, { ...templateButtonData });
-          }
+      payloadCopy.languageId = language?.id;
+      if (payloadCopy.type) {
+        payloadCopy.type = payloadCopy.type.id;
+        // STICKER is a type of IMAGE
+        if (payloadCopy.type.id === 'STICKER') {
+          payloadCopy.type = 'IMAGE';
+        }
+      } else {
+        payloadCopy.type = 'TEXT';
+      }
+
+      delete payloadCopy.language;
+      if (payloadCopy.isHsm) {
+        if (isAddButtonChecked && templateType) {
+          const templateButtonData = getButtonTemplatePayload();
+          Object.assign(payloadCopy, { ...templateButtonData });
+        }
+        if (languageVariant) {
+          payloadCopy.shortcode = existingShortCode.label;
+        } else {
           payloadCopy.shortcode = newShortCode;
-        } else {
-          delete payloadCopy.example;
-          delete payloadCopy.shortcode;
-          delete payloadCopy.category;
-          delete payloadCopy.variables;
-          delete payloadCopy.allowTemplateCategoryChange;
         }
-        if (payloadCopy.type === 'TEXT') {
-          delete payloadCopy.attachmentURL;
-        }
+      } else {
+        delete payloadCopy.example;
+        delete payloadCopy.shortcode;
+        delete payloadCopy.category;
+        delete payloadCopy.variables;
+        delete payloadCopy.allowTemplateCategoryChange;
+      }
+      if (payloadCopy.type === 'TEXT') {
+        delete payloadCopy.attachmentURL;
+      }
 
-        // Removing unnecessary fields
-        delete payloadCopy.isAddButtonChecked;
-        delete payloadCopy.templateButtons;
-      } else if (!defaultAttribute.isHsm) {
+      // Removing unnecessary fields
+      delete payloadCopy.isAddButtonChecked;
+      delete payloadCopy.templateButtons;
+
+      if (!defaultAttribute.isHsm) {
         let messageMedia = null;
         if (payloadCopy.type && payloadCopy.attachmentURL) {
           messageMedia = {

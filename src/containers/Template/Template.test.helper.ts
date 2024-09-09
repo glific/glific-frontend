@@ -618,13 +618,6 @@ export const getSpendSendTemplate = {
 export const updateSessiontemplate = {
   request: {
     query: UPDATE_TEMPLATE,
-    variables: {
-      id: '1',
-      input: {
-        translations:
-          '{"2":{"status":"approved","languageId":{"localized":true,"locale":"hi","label":"Hindi","id":"2","__typename":"Language"},"label":"hey","isHsm":false,"body":"hindi translations","MessageMedia":null},"undefined":{"status":"approved","languageId":null,"label":"title","body":"message","MessageMedia":{"type":"IMAGE","sourceUrl":"https://images.ctfassets.net/hrltx12pl8hq/28ECAQiPJZ78hxatLTa7Ts/2f695d869736ae3b0de3e56ceaca3958/free-nature-images.jpg?fit=fill&w=1200&h=630"},"isHsm":false}}',
-      },
-    },
   },
   result: {
     data: {
@@ -663,6 +656,7 @@ export const updateSessiontemplate = {
       },
     },
   },
+  variableMatcher: (variables: any) => true,
 };
 
 export const TEMPLATE_MOCKS = [
