@@ -27,6 +27,7 @@ export interface SearchDialogBoxProps {
   fullWidth?: boolean;
   placeholder?: string;
   showTags?: boolean;
+  noOptionsText?: string;
 }
 
 export const SearchDialogBox = (props: SearchDialogBoxProps) => {
@@ -51,6 +52,7 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
     fullWidth = false,
     showTags = true,
     placeholder,
+    noOptionsText,
   } = props;
 
   const [selectedOption, setSelectedOptions] = useState<any>(multiple ? [] : null);

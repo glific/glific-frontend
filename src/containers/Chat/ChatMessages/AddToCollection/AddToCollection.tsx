@@ -26,7 +26,7 @@ export const AddToCollection = ({ collectionId, setDialog, groups }: AddToCollec
   let updateMutation = groups ? UPDATE_COLLECTION_WA_GROUP : UPDATE_COLLECTION_CONTACTS;
   let entity = groups ? 'waGroups' : 'contacts';
 
-  const { data: entityData } = useQuery(searchquery, {
+  const { data: entityData, loading } = useQuery(searchquery, {
     variables: groups
       ? setVariables({ excludeGroups: collectionId }, 50)
       : setVariables({ name: contactSearchTerm, excludeGroups: collectionId }, 50),
@@ -97,6 +97,7 @@ export const AddToCollection = ({ collectionId, setDialog, groups }: AddToCollec
       selectedOptions={[]}
       fullWidth={true}
       showTags={false}
+      noOptionsText={loading ? 'Loading...' : 'No options available'}
       onChange={(value: any) => {
         if (typeof value === 'string') {
           setContactSearchTerm(value);
