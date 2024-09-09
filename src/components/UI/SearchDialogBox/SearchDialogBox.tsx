@@ -134,6 +134,7 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
             multiple={multiple}
             placeholder={placeholder}
             showTags={showTags}
+            noOptionsText={noOptionsText}
           />
         </FormControl>
         <div className={styles.Description} data-testid="description">
