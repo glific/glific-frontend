@@ -1,4 +1,4 @@
-import { render, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 
 import { BrowserRouter as Router } from 'react-router-dom';
@@ -6,21 +6,13 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { getAllOrganizations } from 'mocks/Organization';
 
 import UploadContactsDialog from './UploadContactsDialog';
-import { filterCollectionQuery } from 'mocks/Collection';
-import { CONTACTS_COLLECTION } from 'common/constants';
+import { getCollectionsList } from 'mocks/Collection';
 
 const mocks = [
   ...getAllOrganizations,
-  filterCollectionQuery({
-    filter: {
-      groupType: CONTACTS_COLLECTION,
-    },
-    opts: {
-      limit: null,
-      offset: 0,
-      order: 'ASC',
-    },
-  }),
+  getCollectionsList(''),
+  getCollectionsList('Optin group'),
+  getCollectionsList(),
 ];
 
 const setDialogMock = vi.fn();
@@ -41,11 +33,16 @@ const dialogBox = (
   </MockedProvider>
 );
 
-test('Upload contact dialog renders correctly', async () => {
+test('Upload contact dialog renders correctly and search works for dropdown', async () => {
   const { getByText } = render(dialogBox);
 
-  expect(getByText('Loading...')).toBeInTheDocument();
   await waitFor(() => {
     expect(getByText('Upload Contacts')).toBeInTheDocument();
+  });
+
+  fireEvent.change(screen.getByRole('combobox'), { target: { value: 'Optin group' } });
+
+  await waitFor(() => {
+    expect(screen.getByText('Optin group')).toBeInTheDocument();
   });
 });
