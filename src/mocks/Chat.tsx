@@ -1091,3 +1091,30 @@ export const markAsReadMock = (contactId: string) => ({
     },
   },
 });
+
+export const searchCollectionsQuery = {
+  request: {
+    query: SEARCH_QUERY,
+    variables: {
+      contactOpts: { limit: 25 },
+      messageOpts: { limit: 20 },
+      filter: { searchGroup: true, groupLabel: 'optin' },
+    },
+  },
+  result: {
+    data: {
+      search: [
+        {
+          __typename: 'Conversation',
+          contact: null,
+          group: {
+            id: '1',
+            label: 'New optin',
+          },
+          id: 'group_1',
+          messages: [],
+        },
+      ],
+    },
+  },
+};

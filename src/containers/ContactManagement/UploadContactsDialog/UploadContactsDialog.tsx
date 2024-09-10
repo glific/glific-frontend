@@ -5,8 +5,7 @@ import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { useMutation, useQuery } from '@apollo/client';
 
 import { useTranslation } from 'react-i18next';
-import { FILTER_COLLECTIONS } from 'graphql/queries/Collection';
-import { Loading } from 'components/UI/Layout/Loading/Loading';
+import { GET_COLLECTIONS_LIST } from 'graphql/queries/Collection';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { Field, Form, Formik } from 'formik';
 import { UPLOAD_CONTACTS_SAMPLE } from 'config';
@@ -23,6 +22,7 @@ export interface UploadContactsDialogProps {
 }
 
 export const UploadContactsDialog = ({ setDialog, setShowStatus }: UploadContactsDialogProps) => {
+  const [searchTerm, setSearchTerm] = useState<string>('');
   const [fileName, setFileName] = useState<string>('');
   const [csvContent, setCsvContent] = useState<String | null | ArrayBuffer>('');
   const [uploadingContacts, setUploadingContacts] = useState(false);
@@ -32,13 +32,14 @@ export const UploadContactsDialog = ({ setDialog, setShowStatus }: UploadContact
   const [collection] = useState();
   const [optedIn] = useState(false);
 
-  const { data: collections, loading } = useQuery(FILTER_COLLECTIONS, {
+  const { data: collections, loading } = useQuery(GET_COLLECTIONS_LIST, {
     variables: {
       filter: {
         groupType: 'WABA',
+        label: searchTerm,
       },
       opts: {
-        limit: null,
+        limit: 50,
         offset: 0,
         order: 'ASC',
       },
@@ -94,6 +95,8 @@ export const UploadContactsDialog = ({ setDialog, setShowStatus }: UploadContact
       multiple: false,
       optionLabel: 'label',
       label: t('Collection'),
+      onInputChange: (event: any) => setSearchTerm(event?.target?.value),
+      noOptionsText: loading ? 'Loading...' : 'No options available',
     },
     {
       component: Checkbox,
@@ -133,32 +136,28 @@ export const UploadContactsDialog = ({ setDialog, setShowStatus }: UploadContact
             alignButtons="left"
             disableOk={!csvContent}
           >
-            {loading ? (
-              <Loading />
-            ) : (
-              <>
-                <div className={styles.Fields}>
-                  {formFieldItems.map((field: any) => (
-                    <Field {...field} key={field.name} />
-                  ))}
-                </div>
+            <>
+              <div className={styles.Fields}>
+                {formFieldItems.map((field: any) => (
+                  <Field {...field} key={field.name} />
+                ))}
+              </div>
 
-                <div className={styles.ImportContainer}>
-                  <ImportButton
-                    id={'uploadcontacts'}
-                    title={fileName || 'Select file'}
-                    afterImport={(result: string, media: any) => {
-                      setFileName(media.name);
-                      setCsvContent(result);
-                    }}
-                    fileType=".csv"
-                  />
-                </div>
-                <div className={styles.Sample}>
-                  <a href={UPLOAD_CONTACTS_SAMPLE}>Download Sample</a>
-                </div>
-              </>
-            )}
+              <div className={styles.ImportContainer}>
+                <ImportButton
+                  id={'uploadcontacts'}
+                  title={fileName || 'Select file'}
+                  afterImport={(result: string, media: any) => {
+                    setFileName(media.name);
+                    setCsvContent(result);
+                  }}
+                  fileType=".csv"
+                />
+              </div>
+              <div className={styles.Sample}>
+                <a href={UPLOAD_CONTACTS_SAMPLE}>Download Sample</a>
+              </div>
+            </>
           </DialogBox>
         </Form>
       )}
