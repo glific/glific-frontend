@@ -40,7 +40,7 @@ const StatusBar = () => {
         'All the outgoing messages have been suspended. Please note: on recharging, the messages that were stuck will not be sent.';
     } else if (hasInactivePhone && location.pathname.includes('group')) {
       statusMessage =
-        'One or more of your phones are not active. Please check the status of your phones to ensure smooth message delivery.';
+        'One or more of your phones are not active. Please check the Maytapi console to ensure smooth message delivery.';
     }
   }
 

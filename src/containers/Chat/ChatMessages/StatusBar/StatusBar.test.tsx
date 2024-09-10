@@ -73,7 +73,7 @@ test('it should show suspended message if balance is negative', async () => {
     expect(screen.getByTestId('status-bar')).toBeInTheDocument();
     expect(
       screen.getByText(
-        'One or more of your phones are not active. Please check the status of your phones to ensure smooth message delivery.'
+        'One or more of your phones are not active. Please check the Maytapi console to ensure smooth message delivery.'
       )
     ).toBeInTheDocument();
   });
