@@ -587,6 +587,7 @@ export const getExcludedContactsQuery = (excludeGroups: any) => ({
           ],
           id: '2',
           name: 'NGO Admin',
+          fields: '{}',
         },
         {
           __typename: 'Contact',
@@ -599,6 +600,7 @@ export const getExcludedContactsQuery = (excludeGroups: any) => ({
           ],
           id: '1',
           name: 'NGO Main Account',
+          fields: '{}',
         },
         {
           __typename: 'Contact',
@@ -616,6 +618,7 @@ export const getExcludedContactsQuery = (excludeGroups: any) => ({
           ],
           id: '3',
           name: 'NGO Manager',
+          fields: '{}',
         },
       ],
     },

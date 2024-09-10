@@ -54,8 +54,13 @@ export const AddToCollection = ({ collectionId, setDialog, groups }: AddToCollec
   if (entityData) {
     if (entity === 'contacts') {
       entityOptions = entityData[entity].map((item: any) => {
-        let contactFields = JSON.parse(item.fields);
-        return { ...item, name: contactFields?.name?.value || item.name || '' };
+        let contactFields;
+        if (item.fields) {
+          contactFields = JSON.parse(item.fields);
+          return { ...item, name: contactFields?.name?.value || item.name || '' };
+        } else {
+          return item;
+        }
       });
     } else {
       entityOptions = entityData[entity];
