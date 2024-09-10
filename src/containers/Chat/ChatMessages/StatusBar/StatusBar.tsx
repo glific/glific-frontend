@@ -46,7 +46,7 @@ const StatusBar = () => {
 
   if (statusMessage) {
     return (
-      <div className={styles.StatusMessage}>
+      <div data-testid="status-bar" className={styles.StatusMessage}>
         <span className={styles.StatusTitle}>Attention! </span>
         {statusMessage}
       </div>
