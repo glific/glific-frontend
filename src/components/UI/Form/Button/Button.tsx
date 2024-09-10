@@ -32,7 +32,9 @@ export const Button = ({
       type={type}
     >
       {children}
-      {loading && <CircularProgress size={28} className={styles.buttonProgress} />}
+      {loading && (
+        <CircularProgress data-testid="loadingBtn" size={28} className={styles.buttonProgress} />
+      )}
     </ButtonElement>
   );
 };
