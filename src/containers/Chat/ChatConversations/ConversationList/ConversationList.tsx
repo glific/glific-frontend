@@ -130,7 +130,13 @@ export const ConversationList = ({
 
   const filterVariables = () => {
     if (groups && selectedCollectionId) {
-      return GROUP_COLLECTION_SEARCH_QUERY_VARIABLES;
+      return {
+        ...GROUP_COLLECTION_SEARCH_QUERY_VARIABLES,
+        filter: {
+          groupLabel: searchVal,
+          searchGroup: true,
+        },
+      };
     } else if (groups) {
       if (phonenumber?.length === 0 || !phonenumber) {
         return GROUP_QUERY_VARIABLES;
@@ -256,7 +262,7 @@ export const ConversationList = ({
       getFilterSearch({
         variables: filterSearch(),
       });
-    } else if (hasSearchParams || savedSearchCriteria || phonenumber) {
+    } else if (hasSearchParams || savedSearchCriteria || phonenumber || selectedCollectionId) {
       // This is used for filtering the searches, when you click on it, so only call it
       // when user clicks and savedSearchCriteriaId is set.
       addLogs(`filtering the searches`, filterVariables());
