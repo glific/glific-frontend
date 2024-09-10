@@ -3,9 +3,11 @@ import { useQuery } from '@apollo/client';
 import { getUserSession } from 'services/AuthService';
 import { BSPBALANCE, GET_ORGANIZATION_STATUS } from 'graphql/queries/Organization';
 import styles from './StatusBar.module.css';
-import { GET_WA_MANAGED_PHONES, GET_WA_MANAGED_PHONES_STATUS } from 'graphql/queries/WaGroups';
+import { GET_WA_MANAGED_PHONES_STATUS } from 'graphql/queries/WaGroups';
+import { useLocation } from 'react-router';
 
 const StatusBar = () => {
+  const location = useLocation();
   const variables = { organizationId: getUserSession('organizationId') };
 
   // get gupshup balance
@@ -17,7 +19,7 @@ const StatusBar = () => {
   });
 
   const { data } = useQuery(GET_WA_MANAGED_PHONES_STATUS);
-  console.log(data);
+  const hasInactivePhone = data?.waManagedPhones?.some((phone: any) => phone.status !== 'active');
 
   if (!balanceData && !orgStatus) {
     return null;
@@ -36,6 +38,9 @@ const StatusBar = () => {
     } else if (balance <= 0) {
       statusMessage =
         'All the outgoing messages have been suspended. Please note: on recharging, the messages that were stuck will not be sent.';
+    } else if (hasInactivePhone && location.pathname.includes('group')) {
+      statusMessage =
+        'One or more of your phones are not active. Please check the status of your phones to ensure smooth message delivery.';
     }
   }
 
