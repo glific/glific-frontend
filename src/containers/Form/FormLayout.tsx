@@ -179,6 +179,12 @@ export const FormLayout = ({
     }
   }, [advanceSearch]);
 
+  useEffect(() => {
+    if (entityId) {
+      refetch();
+    }
+  }, [entityId]);
+
   const capitalListItemName = listItemName[0].toUpperCase() + listItemName.slice(1);
   let item: any = null;
 
@@ -221,7 +227,7 @@ export const FormLayout = ({
     variables = params.type ? { shortcode: params.type } : false;
   }
 
-  const { loading, error } = useQuery(getItemQuery, {
+  const { loading, error, refetch } = useQuery(getItemQuery, {
     variables,
     skip: !itemId,
     fetchPolicy: getQueryFetchPolicy,
@@ -571,8 +577,10 @@ export const FormLayout = ({
               variant="contained"
               color="primary"
               onClick={() => {
-                onSaveButtonClick(formik.errors);
-                formik.submitForm();
+                formik.validateForm().then((errors) => {
+                  onSaveButtonClick(errors);
+                  formik.submitForm();
+                });
               }}
               className={styles.Button}
               data-testid="submitActionButton"

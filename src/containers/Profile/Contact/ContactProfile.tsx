@@ -7,7 +7,6 @@ import { useTranslation } from 'react-i18next';
 import CollapseIcon from '../../../assets/images/icons/Collapse.svg?react';
 import ExpandIcon from '../../../assets/images/icons/Expand.svg?react';
 import { getContactStatus, getDisplayName } from 'common/utils';
-import { getOrganizationServices } from 'services/AuthService';
 import { GET_CONTACT_DETAILS, GET_CONTACT_PROFILES } from 'graphql/queries/Contact';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { AvatarDisplay } from 'components/UI/AvatarDisplay/AvatarDisplay';
@@ -23,12 +22,10 @@ export const ContactProfile = () => {
   const [showProfileSection, setShowProfileSection] = useState('profile');
   const { t } = useTranslation();
 
-  const isContactProfileEnabled = getOrganizationServices('contactProfileEnabled');
   const { loading, data } = useQuery(GET_CONTACT_DETAILS, { variables: { id: params.id } });
 
   const { loading: profileLoading, data: profileData } = useQuery(GET_CONTACT_PROFILES, {
     variables: { filter: { contactId: params.id } },
-    skip: !isContactProfileEnabled,
     fetchPolicy: 'network-only',
   });
 
@@ -54,7 +51,7 @@ export const ContactProfile = () => {
 
   let selectedProfile;
 
-  if (isContactProfileEnabled && profileData && profileData.profiles.length > 0) {
+  if (profileData && profileData.profiles.length > 0) {
     selectedProfile = profileData.profiles.filter(
       (profile: any) => profile.id === selectedProfileId
     );
@@ -105,6 +102,7 @@ export const ContactProfile = () => {
         return (
           <React.Fragment key={id}>
             <div
+              data-testid="profileHeader"
               className={styles.ProfileHeader}
               onClick={() => {
                 setSelectedProfileId(`${id}`);
