@@ -7,6 +7,10 @@ import { vi } from 'vitest';
 
 import { setUserSession } from 'services/AuthService';
 import {
+  getTemplateMocks1,
+  getTemplateMocks2,
+  getTemplateMocks3,
+  getTemplateMocks4,
   mocks,
   translateInteractiveTemplateMock,
   translateWitTrimmingMocks,
@@ -96,13 +100,13 @@ const mockData = [...mocks, ...mocks];
 
 setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
 
-const renderInteractiveMessage = (id: string, mocks?: any) => {
+const renderInteractiveMessage = (id: string, mocks: any) => {
   let MOCKS = mockData;
   if (mocks) {
     MOCKS = [...MOCKS, ...mocks];
   }
   return (
-    <MockedProvider mocks={MOCKS} addTypename={false}>
+    <MockedProvider mocks={mocks} addTypename={false}>
       <MemoryRouter initialEntries={[`/interactive-message/${id}/edit`]}>
         <Routes>
           <Route path="interactive-message/:id/edit" element={<InteractiveMessage />} />
@@ -324,25 +328,25 @@ describe('Add mode', () => {
 
 describe('Edit mode', () => {
   test('it renders quick reply in edit mode and changes language', async () => {
-    render(renderInteractiveMessage('1'));
+    render(renderInteractiveMessage('1', getTemplateMocks1));
 
     await waitFor(() => {
       expect(screen.getByText('Title')).toBeInTheDocument();
-      expect(screen.getByText('Details Confirmation')).toBeInTheDocument();
+      expect(screen.getByText('Are you excited for *Glific*?')).toBeInTheDocument();
+      expect(screen.getByText('yes')).toBeInTheDocument();
       expect(screen.getByText('Marathi')).toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByText('Marathi'));
 
     await waitFor(() => {
-      expect(screen.getByText('Title')).toBeInTheDocument();
-      expect(screen.getByText('सही')).toBeInTheDocument();
+      expect(screen.getByTestId('translation')).toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByText('English'));
 
     await waitFor(() => {
-      expect(screen.getByText('Details Confirmation')).toBeInTheDocument();
+      expect(screen.queryAllByTestId('translation')).toHaveLength(0);
     });
 
     fireEvent.click(screen.getByTestId('submitActionButton'));
@@ -353,19 +357,19 @@ describe('Edit mode', () => {
   });
 
   test('it renders interactive list in edit mode', async () => {
-    render(renderInteractiveMessage('2'));
+    render(renderInteractiveMessage('2', getTemplateMocks2));
 
     await waitFor(() => {
-      const saveButton = screen.getByText('Save');
-      expect(saveButton).toBeInTheDocument();
-      fireEvent.click(saveButton);
+      expect(screen.getByText('List header*')).toBeInTheDocument();
     });
   });
 
   test('it renders interactive quick reply with media in edit mode', async () => {
-    render(renderInteractiveMessage('3'));
+    render(renderInteractiveMessage('3', getTemplateMocks3));
 
-    // vi.spyOn(axios, 'get').mockResolvedValueOnce(responseMock3);
+    await waitFor(() => {
+      expect(screen.getByText('Button text')).toBeInTheDocument();
+    });
   });
 });
 
@@ -481,7 +485,9 @@ describe('translates the template', () => {
   });
 
   test('it shows error on translating an already exisiting template', async () => {
-    render(renderInteractiveMessage('1', [translateInteractiveTemplateMock(true)]));
+    render(
+      renderInteractiveMessage('1', [...getTemplateMocks1, translateInteractiveTemplateMock(true)])
+    );
 
     await waitFor(() => {
       expect(screen.getByText('Edit Interactive message')).toBeInTheDocument();
@@ -525,19 +531,16 @@ describe('translates the template', () => {
   });
 
   test('it shows warning if contents are trimmed', async () => {
-    render(renderInteractiveMessage('4'));
+    render(renderInteractiveMessage('4', getTemplateMocks4));
 
     await waitFor(() => {
       expect(screen.getByText('Title')).toBeInTheDocument();
-      expect(screen.getByText('Details Confirmation')).toBeInTheDocument();
       expect(screen.getByText('Marathi')).toBeInTheDocument();
+      expect(screen.getByText('Are you excited for *Glific*?')).toBeInTheDocument();
+      expect(screen.getByText('yes')).toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByText('Marathi'));
-
-    await waitFor(() => {
-      expect(screen.getByText('Details Confirmation')).toBeInTheDocument();
-    });
 
     await waitFor(() => {
       expect(screen.getByText('Translations exceeding limit.')).toBeInTheDocument();
@@ -551,13 +554,13 @@ describe('copy interactive message', () => {
   test('it renders copy interactive quick reply message', async () => {
     mockUseLocationValue.state = 'copy';
 
-    const { getByText, getAllByTestId } = render(renderInteractiveMessage('1'));
+    const { getByText, getAllByTestId } = render(renderInteractiveMessage('1', getTemplateMocks1));
     // vi.spyOn(axios, 'get').mockResolvedValueOnce(responseMock1);
 
     await waitFor(() => {
       expect(getByText('Copy Interactive Message')).toBeInTheDocument();
       const input = getAllByTestId('input');
-      expect(input[0]?.querySelector('input')).toHaveValue('Copy of Details Confirmation');
+      expect(input[0]?.querySelector('input')).toHaveValue('Copy of Are you excited for *Glific*?');
     });
   });
 });
