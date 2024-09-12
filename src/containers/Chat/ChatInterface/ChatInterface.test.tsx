@@ -20,6 +20,7 @@ import { OrganizationStateMock } from 'mocks/Organization';
 import { collectionCountSubscription } from 'mocks/Search';
 
 import ChatInterface from './ChatInterface';
+import { getWhatsAppManagedPhonesStatusMock } from 'mocks/StatusBar';
 
 const mockedUsedNavigate = vi.fn();
 vi.mock('react-router-dom', async () => ({
@@ -103,6 +104,7 @@ const mocks = [
   getAttachmentPermissionMock,
   savedSearchQuery,
   markAsReadMock('2'),
+  getWhatsAppManagedPhonesStatusMock,
 ];
 
 const wrapper = (
