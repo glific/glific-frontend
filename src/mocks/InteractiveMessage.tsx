@@ -158,27 +158,6 @@ const quickReplyMock = {
   sendWithTitle: true,
 };
 
-const quickReplyMockInput = {
-  type: 'QUICK_REPLY',
-  interactiveContent:
-    '{"type":"quick_reply","content":{"type":"text","header":"Are you excited for *Glific*?","text":"Glific comes with all new features"},"options":[{"type":"text","title":"yes"},{"type":"text","title":"no"}]}',
-  languageId: '1',
-  label: 'Are you excited for *Glific*?',
-  sendWithTitle: true,
-  translations:
-    '{"1":{"type":"quick_reply","content":{"type":"text","header":"Are you excited for *Glific*?","text":"Glific comes with all new features"},"options":[{"type":"text","title":"yes"},{"type":"text","title":"no"}]},"2":{"type":"quick_reply","options":[{"type":"text","title":"हाँ"},{"type":"text","title":"ना"}],"content":{"type":"text","text":"ग्लिफ़िक सभी नई सुविधाओं के साथ आता है","header":"आप ग्लिफ़िक के लिए कितने उत्साहित हैं?"}}}',
-};
-
-const quickReplyMockInput2 = {
-  type: 'QUICK_REPLY',
-  interactiveContent:
-    '{"type":"quick_reply","options":[{"type":"text","title":"yes"},{"type":"text","title":"no"}],"content":{"type":"text","text":"Glific comes with all new features","header":"Are you excited for *Glific*?"}}',
-  languageId: '1',
-  sendWithTitle: true,
-  translations:
-    '{"1":{"type":"quick_reply","content":{"type":"text","header":"Are you excited for *Glific*?","text":"Glific comes with all new features"},"options":[{"type":"text","title":"yes"},{"type":"text","title":"no"}]},"2":{"type":"quick_reply","content":{"type":"text","header":"आप ग्लिफ़िक के लिए कितने उत्साहित हैं?","text":"ग्लिफ़िक सभी नई सुविधाओं के साथ आता है"},"options":[{"type":"text","title":"yes"},{"type":"text","title":"no"}]}}',
-};
-
 const quickReplyMedia = {
   sendWithTitle: true,
   interactiveContent:
@@ -472,10 +451,18 @@ const quick_reply = {
     '{"1":{"type":"quick_reply","content":{"type":"text","header":"new title","text":"Hi, How are you"},"options":[{"type":"text","title":"new button text"}]}}',
 };
 
-export const mockss = [getFilterTagQuery, getOrganizationLanguagesWithoutOrder];
+export const mocks: any = [
+  createMockByType(quickReplyMock),
+  createMockByType(listReplyMock),
+  createInteractiveCustomMock(),
+  createMockByType(quick_reply),
+  deleteMock,
+  getFilterTagQuery,
+  getOrganizationLanguagesWithoutOrder,
+];
 
 export const getTemplateMocks1 = [
-  ...mockss,
+  ...mocks,
   getTemplateByType('1', quickReplyMock),
   getTemplateByType('1', quickReplyMock),
   updateMockByType(quickReplyMock),
@@ -484,38 +471,24 @@ export const getTemplateMocks1 = [
 ];
 
 export const getTemplateMocks2 = [
-  ...mockss,
+  ...mocks,
   getTemplateByType('2', listReplyMock),
   getTemplateByType('2', listReplyMock),
   updateMockByType(listReplyMock),
 ];
 
 export const getTemplateMocks3 = [
-  ...mockss,
+  ...mocks,
   getTemplateByType('3', quickReplyMedia),
   getTemplateByType('3', quickReplyMedia),
   updateMockByType(quickReplyResult),
 ];
 
 export const getTemplateMocks4 = [
-  ...mockss,
+  ...mocks,
   getTemplateByType('4', quickReplyMock),
   getTemplateByType('4', quickReplyMock),
   updateMockByType(quickReplyMock, trimmingMessage),
-];
-
-export const mocks: any = [
-  createMockByType(quickReplyMock),
-  createMockByType(listReplyMock),
-  createInteractiveCustomMock(),
-  updateMockByType(listReplyMock),
-  updateMockByType(quickReplyResult),
-  getTemplateByType('2', listReplyMock),
-  updateMockByType(quickReplyMockInput, trimmingMessage),
-  createMockByType(quick_reply),
-  deleteMock,
-  getFilterTagQuery,
-  getOrganizationLanguagesWithoutOrder,
 ];
 
 export const translateWithoutTrimmingMocks = [

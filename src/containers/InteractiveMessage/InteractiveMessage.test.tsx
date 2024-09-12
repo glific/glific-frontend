@@ -101,10 +101,6 @@ const mockData = [...mocks, ...mocks];
 setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
 
 const renderInteractiveMessage = (id: string, mocks: any) => {
-  let MOCKS = mockData;
-  if (mocks) {
-    MOCKS = [...MOCKS, ...mocks];
-  }
   return (
     <MockedProvider mocks={mocks} addTypename={false}>
       <MemoryRouter initialEntries={[`/interactive-message/${id}/edit`]}>
