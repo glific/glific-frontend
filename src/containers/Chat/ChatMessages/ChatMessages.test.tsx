@@ -24,6 +24,7 @@ import { userEvent } from '@testing-library/user-event';
 import { setNotification } from 'common/notification';
 import { waGroup, waGroupcollection } from 'mocks/Groups';
 import { getContactSearchQuery } from 'mocks/Search';
+import { getWhatsAppManagedPhonesStatusMock } from 'mocks/StatusBar';
 
 vi.mock('common/notification', async (importOriginal) => {
   const mod = await importOriginal<typeof import('common/notification')>();
@@ -258,6 +259,7 @@ const mocks = [
   loadMoreQuery(0, 40, { id: '2', searchGroup: true }),
   markAsReadMock('2'),
   markAsReadMock('3'),
+  getWhatsAppManagedPhonesStatusMock,
 ];
 
 export const chatMocks = mocks;

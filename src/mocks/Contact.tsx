@@ -9,6 +9,7 @@ import {
   GET_CONTACT_PROFILES,
   GET_COLLECTION_CONTACTS,
   GET_CONTACTS_LIST,
+  GET_PROFILE,
 } from 'graphql/queries/Contact';
 import { addFlowToContactQuery } from 'mocks/Flow';
 import { getOrganizationLanguagesQuery, getOrganizationQuery } from 'mocks/Organization';
@@ -67,7 +68,7 @@ export const updateContactCollectionQuery = {
   },
 };
 
-export const getContactSampleQuery = (variables: any) => {
+export const getContactSampleQuery = (variables: any, contactDetails?: any) => {
   return {
     request: {
       query: GET_CONTACT,
@@ -87,6 +88,7 @@ export const getContactSampleQuery = (variables: any) => {
             bspStatus: 'SESSION_AND_HSM',
             settings: {},
             fields: '{}',
+            ...contactDetails,
           },
         },
       },
@@ -95,6 +97,52 @@ export const getContactSampleQuery = (variables: any) => {
 };
 
 export const getContactQuery = getContactSampleQuery({ id: '1' });
+export const getContactWithMultipleQueries = getContactSampleQuery(
+  { id: '2' },
+  {
+    activeProfile: {
+      __typename: 'Profile',
+      id: '3',
+    },
+  }
+);
+
+export const getMultipleProfiles = {
+  request: {
+    query: GET_CONTACT_PROFILES,
+    variables: {
+      filter: { contactId: '2' },
+    },
+  },
+  result: {
+    data: {
+      profiles: [
+        {
+          fields:
+            '{"role":{"value":"Student","type":"string","label":"role","inserted_at":"2024-09-08T12:13:37.192507Z"},"name":{"value":"profile name 1","type":"string","label":"Name","inserted_at":"2024-09-08T12:13:37.151339Z"},"age_group":{"value":"19 or above","type":"string","label":"Age Group","inserted_at":"2024-09-08T12:12:45.907810Z"}}',
+          id: '2',
+          language: {
+            id: '1',
+          },
+          name: 'profile name 1',
+          type: 'Student',
+        },
+        {
+          __typename: 'Profile',
+          fields:
+            '{"role":{"value":"Parent","type":"string","label":"role","inserted_at":"2024-09-08T12:14:25.625321Z"},"name":{"value":"profile name 2","type":"string","label":"Name","inserted_at":"2024-09-08T12:14:25.619652Z"}}',
+          id: '3',
+          language: {
+            __typename: 'Language',
+            id: '1',
+          },
+          name: 'profile name 2',
+          type: 'Parent',
+        },
+      ],
+    },
+  },
+};
 
 export const clearMessagesQuery = {
   request: {
@@ -115,10 +163,10 @@ export const clearMessagesQuery = {
 
 const date = new Date();
 
-export const getContactDetailsQuery = (attributes: any = {}) => ({
+export const getContactDetailsQuery = (id: string, attributes: any = {}) => ({
   request: {
     query: GET_CONTACT_DETAILS,
-    variables: { id: '1' },
+    variables: { id },
   },
   result: {
     data: {
@@ -471,60 +519,82 @@ export const getContactProfiles = {
   },
   result: {
     data: {
-      profiles: [
-        {
-          fields:
-            '{"school":{"value":"Central","type":"string","label":"school","inserted_at":"2022-08-29T09:09:06.606859Z"},"role":{"value":"Teaccher","type":"string","label":"role","inserted_at":"2022-08-29T09:09:06.600165Z"},"name":{"value":"Shamoon","type":"string","label":"Name","inserted_at":"2022-08-29T09:09:06.590965Z"},"age":{"value":"11 to 14","type":"string","label":"age","inserted_at":"2022-08-29T09:09:06.614903Z"}}',
-          id: '2',
-          language: {
-            id: '1',
-          },
-          name: 'Shamoon',
-          type: 'Teaccher',
-        },
-        {
-          fields:
-            '{"school":{"value":"killer school","type":"string","label":"school","inserted_at":"2022-08-29T09:09:29.520346Z"},"role":{"value":"student","type":"string","label":"role","inserted_at":"2022-08-29T09:09:29.512350Z"},"name":{"value":"Killer","type":"string","label":"Name","inserted_at":"2022-08-29T09:09:29.506118Z"},"age":{"value":"Less than 10","type":"string","label":"age","inserted_at":"2022-08-29T09:09:29.527986Z"}}',
-          id: '3',
-          language: {
-            id: '2',
-          },
-          name: 'Killer',
-          type: 'student',
-        },
-        {
-          fields:
-            '{"school":{"value":"Central","type":"string","label":"school","inserted_at":"2022-08-30T08:36:30.895214Z"},"role":{"value":"Businessman","type":"string","label":"role","inserted_at":"2022-08-30T08:36:30.888247Z"},"name":{"value":"sambhar","type":"string","label":"Name","inserted_at":"2022-08-30T08:36:30.881465Z"},"age":{"value":"19 or above","type":"string","label":"age","inserted_at":"2022-08-30T08:36:30.903089Z"}}',
-          id: '4',
-          language: {
-            id: '1',
-          },
-          name: 'sambhar',
-          type: 'Businessman',
-        },
-      ],
+      profiles: [],
     },
   },
 };
+
+export const getProfileMock = (id: string, profileDetails?: any) => ({
+  request: {
+    query: GET_PROFILE,
+    variables: {
+      id,
+    },
+  },
+  result: {
+    data: {
+      profile: {
+        profile: {
+          fields: '{}',
+          id,
+          language: {
+            id: '1',
+            label: 'English',
+          },
+          contact: {
+            status: 'VALID',
+            bspStatus: 'SESSION_AND_HSM',
+            settings: {},
+          },
+          ...profileDetails,
+        },
+      },
+    },
+  },
+});
 
 export const LOGGED_IN_USER_MOCK = [
   getCurrentUserQuery,
   getCurrentUserQuery,
   getContactProfiles,
-  getContactDetailsQuery(),
-  getContactDetailsQuery(),
+  getContactDetailsQuery('1'),
+  getContactDetailsQuery('1'),
   getOrganizationLanguagesQuery,
   getOrganizationLanguagesQuery,
   getContactQuery,
+  getProfileMock('1', {}),
   addFlowToContactQuery,
   clearMessagesQuery,
   ...getOrganizationQuery,
   updateContact,
 ];
 
+export const multiple_profile_mock = [
+  getContactWithMultipleQueries,
+  getContactProfiles,
+  getContactDetailsQuery('2'),
+  getCurrentUserQuery,
+  getCurrentUserQuery,
+  getOrganizationLanguagesQuery,
+  getProfileMock('2', {
+    fields:
+      '{"role":{"value":"Parent","type":"string","label":"role","inserted_at":"2024-09-08T12:14:25.625321Z"},"name":{"value":"profile name 2","type":"string","label":"Name","inserted_at":"2024-09-08T12:14:25.619652Z"}}',
+    name: 'profile name 2',
+    type: 'Parent',
+  }),
+  getProfileMock('3', {
+    fields:
+      '{"role":{"value":"Student","type":"string","label":"role","inserted_at":"2024-09-08T12:14:25.625321Z"},"name":{"value":"profile name 1","type":"string","label":"Name","inserted_at":"2024-09-08T12:14:25.619652Z"}}',
+    name: 'profile name 1',
+    type: 'Student',
+  }),
+  getMultipleProfiles,
+  getOrganizationLanguagesQuery,
+];
+
 export const LOGGED_IN_USER_MULTIPLE_PROFILES = [
   getCurrentUserQuery,
-  getContactDetailsQuery({ activeProfile: { id: '4', __typename: 'Profile' } }),
+  getContactDetailsQuery('1', { activeProfile: { id: '4', __typename: 'Profile' } }),
   getOrganizationLanguagesQuery,
   getCurrentUserQuery,
   ...getOrganizationQuery,

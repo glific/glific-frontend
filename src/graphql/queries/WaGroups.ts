@@ -181,3 +181,12 @@ export const GET_WA_GROUP = gql`
     }
   }
 `;
+
+export const GET_WA_MANAGED_PHONES_STATUS = gql`
+  query WaManagedPhones {
+    waManagedPhones {
+      status
+      phone
+    }
+  }
+`;
