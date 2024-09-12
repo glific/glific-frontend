@@ -1,24 +1,18 @@
 import { useEffect, useState } from 'react';
-import { useLazyQuery, useMutation } from '@apollo/client';
+import { useLazyQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 
 import CollectionIcon from 'assets/images/icons/Collection/Dark.svg?react';
 import AddContactIcon from 'assets/images/icons/Contact/Add.svg?react';
 import AddGroupIcon from 'assets/images/icons/AddGroupIcon.svg?react';
 import ExportIcon from 'assets/images/icons/Flow/Export.svg?react';
-import {
-  DELETE_COLLECTION,
-  UPDATE_COLLECTION_CONTACTS,
-  UPDATE_COLLECTION_WA_GROUP,
-} from 'graphql/mutations/Collection';
+import { DELETE_COLLECTION } from 'graphql/mutations/Collection';
 import {
   GET_COLLECTIONS_COUNT,
   FILTER_COLLECTIONS,
   EXPORT_COLLECTION_DATA,
 } from 'graphql/queries/Collection';
-import { GET_CONTACTS_LIST } from 'graphql/queries/Contact';
 import { List } from 'containers/List/List';
-import { SearchDialogBox } from 'components/UI/SearchDialogBox/SearchDialogBox';
 import { getUserRolePermissions, getUserRole } from 'context/role';
 import { setNotification } from 'common/notification';
 import {
@@ -26,15 +20,15 @@ import {
   CONTACTS_COLLECTION,
   GROUP_COLLECTION_SEARCH_QUERY_VARIABLES,
   WA_GROUPS_COLLECTION,
-  setVariables,
 } from 'common/constants';
 import { CircularProgress, Modal } from '@mui/material';
 import styles from './CollectionList.module.css';
 import { exportCsvFile } from 'common/utils';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { collectionInfo } from 'common/HelpData';
-import { GET_WA_GROUPS, GROUP_SEARCH_QUERY } from 'graphql/queries/WaGroups';
+import { GROUP_SEARCH_QUERY } from 'graphql/queries/WaGroups';
 import { SEARCH_QUERY } from 'graphql/queries/Search';
+import AddToCollection from 'containers/Chat/ChatMessages/AddToCollection/AddToCollection';
 
 const getLabel = (label: string) => <div className={styles.LabelText}>{label}</div>;
 
@@ -61,29 +55,24 @@ const queries = {
 };
 
 export const CollectionList = () => {
-  const navigate = useNavigate();
-  const [updateCollection, setUpdateCollection] = useState(false);
   const [addContactsDialogShow, setAddContactsDialogShow] = useState(false);
+  const [updateCollection, setUpdateCollection] = useState(false);
 
-  const [contactSearchTerm, setContactSearchTerm] = useState('');
   const [collectionId, setCollectionId] = useState();
   const [exportData, setExportData] = useState(false);
-  const { t } = useTranslation();
   const location = useLocation();
+  const navigate = useNavigate();
+  const { t } = useTranslation();
   const groups: boolean = location.pathname.includes('group');
 
   const [filter, setFilter] = useState<{
     groupType: string;
   }>({ groupType: groups ? WA_GROUPS_COLLECTION : CONTACTS_COLLECTION });
 
-  const entity = groups ? 'waGroups' : 'contacts';
-  const entityQuery = groups ? GET_WA_GROUPS : GET_CONTACTS_LIST;
-
   const searchQuery = groups ? GROUP_SEARCH_QUERY : SEARCH_QUERY;
   const searchVariables = groups
     ? GROUP_COLLECTION_SEARCH_QUERY_VARIABLES
     : COLLECTION_SEARCH_QUERY_VARIABLES;
-  const updateMutation = groups ? UPDATE_COLLECTION_WA_GROUP : UPDATE_COLLECTION_CONTACTS;
 
   useEffect(() => {
     setFilter({ groupType: groups ? WA_GROUPS_COLLECTION : CONTACTS_COLLECTION });
@@ -104,9 +93,6 @@ export const CollectionList = () => {
     columnStyles,
   };
 
-  const [getContacts, { data: entityData }] = useLazyQuery(entityQuery, {
-    fetchPolicy: 'cache-and-network',
-  });
   const [exportCollectionData] = useLazyQuery(EXPORT_COLLECTION_DATA, {
     onCompleted: (data) => {
       if (data.exportCollection.errors) {
@@ -121,37 +107,11 @@ export const CollectionList = () => {
     },
   });
 
-  const [updateCollectionContacts] = useMutation(updateMutation, {
-    onCompleted: (data) => {
-      let updateVariable = groups ? 'updateCollectionWaGroup' : 'updateGroupContacts';
-      const { groupContacts } = data[updateVariable];
-      const numberAdded = groupContacts.length;
-      if (numberAdded > 0) {
-        setNotification(
-          `${numberAdded} ${groups ? 'group' : 'contact'}${numberAdded === 1 ? '' : 's  were'} added`
-        );
-      }
-      setUpdateCollection((updateCollection) => !updateCollection);
-      setAddContactsDialogShow(false);
-    },
-  });
-
   const dialogMessage = t("You won't be able to use this collection again.");
-
-  let contactOptions: any = [];
-
-  if (entityData) {
-    contactOptions = entityData[entity];
-  }
 
   let dialog = null;
 
   const setContactsDialog = (id: any) => {
-    getContacts({
-      variables: groups
-        ? setVariables({ label: contactSearchTerm, excludeGroups: id }, 50)
-        : setVariables({ name: contactSearchTerm, excludeGroups: id }, 50),
-    });
     setCollectionId(id);
     setAddContactsDialogShow(true);
   };
@@ -165,55 +125,15 @@ export const CollectionList = () => {
     });
   };
 
-  const handleCollectionAdd = (selectedContacts: any) => {
-    if (selectedContacts.length === 0) {
-      setAddContactsDialogShow(false);
-    } else {
-      const addvariable = groups ? 'addWaGroupIds' : 'addContactIds';
-      const deletevariable = groups ? 'deleteWaGroupIds' : 'deleteContactIds';
-      updateCollectionContacts({
-        variables: {
-          input: {
-            [addvariable]: selectedContacts,
-            groupId: collectionId,
-            [deletevariable]: [],
-          },
-        },
-      });
-    }
-  };
-
-  let searchDialogTitle = t('Add contacts to the collection');
-  let selectPlaceHolder = t('Select contacts');
-
-  if (groups) {
-    searchDialogTitle = t('Add groups to the collection');
-    selectPlaceHolder = t('Select groups');
-  }
-
   if (addContactsDialogShow) {
     dialog = (
-      <SearchDialogBox
-        title={searchDialogTitle}
-        handleOk={handleCollectionAdd}
-        handleCancel={() => setAddContactsDialogShow(false)}
-        options={contactOptions}
-        optionLabel="name"
-        additionalOptionLabel="phone"
-        asyncSearch
-        disableClearable
-        selectedOptions={[]}
-        renderTags={false}
-        searchLabel="Search contacts"
-        textFieldPlaceholder="Type here"
-        onChange={(value: any) => {
-          if (typeof value === 'string') {
-            setContactSearchTerm(value);
-          }
+      <AddToCollection
+        groups={groups}
+        collectionId={collectionId}
+        setDialog={setAddContactsDialogShow}
+        afterAdd={() => {
+          setUpdateCollection((updateCollection) => !updateCollection);
         }}
-        fullWidth={true}
-        showTags={false}
-        placeholder={selectPlaceHolder}
       />
     );
   }

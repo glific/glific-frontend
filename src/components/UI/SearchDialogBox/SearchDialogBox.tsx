@@ -73,12 +73,6 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
     }
   }, [selectedOptions, options]);
 
-  useEffect(() => {
-    if (asyncSearch === true) {
-      setAsyncSelectedOptions(selectedOptions);
-    }
-  }, [selectedOptions]);
-
   const changeValue = (event: any, value: any) => {
     setSelectedOptions(value);
     if (multiple) {

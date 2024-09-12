@@ -16,9 +16,15 @@ interface AddToCollectionProps {
   collectionId: string | undefined;
   setDialog: Function;
   groups?: boolean;
+  afterAdd?: Function;
 }
 
-export const AddToCollection = ({ collectionId, setDialog, groups }: AddToCollectionProps) => {
+export const AddToCollection = ({
+  collectionId,
+  setDialog,
+  groups,
+  afterAdd,
+}: AddToCollectionProps) => {
   const [contactSearchTerm, setContactSearchTerm] = useState('');
   const { t } = useTranslation();
 
@@ -28,7 +34,7 @@ export const AddToCollection = ({ collectionId, setDialog, groups }: AddToCollec
 
   const { data: entityData, loading } = useQuery(searchquery, {
     variables: groups
-      ? setVariables({ excludeGroups: collectionId }, 50)
+      ? setVariables({ term: contactSearchTerm, excludeGroups: collectionId }, 50)
       : setVariables({ name: contactSearchTerm, excludeGroups: collectionId }, 50),
     fetchPolicy: 'cache-and-network',
   });
@@ -45,26 +51,16 @@ export const AddToCollection = ({ collectionId, setDialog, groups }: AddToCollec
           `${numberAdded} ${groups ? 'group' : 'contact'}${numberAdded === 1 ? '' : 's  were'} added`
         );
       }
-
+      if (afterAdd) {
+        afterAdd();
+      }
       setDialog(false);
     },
   });
   let entityOptions = [];
 
   if (entityData) {
-    if (entity === 'contacts') {
-      entityOptions = entityData[entity].map((item: any) => {
-        let contactFields;
-        if (item.fields) {
-          contactFields = JSON.parse(item.fields);
-          return { ...item, name: contactFields?.name?.value || item.name || '' };
-        } else {
-          return item;
-        }
-      });
-    } else {
-      entityOptions = entityData[entity];
-    }
+    entityOptions = entityData[entity];
   }
 
   const handleCollectionAdd = (selectedContacts: any) => {

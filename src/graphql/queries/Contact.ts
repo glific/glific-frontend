@@ -25,7 +25,6 @@ export const GET_CONTACTS_LIST = gql`
     contacts(filter: $filter, opts: $opts) {
       id
       name
-      fields
       groups {
         id
         label
