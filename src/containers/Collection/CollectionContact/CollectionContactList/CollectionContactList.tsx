@@ -26,12 +26,22 @@ export interface CollectionContactListProps {
   descriptionBox?: any;
 }
 
-const getName = (label: string, phone: string) => (
-  <div>
-    <div className={styles.NameText}>{label}</div>
-    <div className={styles.Phone}>{phone}</div>
-  </div>
-);
+const getName = (label: string, fields: any, phone: string) => {
+  let contactFields: any = {};
+  let displayName = '';
+  if (fields) {
+    contactFields = JSON.parse(fields);
+  }
+
+  displayName = contactFields?.name?.value || label;
+
+  return (
+    <div>
+      <div className={styles.NameText}>{displayName}</div>
+      <div className={styles.Phone}>{phone}</div>
+    </div>
+  );
+};
 
 const getCollections = (collections: Array<any>) => (
   <div className={styles.CollectionsText}>
@@ -40,9 +50,9 @@ const getCollections = (collections: Array<any>) => (
 );
 
 const getColumns = (contact: any) => {
-  const { name, maskedPhone, groups } = contact;
+  const { name, maskedPhone, groups, fields } = contact;
   return {
-    label: getName(name, maskedPhone),
+    label: getName(name, fields, maskedPhone),
     status: getContactStatus(contact),
     groups: getCollections(groups),
   };

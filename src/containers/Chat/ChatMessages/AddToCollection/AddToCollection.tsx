@@ -24,7 +24,6 @@ export const AddToCollection = ({ collectionId, setDialog, groups }: AddToCollec
 
   let searchquery = groups ? GET_WA_GROUPS : GET_CONTACTS_LIST;
   let updateMutation = groups ? UPDATE_COLLECTION_WA_GROUP : UPDATE_COLLECTION_CONTACTS;
-  let entity = groups ? 'waGroups' : 'contacts';
 
   const { data: entityData } = useQuery(searchquery, {
     variables: groups
@@ -52,7 +51,20 @@ export const AddToCollection = ({ collectionId, setDialog, groups }: AddToCollec
   let entityOptions = [];
 
   if (entityData) {
-    entityOptions = entityData[entity];
+    if (groups) {
+      entityOptions = entityData.waGroups;
+    } else {
+      entityOptions = entityData.contacts.map((contact: any) => {
+        let contactFields: any = {};
+        if (contact.fields) {
+          contactFields = JSON.parse(contact.fields);
+        }
+        return {
+          ...contact,
+          name: contactFields?.name?.value || contact.name,
+        };
+      });
+    }
   }
 
   const handleCollectionAdd = (selectedContacts: any) => {

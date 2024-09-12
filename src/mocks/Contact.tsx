@@ -296,6 +296,7 @@ export const getContactsQuery = {
           optinTime: '2024-04-04T12:13:30Z',
           optoutMethod: null,
           optoutTime: null,
+          fields: '{}',
         },
         {
           id: '2',
@@ -308,6 +309,8 @@ export const getContactsQuery = {
           optinTime: '2024-04-04T12:13:30Z',
           optoutMethod: null,
           optoutTime: null,
+          fields:
+            '{"name":{"value":"fieldValue","type":"string","label":"name","inserted_at":"2024-09-12T14:28:00.680124Z"},"gender":{"value":"Female","type":"string","label":"gender","inserted_at":"2024-09-12T05:00:45.328093Z"},"age":{"value":40,"type":"string","label":"age","inserted_at":"2024-09-12T05:00:45.328093Z"}}',
         },
         {
           id: '3',
@@ -320,6 +323,7 @@ export const getContactsQuery = {
           optinTime: '2024-04-04T12:13:30Z',
           optoutMethod: null,
           optoutTime: null,
+          fields: '{}',
         },
       ],
     },
@@ -344,6 +348,7 @@ export const getContactsSearchQuery = {
           optinTime: '2024-04-04T12:13:30Z',
           optoutMethod: null,
           optoutTime: null,
+          fields: '{}',
         },
       ],
     },
@@ -375,6 +380,7 @@ export const getCollectionContactsQuery = (variables: any) => {
             optinTime: '2024-04-04T12:13:30Z',
             optoutMethod: null,
             optoutTime: null,
+            fields: '{}',
           },
           {
             id: '2',
@@ -392,6 +398,7 @@ export const getCollectionContactsQuery = (variables: any) => {
             optinTime: null,
             optoutMethod: null,
             optoutTime: '2024-04-04T12:13:30Z',
+            fields: '{}',
           },
           {
             id: '3',
@@ -409,6 +416,7 @@ export const getCollectionContactsQuery = (variables: any) => {
             optinTime: '2024-04-04T12:13:30Z',
             optoutMethod: null,
             optoutTime: null,
+            fields: '{}',
           },
         ],
       },
@@ -657,6 +665,7 @@ export const getExcludedContactsQuery = (excludeGroups: any) => ({
           ],
           id: '2',
           name: 'NGO Admin',
+          fields: '{}',
         },
         {
           __typename: 'Contact',
@@ -669,6 +678,8 @@ export const getExcludedContactsQuery = (excludeGroups: any) => ({
           ],
           id: '1',
           name: 'NGO Main Account',
+          fields:
+            '{"name":{"value":"value","type":"string","label":"name","inserted_at":"2024-09-12T14:28:00.680124Z"},"gender":{"value":"Female","type":"string","label":"gender","inserted_at":"2024-09-12T05:00:45.328093Z"},"age":{"value":40,"type":"string","label":"age","inserted_at":"2024-09-12T05:00:45.328093Z"}}',
         },
         {
           __typename: 'Contact',
@@ -686,6 +697,8 @@ export const getExcludedContactsQuery = (excludeGroups: any) => ({
           ],
           id: '3',
           name: 'NGO Manager',
+          fields:
+            '{"name":{"value":"","type":"string","label":"name","inserted_at":"2024-09-12T14:28:00.680124Z"},"gender":{"value":"Female","type":"string","label":"gender","inserted_at":"2024-09-12T05:00:45.328093Z"},"age":{"value":40,"type":"string","label":"age","inserted_at":"2024-09-12T05:00:45.328093Z"}}',
         },
       ],
     },
