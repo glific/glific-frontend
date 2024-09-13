@@ -112,7 +112,11 @@ export const Input = ({
 
   return (
     <>
-      {translation && <div className={styles.Translation}>{translation}</div>}
+      {translation && (
+        <div data-testid="translation" className={styles.Translation}>
+          {translation}
+        </div>
+      )}
       <div className={styles.Input} data-testid="input">
         <FormControl fullWidth error={showError}>
           {inputLabel && (
