@@ -915,4 +915,5 @@ export const SPEED_SENDS_MOCKS = [
   getFilterTagQuery,
   getFilterTagQuery,
   updateSessiontemplate,
+  updateSessiontemplate,
 ];
