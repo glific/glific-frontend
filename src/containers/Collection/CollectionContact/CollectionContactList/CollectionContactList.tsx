@@ -17,7 +17,7 @@ import { useLazyQuery, useMutation } from '@apollo/client';
 import { setVariables } from 'common/constants';
 import { SearchDialogBox } from 'components/UI/SearchDialogBox/SearchDialogBox';
 import { Button } from 'components/UI/Form/Button/Button';
-import { getContactStatus } from 'common/utils';
+import { getContactStatus, getDisplayName } from 'common/utils';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { setNotification } from 'common/notification';
 
@@ -26,14 +26,8 @@ export interface CollectionContactListProps {
   descriptionBox?: any;
 }
 
-const getName = (label: string, fields: any, phone: string) => {
-  let contactFields: any = {};
-  let displayName = '';
-  if (fields) {
-    contactFields = JSON.parse(fields);
-  }
-
-  displayName = contactFields?.name?.value || label;
+const getName = (contact: any, phone: string) => {
+  const displayName = getDisplayName(contact);
 
   return (
     <div>
@@ -50,9 +44,9 @@ const getCollections = (collections: Array<any>) => (
 );
 
 const getColumns = (contact: any) => {
-  const { name, maskedPhone, groups, fields } = contact;
+  const { maskedPhone, groups } = contact;
   return {
-    label: getName(name, fields, maskedPhone),
+    label: getName(contact, maskedPhone),
     status: getContactStatus(contact),
     groups: getCollections(groups),
   };

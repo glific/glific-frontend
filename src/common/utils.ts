@@ -176,7 +176,7 @@ export const getDisplayName = (contact: any) => {
     return contact.name || contact.maskedPhone;
   }
 
-  let displayName = '';
+  let displayName: string;
   let contactFields: any = {};
   try {
     contactFields = JSON.parse(contact.fields);
@@ -188,8 +188,10 @@ export const getDisplayName = (contact: any) => {
     displayName = contactFields.name.value;
   } else if (contact.name) {
     displayName = contact.name;
-  } else {
+  } else if (contact.maskedPhone) {
     displayName = contact.maskedPhone;
+  } else {
+    displayName = '';
   }
   return displayName;
 };

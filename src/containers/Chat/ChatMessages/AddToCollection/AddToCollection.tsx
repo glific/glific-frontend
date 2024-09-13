@@ -2,14 +2,15 @@ import { useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 
-import { setNotification } from 'common/notification';
 import { setVariables } from 'common/constants';
-import { GET_CONTACTS_LIST } from 'graphql/queries/Contact';
+import { setNotification } from 'common/notification';
+import { getDisplayName } from 'common/utils';
+import { SearchDialogBox } from 'components/UI/SearchDialogBox/SearchDialogBox';
 import {
   UPDATE_COLLECTION_CONTACTS,
   UPDATE_COLLECTION_WA_GROUP,
 } from 'graphql/mutations/Collection';
-import { SearchDialogBox } from 'components/UI/SearchDialogBox/SearchDialogBox';
+import { GET_CONTACTS_LIST } from 'graphql/queries/Contact';
 import { GET_WA_GROUPS } from 'graphql/queries/WaGroups';
 
 interface AddToCollectionProps {
@@ -55,13 +56,9 @@ export const AddToCollection = ({ collectionId, setDialog, groups }: AddToCollec
       entityOptions = entityData.waGroups;
     } else {
       entityOptions = entityData.contacts.map((contact: any) => {
-        let contactFields: any = {};
-        if (contact.fields) {
-          contactFields = JSON.parse(contact.fields);
-        }
         return {
           ...contact,
-          name: contactFields?.name?.value || contact.name,
+          name: getDisplayName(contact),
         };
       });
     }
