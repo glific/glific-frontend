@@ -286,6 +286,7 @@ const getFlowDetails = (isActive = true, keywords = ['help']) => ({
           isActive,
           name: 'help workflow',
           keywords,
+          isTemplate: false,
         },
       ],
     },

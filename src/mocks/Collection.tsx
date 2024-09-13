@@ -445,7 +445,7 @@ export const deleteContactFromCollection = {
   },
 };
 
-export const getCollectionsList = (label?: string) => ({
+export const getCollectionsList = (label?: any) => ({
   request: {
     query: GET_COLLECTIONS_LIST,
     variables: {

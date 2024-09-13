@@ -9,6 +9,7 @@ import { SpeedSend } from './SpeedSend';
 import * as Notification from 'common/notification';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
 import { BeautifulMentionNode } from 'lexical-beautiful-mentions';
+import axios from 'axios';
 
 setUserSession(JSON.stringify({ roles: ['Admin'] }));
 
@@ -37,8 +38,17 @@ vi.mock('lexical-beautiful-mentions', async (importOriginal) => {
   };
 });
 
+vi.mock('axios');
+const mockedAxios = axios as any;
+
+const mockAxios = () => {
+  const responseData = { data: { message: 'success', is_valid: true } };
+  mockedAxios.get.mockImplementationOnce(() => Promise.resolve(responseData));
+};
+
 describe('SpeedSend', () => {
   test('cancel button should redirect to SpeedSendlist page', async () => {
+    mockAxios();
     const { container, getByText } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
         <MemoryRouter>
@@ -62,6 +72,8 @@ describe('SpeedSend', () => {
   });
 
   test('should have correct validations ', async () => {
+    mockAxios();
+
     const { container } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
         <MemoryRouter>
@@ -99,12 +111,15 @@ describe('SpeedSend', () => {
   });
 
   test('should test translations', async () => {
+    mockAxios();
+
     const notificationSpy = vi.spyOn(Notification, 'setNotification');
     render(
       <MockedProvider mocks={mocks} addTypename={false}>
         <MemoryRouter initialEntries={['/speed-send/1/edit']}>
           <Routes>
             <Route path="speed-send/:id/edit" element={<SpeedSend />} />
+            <Route path="/speed-send" element={<SpeedSendList />} />
           </Routes>
         </MemoryRouter>
       </MockedProvider>
