@@ -17,6 +17,7 @@ export interface Menu {
   url?: string;
   show?: boolean;
   children?: Menu[];
+  new?: boolean;
 }
 
 // define all the menus in the system
@@ -96,6 +97,30 @@ const menus = (): Menu[] => [
       },
     ],
     roles: managerLevel,
+  },
+  {
+    title: 'AI Toolkit',
+    path: '/ai/assistants',
+    icon: 'aiToolkit',
+    type: 'sideDrawer',
+    roles: allRoles,
+    new: true,
+    children: [
+      {
+        title: 'Assistants',
+        path: '/ai/assistants',
+        icon: 'assistant',
+        type: 'sideDrawer',
+        roles: allRoles,
+      },
+      {
+        title: 'Vector Storage',
+        path: '/ai/storage',
+        icon: 'storage',
+        type: 'sideDrawer',
+        roles: allRoles,
+      },
+    ],
   },
   {
     title: 'Support tickets',
