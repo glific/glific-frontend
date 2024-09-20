@@ -451,12 +451,12 @@ const createHSMtemplate = {
   variableMatcher: (variables: any) => true,
 };
 
-const createMediaMessage = {
+const createMediaMessage = (caption: string) => ({
   request: {
     query: CREATE_MEDIA_MESSAGE,
     variables: {
       input: {
-        caption: 'Hi {{1}}, How are you',
+        caption,
         sourceUrl: 'https://www.buildquickbots.com/whatsapp/media/sample/jpg/sample02.jpg',
         url: 'https://www.buildquickbots.com/whatsapp/media/sample/jpg/sample02.jpg',
       },
@@ -473,7 +473,7 @@ const createMediaMessage = {
       },
     },
   },
-};
+});
 
 const getShortCodeQuery = {
   request: {
@@ -649,32 +649,9 @@ export const TEMPLATE_MOCKS = [
   getFilterTagQuery,
   createHsmWithButtontemplate,
   createHsmWithPhonetemplate,
-  createMediaMessage,
+  createMediaMessage('Hi {{1}}, How are you'),
   getShortCodeQuery,
-  {
-    request: {
-      query: CREATE_TEMPLATE,
-      variables: {
-        input: {
-          body: 'new Template body',
-          label: 'new Template',
-          languageId: 1,
-          type: 'TEXT',
-        },
-      },
-    },
-    result: {
-      data: {
-        createSessionTemplate: {
-          sessionTemplate: {
-            body: 'new Template body',
-            id: '121',
-            label: 'new Template',
-          },
-        },
-      },
-    },
-  },
+
   {
     request: {
       query: CREATE_MEDIA_MESSAGE,
@@ -879,25 +856,67 @@ const getTemplatesCount = {
   },
 };
 
+const createSessionTemplate = {
+  request: {
+    query: CREATE_TEMPLATE,
+    variables: {
+      input: {
+        label: 'Template',
+        body: 'Hi, How are you',
+        type: 'IMAGE',
+        tagId: null,
+        isActive: true,
+        languageId: '1',
+        translations:
+          '{"1":{"language":{"id":"1","label":"English","localized":true,"locale":"en"},"label":"Template","body":"Hi, How are you","type":"IMAGE","attachmentURL":"https://www.buildquickbots.com/whatsapp/media/sample/jpg/sample02.jpg","tagId":null,"isActive":true,"languageId":"1"}}',
+        messageMediaId: 5,
+      },
+    },
+  },
+  result: {
+    data: {
+      createSessionTemplate: {
+        __typename: 'SessionTemplateResult',
+        errors: null,
+        sessionTemplate: {
+          MessageMedia: null,
+          __typename: 'SessionTemplate',
+          allowTemplateCategoryChange: true,
+          body: 'Hi, How are you',
+          buttonType: null,
+          buttons: '[]',
+          category: null,
+          example: null,
+          hasButtons: false,
+          id: '1',
+          isActive: true,
+          label: 'Template',
+          language: {
+            __typename: 'Language',
+            id: '1',
+            label: 'English',
+          },
+          shortcode: null,
+          translations:
+            '{"1":{"type":"TEXT","tagId":null,"languageId":"1","language":{"localized":true,"locale":"en","label":"English","id":"1","__typename":"Language"},"label":"Template","isActive":true,"body":"Hi, How are you"}}',
+          type: 'TEXT',
+        },
+      },
+    },
+  },
+};
+
 export const SPEED_SENDS_MOCKS = [
+  getFilterTagQuery,
+  getFilterTagQuery,
+  getOrganizationLanguagesQueryByOrder,
   getSpendSendTemplate,
-  getSpendSendTemplate,
-  getSpendSendTemplate,
-  speedSendOrderWith,
-  speedSendOrderWith,
   speedSend,
-  speedSend,
-  filterTemplateQuery,
   getTemplatesCount,
   getTemplatesCount,
-  updateSessiontemplate,
-  getOrganizationLanguagesQuery,
-  getOrganizationLanguagesQueryByOrder,
-  getOrganizationLanguagesQueryByOrder,
-  getOrganizationLanguagesQueryByOrder,
-  getFilterTagQuery,
-  getFilterTagQuery,
-  getFilterTagQuery,
-  updateSessiontemplate,
-  updateSessiontemplate,
+  speedSend,
+  speedSend,
+  createSessionTemplate,
+  createSessionTemplate,
+  createMediaMessage('Hi, How are you'),
 ];
