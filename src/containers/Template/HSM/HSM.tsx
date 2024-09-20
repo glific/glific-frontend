@@ -188,8 +188,15 @@ export const HSM = () => {
     useLazyQuery<any>(GET_TEMPLATE);
 
   let isEditing = false;
+  const isCopyState = location.state === 'copy';
   let mode;
-  let isCopyState;
+
+  if (isCopyState) {
+    queries.updateItemQuery = CREATE_TEMPLATE;
+    mode = 'copy';
+  } else {
+    queries.updateItemQuery = UPDATE_TEMPLATE;
+  }
 
   // disable fields in edit mode for hsm template
   if (params.id && !isCopyState) {
@@ -325,17 +332,23 @@ export const HSM = () => {
       }
     }
 
-    setLabel(labelValue);
     setIsActive(isActiveValue);
     let variables: any = [];
-    if (typeof bodyValue === 'string') {
+
+    variables = getExampleValue(exampleValue);
+    setVariables(variables);
+
+    if (isCopyState) {
+      setIsAddButtonChecked(hasButtons);
+      setTemplateType(templateButtonType);
+      setSimulatorMessage('');
+      setEditorState('');
+      setBody('');
+      setLabel('');
+    } else {
       setBody(bodyValue || '');
       setEditorState(bodyValue || '');
-    }
-
-    if (exampleValue) {
-      variables = getExampleValue(exampleValue);
-      setVariables(variables);
+      setLabel(labelValue);
 
       if (hasButtons) {
         const { buttons: buttonsVal } = getTemplateAndButtons(
@@ -431,6 +444,7 @@ export const HSM = () => {
   const setPayload = (payload: any) => {
     let payloadCopy = payload;
     let translationsCopy: any = {};
+    payloadCopy.isHsm = true;
 
     // Create template
     payloadCopy.languageId = payload.language.id;
@@ -443,7 +457,7 @@ export const HSM = () => {
     } else {
       payloadCopy.type = 'TEXT';
     }
-    payloadCopy.category = category.label;
+    payloadCopy.category = category.label || category;
     if (payloadCopy.body) {
       payloadCopy.example = getExampleFromBody(payloadCopy.body, variables);
     }
@@ -461,6 +475,10 @@ export const HSM = () => {
       delete payloadCopy.attachmentURL;
     }
     payloadCopy.translations = JSON.stringify(translationsCopy);
+
+    if (tagId) {
+      payloadCopy.tagId = payload.tagId.id;
+    }
 
     delete payloadCopy.isAddButtonChecked;
     delete payloadCopy.templateButtons;

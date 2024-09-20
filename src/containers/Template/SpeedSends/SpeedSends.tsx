@@ -15,12 +15,12 @@ import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { Typography } from '@mui/material';
 import { Input } from 'components/UI/Form/Input/Input';
 import { EmojiInput } from 'components/UI/Form/EmojiInput/EmojiInput';
-import { CreateAutoComplete } from 'components/UI/Form/CreateAutoComplete/CreateAutoComplete';
 import { GET_TAGS } from 'graphql/queries/Tags';
 import { USER_LANGUAGES } from 'graphql/queries/Organization';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { validateMedia } from 'common/utils';
 import { LanguageBar } from 'components/UI/LanguageBar/LanguageBar';
+import { setNotification } from 'common/notification';
 
 const queries = {
   getItemQuery: GET_TEMPLATE,
@@ -38,13 +38,29 @@ const mediaTypes = MEDIA_MESSAGE_TYPES.map((option: string) => ({
 }));
 const speedSendIcon = <SpeedSendIcon className={styles.SpeedSendIcon} />;
 
+export const getTranslation = (attribute: any, translations: any, defaultLanguage: any) => {
+  const defaultTemplate = JSON.parse(translations)[defaultLanguage.id];
+
+  if (!defaultTemplate) {
+    return null;
+  }
+
+  if (attribute === 'title') {
+    return defaultTemplate?.label;
+  } else if (attribute === 'body') {
+    return defaultTemplate?.body;
+  }
+
+  return null;
+};
+
 export const SpeedSends = () => {
   const [tagId, setTagId] = useState<any>(null);
   const [label, setLabel] = useState('');
   const [body, setBody] = useState<any>('');
   const [language, setLanguageId] = useState<any>(null);
   const [type, setType] = useState<any>(null);
-  const [translations, setTranslations] = useState<any>();
+  const [translations, setTranslations] = useState<any>('{}');
   const [attachmentURL, setAttachmentURL] = useState<any>('');
   const [languageOptions, setLanguageOptions] = useState<any>([]);
   const [isActive, setIsActive] = useState<boolean>(true);
@@ -53,11 +69,14 @@ export const SpeedSends = () => {
   const [isUrlValid, setIsUrlValid] = useState<any>();
   const [nextLanguage, setNextLanguage] = useState<any>('');
   const [editorState, setEditorState] = useState<any>('');
+  const [defaultLanguage, setDefaultLanguage] = useState<any>({});
 
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location: any = useLocation();
   const params = useParams();
+
+  const hasTranslations = params?.id && defaultLanguage?.id !== language?.id;
 
   const [createMediaMessage] = useMutation(CREATE_MEDIA_MESSAGE);
   const { data: tag, loading: tagLoading } = useQuery(GET_TAGS, {
@@ -104,6 +123,10 @@ export const SpeedSends = () => {
     }
   }, [type, attachmentURL]);
 
+  useEffect(() => {
+    displayWarning();
+  }, [type]);
+
   const states = {
     language,
     label,
@@ -130,7 +153,6 @@ export const SpeedSends = () => {
           (lang: any) => lang.label === location.state.language
         );
         navigate(location.pathname);
-        console.log(selectedLangauge);
 
         setLanguageId(selectedLangauge);
       } else if (!language?.id) {
@@ -145,7 +167,6 @@ export const SpeedSends = () => {
 
     setLabel(labelValue);
     setIsActive(isActiveValue);
-    let variables: any = [];
     if (typeof bodyValue === 'string') {
       setBody(bodyValue || '');
       setEditorState(bodyValue || '');
@@ -169,6 +190,7 @@ export const SpeedSends = () => {
         setBody(content.body || '');
         setEditorState(content.body || '');
       }
+
       setTranslations(translationsValue);
     }
     if (MessageMediaValue) {
@@ -180,57 +202,13 @@ export const SpeedSends = () => {
     if (tagIdValue) {
       setTagId(tagIdValue);
     }
+
+    setDefaultLanguage(languageIdValue);
   };
 
   const setPayload = (payload: any) => {
     let payloadCopy = payload;
     let translationsCopy: any = {};
-
-    if (template) {
-      payloadCopy.languageId = language?.id;
-      if (payloadCopy.type) {
-        payloadCopy.type = payloadCopy.type.id;
-        // STICKER is a type of IMAGE
-        if (payloadCopy.type.id === 'STICKER') {
-          payloadCopy.type = 'IMAGE';
-        }
-      } else {
-        payloadCopy.type = 'TEXT';
-      }
-
-      delete payloadCopy.language;
-
-      if (payloadCopy.type === 'TEXT') {
-        delete payloadCopy.attachmentURL;
-      }
-
-      // Removing unnecessary fields
-      delete payloadCopy.isAddButtonChecked;
-      delete payloadCopy.templateButtons;
-
-      let messageMedia = null;
-      if (payloadCopy.type && payloadCopy.attachmentURL) {
-        messageMedia = {
-          type: payloadCopy.type.id,
-          sourceUrl: payloadCopy.attachmentURL,
-        };
-      }
-
-      // Update template translation
-      if (translations) {
-        translationsCopy = JSON.parse(translations);
-        translationsCopy[language?.id] = {
-          status: 'approved',
-          languageId: language,
-          label: payloadCopy.label,
-          body: payloadCopy.body,
-          MessageMedia: messageMedia,
-        };
-      }
-      payloadCopy = {
-        translations: JSON.stringify(translationsCopy),
-      };
-    }
 
     // Create template
     payloadCopy.languageId = payload.language.id;
@@ -249,6 +227,14 @@ export const SpeedSends = () => {
     if (payloadCopy.type === 'TEXT') {
       delete payloadCopy.attachmentURL;
     }
+
+    // Update template translation
+    if (translations) {
+      translationsCopy = JSON.parse(translations);
+      translationsCopy[language?.id] = payloadCopy;
+      setTranslations(JSON.stringify(translationsCopy));
+    }
+
     payloadCopy.translations = JSON.stringify(translationsCopy);
 
     delete payloadCopy.isAddButtonChecked;
@@ -257,7 +243,9 @@ export const SpeedSends = () => {
     delete payloadCopy.languageVariant;
     delete payloadCopy.variables;
     delete payloadCopy.exisitingShortCode;
+
     delete payloadCopy.newShortcode;
+    console.log(payloadCopy);
 
     return payloadCopy;
   };
@@ -379,11 +367,46 @@ export const SpeedSends = () => {
 
   const onLanguageChange = (option: string, form: any) => {
     setNextLanguage(option);
-    const { values } = form;
-    if (values.label || values.body) {
-      return;
+    const { values, errors } = form;
+    if (values.type?.label === 'TEXT') {
+      if (values.title || values.body) {
+        if (errors) {
+          setNotification(t('Please check the errors'), 'warning');
+        }
+      } else {
+        handleLanguageChange(option);
+      }
     }
-    handleLanguageChange(option);
+    if (values.body) {
+      if (Object.keys(errors).length !== 0) {
+        setNotification(t('Please check the errors'), 'warning');
+      }
+    } else {
+      handleLanguageChange(option);
+    }
+  };
+
+  const displayWarning = () => {
+    if (type && type.id === 'STICKER') {
+      setWarning(
+        <div className={styles.Warning}>
+          <ol>
+            <li>{t('Animated stickers are not supported.')}</li>
+            <li>{t('Captions along with stickers are not supported.')}</li>
+          </ol>
+        </div>
+      );
+    } else if (type && type.id === 'AUDIO') {
+      setWarning(
+        <div className={styles.Warning}>
+          <ol>
+            <li>{t('Captions along with audio are not supported.')}</li>
+          </ol>
+        </div>
+      );
+    } else {
+      setWarning(null);
+    }
   };
 
   const FormSchema = Yup.object().shape(
@@ -417,7 +440,6 @@ export const SpeedSends = () => {
       optionLabel: 'label',
       multiple: false,
       label: t('Attachment Type'),
-      disabled: isEditing,
       helperText: warning,
       onChange: (event: any) => {
         const val = event;
@@ -433,7 +455,6 @@ export const SpeedSends = () => {
       type: 'text',
       label: t('Attachment URL'),
       validate: () => isUrlValid,
-      disabled: isEditing,
       helperText: t(
         'Please provide a sample attachment for approval purpose. You may send a similar but different attachment when sending the HSM to users.'
       ),
@@ -452,6 +473,7 @@ export const SpeedSends = () => {
 
   const formFields = [
     {
+      field: 'languageBar',
       component: LanguageBar,
       options: langOptions || [],
       selectedLangauge: language && language.label,
@@ -461,10 +483,10 @@ export const SpeedSends = () => {
       component: Input,
       name: 'label',
       label: t('Title'),
-      disabled: isEditing,
       inputProp: {
         onBlur: (event: any) => setLabel(event.target.value),
       },
+      translation: hasTranslations && getTranslation('title', translations, defaultLanguage),
     },
     {
       component: Checkbox,
@@ -483,14 +505,27 @@ export const SpeedSends = () => {
       rows: 5,
       convertToWhatsApp: true,
       textArea: true,
-      disabled: isEditing,
       handleChange: (value: any) => {
         setBody(value);
       },
       defaultValue: isEditing && editorState,
+      translation: hasTranslations && getTranslation('body', translations, defaultLanguage),
     },
     ...attachmentField,
   ];
+
+  const afterSave = (data: any, saveClick: boolean) => {
+    if (!saveClick) {
+      if (params.id) {
+        handleLanguageChange(nextLanguage);
+      } else {
+        const { sessionTemplate } = data.createSessionTemplate;
+        navigate(`/speed-send/${sessionTemplate.id}/edit`, {
+          state: { language: nextLanguage },
+        });
+      }
+    }
+  };
 
   if (languageLoading || templateLoading || tagLoading) {
     return <Loading />;
@@ -521,6 +556,7 @@ export const SpeedSends = () => {
       copyNotification={t('Copy of the template has been created!')}
       backLinkButton={`/${redirectionLink}`}
       customStyles={styles.AttachmentFields}
+      afterSave={afterSave}
     />
   );
 };

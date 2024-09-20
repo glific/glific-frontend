@@ -287,7 +287,7 @@ export const Template = ({
 
   const copyAction = {
     label: t('Copy'),
-    icon: <DuplicateIcon />,
+    icon: <DuplicateIcon data-testid="copyTemplate" />,
     parameter: 'id',
     dialog: setCopyDialog,
     insideMore: true,
