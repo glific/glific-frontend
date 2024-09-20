@@ -183,18 +183,12 @@ const GET_GROUPS = {
   },
 };
 
-const UPDATE_USER_MOCK = {
+const updateUserMock = (input?: any) => ({
   request: {
     query: UPDATE_USER,
     variables: {
       id: '1',
-      input: {
-        name: 'Staff',
-        isRestricted: false,
-        addRoleIds: ['3'],
-        deleteRoleIds: ['2'],
-        groupIds: ['2'],
-      },
+      input,
     },
   },
   result: {
@@ -217,7 +211,7 @@ const UPDATE_USER_MOCK = {
       },
     },
   },
-};
+});
 
 const UPDATE_USER_DEMOTE_ADMIN_MOCK = {
   request: {
@@ -325,9 +319,23 @@ export const STAFF_MANAGEMENT_MOCKS = [
   GET_ROLES_MOCK,
   GET_USER_LANGUAGE_MOCK,
   GET_GROUPS,
-  UPDATE_USER_MOCK,
+
   UPDATE_USER_MULTIPLE_ROLES_MOCK,
   getRoleNamesMock,
+  updateUserMock({
+    name: 'Staff',
+    isRestricted: false,
+    addRoleIds: ['3'],
+    deleteRoleIds: ['2'],
+    groupIds: ['2'],
+  }),
+  updateUserMock({
+    name: 'Staff',
+    isRestricted: false,
+    addRoleIds: [],
+    deleteRoleIds: [],
+    groupIds: ['2'],
+  }),
 ];
 
 export const STAFF_MANAGEMENT_MOCKS_WITH_EMPTY_ROLES = [

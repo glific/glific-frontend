@@ -179,6 +179,12 @@ export const FormLayout = ({
     }
   }, [advanceSearch]);
 
+  useEffect(() => {
+    if (entityId) {
+      refetch();
+    }
+  }, [entityId]);
+
   const capitalListItemName = listItemName[0].toUpperCase() + listItemName.slice(1);
   let item: any = null;
 
@@ -221,7 +227,7 @@ export const FormLayout = ({
     variables = params.type ? { shortcode: params.type } : false;
   }
 
-  const { loading, error } = useQuery(getItemQuery, {
+  const { loading, error, refetch } = useQuery(getItemQuery, {
     variables,
     skip: !itemId,
     fetchPolicy: getQueryFetchPolicy,
@@ -661,7 +667,10 @@ export const FormLayout = ({
         handleOk={() => {
           saveHandler(formik.values);
         }}
-        handleCancel={() => setShowConfirmationDialog(false)}
+        handleCancel={() => {
+          onSaveClick(false);
+          setShowConfirmationDialog(false);
+        }}
         colorOk="warning"
         alignButtons="center"
         contentAlign="center"

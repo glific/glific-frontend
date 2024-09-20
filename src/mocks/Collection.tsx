@@ -5,6 +5,7 @@ import {
   GET_COLLECTION,
   GET_COLLECTIONS,
   GET_COLLECTIONS_COUNT,
+  GET_COLLECTIONS_LIST,
   GET_COLLECTION_INFO,
   GET_COLLECTION_USERS,
   GET_ORGANIZATION_COLLECTIONS,
@@ -443,3 +444,38 @@ export const deleteContactFromCollection = {
     },
   },
 };
+
+export const getCollectionsList = (label?: any) => ({
+  request: {
+    query: GET_COLLECTIONS_LIST,
+    variables: {
+      filter: {
+        groupType: 'WABA',
+        label,
+      },
+      opts: {
+        limit: 50,
+        offset: 0,
+        order: 'ASC',
+      },
+    },
+  },
+  result: {
+    data: {
+      groups: [
+        {
+          id: '1',
+          label: 'Staff group',
+        },
+        {
+          id: '2',
+          label: 'Optin group',
+        },
+        {
+          id: '3',
+          label: 'Optout group',
+        },
+      ],
+    },
+  },
+});

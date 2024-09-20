@@ -286,6 +286,7 @@ const getFlowDetails = (isActive = true, keywords = ['help']) => ({
           isActive,
           name: 'help workflow',
           keywords,
+          isTemplate: false,
         },
       ],
     },
@@ -696,31 +697,18 @@ export const copyFlowQuery = (input: any) => {
   };
 };
 
-export const createFlowQuery = {
+export const createFlowQuery = (input: any) => ({
   request: {
     query: CREATE_FLOW,
     variables: {
-      input: {
-        isActive: true,
-        isPinned: false,
-        isBackground: false,
-        name: 'New Flow',
-        keywords: ['मदद'],
-        description: '',
-        ignoreKeywords: false,
-        addRoleIds: [],
-        deleteRoleIds: [],
-      },
+      input,
     },
     result: {
       data: {
         createFlow: {
           errors: null,
           flow: {
-            description: '',
-            id: '4',
-            isActive: true,
-            name: 'New Flow',
+            ...input,
             roles: [],
             uuid: 'c18190b4-5f14-47f3-acfd-c301e5edf3a0',
           },
@@ -728,7 +716,7 @@ export const createFlowQuery = {
       },
     },
   },
-};
+});
 
 export const getAllFlowLabelsQuery = {
   request: {
