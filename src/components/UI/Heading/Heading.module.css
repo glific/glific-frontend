@@ -40,3 +40,9 @@
   cursor: pointer;
   margin-top: 10px;
 }
+
+.Button {
+  width: 100%;
+  display: flex;
+  column-gap: 5px;
+}
