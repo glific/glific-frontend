@@ -4,10 +4,10 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { HSM } from './HSM';
 import {
-  TEMPLATE_MOCKS,
   getHSMTemplateTypeMedia,
   getHSMTemplateTypeText,
 } from 'containers/Template/Template.test.helper';
+import { TEMPLATE_MOCKS } from 'mocks/Template';
 
 const mocks = TEMPLATE_MOCKS;
 

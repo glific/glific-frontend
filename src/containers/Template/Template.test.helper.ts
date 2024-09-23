@@ -6,6 +6,7 @@ import {
   GET_TEMPLATES_COUNT,
   FILTER_SESSION_TEMPLATES,
   GET_SHORTCODES,
+  GET_SPEED_SEND,
 } from 'graphql/queries/Template';
 import { DELETE_TEMPLATE, CREATE_TEMPLATE, UPDATE_TEMPLATE } from 'graphql/mutations/Template';
 import {
@@ -552,9 +553,9 @@ export const getHSMTemplateTypeMedia = {
   },
 };
 
-export const getSpendSendTemplate = {
+export const getSpeedSendTemplate = {
   request: {
-    query: GET_TEMPLATE,
+    query: GET_SPEED_SEND,
     variables: {
       id: '1',
     },
@@ -562,37 +563,59 @@ export const getSpendSendTemplate = {
   result: {
     data: {
       sessionTemplate: {
+        __typename: 'SessionTemplateResult',
         sessionTemplate: {
-          MessageMedia: {
-            __typename: 'MessageMedia',
-            caption: 'message',
-            id: '5',
-            sourceUrl:
-              'https://images.ctfassets.net/hrltx12pl8hq/28ECAQiPJZ78hxatLTa7Ts/2f695d869736ae3b0de3e56ceaca3958/free-nature-images.jpg?fit=fill&w=1200&h=630',
-          },
           __typename: 'SessionTemplate',
-          allowTemplateCategoryChange: true,
-          body: 'message',
-          buttonType: null,
-          buttons: '[]',
-          category: null,
-          example: null,
-          hasButtons: false,
-          id: '11',
+          body: 'message1',
+          id: '30',
           isActive: true,
-          isHsm: false,
-          label: 'title',
+          label: 'title1',
           language: {
+            __typename: 'Language',
             id: '1',
             label: 'English',
           },
-          shortcode: null,
-          tag: null,
+          messageMedia: null,
           translations:
-            '{"2":{"status":"approved","languageId":{"localized":true,"locale":"hi","label":"Hindi","id":"2","__typename":"Language"},"label":"hey","isHsm":false,"body":"hindi translations","MessageMedia":null}}',
+            '{"2":{"type":"TEXT","tagId":null,"languageId":"2","language":{"localized":true,"locale":"hi","label":"Hindi","id":"2","__typename":"Language"},"label":"title2","isActive":true,"body":"message2"},"1":{"type":"TEXT","tagId":null,"languageId":"1","language":{"localized":true,"locale":"en","label":"English","id":"1","__typename":"Language"},"label":"title1","isActive":true,"body":"message1"}}',
+          type: 'TEXT',
+        },
+      },
+    },
+  },
+};
+
+export const getSpeedSendTemplate2 = {
+  request: {
+    query: GET_SPEED_SEND,
+    variables: {
+      id: '2',
+    },
+  },
+  result: {
+    data: {
+      sessionTemplate: {
+        __typename: 'SessionTemplateResult',
+        sessionTemplate: {
+          __typename: 'SessionTemplate',
+          body: 'sample message',
+          id: '2',
+          isActive: true,
+          label: 'sample title',
+          language: {
+            __typename: 'Language',
+            id: '1',
+            label: 'English',
+          },
+          messageMedia: {
+            __typename: 'MessageMedia',
+            caption: 'sample message',
+            id: '7',
+            sourceUrl: 'https://www.buildquickbots.com/whatsapp/media/sample/jpg/sample01.jpg',
+          },
+          translations:
+            '{"1":{"type":"IMAGE","tagId":null,"languageId":"1","language":{"localized":true,"locale":"en","label":"English","id":"1","__typename":"Language"},"label":"sample title","isActive":true,"body":"sample message","attachmentURL":"https://www.buildquickbots.com/whatsapp/media/sample/jpg/sample01.jpg"}}',
           type: 'IMAGE',
-          updatedAt: '2024-07-10T09:43:25Z',
-          quality: null,
         },
       },
     },
@@ -731,7 +754,7 @@ export const TEMPLATE_MOCKS = [
   ...whatsappHsmCategories,
   speedSendOrderWith,
   speedSendOrderWith,
-  getSpendSendTemplate,
+  getSpeedSendTemplate,
   updateSessiontemplate,
   getOrganizationLanguagesQuery,
   getOrganizationLanguagesQuery,
@@ -863,13 +886,12 @@ const createSessionTemplate = {
       input: {
         label: 'Template',
         body: 'Hi, How are you',
-        type: 'IMAGE',
+        type: 'TEXT',
         tagId: null,
         isActive: true,
         languageId: '1',
         translations:
-          '{"1":{"language":{"id":"1","label":"English","localized":true,"locale":"en"},"label":"Template","body":"Hi, How are you","type":"IMAGE","attachmentURL":"https://www.buildquickbots.com/whatsapp/media/sample/jpg/sample02.jpg","tagId":null,"isActive":true,"languageId":"1"}}',
-        messageMediaId: 5,
+          '{"1":{"language":{"id":"1","label":"English","localized":true,"locale":"en"},"label":"Template","body":"Hi, How are you","type":"TEXT","tagId":null,"isActive":true,"languageId":"1"}}',
       },
     },
   },
@@ -906,11 +928,53 @@ const createSessionTemplate = {
   },
 };
 
+const updateSpeedSend = {
+  request: {
+    query: UPDATE_TEMPLATE,
+  },
+  result: {
+    data: {
+      updateSessionTemplate: {
+        sessionTemplate: {
+          MessageMedia: {
+            __typename: 'MessageMedia',
+            caption: 'message1',
+            id: '5',
+            sourceUrl: 'https://www.buildquickbots.com/whatsapp/media/sample/jpg/sample01.jpg',
+          },
+          __typename: 'SessionTemplate',
+          allowTemplateCategoryChange: true,
+          body: 'message1',
+          buttonType: null,
+          buttons: '[]',
+          category: null,
+          example: null,
+          hasButtons: false,
+          id: '1',
+          isActive: true,
+          label: 'title1',
+          language: {
+            __typename: 'Language',
+            id: '1',
+            label: 'English',
+          },
+          shortcode: null,
+          translations:
+            '{"2":{"type":"IMAGE","tagId":null,"languageId":"2","language":{"localized":true,"locale":"hi","label":"Hindi","id":"2","__typename":"Language"},"label":"title2","isActive":true,"body":"message2","attachmentURL":"https://www.buildquickbots.com/whatsapp/media/sample/jpg/sample01.jpg"},"1":{"type":"IMAGE","tagId":null,"languageId":"1","language":{"localized":true,"locale":"en","label":"English","id":"1","__typename":"Language"},"label":"title1","isActive":true,"body":"message1","attachmentURL":"https://www.buildquickbots.com/whatsapp/media/sample/jpg/sample01.jpg"}}',
+          type: 'IMAGE',
+        },
+      },
+    },
+  },
+  variableMatcher: () => true,
+};
+
 export const SPEED_SENDS_MOCKS = [
   getFilterTagQuery,
   getFilterTagQuery,
   getOrganizationLanguagesQueryByOrder,
-  getSpendSendTemplate,
+  getSpeedSendTemplate,
+  getSpeedSendTemplate,
   speedSend,
   getTemplatesCount,
   getTemplatesCount,
@@ -918,5 +982,10 @@ export const SPEED_SENDS_MOCKS = [
   speedSend,
   createSessionTemplate,
   createSessionTemplate,
-  createMediaMessage('Hi, How are you'),
+  createMediaMessage('message1'),
+  updateSpeedSend,
+  updateSpeedSend,
+  updateSpeedSend,
+  getSpeedSendTemplate2,
+  getSpeedSendTemplate2,
 ];

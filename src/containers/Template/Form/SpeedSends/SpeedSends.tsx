@@ -1,7 +1,7 @@
 import { MEDIA_MESSAGE_TYPES } from 'common/constants';
 import { FormLayout } from 'containers/Form/FormLayout';
 import { CREATE_TEMPLATE, DELETE_TEMPLATE, UPDATE_TEMPLATE } from 'graphql/mutations/Template';
-import { GET_TEMPLATE } from 'graphql/queries/Template';
+import { GET_SPEED_SEND } from 'graphql/queries/Template';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate, useParams } from 'react-router';
@@ -15,7 +15,6 @@ import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { Typography } from '@mui/material';
 import { Input } from 'components/UI/Form/Input/Input';
 import { EmojiInput } from 'components/UI/Form/EmojiInput/EmojiInput';
-import { GET_TAGS } from 'graphql/queries/Tags';
 import { USER_LANGUAGES } from 'graphql/queries/Organization';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { validateMedia } from 'common/utils';
@@ -23,7 +22,7 @@ import { LanguageBar } from 'components/UI/LanguageBar/LanguageBar';
 import { setNotification } from 'common/notification';
 
 const queries = {
-  getItemQuery: GET_TEMPLATE,
+  getItemQuery: GET_SPEED_SEND,
   createItemQuery: CREATE_TEMPLATE,
   updateItemQuery: UPDATE_TEMPLATE,
   deleteItemQuery: DELETE_TEMPLATE,
@@ -75,30 +74,23 @@ export const SpeedSends = () => {
   const navigate = useNavigate();
   const location: any = useLocation();
   const params = useParams();
+  let isEditing = false;
+  let mode;
+
+  if (params.id) {
+    isEditing = true;
+  }
 
   const hasTranslations = params?.id && defaultLanguage?.id !== language?.id;
 
   const [createMediaMessage] = useMutation(CREATE_MEDIA_MESSAGE);
-  const { data: tag, loading: tagLoading } = useQuery(GET_TAGS, {
-    variables: {},
-    fetchPolicy: 'network-only',
-  });
 
   const { data: languages, loading: languageLoading } = useQuery(USER_LANGUAGES, {
     variables: { opts: { order: 'ASC' } },
   });
 
   const [getSessionTemplate, { data: template, loading: templateLoading }] =
-    useLazyQuery<any>(GET_TEMPLATE);
-
-  let isEditing = false;
-  let mode;
-  let isCopyState;
-
-  // disable fields in edit mode for hsm template
-  if (params.id && !isCopyState) {
-    isEditing = true;
-  }
+    useLazyQuery<any>(GET_SPEED_SEND);
 
   useEffect(() => {
     if (languages) {
@@ -115,7 +107,7 @@ export const SpeedSends = () => {
     if (params.id) {
       getSessionTemplate({ variables: { id: params.id } });
     }
-  }, []);
+  }, [params]);
 
   useEffect(() => {
     if ((type === '' || type) && attachmentURL) {
@@ -144,9 +136,33 @@ export const SpeedSends = () => {
     body: bodyValue,
     type: typeValue,
     translations: translationsValue,
-    MessageMedia: MessageMediaValue,
+    messageMedia: MessageMediaValue,
     tag: tagIdValue,
   }: any) => {
+    let title = labelValue;
+    let body = bodyValue;
+
+    if (translationsValue) {
+      const translationsCopy = JSON.parse(translationsValue);
+      const currentLanguage = language?.id || languageIdValue.id;
+
+      if (
+        Object.keys(translationsCopy).length > 0 &&
+        translationsCopy[currentLanguage] &&
+        !location.state?.language
+      ) {
+        let content = translationsCopy[currentLanguage];
+        title = content.label;
+        body = content.body || '';
+      } else if (template) {
+        // translations for current language doesn't exist
+        title = '';
+        body = '';
+      }
+
+      setTranslations(translationsValue);
+    }
+
     if (languageOptions.length > 0 && languageIdValue) {
       if (location.state && location.state !== 'copy') {
         const selectedLangauge = languageOptions.find(
@@ -165,34 +181,12 @@ export const SpeedSends = () => {
       }
     }
 
-    setLabel(labelValue);
-    setIsActive(isActiveValue);
-    if (typeof bodyValue === 'string') {
-      setBody(bodyValue || '');
-      setEditorState(bodyValue || '');
-    }
-
     if (typeValue && typeValue !== 'TEXT') {
       setType({ id: typeValue, label: typeValue });
     } else {
       setType(null);
     }
-    if (translationsValue) {
-      const translationsCopy = JSON.parse(translationsValue);
-      const currentLanguage = language?.id || languageIdValue.id;
-      if (
-        Object.keys(translationsCopy).length > 0 &&
-        translationsCopy[currentLanguage] &&
-        !location.state
-      ) {
-        const content = translationsCopy[currentLanguage];
-        setLabel(content.label);
-        setBody(content.body || '');
-        setEditorState(content.body || '');
-      }
 
-      setTranslations(translationsValue);
-    }
     if (MessageMediaValue) {
       setAttachmentURL(MessageMediaValue.sourceUrl);
     } else {
@@ -204,6 +198,10 @@ export const SpeedSends = () => {
     }
 
     setDefaultLanguage(languageIdValue);
+    setLabel(title);
+    setIsActive(isActiveValue);
+    setBody(body || '');
+    setEditorState(body || '');
   };
 
   const setPayload = (payload: any) => {
@@ -211,7 +209,7 @@ export const SpeedSends = () => {
     let translationsCopy: any = {};
 
     // Create template
-    payloadCopy.languageId = payload.language.id;
+    payloadCopy.languageId = payload.language?.id;
     if (payloadCopy.type) {
       payloadCopy.type = payloadCopy.type.id;
       // STICKER is a type of IMAGE
@@ -220,8 +218,6 @@ export const SpeedSends = () => {
       }
     } else {
       payloadCopy.type = 'TEXT';
-    }
-    if (payloadCopy.body) {
     }
 
     if (payloadCopy.type === 'TEXT') {
@@ -245,19 +241,8 @@ export const SpeedSends = () => {
     delete payloadCopy.exisitingShortCode;
 
     delete payloadCopy.newShortcode;
-    console.log(payloadCopy);
 
     return payloadCopy;
-  };
-
-  const getLanguageId = (value: any) => {
-    let result = value;
-
-    // create translations only while updating
-    if (result && isEditing) {
-      // updateTranslation(result);
-    }
-    if (result) setLanguageId(result);
   };
 
   const getMediaId = async (payload: any) => {
@@ -299,11 +284,8 @@ export const SpeedSends = () => {
     }
 
     setLabel(labelValue);
-
-    if (typeof bodyValue === 'string') {
-      setBody(bodyValue || '');
-      setEditorState(bodyValue || '');
-    }
+    setBody(bodyValue || '');
+    setEditorState(bodyValue || '');
 
     if (typeValue && typeValue !== 'TEXT') {
       setType({ id: typeValue, label: typeValue });
@@ -368,6 +350,7 @@ export const SpeedSends = () => {
   const onLanguageChange = (option: string, form: any) => {
     setNextLanguage(option);
     const { values, errors } = form;
+
     if (values.type?.label === 'TEXT') {
       if (values.title || values.body) {
         if (errors) {
@@ -527,7 +510,7 @@ export const SpeedSends = () => {
     }
   };
 
-  if (languageLoading || templateLoading || tagLoading) {
+  if (languageLoading || templateLoading) {
     return <Loading />;
   }
 
@@ -544,7 +527,6 @@ export const SpeedSends = () => {
       redirectionLink={redirectionLink}
       listItem="sessionTemplate"
       icon={speedSendIcon}
-      getLanguageId={getLanguageId}
       languageSupport={false}
       isAttachment
       getMediaId={getMediaId}

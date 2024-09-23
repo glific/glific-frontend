@@ -15,7 +15,7 @@ import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { Typography } from '@mui/material';
 import { Input } from 'components/UI/Form/Input/Input';
 import { EmojiInput } from 'components/UI/Form/EmojiInput/EmojiInput';
-import { TemplateVariables } from '../TemplateVariables/TemplateVariables';
+import { TemplateVariables } from '../../TemplateVariables/TemplateVariables';
 import { TemplateOptions } from 'containers/TemplateOptions/TemplateOptions';
 import { CreateAutoComplete } from 'components/UI/Form/CreateAutoComplete/CreateAutoComplete';
 import { GET_TAGS } from 'graphql/queries/Tags';
@@ -88,7 +88,7 @@ const getTemplateAndButtons = (templateType: string, message: string, buttons: s
 };
 
 const getExampleFromBody = (body: string, variables: Array<any>) => {
-  return body.replace(/{{(\d+)}}/g, (match, number) => {
+  return body?.replace(/{{(\d+)}}/g, (match, number) => {
     let index = parseInt(number) - 1;
 
     return variables[index]?.text
@@ -166,7 +166,7 @@ export const HSM = () => {
   const params = useParams();
 
   const [createMediaMessage] = useMutation(CREATE_MEDIA_MESSAGE);
-  const { data: categoryList, loading } = useQuery(GET_HSM_CATEGORIES);
+  const { data: categoryList } = useQuery(GET_HSM_CATEGORIES);
   const { data: shortCodes } = useQuery(GET_SHORTCODES, {
     variables: {
       filter: {
@@ -600,7 +600,7 @@ export const HSM = () => {
   const setSimulatorMessage = (messages: any) => {
     const message = removeFirstLineBreak(messages);
     const mediaBody: any = { ...sampleMessages.media };
-    let typeValue = 'TEXT';
+    let typeValue;
     let text = messages;
 
     if (isAddButtonChecked) {
