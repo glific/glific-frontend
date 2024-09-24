@@ -667,7 +667,10 @@ export const FormLayout = ({
         handleOk={() => {
           saveHandler(formik.values);
         }}
-        handleCancel={() => setShowConfirmationDialog(false)}
+        handleCancel={() => {
+          onSaveClick(false);
+          setShowConfirmationDialog(false);
+        }}
         colorOk="warning"
         alignButtons="center"
         contentAlign="center"
