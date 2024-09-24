@@ -186,7 +186,15 @@ describe('update credentials', () => {
     fireEvent.change(inputs[0], { target: { value: 'token2' } });
     fireEvent.change(inputs[1], { target: { value: 'product_id2' } });
 
-    fireEvent.click(screen.getByText('Save'));
+    fireEvent.click(screen.getByTestId('submitActionButton'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('dialogBox')).toBeInTheDocument();
+    });
+
+    // testing if it closes the dialog box
+    fireEvent.click(screen.getByTestId('cancel-button'));
+    fireEvent.click(screen.getByTestId('submitActionButton'));
 
     await waitFor(() => {
       expect(screen.getByTestId('dialogBox')).toBeInTheDocument();
