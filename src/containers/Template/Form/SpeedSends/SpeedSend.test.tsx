@@ -11,7 +11,6 @@ import SpeedSendList from '../../List/SpeedSendList/SpeedSendList';
 import SpeedSends from './SpeedSends';
 
 beforeEach(() => {
-  vi.clearAllMocks();
   cleanup();
 });
 
