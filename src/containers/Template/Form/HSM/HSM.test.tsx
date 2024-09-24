@@ -1,18 +1,29 @@
-import { render, waitFor, within, fireEvent, screen } from '@testing-library/react';
+import { render, waitFor, within, fireEvent, screen, cleanup } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { HSM } from './HSM';
 import {
+  HSM_TEMPLATE_MOCKS,
   getHSMTemplateTypeMedia,
   getHSMTemplateTypeText,
-} from 'containers/Template/Template.test.helper';
-import { TEMPLATE_MOCKS } from 'mocks/Template';
+} from 'mocks/Template';
+import { setNotification } from 'common/notification';
 
-const mocks = TEMPLATE_MOCKS;
+const mocks = HSM_TEMPLATE_MOCKS;
+
+vi.mock('common/notification', async (importOriginal) => {
+  const mod = await importOriginal<typeof import('common/notification')>();
+  return {
+    ...mod,
+    setNotification: vi.fn((...args) => {
+      return args[1];
+    }),
+  };
+});
 
 beforeEach(() => {
-  vi.restoreAllMocks();
+  cleanup();
 });
 
 vi.mock('lexical-beautiful-mentions', async (importOriginal) => {
@@ -80,6 +91,7 @@ describe('Add mode', () => {
       </MemoryRouter>
     </MockedProvider>
   );
+
   const user = userEvent.setup();
 
   test('check for validations for the HSM form', async () => {
@@ -121,7 +133,6 @@ describe('Add mode', () => {
     const inputs = screen.getAllByRole('textbox');
 
     fireEvent.change(inputs[0], { target: { value: 'element_name' } });
-    fireEvent.change(inputs[1], { target: { value: 'element_name' } });
     const lexicalEditor = inputs[2];
 
     await user.click(lexicalEditor);
@@ -148,8 +159,13 @@ describe('Add mode', () => {
     fireEvent.change(inputs[1], { target: { value: 'element_name' } });
 
     fireEvent.change(screen.getByPlaceholderText('Define value'), { target: { value: 'User' } });
+    fireEvent.change(inputs[1], { target: { value: 'title' } });
 
     fireEvent.click(screen.getByTestId('submitActionButton'));
+
+    await waitFor(() => {
+      expect(setNotification).toHaveBeenCalled();
+    });
   });
 
   test('it should add and remove variables', async () => {
@@ -177,6 +193,10 @@ describe('Add mode', () => {
     });
 
     fireEvent.click(screen.getAllByTestId('delete-variable')[0]);
+
+    await waitFor(() => {
+      expect(screen.queryByPlaceholderText('Define value ')).not.toBeInTheDocument();
+    });
   });
 
   test('it adds quick reply buttons', async () => {
@@ -225,7 +245,10 @@ describe('Add mode', () => {
     fireEvent.click(screen.getByText('ACCOUNT_UPDATE'), { key: 'Enter' });
 
     fireEvent.click(screen.getByTestId('submitActionButton'));
-    fireEvent.click(screen.getByTestId('submitActionButton'));
+
+    await waitFor(() => {
+      expect(setNotification).toHaveBeenCalled();
+    });
   });
 
   test('it adds call to action buttons', async () => {
@@ -273,7 +296,10 @@ describe('Add mode', () => {
     fireEvent.click(screen.getByText('ACCOUNT_UPDATE'), { key: 'Enter' });
 
     fireEvent.click(screen.getByTestId('submitActionButton'));
-    fireEvent.click(screen.getByTestId('submitActionButton'));
+
+    await waitFor(() => {
+      expect(setNotification).toHaveBeenCalled();
+    });
   });
 
   test('adding attachments', async () => {

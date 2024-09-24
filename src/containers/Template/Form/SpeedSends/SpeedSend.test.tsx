@@ -1,13 +1,14 @@
 import { MockedProvider } from '@apollo/client/testing';
-import { MemoryRouter, Route, Routes } from 'react-router';
-import SpeedSends from './SpeedSends';
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { SPEED_SENDS_MOCKS } from '../../Template.test.helper';
-import { LexicalWrapper } from 'common/LexicalWrapper';
 import userEvent from '@testing-library/user-event';
+import { MemoryRouter, Route, Routes } from 'react-router';
+
 import * as Notification from 'common/notification';
-import SpeedSendList from '../../List/SpeedSendList/SpeedSendList';
+import { LexicalWrapper } from 'common/LexicalWrapper';
 import * as utilsModule from 'common/utils';
+import { SPEED_SENDS_MOCKS } from 'mocks/Template';
+import SpeedSendList from '../../List/SpeedSendList/SpeedSendList';
+import SpeedSends from './SpeedSends';
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -140,7 +141,7 @@ describe('test editing a speed send', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByText('title1')).toBeInTheDocument();
+      expect(screen.getByText('Marathi')).toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByText('Marathi'));
