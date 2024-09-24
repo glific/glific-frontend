@@ -128,7 +128,7 @@ describe('test editing a speed send', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByText('sample title')).toBeInTheDocument();
+      expect(screen.getByText('Marathi')).toBeInTheDocument();
     });
   });
 
