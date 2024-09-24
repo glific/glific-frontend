@@ -3,7 +3,7 @@ import { render, waitFor, fireEvent, screen } from '@testing-library/react';
 import { vi } from 'vitest';
 
 import ChatInput from './ChatInput';
-import { TEMPLATE_MOCKS } from 'mocks/Template';
+import { filterTemplatesQuery } from 'mocks/Template';
 import {
   createMediaMessageMock,
   getAttachmentPermissionMock,
@@ -17,7 +17,10 @@ const mocks = [
   searchInteractive,
   searchInteractive,
   searchInteractiveHi,
-  ...TEMPLATE_MOCKS,
+  filterTemplatesQuery('', { isHsm: true }),
+  filterTemplatesQuery('', { isHsm: true }),
+  filterTemplatesQuery('hi', { isHsm: true }),
+  filterTemplatesQuery('', { isHsm: false }),
   getAttachmentPermissionMock,
   uploadBlobMock,
   createMediaMessageMock({

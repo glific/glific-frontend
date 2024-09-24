@@ -2,9 +2,8 @@ import { render, waitFor } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 
-import { HSM_LIST, TEMPLATE_MOCKS } from 'containers/Template/Template.test.helper';
+import { HSM_LIST } from 'mocks/Template';
 import { HSMList } from './HSMList';
-import { hsmTemplatesCountQuery } from 'mocks/Template';
 import userEvent from '@testing-library/user-event';
 import { SYNC_HSM_TEMPLATES } from 'graphql/mutations/Template';
 import { setNotification } from 'common/notification';
@@ -53,15 +52,7 @@ export const syncTemplateQueryFailedQuery = {
 };
 
 // Todo: multiple calls are made here. We need to refactor this code
-const mocks = [
-  ...TEMPLATE_MOCKS,
-  ...TEMPLATE_MOCKS,
-  hsmTemplatesCountQuery,
-  ...HSM_LIST,
-  ...HSM_LIST,
-  ...HSM_LIST,
-  ...HSM_LIST,
-];
+const mocks = [...HSM_LIST, ...HSM_LIST, ...HSM_LIST, ...HSM_LIST];
 
 const template = (mockQuery: any) => (
   <MockedProvider mocks={[...mocks, mockQuery]} addTypename={false}>

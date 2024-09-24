@@ -10,11 +10,13 @@ import { MockedProvider } from '@apollo/client/testing';
 import { BrowserRouter as Router } from 'react-router-dom';
 
 import { setUserSession } from 'services/AuthService';
-import { TEMPLATE_MOCKS, HSM_LIST } from 'containers/Template/Template.test.helper';
 import { Template } from './Template';
 import { getOrganizationBSP } from 'mocks/Organization';
 import * as common from 'common/notification';
 import {
+  HSM_LIST,
+  HSM_TEMPLATE_MOCKS,
+  SPEED_SENDS_MOCKS,
   bulkApplyMutation,
   importTemplateMutation,
   importTemplateMutationWithErrors,
@@ -32,6 +34,8 @@ const errorTemplateString = `"Template Id","Template Name","Body","Type","Qualit
 
 export const bulkApplyString = `Language,Title,Message,Sample Message,Element Name,Category,Attachment Type,Attachment URL,Has Buttons,Button Type,CTA Button 1 Type,CTA Button 1 Title,CTA Button 1 Value,CTA Button 2 Type,CTA Button 2 Title,CTA Button 2 Value,Quick Reply 1 Title,Quick Reply 2 Title,Quick Reply 3 Title
 English,Welcome glific,"Hi {{1}}, Welcome to the world","Hi [User], Welcome to the world",welcome_glific,TRANSACTIONAL,,,FALSE,,,,,,,,,,`;
+
+const TEMPLATE_MOCKS = [...HSM_TEMPLATE_MOCKS, ...SPEED_SENDS_MOCKS];
 
 const speedSendProps: any = {
   title: 'Speed sends',

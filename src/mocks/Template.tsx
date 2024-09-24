@@ -1,12 +1,19 @@
-import { CREATE_TEMPLATE, UPDATE_TEMPLATE } from 'graphql/mutations/Template';
+import {
+  BULK_APPLY_TEMPLATES,
+  CREATE_TEMPLATE,
+  IMPORT_TEMPLATES,
+  UPDATE_TEMPLATE,
+} from 'graphql/mutations/Template';
 import {
   FILTER_SESSION_TEMPLATES,
+  FILTER_TEMPLATES,
   GET_HSM_CATEGORIES,
   GET_SHORTCODES,
   GET_SPEED_SEND,
   GET_TEMPLATE,
   GET_TEMPLATES_COUNT,
 } from 'graphql/queries/Template';
+import { setVariables } from 'common/constants';
 import { getOrganizationLanguagesQueryByOrder } from './Organization';
 import { getFilterTagQuery } from './Tag';
 
@@ -320,7 +327,7 @@ export const createSpeedSend = createTemplateMock({
     '{"1":{"language":{"id":"1","label":"English","localized":true,"locale":"en"},"label":"Template","body":"Hi, How are you","type":"TEXT","tagId":null,"isActive":true,"languageId":"1"}}',
 });
 
-const filterSpeedSends = {
+export const filterSpeedSends = {
   request: {
     query: FILTER_SESSION_TEMPLATES,
     variables: {
@@ -363,14 +370,12 @@ const filterSpeedSends = {
   },
 };
 
-export const templateCountQuery = (isHsm: boolean, count: number = 3) => {
+export const templateCountQuery = (filter: any, count: number = 3) => {
   return {
     request: {
       query: GET_TEMPLATES_COUNT,
       variables: {
-        filter: {
-          isHsm: isHsm,
-        },
+        filter,
       },
     },
     result: {
@@ -494,6 +499,178 @@ export const updateSessiontemplate = {
   variableMatcher: (variables: any) => true,
 };
 
+export const templatesData = [
+  {
+    id: '87',
+    bspId: null,
+    label: 'Account Balance',
+    body: 'Hey there',
+    shortcode: 'test',
+    category: 'ACCOUNT_UPDATE',
+    isReserved: true,
+    status: 'APPROVED',
+    reason: 'test reason',
+    isHsm: true,
+    isActive: true,
+    updatedAt: '2020-12-01T18:00:32Z',
+    numberParameters: 0,
+    translations:
+      '{"2":{"status":"approved","languageId":{"label":"Hindi","id":"2"},"label":"now","isHsm":false,"body":"hey","MessageMedia":null}}',
+    type: 'TEXT',
+    quality: null,
+    language: {
+      id: '1',
+      label: 'Hindi',
+    },
+    MessageMedia: {
+      id: 1,
+      caption: 'Test',
+      sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
+    },
+  },
+  {
+    id: '94',
+    label: 'Good message',
+    bspId: null,
+    body: 'description',
+    shortcode: 'test',
+    isReserved: true,
+    isHsm: false,
+    isActive: true,
+    status: null,
+    reason: 'test reason',
+    updatedAt: '2020-12-01T18:00:32Z',
+    numberParameters: 0,
+    translations: '{}',
+    type: 'TEXT',
+    language: {
+      id: '1',
+      label: 'Hindi',
+    },
+    category: 'ACCOUNT_UPDATE',
+    quality: null,
+    MessageMedia: {
+      id: 1,
+      caption: 'Test',
+      sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
+    },
+  },
+  {
+    id: '94',
+    label: 'Message',
+    bspId: null,
+    body: 'some description',
+    shortcode: 'test',
+    isReserved: true,
+    isHsm: false,
+    isActive: true,
+    status: null,
+    reason: 'test reason',
+    updatedAt: '2020-12-01T18:00:32Z',
+    numberParameters: 0,
+    translations: '{}',
+    type: 'TEXT',
+    language: {
+      id: '1',
+      label: 'Hindi',
+    },
+    category: 'ACCOUNT_UPDATE',
+    quality: null,
+    MessageMedia: {
+      id: 1,
+      caption: 'Test',
+      sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
+    },
+  },
+];
+export const filterTemplatesQuery = (term: any, filter?: any, data: boolean = true) => {
+  return {
+    request: {
+      query: FILTER_TEMPLATES,
+      variables: {
+        ...setVariables({ term: term }, 50),
+        ...filter,
+      },
+    },
+    result: {
+      data: {
+        sessionTemplates: data ? templatesData : [],
+      },
+    },
+  };
+};
+
+export const filterTemplatesMock = (filter: any) => ({
+  request: {
+    query: FILTER_TEMPLATES,
+    variables: {
+      opts: {
+        limit: 50,
+        offset: 0,
+        order: 'ASC',
+        orderWith: 'label',
+      },
+      filter,
+    },
+  },
+  result: {
+    data: {
+      sessionTemplates: templatesData,
+    },
+  },
+});
+
+export const bulkApplyMutation = {
+  request: {
+    query: BULK_APPLY_TEMPLATES,
+    variables: {
+      data: 'Language,Title,Message,Sample Message,Element Name,Category,Attachment Type,Attachment URL,Has Buttons,Button Type,CTA Button 1 Type,CTA Button 1 Title,CTA Button 1 Value,CTA Button 2 Type,CTA Button 2 Title,CTA Button 2 Value,Quick Reply 1 Title,Quick Reply 2 Title,Quick Reply 3 Title\nEnglish,Welcome glific,"Hi {{1}}, Welcome to the world","Hi [User], Welcome to the world",welcome_glific,TRANSACTIONAL,,,FALSE,,,,,,,,,,',
+    },
+  },
+  result: {
+    data: {
+      bulkApplyTemplates: {
+        errors: null,
+        csv_rows: 'Title,Status\nWelcome Glfic,Template has been applied successfully',
+      },
+    },
+  },
+};
+
+export const importTemplateMutation = {
+  request: {
+    query: IMPORT_TEMPLATES,
+    variables: {
+      data: '"Template Id","Template Name","Body","Type","Quality Rating","Language","Status","Created On"\n"6344689","common_otp","Your OTP for {{1}} is {{2}}. This is valid for {{3}}.","TEXT","Unknown","English","Enabled","2022-03-10"',
+    },
+  },
+  result: {
+    data: {
+      importTemplates: {
+        errors: null,
+        status: 'success',
+      },
+    },
+  },
+};
+
+export const importTemplateMutationWithErrors = {
+  request: {
+    query: IMPORT_TEMPLATES,
+    variables: {
+      data: '"Template Id","Template Name","Body","Type","Quality Rating","Language","Status","Created On"\n"6344689","common_otp","Your OTP for {{1}} is {{2}}. This is valid for {}}.","TEXT","Unknown","English","Enabled","2022-03-10"',
+    },
+  },
+  result: {
+    data: {
+      importTemplates: {
+        errors: [{ key: 'import', message: 'Invalid format' }],
+        status: null,
+      },
+    },
+  },
+};
+
 export const HSM_TEMPLATE_MOCKS = [
   getShortCodeQuery,
   getCategoriesMock,
@@ -512,8 +689,8 @@ export const SPEED_SENDS_MOCKS = [
   createSpeedSend,
   filterSpeedSends,
   filterSpeedSends,
-  templateCountQuery(false, 1),
-  templateCountQuery(false, 1),
+  templateCountQuery({ isHsm: false }, 1),
+  templateCountQuery({ isHsm: false }, 1),
   getSpeedSendTemplate1,
   getSpeedSendTemplate1,
   getSpeedSendTemplate2,
@@ -521,4 +698,16 @@ export const SPEED_SENDS_MOCKS = [
   updateSessiontemplate,
   updateSessiontemplate,
   updateSessiontemplate,
+];
+
+export const HSM_LIST = [
+  ...HSM_TEMPLATE_MOCKS,
+  filterTemplatesMock({ isHsm: true, status: 'APPROVED' }),
+  templateCountQuery({ isHsm: true, status: 'APPROVED' }, 1),
+];
+
+export const SPEED_SEND_LIST = [
+  ...SPEED_SENDS_MOCKS,
+  filterTemplatesMock({ isHsm: false, status: 'APPROVED' }),
+  templateCountQuery({ isHsm: false, status: 'APPROVED' }, 1),
 ];
