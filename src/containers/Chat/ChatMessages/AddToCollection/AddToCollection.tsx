@@ -17,18 +17,24 @@ interface AddToCollectionProps {
   collectionId: string | undefined;
   setDialog: Function;
   groups?: boolean;
+  afterAdd?: Function;
 }
 
-export const AddToCollection = ({ collectionId, setDialog, groups }: AddToCollectionProps) => {
+export const AddToCollection = ({
+  collectionId,
+  setDialog,
+  groups,
+  afterAdd,
+}: AddToCollectionProps) => {
   const [contactSearchTerm, setContactSearchTerm] = useState('');
   const { t } = useTranslation();
 
   let searchquery = groups ? GET_WA_GROUPS : GET_CONTACTS_LIST;
   let updateMutation = groups ? UPDATE_COLLECTION_WA_GROUP : UPDATE_COLLECTION_CONTACTS;
 
-  const { data: entityData } = useQuery(searchquery, {
+  const { data: entityData, loading } = useQuery(searchquery, {
     variables: groups
-      ? setVariables({ excludeGroups: collectionId }, 50)
+      ? setVariables({ term: contactSearchTerm, excludeGroups: collectionId }, 50)
       : setVariables({ name: contactSearchTerm, excludeGroups: collectionId }, 50),
     fetchPolicy: 'cache-and-network',
   });
@@ -45,7 +51,9 @@ export const AddToCollection = ({ collectionId, setDialog, groups }: AddToCollec
           `${numberAdded} ${groups ? 'group' : 'contact'}${numberAdded === 1 ? '' : 's  were'} added`
         );
       }
-
+      if (afterAdd) {
+        afterAdd();
+      }
       setDialog(false);
     },
   });
@@ -99,6 +107,7 @@ export const AddToCollection = ({ collectionId, setDialog, groups }: AddToCollec
       selectedOptions={[]}
       fullWidth={true}
       showTags={false}
+      noOptionsText={loading ? 'Loading...' : 'No options available'}
       onChange={(value: any) => {
         if (typeof value === 'string') {
           setContactSearchTerm(value);

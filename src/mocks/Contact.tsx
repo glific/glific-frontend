@@ -638,11 +638,11 @@ export const getGroupContact = {
   },
 };
 
-export const getExcludedContactsQuery = (excludeGroups: any) => ({
+export const getExcludedContactsQuery = (filter?: any) => ({
   request: {
     query: GET_CONTACTS_LIST,
     variables: {
-      filter: { name: '', excludeGroups },
+      filter,
       opts: { limit: 50, offset: 0, order: 'ASC' },
     },
   },

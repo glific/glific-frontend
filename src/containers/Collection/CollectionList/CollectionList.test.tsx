@@ -58,7 +58,14 @@ const mocks = [
   updateCollectionWaGroupQuery({
     input: { addWaGroupIds: ['1'], groupId: '1', deleteWaGroupIds: [] },
   }),
-  getExcludedContactsQuery('1'),
+  getExcludedContactsQuery({
+    name: '',
+    excludeGroups: '1',
+  }),
+  getExcludedContactsQuery({
+    name: 'glific',
+    excludeGroups: '1',
+  }),
 ];
 
 const wrapper = (
@@ -239,8 +246,7 @@ describe('<CollectionList />', () => {
           filterCollectionQueryWAGroups,
           countCollectionQueryWAGroups,
           countCollectionQueryWAGroups,
-          getGroupsSearchQuery(setVariables({}, 50)),
-          getGroupsSearchQuery(setVariables({ label: '', excludeGroups: '1' }, 50)),
+          getGroupsSearchQuery(setVariables({ term: '', excludeGroups: '1' }, 50)),
           addGroupToCollectionList,
           filterCollectionQueryWAGroups,
           countCollectionQueryWAGroups,
