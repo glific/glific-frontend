@@ -1,6 +1,6 @@
 export interface HelpDataProps {
   heading: string;
-  link: string;
+  link?: string;
 }
 
 export const speedSendInfo: HelpDataProps = {

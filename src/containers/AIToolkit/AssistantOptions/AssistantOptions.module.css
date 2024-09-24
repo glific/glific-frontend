@@ -1,0 +1,40 @@
+.AssistantOptions {
+  margin: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  row-gap: 1rem;
+}
+
+.Label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #555;
+  display: flex;
+  align-items: center;
+  column-gap: 0.5rem;
+}
+
+.Temperature {
+  display: flex;
+  column-gap: 1rem;
+  align-items: center;
+}
+
+.Slider {
+  width: 80%;
+  display: flex;
+  align-items: center;
+  column-gap: 1rem;
+}
+
+.SliderDisplay {
+  font-size: 15px;
+  padding: 4px 8px;
+  border: 0.5px solid #a4a4a4;
+  border-radius: 4px;
+  width: 15%;
+}
+
+.SliderDisplay:focus {
+  outline: none;
+}

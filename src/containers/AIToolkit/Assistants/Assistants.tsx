@@ -14,6 +14,7 @@ export const Assistants = () => {
       inserted_at: '6:30 PM',
     },
   ];
+
   return (
     <div className={styles.AssistantContainer}>
       <Heading
@@ -24,7 +25,7 @@ export const Assistants = () => {
       />
       <div className={styles.MainContainer}>
         <div className={styles.LeftContainer}>
-          <div>
+          <div className={styles.Search}>
             <SearchBar
               className={styles.ChatSearchBar}
               handleChange={() => {}}
