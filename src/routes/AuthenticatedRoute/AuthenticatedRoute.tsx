@@ -74,6 +74,7 @@ const RoleList = lazy(() => import('containers/Role/RoleList/RoleList'));
 const Role = lazy(() => import('containers/Role/Role'));
 const KnowledgeBase = lazy(() => import('containers/KnowledgeBase/KnowledgeBase'));
 const Assistants = lazy(() => import('containers/AIToolkit/Assistants/Assistants'));
+const VectorStorage = lazy(() => import('containers/AIToolkit/Storage/Storage'));
 
 const routeStaff = (
   <Routes>
@@ -158,6 +159,7 @@ const routeAdmin = (
     <Route path="knowledge-base" element={<KnowledgeBase />} />
 
     <Route path="/ai/assistants" element={<Assistants />} />
+    <Route path="/ai/storage" element={<VectorStorage />} />
 
     <Route path="/*" element={<Chat />} />
   </Routes>
