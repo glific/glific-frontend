@@ -124,7 +124,7 @@ const getSimulatorVariables = (id: any) => ({
   },
 });
 
-export const Simulator = ({
+const Simulator = ({
   setShowSimulator = () => {},
   message,
   isPreviewMessage,
@@ -625,3 +625,5 @@ export const Simulator = ({
     <BackdropLoader text="Please wait while the simulator is loading" />
   );
 };
+
+export default Simulator;

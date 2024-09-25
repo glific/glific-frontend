@@ -14,6 +14,7 @@ import {
   getFreeFlow,
   resetFlowCount,
   getFlowTranslations,
+  getTemplateFlow,
 } from 'mocks/Flow';
 import { conversationQuery } from 'mocks/Chat';
 import {
@@ -38,6 +39,11 @@ vi.mock('react-router-dom', async () => {
 vi.mock('axios');
 const mockedAxios = axios as any;
 
+vi.mock('../simulator/Simulator', () => ({
+  __esModule: true, // Ensures that the mock is treated as an ES module
+  default: ({ message }: { message: string }) => <div data-testid="simulator">{message}</div>, // Mocking the component's behavior
+}));
+
 const mocks = [
   messageReceivedSubscription({ organizationId: null }),
   messageSendSubscription({ organizationId: null }),
@@ -58,6 +64,7 @@ const mocks = [
 const activeFlowMocks = [...mocks, getActiveFlow];
 const inActiveFlowMocks = [...mocks, getInactiveFlow];
 const noKeywordMocks = [...mocks, getFlowWithoutKeyword, resetFlowCount];
+const templateFlowMocks = [...mocks, getTemplateFlow, resetFlowCount];
 
 const wrapperFunction = (mocks: any) => (
   <MockedProvider mocks={mocks} addTypename={false}>
@@ -197,12 +204,12 @@ test('start with a keyword message if the simulator opens in floweditor screen',
   await waitFor(() => {
     expect(screen.findByText('help workflow'));
   });
-  fireEvent.click(screen.getByTestId('previewButton'));
-  await waitFor(() => {
-    expect(screen.getByTestId('simulator-container'));
-  });
 
-  // need some assertion
+  fireEvent.click(screen.getByTestId('previewButton'));
+
+  await waitFor(() => {
+    expect(screen.getByTestId('simulator')).toHaveTextContent('draft:help');
+  });
 });
 
 test('if the flow the inactive', async () => {
@@ -228,11 +235,10 @@ test('flow with no keywords', async () => {
     expect(screen.findByText('help workflow'));
   });
   fireEvent.click(screen.getByTestId('previewButton'));
-  await waitFor(() => {
-    expect(screen.findByTestId('beneficiaryName'));
-  });
 
-  // need some assertion
+  await waitFor(() => {
+    expect(screen.getByTestId('simulator')).toHaveTextContent('No keyword found');
+  });
 });
 
 test('reset flow counts', async () => {
@@ -291,5 +297,19 @@ test('it translates the flow', async () => {
 
   await waitFor(() => {
     expect(notificationSpy).toHaveBeenCalled();
+  });
+});
+
+test('template words should have template: prefix', async () => {
+  mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
+  render(wrapperFunction(templateFlowMocks));
+
+  await waitFor(() => {
+    expect(screen.findByText('help workflow'));
+  });
+  fireEvent.click(screen.getByTestId('previewButton'));
+
+  await waitFor(() => {
+    expect(screen.getByTestId('simulator')).toHaveTextContent('template:help workflow');
   });
 });

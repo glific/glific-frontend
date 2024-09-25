@@ -9,7 +9,7 @@ import TranslateIcon from 'assets/images/icons/LanguageTranslation.svg?react';
 import PublishIcon from 'assets/images/icons/PublishIcon.svg?react';
 import { Button } from 'components/UI/Form/Button/Button';
 import { APP_NAME } from 'config/index';
-import { Simulator } from 'components/simulator/Simulator';
+import Simulator from 'components/simulator/Simulator';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { setErrorMessage, setNotification } from 'common/notification';
 import { PUBLISH_FLOW, RESET_FLOW_COUNT } from 'graphql/mutations/Flow';
@@ -450,7 +450,6 @@ export const FlowEditor = () => {
           hasResetButton
           flowSimulator
           message={getFlowKeyword()}
-          flowId={flowId}
         />
       )}
       {modal}

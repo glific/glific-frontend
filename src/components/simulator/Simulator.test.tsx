@@ -12,7 +12,7 @@ import {
   simulatorReleaseSubscription,
   simulatorSearchQuery,
 } from 'mocks/Simulator';
-import { Simulator } from './Simulator';
+import Simulator from './Simulator';
 import { setUserSession } from 'services/AuthService';
 
 vi.mock('axios');
