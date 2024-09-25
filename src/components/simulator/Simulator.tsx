@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useApolloClient, useLazyQuery, useMutation, useSubscription } from '@apollo/client';
+import { useApolloClient, useLazyQuery, useSubscription } from '@apollo/client';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { Button, ClickAwayListener } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -56,7 +56,6 @@ import styles from './Simulator.module.css';
 import { LocationRequestTemplate } from 'containers/Chat/ChatMessages/ChatMessage/LocationRequestTemplate/LocationRequestTemplate';
 import { BackdropLoader } from 'containers/Flow/FlowTranslation';
 import { SIMULATOR_RELEASE_SUBSCRIPTION } from 'graphql/subscriptions/PeriodicInfo';
-import { ADD_FLOW_TO_CONTACT } from 'graphql/mutations/Flow';
 
 export interface SimulatorProps {
   setShowSimulator?: any;
@@ -68,7 +67,6 @@ export interface SimulatorProps {
   interactiveMessage?: any;
   showHeader?: boolean;
   hasResetButton?: boolean;
-  flowId?: string;
 }
 
 interface Sender {
@@ -134,7 +132,6 @@ export const Simulator = ({
   interactiveMessage,
   showHeader = true,
   hasResetButton = false,
-  flowId = '',
 }: SimulatorProps) => {
   const [inputMessage, setInputMessage] = useState('');
   const [simulatedMessages, setSimulatedMessage] = useState<any>();
@@ -158,8 +155,6 @@ export const Simulator = ({
   // chat messages will be shown on simulator
   const isSimulatedMessage = true;
 
-  const [addFlow] = useMutation(ADD_FLOW_TO_CONTACT);
-
   const sendMessage = (senderDetails: Sender, interactivePayload?: any, templateValue?: any) => {
     const sendMessageText = inputMessage === '' && message ? message : inputMessage;
 
@@ -181,15 +176,6 @@ export const Simulator = ({
       payload.text = templateValue;
     } else {
       payload.text = sendMessageText;
-    }
-    if (sendMessageText.startsWith('temp:')) {
-      addFlow({
-        variables: {
-          flowId: flowId,
-          contactId: senderDetails.id,
-        },
-      });
-      return;
     }
 
     axios

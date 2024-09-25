@@ -332,9 +332,9 @@ export const FlowEditor = () => {
   const getFlowKeyword = () => {
     const flows = flowName ? flowName.flows : null;
     if (flows && flows.length > 0) {
-      const { isActive, keywords, isTemplate } = flows[0];
+      const { isActive, keywords, isTemplate, name } = flows[0];
       if (isTemplate) {
-        return 'temp:';
+        return `template:${name}`;
       } else if (isActive && keywords.length > 0) {
         return `draft:${keywords[0]}`;
       } else if (keywords.length === 0) {
