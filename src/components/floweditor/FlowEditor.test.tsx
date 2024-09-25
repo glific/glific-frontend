@@ -224,7 +224,9 @@ test('if the flow the inactive', async () => {
     expect(screen.findByTestId('beneficiaryName'));
   });
 
-  // need some assertion
+  await waitFor(() => {
+    expect(screen.getByTestId('simulator')).toHaveTextContent('Sorry, the flow is not active');
+  });
 });
 
 test('flow with no keywords', async () => {
