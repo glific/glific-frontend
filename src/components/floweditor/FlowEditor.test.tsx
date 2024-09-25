@@ -40,7 +40,6 @@ vi.mock('axios');
 const mockedAxios = axios as any;
 
 vi.mock('../simulator/Simulator', () => ({
-  __esModule: true, // Ensures that the mock is treated as an ES module
   default: ({ message }: { message: string }) => <div data-testid="simulator">{message}</div>, // Mocking the component's behavior
 }));
 
