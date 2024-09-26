@@ -1455,14 +1455,6 @@
   dependencies:
     "@babel/types" "^7.20.7"
 
-"@types/draft-js@^0.11.18":
-  version "0.11.18"
-  resolved "https://registry.yarnpkg.com/@types/draft-js/-/draft-js-0.11.18.tgz#f2cad2178987fdd444827a2f7809a653f82a70ad"
-  integrity sha512-lP6yJ+EKv5tcG1dflWgDKeezdwBa8wJ7KkiNrrHqXuXhl/VGes1SKjEfKHDZqOz19KQbrAhFvNhDPWwnQXYZGQ==
-  dependencies:
-    "@types/react" "*"
-    immutable "~3.7.4"
-
 "@types/emoji-mart@^3.0.14":
   version "3.0.14"
   resolved "https://registry.yarnpkg.com/@types/emoji-mart/-/emoji-mart-3.0.14.tgz#219b8badbf1899cdb9790b5c2fafebea899ff5b3"
@@ -3739,11 +3731,6 @@ image-size@^1.1.1:
   integrity sha512-541xKlUw6jr/6gGuk92F+mYM5zaFAc5ahphvkqvNe2bQ6gVBkd6bfrmVJ2t4KDAfikAYZyIqTnktX3i6/aQDrQ==
   dependencies:
     queue "6.0.2"
-
-immutable@~3.7.4:
-  version "3.7.6"
-  resolved "https://registry.yarnpkg.com/immutable/-/immutable-3.7.6.tgz#13b4d3cb12befa15482a26fe1b2ebae640071e4b"
-  integrity sha512-AizQPcaofEtO11RZhPPHBOJRdo/20MKQF9mBLnVkBoyHi1/zXK8fzVdnEpSV9gxqtnh6Qomfp3F0xT5qP/vThw==
 
 import-fresh@^3.2.1, import-fresh@^3.3.0:
   version "3.3.0"
