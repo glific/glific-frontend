@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
-import { GET_GROUP_COUNT, GET_WA_GROUPS } from 'graphql/queries/WaGroups';
+import { GET_GROUP_COUNT } from 'graphql/queries/WaGroups';
 import {
   UPDATE_COLLECTION_WA_GROUP,
   UPDATE_WA_GROUP_COLLECTION,
@@ -93,7 +93,7 @@ export const GroupCollectionList = () => {
   if (addGroupsDialogShow) {
     dialog = (
       <AddToCollection
-        groups={true}
+        groups
         collectionId={collectionId}
         setDialog={setAddGroupsDialogShow}
         afterAdd={() => {
