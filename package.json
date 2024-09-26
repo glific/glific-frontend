@@ -127,7 +127,6 @@
     "prettier": "^3.3.3",
     "react-test-renderer": "^18.3.1",
     "typescript": "^5.5.4",
-    "vite-plugin-eslint": "^1.8.1",
     "vitest": "^2.0.5",
     "yarn-upgrade-all": "^0.7.4"
   }
