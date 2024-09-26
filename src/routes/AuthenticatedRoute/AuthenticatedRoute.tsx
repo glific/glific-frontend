@@ -73,8 +73,8 @@ const InteractiveMessage = lazy(() => import('containers/InteractiveMessage/Inte
 const RoleList = lazy(() => import('containers/Role/RoleList/RoleList'));
 const Role = lazy(() => import('containers/Role/Role'));
 const KnowledgeBase = lazy(() => import('containers/KnowledgeBase/KnowledgeBase'));
-const Assistants = lazy(() => import('containers/AIToolkit/Assistants/Assistants'));
-const VectorStorage = lazy(() => import('containers/AIToolkit/Storage/Storage'));
+const Assistants = lazy(() => import('containers/AIToolkit/Assistant/Assistants/Assistants'));
+const VectorStorage = lazy(() => import('containers/AIToolkit/Storage/Storage/Storage'));
 
 const routeStaff = (
   <Routes>

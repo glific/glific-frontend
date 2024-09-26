@@ -2,7 +2,8 @@ import { assistantsInfo } from 'common/HelpData';
 import { Heading } from 'components/UI/Heading/Heading';
 import styles from './Assistants.module.css';
 import SearchBar from 'components/UI/SearchBar/SearchBar';
-import { CreateAssistant } from '../CreateAssistant.tsx/CreateAssistant';
+import { CreateAssistant } from '../CreateAssistant/CreateAssistant';
+import { List } from '../../ListItems/List';
 
 export const Assistants = () => {
   const assistants = [
@@ -34,17 +35,7 @@ export const Assistants = () => {
               iconFront
             />
           </div>
-          <div className={styles.AssistantList}>
-            {[...assistants, ...assistants, ...assistants].map((assistant) => (
-              <div className={styles.Assistant}>
-                <div className={styles.AssistantHeader}>
-                  <span className={styles.AssistantTitle}>{assistant.title}</span>
-                  <span className={styles.AssistantDate}>{assistant.inserted_at}</span>
-                </div>
-                <span className={styles.AssistantId}>{assistant.id}</span>
-              </div>
-            ))}
-          </div>
+          <List listItems={[...assistants, ...assistants, ...assistants]} />
         </div>
         <div className={styles.RightContainer}>
           <CreateAssistant />

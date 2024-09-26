@@ -8,14 +8,11 @@ import {
 import { GET_COLLECTION } from 'graphql/queries/Collection';
 import { AssistantOptions } from '../AssistantOptions/AssistantOptions';
 import { useState } from 'react';
-import { FormLayout } from '../FormLayout/FormLayout';
+import { Field, FormikProvider, useFormik } from 'formik';
+import { Typography } from '@mui/material';
 
-const queries = {
-  getItemQuery: GET_COLLECTION,
-  createItemQuery: CREATE_COLLECTION,
-  updateItemQuery: UPDATE_COLLECTION,
-  deleteItemQuery: DELETE_COLLECTION,
-};
+import styles from './CreateAssistant.module.css';
+import { Button } from 'components/UI/Form/Button/Button';
 
 export const CreateAssistant = () => {
   const [name, setName] = useState('');
@@ -72,6 +69,14 @@ export const CreateAssistant = () => {
     fileSearch,
     options,
   };
+  const FormSchema = {};
+
+  const formik = useFormik({
+    initialValues: states,
+    validationSchema: FormSchema,
+    enableReinitialize: true,
+    onSubmit: (values, { setErrors }) => {},
+  });
 
   const setStates = ({ name: nameValue, prompt: promptValue, model: modelValue }: any) => {
     setName(nameValue);
@@ -83,9 +88,30 @@ export const CreateAssistant = () => {
     console.log(payload);
   };
 
-  const FormSchema = {};
-
   return (
-    <FormLayout initialValues={states} validationSchema={FormSchema} formFieldItems={formFields} />
+    <FormikProvider value={formik}>
+      <div className={styles.FormContainer}>
+        <form className={styles.Form} onSubmit={formik.handleSubmit} data-testid="formLayout">
+          <div className={styles.FormFields}>
+            {formFields.map((field: any) => (
+              <div className={styles.FormSection} key={field.name}>
+                <Typography className={styles.Label} variant="h5">
+                  {field.label}
+                </Typography>
+
+                <Field key={field.name} {...field} />
+              </div>
+            ))}
+          </div>
+          <div className={styles.Buttons}>
+            <Button variant="contained">Save</Button>
+
+            <Button variant="outlined" color="error">
+              Remove
+            </Button>
+          </div>
+        </form>
+      </div>
+    </FormikProvider>
   );
 };

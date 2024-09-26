@@ -1,0 +1,31 @@
+.Storage {
+  background-color: #f8faf5;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+}
+
+.Heading {
+  font-size: 1rem;
+  color: #555;
+}
+
+.Details {
+  display: flex;
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+
+.Details span {
+  width: 50%;
+}
+
+.Title {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.Value {
+  font-size: 0.8rem;
+}
