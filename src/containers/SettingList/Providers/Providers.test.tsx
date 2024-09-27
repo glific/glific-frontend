@@ -1,5 +1,4 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import UserEvent from '@testing-library/user-event';
 import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 
@@ -47,10 +46,10 @@ describe('<Providers />', () => {
     expect(getByText('Loading...')).toBeInTheDocument();
     await waitFor(() => {
       const checkbox = screen.getByRole('checkbox');
-      UserEvent.click(checkbox);
+      fireEvent.click(checkbox);
       // click on SAVE
       const saveButton = screen.getByText('Save');
-      UserEvent.click(saveButton);
+      fireEvent.click(saveButton);
     });
   });
 });
@@ -63,7 +62,7 @@ describe('<Providers />', () => {
     await waitFor(() => {
       // click on Cancel
       const cancelButton = screen.getByText('Cancel');
-      UserEvent.click(cancelButton);
+      fireEvent.click(cancelButton);
     });
   });
 });

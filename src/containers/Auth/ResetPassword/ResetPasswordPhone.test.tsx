@@ -1,5 +1,4 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import UserEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import axios from 'axios';
 import { vi } from 'vitest';
@@ -56,7 +55,7 @@ describe('<ResetPasswordPhone />', () => {
 
     // click on GENERATE button
     const continueButton = screen.getByText('Generate OTP to confirm');
-    UserEvent.click(continueButton);
+    fireEvent.click(continueButton);
 
     await waitFor(() => {
       expect(screen.getByTestId('AuthContainer')).toHaveTextContent(
@@ -87,7 +86,7 @@ describe('<ResetPasswordPhone />', () => {
       expect(screen.getByText('Generate OTP to confirm')).toBeInTheDocument();
     });
     const continueButton = screen.getByText('Generate OTP to confirm');
-    await UserEvent.click(continueButton);
+    await fireEvent.click(continueButton);
 
     await waitFor(() => {
       expect(screen.getByText('Confirm OTP')).toBeInTheDocument();

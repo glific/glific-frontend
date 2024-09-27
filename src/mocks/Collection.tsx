@@ -10,7 +10,12 @@ import {
   GET_COLLECTION_USERS,
   GET_ORGANIZATION_COLLECTIONS,
 } from 'graphql/queries/Collection';
-import { CREATE_COLLECTION, UPDATE_COLLECTION_CONTACTS } from 'graphql/mutations/Collection';
+import {
+  CREATE_COLLECTION,
+  UPDATE_COLLECTION,
+  UPDATE_COLLECTION_CONTACTS,
+  UPDATE_COLLECTION_USERS,
+} from 'graphql/mutations/Collection';
 import { CONTACTS_COLLECTION, WA_GROUPS_COLLECTION } from 'common/constants';
 
 export const getCollectionQuery = {
@@ -479,3 +484,47 @@ export const getCollectionsList = (label?: any) => ({
     },
   },
 });
+
+export const updateCollectionQuery = {
+  request: {
+    query: UPDATE_COLLECTION,
+    variables: {
+      id: '1',
+      input: {
+        label: 'Staff group',
+        description: 'Only for staff members',
+        addRoleIds: [],
+        deleteRoleIds: [],
+        groupType: 'WABA',
+      },
+    },
+  },
+  result: {
+    data: {
+      updateGroup: {
+        group: {
+          id: '1',
+          label: 'Staff group',
+          description: 'Only for staff members',
+        },
+      },
+    },
+  },
+};
+
+export const updateCollectionUsersQuery = {
+  request: {
+    query: UPDATE_COLLECTION_USERS,
+    variables: { input: { addUserIds: [], groupId: '1', deleteUserIds: ['1', '2'] } },
+  },
+  result: {
+    data: {
+      updateGroupUsers: {
+        groupUsers: {
+          id: '1',
+          value: '',
+        },
+      },
+    },
+  },
+};

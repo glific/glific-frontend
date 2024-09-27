@@ -48,7 +48,7 @@ describe('<MyAccount />', () => {
     await waitFor(() => {
       // click on generate OTP
       const generateOTPButton = screen.getByText('Generate OTP');
-      UserEvent.click(generateOTPButton);
+      fireEvent.click(generateOTPButton);
     });
 
     // set the mock
@@ -60,14 +60,14 @@ describe('<MyAccount />', () => {
     await waitFor(() => {
       // click on resend button
       const resendButton = screen.getByTestId('resendOtp');
-      UserEvent.click(resendButton);
+      fireEvent.click(resendButton);
     });
 
     // trigger validation errors
     await waitFor(() => {
       // click on save button
       const saveButton = screen.getByText('Save');
-      UserEvent.click(saveButton);
+      fireEvent.click(saveButton);
     });
 
     // check for validation errors
@@ -99,7 +99,7 @@ describe('<MyAccount />', () => {
     await waitFor(() => {
       // click on generate OTP
       const generateOTPButton = screen.getByText('Generate OTP');
-      UserEvent.click(generateOTPButton);
+      fireEvent.click(generateOTPButton);
     });
 
     // close the alert
@@ -107,7 +107,7 @@ describe('<MyAccount />', () => {
       expect(screen.getByTestId('crossIcon')).toBeInTheDocument();
     });
     const closeAlert = screen.getByTestId('crossIcon');
-    await UserEvent.click(closeAlert);
+    await fireEvent.click(closeAlert);
   });
 
   test('generate OTP success flow with cancel', async () => {
@@ -120,7 +120,7 @@ describe('<MyAccount />', () => {
     await waitFor(() => {
       // click on generate OTP
       const generateOTPButton = screen.getByText('Generate OTP');
-      UserEvent.click(generateOTPButton);
+      fireEvent.click(generateOTPButton);
     });
 
     await waitFor(() => {
@@ -128,7 +128,7 @@ describe('<MyAccount />', () => {
       expect(screen.getByText('Cancel')).toBeInTheDocument();
     });
     const cancelButton = screen.getByText('Cancel');
-    UserEvent.click(cancelButton);
+    fireEvent.click(cancelButton);
   });
 
   test('generate OTP error with incorrect OTP', async () => {
@@ -142,7 +142,7 @@ describe('<MyAccount />', () => {
     await waitFor(() => {
       // click on generate OTP
       const generateOTPButton = screen.getByText('Generate OTP');
-      UserEvent.click(generateOTPButton);
+      fireEvent.click(generateOTPButton);
     });
 
     // enter otp
@@ -160,7 +160,7 @@ describe('<MyAccount />', () => {
       expect(screen.getByText('Save')).toBeInTheDocument();
     });
     const saveButton = screen.getByText('Save');
-    await UserEvent.click(saveButton);
+    await fireEvent.click(saveButton);
 
     // assert for incorrect OTP
     // await waitFor(() => {
@@ -179,7 +179,7 @@ describe('<MyAccount />', () => {
     await waitFor(() => {
       // click on generate OTP
       const generateOTPButton = screen.getByText('Generate OTP');
-      UserEvent.click(generateOTPButton);
+      fireEvent.click(generateOTPButton);
     });
 
     // enter otp
@@ -197,6 +197,6 @@ describe('<MyAccount />', () => {
       expect(screen.getByText('Save')).toBeInTheDocument();
     });
     const saveButton = screen.getByText('Save');
-    await UserEvent.click(saveButton);
+    await fireEvent.click(saveButton);
   });
 });

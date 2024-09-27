@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { vi } from 'vitest';
@@ -67,7 +67,7 @@ describe('<ConfirmOTP />', () => {
 
       // click on continue
       const continueButton = screen.getByText('Continue');
-      UserEvent.click(continueButton);
+      fireEvent.click(continueButton);
     });
 
     await waitFor(() => {});
@@ -86,7 +86,7 @@ describe('<ConfirmOTP />', () => {
 
       // click on continue
       const continueButton = screen.getByText('Continue');
-      UserEvent.click(continueButton);
+      fireEvent.click(continueButton);
     });
 
     await waitFor(() => {});
@@ -102,7 +102,7 @@ describe('<ConfirmOTP />', () => {
 
     await waitFor(() => {
       const resendButton = screen.getByTestId('resendOtp');
-      UserEvent.click(resendButton);
+      fireEvent.click(resendButton);
     });
     // click on resend button
 
@@ -119,7 +119,7 @@ describe('<ConfirmOTP />', () => {
     await waitFor(() => {
       // click on resend button
       const resendButton = screen.getByTestId('resendOtp');
-      UserEvent.click(resendButton);
+      fireEvent.click(resendButton);
     });
 
     await waitFor(() => {});
