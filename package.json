@@ -128,7 +128,7 @@
     "react-test-renderer": "^18.3.1",
     "typescript": "^5.6.2",
     "vite-plugin-eslint": "^1.8.1",
-    "vitest": "^2.1.1",
+    "vitest": "^2.0.5",
     "yarn-upgrade-all": "^0.7.4"
   }
 }
