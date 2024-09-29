@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import * as Yup from 'yup';
 import TemplateIcon from 'assets/images/icons/Template/UnselectedDark.svg?react';
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { CREATE_MEDIA_MESSAGE } from 'graphql/mutations/Chat';
 import styles from './HSM.module.css';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
@@ -138,7 +138,6 @@ export const HSM = () => {
   const [body, setBody] = useState<any>('');
   const [language, setLanguageId] = useState<any>(null);
   const [type, setType] = useState<any>(null);
-  const [translations, setTranslations] = useState<any>();
   const [attachmentURL, setAttachmentURL] = useState<any>('');
   const [languageOptions, setLanguageOptions] = useState<any>([]);
   const [isActive, setIsActive] = useState<boolean>(true);
@@ -150,7 +149,6 @@ export const HSM = () => {
     Array<CallToActionTemplate | QuickReplyTemplate>
   >([]);
   const [isAddButtonChecked, setIsAddButtonChecked] = useState(false);
-  const [nextLanguage, setNextLanguage] = useState<any>('');
   const [variables, setVariables] = useState<any>([]);
   const [editorState, setEditorState] = useState<any>('');
 
@@ -184,9 +182,6 @@ export const HSM = () => {
     variables: { opts: { order: 'ASC' } },
   });
 
-  const [getSessionTemplate, { data: template, loading: templateLoading }] =
-    useLazyQuery<any>(GET_TEMPLATE);
-
   let isEditing = false;
   const isCopyState = location.state === 'copy';
   let mode;
@@ -204,6 +199,10 @@ export const HSM = () => {
   }
 
   useEffect(() => {
+    displayWarning();
+  }, [type]);
+
+  useEffect(() => {
     if (languages) {
       const lang = languages.currentUser.user.organization.activeLanguages.slice();
       // sort languages by thaeir name
@@ -213,12 +212,6 @@ export const HSM = () => {
       if (!isEditing) setLanguageId(lang[0]);
     }
   }, [languages]);
-
-  useEffect(() => {
-    if (params.id) {
-      getSessionTemplate({ variables: { id: params.id } });
-    }
-  }, []);
 
   useEffect(() => {
     setVariables(getVariables(body, variables));
@@ -305,7 +298,6 @@ export const HSM = () => {
     body: bodyValue,
     example: exampleValue,
     type: typeValue,
-    translations: translationsValue,
     MessageMedia: MessageMediaValue,
     shortcode: shortcodeValue,
     category: categoryValue,
@@ -378,21 +370,6 @@ export const HSM = () => {
     } else {
       setType(null);
     }
-    if (translationsValue) {
-      const translationsCopy = JSON.parse(translationsValue);
-      const currentLanguage = language?.id || languageIdValue.id;
-      if (
-        Object.keys(translationsCopy).length > 0 &&
-        translationsCopy[currentLanguage] &&
-        !location.state
-      ) {
-        const content = translationsCopy[currentLanguage];
-        setLabel(content.label);
-        setBody(content.body || '');
-        setEditorState(content.body || '');
-      }
-      setTranslations(translationsValue);
-    }
     if (MessageMediaValue) {
       setAttachmentURL(MessageMediaValue.sourceUrl);
     } else {
@@ -443,7 +420,6 @@ export const HSM = () => {
 
   const setPayload = (payload: any) => {
     let payloadCopy = payload;
-    let translationsCopy: any = {};
     payloadCopy.isHsm = true;
 
     // Create template
@@ -474,7 +450,6 @@ export const HSM = () => {
     if (payloadCopy.type === 'TEXT') {
       delete payloadCopy.attachmentURL;
     }
-    payloadCopy.translations = JSON.stringify(translationsCopy);
 
     if (tagId) {
       payloadCopy.tagId = payload.tagId.id;
@@ -493,11 +468,6 @@ export const HSM = () => {
 
   const getLanguageId = (value: any) => {
     let result = value;
-
-    // create translations only while updating
-    if (result && isEditing) {
-      // updateTranslation(result);
-    }
     if (result) setLanguageId(result);
   };
 
@@ -612,6 +582,29 @@ export const HSM = () => {
     typeValue = type?.id || 'TEXT';
 
     setSampleMessages({ ...sampleMessages, body: text, media: mediaBody, type: typeValue });
+  };
+
+  const displayWarning = () => {
+    if (type && type.id === 'STICKER') {
+      setWarning(
+        <div className={styles.Warning}>
+          <ol>
+            <li>{t('Animated stickers are not supported.')}</li>
+            <li>{t('Captions along with stickers are not supported.')}</li>
+          </ol>
+        </div>
+      );
+    } else if (type && type.id === 'AUDIO') {
+      setWarning(
+        <div className={styles.Warning}>
+          <ol>
+            <li>{t('Captions along with audio are not supported.')}</li>
+          </ol>
+        </div>
+      );
+    } else {
+      setWarning(null);
+    }
   };
 
   const FormSchema = Yup.object().shape(
@@ -869,7 +862,7 @@ export const HSM = () => {
     },
   ];
 
-  if (languageLoading || templateLoading || tagLoading) {
+  if (languageLoading || tagLoading) {
     return <Loading />;
   }
 
@@ -887,7 +880,6 @@ export const HSM = () => {
         redirectionLink={redirectionLink}
         listItem="sessionTemplate"
         icon={templateIcon}
-        getLanguageId={getLanguageId}
         languageSupport={false}
         isAttachment
         getMediaId={getMediaId}

@@ -81,7 +81,7 @@ export const SpeedSends = () => {
     isEditing = true;
   }
 
-  const hasTranslations = params?.id && defaultLanguage?.id !== language?.id;
+  const hasTranslations = params.id && defaultLanguage?.id !== language?.id;
 
   const [createMediaMessage] = useMutation(CREATE_MEDIA_MESSAGE);
 
