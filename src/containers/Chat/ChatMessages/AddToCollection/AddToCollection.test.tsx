@@ -16,7 +16,10 @@ const mocks = [
   getContactsSearchQuery,
   getContactsQuery,
   updateCollectionContactsQuery,
-  getExcludedContactsQuery('1'),
+  getExcludedContactsQuery({
+    name: '',
+    excludeGroups: '1',
+  }),
 ];
 
 setUserSession(JSON.stringify({ roles: ['Admin'] }));
@@ -98,12 +101,11 @@ test('should add contact to collection', async () => {
 
 const groupsmocks = [
   getCollectionContactsQuery,
-  getGroupsSearchQuery(setVariables({}, 50)),
   getGroupsQuery,
   updateCollectionWaGroupQuery({
     input: { addWaGroupIds: ['5'], groupId: '1', deleteWaGroupIds: [] },
   }),
-  getGroupsSearchQuery(setVariables({ excludeGroups: '1' }, 50)),
+  getGroupsSearchQuery(setVariables({ excludeGroups: '1', term: '' }, 50)),
 ];
 
 const addGroups = (

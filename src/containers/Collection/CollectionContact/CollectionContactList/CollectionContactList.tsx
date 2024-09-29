@@ -1,37 +1,36 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
-import {
-  CONTACT_SEARCH_QUERY,
-  GET_CONTACTS_LIST,
-  GET_CONTACT_COUNT,
-} from 'graphql/queries/Contact';
+import { CONTACT_SEARCH_QUERY, GET_CONTACT_COUNT } from 'graphql/queries/Contact';
 import { UPDATE_COLLECTION_CONTACTS } from 'graphql/mutations/Collection';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import DeleteIcon from 'assets/images/icons/Delete/Red.svg?react';
 import CollectionIcon from 'assets/images/icons/Collection/Dark.svg?react';
 import { List } from 'containers/List/List';
 import styles from './CollectionContactList.module.css';
-import { useLazyQuery, useMutation } from '@apollo/client';
-import { setVariables } from 'common/constants';
-import { SearchDialogBox } from 'components/UI/SearchDialogBox/SearchDialogBox';
+import { useMutation } from '@apollo/client';
 import { Button } from 'components/UI/Form/Button/Button';
-import { getContactStatus } from 'common/utils';
+import { getContactStatus, getDisplayName } from 'common/utils';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { setNotification } from 'common/notification';
+import AddToCollection from 'containers/Chat/ChatMessages/AddToCollection/AddToCollection';
 
 export interface CollectionContactListProps {
   title: string;
   descriptionBox?: any;
 }
 
-const getName = (label: string, phone: string) => (
-  <div>
-    <div className={styles.NameText}>{label}</div>
-    <div className={styles.Phone}>{phone}</div>
-  </div>
-);
+const getName = (contact: any, phone: string) => {
+  const displayName = getDisplayName(contact);
+
+  return (
+    <div>
+      <div className={styles.NameText}>{displayName}</div>
+      <div className={styles.Phone}>{phone}</div>
+    </div>
+  );
+};
 
 const getCollections = (collections: Array<any>) => (
   <div className={styles.CollectionsText}>
@@ -40,9 +39,9 @@ const getCollections = (collections: Array<any>) => (
 );
 
 const getColumns = (contact: any) => {
-  const { name, maskedPhone, groups } = contact;
+  const { maskedPhone, groups } = contact;
   return {
-    label: getName(name, maskedPhone),
+    label: getName(contact, maskedPhone),
     status: getContactStatus(contact),
     groups: getCollections(groups),
   };
@@ -68,10 +67,9 @@ export const CollectionContactList = ({
 }: CollectionContactListProps) => {
   const [addContactsDialogShow, setAddContactsDialogShow] = useState(false);
   const [removeContactsDialogShow, setRemoveContactsDialogShow] = useState(false);
-  const [contactSearchTerm, setContactSearchTerm] = useState('');
   const [selectedContacts, setSelectedContact] = useState<any>([]);
   const [contactsToRemove, setContactsToRemove] = useState<any>([]);
-  const [contactOptions, setContactOptions] = useState<any>([]);
+  const [updateCollection, setUpdateCollection] = useState(false);
 
   const { t } = useTranslation();
   const params = useParams();
@@ -79,31 +77,7 @@ export const CollectionContactList = ({
   const collectionId = params.id;
   let dialog;
 
-  const [getContacts, { data: contactsData }] = useLazyQuery(GET_CONTACTS_LIST, {
-    fetchPolicy: 'cache-and-network',
-  });
-
   const [updateCollectionContacts] = useMutation(UPDATE_COLLECTION_CONTACTS);
-
-  const handleCollectionAdd = (selectedContacts: any) => {
-    if (selectedContacts.length === 0) {
-      setAddContactsDialogShow(false);
-    } else {
-      updateCollectionContacts({
-        variables: {
-          input: {
-            addContactIds: selectedContacts,
-            groupId: collectionId,
-            deleteContactIds: [],
-          },
-        },
-        onCompleted: () => {
-          setNotification(t('Contact has been added successfully to the collection.'), 'success');
-        },
-      });
-    }
-    setAddContactsDialogShow(false);
-  };
 
   const handleCollectionRemove = () => {
     const idsToRemove = selectedContacts.map((collection: any) => collection.id);
@@ -117,6 +91,7 @@ export const CollectionContactList = ({
       },
       onCompleted: () => {
         setNotification(t('Contact has been removed successfully from the collection.'), 'success');
+        setUpdateCollection(!updateCollection);
       },
     });
     setRemoveContactsDialogShow(false);
@@ -128,36 +103,14 @@ export const CollectionContactList = ({
     setSelectedContact(selectedContacts);
   };
 
-  useEffect(() => {
-    if (contactsData) {
-      setContactOptions(contactsData.contacts);
-    }
-  }, [contactsData]);
-
   if (addContactsDialogShow) {
     dialog = (
-      <SearchDialogBox
-        title={t('Add contacts to collection')}
-        handleOk={handleCollectionAdd}
-        handleCancel={() => setAddContactsDialogShow(false)}
-        options={contactOptions}
-        optionLabel="name"
-        additionalOptionLabel="phone"
-        asyncSearch
-        colorOk="primary"
-        buttonOk="Add"
-        disableClearable
-        searchLabel="Search contacts"
-        textFieldPlaceholder="Type here"
-        onChange={(value: any) => {
-          if (typeof value === 'string') {
-            setContactSearchTerm(value);
-          }
+      <AddToCollection
+        collectionId={collectionId}
+        setDialog={setAddContactsDialogShow}
+        afterAdd={() => {
+          setUpdateCollection(!updateCollection);
         }}
-        selectedOptions={[]}
-        fullWidth={true}
-        showTags={false}
-        placeholder="Select contacts"
       />
     );
   }
@@ -189,9 +142,6 @@ export const CollectionContactList = ({
       color="primary"
       data-testid="addBtn"
       onClick={() => {
-        getContacts({
-          variables: setVariables({ name: contactSearchTerm, excludeGroups: collectionId }, 50),
-        });
         setAddContactsDialogShow(true);
       }}
     >
@@ -241,6 +191,7 @@ export const CollectionContactList = ({
         }}
         {...queries}
         {...columnAttributes}
+        refreshList={updateCollection}
       />
     </>
   );

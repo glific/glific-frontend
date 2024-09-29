@@ -71,7 +71,10 @@ const mocks = [
       orderWith: 'name',
     },
   }),
-  getExcludedContactsQuery('1'),
+  getExcludedContactsQuery({
+    name: '',
+    excludeGroups: '1',
+  }),
 ];
 const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>

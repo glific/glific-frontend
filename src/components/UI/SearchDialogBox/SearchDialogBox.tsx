@@ -27,6 +27,7 @@ export interface SearchDialogBoxProps {
   fullWidth?: boolean;
   placeholder?: string;
   showTags?: boolean;
+  noOptionsText?: string;
 }
 
 export const SearchDialogBox = (props: SearchDialogBoxProps) => {
@@ -51,6 +52,7 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
     fullWidth = false,
     showTags = true,
     placeholder,
+    noOptionsText,
   } = props;
 
   const [selectedOption, setSelectedOptions] = useState<any>(multiple ? [] : null);
@@ -70,12 +72,6 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
       );
     }
   }, [selectedOptions, options]);
-
-  useEffect(() => {
-    if (asyncSearch === true) {
-      setAsyncSelectedOptions(selectedOptions);
-    }
-  }, [selectedOptions]);
 
   const changeValue = (event: any, value: any) => {
     setSelectedOptions(value);
@@ -132,6 +128,7 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
             multiple={multiple}
             placeholder={placeholder}
             showTags={showTags}
+            noOptionsText={noOptionsText}
           />
         </FormControl>
         <div className={styles.Description} data-testid="description">
