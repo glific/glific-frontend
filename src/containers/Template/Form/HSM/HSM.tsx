@@ -533,23 +533,6 @@ export const HSM = () => {
     setTemplateButtons(result);
   };
 
-  const getTemplate = (text: string) => {
-    const { body } = sampleMessages;
-    /**
-     * Regular expression to check if message contains given pattern
-     * If pattern is present search will return first index of given pattern
-     * otherwise it will return -1
-     */
-    const exp = /(\|\s\[)|(\|\[)/;
-
-    const areButtonsPresent = body.search(exp);
-    if (areButtonsPresent > -1) {
-      const buttons = body.substr(areButtonsPresent);
-      return text + buttons;
-    }
-    return text;
-  };
-
   const validateURL = (value: string) => {
     if (value && type) {
       setValidatingURL(true);
@@ -571,11 +554,7 @@ export const HSM = () => {
     const message = removeFirstLineBreak(messages);
     const mediaBody: any = { ...sampleMessages.media };
     let typeValue;
-    let text = messages;
-
-    if (isAddButtonChecked) {
-      text = getTemplate(message);
-    }
+    let text = message;
 
     mediaBody.caption = getExampleFromBody(body, variables);
     mediaBody.url = attachmentURL;

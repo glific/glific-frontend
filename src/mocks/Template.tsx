@@ -258,6 +258,7 @@ export const createTemplateMock = (input: any) => ({
           shortcode: null,
           example: null,
           allowTemplateCategoryChange: null,
+          translations: '{}',
           ...input,
         },
       },
@@ -277,7 +278,6 @@ export const templateMock = createTemplateMock({
   languageId: '1',
   example: 'Hi, How are you [User]',
   shortcode: 'element_name',
-  translations: '{}',
 });
 
 export const quickReplyMock = createTemplateMock({
@@ -295,7 +295,6 @@ export const quickReplyMock = createTemplateMock({
   hasButtons: true,
   buttons: '[{"type":"QUICK_REPLY","text":""},{"type":"QUICK_REPLY","text":""}]',
   buttonType: 'QUICK_REPLY',
-  translations: '{}',
 });
 
 export const ctaMock = createTemplateMock({
@@ -313,7 +312,6 @@ export const ctaMock = createTemplateMock({
   hasButtons: true,
   buttons: '[{"type":"PHONE_NUMBER","text":"","phone_number":""}]',
   buttonType: 'CALL_TO_ACTION',
-  translations: '{}',
 });
 
 export const createSpeedSend = createTemplateMock({
