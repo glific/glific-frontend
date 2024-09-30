@@ -25,7 +25,6 @@
     "@nyaruka/temba-components": "^0.108.1",
     "@stripe/react-stripe-js": "^2.8.0",
     "@stripe/stripe-js": "^4.5.0",
-    "@types/jest": "^29.5.13",
     "@vitejs/plugin-react": "^4.3.1",
     "apollo-absinthe-upload-link": "^1.7.0",
     "apollo-link-token-refresh": "^0.7.0",
@@ -103,7 +102,6 @@
     "@testing-library/jest-dom": "^6.5.0",
     "@testing-library/react": "^16.0.1",
     "@testing-library/user-event": "^14.5.2",
-    "@types/draft-js": "^0.11.18",
     "@types/emoji-mart": "^3.0.14",
     "@types/node": "^22.7.2",
     "@types/react": "^18.3.9",
@@ -127,7 +125,6 @@
     "prettier": "^3.3.3",
     "react-test-renderer": "^18.3.1",
     "typescript": "^5.6.2",
-    "vite-plugin-eslint": "^1.8.1",
     "vitest": "^2.1.1",
     "yarn-upgrade-all": "^0.7.4"
   }
