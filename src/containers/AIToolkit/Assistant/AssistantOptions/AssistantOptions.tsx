@@ -19,7 +19,6 @@ const fileSearchInfo =
 
 export const AssistantOptions = ({ form, field, fileSearch }: AssistantOptionsProps) => {
   const [checked, setChecked] = useState(false);
-  console.log(field.value);
 
   return (
     <div className={styles.AssistantOptions}>
@@ -37,7 +36,6 @@ export const AssistantOptions = ({ form, field, fileSearch }: AssistantOptionsPr
                   ...field.value,
                   fileSearch: event.target.checked,
                 });
-                console.log(event.target.checked);
               }}
             />
           }

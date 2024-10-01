@@ -1,0 +1,22 @@
+.Header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.Header button {
+  border-radius: 10px;
+  font-size: 1rem;
+  padding: 2px 8px;
+  display: flex;
+  align-items: center;
+  column-gap: 0.5rem;
+}
+
+.EmptyText {
+  font-size: 0.8rem;
+  color: #2f2f2f;
+  width: 100%;
+  text-align: center;
+}

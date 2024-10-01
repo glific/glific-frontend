@@ -24,3 +24,10 @@
   overflow-y: scroll;
   padding: 2rem 4rem;
 }
+
+.RightContainer h5 {
+  color: #555;
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0;
+}

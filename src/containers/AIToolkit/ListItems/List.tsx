@@ -14,9 +14,9 @@ interface ListProps {
   icon?: any;
   getItemsQuery: DocumentNode;
   listItemName: string;
-  listItems?: any[];
+  currentId?: any;
   refreshList?: boolean;
-  setCurrentItem: any;
+  setCurrentId: any;
 }
 
 export const List = ({
@@ -24,7 +24,8 @@ export const List = ({
   getItemsQuery,
   listItemName,
   refreshList,
-  setCurrentItem,
+  setCurrentId,
+  currentId,
 }: ListProps) => {
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -39,7 +40,7 @@ export const List = ({
       },
     },
     onCompleted: (data) => {
-      setCurrentItem(data[listItemName][0]?.id);
+      setCurrentId(data[listItemName][0]?.id);
     },
   });
 
@@ -79,7 +80,11 @@ export const List = ({
             <div className={styles.NoItems}>No {listItemName} found!</div>
           ) : (
             data[listItemName].map((item: any) => (
-              <div key={item.id} className={styles.Item}>
+              <div
+                key={item.id}
+                className={`${styles.Item} ${currentId === item.id ? styles.SelectedItem : ''}`}
+                onClick={() => setCurrentId(item.id)}
+              >
                 {icon && <div>{icon}</div>}
                 <div className={styles.Itemm}>
                   <div className={styles.Header}>

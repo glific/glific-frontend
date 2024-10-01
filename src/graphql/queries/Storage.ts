@@ -41,3 +41,40 @@ export const VECTOR_STORE = gql`
     }
   }
 `;
+
+export const VECTOR_STORE_FILES = gql`
+  query getVectorStoreFiles($vectorStoreId: ID!) {
+    vectorStore(id: $vectorStoreId) {
+      vectorStore {
+        id
+        name
+        files {
+          id
+          name
+          size
+        }
+      }
+      errors {
+        message
+      }
+    }
+  }
+`;
+
+export const VECTOR_STORE_ASSISTANTS = gql`
+  query getVectorStoreAssistants($vectorStoreId: ID!) {
+    vectorStore(id: $vectorStoreId) {
+      vectorStore {
+        assistants {
+          id
+          instructions
+          model
+          name
+        }
+      }
+      errors {
+        message
+      }
+    }
+  }
+`;

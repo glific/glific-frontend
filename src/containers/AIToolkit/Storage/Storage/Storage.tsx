@@ -10,7 +10,7 @@ import { useState } from 'react';
 
 export const VectorStorage = () => {
   const [updateList, setUpdateList] = useState(false);
-  const [currentItem, setCurrentItem] = useState(null);
+  const [currentId, setCurrentId] = useState(null);
 
   const states = {};
   const formFields = [{}];
@@ -45,11 +45,12 @@ export const VectorStorage = () => {
             getItemsQuery={VECTOR_STORES}
             listItemName="vectorStores"
             refreshList={updateList}
-            setCurrentItem={setCurrentItem}
+            setCurrentId={setCurrentId}
+            currentId={currentId}
           />
         </div>
         <div className={styles.RightContainer}>
-          <CreateStorage currentItem={currentItem} />
+          <CreateStorage currentId={currentId} />
         </div>
       </div>
     </div>

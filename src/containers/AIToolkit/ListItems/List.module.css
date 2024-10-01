@@ -29,6 +29,10 @@
   width: 100%;
 }
 
+.SelectedItem {
+  background-color: #ebf8ee;
+}
+
 .Header {
   width: 100%;
   display: flex;

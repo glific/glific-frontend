@@ -9,7 +9,8 @@ import { useState } from 'react';
 
 export const Assistants = () => {
   const [updateList, setUpdateList] = useState(false);
-  const [currentItem, setCurrentItem] = useState(null);
+  const [currentId, setCurrentId] = useState(null);
+
   const assistants = [
     { title: 'Untitled assistant', id: 'asst_KsGPe1fAchlx6lAggIWfPEXN', inserted_at: '6:30 PM' },
     { title: 'Vyse module', id: 'asst_KsGPe1fAchlx6lAggIWfPEXN', inserted_at: '6:30 PM' },
@@ -43,7 +44,7 @@ export const Assistants = () => {
             getItemsQuery={VECTOR_STORES}
             listItemName="assistants"
             refreshList={updateList}
-            setCurrentItem={setCurrentItem}
+            setCurrentId={setCurrentId}
           />
         </div>
         <div className={styles.RightContainer}>
