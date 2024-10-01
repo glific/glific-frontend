@@ -32,7 +32,7 @@ const mocks = [
   countGroups,
   getGroupsCollectionList(getCollectionsVariables),
   getGroupsCollectionList(getCollectionsVariables),
-  getGroupsSearchQuery(setVariables({ excludeGroups: '1' }, 50)),
+  getGroupsSearchQuery(setVariables({ excludeGroups: '1', term: '' }, 50)),
   getGroupsSearchQuery(setVariables({ excludeGroups: '1' }, 50)),
   updateCollectionWaGroupQuery({
     input: { addWaGroupIds: ['1'], groupId: '1', deleteWaGroupIds: [] },
