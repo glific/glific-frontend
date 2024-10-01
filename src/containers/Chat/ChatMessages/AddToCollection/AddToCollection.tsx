@@ -2,33 +2,39 @@ import { useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 
-import { setNotification } from 'common/notification';
 import { setVariables } from 'common/constants';
-import { GET_CONTACTS_LIST } from 'graphql/queries/Contact';
+import { setNotification } from 'common/notification';
+import { getDisplayName } from 'common/utils';
+import { SearchDialogBox } from 'components/UI/SearchDialogBox/SearchDialogBox';
 import {
   UPDATE_COLLECTION_CONTACTS,
   UPDATE_COLLECTION_WA_GROUP,
 } from 'graphql/mutations/Collection';
-import { SearchDialogBox } from 'components/UI/SearchDialogBox/SearchDialogBox';
+import { GET_CONTACTS_LIST } from 'graphql/queries/Contact';
 import { GET_WA_GROUPS } from 'graphql/queries/WaGroups';
 
 interface AddToCollectionProps {
   collectionId: string | undefined;
   setDialog: Function;
   groups?: boolean;
+  afterAdd?: Function;
 }
 
-export const AddToCollection = ({ collectionId, setDialog, groups }: AddToCollectionProps) => {
+export const AddToCollection = ({
+  collectionId,
+  setDialog,
+  groups,
+  afterAdd,
+}: AddToCollectionProps) => {
   const [contactSearchTerm, setContactSearchTerm] = useState('');
   const { t } = useTranslation();
 
   let searchquery = groups ? GET_WA_GROUPS : GET_CONTACTS_LIST;
   let updateMutation = groups ? UPDATE_COLLECTION_WA_GROUP : UPDATE_COLLECTION_CONTACTS;
-  let entity = groups ? 'waGroups' : 'contacts';
 
-  const { data: entityData } = useQuery(searchquery, {
+  const { data: entityData, loading } = useQuery(searchquery, {
     variables: groups
-      ? setVariables({ excludeGroups: collectionId }, 50)
+      ? setVariables({ term: contactSearchTerm, excludeGroups: collectionId }, 50)
       : setVariables({ name: contactSearchTerm, excludeGroups: collectionId }, 50),
     fetchPolicy: 'cache-and-network',
   });
@@ -45,14 +51,25 @@ export const AddToCollection = ({ collectionId, setDialog, groups }: AddToCollec
           `${numberAdded} ${groups ? 'group' : 'contact'}${numberAdded === 1 ? '' : 's  were'} added`
         );
       }
-
+      if (afterAdd) {
+        afterAdd();
+      }
       setDialog(false);
     },
   });
   let entityOptions = [];
 
   if (entityData) {
-    entityOptions = entityData[entity];
+    if (groups) {
+      entityOptions = entityData.waGroups;
+    } else {
+      entityOptions = entityData.contacts.map((contact: any) => {
+        return {
+          ...contact,
+          name: getDisplayName(contact),
+        };
+      });
+    }
   }
 
   const handleCollectionAdd = (selectedContacts: any) => {
@@ -90,6 +107,7 @@ export const AddToCollection = ({ collectionId, setDialog, groups }: AddToCollec
       selectedOptions={[]}
       fullWidth={true}
       showTags={false}
+      noOptionsText={loading ? 'Loading...' : 'No options available'}
       onChange={(value: any) => {
         if (typeof value === 'string') {
           setContactSearchTerm(value);
