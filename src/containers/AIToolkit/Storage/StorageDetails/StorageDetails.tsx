@@ -1,10 +1,12 @@
 import styles from './StorageDetails.module.css';
 
 interface StorageProps {
-  storage: { id: string; size: number; last_active: string; inserted_at: string };
+  storage: any;
 }
 
 export const StorageDetails = ({ storage }: StorageProps) => {
+  console.log(storage);
+
   return (
     <>
       <h5 className={styles.Heading}>Details</h5>

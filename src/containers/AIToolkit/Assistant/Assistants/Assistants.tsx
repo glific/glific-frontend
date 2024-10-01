@@ -4,8 +4,12 @@ import styles from './Assistants.module.css';
 import SearchBar from 'components/UI/SearchBar/SearchBar';
 import { CreateAssistant } from '../CreateAssistant/CreateAssistant';
 import { List } from '../../ListItems/List';
+import { VECTOR_STORES } from 'graphql/queries/Storage';
+import { useState } from 'react';
 
 export const Assistants = () => {
+  const [updateList, setUpdateList] = useState(false);
+  const [currentItem, setCurrentItem] = useState(null);
   const assistants = [
     { title: 'Untitled assistant', id: 'asst_KsGPe1fAchlx6lAggIWfPEXN', inserted_at: '6:30 PM' },
     { title: 'Vyse module', id: 'asst_KsGPe1fAchlx6lAggIWfPEXN', inserted_at: '6:30 PM' },
@@ -35,7 +39,12 @@ export const Assistants = () => {
               iconFront
             />
           </div>
-          <List listItems={[...assistants, ...assistants, ...assistants]} />
+          <List
+            getItemsQuery={VECTOR_STORES}
+            listItemName="assistants"
+            refreshList={updateList}
+            setCurrentItem={setCurrentItem}
+          />
         </div>
         <div className={styles.RightContainer}>
           <CreateAssistant />
