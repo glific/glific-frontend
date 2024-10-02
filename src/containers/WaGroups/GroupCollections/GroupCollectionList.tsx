@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
-import { GET_GROUP_COUNT, GET_WA_GROUPS } from 'graphql/queries/WaGroups';
+import { GET_GROUP_COUNT } from 'graphql/queries/WaGroups';
 import {
   UPDATE_COLLECTION_WA_GROUP,
   UPDATE_WA_GROUP_COLLECTION,
@@ -13,13 +13,12 @@ import { List } from 'containers/List/List';
 import styles from './GroupCollectionList.module.css';
 
 import { GET_COLLECTION, GROUP_GET_COLLECTION } from 'graphql/queries/Collection';
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { useState } from 'react';
-import { setVariables } from 'common/constants';
 import { setNotification } from 'common/notification';
-import { SearchDialogBox } from 'components/UI/SearchDialogBox/SearchDialogBox';
 import { Button } from 'components/UI/Form/Button/Button';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
+import AddToCollection from 'containers/Chat/ChatMessages/AddToCollection/AddToCollection';
 
 const getName = (label: string) => (
   <div>
@@ -51,9 +50,9 @@ const columnAttributes = {
 export const GroupCollectionList = () => {
   const [addGroupsDialogShow, setAddGroupsDialogShow] = useState(false);
   const [removeGroupsDialogShow, setRemoveGroupsDialogShow] = useState(false);
-  const [groupSearchTerm, setGroupSearchTerm] = useState('');
   const [selectedGroups, setSelectedGroup] = useState<any>([]);
   const [groupsToRemove, setGroupsToRemove] = useState<any>([]);
+  const [updateCollection, setUpdateCollection] = useState(false);
   const { t } = useTranslation();
   const params = useParams();
 
@@ -63,31 +62,7 @@ export const GroupCollectionList = () => {
     fetchPolicy: 'cache-and-network',
   });
 
-  const [getGroups, { data: groupsData }] = useLazyQuery(GET_WA_GROUPS, {
-    fetchPolicy: 'cache-and-network',
-  });
-
   const [updateCollectionGroups] = useMutation(UPDATE_COLLECTION_WA_GROUP);
-
-  const handleCollectionAdd = (selectedGroups: any) => {
-    if (selectedGroups.length === 0) {
-      setAddGroupsDialogShow(false);
-    } else {
-      updateCollectionGroups({
-        variables: {
-          input: {
-            addWaGroupIds: selectedGroups,
-            groupId: collectionId,
-            deleteWaGroupIds: [],
-          },
-        },
-        onCompleted: () => {
-          setNotification(t('Group has been added successfully to the collection.'), 'success');
-        },
-      });
-    }
-    setAddGroupsDialogShow(false);
-  };
 
   const handleCollectionRemove = () => {
     const idsToRemove = selectedGroups.map((collection: any) => collection.id);
@@ -101,6 +76,7 @@ export const GroupCollectionList = () => {
       },
       onCompleted: () => {
         setNotification(t('Group has been removed successfully from the collection.'), 'success');
+        setUpdateCollection(!updateCollection);
       },
     });
     setRemoveGroupsDialogShow(false);
@@ -115,34 +91,14 @@ export const GroupCollectionList = () => {
   let dialog;
 
   if (addGroupsDialogShow) {
-    let groupsOptions: any = [];
-    if (groupsData) {
-      groupsOptions = groupsData.waGroups;
-    }
-
     dialog = (
-      <SearchDialogBox
-        title={t('Add groups to collection')}
-        handleOk={handleCollectionAdd}
-        handleCancel={() => setAddGroupsDialogShow(false)}
-        options={groupsOptions}
-        optionLabel="name"
-        additionalOptionLabel="phone"
-        asyncSearch
-        colorOk="primary"
-        buttonOk="Add"
-        disableClearable={true}
-        searchLabel="Search groups"
-        textFieldPlaceholder="Type here"
-        onChange={(value: any) => {
-          if (typeof value === 'string') {
-            setGroupSearchTerm(value);
-          }
+      <AddToCollection
+        groups
+        collectionId={collectionId}
+        setDialog={setAddGroupsDialogShow}
+        afterAdd={() => {
+          setUpdateCollection(!updateCollection);
         }}
-        selectedOptions={[]}
-        fullWidth={true}
-        showTags={false}
-        placeholder="Select groups"
       />
     );
   }
@@ -153,9 +109,6 @@ export const GroupCollectionList = () => {
       color="primary"
       data-testid="addBtn"
       onClick={() => {
-        getGroups({
-          variables: setVariables({ excludeGroups: collectionId }, 50),
-        });
         setAddGroupsDialogShow(true);
       }}
     >
@@ -223,6 +176,7 @@ export const GroupCollectionList = () => {
         }}
         {...queries}
         {...columnAttributes}
+        refreshList={updateCollection}
       />
     </>
   );

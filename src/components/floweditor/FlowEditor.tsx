@@ -9,7 +9,7 @@ import TranslateIcon from 'assets/images/icons/LanguageTranslation.svg?react';
 import PublishIcon from 'assets/images/icons/PublishIcon.svg?react';
 import { Button } from 'components/UI/Form/Button/Button';
 import { APP_NAME } from 'config/index';
-import { Simulator } from 'components/simulator/Simulator';
+import Simulator from 'components/simulator/Simulator';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { setErrorMessage, setNotification } from 'common/notification';
 import { PUBLISH_FLOW, RESET_FLOW_COUNT } from 'graphql/mutations/Flow';
@@ -332,9 +332,9 @@ export const FlowEditor = () => {
   const getFlowKeyword = () => {
     const flows = flowName ? flowName.flows : null;
     if (flows && flows.length > 0) {
-      const { isActive, keywords, isTemplate } = flows[0];
+      const { isActive, keywords, isTemplate, name } = flows[0];
       if (isTemplate) {
-        return 'temp:';
+        return `template:${name}`;
       } else if (isActive && keywords.length > 0) {
         return `draft:${keywords[0]}`;
       } else if (keywords.length === 0) {
@@ -450,7 +450,6 @@ export const FlowEditor = () => {
           hasResetButton
           flowSimulator
           message={getFlowKeyword()}
-          flowId={flowId}
         />
       )}
       {modal}

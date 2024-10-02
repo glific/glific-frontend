@@ -8,7 +8,7 @@ import { GET_HSM_CATEGORIES, GET_SHORTCODES } from 'graphql/queries/Template';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Input } from 'components/UI/Form/Input/Input';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
-import { Simulator } from 'components/simulator/Simulator';
+import Simulator from 'components/simulator/Simulator';
 import Template from '../Template';
 import styles from './HSM.module.css';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
