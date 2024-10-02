@@ -26,7 +26,7 @@ const filterQuery = filterTemplatesQuery(
     {
       id: '87',
       bspId: null,
-      label: 'Goodwsddsdsdsds message',
+      label: 'Good message',
       body: 'Hey there',
       shortcode: 'test',
       category: 'ACCOUNT_UPDATE',
@@ -136,7 +136,7 @@ const filterQueryMock = filterTemplatesQuery(
     {
       id: '87',
       bspId: null,
-      label: 'Good ssddmessage',
+      label: 'Good message',
       body: 'Hey there',
       shortcode: 'test',
       category: 'ACCOUNT_UPDATE',
@@ -206,7 +206,7 @@ export const TEMPLATE_MOCKS = [
     [
       {
         id: '87',
-        label: 'Goodsdsd message',
+        label: 'Good message',
         bspId: null,
         body: 'hi can you help!',
         category: 'ACCOUNT_UPDATE',
