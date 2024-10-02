@@ -177,16 +177,23 @@ const getTemplateDataTypeText = {
 const getTemplateDataTypeMedia = {
   sessionTemplate: {
     sessionTemplate: {
-      MessageMedia: null,
-      body: 'Hi {{1}},\n\nYour account image was updated on {{2}} by {{3}} with above.  | [Visit Website,https://www.gupshup.io/developer/[message]]',
-      buttonType: null,
-      buttons: '[]',
-      category: 'UTILITY',
-      example:
-        'Hi [Anil],\n\nYour account image was updated on [19th December] by [Saurav] with above.  | [Visit Website,https://www.gupshup.io/developer/[message]]',
-      hasButtons: false,
+      MessageMedia: {
+        __typename: 'MessageMedia',
+        caption: 'Hi how are you!',
+        id: '7619471',
+        sourceUrl: 'https://storage.googleapis.com/haqdarshak-bot/images.jpeg',
+      },
+      __typename: 'SessionTemplate',
+      allowTemplateCategoryChange: true,
+      body: 'Hi how are you!',
+      buttonType: 'CALL_TO_ACTION',
+      buttons:
+        '[{"type":"PHONE_NUMBER","text":"Call Us","phone_number":"18008914212"},{"url":"https://play.google.com/store/apps/details?id=com.haqdarshak.jana","type":"URL","text":"App URl"}]',
+      category: 'MARKETING',
+      example: 'Hi how are you!',
+      hasButtons: true,
       id: '5',
-      isActive: false,
+      isActive: true,
       isHsm: true,
       label: 'Account Update',
       language: {
@@ -194,14 +201,12 @@ const getTemplateDataTypeMedia = {
         id: '1',
         label: 'English',
       },
+      quality: 'UNKNOWN',
       shortcode: 'account_update',
       tag: null,
-      translations:
-        '{"2":{"number_parameters":3,"language_id":2,"body":"हाय {{1}},  n  n आपके खाते की छवि {{2}} पर {{3}} द्वारा अद्यतन की गई थी।"}}',
+      translations: '{}',
       type: 'IMAGE',
-      updatedAt: '2024-07-03T08:17:28Z',
-      allowTemplateCategoryChange: true,
-      quality: null,
+      updatedAt: '2024-07-16T11:22:59Z',
     },
   },
 };

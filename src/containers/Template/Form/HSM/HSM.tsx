@@ -21,7 +21,7 @@ import { CreateAutoComplete } from 'components/UI/Form/CreateAutoComplete/Create
 import { GET_TAGS } from 'graphql/queries/Tags';
 import { USER_LANGUAGES } from 'graphql/queries/Organization';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
-import { Simulator } from 'components/simulator/Simulator';
+import Simulator from 'components/simulator/Simulator';
 import { validateMedia } from 'common/utils';
 
 const queries = {
