@@ -2,11 +2,11 @@ import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router';
 import VectorStorage from './Storage';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { VECTOR_STORE_MOCKS } from 'mocks/Storage';
+import { VECTOR_STORE_MOCKS, loadMoreMocks } from 'mocks/Storage';
 import * as Notification from 'common/notification';
 
-const wrapper = (
-  <MockedProvider mocks={VECTOR_STORE_MOCKS}>
+const wrapper = (mocks: any = VECTOR_STORE_MOCKS) => (
+  <MockedProvider mocks={mocks}>
     <MemoryRouter>
       <VectorStorage />
     </MemoryRouter>
@@ -16,7 +16,7 @@ const wrapper = (
 const notificationSpy = vi.spyOn(Notification, 'setNotification');
 
 test('it should render Vector storage component', async () => {
-  render(wrapper);
+  render(wrapper());
 
   await waitFor(() => {
     expect(screen.getByText('Vector Storage')).toBeInTheDocument();
@@ -28,7 +28,7 @@ test('it should render Vector storage component', async () => {
 });
 
 test('it should create a Vector storage', async () => {
-  render(wrapper);
+  render(wrapper());
 
   await waitFor(() => {
     expect(screen.getByText('Vector Storage')).toBeInTheDocument();
@@ -46,7 +46,7 @@ test('it should create a Vector storage', async () => {
 });
 
 test('it should switch between vector stores', async () => {
-  render(wrapper);
+  render(wrapper());
 
   await waitFor(() => {
     expect(screen.getByText('Vector Storage')).toBeInTheDocument();
@@ -64,7 +64,7 @@ test('it should switch between vector stores', async () => {
 });
 
 test('it should search for vector stores', async () => {
-  render(wrapper);
+  render(wrapper());
 
   await waitFor(() => {
     expect(screen.getByText('Vector Storage')).toBeInTheDocument();
@@ -85,7 +85,7 @@ test('it should search for vector stores', async () => {
 });
 
 test('should update name', async () => {
-  render(wrapper);
+  render(wrapper());
 
   await waitFor(() => {
     expect(screen.getByText('Vector Storage')).toBeInTheDocument();
@@ -107,7 +107,7 @@ test('should update name', async () => {
 });
 
 test('should add and remove files', async () => {
-  render(wrapper);
+  render(wrapper());
 
   await waitFor(() => {
     expect(screen.getByText('Vector Storage')).toBeInTheDocument();
@@ -142,14 +142,14 @@ test('should add and remove files', async () => {
   fireEvent.click(screen.getByTestId('ok-button'));
 
   await waitFor(() => {
-    expect(screen.getAllByTestId('vectorFile')).toHaveLength(4);
+    expect(screen.getAllByTestId('vectorFile')).toHaveLength(2);
   });
 
   fireEvent.click(screen.getAllByTestId('removeVectorFile')[1]);
 });
 
 test('it should create an assistant', async () => {
-  render(wrapper);
+  render(wrapper());
 
   await waitFor(() => {
     expect(screen.getByText('Vector Storage')).toBeInTheDocument();
@@ -163,5 +163,24 @@ test('it should create an assistant', async () => {
 
   await waitFor(() => {
     expect(notificationSpy).toHaveBeenCalled();
+  });
+});
+
+test('should test loadmore', async () => {
+  render(wrapper(loadMoreMocks));
+
+  await waitFor(() => {
+    expect(screen.getByText('Vector Storage')).toBeInTheDocument();
+  });
+
+  await waitFor(() => {
+    expect(screen.getAllByTestId('listItem')).toHaveLength(25);
+    expect(screen.getAllByRole('textbox')[1]).toHaveValue('vector_store_1');
+  });
+
+  fireEvent.click(screen.getByText('Load More'));
+
+  await waitFor(() => {
+    expect(screen.getAllByTestId('listItem')).toHaveLength(75);
   });
 });

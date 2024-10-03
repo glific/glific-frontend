@@ -131,7 +131,7 @@ export const List = ({
             ))
           ))}
         {showLoadMore ? (
-          <span onClick={loadMoreItems} className={styles.LoadMore}>
+          <span data-testid="loadmore" onClick={loadMoreItems} className={styles.LoadMore}>
             Load More
           </span>
         ) : null}

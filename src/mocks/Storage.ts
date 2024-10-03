@@ -55,15 +55,19 @@ const vectorStores = [
   },
 ];
 
-export const vectorStorageMocks = (data: any[] = vectorStores, searchTerm: string = '') => ({
+export const vectorStorageMocks = (
+  data: any[] = vectorStores,
+  searchTerm: string = '',
+  opts: any = {
+    limit: 25,
+    order: 'DESC',
+  }
+) => ({
   request: {
     query: VECTOR_STORES,
     variables: {
       filter: { name: searchTerm },
-      opts: {
-        limit: 25,
-        order: 'DESC',
-      },
+      opts,
     },
   },
   result: {
@@ -261,4 +265,20 @@ export const VECTOR_STORE_MOCKS = [
   getVectorStorFiles,
   createVectorStore,
   addAssistant,
+];
+
+const vectors = (limit: number = 25) =>
+  new Array(limit).fill(null).map((val, ind) => ({
+    id: `${ind + 1}`,
+    insertedAt: '2024-09-30T09:18:44Z',
+    itemId: 'vs_HFGiyvbrl4c4Xx32ijAXhzd7',
+    name: `vector_store_${ind + 1}`,
+    size: '0 B',
+    updatedAt: '2024-09-30T09:18:44Z',
+  }));
+
+export const loadMoreMocks = [
+  vectorStorageMocks(vectors(), ''),
+  getVectorStoreQuery('1', 'vector_store_1'),
+  vectorStorageMocks(vectors(50), '', { limit: 50, offset: 25, order: 'DESC' }),
 ];
