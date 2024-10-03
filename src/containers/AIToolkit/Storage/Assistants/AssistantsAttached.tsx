@@ -1,20 +1,20 @@
 import { useQuery } from '@apollo/client';
-import { VECTOR_STORE_ASSISTANTS } from 'graphql/queries/Storage';
-import AddIcon from 'assets/images/AddGreenIcon.svg?react';
-
-import styles from './AssistantsAttached.module.css';
 import Button from '@mui/material/Button';
 import { CircularProgress } from '@mui/material';
 
+import AddIcon from 'assets/images/AddGreenIcon.svg?react';
+import { VECTOR_STORE_ASSISTANTS } from 'graphql/queries/Storage';
+
+import styles from './AssistantsAttached.module.css';
+
 interface AssistantProps {
-  currentId: any;
+  vectorStoreId: any;
 }
 
-export const AssistantsAttached = ({ currentId }: AssistantProps) => {
-  const { data, refetch, loading } = useQuery(VECTOR_STORE_ASSISTANTS, {
+export const AssistantsAttached = ({ vectorStoreId }: AssistantProps) => {
+  const { data, loading } = useQuery(VECTOR_STORE_ASSISTANTS, {
     variables: {
-      vectorStoreId: currentId,
-      skip: !!currentId,
+      vectorStoreId: vectorStoreId,
     },
   });
 

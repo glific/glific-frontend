@@ -1,15 +1,15 @@
 import { DocumentNode, useQuery } from '@apollo/client';
-import styles from './List.module.css';
-import SearchBar from 'components/UI/SearchBar/SearchBar';
-import { Loading } from 'components/UI/Layout/Loading/Loading';
-import dayjs from 'dayjs';
-import CopyIcon from 'assets/images/icons/Settings/Copy.svg?react';
 import { IconButton } from '@mui/material';
-import { copyToClipboard } from 'common/utils';
+import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
-import { DEFAULT_ENTITY_LIMIT } from 'common/constants';
 
-// const DEFAULT_ENTITY_LIMIT = 2;
+import CopyIcon from 'assets/images/icons/Settings/Copy.svg?react';
+import { DEFAULT_ENTITY_LIMIT, DEFAULT_MESSAGE_LOADMORE_LIMIT } from 'common/constants';
+import { copyToClipboard } from 'common/utils';
+import SearchBar from 'components/UI/SearchBar/SearchBar';
+
+import styles from './List.module.css';
+
 interface ListProps {
   icon?: any;
   getItemsQuery: DocumentNode;
@@ -28,8 +28,9 @@ export const List = ({
   currentId,
 }: ListProps) => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [showLoadMore, setLoadMore] = useState(false);
 
-  const { data, loading, fetchMore, refetch } = useQuery(getItemsQuery, {
+  const { data, loading, refetch, fetchMore } = useQuery(getItemsQuery, {
     variables: {
       filter: {
         name: searchTerm,
@@ -41,6 +42,9 @@ export const List = ({
     },
     onCompleted: (data) => {
       setCurrentId(data[listItemName][0]?.id);
+      if (data[listItemName].length > DEFAULT_ENTITY_LIMIT - 1) {
+        setLoadMore(true);
+      }
     },
   });
 
@@ -50,11 +54,29 @@ export const List = ({
         name: searchTerm,
       },
       opts: {
-        limit: 4,
+        limit: DEFAULT_MESSAGE_LOADMORE_LIMIT,
+        offset: data[listItemName].length,
         order: 'DESC',
       },
     };
-    fetchMore({ variables });
+
+    fetchMore({
+      variables,
+      updateQuery: (prev, { fetchMoreResult }) => {
+        if (fetchMoreResult[listItemName].length === 0) setLoadMore(false);
+
+        if (!fetchMoreResult) return prev; // If there's no new data, return the previous data
+
+        // Merge the new items with the existing items
+        const updatedItems = [...prev[listItemName], ...fetchMoreResult[listItemName]];
+
+        // Return the updated data in the same shape as the original data
+        return {
+          ...prev,
+          [listItemName]: updatedItems,
+        };
+      },
+    });
   };
 
   useEffect(() => {
@@ -84,6 +106,7 @@ export const List = ({
                 key={item.id}
                 className={`${styles.Item} ${currentId === item.id ? styles.SelectedItem : ''}`}
                 onClick={() => setCurrentId(item.id)}
+                data-testid="listItem"
               >
                 {icon && <div>{icon}</div>}
                 <div className={styles.Itemm}>
@@ -107,9 +130,8 @@ export const List = ({
               </div>
             ))
           ))}
-        {data && data[listItemName] && data[listItemName].length > DEFAULT_ENTITY_LIMIT - 1 ? (
+        {showLoadMore ? (
           <span onClick={loadMoreItems} className={styles.LoadMore}>
-            {' '}
             Load More
           </span>
         ) : null}

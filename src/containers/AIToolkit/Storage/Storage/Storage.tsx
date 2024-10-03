@@ -1,20 +1,20 @@
+import { useMutation } from '@apollo/client';
+import { useState } from 'react';
+
 import { storageInfo } from 'common/HelpData';
-import styles from './Storage.module.css';
+import { setNotification } from 'common/notification';
 import { Heading } from 'components/UI/Heading/Heading';
+import { VECTOR_STORES } from 'graphql/queries/Storage';
+import { CREATE_STORAGE } from 'graphql/mutations/Storage';
+
 import { List } from '../../ListItems/List';
 import { CreateStorage } from '../CreateStorage/CreateStorage';
-import { VECTOR_STORES } from 'graphql/queries/Storage';
-import { useMutation } from '@apollo/client';
-import { CREATE_STORAGE } from 'graphql/mutations/Storage';
-import { useState } from 'react';
+
+import styles from './Storage.module.css';
 
 export const VectorStorage = () => {
   const [updateList, setUpdateList] = useState(false);
-  const [currentId, setCurrentId] = useState(null);
-
-  const states = {};
-  const formFields = [{}];
-  const FormSchema = {};
+  const [vectorStoreId, setVectorStoreId] = useState(null);
 
   const [createStorage] = useMutation(CREATE_STORAGE, {
     variables: {
@@ -23,6 +23,7 @@ export const VectorStorage = () => {
       },
     },
     onCompleted: () => {
+      setNotification('Vector store created successfully!');
       setUpdateList(!updateList);
     },
   });
@@ -45,12 +46,12 @@ export const VectorStorage = () => {
             getItemsQuery={VECTOR_STORES}
             listItemName="vectorStores"
             refreshList={updateList}
-            setCurrentId={setCurrentId}
-            currentId={currentId}
+            setCurrentId={setVectorStoreId}
+            currentId={vectorStoreId}
           />
         </div>
         <div className={styles.RightContainer}>
-          <CreateStorage currentId={currentId} />
+          <CreateStorage vectorStoreId={vectorStoreId} />
         </div>
       </div>
     </div>

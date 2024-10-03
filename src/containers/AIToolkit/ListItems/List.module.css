@@ -21,6 +21,11 @@
   border-radius: 8px;
   display: flex;
   width: 100%;
+  cursor: pointer;
+}
+
+.Item:hover {
+  background-color: #ebf8ee;
 }
 
 .Itemm {

@@ -1,20 +1,23 @@
 import { useMutation, useQuery } from '@apollo/client';
-import Button from '@mui/material/Button';
-import { VECTOR_STORE_FILES } from 'graphql/queries/Storage';
-import styles from './Files.module.css';
-import { DialogBox } from 'components/UI/DialogBox/DialogBox';
-import { useState } from 'react';
-import AddIcon from 'assets/images/AddGreenIcon.svg?react';
-import UploadIcon from 'assets/images/icons/UploadIcon.svg?react';
-import DeleteIcon from 'assets/images/icons/Delete/Red.svg?react';
 import { CircularProgress, IconButton } from '@mui/material';
-import { REMOVE_FILES_FROM_STORAGE, UPLOAD_FILES_TO_STORAGE } from 'graphql/mutations/Storage';
+import Button from '@mui/material/Button';
+import { useState } from 'react';
+
+import AddIcon from 'assets/images/AddGreenIcon.svg?react';
+import DeleteIcon from 'assets/images/icons/Delete/Red.svg?react';
 import FileIcon from 'assets/images/FileGreen.svg?react';
+import UploadIcon from 'assets/images/icons/UploadIcon.svg?react';
+import { DialogBox } from 'components/UI/DialogBox/DialogBox';
+import { REMOVE_FILES_FROM_STORAGE, UPLOAD_FILES_TO_STORAGE } from 'graphql/mutations/Storage';
+import { VECTOR_STORE_FILES } from 'graphql/queries/Storage';
+
+import styles from './Files.module.css';
+
 interface FilesProps {
-  currentId: string;
+  vectorStoreId: string;
 }
 
-export const FilesAttached = ({ currentId }: FilesProps) => {
+export const FilesAttached = ({ vectorStoreId }: FilesProps) => {
   const [showUploadDialog, setShowUploadDialog] = useState(false);
   const [files, setFiles] = useState<any[]>([]);
 
@@ -24,8 +27,7 @@ export const FilesAttached = ({ currentId }: FilesProps) => {
     loading: filesLoading,
   } = useQuery(VECTOR_STORE_FILES, {
     variables: {
-      vectorStoreId: currentId,
-      skip: !!currentId,
+      vectorStoreId: vectorStoreId,
     },
   });
 
@@ -34,7 +36,7 @@ export const FilesAttached = ({ currentId }: FilesProps) => {
 
   const handleFileUpload = () => {
     uploadFiles({
-      variables: { media: files.map((file) => file.file), addVectorStoreFilesId: currentId },
+      variables: { media: files.map((file) => file.file), addVectorStoreFilesId: vectorStoreId },
       onCompleted: () => {
         setFiles([]);
         setShowUploadDialog(false);
@@ -47,7 +49,7 @@ export const FilesAttached = ({ currentId }: FilesProps) => {
     removeFile({
       variables: {
         fileId,
-        removeVectorStoreFileId: currentId,
+        removeVectorStoreFileId: vectorStoreId,
       },
       onCompleted: () => {
         refetch();
@@ -94,15 +96,20 @@ export const FilesAttached = ({ currentId }: FilesProps) => {
             <div className={styles.UploadContainer}>
               <UploadIcon />
               Upload File
-              <input type="file" onChange={handleFileChange} style={{ display: 'none' }} />
+              <input
+                data-testid="uploadFile"
+                type="file"
+                onChange={handleFileChange}
+                style={{ display: 'none' }}
+              />
             </div>
           </Button>
           {files.length > 0 && (
             <div className={styles.FileList}>
               {files.map((file, index) => (
-                <div className={styles.File} key={index}>
+                <div data-testid="fileItem" className={styles.File} key={index}>
                   <span>{file.file.name}</span>
-                  <IconButton onClick={() => handleRemoveFile(file.id)}>
+                  <IconButton data-testid="deleteFile" onClick={() => handleRemoveFile(file.id)}>
                     <DeleteIcon />
                   </IconButton>
                 </div>
@@ -122,7 +129,7 @@ export const FilesAttached = ({ currentId }: FilesProps) => {
     <div className={styles.Container}>
       <div className={styles.Header}>
         <h5>Files Attached</h5>
-        <Button onClick={() => setShowUploadDialog(true)} variant="outlined">
+        <Button data-testid="addFiles" onClick={() => setShowUploadDialog(true)} variant="outlined">
           <AddIcon />
           Add Files
         </Button>
@@ -136,12 +143,15 @@ export const FilesAttached = ({ currentId }: FilesProps) => {
             <div className={styles.EmptyText}>This vector store is empty.</div>
           ) : (
             data?.vectorStore?.vectorStore?.files?.map((file: any) => (
-              <div className={styles.File} key={file?.id}>
+              <div data-testid="vectorFile" className={styles.File} key={file?.id}>
                 <div>
                   <FileIcon />
                   <span>{file.name}</span>
                 </div>
-                <IconButton onClick={() => handleDeleteFile(file.id)}>
+                <IconButton
+                  data-testid="removeVectorFile"
+                  onClick={() => handleDeleteFile(file.id)}
+                >
                   <DeleteIcon />
                 </IconButton>
               </div>

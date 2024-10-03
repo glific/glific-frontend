@@ -1,6 +1,8 @@
 import dayjs from 'dayjs';
-import styles from './StorageDetails.module.css';
+
 import { SHORT_DATE_TIME_FORMAT } from 'common/constants';
+
+import styles from './StorageDetails.module.css';
 
 interface StorageProps {
   storage: any;

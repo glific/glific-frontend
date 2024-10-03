@@ -1,17 +1,20 @@
-import { Input } from 'components/UI/Form/Input/Input';
-import { StorageDetails } from '../StorageDetails/StorageDetails';
-import { FilesAttached } from '../Files/Files';
-import { CircularProgress, InputAdornment, OutlinedInput, TextField } from '@mui/material';
-import { AssistantsAttached } from '../Assistants/AssistantsAttached';
-import { useMutation, useQuery } from '@apollo/client';
-import { VECTOR_STORE } from 'graphql/queries/Storage';
+import { useLazyQuery, useMutation } from '@apollo/client';
+import { CircularProgress, InputAdornment, OutlinedInput } from '@mui/material';
+import { useEffect, useState } from 'react';
+
 import EditIcon from 'assets/images/icons/GreenEdit.svg?react';
-import styles from './CreateStorage.module.css';
-import { useState } from 'react';
 import { UPDATE_VECTORE_STORE } from 'graphql/mutations/Storage';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
+import { VECTOR_STORE } from 'graphql/queries/Storage';
+
+import { AssistantsAttached } from '../Assistants/AssistantsAttached';
+import { FilesAttached } from '../Files/Files';
+import { StorageDetails } from '../StorageDetails/StorageDetails';
+
+import styles from './CreateStorage.module.css';
+
 interface CreateStorageProps {
-  currentId: any;
+  vectorStoreId: any;
 }
 
 const storageOb = {
@@ -27,28 +30,30 @@ const assistants = [
   { id: 'asst_KyUlkD25kP34DIANLwxYWQK0', name: 'Vyse module', inserted_at: '2021-10-01' },
 ];
 
-export const CreateStorage = ({ currentId }: CreateStorageProps) => {
+export const CreateStorage = ({ vectorStoreId }: CreateStorageProps) => {
   const [vectorStore, setVectorStore] = useState(null);
   const [name, setName] = useState('');
   const [editName, setEditName] = useState(false);
 
-  const { data, refetch } = useQuery(VECTOR_STORE, {
-    variables: {
-      vectorStoreId: currentId,
-      skip: !currentId,
-    },
-    onCompleted: ({ vectorStore }) => {
-      setVectorStore(vectorStore?.vectorStore);
-      setName(vectorStore?.vectorStore?.name);
-    },
-  });
+  const [getVectorStore, { data, refetch, loading: vectorStoresLoading }] = useLazyQuery(
+    VECTOR_STORE,
+    {
+      variables: {
+        vectorStoreId: vectorStoreId,
+      },
+      onCompleted: ({ vectorStore }) => {
+        setVectorStore(vectorStore?.vectorStore);
+        setName(vectorStore?.vectorStore?.name);
+      },
+    }
+  );
 
   const [updateVectorStore, { loading }] = useMutation(UPDATE_VECTORE_STORE);
 
   const handleUpdateName = (name: string) => {
     updateVectorStore({
       variables: {
-        updateVectorStoreId: currentId,
+        updateVectorStoreId: vectorStoreId,
         input: {
           name,
         },
@@ -60,11 +65,20 @@ export const CreateStorage = ({ currentId }: CreateStorageProps) => {
     });
   };
 
-  if (!currentId || !data) return <div>Please select a vector storage</div>;
+  useEffect(() => {
+    if (vectorStoreId) {
+      getVectorStore();
+    }
+  }, [vectorStoreId]);
+
+  if (vectorStoresLoading) return <Loading />;
+
+  if (!vectorStoreId || !data) return <div>Please select a vector storage</div>;
 
   return (
     <div className={styles.Main}>
       <OutlinedInput
+        name="name"
         fullWidth
         value={name}
         disabled={!editName || loading}
@@ -73,6 +87,7 @@ export const CreateStorage = ({ currentId }: CreateStorageProps) => {
             className={styles.EditIcon}
             position="end"
             onClick={() => setEditName(!editName)}
+            data-testid="editIcon"
           >
             {loading ? <CircularProgress /> : <EditIcon />}
           </InputAdornment>
@@ -83,8 +98,8 @@ export const CreateStorage = ({ currentId }: CreateStorageProps) => {
         }}
       />
       <StorageDetails storage={vectorStore} />
-      <FilesAttached currentId={currentId} />
-      <AssistantsAttached currentId={currentId} />
+      <FilesAttached vectorStoreId={vectorStoreId} />
+      <AssistantsAttached vectorStoreId={vectorStoreId} />
     </div>
   );
 };
