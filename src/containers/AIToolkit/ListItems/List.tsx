@@ -30,7 +30,7 @@ export const List = ({
   const [searchTerm, setSearchTerm] = useState('');
   const [showLoadMore, setLoadMore] = useState(false);
 
-  const { data, loading, refetch, fetchMore } = useQuery(getItemsQuery, {
+  const { data, refetch, fetchMore } = useQuery(getItemsQuery, {
     variables: {
       filter: {
         name: searchTerm,
@@ -63,9 +63,9 @@ export const List = ({
     fetchMore({
       variables,
       updateQuery: (prev, { fetchMoreResult }) => {
-        if (fetchMoreResult[listItemName].length === 0) setLoadMore(false);
-
         if (!fetchMoreResult) return prev; // If there's no new data, return the previous data
+
+        if (fetchMoreResult[listItemName].length === 0) setLoadMore(false);
 
         // Merge the new items with the existing items
         const updatedItems = [...prev[listItemName], ...fetchMoreResult[listItemName]];

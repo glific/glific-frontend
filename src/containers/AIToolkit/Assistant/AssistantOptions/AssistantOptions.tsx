@@ -1,8 +1,6 @@
 import { FormControlLabel, Slider, Switch, Typography } from '@mui/material';
 import { useState } from 'react';
 import styles from './AssistantOptions.module.css';
-import InfoIcon from 'assets/images/icons/Info.svg?react';
-import Tooltip from 'components/UI/Tooltip/Tooltip';
 import HelpIcon from 'components/UI/HelpIcon/HelpIcon';
 
 interface AssistantOptionsProps {
@@ -39,7 +37,16 @@ export const AssistantOptions = ({ form, field, fileSearch }: AssistantOptionsPr
               }}
             />
           }
-          label="File Search"
+          label={
+            <>
+              File Search{' '}
+              <HelpIcon
+                helpData={{
+                  heading: fileSearchInfo,
+                }}
+              />
+            </>
+          }
         />
 
         <button>Files</button>

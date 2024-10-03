@@ -9,17 +9,7 @@ import { useState } from 'react';
 
 export const Assistants = () => {
   const [updateList, setUpdateList] = useState(false);
-  const [currentId, setCurrentId] = useState(null);
-
-  const assistants = [
-    { title: 'Untitled assistant', id: 'asst_KsGPe1fAchlx6lAggIWfPEXN', inserted_at: '6:30 PM' },
-    { title: 'Vyse module', id: 'asst_KsGPe1fAchlx6lAggIWfPEXN', inserted_at: '6:30 PM' },
-    {
-      title: 'Sova integration module',
-      id: 'asst_KsGPe1fAchlx6lAggIWfPEXN',
-      inserted_at: '6:30 PM',
-    },
-  ];
+  const [assistantId, setAssistantId] = useState(null);
 
   return (
     <div className={styles.AssistantContainer}>
@@ -31,20 +21,11 @@ export const Assistants = () => {
       />
       <div className={styles.MainContainer}>
         <div className={styles.LeftContainer}>
-          <div className={styles.Search}>
-            <SearchBar
-              className={styles.ChatSearchBar}
-              handleChange={() => {}}
-              onReset={() => ''}
-              searchMode
-              iconFront
-            />
-          </div>
           <List
             getItemsQuery={VECTOR_STORES}
             listItemName="assistants"
             refreshList={updateList}
-            setCurrentId={setCurrentId}
+            setCurrentId={setAssistantId}
           />
         </div>
         <div className={styles.RightContainer}>

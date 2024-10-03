@@ -66,10 +66,9 @@ export const VECTOR_STORE_ASSISTANTS = gql`
     vectorStore(id: $vectorStoreId) {
       vectorStore {
         assistants {
-          id
-          instructions
-          model
+          assistantId
           name
+          id
         }
       }
       errors {

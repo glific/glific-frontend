@@ -1,11 +1,5 @@
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Input } from 'components/UI/Form/Input/Input';
-import {
-  CREATE_COLLECTION,
-  DELETE_COLLECTION,
-  UPDATE_COLLECTION,
-} from 'graphql/mutations/Collection';
-import { GET_COLLECTION } from 'graphql/queries/Collection';
 import { AssistantOptions } from '../AssistantOptions/AssistantOptions';
 import { useState } from 'react';
 import { Field, FormikProvider, useFormik } from 'formik';
@@ -77,16 +71,6 @@ export const CreateAssistant = () => {
     enableReinitialize: true,
     onSubmit: (values, { setErrors }) => {},
   });
-
-  const setStates = ({ name: nameValue, prompt: promptValue, model: modelValue }: any) => {
-    setName(nameValue);
-    setModel(modelValue);
-    setPrompt(promptValue);
-  };
-
-  const setPayload = (payload: any) => {
-    console.log(payload);
-  };
 
   return (
     <FormikProvider value={formik}>

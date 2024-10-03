@@ -1,8 +1,15 @@
+.Container {
+  max-height: 30%;
+  display: flex;
+  flex-direction: column;
+}
+
 .Header {
   width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 1rem;
 }
 
 .Header button {
@@ -19,4 +26,54 @@
   color: #2f2f2f;
   width: 100%;
   text-align: center;
+}
+
+.AssistantsList {
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.5rem;
+  height: 100%;
+  overflow-y: scroll;
+}
+
+.AssistantHeading {
+  font-size: 1rem;
+  color: #555;
+  font-weight: 500;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.Assistant {
+  font-size: 0.8rem;
+  width: 100%;
+  display: flex;
+  column-gap: 0.5rem;
+}
+
+.Assistant span {
+  white-space: nowrap;
+  width: 50%;
+  overflow-x: scroll;
+  position: relative;
+}
+
+.Assistant span span {
+  margin-left: 1.2rem;
+}
+
+.AssistantHeading span {
+  width: 50%;
+}
+.Assistant span::-webkit-scrollbar {
+  display: none;
+}
+
+.Assistant svg {
+  height: 0.8rem;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  cursor: pointer;
 }
