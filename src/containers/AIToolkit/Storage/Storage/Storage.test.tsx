@@ -76,6 +76,12 @@ test('it should search for vector stores', async () => {
     expect(screen.getAllByTestId('listItem')).toHaveLength(1);
     expect(screen.getByText('vector_store_4')).toBeInTheDocument();
   });
+
+  fireEvent.click(screen.getByTestId('CloseIcon'));
+
+  await waitFor(() => {
+    expect(screen.getAllByRole('textbox')[0]).toHaveValue('');
+  });
 });
 
 test('should update name', async () => {
@@ -133,12 +139,29 @@ test('should add and remove files', async () => {
   });
 
   fireEvent.click(screen.getAllByTestId('deleteFile')[1]);
-
   fireEvent.click(screen.getByTestId('ok-button'));
 
   await waitFor(() => {
-    expect(screen.getAllByTestId('vectorFile')).toHaveLength(2);
+    expect(screen.getAllByTestId('vectorFile')).toHaveLength(4);
   });
 
   fireEvent.click(screen.getAllByTestId('removeVectorFile')[1]);
+});
+
+test('it should create an assistant', async () => {
+  render(wrapper);
+
+  await waitFor(() => {
+    expect(screen.getByText('Vector Storage')).toBeInTheDocument();
+  });
+
+  await waitFor(() => {
+    expect(screen.getAllByRole('textbox')[1]).toHaveValue('Vector store 1');
+  });
+
+  fireEvent.click(screen.getByTestId('addAssistant'));
+
+  await waitFor(() => {
+    expect(notificationSpy).toHaveBeenCalled();
+  });
 });

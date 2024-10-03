@@ -1,3 +1,4 @@
+import { CREATE_ASSISTANT } from 'graphql/mutations/Assistants';
 import {
   CREATE_STORAGE,
   REMOVE_FILES_FROM_STORAGE,
@@ -223,6 +224,27 @@ const removeFilesFromVectorStore = {
   },
 };
 
+const addAssistant = {
+  request: {
+    query: CREATE_ASSISTANT,
+    variables: {
+      input: {
+        vectorStoreId: '5',
+      },
+    },
+  },
+  result: {
+    data: {
+      createAssistant: {
+        assistant: {
+          id: '1',
+          name: 'assistant',
+        },
+      },
+    },
+  },
+};
+
 export const VECTOR_STORE_MOCKS = [
   vectorStorageMocks(),
   vectorStorageMocks(),
@@ -238,4 +260,5 @@ export const VECTOR_STORE_MOCKS = [
   removeFilesFromVectorStore,
   getVectorStorFiles,
   createVectorStore,
+  addAssistant,
 ];

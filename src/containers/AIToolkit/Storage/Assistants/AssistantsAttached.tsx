@@ -9,6 +9,7 @@ import { VECTOR_STORE_ASSISTANTS } from 'graphql/queries/Storage';
 import styles from './AssistantsAttached.module.css';
 import { CREATE_ASSISTANT } from 'graphql/mutations/Assistants';
 import { copyToClipboard } from 'common/utils';
+import { setNotification } from 'common/notification';
 
 interface AssistantProps {
   vectorStoreId: any;
@@ -30,7 +31,10 @@ export const AssistantsAttached = ({ vectorStoreId }: AssistantProps) => {
           vectorStoreId,
         },
       },
-      onCompleted: () => refetch(),
+      onCompleted: () => {
+        setNotification('Assistant created successfully!');
+        refetch();
+      },
     });
   };
 
@@ -41,7 +45,7 @@ export const AssistantsAttached = ({ vectorStoreId }: AssistantProps) => {
         {creatingAssistant ? (
           <CircularProgress size={24} />
         ) : (
-          <Button onClick={handleCreateAssistant} variant="outlined">
+          <Button data-testid="addAssistant" onClick={handleCreateAssistant} variant="outlined">
             <AddIcon />
             Add Assistant
           </Button>
