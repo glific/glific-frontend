@@ -63,11 +63,7 @@ export const AssistantsAttached = ({ vectorStoreId }: AssistantProps) => {
           (data?.vectorStore?.vectorStore?.assistants.length === 0 ? (
             <div className={styles.EmptyText}>Not used by any resources.</div>
           ) : (
-            [
-              ...data?.vectorStore?.vectorStore?.assistants,
-              ...data?.vectorStore?.vectorStore?.assistants,
-              ...data?.vectorStore?.vectorStore?.assistants,
-            ]?.map((assistant: any) => (
+            data?.vectorStore?.vectorStore?.assistants?.map((assistant: any) => (
               <div className={styles.Assistant} key={assistant.id}>
                 <span>{assistant.name}</span>
                 <span>

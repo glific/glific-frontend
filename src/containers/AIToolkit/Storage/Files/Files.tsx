@@ -142,10 +142,7 @@ export const FilesAttached = ({ vectorStoreId }: FilesProps) => {
           (data?.vectorStore?.vectorStore?.files.length === 0 ? (
             <div className={styles.EmptyText}>This vector store is empty.</div>
           ) : (
-            [
-              ...data?.vectorStore?.vectorStore?.files,
-              ...data?.vectorStore?.vectorStore?.files,
-            ]?.map((file: any) => (
+            data?.vectorStore?.vectorStore?.files?.map((file: any) => (
               <div data-testid="vectorFile" className={styles.File} key={file.id}>
                 <div>
                   <FileIcon />

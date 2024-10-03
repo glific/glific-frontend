@@ -1,7 +1,6 @@
 import { assistantsInfo } from 'common/HelpData';
 import { Heading } from 'components/UI/Heading/Heading';
 import styles from './Assistants.module.css';
-import SearchBar from 'components/UI/SearchBar/SearchBar';
 import { CreateAssistant } from '../CreateAssistant/CreateAssistant';
 import { List } from '../../ListItems/List';
 import { VECTOR_STORES } from 'graphql/queries/Storage';
