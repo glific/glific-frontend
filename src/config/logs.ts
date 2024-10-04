@@ -1,8 +1,12 @@
 import pino from 'pino';
 import { createPinoBrowserSend, createWriteStream } from 'pino-logflare';
 import { LOGFLARE_API, LOGFLARE_SOURCE } from '.';
+import { getUserSession } from 'services/AuthService';
 
 const setLogs = (message: any, type: string) => {
+  const orgId = getUserSession('organizationId');
+  const userId = getUserSession('id');
+
   let logger: any;
 
   if (LOGFLARE_API && LOGFLARE_SOURCE) {
@@ -37,6 +41,8 @@ const setLogs = (message: any, type: string) => {
     if (typeof message === 'object') {
       logMessage = JSON.stringify(message);
     }
+
+    logMessage = `org_id: ${orgId} user_id: ${userId} [${type}] ${message}`;
 
     // log some events
     switch (type) {
