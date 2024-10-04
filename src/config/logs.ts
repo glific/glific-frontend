@@ -37,7 +37,7 @@ const setLogs = (message: any, type: string) => {
       stream
     );
 
-    let logMessage = message;
+    let logMessage;
     if (typeof message === 'object') {
       logMessage = JSON.stringify(message);
     }
