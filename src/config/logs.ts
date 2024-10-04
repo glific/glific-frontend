@@ -39,7 +39,7 @@ const setLogs = (message: any, type: string) => {
 
     let logMessage;
     if (typeof message === 'object') {
-      logMessage = JSON.stringify(message);
+      message = JSON.stringify(message);
     }
 
     logMessage = `org_id: ${orgId} user_id: ${userId} [${type}] ${message}`;
