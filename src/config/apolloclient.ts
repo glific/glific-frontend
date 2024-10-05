@@ -105,7 +105,7 @@ const gqlClient = (navigate: any) => {
       // @ts-ignore
       switch (networkError.statusCode) {
         case 401:
-          setLogs(`Error 401: logging user out`, 'error');
+          setLogs(`Error 401: logging user out,  ${JSON.stringify(networkError)}`, 'error');
           navigate('/logout/session');
           break;
         default:
