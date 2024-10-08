@@ -277,7 +277,7 @@ export const templateMock = createTemplateMock({
   body: 'Hi, How are you {{1}}',
   type: 'TEXT',
   category: 'ACCOUNT_UPDATE',
-  tagId: null,
+  tagId: '1',
   isActive: true,
   allowTemplateCategoryChange: false,
   isHsm: true,

@@ -455,7 +455,7 @@ export const SpeedSends = () => {
       name: 'label',
       label: t('Title'),
       inputProp: {
-        onBlur: (event: any) => setLabel(event.target.value),
+        onChange: (event: any) => setLabel(event.target.value),
       },
       translation: hasTranslations && getTranslation('label', translations, defaultLanguage),
     },

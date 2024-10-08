@@ -161,6 +161,10 @@ describe('Add mode', () => {
     fireEvent.change(screen.getByPlaceholderText('Define value'), { target: { value: 'User' } });
     fireEvent.change(inputs[1], { target: { value: 'title' } });
 
+    autocompletes[3].focus();
+    fireEvent.keyDown(autocompletes[3], { key: 'ArrowDown' });
+    fireEvent.click(screen.getByText('Messages'), { key: 'Enter' });
+
     fireEvent.click(screen.getByTestId('submitActionButton'));
 
     await waitFor(() => {

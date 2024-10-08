@@ -199,10 +199,6 @@ export const HSM = () => {
   }
 
   useEffect(() => {
-    displayWarning();
-  }, [type]);
-
-  useEffect(() => {
     if (languages) {
       const lang = languages.currentUser.user.organization.activeLanguages.slice();
       // sort languages by thaeir name
@@ -423,13 +419,9 @@ export const HSM = () => {
     payloadCopy.isHsm = true;
 
     // Create template
-    payloadCopy.languageId = payload.language.id;
+    payloadCopy.languageId = payload.language?.id;
     if (payloadCopy.type) {
       payloadCopy.type = payloadCopy.type.id;
-      // STICKER is a type of IMAGE
-      if (payloadCopy.type.id === 'STICKER') {
-        payloadCopy.type = 'IMAGE';
-      }
     } else {
       payloadCopy.type = 'TEXT';
     }
@@ -563,29 +555,6 @@ export const HSM = () => {
     setSampleMessages({ ...sampleMessages, body: text, media: mediaBody, type: typeValue });
   };
 
-  const displayWarning = () => {
-    if (type && type.id === 'STICKER') {
-      setWarning(
-        <div className={styles.Warning}>
-          <ol>
-            <li>{t('Animated stickers are not supported.')}</li>
-            <li>{t('Captions along with stickers are not supported.')}</li>
-          </ol>
-        </div>
-      );
-    } else if (type && type.id === 'AUDIO') {
-      setWarning(
-        <div className={styles.Warning}>
-          <ol>
-            <li>{t('Captions along with audio are not supported.')}</li>
-          </ol>
-        </div>
-      );
-    } else {
-      setWarning(null);
-    }
-  };
-
   const FormSchema = Yup.object().shape(
     {
       category: Yup.object().nullable().required(t('Category is required.')),
@@ -685,9 +654,6 @@ export const HSM = () => {
         'Please provide a sample attachment for approval purpose. You may send a similar but different attachment when sending the HSM to users.'
       ),
       inputProp: {
-        onBlur: (event: any) => {
-          setAttachmentURL(event.target.value);
-        },
         onChange: (event: any) => {
           setAttachmentURL(event.target.value);
         },
@@ -751,7 +717,7 @@ export const HSM = () => {
         'Define what use case does this template serve eg. OTP, optin, activity preference'
       ),
       inputProp: {
-        onBlur: (event: any) => setLabel(event.target.value),
+        onChange: (event: any) => setLabel(event.target.value),
       },
     },
     {
