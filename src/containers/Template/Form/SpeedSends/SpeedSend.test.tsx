@@ -9,10 +9,7 @@ import * as utilsModule from 'common/utils';
 import { SPEED_SENDS_MOCKS } from 'mocks/Template';
 import SpeedSendList from '../../List/SpeedSendList/SpeedSendList';
 import SpeedSends from './SpeedSends';
-
-beforeEach(() => {
-  cleanup();
-});
+import axios from 'axios';
 
 vi.mock('lexical-beautiful-mentions', async (importOriginal) => {
   const actual = (await importOriginal()) as typeof import('lexical-beautiful-mentions');
@@ -24,6 +21,17 @@ vi.mock('lexical-beautiful-mentions', async (importOriginal) => {
   };
 });
 
+const mockedAxios = axios as any;
+vitest.mock('axios');
+
+beforeEach(() => {
+  cleanup();
+});
+
+afterEach(() => {
+  mockedAxios.get.mockReset();
+});
+
 const addSpeedSendContainer = (
   <LexicalWrapper>
     <MockedProvider mocks={SPEED_SENDS_MOCKS}>
@@ -31,6 +39,7 @@ const addSpeedSendContainer = (
         <Routes>
           <Route path="/speed-send/add" element={<SpeedSends />} />
           <Route path="/speed-send" element={<SpeedSendList />} />
+          <Route path="/speed-send/:id/edit" element={<SpeedSends />} />
         </Routes>
       </MemoryRouter>
     </MockedProvider>
@@ -63,35 +72,11 @@ describe('test creating a speed send', () => {
     });
   });
 
-  test('should create a speed send', async () => {
-    render(addSpeedSendContainer);
-
-    await waitFor(() => {
-      expect(screen.getByText('Add a new Speed send')).toBeInTheDocument();
-    });
-
-    const inputs = screen.getAllByRole('textbox');
-
-    const lexicalEditor = inputs[1];
-
-    await user.click(lexicalEditor);
-    await user.tab();
-    fireEvent.input(lexicalEditor, { data: 'Hi, How are you' });
-
-    await waitFor(() => {
-      expect(screen.getByText('Hi, How are you')).toBeInTheDocument();
-    });
-
-    fireEvent.change(inputs[0], { target: { value: 'Template' } });
-
-    fireEvent.click(screen.getByText('Save'));
-
-    await waitFor(() => {
-      expect(notificationSpy).toHaveBeenCalled();
-    });
-  });
-
   test('should validate media', async () => {
+    mockedAxios.get.mockImplementationOnce(() =>
+      Promise.resolve({ data: { is_valid: true, message: 'valid media' } })
+    );
+
     render(addSpeedSendContainer);
 
     await waitFor(() => {
@@ -117,10 +102,93 @@ describe('test creating a speed send', () => {
       expect(screen.getByText('Validating URL')).toBeInTheDocument();
     });
   });
+
+  test('should show invalid media message', async () => {
+    mockedAxios.get.mockImplementationOnce(() =>
+      Promise.resolve({ data: { message: 'This media URL is invalid', is_valid: false } })
+    );
+
+    render(addSpeedSendContainer);
+
+    await waitFor(() => {
+      expect(screen.getByText('Add a new Speed send')).toBeInTheDocument();
+    });
+
+    const inputs = screen.getAllByRole('textbox');
+
+    const autocompletes = screen.getAllByTestId('autocomplete-element');
+    autocompletes[0].focus();
+    fireEvent.keyDown(autocompletes[0], { key: 'ArrowDown' });
+
+    fireEvent.click(screen.getByText('IMAGE'), { key: 'Enter' });
+
+    fireEvent.change(inputs[2], {
+      target: {
+        value: 'invalid media',
+      },
+    });
+
+    await waitFor(() => {
+      expect(validateMediaSpy).toHaveBeenCalled();
+      expect(screen.getByText('Validating URL')).toBeInTheDocument();
+    });
+  });
+
+  test('should create a speed send', async () => {
+    mockedAxios.get.mockImplementationOnce(() =>
+      Promise.resolve({ data: { is_valid: true, message: 'valid media' } })
+    );
+
+    render(addSpeedSendContainer);
+
+    await waitFor(() => {
+      expect(screen.getByText('Add a new Speed send')).toBeInTheDocument();
+    });
+
+    const inputs = screen.getAllByRole('textbox');
+
+    const lexicalEditor = inputs[1];
+
+    await user.click(lexicalEditor);
+    await user.tab();
+    fireEvent.input(lexicalEditor, { data: 'Hi, How are you' });
+
+    await waitFor(() => {
+      expect(screen.getByText('Hi, How are you')).toBeInTheDocument();
+    });
+
+    const autocompletes = screen.getAllByTestId('autocomplete-element');
+    autocompletes[0].focus();
+    fireEvent.keyDown(autocompletes[0], { key: 'ArrowDown' });
+
+    fireEvent.click(screen.getByText('STICKER'), { key: 'Enter' });
+
+    fireEvent.change(inputs[2], {
+      target: {
+        value: 'https://www.buildquickbots.com/whatsapp/media/sample/jpg/sample02.jpg',
+      },
+    });
+
+    fireEvent.change(inputs[0], { target: { value: 'Template' } });
+
+    fireEvent.click(screen.getByText('Marathi'));
+
+    await waitFor(() => {
+      expect(notificationSpy).toHaveBeenCalled();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('translation')).toBeInTheDocument();
+    });
+  });
 });
 
 describe('test editing a speed send', () => {
   test('should render speed send form', async () => {
+    mockedAxios.get.mockImplementationOnce(() =>
+      Promise.resolve({ data: { is_valid: true, message: 'valid media' } })
+    );
+
     render(editSpeedSendContainer('2'));
 
     await waitFor(() => {

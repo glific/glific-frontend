@@ -44,17 +44,10 @@ export const getTranslation = (attribute: any, translations: any, defaultLanguag
     return null;
   }
 
-  if (attribute === 'title') {
-    return defaultTemplate?.label;
-  } else if (attribute === 'body') {
-    return defaultTemplate?.body;
-  }
-
-  return null;
+  return defaultTemplate[attribute] || null;
 };
 
 export const SpeedSends = () => {
-  const [tagId, setTagId] = useState<any>(null);
   const [label, setLabel] = useState('');
   const [body, setBody] = useState<any>('');
   const [language, setLanguageId] = useState<any>(null);
@@ -125,7 +118,6 @@ export const SpeedSends = () => {
     body,
     type,
     attachmentURL,
-    tagId,
     isActive,
   };
 
@@ -137,7 +129,6 @@ export const SpeedSends = () => {
     type: typeValue,
     translations: translationsValue,
     messageMedia: MessageMediaValue,
-    tag: tagIdValue,
   }: any) => {
     let title = labelValue;
     let body = bodyValue;
@@ -193,10 +184,6 @@ export const SpeedSends = () => {
       setAttachmentURL('');
     }
 
-    if (tagIdValue) {
-      setTagId(tagIdValue);
-    }
-
     setDefaultLanguage(languageIdValue);
     setLabel(title);
     setIsActive(isActiveValue);
@@ -211,10 +198,11 @@ export const SpeedSends = () => {
     // Create template
     payloadCopy.languageId = payload.language?.id;
     if (payloadCopy.type) {
-      payloadCopy.type = payloadCopy.type.id;
       // STICKER is a type of IMAGE
       if (payloadCopy.type.id === 'STICKER') {
         payloadCopy.type = 'IMAGE';
+      } else {
+        payloadCopy.type = payloadCopy.type.id;
       }
     } else {
       payloadCopy.type = 'TEXT';
@@ -469,7 +457,7 @@ export const SpeedSends = () => {
       inputProp: {
         onBlur: (event: any) => setLabel(event.target.value),
       },
-      translation: hasTranslations && getTranslation('title', translations, defaultLanguage),
+      translation: hasTranslations && getTranslation('label', translations, defaultLanguage),
     },
     {
       component: Checkbox,
@@ -520,7 +508,7 @@ export const SpeedSends = () => {
       states={states}
       setStates={setStates}
       setPayload={setPayload}
-      validationSchema={isEditing ? Yup.object() : FormSchema}
+      validationSchema={FormSchema}
       listItemName="Speed send"
       dialogMessage={dialogMessage}
       formFields={formFields}

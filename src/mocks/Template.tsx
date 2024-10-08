@@ -16,6 +16,7 @@ import {
 import { setVariables } from 'common/constants';
 import { getOrganizationLanguagesQueryByOrder } from './Organization';
 import { getFilterTagQuery } from './Tag';
+import { createMediaMessageMock } from './Attachment';
 
 const getShortCodeQuery = {
   request: {
@@ -322,12 +323,12 @@ export const ctaMock = createTemplateMock({
 export const createSpeedSend = createTemplateMock({
   label: 'Template',
   body: 'Hi, How are you',
-  type: 'TEXT',
-  tagId: null,
+  type: 'IMAGE',
   isActive: true,
   languageId: '1',
   translations:
-    '{"1":{"language":{"id":"1","label":"English","localized":true,"locale":"en"},"label":"Template","body":"Hi, How are you","type":"TEXT","tagId":null,"isActive":true,"languageId":"1"}}',
+    '{"1":{"language":{"id":"1","label":"English","localized":true,"locale":"en"},"label":"Template","body":"Hi, How are you","type":"IMAGE","attachmentURL":"https://www.buildquickbots.com/whatsapp/media/sample/jpg/sample02.jpg","isActive":true,"languageId":"1"}}',
+  messageMediaId: 1,
 });
 
 export const filterSpeedSends = {
@@ -701,6 +702,11 @@ export const SPEED_SENDS_MOCKS = [
   updateSessiontemplate,
   updateSessiontemplate,
   updateSessiontemplate,
+  createMediaMessageMock({
+    caption: 'Hi, How are you',
+    sourceUrl: 'https://www.buildquickbots.com/whatsapp/media/sample/jpg/sample02.jpg',
+    url: 'https://www.buildquickbots.com/whatsapp/media/sample/jpg/sample02.jpg',
+  }),
 ];
 
 export const HSM_LIST = [
