@@ -160,7 +160,7 @@ export const HSM = () => {
 
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const location: any = useLocation();
+  const location = useLocation();
   const params = useParams();
 
   const [createMediaMessage] = useMutation(CREATE_MEDIA_MESSAGE);
@@ -357,10 +357,6 @@ export const HSM = () => {
       }
     }
 
-    if (shortcodeValue) {
-      setNewShortcode(shortcodeValue);
-    }
-
     if (typeValue && typeValue !== 'TEXT') {
       setType({ id: typeValue, label: typeValue });
     } else {
@@ -371,15 +367,11 @@ export const HSM = () => {
     } else {
       setAttachmentURL('');
     }
-    if (categoryValue) {
-      setCategory(categoryValue);
-    }
-    if (tagIdValue) {
-      setTagId(tagIdValue);
-    }
-    if (setAllowTemplateCategoryChange) {
-      setAllowTemplateCategoryChange(allowCategoryChangeValue);
-    }
+
+    setNewShortcode(shortcodeValue);
+    setTagId(tagIdValue);
+    setCategory(categoryValue);
+    setAllowTemplateCategoryChange(allowCategoryChangeValue);
   };
 
   const getButtonTemplatePayload = () => {

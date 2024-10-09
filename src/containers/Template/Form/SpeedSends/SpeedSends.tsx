@@ -339,8 +339,8 @@ export const SpeedSends = () => {
     setNextLanguage(option);
     const { values, errors } = form;
 
-    if (values.type?.label === 'TEXT') {
-      if (values.title || values.body) {
+    if (values.type) {
+      if (values.label || values.body) {
         if (errors) {
           setNotification(t('Please check the errors'), 'warning');
         }
@@ -430,9 +430,6 @@ export const SpeedSends = () => {
         'Please provide a sample attachment for approval purpose. You may send a similar but different attachment when sending the HSM to users.'
       ),
       inputProp: {
-        onBlur: (event: any) => {
-          setAttachmentURL(event.target.value);
-        },
         onChange: (event: any) => {
           setAttachmentURL(event.target.value);
         },

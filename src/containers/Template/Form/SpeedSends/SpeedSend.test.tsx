@@ -157,6 +157,12 @@ describe('test creating a speed send', () => {
       expect(screen.getByText('Hi, How are you')).toBeInTheDocument();
     });
 
+    fireEvent.click(screen.getByText('Marathi'));
+
+    await waitFor(() => {
+      expect(notificationSpy).toHaveBeenCalled();
+    });
+
     const autocompletes = screen.getAllByTestId('autocomplete-element');
     autocompletes[0].focus();
     fireEvent.keyDown(autocompletes[0], { key: 'ArrowDown' });
@@ -179,6 +185,58 @@ describe('test creating a speed send', () => {
 
     await waitFor(() => {
       expect(screen.getByTestId('translation')).toBeInTheDocument();
+    });
+  });
+
+  test('it should display warning message', async () => {
+    render(addSpeedSendContainer);
+
+    await waitFor(() => {
+      expect(screen.getByText('Add a new Speed send')).toBeInTheDocument();
+    });
+
+    const autocompletes = screen.getAllByTestId('autocomplete-element');
+    autocompletes[0].focus();
+    fireEvent.keyDown(autocompletes[0], { key: 'ArrowDown' });
+
+    fireEvent.click(screen.getByText('STICKER'), { key: 'Enter' });
+
+    await waitFor(() => {
+      expect(screen.getByText('Animated stickers are not supported.')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('CloseIcon'));
+
+    autocompletes[0].focus();
+    fireEvent.keyDown(autocompletes[0], { key: 'ArrowDown' });
+
+    fireEvent.click(screen.getByText('AUDIO'), { key: 'Enter' });
+
+    await waitFor(() => {
+      expect(screen.getByText('Captions along with audio are not supported.')).toBeInTheDocument();
+    });
+  });
+
+  test('it should show errors if they exist', async () => {
+    render(addSpeedSendContainer);
+
+    await waitFor(() => {
+      expect(screen.getByText('Add a new Speed send')).toBeInTheDocument();
+    });
+
+    const inputs = screen.getAllByRole('textbox');
+    const autocompletes = screen.getAllByTestId('autocomplete-element');
+
+    autocompletes[0].focus();
+    fireEvent.keyDown(autocompletes[0], { key: 'ArrowDown' });
+    fireEvent.click(screen.getByText('IMAGE'), { key: 'Enter' });
+
+    fireEvent.change(inputs[0], { target: { value: 'Template' } });
+
+    fireEvent.click(screen.getByText('Marathi'));
+
+    await waitFor(() => {
+      expect(notificationSpy).toHaveBeenCalled();
     });
   });
 });
@@ -207,8 +265,10 @@ describe('test editing a speed send', () => {
       expect(screen.getByText('Edit Speed send')).toBeInTheDocument();
     });
 
+    const inputs = screen.getAllByRole('textbox');
+
     await waitFor(() => {
-      expect(screen.getByText('Marathi')).toBeInTheDocument();
+      expect(inputs[0]).toHaveValue('title1');
     });
 
     fireEvent.click(screen.getByText('Marathi'));
