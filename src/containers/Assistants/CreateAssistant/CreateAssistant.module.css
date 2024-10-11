@@ -1,0 +1,34 @@
+.FormContainer {
+    padding: 3rem;
+    height: 100%;
+    position: relative;
+}
+
+.Form {
+    height: 100%;
+    overflow-y: scroll;
+}
+
+.Form::-webkit-scrollbar {
+    display: none;
+}
+
+.Label {
+    color: #555;
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.FormFields {
+    display: flex;
+    flex-direction: column;
+    row-gap: 1rem;
+}
+
+.Buttons {
+    background-color: #fff;
+    padding: 1rem 0;
+    position: absolute;
+    bottom: 0;
+}

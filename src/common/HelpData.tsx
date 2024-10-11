@@ -1,6 +1,6 @@
 export interface HelpDataProps {
   heading: string;
-  link: string;
+  link?: string;
 }
 
 export const speedSendInfo: HelpDataProps = {
@@ -100,4 +100,10 @@ export const blockedContactsInfo: HelpDataProps = {
   heading:
     'Glific allows you to block contacts who are sending unwanted or inappropriate messages, ensuring a positive experience for both your beneficiaries and staff.',
   link: 'https://glific.github.io/docs/docs/Product%20Features/Others/All%20product%20features/#block-contacts', // Replace with the actual Glific documentation link
+};
+
+export const assistantsInfo: HelpDataProps = {
+  heading:
+    'Assistants can call OpenAI’s models with specific instructions to tune their personality and capabilities. Assistants can access multiple tools in parallel. Assistants can access files in several formats as part of their creation. When using tools, Assistants can also create files (e.g., images, spreadsheets, etc) and cite files they reference in the Messages they create.',
+  link: 'https://glific.github.io/docs/docs/Product%20Features/Flows/Flow%20Variables/Flow%20variables%20vs%20Contact%20variables', // Replace with the actual Glific documentation link
 };
