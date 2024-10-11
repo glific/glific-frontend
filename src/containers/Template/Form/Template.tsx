@@ -316,7 +316,12 @@ const Template = ({
     }
 
     if (exampleValue) {
+      variables = getExampleValue(exampleValue);
+      setVariables(variables);
+
       if (hasButtons) {
+        setIsAddButtonChecked(hasButtons);
+
         const { buttons: buttonsVal } = getTemplateAndButtons(
           templateButtonType,
           exampleValue,
@@ -324,19 +329,20 @@ const Template = ({
         );
         setTemplateButtons(buttonsVal);
         setTemplateType(templateButtonType);
+        const parse = convertButtonsToTemplate(buttonsVal, templateButtonType);
+        const parsedText = parse.length ? `| ${parse.join(' | ')}` : null;
+        const { message }: any = getTemplateAndButton(getExampleFromBody(bodyValue, variables));
+        const sampleText: any = parsedText && message + parsedText;
+        onExampleChange(sampleText);
+      } else {
+        onExampleChange(getExampleFromBody(bodyValue, variables));
       }
-      variables = getExampleValue(exampleValue);
-      setVariables(variables);
-      onExampleChange(getExampleFromBody(bodyValue, variables));
     }
 
     if (shortcodeValue && setNewShortcode) {
       setNewShortcode(shortcodeValue);
     }
 
-    if (hasButtons) {
-      setIsAddButtonChecked(hasButtons);
-    }
     if (typeValue && typeValue !== 'TEXT') {
       setType({ id: typeValue, label: typeValue });
     } else {
@@ -371,6 +377,7 @@ const Template = ({
     if (setAllowTemplateCategoryChange) {
       setAllowTemplateCategoryChange(allowCategoryChangeValue);
     }
+    getUrlAttachmentAndType(typeValue || 'TEXT', { url: MessageMediaValue?.sourceUrl });
   };
 
   const updateStates = ({
@@ -520,15 +527,6 @@ const Template = ({
   }, [languages]);
 
   useEffect(() => {
-    if ((type === '' || type) && attachmentURL) {
-      validateURL(attachmentURL);
-      if (getUrlAttachmentAndType) {
-        getUrlAttachmentAndType(type.id || 'TEXT', { url: attachmentURL });
-      }
-    }
-  }, [type, attachmentURL]);
-
-  useEffect(() => {
     displayWarning();
   }, [type]);
 
@@ -540,13 +538,26 @@ const Template = ({
 
   // Removing buttons when checkbox is checked or unchecked
   useEffect(() => {
-    const { message }: any = getTemplateAndButton(getExampleFromBody(body, variables));
-    onExampleChange(message || '');
+    if (!isEditing) {
+      const { message }: any = getTemplateAndButton(getExampleFromBody(body, variables));
+      onExampleChange(message || '');
+    }
   }, [isAddButtonChecked]);
+
+  useEffect(() => {
+    if (type === '' || (type && !isEditing)) {
+      if (attachmentURL) {
+        validateURL(attachmentURL);
+      }
+      if (getUrlAttachmentAndType) {
+        getUrlAttachmentAndType(type.id || 'TEXT', { url: attachmentURL });
+      }
+    }
+  }, [type, attachmentURL]);
 
   // Converting buttons to template and vice-versa to show realtime update on simulator
   useEffect(() => {
-    if (templateButtons.length > 0) {
+    if (templateButtons.length > 0 && !isEditing) {
       const parse = convertButtonsToTemplate(templateButtons, templateType);
 
       const parsedText = parse.length ? `| ${parse.join(' | ')}` : null;

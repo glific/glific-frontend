@@ -72,7 +72,7 @@ export const ChatMessageType = ({
               zIndex={1501} // greater than tooltips
             />
           </div>
-          <MessagesWithLinks isSender={isSender} message={media.caption || media.text} />
+          <MessagesWithLinks isSender={isSender} message={media.caption || media.text || body} />
         </div>
       );
 

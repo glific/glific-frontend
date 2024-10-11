@@ -90,6 +90,7 @@ export const HSM = () => {
     const media: any = { ...sampleMessages.media };
     const text = getTemplate(message);
     media.caption = text;
+
     setSampleMessages((val) => ({ ...val, body: text, media }));
   };
 
