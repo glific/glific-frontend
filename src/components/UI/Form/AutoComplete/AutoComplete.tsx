@@ -91,7 +91,6 @@ export const AutoComplete = ({
   const [inputValue, setInputValue] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [open, setOpen] = useState(false);
-  console.log(field);
 
   let classStyles = { ...classes, inputRoot: styles.DefaultInputRoot };
 
@@ -114,8 +113,6 @@ export const AutoComplete = ({
       }
       return [];
     }
-
-    console.log(field.value);
 
     return field.value;
   })();

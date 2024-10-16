@@ -1,12 +1,33 @@
-import { FormControlLabel, Slider, Switch, Typography } from '@mui/material';
+import {
+  Button,
+  CircularProgress,
+  FormControlLabel,
+  IconButton,
+  Slider,
+  Switch,
+  Typography,
+} from '@mui/material';
 import { useState } from 'react';
 import styles from './AssistantOptions.module.css';
 import HelpIcon from 'components/UI/HelpIcon/HelpIcon';
-
+import AddIcon from 'assets/images/AddGreenIcon.svg?react';
+import UploadIcon from 'assets/images/icons/UploadIcon.svg?react';
+import DatabaseIcon from 'assets/images/database.svg?react';
+import { DialogBox } from 'components/UI/DialogBox/DialogBox';
+import DeleteIcon from 'assets/images/icons/Delete/Red.svg?react';
+import { useMutation, useQuery } from '@apollo/client';
+import {
+  ADD_FILES_TO_FILE_SEARCH,
+  REMOVE_FILES_FROM_ASSISTANT,
+  UPLOAD_FILE_TO_OPENAI,
+} from 'graphql/mutations/Assistant';
+import { GET_ASSISTANT_FILES } from 'graphql/queries/Assistant';
+import { setNotification } from 'common/notification';
 interface AssistantOptionsProps {
-  form: any;
-  field: any;
+  options: any;
   fileSearch: boolean;
+  currentId: any;
+  setOptions: any;
 }
 
 const temperatureInfo =
@@ -15,41 +36,185 @@ const temperatureInfo =
 const fileSearchInfo =
   'File search enables the assistant with knowledge from files that you or your users upload. Once a file is uploaded, the assistant automatically decides when to retrieve content based on user requests.';
 
-export const AssistantOptions = ({ form, field, fileSearch }: AssistantOptionsProps) => {
-  const [checked, setChecked] = useState(false);
+export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOptionsProps) => {
+  const [showUploadDialog, setShowUploadDialog] = useState(false);
+  const [files, setFiles] = useState<any[]>([]);
+
+  const [uploadFile, { loading: uploadingFile }] = useMutation(UPLOAD_FILE_TO_OPENAI);
+  const [addFilesToFileSearch, { loading: addingFiles }] = useMutation(ADD_FILES_TO_FILE_SEARCH);
+  const [removeFile] = useMutation(REMOVE_FILES_FROM_ASSISTANT);
+
+  const { refetch, data } = useQuery(GET_ASSISTANT_FILES, {
+    variables: { assistantId: currentId },
+    onCompleted: ({ assistant }) => {
+      const attachedFiles = assistant.assistant.vectorStore.files;
+      setFiles([...files, ...attachedFiles.map((item: any) => ({ ...item, attached: true }))]);
+    },
+  });
+
+  const handleFileChange = (event: any) => {
+    if (event.target.files.length === 0) return;
+
+    uploadFile({
+      variables: {
+        media: event.target.files[0],
+      },
+      onCompleted: ({ uploadFilesearchFile }) => {
+        uploadFilesearchFile = {
+          fileId: uploadFilesearchFile?.fileId,
+          filename: uploadFilesearchFile?.filename,
+        };
+        setFiles([...files, uploadFilesearchFile]);
+      },
+    });
+  };
+
+  const handleRemoveFile = (file: any) => {
+    if (file.attached) {
+      removeFile({
+        variables: {
+          fileId: file.fileId,
+          removeAssistantFileId: currentId,
+        },
+        onCompleted: () => {
+          refetch();
+        },
+      });
+    }
+    setFiles(files.filter((fileItem) => fileItem.fileId !== file.fileId));
+  };
+
+  const handleFileUpload = () => {
+    const filesToUpload = files.filter((item) => !item.attached);
+    if (filesToUpload.length > 0) {
+      addFilesToFileSearch({
+        variables: {
+          addAssistantFilesId: currentId,
+          mediaInfo: files.filter((item) => !item.attached),
+        },
+        onCompleted: (data) => {
+          setNotification('Files added to assistant!', 'success');
+          setShowUploadDialog(false);
+        },
+      });
+    } else {
+      setShowUploadDialog(false);
+    }
+  };
+
+  let dialog;
+  if (showUploadDialog) {
+    dialog = (
+      <DialogBox
+        open={showUploadDialog}
+        title={`Add files to file search`}
+        handleCancel={() => setShowUploadDialog(false)}
+        buttonOk="Add"
+        fullWidth
+        handleOk={handleFileUpload}
+        disableOk={addingFiles}
+        buttonOkLoading={addingFiles}
+      >
+        <div className={styles.DialogContent}>
+          <Button
+            className="Container"
+            fullWidth={true}
+            component="label"
+            variant="text"
+            tabIndex={-1}
+          >
+            <div className={styles.UploadContainer}>
+              {uploadingFile ? (
+                <CircularProgress size={20} />
+              ) : (
+                <>
+                  <UploadIcon /> Upload File
+                </>
+              )}
+              <input
+                data-testid="uploadFile"
+                type="file"
+                onChange={handleFileChange}
+                style={{ display: 'none' }}
+              />
+            </div>
+          </Button>
+          {files.length > 0 && (
+            <div className={styles.FileList}>
+              {files.map((file, index) => (
+                <div data-testid="fileItem" className={styles.File} key={index}>
+                  <span>{file.filename}</span>
+                  <IconButton data-testid="deleteFile" onClick={() => handleRemoveFile(file)}>
+                    <DeleteIcon />
+                  </IconButton>
+                </div>
+              ))}
+            </div>
+          )}
+          <span>
+            Information in the attached files will be available to this assistant.{' '}
+            <a href="#">Learn More</a>
+          </span>
+        </div>
+      </DialogBox>
+    );
+  }
 
   return (
     <div className={styles.AssistantOptions}>
-      <div>
+      <div className={styles.Files}>
         <Typography variant="subtitle2" className={styles.Label} data-testid="inputLabel">
           Tools
         </Typography>
-        <FormControlLabel
-          control={
-            <Switch
-              checked={field.value.fileSearch}
-              name="fileSearch"
-              onChange={(event) => {
-                form.setFieldValue('options', {
-                  ...field.value,
-                  fileSearch: event.target.checked,
-                });
-              }}
-            />
-          }
-          label={
-            <>
-              File Search{' '}
-              <HelpIcon
-                helpData={{
-                  heading: fileSearchInfo,
+        <div className={styles.FilesHeader}>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={options.fileSearch}
+                name="fileSearch"
+                onChange={(event) => {
+                  setOptions({
+                    ...options,
+                    fileSearch: event.target.checked,
+                  });
                 }}
               />
-            </>
-          }
-        />
+            }
+            label={
+              <div className={styles.LabelContainer}>
+                <span>File Search</span>
+                <HelpIcon
+                  helpData={{
+                    heading: fileSearchInfo,
+                  }}
+                />
+              </div>
+            }
+          />
 
-        <button>Files</button>
+          <Button
+            data-testid="addFiles"
+            onClick={() => setShowUploadDialog(true)}
+            variant="outlined"
+          >
+            <AddIcon />
+            Add Files
+          </Button>
+        </div>
+        {data?.assistant.assistant.vectorStore && (
+          <div className={styles.VectorStore}>
+            <div className={styles.VectorContent}>
+              <DatabaseIcon />
+              <div>
+                <p>{data?.assistant.assistant.vectorStore?.name}</p>
+                <span>{data?.assistant.assistant.vectorStore?.vectorStoreId}</span>
+              </div>
+            </div>
+            <IconButton data-testid="deleteFile" onClick={() => {}}>
+              <DeleteIcon />
+            </IconButton>
+          </div>
+        )}
       </div>
 
       <div className={styles.Temperature}>
@@ -65,20 +230,20 @@ export const AssistantOptions = ({ form, field, fileSearch }: AssistantOptionsPr
         <div className={styles.Slider}>
           <Slider
             onChange={(_, value) => {
-              form.setFieldValue('options', {
-                ...field.value,
+              setOptions({
+                ...options,
                 temperature: value,
               });
             }}
-            value={field.value.temperature}
+            value={options.temperature}
             step={0.01}
             max={2}
           />
           <input
-            value={field.value.temperature}
+            value={options.temperature}
             onChange={(event) => {
-              form.setFieldValue('options', {
-                ...field.value,
+              setOptions({
+                ...options,
                 temperature: event.target.value,
               });
             }}
@@ -86,6 +251,8 @@ export const AssistantOptions = ({ form, field, fileSearch }: AssistantOptionsPr
           />
         </div>
       </div>
+
+      {dialog}
     </div>
   );
 };

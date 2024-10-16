@@ -28,6 +28,24 @@ export const GET_ASSISTANT = gql`
   }
 `;
 
+export const GET_ASSISTANT_FILES = gql`
+  query Assistant($assistantId: ID!) {
+    assistant(id: $assistantId) {
+      assistant {
+        vectorStore {
+          files {
+            fileId: id
+            filename: name
+          }
+          id
+          name
+          vectorStoreId
+        }
+      }
+    }
+  }
+`;
+
 export const GET_MODELS = gql`
   query RootQueryType {
     listOpenaiModels
