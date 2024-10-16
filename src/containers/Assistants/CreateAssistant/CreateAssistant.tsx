@@ -110,6 +110,9 @@ export const CreateAssistant = ({
         updateAssistantId: currentId,
         input: payload,
       },
+      onCompleted: (data) => {
+        setUpdateList(!updateList);
+      },
     });
   };
 
