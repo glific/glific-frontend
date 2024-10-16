@@ -1,22 +1,26 @@
-import { Input } from 'components/UI/Form/Input/Input';
-import { AssistantOptions } from '../AssistantOptions/AssistantOptions';
-import { useEffect, useState } from 'react';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import { Typography } from '@mui/material';
 import { Field, FormikProvider, useFormik } from 'formik';
-import { Autocomplete, TextField, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
+import * as Yup from 'yup';
+
+import { copyToClipboard } from 'common/utils';
+import { setNotification } from 'common/notification';
+
+import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
+import { Button } from 'components/UI/Form/Button/Button';
+import { DialogBox } from 'components/UI/DialogBox/DialogBox';
+import { Input } from 'components/UI/Form/Input/Input';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
+
+import { GET_ASSISTANT, GET_MODELS } from 'graphql/queries/Assistant';
+import { DELETE_ASSISTANT, UPDATE_ASSISTANT } from 'graphql/mutations/Assistant';
+
+import CopyIcon from 'assets/images/CopyGreen.svg?react';
+
+import { AssistantOptions } from '../AssistantOptions/AssistantOptions';
 
 import styles from './CreateAssistant.module.css';
-import { Button } from 'components/UI/Form/Button/Button';
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { GET_ASSISTANT, GET_MODELS } from 'graphql/queries/Assistant';
-import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
-import * as Yup from 'yup';
-import { Loading } from 'components/UI/Layout/Loading/Loading';
-import { CREATE_ASSISTANT, DELETE_ASSISTANT, UPDATE_ASSISTANT } from 'graphql/mutations/Assistant';
-import { setNotification } from 'common/notification';
-import { DialogBox } from 'components/UI/DialogBox/DialogBox';
-import { copyToClipboard } from 'common/utils';
-import { IconButton } from '@mui/material';
-import CopyIcon from 'assets/images/CopyGreen.svg?react';
 
 interface CreateAssistantProps {
   currentId: string | number | null;

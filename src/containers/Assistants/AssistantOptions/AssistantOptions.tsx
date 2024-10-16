@@ -1,3 +1,4 @@
+import { useMutation, useQuery } from '@apollo/client';
 import {
   Button,
   CircularProgress,
@@ -8,21 +9,26 @@ import {
   Typography,
 } from '@mui/material';
 import { useState } from 'react';
-import styles from './AssistantOptions.module.css';
-import HelpIcon from 'components/UI/HelpIcon/HelpIcon';
+
 import AddIcon from 'assets/images/AddGreenIcon.svg?react';
-import UploadIcon from 'assets/images/icons/UploadIcon.svg?react';
 import DatabaseIcon from 'assets/images/database.svg?react';
-import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import DeleteIcon from 'assets/images/icons/Delete/Red.svg?react';
-import { useMutation, useQuery } from '@apollo/client';
+import FileIcon from 'assets/images/FileGreen.svg?react';
+import UploadIcon from 'assets/images/icons/UploadIcon.svg?react';
+
+import { DialogBox } from 'components/UI/DialogBox/DialogBox';
+import HelpIcon from 'components/UI/HelpIcon/HelpIcon';
+import { setNotification } from 'common/notification';
+
 import {
   ADD_FILES_TO_FILE_SEARCH,
   REMOVE_FILES_FROM_ASSISTANT,
   UPLOAD_FILE_TO_OPENAI,
 } from 'graphql/mutations/Assistant';
+
 import { GET_ASSISTANT_FILES } from 'graphql/queries/Assistant';
-import { setNotification } from 'common/notification';
+
+import styles from './AssistantOptions.module.css';
 interface AssistantOptionsProps {
   options: any;
   fileSearch: boolean;
@@ -144,7 +150,10 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
             <div className={styles.FileList}>
               {files.map((file, index) => (
                 <div data-testid="fileItem" className={styles.File} key={index}>
-                  <span>{file.filename}</span>
+                  <div>
+                    <FileIcon />
+                    <span>{file.filename}</span>
+                  </div>
                   <IconButton data-testid="deleteFile" onClick={() => handleRemoveFile(file)}>
                     <DeleteIcon />
                   </IconButton>

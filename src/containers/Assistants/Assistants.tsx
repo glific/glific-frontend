@@ -1,12 +1,16 @@
-import { assistantsInfo } from 'common/HelpData';
-import { Heading } from 'components/UI/Heading/Heading';
-import styles from './Assistants.module.css';
-import { useState } from 'react';
-import { List } from './ListItems/List';
-import { CreateAssistant } from './CreateAssistant/CreateAssistant';
-import { GET_ASSISTANTS } from 'graphql/queries/Assistant';
 import { useMutation } from '@apollo/client';
+import { useState } from 'react';
+
+import { assistantsInfo } from 'common/HelpData';
+
+import { Heading } from 'components/UI/Heading/Heading';
+
 import { CREATE_ASSISTANT } from 'graphql/mutations/Assistant';
+import { GET_ASSISTANTS } from 'graphql/queries/Assistant';
+
+import { CreateAssistant } from './CreateAssistant/CreateAssistant';
+import { List } from './ListItems/List';
+import styles from './Assistants.module.css';
 
 export const Assistants = () => {
   const [updateList, setUpdateList] = useState(false);
