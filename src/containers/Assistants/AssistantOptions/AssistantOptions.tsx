@@ -95,6 +95,7 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
         onCompleted: (data) => {
           setNotification('Files added to assistant!', 'success');
           setShowUploadDialog(false);
+          refetch();
         },
       });
     } else {
@@ -152,7 +153,7 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
             </div>
           )}
           <span>
-            Information in the attached files will be available to this assistant.{' '}
+            Information in the attached files will be available to this assistant.
             <a href="#">Learn More</a>
           </span>
         </div>

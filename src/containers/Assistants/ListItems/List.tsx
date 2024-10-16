@@ -41,7 +41,7 @@ export const List = ({
       },
     },
     onCompleted: (data) => {
-      setCurrentId(data[listItemName][0]?.id);
+      if (!currentId) setCurrentId(data[listItemName][0]?.id);
       if (data[listItemName].length > DEFAULT_ENTITY_LIMIT - 1) {
         setLoadMore(true);
       }

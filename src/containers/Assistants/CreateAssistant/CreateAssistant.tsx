@@ -11,18 +11,32 @@ import { GET_ASSISTANT, GET_MODELS } from 'graphql/queries/Assistant';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import * as Yup from 'yup';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
-import { CREATE_ASSISTANT, UPDATE_ASSISTANT } from 'graphql/mutations/Assistant';
+import { CREATE_ASSISTANT, DELETE_ASSISTANT, UPDATE_ASSISTANT } from 'graphql/mutations/Assistant';
 import { setNotification } from 'common/notification';
+import { DialogBox } from 'components/UI/DialogBox/DialogBox';
+import { copyToClipboard } from 'common/utils';
+import { IconButton } from '@mui/material';
+import CopyIcon from 'assets/images/CopyGreen.svg?react';
 
 interface CreateAssistantProps {
   currentId: string | number | null;
+  updateList: boolean;
+  setCurrentId: any;
+  setUpdateList: any;
 }
 
-export const CreateAssistant = ({ currentId }: CreateAssistantProps) => {
+export const CreateAssistant = ({
+  currentId,
+  setUpdateList,
+  setCurrentId,
+  updateList,
+}: CreateAssistantProps) => {
+  const [assistantId, setAssistantId] = useState('');
   const [name, setName] = useState('');
   const [model, setModel] = useState<any>(null);
-  const [instructions, setPrompt] = useState('');
+  const [instructions, setInstructions] = useState('');
   const [options, setOptions] = useState({ fileSearch: true, temperature: 1 });
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
   const states = {
     name,
@@ -42,6 +56,8 @@ export const CreateAssistant = ({ currentId }: CreateAssistantProps) => {
     },
   });
 
+  const [deleteAssistant, { loading: deletingAssistant }] = useMutation(DELETE_ASSISTANT);
+
   if (modelsList) {
     modelOptions = modelsList?.listOpenaiModels.map((item: string, index: number) => ({
       id: index.toString(),
@@ -54,12 +70,13 @@ export const CreateAssistant = ({ currentId }: CreateAssistantProps) => {
       getAssistant({
         variables: { assistantId: currentId },
         onCompleted: ({ assistant }) => {
+          setAssistantId(assistant?.assistant?.assistantId);
           setName(assistant?.assistant?.name || '');
           let modelValue = modelOptions?.find(
             (item: any) => item.label === assistant?.assistant?.model
           );
           setModel(modelValue);
-          setPrompt(assistant?.assistant?.instructions || '');
+          setInstructions(assistant?.assistant?.instructions || '');
           setOptions({
             ...options,
             temperature: assistant?.assistant?.temperature,
@@ -70,7 +87,6 @@ export const CreateAssistant = ({ currentId }: CreateAssistantProps) => {
   }, [currentId, modelsList]);
 
   const handleCreate = () => {
-    console.log(states);
     const {
       instructions: instructionsValue,
       model: modelValue,
@@ -109,8 +125,16 @@ export const CreateAssistant = ({ currentId }: CreateAssistantProps) => {
       name: 'name',
       type: 'text',
       label: 'Name',
-      helperText: 'Give a recognizable name for your assistant',
       onChange: (value: any) => setName(value),
+      helperText: (
+        <div className={styles.AssistantId}>
+          <span className={styles.HelperText}>Give a recognizable name for your assistant</span>
+          <div onClick={() => copyToClipboard(assistantId)}>
+            <CopyIcon />
+            <span>{assistantId}</span>
+          </div>
+        </div>
+      ),
     },
     {
       component: Input,
@@ -120,7 +144,7 @@ export const CreateAssistant = ({ currentId }: CreateAssistantProps) => {
       rows: 3,
       textArea: true,
       helperText: 'Set the instructions according to your requirements.',
-      onChange: (value: any) => setPrompt(value),
+      onChange: (value: any) => setInstructions(value),
     },
     {
       component: AssistantOptions,
@@ -144,6 +168,44 @@ export const CreateAssistant = ({ currentId }: CreateAssistantProps) => {
     onSubmit: (values, { setErrors }) => {},
   });
 
+  const handleClose = () => {
+    setShowConfirmation(false);
+  };
+
+  const handleDelete = () => {
+    deleteAssistant({
+      variables: {
+        deleteAssistantId: currentId,
+      },
+      onCompleted: ({ deleteAssistant }) => {
+        setShowConfirmation(false);
+        setNotification(
+          `Assistant ${deleteAssistant.assistant.name} deleted successfully`,
+          'success'
+        );
+        setCurrentId(null);
+        setUpdateList(!updateList);
+      },
+    });
+  };
+
+  let dialog;
+  if (showConfirmation) {
+    dialog = (
+      <DialogBox
+        title={`Are you sure you want to delete the assistant ${name}?`}
+        handleCancel={handleClose}
+        colorOk="warning"
+        alignButtons="center"
+        handleOk={handleDelete}
+        buttonOkLoading={deletingAssistant}
+        disableOk={deletingAssistant}
+      >
+        <div className={styles.DialogContent}>You won't be able to use this assistant.</div>
+      </DialogBox>
+    );
+  }
+
   if (loading || listLoading) {
     return <Loading />;
   }
@@ -166,11 +228,12 @@ export const CreateAssistant = ({ currentId }: CreateAssistantProps) => {
             <Button loading={savingChanges} onClick={handleCreate} variant="contained">
               Save Changes
             </Button>
-            <Button variant="outlined" color="error">
+            <Button onClick={() => setShowConfirmation(true)} variant="outlined" color="error">
               Remove
             </Button>
           </div>
         </form>
+        {dialog}
       </div>
     </FormikProvider>
   );

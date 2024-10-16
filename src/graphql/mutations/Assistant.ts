@@ -58,3 +58,17 @@ export const REMOVE_FILES_FROM_ASSISTANT = gql`
     }
   }
 `;
+
+export const DELETE_ASSISTANT = gql`
+  mutation DeleteAssistant($deleteAssistantId: ID!) {
+    deleteAssistant(id: $deleteAssistantId) {
+      assistant {
+        name
+        assistantId
+      }
+      errors {
+        message
+      }
+    }
+  }
+`;

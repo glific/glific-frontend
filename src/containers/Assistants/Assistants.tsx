@@ -11,7 +11,6 @@ import { CREATE_ASSISTANT } from 'graphql/mutations/Assistant';
 export const Assistants = () => {
   const [updateList, setUpdateList] = useState(false);
   const [assistantId, setAssistantId] = useState(null);
-  const [showCreateAssistant, setShowCreateAssistant] = useState(false);
 
   const [createAssistant] = useMutation(CREATE_ASSISTANT);
 
@@ -22,7 +21,8 @@ export const Assistants = () => {
           name: null,
         },
       },
-      onCompleted: () => {
+      onCompleted: ({ createAssistant }) => {
+        setAssistantId(createAssistant.assistant.id);
         setUpdateList(!updateList);
       },
     });
@@ -43,11 +43,17 @@ export const Assistants = () => {
             listItemName="assistants"
             refreshList={updateList}
             setCurrentId={setAssistantId}
+            currentId={assistantId}
           />
         </div>
         <div className={styles.RightContainer}>
           {assistantId ? (
-            <CreateAssistant currentId={assistantId} />
+            <CreateAssistant
+              setUpdateList={setUpdateList}
+              setCurrentId={setAssistantId}
+              currentId={assistantId}
+              updateList={updateList}
+            />
           ) : (
             <p className={styles.EmptyText}>Select/Create an assistant</p>
           )}
