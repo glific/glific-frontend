@@ -7,8 +7,8 @@ import * as Notification from 'common/notification';
 import { LexicalWrapper } from 'common/LexicalWrapper';
 import * as utilsModule from 'common/utils';
 import { SPEED_SENDS_MOCKS } from 'mocks/Template';
-import SpeedSendList from '../../List/SpeedSendList/SpeedSendList';
-import SpeedSends from './SpeedSends';
+import SpeedSendList from '../Template/List/SpeedSendList/SpeedSendList';
+import SpeedSend from './SpeedSend';
 import axios from 'axios';
 
 vi.mock('lexical-beautiful-mentions', async (importOriginal) => {
@@ -37,9 +37,9 @@ const addSpeedSendContainer = (
     <MockedProvider mocks={SPEED_SENDS_MOCKS}>
       <MemoryRouter initialEntries={['/speed-send/add']}>
         <Routes>
-          <Route path="/speed-send/add" element={<SpeedSends />} />
+          <Route path="/speed-send/add" element={<SpeedSend />} />
           <Route path="/speed-send" element={<SpeedSendList />} />
-          <Route path="/speed-send/:id/edit" element={<SpeedSends />} />
+          <Route path="/speed-send/:id/edit" element={<SpeedSend />} />
         </Routes>
       </MemoryRouter>
     </MockedProvider>
@@ -51,7 +51,7 @@ const editSpeedSendContainer = (id: string) => (
     <MockedProvider mocks={SPEED_SENDS_MOCKS}>
       <MemoryRouter initialEntries={[`/speed-send/${id}/edit`]}>
         <Routes>
-          <Route path="/speed-send/:id/edit" element={<SpeedSends />} />
+          <Route path="/speed-send/:id/edit" element={<SpeedSend />} />
           <Route path="/speed-send" element={<SpeedSendList />} />
         </Routes>
       </MemoryRouter>

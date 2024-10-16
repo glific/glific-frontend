@@ -47,7 +47,7 @@ export const getTranslation = (attribute: any, translations: any, defaultLanguag
   return defaultTemplate[attribute] || null;
 };
 
-export const SpeedSends = () => {
+export const SpeedSend = () => {
   const [label, setLabel] = useState('');
   const [body, setBody] = useState<any>('');
   const [language, setLanguageId] = useState<any>(null);
@@ -528,4 +528,4 @@ export const SpeedSends = () => {
   );
 };
 
-export default SpeedSends;
+export default SpeedSend;

@@ -15,7 +15,7 @@ import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { Typography } from '@mui/material';
 import { Input } from 'components/UI/Form/Input/Input';
 import { EmojiInput } from 'components/UI/Form/EmojiInput/EmojiInput';
-import { TemplateVariables } from '../../TemplateVariables/TemplateVariables';
+import { TemplateVariables } from './TemplateVariables/TemplateVariables';
 import { TemplateOptions } from 'containers/TemplateOptions/TemplateOptions';
 import { CreateAutoComplete } from 'components/UI/Form/CreateAutoComplete/CreateAutoComplete';
 import { GET_TAGS } from 'graphql/queries/Tags';
