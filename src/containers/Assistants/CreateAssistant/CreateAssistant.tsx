@@ -52,7 +52,7 @@ export const CreateAssistant = ({
   let modelOptions = [];
 
   const { data: modelsList, loading: listLoading } = useQuery(GET_MODELS);
-  const [getAssistant, { loading }] = useLazyQuery(GET_ASSISTANT);
+  const [getAssistant, { loading, data }] = useLazyQuery(GET_ASSISTANT);
 
   const [updateAssistant, { loading: savingChanges }] = useMutation(UPDATE_ASSISTANT, {
     onCompleted: () => {
@@ -216,6 +216,9 @@ export const CreateAssistant = ({
   if (loading || listLoading) {
     return <Loading />;
   }
+
+  if (!data?.assistant?.assistant) return;
+
   return (
     <FormikProvider value={formik}>
       <div className={styles.FormContainer}>

@@ -158,6 +158,7 @@ const routeAdmin = (
     <Route path="knowledge-base" element={<KnowledgeBase />} />
 
     <Route path="/assistants" element={<Assistant />} />
+    <Route path="/assistants/:assistantId" element={<Assistant />} />
 
     <Route path="/*" element={<Chat />} />
   </Routes>

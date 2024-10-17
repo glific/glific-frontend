@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { assistantsInfo } from 'common/HelpData';
 
@@ -11,10 +11,13 @@ import { GET_ASSISTANTS } from 'graphql/queries/Assistant';
 import { CreateAssistant } from './CreateAssistant/CreateAssistant';
 import { List } from './ListItems/List';
 import styles from './Assistants.module.css';
+import { useParams } from 'react-router';
+import { setNotification } from 'common/notification';
 
 export const Assistants = () => {
+  const params = useParams();
   const [updateList, setUpdateList] = useState(false);
-  const [assistantId, setAssistantId] = useState(null);
+  const [assistantId, setAssistantId] = useState<string | null>(null);
 
   const [createAssistant] = useMutation(CREATE_ASSISTANT);
 
@@ -26,11 +29,16 @@ export const Assistants = () => {
         },
       },
       onCompleted: ({ createAssistant }) => {
+        setNotification('Assistant created successfully', 'success');
         setAssistantId(createAssistant.assistant.id);
         setUpdateList(!updateList);
       },
     });
   };
+
+  useEffect(() => {
+    if (params.assistantId) setAssistantId(params.assistantId);
+  }, [params]);
 
   return (
     <div className={styles.AssistantContainer}>

@@ -220,9 +220,9 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
                 <span>{data?.assistant.assistant.vectorStore?.vectorStoreId}</span>
               </div>
             </div>
-            <IconButton data-testid="deleteFile" onClick={() => {}}>
-              <DeleteIcon />
-            </IconButton>
+            {data?.assistant.assistant.vectorStore.files.length > 0 && (
+              <span>{data?.assistant.assistant.vectorStore.files.length} files</span>
+            )}
           </div>
         )}
       </div>

@@ -9,6 +9,7 @@ import { copyToClipboard } from 'common/utils';
 import SearchBar from 'components/UI/SearchBar/SearchBar';
 
 import styles from './List.module.css';
+import { useNavigate } from 'react-router';
 
 interface ListProps {
   icon?: any;
@@ -27,6 +28,7 @@ export const List = ({
   setCurrentId,
   currentId,
 }: ListProps) => {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [showLoadMore, setLoadMore] = useState(false);
 
@@ -103,7 +105,7 @@ export const List = ({
               <div
                 key={item.id}
                 className={`${styles.Item} ${currentId === item.id ? styles.SelectedItem : ''}`}
-                onClick={() => setCurrentId(item.id)}
+                onClick={() => navigate(`/assistants/${item.id}`)}
                 data-testid="listItem"
               >
                 {icon && <div>{icon}</div>}
