@@ -6,13 +6,13 @@ import { SEARCH_QUERY } from 'graphql/queries/Search';
 import ChatMessages from './ChatMessages';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { getAttachmentPermissionMock } from 'mocks/Attachment';
+import { createMediaMessageMock, getAttachmentPermissionMock } from 'mocks/Attachment';
 import { clearMessagesQuery, contactCollectionsQuery } from 'mocks/Contact';
 import { OrganizationStateMock } from 'mocks/Organization';
 import {
   CONVERSATION_MOCKS,
   conversationMock,
-  createAndSendMessageMutation2,
+  createAndSendMessageMutation,
   markAsReadMock,
   mocksWithConversation,
   sendMessageInWaGroup,
@@ -25,6 +25,7 @@ import { setNotification } from 'common/notification';
 import { waGroup, waGroupcollection } from 'mocks/Groups';
 import { getContactSearchQuery } from 'mocks/Search';
 import { getWhatsAppManagedPhonesStatusMock } from 'mocks/StatusBar';
+import { TEMPLATE_MOCKS } from 'mocks/Template';
 
 vi.mock('common/notification', async (importOriginal) => {
   const mod = await importOriginal<typeof import('common/notification')>();
@@ -35,6 +36,15 @@ vi.mock('common/notification', async (importOriginal) => {
     }),
   };
 });
+
+const mockIntersectionObserver = class {
+  constructor() {}
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+};
+
+(window as any).IntersectionObserver = mockIntersectionObserver;
 
 const messages = (limit: number, skip: number) =>
   new Array(limit).fill(null).map((val: any, index: number) => ({
@@ -250,7 +260,15 @@ const mocks = [
     messageOpts: { limit: 20, offset: 0 },
     filter: { id: '2', searchGroup: true },
   }),
-  createAndSendMessageMutation2,
+  createAndSendMessageMutation({
+    body: 'hey',
+    senderId: 1,
+    receiverId: '2',
+    flow: 'OUTBOUND',
+    interactiveTemplateId: undefined,
+    type: 'TEXT',
+    mediaId: null,
+  }),
   sendMessageMock,
   sendMessageInWaGroup,
   sendMessageInWaGroupCollection,
@@ -260,6 +278,24 @@ const mocks = [
   markAsReadMock('2'),
   markAsReadMock('3'),
   getWhatsAppManagedPhonesStatusMock,
+  ...TEMPLATE_MOCKS,
+  createMediaMessageMock({
+    caption: 'some description',
+    sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
+    url: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
+  }),
+  createAndSendMessageMutation({
+    body: '',
+    senderId: 1,
+    receiverId: '2',
+    flow: 'OUTBOUND',
+    interactiveTemplateId: undefined,
+    type: 'IMAGE',
+    mediaId: '1',
+    isHsm: true,
+    templateId: 3,
+    params: [],
+  }),
 ];
 
 export const chatMocks = mocks;
@@ -522,6 +558,83 @@ test('Load more messages for collections', async () => {
   await waitFor(() => {
     fireEvent.scroll(container, { target: { scrollY: 0 } });
     fireEvent.click(loadmore);
+  });
+});
+
+test('should send media template message to contact', async () => {
+  render(chatMessages);
+
+  fireEvent.click(screen.getByTestId('shortcut-open-button'));
+  fireEvent.click(screen.getByText('Templates'));
+
+  await waitFor(() => {
+    expect(screen.getByTestId('chatTemplates')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getAllByTestId('templateItem')[0]);
+
+  fireEvent.click(screen.getByTestId('sendButton'));
+
+  await waitFor(() => {
+    expect(screen.getByText('Add attachments to message')).toBeInTheDocument();
+  });
+});
+
+test('should send template message to contact', async () => {
+  render(chatMessages);
+
+  fireEvent.click(screen.getByTestId('shortcut-open-button'));
+  fireEvent.click(screen.getByText('Templates'));
+
+  await waitFor(() => {
+    expect(screen.getByTestId('chatTemplates')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getAllByTestId('templateItem')[1]);
+
+  fireEvent.click(screen.getByTestId('removeMessage'));
+
+  fireEvent.click(screen.getByTestId('shortcut-open-button'));
+  fireEvent.click(screen.getByText('Templates'));
+
+  await waitFor(() => {
+    expect(screen.getByTestId('chatTemplates')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getAllByTestId('templateItem')[1]);
+
+  fireEvent.click(screen.getByTestId('sendButton'));
+});
+
+test('should open attachment dialog', async () => {
+  render(chatMessages);
+
+  fireEvent.click(screen.getByTestId('attachmentIcon'));
+
+  await waitFor(() => {
+    expect(screen.getByText('Add attachments to message')).toBeInTheDocument();
+  });
+
+  const autocomplete = screen.getByRole('combobox');
+  autocomplete.focus();
+  fireEvent.keyDown(autocomplete, { key: 'ArrowDown' });
+
+  fireEvent.click(screen.getByText('Image'), { key: 'Enter' });
+
+  fireEvent.change(screen.getByPlaceholderText('Attachment URL'), {
+    target: { value: 'https://www.buildquickbots.com/whatsapp/media/sample/jpg/sample01.jpg' },
+  });
+
+  fireEvent.click(screen.getByText('Add'));
+});
+
+test('should open emoji picker', async () => {
+  render(chatMessages);
+
+  fireEvent.click(screen.getByTestId('emoji-picker'));
+
+  await waitFor(() => {
+    expect(screen.getByTestId('emoji-container')).toBeInTheDocument();
   });
 });
 

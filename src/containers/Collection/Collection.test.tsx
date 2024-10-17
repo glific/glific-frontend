@@ -1,5 +1,4 @@
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
-import UserEvent from '@testing-library/user-event';
 import { MockedProvider } from '@apollo/client/testing';
 import { vi } from 'vitest';
 import {
@@ -7,6 +6,8 @@ import {
   getCollectionQuery,
   getCollectionsQuery,
   getCollectionUsersQuery,
+  updateCollectionQuery,
+  updateCollectionUsersQuery,
 } from 'mocks/Collection';
 import { getUsersQuery } from 'mocks/User';
 import { getOrganizationLanguagesQuery, getOrganizationQuery } from 'mocks/Organization';
@@ -29,6 +30,8 @@ const mocks = [
   ...getCollectionsQuery,
   createCollectionQuery,
   getSearchCollectionQuery,
+  updateCollectionQuery,
+  updateCollectionUsersQuery,
 ];
 
 const wrapper = (
@@ -84,11 +87,11 @@ describe('collection', () => {
 
     // remove first user
     const removeUser = getAllByTestId('deleteIcon');
-    UserEvent.click(removeUser[0]);
+    fireEvent.click(removeUser[0]);
     // click on SAVE
     const saveButton = getByTestId('submitActionButton');
     await waitFor(() => {
-      UserEvent.click(saveButton);
+      fireEvent.click(saveButton);
     });
   });
 

@@ -1,5 +1,4 @@
 import { fireEvent, render, screen, waitFor, act } from '@testing-library/react';
-import UserEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 import axios from 'axios';
@@ -68,7 +67,7 @@ describe('<Registration />', () => {
       // click on continue
     });
     const button = screen.getByText('GET STARTED');
-    UserEvent.click(button);
+    fireEvent.click(button);
 
     const responseData = { data: { is_valid: true, messages: [] } };
     act(() => {
@@ -94,7 +93,7 @@ describe('<Registration />', () => {
       // click on continue
     });
     const button = screen.getByText('GET STARTED');
-    UserEvent.click(button);
+    fireEvent.click(button);
 
     const responseData = { data: { is_valid: false, messages: [] } };
     act(() => {

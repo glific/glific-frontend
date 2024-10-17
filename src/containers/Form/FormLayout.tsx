@@ -152,6 +152,95 @@ export const FormLayout = ({
   const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
   const params = useParams();
 
+  const saveHandler = ({ languageId: languageIdValue, ...itemData }: any) => {
+    let payload = {
+      ...itemData,
+      ...defaultAttribute,
+    };
+
+    payload = languageSupport
+      ? { ...payload, languageId: Number(languageIdValue) }
+      : { ...payload };
+
+    // create custom payload for searches
+    if (setPayload) {
+      payload = setPayload(payload);
+      if (advanceSearch) {
+        const data = advanceSearch(payload);
+
+        if (data && data.heading && type === 'search') return;
+      }
+    }
+    // remove fields from the payload that marked as skipPayload = true
+    formFields.forEach((field: any) => {
+      if (field.additionalState) {
+        additionalState(payload[field.additionalState]);
+      }
+      if (field.skipPayload) {
+        delete payload[field.name];
+      }
+    });
+    // for template create media for attachment
+    if (isAttachment && payload.type !== 'TEXT' && payload.type) {
+      getMediaId(payload)
+        .then((data: any) => {
+          if (data) {
+            const payloadCopy = payload;
+            delete payloadCopy.attachmentURL;
+            payloadCopy.messageMediaId = parseInt(data.data.createMessageMedia.messageMedia.id, 10);
+            performTask(payloadCopy);
+          }
+        })
+        .catch((e: any) => {
+          setErrorMessage(e);
+        });
+    } else {
+      performTask(payload);
+    }
+  };
+
+  const performTask = (payload: any) => {
+    if (itemId) {
+      if (isLoadedData) {
+        let idKey = idType;
+        let idVal = itemId;
+
+        /**
+         * When idType is organizationId
+         * We are updating billing for given organization
+         * since params.id is orgId we want billing
+         * id to update billing details
+         */
+        const payloadBody = { ...payload };
+        if (idType === 'organizationId') {
+          idKey = 'id';
+          idVal = payloadBody.billingId;
+          // Clearning unnecessary fields
+          delete payloadBody.billingId;
+        }
+
+        updateItem({
+          variables: {
+            [idKey]: idVal,
+            input: payloadBody,
+          },
+        });
+      } else {
+        createItem({
+          variables: {
+            input: payload,
+          },
+        });
+      }
+    } else {
+      createItem({
+        variables: {
+          input: payload,
+        },
+      });
+    }
+  };
+
   const formik = useFormik({
     initialValues: {
       languageId,
@@ -369,93 +458,6 @@ export const FormLayout = ({
     setErrorMessage(error);
     return null;
   }
-  const performTask = (payload: any) => {
-    if (itemId) {
-      if (isLoadedData) {
-        let idKey = idType;
-        let idVal = itemId;
-
-        /**
-         * When idType is organizationId
-         * We are updating billing for given organization
-         * since params.id is orgId we want billing
-         * id to update billing details
-         */
-        const payloadBody = { ...payload };
-        if (idType === 'organizationId') {
-          idKey = 'id';
-          idVal = payloadBody.billingId;
-          // Clearning unnecessary fields
-          delete payloadBody.billingId;
-        }
-
-        updateItem({
-          variables: {
-            [idKey]: idVal,
-            input: payloadBody,
-          },
-        });
-      } else {
-        createItem({
-          variables: {
-            input: payload,
-          },
-        });
-      }
-    } else {
-      createItem({
-        variables: {
-          input: payload,
-        },
-      });
-    }
-  };
-  const saveHandler = ({ languageId: languageIdValue, ...itemData }: any) => {
-    let payload = {
-      ...itemData,
-      ...defaultAttribute,
-    };
-
-    payload = languageSupport
-      ? { ...payload, languageId: Number(languageIdValue) }
-      : { ...payload };
-
-    // create custom payload for searches
-    if (setPayload) {
-      payload = setPayload(payload);
-      if (advanceSearch) {
-        const data = advanceSearch(payload);
-
-        if (data && data.heading && type === 'search') return;
-      }
-    }
-    // remove fields from the payload that marked as skipPayload = true
-    formFields.forEach((field: any) => {
-      if (field.additionalState) {
-        additionalState(payload[field.additionalState]);
-      }
-      if (field.skipPayload) {
-        delete payload[field.name];
-      }
-    });
-    // for template create media for attachment
-    if (isAttachment && payload.type !== 'TEXT' && payload.type) {
-      getMediaId(payload)
-        .then((data: any) => {
-          if (data) {
-            const payloadCopy = payload;
-            delete payloadCopy.attachmentURL;
-            payloadCopy.messageMediaId = parseInt(data.data.createMessageMedia.messageMedia.id, 10);
-            performTask(payloadCopy);
-          }
-        })
-        .catch((e: any) => {
-          setErrorMessage(e);
-        });
-    } else {
-      performTask(payload);
-    }
-  };
 
   const cancelHandler = () => {
     // for chat screen searches

@@ -1,5 +1,4 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import UserEvent from '@testing-library/user-event';
 import { MockedProvider } from '@apollo/client/testing';
 import { BrowserRouter as Router } from 'react-router-dom';
 
@@ -30,7 +29,7 @@ test('it renders component and clicks cancel', async () => {
     const Button = screen.getByText('Cancel');
     expect(Button).toBeInTheDocument();
     // click on Cancel
-    UserEvent.click(Button);
+    fireEvent.click(Button);
   });
 });
 
