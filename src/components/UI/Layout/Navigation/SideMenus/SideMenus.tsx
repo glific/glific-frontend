@@ -212,6 +212,7 @@ const SideMenus = ({ opened }: SideMenusProps) => {
               primary={t(menu.title as any)}
             />
           )}
+          {menu.new && <span className={styles.New}>{'New'}</span>}
         </ListItemButton>
       );
 

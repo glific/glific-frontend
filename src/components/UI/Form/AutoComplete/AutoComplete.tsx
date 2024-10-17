@@ -113,6 +113,7 @@ export const AutoComplete = ({
       }
       return [];
     }
+
     return field.value;
   })();
 

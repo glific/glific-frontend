@@ -26,14 +26,16 @@ export const HelpIcon = ({
             <div>
               <div className={styles.HoverPopUpText}>
                 {helpData.heading}
-                <div
-                  className={styles.HoverLink}
-                  onClick={() => {
-                    window.open(helpData.link);
-                  }}
-                >
-                  Learn more
-                </div>
+                {helpData.link && (
+                  <div
+                    className={styles.HoverLink}
+                    onClick={() => {
+                      window.open(helpData.link);
+                    }}
+                  >
+                    Learn more
+                  </div>
+                )}
               </div>
             </div>
           )}
