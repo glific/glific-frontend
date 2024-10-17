@@ -7,7 +7,7 @@ import * as Notification from 'common/notification';
 import { LexicalWrapper } from 'common/LexicalWrapper';
 import * as utilsModule from 'common/utils';
 import { SPEED_SENDS_MOCKS } from 'mocks/Template';
-import SpeedSendList from '../Template/List/SpeedSendList/SpeedSendList';
+import SpeedSendList from './SpeedSendList/SpeedSendList';
 import SpeedSend from './SpeedSend';
 import axios from 'axios';
 
