@@ -31,6 +31,7 @@ export const TemplateButtons = ({
           onClick={() => handleButtonClick(type, value)}
           startIcon={icon}
           disabled={!isSimulator}
+          data-testid="templateButton"
         >
           {title}
         </Button>

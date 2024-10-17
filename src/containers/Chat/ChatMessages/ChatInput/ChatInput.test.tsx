@@ -3,7 +3,7 @@ import { render, waitFor, fireEvent, screen } from '@testing-library/react';
 import { vi } from 'vitest';
 
 import ChatInput from './ChatInput';
-import { TEMPLATE_MOCKS } from 'mocks/Template';
+import { filterTemplatesQuery } from 'mocks/Template';
 import {
   createMediaMessageMock,
   getAttachmentPermissionMock,
@@ -17,7 +17,10 @@ const mocks = [
   searchInteractive,
   searchInteractive,
   searchInteractiveHi,
-  ...TEMPLATE_MOCKS,
+  filterTemplatesQuery('', { isHsm: true }),
+  filterTemplatesQuery('', { isHsm: true }),
+  filterTemplatesQuery('hi', { isHsm: true }),
+  filterTemplatesQuery('', { isHsm: false }),
   getAttachmentPermissionMock,
   uploadBlobMock,
   createMediaMessageMock({
@@ -177,12 +180,12 @@ describe('<ChatInput />', () => {
     const interactiveMessages = getAllByTestId('shortcutButton')[2];
     fireEvent.click(interactiveMessages);
     await waitFor(() => {
-      expect(getAllByTestId('templateItem')).toHaveLength(2);
+      expect(getAllByTestId('templateItem')).toHaveLength(3);
     });
     const listItem = getAllByTestId('templateItem')[0];
     fireEvent.click(listItem);
     await waitFor(() => {
-      expect(getAllByText('some description')).toHaveLength(1);
+      expect(getAllByText('description')).toHaveLength(1);
     });
   });
 

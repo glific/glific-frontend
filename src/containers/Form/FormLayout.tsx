@@ -439,7 +439,7 @@ export const FormLayout = ({
       }
     });
     // for template create media for attachment
-    if (isAttachment && payload.type !== 'TEXT' && payload.type) {
+    if (isAttachment && payload.type && payload.type !== 'TEXT') {
       getMediaId(payload)
         .then((data: any) => {
           if (data) {
