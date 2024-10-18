@@ -22,7 +22,7 @@
     "@mui/icons-material": "^6.1.1",
     "@mui/material": "^6.1.1",
     "@mui/x-date-pickers": "^7.18.0",
-    "@nyaruka/temba-components": "^0.108.1",
+    "@nyaruka/temba-components": "^0.108.3",
     "@stripe/react-stripe-js": "^2.8.0",
     "@stripe/stripe-js": "^4.5.0",
     "@vitejs/plugin-react": "^4.3.1",
