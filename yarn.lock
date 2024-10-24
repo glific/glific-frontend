@@ -59,12 +59,20 @@
     "@appsignal/types" "=3.0.1"
     tslib "^2.3.0"
 
-"@appsignal/javascript@^1.3.31":
-  version "1.3.31"
-  resolved "https://registry.yarnpkg.com/@appsignal/javascript/-/javascript-1.3.31.tgz#905086fea5808158b235b8299eddc71beaa5dd2f"
-  integrity sha512-vpISIrrnLMdHELY1byTRXh7bDzKJOwqwb33TjfVcrQ+X3G/RnZrHw395xLEkRWOWIaFJ9677vMX/lBWTv7WqDQ==
+"@appsignal/core@=1.1.23":
+  version "1.1.23"
+  resolved "https://registry.yarnpkg.com/@appsignal/core/-/core-1.1.23.tgz#bbde8c5c70ced96774e976fb8ab7fde7074f7df7"
+  integrity sha512-5N6bGBecZRU7C9MkUc/U/+CNeSfnjdLqP07h8lJnEfe4DXDfeABiy4AWGZPFRHFllP1eWZY+fWXJQo9mkTubFQ==
   dependencies:
-    "@appsignal/core" "=1.1.22"
+    "@appsignal/types" "=3.0.1"
+    tslib "^2.3.0"
+
+"@appsignal/javascript@^1.4.0":
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@appsignal/javascript/-/javascript-1.4.0.tgz#4964138244128d0c1239e1dea3eb20d71ade507a"
+  integrity sha512-IEWWmRKItyH3zAyzS5ZA5CKsXxlbTtopIh4UDG1tJFPrKeGobVKx5f8d2MITjhT1qd1C/rKYTQHE0WSUVkoHUg==
+  dependencies:
+    "@appsignal/core" "=1.1.23"
     "@appsignal/types" "=3.0.1"
     tslib "^2.3.0"
 
@@ -5514,8 +5522,16 @@ streamx@^2.12.0, streamx@^2.12.5, streamx@^2.13.2, streamx@^2.14.0:
   optionalDependencies:
     bare-events "^2.2.0"
 
-"string-width-cjs@npm:string-width@^4.2.0", string-width@^4.1.0:
-  name string-width-cjs
+"string-width-cjs@npm:string-width@^4.2.0":
+  version "4.2.3"
+  resolved "https://registry.yarnpkg.com/string-width/-/string-width-4.2.3.tgz#269c7117d27b05ad2e536830a8ec895ef9c6d010"
+  integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
+  dependencies:
+    emoji-regex "^8.0.0"
+    is-fullwidth-code-point "^3.0.0"
+    strip-ansi "^6.0.1"
+
+string-width@^4.1.0:
   version "4.2.3"
   resolved "https://registry.yarnpkg.com/string-width/-/string-width-4.2.3.tgz#269c7117d27b05ad2e536830a8ec895ef9c6d010"
   integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
@@ -5609,8 +5625,14 @@ string_decoder@~1.1.1:
   dependencies:
     safe-buffer "~5.1.0"
 
-"strip-ansi-cjs@npm:strip-ansi@^6.0.1", strip-ansi@^6.0.0, strip-ansi@^6.0.1:
-  name strip-ansi-cjs
+"strip-ansi-cjs@npm:strip-ansi@^6.0.1":
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-6.0.1.tgz#9e26c63d30f53443e9489495b2105d37b67a85d9"
+  integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
+  dependencies:
+    ansi-regex "^5.0.1"
+
+strip-ansi@^6.0.0, strip-ansi@^6.0.1:
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-6.0.1.tgz#9e26c63d30f53443e9489495b2105d37b67a85d9"
   integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
