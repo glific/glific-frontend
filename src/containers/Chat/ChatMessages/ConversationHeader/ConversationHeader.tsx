@@ -473,8 +473,8 @@ export const ConversationHeader = ({
     options = (
       <>
         {viewDetails}
-        {addMember}
         {flowButton}
+        {addMember}
       </>
     );
   } else {
