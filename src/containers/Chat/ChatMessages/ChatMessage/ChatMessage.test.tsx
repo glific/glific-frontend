@@ -24,7 +24,7 @@ vi.mock('react-player', () => {
 HTMLAnchorElement.prototype.click = vi.fn();
 
 const insertedAt = '2020-06-19T18:44:02Z';
-const getProps: any = (type: any) => {
+const getProps: any = (additionalProps: any) => {
   return {
     id: 1,
     body: '*Hello there!* visit https://www.google.com',
@@ -39,7 +39,6 @@ const getProps: any = (type: any) => {
     popup: 1,
     open: true,
     insertedAt,
-    type,
     media: { url: 'http://glific.com' },
     errors: '{}',
     contextMessage: {
@@ -63,6 +62,7 @@ const getProps: any = (type: any) => {
     focus: true,
     interactiveContent: '{}',
     sendBy: 'test',
+    ...additionalProps,
   };
 };
 
@@ -71,7 +71,7 @@ window.HTMLElement.prototype.scrollIntoView = vi.fn();
 describe('<ChatMessage />', () => {
   const chatMessage = (type: any) => (
     <MockedProvider mocks={[]} addTypename={false}>
-      <ChatMessage {...getProps(type)} />
+      <ChatMessage {...getProps({ type })} />
     </MockedProvider>
   );
 
@@ -187,7 +187,7 @@ describe('<ChatMessage />', () => {
     });
   });
 
-  const props = getProps('TEXT');
+  const props = getProps({ type: 'TEXT' });
   test('it should render error with payload', async () => {
     props.errors = '{"payload": {"payload": {"reason": "Something went wrong"}}} ';
     render(
@@ -200,7 +200,7 @@ describe('<ChatMessage />', () => {
     expect(errors).toBeInTheDocument();
   });
 
-  const imageProps = getProps('DOCUMENT');
+  const imageProps = getProps({ type: 'DOCUMENT' });
   test('it should render error with message', () => {
     imageProps.media = {
       url: 'https://file-examples-com.github.io/uploads/2017/10/file-sample_150kB.pdf',
@@ -349,5 +349,25 @@ describe('<ChatMessage />', () => {
         <ChatMessage {...receivedProps} />
       </MockedProvider>
     );
+  });
+
+  test('should render location request template', async () => {
+    render(
+      <MockedProvider addTypename={false}>
+        <ChatMessage
+          {...getProps({
+            type: 'LOCATION_REQUEST_MESSAGE',
+            interactiveContent:
+              '{"type":"location_request_message","body":{"type":"text","text":"please share your location"},"action":{"name":"send_location"}}',
+            body: 'please share your location',
+            entityId: '2',
+          })}
+        />
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('locationTemplate')).toBeInTheDocument();
+    });
   });
 });
