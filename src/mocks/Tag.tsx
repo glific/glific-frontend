@@ -1,10 +1,11 @@
+import { CREATE_LABEL } from 'graphql/mutations/Tags';
 import { GET_TAG, FILTER_TAGS, GET_TAGS, GET_TAG_COUNT } from 'graphql/queries/Tags';
 
 export const getTagQuery = {
   request: {
     query: GET_TAG,
     variables: {
-      id: 13,
+      id: '13',
     },
   },
 
@@ -106,6 +107,29 @@ export const countTagQuery = {
   result: {
     data: {
       countTags: 1,
+    },
+  },
+};
+
+export const createTag = {
+  request: {
+    query: CREATE_LABEL,
+    variables: {
+      input: {
+        label: 'tag',
+        language_id: '1',
+      },
+    },
+  },
+  result: {
+    data: {
+      createTag: {
+        errors: null,
+        tag: {
+          id: '4',
+          label: 'tag',
+        },
+      },
     },
   },
 };
