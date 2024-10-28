@@ -1,13 +1,5 @@
 import { useMutation, useQuery } from '@apollo/client';
-import {
-  Button,
-  CircularProgress,
-  FormControlLabel,
-  IconButton,
-  Slider,
-  Switch,
-  Typography,
-} from '@mui/material';
+import { Button, CircularProgress, IconButton, Slider, Typography } from '@mui/material';
 import { useState } from 'react';
 
 import AddIcon from 'assets/images/AddGreenIcon.svg?react';
