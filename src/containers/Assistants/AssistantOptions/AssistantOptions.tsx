@@ -18,7 +18,7 @@ import UploadIcon from 'assets/images/icons/UploadIcon.svg?react';
 
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import HelpIcon from 'components/UI/HelpIcon/HelpIcon';
-import { setNotification } from 'common/notification';
+import { setErrorMessage, setNotification } from 'common/notification';
 
 import {
   ADD_FILES_TO_FILE_SEARCH,
@@ -31,16 +31,12 @@ import { GET_ASSISTANT_FILES } from 'graphql/queries/Assistant';
 import styles from './AssistantOptions.module.css';
 interface AssistantOptionsProps {
   options: any;
-  fileSearch: boolean;
   currentId: any;
   setOptions: any;
 }
 
 const temperatureInfo =
   'Controls randomness: Lowering results in less random completions. As the temperature approaches zero, the model will become deterministic and repetitive.';
-
-const fileSearchInfo =
-  'File search enables the assistant with knowledge from files that you or your users upload. Once a file is uploaded, the assistant automatically decides when to retrieve content based on user requests.';
 
 export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOptionsProps) => {
   const [showUploadDialog, setShowUploadDialog] = useState(false);
@@ -102,6 +98,9 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
           setNotification('Files added to assistant!', 'success');
           setShowUploadDialog(false);
           refetch();
+        },
+        onError: (error) => {
+          setErrorMessage(error);
         },
       });
     } else {
@@ -173,35 +172,10 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
   return (
     <div className={styles.AssistantOptions}>
       <div className={styles.Files}>
-        <Typography variant="subtitle2" className={styles.Label} data-testid="inputLabel">
-          Tools
-        </Typography>
         <div className={styles.FilesHeader}>
-          <FormControlLabel
-            control={
-              <Switch
-                checked={options.fileSearch}
-                name="fileSearch"
-                onChange={(event) => {
-                  setOptions({
-                    ...options,
-                    fileSearch: event.target.checked,
-                  });
-                }}
-              />
-            }
-            label={
-              <div className={styles.LabelContainer}>
-                <span>File Search</span>
-                <HelpIcon
-                  helpData={{
-                    heading: fileSearchInfo,
-                  }}
-                />
-              </div>
-            }
-          />
-
+          <Typography variant="subtitle2" className={styles.Label} data-testid="inputLabel">
+            Files
+          </Typography>
           <Button
             data-testid="addFiles"
             onClick={() => setShowUploadDialog(true)}

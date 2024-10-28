@@ -16,6 +16,7 @@ export interface HeadingProps {
     label: string;
     action: any;
     icon?: any;
+    loading?: boolean;
   };
 }
 
@@ -54,6 +55,7 @@ export const Heading = ({
             variant="contained"
             onClick={() => button.action && button.action()}
             data-testid="headingButton"
+            loading={button.loading}
           >
             {button.icon || addIcon} {button.label}
           </Button>

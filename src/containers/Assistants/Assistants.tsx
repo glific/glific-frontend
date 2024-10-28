@@ -11,15 +11,16 @@ import { GET_ASSISTANTS } from 'graphql/queries/Assistant';
 import { CreateAssistant } from './CreateAssistant/CreateAssistant';
 import { List } from './ListItems/List';
 import styles from './Assistants.module.css';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { setNotification } from 'common/notification';
 
 export const Assistants = () => {
   const params = useParams();
   const [updateList, setUpdateList] = useState(false);
   const [assistantId, setAssistantId] = useState<string | null>(null);
+  const navigate = useNavigate();
 
-  const [createAssistant] = useMutation(CREATE_ASSISTANT);
+  const [createAssistant, { loading }] = useMutation(CREATE_ASSISTANT);
 
   const handleCreateAssistant = () => {
     createAssistant({
@@ -30,7 +31,7 @@ export const Assistants = () => {
       },
       onCompleted: ({ createAssistant }) => {
         setNotification('Assistant created successfully', 'success');
-        setAssistantId(createAssistant.assistant.id);
+        navigate(`/assistants/${createAssistant.assistant.id}`);
         setUpdateList(!updateList);
       },
     });
@@ -46,7 +47,12 @@ export const Assistants = () => {
         formTitle="Assistants"
         helpData={assistantsInfo}
         headerHelp="Purpose-built AI that uses OpenAI's models and calls tools"
-        button={{ show: true, label: 'Create Assistant', action: handleCreateAssistant }}
+        button={{
+          show: true,
+          label: 'Create Assistant',
+          action: handleCreateAssistant,
+          loading: loading,
+        }}
       />
       <div className={styles.MainContainer}>
         <div className={styles.LeftContainer}>
