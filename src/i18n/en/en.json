@@ -512,5 +512,7 @@
   "Template Flows": "Template Flows",
   "Template Flow": "Template Flow",
   "Template flow copy": "Template flow copy",
-  "Flow created successfully from template!": "Flow created successfully from template!"
+  "Flow created successfully from template!": "Flow created successfully from template!",
+  "First name is required.": "First Nname is required.",
+  "Last name is required.": "Last name is required."
 }

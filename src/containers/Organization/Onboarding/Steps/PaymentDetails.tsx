@@ -15,16 +15,21 @@ export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) =>
   const { t } = useTranslation();
   const [billing_frequency, setPaymentType] = useState<string>('yearly');
 
-  const [name, setName] = useState<string>('');
+  const [first_name, setFirstName] = useState<string>('');
+  const [last_name, setLastName] = useState<string>('');
   const [designation, setDesignation] = useState<string>('');
   const [phone, setPhone] = useState<string>('');
+  const [formattedPhone, setFormattedPhone] = useState<string>('');
   const [email, setEmail] = useState<string>('');
 
   const [loading, setLoading] = useState(false);
 
   const FormSchema = Yup.object().shape({
-    name: Yup.string()
-      .required(t('Name is required.'))
+    first_name: Yup.string()
+      .required(t('First name is required.'))
+      .max(25, t('Please enter not more than 25 characters')),
+    last_name: Yup.string()
+      .required(t('Last name is required.'))
       .max(25, t('Please enter not more than 25 characters')),
     designation: Yup.string()
       .required(t('Designation is required.'))
@@ -35,11 +40,17 @@ export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) =>
     email: Yup.string().required(t('Email is required.')).email(t('Enter a valid email.')),
   });
   const initialFormValues: any = {
-    name,
+    first_name,
+    last_name,
     designation,
     phone,
     email,
     billing_frequency,
+  };
+
+  const handlePhoneNumberChange = (_: any, data: any, formFieldItems: any) => {
+    const formattedValue = formFieldItems.split(data.dialCode).join(data.dialCode + '-');
+    setFormattedPhone(formattedValue);
   };
 
   const formFields = [
@@ -58,9 +69,15 @@ export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) =>
       children: [
         {
           component: Input,
-          name: 'name',
+          name: 'first_name',
           type: 'text',
-          inputLabel: 'Name',
+          inputLabel: 'First Name',
+        },
+        {
+          component: Input,
+          name: 'last_name',
+          type: 'text',
+          inputLabel: 'Last Name',
         },
         {
           component: Input,
@@ -73,6 +90,7 @@ export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) =>
           name: 'phone',
           type: 'phone',
           inputLabel: 'Phone Number',
+          changeHandler: handlePhoneNumberChange,
         },
         {
           component: Input,
@@ -95,6 +113,7 @@ export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) =>
       const updatedPayload = {
         finance_poc: {
           ...payload,
+          phone: formattedPhone,
         },
         registration_id: registrationData.registration_details.registration_id,
         org_id: registrationData.registration_details.org_id,
@@ -107,10 +126,14 @@ export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) =>
   };
 
   const setStates = (states: any) => {
-    const { name, designation, phone, email, billing_frequency } = states.finance_poc;
-    setName(name);
+    const { first_name, last_name, designation, phone, email, billing_frequency } =
+      states.finance_poc;
+
+    setFirstName(first_name);
+    setLastName(last_name);
     setDesignation(designation);
     setPhone(phone);
+    setFormattedPhone(phone);
     setEmail(email);
     setPaymentType(billing_frequency);
   };

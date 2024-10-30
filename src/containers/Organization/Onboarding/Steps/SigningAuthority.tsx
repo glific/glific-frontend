@@ -20,9 +20,12 @@ export const SigningAuthority = ({
   saveData,
 }: SigningAuthorityProps) => {
   const { t } = useTranslation();
-  const [submitterName, setSubmitterName] = useState<string>('');
+  const [submitterFirstName, setSubmitterFirstName] = useState<string>('');
+  const [submitterLastName, setSubmitterLastName] = useState<string>('');
   const [submitterEmail, setSubmitterEmail] = useState<string>('');
-  const [signingAuthorityName, setSigningAuthorityName] = useState<string>('');
+  const [submitterDesignation, setSubmitterDesignation] = useState<string>('');
+  const [signingAuthorityFirstName, setSigningAuthorityFirstName] = useState<string>('');
+  const [signingAuthorityLastName, setSigningAuthorityLastName] = useState<string>('');
   const [signingAuthorityDesignation, setSigningAuthorityDesignation] = useState<string>('');
   const [signingAuthorityEmail, setSigningAuthorityEmail] = useState<string>('');
 
@@ -34,14 +37,20 @@ export const SigningAuthority = ({
   const [loading, setLoading] = useState(false);
 
   const FormSchema = Yup.object().shape({
-    submitterName: Yup.string()
-      .required(t('Name is required.'))
+    submitterFirstName: Yup.string()
+      .required(t('First name is required.'))
+      .max(25, t('Please enter not more than 25 characters')),
+    submitterLastName: Yup.string()
+      .required(t('Last name is required.'))
       .max(25, t('Please enter not more than 25 characters')),
     submitterEmail: Yup.string().required(t('Email is required.')).email(t('Enter a valid email.')),
-    signingAuthorityName: Yup.string()
-      .required(t('Name is required.'))
+    submitterDesignation: Yup.string().required('Designation is required.'),
+    signingAuthorityFirstName: Yup.string()
+      .required(t('First name is required.'))
       .max(25, t('Please enter not more than 25 characters')),
-
+    signingAuthorityLastName: Yup.string()
+      .required(t('Last name is required.'))
+      .max(25, t('Please enter not more than 25 characters')),
     signingAuthorityDesignation: Yup.string().required('Designation is required.'),
     signingAuthorityEmail: Yup.string()
       .required(t('Email is required.'))
@@ -57,9 +66,12 @@ export const SigningAuthority = ({
   });
 
   const initialFormValues: any = {
-    submitterName,
+    submitterFirstName,
+    submitterLastName,
     submitterEmail,
-    signingAuthorityName,
+    submitterDesignation,
+    signingAuthorityFirstName,
+    signingAuthorityLastName,
     signingAuthorityDesignation,
     signingAuthorityEmail,
     permissions,
@@ -71,9 +83,21 @@ export const SigningAuthority = ({
       children: [
         {
           component: Input,
-          name: 'submitterName',
+          name: 'submitterFirstName',
           type: 'text',
-          inputLabel: 'Name',
+          inputLabel: 'First Name',
+        },
+        {
+          component: Input,
+          name: 'submitterLastName',
+          type: 'text',
+          inputLabel: 'Last Name',
+        },
+        {
+          component: Input,
+          name: 'submitterDesignation',
+          type: 'text',
+          inputLabel: 'Designation',
         },
         {
           component: Input,
@@ -88,9 +112,15 @@ export const SigningAuthority = ({
       children: [
         {
           component: Input,
-          name: 'signingAuthorityName',
+          name: 'signingAuthorityFirstName',
           type: 'text',
-          inputLabel: 'Name',
+          inputLabel: 'First Name',
+        },
+        {
+          component: Input,
+          name: 'signingAuthorityLastName',
+          type: 'text',
+          inputLabel: 'Last Name',
         },
         {
           component: Input,
@@ -121,11 +151,14 @@ export const SigningAuthority = ({
 
       const updatedPayload = {
         submitter: {
-          name: payload.submitterName,
+          first_name: payload.submitterFirstName,
+          last_name: payload.submitterLastName,
+          designation: payload.submitterDesignation,
           email: payload.submitterEmail,
         },
         signing_authority: {
-          name: payload.signingAuthorityName,
+          first_name: payload.signingAuthorityFirstName,
+          last_name: payload.signingAuthorityLastName,
           designation: payload.signingAuthorityDesignation,
           email: payload.signingAuthorityEmail,
         },
@@ -136,6 +169,7 @@ export const SigningAuthority = ({
 
         has_submitted: true,
       };
+      console.log(updatedPayload);
 
       return updatedPayload;
     }
@@ -144,9 +178,12 @@ export const SigningAuthority = ({
   const setStates = (states: any) => {
     const { signing_authority, submitter } = states;
 
-    setSubmitterName(submitter?.name);
+    setSubmitterFirstName(submitter?.first_name);
+    setSubmitterLastName(submitter?.last_name);
     setSubmitterEmail(submitter?.email);
-    setSigningAuthorityName(signing_authority?.name);
+    setSubmitterDesignation(submitter?.designation);
+    setSigningAuthorityFirstName(signing_authority?.first_name);
+    setSigningAuthorityLastName(signing_authority?.last_name);
     setSigningAuthorityDesignation(signing_authority?.designation);
     setSigningAuthorityEmail(signing_authority?.email);
     setPermissions({ support_staff_account: false, terms_agreed: false });
