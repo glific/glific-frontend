@@ -24,8 +24,7 @@ export const SigningAuthority = ({
   const [submitterLastName, setSubmitterLastName] = useState<string>('');
   const [submitterEmail, setSubmitterEmail] = useState<string>('');
   const [submitterDesignation, setSubmitterDesignation] = useState<string>('');
-  const [signingAuthorityFirstName, setSigningAuthorityFirstName] = useState<string>('');
-  const [signingAuthorityLastName, setSigningAuthorityLastName] = useState<string>('');
+  const [signingAuthorityName, setSigningAuthorityName] = useState<string>('');
   const [signingAuthorityDesignation, setSigningAuthorityDesignation] = useState<string>('');
   const [signingAuthorityEmail, setSigningAuthorityEmail] = useState<string>('');
 
@@ -45,11 +44,8 @@ export const SigningAuthority = ({
       .max(25, t('Please enter not more than 25 characters')),
     submitterEmail: Yup.string().required(t('Email is required.')).email(t('Enter a valid email.')),
     submitterDesignation: Yup.string().required('Designation is required.'),
-    signingAuthorityFirstName: Yup.string()
-      .required(t('First name is required.'))
-      .max(25, t('Please enter not more than 25 characters')),
-    signingAuthorityLastName: Yup.string()
-      .required(t('Last name is required.'))
+    signingAuthorityName: Yup.string()
+      .required(t('Name is required.'))
       .max(25, t('Please enter not more than 25 characters')),
     signingAuthorityDesignation: Yup.string().required('Designation is required.'),
     signingAuthorityEmail: Yup.string()
@@ -70,8 +66,7 @@ export const SigningAuthority = ({
     submitterLastName,
     submitterEmail,
     submitterDesignation,
-    signingAuthorityFirstName,
-    signingAuthorityLastName,
+    signingAuthorityName,
     signingAuthorityDesignation,
     signingAuthorityEmail,
     permissions,
@@ -118,12 +113,6 @@ export const SigningAuthority = ({
         },
         {
           component: Input,
-          name: 'signingAuthorityLastName',
-          type: 'text',
-          inputLabel: 'Last Name',
-        },
-        {
-          component: Input,
           name: 'signingAuthorityDesignation',
           type: 'text',
           inputLabel: 'Designation',
@@ -157,8 +146,7 @@ export const SigningAuthority = ({
           email: payload.submitterEmail,
         },
         signing_authority: {
-          first_name: payload.signingAuthorityFirstName,
-          last_name: payload.signingAuthorityLastName,
+          name: payload.signingAuthorityName,
           designation: payload.signingAuthorityDesignation,
           email: payload.signingAuthorityEmail,
         },
@@ -182,8 +170,7 @@ export const SigningAuthority = ({
     setSubmitterLastName(submitter?.last_name);
     setSubmitterEmail(submitter?.email);
     setSubmitterDesignation(submitter?.designation);
-    setSigningAuthorityFirstName(signing_authority?.first_name);
-    setSigningAuthorityLastName(signing_authority?.last_name);
+    setSigningAuthorityName(signing_authority?.name);
     setSigningAuthorityDesignation(signing_authority?.designation);
     setSigningAuthorityEmail(signing_authority?.email);
     setPermissions({ support_staff_account: false, terms_agreed: false });

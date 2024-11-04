@@ -14,9 +14,7 @@ import { FormStepProps } from './OrgDetails';
 export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) => {
   const { t } = useTranslation();
   const [billing_frequency, setPaymentType] = useState<string>('yearly');
-
-  const [first_name, setFirstName] = useState<string>('');
-  const [last_name, setLastName] = useState<string>('');
+  const [name, setName] = useState<string>('');
   const [designation, setDesignation] = useState<string>('');
   const [phone, setPhone] = useState<string>('');
   const [formattedPhone, setFormattedPhone] = useState<string>('');
@@ -25,11 +23,8 @@ export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) =>
   const [loading, setLoading] = useState(false);
 
   const FormSchema = Yup.object().shape({
-    first_name: Yup.string()
-      .required(t('First name is required.'))
-      .max(25, t('Please enter not more than 25 characters')),
-    last_name: Yup.string()
-      .required(t('Last name is required.'))
+    name: Yup.string()
+      .required(t('Name is required.'))
       .max(25, t('Please enter not more than 25 characters')),
     designation: Yup.string()
       .required(t('Designation is required.'))
@@ -40,8 +35,7 @@ export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) =>
     email: Yup.string().required(t('Email is required.')).email(t('Enter a valid email.')),
   });
   const initialFormValues: any = {
-    first_name,
-    last_name,
+    name,
     designation,
     phone,
     email,
@@ -69,15 +63,9 @@ export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) =>
       children: [
         {
           component: Input,
-          name: 'first_name',
+          name: 'name',
           type: 'text',
           inputLabel: 'First Name',
-        },
-        {
-          component: Input,
-          name: 'last_name',
-          type: 'text',
-          inputLabel: 'Last Name',
         },
         {
           component: Input,
@@ -126,11 +114,9 @@ export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) =>
   };
 
   const setStates = (states: any) => {
-    const { first_name, last_name, designation, phone, email, billing_frequency } =
-      states.finance_poc;
+    const { name, designation, phone, email, billing_frequency } = states.finance_poc;
 
-    setFirstName(first_name);
-    setLastName(last_name);
+    setName(name);
     setDesignation(designation);
     setPhone(phone);
     setFormattedPhone(phone);
