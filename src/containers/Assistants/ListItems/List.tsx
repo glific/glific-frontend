@@ -12,7 +12,6 @@ import styles from './List.module.css';
 import { useNavigate } from 'react-router';
 
 interface ListProps {
-  icon?: any;
   getItemsQuery: DocumentNode;
   listItemName: string;
   currentId?: any;
@@ -21,7 +20,6 @@ interface ListProps {
 }
 
 export const List = ({
-  icon,
   getItemsQuery,
   listItemName,
   refreshList,
@@ -109,7 +107,6 @@ export const List = ({
                 onClick={() => navigate(`/assistants/${item.id}`)}
                 data-testid="listItem"
               >
-                {icon && <div>{icon}</div>}
                 <div className={styles.Itemm}>
                   <div className={styles.Header}>
                     <span className={styles.Title}>{item.name}</span>

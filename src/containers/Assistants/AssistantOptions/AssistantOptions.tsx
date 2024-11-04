@@ -49,7 +49,7 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
   const handleFileChange = (event: any) => {
     if (event.target.files.length === 0) return;
 
-    if (event.target.files[0].size / (1024 * 1024) > 20) {
+    if (event.target.files[0]?.size / (1024 * 1024) > 20) {
       setNotification('File size should be less than 20MB', 'error');
       return;
     }
@@ -212,6 +212,7 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
 
         <div className={styles.Slider}>
           <Slider
+            name="slider"
             onChange={(_, value) => {
               setOptions({
                 ...options,
@@ -223,6 +224,10 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
             max={2}
           />
           <input
+            role="sliderDisplay"
+            name="sliderDisplay"
+            type="number"
+            step={0.1}
             value={options.temperature}
             onChange={(event) => {
               setOptions({

@@ -71,7 +71,7 @@ export const CreateAssistant = ({
         variables: { assistantId: currentId },
         onCompleted: ({ assistant }) => {
           setAssistantId(assistant?.assistant?.assistantId);
-          setName(assistant?.assistant?.name || '');
+          setName(assistant?.assistant?.name);
           let modelValue = modelOptions?.find(
             (item: any) => item.label === assistant?.assistant?.model
           );
@@ -235,10 +235,20 @@ export const CreateAssistant = ({
             ))}
           </div>
           <div className={styles.Buttons}>
-            <Button loading={savingChanges} onClick={handleCreate} variant="contained">
+            <Button
+              loading={savingChanges}
+              onClick={handleCreate}
+              variant="contained"
+              data-testid="submitAction"
+            >
               Save Changes
             </Button>
-            <Button onClick={() => setShowConfirmation(true)} variant="outlined" color="error">
+            <Button
+              onClick={() => setShowConfirmation(true)}
+              variant="outlined"
+              color="error"
+              data-testid="cancelAction"
+            >
               Remove
             </Button>
           </div>
