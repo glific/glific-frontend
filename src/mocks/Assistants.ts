@@ -1,6 +1,7 @@
 import {
   ADD_FILES_TO_FILE_SEARCH,
   CREATE_ASSISTANT,
+  DELETE_ASSISTANT,
   REMOVE_FILES_FROM_ASSISTANT,
   UPDATE_ASSISTANT,
   UPLOAD_FILE_TO_OPENAI,
@@ -235,6 +236,26 @@ const updateAssistant = {
   },
 };
 
+const removeAssistant = {
+  request: {
+    query: DELETE_ASSISTANT,
+    variables: {
+      deleteAssistantId: '1',
+    },
+  },
+  result: {
+    data: {
+      deleteAssistant: {
+        assistant: {
+          assistantId: '1',
+          name: 'test name',
+        },
+        errors: null,
+      },
+    },
+  },
+};
+
 const uploadFileMocks = [
   uploadFileToFileSearch,
   uploadFileToFileSearch,
@@ -263,6 +284,7 @@ export const MOCKS = [
   getAssistantFiles('2'),
   getAssistantListOnSearch,
   updateAssistant,
+  removeAssistant,
   ...uploadFileMocks,
 ];
 

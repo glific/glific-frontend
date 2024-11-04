@@ -136,7 +136,7 @@ export const CreateAssistant = ({
       helperText: (
         <div className={styles.AssistantId}>
           <span className={styles.HelperText}>Give a recognizable name for your assistant</span>
-          <div onClick={() => copyToClipboard(assistantId)}>
+          <div data-testid="copyCurrentAssistantId" onClick={() => copyToClipboard(assistantId)}>
             <CopyIcon />
             <span>{assistantId}</span>
           </div>
@@ -247,7 +247,7 @@ export const CreateAssistant = ({
               onClick={() => setShowConfirmation(true)}
               variant="outlined"
               color="error"
-              data-testid="cancelAction"
+              data-testid="removeAssistant"
             >
               Remove
             </Button>

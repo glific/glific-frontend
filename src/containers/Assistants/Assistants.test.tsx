@@ -168,6 +168,8 @@ test('it updates the assistant', async () => {
     expect(screen.getByText('Instructions')).toBeInTheDocument();
   });
 
+  fireEvent.click(screen.getByTestId('copyCurrentAssistantId'));
+
   const autocompletes = screen.getAllByTestId('AutocompleteInput');
   const inputs = screen.getAllByRole('textbox');
 
@@ -181,6 +183,34 @@ test('it updates the assistant', async () => {
   fireEvent.change(screen.getByRole('sliderDisplay'), { target: { value: 1.5 } });
 
   fireEvent.click(screen.getByTestId('submitAction'));
+
+  await waitFor(() => {
+    expect(notificationSpy).toHaveBeenCalled();
+  });
+});
+
+test('it deletes the assistant', async () => {
+  render(assistantsComponent());
+
+  await waitFor(() => {
+    expect(screen.getByText('Assistants')).toBeInTheDocument();
+    expect(screen.getByText('Assistant-1')).toBeInTheDocument();
+  });
+
+  await waitFor(() => {
+    expect(screen.getByText('Instructions')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('removeAssistant'));
+  fireEvent.click(screen.getByTestId('cancel-button'));
+
+  fireEvent.click(screen.getByTestId('removeAssistant'));
+
+  await waitFor(() => {
+    expect(screen.getByTestId('dialogBox')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('ok-button'));
 
   await waitFor(() => {
     expect(notificationSpy).toHaveBeenCalled();
