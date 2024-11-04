@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import * as Yup from 'yup';
 
 import { copyToClipboard } from 'common/utils';
-import { setNotification } from 'common/notification';
+import { setErrorMessage, setNotification } from 'common/notification';
 
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Button } from 'components/UI/Form/Button/Button';
@@ -54,11 +54,7 @@ export const CreateAssistant = ({
   const { data: modelsList, loading: listLoading } = useQuery(GET_MODELS);
   const [getAssistant, { loading, data }] = useLazyQuery(GET_ASSISTANT);
 
-  const [updateAssistant, { loading: savingChanges }] = useMutation(UPDATE_ASSISTANT, {
-    onCompleted: () => {
-      setNotification('Changes saved successfully', 'success');
-    },
-  });
+  const [updateAssistant, { loading: savingChanges }] = useMutation(UPDATE_ASSISTANT);
 
   const [deleteAssistant, { loading: deletingAssistant }] = useMutation(DELETE_ASSISTANT);
 
@@ -110,8 +106,12 @@ export const CreateAssistant = ({
         updateAssistantId: currentId,
         input: payload,
       },
-      onCompleted: (data) => {
+      onCompleted: () => {
+        setNotification('Changes saved successfully', 'success');
         setUpdateList(!updateList);
+      },
+      onError: (errors) => {
+        setErrorMessage(errors);
       },
     });
   };
@@ -124,7 +124,7 @@ export const CreateAssistant = ({
       optionLabel: 'label',
       multiple: false,
       label: 'Model',
-      helperText: 'Use this to categorize your flows.',
+      helperText: 'Choose the best model for your needs.',
       onChange: (value: any) => setModel(value),
     },
     {

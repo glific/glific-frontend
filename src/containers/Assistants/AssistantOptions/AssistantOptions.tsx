@@ -49,6 +49,11 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
   const handleFileChange = (event: any) => {
     if (event.target.files.length === 0) return;
 
+    if (event.target.files[0].size / (1024 * 1024) > 20) {
+      setNotification('File size should be less than 20MB', 'error');
+      return;
+    }
+
     uploadFile({
       variables: {
         media: event.target.files[0],
@@ -86,7 +91,7 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
           addAssistantFilesId: currentId,
           mediaInfo: files.filter((item) => !item.attached),
         },
-        onCompleted: (data) => {
+        onCompleted: () => {
           setNotification('Files added to assistant!', 'success');
           setShowUploadDialog(false);
           refetch();
@@ -152,6 +157,8 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
               ))}
             </div>
           )}
+          <span>Max File Size: 20MB</span>
+
           <span>
             Information in the attached files will be available to this assistant.
             <a href="#">Learn More</a>

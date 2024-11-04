@@ -90,6 +90,7 @@ export const List = ({
           handleChange={(e) => {
             setSearchTerm(e.target.value);
           }}
+          handleSubmit={(e) => e.preventDefault()}
           onReset={() => setSearchTerm('')}
           searchMode
           iconFront

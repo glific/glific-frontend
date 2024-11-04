@@ -132,6 +132,11 @@
     column-gap: 0.8rem;
 }
 
+.File span {
+    line-height: 1rem;
+    text-align: left;
+}
+
 .EmptyText {
     font-size: 0.8rem;
     color: #2f2f2f;
