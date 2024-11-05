@@ -20,7 +20,6 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
   const [shortcode, setShortcode] = useState<string>('');
   const [phone, setPhone] = useState<string>('');
   const [code, setCode] = useState('[shortcode]');
-  const [formattedPhone, setFormattedPhone] = useState<string>('');
 
   const [isDisabled, setIsDisabled] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -39,11 +38,6 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
       .required(t('Phone number is required.'))
       .min(7, t('Enter a valid phone number.')),
   });
-
-  const handlePhoneNumberChange = (_: any, data: any, formFieldItems: any) => {
-    const formattedValue = formFieldItems.split(data.dialCode).join(data.dialCode + '-');
-    setFormattedPhone(formattedValue);
-  };
 
   const initialFormValues: any = { name, app_name, api_key, shortcode, phone };
 
@@ -90,7 +84,6 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
       inputLabel: 'Chatbot Number',
       helperText: 'WhatsApp number that will be used for chatbot',
       disabled: isDisabled,
-      changeHandler: handlePhoneNumberChange,
     },
     {
       component: Input,
@@ -144,7 +137,7 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
     return {
       api_key,
       app_name,
-      phone: formattedPhone,
+      phone,
       shortcode,
       name,
       token,

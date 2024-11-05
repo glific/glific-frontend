@@ -1,6 +1,5 @@
 import { OutlinedInput, Typography } from '@mui/material';
 import styles from './Address.module.css';
-import { ChangeEvent, useState } from 'react';
 
 interface RegisteredAddressProps {
   inputLabel: string;

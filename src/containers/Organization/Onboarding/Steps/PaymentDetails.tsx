@@ -10,6 +10,7 @@ import { PhoneInput } from 'components/UI/Form/PhoneInput/PhoneInput';
 import { FormLayout } from '../FormLayout/FormLayout';
 import { PaymentOptions } from '../PaymentType/PaymentOptions';
 import { FormStepProps } from './OrgDetails';
+import { setNotification } from 'common/notification';
 
 export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) => {
   const { t } = useTranslation();
@@ -127,19 +128,26 @@ export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) =>
   const handleSubmit = async (payload: any, setErrors: any) => {
     setLoading(true);
 
-    await axios.post(ONBOARD_URL_UPDATE, payload).then(({ data }) => {
-      setLoading(false);
-      if (data.is_valid) {
-        handleStepChange();
-      } else {
-        const errors = Object.keys(data.messages).reduce((acc, key) => {
-          const newKey = key.replace('finance_poc_', '');
-          return { ...acc, [newKey]: data.messages[key] };
-        }, {});
+    await axios
+      .post(ONBOARD_URL_UPDATE, payload)
+      .then(({ data }) => {
+        setLoading(false);
+        if (data.is_valid) {
+          handleStepChange();
+        } else {
+          const errors = Object.keys(data.messages).reduce((acc, key) => {
+            const newKey = key.replace('finance_poc_', '');
+            return { ...acc, [newKey]: data.messages[key] };
+          }, {});
 
-        setErrors(errors);
-      }
-    });
+          setErrors(errors);
+          setLoading(false);
+        }
+      })
+      .catch((errors) => {
+        setLoading(false);
+        setNotification('Something went wrong', 'error');
+      });
   };
 
   return (
