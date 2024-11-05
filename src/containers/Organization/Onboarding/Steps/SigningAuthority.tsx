@@ -157,7 +157,6 @@ export const SigningAuthority = ({
 
         has_submitted: true,
       };
-      console.log(updatedPayload);
 
       return updatedPayload;
     }

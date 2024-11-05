@@ -14,12 +14,13 @@ import { setNotification } from 'common/notification';
 
 export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) => {
   const { t } = useTranslation();
-  const [billing_frequency, setPaymentType] = useState<string>('yearly');
+  const [billing_frequency, setPaymentType] = useState<string>('Annually');
   const [name, setName] = useState<string>('');
   const [designation, setDesignation] = useState<string>('');
   const [phone, setPhone] = useState<string>('');
   const [formattedPhone, setFormattedPhone] = useState<string>('');
   const [email, setEmail] = useState<string>('');
+  const [customError, setCustomError] = useState(null);
 
   const [loading, setLoading] = useState(false);
 
@@ -135,6 +136,9 @@ export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) =>
         if (data.is_valid) {
           handleStepChange();
         } else {
+          if (data.messages.global) {
+            setCustomError(data.messages.global);
+          }
           const errors = Object.keys(data.messages).reduce((acc, key) => {
             const newKey = key.replace('finance_poc_', '');
             return { ...acc, [newKey]: data.messages[key] };
@@ -165,6 +169,8 @@ export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) =>
       saveData={saveData}
       submitData={handleSubmit}
       loading={loading}
+      setCustomError={setCustomError}
+      customError={customError}
     />
   );
 };

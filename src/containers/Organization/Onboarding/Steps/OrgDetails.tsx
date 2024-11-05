@@ -41,6 +41,7 @@ export const OrgDetails = ({ handleStepChange, saveData }: FormStepProps) => {
   const [disable, setDisable] = useState(false);
 
   const [loading, setLoading] = useState(false);
+  const [customError, setCustomError] = useState(null);
 
   const { t } = useTranslation();
 
@@ -198,6 +199,9 @@ export const OrgDetails = ({ handleStepChange, saveData }: FormStepProps) => {
       if (data.is_valid) {
         handleStepChange();
       } else {
+        if (data.messages.global) {
+          setCustomError(data.messages.global);
+        }
         setErrors(data.messages);
       }
     });
@@ -228,6 +232,8 @@ export const OrgDetails = ({ handleStepChange, saveData }: FormStepProps) => {
       submitData={handleSubmit}
       loading={loading}
       handleEffect={handleAutoUpdateAddress}
+      setCustomError={setCustomError}
+      customError={customError}
     />
   );
 };

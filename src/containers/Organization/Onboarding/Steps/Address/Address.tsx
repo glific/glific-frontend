@@ -35,7 +35,6 @@ export const RegisteredAddress = ({
 
   const errors = form.errors[field.name];
   const touched = form.touched[field.name];
-  console.log(disabled);
 
   return (
     <div>

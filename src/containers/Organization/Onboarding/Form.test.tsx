@@ -144,9 +144,15 @@ test('it should submit the form', async () => {
 
   const inputFieldsOrgdetails = getAllByRole('textbox');
 
-  const [registeredAddress, gstin] = inputFieldsOrgdetails;
+  const [line1, line2, city, state, country, pincode, gstin] = inputFieldsOrgdetails;
 
-  fireEvent.change(registeredAddress, { target: { value: 'address' } });
+  fireEvent.change(line1, { target: { value: 'line1' } });
+  fireEvent.change(line2, { target: { value: 'line2' } });
+  fireEvent.change(city, { target: { value: 'City' } });
+  fireEvent.change(state, { target: { value: 'State' } });
+  fireEvent.change(country, { target: { value: 'Country' } });
+  fireEvent.change(pincode, { target: { value: '123456' } });
+
   fireEvent.click(screen.getByRole('checkbox'));
   fireEvent.change(gstin, { target: { value: '123456789012345' } });
 
@@ -189,14 +195,18 @@ test('it should submit the form', async () => {
 
   const inputFieldssigningdetails = getAllByRole('textbox');
   const [
-    submitterName,
+    submitterFirstName,
+    submitterLastName,
+    submitterDesignation,
     submitterEmail,
     signingAuthorityName,
     signingAuthorityDesignation,
     signingAuthorityEmail,
   ] = inputFieldssigningdetails;
 
-  fireEvent.change(submitterName, { target: { value: 'Default submitter' } });
+  fireEvent.change(submitterFirstName, { target: { value: 'first name' } });
+  fireEvent.change(submitterLastName, { target: { value: 'last name' } });
+  fireEvent.change(submitterDesignation, { target: { value: 'submitter' } });
   fireEvent.change(submitterEmail, { target: { value: 'submitter@email.com' } });
 
   fireEvent.change(signingAuthorityName, { target: { value: 'Default signing' } });
@@ -253,9 +263,14 @@ test('it should disgree and send an email', async () => {
 
   const inputFieldsOrgdetails = getAllByRole('textbox');
 
-  const [registeredAddress, gstin] = inputFieldsOrgdetails;
+  const [line1, line2, city, state, country, pincode, gstin] = inputFieldsOrgdetails;
 
-  fireEvent.change(registeredAddress, { target: { value: 'address' } });
+  fireEvent.change(line1, { target: { value: 'line1' } });
+  fireEvent.change(line2, { target: { value: 'line2' } });
+  fireEvent.change(city, { target: { value: 'City' } });
+  fireEvent.change(state, { target: { value: 'State' } });
+  fireEvent.change(country, { target: { value: 'Country' } });
+  fireEvent.change(pincode, { target: { value: '123456' } });
   fireEvent.click(screen.getByRole('checkbox'));
   fireEvent.change(gstin, { target: { value: '123456789012345' } });
 
