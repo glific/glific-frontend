@@ -107,9 +107,9 @@ export const SigningAuthority = ({
       children: [
         {
           component: Input,
-          name: 'signingAuthorityFirstName',
+          name: 'signingAuthorityName',
           type: 'text',
-          inputLabel: 'First Name',
+          inputLabel: 'Name',
         },
         {
           component: Input,
