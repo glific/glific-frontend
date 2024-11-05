@@ -41,8 +41,10 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
   const { refetch, data } = useQuery(GET_ASSISTANT_FILES, {
     variables: { assistantId: currentId },
     onCompleted: ({ assistant }) => {
-      const attachedFiles = assistant.assistant.vectorStore.files;
-      setFiles([...files, ...attachedFiles.map((item: any) => ({ ...item, attached: true }))]);
+      if (assistant.assistant.vectorStore) {
+        const attachedFiles = assistant.assistant.vectorStore.files;
+        setFiles([...files, ...attachedFiles.map((item: any) => ({ ...item, attached: true }))]);
+      }
     },
   });
 
