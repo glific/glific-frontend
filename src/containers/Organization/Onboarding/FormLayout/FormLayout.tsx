@@ -30,6 +30,8 @@ interface FormLayoutProps {
   showModal?: boolean;
   isDisabled?: boolean;
   handleEffect?: Function;
+  customError?: null | string;
+  setCustomError?: Function;
 }
 
 export const FormLayout = ({
@@ -52,6 +54,8 @@ export const FormLayout = ({
   showModal,
   isDisabled,
   handleEffect,
+  customError,
+  setCustomError,
 }: FormLayoutProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -217,7 +221,7 @@ export const FormLayout = ({
   );
 
   let modal;
-
+  let errorModal;
   if (showModal)
     modal = (
       <DialogBox
@@ -239,6 +243,23 @@ export const FormLayout = ({
       </DialogBox>
     );
 
+  if (customError && setCustomError) {
+    errorModal = (
+      <DialogBox
+        handleOk={() => setCustomError(null)}
+        handleCancel={() => setCustomError(null)}
+        title={'Something went wrong!'}
+        buttonOk={'Ok'}
+        skipCancel
+        colorOk={'warning'}
+      >
+        <div className={styles.Modal}>
+          <p>{customError}</p>
+          <p>Please contact the Glific team for support.</p>
+        </div>
+      </DialogBox>
+    );
+  }
   return (
     <FormikProvider value={formik}>
       <div className={styles.FormContainer}>
@@ -246,6 +267,7 @@ export const FormLayout = ({
         {form}
       </div>
       {isModalOpen && modal}
+      {errorModal}
     </FormikProvider>
   );
 };

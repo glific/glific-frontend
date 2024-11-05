@@ -20,6 +20,7 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
   const [shortcode, setShortcode] = useState<string>('');
   const [phone, setPhone] = useState<string>('');
   const [code, setCode] = useState('[shortcode]');
+  const [customError, setCustomError] = useState(null);
 
   const [isDisabled, setIsDisabled] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -163,6 +164,9 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
 
         return true;
       } else {
+        if (data.messages.global) {
+          setCustomError(data.messages.global);
+        }
         setErrors(data.messages);
         saveData(data.messages, 'errors');
         return false;
@@ -234,6 +238,8 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
       showModal={true}
       isDisabled={isDisabled}
       handleEffect={generateShortcode}
+      customError={customError}
+      setCustomError={setCustomError}
     />
   );
 };
