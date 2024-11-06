@@ -80,6 +80,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
   const [showJumpToLatest, setShowJumpToLatest] = useState(false);
   const [conversationInfo, setConversationInfo] = useState<any>({});
   const [collectionVariables, setCollectionVariables] = useState<any>({});
+  const [messageList, setMessageList] = useState<any>(null);
   const { t } = useTranslation();
   let dialogBox;
 
@@ -254,7 +255,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
     if (allConversations || parameterdata) getScrollToMessage();
   }, [allConversations, parameterdata]);
 
-  let messageList: any;
+  // let messageList: any;
 
   const [sendMessageToCollection] = useMutation(sendCollectionMessageMutation, {
     refetchQueries: [{ query: SEARCH_QUERY, variables: SEARCH_QUERY_VARIABLES }],
@@ -495,6 +496,17 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
     }
   }, [searchMessageNumber]);
 
+  useEffect(() => {
+    setMessageList(getReverserConversations());
+  }, [entityId, conversationInfo]);
+
+  useEffect(() => {
+    const element = document.querySelector(`#search${scrollToMessageNumber}`);
+    if (element) {
+      element.scrollIntoView();
+    }
+  }, [scrollToMessageNumber]);
+
   // HOOKS ESTABLISHED ABOVE
 
   // Run through these cases to ensure data always exists
@@ -561,32 +573,63 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
     return false;
   };
 
-  if (conversationInfo && conversationInfo.messages && conversationInfo.messages?.length > 0) {
-    let reverseConversation = [...conversationInfo.messages];
+  const getReverserConversations = () => {
+    console.log(conversationInfo);
 
-    reverseConversation = reverseConversation.map((message: any, index: number) => {
-      return (
-        <ChatMessage
-          groups={groups}
-          {...message}
-          entityId={entityId}
-          key={message.messageNumber}
-          popup={message.id === showDropdown}
-          onClick={() => showEditDialog(message.id)}
-          focus={index === 0}
-          jumpToMessage={jumpToMessage}
-          daySeparator={showDaySeparator(
-            reverseConversation[index].insertedAt,
-            reverseConversation[index + 1] ? reverseConversation[index + 1].insertedAt : null
-          )}
-        />
-      );
-    });
+    if (conversationInfo && conversationInfo.messages && conversationInfo.messages?.length > 0) {
+      let reverseConversation = [...conversationInfo.messages];
 
-    messageList = reverseConversation
-      .sort((currentMessage: any, nextMessage: any) => currentMessage.id - nextMessage.id)
-      .reverse();
-  }
+      reverseConversation = reverseConversation.map((message: any, index: number) => {
+        return (
+          <ChatMessage
+            groups={groups}
+            {...message}
+            entityId={entityId}
+            key={message.messageNumber}
+            popup={message.id === showDropdown}
+            onClick={() => showEditDialog(message.id)}
+            focus={index === 0}
+            jumpToMessage={jumpToMessage}
+            daySeparator={showDaySeparator(
+              reverseConversation[index].insertedAt,
+              reverseConversation[index + 1] ? reverseConversation[index + 1].insertedAt : null
+            )}
+          />
+        );
+      });
+
+      return reverseConversation
+        .sort((currentMessage: any, nextMessage: any) => currentMessage.id - nextMessage.id)
+        .reverse();
+    }
+  };
+
+  // if (conversationInfo && conversationInfo.messages && conversationInfo.messages?.length > 0) {
+  //   let reverseConversation = [...conversationInfo.messages];
+
+  //   reverseConversation = reverseConversation.map((message: any, index: number) => {
+  //     return (
+  //       <ChatMessage
+  //         groups={groups}
+  //         {...message}
+  //         entityId={entityId}
+  //         key={message.messageNumber}
+  //         popup={message.id === showDropdown}
+  //         onClick={() => showEditDialog(message.id)}
+  //         focus={index === 0}
+  //         jumpToMessage={jumpToMessage}
+  //         daySeparator={showDaySeparator(
+  //           reverseConversation[index].insertedAt,
+  //           reverseConversation[index + 1] ? reverseConversation[index + 1].insertedAt : null
+  //         )}
+  //       />
+  //     );
+  //   });
+
+  //   messageList = reverseConversation
+  //     .sort((currentMessage: any, nextMessage: any) => currentMessage.id - nextMessage.id)
+  //     .reverse();
+  // }
 
   const loadMoreMessages = () => {
     const { messageNumber } = conversationInfo.messages[conversationInfo.messages.length - 1];
@@ -627,13 +670,6 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
       setScrollToMessageNumber(messageNumber);
     });
   };
-
-  useEffect(() => {
-    const element = document.querySelector(`#search${scrollToMessageNumber}`);
-    if (element) {
-      element.scrollIntoView();
-    }
-  }, [scrollToMessageNumber]);
 
   let chatMessages;
   // Check if there are conversation messages else display no messages
