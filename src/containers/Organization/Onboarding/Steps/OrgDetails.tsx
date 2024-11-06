@@ -200,13 +200,13 @@ export const OrgDetails = ({ handleStepChange, saveData }: FormStepProps) => {
         if (data.is_valid) {
           handleStepChange();
         } else {
-          if (data.messages.global) {
-            setCustomError(data.messages.global);
-          }
           setErrors(data.messages);
         }
       })
-      .catch(() => {
+      .catch((data) => {
+        if (data.response.data.error.message) {
+          setCustomError(data.messages.global);
+        }
         setLoading(false);
       });
   };

@@ -187,13 +187,13 @@ export const SigningAuthority = ({
           handleStepChange();
           localStorage.removeItem('registrationData');
         } else {
-          if (data.messages.global) {
-            setCustomError(data.messages.global);
-          }
           setErrors(data.messages);
         }
       })
-      .catch(() => {
+      .catch((data) => {
+        if (data.response.data.error.message) {
+          setCustomError(data.messages.global);
+        }
         setLoading(false);
       });
   };

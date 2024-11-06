@@ -135,9 +135,6 @@ export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) =>
         if (data.is_valid) {
           handleStepChange();
         } else {
-          if (data.messages.global) {
-            setCustomError(data.messages.global);
-          }
           const errors = Object.keys(data.messages).reduce((acc, key) => {
             const newKey = key.replace('finance_poc_', '');
             return { ...acc, [newKey]: data.messages[key] };
@@ -147,7 +144,10 @@ export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) =>
           setLoading(false);
         }
       })
-      .catch(() => {
+      .catch((data) => {
+        if (data.response.data.error.message) {
+          setCustomError(data.messages.global);
+        }
         setLoading(false);
       });
   };
