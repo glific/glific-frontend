@@ -34,7 +34,7 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
     shortcode: Yup.string()
       .required(t('Shortcode is required.'))
       .max(8, 'Shortcode cannot be more than 8 characters.')
-      .matches(/^\S*$/, 'Shortcode cannot contain spaces.'),
+      .matches(/^[a-z0-9]([-a-z0-9]*[a-z0-9])?$/, 'Invalid shortcode.'),
     phone: Yup.string()
       .required(t('Phone number is required.'))
       .min(7, t('Enter a valid phone number.')),
