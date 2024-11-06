@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { Button, CircularProgress, IconButton, Slider, Typography } from '@mui/material';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import AddIcon from 'assets/images/AddGreenIcon.svg?react';
 import DatabaseIcon from 'assets/images/database.svg?react';
@@ -33,6 +34,7 @@ const temperatureInfo =
 export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOptionsProps) => {
   const [showUploadDialog, setShowUploadDialog] = useState(false);
   const [files, setFiles] = useState<any[]>([]);
+  const { t } = useTranslation();
 
   const [uploadFile, { loading: uploadingFile }] = useMutation(UPLOAD_FILE_TO_OPENAI);
   const [addFilesToFileSearch, { loading: addingFiles }] = useMutation(ADD_FILES_TO_FILE_SEARCH);
@@ -112,7 +114,7 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
     dialog = (
       <DialogBox
         open={showUploadDialog}
-        title={`Add files to file search`}
+        title={t('Add files to file search')}
         handleCancel={() => setShowUploadDialog(false)}
         buttonOk="Add"
         fullWidth
@@ -133,7 +135,7 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
                 <CircularProgress size={20} />
               ) : (
                 <>
-                  <UploadIcon /> Upload File
+                  <UploadIcon /> {t('Upload File')}
                 </>
               )}
               <input
@@ -162,7 +164,7 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
           <span>Max File Size: 20MB</span>
 
           <span>
-            Information in the attached files will be available to this assistant.
+            {t('Information in the attached files will be available to this assistant.')}
             <a href="#">Learn More</a>
           </span>
         </div>
@@ -183,7 +185,7 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
             variant="outlined"
           >
             <AddIcon />
-            Add Files
+            {t('Add Files')}
           </Button>
         </div>
         {data?.assistant.assistant.vectorStore && (
@@ -204,7 +206,7 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
 
       <div className={styles.Temperature}>
         <Typography variant="subtitle2" className={styles.Label} data-testid="inputLabel">
-          Temperature
+          {t('Temperature')}
           <HelpIcon
             helpData={{
               heading: temperatureInfo,

@@ -2,6 +2,7 @@ import { DocumentNode, useQuery } from '@apollo/client';
 import { IconButton } from '@mui/material';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import CopyIcon from 'assets/images/icons/Settings/Copy.svg?react';
 import { DEFAULT_ENTITY_LIMIT, DEFAULT_MESSAGE_LOADMORE_LIMIT } from 'common/constants';
@@ -29,6 +30,7 @@ export const List = ({
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [showLoadMore, setLoadMore] = useState(false);
+  const { t } = useTranslation();
 
   const { data, refetch, fetchMore } = useQuery(getItemsQuery, {
     variables: {
@@ -130,7 +132,7 @@ export const List = ({
           ))}
         {showLoadMore ? (
           <span data-testid="loadmore" onClick={loadMoreItems} className={styles.LoadMore}>
-            Load More
+            {t('Load more')}
           </span>
         ) : null}
       </div>

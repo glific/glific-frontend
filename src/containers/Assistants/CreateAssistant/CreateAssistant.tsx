@@ -2,6 +2,7 @@ import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { Typography } from '@mui/material';
 import { Field, FormikProvider, useFormik } from 'formik';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
 
 import { copyToClipboard } from 'common/utils';
@@ -41,6 +42,7 @@ export const CreateAssistant = ({
   const [instructions, setInstructions] = useState('');
   const [options, setOptions] = useState({ fileSearch: true, temperature: 1 });
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const { t } = useTranslation();
 
   const states = {
     name,
@@ -123,19 +125,21 @@ export const CreateAssistant = ({
       options: modelOptions || [],
       optionLabel: 'label',
       multiple: false,
-      label: 'Model',
-      helperText: 'Choose the best model for your needs.',
+      label: t('Model'),
+      helperText: t('Choose the best model for your needs.'),
       onChange: (value: any) => setModel(value),
     },
     {
       component: Input,
       name: 'name',
       type: 'text',
-      label: 'Name',
+      label: t('Name'),
       onChange: (value: any) => setName(value),
       helperText: (
         <div className={styles.AssistantId}>
-          <span className={styles.HelperText}>Give a recognizable name for your assistant</span>
+          <span className={styles.HelperText}>
+            {t('Give a recognizable name for your assistant')}
+          </span>
           <div data-testid="copyCurrentAssistantId" onClick={() => copyToClipboard(assistantId)}>
             <CopyIcon />
             <span>{assistantId}</span>
@@ -147,10 +151,10 @@ export const CreateAssistant = ({
       component: Input,
       name: 'instructions',
       type: 'text',
-      label: 'Instructions',
+      label: t('Instructions'),
       rows: 3,
       textArea: true,
-      helperText: 'Set the instructions according to your requirements.',
+      helperText: t('Set the instructions according to your requirements.'),
       onChange: (value: any) => setInstructions(value),
     },
     {
@@ -208,7 +212,7 @@ export const CreateAssistant = ({
         buttonOkLoading={deletingAssistant}
         disableOk={deletingAssistant}
       >
-        <div className={styles.DialogContent}>You won't be able to use this assistant.</div>
+        <div className={styles.DialogContent}>{t("You won't be able to use this assistant.")}</div>
       </DialogBox>
     );
   }
@@ -241,7 +245,7 @@ export const CreateAssistant = ({
               variant="contained"
               data-testid="submitAction"
             >
-              Save Changes
+              {t('Save Changes')}
             </Button>
             <Button
               onClick={() => setShowConfirmation(true)}
@@ -249,7 +253,7 @@ export const CreateAssistant = ({
               color="error"
               data-testid="removeAssistant"
             >
-              Remove
+              {t('Remove')}
             </Button>
           </div>
         </form>

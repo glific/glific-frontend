@@ -1,5 +1,6 @@
 import { useMutation } from '@apollo/client';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { assistantsInfo } from 'common/HelpData';
 
@@ -19,6 +20,7 @@ export const Assistants = () => {
   const [updateList, setUpdateList] = useState(false);
   const [assistantId, setAssistantId] = useState<string | null>(null);
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const [createAssistant, { loading }] = useMutation(CREATE_ASSISTANT);
 
@@ -30,7 +32,7 @@ export const Assistants = () => {
         },
       },
       onCompleted: ({ createAssistant }) => {
-        setNotification('Assistant created successfully', 'success');
+        setNotification(t('Assistant created successfully'), 'success');
         navigate(`/assistants/${createAssistant.assistant.id}`);
         setUpdateList(!updateList);
       },
@@ -44,12 +46,12 @@ export const Assistants = () => {
   return (
     <div className={styles.AssistantContainer}>
       <Heading
-        formTitle="Assistants"
+        formTitle={t('Assistants')}
         helpData={assistantsInfo}
-        headerHelp="Purpose-built AI that uses OpenAI's models and calls tools"
+        headerHelp={t("Purpose-built AI that uses OpenAI's models and calls tools")}
         button={{
           show: true,
-          label: 'Create Assistant',
+          label: t('Create Assistant'),
           action: handleCreateAssistant,
           loading: loading,
         }}
@@ -73,7 +75,7 @@ export const Assistants = () => {
               updateList={updateList}
             />
           ) : (
-            <p className={styles.EmptyText}>Select/Create an assistant</p>
+            <p className={styles.EmptyText}>{t('Select/Create an assistant')}</p>
           )}
         </div>
       </div>
