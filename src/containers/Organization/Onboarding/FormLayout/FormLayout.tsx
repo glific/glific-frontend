@@ -229,8 +229,8 @@ export const FormLayout = ({
         handleOk={() => {
           saveHandler(formik.values, formik.setErrors);
         }}
-        title={'Confirmation'}
-        buttonOk={'Confirm'}
+        title="Confirmation"
+        buttonOk="Confirm"
         buttonCancel="Cancel"
         buttonOkLoading={loading}
       >
@@ -248,10 +248,10 @@ export const FormLayout = ({
       <DialogBox
         handleOk={() => setCustomError(null)}
         handleCancel={() => setCustomError(null)}
-        title={'Something went wrong!'}
-        buttonOk={'Ok'}
+        title="Something went wrong!"
+        buttonOk="Ok"
         skipCancel
-        colorOk={'warning'}
+        colorOk="warning"
       >
         <div className={styles.Modal}>
           <p>{customError}</p>

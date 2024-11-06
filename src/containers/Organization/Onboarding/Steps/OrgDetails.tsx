@@ -15,9 +15,8 @@ export interface FormStepProps {
   saveData: Function;
 }
 
-const isSameAddress = (address1: any, address2: any) => {
-  return Object.keys(address1).every((key) => address1[key] === address2[key]);
-};
+const isSameAddress = (address1: any, address2: any) =>
+  Object.keys(address1).every((key) => address1[key] === address2[key]);
 
 export const OrgDetails = ({ handleStepChange, saveData }: FormStepProps) => {
   const [gstin, setGstNumber] = useState<string>('');
@@ -194,17 +193,22 @@ export const OrgDetails = ({ handleStepChange, saveData }: FormStepProps) => {
 
   const handleSubmit = async (payload: any, setErrors: any) => {
     setLoading(true);
-    await axios.post(ONBOARD_URL_UPDATE, payload).then(({ data }) => {
-      setLoading(false);
-      if (data.is_valid) {
-        handleStepChange();
-      } else {
-        if (data.messages.global) {
-          setCustomError(data.messages.global);
+    await axios
+      .post(ONBOARD_URL_UPDATE, payload)
+      .then(({ data }) => {
+        setLoading(false);
+        if (data.is_valid) {
+          handleStepChange();
+        } else {
+          if (data.messages.global) {
+            setCustomError(data.messages.global);
+          }
+          setErrors(data.messages);
         }
-        setErrors(data.messages);
-      }
-    });
+      })
+      .catch(() => {
+        setLoading(false);
+      });
   };
 
   const handleAutoUpdateAddress = (identifier: string, formik: any) => {

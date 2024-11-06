@@ -10,7 +10,6 @@ import { PhoneInput } from 'components/UI/Form/PhoneInput/PhoneInput';
 import { FormLayout } from '../FormLayout/FormLayout';
 import { PaymentOptions } from '../PaymentType/PaymentOptions';
 import { FormStepProps } from './OrgDetails';
-import { setNotification } from 'common/notification';
 
 export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) => {
   const { t } = useTranslation();
@@ -45,7 +44,7 @@ export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) =>
   };
 
   const handlePhoneNumberChange = (_: any, data: any, formFieldItems: any) => {
-    const formattedValue = formFieldItems.split(data.dialCode).join(data.dialCode + '-');
+    const formattedValue = formFieldItems.split(data.dialCode).join(`${data.dialCode}-`);
     setFormattedPhone(formattedValue);
   };
 
@@ -148,9 +147,8 @@ export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) =>
           setLoading(false);
         }
       })
-      .catch((errors) => {
+      .catch(() => {
         setLoading(false);
-        setNotification('Something went wrong', 'error');
       });
   };
 

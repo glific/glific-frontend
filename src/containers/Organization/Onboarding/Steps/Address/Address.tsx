@@ -1,4 +1,5 @@
 import { OutlinedInput, Typography } from '@mui/material';
+import { formatString } from 'common/utils';
 import styles from './Address.module.css';
 
 interface RegisteredAddressProps {
@@ -6,16 +7,8 @@ interface RegisteredAddressProps {
   inputLabelSubtext: any;
   address: any;
   disabled: boolean;
-  setAddress: any;
   form: { touched: any; errors: any; setFieldValue: any };
   field: { name: string; value: any };
-}
-
-function x(str: string) {
-  return str
-    .replace(/_/g, ' ') // Replace underscores with spaces
-    .replace(/([a-z])([0-9])/gi, '$1 $2') // Insert space before digits
-    .replace(/\b\w/g, (char) => char.toUpperCase()); // Capitalize each word
 }
 
 export const RegisteredAddress = ({
@@ -48,7 +41,7 @@ export const RegisteredAddress = ({
           .slice(0, 2)
           .map((key) => (
             <div className={styles.FullRow} key={key}>
-              <p className={styles.Label}>{x(key)}</p>
+              <p className={styles.Label}>{formatString(key)}</p>
               <OutlinedInput
                 disabled={disabled}
                 className={styles.InputBox}
@@ -65,7 +58,7 @@ export const RegisteredAddress = ({
           .slice(2)
           .map((key) => (
             <div className={styles.Row} key={key}>
-              <p className={styles.Label}>{x(key)}</p>
+              <p className={styles.Label}>{formatString(key)}</p>
               <OutlinedInput
                 disabled={disabled}
                 className={styles.InputBox}

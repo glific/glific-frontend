@@ -27,6 +27,7 @@ export const SigningAuthority = ({
   const [signingAuthorityName, setSigningAuthorityName] = useState<string>('');
   const [signingAuthorityDesignation, setSigningAuthorityDesignation] = useState<string>('');
   const [signingAuthorityEmail, setSigningAuthorityEmail] = useState<string>('');
+  const [customError, setCustomError] = useState(null);
 
   const [permissions, setPermissions] = useState({
     terms_agreed: false,
@@ -178,15 +179,23 @@ export const SigningAuthority = ({
   const handleSubmit = async (payload: any, setErrors: any) => {
     setLoading(true);
 
-    await axios.post(ONBOARD_URL_UPDATE, payload).then(({ data }) => {
-      setLoading(false);
-      if (data.is_valid) {
-        handleStepChange();
-        localStorage.removeItem('registrationData');
-      } else {
-        setErrors(data.messages);
-      }
-    });
+    await axios
+      .post(ONBOARD_URL_UPDATE, payload)
+      .then(({ data }) => {
+        setLoading(false);
+        if (data.is_valid) {
+          handleStepChange();
+          localStorage.removeItem('registrationData');
+        } else {
+          if (data.messages.global) {
+            setCustomError(data.messages.global);
+          }
+          setErrors(data.messages);
+        }
+      })
+      .catch(() => {
+        setLoading(false);
+      });
   };
 
   return (
@@ -205,6 +214,8 @@ export const SigningAuthority = ({
       loading={loading}
       submitData={handleSubmit}
       buttonState={{ text: 'Submit' }}
+      setCustomError={setCustomError}
+      customError={customError}
     />
   );
 };

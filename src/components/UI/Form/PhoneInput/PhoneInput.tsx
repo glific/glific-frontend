@@ -18,7 +18,7 @@ export interface InputProps {
   form: { touched: any; errors: any; setFieldValue: any };
   inputLabel?: string | null;
   disabled?: boolean;
-  changeHandler?: any;
+  changeHandler?: (event: string, data: {}, formFieldItems: string) => void;
 }
 
 export const PhoneInput = ({
