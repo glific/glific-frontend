@@ -12,8 +12,10 @@ import {
   getSavedCredentials,
   updateMaytapiCredentials,
 } from 'mocks/Organization';
+import userEvent from '@testing-library/user-event';
 
 const mocks = LIST_ITEM_MOCKS;
+const user = userEvent.setup();
 
 const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>
@@ -46,10 +48,10 @@ describe('<Providers />', () => {
     expect(getByText('Loading...')).toBeInTheDocument();
     await waitFor(() => {
       const checkbox = screen.getByRole('checkbox');
-      fireEvent.click(checkbox);
+      user.click(checkbox);
       // click on SAVE
       const saveButton = screen.getByText('Save');
-      fireEvent.click(saveButton);
+      user.click(saveButton);
     });
   });
 });
@@ -62,7 +64,7 @@ describe('<Providers />', () => {
     await waitFor(() => {
       // click on Cancel
       const cancelButton = screen.getByText('Cancel');
-      fireEvent.click(cancelButton);
+      user.click(cancelButton);
     });
   });
 });
@@ -96,18 +98,18 @@ describe('maytapi', () => {
 
     const inputs = screen.getAllByRole('textbox');
 
-    fireEvent.click(screen.getByText('Active?'));
+    user.click(screen.getByText('Active?'));
 
     fireEvent.change(inputs[0], { target: { value: 'token' } });
     fireEvent.change(inputs[1], { target: { value: 'product_id' } });
 
-    fireEvent.click(screen.getByText('Save'));
+    user.click(screen.getByText('Save'));
 
     await waitFor(() => {
       expect(screen.getByTestId('dialogBox')).toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getByTestId('ok-button'));
+    user.click(screen.getByTestId('ok-button'));
 
     await waitFor(() => {
       expect(notificationspy).toHaveBeenCalled();
@@ -128,18 +130,18 @@ describe('maytapi', () => {
 
     const inputs = screen.getAllByRole('textbox');
 
-    fireEvent.click(screen.getByText('Active?'));
+    user.click(screen.getByText('Active?'));
 
     fireEvent.change(inputs[0], { target: { value: 'token' } });
     fireEvent.change(inputs[1], { target: { value: 'product_id' } });
 
-    fireEvent.click(screen.getByText('Save'));
+    user.click(screen.getByText('Save'));
 
     await waitFor(() => {
       expect(screen.getByTestId('dialogBox')).toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getByTestId('ok-button'));
+    user.click(screen.getByTestId('ok-button'));
 
     await waitFor(() => {
       expect(errorMessageSpy).toHaveBeenCalled();
@@ -185,7 +187,7 @@ describe('update credentials', () => {
     fireEvent.change(inputs[0], { target: { value: 'token2' } });
     fireEvent.change(inputs[1], { target: { value: 'product_id2' } });
 
-    fireEvent.click(screen.getByTestId('submitActionButton'));
+    user.click(screen.getByTestId('submitActionButton'));
 
     await waitFor(() => {
       expect(screen.getByTestId('dialogBox')).toBeInTheDocument();
@@ -199,7 +201,7 @@ describe('update credentials', () => {
       expect(screen.getByTestId('dialogBox')).toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getByTestId('ok-button'));
+    user.click(screen.getByTestId('ok-button'));
 
     await waitFor(() => {
       expect(screen.getByText('Token')).toBeInTheDocument();
@@ -228,13 +230,13 @@ describe('update credentials', () => {
     fireEvent.change(inputs[0], { target: { value: 'token2' } });
     fireEvent.change(inputs[1], { target: { value: 'product_id2' } });
 
-    fireEvent.click(screen.getByText('Save'));
+    user.click(screen.getByText('Save'));
 
     await waitFor(() => {
       expect(screen.getByTestId('dialogBox')).toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getByTestId('ok-button'));
+    user.click(screen.getByTestId('ok-button'));
 
     await waitFor(() => {
       expect(errorMessageSpy).toHaveBeenCalled();

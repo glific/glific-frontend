@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
-import UserEvent from '@testing-library/user-event';
+import userEvent from '@testing-library/user-event';
 import { MockedProvider } from '@apollo/client/testing';
 import axios from 'axios';
 import { MemoryRouter } from 'react-router';
@@ -19,6 +19,7 @@ const mocks = [
 
 vi.mock('axios');
 const mockedAxios = axios as any;
+const user = userEvent.setup();
 
 const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>
@@ -48,7 +49,7 @@ describe('<MyAccount />', () => {
     await waitFor(() => {
       // click on generate OTP
       const generateOTPButton = screen.getByText('Generate OTP');
-      fireEvent.click(generateOTPButton);
+      user.click(generateOTPButton);
     });
 
     // set the mock
@@ -60,14 +61,14 @@ describe('<MyAccount />', () => {
     await waitFor(() => {
       // click on resend button
       const resendButton = screen.getByTestId('resendOtp');
-      fireEvent.click(resendButton);
+      user.click(resendButton);
     });
 
     // trigger validation errors
     await waitFor(() => {
       // click on save button
       const saveButton = screen.getByText('Save');
-      fireEvent.click(saveButton);
+      user.click(saveButton);
     });
 
     // check for validation errors
@@ -99,7 +100,7 @@ describe('<MyAccount />', () => {
     await waitFor(() => {
       // click on generate OTP
       const generateOTPButton = screen.getByText('Generate OTP');
-      fireEvent.click(generateOTPButton);
+      user.click(generateOTPButton);
     });
 
     // close the alert
@@ -107,7 +108,7 @@ describe('<MyAccount />', () => {
       expect(screen.getByTestId('crossIcon')).toBeInTheDocument();
     });
     const closeAlert = screen.getByTestId('crossIcon');
-    await fireEvent.click(closeAlert);
+    await user.click(closeAlert);
   });
 
   test('generate OTP success flow with cancel', async () => {
@@ -120,7 +121,7 @@ describe('<MyAccount />', () => {
     await waitFor(() => {
       // click on generate OTP
       const generateOTPButton = screen.getByText('Generate OTP');
-      fireEvent.click(generateOTPButton);
+      user.click(generateOTPButton);
     });
 
     await waitFor(() => {
@@ -128,11 +129,10 @@ describe('<MyAccount />', () => {
       expect(screen.getByText('Cancel')).toBeInTheDocument();
     });
     const cancelButton = screen.getByText('Cancel');
-    fireEvent.click(cancelButton);
+    user.click(cancelButton);
   });
 
   test('generate OTP error with incorrect OTP', async () => {
-    const user = UserEvent.setup();
     const { container } = render(wrapper);
 
     // let's mock successful sending of OTP
@@ -142,7 +142,7 @@ describe('<MyAccount />', () => {
     await waitFor(() => {
       // click on generate OTP
       const generateOTPButton = screen.getByText('Generate OTP');
-      fireEvent.click(generateOTPButton);
+      user.click(generateOTPButton);
     });
 
     // enter otp
@@ -160,7 +160,7 @@ describe('<MyAccount />', () => {
       expect(screen.getByText('Save')).toBeInTheDocument();
     });
     const saveButton = screen.getByText('Save');
-    await fireEvent.click(saveButton);
+    await user.click(saveButton);
 
     // assert for incorrect OTP
     // await waitFor(() => {
@@ -169,7 +169,6 @@ describe('<MyAccount />', () => {
   });
 
   test('generate OTP error with too many attempts', async () => {
-    const user = UserEvent.setup();
     const { container } = render(wrapper);
 
     // let's mock successful sending of OTP
@@ -179,7 +178,7 @@ describe('<MyAccount />', () => {
     await waitFor(() => {
       // click on generate OTP
       const generateOTPButton = screen.getByText('Generate OTP');
-      fireEvent.click(generateOTPButton);
+      user.click(generateOTPButton);
     });
 
     // enter otp
@@ -197,6 +196,6 @@ describe('<MyAccount />', () => {
       expect(screen.getByText('Save')).toBeInTheDocument();
     });
     const saveButton = screen.getByText('Save');
-    await fireEvent.click(saveButton);
+    await user.click(saveButton);
   });
 });

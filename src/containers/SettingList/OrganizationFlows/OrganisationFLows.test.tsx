@@ -4,6 +4,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 
 import { ORGANIZATION_MOCKS } from '../SettingList.test.helper';
 import { OrganizationFlows } from './OrganizationFlows';
+import userEvent from '@testing-library/user-event';
 
 const mocks = ORGANIZATION_MOCKS;
 
@@ -14,6 +15,8 @@ const wrapper = (
     </Router>
   </MockedProvider>
 );
+
+const user = userEvent.setup();
 
 test('it renders component properly', async () => {
   const { getByText } = render(wrapper);
@@ -29,7 +32,7 @@ test('it renders component and clicks cancel', async () => {
     const Button = screen.getByText('Cancel');
     expect(Button).toBeInTheDocument();
     // click on Cancel
-    fireEvent.click(Button);
+    user.click(Button);
   });
 });
 
@@ -53,12 +56,12 @@ test('it renders component in edit mode', async () => {
       const selectedOption = screen.getByText('Monday');
       expect(selectedOption).toBeInTheDocument();
 
-      fireEvent.click(selectedOption);
+      user.click(selectedOption);
     });
   });
 
   await waitFor(() => {
     const submit = getByTestId('submitActionButton');
-    fireEvent.click(submit);
+    user.click(submit);
   });
 });

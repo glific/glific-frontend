@@ -1,4 +1,5 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import axios from 'axios';
 import { vi } from 'vitest';
@@ -7,6 +8,7 @@ import { ResetPasswordPhone } from './ResetPasswordPhone';
 
 vi.mock('axios');
 const mockedAxios = axios as any;
+const user = userEvent.setup();
 
 export const postRequestMock = () => {
   const responseData = { data: { data: {} } };
@@ -55,7 +57,7 @@ describe('<ResetPasswordPhone />', () => {
 
     // click on GENERATE button
     const continueButton = screen.getByText('Generate OTP to confirm');
-    fireEvent.click(continueButton);
+    user.click(continueButton);
 
     await waitFor(() => {
       expect(screen.getByTestId('AuthContainer')).toHaveTextContent(
@@ -86,7 +88,7 @@ describe('<ResetPasswordPhone />', () => {
       expect(screen.getByText('Generate OTP to confirm')).toBeInTheDocument();
     });
     const continueButton = screen.getByText('Generate OTP to confirm');
-    await fireEvent.click(continueButton);
+    await user.click(continueButton);
 
     await waitFor(() => {
       expect(screen.getByText('Confirm OTP')).toBeInTheDocument();

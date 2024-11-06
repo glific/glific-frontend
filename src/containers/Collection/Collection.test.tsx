@@ -16,6 +16,7 @@ import * as FormLayout from 'containers/Form/FormLayout';
 import { getRoleNamesMock } from 'containers/StaffManagement/StaffManagement.test.helper';
 import { BrowserRouter, MemoryRouter, Routes, Route } from 'react-router-dom';
 import { getSearchCollectionQuery } from 'mocks/Search';
+import userEvent from '@testing-library/user-event';
 
 const mocks = [
   getRoleNamesMock,
@@ -52,6 +53,7 @@ vi.mock('common/notification', async (importOriginal) => {
   };
 });
 
+const user = userEvent.setup();
 const mockedUsedNavigate = vi.fn();
 vi.mock('react-router-dom', async () => ({
   ...(await vi.importActual('react-router-dom')),
@@ -87,11 +89,11 @@ describe('collection', () => {
 
     // remove first user
     const removeUser = getAllByTestId('deleteIcon');
-    fireEvent.click(removeUser[0]);
+    user.click(removeUser[0]);
     // click on SAVE
     const saveButton = getByTestId('submitActionButton');
     await waitFor(() => {
-      fireEvent.click(saveButton);
+      user.click(saveButton);
     });
   });
 
@@ -117,7 +119,7 @@ describe('collection', () => {
     fireEvent.change(collectionInputs[0], { target: { value: 'Sample Collection Title' } });
     fireEvent.change(collectionInputs[1], { target: { value: 'Sample Collection Description' } });
 
-    fireEvent.click(getByText('Save'));
+    user.click(getByText('Save'));
   });
 
   test('should be able to check for existing collections', async () => {
@@ -132,9 +134,9 @@ describe('collection', () => {
     const collectionInputs = getAllByRole('textbox');
 
     fireEvent.change(collectionInputs[0], { target: { value: 'Staff group' } });
-    fireEvent.click(collectionInputs[1]);
+    user.click(collectionInputs[1]);
 
-    fireEvent.click(getByText('Save'));
+    user.click(getByText('Save'));
 
     await waitFor(() => {
       expect(screen.getByText('Title already exists.')).toBeInTheDocument();
@@ -166,7 +168,7 @@ describe('collection', () => {
       expect(getByTestId('collection')).toBeInTheDocument();
     });
 
-    fireEvent.click(getByTestId('collection'));
+    user.click(getByTestId('collection'));
 
     await waitFor(() => {
       expect(mockCallback).toBeCalled();
