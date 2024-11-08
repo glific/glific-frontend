@@ -1,11 +1,12 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import UserEvent from '@testing-library/user-event';
+import { render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { BrowserRouter as Router, MemoryRouter } from 'react-router-dom';
+import userEvent from '@testing-library/user-event';
 
 import { ORGANIZATION_MOCKS } from '../SettingList.test.helper';
 import { Organization } from './Organization';
 
+const user = userEvent.setup();
 const mocks = ORGANIZATION_MOCKS;
 
 const wrapper = (
@@ -53,7 +54,7 @@ test('it renders component and clicks cancel', async () => {
     const Button = screen.getByText('Cancel');
     expect(Button).toBeInTheDocument();
     // click on Cancel
-    UserEvent.click(Button);
+    user.click(Button);
   });
 });
 
@@ -81,7 +82,7 @@ test('it renders component in edit mode', async () => {
     const lowBalanceThreshold = numberInputElements[0] as HTMLInputElement;
     const criticalBalanceThreshold = numberInputElements[1] as HTMLInputElement;
 
-    fireEvent.click(phoneNumber);
+    user.click(phoneNumber);
     expect(orgName?.value).toBe('Glific');
     expect(signaturePhrase?.value).toBe('Please change me, NOW!');
     expect(phoneNumber?.value).toBe('917834811114');
@@ -91,6 +92,6 @@ test('it renders component in edit mode', async () => {
 
   await waitFor(() => {
     const submit = getByTestId('submitActionButton');
-    fireEvent.click(submit);
+    user.click(submit);
   });
 });

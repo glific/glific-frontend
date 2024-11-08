@@ -496,6 +496,7 @@ export const ChatInput = ({
           {selectedTemplate || Object.keys(interactiveMessageContent).length > 0 ? (
             <Tooltip title={t('Remove message')} placement="top">
               <IconButton
+                data-testid="removeMessage"
                 className={updatedEditorState ? styles.CrossIcon : styles.CrossIconWithVariable}
                 onClick={handleCancel}
               >
