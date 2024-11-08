@@ -69,6 +69,7 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
         };
         setFiles([...files, uploadFilesearchFile]);
       },
+      onError: (errors) => setErrorMessage(errors),
     });
   };
 
@@ -123,13 +124,7 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
         buttonOkLoading={addingFiles}
       >
         <div className={styles.DialogContent}>
-          <Button
-            className="Container"
-            fullWidth={true}
-            component="label"
-            variant="text"
-            tabIndex={-1}
-          >
+          <Button className="Container" fullWidth={true} component="label" variant="text" tabIndex={-1}>
             <div className={styles.UploadContainer}>
               {uploadingFile ? (
                 <CircularProgress size={20} />
@@ -138,12 +133,7 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
                   <UploadIcon /> {t('Upload File')}
                 </>
               )}
-              <input
-                data-testid="uploadFile"
-                type="file"
-                onChange={handleFileChange}
-                style={{ display: 'none' }}
-              />
+              <input data-testid="uploadFile" type="file" onChange={handleFileChange} style={{ display: 'none' }} />
             </div>
           </Button>
           {files.length > 0 && (
@@ -181,11 +171,7 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
           <Typography variant="subtitle2" className={styles.Label} data-testid="inputLabel">
             Files
           </Typography>
-          <Button
-            data-testid="addFiles"
-            onClick={() => setShowUploadDialog(true)}
-            variant="outlined"
-          >
+          <Button data-testid="addFiles" onClick={() => setShowUploadDialog(true)} variant="outlined">
             <AddIcon />
             {t('Add Files')}
           </Button>
