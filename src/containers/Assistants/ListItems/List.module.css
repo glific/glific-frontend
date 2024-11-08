@@ -16,7 +16,8 @@
     scrollbar-width: none;
 }
 
-.ListContainer ::-webkit-scrollbar {
+.ListContainer ::-webkit-scrollbar,
+::-webkit-scrollbar-track {
     display: none !important;
 }
 
