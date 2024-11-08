@@ -16,6 +16,10 @@
     scrollbar-width: none;
 }
 
+.ListContainer ::-webkit-scrollbar {
+    display: none !important;
+}
+
 .Item {
     background-color: #fff;
     padding: 0.8rem 1rem;

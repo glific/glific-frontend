@@ -165,7 +165,9 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
 
           <span>
             {t('Information in the attached files will be available to this assistant.')}
-            <a href="#">Learn More</a>
+            <a href="https://platform.openai.com/docs/assistants/tools/file-search" target="_blank">
+              Learn More
+            </a>
           </span>
         </div>
       </DialogBox>
