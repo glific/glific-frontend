@@ -44,11 +44,15 @@ export const SigningAuthority = ({
       .required(t('Last name is required.'))
       .max(25, t('Please enter not more than 25 characters')),
     submitterEmail: Yup.string().required(t('Email is required.')).email(t('Enter a valid email.')),
-    submitterDesignation: Yup.string().required('Designation is required.'),
+    submitterDesignation: Yup.string()
+      .required('Designation is required.')
+      .max(25, t('Please enter not more than 25 characters')),
     signingAuthorityName: Yup.string()
       .required(t('Name is required.'))
       .max(25, t('Please enter not more than 25 characters')),
-    signingAuthorityDesignation: Yup.string().required('Designation is required.'),
+    signingAuthorityDesignation: Yup.string()
+      .required('Designation is required.')
+      .max(25, t('Please enter not more than 25 characters')),
     signingAuthorityEmail: Yup.string()
       .required(t('Email is required.'))
       .email('Enter a valid email.'),

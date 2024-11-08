@@ -13,6 +13,7 @@ import { UnauthenticatedRoute } from 'routes/UnauthenticatedRoute/Unauthenticate
 import { AuthenticatedRoute } from 'routes/AuthenticatedRoute/AuthenticatedRoute';
 import { Logout } from 'containers/Auth/Logout/Logout';
 import { checkSessionValidity } from 'common/utils';
+import axios from 'axios';
 
 const App = () => {
   const navigate = useNavigate();
@@ -20,6 +21,10 @@ const App = () => {
   // let's checkAuthStatusService allocate it on useEffect
   const [authenticated, setAuthenticated] = useState<any>();
   const [drawerOpen, setDrawerOpen] = useState(true);
+
+  axios
+    .get('http://localhost:4000/flow-editor/interactive-templates/')
+    .then((data) => console.log(data));
 
   useEffect(() => {
     const checkAuth = async () => {
