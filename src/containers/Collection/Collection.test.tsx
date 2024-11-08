@@ -1,12 +1,15 @@
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
-import UserEvent from '@testing-library/user-event';
 import { MockedProvider } from '@apollo/client/testing';
 import { vi } from 'vitest';
+import userEvent from '@testing-library/user-event';
+
 import {
   createCollectionQuery,
   getCollectionQuery,
   getCollectionsQuery,
   getCollectionUsersQuery,
+  updateCollectionQuery,
+  updateCollectionUsersQuery,
 } from 'mocks/Collection';
 import { getUsersQuery } from 'mocks/User';
 import { getOrganizationLanguagesQuery, getOrganizationQuery } from 'mocks/Organization';
@@ -29,6 +32,8 @@ const mocks = [
   ...getCollectionsQuery,
   createCollectionQuery,
   getSearchCollectionQuery,
+  updateCollectionQuery,
+  updateCollectionUsersQuery,
 ];
 
 const wrapper = (
@@ -49,6 +54,7 @@ vi.mock('common/notification', async (importOriginal) => {
   };
 });
 
+const user = userEvent.setup();
 const mockedUsedNavigate = vi.fn();
 vi.mock('react-router-dom', async () => ({
   ...(await vi.importActual('react-router-dom')),
@@ -84,11 +90,11 @@ describe('collection', () => {
 
     // remove first user
     const removeUser = getAllByTestId('deleteIcon');
-    UserEvent.click(removeUser[0]);
+    user.click(removeUser[0]);
     // click on SAVE
     const saveButton = getByTestId('submitActionButton');
     await waitFor(() => {
-      UserEvent.click(saveButton);
+      user.click(saveButton);
     });
   });
 
@@ -114,7 +120,7 @@ describe('collection', () => {
     fireEvent.change(collectionInputs[0], { target: { value: 'Sample Collection Title' } });
     fireEvent.change(collectionInputs[1], { target: { value: 'Sample Collection Description' } });
 
-    fireEvent.click(getByText('Save'));
+    user.click(getByText('Save'));
   });
 
   test('should be able to check for existing collections', async () => {
@@ -129,9 +135,9 @@ describe('collection', () => {
     const collectionInputs = getAllByRole('textbox');
 
     fireEvent.change(collectionInputs[0], { target: { value: 'Staff group' } });
-    fireEvent.click(collectionInputs[1]);
+    user.click(collectionInputs[1]);
 
-    fireEvent.click(getByText('Save'));
+    user.click(getByText('Save'));
 
     await waitFor(() => {
       expect(screen.getByText('Title already exists.')).toBeInTheDocument();
@@ -163,7 +169,7 @@ describe('collection', () => {
       expect(getByTestId('collection')).toBeInTheDocument();
     });
 
-    fireEvent.click(getByTestId('collection'));
+    user.click(getByTestId('collection'));
 
     await waitFor(() => {
       expect(mockCallback).toBeCalled();
