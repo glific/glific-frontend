@@ -18,6 +18,7 @@ import { GET_ASSISTANT, GET_MODELS } from 'graphql/queries/Assistant';
 import { DELETE_ASSISTANT, UPDATE_ASSISTANT } from 'graphql/mutations/Assistant';
 
 import CopyIcon from 'assets/images/CopyGreen.svg?react';
+import DeleteIcon from 'assets/images/icons/Delete/White.svg?react';
 
 import { AssistantOptions } from '../AssistantOptions/AssistantOptions';
 
@@ -245,14 +246,16 @@ export const CreateAssistant = ({
               variant="contained"
               data-testid="submitAction"
             >
-              {t('Save Changes')}
+              {t('Save')}
             </Button>
             <Button
               onClick={() => setShowConfirmation(true)}
-              variant="outlined"
-              color="error"
+              variant="contained"
+              color="warning"
               data-testid="removeAssistant"
             >
+              <DeleteIcon className={styles.DeleteIcon} />
+
               {t('Remove')}
             </Button>
           </div>
