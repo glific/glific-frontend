@@ -1,6 +1,8 @@
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { vi } from 'vitest';
+import userEvent from '@testing-library/user-event';
+
 import {
   createCollectionQuery,
   getCollectionQuery,
@@ -16,7 +18,6 @@ import * as FormLayout from 'containers/Form/FormLayout';
 import { getRoleNamesMock } from 'containers/StaffManagement/StaffManagement.test.helper';
 import { BrowserRouter, MemoryRouter, Routes, Route } from 'react-router-dom';
 import { getSearchCollectionQuery } from 'mocks/Search';
-import userEvent from '@testing-library/user-event';
 
 const mocks = [
   getRoleNamesMock,

@@ -1,6 +1,7 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import userEvent from '@testing-library/user-event';
 
 import { Providers } from './Providers';
 import { LIST_ITEM_MOCKS } from '../SettingList.test.helper';
@@ -12,7 +13,6 @@ import {
   getSavedCredentials,
   updateMaytapiCredentials,
 } from 'mocks/Organization';
-import userEvent from '@testing-library/user-event';
 
 const mocks = LIST_ITEM_MOCKS;
 const user = userEvent.setup();
