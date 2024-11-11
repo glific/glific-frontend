@@ -1,0 +1,99 @@
+.Container {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.ListContainer {
+    position: relative;
+    margin-top: 2rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    row-gap: 0.5rem;
+    overflow-y: scroll;
+    scrollbar-width: none;
+}
+
+.ListContainer ::-webkit-scrollbar,
+::-webkit-scrollbar-track {
+    display: none !important;
+}
+
+.Item {
+    background-color: #fff;
+    padding: 0.8rem 1rem;
+    border-radius: 8px;
+    display: flex;
+    width: 100%;
+    cursor: pointer;
+}
+
+.Item:hover {
+    background-color: #ebf8ee;
+}
+
+.Itemm {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.SelectedItem {
+    background-color: #ebf8ee;
+}
+
+.Header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.Title {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.Date {
+    font-size: 10px;
+    color: #0000007a;
+}
+
+.Id {
+    font-size: 12px;
+    color: #555;
+    display: flex;
+    align-items: center;
+    column-gap: 1rem;
+}
+
+.Id button {
+    padding: 0;
+}
+
+.Id svg {
+    height: 1rem !important;
+}
+
+.NoItems {
+    color: #555;
+    font-size: 1rem;
+    width: 100%;
+    text-align: center;
+}
+
+.LoadMore {
+    width: fit-content;
+    background-color: #073f24;
+    padding: 4px 8px;
+    margin: 0 auto;
+    margin-top: 1rem;
+    border-radius: 12px 12px 0 0;
+    color: #edf6f2;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.875rem;
+    z-index: 101;
+}

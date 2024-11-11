@@ -17,6 +17,7 @@ export interface Menu {
   url?: string;
   show?: boolean;
   children?: Menu[];
+  new?: boolean;
 }
 
 // define all the menus in the system
@@ -163,6 +164,14 @@ const menus = (): Menu[] => [
     type: 'sideDrawer',
     showBadge: true,
     roles: managerLevel,
+  },
+  {
+    title: 'Assistants',
+    path: '/assistants',
+    icon: 'assistant',
+    type: 'sideDrawer',
+    roles: allRoles,
+    new: true,
   },
   {
     title: 'Manage',
