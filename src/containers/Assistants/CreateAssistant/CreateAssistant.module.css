@@ -1,0 +1,68 @@
+.FormContainer {
+    padding: 3rem;
+    height: 100%;
+    position: relative;
+}
+
+.Form {
+    height: 100%;
+    overflow-y: scroll;
+}
+
+.Form::-webkit-scrollbar {
+    display: none;
+}
+
+.Label {
+    color: #555;
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.FormFields {
+    display: flex;
+    flex-direction: column;
+    row-gap: 1rem;
+}
+
+.Buttons {
+    background-color: #fff;
+    padding: 1rem 0;
+    position: absolute;
+    bottom: 0;
+}
+
+.DialogContent {
+    max-width: auto;
+    margin-top: 0px;
+    text-align: center;
+    color: #073f24;
+    font-weight: 400;
+    display: flex;
+    justify-content: center;
+}
+
+.AssistantId {
+    color: #119656;
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.AssistantId div {
+    display: flex;
+    column-gap: 0.5rem;
+    align-items: center;
+    cursor: pointer;
+}
+
+.HelperText {
+    color: #999999;
+    font-weight: normal;
+}
+
+.DeleteIcon {
+    margin-right: 0.5rem;
+}
