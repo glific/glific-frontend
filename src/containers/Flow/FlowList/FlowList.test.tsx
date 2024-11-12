@@ -16,7 +16,7 @@ import {
 } from 'mocks/Flow';
 import { getOrganizationQuery } from 'mocks/Organization';
 import testJSON from 'mocks/ImportFlow.json';
-import { setUserSession } from 'services/AuthService';
+import { setOrganizationServices, setUserSession } from 'services/AuthService';
 import { FlowList } from './FlowList';
 import { Flow } from '../Flow';
 import { getFilterTagQuery } from 'mocks/Tag';
@@ -67,7 +67,8 @@ vi.mock('react-router-dom', async () => {
   };
 });
 
-setUserSession(JSON.stringify({ roles: ['Admin'] }));
+setUserSession(JSON.stringify({ roles: [{ id: '1', label: 'Admin' }] }));
+setOrganizationServices('{"__typename":"OrganizationServicesResult","rolesAndPermission":true}');
 
 describe('<FlowList />', () => {
   test('should render Flow', async () => {
@@ -172,6 +173,26 @@ describe('<FlowList />', () => {
       fireEvent.click(exportButton[0]);
     });
   });
+
+  test('should create from scratch ', async () => {
+    render(flowList);
+
+    await waitFor(() => {
+      expect(screen.getByText('Flows')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('newItemButton'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Create flow')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('middle-button'));
+
+    await waitFor(() => {
+      expect(mockedUsedNavigate).toHaveBeenCalled();
+    });
+  });
 });
 
 describe('Template flows', () => {
@@ -220,6 +241,32 @@ describe('Template flows', () => {
     });
 
     fireEvent.click(screen.getAllByTestId('viewIt')[0]);
+
+    await waitFor(() => {
+      expect(mockedUsedNavigate).toHaveBeenCalled();
+    });
+  });
+
+  test('click on Use it for templates', async () => {
+    render(flowList);
+
+    await waitFor(() => {
+      expect(screen.getByText('Flows')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('newItemButton'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Create flow')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('ok-button'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Template Flows')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getAllByTestId('copyTemplate')[0]);
 
     await waitFor(() => {
       expect(mockedUsedNavigate).toHaveBeenCalled();

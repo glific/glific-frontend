@@ -6,6 +6,7 @@ import {
   contactCollectionsQuery,
   updateContactCollectionQuery,
   clearMessagesQuery,
+  terminateFlowQuery,
 } from '../../../../mocks/Contact';
 import { MemoryRouter } from 'react-router';
 import {
@@ -20,6 +21,7 @@ import {
 } from '../../../../mocks/Flow';
 import { CONVERSATION_MOCKS } from '../../../../mocks/Chat';
 import { searchGroupQuery } from 'mocks/Groups';
+import { setNotification } from 'common/notification';
 
 const mocks = [
   ...CONVERSATION_MOCKS,
@@ -53,7 +55,7 @@ const propsWithBspStatusNone = {
 };
 
 const component = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={[...mocks, terminateFlowQuery()]} addTypename={false}>
     <MemoryRouter>
       <ConversationHeader {...defaultProps} />
     </MemoryRouter>
@@ -84,6 +86,32 @@ test('it should have a session timer', async () => {
   const { getByText } = render(component);
   await waitFor(() => {
     expect(getByText('24 hrs')).toBeInTheDocument();
+  });
+});
+
+test('terminate a flow should show errors', async () => {
+  render(
+    <MockedProvider mocks={[...mocks, terminateFlowQuery(true)]} addTypename={false}>
+      <MemoryRouter>
+        <ConversationHeader {...defaultProps} />
+      </MemoryRouter>
+    </MockedProvider>
+  );
+
+  await waitFor(() => {
+    fireEvent.click(screen.getByTestId('dropdownIcon')?.querySelector('svg') as SVGElement);
+  });
+
+  fireEvent.click(screen.getByTestId('terminateButton'));
+
+  await waitFor(() => {
+    expect(screen.getByText('Terminate flows!')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('ok-button'));
+
+  await waitFor(() => {
+    expect(setNotification).toHaveBeenCalledWith('Some error occurred', 'warning');
   });
 });
 
@@ -210,6 +238,18 @@ describe('Menu test', () => {
       expect(getByTestId('disabledFlowButton')).toBeInTheDocument();
     });
   });
+
+  test('terminate a flow', async () => {
+    fireEvent.click(screen.getByTestId('terminateButton'));
+    fireEvent.click(screen.getByTestId('cancel-button'));
+    fireEvent.click(screen.getByTestId('terminateButton'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Terminate flows!')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('ok-button'));
+  });
 });
 
 describe('Collection test', () => {
@@ -242,7 +282,7 @@ describe('Collection test', () => {
     expect(getByText('Default Collection')).toBeInTheDocument();
   });
 
-  test('clicking on start a flow shoul open dialog box', async () => {
+  test('clicking on start a flow should open dialog box', async () => {
     render(component);
     await waitFor(() => {
       fireEvent.click(screen.getByTestId('dropdownIcon')?.querySelector('svg') as SVGElement);
@@ -252,6 +292,20 @@ describe('Collection test', () => {
     await waitFor(() => {
       expect(screen.getByTestId('dialogBox')).toBeInTheDocument();
     });
+  });
+});
+
+test('should shorten collections list', async () => {
+  render(
+    <MockedProvider mocks={[...mocks, contactCollectionsQuery(3, true)]}>
+      <MemoryRouter>
+        <ConversationHeader {...defaultProps} entityId="3" />
+      </MemoryRouter>
+    </MockedProvider>
+  );
+
+  await waitFor(() => {
+    expect(screen.getByText('+1')).toBeInTheDocument();
   });
 });
 

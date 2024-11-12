@@ -34,6 +34,7 @@ test('should load the ticket list', async () => {
   expect(getByTestId('loading')).toBeInTheDocument();
   await waitFor(() => {
     expect(getByText('Tickets')).toBeInTheDocument();
+    expect(getByText('field name')).toBeInTheDocument();
   });
 });
 

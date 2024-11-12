@@ -172,7 +172,7 @@ export const FlowList = () => {
     },
     {
       label: 'Use it',
-      icon: <DuplicateIcon />,
+      icon: <DuplicateIcon data-testid="copyTemplate" />,
       parameter: 'id',
       insideMore: false,
       dialog: (id: any) => {
