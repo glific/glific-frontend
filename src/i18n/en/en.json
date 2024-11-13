@@ -519,7 +519,7 @@
   "Purpose-built AI that uses OpenAI's models and calls tools": "Purpose-built AI that uses OpenAI's models and calls tools",
   "Assistant created successfully": "Assistant created successfully",
   "Remove": "Remove",
-  "You won't be able to use this assistant.": "You won't be able to use this assistant.",
+  "Please confirm that this assistant is not being used in any of the active flows.": "Please confirm that this assistant is not being used in any of the active flows.",
   "Model": "Model",
   "Instructions": "Instructions",
   "Choose the best model for your needs.": "Choose the best model for your needs.",

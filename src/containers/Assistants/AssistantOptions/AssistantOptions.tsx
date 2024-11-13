@@ -34,6 +34,7 @@ const temperatureInfo =
 export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOptionsProps) => {
   const [showUploadDialog, setShowUploadDialog] = useState(false);
   const [files, setFiles] = useState<any[]>([]);
+  const [error, setError] = useState(false);
   const { t } = useTranslation();
 
   const [uploadFile, { loading: uploadingFile }] = useMutation(UPLOAD_FILE_TO_OPENAI);
@@ -201,34 +202,45 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
             }}
           />
         </Typography>
-
-        <div className={styles.Slider}>
-          <Slider
-            name="slider"
-            onChange={(_, value) => {
-              setOptions({
-                ...options,
-                temperature: value,
-              });
-            }}
-            value={options.temperature}
-            step={0.01}
-            max={2}
-          />
-          <input
-            role="sliderDisplay"
-            name="sliderDisplay"
-            type="number"
-            step={0.1}
-            value={options.temperature}
-            onChange={(event) => {
-              setOptions({
-                ...options,
-                temperature: event.target.value,
-              });
-            }}
-            className={styles.SliderDisplay}
-          />
+        <div className={styles.SliderContainer}>
+          <div className={styles.Slider}>
+            <Slider
+              name="slider"
+              onChange={(_, value) => {
+                setOptions({
+                  ...options,
+                  temperature: value,
+                });
+              }}
+              value={options.temperature}
+              step={0.01}
+              max={2}
+              min={0}
+            />
+            <input
+              role="sliderDisplay"
+              name="sliderDisplay"
+              type="number"
+              step={0.1}
+              min={0}
+              max={2}
+              value={options.temperature}
+              onChange={(event) => {
+                const value = parseFloat(event.target.value);
+                if (value < 0 || value > 2) {
+                  setError(true);
+                  return;
+                }
+                setError(false);
+                setOptions({
+                  ...options,
+                  temperature: value,
+                });
+              }}
+              className={`${styles.SliderDisplay} ${error ? styles.Error : ''}`}
+            />
+          </div>
+          {error && <p className={styles.ErrorText}>Temperature value should be between 0-1</p>}
         </div>
       </div>
 
