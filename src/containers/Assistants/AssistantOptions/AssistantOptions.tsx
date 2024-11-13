@@ -240,7 +240,7 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
               className={`${styles.SliderDisplay} ${error ? styles.Error : ''}`}
             />
           </div>
-          {error && <p className={styles.ErrorText}>Temperature value should be between 0-1</p>}
+          {error && <p className={styles.ErrorText}>Temperature value should be between 0-2</p>}
         </div>
       </div>
 

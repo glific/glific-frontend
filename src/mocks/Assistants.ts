@@ -266,6 +266,7 @@ export const MOCKS = [
   listOpenaiModels,
   getAssistant('1'),
   getAssistant('1'),
+  getAssistant('1'),
   getAssistant('2'),
   getAssistant('2'),
   getAssistant('2'),
