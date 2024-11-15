@@ -105,7 +105,7 @@ export const Flow = () => {
       fieldName = `Copy of ${nameValue}`;
       fieldKeywords = '';
     } else if (location.state === 'copyTemplate') {
-      fieldName = `Copy of ${nameValue}`;
+      fieldName = '';
       description = '';
       tags = null;
       fieldKeywords = '';
@@ -140,8 +140,7 @@ export const Flow = () => {
     }
   };
 
-  const regex =
-    /^\s*[^-!$%^&*()+|~=`{}[\]:";'<>?,./]+\s*(,\s*[^-!$%^&*()+|~=`{}[\]:";'<>?,./]+\s*)*$/g;
+  const regex = /^\s*[^-!$%^&*()+|~=`{}[\]:";'<>?,./]+\s*(,\s*[^-!$%^&*()+|~=`{}[\]:";'<>?,./]+\s*)*$/g;
 
   const FormSchema = Yup.object().shape({
     name: Yup.string().required(t('Name is required.')),
@@ -215,9 +214,7 @@ export const Flow = () => {
       name: 'ignoreKeywords',
       title: t('Ignore Keywords'),
       info: {
-        title: t(
-          'If activated, users will not be able to change this flow by entering keyword for any other flow.'
-        ),
+        title: t('If activated, users will not be able to change this flow by entering keyword for any other flow.'),
       },
       darkCheckbox: true,
       className: styles.Checkbox,
