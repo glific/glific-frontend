@@ -140,7 +140,7 @@ export const Flow = () => {
     }
   };
 
-  const regex = /^\s*[^-!$%^&*()+|~=`{}[\]:";'<>?,./]+\s*(,\s*[^-!$%^&*()+|~=`{}[\]:";'<>?,./]+\s*)*$/g;
+  const regex = /^\s*[^-!$%^&*()+|~=`{}[\]:";'<>?,./\s]+\s*(,\s*[^-!$%^&*()+|~=`{}[\]:";'<>?,./\s]+\s*)*$/g;
 
   const FormSchema = Yup.object().shape({
     name: Yup.string().required(t('Name is required.')),
