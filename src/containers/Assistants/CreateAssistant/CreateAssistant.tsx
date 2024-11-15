@@ -70,7 +70,6 @@ export const CreateAssistant = ({ currentId, setUpdateList, setCurrentId, update
         onCompleted: ({ assistant }) => {
           setAssistantId(assistant?.assistant?.assistantId);
           setName(assistant?.assistant?.name);
-          console.log(modelOptions);
           const modelValue = modelOptions?.find(
             (item: { label: string }) => item.label === assistant?.assistant?.model
           );
