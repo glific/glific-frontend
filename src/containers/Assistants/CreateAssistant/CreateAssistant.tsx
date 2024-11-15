@@ -70,7 +70,10 @@ export const CreateAssistant = ({ currentId, setUpdateList, setCurrentId, update
         onCompleted: ({ assistant }) => {
           setAssistantId(assistant?.assistant?.assistantId);
           setName(assistant?.assistant?.name);
-          let modelValue = modelOptions?.find((item: any) => item.label === assistant?.assistant?.model);
+          console.log(modelOptions);
+          const modelValue = modelOptions?.find(
+            (item: { label: string }) => item.label === assistant?.assistant?.model
+          );
           setModel(modelValue);
           setInstructions(assistant?.assistant?.instructions || '');
           setOptions({
@@ -188,7 +191,7 @@ export const CreateAssistant = ({ currentId, setUpdateList, setCurrentId, update
   if (showConfirmation) {
     dialog = (
       <DialogBox
-        title={`Permanently delete assistant?`}
+        title="Permanently delete assistant?"
         handleCancel={handleClose}
         colorOk="warning"
         alignButtons="center"
