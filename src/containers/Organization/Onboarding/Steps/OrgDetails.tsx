@@ -44,64 +44,22 @@ export const OrgDetails = ({ handleStepChange, saveData }: FormStepProps) => {
 
   const { t } = useTranslation();
 
-  const firstLetterCapitalized = (value: string) => {
-    if (!value) return true; // Allow empty values to be handled by other validations
-    return /^[A-Z]/.test(value);
-  };
-
   const FormSchema = Yup.object().shape({
     gstin: Yup.string().length(15, t('Invalid gst number')),
     registered_address: Yup.object().shape({
       address_line1: Yup.string().required('Address Line 1 is required'),
       address_line2: Yup.string(),
-      city: Yup.string()
-        .required('City is required')
-        .test(
-          'first-letter-capitalized',
-          'First letter must be capitalized',
-          firstLetterCapitalized
-        ),
-      state: Yup.string()
-        .required('State is required')
-        .test(
-          'first-letter-capitalized',
-          'First letter must be capitalized',
-          firstLetterCapitalized
-        ),
-      country: Yup.string()
-        .required('Country is required')
-        .test(
-          'first-letter-capitalized',
-          'First letter must be capitalized',
-          firstLetterCapitalized
-        ),
+      city: Yup.string().required('City is required'),
+      state: Yup.string().required('State is required'),
+      country: Yup.string().required('Country is required'),
       pincode: Yup.string().matches(/^\d+$/, 'Invalid Pincode').required('Pincode is required'),
     }),
     current_address: Yup.object().shape({
       address_line1: Yup.string().required('Address Line 1 is required'),
       address_line2: Yup.string(),
-      city: Yup.string()
-        .required('City is required')
-        .test(
-          'first-letter-capitalized',
-          'First letter must be capitalized',
-          firstLetterCapitalized
-        ),
-
-      state: Yup.string()
-        .required('State is required')
-        .test(
-          'first-letter-capitalized',
-          'First letter must be capitalized',
-          firstLetterCapitalized
-        ),
-      country: Yup.string()
-        .required('Country is required')
-        .test(
-          'first-letter-capitalized',
-          'First letter must be capitalized',
-          firstLetterCapitalized
-        ),
+      city: Yup.string().required('City is required'),
+      state: Yup.string().required('State is required'),
+      country: Yup.string().required('Country is required'),
       pincode: Yup.string().matches(/^\d+$/, 'Invalid Pincode').required('Pincode is required'),
     }),
   });

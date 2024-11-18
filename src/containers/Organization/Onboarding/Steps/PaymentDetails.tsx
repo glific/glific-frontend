@@ -14,7 +14,8 @@ import { FormStepProps } from './OrgDetails';
 export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) => {
   const { t } = useTranslation();
   const [billing_frequency, setPaymentType] = useState<string>('Annually');
-  const [name, setName] = useState<string>('');
+  const [firstName, setFirstName] = useState<string>('');
+  const [lastName, setLastName] = useState<string>('');
   const [designation, setDesignation] = useState<string>('');
   const [phone, setPhone] = useState<string>('');
   const [formattedPhone, setFormattedPhone] = useState<string>('');
@@ -24,19 +25,19 @@ export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) =>
   const [loading, setLoading] = useState(false);
 
   const FormSchema = Yup.object().shape({
-    name: Yup.string()
-      .required(t('Name is required.'))
+    firstName: Yup.string()
+      .required(t('First name is required.'))
       .max(25, t('Please enter not more than 25 characters')),
+    lastName: Yup.string().required(t('Last name is required.')).max(25, t('Please enter not more than 25 characters')),
     designation: Yup.string()
       .required(t('Designation is required.'))
       .max(25, t('Please enter not more than 25 characters')),
-    phone: Yup.string()
-      .required(t('Phone number is required.'))
-      .min(7, t('Enter a valid phone number.')),
+    phone: Yup.string().required(t('Phone number is required.')).min(7, t('Enter a valid phone number.')),
     email: Yup.string().required(t('Email is required.')).email(t('Enter a valid email.')),
   });
   const initialFormValues: any = {
-    name,
+    firstName,
+    lastName,
     designation,
     phone,
     email,
@@ -64,9 +65,15 @@ export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) =>
       children: [
         {
           component: Input,
-          name: 'name',
+          name: 'firstName',
           type: 'text',
           inputLabel: 'First Name',
+        },
+        {
+          component: Input,
+          name: 'lastName',
+          type: 'text',
+          inputLabel: 'Last Name',
         },
         {
           component: Input,
@@ -86,9 +93,7 @@ export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) =>
           name: 'email',
           type: 'text',
           inputLabel: 'Email Address',
-          helperText: (
-            <span className={styles.FormHelperText}>Invoice will be sent to this email</span>
-          ),
+          helperText: <span className={styles.FormHelperText}>Invoice will be sent to this email</span>,
         },
       ],
     },
@@ -96,6 +101,7 @@ export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) =>
 
   const setPayload = (payload: any) => {
     const data = localStorage.getItem('registrationData');
+    const { firstName, lastName } = payload;
     if (data) {
       let registrationData = JSON.parse(data);
 
@@ -103,6 +109,7 @@ export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) =>
         finance_poc: {
           ...payload,
           phone: formattedPhone,
+          name: firstName + ' ' + lastName,
         },
         registration_id: registrationData.registration_details.registration_id,
         org_id: registrationData.registration_details.org_id,
@@ -115,9 +122,10 @@ export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) =>
   };
 
   const setStates = (states: any) => {
-    const { name, designation, phone, email, billing_frequency } = states.finance_poc;
+    const { firstName, lastName, designation, phone, email, billing_frequency } = states.finance_poc;
 
-    setName(name);
+    setFirstName(firstName);
+    setLastName(lastName);
     setDesignation(designation);
     setPhone(phone);
     setFormattedPhone(phone);

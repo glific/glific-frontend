@@ -14,17 +14,14 @@ interface SigningAuthorityProps extends FormStepProps {
   openReachOutToUs?: Function;
 }
 
-export const SigningAuthority = ({
-  handleStepChange,
-  openReachOutToUs,
-  saveData,
-}: SigningAuthorityProps) => {
+export const SigningAuthority = ({ handleStepChange, openReachOutToUs, saveData }: SigningAuthorityProps) => {
   const { t } = useTranslation();
   const [submitterFirstName, setSubmitterFirstName] = useState<string>('');
   const [submitterLastName, setSubmitterLastName] = useState<string>('');
   const [submitterEmail, setSubmitterEmail] = useState<string>('');
   const [submitterDesignation, setSubmitterDesignation] = useState<string>('');
-  const [signingAuthorityName, setSigningAuthorityName] = useState<string>('');
+  const [signingAuthorityFirstName, setSigningAuthorityFirstName] = useState<string>('');
+  const [signingAuthorityLastName, setSigningAuthorityLastName] = useState<string>('');
   const [signingAuthorityDesignation, setSigningAuthorityDesignation] = useState<string>('');
   const [signingAuthorityEmail, setSigningAuthorityEmail] = useState<string>('');
   const [customError, setCustomError] = useState(null);
@@ -47,15 +44,16 @@ export const SigningAuthority = ({
     submitterDesignation: Yup.string()
       .required('Designation is required.')
       .max(25, t('Please enter not more than 25 characters')),
-    signingAuthorityName: Yup.string()
-      .required(t('Name is required.'))
+    signingAuthorityFirstName: Yup.string()
+      .required(t('First name is required.'))
+      .max(25, t('Please enter not more than 25 characters')),
+    signingAuthorityLastName: Yup.string()
+      .required(t('Last name is required.'))
       .max(25, t('Please enter not more than 25 characters')),
     signingAuthorityDesignation: Yup.string()
       .required('Designation is required.')
       .max(25, t('Please enter not more than 25 characters')),
-    signingAuthorityEmail: Yup.string()
-      .required(t('Email is required.'))
-      .email('Enter a valid email.'),
+    signingAuthorityEmail: Yup.string().required(t('Email is required.')).email('Enter a valid email.'),
     permissions: Yup.object({
       terms_agreed: Yup.boolean()
         .oneOf([true], 'Please agree to the terms and conditions.')
@@ -71,7 +69,8 @@ export const SigningAuthority = ({
     submitterLastName,
     submitterEmail,
     submitterDesignation,
-    signingAuthorityName,
+    signingAuthorityFirstName,
+    signingAuthorityLastName,
     signingAuthorityDesignation,
     signingAuthorityEmail,
     permissions,
@@ -112,9 +111,15 @@ export const SigningAuthority = ({
       children: [
         {
           component: Input,
-          name: 'signingAuthorityName',
+          name: 'signingAuthorityFirstName',
           type: 'text',
-          inputLabel: 'Name',
+          inputLabel: 'First Name',
+        },
+        {
+          component: Input,
+          name: 'signingAuthorityLastName',
+          type: 'text',
+          inputLabel: 'Last Name',
         },
         {
           component: Input,
@@ -151,7 +156,7 @@ export const SigningAuthority = ({
           email: payload.submitterEmail,
         },
         signing_authority: {
-          name: payload.signingAuthorityName,
+          name: payload.signingAuthorityFirstName + ' ' + payload.signingAuthorityLastName,
           designation: payload.signingAuthorityDesignation,
           email: payload.signingAuthorityEmail,
         },
@@ -169,12 +174,17 @@ export const SigningAuthority = ({
 
   const setStates = (states: any) => {
     const { signing_authority, submitter } = states;
+    let name;
+    if (signing_authority.name) {
+      name = signing_authority.name.split(' ');
+    }
 
     setSubmitterFirstName(submitter?.first_name);
     setSubmitterLastName(submitter?.last_name);
     setSubmitterEmail(submitter?.email);
     setSubmitterDesignation(submitter?.designation);
-    setSigningAuthorityName(signing_authority?.name);
+    setSigningAuthorityFirstName(name[0]);
+    setSigningAuthorityLastName(name[1]);
     setSigningAuthorityDesignation(signing_authority?.designation);
     setSigningAuthorityEmail(signing_authority?.email);
     setPermissions({ support_staff_account: false, terms_agreed: false });
