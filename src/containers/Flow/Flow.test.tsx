@@ -372,7 +372,7 @@ it('should create copy of a template flow', async () => {
 
   const { container, getByTestId } = render(copyFlow());
   await waitFor(() => {
-    expect(screen.getByText('Template flow copy')).toBeInTheDocument();
+    expect(screen.getByText('Copy of Help')).toBeInTheDocument();
   });
 
   const button = getByTestId('submitActionButton');
