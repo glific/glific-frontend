@@ -43,6 +43,8 @@ export const Flow = () => {
   const [roles, setRoles] = useState<Array<any>>([]);
   const [isBackground, setIsBackground] = useState(false);
   const [ignoreKeywords, setIgnoreKeywords] = useState(false);
+  const [copyFlowTitle, setCopyFlowTitle] = useState('');
+
   const { t } = useTranslation();
 
   let isTemplate = false;
@@ -104,11 +106,13 @@ export const Flow = () => {
     if (location.state === 'copy') {
       fieldName = `Copy of ${nameValue}`;
       fieldKeywords = '';
+      setCopyFlowTitle(nameValue);
     } else if (location.state === 'copyTemplate') {
       fieldName = '';
       description = '';
       tags = null;
       fieldKeywords = '';
+      setCopyFlowTitle(nameValue);
     }
     const {
       organization: {
@@ -277,18 +281,22 @@ export const Flow = () => {
 
   if (location.state === 'copy') {
     queries.updateItemQuery = CREATE_FLOW_COPY;
-    title = t('Copy flow');
+    title = t('Copy of');
     type = 'copy';
     copyNotification = t('Copy of the flow has been created!');
   } else if (location.state === 'copyTemplate') {
     queries.updateItemQuery = CREATE_FLOW_COPY;
-    title = t('Template flow copy');
+    title = t('Copy of');
     type = 'copy';
     copyNotification = t('Flow created successfully from template!');
   } else if (location.state === 'template') {
     title = t('Template Flow');
   } else {
     queries.updateItemQuery = UPDATE_FLOW;
+  }
+
+  if (copyFlowTitle) {
+    title = `${title} ${copyFlowTitle}`;
   }
 
   const customHandler = (data: any) => {
