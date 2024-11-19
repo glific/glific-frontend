@@ -106,10 +106,11 @@ export const Flow = () => {
     if (location.state === 'copy') {
       fieldName = `Copy of ${nameValue}`;
       fieldKeywords = '';
+      description = `Copy of ${nameValue}`;
       setCopyFlowTitle(nameValue);
     } else if (location.state === 'copyTemplate') {
       fieldName = '';
-      description = '';
+      description = `Copy of ${nameValue}`;
       tags = null;
       fieldKeywords = '';
       setCopyFlowTitle(nameValue);
