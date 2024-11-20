@@ -83,6 +83,17 @@ const mocks = [
     addRoleIds: [],
     deleteRoleIds: [],
   }),
+  copyFlowQuery({
+    isActive: true,
+    isPinned: false,
+    isBackground: false,
+    name: 'Help flow',
+    keywords: ['help'],
+    description: '',
+    ignoreKeywords: false,
+    addRoleIds: [],
+    deleteRoleIds: [],
+  }),
 ];
 
 const mockUseLocationValue: any = {
@@ -361,12 +372,16 @@ it('should create copy of a template flow', async () => {
 
   const { container, getByTestId } = render(copyFlow());
   await waitFor(() => {
-    const inputElement = container.querySelector('input[name="name"]') as HTMLInputElement;
-    expect(inputElement?.value).toBe('Copy of Help');
+    expect(screen.getByText('Copy of Help')).toBeInTheDocument();
   });
 
   const button = getByTestId('submitActionButton');
   fireEvent.click(button);
+
+  const inputs = screen.getAllByRole('textbox');
+  fireEvent.change(inputs[0], { target: { value: 'Help flow' } });
+  fireEvent.change(inputs[1], { target: { value: 'help' } });
+
   await waitFor(() => {});
 });
 
