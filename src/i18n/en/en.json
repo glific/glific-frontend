@@ -528,5 +528,7 @@
   "Temperature": "Temperature",
   "Upload File": "Upload File",
   "Add Files": "Add Files",
-  "Add files to file search": "Add files to file search"
+  "Add files to file search": "Add files to file search",
+  "First name is required.": "First Name is required.",
+  "Last name is required.": "Last name is required."
 }
