@@ -6,12 +6,7 @@ import {
   UPDATE_ASSISTANT,
   UPLOAD_FILE_TO_OPENAI,
 } from 'graphql/mutations/Assistant';
-import {
-  GET_ASSISTANT,
-  GET_ASSISTANTS,
-  GET_ASSISTANT_FILES,
-  GET_MODELS,
-} from 'graphql/queries/Assistant';
+import { GET_ASSISTANT, GET_ASSISTANTS, GET_ASSISTANT_FILES, GET_MODELS } from 'graphql/queries/Assistant';
 
 const getAssistantsList = (limit: number = 3) => ({
   request: {
@@ -219,7 +214,7 @@ const updateAssistant = {
         instructions: 'test instructions',
         model: 'chatgpt-4o-latest',
         name: 'test name',
-        temperature: '1.5',
+        temperature: 1.5,
       },
     },
   },
@@ -271,6 +266,7 @@ export const MOCKS = [
   listOpenaiModels,
   getAssistant('1'),
   getAssistant('1'),
+  getAssistant('1'),
   getAssistant('2'),
   getAssistant('2'),
   getAssistant('2'),
@@ -290,9 +286,4 @@ export const MOCKS = [
 
 export const emptyMocks = [getAssistantsList(0), listOpenaiModels, getAssistant('2')];
 
-export const loadMoreMocks = [
-  getAssistantsList(25),
-  listOpenaiModels,
-  loadMoreQuery,
-  getAssistant('1'),
-];
+export const loadMoreMocks = [getAssistantsList(25), listOpenaiModels, loadMoreQuery, getAssistant('1')];
