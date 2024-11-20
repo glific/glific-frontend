@@ -167,3 +167,18 @@ export const TERMINATE_FLOW = gql`
     }
   }
 `;
+
+export const PIN_FLOW = gql`
+  mutation UpdateFlow($updateFlowId: ID!, $input: FlowInput) {
+    updateFlow(id: $updateFlowId, input: $input) {
+      errors {
+        key
+        message
+      }
+      flow {
+        id
+        isPinned
+      }
+    }
+  }
+`;
