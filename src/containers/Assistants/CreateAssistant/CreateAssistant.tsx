@@ -190,7 +190,7 @@ export const CreateAssistant = ({ currentId, setUpdateList, setCurrentId, update
   if (showConfirmation) {
     dialog = (
       <DialogBox
-        title="Permanently delete assistant?"
+        title={`Are you sure you want to delete the assistant ${name}?`}
         handleCancel={handleClose}
         colorOk="warning"
         alignButtons="center"
