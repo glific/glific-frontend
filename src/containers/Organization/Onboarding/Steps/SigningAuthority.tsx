@@ -174,17 +174,19 @@ export const SigningAuthority = ({ handleStepChange, openReachOutToUs, saveData 
 
   const setStates = (states: any) => {
     const { signing_authority, submitter } = states;
-    let name;
+    let firstName;
+    let lastName;
     if (signing_authority?.name) {
-      name = signing_authority?.name.split(' ');
+      firstName = signing_authority?.name?.split(' ')[0];
+      lastName = signing_authority?.name?.split(' ')[1];
     }
 
     setSubmitterFirstName(submitter?.first_name);
     setSubmitterLastName(submitter?.last_name);
     setSubmitterEmail(submitter?.email);
     setSubmitterDesignation(submitter?.designation);
-    setSigningAuthorityFirstName(name[0] || '');
-    setSigningAuthorityLastName(name[1] || '');
+    setSigningAuthorityFirstName(firstName || '');
+    setSigningAuthorityLastName(lastName || '');
     setSigningAuthorityDesignation(signing_authority?.designation);
     setSigningAuthorityEmail(signing_authority?.email);
     setPermissions({ support_staff_account: false, terms_agreed: false });
