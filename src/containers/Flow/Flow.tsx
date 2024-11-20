@@ -43,6 +43,8 @@ export const Flow = () => {
   const [roles, setRoles] = useState<Array<any>>([]);
   const [isBackground, setIsBackground] = useState(false);
   const [ignoreKeywords, setIgnoreKeywords] = useState(false);
+  const [copyFlowTitle, setCopyFlowTitle] = useState('');
+
   const { t } = useTranslation();
 
   let isTemplate = false;
@@ -104,11 +106,14 @@ export const Flow = () => {
     if (location.state === 'copy') {
       fieldName = `Copy of ${nameValue}`;
       fieldKeywords = '';
+      description = `Copy of ${nameValue}`;
+      setCopyFlowTitle(nameValue);
     } else if (location.state === 'copyTemplate') {
-      fieldName = `Copy of ${nameValue}`;
-      description = '';
+      fieldName = '';
+      description = `Copy of ${nameValue}`;
       tags = null;
       fieldKeywords = '';
+      setCopyFlowTitle(nameValue);
     }
     const {
       organization: {
@@ -140,8 +145,7 @@ export const Flow = () => {
     }
   };
 
-  const regex =
-    /^\s*[^-!$%^&*()+|~=`{}[\]:";'<>?,./]+\s*(,\s*[^-!$%^&*()+|~=`{}[\]:";'<>?,./]+\s*)*$/g;
+  const regex = /^\s*[^-!$%^&*()+|~=`{}[\]:";'<>?,./\s]+\s*(,\s*[^-!$%^&*()+|~=`{}[\]:";'<>?,./\s]+\s*)*$/g;
 
   const FormSchema = Yup.object().shape({
     name: Yup.string().required(t('Name is required.')),
@@ -215,9 +219,7 @@ export const Flow = () => {
       name: 'ignoreKeywords',
       title: t('Ignore Keywords'),
       info: {
-        title: t(
-          'If activated, users will not be able to change this flow by entering keyword for any other flow.'
-        ),
+        title: t('If activated, users will not be able to change this flow by entering keyword for any other flow.'),
       },
       darkCheckbox: true,
       className: styles.Checkbox,
@@ -280,18 +282,22 @@ export const Flow = () => {
 
   if (location.state === 'copy') {
     queries.updateItemQuery = CREATE_FLOW_COPY;
-    title = t('Copy flow');
+    title = t('Copy of');
     type = 'copy';
     copyNotification = t('Copy of the flow has been created!');
   } else if (location.state === 'copyTemplate') {
     queries.updateItemQuery = CREATE_FLOW_COPY;
-    title = t('Template flow copy');
+    title = t('Copy of');
     type = 'copy';
     copyNotification = t('Flow created successfully from template!');
   } else if (location.state === 'template') {
     title = t('Template Flow');
   } else {
     queries.updateItemQuery = UPDATE_FLOW;
+  }
+
+  if (copyFlowTitle) {
+    title = `${title} ${copyFlowTitle}`;
   }
 
   const customHandler = (data: any) => {
