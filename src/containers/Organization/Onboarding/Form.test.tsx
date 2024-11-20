@@ -170,12 +170,13 @@ test('it should submit the form', async () => {
   });
 
   const inputFieldsPaymentdetails = getAllByRole('textbox');
-  const [name, designation, phone, email] = inputFieldsPaymentdetails;
+  const [firstName, lastName, designation, phone, email] = inputFieldsPaymentdetails;
 
   const radioButtons = getAllByTestId('radio-btn');
   fireEvent.click(radioButtons[1]);
 
-  fireEvent.change(name, { target: { value: 'Default finance poc name' } });
+  fireEvent.change(firstName, { target: { value: 'finance poc firstName' } });
+  fireEvent.change(lastName, { target: { value: 'finance poc lastName' } });
   fireEvent.change(designation, { target: { value: 'finance' } });
   fireEvent.change(phone, { target: { value: '09421050449' } });
   fireEvent.change(email, { target: { value: 'finance@email.com' } });
@@ -199,7 +200,8 @@ test('it should submit the form', async () => {
     submitterLastName,
     submitterDesignation,
     submitterEmail,
-    signingAuthorityName,
+    signingAuthorityFirstName,
+    signingAuthorityLastName,
     signingAuthorityDesignation,
     signingAuthorityEmail,
   ] = inputFieldssigningdetails;
@@ -209,7 +211,8 @@ test('it should submit the form', async () => {
   fireEvent.change(submitterDesignation, { target: { value: 'submitter' } });
   fireEvent.change(submitterEmail, { target: { value: 'submitter@email.com' } });
 
-  fireEvent.change(signingAuthorityName, { target: { value: 'Default signing' } });
+  fireEvent.change(signingAuthorityFirstName, { target: { value: 'Default signing firstName' } });
+  fireEvent.change(signingAuthorityLastName, { target: { value: 'Default signing lastName' } });
   fireEvent.change(signingAuthorityDesignation, { target: { value: 'signing authority' } });
   fireEvent.change(signingAuthorityEmail, { target: { value: 'signing@email.com' } });
 
@@ -281,12 +284,13 @@ test('it should disgree and send an email', async () => {
   });
 
   const inputFieldsPaymentdetails = getAllByRole('textbox');
-  const [name, designation, phone, email] = inputFieldsPaymentdetails;
+  const [firstName, lastName, designation, phone, email] = inputFieldsPaymentdetails;
 
   const radioButtons = getAllByTestId('radio-btn');
   fireEvent.click(radioButtons[1]);
 
-  fireEvent.change(name, { target: { value: 'Default finance poc name' } });
+  fireEvent.change(firstName, { target: { value: 'finance poc firstName' } });
+  fireEvent.change(lastName, { target: { value: 'finance poc lastName' } });
   fireEvent.change(designation, { target: { value: 'finance' } });
   fireEvent.change(phone, { target: { value: '09421050449' } });
   fireEvent.change(email, { target: { value: 'finance@email.com' } });

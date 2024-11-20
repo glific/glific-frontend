@@ -24,7 +24,7 @@ export const SigningAuthority = ({ handleStepChange, openReachOutToUs, saveData 
   const [signingAuthorityLastName, setSigningAuthorityLastName] = useState<string>('');
   const [signingAuthorityDesignation, setSigningAuthorityDesignation] = useState<string>('');
   const [signingAuthorityEmail, setSigningAuthorityEmail] = useState<string>('');
-  const [customError, setCustomError] = useState(null);
+  const [customError, setCustomError] = useState<any>(null);
 
   const [permissions, setPermissions] = useState({
     terms_agreed: false,
@@ -175,16 +175,16 @@ export const SigningAuthority = ({ handleStepChange, openReachOutToUs, saveData 
   const setStates = (states: any) => {
     const { signing_authority, submitter } = states;
     let name;
-    if (signing_authority.name) {
-      name = signing_authority.name.split(' ');
+    if (signing_authority?.name) {
+      name = signing_authority?.name.split(' ');
     }
 
     setSubmitterFirstName(submitter?.first_name);
     setSubmitterLastName(submitter?.last_name);
     setSubmitterEmail(submitter?.email);
     setSubmitterDesignation(submitter?.designation);
-    setSigningAuthorityFirstName(name[0]);
-    setSigningAuthorityLastName(name[1]);
+    setSigningAuthorityFirstName(name[0] || '');
+    setSigningAuthorityLastName(name[1] || '');
     setSigningAuthorityDesignation(signing_authority?.designation);
     setSigningAuthorityEmail(signing_authority?.email);
     setPermissions({ support_staff_account: false, terms_agreed: false });
@@ -204,11 +204,16 @@ export const SigningAuthority = ({ handleStepChange, openReachOutToUs, saveData 
           setErrors(data.messages);
         }
       })
-      .catch((data) => {
-        if (data.response.data.error.message) {
-          setCustomError(data.messages.global);
-        }
+      .catch((data: any) => {
         setLoading(false);
+
+        if (data?.response?.data?.error?.message) {
+          if (data?.response?.data?.error?.message?.includes('Failed to update address')) {
+            setCustomError('Please check the entered address and try again!');
+            return;
+          }
+          setCustomError(data?.response?.data?.error?.message);
+        }
       });
   };
 

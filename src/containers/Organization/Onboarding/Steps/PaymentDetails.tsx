@@ -102,10 +102,11 @@ export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) =>
   const setPayload = (payload: any) => {
     const data = localStorage.getItem('registrationData');
     const { firstName, lastName } = payload;
+    const billing_frequency = payload.billing_frequency;
     if (data) {
       let registrationData = JSON.parse(data);
 
-      const updatedPayload = {
+      const updatedPayload: any = {
         finance_poc: {
           ...payload,
           phone: formattedPhone,
@@ -114,7 +115,7 @@ export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) =>
         registration_id: registrationData.registration_details.registration_id,
         org_id: registrationData.registration_details.org_id,
         has_submitted: false,
-        billing_frequency: payload.billing_frequency,
+        billing_frequency,
       };
 
       return updatedPayload;
@@ -153,8 +154,8 @@ export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) =>
         }
       })
       .catch((data) => {
-        if (data.response.data.error.message) {
-          setCustomError(data.messages.global);
+        if (data?.response?.data?.error?.message) {
+          setCustomError(data?.response?.data?.error?.message);
         }
         setLoading(false);
       });

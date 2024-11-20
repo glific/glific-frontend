@@ -162,8 +162,8 @@ export const OrgDetails = ({ handleStepChange, saveData }: FormStepProps) => {
         }
       })
       .catch((data) => {
-        if (data.response.data.error.message) {
-          setCustomError(data.messages.global);
+        if (data?.response?.data?.error?.message) {
+          setCustomError(data?.response?.data?.error?.message);
         }
         setLoading(false);
       });
