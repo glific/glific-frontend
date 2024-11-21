@@ -300,3 +300,9 @@ export const updateContactCache = (client: any, id: any) => {
 
   return null;
 };
+
+export const formatString = (str: string) =>
+  str
+    .replace(/_/g, ' ')
+    .replace(/([a-z])([0-9])/gi, '$1 $2')
+    .replace(/\b\w/g, (char) => char.toUpperCase());

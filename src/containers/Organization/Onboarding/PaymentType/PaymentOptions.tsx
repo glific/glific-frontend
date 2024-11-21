@@ -25,32 +25,32 @@ export const PaymentOptions = ({ form: { setFieldValue, values } }: PaymentOptio
           <div className={`${styles.RadioLabelWrapper} ${styles.Year}`}>
             <FormControlLabel
               data-testid="radio-btn"
-              value={'yearly'}
-              checked={isChecked('yearly')}
+              value={'Annually'}
+              checked={isChecked('Annually')}
               control={<Radio color="primary" />}
-              label={'Yearly'}
-              className={isChecked('yearly') ? styles.Selectedlabel : styles.Label}
+              label={'Annually'}
+              className={isChecked('Annually') ? styles.Selectedlabel : styles.Label}
             />
             <div className={styles.Recommended}>One month fee waived off!</div>
           </div>
           <div className={styles.RadioLabelWrapper}>
             <FormControlLabel
               data-testid="radio-btn"
-              value={'quarterly'}
-              checked={isChecked('quarterly')}
+              value={'Quarterly'}
+              checked={isChecked('Quarterly')}
               control={<Radio color="primary" />}
               label={'Quarterly'}
-              className={isChecked('quarterly') ? styles.Selectedlabel : styles.Label}
+              className={isChecked('Quarterly') ? styles.Selectedlabel : styles.Label}
             />
           </div>
           <div className={styles.RadioLabelWrapper}>
             <FormControlLabel
               data-testid="radio-btn"
-              value={'monthly'}
-              checked={isChecked('monthly')}
+              value={'Monthly'}
+              checked={isChecked('Monthly')}
               control={<Radio color="primary" />}
               label={'Monthly'}
-              className={isChecked('monthly') ? styles.Selectedlabel : styles.Label}
+              className={isChecked('Monthly') ? styles.Selectedlabel : styles.Label}
             />
           </div>
         </RadioGroup>

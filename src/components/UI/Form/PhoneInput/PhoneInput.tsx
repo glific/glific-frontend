@@ -18,6 +18,7 @@ export interface InputProps {
   form: { touched: any; errors: any; setFieldValue: any };
   inputLabel?: string | null;
   disabled?: boolean;
+  changeHandler?: (event: string, data: {}, formFieldItems: string) => void;
 }
 
 export const PhoneInput = ({
@@ -33,6 +34,7 @@ export const PhoneInput = ({
   inputLabel = null,
   disabled = false,
   helperText,
+  changeHandler,
 }: InputProps) => {
   const errorText = getIn(errors, field.name);
   const touchedVal = getIn(touched, field.name);
@@ -58,7 +60,9 @@ export const PhoneInput = ({
           inputProps={inputProps}
           {...field}
           value={field.value}
-          onChange={(event) => {
+          onChange={(event, data, _, formFieldItems) => {
+            if (changeHandler) changeHandler(event, data, formFieldItems);
+
             setFieldValue(field.name, event);
           }}
         />

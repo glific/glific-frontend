@@ -31,12 +31,7 @@ interface CreateAssistantProps {
   setUpdateList: any;
 }
 
-export const CreateAssistant = ({
-  currentId,
-  setUpdateList,
-  setCurrentId,
-  updateList,
-}: CreateAssistantProps) => {
+export const CreateAssistant = ({ currentId, setUpdateList, setCurrentId, updateList }: CreateAssistantProps) => {
   const [assistantId, setAssistantId] = useState('');
   const [name, setName] = useState('');
   const [model, setModel] = useState<any>(null);
@@ -75,8 +70,8 @@ export const CreateAssistant = ({
         onCompleted: ({ assistant }) => {
           setAssistantId(assistant?.assistant?.assistantId);
           setName(assistant?.assistant?.name);
-          let modelValue = modelOptions?.find(
-            (item: any) => item.label === assistant?.assistant?.model
+          const modelValue = modelOptions?.find(
+            (item: { label: string }) => item.label === assistant?.assistant?.model
           );
           setModel(modelValue);
           setInstructions(assistant?.assistant?.instructions || '');
@@ -90,12 +85,7 @@ export const CreateAssistant = ({
   }, [currentId, modelsList]);
 
   const handleCreate = () => {
-    const {
-      instructions: instructionsValue,
-      model: modelValue,
-      name: nameValue,
-      options: optionsValue,
-    } = states;
+    const { instructions: instructionsValue, model: modelValue, name: nameValue, options: optionsValue } = states;
 
     const payload = {
       instructions: instructionsValue,
@@ -138,9 +128,7 @@ export const CreateAssistant = ({
       onChange: (value: any) => setName(value),
       helperText: (
         <div className={styles.AssistantId}>
-          <span className={styles.HelperText}>
-            {t('Give a recognizable name for your assistant')}
-          </span>
+          <span className={styles.HelperText}>{t('Give a recognizable name for your assistant')}</span>
           <div data-testid="copyCurrentAssistantId" onClick={() => copyToClipboard(assistantId)}>
             <CopyIcon />
             <span>{assistantId}</span>
@@ -191,10 +179,7 @@ export const CreateAssistant = ({
       },
       onCompleted: ({ deleteAssistant }) => {
         setShowConfirmation(false);
-        setNotification(
-          `Assistant ${deleteAssistant.assistant.name} deleted successfully`,
-          'success'
-        );
+        setNotification(`Assistant ${deleteAssistant.assistant.name} deleted successfully`, 'success');
         setCurrentId(null);
         setUpdateList(!updateList);
       },
@@ -213,7 +198,9 @@ export const CreateAssistant = ({
         buttonOkLoading={deletingAssistant}
         disableOk={deletingAssistant}
       >
-        <div className={styles.DialogContent}>{t("You won't be able to use this assistant.")}</div>
+        <div className={styles.DialogContent}>
+          {t('Please confirm that this assistant is not being used in any of the active flows.')}
+        </div>
       </DialogBox>
     );
   }
@@ -240,12 +227,7 @@ export const CreateAssistant = ({
             ))}
           </div>
           <div className={styles.Buttons}>
-            <Button
-              loading={savingChanges}
-              onClick={handleCreate}
-              variant="contained"
-              data-testid="submitAction"
-            >
+            <Button loading={savingChanges} onClick={handleCreate} variant="contained" data-testid="submitAction">
               {t('Save')}
             </Button>
             <Button
