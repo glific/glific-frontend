@@ -20,6 +20,7 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
   const [shortcode, setShortcode] = useState<string>('');
   const [phone, setPhone] = useState<string>('');
   const [code, setCode] = useState('[shortcode]');
+  const [customError, setCustomError] = useState(null);
 
   const [isDisabled, setIsDisabled] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -33,7 +34,7 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
     shortcode: Yup.string()
       .required(t('Shortcode is required.'))
       .max(8, 'Shortcode cannot be more than 8 characters.')
-      .matches(/^\S*$/, 'Shortcode cannot contain spaces.'),
+      .matches(/^[a-z0-9]([-a-z0-9]*[a-z0-9])?$/, 'Invalid shortcode.'),
     phone: Yup.string()
       .required(t('Phone number is required.'))
       .min(7, t('Enter a valid phone number.')),
@@ -147,27 +148,35 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
   const handleSubmit = async (payload: any, setErrors: Function) => {
     if (isDisabled) handleStepChange();
     setLoading(true);
-    await axios.post(ONBOARD_URL_SETUP, payload).then(({ data }) => {
-      setLoading(false);
-      if (data.is_valid) {
-        saveData(
-          {
-            registration_id: data.registration_id,
-            org_id: data.organization?.id,
-            submitted: true,
-          },
-          'registration_details'
-        );
+    await axios
+      .post(ONBOARD_URL_SETUP, payload)
+      .then(({ data }) => {
+        setLoading(false);
+        if (data.is_valid) {
+          saveData(
+            {
+              registration_id: data.registration_id,
+              org_id: data.organization?.id,
+              submitted: true,
+            },
+            'registration_details'
+          );
 
-        handleStepChange();
+          handleStepChange();
 
-        return true;
-      } else {
-        setErrors(data.messages);
-        saveData(data.messages, 'errors');
-        return false;
-      }
-    });
+          return true;
+        } else {
+          if (data.messages.global) {
+            setCustomError(data.messages.global);
+          }
+          setErrors(data.messages);
+          saveData(data.messages, 'errors');
+          return false;
+        }
+      })
+      .catch((errors) => {
+        setLoading(false);
+      });
   };
 
   const setStates = (states: any) => {
@@ -234,6 +243,8 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
       showModal={true}
       isDisabled={isDisabled}
       handleEffect={generateShortcode}
+      customError={customError}
+      setCustomError={setCustomError}
     />
   );
 };

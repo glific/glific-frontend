@@ -216,3 +216,28 @@ test('it deletes the assistant', async () => {
     expect(notificationSpy).toHaveBeenCalled();
   });
 });
+
+test('it should show errors for invalid value in temperature', async () => {
+  render(assistantsComponent());
+
+  await waitFor(() => {
+    expect(screen.getByText('Assistants')).toBeInTheDocument();
+    expect(screen.getByText('Assistant-1')).toBeInTheDocument();
+  });
+
+  await waitFor(() => {
+    expect(screen.getByText('Instructions')).toBeInTheDocument();
+  });
+
+  fireEvent.change(screen.getByRole('sliderDisplay'), { target: { value: 2.5 } });
+
+  await waitFor(() => {
+    expect(screen.getByText('Temperature value should be between 0-2')).toBeInTheDocument();
+  });
+
+  fireEvent.change(screen.getByRole('sliderDisplay'), { target: { value: -2.5 } });
+
+  await waitFor(() => {
+    expect(screen.getByText('Temperature value should be between 0-2')).toBeInTheDocument();
+  });
+});
