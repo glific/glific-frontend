@@ -1,4 +1,4 @@
-import { render, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 
@@ -63,13 +63,19 @@ const mocks = [
   ...HSM_LIST,
 ];
 
-const template = (mockQuery: any) => (
-  <MockedProvider mocks={[...mocks, mockQuery]} addTypename={false}>
-    <Router>
-      <HSMList />
-    </Router>
-  </MockedProvider>
-);
+const template = (mockQuery?: any) => {
+  let MOCKS = mocks;
+  if (mockQuery) {
+    MOCKS = [...MOCKS, mockQuery];
+  }
+  return (
+    <MockedProvider mocks={MOCKS} addTypename={false}>
+      <Router>
+        <HSMList />
+      </Router>
+    </MockedProvider>
+  );
+};
 
 vi.mock('common/notification', async (importOriginal) => {
   const mod = await importOriginal<typeof import('common/notification')>();
@@ -121,4 +127,20 @@ test('sync api should render notification on error', async () => {
   await waitFor(() => {
     expect(setNotification).toHaveBeenCalledWith('Sorry, failed to sync HSM updates.', 'warning');
   });
+});
+
+test.only('', async () => {
+  render(template());
+
+  await waitFor(() => {
+    expect(screen.getByText('Templates')).toBeInTheDocument();
+  });
+
+  fireEvent.mouseDown(screen.getByRole('button'));
+
+  const listbox = within(screen.getByRole('listbox'));
+
+  fireEvent.click(listbox.getByText(/Failed/i));
+
+  screen.debug(document, Infinity);
 });

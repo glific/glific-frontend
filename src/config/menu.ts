@@ -279,14 +279,14 @@ const menus = (): Menu[] => [
     roles: staffLevel,
   },
 
-  {
-    title: "What's new",
-    path: '/changelog',
-    url: NEW_UI_BLOG,
-    icon: 'new',
-    type: 'sideDrawer',
-    roles: staffLevel,
-  },
+  // {
+  //   title: "What's new",
+  //   path: '/changelog',
+  //   url: NEW_UI_BLOG,
+  //   icon: 'new',
+  //   type: 'sideDrawer',
+  //   roles: staffLevel,
+  // },
 ];
 
 export const getMenus = (menuType = 'sideDrawer', role = 'Staff') =>
