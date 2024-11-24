@@ -8,10 +8,11 @@ const setLogs = (message: any, type: string) => {
   const userId = getUserSession('id');
 
   let logger: any;
+  console.log(LOGFLARE_API, LOGFLARE_SOURCE, 'ss');
 
   if (LOGFLARE_API && LOGFLARE_SOURCE) {
-    const apiKey = LOGFLARE_API;
     const sourceToken = LOGFLARE_SOURCE;
+    const apiKey = LOGFLARE_API;
     // create pino-logflare stream
     const stream = createWriteStream({
       apiKey,

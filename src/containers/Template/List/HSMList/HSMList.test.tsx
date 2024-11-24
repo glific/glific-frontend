@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 
@@ -127,20 +127,4 @@ test('sync api should render notification on error', async () => {
   await waitFor(() => {
     expect(setNotification).toHaveBeenCalledWith('Sorry, failed to sync HSM updates.', 'warning');
   });
-});
-
-test.only('', async () => {
-  render(template());
-
-  await waitFor(() => {
-    expect(screen.getByText('Templates')).toBeInTheDocument();
-  });
-
-  fireEvent.mouseDown(screen.getByRole('button'));
-
-  const listbox = within(screen.getByRole('listbox'));
-
-  fireEvent.click(listbox.getByText(/Failed/i));
-
-  screen.debug(document, Infinity);
 });

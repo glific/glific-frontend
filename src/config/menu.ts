@@ -1,5 +1,5 @@
 import { organizationHasDynamicRole } from 'common/utils';
-import { ANALYTICS_URL, GLIFIC_DOCS_URL, NEW_UI_BLOG } from 'config';
+import { ANALYTICS_URL, GLIFIC_DOCS_URL } from 'config';
 import { getOrganizationServices } from 'services/AuthService';
 
 const allRoles = ['Staff', 'Manager', 'Admin', 'Dynamic', 'Glific_admin'];

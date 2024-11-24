@@ -32,7 +32,10 @@ export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) =>
     designation: Yup.string()
       .required(t('Designation is required.'))
       .max(25, t('Please enter not more than 25 characters')),
-    phone: Yup.string().required(t('Phone number is required.')).min(7, t('Enter a valid phone number.')),
+    phone: Yup.string()
+      .required(t('Phone number is required.'))
+      .min(7, t('Enter a valid phone number.'))
+      .matches(/^\+\d{1,4}\d{7,15}$/, 'Please enter a valid phone number.'),
     email: Yup.string().required(t('Email is required.')).email(t('Enter a valid email.')),
   });
   const initialFormValues: any = {
