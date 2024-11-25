@@ -342,4 +342,5 @@ test('if flow is not published it should show warning', async () => {
   await waitFor(() => {
     expect(screen.getByTestId('dialogBox')).toBeInTheDocument();
   });
+  fireEvent.click(getByTestId('cancel-button'));
 });
