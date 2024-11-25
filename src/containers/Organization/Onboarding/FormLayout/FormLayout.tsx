@@ -90,12 +90,7 @@ export const FormLayout = ({
 
   useEffect(() => {
     if (handleEffect) handleEffect(identifier, formik);
-  }, [
-    formik.touched?.name,
-    formik.values.name,
-    formik.values.registered_address,
-    formik.values.same_address,
-  ]);
+  }, [formik.touched?.name, formik.values.name, formik.values.registered_address, formik.values.same_address]);
 
   const header = (
     <div className={styles.Header}>
@@ -123,11 +118,7 @@ export const FormLayout = ({
             if (field.children) {
               return (
                 <div className={styles.FormSection} key={key}>
-                  <Typography
-                    data-testid="formLabel"
-                    variant="h5"
-                    className={styles.SectionHeading}
-                  >
+                  <Typography data-testid="formLabel" variant="h5" className={styles.SectionHeading}>
                     {field.label}
                   </Typography>
                   <div className={styles.FormFields}>
@@ -135,11 +126,7 @@ export const FormLayout = ({
                       return (
                         <div className={child.additionalStyles} key={i}>
                           {child.label && (
-                            <Typography
-                              data-testid="formLabel"
-                              variant="h5"
-                              className={styles.FieldLabel}
-                            >
+                            <Typography data-testid="formLabel" variant="h5" className={styles.FieldLabel}>
                               {child.label}
                             </Typography>
                           )}
@@ -161,9 +148,7 @@ export const FormLayout = ({
                 )}
 
                 <Field key={key} {...field} onSubmit={formik.submitForm} />
-                {field.fieldEndAdornment &&
-                  field.fieldEndAdornment.show &&
-                  field.fieldEndAdornment.component(formik)}
+                {field.fieldEndAdornment && field.fieldEndAdornment.show && field.fieldEndAdornment.component(formik)}
               </div>
             );
           })}
@@ -176,6 +161,8 @@ export const FormLayout = ({
             variant="outlined"
             color="primary"
             onClick={() => {
+              const values = setPayload(formik.values);
+              saveData(values, identifier);
               handleStepChange(false);
             }}
             className={styles.Button}
@@ -235,9 +222,7 @@ export const FormLayout = ({
         buttonOkLoading={loading}
       >
         <div className={styles.Modal}>
-          <p>
-            You wont be able to make changes to this page once confirmed. Do you want to go ahead?
-          </p>
+          <p>You wont be able to make changes to this page once confirmed. Do you want to go ahead?</p>
           {loading && <p className={styles.Wait}>Please wait, this might take a few seconds.</p>}
         </div>
       </DialogBox>
