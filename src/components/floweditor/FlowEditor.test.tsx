@@ -322,6 +322,12 @@ test('template words should have template: prefix', async () => {
   await waitFor(() => {
     expect(screen.getByTestId('simulator')).toHaveTextContent('template:help workflow');
   });
+
+  fireEvent.click(screen.getByTestId('back-button'));
+
+  await waitFor(() => {
+    expect(mockedUsedNavigate).toHaveBeenCalled();
+  });
 });
 
 test('if flow is not published it should show warning', async () => {
