@@ -161,8 +161,8 @@ export const FormLayout = ({
             variant="outlined"
             color="primary"
             onClick={() => {
-              const payload = setPayload(formik.values);
-              saveData(payload, identifier);
+              const values = setPayload(formik.values);
+              saveData(values, identifier);
               handleStepChange(false);
             }}
             className={styles.Button}

@@ -227,6 +227,7 @@ test('it should submit the form', async () => {
   });
 
   fireEvent.click(screen.getByText('I Agree'));
+  fireEvent.click(checkboxes[1]);
 
   fireEvent.click(getByTestId('submitActionButton'));
 
