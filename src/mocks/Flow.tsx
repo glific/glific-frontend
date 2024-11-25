@@ -267,12 +267,12 @@ export const filterFlowWithNameOrKeywordOrTagQuery = {
   },
 };
 
-const getFlowDetails = (isActive = true, keywords = ['help'], isTemplate = false) => ({
+const getFlowDetails = (data?: any, uuid: string = 'b050c652-65b5-4ccf-b62b-1e8b3f328676') => ({
   request: {
     query: GET_FLOW_DETAILS,
     variables: {
       filter: {
-        uuid: 'b050c652-65b5-4ccf-b62b-1e8b3f328676',
+        uuid,
       },
       opts: {},
     },
@@ -283,20 +283,27 @@ const getFlowDetails = (isActive = true, keywords = ['help'], isTemplate = false
       flows: [
         {
           id: '1',
-          isActive,
           name: 'help workflow',
-          keywords,
-          isTemplate,
+          isActive: true,
+          keywords: ['keyword'],
+          isTemplate: false,
+          lastPublishedAt: '2021-03-05T04:32:23Z',
+          lastChangedAt: null,
+          ...data,
         },
       ],
     },
   },
 });
 
-export const getActiveFlow = getFlowDetails();
-export const getInactiveFlow = getFlowDetails(false);
-export const getFlowWithoutKeyword = getFlowDetails(true, []);
-export const getTemplateFlow = getFlowDetails(true, [], true);
+export const getActiveFlow = getFlowDetails({ keywords: ['help'] });
+export const getInactiveFlow = getFlowDetails({ isActive: false });
+export const getFlowWithoutKeyword = getFlowDetails({ isActive: true, keywords: [] });
+export const getTemplateFlow = getFlowDetails({ isActive: true, keywords: [], isTemplate: true });
+export const unsavedFlow = getFlowDetails(
+  { lastChangedAt: '2021-04-05T04:32:23Z' },
+  '63397051-789d-418d-9388-2ef7eb1268bb'
+);
 
 export const getFlowCountQuery = (filter: any) => ({
   request: {

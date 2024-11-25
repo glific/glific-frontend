@@ -1,4 +1,4 @@
-import { BrowserRouter as Router } from 'react-router-dom';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 import { render, waitFor, fireEvent, screen } from '@testing-library/react';
 import { vi } from 'vitest';
@@ -15,6 +15,7 @@ import {
   resetFlowCount,
   getFlowTranslations,
   getTemplateFlow,
+  unsavedFlow,
 } from 'mocks/Flow';
 import { conversationQuery } from 'mocks/Chat';
 import {
@@ -29,18 +30,17 @@ import * as Notification from 'common/notification';
 
 window.location = { assign: vi.fn() } as any;
 
-vi.mock('react-router-dom', async () => {
-  return {
-    ...(await vi.importActual<any>('react-router-dom')),
-    useParams: () => ({ uuid: 'b050c652-65b5-4ccf-b62b-1e8b3f328676' }),
-  };
-});
-
 vi.mock('axios');
 const mockedAxios = axios as any;
 
 vi.mock('../simulator/Simulator', () => ({
   default: ({ message }: { message: string }) => <div data-testid="simulator">{message}</div>, // Mocking the component's behavior
+}));
+
+const mockedUsedNavigate = vi.fn();
+vi.mock('react-router-dom', async () => ({
+  ...(await vi.importActual('react-router-dom')),
+  useNavigate: () => mockedUsedNavigate,
 }));
 
 const mocks = [
@@ -60,16 +60,19 @@ const mocks = [
   getFlowTranslations,
 ];
 
-const activeFlowMocks = [...mocks, getActiveFlow];
+const activeFlowMocks = [...mocks, getActiveFlow, getActiveFlow];
 const inActiveFlowMocks = [...mocks, getInactiveFlow];
 const noKeywordMocks = [...mocks, getFlowWithoutKeyword, resetFlowCount];
 const templateFlowMocks = [...mocks, getTemplateFlow, resetFlowCount];
+const flowWithUnsavedChanges = [...mocks, unsavedFlow, unsavedFlow];
 
-const wrapperFunction = (mocks: any) => (
+const wrapperFunction = (mocks: any, uuid: string = 'b050c652-65b5-4ccf-b62b-1e8b3f328676') => (
   <MockedProvider mocks={mocks} addTypename={false}>
-    <Router>
-      <FlowEditor />
-    </Router>
+    <MemoryRouter initialEntries={[`/flow/configure/${uuid}`]}>
+      <Routes>
+        <Route path="flow/configure/:uuid" element={<FlowEditor />} />
+      </Routes>
+    </MemoryRouter>
   </MockedProvider>
 );
 
@@ -94,6 +97,12 @@ test('it should have a back button that redirects to flow page', async () => {
   const { getByTestId } = render(defaultWrapper);
   await waitFor(() => {
     expect(getByTestId('back-button')).toBeInTheDocument();
+  });
+
+  fireEvent.click(getByTestId('back-button'));
+
+  await waitFor(() => {
+    expect(mockedUsedNavigate).toHaveBeenCalled();
   });
 });
 
@@ -312,5 +321,19 @@ test('template words should have template: prefix', async () => {
 
   await waitFor(() => {
     expect(screen.getByTestId('simulator')).toHaveTextContent('template:help workflow');
+  });
+});
+
+test('if flow is not published it should show warning', async () => {
+  const { getByTestId } = render(wrapperFunction(flowWithUnsavedChanges, '63397051-789d-418d-9388-2ef7eb1268bb'));
+
+  await waitFor(() => {
+    expect(getByTestId('back-button')).toBeInTheDocument();
+  });
+
+  fireEvent.click(getByTestId('back-button'));
+
+  await waitFor(() => {
+    expect(screen.getByTestId('dialogBox')).toBeInTheDocument();
   });
 });

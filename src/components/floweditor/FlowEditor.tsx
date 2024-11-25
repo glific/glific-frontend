@@ -22,8 +22,6 @@ import styles from './FlowEditor.module.css';
 import { checkElementInRegistry, loadfiles, setConfig } from './FlowEditor.helper';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { BackdropLoader, FlowTranslation } from 'containers/Flow/FlowTranslation';
-import { P } from 'pino';
-import dayjs from 'dayjs';
 
 declare function showFlowEditor(node: any, config: any): void;
 
@@ -351,7 +349,7 @@ export const FlowEditor = () => {
     }
 
     refetch().then(({ data }) => {
-      const isFlowPublished = !dayjs(data.flows[0].lastChangedAt).isAfter(data.flows[0].lastPublishedAt);
+      const isFlowPublished = data.flows[0].lastChangedAt === null;
       if (isFlowPublished) {
         navigate('/flow');
       } else {
@@ -368,7 +366,7 @@ export const FlowEditor = () => {
         <div className={styles.Title}>
           <BackIconFlow onClick={handleBack} className={styles.BackIcon} data-testid="back-button" />
           <div>
-            <Typography variant="h6" data-testid="flowData">
+            <Typography variant="h6" data-testid="flowName">
               {flowData ? flowTitle : 'Flow'}
             </Typography>
             <div>{flowKeywords}</div>
