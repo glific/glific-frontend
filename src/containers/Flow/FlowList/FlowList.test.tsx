@@ -13,6 +13,7 @@ import {
   exportFlow,
   releaseFlow,
   filterTemplateFlows,
+  pinFlowQuery,
 } from 'mocks/Flow';
 import { getOrganizationQuery } from 'mocks/Organization';
 import testJSON from 'mocks/ImportFlow.json';
@@ -21,6 +22,7 @@ import { FlowList } from './FlowList';
 import { Flow } from '../Flow';
 import { getFilterTagQuery } from 'mocks/Tag';
 import { getRoleNameQuery } from 'mocks/Role';
+import * as Notification from 'common/notification';
 
 const isActiveFilter = { isActive: true, isTemplate: false };
 
@@ -44,6 +46,8 @@ const mocks = [
   getRoleNameQuery,
   getFlowCountQuery({ isTemplate: true }),
   filterTemplateFlows,
+  pinFlowQuery('2', true),
+  pinFlowQuery('1'),
   ...getOrganizationQuery,
 ];
 
@@ -69,6 +73,7 @@ vi.mock('react-router-dom', async () => {
 
 setUserSession(JSON.stringify({ roles: [{ id: '1', label: 'Admin' }] }));
 setOrganizationServices('{"__typename":"OrganizationServicesResult","rolesAndPermission":true}');
+const notificationSpy = vi.spyOn(Notification, 'setNotification');
 
 describe('<FlowList />', () => {
   test('should render Flow', async () => {
@@ -79,7 +84,7 @@ describe('<FlowList />', () => {
     });
   });
 
-  test('should search flow and check if flow keywprds are present below the name', async () => {
+  test('should search flow and check if flow keywords are present below the name', async () => {
     const { getByText, getByTestId, queryByPlaceholderText } = render(flowList);
     await waitFor(() => {
       // type "Help Workflow" in search box and enter
@@ -191,6 +196,26 @@ describe('<FlowList />', () => {
 
     await waitFor(() => {
       expect(mockedUsedNavigate).toHaveBeenCalled();
+    });
+  });
+
+  test('it should pin/unpin the flows', async () => {
+    render(flowList);
+
+    await waitFor(() => {
+      expect(screen.getByText('Flows')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getAllByTestId('pin-button')[0]);
+
+    await waitFor(() => {
+      expect(notificationSpy).toHaveBeenCalled();
+    });
+
+    fireEvent.click(screen.getAllByTestId('unpin-button')[0]);
+
+    await waitFor(() => {
+      expect(notificationSpy).toHaveBeenCalled();
     });
   });
 });

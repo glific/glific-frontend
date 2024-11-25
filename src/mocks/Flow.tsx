@@ -21,6 +21,7 @@ import {
   IMPORT_FLOW_LOCALIZATIONS,
   ADD_FLOW_TO_WA_GROUP,
   CREATE_FLOW,
+  PIN_FLOW,
 } from 'graphql/mutations/Flow';
 import { GET_ORGANIZATION_SERVICES } from 'graphql/queries/Organization';
 import json from './ImportFlow.json';
@@ -753,3 +754,26 @@ export const createTagQuery = {
     },
   },
 };
+
+export const pinFlowQuery = (updateFlowId: string, pin: boolean = false) => ({
+  request: {
+    query: PIN_FLOW,
+    variables: {
+      updateFlowId,
+      input: {
+        isPinned: pin,
+      },
+    },
+  },
+  result: {
+    data: {
+      updateFlow: {
+        errors: null,
+        flow: {
+          id: '2',
+          isPinned: pin,
+        },
+      },
+    },
+  },
+});

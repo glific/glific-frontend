@@ -4,22 +4,24 @@ import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 
-import { FormControl, MenuItem, Select } from '@mui/material';
+import { FormControl, IconButton, MenuItem, Select } from '@mui/material';
 
 import FlowIcon from 'assets/images/icons/Flow/Dark.svg?react';
 import DuplicateIcon from 'assets/images/icons/Duplicate.svg?react';
 import ExportIcon from 'assets/images/icons/Flow/Export.svg?react';
 import ConfigureIcon from 'assets/images/icons/Configure/UnselectedDark.svg?react';
-import PinIcon from 'assets/images/icons/Pin/Active.svg?react';
+import PinIcon from 'assets/images/icons/Pin/Pin.svg?react';
+import ActivePinIcon from 'assets/images/icons/Pin/Active.svg?react';
 import ViewIcon from 'assets/images/icons/ViewLight.svg?react';
 import { FILTER_FLOW, GET_FLOW_COUNT, EXPORT_FLOW, RELEASE_FLOW } from 'graphql/queries/Flow';
-import { DELETE_FLOW, IMPORT_FLOW } from 'graphql/mutations/Flow';
+import { DELETE_FLOW, IMPORT_FLOW, PIN_FLOW } from 'graphql/mutations/Flow';
 import { List } from 'containers/List/List';
 import { ImportButton } from 'components/UI/ImportButton/ImportButton';
 import { STANDARD_DATE_TIME_FORMAT } from 'common/constants';
 import { exportFlowMethod, organizationHasDynamicRole } from 'common/utils';
 import styles from './FlowList.module.css';
 import { GET_TAGS } from 'graphql/queries/Tags';
+import Tooltip from 'components/UI/Tooltip/Tooltip';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { flowInfo } from 'common/HelpData';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
@@ -34,17 +36,13 @@ const getName = (text: string, keywordsList: any, roles: any) => {
       {text}
       <br />
       <span className={styles.Keyword}>{keywords.join(', ')}</span>
-      {hasDynamicRole && (
-        <span className={styles.Roles}>{accessRoles && accessRoles.join(', ')} </span>
-      )}
+      {hasDynamicRole && <span className={styles.Roles}>{accessRoles && accessRoles.join(', ')} </span>}
     </div>
   );
 };
 
 const getDate = (date: string, fallback: string = '') => (
-  <div className={styles.LastPublished}>
-    {date ? dayjs(date).format(STANDARD_DATE_TIME_FORMAT) : fallback}
-  </div>
+  <div className={styles.LastPublished}>{date ? dayjs(date).format(STANDARD_DATE_TIME_FORMAT) : fallback}</div>
 );
 
 const getLastPublished = (date: string, fallback: string = '') =>
@@ -55,21 +53,7 @@ const getLastPublished = (date: string, fallback: string = '') =>
   );
 const getLabel = (tag: any) => <div className={styles.LabelButton}>{tag.label}</div>;
 
-const displayPinned = (isPinned: boolean) => {
-  if (isPinned) {
-    return <PinIcon />;
-  }
-  return '';
-};
-
-const columnStyles = [
-  styles.Pinned,
-  styles.Name,
-  styles.DateColumn,
-  styles.Label,
-  styles.DateColumn,
-  styles.Actions,
-];
+const columnStyles = [styles.Pinned, styles.Name, styles.DateColumn, styles.Label, styles.DateColumn, styles.Actions];
 const flowIcon = <FlowIcon className={styles.FlowIcon} />;
 
 const queries = {
@@ -91,6 +75,7 @@ export const FlowList = () => {
   const [importing, setImporting] = useState(false);
   const [importStatus, setImportStatus] = useState([]);
   const [showDialog, setShowDialog] = useState(false);
+  const [refreshList, setRefreshList] = useState(false);
 
   const [releaseFlow] = useLazyQuery(RELEASE_FLOW);
 
@@ -122,6 +107,8 @@ export const FlowList = () => {
     },
   });
 
+  const [updatePinned] = useMutation(PIN_FLOW);
+
   const handleCopy = (id: any) => {
     navigate(`/flow/${id}/edit`, { state: 'copy' });
   };
@@ -130,7 +117,57 @@ export const FlowList = () => {
     setFlowName(item.name);
     exportFlowMutation({ variables: { id } });
   };
+
+  const handlePin = (updateFlowId: any, pin: boolean = false) => {
+    if (pin) {
+      updatePinned({
+        variables: {
+          updateFlowId,
+          input: {
+            isPinned: true,
+          },
+        },
+        onCompleted: () => {
+          setRefreshList(!refreshList);
+          setNotification('Flow pinned successfully');
+        },
+      });
+    } else {
+      updatePinned({
+        variables: {
+          updateFlowId,
+          input: {
+            isPinned: false,
+          },
+        },
+        onCompleted: () => {
+          setRefreshList(!refreshList);
+          setNotification('Flow unpinned successfully');
+        },
+      });
+    }
+  };
+
   let dialog;
+
+  const displayPinned = (isPinned: boolean, id: any) => {
+    if (isPinned) {
+      return (
+        <Tooltip title={'Unpin'} placement={'top-start'}>
+          <IconButton data-testid="unpin-button" onClick={() => handlePin(id)}>
+            <ActivePinIcon />
+          </IconButton>
+        </Tooltip>
+      );
+    }
+    return (
+      <Tooltip title={'Pin'} placement={'top-start'}>
+        <IconButton data-testid="pin-button" onClick={() => handlePin(id, true)}>
+          <PinIcon />
+        </IconButton>
+      </Tooltip>
+    );
+  };
 
   if (importStatus.length > 0) {
     dialog = (
@@ -206,16 +243,8 @@ export const FlowList = () => {
 
   const additionalAction = () => (filter === 'isTemplate' ? templateFlowActions : actions);
 
-  const getColumns = ({
-    name,
-    keywords,
-    lastChangedAt,
-    lastPublishedAt,
-    tag,
-    roles,
-    isPinned,
-  }: any) => ({
-    pin: displayPinned(isPinned),
+  const getColumns = ({ name, keywords, lastChangedAt, lastPublishedAt, tag, roles, isPinned, id }: any) => ({
+    pin: displayPinned(isPinned, id),
     name: getName(name, keywords, roles),
     lastPublishedAt: getLastPublished(lastPublishedAt, t('Not published yet')),
     label: tag ? getLabel(tag) : '',
@@ -360,6 +389,7 @@ export const FlowList = () => {
         filterList={activeFilter}
         loadingList={importing}
         restrictedAction={restrictedAction}
+        refreshList={refreshList}
       />
     </>
   );
