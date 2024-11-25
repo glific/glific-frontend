@@ -20,14 +20,7 @@ export interface HeadingProps {
   };
 }
 
-export const Heading = ({
-  formTitle,
-  helpData,
-  showHeaderHelp = true,
-  backLink,
-  headerHelp,
-  button,
-}: HeadingProps) => {
+export const Heading = ({ formTitle, helpData, showHeaderHelp = true, backLink, headerHelp, button }: HeadingProps) => {
   const navigate = useNavigate();
   const addIcon = <AddIcon className={styles.AddIcon} />;
 
@@ -39,12 +32,12 @@ export const Heading = ({
         </div>
         <div>
           <div className={styles.HeadingTitle}>
-            <div className={styles.TitleText}>{formTitle}</div>
+            <div data-testid="headerTitle" className={styles.TitleText}>
+              {formTitle}
+            </div>
             {helpData ? <HelpIcon helpData={helpData} /> : ''}
           </div>
-          <div className={styles.TextHeading}>
-            {showHeaderHelp ? headerHelp || `Please enter below details.` : ''}
-          </div>
+          <div className={styles.TextHeading}>{showHeaderHelp ? headerHelp || `Please enter below details.` : ''}</div>
         </div>
       </div>
       {button && button.show && (

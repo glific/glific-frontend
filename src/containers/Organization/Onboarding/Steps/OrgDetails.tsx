@@ -8,31 +8,60 @@ import styles from '../FormLayout/FormLayout.module.css';
 import { Input } from 'components/UI/Form/Input/Input';
 import { FormLayout } from '../FormLayout/FormLayout';
 import { useTranslation } from 'react-i18next';
+import { RegisteredAddress } from './Address/Address';
 
 export interface FormStepProps {
   handleStepChange: Function;
   saveData: Function;
 }
 
+const isSameAddress = (address1: any, address2: any) =>
+  Object.keys(address1).every((key) => address1[key] === address2[key]);
+
 export const OrgDetails = ({ handleStepChange, saveData }: FormStepProps) => {
   const [gstin, setGstNumber] = useState<string>('');
-  const [registered_address, setRegisteredAddress] = useState<string>('');
-  const [current_address, setCurrentAddress] = useState<string>('');
+  const [registered_address, setRegisteredAddress] = useState({
+    address_line1: '',
+    address_line2: '',
+    city: '',
+    state: '',
+    country: '',
+    pincode: '',
+  });
+  const [current_address, setCurrentAddress] = useState({
+    address_line1: '',
+    address_line2: '',
+    city: '',
+    state: '',
+    country: '',
+    pincode: '',
+  });
   const [same_address, setSameAddress] = useState(false);
   const [disable, setDisable] = useState(false);
 
   const [loading, setLoading] = useState(false);
+  const [customError, setCustomError] = useState(null);
 
   const { t } = useTranslation();
 
   const FormSchema = Yup.object().shape({
     gstin: Yup.string().length(15, t('Invalid gst number')),
-    registered_address: Yup.string()
-      .required(t('Registered address is required.'))
-      .max(300, t('Address should not exceed 300 characters')),
-    current_address: Yup.string()
-      .required(t('Current address is required.'))
-      .max(300, t('Address should not exceed 300 characters')),
+    registered_address: Yup.object().shape({
+      address_line1: Yup.string().required('Address Line 1 is required'),
+      address_line2: Yup.string(),
+      city: Yup.string().required('City is required'),
+      state: Yup.string().required('State is required'),
+      country: Yup.string().required('Country is required'),
+      pincode: Yup.string().matches(/^\d+$/, 'Invalid Pincode').required('Pincode is required'),
+    }),
+    current_address: Yup.object().shape({
+      address_line1: Yup.string().required('Address Line 1 is required'),
+      address_line2: Yup.string(),
+      city: Yup.string().required('City is required'),
+      state: Yup.string().required('State is required'),
+      country: Yup.string().required('Country is required'),
+      pincode: Yup.string().matches(/^\d+$/, 'Invalid Pincode').required('Pincode is required'),
+    }),
   });
 
   const initialFormValues: any = {
@@ -61,23 +90,22 @@ export const OrgDetails = ({ handleStepChange, saveData }: FormStepProps) => {
 
   const formFields = [
     {
-      component: Input,
+      component: RegisteredAddress,
       name: 'registered_address',
-      type: 'text',
-      inputLabel: 'Registered Address',
-      textArea: true,
       inputLabelSubtext: <span className={styles.SubText}>(As per your documentation)</span>,
-      additionalStyles: styles.MessageField,
+      inputLabel: 'Registered Address',
+      address: registered_address,
+      setAddress: setRegisteredAddress,
     },
     {
-      component: Input,
+      component: RegisteredAddress,
       name: 'current_address',
-      type: 'text',
       inputLabel: 'Current Address',
-      textArea: true,
       additionalStyles: styles.MessageField,
       fieldEndAdornment: { show: true, component: inputendAdornment },
       disabled: disable,
+      address: current_address,
+      setAddress: setCurrentAddress,
     },
     {
       component: Input,
@@ -115,21 +143,30 @@ export const OrgDetails = ({ handleStepChange, saveData }: FormStepProps) => {
     setGstNumber(gstin);
     setRegisteredAddress(registered_address);
     setCurrentAddress(current_address);
-    if (current_address === registered_address) {
+    if (isSameAddress(registered_address, current_address)) {
       setSameAddress(true);
+      setDisable(true);
     }
   };
 
   const handleSubmit = async (payload: any, setErrors: any) => {
     setLoading(true);
-    await axios.post(ONBOARD_URL_UPDATE, payload).then(({ data }) => {
-      setLoading(false);
-      if (data.is_valid) {
-        handleStepChange();
-      } else {
-        setErrors(data.messages);
-      }
-    });
+    await axios
+      .post(ONBOARD_URL_UPDATE, payload)
+      .then(({ data }) => {
+        setLoading(false);
+        if (data.is_valid) {
+          handleStepChange();
+        } else {
+          setErrors(data.messages);
+        }
+      })
+      .catch((data) => {
+        if (data?.response?.data?.error?.message) {
+          setCustomError(data?.response?.data?.error?.message);
+        }
+        setLoading(false);
+      });
   };
 
   const handleAutoUpdateAddress = (identifier: string, formik: any) => {
@@ -157,6 +194,8 @@ export const OrgDetails = ({ handleStepChange, saveData }: FormStepProps) => {
       submitData={handleSubmit}
       loading={loading}
       handleEffect={handleAutoUpdateAddress}
+      setCustomError={setCustomError}
+      customError={customError}
     />
   );
 };

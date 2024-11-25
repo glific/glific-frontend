@@ -1,0 +1,45 @@
+.Label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #111;
+    line-height: 22px;
+    margin: 6px 0;
+    display: flex;
+    column-gap: 4px;
+}
+
+.Heading {
+    composes: Label;
+    font-size: 1rem;
+}
+
+.InputBox {
+    width: 100%;
+}
+
+.OutlinedInput {
+    padding: 12.5px 14px;
+}
+
+
+.AddressField {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    grid-gap: 0.5rem;
+
+}
+
+.FullRow {
+    grid-column-start: 1;
+    grid-column-end: 3;
+}
+
+.Errors {
+    font-size: 12px;
+    margin: 0;
+    margin-left: 14px;
+    line-height: 18px;
+    font-weight: 400;
+    color: #fb5c5c;
+}
