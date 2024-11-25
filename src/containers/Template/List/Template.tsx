@@ -9,16 +9,8 @@ import { List } from 'containers/List/List';
 import { WhatsAppToJsx } from 'common/RichEditor';
 import { STANDARD_DATE_TIME_FORMAT, GUPSHUP_ENTERPRISE_SHORTCODE } from 'common/constants';
 import { capitalizeFirstLetter } from 'common/utils';
-import {
-  GET_TEMPLATES_COUNT,
-  FILTER_TEMPLATES,
-  FILTER_SESSION_TEMPLATES,
-} from 'graphql/queries/Template';
-import {
-  BULK_APPLY_TEMPLATES,
-  DELETE_TEMPLATE,
-  IMPORT_TEMPLATES,
-} from 'graphql/mutations/Template';
+import { GET_TEMPLATES_COUNT, FILTER_TEMPLATES, FILTER_SESSION_TEMPLATES } from 'graphql/queries/Template';
+import { BULK_APPLY_TEMPLATES, DELETE_TEMPLATE, IMPORT_TEMPLATES } from 'graphql/mutations/Template';
 import { GET_TAGS } from 'graphql/queries/Tags';
 import { ImportButton } from 'components/UI/ImportButton/ImportButton';
 import DownArrow from 'assets/images/icons/DownArrow.svg?react';
@@ -41,11 +33,7 @@ import { RaiseToGupShup } from './RaiseToGupshupDialog/RaiseToGupShup';
 const getLabel = (label: string, quality?: string, isHsm?: boolean) => (
   <div className={styles.LabelContainer}>
     <div className={styles.LabelText}>{label}</div>
-    {isHsm && (
-      <div className={styles.Quality}>
-        {quality && quality !== 'UNKNOWN' ? quality : 'Not Rated'}
-      </div>
-    )}
+    {isHsm && <div className={styles.Quality}>{quality && quality !== 'UNKNOWN' ? quality : 'Not Rated'}</div>}
   </div>
 );
 
@@ -133,9 +121,7 @@ export const Template = ({
       setImporting(false);
       if (data && data.bulkApplyTemplates) {
         exportCsvFile(data.bulkApplyTemplates.csv_rows, 'result');
-        setNotification(
-          t('Templates applied successfully. Please check the csv file for the results')
-        );
+        setNotification(t('Templates applied successfully. Please check the csv file for the results'));
       }
     },
     onError: () => {
@@ -194,7 +180,7 @@ export const Template = ({
   if (isHSM) {
     columnNames.push({ name: 'category', label: t('Category') });
     columnNames.push({ name: 'status', label: t('Status') });
-    if (filters.REJECTED) {
+    if (filters.REJECTED || filters.FAILED) {
       columnNames.push({ label: t('Reason') });
     }
   } else {
@@ -210,7 +196,7 @@ export const Template = ({
         ...columnStyles,
         styles.Category,
         styles.Status,
-        ...(filters.REJECTED ? [styles.Reason] : []),
+        ...(filters.REJECTED || filters.FAILED ? [styles.Reason] : []),
         styles.Actions,
       ]
     : [...columnStyles, styles.LastModified, styles.Actions];
@@ -236,7 +222,7 @@ export const Template = ({
     if (isHSM) {
       columns.category = getCategory(category);
       columns.status = getStatus(status);
-      if (filters.REJECTED) {
+      if (filters.REJECTED || filters.FAILED) {
         columns.reason = getReason(reason);
       }
     } else {
@@ -308,7 +294,7 @@ export const Template = ({
   const dialogMessage = t('It will stop showing when you draft a customized message');
 
   let filterValue: any = '';
-  const statusList = ['Approved', 'Pending', 'Rejected'];
+  const statusList = ['Approved', 'Pending', 'Rejected', 'Failed'];
 
   const handleCheckedBox = (event: any) => {
     setFilters({ ...statusFilter, [event.target.value.toUpperCase()]: true });
@@ -401,12 +387,7 @@ export const Template = ({
   if (isHSM) {
     secondaryButton = (
       <div className={styles.ImportButton}>
-        <a
-          href={BULK_APPLY_SAMPLE_LINK}
-          target="_blank"
-          rel="noreferrer"
-          className={styles.HelperText}
-        >
+        <a href={BULK_APPLY_SAMPLE_LINK} target="_blank" rel="noreferrer" className={styles.HelperText}>
           View Sample
         </a>
         <ImportButton
