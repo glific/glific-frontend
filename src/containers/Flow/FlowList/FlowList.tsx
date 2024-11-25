@@ -128,7 +128,7 @@ export const FlowList = () => {
           },
         },
         onCompleted: () => {
-          setRefreshList(true);
+          setRefreshList(!refreshList);
           setNotification('Flow pinned successfully');
         },
       });
@@ -141,7 +141,7 @@ export const FlowList = () => {
           },
         },
         onCompleted: () => {
-          setRefreshList(true);
+          setRefreshList(!refreshList);
           setNotification('Flow unpinned successfully');
         },
       });
