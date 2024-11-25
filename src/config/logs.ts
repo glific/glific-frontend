@@ -8,7 +8,6 @@ const setLogs = (message: any, type: string) => {
   const userId = getUserSession('id');
 
   let logger: any;
-  console.log(LOGFLARE_API, LOGFLARE_SOURCE, 'ss');
 
   if (LOGFLARE_API && LOGFLARE_SOURCE) {
     const sourceToken = LOGFLARE_SOURCE;
