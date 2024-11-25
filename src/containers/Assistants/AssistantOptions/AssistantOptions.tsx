@@ -30,7 +30,8 @@ interface AssistantOptionsProps {
 
 const temperatureInfo =
   'Controls randomness: Lowering results in less random completions. As the temperature approaches zero, the model will become deterministic and repetitive.';
-
+const filesInfo =
+  'Enables the assistant with knowledge from files that you or your users upload. Once a file is uploaded, the assistant automatically decides when to retrieve content based on user requests.';
 export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOptionsProps) => {
   const [showUploadDialog, setShowUploadDialog] = useState(false);
   const [files, setFiles] = useState<any[]>([]);
@@ -171,6 +172,11 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
         <div className={styles.FilesHeader}>
           <Typography variant="subtitle2" className={styles.Label} data-testid="inputLabel">
             Files
+            <HelpIcon
+              helpData={{
+                heading: filesInfo,
+              }}
+            />
           </Typography>
           <Button data-testid="addFiles" onClick={() => setShowUploadDialog(true)} variant="outlined">
             <AddIcon />
