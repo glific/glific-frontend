@@ -23,6 +23,7 @@ import CopyAllOutlined from 'assets/images/icons/Flow/Copy.svg?react';
 import { ProviderContext } from 'context/session';
 import { copyToClipboardMethod, exportCsvFile, getFileExtension } from 'common/utils';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
+import HelpIcon from 'components/UI/HelpIcon/HelpIcon';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { setNotification } from 'common/notification';
 import { BULK_APPLY_SAMPLE_LINK } from 'config';
@@ -58,6 +59,10 @@ const getCategory = (category: string) => {
   let categoryName = category.split('_').join(' ').toLowerCase();
   return <p className={styles.TableText}>{capitalizeFirstLetter(categoryName)}</p>;
 };
+
+const failedInfo = "The template has failed the review process at Gupshup's end.";
+const rejectedInfo =
+  'The template has failed to be reviewed due to violations of the approval criteria. This status requires revising and resubmitting the template.';
 
 export interface TemplateProps {
   title: string;
@@ -159,8 +164,33 @@ export const Template = ({
       case 'REJECTED':
         statusValue = (
           <div className={styles.AlignCenter}>
-            <RejectedIcon />
-            {t('Rejected')}
+            <span>
+              <RejectedIcon />
+              {t('Rejected')}
+            </span>
+            <HelpIcon
+              darkIcon={false}
+              helpData={{
+                heading: rejectedInfo,
+              }}
+            />
+          </div>
+        );
+        break;
+
+      case 'FAILED':
+        statusValue = (
+          <div className={styles.AlignCenter}>
+            <span>
+              <RejectedIcon />
+              {t('Failed')}
+            </span>
+            <HelpIcon
+              darkIcon={false}
+              helpData={{
+                heading: failedInfo,
+              }}
+            />
           </div>
         );
         break;

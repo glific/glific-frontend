@@ -64,6 +64,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 0.5rem;
+}
+
+.AlignCenter span {
+  display: flex;
+  align-items: flex-start;
 }
 
 .Status svg {

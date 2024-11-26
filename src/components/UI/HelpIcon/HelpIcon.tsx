@@ -1,10 +1,12 @@
 import styles from './HelpIcon.module.css';
 import InfoIcon from 'assets/images/info.svg?react';
+import LightInfoIcon from 'assets/images/infoLight.svg?react';
 import { Tooltip } from '@mui/material';
 import { HelpDataProps } from 'common/HelpData';
 
 export interface HelpIconProps {
   helpData?: HelpDataProps;
+  darkIcon?: boolean;
 }
 
 export const HelpIcon = ({
@@ -12,6 +14,7 @@ export const HelpIcon = ({
     heading: '',
     link: '',
   },
+  darkIcon = true,
 }: HelpIconProps) => {
   return (
     <Tooltip
@@ -44,7 +47,7 @@ export const HelpIcon = ({
       arrow
     >
       <span data-testid="help-icon" className={styles.InfoIconContainer}>
-        <InfoIcon className={styles.InfoIcon} />
+        {darkIcon ? <InfoIcon className={styles.InfoIcon} /> : <LightInfoIcon className={styles.InfoIcon} />}
       </span>
     </Tooltip>
   );
