@@ -27,7 +27,7 @@ import HelpIcon from 'components/UI/HelpIcon/HelpIcon';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { setNotification } from 'common/notification';
 import { BULK_APPLY_SAMPLE_LINK } from 'config';
-import { speedSendInfo, templateInfo } from 'common/HelpData';
+import { failedTemplateInfo, rejectedTemplateInfo, speedSendInfo, templateInfo } from 'common/HelpData';
 import styles from './Template.module.css';
 import { RaiseToGupShup } from './RaiseToGupshupDialog/RaiseToGupShup';
 
@@ -59,10 +59,6 @@ const getCategory = (category: string) => {
   let categoryName = category.split('_').join(' ').toLowerCase();
   return <p className={styles.TableText}>{capitalizeFirstLetter(categoryName)}</p>;
 };
-
-const failedInfo = "The template has failed the review process at Gupshup's end.";
-const rejectedInfo =
-  'The template has failed to be reviewed due to violations of the approval criteria. This status requires revising and resubmitting the template.';
 
 export interface TemplateProps {
   title: string;
@@ -168,12 +164,7 @@ export const Template = ({
               <RejectedIcon />
               {t('Rejected')}
             </span>
-            <HelpIcon
-              darkIcon={false}
-              helpData={{
-                heading: rejectedInfo,
-              }}
-            />
+            <HelpIcon darkIcon={false} helpData={rejectedTemplateInfo} />
           </div>
         );
         break;
@@ -185,12 +176,7 @@ export const Template = ({
               <RejectedIcon />
               {t('Failed')}
             </span>
-            <HelpIcon
-              darkIcon={false}
-              helpData={{
-                heading: failedInfo,
-              }}
-            />
+            <HelpIcon darkIcon={false} helpData={failedTemplateInfo} />
           </div>
         );
         break;
