@@ -64,12 +64,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-}
-
-.AlignCenter span {
-  display: flex;
-  align-items: flex-start;
 }
 
 .Status svg {
@@ -136,7 +130,7 @@
   border-radius: 24px;
   border: 1px solid #cccccc;
   display: flex;
-  width: 130px;
+  width: 140px;
   margin: auto;
   height: 36px !important;
   background: #ffffff;
@@ -154,4 +148,10 @@
 .Category {
   width: 20%;
   min-width: 100px;
+}
+
+.Select {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }

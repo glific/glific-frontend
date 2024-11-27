@@ -160,11 +160,8 @@ export const Template = ({
       case 'REJECTED':
         statusValue = (
           <div className={styles.AlignCenter}>
-            <span>
-              <RejectedIcon />
-              {t('Rejected')}
-            </span>
-            <HelpIcon darkIcon={false} helpData={rejectedTemplateInfo} />
+            <RejectedIcon />
+            {t('Rejected')}
           </div>
         );
         break;
@@ -172,11 +169,8 @@ export const Template = ({
       case 'FAILED':
         statusValue = (
           <div className={styles.AlignCenter}>
-            <span>
-              <RejectedIcon />
-              {t('Failed')}
-            </span>
-            <HelpIcon darkIcon={false} helpData={failedTemplateInfo} />
+            <RejectedIcon />
+            {t('Failed')}
           </div>
         );
         break;
@@ -331,10 +325,15 @@ export const Template = ({
           onChange={handleCheckedBox}
           className={styles.DropDown}
           data-testid="dropdown-template"
+          classes={{
+            select: styles.Select,
+          }}
         >
           {statusList.map((status: any) => (
-            <MenuItem data-testid="template-item" key={status} value={status}>
+            <MenuItem className={styles.Select} data-testid="template-item" key={status} value={status}>
               {status}
+              {status === 'Rejected' && <HelpIcon darkIcon={false} helpData={rejectedTemplateInfo} />}
+              {status === 'Failed' && <HelpIcon darkIcon={false} helpData={failedTemplateInfo} />}
             </MenuItem>
           ))}
         </Select>
