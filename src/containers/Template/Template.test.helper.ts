@@ -327,8 +327,7 @@ const createHsmWithButtontemplate = {
         isHsm: true,
         languageId: '1',
         hasButtons: true,
-        buttons:
-          '[{"type":"QUICK_REPLY","text":"Quick reply 1"},{"type":"QUICK_REPLY","text":"Quick reply 2"}]',
+        buttons: '[{"type":"QUICK_REPLY","text":"Quick reply 1"},{"type":"QUICK_REPLY","text":"Quick reply 2"}]',
         buttonType: 'QUICK_REPLY',
         translations: '{}',
         allowTemplateCategoryChange: false,
@@ -354,8 +353,7 @@ const createHsmWithButtontemplate = {
           category: 'ACCOUNT_UPDATE',
           example: 'Hi [Glific], How are you',
           hasButtons: true,
-          buttons:
-            '[{"type":"QUICK_REPLY","text":"Quick reply 1"},{"type":"QUICK_REPLY","text":"Quick reply 2"}]',
+          buttons: '[{"type":"QUICK_REPLY","text":"Quick reply 1"},{"type":"QUICK_REPLY","text":"Quick reply 2"}]',
           buttonType: 'QUICK_REPLY',
           allowTemplateCategoryChange: false,
         },
@@ -829,6 +827,7 @@ export const HSM_LIST = [
           getHSMTemplate('1', 'APPROVED', 'UNKNOWN'),
           getHSMTemplate('2', 'PENDING'),
           getHSMTemplate('3', 'REJECTED'),
+          getHSMTemplate('4', 'FAILED'),
         ],
       },
     },
