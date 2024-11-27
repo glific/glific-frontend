@@ -137,7 +137,7 @@
   min-height: 36px !important;
 }
 
-.DropDown > fieldset {
+.DropDown>fieldset {
   border: none !important;
 }
 
@@ -150,8 +150,9 @@
   min-width: 100px;
 }
 
-.Select {
+
+.FilterContainer {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 0.25rem;
 }

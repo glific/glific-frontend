@@ -27,7 +27,7 @@ import HelpIcon from 'components/UI/HelpIcon/HelpIcon';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { setNotification } from 'common/notification';
 import { BULK_APPLY_SAMPLE_LINK } from 'config';
-import { failedTemplateInfo, rejectedTemplateInfo, speedSendInfo, templateInfo } from 'common/HelpData';
+import { speedSendInfo, templateInfo, templateStatusInfo } from 'common/HelpData';
 import styles from './Template.module.css';
 import { RaiseToGupShup } from './RaiseToGupshupDialog/RaiseToGupShup';
 
@@ -316,7 +316,7 @@ export const Template = ({
   }
 
   const filterTemplateStatus = (
-    <>
+    <div className={styles.FilterContainer}>
       <FormControl className={styles.FormStyle}>
         <Select
           aria-label="template-type"
@@ -325,19 +325,15 @@ export const Template = ({
           onChange={handleCheckedBox}
           className={styles.DropDown}
           data-testid="dropdown-template"
-          classes={{
-            select: styles.Select,
-          }}
         >
           {statusList.map((status: any) => (
-            <MenuItem className={styles.Select} data-testid="template-item" key={status} value={status}>
+            <MenuItem data-testid="template-item" key={status} value={status}>
               {status}
-              {status === 'Rejected' && <HelpIcon darkIcon={false} helpData={rejectedTemplateInfo} />}
-              {status === 'Failed' && <HelpIcon darkIcon={false} helpData={failedTemplateInfo} />}
             </MenuItem>
           ))}
         </Select>
       </FormControl>
+      <HelpIcon darkIcon={false} helpData={templateStatusInfo} />
       <AutoComplete
         isFilterType
         placeholder="Select tag"
@@ -353,7 +349,7 @@ export const Template = ({
         }}
       />
       {syncHSMButton}
-    </>
+    </div>
   );
 
   let appliedFilters = templateFilters;
