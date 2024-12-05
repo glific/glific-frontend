@@ -56,11 +56,7 @@ export const GROUP_SEARCH_QUERY = gql`
 
 export const GROUP_SEARCH_MULTI_QUERY = gql`
   query WaSearchMulti($filter: WaSearchFilter!, $waGroupOpts: Opts!, $waMessageOpts: Opts!) {
-    searchMulti: waSearchMulti(
-      filter: $filter
-      waGroupOpts: $waGroupOpts
-      waMessageOpts: $waMessageOpts
-    ) {
+    searchMulti: waSearchMulti(filter: $filter, waGroupOpts: $waGroupOpts, waMessageOpts: $waMessageOpts) {
       groups: waGroups {
         bspId
         id
@@ -173,9 +169,17 @@ export const GET_WA_GROUP = gql`
         id
         lastCommunicationAt
         bspId
+        fields
         waManagedPhone {
           phone
           id
+        }
+        groups {
+          id
+          label
+          users {
+            name
+          }
         }
       }
     }
