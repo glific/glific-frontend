@@ -16,6 +16,7 @@ export interface ContactDescriptionProps {
   lastMessage?: string;
   statusMessage?: string;
   groups?: boolean;
+  customStyles?: string;
 }
 
 export const ContactDescription = ({
@@ -27,6 +28,7 @@ export const ContactDescription = ({
   fields,
   settings,
   groups = false,
+  customStyles,
 }: ContactDescriptionProps) => {
   const [showPlainPhone, setShowPlainPhone] = useState(false);
   const { t } = useTranslation();
@@ -200,7 +202,7 @@ export const ContactDescription = ({
   );
 
   return (
-    <div className={styles.DescriptionContainer} data-testid="contactDescription">
+    <div className={`${styles.DescriptionContainer} ${customStyles}`} data-testid="contactDescription">
       {numberBlock}
       {collectionBlock}
       {settingsBlock}

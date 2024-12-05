@@ -184,7 +184,14 @@ export const GroupDetails = () => {
       />
     );
   } else {
-    contentBody = <ContactDescription fields={groupData?.fields} collections={groupData?.groups} groups />;
+    contentBody = (
+      <ContactDescription
+        customStyles={styles.BackGround}
+        fields={groupData?.fields}
+        collections={groupData?.groups}
+        groups
+      />
+    );
   }
 
   const drawer = (

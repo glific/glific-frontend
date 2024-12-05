@@ -71,7 +71,6 @@
   height: 100%;
   display: flex;
   background-color: #f8faf5;
-  align-items: center;
 }
 
 .RightContainer {
@@ -133,4 +132,11 @@
 
 .Table {
   display: flex;
+}
+
+.BackGround {
+  background-color: #f8faf5 !important;
+  width: 100%;
+  height: 100%;
+
 }
