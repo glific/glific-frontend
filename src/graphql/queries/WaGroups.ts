@@ -174,13 +174,6 @@ export const GET_WA_GROUP = gql`
           phone
           id
         }
-        groups {
-          id
-          label
-          users {
-            name
-          }
-        }
       }
     }
   }
