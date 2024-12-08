@@ -348,7 +348,6 @@ export const Template = ({
           value: selectedTag,
         }}
       />
-      {syncHSMButton}
     </div>
   );
 
@@ -397,12 +396,36 @@ export const Template = ({
 
   if (isHSM) {
     secondaryButton = (
-      <div className={styles.ImportButton}>
-        <a href={BULK_APPLY_SAMPLE_LINK} target="_blank" rel="noreferrer" className={styles.HelperText}>
-          View Sample
-        </a>
+      <div className={styles.SecondaryButton}>
+        {syncHSMButton}
+        <div className={styles.ImportButton}>
+          <a href={BULK_APPLY_SAMPLE_LINK} target="_blank" rel="noreferrer" className={styles.HelperText}>
+            View Sample
+          </a>
+          <ImportButton
+            title={t('Bulk apply')}
+            onImport={() => setImporting(true)}
+            afterImport={(result: string, media: any) => {
+              const extension = getFileExtension(media.name);
+              if (extension !== 'csv') {
+                setNotification('Please upload a valid CSV file', 'warning');
+                setImporting(false);
+              } else {
+                bulkApplyTemplates({ variables: { data: result } });
+              }
+            }}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  if (provider === GUPSHUP_ENTERPRISE_SHORTCODE) {
+    secondaryButton = (
+      <div className={styles.SecondaryButton}>
+        {syncHSMButton}
         <ImportButton
-          title={t('Bulk apply')}
+          title={t('Import templates')}
           onImport={() => setImporting(true)}
           afterImport={(result: string, media: any) => {
             const extension = getFileExtension(media.name);
@@ -410,29 +433,11 @@ export const Template = ({
               setNotification('Please upload a valid CSV file', 'warning');
               setImporting(false);
             } else {
-              bulkApplyTemplates({ variables: { data: result } });
+              importTemplatesMutation({ variables: { data: result } });
             }
           }}
         />
       </div>
-    );
-  }
-
-  if (provider === GUPSHUP_ENTERPRISE_SHORTCODE) {
-    secondaryButton = (
-      <ImportButton
-        title={t('Import templates')}
-        onImport={() => setImporting(true)}
-        afterImport={(result: string, media: any) => {
-          const extension = getFileExtension(media.name);
-          if (extension !== 'csv') {
-            setNotification('Please upload a valid CSV file', 'warning');
-            setImporting(false);
-          } else {
-            importTemplatesMutation({ variables: { data: result } });
-          }
-        }}
-      />
     );
     button.show = false;
   }
