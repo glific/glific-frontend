@@ -61,9 +61,7 @@ const BoldedText = (originalText: string, highlight: any) => {
       if (index === 0) {
         // we need calculate the length of the string before the search keyword
         const beforeSearchKeywordLength = strings[index].length;
-        formattedStringArray[index] = string.substring(
-          beforeSearchKeywordLength - availableCharacterLength / 2
-        );
+        formattedStringArray[index] = string.substring(beforeSearchKeywordLength - availableCharacterLength / 2);
       } else if (index % 2 !== 0) {
         formattedStringArray[index] = string;
       } else {
@@ -176,6 +174,8 @@ const ChatConversation = ({
   }
 
   let handleOnClick = () => {
+    console.log('hgf');
+
     if (onClick) onClick(index);
     setSearchOffset(client, messageNumber);
     if (entityType === 'contact') {
