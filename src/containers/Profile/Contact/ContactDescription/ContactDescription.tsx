@@ -12,7 +12,7 @@ export interface ContactDescriptionProps {
   settings?: any;
   phone?: string;
   maskedPhone?: string;
-  collections?: any;
+  collections: any;
   lastMessage?: string;
   statusMessage?: string;
   groups?: boolean;
@@ -34,13 +34,9 @@ export const ContactDescription = ({
   const { t } = useTranslation();
 
   // list of collections that the contact is assigned
-  let assignedToCollection: any = [];
-
-  if (collections) {
-    assignedToCollection = Array.from(
-      new Set([].concat(...collections.map((collection: any) => collection.users.map((user: any) => user.name))))
-    );
-  }
+  let assignedToCollection: any = Array.from(
+    new Set([].concat(...collections.map((collection: any) => collection.users.map((user: any) => user.name))))
+  );
 
   if (assignedToCollection.length > 2) {
     assignedToCollection = `${assignedToCollection.slice(0, 2).join(', ')} +${(
@@ -51,7 +47,7 @@ export const ContactDescription = ({
   }
 
   // list of collections that the contact belongs
-  const collectionList = collections?.map((collection: any) => collection.label).join(', ');
+  const collectionList = collections.map((collection: any) => collection.label).join(', ');
 
   let collectionDetails = [{ label: t('Collections'), value: collectionList || t('None') }];
   if (!groups) {
@@ -141,22 +137,18 @@ export const ContactDescription = ({
 
   const collectionBlock = (
     <>
-      {collections && (
-        <>
-          <div className={styles.DetailBlock}>
-            {collectionDetails.map((collectionItem: any) => (
-              <div key={collectionItem.label}>
-                <div className={styles.FieldLabel}>{collectionItem.label}</div>
-                <div className={styles.DescriptionItemValue} data-testid="collections">
-                  {collectionItem.value}
-                </div>
-              </div>
-            ))}
+      <div className={styles.DetailBlock}>
+        {collectionDetails.map((collectionItem: any) => (
+          <div key={collectionItem.label}>
+            <div className={styles.FieldLabel}>{collectionItem.label}</div>
+            <div className={styles.DescriptionItemValue} data-testid="collections">
+              {collectionItem.value}
+            </div>
           </div>
+        ))}
+      </div>
 
-          <div className={styles.Divider} />
-        </>
-      )}
+      <div className={styles.Divider} />
     </>
   );
 
