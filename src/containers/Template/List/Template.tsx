@@ -23,10 +23,11 @@ import CopyAllOutlined from 'assets/images/icons/Flow/Copy.svg?react';
 import { ProviderContext } from 'context/session';
 import { copyToClipboardMethod, exportCsvFile, getFileExtension } from 'common/utils';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
+import HelpIcon from 'components/UI/HelpIcon/HelpIcon';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { setNotification } from 'common/notification';
 import { BULK_APPLY_SAMPLE_LINK } from 'config';
-import { speedSendInfo, templateInfo } from 'common/HelpData';
+import { speedSendInfo, templateInfo, templateStatusInfo } from 'common/HelpData';
 import styles from './Template.module.css';
 import { RaiseToGupShup } from './RaiseToGupshupDialog/RaiseToGupShup';
 
@@ -161,6 +162,15 @@ export const Template = ({
           <div className={styles.AlignCenter}>
             <RejectedIcon />
             {t('Rejected')}
+          </div>
+        );
+        break;
+
+      case 'FAILED':
+        statusValue = (
+          <div className={styles.AlignCenter}>
+            <RejectedIcon />
+            {t('Failed')}
           </div>
         );
         break;
@@ -306,7 +316,7 @@ export const Template = ({
   }
 
   const filterTemplateStatus = (
-    <>
+    <div className={styles.FilterContainer}>
       <FormControl className={styles.FormStyle}>
         <Select
           aria-label="template-type"
@@ -323,6 +333,7 @@ export const Template = ({
           ))}
         </Select>
       </FormControl>
+      <HelpIcon darkIcon={false} helpData={templateStatusInfo} />
       <AutoComplete
         isFilterType
         placeholder="Select tag"
@@ -338,7 +349,7 @@ export const Template = ({
         }}
       />
       {syncHSMButton}
-    </>
+    </div>
   );
 
   let appliedFilters = templateFilters;
