@@ -16,13 +16,7 @@ export const setConfig = (uuid: any, isTemplate: boolean) => {
     attachmentsEnabled: false,
     filters: ['whatsapp', 'classifier'],
 
-    excludeTypes: [
-      'add_contact_urn',
-      'send_email',
-      'call_resthook',
-      'transfer_airtime',
-      'split_by_scheme',
-    ],
+    excludeTypes: ['add_contact_urn', 'send_email', 'call_resthook', 'transfer_airtime', 'split_by_scheme'],
 
     excludeOperators: [
       'has_text',
@@ -58,7 +52,8 @@ export const setConfig = (uuid: any, isTemplate: boolean) => {
       simulateResume: false,
       globals: `${glificBase}globals`,
       groups: `${glificBase}groups`,
-      fields: `${glificBase}fields`,
+      fields: `${glificBase}fields?scope=contact`,
+      waGroupFields: `${glificBase}fields?scope=group`,
       labels: `${glificBase}labels`,
       channels: `${glificBase}channels`,
       classifiers: `${glificBase}classifiers`,
@@ -104,6 +99,9 @@ export const setConfig = (uuid: any, isTemplate: boolean) => {
     config.filters.push('ticketer');
   }
 
+  if (services.whatsappGroupEnabled) {
+    config.filters.push('groups');
+  }
   return config;
 };
 
@@ -155,10 +153,7 @@ export const checkElementInRegistry = (fn: any) =>
       // @ts-ignore
       return fn.apply(this, args);
     } catch (error) {
-      if (
-        error instanceof DOMException &&
-        error.message.includes('has already been used with this registry')
-      ) {
+      if (error instanceof DOMException && error.message.includes('has already been used with this registry')) {
         return false;
       }
       throw error;
