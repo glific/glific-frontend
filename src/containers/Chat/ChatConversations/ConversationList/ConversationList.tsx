@@ -72,9 +72,7 @@ export const ConversationList = ({
 
   let queryVariables = groups ? GROUP_QUERY_VARIABLES : SEARCH_QUERY_VARIABLES;
   if (selectedCollectionId || entityType === 'collection') {
-    queryVariables = groups
-      ? GROUP_COLLECTION_SEARCH_QUERY_VARIABLES
-      : COLLECTION_SEARCH_QUERY_VARIABLES;
+    queryVariables = groups ? GROUP_COLLECTION_SEARCH_QUERY_VARIABLES : COLLECTION_SEARCH_QUERY_VARIABLES;
   }
   if (savedSearchCriteria) {
     const variables = JSON.parse(savedSearchCriteria);
@@ -222,8 +220,7 @@ export const ConversationList = ({
       groups
     );
 
-  const [getFilterConvos, { called, loading, error, data: searchData }] =
-    useLazyQuery<any>(searchQuery);
+  const [getFilterConvos, { called, loading, error, data: searchData }] = useLazyQuery<any>(searchQuery);
 
   // fetch data when typing for search
   const [getFilterSearch] = useLazyQuery<any>(searchMultiQuery, {
@@ -233,27 +230,24 @@ export const ConversationList = ({
   });
 
   // load more messages for multi search load more
-  const [getLoadMoreFilterSearch, { loading: loadingSearch }] = useLazyQuery<any>(
-    SEARCH_MULTI_QUERY,
-    {
-      onCompleted: (multiSearch) => {
-        if (!searchMultiData) {
-          setSearchMultiData(multiSearch);
-        } else if (multiSearch && multiSearch.searchMulti.messages.length !== 0) {
-          const searchMultiDataCopy = JSON.parse(JSON.stringify(searchMultiData));
-          // append new messages to existing messages
-          searchMultiDataCopy.searchMulti.messages = [
-            ...searchMultiData.searchMulti.messages,
-            ...multiSearch.searchMulti.messages,
-          ];
-          setSearchMultiData(searchMultiDataCopy);
-        } else {
-          setShowLoadMore(false);
-        }
-        setShowLoading(false);
-      },
-    }
-  );
+  const [getLoadMoreFilterSearch, { loading: loadingSearch }] = useLazyQuery<any>(SEARCH_MULTI_QUERY, {
+    onCompleted: (multiSearch) => {
+      if (!searchMultiData) {
+        setSearchMultiData(multiSearch);
+      } else if (multiSearch && multiSearch.searchMulti.messages.length !== 0) {
+        const searchMultiDataCopy = JSON.parse(JSON.stringify(searchMultiData));
+        // append new messages to existing messages
+        searchMultiDataCopy.searchMulti.messages = [
+          ...searchMultiData.searchMulti.messages,
+          ...multiSearch.searchMulti.messages,
+        ];
+        setSearchMultiData(searchMultiDataCopy);
+      } else {
+        setShowLoadMore(false);
+      }
+      setShowLoading(false);
+    },
+  });
 
   useEffect(() => {
     // Use multi search when has search value and when there is no collection id
@@ -305,8 +299,11 @@ export const ConversationList = ({
 
   const buildChatConversation = (index: number, header: any, conversation: any) => {
     // We don't have the contact data in the case of contacts.
-    const { displayName, contactIsOrgRead, selectedRecord, entityId, entity, timer } =
-      getConversationForSearchMulti(conversation, selectedContactId, groups);
+    const { displayName, contactIsOrgRead, selectedRecord, entityId, entity, timer } = getConversationForSearchMulti(
+      conversation,
+      selectedContactId,
+      groups
+    );
     return (
       <Fragment>
         {index === 0 ? header : null}
@@ -315,6 +312,7 @@ export const ConversationList = ({
           selected={selectedRecord}
           onClick={() => {
             setSearchHeight();
+            showMessages();
             if (entityType === 'contact' && setSelectedContactId) {
               setSelectedContactId(entity.id);
             }
@@ -340,9 +338,7 @@ export const ConversationList = ({
     conversations = searchMultiData.searchMulti;
 
     // to set search response sequence
-    const searchArray = groups
-      ? { groups: [], messages: [] }
-      : { contacts: [], messages: [], labels: [] };
+    const searchArray = groups ? { groups: [], messages: [] } : { contacts: [], messages: [], labels: [] };
     let conversationsData;
     Object.keys(searchArray).forEach((dataArray: any) => {
       const header = (
@@ -366,8 +362,11 @@ export const ConversationList = ({
   // build the conversation list only if there are conversations
   if (!conversationList && conversations && conversations.length > 0) {
     conversationList = conversations.map((conversation: any, index: number) => {
-      const { lastMessage, entityId, displayName, contactIsOrgRead, selectedRecord, timer } =
-        getConversation(conversation, selectedContactId, selectedCollectionId);
+      const { lastMessage, entityId, displayName, contactIsOrgRead, selectedRecord, timer } = getConversation(
+        conversation,
+        selectedContactId,
+        selectedCollectionId
+      );
 
       return (
         <ChatConversation
@@ -494,19 +493,12 @@ export const ConversationList = ({
     }
   };
 
-  let scrollTopStyle = selectedContactId
-    ? styles.ScrollToTopContacts
-    : styles.ScrollToTopCollections;
+  let scrollTopStyle = selectedContactId ? styles.ScrollToTopContacts : styles.ScrollToTopCollections;
 
   scrollTopStyle = entityType === 'savedSearch' ? styles.ScrollToTopSearches : scrollTopStyle;
 
   const scrollToTop = (
-    <div
-      className={scrollTopStyle}
-      onClick={showLatestContact}
-      onKeyDown={showLatestContact}
-      aria-hidden="true"
-    >
+    <div className={scrollTopStyle} onClick={showLatestContact} onKeyDown={showLatestContact} aria-hidden="true">
       {t('Go to top')}
       <KeyboardArrowUpIcon />
     </div>
@@ -538,18 +530,13 @@ export const ConversationList = ({
   const entityStyle = entityStyles[entityType];
 
   return (
-    <Container
-      className={`${entityStyle} contactsContainer`}
-      disableGutters
-      data-testid="listingContainer"
-    >
+    <Container className={`${entityStyle} contactsContainer`} disableGutters data-testid="listingContainer">
       {showJumpToLatest && !showLoading ? scrollToTop : null}
       <List className={styles.StyledList}>
         {conversationList}
         {showLoadMore &&
         conversations &&
-        (conversations.length > DEFAULT_ENTITY_LIMIT - 1 ||
-          conversations.messages?.length > DEFAULT_MESSAGE_LIMIT - 1)
+        (conversations.length > DEFAULT_ENTITY_LIMIT - 1 || conversations.messages?.length > DEFAULT_MESSAGE_LIMIT - 1)
           ? loadMore
           : null}
       </List>
