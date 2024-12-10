@@ -63,9 +63,7 @@ export const InteractiveOptions = ({
           onListRemoveClick={() => handleRemoveClick(arrayHelpers, index)}
           onListItemAddClick={(options: Array<any>) => onListItemAddClick(index, options)}
           onListItemRemoveClick={(itemIndex: number) => onListItemRemoveClick(index, itemIndex)}
-          onInputChange={(value: string, payload: any) =>
-            onInputChange(LIST, index, value, payload, setFieldValue)
-          }
+          onInputChange={(value: string, payload: any) => onInputChange(LIST, index, value, payload, setFieldValue)}
         />
       );
     }
@@ -94,11 +92,7 @@ export const InteractiveOptions = ({
       {templateType && templateType === LIST && (
         <div className={styles.GlobalButton}>
           {translation && <div className={styles.Translation}>{translation.globalButton}</div>}
-          <FormControl
-            fullWidth
-            error={!!(errors.globalButton && touched.globalButton)}
-            className={styles.FormControl}
-          >
+          <FormControl fullWidth error={!!(errors.globalButton && touched.globalButton)} className={styles.FormControl}>
             <Typography variant="h5" className={styles.FieldLabel}>
               List header*
             </Typography>
@@ -111,18 +105,12 @@ export const InteractiveOptions = ({
               value={values.globalButton}
               error={!!errors.globalButton && touched.globalButton}
             />
-            {errors.globalButton && touched.globalButton && (
-              <FormHelperText>{errors.globalButton}</FormHelperText>
-            )}
+            {errors.globalButton && touched.globalButton && <FormHelperText>{errors.globalButton}</FormHelperText>}
           </FormControl>
         </div>
       )}
       {templateType && templateType !== LOCATION_REQUEST && (
-        <div
-          className={
-            templateType === QUICK_REPLY ? styles.TemplateFields : styles.TemplateFieldsList
-          }
-        >
+        <div className={templateType === QUICK_REPLY ? styles.TemplateFields : styles.TemplateFieldsList}>
           <FieldArray
             name="templateButtons"
             render={(arrayHelpers: any) =>

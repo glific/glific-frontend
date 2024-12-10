@@ -47,21 +47,15 @@ export const Collection = () => {
   const redirectLink = groups ? 'group/collection' : 'collection';
   const groupType = groups ? WA_GROUPS_COLLECTION : CONTACTS_COLLECTION;
   const searchQuery = groups ? GROUP_SEARCH_QUERY : SEARCH_QUERY;
-  const searchVariables = groups
-    ? GROUP_COLLECTION_SEARCH_QUERY_VARIABLES
-    : COLLECTION_SEARCH_QUERY_VARIABLES;
+  const searchVariables = groups ? GROUP_COLLECTION_SEARCH_QUERY_VARIABLES : COLLECTION_SEARCH_QUERY_VARIABLES;
 
   const [updateCollectionUsers] = useMutation(UPDATE_COLLECTION_USERS);
 
   const updateUsers = (collectionIdValue: any) => {
     const initialSelectedUsers = users.map((user: any) => user.id);
     const finalSelectedUsers = selected.map((user: any) => user.id);
-    const selectedUsersData = finalSelectedUsers.filter(
-      (user: any) => !initialSelectedUsers.includes(user)
-    );
-    const removedUsers = initialSelectedUsers.filter(
-      (contact: any) => !finalSelectedUsers.includes(contact)
-    );
+    const selectedUsersData = finalSelectedUsers.filter((user: any) => !initialSelectedUsers.includes(user));
+    const removedUsers = initialSelectedUsers.filter((contact: any) => !finalSelectedUsers.includes(contact));
 
     if (selectedUsersData.length > 0 || removedUsers.length > 0) {
       updateCollectionUsers({
@@ -96,11 +90,7 @@ export const Collection = () => {
 
   const states = { label, description, users, roles };
 
-  const setStates = ({
-    label: labelValue,
-    description: descriptionValue,
-    roles: rolesValue,
-  }: any) => {
+  const setStates = ({ label: labelValue, description: descriptionValue, roles: rolesValue }: any) => {
     setLabel(labelValue);
     setDescription(descriptionValue);
     setRoles(rolesValue);
@@ -170,9 +160,7 @@ export const Collection = () => {
       label: t('Assign staff to collection'),
       skipPayload: true,
       icon: <ContactIcon className={styles.ContactIcon} />,
-      helperText: t(
-        'Assigned staff members will be responsible to chat with contacts in this collection'
-      ),
+      helperText: t('Assigned staff members will be responsible to chat with contacts in this collection'),
       skip: groups,
     },
   ];

@@ -6,11 +6,7 @@ import { FLOW_STATUS_PUBLISHED, setVariables } from 'common/constants';
 import { SearchDialogBox } from 'components/UI/SearchDialogBox/SearchDialogBox';
 import { CircularProgress } from '@mui/material';
 import { GET_FLOWS } from 'graphql/queries/Flow';
-import {
-  ADD_FLOW_TO_COLLECTION,
-  ADD_FLOW_TO_CONTACT,
-  ADD_FLOW_TO_WA_GROUP,
-} from 'graphql/mutations/Flow';
+import { ADD_FLOW_TO_COLLECTION, ADD_FLOW_TO_CONTACT, ADD_FLOW_TO_WA_GROUP } from 'graphql/mutations/Flow';
 
 interface StartAFlowProps {
   collectionId: string | undefined;
@@ -19,12 +15,7 @@ interface StartAFlowProps {
   groups?: boolean;
 }
 
-export const StartAFlow = ({
-  collectionId,
-  setShowFlowDialog,
-  groups,
-  entityId,
-}: StartAFlowProps) => {
+export const StartAFlow = ({ collectionId, setShowFlowDialog, groups, entityId }: StartAFlowProps) => {
   const { t } = useTranslation();
 
   const { data: flowsData, loading } = useQuery(GET_FLOWS, {

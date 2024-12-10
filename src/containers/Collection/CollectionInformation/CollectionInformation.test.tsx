@@ -9,10 +9,7 @@ const handleSendMessageMock = vi.fn();
 const setDisplayPopupMock = vi.fn();
 
 const wrapper = (
-  <MockedProvider
-    mocks={[getCollectionInfo({ id: '1' }), getCollectionUsersQuery]}
-    addTypename={false}
-  >
+  <MockedProvider mocks={[getCollectionInfo({ id: '1' }), getCollectionUsersQuery]} addTypename={false}>
     <CollectionInformation collectionId={'1'} />
   </MockedProvider>
 );
@@ -77,10 +74,7 @@ describe('render SessionInfo', () => {
 
   test('it should have 3 staff', async () => {
     const { getAllByText } = render(
-      <MockedProvider
-        mocks={[getCollectionInfo({ id: '1' }), collectionUsersQuery]}
-        addTypename={false}
-      >
+      <MockedProvider mocks={[getCollectionInfo({ id: '1' }), collectionUsersQuery]} addTypename={false}>
         <CollectionInformation collectionId={'1'} />
       </MockedProvider>
     );
@@ -95,10 +89,7 @@ describe('render SessionInfo', () => {
 
 describe('render collection info popup', () => {
   const wrapper = (
-    <MockedProvider
-      mocks={[getCollectionInfo({ id: '1' }), collectionUsersQuery]}
-      addTypename={false}
-    >
+    <MockedProvider mocks={[getCollectionInfo({ id: '1' }), collectionUsersQuery]} addTypename={false}>
       <CollectionInformation
         collectionId={'1'}
         displayPopup

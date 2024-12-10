@@ -28,10 +28,7 @@ export const UnauthenticatedRoute = () => {
           <Route path="/resetpassword-confirmotp" element={<ResetPassOTP />} />
           <Route path="/organization-registration" element={<OnboardingHome />} />
           <Route path="/organization-registration/setup" element={<OnboardingForm />} />
-          <Route
-            path="/*"
-            element={<Navigate to="/logout/user" replace state={location.pathname} />}
-          />
+          <Route path="/*" element={<Navigate to="/logout/user" replace state={location.pathname} />} />
         </Routes>
       </GoogleReCaptchaProvider>
     </Suspense>

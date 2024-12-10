@@ -25,11 +25,7 @@ vi.mock('lexical-beautiful-mentions', async (importOriginal) => {
 
 const wrapper = (
   <LexicalWrapper>
-    <Editor
-      field={{ name: 'body', value: '', onBlur: () => {} }}
-      placeholder={''}
-      onChange={handleChange}
-    />
+    <Editor field={{ name: 'body', value: '', onBlur: () => {} }} placeholder={''} onChange={handleChange} />
   </LexicalWrapper>
 );
 

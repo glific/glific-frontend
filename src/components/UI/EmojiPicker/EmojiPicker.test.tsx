@@ -28,9 +28,7 @@ Object.defineProperty(window, 'matchMedia', {
   },
 });
 
-const dialogBox = (
-  <EmojiPicker displayStyle={{ width: '100%' }} onEmojiSelect={onEmojiSelectMock} />
-);
+const dialogBox = <EmojiPicker displayStyle={{ width: '100%' }} onEmojiSelect={onEmojiSelectMock} />;
 
 test('it should render emoji picker', () => {
   const { getByTestId } = render(dialogBox);

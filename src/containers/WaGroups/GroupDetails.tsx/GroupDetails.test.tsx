@@ -2,12 +2,7 @@ import { MockedProvider } from '@apollo/client/testing';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 import GroupDetails from './GroupDetails';
-import {
-  countWaGroupContacts,
-  removeContactQuery,
-  getWaGroupQuery,
-  waGroupContacts,
-} from 'mocks/Groups';
+import { countWaGroupContacts, removeContactQuery, getWaGroupQuery, waGroupContacts } from 'mocks/Groups';
 import { setNotification } from 'common/notification';
 
 const mocks = [
@@ -86,9 +81,7 @@ test('if number of groups exceed 4 it should show + n groups ', async () => {
     expect(getAllByTestId('contact-name')[0]).toHaveTextContent('User 1');
 
     // when number of groups is more than 4
-    expect(getAllByTestId('contact-groups')[0]).toHaveTextContent(
-      'Group 1, Group 2, Group 3, Group 4 + 26 groups'
-    );
+    expect(getAllByTestId('contact-groups')[0]).toHaveTextContent('Group 1, Group 2, Group 3, Group 4 + 26 groups');
 
     // when number of groups is less than 4
     expect(getAllByTestId('contact-groups')[1]).toHaveTextContent('Maytapi Testing, Random2');

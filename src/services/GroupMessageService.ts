@@ -24,11 +24,7 @@ export const updateGroupConversationsCache = (conversations: any, queryVariables
 };
 
 // write conversation to cache
-export const updateGroupConversations = (
-  conversation: any,
-  queryVariables: any,
-  newConversation?: boolean
-) => {
+export const updateGroupConversations = (conversation: any, queryVariables: any, newConversation?: boolean) => {
   // gcurrent conversations
   const conversations = getCachedGroupConverations(queryVariables);
 
@@ -76,10 +72,7 @@ export const updateCacheQuery = (
 
   const updateConversation = (conversationObj: any) => {
     if (updateMessage) {
-      conversationObj.messages = [
-        ...conversationObj.messages,
-        ...conversationCopy.search[0].messages,
-      ];
+      conversationObj.messages = [...conversationObj.messages, ...conversationCopy.search[0].messages];
     }
     return conversationObj;
   };

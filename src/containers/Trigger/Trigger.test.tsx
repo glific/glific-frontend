@@ -29,12 +29,7 @@ vi.mock('react-router-dom', async () => {
 });
 
 describe('trigger with daily frequency', () => {
-  const frequencyDailyMocks = [
-    getTriggerQuery('daily'),
-    ...LIST_ITEM_MOCKS,
-    ...SearchMocks,
-    createTriggerQuery,
-  ];
+  const frequencyDailyMocks = [getTriggerQuery('daily'), ...LIST_ITEM_MOCKS, ...SearchMocks, createTriggerQuery];
 
   const frequencyDailyWrapper = (
     <MockedProvider mocks={frequencyDailyMocks} addTypename={false}>
@@ -60,12 +55,7 @@ describe('trigger with daily frequency', () => {
 });
 
 describe('trigger with no frequency', () => {
-  const frequencyDailyMocks = [
-    getTriggerQuery('none'),
-    ...LIST_ITEM_MOCKS,
-    ...SearchMocks,
-    updateTriggerQuery,
-  ];
+  const frequencyDailyMocks = [getTriggerQuery('none'), ...LIST_ITEM_MOCKS, ...SearchMocks, updateTriggerQuery];
 
   const frequencyDailyWrapper = (
     <MockedProvider mocks={frequencyDailyMocks} addTypename={false}>

@@ -4,11 +4,7 @@ import { useTranslation } from 'react-i18next';
 import CollectionIcon from 'assets/images/icons/Collection/Dark.svg?react';
 import styles from './GroupDetails.module.css';
 import { UPDATE_GROUP_CONTACT } from 'graphql/mutations/Group';
-import {
-  COUNT_COUNTACTS_WA_GROUPS,
-  GET_WA_GROUP,
-  LIST_CONTACTS_WA_GROUPS,
-} from 'graphql/queries/WaGroups';
+import { COUNT_COUNTACTS_WA_GROUPS, GET_WA_GROUP, LIST_CONTACTS_WA_GROUPS } from 'graphql/queries/WaGroups';
 import DeleteIcon from 'assets/images/icons/Delete/Red.svg?react';
 import { useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
@@ -32,11 +28,7 @@ export const GroupDetails = () => {
   const dialogTitle = 'Are you sure you want to remove this contact from the group?';
   const dialogMessage = 'The contact will no longer receive messages sent to this group';
 
-  const columnNames = [
-    { label: t('Contact') },
-    { label: 'All WhatsApp Groups' },
-    { label: t('Actions') },
-  ];
+  const columnNames = [{ label: t('Contact') }, { label: 'All WhatsApp Groups' }, { label: t('Actions') }];
 
   const [removeContact, { loading }] = useMutation(UPDATE_GROUP_CONTACT, {
     onCompleted: () => {
@@ -141,9 +133,7 @@ export const GroupDetails = () => {
         alignButtons="center"
         buttonOkLoading={loading}
       >
-        <div className={styles.dialogText}>
-          The contact will no longer receive messages sent to this group
-        </div>
+        <div className={styles.dialogText}>The contact will no longer receive messages sent to this group</div>
       </DialogBox>
     );
   }

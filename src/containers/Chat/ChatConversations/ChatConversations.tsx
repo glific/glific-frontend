@@ -23,11 +23,7 @@ export interface ChatConversationsProps {
   filterComponent?: any;
 }
 
-export const ChatConversations = ({
-  entityId,
-  phonenumber,
-  filterComponent,
-}: ChatConversationsProps) => {
+export const ChatConversations = ({ entityId, phonenumber, filterComponent }: ChatConversationsProps) => {
   // get the conversations stored from the cache
   const [searchVal, setSearchVal] = useState<any>();
   const [searchParam, setSearchParam] = useState<any>({});

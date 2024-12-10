@@ -416,8 +416,7 @@ export const exportInteractiveTemplateMock = (error: boolean = false) => ({
     : {
         data: {
           exportInteractiveTemplate: {
-            exportData:
-              'Attribute,en,hi\nHeader,test,परीक्षा\nText,test,परीक्षा\nOptionTitle 1,test,परीक्षा\n',
+            exportData: 'Attribute,en,hi\nHeader,test,परीक्षा\nText,test,परीक्षा\nOptionTitle 1,test,परीक्षा\n',
           },
         },
       },
@@ -433,8 +432,7 @@ export const exportInteractiveTemplateMockWithoutTranslation = (error: boolean =
     : {
         data: {
           exportInteractiveTemplate: {
-            exportData:
-              'Attribute,en,hi\nHeader,test,परीक्षा\nText,test,परीक्षा\nOptionTitle 1,test,परीक्षा\n',
+            exportData: 'Attribute,en,hi\nHeader,test,परीक्षा\nText,test,परीक्षा\nOptionTitle 1,test,परीक्षा\n',
           },
         },
       },

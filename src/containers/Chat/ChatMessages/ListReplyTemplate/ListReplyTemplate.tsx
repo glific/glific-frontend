@@ -58,11 +58,7 @@ export const ChatTemplate = ({ title, body, globalButtonTitle, items }: Template
         <div className={styles.ListItemContainer} key={listItemTitle}>
           <div className={styles.ListItemTitle}>{listItemTitle}</div>
           {options.map((option: any) => (
-            <Button
-              key={option.title}
-              className={styles.ListItemChat}
-              onClick={() => setCheckedItem(option.title)}
-            >
+            <Button key={option.title} className={styles.ListItemChat} onClick={() => setCheckedItem(option.title)}>
               <div>
                 <div className={styles.OptionTitle}>{option.title}</div>
                 <div className={styles.OptionDescription}>{option.description}</div>
@@ -189,11 +185,7 @@ export const ListReplyTemplateDrawer = ({
 
                 if (option.title) {
                   return (
-                    <Button
-                      key={uuidv4()}
-                      className={styles.ListItem}
-                      onClick={() => setCheckedItem(payloadObject)}
-                    >
+                    <Button key={uuidv4()} className={styles.ListItem} onClick={() => setCheckedItem(payloadObject)}>
                       <div className={styles.ListItemText}>
                         <div className={styles.ListItemTextTitle}>{option.title}</div>
                         <div>{option.description}</div>
@@ -227,12 +219,7 @@ export const ListReplyTemplateDrawer = ({
       </div>
       <div className={styles.List}>{list}</div>
       <div className={styles.SendButton}>
-        <Button
-          variant="contained"
-          color="primary"
-          disabled={!checkedItem || disableSend}
-          onClick={handleItemClick}
-        >
+        <Button variant="contained" color="primary" disabled={!checkedItem || disableSend} onClick={handleItemClick}>
           Send
         </Button>
       </div>
@@ -240,11 +227,7 @@ export const ListReplyTemplateDrawer = ({
   );
 };
 
-export const ListReplyTemplate = ({
-  globalButtons,
-  component: TemplateComponent,
-  ...rest
-}: ListReplyTemplateProps) => {
+export const ListReplyTemplate = ({ globalButtons, component: TemplateComponent, ...rest }: ListReplyTemplateProps) => {
   const globalButtonTitle = globalButtons?.length ? globalButtons[0].title : '';
 
   return <TemplateComponent globalButtonTitle={globalButtonTitle} {...rest} />;

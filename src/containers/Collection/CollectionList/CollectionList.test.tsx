@@ -19,11 +19,7 @@ import { getPublishedFlowQuery } from 'mocks/Flow';
 import { setUserSession } from 'services/AuthService';
 import { CollectionList } from './CollectionList';
 import * as utils from 'common/utils';
-import {
-  addGroupToCollectionList,
-  getGroupsSearchQuery,
-  updateCollectionWaGroupQuery,
-} from 'mocks/Groups';
+import { addGroupToCollectionList, getGroupsSearchQuery, updateCollectionWaGroupQuery } from 'mocks/Groups';
 import { setNotification } from 'common/notification';
 import { CONTACTS_COLLECTION, setVariables } from 'common/constants';
 import { setUserRolePermissions } from 'context/role';

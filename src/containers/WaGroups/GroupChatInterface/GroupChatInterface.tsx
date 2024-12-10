@@ -105,11 +105,7 @@ export const GroupChatInterface = ({ collections }: GroupChatInterfaceProps) => 
     // let's enable simulator only when group tab is shown
     phonesDropDown = <WaManagedPhones phonenumber={phonenumber} setPhonenumber={setPhonenumber} />;
     listingContent = (
-      <ChatConversations
-        phonenumber={phonenumber}
-        filterComponent={phonesDropDown}
-        entityId={selectedGroupId}
-      />
+      <ChatConversations phonenumber={phonenumber} filterComponent={phonesDropDown} entityId={selectedGroupId} />
     );
 
     heading = 'Groups';

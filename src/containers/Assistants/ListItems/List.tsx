@@ -20,13 +20,7 @@ interface ListProps {
   setCurrentId: any;
 }
 
-export const List = ({
-  getItemsQuery,
-  listItemName,
-  refreshList,
-  setCurrentId,
-  currentId,
-}: ListProps) => {
+export const List = ({ getItemsQuery, listItemName, refreshList, setCurrentId, currentId }: ListProps) => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [showLoadMore, setLoadMore] = useState(false);
@@ -112,16 +106,10 @@ export const List = ({
                 <div className={styles.Itemm}>
                   <div className={styles.Header}>
                     <span className={styles.Title}>{item.name}</span>
-                    <span className={styles.Date}>
-                      {dayjs(item.insertedAt).format('DD/MM/YY, HH:MM')}
-                    </span>
+                    <span className={styles.Date}>{dayjs(item.insertedAt).format('DD/MM/YY, HH:MM')}</span>
                   </div>
                   <span className={styles.Id}>
-                    <IconButton
-                      data-testid="copyItemId"
-                      onClick={() => copyToClipboard(item.itemId)}
-                      edge="end"
-                    >
+                    <IconButton data-testid="copyItemId" onClick={() => copyToClipboard(item.itemId)} edge="end">
                       <CopyIcon />
                     </IconButton>
                     {item.itemId}

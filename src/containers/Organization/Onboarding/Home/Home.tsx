@@ -71,8 +71,8 @@ export const RegistrationHome = () => {
           </Button>
 
           <p>
-            By proceeding, you consent to providing all the necessary information that has been
-            validated by the signing authority.
+            By proceeding, you consent to providing all the necessary information that has been validated by the signing
+            authority.
           </p>
         </div>
       </div>

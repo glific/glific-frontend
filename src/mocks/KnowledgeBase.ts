@@ -1,8 +1,4 @@
-import {
-  CREATE_CATEGORY,
-  DELETE_KNOWLEDGE_BASE,
-  UPLOAD_KNOWLEDGE_BASE,
-} from 'graphql/mutations/KnowledgeBase';
+import { CREATE_CATEGORY, DELETE_KNOWLEDGE_BASE, UPLOAD_KNOWLEDGE_BASE } from 'graphql/mutations/KnowledgeBase';
 import { GET_CATEGORIES, GET_KNOWLEDGE_BASE } from 'graphql/queries/KnowledgeBase';
 
 const getKnowledgeBase = {

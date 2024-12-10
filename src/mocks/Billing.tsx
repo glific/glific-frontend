@@ -1,11 +1,5 @@
-import CREATE_BILLING_SUBSCRIPTION, {
-  UPDATE_BILLING,
-  CREATE_BILLING,
-} from 'graphql/mutations/Billing';
-import GET_ORGANIZATION_BILLING, {
-  GET_COUPON_CODE,
-  GET_CUSTOMER_PORTAL,
-} from 'graphql/queries/Billing';
+import CREATE_BILLING_SUBSCRIPTION, { UPDATE_BILLING, CREATE_BILLING } from 'graphql/mutations/Billing';
+import GET_ORGANIZATION_BILLING, { GET_COUPON_CODE, GET_CUSTOMER_PORTAL } from 'graphql/queries/Billing';
 import { getOrganizationLanguagesQuery } from './Organization';
 import { getRoleNamesMock } from 'containers/StaffManagement/StaffManagement.test.helper';
 

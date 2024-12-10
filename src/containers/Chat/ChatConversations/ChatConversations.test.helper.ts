@@ -53,12 +53,7 @@ const withResult = {
 
 const noResult = { data: { search: [] } };
 
-const searchQuery = (
-  messageLimit: object,
-  contactLimit: number,
-  filter: any,
-  showResult: boolean = true
-) => {
+const searchQuery = (messageLimit: object, contactLimit: number, filter: any, showResult: boolean = true) => {
   return {
     request: {
       query: SEARCH_QUERY,
@@ -76,12 +71,7 @@ export const chatConversationsMocks = [
   searchQuery({ limit: DEFAULT_MESSAGE_LIMIT }, DEFAULT_ENTITY_LIMIT, {}),
   searchQuery({ limit: DEFAULT_MESSAGE_LIMIT }, DEFAULT_ENTITY_LIMIT, { term: 'a' }, false),
   searchQuery({ limit: DEFAULT_MESSAGE_LIMIT }, DEFAULT_ENTITY_LIMIT, { term: '' }),
-  searchQuery(
-    { limit: DEFAULT_ENTITY_LIMIT },
-    DEFAULT_MESSAGE_LIMIT,
-    { includeTags: ['12'] },
-    false
-  ),
+  searchQuery({ limit: DEFAULT_ENTITY_LIMIT }, DEFAULT_MESSAGE_LIMIT, { includeTags: ['12'] }, false),
   searchQuery({ limit: DEFAULT_MESSAGE_LIMIT }, 1, {}, false),
   searchQuery({ limit: DEFAULT_MESSAGE_LIMIT, offset: 0 }, 1, { id: '6' }, false),
 ];
@@ -173,11 +163,7 @@ export const searchOffset = {
   },
 };
 
-export const SearchConversationsMocks = [
-  searchMultiQuery(),
-  searchMultiQuery(),
-  searchMultiQuery('a'),
-];
+export const SearchConversationsMocks = [searchMultiQuery(), searchMultiQuery(), searchMultiQuery('a')];
 
 export const sampleMessage = {
   __typename: 'Message',
@@ -253,8 +239,4 @@ export const ChatConversationMocks = [
 export const searchQueryMock = searchQuery({ limit: DEFAULT_ENTITY_LIMIT }, DEFAULT_MESSAGE_LIMIT, {
   term: '',
 });
-export const searchQueryEmptyMock = searchQuery(
-  { limit: DEFAULT_ENTITY_LIMIT },
-  DEFAULT_MESSAGE_LIMIT,
-  {}
-);
+export const searchQueryEmptyMock = searchQuery({ limit: DEFAULT_ENTITY_LIMIT }, DEFAULT_MESSAGE_LIMIT, {});

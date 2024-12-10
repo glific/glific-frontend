@@ -60,14 +60,9 @@ export const AdminContactManagement = ({ setShowStatus }: AdminContactManagement
         <h2>Move contacts</h2>
 
         <div className={styles.Instructions}>
-          You can move contacts to collections in bulk or update their contact information. Please
-          create csv file that exactly matches the sample. Here are the &nbsp;
-          <a
-            href={CONTACT_MANAGE_HELP_LINK}
-            target="_blank"
-            rel="noreferrer"
-            className={styles.Link}
-          >
+          You can move contacts to collections in bulk or update their contact information. Please create csv file that
+          exactly matches the sample. Here are the &nbsp;
+          <a href={CONTACT_MANAGE_HELP_LINK} target="_blank" rel="noreferrer" className={styles.Link}>
             detailed instructions.
           </a>
         </div>

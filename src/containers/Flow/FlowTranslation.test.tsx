@@ -103,10 +103,7 @@ describe('Testing Translation flows', () => {
     fireEvent.click(submitButton);
     await waitFor(() => {
       expect(mockSetDialog).toHaveBeenCalledWith(false);
-      expect(notificationSpy).toHaveBeenCalledWith(
-        'An error occured while exporting flow translations',
-        'warning'
-      );
+      expect(notificationSpy).toHaveBeenCalledWith('An error occured while exporting flow translations', 'warning');
     });
   });
 

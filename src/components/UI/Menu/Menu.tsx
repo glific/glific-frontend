@@ -1,12 +1,5 @@
 import { useRef, useState } from 'react';
-import {
-  ClickAwayListener,
-  Grow,
-  MenuList,
-  Paper,
-  Popper,
-  PopperPlacementType,
-} from '@mui/material';
+import { ClickAwayListener, Grow, MenuList, Paper, Popper, PopperPlacementType } from '@mui/material';
 import styles from './Menu.module.css';
 
 import MenuItem from './MenuItem/MenuItem';

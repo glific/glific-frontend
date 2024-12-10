@@ -31,11 +31,7 @@ export const ContactDescription = ({
 
   // list of collections that the contact is assigned
   let assignedToCollection: any = Array.from(
-    new Set(
-      [].concat(
-        ...collections.map((collection: any) => collection.users.map((user: any) => user.name))
-      )
-    )
+    new Set([].concat(...collections.map((collection: any) => collection.users.map((user: any) => user.name))))
   );
 
   if (assignedToCollection.length > 2) {

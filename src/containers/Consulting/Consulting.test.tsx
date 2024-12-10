@@ -2,12 +2,7 @@ import { fireEvent, render, waitFor, cleanup, screen, within } from '@testing-li
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 
-import {
-  getConsultingHour,
-  getOrganizationList,
-  createConsultingHour,
-  updateConsultingHour,
-} from 'mocks/Consulting';
+import { getConsultingHour, getOrganizationList, createConsultingHour, updateConsultingHour } from 'mocks/Consulting';
 import { setUserSession } from 'services/AuthService';
 import { Consulting } from './Consulting';
 import userEvent from '@testing-library/user-event';
@@ -28,10 +23,7 @@ const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <Router>
       <Routes>
-        <Route
-          path="/"
-          element={<Consulting organizationId="" setOpenDialog={setOpenDialogMock} />}
-        />
+        <Route path="/" element={<Consulting organizationId="" setOpenDialog={setOpenDialogMock} />} />
         <Route path="consulting-hours" element={<div />} />
       </Routes>
     </Router>
@@ -84,10 +76,7 @@ const consultingEditForm = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <Router>
       <Routes>
-        <Route
-          path="/"
-          element={<Consulting organizationId="1" setOpenDialog={setOpenDialogMock} />}
-        />
+        <Route path="/" element={<Consulting organizationId="1" setOpenDialog={setOpenDialogMock} />} />
         <Route path="consulting-hours" element={<div />} />
       </Routes>
     </Router>
