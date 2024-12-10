@@ -26,18 +26,14 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
   const [loading, setLoading] = useState(false);
 
   const FormSchema = Yup.object().shape({
-    name: Yup.string()
-      .required(t('Name is required.'))
-      .max(40, t('Name should not exceed 40 characters')),
+    name: Yup.string().required(t('Name is required.')).max(40, t('Name should not exceed 40 characters')),
     app_name: Yup.string().required(t('App name is required.')),
     api_key: Yup.string().required(t('API key is required.')),
     shortcode: Yup.string()
       .required(t('Shortcode is required.'))
       .max(8, 'Shortcode cannot be more than 8 characters.')
       .matches(/^[a-z0-9]([-a-z0-9]*[a-z0-9])?$/, 'Invalid shortcode.'),
-    phone: Yup.string()
-      .required(t('Phone number is required.'))
-      .min(7, t('Enter a valid phone number.')),
+    phone: Yup.string().required(t('Phone number is required.')).min(7, t('Enter a valid phone number.')),
   });
 
   const initialFormValues: any = { name, app_name, api_key, shortcode, phone };
@@ -91,9 +87,7 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
       name: 'app_name',
       type: 'text',
       inputLabel: 'App Name',
-      helperText: (
-        <span className={styles.FormHelperText}>Name of your bot on Gupshup. {appNameTooltip}</span>
-      ),
+      helperText: <span className={styles.FormHelperText}>Name of your bot on Gupshup. {appNameTooltip}</span>,
       disabled: isDisabled,
     },
     {
@@ -101,9 +95,7 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
       name: 'api_key',
       type: 'text',
       inputLabel: 'Gupshup API Key',
-      helperText: (
-        <span className={styles.FormHelperText}>API key generated on Gupshup {apiTooltip}</span>
-      ),
+      helperText: <span className={styles.FormHelperText}>API key generated on Gupshup {apiTooltip}</span>,
       disabled: isDisabled,
     },
     {
@@ -195,8 +187,7 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
     let registrationData;
     if (data) {
       registrationData = JSON.parse(data);
-      if (registrationData.registration_details && registrationData.registration_details.submitted)
-        setIsDisabled(true);
+      if (registrationData.registration_details && registrationData.registration_details.submitted) setIsDisabled(true);
     }
   }, []);
 

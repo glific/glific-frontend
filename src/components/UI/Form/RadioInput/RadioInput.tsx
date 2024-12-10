@@ -1,11 +1,4 @@
-import {
-  Radio,
-  RadioGroup,
-  FormControl,
-  FormControlLabel,
-  FormLabel,
-  FormHelperText,
-} from '@mui/material';
+import { Radio, RadioGroup, FormControl, FormControlLabel, FormLabel, FormHelperText } from '@mui/material';
 
 import styles from './RadioInput.module.css';
 
@@ -50,25 +43,13 @@ export const RadioInput = ({
       <RadioGroup row={row} name="radio-buttons">
         <FormControlLabel
           value={1}
-          control={
-            <Radio
-              color="primary"
-              onClick={() => handleRadioChange(true)}
-              checked={isChecked(true)}
-            />
-          }
+          control={<Radio color="primary" onClick={() => handleRadioChange(true)} checked={isChecked(true)} />}
           label={labelYes}
           className={styles.Label}
         />
         <FormControlLabel
           value={0}
-          control={
-            <Radio
-              color="primary"
-              onClick={() => handleRadioChange(false)}
-              checked={isChecked(false)}
-            />
-          }
+          control={<Radio color="primary" onClick={() => handleRadioChange(false)} checked={isChecked(false)} />}
           label={labelNo}
           className={styles.Label}
         />

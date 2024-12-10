@@ -128,9 +128,7 @@ const ContactFieldList = () => {
               label={labelText}
               error={error}
               closeModal={() => handleCloseModal()}
-              callback={(updatedColumnValue: string) =>
-                handleEditCallback(row, updatedColumnValue, column)
-              }
+              callback={(updatedColumnValue: string) => handleEditCallback(row, updatedColumnValue, column)}
             />
           </div>
         ) : null}
@@ -159,8 +157,7 @@ const ContactFieldList = () => {
           <br />
           1. Delete only contact field (no impact on contacts).
           <br />
-          2. Delete contact field and associated data (removes "{deleteItemName}" field from all
-          contacts).
+          2. Delete contact field and associated data (removes "{deleteItemName}" field from all contacts).
         </span>
       </div>
     );

@@ -74,12 +74,7 @@ const collapsedRowData = (dataObj: any, columnStyles: any, recordId: any) => {
   return additionalRowInformation;
 };
 
-const createRows = (
-  data: any,
-  columnStyles: any,
-  collapseRow?: string,
-  collapseOpen: boolean = false
-) => {
+const createRows = (data: any, columnStyles: any, collapseRow?: string, collapseOpen: boolean = false) => {
   const createRow = (entry: any) => {
     let stylesIndex = -1;
     return Object.keys(entry).map((item: any) => {
@@ -130,9 +125,7 @@ const tableHeadColumns = (
   if (checkboxSupport?.selectedItems && checkboxSupport?.selectedItems.length > 0) {
     headerRow = (
       <TableRow className={styles.TableHeadRow}>
-        <TableCell className={`${styles.Checkbox} ${styles.RowHeadStyle}`}>
-          {columnNames[0].label}
-        </TableCell>
+        <TableCell className={`${styles.Checkbox} ${styles.RowHeadStyle}`}>{columnNames[0].label}</TableCell>
         <TableCell className={styles.SelectedItems}>
           {checkboxSupport?.selectedItems.length} of {totalRows} selected
         </TableCell>
@@ -151,10 +144,7 @@ const tableHeadColumns = (
     headerRow = (
       <TableRow className={styles.TableHeadRow}>
         {columnNames.map((field: any, i: number) => (
-          <TableCell
-            key={field.label}
-            className={`${columnStyles && columnStyles[i]} ${styles.RowHeadStyle}`}
-          >
+          <TableCell key={field.label} className={`${columnStyles && columnStyles[i]} ${styles.RowHeadStyle}`}>
             {i !== columnNames.length - 1 && field.name ? (
               <TableSortLabel
                 active={field.name === tableVals.sortCol}
@@ -164,10 +154,7 @@ const tableHeadColumns = (
                     handleTableChange('sortCol', field.name);
                   } else {
                     handleTableChange('sortCol', field.name);
-                    handleTableChange(
-                      'sortDirection',
-                      tableVals.sortDirection === 'asc' ? 'desc' : 'asc'
-                    );
+                    handleTableChange('sortDirection', tableVals.sortDirection === 'asc' ? 'desc' : 'asc');
                   }
                 }}
                 className={styles.HeaderColor}
@@ -186,12 +173,7 @@ const tableHeadColumns = (
   return headerRow;
 };
 
-const pagination = (
-  columnNames: Array<any>,
-  totalRows: number,
-  handleTableChange: Function,
-  tableVals: any
-) => (
+const pagination = (columnNames: Array<any>, totalRows: number, handleTableChange: Function, tableVals: any) => (
   <TablePagination
     component="div"
     className={styles.FooterRow}
@@ -246,13 +228,7 @@ export const Pager = ({
         {loadingList && (
           <div className={styles.Skeleton} data-testid="loading">
             {[...Array(3).keys()].map((key) => (
-              <Skeleton
-                key={key}
-                variant="rounded"
-                width={'100%'}
-                height={50}
-                className={styles.Skeleton}
-              />
+              <Skeleton key={key} variant="rounded" width={'100%'} height={50} className={styles.Skeleton} />
             ))}
           </div>
         )}

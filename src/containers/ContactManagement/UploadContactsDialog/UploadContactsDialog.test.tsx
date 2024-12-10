@@ -8,12 +8,7 @@ import { getAllOrganizations } from 'mocks/Organization';
 import UploadContactsDialog from './UploadContactsDialog';
 import { getCollectionsList } from 'mocks/Collection';
 
-const mocks = [
-  ...getAllOrganizations,
-  getCollectionsList(''),
-  getCollectionsList('Optin group'),
-  getCollectionsList(),
-];
+const mocks = [...getAllOrganizations, getCollectionsList(''), getCollectionsList('Optin group'), getCollectionsList()];
 
 const setDialogMock = vi.fn();
 const props = {

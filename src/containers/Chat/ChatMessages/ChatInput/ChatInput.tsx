@@ -120,13 +120,7 @@ export const ChatInput = ({
   const [createMediaMessage] = useMutation(CREATE_MEDIA_MESSAGE, {
     onCompleted: (data: any) => {
       if (data) {
-        onSendMessage(
-          '',
-          data.createMessageMedia.messageMedia.id,
-          attachmentType,
-          selectedTemplate,
-          variableParam
-        );
+        onSendMessage('', data.createMessageMedia.messageMedia.id, attachmentType, selectedTemplate, variableParam);
         setAttachmentAdded(false);
         setAttachmentURL('');
         setAttachmentType('');
@@ -183,12 +177,7 @@ export const ChatInput = ({
     if ((!message || /^\s*$/.test(message)) && !attachmentAdded) return;
 
     //check if it has media if the template type is image
-    if (
-      selectedTemplate &&
-      selectedTemplate.isHsm &&
-      selectedTemplate.type !== 'TEXT' &&
-      !attachmentAdded
-    ) {
+    if (selectedTemplate && selectedTemplate.isHsm && selectedTemplate.type !== 'TEXT' && !attachmentAdded) {
       setAttachment(!attachment);
       return;
     }
@@ -206,14 +195,7 @@ export const ChatInput = ({
       });
       // check if type is list or quick replies
     } else if (interactiveMessageContent && interactiveMessageContent.type) {
-      onSendMessage(
-        null,
-        null,
-        interactiveMessageContent.type.toUpperCase(),
-        null,
-        null,
-        Number(selectedTemplate.id)
-      );
+      onSendMessage(null, null, interactiveMessageContent.type.toUpperCase(), null, null, Number(selectedTemplate.id));
       // else the type will by default be text
     } else {
       onSendMessage(message, null, 'TEXT', selectedTemplate, variableParam);
@@ -383,9 +365,7 @@ export const ChatInput = ({
   if ((contactStatus && contactStatus === 'INVALID') || contactBspStatus === 'NONE') {
     return (
       <div className={styles.ContactOptOutMessage}>
-        {t(
-          'Sorry, chat is unavailable with this contact at this moment because they aren’t opted in to your number.'
-        )}
+        {t('Sorry, chat is unavailable with this contact at this moment because they aren’t opted in to your number.')}
       </div>
     );
   }
@@ -442,10 +422,7 @@ export const ChatInput = ({
   }
 
   return (
-    <Container
-      className={`${styles.ChatInput} ${additionalStyle}`}
-      data-testid="message-input-container"
-    >
+    <Container className={`${styles.ChatInput} ${additionalStyle}`} data-testid="message-input-container">
       {dialog}
       {open ? (
         <div className={styles.SendsContainer} id="popup">

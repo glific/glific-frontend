@@ -95,9 +95,7 @@ describe('<SheetIntegrationList />', () => {
   });
 
   test('Should render warnings', async () => {
-    const { getByText, getByTestId, getAllByTestId } = render(
-      wrapper(syncSheetMutationWithWarnings)
-    );
+    const { getByText, getByTestId, getAllByTestId } = render(wrapper(syncSheetMutationWithWarnings));
 
     // loading is show initially
     expect(getByTestId('loading')).toBeInTheDocument();

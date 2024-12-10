@@ -132,9 +132,7 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
     } else if (selectedContactId && !savedSearches) {
       // let's enable simulator only when contact tab is shown
 
-      listingContent = (
-        <ChatConversations entityId={simulatorId > 0 ? simulatorId : selectedContactId} />
-      );
+      listingContent = <ChatConversations entityId={simulatorId > 0 ? simulatorId : selectedContactId} />;
 
       heading = 'Contacts';
     } else if (savedSearches) {

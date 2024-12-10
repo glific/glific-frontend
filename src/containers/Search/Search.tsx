@@ -17,12 +17,7 @@ import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Calendar } from 'components/UI/Form/Calendar/Calendar';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
-import {
-  DEFAULT_ENTITY_LIMIT,
-  DEFAULT_MESSAGE_LIMIT,
-  ISO_DATE_FORMAT,
-  setVariables,
-} from 'common/constants';
+import { DEFAULT_ENTITY_LIMIT, DEFAULT_MESSAGE_LIMIT, ISO_DATE_FORMAT, setVariables } from 'common/constants';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { getObject } from 'common/utils';
 import styles from './Search.module.css';
@@ -440,8 +435,7 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
   };
 
   const saveHandler = (saveData: any) => {
-    if (props.handleSave && saveData.updateSavedSearch)
-      props.handleSave(saveData.updateSavedSearch);
+    if (props.handleSave && saveData.updateSavedSearch) props.handleSave(saveData.updateSavedSearch);
   };
   let dialog;
 
@@ -455,8 +449,8 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
         handleOk={() => setInfoDialog(false)}
       >
         <div className={styles.DialogContent}>
-          You can use date expression for dynamic dates like ‘Last 2 days’ instead two days between
-          two fixed dates. To get search results for ‘Last 2 days’ you need to use this function:
+          You can use date expression for dynamic dates like ‘Last 2 days’ instead two days between two fixed dates. To
+          get search results for ‘Last 2 days’ you need to use this function:
           <br />
           <br />
           <div className={styles.DialogTitleText}>Date from expression:</div>

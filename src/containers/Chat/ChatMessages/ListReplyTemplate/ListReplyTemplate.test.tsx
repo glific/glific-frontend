@@ -1,10 +1,5 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import {
-  ListReplyTemplate,
-  ChatTemplate,
-  SimulatorTemplate,
-  ListReplyTemplateDrawer,
-} from './ListReplyTemplate';
+import { ListReplyTemplate, ChatTemplate, SimulatorTemplate, ListReplyTemplateDrawer } from './ListReplyTemplate';
 
 const items = [
   {

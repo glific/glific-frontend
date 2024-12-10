@@ -12,9 +12,7 @@ const getName = (Name: any) => {
 };
 
 const getCreated = (updatedAt: string) => {
-  return (
-    <div className={styles.TableText}>{dayjs(updatedAt).format(STANDARD_DATE_TIME_FORMAT)}</div>
-  );
+  return <div className={styles.TableText}>{dayjs(updatedAt).format(STANDARD_DATE_TIME_FORMAT)}</div>;
 };
 
 const columnStyles = [styles.Name, styles.DateColumn, styles.Actions];
@@ -34,11 +32,7 @@ export const TagList = () => {
     created: getCreated(updatedAt),
   });
 
-  const columnNames = [
-    { name: 'label', label: t('Title') },
-    { label: t('Created') },
-    { label: t('Actions') },
-  ];
+  const columnNames = [{ name: 'label', label: t('Title') }, { label: t('Created') }, { label: t('Actions') }];
 
   const dialogMessage = t("You won't be able to use this tag.");
 

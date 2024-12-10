@@ -24,9 +24,7 @@ export const UploadFile = ({ setFile, setCategory }: UploadFileProps) => {
 
   const { loading, refetch: refetchCategories } = useQuery(GET_CATEGORIES, {
     onCompleted: (data) => {
-      setOptions(
-        data.categories.map((category: any) => ({ id: category.id, label: category.name }))
-      );
+      setOptions(data.categories.map((category: any) => ({ id: category.id, label: category.name })));
     },
   });
 

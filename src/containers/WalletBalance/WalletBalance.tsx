@@ -140,9 +140,7 @@ export const WalletBalance = ({ fullOpen }: WalletBalanceProps) => {
   const updateBalance = (
     <div
       className={`${styles.WalletBalance} ${
-        displayBalance !== null && displayBalance > 1
-          ? styles.WalletBalanceHigh
-          : styles.WalletBalanceLow
+        displayBalance !== null && displayBalance > 1 ? styles.WalletBalanceHigh : styles.WalletBalanceLow
       }`}
       data-testid="WalletBalance"
     >

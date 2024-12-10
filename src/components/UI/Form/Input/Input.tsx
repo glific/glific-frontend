@@ -1,11 +1,4 @@
-import {
-  FormControl,
-  OutlinedInput,
-  FormHelperText,
-  InputAdornment,
-  IconButton,
-  Typography,
-} from '@mui/material';
+import { FormControl, OutlinedInput, FormHelperText, InputAdornment, IconButton, Typography } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import RefreshIcon from '@mui/icons-material/Refresh';
@@ -36,12 +29,7 @@ export interface InputProps {
   inputLabelSubtext?: any;
 }
 
-export const Input = ({
-  textArea = false,
-  disabled = false,
-  inputLabel = null,
-  ...props
-}: InputProps) => {
+export const Input = ({ textArea = false, disabled = false, inputLabel = null, ...props }: InputProps) => {
   const {
     field,
     form,
@@ -90,14 +78,8 @@ export const Input = ({
     fieldType = 'text';
     fieldEndAdorment = (
       <InputAdornment position="end">
-        <IconButton
-          aria-label="resend otp"
-          data-testid="resendOtp"
-          onClick={endAdornmentCallback}
-          edge="end"
-        >
-          <p className={styles.Resend}>resend</p>{' '}
-          <RefreshIcon classes={{ root: styles.ResendButton }} />
+        <IconButton aria-label="resend otp" data-testid="resendOtp" onClick={endAdornmentCallback} edge="end">
+          <p className={styles.Resend}>resend</p> <RefreshIcon classes={{ root: styles.ResendButton }} />
         </IconButton>
       </InputAdornment>
     );

@@ -65,11 +65,7 @@ export const SideDrawer = () => {
   };
 
   return (
-    <nav
-      className={drawerOpen ? styles.Drawer : styles.NavClose}
-      aria-label="navigation menus"
-      data-testid="navbar"
-    >
+    <nav className={drawerOpen ? styles.Drawer : styles.NavClose} aria-label="navigation menus" data-testid="navbar">
       <Hidden {...HiddenProps}>
         <Drawer
           container={container}

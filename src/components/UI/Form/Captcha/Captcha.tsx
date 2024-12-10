@@ -10,14 +10,7 @@ export interface CaptchaProps {
   [key: string]: any;
 }
 
-export const Captcha = ({
-  component: Component,
-  onTokenUpdate,
-  action,
-  children,
-  onClick,
-  ...rest
-}: CaptchaProps) => {
+export const Captcha = ({ component: Component, onTokenUpdate, action, children, onClick, ...rest }: CaptchaProps) => {
   const { executeRecaptcha } = useGoogleReCaptcha();
 
   // Create an event handler so you can call the verification on button click event or form submit

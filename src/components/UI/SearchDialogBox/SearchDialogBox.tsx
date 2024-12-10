@@ -66,9 +66,7 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
   useEffect(() => {
     if (!asyncSearch) {
       setSelectedOptions(
-        multiple
-          ? options.filter((option: any) => selectedOptions.includes(option.id))
-          : selectedOptions
+        multiple ? options.filter((option: any) => selectedOptions.includes(option.id)) : selectedOptions
       );
     }
   }, [selectedOptions, options]);
@@ -77,25 +75,18 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
     setSelectedOptions(value);
     if (multiple) {
       const selectedIds = value.map((option: any) => option.id);
-      setOptionsData([
-        ...value,
-        ...options.filter((option: any) => !selectedIds.includes(option.id)),
-      ]);
+      setOptionsData([...value, ...options.filter((option: any) => !selectedIds.includes(option.id))]);
     }
   };
 
-  const selectedOptionsIds = multiple
-    ? selectedOptions.map(({ id }: { id: any }) => id)
-    : selectedOptions?.id;
+  const selectedOptionsIds = multiple ? selectedOptions.map(({ id }: { id: any }) => id) : selectedOptions?.id;
 
   const getIds = multiple ? selectedOption?.map((option: any) => option.id) : selectedOption?.id;
 
   return (
     <DialogBox
       title={title}
-      handleOk={() =>
-        handleOk(asyncSearch ? asyncSelectedOptions.map((option: any) => option.id) : getIds)
-      }
+      handleOk={() => handleOk(asyncSearch ? asyncSelectedOptions.map((option: any) => option.id) : getIds)}
       handleCancel={handleCancel}
       titleAlign="left"
       colorOk={colorOk}

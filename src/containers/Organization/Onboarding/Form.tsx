@@ -90,11 +90,7 @@ export const RegistrationForm = () => {
         return <PaymentDetails saveData={saveData} handleStepChange={handleStepChange} />;
       case 3:
         return (
-          <SigningAuthority
-            saveData={saveData}
-            openReachOutToUs={setDialogOpen}
-            handleStepChange={handleStepChange}
-          />
+          <SigningAuthority saveData={saveData} openReachOutToUs={setDialogOpen} handleStepChange={handleStepChange} />
         );
       case 4:
         return <Success />;
@@ -112,9 +108,7 @@ export const RegistrationForm = () => {
             {steps.map((step, index) => (
               <Step key={step.label}>
                 <StepLabel>
-                  <p className={`${styles.Step} ${activeStep === index && styles.Active}`}>
-                    {step.label}
-                  </p>
+                  <p className={`${styles.Step} ${activeStep === index && styles.Active}`}>{step.label}</p>
                 </StepLabel>
               </Step>
             ))}

@@ -17,12 +17,7 @@ export interface VoiceRecorderProps {
   isMicActive?: boolean;
 }
 
-export const VoiceRecorder = ({
-  handleAudioRecording,
-  clearAudio,
-  uploading,
-  isMicActive,
-}: VoiceRecorderProps) => {
+export const VoiceRecorder = ({ handleAudioRecording, clearAudio, uploading, isMicActive }: VoiceRecorderProps) => {
   const [showRecordCounter, setShowRecordCounter] = useState(false);
 
   const { t } = useTranslation();
@@ -32,14 +27,13 @@ export const VoiceRecorder = ({
     handleAudioRecording(blob);
   }, []);
 
-  const { status, error, startRecording, stopRecording, mediaBlobUrl, clearBlobUrl } =
-    useReactMediaRecorder({
-      audio: true,
-      blobPropertyBag: {
-        type: 'audio/mpeg',
-      },
-      onStop: saveRecording,
-    });
+  const { status, error, startRecording, stopRecording, mediaBlobUrl, clearBlobUrl } = useReactMediaRecorder({
+    audio: true,
+    blobPropertyBag: {
+      type: 'audio/mpeg',
+    },
+    onStop: saveRecording,
+  });
 
   // function to start recording
   const startCallback = () => {

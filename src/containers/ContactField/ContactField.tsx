@@ -6,11 +6,7 @@ import { Input } from 'components/UI/Form/Input/Input';
 import { FormLayout } from 'containers/Form/FormLayout';
 import ContactVariableIcon from 'assets/images/icons/ContactVariable.svg?react';
 import { GET_CONTACT_FIELD_BY_ID, GET_ALL_CONTACT_FIELDS } from 'graphql/queries/ContactFields';
-import {
-  CREATE_CONTACT_FIELDS,
-  UPDATE_CONTACT_FIELDS,
-  DELETE_CONTACT_FIELDS,
-} from 'graphql/mutations/ContactFields';
+import { CREATE_CONTACT_FIELDS, UPDATE_CONTACT_FIELDS, DELETE_CONTACT_FIELDS } from 'graphql/mutations/ContactFields';
 import styles from './ContactField.module.css';
 
 export interface ContactFieldProps {

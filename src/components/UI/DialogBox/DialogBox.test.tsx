@@ -16,12 +16,7 @@ const dialogBox = (
 
 it('should not display dialog box if open is false', () => {
   const { queryByTestId } = render(
-    <DialogBox
-      open={false}
-      title={'Are you sure?'}
-      handleOk={mockCallbackOK}
-      handleCancel={mockCallbackCancel}
-    />
+    <DialogBox open={false} title={'Are you sure?'} handleOk={mockCallbackOK} handleCancel={mockCallbackCancel} />
   );
 
   expect(queryByTestId('dialogBox')).toBe(null);
@@ -46,12 +41,7 @@ it('should check if callback method is called when confirm button is clicked', (
 
 it('Dialogbox with no ok and cancel buttons', () => {
   const { container } = render(
-    <DialogBox
-      skipOk
-      skipCancel
-      title="Dialog with no action buttons"
-      handleCancel={mockCallbackCancel}
-    />
+    <DialogBox skipOk skipCancel title="Dialog with no action buttons" handleCancel={mockCallbackCancel} />
   );
   expect(container).toBeInTheDocument();
 });

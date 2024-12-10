@@ -18,8 +18,8 @@ import { User } from '../Registration/Registration';
 // let's define registration success message
 const successMessage = (
   <div>
-    Your account is registered successfully. Please contact your organization admin for the
-    approval. Click&nbsp;<a href="/login">here</a>&nbsp;for login.
+    Your account is registered successfully. Please contact your organization admin for the approval. Click&nbsp;
+    <a href="/login">here</a>&nbsp;for login.
   </div>
 );
 
@@ -71,8 +71,7 @@ export const ConfirmOTP = () => {
         action="resend"
         onTokenUpdate={(tokenString: string) => setToken(tokenString)}
       >
-        <p className={styles.Resend}>resend</p>{' '}
-        <RefreshIcon classes={{ root: styles.ResendButton }} />
+        <p className={styles.Resend}>resend</p> <RefreshIcon classes={{ root: styles.ResendButton }} />
       </Captcha>
     </InputAdornment>
   );

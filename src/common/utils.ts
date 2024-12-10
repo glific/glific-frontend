@@ -15,8 +15,7 @@ import { CONTACT_FRAGMENT } from 'graphql/mutations/Chat';
 import { SIMULATOR_NUMBER_START, STANDARD_DATE_TIME_FORMAT } from './constants';
 import { setNotification } from './notification';
 
-export const isSimulator = (phone: string) =>
-  phone ? phone.startsWith(SIMULATOR_NUMBER_START) : false;
+export const isSimulator = (phone: string) => (phone ? phone.startsWith(SIMULATOR_NUMBER_START) : false);
 
 export const getObject = (arr: any, data: any) => {
   const result: any = [];
@@ -43,11 +42,7 @@ export { parseText as parseTextMethod };
 const validateMediaMethod = (URL: string, attachmentType: string, allowStickers: boolean = true) =>
   new Promise((resolve) => {
     // check if stickers are allowed instead of image, if not then return early
-    if (
-      !allowStickers &&
-      attachmentType === 'IMAGE' &&
-      URL.slice(-5).toLocaleLowerCase() === '.webp'
-    ) {
+    if (!allowStickers && attachmentType === 'IMAGE' && URL.slice(-5).toLocaleLowerCase() === '.webp') {
       resolve({
         data: {
           is_valid: false,
@@ -58,12 +53,9 @@ const validateMediaMethod = (URL: string, attachmentType: string, allowStickers:
 
     const encodedUrl = encodeURIComponent(URL);
     axios
-      .get(
-        `${FLOW_EDITOR_API}validate-media?url=${encodedUrl}&type=${attachmentType.toLowerCase()}`,
-        {
-          headers: { authorization: getAuthSession('access_token') },
-        }
-      )
+      .get(`${FLOW_EDITOR_API}validate-media?url=${encodedUrl}&type=${attachmentType.toLowerCase()}`, {
+        headers: { authorization: getAuthSession('access_token') },
+      })
       .then((response: any) => {
         resolve(response);
       })
@@ -95,8 +87,7 @@ const checkSessionValidityMethod = async () => {
 export { checkSessionValidityMethod as checkSessionValidity };
 
 // function to get the random number with min and max
-export const randomIntFromInterval = (min: number, max: number) =>
-  Math.floor(Math.random() * (max - min + 1) + min);
+export const randomIntFromInterval = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1) + min);
 
 export const copyToClipboardMethod = (text: string) => {
   if (text) {
@@ -222,12 +213,8 @@ export const getAddOrRemoveRoleIds = (roles: any, payload: any) => {
   const initialSelectedRoles = roles.map((role: any) => role.id);
   const payloadRoleIds = payload.roles.map((role: any) => role.id);
 
-  let addRoleIds = payloadRoleIds.filter(
-    (selectedRoles: any) => !initialSelectedRoles.includes(selectedRoles)
-  );
-  const deleteRoleIds = initialSelectedRoles.filter(
-    (roleId: any) => !payloadRoleIds.includes(roleId)
-  );
+  let addRoleIds = payloadRoleIds.filter((selectedRoles: any) => !initialSelectedRoles.includes(selectedRoles));
+  const deleteRoleIds = initialSelectedRoles.filter((roleId: any) => !payloadRoleIds.includes(roleId));
 
   if (checkDynamicRole()) {
     const userRoles = getUserSession('roles').map((role: any) => role.id);

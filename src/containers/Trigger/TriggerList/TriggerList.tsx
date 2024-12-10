@@ -44,13 +44,9 @@ const getName = ({ flow, startAt, frequency, days, isActive, nextTriggerAt }: an
   </div>
 );
 
-const getEndDate = (date: any) => (
-  <div className={styles.EndDateVal}>{dayjs(date).format(LONG_DATE_FORMAT)}</div>
-);
+const getEndDate = (date: any) => <div className={styles.EndDateVal}>{dayjs(date).format(LONG_DATE_FORMAT)}</div>;
 
-const getCollections = (groups: any) => (
-  <div className={styles.Collection}>{groups && groups.join(', ')}</div>
-);
+const getCollections = (groups: any) => <div className={styles.Collection}>{groups && groups.join(', ')}</div>;
 
 const getColumns = (columns: any) => {
   const { endDate, groups } = columns;

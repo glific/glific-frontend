@@ -54,15 +54,8 @@ export const ChatMessageType = ({
       const imageStyle = isContextMessage ? styles.ContextMessageImage : styles.Image;
       messageBody = (
         <div className={`${isContextMessage && styles.ContentMessageContainer}`}>
-          <div
-            className={isSimulatedMessage ? styles.SimulatorImage : imageStyle}
-            data-testid="imageMessage"
-          >
-            <HtmlImgFallback
-              src={mediaUrl}
-              onClick={() => setShowViewer(true)}
-              alt="message image"
-            />
+          <div className={isSimulatedMessage ? styles.SimulatorImage : imageStyle} data-testid="imageMessage">
+            <HtmlImgFallback src={mediaUrl} onClick={() => setShowViewer(true)} alt="message image" />
             <Viewer
               visible={showViewer}
               onClose={() => {
@@ -130,17 +123,9 @@ export const ChatMessageType = ({
         <div data-testid="documentMessage" className={styles.Document}>
           <div>
             <DocumentIconDark className={styles.DocumentIcon} />
-            <span className={isSender ? styles.CaptionSender : styles.CaptionReciever}>
-              {media.caption}
-            </span>
+            <span className={isSender ? styles.CaptionSender : styles.CaptionReciever}>{media.caption}</span>
           </div>
-          <a
-            href={mediaUrl}
-            className={styles.DocumentText}
-            download={media.caption}
-            target="_blank"
-            rel="noreferrer"
-          >
+          <a href={mediaUrl} className={styles.DocumentText} download={media.caption} target="_blank" rel="noreferrer">
             {!isContextMessage && <DownloadIcon className={styles.DownloadIcon} />}
           </a>
         </div>

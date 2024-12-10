@@ -1,9 +1,5 @@
 import { DEFAULT_MESSAGE_LIMIT } from 'common/constants';
-import {
-  GET_SIMULATOR,
-  RELEASE_SIMULATOR,
-  SIMULATOR_SEARCH_QUERY,
-} from 'graphql/queries/Simulator';
+import { GET_SIMULATOR, RELEASE_SIMULATOR, SIMULATOR_SEARCH_QUERY } from 'graphql/queries/Simulator';
 import { SIMULATOR_RELEASE_SUBSCRIPTION } from 'graphql/subscriptions/PeriodicInfo';
 import {
   SIMULATOR_MESSAGE_RECEIVED_SUBSCRIPTION,

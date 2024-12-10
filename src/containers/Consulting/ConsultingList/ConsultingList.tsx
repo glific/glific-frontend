@@ -91,14 +91,7 @@ const ConsultingList = () => {
   const columnAttributes = {
     columnNames,
     columns: getColumns,
-    columnStyles: [
-      styles.Label,
-      styles.Status,
-      styles.Status,
-      styles.Status,
-      styles.Status,
-      styles.Actions,
-    ],
+    columnStyles: [styles.Label, styles.Status, styles.Status, styles.Status, styles.Status, styles.Actions],
   };
 
   const editConsulting = (id: string) => {

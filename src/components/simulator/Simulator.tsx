@@ -30,11 +30,7 @@ import {
 import { GUPSHUP_CALLBACK_URL } from 'config';
 import { ChatMessageType } from 'containers/Chat/ChatMessages/ChatMessage/ChatMessageType/ChatMessageType';
 import { TemplateButtons } from 'containers/Chat/ChatMessages/TemplateButtons/TemplateButtons';
-import {
-  GET_SIMULATOR,
-  RELEASE_SIMULATOR,
-  SIMULATOR_SEARCH_QUERY,
-} from 'graphql/queries/Simulator';
+import { GET_SIMULATOR, RELEASE_SIMULATOR, SIMULATOR_SEARCH_QUERY } from 'graphql/queries/Simulator';
 // import { SIMULATOR_RELEASE_SUBSCRIPTION } from 'graphql/subscriptions/PeriodicInfo';
 import { getUserSession } from 'services/AuthService';
 import { setNotification } from 'common/notification';
@@ -75,11 +71,7 @@ interface Sender {
   id: string;
 }
 
-const getStyleForDirection = (
-  directionValue: string,
-  isInteractiveValue: boolean,
-  messageTypeValue: any
-): string => {
+const getStyleForDirection = (directionValue: string, isInteractiveValue: boolean, messageTypeValue: any): string => {
   switch (directionValue) {
     case 'received':
       if (isInteractiveValue) {
@@ -191,10 +183,7 @@ const Simulator = ({
       })
       .catch((error) => {
         // add log's
-        setLogs(
-          `sendMessageText:${sendMessageText} GUPSHUP_CALLBACK_URL:${GUPSHUP_CALLBACK_URL}`,
-          'info'
-        );
+        setLogs(`sendMessageText:${sendMessageText} GUPSHUP_CALLBACK_URL:${GUPSHUP_CALLBACK_URL}`, 'info');
         setLogs(error, 'error');
       });
     setInputMessage('');
@@ -207,8 +196,7 @@ const Simulator = ({
     onData: ({ data: simulatorSubscribe }) => {
       if (simulatorSubscribe.data) {
         try {
-          const userId = JSON.parse(simulatorSubscribe.data.simulatorRelease).simulator_release
-            .user_id;
+          const userId = JSON.parse(simulatorSubscribe.data.simulatorRelease).simulator_release.user_id;
           if (userId.toString() === getUserSession('id')) {
             setShowSimulator(false);
           }
@@ -280,14 +268,8 @@ const Simulator = ({
       });
   };
 
-  const renderMessage = (
-    messageObject: any,
-    direction: string,
-    index: number,
-    isInteractive: boolean = false
-  ) => {
-    const { insertedAt, type, media, location, interactiveContent, bspMessageId, templateType } =
-      messageObject;
+  const renderMessage = (messageObject: any, direction: string, index: number, isInteractive: boolean = false) => {
+    const { insertedAt, type, media, location, interactiveContent, bspMessageId, templateType } = messageObject;
 
     const messageType = isInteractive ? templateType : type;
     const { body, buttons } = WhatsAppTemplateButton(isInteractive ? '' : messageObject.body);
@@ -480,11 +462,7 @@ const Simulator = ({
     <ClickAwayListener onClickAway={() => setIsOpen(false)}>
       <div className={styles.Dropdown} id="media">
         {SAMPLE_MEDIA_FOR_SIMULATOR.map((media: any) => (
-          <Button
-            onClick={() => handleAttachmentClick(media)}
-            key={media.id}
-            className={styles.AttachmentOptions}
-          >
+          <Button onClick={() => handleAttachmentClick(media)} key={media.id} className={styles.AttachmentOptions}>
             <MessageType type={media.id} color="dark" />
           </Button>
         ))}

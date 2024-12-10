@@ -6,13 +6,9 @@ import { DELETE_ROLE } from 'graphql/mutations/Roles';
 import styles from './RoleList.module.css';
 import { roleInfo } from 'common/HelpData';
 
-const getLabel = (text: string) => (
-  <p className={`${styles.LabelText} ${styles.NameText}`}>{text}</p>
-);
+const getLabel = (text: string) => <p className={`${styles.LabelText} ${styles.NameText}`}>{text}</p>;
 
-const getDescription = (description: string) => (
-  <div className={styles.TableText}>{description}</div>
-);
+const getDescription = (description: string) => <div className={styles.TableText}>{description}</div>;
 
 const columnStyles = [styles.Label, styles.Description, styles.Actions];
 const roleIcon = <RoleIcon className={styles.RoleIcon} />;

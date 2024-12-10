@@ -18,8 +18,7 @@ export const getNotificationsQuery = {
           entity: '{"shortcode":"bigquery","id":2}',
           id: '1',
           isRead: true,
-          message:
-            'Disabling bigquery. Account does not have sufficient permissions to insert data to BigQuery.',
+          message: 'Disabling bigquery. Account does not have sufficient permissions to insert data to BigQuery.',
           severity: '"Critical"',
           updatedAt: '2024-03-23T15:26:41Z',
         },
@@ -54,8 +53,7 @@ export const getNotificationsQuery = {
         },
         {
           category: 'Ticket',
-          entity:
-            '{"uuid":"98c7dec4-f05a-4a76-a25a-f7a50d821f27","shortcode":"otp","label":"OTP Message","id":9}',
+          entity: '{"uuid":"98c7dec4-f05a-4a76-a25a-f7a50d821f27","shortcode":"otp","label":"OTP Message","id":9}',
           id: '5',
           isRead: true,
           message: 'Template OTP Message has been rejected',

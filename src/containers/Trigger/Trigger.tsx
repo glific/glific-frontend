@@ -28,12 +28,7 @@ import { getAddOrRemoveRoleIds } from 'common/utils';
 import { GET_FLOWS } from 'graphql/queries/Flow';
 import { GET_COLLECTIONS } from 'graphql/queries/Collection';
 import { GET_TRIGGER } from 'graphql/queries/Trigger';
-import {
-  CREATE_TRIGGER,
-  DELETE_TRIGGER,
-  UPDATE_TRIGGER,
-  VALIDATE_TRIGGER,
-} from 'graphql/mutations/Trigger';
+import { CREATE_TRIGGER, DELETE_TRIGGER, UPDATE_TRIGGER, VALIDATE_TRIGGER } from 'graphql/mutations/Trigger';
 import styles from './Trigger.module.css';
 import { triggerInfo } from 'common/HelpData';
 import { TriggerType } from './TriggerType/TriggerType';
@@ -57,8 +52,7 @@ const checkDateTimeValidation = (startAtValue: string, startDateValue: string) =
 const setPayload = (payload: any, roles: any, groupType: any) => {
   const payloadCopy = payload;
 
-  const { startDate, startTime, isActive, flowId, frequencyValues, groupIds, endDate, frequency } =
-    payloadCopy;
+  const { startDate, startTime, isActive, flowId, frequencyValues, groupIds, endDate, frequency } = payloadCopy;
 
   const groups = groupIds.map((group: any) => parseInt(group.id));
   const startAtTime = dayjs(startTime).format(EXTENDED_TIME_FORMAT);
@@ -103,11 +97,7 @@ const setPayload = (payload: any, roles: any, groupType: any) => {
   return payloadWithRoleIds;
 };
 
-const getFrequencyDetails = (
-  frequencyValue: string,
-  daysValue: Array<any>,
-  hoursValue: Array<any>
-) => {
+const getFrequencyDetails = (frequencyValue: string, daysValue: Array<any>, hoursValue: Array<any>) => {
   const frequencyDetails = {
     values: [],
     options: dayList,
@@ -212,8 +202,7 @@ export const Trigger = () => {
       .required(t('End date is required'))
       .when('startDate', ([startDateValue], schema: any) =>
         schema.test({
-          test: (endDateValue: any) =>
-            startDateValue && dayjs(endDateValue).isAfter(startDateValue),
+          test: (endDateValue: any) => startDateValue && dayjs(endDateValue).isAfter(startDateValue),
           message: t('End date should be greater than the start date'),
         })
       ),
@@ -445,9 +434,7 @@ export const Trigger = () => {
     }
 
     if (groupValue && collections?.groups && groupValue.length > 0) {
-      const selectedGroups = collections?.groups.filter((group: any) =>
-        groupValue.includes(group.label)
-      );
+      const selectedGroups = collections?.groups.filter((group: any) => groupValue.includes(group.label));
       setGroupIds(selectedGroups);
     }
   };

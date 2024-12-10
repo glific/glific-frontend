@@ -18,15 +18,9 @@ import { FormLayout } from 'containers/Form/FormLayout';
 import { Input } from 'components/UI/Form/Input/Input';
 import { EmojiInput } from 'components/UI/Form/EmojiInput/EmojiInput';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
-import  Simulator  from 'components/simulator/Simulator';
+import Simulator from 'components/simulator/Simulator';
 import { LanguageBar } from 'components/UI/LanguageBar/LanguageBar';
-import {
-  LIST,
-  LOCATION_REQUEST,
-  MEDIA_MESSAGE_TYPES,
-  QUICK_REPLY,
-  VALID_URL_REGEX,
-} from 'common/constants';
+import { LIST, LOCATION_REQUEST, MEDIA_MESSAGE_TYPES, QUICK_REPLY, VALID_URL_REGEX } from 'common/constants';
 import { validateMedia } from 'common/utils';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { InteractiveOptions } from './InteractiveOptions/InteractiveOptions';
@@ -45,9 +39,7 @@ import { interactiveMessageInfo } from 'common/HelpData';
 import { TranslateButton } from './TranslateButton/TranslateButton';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 
-const interactiveMessageIcon = (
-  <InteractiveMessageIcon className={styles.Icon} data-testid="interactive-icon" />
-);
+const interactiveMessageIcon = <InteractiveMessageIcon className={styles.Icon} data-testid="interactive-icon" />;
 
 const queries = {
   getItemQuery: GET_INTERACTIVE_MESSAGE,
@@ -217,9 +209,7 @@ export const InteractiveMessage = () => {
         translationsCopy[language.id || languageVal.id] &&
         !location.state?.language
       ) {
-        content =
-          JSON.parse(translationsVal)[language.id || languageVal.id] ||
-          JSON.parse(interactiveContentValue);
+        content = JSON.parse(translationsVal)[language.id || languageVal.id] || JSON.parse(interactiveContentValue);
       } else if (template) {
         content = getDefaultValuesByTemplate(template.interactiveTemplate.interactiveTemplate);
       }
@@ -230,9 +220,7 @@ export const InteractiveMessage = () => {
 
     if (languageOptions.length > 0 && languageVal) {
       if (location.state?.language) {
-        const selectedLangauge = languageOptions.find(
-          (lang: any) => lang.label === location.state.language
-        );
+        const selectedLangauge = languageOptions.find((lang: any) => lang.label === location.state.language);
         navigate(location.pathname);
         setLanguage(selectedLangauge);
       } else if (!language.id) {
@@ -332,9 +320,7 @@ export const InteractiveMessage = () => {
     const buttons = [...templateButtons];
     const newOptions = [...oldOptions, { title: '', description: '' }];
 
-    const result = buttons.map((row: any, idx: number) =>
-      rowNo === idx ? { ...row, options: newOptions } : row
-    );
+    const result = buttons.map((row: any, idx: number) => (rowNo === idx ? { ...row, options: newOptions } : row));
 
     setTemplateButtons(result);
   };
@@ -418,9 +404,7 @@ export const InteractiveMessage = () => {
           interactiveContent: JSON.stringify(translationsCopy[Id]),
         });
       } else if (template) {
-        const fillDataWithEmptyValues = getDefaultValuesByTemplate(
-          template.interactiveTemplate.interactiveTemplate
-        );
+        const fillDataWithEmptyValues = getDefaultValuesByTemplate(template.interactiveTemplate.interactiveTemplate);
 
         updateStates({
           language: value,
@@ -471,9 +455,9 @@ export const InteractiveMessage = () => {
 
   const dialogMessage = t("You won't be able to use this again.");
 
-  const options = MEDIA_MESSAGE_TYPES.filter(
-    (msgType: string) => !['AUDIO', 'STICKER'].includes(msgType)
-  ).map((option: string) => ({ id: option, label: option }));
+  const options = MEDIA_MESSAGE_TYPES.filter((msgType: string) => !['AUDIO', 'STICKER'].includes(msgType)).map(
+    (option: string) => ({ id: option, label: option })
+  );
 
   let timer: any = null;
   const langOptions = languageOptions && languageOptions.map(({ label }: any) => label);
@@ -533,8 +517,7 @@ export const InteractiveMessage = () => {
       optionLabel: 'label',
     },
     {
-      translation:
-        hasTranslations && getTranslation(templateType, 'title', translations, defaultLanguage),
+      translation: hasTranslations && getTranslation(templateType, 'title', translations, defaultLanguage),
       component: Input,
       name: 'title',
       type: 'text',
@@ -554,8 +537,7 @@ export const InteractiveMessage = () => {
       addLabelStyle: false,
     },
     {
-      translation:
-        hasTranslations && getTranslation(templateType, 'body', translations, defaultLanguage),
+      translation: hasTranslations && getTranslation(templateType, 'body', translations, defaultLanguage),
       component: EmojiInput,
       name: 'body',
       label: t('Message'),
@@ -573,8 +555,7 @@ export const InteractiveMessage = () => {
     },
     {
       skip: templateType !== QUICK_REPLY,
-      translation:
-        hasTranslations && getTranslation(templateType, 'footer', translations, defaultLanguage),
+      translation: hasTranslations && getTranslation(templateType, 'footer', translations, defaultLanguage),
       component: Input,
       name: 'footer',
       type: 'text',
@@ -584,8 +565,7 @@ export const InteractiveMessage = () => {
       },
     },
     {
-      translation:
-        hasTranslations && getTranslation(templateType, 'options', translations, defaultLanguage),
+      translation: hasTranslations && getTranslation(templateType, 'options', translations, defaultLanguage),
       component: InteractiveOptions,
       isAddButtonChecked: true,
       templateType,
@@ -793,8 +773,7 @@ export const InteractiveMessage = () => {
     },
   ];
 
-  let formFields: any =
-    templateType === QUICK_REPLY ? [...fields, ...attachmentInputs] : [...fields];
+  let formFields: any = templateType === QUICK_REPLY ? [...fields, ...attachmentInputs] : [...fields];
   formFields = [
     ...formFields,
     {
@@ -829,13 +808,7 @@ export const InteractiveMessage = () => {
       language,
     };
 
-    const { interactiveContent } = convertStateDataToJSON(
-      payload,
-      title,
-      templateType,
-      templateButtons,
-      globalButton
-    );
+    const { interactiveContent } = convertStateDataToJSON(payload, title, templateType, templateButtons, globalButton);
 
     const data = { templateType, interactiveContent };
     return data;

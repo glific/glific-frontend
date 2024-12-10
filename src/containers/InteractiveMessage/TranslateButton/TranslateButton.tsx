@@ -92,42 +92,36 @@ export const TranslateButton = ({
     },
   });
 
-  const [exportInteractiveMessage, { loading: exportLoading }] = useMutation(
-    EXPORT_INTERACTIVE_TEMPLATE,
-    {
-      onCompleted: ({ exportInteractiveTemplate }) => {
-        const { exportData } = exportInteractiveTemplate;
-        exportCsvFile(exportData, `Interactive_Message_Translations_${templateId}`);
-        setNotification('Interactive Message Exported Successfully', 'success');
-        handleClose();
-      },
-      onError(error: any) {
-        handleClose();
-        setErrorMessage(error);
-      },
-    }
-  );
+  const [exportInteractiveMessage, { loading: exportLoading }] = useMutation(EXPORT_INTERACTIVE_TEMPLATE, {
+    onCompleted: ({ exportInteractiveTemplate }) => {
+      const { exportData } = exportInteractiveTemplate;
+      exportCsvFile(exportData, `Interactive_Message_Translations_${templateId}`);
+      setNotification('Interactive Message Exported Successfully', 'success');
+      handleClose();
+    },
+    onError(error: any) {
+      handleClose();
+      setErrorMessage(error);
+    },
+  });
 
-  const [importInteractiveMessage, { loading: importingLoad }] = useMutation(
-    IMPORT_INTERACTIVE_TEMPLATE,
-    {
-      onCompleted: ({ importInteractiveTemplate }) => {
-        const { interactiveTemplate, message } = importInteractiveTemplate;
-        setStates(interactiveTemplate);
+  const [importInteractiveMessage, { loading: importingLoad }] = useMutation(IMPORT_INTERACTIVE_TEMPLATE, {
+    onCompleted: ({ importInteractiveTemplate }) => {
+      const { interactiveTemplate, message } = importInteractiveTemplate;
+      setStates(interactiveTemplate);
 
-        if (message) {
-          setTranslateMessage(message);
-        } else {
-          setNotification('Interactive Message Imported Successfully!', 'success');
-        }
-        handleClose();
-      },
-      onError: (error: any) => {
-        setErrorMessage(error);
-        handleClose();
-      },
-    }
-  );
+      if (message) {
+        setTranslateMessage(message);
+      } else {
+        setNotification('Interactive Message Imported Successfully!', 'success');
+      }
+      handleClose();
+    },
+    onError: (error: any) => {
+      setErrorMessage(error);
+      handleClose();
+    },
+  });
 
   const importButton = (
     <ImportButton

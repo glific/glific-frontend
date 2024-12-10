@@ -7,13 +7,7 @@ import { collectionCountSubscription } from 'mocks/Search';
 import { setUserSession } from 'services/AuthService';
 import SavedSearchToolbar from './SavedSearchToolbar';
 
-const mocks = [
-  savedSearchStatusQuery,
-
-  savedSearchQuery,
-  collectionCountSubscription,
-  collectionCountQuery,
-];
+const mocks = [savedSearchStatusQuery, savedSearchQuery, collectionCountSubscription, collectionCountQuery];
 
 describe('testing <SavedSearchToolbar />', () => {
   const defaultProps = {

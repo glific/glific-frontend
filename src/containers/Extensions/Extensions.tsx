@@ -117,9 +117,7 @@ export const Extensions = ({ openDialog }: ExtensionProps) => {
           languageSupport={false}
           idType="clientId"
           customStyles={[styles.Form]}
-          refetchQueries={[
-            { query: GET_ORGANIZATION_EXTENSION, variables: { clientId: params.id } },
-          ]}
+          refetchQueries={[{ query: GET_ORGANIZATION_EXTENSION, variables: { clientId: params.id } }]}
         />
       </DialogContent>
     </Dialog>

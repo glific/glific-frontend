@@ -11,12 +11,7 @@ import {
   getPublishedFlowQuery,
 } from 'mocks/Flow';
 
-const mocks = [
-  getPublishedFlowQuery,
-  addFlowToContactQuery,
-  addFlowToCollectionQuery,
-  addFlowToWAGroupQuery,
-];
+const mocks = [getPublishedFlowQuery, addFlowToContactQuery, addFlowToCollectionQuery, addFlowToWAGroupQuery];
 
 const setShowFlowDialogMock = vi.fn();
 
@@ -118,9 +113,7 @@ test('should start a flow for contact', async () => {
 });
 
 test('should start a flow for collection', async () => {
-  const { getByTestId, getByText, getByRole } = render(
-    renderWrapper({ collectionId: '1', entityId: '' })
-  );
+  const { getByTestId, getByText, getByRole } = render(renderWrapper({ collectionId: '1', entityId: '' }));
 
   expect(getByTestId('loading')).toBeInTheDocument();
 

@@ -237,12 +237,7 @@ export const MyAccount = () => {
               </>
             ) : (
               <>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={submitForm}
-                  className={styles.Button}
-                >
+                <Button variant="contained" color="primary" onClick={submitForm} className={styles.Button}>
                   {t('Save')}
                 </Button>
                 <Button variant="contained" onClick={cancelHandler}>
@@ -296,11 +291,7 @@ export const MyAccount = () => {
 
   const languageSwitcher = (
     <div className={styles.Form}>
-      <Dropdown
-        options={languageOptions}
-        placeholder={t('Available languages')}
-        field={languageField}
-      />
+      <Dropdown options={languageOptions} placeholder={t('Available languages')} field={languageField} />
     </div>
   );
 

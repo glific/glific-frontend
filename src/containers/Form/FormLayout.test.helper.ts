@@ -46,8 +46,7 @@ export const listItemProps: FormLayoutProps = {
       name: 'ignoreKeywords',
       title: 'Ignore Keywords',
       info: {
-        title:
-          'If activated, users will not be able to change this flow by entering keyword for any other flow.',
+        title: 'If activated, users will not be able to change this flow by entering keyword for any other flow.',
       },
       darkCheckbox: true,
     },

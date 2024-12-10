@@ -91,9 +91,7 @@ describe('Server Table test', () => {
     expect(
       wrapper.getByTestId('tableFooter').querySelectorAll('.MuiTablePagination-displayedRows')[0]
     ).toHaveTextContent('1–5 of 5');
-    expect(
-      wrapper.getByTestId('tableFooter').querySelector('.MuiTablePagination-select')
-    ).toHaveTextContent('50');
+    expect(wrapper.getByTestId('tableFooter').querySelector('.MuiTablePagination-select')).toHaveTextContent('50');
   });
 
   it('renders column names correctly', () => {
@@ -124,9 +122,7 @@ describe('Server Table test', () => {
 
   it('num rows correct', () => {
     const wrapper = render(createTable());
-    expect(wrapper.getByTestId('tableBody').querySelectorAll('.MuiTableRow-root').length).toEqual(
-      data.length
-    );
+    expect(wrapper.getByTestId('tableBody').querySelectorAll('.MuiTableRow-root').length).toEqual(data.length);
   });
 
   // it('changing page working', () => {

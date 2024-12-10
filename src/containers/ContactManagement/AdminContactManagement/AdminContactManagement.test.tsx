@@ -55,9 +55,7 @@ test('Files other than .csv should raise a warning message upon upload', async (
     userEvent.upload(fileInput, nonCSVFile);
   });
   await waitFor(() => {
-    expect(
-      screen.getByText(/Please make sure the file format matches the sample/)
-    ).toBeInTheDocument();
+    expect(screen.getByText(/Please make sure the file format matches the sample/)).toBeInTheDocument();
   });
 });
 

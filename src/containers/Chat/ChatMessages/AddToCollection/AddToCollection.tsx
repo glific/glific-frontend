@@ -6,10 +6,7 @@ import { setVariables } from 'common/constants';
 import { setNotification } from 'common/notification';
 import { getDisplayName } from 'common/utils';
 import { SearchDialogBox } from 'components/UI/SearchDialogBox/SearchDialogBox';
-import {
-  UPDATE_COLLECTION_CONTACTS,
-  UPDATE_COLLECTION_WA_GROUP,
-} from 'graphql/mutations/Collection';
+import { UPDATE_COLLECTION_CONTACTS, UPDATE_COLLECTION_WA_GROUP } from 'graphql/mutations/Collection';
 import { GET_CONTACTS_LIST } from 'graphql/queries/Contact';
 import { GET_WA_GROUPS } from 'graphql/queries/WaGroups';
 
@@ -20,12 +17,7 @@ interface AddToCollectionProps {
   afterAdd?: Function;
 }
 
-export const AddToCollection = ({
-  collectionId,
-  setDialog,
-  groups,
-  afterAdd,
-}: AddToCollectionProps) => {
+export const AddToCollection = ({ collectionId, setDialog, groups, afterAdd }: AddToCollectionProps) => {
   const [contactSearchTerm, setContactSearchTerm] = useState('');
   const { t } = useTranslation();
 
@@ -47,9 +39,7 @@ export const AddToCollection = ({
       const numberAdded = groupContacts.length;
 
       if (numberAdded > 0) {
-        setNotification(
-          `${numberAdded} ${groups ? 'group' : 'contact'}${numberAdded === 1 ? '' : 's  were'} added`
-        );
+        setNotification(`${numberAdded} ${groups ? 'group' : 'contact'}${numberAdded === 1 ? '' : 's  were'} added`);
       }
       if (afterAdd) {
         afterAdd();
@@ -91,9 +81,7 @@ export const AddToCollection = ({
     }
   };
 
-  let searchDialogTitle = groups
-    ? t('Add groups to the collection')
-    : t('Add contacts to the collection');
+  let searchDialogTitle = groups ? t('Add groups to the collection') : t('Add contacts to the collection');
   return (
     <SearchDialogBox
       title={searchDialogTitle}

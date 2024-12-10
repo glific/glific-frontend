@@ -5,8 +5,7 @@ import { UrlMatcher } from 'interweave-autolink';
 import { $createParagraphNode, $createTextNode, $getRoot } from 'lexical';
 
 // Indicates how to replace different parts of the text from WhatsApp to HTML.
-const regexForLink =
-  /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_+.~#?&/=]*)/gi;
+const regexForLink = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_+.~#?&/=]*)/gi;
 
 export const handleFormatterEvents = (event: KeyboardEvent) => {
   if ((event.ctrlKey || event.metaKey) && event.code === 'KeyB') {
@@ -130,9 +129,7 @@ export const WhatsAppTemplateButton = (text: string) => {
     const buttonsStr = text.substring(isTemplateButtonsPresent);
     const templateStr = buttonsStr.split('|');
 
-    const buttons = templateStr
-      .map((val: string) => val && val.trim().slice(1, -1))
-      .filter((a) => a);
+    const buttons = templateStr.map((val: string) => val && val.trim().slice(1, -1)).filter((a) => a);
 
     // Checking if template type is call to action or quick reply
 

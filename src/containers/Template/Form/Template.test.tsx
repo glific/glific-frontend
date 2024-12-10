@@ -22,12 +22,7 @@ vi.mock('lexical-beautiful-mentions', async (importOriginal) => {
   };
 });
 
-const defaultMocks = [
-  ...TEMPLATE_MOCKS,
-  ...TEMPLATE_MOCKS,
-  getSpendSendTemplate,
-  getSpendSendTemplate,
-];
+const defaultMocks = [...TEMPLATE_MOCKS, ...TEMPLATE_MOCKS, getSpendSendTemplate, getSpendSendTemplate];
 
 const defaultProps = {
   listItemName: 'Speed sends',

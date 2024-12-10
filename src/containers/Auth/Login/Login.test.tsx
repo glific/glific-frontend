@@ -5,11 +5,7 @@ import axios from 'axios';
 import { MockedProvider } from '@apollo/client/testing';
 import { vi } from 'vitest';
 
-import {
-  getCurrentUserQuery,
-  getCurrentUserErrorQuery,
-  getCurrentUserInvalidRoleQuery,
-} from 'mocks/User';
+import { getCurrentUserQuery, getCurrentUserErrorQuery, getCurrentUserInvalidRoleQuery } from 'mocks/User';
 
 import { getOrganizationServicesQuery, getOrganizationStatus } from 'mocks/Organization';
 

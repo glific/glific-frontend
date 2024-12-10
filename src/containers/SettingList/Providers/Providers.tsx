@@ -10,11 +10,7 @@ import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { Input } from 'components/UI/Form/Input/Input';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { GET_PROVIDERS, GET_CREDENTIAL } from 'graphql/queries/Organization';
-import {
-  DELETE_ORGANIZATION,
-  CREATE_CREDENTIAL,
-  UPDATE_CREDENTIAL,
-} from 'graphql/mutations/Organization';
+import { DELETE_ORGANIZATION, CREATE_CREDENTIAL, UPDATE_CREDENTIAL } from 'graphql/mutations/Organization';
 import styles from './Providers.module.css';
 import Settingicon from 'assets/images/icons/Settings/Settings.svg?react';
 
@@ -111,8 +107,7 @@ export const Providers = () => {
         is: true,
         then: (schema) => schema.nullable().required(`${fields[key].label} is required.`),
         otherwise: (schema) =>
-          fields[key].is_required &&
-          schema.nullable().required(`${fields[key].label} is required.`),
+          fields[key].is_required && schema.nullable().required(`${fields[key].label} is required.`),
       });
     FormSchema = Yup.object().shape(validation);
   };

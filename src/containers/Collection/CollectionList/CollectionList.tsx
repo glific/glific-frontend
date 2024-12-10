@@ -7,11 +7,7 @@ import AddContactIcon from 'assets/images/icons/Contact/Add.svg?react';
 import AddGroupIcon from 'assets/images/icons/AddGroupIcon.svg?react';
 import ExportIcon from 'assets/images/icons/Flow/Export.svg?react';
 import { DELETE_COLLECTION } from 'graphql/mutations/Collection';
-import {
-  GET_COLLECTIONS_COUNT,
-  FILTER_COLLECTIONS,
-  EXPORT_COLLECTION_DATA,
-} from 'graphql/queries/Collection';
+import { GET_COLLECTIONS_COUNT, FILTER_COLLECTIONS, EXPORT_COLLECTION_DATA } from 'graphql/queries/Collection';
 import { List } from 'containers/List/List';
 import { getUserRolePermissions, getUserRole } from 'context/role';
 import { setNotification } from 'common/notification';
@@ -32,16 +28,10 @@ import AddToCollection from 'containers/Chat/ChatMessages/AddToCollection/AddToC
 
 const getLabel = (label: string) => <div className={styles.LabelText}>{label}</div>;
 
-const getDescription = (description: string) => (
-  <div className={styles.DescriptionText}>{description}</div>
-);
+const getDescription = (description: string) => <div className={styles.DescriptionText}>{description}</div>;
 
 const getContact = (totalCount: number, groups: boolean, id: any) => (
-  <Link
-    data-testid="view"
-    to={`/collection/${id}/${groups ? 'groups' : 'contacts'}`}
-    className={styles.UserCount}
-  >
+  <Link data-testid="view" to={`/collection/${id}/${groups ? 'groups' : 'contacts'}`} className={styles.UserCount}>
     {`${totalCount} ${groups ? 'group' : 'contact'}${totalCount === 1 ? '' : 's'}`}
   </Link>
 );
@@ -70,9 +60,7 @@ export const CollectionList = () => {
   }>({ groupType: groups ? WA_GROUPS_COLLECTION : CONTACTS_COLLECTION });
 
   const searchQuery = groups ? GROUP_SEARCH_QUERY : SEARCH_QUERY;
-  const searchVariables = groups
-    ? GROUP_COLLECTION_SEARCH_QUERY_VARIABLES
-    : COLLECTION_SEARCH_QUERY_VARIABLES;
+  const searchVariables = groups ? GROUP_COLLECTION_SEARCH_QUERY_VARIABLES : COLLECTION_SEARCH_QUERY_VARIABLES;
 
   useEffect(() => {
     setFilter({ groupType: groups ? WA_GROUPS_COLLECTION : CONTACTS_COLLECTION });

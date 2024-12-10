@@ -1,10 +1,6 @@
 import { getDisplayName, getDisplayNameForSearch } from 'common/utils';
 
-export const getConversationForSearchMulti = (
-  conversation: any,
-  selectedContactId: any,
-  groups: boolean
-) => {
+export const getConversationForSearchMulti = (conversation: any, selectedContactId: any, groups: boolean) => {
   const chatType: string = groups ? 'waGroup' : 'contact';
 
   let entity = conversation;
@@ -49,11 +45,7 @@ export const getConversationForSearchMulti = (
   };
 };
 
-export const getConversation = (
-  conversation: any,
-  selectedContactId: any,
-  selectedCollectionId: any
-) => {
+export const getConversation = (conversation: any, selectedContactId: any, selectedCollectionId: any) => {
   let lastMessage = [];
   if (conversation.messages && conversation.messages.length > 0) {
     [lastMessage] = conversation.messages;

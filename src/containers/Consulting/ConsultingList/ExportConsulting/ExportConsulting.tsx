@@ -31,10 +31,7 @@ export const ExportConsulting = ({ setFilters }: ExportConsultingPropTypes) => {
   const [getConsultingDetails] = useLazyQuery(EXPORT_CONSULTING_HOURS, {
     fetchPolicy: 'network-only',
     onCompleted: ({ fetchConsultingHours }) => {
-      downloadFile(
-        `data:attachment/csv,${encodeURIComponent(fetchConsultingHours)}`,
-        'consulting-hours.csv'
-      );
+      downloadFile(`data:attachment/csv,${encodeURIComponent(fetchConsultingHours)}`, 'consulting-hours.csv');
     },
   });
 
@@ -72,8 +69,7 @@ export const ExportConsulting = ({ setFilters }: ExportConsultingPropTypes) => {
 
     dateTo: Yup.string().when('dateFrom', ([dateFrom], schema: any) =>
       schema.test({
-        test: (endDateValue: any) =>
-          !(dateFrom !== undefined && !dayjs(endDateValue).isAfter(dateFrom)),
+        test: (endDateValue: any) => !(dateFrom !== undefined && !dayjs(endDateValue).isAfter(dateFrom)),
         message: t('End date should be greater than the start date'),
       })
     ),

@@ -34,9 +34,7 @@ Yup.addMethod(Yup.array, 'unique', function uniqueMethod(message) {
 
 export const validator = (templateType: any, t: any) => {
   const validation: any = {
-    title: Yup.string()
-      .required(t('Title is required'))
-      .max(60, t('Title can be at most 60 characters')),
+    title: Yup.string().required(t('Title is required')).max(60, t('Title can be at most 60 characters')),
     body: Yup.string().when('type', {
       is: (val: any) => val && val.id && val.id === 'DOCUMENT',
       then: (schema) => schema.nullable(),
@@ -48,9 +46,7 @@ export const validator = (templateType: any, t: any) => {
     validation.templateButtons = Yup.array()
       .of(
         Yup.object().shape({
-          title: Yup.string()
-            .required(t('Required'))
-            .max(24, t('Section title can be at most 24 characters')),
+          title: Yup.string().required(t('Required')).max(24, t('Section title can be at most 24 characters')),
           options: Yup.array().of(
             Yup.object().shape({
               title: Yup.string()
@@ -80,17 +76,13 @@ export const validator = (templateType: any, t: any) => {
     validation.templateButtons = Yup.array()
       .of(
         Yup.object().shape({
-          value: Yup.string()
-            .required(t('Required'))
-            .max(20, t('Button value can be at most 20 characters')),
+          value: Yup.string().required(t('Required')).max(20, t('Button value can be at most 20 characters')),
         })
       )
       .min(1)
       .max(3);
 
-    validation.footer = Yup.string()
-      .nullable()
-      .max(60, t('Footer value can be at most 60 characters'));
+    validation.footer = Yup.string().nullable().max(60, t('Footer value can be at most 60 characters'));
 
     validation.type = Yup.object()
       .nullable()
@@ -227,9 +219,7 @@ export const getVariableOptions = async (setContactVariables: any) => {
     headers,
   });
 
-  const properties = contactData.data.context.types.find(
-    ({ name }: { name: string }) => name === 'contact'
-  );
+  const properties = contactData.data.context.types.find(({ name }: { name: string }) => name === 'contact');
 
   const contacts =
     properties &&
@@ -254,9 +244,7 @@ export const getPayloadByMediaType = (mediaType: string, payload: any) => {
     case 'DOCUMENT':
       result.type = 'file';
       result.url = payload.attachmentURL;
-      result.filename = payload.attachmentURL?.substring(
-        payload.attachmentURL.lastIndexOf('/') + 1
-      );
+      result.filename = payload.attachmentURL?.substring(payload.attachmentURL.lastIndexOf('/') + 1);
       break;
     default:
       result.type = 'text';
@@ -272,12 +260,7 @@ export const getPayloadByMediaType = (mediaType: string, payload: any) => {
   return result;
 };
 
-export const getTranslation = (
-  interactiveType: string,
-  attribute: any,
-  translations: any,
-  defaultLanguage: any
-) => {
+export const getTranslation = (interactiveType: string, attribute: any, translations: any, defaultLanguage: any) => {
   if (defaultLanguage.id) {
     const defaultTemplate = JSON.parse(translations)[defaultLanguage.id];
 

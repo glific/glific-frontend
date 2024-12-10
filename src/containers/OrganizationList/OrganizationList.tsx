@@ -6,10 +6,7 @@ import { OutlinedInput } from '@mui/material';
 import { useMutation } from '@apollo/client';
 
 import { GET_ORGANIZATION_COUNT, FILTER_ORGANIZATIONS } from 'graphql/queries/Organization';
-import {
-  DELETE_INACTIVE_ORGANIZATIONS,
-  UPDATE_ORGANIZATION_STATUS,
-} from 'graphql/mutations/Organization';
+import { DELETE_INACTIVE_ORGANIZATIONS, UPDATE_ORGANIZATION_STATUS } from 'graphql/mutations/Organization';
 import OrganizationIcon from 'assets/images/icons/Organization.svg?react';
 import ExtensionIcon from 'assets/images/icons/extension.svg?react';
 import CustomerDetailsIcon from 'assets/images/icons/customer_details.svg?react';
@@ -32,10 +29,7 @@ const queries = {
   deleteItemQuery: DELETE_INACTIVE_ORGANIZATIONS,
 };
 
-export const OrganizationList = ({
-  openExtensionModal,
-  openCustomerModal,
-}: OrganizationListProps) => {
+export const OrganizationList = ({ openExtensionModal, openCustomerModal }: OrganizationListProps) => {
   const { t } = useTranslation();
 
   const [orgName, setOrgName] = useState('');
@@ -55,9 +49,7 @@ export const OrganizationList = ({
       <p className={styles.LabelText}>
         {label}
         <br />
-        <span className={styles.SubLabelText}>
-          {dayjs(insertedAt).format(DATE_FORMAT_WITH_MONTH)}
-        </span>
+        <span className={styles.SubLabelText}>{dayjs(insertedAt).format(DATE_FORMAT_WITH_MONTH)}</span>
       </p>
     </div>
   );

@@ -27,9 +27,7 @@ test('it renders organization onboarding pre-requisits information', () => {
 });
 
 test('it renders organization onboarding landing page', () => {
-  const { getByText } = render(
-    <StaticOrganizationContents title="Thank you" subtitle="Setup is complete" />
-  );
+  const { getByText } = render(<StaticOrganizationContents title="Thank you" subtitle="Setup is complete" />);
   expect(getByText('Thank you')).toBeInTheDocument();
   expect(getByText('Setup is complete')).toBeInTheDocument();
 });

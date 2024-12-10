@@ -17,9 +17,7 @@ export const StaffManagementList = () => {
 
   const dialogMessage = t('Once deleted this action cannot be undone.');
   const chatIcon = <ChatIcon />;
-  const additionalAction = () => [
-    { icon: chatIcon, parameter: 'contact.id', link: '/chat', label: t('Send Message') },
-  ];
+  const additionalAction = () => [{ icon: chatIcon, parameter: 'contact.id', link: '/chat', label: t('Send Message') }];
 
   const columnNames = [
     { name: 'name', label: t('Name') },
@@ -81,10 +79,7 @@ export const StaffManagementList = () => {
     const userRoles = param.accessRoles.map((role: any) => role.label);
 
     // we should disable edit actions for admin and managers in case of users with Glific admin role
-    if (
-      (getUserRole().includes('Admin') || getUserRole().includes('Manager')) &&
-      userRoles.includes('Glific_admin')
-    ) {
+    if ((getUserRole().includes('Admin') || getUserRole().includes('Manager')) && userRoles.includes('Glific_admin')) {
       action.edit = false;
       action.delete = false;
     }

@@ -30,12 +30,9 @@ export const ChatTemplates = ({
   const filterVariables = () => setVariables({ term: searchVal }, 50);
   const [getSessionTemplates, { loading, error, data }] = useLazyQuery<any>(FILTER_TEMPLATES);
 
-  const [getInteractiveMessages, { data: interactives }] = useLazyQuery<any>(
-    FILTER_INTERACTIVE_MESSAGES,
-    {
-      fetchPolicy: 'network-only',
-    }
-  );
+  const [getInteractiveMessages, { data: interactives }] = useLazyQuery<any>(FILTER_INTERACTIVE_MESSAGES, {
+    fetchPolicy: 'network-only',
+  });
 
   useEffect(() => {
     if (selectedTab === 'Templates') {
@@ -139,9 +136,7 @@ export const ChatTemplates = ({
         return null;
       });
     } else {
-      listItems = interactiveObj.map((obj: any, index: number) =>
-        getListItem(obj, index, isInteractiveMsg)
-      );
+      listItems = interactiveObj.map((obj: any, index: number) => getListItem(obj, index, isInteractiveMsg));
     }
     listItems = listItems.filter((n) => n);
 

@@ -52,9 +52,7 @@ export const ContactProfile = () => {
   let selectedProfile;
 
   if (profileData && profileData.profiles.length > 0) {
-    selectedProfile = profileData.profiles.filter(
-      (profile: any) => profile.id === selectedProfileId
-    );
+    selectedProfile = profileData.profiles.filter((profile: any) => profile.id === selectedProfileId);
 
     if (selectedProfile.length > 0) {
       [selectedProfile] = selectedProfile;
@@ -128,9 +126,7 @@ export const ContactProfile = () => {
                     <div
                       key={index}
                       onClick={() => setShowProfileSection(data.section)}
-                      className={`${styles.Tab} ${
-                        showProfileSection === data.section ? styles.ActiveTab : ''
-                      }`}
+                      className={`${styles.Tab} ${showProfileSection === data.section ? styles.ActiveTab : ''}`}
                     >
                       {data.name}
                     </div>
@@ -147,11 +143,7 @@ export const ContactProfile = () => {
   let profileBodyContent;
   if (showProfileSection === 'profile') {
     profileBodyContent = (
-      <Profile
-        multiProfileAttributes={switchProfile}
-        removePhoneField
-        redirectionLink={`chat/${params.id}`}
-      />
+      <Profile multiProfileAttributes={switchProfile} removePhoneField redirectionLink={`chat/${params.id}`} />
     );
   } else if (showProfileSection === 'details') {
     profileBodyContent = (
@@ -175,11 +167,7 @@ export const ContactProfile = () => {
 
   return (
     <>
-      <Heading
-        formTitle={t('Contact Profile')}
-        showHeaderHelp={false}
-        backLink={`/chat/${params.id}`}
-      />
+      <Heading formTitle={t('Contact Profile')} showHeaderHelp={false} backLink={`/chat/${params.id}`} />
       <Box className={styles.ContactProfile}>
         {drawer}
         <Box className={styles.ProfileBody}>{profileBodyContent}</Box>

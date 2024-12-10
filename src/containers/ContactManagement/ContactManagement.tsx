@@ -38,20 +38,14 @@ export const ContactManagement = () => {
         buttonOk={'Go to notifications'}
         alignButtons="left"
       >
-        <div className={styles.DialogContent}>
-          Please check notifications to see the status of import.
-        </div>
+        <div className={styles.DialogContent}>Please check notifications to see the status of import.</div>
       </DialogBox>
     );
   }
 
   return (
     <>
-      <Heading
-        formTitle="Contact Management"
-        showHeaderHelp={false}
-        helpData={contactVariablesInfo}
-      />
+      <Heading formTitle="Contact Management" showHeaderHelp={false} helpData={contactVariablesInfo} />
       <div className={styles.MainContainer}>
         <div className={styles.Container}>
           <div>
@@ -60,11 +54,7 @@ export const ContactManagement = () => {
           </div>
 
           <div className={styles.Buttons}>
-            <Button
-              data-testid="uploadContactsBtn"
-              variant="contained"
-              onClick={() => setShowUploadDialog(true)}
-            >
+            <Button data-testid="uploadContactsBtn" variant="contained" onClick={() => setShowUploadDialog(true)}>
               Continue
             </Button>
           </div>

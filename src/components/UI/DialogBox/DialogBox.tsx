@@ -54,12 +54,7 @@ export const DialogBox = ({
   let cancelButtonDisplay = null;
   if (!skipCancel) {
     cancelButtonDisplay = (
-      <Button
-        variant="outlined"
-        onClick={() => handleCancel()}
-        color={colorCancel}
-        data-testid="cancel-button"
-      >
+      <Button variant="outlined" onClick={() => handleCancel()} color={colorCancel} data-testid="cancel-button">
         {buttonCancel}
       </Button>
     );
@@ -83,12 +78,7 @@ export const DialogBox = ({
 
   if (buttonMiddle) {
     middleButtonDisplay = (
-      <Button
-        onClick={() => handleMiddle()}
-        color="primary"
-        variant="outlined"
-        data-testid="middle-button"
-      >
+      <Button onClick={() => handleMiddle()} color="primary" variant="outlined" data-testid="middle-button">
         {buttonMiddle}
       </Button>
     );

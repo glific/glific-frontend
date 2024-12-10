@@ -25,10 +25,7 @@ import {
 } from '../../../common/constants';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 import { GROUP_SEARCH_QUERY } from 'graphql/queries/WaGroups';
-import {
-  SEND_MESSAGE_IN_WA_GROUP,
-  SEND_MESSAGE_IN_WA_GROUP_COLLECTION,
-} from 'graphql/mutations/Group';
+import { SEND_MESSAGE_IN_WA_GROUP, SEND_MESSAGE_IN_WA_GROUP_COLLECTION } from 'graphql/mutations/Group';
 import {
   CREATE_AND_SEND_MESSAGE_MUTATION,
   CREATE_AND_SEND_MESSAGE_TO_COLLECTION_MUTATION,
@@ -67,9 +64,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
     searchMessageNumber = urlString.searchParams.get('search');
     // check if the message number is greater than 10 otherwise set the initial offset to 0
     messageParameterOffset =
-      searchMessageNumber && parseInt(searchMessageNumber, 10) - 10 < 0
-        ? 1
-        : parseInt(searchMessageNumber, 10) - 10;
+      searchMessageNumber && parseInt(searchMessageNumber, 10) - 10 < 0 ? 1 : parseInt(searchMessageNumber, 10) - 10;
   }
 
   const [dialog, setDialogbox] = useState<string>();
@@ -126,9 +121,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
   // Instantiate these to be used later.
 
   let conversationIndex: number = -1;
-  const sendChatMessageMutation = groups
-    ? SEND_MESSAGE_IN_WA_GROUP
-    : CREATE_AND_SEND_MESSAGE_MUTATION;
+  const sendChatMessageMutation = groups ? SEND_MESSAGE_IN_WA_GROUP : CREATE_AND_SEND_MESSAGE_MUTATION;
   const sendCollectionMessageMutation = groups
     ? SEND_MESSAGE_IN_WA_GROUP_COLLECTION
     : CREATE_AND_SEND_MESSAGE_TO_COLLECTION_MUTATION;
@@ -163,9 +156,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
   }, []);
 
   if (collectionId) {
-    queryVariables = groups
-      ? GROUP_COLLECTION_SEARCH_QUERY_VARIABLES
-      : COLLECTION_SEARCH_QUERY_VARIABLES;
+    queryVariables = groups ? GROUP_COLLECTION_SEARCH_QUERY_VARIABLES : COLLECTION_SEARCH_QUERY_VARIABLES;
   }
 
   const {
@@ -205,49 +196,47 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
     }
   };
   /* istanbul ignore next */
-  const [
-    getSearchParameterQuery,
-    { called: parameterCalled, data: parameterdata, loading: parameterLoading },
-  ] = useLazyQuery<any>(SEARCH_QUERY, {
-    onCompleted: (searchData) => {
-      if (searchData && searchData.search.length > 0) {
-        // get the conversations from cache
-        const conversations = groups
-          ? getCachedGroupConverations(queryVariables)
-          : getCachedConverations(queryVariables);
+  const [getSearchParameterQuery, { called: parameterCalled, data: parameterdata, loading: parameterLoading }] =
+    useLazyQuery<any>(SEARCH_QUERY, {
+      onCompleted: (searchData) => {
+        if (searchData && searchData.search.length > 0) {
+          // get the conversations from cache
+          const conversations = groups
+            ? getCachedGroupConverations(queryVariables)
+            : getCachedConverations(queryVariables);
 
-        const conversationCopy = JSON.parse(JSON.stringify(searchData));
-        conversationCopy.search[0].messages
-          .sort((currentMessage: any, nextMessage: any) => currentMessage.id - nextMessage.id)
-          .reverse();
-        const conversationsCopy = JSON.parse(JSON.stringify(conversations));
+          const conversationCopy = JSON.parse(JSON.stringify(searchData));
+          conversationCopy.search[0].messages
+            .sort((currentMessage: any, nextMessage: any) => currentMessage.id - nextMessage.id)
+            .reverse();
+          const conversationsCopy = JSON.parse(JSON.stringify(conversations));
 
-        conversationsCopy.search = conversationsCopy.search.map((conversation: any) => {
-          const conversationObj = conversation;
-          if (collectionId) {
-            // If the collection(group) is present in the cache
-            if (conversationObj.group?.id === collectionId.toString()) {
+          conversationsCopy.search = conversationsCopy.search.map((conversation: any) => {
+            const conversationObj = conversation;
+            if (collectionId) {
+              // If the collection(group) is present in the cache
+              if (conversationObj.group?.id === collectionId.toString()) {
+                conversationObj.messages = conversationCopy.search[0].messages;
+              }
+              // If the contact is present in the cache
+            } else if (conversationObj[chatType]?.id === entityId?.toString()) {
               conversationObj.messages = conversationCopy.search[0].messages;
             }
-            // If the contact is present in the cache
-          } else if (conversationObj[chatType]?.id === entityId?.toString()) {
-            conversationObj.messages = conversationCopy.search[0].messages;
+            return conversationObj;
+          });
+
+          // update the conversation cache
+          if (groups) {
+            updateGroupConversationsCache(conversationsCopy, queryVariables);
+          } else {
+            updateConversationsCache(conversationsCopy, queryVariables);
           }
-          return conversationObj;
-        });
 
-        // update the conversation cache
-        if (groups) {
-          updateGroupConversationsCache(conversationsCopy, queryVariables);
-        } else {
-          updateConversationsCache(conversationsCopy, queryVariables);
+          // need to display Load more messages button
+          setShowLoadMore(true);
         }
-
-        // need to display Load more messages button
-        setShowLoadMore(true);
-      }
-    },
-  });
+      },
+    });
 
   useEffect(() => {
     // scroll to the particular message after loading
@@ -394,10 +383,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
 
     // if conversation is not present then fetch for contact
     if (conversationIndex < 0) {
-      if (
-        !conversationLoad ||
-        (allConversations && allConversations.search[0][chatType].id !== entityId)
-      ) {
+      if (!conversationLoad || (allConversations && allConversations.search[0][chatType].id !== entityId)) {
         const variables = getVariables(
           { limit: 1 },
           {
@@ -451,10 +437,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
 
     // if conversation is not present then fetch the collection
     if (conversationIndex < 0 && !groups) {
-      if (
-        !conversationLoad ||
-        (allConversations && allConversations.search[0].group.id !== collectionId)
-      ) {
+      if (!conversationLoad || (allConversations && allConversations.search[0].group.id !== collectionId)) {
         const variables = getVariables(
           { limit: DEFAULT_ENTITY_LIMIT },
           { limit: DEFAULT_MESSAGE_LIMIT, offset: 0 },
@@ -462,10 +445,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
           groups
         );
 
-        addLogs(
-          `if conversation is not present then search for collection-${collectionId}`,
-          variables
-        );
+        addLogs(`if conversation is not present then search for collection-${collectionId}`, variables);
         fetchMore({
           variables,
           updateQuery: (prev: any, { fetchMoreResult }: any) =>
@@ -505,10 +485,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
 
   // check if the search API results nothing for a particular contact ID and redirect to chat
   if (entityId && allConversations) {
-    if (
-      allConversations.search.length === 0 ||
-      allConversations.search[0][chatType]?.status === 'BLOCKED'
-    ) {
+    if (allConversations.search.length === 0 || allConversations.search[0][chatType]?.status === 'BLOCKED') {
       return <Navigate to="/chat" />;
     }
   }
@@ -551,10 +528,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
     }
 
     // if the day is changed then show day separator
-    if (
-      nextDate &&
-      dayjs(currentDate).format(ISO_DATE_FORMAT) > dayjs(nextDate).format(ISO_DATE_FORMAT)
-    ) {
+    if (nextDate && dayjs(currentDate).format(ISO_DATE_FORMAT) > dayjs(nextDate).format(ISO_DATE_FORMAT)) {
       return true;
     }
 
@@ -593,14 +567,9 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
     const variables: any = getVariables(
       { limit: 1 },
       {
-        limit:
-          messageNumber > DEFAULT_MESSAGE_LOADMORE_LIMIT
-            ? DEFAULT_MESSAGE_LOADMORE_LIMIT - 1
-            : messageNumber - 2,
+        limit: messageNumber > DEFAULT_MESSAGE_LOADMORE_LIMIT ? DEFAULT_MESSAGE_LOADMORE_LIMIT - 1 : messageNumber - 2,
         offset:
-          messageNumber - DEFAULT_MESSAGE_LOADMORE_LIMIT <= 0
-            ? 1
-            : messageNumber - DEFAULT_MESSAGE_LOADMORE_LIMIT,
+          messageNumber - DEFAULT_MESSAGE_LOADMORE_LIMIT <= 0 ? 1 : messageNumber - DEFAULT_MESSAGE_LOADMORE_LIMIT,
       },
       { filter: { id: entityId?.toString() } },
       groups
@@ -758,9 +727,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
   const isSimulatorProp = groups ? false : isSimulator(conversationInfo.contact?.phone);
 
   if (entityId && conversationInfo[chatType]) {
-    const displayName = groups
-      ? conversationInfo.waGroup.label
-      : getDisplayName(conversationInfo[chatType]);
+    const displayName = groups ? conversationInfo.waGroup.label : getDisplayName(conversationInfo[chatType]);
 
     topChatBar = (
       <ConversationHeader
@@ -803,27 +770,16 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
 
     chatInputSection = (
       <div className={styles.ChatInput}>
-        {conversationInfo.messages && conversationInfo.messages.length && showJumpToLatest
-          ? jumpToLatest
-          : null}
+        {conversationInfo.messages && conversationInfo.messages.length && showJumpToLatest ? jumpToLatest : null}
         <LexicalWrapper>
-          <ChatInput
-            onSendMessage={sendCollectionMessageHandler}
-            isCollection
-            showAttachmentButton={!groups}
-          />
+          <ChatInput onSendMessage={sendCollectionMessageHandler} isCollection showAttachmentButton={!groups} />
         </LexicalWrapper>
       </div>
     );
   }
 
   return (
-    <Container
-      data-testid="message-container"
-      className={styles.ChatMessages}
-      maxWidth={false}
-      disableGutters
-    >
+    <Container data-testid="message-container" className={styles.ChatMessages} maxWidth={false} disableGutters>
       {dialogBox}
       {dialog === 'collection' ? (
         <CollectionInformation

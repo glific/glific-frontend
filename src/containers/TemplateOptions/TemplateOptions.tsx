@@ -1,11 +1,4 @@
-import {
-  RadioGroup,
-  FormControlLabel,
-  Radio,
-  TextField,
-  FormHelperText,
-  FormControl,
-} from '@mui/material';
+import { RadioGroup, FormControlLabel, Radio, TextField, FormHelperText, FormControl } from '@mui/material';
 import { FieldArray } from 'formik';
 
 import { Button } from 'components/UI/Form/Button/Button';
@@ -13,12 +6,7 @@ import Tooltip from 'components/UI/Tooltip/Tooltip';
 import DeleteIcon from 'assets/images/icons/Delete/Red.svg?react';
 import InfoIcon from 'assets/images/icons/Info.svg?react';
 import CrossIcon from 'assets/images/icons/Cross.svg?react';
-import {
-  GUPSHUP_CALL_TO_ACTION,
-  GUPSHUP_QUICK_REPLY,
-  CALL_TO_ACTION,
-  QUICK_REPLY,
-} from 'common/constants';
+import { GUPSHUP_CALL_TO_ACTION, GUPSHUP_QUICK_REPLY, CALL_TO_ACTION, QUICK_REPLY } from 'common/constants';
 import styles from './TemplateOptions.module.css';
 import { Fragment } from 'react';
 
@@ -64,8 +52,7 @@ export const TemplateOptions = ({
 
   const addButton = (helper: any, type: boolean = false) => {
     const title = templateType ? buttonTitles[templateType] : '';
-    const buttonClass =
-      templateType === QUICK_REPLY ? styles.QuickReplyAddButton : styles.CallToActionAddButton;
+    const buttonClass = templateType === QUICK_REPLY ? styles.QuickReplyAddButton : styles.CallToActionAddButton;
     return (
       <Button
         className={buttonClass}
@@ -113,12 +100,8 @@ export const TemplateOptions = ({
                           color="primary"
                           disabled={
                             disabled ||
-                            (index === 0 &&
-                              inputFields.length > 1 &&
-                              inputFields[0].type !== 'phone_number') ||
-                            (index > 0 &&
-                              inputFields[0].type &&
-                              inputFields[0].type === 'phone_number')
+                            (index === 0 && inputFields.length > 1 && inputFields[0].type !== 'phone_number') ||
+                            (index > 0 && inputFields[0].type && inputFields[0].type === 'phone_number')
                           }
                         />
                       }
@@ -131,9 +114,7 @@ export const TemplateOptions = ({
                           color="primary"
                           disabled={
                             disabled ||
-                            (index === 0 &&
-                              inputFields.length > 1 &&
-                              inputFields[0].type !== 'url') ||
+                            (index === 0 && inputFields.length > 1 && inputFields[0].type !== 'url') ||
                             (index > 0 && inputFields[0].type && inputFields[0].type === 'url')
                           }
                         />
@@ -141,19 +122,14 @@ export const TemplateOptions = ({
                       label="URL"
                     />
                   </RadioGroup>
-                  {errors.templateButtons &&
-                  touched.templateButtons &&
-                  touched.templateButtons[index] ? (
+                  {errors.templateButtons && touched.templateButtons && touched.templateButtons[index] ? (
                     <FormHelperText>{errors.templateButtons[index]?.type}</FormHelperText>
                   ) : null}
                 </FormControl>
               </div>
               <div>
                 {inputFields.length > 1 ? (
-                  <DeleteIcon
-                    onClick={() => handleRemoveClick(arrayHelpers, index)}
-                    data-testid="delete-icon"
-                  />
+                  <DeleteIcon onClick={() => handleRemoveClick(arrayHelpers, index)} data-testid="delete-icon" />
                 ) : null}
               </div>
             </div>
@@ -169,9 +145,7 @@ export const TemplateOptions = ({
                   className={styles.TextField}
                   error={isError('title')}
                 />
-                {errors.templateButtons &&
-                touched.templateButtons &&
-                touched.templateButtons[index] ? (
+                {errors.templateButtons && touched.templateButtons && touched.templateButtons[index] ? (
                   <FormHelperText>{errors.templateButtons[index]?.title}</FormHelperText>
                 ) : null}
               </FormControl>
@@ -188,18 +162,14 @@ export const TemplateOptions = ({
                   className={styles.TextField}
                   error={isError('value')}
                 />
-                {errors.templateButtons &&
-                touched.templateButtons &&
-                touched.templateButtons[index] ? (
+                {errors.templateButtons && touched.templateButtons && touched.templateButtons[index] ? (
                   <FormHelperText>{errors.templateButtons[index]?.value}</FormHelperText>
                 ) : null}
               </FormControl>
             </div>
           </div>
           <div className={styles.Button}>
-            {inputFields.length === index + 1 && inputFields.length !== 2
-              ? addButton(arrayHelpers, true)
-              : null}
+            {inputFields.length === index + 1 && inputFields.length !== 2 ? addButton(arrayHelpers, true) : null}
           </div>
         </Fragment>
       );
@@ -208,11 +178,7 @@ export const TemplateOptions = ({
     if (templateType === QUICK_REPLY) {
       template = (
         <>
-          <div
-            className={styles.QuickReplyWrapper}
-            key={index.toString()}
-            data-testid="quickReplyWrapper"
-          >
+          <div className={styles.QuickReplyWrapper} key={index.toString()} data-testid="quickReplyWrapper">
             <FormControl fullWidth error={isError('value')} className={styles.FormControl}>
               <TextField
                 disabled={disabled}
@@ -234,18 +200,12 @@ export const TemplateOptions = ({
                   ),
                 }}
               />
-              {errors.templateButtons &&
-              touched.templateButtons &&
-              touched.templateButtons[index] ? (
+              {errors.templateButtons && touched.templateButtons && touched.templateButtons[index] ? (
                 <FormHelperText>{errors.templateButtons[index]?.value}</FormHelperText>
               ) : null}
             </FormControl>
           </div>
-          <div>
-            {inputFields.length === index + 1 && inputFields.length !== 3
-              ? addButton(arrayHelpers)
-              : null}
-          </div>
+          <div>{inputFields.length === index + 1 && inputFields.length !== 3 ? addButton(arrayHelpers) : null}</div>
         </>
       );
     }

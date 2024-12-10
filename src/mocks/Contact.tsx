@@ -44,9 +44,7 @@ export const contactCollectionsQuery = (id: number, multipleGroups: boolean = fa
     data: {
       contact: {
         contact: {
-          groups: multipleGroups
-            ? [...groups, { id: '3', label: 'Test collection', users: [] }]
-            : groups,
+          groups: multipleGroups ? [...groups, { id: '3', label: 'Test collection', users: [] }] : groups,
         },
       },
     },
@@ -497,8 +495,7 @@ export const contactHistoryQueryUpdatedOffset = {
         {
           eventDatetime: '2021-12-08T06:50:32Z',
           eventLabel: 'Flow started: "Optout contacts"',
-          eventMeta:
-            '"flow":{"uuid":"8c78ffd7-792e-4fa5-878d-266bfa63ae27","name":"test","id":14},"context_id":2}',
+          eventMeta: '"flow":{"uuid":"8c78ffd7-792e-4fa5-878d-266bfa63ae27","name":"test","id":14},"context_id":2}',
           eventType: 'contact_flow_started',
           id: '2',
           insertedAt: '2021-12-08T06:50:33.000000Z',

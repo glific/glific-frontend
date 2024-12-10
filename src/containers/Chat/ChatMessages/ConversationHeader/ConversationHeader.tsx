@@ -1,14 +1,5 @@
 import { useEffect, useState } from 'react';
-import {
-  Toolbar,
-  Typography,
-  Popper,
-  Fade,
-  Paper,
-  Button,
-  ClickAwayListener,
-  IconButton,
-} from '@mui/material';
+import { Toolbar, Typography, Popper, Fade, Paper, Button, ClickAwayListener, IconButton } from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useMutation, useLazyQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
@@ -27,10 +18,7 @@ import CollectionIcon from 'assets/images/icons/Chat/SelectedCollection.svg?reac
 import SavedSearchIcon from 'assets/images/icons/Chat/SelectedSavedSearch.svg?react';
 
 import { GET_COLLECTIONS } from 'graphql/queries/Collection';
-import {
-  UPDATE_CONTACT_COLLECTIONS,
-  UPDATE_WA_GROUP_COLLECTION,
-} from 'graphql/mutations/Collection';
+import { UPDATE_CONTACT_COLLECTIONS, UPDATE_WA_GROUP_COLLECTION } from 'graphql/mutations/Collection';
 import { GET_CONTACT_COLLECTIONS } from 'graphql/queries/Contact';
 import { UPDATE_CONTACT } from 'graphql/mutations/Contact';
 import { SEARCH_QUERY } from 'graphql/queries/Search';
@@ -214,9 +202,7 @@ export const ConversationHeader = ({
     setShowCollectionDialog(false);
   };
 
-  const searchDialogBoxTitle = groups
-    ? t('Add group to collection')
-    : t('Add contact to collection');
+  const searchDialogBoxTitle = groups ? t('Add group to collection') : t('Add contact to collection');
 
   if (showCollectionDialog) {
     dialogBox = (
@@ -286,9 +272,7 @@ export const ConversationHeader = ({
         alignButtons="center"
         colorOk="warning"
       >
-        <p className={styles.DialogText}>
-          You will not be able to view their chats and interact with them again
-        </p>
+        <p className={styles.DialogText}>You will not be able to view their chats and interact with them again</p>
       </DialogBox>
     );
   }
@@ -307,11 +291,7 @@ export const ConversationHeader = ({
       disabled={isSimulator}
       onClick={() => setShowBlockDialog(true)}
     >
-      {isSimulator ? (
-        <BlockDisabledIcon className={styles.Icon} />
-      ) : (
-        <BlockIcon className={styles.Icon} />
-      )}
+      {isSimulator ? <BlockDisabledIcon className={styles.Icon} /> : <BlockIcon className={styles.Icon} />}
       Block Contact
     </Button>
   ) : null;
@@ -354,8 +334,7 @@ export const ConversationHeader = ({
     let disabled = true;
     // if 24hr window expired & contact type HSM. we can start flow with template msg .
     if (contact?.contactBspStatus === 'HSM') {
-      toolTip =
-        'Since the 24-hour window has passed, the contact will only receive a template message.';
+      toolTip = 'Since the 24-hour window has passed, the contact will only receive a template message.';
       disabled = false;
     }
     flowButton = (
@@ -369,11 +348,7 @@ export const ConversationHeader = ({
               setShowFlowDialog(true);
             }}
           >
-            {disabled ? (
-              <FlowUnselectedIcon className={styles.Icon} />
-            ) : (
-              <FlowIcon className={styles.Icon} />
-            )}
+            {disabled ? <FlowUnselectedIcon className={styles.Icon} /> : <FlowIcon className={styles.Icon} />}
             Start a flow
           </Button>
         </span>
@@ -423,11 +398,7 @@ export const ConversationHeader = ({
   );
 
   const clearConversation = entityId && (
-    <Button
-      className={styles.ListButtonPrimary}
-      data-testid="clearChatButton"
-      onClick={() => setClearChatDialog(true)}
-    >
+    <Button className={styles.ListButtonPrimary} data-testid="clearChatButton" onClick={() => setClearChatDialog(true)}>
       <ClearConversation className={styles.Icon} />
       Clear conversation
     </Button>
@@ -459,13 +430,7 @@ export const ConversationHeader = ({
   );
 
   if (addContactsDialogShow) {
-    dialogBox = (
-      <AddToCollection
-        groups={groups}
-        collectionId={collectionId}
-        setDialog={setAddContactsDialogShow}
-      />
-    );
+    dialogBox = <AddToCollection groups={groups} collectionId={collectionId} setDialog={setAddContactsDialogShow} />;
   }
 
   let options: any;
@@ -491,14 +456,7 @@ export const ConversationHeader = ({
   }
 
   const popper = (
-    <Popper
-      open={open}
-      anchorEl={anchorEl}
-      placement="bottom-start"
-      transition
-      disablePortal
-      className={styles.Popper}
-    >
+    <Popper open={open} anchorEl={anchorEl} placement="bottom-start" transition disablePortal className={styles.Popper}>
       {({ TransitionProps }) => (
         <Fade {...TransitionProps} timeout={350}>
           <Paper elevation={3} className={styles.Container}>
@@ -574,12 +532,7 @@ export const ConversationHeader = ({
           <div className={styles.ContactInfoWrapper}>
             <div className={styles.InfoWrapperRight}>
               <div className={styles.ContactDetails}>
-                <Typography
-                  className={styles.Title}
-                  variant="h6"
-                  noWrap
-                  data-testid="beneficiaryName"
-                >
+                <Typography className={styles.Title} variant="h6" noWrap data-testid="beneficiaryName">
                   {slicedString(displayName, 40)}
                 </Typography>
                 <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
@@ -596,12 +549,7 @@ export const ConversationHeader = ({
               </div>
             </div>
             {conversationHeaderDetails}
-            <div
-              role="button"
-              className={styles.Chat}
-              onKeyDown={() => showChats()}
-              onClick={() => showChats()}
-            >
+            <div role="button" className={styles.Chat} onKeyDown={() => showChats()} onClick={() => showChats()}>
               <IconButton className={styles.MobileIcon}>
                 <IconComponent data-testid="icon-component" />
               </IconButton>

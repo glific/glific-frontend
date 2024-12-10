@@ -23,8 +23,7 @@ export const SIMULATOR_CONTACT = '9876543210';
 export const FLOW_STATUS_PUBLISHED = 'published';
 export const SIMULATOR_NUMBER_START = '9876543210';
 export const GUPSHUP_ENTERPRISE_SHORTCODE = 'gupshup_enterprise';
-export const VALID_URL_REGEX =
-  'https?://(www.)?[-a-zA-Z0-9@:%._+~#=]{2,256}.[a-z]{2,4}([-a-zA-Z0-9@:%_+.~#?&/=]*)';
+export const VALID_URL_REGEX = 'https?://(www.)?[-a-zA-Z0-9@:%._+~#=]{2,256}.[a-z]{2,4}([-a-zA-Z0-9@:%_+.~#?&/=]*)';
 // to find variables in message
 export const pattern = /[^{}]+(?=})/g;
 
@@ -131,12 +130,7 @@ export const GROUP_COLLECTION_SEARCH_QUERY_VARIABLES = {
   },
 };
 
-export const setVariables = (
-  filter: any = {},
-  limit: any = null,
-  offset: number = 0,
-  order: string = 'ASC'
-) => ({
+export const setVariables = (filter: any = {}, limit: any = null, offset: number = 0, order: string = 'ASC') => ({
   filter,
   opts: {
     limit,
@@ -248,12 +242,7 @@ export const yupPasswordValidation = (t: any) =>
 export const WA_GROUPS_COLLECTION = 'WA';
 export const CONTACTS_COLLECTION = 'WABA';
 
-export const getVariables = (
-  contactOptions: any,
-  messageOptions: any,
-  variables: any,
-  groups?: boolean
-) => {
+export const getVariables = (contactOptions: any, messageOptions: any, variables: any, groups?: boolean) => {
   const contactVariable: string = groups ? 'waGroupOpts' : 'contactOpts';
   const messageVariable: string = groups ? 'waMessageOpts' : 'messageOpts';
   return {

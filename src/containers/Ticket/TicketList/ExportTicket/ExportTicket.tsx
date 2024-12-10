@@ -48,8 +48,7 @@ export const ExportTicket = ({ setShowExportDialog }: ExportTicketPropTypes) => 
   const validationSchema = Yup.object().shape({
     endDate: Yup.string().when('startDate', ([startDate], schema: any) =>
       schema.test({
-        test: (endDateValue: any) =>
-          !(startDate !== undefined && !dayjs(endDateValue).isAfter(startDate)),
+        test: (endDateValue: any) => !(startDate !== undefined && !dayjs(endDateValue).isAfter(startDate)),
         message: t('End date should be greater than the start date'),
       })
     ),

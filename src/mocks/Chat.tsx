@@ -4,12 +4,7 @@ import {
   MESSAGE_SENT_SUBSCRIPTION,
   MESSAGE_STATUS_SUBSCRIPTION,
 } from 'graphql/subscriptions/Chat';
-import {
-  SAVED_SEARCH_QUERY,
-  SEARCH_QUERY,
-  SEARCH_MULTI_QUERY,
-  SEARCHES_COUNT,
-} from 'graphql/queries/Search';
+import { SAVED_SEARCH_QUERY, SEARCH_QUERY, SEARCH_MULTI_QUERY, SEARCHES_COUNT } from 'graphql/queries/Search';
 import { CREATE_AND_SEND_MESSAGE_MUTATION, MARK_AS_READ } from 'graphql/mutations/Chat';
 import {
   DEFAULT_ENTITY_LIMIT,
@@ -20,10 +15,7 @@ import { searchQueryMock as searchQuery } from 'containers/Chat/ChatConversation
 import { searchQueryEmptyMock as searchEmptyQuery } from 'containers/Chat/ChatConversations/ChatConversations.test.helper';
 import { contactCollectionsQuery } from './Contact';
 import { getOrganizationLanguagesQuery } from './Organization';
-import {
-  SEND_MESSAGE_IN_WA_GROUP,
-  SEND_MESSAGE_IN_WA_GROUP_COLLECTION,
-} from 'graphql/mutations/Group';
+import { SEND_MESSAGE_IN_WA_GROUP, SEND_MESSAGE_IN_WA_GROUP_COLLECTION } from 'graphql/mutations/Group';
 
 export const getConversationQuery = (data: any) => {
   return {
@@ -918,10 +910,7 @@ const chatMessagesMocks = [
 ];
 
 export const mocksWithConversation = [...chatMessagesMocks, getConversationQuery(conversation)];
-export const mocksWithMultipleMessages = [
-  ...chatMessagesMocks,
-  getConversationQuery(conversationWithMultipleMessages),
-];
+export const mocksWithMultipleMessages = [...chatMessagesMocks, getConversationQuery(conversationWithMultipleMessages)];
 
 export const sendMessageMock = {
   request: {

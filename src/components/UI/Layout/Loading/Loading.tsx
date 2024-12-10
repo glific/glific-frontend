@@ -29,10 +29,7 @@ export const Loading = ({ message, showTip = false, whiteBackground = false }: L
           </div>
         </div>
       ) : (
-        <div
-          className={`${styles.CenterItems} ${whiteBackground && styles.WhiteBackground}`}
-          data-testid="loader"
-        >
+        <div className={`${styles.CenterItems} ${whiteBackground && styles.WhiteBackground}`} data-testid="loader">
           <div className={styles.LoadingPadding}>
             <CircularProgress />
           </div>

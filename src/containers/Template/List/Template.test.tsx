@@ -1,11 +1,4 @@
-import {
-  cleanup,
-  fireEvent,
-  render,
-  screen,
-  waitFor,
-  waitForElementToBeRemoved,
-} from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor, waitForElementToBeRemoved } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { BrowserRouter as Router } from 'react-router-dom';
 
@@ -14,11 +7,7 @@ import { TEMPLATE_MOCKS, HSM_LIST } from 'containers/Template/Template.test.help
 import { Template } from './Template';
 import { getOrganizationBSP } from 'mocks/Organization';
 import * as common from 'common/notification';
-import {
-  bulkApplyMutation,
-  importTemplateMutation,
-  importTemplateMutationWithErrors,
-} from 'mocks/Template';
+import { bulkApplyMutation, importTemplateMutation, importTemplateMutationWithErrors } from 'mocks/Template';
 import { ProviderContext } from 'context/session';
 import { getFilterTagQuery } from 'mocks/Tag';
 

@@ -41,8 +41,7 @@ export const Login = () => {
 
   // get the information on current user
   const [getCurrentUser, { data: userData, error: userError }] = useLazyQuery(GET_CURRENT_USER);
-  const [getOrganizationServices, { data: organizationServicesData }] =
-    useLazyQuery(GET_ORGANIZATION_SERVICES);
+  const [getOrganizationServices, { data: organizationServicesData }] = useLazyQuery(GET_ORGANIZATION_SERVICES);
 
   useEffect(() => {
     if (userData && organizationServicesData) {
@@ -59,10 +58,7 @@ export const Login = () => {
       const userAccessRoles = accessRoles.map((role: any) => role.label);
 
       // check for user role none or empty
-      if (
-        (userAccessRoles.includes('None') && userAccessRoles.length === 1) ||
-        userAccessRoles.length === 0
-      ) {
+      if ((userAccessRoles.includes('None') && userAccessRoles.length === 1) || userAccessRoles.length === 0) {
         accessDenied();
       } else {
         // needed to redirect after login

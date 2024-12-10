@@ -62,8 +62,7 @@ export const StaffManagement = () => {
       {
         key: 3,
         title: 'Staff',
-        description:
-          t(`Access only to the chat section and their collections. Access can be limited to chatting
+        description: t(`Access only to the chat section and their collections. Access can be limited to chatting
         with all contacts or only to the ones in their assigned collection.`),
       },
       { key: 4, title: 'None', description: t('No access to the platform. They can’t login.') },
@@ -148,9 +147,7 @@ export const StaffManagement = () => {
   if (rolesList.length > 0) {
     if (isManager) {
       // should not display Admin role to manager.
-      rolesList = rolesList.filter(
-        (item: any) => item.label !== 'Admin' && item.label !== 'Glific admin'
-      );
+      rolesList = rolesList.filter((item: any) => item.label !== 'Admin' && item.label !== 'Glific admin');
     }
     if (isAdmin) {
       rolesList = rolesList.filter((item: any) => item.label !== 'Glific admin');
@@ -251,9 +248,7 @@ export const StaffManagement = () => {
     let isSameRole = true;
     // let's rebuild roles, as per backend
     if (payloadCopy.roles) {
-      roleIds = hasDynamicRoles
-        ? payloadCopy.roles.map((role: any) => role.id)
-        : [payloadCopy.roles.id];
+      roleIds = hasDynamicRoles ? payloadCopy.roles.map((role: any) => role.id) : [payloadCopy.roles.id];
 
       isSameRole = payloadCopy.roles.id === roles.id;
     }
@@ -263,13 +258,9 @@ export const StaffManagement = () => {
 
     if (hasDynamicRoles) {
       const initialSelectedRoles = roles.map((role: any) => role.id);
-      payloadCopy.addRoleIds = roleIds.filter(
-        (selectedRoles: any) => !initialSelectedRoles.includes(selectedRoles)
-      );
+      payloadCopy.addRoleIds = roleIds.filter((selectedRoles: any) => !initialSelectedRoles.includes(selectedRoles));
       payloadCopy.deleteRoleIds = [];
-      payloadCopy.deleteRoleIds = initialSelectedRoles.filter(
-        (roleId: any) => !roleIds.includes(roleId)
-      );
+      payloadCopy.deleteRoleIds = initialSelectedRoles.filter((roleId: any) => !roleIds.includes(roleId));
     }
 
     // delete current roles from the payload

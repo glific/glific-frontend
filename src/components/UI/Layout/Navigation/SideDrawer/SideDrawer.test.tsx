@@ -10,12 +10,7 @@ import { walletBalanceQuery, walletBalanceSubscription } from 'mocks/Organizatio
 import { SideDrawerContext } from 'context/session';
 import { getNotificationCountQuery } from 'mocks/Notifications';
 
-const mocks = [
-  getCurrentUserQuery,
-  ...walletBalanceQuery,
-  ...walletBalanceSubscription,
-  getNotificationCountQuery,
-];
+const mocks = [getCurrentUserQuery, ...walletBalanceQuery, ...walletBalanceSubscription, getNotificationCountQuery];
 
 describe('side drawer testing', () => {
   const component = (

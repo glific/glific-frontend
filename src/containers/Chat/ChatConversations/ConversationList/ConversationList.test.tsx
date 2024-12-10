@@ -9,11 +9,7 @@ import ConversationList from './ConversationList';
 import { conversationCollectionQuery } from 'mocks/Chat';
 import { cache as collectionCache } from 'config/apolloclient';
 import { searchGroupQuery, waGroup } from 'mocks/Groups';
-import {
-  collection,
-  collectionWithLoadMore,
-  contact,
-} from 'containers/Chat/ChatMessages/ChatMessages.test';
+import { collection, collectionWithLoadMore, contact } from 'containers/Chat/ChatMessages/ChatMessages.test';
 
 const contactCache = new InMemoryCache({ addTypename: false });
 const groupsCache = new InMemoryCache({ addTypename: false });
@@ -108,11 +104,7 @@ test('it should render conversation collection list with searched value', async 
   props.savedSearchCriteriaId = '2';
 
   const { container } = render(
-    <MockedProvider
-      cache={collectionCacheWithSearch}
-      addTypename={false}
-      mocks={searchCollectionMocks}
-    >
+    <MockedProvider cache={collectionCacheWithSearch} addTypename={false} mocks={searchCollectionMocks}>
       <Router>
         <ConversationList {...props} />
       </Router>

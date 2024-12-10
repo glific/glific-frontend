@@ -42,12 +42,7 @@ export const SheetIntegration = () => {
   const [type, setType] = useState<any>(typeOptions[0]);
   const { t } = useTranslation();
   const states = { label, url, type, autoSync };
-  const setStates = ({
-    label: labelValue,
-    url: urlValue,
-    type: typeValue,
-    autoSync: autoSyncValue,
-  }: any) => {
+  const setStates = ({ label: labelValue, url: urlValue, type: typeValue, autoSync: autoSyncValue }: any) => {
     setLabel(labelValue);
     setUrl(urlValue);
     const selectedOption = typeOptions.find((option) => option.id === typeValue);

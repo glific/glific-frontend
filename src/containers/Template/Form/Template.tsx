@@ -18,12 +18,7 @@ import { CREATE_MEDIA_MESSAGE } from 'graphql/mutations/Chat';
 import { USER_LANGUAGES } from 'graphql/queries/Organization';
 import { GET_TAGS } from 'graphql/queries/Tags';
 import { CREATE_TEMPLATE, UPDATE_TEMPLATE, DELETE_TEMPLATE } from 'graphql/mutations/Template';
-import {
-  MEDIA_MESSAGE_TYPES,
-  CALL_TO_ACTION,
-  QUICK_REPLY,
-  VALID_URL_REGEX,
-} from 'common/constants';
+import { MEDIA_MESSAGE_TYPES, CALL_TO_ACTION, QUICK_REPLY, VALID_URL_REGEX } from 'common/constants';
 import { CreateAutoComplete } from 'components/UI/Form/CreateAutoComplete/CreateAutoComplete';
 import { validateMedia } from 'common/utils';
 import styles from './Template.module.css';
@@ -107,11 +102,7 @@ const getExampleFromBody = (body: string, variables: Array<any>) => {
   return body.replace(/{{(\d+)}}/g, (match, number) => {
     let index = parseInt(number) - 1;
 
-    return variables[index]?.text
-      ? variables[index]
-        ? `[${variables[index]?.text}]`
-        : match
-      : `{{${number}}}`;
+    return variables[index]?.text ? (variables[index] ? `[${variables[index]?.text}]` : match) : `{{${number}}}`;
   });
 };
 
@@ -123,9 +114,7 @@ const getVariables = (message: string, variables: any) => {
     return [];
   }
 
-  return matches.map((match, index) =>
-    variables[index]?.text ? variables[index] : { text: '', id: index + 1 }
-  );
+  return matches.map((match, index) => (variables[index]?.text ? variables[index] : { text: '', id: index + 1 }));
 };
 
 const getExampleValue = (example: string) => {
@@ -195,9 +184,7 @@ const Template = ({
 }: TemplateProps) => {
   // "Audio" option is removed in case of HSM Template
   const mediaTypes =
-    listItemName === 'HSM Template'
-      ? options.filter(({ label }) => label !== 'AUDIO' && label !== 'STICKER')
-      : options;
+    listItemName === 'HSM Template' ? options.filter(({ label }) => label !== 'AUDIO' && label !== 'STICKER') : options;
 
   const [tagId, setTagId] = useState<any>(null);
   const [label, setLabel] = useState('');
@@ -212,9 +199,7 @@ const Template = ({
   const [warning, setWarning] = useState<any>();
   const [isUrlValid, setIsUrlValid] = useState<any>();
   const [templateType, setTemplateType] = useState<string | null>(null);
-  const [templateButtons, setTemplateButtons] = useState<
-    Array<CallToActionTemplate | QuickReplyTemplate>
-  >([]);
+  const [templateButtons, setTemplateButtons] = useState<Array<CallToActionTemplate | QuickReplyTemplate>>([]);
   const [isAddButtonChecked, setIsAddButtonChecked] = useState(false);
   const [nextLanguage, setNextLanguage] = useState<any>('');
   const [variables, setVariables] = useState<any>([]);
@@ -249,8 +234,7 @@ const Template = ({
     variables: { opts: { order: 'ASC' } },
   });
 
-  const [getSessionTemplate, { data: template, loading: templateLoading }] =
-    useLazyQuery<any>(GET_TEMPLATE);
+  const [getSessionTemplate, { data: template, loading: templateLoading }] = useLazyQuery<any>(GET_TEMPLATE);
 
   // create media for attachment
   const [createMediaMessage] = useMutation(CREATE_MEDIA_MESSAGE);
@@ -292,15 +276,11 @@ const Template = ({
   }: any) => {
     if (languageOptions.length > 0 && languageIdValue) {
       if (location.state && location.state !== 'copy') {
-        const selectedLangauge = languageOptions.find(
-          (lang: any) => lang.label === location.state.language
-        );
+        const selectedLangauge = languageOptions.find((lang: any) => lang.label === location.state.language);
         navigate(location.pathname);
         setLanguageId(selectedLangauge);
       } else if (!language?.id) {
-        const selectedLangauge = languageOptions.find(
-          (lang: any) => lang.id === languageIdValue.id
-        );
+        const selectedLangauge = languageOptions.find((lang: any) => lang.id === languageIdValue.id);
         setLanguageId(selectedLangauge);
       } else {
         setLanguageId(language);
@@ -317,11 +297,7 @@ const Template = ({
 
     if (exampleValue) {
       if (hasButtons) {
-        const { buttons: buttonsVal } = getTemplateAndButtons(
-          templateButtonType,
-          exampleValue,
-          buttons
-        );
+        const { buttons: buttonsVal } = getTemplateAndButtons(templateButtonType, exampleValue, buttons);
         setTemplateButtons(buttonsVal);
         setTemplateType(templateButtonType);
       }
@@ -345,11 +321,7 @@ const Template = ({
     if (translationsValue) {
       const translationsCopy = JSON.parse(translationsValue);
       const currentLanguage = language?.id || languageIdValue.id;
-      if (
-        Object.keys(translationsCopy).length > 0 &&
-        translationsCopy[currentLanguage] &&
-        !location.state
-      ) {
+      if (Object.keys(translationsCopy).length > 0 && translationsCopy[currentLanguage] && !location.state) {
         const content = translationsCopy[currentLanguage];
         setLabel(content.label);
         setBody(content.body || '');
@@ -440,10 +412,7 @@ const Template = ({
       otherwise: (schema) =>
         schema
           .required(t('Element name is required.'))
-          .matches(
-            regexForShortcode,
-            'Only lowercase alphanumeric characters and underscores are allowed.'
-          ),
+          .matches(regexForShortcode, 'Only lowercase alphanumeric characters and underscores are allowed.'),
     }),
     existingShortCode: Yup.object().when('languageVariant', {
       is: (val: any) => val === true,
@@ -474,9 +443,7 @@ const Template = ({
     };
 
     if (templateType) {
-      buttons = addFromTemplate
-        ? [...templateButtons, buttonType[templateType]]
-        : [buttonType[templateType]];
+      buttons = addFromTemplate ? [...templateButtons, buttonType[templateType]] : [buttonType[templateType]];
     }
 
     setTemplateButtons(buttons);
@@ -593,9 +560,7 @@ const Template = ({
           language: value,
           label: translationsCopy[translationId].label,
           body: translationsCopy[translationId].body,
-          type: translationsCopy[translationId].MessageMedia
-            ? translationsCopy[translationId].MessageMedia.type
-            : null,
+          type: translationsCopy[translationId].MessageMedia ? translationsCopy[translationId].MessageMedia.type : null,
           MessageMedia: translationsCopy[translationId].MessageMedia,
         });
       } else {
@@ -611,9 +576,7 @@ const Template = ({
   };
 
   const handleLanguageChange = (value: any) => {
-    const selected = languageOptions.find(
-      ({ label: languageLabel }: any) => languageLabel === value
-    );
+    const selected = languageOptions.find(({ label: languageLabel }: any) => languageLabel === value);
     if (selected && isEditing) {
       updateTranslation(selected);
     } else if (selected) {
@@ -1003,9 +966,7 @@ const Template = ({
         is: (val: any) => val && val.id,
         then: (schema) => schema.required(t('Attachment URL is required.')),
       }),
-    body: Yup.string()
-      .required(t('Message is required.'))
-      .max(1024, 'Maximum 1024 characters are allowed'),
+    body: Yup.string().required(t('Message is required.')).max(1024, 'Maximum 1024 characters are allowed'),
   };
 
   if (defaultAttribute.isHsm && isAddButtonChecked) {
@@ -1019,13 +980,11 @@ const Template = ({
               .required('Required')
               .when('type', {
                 is: (val: any) => val === 'phone_number',
-                then: (schema) =>
-                  schema.matches(/^\d{10,12}$/, t('Please enter valid phone number.')),
+                then: (schema) => schema.matches(/^\d{10,12}$/, t('Please enter valid phone number.')),
               })
               .when('type', {
                 is: (val: any) => val === 'url',
-                then: (schema) =>
-                  schema.matches(new RegExp(VALID_URL_REGEX, 'gi'), t('Please enter valid url.')),
+                then: (schema) => schema.matches(new RegExp(VALID_URL_REGEX, 'gi'), t('Please enter valid url.')),
               }),
           })
         )

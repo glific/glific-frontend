@@ -12,14 +12,7 @@ export interface MenuItemProps {
   spacing?: boolean;
 }
 
-const MenuItem = ({
-  className,
-  onClickHandler,
-  path,
-  icon,
-  title,
-  spacing = true,
-}: MenuItemProps) => {
+const MenuItem = ({ className, onClickHandler, path, icon, title, spacing = true }: MenuItemProps) => {
   let link = {};
   // check if we have a path to another page and add Link component
   if (path) {

@@ -4,10 +4,7 @@ import {
   GROUP_COLLECTION_SEARCH_QUERY_VARIABLES,
   setVariables,
 } from 'common/constants';
-import {
-  UPDATE_COLLECTION_WA_GROUP,
-  UPDATE_WA_GROUP_COLLECTION,
-} from 'graphql/mutations/Collection';
+import { UPDATE_COLLECTION_WA_GROUP, UPDATE_WA_GROUP_COLLECTION } from 'graphql/mutations/Collection';
 import { SYNC_GROUPS, UPDATE_GROUP_CONTACT } from 'graphql/mutations/Group';
 import { GET_COLLECTION, GROUP_GET_COLLECTION } from 'graphql/queries/Collection';
 import {
@@ -889,8 +886,7 @@ const updateWaSatatusMock = {
     data: {
       updateWaMessageStatus: {
         __typename: 'WaMessage',
-        errors:
-          '{"message":"{\\"success\\":false,\\"message\\":\\"You dont own the phone[8310]. \\"}"}',
+        errors: '{"message":"{\\"success\\":false,\\"message\\":\\"You dont own the phone[8310]. \\"}"}',
         id: '26',
         messageNumber: 21,
         waGroup: {

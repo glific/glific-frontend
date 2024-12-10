@@ -24,9 +24,7 @@ const staffManagement = (
 );
 
 test('StaffManagementList is rendered correctly', async () => {
-  setUserSession(
-    JSON.stringify({ organization: { id: '1' }, roles: [{ id: '1', label: 'Manager' }] })
-  );
+  setUserSession(JSON.stringify({ organization: { id: '1' }, roles: [{ id: '1', label: 'Manager' }] }));
   render(staffManagement);
 
   await waitFor(() => {

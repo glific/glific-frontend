@@ -27,13 +27,7 @@ export const OrganizationCustomer = ({ openDialog }: OrganizationCustomerProps) 
   const { t } = useTranslation();
 
   const states = { name, email, currency, tds };
-  const setStates = ({
-    name: nameVal,
-    email: emailVal,
-    currency: currencyVal,
-    tdsAmount: tdsVal,
-    id: idVal,
-  }: any) => {
+  const setStates = ({ name: nameVal, email: emailVal, currency: currencyVal, tdsAmount: tdsVal, id: idVal }: any) => {
     setName(nameVal);
     setEmail(emailVal);
     setCurrency(currencyVal);
@@ -53,9 +47,7 @@ export const OrganizationCustomer = ({ openDialog }: OrganizationCustomerProps) 
     name: Yup.string().required(t('Name is required.')),
     email: Yup.string().email(t('Email is invalid')).required(t('Email is required.')),
     currency: Yup.string().required(t('Currency is required.')),
-    tds: Yup.number()
-      .min(0, 'TDS should not be negative')
-      .max(10, 'TDS amount should be less than or equal 10%'),
+    tds: Yup.number().min(0, 'TDS should not be negative').max(10, 'TDS amount should be less than or equal 10%'),
   });
 
   const formFields = [
@@ -130,9 +122,7 @@ export const OrganizationCustomer = ({ openDialog }: OrganizationCustomerProps) 
               title={title}
               listItem="billing"
               listItemName="billing"
-              refetchQueries={[
-                { query: GET_ORGANIZATION_BILLING, variables: { organizationId: params.id } },
-              ]}
+              refetchQueries={[{ query: GET_ORGANIZATION_BILLING, variables: { organizationId: params.id } }]}
               states={states}
               setStates={setStates}
               setPayload={setPayload}

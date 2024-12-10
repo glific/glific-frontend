@@ -49,9 +49,7 @@ describe('<ConfirmOTP />', () => {
     const { findByTestId } = render(wrapper);
 
     const authContainer = await findByTestId('AuthContainer');
-    expect(authContainer).toHaveTextContent(
-      'Please confirm the OTP received at your WhatsApp number.'
-    );
+    expect(authContainer).toHaveTextContent('Please confirm the OTP received at your WhatsApp number.');
   });
 
   it('test the OTP form submission with correct OTP', async () => {

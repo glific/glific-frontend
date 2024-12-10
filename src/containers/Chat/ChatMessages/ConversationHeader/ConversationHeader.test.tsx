@@ -9,16 +9,8 @@ import {
   terminateFlowQuery,
 } from '../../../../mocks/Contact';
 import { MemoryRouter } from 'react-router';
-import {
-  getCollectionInfo,
-  getCollectionUsersQuery2,
-  getCollectionsQuery,
-} from '../../../../mocks/Collection';
-import {
-  getPublishedFlowQuery,
-  addFlowToContactQuery,
-  addFlowToCollectionQuery,
-} from '../../../../mocks/Flow';
+import { getCollectionInfo, getCollectionUsersQuery2, getCollectionsQuery } from '../../../../mocks/Collection';
+import { getPublishedFlowQuery, addFlowToContactQuery, addFlowToCollectionQuery } from '../../../../mocks/Flow';
 import { CONVERSATION_MOCKS } from '../../../../mocks/Chat';
 import { searchGroupQuery } from 'mocks/Groups';
 import { setNotification } from 'common/notification';
@@ -177,9 +169,7 @@ describe('Menu test', () => {
     fireEvent.click(screen.getByTestId('clearChatButton'));
 
     await waitFor(() => {
-      expect(
-        screen.getByText('Are you sure you want to clear all conversation for this contact?')
-      ).toBeInTheDocument();
+      expect(screen.getByText('Are you sure you want to clear all conversation for this contact?')).toBeInTheDocument();
       // click on cancel
       fireEvent.click(screen.getByTestId('ok-button'));
     });
@@ -189,9 +179,7 @@ describe('Menu test', () => {
     fireEvent.click(screen.getByTestId('clearChatButton'));
 
     await waitFor(() => {
-      expect(
-        screen.getByText('Are you sure you want to clear all conversation for this contact?')
-      ).toBeInTheDocument();
+      expect(screen.getByText('Are you sure you want to clear all conversation for this contact?')).toBeInTheDocument();
     });
     // click on cancel
     fireEvent.click(screen.getByTestId('cancel-button'));

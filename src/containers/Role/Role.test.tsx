@@ -4,12 +4,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { vi } from 'vitest';
 
 import { Role } from './Role';
-import {
-  createRoleMutation,
-  deleteRoleMutation,
-  getRoleQuery,
-  updateRoleMutation,
-} from 'mocks/Role';
+import { createRoleMutation, deleteRoleMutation, getRoleQuery, updateRoleMutation } from 'mocks/Role';
 import { getRoleNamesMock } from 'containers/StaffManagement/StaffManagement.test.helper';
 import { getOrganizationLanguagesQuery } from 'mocks/Organization';
 

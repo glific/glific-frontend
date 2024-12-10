@@ -33,9 +33,7 @@ const getName = (contact: any, phone: string) => {
 };
 
 const getCollections = (collections: Array<any>) => (
-  <div className={styles.CollectionsText}>
-    {collections.map((collection: any) => collection.label).join(', ')}
-  </div>
+  <div className={styles.CollectionsText}>{collections.map((collection: any) => collection.label).join(', ')}</div>
 );
 
 const getColumns = (contact: any) => {
@@ -61,10 +59,7 @@ const columnAttributes = {
   columnStyles,
 };
 
-export const CollectionContactList = ({
-  title,
-  descriptionBox = <></>,
-}: CollectionContactListProps) => {
+export const CollectionContactList = ({ title, descriptionBox = <></> }: CollectionContactListProps) => {
   const [addContactsDialogShow, setAddContactsDialogShow] = useState(false);
   const [removeContactsDialogShow, setRemoveContactsDialogShow] = useState(false);
   const [selectedContacts, setSelectedContact] = useState<any>([]);

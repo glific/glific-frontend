@@ -1,10 +1,6 @@
 import { FILTER_ORGANIZATIONS, GET_ORGANIZATION_COUNT } from 'graphql/queries/Organization';
 import { DELETE_INACTIVE_ORGANIZATIONS } from 'graphql/mutations/Organization';
-import {
-  getOrganizationLanguagesQuery,
-  getOrganizationQuery,
-  getAllOrganizations,
-} from 'mocks/Organization';
+import { getOrganizationLanguagesQuery, getOrganizationQuery, getAllOrganizations } from 'mocks/Organization';
 import { getCurrentUserQuery } from 'mocks/User';
 import { FILTER_FLOW, GET_FLOW_COUNT } from 'graphql/queries/Flow';
 import { DELETE_FLOW } from 'graphql/mutations/Flow';
@@ -62,11 +58,7 @@ export const LIST_MOCKS = [
 export const ORG_LIST_MOCK = [...getAllOrganizations, ...getAllOrganizations];
 
 export const orgProps = {
-  columnNames: [
-    { name: 'name', label: 'Name' },
-    { name: 'status', label: 'Status' },
-    { label: 'Actions' },
-  ],
+  columnNames: [{ name: 'name', label: 'Name' }, { name: 'status', label: 'Status' }, { label: 'Actions' }],
   countQuery: GET_ORGANIZATION_COUNT,
   listItem: 'organizations',
   filterItemsQuery: FILTER_ORGANIZATIONS,
