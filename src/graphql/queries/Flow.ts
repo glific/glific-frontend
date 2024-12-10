@@ -77,6 +77,8 @@ export const GET_FLOW_DETAILS = gql`
       name
       keywords
       isTemplate
+      lastPublishedAt
+      lastChangedAt
     }
   }
 `;
