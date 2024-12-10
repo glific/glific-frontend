@@ -174,8 +174,6 @@ const ChatConversation = ({
   }
 
   let handleOnClick = () => {
-    console.log('hgf');
-
     if (onClick) onClick(index);
     setSearchOffset(client, messageNumber);
     if (entityType === 'contact') {
