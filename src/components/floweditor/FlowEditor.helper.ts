@@ -53,7 +53,7 @@ export const setConfig = (uuid: any, isTemplate: boolean) => {
       globals: `${glificBase}globals`,
       groups: `${glificBase}groups`,
       fields: `${glificBase}fields?scope=contact`,
-      waGroupFields: `${glificBase}fields?scope=group`,
+      waGroupFields: `${glificBase}fields?scope=wa_group`,
       labels: `${glificBase}labels`,
       channels: `${glificBase}channels`,
       classifiers: `${glificBase}classifiers`,
