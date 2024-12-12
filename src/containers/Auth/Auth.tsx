@@ -176,11 +176,7 @@ export const Auth = ({
                   return (
                     <div key={key}>
                       {field.label ? (
-                        <Typography
-                          data-testid="formLabel"
-                          variant="h5"
-                          className={styles.FieldLabel}
-                        >
+                        <Typography data-testid="formLabel" variant="h5" className={styles.FieldLabel}>
                           {field.label}
                         </Typography>
                       ) : (

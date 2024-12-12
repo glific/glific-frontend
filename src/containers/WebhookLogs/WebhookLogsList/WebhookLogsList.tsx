@@ -116,12 +116,7 @@ export const WebhookLogsList = () => {
     ];
     return (
       <Menu menus={Menus}>
-        <div
-          className={styles.CroppedText}
-          onClick={handleClick}
-          onKeyDown={handleClick}
-          aria-hidden="true"
-        >
+        <div className={styles.CroppedText} onClick={handleClick} onKeyDown={handleClick} aria-hidden="true">
           {slicedString(newtext, 21)}
         </div>
       </Menu>
@@ -167,11 +162,7 @@ export const WebhookLogsList = () => {
         <pre>{JSON.stringify(text ? JSON.parse(text) : '', null, 2)}</pre>
       </div>
       <div className={styles.PopoverActions}>
-        <span
-          onClick={() => copyToClipboard(text)}
-          aria-hidden="true"
-          data-testid="copyToClipboard"
-        >
+        <span onClick={() => copyToClipboard(text)} aria-hidden="true" data-testid="copyToClipboard">
           <img src={CopyIcon} alt="copy" />
           {t('Copy text')}
         </span>

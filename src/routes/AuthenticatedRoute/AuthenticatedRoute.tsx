@@ -25,7 +25,9 @@ const SpeedSendList = lazy(() => import('containers/Template/List/SpeedSendList/
 const SpeedSend = lazy(() => import('containers/Template/Form/SpeedSend/SpeedSend'));
 const FlowList = lazy(() => import('containers/Flow/FlowList/FlowList'));
 const Flow = lazy(() => import('containers/Flow/Flow'));
-const SheetIntegrationList = lazy(() => import('containers/SheetIntegration/SheetIntegrationList/SheetIntegrationList'));
+const SheetIntegrationList = lazy(
+  () => import('containers/SheetIntegration/SheetIntegrationList/SheetIntegrationList')
+);
 const SheetIntegration = lazy(() => import('containers/SheetIntegration/SheetIntegration'));
 const CollectionList = lazy(() => import('containers/Collection/CollectionList/CollectionList'));
 const Collection = lazy(() => import('containers/Collection/Collection'));
@@ -51,7 +53,9 @@ const NotificationList = lazy(() => import('containers/NotificationList/Notifica
 const OrganizationList = lazy(() => import('containers/OrganizationList/OrganizationList'));
 const ConsultingHourList = lazy(() => import('containers/Consulting/ConsultingList/ConsultingList'));
 const ContactFieldList = lazy(() => import('containers/ContactField/ContactFieldList/ContactFieldList'));
-const InteractiveMessageList = lazy(() => import('containers/InteractiveMessage/InteractiveMessageList/InteractiveMessageList'));
+const InteractiveMessageList = lazy(
+  () => import('containers/InteractiveMessage/InteractiveMessageList/InteractiveMessageList')
+);
 const InteractiveMessage = lazy(() => import('containers/InteractiveMessage/InteractiveMessage'));
 
 const RoleList = lazy(() => import('containers/Role/RoleList/RoleList'));
@@ -203,7 +207,12 @@ export const AuthenticatedRoute = () => {
     route = routeStaff;
   }
 
-  if (checkDynamicRole() || userRole.includes('Manager') || userRole.includes('Admin') || userRole.includes('Glific_admin')) {
+  if (
+    checkDynamicRole() ||
+    userRole.includes('Manager') ||
+    userRole.includes('Admin') ||
+    userRole.includes('Glific_admin')
+  ) {
     route = routeAdmin;
   }
 

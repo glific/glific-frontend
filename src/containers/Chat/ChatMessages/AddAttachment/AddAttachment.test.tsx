@@ -158,9 +158,7 @@ test('successful media submission', async () => {
 
   // let url validation complete
   await waitFor(() => {
-    expect(
-      screen.queryByText('Please wait for the attachment URL verification')
-    ).not.toBeInTheDocument();
+    expect(screen.queryByText('Please wait for the attachment URL verification')).not.toBeInTheDocument();
   });
 
   await waitFor(() => {

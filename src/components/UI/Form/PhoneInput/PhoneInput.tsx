@@ -66,12 +66,8 @@ export const PhoneInput = ({
             setFieldValue(field.name, event);
           }}
         />
-        {helperText && (
-          <FormHelperText classes={{ root: styles.FormHelperText }}>{helperText}</FormHelperText>
-        )}
-        {hasError ? (
-          <FormHelperText classes={{ root: styles.ErrorText }}>{errorText}</FormHelperText>
-        ) : null}
+        {helperText && <FormHelperText classes={{ root: styles.FormHelperText }}>{helperText}</FormHelperText>}
+        {hasError ? <FormHelperText classes={{ root: styles.ErrorText }}>{errorText}</FormHelperText> : null}
       </FormControl>
     </div>
   );

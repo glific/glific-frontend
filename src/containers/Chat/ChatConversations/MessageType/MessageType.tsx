@@ -61,10 +61,7 @@ export const MessageType = ({ type, body = '', color = 'light' }: MessageTypePro
   );
 
   return (
-    <span
-      className={`${styles.Message} ${isLight ? styles.Light : styles.Dark}`}
-      data-testid="messageType"
-    >
+    <span className={`${styles.Message} ${isLight ? styles.Light : styles.Dark}`} data-testid="messageType">
       {option}
     </span>
   );

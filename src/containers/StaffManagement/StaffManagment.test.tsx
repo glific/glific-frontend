@@ -92,9 +92,7 @@ test('change the role from staff to Admin', async () => {
   });
 
   await waitFor(() => {
-    expect(screen.getAllByTestId('AutocompleteInput')[0].querySelector('input')).toHaveValue(
-      'Staff'
-    );
+    expect(screen.getAllByTestId('AutocompleteInput')[0].querySelector('input')).toHaveValue('Staff');
   });
 
   const [roles] = screen.getAllByTestId('autocomplete-element');
@@ -132,9 +130,7 @@ test('can select multiple roles if dynamic roles are enabled', async () => {
 
   await waitFor(() => {
     expect(screen.getAllByTestId('searchChip')[0].querySelector('span')).toHaveTextContent('Staff');
-    expect(screen.getAllByTestId('searchChip')[1].querySelector('span')).toHaveTextContent(
-      'Manager'
-    );
+    expect(screen.getAllByTestId('searchChip')[1].querySelector('span')).toHaveTextContent('Manager');
   });
 
   fireEvent.click(screen.getByTestId('submitActionButton'));
@@ -154,9 +150,7 @@ test('return error if roles api does not have data', async () => {
   );
 
   await waitFor(() => {
-    expect(
-      screen.getByText('An error occured! Not able to fetch collections or roles')
-    ).toBeInTheDocument();
+    expect(screen.getByText('An error occured! Not able to fetch collections or roles')).toBeInTheDocument();
   });
 });
 
@@ -177,9 +171,7 @@ test('if the user is manager they should not see Admin role in the list', async 
   });
 
   await waitFor(() => {
-    expect(screen.getAllByTestId('AutocompleteInput')[0].querySelector('input')).toHaveValue(
-      'Manager'
-    );
+    expect(screen.getAllByTestId('AutocompleteInput')[0].querySelector('input')).toHaveValue('Manager');
   });
 
   const [roles] = screen.getAllByTestId('autocomplete-element');
@@ -211,9 +203,7 @@ test('if the user is Admin they should not see Glific admin role in the list', a
   });
 
   await waitFor(() => {
-    expect(screen.getAllByTestId('AutocompleteInput')[0].querySelector('input')).toHaveValue(
-      'Admin'
-    );
+    expect(screen.getAllByTestId('AutocompleteInput')[0].querySelector('input')).toHaveValue('Admin');
   });
 
   const [roles] = screen.getAllByTestId('autocomplete-element');
@@ -253,9 +243,7 @@ test('changing to staff role shows a checkbox', async () => {
 
   await waitFor(() => {
     expect(screen.getAllByTestId('searchChip')[0].querySelector('span')).toHaveTextContent('Staff');
-    expect(
-      screen.getByText('Can chat with contacts from assigned collection only')
-    ).toBeInTheDocument();
+    expect(screen.getByText('Can chat with contacts from assigned collection only')).toBeInTheDocument();
   });
 });
 
@@ -268,9 +256,7 @@ test('unset all roles and then set admin role', async () => {
   });
 
   await waitFor(() => {
-    expect(screen.getAllByTestId('AutocompleteInput')[0].querySelector('input')).toHaveValue(
-      'Staff'
-    );
+    expect(screen.getAllByTestId('AutocompleteInput')[0].querySelector('input')).toHaveValue('Staff');
   });
   const clearButton = screen.getAllByTestId('CloseIcon')[0];
   fireEvent.click(clearButton);
@@ -281,9 +267,7 @@ test('unset all roles and then set admin role', async () => {
   fireEvent.keyDown(roles, { key: 'Enter' });
 
   await waitFor(() => {
-    expect(screen.getAllByTestId('AutocompleteInput')[0].querySelector('input')).toHaveValue(
-      'Admin'
-    );
+    expect(screen.getAllByTestId('AutocompleteInput')[0].querySelector('input')).toHaveValue('Admin');
   });
 });
 
@@ -306,9 +290,7 @@ test('admin should logout if they demote their own role', async () => {
   );
 
   await waitFor(() => {
-    expect(screen.getAllByTestId('AutocompleteInput')[0].querySelector('input')).toHaveValue(
-      'Admin'
-    );
+    expect(screen.getAllByTestId('AutocompleteInput')[0].querySelector('input')).toHaveValue('Admin');
   });
 
   const [roles] = screen.getAllByTestId('autocomplete-element');

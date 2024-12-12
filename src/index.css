@@ -160,12 +160,7 @@ temba-button {
 }
 
 temba-button:hover {
-  --button-bg-img: linear-gradient(
-    to bottom,
-    rgba(var(--primary-rgb), 0.1),
-    transparent,
-    transparent
-  );
+  --button-bg-img: linear-gradient(to bottom, rgba(var(--primary-rgb), 0.1), transparent, transparent);
 }
 
 temba-button.active {

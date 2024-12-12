@@ -11,16 +11,8 @@ import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 
 import ApprovedIcon from 'assets/images/icons/Template/Approved.svg?react';
 import PendingIcon from 'assets/images/icons/Template/Pending.svg?react';
-import {
-  CREATE_BILLING_SUBSCRIPTION,
-  UPDATE_BILLING,
-  CREATE_BILLING,
-} from 'graphql/mutations/Billing';
-import {
-  GET_CUSTOMER_PORTAL,
-  GET_ORGANIZATION_BILLING,
-  GET_COUPON_CODE,
-} from 'graphql/queries/Billing';
+import { CREATE_BILLING_SUBSCRIPTION, UPDATE_BILLING, CREATE_BILLING } from 'graphql/mutations/Billing';
+import { GET_CUSTOMER_PORTAL, GET_ORGANIZATION_BILLING, GET_COUPON_CODE } from 'graphql/queries/Billing';
 import { Button } from 'components/UI/Form/Button/Button';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { Input } from 'components/UI/Form/Input/Input';
@@ -70,14 +62,16 @@ export const BillingForm = () => {
     fetchPolicy: 'network-only',
   });
 
-  const [getCouponCode, { data: couponCode, loading: couponLoading, error: couponError }] =
-    useLazyQuery(GET_COUPON_CODE, {
+  const [getCouponCode, { data: couponCode, loading: couponLoading, error: couponError }] = useLazyQuery(
+    GET_COUPON_CODE,
+    {
       onCompleted: ({ getCouponCode: couponCodeResult }) => {
         if (couponCodeResult.code) {
           setCouponApplied(true);
         }
       },
-    });
+    }
+  );
   const [getCustomerPortal, { loading: portalLoading }] = useLazyQuery(GET_CUSTOMER_PORTAL, {
     fetchPolicy: 'network-only',
     onCompleted: (customerPortal: any) => {
@@ -380,8 +374,7 @@ export const BillingForm = () => {
           <div className={styles.DottedSpaced} />
           <div className={styles.BottomSection}>
             <div className={styles.InactiveHeading}>
-              Suspended or inactive accounts:{' '}
-              <span className={styles.Amount}> INR 1,500/mo + taxes</span>
+              Suspended or inactive accounts: <span className={styles.Amount}> INR 1,500/mo + taxes</span>
             </div>
           </div>
         </div>
@@ -462,11 +455,7 @@ export const BillingForm = () => {
                   return (
                     <Fragment key={key}>
                       {field.label && (
-                        <Typography
-                          data-testid="formLabel"
-                          variant="h5"
-                          className={styles.FieldLabel}
-                        >
+                        <Typography data-testid="formLabel" variant="h5" className={styles.FieldLabel}>
                           {field.label}
                         </Typography>
                       )}

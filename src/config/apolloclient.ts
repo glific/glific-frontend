@@ -95,10 +95,7 @@ const gqlClient = (navigate: any) => {
         // eslint-disable-next-line
         console.log(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`);
         // logged error in logflare
-        return setLogs(
-          `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`,
-          'error'
-        );
+        return setLogs(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`, 'error');
       });
 
     if (networkError) {

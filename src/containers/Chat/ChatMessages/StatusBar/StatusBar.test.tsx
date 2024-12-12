@@ -3,11 +3,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import { InMemoryCache } from '@apollo/client';
 import { MockedProvider } from '@apollo/client/testing';
 import { BSPBALANCE } from 'graphql/queries/Organization';
-import {
-  getInactiveStatusMock,
-  getWhatsAppManagedPhonesStatusMock,
-  orgSuspendedMock,
-} from 'mocks/StatusBar';
+import { getInactiveStatusMock, getWhatsAppManagedPhonesStatusMock, orgSuspendedMock } from 'mocks/StatusBar';
 import StatusBar from './StatusBar';
 
 const cache = new InMemoryCache({

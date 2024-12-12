@@ -4,11 +4,7 @@ import { vi } from 'vitest';
 
 import ChatInput from './ChatInput';
 import { TEMPLATE_MOCKS } from 'mocks/Template';
-import {
-  createMediaMessageMock,
-  getAttachmentPermissionMock,
-  uploadBlobMock,
-} from 'mocks/Attachment';
+import { createMediaMessageMock, getAttachmentPermissionMock, uploadBlobMock } from 'mocks/Attachment';
 import { searchInteractive, searchInteractiveHi } from 'mocks/InteractiveMessage';
 import '../VoiceRecorder/VoiceRecorder';
 import { LexicalWrapper } from 'common/LexicalWrapper';

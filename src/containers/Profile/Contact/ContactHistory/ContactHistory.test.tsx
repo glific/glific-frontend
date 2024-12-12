@@ -2,18 +2,10 @@ import { render, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 
 import { ContactHistory } from './ContactHistory';
-import {
-  contactHistoryQuery,
-  countContactHistoryQuery,
-  contactHistoryQueryUpdatedOffset,
-} from 'mocks/Contact';
+import { contactHistoryQuery, countContactHistoryQuery, contactHistoryQueryUpdatedOffset } from 'mocks/Contact';
 import { MemoryRouter } from 'react-router';
 
-export const mocks = [
-  contactHistoryQuery,
-  countContactHistoryQuery,
-  contactHistoryQueryUpdatedOffset,
-];
+export const mocks = [contactHistoryQuery, countContactHistoryQuery, contactHistoryQueryUpdatedOffset];
 const defaultProps = {
   contactId: '1',
 };

@@ -20,11 +20,7 @@ import {
   MESSAGE_SENT_SUBSCRIPTION,
   MESSAGE_STATUS_SUBSCRIPTION,
 } from 'graphql/subscriptions/Chat';
-import {
-  getSubscriptionDetails,
-  recordRequests,
-  switchSubscriptionToRefetch,
-} from 'services/SubscriptionService';
+import { getSubscriptionDetails, recordRequests, switchSubscriptionToRefetch } from 'services/SubscriptionService';
 
 export interface ChatSubscriptionProps {
   setDataLoaded: any;
@@ -73,8 +69,7 @@ export const ChatSubscription = ({ setDataLoaded }: ChatSubscriptionProps) => {
           subscriptionToRefetchSwitchHappened = true;
 
           // let's get the random wait time
-          const waitTime =
-            randomIntFromInterval(REFETCH_RANDOM_TIME_MIN, REFETCH_RANDOM_TIME_MAX) * 1000;
+          const waitTime = randomIntFromInterval(REFETCH_RANDOM_TIME_MIN, REFETCH_RANDOM_TIME_MAX) * 1000;
 
           // let's clear the timeout if exists
           if (refetchTimer) {
@@ -123,13 +118,7 @@ export const ChatSubscription = ({ setDataLoaded }: ChatSubscriptionProps) => {
       // it to the cached conversations
       // let's also skip fetching contact when we trigger this via group subscriptions
       // let's skip fetch contact when we switch to refetch mode from subscription
-      if (
-        !conversationFound &&
-        newMessage &&
-        !newMessage.groupId &&
-        fetchMissingContact &&
-        !triggerRefetch
-      ) {
+      if (!conversationFound && newMessage && !newMessage.groupId && fetchMissingContact && !triggerRefetch) {
         const variables = {
           contactOpts: {
             limit: DEFAULT_ENTITY_LIMIT,
@@ -140,10 +129,7 @@ export const ChatSubscription = ({ setDataLoaded }: ChatSubscriptionProps) => {
           },
         };
 
-        addLogs(
-          `${action}-contact is not cached, so we need to fetch the conversations and add to cache`,
-          variables
-        );
+        addLogs(`${action}-contact is not cached, so we need to fetch the conversations and add to cache`, variables);
 
         if (!entityIdsFetched.includes(entityId)) {
           entityIdsFetched.push(entityId);
@@ -200,14 +186,11 @@ export const ChatSubscription = ({ setDataLoaded }: ChatSubscriptionProps) => {
     [getContactQuery]
   );
 
-  const { subscribeToMore: collectionSubscribe, data: collectionData } = useQuery<any>(
-    SEARCH_QUERY,
-    {
-      variables: COLLECTION_SEARCH_QUERY_VARIABLES,
-      fetchPolicy: 'cache-first',
-      nextFetchPolicy: 'cache-only',
-    }
-  );
+  const { subscribeToMore: collectionSubscribe, data: collectionData } = useQuery<any>(SEARCH_QUERY, {
+    variables: COLLECTION_SEARCH_QUERY_VARIABLES,
+    fetchPolicy: 'cache-first',
+    nextFetchPolicy: 'cache-only',
+  });
 
   const { loading, error, subscribeToMore, data, refetch } = useQuery<any>(SEARCH_QUERY, {
     variables: queryVariables,
@@ -222,8 +205,7 @@ export const ChatSubscription = ({ setDataLoaded }: ChatSubscriptionProps) => {
       collectionSubscribe({
         document: COLLECTION_SENT_SUBSCRIPTION,
         variables: subscriptionVariables,
-        updateQuery: (prev, { subscriptionData }) =>
-          updateConversations(prev, subscriptionData, 'COLLECTION'),
+        updateQuery: (prev, { subscriptionData }) => updateConversations(prev, subscriptionData, 'COLLECTION'),
       });
     }
   }, [collectionSubscribe]);
@@ -235,24 +217,21 @@ export const ChatSubscription = ({ setDataLoaded }: ChatSubscriptionProps) => {
       subscribeToMore({
         document: MESSAGE_RECEIVED_SUBSCRIPTION,
         variables: subscriptionVariables,
-        updateQuery: (prev, { subscriptionData }) =>
-          updateConversations(prev, subscriptionData, 'RECEIVED'),
+        updateQuery: (prev, { subscriptionData }) => updateConversations(prev, subscriptionData, 'RECEIVED'),
       });
 
       // message sent subscription
       subscribeToMore({
         document: MESSAGE_SENT_SUBSCRIPTION,
         variables: subscriptionVariables,
-        updateQuery: (prev, { subscriptionData }) =>
-          updateConversations(prev, subscriptionData, 'SENT'),
+        updateQuery: (prev, { subscriptionData }) => updateConversations(prev, subscriptionData, 'SENT'),
       });
 
       // message status subscription
       subscribeToMore({
         document: MESSAGE_STATUS_SUBSCRIPTION,
         variables: subscriptionVariables,
-        updateQuery: (prev, { subscriptionData }) =>
-          updateConversations(prev, subscriptionData, 'STATUS'),
+        updateQuery: (prev, { subscriptionData }) => updateConversations(prev, subscriptionData, 'STATUS'),
         onError: () => {},
       });
     }

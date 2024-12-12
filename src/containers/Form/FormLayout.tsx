@@ -158,9 +158,7 @@ export const FormLayout = ({
       ...defaultAttribute,
     };
 
-    payload = languageSupport
-      ? { ...payload, languageId: Number(languageIdValue) }
-      : { ...payload };
+    payload = languageSupport ? { ...payload, languageId: Number(languageIdValue) } : { ...payload };
 
     // create custom payload for searches
     if (setPayload) {
@@ -517,9 +515,7 @@ export const FormLayout = ({
     const roleAccess = {
       component: AutoComplete,
       name: 'roles',
-      options: roleData
-        ? roleData.accessRoles.map((role: any) => ({ label: role.label, id: role.id }))
-        : [],
+      options: roleData ? roleData.accessRoles.map((role: any) => ({ label: role.label, id: role.id })) : [],
       optionLabel: 'label',
       multiple: true,
       label: t('Roles'),
@@ -609,12 +605,7 @@ export const FormLayout = ({
                 {additionalAction.label}
               </Button>
             ) : null}
-            <Button
-              variant="outlined"
-              color="secondary"
-              onClick={cancelHandler}
-              data-testid="cancelActionButton"
-            >
+            <Button variant="outlined" color="secondary" onClick={cancelHandler} data-testid="cancelActionButton">
               {t('Cancel')}
             </Button>
 
@@ -684,10 +675,7 @@ export const FormLayout = ({
   }
   return (
     <FormikProvider value={formik}>
-      <div
-        className={partialPage ? styles.ItemAddDialog : styles.ItemAdd}
-        data-testid="add-container"
-      >
+      <div className={partialPage ? styles.ItemAddDialog : styles.ItemAdd} data-testid="add-container">
         {dialogBox}
         {confirmationDialog}
         {!noHeading && heading}

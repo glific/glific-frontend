@@ -12,13 +12,7 @@ export interface InlineInputProps {
   error: string | null;
 }
 
-export const InlineInput = ({
-  value,
-  closeModal,
-  callback,
-  label = 'Input',
-  error,
-}: InlineInputProps) => {
+export const InlineInput = ({ value, closeModal, callback, label = 'Input', error }: InlineInputProps) => {
   const [inputVal, setInputVal] = useState(value);
   const containerRef: any = createRef();
 
@@ -34,12 +28,7 @@ export const InlineInput = ({
   });
 
   const endAdornment = (
-    <Icon
-      onClick={() => callback(inputVal)}
-      className={styles.Icon}
-      title="Save"
-      data-testid="save-button"
-    />
+    <Icon onClick={() => callback(inputVal)} className={styles.Icon} title="Save" data-testid="save-button" />
   );
 
   return (

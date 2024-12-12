@@ -10,12 +10,7 @@ import { FormLayout } from 'containers/Form/FormLayout';
 import { Input } from 'components/UI/Form/Input/Input';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { GET_CONTACT, GET_PROFILE } from 'graphql/queries/Contact';
-import {
-  CREATE_CONTACT,
-  UPDATE_CONTACT,
-  DELETE_CONTACT,
-  DELETE_CONTACT_PROFILE,
-} from 'graphql/mutations/Contact';
+import { CREATE_CONTACT, UPDATE_CONTACT, DELETE_CONTACT, DELETE_CONTACT_PROFILE } from 'graphql/mutations/Contact';
 import { GET_CURRENT_USER } from 'graphql/queries/User';
 import { getDisplayName, isSimulator } from 'common/utils';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';

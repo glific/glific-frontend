@@ -39,8 +39,8 @@ export const TerminateFlow = ({ contactId, setDialog }: TerminateFlowProps) => {
       }}
     >
       <div className={styles.Dialog}>
-        All active flows for the contact will be stopped. They can initiate a flow via keyword or
-        you will need to do it manually.
+        All active flows for the contact will be stopped. They can initiate a flow via keyword or you will need to do it
+        manually.
       </div>
     </DialogBox>
   );

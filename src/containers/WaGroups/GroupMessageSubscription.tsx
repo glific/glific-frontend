@@ -19,11 +19,7 @@ import {
 import { useCallback, useEffect, useState } from 'react';
 import { getUserSession } from 'services/AuthService';
 import { saveGroupConversation } from 'services/GroupMessageService';
-import {
-  getSubscriptionDetails,
-  recordRequests,
-  switchSubscriptionToRefetch,
-} from 'services/SubscriptionService';
+import { getSubscriptionDetails, recordRequests, switchSubscriptionToRefetch } from 'services/SubscriptionService';
 
 export interface GroupMessageProps {
   setDataLoaded: any;
@@ -71,8 +67,7 @@ export const GroupMessageSubscription = ({ setDataLoaded }: GroupMessageProps) =
           subscriptionToRefetchSwitchHappened = true;
 
           // let's get the random wait time
-          const waitTime =
-            randomIntFromInterval(REFETCH_RANDOM_TIME_MIN, REFETCH_RANDOM_TIME_MAX) * 1000;
+          const waitTime = randomIntFromInterval(REFETCH_RANDOM_TIME_MIN, REFETCH_RANDOM_TIME_MAX) * 1000;
 
           // let's clear the timeout if exists
           if (refetchTimer) {
@@ -119,13 +114,7 @@ export const GroupMessageSubscription = ({ setDataLoaded }: GroupMessageProps) =
       // it to the cached conversations
       // let's also skip fetching group when we trigger this via group subscriptions
       // let's skip fetch group when we switch to refetch mode from subscription
-      if (
-        !conversationFound &&
-        newMessage &&
-        !newMessage.entityId &&
-        fetchMissingGroup &&
-        !triggerRefetch
-      ) {
+      if (!conversationFound && newMessage && !newMessage.entityId && fetchMissingGroup && !triggerRefetch) {
         const variables = {
           waMessageOpts: {
             limit: DEFAULT_MESSAGE_LIMIT,
@@ -136,10 +125,7 @@ export const GroupMessageSubscription = ({ setDataLoaded }: GroupMessageProps) =
           filter: { id: entityId?.toString() },
         };
 
-        addLogs(
-          `${action}-group is not cached, so we need to fetch the conversations and add to cache`,
-          variables
-        );
+        addLogs(`${action}-group is not cached, so we need to fetch the conversations and add to cache`, variables);
 
         if (!groupsFetched.includes(entityId)) {
           groupsFetched.push(entityId);
@@ -193,14 +179,11 @@ export const GroupMessageSubscription = ({ setDataLoaded }: GroupMessageProps) =
     nextFetchPolicy: 'cache-only',
   });
 
-  const { subscribeToMore: collectionSubscribe, data: collectionData } = useQuery<any>(
-    GROUP_SEARCH_QUERY,
-    {
-      variables: GROUP_COLLECTION_SEARCH_QUERY_VARIABLES,
-      fetchPolicy: 'cache-first',
-      nextFetchPolicy: 'cache-only',
-    }
-  );
+  const { subscribeToMore: collectionSubscribe, data: collectionData } = useQuery<any>(GROUP_SEARCH_QUERY, {
+    variables: GROUP_COLLECTION_SEARCH_QUERY_VARIABLES,
+    fetchPolicy: 'cache-first',
+    nextFetchPolicy: 'cache-only',
+  });
 
   useEffect(() => {
     if (subscribeToMore) {
@@ -209,24 +192,21 @@ export const GroupMessageSubscription = ({ setDataLoaded }: GroupMessageProps) =
       subscribeToMore({
         document: WA_MESSAGE_RECEIVED_SUBSCRIPTION,
         variables: subscriptionVariables,
-        updateQuery: (prev, { subscriptionData }) =>
-          updateConversations(prev, subscriptionData, 'RECEIVED'),
+        updateQuery: (prev, { subscriptionData }) => updateConversations(prev, subscriptionData, 'RECEIVED'),
       });
 
       // message sent subscription
       subscribeToMore({
         document: WA_MESSAGE_SENT_SUBSCRIPTION,
         variables: subscriptionVariables,
-        updateQuery: (prev, { subscriptionData }) =>
-          updateConversations(prev, subscriptionData, 'SENT'),
+        updateQuery: (prev, { subscriptionData }) => updateConversations(prev, subscriptionData, 'SENT'),
       });
 
       subscribeToMore({
         document: UPDATE_WA_MESSAGE_STATUS,
         variables: subscriptionVariables,
         onError: (error) => console.log(error),
-        updateQuery: (prev, { subscriptionData }) =>
-          updateConversations(prev, subscriptionData, 'STATUS'),
+        updateQuery: (prev, { subscriptionData }) => updateConversations(prev, subscriptionData, 'STATUS'),
       });
     }
   }, [subscribeToMore]);
@@ -238,8 +218,7 @@ export const GroupMessageSubscription = ({ setDataLoaded }: GroupMessageProps) =
       collectionSubscribe({
         document: SENT_MESSAGE_WA_GROUP_COLLECTION,
         variables: subscriptionVariables,
-        updateQuery: (prev, { subscriptionData }) =>
-          updateConversations(prev, subscriptionData, 'COLLECTION'),
+        updateQuery: (prev, { subscriptionData }) => updateConversations(prev, subscriptionData, 'COLLECTION'),
       });
     }
   }, [collectionSubscribe]);

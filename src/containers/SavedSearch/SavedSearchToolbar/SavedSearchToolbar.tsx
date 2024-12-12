@@ -74,18 +74,13 @@ export const SavedSearchToolbar = ({
     },
   });
 
-  const handlerSavedSearchCriteria = (
-    savedSearchCriteria: string | null,
-    savedSearchId: number | null
-  ) => {
+  const handlerSavedSearchCriteria = (savedSearchCriteria: string | null, savedSearchId: number | null) => {
     savedSearchCriteriaCallback(savedSearchCriteria, savedSearchId);
     setSelectedSavedSearch(savedSearchId);
   };
 
   const handleAdditionalSavedSearch = (search: any) => {
-    const replaceSearchIndex = fixedSearches
-      .map((savedSearch: any) => savedSearch.id)
-      .indexOf(search.id);
+    const replaceSearchIndex = fixedSearches.map((savedSearch: any) => savedSearch.id).indexOf(search.id);
     const fixedSearchesCopy = JSON.parse(JSON.stringify(fixedSearches));
     if (replaceSearchIndex !== -1) {
       [fixedSearchesCopy[replaceSearchIndex], fixedSearchesCopy[2]] = [
@@ -147,13 +142,7 @@ export const SavedSearchToolbar = ({
   };
 
   const additionalOptions = (
-    <Popper
-      open={open}
-      anchorEl={anchorEl}
-      placement="bottom"
-      transition
-      className={styles.PopperContainer}
-    >
+    <Popper open={open} anchorEl={anchorEl} placement="bottom" transition className={styles.PopperContainer}>
       {({ TransitionProps }) => (
         <Fade {...TransitionProps} timeout={350}>
           <Paper elevation={3} className={styles.Popper}>

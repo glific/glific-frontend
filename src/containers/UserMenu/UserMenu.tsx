@@ -36,10 +36,7 @@ export const UserMenu = ({ drawerOpen }: UserMenuProps) => {
   }));
 
   return (
-    <div
-      className={drawerOpen ? styles.UserAccount : styles.UserAccountClosed}
-      data-testid="user-account"
-    >
+    <div className={drawerOpen ? styles.UserAccount : styles.UserAccountClosed} data-testid="user-account">
       <Divider />
       <Menu menus={menus} onOpen={() => setOpen(true)} onClose={() => setOpen(false)}>
         <div className={drawerOpen ? styles.UserOpen : styles.UserClosed}>
@@ -53,9 +50,7 @@ export const UserMenu = ({ drawerOpen }: UserMenuProps) => {
             </div>
           )}
 
-          <ExpandIcon
-            className={`${styles.RotatableSvg} ${open ? styles.Rotate180 : styles.Rotate0}`}
-          />
+          <ExpandIcon className={`${styles.RotatableSvg} ${open ? styles.Rotate180 : styles.Rotate0}`} />
         </div>
       </Menu>
     </div>

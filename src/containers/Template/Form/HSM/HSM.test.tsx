@@ -98,8 +98,7 @@ describe('Add mode', () => {
 
     fireEvent.change(container.querySelector('input[name="label"]') as HTMLInputElement, {
       target: {
-        value:
-          'We are not allowing a really long title, and we should trigger validation for this.',
+        value: 'We are not allowing a really long title, and we should trigger validation for this.',
       },
     });
 
