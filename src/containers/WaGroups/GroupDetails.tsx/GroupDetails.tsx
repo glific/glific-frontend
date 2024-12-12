@@ -1,20 +1,20 @@
-import { useMutation, useQuery } from '@apollo/client';
-import { useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { List } from 'containers/List/List';
 import { useTranslation } from 'react-i18next';
-
 import CollectionIcon from 'assets/images/icons/Collection/Dark.svg?react';
+import styles from './GroupDetails.module.css';
+import { UPDATE_GROUP_CONTACT } from 'graphql/mutations/Group';
+import {
+  COUNT_COUNTACTS_WA_GROUPS,
+  GET_WA_GROUP,
+  LIST_CONTACTS_WA_GROUPS,
+} from 'graphql/queries/WaGroups';
 import DeleteIcon from 'assets/images/icons/Delete/Red.svg?react';
+import { useState } from 'react';
+import { useMutation, useQuery } from '@apollo/client';
 import { setNotification } from 'common/notification';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
-import { Heading } from 'components/UI/Heading/Heading';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
-import { AvatarDisplay } from 'components/UI/AvatarDisplay/AvatarDisplay';
-import { List } from 'containers/List/List';
-import { ContactDescription } from 'containers/Profile/Contact/ContactDescription/ContactDescription';
-import { UPDATE_GROUP_CONTACT } from 'graphql/mutations/Group';
-import { COUNT_COUNTACTS_WA_GROUPS, GET_WA_GROUP, LIST_CONTACTS_WA_GROUPS } from 'graphql/queries/WaGroups';
-import styles from './GroupDetails.module.css';
 
 export const GroupDetails = () => {
   const params = useParams();
@@ -22,22 +22,20 @@ export const GroupDetails = () => {
 
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [deleteVariables, setDeleteVariables] = useState<any>();
-  const [contentToShow, setContentToShow] = useState('members');
+
+  const { loading: groupDataLoading, data: groupData } = useQuery(GET_WA_GROUP, {
+    variables: {
+      waGroupId: params.id,
+    },
+  });
 
   const dialogTitle = 'Are you sure you want to remove this contact from the group?';
   const dialogMessage = 'The contact will no longer receive messages sent to this group';
 
-  const columnNames = [{ label: t('Contact') }, { label: 'All WhatsApp Groups' }, { label: t('Actions') }];
-
-  const list = [
-    {
-      name: t('Members'),
-      section: 'members',
-    },
-    {
-      name: t('Details'),
-      section: 'details',
-    },
+  const columnNames = [
+    { label: t('Contact') },
+    { label: 'All WhatsApp Groups' },
+    { label: t('Actions') },
   ];
 
   const [removeContact, { loading }] = useMutation(UPDATE_GROUP_CONTACT, {
@@ -46,14 +44,6 @@ export const GroupDetails = () => {
       setShowDeleteDialog(false);
     },
   });
-
-  const { loading: groupDataLoading, data } = useQuery(GET_WA_GROUP, {
-    variables: {
-      waGroupId: params.id,
-    },
-  });
-
-  const groupData = data?.waGroup?.waGroup;
 
   const queries = {
     countQuery: COUNT_COUNTACTS_WA_GROUPS,
@@ -151,19 +141,24 @@ export const GroupDetails = () => {
         alignButtons="center"
         buttonOkLoading={loading}
       >
-        <div className={styles.dialogText}>The contact will no longer receive messages sent to this group</div>
+        <div className={styles.dialogText}>
+          The contact will no longer receive messages sent to this group
+        </div>
       </DialogBox>
     );
   }
 
-  let contentBody;
-  if (contentToShow === 'members') {
-    contentBody = (
+  if (groupDataLoading) {
+    return <Loading />;
+  }
+
+  return (
+    <>
       <List
         backLink={`/group/chat/${params.id}`}
         dialogTitle={dialogTitle}
         columnNames={columnNames}
-        title={groupData?.label}
+        title={groupData?.waGroup?.waGroup?.label}
         listItem="waGroupContact"
         listItemName="waGroupContact"
         searchParameter={['term']}
@@ -179,56 +174,7 @@ export const GroupDetails = () => {
         {...queries}
         {...columnAttributes}
         showSearch={false}
-        showHeader={false}
-        customStyles={styles.Table}
       />
-    );
-  } else {
-    contentBody = (
-      <ContactDescription
-        customStyles={styles.BackGround}
-        fields={groupData?.fields}
-        collections={groupData?.groups}
-        groups
-      />
-    );
-  }
-
-  const drawer = (
-    <div className={styles.Drawer}>
-      <div data-testid="profileHeader" className={styles.GroupHeader}>
-        <AvatarDisplay name={groupData?.label} />
-
-        <div className={styles.GroupHeaderTitle}>{groupData?.label}</div>
-      </div>
-      <div className={styles.GroupHeaderElements}>
-        {list.map((data: any, index: number) => {
-          return (
-            <div
-              key={index}
-              onClick={() => setContentToShow(data.section)}
-              className={`${styles.Tab} ${contentToShow === data.section ? styles.ActiveTab : ''}`}
-            >
-              {data.name}
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-
-  if (groupDataLoading) {
-    return <Loading />;
-  }
-
-  return (
-    <>
-      <Heading formTitle={t('Group Details')} backLink={`/group/chat/${params.id}`} showHeaderHelp={false} />
-
-      <div className={styles.Container}>
-        {drawer}
-        <div className={styles.RightContainer}>{contentBody}</div>
-      </div>
       {dialog}
     </>
   );
