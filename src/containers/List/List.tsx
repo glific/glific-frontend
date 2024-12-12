@@ -227,7 +227,9 @@ export const List = ({
 
   // check if the user has access to manage collections
   const userRolePermissions = getUserRolePermissions();
-  const capitalListItemName = listItemName ? listItemName[0].toUpperCase() + listItemName.slice(1) : '';
+  const capitalListItemName = listItemName
+    ? listItemName[0].toUpperCase() + listItemName.slice(1)
+    : '';
 
   // function to get the default sorting set for columns
   const getDefaultSortColumn = (columnsFields: any) => {
@@ -331,9 +333,12 @@ export const List = ({
   let l;
 
   if (countQuery) {
-    [, { data: countData, error: e, loading: l, refetch: refetchCount }] = useLazyQuery(countQuery, {
-      variables: { filter },
-    });
+    [, { data: countData, error: e, loading: l, refetch: refetchCount }] = useLazyQuery(
+      countQuery,
+      {
+        variables: { filter },
+      }
+    );
   }
 
   // Get item data here
@@ -343,7 +348,8 @@ export const List = ({
   });
 
   // Get item data here
-  const [fetchUserCollections, { loading: loadingCollections, data: userCollections }] = useLazyQuery(GET_CURRENT_USER);
+  const [fetchUserCollections, { loading: loadingCollections, data: userCollections }] =
+    useLazyQuery(GET_CURRENT_USER);
 
   const checkUserRole = () => {
     userRole = getUserRole();
@@ -454,7 +460,9 @@ export const List = ({
     const { component, props } = useDelete(dialogMessage);
     dialogBox = (
       <DialogBox
-        title={dialogTitle || `Are you sure you want to delete the ${listItemName} "${deleteItemName}"?`}
+        title={
+          dialogTitle || `Are you sure you want to delete the ${listItemName} "${deleteItemName}"?`
+        }
         handleCancel={closeDialogBox}
         colorOk="warning"
         alignButtons="center"
@@ -520,7 +528,11 @@ export const List = ({
 
     const deleteButton = (Id: any, text: string) =>
       allowedAction.delete ? (
-        <div aria-label={t('Delete')} data-testid="DeleteIcon" onClick={() => showDialogHandler(Id, text)}>
+        <div
+          aria-label={t('Delete')}
+          data-testid="DeleteIcon"
+          onClick={() => showDialogHandler(Id, text)}
+        >
           <div className={styles.IconWithText}>
             <DeleteIcon className={styles.IconSize} />
             <div className={styles.TextButton}>Delete</div>
@@ -580,7 +592,9 @@ export const List = ({
                     <div>
                       {actionListMap(item, actionsInsideMore, true)}
                       <Divider className={styles.Divider}></Divider>
-                      <MenuItem className={styles.MenuItem}>{deleteButton(id, labelValue)}</MenuItem>
+                      <MenuItem className={styles.MenuItem}>
+                        {deleteButton(id, labelValue)}
+                      </MenuItem>
                     </div>
                   </Menu>
                 </Backdrop>
@@ -605,7 +619,9 @@ export const List = ({
                 if (event.target.checked) {
                   checkbox?.setSelectedItems([...checkbox?.selectedItems, listItem]);
                 } else {
-                  checkbox?.setSelectedItems(checkbox?.selectedItems.filter((item: any) => item.id !== listItem.id));
+                  checkbox?.setSelectedItems(
+                    checkbox?.selectedItems.filter((item: any) => item.id !== listItem.id)
+                  );
                 }
               }}
             />
@@ -680,7 +696,8 @@ export const List = ({
         <div>{t('Sorry, no results found! Please try a different search.')}</div>
       ) : (
         <div>
-          There are no {noItemText || listItemName}s right now. {button.show && t('Please create one.')}
+          There are no {noItemText || listItemName}s right now.{' '}
+          {button.show && t('Please create one.')}
         </div>
       )}
     </div>
@@ -692,7 +709,10 @@ export const List = ({
       {
         label: (
           <Checkbox
-            checked={checkbox?.selectedItems.length !== 0 && checkbox?.selectedItems.length === itemList.length}
+            checked={
+              checkbox?.selectedItems.length !== 0 &&
+              checkbox?.selectedItems.length === itemList.length
+            }
             onChange={(event) => {
               if (event.target.checked) {
                 checkbox?.setSelectedItems(data[listItem]);
@@ -754,7 +774,12 @@ export const List = ({
       );
     } else if (!button.link) {
       buttonContent = (
-        <Button color="primary" variant="contained" onClick={() => setNewItem(true)} data-testid="newItemButton">
+        <Button
+          color="primary"
+          variant="contained"
+          onClick={() => setNewItem(true)}
+          data-testid="newItemButton"
+        >
           {button.symbol} {button.label}
         </Button>
       );
@@ -790,14 +815,18 @@ export const List = ({
   ) : null;
 
   return (
-    <div className={`${showHeader ? styles.FullHeight : ''} ${styles.ListContainer}`}>
+    <div className={styles.ListContainer}>
       {showHeader && (
         <>
           <div className={styles.Header} data-testid="listHeader">
             <div>
               <div className={styles.Title}>
                 {backLink && (
-                  <BackIcon onClick={() => navigate(backLink)} className={styles.BackLink} data-testid="back-button" />
+                  <BackIcon
+                    onClick={() => navigate(backLink)}
+                    className={styles.BackLink}
+                    data-testid="back-button"
+                  />
                 )}
                 <div className={styles.TitleText}> {title}</div>
                 {helpData && <HelpIcon helpData={helpData} />}

@@ -270,11 +270,8 @@
 }
 
 .ListContainer {
-  background-color: #f8faf5;
-}
-
-.FullHeight {
   height: 100vh;
+  background-color: #f8faf5;
 }
 
 .Checkbox {
