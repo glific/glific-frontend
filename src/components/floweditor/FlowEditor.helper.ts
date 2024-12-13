@@ -52,7 +52,8 @@ export const setConfig = (uuid: any, isTemplate: boolean) => {
       simulateResume: false,
       globals: `${glificBase}globals`,
       groups: `${glificBase}groups`,
-      fields: `${glificBase}fields`,
+      fields: `${glificBase}fields?scope=contact`,
+      waGroupFields: `${glificBase}fields?scope=wa_group`,
       labels: `${glificBase}labels`,
       channels: `${glificBase}channels`,
       classifiers: `${glificBase}classifiers`,
@@ -98,6 +99,9 @@ export const setConfig = (uuid: any, isTemplate: boolean) => {
     config.filters.push('ticketer');
   }
 
+  if (services.whatsappGroupEnabled) {
+    config.filters.push('groups');
+  }
   return config;
 };
 
