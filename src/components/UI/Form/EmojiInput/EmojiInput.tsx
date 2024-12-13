@@ -49,13 +49,7 @@ export const EmojiInput = ({
   );
 
   const input = (
-    <Editor
-      field={{ name, value, onBlur }}
-      picker={picker}
-      onChange={handleChange}
-      form={form}
-      {...props}
-    />
+    <Editor field={{ name, value, onBlur }} picker={picker} onChange={handleChange} form={form} {...props} />
   );
 
   return (
@@ -66,11 +60,7 @@ export const EmojiInput = ({
   );
 };
 
-const EmojiPickerComponent = ({
-  showEmojiPicker,
-  setShowEmojiPicker,
-  handleClickAway,
-}: EmojiPickerProps) => {
+const EmojiPickerComponent = ({ showEmojiPicker, setShowEmojiPicker, handleClickAway }: EmojiPickerProps) => {
   const [editor] = useLexicalComposerContext();
 
   const emojiStyles = {

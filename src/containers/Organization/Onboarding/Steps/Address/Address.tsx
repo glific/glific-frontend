@@ -49,9 +49,7 @@ export const RegisteredAddress = ({
                 onChange={(e) => handleChange(e, key)}
                 value={field.value[key]}
               />
-              <p className={styles.Errors}>
-                {touched && errors && touched[key] && errors[key] ? errors[key] : ''}
-              </p>
+              <p className={styles.Errors}>{touched && errors && touched[key] && errors[key] ? errors[key] : ''}</p>
             </div>
           ))}
         {Object.keys(address)
@@ -66,9 +64,7 @@ export const RegisteredAddress = ({
                 onChange={(e) => handleChange(e, key)}
                 value={field.value[key]}
               />
-              <p className={styles.Errors}>
-                {touched && errors && touched[key] && errors[key] ? errors[key] : ''}
-              </p>
+              <p className={styles.Errors}>{touched && errors && touched[key] && errors[key] ? errors[key] : ''}</p>
             </div>
           ))}
       </div>

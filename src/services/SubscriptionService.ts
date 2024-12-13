@@ -36,10 +36,7 @@ export const recordRequests = () => {
 
   // now keep requests array from growing forever
   if (subscriptionRequests.length > requestTrimThreshold) {
-    subscriptionRequests = subscriptionRequests.slice(
-      0,
-      subscriptionRequests.length - requestTrimSize
-    );
+    subscriptionRequests = subscriptionRequests.slice(0, subscriptionRequests.length - requestTrimSize);
   }
 };
 
@@ -52,26 +49,20 @@ export const getSubscriptionDetails = (action: string, subscriptionData: any, gr
   switch (action) {
     case 'SENT':
       // set the receiver contact id
-      newMessage = groups
-        ? subscriptionData.data.sentWaGroupMessage
-        : subscriptionData.data.sentMessage;
+      newMessage = groups ? subscriptionData.data.sentWaGroupMessage : subscriptionData.data.sentMessage;
       entityId = groups
         ? subscriptionData.data.sentWaGroupMessage.waGroup.id
         : subscriptionData.data.sentMessage.receiver.id;
       break;
     case 'RECEIVED':
       // set the sender contact id
-      newMessage = groups
-        ? subscriptionData.data.receivedWaGroupMessage
-        : subscriptionData.data.receivedMessage;
+      newMessage = groups ? subscriptionData.data.receivedWaGroupMessage : subscriptionData.data.receivedMessage;
       entityId = groups
         ? subscriptionData.data.receivedWaGroupMessage.waGroup.id
         : subscriptionData.data.receivedMessage.sender.id;
       break;
     case 'COLLECTION':
-      newMessage = groups
-        ? subscriptionData.data.sentWaGroupCollectionMessage
-        : subscriptionData.data.sentGroupMessage;
+      newMessage = groups ? subscriptionData.data.sentWaGroupCollectionMessage : subscriptionData.data.sentGroupMessage;
       collectionId = groups
         ? subscriptionData.data.sentWaGroupCollectionMessage.groupId
         : subscriptionData.data.sentGroupMessage.groupId.toString();
@@ -97,11 +88,7 @@ export const getSubscriptionDetails = (action: string, subscriptionData: any, gr
   };
 };
 
-export const updateSimulatorConversations = (
-  cachedConversations: any,
-  subscriptionData: any,
-  action: string
-) => {
+export const updateSimulatorConversations = (cachedConversations: any, subscriptionData: any, action: string) => {
   // if there is no message data then return previous conversations
   if (!subscriptionData.data) {
     return cachedConversations;

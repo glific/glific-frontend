@@ -95,9 +95,7 @@ describe('<List /> actions', () => {
   test('add new Button contains a route to add new page', async () => {
     const { container } = render(listButtons);
     await waitFor(() => {
-      const button = container.querySelector(
-        'button.MuiButton-containedPrimary'
-      ) as HTMLButtonElement;
+      const button = container.querySelector('button.MuiButton-containedPrimary') as HTMLButtonElement;
       fireEvent.click(button);
     });
 

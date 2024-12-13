@@ -7,15 +7,9 @@ import { setUserSession } from 'services/AuthService';
 import SavedSearches from './SavedSearches';
 import { MemoryRouter } from 'react-router';
 
-const searchQueryWthLabelsMock = conversationMessageQuery(
-  { includeLabels: ['12'] },
-  'Jane Doe',
-  '919090909009',
-  1,
-  {
-    limit: 1,
-  }
-);
+const searchQueryWthLabelsMock = conversationMessageQuery({ includeLabels: ['12'] }, 'Jane Doe', '919090909009', 1, {
+  limit: 1,
+});
 
 const SavedSearch = (
   <MemoryRouter>

@@ -4,10 +4,7 @@ import InteractiveMessageIcon from 'assets/images/icons/InteractiveMessage/Dark.
 import DownArrow from 'assets/images/icons/DownArrow.svg?react';
 import DuplicateIcon from 'assets/images/icons/Duplicate.svg?react';
 import { List } from 'containers/List/List';
-import {
-  FILTER_INTERACTIVE_MESSAGES,
-  GET_INTERACTIVE_MESSAGES_COUNT,
-} from 'graphql/queries/InteractiveMessage';
+import { FILTER_INTERACTIVE_MESSAGES, GET_INTERACTIVE_MESSAGES_COUNT } from 'graphql/queries/InteractiveMessage';
 import { DELETE_INTERACTIVE } from 'graphql/mutations/InteractiveMessage';
 import { getInteractiveMessageBody } from 'common/utils';
 import { QUICK_REPLY } from 'common/constants';

@@ -86,9 +86,7 @@ test('it calls the cancel button', () => {
 test('error when no input is provided', () => {
   const { getByTestId } = render(messageTemplate);
   fireEvent.click(getByTestId('ok-button'));
-  expect(getByTestId('templateInput').querySelector('input')?.getAttribute('aria-invalid')).toBe(
-    'true'
-  );
+  expect(getByTestId('templateInput').querySelector('input')?.getAttribute('aria-invalid')).toBe('true');
 });
 
 test('error removed when user inputs a value', () => {

@@ -55,9 +55,7 @@ export const SettingList = () => {
   let providersList: any = [];
   if (providerData) {
     const providers = [...providerData.providers];
-    const sortedProviders = providers.sort((first: any, second: any) =>
-      first.name > second.name ? 1 : -1
-    );
+    const sortedProviders = providers.sort((first: any, second: any) => (first.name > second.name ? 1 : -1));
 
     // create setting list of Organisation & providers
     providersList = [...sortedProviders];
@@ -69,9 +67,7 @@ export const SettingList = () => {
         <div
           key={index}
           onClick={() => navigate(`/settings/${data.shortcode}`)}
-          className={`${styles.Tab} ${
-            location.pathname == `/settings/${data.shortcode}` && styles.ActiveTab
-          }`}
+          className={`${styles.Tab} ${location.pathname == `/settings/${data.shortcode}` && styles.ActiveTab}`}
         >
           {data.name}
         </div>
@@ -81,9 +77,7 @@ export const SettingList = () => {
         <div
           key={index}
           onClick={() => navigate(`/settings/${data.shortcode}`)}
-          className={`${styles.Tab} ${
-            location.pathname == `/settings/${data.shortcode}` && styles.ActiveTab
-          }`}
+          className={`${styles.Tab} ${location.pathname == `/settings/${data.shortcode}` && styles.ActiveTab}`}
         >
           {data.name}
         </div>
@@ -93,9 +87,7 @@ export const SettingList = () => {
 
   const completeList = [...list, ...providersList];
 
-  const heading = completeList.find(
-    (data: any) => data.shortcode === location.pathname.replace(/\/settings\//gi, '')
-  );
+  const heading = completeList.find((data: any) => data.shortcode === location.pathname.replace(/\/settings\//gi, ''));
 
   return (
     <>
@@ -103,10 +95,7 @@ export const SettingList = () => {
       <Box className={styles.SettingsContainer}>
         {drawer}
         <Box className={styles.SettingBody}>
-          <SettingHeading
-            formTitle={heading ? heading.name : ''}
-            description={heading ? heading.description : ''}
-          />
+          <SettingHeading formTitle={heading ? heading.name : ''} description={heading ? heading.description : ''} />
           <Outlet />
         </Box>
       </Box>

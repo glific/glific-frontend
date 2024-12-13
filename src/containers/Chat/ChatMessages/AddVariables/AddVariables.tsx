@@ -106,10 +106,7 @@ export const AddVariables = ({
   const updateText = (variable: any) => {
     let body = template?.body;
     Object.keys(variable).forEach((element: string, index: number) => {
-      body = body.replace(
-        `{{${index + 1}}}`,
-        variable[element].key ? variable[element].key : variable[element]
-      );
+      body = body.replace(`{{${index + 1}}}`, variable[element].key ? variable[element].key : variable[element]);
     });
     updateEditorState(body);
     selectedVariables = Object.values(variable).map((item: any) => (item.key ? item.key : item));

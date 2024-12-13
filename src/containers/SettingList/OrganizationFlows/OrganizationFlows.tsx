@@ -12,19 +12,9 @@ import { Input } from 'components/UI/Form/Input/Input';
 import { FormLayout } from 'containers/Form/FormLayout';
 import { GET_FLOWS } from 'graphql/queries/Flow';
 import { GET_ORGANIZATION, USER_LANGUAGES } from 'graphql/queries/Organization';
-import {
-  CREATE_ORGANIZATION,
-  DELETE_ORGANIZATION,
-  UPDATE_ORGANIZATION,
-} from 'graphql/mutations/Organization';
+import { CREATE_ORGANIZATION, DELETE_ORGANIZATION, UPDATE_ORGANIZATION } from 'graphql/mutations/Organization';
 import Settingicon from 'assets/images/icons/Settings/Settings.svg?react';
-import {
-  dayList,
-  FLOW_STATUS_PUBLISHED,
-  ISO_DATE_FORMAT,
-  EXTENDED_TIME_FORMAT,
-  setVariables,
-} from 'common/constants';
+import { dayList, FLOW_STATUS_PUBLISHED, ISO_DATE_FORMAT, EXTENDED_TIME_FORMAT, setVariables } from 'common/constants';
 import styles from './OrganizationFlows.module.css';
 import dayjs from 'dayjs';
 
@@ -203,11 +193,7 @@ export const OrganizationFlows = () => {
     endTime: Yup.string()
       .test('is-midnight', t('End time cannot be 12 AM'), (value) => value !== 'T00:00:00')
       .test('is-valid', t('Not a valid time'), (value) => value !== 'Invalid date'),
-    startTime: Yup.string().test(
-      'is-valid',
-      t('Not a valid time'),
-      (value) => value !== 'Invalid date'
-    ),
+    startTime: Yup.string().test('is-valid', t('Not a valid time'), (value) => value !== 'Invalid date'),
     newcontactFlowId: Yup.object()
       .nullable()
       .when('newcontactFlowEnabled', {
@@ -351,9 +337,7 @@ export const OrganizationFlows = () => {
       component: Checkbox,
       name: 'regxFlowEnabled',
       className: styles.Checkbox,
-      title: (
-        <Typography className={styles.CheckboxLabel}>{t('Regular expression flow')}</Typography>
-      ),
+      title: <Typography className={styles.CheckboxLabel}>{t('Regular expression flow')}</Typography>,
       handleChange: setRegxFlowEnabled,
     },
     {
@@ -374,9 +358,7 @@ export const OrganizationFlows = () => {
       type: 'text',
       label: t('Regular expression'),
       disabled: !regxFlowEnabled,
-      helperText: t(
-        'A pattern that the regular expression engine attempts to match in input text.'
-      ),
+      helperText: t('A pattern that the regular expression engine attempts to match in input text.'),
     },
     {
       component: Input,

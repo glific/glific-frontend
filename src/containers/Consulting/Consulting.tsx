@@ -12,11 +12,7 @@ import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { FormLayout } from 'containers/Form/FormLayout';
 import ConsultingIcon from 'assets/images/icons/icon-consulting.svg?react';
 import { GET_CONSULTING_HOURS_BY_ID, GET_CONSULTING_HOURS } from 'graphql/queries/Consulting';
-import {
-  CREATE_CONSULTING_HOUR,
-  UPDATE_CONSULTING_HOURS,
-  DELETE_CONSULTING_HOURS,
-} from 'graphql/mutations/Consulting';
+import { CREATE_CONSULTING_HOUR, UPDATE_CONSULTING_HOURS, DELETE_CONSULTING_HOURS } from 'graphql/mutations/Consulting';
 import { FILTER_ORGANIZATIONS } from 'graphql/queries/Organization';
 import { setVariables } from 'common/constants';
 import styles from './Consulting.module.css';

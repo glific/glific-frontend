@@ -1,8 +1,4 @@
-import {
-  Button as ButtonElement,
-  CircularProgress,
-  ButtonProps as MaterialButtonProps,
-} from '@mui/material';
+import { Button as ButtonElement, CircularProgress, ButtonProps as MaterialButtonProps } from '@mui/material';
 import styles from './Button.module.css';
 
 export interface ButtonProps extends MaterialButtonProps {
@@ -13,12 +9,7 @@ export interface ButtonProps extends MaterialButtonProps {
   type?: any;
 }
 
-export const Button = ({
-  type = 'button',
-  loading = false,
-  disabled = false,
-  ...props
-}: ButtonProps) => {
+export const Button = ({ type = 'button', loading = false, disabled = false, ...props }: ButtonProps) => {
   const { variant, color, onClick, className, children, ...rest } = props;
 
   return (
@@ -32,9 +23,7 @@ export const Button = ({
       type={type}
     >
       {children}
-      {loading && (
-        <CircularProgress data-testid="loadingBtn" size={28} className={styles.buttonProgress} />
-      )}
+      {loading && <CircularProgress data-testid="loadingBtn" size={28} className={styles.buttonProgress} />}
     </ButtonElement>
   );
 };

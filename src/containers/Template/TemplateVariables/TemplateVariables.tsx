@@ -64,9 +64,7 @@ export const TemplateVariables = ({
                       paddingLeft: '14px',
                     },
                   }}
-                  startAdornment={
-                    <div className={styles.VariableNumber}>{`{{${variable.id}}}`}</div>
-                  }
+                  startAdornment={<div className={styles.VariableNumber}>{`{{${variable.id}}}`}</div>}
                   fullWidth
                   label="Name"
                   placeholder={'Define value '}
@@ -76,16 +74,12 @@ export const TemplateVariables = ({
                   onChange={(event) => {
                     let currentVariable = variables.find((v) => v.id === variable.id);
                     currentVariable.text = event.target.value;
-                    setVariables(
-                      variables.map((v) => (v.id === variable.id ? currentVariable : v))
-                    );
+                    setVariables(variables.map((v) => (v.id === variable.id ? currentVariable : v)));
                   }}
                 />
 
                 {errors.variables && touched.variables && touched.variables[index] ? (
-                  <FormHelperText className={styles.DangerText}>
-                    {errors.variables[index]?.text}
-                  </FormHelperText>
+                  <FormHelperText className={styles.DangerText}>{errors.variables[index]?.text}</FormHelperText>
                 ) : null}
               </div>
               <DeleteIcon

@@ -9,11 +9,7 @@ import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Input } from 'components/UI/Form/Input/Input';
 import { FormLayout } from 'containers/Form/FormLayout';
 import { GET_ORGANIZATION, GET_QUALITY_RATING, USER_LANGUAGES } from 'graphql/queries/Organization';
-import {
-  CREATE_ORGANIZATION,
-  DELETE_ORGANIZATION,
-  UPDATE_ORGANIZATION,
-} from 'graphql/mutations/Organization';
+import { CREATE_ORGANIZATION, DELETE_ORGANIZATION, UPDATE_ORGANIZATION } from 'graphql/mutations/Organization';
 import { GET_LANGUAGES } from 'graphql/queries/List';
 import Settingicon from 'assets/images/icons/Settings/Settings.svg?react';
 import CopyIcon from 'assets/images/icons/Settings/Copy.svg?react';

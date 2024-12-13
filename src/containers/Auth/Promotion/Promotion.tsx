@@ -17,10 +17,7 @@ export const Promotion = () => {
         {minimized ? (
           <>
             <div className={styles.GiftCard}>Level up with Glific</div>
-            <MaximizeIcon
-              className={styles.AccordianIcon}
-              onClick={() => setMinimized(!minimized)}
-            />
+            <MaximizeIcon className={styles.AccordianIcon} onClick={() => setMinimized(!minimized)} />
           </>
         ) : (
           <MinimizeIcon className={styles.AccordianIcon} onClick={() => setMinimized(!minimized)} />
@@ -52,8 +49,8 @@ export const Promotion = () => {
             </div> */}
             <div className={styles.BodyListText}>
               <div>
-                Learn about the powerful integrations NGOs have done with Glific to create
-                interconnected experience for their beneficiaries.
+                Learn about the powerful integrations NGOs have done with Glific to create interconnected experience for
+                their beneficiaries.
               </div>
             </div>
           </div>

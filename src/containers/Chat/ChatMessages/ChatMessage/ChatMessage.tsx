@@ -214,11 +214,7 @@ export const ChatMessage = ({
   let saveTemplateMessage;
   if (showSaveMessageDialog) {
     saveTemplateMessage = (
-      <AddToMessageTemplate
-        id={id}
-        message={WhatsAppToJsx(body)}
-        changeDisplay={saveMessageTemplate}
-      />
+      <AddToMessageTemplate id={id} message={WhatsAppToJsx(body)} changeDisplay={saveMessageTemplate} />
     );
   }
 
@@ -310,17 +306,9 @@ export const ChatMessage = ({
   return (
     <div>
       {daySeparatorContent}
-      <div
-        className={additionalClass}
-        ref={messageRef}
-        data-testid="message"
-        id={`search${messageNumber}`}
-      >
+      <div className={additionalClass} ref={messageRef} data-testid="message" id={`search${messageNumber}`}>
         {contextMessage ? (
-          <Tooltip
-            title={dayjs(contextMessage.insertedAt).format(SHORT_DATE_FORMAT)}
-            placement="right"
-          >
+          <Tooltip title={dayjs(contextMessage.insertedAt).format(SHORT_DATE_FORMAT)} placement="right">
             <div
               className={styles.ReplyMessage}
               onClick={() => jumpToMessage(contextMessage.messageNumber)}
@@ -392,11 +380,7 @@ export const ChatMessage = ({
               {({ TransitionProps }) => (
                 <Fade {...TransitionProps} timeout={350}>
                   <Paper elevation={3}>
-                    <Button
-                      className={styles.Popper}
-                      color="primary"
-                      onClick={() => setShowSaveMessageDialog(true)}
-                    >
+                    <Button className={styles.Popper} color="primary" onClick={() => setShowSaveMessageDialog(true)}>
                       {t('Add to speed sends')}
                     </Button>
                     {type !== 'TEXT' && (
@@ -428,9 +412,7 @@ export const ChatMessage = ({
             {templateButtons && <TemplateButtons template={templateButtons} />}
           </div>
 
-          {displayLabel ? (
-            <div className={`${styles.LabelContainer} ${labelContainer}`}>{displayLabel}</div>
-          ) : null}
+          {displayLabel ? <div className={`${styles.LabelContainer} ${labelContainer}`}>{displayLabel}</div> : null}
         </div>
       </div>
     </div>

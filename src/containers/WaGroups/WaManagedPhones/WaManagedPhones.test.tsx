@@ -2,11 +2,7 @@ import { MockedProvider } from '@apollo/client/testing';
 import WaManagedPhones from './WaManagedPhones';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { setNotification } from 'common/notification';
-import {
-  syncWaGroupContactsQuery,
-  syncWaGroupContactsQueryWithError,
-  waManagedPhonesQuery,
-} from 'mocks/Groups';
+import { syncWaGroupContactsQuery, syncWaGroupContactsQueryWithError, waManagedPhonesQuery } from 'mocks/Groups';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import { GET_WA_MANAGED_PHONES } from 'graphql/queries/WaGroups';
 

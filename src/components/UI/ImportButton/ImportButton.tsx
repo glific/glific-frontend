@@ -11,13 +11,7 @@ export interface ImportButtonProps {
   fileType?: string;
 }
 
-export const ImportButton = ({
-  title,
-  onImport,
-  afterImport,
-  id,
-  fileType = '*',
-}: ImportButtonProps) => {
+export const ImportButton = ({ title, onImport, afterImport, id, fileType = '*' }: ImportButtonProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const changeHandler = (event: any) => {
     const media = event.target.files[0];
