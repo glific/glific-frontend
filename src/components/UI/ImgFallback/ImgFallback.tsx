@@ -10,7 +10,7 @@ type ImgProps = {
 
 const ImgFallback = ({ src, alt, ...rest }: ImgProps) => {
   const [imgSrc, setImgSrc] = useState<string>(src);
-  const imgRef: any = useRef<HTMLImageElement>();
+  const imgRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
     setImgSrc(src);
