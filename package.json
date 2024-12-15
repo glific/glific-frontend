@@ -3,6 +3,10 @@
   "version": "6.2.2",
   "private": true,
   "type": "module",
+  "license": {
+    "type": "AGPL-3.0",
+    "url": "https://github.com/glific/glific-frontend?tab=AGPL-3.0-1-ov-file#readme"
+  },
   "dependencies": {
     "@apollo/client": "^3.12.3",
     "@apollo/link-context": "^2.0.0-beta.3",
