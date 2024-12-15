@@ -146,3 +146,12 @@
     transform: scale3d(1, 1, 1);
   }
 }
+.ExpandedIcon {
+  color: #717971;
+  margin-left: auto;
+}
+
+.CollapsedIcon {
+  color: #717971;
+  margin-left: auto;
+}

@@ -18,7 +18,7 @@ import { getSideDrawerMenus } from 'context/role';
 import styles from './SideMenus.module.css';
 import { useTranslation } from 'react-i18next';
 import { Menu } from 'config/menu';
-
+import { ArrowDropDown } from '@mui/icons-material';
 export interface SideMenusProps {
   opened: boolean;
 }
@@ -176,6 +176,16 @@ const SideMenus = ({ opened }: SideMenusProps) => {
           });
 
       const links = menu.children ? {} : { component: NavLink, to: parentredirectPath };
+      const dropdownArrow = menu.children && (
+        <ArrowDropDown
+          className={isSelected ? styles.ExpandedIcon : styles.CollapsedIcon}
+          style={{
+            transform: isSelected ? 'rotate(180deg)' : 'rotate(0deg)',
+            transition: 'transform 0.5s ease',
+          }}
+        />
+      );
+  
       let listItemButton = (
         <ListItemButton
           disableRipple
@@ -199,6 +209,7 @@ const SideMenus = ({ opened }: SideMenusProps) => {
             />
           </ListItemIcon>
           {opened && (
+            <>
             <ListItemText
               disableTypography
               data-testid="list-item"
@@ -207,6 +218,8 @@ const SideMenus = ({ opened }: SideMenusProps) => {
               }
               primary={t(menu.title as any)}
             />
+            {dropdownArrow}
+            </>
           )}
           {menu.new && <span className={styles.New}>{'New'}</span>}
         </ListItemButton>
