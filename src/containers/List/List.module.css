@@ -274,6 +274,10 @@
   background-color: #f8faf5;
 }
 
+.FullHeight {
+  height: 100vh;
+}
+
 .Checkbox {
   min-width: 50px;
   padding: 1rem;
