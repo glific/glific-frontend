@@ -218,7 +218,6 @@ const SideMenus = ({ opened }: SideMenusProps) => {
               }
               primary={t(menu.title as any)}
             />
-            
             {dropdownArrow}
             </>
           )}
