@@ -169,9 +169,17 @@ export const GET_WA_GROUP = gql`
         id
         lastCommunicationAt
         bspId
+        fields
         waManagedPhone {
           phone
           id
+        }
+        groups {
+          id
+          label
+          users {
+            name
+          }
         }
       }
     }

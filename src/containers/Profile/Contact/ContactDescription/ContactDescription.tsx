@@ -9,12 +9,14 @@ import styles from './ContactDescription.module.css';
 
 export interface ContactDescriptionProps {
   fields: any;
-  settings: any;
-  phone: string;
-  maskedPhone: string;
+  settings?: any;
+  phone?: string;
+  maskedPhone?: string;
   collections: any;
-  lastMessage: string;
-  statusMessage: string;
+  lastMessage?: string;
+  statusMessage?: string;
+  groups?: boolean;
+  customStyles?: string;
 }
 
 export const ContactDescription = ({
@@ -25,6 +27,8 @@ export const ContactDescription = ({
   statusMessage,
   fields,
   settings,
+  groups = false,
+  customStyles,
 }: ContactDescriptionProps) => {
   const [showPlainPhone, setShowPlainPhone] = useState(false);
   const { t } = useTranslation();
@@ -45,16 +49,19 @@ export const ContactDescription = ({
   // list of collections that the contact belongs
   const collectionList = collections.map((collection: any) => collection.label).join(', ');
 
-  const collectionDetails = [
-    { label: t('Collections'), value: collectionList || t('None') },
-    {
-      label: t('Assigned to'),
-      value: assignedToCollection || t('None'),
-    },
-  ];
+  let collectionDetails = [{ label: t('Collections'), value: collectionList || t('None') }];
+  if (!groups) {
+    collectionDetails = [
+      ...collectionDetails,
+      {
+        label: t('Assigned to'),
+        value: assignedToCollection || t('None'),
+      },
+    ];
+  }
 
   let settingsValue: any = '';
-  if (typeof settings === 'string') {
+  if (settings && typeof settings === 'string') {
     settingsValue = JSON.parse(settings);
   }
 
@@ -106,23 +113,30 @@ export const ContactDescription = ({
     );
   }
 
-  return (
-    <div className={styles.DescriptionContainer} data-testid="contactDescription">
-      <div className={styles.DetailBlock}>
-        <Typography data-testid="formLabel" variant="h5" className={styles.FieldLabel}>
-          Number
-        </Typography>
-        <div className={styles.Description}>
-          {phoneDisplay}
-          <div className={styles.SessionTimer}>
-            <span>{t('Session Timer')}</span>
-            <Timer time={lastMessage} variant="secondary" />
+  const numberBlock = (
+    <>
+      {!groups && (
+        <>
+          <div className={styles.DetailBlock}>
+            <Typography data-testid="formLabel" variant="h5" className={styles.FieldLabel}>
+              Number
+            </Typography>
+            <div className={styles.Description}>
+              {phoneDisplay}
+              <div className={styles.SessionTimer}>
+                <span>{t('Session Timer')}</span>
+                <Timer time={lastMessage} variant="secondary" />
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+          <div className={styles.Divider} />
+        </>
+      )}
+    </>
+  );
 
-      <div className={styles.Divider} />
-
+  const collectionBlock = (
+    <>
       <div className={styles.DetailBlock}>
         {collectionDetails.map((collectionItem: any) => (
           <div key={collectionItem.label}>
@@ -135,38 +149,65 @@ export const ContactDescription = ({
       </div>
 
       <div className={styles.Divider} />
+    </>
+  );
 
-      <div className={styles.DetailBlock}>
-        <div>
-          <div className={styles.FieldLabel}>Status</div>
-          <div className={styles.DescriptionItemValue}>{statusMessage}</div>
+  const settingsBlock = (
+    <>
+      {settingsValue &&
+        !groups &&
+        typeof settingsValue === 'object' &&
+        Object.keys(settingsValue).map((key) => (
+          <div key={key}>
+            <div className={styles.FieldLabel}>{key}</div>
+            <div className={styles.DescriptionItemValue}>
+              {Object.keys(settingsValue[key])
+                .filter((settingKey) => settingsValue[key][settingKey] === true)
+                .join(', ')}
+            </div>
+            <div className={styles.Divider} />
+          </div>
+        ))}
+    </>
+  );
+
+  const statusBlock = (
+    <>
+      {!groups && (
+        <div className={styles.DetailBlock}>
+          <div>
+            <div className={styles.FieldLabel}>Status</div>
+            <div className={styles.DescriptionItemValue}>{statusMessage}</div>
+          </div>
+          <div className={styles.Divider} />
         </div>
-        <div className={styles.Divider} />
-        {settingsValue &&
-          typeof settingsValue === 'object' &&
-          Object.keys(settingsValue).map((key) => (
-            <div key={key}>
-              <div className={styles.FieldLabel}>{key}</div>
-              <div className={styles.DescriptionItemValue}>
-                {Object.keys(settingsValue[key])
-                  .filter((settingKey) => settingsValue[key][settingKey] === true)
-                  .join(', ')}
-              </div>
-              <div className={styles.Divider} />
+      )}
+    </>
+  );
+
+  const fieldsBlock = (
+    <div className={styles.DetailBlock}>
+      {fieldsValue &&
+        typeof fieldsValue === 'object' &&
+        Object.keys(fieldsValue).map((key) => (
+          <div key={key}>
+            <div className={styles.FieldLabel}>
+              {fieldsValue[key].label ? fieldsValue[key].label : key.replace('_', ' ')}
             </div>
-          ))}
-        {fieldsValue &&
-          typeof fieldsValue === 'object' &&
-          Object.keys(fieldsValue).map((key) => (
-            <div key={key}>
-              <div className={styles.FieldLabel}>
-                {fieldsValue[key].label ? fieldsValue[key].label : key.replace('_', ' ')}
-              </div>
-              <div className={styles.DescriptionItemValue}>{fieldsValue[key].value}</div>
-              <div className={styles.Divider} />
-            </div>
-          ))}
-      </div>
+            <div className={styles.DescriptionItemValue}>{fieldsValue[key].value}</div>
+            <div className={styles.Divider} />
+          </div>
+        ))}
+    </div>
+  );
+
+  return (
+    <div className={`${styles.DescriptionContainer} ${customStyles}`} data-testid="contactDescription">
+      {numberBlock}
+      {collectionBlock}
+      {settingsBlock}
+      {statusBlock}
+      {fieldsBlock}
     </div>
   );
 };
