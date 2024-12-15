@@ -790,7 +790,7 @@ export const List = ({
   ) : null;
 
   return (
-    <div className={styles.ListContainer}>
+    <div className={`${showHeader ? styles.FullHeight : ''} ${styles.ListContainer}`}>
       {showHeader && (
         <>
           <div className={styles.Header} data-testid="listHeader">
