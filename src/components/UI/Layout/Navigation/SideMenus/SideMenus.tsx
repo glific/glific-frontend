@@ -19,6 +19,7 @@ import styles from './SideMenus.module.css';
 import { useTranslation } from 'react-i18next';
 import { Menu } from 'config/menu';
 import { ArrowDropDown } from '@mui/icons-material';
+
 export interface SideMenusProps {
   opened: boolean;
 }
@@ -185,7 +186,6 @@ const SideMenus = ({ opened }: SideMenusProps) => {
           }}
         />
       );
-  
       let listItemButton = (
         <ListItemButton
           disableRipple
@@ -218,6 +218,7 @@ const SideMenus = ({ opened }: SideMenusProps) => {
               }
               primary={t(menu.title as any)}
             />
+            
             {dropdownArrow}
             </>
           )}
