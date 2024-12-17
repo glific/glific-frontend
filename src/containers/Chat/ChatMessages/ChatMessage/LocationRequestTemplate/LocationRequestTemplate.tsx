@@ -22,7 +22,7 @@ export const LocationRequestTemplate = ({
   const body = content.body.text;
   const locationPayload = SAMPLE_MEDIA_FOR_SIMULATOR[5].payload;
   return (
-    <div>
+    <div data-testid="locationTemplate">
       <div className={styles.MessageContent}>
         <ChatMessageType type="TEXT" body={body} isSimulatedMessage={isSimulator} />
       </div>

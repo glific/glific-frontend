@@ -14,9 +14,7 @@ let HOSTNAME =
     ? `${API_PREFIX}.${window.location.hostname}`
     : window.location.hostname;
 
-let GLIFIC_BACKEND_URL = API_PORT
-  ? `${PROTOCOL}//${HOSTNAME}:${API_PORT}`
-  : `${PROTOCOL}//${HOSTNAME}`;
+let GLIFIC_BACKEND_URL = API_PORT ? `${PROTOCOL}//${HOSTNAME}:${API_PORT}` : `${PROTOCOL}//${HOSTNAME}`;
 
 let SOCKET_URL = API_PORT
   ? `${SOCKET_PROTOCOL}://${HOSTNAME}:${API_PORT}/socket`
@@ -55,6 +53,7 @@ export const ONBOARD_URL_UPDATE = `${GLIFIC_API_URL}/v1/onboard/update-registrat
 export const ONBOARD_URL_REACT_OUT = `${GLIFIC_API_URL}/v1/onboard/reachout`;
 export const ONBOARD_URL = `${GLIFIC_API_URL}/v1/onboard/setup`;
 export const RECAPTCHA_CLIENT_KEY = envVariables.VITE_RECAPTCHA_CLIENT_KEY;
+export const DISCORD_URL='https://discord.gg/kyqsZAJEPK';
 export const UPLOAD_CONTACTS_SAMPLE =
   'https://storage.googleapis.com/cc-tides/sample_contacts_import.csv';
 export const UPLOAD_CONTACTS_ADMIN_SAMPLE =
@@ -63,8 +62,7 @@ export const REGISTRATION_HELP_LINK =
   'https://glific.slab.com/public/posts/02-managing-staff-members-creating-account-on-glific-gg6fkw8h';
 export const CONTACT_MANAGE_HELP_LINK =
   'https://glific.github.io/docs/docs/FAQ/Update%20collection%20with%20bulk%20contacts%20or%20contact%20fields/';
-export const SAMPLE_SHEET_LINK =
-  'https://docs.google.com/spreadsheets/d/1fRpFyicqrUFxd79u_dGC8UOHEtAT3rA-G2i4tvOgScw';
+export const SAMPLE_SHEET_LINK = 'https://docs.google.com/spreadsheets/d/1fRpFyicqrUFxd79u_dGC8UOHEtAT3rA-G2i4tvOgScw';
 export const BULK_APPLY_SAMPLE_LINK =
   'https://docs.google.com/spreadsheets/d/1x04wI9palh1Ag11TrdBbUj9pnyNOw8-I4834qN3idik';
 

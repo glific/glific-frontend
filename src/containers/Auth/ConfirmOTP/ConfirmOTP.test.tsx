@@ -1,5 +1,5 @@
 import { render, screen, waitFor } from '@testing-library/react';
-import UserEvent from '@testing-library/user-event';
+import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { vi } from 'vitest';
 import axios from 'axios';
@@ -10,6 +10,7 @@ import { ConfirmOTP } from './ConfirmOTP';
 
 vi.mock('axios');
 const mockedAxios = axios as any;
+const user = userEvent.setup();
 
 const mockedState = {
   state: {
@@ -48,9 +49,7 @@ describe('<ConfirmOTP />', () => {
     const { findByTestId } = render(wrapper);
 
     const authContainer = await findByTestId('AuthContainer');
-    expect(authContainer).toHaveTextContent(
-      'Please confirm the OTP received at your WhatsApp number.'
-    );
+    expect(authContainer).toHaveTextContent('Please confirm the OTP received at your WhatsApp number.');
   });
 
   it('test the OTP form submission with correct OTP', async () => {
@@ -63,11 +62,11 @@ describe('<ConfirmOTP />', () => {
     await waitFor(() => {
       // enter the otp
       const input = screen.getByRole('textbox');
-      UserEvent.type(input, '12345');
+      user.type(input, '12345');
 
       // click on continue
       const continueButton = screen.getByText('Continue');
-      UserEvent.click(continueButton);
+      user.click(continueButton);
     });
 
     await waitFor(() => {});
@@ -82,11 +81,11 @@ describe('<ConfirmOTP />', () => {
     await waitFor(() => {
       // enter the otp
       const input = screen.getByRole('textbox');
-      UserEvent.type(input, '12345');
+      user.type(input, '12345');
 
       // click on continue
       const continueButton = screen.getByText('Continue');
-      UserEvent.click(continueButton);
+      user.click(continueButton);
     });
 
     await waitFor(() => {});
@@ -102,7 +101,7 @@ describe('<ConfirmOTP />', () => {
 
     await waitFor(() => {
       const resendButton = screen.getByTestId('resendOtp');
-      UserEvent.click(resendButton);
+      user.click(resendButton);
     });
     // click on resend button
 
@@ -119,7 +118,7 @@ describe('<ConfirmOTP />', () => {
     await waitFor(() => {
       // click on resend button
       const resendButton = screen.getByTestId('resendOtp');
-      UserEvent.click(resendButton);
+      user.click(resendButton);
     });
 
     await waitFor(() => {});

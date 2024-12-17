@@ -30,6 +30,8 @@ interface FormLayoutProps {
   showModal?: boolean;
   isDisabled?: boolean;
   handleEffect?: Function;
+  customError?: null | string;
+  setCustomError?: Function;
 }
 
 export const FormLayout = ({
@@ -52,6 +54,8 @@ export const FormLayout = ({
   showModal,
   isDisabled,
   handleEffect,
+  customError,
+  setCustomError,
 }: FormLayoutProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -86,12 +90,7 @@ export const FormLayout = ({
 
   useEffect(() => {
     if (handleEffect) handleEffect(identifier, formik);
-  }, [
-    formik.touched?.name,
-    formik.values.name,
-    formik.values.registered_address,
-    formik.values.same_address,
-  ]);
+  }, [formik.touched?.name, formik.values.name, formik.values.registered_address, formik.values.same_address]);
 
   const header = (
     <div className={styles.Header}>
@@ -119,11 +118,7 @@ export const FormLayout = ({
             if (field.children) {
               return (
                 <div className={styles.FormSection} key={key}>
-                  <Typography
-                    data-testid="formLabel"
-                    variant="h5"
-                    className={styles.SectionHeading}
-                  >
+                  <Typography data-testid="formLabel" variant="h5" className={styles.SectionHeading}>
                     {field.label}
                   </Typography>
                   <div className={styles.FormFields}>
@@ -131,11 +126,7 @@ export const FormLayout = ({
                       return (
                         <div className={child.additionalStyles} key={i}>
                           {child.label && (
-                            <Typography
-                              data-testid="formLabel"
-                              variant="h5"
-                              className={styles.FieldLabel}
-                            >
+                            <Typography data-testid="formLabel" variant="h5" className={styles.FieldLabel}>
                               {child.label}
                             </Typography>
                           )}
@@ -157,9 +148,7 @@ export const FormLayout = ({
                 )}
 
                 <Field key={key} {...field} onSubmit={formik.submitForm} />
-                {field.fieldEndAdornment &&
-                  field.fieldEndAdornment.show &&
-                  field.fieldEndAdornment.component(formik)}
+                {field.fieldEndAdornment && field.fieldEndAdornment.show && field.fieldEndAdornment.component(formik)}
               </div>
             );
           })}
@@ -172,6 +161,8 @@ export const FormLayout = ({
             variant="outlined"
             color="primary"
             onClick={() => {
+              const values = setPayload(formik.values);
+              saveData(values, identifier);
               handleStepChange(false);
             }}
             className={styles.Button}
@@ -217,7 +208,7 @@ export const FormLayout = ({
   );
 
   let modal;
-
+  let errorModal;
   if (showModal)
     modal = (
       <DialogBox
@@ -225,20 +216,35 @@ export const FormLayout = ({
         handleOk={() => {
           saveHandler(formik.values, formik.setErrors);
         }}
-        title={'Confirmation'}
-        buttonOk={'Confirm'}
+        title="Confirmation"
+        buttonOk="Confirm"
         buttonCancel="Cancel"
         buttonOkLoading={loading}
       >
         <div className={styles.Modal}>
-          <p>
-            You wont be able to make changes to this page once confirmed. Do you want to go ahead?
-          </p>
+          <p>You wont be able to make changes to this page once confirmed. Do you want to go ahead?</p>
           {loading && <p className={styles.Wait}>Please wait, this might take a few seconds.</p>}
         </div>
       </DialogBox>
     );
 
+  if (customError && setCustomError) {
+    errorModal = (
+      <DialogBox
+        handleOk={() => setCustomError(null)}
+        handleCancel={() => setCustomError(null)}
+        title="Something went wrong!"
+        buttonOk="Ok"
+        skipCancel
+        colorOk="warning"
+      >
+        <div className={styles.Modal}>
+          <p>{customError}</p>
+          <p>Please contact the Glific team for support.</p>
+        </div>
+      </DialogBox>
+    );
+  }
   return (
     <FormikProvider value={formik}>
       <div className={styles.FormContainer}>
@@ -246,6 +252,7 @@ export const FormLayout = ({
         {form}
       </div>
       {isModalOpen && modal}
+      {errorModal}
     </FormikProvider>
   );
 };

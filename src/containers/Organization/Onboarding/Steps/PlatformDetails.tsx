@@ -20,23 +20,20 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
   const [shortcode, setShortcode] = useState<string>('');
   const [phone, setPhone] = useState<string>('');
   const [code, setCode] = useState('[shortcode]');
+  const [customError, setCustomError] = useState(null);
 
   const [isDisabled, setIsDisabled] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const FormSchema = Yup.object().shape({
-    name: Yup.string()
-      .required(t('Name is required.'))
-      .max(40, t('Name should not exceed 40 characters')),
+    name: Yup.string().required(t('Name is required.')).max(40, t('Name should not exceed 40 characters')),
     app_name: Yup.string().required(t('App name is required.')),
     api_key: Yup.string().required(t('API key is required.')),
     shortcode: Yup.string()
       .required(t('Shortcode is required.'))
       .max(8, 'Shortcode cannot be more than 8 characters.')
-      .matches(/^\S*$/, 'Shortcode cannot contain spaces.'),
-    phone: Yup.string()
-      .required(t('Phone number is required.'))
-      .min(7, t('Enter a valid phone number.')),
+      .matches(/^[a-z0-9]([-a-z0-9]*[a-z0-9])?$/, 'Invalid shortcode.'),
+    phone: Yup.string().required(t('Phone number is required.')).min(7, t('Enter a valid phone number.')),
   });
 
   const initialFormValues: any = { name, app_name, api_key, shortcode, phone };
@@ -90,9 +87,7 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
       name: 'app_name',
       type: 'text',
       inputLabel: 'App Name',
-      helperText: (
-        <span className={styles.FormHelperText}>Name of your bot on Gupshup. {appNameTooltip}</span>
-      ),
+      helperText: <span className={styles.FormHelperText}>Name of your bot on Gupshup. {appNameTooltip}</span>,
       disabled: isDisabled,
     },
     {
@@ -100,9 +95,7 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
       name: 'api_key',
       type: 'text',
       inputLabel: 'Gupshup API Key',
-      helperText: (
-        <span className={styles.FormHelperText}>API key generated on Gupshup {apiTooltip}</span>
-      ),
+      helperText: <span className={styles.FormHelperText}>API key generated on Gupshup {apiTooltip}</span>,
       disabled: isDisabled,
     },
     {
@@ -147,27 +140,35 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
   const handleSubmit = async (payload: any, setErrors: Function) => {
     if (isDisabled) handleStepChange();
     setLoading(true);
-    await axios.post(ONBOARD_URL_SETUP, payload).then(({ data }) => {
-      setLoading(false);
-      if (data.is_valid) {
-        saveData(
-          {
-            registration_id: data.registration_id,
-            org_id: data.organization?.id,
-            submitted: true,
-          },
-          'registration_details'
-        );
+    await axios
+      .post(ONBOARD_URL_SETUP, payload)
+      .then(({ data }) => {
+        setLoading(false);
+        if (data.is_valid) {
+          saveData(
+            {
+              registration_id: data.registration_id,
+              org_id: data.organization?.id,
+              submitted: true,
+            },
+            'registration_details'
+          );
 
-        handleStepChange();
+          handleStepChange();
 
-        return true;
-      } else {
-        setErrors(data.messages);
-        saveData(data.messages, 'errors');
-        return false;
-      }
-    });
+          return true;
+        } else {
+          if (data.messages.global) {
+            setCustomError(data.messages.global);
+          }
+          setErrors(data.messages);
+          saveData(data.messages, 'errors');
+          return false;
+        }
+      })
+      .catch((errors) => {
+        setLoading(false);
+      });
   };
 
   const setStates = (states: any) => {
@@ -186,8 +187,7 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
     let registrationData;
     if (data) {
       registrationData = JSON.parse(data);
-      if (registrationData.registration_details && registrationData.registration_details.submitted)
-        setIsDisabled(true);
+      if (registrationData.registration_details && registrationData.registration_details.submitted) setIsDisabled(true);
     }
   }, []);
 
@@ -234,6 +234,8 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
       showModal={true}
       isDisabled={isDisabled}
       handleEffect={generateShortcode}
+      customError={customError}
+      setCustomError={setCustomError}
     />
   );
 };

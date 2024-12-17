@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next';
 import { Captcha } from 'components/UI/Form/Captcha/Captcha';
 
 import WhatsAppIcon from 'assets/images/icons/Social/Whatsapp.svg?react';
-import { termsOfUse } from 'containers/Organization/Organization';
 import { Button } from 'components/UI/Form/Button/Button';
 import GlificLogo from 'assets/images/logo/Logo.svg';
 import styles from './Auth.module.css';
@@ -14,6 +13,7 @@ import axios from 'axios';
 import { ORGANIZATION_NAME } from 'config';
 import setLogs from 'config/logs';
 import { checkOrgStatus } from 'services/AuthService';
+import { TERMS_OF_USE_LINK } from 'common/constants';
 
 // import { Promotion } from './Promotion/Promotion';
 
@@ -176,11 +176,7 @@ export const Auth = ({
                   return (
                     <div key={key}>
                       {field.label ? (
-                        <Typography
-                          data-testid="formLabel"
-                          variant="h5"
-                          className={styles.FieldLabel}
-                        >
+                        <Typography data-testid="formLabel" variant="h5" className={styles.FieldLabel}>
                           {field.label}
                         </Typography>
                       ) : (
@@ -253,7 +249,13 @@ export const Auth = ({
 
         <div className={boxClass.join(' ')}>
           {formElements}
-          {isRegistration && termsOfUse}
+          {isRegistration && (
+            <div className={styles.TermsOfUse}>
+              <a href={TERMS_OF_USE_LINK} target="_blank" rel="noreferrer">
+                Read the applied terms of use
+              </a>
+            </div>
+          )}
         </div>
         {alternateText ? (
           <>

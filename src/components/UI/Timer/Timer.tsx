@@ -87,9 +87,7 @@ export const Timer = (props: TimerProps) => {
   if (hours === 0) {
     timerStyle = styles.TimerEnd;
     tooltipStyle = styles.TimerApproachTooltip;
-    tooltip = createTooltip(
-      t('Session message window has expired! You can only send a template message now.')
-    );
+    tooltip = createTooltip(t('Session message window has expired! You can only send a template message now.'));
   } else if (hours < 5) {
     timerStyle = styles.TimerApproachEnd;
     tooltipStyle = styles.TimerApproachTooltip;
@@ -108,10 +106,7 @@ export const Timer = (props: TimerProps) => {
       placement="bottom"
       interactive
     >
-      <div
-        className={timerStyle + ' ' + (variant === 'secondary' && styles.SecondaryTimer)}
-        data-testid="timerCount"
-      >
+      <div className={timerStyle + ' ' + (variant === 'secondary' && styles.SecondaryTimer)} data-testid="timerCount">
         {hours} hrs
       </div>
     </Tooltip>

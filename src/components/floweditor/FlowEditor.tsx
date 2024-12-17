@@ -167,21 +167,15 @@ export const FlowEditor = () => {
         additionalTitleStyles={styles.DialogTitle}
       >
         <div className={styles.DialogContent}>
-          Please be careful, this cannot be undone. Once you reset the flow counts you will lose
-          tracking of how many times a node was triggered for users.
+          Please be careful, this cannot be undone. Once you reset the flow counts you will lose tracking of how many
+          times a node was triggered for users.
         </div>
       </DialogBox>
     );
   }
 
   if (showTranslateFlowModal) {
-    modal = (
-      <FlowTranslation
-        loadFlowEditor={loadFlowEditor}
-        flowId={flowId}
-        setDialog={setShowTranslateFlowModal}
-      />
-    );
+    modal = <FlowTranslation loadFlowEditor={loadFlowEditor} flowId={flowId} setDialog={setShowTranslateFlowModal} />;
   }
 
   useEffect(() => {
@@ -267,8 +261,7 @@ export const FlowEditor = () => {
         }}
       >
         <p className={styles.DialogDescription}>
-          You can either go back and edit it later or <br /> &lsquo;Take Over&rsquo; this flow to
-          start editing now.
+          You can either go back and edit it later or <br /> &lsquo;Take Over&rsquo; this flow to start editing now.
         </p>
       </DialogBox>
     );
@@ -445,12 +438,7 @@ export const FlowEditor = () => {
       </div>
 
       {showSimulator && (
-        <Simulator
-          setShowSimulator={setShowSimulator}
-          hasResetButton
-          flowSimulator
-          message={getFlowKeyword()}
-        />
+        <Simulator setShowSimulator={setShowSimulator} hasResetButton flowSimulator message={getFlowKeyword()} />
       )}
       {modal}
       <div className={styles.FlowContainer}>

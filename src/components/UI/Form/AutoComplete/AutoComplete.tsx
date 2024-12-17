@@ -1,12 +1,5 @@
 import { useState } from 'react';
-import {
-  Autocomplete,
-  TextField,
-  Chip,
-  FormHelperText,
-  FormControl,
-  Checkbox,
-} from '@mui/material';
+import { Autocomplete, TextField, Chip, FormHelperText, FormControl, Checkbox } from '@mui/material';
 
 import { getIn } from 'formik';
 
@@ -107,12 +100,11 @@ export const AutoComplete = ({
     if (multiple && asyncSearch) return asyncValues.value;
     if (multiple) {
       if (options.length > 0 && field.value) {
-        return options.filter((option: any) =>
-          field.value.map((value: any) => value.id).includes(option.id)
-        );
+        return options.filter((option: any) => field.value.map((value: any) => value.id).includes(option.id));
       }
       return [];
     }
+
     return field.value;
   })();
 
@@ -186,9 +178,7 @@ export const AutoComplete = ({
           freeSolo={freeSolo}
           autoSelect={autoSelect}
           disableClearable={disableClearable}
-          getOptionLabel={(option: any) =>
-            option[optionLabel] != null ? option[optionLabel] : option
-          }
+          getOptionLabel={(option: any) => (option[optionLabel] != null ? option[optionLabel] : option)}
           getOptionDisabled={getOptionDisabled}
           isOptionEqualToValue={(option, value) => {
             if (value) {
@@ -206,9 +196,7 @@ export const AutoComplete = ({
               onChange(value);
             }
             if (value && value.inputValue) {
-              handleCreateItem(value.inputValue).then((value: any) =>
-                setFieldValue(field.name, value)
-              );
+              handleCreateItem(value.inputValue).then((value: any) => setFieldValue(field.name, value));
             } else {
               setFieldValue(field.name, value);
             }
@@ -230,11 +218,7 @@ export const AutoComplete = ({
               {multiple && (
                 <Checkbox
                   icon={icon}
-                  checked={
-                    asyncSearch
-                      ? asyncValues.value.map((value: any) => value.id).includes(option.id)
-                      : selected
-                  }
+                  checked={asyncSearch ? asyncValues.value.map((value: any) => value.id).includes(option.id) : selected}
                   color="primary"
                 />
               )}

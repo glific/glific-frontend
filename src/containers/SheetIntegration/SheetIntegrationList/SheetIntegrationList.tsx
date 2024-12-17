@@ -32,20 +32,14 @@ const getName = (text: string, sheetDataCount: string, type: SheetTypes) => (
   <p className={styles.NameText}>
     {text}
     <br />
-    {type !== SheetTypes.Write && (
-      <span className={styles.SheetCount}>{sheetDataCount} rows synced</span>
-    )}
+    {type !== SheetTypes.Write && <span className={styles.SheetCount}>{sheetDataCount} rows synced</span>}
   </p>
 );
 const getLastSyncedAt = (date: string, fallback: string = '') => (
-  <div className={styles.LastSyncText}>
-    {date ? dayjs(date).format(STANDARD_DATE_TIME_FORMAT) : fallback}
-  </div>
+  <div className={styles.LastSyncText}>{date ? dayjs(date).format(STANDARD_DATE_TIME_FORMAT) : fallback}</div>
 );
 
-const getType = (type: SheetTypes) => (
-  <div className={styles.LastSyncText}>{textForSheetType[type]}</div>
-);
+const getType = (type: SheetTypes) => <div className={styles.LastSyncText}>{textForSheetType[type]}</div>;
 const columnStyles = [styles.Name, styles.LastSync, styles.Type, styles.Actions];
 const sheetIcon = <SheetIcon className={styles.DarkIcon} />;
 
@@ -105,10 +99,7 @@ export const SheetIntegrationList = () => {
       }
     },
     onError: () => {
-      setNotification(
-        'Sorry! An error occurred while fetching data from the Google sheet.',
-        'warning'
-      );
+      setNotification('Sorry! An error occurred while fetching data from the Google sheet.', 'warning');
     },
   });
 

@@ -9,12 +9,7 @@ import { SEARCH_QUERY } from 'graphql/queries/Search';
 import { setUserSession } from 'services/AuthService';
 
 import { getAttachmentPermissionMock } from 'mocks/Attachment';
-import {
-  collectionCountQuery,
-  markAsReadMock,
-  savedSearchQuery,
-  savedSearchStatusQuery,
-} from 'mocks/Chat';
+import { collectionCountQuery, markAsReadMock, savedSearchQuery, savedSearchStatusQuery } from 'mocks/Chat';
 import { contactCollectionsQuery } from 'mocks/Contact';
 import { OrganizationStateMock } from 'mocks/Organization';
 import { collectionCountSubscription } from 'mocks/Search';

@@ -20,24 +20,16 @@ import { STANDARD_DATE_TIME_FORMAT } from 'common/constants';
 import { templateInfo } from 'common/HelpData';
 import { setNotification } from 'common/notification';
 import { WhatsAppToJsx } from 'common/RichEditor';
-import {
-  capitalizeFirstLetter,
-  copyToClipboardMethod,
-  exportCsvFile,
-  getFileExtension,
-} from 'common/utils';
+import { capitalizeFirstLetter, copyToClipboardMethod, exportCsvFile, getFileExtension } from 'common/utils';
 
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Button } from 'components/UI/Form/Button/Button';
 import { ImportButton } from 'components/UI/ImportButton/ImportButton';
+import HelpIcon from 'components/UI/HelpIcon/HelpIcon';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 
 import { GET_TAGS } from 'graphql/queries/Tags';
-import {
-  BULK_APPLY_TEMPLATES,
-  DELETE_TEMPLATE,
-  SYNC_HSM_TEMPLATES,
-} from 'graphql/mutations/Template';
+import { BULK_APPLY_TEMPLATES, DELETE_TEMPLATE, SYNC_HSM_TEMPLATES } from 'graphql/mutations/Template';
 import { FILTER_TEMPLATES, GET_TEMPLATES_COUNT } from 'graphql/queries/Template';
 
 import styles from './HSMList.module.css';
@@ -91,9 +83,7 @@ export const HSMList = () => {
       setImporting(false);
       if (data && data.bulkApplyTemplates) {
         exportCsvFile(data.bulkApplyTemplates.csv_rows, 'result');
-        setNotification(
-          t('Templates applied successfully. Please check the csv file for the results')
-        );
+        setNotification(t('Templates applied successfully. Please check the csv file for the results'));
       }
     },
     onError: () => {
@@ -148,6 +138,15 @@ export const HSMList = () => {
           <div className={styles.AlignCenter}>
             <RejectedIcon />
             {t('Rejected')}
+          </div>
+        );
+        break;
+
+      case 'FAILED':
+        statusValue = (
+          <div className={styles.AlignCenter}>
+            <RejectedIcon />
+            {t('Failed')}
           </div>
         );
         break;
@@ -259,7 +258,7 @@ export const HSMList = () => {
   const dialogMessage = t('It will stop showing when you draft a customized message');
 
   const filterTemplateStatus = (
-    <>
+    <div className={styles.FilterContainer}>
       <FormControl className={styles.FormStyle}>
         <Select
           aria-label="template-type"
@@ -276,6 +275,7 @@ export const HSMList = () => {
           ))}
         </Select>
       </FormControl>
+      <HelpIcon darkIcon={false} helpData={templateStatusInfo} />
       <AutoComplete
         isFilterType
         placeholder="Select tag"
@@ -290,18 +290,12 @@ export const HSMList = () => {
           value: selectedTag,
         }}
       />
-      {syncHSMButton}
-    </>
+    </div>
   );
 
   const secondaryButton = (
     <div className={styles.ImportButton}>
-      <a
-        href={BULK_APPLY_SAMPLE_LINK}
-        target="_blank"
-        rel="noreferrer"
-        className={styles.HelperText}
-      >
+      <a href={BULK_APPLY_SAMPLE_LINK} target="_blank" rel="noreferrer" className={styles.HelperText}>
         View Sample
       </a>
       <ImportButton

@@ -22,20 +22,11 @@ import { setErrorMessage, setNotification } from 'common/notification';
 
 const getDot = (isRead: boolean) => <div>{!isRead ? <div className={styles.Dot} /> : null}</div>;
 
-const getTime = (time: string) => (
-  <div className={styles.TableText}>{dayjs(time).format(SHORT_DATE_TIME_FORMAT)}</div>
-);
+const getTime = (time: string) => <div className={styles.TableText}>{dayjs(time).format(SHORT_DATE_TIME_FORMAT)}</div>;
 
 const getText = (text: string) => <div className={styles.TableText}>{text}</div>;
 
-const columnStyles = [
-  styles.Mark,
-  styles.Time,
-  styles.Category,
-  styles.Severity,
-  styles.Entity,
-  styles.Message,
-];
+const columnStyles = [styles.Mark, styles.Time, styles.Category, styles.Severity, styles.Entity, styles.Message];
 const notificationIcon = <NotificationIcon className={styles.NotificationIcon} />;
 
 const queries = {
@@ -170,12 +161,7 @@ export const NotificationList = () => {
 
     return (
       <Menu menus={Menus}>
-        <div
-          className={styles.CroppedText}
-          data-testid="NotificationRowMenu"
-          ref={menuRef}
-          aria-hidden="true"
-        >
+        <div className={styles.CroppedText} data-testid="NotificationRowMenu" ref={menuRef} aria-hidden="true">
           {entityObj.name ? (
             <span>
               Name: {entityObj.name}
@@ -225,11 +211,7 @@ export const NotificationList = () => {
         <pre>{JSON.stringify(text ? JSON.parse(text) : '', null, 2)}</pre>
       </div>
       <div className={styles.PopoverActions}>
-        <span
-          onClick={() => copyToClipboard(text)}
-          aria-hidden="true"
-          data-testid="copyToClipboard"
-        >
+        <span onClick={() => copyToClipboard(text)} aria-hidden="true" data-testid="copyToClipboard">
           <img src={CopyIcon} alt="copy" />
           {t('Copy text')}
         </span>

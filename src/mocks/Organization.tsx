@@ -1,8 +1,4 @@
-import {
-  CREATE_CREDENTIAL,
-  DELETE_INACTIVE_ORGANIZATIONS,
-  UPDATE_CREDENTIAL,
-} from 'graphql/mutations/Organization';
+import { CREATE_CREDENTIAL, DELETE_INACTIVE_ORGANIZATIONS, UPDATE_CREDENTIAL } from 'graphql/mutations/Organization';
 import {
   GET_ORGANIZATION,
   USER_LANGUAGES,
@@ -368,11 +364,10 @@ export const getProvidersQuery = [
       variables: {
         id: '1',
         input: {
-          shortcode: 'gupshup',
+          shortcode: null,
           isActive: true,
           keys: '{"worker":"Glific.Providers.Gupshup.Worker","url":"https://gupshup.io/","handler":"Glific.Providers.Gupshup.Message","api_end_point":"https://api.gupshup.io/sm/api/v1"}',
-          secrets:
-            '{"app_name":"Please enter your App Name here","api_key":"Please enter your key here"}',
+          secrets: '{}',
         },
       },
     },
@@ -383,8 +378,7 @@ export const getProvidersQuery = [
             id: '1',
             keys: '{"worker":{"view_only":true,"type":"string","label":"Outbound Message Worker","default":"Glific.Providers.Gupshup.Worker"},"url":{"view_only":true,"type":"string","label":"BSP Home Page","default":"https://gupshup.io/"},"handler":{"view_only":true,"type":"string","label":"Inbound Message Handler","default":"Glific.Providers.Gupshup.Message"},"api_end_point":{"view_only":false,"type":"string","label":"API End Point","default":"https://api.gupshup.io/sm/api/v1"}}',
             provider: { shortcode: 'gupshup' },
-            secrets:
-              '{"app_name":"Please enter your App Name here","api_key":"Please enter your key here"}',
+            secrets: '{"app_name":"Please enter your App Name here","api_key":"Please enter your key here"}',
           },
           errors: null,
         },
@@ -407,8 +401,7 @@ export const getCredential = [
             provider: {
               shortcode: 'gupshup',
             },
-            secrets:
-              '{"app_name":"Please enter your App Name here","api_key":"Please enter your key here"}',
+            secrets: '{"app_name":"Please enter your App Name here","api_key":"Please enter your key here"}',
             isActive: true,
           },
         },
@@ -429,8 +422,7 @@ export const getCredential = [
             provider: {
               shortcode: 'gupshup',
             },
-            secrets:
-              '{"app_name":"Please enter your App Name here","api_key":"Please enter your key here"}',
+            secrets: '{"app_name":"Please enter your App Name here","api_key":"Please enter your key here"}',
             isActive: true,
           },
         },
@@ -451,8 +443,7 @@ export const getCredential = [
             provider: {
               shortcode: 'gupshup',
             },
-            secrets:
-              '{"app_name":"Please enter your App Name here","api_key":"Please enter your key here"}',
+            secrets: '{"app_name":"Please enter your App Name here","api_key":"Please enter your key here"}',
             isActive: true,
           },
         },
@@ -473,8 +464,7 @@ export const getCredential = [
             provider: {
               shortcode: 'gupshup',
             },
-            secrets:
-              '{"app_name":"Please enter your App Name here","api_key":"Please enter your key here"}',
+            secrets: '{"app_name":"Please enter your App Name here","api_key":"Please enter your key here"}',
             isActive: true,
           },
         },

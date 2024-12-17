@@ -185,8 +185,7 @@ describe('Add mode', () => {
 
     await waitFor(() => {
       // Get all input elements
-      const [title, lexicalEditor, quickReply1, quickReply2, , attachmentUrl] =
-        screen.getAllByRole('textbox');
+      const [title, lexicalEditor, quickReply1, quickReply2, , attachmentUrl] = screen.getAllByRole('textbox');
       expect(title).toBeInTheDocument();
       expect(quickReply1).toBeInTheDocument();
       expect(quickReply2).toBeInTheDocument();
@@ -388,12 +387,9 @@ describe('location request message', () => {
       expect(interactiveType.querySelector('input')).toHaveValue('Location request');
     });
 
-    fireEvent.change(
-      screen.getAllByTestId('outlinedInput')[0]?.querySelector('input') as HTMLElement,
-      {
-        target: { value: 'Section 1' },
-      }
-    );
+    fireEvent.change(screen.getAllByTestId('outlinedInput')[0]?.querySelector('input') as HTMLElement, {
+      target: { value: 'Section 1' },
+    });
 
     // have send location in simulator preview
     await waitFor(() => {
@@ -481,9 +477,7 @@ describe('translates the template', () => {
   });
 
   test('it shows error on translating an already exisiting template', async () => {
-    render(
-      renderInteractiveMessage('1', [...getTemplateMocks1, translateInteractiveTemplateMock(true)])
-    );
+    render(renderInteractiveMessage('1', [...getTemplateMocks1, translateInteractiveTemplateMock(true)]));
 
     await waitFor(() => {
       expect(screen.getByText('Edit Interactive message')).toBeInTheDocument();

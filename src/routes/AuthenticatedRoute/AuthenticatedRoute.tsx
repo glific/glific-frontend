@@ -31,15 +31,11 @@ const SheetIntegrationList = lazy(
 const SheetIntegration = lazy(() => import('containers/SheetIntegration/SheetIntegration'));
 const CollectionList = lazy(() => import('containers/Collection/CollectionList/CollectionList'));
 const Collection = lazy(() => import('containers/Collection/Collection'));
-const CollectionContact = lazy(
-  () => import('containers/Collection/CollectionContact/CollectionContact')
-);
+const CollectionContact = lazy(() => import('containers/Collection/CollectionContact/CollectionContact'));
 const FlowEditor = lazy(() => import('components/floweditor/FlowEditor'));
 const SearchList = lazy(() => import('containers/Search/SearchList/SearchList'));
 const Search = lazy(() => import('containers/Search/Search'));
-const StaffManagementList = lazy(
-  () => import('containers/StaffManagement/StaffManagementList/StaffManagementList')
-);
+const StaffManagementList = lazy(() => import('containers/StaffManagement/StaffManagementList/StaffManagementList'));
 const ContactManagement = lazy(() => import('containers/ContactManagement/ContactManagement'));
 const StaffManagement = lazy(() => import('containers/StaffManagement/StaffManagement'));
 const ContactProfile = lazy(() => import('containers/Profile/Contact/ContactProfile'));
@@ -49,22 +45,14 @@ const HSM = lazy(() => import('containers/HSM/HSM'));
 
 const TicketList = lazy(() => import('containers/Ticket/TicketList/TicketList'));
 const SettingList = lazy(() => import('containers/SettingList/SettingList'));
-const BlockContactList = lazy(
-  () => import('containers/BlockContact/BlockContactList/BlockContactList')
-);
-const WebhookLogsList = lazy(
-  () => import('containers/WebhookLogs/WebhookLogsList/WebhookLogsList')
-);
+const BlockContactList = lazy(() => import('containers/BlockContact/BlockContactList/BlockContactList'));
+const WebhookLogsList = lazy(() => import('containers/WebhookLogs/WebhookLogsList/WebhookLogsList'));
 const TriggerList = lazy(() => import('containers/Trigger/TriggerList/TriggerList'));
 const Trigger = lazy(() => import('containers/Trigger/Trigger'));
 const NotificationList = lazy(() => import('containers/NotificationList/NotificationList'));
 const OrganizationList = lazy(() => import('containers/OrganizationList/OrganizationList'));
-const ConsultingHourList = lazy(
-  () => import('containers/Consulting/ConsultingList/ConsultingList')
-);
-const ContactFieldList = lazy(
-  () => import('containers/ContactField/ContactFieldList/ContactFieldList')
-);
+const ConsultingHourList = lazy(() => import('containers/Consulting/ConsultingList/ConsultingList'));
+const ContactFieldList = lazy(() => import('containers/ContactField/ContactFieldList/ContactFieldList'));
 const InteractiveMessageList = lazy(
   () => import('containers/InteractiveMessage/InteractiveMessageList/InteractiveMessageList')
 );
@@ -73,6 +61,7 @@ const InteractiveMessage = lazy(() => import('containers/InteractiveMessage/Inte
 const RoleList = lazy(() => import('containers/Role/RoleList/RoleList'));
 const Role = lazy(() => import('containers/Role/Role'));
 const KnowledgeBase = lazy(() => import('containers/KnowledgeBase/KnowledgeBase'));
+const Assistant = lazy(() => import('containers/Assistants/Assistants'));
 
 const routeStaff = (
   <Routes>
@@ -156,6 +145,9 @@ const routeAdmin = (
 
     <Route path="knowledge-base" element={<KnowledgeBase />} />
 
+    <Route path="/assistants" element={<Assistant />} />
+    <Route path="/assistants/:assistantId" element={<Assistant />} />
+
     <Route path="/*" element={<Chat />} />
   </Routes>
 );
@@ -231,9 +223,7 @@ export const AuthenticatedRoute = () => {
       <div className={styles.App} data-testid="app">
         <Layout>
           {toastMessage}
-          <Suspense
-            fallback={<Loading showTip={window.location.pathname.startsWith('/flow/configure')} />}
-          >
+          <Suspense fallback={<Loading showTip={window.location.pathname.startsWith('/flow/configure')} />}>
             <ErrorBoundary>{route}</ErrorBoundary>
           </Suspense>
         </Layout>

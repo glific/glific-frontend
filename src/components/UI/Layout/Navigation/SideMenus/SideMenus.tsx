@@ -203,26 +203,18 @@ const SideMenus = ({ opened }: SideMenusProps) => {
               disableTypography
               data-testid="list-item"
               className={
-                menu.children
-                  ? styles.UnselectedText
-                  : isSelected
-                    ? styles.SelectedText
-                    : styles.UnselectedText
+                menu.children ? styles.UnselectedText : isSelected ? styles.SelectedText : styles.UnselectedText
               }
               primary={t(menu.title as any)}
             />
           )}
+          {menu.new && <span className={styles.New}>{'New'}</span>}
         </ListItemButton>
       );
 
       listItemButton = subMenu ? (
         <div key={menu.title}>
-          <AddAccordian
-            summary={listItemButton}
-            details={subMenu}
-            opened={opened}
-            expanded={isSelected}
-          />
+          <AddAccordian summary={listItemButton} details={subMenu} opened={opened} expanded={isSelected} />
         </div>
       ) : (
         listItemButton

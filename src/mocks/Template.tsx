@@ -1,9 +1,4 @@
-import {
-  BULK_APPLY_TEMPLATES,
-  CREATE_TEMPLATE,
-  IMPORT_TEMPLATES,
-  UPDATE_TEMPLATE,
-} from 'graphql/mutations/Template';
+import { BULK_APPLY_TEMPLATES, CREATE_TEMPLATE, IMPORT_TEMPLATES, UPDATE_TEMPLATE } from 'graphql/mutations/Template';
 import {
   FILTER_SESSION_TEMPLATES,
   FILTER_TEMPLATES,

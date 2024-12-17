@@ -1,6 +1,6 @@
 export interface HelpDataProps {
-  heading: string;
-  link: string;
+  heading: any;
+  link?: string;
 }
 
 export const speedSendInfo: HelpDataProps = {
@@ -24,8 +24,7 @@ export const triggerInfo: HelpDataProps = {
 };
 
 export const searchInfo: HelpDataProps = {
-  heading:
-    'Glific provides search functionality to NGO staff to find contacts from a large set of contacts list.',
+  heading: 'Glific provides search functionality to NGO staff to find contacts from a large set of contacts list.',
 
   link: 'https://glific.github.io/docs/docs/Product%20Features/Searches',
 };
@@ -100,4 +99,33 @@ export const blockedContactsInfo: HelpDataProps = {
   heading:
     'Glific allows you to block contacts who are sending unwanted or inappropriate messages, ensuring a positive experience for both your beneficiaries and staff.',
   link: 'https://glific.github.io/docs/docs/Product%20Features/Others/All%20product%20features/#block-contacts', // Replace with the actual Glific documentation link
+};
+
+export const assistantsInfo: HelpDataProps = {
+  heading:
+    'Assistants can call OpenAI’s models with specific instructions to tune their personality and capabilities. Assistants can access multiple tools in parallel. Assistants can access files in several formats as part of their creation. When using tools, Assistants can also create files (e.g., images, spreadsheets, etc) and cite files they reference in the Messages they create.',
+  link: 'https://glific.github.io/docs/docs/Integrations/RAG%20using%20OpenAI%20file%20search%20assistant', // Replace with the actual Glific documentation link
+};
+
+export const templateStatusInfo: HelpDataProps = {
+  heading: (
+    <div>
+      <p>
+        <b>Submitted:</b> The template is under review and can take up to 24 hours. This status indicates that the
+        template has not yet been approved or rejected.
+      </p>
+      <p>
+        <b>Approved:</b> The template has passed review and can be used to notify customers. This status indicates that
+        the template meets all necessary criteria and policies.
+      </p>
+      <p>
+        <b>Rejected:</b> The template has failed to be reviewed due to violations of the approval criteria. This status
+        requires revising and resubmitting the template.
+      </p>
+      <p>
+        <b>Failed:</b> The template has failed the review process at Gupshup's end
+      </p>
+    </div>
+  ),
+  link: 'https://docs.gupshup.io/docs/message-template-approvals-statuses',
 };

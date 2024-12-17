@@ -2,13 +2,7 @@ import { useEffect } from 'react';
 import { PlainTextPlugin } from '@lexical/react/LexicalPlainTextPlugin';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
-import {
-  $getSelection,
-  $createTextNode,
-  $getRoot,
-  KEY_DOWN_COMMAND,
-  COMMAND_PRIORITY_LOW,
-} from 'lexical';
+import { $getSelection, $createTextNode, $getRoot, KEY_DOWN_COMMAND, COMMAND_PRIORITY_LOW } from 'lexical';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import { ClearEditorPlugin } from '@lexical/react/LexicalClearEditorPlugin';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
@@ -24,11 +18,7 @@ interface WhatsAppEditorProps {
   readOnly?: boolean;
 }
 
-export const WhatsAppEditor = ({
-  setEditorState,
-  sendMessage,
-  readOnly = false,
-}: WhatsAppEditorProps) => {
+export const WhatsAppEditor = ({ setEditorState, sendMessage, readOnly = false }: WhatsAppEditorProps) => {
   const [editor] = useLexicalComposerContext();
 
   const { ref } = useResizeDetector({

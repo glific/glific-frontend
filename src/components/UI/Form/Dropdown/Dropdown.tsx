@@ -36,11 +36,7 @@ export const Dropdown = ({
 
   return (
     <div className={styles.Dropdown} data-testid="dropdown">
-      <FormControl
-        variant="outlined"
-        fullWidth
-        error={form && form.errors[field.name] && form.touched[field.name]}
-      >
+      <FormControl variant="outlined" fullWidth error={form && form.errors[field.name] && form.touched[field.name]}>
         {placeholder && (
           <Typography data-testid="inputLabel" variant="h5" className={styles.FieldLabel}>
             {placeholder}
@@ -69,9 +65,7 @@ export const Dropdown = ({
         {form && form.errors[field.name] && form.touched[field.name] ? (
           <FormHelperText>{form.errors[field.name]}</FormHelperText>
         ) : null}
-        {helperText ? (
-          <FormHelperText className={styles.HelperText}>{helperText}</FormHelperText>
-        ) : null}
+        {helperText ? <FormHelperText className={styles.HelperText}>{helperText}</FormHelperText> : null}
       </FormControl>
     </div>
   );

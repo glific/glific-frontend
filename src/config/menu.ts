@@ -1,5 +1,5 @@
 import { organizationHasDynamicRole } from 'common/utils';
-import { ANALYTICS_URL, GLIFIC_DOCS_URL, NEW_UI_BLOG } from 'config';
+import { ANALYTICS_URL, GLIFIC_DOCS_URL, DISCORD_URL } from 'config';
 import { getOrganizationServices } from 'services/AuthService';
 
 const allRoles = ['Staff', 'Manager', 'Admin', 'Dynamic', 'Glific_admin'];
@@ -17,6 +17,7 @@ export interface Menu {
   url?: string;
   show?: boolean;
   children?: Menu[];
+  new?: boolean;
 }
 
 // define all the menus in the system
@@ -165,6 +166,14 @@ const menus = (): Menu[] => [
     roles: managerLevel,
   },
   {
+    title: 'Assistants',
+    path: '/assistants',
+    icon: 'assistant',
+    type: 'sideDrawer',
+    roles: allRoles,
+    new: true,
+  },
+  {
     title: 'Manage',
     path: '/collection',
     icon: 'manage',
@@ -270,14 +279,22 @@ const menus = (): Menu[] => [
     roles: staffLevel,
   },
 
-  {
-    title: "What's new",
-    path: '/changelog',
-    url: NEW_UI_BLOG,
-    icon: 'new',
-    type: 'sideDrawer',
-    roles: staffLevel,
-  },
+    // {
+    //   title: "What's new",
+    //   path: '/changelog',
+    //   url: NEW_UI_BLOG,
+    //   icon: 'new',
+    //   type: 'sideDrawer',
+    //   roles: staffLevel,
+    // },
+    {
+      title: "Discord",
+      path: '/discord',
+      url: DISCORD_URL,
+      icon: 'discord',
+      type: 'sideDrawer',
+      roles: staffLevel,
+    },
 ];
 
 export const getMenus = (menuType = 'sideDrawer', role = 'Staff') =>

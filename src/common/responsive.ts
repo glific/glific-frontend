@@ -8,8 +8,6 @@ export const showMessages = () => {
 export const showChats = () => {
   if (window.innerWidth < 768) {
     document.querySelector('.chatMessages')?.setAttribute('style', 'display: none ');
-    document
-      .querySelector('.ChatConversations')
-      ?.setAttribute('style', 'display: block !important');
+    document.querySelector('.ChatConversations')?.setAttribute('style', 'display: block !important');
   }
 };

@@ -55,21 +55,18 @@ export const FlowTranslation = ({ flowId, setDialog, loadFlowEditor }: FlowTrans
     },
   });
 
-  const [exportFlowTranslations, { loading: exportLoad }] = useLazyQuery(
-    EXPORT_FLOW_LOCALIZATIONS,
-    {
-      fetchPolicy: 'network-only',
-      onCompleted: async ({ exportFlowLocalization }) => {
-        const { exportData } = exportFlowLocalization;
-        exportCsvFile(exportData, `Flow_Translations_${flowId}`);
-        setDialog(false);
-      },
-      onError: (error) => {
-        setDialog(false);
-        setNotification(t('An error occured while exporting flow translations'), 'warning');
-      },
-    }
-  );
+  const [exportFlowTranslations, { loading: exportLoad }] = useLazyQuery(EXPORT_FLOW_LOCALIZATIONS, {
+    fetchPolicy: 'network-only',
+    onCompleted: async ({ exportFlowLocalization }) => {
+      const { exportData } = exportFlowLocalization;
+      exportCsvFile(exportData, `Flow_Translations_${flowId}`);
+      setDialog(false);
+    },
+    onError: (error) => {
+      setDialog(false);
+      setNotification(t('An error occured while exporting flow translations'), 'warning');
+    },
+  });
 
   const [importFlow, { loading: importingLoad }] = useMutation(IMPORT_FLOW_LOCALIZATIONS, {
     onCompleted: (result: any) => {
@@ -115,9 +112,7 @@ export const FlowTranslation = ({ flowId, setDialog, loadFlowEditor }: FlowTrans
     <ImportButton
       title={t('Import translations')}
       onImport={() => setImporting(true)}
-      afterImport={(result: string) =>
-        importFlow({ variables: { localization: result, id: flowId } })
-      }
+      afterImport={(result: string) => importFlow({ variables: { localization: result, id: flowId } })}
     />
   );
 
@@ -196,9 +191,8 @@ export const FlowTranslation = ({ flowId, setDialog, loadFlowEditor }: FlowTrans
         }}
       >
         <p className={styles.DialogContent}>
-          Auto translate only adds translation in languages nodes which are empty. To get the latest
-          translations of updated content in your default language flow, please clear the nodes in
-          the language nodes.
+          Auto translate only adds translation in languages nodes which are empty. To get the latest translations of
+          updated content in your default language flow, please clear the nodes in the language nodes.
         </p>
       </DialogBox>
     );

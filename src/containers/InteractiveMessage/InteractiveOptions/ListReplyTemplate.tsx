@@ -80,12 +80,7 @@ export const ListReplyTemplate = ({
     onListItemRemoveClick(idx);
   };
 
-  const handleInputChange = (
-    event: any,
-    key: string,
-    itemIndex: number | null = null,
-    isOption: boolean = false
-  ) => {
+  const handleInputChange = (event: any, key: string, itemIndex: number | null = null, isOption: boolean = false) => {
     const { value } = event.target;
     const payload = { key, itemIndex, isOption };
     onInputChange(value, payload);
@@ -135,15 +130,9 @@ export const ListReplyTemplate = ({
                     <div className={styles.ListReplyItemContent}>
                       <div className={styles.TextFieldWrapper}>
                         {translation?.options && translation.options.length > itemIndex && (
-                          <div className={styles.Translation}>
-                            {translation.options[itemIndex].title}
-                          </div>
+                          <div className={styles.Translation}>{translation.options[itemIndex].title}</div>
                         )}
-                        <FormControl
-                          fullWidth
-                          error={isError('title', itemIndex)}
-                          className={styles.FormControl}
-                        >
+                        <FormControl fullWidth error={isError('title', itemIndex)} className={styles.FormControl}>
                           <TextField
                             placeholder={`Title ${itemIndex + 1} (Max 24 char.)`}
                             variant="outlined"
@@ -174,21 +163,13 @@ export const ListReplyTemplate = ({
                         {translation?.options &&
                           translation.options.length > itemIndex &&
                           translation.options[itemIndex].description && (
-                            <div className={styles.Translation}>
-                              {translation.options[itemIndex].description}
-                            </div>
+                            <div className={styles.Translation}>{translation.options[itemIndex].description}</div>
                           )}
-                        <FormControl
-                          fullWidth
-                          error={isError('description', itemIndex)}
-                          className={styles.FormControl}
-                        >
+                        <FormControl fullWidth error={isError('description', itemIndex)} className={styles.FormControl}>
                           <TextField
                             placeholder={`Description ${itemIndex + 1} (Max 60 char.)`}
                             variant="outlined"
-                            onChange={(e: any) =>
-                              handleInputChange(e, 'description', itemIndex, true)
-                            }
+                            onChange={(e: any) => handleInputChange(e, 'description', itemIndex, true)}
                             className={styles.TextField}
                             error={isError('description', itemIndex)}
                             value={itemRow.description}

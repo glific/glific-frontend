@@ -4,12 +4,7 @@ import {
   MESSAGE_SENT_SUBSCRIPTION,
   MESSAGE_STATUS_SUBSCRIPTION,
 } from 'graphql/subscriptions/Chat';
-import {
-  SAVED_SEARCH_QUERY,
-  SEARCH_QUERY,
-  SEARCH_MULTI_QUERY,
-  SEARCHES_COUNT,
-} from 'graphql/queries/Search';
+import { SAVED_SEARCH_QUERY, SEARCH_QUERY, SEARCH_MULTI_QUERY, SEARCHES_COUNT } from 'graphql/queries/Search';
 import { CREATE_AND_SEND_MESSAGE_MUTATION, MARK_AS_READ } from 'graphql/mutations/Chat';
 import {
   DEFAULT_ENTITY_LIMIT,
@@ -20,10 +15,7 @@ import { searchQueryMock as searchQuery } from 'containers/Chat/ChatConversation
 import { searchQueryEmptyMock as searchEmptyQuery } from 'containers/Chat/ChatConversations/ChatConversations.test.helper';
 import { contactCollectionsQuery } from './Contact';
 import { getOrganizationLanguagesQuery } from './Organization';
-import {
-  SEND_MESSAGE_IN_WA_GROUP,
-  SEND_MESSAGE_IN_WA_GROUP_COLLECTION,
-} from 'graphql/mutations/Group';
+import { SEND_MESSAGE_IN_WA_GROUP, SEND_MESSAGE_IN_WA_GROUP_COLLECTION } from 'graphql/mutations/Group';
 
 export const getConversationQuery = (data: any) => {
   return {
@@ -761,17 +753,11 @@ const conversationWithMultipleMessages = {
   ],
 };
 
-export const createAndSendMessageMutation = {
+export const createAndSendMessageMutation = (input: any) => ({
   request: {
     query: CREATE_AND_SEND_MESSAGE_MUTATION,
     variables: {
-      input: {
-        body: 'Hey There Wow',
-        senderId: '1',
-        receiverId: '2',
-        type: 'TEXT',
-        flow: 'OUTBOUND',
-      },
+      input,
     },
   },
   result: {
@@ -791,42 +777,7 @@ export const createAndSendMessageMutation = {
       },
     },
   },
-};
-
-export const createAndSendMessageMutation2 = {
-  request: {
-    query: CREATE_AND_SEND_MESSAGE_MUTATION,
-    variables: {
-      input: {
-        body: 'hey',
-        senderId: 1,
-        receiverId: '2',
-        flow: 'OUTBOUND',
-        interactiveTemplateId: undefined,
-        type: 'TEXT',
-        mediaId: null,
-      },
-    },
-  },
-  result: {
-    data: {
-      createAndSendMessage: {
-        message: {
-          body: 'hey',
-          insertedAt: '2020-06-25T13:36:43Z',
-          id: '10388',
-          receiver: {
-            id: '2',
-          },
-          sender: {
-            id: '1',
-          },
-          media: null,
-        },
-      },
-    },
-  },
-};
+});
 
 export const sendMessageInWaGroup = {
   request: {
@@ -949,14 +900,17 @@ const chatMessagesMocks = [
   searchQuerywithFilter,
   searchQuerywithFilterOffset,
   searchQuerywithFilterOffset,
-  createAndSendMessageMutation,
+  createAndSendMessageMutation({
+    body: 'Hey There Wow',
+    senderId: '1',
+    receiverId: '2',
+    type: 'TEXT',
+    flow: 'OUTBOUND',
+  }),
 ];
 
 export const mocksWithConversation = [...chatMessagesMocks, getConversationQuery(conversation)];
-export const mocksWithMultipleMessages = [
-  ...chatMessagesMocks,
-  getConversationQuery(conversationWithMultipleMessages),
-];
+export const mocksWithMultipleMessages = [...chatMessagesMocks, getConversationQuery(conversationWithMultipleMessages)];
 
 export const sendMessageMock = {
   request: {

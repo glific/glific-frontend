@@ -18,8 +18,22 @@ import { UPDATE_CONTACT_COLLECTIONS } from 'graphql/mutations/Collection';
 import { CLEAR_MESSAGES } from 'graphql/mutations/Chat';
 import { setVariables } from 'common/constants';
 import { getCurrentUserQuery } from './User';
+import { TERMINATE_FLOW } from 'graphql/mutations/Flow';
 
-export const contactCollectionsQuery = (id: number) => ({
+const groups = [
+  {
+    id: '1',
+    label: 'Default Collection',
+    users: [],
+  },
+  {
+    id: '2',
+    label: 'Staff Collection',
+    users: [],
+  },
+];
+
+export const contactCollectionsQuery = (id: number, multipleGroups: boolean = false) => ({
   request: {
     query: GET_CONTACT_COLLECTIONS,
     variables: {
@@ -30,18 +44,7 @@ export const contactCollectionsQuery = (id: number) => ({
     data: {
       contact: {
         contact: {
-          groups: [
-            {
-              id: '1',
-              label: 'Default Collection',
-              users: [],
-            },
-            {
-              id: '2',
-              label: 'Staff Collection',
-              users: [],
-            },
-          ],
+          groups: multipleGroups ? [...groups, { id: '3', label: 'Test collection', users: [] }] : groups,
         },
       },
     },
@@ -492,8 +495,7 @@ export const contactHistoryQueryUpdatedOffset = {
         {
           eventDatetime: '2021-12-08T06:50:32Z',
           eventLabel: 'Flow started: "Optout contacts"',
-          eventMeta:
-            '"flow":{"uuid":"8c78ffd7-792e-4fa5-878d-266bfa63ae27","name":"test","id":14},"context_id":2}',
+          eventMeta: '"flow":{"uuid":"8c78ffd7-792e-4fa5-878d-266bfa63ae27","name":"test","id":14},"context_id":2}',
           eventType: 'contact_flow_started',
           id: '2',
           insertedAt: '2021-12-08T06:50:33.000000Z',
@@ -719,3 +721,20 @@ export const importContacts = {
   },
   variableMatcher: (variables: any) => true,
 };
+
+export const terminateFlowQuery = (error: boolean = false) => ({
+  request: {
+    query: TERMINATE_FLOW,
+    variables: {
+      contactId: '2',
+    },
+  },
+  result: {
+    data: {
+      terminateContactFlows: {
+        success: !error,
+        errors: error ? [{ message: 'Some error occurred' }] : null,
+      },
+    },
+  },
+});

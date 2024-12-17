@@ -3,12 +3,8 @@ import { render, waitFor, fireEvent, screen } from '@testing-library/react';
 import { vi } from 'vitest';
 
 import ChatInput from './ChatInput';
+import { createMediaMessageMock, getAttachmentPermissionMock, uploadBlobMock } from 'mocks/Attachment';
 import { filterTemplatesQuery } from 'mocks/Template';
-import {
-  createMediaMessageMock,
-  getAttachmentPermissionMock,
-  uploadBlobMock,
-} from 'mocks/Attachment';
 import { searchInteractive, searchInteractiveHi } from 'mocks/InteractiveMessage';
 import '../VoiceRecorder/VoiceRecorder';
 import { LexicalWrapper } from 'common/LexicalWrapper';

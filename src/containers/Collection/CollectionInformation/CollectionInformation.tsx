@@ -69,9 +69,7 @@ export const CollectionInformation = ({
           <div className={styles.Message}>
             {t('Custom messages will not be sent to the opted out/session expired contacts.')}
           </div>
-          <div className={styles.Message}>
-            {t('Only HSM template can be sent to the session expired contacts.')}{' '}
-          </div>
+          <div className={styles.Message}>{t('Only HSM template can be sent to the session expired contacts.')} </div>
           <div className={styles.Message}>
             {t('Total Contacts:')} {collectionInfo ? JSON.parse(collectionInfo.groupInfo).total : 0}
             <div>

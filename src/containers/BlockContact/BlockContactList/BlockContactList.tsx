@@ -100,9 +100,7 @@ export const BlockContactList = () => {
         handleCancel={() => setUnblockDialog(false)}
         alignButtons="center"
       >
-        <p className={styles.DialogText}>
-          {t('You will be able to view their chats and interact with them again.')}
-        </p>
+        <p className={styles.DialogText}>{t('You will be able to view their chats and interact with them again.')}</p>
       </DialogBox>
     );
   }

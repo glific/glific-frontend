@@ -144,9 +144,15 @@ test('it should submit the form', async () => {
 
   const inputFieldsOrgdetails = getAllByRole('textbox');
 
-  const [registeredAddress, gstin] = inputFieldsOrgdetails;
+  const [line1, line2, city, state, country, pincode, gstin] = inputFieldsOrgdetails;
 
-  fireEvent.change(registeredAddress, { target: { value: 'address' } });
+  fireEvent.change(line1, { target: { value: 'line1' } });
+  fireEvent.change(line2, { target: { value: 'line2' } });
+  fireEvent.change(city, { target: { value: 'City' } });
+  fireEvent.change(state, { target: { value: 'State' } });
+  fireEvent.change(country, { target: { value: 'Country' } });
+  fireEvent.change(pincode, { target: { value: '123456' } });
+
   fireEvent.click(screen.getByRole('checkbox'));
   fireEvent.change(gstin, { target: { value: '123456789012345' } });
 
@@ -164,12 +170,13 @@ test('it should submit the form', async () => {
   });
 
   const inputFieldsPaymentdetails = getAllByRole('textbox');
-  const [name, designation, phone, email] = inputFieldsPaymentdetails;
+  const [firstName, lastName, designation, phone, email] = inputFieldsPaymentdetails;
 
   const radioButtons = getAllByTestId('radio-btn');
   fireEvent.click(radioButtons[1]);
 
-  fireEvent.change(name, { target: { value: 'Default finance poc name' } });
+  fireEvent.change(firstName, { target: { value: 'finance poc firstName' } });
+  fireEvent.change(lastName, { target: { value: 'finance poc lastName' } });
   fireEvent.change(designation, { target: { value: 'finance' } });
   fireEvent.change(phone, { target: { value: '09421050449' } });
   fireEvent.change(email, { target: { value: 'finance@email.com' } });
@@ -189,17 +196,23 @@ test('it should submit the form', async () => {
 
   const inputFieldssigningdetails = getAllByRole('textbox');
   const [
-    submitterName,
+    submitterFirstName,
+    submitterLastName,
+    submitterDesignation,
     submitterEmail,
-    signingAuthorityName,
+    signingAuthorityFirstName,
+    signingAuthorityLastName,
     signingAuthorityDesignation,
     signingAuthorityEmail,
   ] = inputFieldssigningdetails;
 
-  fireEvent.change(submitterName, { target: { value: 'Default submitter' } });
+  fireEvent.change(submitterFirstName, { target: { value: 'first name' } });
+  fireEvent.change(submitterLastName, { target: { value: 'last name' } });
+  fireEvent.change(submitterDesignation, { target: { value: 'submitter' } });
   fireEvent.change(submitterEmail, { target: { value: 'submitter@email.com' } });
 
-  fireEvent.change(signingAuthorityName, { target: { value: 'Default signing' } });
+  fireEvent.change(signingAuthorityFirstName, { target: { value: 'Default signing firstName' } });
+  fireEvent.change(signingAuthorityLastName, { target: { value: 'Default signing lastName' } });
   fireEvent.change(signingAuthorityDesignation, { target: { value: 'signing authority' } });
   fireEvent.change(signingAuthorityEmail, { target: { value: 'signing@email.com' } });
 
@@ -214,6 +227,7 @@ test('it should submit the form', async () => {
   });
 
   fireEvent.click(screen.getByText('I Agree'));
+  fireEvent.click(checkboxes[1]);
 
   fireEvent.click(getByTestId('submitActionButton'));
 
@@ -253,9 +267,14 @@ test('it should disgree and send an email', async () => {
 
   const inputFieldsOrgdetails = getAllByRole('textbox');
 
-  const [registeredAddress, gstin] = inputFieldsOrgdetails;
+  const [line1, line2, city, state, country, pincode, gstin] = inputFieldsOrgdetails;
 
-  fireEvent.change(registeredAddress, { target: { value: 'address' } });
+  fireEvent.change(line1, { target: { value: 'line1' } });
+  fireEvent.change(line2, { target: { value: 'line2' } });
+  fireEvent.change(city, { target: { value: 'City' } });
+  fireEvent.change(state, { target: { value: 'State' } });
+  fireEvent.change(country, { target: { value: 'Country' } });
+  fireEvent.change(pincode, { target: { value: '123456' } });
   fireEvent.click(screen.getByRole('checkbox'));
   fireEvent.change(gstin, { target: { value: '123456789012345' } });
 
@@ -266,12 +285,13 @@ test('it should disgree and send an email', async () => {
   });
 
   const inputFieldsPaymentdetails = getAllByRole('textbox');
-  const [name, designation, phone, email] = inputFieldsPaymentdetails;
+  const [firstName, lastName, designation, phone, email] = inputFieldsPaymentdetails;
 
   const radioButtons = getAllByTestId('radio-btn');
   fireEvent.click(radioButtons[1]);
 
-  fireEvent.change(name, { target: { value: 'Default finance poc name' } });
+  fireEvent.change(firstName, { target: { value: 'finance poc firstName' } });
+  fireEvent.change(lastName, { target: { value: 'finance poc lastName' } });
   fireEvent.change(designation, { target: { value: 'finance' } });
   fireEvent.change(phone, { target: { value: '09421050449' } });
   fireEvent.change(email, { target: { value: 'finance@email.com' } });
