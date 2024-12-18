@@ -1,5 +1,5 @@
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { Typography } from '@mui/material';
+import { IconButton, InputAdornment, Modal, OutlinedInput, Typography } from '@mui/material';
 import { Field, FormikProvider, useFormik } from 'formik';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -19,6 +19,7 @@ import { DELETE_ASSISTANT, UPDATE_ASSISTANT } from 'graphql/mutations/Assistant'
 
 import CopyIcon from 'assets/images/CopyGreen.svg?react';
 import DeleteIcon from 'assets/images/icons/Delete/White.svg?react';
+import ExpandIcon from 'assets/images/icons/ExpandContent.svg?react';
 
 import { AssistantOptions } from '../AssistantOptions/AssistantOptions';
 
@@ -38,6 +39,7 @@ export const CreateAssistant = ({ currentId, setUpdateList, setCurrentId, update
   const [instructions, setInstructions] = useState('');
   const [options, setOptions] = useState({ fileSearch: true, temperature: 1 });
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [openInstructions, setOpenInstructions] = useState(false);
   const { t } = useTranslation();
 
   const states = {
@@ -109,6 +111,12 @@ export const CreateAssistant = ({ currentId, setUpdateList, setCurrentId, update
     });
   };
 
+  const expandIcon = (
+    <InputAdornment className={styles.Expand} position="end">
+      <ExpandIcon data-testid="expandIcon" onClick={() => setOpenInstructions(true)} className={styles.ExpandButton} />
+    </InputAdornment>
+  );
+
   const formFields: any = [
     {
       component: AutoComplete,
@@ -145,6 +153,7 @@ export const CreateAssistant = ({ currentId, setUpdateList, setCurrentId, update
       textArea: true,
       helperText: t('Set the instructions according to your requirements.'),
       onChange: (value: any) => setInstructions(value),
+      endAdornment: expandIcon,
     },
     {
       component: AssistantOptions,
@@ -187,6 +196,7 @@ export const CreateAssistant = ({ currentId, setUpdateList, setCurrentId, update
   };
 
   let dialog;
+  let instructionsDialog;
   if (showConfirmation) {
     dialog = (
       <DialogBox
@@ -202,6 +212,33 @@ export const CreateAssistant = ({ currentId, setUpdateList, setCurrentId, update
           {t('Please confirm that this assistant is not being used in any of the active flows.')}
         </div>
       </DialogBox>
+    );
+  }
+  if (openInstructions) {
+    instructionsDialog = (
+      <Modal open={openInstructions} onClose={() => setOpenInstructions(false)}>
+        <div className={styles.InstructionsBox}>
+          <div className={styles.Instructions}>
+            <h5>Edit system instructions</h5>
+            <OutlinedInput
+              name="expand-instructions"
+              onChange={(event) => setInstructions(event.target.value)}
+              value={instructions}
+              className={styles.Input}
+              multiline
+              rows={16}
+            />
+            <div className={styles.InstructionButtons}>
+              <Button data-testid="cancel-button" onClick={() => setOpenInstructions(false)} variant="outlined">
+                Cancel
+              </Button>
+              <Button data-testid="save-button" onClick={() => setOpenInstructions(false)} variant="contained">
+                Save
+              </Button>
+            </div>
+          </div>
+        </div>
+      </Modal>
     );
   }
 
@@ -243,6 +280,7 @@ export const CreateAssistant = ({ currentId, setUpdateList, setCurrentId, update
           </div>
         </form>
         {dialog}
+        {instructionsDialog}
       </div>
     </FormikProvider>
   );
