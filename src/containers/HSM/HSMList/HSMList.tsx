@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { FormControl, MenuItem, Select } from '@mui/material';
 import dayjs from 'dayjs';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
@@ -16,8 +16,8 @@ import PendingIcon from 'assets/images/icons/Template/Pending.svg?react';
 import { BULK_APPLY_SAMPLE_LINK } from 'config';
 import { List } from 'containers/List/List';
 import { RaiseToGupShup } from 'containers/HSM/RaiseToGupshupDialog/RaiseToGupShup';
-import { STANDARD_DATE_TIME_FORMAT } from 'common/constants';
-import { templateInfo } from 'common/HelpData';
+import { GUPSHUP_ENTERPRISE_SHORTCODE, STANDARD_DATE_TIME_FORMAT } from 'common/constants';
+import { templateInfo, templateStatusInfo } from 'common/HelpData';
 import { setNotification } from 'common/notification';
 import { WhatsAppToJsx } from 'common/RichEditor';
 import { capitalizeFirstLetter, copyToClipboardMethod, exportCsvFile, getFileExtension } from 'common/utils';
@@ -29,10 +29,16 @@ import HelpIcon from 'components/UI/HelpIcon/HelpIcon';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 
 import { GET_TAGS } from 'graphql/queries/Tags';
-import { BULK_APPLY_TEMPLATES, DELETE_TEMPLATE, SYNC_HSM_TEMPLATES } from 'graphql/mutations/Template';
+import {
+  BULK_APPLY_TEMPLATES,
+  DELETE_TEMPLATE,
+  IMPORT_TEMPLATES,
+  SYNC_HSM_TEMPLATES,
+} from 'graphql/mutations/Template';
 import { FILTER_TEMPLATES, GET_TEMPLATES_COUNT } from 'graphql/queries/Template';
 
 import styles from './HSMList.module.css';
+import { ProviderContext } from 'context/session';
 
 const templateIcon = <TemplateIcon className={styles.TemplateIcon} />;
 
@@ -40,8 +46,10 @@ const statusFilter = {
   APPROVED: false,
   PENDING: false,
   REJECTED: false,
+  FAILED: false,
 };
-const getLabel = (label: string, quality?: string) => (
+
+const getLabel = (label: string, quality?: string, isHsm?: boolean) => (
   <div className={styles.LabelContainer}>
     <div className={styles.LabelText}>{label}</div>
     <div className={styles.Quality}>{quality && quality !== 'UNKNOWN' ? quality : 'Not Rated'}</div>
@@ -75,6 +83,7 @@ export const HSMList = () => {
   const [selectedTag, setSelectedTag] = useState<any>(null);
   const [syncTemplateLoad, setSyncTemplateLoad] = useState(false);
 
+  const { provider } = useContext(ProviderContext);
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -105,6 +114,16 @@ export const HSMList = () => {
     onError: () => {
       setNotification(t('Sorry, failed to sync HSM updates.'), 'warning');
       setSyncTemplateLoad(false);
+    },
+  });
+
+  const [importTemplatesMutation] = useMutation(IMPORT_TEMPLATES, {
+    onCompleted: (data: any) => {
+      setImporting(false);
+      const { errors } = data.importTemplates;
+      if (errors && errors.length > 0) {
+        setNotification(t('Error importing templates'), 'warning');
+      }
     },
   });
 
@@ -155,7 +174,7 @@ export const HSMList = () => {
         statusValue = status;
     }
 
-    return <span>{statusValue}</span>;
+    return statusValue;
   };
 
   const columnNames: any = [
@@ -164,22 +183,17 @@ export const HSMList = () => {
     { name: 'category', label: t('Category') },
     { name: 'status', label: t('Status') },
   ];
+  const columnStyles: any = [styles.Name, styles.Body, styles.Category, styles.Status];
 
-  if (filters.REJECTED) {
+  if (filters.REJECTED || filters.FAILED) {
     columnNames.push({ label: t('Reason') });
+    columnStyles.push(styles.Reason);
   } else {
     columnNames.push({ name: 'updated_at', label: t('Last modified') });
+    columnStyles.push(styles.LastModified);
   }
   columnNames.push({ label: t('Actions') });
-
-  let columnStyles: any = [
-    styles.Name,
-    styles.Body,
-    styles.Category,
-    styles.Status,
-    ...(filters.REJECTED ? [styles.Reason] : []),
-    styles.Actions,
-  ];
+  columnStyles.push(styles.Actions);
 
   const getColumns = ({ id, label, body, status, reason, quality, category, updatedAt }: any) => {
     const columns: any = {
@@ -190,7 +204,7 @@ export const HSMList = () => {
       status: getStatus(status),
     };
 
-    if (filters.REJECTED) {
+    if (filters.REJECTED || filters.FAILED) {
       columns.reason = getReason(reason);
     } else {
       columns.updatedAt = getUpdatedAt(updatedAt);
@@ -211,7 +225,17 @@ export const HSMList = () => {
   };
 
   let filterValue: any = '';
-  const statusList = ['Approved', 'Pending', 'Rejected'];
+  const statusList = ['Approved', 'Pending', 'Rejected', 'Failed'];
+  const defaultSortBy = 'STATUS';
+  const button = { show: true, label: t('Create') };
+
+  const filterStatusName = Object.keys(filters).filter((status) => filters[status] === true);
+  if (filterStatusName.length === 1) {
+    [filterValue] = filterStatusName;
+  }
+  const appliedFilters = { isHsm: true, status: filterValue };
+
+  console.log(filterValue);
 
   const setCopyDialog = (id: any) => {
     navigate(`/template/${id}/edit`, { state: 'copy' });
@@ -237,11 +261,6 @@ export const HSMList = () => {
     setFilters({ ...statusFilter, [event.target.value.toUpperCase()]: true });
   };
 
-  const filterStatusName = Object.keys(filters).filter((status) => filters[status] === true);
-  if (filterStatusName.length === 1) {
-    [filterValue] = filterStatusName;
-  }
-
   const syncHSMButton = (
     <Button
       variant="outlined"
@@ -255,6 +274,7 @@ export const HSMList = () => {
       SYNC HSM
     </Button>
   );
+
   const dialogMessage = t('It will stop showing when you draft a customized message');
 
   const filterTemplateStatus = (
@@ -293,26 +313,51 @@ export const HSMList = () => {
     </div>
   );
 
-  const secondaryButton = (
-    <div className={styles.ImportButton}>
-      <a href={BULK_APPLY_SAMPLE_LINK} target="_blank" rel="noreferrer" className={styles.HelperText}>
-        View Sample
-      </a>
-      <ImportButton
-        title={t('Bulk apply')}
-        onImport={() => setImporting(true)}
-        afterImport={(result: string, media: any) => {
-          const extension = getFileExtension(media.name);
-          if (extension !== 'csv') {
-            setNotification('Please upload a valid CSV file', 'warning');
-            setImporting(false);
-          } else {
-            bulkApplyTemplates({ variables: { data: result } });
-          }
-        }}
-      />
+  let secondaryButton = (
+    <div className={styles.SecondaryButton}>
+      {syncHSMButton}
+      <div className={styles.ImportButton}>
+        <a href={BULK_APPLY_SAMPLE_LINK} target="_blank" rel="noreferrer" className={styles.HelperText}>
+          View Sample
+        </a>
+        <ImportButton
+          title={t('Bulk apply')}
+          onImport={() => setImporting(true)}
+          afterImport={(result: string, media: any) => {
+            const extension = getFileExtension(media.name);
+            if (extension !== 'csv') {
+              setNotification('Please upload a valid CSV file', 'warning');
+              setImporting(false);
+            } else {
+              bulkApplyTemplates({ variables: { data: result } });
+            }
+          }}
+        />
+      </div>
     </div>
   );
+
+  if (provider === GUPSHUP_ENTERPRISE_SHORTCODE) {
+    secondaryButton = (
+      <div className={styles.SecondaryButton}>
+        {syncHSMButton}
+        <ImportButton
+          title={t('Import templates')}
+          onImport={() => setImporting(true)}
+          afterImport={(result: string, media: any) => {
+            const extension = getFileExtension(media.name);
+            if (extension !== 'csv') {
+              setNotification('Please upload a valid CSV file', 'warning');
+              setImporting(false);
+            } else {
+              importTemplatesMutation({ variables: { data: result } });
+            }
+          }}
+        />
+      </div>
+    );
+    button.show = false;
+  }
 
   let additionalAction: any = () => [
     {
@@ -337,10 +382,6 @@ export const HSMList = () => {
       insideMore: true,
     },
   ];
-
-  const defaultSortBy = 'STATUS';
-  const appliedFilters = { isHsm: true, status: filterValue };
-  const button = { show: true, label: t('Create') };
 
   let dialogBox;
   if (raiseToGupshupTemplate) {

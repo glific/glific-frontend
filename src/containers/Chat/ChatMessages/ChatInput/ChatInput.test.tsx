@@ -4,19 +4,16 @@ import { vi } from 'vitest';
 
 import ChatInput from './ChatInput';
 import { createMediaMessageMock, getAttachmentPermissionMock, uploadBlobMock } from 'mocks/Attachment';
-import { filterTemplatesQuery } from 'mocks/Template';
 import { searchInteractive, searchInteractiveHi } from 'mocks/InteractiveMessage';
 import '../VoiceRecorder/VoiceRecorder';
 import { LexicalWrapper } from 'common/LexicalWrapper';
+import { TEMPLATE_MOCKS } from 'mocks/Template';
 
 const mocks = [
   searchInteractive,
   searchInteractive,
   searchInteractiveHi,
-  filterTemplatesQuery('', { isHsm: true }),
-  filterTemplatesQuery('', { isHsm: true }),
-  filterTemplatesQuery('hi', { isHsm: true }),
-  filterTemplatesQuery('', { isHsm: false }),
+  ...TEMPLATE_MOCKS,
   getAttachmentPermissionMock,
   uploadBlobMock,
   createMediaMessageMock({
@@ -176,12 +173,12 @@ describe('<ChatInput />', () => {
     const interactiveMessages = getAllByTestId('shortcutButton')[2];
     fireEvent.click(interactiveMessages);
     await waitFor(() => {
-      expect(getAllByTestId('templateItem')).toHaveLength(3);
+      expect(getAllByTestId('templateItem')).toHaveLength(2);
     });
     const listItem = getAllByTestId('templateItem')[0];
     fireEvent.click(listItem);
     await waitFor(() => {
-      expect(getAllByText('description')).toHaveLength(1);
+      expect(getAllByText('some description')).toHaveLength(1);
     });
   });
 

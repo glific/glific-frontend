@@ -165,3 +165,16 @@
     font-size: 14px;
     color: #2ea36a;
 }
+
+.FilterContainer {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.SecondaryButton {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 0.5rem;
+}

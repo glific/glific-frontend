@@ -12,6 +12,7 @@ import { setVariables } from 'common/constants';
 import { getOrganizationLanguagesQueryByOrder } from './Organization';
 import { getFilterTagQuery } from './Tag';
 import { createMediaMessageMock } from './Attachment';
+import { searchInteractive, searchInteractiveHi } from './InteractiveMessage';
 
 const getShortCodeQuery = {
   request: {
@@ -582,7 +583,7 @@ export const templatesData = [
     },
   },
 ];
-export const filterTemplatesQuery = (term: any, filter?: any, data: boolean = true) => {
+export const filterTemplatesQuery = (term: any, data: any, filter?: any) => {
   return {
     request: {
       query: FILTER_TEMPLATES,
@@ -593,7 +594,7 @@ export const filterTemplatesQuery = (term: any, filter?: any, data: boolean = tr
     },
     result: {
       data: {
-        sessionTemplates: data ? templatesData : [],
+        sessionTemplates: data,
       },
     },
   };
@@ -714,4 +715,216 @@ export const SPEED_SEND_LIST = [
   ...SPEED_SENDS_MOCKS,
   filterTemplatesMock({ isHsm: false, status: 'APPROVED' }),
   templateCountQuery({ isHsm: false, status: 'APPROVED' }, 1),
+];
+
+const filterQueryMock = filterTemplatesQuery(
+  '',
+  [
+    {
+      id: '87',
+      bspId: null,
+      label: 'Good message',
+      body: 'Hey there',
+      shortcode: 'test',
+      category: 'ACCOUNT_UPDATE',
+      isReserved: true,
+      status: 'APPROVED',
+      reason: 'test reason',
+      isHsm: true,
+      isActive: true,
+      updatedAt: '2020-12-01T18:00:32Z',
+      numberParameters: 0,
+      translations:
+        '{"2":{"status":"approved","languageId":{"label":"Hindi","id":"2"},"label":"now","isHsm":false,"body":"hey","MessageMedia":null}}',
+      type: 'TEXT',
+      quality: null,
+      language: {
+        id: '1',
+        label: 'Hindi',
+      },
+      MessageMedia: {
+        id: 1,
+        caption: 'Test',
+        sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
+      },
+    },
+    {
+      id: '94',
+      label: 'Message',
+      bspId: null,
+      body: 'some description',
+      shortcode: 'test',
+      isReserved: true,
+      isHsm: false,
+      isActive: true,
+      status: null,
+      reason: 'test reason',
+      updatedAt: '2020-12-01T18:00:32Z',
+      numberParameters: 0,
+      translations: '{}',
+      type: 'TEXT',
+      language: {
+        id: '1',
+        label: 'Hindi',
+      },
+      category: 'ACCOUNT_UPDATE',
+      quality: null,
+      MessageMedia: {
+        id: 1,
+        caption: 'Test',
+        sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
+      },
+    },
+  ],
+  { isHsm: false }
+);
+
+const filterQuery = filterTemplatesQuery(
+  '',
+  [
+    {
+      id: '87',
+      bspId: null,
+      label: 'Good message',
+      body: 'Hey there',
+      shortcode: 'test',
+      category: 'ACCOUNT_UPDATE',
+      isReserved: true,
+      status: 'APPROVED',
+      reason: 'test reason',
+      isHsm: true,
+      isActive: true,
+      updatedAt: '2020-12-01T18:00:32Z',
+      numberParameters: 0,
+      translations:
+        '{"2":{"status":"approved","languageId":{"label":"Hindi","id":"2"},"label":"now","isHsm":false,"body":"hey","MessageMedia":null}}',
+      type: 'IMAGE',
+      quality: null,
+      language: {
+        id: '1',
+        label: 'Hindi',
+      },
+      MessageMedia: null,
+    },
+    {
+      id: '94',
+      label: 'Message',
+      bspId: null,
+      body: 'some description',
+      shortcode: 'test',
+      isReserved: true,
+      isHsm: false,
+      isActive: true,
+      status: null,
+      reason: 'test reason',
+      updatedAt: '2020-12-01T18:00:32Z',
+      numberParameters: 0,
+      translations: '{}',
+      type: 'IMAGE',
+      language: {
+        id: '1',
+        label: 'Hindi',
+      },
+      category: 'ACCOUNT_UPDATE',
+      quality: null,
+      MessageMedia: {
+        id: 1,
+        caption: 'Test',
+        sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
+      },
+    },
+    {
+      id: '3',
+      label: 'Message',
+      bspId: null,
+      body: 'some description',
+      shortcode: 'test',
+      isReserved: true,
+      isHsm: true,
+      isActive: true,
+      status: 'APPROVED',
+      reason: 'test reason',
+      updatedAt: '2020-12-01T18:00:32Z',
+      numberParameters: 0,
+      translations: '{}',
+      type: 'IMAGE',
+      language: {
+        id: '1',
+        label: 'Hindi',
+      },
+      category: 'ACCOUNT_UPDATE',
+      quality: null,
+      MessageMedia: {
+        id: 1,
+        caption: 'Test',
+        sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
+      },
+    },
+    {
+      MessageMedia: null,
+      __typename: 'SessionTemplate',
+      body: 'You can now view your Account Balance or Mini statement for Account ending with {{1}} simply by selecting one of the options below. ',
+      bspId: '0922869a-cd33-4fed-83af-39376d8ccfb5',
+      category: 'ACCOUNT_UPDATE',
+      id: '11',
+      isActive: true,
+      isHsm: true,
+      isReserved: false,
+      label: 'account_statement',
+      language: {
+        __typename: 'Language',
+        id: '1',
+        label: 'English',
+      },
+      numberParameters: 1,
+      quality: null,
+      reason: null,
+      shortcode: 'account_statement',
+      status: 'APPROVED',
+      translations: '{}',
+      type: 'TEXT',
+      updatedAt: '2024-10-02T05:02:29Z',
+    },
+  ],
+  { isHsm: true }
+);
+
+export const TEMPLATE_MOCKS = [
+  searchInteractive,
+  searchInteractiveHi,
+  filterQueryMock,
+  filterQueryMock,
+  filterQuery,
+  filterQuery,
+  filterTemplatesQuery('', []),
+  filterTemplatesQuery('this should not return anything', []),
+  filterTemplatesQuery(
+    'hi',
+    [
+      {
+        id: '87',
+        label: 'Good message',
+        bspId: null,
+        body: 'hi can you help!',
+        category: 'ACCOUNT_UPDATE',
+        shortcode: 'test',
+        isReserved: true,
+        isHsm: true,
+        isActive: true,
+        status: 'APPROVED',
+        reason: 'test reason',
+        updatedAt: '2020-12-01T18:00:32Z',
+        numberParameters: 0,
+        translations: '{}',
+        type: 'IMAGE',
+        quality: null,
+        language: {
+          id: '1',
+          label: 'Hindi',
+        },
+        MessageMedia: null,
+      },
+    ],
+    { isHsm: true }
+  ),
 ];

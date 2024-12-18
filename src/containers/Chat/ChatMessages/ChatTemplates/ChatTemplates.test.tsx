@@ -1,12 +1,9 @@
 import { MockedProvider } from '@apollo/client/testing';
 import ChatTemplates from './ChatTemplates';
-import { filterTemplatesQuery } from 'mocks/Template';
 import { render, fireEvent, waitFor } from '@testing-library/react';
+import { TEMPLATE_MOCKS } from 'mocks/Template';
 
-const mocks = [
-  filterTemplatesQuery('', { isHsm: true }),
-  filterTemplatesQuery('hi', { isHsm: true }, false),
-];
+const mocks = TEMPLATE_MOCKS;
 
 describe('<ChatTemplates />', () => {
   let defaultProps = {
