@@ -88,3 +88,15 @@
   line-height: 18px;
   font-size: 16px;
 }
+
+.TemplateIcon {
+  width: 29px;
+  height: 29px;
+}
+
+.Checkbox {
+  color: #555555;
+  font-weight: 400;
+  line-height: 18px;
+  font-size: 16px;
+}

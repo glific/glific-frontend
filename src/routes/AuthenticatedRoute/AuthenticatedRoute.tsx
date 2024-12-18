@@ -21,8 +21,8 @@ import { GroupCollectionList } from 'containers/WaGroups/GroupCollections/GroupC
 
 const Chat = lazy(() => import('containers/Chat/Chat'));
 const Layout = lazy(() => import('components/UI/Layout/Layout'));
-const SpeedSendList = lazy(() => import('containers/Template/List/SpeedSendList/SpeedSendList'));
-const SpeedSend = lazy(() => import('containers/Template/Form/SpeedSend/SpeedSend'));
+const SpeedSendList = lazy(() => import('containers/SpeedSend/SpeedSendList/SpeedSendList'));
+const SpeedSend = lazy(() => import('containers/SpeedSend/SpeedSend'));
 const FlowList = lazy(() => import('containers/Flow/FlowList/FlowList'));
 const Flow = lazy(() => import('containers/Flow/Flow'));
 const SheetIntegrationList = lazy(
@@ -40,8 +40,8 @@ const ContactManagement = lazy(() => import('containers/ContactManagement/Contac
 const StaffManagement = lazy(() => import('containers/StaffManagement/StaffManagement'));
 const ContactProfile = lazy(() => import('containers/Profile/Contact/ContactProfile'));
 const MyAccount = lazy(() => import('containers/MyAccount/MyAccount'));
-const HSMList = lazy(() => import('containers/Template/List/HSMList/HSMList'));
-const HSM = lazy(() => import('containers/Template/Form/HSM/HSM'));
+const HSMList = lazy(() => import('containers/HSM/HSMList/HSMList'));
+const HSM = lazy(() => import('containers/HSM/HSM'));
 
 const TicketList = lazy(() => import('containers/Ticket/TicketList/TicketList'));
 const SettingList = lazy(() => import('containers/SettingList/SettingList'));

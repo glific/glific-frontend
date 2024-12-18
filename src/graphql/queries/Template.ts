@@ -90,3 +90,27 @@ export const GET_SHORTCODES = gql`
     }
   }
 `;
+
+export const GET_SPEED_SEND = gql`
+  query SessionTemplate($id: ID!) {
+    sessionTemplate(id: $id) {
+      sessionTemplate {
+        id
+        body
+        isActive
+        label
+        translations
+        type
+        language {
+          id
+          label
+        }
+        messageMedia {
+          id
+          caption
+          sourceUrl
+        }
+      }
+    }
+  }
+`;

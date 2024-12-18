@@ -2,13 +2,13 @@ import { render, fireEvent, cleanup, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 
 import { SAVE_MESSAGE_TEMPLATE_MUTATION } from 'graphql/mutations/MessageTemplate';
-import { TEMPLATE_MOCKS } from 'mocks/Template';
+import { filterTemplatesQuery } from 'mocks/Template';
 import AddToMessageTemplate from './AddToMessageTemplate';
 
 let resultReturned = false;
 
 const mocks = [
-  ...TEMPLATE_MOCKS,
+  filterTemplatesQuery('', {}),
   {
     request: {
       query: SAVE_MESSAGE_TEMPLATE_MUTATION,

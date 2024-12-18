@@ -2,12 +2,12 @@ import { render, waitFor, cleanup } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 
-import { TEMPLATE_MOCKS } from 'containers/Template/Template.test.helper';
+import { SPEED_SEND_LIST } from 'mocks/Template';
 import { setUserSession } from 'services/AuthService';
 import { SpeedSendList } from './SpeedSendList';
 
 afterEach(cleanup);
-const mocks = [...TEMPLATE_MOCKS, ...TEMPLATE_MOCKS];
+const mocks = [...SPEED_SEND_LIST, ...SPEED_SEND_LIST];
 
 const speedSend = (
   <MockedProvider mocks={mocks} addTypename={false}>
