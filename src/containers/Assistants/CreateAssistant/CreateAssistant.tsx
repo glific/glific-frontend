@@ -1,5 +1,5 @@
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { IconButton, InputAdornment, Modal, OutlinedInput, Typography } from '@mui/material';
+import { InputAdornment, Modal, OutlinedInput, Typography } from '@mui/material';
 import { Field, FormikProvider, useFormik } from 'formik';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
