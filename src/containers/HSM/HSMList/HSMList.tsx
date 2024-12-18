@@ -49,7 +49,7 @@ const statusFilter = {
   FAILED: false,
 };
 
-const getLabel = (label: string, quality?: string, isHsm?: boolean) => (
+const getLabel = (label: string, quality?: string) => (
   <div className={styles.LabelContainer}>
     <div className={styles.LabelText}>{label}</div>
     <div className={styles.Quality}>{quality && quality !== 'UNKNOWN' ? quality : 'Not Rated'}</div>
