@@ -241,3 +241,27 @@ test('it should show errors for invalid value in temperature', async () => {
     expect(screen.getByText('Temperature value should be between 0-2')).toBeInTheDocument();
   });
 });
+
+test('it opens the instruction dialog box', async () => {
+  render(assistantsComponent());
+
+  await waitFor(() => {
+    expect(screen.getByText('Assistants')).toBeInTheDocument();
+    expect(screen.getByText('Assistant-1')).toBeInTheDocument();
+  });
+
+  await waitFor(() => {
+    expect(screen.getByTestId('expandIcon')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('expandIcon'));
+  fireEvent.click(screen.getByTestId('cancel-button'));
+  fireEvent.click(screen.getByTestId('expandIcon'));
+
+  fireEvent.change(screen.getByRole('textbox'), { target: { value: 'test instructions' } });
+  fireEvent.click(screen.getByTestId('save-button'));
+
+  await waitFor(() => {
+    expect(screen.getByText('test instructions')).toBeInTheDocument();
+  });
+});
