@@ -297,7 +297,6 @@ export const HSM = () => {
       if (!language?.id) {
         const selectedLangauge = languageOptions.find((lang: any) => lang.id === languageIdValue.id);
         setLanguageId(selectedLangauge);
-        console.log(selectedLangauge);
       } else {
         setLanguageId(language);
       }
@@ -349,8 +348,6 @@ export const HSM = () => {
         setAttachmentURL('');
       }
     }
-
-    console.log(languageOptions.length, languageIdValue);
   };
 
   const setPayload = (payload: any) => {
@@ -389,7 +386,6 @@ export const HSM = () => {
     delete payloadCopy.existingShortcode;
     delete payloadCopy.newShortcode;
     delete payloadCopy.attachmentURL;
-    console.log(payloadCopy);
     return payloadCopy;
   };
 
@@ -493,20 +489,16 @@ export const HSM = () => {
   };
 
   const getMediaId = async (payload: any) => {
-    if (isEditing) {
-      const data = await createMediaMessage({
-        variables: {
-          input: {
-            caption: payload.body,
-            sourceUrl: payload.attachmentURL,
-            url: payload.attachmentURL,
-          },
+    const data = await createMediaMessage({
+      variables: {
+        input: {
+          caption: payload.body,
+          sourceUrl: payload.attachmentURL,
+          url: payload.attachmentURL,
         },
-      });
-      console.log(data);
-
-      return data;
-    }
+      },
+    });
+    return data;
   };
 
   const setSimulatorMessage = (messages: any) => {
@@ -766,7 +758,6 @@ export const HSM = () => {
       const lang = languages.currentUser.user.organization.activeLanguages.slice();
       // sort languages by thaeir name
       lang.sort((first: any, second: any) => (first.label > second.label ? 1 : -1));
-      console.log(lang);
 
       setLanguageOptions(lang);
       if (!isEditing) setLanguageId(lang[0]);

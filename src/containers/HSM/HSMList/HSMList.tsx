@@ -235,8 +235,6 @@ export const HSMList = () => {
   }
   const appliedFilters = { isHsm: true, status: filterValue };
 
-  console.log(filterValue);
-
   const setCopyDialog = (id: any) => {
     navigate(`/template/${id}/edit`, { state: 'copy' });
   };

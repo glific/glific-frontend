@@ -576,8 +576,6 @@ export const FormLayout = ({
               color="primary"
               onClick={() => {
                 formik.validateForm().then((errors) => {
-                  console.log(errors);
-
                   onSaveButtonClick(errors);
                   formik.submitForm();
                 });
