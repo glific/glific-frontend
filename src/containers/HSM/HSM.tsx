@@ -444,23 +444,6 @@ export const HSM = () => {
     setSampleMessages(message);
   };
 
-  const getTemplate = (text: string) => {
-    const { body } = sampleMessages;
-    /**
-     * Regular expression to check if message contains given pattern
-     * If pattern is present search will return first index of given pattern
-     * otherwise it will return -1
-     */
-    const exp = /(\|\s\[)|(\|\[)/;
-
-    const areButtonsPresent = body.search(exp);
-    if (areButtonsPresent > -1) {
-      const buttons = body.substr(areButtonsPresent);
-      return text + buttons;
-    }
-    return text;
-  };
-
   const handeInputChange = (event: any, row: any, index: any, eventType: any) => {
     const { value } = event.target;
     const obj = { ...row };
