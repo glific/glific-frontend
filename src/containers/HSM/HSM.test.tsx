@@ -3,11 +3,7 @@ import { MockedProvider } from '@apollo/client/testing';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { HSM } from './HSM';
-import {
-  HSM_TEMPLATE_MOCKS,
-  getHSMTemplateTypeMedia,
-  getHSMTemplateTypeText,
-} from 'mocks/Template';
+import { HSM_TEMPLATE_MOCKS, getHSMTemplateTypeMedia, getHSMTemplateTypeText } from 'mocks/Template';
 import { setNotification } from 'common/notification';
 
 const mocks = HSM_TEMPLATE_MOCKS;
@@ -155,14 +151,13 @@ describe('Add mode', () => {
     await waitFor(() => {
       expect(screen.getByText('Hi, How are you {{1}}')).toBeInTheDocument();
     });
-    fireEvent.change(inputs[1], { target: { value: 'element_name' } });
 
     fireEvent.change(screen.getByPlaceholderText('Define value'), { target: { value: 'User' } });
-    fireEvent.change(inputs[1], { target: { value: 'title' } });
 
     autocompletes[3].focus();
     fireEvent.keyDown(autocompletes[3], { key: 'ArrowDown' });
     fireEvent.click(screen.getByText('Messages'), { key: 'Enter' });
+    fireEvent.change(inputs[1], { target: { value: 'title' } });
 
     fireEvent.click(screen.getByTestId('submitActionButton'));
 
