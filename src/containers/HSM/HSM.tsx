@@ -1,28 +1,32 @@
-import { GET_HSM_CATEGORIES, GET_SHORTCODES, GET_TEMPLATE } from 'graphql/queries/Template';
-import * as Yup from 'yup';
-import styles from './HSM.module.css';
-import { CREATE_TEMPLATE, DELETE_TEMPLATE, UPDATE_TEMPLATE } from 'graphql/mutations/Template';
+import { useMutation, useQuery } from '@apollo/client';
+import { Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation, useNavigate, useParams } from 'react-router';
-import { FormLayout } from 'containers/Form/FormLayout';
+import { useLocation, useParams } from 'react-router';
+import * as Yup from 'yup';
+
 import TemplateIcon from 'assets/images/icons/Template/UnselectedDark.svg?react';
+
+import { CALL_TO_ACTION, MEDIA_MESSAGE_TYPES, QUICK_REPLY } from 'common/constants';
+import { validateMedia } from 'common/utils';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
-import { Typography } from '@mui/material';
-import { Input } from 'components/UI/Form/Input/Input';
-import { TemplateVariables } from './TemplateVariables/TemplateVariables';
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { CALL_TO_ACTION, MEDIA_MESSAGE_TYPES, QUICK_REPLY } from 'common/constants';
-import { GET_TAGS } from 'graphql/queries/Tags';
-import { USER_LANGUAGES } from 'graphql/queries/Organization';
-import { CREATE_MEDIA_MESSAGE } from 'graphql/mutations/Chat';
-import { validateMedia } from 'common/utils';
-import { Loading } from 'components/UI/Layout/Loading/Loading';
-import { TemplateOptions } from 'containers/TemplateOptions/TemplateOptions';
-import { EmojiInput } from 'components/UI/Form/EmojiInput/EmojiInput';
 import { CreateAutoComplete } from 'components/UI/Form/CreateAutoComplete/CreateAutoComplete';
+import { EmojiInput } from 'components/UI/Form/EmojiInput/EmojiInput';
+import { Input } from 'components/UI/Form/Input/Input';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
 import Simulator from 'components/simulator/Simulator';
+import { FormLayout } from 'containers/Form/FormLayout';
+import { TemplateOptions } from 'containers/TemplateOptions/TemplateOptions';
+
+import { USER_LANGUAGES } from 'graphql/queries/Organization';
+import { GET_TAGS } from 'graphql/queries/Tags';
+import { GET_HSM_CATEGORIES, GET_SHORTCODES, GET_TEMPLATE } from 'graphql/queries/Template';
+import { CREATE_MEDIA_MESSAGE } from 'graphql/mutations/Chat';
+import { CREATE_TEMPLATE, DELETE_TEMPLATE, UPDATE_TEMPLATE } from 'graphql/mutations/Template';
+
+import { TemplateVariables } from './TemplateVariables/TemplateVariables';
+import styles from './HSM.module.css';
 
 const queries = {
   getItemQuery: GET_TEMPLATE,
@@ -162,7 +166,6 @@ export const HSM = () => {
     body: '',
   });
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const location: any = useLocation();
   const params = useParams();
   let timer: any = null;
@@ -183,7 +186,6 @@ export const HSM = () => {
   const { data: languages, loading: languageLoading } = useQuery(USER_LANGUAGES, {
     variables: { opts: { order: 'ASC' } },
   });
-  const [getSessionTemplate, { data: template, loading: templateLoading }] = useLazyQuery<any>(GET_TEMPLATE);
   const [createMediaMessage] = useMutation(CREATE_MEDIA_MESSAGE);
 
   let isEditing = false;
@@ -281,7 +283,6 @@ export const HSM = () => {
     body: bodyValue,
     example: exampleValue,
     type: typeValue,
-    translations: translationsValue,
     MessageMedia: MessageMediaValue,
     shortcode: shortcodeValue,
     category: categoryValue,
@@ -310,9 +311,9 @@ export const HSM = () => {
       setBody('');
       setLabel('');
     } else {
-      setBody(bodyValue || '');
+      setBody(bodyValue);
       setLabel(labelValue);
-      setEditorState(bodyValue || '');
+      setEditorState(bodyValue);
       setIsActive(isActiveValue);
       setCategory(categoryValue);
       setTagId(tagIdValue);
@@ -437,13 +438,6 @@ export const HSM = () => {
     return { message, buttons };
   };
 
-  const getAttachmentUrl = (type: any, media: any) => {
-    const mediaBody = { ...media };
-    const mediaObj: any = sampleMessages.media;
-    mediaBody.caption = mediaObj.caption;
-    //   setSampleMessages((val) => ({ ...val, type, media: mediaBody }));
-  };
-
   const addButtonsToSampleMessage = (buttonTemplate: string) => {
     const message: any = { ...sampleMessages };
     message.body = buttonTemplate;
@@ -465,14 +459,6 @@ export const HSM = () => {
       return text + buttons;
     }
     return text;
-  };
-
-  const getSimulatorMessage = (messages: any) => {
-    const message = removeFirstLineBreak(messages);
-    const media: any = { ...sampleMessages.media };
-    const text = getTemplate(message);
-    media.caption = text;
-    setSampleMessages((val) => ({ ...val, body: text, media }));
   };
 
   const handeInputChange = (event: any, row: any, index: any, eventType: any) => {
@@ -810,13 +796,7 @@ export const HSM = () => {
     setVariables(getVariables(body, variables));
   }, [body]);
 
-  useEffect(() => {
-    if (params.id) {
-      getSessionTemplate({ variables: { id: params.id } });
-    }
-  }, []);
-
-  if (languageLoading || categoryLoading || tagLoading || shortcodesLoading || templateLoading) {
+  if (languageLoading || categoryLoading || tagLoading || shortcodesLoading) {
     return <Loading />;
   }
 
