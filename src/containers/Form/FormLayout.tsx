@@ -179,7 +179,7 @@ export const FormLayout = ({
       }
     });
     // for template create media for attachment
-    if (isAttachment && payload.type !== 'TEXT' && payload.type) {
+    if (isAttachment && payload.type !== 'TEXT' && payload.type && entityId !== null) {
       getMediaId(payload)
         .then((data: any) => {
           if (data) {
@@ -576,6 +576,8 @@ export const FormLayout = ({
               color="primary"
               onClick={() => {
                 formik.validateForm().then((errors) => {
+                  console.log(errors);
+
                   onSaveButtonClick(errors);
                   formik.submitForm();
                 });

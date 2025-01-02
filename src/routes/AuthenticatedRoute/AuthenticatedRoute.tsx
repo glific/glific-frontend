@@ -41,7 +41,7 @@ const StaffManagement = lazy(() => import('containers/StaffManagement/StaffManag
 const ContactProfile = lazy(() => import('containers/Profile/Contact/ContactProfile'));
 const MyAccount = lazy(() => import('containers/MyAccount/MyAccount'));
 const HSMList = lazy(() => import('containers/Template/List/HSMList/HSMList'));
-const HSM = lazy(() => import('containers/Template/Form/HSM/HSM'));
+const HSM = lazy(() => import('containers/HSM/HSM'));
 
 const TicketList = lazy(() => import('containers/Ticket/TicketList/TicketList'));
 const SettingList = lazy(() => import('containers/SettingList/SettingList'));
