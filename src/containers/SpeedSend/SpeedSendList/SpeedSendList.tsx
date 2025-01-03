@@ -56,7 +56,7 @@ export const SpeedSendList = () => {
 
   let columnStyles: any = [styles.Name, styles.Body, styles.LastModified, styles.Actions];
 
-  const getColumns = ({ id, language, label, body, updatedAt, translations, category }: any) => {
+  const getColumns = ({ id, language, label, body, updatedAt, translations }: any) => {
     const columns: any = {
       id,
       label: getLabel(label),
