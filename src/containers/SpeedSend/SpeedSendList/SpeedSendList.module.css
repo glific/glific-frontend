@@ -1,0 +1,48 @@
+.SpeedSendIcon {
+  width: 29px;
+  height: 29px;
+}
+
+.LabelContainer {
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.5rem;
+}
+
+.LabelText {
+  font-weight: 500;
+  font-size: 17px;
+  word-break: break-all;
+}
+
+.TableText {
+  text-align: left;
+  font-size: 14px;
+  color: #93a29b;
+  white-space: pre-line;
+  margin: 0;
+  padding: 0;
+}
+
+.LastModified {
+  width: 20%;
+  min-width: 185px;
+  color: #93a29b;
+}
+
+.Name {
+  width: 25%;
+  min-width: 200px;
+}
+
+.Body {
+  width: 36%;
+  min-width: 200px;
+  word-break: break-word;
+}
+
+.Actions {
+  width: 19%;
+  min-width: 200px;
+  text-align: end;
+}
