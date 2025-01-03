@@ -178,7 +178,9 @@ export const AutoComplete = ({
           freeSolo={freeSolo}
           autoSelect={autoSelect}
           disableClearable={disableClearable}
-          getOptionLabel={(option: any) => (option[optionLabel] != null ? option[optionLabel] : option)}
+          getOptionLabel={(option: any) =>
+            option[optionLabel] != null ? option[optionLabel] : typeof option === 'string' ? option : ''
+          }
           getOptionDisabled={getOptionDisabled}
           isOptionEqualToValue={(option, value) => {
             if (value) {
