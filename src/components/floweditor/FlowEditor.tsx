@@ -31,7 +31,7 @@ export const FlowEditor = () => {
   const params = useParams();
   const { uuid } = params;
   const navigate = useNavigate();
-  const [publishDialog, setPublishDialog] = useState(false);
+  const [publishDialog, setPublishDialog] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [flowEditorLoaded, setFlowEditorLoaded] = useState(false);
   const [flowId, setFlowId] = useState();
@@ -127,7 +127,7 @@ export const FlowEditor = () => {
     },
   });
 
-  const { data: flowName } = useQuery(GET_FLOW_DETAILS, {
+  const { data: flowData, refetch } = useQuery(GET_FLOW_DETAILS, {
     fetchPolicy: 'network-only',
     variables: {
       filter: {
@@ -138,15 +138,15 @@ export const FlowEditor = () => {
   });
 
   useEffect(() => {
-    if (flowName && flowName.flows.length > 0) {
-      setFlowId(flowName.flows[0].id);
-      setIsTemplate(flowName.flows[0].isTemplate);
+    if (flowData && flowData.flows.length > 0) {
+      setFlowId(flowData.flows[0].id);
+      setIsTemplate(flowData.flows[0].isTemplate);
     }
-  }, [flowName]);
+  }, [flowData]);
 
-  if (flowName && flowName.flows.length > 0) {
-    flowTitle = flowName.flows[0].name;
-    flowKeywords = flowName.flows[0].keywords.join(', ');
+  if (flowData && flowData.flows.length > 0) {
+    flowTitle = flowData.flows[0].name;
+    flowKeywords = flowData.flows[0].keywords.join(', ');
   }
 
   const handleResetFlowCount = () => {
@@ -179,13 +179,13 @@ export const FlowEditor = () => {
   }
 
   useEffect(() => {
-    if (flowName) {
+    if (flowData) {
       document.title = flowTitle;
     }
     return () => {
       document.title = APP_NAME;
     };
-  }, [flowName]);
+  }, [flowData]);
 
   useEffect(() => {
     if (flowId) {
@@ -228,7 +228,7 @@ export const FlowEditor = () => {
   };
 
   const handleCancelFlow = () => {
-    setPublishDialog(false);
+    setPublishDialog(null);
     setIsError(false);
     setFlowValidation('');
   };
@@ -270,7 +270,7 @@ export const FlowEditor = () => {
   if (publishDialog) {
     dialog = (
       <DialogBox
-        title="Ready to publish?"
+        title={publishDialog === 'publish' ? 'Publish flow' : 'Unsaved changes.'}
         buttonOk="Publish & stay"
         titleAlign="center"
         buttonOkLoading={publishLoading}
@@ -289,7 +289,11 @@ export const FlowEditor = () => {
         buttonCancel="Cancel"
         additionalTitleStyles={styles.PublishDialogTitle}
       >
-        <p className={styles.DialogDescription}>New changes will be activated for the users</p>
+        <p className={styles.DialogDescription}>
+          {publishDialog === 'publish'
+            ? 'New changes will be activated for the users'
+            : 'You have unsaved changes. Do you want to publish the flow before exiting?'}
+        </p>
       </DialogBox>
     );
   }
@@ -300,7 +304,7 @@ export const FlowEditor = () => {
         title="Errors were detected in the flow. Would you like to continue modifying?"
         buttonOk="Publish"
         handleOk={() => {
-          setPublishDialog(false);
+          setPublishDialog(null);
           setIsError(false);
           setPublished(true);
         }}
@@ -318,12 +322,12 @@ export const FlowEditor = () => {
     if (!stayOnPublish) {
       return <Navigate to="/flow" />;
     }
-    setPublishDialog(false);
+    setPublishDialog(null);
     setPublished(false);
   }
 
   const getFlowKeyword = () => {
-    const flows = flowName ? flowName.flows : null;
+    const flows = flowData ? flowData.flows : null;
     if (flows && flows.length > 0) {
       const { isActive, keywords, isTemplate, name } = flows[0];
       if (isTemplate) {
@@ -338,20 +342,32 @@ export const FlowEditor = () => {
     }
   };
 
+  const handleBack = async () => {
+    if (isTemplate) {
+      navigate('/flow?isTemplate=true');
+      return;
+    }
+
+    refetch().then(({ data }) => {
+      const isFlowPublished = data.flows[0].lastChangedAt === null;
+      if (isFlowPublished) {
+        navigate('/flow');
+      } else {
+        setPublishDialog('unsaved');
+      }
+    });
+  };
+
   return (
     <>
       {exportFlowloading && <BackdropLoader />}
       {dialog}
       <div className={styles.Header}>
         <div className={styles.Title}>
-          <BackIconFlow
-            onClick={() => (isTemplate ? navigate('/flow?isTemplate=true') : navigate('/flow'))}
-            className={styles.BackIcon}
-            data-testid="back-button"
-          />
+          <BackIconFlow onClick={handleBack} className={styles.BackIcon} data-testid="back-button" />
           <div>
             <Typography variant="h6" data-testid="flowName">
-              {flowName ? flowTitle : 'Flow'}
+              {flowData ? flowTitle : 'Flow'}
             </Typography>
             <div>{flowKeywords}</div>
           </div>
@@ -429,7 +445,7 @@ export const FlowEditor = () => {
             color="primary"
             data-testid="button"
             disabled={isTemplate}
-            onClick={() => setPublishDialog(true)}
+            onClick={() => setPublishDialog('publish')}
           >
             <PublishIcon className={styles.Icon} />
             Publish
