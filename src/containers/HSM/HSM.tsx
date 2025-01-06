@@ -49,6 +49,10 @@ const queries = {
 const templateIcon = <TemplateIcon className={styles.TemplateIcon} />;
 const regexForShortcode = /^[a-z0-9_]+$/g;
 const dialogMessage = ' It will stop showing when you are drafting a customized message.';
+const buttonTypes: any = {
+  QUICK_REPLY: { value: '' },
+  CALL_TO_ACTION: { type: 'phone_number', title: '', value: '' },
+};
 
 export const HSM = () => {
   const [language, setLanguageId] = useState<any>(null);
@@ -318,13 +322,9 @@ export const HSM = () => {
 
   const addTemplateButtons = (addFromTemplate: boolean = true) => {
     let buttons: any = [];
-    const buttonType: any = {
-      QUICK_REPLY: { value: '' },
-      CALL_TO_ACTION: { type: 'phone_number', title: '', value: '' },
-    };
 
     if (templateType) {
-      buttons = addFromTemplate ? [...templateButtons, buttonType[templateType]] : [buttonType[templateType]];
+      buttons = addFromTemplate ? [...templateButtons, buttonTypes[templateType]] : [buttonTypes[templateType]];
     }
 
     setTemplateButtons(buttons);
@@ -372,6 +372,11 @@ export const HSM = () => {
     });
 
     setTemplateButtons(result);
+  };
+
+  const handleTemplateTypeChange = (value: string) => {
+    setTemplateButtons([buttonTypes[value]]);
+    setTemplateType(value);
   };
 
   const getMediaId = async (payload: any) => {
@@ -509,7 +514,7 @@ export const HSM = () => {
       onAddClick: addTemplateButtons,
       onRemoveClick: removeTemplateButtons,
       onInputChange: handeInputChange,
-      onTemplateTypeChange: (value: string) => setTemplateType(value),
+      onTemplateTypeChange: handleTemplateTypeChange,
     },
     {
       component: AutoComplete,
