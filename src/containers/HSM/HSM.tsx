@@ -70,7 +70,7 @@ export const HSM = () => {
   const [languageOptions, setLanguageOptions] = useState<any>([]);
   const [validatingURL, setValidatingURL] = useState<boolean>(false);
   const [isUrlValid, setIsUrlValid] = useState<any>();
-  const [templateType, setTemplateType] = useState<string | null>(null);
+  const [templateType, setTemplateType] = useState<string | null>(CALL_TO_ACTION);
   const [sampleMessages, setSampleMessages] = useState({
     type: 'TEXT',
     location: null,
@@ -320,7 +320,7 @@ export const HSM = () => {
     let buttons: any = [];
     const buttonType: any = {
       QUICK_REPLY: { value: '' },
-      CALL_TO_ACTION: { type: '', title: '', value: '' },
+      CALL_TO_ACTION: { type: 'phone_number', title: '', value: '' },
     };
 
     if (templateType) {
@@ -358,8 +358,13 @@ export const HSM = () => {
 
   const handeInputChange = (event: any, row: any, index: any, eventType: any) => {
     const { value } = event.target;
-    const obj = { ...row };
-    obj[eventType] = value;
+    let obj = { ...row };
+
+    if (eventType === 'type') {
+      obj = { type: value, title: '', value: '' };
+    } else {
+      obj[eventType] = value;
+    }
 
     const result = templateButtons.map((val: any, idx: number) => {
       if (idx === index) return obj;
