@@ -75,6 +75,9 @@ export const HSM = () => {
   const [validatingURL, setValidatingURL] = useState<boolean>(false);
   const [isUrlValid, setIsUrlValid] = useState<any>();
   const [templateType, setTemplateType] = useState<string | null>(CALL_TO_ACTION);
+  const [urlType, setUrlType] = useState<string | null>('Static');
+  const [sampleSuffix, setSampleSuffix] = useState<string | null>('');
+
   const [sampleMessages, setSampleMessages] = useState({
     type: 'TEXT',
     location: null,
@@ -149,6 +152,9 @@ export const HSM = () => {
     newShortcode,
     existingShortcode,
     allowTemplateCategoryChange,
+    templateType,
+    urlType,
+    sampleSuffix,
   };
 
   const getLanguageId = (value: any) => {
@@ -160,15 +166,24 @@ export const HSM = () => {
   };
 
   // Creating payload for button template
-  const getButtonTemplatePayload = () => {
-    const buttons = templateButtons.reduce((result: any, button) => {
+  const getButtonTemplatePayload = (templateButtons: any, sampleSuffix: string, urlType: string) => {
+    const buttons = templateButtons.reduce((result: any, button: any) => {
       const { type: buttonType, value, title }: any = button;
       if (templateType === CALL_TO_ACTION) {
         const typeObj: any = {
           phone_number: 'PHONE_NUMBER',
           url: 'URL',
         };
-        const obj: any = { type: typeObj[buttonType], text: title, [buttonType]: value };
+        let obj: any = { type: typeObj[buttonType], text: title, [buttonType]: value };
+
+        if (buttonType === 'url' && urlType === 'Dynamic') {
+          obj = {
+            type: typeObj[buttonType],
+            text: title,
+            [buttonType]: `${value}{{1}}`,
+            example: [`${value}${sampleSuffix}`],
+          };
+        }
         result.push(obj);
       }
 
@@ -277,8 +292,13 @@ export const HSM = () => {
     }
     payloadCopy.languageId = payload.language.id;
     payloadCopy.example = getExampleFromBody(payloadCopy.body, variables);
-    if (isAddButtonChecked && templateType) {
-      const templateButtonData = getButtonTemplatePayload();
+    if (payloadCopy.isAddButtonChecked && payloadCopy.templateType) {
+      const templateButtonData = getButtonTemplatePayload(
+        payloadCopy.templateButtons,
+        payloadCopy.sampleSuffix,
+        payloadCopy.urlType
+      );
+
       Object.assign(payloadCopy, { ...templateButtonData });
     }
     if (payloadCopy.type) {
@@ -303,6 +323,12 @@ export const HSM = () => {
     delete payloadCopy.existingShortcode;
     delete payloadCopy.newShortcode;
     delete payloadCopy.attachmentURL;
+    delete payloadCopy.urlType;
+    delete payloadCopy.sampleSuffix;
+    delete payloadCopy.templateType;
+
+    console.log(payloadCopy);
+
     return payloadCopy;
   };
 
@@ -320,19 +346,10 @@ export const HSM = () => {
     }
   };
 
-  const addTemplateButtons = (addFromTemplate: boolean = true) => {
-    let buttons: any = [];
-
+  const addTemplateButtons = () => {
     if (templateType) {
-      buttons = addFromTemplate ? [...templateButtons, buttonTypes[templateType]] : [buttonTypes[templateType]];
+      setTemplateButtons([buttonTypes[templateType]]);
     }
-
-    setTemplateButtons(buttons);
-  };
-
-  const removeTemplateButtons = (index: number) => {
-    const result = templateButtons.filter((val, idx) => idx !== index);
-    setTemplateButtons(result);
   };
 
   const getTemplateAndButton = (text: string) => {
@@ -343,8 +360,8 @@ export const HSM = () => {
     let buttons: any = null;
 
     if (areButtonsPresent !== -1) {
-      buttons = text.substr(areButtonsPresent);
-      message = text.substr(0, areButtonsPresent);
+      buttons = text.substring(areButtonsPresent);
+      message = text.substring(0, areButtonsPresent);
     }
 
     return { message, buttons };
@@ -354,29 +371,6 @@ export const HSM = () => {
     const message: any = { ...sampleMessages };
     message.body = buttonTemplate;
     setSampleMessages(message);
-  };
-
-  const handeInputChange = (event: any, row: any, index: any, eventType: any) => {
-    const { value } = event.target;
-    let obj = { ...row };
-
-    if (eventType === 'type') {
-      obj = { type: value, title: '', value: '' };
-    } else {
-      obj[eventType] = value;
-    }
-
-    const result = templateButtons.map((val: any, idx: number) => {
-      if (idx === index) return obj;
-      return val;
-    });
-
-    setTemplateButtons(result);
-  };
-
-  const handleTemplateTypeChange = (value: string) => {
-    setTemplateButtons([buttonTypes[value]]);
-    setTemplateType(value);
   };
 
   const getMediaId = async (payload: any) => {
@@ -507,14 +501,9 @@ export const HSM = () => {
     },
     {
       component: TemplateOptions,
-      isAddButtonChecked,
-      templateType,
-      inputFields: templateButtons,
       disabled: isEditing,
-      onAddClick: addTemplateButtons,
-      onRemoveClick: removeTemplateButtons,
-      onInputChange: handeInputChange,
-      onTemplateTypeChange: handleTemplateTypeChange,
+      buttonTypes,
+      setTemplateButtons,
     },
     {
       component: AutoComplete,
@@ -640,6 +629,13 @@ export const HSM = () => {
       then: (schema) => schema.nullable().required(t('Element name is required.')),
       otherwise: (schema) => schema.nullable(),
     }),
+    templateButtons: Yup.array().of(
+      Yup.object().shape({
+        type: Yup.string().required('Type is required.'),
+        title: Yup.string().required('Title is required.'),
+        value: Yup.string().required('Value is required.'),
+      })
+    ),
   };
 
   const FormSchema = Yup.object().shape(validation, [['type', 'attachmentURL']]);
@@ -665,7 +661,7 @@ export const HSM = () => {
 
   useEffect(() => {
     if (templateType && !isEditing) {
-      addTemplateButtons(false);
+      addTemplateButtons();
     }
   }, [templateType]);
 

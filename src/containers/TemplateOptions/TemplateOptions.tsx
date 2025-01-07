@@ -1,4 +1,13 @@
-import { RadioGroup, FormControlLabel, Radio, TextField, FormHelperText, FormControl } from '@mui/material';
+import {
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  TextField,
+  FormHelperText,
+  FormControl,
+  Autocomplete,
+  Typography,
+} from '@mui/material';
 import { FieldArray } from 'formik';
 
 import { Button } from 'components/UI/Form/Button/Button';
@@ -11,26 +20,16 @@ import styles from './TemplateOptions.module.css';
 import { Fragment } from 'react';
 
 export interface TemplateOptionsProps {
-  isAddButtonChecked: boolean;
-  templateType: string | null;
-  inputFields: Array<any>;
-  form: { touched: any; errors: any; values: any };
-  onAddClick: any;
-  onRemoveClick: any;
-  onInputChange: any;
-  onTemplateTypeChange: any;
+  form: { touched: any; errors: any; values: any; setFieldValue: any };
   disabled: any;
+  buttonTypes: any;
+  setTemplateButtons: any;
 }
 export const TemplateOptions = ({
-  isAddButtonChecked,
-  templateType,
-  inputFields,
-  form: { touched, errors, values },
-  onAddClick,
-  onRemoveClick,
-  onTemplateTypeChange,
-  onInputChange,
+  form: { touched, errors, values, setFieldValue },
   disabled = false,
+  buttonTypes,
+  setTemplateButtons,
 }: TemplateOptionsProps) => {
   const buttonTitle = 'Button Title';
   const buttonValue = 'Button Value';
@@ -38,16 +37,48 @@ export const TemplateOptions = ({
     CALL_TO_ACTION: 'Call to action',
     QUICK_REPLY: 'Quick Reply',
   };
+  const options = ['Static', 'Dynamic'];
+  const { templateType, templateButtons, sampleSuffix, urlType, isAddButtonChecked } = values;
 
   const handleAddClick = (helper: any, type: boolean) => {
     const obj = type ? { type: '', value: '', title: '' } : { value: '' };
     helper.push(obj);
-    onAddClick();
+    setFieldValue('templateButtons', [...templateButtons, buttonTypes[templateType]]);
+    setTemplateButtons([...templateButtons, buttonTypes[templateType]]);
   };
 
   const handleRemoveClick = (helper: any, idx: number) => {
     helper.remove(idx);
-    onRemoveClick(idx);
+    const result = templateButtons.filter((_: any, index: number) => idx !== index);
+    setFieldValue('templateButtons', result);
+    setTemplateButtons(result);
+  };
+  console.log(values);
+
+  const handleTemplateTypeChange = (event: any) => {
+    const { value } = event.target;
+    setFieldValue('templateType', value);
+    // setTemplateButtons([buttonTypes[value]]);
+    setFieldValue('templateButtons', [buttonTypes[value]]);
+  };
+
+  const onInputChange = (event: any, row: any, index: any, eventType: any) => {
+    const { value } = event.target;
+    let obj = { ...row };
+
+    if (eventType === 'type') {
+      obj = { type: value, title: '', value: '' };
+    } else {
+      obj[eventType] = value;
+    }
+
+    const result = templateButtons.map((val: any, idx: number) => {
+      if (idx === index) return obj;
+      return val;
+    });
+    console.log(result);
+
+    setFieldValue('templateButtons', result);
   };
 
   const addButton = (helper: any, type: boolean = false) => {
@@ -100,8 +131,8 @@ export const TemplateOptions = ({
                           color="primary"
                           disabled={
                             disabled ||
-                            (index === 0 && inputFields.length > 1 && inputFields[0].type !== 'phone_number') ||
-                            (index > 0 && inputFields[0].type && inputFields[0].type === 'phone_number')
+                            (index === 0 && templateButtons.length > 1 && templateButtons[0].type !== 'phone_number') ||
+                            (index > 0 && templateButtons[0].type && templateButtons[0].type === 'phone_number')
                           }
                         />
                       }
@@ -114,8 +145,8 @@ export const TemplateOptions = ({
                           color="primary"
                           disabled={
                             disabled ||
-                            (index === 0 && inputFields.length > 1 && inputFields[0].type !== 'url') ||
-                            (index > 0 && inputFields[0].type && inputFields[0].type === 'url')
+                            (index === 0 && templateButtons.length > 1 && templateButtons[0].type !== 'url') ||
+                            (index > 0 && templateButtons[0].type && templateButtons[0].type === 'url')
                           }
                         />
                       }
@@ -128,18 +159,32 @@ export const TemplateOptions = ({
                 </FormControl>
               </div>
               <div>
-                {inputFields.length > 1 ? (
+                {templateButtons.length > 1 ? (
                   <DeleteIcon onClick={() => handleRemoveClick(arrayHelpers, index)} data-testid="delete-icon" />
                 ) : null}
               </div>
             </div>
+            {type === 'url' && (
+              <div className={styles.TextFieldWrapper}>
+                <Autocomplete
+                  options={options}
+                  classes={{ inputRoot: styles.DefaultInputRoot }}
+                  renderInput={(params) => <TextField {...params} label="Select URL Type" />}
+                  clearIcon={false}
+                  value={urlType}
+                  onChange={(event: any, newValue: string | null) => {
+                    setFieldValue('urlType', newValue);
+                  }}
+                />
+              </div>
+            )}
             <div className={styles.TextFieldWrapper} data-testid="buttonTitle">
               <FormControl fullWidth error={isError('title')} className={styles.FormControl}>
                 <TextField
                   disabled={disabled}
                   title={title}
                   value={title}
-                  placeholder={buttonTitle}
+                  label={buttonTitle}
                   variant="outlined"
                   onChange={(e: any) => onInputChange(e, row, index, 'title')}
                   className={styles.TextField}
@@ -156,7 +201,7 @@ export const TemplateOptions = ({
                   title={value}
                   value={value}
                   disabled={disabled}
-                  placeholder={buttonValue}
+                  label={buttonValue}
                   variant="outlined"
                   onChange={(e: any) => onInputChange(e, row, index, 'value')}
                   className={styles.TextField}
@@ -167,9 +212,29 @@ export const TemplateOptions = ({
                 ) : null}
               </FormControl>
             </div>
+            {urlType === 'Dynamic' && type === 'url' && (
+              <div>
+                <FormControl fullWidth error={isError('title')} className={styles.FormControl}>
+                  <TextField
+                    disabled={disabled}
+                    label={'Sample Suffix'}
+                    className={styles.TextField}
+                    slotProps={{
+                      input: {
+                        startAdornment: <Typography variant="body2" color="textSecondary">{`{{1}}`}</Typography>,
+                      },
+                    }}
+                    onChange={(event) => setFieldValue('sampleSuffix', event.target.value)}
+                    value={sampleSuffix}
+                  />
+                </FormControl>
+              </div>
+            )}
           </div>
           <div className={styles.Button}>
-            {inputFields.length === index + 1 && inputFields.length !== 2 ? addButton(arrayHelpers, true) : null}
+            {templateButtons.length === index + 1 && templateButtons.length !== 2
+              ? addButton(arrayHelpers, true)
+              : null}
           </div>
         </Fragment>
       );
@@ -184,14 +249,14 @@ export const TemplateOptions = ({
                 disabled={disabled}
                 value={value}
                 title={title}
-                placeholder={`Quick reply ${index + 1} title`}
+                label={`Quick reply ${index + 1} title`}
                 variant="outlined"
                 onChange={(e: any) => onInputChange(e, row, index, 'value')}
                 className={styles.TextField}
                 error={isError('value')}
                 slotProps={{
                   input: {
-                    endAdornment: inputFields.length > 1 && !disabled && (
+                    endAdornment: templateButtons.length > 1 && !disabled && (
                       <CrossIcon
                         className={styles.RemoveIcon}
                         title="Remove"
@@ -207,7 +272,9 @@ export const TemplateOptions = ({
               ) : null}
             </FormControl>
           </div>
-          <div>{inputFields.length === index + 1 && inputFields.length !== 3 ? addButton(arrayHelpers) : null}</div>
+          <div>
+            {templateButtons.length === index + 1 && templateButtons.length !== 3 ? addButton(arrayHelpers) : null}
+          </div>
         </>
       );
     }
@@ -220,8 +287,8 @@ export const TemplateOptions = ({
         aria-label="template-type"
         name="template-type"
         row
-        value={templateType}
-        onChange={(event) => onTemplateTypeChange(event.target.value)}
+        value={values?.templateType}
+        onChange={handleTemplateTypeChange}
       >
         <div className={styles.RadioLabelWrapper}>
           <FormControlLabel
@@ -253,7 +320,7 @@ export const TemplateOptions = ({
             name="templateButtons"
             render={(arrayHelpers: any) => (
               <div className={styles.QuickReplyContainer}>
-                {inputFields.map((row: any, index: any) => (
+                {templateButtons.map((row: any, index: any) => (
                   <div key={index}> {getButtons(row, index, arrayHelpers)}</div>
                 ))}
               </div>

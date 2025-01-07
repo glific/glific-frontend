@@ -4,15 +4,10 @@ import { Formik } from 'formik';
 import { TemplateOptions } from './TemplateOptions';
 
 const props = (isAddButtonChecked: any, templateType: any, inputFields: any, form: any) => ({
-  onAddClick: vi.fn(),
-  onRemoveClick: vi.fn(),
-  onInputChange: vi.fn(),
-  onTemplateTypeChange: vi.fn(),
   disabled: false,
-  isAddButtonChecked,
-  templateType,
-  inputFields,
+  setTemplateButtons: vi.fn(),
   form,
+  buttonTypes: [],
 });
 
 const callToAction = { type: 'phone_number', value: '', title: '' };
