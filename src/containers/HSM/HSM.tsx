@@ -662,10 +662,19 @@ export const HSM = () => {
       otherwise: (schema) => schema.nullable(),
     }),
     templateButtons: Yup.array().of(
-      Yup.object().shape({
-        type: Yup.string().required('Type is required.'),
-        title: Yup.string().required('Title is required.'),
-        value: Yup.string().required('Value is required.'),
+      Yup.lazy(() => {
+        if (templateType === 'CALL_TO_ACTION') {
+          return Yup.object().shape({
+            type: Yup.string().required('Type is required.'),
+            title: Yup.string().required('Title is required.'),
+            value: Yup.string().required('Value is required.'),
+          });
+        } else if (templateType === 'QUICK_REPLY') {
+          return Yup.object().shape({
+            value: Yup.string().required('Value is required.'),
+          });
+        }
+        return Yup.object().shape({});
       })
     ),
   };
