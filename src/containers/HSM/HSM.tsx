@@ -75,6 +75,10 @@ export const HSM = () => {
   const [validatingURL, setValidatingURL] = useState<boolean>(false);
   const [isUrlValid, setIsUrlValid] = useState<any>();
   const [templateType, setTemplateType] = useState<string | null>(CALL_TO_ACTION);
+  const [dynamicUrlParams, setDynamicUrlParams] = useState<any>({
+    urlType: 'Static',
+    sampleSuffix: '',
+  });
   const [sampleMessages, setSampleMessages] = useState({
     type: 'TEXT',
     location: null,
@@ -160,15 +164,25 @@ export const HSM = () => {
   };
 
   // Creating payload for button template
-  const getButtonTemplatePayload = () => {
-    const buttons = templateButtons.reduce((result: any, button) => {
+  const getButtonTemplatePayload = (urlType: string, sampleSuffix: string) => {
+    const buttons = templateButtons.reduce((result: any, button: any) => {
       const { type: buttonType, value, title }: any = button;
+
       if (templateType === CALL_TO_ACTION) {
         const typeObj: any = {
           phone_number: 'PHONE_NUMBER',
           url: 'URL',
         };
-        const obj: any = { type: typeObj[buttonType], text: title, [buttonType]: value };
+        let obj: any = { type: typeObj[buttonType], text: title, [buttonType]: value };
+
+        if (buttonType === 'url' && urlType === 'Dynamic') {
+          obj = {
+            type: typeObj[buttonType],
+            text: title,
+            [buttonType]: `${value}{{1}}`,
+            example: [`${value}${sampleSuffix}`],
+          };
+        }
         result.push(obj);
       }
 
@@ -190,6 +204,10 @@ export const HSM = () => {
       body: templateBody.message,
       example: templateExample.message,
     };
+  };
+
+  const handleDynamicParamsChange = (value: any) => {
+    setDynamicUrlParams(value);
   };
 
   const setStates = ({
@@ -269,6 +287,7 @@ export const HSM = () => {
 
   const setPayload = (payload: any) => {
     let payloadCopy = { ...payload, isHsm: true };
+    const { urlType, sampleSuffix } = dynamicUrlParams;
     if (isEditing) {
       payloadCopy.shortcode = payloadCopy.newShortcode;
     } else {
@@ -278,7 +297,7 @@ export const HSM = () => {
     payloadCopy.languageId = payload.language.id;
     payloadCopy.example = getExampleFromBody(payloadCopy.body, variables);
     if (isAddButtonChecked && templateType) {
-      const templateButtonData = getButtonTemplatePayload();
+      const templateButtonData = getButtonTemplatePayload(urlType, sampleSuffix);
       Object.assign(payloadCopy, { ...templateButtonData });
     }
     if (payloadCopy.type) {
@@ -515,6 +534,8 @@ export const HSM = () => {
       onRemoveClick: removeTemplateButtons,
       onInputChange: handeInputChange,
       onTemplateTypeChange: handleTemplateTypeChange,
+      dynamicUrlParams,
+      onDynamicParamsChange: handleDynamicParamsChange,
     },
     {
       component: AutoComplete,
