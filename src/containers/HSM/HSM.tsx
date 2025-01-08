@@ -677,25 +677,26 @@ export const HSM = () => {
   }, [isAddButtonChecked]);
 
   useEffect(() => {
-    if (templateButtons.length > 0 && !isEditing) {
-      const parse = convertButtonsToTemplate(templateButtons, templateType);
+    const { message }: any = getTemplateAndButton(getExampleFromBody(body, variables));
 
-      const parsedText = parse.length ? `| ${parse.join(' | ')}` : null;
+    if (!isEditing) {
+      let parse: any = [];
+      if (templateButtons.length > 0) {
+        parse = convertButtonsToTemplate(templateButtons, templateType);
+      }
 
-      const { message }: any = getTemplateAndButton(getExampleFromBody(body, variables));
+      const parsedText = parse.length ? `| ${parse.join(' | ')}` : '';
 
-      const sampleText: any = parsedText && message + parsedText;
+      let sampleText: any = message;
+      if (parsedText) {
+        sampleText = (message || ' ') + parsedText;
+      }
+
       if (sampleText) {
         setSimulatorMessage(sampleText);
       }
     }
-  }, [templateButtons]);
-
-  useEffect(() => {
-    if (!isEditing) {
-      setSimulatorMessage(getExampleFromBody(body, variables));
-    }
-  }, [body, variables]);
+  }, [templateButtons, body, variables]);
 
   useEffect(() => {
     setVariables(getVariables(body, variables));
