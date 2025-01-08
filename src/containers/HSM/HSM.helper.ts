@@ -18,9 +18,12 @@ export const removeFirstLineBreak = (text: any) =>
   text?.length === 1 ? text.slice(0, 1).replace(/(\r\n|\n|\r)/, '') : text;
 
 /**
+ * Function to convert buttons to template format
  *
  * @param templateButtons buttons that need to be converted to gupshup format
  * @param templateType depending on template type convert button to gupshup format
+ *
+ * @return array result
  */
 export const convertButtonsToTemplate = (templateButtons: Array<any>, templateType: string | null) =>
   templateButtons.reduce((result: any, temp: any) => {
@@ -35,15 +38,16 @@ export const convertButtonsToTemplate = (templateButtons: Array<any>, templateTy
   }, []);
 
 /**
+ * As messages and buttons are now separated
+ * we are combining both message and buttons,
+ * so that you can see preview in simulator
  *
  * @param templateType template type
  * @param message
  * @param buttons
- * Since messages and buttons are now separated
- * we are combining both message and buttons,
- * so that you can see preview in simulator
+ *
+ * @return object {buttons, template}
  */
-
 export const getTemplateAndButtons = (templateType: string, message: string, buttons: string) => {
   const templateButtons = JSON.parse(buttons);
   let result: any;

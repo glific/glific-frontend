@@ -113,7 +113,7 @@ export const Input = ({ textArea = false, disabled = false, inputLabel = null, .
             inputComponent={editor ? editor.inputComponent : undefined}
             inputProps={editor ? editor.inputProps : inputProp}
             type={fieldType}
-            classes={{ multiline: styles.Multiline, input: !textArea ? inputStyles : '' }}
+            classes={{ input: !textArea ? inputStyles : '' }}
             disabled={disabled}
             error={showError}
             multiline={textArea}
