@@ -640,6 +640,13 @@ export const HSM = () => {
       then: (schema) => schema.nullable().required(t('Element name is required.')),
       otherwise: (schema) => schema.nullable(),
     }),
+    templateButtons: Yup.array().of(
+      Yup.object().shape({
+        type: Yup.string().required('Type is required.'),
+        title: Yup.string().required('Title is required.'),
+        value: Yup.string().required('Value is required.'),
+      })
+    ),
   };
 
   const FormSchema = Yup.object().shape(validation, [['type', 'attachmentURL']]);
