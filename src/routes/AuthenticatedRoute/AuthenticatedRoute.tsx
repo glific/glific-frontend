@@ -62,6 +62,8 @@ const RoleList = lazy(() => import('containers/Role/RoleList/RoleList'));
 const Role = lazy(() => import('containers/Role/Role'));
 const KnowledgeBase = lazy(() => import('containers/KnowledgeBase/KnowledgeBase'));
 const Assistant = lazy(() => import('containers/Assistants/Assistants'));
+const WaPollsCreate = lazy(() => import('containers/WaGroups/WaPolls/WaPolls'));
+const WaPollsList = lazy(() => import('containers/WaGroups/WaPolls/WaPollsList/WaPollsList'));
 
 const routeStaff = (
   <Routes>
@@ -147,6 +149,10 @@ const routeAdmin = (
 
     <Route path="/assistants" element={<Assistant />} />
     <Route path="/assistants/:assistantId" element={<Assistant />} />
+
+    <Route path="group/polls" element={<WaPollsList />} />
+    <Route path="group/polls/add" element={<WaPollsCreate />} />
+    <Route path="group/polls/:id/edit" element={<WaPollsCreate />} />
 
     <Route path="/*" element={<Chat />} />
   </Routes>

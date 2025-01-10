@@ -51,6 +51,13 @@ const menus = (): Menu[] => [
         type: 'sideDrawer',
         roles: allRoles,
       },
+      {
+        title: 'WhatsApp Polls',
+        path: '/group/polls',
+        icon: 'waPolls',
+        type: 'sideDrawer',
+        roles: allRoles,
+      },
     ],
   },
   {
@@ -279,22 +286,22 @@ const menus = (): Menu[] => [
     roles: staffLevel,
   },
 
-    // {
-    //   title: "What's new",
-    //   path: '/changelog',
-    //   url: NEW_UI_BLOG,
-    //   icon: 'new',
-    //   type: 'sideDrawer',
-    //   roles: staffLevel,
-    // },
-    {
-      title: "Discord",
-      path: '/discord',
-      url: DISCORD_URL,
-      icon: 'discord',
-      type: 'sideDrawer',
-      roles: staffLevel,
-    },
+  // {
+  //   title: "What's new",
+  //   path: '/changelog',
+  //   url: NEW_UI_BLOG,
+  //   icon: 'new',
+  //   type: 'sideDrawer',
+  //   roles: staffLevel,
+  // },
+  {
+    title: 'Discord',
+    path: '/discord',
+    url: DISCORD_URL,
+    icon: 'discord',
+    type: 'sideDrawer',
+    roles: staffLevel,
+  },
 ];
 
 export const getMenus = (menuType = 'sideDrawer', role = 'Staff') =>

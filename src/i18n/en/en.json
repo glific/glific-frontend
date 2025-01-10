@@ -532,5 +532,6 @@
   "First name is required.": "First Name is required.",
   "Last name is required.": "Last name is required.",
   "Failed": "Failed",
-  "Members": "Members"
+  "Members": "Members",
+  "Group polls": "Group polls"
 }
