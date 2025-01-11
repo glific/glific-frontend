@@ -49,6 +49,10 @@ const queries = {
 const templateIcon = <TemplateIcon className={styles.TemplateIcon} />;
 const regexForShortcode = /^[a-z0-9_]+$/g;
 const dialogMessage = ' It will stop showing when you are drafting a customized message.';
+const buttonTypes: any = {
+  QUICK_REPLY: { value: '' },
+  CALL_TO_ACTION: { type: 'phone_number', title: '', value: '' },
+};
 
 export const HSM = () => {
   const [language, setLanguageId] = useState<any>(null);
@@ -70,7 +74,7 @@ export const HSM = () => {
   const [languageOptions, setLanguageOptions] = useState<any>([]);
   const [validatingURL, setValidatingURL] = useState<boolean>(false);
   const [isUrlValid, setIsUrlValid] = useState<any>();
-  const [templateType, setTemplateType] = useState<string | null>(null);
+  const [templateType, setTemplateType] = useState<string | null>(CALL_TO_ACTION);
   const [sampleMessages, setSampleMessages] = useState({
     type: 'TEXT',
     location: null,
@@ -318,13 +322,9 @@ export const HSM = () => {
 
   const addTemplateButtons = (addFromTemplate: boolean = true) => {
     let buttons: any = [];
-    const buttonType: any = {
-      QUICK_REPLY: { value: '' },
-      CALL_TO_ACTION: { type: '', title: '', value: '' },
-    };
 
     if (templateType) {
-      buttons = addFromTemplate ? [...templateButtons, buttonType[templateType]] : [buttonType[templateType]];
+      buttons = addFromTemplate ? [...templateButtons, buttonTypes[templateType]] : [buttonTypes[templateType]];
     }
 
     setTemplateButtons(buttons);
@@ -358,8 +358,13 @@ export const HSM = () => {
 
   const handeInputChange = (event: any, row: any, index: any, eventType: any) => {
     const { value } = event.target;
-    const obj = { ...row };
-    obj[eventType] = value;
+    let obj = { ...row };
+
+    if (eventType === 'type') {
+      obj = { type: value, title: '', value: '' };
+    } else {
+      obj[eventType] = value;
+    }
 
     const result = templateButtons.map((val: any, idx: number) => {
       if (idx === index) return obj;
@@ -367,6 +372,11 @@ export const HSM = () => {
     });
 
     setTemplateButtons(result);
+  };
+
+  const handleTemplateTypeChange = (value: string) => {
+    setTemplateButtons([buttonTypes[value]]);
+    setTemplateType(value);
   };
 
   const getMediaId = async (payload: any) => {
@@ -504,7 +514,7 @@ export const HSM = () => {
       onAddClick: addTemplateButtons,
       onRemoveClick: removeTemplateButtons,
       onInputChange: handeInputChange,
-      onTemplateTypeChange: (value: string) => setTemplateType(value),
+      onTemplateTypeChange: handleTemplateTypeChange,
     },
     {
       component: AutoComplete,
@@ -630,6 +640,22 @@ export const HSM = () => {
       then: (schema) => schema.nullable().required(t('Element name is required.')),
       otherwise: (schema) => schema.nullable(),
     }),
+    templateButtons: Yup.array().of(
+      Yup.lazy(() => {
+        if (templateType === 'CALL_TO_ACTION') {
+          return Yup.object().shape({
+            type: Yup.string().required('Type is required.'),
+            title: Yup.string().required('Title is required.'),
+            value: Yup.string().required('Value is required.'),
+          });
+        } else if (templateType === 'QUICK_REPLY') {
+          return Yup.object().shape({
+            value: Yup.string().required('Value is required.'),
+          });
+        }
+        return Yup.object().shape({});
+      })
+    ),
   };
 
   const FormSchema = Yup.object().shape(validation, [['type', 'attachmentURL']]);
@@ -667,25 +693,26 @@ export const HSM = () => {
   }, [isAddButtonChecked]);
 
   useEffect(() => {
-    if (templateButtons.length > 0 && !isEditing) {
-      const parse = convertButtonsToTemplate(templateButtons, templateType);
+    const { message }: any = getTemplateAndButton(getExampleFromBody(body, variables));
 
-      const parsedText = parse.length ? `| ${parse.join(' | ')}` : null;
+    if (!isEditing) {
+      let parse: any = [];
+      if (templateButtons.length > 0) {
+        parse = convertButtonsToTemplate(templateButtons, templateType);
+      }
 
-      const { message }: any = getTemplateAndButton(getExampleFromBody(body, variables));
+      const parsedText = parse.length ? `| ${parse.join(' | ')}` : '';
 
-      const sampleText: any = parsedText && message + parsedText;
+      let sampleText: any = message;
+      if (parsedText) {
+        sampleText = (message || ' ') + parsedText;
+      }
+
       if (sampleText) {
         setSimulatorMessage(sampleText);
       }
     }
-  }, [templateButtons]);
-
-  useEffect(() => {
-    if (!isEditing) {
-      setSimulatorMessage(getExampleFromBody(body, variables));
-    }
-  }, [body, variables]);
+  }, [templateButtons, body, variables]);
 
   useEffect(() => {
     setVariables(getVariables(body, variables));
