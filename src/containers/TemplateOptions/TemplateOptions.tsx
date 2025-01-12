@@ -138,10 +138,10 @@ export const TemplateOptions = ({
                 <TextField
                   disabled={disabled}
                   title={title}
-                  defaultValue={value}
+                  value={title}
                   placeholder={buttonTitle}
                   variant="outlined"
-                  onBlur={(e: any) => onInputChange(e, row, index, 'title')}
+                  onChange={(e: any) => onInputChange(e, row, index, 'title')}
                   className={styles.TextField}
                   error={isError('title')}
                 />
@@ -154,11 +154,11 @@ export const TemplateOptions = ({
               <FormControl fullWidth error={isError('value')} className={styles.FormControl}>
                 <TextField
                   title={value}
-                  defaultValue={value}
+                  value={value}
                   disabled={disabled}
                   placeholder={buttonValue}
                   variant="outlined"
-                  onBlur={(e: any) => onInputChange(e, row, index, 'value')}
+                  onChange={(e: any) => onInputChange(e, row, index, 'value')}
                   className={styles.TextField}
                   error={isError('value')}
                 />
@@ -182,22 +182,24 @@ export const TemplateOptions = ({
             <FormControl fullWidth error={isError('value')} className={styles.FormControl}>
               <TextField
                 disabled={disabled}
-                defaultValue={value}
+                value={value}
                 title={title}
                 placeholder={`Quick reply ${index + 1} title`}
                 variant="outlined"
-                onBlur={(e: any) => onInputChange(e, row, index, 'value')}
+                onChange={(e: any) => onInputChange(e, row, index, 'value')}
                 className={styles.TextField}
                 error={isError('value')}
-                InputProps={{
-                  endAdornment: inputFields.length > 1 && !disabled && (
-                    <CrossIcon
-                      className={styles.RemoveIcon}
-                      title="Remove"
-                      data-testid="cross-icon"
-                      onClick={() => handleRemoveClick(arrayHelpers, index)}
-                    />
-                  ),
+                slotProps={{
+                  input: {
+                    endAdornment: inputFields.length > 1 && !disabled && (
+                      <CrossIcon
+                        className={styles.RemoveIcon}
+                        title="Remove"
+                        data-testid="cross-icon"
+                        onClick={() => handleRemoveClick(arrayHelpers, index)}
+                      />
+                    ),
+                  },
                 }}
               />
               {errors.templateButtons && touched.templateButtons && touched.templateButtons[index] ? (
@@ -251,7 +253,7 @@ export const TemplateOptions = ({
             name="templateButtons"
             render={(arrayHelpers: any) => (
               <div className={styles.QuickReplyContainer}>
-                {values.templateButtons.map((row: any, index: any) => (
+                {inputFields.map((row: any, index: any) => (
                   <div key={index}> {getButtons(row, index, arrayHelpers)}</div>
                 ))}
               </div>
