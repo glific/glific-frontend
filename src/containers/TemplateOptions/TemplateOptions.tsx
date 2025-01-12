@@ -29,14 +29,14 @@ export interface TemplateOptionsProps {
   onInputChange: any;
   onTemplateTypeChange: any;
   disabled: any;
-  dynamicUrlParams?: any;
-  onDynamicParamsChange?: any;
+  dynamicUrlParams: any;
+  onDynamicParamsChange: any;
 }
 export const TemplateOptions = ({
   isAddButtonChecked,
   templateType,
   inputFields,
-  form: { touched, errors, values, setFieldValue },
+  form: { touched, errors },
   onAddClick,
   onRemoveClick,
   onTemplateTypeChange,
