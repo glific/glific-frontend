@@ -2,20 +2,22 @@ import { useTranslation } from 'react-i18next';
 import CollectionIcon from 'assets/images/icons/Collection/Dark.svg?react';
 import DeleteIcon from 'assets/images/icons/Delete/Red.svg?react';
 import DuplicateIcon from 'assets/images/icons/Duplicate.svg?react';
-import { FILTER_COLLECTIONS, GET_COLLECTIONS_COUNT } from 'graphql/queries/Collection';
-import { DELETE_COLLECTION } from 'graphql/mutations/Collection';
-const queries = {
-  countQuery: GET_COLLECTIONS_COUNT,
-  filterItemsQuery: FILTER_COLLECTIONS,
-  deleteItemQuery: DELETE_COLLECTION,
-};
-
 import styles from './WaPollsList.module.css';
 import { List } from 'containers/List/List';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { pollsInfo } from 'common/HelpData';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
+import { GET_POLLS, GET_POLLS_COUNT } from 'graphql/queries/WaPolls';
+import { DELETE_POLL } from 'graphql/mutations/WaPolls';
+import { useMutation } from '@apollo/client';
+import { setErrorMessage, setNotification } from 'common/notification';
+
+const queries = {
+  countQuery: GET_POLLS_COUNT,
+  filterItemsQuery: GET_POLLS,
+  deleteItemQuery: DELETE_POLL,
+};
 
 const getLabel = (label: string) => <div className={styles.LabelText}>{label}</div>;
 
@@ -31,10 +33,12 @@ const getContent = (content: string, id: number) => {
   return <div className={styles.ContentText}>{content.length < 100 ? content : `${content.slice(0, 100)}...`}</div>;
 };
 export const WaPollsList = () => {
-  const [deleteItemId, setDeleteItemId] = useState<string | null>(null);
+  const [deleteWaPollId, setDeleteWaPollId] = useState<string | null>(null);
 
   const { t } = useTranslation();
   const navigate = useNavigate();
+
+  const [deletePoll, { loading }] = useMutation(DELETE_POLL);
 
   const columnNames = [{ name: 'label', label: 'Title' }, { label: 'Content' }, { label: t('Actions') }];
   const title = t('Group polls');
@@ -59,7 +63,14 @@ export const WaPollsList = () => {
   };
 
   const handleDelete = () => {
-    console.log('deleteItemId', deleteItemId);
+    deletePoll({
+      variables: { deleteWaPollId },
+      onCompleted: () => {
+        setNotification('Poll deleted successfully', 'success');
+        setDeleteWaPollId(null);
+      },
+      onError: (error) => setErrorMessage(error),
+    });
   };
 
   const getRestrictedAction = () => {
@@ -79,7 +90,7 @@ export const WaPollsList = () => {
       label: t('Delete'),
       icon: <DeleteIcon data-testid="delete-icon" />,
       parameter: 'label',
-      dialog: (id: any) => setDeleteItemId(id),
+      dialog: (id: any) => setDeleteWaPollId(id),
       insideMore: false,
     },
   ];
@@ -88,10 +99,12 @@ export const WaPollsList = () => {
     <DialogBox
       title={`Do you want to delete this poll?`}
       handleOk={handleDelete}
-      handleCancel={() => setDeleteItemId(null)}
+      handleCancel={() => setDeleteWaPollId(null)}
       alignButtons="center"
       colorOk={'warning'}
       buttonOk={'Delete'}
+      buttonOkLoading={loading}
+      disableOk={loading}
     >
       <p data-testid="delete-dialog" className={styles.DialogText}>
         This action is permanent and cannot be undone. Deleting this poll will remove all associated responses and data
@@ -104,9 +117,9 @@ export const WaPollsList = () => {
     <>
       <List
         title={title}
-        listItem="groups"
+        listItem="poll"
         columnNames={columnNames}
-        listItemName="collection"
+        listItemName="poll"
         button={{
           show: true,
           label: t('Create'),
@@ -120,7 +133,7 @@ export const WaPollsList = () => {
         {...queries}
         {...columnAttributes}
       />
-      {deleteItemId && deletedialog}
+      {deleteWaPollId && deletedialog}
     </>
   );
 };
