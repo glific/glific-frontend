@@ -25,6 +25,7 @@ import { QuickReplyTemplate } from '../QuickReplyTemplate/QuickReplyTemplate';
 import styles from './ChatMessage.module.css';
 import { setNotification } from 'common/notification';
 import { LocationRequestTemplate } from './LocationRequestTemplate/LocationRequestTemplate';
+import { PollMessage } from './PollMessage/PollMessage';
 
 export interface ChatMessageProps {
   id: number;
@@ -56,6 +57,7 @@ export interface ChatMessageProps {
   groups?: boolean;
   status?: string;
   contact?: any;
+  pollContent?: any;
 }
 
 export const ChatMessage = ({
@@ -81,6 +83,7 @@ export const ChatMessage = ({
   groups,
   status,
   contact,
+  pollContent,
 }: ChatMessageProps) => {
   const [showSaveMessageDialog, setShowSaveMessageDialog] = useState(false);
   const Ref = useRef(null);
@@ -259,6 +262,8 @@ export const ChatMessage = ({
 
   const content: any = interactiveContent ? JSON.parse(interactiveContent) : null;
   const isInteractiveContentPresent: Boolean = content ? !!Object.entries(content).length : false;
+  const isPollMessage = type === 'POLL';
+  const pollContentJson = pollContent ? JSON.parse(pollContent) : {};
 
   const errorClasses = messageErrorStatus ? styles.ErrorContent : '';
   const stickerClasses = type === 'STICKER' ? styles.StickerBackground : '';
@@ -303,6 +308,20 @@ export const ChatMessage = ({
     contactName = <div className={styles.ContactName}>{contact?.name}</div>;
   }
 
+  let messageBody: any;
+  if (isInteractiveContentPresent && !isSender) {
+    messageBody = template;
+  } else if (isPollMessage) {
+    messageBody = <PollMessage pollContentJson={pollContentJson} isSender={isSender} />;
+  } else {
+    messageBody = (
+      <>
+        {contactName}
+        <ChatMessageType type={type} media={media} body={bodyText} location={location} isSender={isSender} />
+        {dateAndSendBy}
+      </>
+    );
+  }
   return (
     <div>
       {daySeparatorContent}
@@ -342,21 +361,7 @@ export const ChatMessage = ({
             <Tooltip title={tooltipTitle} placement={isSender ? 'right' : 'left'}>
               <div>
                 <div className={chatMessageContent.join(' ')} data-testid="content">
-                  {isInteractiveContentPresent && !isSender ? (
-                    template
-                  ) : (
-                    <>
-                      {contactName}
-                      <ChatMessageType
-                        type={type}
-                        media={media}
-                        body={bodyText}
-                        location={location}
-                        isSender={isSender}
-                      />
-                      {dateAndSendBy}
-                    </>
-                  )}
+                  {messageBody}
                 </div>
               </div>
             </Tooltip>
