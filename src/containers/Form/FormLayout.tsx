@@ -216,10 +216,10 @@ export const FormLayout = ({
           // Clearning unnecessary fields
           delete payloadBody.billingId;
         }
-        // TODO: Change this back
+
         updateItem({
           variables: {
-            copyWaPollId: idVal,
+            [idType]: idVal,
             input: payloadBody,
           },
         });

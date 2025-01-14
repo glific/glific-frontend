@@ -150,7 +150,6 @@ export const WaPolls = () => {
       icon={pollsIcon}
       backLinkButton={`/group/polls`}
       entityId={params.id}
-      idType={idType}
       {...queries}
     />
   );
