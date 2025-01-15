@@ -12,8 +12,8 @@ export const GET_POLLS = gql`
 `;
 
 export const GET_POLL = gql`
-  query WaPoll($waPollId: ID!) {
-    waPoll(id: $waPollId) {
+  query WaPoll($id: ID!) {
+    waPoll(id: $id) {
       waPoll {
         id
         label

@@ -14,8 +14,8 @@ export const CREATE_POLL = gql`
 `;
 
 export const COPY_POLL = gql`
-  mutation CopyWaPoll($input: WaPollInput, $copyWaPollId: ID!) {
-    copyWaPoll(input: $input, id: $copyWaPollId) {
+  mutation CopyWaPoll($input: WaPollInput, $id: ID!) {
+    copyWaPoll(input: $input, id: $id) {
       waPoll {
         id
         label
