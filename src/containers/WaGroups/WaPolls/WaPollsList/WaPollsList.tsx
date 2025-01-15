@@ -1,17 +1,19 @@
+import { useMutation } from '@apollo/client';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router';
+
 import CollectionIcon from 'assets/images/icons/Collection/Dark.svg?react';
 import DeleteIcon from 'assets/images/icons/Delete/Red.svg?react';
 import DuplicateIcon from 'assets/images/icons/Duplicate.svg?react';
-import styles from './WaPollsList.module.css';
-import { List } from 'containers/List/List';
-import { useState } from 'react';
-import { useNavigate } from 'react-router';
 import { pollsInfo } from 'common/HelpData';
-import { DialogBox } from 'components/UI/DialogBox/DialogBox';
-import { GET_POLLS, GET_POLLS_COUNT } from 'graphql/queries/WaPolls';
-import { DELETE_POLL } from 'graphql/mutations/WaPolls';
-import { useMutation } from '@apollo/client';
 import { setErrorMessage, setNotification } from 'common/notification';
+import { DialogBox } from 'components/UI/DialogBox/DialogBox';
+import { List } from 'containers/List/List';
+import { DELETE_POLL } from 'graphql/mutations/WaPolls';
+import { GET_POLLS, GET_POLLS_COUNT } from 'graphql/queries/WaPolls';
+
+import styles from './WaPollsList.module.css';
 
 const queries = {
   countQuery: GET_POLLS_COUNT,
