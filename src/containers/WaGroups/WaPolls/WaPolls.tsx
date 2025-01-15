@@ -19,7 +19,6 @@ const queries = {
   updateItemQuery: COPY_POLL,
 };
 const pollsIcon = <PollsIcon />;
-let idType = 'waPollId';
 
 export const WaPolls = () => {
   const [label, setLabel] = useState<string>('');
@@ -66,9 +65,6 @@ export const WaPolls = () => {
     delete payloadCopy.content;
     delete payloadCopy.allowMultiple;
 
-    if (isCopyState) {
-      idType = 'copyWaPollId';
-    }
     return payloadCopy;
   };
   const setStates = (states: any) => {

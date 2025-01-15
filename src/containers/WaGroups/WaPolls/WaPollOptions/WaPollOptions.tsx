@@ -21,7 +21,7 @@ const emojiStyles = {
 
 export const WaPollOptions = ({ form: { values, setFieldValue, errors, touched }, isEditing }: WaPollOptionsProps) => {
   const handleAddOption = () => {
-    setFieldValue('options', [...values.options, { name: '', id: values.options.length }]);
+    setFieldValue('options', [...values.options, { name: '', id: Math.random() }]);
   };
 
   const handleInput = (value: any, id: any) => {
@@ -51,6 +51,7 @@ export const WaPollOptions = ({ form: { values, setFieldValue, errors, touched }
         {values.options.map((option: any, ind: number) => (
           <PollOption
             key={option.id}
+            ind={ind}
             option={option}
             options={values.options}
             handleInput={handleInput}
@@ -84,6 +85,7 @@ interface PollOptionProps {
   handleRemoveClick: any;
   handleEmojiAdd: any;
   isEditing: boolean;
+  ind: number;
 }
 
 const PollOption = ({
@@ -95,9 +97,10 @@ const PollOption = ({
   handleRemoveClick,
   handleEmojiAdd,
   isEditing,
+  ind,
 }: PollOptionProps) => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const hasError = errors && typeof errors !== 'string' && touched && errors[option.id] && touched[option.id];
+  const hasError = errors && typeof errors !== 'string' && touched && errors[ind] && touched[ind];
 
   return (
     <FormControl fullWidth error={hasError} color={hasError ? 'error' : 'primary'}>
@@ -105,7 +108,7 @@ const PollOption = ({
         <TextField
           className={styles.TextField}
           variant="outlined"
-          placeholder={`Option ${option.id + 1}`}
+          placeholder={`Option ${ind + 1}`}
           value={option?.name}
           onChange={(event) => handleInput(event.target.value, option?.id)}
           disabled={isEditing}
@@ -141,7 +144,7 @@ const PollOption = ({
           <EmojiPicker onEmojiSelect={(emoji: any) => handleEmojiAdd(emoji, option.id)} displayStyle={emojiStyles} />
         )}
       </div>
-      {hasError ? <FormHelperText>{errors[option.id]?.name}</FormHelperText> : null}
+      {hasError ? <FormHelperText>{errors[ind]?.name || ''}</FormHelperText> : null}
     </FormControl>
   );
 };
