@@ -157,7 +157,7 @@ export const HSM = () => {
 
   const getLanguageId = (value: any) => {
     let result: any;
-    const selected = languageOptions.find((option: any) => option.label === value);
+    const selected = languageOptions.find((option: any) => option.label === value.label);
     result = selected;
 
     if (result) setLanguageId(result);
