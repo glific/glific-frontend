@@ -18,10 +18,16 @@
   line-height: 19.6px;
 }
 
-.SelectText {
+.SelectTextDark {
   font-weight: 400;
   line-height: 15px;
   color: #6a6d6b;
+}
+
+.SelectTextLight {
+  font-weight: 400;
+  line-height: 15px;
+  color: #b3b6b4;
 }
 
 .ChatMessage p {
@@ -69,8 +75,8 @@
   text-align: left;
 }
 
-.LinearProgress {
-  height: 10px;
+.LinearProgressChat {
+  height: 8px;
   border-radius: 5px;
 }
 

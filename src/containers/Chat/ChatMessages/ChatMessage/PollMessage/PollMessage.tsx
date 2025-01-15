@@ -14,14 +14,15 @@ const getTotalVotes = (options: any) => {
 
 export const PollMessage = ({ pollContentJson, isSender = false, isSimulator = false }: PollMessageProps) => {
   const { text, options } = pollContentJson;
-  const totalVotes = getTotalVotes(options);
+  const maxVotes = Math.max(...pollContentJson.options.map((option: any) => option.votes));
 
   return (
     <div className={`${isSimulator ? styles.SimpulatorMessage : styles.ChatMessage} ${isSender && styles.Sender}`}>
       <div className={styles.Text}>{text}</div>
-      <p className={styles.SelectText}>Select one or more</p>
+      <p className={isSender ? styles.SelectTextLight : styles.SelectTextDark}>Select one or more</p>
       <div className={styles.Options}>
         {options.map((option: any, index: number) => {
+          const percentage = maxVotes > 0 ? (option.votes / maxVotes) * 100 : 0;
           return (
             <>
               {option.name ? (
@@ -35,10 +36,11 @@ export const PollMessage = ({ pollContentJson, isSender = false, isSimulator = f
                   </span>
                   <LinearProgress
                     classes={{
-                      root: isSimulator ? styles.LinearProgressChat : styles.LinearProgressSimulator,
+                      root: isSimulator ? styles.LinearProgressSimulator : styles.LinearProgressChat,
                     }}
                     variant="determinate"
-                    value={isSimulator ? 0 : (option.votes / totalVotes) * 100}
+                    value={isSimulator ? 0 : percentage}
+                    color={isSender ? 'inherit' : 'primary'}
                   />
                 </div>
               ) : (
