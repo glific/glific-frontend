@@ -141,7 +141,7 @@ const PollOption = ({
           <EmojiPicker onEmojiSelect={(emoji: any) => handleEmojiAdd(emoji, option.id)} displayStyle={emojiStyles} />
         )}
       </div>
-      {hasError ? <FormHelperText>{errors[option.id]}</FormHelperText> : null}
+      {hasError ? <FormHelperText>{errors[option.id]?.name}</FormHelperText> : null}
     </FormControl>
   );
 };
