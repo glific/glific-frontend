@@ -156,12 +156,12 @@ export const HSM = () => {
   };
 
   const getLanguageId = (value: any) => {
-    if (value.label) {
-      const selected = languageOptions.find((option: any) => option.label === value.label);
-      setLanguageId(selected);
-    } else {
+    if (!value.label) {
       return;
     }
+
+    const selected = languageOptions.find((option: any) => option.label === value.label);
+    setLanguageId(selected);
   };
 
   // Creating payload for button template
