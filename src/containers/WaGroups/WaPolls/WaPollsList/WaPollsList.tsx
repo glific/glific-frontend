@@ -21,15 +21,7 @@ const queries = {
 
 const getLabel = (label: string) => <div className={styles.LabelText}>{label}</div>;
 
-const getContent = (content: string, id: number) => {
-  const content1 =
-    'Which of our communication channels do you find most effective for staying updated on our activities?';
-  const content2 =
-    'How frequently do you participate in our activities or events, and what influences your level of involvement? Which day works best for our upcoming community workshops?';
-  if (!content) {
-    content = id % 2 === 0 ? content1 : content2;
-  }
-
+const getContent = (content: string) => {
   return <div className={styles.ContentText}>{content.length < 100 ? content : `${content.slice(0, 100)}...`}</div>;
 };
 export const WaPollsList = () => {
@@ -46,10 +38,11 @@ export const WaPollsList = () => {
   const dialogMessage = t("You won't be able to use this collection again.");
   const columnStyles = [styles.Label, styles.Content, styles.Actions];
 
-  const getColumns = ({ label, content, id }: any) => {
+  const getColumns = ({ label, pollContent, id }: any) => {
+    const content = pollContent ? JSON.parse(pollContent) : {};
     return {
       label: getLabel(label),
-      content: getContent(content, id),
+      content: getContent(content?.text),
     };
   };
 
