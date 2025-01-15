@@ -219,7 +219,7 @@ export const FormLayout = ({
 
         updateItem({
           variables: {
-            [idType]: idVal,
+            [idKey]: idVal,
             input: payloadBody,
           },
         });
