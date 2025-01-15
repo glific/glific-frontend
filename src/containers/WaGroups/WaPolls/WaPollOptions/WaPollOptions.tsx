@@ -10,6 +10,7 @@ interface WaPollOptionsProps {
   form: { field: any; errors: any; touched: any; values: any; setFieldValue: any };
   options: string[];
   isEditing: boolean;
+  setPreviewData: any;
 }
 
 const emojiStyles = {
@@ -19,14 +20,21 @@ const emojiStyles = {
   zIndex: 100,
 };
 
-export const WaPollOptions = ({ form: { values, setFieldValue, errors, touched }, isEditing }: WaPollOptionsProps) => {
+export const WaPollOptions = ({
+  form: { values, setFieldValue, errors, touched },
+  isEditing,
+  setPreviewData,
+}: WaPollOptionsProps) => {
   const handleAddOption = () => {
-    setFieldValue('options', [...values.options, { name: '', id: values.options.length }]);
+    const newOptions = [...values.options, { name: '', id: values.options.length }];
+    setFieldValue('options', newOptions);
+    setPreviewData((prev: any) => ({ ...prev, options: newOptions }));
   };
 
   const handleInput = (value: any, id: any) => {
     const newOptions = values.options.map((option: any) => (option.id === id ? { ...option, name: value } : option));
     setFieldValue('options', newOptions);
+    setPreviewData((prev: any) => ({ ...prev, options: newOptions }));
   };
 
   const handleEmojiAdd = (emoji: any, id: number) => {
@@ -35,11 +43,13 @@ export const WaPollOptions = ({ form: { values, setFieldValue, errors, touched }
     );
 
     setFieldValue('options', newOptions);
+    setPreviewData((prev: any) => ({ ...prev, options: newOptions }));
   };
 
   const handleRemoveClick = (id: any) => {
     const newOptions = values.options.filter((option: any) => option.id !== id);
     setFieldValue('options', newOptions);
+    setPreviewData((prev: any) => ({ ...prev, options: newOptions }));
   };
 
   return (

@@ -11,6 +11,7 @@ import { WaPollOptions } from './WaPollOptions/WaPollOptions';
 import { COPY_POLL, CREATE_POLL, DELETE_POLL } from 'graphql/mutations/WaPolls';
 import { GET_POLL } from 'graphql/queries/WaPolls';
 import { useLocation, useParams } from 'react-router';
+import Simulator from 'components/simulator/Simulator';
 
 const queries = {
   getItemQuery: GET_POLL,
@@ -29,17 +30,23 @@ export const WaPolls = () => {
     { id: 1, name: '' },
   ]);
   const [allowMultiple, setAllowMultiple] = useState<boolean>(false);
+  const [previewData, setPreviewData] = useState<any>({
+    text: '',
+    options: [
+      { id: 0, name: '' },
+      { id: 1, name: '' },
+    ],
+  });
   const { t } = useTranslation();
   const params = useParams();
   const location = useLocation();
-
+  const mode = location.state;
   let isEditing = false;
   let isCopyState = false;
   if (params.id) {
     isEditing = true;
   }
-  if (location.state === 'copy') {
-    console.log('copy state');
+  if (mode === 'copy') {
     isCopyState = true;
     isEditing = false;
   }
@@ -83,6 +90,11 @@ export const WaPolls = () => {
     setAllowMultiple(allowMultipleAnswer);
     setContent(text);
     setOptions(options);
+
+    setPreviewData({
+      text,
+      options,
+    });
   };
 
   const FormSchema = Yup.object().shape({
@@ -115,11 +127,18 @@ export const WaPolls = () => {
       textArea: true,
       rows: 6,
       disabled: isEditing,
+      onChange: (value: any) => {
+        setPreviewData({
+          ...previewData,
+          text: value,
+        });
+      },
     },
     {
       component: WaPollOptions,
       name: 'options',
       isEditing,
+      setPreviewData,
     },
     {
       component: Checkbox,
@@ -135,24 +154,30 @@ export const WaPolls = () => {
   ];
 
   return (
-    <FormLayout
-      roleAccessSupport
-      states={states}
-      setPayload={setPayload}
-      languageSupport={false}
-      setStates={setStates}
-      validationSchema={FormSchema}
-      listItemName="waPoll"
-      dialogMessage={dialogMessage}
-      formFields={formFields}
-      redirectionLink={'group/polls'}
-      listItem="waPoll"
-      icon={pollsIcon}
-      backLinkButton={`/group/polls`}
-      entityId={params.id}
-      idType={idType}
-      {...queries}
-    />
+    <>
+      <FormLayout
+        roleAccessSupport
+        states={states}
+        setPayload={setPayload}
+        languageSupport={false}
+        setStates={setStates}
+        validationSchema={FormSchema}
+        listItemName="waPoll"
+        dialogMessage={dialogMessage}
+        formFields={formFields}
+        redirectionLink={'group/polls'}
+        listItem="waPoll"
+        icon={pollsIcon}
+        backLinkButton={`/group/polls`}
+        entityId={params.id}
+        idType={idType}
+        type={mode}
+        {...queries}
+      />
+      <div className={styles.Simulator}>
+        <Simulator isPreviewMessage message={{}} pollContent={previewData} simulatorIcon={false} />
+      </div>
+    </>
   );
 };
 

@@ -1,6 +1,12 @@
-.PollsContainer {
+.ChatMessage {
   min-width: 250px;
   color: #4a4a4a !important;
+  font-size: 14px;
+}
+
+.SimpulatorMessage {
+  min-width: 180px;
+  font-size: 12px;
 }
 
 .Sender {
@@ -8,17 +14,24 @@
 }
 
 .Text {
-  font-size: 14px;
   font-weight: 500;
   line-height: 19.6px;
 }
 
 .SelectText {
-  font-size: 10px;
   font-weight: 400;
   line-height: 15px;
   color: #6a6d6b;
+}
+
+.ChatMessage p {
+  font-size: 10px !important;
   margin-bottom: 1rem !important;
+}
+
+.SimpulatorMessage p {
+  font-size: 8px;
+  margin: 0.3rem 0
 }
 
 .Options {
@@ -29,7 +42,6 @@
 }
 
 .Option {
-  font-size: 14px;
   font-weight: 500;
   line-height: 20px;
   letter-spacing: -0.25px;
@@ -60,4 +72,18 @@
 .LinearProgress {
   height: 10px;
   border-radius: 5px;
+}
+
+.LinearProgressSimulator {
+  height: 6px;
+  border-radius: 5px;
+}
+
+.PlaceHolder {
+  width: 100%;
+  border-radius: 4px;
+  background-color: #dfece2c3;
+  color: #0c1f144b;
+  padding: 0.3rem;
+  font-size: 12px;
 }
