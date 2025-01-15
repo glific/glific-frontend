@@ -1,6 +1,7 @@
 import { LinearProgress } from '@mui/material';
 import styles from './PollMessage.module.css';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
+import { Fragment } from 'react/jsx-runtime';
 
 interface PollMessageProps {
   pollContentJson: any;
@@ -26,7 +27,7 @@ export const PollMessage = ({
         {options.map((option: any, index: number) => {
           const percentage = maxVotes > 0 ? (option.votes / maxVotes) * 100 : 0;
           return (
-            <>
+            <Fragment key={option.id}>
               {option.name ? (
                 <div className={styles.Option} key={index}>
                   <span>
@@ -49,7 +50,7 @@ export const PollMessage = ({
               ) : (
                 isSimulator && <div className={styles.PlaceHolder}>Option {option.id + 1}</div>
               )}
-            </>
+            </Fragment>
           );
         })}
       </div>
