@@ -18,26 +18,36 @@
   line-height: 19.6px;
 }
 
-.SelectTextDark {
+.TextLarge {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+.SelectText {
   font-weight: 400;
   line-height: 15px;
+  margin: 0 !important;
+}
+
+.SelectTextDark {
+  composes: SelectText;
   color: #6a6d6b;
 }
 
 .SelectTextLight {
-  font-weight: 400;
-  line-height: 15px;
+  composes: SelectText;
   color: #b3b6b4;
 }
 
 .ChatMessage p {
   font-size: 10px !important;
-  margin-bottom: 1rem !important;
+  margin-top: 0.5rem !important;
+  margin-bottom: 0.8rem !important;
 }
 
 .SimpulatorMessage p {
   font-size: 8px;
-  margin: 0.3rem 0
+  margin: 0.3rem 0 !important;
 }
 
 .Options {
@@ -65,6 +75,12 @@
 .OptionName {
   display: flex;
   gap: 0.2rem;
+}
+
+.OptionNameLarge {
+  composes: OptionName;
+  gap: 0.5rem;
+  font-size: 1rem;
 }
 
 .Vote {

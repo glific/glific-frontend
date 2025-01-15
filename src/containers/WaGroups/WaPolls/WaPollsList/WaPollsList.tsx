@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import CollectionIcon from 'assets/images/icons/Collection/Dark.svg?react';
 import DeleteIcon from 'assets/images/icons/Delete/Red.svg?react';
 import DuplicateIcon from 'assets/images/icons/Duplicate.svg?react';
+import ViewIcon from 'assets/images/icons/ViewLight.svg?react';
 import styles from './WaPollsList.module.css';
 import { List } from 'containers/List/List';
 import { useState } from 'react';
@@ -12,6 +13,7 @@ import { GET_POLLS, GET_POLLS_COUNT } from 'graphql/queries/WaPolls';
 import { DELETE_POLL } from 'graphql/mutations/WaPolls';
 import { useMutation } from '@apollo/client';
 import { setErrorMessage, setNotification } from 'common/notification';
+import { ViewPoll } from './ViewPollDialog/ViewPollDialog';
 
 const queries = {
   countQuery: GET_POLLS_COUNT,
@@ -34,6 +36,7 @@ const getContent = (content: string, id: number) => {
 };
 export const WaPollsList = () => {
   const [deleteWaPollId, setDeleteWaPollId] = useState<string | null>(null);
+  const [viewWaPollId, setViewWaPollId] = useState<string | null>(null);
 
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -80,6 +83,13 @@ export const WaPollsList = () => {
 
   const additionalAction = () => [
     {
+      label: t('View'),
+      icon: <ViewIcon data-testid="view-icon" />,
+      parameter: 'id',
+      dialog: (id: any) => setViewWaPollId(id),
+      insideMore: false,
+    },
+    {
       label: t('Copy'),
       icon: <DuplicateIcon />,
       parameter: 'id',
@@ -89,7 +99,7 @@ export const WaPollsList = () => {
     {
       label: t('Delete'),
       icon: <DeleteIcon data-testid="delete-icon" />,
-      parameter: 'label',
+      parameter: 'id',
       dialog: (id: any) => setDeleteWaPollId(id),
       insideMore: false,
     },
@@ -134,6 +144,7 @@ export const WaPollsList = () => {
         {...columnAttributes}
       />
       {deleteWaPollId && deletedialog}
+      {viewWaPollId && <ViewPoll id={viewWaPollId} onClose={() => setViewWaPollId(null)} />}
     </>
   );
 };

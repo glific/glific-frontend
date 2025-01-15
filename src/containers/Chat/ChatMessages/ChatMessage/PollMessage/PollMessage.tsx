@@ -6,20 +6,22 @@ interface PollMessageProps {
   pollContentJson: any;
   isSender?: boolean;
   isSimulator?: boolean;
+  view?: boolean;
 }
 
-const getTotalVotes = (options: any) => {
-  return options.reduce((acc: number, option: any) => acc + option.votes, 0);
-};
-
-export const PollMessage = ({ pollContentJson, isSender = false, isSimulator = false }: PollMessageProps) => {
+export const PollMessage = ({
+  pollContentJson,
+  isSender = false,
+  isSimulator = false,
+  view = false,
+}: PollMessageProps) => {
   const { text, options } = pollContentJson;
   const maxVotes = Math.max(...pollContentJson.options.map((option: any) => option.votes));
 
   return (
     <div className={`${isSimulator ? styles.SimpulatorMessage : styles.ChatMessage} ${isSender && styles.Sender}`}>
-      <div className={styles.Text}>{text}</div>
-      <p className={isSender ? styles.SelectTextLight : styles.SelectTextDark}>Select one or more</p>
+      <div className={view ? styles.TextLarge : styles.Text}>{text}</div>
+      {!view && <p className={isSender ? styles.SelectTextLight : styles.SelectTextDark}>Select one or more</p>}
       <div className={styles.Options}>
         {options.map((option: any, index: number) => {
           const percentage = maxVotes > 0 ? (option.votes / maxVotes) * 100 : 0;
@@ -28,12 +30,13 @@ export const PollMessage = ({ pollContentJson, isSender = false, isSimulator = f
               {option.name ? (
                 <div className={styles.Option} key={index}>
                   <span>
-                    <span className={styles.OptionName}>
+                    <span className={view ? styles.OptionNameLarge : styles.OptionName}>
                       <RadioButtonUncheckedIcon fontSize="small" />
                       {option.name}
                     </span>
                     <span className={styles.Vote}>{option.votes}</span>
                   </span>
+
                   <LinearProgress
                     classes={{
                       root: isSimulator ? styles.LinearProgressSimulator : styles.LinearProgressChat,
