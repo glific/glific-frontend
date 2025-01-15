@@ -159,6 +159,8 @@ export const HSM = () => {
     if (value.label) {
       const selected = languageOptions.find((option: any) => option.label === value.label);
       setLanguageId(selected);
+    } else {
+      return;
     }
   };
 
