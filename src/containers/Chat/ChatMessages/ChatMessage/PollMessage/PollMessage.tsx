@@ -48,7 +48,7 @@ export const PollMessage = ({
                   />
                 </div>
               ) : (
-                isSimulator && <div className={styles.PlaceHolder}>Option {option.id + 1}</div>
+                isSimulator && <div className={styles.PlaceHolder}>Option {index + 1}</div>
               )}
             </Fragment>
           );
