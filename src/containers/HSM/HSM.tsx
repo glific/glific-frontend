@@ -311,6 +311,10 @@ export const HSM = () => {
       payloadCopy.type = 'TEXT';
     }
 
+    if (payloadCopy.type === 'TEXT') {
+      delete payloadCopy.attachmentURL;
+    }
+
     if (tagId) {
       payloadCopy.tagId = payload.tagId.id;
     }
