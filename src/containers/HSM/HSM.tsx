@@ -322,7 +322,6 @@ export const HSM = () => {
     delete payloadCopy.variables;
     delete payloadCopy.existingShortcode;
     delete payloadCopy.newShortcode;
-    delete payloadCopy.attachmentURL;
     return payloadCopy;
   };
 
@@ -664,18 +663,22 @@ export const HSM = () => {
     }),
     templateButtons: Yup.array().of(
       Yup.lazy(() => {
-        if (templateType === 'CALL_TO_ACTION') {
-          return Yup.object().shape({
-            type: Yup.string().required('Type is required.'),
-            title: Yup.string().required('Title is required.'),
-            value: Yup.string().required('Value is required.'),
-          });
-        } else if (templateType === 'QUICK_REPLY') {
-          return Yup.object().shape({
-            value: Yup.string().required('Value is required.'),
-          });
+        if (isAddButtonChecked) {
+          if (templateType === 'CALL_TO_ACTION') {
+            return Yup.object().shape({
+              type: Yup.string().required('Type is required.'),
+              title: Yup.string().required('Title is required.'),
+              value: Yup.string().required('Value is required.'),
+            });
+          } else if (templateType === 'QUICK_REPLY') {
+            return Yup.object().shape({
+              value: Yup.string().required('Value is required.'),
+            });
+          }
+          return Yup.object().shape({});
+        } else {
+          return Yup.object().shape({});
         }
-        return Yup.object().shape({});
       })
     ),
   };
