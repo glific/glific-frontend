@@ -1,18 +1,20 @@
+import { useMutation } from '@apollo/client';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router';
+
 import CollectionIcon from 'assets/images/icons/Collection/Dark.svg?react';
 import DeleteIcon from 'assets/images/icons/Delete/Red.svg?react';
 import DuplicateIcon from 'assets/images/icons/Duplicate.svg?react';
 import ViewIcon from 'assets/images/icons/ViewLight.svg?react';
-import styles from './WaPollsList.module.css';
-import { List } from 'containers/List/List';
-import { useState } from 'react';
-import { useNavigate } from 'react-router';
 import { pollsInfo } from 'common/HelpData';
-import { DialogBox } from 'components/UI/DialogBox/DialogBox';
-import { GET_POLLS, GET_POLLS_COUNT } from 'graphql/queries/WaPolls';
-import { DELETE_POLL } from 'graphql/mutations/WaPolls';
-import { useMutation } from '@apollo/client';
 import { setErrorMessage, setNotification } from 'common/notification';
+import { DialogBox } from 'components/UI/DialogBox/DialogBox';
+import { List } from 'containers/List/List';
+import { DELETE_POLL } from 'graphql/mutations/WaPolls';
+import { GET_POLLS, GET_POLLS_COUNT } from 'graphql/queries/WaPolls';
+
+import styles from './WaPollsList.module.css';
 import { ViewPoll } from './ViewPollDialog/ViewPollDialog';
 
 const queries = {
@@ -24,7 +26,11 @@ const queries = {
 const getLabel = (label: string) => <div className={styles.LabelText}>{label}</div>;
 
 const getContent = (content: string) => {
-  return <div className={styles.ContentText}>{content.length < 100 ? content : `${content.slice(0, 100)}...`}</div>;
+  return (
+    <div className={styles.ContentText}>
+      {content ? (content.length < 100 ? content : `${content.slice(0, 100)}...`) : ''}
+    </div>
+  );
 };
 export const WaPollsList = () => {
   const [deleteWaPollId, setDeleteWaPollId] = useState<string | null>(null);
@@ -45,7 +51,7 @@ export const WaPollsList = () => {
     const content = pollContent ? JSON.parse(pollContent) : {};
     return {
       label: getLabel(label),
-      content: getContent(content?.text),
+      content: getContent(content.text),
     };
   };
 

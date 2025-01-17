@@ -1,17 +1,19 @@
 import { Typography } from '@mui/material';
-import { Input } from 'components/UI/Form/Input/Input';
-import { FormLayout } from 'containers/Form/FormLayout';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLocation, useParams } from 'react-router';
 import * as Yup from 'yup';
+
 import PollsIcon from 'assets/images/Polls.svg?react';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
-import styles from './WaPolls.module.css';
-import { WaPollOptions } from './WaPollOptions/WaPollOptions';
+import { Input } from 'components/UI/Form/Input/Input';
+import Simulator from 'components/simulator/Simulator';
+import { FormLayout } from 'containers/Form/FormLayout';
 import { COPY_POLL, CREATE_POLL, DELETE_POLL } from 'graphql/mutations/WaPolls';
 import { GET_POLL } from 'graphql/queries/WaPolls';
-import { useLocation, useParams } from 'react-router';
-import Simulator from 'components/simulator/Simulator';
+
+import { WaPollOptions } from './WaPollOptions/WaPollOptions';
+import styles from './WaPolls.module.css';
 
 const queries = {
   getItemQuery: GET_POLL,

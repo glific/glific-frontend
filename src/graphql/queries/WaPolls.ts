@@ -29,6 +29,6 @@ export const GET_POLL = gql`
 
 export const GET_POLLS_COUNT = gql`
   query RootQueryType($filter: WaPollFilter) {
-    countWaPolls(filter: $filter)
+    countPoll: countWaPolls(filter: $filter)
   }
 `;
