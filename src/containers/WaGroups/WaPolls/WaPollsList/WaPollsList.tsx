@@ -35,6 +35,7 @@ const getContent = (content: string) => {
 export const WaPollsList = () => {
   const [deleteWaPollId, setDeleteWaPollId] = useState<string | null>(null);
   const [viewWaPollId, setViewWaPollId] = useState<string | null>(null);
+  const [refreshList, setRefreshList] = useState<boolean>(false);
 
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -70,6 +71,7 @@ export const WaPollsList = () => {
       onCompleted: () => {
         setNotification('Poll deleted successfully', 'success');
         setDeleteWaPollId(null);
+        setRefreshList(!refreshList);
       },
       onError: (error) => setErrorMessage(error),
     });
@@ -129,16 +131,17 @@ export const WaPollsList = () => {
         listItem="poll"
         columnNames={columnNames}
         listItemName="poll"
-        button={{
-          show: true,
-          label: t('Create'),
-        }}
         pageLink={`group/polls`}
         listIcon={collectionIcon}
         dialogMessage={dialogMessage}
         additionalAction={additionalAction}
         restrictedAction={getRestrictedAction}
         helpData={pollsInfo}
+        refreshList={refreshList}
+        button={{
+          show: true,
+          label: t('Create'),
+        }}
         {...queries}
         {...columnAttributes}
       />
