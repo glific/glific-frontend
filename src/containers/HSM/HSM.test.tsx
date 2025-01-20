@@ -147,6 +147,12 @@ describe('Add mode', () => {
     });
 
     fireEvent.click(screen.getByText('Add Variable'));
+    fireEvent.click(screen.getByText('Add buttons'));
+
+    fireEvent.change(screen.getByPlaceholderText('Button Title'), { target: { value: 'Call me' } });
+    fireEvent.change(screen.getByPlaceholderText('Button Value'), {
+      target: { value: '9876543210' },
+    });
 
     await waitFor(() => {
       expect(screen.getByText('Hi, How are you {{1}}')).toBeInTheDocument();

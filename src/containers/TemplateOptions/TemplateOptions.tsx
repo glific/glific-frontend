@@ -1,4 +1,13 @@
-import { RadioGroup, FormControlLabel, Radio, TextField, FormHelperText, FormControl } from '@mui/material';
+import {
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  TextField,
+  FormHelperText,
+  FormControl,
+  Autocomplete,
+  Typography,
+} from '@mui/material';
 import { FieldArray } from 'formik';
 
 import { Button } from 'components/UI/Form/Button/Button';
@@ -14,23 +23,27 @@ export interface TemplateOptionsProps {
   isAddButtonChecked: boolean;
   templateType: string | null;
   inputFields: Array<any>;
-  form: { touched: any; errors: any; values: any };
+  form: { touched: any; errors: any; values: any; setFieldValue: any };
   onAddClick: any;
   onRemoveClick: any;
   onInputChange: any;
   onTemplateTypeChange: any;
   disabled: any;
+  dynamicUrlParams: any;
+  onDynamicParamsChange: any;
 }
 export const TemplateOptions = ({
   isAddButtonChecked,
   templateType,
   inputFields,
-  form: { touched, errors, values },
+  form: { touched, errors },
   onAddClick,
   onRemoveClick,
   onTemplateTypeChange,
   onInputChange,
   disabled = false,
+  dynamicUrlParams,
+  onDynamicParamsChange,
 }: TemplateOptionsProps) => {
   const buttonTitle = 'Button Title';
   const buttonValue = 'Button Value';
@@ -38,7 +51,8 @@ export const TemplateOptions = ({
     CALL_TO_ACTION: 'Call to action',
     QUICK_REPLY: 'Quick Reply',
   };
-
+  const options = ['Static', 'Dynamic'];
+  const { urlType, sampleSuffix } = dynamicUrlParams;
   const handleAddClick = (helper: any, type: boolean) => {
     const obj = type ? { type: '', value: '', title: '' } : { value: '' };
     helper.push(obj);
@@ -133,15 +147,32 @@ export const TemplateOptions = ({
                 ) : null}
               </div>
             </div>
+            {type === 'url' && (
+              <div className={styles.TextFieldWrapper}>
+                <Autocomplete
+                  options={options}
+                  classes={{ inputRoot: styles.DefaultInputRoot }}
+                  renderInput={(params) => <TextField {...params} label="Select URL Type" />}
+                  clearIcon={false}
+                  value={urlType}
+                  onChange={(event: any, newValue: string | null) => {
+                    onDynamicParamsChange({
+                      ...dynamicUrlParams,
+                      urlType: newValue,
+                    });
+                  }}
+                />
+              </div>
+            )}
             <div className={styles.TextFieldWrapper} data-testid="buttonTitle">
               <FormControl fullWidth error={isError('title')} className={styles.FormControl}>
                 <TextField
                   disabled={disabled}
                   title={title}
-                  defaultValue={value}
+                  value={title}
                   placeholder={buttonTitle}
                   variant="outlined"
-                  onBlur={(e: any) => onInputChange(e, row, index, 'title')}
+                  onChange={(e: any) => onInputChange(e, row, index, 'title')}
                   className={styles.TextField}
                   error={isError('title')}
                 />
@@ -154,11 +185,11 @@ export const TemplateOptions = ({
               <FormControl fullWidth error={isError('value')} className={styles.FormControl}>
                 <TextField
                   title={value}
-                  defaultValue={value}
+                  value={value}
                   disabled={disabled}
                   placeholder={buttonValue}
                   variant="outlined"
-                  onBlur={(e: any) => onInputChange(e, row, index, 'value')}
+                  onChange={(e: any) => onInputChange(e, row, index, 'value')}
                   className={styles.TextField}
                   error={isError('value')}
                 />
@@ -167,7 +198,37 @@ export const TemplateOptions = ({
                 ) : null}
               </FormControl>
             </div>
+            {urlType === 'Dynamic' && type === 'url' && (
+              <div>
+                <FormControl fullWidth error={isError('title')} className={styles.FormControl}>
+                  <TextField
+                    disabled={disabled}
+                    label={'Sample Suffix'}
+                    className={styles.TextField}
+                    slotProps={{
+                      input: {
+                        startAdornment: (
+                          <Typography
+                            variant="body2"
+                            color="textSecondary"
+                            className={styles.StartAdornment}
+                          >{`{{1}}`}</Typography>
+                        ),
+                      },
+                    }}
+                    onChange={(event) =>
+                      onDynamicParamsChange({
+                        ...dynamicUrlParams,
+                        sampleSuffix: event.target.value,
+                      })
+                    }
+                    value={sampleSuffix}
+                  />
+                </FormControl>
+              </div>
+            )}
           </div>
+
           <div className={styles.Button}>
             {inputFields.length === index + 1 && inputFields.length !== 2 ? addButton(arrayHelpers, true) : null}
           </div>
@@ -182,22 +243,24 @@ export const TemplateOptions = ({
             <FormControl fullWidth error={isError('value')} className={styles.FormControl}>
               <TextField
                 disabled={disabled}
-                defaultValue={value}
+                value={value}
                 title={title}
                 placeholder={`Quick reply ${index + 1} title`}
                 variant="outlined"
-                onBlur={(e: any) => onInputChange(e, row, index, 'value')}
+                onChange={(e: any) => onInputChange(e, row, index, 'value')}
                 className={styles.TextField}
                 error={isError('value')}
-                InputProps={{
-                  endAdornment: inputFields.length > 1 && !disabled && (
-                    <CrossIcon
-                      className={styles.RemoveIcon}
-                      title="Remove"
-                      data-testid="cross-icon"
-                      onClick={() => handleRemoveClick(arrayHelpers, index)}
-                    />
-                  ),
+                slotProps={{
+                  input: {
+                    endAdornment: inputFields.length > 1 && !disabled && (
+                      <CrossIcon
+                        className={styles.RemoveIcon}
+                        title="Remove"
+                        data-testid="cross-icon"
+                        onClick={() => handleRemoveClick(arrayHelpers, index)}
+                      />
+                    ),
+                  },
                 }}
               />
               {errors.templateButtons && touched.templateButtons && touched.templateButtons[index] ? (
@@ -251,7 +314,7 @@ export const TemplateOptions = ({
             name="templateButtons"
             render={(arrayHelpers: any) => (
               <div className={styles.QuickReplyContainer}>
-                {values.templateButtons.map((row: any, index: any) => (
+                {inputFields.map((row: any, index: any) => (
                   <div key={index}> {getButtons(row, index, arrayHelpers)}</div>
                 ))}
               </div>

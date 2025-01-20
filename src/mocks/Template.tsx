@@ -280,6 +280,9 @@ export const templateMock = createTemplateMock({
   languageId: '1',
   example: 'Hi, How are you [User]',
   shortcode: 'element_name',
+  hasButtons: true,
+  buttons: '[{"type":"PHONE_NUMBER","text":"Call me","phone_number":"9876543210"}]',
+  buttonType: 'CALL_TO_ACTION',
 });
 
 export const quickReplyMock = createTemplateMock({
@@ -295,7 +298,7 @@ export const quickReplyMock = createTemplateMock({
   example: 'Hi',
   shortcode: 'welcome',
   hasButtons: true,
-  buttons: '[{"type":"QUICK_REPLY","text":""},{"type":"QUICK_REPLY","text":""}]',
+  buttons: '[{"type":"QUICK_REPLY","text":"Yes"},{"type":"QUICK_REPLY","text":"No"}]',
   buttonType: 'QUICK_REPLY',
 });
 
@@ -312,7 +315,7 @@ export const ctaMock = createTemplateMock({
   example: 'Hi',
   shortcode: 'welcome',
   hasButtons: true,
-  buttons: '[{"type":"PHONE_NUMBER","text":"","phone_number":""}]',
+  buttons: '[{"type":"PHONE_NUMBER","text":"Call me","phone_number":"9876543210"}]',
   buttonType: 'CALL_TO_ACTION',
 });
 
