@@ -311,7 +311,7 @@ export const HSM = () => {
       payloadCopy.type = 'TEXT';
     }
 
-    if (payloadCopy.type === 'TEXT') {
+    if (payloadCopy.type === 'TEXT' || isEditing) {
       delete payloadCopy.attachmentURL;
     }
 
@@ -703,7 +703,7 @@ export const HSM = () => {
   useEffect(() => {
     setSimulatorMessage(getExampleFromBody(body, variables));
 
-    if ((type === '' || type) && attachmentURL) {
+    if ((type === '' || type) && attachmentURL && !isEditing) {
       validateURL(attachmentURL);
     }
   }, [type, attachmentURL]);
