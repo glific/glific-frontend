@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
-import CollectionIcon from 'assets/images/icons/Collection/Dark.svg?react';
 import DeleteIcon from 'assets/images/icons/Delete/Red.svg?react';
 import DuplicateIcon from 'assets/images/icons/Duplicate.svg?react';
 import ViewIcon from 'assets/images/icons/ViewLight.svg?react';
@@ -43,8 +42,7 @@ export const WaPollsList = () => {
   const [deletePoll, { loading }] = useMutation(DELETE_POLL);
 
   const columnNames = [{ name: 'label', label: 'Title' }, { label: 'Content' }, { label: t('Actions') }];
-  const title = t('Group polls');
-  const collectionIcon = <CollectionIcon />;
+  const title = t('WhatsApp Polls');
   const dialogMessage = t("You won't be able to use this collection again.");
   const columnStyles = [styles.Label, styles.Content, styles.Actions];
 
@@ -92,7 +90,7 @@ export const WaPollsList = () => {
     },
     {
       label: t('Copy'),
-      icon: <DuplicateIcon />,
+      icon: <DuplicateIcon data-testid="copy-icon" />,
       parameter: 'id',
       insideMore: false,
       dialog: handleCopy,
@@ -132,7 +130,6 @@ export const WaPollsList = () => {
         columnNames={columnNames}
         listItemName="poll"
         pageLink={`group/polls`}
-        listIcon={collectionIcon}
         dialogMessage={dialogMessage}
         additionalAction={additionalAction}
         restrictedAction={getRestrictedAction}

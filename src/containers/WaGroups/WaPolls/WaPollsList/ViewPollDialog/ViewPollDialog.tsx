@@ -18,7 +18,6 @@ export const ViewPoll = ({ id, onClose }: ViewPollProps) => {
 
   const poll = data?.waPoll?.waPoll;
   const pollContent = poll?.pollContent ? JSON.parse(poll?.pollContent) : {};
-  console.log(poll);
 
   if (loading) {
     return <Loading />;

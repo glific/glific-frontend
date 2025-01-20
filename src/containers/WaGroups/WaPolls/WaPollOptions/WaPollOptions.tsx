@@ -77,7 +77,7 @@ export const WaPollOptions = ({
         </FormHelperText>
 
         {values.options.length < 10 && !isEditing && (
-          <Button variant="outlined" onClick={handleAddOption}>
+          <Button data-testid="add-btn" variant="outlined" onClick={handleAddOption}>
             Add Option
           </Button>
         )}
