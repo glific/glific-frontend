@@ -92,6 +92,12 @@ export const WaPollsList = () => {
 
   const additionalAction = () => [
     {
+      label: t('Copy UUID'),
+      icon: <CopyAllOutlined data-testid="copy-icon" />,
+      parameter: 'id',
+      dialog: copyUuid,
+    },
+    {
       label: t('View'),
       icon: <ViewIcon data-testid="view-icon" />,
       parameter: 'id',
@@ -99,14 +105,8 @@ export const WaPollsList = () => {
       insideMore: false,
     },
     {
-      label: t('Copy UUID'),
-      icon: <CopyAllOutlined data-testid="copy-button" />,
-      parameter: 'id',
-      dialog: copyUuid,
-    },
-    {
       label: t('Copy Poll'),
-      icon: <DuplicateIcon data-testid="copy-icon" />,
+      icon: <DuplicateIcon data-testid="duplicate-icon" />,
       parameter: 'id',
       insideMore: false,
       dialog: handleCopy,

@@ -36,6 +36,20 @@ test('it should render the WaPollsList component', async () => {
   });
 });
 
+test('it should copy the uuid', async () => {
+  render(wrapper);
+
+  await waitFor(() => {
+    expect(screen.getByText('WhatsApp Polls')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getAllByTestId('copy-icon')[0]);
+
+  await waitFor(() => {
+    expect(notificationSpy).toHaveBeenCalled();
+  });
+});
+
 test('it should open the view dialog box', async () => {
   render(wrapper);
 
@@ -59,10 +73,10 @@ test('it navigates to create a copy', async () => {
     expect(screen.getByText('WhatsApp Polls')).toBeInTheDocument();
   });
 
-  fireEvent.click(screen.getAllByTestId('copy-icon')[0]);
+  fireEvent.click(screen.getAllByTestId('duplicate-icon')[0]);
 
   await waitFor(() => {
-    expect(screen.getByText('Copy waPoll')).toBeInTheDocument();
+    expect(screen.getByText('Copy Poll')).toBeInTheDocument();
   });
 });
 

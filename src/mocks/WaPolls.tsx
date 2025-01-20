@@ -81,6 +81,7 @@ const listPollsQuery = {
           id: '1',
           label: 'poll 1',
           pollContent: '{"text":"text","options":[{"name":"1","id":0},{"name":"2","id":1}]}',
+          uuid: '6fa459ea-ee8a-3ca4-894e-db77e160355e',
         },
         {
           allowMultipleAnswer: true,
@@ -88,6 +89,7 @@ const listPollsQuery = {
           label: 'Poll Title',
           pollContent:
             '{"text":"Poll Content","options":[{"name":"Option 1","id":0},{"name":"Option 3","id":0.6781005888671008}]}',
+          uuid: '550e8400-e29b-41d4-a716-446655440000',
         },
         {
           allowMultipleAnswer: true,
@@ -95,18 +97,21 @@ const listPollsQuery = {
           label: 'polllll',
           pollContent:
             '{"text":"How frequently do you participate in our activities or events, and what influences your level of involvement?","options":[{"name":"Everyday","id":0},{"name":"Once a week","id":1},{"name":"Monthly","id":2},{"name":"Never","id":3}]}',
+          uuid: '123e4567-e89b-12d3-a456-426614174000',
         },
         {
           allowMultipleAnswer: false,
           id: '3',
           label: 'titek 1',
           pollContent: '{"text":"sdcfd","options":[{"name":"dfv","id":0},{"name":"sdf","id":1}]}',
+          uuid: '9b2d9b1e-1c3e-4f5a-8b2d-9b1e1c3e4f5a',
         },
         {
           allowMultipleAnswer: false,
           id: '4',
           label: 'we',
           pollContent: '{"text":"s","options":[{"name":"dds","id":0},{"name":"ss","id":1}]}',
+          uuid: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
         },
       ],
     },

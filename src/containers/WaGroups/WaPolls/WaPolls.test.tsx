@@ -41,7 +41,7 @@ describe('Create', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Add a new waPoll')).toBeInTheDocument();
+      expect(screen.getByText('Add a new Poll')).toBeInTheDocument();
     });
 
     const inputs = screen.getAllByRole('textbox');
@@ -85,7 +85,7 @@ describe('Copy', () => {
     render(copyFlow);
 
     await waitFor(() => {
-      expect(screen.getByText('Copy waPoll')).toBeInTheDocument();
+      expect(screen.getByText('Copy Poll')).toBeInTheDocument();
     });
 
     await waitFor(() => {
