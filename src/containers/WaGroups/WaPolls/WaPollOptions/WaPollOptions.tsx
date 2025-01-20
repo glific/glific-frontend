@@ -26,7 +26,8 @@ export const WaPollOptions = ({
   setPreviewData,
 }: WaPollOptionsProps) => {
   const handleAddOption = () => {
-    const newOptions = [...values.options, { name: '', id: Math.random() }];
+    const lastId = values?.options[values?.options.length - 1]?.id;
+    const newOptions = [...values.options, { name: '', id: lastId + 1 }];
     setFieldValue('options', newOptions);
     setPreviewData((prev: any) => ({ ...prev, options: newOptions }));
   };
@@ -76,8 +77,8 @@ export const WaPollOptions = ({
           {errors['options'] && typeof errors['options'] === 'string' && errors['options']}
         </FormHelperText>
 
-        {values.options.length < 10 && !isEditing && (
-          <Button data-testid="add-btn" variant="outlined" onClick={handleAddOption}>
+        {values.options.length < 12 && !isEditing && (
+          <Button variant="outlined" onClick={handleAddOption}>
             Add Option
           </Button>
         )}
@@ -126,16 +127,24 @@ const PollOption = ({
             input: {
               endAdornment: !isEditing && (
                 <ClickAwayListener onClickAway={() => setShowEmojiPicker(false)}>
-                  <IconButton
-                    data-testid="emoji-picker"
-                    color="primary"
-                    aria-label="pick emoji"
-                    component="span"
-                    className={styles.EmojiButton}
-                    onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                  >
-                    <EmojiEmotionsOutlinedIcon className={styles.EmojiIcon} role="img" aria-label="pick emoji" />
-                  </IconButton>
+                  <div>
+                    <IconButton
+                      data-testid="emoji-picker"
+                      color="primary"
+                      aria-label="pick emoji"
+                      component="span"
+                      className={styles.EmojiButton}
+                      onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                    >
+                      <EmojiEmotionsOutlinedIcon className={styles.EmojiIcon} role="img" aria-label="pick emoji" />
+                    </IconButton>
+                    {showEmojiPicker && (
+                      <EmojiPicker
+                        onEmojiSelect={(emoji: any) => handleEmojiAdd(emoji, option.id)}
+                        displayStyle={emojiStyles}
+                      />
+                    )}
+                  </div>
                 </ClickAwayListener>
               ),
             },
@@ -149,9 +158,6 @@ const PollOption = ({
             data-testid="cross-icon"
             onClick={() => handleRemoveClick(option.id)}
           />
-        )}
-        {showEmojiPicker && (
-          <EmojiPicker onEmojiSelect={(emoji: any) => handleEmojiAdd(emoji, option.id)} displayStyle={emojiStyles} />
         )}
       </div>
       {hasError ? <FormHelperText>{errors[ind]?.name || ''}</FormHelperText> : null}

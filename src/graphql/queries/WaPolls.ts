@@ -7,6 +7,7 @@ export const GET_POLLS = gql`
       id
       label
       pollContent
+      uuid
     }
   }
 `;
