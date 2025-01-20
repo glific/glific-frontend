@@ -34,7 +34,7 @@ export const WA_MESSAGE_RECEIVED_SUBSCRIPTION = gql`
         type
         insertedAt
       }
-
+      pollContent
       errors
     }
   }
@@ -124,6 +124,7 @@ export const UPDATE_WA_MESSAGE_STATUS = gql`
     updateWaMessageStatus(organizationId: $organizationId) {
       id
       messageNumber
+      pollContent
       errors
       waGroup {
         id
