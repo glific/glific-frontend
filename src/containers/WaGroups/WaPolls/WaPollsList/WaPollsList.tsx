@@ -4,8 +4,10 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
 import CollectionIcon from 'assets/images/icons/Collection/Dark.svg?react';
+import CopyAllOutlined from 'assets/images/icons/Flow/Copy.svg?react';
 import DeleteIcon from 'assets/images/icons/Delete/Red.svg?react';
 import DuplicateIcon from 'assets/images/icons/Duplicate.svg?react';
+import { copyToClipboardMethod } from 'common/utils';
 import { pollsInfo } from 'common/HelpData';
 import { setErrorMessage, setNotification } from 'common/notification';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
@@ -74,6 +76,14 @@ export const WaPollsList = () => {
     });
   };
 
+  const copyUuid = (_id: string, item: any) => {
+    if (item.uuid) {
+      copyToClipboardMethod(item.uuid);
+    } else {
+      setNotification('Sorry! UUID not found', 'warning');
+    }
+  };
+
   const getRestrictedAction = () => {
     const action: any = { edit: false, delete: false };
     return action;
@@ -81,7 +91,13 @@ export const WaPollsList = () => {
 
   const additionalAction = () => [
     {
-      label: t('Copy'),
+      label: t('Copy UUID'),
+      icon: <CopyAllOutlined data-testid="copy-button" />,
+      parameter: 'id',
+      dialog: copyUuid,
+    },
+    {
+      label: t('Copy Poll'),
       icon: <DuplicateIcon />,
       parameter: 'id',
       insideMore: false,

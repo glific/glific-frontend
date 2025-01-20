@@ -533,5 +533,6 @@
   "Last name is required.": "Last name is required.",
   "Failed": "Failed",
   "Members": "Members",
-  "Group polls": "Group polls"
+  "Group polls": "Group polls",
+  "Copy Poll": "Copy Poll"
 }
