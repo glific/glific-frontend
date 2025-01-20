@@ -298,3 +298,7 @@
   padding-bottom: 8px;
   font-weight: bold;
 }
+
+.NoIcon {
+  margin: 0 1rem;
+}

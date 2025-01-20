@@ -58,6 +58,7 @@ export interface ChatMessageProps {
   status?: string;
   contact?: any;
   pollContent?: any;
+  showIcon?: boolean;
 }
 
 export const ChatMessage = ({
@@ -84,6 +85,7 @@ export const ChatMessage = ({
   status,
   contact,
   pollContent,
+  showIcon = true,
 }: ChatMessageProps) => {
   const [showSaveMessageDialog, setShowSaveMessageDialog] = useState(false);
   const Ref = useRef(null);
@@ -354,8 +356,8 @@ export const ChatMessage = ({
           </Tooltip>
         ) : null}
 
-        <div className={styles.Inline}>
-          {iconLeft && icon}
+        <div className={`${styles.Inline} ${!showIcon && styles.NoIcon}`}>
+          {showIcon && iconLeft && icon}
           {ErrorIcon}
           <div className={chatMessageClasses.join(' ')}>
             <Tooltip title={tooltipTitle} placement={isSender ? 'right' : 'left'}>
@@ -366,47 +368,49 @@ export const ChatMessage = ({
               </div>
             </Tooltip>
 
-            <Popper
-              id={popperId}
-              open={open}
-              modifiers={[
-                {
-                  name: 'preventOverflow',
-                  options: {
-                    altBoundary: true,
+            {showIcon && (
+              <Popper
+                id={popperId}
+                open={open}
+                modifiers={[
+                  {
+                    name: 'preventOverflow',
+                    options: {
+                      altBoundary: true,
+                    },
                   },
-                },
-              ]}
-              anchorEl={anchorEl}
-              placement={placement}
-              transition
-              data-testid="popup"
-            >
-              {({ TransitionProps }) => (
-                <Fade {...TransitionProps} timeout={350}>
-                  <Paper elevation={3}>
-                    <Button className={styles.Popper} color="primary" onClick={() => setShowSaveMessageDialog(true)}>
-                      {t('Add to speed sends')}
-                    </Button>
-                    {type !== 'TEXT' && (
-                      <span>
-                        <br />
-                        <Button
-                          className={styles.Popper}
-                          color="primary"
-                          onClick={() => downloadMedia()}
-                          data-testid="downloadMedia"
-                        >
-                          {t('Download media')}
-                        </Button>
-                      </span>
-                    )}
-                  </Paper>
-                </Fade>
-              )}
-            </Popper>
+                ]}
+                anchorEl={anchorEl}
+                placement={placement}
+                transition
+                data-testid="popup"
+              >
+                {({ TransitionProps }) => (
+                  <Fade {...TransitionProps} timeout={350}>
+                    <Paper elevation={3}>
+                      <Button className={styles.Popper} color="primary" onClick={() => setShowSaveMessageDialog(true)}>
+                        {t('Add to speed sends')}
+                      </Button>
+                      {type !== 'TEXT' && (
+                        <span>
+                          <br />
+                          <Button
+                            className={styles.Popper}
+                            color="primary"
+                            onClick={() => downloadMedia()}
+                            data-testid="downloadMedia"
+                          >
+                            {t('Download media')}
+                          </Button>
+                        </span>
+                      )}
+                    </Paper>
+                  </Fade>
+                )}
+              </Popper>
+            )}
           </div>
-          {iconLeft ? null : icon}
+          {iconLeft ? null : showIcon && icon}
         </div>
         <div className={styles.SendBy}>{sendBy}</div>
 
