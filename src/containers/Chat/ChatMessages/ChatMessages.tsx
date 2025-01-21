@@ -549,6 +549,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
           onClick={() => showEditDialog(message.id)}
           focus={index === 0}
           jumpToMessage={jumpToMessage}
+          showIcon={!groups}
           daySeparator={showDaySeparator(
             reverseConversation[index].insertedAt,
             reverseConversation[index + 1] ? reverseConversation[index + 1].insertedAt : null

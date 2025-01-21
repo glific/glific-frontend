@@ -1,0 +1,26 @@
+.Label {
+  width: 300px;
+}
+
+.Content {
+  width: 400px;
+}
+
+.Actions {
+  width: 30%;
+  min-width: 200px;
+  text-align: end;
+}
+
+.LabelText {
+  font-weight: 500;
+  font-size: 17px;
+  line-height: 20px;
+  color: #191c1a;
+  display: flex;
+  align-items: center;
+}
+
+.DialogText {
+  text-align: center;
+}
