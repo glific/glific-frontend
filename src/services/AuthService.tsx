@@ -18,8 +18,7 @@ type ServiceType =
   | 'rolesAndPermission'
   | 'contactProfileEnabled'
   | 'ticketingEnabled'
-  | 'whatsappGroupEnabled'
-  | 'llm4devEnabled';
+  | 'whatsappGroupEnabled';
 
 // get the current authentication session
 export const getAuthSession = (element?: string) => {

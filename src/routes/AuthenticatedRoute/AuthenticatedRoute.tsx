@@ -60,7 +60,6 @@ const InteractiveMessage = lazy(() => import('containers/InteractiveMessage/Inte
 
 const RoleList = lazy(() => import('containers/Role/RoleList/RoleList'));
 const Role = lazy(() => import('containers/Role/Role'));
-const KnowledgeBase = lazy(() => import('containers/KnowledgeBase/KnowledgeBase'));
 const Assistant = lazy(() => import('containers/Assistants/Assistants'));
 
 const routeStaff = (
@@ -142,8 +141,6 @@ const routeAdmin = (
     <Route path="group/collection/add" element={<Collection />} />
     <Route path="group/collection/:id/edit" element={<Collection />} />
     <Route path="collection/:id/groups" element={<GroupCollectionList />} />
-
-    <Route path="knowledge-base" element={<KnowledgeBase />} />
 
     <Route path="/assistants" element={<Assistant />} />
     <Route path="/assistants/:assistantId" element={<Assistant />} />
