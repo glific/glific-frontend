@@ -75,6 +75,10 @@ export const HSM = () => {
   const [validatingURL, setValidatingURL] = useState<boolean>(false);
   const [isUrlValid, setIsUrlValid] = useState<any>();
   const [templateType, setTemplateType] = useState<string | null>(CALL_TO_ACTION);
+  const [dynamicUrlParams, setDynamicUrlParams] = useState<any>({
+    urlType: 'Static',
+    sampleSuffix: '',
+  });
   const [sampleMessages, setSampleMessages] = useState({
     type: 'TEXT',
     location: null,
@@ -152,23 +156,34 @@ export const HSM = () => {
   };
 
   const getLanguageId = (value: any) => {
-    let result: any;
-    const selected = languageOptions.find((option: any) => option.label === value);
-    result = selected;
+    if (!value.label) {
+      return;
+    }
 
-    if (result) setLanguageId(result);
+    const selected = languageOptions.find((option: any) => option.label === value.label);
+    setLanguageId(selected);
   };
 
   // Creating payload for button template
-  const getButtonTemplatePayload = () => {
-    const buttons = templateButtons.reduce((result: any, button) => {
+  const getButtonTemplatePayload = (urlType: string, sampleSuffix: string) => {
+    const buttons = templateButtons.reduce((result: any, button: any) => {
       const { type: buttonType, value, title }: any = button;
+
       if (templateType === CALL_TO_ACTION) {
         const typeObj: any = {
           phone_number: 'PHONE_NUMBER',
           url: 'URL',
         };
-        const obj: any = { type: typeObj[buttonType], text: title, [buttonType]: value };
+        let obj: any = { type: typeObj[buttonType], text: title, [buttonType]: value };
+
+        if (buttonType === 'url' && urlType === 'Dynamic') {
+          obj = {
+            type: typeObj[buttonType],
+            text: title,
+            [buttonType]: `${value}{{1}}`,
+            example: [`${value}${sampleSuffix}`],
+          };
+        }
         result.push(obj);
       }
 
@@ -190,6 +205,10 @@ export const HSM = () => {
       body: templateBody.message,
       example: templateExample.message,
     };
+  };
+
+  const handleDynamicParamsChange = (value: any) => {
+    setDynamicUrlParams(value);
   };
 
   const setStates = ({
@@ -269,6 +288,7 @@ export const HSM = () => {
 
   const setPayload = (payload: any) => {
     let payloadCopy = { ...payload, isHsm: true };
+    const { urlType, sampleSuffix } = dynamicUrlParams;
     if (isEditing) {
       payloadCopy.shortcode = payloadCopy.newShortcode;
     } else {
@@ -278,7 +298,7 @@ export const HSM = () => {
     payloadCopy.languageId = payload.language.id;
     payloadCopy.example = getExampleFromBody(payloadCopy.body, variables);
     if (isAddButtonChecked && templateType) {
-      const templateButtonData = getButtonTemplatePayload();
+      const templateButtonData = getButtonTemplatePayload(urlType, sampleSuffix);
       Object.assign(payloadCopy, { ...templateButtonData });
     }
     if (payloadCopy.type) {
@@ -289,6 +309,10 @@ export const HSM = () => {
       }
     } else {
       payloadCopy.type = 'TEXT';
+    }
+
+    if (payloadCopy.type === 'TEXT' || isEditing) {
+      delete payloadCopy.attachmentURL;
     }
 
     if (tagId) {
@@ -302,7 +326,6 @@ export const HSM = () => {
     delete payloadCopy.variables;
     delete payloadCopy.existingShortcode;
     delete payloadCopy.newShortcode;
-    delete payloadCopy.attachmentURL;
     return payloadCopy;
   };
 
@@ -515,6 +538,8 @@ export const HSM = () => {
       onRemoveClick: removeTemplateButtons,
       onInputChange: handeInputChange,
       onTemplateTypeChange: handleTemplateTypeChange,
+      dynamicUrlParams,
+      onDynamicParamsChange: handleDynamicParamsChange,
     },
     {
       component: AutoComplete,
@@ -642,18 +667,22 @@ export const HSM = () => {
     }),
     templateButtons: Yup.array().of(
       Yup.lazy(() => {
-        if (templateType === 'CALL_TO_ACTION') {
-          return Yup.object().shape({
-            type: Yup.string().required('Type is required.'),
-            title: Yup.string().required('Title is required.'),
-            value: Yup.string().required('Value is required.'),
-          });
-        } else if (templateType === 'QUICK_REPLY') {
-          return Yup.object().shape({
-            value: Yup.string().required('Value is required.'),
-          });
+        if (isAddButtonChecked) {
+          if (templateType === 'CALL_TO_ACTION') {
+            return Yup.object().shape({
+              type: Yup.string().required('Type is required.'),
+              title: Yup.string().required('Title is required.'),
+              value: Yup.string().required('Value is required.'),
+            });
+          } else if (templateType === 'QUICK_REPLY') {
+            return Yup.object().shape({
+              value: Yup.string().required('Value is required.'),
+            });
+          }
+          return Yup.object().shape({});
+        } else {
+          return Yup.object().shape({});
         }
-        return Yup.object().shape({});
       })
     ),
   };
@@ -674,7 +703,7 @@ export const HSM = () => {
   useEffect(() => {
     setSimulatorMessage(getExampleFromBody(body, variables));
 
-    if ((type === '' || type) && attachmentURL) {
+    if ((type === '' || type) && attachmentURL && !isEditing) {
       validateURL(attachmentURL);
     }
   }, [type, attachmentURL]);

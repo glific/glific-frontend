@@ -14,6 +14,9 @@
 
 .CallToActionWrapper {
   composes: Font;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .CallToActionWrapper > div {
@@ -42,7 +45,7 @@
 
 .RadioStyles {
   composes: Font;
-  margin-bottom: 12px;
+  margin-bottom: 0.5rem;
 }
 
 .RadioLabel > span:last-child {
@@ -55,10 +58,6 @@
 
 .TextFieldWrapper {
   display: block !important;
-}
-
-.FormControl {
-  margin-bottom: 17px;
 }
 
 .FormControl > p {
@@ -114,4 +113,20 @@
 
 .Button {
   margin-top: 7px;
+}
+
+.FieldLabel {
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 18px;
+  color: #555555;
+  padding-bottom: 14px;
+}
+
+.DefaultInputRoot {
+  background-color: #ffffff;
+}
+
+.StartAdornment {
+  padding-right: 0.5rem;
 }

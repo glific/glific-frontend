@@ -13,6 +13,11 @@ const props = (isAddButtonChecked: any, templateType: any, inputFields: any, for
   templateType,
   inputFields,
   form,
+  dynamicUrlParams: {
+    urlType: 'Static',
+    sampleSuffix: '',
+  },
+  onDynamicParamsChange: () => {},
 });
 
 const callToAction = { type: 'phone_number', value: '', title: '' };

@@ -253,7 +253,6 @@ export const getOrganizationServicesQuery = {
         ticketingEnabled: true,
         autoTranslationEnabled: true,
         whatsappGroupEnabled: true,
-        llm4devEnabled: true,
       },
     },
   },
