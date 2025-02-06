@@ -26,7 +26,7 @@ export const PlatformDetails = ({ handleStepChange, saveData }: FormStepProps) =
   const [loading, setLoading] = useState(false);
 
   const FormSchema = Yup.object().shape({
-    name: Yup.string().required(t('Name is required.')).max(40, t('Name should not exceed 40 characters')),
+    name: Yup.string().required(t('Name is required.')),
     app_name: Yup.string().required(t('App name is required.')),
     api_key: Yup.string().required(t('API key is required.')),
     shortcode: Yup.string()
