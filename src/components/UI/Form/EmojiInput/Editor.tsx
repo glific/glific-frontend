@@ -1,8 +1,18 @@
 import styles from './Editor.module.css';
-import { forwardRef, useEffect } from 'react';
+import { forwardRef, useEffect, useState } from 'react';
 import { PlainTextPlugin } from '@lexical/react/LexicalPlainTextPlugin';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
-import { $getSelection, $createTextNode, $getRoot, KEY_DOWN_COMMAND, COMMAND_PRIORITY_LOW } from 'lexical';
+import {
+  $getSelection,
+  $createTextNode,
+  $getRoot,
+  KEY_DOWN_COMMAND,
+  COMMAND_PRIORITY_LOW,
+  FORMAT_TEXT_COMMAND,
+  $createRangeSelection,
+  $setSelection,
+  $isRangeSelection,
+} from 'lexical';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
@@ -14,6 +24,8 @@ import {
   BeautifulMentionsMenuItemProps,
 } from 'lexical-beautiful-mentions';
 import { handleFormatterEvents, handleFormatting, setDefaultValue } from 'common/RichEditor';
+import { FormatBold, FormatItalic, StrikethroughS } from '@mui/icons-material';
+import { mergeRegister } from '@lexical/utils';
 
 export interface EditorProps {
   field: { name: string; onChange?: any; value: any; onBlur?: any };
@@ -46,22 +58,49 @@ export const Editor = ({ disabled = false, ...props }: EditorProps) => {
   };
 
   useEffect(() => {
-    return editor.registerCommand(
-      KEY_DOWN_COMMAND,
-      (event: KeyboardEvent) => {
-        let formatter = handleFormatterEvents(event);
+    return mergeRegister(
+      editor.registerCommand(
+        KEY_DOWN_COMMAND,
+        (event: KeyboardEvent) => {
+          let formatter = handleFormatterEvents(event);
 
-        editor.update(() => {
-          const selection = $getSelection();
-          if (selection?.getTextContent() && formatter) {
-            const text = handleFormatting(selection?.getTextContent(), formatter);
-            const newNode = $createTextNode(text);
-            selection?.insertNodes([newNode]);
-          }
-        });
-        return false;
-      },
-      COMMAND_PRIORITY_LOW
+          editor.update(() => {
+            const selection = $getSelection();
+            if (selection?.getTextContent() && formatter) {
+              const text = handleFormatting(selection?.getTextContent(), formatter);
+              const newNode = $createTextNode(text);
+              selection?.insertNodes([newNode]);
+            }
+          });
+          return false;
+        },
+        COMMAND_PRIORITY_LOW
+      ),
+      editor.registerCommand(
+        FORMAT_TEXT_COMMAND,
+        (event: any) => {
+          editor.update(() => {
+            const selection = $getSelection();
+            const text = handleFormatting(selection?.getTextContent(), event);
+
+            if (!selection?.getTextContent()) {
+              const newNode = $createTextNode(text);
+              selection?.insertNodes([newNode]);
+              const newSelection = $createRangeSelection();
+              newSelection.anchor.set(newNode.getKey(), 1, 'text'); // Set the cursor between the backticks
+              newSelection.focus.set(newNode.getKey(), 1, 'text');
+              $setSelection(newSelection);
+            }
+            if (selection?.getTextContent() && event) {
+              const newNode = $createTextNode(text);
+              selection?.insertNodes([newNode]);
+              editor.focus();
+            }
+          });
+          return false;
+        },
+        COMMAND_PRIORITY_LOW
+      )
     );
   }, [editor]);
 
@@ -81,39 +120,134 @@ export const Editor = ({ disabled = false, ...props }: EditorProps) => {
     });
   };
 
-  return (
-    <div className={styles.EditorWrapper}>
-      <div className={disabled ? styles?.disabled : styles.Editor} data-testid="resizer">
-        <PlainTextPlugin
-          placeholder={<Placeholder />}
-          contentEditable={
-            <div className={styles.editorScroller}>
-              <div className={styles.editor}>
-                <ContentEditable
-                  data-testid={`editor-${field.name}`}
-                  disabled={disabled}
-                  className={styles.EditorInput}
-                />
-              </div>
-            </div>
+  const [activeFormats, setActiveFormats] = useState<{ bold: boolean; italic: boolean; strikethrough: boolean }>({
+    bold: false,
+    italic: false,
+    strikethrough: false,
+  });
+
+  useEffect(() => {
+    const checkFormatting = () => {
+      editor.update(() => {
+        const selection = $getSelection();
+
+        if (!$isRangeSelection(selection)) {
+          setActiveFormats({ bold: false, italic: false, strikethrough: false });
+          return;
+        }
+
+        const anchorNode = selection.anchor.getNode();
+        const anchorOffset = selection.anchor.offset;
+
+        if (!anchorNode.getTextContent()) {
+          setActiveFormats({ bold: false, italic: false, strikethrough: false });
+          return;
+        }
+
+        const textContent = anchorNode.getTextContent();
+        const textFormat = anchorNode.getFormat(); // 🔥 Detects Lexical's internal formatting
+        console.log(textFormat);
+
+        // Regex patterns for formatting
+        const boldRegex = /\*(?:\S.*?\S|\S)\*/g; // Correctly detects *bold*
+        const italicRegex = /_(.*?)_/g; // Matches _italic_
+        const strikethroughRegex = /~(.*?)~/g; // Matches ~~strikethrough~~
+
+        const isInsideFormat = (regex: RegExp) => {
+          let match;
+          while ((match = regex.exec(textContent)) !== null) {
+            const start = match.index;
+            const end = start + match[0].length;
+            if (anchorOffset > start && anchorOffset < end) {
+              return true;
+            }
           }
-          ErrorBoundary={LexicalErrorBoundary}
-        />
-        <HistoryPlugin />
-        <BeautifulMentionsPlugin
-          menuComponent={CustomMenu}
-          menuItemComponent={CustomMenuItem}
-          triggers={['@']}
-          items={suggestions}
-        />
-        <OnChangePlugin onChange={handleChange} />
-        {picker}
+          return false;
+        };
+        // console.log(isInsideFormat(boldRegex));
+
+        setActiveFormats({
+          bold: isInsideFormat(boldRegex),
+          italic: isInsideFormat(italicRegex),
+          strikethrough: isInsideFormat(strikethroughRegex),
+        });
+      });
+    };
+
+    // Register an update listener to track selection changes
+    const removeListener = editor.registerUpdateListener(({ editorState }) => {
+      editorState.read(() => {
+        checkFormatting();
+      });
+    });
+
+    return () => {
+      removeListener();
+    };
+  }, [editor]);
+  // console.log(activeFormats);
+
+  return (
+    <>
+      <div className={styles.EditorWrapper}>
+        <div className={styles.FormatingOptions}>
+          <span
+            className={activeFormats.bold ? styles.Active : ''}
+            onClick={() => {
+              editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold');
+            }}
+          >
+            <FormatBold fontSize="small" color="inherit" />
+          </span>
+          <span
+            className={activeFormats.italic ? styles.Active : ''}
+            onClick={() => {
+              editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic');
+            }}
+          >
+            <FormatItalic fontSize="small" color="inherit" />
+          </span>
+          <span
+            className={activeFormats.strikethrough ? styles.Active : ''}
+            onClick={() => {
+              editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'strikethrough');
+            }}
+          >
+            <StrikethroughS fontSize="small" color="inherit" />
+          </span>
+        </div>
+        <div className={disabled ? styles?.disabled : styles.Editor} data-testid="resizer">
+          <PlainTextPlugin
+            placeholder={<Placeholder />}
+            contentEditable={
+              <div className={styles.editorScroller}>
+                <div className={styles.editor}>
+                  <ContentEditable
+                    data-testid={`editor-${field.name}`}
+                    disabled={disabled}
+                    className={styles.EditorInput}
+                  />
+                </div>
+              </div>
+            }
+            ErrorBoundary={LexicalErrorBoundary}
+          />
+          <HistoryPlugin />
+          <BeautifulMentionsPlugin
+            menuComponent={CustomMenu}
+            menuItemComponent={CustomMenuItem}
+            triggers={['@']}
+            items={suggestions}
+          />
+          <OnChangePlugin onChange={handleChange} />
+          {picker}
+        </div>
       </div>
       {form && form.errors[field.name] && form.touched[field.name] ? (
         <FormHelperText className={styles.DangerText}>{form.errors[field.name]}</FormHelperText>
       ) : null}
       {props.helperText && <FormHelperText className={styles.HelperText}>{props.helperText}</FormHelperText>}
-    </div>
+    </>
   );
 };
 
