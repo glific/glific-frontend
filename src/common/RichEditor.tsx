@@ -19,7 +19,7 @@ export const handleFormatterEvents = (event: KeyboardEvent) => {
   return '';
 };
 
-export const handleFormatting = (text: string, formatter: string) => {
+export const handleFormatting = (text: string = '', formatter: string) => {
   switch (formatter) {
     case 'bold':
       return `*${text}*`;
