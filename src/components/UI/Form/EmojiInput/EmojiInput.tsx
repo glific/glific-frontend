@@ -5,7 +5,8 @@ import { EmojiPicker } from 'components/UI/EmojiPicker/EmojiPicker';
 import { Editor } from './Editor';
 import Styles from './EmojiInput.module.css';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import { $createTextNode, $getSelection, $isRangeSelection } from 'lexical';
+import { $createTextNode, $getRoot, $getSelection, $isParagraphNode, $isRangeSelection, $isTextNode } from 'lexical';
+import { getFormattedText } from 'common/RichEditor';
 
 export interface EmojiInputProps {
   field: { name: string; onChange?: any; value: any; onBlur?: any };
@@ -24,6 +25,7 @@ interface EmojiPickerProps {
   handleClickAway: any;
   showEmojiPicker: any;
   setShowEmojiPicker: any;
+  editor?: any;
 }
 
 export const EmojiInput = ({
@@ -35,6 +37,7 @@ export const EmojiInput = ({
   ...props
 }: EmojiInputProps) => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [editor] = useLexicalComposerContext();
 
   const handleClickAway = () => {
     setShowEmojiPicker(false);
@@ -45,11 +48,49 @@ export const EmojiInput = ({
       handleClickAway={handleClickAway}
       setShowEmojiPicker={setShowEmojiPicker}
       showEmojiPicker={showEmojiPicker}
+      editor={editor}
     />
   );
 
   const input = (
-    <Editor field={{ name, value, onBlur }} picker={picker} onChange={handleChange} form={form} {...props} />
+    <Editor
+      field={{ name, value, onBlur }}
+      picker={picker}
+      onChange={(value: any) => {
+        let formattedText = '';
+
+        editor.update(() => {
+          const rootNode = $getRoot();
+          if (!rootNode) return;
+
+          rootNode.getChildren().forEach((node) => {
+            if ($isParagraphNode(node)) {
+              let paragraphText = '';
+
+              node.getChildren().forEach((textNode) => {
+                if ($isTextNode(textNode)) {
+                  let text = textNode.getTextContent();
+                  const format = textNode.getFormat();
+                  console.log(format);
+
+                  // ✅ Apply formatting styles
+                  if (format & 1) text = `**${text}**`; // Bold
+                  if (format & 2) text = `*${text}*`; // Italic
+                  if (format & 16) text = `~~${text}~~`; // Strikethrough
+
+                  paragraphText += text;
+                }
+              });
+
+              formattedText += paragraphText + '\n'; // Preserve paragraph breaks
+            }
+          });
+        });
+        handleChange(value);
+      }}
+      form={form}
+      {...props}
+    />
   );
 
   return (
@@ -60,9 +101,7 @@ export const EmojiInput = ({
   );
 };
 
-const EmojiPickerComponent = ({ showEmojiPicker, setShowEmojiPicker, handleClickAway }: EmojiPickerProps) => {
-  const [editor] = useLexicalComposerContext();
-
+const EmojiPickerComponent = ({ showEmojiPicker, setShowEmojiPicker, handleClickAway, editor }: EmojiPickerProps) => {
   const emojiStyles = {
     position: 'absolute',
     bottom: '60px',

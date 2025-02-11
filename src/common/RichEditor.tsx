@@ -2,7 +2,7 @@ import CallIcon from '@mui/icons-material/Call';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { Interweave } from 'interweave';
 import { UrlMatcher } from 'interweave-autolink';
-import { $createParagraphNode, $createTextNode, $getRoot } from 'lexical';
+import { $createParagraphNode, $createTextNode, $getRoot, $getSelection, $isTextNode } from 'lexical';
 
 // Indicates how to replace different parts of the text from WhatsApp to HTML.
 const regexForLink = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_+.~#?&/=]*)/gi;
@@ -161,4 +161,31 @@ export const WhatsAppTemplateButton = (text: string) => {
   }
 
   return result;
+};
+
+export const getFormattedText = (editor: any) => {
+  let extractedText = '';
+
+  editor.update(() => {
+    const rootNode = $getRoot();
+    const selection = $getSelection();
+
+    if (!rootNode) return;
+
+    rootNode.getChildren().forEach((node) => {
+      if ($isTextNode(node)) {
+        let text = node.getTextContent();
+        const format = node.getFormat();
+
+        // Check applied formatting
+        if (format & 1) text = `**${text}**`; // Bold
+        if (format & 2) text = `*${text}*`; // Italic
+        if (format & 16) text = `~~${text}~~`; // Strikethrough
+
+        extractedText += text + ' ';
+      }
+    });
+  });
+
+  return extractedText.trim();
 };

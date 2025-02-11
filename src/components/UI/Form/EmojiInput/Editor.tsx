@@ -26,6 +26,7 @@ import {
 import { handleFormatterEvents, handleFormatting, setDefaultValue } from 'common/RichEditor';
 import { FormatBold, FormatItalic, StrikethroughS } from '@mui/icons-material';
 import { mergeRegister } from '@lexical/utils';
+import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 
 export interface EditorProps {
   field: { name: string; onChange?: any; value: any; onBlur?: any };
@@ -75,32 +76,33 @@ export const Editor = ({ disabled = false, ...props }: EditorProps) => {
           return false;
         },
         COMMAND_PRIORITY_LOW
-      ),
-      editor.registerCommand(
-        FORMAT_TEXT_COMMAND,
-        (event: any) => {
-          editor.update(() => {
-            const selection = $getSelection();
-            const text = handleFormatting(selection?.getTextContent(), event);
-
-            if (!selection?.getTextContent()) {
-              const newNode = $createTextNode(text);
-              selection?.insertNodes([newNode]);
-              const newSelection = $createRangeSelection();
-              newSelection.anchor.set(newNode.getKey(), 1, 'text'); // Set the cursor between the backticks
-              newSelection.focus.set(newNode.getKey(), 1, 'text');
-              $setSelection(newSelection);
-            }
-            if (selection?.getTextContent() && event) {
-              const newNode = $createTextNode(text);
-              selection?.insertNodes([newNode]);
-              editor.focus();
-            }
-          });
-          return false;
-        },
-        COMMAND_PRIORITY_LOW
       )
+      // editor.registerCommand(
+      //   FORMAT_TEXT_COMMAND,
+      //   (event: any) => {
+      //     editor.update(() => {
+      //       const selection = $getSelection();
+      //       const text = handleFormatting(selection?.getTextContent(), event);
+
+      //       if (!selection?.getTextContent()) {
+      //         const newNode = $createTextNode(text);
+      //         selection?.insertNodes([newNode]);
+
+      //         const newSelection = $createRangeSelection();
+      //         newSelection.anchor.set(newNode.getKey(), 1, 'text');
+      //         newSelection.focus.set(newNode.getKey(), 1, 'text');
+      //         $setSelection(newSelection);
+      //       }
+      //       if (selection?.getTextContent() && event) {
+      //         const newNode = $createTextNode(text);
+      //         selection?.insertNodes([newNode]);
+      //         editor.focus();
+      //       }
+      //     });
+      //     return false;
+      //   },
+      //   COMMAND_PRIORITY_LOW
+      // )
     );
   }, [editor]);
 
@@ -119,6 +121,7 @@ export const Editor = ({ disabled = false, ...props }: EditorProps) => {
       }
     });
   };
+  // console.log(editor.ge);
 
   const [activeFormats, setActiveFormats] = useState<{ bold: boolean; italic: boolean; strikethrough: boolean }>({
     bold: false,
@@ -217,7 +220,7 @@ export const Editor = ({ disabled = false, ...props }: EditorProps) => {
           </span>
         </div>
         <div className={disabled ? styles?.disabled : styles.Editor} data-testid="resizer">
-          <PlainTextPlugin
+          <RichTextPlugin
             placeholder={<Placeholder />}
             contentEditable={
               <div className={styles.editorScroller}>

@@ -56,7 +56,7 @@ export const WhatsAppEditor = ({ setEditorState, sendMessage, readOnly = false }
         editor.update(() => {
           const selection = $getSelection();
           if (selection?.getTextContent() && formatter) {
-            const text = handleFormatting(formatter, selection?.getTextContent());
+            const text = handleFormatting(selection?.getTextContent(), formatter);
             const newNode = $createTextNode(text);
             selection?.insertNodes([newNode]);
           }
