@@ -485,7 +485,7 @@
   "Registered address is required.": "Registered address is required.",
   "Address should not exceed 300 characters": "Address should not exceed 300 characters",
   "Current address is required.": "Current address is required.",
-  "Please enter not more than 25 characters": "Please enter not more than 25 characters",
+  "Please enter not more than 100 characters": "Please enter not more than 100 characters",
   "Designation is required.": "Designation is required.",
   "Phone number is required.": "Phone number is required.",
   "Enter a valid email.": "Enter a valid email.",
@@ -531,5 +531,6 @@
   "First name is required.": "First Name is required.",
   "Last name is required.": "Last name is required.",
   "Failed": "Failed",
-  "Members": "Members"
+  "Members": "Members",
+  "Name cannot be more than 250 characters.": "Name cannot be more than 250 characters."
 }
