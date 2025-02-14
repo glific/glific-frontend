@@ -5,8 +5,7 @@ import { EmojiPicker } from 'components/UI/EmojiPicker/EmojiPicker';
 import { Editor } from './Editor';
 import Styles from './EmojiInput.module.css';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import { $createTextNode, $getRoot, $getSelection, $isParagraphNode, $isRangeSelection, $isTextNode } from 'lexical';
-import { getFormattedText } from 'common/RichEditor';
+import { $createTextNode, $getSelection, $isRangeSelection } from 'lexical';
 
 export interface EmojiInputProps {
   field: { name: string; onChange?: any; value: any; onBlur?: any };

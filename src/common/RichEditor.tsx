@@ -172,7 +172,6 @@ export const getFormattedText = (editor: any) => {
 
   editor.update(() => {
     const rootNode = $getRoot();
-    const selection = $getSelection();
 
     if (!rootNode) return;
 

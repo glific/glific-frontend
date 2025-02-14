@@ -23,7 +23,7 @@ import {
   BeautifulMentionsMenuProps,
   BeautifulMentionsMenuItemProps,
 } from 'lexical-beautiful-mentions';
-import { handleFormatterEvents, handleFormatting, setDefaultValue } from 'common/RichEditor';
+import { handleFormatting, setDefaultValue } from 'common/RichEditor';
 import { FormatBold, FormatItalic, StrikethroughS, Code } from '@mui/icons-material';
 import { mergeRegister } from '@lexical/utils';
 
