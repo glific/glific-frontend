@@ -60,23 +60,6 @@ export const Editor = ({ disabled = false, ...props }: EditorProps) => {
   useEffect(() => {
     return mergeRegister(
       editor.registerCommand(
-        KEY_DOWN_COMMAND,
-        (event: KeyboardEvent) => {
-          let formatter = handleFormatterEvents(event);
-
-          editor.update(() => {
-            const selection = $getSelection();
-            if (selection?.getTextContent() && formatter) {
-              const text = handleFormatting(selection?.getTextContent(), formatter);
-              const newNode = $createTextNode(text);
-              selection?.insertNodes([newNode]);
-            }
-          });
-          return false;
-        },
-        COMMAND_PRIORITY_LOW
-      ),
-      editor.registerCommand(
         FORMAT_TEXT_COMMAND,
         (event: any) => {
           editor.update(() => {

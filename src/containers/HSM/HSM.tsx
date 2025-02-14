@@ -506,7 +506,6 @@ export const HSM = () => {
       helperText:
         'You can provide variable values in your HSM templates to personalize the message. To add: click on the variable button and provide an example value for the variable in the field provided below',
       handleChange: (value: any) => {
-        // console.log('value', value);
         setBody(value);
       },
       defaultValue: isEditing && editorState,

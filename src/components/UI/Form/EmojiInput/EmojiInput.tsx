@@ -53,44 +53,7 @@ export const EmojiInput = ({
   );
 
   const input = (
-    <Editor
-      field={{ name, value, onBlur }}
-      picker={picker}
-      onChange={(value: any) => {
-        let formattedText = '';
-
-        editor.update(() => {
-          const rootNode = $getRoot();
-          if (!rootNode) return;
-
-          rootNode.getChildren().forEach((node) => {
-            if ($isParagraphNode(node)) {
-              let paragraphText = '';
-
-              node.getChildren().forEach((textNode) => {
-                if ($isTextNode(textNode)) {
-                  let text = textNode.getTextContent();
-                  const format = textNode.getFormat();
-                  console.log(format);
-
-                  // ✅ Apply formatting styles
-                  if (format & 1) text = `**${text}**`; // Bold
-                  if (format & 2) text = `*${text}*`; // Italic
-                  if (format & 16) text = `~~${text}~~`; // Strikethrough
-
-                  paragraphText += text;
-                }
-              });
-
-              formattedText += paragraphText + '\n'; // Preserve paragraph breaks
-            }
-          });
-        });
-        handleChange(value);
-      }}
-      form={form}
-      {...props}
-    />
+    <Editor field={{ name, value, onBlur }} picker={picker} onChange={handleChange} form={form} {...props} />
   );
 
   return (
