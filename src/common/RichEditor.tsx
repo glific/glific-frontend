@@ -166,29 +166,3 @@ export const WhatsAppTemplateButton = (text: string) => {
 
   return result;
 };
-
-export const getFormattedText = (editor: any) => {
-  let extractedText = '';
-
-  editor.update(() => {
-    const rootNode = $getRoot();
-
-    if (!rootNode) return;
-
-    rootNode.getChildren().forEach((node) => {
-      if ($isTextNode(node)) {
-        let text = node.getTextContent();
-        const format = node.getFormat();
-
-        // Check applied formatting
-        if (format & 1) text = `**${text}**`; // Bold
-        if (format & 2) text = `*${text}*`; // Italic
-        if (format & 16) text = `~~${text}~~`; // Strikethrough
-
-        extractedText += text + ' ';
-      }
-    });
-  });
-
-  return extractedText.trim();
-};

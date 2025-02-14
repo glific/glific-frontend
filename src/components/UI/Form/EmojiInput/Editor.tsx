@@ -46,16 +46,17 @@ export const Editor = ({ disabled = false, ...props }: EditorProps) => {
     '@': mentions.map((mention: string) => mention?.split('@')[1]),
   };
   const [editor] = useLexicalComposerContext();
+  const [activeFormats, setActiveFormats] = useState<{ bold: boolean; italic: boolean; strikethrough: boolean }>({
+    bold: false,
+    italic: false,
+    strikethrough: false,
+  });
 
   useEffect(() => {
     if (defaultValue || defaultValue === '') {
       setDefaultValue(editor, defaultValue);
     }
   }, [defaultValue]);
-
-  const Placeholder = () => {
-    return <p className={styles.editorPlaceholder}>{placeholder}</p>;
-  };
 
   useEffect(() => {
     return mergeRegister(
@@ -93,22 +94,6 @@ export const Editor = ({ disabled = false, ...props }: EditorProps) => {
       editor.setEditable(false);
     }
   }, [disabled]);
-
-  const handleChange = (editorState: any) => {
-    editorState.read(() => {
-      const root = $getRoot();
-      if (!disabled) {
-        onChange(root.getTextContent());
-        form?.setFieldValue(field?.name, root.getTextContent());
-      }
-    });
-  };
-
-  const [activeFormats, setActiveFormats] = useState<{ bold: boolean; italic: boolean; strikethrough: boolean }>({
-    bold: false,
-    italic: false,
-    strikethrough: false,
-  });
 
   useEffect(() => {
     const checkFormatting = () => {
@@ -165,6 +150,20 @@ export const Editor = ({ disabled = false, ...props }: EditorProps) => {
       removeListener();
     };
   }, [editor]);
+
+  const handleChange = (editorState: any) => {
+    editorState.read(() => {
+      const root = $getRoot();
+      if (!disabled) {
+        onChange(root.getTextContent());
+        form?.setFieldValue(field?.name, root.getTextContent());
+      }
+    });
+  };
+
+  const Placeholder = () => {
+    return <p className={styles.editorPlaceholder}>{placeholder}</p>;
+  };
 
   return (
     <>

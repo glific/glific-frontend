@@ -24,7 +24,6 @@ interface EmojiPickerProps {
   handleClickAway: any;
   showEmojiPicker: any;
   setShowEmojiPicker: any;
-  editor?: any;
 }
 
 export const EmojiInput = ({
@@ -36,7 +35,6 @@ export const EmojiInput = ({
   ...props
 }: EmojiInputProps) => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const [editor] = useLexicalComposerContext();
 
   const handleClickAway = () => {
     setShowEmojiPicker(false);
@@ -47,7 +45,6 @@ export const EmojiInput = ({
       handleClickAway={handleClickAway}
       setShowEmojiPicker={setShowEmojiPicker}
       showEmojiPicker={showEmojiPicker}
-      editor={editor}
     />
   );
 
@@ -63,7 +60,9 @@ export const EmojiInput = ({
   );
 };
 
-const EmojiPickerComponent = ({ showEmojiPicker, setShowEmojiPicker, handleClickAway, editor }: EmojiPickerProps) => {
+const EmojiPickerComponent = ({ showEmojiPicker, setShowEmojiPicker, handleClickAway }: EmojiPickerProps) => {
+  const [editor] = useLexicalComposerContext();
+
   const emojiStyles = {
     position: 'absolute',
     bottom: '60px',
@@ -96,6 +95,7 @@ const EmojiPickerComponent = ({ showEmojiPicker, setShowEmojiPicker, handleClick
                   selection.insertNodes([$createTextNode(emoji.native)]);
                 }
               });
+              editor.focus();
             }}
             displayStyle={emojiStyles}
           />
