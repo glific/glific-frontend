@@ -6,7 +6,6 @@ import {
   $getSelection,
   $createTextNode,
   $getRoot,
-  KEY_DOWN_COMMAND,
   COMMAND_PRIORITY_LOW,
   FORMAT_TEXT_COMMAND,
   $createRangeSelection,
@@ -25,7 +24,6 @@ import {
 } from 'lexical-beautiful-mentions';
 import { handleFormatting, setDefaultValue } from 'common/RichEditor';
 import { FormatBold, FormatItalic, StrikethroughS, Code } from '@mui/icons-material';
-import { mergeRegister } from '@lexical/utils';
 
 export interface EditorProps {
   field: { name: string; onChange?: any; value: any; onBlur?: any };
@@ -59,33 +57,31 @@ export const Editor = ({ disabled = false, ...props }: EditorProps) => {
   }, [defaultValue]);
 
   useEffect(() => {
-    return mergeRegister(
-      editor.registerCommand(
-        FORMAT_TEXT_COMMAND,
-        (event: any) => {
-          editor.update(() => {
-            const selection = $getSelection();
-            const text = handleFormatting(selection?.getTextContent(), event);
+    editor.registerCommand(
+      FORMAT_TEXT_COMMAND,
+      (event: any) => {
+        editor.update(() => {
+          const selection = $getSelection();
+          const text = handleFormatting(selection?.getTextContent(), event);
 
-            if (!selection?.getTextContent()) {
-              const newNode = $createTextNode(text);
-              selection?.insertNodes([newNode]);
+          if (!selection?.getTextContent()) {
+            const newNode = $createTextNode(text);
+            selection?.insertNodes([newNode]);
 
-              const newSelection = $createRangeSelection();
-              newSelection.anchor.set(newNode.getKey(), 1, 'text');
-              newSelection.focus.set(newNode.getKey(), 1, 'text');
-              $setSelection(newSelection);
-            }
-            if (selection?.getTextContent() && event) {
-              const newNode = $createTextNode(text);
-              selection?.insertNodes([newNode]);
-              editor.focus();
-            }
-          });
-          return false;
-        },
-        COMMAND_PRIORITY_LOW
-      )
+            const newSelection = $createRangeSelection();
+            newSelection.anchor.set(newNode.getKey(), 1, 'text');
+            newSelection.focus.set(newNode.getKey(), 1, 'text');
+            $setSelection(newSelection);
+          }
+          if (selection?.getTextContent() && event) {
+            const newNode = $createTextNode(text);
+            selection?.insertNodes([newNode]);
+            editor.focus();
+          }
+        });
+        return false;
+      },
+      COMMAND_PRIORITY_LOW
     );
   }, [editor]);
 
@@ -154,7 +150,7 @@ export const Editor = ({ disabled = false, ...props }: EditorProps) => {
   const handleChange = (editorState: any) => {
     editorState.read(() => {
       const root = $getRoot();
-      if (!disabled) {
+      if (!disabled && onChange) {
         onChange(root.getTextContent());
         form?.setFieldValue(field?.name, root.getTextContent());
       }

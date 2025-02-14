@@ -2,7 +2,7 @@ import CallIcon from '@mui/icons-material/Call';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { Interweave } from 'interweave';
 import { UrlMatcher } from 'interweave-autolink';
-import { $createParagraphNode, $createTextNode, $getRoot, $getSelection, $isTextNode } from 'lexical';
+import { $createParagraphNode, $createTextNode, $getRoot } from 'lexical';
 
 // Indicates how to replace different parts of the text from WhatsApp to HTML.
 const regexForLink = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_+.~#?&/=]*)/gi;

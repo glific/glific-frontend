@@ -19,7 +19,6 @@
     "@emotion/styled": "^11.13.0",
     "@glific/flow-editor": "^1.26.3-18",
     "@lexical/react": "^0.17.1",
-    "@lexical/utils": "^0.24.0",
     "@mui/icons-material": "^6.1.1",
     "@mui/material": "^6.1.1",
     "@mui/x-date-pickers": "^7.18.0",
