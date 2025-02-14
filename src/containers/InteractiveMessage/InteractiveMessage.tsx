@@ -546,8 +546,6 @@ export const InteractiveMessage = () => {
       textArea: true,
       helperText: t('You can also use variables in message enter @ to see the available list'),
       handleChange: (value: any) => {
-        console.log('Val', value);
-
         setBody(value);
       },
       inputProp: {
