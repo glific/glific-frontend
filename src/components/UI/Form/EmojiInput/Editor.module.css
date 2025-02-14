@@ -166,6 +166,7 @@
   border-top-right-radius: 10px;
   display: flex;
   padding: 0.2rem;
+  justify-content: flex-end;
 }
 
 .FormatingOptions span {

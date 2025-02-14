@@ -22,11 +22,14 @@ export const handleFormatterEvents = (event: KeyboardEvent) => {
 export const handleFormatting = (text: string = '', formatter: string) => {
   switch (formatter) {
     case 'bold':
-      return `*${text}*`;
+      return text.startsWith('*') && text.endsWith('*') ? text.slice(1, -1) : `*${text}*`;
     case 'italic':
-      return `_${text}_`;
+      return text.startsWith('_') && text.endsWith('_') ? text.slice(1, -1) : `_${text}_`;
     case 'strikethrough':
-      return `~${text}~`;
+      return text.startsWith('~') && text.endsWith('~') ? text.slice(1, -1) : `~${text}~`;
+    case 'code':
+      return text.startsWith('`') && text.endsWith('`') ? text.slice(1, -1) : `\`${text}\``;
+
     default:
       return text;
   }
@@ -96,6 +99,7 @@ const showLivePreview = (format: any) => {
   formatObject = whatsappStyles(formatObject, '_', '<i>', '</i>');
   formatObject = whatsappStyles(formatObject, '*', '<b>', '</b>');
   formatObject = whatsappStyles(formatObject, '~', '<s>', '</s>');
+  formatObject = whatsappStyles(formatObject, '`', '<code>', '</code>');
   formatObject = formatObject.replace(/\n/gi, '<br>');
   return formatObject;
 };

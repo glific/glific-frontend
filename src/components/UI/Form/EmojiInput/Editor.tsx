@@ -24,9 +24,8 @@ import {
   BeautifulMentionsMenuItemProps,
 } from 'lexical-beautiful-mentions';
 import { handleFormatterEvents, handleFormatting, setDefaultValue } from 'common/RichEditor';
-import { FormatBold, FormatItalic, StrikethroughS } from '@mui/icons-material';
+import { FormatBold, FormatItalic, StrikethroughS, Code } from '@mui/icons-material';
 import { mergeRegister } from '@lexical/utils';
-import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 
 export interface EditorProps {
   field: { name: string; onChange?: any; value: any; onBlur?: any };
@@ -76,33 +75,33 @@ export const Editor = ({ disabled = false, ...props }: EditorProps) => {
           return false;
         },
         COMMAND_PRIORITY_LOW
+      ),
+      editor.registerCommand(
+        FORMAT_TEXT_COMMAND,
+        (event: any) => {
+          editor.update(() => {
+            const selection = $getSelection();
+            const text = handleFormatting(selection?.getTextContent(), event);
+
+            if (!selection?.getTextContent()) {
+              const newNode = $createTextNode(text);
+              selection?.insertNodes([newNode]);
+
+              const newSelection = $createRangeSelection();
+              newSelection.anchor.set(newNode.getKey(), 1, 'text');
+              newSelection.focus.set(newNode.getKey(), 1, 'text');
+              $setSelection(newSelection);
+            }
+            if (selection?.getTextContent() && event) {
+              const newNode = $createTextNode(text);
+              selection?.insertNodes([newNode]);
+              editor.focus();
+            }
+          });
+          return false;
+        },
+        COMMAND_PRIORITY_LOW
       )
-      // editor.registerCommand(
-      //   FORMAT_TEXT_COMMAND,
-      //   (event: any) => {
-      //     editor.update(() => {
-      //       const selection = $getSelection();
-      //       const text = handleFormatting(selection?.getTextContent(), event);
-
-      //       if (!selection?.getTextContent()) {
-      //         const newNode = $createTextNode(text);
-      //         selection?.insertNodes([newNode]);
-
-      //         const newSelection = $createRangeSelection();
-      //         newSelection.anchor.set(newNode.getKey(), 1, 'text');
-      //         newSelection.focus.set(newNode.getKey(), 1, 'text');
-      //         $setSelection(newSelection);
-      //       }
-      //       if (selection?.getTextContent() && event) {
-      //         const newNode = $createTextNode(text);
-      //         selection?.insertNodes([newNode]);
-      //         editor.focus();
-      //       }
-      //     });
-      //     return false;
-      //   },
-      //   COMMAND_PRIORITY_LOW
-      // )
     );
   }, [editor]);
 
@@ -121,7 +120,6 @@ export const Editor = ({ disabled = false, ...props }: EditorProps) => {
       }
     });
   };
-  // console.log(editor.ge);
 
   const [activeFormats, setActiveFormats] = useState<{ bold: boolean; italic: boolean; strikethrough: boolean }>({
     bold: false,
@@ -148,13 +146,10 @@ export const Editor = ({ disabled = false, ...props }: EditorProps) => {
         }
 
         const textContent = anchorNode.getTextContent();
-        const textFormat = anchorNode.getFormat(); // 🔥 Detects Lexical's internal formatting
-        console.log(textFormat);
 
-        // Regex patterns for formatting
-        const boldRegex = /\*(?:\S.*?\S|\S)\*/g; // Correctly detects *bold*
-        const italicRegex = /_(.*?)_/g; // Matches _italic_
-        const strikethroughRegex = /~(.*?)~/g; // Matches ~~strikethrough~~
+        const boldRegex = /\*(?:\S.*?\S|\S)\*/g;
+        const italicRegex = /_(.*?)_/g;
+        const strikethroughRegex = /~(.*?)~/g;
 
         const isInsideFormat = (regex: RegExp) => {
           let match;
@@ -167,7 +162,6 @@ export const Editor = ({ disabled = false, ...props }: EditorProps) => {
           }
           return false;
         };
-        // console.log(isInsideFormat(boldRegex));
 
         setActiveFormats({
           bold: isInsideFormat(boldRegex),
@@ -188,7 +182,6 @@ export const Editor = ({ disabled = false, ...props }: EditorProps) => {
       removeListener();
     };
   }, [editor]);
-  // console.log(activeFormats);
 
   return (
     <>
@@ -218,9 +211,17 @@ export const Editor = ({ disabled = false, ...props }: EditorProps) => {
           >
             <StrikethroughS fontSize="small" color="inherit" />
           </span>
+          <span
+            className={activeFormats.strikethrough ? styles.Active : ''}
+            onClick={() => {
+              editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'code');
+            }}
+          >
+            <Code fontSize="small" color="inherit" />
+          </span>
         </div>
         <div className={disabled ? styles?.disabled : styles.Editor} data-testid="resizer">
-          <RichTextPlugin
+          <PlainTextPlugin
             placeholder={<Placeholder />}
             contentEditable={
               <div className={styles.editorScroller}>
