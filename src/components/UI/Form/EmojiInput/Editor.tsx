@@ -170,6 +170,7 @@ export const Editor = ({ disabled = false, ...props }: EditorProps) => {
       <div className={styles.EditorWrapper}>
         <div className={styles.FormatingOptions}>
           <span
+            data-testid="bold-icon"
             className={activeFormats.bold ? styles.Active : ''}
             onClick={() => {
               editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold');
@@ -178,6 +179,7 @@ export const Editor = ({ disabled = false, ...props }: EditorProps) => {
             <FormatBold fontSize="small" color="inherit" />
           </span>
           <span
+            data-testid="italic-icon"
             className={activeFormats.italic ? styles.Active : ''}
             onClick={() => {
               editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic');
@@ -186,6 +188,7 @@ export const Editor = ({ disabled = false, ...props }: EditorProps) => {
             <FormatItalic fontSize="small" color="inherit" />
           </span>
           <span
+            data-testid="strikethrough-icon"
             className={activeFormats.strikethrough ? styles.Active : ''}
             onClick={() => {
               editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'strikethrough');
@@ -194,6 +197,7 @@ export const Editor = ({ disabled = false, ...props }: EditorProps) => {
             <StrikethroughS fontSize="small" color="inherit" />
           </span>
           <span
+            data-testid="code-icon"
             className={activeFormats.strikethrough ? styles.Active : ''}
             onClick={() => {
               editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'code');

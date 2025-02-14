@@ -32,6 +32,8 @@ vi.mock('lexical-beautiful-mentions', async (importOriginal) => {
   };
 });
 
+// const user = userEvent.setup()
+
 describe('Edit mode', () => {
   test('HSM form is loaded correctly in edit mode', async () => {
     const MOCKS = [...mocks, getHSMTemplateTypeText, getHSMTemplateTypeText];
@@ -128,7 +130,7 @@ describe('Add mode', () => {
     const inputs = screen.getAllByRole('textbox');
 
     fireEvent.change(inputs[0], { target: { value: 'element_name' } });
-    const lexicalEditor = inputs[2];
+    const lexicalEditor = inputs[2] as HTMLInputElement;
 
     await user.click(lexicalEditor);
     await user.tab();
@@ -140,10 +142,17 @@ describe('Add mode', () => {
 
     fireEvent.click(screen.getByText('ACCOUNT_UPDATE'), { key: 'Enter' });
 
+    fireEvent.click(screen.getByTestId('bold-icon'));
+
     fireEvent.click(screen.getByText('Allow meta to re-categorize template?'));
+    screen.debug(document, Infinity);
+
+    fireEvent.click(screen.getByTestId('italic-icon'));
+    fireEvent.click(screen.getByTestId('strikethrough-icon'));
+    fireEvent.click(screen.getByTestId('code-icon'));
 
     await waitFor(() => {
-      expect(screen.getByText('Hi, How are you')).toBeInTheDocument();
+      expect(screen.getByText('Hi, How are you**')).toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByText('Add Variable'));
@@ -155,7 +164,7 @@ describe('Add mode', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByText('Hi, How are you {{1}}')).toBeInTheDocument();
+      expect(screen.getByText('Hi, How are you** {{1}}')).toBeInTheDocument();
     });
 
     fireEvent.change(screen.getByPlaceholderText('Define value'), { target: { value: 'User' } });
@@ -344,6 +353,26 @@ describe('Add mode', () => {
 
     await waitFor(() => {
       expect(screen.getAllByRole('combobox')[1]).toHaveValue('account_balance');
+    });
+  });
+
+  test('formatting should work properly', async () => {
+    render(template);
+
+    await waitFor(() => {
+      expect(screen.getByText('Add a new HSM Template')).toBeInTheDocument();
+    });
+
+    const inputs = screen.getAllByRole('textbox');
+    const lexicalEditor = inputs[2];
+    fireEvent.input(lexicalEditor, { data: 'How are you' });
+
+    fireEvent.click(screen.getByTestId('bold-icon'));
+
+    screen.debug(document, Infinity);
+
+    await waitFor(() => {
+      expect(screen.getByText('How are you')).toBeInTheDocument();
     });
   });
 });
