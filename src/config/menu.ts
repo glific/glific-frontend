@@ -52,7 +52,7 @@ const menus = (): Menu[] => [
         roles: allRoles,
       },
       {
-        title: 'WhatsApp Polls',
+        title: 'Group Polls',
         path: '/group/polls',
         icon: 'waPolls',
         type: 'sideDrawer',
