@@ -4,7 +4,6 @@ import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import { Fragment } from 'react/jsx-runtime';
 
 interface PollMessageProps {
-  pollContentJson?: any;
   isSender?: boolean;
   isSimulator?: boolean;
   view?: boolean;
@@ -12,7 +11,7 @@ interface PollMessageProps {
 }
 
 export const PollMessage = ({ isSender = false, isSimulator = false, view = false, poll }: PollMessageProps) => {
-  const pollContentJson = poll.pollContent
+  const pollContentJson = poll?.pollContent
     ? typeof poll.pollContent === 'string'
       ? JSON.parse(poll.pollContent)
       : poll.pollContent

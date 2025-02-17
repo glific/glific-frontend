@@ -25,7 +25,7 @@ export const ViewPoll = ({ id, onClose }: ViewPollProps) => {
 
   return (
     <DialogBox title={poll?.label} handleCancel={onClose} alignButtons="center" skipOk skipCancel>
-      <PollMessage pollContentJson={pollContent} view />
+      <PollMessage poll={poll} view />
     </DialogBox>
   );
 };
