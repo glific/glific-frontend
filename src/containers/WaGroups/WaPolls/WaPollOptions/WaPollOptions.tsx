@@ -21,8 +21,8 @@ const emojiStyles = {
 
 export const WaPollOptions = ({ form: { values, setFieldValue, errors, touched }, isEditing }: WaPollOptionsProps) => {
   const handleAddOption = () => {
-    const lastId = values?.options[values?.options.length - 1]?.id;
-    setFieldValue('options', [...values?.options, { name: '', id: lastId + 1 }]);
+    const lastId = values.options[values.options.length - 1]?.id;
+    setFieldValue('options', [...values.options, { name: '', id: lastId + 1 }]);
   };
 
   const handleInput = (value: any, id: any) => {
