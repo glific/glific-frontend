@@ -150,6 +150,7 @@
 .Inline {
   display: flex;
 }
+
 .SendBy {
   display: flex;
   align-items: flex-end;
