@@ -27,8 +27,6 @@ export const handleFormatting = (text: string = '', formatter: string) => {
       return text.startsWith('_') && text.endsWith('_') ? text.slice(1, -1) : `_${text}_`;
     case 'strikethrough':
       return text.startsWith('~') && text.endsWith('~') ? text.slice(1, -1) : `~${text}~`;
-    case 'code':
-      return text.startsWith('`') && text.endsWith('`') ? text.slice(1, -1) : `\`${text}\``;
 
     default:
       return text;
@@ -99,7 +97,6 @@ const showLivePreview = (format: any) => {
   formatObject = whatsappStyles(formatObject, '_', '<i>', '</i>');
   formatObject = whatsappStyles(formatObject, '*', '<b>', '</b>');
   formatObject = whatsappStyles(formatObject, '~', '<s>', '</s>');
-  formatObject = whatsappStyles(formatObject, '`', '<code>', '</code>');
   formatObject = formatObject.replace(/\n/gi, '<br>');
   return formatObject;
 };

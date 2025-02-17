@@ -146,7 +146,6 @@ describe('Add mode', () => {
 
     fireEvent.click(screen.getByTestId('italic-icon'));
     fireEvent.click(screen.getByTestId('strikethrough-icon'));
-    fireEvent.click(screen.getByTestId('code-icon'));
 
     await waitFor(() => {
       expect(screen.getByText('Hi, How are you**')).toBeInTheDocument();

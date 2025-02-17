@@ -192,15 +192,6 @@ export const Editor = ({ disabled = false, ...props }: EditorProps) => {
           >
             <StrikethroughS fontSize="small" color="inherit" />
           </span>
-          <span
-            data-testid="code-icon"
-            className={activeFormats.strikethrough ? styles.Active : ''}
-            onClick={() => {
-              editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'code');
-            }}
-          >
-            <Code fontSize="small" color="inherit" />
-          </span>
         </div>
         <div className={disabled ? styles?.disabled : styles.Editor} data-testid="resizer">
           <PlainTextPlugin
