@@ -50,6 +50,11 @@ export const GROUP_SEARCH_QUERY = gql`
           insertedAt
         }
         pollContent
+        poll {
+          id
+          pollContent
+          allowMultipleAnswer
+        }
       }
     }
   }

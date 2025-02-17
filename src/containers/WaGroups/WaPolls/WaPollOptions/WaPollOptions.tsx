@@ -29,13 +29,25 @@ export const WaPollOptions = ({
     const lastId = values.options[values.options.length - 1]?.id;
     const newOptions = [...values.options, { name: '', id: lastId + 1 }];
     setFieldValue('options', newOptions);
-    setPreviewData((prev: any) => ({ ...prev, options: newOptions }));
+    setPreviewData((prev: any) => ({
+      ...prev,
+      pollContent: {
+        ...prev.pollContent,
+        options: newOptions,
+      },
+    }));
   };
 
   const handleInput = (value: any, id: any) => {
     const newOptions = values.options.map((option: any) => (option.id === id ? { ...option, name: value } : option));
     setFieldValue('options', newOptions);
-    setPreviewData((prev: any) => ({ ...prev, options: newOptions }));
+    setPreviewData((prev: any) => ({
+      ...prev,
+      pollContent: {
+        ...prev.pollContent,
+        options: newOptions,
+      },
+    }));
   };
 
   const handleEmojiAdd = (emoji: any, id: number) => {
@@ -44,13 +56,25 @@ export const WaPollOptions = ({
     );
 
     setFieldValue('options', newOptions);
-    setPreviewData((prev: any) => ({ ...prev, options: newOptions }));
+    setPreviewData((prev: any) => ({
+      ...prev,
+      pollContent: {
+        ...prev.pollContent,
+        options: newOptions,
+      },
+    }));
   };
 
   const handleRemoveClick = (id: any) => {
     const newOptions = values.options.filter((option: any) => option.id !== id);
     setFieldValue('options', newOptions);
-    setPreviewData((prev: any) => ({ ...prev, options: newOptions }));
+    setPreviewData((prev: any) => ({
+      ...prev,
+      pollContent: {
+        ...prev.pollContent,
+        options: newOptions,
+      },
+    }));
   };
 
   return (

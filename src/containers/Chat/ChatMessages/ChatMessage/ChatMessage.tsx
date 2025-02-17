@@ -57,7 +57,7 @@ export interface ChatMessageProps {
   groups?: boolean;
   status?: string;
   contact?: any;
-  pollContent?: any;
+  poll?: any;
   showIcon?: boolean;
 }
 
@@ -84,7 +84,7 @@ export const ChatMessage = ({
   groups,
   status,
   contact,
-  pollContent,
+  poll,
   showIcon = true,
 }: ChatMessageProps) => {
   const [showSaveMessageDialog, setShowSaveMessageDialog] = useState(false);
@@ -264,7 +264,6 @@ export const ChatMessage = ({
 
   const content: any = interactiveContent ? JSON.parse(interactiveContent) : null;
   const isInteractiveContentPresent: Boolean = content ? !!Object.entries(content).length : false;
-  const pollContentJson = pollContent ? JSON.parse(pollContent) : {};
 
   const errorClasses = messageErrorStatus ? styles.ErrorContent : '';
   const stickerClasses = type === 'STICKER' ? styles.StickerBackground : '';
@@ -313,7 +312,7 @@ export const ChatMessage = ({
   if (isInteractiveContentPresent && !isSender) {
     messageBody = template;
   } else if (type === 'POLL') {
-    messageBody = <PollMessage pollContentJson={pollContentJson} isSender={isSender} />;
+    messageBody = <PollMessage isSender={isSender} poll={poll} />;
   } else {
     messageBody = (
       <>
