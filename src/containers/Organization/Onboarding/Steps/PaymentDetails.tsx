@@ -27,11 +27,13 @@ export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) =>
   const FormSchema = Yup.object().shape({
     firstName: Yup.string()
       .required(t('First name is required.'))
-      .max(25, t('Please enter not more than 25 characters')),
-    lastName: Yup.string().required(t('Last name is required.')).max(25, t('Please enter not more than 25 characters')),
+      .max(100, t('Please enter not more than 100 characters')),
+    lastName: Yup.string()
+      .required(t('Last name is required.'))
+      .max(100, t('Please enter not more than 100 characters')),
     designation: Yup.string()
       .required(t('Designation is required.'))
-      .max(25, t('Please enter not more than 25 characters')),
+      .max(100, t('Please enter not more than 100 characters')),
     phone: Yup.string().required(t('Phone number is required.')).min(7, t('Enter a valid phone number.')),
     email: Yup.string().required(t('Email is required.')).email(t('Enter a valid email.')),
   });
