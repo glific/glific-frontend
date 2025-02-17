@@ -32,11 +32,14 @@ export const WaPolls = () => {
   ]);
   const [allowMultiple, setAllowMultiple] = useState<boolean>(false);
   const [previewData, setPreviewData] = useState<any>({
-    text: '',
-    options: [
-      { id: 0, name: '' },
-      { id: 1, name: '' },
-    ],
+    allowMultipleAnswer: false,
+    pollContent: {
+      text: '',
+      options: [
+        { id: 0, name: '' },
+        { id: 1, name: '' },
+      ],
+    },
   });
   const { t } = useTranslation();
   const params = useParams();
@@ -90,8 +93,8 @@ export const WaPolls = () => {
     setOptions(options);
 
     setPreviewData({
-      text,
-      options,
+      allowMultipleAnswer,
+      pollContent: { text, options },
     });
   };
 
@@ -128,7 +131,10 @@ export const WaPolls = () => {
       onChange: (value: any) => {
         setPreviewData({
           ...previewData,
-          text: value,
+          pollContent: {
+            ...previewData.pollContent,
+            text: value,
+          },
         });
       },
     },
@@ -148,6 +154,12 @@ export const WaPolls = () => {
       ),
       darkCheckbox: true,
       disabled: isEditing,
+      handleChange: (value: boolean) => {
+        setPreviewData({
+          ...previewData,
+          allowMultipleAnswer: value,
+        });
+      },
     },
   ];
 
