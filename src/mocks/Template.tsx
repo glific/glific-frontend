@@ -270,7 +270,7 @@ export const createTemplateMock = (input: any) => ({
 
 export const templateMock = createTemplateMock({
   label: 'title',
-  body: 'Hi, How are you*_~``~_* {{1}}',
+  body: 'Hi, How are you*_~~_* {{1}}',
   type: 'TEXT',
   category: 'ACCOUNT_UPDATE',
   tagId: '1',
@@ -279,7 +279,7 @@ export const templateMock = createTemplateMock({
   isHsm: true,
   shortcode: 'element_name',
   languageId: '1',
-  example: 'Hi, How are you*_~``~_* [User]',
+  example: 'Hi, How are you*_~~_* [User]',
   hasButtons: true,
   buttons: '[{"type":"PHONE_NUMBER","text":"Call me","phone_number":"9876543210"}]',
   buttonType: 'CALL_TO_ACTION',
