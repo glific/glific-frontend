@@ -20,7 +20,7 @@ export const PollMessage = ({
   const maxVotes = Math.max(...pollContentJson.options.map((option: any) => option.votes));
 
   return (
-    <div className={`${isSimulator ? styles.SimpulatorMessage : styles.ChatMessage} ${isSender && styles.Sender}`}>
+    <div className={`${isSimulator ? styles.SimulatorMessage : styles.ChatMessage} ${isSender && styles.Sender}`}>
       <div className={view ? styles.TextLarge : styles.Text}>{text}</div>
       {!view && <p className={isSender ? styles.SelectTextLight : styles.SelectTextDark}>Select one or more</p>}
       <div className={styles.Options}>

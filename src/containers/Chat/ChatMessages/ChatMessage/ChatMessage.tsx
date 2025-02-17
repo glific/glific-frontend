@@ -264,7 +264,6 @@ export const ChatMessage = ({
 
   const content: any = interactiveContent ? JSON.parse(interactiveContent) : null;
   const isInteractiveContentPresent: Boolean = content ? !!Object.entries(content).length : false;
-  const isPollMessage = type === 'POLL';
   const pollContentJson = pollContent ? JSON.parse(pollContent) : {};
 
   const errorClasses = messageErrorStatus ? styles.ErrorContent : '';
@@ -313,7 +312,7 @@ export const ChatMessage = ({
   let messageBody: any;
   if (isInteractiveContentPresent && !isSender) {
     messageBody = template;
-  } else if (isPollMessage) {
+  } else if (type === 'POLL') {
     messageBody = <PollMessage pollContentJson={pollContentJson} isSender={isSender} />;
   } else {
     messageBody = (
