@@ -26,7 +26,7 @@ export const WaPollOptions = ({
   setPreviewData,
 }: WaPollOptionsProps) => {
   const handleAddOption = () => {
-    const lastId = values?.options[values?.options.length - 1]?.id;
+    const lastId = values.options[values.options.length - 1]?.id;
     const newOptions = [...values.options, { name: '', id: lastId + 1 }];
     setFieldValue('options', newOptions);
     setPreviewData((prev: any) => ({ ...prev, options: newOptions }));
