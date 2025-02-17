@@ -23,7 +23,7 @@ import {
   BeautifulMentionsMenuItemProps,
 } from 'lexical-beautiful-mentions';
 import { handleFormatting, setDefaultValue } from 'common/RichEditor';
-import { FormatBold, FormatItalic, StrikethroughS, Code } from '@mui/icons-material';
+import { FormatBold, FormatItalic, StrikethroughS } from '@mui/icons-material';
 
 export interface EditorProps {
   field: { name: string; onChange?: any; value: any; onBlur?: any };
