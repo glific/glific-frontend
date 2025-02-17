@@ -150,6 +150,7 @@
 .Inline {
   display: flex;
 }
+
 .SendBy {
   display: flex;
   align-items: flex-end;
@@ -301,5 +302,4 @@
 
 .NoIcon {
   margin: 0 1rem;
-  /* background-color: red !important; */
 }

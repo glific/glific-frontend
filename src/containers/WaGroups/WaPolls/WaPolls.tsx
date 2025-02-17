@@ -40,7 +40,6 @@ export const WaPolls = () => {
     isEditing = true;
   }
   if (location.state === 'copy') {
-    console.log('copy state');
     isCopyState = true;
     isEditing = false;
   }
@@ -140,7 +139,7 @@ export const WaPolls = () => {
       languageSupport={false}
       setStates={setStates}
       validationSchema={FormSchema}
-      listItemName="Poll"
+      listItemName="Group Poll"
       dialogMessage={dialogMessage}
       formFields={formFields}
       redirectionLink={'group/polls'}
