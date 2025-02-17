@@ -36,23 +36,23 @@ export const SigningAuthority = ({ handleStepChange, openReachOutToUs, saveData 
   const FormSchema = Yup.object().shape({
     submitterFirstName: Yup.string()
       .required(t('First name is required.'))
-      .max(25, t('Please enter not more than 25 characters')),
+      .max(100, t('Please enter not more than 100 characters')),
     submitterLastName: Yup.string()
       .required(t('Last name is required.'))
-      .max(25, t('Please enter not more than 25 characters')),
+      .max(100, t('Please enter not more than 100 characters')),
     submitterEmail: Yup.string().required(t('Email is required.')).email(t('Enter a valid email.')),
     submitterDesignation: Yup.string()
       .required('Designation is required.')
-      .max(25, t('Please enter not more than 25 characters')),
+      .max(100, t('Please enter not more than 100 characters')),
     signingAuthorityFirstName: Yup.string()
       .required(t('First name is required.'))
-      .max(25, t('Please enter not more than 25 characters')),
+      .max(100, t('Please enter not more than 100 characters')),
     signingAuthorityLastName: Yup.string()
       .required(t('Last name is required.'))
-      .max(25, t('Please enter not more than 25 characters')),
+      .max(100, t('Please enter not more than 100 characters')),
     signingAuthorityDesignation: Yup.string()
       .required('Designation is required.')
-      .max(25, t('Please enter not more than 25 characters')),
+      .max(100, t('Please enter not more than 100 characters')),
     signingAuthorityEmail: Yup.string().required(t('Email is required.')).email('Enter a valid email.'),
     permissions: Yup.object({
       terms_agreed: Yup.boolean()

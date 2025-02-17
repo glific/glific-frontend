@@ -28,7 +28,7 @@ test('it should render the WaPollsList component', async () => {
   render(wrapper);
 
   await waitFor(() => {
-    expect(screen.getByText('WhatsApp Polls')).toBeInTheDocument();
+    expect(screen.getByText('Group Polls')).toBeInTheDocument();
   });
 
   await waitFor(() => {
@@ -40,7 +40,7 @@ test('it should copy the uuid', async () => {
   render(wrapper);
 
   await waitFor(() => {
-    expect(screen.getByText('WhatsApp Polls')).toBeInTheDocument();
+    expect(screen.getByText('Group Polls')).toBeInTheDocument();
   });
 
   fireEvent.click(screen.getAllByTestId('copy-icon')[0]);
@@ -54,7 +54,7 @@ test('it should open the view dialog box', async () => {
   render(wrapper);
 
   await waitFor(() => {
-    expect(screen.getByText('WhatsApp Polls')).toBeInTheDocument();
+    expect(screen.getByText('Group Polls')).toBeInTheDocument();
   });
 
   fireEvent.click(screen.getAllByTestId('view-icon')[0]);
@@ -70,7 +70,7 @@ test('it navigates to create a copy', async () => {
   render(wrapper);
 
   await waitFor(() => {
-    expect(screen.getByText('WhatsApp Polls')).toBeInTheDocument();
+    expect(screen.getByText('Group Polls')).toBeInTheDocument();
   });
 
   fireEvent.click(screen.getAllByTestId('duplicate-icon')[0]);
@@ -84,7 +84,7 @@ test('it should delete the poll', async () => {
   render(wrapper);
 
   await waitFor(() => {
-    expect(screen.getByText('WhatsApp Polls')).toBeInTheDocument();
+    expect(screen.getByText('Group Polls')).toBeInTheDocument();
   });
 
   fireEvent.click(screen.getAllByTestId('delete-icon')[0]);
