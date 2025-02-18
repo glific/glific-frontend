@@ -100,9 +100,13 @@ export const WaPolls = () => {
 
   const FormSchema = Yup.object().shape({
     label: Yup.string().required(t('Title is required.')).max(50, t('Title is too long.')),
-    content: Yup.string().required('Content is required.').max(150, 'Content is too long.'),
+    content: Yup.string().required('Content is required.').max(255, 'Content is too long.'),
     options: Yup.array()
-      .of(Yup.object().shape({ name: Yup.string().required('Option is required.') }))
+      .of(
+        Yup.object().shape({
+          name: Yup.string().required('Option is required.').max(100, 'Please enter not more than 100 characters'),
+        })
+      )
       .test('unique-values', 'Values must be unique', (array: any) => {
         const values = array.map((item: any) => item.name);
         return new Set(values).size === values.length;
