@@ -140,10 +140,15 @@ describe('Add mode', () => {
 
     fireEvent.click(screen.getByText('ACCOUNT_UPDATE'), { key: 'Enter' });
 
+    fireEvent.click(screen.getByTestId('bold-icon'));
+
     fireEvent.click(screen.getByText('Allow meta to re-categorize template?'));
 
+    fireEvent.click(screen.getByTestId('italic-icon'));
+    fireEvent.click(screen.getByTestId('strikethrough-icon'));
+
     await waitFor(() => {
-      expect(screen.getByText('Hi, How are you')).toBeInTheDocument();
+      expect(screen.getByText('Hi, How are you**')).toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByText('Add Variable'));
@@ -155,7 +160,7 @@ describe('Add mode', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByText('Hi, How are you {{1}}')).toBeInTheDocument();
+      expect(screen.getByText('Hi, How are you** {{1}}')).toBeInTheDocument();
     });
 
     fireEvent.change(screen.getByPlaceholderText('Define value'), { target: { value: 'User' } });

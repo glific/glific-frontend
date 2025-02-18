@@ -95,6 +95,7 @@ const EmojiPickerComponent = ({ showEmojiPicker, setShowEmojiPicker, handleClick
                   selection.insertNodes([$createTextNode(emoji.native)]);
                 }
               });
+              editor.focus();
             }}
             displayStyle={emojiStyles}
           />
