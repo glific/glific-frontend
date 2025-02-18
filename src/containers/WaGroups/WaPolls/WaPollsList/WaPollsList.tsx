@@ -3,10 +3,10 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
-import CollectionIcon from 'assets/images/icons/Collection/Dark.svg?react';
 import CopyAllOutlined from 'assets/images/icons/Flow/Copy.svg?react';
 import DeleteIcon from 'assets/images/icons/Delete/Red.svg?react';
 import DuplicateIcon from 'assets/images/icons/Duplicate.svg?react';
+import ViewIcon from 'assets/images/icons/ViewLight.svg?react';
 import { copyToClipboardMethod } from 'common/utils';
 import { pollsInfo } from 'common/HelpData';
 import { setErrorMessage, setNotification } from 'common/notification';
@@ -16,6 +16,7 @@ import { DELETE_POLL } from 'graphql/mutations/WaPolls';
 import { GET_POLLS, GET_POLLS_COUNT } from 'graphql/queries/WaPolls';
 
 import styles from './WaPollsList.module.css';
+import { ViewPoll } from './ViewPollDialog/ViewPollDialog';
 
 const queries = {
   countQuery: GET_POLLS_COUNT,
@@ -34,6 +35,7 @@ const getContent = (content: string) => {
 };
 export const WaPollsList = () => {
   const [deleteWaPollId, setDeleteWaPollId] = useState<string | null>(null);
+  const [viewWaPollId, setViewWaPollId] = useState<string | null>(null);
   const [refreshList, setRefreshList] = useState<boolean>(false);
 
   const { t } = useTranslation();
@@ -42,8 +44,7 @@ export const WaPollsList = () => {
   const [deletePoll, { loading }] = useMutation(DELETE_POLL);
 
   const columnNames = [{ name: 'label', label: 'Title' }, { label: 'Content' }, { label: t('Actions') }];
-  const title = t('Group polls');
-  const collectionIcon = <CollectionIcon />;
+  const title = t('Group Polls');
   const dialogMessage = t("You won't be able to use this collection again.");
   const columnStyles = [styles.Label, styles.Content, styles.Actions];
 
@@ -92,13 +93,20 @@ export const WaPollsList = () => {
   const additionalAction = () => [
     {
       label: t('Copy UUID'),
-      icon: <CopyAllOutlined data-testid="copy-button" />,
+      icon: <CopyAllOutlined data-testid="copy-icon" />,
       parameter: 'id',
       dialog: copyUuid,
     },
     {
+      label: t('View'),
+      icon: <ViewIcon data-testid="view-icon" />,
+      parameter: 'id',
+      dialog: (id: any) => setViewWaPollId(id),
+      insideMore: false,
+    },
+    {
       label: t('Copy Poll'),
-      icon: <DuplicateIcon />,
+      icon: <DuplicateIcon data-testid="duplicate-icon" />,
       parameter: 'id',
       insideMore: false,
       dialog: handleCopy,
@@ -138,7 +146,6 @@ export const WaPollsList = () => {
         columnNames={columnNames}
         listItemName="poll"
         pageLink={`group/polls`}
-        listIcon={collectionIcon}
         dialogMessage={dialogMessage}
         additionalAction={additionalAction}
         restrictedAction={getRestrictedAction}
@@ -152,6 +159,7 @@ export const WaPollsList = () => {
         {...columnAttributes}
       />
       {deleteWaPollId && deletedialog}
+      {viewWaPollId && <ViewPoll id={viewWaPollId} onClose={() => setViewWaPollId(null)} />}
     </>
   );
 };

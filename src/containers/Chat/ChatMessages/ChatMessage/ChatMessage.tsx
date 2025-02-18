@@ -25,6 +25,7 @@ import { QuickReplyTemplate } from '../QuickReplyTemplate/QuickReplyTemplate';
 import styles from './ChatMessage.module.css';
 import { setNotification } from 'common/notification';
 import { LocationRequestTemplate } from './LocationRequestTemplate/LocationRequestTemplate';
+import { PollMessage } from './PollMessage/PollMessage';
 
 export interface ChatMessageProps {
   id: number;
@@ -56,6 +57,7 @@ export interface ChatMessageProps {
   groups?: boolean;
   status?: string;
   contact?: any;
+  poll?: any;
   showIcon?: boolean;
 }
 
@@ -82,6 +84,7 @@ export const ChatMessage = ({
   groups,
   status,
   contact,
+  poll,
   showIcon = true,
 }: ChatMessageProps) => {
   const [showSaveMessageDialog, setShowSaveMessageDialog] = useState(false);
@@ -305,6 +308,20 @@ export const ChatMessage = ({
     contactName = <div className={styles.ContactName}>{contact?.name}</div>;
   }
 
+  let messageBody: any;
+  if (isInteractiveContentPresent && !isSender) {
+    messageBody = template;
+  } else if (type === 'POLL') {
+    messageBody = <PollMessage isSender={isSender} poll={poll} />;
+  } else {
+    messageBody = (
+      <>
+        {contactName}
+        <ChatMessageType type={type} media={media} body={bodyText} location={location} isSender={isSender} />
+        {dateAndSendBy}
+      </>
+    );
+  }
   return (
     <div>
       {daySeparatorContent}
@@ -344,21 +361,7 @@ export const ChatMessage = ({
             <Tooltip title={tooltipTitle} placement={isSender ? 'right' : 'left'}>
               <div>
                 <div className={chatMessageContent.join(' ')} data-testid="content">
-                  {isInteractiveContentPresent && !isSender ? (
-                    template
-                  ) : (
-                    <>
-                      {contactName}
-                      <ChatMessageType
-                        type={type}
-                        media={media}
-                        body={bodyText}
-                        location={location}
-                        isSender={isSender}
-                      />
-                      {dateAndSendBy}
-                    </>
-                  )}
+                  {messageBody}
                 </div>
               </div>
             </Tooltip>

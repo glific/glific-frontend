@@ -10,6 +10,7 @@ interface WaPollOptionsProps {
   form: { field: any; errors: any; touched: any; values: any; setFieldValue: any };
   options: string[];
   isEditing: boolean;
+  setPreviewData: any;
 }
 
 const emojiStyles = {
@@ -19,15 +20,34 @@ const emojiStyles = {
   zIndex: 100,
 };
 
-export const WaPollOptions = ({ form: { values, setFieldValue, errors, touched }, isEditing }: WaPollOptionsProps) => {
+export const WaPollOptions = ({
+  form: { values, setFieldValue, errors, touched },
+  isEditing,
+  setPreviewData,
+}: WaPollOptionsProps) => {
   const handleAddOption = () => {
     const lastId = values.options[values.options.length - 1]?.id;
-    setFieldValue('options', [...values.options, { name: '', id: lastId + 1 }]);
+    const newOptions = [...values.options, { name: '', id: lastId + 1 }];
+    setFieldValue('options', newOptions);
+    setPreviewData((prev: any) => ({
+      ...prev,
+      pollContent: {
+        ...prev.pollContent,
+        options: newOptions,
+      },
+    }));
   };
 
   const handleInput = (value: any, id: any) => {
     const newOptions = values.options.map((option: any) => (option.id === id ? { ...option, name: value } : option));
     setFieldValue('options', newOptions);
+    setPreviewData((prev: any) => ({
+      ...prev,
+      pollContent: {
+        ...prev.pollContent,
+        options: newOptions,
+      },
+    }));
   };
 
   const handleEmojiAdd = (emoji: any, id: number) => {
@@ -36,11 +56,25 @@ export const WaPollOptions = ({ form: { values, setFieldValue, errors, touched }
     );
 
     setFieldValue('options', newOptions);
+    setPreviewData((prev: any) => ({
+      ...prev,
+      pollContent: {
+        ...prev.pollContent,
+        options: newOptions,
+      },
+    }));
   };
 
   const handleRemoveClick = (id: any) => {
     const newOptions = values.options.filter((option: any) => option.id !== id);
     setFieldValue('options', newOptions);
+    setPreviewData((prev: any) => ({
+      ...prev,
+      pollContent: {
+        ...prev.pollContent,
+        options: newOptions,
+      },
+    }));
   };
 
   return (
@@ -68,7 +102,7 @@ export const WaPollOptions = ({ form: { values, setFieldValue, errors, touched }
         </FormHelperText>
 
         {values.options.length < 12 && !isEditing && (
-          <Button variant="outlined" onClick={handleAddOption}>
+          <Button data-testid="add-btn" variant="outlined" onClick={handleAddOption}>
             Add Option
           </Button>
         )}

@@ -10,6 +10,7 @@ import AudioIconDark from 'assets/images/icons/Audio/Dark.svg?react';
 import DocumentIconDark from 'assets/images/icons/Document/Dark.svg?react';
 import StickerIconDark from 'assets/images/icons/Sticker/Dark.svg?react';
 import LocationIconDark from 'assets/images/icons/Location/Dark.svg?react';
+import PollIcon from 'assets/images/icons/Poll.svg?react';
 
 import styles from './MessageType.module.css';
 
@@ -26,6 +27,7 @@ const lightIcons: any = {
   DOCUMENT: <DocumentIcon />,
   STICKER: <StickerIcon />,
   LOCATION: <LocationIcon />,
+  POLL: <PollIcon />,
 };
 
 const darkIcons: any = {
@@ -51,6 +53,7 @@ export const MessageType = ({ type, body = '', color = 'light' }: MessageTypePro
     QUICK_REPLY: 'Quick Reply',
     LIST: 'List',
     LOCATION_REQUEST_MESSAGE: 'Location Request',
+    POLL: body,
   };
 
   const option = (
