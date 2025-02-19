@@ -70,6 +70,8 @@ export const waGroup = {
             messageNumber: 4,
             status: 'sent',
             type: 'TEXT',
+            poll: null,
+            pollContent: '{}',
           },
           {
             __typename: 'WaMessage',
@@ -86,6 +88,8 @@ export const waGroup = {
             messageNumber: 3,
             status: 'sent',
             type: 'TEXT',
+            poll: null,
+            pollContent: '{}',
           },
         ],
       },
@@ -127,6 +131,8 @@ const sampleMessage = {
   messageNumber: 1,
   status: 'received',
   type: 'TEXT',
+  poll: null,
+  pollContent: '{}',
 };
 
 const sampleSearchQueryResult = [
