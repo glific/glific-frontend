@@ -129,3 +129,8 @@ export const templateStatusInfo: HelpDataProps = {
   ),
   link: 'https://docs.gupshup.io/docs/message-template-approvals-statuses',
 };
+
+export const pollsInfo: HelpDataProps = {
+  heading: 'An overview of all the polls created to date',
+  link: 'https://glific.github.io/docs/docs/WhatsApp%20Groups%20Automation/Sending%20Polls%20To%20WhatsApp%20Groups',
+};

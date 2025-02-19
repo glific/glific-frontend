@@ -28,6 +28,7 @@ import WaChatIcon from 'assets/images/icons/SideDrawer/WaGroupChat';
 import WaCollectionIcon from 'assets/images/icons/SideDrawer/WaGroupCollection';
 import WaGroupIcon from 'assets/images/icons/SideDrawer/WhatsAppGroupIcon';
 import Assistant from 'assets/images/icons/SideDrawer/Assistant';
+import WaPolls from 'assets/images/icons/SideDrawer/WaPolls';
 import styles from './ListIcon.module.css';
 import FiberNewIcon from '@mui/icons-material/FiberNew';
 import { Badge } from '@mui/material';
@@ -74,6 +75,7 @@ export const ListIcon = ({ icon = '', selected = false, count }: ListIconProps) 
     waGroup: WaGroupIcon,
     assistant: Assistant,
     discord: DiscordIcon,
+    waPolls: WaPolls,
   };
 
   const iconImage = stringsToIcons[icon] && (

@@ -51,6 +51,13 @@ const menus = (): Menu[] => [
         type: 'sideDrawer',
         roles: allRoles,
       },
+      {
+        title: 'Group Polls',
+        path: '/group/polls',
+        icon: 'waPolls',
+        type: 'sideDrawer',
+        roles: allRoles,
+      },
     ],
   },
   {
