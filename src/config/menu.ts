@@ -171,7 +171,6 @@ const menus = (): Menu[] => [
     icon: 'assistant',
     type: 'sideDrawer',
     roles: allRoles,
-    new: true,
   },
   {
     title: 'Manage',
