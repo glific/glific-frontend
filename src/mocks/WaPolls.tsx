@@ -5,6 +5,13 @@ import { GET_POLL, GET_POLLS, GET_POLLS_COUNT } from 'graphql/queries/WaPolls';
 const createPoll = {
   request: {
     query: CREATE_POLL,
+    variables: {
+      input: {
+        label: 'Poll Title',
+        poll_content: '{"options":[{"id":0,"name":"Option 1😃"},{"name":"Option 3","id":2}],"text":"Poll Content"}',
+        allow_multiple_answer: true,
+      },
+    },
   },
   result: {
     data: {
@@ -16,7 +23,6 @@ const createPoll = {
       },
     },
   },
-  variableMatcher: () => true,
 };
 
 const getPoll = {

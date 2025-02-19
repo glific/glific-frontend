@@ -14,6 +14,23 @@ const mockUseLocationValue: any = {
   state: null,
 };
 
+vi.mock('../../../components/UI/EmojiPicker/EmojiPicker', () => ({
+  default: ({ onEmojiSelect }: { onEmojiSelect: (emoji: any) => void }) => (
+    <div data-testid="emoji-container">
+      <button
+        data-testid="mock-emoji-picker"
+        onClick={() =>
+          onEmojiSelect({
+            native: '😃',
+          })
+        }
+      >
+        Mock Emoji Picker
+      </button>
+    </div>
+  ),
+}));
+
 vi.mock('react-router-dom', async () => ({
   ...((await vi.importActual<any>('react-router-dom')) as {}),
   useLocation: () => {
@@ -51,6 +68,11 @@ describe('Create', () => {
 
     fireEvent.change(screen.getByPlaceholderText('Option 1'), { target: { value: 'Option 1' } });
     fireEvent.change(screen.getByPlaceholderText('Option 2'), { target: { value: 'Option 2' } });
+
+    fireEvent.click(screen.getAllByTestId('emoji-picker')[0]);
+
+    expect(screen.getByTestId('emoji-container')).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('mock-emoji-picker'));
 
     fireEvent.click(screen.getByTestId('add-btn'));
 

@@ -27,11 +27,7 @@ const queries = {
 const getLabel = (label: string) => <div className={styles.LabelText}>{label}</div>;
 
 const getContent = (content: string) => {
-  return (
-    <div className={styles.ContentText}>
-      {content ? (content.length < 100 ? content : `${content.slice(0, 100)}...`) : ''}
-    </div>
-  );
+  return <div className={styles.ContentText}>{content.length < 100 ? content : `${content.slice(0, 100)}...`}</div>;
 };
 export const WaPollsList = () => {
   const [deleteWaPollId, setDeleteWaPollId] = useState<string | null>(null);
