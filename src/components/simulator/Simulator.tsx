@@ -52,6 +52,7 @@ import styles from './Simulator.module.css';
 import { LocationRequestTemplate } from 'containers/Chat/ChatMessages/ChatMessage/LocationRequestTemplate/LocationRequestTemplate';
 import { BackdropLoader } from 'containers/Flow/FlowTranslation';
 import { SIMULATOR_RELEASE_SUBSCRIPTION } from 'graphql/subscriptions/PeriodicInfo';
+import { PollMessage } from 'containers/Chat/ChatMessages/ChatMessage/PollMessage/PollMessage';
 
 export interface SimulatorProps {
   setShowSimulator?: any;
@@ -63,6 +64,7 @@ export interface SimulatorProps {
   interactiveMessage?: any;
   showHeader?: boolean;
   hasResetButton?: boolean;
+  pollContent?: any;
 }
 
 interface Sender {
@@ -124,6 +126,7 @@ const Simulator = ({
   interactiveMessage,
   showHeader = true,
   hasResetButton = false,
+  pollContent,
 }: SimulatorProps) => {
   const [inputMessage, setInputMessage] = useState('');
   const [simulatedMessages, setSimulatedMessage] = useState<any>();
@@ -268,7 +271,13 @@ const Simulator = ({
       });
   };
 
-  const renderMessage = (messageObject: any, direction: string, index: number, isInteractive: boolean = false) => {
+  const renderMessage = (
+    messageObject: any,
+    direction: string,
+    index: number,
+    isInteractive: boolean,
+    isPollContent: boolean = false
+  ) => {
     const { insertedAt, type, media, location, interactiveContent, bspMessageId, templateType } = messageObject;
 
     const messageType = isInteractive ? templateType : type;
@@ -320,26 +329,31 @@ const Simulator = ({
       }
     }
 
+    let messageBody: any = (
+      <>
+        <ChatMessageType
+          type={messageType}
+          media={media}
+          body={body}
+          location={location}
+          isSimulatedMessage={isSimulatedMessage}
+        />
+        <TimeComponent direction={direction} insertedAt={insertedAt} />
+      </>
+    );
+    if (isInteractiveContentPresent && direction !== 'send') {
+      messageBody = template;
+    } else if (isPollContent) {
+      messageBody = <PollMessage poll={pollContent} isSimulator />;
+    }
+
     return (
       <div key={index}>
         <div
           className={getStyleForDirection(direction, isInteractiveContentPresent, messageType)}
           data-testid="simulatorMessage"
         >
-          {isInteractiveContentPresent && direction !== 'send' ? (
-            template
-          ) : (
-            <>
-              <ChatMessageType
-                type={messageType}
-                media={media}
-                body={body}
-                location={location}
-                isSimulatedMessage={isSimulatedMessage}
-              />
-              <TimeComponent direction={direction} insertedAt={insertedAt} />
-            </>
-          )}
+          {messageBody}
         </div>
         <div className={styles.TemplateButtons}>
           <TemplateButtons
@@ -356,9 +370,9 @@ const Simulator = ({
     const chatMessage = messages
       .map((simulatorMessage: any, index: number) => {
         if (simulatorMessage.receiver.id === simulatorId) {
-          return renderMessage(simulatorMessage, 'received', index);
+          return renderMessage(simulatorMessage, 'received', index, false);
         }
-        return renderMessage(simulatorMessage, 'send', index);
+        return renderMessage(simulatorMessage, 'send', index, false);
       })
       .reverse();
     setSimulatedMessage(chatMessage);
@@ -366,7 +380,7 @@ const Simulator = ({
 
   const getPreviewMessage = () => {
     if (message && message.type) {
-      const previewMessage = renderMessage(message, 'received', 0);
+      const previewMessage = renderMessage(message, 'received', 0, false);
       if (['STICKER', 'AUDIO'].includes(message.type)) {
         setSimulatedMessage(previewMessage);
       } else if (message.body || message.media?.caption) {
@@ -380,6 +394,7 @@ const Simulator = ({
     if (interactiveMessage) {
       const { templateType, interactiveContent } = interactiveMessage;
       const previewMessage = renderMessage(interactiveMessage, 'received', 0, true);
+
       setSimulatedMessage(previewMessage);
       if (templateType === LIST) {
         const { items } = JSON.parse(interactiveContent);
@@ -387,6 +402,11 @@ const Simulator = ({
       } else {
         setIsDrawerOpen(false);
       }
+    }
+
+    if (pollContent) {
+      const previewMessage = renderMessage(pollContent, 'received', 0, false, true);
+      setSimulatedMessage(previewMessage);
     }
   };
 
