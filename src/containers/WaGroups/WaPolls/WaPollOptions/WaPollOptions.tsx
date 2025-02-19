@@ -31,8 +31,8 @@ export const WaPollOptions = ({
     setFieldValue('options', newOptions);
     setPreviewData((prev: any) => ({
       ...prev,
-      pollContent: {
-        ...prev.pollContent,
+      pollContentJson: {
+        ...prev.pollContentJson,
         options: newOptions,
       },
     }));
@@ -43,8 +43,8 @@ export const WaPollOptions = ({
     setFieldValue('options', newOptions);
     setPreviewData((prev: any) => ({
       ...prev,
-      pollContent: {
-        ...prev.pollContent,
+      pollContentJson: {
+        ...prev.pollContentJson,
         options: newOptions,
       },
     }));
@@ -58,8 +58,8 @@ export const WaPollOptions = ({
     setFieldValue('options', newOptions);
     setPreviewData((prev: any) => ({
       ...prev,
-      pollContent: {
-        ...prev.pollContent,
+      pollContentJson: {
+        ...prev.pollContentJson,
         options: newOptions,
       },
     }));
@@ -70,8 +70,8 @@ export const WaPollOptions = ({
     setFieldValue('options', newOptions);
     setPreviewData((prev: any) => ({
       ...prev,
-      pollContent: {
-        ...prev.pollContent,
+      pollContentJson: {
+        ...prev.pollContentJson,
         options: newOptions,
       },
     }));

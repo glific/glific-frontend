@@ -17,6 +17,7 @@ export const ViewPoll = ({ id, onClose }: ViewPollProps) => {
   });
 
   const poll = data?.waPoll?.waPoll;
+  const pollContentJson = poll?.pollContent ? JSON.parse(poll?.pollContent) : {};
 
   if (loading) {
     return <Loading />;
@@ -24,7 +25,13 @@ export const ViewPoll = ({ id, onClose }: ViewPollProps) => {
 
   return (
     <DialogBox title={poll?.label} handleCancel={onClose} alignButtons="center" skipOk skipCancel>
-      <PollMessage poll={poll} view />
+      <PollMessage
+        pollContent={{
+          poll: poll,
+          pollContentJson: pollContentJson,
+        }}
+        view
+      />
     </DialogBox>
   );
 };

@@ -344,7 +344,7 @@ const Simulator = ({
     if (isInteractiveContentPresent && direction !== 'send') {
       messageBody = template;
     } else if (isPollContent) {
-      messageBody = <PollMessage poll={pollContent} isSimulator />;
+      messageBody = <PollMessage pollContent={pollContent} isSimulator />;
     }
 
     return (

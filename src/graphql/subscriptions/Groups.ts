@@ -35,6 +35,11 @@ export const WA_MESSAGE_RECEIVED_SUBSCRIPTION = gql`
         insertedAt
       }
       pollContent
+      poll {
+        id
+        pollContent
+        allowMultipleAnswer
+      }
       errors
     }
   }
@@ -75,6 +80,12 @@ export const WA_MESSAGE_SENT_SUBSCRIPTION = gql`
         insertedAt
       }
       status
+      pollContent
+      poll {
+        id
+        pollContent
+        allowMultipleAnswer
+      }
     }
   }
 `;
@@ -125,6 +136,11 @@ export const UPDATE_WA_MESSAGE_STATUS = gql`
       id
       messageNumber
       pollContent
+      poll {
+        id
+        pollContent
+        allowMultipleAnswer
+      }
       errors
       waGroup {
         id

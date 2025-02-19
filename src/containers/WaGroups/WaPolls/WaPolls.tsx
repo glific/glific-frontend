@@ -32,8 +32,8 @@ export const WaPolls = () => {
   ]);
   const [allowMultiple, setAllowMultiple] = useState<boolean>(false);
   const [previewData, setPreviewData] = useState<any>({
-    allowMultipleAnswer: false,
-    pollContent: {
+    poll: { allowMultipleAnswer: false },
+    pollContentJson: {
       text: '',
       options: [
         { id: 0, name: '' },
@@ -81,7 +81,15 @@ export const WaPolls = () => {
   };
   const setStates = (states: any) => {
     const { label, pollContent, allowMultipleAnswer } = states;
-    const { text, options } = JSON.parse(pollContent);
+    let text;
+    let options;
+
+    if (pollContent) {
+      const pollContentJson = JSON.parse(pollContent);
+      text = pollContentJson?.text;
+      options = pollContentJson?.options;
+    }
+
     let labelValue = label;
     if (isCopyState) {
       labelValue = `Copy of ${label}`;
@@ -93,8 +101,8 @@ export const WaPolls = () => {
     setOptions(options);
 
     setPreviewData({
-      allowMultipleAnswer,
-      pollContent: { text, options },
+      poll: { allowMultipleAnswer },
+      pollContentJson: { text, options },
     });
   };
 
@@ -135,8 +143,8 @@ export const WaPolls = () => {
       onChange: (value: any) => {
         setPreviewData({
           ...previewData,
-          pollContent: {
-            ...previewData.pollContent,
+          pollContentJson: {
+            ...previewData.pollContentJson,
             text: value,
           },
         });
@@ -161,7 +169,9 @@ export const WaPolls = () => {
       handleChange: (value: boolean) => {
         setPreviewData({
           ...previewData,
-          allowMultipleAnswer: value,
+          poll: {
+            allowMultipleAnswer: value,
+          },
         });
       },
     },

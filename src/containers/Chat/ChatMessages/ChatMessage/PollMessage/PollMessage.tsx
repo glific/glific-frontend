@@ -7,16 +7,14 @@ interface PollMessageProps {
   isSender?: boolean;
   isSimulator?: boolean;
   view?: boolean;
-  poll?: any;
+  pollContent: {
+    poll: any;
+    pollContentJson: any;
+  };
 }
 
-export const PollMessage = ({ isSender = false, isSimulator = false, view = false, poll }: PollMessageProps) => {
-  const pollContentJson = poll?.pollContent
-    ? typeof poll.pollContent === 'string'
-      ? JSON.parse(poll.pollContent)
-      : poll.pollContent
-    : {};
-
+export const PollMessage = ({ isSender = false, isSimulator = false, view = false, pollContent }: PollMessageProps) => {
+  const { poll, pollContentJson } = pollContent;
   const { text, options } = pollContentJson;
   const maxVotes = Math.max(...pollContentJson.options.map((option: any) => option.votes));
 

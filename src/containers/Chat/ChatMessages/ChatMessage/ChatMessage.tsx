@@ -58,6 +58,7 @@ export interface ChatMessageProps {
   status?: string;
   contact?: any;
   poll?: any;
+  pollContent?: any;
   showIcon?: boolean;
 }
 
@@ -85,6 +86,7 @@ export const ChatMessage = ({
   status,
   contact,
   poll,
+  pollContent,
   showIcon = true,
 }: ChatMessageProps) => {
   const [showSaveMessageDialog, setShowSaveMessageDialog] = useState(false);
@@ -312,7 +314,20 @@ export const ChatMessage = ({
   if (isInteractiveContentPresent && !isSender) {
     messageBody = template;
   } else if (type === 'POLL') {
-    messageBody = <PollMessage isSender={isSender} poll={poll} />;
+    const pollContentJson = pollContent ? JSON.parse(pollContent) : {};
+
+    messageBody = (
+      <>
+        {contactName}
+        <PollMessage
+          isSender={isSender}
+          pollContent={{
+            pollContentJson,
+            poll,
+          }}
+        />
+      </>
+    );
   } else {
     messageBody = (
       <>
