@@ -19,14 +19,15 @@ export const handleFormatterEvents = (event: KeyboardEvent) => {
   return '';
 };
 
-export const handleFormatting = (text: string, formatter: string) => {
+export const handleFormatting = (text: string = '', formatter: string) => {
   switch (formatter) {
     case 'bold':
-      return `*${text}*`;
+      return text.startsWith('*') && text.endsWith('*') ? text.slice(1, -1) : `*${text}*`;
     case 'italic':
-      return `_${text}_`;
+      return text.startsWith('_') && text.endsWith('_') ? text.slice(1, -1) : `_${text}_`;
     case 'strikethrough':
-      return `~${text}~`;
+      return text.startsWith('~') && text.endsWith('~') ? text.slice(1, -1) : `~${text}~`;
+
     default:
       return text;
   }
