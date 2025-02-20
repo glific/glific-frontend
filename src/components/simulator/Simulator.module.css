@@ -29,6 +29,7 @@
   background: white;
   width: 200px;
   margin-top: 4px;
+  overflow-x: hidden;
 }
 
 .StickerReceivedMessage {

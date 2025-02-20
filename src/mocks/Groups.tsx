@@ -69,7 +69,16 @@ export const waGroup = {
             media: null,
             messageNumber: 4,
             status: 'sent',
-            type: 'TEXT',
+            type: 'POLL',
+            poll: {
+              __typename: 'WaPoll',
+              allowMultipleAnswer: false,
+              id: '4',
+              pollContent:
+                '{"text": "this is a poll", "options": [{ "votes": 1, "name": "option 1", "id": 0 },{ "votes": 1, "name": "option 2", "id": 1 },{ "votes": 0, "name": "okay option 4", "id": 2 }]}',
+            },
+            pollContent:
+              '{"text": "this is a poll", "options": [{ "votes": 1, "name": "option 1", "id": 0 },{ "votes": 1, "name": "option 2", "id": 1 },{ "votes": 0, "name": "okay option 4", "id": 2 }]}',
           },
           {
             __typename: 'WaMessage',
@@ -86,6 +95,8 @@ export const waGroup = {
             messageNumber: 3,
             status: 'sent',
             type: 'TEXT',
+            poll: null,
+            pollContent: '{}',
           },
         ],
       },
@@ -126,7 +137,16 @@ const sampleMessage = {
   media: null,
   messageNumber: 1,
   status: 'received',
-  type: 'TEXT',
+  type: 'POLL',
+  poll: {
+    __typename: 'WaPoll',
+    allowMultipleAnswer: false,
+    id: '4',
+    pollContent:
+      '{"text": "this is a poll", "options": [{ "votes": 1, "name": "option 1", "id": 0 },{ "votes": 1, "name": "option 2", "id": 1 },{ "votes": 0, "name": "okay option 4", "id": 2 }]}',
+  },
+  pollContent:
+    '{"text": "this is a poll", "options": [{ "votes": 1, "name": "option 1", "id": 0 },{ "votes": 1, "name": "option 2", "id": 1 },{ "votes": 0, "name": "okay option 4", "id": 2 }]}',
 };
 
 const sampleSearchQueryResult = [

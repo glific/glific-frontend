@@ -793,11 +793,7 @@ export const sendMessageInWaGroup = {
     },
   },
   result: {
-    data: {
-      sendMessageInWaGroup: {
-        errors: null,
-      },
-    },
+    errors: [new Error('Error!')],
   },
 };
 

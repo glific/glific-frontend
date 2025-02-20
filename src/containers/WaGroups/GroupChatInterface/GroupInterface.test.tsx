@@ -32,6 +32,8 @@ cache.writeQuery({
             messageNumber: 3,
             status: 'sent',
             type: 'TEXT',
+            poll: null,
+            pollContent: {},
           },
         ],
         waGroup: {
@@ -69,6 +71,8 @@ cache.writeQuery({
             messageNumber: 2,
             status: 'sent',
             type: 'TEXT',
+            poll: null,
+            pollContent: {},
           },
         ],
         waGroup: {
@@ -106,6 +110,8 @@ cache.writeQuery({
             messageNumber: 4,
             status: 'sent',
             type: 'TEXT',
+            poll: null,
+            pollContent: {},
           },
           {
             __typename: 'WaMessage',
@@ -122,6 +128,8 @@ cache.writeQuery({
             messageNumber: 3,
             status: 'sent',
             type: 'TEXT',
+            poll: null,
+            pollContent: {},
           },
         ],
         waGroup: {
