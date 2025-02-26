@@ -51,6 +51,13 @@ const menus = (): Menu[] => [
         type: 'sideDrawer',
         roles: allRoles,
       },
+      {
+        title: 'Group Polls',
+        path: '/group/polls',
+        icon: 'waPolls',
+        type: 'sideDrawer',
+        roles: allRoles,
+      },
     ],
   },
   {
@@ -171,7 +178,6 @@ const menus = (): Menu[] => [
     icon: 'assistant',
     type: 'sideDrawer',
     roles: allRoles,
-    new: true,
   },
   {
     title: 'Manage',

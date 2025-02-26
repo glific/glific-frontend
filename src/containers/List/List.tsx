@@ -107,7 +107,7 @@ export interface ListProps {
   dialogMessage?: string | any;
   pageLink: string;
   columns: Function;
-  listIcon: React.ReactNode;
+  listIcon?: React.ReactNode;
   helpData?: HelpDataProps;
   columnStyles: Array<any>;
   secondaryButton?: any;

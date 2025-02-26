@@ -1,0 +1,46 @@
+.Container {
+  background-color: #f8faf5;
+  border: 1px solid #cccccc;
+  border-radius: 4px;
+  margin: 1rem 0;
+  padding: 1rem;
+}
+
+.Title {
+  color: #555555;
+  font-weight: 500;
+  line-height: 18px;
+  font-size: 16px;
+  margin-bottom: 1rem;
+}
+
+.OptionField {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.TextField {
+  width: 100%;
+  background-color: #ffffff;
+  border-radius: 12px;
+}
+
+.Options {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.Options button {
+  width: 40%;
+  align-self: flex-end;
+}
+
+.RemoveIcon {
+  cursor: pointer;
+}
+
+.EmojiButton {
+  margin-right: -1rem;
+}
