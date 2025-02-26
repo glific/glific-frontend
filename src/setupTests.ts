@@ -4,6 +4,7 @@ import { TextEncoder, TextDecoder } from 'util';
 import '@testing-library/jest-dom/vitest';
 
 import { cleanup } from '@testing-library/react';
+import { afterEach } from 'node:test';
 
 // runs a cleanup after each test case (e.g. clearing jsdom)
 afterEach(() => {
@@ -69,6 +70,7 @@ window.fetch = vi.fn() as any;
 
 global.URL.createObjectURL = vi.fn();
 
-// fixes TextEncoder error while running tests
-global.TextEncoder = TextEncoder;
-global.TextDecoder = TextDecoder as any;
+if (!globalThis.TextEncoder || !globalThis.TextDecoder) {
+  globalThis.TextEncoder = TextEncoder;
+  globalThis.TextDecoder = TextDecoder as any;
+}

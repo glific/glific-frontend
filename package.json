@@ -106,7 +106,7 @@
     "@testing-library/react": "^16.2.0",
     "@testing-library/user-event": "^14.6.1",
     "@types/emoji-mart": "^3.0.14",
-    "@types/node": "^22.13.4",
+    "@types/node": "^22.13.5",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
     "@types/react-google-recaptcha": "^2.1.9",
@@ -129,7 +129,7 @@
     "react-test-renderer": "^19.0.0",
     "typescript": "^5.7.3",
     "vite-plugin-node-polyfills": "^0.23.0",
-    "vitest": "^3.0.6",
+    "vitest": "^3.0.7",
     "yarn-upgrade-all": "^0.7.4"
   }
 }

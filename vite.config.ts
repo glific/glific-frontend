@@ -5,7 +5,8 @@ import react from '@vitejs/plugin-react';
 // import eslint from 'vite-plugin-eslint';
 import viteTsconfigPaths from 'vite-tsconfig-paths';
 import checker from 'vite-plugin-checker';
-import svgrPlugin from 'vite-plugin-svgr';
+import svgr from 'vite-plugin-svgr';
+
 import fs from 'fs';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
 
@@ -19,7 +20,7 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
     },
   };
 
-  const plugins = [react(), viteTsconfigPaths(), svgrPlugin(), nodePolyfills(nodePolyfillsOptions)];
+  const plugins = [react(), viteTsconfigPaths(), svgr(), nodePolyfills(nodePolyfillsOptions)];
 
   const esbuildOptions = {
     // Node.js global to browser globalThis

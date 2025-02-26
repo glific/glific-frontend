@@ -1,4 +1,6 @@
 import { defineConfig } from 'vitest/config';
+import tsconfigPaths from 'vite-tsconfig-paths';
+import svgr from 'vite-plugin-svgr';
 
 export default defineConfig({
   test: {
@@ -14,4 +16,5 @@ export default defineConfig({
     },
     css: true,
   },
+  plugins: [tsconfigPaths(), svgr()],
 });
