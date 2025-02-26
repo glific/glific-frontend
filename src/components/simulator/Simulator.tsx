@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useApolloClient, useLazyQuery, useSubscription } from '@apollo/client';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { Button, ClickAwayListener } from '@mui/material';
@@ -131,7 +131,7 @@ const Simulator = ({
   const [inputMessage, setInputMessage] = useState('');
   const [simulatedMessages, setSimulatedMessage] = useState<any>();
   const [isOpen, setIsOpen] = useState(false);
-  const nodeRef = React.useRef<HTMLDivElement>(null!);
+  const nodeRef = useRef<HTMLDivElement>(null!);
 
   const client = useApolloClient();
   // Template listing
