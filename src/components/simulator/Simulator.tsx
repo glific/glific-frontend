@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useApolloClient, useLazyQuery, useSubscription } from '@apollo/client';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { Button, ClickAwayListener } from '@mui/material';
@@ -131,6 +131,7 @@ const Simulator = ({
   const [inputMessage, setInputMessage] = useState('');
   const [simulatedMessages, setSimulatedMessage] = useState<any>();
   const [isOpen, setIsOpen] = useState(false);
+  const nodeRef = React.useRef<HTMLDivElement>(null!);
 
   const client = useApolloClient();
   // Template listing
@@ -491,8 +492,8 @@ const Simulator = ({
   );
 
   const simulator = (
-    <Draggable>
-      <div data-testid="simulator-container" className={styles.SimContainer}>
+    <Draggable nodeRef={nodeRef}>
+      <div ref={nodeRef} data-testid="simulator-container" className={styles.SimContainer}>
         <div>
           <div id="simulator" className={styles.Simulator}>
             <img src={BackgroundPhoneImage} className={styles.BackgroundImage} draggable="false" />
