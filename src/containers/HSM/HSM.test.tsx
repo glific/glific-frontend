@@ -198,13 +198,19 @@ describe('Add mode', () => {
     fireEvent.click(screen.getByText('Add Variable'));
 
     await waitFor(() => {
-      expect(screen.getByText('Hi {{1}}')).toBeInTheDocument();
+      expect(screen.getAllByTestId('variable')).toHaveLength(1);
+    });
+
+    fireEvent.click(screen.getByText('Add Variable'));
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('variable')).toHaveLength(2);
     });
 
     fireEvent.click(screen.getAllByTestId('delete-variable')[0]);
 
     await waitFor(() => {
-      expect(screen.queryByPlaceholderText('Define value ')).not.toBeInTheDocument();
+      expect(screen.getAllByTestId('variable')).toHaveLength(1);
     });
   });
 

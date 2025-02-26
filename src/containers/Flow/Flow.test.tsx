@@ -37,9 +37,9 @@ const mocks = [
     isActive: true,
     isPinned: false,
     isBackground: false,
-    name: 'Copy of Help',
-    keywords: [],
-    description: '',
+    name: 'Help flow',
+    keywords: ['help'],
+    description: 'Copy of Help',
     ignoreKeywords: false,
     addRoleIds: [],
     deleteRoleIds: [],
@@ -50,7 +50,7 @@ const mocks = [
     isBackground: false,
     name: 'Copy of Help',
     keywords: ['help', 'activity'],
-    description: 'Help flow',
+    description: 'Copy of Help',
     ignoreKeywords: false,
     addRoleIds: [],
     deleteRoleIds: [],
@@ -372,7 +372,7 @@ it('should create copy of a template flow', async () => {
 
   const { container, getByTestId } = render(copyFlow());
   await waitFor(() => {
-    expect(screen.getByText('Copy of Help')).toBeInTheDocument();
+    expect(screen.getAllByText('Copy of Help')[0]).toBeInTheDocument();
   });
 
   const button = getByTestId('submitActionButton');

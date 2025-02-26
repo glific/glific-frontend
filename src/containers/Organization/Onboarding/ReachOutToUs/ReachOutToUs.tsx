@@ -27,9 +27,9 @@ export const ReachOutToUs = ({ open, setOpen, handleStepChange, saveData }: Reac
   const [success, setSuccess] = useState(false);
 
   const helperText = (
-    <p>
+    <span>
       You can also reachout to us on <a href="mailto:support@glific.org">support@glific.org</a>.
-    </p>
+    </span>
   );
 
   const formFields = [
