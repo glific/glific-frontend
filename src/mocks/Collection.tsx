@@ -453,7 +453,17 @@ export const deleteContactFromCollection = {
 export const getCollectionsList = (label?: any) => ({
   request: {
     query: GET_COLLECTIONS_LIST,
-    variables: { filter: { groupType: 'WABA', label: '' }, opts: { limit: 50, offset: 0, order: 'ASC' } },
+    variables: {
+      filter: {
+        groupType: 'WABA',
+        label,
+      },
+      opts: {
+        limit: 50,
+        offset: 0,
+        order: 'ASC',
+      },
+    },
   },
   result: {
     data: {
