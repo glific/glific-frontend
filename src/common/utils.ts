@@ -77,8 +77,10 @@ const checkSessionValidityMethod = async () => {
       setAuthSession(response.data.data);
       return true;
     }
+    setLogs(`Token renewal failed: No response data: ${response} `, 'error');
     return false;
   } catch (_err) {
+    setLogs(`Token renewal failed: ${_err} `, 'error');
     // error indicates session has expired or invalid tokens
     return false;
   }

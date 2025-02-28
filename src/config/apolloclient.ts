@@ -15,6 +15,7 @@ import {
   getAuthSession,
   setAuthSession,
   getUserSession,
+  checkAndRenewToken,
 } from 'services/AuthService';
 import { CONNECTION_RECONNECT_ATTEMPTS } from 'common/constants';
 import { Logout } from 'containers/Auth/Logout/Logout';
@@ -102,8 +103,10 @@ const gqlClient = (navigate: any) => {
       // @ts-ignore
       switch (networkError.statusCode) {
         case 401:
-          setLogs(`Error 401: logging user out,  ${JSON.stringify(networkError)}`, 'error');
-          navigate('/logout/session');
+          setLogs('401 detected. Attempting token renewal before logout.', 'info');
+
+          // check if token exists
+          checkAndRenewToken(navigate);
           break;
         default:
           // eslint-disable-next-line
