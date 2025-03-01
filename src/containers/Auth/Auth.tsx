@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Formik, Form, Field } from 'formik';
 import { Typography } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { Captcha } from 'components/UI/Form/Captcha/Captcha';
 
@@ -187,7 +187,7 @@ export const Auth = ({
                   );
                 })}
                 <div className={styles.Link}>
-                  <Link to={`/${linkURL}`}>{linkText}</Link>
+                  <a href={`/${linkURL}`}>{linkText}</a>
                 </div>
                 <div className={styles.CenterButton}>
                   {isRegistration ? (

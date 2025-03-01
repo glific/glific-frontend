@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react';
-import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation } from 'react-router';
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 
 import { Loading } from 'components/UI/Layout/Loading/Loading';

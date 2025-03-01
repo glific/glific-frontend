@@ -2,7 +2,7 @@ import { Container } from '@mui/material';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import setLogs from 'config/logs';
 import { Component } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import styles from './ErrorBoundary.module.css';
 
 function withRouter(NavigateComponent: any) {

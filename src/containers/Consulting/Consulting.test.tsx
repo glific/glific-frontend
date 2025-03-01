@@ -1,5 +1,5 @@
 import { fireEvent, render, waitFor, cleanup, screen, within } from '@testing-library/react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router';
 import { MockedProvider } from '@apollo/client/testing';
 
 import { getConsultingHour, getOrganizationList, createConsultingHour, updateConsultingHour } from 'mocks/Consulting';

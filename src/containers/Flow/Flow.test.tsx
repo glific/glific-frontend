@@ -1,6 +1,6 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { render, waitFor, fireEvent, screen, cleanup } from '@testing-library/react';
-import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import { MemoryRouter, Route, Routes } from 'react-router';
 import { vi } from 'vitest';
 
 import { getOrganizationLanguagesQuery, getOrganizationQuery } from 'mocks/Organization';
@@ -104,8 +104,8 @@ const mockUseLocationValue: any = {
 };
 const mockedUsedNavigate = vi.fn();
 
-vi.mock('react-router-dom', async () => ({
-  ...((await vi.importActual<any>('react-router-dom')) as {}),
+vi.mock('react-router', async () => ({
+  ...((await vi.importActual<any>('react-router')) as {}),
   useLocation: () => {
     return mockUseLocationValue;
   },

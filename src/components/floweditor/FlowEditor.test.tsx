@@ -1,4 +1,4 @@
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router';
 import { MockedProvider } from '@apollo/client/testing';
 import { render, waitFor, fireEvent, screen } from '@testing-library/react';
 import { vi } from 'vitest';
@@ -29,9 +29,9 @@ import * as Notification from 'common/notification';
 
 window.location = { assign: vi.fn() } as any;
 
-vi.mock('react-router-dom', async () => {
+vi.mock('react-router', async () => {
   return {
-    ...(await vi.importActual<any>('react-router-dom')),
+    ...(await vi.importActual<any>('react-router')),
     useParams: () => ({ uuid: 'b050c652-65b5-4ccf-b62b-1e8b3f328676' }),
   };
 });

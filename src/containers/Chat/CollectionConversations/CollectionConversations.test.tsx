@@ -1,4 +1,4 @@
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router';
 import { render, cleanup, waitFor, screen, fireEvent } from '@testing-library/react';
 
 import { SEARCH_QUERY } from 'graphql/queries/Search';

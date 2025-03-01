@@ -1,5 +1,5 @@
 import { render, waitFor, within, fireEvent } from '@testing-library/react';
-import { Route, Routes, BrowserRouter as Router } from 'react-router-dom';
+import { Route, Routes, BrowserRouter as Router } from 'react-router';
 import { MockedProvider } from '@apollo/client/testing';
 import { vi } from 'vitest';
 
@@ -7,9 +7,9 @@ import { FlowList } from 'containers/Flow/FlowList/FlowList';
 import { FormLayout } from './FormLayout';
 import { LIST_ITEM_MOCKS, listItemProps } from './FormLayout.test.helper';
 
-vi.mock('react-router-dom', async () => {
+vi.mock('react-router', async () => {
   return {
-    ...(await vi.importActual<any>('react-router-dom')),
+    ...(await vi.importActual<any>('react-router')),
     useParams: () => ({ id: 1 }),
   };
 });

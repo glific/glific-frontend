@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import { MemoryRouter, Route, Routes } from 'react-router';
 import axios from 'axios';
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 import { vi } from 'vitest';

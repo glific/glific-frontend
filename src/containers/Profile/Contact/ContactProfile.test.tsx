@@ -4,7 +4,7 @@ import { MockedProvider } from '@apollo/client/testing';
 import { LOGGED_IN_USER_MOCK, multiple_profile_mock } from 'mocks/Contact';
 import { ContactProfile } from './ContactProfile';
 import { mocks as historyMock } from './ContactHistory/ContactHistory.test';
-import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import { MemoryRouter, Route, Routes } from 'react-router';
 
 describe('contact profile with single profile', () => {
   const mocks = [...LOGGED_IN_USER_MOCK, ...historyMock];

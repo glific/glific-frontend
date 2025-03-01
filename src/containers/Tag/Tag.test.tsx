@@ -1,6 +1,6 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import { MemoryRouter, Route, Routes } from 'react-router';
 import { vi } from 'vitest';
 import { getOrganizationLanguagesQuery, getOrganizationQuery } from 'mocks/Organization';
 import { getTagQuery, filterTagQuery, getFilterTagQuery, createTag } from 'mocks/Tag';
@@ -30,8 +30,8 @@ const mockUseLocationValue: any = {
 };
 
 const notificationSpy = vi.spyOn(Notification, 'setNotification');
-vi.mock('react-router-dom', async () => ({
-  ...((await vi.importActual<any>('react-router-dom')) as {}),
+vi.mock('react-router', async () => ({
+  ...((await vi.importActual<any>('react-router')) as {}),
   useLocation: () => {
     return mockUseLocationValue;
   },

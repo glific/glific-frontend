@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router';
 import axios from 'axios';
 import * as Yup from 'yup';
 import { useLazyQuery } from '@apollo/client';

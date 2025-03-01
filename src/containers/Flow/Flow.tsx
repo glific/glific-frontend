@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useParams, useNavigate } from 'react-router';
 import { useQuery, useMutation } from '@apollo/client';
 
 import { FormLayout } from 'containers/Form/FormLayout';

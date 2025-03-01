@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 import { MockedProvider } from '@apollo/client/testing';
 import axios from 'axios';
 import { vi } from 'vitest';

@@ -2,7 +2,7 @@ import { render, screen, waitFor, fireEvent, cleanup } from '@testing-library/re
 import userEvent from '@testing-library/user-event';
 import { MockedProvider } from '@apollo/client/testing';
 import axios from 'axios';
-import { Route, MemoryRouter, Routes } from 'react-router-dom';
+import { Route, MemoryRouter, Routes } from 'react-router';
 import { vi } from 'vitest';
 
 import { setUserSession } from 'services/AuthService';
@@ -40,8 +40,8 @@ const mockUseLocationValue: any = {
   state: null,
 };
 
-vi.mock('react-router-dom', async () => ({
-  ...((await vi.importActual<any>('react-router-dom')) as {}),
+vi.mock('react-router', async () => ({
+  ...((await vi.importActual<any>('react-router')) as {}),
   useLocation: () => {
     return mockUseLocationValue;
   },
