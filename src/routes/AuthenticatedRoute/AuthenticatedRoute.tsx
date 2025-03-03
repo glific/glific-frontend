@@ -64,6 +64,9 @@ const Assistant = lazy(() => import('containers/Assistants/Assistants'));
 const WaPollsCreate = lazy(() => import('containers/WaGroups/WaPolls/WaPolls'));
 const WaPollsList = lazy(() => import('containers/WaGroups/WaPolls/WaPollsList/WaPollsList'));
 
+const Certificates = lazy(() => import('containers/Certificates/Certificate'));
+const CertificatesList = lazy(() => import('containers/Certificates/CertificatesList/CertificateList'));
+
 const routeStaff = (
   <Routes>
     <Route path="collection" element={<CollectionList />} />
@@ -150,6 +153,9 @@ const routeAdmin = (
     <Route path="group/polls" element={<WaPollsList />} />
     <Route path="group/polls/add" element={<WaPollsCreate />} />
     <Route path="group/polls/:id/edit" element={<WaPollsCreate />} />
+
+    <Route path="certificates" element={<CertificatesList />} />
+    <Route path="certificates/add" element={<Certificates />} />
 
     <Route path="/*" element={<Chat />} />
   </Routes>

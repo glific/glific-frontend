@@ -162,6 +162,13 @@ const menus = (): Menu[] => [
         type: 'sideDrawer',
         roles: managerLevel,
       },
+      {
+        title: 'Certificates',
+        path: '/certificates',
+        icon: 'certificate',
+        type: 'sideDrawer',
+        roles: allRoles,
+      },
     ],
   },
   {
