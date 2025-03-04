@@ -47,8 +47,9 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
         esbuildOptions: esbuildOptions,
       },
       server: {
-        open: true,
+        host: 'glific.test',
         port: 3000,
+        open: 'https://glific.test:3000/',
         https: {
           key: fs.readFileSync('../glific/priv/cert/glific.test+1-key.pem'),
           cert: fs.readFileSync('../glific/priv/cert/glific.test+1.pem'),

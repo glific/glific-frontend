@@ -98,6 +98,7 @@ export const Login = () => {
       name: 'password',
       type: 'password',
       placeholder: t('Password'),
+      autoComplete: 'on',
     },
   ];
 
