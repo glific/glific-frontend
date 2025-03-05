@@ -1,15 +1,15 @@
 import { useTranslation } from 'react-i18next';
 
 import CertificateIcon from 'assets/images/Certificate.svg?react';
+import CopyAllOutlined from 'assets/images/icons/Flow/Copy.svg?react';
+import { certificatesInfo } from 'common/HelpData';
+import { setNotification } from 'common/notification';
+import { copyToClipboardMethod } from 'common/utils';
 import { List } from 'containers/List/List';
+import { DELETE_CERTIFICATE } from 'graphql/mutations/Certificate';
+import { COUNT_CERTIFICATES, LIST_CERTIFICATES } from 'graphql/queries/Certificate';
 
 import styles from './CertificateList.module.css';
-import { certificatesInfo } from 'common/HelpData';
-import { COUNT_CERTIFICATES, LIST_CERTIFICATES } from 'graphql/queries/Certificate';
-import { DELETE_CERTIFICATE } from 'graphql/mutations/Certificate';
-import { copyToClipboardMethod } from 'common/utils';
-import { setNotification } from 'common/notification';
-import CopyAllOutlined from 'assets/images/icons/Flow/Copy.svg?react';
 
 const queries = {
   countQuery: COUNT_CERTIFICATES,

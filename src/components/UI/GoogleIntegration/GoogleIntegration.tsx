@@ -1,14 +1,12 @@
 import { FormLayout } from 'containers/Form/FormLayout';
 import { DocumentNode } from 'graphql';
-import { useTranslation } from 'react-i18next';
-import * as Yup from 'yup';
 
 interface GoogleIntegrationProps {
-  type: string;
   getItemQuery: DocumentNode;
   createItemQuery: DocumentNode;
   updateItemQuery: DocumentNode;
   deleteItemQuery: DocumentNode;
+  title?: string;
   formFields: Array<any>;
   setStates: any;
   setPayload: any;
@@ -21,23 +19,9 @@ interface GoogleIntegrationProps {
   redirectionLink: string;
 }
 
-const permissionOptions = [
-  {
-    label: 'Read',
-    id: 'READ',
-  },
-  {
-    label: 'Write',
-    id: 'WRITE',
-  },
-  {
-    label: 'Read & Write',
-    id: 'ALL',
-  },
-];
-
 const GoogleIntegration = ({
   states,
+  title,
   icon,
   formFields,
   setStates,
@@ -52,8 +36,6 @@ const GoogleIntegration = ({
   listItem,
   redirectionLink,
 }: GoogleIntegrationProps) => {
-  const { t } = useTranslation();
-
   const queries = {
     getItemQuery,
     createItemQuery,
@@ -61,15 +43,14 @@ const GoogleIntegration = ({
     deleteItemQuery,
   };
 
-  const FormSchema = Yup.object().shape(formSchema);
-
   return (
     <FormLayout
       {...queries}
+      title={title}
       states={states}
       setPayload={setPayload}
       setStates={setStates}
-      validationSchema={FormSchema}
+      validationSchema={formSchema}
       listItemName={listItemName}
       dialogMessage={dialogMessage}
       formFields={formFields}

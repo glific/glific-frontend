@@ -1,11 +1,12 @@
-import { Input } from 'components/UI/Form/Input/Input';
-import GoogleIntegration from 'components/UI/GoogleIntegration/GoogleIntegration';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
+
 import CertificateIcon from 'assets/images/Certificate.svg?react';
-import { GET_CERTIFICATE } from 'graphql/queries/Certificate';
+import { Input } from 'components/UI/Form/Input/Input';
+import GoogleIntegration from 'components/UI/GoogleIntegration/GoogleIntegration';
 import { CREATE_CERTIFICATE, DELETE_CERTIFICATE, UPDATE_CERTIFICATE } from 'graphql/mutations/Certificate';
+import { GET_CERTIFICATE } from 'graphql/queries/Certificate';
 
 const regex = /^https:\/\/docs\.google\.com\/presentation\/d\/[a-zA-Z0-9_-]+(?:\/.*)?$/;
 const dialogMessage = "You won't be able to use this certificate again.";
@@ -78,7 +79,7 @@ const Certificate = () => {
 
   return (
     <GoogleIntegration
-      type="slides"
+      title={t('Google sheet')}
       states={states}
       formSchema={formSchema}
       formFields={formFields}
