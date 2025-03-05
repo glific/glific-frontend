@@ -31,13 +31,13 @@ const Certificate = () => {
     url,
   };
 
-  const formSchema = {
+  const formSchema = Yup.object().shape({
     label: Yup.string().required('Label is required').max(40, 'Label should be less than 40 characters'),
     description: Yup.string()
       .required('Description is required')
       .max(150, 'Description should be less than 150 characters'),
     url: Yup.string().required('URL is required').matches(regex, 'Invalid URL'),
-  };
+  });
 
   const formFields = [
     {
@@ -79,7 +79,6 @@ const Certificate = () => {
 
   return (
     <GoogleIntegration
-      title={t('Google sheet')}
       states={states}
       formSchema={formSchema}
       formFields={formFields}
