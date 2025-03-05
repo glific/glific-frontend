@@ -187,7 +187,7 @@ export const Auth = ({
                   );
                 })}
                 <div className={styles.Link}>
-                  <a href={`/${linkURL}`}>{linkText}</a>
+                  <Link to={`/${linkURL}`}>{linkText}</Link>
                 </div>
                 <div className={styles.CenterButton}>
                   {isRegistration ? (
