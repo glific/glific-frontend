@@ -652,10 +652,10 @@
   resolved "https://registry.yarnpkg.com/@esbuild/win32-x64/-/win32-x64-0.23.1.tgz#81fd50d11e2c32b2d6241470e3185b70c7b30699"
   integrity sha512-BHpFFeslkWrXWyUPnbKm+xYYVYruCinGcftSBaa8zoF9hZO4BcSCFUvHVTtzpIY6YzUnYtuEhZ+C9iEXjxnasg==
 
-"@glific/flow-editor@^1.26.3-20":
-  version "1.26.3-20"
-  resolved "https://registry.yarnpkg.com/@glific/flow-editor/-/flow-editor-1.26.3-20.tgz#06c315ea1ce2ae890d3b7fc27c4e382867367505"
-  integrity sha512-tNCQm0/g2240dQkZ4fR/zzNG1cV7XmwBN5kTwSoeHIxemJfhZ4cQB6FPvhx7agdnJ5JABEAYiLOI4xt9sI+cUg==
+"@glific/flow-editor@^1.26.3-21":
+  version "1.26.3"
+  resolved "https://registry.yarnpkg.com/@glific/flow-editor/-/flow-editor-1.26.3.tgz#369cd35240d4daa644fb734c8593a2d31d41125f"
+  integrity sha512-fDCCRguLLtOnY7LHdJ1znUjHMw4TldCnULkLJqT7NdaiI7V/w+0P7rvnHpgbCbmx5ki/15F3YVoV95JPONoGnA==
   dependencies:
     react "^16.8.6"
     react-dom "^16.8.6"
