@@ -19,7 +19,6 @@ interface GoogleIntegrationProps {
   listItemName: string;
   listItem: string;
   redirectionLink: string;
-  title: string;
 }
 
 const permissionOptions = [
@@ -38,7 +37,6 @@ const permissionOptions = [
 ];
 
 const GoogleIntegration = ({
-  type,
   states,
   icon,
   formFields,
@@ -53,7 +51,6 @@ const GoogleIntegration = ({
   listItemName,
   listItem,
   redirectionLink,
-  title,
 }: GoogleIntegrationProps) => {
   const { t } = useTranslation();
 
@@ -70,7 +67,6 @@ const GoogleIntegration = ({
     <FormLayout
       {...queries}
       states={states}
-      title={title}
       setPayload={setPayload}
       setStates={setStates}
       validationSchema={FormSchema}
@@ -83,7 +79,7 @@ const GoogleIntegration = ({
       listItem={listItem}
       icon={icon}
       languageSupport={false}
-      backLinkButton="/sheet-integration"
+      backLinkButton={`/${redirectionLink}`}
     />
   );
 };

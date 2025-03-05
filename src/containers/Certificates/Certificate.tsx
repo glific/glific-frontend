@@ -1,21 +1,21 @@
 import { Input } from 'components/UI/Form/Input/Input';
 import GoogleIntegration from 'components/UI/GoogleIntegration/GoogleIntegration';
-import { CREATE_SHEET, DELETE_SHEET, UPDATE_SHEET } from 'graphql/mutations/Sheet';
-import { GET_SHEET } from 'graphql/queries/Sheet';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
 import CertificateIcon from 'assets/images/Certificate.svg?react';
+import { GET_CERTIFICATE } from 'graphql/queries/Certificate';
+import { CREATE_CERTIFICATE, DELETE_CERTIFICATE, UPDATE_CERTIFICATE } from 'graphql/mutations/Certificate';
 
 const regex = /^https:\/\/docs\.google\.com\/presentation\/d\/[a-zA-Z0-9_-]+(?:\/.*)?$/;
 const dialogMessage = "You won't be able to use this certificate again.";
 const icon = <CertificateIcon />;
 
 const queries = {
-  getItemQuery: GET_SHEET,
-  createItemQuery: CREATE_SHEET,
-  updateItemQuery: UPDATE_SHEET,
-  deleteItemQuery: DELETE_SHEET,
+  getItemQuery: GET_CERTIFICATE,
+  createItemQuery: CREATE_CERTIFICATE,
+  updateItemQuery: UPDATE_CERTIFICATE,
+  deleteItemQuery: DELETE_CERTIFICATE,
 };
 
 const Certificate = () => {
@@ -61,13 +61,24 @@ const Certificate = () => {
     },
   ];
 
-  const setStates = () => {};
-  const setPayload = () => {};
+  const setStates = ({ label: labelvalue, description: descriptionValue, url: urlValue }: any) => {
+    setLabel(labelvalue);
+    setDescription(descriptionValue);
+    setUrl(urlValue);
+  };
+  const setPayload = ({ label: labelvalue, description: descriptionValue, url: urlValue }: any) => {
+    const payload = {
+      label: labelvalue,
+      description: descriptionValue,
+      url: urlValue,
+    };
+
+    return payload;
+  };
 
   return (
     <GoogleIntegration
       type="slides"
-      title="Certificate"
       states={states}
       formSchema={formSchema}
       formFields={formFields}
@@ -75,8 +86,8 @@ const Certificate = () => {
       setStates={setStates}
       dialogMessage={dialogMessage}
       listItemName="Certificate"
-      listItem="certificate"
-      redirectionLink="custom-certificates"
+      listItem="certificateTemplate"
+      redirectionLink="certificates"
       icon={icon}
       {...queries}
     />

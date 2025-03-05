@@ -155,7 +155,8 @@ const routeAdmin = (
     <Route path="group/polls/:id/edit" element={<WaPollsCreate />} />
 
     <Route path="certificates" element={<CertificatesList />} />
-    <Route path="certificates/add" element={<Certificates />} />
+    <Route path="certificate/add" element={<Certificates />} />
+    <Route path="certificate/:id/edit" element={<Certificates />} />
 
     <Route path="/*" element={<Chat />} />
   </Routes>
