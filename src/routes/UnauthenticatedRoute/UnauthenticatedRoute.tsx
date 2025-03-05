@@ -5,16 +5,16 @@ import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { RECAPTCHA_CLIENT_KEY } from 'config';
 
+const Login = lazy(() => import('containers/Auth/Login/Login'));
+const Registration = lazy(() => import('containers/Auth/Registration/Registration'));
+const ConfirmOTP = lazy(() => import('containers/Auth/ConfirmOTP/ConfirmOTP'));
+const ResetPasswordPhone = lazy(() => import('containers/Auth/ResetPassword/ResetPasswordPhone'));
+const ResetPassOTP = lazy(() => import('containers/Auth/ResetPassword/ResetPasswordConfirmOTP'));
+const OnboardingForm = lazy(() => import('containers/Organization/Onboarding/Form'));
+const OnboardingHome = lazy(() => import('containers/Organization/Onboarding/Home/Home'));
+
 export const UnauthenticatedRoute = () => {
   const location = useLocation();
-
-  const Login = lazy(() => import('containers/Auth/Login/Login'));
-  const Registration = lazy(() => import('containers/Auth/Registration/Registration'));
-  const ConfirmOTP = lazy(() => import('containers/Auth/ConfirmOTP/ConfirmOTP'));
-  const ResetPasswordPhone = lazy(() => import('containers/Auth/ResetPassword/ResetPasswordPhone'));
-  const ResetPassOTP = lazy(() => import('containers/Auth/ResetPassword/ResetPasswordConfirmOTP'));
-  const OnboardingForm = lazy(() => import('containers/Organization/Onboarding/Form'));
-  const OnboardingHome = lazy(() => import('containers/Organization/Onboarding/Home/Home'));
 
   return (
     <Suspense fallback={<Loading />}>
