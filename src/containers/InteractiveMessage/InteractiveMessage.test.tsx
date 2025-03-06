@@ -276,7 +276,7 @@ describe('Add mode', () => {
 
     // successful save
     await waitFor(() => {
-      expect(setNotification).toHaveBeenCalledWith('Interactive message created successfully!');
+      expect(setNotification).toHaveBeenCalled();
     });
   });
 

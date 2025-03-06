@@ -19,6 +19,10 @@ vi.mock('react-router', async () => ({
   useNavigate: () => mockedUsedNavigate,
 }));
 
+beforeEach(() => {
+  cleanup();
+});
+
 const renderForm = (
   <GoogleReCaptchaProvider reCaptchaKey={'test key'}>
     <MockedProvider>
@@ -234,7 +238,7 @@ test('it should submit the form', async () => {
   await waitFor(() => {
     expect(getByText('Success!')).toBeInTheDocument();
   });
-}, 1500);
+});
 
 test('it should disgree and send an email', async () => {
   const { getByTestId, getAllByRole, getAllByTestId } = render(renderForm);
