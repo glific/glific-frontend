@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router';
+import { useLocation, redirect } from 'react-router';
 import axios from 'axios';
 import * as Yup from 'yup';
 import { useLazyQuery } from '@apollo/client';
@@ -29,7 +29,6 @@ export const Login = () => {
   const { setAuthenticated } = useContext(SessionContext);
   const [authError, setAuthError] = useState('');
   const { i18n, t } = useTranslation();
-  const navigate = useNavigate();
   const location: any = useLocation();
 
   // function to unauthorize access
@@ -73,10 +72,10 @@ export const Login = () => {
         }
 
         if (location.state?.to) {
-          navigate(location.state.to);
+          redirect(location.state.to);
         } else {
           // redirect to chat
-          navigate('/chat');
+          redirect('/chat');
         }
       }
     }
