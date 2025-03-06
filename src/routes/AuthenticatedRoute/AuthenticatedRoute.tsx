@@ -200,7 +200,7 @@ export const AuthenticatedRoute = () => {
   );
 
   let userRole: any[] = [];
-  let route = routeStaff;
+  let route;
 
   if (getUserRole()) {
     userRole = getUserRole();

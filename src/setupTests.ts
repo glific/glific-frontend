@@ -4,7 +4,7 @@ import { TextEncoder, TextDecoder } from 'util';
 import '@testing-library/jest-dom/vitest';
 
 import { cleanup } from '@testing-library/react';
-import { afterEach } from 'node:test';
+import { afterEach } from 'vitest';
 
 // runs a cleanup after each test case (e.g. clearing jsdom)
 afterEach(() => {

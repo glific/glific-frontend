@@ -55,7 +55,12 @@ const mockStripe = () => ({
     };
   }),
   confirmCardPayment: vi.fn(),
-  confirmCardSetup: vi.fn(),
+  confirmCardSetup: vi.fn((props) => {
+    return Promise.resolve({
+      error: null,
+      setupIntent: { status: 'succeeded' },
+    });
+  }),
   paymentRequest: vi.fn(),
   _registerWrapper: vi.fn(),
 });

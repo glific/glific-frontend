@@ -76,7 +76,7 @@ test('it navigates to create a copy', async () => {
   fireEvent.click(screen.getAllByTestId('duplicate-icon')[0]);
 
   await waitFor(() => {
-    expect(screen.getByText('Copy Poll')).toBeInTheDocument();
+    expect(mockedUsedNavigate).toHaveBeenCalled();
   });
 });
 
