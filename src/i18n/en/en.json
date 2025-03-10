@@ -535,5 +535,7 @@
   "Copy Poll": "Copy Poll",
   "Group Polls": "Group Polls",
   "Name cannot be more than 250 characters.": "Name cannot be more than 250 characters.",
-  "Certificates": "Certificates"
+  "Certificates": "Certificates",
+  "Copy Id": "Copy Id",
+  "You won't be able to use this certificate.": "You won't be able to use this certificate."
 }

@@ -35,7 +35,7 @@ export const CertificateList = () => {
 
   const columnNames = [{ name: 'label', label: t('Label') }, { label: t('Description') }, { label: t('Actions') }];
 
-  const dialogMessage = "You won't be able to use this certificate.";
+  const dialogMessage = t("You won't be able to use this certificate.");
 
   const columnAttributes = {
     columnNames,
@@ -43,20 +43,20 @@ export const CertificateList = () => {
     columnStyles,
   };
 
-  const copyUuid = (_id: string, item: any) => {
+  const copyId = (_id: string, item: any) => {
     if (item.id) {
       copyToClipboardMethod(item.id);
     } else {
-      setNotification('Sorry! UUID not found', 'warning');
+      setNotification('Sorry! Id not found', 'warning');
     }
   };
 
   const additionalAction = () => [
     {
-      label: t('Copy UUID'),
+      label: t('Copy Id'),
       icon: <CopyAllOutlined data-testid="copy-icon" />,
       parameter: 'id',
-      dialog: copyUuid,
+      dialog: copyId,
     },
   ];
 
