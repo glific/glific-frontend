@@ -318,6 +318,6 @@ export const checkAndRenewToken = async (navigate: any) => {
   }
 
   // If renewal fails, log out the user
-  setLogs(`Error 401: logging user out`, 'error');
+  setLogs(`Error 401: logging user out because invalid token`, 'error');
   navigate('/logout/session');
 };
