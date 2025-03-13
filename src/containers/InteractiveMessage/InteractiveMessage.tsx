@@ -84,6 +84,7 @@ export const InteractiveMessage = () => {
   const [previousState, setPreviousState] = useState<any>({});
   const [nextLanguage, setNextLanguage] = useState<any>('');
   const [translateMessage, setTranslateMessage] = useState(null);
+  const [showWarning, setShowWarning] = useState(false);
 
   const { t } = useTranslation();
   const params = useParams();
@@ -118,6 +119,25 @@ export const InteractiveMessage = () => {
 
   const [getInteractiveTemplateById, { data: template, loading: loadingTemplate }] =
     useLazyQuery<any>(GET_INTERACTIVE_MESSAGE);
+
+  const removeMarkdownValidation = (interactiveContent: any) => {
+    const regex = /(\*\*.*?\*\*)|(\*.*?\*)|(__.*?__)|(_.*?_)|(#.*?\n)|(\[.*?\]\(.*?\))/g;
+
+    const newOptions = interactiveContent.options.map((option: any) => {
+      if (regex.test(option.title)) {
+        option.title = option.title.replace(regex, (match: string) => {
+          setShowWarning(true);
+          return match.replace(/(\*\*|\*|__|_|#|\[|\]\(.*?\))/g, '');
+        });
+      }
+      return option;
+    });
+
+    return {
+      ...interactiveContent,
+      options: newOptions,
+    };
+  };
 
   useEffect(() => {
     getVariableOptions(setContactVariables);
@@ -200,8 +220,18 @@ export const InteractiveMessage = () => {
     sendWithTitle: sendInteractiveTitleValue,
   }: any) => {
     let content;
+    let translationValCopy;
     if (translationsVal) {
-      const translationsCopy = JSON.parse(translationsVal);
+      let translationsCopy = JSON.parse(translationsVal);
+
+      Object.keys(translationsCopy).map((key) => {
+        translationsCopy = {
+          ...translationsCopy,
+          [key]: removeMarkdownValidation(translationsCopy[key]),
+        };
+      });
+
+      translationValCopy = JSON.stringify(translationsCopy);
 
       // restore if translations present for selected language
       if (
@@ -209,8 +239,12 @@ export const InteractiveMessage = () => {
         translationsCopy[language.id || languageVal.id] &&
         !location.state?.language
       ) {
+        console.log(1);
+
         content = JSON.parse(translationsVal)[language.id || languageVal.id] || JSON.parse(interactiveContentValue);
       } else if (template) {
+        console.log(21);
+
         content = getDefaultValuesByTemplate(template.interactiveTemplate.interactiveTemplate);
       }
     }
@@ -262,7 +296,9 @@ export const InteractiveMessage = () => {
     }
 
     if (translationsVal) {
-      setTranslations(translationsVal);
+      console.log(translationsVal);
+
+      setTranslations(translationValCopy);
     }
     setSendWithTitle(sendInteractiveTitleValue);
 
@@ -723,6 +759,7 @@ export const InteractiveMessage = () => {
 
     payloadData.sendWithTitle = sendWithTitle;
     payloadData.translations = JSON.stringify(translationsCopy);
+    console.log(payloadData);
 
     return payloadData;
   };
@@ -840,6 +877,20 @@ export const InteractiveMessage = () => {
     );
   }
 
+  let warningDialog;
+  if (showWarning) {
+    warningDialog = (
+      <DialogBox
+        title="Markdown characters are not supported in buttons!"
+        buttonOk="Okay"
+        alignButtons="center"
+        handleOk={() => setShowWarning(false)}
+        skipCancel
+      >
+        <div className={styles.DialogContent}>The markdown content was removed.</div>
+      </DialogBox>
+    );
+  }
   if (languageOptions.length < 1 || loadingTemplate || tagsLoading) {
     return <Loading />;
   }
