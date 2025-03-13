@@ -8,6 +8,7 @@ import {
   clearAuthSession,
   getAuthSession,
 } from './AuthService';
+import setLogs from 'config/logs';
 
 vi.mock('axios');
 
@@ -17,6 +18,10 @@ vi.mock('pino-logflare', () => ({
 }));
 
 const mockedAxios = axios as any;
+
+vi.mock('config/logs', () => ({
+  default: vi.fn(),
+}));
 
 describe('AuthService', () => {
   beforeEach(() => {
@@ -107,5 +112,15 @@ describe('AuthService', () => {
     const errorMessage = 'Cannot send the otp to 919967665667';
     mockedAxios.post.mockImplementationOnce(() => Promise.reject(new Error(errorMessage)));
     await expect(sendOTP('919967665667')).rejects.toThrow(errorMessage);
+  });
+
+  test('testing renewAuthToken with error when there is no auth token', async () => {
+    // Call renewAuthToken
+    const result = renewAuthToken();
+
+    expect(result).toBeInstanceOf(Error);
+
+    // Verify setLogs was called with the correct arguments
+    expect(setLogs).toHaveBeenCalledWith('Token renewal failed: not found', 'error');
   });
 });
