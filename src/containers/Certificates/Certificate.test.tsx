@@ -72,7 +72,7 @@ describe('Certificate', () => {
     fireEvent.change(inputs[2], { target: { value: 'url' } });
     fireEvent.click(screen.getByText('Save'));
     await waitFor(() => {
-      expect(screen.getByText('Invalid URL')).toBeInTheDocument();
+      expect(screen.getByText('Invalid URL, Please add a Google Slides link.')).toBeInTheDocument();
     });
     fireEvent.change(inputs[2], {
       target: {
