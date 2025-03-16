@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 
 import CertificateIcon from 'assets/images/Certificate.svg?react';
 import CopyAllOutlined from 'assets/images/icons/Flow/Copy.svg?react';
+import LinkIcon from 'assets/images/icons/Sheets/Link.svg?react';
 import { certificatesInfo } from 'common/HelpData';
 import { setNotification } from 'common/notification';
 import { copyToClipboardMethod } from 'common/utils';
@@ -18,8 +19,8 @@ const queries = {
 };
 
 const getLabel = (label: string) => <p>{label}</p>;
-const getDescription = (description: string) => (
-  <p>{description.length < 100 ? description : `${description.slice(0, 100)}...`}</p>
+const getDescription = (description?: string) => (
+  <>{description ? <p>{description.length < 100 ? description : `${description.slice(0, 100)}...`}</p> : ''}</>
 );
 
 const columnStyles = [styles.Label, styles.Description, styles.Actions];
@@ -43,6 +44,10 @@ export const CertificateList = () => {
     columnStyles,
   };
 
+  const openLink = (_id: any, item: any) => {
+    window.open(item.url);
+  };
+
   const copyId = (_id: string, item: any) => {
     if (item.id) {
       copyToClipboardMethod(item.id);
@@ -52,6 +57,12 @@ export const CertificateList = () => {
   };
 
   const additionalAction = () => [
+    {
+      label: t('Link'),
+      icon: <LinkIcon />,
+      parameter: 'id',
+      dialog: openLink,
+    },
     {
       label: t('Copy Id'),
       icon: <CopyAllOutlined data-testid="copy-icon" />,

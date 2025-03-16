@@ -4,12 +4,15 @@ import * as Yup from 'yup';
 
 import CertificateIcon from 'assets/images/Certificate.svg?react';
 import { Input } from 'components/UI/Form/Input/Input';
-import GoogleIntegration from 'components/UI/GoogleIntegration/GoogleIntegration';
+import { SAMPLE_SLIDE_LINK } from 'config';
+import { FormLayout } from 'containers/Form/FormLayout';
 import { CREATE_CERTIFICATE, DELETE_CERTIFICATE, UPDATE_CERTIFICATE } from 'graphql/mutations/Certificate';
 import { GET_CERTIFICATE } from 'graphql/queries/Certificate';
+import styles from './Certificate.module.css';
 
 const regex = /^https:\/\/docs\.google\.com\/presentation\/d\/[a-zA-Z0-9_-]+(?:\/.*)?$/;
 const dialogMessage = "You won't be able to use this certificate again.";
+const redirectionLink = 'certificates';
 const icon = <CertificateIcon />;
 
 const queries = {
@@ -33,10 +36,8 @@ const Certificate = () => {
 
   const formSchema = Yup.object().shape({
     label: Yup.string().required('Label is required').max(40, 'Label should be less than 40 characters'),
-    description: Yup.string()
-      .required('Description is required')
-      .max(150, 'Description should be less than 150 characters'),
-    url: Yup.string().required('URL is required').matches(regex, 'Invalid URL'),
+    description: Yup.string().max(150, 'Description should be less than 150 characters'),
+    url: Yup.string().required('URL is required').matches(regex, 'Invalid URL, Please add a Google Slides link'),
   });
 
   const formFields = [
@@ -59,6 +60,14 @@ const Certificate = () => {
       name: 'url',
       type: 'text',
       label: t('URL'),
+      helperText: (
+        <span>
+          Please add a Google Slides link.
+          <a href={SAMPLE_SLIDE_LINK} target="_blank" rel="noreferrer" className={styles.HelperText}>
+            View Sample
+          </a>
+        </span>
+      ),
     },
   ];
 
@@ -78,16 +87,20 @@ const Certificate = () => {
   };
 
   return (
-    <GoogleIntegration
+    <FormLayout
       states={states}
-      formSchema={formSchema}
+      validationSchema={formSchema}
       formFields={formFields}
       setPayload={setPayload}
       setStates={setStates}
       dialogMessage={dialogMessage}
       listItemName="Certificate"
       listItem="certificateTemplate"
-      redirectionLink="certificates"
+      redirectionLink={redirectionLink}
+      cancelLink={redirectionLink}
+      backLinkButton={`/${redirectionLink}`}
+      languageSupport={false}
+      linkParameter="uuid"
       icon={icon}
       {...queries}
     />

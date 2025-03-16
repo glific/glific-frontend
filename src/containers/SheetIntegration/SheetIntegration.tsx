@@ -2,6 +2,7 @@ import { useState } from 'react';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 
+import { FormLayout } from 'containers/Form/FormLayout';
 import { Input } from 'components/UI/Form/Input/Input';
 import SheetIcon from 'assets/images/icons/Sheets/Sheet.svg?react';
 import { CREATE_SHEET, UPDATE_SHEET, DELETE_SHEET } from 'graphql/mutations/Sheet';
@@ -10,7 +11,6 @@ import { GET_SHEET } from 'graphql/queries/Sheet';
 import styles from './SheetIntegration.module.css';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
-import GoogleIntegration from 'components/UI/GoogleIntegration/GoogleIntegration';
 
 const sheetIcon = <SheetIcon className={styles.DarkIcon} />;
 const typeOptions = [
@@ -102,19 +102,23 @@ export const SheetIntegration = () => {
   };
 
   return (
-    <GoogleIntegration
-      title={t('Google sheet')}
+    <FormLayout
+      {...queries}
       states={states}
-      formSchema={FormSchema}
-      formFields={formFields}
+      title={t('Google sheet')}
       setPayload={setPayload}
       setStates={setStates}
-      dialogMessage={dialogMessage}
+      validationSchema={FormSchema}
       listItemName="Sheet"
-      listItem="sheet"
+      dialogMessage={dialogMessage}
+      formFields={formFields}
       redirectionLink="sheet-integration"
+      cancelLink="sheet-integration"
+      linkParameter="uuid"
+      listItem="sheet"
       icon={sheetIcon}
-      {...queries}
+      languageSupport={false}
+      backLinkButton="/sheet-integration"
     />
   );
 };
