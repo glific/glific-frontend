@@ -23,19 +23,19 @@ const queries = {
 };
 
 const Certificate = () => {
-  const [label, setLabel] = useState<string>('');
+  const [title, setTitle] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [url, setUrl] = useState<string>('');
   const { t } = useTranslation();
 
   const states = {
-    label,
+    title,
     description,
     url,
   };
 
   const formSchema = Yup.object().shape({
-    label: Yup.string().required('Label is required').max(40, 'Label should be less than 40 characters'),
+    title: Yup.string().required('Title is required').max(40, 'Title should be less than 40 characters'),
     description: Yup.string().max(150, 'Description should be less than 150 characters'),
     url: Yup.string().required('URL is required').matches(regex, 'Invalid URL, Please add a Google Slides link.'),
   });
@@ -43,9 +43,9 @@ const Certificate = () => {
   const formFields = [
     {
       component: Input,
-      name: 'label',
+      name: 'title',
       type: 'text',
-      label: t('Label'),
+      label: t('Title'),
     },
     {
       component: Input,
@@ -62,7 +62,8 @@ const Certificate = () => {
       label: t('URL'),
       helperText: (
         <span>
-          Please add a Google Slides link.
+          Please add a Google Slides link. Allowed dimensions are 16x9
+          <br />
           <a href={SAMPLE_SLIDE_LINK} target="_blank" rel="noreferrer" className={styles.HelperText}>
             View Sample
           </a>
@@ -72,11 +73,11 @@ const Certificate = () => {
   ];
 
   const setStates = ({ label: labelvalue, description: descriptionValue, url: urlValue }: any) => {
-    setLabel(labelvalue);
+    setTitle(labelvalue);
     setDescription(descriptionValue);
     setUrl(urlValue);
   };
-  const setPayload = ({ label: labelvalue, description: descriptionValue, url: urlValue }: any) => {
+  const setPayload = ({ title: labelvalue, description: descriptionValue, url: urlValue }: any) => {
     const payload = {
       label: labelvalue,
       description: descriptionValue,
