@@ -36,7 +36,7 @@ const Certificate = () => {
 
   const formSchema = Yup.object().shape({
     title: Yup.string().required('Title is required').max(40, 'Title should be less than 40 characters'),
-    description: Yup.string().max(150, 'Description should be less than 150 characters'),
+    description: Yup.string().max(150, 'Description should be less than 150 characters').nullable(),
     url: Yup.string().required('URL is required').matches(regex, 'Invalid URL, Please add a Google Slides link.'),
   });
 
