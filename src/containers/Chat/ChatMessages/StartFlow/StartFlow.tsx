@@ -6,7 +6,12 @@ import { FLOW_STATUS_PUBLISHED, setVariables } from 'common/constants';
 import { SearchDialogBox } from 'components/UI/SearchDialogBox/SearchDialogBox';
 import { CircularProgress } from '@mui/material';
 import { GET_FLOWS } from 'graphql/queries/Flow';
-import { ADD_FLOW_TO_COLLECTION, ADD_FLOW_TO_CONTACT, ADD_FLOW_TO_WA_GROUP } from 'graphql/mutations/Flow';
+import {
+  ADD_FLOW_TO_COLLECTION,
+  ADD_FLOW_TO_CONTACT,
+  ADD_FLOW_TO_WA_GROUP,
+  ADD_FLOW_TO_WA_GROUP_COLLECTION,
+} from 'graphql/mutations/Flow';
 
 interface StartAFlowProps {
   collectionId: string | undefined;
@@ -17,6 +22,8 @@ interface StartAFlowProps {
 
 export const StartAFlow = ({ collectionId, setShowFlowDialog, groups, entityId }: StartAFlowProps) => {
   const { t } = useTranslation();
+  const addFlowForCollectionMutation = groups ? ADD_FLOW_TO_WA_GROUP_COLLECTION : ADD_FLOW_TO_COLLECTION;
+  const addFlowMutation = groups ? ADD_FLOW_TO_WA_GROUP : ADD_FLOW_TO_CONTACT;
 
   const { data: flowsData, loading } = useQuery(GET_FLOWS, {
     variables: setVariables({
@@ -27,7 +34,7 @@ export const StartAFlow = ({ collectionId, setShowFlowDialog, groups, entityId }
     fetchPolicy: 'network-only', // set for now, need to check cache issue
   });
 
-  const [addFlowToWaGroups] = useMutation(ADD_FLOW_TO_WA_GROUP, {
+  const [addFlow] = useMutation(addFlowMutation, {
     onCompleted: () => {
       setNotification(t('Flow started successfully.'));
     },
@@ -36,16 +43,7 @@ export const StartAFlow = ({ collectionId, setShowFlowDialog, groups, entityId }
     },
   });
 
-  const [addFlow] = useMutation(ADD_FLOW_TO_CONTACT, {
-    onCompleted: () => {
-      setNotification(t('Flow started successfully.'));
-    },
-    onError: (error) => {
-      setErrorMessage(error);
-    },
-  });
-
-  const [addFlowToCollection] = useMutation(ADD_FLOW_TO_COLLECTION, {
+  const [addFlowToCollection] = useMutation(addFlowForCollectionMutation, {
     onCompleted: () => {
       setNotification(t('Your flow will start in a couple of minutes.'));
     },
@@ -60,15 +58,13 @@ export const StartAFlow = ({ collectionId, setShowFlowDialog, groups, entityId }
     if (entityId) {
       if (groups) {
         flowVariables.waGroupId = entityId;
-        addFlowToWaGroups({
-          variables: flowVariables,
-        });
       } else {
         flowVariables.contactId = entityId;
-        addFlow({
-          variables: flowVariables,
-        });
       }
+
+      addFlow({
+        variables: flowVariables,
+      });
     }
 
     if (collectionId) {
