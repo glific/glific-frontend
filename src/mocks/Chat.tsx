@@ -767,6 +767,7 @@ export const createAndSendMessageMutation = (input: any) => ({
           body: 'Hey There Wow',
           insertedAt: '2020-06-25T13:36:43Z',
           id: '10388',
+          media: null,
           receiver: {
             id: '2',
           },

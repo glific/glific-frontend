@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import HelpIcon from '../HelpIcon/HelpIcon';
 import styles from './Heading.module.css';
 import BackIcon from 'assets/images/icons/BackIconFlow.svg?react';

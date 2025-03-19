@@ -14,10 +14,14 @@ mockedAxios.post.mockResolvedValue({
 });
 
 const mockedUsedNavigate = vi.fn();
-vi.mock('react-router-dom', async () => ({
-  ...(await vi.importActual('react-router-dom')),
+vi.mock('react-router', async () => ({
+  ...(await vi.importActual('react-router')),
   useNavigate: () => mockedUsedNavigate,
 }));
+
+beforeEach(() => {
+  cleanup();
+});
 
 const renderForm = (
   <GoogleReCaptchaProvider reCaptchaKey={'test key'}>

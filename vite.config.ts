@@ -5,57 +5,51 @@ import react from '@vitejs/plugin-react';
 // import eslint from 'vite-plugin-eslint';
 import viteTsconfigPaths from 'vite-tsconfig-paths';
 import checker from 'vite-plugin-checker';
-import svgrPlugin from 'vite-plugin-svgr';
+import svgr from 'vite-plugin-svgr';
+
 import fs from 'fs';
-import nodePolyfills from 'rollup-plugin-polyfill-node';
+import { nodePolyfills } from 'vite-plugin-node-polyfills';
 
 // https://vitejs.dev/config/
 export default ({ command, mode }: ConfigEnv): UserConfigExport => {
+  const nodePolyfillsOptions = {
+    globals: {
+      Buffer: true,
+      global: true,
+      process: true,
+    },
+  };
+
+  const plugins = [react(), viteTsconfigPaths(), svgr(), nodePolyfills(nodePolyfillsOptions)];
+
+  const esbuildOptions = {
+    // Node.js global to browser globalThis
+    define: {
+      global: 'globalThis',
+    },
+  };
+
+  // dev in test mode config
   if (mode === 'test' && command === 'serve') {
     return defineConfig({
-      // dev specific config
-      plugins: [react(), viteTsconfigPaths(), svgrPlugin()],
-
+      plugins: plugins,
       optimizeDeps: {
-        esbuildOptions: {
-          // Node.js global to browser globalThis
-          define: {
-            global: 'globalThis',
-          },
-        },
-      },
-
-      resolve: { alias: { util: 'util/' } },
-      test: {
-        globals: true,
-        environment: 'jsdom',
-        setupFiles: './src/setupTests.ts',
-        coverage: {
-          reporter: ['lcov', 'text', 'html'],
-          // choosing istanbul for now because of this https://github.com/vitest-dev/vitest/issues/1252
-          provider: 'istanbul', // or 'c8',
-          include: ['src/**/**'],
-          exclude: ['node_modules/', '**/*.test.tsx', './src/assets/**'],
-        },
-        css: true,
+        esbuildOptions: esbuildOptions,
       },
     });
   }
+
+  // dev specific config
   if (command === 'serve') {
     return defineConfig({
-      // dev specific config
-      plugins: [react(), viteTsconfigPaths(), svgrPlugin(), checker({ typescript: true })],
+      plugins: plugins.concat([checker({ typescript: true })]),
       optimizeDeps: {
-        esbuildOptions: {
-          // Node.js global to browser globalThis
-          define: {
-            global: 'globalThis',
-          },
-        },
+        esbuildOptions: esbuildOptions,
       },
       server: {
-        open: true,
+        host: 'glific.test',
         port: 3000,
+        open: 'https://glific.test:3000/',
         https: {
           key: fs.readFileSync('../glific/priv/cert/glific.test+1-key.pem'),
           cert: fs.readFileSync('../glific/priv/cert/glific.test+1.pem'),
@@ -69,42 +63,17 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
           'Strict-Transport-Security': 'max-age=63072000; includeSubdomains; preload',
         },
       },
-      resolve: { alias: { util: 'util/', stream: 'stream-browserify' } }, // stream polyfill is needed by logflare
     });
   }
+
   // command === 'build'
   return defineConfig({
     optimizeDeps: {
-      esbuildOptions: {
-        // Node.js global to browser globalThis
-        define: {
-          global: 'globalThis',
-        },
-      },
+      esbuildOptions: esbuildOptions,
     },
-    // build specific config
-    plugins: [react(), viteTsconfigPaths(), svgrPlugin()],
+    plugins: plugins,
     build: {
-      // this is needed because of this https://github.com/vitejs/vite/issues/2139#issuecomment-1405624744
-      commonjsOptions: {
-        defaultIsModuleExports(id) {
-          try {
-            const module = require(id);
-            if (module?.default) {
-              return false;
-            }
-            return 'auto';
-          } catch (error) {
-            return 'auto';
-          }
-        },
-        transformMixedEsModules: true,
-      },
       outDir: 'build',
-      rollupOptions: {
-        plugins: [nodePolyfills('buffer', 'process')],
-      },
     },
-    resolve: { alias: { util: 'util/', stream: 'stream-browserify' } },
   });
 };
