@@ -84,6 +84,7 @@ export const InteractiveMessage = () => {
   const [previousState, setPreviousState] = useState<any>({});
   const [nextLanguage, setNextLanguage] = useState<any>('');
   const [translateMessage, setTranslateMessage] = useState(null);
+  const [showWarning, setShowWarning] = useState(false);
 
   const { t } = useTranslation();
   const params = useParams();
@@ -118,6 +119,43 @@ export const InteractiveMessage = () => {
 
   const [getInteractiveTemplateById, { data: template, loading: loadingTemplate }] =
     useLazyQuery<any>(GET_INTERACTIVE_MESSAGE);
+
+  const removeMarkdownValidation = (interactiveContent: any, type: string) => {
+    const regex = /(\*\*.*?\*\*)|(\*.*?\*)|(__.*?__)|(_.*?_)|(#.*?\n)|(\[.*?\]\(.*?\))/g;
+
+    const cleanMarkdown = (input: any): any => {
+      if (typeof input === 'string') {
+        if (regex.test(input)) {
+          setShowWarning(true);
+          return input.replace(/(\*\*|\*|__|_|#|\[|\]\(.*?\))/g, '');
+        }
+      } else if (Array.isArray(input)) {
+        return input.map(cleanMarkdown);
+      } else if (typeof input === 'object') {
+        for (const key in input) {
+          if (input.hasOwnProperty(key)) {
+            input[key] = cleanMarkdown(input[key]);
+          }
+        }
+      }
+      return input;
+    };
+
+    switch (type) {
+      case QUICK_REPLY:
+        return { ...interactiveContent, options: cleanMarkdown(interactiveContent.options) };
+
+      case LIST:
+        interactiveContent.items = interactiveContent.items.map((item: any) => ({
+          ...item,
+          options: cleanMarkdown(item.options),
+        }));
+        return cleanMarkdown(interactiveContent);
+
+      default:
+        return interactiveContent;
+    }
+  };
 
   useEffect(() => {
     getVariableOptions(setContactVariables);
@@ -200,8 +238,18 @@ export const InteractiveMessage = () => {
     sendWithTitle: sendInteractiveTitleValue,
   }: any) => {
     let content;
+    let translationValCopy;
     if (translationsVal) {
-      const translationsCopy = JSON.parse(translationsVal);
+      let translationsCopy = JSON.parse(translationsVal);
+
+      Object.keys(translationsCopy).forEach((key) => {
+        translationsCopy = {
+          ...translationsCopy,
+          [key]: removeMarkdownValidation(translationsCopy[key], typeValue),
+        };
+      });
+
+      translationValCopy = JSON.stringify(translationsCopy);
 
       // restore if translations present for selected language
       if (
@@ -262,7 +310,7 @@ export const InteractiveMessage = () => {
     }
 
     if (translationsVal) {
-      setTranslations(translationsVal);
+      setTranslations(translationValCopy);
     }
     setSendWithTitle(sendInteractiveTitleValue);
 
@@ -840,6 +888,23 @@ export const InteractiveMessage = () => {
     );
   }
 
+  let warningDialog;
+  if (showWarning) {
+    warningDialog = (
+      <DialogBox
+        title="Markdown content removed"
+        buttonOk="Okay"
+        alignButtons="center"
+        handleOk={() => setShowWarning(false)}
+        skipCancel
+      >
+        <div className={styles.DialogContent}>
+          Markdown content was detected in the message buttons, which has been removed. Interactive message buttons
+          cannot contain markdown characters.
+        </div>
+      </DialogBox>
+    );
+  }
   if (languageOptions.length < 1 || loadingTemplate || tagsLoading) {
     return <Loading />;
   }
@@ -879,6 +944,7 @@ export const InteractiveMessage = () => {
         />
       </div>
       {translateMessage && messageDialog}
+      {showWarning && warningDialog}
     </>
   );
 };
