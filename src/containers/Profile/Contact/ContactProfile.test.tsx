@@ -50,7 +50,7 @@ describe('contact profile with single profile', () => {
   });
 });
 
-describe('contact profile with no profiles', () => {
+describe('contact profile with multiple profiles', () => {
   const wrapper = (
     <MockedProvider mocks={multiple_profile_mock}>
       <MemoryRouter initialEntries={['/contact-profile/2']}>

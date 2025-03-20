@@ -57,6 +57,8 @@ export const ContactProfile = () => {
     if (selectedProfile.length > 0) {
       [selectedProfile] = selectedProfile;
       fields = selectedProfile.fields;
+    } else {
+      selectedProfile = null;
     }
   }
 
@@ -71,7 +73,7 @@ export const ContactProfile = () => {
   };
 
   let profileHeaders: Array<{ id: string | undefined; name: string }> = [];
-  if (profileData && profileData.profiles.length > 0) {
+  if (profileData && profileData.profiles.length > 0 && activeProfile?.id) {
     profileHeaders = profileData.profiles;
   } else {
     profileHeaders = [{ id: 'noProfile', name: contactDisplayName }];
