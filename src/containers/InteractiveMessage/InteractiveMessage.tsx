@@ -224,7 +224,7 @@ export const InteractiveMessage = () => {
     if (translationsVal) {
       let translationsCopy = JSON.parse(translationsVal);
 
-      Object.keys(translationsCopy).map((key) => {
+      Object.keys(translationsCopy).forEach((key) => {
         translationsCopy = {
           ...translationsCopy,
           [key]: removeMarkdownValidation(translationsCopy[key]),
@@ -881,13 +881,16 @@ export const InteractiveMessage = () => {
   if (showWarning) {
     warningDialog = (
       <DialogBox
-        title="Markdown characters are not supported in buttons!"
+        title="Markdown content removed"
         buttonOk="Okay"
         alignButtons="center"
         handleOk={() => setShowWarning(false)}
         skipCancel
       >
-        <div className={styles.DialogContent}>The markdown content was removed.</div>
+        <div className={styles.DialogContent}>
+          Markdown content was detected in the message buttons, which has been removed. Interactive message buttons
+          cannot contain markdown characters.
+        </div>
       </DialogBox>
     );
   }
@@ -930,6 +933,7 @@ export const InteractiveMessage = () => {
         />
       </div>
       {translateMessage && messageDialog}
+      {showWarning && warningDialog}
     </>
   );
 };
