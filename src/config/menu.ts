@@ -168,7 +168,7 @@ const menus = (): Menu[] => [
         icon: 'certificate',
         type: 'sideDrawer',
         roles: allRoles,
-        show: !getOrganizationServices('customCertificateEnabled'),
+        show: !getOrganizationServices('certificateEnabled'),
       },
     ],
   },
