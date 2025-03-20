@@ -20,7 +20,7 @@ type ServiceType =
   | 'contactProfileEnabled'
   | 'ticketingEnabled'
   | 'whatsappGroupEnabled'
-  | 'customCertificateEnabled';
+  | 'certificateEnabled';
 
 // get the current authentication session
 export const getAuthSession = (element?: string) => {
