@@ -355,7 +355,7 @@ describe('Edit mode', () => {
     render(renderInteractiveMessage('2', getTemplateMocks2));
 
     await waitFor(() => {
-      expect(screen.getByText('List header')).toBeInTheDocument();
+      expect(screen.getByText('List header*')).toBeInTheDocument();
     });
   });
 

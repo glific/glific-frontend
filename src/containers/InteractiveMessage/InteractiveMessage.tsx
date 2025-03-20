@@ -120,23 +120,41 @@ export const InteractiveMessage = () => {
   const [getInteractiveTemplateById, { data: template, loading: loadingTemplate }] =
     useLazyQuery<any>(GET_INTERACTIVE_MESSAGE);
 
-  const removeMarkdownValidation = (interactiveContent: any) => {
+  const removeMarkdownValidation = (interactiveContent: any, type: string) => {
     const regex = /(\*\*.*?\*\*)|(\*.*?\*)|(__.*?__)|(_.*?_)|(#.*?\n)|(\[.*?\]\(.*?\))/g;
 
-    const newOptions = interactiveContent.options.map((option: any) => {
-      if (regex.test(option.title)) {
-        option.title = option.title.replace(regex, (match: string) => {
+    const cleanMarkdown = (input: any): any => {
+      if (typeof input === 'string') {
+        if (regex.test(input)) {
           setShowWarning(true);
-          return match.replace(/(\*\*|\*|__|_|#|\[|\]\(.*?\))/g, '');
-        });
+          return input.replace(/(\*\*|\*|__|_|#|\[|\]\(.*?\))/g, '');
+        }
+      } else if (Array.isArray(input)) {
+        return input.map(cleanMarkdown);
+      } else if (typeof input === 'object') {
+        for (const key in input) {
+          if (input.hasOwnProperty(key)) {
+            input[key] = cleanMarkdown(input[key]);
+          }
+        }
       }
-      return option;
-    });
-
-    return {
-      ...interactiveContent,
-      options: newOptions,
+      return input;
     };
+
+    switch (type) {
+      case QUICK_REPLY:
+        return { ...interactiveContent, options: cleanMarkdown(interactiveContent.options) };
+
+      case LIST:
+        interactiveContent.items = interactiveContent.items.map((item: any) => ({
+          ...item,
+          options: cleanMarkdown(item.options),
+        }));
+        return cleanMarkdown(interactiveContent);
+
+      default:
+        return interactiveContent;
+    }
   };
 
   useEffect(() => {
@@ -227,7 +245,7 @@ export const InteractiveMessage = () => {
       Object.keys(translationsCopy).forEach((key) => {
         translationsCopy = {
           ...translationsCopy,
-          [key]: removeMarkdownValidation(translationsCopy[key]),
+          [key]: removeMarkdownValidation(translationsCopy[key], typeValue),
         };
       });
 
@@ -296,8 +314,6 @@ export const InteractiveMessage = () => {
     }
 
     if (translationsVal) {
-      console.log(translationsVal);
-
       setTranslations(translationValCopy);
     }
     setSendWithTitle(sendInteractiveTitleValue);
