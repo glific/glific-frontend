@@ -257,12 +257,8 @@ export const InteractiveMessage = () => {
         translationsCopy[language.id || languageVal.id] &&
         !location.state?.language
       ) {
-        console.log(1);
-
         content = JSON.parse(translationsVal)[language.id || languageVal.id] || JSON.parse(interactiveContentValue);
       } else if (template) {
-        console.log(21);
-
         content = getDefaultValuesByTemplate(template.interactiveTemplate.interactiveTemplate);
       }
     }
@@ -775,7 +771,6 @@ export const InteractiveMessage = () => {
 
     payloadData.sendWithTitle = sendWithTitle;
     payloadData.translations = JSON.stringify(translationsCopy);
-    console.log(payloadData);
 
     return payloadData;
   };
