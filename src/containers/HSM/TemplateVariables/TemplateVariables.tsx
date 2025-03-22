@@ -67,10 +67,10 @@ export const TemplateVariables = ({
                   startAdornment={<div className={styles.VariableNumber}>{`{{${variable.id}}}`}</div>}
                   fullWidth
                   label="Name"
-                  placeholder={'Define value '}
+                  placeholder={'Define value'}
                   notched={false}
                   disabled={isEditing}
-                  defaultValue={isEditing ? variable.text : ''}
+                  defaultValue={variable.text || ''}
                   onChange={(event) => {
                     let currentVariable = variables.find((v) => v.id === variable.id);
                     currentVariable.text = event.target.value;
