@@ -239,50 +239,46 @@ export const HSM = () => {
     }
 
     if (isCopyState) {
-      setIsAddButtonChecked(hasButtons);
-      setTemplateType(templateButtonType);
-      setSimulatorMessage('');
-      setEditorState('');
-      setBody('');
-      setLabel('');
+      setLabel(`Copy of ${labelValue}`);
     } else {
-      setBody(bodyValue);
       setLabel(labelValue);
-      setEditorState(bodyValue);
-      setIsActive(isActiveValue);
-      setCategory(categoryValue);
-      setTagId(tagIdValue);
-      setAllowTemplateCategoryChange(allowCategoryChangeValue);
-      variables = getExampleValue(exampleValue);
-      setVariables(variables);
-      addButtonsToSampleMessage(getExampleFromBody(bodyValue, variables));
       setNewShortcode(shortcodeValue);
+      setIsActive(isActiveValue);
+    }
 
-      if (hasButtons) {
-        const { buttons: buttonsVal } = getTemplateAndButtons(templateButtonType, exampleValue, buttons);
-        setTemplateButtons(buttonsVal);
-        setTemplateType(templateButtonType);
-        setIsAddButtonChecked(hasButtons);
-        const parse = convertButtonsToTemplate(buttonsVal, templateButtonType);
-        const parsedText = parse.length ? `| ${parse.join(' | ')}` : null;
-        const { message }: any = getTemplateAndButton(getExampleFromBody(bodyValue, variables));
-        const sampleText: any = parsedText && message + parsedText;
-        setSimulatorMessage(sampleText);
-      } else {
-        setSimulatorMessage(getExampleFromBody(bodyValue, variables));
-      }
+    setBody(bodyValue);
+    setEditorState(bodyValue);
+    setCategory(categoryValue);
+    setTagId(tagIdValue);
+    setAllowTemplateCategoryChange(allowCategoryChangeValue);
+    variables = getExampleValue(exampleValue);
+    setVariables(variables);
+    addButtonsToSampleMessage(getExampleFromBody(bodyValue, variables));
 
-      if (typeValue && typeValue !== 'TEXT') {
-        setType({ id: typeValue, label: typeValue });
-      } else {
-        setType(null);
-      }
+    if (hasButtons) {
+      const { buttons: buttonsVal } = getTemplateAndButtons(templateButtonType, exampleValue, buttons);
+      setTemplateButtons(buttonsVal);
+      setTemplateType(templateButtonType);
+      setIsAddButtonChecked(hasButtons);
+      const parse = convertButtonsToTemplate(buttonsVal, templateButtonType);
+      const parsedText = parse.length ? `| ${parse.join(' | ')}` : null;
+      const { message }: any = getTemplateAndButton(getExampleFromBody(bodyValue, variables));
+      const sampleText: any = parsedText && message + parsedText;
+      setSimulatorMessage(sampleText);
+    } else {
+      setSimulatorMessage(getExampleFromBody(bodyValue, variables));
+    }
 
-      if (MessageMediaValue) {
-        setAttachmentURL(MessageMediaValue.sourceUrl);
-      } else {
-        setAttachmentURL('');
-      }
+    if (typeValue && typeValue !== 'TEXT') {
+      setType({ id: typeValue, label: typeValue });
+    } else {
+      setType(null);
+    }
+
+    if (MessageMediaValue) {
+      setAttachmentURL(MessageMediaValue.sourceUrl);
+    } else {
+      setAttachmentURL('');
     }
   };
 
@@ -508,7 +504,7 @@ export const HSM = () => {
       handleChange: (value: any) => {
         setBody(value);
       },
-      defaultValue: isEditing && editorState,
+      defaultValue: (isEditing || isCopyState) && editorState,
     },
     {
       component: TemplateVariables,
