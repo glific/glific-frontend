@@ -177,7 +177,6 @@ export const getContactDetailsQuery = (id: string, attributes: any = {}) => ({
         contact: {
           ...attributes,
           name: 'Default User',
-          activeProfile: null,
           phone: '+919820198765',
           maskedPhone: '+919820198765',
           lastMessageAt: date.toISOString(),
@@ -567,8 +566,8 @@ export const LOGGED_IN_USER_MOCK = [
   getCurrentUserQuery,
   getCurrentUserQuery,
   getContactProfiles,
-  getContactDetailsQuery('1'),
-  getContactDetailsQuery('1'),
+  getContactDetailsQuery('1', { activeProfile: null }),
+  getContactDetailsQuery('1', { activeProfile: null }),
   getOrganizationLanguagesQuery,
   getOrganizationLanguagesQuery,
   getContactQuery,
@@ -582,7 +581,8 @@ export const LOGGED_IN_USER_MOCK = [
 export const multiple_profile_mock = [
   getContactWithMultipleQueries,
   getContactProfiles,
-  getContactDetailsQuery('2'),
+  getContactDetailsQuery('2', { activeProfile: { id: '2' } }),
+  getContactDetailsQuery('2', { activeProfile: { id: '2' } }),
   getCurrentUserQuery,
   getCurrentUserQuery,
   getOrganizationLanguagesQuery,
