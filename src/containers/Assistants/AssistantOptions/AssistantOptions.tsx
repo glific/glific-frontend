@@ -35,6 +35,7 @@ const filesInfo =
 export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOptionsProps) => {
   const [showUploadDialog, setShowUploadDialog] = useState(false);
   const [files, setFiles] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const { t } = useTranslation();
 
@@ -60,19 +61,55 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
       return;
     }
 
-    uploadFile({
+    const inputFiles = event.target.files;
+    let errorMessages: any = [];
+    let uploadedFiles: any = [];
+    setLoading(true);
+
+    const uploadPromises = Object.keys(inputFiles).map(async (key: any) => {
+      const { uploadedFile, error } = await uploadFileOneByOne(inputFiles[key]);
+      if (uploadedFile) {
+        uploadedFiles.push(uploadedFile);
+      }
+      if (error) {
+        errorMessages.push(error);
+      }
+    });
+
+    Promise.all(uploadPromises)
+      .then(() => {
+        setFiles((prevFiles) => [...prevFiles, ...uploadedFiles]);
+        if (errorMessages.length > 0) {
+          setNotification(errorMessages.join('\n\n'), 'warning');
+        }
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error('Error uploading files:', error);
+        setLoading(false);
+      });
+  };
+
+  const uploadFileOneByOne = async (file: any) => {
+    let uploadedFile;
+    let error = null;
+
+    await uploadFile({
       variables: {
-        media: event.target.files[0],
+        media: file,
       },
       onCompleted: ({ uploadFilesearchFile }) => {
-        uploadFilesearchFile = {
+        uploadedFile = {
           fileId: uploadFilesearchFile?.fileId,
           filename: uploadFilesearchFile?.filename,
         };
-        setFiles([...files, uploadFilesearchFile]);
       },
-      onError: (errors) => setErrorMessage(errors),
+      onError: (errors) => {
+        error = errors.message;
+      },
     });
+
+    return { uploadedFile, error };
   };
 
   const handleRemoveFile = (file: any) => {
@@ -128,14 +165,20 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
         <div className={styles.DialogContent}>
           <Button className="Container" fullWidth={true} component="label" variant="text" tabIndex={-1}>
             <div className={styles.UploadContainer}>
-              {uploadingFile ? (
+              {loading ? (
                 <CircularProgress size={20} />
               ) : (
                 <>
                   <UploadIcon /> {t('Upload File')}
                 </>
               )}
-              <input data-testid="uploadFile" type="file" onChange={handleFileChange} style={{ display: 'none' }} />
+              <input
+                data-testid="uploadFile"
+                type="file"
+                onChange={handleFileChange}
+                style={{ display: 'none' }}
+                multiple
+              />
             </div>
           </Button>
           {files.length > 0 && (
