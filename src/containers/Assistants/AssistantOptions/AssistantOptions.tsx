@@ -39,7 +39,7 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
   const [error, setError] = useState(false);
   const { t } = useTranslation();
 
-  const [uploadFile, { loading: uploadingFile }] = useMutation(UPLOAD_FILE_TO_OPENAI);
+  const [uploadFileToOpenAi] = useMutation(UPLOAD_FILE_TO_OPENAI);
   const [addFilesToFileSearch, { loading: addingFiles }] = useMutation(ADD_FILES_TO_FILE_SEARCH);
   const [removeFile] = useMutation(REMOVE_FILES_FROM_ASSISTANT);
 
@@ -54,20 +54,24 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
   });
 
   const handleFileChange = (event: any) => {
-    if (event.target.files.length === 0) return;
-
-    if (event.target.files[0]?.size / (1024 * 1024) > 20) {
-      setNotification('File size should be less than 20MB', 'error');
-      return;
-    }
-
     const inputFiles = event.target.files;
     let errorMessages: any = [];
     let uploadedFiles: any = [];
     setLoading(true);
 
-    const uploadPromises = Object.keys(inputFiles).map(async (key: any) => {
-      const { uploadedFile, error } = await uploadFileOneByOne(inputFiles[key]);
+    if (inputFiles.length === 0) return;
+
+    const validFiles = Array.from(inputFiles).filter((file: any) => {
+      if (file.size / (1024 * 1024) > 20) {
+        setNotification('File size should be less than 20MB', 'error');
+        return false;
+      }
+      return true;
+    });
+
+    const uploadPromises = validFiles.map(async (file: any) => {
+      const { uploadedFile, error } = await uplaodFile(file);
+
       if (uploadedFile) {
         uploadedFiles.push(uploadedFile);
       }
@@ -90,11 +94,11 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
       });
   };
 
-  const uploadFileOneByOne = async (file: any) => {
+  const uplaodFile = async (file: any) => {
     let uploadedFile;
     let error = null;
 
-    await uploadFile({
+    await uploadFileToOpenAi({
       variables: {
         media: file,
       },
@@ -159,8 +163,8 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
         buttonOk="Add"
         fullWidth
         handleOk={handleFileUpload}
-        disableOk={addingFiles}
-        buttonOkLoading={addingFiles}
+        disableOk={addingFiles || loading}
+        buttonOkLoading={addingFiles || loading}
       >
         <div className={styles.DialogContent}>
           <Button className="Container" fullWidth={true} component="label" variant="text" tabIndex={-1}>
