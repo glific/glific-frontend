@@ -35,7 +35,9 @@ const getName = (text: string, keywordsList: any, roles: any) => {
     <div className={styles.NameText}>
       {text}
       <br />
-      <span className={styles.Keyword}>{keywords.join(', ')}</span>
+      <span className={styles.Keyword}>
+        {keywords.length < 6 ? keywords.join(', ') : `${keywords.slice(0, 6).join(', ')}...`}
+      </span>
       {hasDynamicRole && <span className={styles.Roles}>{accessRoles && accessRoles.join(', ')} </span>}
     </div>
   );

@@ -22,6 +22,7 @@ import styles from './FlowEditor.module.css';
 import { checkElementInRegistry, loadfiles, setConfig } from './FlowEditor.helper';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { BackdropLoader, FlowTranslation } from 'containers/Flow/FlowTranslation';
+import Tooltip from 'components/UI/Tooltip/Tooltip';
 
 declare function showFlowEditor(node: any, config: any): void;
 
@@ -146,7 +147,24 @@ export const FlowEditor = () => {
 
   if (flowName && flowName.flows.length > 0) {
     flowTitle = flowName.flows[0].name;
-    flowKeywords = flowName.flows[0].keywords.join(', ');
+    const keywords = flowName.flows[0].keywords;
+    if (keywords.length < 8) {
+      flowKeywords = <span>{keywords.join(', ')}</span>;
+    } else {
+      flowKeywords = (
+        <span>
+          {keywords.slice(0, 8).join(', ')}{' '}
+          <Tooltip
+            interactive
+            title={keywords.slice(8).join(', ')}
+            tooltipClass={styles.Keywords}
+            placement="top-start"
+          >
+            <span className={styles.ViewMore}>+ {keywords.length - 8} more</span>
+          </Tooltip>
+        </span>
+      );
+    }
   }
 
   const handleResetFlowCount = () => {
