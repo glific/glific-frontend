@@ -33,7 +33,7 @@ export const Tooltip = ({ tooltipClass, tooltipArrowClass, title, placement, chi
       placement={placement}
       arrow
       classes={{ tooltip: toolTipStyling.join(' '), arrow: toolTipArrowStyling.join(' ') }}
-      disableInteractive={interactive}
+      disableInteractive={!interactive}
     >
       <span>{children}</span>
     </TooltipElement>

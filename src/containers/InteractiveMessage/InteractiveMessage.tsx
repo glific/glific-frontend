@@ -56,6 +56,7 @@ const templateTypeOptions = [
 
 export const InteractiveMessage = () => {
   const location: any = useLocation();
+  const stateType = location.state;
   const navigate = useNavigate();
   const [title, setTitle] = useState('');
   const [footer, setFooter] = useState('');
@@ -71,7 +72,7 @@ export const InteractiveMessage = () => {
   const [defaultLanguage, setDefaultLanguage] = useState<any>({});
   const [sendWithTitle, setSendWithTitle] = useState<boolean>(false);
   const [validatingURL, setValidatingURL] = useState<boolean>(false);
-  const [tagId, setTagId] = useState<any>(location?.state?.tag || null);
+  const [tagId, setTagId] = useState<any>(stateType?.tag || null);
   const [language, setLanguage] = useState<any>({});
   const [languageOptions, setLanguageOptions] = useState<any>([]);
   const [editorState, setEditorState] = useState<any>('');
@@ -88,9 +89,7 @@ export const InteractiveMessage = () => {
   const { t } = useTranslation();
   const params = useParams();
   let isEditing = false;
-  let backButton = location.state?.tag?.label
-    ? `interactive-message?tag=${location.state?.tag?.label}`
-    : 'interactive-message';
+  let backButton = stateType?.tag?.label ? `interactive-message?tag=${stateType?.tag?.label}` : 'interactive-message';
 
   if (params?.id) {
     isEditing = true;
@@ -107,8 +106,6 @@ export const InteractiveMessage = () => {
 
   // alter header & update/copy queries
   let header;
-
-  const stateType = location.state;
 
   if (stateType === 'copy') {
     queries.updateItemQuery = COPY_INTERACTIVE;
@@ -210,7 +207,7 @@ export const InteractiveMessage = () => {
       if (
         Object.keys(translationsCopy).length > 0 &&
         translationsCopy[language.id || languageVal.id] &&
-        !location.state?.language
+        !stateType?.language
       ) {
         content = JSON.parse(translationsVal)[language.id || languageVal.id] || JSON.parse(interactiveContentValue);
       } else if (template) {
@@ -222,8 +219,8 @@ export const InteractiveMessage = () => {
     setDefaultLanguage(languageVal);
 
     if (languageOptions.length > 0 && languageVal) {
-      if (location.state?.language) {
-        const selectedLangauge = languageOptions.find((lang: any) => lang.label === location.state.language);
+      if (stateType?.language) {
+        const selectedLangauge = languageOptions.find((lang: any) => lang.label === stateType.language);
         navigate(location.pathname);
         setLanguage(selectedLangauge);
       } else if (!language.id) {
@@ -236,7 +233,7 @@ export const InteractiveMessage = () => {
 
     let titleText = data.title;
 
-    if (location.state === 'copy') {
+    if (stateType === 'copy') {
       titleText = `Copy of ${data.title}`;
     }
 

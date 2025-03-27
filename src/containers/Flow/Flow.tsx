@@ -31,13 +31,14 @@ const queries = {
 
 export const Flow = () => {
   const location = useLocation();
+  const locationState = location.state;
   const navigate = useNavigate();
   const params = useParams();
   const [name, setName] = useState('');
   const [isPinnedDisable, setIsPinnedDisable] = useState(false);
   const [keywords, setKeywords] = useState('');
   const [description, setDescription] = useState('');
-  const [tagId, setTagId] = useState(location.state?.tag || null);
+  const [tagId, setTagId] = useState(locationState?.tag || null);
   const [isActive, setIsActive] = useState(true);
   const [isPinned, setIsPinned] = useState(false);
   const [roles, setRoles] = useState<Array<any>>([]);
@@ -48,7 +49,7 @@ export const Flow = () => {
   const { t } = useTranslation();
 
   let isTemplate = false;
-  if (location.state === 'template') {
+  if (locationState === 'template') {
     isTemplate = true;
   }
   const { data: tag } = useQuery(GET_TAGS, {
@@ -103,12 +104,12 @@ export const Flow = () => {
     let fieldKeywords = keywordsValue;
     let description = descriptionValue;
     let tags = tagValue;
-    if (location.state === 'copy') {
+    if (locationState === 'copy') {
       fieldName = `Copy of ${nameValue}`;
       fieldKeywords = '';
       description = `Copy of ${nameValue}`;
       setCopyFlowTitle(nameValue);
-    } else if (location.state === 'copyTemplate') {
+    } else if (locationState === 'copyTemplate') {
       fieldName = '';
       description = `Copy of ${nameValue}`;
       tags = null;
@@ -153,8 +154,8 @@ export const Flow = () => {
   });
 
   const dialogMessage = t("You won't be able to use this flow again.");
-  let backLink = location.state?.tag?.label ? `flow?tag=${location.state?.tag?.label}` : 'flow';
-  if (isTemplate || location.state === 'copyTemplate') {
+  let backLink = locationState?.tag?.label ? `flow?tag=${locationState?.tag?.label}` : 'flow';
+  if (isTemplate || locationState === 'copyTemplate') {
     backLink = '/flow?isTemplate=true';
   }
 
@@ -278,17 +279,17 @@ export const Flow = () => {
   let type;
   let copyNotification;
 
-  if (location.state === 'copy') {
+  if (locationState === 'copy') {
     queries.updateItemQuery = CREATE_FLOW_COPY;
     title = t('Copy of');
     type = 'copy';
     copyNotification = t('Copy of the flow has been created!');
-  } else if (location.state === 'copyTemplate') {
+  } else if (locationState === 'copyTemplate') {
     queries.updateItemQuery = CREATE_FLOW_COPY;
     title = t('Copy of');
     type = 'copy';
     copyNotification = t('Flow created successfully from template!');
-  } else if (location.state === 'template') {
+  } else if (locationState === 'template') {
     title = t('Template Flow');
   } else {
     queries.updateItemQuery = UPDATE_FLOW;

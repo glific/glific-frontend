@@ -63,7 +63,7 @@ export const HSM = () => {
   const [attachmentURL, setAttachmentURL] = useState<any>('');
   const [isActive, setIsActive] = useState<boolean>(true);
   const [category, setCategory] = useState<any>([]);
-  const [tagId, setTagId] = useState<any>(location?.state?.tag || null);
+  const [tagId, setTagId] = useState<any>(location.state?.tag || null);
   const [variables, setVariables] = useState<any>([]);
   const [editorState, setEditorState] = useState<any>('');
   const [templateButtons, setTemplateButtons] = useState<Array<CallToActionTemplate | QuickReplyTemplate>>([]);
