@@ -153,7 +153,7 @@ export const Flow = () => {
   });
 
   const dialogMessage = t("You won't be able to use this flow again.");
-  let backLink = '/flow';
+  let backLink = location.state?.tag ? `/flow?tag=${location.state?.tag}` : '/flow';
   let cancelLink = 'flow';
   if (isTemplate || location.state === 'copyTemplate') {
     backLink = '/flow?isTemplate=true';

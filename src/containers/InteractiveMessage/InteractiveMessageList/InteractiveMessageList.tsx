@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import InteractiveMessageIcon from 'assets/images/icons/InteractiveMessage/Dark.svg?react';
 import DownArrow from 'assets/images/icons/DownArrow.svg?react';
@@ -8,7 +8,7 @@ import { FILTER_INTERACTIVE_MESSAGES, GET_INTERACTIVE_MESSAGES_COUNT } from 'gra
 import { DELETE_INTERACTIVE } from 'graphql/mutations/InteractiveMessage';
 import { getInteractiveMessageBody } from 'common/utils';
 import { QUICK_REPLY } from 'common/constants';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import styles from './InteractiveMessageList.module.css';
 import { useQuery } from '@apollo/client';
 import { GET_TAGS } from 'graphql/queries/Tags';
@@ -69,6 +69,8 @@ export const InteractiveMessageList = () => {
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState('');
   const [selectedtag, setSelectedTag] = useState<any>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const navigate = useNavigate();
 
   const getColumns = ({ id, label, interactiveContent, type, language, translations }: any) => ({
@@ -123,20 +125,47 @@ export const InteractiveMessageList = () => {
     },
   ];
 
-  const { data: tag } = useQuery(GET_TAGS, {
+  const { data: tags } = useQuery(GET_TAGS, {
     variables: {},
     fetchPolicy: 'network-only',
   });
+
+  const navigateToCreate = () => {
+    if (selectedtag?.label) {
+      navigate('/interactive-message/add', { state: { tag: selectedtag.label } });
+    } else {
+      navigate('/interactive-message/add');
+    }
+  };
+
+  useEffect(() => {
+    const tagValue = searchParams.get('tag');
+
+    if (tagValue && tags) {
+      const tag = tags?.tags.find((tag: any) => tagValue === tag.label);
+      setSelectedTag(tag);
+    } else {
+      setSelectedTag(null);
+    }
+  }, [searchParams, tags]);
 
   const tagFilter = (
     <AutoComplete
       isFilterType
       placeholder="Select tag"
-      options={tag ? tag.tags : []}
+      options={tags ? tags.tags : []}
       optionLabel="label"
       multiple={false}
       onChange={(value: any) => {
-        setSelectedTag(value);
+        if (value) {
+          setSearchParams({
+            tag: value.label,
+          });
+        } else {
+          setSearchParams({
+            tag: '',
+          });
+        }
       }}
       form={{ setFieldValue: () => {} }}
       field={{
@@ -159,7 +188,7 @@ export const InteractiveMessageList = () => {
       searchParameter={['term']}
       {...queries}
       {...columnAttributes}
-      button={{ show: true, label: t('Create') }}
+      button={{ show: true, label: t('Create'), action: navigateToCreate }}
       additionalAction={additionalAction}
       collapseOpen={open}
       collapseRow={selectedId}

@@ -89,6 +89,7 @@ export const HSM = () => {
   const location: any = useLocation();
   const params = useParams();
   let timer: any = null;
+  let backButton = location.state?.tag ? `/template?tag=${location.state?.tag}` : '/template';
 
   const { data: categoryList, loading: categoryLoading } = useQuery(GET_HSM_CATEGORIES);
   const { data: shortCodes, loading: shortcodesLoading } = useQuery(GET_SHORTCODES, {
@@ -770,7 +771,7 @@ export const HSM = () => {
         saveOnPageChange={false}
         type={mode}
         copyNotification={copyMessage}
-        backLinkButton={'/template'}
+        backLinkButton={backButton}
         getMediaId={getMediaId}
         entityId={params.id}
       />

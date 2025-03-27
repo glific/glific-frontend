@@ -88,6 +88,7 @@ export const InteractiveMessage = () => {
   const { t } = useTranslation();
   const params = useParams();
   let isEditing = false;
+  let backButton = location.state?.tag ? `/interactive-message?tag=${location.state?.tag}` : '/interactive-message';
 
   if (params?.id) {
     isEditing = true;
@@ -867,7 +868,7 @@ export const InteractiveMessage = () => {
         saveOnPageChange={false}
         buttonState={{ text: t('Validating URL'), status: validatingURL }}
         helpData={interactiveMessageInfo}
-        backLinkButton={'/interactive-message'}
+        backLinkButton={backButton}
       />
       <div className={styles.Simulator}>
         <Simulator
