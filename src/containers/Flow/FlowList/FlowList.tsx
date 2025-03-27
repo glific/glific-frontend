@@ -351,7 +351,7 @@ export const FlowList = () => {
         skipCancel
         handleMiddle={() => {
           if (selectedtag?.label) {
-            navigate('/flow/add', { state: { tag: selectedtag.label } });
+            navigate('/flow/add', { state: { tag: selectedtag } });
           } else {
             navigate('/flow/add');
           }

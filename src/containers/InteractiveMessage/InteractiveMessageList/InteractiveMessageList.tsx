@@ -132,7 +132,7 @@ export const InteractiveMessageList = () => {
 
   const navigateToCreate = () => {
     if (selectedtag?.label) {
-      navigate('/interactive-message/add', { state: { tag: selectedtag.label } });
+      navigate('/interactive-message/add', { state: { tag: selectedtag } });
     } else {
       navigate('/interactive-message/add');
     }

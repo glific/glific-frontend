@@ -37,7 +37,7 @@ export const Flow = () => {
   const [isPinnedDisable, setIsPinnedDisable] = useState(false);
   const [keywords, setKeywords] = useState('');
   const [description, setDescription] = useState('');
-  const [tagId, setTagId] = useState(null);
+  const [tagId, setTagId] = useState(location.state?.tag || null);
   const [isActive, setIsActive] = useState(true);
   const [isPinned, setIsPinned] = useState(false);
   const [roles, setRoles] = useState<Array<any>>([]);
@@ -153,11 +153,9 @@ export const Flow = () => {
   });
 
   const dialogMessage = t("You won't be able to use this flow again.");
-  let backLink = location.state?.tag ? `/flow?tag=${location.state?.tag}` : '/flow';
-  let cancelLink = 'flow';
+  let backLink = location.state?.tag?.label ? `flow?tag=${location.state?.tag?.label}` : 'flow';
   if (isTemplate || location.state === 'copyTemplate') {
     backLink = '/flow?isTemplate=true';
-    cancelLink = 'flow?isTemplate=true';
   }
 
   const configureAction = {
@@ -324,8 +322,8 @@ export const Flow = () => {
       listItemName="flow"
       dialogMessage={dialogMessage}
       formFields={formFields}
-      redirectionLink="flow"
-      cancelLink={cancelLink}
+      redirectionLink={backLink}
+      cancelLink={backLink}
       linkParameter="uuid"
       listItem="flow"
       icon={flowIcon}
@@ -336,7 +334,7 @@ export const Flow = () => {
       copyNotification={copyNotification}
       customHandler={customHandler}
       helpData={flowInfo}
-      backLinkButton={backLink}
+      backLinkButton={`/${backLink}`}
       buttonState={{ text: 'Save', status: isTemplate }}
       restrictButtonStatus={{ status: isTemplate }}
     />

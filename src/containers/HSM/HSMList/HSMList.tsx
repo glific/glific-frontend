@@ -278,7 +278,7 @@ export const HSMList = () => {
 
   const navigateToCreate = () => {
     if (selectedTag?.label) {
-      navigate('/template/add', { state: { tag: selectedTag.label } });
+      navigate('/template/add', { state: { tag: selectedTag } });
     } else {
       navigate('/template/add');
     }

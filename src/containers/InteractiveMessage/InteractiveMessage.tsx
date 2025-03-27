@@ -71,7 +71,7 @@ export const InteractiveMessage = () => {
   const [defaultLanguage, setDefaultLanguage] = useState<any>({});
   const [sendWithTitle, setSendWithTitle] = useState<boolean>(false);
   const [validatingURL, setValidatingURL] = useState<boolean>(false);
-  const [tagId, setTagId] = useState<any>(null);
+  const [tagId, setTagId] = useState<any>(location?.state?.tag || null);
   const [language, setLanguage] = useState<any>({});
   const [languageOptions, setLanguageOptions] = useState<any>([]);
   const [editorState, setEditorState] = useState<any>('');
@@ -88,7 +88,9 @@ export const InteractiveMessage = () => {
   const { t } = useTranslation();
   const params = useParams();
   let isEditing = false;
-  let backButton = location.state?.tag ? `/interactive-message?tag=${location.state?.tag}` : '/interactive-message';
+  let backButton = location.state?.tag?.label
+    ? `interactive-message?tag=${location.state?.tag?.label}`
+    : 'interactive-message';
 
   if (params?.id) {
     isEditing = true;
@@ -859,8 +861,8 @@ export const InteractiveMessage = () => {
         listItemName="Interactive message"
         dialogMessage={dialogMessage}
         formFields={formFields}
-        redirectionLink="interactive-message"
-        cancelLink="interactive-message"
+        redirectionLink={backButton}
+        cancelLink={backButton}
         icon={interactiveMessageIcon}
         languageSupport={false}
         getQueryFetchPolicy="cache-and-network"
@@ -868,7 +870,7 @@ export const InteractiveMessage = () => {
         saveOnPageChange={false}
         buttonState={{ text: t('Validating URL'), status: validatingURL }}
         helpData={interactiveMessageInfo}
-        backLinkButton={backButton}
+        backLinkButton={`/${backButton}`}
       />
       <div className={styles.Simulator}>
         <Simulator
