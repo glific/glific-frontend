@@ -76,7 +76,7 @@ describe('Certificate', () => {
     });
     fireEvent.change(inputs[2], {
       target: {
-        value: 'https://docs.google.com/presentation/d/1fBrDFDCD2iwnaKg8sxKd45lRbqLuBFvsZbSH1sjm7aI/edit#slide=id.p',
+        value: 'https://docs.google.com/presentation/d/1fBrDFDCD2iwnaKg8sxKd45lRbqLuBFvsZbSH1sjm7aI/edit#slide=id.g',
       },
     });
 
