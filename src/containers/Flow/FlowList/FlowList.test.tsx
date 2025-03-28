@@ -35,6 +35,8 @@ const mocks = [
   filterFlowQuery(isActiveFilter),
   filterFlowQuery(isActiveFilter),
   filterFlowQuery(isActiveFilter),
+  filterFlowQuery({ ...isActiveFilter, tagIds: [1] }),
+  getFlowCountQuery({ ...isActiveFilter, tagIds: [1] }),
   filterFlowNewQuery,
   getFlowCountNewQuery,
   getFlowQuery({ id: 1 }),
@@ -216,6 +218,30 @@ describe('<FlowList />', () => {
 
     await waitFor(() => {
       expect(notificationSpy).toHaveBeenCalled();
+    });
+  });
+
+  test('it should navigate to create page with selected tag', async () => {
+    render(flowList);
+
+    await waitFor(() => {
+      expect(screen.getByText('Flows')).toBeInTheDocument();
+    });
+
+    const autoComplete = screen.getAllByRole('combobox')[1];
+
+    autoComplete.focus();
+
+    fireEvent.change(autoComplete, { target: { value: 'Messages' } });
+
+    fireEvent.keyDown(autoComplete, { key: 'ArrowDown' });
+    fireEvent.keyDown(autoComplete, { key: 'Enter' });
+
+    fireEvent.click(screen.getByTestId('newItemButton'));
+    fireEvent.click(screen.getByTestId('middle-button'));
+
+    await waitFor(() => {
+      expect(mockedUsedNavigate).toHaveBeenCalledWith('/flow/add', { state: { tag: { id: '1', label: 'Messages' } } });
     });
   });
 });

@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { BrowserRouter as Router } from 'react-router-dom';
 
@@ -21,6 +21,10 @@ const mocks = [
   getFilterInteractiveCountQuery,
 ];
 setUserSession(JSON.stringify({ roles: ['Admin'] }));
+
+beforeEach(() => {
+  cleanup();
+});
 
 const list = (
   <MockedProvider mocks={mocks} addTypename={false}>
@@ -56,6 +60,18 @@ test('Interactive message list renders correctly', async () => {
     expect(screen.getByText('Are you excited for Glific?')).toBeInTheDocument();
     expect(screen.getAllByText('Quick Reply')[0]).toBeInTheDocument();
   });
+});
+
+test('should navigate to create template page', async () => {
+  render(list);
+
+  await waitFor(() => {
+    expect(screen.getByText('Interactive messages')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('newItemButton'));
+
+  expect(mockedUsedNavigate).toHaveBeenCalledWith('/interactive-message/add');
 });
 
 test('Translation is shown', async () => {
@@ -106,5 +122,10 @@ test('It changes tag filter value', async () => {
 
   await waitFor(() => {
     expect(autoComplete).toHaveValue('Messages');
+  });
+
+  fireEvent.click(screen.getByTestId('newItemButton'));
+  expect(mockedUsedNavigate).toHaveBeenCalledWith('/interactive-message/add', {
+    state: { tag: { label: 'Messages', id: '1' } },
   });
 });
