@@ -10,7 +10,7 @@ import { CREATE_CERTIFICATE, DELETE_CERTIFICATE, UPDATE_CERTIFICATE } from 'grap
 import { GET_CERTIFICATE } from 'graphql/queries/Certificate';
 import styles from './Certificate.module.css';
 
-const regex = /^https:\/\/docs\.google\.com\/presentation\/d\/[a-zA-Z0-9_-]+(?:\/.*)?$/;
+const regex = /^https:\/\/docs\.google\.com\/presentation\/d\/[a-zA-Z0-9_-]+\/edit.*slide=id\.g[a-zA-Z0-9_]*$/;
 const dialogMessage = "You won't be able to use this certificate again.";
 const redirectionLink = 'certificates';
 const icon = <CertificateIcon />;
