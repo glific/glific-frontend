@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { FormControl, MenuItem, Select } from '@mui/material';
 import dayjs from 'dayjs';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
@@ -39,6 +39,7 @@ import { FILTER_TEMPLATES, GET_TEMPLATES_COUNT } from 'graphql/queries/Template'
 
 import styles from './HSMList.module.css';
 import { ProviderContext } from 'context/session';
+import { useSearchParams } from 'react-router-dom';
 
 const templateIcon = <TemplateIcon className={styles.TemplateIcon} />;
 
@@ -82,6 +83,7 @@ export const HSMList = () => {
   const [filters, setFilters] = useState<any>({ ...statusFilter, APPROVED: true });
   const [selectedTag, setSelectedTag] = useState<any>(null);
   const [syncTemplateLoad, setSyncTemplateLoad] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const { provider } = useContext(ProviderContext);
   const { t } = useTranslation();
@@ -127,7 +129,7 @@ export const HSMList = () => {
     },
   });
 
-  const { data: tag } = useQuery(GET_TAGS, {
+  const { data: tags } = useQuery(GET_TAGS, {
     variables: {},
     fetchPolicy: 'network-only',
   });
@@ -227,13 +229,12 @@ export const HSMList = () => {
   let filterValue: any = '';
   const statusList = ['Approved', 'Pending', 'Rejected', 'Failed'];
   const defaultSortBy = 'STATUS';
-  const button = { show: true, label: t('Create') };
 
   const filterStatusName = Object.keys(filters).filter((status) => filters[status] === true);
   if (filterStatusName.length === 1) {
     [filterValue] = filterStatusName;
   }
-  const appliedFilters = { isHsm: true, status: filterValue };
+  const appliedFilters: any = { isHsm: true, status: filterValue };
 
   const setCopyDialog = (id: any) => {
     navigate(`/template/${id}/edit`, { state: 'copy' });
@@ -275,6 +276,26 @@ export const HSMList = () => {
 
   const dialogMessage = t('It will stop showing when you draft a customized message');
 
+  const navigateToCreate = () => {
+    if (selectedTag?.label) {
+      navigate('/template/add', { state: { tag: selectedTag } });
+    } else {
+      navigate('/template/add');
+    }
+  };
+  const button = { show: true, label: t('Create'), action: navigateToCreate };
+
+  useEffect(() => {
+    const tagValue = searchParams.get('tag');
+
+    if (tagValue && tags) {
+      const tag = tags?.tags.find((tag: any) => tagValue === tag.label);
+      setSelectedTag(tag);
+    } else {
+      setSelectedTag(null);
+    }
+  }, [searchParams, tags]);
+
   const filterTemplateStatus = (
     <div className={styles.FilterContainer}>
       <FormControl className={styles.FormStyle}>
@@ -297,11 +318,19 @@ export const HSMList = () => {
       <AutoComplete
         isFilterType
         placeholder="Select tag"
-        options={tag ? tag.tags : []}
+        options={tags ? tags.tags : []}
         optionLabel="label"
         multiple={false}
         onChange={(value: any) => {
-          setSelectedTag(value);
+          if (value) {
+            setSearchParams({
+              tag: value.label,
+            });
+          } else {
+            setSearchParams({
+              tag: '',
+            });
+          }
         }}
         form={{ setFieldValue: () => {} }}
         field={{
@@ -410,12 +439,12 @@ export const HSMList = () => {
         listIcon={templateIcon}
         additionalAction={additionalAction}
         dialogMessage={dialogMessage}
-        filters={appliedFilters}
         defaultSortBy={defaultSortBy}
         button={button}
         {...columnAttributes}
         {...queries}
         filterList={filterTemplateStatus}
+        filters={selectedTag?.id ? { ...appliedFilters, tagIds: [parseInt(selectedTag.id)] } : appliedFilters}
       />
     </>
   );
