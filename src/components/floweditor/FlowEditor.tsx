@@ -148,23 +148,38 @@ export const FlowEditor = () => {
   if (flowName && flowName.flows.length > 0) {
     flowTitle = flowName.flows[0].name;
     const keywords = flowName.flows[0].keywords;
-    if (keywords.length < 8) {
-      flowKeywords = <span>{keywords.join(', ')}</span>;
-    } else {
-      flowKeywords = (
-        <span>
-          {keywords.slice(0, 8).join(', ')}{' '}
-          <Tooltip
-            interactive
-            title={keywords.slice(8).join(', ')}
-            tooltipClass={styles.Keywords}
-            placement="top-start"
-          >
-            <span className={styles.ViewMore}>+ {keywords.length - 8} more</span>
-          </Tooltip>
-        </span>
-      );
+    const MAX_CHARS = 100;
+
+    let visibleKeywords = [];
+    let hiddenKeywords = [];
+    let totalLength = 0;
+
+    for (let i = 0; i < keywords.length; i++) {
+      const keyword = keywords[i];
+      const nextLength = totalLength + keyword.length + (i === 0 ? 0 : 2);
+
+      if (nextLength <= MAX_CHARS) {
+        visibleKeywords.push(keyword);
+        totalLength = nextLength;
+      } else {
+        hiddenKeywords = keywords.slice(i);
+        break;
+      }
     }
+
+    flowKeywords = (
+      <span>
+        {visibleKeywords.join(', ')}
+        {hiddenKeywords.length > 0 && (
+          <>
+            ,{' '}
+            <Tooltip interactive title={hiddenKeywords.join(', ')} tooltipClass={styles.Keywords} placement="top-start">
+              <span className={styles.ViewMore}>... View more</span>
+            </Tooltip>
+          </>
+        )}
+      </span>
+    );
   }
 
   const handleResetFlowCount = () => {
