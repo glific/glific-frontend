@@ -85,7 +85,7 @@ describe('<FlowList />', () => {
 
     await waitFor(() => {
       expect(getByText('help, मदद'));
-      expect(getByText('help, activity, preference, optout, stop, start...'));
+      expect(getByText('help, activity, preference, op...'));
     });
   });
 
