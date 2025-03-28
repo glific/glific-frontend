@@ -28,16 +28,14 @@ import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { setErrorMessage, setNotification } from 'common/notification';
 
 const getName = (text: string, keywordsList: any, roles: any) => {
-  const keywords = keywordsList.map((keyword: any) => keyword);
+  const keywords = keywordsList.map((keyword: any) => keyword).join(', ');
   const accessRoles = roles && roles.map((role: any) => role.label);
   const hasDynamicRole = organizationHasDynamicRole();
   return (
     <div className={styles.NameText}>
       {text}
       <br />
-      <span className={styles.Keyword}>
-        {keywords.length < 6 ? keywords.join(', ') : `${keywords.slice(0, 6).join(', ')}...`}
-      </span>
+      <span className={styles.Keyword}>{keywords.length < 30 ? keywords : `${keywords.slice(0, 30)}...`}</span>
       {hasDynamicRole && <span className={styles.Roles}>{accessRoles && accessRoles.join(', ')} </span>}
     </div>
   );

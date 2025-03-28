@@ -19,10 +19,9 @@ import { Loading } from 'components/UI/Layout/Loading/Loading';
 import Track from 'services/TrackService';
 import { exportFlowMethod } from 'common/utils';
 import styles from './FlowEditor.module.css';
-import { checkElementInRegistry, loadfiles, setConfig } from './FlowEditor.helper';
+import { checkElementInRegistry, getKeywords, loadfiles, setConfig } from './FlowEditor.helper';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { BackdropLoader, FlowTranslation } from 'containers/Flow/FlowTranslation';
-import Tooltip from 'components/UI/Tooltip/Tooltip';
 
 declare function showFlowEditor(node: any, config: any): void;
 
@@ -148,38 +147,7 @@ export const FlowEditor = () => {
   if (flowName && flowName.flows.length > 0) {
     flowTitle = flowName.flows[0].name;
     const keywords = flowName.flows[0].keywords;
-    const MAX_CHARS = 100;
-
-    let visibleKeywords = [];
-    let hiddenKeywords = [];
-    let totalLength = 0;
-
-    for (let i = 0; i < keywords.length; i++) {
-      const keyword = keywords[i];
-      const nextLength = totalLength + keyword.length + (i === 0 ? 0 : 2);
-
-      if (nextLength <= MAX_CHARS) {
-        visibleKeywords.push(keyword);
-        totalLength = nextLength;
-      } else {
-        hiddenKeywords = keywords.slice(i);
-        break;
-      }
-    }
-
-    flowKeywords = (
-      <span>
-        {visibleKeywords.join(', ')}
-        {hiddenKeywords.length > 0 && (
-          <>
-            ,{' '}
-            <Tooltip interactive title={hiddenKeywords.join(', ')} tooltipClass={styles.Keywords} placement="top-start">
-              <span className={styles.ViewMore}>... View more</span>
-            </Tooltip>
-          </>
-        )}
-      </span>
-    );
+    flowKeywords = getKeywords(keywords);
   }
 
   const handleResetFlowCount = () => {
