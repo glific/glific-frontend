@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 import { MockedProvider } from '@apollo/client/testing';
 import { vi } from 'vitest';
 
@@ -62,9 +62,9 @@ const flowList = (
 HTMLAnchorElement.prototype.click = vi.fn();
 
 const mockedUsedNavigate = vi.fn();
-vi.mock('react-router-dom', async () => {
+vi.mock('react-router', async () => {
   return {
-    ...(await vi.importActual<any>('react-router-dom')),
+    ...(await vi.importActual<any>('react-router')),
     useLocation: () => ({ state: 'copy', pathname: '/flow/1/edit' }),
     useParams: () => ({ id: 1 }),
     useNavigate: () => mockedUsedNavigate,

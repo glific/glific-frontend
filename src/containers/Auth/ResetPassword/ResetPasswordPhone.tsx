@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate } from 'react-router';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 

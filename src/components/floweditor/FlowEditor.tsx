@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useMutation, useLazyQuery, useQuery } from '@apollo/client';
-import { Navigate, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, Navigate, useParams } from 'react-router';
 import { Menu, MenuItem, Typography } from '@mui/material';
 import BackIconFlow from 'assets/images/icons/BackIconFlow.svg?react';
 import WarningIcon from 'assets/images/icons/Warning.svg?react';

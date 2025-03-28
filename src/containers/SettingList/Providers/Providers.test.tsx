@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
-import { MemoryRouter, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import { MemoryRouter, Route, BrowserRouter as Router, Routes } from 'react-router';
 import userEvent from '@testing-library/user-event';
 
 import { Providers } from './Providers';
@@ -182,6 +182,10 @@ describe('update credentials', () => {
       expect(screen.getByText('Token')).toBeInTheDocument();
     });
 
+    await waitFor(() => {
+      expect(screen.getByText('Product ID')).toBeInTheDocument();
+    });
+
     const inputs = screen.getAllByRole('textbox');
 
     fireEvent.change(inputs[0], { target: { value: 'token2' } });
@@ -223,6 +227,10 @@ describe('update credentials', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Token')).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Product ID')).toBeInTheDocument();
     });
 
     const inputs = screen.getAllByRole('textbox');
