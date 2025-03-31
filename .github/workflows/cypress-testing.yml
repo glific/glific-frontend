@@ -86,6 +86,7 @@ jobs:
           echo start mix setup
           echo done. start installing inotify-tools
           sudo apt-get install inotify-tools
+          git checkout feat/custom-certificates
           mix setup
           cd ../glific-frontend/
 
