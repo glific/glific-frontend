@@ -70,7 +70,7 @@ const Certificate = () => {
           For best results:
           <ul>
             <li>Landscape certificates – Use a resolution of 2550 x 3300 px.</li>
-            <li> Badges – Use a square format, minimum600 x 600 px.</li>
+            <li> Badges – Use a square format, minimum 600 x 600 px.</li>
           </ul>
         </span>
       ),
