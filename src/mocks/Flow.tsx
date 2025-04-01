@@ -146,7 +146,7 @@ const filterFlowResult = {
         isActive: true,
         isBackground: false,
         isPinned: false,
-        keywords: ['preference'],
+        keywords: ['help', 'activity', 'preference', 'optout', 'stop', 'start', 'end', 'yes', 'no', 'maybe'],
         lastChangedAt: null,
         lastPublishedAt: '2024-03-23T15:26:41.450940Z',
         name: 'Preference Workflow',
@@ -298,6 +298,18 @@ export const getActiveFlow = getFlowDetails();
 export const getInactiveFlow = getFlowDetails(false);
 export const getFlowWithoutKeyword = getFlowDetails(true, []);
 export const getTemplateFlow = getFlowDetails(true, [], true);
+export const getFlowWithManyKeywords = getFlowDetails(true, [
+  'help',
+  'activity',
+  'preference',
+  'optout',
+  'stop',
+  'start',
+  'end',
+  'yes',
+  'no',
+  'maybe',
+]);
 
 export const getFlowCountQuery = (filter: any) => ({
   request: {
