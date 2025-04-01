@@ -61,12 +61,17 @@ const Certificate = () => {
       type: 'text',
       label: t('URL'),
       helperText: (
-        <span>
-          Please add a Google Slides link. Allowed dimensions are 16x9
-          <br />
-          <a href={SAMPLE_SLIDE_LINK} target="_blank" rel="noreferrer" className={styles.HelperText}>
+        <span className={styles.HelperText}>
+          Add your Google Slides link here.
+          <a href={SAMPLE_SLIDE_LINK} target="_blank" rel="noreferrer" className={styles.HelperTextLink}>
             View Sample
           </a>
+          <br />
+          For best results:
+          <ul>
+            <li>Landscape certificates – Use a resolution of 2550 x 3300 px.</li>
+            <li> Badges – Use a square format, minimum600 x 600 px.</li>
+          </ul>
         </span>
       ),
     },
