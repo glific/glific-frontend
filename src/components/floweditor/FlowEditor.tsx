@@ -19,7 +19,7 @@ import { Loading } from 'components/UI/Layout/Loading/Loading';
 import Track from 'services/TrackService';
 import { exportFlowMethod } from 'common/utils';
 import styles from './FlowEditor.module.css';
-import { checkElementInRegistry, loadfiles, setConfig } from './FlowEditor.helper';
+import { checkElementInRegistry, getKeywords, loadfiles, setConfig } from './FlowEditor.helper';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { BackdropLoader, FlowTranslation } from 'containers/Flow/FlowTranslation';
 
@@ -146,7 +146,8 @@ export const FlowEditor = () => {
 
   if (flowName && flowName.flows.length > 0) {
     flowTitle = flowName.flows[0].name;
-    flowKeywords = flowName.flows[0].keywords.join(', ');
+    const keywords = flowName.flows[0].keywords;
+    flowKeywords = getKeywords(keywords);
   }
 
   const handleResetFlowCount = () => {
