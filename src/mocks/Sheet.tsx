@@ -80,10 +80,10 @@ export const getSheetQuery = {
   },
 };
 
-export const deleteSheetQuery = {
+export const deleteSheetQuery = (variables: any) => ({
   request: {
     query: DELETE_SHEET,
-    variables: { sheetId: '3' },
+    variables,
   },
   result: {
     data: {
@@ -93,7 +93,7 @@ export const deleteSheetQuery = {
       },
     },
   },
-};
+});
 
 export const createSheetQuery = {
   request: {

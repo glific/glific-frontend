@@ -18,7 +18,7 @@ const mocks = [
   getSearchSheetQuery,
   getSheetQuery,
   getSheetQuery,
-  deleteSheetQuery,
+  deleteSheetQuery({ id: '1' }),
   createSheetQuery,
   getSheetCountQuery,
   getSheetCountQuery,
@@ -115,5 +115,22 @@ describe('<SheetIntegrationList />', () => {
     await waitFor(() => {
       expect(queryByText('Please check the warnings')).not.toBeInTheDocument();
     });
+  });
+
+  test('should delete the sheet', async () => {
+    const { getAllByTestId, getByText } = render(wrapper());
+
+    await waitFor(() => {
+      expect(getByText('Google sheets')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getAllByTestId('MoreIcon')[0]);
+    fireEvent.click(screen.getByText('Delete'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('dialogBox')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('ok-button'));
   });
 });
