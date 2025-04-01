@@ -71,7 +71,7 @@ export const getSheetQuery = {
           sheetDataCount: 4,
           type: 'READ',
           autoSync: false,
-          lastSyncedAt: '2022-10-16T14:54:54Z',
+          lastSyncedAt: null,
           updatedAt: '2022-10-16T14:54:55.000000Z',
           url: 'https://glific.test:8080/sheet-integration/add',
         },

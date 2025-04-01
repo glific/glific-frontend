@@ -2,10 +2,18 @@ import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import Assistants from './Assistants';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { MOCKS, emptyMocks, loadMoreMocks } from 'mocks/Assistants';
+import {
+  MOCKS,
+  addFilesToFileSearchWithErrorMocks,
+  emptyMocks,
+  loadMoreMocks,
+  uploadSupportedFileMocks,
+  uploadUnSupportedFileMocks,
+} from 'mocks/Assistants';
 import * as Notification from 'common/notification';
 
 const notificationSpy = vi.spyOn(Notification, 'setNotification');
+const errorMessageSpy = vi.spyOn(Notification, 'setErrorMessage');
 const mockedUsedNavigate = vi.fn();
 vi.mock('react-router-dom', async () => ({
   ...(await vi.importActual('react-router-dom')),
@@ -105,7 +113,7 @@ test('it searchs for an assistant', async () => {
 });
 
 test('it uploads files to assistant', async () => {
-  render(assistantsComponent());
+  render(assistantsComponent(uploadSupportedFileMocks));
 
   await waitFor(() => {
     expect(screen.getByText('Assistants')).toBeInTheDocument();
@@ -120,6 +128,9 @@ test('it uploads files to assistant', async () => {
   await waitFor(() => {
     expect(screen.getByText('Add files to file search')).toBeInTheDocument();
   });
+  fireEvent.click(screen.getByTestId('ok-button'));
+
+  fireEvent.click(screen.getByTestId('addFiles'));
 
   const mockFile = new File(['file content'], 'testFile.txt', { type: 'text/plain' });
   const mockFileContent = new Blob([new Array(28000000).fill('a').join('')], {
@@ -153,6 +164,52 @@ test('it uploads files to assistant', async () => {
 
   await waitFor(() => {
     expect(notificationSpy).toHaveBeenCalled();
+  });
+});
+
+test('it shows error for unsupported files', async () => {
+  render(assistantsComponent(uploadUnSupportedFileMocks));
+
+  await waitFor(() => {
+    expect(screen.getByText('Assistants')).toBeInTheDocument();
+    expect(screen.getByTestId('addFiles'));
+  });
+
+  fireEvent.click(screen.getByTestId('addFiles'));
+
+  await waitFor(() => {
+    expect(screen.getByText('Add files to file search')).toBeInTheDocument();
+  });
+  const mockFile = new File(['file content'], 'testFile.csv', { type: 'text/csv' });
+  fireEvent.change(screen.getByTestId('uploadFile'), { target: { files: [mockFile] } });
+
+  await waitFor(() => {
+    expect(errorMessageSpy).toHaveBeenCalled();
+  });
+});
+
+test('it shows error when adding files to assistant fails', async () => {
+  render(assistantsComponent(addFilesToFileSearchWithErrorMocks));
+
+  await waitFor(() => {
+    expect(screen.getByText('Assistants')).toBeInTheDocument();
+    expect(screen.getByTestId('addFiles'));
+  });
+
+  fireEvent.click(screen.getByTestId('addFiles'));
+  const mockFile = new File(['file content'], 'testFile.txt', { type: 'text/plain' });
+
+  const fileInput = screen.getByTestId('uploadFile');
+  fireEvent.change(fileInput, { target: { files: [mockFile] } });
+
+  await waitFor(() => {
+    expect(screen.getAllByTestId('fileItem')).toHaveLength(2);
+  });
+
+  fireEvent.click(screen.getByTestId('ok-button'));
+
+  await waitFor(() => {
+    expect(errorMessageSpy).toHaveBeenCalled();
   });
 });
 

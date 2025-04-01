@@ -1,4 +1,4 @@
-import { CREATE_TRIGGER, DELETE_TRIGGER, UPDATE_TRIGGER } from 'graphql/mutations/Trigger';
+import { CREATE_TRIGGER, DELETE_TRIGGER, UPDATE_TRIGGER, VALIDATE_TRIGGER } from 'graphql/mutations/Trigger';
 import { TRIGGER_LIST_QUERY, TRIGGER_QUERY_COUNT, GET_TRIGGER } from 'graphql/queries/Trigger';
 
 export const triggerListQuery = {
@@ -110,23 +110,6 @@ const hourlyTrigger = () => {
 export const createTriggerQuery = {
   request: {
     query: CREATE_TRIGGER,
-    variables: {
-      id: '1',
-      input: {
-        isActive: true,
-        isRepeating: true,
-        flowId: '1',
-        days: [],
-        hours: [],
-        groupId: '1',
-        startDate: '2021-02-28',
-        endDate: '2021-03-13',
-        startTime: 'T20:00:22',
-        frequency: 'daily',
-        addRoleIds: [],
-        deleteRoleIds: [],
-      },
-    },
   },
   result: {
     data: {
@@ -150,6 +133,7 @@ export const createTriggerQuery = {
       },
     },
   },
+  variableMatcher: () => true,
 };
 
 export const updateTriggerQuery = {
@@ -260,3 +244,19 @@ export const deleteTriggerQuery = {
 };
 
 export { hourlyTrigger };
+
+export const validateTrigger = (flowId: string, validateTrigger: any) => ({
+  request: {
+    query: VALIDATE_TRIGGER,
+    variables: {
+      input: {
+        flowId,
+      },
+    },
+  },
+  result: {
+    data: {
+      validateTrigger,
+    },
+  },
+});

@@ -95,7 +95,7 @@ describe('<SheetIntegrationList />', () => {
   });
 
   test('Should render warnings', async () => {
-    const { getByText, getByTestId, getAllByTestId } = render(wrapper(syncSheetMutationWithWarnings));
+    const { getByText, getByTestId, getAllByTestId, queryByText } = render(wrapper(syncSheetMutationWithWarnings));
 
     // loading is show initially
     expect(getByTestId('loading')).toBeInTheDocument();
@@ -108,6 +108,12 @@ describe('<SheetIntegrationList />', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Please check the warnings')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('ok-button'));
+
+    await waitFor(() => {
+      expect(queryByText('Please check the warnings')).not.toBeInTheDocument();
     });
   });
 });

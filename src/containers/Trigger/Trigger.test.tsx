@@ -1,6 +1,6 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
-import { MemoryRouter } from 'react-router';
+import { MemoryRouter, Route, Routes } from 'react-router';
 import { vi } from 'vitest';
 
 import { LIST_ITEM_MOCKS } from 'containers/SettingList/SettingList.test.helper';
@@ -14,6 +14,7 @@ import {
   hourlyTrigger,
   updateTriggerQuery,
   updateTriggerWeeklyQuery,
+  validateTrigger,
 } from 'mocks/Trigger';
 import { Trigger } from './Trigger';
 import dayjs from 'dayjs';
@@ -21,20 +22,130 @@ import utc from 'dayjs';
 import { conversationMock } from 'mocks/Chat';
 dayjs.extend(utc);
 
-vi.mock('react-router-dom', async () => {
-  return {
-    ...(await vi.importActual<any>('react-router-dom')),
-    useParams: () => ({ id: '1' }),
-  };
+const mockUseLocationValue: any = {
+  pathname: '/',
+  search: '',
+  hash: '',
+  state: null,
+};
+
+vi.mock('react-router-dom', async () => ({
+  ...((await vi.importActual<any>('react-router-dom')) as {}),
+  useLocation: () => {
+    return mockUseLocationValue;
+  },
+}));
+const notificationSpy = vi.spyOn(Notification, 'setNotification');
+
+const MOCKS = [...LIST_ITEM_MOCKS, ...SearchMocks];
+
+beforeEach(() => {
+  mockUseLocationValue.state = null;
+  cleanup();
+});
+
+describe('it creates a new trigger', () => {
+  const CREATE_MOCKS = [
+    ...MOCKS,
+    validateTrigger('2', {
+      errors: null,
+      success: true,
+    }),
+    validateTrigger('1', {
+      __typename: 'ValidateTriggerResult',
+      errors: [
+        {
+          key: 'warning',
+          message: 'The first message node is not an HSM template',
+        },
+      ],
+      success: false,
+    }),
+    createTriggerQuery,
+  ];
+  const wrapper = (
+    <MockedProvider mocks={CREATE_MOCKS} addTypename={false}>
+      <MemoryRouter initialEntries={['/trigger/add']}>
+        <Routes>
+          <Route path="trigger/add" element={<Trigger />} />
+        </Routes>
+      </MemoryRouter>
+    </MockedProvider>
+  );
+
+  test('it should create a new trigger', async () => {
+    render(wrapper);
+
+    expect(screen.getByText('Loading...')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(screen.getByText('Add a new trigger')).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Select flow')).toBeInTheDocument();
+    });
+
+    const autoCompletes = screen.getAllByRole('combobox');
+
+    autoCompletes[0].focus();
+    fireEvent.keyDown(autoCompletes[0], { key: 'ArrowDown' });
+    fireEvent.click(screen.getByText('Help Workflow'), { key: 'Enter' });
+
+    await waitFor(() => {
+      expect(screen.getByText('Warning: The first message node is not an HSM template')).toBeInTheDocument();
+    });
+
+    autoCompletes[0].focus();
+    fireEvent.keyDown(autoCompletes[0], { key: 'ArrowDown' });
+
+    fireEvent.click(screen.getByText('SoL Feedback'), { key: 'Enter' });
+
+    const inputs = screen.getAllByRole('textbox');
+    fireEvent.change(inputs[0], { target: { value: dayjs().format('MM/DD/YYYY') } });
+    fireEvent.change(inputs[1], { target: { value: dayjs().add(1, 'day').format('MM/DD/YYYY') } });
+    fireEvent.change(inputs[2], { target: { value: '10:00 PM' } });
+
+    await waitFor(() => {
+      expect(inputs[0]).toHaveValue(dayjs().format('MM/DD/YYYY'));
+    });
+
+    autoCompletes[1].focus();
+    fireEvent.keyDown(autoCompletes[1], { key: 'ArrowDown' });
+    fireEvent.click(screen.getByText('Hourly'), { key: 'Enter' });
+
+    autoCompletes[2].focus();
+    fireEvent.keyDown(autoCompletes[2], { key: 'ArrowDown' });
+    fireEvent.click(screen.getByText('1 AM'), { key: 'Enter' });
+    fireEvent.click(screen.getByText('3 AM'), { key: 'Enter' });
+
+    autoCompletes[3].focus();
+    fireEvent.keyDown(autoCompletes[3], { key: 'ArrowDown' });
+    fireEvent.click(screen.getByText('Group 1'), { key: 'Enter' });
+
+    await waitFor(() => {
+      expect(autoCompletes[1]).toHaveValue('Hourly');
+    });
+
+    fireEvent.click(screen.getByTestId('submitActionButton'));
+
+    await waitFor(() => {
+      expect(notificationSpy).toHaveBeenCalledWith('Trigger created successfully!');
+    });
+  });
 });
 
 describe('trigger with daily frequency', () => {
-  const frequencyDailyMocks = [getTriggerQuery('daily'), ...LIST_ITEM_MOCKS, ...SearchMocks, createTriggerQuery];
+  const frequencyDailyMocks = [...MOCKS, getTriggerQuery('daily')];
+  mockUseLocationValue.state = 'copy';
 
   const frequencyDailyWrapper = (
     <MockedProvider mocks={frequencyDailyMocks} addTypename={false}>
-      <MemoryRouter initialEntries={[{ state: 'copy' }]}>
-        <Trigger />
+      <MemoryRouter initialEntries={['/trigger/1/edit']}>
+        <Routes>
+          <Route path="trigger/add" element={<Trigger />} />
+          <Route path="trigger/:id/edit" element={<Trigger />} />
+        </Routes>
       </MemoryRouter>
     </MockedProvider>
   );
@@ -55,12 +166,15 @@ describe('trigger with daily frequency', () => {
 });
 
 describe('trigger with no frequency', () => {
-  const frequencyDailyMocks = [getTriggerQuery('none'), ...LIST_ITEM_MOCKS, ...SearchMocks, updateTriggerQuery];
+  const frequencyDailyMocks = [...MOCKS, getTriggerQuery('none'), updateTriggerQuery];
 
   const frequencyDailyWrapper = (
     <MockedProvider mocks={frequencyDailyMocks} addTypename={false}>
-      <MemoryRouter>
-        <Trigger />
+      <MemoryRouter initialEntries={['/trigger/1/edit']}>
+        <Routes>
+          <Route path="trigger/add" element={<Trigger />} />
+          <Route path="trigger/:id/edit" element={<Trigger />} />
+        </Routes>
       </MemoryRouter>
     </MockedProvider>
   );
@@ -80,12 +194,15 @@ describe('trigger with no frequency', () => {
 });
 
 describe('trigger with hourly frequency', () => {
-  const mocks = [hourlyTrigger(), ...LIST_ITEM_MOCKS, ...SearchMocks];
+  const mocks = [...MOCKS, hourlyTrigger()];
 
   const wrapper = (
     <MockedProvider mocks={mocks} addTypename={false}>
-      <MemoryRouter>
-        <Trigger />
+      <MemoryRouter initialEntries={['/trigger/1/edit']}>
+        <Routes>
+          <Route path="trigger/add" element={<Trigger />} />
+          <Route path="trigger/:id/edit" element={<Trigger />} />
+        </Routes>
       </MemoryRouter>
     </MockedProvider>
   );
@@ -110,8 +227,7 @@ describe('trigger with hourly frequency', () => {
 describe('trigger with weekly frequency', () => {
   const mocks = [
     getTriggerQuery('weekly'),
-    ...LIST_ITEM_MOCKS,
-    ...SearchMocks,
+    ...MOCKS,
     updateTriggerWeeklyQuery,
     deleteTriggerQuery,
     conversationMock({ contactOpts: { limit: 25 }, filter: {}, messageOpts: { limit: 20 } }),
@@ -119,8 +235,11 @@ describe('trigger with weekly frequency', () => {
 
   const wrapper = (
     <MockedProvider mocks={mocks} addTypename={false}>
-      <MemoryRouter>
-        <Trigger />
+      <MemoryRouter initialEntries={['/trigger/1/edit']}>
+        <Routes>
+          <Route path="trigger/add" element={<Trigger />} />
+          <Route path="trigger/:id/edit" element={<Trigger />} />
+        </Routes>
       </MemoryRouter>
     </MockedProvider>
   );
@@ -191,8 +310,6 @@ describe('trigger with weekly frequency', () => {
   });
 
   test('it should remove the trigger in edit mode', async () => {
-    const notificationSpy = vi.spyOn(Notification, 'setNotification');
-
     const { getByText, getByTestId } = render(wrapper);
     expect(getByText('Loading...')).toBeInTheDocument();
 

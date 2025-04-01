@@ -46,6 +46,7 @@ export const Calendar = ({
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <div className={styles.Calendar} data-testid="date-picker-inline">
         <DatePicker
+          readOnly={false}
           label={placeholder}
           open={open}
           value={dateValue}
