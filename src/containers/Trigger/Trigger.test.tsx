@@ -104,7 +104,7 @@ describe('it creates a new trigger', () => {
     const inputs = screen.getAllByRole('textbox');
     fireEvent.change(inputs[0], { target: { value: dayjs().format('MM/DD/YYYY') } });
     fireEvent.change(inputs[1], { target: { value: dayjs().add(1, 'day').format('MM/DD/YYYY') } });
-    fireEvent.change(inputs[2], { target: { value: '10:00 PM' } });
+    fireEvent.change(inputs[2], { target: { value: dayjs().add(1, 'hour').format('hh:mm A') } });
 
     await waitFor(() => {
       expect(inputs[0]).toHaveValue(dayjs().format('MM/DD/YYYY'));
@@ -131,6 +131,34 @@ describe('it creates a new trigger', () => {
 
     await waitFor(() => {
       expect(notificationSpy).toHaveBeenCalledWith('Trigger created successfully!');
+    });
+  });
+
+  test('it should validate start and end date', async () => {
+    render(wrapper);
+
+    expect(screen.getByText('Loading...')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(screen.getByText('Add a new trigger')).toBeInTheDocument();
+    });
+
+    const inputs = screen.getAllByRole('textbox');
+
+    fireEvent.change(inputs[0], { target: { value: dayjs().format('MM/DD/YYYY') } });
+    fireEvent.change(inputs[1], { target: { value: dayjs().format('MM/DD/YYYY') } });
+    fireEvent.change(inputs[2], { target: { value: dayjs().subtract(1, 'hour').format('hh:mm A') } });
+
+    fireEvent.click(screen.getByTestId('submitActionButton'));
+    await waitFor(() => {
+      expect(screen.getByText('Start time should be greater than current time')).toBeInTheDocument();
+    });
+
+    fireEvent.change(inputs[0], { target: { value: dayjs().add(1, 'day').format('MM/DD/YYYY') } });
+    fireEvent.click(screen.getByTestId('submitActionButton'));
+
+    await waitFor(() => {
+      expect(screen.getByText('End date should be greater than the start date')).toBeInTheDocument();
     });
   });
 });

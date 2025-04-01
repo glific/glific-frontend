@@ -82,7 +82,7 @@ test('it should render my tickets', async () => {
   fireEvent.click(screen.getByText('My tickets'));
 
   await waitFor(() => {
-    // expect(screen.getByText('what is an interactive message?')).toBeInTheDocument();
+    expect(screen.getByText('what is an interactive message?')).toBeInTheDocument();
   });
 });
 

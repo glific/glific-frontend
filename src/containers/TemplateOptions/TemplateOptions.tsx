@@ -202,6 +202,7 @@ export const TemplateOptions = ({
               <div>
                 <FormControl fullWidth error={isError('title')} className={styles.FormControl}>
                   <TextField
+                    placeholder="Sample Suffix"
                     disabled={disabled}
                     label={'Sample Suffix'}
                     className={styles.TextField}
