@@ -2,6 +2,7 @@ import { CREATE_TRIGGER, DELETE_TRIGGER, UPDATE_TRIGGER, VALIDATE_TRIGGER } from
 import { TRIGGER_LIST_QUERY, TRIGGER_QUERY_COUNT, GET_TRIGGER } from 'graphql/queries/Trigger';
 import { LIST_ITEM_MOCKS as SearchMocks } from 'containers/Search/Search.test.helper';
 import { LIST_ITEM_MOCKS } from 'containers/SettingList/SettingList.test.helper';
+import { conversationQuery } from './Chat';
 
 export const triggerListQuery = {
   request: {
@@ -103,13 +104,6 @@ export const getTriggerQuery = (frequency: any, additionalFields?: any) => ({
   },
 });
 
-const hourlyTrigger = () => {
-  const hourlyTrigger: any = getTriggerQuery('hourly');
-  hourlyTrigger.result.data.trigger.trigger.days = [];
-  hourlyTrigger.result.data.trigger.trigger.hours = [1, 13];
-  return hourlyTrigger;
-};
-
 export const createTriggerQuery = (input: any) => ({
   request: {
     query: CREATE_TRIGGER,
@@ -146,15 +140,16 @@ export const updateTriggerQuery = {
       id: '1',
       input: {
         isActive: true,
-        isRepeating: false,
+        isRepeating: true,
         flowId: '1',
         days: [],
-        hours: [],
-        groupId: '1',
+        hours: [0, 1],
+        groupIds: [1],
         startDate: '2021-02-28',
         endDate: '2021-03-13',
         startTime: 'T20:00:22',
-        frequency: 'none',
+        frequency: 'hourly',
+        groupType: 'WABA',
         addRoleIds: [],
         deleteRoleIds: [],
       },
@@ -184,51 +179,6 @@ export const updateTriggerQuery = {
   },
 };
 
-export const updateTriggerWeeklyQuery = {
-  request: {
-    query: UPDATE_TRIGGER,
-    variables: {
-      id: '1',
-      input: {
-        isActive: true,
-        isRepeating: true,
-        flowId: '1',
-        days: [1, 2],
-        hours: [],
-        groupId: '1',
-        startDate: '2021-02-28',
-        endDate: '2021-03-13',
-        startTime: 'T20:00:22',
-        frequency: 'weekly',
-        addRoleIds: [],
-        deleteRoleIds: [],
-      },
-    },
-  },
-  result: {
-    data: {
-      updateTrigger: {
-        trigger: {
-          days: [1, 2],
-          endDate: '2021-03-13',
-          flow: {
-            id: '1',
-          },
-          roles: [],
-          name: 'New trigger',
-          frequency: 'weekly',
-          hours: [],
-          groups: [],
-          id: '1',
-          isActive: true,
-          isRepeating: true,
-          startAt: '2021-02-28T20:00:22Z',
-        },
-      },
-    },
-  },
-};
-
 export const deleteTriggerQuery = {
   request: {
     query: DELETE_TRIGGER,
@@ -245,8 +195,6 @@ export const deleteTriggerQuery = {
     },
   },
 };
-
-export { hourlyTrigger };
 
 export const validateTrigger = (flowId: string, validateTrigger: any) => ({
   request: {
@@ -267,8 +215,11 @@ export const validateTrigger = (flowId: string, validateTrigger: any) => ({
 export const TRIGGER_MOCKS = [
   ...LIST_ITEM_MOCKS,
   ...SearchMocks,
+  conversationQuery,
   triggerListQuery,
   triggerCountQuery,
+  deleteTriggerQuery,
+  updateTriggerQuery,
   validateTrigger('2', {
     errors: null,
     success: true,

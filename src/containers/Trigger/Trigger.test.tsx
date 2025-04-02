@@ -28,7 +28,6 @@ vi.mock('react-router-dom', async () => ({
 const notificationSpy = vi.spyOn(Notification, 'setNotification');
 
 const MOCKS = TRIGGER_MOCKS;
-const CREATE_MOCKS = [...MOCKS];
 
 beforeEach(() => {
   mockUseLocationValue.state = null;
@@ -88,7 +87,7 @@ const getDates = (startTime: any, startDate: any, endDate: any) => {
 };
 
 const wrapper = (mock?: any) => (
-  <MockedProvider mocks={mock ? [...CREATE_MOCKS, mock] : CREATE_MOCKS} addTypename={false}>
+  <MockedProvider mocks={mock ? [...MOCKS, mock] : MOCKS} addTypename={false}>
     <MemoryRouter initialEntries={['/trigger/add']}>
       <Routes>
         <Route path="trigger/add" element={<Trigger />} />
@@ -99,7 +98,7 @@ const wrapper = (mock?: any) => (
 );
 
 const editWrapper = (mocks?: any) => (
-  <MockedProvider mocks={mocks ? [...CREATE_MOCKS, ...mocks] : CREATE_MOCKS} addTypename={false}>
+  <MockedProvider mocks={mocks ? [...MOCKS, ...mocks] : MOCKS} addTypename={false}>
     <MemoryRouter initialEntries={['/trigger/1/edit']}>
       <Routes>
         <Route path="trigger/:id/edit" element={<Trigger />} />
@@ -312,6 +311,12 @@ describe('edit mode', () => {
     await waitFor(() => {
       expect(screen.getAllByRole('combobox')[1]).toHaveValue('Hourly');
     });
+
+    fireEvent.click(screen.getByTestId('submitActionButton'));
+
+    await waitFor(() => {
+      expect(notificationSpy).toHaveBeenCalledWith('Trigger edited successfully!');
+    });
   });
 
   test('should renders form for daily triggers', async () => {
@@ -399,6 +404,38 @@ describe('edit mode', () => {
       expect(screen.getAllByRole('combobox')[1]).toHaveValue('Monthly');
       expect(screen.getByText('2')).toBeInTheDocument();
       expect(screen.getByText('3')).toBeInTheDocument();
+    });
+  });
+
+  test('it deletes a trigger', async () => {
+    render(
+      editWrapper([
+        getTriggerQuery('monthly', {
+          flow: {
+            id: '1',
+          },
+          groups: ['Group 1'],
+          days: [2, 3],
+        }),
+      ])
+    );
+
+    expect(screen.getByText('Loading...')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(screen.getByText('Edit trigger')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('remove-icon'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Are you sure you want to delete the trigger?')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('ok-button'));
+
+    await waitFor(() => {
+      expect(notificationSpy).toHaveBeenCalledWith('Trigger deleted successfully');
     });
   });
 });
