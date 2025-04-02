@@ -1,5 +1,7 @@
 import { CREATE_TRIGGER, DELETE_TRIGGER, UPDATE_TRIGGER, VALIDATE_TRIGGER } from 'graphql/mutations/Trigger';
 import { TRIGGER_LIST_QUERY, TRIGGER_QUERY_COUNT, GET_TRIGGER } from 'graphql/queries/Trigger';
+import { LIST_ITEM_MOCKS as SearchMocks } from 'containers/Search/Search.test.helper';
+import { LIST_ITEM_MOCKS } from 'containers/SettingList/SettingList.test.helper';
 
 export const triggerListQuery = {
   request: {
@@ -69,7 +71,7 @@ export const triggerCountQuery = {
   },
 };
 
-export const getTriggerQuery = (frequency: any) => ({
+export const getTriggerQuery = (frequency: any, additionalFields?: any) => ({
   request: {
     query: GET_TRIGGER,
     variables: {
@@ -80,12 +82,12 @@ export const getTriggerQuery = (frequency: any) => ({
     data: {
       trigger: {
         trigger: {
-          days: [1, 2],
+          days: [],
           endDate: '2021-03-13',
           flow: {
             id: '1',
           },
-          groupType: 'WA',
+          groupType: 'WABA',
           groups: [],
           roles: [],
           frequency,
@@ -94,6 +96,7 @@ export const getTriggerQuery = (frequency: any) => ({
           isActive: true,
           isRepeating: true,
           startAt: '2021-02-28T20:00:22Z',
+          ...additionalFields,
         },
       },
     },
@@ -107,9 +110,10 @@ const hourlyTrigger = () => {
   return hourlyTrigger;
 };
 
-export const createTriggerQuery = {
+export const createTriggerQuery = (input: any) => ({
   request: {
     query: CREATE_TRIGGER,
+    variables: { input },
   },
   result: {
     data: {
@@ -133,8 +137,7 @@ export const createTriggerQuery = {
       },
     },
   },
-  variableMatcher: () => true,
-};
+});
 
 export const updateTriggerQuery = {
   request: {
@@ -260,3 +263,24 @@ export const validateTrigger = (flowId: string, validateTrigger: any) => ({
     },
   },
 });
+
+export const TRIGGER_MOCKS = [
+  ...LIST_ITEM_MOCKS,
+  ...SearchMocks,
+  triggerListQuery,
+  triggerCountQuery,
+  validateTrigger('2', {
+    errors: null,
+    success: true,
+  }),
+  validateTrigger('1', {
+    __typename: 'ValidateTriggerResult',
+    errors: [
+      {
+        key: 'warning',
+        message: 'The first message node is not an HSM template',
+      },
+    ],
+    success: false,
+  }),
+];

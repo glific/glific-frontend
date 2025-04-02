@@ -2,24 +2,14 @@ import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/re
 import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { vi } from 'vitest';
-
-import { LIST_ITEM_MOCKS } from 'containers/SettingList/SettingList.test.helper';
-import { LIST_ITEM_MOCKS as SearchMocks } from 'containers/Search/Search.test.helper';
-import * as AutoComplete from 'components/UI/Form/AutoComplete/AutoComplete';
 import * as Notification from 'common/notification';
-import {
-  createTriggerQuery,
-  deleteTriggerQuery,
-  getTriggerQuery,
-  hourlyTrigger,
-  updateTriggerQuery,
-  updateTriggerWeeklyQuery,
-  validateTrigger,
-} from 'mocks/Trigger';
+import { TRIGGER_MOCKS, createTriggerQuery, getTriggerQuery } from 'mocks/Trigger';
 import { Trigger } from './Trigger';
 import dayjs from 'dayjs';
 import utc from 'dayjs';
-import { conversationMock } from 'mocks/Chat';
+import TriggerList from './TriggerList/TriggerList';
+import { EXTENDED_TIME_FORMAT, ISO_DATE_FORMAT } from 'common/constants';
+import { setOrganizationServices } from 'services/AuthService';
 dayjs.extend(utc);
 
 const mockUseLocationValue: any = {
@@ -37,53 +27,113 @@ vi.mock('react-router-dom', async () => ({
 }));
 const notificationSpy = vi.spyOn(Notification, 'setNotification');
 
-const MOCKS = [...LIST_ITEM_MOCKS, ...SearchMocks];
+const MOCKS = TRIGGER_MOCKS;
+const CREATE_MOCKS = [...MOCKS];
 
 beforeEach(() => {
   mockUseLocationValue.state = null;
   cleanup();
 });
 
-describe('it creates a new trigger', () => {
-  const CREATE_MOCKS = [
-    ...MOCKS,
-    validateTrigger('2', {
-      errors: null,
-      success: true,
-    }),
-    validateTrigger('1', {
-      __typename: 'ValidateTriggerResult',
-      errors: [
-        {
-          key: 'warning',
-          message: 'The first message node is not an HSM template',
-        },
-      ],
-      success: false,
-    }),
-    createTriggerQuery,
-  ];
-  const wrapper = (
-    <MockedProvider mocks={CREATE_MOCKS} addTypename={false}>
-      <MemoryRouter initialEntries={['/trigger/add']}>
-        <Routes>
-          <Route path="trigger/add" element={<Trigger />} />
-        </Routes>
-      </MemoryRouter>
-    </MockedProvider>
-  );
+const startDate = dayjs();
+const endDate = dayjs().add(1, 'day');
+const startTime = dayjs().add(1, 'hour');
 
-  test('it should create a new trigger', async () => {
-    render(wrapper);
+const fillForm = async (frequency: string) => {
+  await waitFor(() => {
+    expect(screen.getByText('Add a new trigger')).toBeInTheDocument();
+  });
 
+  await waitFor(() => {
+    expect(screen.getByText('Select flow')).toBeInTheDocument();
+  });
+
+  const autoCompletes = screen.getAllByRole('combobox');
+
+  autoCompletes[0].focus();
+  fireEvent.keyDown(autoCompletes[0], { key: 'ArrowDown' });
+  fireEvent.click(screen.getByText('SoL Feedback'), { key: 'Enter' });
+
+  const inputs = screen.getAllByRole('textbox');
+  fireEvent.change(inputs[0], { target: { value: startDate.format('MM/DD/YYYY') } });
+  fireEvent.change(inputs[1], { target: { value: endDate.format('MM/DD/YYYY') } });
+  fireEvent.change(inputs[2], { target: { value: startTime.format('hh:mm A') } });
+
+  await waitFor(() => {
+    expect(inputs[0]).toHaveValue(startDate.format('MM/DD/YYYY'));
+  });
+
+  autoCompletes[1].focus();
+  fireEvent.keyDown(autoCompletes[1], { key: 'ArrowDown' });
+  fireEvent.click(screen.getByText(frequency), { key: 'Enter' });
+
+  autoCompletes[3].focus();
+  fireEvent.keyDown(autoCompletes[3], { key: 'ArrowDown' });
+  fireEvent.click(screen.getByText('Group 1'), { key: 'Enter' });
+
+  await waitFor(() => {
+    expect(autoCompletes[1]).toHaveValue(frequency);
+  });
+};
+
+const getDates = (startTime: any, startDate: any, endDate: any) => {
+  const startAtTime = dayjs(startTime).format(EXTENDED_TIME_FORMAT);
+  const startAt = dayjs(`${dayjs(startDate).format(ISO_DATE_FORMAT)}${startAtTime}`).utc();
+
+  return {
+    startDate: dayjs(startAt).format(ISO_DATE_FORMAT),
+    endDate: dayjs(endDate).format(ISO_DATE_FORMAT),
+    startTime: dayjs(startAt).utc().set('seconds', 0).format(EXTENDED_TIME_FORMAT),
+  };
+};
+
+const wrapper = (mock?: any) => (
+  <MockedProvider mocks={mock ? [...CREATE_MOCKS, mock] : CREATE_MOCKS} addTypename={false}>
+    <MemoryRouter initialEntries={['/trigger/add']}>
+      <Routes>
+        <Route path="trigger/add" element={<Trigger />} />
+        <Route path="trigger" element={<TriggerList />} />
+      </Routes>
+    </MemoryRouter>
+  </MockedProvider>
+);
+
+const editWrapper = (mocks?: any) => (
+  <MockedProvider mocks={mocks ? [...CREATE_MOCKS, ...mocks] : CREATE_MOCKS} addTypename={false}>
+    <MemoryRouter initialEntries={['/trigger/1/edit']}>
+      <Routes>
+        <Route path="trigger/:id/edit" element={<Trigger />} />
+        <Route path="trigger" element={<TriggerList />} />
+      </Routes>
+    </MemoryRouter>
+  </MockedProvider>
+);
+
+const createTriggerPayload = {
+  isActive: true,
+  isRepeating: true,
+  flowId: '2',
+  groupIds: [1],
+  groupType: 'WABA',
+  addRoleIds: [],
+  deleteRoleIds: [],
+};
+
+describe('add mode', () => {
+  test('it creates a hourly trigger', async () => {
+    const createMock = createTriggerQuery({
+      days: [],
+      hours: [1, 3],
+      frequency: 'hourly',
+      ...createTriggerPayload,
+      ...getDates(startTime, startDate, endDate),
+    });
+
+    render(wrapper(createMock));
     expect(screen.getByText('Loading...')).toBeInTheDocument();
 
     await waitFor(() => {
       expect(screen.getByText('Add a new trigger')).toBeInTheDocument();
-    });
-
-    await waitFor(() => {
-      expect(screen.getByText('Select flow')).toBeInTheDocument();
     });
 
     const autoCompletes = screen.getAllByRole('combobox');
@@ -96,36 +146,108 @@ describe('it creates a new trigger', () => {
       expect(screen.getByText('Warning: The first message node is not an HSM template')).toBeInTheDocument();
     });
 
-    autoCompletes[0].focus();
-    fireEvent.keyDown(autoCompletes[0], { key: 'ArrowDown' });
-
-    fireEvent.click(screen.getByText('SoL Feedback'), { key: 'Enter' });
-
-    const inputs = screen.getAllByRole('textbox');
-    fireEvent.change(inputs[0], { target: { value: dayjs().format('MM/DD/YYYY') } });
-    fireEvent.change(inputs[1], { target: { value: dayjs().add(1, 'day').format('MM/DD/YYYY') } });
-    fireEvent.change(inputs[2], { target: { value: dayjs().add(1, 'hour').format('hh:mm A') } });
-
-    await waitFor(() => {
-      expect(inputs[0]).toHaveValue(dayjs().format('MM/DD/YYYY'));
-    });
-
-    autoCompletes[1].focus();
-    fireEvent.keyDown(autoCompletes[1], { key: 'ArrowDown' });
-    fireEvent.click(screen.getByText('Hourly'), { key: 'Enter' });
+    await fillForm('Hourly');
 
     autoCompletes[2].focus();
     fireEvent.keyDown(autoCompletes[2], { key: 'ArrowDown' });
     fireEvent.click(screen.getByText('1 AM'), { key: 'Enter' });
     fireEvent.click(screen.getByText('3 AM'), { key: 'Enter' });
 
-    autoCompletes[3].focus();
-    fireEvent.keyDown(autoCompletes[3], { key: 'ArrowDown' });
-    fireEvent.click(screen.getByText('Group 1'), { key: 'Enter' });
+    fireEvent.click(screen.getByTestId('submitActionButton'));
 
     await waitFor(() => {
-      expect(autoCompletes[1]).toHaveValue('Hourly');
+      expect(notificationSpy).toHaveBeenCalledWith('Trigger created successfully!');
     });
+  });
+
+  test('it creates a daily trigger', async () => {
+    const startDate = dayjs();
+    const endDate = dayjs().add(1, 'day');
+    const startTime = dayjs().add(1, 'hour');
+
+    const createMock = createTriggerQuery({
+      days: [],
+      hours: [],
+      frequency: 'daily',
+      ...createTriggerPayload,
+      ...getDates(startTime, startDate, endDate),
+    });
+
+    render(wrapper(createMock));
+    expect(screen.getByText('Loading...')).toBeInTheDocument();
+
+    await fillForm('Daily');
+    fireEvent.click(screen.getByTestId('submitActionButton'));
+
+    await waitFor(() => {
+      expect(notificationSpy).toHaveBeenCalledWith('Trigger created successfully!');
+    });
+  });
+
+  test('it creates a weekly trigger', async () => {
+    const startDate = dayjs();
+    const endDate = dayjs().add(1, 'day');
+    const startTime = dayjs().add(1, 'hour');
+
+    const createMock = createTriggerQuery({
+      days: [1, 4],
+      hours: [],
+      frequency: 'weekly',
+      ...createTriggerPayload,
+      ...getDates(startTime, startDate, endDate),
+    });
+
+    render(wrapper(createMock));
+    expect(screen.getByText('Loading...')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(screen.getByText('Add a new trigger')).toBeInTheDocument();
+    });
+
+    const autoCompletes = screen.getAllByRole('combobox');
+
+    await fillForm('Weekly');
+
+    autoCompletes[2].focus();
+    fireEvent.keyDown(autoCompletes[2], { key: 'ArrowDown' });
+    fireEvent.click(screen.getByText('Monday'), { key: 'Enter' });
+    fireEvent.click(screen.getByText('Thursday'), { key: 'Enter' });
+
+    fireEvent.click(screen.getByTestId('submitActionButton'));
+
+    await waitFor(() => {
+      expect(notificationSpy).toHaveBeenCalledWith('Trigger created successfully!');
+    });
+  });
+
+  test('it creates a monthly trigger', async () => {
+    const startDate = dayjs();
+    const endDate = dayjs().add(1, 'day');
+    const startTime = dayjs().add(1, 'hour');
+
+    const createMock = createTriggerQuery({
+      days: [1, 4],
+      hours: [],
+      frequency: 'monthly',
+      ...createTriggerPayload,
+      ...getDates(startTime, startDate, endDate),
+    });
+
+    render(wrapper(createMock));
+
+    expect(screen.getByText('Loading...')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(screen.getByText('Add a new trigger')).toBeInTheDocument();
+    });
+    const autoCompletes = screen.getAllByRole('combobox');
+
+    await fillForm('Monthly');
+
+    autoCompletes[2].focus();
+    fireEvent.keyDown(autoCompletes[2], { key: 'ArrowDown' });
+    fireEvent.click(screen.getByText('1'), { key: 'Enter' });
+    fireEvent.click(screen.getByText('4'), { key: 'Enter' });
 
     fireEvent.click(screen.getByTestId('submitActionButton'));
 
@@ -135,7 +257,7 @@ describe('it creates a new trigger', () => {
   });
 
   test('it should validate start and end date', async () => {
-    render(wrapper);
+    render(wrapper());
 
     expect(screen.getByText('Loading...')).toBeInTheDocument();
 
@@ -163,195 +285,238 @@ describe('it creates a new trigger', () => {
   });
 });
 
-describe('trigger with daily frequency', () => {
-  const frequencyDailyMocks = [...MOCKS, getTriggerQuery('daily')];
-  mockUseLocationValue.state = 'copy';
+describe('edit mode', () => {
+  test('should renders form for hourly triggers', async () => {
+    render(
+      editWrapper([
+        getTriggerQuery('hourly', {
+          flow: {
+            id: '1',
+          },
+          groups: ['Group 1'],
+          hours: [0, 1],
+        }),
+      ])
+    );
 
-  const frequencyDailyWrapper = (
-    <MockedProvider mocks={frequencyDailyMocks} addTypename={false}>
-      <MemoryRouter initialEntries={['/trigger/1/edit']}>
-        <Routes>
-          <Route path="trigger/add" element={<Trigger />} />
-          <Route path="trigger/:id/edit" element={<Trigger />} />
-        </Routes>
-      </MemoryRouter>
-    </MockedProvider>
-  );
-
-  test('save functionality', async () => {
-    const { getByText, getAllByTestId } = render(frequencyDailyWrapper);
-
-    // loading is show initially
-    expect(getByText('Loading...')).toBeInTheDocument();
+    expect(screen.getByText('Loading...')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(getAllByTestId('autocomplete-element')).toHaveLength(4);
+      expect(screen.getByText('Edit trigger')).toBeInTheDocument();
     });
 
-    fireEvent.click(getByText('Save'));
-    await waitFor(() => {});
+    await waitFor(() => {
+      expect(screen.getAllByRole('combobox')[0]).toHaveValue('Help Workflow');
+    });
+
+    await waitFor(() => {
+      expect(screen.getAllByRole('combobox')[1]).toHaveValue('Hourly');
+    });
+  });
+
+  test('should renders form for daily triggers', async () => {
+    render(
+      editWrapper([
+        getTriggerQuery('daily', {
+          flow: {
+            id: '1',
+          },
+          groups: ['Group 1'],
+          hours: [],
+        }),
+      ])
+    );
+
+    expect(screen.getByText('Loading...')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(screen.getByText('Edit trigger')).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(screen.getAllByRole('combobox')[1]).toHaveValue('Daily');
+    });
+
+    await waitFor(() => {
+      expect(screen.getAllByRole('combobox')[0]).toHaveValue('Help Workflow');
+    });
+  });
+
+  test('should renders form for weekly triggers', async () => {
+    render(
+      editWrapper([
+        getTriggerQuery('weekly', {
+          flow: {
+            id: '1',
+          },
+          groups: ['Group 1'],
+          days: [3, 4],
+        }),
+      ])
+    );
+
+    expect(screen.getByText('Loading...')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(screen.getByText('Edit trigger')).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(screen.getAllByRole('combobox')[0]).toHaveValue('Help Workflow');
+    });
+
+    await waitFor(() => {
+      expect(screen.getAllByRole('combobox')[1]).toHaveValue('Weekly');
+      expect(screen.getByText('Wednesday')).toBeInTheDocument();
+      expect(screen.getByText('Thursday')).toBeInTheDocument();
+    });
+  });
+
+  test('should renders form for monthly triggers', async () => {
+    render(
+      editWrapper([
+        getTriggerQuery('monthly', {
+          flow: {
+            id: '1',
+          },
+          groups: ['Group 1'],
+          days: [2, 3],
+        }),
+      ])
+    );
+
+    expect(screen.getByText('Loading...')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(screen.getByText('Edit trigger')).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(screen.getAllByRole('combobox')[0]).toHaveValue('Help Workflow');
+    });
+
+    await waitFor(() => {
+      expect(screen.getAllByRole('combobox')[1]).toHaveValue('Monthly');
+      expect(screen.getByText('2')).toBeInTheDocument();
+      expect(screen.getByText('3')).toBeInTheDocument();
+    });
   });
 });
 
-describe('trigger with no frequency', () => {
-  const frequencyDailyMocks = [...MOCKS, getTriggerQuery('none'), updateTriggerQuery];
+describe('copy mode', async () => {
+  test('it copies a trigger', async () => {
+    mockUseLocationValue.state = 'copy';
 
-  const frequencyDailyWrapper = (
-    <MockedProvider mocks={frequencyDailyMocks} addTypename={false}>
-      <MemoryRouter initialEntries={['/trigger/1/edit']}>
-        <Routes>
-          <Route path="trigger/add" element={<Trigger />} />
-          <Route path="trigger/:id/edit" element={<Trigger />} />
-        </Routes>
-      </MemoryRouter>
-    </MockedProvider>
-  );
+    render(
+      editWrapper([
+        getTriggerQuery('hourly', {
+          flow: {
+            id: '1',
+          },
+          groups: ['Group 1'],
+          hours: [0, 1],
+          startAt: startTime.format('YYYY-MM-DDTHH:mm:ss[Z]'),
+          startDate: startDate.format('MM/DD/YYYY'),
+          endDate: endDate.format('MM/DD/YYYY'),
+        }),
+        createTriggerQuery({
+          ...createTriggerPayload,
+          ...getDates(startTime, startDate, endDate),
+          days: [],
+          hours: [0, 1],
+          frequency: 'hourly',
+          groupType: 'WABA',
+          flowId: '1',
+        }),
+      ])
+    );
 
-  test('save functionality', async () => {
-    const { getByText, getAllByTestId } = render(frequencyDailyWrapper);
+    expect(screen.getByText('Loading...')).toBeInTheDocument();
 
-    // loading is show initially
-    expect(getByText('Loading...')).toBeInTheDocument();
     await waitFor(() => {
-      expect(getAllByTestId('autocomplete-element')).toHaveLength(4);
-    });
-
-    fireEvent.click(getByText('Save'));
-    await waitFor(() => {});
-  });
-});
-
-describe('trigger with hourly frequency', () => {
-  const mocks = [...MOCKS, hourlyTrigger()];
-
-  const wrapper = (
-    <MockedProvider mocks={mocks} addTypename={false}>
-      <MemoryRouter initialEntries={['/trigger/1/edit']}>
-        <Routes>
-          <Route path="trigger/add" element={<Trigger />} />
-          <Route path="trigger/:id/edit" element={<Trigger />} />
-        </Routes>
-      </MemoryRouter>
-    </MockedProvider>
-  );
-
-  test('should load trigger edit form', async () => {
-    const { getByText, getByTestId } = render(wrapper);
-
-    // loading is show initially
-    expect(getByText('Loading...')).toBeInTheDocument();
-    await waitFor(() => {
-      const formLayout = getByTestId('formLayout');
-      expect(formLayout).toHaveTextContent('hours');
+      expect(screen.getByText('Copy trigger')).toBeInTheDocument();
     });
 
     await waitFor(() => {
-      expect(getByText('1 AM')).toBeInTheDocument();
-      expect(getByText('1 PM')).toBeInTheDocument();
+      expect(screen.getAllByRole('combobox')[0]).toHaveValue('Help Workflow');
+    });
+
+    const inputs = screen.getAllByRole('textbox');
+    fireEvent.change(inputs[0], { target: { value: startDate.format('MM/DD/YYYY') } });
+    fireEvent.change(inputs[1], { target: { value: endDate.format('MM/DD/YYYY') } });
+    fireEvent.change(inputs[2], { target: { value: startTime.format('hh:mm A') } });
+
+    fireEvent.click(screen.getByTestId('submitActionButton'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Copy trigger')).toBeInTheDocument();
     });
   });
 });
 
-describe('trigger with weekly frequency', () => {
-  const mocks = [
-    getTriggerQuery('weekly'),
-    ...MOCKS,
-    updateTriggerWeeklyQuery,
-    deleteTriggerQuery,
-    conversationMock({ contactOpts: { limit: 25 }, filter: {}, messageOpts: { limit: 20 } }),
-  ];
+describe('Whatsapp group collections', () => {
+  setOrganizationServices('{"__typename":"OrganizationServicesResult","whatsappGroupEnabled":true}');
 
-  const wrapper = (
-    <MockedProvider mocks={mocks} addTypename={false}>
-      <MemoryRouter initialEntries={['/trigger/1/edit']}>
-        <Routes>
-          <Route path="trigger/add" element={<Trigger />} />
-          <Route path="trigger/:id/edit" element={<Trigger />} />
-        </Routes>
-      </MemoryRouter>
-    </MockedProvider>
-  );
+  test('it creates a trigger for whatsapp group', async () => {
+    const startDate = dayjs();
+    const endDate = dayjs().add(1, 'day');
+    const startTime = dayjs().add(1, 'hour');
 
-  test('should load trigger edit form', async () => {
-    const { getByText, getByTestId } = render(wrapper);
-
-    // loading is show initially
-    expect(getByText('Loading...')).toBeInTheDocument();
-    await waitFor(() => {
-      const formLayout = getByTestId('formLayout');
-      expect(formLayout).toHaveTextContent('days');
+    const createMock = createTriggerQuery({
+      ...createTriggerPayload,
+      ...getDates(startTime, startDate, endDate),
+      days: [],
+      hours: [],
+      frequency: 'daily',
+      groupType: 'WA',
     });
 
-    await waitFor(() => {
-      expect(getByText('Tuesday')).toBeInTheDocument();
-    });
-  });
+    render(wrapper(createMock));
 
-  test('save functionality', async () => {
-    const { getByText, getAllByTestId } = render(wrapper);
+    expect(screen.getByText('Loading...')).toBeInTheDocument();
 
-    // loading is show initially
-    expect(getByText('Loading...')).toBeInTheDocument();
     await waitFor(() => {
-      expect(getAllByTestId('autocomplete-element')).toHaveLength(4);
+      expect(screen.getByText('Add a new trigger')).toBeInTheDocument();
     });
 
-    fireEvent.click(getByText('Save'));
-    await waitFor(() => {});
-  });
+    await fillForm('Daily');
 
-  test('should load trigger edit form', async () => {
-    const spy = vi.spyOn(AutoComplete, 'AutoComplete');
-    spy.mockImplementation((props: any) => {
-      const { form, onChange, options } = props;
+    fireEvent.click(screen.getByText('WhatsApp Group Collections'));
 
-      return (
-        <div key={form}>
-          <select
-            key={form}
-            data-testid="autoComplete"
-            onChange={(event) => {
-              onChange({ value: event.target.value });
-              form.setFieldValue(event.target.value);
-            }}
-          >
-            {options?.map((option: any) => (
-              <option key={option.id ? option.id : option.label} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </div>
-      );
-    });
+    fireEvent.click(screen.getByTestId('submitActionButton'));
 
-    const { getByText, getAllByTestId } = render(wrapper);
-
-    // loading is show initially
-    expect(getByText('Loading...')).toBeInTheDocument();
     await waitFor(() => {
-      const formLayout = getAllByTestId('autoComplete');
-
-      fireEvent.change(formLayout[1], { target: { value: 'weekly' } });
-      fireEvent.change(formLayout[1], { target: { value: 'daily' } });
+      expect(notificationSpy).toHaveBeenCalledWith('Trigger created successfully!');
     });
   });
 
-  test('it should remove the trigger in edit mode', async () => {
-    const { getByText, getByTestId } = render(wrapper);
-    expect(getByText('Loading...')).toBeInTheDocument();
+  test('it edits flow in edit mode', async () => {
+    render(
+      editWrapper([
+        getTriggerQuery('hourly', {
+          flow: {
+            id: '1',
+          },
+          groups: ['Group 1'],
+          hours: [0, 1],
+          groupType: 'WA',
+        }),
+      ])
+    );
+    expect(screen.getByText('Loading...')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(getByText('Edit trigger')).toBeInTheDocument();
+      expect(screen.getByText('Edit trigger')).toBeInTheDocument();
     });
 
-    fireEvent.click(getByTestId('remove-icon'));
-    expect(screen.getByText('Are you sure you want to delete the trigger?')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getAllByRole('combobox')[0]).toHaveValue('Help Workflow');
+    });
 
-    fireEvent.click(screen.getByTestId('ok-button'));
+    const radioButton = screen.getByRole('radio', { name: /WhatsApp Group Collections/i });
 
     await waitFor(() => {
-      expect(notificationSpy).toHaveBeenCalledWith('Trigger deleted successfully');
+      expect(radioButton).toBeChecked();
     });
   });
 });
