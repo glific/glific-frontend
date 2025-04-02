@@ -165,6 +165,30 @@ const uploadFileToFileSearch = {
   variableMatcher: (variables: any) => true,
 };
 
+const uploadUnsupportedFileToFileSearch = {
+  request: {
+    query: UPLOAD_FILE_TO_OPENAI,
+  },
+  result: {
+    data: {
+      uploadFilesearchFile: null,
+    },
+    errors: [
+      {
+        message: "Files with extension '.csv' not supported in Filesearch",
+        path: ['uploadFilesearchFile'],
+        locations: [
+          {
+            line: 2,
+            column: 3,
+          },
+        ],
+      },
+    ],
+  },
+  variableMatcher: (variables: any) => true,
+};
+
 const removeFileFromAssistant = {
   request: {
     query: REMOVE_FILES_FROM_ASSISTANT,
@@ -203,6 +227,17 @@ const addFilesToFilesearch = {
       },
     },
   },
+};
+
+const addFilesToFilesearchWithError = {
+  request: {
+    query: ADD_FILES_TO_FILE_SEARCH,
+    variables: {
+      addAssistantFilesId: '1',
+      mediaInfo: [{ fileId: 'file-rls90OGDUgFeLewh6e01Eamf', filename: 'Accelerator Guide (1).pdf' }],
+    },
+  },
+  error: new Error('An error occured'),
 };
 
 const updateAssistant = {
@@ -281,8 +316,11 @@ export const MOCKS = [
   getAssistantListOnSearch,
   updateAssistant,
   removeAssistant,
-  ...uploadFileMocks,
 ];
+
+export const uploadSupportedFileMocks = [...MOCKS, ...uploadFileMocks];
+export const uploadUnSupportedFileMocks = [...MOCKS, uploadUnsupportedFileToFileSearch];
+export const addFilesToFileSearchWithErrorMocks = [...MOCKS, uploadFileToFileSearch, addFilesToFilesearchWithError];
 
 export const emptyMocks = [getAssistantsList(0), listOpenaiModels, getAssistant('2')];
 

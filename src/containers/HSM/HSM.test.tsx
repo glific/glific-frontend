@@ -351,4 +351,56 @@ describe('Add mode', () => {
       expect(screen.getAllByRole('combobox')[1]).toHaveValue('account_balance');
     });
   });
+
+  test('it creates a template with dynamic url', async () => {
+    render(template);
+
+    await waitFor(() => {
+      const language = screen.getAllByTestId('AutocompleteInput')[0].querySelector('input');
+      expect(language).toHaveValue('English');
+    });
+
+    const inputs = screen.getAllByRole('textbox');
+
+    await user.type(inputs[0], 'welcome');
+    await user.type(inputs[1], 'Hello');
+
+    await user.click(inputs[2]);
+    await user.tab();
+    fireEvent.input(inputs[2], { data: 'Hi' });
+
+    await waitFor(() => {
+      expect(screen.getByText('Hi')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Add buttons'));
+    fireEvent.click(screen.getByText('URL'));
+
+    const autoCompletes = screen.getAllByRole('combobox');
+
+    autoCompletes[1].focus();
+    fireEvent.keyDown(autoCompletes[1], { key: 'ArrowDown' });
+    fireEvent.click(screen.getByText('Dynamic'), { key: 'Enter' });
+
+    fireEvent.change(screen.getByPlaceholderText('Button Title'), { target: { value: 'Click me' } });
+    fireEvent.change(screen.getByPlaceholderText('Button Value'), {
+      target: { value: 'https://example.com/' },
+    });
+
+    fireEvent.change(screen.getByPlaceholderText('Sample Suffix'), { target: { value: 'example' } });
+
+    autoCompletes[2].focus();
+    fireEvent.keyDown(autoCompletes[2], { key: 'ArrowDown' });
+    fireEvent.click(screen.getByText('ACCOUNT_UPDATE'), { key: 'Enter' });
+
+    autoCompletes[0].focus();
+    fireEvent.keyDown(autoCompletes[0], { key: 'ArrowDown' });
+    fireEvent.click(screen.getByText('Marathi'), { key: 'Enter' });
+
+    fireEvent.click(screen.getByTestId('submitActionButton'));
+
+    await waitFor(() => {
+      expect(setNotification).toHaveBeenCalled();
+    });
+  });
 });
