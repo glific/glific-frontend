@@ -1,4 +1,4 @@
-import { render, waitFor } from '@testing-library/react';
+import { fireEvent, render, waitFor } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 
@@ -72,6 +72,12 @@ vi.mock('common/notification', async (importOriginal) => {
   };
 });
 
+const mockedUsedNavigate = vi.fn();
+vi.mock('react-router', async () => ({
+  ...(await vi.importActual('react-router-dom')),
+  useNavigate: () => mockedUsedNavigate,
+}));
+
 test('click on HSM update button should call the sync api', async () => {
   const { getByTestId } = render(template(syncTemplateQuery));
 
@@ -112,4 +118,37 @@ test('sync api should render notification on error', async () => {
   await waitFor(() => {
     expect(setNotification).toHaveBeenCalledWith('Sorry, failed to sync HSM updates.', 'warning');
   });
+});
+
+test('should navigate to create template page', async () => {
+  const { getByText, getByTestId } = render(template(syncTemplateQuery));
+
+  await waitFor(() => {
+    expect(getByText('Templates')).toBeInTheDocument();
+  });
+
+  fireEvent.click(getByTestId('newItemButton'));
+
+  expect(mockedUsedNavigate).toHaveBeenCalledWith('/template/add');
+});
+
+test('should navigate to create template page with selected tag', async () => {
+  const { getByText, getByTestId, getAllByRole } = render(template(syncTemplateQuery));
+
+  await waitFor(() => {
+    expect(getByText('Templates')).toBeInTheDocument();
+  });
+
+  const autoComplete = getAllByRole('combobox')[1];
+
+  autoComplete.focus();
+
+  fireEvent.change(autoComplete, { target: { value: 'Messages' } });
+
+  fireEvent.keyDown(autoComplete, { key: 'ArrowDown' });
+  fireEvent.keyDown(autoComplete, { key: 'Enter' });
+
+  fireEvent.click(getByTestId('newItemButton'));
+
+  expect(mockedUsedNavigate).toHaveBeenCalledWith('/template/add', { state: { tag: { label: 'Messages', id: '1' } } });
 });
