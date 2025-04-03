@@ -35,10 +35,11 @@ const filesInfo =
 export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOptionsProps) => {
   const [showUploadDialog, setShowUploadDialog] = useState(false);
   const [files, setFiles] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const { t } = useTranslation();
 
-  const [uploadFile, { loading: uploadingFile }] = useMutation(UPLOAD_FILE_TO_OPENAI);
+  const [uploadFileToOpenAi] = useMutation(UPLOAD_FILE_TO_OPENAI);
   const [addFilesToFileSearch, { loading: addingFiles }] = useMutation(ADD_FILES_TO_FILE_SEARCH);
   const [removeFile] = useMutation(REMOVE_FILES_FROM_ASSISTANT);
 
@@ -53,26 +54,66 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
   });
 
   const handleFileChange = (event: any) => {
-    if (event.target.files.length === 0) return;
+    const inputFiles = event.target.files;
+    let errorMessages: any = [];
+    let uploadedFiles: any = [];
+    setLoading(true);
 
-    if (event.target.files[0]?.size / (1024 * 1024) > 20) {
-      setNotification('File size should be less than 20MB', 'error');
-      return;
-    }
+    if (inputFiles.length === 0) return;
 
-    uploadFile({
+    const validFiles = Array.from(inputFiles).filter((file: any) => {
+      if (file.size / (1024 * 1024) > 20) {
+        setNotification('File size should be less than 20MB', 'error');
+        return false;
+      }
+      return true;
+    });
+
+    const uploadPromises = validFiles.map(async (file: any) => {
+      const { uploadedFile, error } = await uplaodFile(file);
+
+      if (uploadedFile) {
+        uploadedFiles.push(uploadedFile);
+      }
+      if (error) {
+        errorMessages.push(error);
+      }
+    });
+
+    Promise.all(uploadPromises)
+      .then(() => {
+        setFiles((prevFiles) => [...prevFiles, ...uploadedFiles]);
+        if (errorMessages.length > 0) {
+          setNotification(errorMessages.join('\n\n'), 'warning');
+        }
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error('Error uploading files:', error);
+        setLoading(false);
+      });
+  };
+
+  const uplaodFile = async (file: any) => {
+    let uploadedFile;
+    let error = null;
+
+    await uploadFileToOpenAi({
       variables: {
-        media: event.target.files[0],
+        media: file,
       },
       onCompleted: ({ uploadFilesearchFile }) => {
-        uploadFilesearchFile = {
+        uploadedFile = {
           fileId: uploadFilesearchFile?.fileId,
           filename: uploadFilesearchFile?.filename,
         };
-        setFiles([...files, uploadFilesearchFile]);
       },
-      onError: (errors) => setErrorMessage(errors),
+      onError: (errors) => {
+        error = errors.message;
+      },
     });
+
+    return { uploadedFile, error };
   };
 
   const handleRemoveFile = (file: any) => {
@@ -122,20 +163,26 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
         buttonOk="Add"
         fullWidth
         handleOk={handleFileUpload}
-        disableOk={addingFiles}
-        buttonOkLoading={addingFiles}
+        disableOk={addingFiles || loading}
+        buttonOkLoading={addingFiles || loading}
       >
         <div className={styles.DialogContent}>
           <Button className="Container" fullWidth={true} component="label" variant="text" tabIndex={-1}>
             <div className={styles.UploadContainer}>
-              {uploadingFile ? (
+              {loading ? (
                 <CircularProgress size={20} />
               ) : (
                 <>
                   <UploadIcon /> {t('Upload File')}
                 </>
               )}
-              <input data-testid="uploadFile" type="file" onChange={handleFileChange} style={{ display: 'none' }} />
+              <input
+                data-testid="uploadFile"
+                type="file"
+                onChange={handleFileChange}
+                style={{ display: 'none' }}
+                multiple
+              />
             </div>
           </Button>
           {files.length > 0 && (
