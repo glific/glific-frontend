@@ -86,6 +86,7 @@ jobs:
           echo start mix setup
           echo done. start installing inotify-tools
           sudo apt-get install inotify-tools
+          git checkout feat/custom-certificates
           mix setup
           cd ../glific-frontend/
 
@@ -96,7 +97,7 @@ jobs:
           git clone https://github.com/glific/cypress-testing.git
           echo done. go to dir.
           cd cypress-testing
-          git checkout templates
+          git checkout certificates
           cd ..
           cp -r cypress-testing/cypress cypress
           yarn add cypress@13.6.2

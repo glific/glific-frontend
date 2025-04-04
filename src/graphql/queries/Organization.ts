@@ -133,6 +133,7 @@ export const GET_ORGANIZATION_SERVICES = gql`
       contactProfileEnabled
       ticketingEnabled
       whatsappGroupEnabled
+      certificateEnabled
     }
   }
 `;

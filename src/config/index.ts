@@ -53,11 +53,9 @@ export const ONBOARD_URL_UPDATE = `${GLIFIC_API_URL}/v1/onboard/update-registrat
 export const ONBOARD_URL_REACT_OUT = `${GLIFIC_API_URL}/v1/onboard/reachout`;
 export const ONBOARD_URL = `${GLIFIC_API_URL}/v1/onboard/setup`;
 export const RECAPTCHA_CLIENT_KEY = envVariables.VITE_RECAPTCHA_CLIENT_KEY;
-export const DISCORD_URL='https://discord.gg/kyqsZAJEPK';
-export const UPLOAD_CONTACTS_SAMPLE =
-  'https://storage.googleapis.com/cc-tides/sample_contacts_import.csv';
-export const UPLOAD_CONTACTS_ADMIN_SAMPLE =
-  'https://storage.googleapis.com/cc-tides/sample_import_admin.csv';
+export const DISCORD_URL = 'https://discord.gg/kyqsZAJEPK';
+export const UPLOAD_CONTACTS_SAMPLE = 'https://storage.googleapis.com/cc-tides/sample_contacts_import.csv';
+export const UPLOAD_CONTACTS_ADMIN_SAMPLE = 'https://storage.googleapis.com/cc-tides/sample_import_admin.csv';
 export const REGISTRATION_HELP_LINK =
   'https://glific.slab.com/public/posts/02-managing-staff-members-creating-account-on-glific-gg6fkw8h';
 export const CONTACT_MANAGE_HELP_LINK =
@@ -67,3 +65,5 @@ export const BULK_APPLY_SAMPLE_LINK =
   'https://docs.google.com/spreadsheets/d/1x04wI9palh1Ag11TrdBbUj9pnyNOw8-I4834qN3idik';
 
 export const NEW_UI_BLOG = 'https://glific.org/glific-new-interface-changes/';
+export const SAMPLE_SLIDE_LINK =
+  'https://docs.google.com/presentation/d/1gOEVtZFWHhRWrKgdHPlfDrkiTnE56Pfxf6_GkLaolqk/edit?usp=sharing';
