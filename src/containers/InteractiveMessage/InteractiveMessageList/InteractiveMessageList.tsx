@@ -8,7 +8,7 @@ import { FILTER_INTERACTIVE_MESSAGES, GET_INTERACTIVE_MESSAGES_COUNT } from 'gra
 import { DELETE_INTERACTIVE } from 'graphql/mutations/InteractiveMessage';
 import { getInteractiveMessageBody } from 'common/utils';
 import { QUICK_REPLY } from 'common/constants';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import styles from './InteractiveMessageList.module.css';
 import { useQuery } from '@apollo/client';
 import { GET_TAGS } from 'graphql/queries/Tags';

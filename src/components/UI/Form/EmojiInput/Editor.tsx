@@ -14,7 +14,7 @@ import {
 } from 'lexical';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
+import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
 import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 import { FormHelperText } from '@mui/material';
 import {

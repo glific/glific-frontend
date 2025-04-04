@@ -965,7 +965,14 @@ export const createMaytapiCredentialsMock = (error: boolean = false) => ({
               keys: '{}',
               secrets: '{"token":"token","product_id":"product_id"}',
             },
-        errors: error ? new Error('Something went wrong') : null,
+        errors: error
+          ? [
+              {
+                message: 'Something went wrong',
+                key: 0,
+              },
+            ]
+          : null,
       },
     },
   },
@@ -1043,7 +1050,14 @@ export const updateMaytapiCredentials = (error: boolean = false) => ({
               keys: '{}',
               secrets: '{"token":"token2","product_id":"product_id2"}',
             },
-        errors: error ? new Error('Something went wrong') : null,
+        errors: error
+          ? [
+              {
+                message: 'Something went wrong',
+                key: 0,
+              },
+            ]
+          : null,
       },
     },
   },

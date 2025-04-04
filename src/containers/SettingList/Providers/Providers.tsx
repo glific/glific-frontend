@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useQuery, useApolloClient } from '@apollo/client';
 import Typography from '@mui/material/Typography';
 import * as Yup from 'yup';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 
 import { FormLayout } from 'containers/Form/FormLayout';

@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 
 import { GET_COLLECTION } from 'graphql/queries/Collection';
 import styles from './CollectionContact.module.css';
