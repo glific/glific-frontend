@@ -128,6 +128,8 @@ export const Login = () => {
           setAuthError(' ');
         } else if (error?.response?.data?.error) {
           setAuthError(error?.response?.data?.error?.message);
+        } else {
+          setAuthError('Something went wrong. Please contact the Glific team.');
         }
         setLogs(error, 'error');
       });

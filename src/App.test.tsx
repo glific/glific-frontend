@@ -6,12 +6,17 @@ import { setAuthSession, setUserSession, renewAuthToken } from 'services/AuthSer
 import App from 'App';
 import { CONVERSATION_MOCKS } from 'mocks/Chat';
 import * as AuthService from 'services/AuthService';
+import setLogs from 'config/logs';
 
 const mocks = CONVERSATION_MOCKS;
 import axios from 'axios';
 
 vi.mock('axios');
 const mockedAxios = axios as any;
+
+vi.mock('config/logs', () => ({
+  default: vi.fn(),
+}));
 
 global.fetch = vi.fn() as any;
 
@@ -134,6 +139,42 @@ describe('<App /> ', () => {
 
     await waitFor(() => {
       expect(screen.getByTestId('AuthContainer')).toBeInTheDocument();
+    });
+  });
+
+  it('it should call log error if api fails', async () => {
+    const spy = vi.spyOn(AuthService, 'renewAuthToken');
+    spy.mockImplementation(
+      vi.fn(() => {
+        const tokenExpiryDate = new Date();
+        tokenExpiryDate.setDate(new Date().getDate() + 1);
+        return Promise.resolve({
+          data: null,
+        });
+      })
+    ),
+      // let's create token expiry date for yesterday
+      mockedAxios.post.mockResolvedValue(() => Promise.resolve({}));
+
+    const tokenExpiryDate = new Date();
+    tokenExpiryDate.setDate(new Date().getDate() - 1);
+
+    setAuthSession({
+      access_token: 'access',
+      renewal_token: 'renew',
+      token_expiry_time: tokenExpiryDate,
+    });
+
+    setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Staff'] }));
+
+    render(app);
+
+    await waitFor(() => {
+      expect(renewAuthToken).toHaveBeenCalled();
+    });
+
+    await waitFor(() => {
+      expect(setLogs).toHaveBeenCalledWith('Token renewal failed: No response data', 'error');
     });
   });
 });

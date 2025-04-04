@@ -15,6 +15,7 @@ import {
   resetFlowCount,
   getFlowTranslations,
   getTemplateFlow,
+  getFlowWithManyKeywords,
 } from 'mocks/Flow';
 import { conversationQuery } from 'mocks/Chat';
 import {
@@ -71,6 +72,7 @@ const activeFlowMocks = [...mocks, getActiveFlow];
 const inActiveFlowMocks = [...mocks, getInactiveFlow];
 const noKeywordMocks = [...mocks, getFlowWithoutKeyword, resetFlowCount];
 const templateFlowMocks = [...mocks, getTemplateFlow, resetFlowCount];
+const manyKeywordsMocks = [...mocks, getFlowWithManyKeywords, resetFlowCount];
 
 const wrapperFunction = (mocks: any) => (
   <MockedProvider mocks={mocks} addTypename={false}>
@@ -319,5 +321,14 @@ test('template words should have template: prefix', async () => {
 
   await waitFor(() => {
     expect(screen.getByTestId('simulator')).toHaveTextContent('template:help workflow');
+  });
+});
+
+test('if keywords are more than 8 it should be shown in a tooltip', async () => {
+  mockedAxios.post.mockImplementation(() => Promise.resolve({ data: {} }));
+  render(wrapperFunction(manyKeywordsMocks));
+
+  await waitFor(() => {
+    expect(screen.findByText('help, activity, preference, optout, stop, start, end, yes + 2 more'));
   });
 });

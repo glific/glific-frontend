@@ -2,6 +2,9 @@ import Manifest from '@glific/flow-editor/build/asset-manifest.json';
 import { FLOW_EDITOR_CONFIGURE_LINK, FLOW_EDITOR_API, CONTACT_CHAT_LINK } from 'config/index';
 import '@nyaruka/temba-components/dist/temba-components.js';
 
+import Tooltip from 'components/UI/Tooltip/Tooltip';
+import styles from './FlowEditor.module.css';
+
 const glificBase = FLOW_EDITOR_API;
 
 export const setConfig = (uuid: any, isTemplate: boolean) => {
@@ -159,3 +162,41 @@ export const checkElementInRegistry = (fn: any) =>
       throw error;
     }
   };
+
+export const getKeywords = (keywords: any[]) => {
+  let flowKeywords: any = '';
+  const MAX_CHARS = 100;
+
+  let visibleKeywords = [];
+  let hiddenKeywords = [];
+  let totalLength = 0;
+
+  for (let i = 0; i < keywords.length; i++) {
+    const keyword = keywords[i];
+    const nextLength = totalLength + keyword.length + (i === 0 ? 0 : 2);
+
+    if (nextLength <= MAX_CHARS) {
+      visibleKeywords.push(keyword);
+      totalLength = nextLength;
+    } else {
+      hiddenKeywords = keywords.slice(i);
+      break;
+    }
+  }
+
+  flowKeywords = (
+    <span>
+      {visibleKeywords.join(', ')}
+      {hiddenKeywords.length > 0 && (
+        <>
+          ,{' '}
+          <Tooltip interactive title={hiddenKeywords.join(', ')} tooltipClass={styles.Keywords} placement="top-start">
+            <span className={styles.ViewMore}>...View More</span>
+          </Tooltip>
+        </>
+      )}
+    </span>
+  );
+
+  return flowKeywords;
+};

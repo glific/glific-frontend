@@ -93,7 +93,7 @@
   color: #073f24;
 }
 
-.DialogTitle > h2 {
+.DialogTitle>h2 {
   font-size: 24px;
 }
 
@@ -125,21 +125,27 @@
   position: absolute;
   width: 100%;
   z-index: 1000;
-  height: 70px;
+  height: 5rem;
   display: flex;
+  align-items: center;
   background-color: #f8faf5;
+  padding: 1rem;
 }
 
 .Actions {
   position: relative;
-  padding: 16px 40px;
   margin-left: auto;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.Actions button {
+  margin: 0;
 }
 
 .Title {
   display: flex;
   align-items: center;
-  padding: 15px;
 }
 
 .BackIcon {
@@ -152,4 +158,15 @@
   padding-bottom: 2px;
   justify-content: center;
   align-items: center;
+}
+
+.Keywords {
+  font-size: 0.8rem;
+  max-width: 400px !important;
+}
+
+.ViewMore {
+  color: #119656;
+  cursor: pointer;
+  font-weight: bold;
 }

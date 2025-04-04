@@ -82,6 +82,11 @@ describe('<FlowList />', () => {
     await waitFor(() => {
       expect(getByText('Flows'));
     });
+
+    await waitFor(() => {
+      expect(getByText('help, मदद'));
+      expect(getByText('help, activity, preference, op...'));
+    });
   });
 
   test('should search flow and check if flow keywords are present below the name', async () => {
