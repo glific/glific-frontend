@@ -11,6 +11,7 @@ import {
   getTemplateMocks2,
   getTemplateMocks3,
   getTemplateMocks4,
+  getTemplateMocks5,
   mocks,
   translateInteractiveTemplateMock,
   translateWitTrimmingMocks,
@@ -364,6 +365,20 @@ describe('Edit mode', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Button text')).toBeInTheDocument();
+    });
+  });
+
+  test('it should show warning if markdown character exists on editing', async () => {
+    render(renderInteractiveMessage('5', getTemplateMocks5));
+
+    await waitFor(() => {
+      expect(screen.getByText('Markdown content removed')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('ok-button'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Edit Interactive message')).toBeInTheDocument();
     });
   });
 });

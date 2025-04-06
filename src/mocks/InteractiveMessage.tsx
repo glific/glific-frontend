@@ -190,6 +190,21 @@ const listReplyMock = {
     '{"2":{"type":"list","title":"new title","body":"😀","globalButtons":[{"type":"text","title":"Section 1"}],"items":[{"title":"title","subtitle":"title","options":[{"type":"text","title":"red","description":"red is color"}]}]}}',
 };
 
+const markdownMock = {
+  id: '5',
+  interactiveContent:
+    '{"type":"quick_reply","options":[{"type":"text","title":"yes"},{"type":"text","title":"no"}],"content":{"type":"text","text":"Glific comes with all new features","header":"Are you excited for *Glific*?"}}',
+  label: 'Are you excited for *Glific*?',
+  language: {
+    id: '1',
+    label: 'English',
+  },
+  translations:
+    '{"2":{"type":"quick_reply","options":[{"type":"text","title":"*हाँ*"},{"type":"text","title":"ना"}],"content":{"type":"text","text":"ग्लिफ़िक सभी नई सुविधाओं के साथ आता है","header":"आप ग्लिफ़िक के लिए कितने उत्साहित हैं?"}},"1":{"type":"quick_reply","options":[{"type":"text","title":"yes"},{"type":"text","title":"no"}],"content":{"type":"text","text":"Glific comes with all new features","header":"Are you excited for *Glific*?"}}}',
+  type: 'QUICK_REPLY',
+  sendWithTitle: true,
+};
+
 const createMockByType = (body: any) => ({
   request: {
     query: CREATE_INTERACTIVE,
@@ -488,6 +503,8 @@ export const getTemplateMocks4 = [
   getTemplateByType('4', quickReplyMock),
   updateMockByType(quickReplyMock, trimmingMessage),
 ];
+
+export const getTemplateMocks5 = [...mocks, getTemplateByType('5', markdownMock), getTemplateByType('5', markdownMock)];
 
 export const translateWithoutTrimmingMocks = [
   ...getTemplateMocks1,
