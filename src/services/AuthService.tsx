@@ -70,26 +70,23 @@ export const renewAuthToken = () => {
 
 // service to check the validity of the auth / token  status
 export const checkAuthStatusService = () => {
-  setLogs('Checking if session is active', 'info');
+  setLogs('checkAuthStatusService: Checking if session is active', 'info');
   let authStatus = false;
   const tokenExpiryTimeFromSession = getAuthSession('token_expiry_time');
   // return false if there is no session on local
   if (!tokenExpiryTimeFromSession) {
-    setLogs('Checking if session is active', 'info');
-
+    setLogs('checkAuthStatusService: No token expiry time found in session', 'info');
     authStatus = false;
   } else {
     const tokenExpiryTime = new Date(tokenExpiryTimeFromSession);
     // compare the session token with the current time
     if (tokenExpiryTime > new Date()) {
-      setLogs('Token is active', 'info');
-
+      setLogs('checkAuthStatusService: Token is active', 'info');
       // token is still valid return true
       authStatus = true;
     } else {
       // this means token has expired and let's return false
-      setLogs('Token has expired', 'info');
-
+      setLogs('checkAuthStatusService: Token has expired', 'info');
       authStatus = false;
     }
   }
@@ -308,7 +305,7 @@ export const setAuthHeaders = () => {
           setAuthSession(authToken.data.data);
           renewTokenCalled = false;
         } else {
-          setLogs('Token renewal failed for XMLHttpRequest.', 'info');
+          setLogs('setAuthHeaders: Token renewal failed for XMLHttpRequest.', 'info');
         }
         this.setRequestHeader('authorization', getAuthSession('access_token'));
         send.call(this, body);
