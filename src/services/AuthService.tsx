@@ -70,19 +70,26 @@ export const renewAuthToken = () => {
 
 // service to check the validity of the auth / token  status
 export const checkAuthStatusService = () => {
+  setLogs('Checking if session is active', 'info');
   let authStatus = false;
   const tokenExpiryTimeFromSession = getAuthSession('token_expiry_time');
   // return false if there is no session on local
   if (!tokenExpiryTimeFromSession) {
+    setLogs('Checking if session is active', 'info');
+
     authStatus = false;
   } else {
     const tokenExpiryTime = new Date(tokenExpiryTimeFromSession);
     // compare the session token with the current time
     if (tokenExpiryTime > new Date()) {
+      setLogs('Token is active', 'info');
+
       // token is still valid return true
       authStatus = true;
     } else {
       // this means token has expired and let's return false
+      setLogs('Token has expired', 'info');
+
       authStatus = false;
     }
   }
@@ -195,7 +202,11 @@ export const setAuthHeaders = () => {
   window.fetch = (...args) =>
     (async (parameters) => {
       const parametersCopy = parameters;
+
+      setLogs('Checking auth status before adding authorization header.', 'info');
       if (checkAuthStatusService()) {
+        setLogs('setAuthHeaders: Auth status valid, adding authorization header.', 'info');
+
         if (parametersCopy[1]) {
           parametersCopy[1].headers = {
             ...parametersCopy[1].headers,
@@ -207,11 +218,16 @@ export const setAuthHeaders = () => {
         return result;
       }
       renewTokenCalled = true;
+      setLogs('setAuthHeaders: Auth status invalid, renewing token.', 'info');
       const authToken = await renewAuthToken();
       if (authToken.data) {
+        setLogs('setAuthHeaders: Token renewed successfully.', 'info');
+
         // update localstore
         setAuthSession(authToken.data.data);
         renewTokenCalled = false;
+      } else {
+        setLogs('setAuthHeaders: Token renewal failed.', 'info');
       }
       if (parametersCopy[1]) {
         parametersCopy[1].headers = {
@@ -236,6 +252,8 @@ export const setAuthHeaders = () => {
       username?: string | null,
       password?: string | null
     ) {
+      setLogs(`setAuthHeaders: XMLHttpRequest open called with URL: ${url}`, 'info');
+
       if (url.toString().endsWith('renew')) {
         // @ts-ignore
         this.renewGlificCall = true;
@@ -246,35 +264,51 @@ export const setAuthHeaders = () => {
 
   ((send) => {
     XMLHttpRequest.prototype.send = async function authCheck(body) {
+      setLogs('setAuthHeaders: XMLHttpRequest send called.', 'info');
+
       this.addEventListener('loadend', () => {
         // @ts-ignore
         if (this.renewGlificCall) {
+          setLogs('setAuthHeaders: Renew call completed.', 'info');
           renewCallInProgress = false;
         } else if (this.status === 401) {
+          setLogs('setAuthHeaders: Unauthorized request, redirecting to logout.', 'info');
           window.location.href = '/logout/user';
         }
       });
 
       // @ts-ignore
       if (this.renewGlificCall && !renewCallInProgress) {
+        setLogs('setAuthHeaders: Renew call in progress.', 'info');
+
         renewCallInProgress = true;
         send.call(this, body);
       }
       // @ts-ignore
       else if (this.renewGlificCall) {
+        setLogs('setAuthHeaders: Renew call aborted.', 'info');
         this.abort();
       }
+
       // @ts-ignore
       else if (checkAuthStatusService()) {
+        setLogs('setAuthHeaders: Auth status valid, adding authorization header in XMLHttpRequest.', 'info');
+
         this.setRequestHeader('authorization', getAuthSession('access_token'));
         send.call(this, body);
       } else if (!renewTokenCalled) {
+        setLogs('setAuthHeaders: Auth status invalid, renewing token for XMLHttpRequest.', 'info');
+
         renewTokenCalled = true;
         const authToken = await renewAuthToken();
         if (authToken.data) {
+          setLogs('setAuthHeaders: Token renewed successfully for XMLHttpRequest.', 'info');
+
           // update localstore
           setAuthSession(authToken.data.data);
           renewTokenCalled = false;
+        } else {
+          setLogs('Token renewal failed for XMLHttpRequest.', 'info');
         }
         this.setRequestHeader('authorization', getAuthSession('access_token'));
         send.call(this, body);
