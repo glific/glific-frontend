@@ -35,7 +35,7 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
           // choosing istanbul for now because of this https://github.com/vitest-dev/vitest/issues/1252
           provider: 'istanbul', // or 'c8',
           include: ['src/**/**'],
-          exclude: ['node_modules/', '**/*.test.tsx', './src/assets/**'],
+          exclude: ['node_modules/', '**/*.test.tsx', './src/assets/**', 'chunk-XJ2CQI7F.js?v=528eada4'],
         },
         css: true,
       },
@@ -52,6 +52,7 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
             global: 'globalThis',
           },
         },
+        exclude: ['chunk-XJ2CQI7F.js?v=528eada4'],
       },
       server: {
         open: true,

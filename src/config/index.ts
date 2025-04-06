@@ -67,3 +67,4 @@ export const BULK_APPLY_SAMPLE_LINK =
 export const NEW_UI_BLOG = 'https://glific.org/glific-new-interface-changes/';
 export const SAMPLE_SLIDE_LINK =
   'https://docs.google.com/presentation/d/1gOEVtZFWHhRWrKgdHPlfDrkiTnE56Pfxf6_GkLaolqk/edit?usp=sharing';
+export const CERTIFICATES_FAQ_LINK = 'http://docs.glific.org/docs/faq/certificate-issue/';
