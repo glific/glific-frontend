@@ -146,16 +146,6 @@ const updateCertificate = {
   },
 };
 
-const deleteCertificate = {
-  request: {
-    query: LIST_CERTIFICATES,
-    variables: {},
-  },
-  result: {
-    data: {},
-  },
-};
-
 export const CERTIFICATE_LIST_MOCKS = [
   listCertificates,
   listCertificates,
@@ -163,4 +153,4 @@ export const CERTIFICATE_LIST_MOCKS = [
   countCertificates,
   getCertificate,
 ];
-export const CERTIFICATE_MOCKS = [updateCertificate, deleteCertificate];
+export const CERTIFICATE_MOCKS = [updateCertificate];

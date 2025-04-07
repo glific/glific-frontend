@@ -52,7 +52,7 @@ describe('Certificate', () => {
     });
   });
 
-  test('should show error if the certificate has insufficient permissions', async () => {
+  test('should click on additional actions', async () => {
     render(wrapper());
 
     await waitFor(() => {
