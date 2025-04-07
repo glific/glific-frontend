@@ -121,6 +121,7 @@ const Certificate = () => {
 
     return payload;
   };
+
   const customErrorHandler = (errors: any) => {
     const { message } = errors[0];
     if (message && message.includes('Insufficient permissions')) {
@@ -128,7 +129,6 @@ const Certificate = () => {
     } else {
       showError(errors[0]);
     }
-    console.log(errors[0]);
   };
 
   let errorDialog;

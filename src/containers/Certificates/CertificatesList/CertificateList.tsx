@@ -59,7 +59,7 @@ export const CertificateList = () => {
   const additionalAction = () => [
     {
       label: t('Link'),
-      icon: <LinkIcon />,
+      icon: <LinkIcon data-testid="link-icon" />,
       parameter: 'id',
       dialog: openLink,
     },

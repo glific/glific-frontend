@@ -67,7 +67,7 @@ const getCertificate = {
   },
 };
 
-const createCertificate = {
+export const createCertificate = {
   request: {
     query: CREATE_CERTIFICATE,
     variables: {
@@ -88,6 +88,32 @@ const createCertificate = {
           label: 'title',
         },
         errors: null,
+      },
+    },
+  },
+};
+
+export const createCertificateWithError = {
+  request: {
+    query: CREATE_CERTIFICATE,
+    variables: {
+      input: {
+        label: 'label',
+        description: 'description',
+        url: 'https://docs.google.com/presentation/d/1fBrDFDCD2iwnaKg8sxKd45lRbqLuBFvsZbSH1sjm7aI/edit#slide=id.g',
+      },
+    },
+  },
+  result: {
+    data: {
+      createCertificateTemplate: {
+        certificateTemplate: null,
+        errors: [
+          {
+            key: 'url',
+            message: 'Url: Insufficient permissions to access this slide',
+          },
+        ],
       },
     },
   },
@@ -137,4 +163,4 @@ export const CERTIFICATE_LIST_MOCKS = [
   countCertificates,
   getCertificate,
 ];
-export const CERTIFICATE_MOCKS = [createCertificate, updateCertificate, deleteCertificate];
+export const CERTIFICATE_MOCKS = [updateCertificate, deleteCertificate];
