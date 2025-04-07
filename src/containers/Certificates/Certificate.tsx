@@ -137,6 +137,7 @@ const Certificate = () => {
       <DialogBox
         title={`Permission Issues!`}
         handleOk={() => setErrorMessage(null)}
+        handleCancel={() => setErrorMessage(null)}
         colorOk="warning"
         alignButtons="center"
         skipCancel
