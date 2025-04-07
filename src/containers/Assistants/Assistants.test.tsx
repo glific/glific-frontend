@@ -6,9 +6,9 @@ import {
   MOCKS,
   addFilesToFileSearchWithErrorMocks,
   emptyMocks,
+  errorMocks,
   loadMoreMocks,
   uploadSupportedFileMocks,
-  uploadUnSupportedFileMocks,
 } from 'mocks/Assistants';
 import * as Notification from 'common/notification';
 
@@ -167,27 +167,6 @@ test('it uploads files to assistant', async () => {
   });
 });
 
-test('it shows error for unsupported files', async () => {
-  render(assistantsComponent(uploadUnSupportedFileMocks));
-
-  await waitFor(() => {
-    expect(screen.getByText('Assistants')).toBeInTheDocument();
-    expect(screen.getByTestId('addFiles'));
-  });
-
-  fireEvent.click(screen.getByTestId('addFiles'));
-
-  await waitFor(() => {
-    expect(screen.getByText('Add files to file search')).toBeInTheDocument();
-  });
-  const mockFile = new File(['file content'], 'testFile.csv', { type: 'text/csv' });
-  fireEvent.change(screen.getByTestId('uploadFile'), { target: { files: [mockFile] } });
-
-  await waitFor(() => {
-    expect(errorMessageSpy).toHaveBeenCalled();
-  });
-});
-
 test('it shows error when adding files to assistant fails', async () => {
   render(assistantsComponent(addFilesToFileSearchWithErrorMocks));
 
@@ -320,5 +299,53 @@ test('it opens the instruction dialog box', async () => {
 
   await waitFor(() => {
     expect(screen.getByText('test instructions')).toBeInTheDocument();
+  });
+});
+
+test('uploading multiple files and error messages', async () => {
+  render(assistantsComponent(errorMocks));
+
+  await waitFor(() => {
+    expect(screen.getByText('Assistants')).toBeInTheDocument();
+    expect(screen.getByText('Assistant-1')).toBeInTheDocument();
+    expect(screen.getByTestId('addFiles'));
+  });
+
+  fireEvent.click(screen.getByTestId('addFiles'));
+  fireEvent.click(screen.getByTestId('cancel-button'));
+
+  fireEvent.click(screen.getByTestId('addFiles'));
+  await waitFor(() => {
+    expect(screen.getByText('Add files to file search')).toBeInTheDocument();
+  });
+  expect(screen.getAllByTestId('fileItem')).toHaveLength(1);
+
+  const mockFile = new File(['file content'], 'testFile.txt', { type: 'text/plain' });
+  const mockFileCSV = new File(['file content'], 'testFile.csv', { type: 'text/csv' });
+
+  const mockFileContent = new Blob([new Array(28000000).fill('a').join('')], {
+    type: 'text/plain',
+  });
+  const mockFileBiggerThan20MB = new File([mockFileContent], 'testFile2.txt', {
+    type: 'text/plain',
+  });
+
+  const fileInput = screen.getByTestId('uploadFile');
+  fireEvent.change(fileInput, { target: { files: [] } });
+  fireEvent.change(fileInput, { target: { files: [mockFile, mockFileBiggerThan20MB, mockFileCSV] } });
+
+  //shows error message for larger files
+  await waitFor(() => {
+    expect(notificationSpy).toHaveBeenCalledWith('File size should be less than 20MB', 'error');
+  });
+
+  await waitFor(() => {
+    expect(screen.getAllByTestId('fileItem')).toHaveLength(2);
+  });
+
+  fireEvent.click(screen.getByTestId('ok-button'));
+
+  await waitFor(() => {
+    expect(notificationSpy).toHaveBeenCalledWith("Files with extension '.csv' not supported in Filesearch", 'warning');
   });
 });

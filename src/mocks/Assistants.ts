@@ -165,7 +165,7 @@ const uploadFileToFileSearch = {
   variableMatcher: (variables: any) => true,
 };
 
-const uploadUnsupportedFileToFileSearch = {
+export const uploadFileToFileSearchWithError = {
   request: {
     query: UPLOAD_FILE_TO_OPENAI,
   },
@@ -176,7 +176,6 @@ const uploadUnsupportedFileToFileSearch = {
     errors: [
       {
         message: "Files with extension '.csv' not supported in Filesearch",
-        path: ['uploadFilesearchFile'],
         locations: [
           {
             line: 2,
@@ -206,15 +205,12 @@ const removeFileFromAssistant = {
   },
 };
 
-const addFilesToFilesearch = {
+const addFilesToFilesearch = (mediaInfo: any) => ({
   request: {
     query: ADD_FILES_TO_FILE_SEARCH,
     variables: {
       addAssistantFilesId: '1',
-      mediaInfo: [
-        { fileId: 'file-rls90OGDUgFeLewh6e01Eamf', filename: 'Accelerator Guide (1).pdf' },
-        { fileId: 'file-rls90OGDUgFeLewh6e01Eamf', filename: 'Accelerator Guide (1).pdf' },
-      ],
+      mediaInfo,
     },
   },
   result: {
@@ -227,7 +223,7 @@ const addFilesToFilesearch = {
       },
     },
   },
-};
+});
 
 const addFilesToFilesearchWithError = {
   request: {
@@ -291,7 +287,11 @@ const uploadFileMocks = [
   uploadFileToFileSearch,
   uploadFileToFileSearch,
   removeFileFromAssistant,
-  addFilesToFilesearch,
+  addFilesToFilesearch([
+    { fileId: 'file-rls90OGDUgFeLewh6e01Eamf', filename: 'Accelerator Guide (1).pdf' },
+    { fileId: 'file-rls90OGDUgFeLewh6e01Eamf', filename: 'Accelerator Guide (1).pdf' },
+    { fileId: 'file-rls90OGDUgFeLewh6e01Eamf', filename: 'Accelerator Guide (1).pdf' },
+  ]),
 ];
 
 export const MOCKS = [
@@ -319,9 +319,18 @@ export const MOCKS = [
 ];
 
 export const uploadSupportedFileMocks = [...MOCKS, ...uploadFileMocks];
-export const uploadUnSupportedFileMocks = [...MOCKS, uploadUnsupportedFileToFileSearch];
 export const addFilesToFileSearchWithErrorMocks = [...MOCKS, uploadFileToFileSearch, addFilesToFilesearchWithError];
 
 export const emptyMocks = [getAssistantsList(0), listOpenaiModels, getAssistant('2')];
-
 export const loadMoreMocks = [getAssistantsList(25), listOpenaiModels, loadMoreQuery, getAssistant('1')];
+export const errorMocks = [
+  getAssistantsList(4),
+  listOpenaiModels,
+  getAssistant('1'),
+  getAssistant('1'),
+  getAssistantFiles('1'),
+  getAssistantFiles('1'),
+  uploadFileToFileSearch,
+  uploadFileToFileSearchWithError,
+  addFilesToFilesearch([{ fileId: 'file-rls90OGDUgFeLewh6e01Eamf', filename: 'Accelerator Guide (1).pdf' }]),
+];
