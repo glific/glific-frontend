@@ -1,0 +1,26 @@
+language: 'en-US'
+early_access: false
+reviews:
+  profile: 'chill'
+  request_changes_workflow: false
+  high_level_summary: true
+  poem: true
+  review_status: false
+  commit_status: false
+  collapse_walkthrough: true
+  changed_files_summary: false
+  sequence_diagrams: false
+  assess_linked_issues: true
+  related_issues: true
+  auto_review:
+    enabled: true
+    drafts: false
+  path_instructions:
+    - path: '**/*.{ts,tsx}'
+      instructions: 'Review the Typescript and React code for conformity with best practices in React, Recoil,
+        Graphql, and Typescript. Highlight any deviations.'
+    - path: '*.test.tsx'
+      instructions: |
+        "Assess the unit test code employing the Vitest testing framework. Confirm that:
+        - The tests adhere to Vitest's established best practices.
+        - Test descriptions are sufficiently detailed to clarify the purpose of each test."
