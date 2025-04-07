@@ -10,7 +10,7 @@ reviews:
     drafts: false
   review_status: true
   commit_status: true
-  collapse_walkthrough: true
+  collapse_walkthrough: false
   changed_files_summary: false
   sequence_diagrams: false
   assess_linked_issues: true
