@@ -8,14 +8,13 @@ reviews:
   auto_review:
     enabled: true
     drafts: false
-  reviews:
-    review_status: true
-    commit_status: true
-    collapse_walkthrough: true
-    changed_files_summary: false
-    sequence_diagrams: false
-    assess_linked_issues: true
-    related_issues: true
+  review_status: true
+  commit_status: true
+  collapse_walkthrough: true
+  changed_files_summary: false
+  sequence_diagrams: false
+  assess_linked_issues: true
+  related_issues: true
   path_instructions:
     - path: '**/*.{ts,tsx}'
       instructions: 'Review the Typescript and React code for conformity with best practices in React, Recoil,
