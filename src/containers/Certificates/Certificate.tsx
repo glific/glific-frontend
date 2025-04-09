@@ -6,7 +6,7 @@ import CertificateIcon from 'assets/images/Certificate.svg?react';
 import { setErrorMessage as showError } from 'common/notification';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { Input } from 'components/UI/Form/Input/Input';
-import { CERTIFICATES_FAQ_LINK, SAMPLE_SLIDE_LINK } from 'config';
+import { CERTIFICATES_FAQ_FORMAT_LINK, CERTIFICATES_PERMISSIONS_LINK, SAMPLE_SLIDE_LINK } from 'config';
 import { FormLayout } from 'containers/Form/FormLayout';
 import { CREATE_CERTIFICATE, DELETE_CERTIFICATE, UPDATE_CERTIFICATE } from 'graphql/mutations/Certificate';
 import { GET_CERTIFICATE } from 'graphql/queries/Certificate';
@@ -93,7 +93,12 @@ const Certificate = () => {
             <span className={styles.ErrorText}>
               <>
                 Please check{' '}
-                <a href={CERTIFICATES_FAQ_LINK} target="_blank" rel="noreferrer" className={styles.HelperTextLink}>
+                <a
+                  href={CERTIFICATES_FAQ_FORMAT_LINK}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={styles.HelperTextLink}
+                >
                   here
                 </a>{' '}
                 to resolve
@@ -147,7 +152,7 @@ const Certificate = () => {
           {errorMessage}
           <br />
           Please check{' '}
-          <a href={CERTIFICATES_FAQ_LINK} target="_blank" rel="noreferrer" className={styles.HelperTextLink}>
+          <a href={CERTIFICATES_PERMISSIONS_LINK} target="_blank" rel="noreferrer" className={styles.HelperTextLink}>
             here
           </a>{' '}
           to resolve

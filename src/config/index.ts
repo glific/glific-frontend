@@ -67,4 +67,7 @@ export const BULK_APPLY_SAMPLE_LINK =
 export const NEW_UI_BLOG = 'https://glific.org/glific-new-interface-changes/';
 export const SAMPLE_SLIDE_LINK =
   'https://docs.google.com/presentation/d/1gOEVtZFWHhRWrKgdHPlfDrkiTnE56Pfxf6_GkLaolqk/edit?usp=sharing';
-export const CERTIFICATES_FAQ_LINK = 'http://docs.glific.org/docs/faq/certificate-issue/';
+export const CERTIFICATES_FAQ_FORMAT_LINK =
+  'https://glific.github.io/docs/docs/Product%20Features/Custom%20Certificates/#3-error-1-url-ending-with-slideidp';
+export const CERTIFICATES_PERMISSIONS_LINK =
+  'https://glific.github.io/docs/docs/Product%20Features/Custom%20Certificates/#4-error-2-permission-issues';
