@@ -18,7 +18,7 @@ export const setConfig = (uuid: any, isTemplate: boolean, skipValidation: boolea
     showNodeLabel: false,
     attachmentsEnabled: false,
     filters: ['whatsapp', 'classifier'],
-    skipValidation,
+    skipValidation: skipValidation,
 
     excludeTypes: ['add_contact_urn', 'send_email', 'call_resthook', 'transfer_airtime', 'split_by_scheme'],
 
