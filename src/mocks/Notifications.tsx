@@ -79,9 +79,19 @@ export const getNotificationsQuery = {
           updatedAt: '2024-08-09T05:50:00Z',
         },
         {
+          category: 'Custom Certificates',
+          entity: '{"template_id":3,"contact_id":16}',
+          id: '8',
+          isRead: true,
+          message:
+            'Custom certificate generation with template_id: 3 failed\nfor contact_id: 16 due to Failed to get goth token.\n',
+          severity: '"Warning"',
+          updatedAt: '2025-03-17T03:55:26Z',
+        },
+        {
           category: 'unknown category',
           entity: '{}',
-          id: '8',
+          id: '9',
           isRead: true,
           message: '',
           severity: '',

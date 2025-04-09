@@ -535,6 +535,10 @@
   "Copy Poll": "Copy Poll",
   "Group Polls": "Group Polls",
   "Name cannot be more than 250 characters.": "Name cannot be more than 250 characters.",
+  "Certificates": "Certificates",
+  "Copy Id": "Copy Id",
+  "You won't be able to use this certificate.": "You won't be able to use this certificate."
+  "Name cannot be more than 250 characters.": "Name cannot be more than 250 characters.",
   "Skip Validation": "Skip Validation",
   "Check this box to bypass validation for results that are fetched dynamically via the resumeFlow API. This is useful when the result might not be defined at the flow level in advance.": "Check this box to bypass validation for results that are fetched dynamically via the resumeFlow API. This is useful when the result might not be defined at the flow level in advance."
 }
