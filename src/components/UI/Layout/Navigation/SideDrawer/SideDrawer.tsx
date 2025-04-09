@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react';
-import { Hidden, Drawer, Toolbar, Typography, IconButton } from '@mui/material';
+import { Drawer, Toolbar, Typography, IconButton } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { SideDrawerContext, ProviderContext } from 'context/session';
 import { GUPSHUP_ENTERPRISE_SHORTCODE } from 'common/constants';
@@ -59,32 +59,26 @@ export const SideDrawer = () => {
     bottonMenuClasses.unshift(styles.BottomMenusVertical);
   }
 
-  const HiddenProps = {
-    smUp: true,
-    implementation: 'css' as 'css',
-  };
-
   return (
     <nav className={drawerOpen ? styles.Drawer : styles.NavClose} aria-label="navigation menus" data-testid="navbar">
-      <Hidden {...HiddenProps}>
-        <Drawer
-          container={container}
-          variant="temporary"
-          anchor="left"
-          open={mobileOpen}
-          onClose={() => {
-            setMobileOpen(!mobileOpen);
-          }}
-          classes={{
-            paper: styles.DrawerPaper,
-          }}
-          ModalProps={{
-            keepMounted: true,
-          }}
-        >
-          {drawer}
-        </Drawer>
-      </Hidden>
+      <Drawer
+        container={container}
+        variant="temporary"
+        anchor="left"
+        open={mobileOpen}
+        onClose={() => {
+          setMobileOpen(!mobileOpen);
+        }}
+        classes={{
+          paper: styles.DrawerPaper,
+        }}
+        ModalProps={{
+          keepMounted: true,
+        }}
+        sx={{ display: { xs: 'none', md: 'block' } }}
+      >
+        {drawer}
+      </Drawer>
       <Drawer
         classes={{
           paper: drawerOpen ? styles.DrawerOpen : styles.DrawerClose,

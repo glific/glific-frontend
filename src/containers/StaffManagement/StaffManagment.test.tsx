@@ -1,6 +1,6 @@
 import { render, fireEvent, waitFor, screen } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router';
 import { StaffManagement } from './StaffManagement';
 import {
   STAFF_MANAGEMENT_MOCKS,
@@ -19,8 +19,8 @@ const arrowDown = (element: any, noOfTimes: number) => {
   }
 };
 
-vi.mock('react-router-dom', async (importOriginal) => {
-  const mod = await importOriginal<typeof import('react-router-dom')>();
+vi.mock('react-router', async (importOriginal) => {
+  const mod = await importOriginal<typeof import('react-router')>();
   return {
     ...mod,
     useParams: () => ({
