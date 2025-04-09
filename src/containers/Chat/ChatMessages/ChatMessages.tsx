@@ -86,7 +86,9 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
   // get the conversations stored from the cache
   let queryVariables = groups ? GROUP_QUERY_VARIABLES : SEARCH_QUERY_VARIABLES;
 
-  const [getContactStatus] = useLazyQuery(GET_CONTACT_STATUS);
+  const [getContactStatus] = useLazyQuery(GET_CONTACT_STATUS, {
+    variables: { id: entityId },
+  });
 
   useEffect(() => {
     setShowLoadMore(true);
