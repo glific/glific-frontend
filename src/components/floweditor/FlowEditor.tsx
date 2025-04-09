@@ -47,6 +47,8 @@ export const FlowEditor = () => {
   const [publishLoading, setPublishLoading] = useState(false);
   const [isTemplate, setIsTemplate] = useState(false);
   const [skipValidation, setSkipValidation] = useState(false);
+  console.log(skipValidation);
+
   const config = setConfig(uuid, isTemplate, skipValidation);
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
