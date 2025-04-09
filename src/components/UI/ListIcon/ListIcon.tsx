@@ -33,6 +33,8 @@ import styles from './ListIcon.module.css';
 import FiberNewIcon from '@mui/icons-material/FiberNew';
 import { Badge } from '@mui/material';
 import DiscordIcon from 'assets/images/icons/Discord/DiscordIcon';
+import CertificateIcon from 'assets/images/icons/SideDrawer/CertificateIcon';
+
 export interface ListIconProps {
   icon: string | undefined;
   count?: number;
@@ -76,6 +78,7 @@ export const ListIcon = ({ icon = '', selected = false, count }: ListIconProps) 
     assistant: Assistant,
     discord: DiscordIcon,
     waPolls: WaPolls,
+    certificate: CertificateIcon,
   };
 
   const iconImage = stringsToIcons[icon] && (

@@ -117,7 +117,9 @@ export const NotificationList = () => {
           },
         });
         break;
-
+      case 'Custom Certificates':
+        destination = `/certificate/${entity?.template_id}/edit`;
+        break;
       default:
         // Handle unknown category
         return;
