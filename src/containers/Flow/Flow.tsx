@@ -101,8 +101,6 @@ export const Flow = () => {
     roles: rolesValue,
     skipValidation: skipValidation,
   }: any) => {
-    console.log(skipValidation);
-
     // Override name & keywords when creating Flow Copy
     let fieldName = nameValue;
     let fieldKeywords = keywordsValue;
@@ -289,8 +287,6 @@ export const Flow = () => {
     }
     delete updatedPayload.tagId;
     // return modified payload
-    console.log(updatedPayload);
-
     return updatedPayload;
   };
 
