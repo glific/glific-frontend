@@ -196,3 +196,13 @@ export const GET_PROFILE = gql`
     }
   }
 `;
+
+export const GET_CONTACT_STATUS = gql`
+  query contact($id: ID!) {
+    contact(id: $id) {
+      contact {
+        status
+      }
+    }
+  }
+`;
