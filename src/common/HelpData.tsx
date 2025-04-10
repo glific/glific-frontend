@@ -137,5 +137,5 @@ export const pollsInfo: HelpDataProps = {
 
 export const certificatesInfo: HelpDataProps = {
   heading: 'An overview of all the certificates created to date',
-  link: 'https://glific.github.io/docs/docs/Product%20Features/Certificates',
+  link: 'https://glific.github.io/docs/docs/Product%20Features/Custom%20Certificates',
 };
