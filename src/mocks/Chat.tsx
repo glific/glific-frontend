@@ -4,7 +4,7 @@ import {
   MESSAGE_SENT_SUBSCRIPTION,
   MESSAGE_STATUS_SUBSCRIPTION,
 } from 'graphql/subscriptions/Chat';
-import { SAVED_SEARCH_QUERY, SEARCH_QUERY, SEARCH_MULTI_QUERY, SEARCHES_COUNT } from 'graphql/queries/Search';
+import { SAVED_SEARCH_QUERY, SEARCH_QUERY, SEARCHES_COUNT } from 'graphql/queries/Search';
 import { CREATE_AND_SEND_MESSAGE_MUTATION, MARK_AS_READ } from 'graphql/mutations/Chat';
 import {
   DEFAULT_ENTITY_LIMIT,
