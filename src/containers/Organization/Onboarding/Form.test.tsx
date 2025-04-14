@@ -21,6 +21,7 @@ vi.mock('react-router', async () => ({
 
 beforeEach(() => {
   cleanup();
+  localStorage.clear();
 });
 
 const renderForm = (
@@ -32,10 +33,6 @@ const renderForm = (
     </MockedProvider>
   </GoogleReCaptchaProvider>
 );
-
-beforeEach(() => {
-  cleanup();
-});
 
 test('it should render platform Details page', async () => {
   const { getByTestId } = render(renderForm);

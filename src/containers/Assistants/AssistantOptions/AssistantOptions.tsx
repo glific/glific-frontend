@@ -125,10 +125,12 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
         },
         onCompleted: () => {
           refetch();
+          setNotification('File removed from assistant!', 'success');
         },
       });
     }
     setFiles(files.filter((fileItem) => fileItem.fileId !== file.fileId));
+    setNotification('File removed from assistant!', 'success');
   };
 
   const handleFileUpload = () => {
