@@ -42,57 +42,6 @@ test('it should render platform Details page', async () => {
   });
 });
 
-test('it opens and closes dialog box', async () => {
-  render(renderForm);
-
-  await waitFor(() => {
-    expect(screen.getAllByText('Reach out here')[0]).toBeInTheDocument();
-  });
-
-  fireEvent.click(screen.getAllByText('Reach out here')[0]);
-  const dialogBox = screen.getByTestId('dialogBox');
-
-  await waitFor(() => {
-    expect(dialogBox).toBeInTheDocument();
-  });
-
-  fireEvent.click(screen.getByTestId('close-button'));
-
-  await waitFor(() => {
-    expect(dialogBox).not.toBeInTheDocument();
-  });
-});
-
-test('it sends email to support', async () => {
-  render(renderForm);
-
-  await waitFor(() => {
-    expect(screen.getAllByText('Reach out here')[0]).toBeInTheDocument();
-  });
-
-  fireEvent.click(screen.getAllByText('Reach out here')[0]);
-
-  const dialog = screen.getByText('Write to us');
-
-  await waitFor(() => {
-    expect(dialog).toBeInTheDocument();
-  });
-
-  //checking if it closes the dialog
-  fireEvent.click(screen.getByTestId('close-button'));
-
-  fireEvent.click(screen.getAllByText('Reach out here')[0]);
-
-  const inputFields = screen.getAllByRole('textbox');
-  const [name, email, message] = inputFields;
-
-  fireEvent.change(name, { target: { value: 'name' } });
-  fireEvent.change(email, { target: { value: 'random@email.com' } });
-  fireEvent.change(message, { target: { value: 'message' } });
-
-  fireEvent.click(screen.getByText('Send'));
-});
-
 test('it should submit the form', async () => {
   const { getByTestId, getAllByRole, getAllByTestId, getByText } = render(renderForm);
 
@@ -235,6 +184,57 @@ test('it should submit the form', async () => {
   await waitFor(() => {
     expect(getByText('Success!')).toBeInTheDocument();
   });
+});
+
+test('it opens and closes dialog box', async () => {
+  render(renderForm);
+
+  await waitFor(() => {
+    expect(screen.getAllByText('Reach out here')[0]).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getAllByText('Reach out here')[0]);
+  const dialogBox = screen.getByTestId('dialogBox');
+
+  await waitFor(() => {
+    expect(dialogBox).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('close-button'));
+
+  await waitFor(() => {
+    expect(dialogBox).not.toBeInTheDocument();
+  });
+});
+
+test('it sends email to support', async () => {
+  render(renderForm);
+
+  await waitFor(() => {
+    expect(screen.getAllByText('Reach out here')[0]).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getAllByText('Reach out here')[0]);
+
+  const dialog = screen.getByText('Write to us');
+
+  await waitFor(() => {
+    expect(dialog).toBeInTheDocument();
+  });
+
+  //checking if it closes the dialog
+  fireEvent.click(screen.getByTestId('close-button'));
+
+  fireEvent.click(screen.getAllByText('Reach out here')[0]);
+
+  const inputFields = screen.getAllByRole('textbox');
+  const [name, email, message] = inputFields;
+
+  fireEvent.change(name, { target: { value: 'name' } });
+  fireEvent.change(email, { target: { value: 'random@email.com' } });
+  fireEvent.change(message, { target: { value: 'message' } });
+
+  fireEvent.click(screen.getByText('Send'));
 });
 
 test('it should disgree and send an email', async () => {

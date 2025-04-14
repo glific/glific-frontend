@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { IconButton, Typography } from '@mui/material';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { useTranslation } from 'react-i18next';
 
 import { Timer } from 'components/UI/Timer/Timer';
@@ -84,14 +85,14 @@ export const ContactDescription = ({
     let phoneDisplayValue = maskedPhone;
     let visibilityElement = (
       <Tooltip title={t('Show number')} placement="right">
-        <Visibility classes={{ root: styles.Visibility }} />
+        <VisibilityIcon classes={{ root: styles.Visibility }} />
       </Tooltip>
     );
     if (showPlainPhone) {
       phoneDisplayValue = phone;
       visibilityElement = (
         <Tooltip title={t('Hide number')} placement="right">
-          <VisibilityOff classes={{ root: styles.Visibility }} />
+          <VisibilityOffIcon classes={{ root: styles.Visibility }} />
         </Tooltip>
       );
     }
