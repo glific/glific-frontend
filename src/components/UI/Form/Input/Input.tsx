@@ -28,6 +28,7 @@ export interface InputProps {
   darkMode?: boolean;
   inputLabelSubtext?: any;
   autoComplete?: string;
+  customFieldError?: any;
 }
 
 export const Input = ({ textArea = false, disabled = false, inputLabel = null, ...props }: InputProps) => {
@@ -48,6 +49,7 @@ export const Input = ({ textArea = false, disabled = false, inputLabel = null, .
     onChange,
     darkMode,
     inputLabelSubtext,
+    customFieldError,
     autoComplete = 'off',
   } = props;
 
@@ -139,6 +141,7 @@ export const Input = ({ textArea = false, disabled = false, inputLabel = null, .
           {form && form.errors[field.name] && form.touched[field.name] ? (
             <FormHelperText className={styles.DangerText}>{form.errors[field.name]}</FormHelperText>
           ) : null}
+          {customFieldError ? customFieldError(field) : null}
           {helperText && (
             <div id="helper-text" className={styles.HelperText}>
               {helperText}

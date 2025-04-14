@@ -44,6 +44,7 @@ export const Flow = () => {
   const [isBackground, setIsBackground] = useState(false);
   const [ignoreKeywords, setIgnoreKeywords] = useState(false);
   const [copyFlowTitle, setCopyFlowTitle] = useState('');
+  const [skipValidation, setSkipValidation] = useState(false);
 
   const { t } = useTranslation();
 
@@ -85,6 +86,7 @@ export const Flow = () => {
     tagId,
     ignoreKeywords,
     roles,
+    skipValidation,
   };
 
   const setStates = ({
@@ -97,6 +99,7 @@ export const Flow = () => {
     isBackground: isBackgroundValue,
     ignoreKeywords: ignoreKeywordsValue,
     roles: rolesValue,
+    skipValidation: skipValidation,
   }: any) => {
     // Override name & keywords when creating Flow Copy
     let fieldName = nameValue;
@@ -131,6 +134,7 @@ export const Flow = () => {
     setIsBackground(isBackgroundValue);
     setRoles(rolesValue);
     setDescription(description);
+    setSkipValidation(skipValidation);
 
     // we are receiving keywords as an array object
     if (fieldKeywords.length > 0) {
@@ -245,6 +249,17 @@ export const Flow = () => {
       title: t('Run this flow in the background'),
       darkCheckbox: true,
       disabled: isTemplate,
+    },
+    {
+      component: Checkbox,
+      name: 'skipValidation',
+      title: t('Skip Validation'),
+      info: {
+        title: t(
+          'Check this box to bypass validation for results that are fetched dynamically via the resumeFlow API. This is useful when the result might not be defined at the flow level in advance.'
+        ),
+      },
+      darkCheckbox: true,
     },
   ];
 

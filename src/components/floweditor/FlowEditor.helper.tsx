@@ -7,7 +7,7 @@ import styles from './FlowEditor.module.css';
 
 const glificBase = FLOW_EDITOR_API;
 
-export const setConfig = (uuid: any, isTemplate: boolean) => {
+export const setConfig = (uuid: any, isTemplate: boolean, skipValidation: boolean) => {
   const services = JSON.parse(localStorage.getItem('organizationServices') || '{}');
 
   const config = {
@@ -18,6 +18,7 @@ export const setConfig = (uuid: any, isTemplate: boolean) => {
     showNodeLabel: false,
     attachmentsEnabled: false,
     filters: ['whatsapp', 'classifier'],
+    skipValidation: skipValidation,
 
     excludeTypes: ['add_contact_urn', 'send_email', 'call_resthook', 'transfer_airtime', 'split_by_scheme'],
 

@@ -1,0 +1,23 @@
+.ErrorText {
+    color: #fb5c5c;
+    margin-top: 4px;
+    margin-left: 14px;
+    font-size: 12px;
+}
+
+.HelperText ul {
+    margin: 0;
+}
+
+
+.HelperTextLink {
+    color: green;
+    font-weight: 500;
+    border-bottom: 1px dashed green;
+    display: inline;
+    text-decoration: none !important;
+}
+
+.DialogText {
+    text-align: center;
+}

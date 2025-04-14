@@ -46,7 +46,9 @@ export const FlowEditor = () => {
   const [dialogMessage, setDialogMessage] = useState('');
   const [publishLoading, setPublishLoading] = useState(false);
   const [isTemplate, setIsTemplate] = useState(false);
-  const config = setConfig(uuid, isTemplate);
+  const [skipValidation, setSkipValidation] = useState(false);
+
+  const config = setConfig(uuid, isTemplate, skipValidation);
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -141,6 +143,7 @@ export const FlowEditor = () => {
     if (flowName && flowName.flows.length > 0) {
       setFlowId(flowName.flows[0].id);
       setIsTemplate(flowName.flows[0].isTemplate);
+      setSkipValidation(flowName.flows[0].skipValidation);
     }
   }, [flowName]);
 

@@ -37,24 +37,26 @@ const mocks = [
     isActive: true,
     isPinned: false,
     isBackground: false,
-    name: 'Help flow',
-    keywords: ['help'],
+    name: 'Copy of Help',
+    keywords: ['help', 'activity'],
     description: 'Copy of Help',
     ignoreKeywords: false,
+    skipValidation: false,
     addRoleIds: [],
     deleteRoleIds: [],
+    tag_id: '1',
   }),
   copyFlowQuery({
     isActive: true,
     isPinned: false,
     isBackground: false,
-    name: 'Copy of Help',
-    keywords: ['help', 'activity'],
+    name: 'Help flow',
+    keywords: ['help'],
     description: 'Copy of Help',
     ignoreKeywords: false,
+    skipValidation: false,
     addRoleIds: [],
     deleteRoleIds: [],
-    tag_id: '1',
   }),
   createFlowQuery({
     isActive: true,
@@ -66,6 +68,7 @@ const mocks = [
     ignoreKeywords: false,
     addRoleIds: [],
     deleteRoleIds: [],
+    skipValidation: false,
   }),
   createTagQuery,
   getFlowCountQuery({ isActive: true, isTemplate: false }),
@@ -82,6 +85,7 @@ const mocks = [
     ignoreKeywords: false,
     addRoleIds: [],
     deleteRoleIds: [],
+    skipValidation: false,
   }),
   copyFlowQuery({
     isActive: true,
@@ -93,6 +97,7 @@ const mocks = [
     ignoreKeywords: false,
     addRoleIds: [],
     deleteRoleIds: [],
+    skipValidation: false,
   }),
 ];
 
@@ -238,6 +243,8 @@ it('should edit the flow', async () => {
     expect(inputElement?.value).toBe('Help');
   });
 
+  fireEvent.click(getByText('Skip Validation'));
+
   fireEvent.click(screen.getByText('Save'));
 
   await waitFor(() => {
@@ -264,6 +271,7 @@ it('should configure the flow', async () => {
     expect(getByText('Edit flow')).toBeInTheDocument();
   });
 
+  fireEvent.click(screen.getByText('Skip Validation'));
   fireEvent.click(screen.getByText('Configure'));
 
   await waitFor(() => {
@@ -293,6 +301,7 @@ it('should edit the flow and show error if exists', async () => {
     const inputElement = container.querySelector('input[name="name"]') as HTMLInputElement;
     expect(inputElement?.value).toBe('Help');
   });
+  fireEvent.click(screen.getByText('Skip Validation'));
 
   fireEvent.click(screen.getByText('Save'));
 
