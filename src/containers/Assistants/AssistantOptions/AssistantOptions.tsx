@@ -125,7 +125,6 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
         },
         onCompleted: () => {
           refetch();
-          setNotification('File removed from assistant!', 'success');
         },
       });
     }
