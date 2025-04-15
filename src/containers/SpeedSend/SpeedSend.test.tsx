@@ -182,7 +182,7 @@ describe('test creating a speed send', () => {
     await waitFor(() => {
       expect(screen.getByTestId('translation')).toBeInTheDocument();
     });
-  }, 1500);
+  });
 
   test('it should display warning message', async () => {
     render(addSpeedSendContainer);

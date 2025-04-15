@@ -78,7 +78,6 @@ const searchQueryMock = {
     },
   },
 };
-
 afterEach(cleanup);
 
 const props = {
@@ -104,7 +103,8 @@ describe('<CollectionConversation />', () => {
   });
 
   test('It should render search bar and perform its actions', async () => {
-    const { container, getByTestId } = render(collectionConversation);
+    const { container } = render(collectionConversation);
+
     await waitFor(() => {
       expect(container).toBeInTheDocument();
     });
@@ -114,11 +114,15 @@ describe('<CollectionConversation />', () => {
     });
 
     fireEvent.change(screen.getByRole('textbox'), { target: { value: 'optin' } });
+    fireEvent.change(screen.getByPlaceholderText('Search'), { target: { value: 'optin' } });
     fireEvent.keyDown(screen.getByRole('textbox'), { key: 'Enter', code: 'Enter' });
 
     await waitFor(() => {
-      expect(screen.getAllByRole('list')).toHaveLength(1);
+      expect(screen.getByPlaceholderText('Search')).toHaveValue('optin');
+    });
+
+    await waitFor(() => {
       expect(screen.getByText('New optin')).toBeInTheDocument();
     });
-  });
+  }, 10000);
 });

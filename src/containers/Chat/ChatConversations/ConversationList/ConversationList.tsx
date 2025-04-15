@@ -507,7 +507,7 @@ export const ConversationList = ({
   const loadMore = (
     <div className={styles.LoadMore}>
       {showLoading || loadingSearch ? (
-        <CircularProgress data-testid="loading" className={styles.Progress} />
+        <CircularProgress className={styles.Progress} />
       ) : (
         <div
           onClick={loadMoreMessages}
