@@ -38,6 +38,7 @@ const flowData = {
       uuid: 'b050c652-65b5-4ccf-b62b-1e8b3f328676',
       keywords: ['help'],
       isPinned: false,
+      skipValidation: false,
       roles: [
         {
           id: '1',
@@ -288,6 +289,7 @@ const getFlowDetails = (isActive = true, keywords = ['help'], isTemplate = false
           name: 'help workflow',
           keywords,
           isTemplate,
+          skipValidation: true,
         },
       ],
     },
@@ -552,6 +554,7 @@ const updateFlowQueryRequest = {
       addRoleIds: [],
       deleteRoleIds: [],
       tag_id: '1',
+      skipValidation: true,
     },
   },
 };
