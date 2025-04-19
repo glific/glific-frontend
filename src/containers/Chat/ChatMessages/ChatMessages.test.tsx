@@ -13,6 +13,7 @@ import {
   CONVERSATION_MOCKS,
   conversationMock,
   createAndSendMessageMutation,
+  getContactStatusQuery,
   markAsReadMock,
   mocksWithConversation,
   sendMessageInWaGroup,
@@ -23,7 +24,7 @@ import { getCollectionInfo } from 'mocks/Collection';
 import { userEvent } from '@testing-library/user-event';
 import { setNotification } from 'common/notification';
 import { waGroup, waGroupcollection } from 'mocks/Groups';
-import { getContactSearchQuery } from 'mocks/Search';
+import { getBlockedContactSearchQuery, getContactSearchQuery } from 'mocks/Search';
 import { getWhatsAppManagedPhonesStatusMock } from 'mocks/StatusBar';
 import { TEMPLATE_MOCKS } from 'mocks/Template';
 
@@ -45,6 +46,16 @@ const mockIntersectionObserver = class {
 };
 
 (window as any).IntersectionObserver = mockIntersectionObserver;
+
+const mockedUsedNavigate = vi.fn();
+vi.mock('react-router-dom', async () => ({
+  ...(await vi.importActual('react-router-dom')),
+  useNavigate: () => mockedUsedNavigate,
+}));
+
+beforeEach(() => {
+  vi.clearAllMocks();
+});
 
 const messages = (limit: number, skip: number) =>
   new Array(limit).fill(null).map((val: any, index: number) => ({
@@ -277,6 +288,7 @@ const mocks = [
   loadMoreQuery(0, 40, { id: '2', searchGroup: true }),
   markAsReadMock('2'),
   markAsReadMock('3'),
+  markAsReadMock('5'),
   getWhatsAppManagedPhonesStatusMock,
   ...TEMPLATE_MOCKS,
   createMediaMessageMock({
@@ -725,5 +737,20 @@ test('should show error if send message fails', async () => {
   fireEvent.click(getByTestId('sendButton'), { force: true });
   await waitFor(() => {
     expect(setNotification).toHaveBeenCalled();
+  });
+});
+
+test('Blocked contacts should redirect to chat page', async () => {
+  render(
+    <MemoryRouter>
+      <MockedProvider mocks={[...mocks, getBlockedContactSearchQuery, getContactStatusQuery]} cache={cache}>
+        <ChatMessages entityId="5" />
+      </MockedProvider>
+    </MemoryRouter>
+  );
+
+  await waitFor(() => {
+    expect(mockedUsedNavigate).toHaveBeenCalledWith('/chat');
+    expect(setNotification).toHaveBeenCalledWith('The contact is blocked', 'warning');
   });
 });

@@ -407,7 +407,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
           variables,
           updateQuery: (prev: any, { fetchMoreResult }: any) => {
             if (fetchMoreResult.search && fetchMoreResult.search.length) {
-              updateCacheQuery(prev, fetchMoreResult, entityId, collectionId, chatType);
+              return updateCacheQuery(prev, fetchMoreResult, entityId, collectionId, chatType);
             } else {
               getContactStatus().then(({ data }) => {
                 if (data && data.contact && data.contact.contact && data.contact.contact.status) {
