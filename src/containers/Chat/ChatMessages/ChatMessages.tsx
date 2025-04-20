@@ -427,9 +427,36 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
   const findCollectionInAllConversations = () => {
     // loop through the cached conversations and find if collection exists
     if (allConversations && allConversations.search) {
-      if (collectionId === -1) {
-        conversationIndex = 0;
-        setConversationInfo(allConversations.search);
+      allConversations.search.map((conversation: any, index: any) => {
+        if (conversation?.group?.id === collectionId?.toString()) {
+          conversationIndex = index;
+          setConversationInfo(conversation);
+        }
+        return null;
+      });
+
+      if (conversationIndex === -1) {
+        if (!conversationLoad || (allConversations && allConversations.search[0]?.group?.id !== collectionId)) {
+          const variables = getVariables(
+            { limit: 1 },
+            {
+              limit: DEFAULT_MESSAGE_LIMIT,
+              offset: messageParameterOffset,
+            },
+            { filter: { id: collectionId, searchGroup: true } },
+            groups
+          );
+          console.log(variables);
+
+          addLogs(`if conversation is not present then search for contact-${entityId}`, variables);
+
+          fetchMore({
+            variables,
+            updateQuery: (prev: any, { fetchMoreResult }: any) =>
+              updateCacheQuery(prev, fetchMoreResult, entityId, collectionId, chatType),
+          });
+        }
+        // lets not get from cache if parameter is present
       } else {
         updateConversationInfo('group', collectionId);
       }
