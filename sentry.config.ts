@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/react';
 
 Sentry.init({
-  dsn: process.env.VITE_SENTRY_DSN,
+  dsn: 'https://241c80182eb8438c8eba36c72b283aff@o412613.ingest.us.sentry.io/5296557',
 
   tracesSampleRate: 1,
 

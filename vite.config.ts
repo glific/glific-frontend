@@ -9,12 +9,12 @@ import viteTsconfigPaths from 'vite-tsconfig-paths';
 import checker from 'vite-plugin-checker';
 import svgrPlugin from 'vite-plugin-svgr';
 import fs from 'fs';
+import nodePolyfills from 'rollup-plugin-polyfill-node';
 import { sentryVitePlugin } from '@sentry/vite-plugin';
 
 // https://vitejs.dev/config/
 export default ({ command, mode }: ConfigEnv): UserConfigExport => {
   const env = loadEnv(mode, process.cwd(), '');
-  console.log('Loaded env:', mode, command); // Add this line to debug
 
   const plugins = [
     react(),
@@ -30,9 +30,6 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
   if (mode === 'test' && command === 'serve') {
     return defineConfig({
       // dev specific config
-      define: {
-        'process.env': {},
-      },
       plugins: plugins,
 
       optimizeDeps: {
@@ -45,14 +42,24 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
       },
 
       resolve: { alias: { util: 'util/' } },
+      test: {
+        globals: true,
+        environment: 'jsdom',
+        setupFiles: './src/setupTests.ts',
+        coverage: {
+          reporter: ['lcov', 'text', 'html'],
+          // choosing istanbul for now because of this https://github.com/vitest-dev/vitest/issues/1252
+          provider: 'istanbul', // or 'c8',
+          include: ['src/**/**'],
+          exclude: ['node_modules/', '**/*.test.tsx', './src/assets/**'],
+        },
+        css: true,
+      },
     });
   }
   if (command === 'serve') {
     return defineConfig({
       // dev specific config
-      define: {
-        'process.env': {},
-      },
       plugins: [...plugins, checker({ typescript: true })],
       optimizeDeps: {
         esbuildOptions: {
@@ -110,6 +117,9 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
         transformMixedEsModules: true,
       },
       outDir: 'build',
+      rollupOptions: {
+        plugins: [nodePolyfills('buffer', 'process')],
+      },
     },
     resolve: { alias: { util: 'util/', stream: 'stream-browserify' } },
   });
