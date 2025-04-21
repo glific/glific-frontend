@@ -31,7 +31,7 @@ export const ContactHistory = ({ contactId, profileId }: ContactHistoryProps) =>
         </div>
       );
     } catch (error) {
-      setLogs(error, 'error');
+      throw new Error(`Error parsing eventMeta in contact history: ${eventMeta}`);
     }
     return null;
   };
@@ -46,7 +46,7 @@ export const ContactHistory = ({ contactId, profileId }: ContactHistoryProps) =>
         </div>
       );
     } catch (error) {
-      setLogs(error, 'error');
+      throw new Error(`Error parsing eventMeta in contact history updated: ${eventMeta}`);
     }
     return null;
   };

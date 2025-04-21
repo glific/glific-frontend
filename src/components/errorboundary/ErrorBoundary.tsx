@@ -4,6 +4,7 @@ import setLogs from 'config/logs';
 import { Component } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './ErrorBoundary.module.css';
+import * as Sentry from '@sentry/react';
 
 function withRouter(NavigateComponent: any) {
   return function WrappedComponent(props: any) {
@@ -40,29 +41,31 @@ class ErrorBoundary extends Component<any, any> {
     if (hasError) {
       // You can render any custom fallback UI
       return (
-        <Container>
-          <div data-testid="errorMessage">
-            <DialogBox
-              title="Error !"
-              colorCancel="warning"
-              handleOk={() => {
-                window.location.reload();
-              }}
-              handleCancel={() => {
-                navigate('/logout/user');
-              }}
-              buttonOk="Retry"
-              buttonCancel="Logout"
-              alignButtons="center"
-              contentAlign="center"
-            >
-              <div className={styles.Dialog}>
-                Sorry, An error occurred!
-                <br /> Please contact the team for support.
-              </div>
-            </DialogBox>
-          </div>
-        </Container>
+        <Sentry.ErrorBoundary>
+          <Container>
+            <div data-testid="errorMessage">
+              <DialogBox
+                title="Error !"
+                colorCancel="warning"
+                handleOk={() => {
+                  window.location.reload();
+                }}
+                handleCancel={() => {
+                  navigate('/logout/user');
+                }}
+                buttonOk="Retry"
+                buttonCancel="Logout"
+                alignButtons="center"
+                contentAlign="center"
+              >
+                <div className={styles.Dialog}>
+                  Sorry, An error occurred!
+                  <br /> Please contact the team for support.
+                </div>
+              </DialogBox>
+            </div>
+          </Container>
+        </Sentry.ErrorBoundary>
       );
     }
 

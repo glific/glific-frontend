@@ -61,8 +61,7 @@ const validateMediaMethod = (URL: string, attachmentType: string, allowStickers:
       })
       .catch((error) => {
         // add log's
-        setLogs(`attachmentType:${attachmentType} URL:${URL}`, 'info');
-        setLogs(error, 'error');
+        throw new Error(error);
       });
   });
 
@@ -106,8 +105,7 @@ export const copyToClipboardMethod = (text: string) => {
 export { copyToClipboardMethod as copyToClipboard };
 
 export const addLogsMethod = (event: string, logData: any) => {
-  setLogs(event, 'info');
-  setLogs(logData, 'info');
+  setLogs(`${event} with data ${JSON.stringify(logData)}`, 'info', true);
 };
 
 export const downloadFile = (url: string, filename: string) => {

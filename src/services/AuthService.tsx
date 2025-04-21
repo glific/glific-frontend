@@ -54,8 +54,7 @@ export const getAuthSession = (element?: string) => {
 export const renewAuthToken = () => {
   const renewalToken = getAuthSession('renewal_token');
   if (!renewalToken) {
-    setLogs('Token renewal failed: not found', 'error');
-    return new Error('Error');
+    throw new Error('Token renewal failed: not found');
   }
   // get the renewal token from session
   axios.defaults.headers.common.authorization = renewalToken;
@@ -319,6 +318,6 @@ export const checkAndRenewToken = async (navigate: any) => {
   }
 
   // If renewal fails, log out the user
-  setLogs(`Error 401: logging user out because invalid token`, 'error');
   navigate('/logout/session');
+  throw new Error(`Error 401: logging user out because invalid token`);
 };

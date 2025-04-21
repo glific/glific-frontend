@@ -1,20 +1,39 @@
 /// <reference types="vitest" />
 /// <reference types="vite-plugin-svgr/client" />
-import { defineConfig, ConfigEnv, UserConfigExport } from 'vite';
+/// <reference types="vite/types/importMeta.d.ts" />
+
+import { defineConfig, ConfigEnv, UserConfigExport, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 // import eslint from 'vite-plugin-eslint';
 import viteTsconfigPaths from 'vite-tsconfig-paths';
 import checker from 'vite-plugin-checker';
 import svgrPlugin from 'vite-plugin-svgr';
 import fs from 'fs';
-import nodePolyfills from 'rollup-plugin-polyfill-node';
+import { sentryVitePlugin } from '@sentry/vite-plugin';
 
 // https://vitejs.dev/config/
 export default ({ command, mode }: ConfigEnv): UserConfigExport => {
+  const env = loadEnv(mode, process.cwd(), '');
+  console.log('Loaded env:', mode, command); // Add this line to debug
+
+  const plugins = [
+    react(),
+    viteTsconfigPaths(),
+    svgrPlugin(),
+    sentryVitePlugin({
+      authToken: env.SENTRY_AUTH_TOKEN || '',
+      org: env.SENTRY_ORG_NAME || '',
+      project: env.SENTRY_PROJECT_NAME || '',
+    }),
+  ];
+
   if (mode === 'test' && command === 'serve') {
     return defineConfig({
       // dev specific config
-      plugins: [react(), viteTsconfigPaths(), svgrPlugin()],
+      define: {
+        'process.env': {},
+      },
+      plugins: plugins,
 
       optimizeDeps: {
         esbuildOptions: {
@@ -26,25 +45,15 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
       },
 
       resolve: { alias: { util: 'util/' } },
-      test: {
-        globals: true,
-        environment: 'jsdom',
-        setupFiles: './src/setupTests.ts',
-        coverage: {
-          reporter: ['lcov', 'text', 'html'],
-          // choosing istanbul for now because of this https://github.com/vitest-dev/vitest/issues/1252
-          provider: 'istanbul', // or 'c8',
-          include: ['src/**/**'],
-          exclude: ['node_modules/', '**/*.test.tsx', './src/assets/**'],
-        },
-        css: true,
-      },
     });
   }
   if (command === 'serve') {
     return defineConfig({
       // dev specific config
-      plugins: [react(), viteTsconfigPaths(), svgrPlugin(), checker({ typescript: true })],
+      define: {
+        'process.env': {},
+      },
+      plugins: [...plugins, checker({ typescript: true })],
       optimizeDeps: {
         esbuildOptions: {
           // Node.js global to browser globalThis
@@ -83,7 +92,7 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
       },
     },
     // build specific config
-    plugins: [react(), viteTsconfigPaths(), svgrPlugin()],
+    plugins: plugins,
     build: {
       // this is needed because of this https://github.com/vitejs/vite/issues/2139#issuecomment-1405624744
       commonjsOptions: {
@@ -101,9 +110,6 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
         transformMixedEsModules: true,
       },
       outDir: 'build',
-      rollupOptions: {
-        plugins: [nodePolyfills('buffer', 'process')],
-      },
     },
     resolve: { alias: { util: 'util/', stream: 'stream-browserify' } },
   });

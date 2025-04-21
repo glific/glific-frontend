@@ -68,7 +68,9 @@ export const Auth = ({
         setOrgName(data?.data?.name);
         setStatus(data?.data?.status);
       })
-      .catch((error) => setLogs(`orgName error ${JSON.stringify(error)}`, error));
+      .catch((error) => {
+        throw new Error(`orgName error ${JSON.stringify(error)}`);
+      });
   }, []);
 
   useEffect(() => {

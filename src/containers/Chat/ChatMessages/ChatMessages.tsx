@@ -580,7 +580,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
       variables.filter = { id: collectionId.toString(), searchGroup: true };
     }
 
-    addLogs(`load More Messages-${collectionId}`, variables);
+    addLogs(`load More Messages-${entityId || collectionId}`, variables);
 
     fetchMore({
       variables,

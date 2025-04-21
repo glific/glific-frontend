@@ -80,7 +80,7 @@ export const AddAttachment = ({
           }
         })
         .catch((error) => {
-          setLogs(error, 'error');
+          throw new Error(error);
         });
     }
   };

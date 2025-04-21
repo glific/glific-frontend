@@ -132,6 +132,7 @@ export const Login = () => {
           setAuthError('Something went wrong. Please contact the Glific team.');
         }
         setLogs(error, 'error');
+        throw new Error(error);
       });
   };
 

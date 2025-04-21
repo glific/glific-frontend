@@ -112,7 +112,7 @@ export const ConfirmOTP = () => {
       })
       .catch((error) => {
         setAuthError(t('We are unable to register, kindly contact your technical team.'));
-        setLogs(error, 'error');
+        throw new Error(error);
       });
   };
 

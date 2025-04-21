@@ -42,7 +42,7 @@ const getUser = (user: any) => {
   try {
     contactFields = JSON.parse(user.fields);
   } catch (er) {
-    setLogs(er, 'error');
+    throw new Error(`Error parsing user fields: ${er}`);
   }
   const displayName = contactFields?.name?.value || user?.name || user?.maskedPhone || '';
   return <div className={styles.TableText}>{displayName}</div>;
