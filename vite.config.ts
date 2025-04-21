@@ -1,6 +1,6 @@
 /// <reference types="vitest" />
 /// <reference types="vite-plugin-svgr/client" />
-import { defineConfig, ConfigEnv, UserConfigExport } from 'vite';
+import { defineConfig, ConfigEnv, UserConfigExport, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 // import eslint from 'vite-plugin-eslint';
 import viteTsconfigPaths from 'vite-tsconfig-paths';
@@ -8,13 +8,27 @@ import checker from 'vite-plugin-checker';
 import svgrPlugin from 'vite-plugin-svgr';
 import fs from 'fs';
 import nodePolyfills from 'rollup-plugin-polyfill-node';
+import { sentryVitePlugin } from '@sentry/vite-plugin';
 
 // https://vitejs.dev/config/
 export default ({ command, mode }: ConfigEnv): UserConfigExport => {
+  const env = loadEnv(mode, process.cwd(), '');
+
+  const plugins = [
+    react(),
+    viteTsconfigPaths(),
+    svgrPlugin(),
+    sentryVitePlugin({
+      authToken: env.SENTRY_AUTH_TOKEN || '',
+      org: 'project-tech4dev',
+      project: 'glific-frontend',
+    }),
+  ];
+
   if (mode === 'test' && command === 'serve') {
     return defineConfig({
       // dev specific config
-      plugins: [react(), viteTsconfigPaths(), svgrPlugin()],
+      plugins: plugins,
 
       optimizeDeps: {
         esbuildOptions: {
@@ -44,7 +58,7 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
   if (command === 'serve') {
     return defineConfig({
       // dev specific config
-      plugins: [react(), viteTsconfigPaths(), svgrPlugin(), checker({ typescript: true })],
+      plugins: [...plugins, checker({ typescript: true })],
       optimizeDeps: {
         esbuildOptions: {
           // Node.js global to browser globalThis
@@ -83,7 +97,7 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
       },
     },
     // build specific config
-    plugins: [react(), viteTsconfigPaths(), svgrPlugin()],
+    plugins: plugins,
     build: {
       // this is needed because of this https://github.com/vitejs/vite/issues/2139#issuecomment-1405624744
       commonjsOptions: {
