@@ -446,8 +446,6 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
             { filter: { id: collectionId, searchGroup: true } },
             groups
           );
-          console.log(variables);
-
           addLogs(`if conversation is not present then search for contact-${entityId}`, variables);
 
           fetchMore({

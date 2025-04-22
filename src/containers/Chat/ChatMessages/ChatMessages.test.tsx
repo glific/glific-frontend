@@ -250,6 +250,7 @@ const mocks = [
   loadMoreQuery(20, 20, { id: '2' }),
   getCollectionInfo({ id: '2' }),
   getCollectionInfo({ id: '5' }),
+  getCollectionInfo({ id: '300' }),
   conversationMock({
     contactOpts: { limit: 1 },
     messageOpts: { limit: 20, offset: 0 },
@@ -260,6 +261,24 @@ const mocks = [
     messageOpts: { limit: 20, offset: 0 },
     filter: { id: '2', searchGroup: true },
   }),
+  conversationMock(
+    {
+      contactOpts: { limit: 1 },
+      messageOpts: { limit: 20, offset: 0 },
+      filter: { id: '300', searchGroup: true },
+    },
+    [
+      {
+        contact: null,
+        group: {
+          id: '300',
+          label: 'group 300',
+        },
+        id: 'group_300',
+        messages: [],
+      },
+    ]
+  ),
   createAndSendMessageMutation({
     body: 'hey',
     senderId: 1,
@@ -406,6 +425,21 @@ test('Contact: if not cache', async () => {
 
   await waitFor(() => {
     expect(screen.getByTestId('beneficiaryName')).toHaveTextContent('New Contact');
+  });
+});
+
+test('Collection: if not cache', async () => {
+  const chatMessages = (
+    <MemoryRouter>
+      <MockedProvider mocks={mocks} cache={cache}>
+        <ChatMessages collectionId="300" />
+      </MockedProvider>
+    </MemoryRouter>
+  );
+  render(chatMessages);
+
+  await waitFor(() => {
+    expect(screen.getByTestId('beneficiaryName')).toHaveTextContent('group 300');
   });
 });
 
