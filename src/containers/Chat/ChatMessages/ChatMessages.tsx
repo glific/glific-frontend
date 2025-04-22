@@ -434,8 +434,9 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
         }
         return null;
       });
-
-      if (conversationIndex === -1) {
+      console.log(conversationIndex, messageParameterOffset);
+      // if conversation is not present then fetch the collection
+      if (conversationIndex < 0) {
         if (!conversationLoad || (allConversations && allConversations.search[0]?.group?.id !== collectionId)) {
           const variables = getVariables(
             { limit: 1 },
@@ -459,25 +460,6 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
         // lets not get from cache if parameter is present
       } else {
         updateConversationInfo('group', collectionId);
-      }
-    }
-
-    // if conversation is not present then fetch the collection
-    if (conversationIndex < 0 && !groups) {
-      if (!conversationLoad || (allConversations && allConversations.search[0].group.id !== collectionId)) {
-        const variables = getVariables(
-          { limit: DEFAULT_ENTITY_LIMIT },
-          { limit: DEFAULT_MESSAGE_LIMIT, offset: 0 },
-          { filter: { id: collectionId, searchGroup: true } },
-          groups
-        );
-
-        addLogs(`if conversation is not present then search for collection-${collectionId}`, variables);
-        fetchMore({
-          variables,
-          updateQuery: (prev: any, { fetchMoreResult }: any) =>
-            updateCacheQuery(prev, fetchMoreResult, entityId, collectionId, chatType),
-        });
       }
     }
   };
