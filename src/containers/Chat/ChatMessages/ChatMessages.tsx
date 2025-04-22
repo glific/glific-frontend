@@ -16,7 +16,6 @@ import {
   SEARCH_QUERY_VARIABLES,
   COLLECTION_SEARCH_QUERY_VARIABLES,
   DEFAULT_MESSAGE_LIMIT,
-  DEFAULT_ENTITY_LIMIT,
   DEFAULT_MESSAGE_LOADMORE_LIMIT,
   ISO_DATE_FORMAT,
   GROUP_QUERY_VARIABLES,
@@ -434,10 +433,10 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
         }
         return null;
       });
-      console.log(conversationIndex, messageParameterOffset);
+
       // if conversation is not present then fetch the collection
       if (conversationIndex < 0) {
-        if (!conversationLoad || (allConversations && allConversations.search[0]?.group?.id !== collectionId)) {
+        if (!conversationLoad || allConversations.search[0]?.group?.id !== collectionId) {
           const variables = getVariables(
             { limit: 1 },
             {
