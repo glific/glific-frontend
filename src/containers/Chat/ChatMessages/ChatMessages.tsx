@@ -2,7 +2,7 @@ import { useCallback, useState, useEffect } from 'react';
 import { useQuery, useMutation, useLazyQuery, useApolloClient } from '@apollo/client';
 import { CircularProgress, Container } from '@mui/material';
 import dayjs from 'dayjs';
-import { Navigate, useLocation } from 'react-router-dom';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useTranslation } from 'react-i18next';
 
@@ -39,6 +39,7 @@ import {
   updateCacheQuery,
   updateGroupConversationsCache,
 } from 'services/GroupMessageService';
+import { GET_CONTACT_STATUS } from 'graphql/queries/Contact';
 
 export interface ChatMessagesProps {
   entityId?: number | string | null;
@@ -51,6 +52,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
   const urlString = new URL(window.location.href);
   const location = useLocation();
   const client = useApolloClient();
+  const navigate = useNavigate();
 
   const groups: boolean = location.pathname.includes('group');
   const chatType = groups ? 'waGroup' : 'contact';
@@ -74,6 +76,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
   const [showJumpToLatest, setShowJumpToLatest] = useState(false);
   const [conversationInfo, setConversationInfo] = useState<any>({});
   const [collectionVariables, setCollectionVariables] = useState<any>({});
+
   const { t } = useTranslation();
   let dialogBox;
 
@@ -81,6 +84,10 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
 
   // get the conversations stored from the cache
   let queryVariables = groups ? GROUP_QUERY_VARIABLES : SEARCH_QUERY_VARIABLES;
+
+  const [getContactStatus] = useLazyQuery(GET_CONTACT_STATUS, {
+    variables: { id: entityId },
+  });
 
   useEffect(() => {
     setShowLoadMore(true);
@@ -397,8 +404,21 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
 
         fetchMore({
           variables,
-          updateQuery: (prev: any, { fetchMoreResult }: any) =>
-            updateCacheQuery(prev, fetchMoreResult, entityId, collectionId, chatType),
+          updateQuery: (prev: any, { fetchMoreResult }: any) => {
+            if (fetchMoreResult.search && fetchMoreResult.search.length) {
+              return updateCacheQuery(prev, fetchMoreResult, entityId, collectionId, chatType);
+            } else {
+              getContactStatus().then(({ data }) => {
+                if (data && data.contact && data.contact.contact && data.contact.contact.status) {
+                  const status = data.contact.contact.status;
+                  if (status === 'BLOCKED') {
+                    setNotification('The contact is blocked', 'warning');
+                    navigate('/chat');
+                  }
+                }
+              });
+            }
+          },
         });
       }
       // lets not get from cache if parameter is present
