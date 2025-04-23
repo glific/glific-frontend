@@ -505,3 +505,19 @@ export const getContactSearchQuery = {
     },
   },
 };
+
+export const getBlockedContactSearchQuery = {
+  request: {
+    query: SEARCH_QUERY,
+    variables: {
+      contactOpts: { limit: 1 },
+      messageOpts: { limit: 20, offset: 0 },
+      filter: { id: '5' },
+    },
+  },
+  result: {
+    data: {
+      search: [],
+    },
+  },
+};
