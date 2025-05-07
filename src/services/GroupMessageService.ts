@@ -84,7 +84,8 @@ export const updateCacheQuery = (
     } else if (collectionId && conversation.group?.id === collectionId.toString()) {
       isContactCached = true;
       return updateConversation(conversation);
-    } else return conversation;
+    }
+    return conversation;
   });
   if (!isContactCached) {
     conversationsCopy.search = [...conversationsCopy.search, fetchMoreResult.search[0]];
