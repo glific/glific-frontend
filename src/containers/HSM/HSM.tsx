@@ -68,7 +68,6 @@ export const HSM = () => {
   const [templateButtons, setTemplateButtons] = useState<Array<CallToActionTemplate | QuickReplyTemplate>>([]);
   const [isAddButtonChecked, setIsAddButtonChecked] = useState(false);
   const [languageVariant, setLanguageVariant] = useState<boolean>(false);
-  const [allowTemplateCategoryChange, setAllowTemplateCategoryChange] = useState<boolean>(true);
   const [existingShortcode, setExistingShortcode] = useState('');
   const [newShortcode, setNewShortcode] = useState('');
   const [languageOptions, setLanguageOptions] = useState<any>([]);
@@ -152,7 +151,6 @@ export const HSM = () => {
     variables,
     newShortcode,
     existingShortcode,
-    allowTemplateCategoryChange,
   };
 
   const getLanguageId = (value: any) => {
@@ -225,7 +223,6 @@ export const HSM = () => {
     buttonType: templateButtonType,
     buttons,
     hasButtons,
-    allowTemplateCategoryChange: allowCategoryChangeValue,
   }: any) => {
     let variables: any = [];
 
@@ -250,7 +247,6 @@ export const HSM = () => {
     setEditorState(bodyValue);
     setCategory(categoryValue);
     setTagId(tagIdValue);
-    setAllowTemplateCategoryChange(allowCategoryChangeValue);
     variables = getExampleValue(exampleValue);
     setVariables(variables);
     addButtonsToSampleMessage(getExampleFromBody(bodyValue, variables));
@@ -561,18 +557,6 @@ export const HSM = () => {
       disabled: isEditing,
       helperText: t('Select the most relevant category'),
       skip: !isEditing,
-    },
-    {
-      component: Checkbox,
-      name: 'allowTemplateCategoryChange',
-      title: (
-        <Typography variant="h6" className={styles.Checkbox}>
-          Allow meta to re-categorize template?
-        </Typography>
-      ),
-      darkCheckbox: true,
-      disabled: isEditing,
-      handleChange: (value: boolean) => setAllowTemplateCategoryChange(value),
     },
     {
       component: AutoComplete,
