@@ -16,7 +16,6 @@ import {
   SEARCH_QUERY_VARIABLES,
   COLLECTION_SEARCH_QUERY_VARIABLES,
   DEFAULT_MESSAGE_LIMIT,
-  DEFAULT_ENTITY_LIMIT,
   DEFAULT_MESSAGE_LOADMORE_LIMIT,
   ISO_DATE_FORMAT,
   GROUP_QUERY_VARIABLES,
@@ -447,30 +446,37 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
   const findCollectionInAllConversations = () => {
     // loop through the cached conversations and find if collection exists
     if (allConversations && allConversations.search) {
-      if (collectionId === -1) {
-        conversationIndex = 0;
-        setConversationInfo(allConversations.search);
+      allConversations.search.map((conversation: any, index: any) => {
+        if (conversation?.group?.id === collectionId?.toString()) {
+          conversationIndex = index;
+          setConversationInfo(conversation);
+        }
+        return null;
+      });
+
+      // if conversation is not present then fetch the collection
+      if (conversationIndex < 0) {
+        if (!conversationLoad || allConversations.search[0]?.group?.id !== collectionId) {
+          const variables = getVariables(
+            { limit: 1 },
+            {
+              limit: DEFAULT_MESSAGE_LIMIT,
+              offset: messageParameterOffset,
+            },
+            { filter: { id: collectionId, searchGroup: true } },
+            groups
+          );
+          addLogs(`if conversation is not present then search for contact-${entityId}`, variables);
+
+          fetchMore({
+            variables,
+            updateQuery: (prev: any, { fetchMoreResult }: any) =>
+              updateCacheQuery(prev, fetchMoreResult, entityId, collectionId, chatType),
+          });
+        }
+        // lets not get from cache if parameter is present
       } else {
         updateConversationInfo('group', collectionId);
-      }
-    }
-
-    // if conversation is not present then fetch the collection
-    if (conversationIndex < 0 && !groups) {
-      if (!conversationLoad || (allConversations && allConversations.search[0].group.id !== collectionId)) {
-        const variables = getVariables(
-          { limit: DEFAULT_ENTITY_LIMIT },
-          { limit: DEFAULT_MESSAGE_LIMIT, offset: 0 },
-          { filter: { id: collectionId, searchGroup: true } },
-          groups
-        );
-
-        addLogs(`if conversation is not present then search for collection-${collectionId}`, variables);
-        fetchMore({
-          variables,
-          updateQuery: (prev: any, { fetchMoreResult }: any) =>
-            updateCacheQuery(prev, fetchMoreResult, entityId, collectionId, chatType),
-        });
       }
     }
   };
