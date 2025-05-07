@@ -78,17 +78,15 @@ export const updateCacheQuery = (
   };
 
   conversationsCopy.search = conversationsCopy.search.map((conversation: any) => {
-    if (collectionId && conversation.group?.id === collectionId.toString()) {
+    if (conversation[chatType]?.id === entityId?.toString() && !collectionId) {
       isContactCached = true;
       return updateConversation(conversation);
-    }
-    if (conversation[chatType]?.id === entityId?.toString()) {
+    } else if (collectionId && conversation.group?.id === collectionId.toString()) {
       isContactCached = true;
       return updateConversation(conversation);
     }
     return conversation;
   });
-
   if (!isContactCached) {
     conversationsCopy.search = [...conversationsCopy.search, fetchMoreResult.search[0]];
   }

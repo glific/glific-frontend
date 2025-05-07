@@ -1002,31 +1002,34 @@ export const loadMoreChats = {
   },
 };
 
-export const conversationMock = (variables: any) => ({
+export const conversationMock = (
+  variables: any,
+  searchData: any = [
+    {
+      id: 'contact_2',
+      group: null,
+      contact: {
+        id: '2',
+        name: 'Jane Doe',
+        phone: '9857274829',
+        maskedPhone: '974****678',
+        lastMessageAt: '2020-06-25T13:36:43Z',
+        status: 'VALID',
+        bspStatus: 'SESSION_AND_HSM',
+        isOrgRead: true,
+        fields: '{}',
+      },
+      messages: [sampleMessages],
+    },
+  ]
+) => ({
   request: {
     query: SEARCH_QUERY,
     variables,
   },
   result: {
     data: {
-      search: [
-        {
-          id: 'contact_2',
-          group: null,
-          contact: {
-            id: '2',
-            name: 'Jane Doe',
-            phone: '9857274829',
-            maskedPhone: '974****678',
-            lastMessageAt: '2020-06-25T13:36:43Z',
-            status: 'VALID',
-            bspStatus: 'SESSION_AND_HSM',
-            isOrgRead: true,
-            fields: '{}',
-          },
-          messages: [sampleMessages],
-        },
-      ],
+      search: searchData,
     },
   },
 });
