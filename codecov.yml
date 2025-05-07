@@ -1,0 +1,3 @@
+ignore:
+  - src/assets
+  - src/global.ts
