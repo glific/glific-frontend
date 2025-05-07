@@ -16,6 +16,7 @@ import { searchQueryEmptyMock as searchEmptyQuery } from 'containers/Chat/ChatCo
 import { contactCollectionsQuery } from './Contact';
 import { getOrganizationLanguagesQuery } from './Organization';
 import { SEND_MESSAGE_IN_WA_GROUP, SEND_MESSAGE_IN_WA_GROUP_COLLECTION } from 'graphql/mutations/Group';
+import { GET_CONTACT_STATUS } from 'graphql/queries/Contact';
 
 export const getConversationQuery = (data: any) => {
   return {
@@ -1001,6 +1002,24 @@ export const searchCollectionsQuery = {
           messages: [],
         },
       ],
+    },
+  },
+};
+
+export const getContactStatusQuery = {
+  request: {
+    query: GET_CONTACT_STATUS,
+    variables: {
+      id: '5',
+    },
+  },
+  result: {
+    data: {
+      contact: {
+        contact: {
+          status: 'BLOCKED',
+        },
+      },
     },
   },
 };
