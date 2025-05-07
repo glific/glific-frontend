@@ -156,7 +156,7 @@ export const Flow = () => {
   const dialogMessage = t("You won't be able to use this flow again.");
   let backLink = locationState?.tag?.label ? `flow?tag=${locationState?.tag?.label}` : 'flow';
   if (isTemplate || locationState === 'copyTemplate') {
-    backLink = '/flow?isTemplate=true';
+    backLink = 'flow?isTemplate=true';
   }
 
   const configureAction = {
