@@ -1,0 +1,10 @@
+.Name {
+    width: 30%;
+    min-width: 200px;
+}
+
+.Actions {
+    text-align: end;
+    margin-left: auto;
+    min-width: 200px;
+}

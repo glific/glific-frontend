@@ -23,8 +23,8 @@ jobs:
 
     strategy:
       matrix: # build matrix for the job
-        elixir: [1.15.4-otp-26]
-        otp: [26.0.2]
+        elixir: [1.18.3-otp-27]
+        otp: [27.3.3]
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # frontend setup
@@ -96,7 +96,6 @@ jobs:
           git clone https://github.com/glific/cypress-testing.git
           echo done. go to dir.
           cd cypress-testing
-          git checkout templates
           cd ..
           cp -r cypress-testing/cypress cypress
           yarn add cypress@13.6.2
@@ -112,7 +111,7 @@ jobs:
       - name: Run glific backend
         run: |
           cd ../glific/
-          mix phx.server &
+          OPEN_AI_KEY=${{secrets.OPENAI_KEY}} mix phx.server &
           cd ../glific-frontend/
 
       - name: Wait for some time for the frontend to start
