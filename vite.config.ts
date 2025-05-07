@@ -19,7 +19,7 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
     viteTsconfigPaths(),
     svgrPlugin(),
     sentryVitePlugin({
-      authToken: env.SENTRY_AUTH_TOKEN || '',
+      authToken: env.VITE_SENTRY_AUTH_TOKEN || '',
       org: 'project-tech4dev',
       project: 'glific-frontend',
     }),
