@@ -27,6 +27,9 @@
     "@mui/material": "^7.0.2",
     "@mui/x-date-pickers": "^7.28.3",
     "@nyaruka/temba-components": "^0.120.0",
+    "@sentry/integrations": "^7.114.0",
+    "@sentry/react": "^9.13.0",
+    "@sentry/vite-plugin": "^3.3.1",
     "@stripe/react-stripe-js": "^3.6.0",
     "@stripe/stripe-js": "^7.0.0",
     "@vitejs/plugin-react": "^4.3.4",
@@ -45,8 +48,6 @@
     "interweave-autolink": "^5.1.2",
     "lexical": "^0.30.0",
     "lexical-beautiful-mentions": "^0.1.47",
-    "pino": "^9.6.0",
-    "pino-logflare": "^0.4.2",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-draggable": "^4.4.6",
@@ -128,7 +129,6 @@
     "prettier": "^3.5.3",
     "react-test-renderer": "^19.1.0",
     "typescript": "^5.8.3",
-    "vite-plugin-node-polyfills": "^0.23.0",
     "vitest": "^3.1.1",
     "yarn-upgrade-all": "^0.7.5"
   }

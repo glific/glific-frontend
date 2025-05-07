@@ -23,8 +23,8 @@ jobs:
 
     strategy:
       matrix: # build matrix for the job
-        elixir: [1.15.4-otp-26]
-        otp: [26.0.2]
+        elixir: [1.18.3-otp-27]
+        otp: [27.3.3]
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # frontend setup

@@ -1,6 +1,6 @@
 /// <reference types="vitest" />
 /// <reference types="vite-plugin-svgr/client" />
-import { defineConfig, ConfigEnv, UserConfigExport } from 'vite';
+import { defineConfig, ConfigEnv, UserConfigExport, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 // import eslint from 'vite-plugin-eslint';
 import viteTsconfigPaths from 'vite-tsconfig-paths';
@@ -8,19 +8,22 @@ import checker from 'vite-plugin-checker';
 import svgr from 'vite-plugin-svgr';
 
 import fs from 'fs';
-import { nodePolyfills } from 'vite-plugin-node-polyfills';
+import { sentryVitePlugin } from '@sentry/vite-plugin';
 
 // https://vitejs.dev/config/
 export default ({ command, mode }: ConfigEnv): UserConfigExport => {
-  const nodePolyfillsOptions = {
-    globals: {
-      Buffer: true,
-      global: true,
-      process: true,
-    },
-  };
+  const env = loadEnv(mode, process.cwd(), '');
 
-  const plugins = [react(), viteTsconfigPaths(), svgr(), nodePolyfills(nodePolyfillsOptions)];
+  const plugins = [
+    react(),
+    viteTsconfigPaths(),
+    svgr(),
+    sentryVitePlugin({
+      authToken: env.VITE_SENTRY_AUTH_TOKEN || '',
+      org: 'project-tech4dev',
+      project: 'glific-frontend',
+    }),
+  ];
 
   const esbuildOptions = {
     // Node.js global to browser globalThis
@@ -32,6 +35,7 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
   // dev in test mode config
   if (mode === 'test' && command === 'serve') {
     return defineConfig({
+      // dev specific config
       plugins: plugins,
       optimizeDeps: {
         esbuildOptions: esbuildOptions,

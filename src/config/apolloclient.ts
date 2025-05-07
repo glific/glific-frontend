@@ -103,7 +103,7 @@ const gqlClient = (navigate: any) => {
       // @ts-ignore
       switch (networkError.statusCode) {
         case 401:
-          setLogs('401 detected. Attempting token renewal before logout.', 'info');
+          setLogs('401 detected. Attempting token renewal before logout.', 'info', true);
 
           // check if token exists
           checkAndRenewToken(navigate);
