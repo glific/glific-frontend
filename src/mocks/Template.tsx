@@ -711,6 +711,7 @@ export const HSM_LIST = [
   ...HSM_TEMPLATE_MOCKS,
   filterTemplatesMock({ isHsm: true, status: 'APPROVED' }),
   templateCountQuery({ isHsm: true, status: 'APPROVED' }, 1),
+  filterTemplatesMock({ isHsm: true, status: 'APPROVED', tagIds: [1] }),
 ];
 
 export const SPEED_SEND_LIST = [

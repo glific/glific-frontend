@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
@@ -76,6 +76,7 @@ export const FlowList = () => {
   const [importStatus, setImportStatus] = useState([]);
   const [showDialog, setShowDialog] = useState(false);
   const [refreshList, setRefreshList] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const [releaseFlow] = useLazyQuery(RELEASE_FLOW);
 
@@ -273,7 +274,7 @@ export const FlowList = () => {
     { label: 'Inactive', value: false },
     { label: 'Template', value: 'isTemplate' },
   ];
-  const { data: tag } = useQuery(GET_TAGS, {
+  const { data: tags } = useQuery(GET_TAGS, {
     variables: {},
     fetchPolicy: 'network-only',
   });
@@ -301,11 +302,19 @@ export const FlowList = () => {
       <AutoComplete
         isFilterType
         placeholder="Select tag"
-        options={tag ? tag.tags : []}
+        options={tags ? tags.tags : []}
         optionLabel="label"
         multiple={false}
         onChange={(value: any) => {
-          setSelectedTag(value);
+          if (value) {
+            setSearchParams({
+              tag: value.label,
+            });
+          } else {
+            setSearchParams({
+              tag: '',
+            });
+          }
         }}
         form={{ setFieldValue: () => {} }}
         field={{
@@ -341,9 +350,14 @@ export const FlowList = () => {
         buttonOk="Create from Template"
         skipCancel
         handleMiddle={() => {
-          navigate('/flow/add');
+          if (selectedtag?.label) {
+            navigate('/flow/add', { state: { tag: selectedtag } });
+          } else {
+            navigate('/flow/add');
+          }
         }}
         handleOk={() => {
+          setSelectedTag(null);
           setFilter('isTemplate');
           setShowDialog(false);
         }}
@@ -366,6 +380,17 @@ export const FlowList = () => {
   }, [location]);
 
   const title = filter === 'isTemplate' ? t('Template Flows') : t('Flows');
+
+  useEffect(() => {
+    const tagValue = searchParams.get('tag');
+
+    if (tagValue && tags) {
+      const tag = tags?.tags.find((tag: any) => tagValue === tag.label);
+      setSelectedTag(tag);
+    } else {
+      setSelectedTag(null);
+    }
+  }, [searchParams, tags]);
 
   return (
     <>
