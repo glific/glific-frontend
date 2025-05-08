@@ -190,6 +190,8 @@ export const FormLayout = ({
           }
         })
         .catch((e: any) => {
+          console.log(e);
+
           setErrorMessage(e);
         });
     } else {
@@ -290,6 +292,7 @@ export const FormLayout = ({
     onError: (err: ApolloError) => {
       setShowDialog(false);
       setErrorMessage(err);
+      console.log(err);
     },
     awaitRefetchQueries: true,
     refetchQueries: [
@@ -347,6 +350,8 @@ export const FormLayout = ({
         if (customHandler) {
           customHandler(errors);
         } else {
+          console.log(errors[0]);
+
           setErrorMessage(errors[0]);
         }
       } else if (updatedItem && typeof updatedItem.isValid === 'boolean' && !updatedItem.isValid) {
