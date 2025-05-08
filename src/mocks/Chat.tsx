@@ -16,6 +16,7 @@ import { searchQueryEmptyMock as searchEmptyQuery } from 'containers/Chat/ChatCo
 import { contactCollectionsQuery } from './Contact';
 import { getOrganizationLanguagesQuery } from './Organization';
 import { SEND_MESSAGE_IN_WA_GROUP, SEND_MESSAGE_IN_WA_GROUP_COLLECTION } from 'graphql/mutations/Group';
+import { GET_CONTACT_STATUS } from 'graphql/queries/Contact';
 
 export const getConversationQuery = (data: any) => {
   return {
@@ -1001,31 +1002,34 @@ export const loadMoreChats = {
   },
 };
 
-export const conversationMock = (variables: any) => ({
+export const conversationMock = (
+  variables: any,
+  searchData: any = [
+    {
+      id: 'contact_2',
+      group: null,
+      contact: {
+        id: '2',
+        name: 'Jane Doe',
+        phone: '9857274829',
+        maskedPhone: '974****678',
+        lastMessageAt: '2020-06-25T13:36:43Z',
+        status: 'VALID',
+        bspStatus: 'SESSION_AND_HSM',
+        isOrgRead: true,
+        fields: '{}',
+      },
+      messages: [sampleMessages],
+    },
+  ]
+) => ({
   request: {
     query: SEARCH_QUERY,
     variables,
   },
   result: {
     data: {
-      search: [
-        {
-          id: 'contact_2',
-          group: null,
-          contact: {
-            id: '2',
-            name: 'Jane Doe',
-            phone: '9857274829',
-            maskedPhone: '974****678',
-            lastMessageAt: '2020-06-25T13:36:43Z',
-            status: 'VALID',
-            bspStatus: 'SESSION_AND_HSM',
-            isOrgRead: true,
-            fields: '{}',
-          },
-          messages: [sampleMessages],
-        },
-      ],
+      search: searchData,
     },
   },
 });
@@ -1065,6 +1069,24 @@ export const searchCollectionsQuery = {
           messages: [],
         },
       ],
+    },
+  },
+};
+
+export const getContactStatusQuery = {
+  request: {
+    query: GET_CONTACT_STATUS,
+    variables: {
+      id: '5',
+    },
+  },
+  result: {
+    data: {
+      contact: {
+        contact: {
+          status: 'BLOCKED',
+        },
+      },
     },
   },
 };
