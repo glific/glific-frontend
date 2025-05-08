@@ -55,6 +55,7 @@ const buttonTypes: any = {
 };
 
 export const HSM = () => {
+  const location: any = useLocation();
   const [language, setLanguageId] = useState<any>(null);
   const [label, setLabel] = useState('');
   const [body, setBody] = useState<any>('');
@@ -62,13 +63,12 @@ export const HSM = () => {
   const [attachmentURL, setAttachmentURL] = useState<any>('');
   const [isActive, setIsActive] = useState<boolean>(true);
   const [category, setCategory] = useState<any>([]);
-  const [tagId, setTagId] = useState<any>(null);
+  const [tagId, setTagId] = useState<any>(location.state?.tag || null);
   const [variables, setVariables] = useState<any>([]);
   const [editorState, setEditorState] = useState<any>('');
   const [templateButtons, setTemplateButtons] = useState<Array<CallToActionTemplate | QuickReplyTemplate>>([]);
   const [isAddButtonChecked, setIsAddButtonChecked] = useState(false);
   const [languageVariant, setLanguageVariant] = useState<boolean>(false);
-  const [allowTemplateCategoryChange, setAllowTemplateCategoryChange] = useState<boolean>(true);
   const [existingShortcode, setExistingShortcode] = useState('');
   const [newShortcode, setNewShortcode] = useState('');
   const [languageOptions, setLanguageOptions] = useState<any>([]);
@@ -86,9 +86,9 @@ export const HSM = () => {
     body: '',
   });
   const { t } = useTranslation();
-  const location: any = useLocation();
   const params = useParams();
   let timer: any = null;
+  let backButton = location.state?.tag?.label ? `template?tag=${location.state?.tag?.label}` : 'template';
 
   const { data: categoryList, loading: categoryLoading } = useQuery(GET_HSM_CATEGORIES);
   const { data: shortCodes, loading: shortcodesLoading } = useQuery(GET_SHORTCODES, {
@@ -152,7 +152,6 @@ export const HSM = () => {
     variables,
     newShortcode,
     existingShortcode,
-    allowTemplateCategoryChange,
   };
 
   const getLanguageId = (value: any) => {
@@ -225,7 +224,6 @@ export const HSM = () => {
     buttonType: templateButtonType,
     buttons,
     hasButtons,
-    allowTemplateCategoryChange: allowCategoryChangeValue,
   }: any) => {
     let variables: any = [];
 
@@ -250,7 +248,6 @@ export const HSM = () => {
     setEditorState(bodyValue);
     setCategory(categoryValue);
     setTagId(tagIdValue);
-    setAllowTemplateCategoryChange(allowCategoryChangeValue);
     variables = getExampleValue(exampleValue);
     setVariables(variables);
     addButtonsToSampleMessage(getExampleFromBody(bodyValue, variables));
@@ -563,18 +560,6 @@ export const HSM = () => {
       skip: !isEditing,
     },
     {
-      component: Checkbox,
-      name: 'allowTemplateCategoryChange',
-      title: (
-        <Typography variant="h6" className={styles.Checkbox}>
-          Allow meta to re-categorize template?
-        </Typography>
-      ),
-      darkCheckbox: true,
-      disabled: isEditing,
-      handleChange: (value: boolean) => setAllowTemplateCategoryChange(value),
-    },
-    {
       component: AutoComplete,
       name: 'type',
       options: mediaOptions,
@@ -758,7 +743,7 @@ export const HSM = () => {
         listItemName="HSM Template"
         dialogMessage={dialogMessage}
         formFields={fields}
-        redirectionLink="template"
+        redirectionLink={backButton}
         listItem="sessionTemplate"
         icon={templateIcon}
         getLanguageId={getLanguageId}
@@ -770,7 +755,8 @@ export const HSM = () => {
         saveOnPageChange={false}
         type={mode}
         copyNotification={copyMessage}
-        backLinkButton={'/template'}
+        backLinkButton={`/${backButton}`}
+        cancelLink={backButton}
         getMediaId={getMediaId}
         entityId={params.id}
       />
