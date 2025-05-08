@@ -21,6 +21,7 @@ import { CONNECTION_RECONNECT_ATTEMPTS } from 'common/constants';
 import { Logout } from 'containers/Auth/Logout/Logout';
 import setLogs from './logs';
 import { GLIFIC_API_URL, SOCKET } from '.';
+import * as Sentry from '@sentry/react';
 
 export const cache = new InMemoryCache({
   typePolicies: {
@@ -94,7 +95,7 @@ const gqlClient = (navigate: any) => {
     if (graphQLErrors)
       graphQLErrors.map(({ message, locations, path }) => {
         // eslint-disable-next-line
-        console.log(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`);
+        Sentry.captureException(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`);
         // logged error in logflare
         return setLogs(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`, 'error');
       });
@@ -110,7 +111,7 @@ const gqlClient = (navigate: any) => {
           break;
         default:
           // eslint-disable-next-line
-          console.log(`[Network error]: ${networkError}`);
+          Sentry.captureException(`[Network error]: ${networkError}`);
           // logged error in logflare
           setLogs(`[Network error]: ${networkError}`, 'error');
       }

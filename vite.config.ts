@@ -7,7 +7,6 @@ import viteTsconfigPaths from 'vite-tsconfig-paths';
 import checker from 'vite-plugin-checker';
 import svgrPlugin from 'vite-plugin-svgr';
 import fs from 'fs';
-import nodePolyfills from 'rollup-plugin-polyfill-node';
 import { sentryVitePlugin } from '@sentry/vite-plugin';
 
 // https://vitejs.dev/config/
@@ -28,6 +27,9 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
   if (mode === 'test' && command === 'serve') {
     return defineConfig({
       // dev specific config
+      build: {
+        sourcemap: true, // Source map generation must be turned on
+      },
       plugins: plugins,
 
       optimizeDeps: {
@@ -58,6 +60,9 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
   if (command === 'serve') {
     return defineConfig({
       // dev specific config
+      build: {
+        sourcemap: true, // Source map generation must be turned on
+      },
       plugins: [...plugins, checker({ typescript: true })],
       optimizeDeps: {
         esbuildOptions: {
@@ -68,8 +73,9 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
         },
       },
       server: {
-        open: true,
+        host: 'glific.test',
         port: 3000,
+        open: 'https://glific.test:3000/',
         https: {
           key: fs.readFileSync('../glific/priv/cert/glific.test+1-key.pem'),
           cert: fs.readFileSync('../glific/priv/cert/glific.test+1.pem'),
@@ -99,25 +105,8 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
     // build specific config
     plugins: plugins,
     build: {
-      // this is needed because of this https://github.com/vitejs/vite/issues/2139#issuecomment-1405624744
-      commonjsOptions: {
-        defaultIsModuleExports(id) {
-          try {
-            const module = require(id);
-            if (module?.default) {
-              return false;
-            }
-            return 'auto';
-          } catch (error) {
-            return 'auto';
-          }
-        },
-        transformMixedEsModules: true,
-      },
       outDir: 'build',
-      rollupOptions: {
-        plugins: [nodePolyfills('buffer', 'process')],
-      },
+      sourcemap: true,
     },
     resolve: { alias: { util: 'util/', stream: 'stream-browserify' } },
   });
