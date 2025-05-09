@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect } from 'react';
-import { useLocation, redirect } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import axios from 'axios';
 import * as Yup from 'yup';
 import { useLazyQuery } from '@apollo/client';
@@ -22,6 +22,7 @@ import setLogs from 'config/logs';
 import { GET_ORGANIZATION_SERVICES } from 'graphql/queries/Organization';
 import { Auth } from '../Auth';
 import { setErrorMessage } from 'common/notification';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
 
 const notApprovedMsg = 'Your account is not approved yet. Please contact your organization admin.';
 
@@ -30,6 +31,7 @@ export const Login = () => {
   const [authError, setAuthError] = useState('');
   const { i18n, t } = useTranslation();
   const location: any = useLocation();
+  const navigate = useNavigate();
 
   // function to unauthorize access
   const accessDenied = () => {
@@ -71,12 +73,10 @@ export const Login = () => {
           i18n.changeLanguage(userData.currentUser.user?.language.locale);
         }
 
-        if (location.state?.to) {
-          redirect(location.state.to);
-        } else {
-          // redirect to chat
-          redirect('/chat');
-        }
+        const targetPath = location.state?.to || '/chat';
+        setTimeout(() => {
+          navigate(targetPath, { replace: true });
+        }, 500);
       }
     }
     if (userError) {

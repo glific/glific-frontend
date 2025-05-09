@@ -74,7 +74,7 @@ vi.mock('common/notification', async (importOriginal) => {
 
 const mockedUsedNavigate = vi.fn();
 vi.mock('react-router', async () => ({
-  ...(await vi.importActual('react-router-dom')),
+  ...(await vi.importActual('react-router')),
   useNavigate: () => mockedUsedNavigate,
 }));
 
