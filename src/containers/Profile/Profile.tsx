@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 
 import ProfileIcon from 'assets/images/icons/Contact/Profile.svg?react';
 import { CONTACT_STATUS, PROVIDER_STATUS } from 'common/constants';

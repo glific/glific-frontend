@@ -39,7 +39,7 @@ import { FILTER_TEMPLATES, GET_TEMPLATES_COUNT } from 'graphql/queries/Template'
 
 import styles from './HSMList.module.css';
 import { ProviderContext } from 'context/session';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router';
 
 const templateIcon = <TemplateIcon className={styles.TemplateIcon} />;
 

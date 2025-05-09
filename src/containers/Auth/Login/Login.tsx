@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router';
 import axios from 'axios';
 import * as Yup from 'yup';
 import { useLazyQuery } from '@apollo/client';
@@ -22,6 +22,7 @@ import setLogs from 'config/logs';
 import { GET_ORGANIZATION_SERVICES } from 'graphql/queries/Organization';
 import { Auth } from '../Auth';
 import { setErrorMessage } from 'common/notification';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
 
 const notApprovedMsg = 'Your account is not approved yet. Please contact your organization admin.';
 
@@ -29,8 +30,8 @@ export const Login = () => {
   const { setAuthenticated } = useContext(SessionContext);
   const [authError, setAuthError] = useState('');
   const { i18n, t } = useTranslation();
-  const navigate = useNavigate();
   const location: any = useLocation();
+  const navigate = useNavigate();
 
   // function to unauthorize access
   const accessDenied = () => {
@@ -72,12 +73,10 @@ export const Login = () => {
           i18n.changeLanguage(userData.currentUser.user?.language.locale);
         }
 
-        if (location.state?.to) {
-          navigate(location.state.to);
-        } else {
-          // redirect to chat
-          navigate('/chat');
-        }
+        const targetPath = location.state?.to || '/chat';
+        setTimeout(() => {
+          navigate(targetPath, { replace: true });
+        }, 500);
       }
     }
     if (userError) {
@@ -98,6 +97,7 @@ export const Login = () => {
       name: 'password',
       type: 'password',
       placeholder: t('Password'),
+      autoComplete: 'on',
     },
   ];
 
@@ -131,7 +131,7 @@ export const Login = () => {
         } else {
           setAuthError('Something went wrong. Please contact the Glific team.');
         }
-        setLogs(error, 'error');
+        setLogs(error, 'error', true);
       });
   };
 

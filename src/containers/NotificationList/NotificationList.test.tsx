@@ -1,5 +1,5 @@
 import { render, waitFor, fireEvent, screen, cleanup } from '@testing-library/react';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router';
 import { MockedProvider } from '@apollo/client/testing';
 
 import {
@@ -51,8 +51,8 @@ const notifications = (mock?: any) => {
 };
 
 const mockedUsedNavigate = vi.fn();
-vi.mock('react-router-dom', async () => ({
-  ...(await vi.importActual('react-router-dom')),
+vi.mock('react-router', async () => ({
+  ...(await vi.importActual('react-router')),
   useNavigate: () => mockedUsedNavigate,
 }));
 

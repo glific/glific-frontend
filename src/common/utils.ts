@@ -61,7 +61,7 @@ const validateMediaMethod = (URL: string, attachmentType: string, allowStickers:
       })
       .catch((error) => {
         // add log's
-        setLogs(`attachmentType:${attachmentType} URL:${URL}`, 'info');
+        setLogs(`attachmentType:${attachmentType} URL:${URL} error:${error}`, 'info');
         setLogs(error, 'error');
       });
   });
@@ -77,10 +77,10 @@ const checkSessionValidityMethod = async () => {
       setAuthSession(response.data.data);
       return true;
     }
-    setLogs(`Token renewal failed: No response data`, 'error');
+    setLogs(`Token renewal failed: No response data`, 'error', true);
     return false;
   } catch (_err) {
-    setLogs(`Token renewal failed: ${_err} `, 'error');
+    setLogs(`Token renewal failed: ${_err} `, 'error', true);
     // error indicates session has expired or invalid tokens
     return false;
   }
@@ -106,8 +106,7 @@ export const copyToClipboardMethod = (text: string) => {
 export { copyToClipboardMethod as copyToClipboard };
 
 export const addLogsMethod = (event: string, logData: any) => {
-  setLogs(event, 'info');
-  setLogs(logData, 'info');
+  setLogs(`${event} with data ${JSON.stringify(logData)}`, 'info', true);
 };
 
 export const downloadFile = (url: string, filename: string) => {

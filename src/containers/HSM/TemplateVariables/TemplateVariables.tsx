@@ -56,7 +56,7 @@ export const TemplateVariables = ({
         <div className={styles.Variables}>
           {variables.length !== 0 && <h2>Set custom variable values for the message</h2>}
           {variables.map((variable: any, index: number) => (
-            <div key={variable.id} className={styles.VariableContainer}>
+            <div data-testid="variable" key={variable.id} className={styles.VariableContainer}>
               <div className={styles.Variable} key={index}>
                 <OutlinedInput
                   sx={{

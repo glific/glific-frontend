@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Toolbar, Typography, Popper, Fade, Paper, Button, ClickAwayListener, IconButton } from '@mui/material';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router';
 import { useMutation, useLazyQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import { useQuery } from '@apollo/client';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 
 import StaffManagementIcon from 'assets/images/icons/StaffManagement/Active.svg?react';
