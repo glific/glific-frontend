@@ -12,6 +12,7 @@ import {
   CONVERSATION_MOCKS,
   conversationMock,
   createAndSendMessageMutation,
+  getContactStatusQuery,
   markAsReadMock,
   mocksWithConversation,
   sendMessageInWaGroup,
@@ -22,7 +23,7 @@ import { getCollectionInfo } from 'mocks/Collection';
 import { userEvent } from '@testing-library/user-event';
 import { setNotification } from 'common/notification';
 import { waGroup, waGroupcollection } from 'mocks/Groups';
-import { getContactSearchQuery } from 'mocks/Search';
+import { getBlockedContactSearchQuery, getContactSearchQuery } from 'mocks/Search';
 import { getWhatsAppManagedPhonesStatusMock } from 'mocks/StatusBar';
 import { TEMPLATE_MOCKS } from 'mocks/Template';
 
@@ -44,6 +45,16 @@ const mockIntersectionObserver = class {
 };
 
 (window as any).IntersectionObserver = mockIntersectionObserver;
+
+const mockedUsedNavigate = vi.fn();
+vi.mock('react-router-dom', async () => ({
+  ...(await vi.importActual('react-router-dom')),
+  useNavigate: () => mockedUsedNavigate,
+}));
+
+beforeEach(() => {
+  vi.clearAllMocks();
+});
 
 const messages = (limit: number, skip: number) =>
   new Array(limit).fill(null).map((val: any, index: number) => ({
@@ -249,6 +260,7 @@ const mocks = [
   loadMoreQuery(20, 20, { id: '2' }),
   getCollectionInfo({ id: '2' }),
   getCollectionInfo({ id: '5' }),
+  getCollectionInfo({ id: '300' }),
   conversationMock({
     contactOpts: { limit: 1 },
     messageOpts: { limit: 20, offset: 0 },
@@ -259,6 +271,24 @@ const mocks = [
     messageOpts: { limit: 20, offset: 0 },
     filter: { id: '2', searchGroup: true },
   }),
+  conversationMock(
+    {
+      contactOpts: { limit: 1 },
+      messageOpts: { limit: 20, offset: 0 },
+      filter: { id: '300', searchGroup: true },
+    },
+    [
+      {
+        contact: null,
+        group: {
+          id: '300',
+          label: 'group 300',
+        },
+        id: 'group_300',
+        messages: [],
+      },
+    ]
+  ),
   createAndSendMessageMutation({
     body: 'hey',
     senderId: 1,
@@ -276,6 +306,7 @@ const mocks = [
   loadMoreQuery(0, 40, { id: '2', searchGroup: true }),
   markAsReadMock('2'),
   markAsReadMock('3'),
+  markAsReadMock('5'),
   getWhatsAppManagedPhonesStatusMock,
   ...TEMPLATE_MOCKS,
   createMediaMessageMock({
@@ -405,6 +436,21 @@ test('Contact: if not cache', async () => {
 
   await waitFor(() => {
     expect(screen.getByTestId('beneficiaryName')).toHaveTextContent('New Contact');
+  });
+});
+
+test('Collection: if not cache', async () => {
+  const chatMessages = (
+    <MemoryRouter>
+      <MockedProvider mocks={mocks} cache={cache}>
+        <ChatMessages collectionId="300" />
+      </MockedProvider>
+    </MemoryRouter>
+  );
+  render(chatMessages);
+
+  await waitFor(() => {
+    expect(screen.getByTestId('beneficiaryName')).toHaveTextContent('group 300');
   });
 });
 
@@ -724,5 +770,20 @@ test('should show error if send message fails', async () => {
   fireEvent.click(getByTestId('sendButton'), { force: true });
   await waitFor(() => {
     expect(setNotification).toHaveBeenCalled();
+  });
+});
+
+test('Blocked contacts should redirect to chat page', async () => {
+  render(
+    <MemoryRouter>
+      <MockedProvider mocks={[...mocks, getBlockedContactSearchQuery, getContactStatusQuery]} cache={cache}>
+        <ChatMessages entityId="5" />
+      </MockedProvider>
+    </MemoryRouter>
+  );
+
+  await waitFor(() => {
+    expect(mockedUsedNavigate).toHaveBeenCalledWith('/chat');
+    expect(setNotification).toHaveBeenCalledWith('The contact is blocked', 'warning');
   });
 });

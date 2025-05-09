@@ -142,8 +142,6 @@ describe('Add mode', () => {
 
     fireEvent.click(screen.getByTestId('bold-icon'));
 
-    fireEvent.click(screen.getByText('Allow meta to re-categorize template?'));
-
     fireEvent.click(screen.getByTestId('italic-icon'));
     fireEvent.click(screen.getByTestId('strikethrough-icon'));
 

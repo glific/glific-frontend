@@ -2,7 +2,7 @@ import { useCallback, useState, useEffect } from 'react';
 import { useQuery, useMutation, useLazyQuery, useApolloClient } from '@apollo/client';
 import { CircularProgress, Container } from '@mui/material';
 import dayjs from 'dayjs';
-import { Navigate, useLocation } from 'react-router';
+import { Navigate, useLocation, useNavigate } from 'react-router';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useTranslation } from 'react-i18next';
 
@@ -16,7 +16,6 @@ import {
   SEARCH_QUERY_VARIABLES,
   COLLECTION_SEARCH_QUERY_VARIABLES,
   DEFAULT_MESSAGE_LIMIT,
-  DEFAULT_ENTITY_LIMIT,
   DEFAULT_MESSAGE_LOADMORE_LIMIT,
   ISO_DATE_FORMAT,
   GROUP_QUERY_VARIABLES,
@@ -40,6 +39,7 @@ import {
   updateCacheQuery,
   updateGroupConversationsCache,
 } from 'services/GroupMessageService';
+import { GET_CONTACT_STATUS } from 'graphql/queries/Contact';
 
 export interface ChatMessagesProps {
   entityId?: number | string | null;
@@ -52,6 +52,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
   const urlString = new URL(window.location.href);
   const location = useLocation();
   const client = useApolloClient();
+  const navigate = useNavigate();
 
   const groups: boolean = location.pathname.includes('group');
   const chatType = groups ? 'waGroup' : 'contact';
@@ -75,6 +76,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
   const [showJumpToLatest, setShowJumpToLatest] = useState(false);
   const [conversationInfo, setConversationInfo] = useState<any>({});
   const [collectionVariables, setCollectionVariables] = useState<any>({});
+
   const { t } = useTranslation();
   let dialogBox;
 
@@ -82,6 +84,10 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
 
   // get the conversations stored from the cache
   let queryVariables = groups ? GROUP_QUERY_VARIABLES : SEARCH_QUERY_VARIABLES;
+
+  const [getContactStatus] = useLazyQuery(GET_CONTACT_STATUS, {
+    variables: { id: entityId },
+  });
 
   useEffect(() => {
     setShowLoadMore(true);
@@ -398,8 +404,21 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
 
         fetchMore({
           variables,
-          updateQuery: (prev: any, { fetchMoreResult }: any) =>
-            updateCacheQuery(prev, fetchMoreResult, entityId, collectionId, chatType),
+          updateQuery: (prev: any, { fetchMoreResult }: any) => {
+            if (fetchMoreResult.search && fetchMoreResult.search.length) {
+              return updateCacheQuery(prev, fetchMoreResult, entityId, collectionId, chatType);
+            } else {
+              getContactStatus().then(({ data }) => {
+                if (data && data.contact && data.contact.contact && data.contact.contact.status) {
+                  const status = data.contact.contact.status;
+                  if (status === 'BLOCKED') {
+                    setNotification('The contact is blocked', 'warning');
+                    navigate('/chat');
+                  }
+                }
+              });
+            }
+          },
         });
       }
       // lets not get from cache if parameter is present
@@ -427,30 +446,37 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
   const findCollectionInAllConversations = () => {
     // loop through the cached conversations and find if collection exists
     if (allConversations && allConversations.search) {
-      if (collectionId === -1) {
-        conversationIndex = 0;
-        setConversationInfo(allConversations.search);
+      allConversations.search.map((conversation: any, index: any) => {
+        if (conversation?.group?.id === collectionId?.toString()) {
+          conversationIndex = index;
+          setConversationInfo(conversation);
+        }
+        return null;
+      });
+
+      // if conversation is not present then fetch the collection
+      if (conversationIndex < 0) {
+        if (!conversationLoad || allConversations.search[0]?.group?.id !== collectionId) {
+          const variables = getVariables(
+            { limit: 1 },
+            {
+              limit: DEFAULT_MESSAGE_LIMIT,
+              offset: messageParameterOffset,
+            },
+            { filter: { id: collectionId, searchGroup: true } },
+            groups
+          );
+          addLogs(`if conversation is not present then search for contact-${entityId}`, variables);
+
+          fetchMore({
+            variables,
+            updateQuery: (prev: any, { fetchMoreResult }: any) =>
+              updateCacheQuery(prev, fetchMoreResult, entityId, collectionId, chatType),
+          });
+        }
+        // lets not get from cache if parameter is present
       } else {
         updateConversationInfo('group', collectionId);
-      }
-    }
-
-    // if conversation is not present then fetch the collection
-    if (conversationIndex < 0 && !groups) {
-      if (!conversationLoad || (allConversations && allConversations.search[0].group.id !== collectionId)) {
-        const variables = getVariables(
-          { limit: DEFAULT_ENTITY_LIMIT },
-          { limit: DEFAULT_MESSAGE_LIMIT, offset: 0 },
-          { filter: { id: collectionId, searchGroup: true } },
-          groups
-        );
-
-        addLogs(`if conversation is not present then search for collection-${collectionId}`, variables);
-        fetchMore({
-          variables,
-          updateQuery: (prev: any, { fetchMoreResult }: any) =>
-            updateCacheQuery(prev, fetchMoreResult, entityId, collectionId, chatType),
-        });
       }
     }
   };

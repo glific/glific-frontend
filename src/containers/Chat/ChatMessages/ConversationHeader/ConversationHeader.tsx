@@ -138,6 +138,7 @@ export const ConversationHeader = ({
     onCompleted: () => {
       setShowBlockDialog(false);
       setNotification(t('Contact blocked successfully.'));
+      navigate('/chat');
     },
     refetchQueries: [{ query: SEARCH_QUERY, variables: SEARCH_QUERY_VARIABLES }],
     onError: () => {
