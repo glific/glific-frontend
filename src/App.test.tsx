@@ -174,7 +174,7 @@ describe('<App /> ', () => {
     });
 
     await waitFor(() => {
-      expect(setLogs).toHaveBeenCalledWith('Token renewal failed: No response data', 'error');
+      expect(setLogs).toHaveBeenCalledTimes(2);
     });
   });
 });

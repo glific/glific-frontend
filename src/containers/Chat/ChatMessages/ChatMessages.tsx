@@ -671,7 +671,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
   const messageListContainr = (
     <Container
       className={`${styles.MessageList} messageContainer `}
-      style={{ height: `calc(100% - 215px` }}
+      style={{ height: `calc(100% - 215px)` }}
       maxWidth={false}
       data-testid="messageContainer"
     >

@@ -1,4 +1,5 @@
 import { Container } from '@mui/material';
+import * as Sentry from '@sentry/react';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import setLogs from 'config/logs';
 import { Component } from 'react';
@@ -20,7 +21,7 @@ class ErrorBoundary extends Component<any, any> {
 
   static getDerivedStateFromError(error: any) {
     const errorString = JSON.stringify(error);
-    setLogs(errorString, 'error');
+    setLogs(errorString, 'error', true);
 
     // Update state so the next render will show the fallback UI.
     return { hasError: true };
@@ -28,8 +29,8 @@ class ErrorBoundary extends Component<any, any> {
 
   componentDidCatch(error: any, errorInfo: any) {
     const errorString = JSON.stringify(error);
-    setLogs(errorString, 'error');
-    setLogs(errorInfo, 'error');
+    setLogs(errorString, 'error', true);
+    setLogs(errorInfo, 'error', true);
     // You can also log the error to an error reporting service
     // logErrorToMyService(error, errorInfo);
   }
@@ -40,29 +41,31 @@ class ErrorBoundary extends Component<any, any> {
     if (hasError) {
       // You can render any custom fallback UI
       return (
-        <Container>
-          <div data-testid="errorMessage">
-            <DialogBox
-              title="Error !"
-              colorCancel="warning"
-              handleOk={() => {
-                window.location.reload();
-              }}
-              handleCancel={() => {
-                navigate('/logout/user');
-              }}
-              buttonOk="Retry"
-              buttonCancel="Logout"
-              alignButtons="center"
-              contentAlign="center"
-            >
-              <div className={styles.Dialog}>
-                Sorry, An error occurred!
-                <br /> Please contact the team for support.
-              </div>
-            </DialogBox>
-          </div>
-        </Container>
+        <Sentry.ErrorBoundary>
+          <Container>
+            <div data-testid="errorMessage">
+              <DialogBox
+                title="Error !"
+                colorCancel="warning"
+                handleOk={() => {
+                  window.location.reload();
+                }}
+                handleCancel={() => {
+                  navigate('/logout/user');
+                }}
+                buttonOk="Retry"
+                buttonCancel="Logout"
+                alignButtons="center"
+                contentAlign="center"
+              >
+                <div className={styles.Dialog}>
+                  Sorry, An error occurred!
+                  <br /> Please contact the team for support.
+                </div>
+              </DialogBox>
+            </div>
+          </Container>
+        </Sentry.ErrorBoundary>
       );
     }
 

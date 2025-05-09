@@ -29,6 +29,7 @@ import {
 import * as Notification from 'common/notification';
 
 window.location = { assign: vi.fn() } as any;
+window.location.reload = vi.fn();
 
 vi.mock('react-router-dom', async () => {
   return {

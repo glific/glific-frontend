@@ -1,60 +1,25 @@
-import pino from 'pino';
-import { createPinoBrowserSend, createWriteStream } from 'pino-logflare';
-import { LOGFLARE_API, LOGFLARE_SOURCE } from '.';
 import { getUserSession } from 'services/AuthService';
+import * as Sentry from '@sentry/react';
 
-const setLogs = (message: any, type: string) => {
+const setLogs = (message: any, type: Sentry.SeverityLevel, event: boolean = false) => {
   const orgId = getUserSession('organizationId');
   const userId = getUserSession('id');
 
-  let logger: any;
+  let logMessage;
+  if (typeof message === 'object') {
+    message = JSON.stringify(message);
+  }
 
-  if (LOGFLARE_API && LOGFLARE_SOURCE) {
-    const apiKey = LOGFLARE_API;
-    const sourceToken = LOGFLARE_SOURCE;
-    // create pino-logflare stream
-    const stream = createWriteStream({
-      apiKey,
-      sourceToken,
+  logMessage = `org_id: ${orgId} user_id: ${userId} [${type}] ${message}`;
+
+  if (event) {
+    Sentry.captureMessage(logMessage, type);
+  } else {
+    Sentry.addBreadcrumb({
+      category: 'info',
+      level: 'info',
+      message: logMessage,
     });
-
-    // create pino-logflare browser stream
-    const send = createPinoBrowserSend({
-      apiKey,
-      sourceToken,
-    });
-
-    // create pino logger
-    logger = pino(
-      {
-        browser: {
-          transmit: {
-            // @ts-ignore
-            send,
-          },
-        },
-      },
-      stream
-    );
-
-    let logMessage;
-    if (typeof message === 'object') {
-      message = JSON.stringify(message);
-    }
-
-    logMessage = `org_id: ${orgId} user_id: ${userId} [${type}] ${message}`;
-
-    // log some events
-    switch (type) {
-      case 'info':
-        logger.info(logMessage);
-        break;
-      case 'error':
-        logger.error(logMessage);
-        break;
-      default:
-        break;
-    }
   }
 };
 
