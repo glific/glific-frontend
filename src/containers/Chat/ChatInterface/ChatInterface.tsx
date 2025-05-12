@@ -45,6 +45,7 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
   const location = useLocation();
   const params = useParams();
   const [value, setValue] = useState(tabs[0].link);
+  const [hasSearchParams, setHasSearchParams] = useState(false);
 
   let selectedContactId = params.contactId;
   let selectedCollectionId: any = params.collectionId;
@@ -132,13 +133,19 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
     } else if (selectedContactId && !savedSearches) {
       // let's enable simulator only when contact tab is shown
 
-      listingContent = <ChatConversations entityId={simulatorId > 0 ? simulatorId : selectedContactId} />;
+      listingContent = (
+        <ChatConversations
+          entityId={simulatorId > 0 ? simulatorId : selectedContactId}
+          setHasSearchParams={setHasSearchParams}
+        />
+      );
 
       heading = 'Contacts';
     } else if (savedSearches) {
       listingContent = <SavedSearches />;
       heading = 'Saved searches';
     }
+    console.log(hasSearchParams);
 
     chatInterface = (
       <>
@@ -146,6 +153,7 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
           <ChatMessages
             entityId={simulatorId > 0 ? simulatorId : selectedContactId}
             collectionId={selectedCollectionId}
+            hasSearchParams={hasSearchParams}
           />
         </div>
 

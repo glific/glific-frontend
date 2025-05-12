@@ -46,9 +46,10 @@ export interface ChatMessagesProps {
   collectionId?: number | string | null;
   phoneId?: any;
   setPhonenumber?: any;
+  hasSearchParams?: boolean;
 }
 
-export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesProps) => {
+export const ChatMessages = ({ entityId, collectionId, phoneId, hasSearchParams = false }: ChatMessagesProps) => {
   const urlString = new URL(window.location.href);
   const location = useLocation();
   const client = useApolloClient();
@@ -753,6 +754,15 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
 
   const isSimulatorProp = groups ? false : isSimulator(conversationInfo.contact?.phone);
 
+  const showCurrentMesssage = (
+    <div>
+      <p>
+        You are viewing older messages. Click here to<span> Jump to latest</span>
+      </p>
+    </div>
+  );
+  console.log(hasSearchParams);
+
   if (entityId && conversationInfo[chatType]) {
     const displayName = groups ? conversationInfo.waGroup.label : getDisplayName(conversationInfo[chatType]);
 
@@ -819,6 +829,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
       {topChatBar}
       {messageListContainr}
       {chatInputSection}
+      {hasSearchParams && showCurrentMesssage}
     </Container>
   );
 };
