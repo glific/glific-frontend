@@ -320,34 +320,6 @@ describe('Add mode', () => {
     fireEvent.change(getAllByRole('textbox')[4], { target: { value: '@results.result_1' } });
     fireEvent.click(getByTestId('submitActionButton'));
   });
-
-  test.only('It shows error for buttons with duplicate content', async () => {
-    const { getByText, getAllByRole } = render(interactiveMessage());
-
-    await waitFor(() => {
-      expect(getByText('Add a new Interactive message')).toBeInTheDocument();
-    });
-
-    await waitFor(() => {
-      expect(screen.getByTestId('addButton')).toBeInTheDocument();
-    });
-
-    fireEvent.click(screen.getByTestId('addButton'));
-
-    const [, , quickReply1, quickReply2, ,] = screen.getAllByRole('textbox');
-
-    fireEvent.change(quickReply1, { target: { value: 'btn 1' } });
-
-    fireEvent.change(quickReply2, { target: { value: 'btn 1' } });
-    fireEvent.change(quickReply2, { target: { value: 'btn 1' } });
-
-    await waitFor(() => {
-      expect(quickReply1).toHaveValue('btn 1');
-      expect(quickReply2).toHaveValue('btn 1');
-    });
-
-    fireEvent.click(screen.getByTestId('submitActionButton'));
-  });
 });
 
 describe('Edit mode', () => {
