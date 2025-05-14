@@ -86,7 +86,7 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
 
   // let's handle the case when the type is collection  then we set the first collection
   // as the selected collection
-  if (!selectedContactId && collectionType && data && data.search.length !== 0) {
+  if (!selectedContactId && !selectedCollectionId && collectionType && data && data.search.length !== 0) {
     if (data.search[0].group) {
       selectedCollectionId = data.search[0].group.id;
       selectedContactId = '';
