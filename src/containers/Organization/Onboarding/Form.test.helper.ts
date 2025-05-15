@@ -32,7 +32,7 @@ const orgDetails = {
   has_submitted: false,
 };
 
-const payemntDetails = {
+const paymentDetails = {
   finance_poc: {
     firstName: 'finance poc firstName',
     lastName: 'finance poc lastName',
@@ -56,24 +56,31 @@ export const setRegistrationData = (activeStep: Number) => {
       submitted: true,
     },
   };
-  if (activeStep == 0) {
-    registrationData = {
-      ...registrationData,
-      platformDetails,
-    };
-  } else if (activeStep == 1) {
-    registrationData = {
-      ...registrationData,
-      platformDetails,
-      orgDetails,
-    };
-  } else if (activeStep === 2) {
-    registrationData = {
-      ...registrationData,
-      platformDetails,
-      orgDetails,
-      payemntDetails,
-    };
+
+  switch (activeStep) {
+    case 0:
+      registrationData = {
+        ...registrationData,
+        platformDetails,
+      };
+      break;
+    case 1:
+      registrationData = {
+        ...registrationData,
+        platformDetails,
+        orgDetails,
+      };
+      break;
+    case 2:
+      registrationData = {
+        ...registrationData,
+        platformDetails,
+        orgDetails,
+        paymentDetails,
+      };
+      break;
+    default:
+      break;
   }
 
   localStorage.setItem('registrationData', JSON.stringify(registrationData));
