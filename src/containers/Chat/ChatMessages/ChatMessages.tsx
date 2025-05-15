@@ -761,7 +761,6 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, hasSearchParams 
       </p>
     </div>
   );
-  console.log(hasSearchParams);
 
   if (entityId && conversationInfo[chatType]) {
     const displayName = groups ? conversationInfo.waGroup.label : getDisplayName(conversationInfo[chatType]);

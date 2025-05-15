@@ -134,7 +134,6 @@ export const ChatConversations = ({
   };
 
   useEffect(() => {
-    console.log(Object.keys(searchParam).length);
     if (Object.keys(searchParam).length !== 0) {
       setHasSearchParams(true);
     }

@@ -145,7 +145,6 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
       listingContent = <SavedSearches />;
       heading = 'Saved searches';
     }
-    console.log(hasSearchParams);
 
     chatInterface = (
       <>
