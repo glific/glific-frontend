@@ -95,6 +95,18 @@ test('it should fill the Organization page', async () => {
     expect(getByTestId('heading')).toHaveTextContent('Organization');
   });
 
+  fireEvent.click(screen.getByTestId('back-button'));
+
+  await waitFor(() => {
+    expect(getByTestId('heading')).toHaveTextContent('Chatbot Details');
+  });
+
+  fireEvent.click(screen.getByTestId('submitActionButton'));
+
+  await waitFor(() => {
+    expect(getByTestId('heading')).toHaveTextContent('Organization');
+  });
+
   const inputFieldsOrgdetails = getAllByRole('textbox');
 
   const [line1, line2, city, state, country, pincode, gstin] = inputFieldsOrgdetails;
@@ -120,6 +132,18 @@ test('it should fill the Billing page', async () => {
   setRegistrationData(1);
 
   const { getByTestId, getAllByRole, getAllByTestId } = render(renderForm);
+  await waitFor(() => {
+    expect(getByTestId('heading')).toHaveTextContent('Billing');
+  });
+
+  fireEvent.click(screen.getByTestId('back-button'));
+
+  await waitFor(() => {
+    expect(getByTestId('heading')).toHaveTextContent('Organization');
+  });
+
+  fireEvent.click(screen.getByTestId('submitActionButton'));
+
   await waitFor(() => {
     expect(getByTestId('heading')).toHaveTextContent('Billing');
   });
@@ -214,6 +238,13 @@ test('it should disgree and send an email', async () => {
   });
 
   const checkboxes = getAllByRole('checkbox');
+  fireEvent.click(checkboxes[0]);
+
+  await waitFor(() => {
+    expect(screen.getByText('Terms and conditions')).toBeInTheDocument();
+  });
+
+  fireEvent.keyDown(screen.getByText('Terms and conditions'), { key: 'Escape', code: 'escape' });
   fireEvent.click(checkboxes[0]);
 
   await waitFor(() => {
