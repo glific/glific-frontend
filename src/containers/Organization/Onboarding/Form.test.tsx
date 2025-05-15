@@ -119,7 +119,7 @@ test('it should fill the Organization page', async () => {
 test('it should fill the Billing page', async () => {
   setRegistrationData(1);
 
-  const { getByTestId, getAllByRole, getAllByTestId, getByText } = render(renderForm);
+  const { getByTestId, getAllByRole, getAllByTestId } = render(renderForm);
   await waitFor(() => {
     expect(getByTestId('heading')).toHaveTextContent('Billing');
   });

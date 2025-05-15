@@ -134,7 +134,7 @@ export const ReachOutToUs = ({ open, setOpen, handleStepChange, saveData }: Reac
       </div>
       {success ? (
         <div className={styles.Success}>
-          <h2 data-testid="confirmation-msg">Thankyou for reaching out to us! We will get back to you shortly.</h2>
+          <h2>Thankyou for reaching out to us! We will get back to you shortly.</h2>
         </div>
       ) : (
         <FormLayout

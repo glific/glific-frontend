@@ -74,13 +74,6 @@ export const setRegistrationData = (activeStep: Number) => {
       orgDetails,
       payemntDetails,
     };
-  } else {
-    registrationData = {
-      ...registrationData,
-      platformDetails,
-      orgDetails,
-      payemntDetails,
-    };
   }
 
   localStorage.setItem('registrationData', JSON.stringify(registrationData));
