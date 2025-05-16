@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { getIn } from 'formik';
+import { Dayjs } from 'dayjs';
 import styles from './Calendar.module.css';
 import { MONTH_DATE_FORMAT } from 'common/constants';
 
@@ -32,7 +33,7 @@ export const Calendar = ({
   const dateValue = field.value ? field.value : null;
   const [open, setOpen] = useState(false);
 
-  const handleDateChange = (date: Date | null | string) => {
+  const handleDateChange = (date: Dayjs | null | string) => {
     if (date) {
       if (date.toString() !== 'Invalid Date') {
         setFieldValue(field.name, date);

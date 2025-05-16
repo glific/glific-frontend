@@ -1,6 +1,6 @@
 import { LocalizationProvider, DateTimePicker as Picker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import { getIn } from 'formik';
 
@@ -32,7 +32,7 @@ export const DateTimePicker = ({
   const hasError = touchedVal && errorText !== undefined;
   const dateValue = field.value ? field.value : null;
 
-  const handleDateChange = (date: Date | null | string) => {
+  const handleDateChange = (date: Dayjs | null | string) => {
     const value = date && date.toString() !== 'Invalid Date' ? dayjs(date) : null;
     setFieldValue(field.name, value);
     if (onChange) onChange(value);
