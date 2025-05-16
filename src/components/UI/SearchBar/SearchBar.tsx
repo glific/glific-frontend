@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { InputBase, IconButton, InputAdornment } from '@mui/material';
+import { InputBase, IconButton, InputAdornment, Tooltip } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useTranslation } from 'react-i18next';
 
 import searchIcon from 'assets/images/icons/Search/Desktop.svg';
 import search from 'assets/images/icons/Search/Search.svg';
-import AdvancedSearch from 'assets/images/icons/AdvancedSearch.svg?react';
+import AdvancedSearch from 'assets/images/icons/AdvancedSearch';
 import styles from './SearchBar.module.css';
 import Track from 'services/TrackService';
 
@@ -66,17 +66,19 @@ export const SearchBar = ({
   if (endAdornment) {
     endAdornmentInput = (
       <InputAdornment position="end">
-        <IconButton
-          disableFocusRipple
-          aria-label="toggle password visibility"
-          onClick={(e: any) => {
-            Track('Advanced search');
-            handleClick(e, 'search', 'update');
-          }}
-          className={styles.FilterIcon}
-        >
-          <AdvancedSearch data-testid="advanced-search-icon" />
-        </IconButton>
+        <Tooltip title="Filter">
+          <IconButton
+            disableFocusRipple
+            aria-label="toggle password visibility"
+            onClick={(e: any) => {
+              Track('Advanced search');
+              handleClick(e, 'search', 'update');
+            }}
+            className={styles.FilterIcon}
+          >
+            <AdvancedSearch color={searchMode ? '#119656' : null} data-testid="advanced-search-icon" />
+          </IconButton>
+        </Tooltip>
       </InputAdornment>
     );
   }

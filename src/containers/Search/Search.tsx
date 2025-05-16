@@ -22,6 +22,7 @@ import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { getObject } from 'common/utils';
 import styles from './Search.module.css';
 import { searchInfo } from 'common/HelpData';
+import { useLocation } from 'react-router';
 
 export interface SearchProps {
   type?: string;
@@ -31,6 +32,7 @@ export interface SearchProps {
   searchParam?: any;
   setState?: any;
   searchId?: string | null;
+  setSearchParam?: Function;
 }
 
 const getPayload = (payload: any) => {
@@ -103,7 +105,7 @@ const queries = {
   deleteItemQuery: DELETE_SEARCH,
 };
 
-export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
+export const Search = ({ type, search, searchId, setSearchParam, ...props }: SearchProps) => {
   const { searchParam } = props;
   const [shortcode, setShortcode] = useState('');
   const [label, setLabel] = useState('');
@@ -120,6 +122,8 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
   const [formFields, setFormFields] = useState<any>([]);
   const [button, setButton] = useState<string>('Save');
   const { t } = useTranslation();
+  const location = useLocation();
+  const chatFilters = location.pathname.includes('chat');
 
   const validation = {
     shortcode: Yup.string().required(t('Title is required.')).max(20, t('Title is too long.')),
@@ -127,6 +131,7 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
   };
 
   const dialogMessage = t("You won't be able to use this search again.");
+  const customStyles = type ? [styles.FormSearch] : [styles.Form];
 
   const states = {
     shortcode,
@@ -437,8 +442,8 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
   const saveHandler = (saveData: any) => {
     if (props.handleSave && saveData.updateSavedSearch) props.handleSave(saveData.updateSavedSearch);
   };
-  let dialog;
 
+  let dialog;
   if (infoDialog) {
     dialog = (
       <DialogBox
@@ -467,7 +472,22 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
     );
   }
 
-  const customStyles = type ? [styles.FormSearch] : [styles.Form];
+  const resetFilters = () => {
+    setShortcode('');
+    setLabel('');
+    setTerm('');
+    setIncludeGroups([]);
+    setIncludeUsers([]);
+    setIncludeLabels([]);
+    setdateFrom(null);
+    setdateTo(null);
+    setUseExpression(false);
+    setdateFromExpression('');
+    setdateToExpression('');
+    if (setSearchParam) {
+      setSearchParam({});
+    }
+  };
 
   return (
     <>
@@ -496,6 +516,22 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
         afterSave={saveHandler}
         helpData={searchInfo}
         backLinkButton="/search"
+        skipCancel={chatFilters}
+        buttonState={
+          chatFilters
+            ? {
+                styles: styles.Buttons,
+              }
+            : undefined
+        }
+        additionalAction={
+          chatFilters
+            ? {
+                label: 'Reset Filters',
+                action: resetFilters,
+              }
+            : undefined
+        }
       />
     </>
   );

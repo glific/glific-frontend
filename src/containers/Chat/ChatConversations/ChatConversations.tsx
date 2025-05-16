@@ -21,9 +21,15 @@ export interface ChatConversationsProps {
   entityId?: number | string;
   phonenumber?: any;
   filterComponent?: any;
+  setHasSearchParams?: any;
 }
 
-export const ChatConversations = ({ entityId, phonenumber, filterComponent }: ChatConversationsProps) => {
+export const ChatConversations = ({
+  entityId,
+  phonenumber,
+  filterComponent,
+  setHasSearchParams,
+}: ChatConversationsProps) => {
   // get the conversations stored from the cache
   const [searchVal, setSearchVal] = useState<any>();
   const [searchParam, setSearchParam] = useState<any>({});
@@ -127,6 +133,12 @@ export const ChatConversations = ({ entityId, phonenumber, filterComponent }: Ch
     handlerSavedSearchCriteria(data.savedSearch.args, data.savedSearch.id);
   };
 
+  useEffect(() => {
+    if (Object.keys(searchParam).length !== 0) {
+      setHasSearchParams(true);
+    }
+  }, [searchParam]);
+
   // create searches
   let dialogBox;
   if (dialog) {
@@ -140,6 +152,7 @@ export const ChatConversations = ({ entityId, phonenumber, filterComponent }: Ch
         buttonOk={t('Search')}
         skipOk
         skipCancel
+        customStyles={{ content: styles.Content }}
       >
         <Search
           type={isearchType ? 'search' : 'saveSearch'}
@@ -148,6 +161,7 @@ export const ChatConversations = ({ entityId, phonenumber, filterComponent }: Ch
           handleCancel={closeDialogBox}
           handleSave={isearchType ? undefined : saveHandler}
           searchId={isearchType ? undefined : savedSearchCriteriaId}
+          setSearchParam={setSearchParam}
         />
       </DialogBox>
     );
