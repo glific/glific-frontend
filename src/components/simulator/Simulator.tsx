@@ -187,7 +187,7 @@ const Simulator = ({
       .catch((error) => {
         // add log's
         setLogs(`sendMessageText:${sendMessageText} GUPSHUP_CALLBACK_URL:${GUPSHUP_CALLBACK_URL}`, 'info');
-        setLogs(error, 'error');
+        setLogs(error, 'error', true);
       });
     setInputMessage('');
   };
@@ -204,7 +204,7 @@ const Simulator = ({
             setShowSimulator(false);
           }
         } catch (error) {
-          setLogs('simulator release error', 'error');
+          setLogs('simulator release error', 'error', true);
         }
       }
     },
@@ -267,7 +267,7 @@ const Simulator = ({
       .catch((error) => {
         // add log's
         setLogs(`sendMediaMessage:${type} GUPSHUP_CALLBACK_URL:${GUPSHUP_CALLBACK_URL}`, 'info');
-        setLogs(error, 'error');
+        setLogs(error, 'error', true);
       });
   };
 
