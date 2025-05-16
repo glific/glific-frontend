@@ -36,6 +36,9 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
   if (mode === 'test' && command === 'serve') {
     return defineConfig({
       // dev specific config
+      build: {
+        sourcemap: true, // Source map generation must be turned on
+      },
       plugins: plugins,
       optimizeDeps: {
         esbuildOptions: esbuildOptions,
@@ -47,6 +50,10 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
   if (command === 'serve') {
     return defineConfig({
       plugins: plugins.concat([checker({ typescript: true })]),
+      // dev specific config
+      build: {
+        sourcemap: true, // Source map generation must be turned on
+      },
       optimizeDeps: {
         esbuildOptions: esbuildOptions,
       },
@@ -78,6 +85,7 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
     plugins: plugins,
     build: {
       outDir: 'build',
+      sourcemap: true,
     },
   });
 };

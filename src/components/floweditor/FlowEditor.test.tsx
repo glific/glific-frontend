@@ -29,6 +29,7 @@ import {
 import * as Notification from 'common/notification';
 
 window.location = { assign: vi.fn() } as any;
+window.location.reload = vi.fn();
 
 beforeEach(() => {
   Object.defineProperty(window, 'location', {
