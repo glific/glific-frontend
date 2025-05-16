@@ -22,7 +22,6 @@ import setLogs from 'config/logs';
 import { GET_ORGANIZATION_SERVICES } from 'graphql/queries/Organization';
 import { Auth } from '../Auth';
 import { setErrorMessage } from 'common/notification';
-import { Loading } from 'components/UI/Layout/Loading/Loading';
 
 const notApprovedMsg = 'Your account is not approved yet. Please contact your organization admin.';
 
