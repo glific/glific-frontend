@@ -8,7 +8,7 @@ import AddToMessageTemplate from './AddToMessageTemplate';
 let resultReturned = false;
 
 const mocks = [
-  filterTemplatesQuery('', {}),
+  filterTemplatesQuery('', []),
   {
     request: {
       query: SAVE_MESSAGE_TEMPLATE_MUTATION,

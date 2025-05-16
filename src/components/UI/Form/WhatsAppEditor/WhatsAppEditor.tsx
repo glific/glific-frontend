@@ -6,7 +6,7 @@ import { $getSelection, $createTextNode, $getRoot, KEY_DOWN_COMMAND, COMMAND_PRI
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import { ClearEditorPlugin } from '@lexical/react/LexicalClearEditorPlugin';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
+import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
 import { useResizeDetector } from 'react-resize-detector';
 
 import styles from './WhatsAppEditor.module.css';

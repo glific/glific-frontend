@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider, TimePicker as Picker } from '@mui/x-date-pickers';
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import { getIn } from 'formik';
 import utc from 'dayjs/plugin/utc';
 
@@ -32,7 +32,7 @@ export const TimePicker = ({
   const touchedVal = getIn(touched, field.name);
   const hasError = touchedVal && errorText !== undefined;
 
-  const handleDateChange = (time: Date | null) => {
+  const handleDateChange = (time: Dayjs | null) => {
     const value = time ? time : null;
     setFieldValue(field.name, value);
   };
