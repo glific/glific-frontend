@@ -31,7 +31,7 @@ export const ContactHistory = ({ contactId, profileId }: ContactHistoryProps) =>
         </div>
       );
     } catch (error) {
-      setLogs(error, 'error');
+      setLogs(`Error parsing flowevents eventlabel: ${error}`, 'info', true);
     }
     return null;
   };
@@ -46,9 +46,8 @@ export const ContactHistory = ({ contactId, profileId }: ContactHistoryProps) =>
         </div>
       );
     } catch (error) {
-      setLogs(error, 'error');
+      setLogs(`Error parsing contactFieldUpdate eventMeta: ${error}`, 'info', true);
     }
-    return null;
   };
 
   const getEventLabel = (eventLabel: string, eventType: string, eventMeta: string) => {
