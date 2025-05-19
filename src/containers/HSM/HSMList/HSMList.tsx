@@ -109,7 +109,7 @@ export const HSMList = () => {
       if (data.errors) {
         setNotification(t('Sorry, failed to sync HSM updates.'), 'warning');
       } else {
-        setNotification(t('HSMs updated successfully.'), 'success');
+        setNotification(t('HSM queued for sync, Check notifications for updates.'), 'success');
       }
       setSyncTemplateLoad(false);
     },
