@@ -61,7 +61,7 @@ describe('contact profile with multiple profiles', () => {
     </MockedProvider>
   );
 
-  test.skip('should switch profile', async () => {
+  test('should switch profile', async () => {
     render(wrapper);
 
     await waitFor(() => {

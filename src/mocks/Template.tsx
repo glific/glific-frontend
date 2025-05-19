@@ -390,7 +390,7 @@ export const filterSpeedSends = {
   },
 };
 
-export const templateCountQuery = (filter: any, count: number = 3) => {
+export const templateCountQuery = (filter: any, count: number) => {
   return {
     request: {
       query: GET_TEMPLATES_COUNT,
