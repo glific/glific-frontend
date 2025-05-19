@@ -80,7 +80,7 @@ export const AddAttachment = ({
           }
         })
         .catch((error) => {
-          setLogs(error, 'error');
+          setLogs(`validateURL failed: ${error}`, 'warning', true);
         });
     }
   };
