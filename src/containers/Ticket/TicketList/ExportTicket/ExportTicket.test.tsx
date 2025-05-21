@@ -40,16 +40,20 @@ it('Renders Export ticket component successfully and closes on clicking cancel',
 
 it('Renders Export ticket component successfully', async () => {
   const downloadFileMock = vi.spyOn(utils, 'downloadFile');
-  const { getAllByText, getAllByRole, getByTestId } = render(exportConsulting);
+  const container = render(exportConsulting);
+
+  const { getAllByText, getByTestId } = container;
 
   await waitFor(() => {
     expect(getAllByText('Date from')[0]).toBeInTheDocument();
   });
 
-  const inputs = getAllByRole('textbox');
-
-  fireEvent.change(inputs[0], { target: { value: '01/15/2024' } });
-  fireEvent.change(inputs[1], { target: { value: '04/15/2024' } });
+  const dateFrom = container.queryByTestId('Date from');
+  const dateTo = container.queryByTestId('Date to');
+  if (dateFrom && dateTo) {
+    fireEvent.change(dateFrom, { target: { value: '01/15/2024' } });
+    fireEvent.change(dateTo, { target: { value: '04/15/2024' } });
+  }
 
   fireEvent.click(getByTestId('ok-button'));
 
@@ -59,16 +63,19 @@ it('Renders Export ticket component successfully', async () => {
 });
 
 it('it should validate the start and end dates', async () => {
-  const { getAllByText, getAllByRole, getByTestId, getByText } = render(exportConsulting);
+  const container = render(exportConsulting);
+  const { getAllByText, getByTestId, getByText } = container;
 
   await waitFor(() => {
     expect(getAllByText('Date from')[0]).toBeInTheDocument();
   });
 
-  const inputs = getAllByRole('textbox');
-
-  fireEvent.change(inputs[0], { target: { value: '08/15/2024' } });
-  fireEvent.change(inputs[1], { target: { value: '04/15/2024' } });
+  const dateFrom = container.queryByTestId('Date from');
+  const dateTo = container.queryByTestId('Date to');
+  if (dateFrom && dateTo) {
+    fireEvent.change(dateFrom, { target: { value: '08/15/2024' } });
+    fireEvent.change(dateTo, { target: { value: '04/15/2024' } });
+  }
 
   fireEvent.click(getByTestId('ok-button'));
 

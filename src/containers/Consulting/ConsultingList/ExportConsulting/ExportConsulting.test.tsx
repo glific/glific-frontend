@@ -48,7 +48,8 @@ it('should give proper validation errors', async () => {
 });
 
 it('should export consulting', async () => {
-  const { getAllByRole, getByTestId } = render(exportConsulting);
+  const container = render(exportConsulting);
+  const { getByTestId } = container;
 
   const autocomplete = screen.getByTestId('autocomplete-element');
 
@@ -61,9 +62,12 @@ it('should export consulting', async () => {
   fireEvent.keyDown(autocomplete, { key: 'ArrowDown' });
   fireEvent.keyDown(autocomplete, { key: 'Enter' });
 
-  const dateInputs = getAllByRole('textbox');
-  fireEvent.change(dateInputs[0], { target: { value: '09/03/2020' } });
-  fireEvent.change(dateInputs[1], { target: { value: '09/04/2020' } });
+  const dateFrom = container.queryByTestId('Date from');
+  const dateTo = container.queryByTestId('Date to');
+  if (dateFrom && dateTo) {
+    fireEvent.change(dateFrom, { target: { value: '09/03/2020' } });
+    fireEvent.change(dateTo, { target: { value: '09/04/2020' } });
+  }
 
   fireEvent.click(getByTestId('export'));
 

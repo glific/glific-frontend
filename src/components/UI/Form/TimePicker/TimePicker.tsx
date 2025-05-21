@@ -52,6 +52,7 @@ export const TimePicker = ({
             textField: {
               inputProps: {
                 className: styles.Input,
+                'data-testid': placeholder,
               },
               InputLabelProps: {
                 className: styles.Label,
