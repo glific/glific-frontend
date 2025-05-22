@@ -73,9 +73,7 @@ describe('test creating a speed send', () => {
   });
 
   test('should validate media', async () => {
-    mockedAxios.get.mockImplementationOnce(() =>
-      Promise.resolve({ data: { is_valid: true, message: 'valid media' } })
-    );
+    mockedAxios.get.mockImplementationOnce(() => Promise.resolve({ data: { is_valid: true, message: 'valid media' } }));
 
     render(addSpeedSendContainer);
 
@@ -135,9 +133,7 @@ describe('test creating a speed send', () => {
   });
 
   test('should create a speed send', async () => {
-    mockedAxios.get.mockImplementationOnce(() =>
-      Promise.resolve({ data: { is_valid: true, message: 'valid media' } })
-    );
+    mockedAxios.get.mockImplementationOnce(() => Promise.resolve({ data: { is_valid: true, message: 'valid media' } }));
 
     render(addSpeedSendContainer);
 
@@ -243,9 +239,7 @@ describe('test creating a speed send', () => {
 
 describe('test editing a speed send', () => {
   test('should render speed send form', async () => {
-    mockedAxios.get.mockImplementationOnce(() =>
-      Promise.resolve({ data: { is_valid: true, message: 'valid media' } })
-    );
+    mockedAxios.get.mockImplementationOnce(() => Promise.resolve({ data: { is_valid: true, message: 'valid media' } }));
 
     render(editSpeedSendContainer('2'));
 

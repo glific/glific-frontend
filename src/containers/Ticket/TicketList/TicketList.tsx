@@ -10,7 +10,7 @@ import {
   RadioGroup,
   Select,
 } from '@mui/material';
-import { SupportAgent } from '@mui/icons-material';
+import SupportAgentIcon from '@mui/icons-material/SupportAgent';
 import dayjs from 'dayjs';
 
 import EditIcon from 'assets/images/icons/Edit.svg?react';
@@ -66,7 +66,7 @@ const columnStyles = [
   styles.Assigned,
   styles.Actions,
 ];
-const ticketIcon = <SupportAgent className={styles.Icon} />;
+const ticketIcon = <SupportAgentIcon className={styles.Icon} />;
 
 const queries = {
   countQuery: TICKET_COUNT_QUERY,

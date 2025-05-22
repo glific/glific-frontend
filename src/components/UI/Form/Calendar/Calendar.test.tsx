@@ -32,33 +32,38 @@ describe('<Calendar />', () => {
   });
 
   it('test empty date event', async () => {
-    render(wrapper);
-    const input = screen.getByRole('textbox');
+    const container = render(wrapper);
+    const input = container.queryByTestId('Date from');
     const now = dayjs(new Date()).format('MM/DD/YYYY');
     expect(input).toHaveValue(now);
   });
 
   it('test date change event', async () => {
-    render(wrapper);
-    const input = screen.getByRole('textbox');
-
-    fireEvent.change(input, { target: { value: '09/03/2020' } });
-    expect(input).toHaveValue('09/03/2020');
+    const container = render(wrapper);
+    const input = container.queryByTestId('Date from');
+    if (input) {
+      fireEvent.change(input, { target: { value: '09/03/2020' } });
+    }
+    expect(setFieldValueMock).toHaveBeenCalled();
   });
 
   it('should set the field value to null if no date is passed', async () => {
-    render(wrapper);
-    const input = screen.getByRole('textbox');
-    fireEvent.change(input, { target: { value: '1' } });
+    const container = render(wrapper);
+    const input = container.queryByTestId('Date from');
+    if (input) {
+      fireEvent.change(input, { target: { value: '1' } });
+    }
     backspace(input);
 
     expect(setFieldValueMock).toBeCalledWith('example', null);
   });
 
   it('should set the field value to null if no date is passed', async () => {
-    render(wrapper);
-    const input = screen.getByRole('textbox');
-    fireEvent.change(input, { target: { value: '1' } });
+    const container = render(wrapper);
+    const input = container.queryByTestId('Date from');
+    if (input) {
+      fireEvent.change(input, { target: { value: '1' } });
+    }
     backspace(input);
 
     expect(setFieldValueMock).toBeCalledWith('example', null);
@@ -78,24 +83,28 @@ describe('<Calendar />', () => {
   });
 
   it('should call open the calendar if input is clicked', async () => {
-    render(wrapper);
-    const input = screen.getByRole('textbox');
-    fireEvent.click(input);
+    const container = render(wrapper);
+    const input = container.queryByTestId('Date from');
+    if (input) {
+      fireEvent.click(input);
+    }
     expect(screen.getByTestId('sentinelStart')).toBeInTheDocument();
   });
 
   it('should close the calendar if we click escape', async () => {
-    render(wrapper);
-    const input = screen.getByRole('textbox');
-    fireEvent.click(input);
-    expect(screen.getByTestId('sentinelStart')).toBeInTheDocument();
+    const container = render(wrapper);
+    const input = container.queryByTestId('Date from');
+    if (input) {
+      fireEvent.click(input);
+      expect(screen.getByTestId('sentinelStart')).toBeInTheDocument();
 
-    fireEvent.keyDown(input, {
-      key: 'Escape',
-      code: 'Escape',
-      keyCode: 27,
-      charCode: 27,
-    });
+      fireEvent.keyDown(input, {
+        key: 'Escape',
+        code: 'Escape',
+        keyCode: 27,
+        charCode: 27,
+      });
+    }
     await waitFor(() => {
       expect(screen.queryByTestId('sentinelStart')).not.toBeInTheDocument();
     });

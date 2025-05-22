@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 import { vi } from 'vitest';
 import axios from 'axios';
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
@@ -21,8 +21,8 @@ const mockedState = {
   },
 };
 
-vi.mock('react-router-dom', async () => ({
-  ...((await vi.importActual<any>('react-router-dom')) as {}),
+vi.mock('react-router', async () => ({
+  ...((await vi.importActual<any>('react-router')) as {}),
   useLocation: () => mockedState,
 }));
 

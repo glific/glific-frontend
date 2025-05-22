@@ -31,8 +31,8 @@ vi.mock('../../../components/UI/EmojiPicker/EmojiPicker', () => ({
   ),
 }));
 
-vi.mock('react-router-dom', async () => ({
-  ...((await vi.importActual<any>('react-router-dom')) as {}),
+vi.mock('react-router', async () => ({
+  ...((await vi.importActual<any>('react-router')) as {}),
   useLocation: () => {
     return mockUseLocationValue;
   },

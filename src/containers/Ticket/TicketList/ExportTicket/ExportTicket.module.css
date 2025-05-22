@@ -5,11 +5,12 @@
 .FilterContainer {
   max-width: 400px;
 }
+
 .Form {
+  width: 100%;
   margin-top: 10px;
   align-items: center;
   align-content: center;
-
   display: flex;
 }
 
@@ -26,4 +27,5 @@
 
 .FieldContainer {
   padding-right: 8px;
+  width: 50%;
 }

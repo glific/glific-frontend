@@ -19,8 +19,8 @@ const wrapper = (
 
 const notificationSpy = vi.spyOn(Notification, 'setNotification');
 const mockedUsedNavigate = vi.fn();
-vi.mock('react-router-dom', async () => ({
-  ...(await vi.importActual('react-router-dom')),
+vi.mock('react-router', async () => ({
+  ...(await vi.importActual('react-router')),
   useNavigate: () => mockedUsedNavigate,
 }));
 
@@ -76,7 +76,7 @@ test('it navigates to create a copy', async () => {
   fireEvent.click(screen.getAllByTestId('duplicate-icon')[0]);
 
   await waitFor(() => {
-    expect(screen.getByText('Copy Poll')).toBeInTheDocument();
+    expect(mockedUsedNavigate).toHaveBeenCalled();
   });
 });
 

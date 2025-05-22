@@ -588,14 +588,14 @@ export const multiple_profile_mock = [
   getOrganizationLanguagesQuery,
   getProfileMock('2', {
     fields:
-      '{"role":{"value":"Parent","type":"string","label":"role","inserted_at":"2024-09-08T12:14:25.625321Z"},"name":{"value":"profile name 2","type":"string","label":"Name","inserted_at":"2024-09-08T12:14:25.619652Z"}}',
-    name: 'profile name 2',
+      '{"role":{"value":"Parent","type":"string","label":"role","inserted_at":"2024-09-08T12:14:25.625321Z"},"name":{"value":"profile name 1","type":"string","label":"Name","inserted_at":"2024-09-08T12:14:25.619652Z"}}',
+    name: 'profile name 1',
     type: 'Parent',
   }),
   getProfileMock('3', {
     fields:
-      '{"role":{"value":"Student","type":"string","label":"role","inserted_at":"2024-09-08T12:14:25.625321Z"},"name":{"value":"profile name 1","type":"string","label":"Name","inserted_at":"2024-09-08T12:14:25.619652Z"}}',
-    name: 'profile name 1',
+      '{"role":{"value":"Student","type":"string","label":"role","inserted_at":"2024-09-08T12:14:25.625321Z"},"name":{"value":"profile name 2","type":"string","label":"Name","inserted_at":"2024-09-08T12:14:25.619652Z"}}',
+    name: 'profile name 2',
     type: 'Student',
   }),
   getMultipleProfiles,

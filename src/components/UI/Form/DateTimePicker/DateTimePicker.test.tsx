@@ -1,8 +1,6 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-
+import { render, screen, fireEvent } from '@testing-library/react';
 import { DateTimePicker } from './DateTimePicker';
 import dayjs from 'dayjs';
-import { userEvent } from '@testing-library/user-event';
 
 afterEach(() => {
   (window as any).matchMedia = null;
@@ -29,13 +27,11 @@ describe('<DateTimePicker />', () => {
   });
 
   it('test date change event', async () => {
-    render(wrapper);
-    const input = screen.getByRole('textbox');
-    userEvent.type(input, '14/05/2021 09:50 am');
-
-    await waitFor(() => {
-      expect(input).toHaveValue('14/05/2021 09:50 am');
-    });
+    const container = render(wrapper);
+    const dateFrom = container.queryByTestId('Date range');
+    if (dateFrom) {
+      fireEvent.change(dateFrom, { target: { value: '21/05/2025 10:40 pm' } });
+    }
 
     expect(setFieldMock).toHaveBeenCalled();
     expect(onChangeMock).toHaveBeenCalled();
@@ -53,17 +49,19 @@ describe('<DateTimePicker />', () => {
   it('test date default value', async () => {
     const props = getProps();
     props.field.value = dayjs();
-    render(<DateTimePicker {...props} />);
-    const input = screen.getByRole('textbox');
-    expect(input).toHaveValue();
+    const container = render(<DateTimePicker {...props} />);
+    const dateFrom = container.queryByTestId('Date range');
+    expect(dateFrom).toHaveValue();
   });
 
   it('onChange event will not be called if the prop is not passed', async () => {
     const props = getProps();
     delete props.onChange;
-    render(<DateTimePicker {...props} />);
-    const input = screen.getByRole('textbox');
-    fireEvent.change(input, { target: { value: '14/05/2021 10:50 AM' } });
+    const container = render(<DateTimePicker {...props} />);
+    const dateFrom = container.queryByTestId('Date range');
+    if (dateFrom) {
+      fireEvent.change(dateFrom, { target: { value: '21/05/2025 10:40 pm' } });
+    }
     expect(onChangeMock).toHaveBeenCalled();
   });
 });

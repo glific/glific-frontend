@@ -27,6 +27,7 @@ export interface InputProps {
   inputLabel?: string | null;
   darkMode?: boolean;
   inputLabelSubtext?: any;
+  autoComplete?: string;
   customFieldError?: any;
 }
 
@@ -49,6 +50,7 @@ export const Input = ({ textArea = false, disabled = false, inputLabel = null, .
     darkMode,
     inputLabelSubtext,
     customFieldError,
+    autoComplete = 'off',
   } = props;
 
   let fieldType = type;
@@ -134,6 +136,7 @@ export const Input = ({ textArea = false, disabled = false, inputLabel = null, .
             }}
             endAdornment={endAdornment || fieldEndAdorment}
             notched={false}
+            autoComplete={autoComplete}
           />
           {form && form.errors[field.name] && form.touched[field.name] ? (
             <FormHelperText className={styles.DangerText}>{form.errors[field.name]}</FormHelperText>

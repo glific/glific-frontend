@@ -1,5 +1,5 @@
 import { MenuItem as MenuItemElement } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 
 import styles from './MenuItem.module.css';
 
