@@ -89,6 +89,8 @@ const simulatorParams = {
   entityId: 1,
   simulatorId: 1,
   setShowSimulator: vi.fn(),
+  setSearchParam: vi.fn(),
+  searchParam: {},
 };
 
 const chatConversation = (

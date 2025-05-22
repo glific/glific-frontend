@@ -99,7 +99,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, searchParam }: C
   useEffect(() => {
     setTimeout(() => {
       const messageContainer: any = document.querySelector('.messageContainer');
-      if (messageContainer && !searchParam.dateFrom && !searchParam.dateTo) {
+      if (messageContainer && (searchParam ? !searchParam.dateFrom && !searchParam.dateTo : true)) {
         messageContainer.addEventListener('scroll', (event: any) => {
           const messageContainerTarget = event.target;
           if (

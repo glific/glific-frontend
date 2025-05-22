@@ -76,7 +76,7 @@ export const SearchBar = ({
             }}
             className={styles.FilterIcon}
           >
-            <AdvancedSearch color={searchMode ? '#119656' : null} data-testid="advanced-search-icon" />
+            <AdvancedSearch color={searchMode ? '#119656' : null} />
           </IconButton>
         </Tooltip>
       </InputAdornment>

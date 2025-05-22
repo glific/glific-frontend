@@ -30,7 +30,6 @@ export const ChatConversations = ({
   entityId,
   phonenumber,
   filterComponent,
-
   searchParam,
   setSearchParam,
 }: ChatConversationsProps) => {
@@ -203,7 +202,7 @@ export const ChatConversations = ({
   // check if the user has access to manage collections
   const userRolePermissions = getUserRolePermissions();
 
-  if (Object.keys(searchParam).length !== 0)
+  if (searchParam && Object.keys(searchParam).length !== 0)
     saveSearchButton = userRolePermissions.manageSavedSearches ? (
       <div className={styles.SaveSearch}>
         <div className={styles.Container}>

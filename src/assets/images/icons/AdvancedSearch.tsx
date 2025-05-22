@@ -1,6 +1,7 @@
 export const AdvancedSearchIcon = ({ color }: { color?: string | null }) => {
   return (
     <svg
+      data-testid="advanced-search-icon"
       className="w-[16px] h-[16px] text-gray-800 dark:text-white"
       aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
