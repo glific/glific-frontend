@@ -18,6 +18,13 @@ export interface TimePickerProps {
   helperText?: string;
 }
 
+const TimePickerStyles = {
+  '.MuiPickersOutlinedInput-root': {
+    borderRadius: '12px',
+    borderWidth: '2px',
+  },
+};
+
 export const TimePicker = ({
   field,
   form: { setFieldValue, errors, touched },
@@ -62,6 +69,7 @@ export const TimePicker = ({
               onClick: () => !disabled && setOpen(true),
             },
           }}
+          sx={TimePickerStyles}
         />
         {helperText && (
           <div id="helper-text" className={styles.HelperText}>

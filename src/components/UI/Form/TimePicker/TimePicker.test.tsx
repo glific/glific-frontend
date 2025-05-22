@@ -1,6 +1,5 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
-
 import { TimePicker } from './TimePicker';
 
 afterEach(() => {
@@ -16,8 +15,6 @@ const timePickerProps: any = (disabled: boolean) => {
     form: { dirty: false, touched: false, errors: false, setFieldValue: setFieldValueMock },
   };
 };
-
-const cleanText = (timeValue: any) => timeValue.replace(/\u200e|\u2066|\u2067|\u2068|\u2069/g, '');
 
 describe('<TimePicker />', () => {
   const props = timePickerProps(false);

@@ -17,6 +17,12 @@ export interface CalendarProps {
   minDate?: any;
   className?: string;
 }
+const CalendarStyles = {
+  '.MuiPickersOutlinedInput-root': {
+    borderRadius: '12px',
+    borderWidth: '2px',
+  },
+};
 
 export const Calendar = ({
   format = MONTH_DATE_FORMAT,
@@ -70,6 +76,7 @@ export const Calendar = ({
             },
           }}
           onClose={() => setOpen(false)}
+          sx={CalendarStyles}
         />
       </div>
     </LocalizationProvider>
