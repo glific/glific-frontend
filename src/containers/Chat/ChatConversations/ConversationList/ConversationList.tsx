@@ -66,7 +66,7 @@ export const ConversationList = ({
   const scrollHeight = useQuery(SCROLL_HEIGHT);
   const { t } = useTranslation();
   const location = useLocation();
-  const hasSearchParams = Object.keys(searchParam).length !== 0;
+  const hasSearchParams = searchParam ? Object.keys(searchParam).length !== 0 : false;
 
   let groups: boolean = location.pathname.includes('group');
 

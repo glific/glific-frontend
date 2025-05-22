@@ -21,12 +21,20 @@ export interface ChatConversationsProps {
   entityId?: number | string;
   phonenumber?: any;
   filterComponent?: any;
+
+  searchParam?: any;
+  setSearchParam?: any;
 }
 
-export const ChatConversations = ({ entityId, phonenumber, filterComponent }: ChatConversationsProps) => {
+export const ChatConversations = ({
+  entityId,
+  phonenumber,
+  filterComponent,
+  searchParam,
+  setSearchParam,
+}: ChatConversationsProps) => {
   // get the conversations stored from the cache
   const [searchVal, setSearchVal] = useState<any>();
-  const [searchParam, setSearchParam] = useState<any>({});
   const [selectedContactId, setSelectedContactId] = useState<any>(entityId);
   const [savedSearchCriteria, setSavedSearchCriteria] = useState<string>('');
   const [savedSearchCriteriaId, setSavedSearchCriteriaId] = useState(null);
@@ -140,6 +148,7 @@ export const ChatConversations = ({ entityId, phonenumber, filterComponent }: Ch
         buttonOk={t('Search')}
         skipOk
         skipCancel
+        customStyles={{ content: styles.Content }}
       >
         <Search
           type={isearchType ? 'search' : 'saveSearch'}
@@ -148,6 +157,7 @@ export const ChatConversations = ({ entityId, phonenumber, filterComponent }: Ch
           handleCancel={closeDialogBox}
           handleSave={isearchType ? undefined : saveHandler}
           searchId={isearchType ? undefined : savedSearchCriteriaId}
+          setSearchParam={setSearchParam}
         />
       </DialogBox>
     );
@@ -192,7 +202,7 @@ export const ChatConversations = ({ entityId, phonenumber, filterComponent }: Ch
   // check if the user has access to manage collections
   const userRolePermissions = getUserRolePermissions();
 
-  if (Object.keys(searchParam).length !== 0)
+  if (searchParam && Object.keys(searchParam).length !== 0)
     saveSearchButton = userRolePermissions.manageSavedSearches ? (
       <div className={styles.SaveSearch}>
         <div className={styles.Container}>

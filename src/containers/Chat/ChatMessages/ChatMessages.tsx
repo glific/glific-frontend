@@ -46,9 +46,10 @@ export interface ChatMessagesProps {
   collectionId?: number | string | null;
   phoneId?: any;
   setPhonenumber?: any;
+  searchParam?: any;
 }
 
-export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesProps) => {
+export const ChatMessages = ({ entityId, collectionId, phoneId, searchParam }: ChatMessagesProps) => {
   const urlString = new URL(window.location.href);
   const location = useLocation();
   const client = useApolloClient();
@@ -76,7 +77,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
   const [showJumpToLatest, setShowJumpToLatest] = useState(false);
   const [conversationInfo, setConversationInfo] = useState<any>({});
   const [collectionVariables, setCollectionVariables] = useState<any>({});
-
+  const [showNewMessages, setShowNewMessages] = useState<boolean>(false);
   const { t } = useTranslation();
   let dialogBox;
 
@@ -98,7 +99,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
   useEffect(() => {
     setTimeout(() => {
       const messageContainer: any = document.querySelector('.messageContainer');
-      if (messageContainer) {
+      if (messageContainer && (searchParam ? !searchParam.dateFrom && !searchParam.dateTo : true)) {
         messageContainer.addEventListener('scroll', (event: any) => {
           const messageContainerTarget = event.target;
           if (
@@ -113,6 +114,14 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
       }
     }, 1000);
   }, [setShowJumpToLatest, entityId]);
+
+  useEffect(() => {
+    if (searchParam && searchParam.dateFrom && searchParam.dateTo) {
+      setShowNewMessages(true);
+    } else {
+      setShowNewMessages(false);
+    }
+  }, [searchParam]);
 
   const scrollToLatestMessage = () => {
     const container: any = document.querySelector('.messageContainer');
@@ -541,6 +550,13 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
 
       fetchMore({
         variables,
+      }).then(({ data }: any) => {
+        if (data && data.search[0] && data.search[0].messages) {
+          const hasMessageNumber = data.search[0].messages.some((msg: any) => msg.messageNumber === messageNumber);
+          if (!hasMessageNumber) {
+            setShowNewMessages(false);
+          }
+        }
       });
 
       scrollToMessage(messageNumber);
@@ -639,7 +655,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
       (searchMessageNumber && searchMessageNumber > 19);
     chatMessages = (
       <>
-        {showLoadMore && loadMoreOption && (
+        {showLoadMore && (loadMoreOption || showNewMessages) && (
           <div className={styles.LoadMore}>
             {conversationLoad ? (
               <CircularProgress data-testid="loading" className={styles.Loading} />
@@ -752,6 +768,19 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
   let chatInputSection;
 
   const isSimulatorProp = groups ? false : isSimulator(conversationInfo.contact?.phone);
+  const showCurrentMessages = () => {
+    if (conversationInfo && conversationInfo.messages && conversationInfo.messages[0]) {
+      const nextMessage = conversationInfo.messages[0].messageNumber + 1;
+      jumpToMessage(nextMessage);
+    }
+  };
+
+  const showCurrentMesssage = (
+    <div onClick={showCurrentMessages} className={styles.ShowNewMessages}>
+      You are viewing older messages. Click here to jump to the latest messages.
+      <ExpandMoreIcon />
+    </div>
+  );
 
   if (entityId && conversationInfo[chatType]) {
     const displayName = groups ? conversationInfo.waGroup.label : getDisplayName(conversationInfo[chatType]);
@@ -773,7 +802,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
 
     chatInputSection = (
       <div className={styles.ChatInput}>
-        {conversationInfo.messages.length && showJumpToLatest ? jumpToLatest : null}
+        {conversationInfo.messages.length && !showNewMessages && showJumpToLatest ? jumpToLatest : null}
         <LexicalWrapper>
           <ChatInput
             onSendMessage={sendMessageHandler}
@@ -819,6 +848,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId }: ChatMessagesPr
       {topChatBar}
       {messageListContainr}
       {chatInputSection}
+      {showNewMessages && showCurrentMesssage}
     </Container>
   );
 };
