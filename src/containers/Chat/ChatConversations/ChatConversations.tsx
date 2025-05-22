@@ -21,18 +21,21 @@ export interface ChatConversationsProps {
   entityId?: number | string;
   phonenumber?: any;
   filterComponent?: any;
-  setHasSearchParams?: any;
+
+  searchParam?: any;
+  setSearchParam?: any;
 }
 
 export const ChatConversations = ({
   entityId,
   phonenumber,
   filterComponent,
-  setHasSearchParams,
+
+  searchParam,
+  setSearchParam,
 }: ChatConversationsProps) => {
   // get the conversations stored from the cache
   const [searchVal, setSearchVal] = useState<any>();
-  const [searchParam, setSearchParam] = useState<any>({});
   const [selectedContactId, setSelectedContactId] = useState<any>(entityId);
   const [savedSearchCriteria, setSavedSearchCriteria] = useState<string>('');
   const [savedSearchCriteriaId, setSavedSearchCriteriaId] = useState(null);
@@ -132,12 +135,6 @@ export const ChatConversations = ({
     setSavedSearches(data.savedSearch);
     handlerSavedSearchCriteria(data.savedSearch.args, data.savedSearch.id);
   };
-
-  useEffect(() => {
-    if (Object.keys(searchParam).length !== 0) {
-      setHasSearchParams(true);
-    }
-  }, [searchParam]);
 
   // create searches
   let dialogBox;
