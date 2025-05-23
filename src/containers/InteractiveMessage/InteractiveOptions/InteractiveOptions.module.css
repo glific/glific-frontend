@@ -13,7 +13,7 @@
   margin-left: 32px;
 }
 
-.RadioLabelWrapper > label {
+.RadioLabelWrapper>label {
   margin: 0px;
   padding: 0px 12px;
   border-radius: 21px;
@@ -21,14 +21,14 @@
   border-color: #93a29b;
 }
 
-.RadioLabelWrapper > label > span {
+.RadioLabelWrapper>label>span {
   padding-left: 0px;
   color: #555555;
   font-weight: 500;
   font-size: 16px;
 }
 
-.RadioLabel > span {
+.RadioLabel>span {
   line-height: 1;
   font-weight: 500;
   font-size: 16px;
@@ -48,7 +48,6 @@
   border-radius: 10px;
   border: 1px solid #cccccc;
   padding: 16px 24px 8px 24px;
-  margin-bottom: 25px;
   margin-top: 15px;
 }
 
@@ -75,10 +74,16 @@
   margin-bottom: 15px;
 }
 
+.Error {
+  color: #fb5c5c;
+  margin-left: 1rem;
+}
+
 @media screen and (max-width: 768px) {
   .RadioLabelWrapper:last-child {
     margin-left: 0px;
   }
+
   .RadioGroupDisplay {
     justify-content: space-between;
   }

@@ -80,7 +80,11 @@ export const validator = (templateType: any, t: any) => {
         })
       )
       .min(1)
-      .max(3);
+      .max(3)
+      .test('unique-values', 'Button labels must be unique.', (array: any) => {
+        const values = array.map((item: any) => item.value);
+        return new Set(values).size === values.length;
+      });
 
     validation.footer = Yup.string().nullable().max(60, t('Footer value can be at most 60 characters'));
 

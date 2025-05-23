@@ -320,6 +320,30 @@ describe('Add mode', () => {
     fireEvent.change(getAllByRole('textbox')[4], { target: { value: '@results.result_1' } });
     fireEvent.click(getByTestId('submitActionButton'));
   });
+
+  test('it should show error if buttons have same text', async () => {
+    render(interactiveMessage());
+
+    await waitFor(() => {
+      expect(screen.getByText('Add a new Interactive message')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('addButton'));
+
+    const inputs = screen.getAllByPlaceholderText('Enter button text(20 char.)');
+    await waitFor(() => {
+      expect(inputs).toHaveLength(2);
+    });
+
+    fireEvent.change(inputs[0], { target: { value: 'yes' } });
+    fireEvent.change(inputs[1], { target: { value: 'yes' } });
+
+    fireEvent.click(screen.getByTestId('submitActionButton'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Button labels must be unique.')).toBeInTheDocument();
+    });
+  });
 });
 
 describe('Edit mode', () => {

@@ -119,6 +119,9 @@ export const InteractiveOptions = ({
           />
         </div>
       )}
+      {errors.templateButtons && typeof errors.templateButtons === 'string' && (
+        <FormHelperText className={styles.Error}>{errors.templateButtons}</FormHelperText>
+      )}
     </div>
   );
 
