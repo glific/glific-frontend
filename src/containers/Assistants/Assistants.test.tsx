@@ -7,8 +7,8 @@ import * as Notification from 'common/notification';
 
 const notificationSpy = vi.spyOn(Notification, 'setNotification');
 const mockedUsedNavigate = vi.fn();
-vi.mock('react-router-dom', async () => ({
-  ...(await vi.importActual('react-router-dom')),
+vi.mock('react-router', async () => ({
+  ...(await vi.importActual('react-router')),
   useNavigate: () => mockedUsedNavigate,
 }));
 
@@ -129,11 +129,15 @@ test('it uploads files to assistant', async () => {
   const mockFileBiggerThan20MB = new File([mockFileContent], 'testFile2.txt', {
     type: 'text/plain',
   });
-
   const fileInput = screen.getByTestId('uploadFile');
   fireEvent.change(fileInput, { target: { files: [] } });
   fireEvent.change(fileInput, { target: { files: [mockFile] } });
+  fireEvent.change(fileInput, { target: { files: [mockFile] } });
   fireEvent.click(screen.getAllByTestId('deleteFile')[0]);
+
+  await waitFor(() => {
+    expect(notificationSpy).toHaveBeenCalled();
+  });
 
   fireEvent.change(fileInput, { target: { files: [mockFileBiggerThan20MB] } });
 
@@ -142,7 +146,6 @@ test('it uploads files to assistant', async () => {
     expect(notificationSpy).toHaveBeenCalled();
   });
 
-  fireEvent.change(fileInput, { target: { files: [mockFile] } });
   fireEvent.change(fileInput, { target: { files: [mockFile] } });
 
   await waitFor(() => {

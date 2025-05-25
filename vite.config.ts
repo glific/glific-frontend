@@ -5,7 +5,8 @@ import react from '@vitejs/plugin-react';
 // import eslint from 'vite-plugin-eslint';
 import viteTsconfigPaths from 'vite-tsconfig-paths';
 import checker from 'vite-plugin-checker';
-import svgrPlugin from 'vite-plugin-svgr';
+import svgr from 'vite-plugin-svgr';
+
 import fs from 'fs';
 import { sentryVitePlugin } from '@sentry/vite-plugin';
 
@@ -16,7 +17,7 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
   const plugins = [
     react(),
     viteTsconfigPaths(),
-    svgrPlugin(),
+    svgr(),
     sentryVitePlugin({
       authToken: env.VITE_SENTRY_AUTH_TOKEN || '',
       org: 'project-tech4dev',
@@ -24,6 +25,14 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
     }),
   ];
 
+  const esbuildOptions = {
+    // Node.js global to browser globalThis
+    define: {
+      global: 'globalThis',
+    },
+  };
+
+  // dev in test mode config
   if (mode === 'test' && command === 'serve') {
     return defineConfig({
       // dev specific config
@@ -31,46 +40,22 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
         sourcemap: true, // Source map generation must be turned on
       },
       plugins: plugins,
-
       optimizeDeps: {
-        esbuildOptions: {
-          // Node.js global to browser globalThis
-          define: {
-            global: 'globalThis',
-          },
-        },
-      },
-
-      resolve: { alias: { util: 'util/' } },
-      test: {
-        globals: true,
-        environment: 'jsdom',
-        setupFiles: './src/setupTests.ts',
-        coverage: {
-          reporter: ['lcov', 'text', 'html'],
-          // choosing istanbul for now because of this https://github.com/vitest-dev/vitest/issues/1252
-          provider: 'istanbul', // or 'c8',
-          include: ['src/**/**'],
-          exclude: ['node_modules/', '**/*.test.tsx', './src/assets/**'],
-        },
-        css: true,
+        esbuildOptions: esbuildOptions,
       },
     });
   }
+
+  // dev specific config
   if (command === 'serve') {
     return defineConfig({
+      plugins: plugins.concat([checker({ typescript: true })]),
       // dev specific config
       build: {
         sourcemap: true, // Source map generation must be turned on
       },
-      plugins: [...plugins, checker({ typescript: true })],
       optimizeDeps: {
-        esbuildOptions: {
-          // Node.js global to browser globalThis
-          define: {
-            global: 'globalThis',
-          },
-        },
+        esbuildOptions: esbuildOptions,
       },
       server: {
         host: 'glific.test',
@@ -89,25 +74,18 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
           'Strict-Transport-Security': 'max-age=63072000; includeSubdomains; preload',
         },
       },
-      resolve: { alias: { util: 'util/', stream: 'stream-browserify' } }, // stream polyfill is needed by logflare
     });
   }
+
   // command === 'build'
   return defineConfig({
     optimizeDeps: {
-      esbuildOptions: {
-        // Node.js global to browser globalThis
-        define: {
-          global: 'globalThis',
-        },
-      },
+      esbuildOptions: esbuildOptions,
     },
-    // build specific config
     plugins: plugins,
     build: {
       outDir: 'build',
       sourcemap: true,
     },
-    resolve: { alias: { util: 'util/', stream: 'stream-browserify' } },
   });
 };

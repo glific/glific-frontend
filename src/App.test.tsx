@@ -1,4 +1,4 @@
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 import { MockedProvider } from '@apollo/client/testing';
 import { waitFor, render, screen } from '@testing-library/react';
 import { vi, describe, it } from 'vitest';

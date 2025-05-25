@@ -1,7 +1,7 @@
 import { fireEvent, render } from '@testing-library/react';
 import dayjs from 'dayjs';
 import { MockedProvider } from '@apollo/client/testing';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 
 import { MARK_AS_READ } from 'graphql/mutations/Chat';
 import { SHORT_DATE_FORMAT } from 'common/constants';

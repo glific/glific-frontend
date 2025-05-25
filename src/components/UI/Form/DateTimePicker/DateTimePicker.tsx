@@ -1,6 +1,6 @@
 import { LocalizationProvider, DateTimePicker as Picker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import { getIn } from 'formik';
 
@@ -17,6 +17,7 @@ export interface DateTimePickerProps {
   placeholder: string;
   minDate?: any;
   onChange?: any;
+  label?: string;
 }
 
 export const DateTimePicker = ({
@@ -26,13 +27,14 @@ export const DateTimePicker = ({
   placeholder,
   minDate,
   onChange,
+  label,
 }: DateTimePickerProps) => {
   const errorText = getIn(errors, field.name);
   const touchedVal = getIn(touched, field.name);
   const hasError = touchedVal && errorText !== undefined;
   const dateValue = field.value ? field.value : null;
 
-  const handleDateChange = (date: Date | null | string) => {
+  const handleDateChange = (date: Dayjs | null | string) => {    
     const value = date && date.toString() !== 'Invalid Date' ? dayjs(date) : null;
     setFieldValue(field.name, value);
     if (onChange) onChange(value);
@@ -51,6 +53,7 @@ export const DateTimePicker = ({
             textField: {
               inputProps: {
                 className: styles.Input,
+                'data-testid': label,
               },
               InputLabelProps: {
                 className: styles.Label,

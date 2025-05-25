@@ -1,6 +1,6 @@
 import { render, waitFor, fireEvent, screen } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 
 import { triggerListQuery, triggerCountQuery } from 'mocks/Trigger';
 import { setUserSession } from 'services/AuthService';

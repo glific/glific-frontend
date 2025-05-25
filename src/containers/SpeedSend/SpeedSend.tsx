@@ -82,8 +82,7 @@ export const SpeedSend = () => {
     variables: { opts: { order: 'ASC' } },
   });
 
-  const [getSessionTemplate, { data: template, loading: templateLoading }] =
-    useLazyQuery<any>(GET_SPEED_SEND);
+  const [getSessionTemplate, { data: template, loading: templateLoading }] = useLazyQuery<any>(GET_SPEED_SEND);
 
   useEffect(() => {
     if (languages) {
@@ -137,11 +136,7 @@ export const SpeedSend = () => {
       const translationsCopy = JSON.parse(translationsValue);
       const currentLanguage = language?.id || languageIdValue.id;
 
-      if (
-        Object.keys(translationsCopy).length > 0 &&
-        translationsCopy[currentLanguage] &&
-        !location.state?.language
-      ) {
+      if (Object.keys(translationsCopy).length > 0 && translationsCopy[currentLanguage] && !location.state?.language) {
         let content = translationsCopy[currentLanguage];
         title = content.label;
         body = content.body || '';
@@ -156,16 +151,12 @@ export const SpeedSend = () => {
 
     if (languageOptions.length > 0 && languageIdValue) {
       if (location.state && location.state !== 'copy') {
-        const selectedLangauge = languageOptions.find(
-          (lang: any) => lang.label === location.state.language
-        );
+        const selectedLangauge = languageOptions.find((lang: any) => lang.label === location.state.language);
         navigate(location.pathname);
 
         setLanguageId(selectedLangauge);
       } else if (!language?.id) {
-        const selectedLangauge = languageOptions.find(
-          (lang: any) => lang.id === languageIdValue.id
-        );
+        const selectedLangauge = languageOptions.find((lang: any) => lang.id === languageIdValue.id);
         setLanguageId(selectedLangauge);
       } else {
         setLanguageId(language);
@@ -307,9 +298,7 @@ export const SpeedSend = () => {
           language: value,
           label: translationsCopy[translationId].label,
           body: translationsCopy[translationId].body,
-          type: translationsCopy[translationId].MessageMedia
-            ? translationsCopy[translationId].MessageMedia.type
-            : null,
+          type: translationsCopy[translationId].MessageMedia ? translationsCopy[translationId].MessageMedia.type : null,
           MessageMedia: translationsCopy[translationId].MessageMedia,
         });
       } else {
@@ -325,9 +314,7 @@ export const SpeedSend = () => {
   };
 
   const handleLanguageChange = (value: any) => {
-    const selected = languageOptions.find(
-      ({ label: languageLabel }: any) => languageLabel === value
-    );
+    const selected = languageOptions.find(({ label: languageLabel }: any) => languageLabel === value);
     if (selected && isEditing) {
       updateTranslation(selected);
     } else if (selected) {
@@ -360,21 +347,15 @@ export const SpeedSend = () => {
   const displayWarning = () => {
     if (type && type.id === 'STICKER') {
       setWarning(
-        <div className={styles.Warning}>
-          <ol>
-            <li>{t('Animated stickers are not supported.')}</li>
-            <li>{t('Captions along with stickers are not supported.')}</li>
-          </ol>
-        </div>
+        <span className={styles.Warning}>
+          <span>{t('Animated stickers are not supported.')}</span>
+          <br />
+          <span>{t('Captions along with stickers are not supported.')}</span>
+          <span></span>
+        </span>
       );
     } else if (type && type.id === 'AUDIO') {
-      setWarning(
-        <div className={styles.Warning}>
-          <ol>
-            <li>{t('Captions along with audio are not supported.')}</li>
-          </ol>
-        </div>
-      );
+      setWarning(<span className={styles.Warning}>{t('Captions along with audio are not supported.')}</span>);
     } else {
       setWarning(null);
     }
@@ -396,9 +377,7 @@ export const SpeedSend = () => {
           is: (val: any) => val && val.id,
           then: (schema) => schema.required(t('Attachment URL is required.')),
         }),
-      body: Yup.string()
-        .required(t('Message is required.'))
-        .max(1024, 'Maximum 1024 characters are allowed'),
+      body: Yup.string().required(t('Message is required.')).max(1024, 'Maximum 1024 characters are allowed'),
     },
     [['type', 'attachmentURL']]
   );

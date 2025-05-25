@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SupportAgent } from '@mui/icons-material';
+import SupportAgentIcon from '@mui/icons-material/SupportAgent';
 import { useQuery } from '@apollo/client';
 import dayjs from 'dayjs';
 
@@ -124,7 +124,7 @@ export const Ticket = ({ selectedTicket, setOpenDialog }: TicketProps) => {
     },
   ];
 
-  const ticketIcon = <SupportAgent className={styles.TicketIcon} />;
+  const ticketIcon = <SupportAgentIcon className={styles.TicketIcon} />;
 
   if (loading) {
     return <Loading />;

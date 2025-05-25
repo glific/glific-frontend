@@ -1,4 +1,4 @@
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router';
 import { render, screen } from '@testing-library/react';
 import MenuItem from './MenuItem';
 
