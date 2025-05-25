@@ -173,7 +173,7 @@ export const PaymentDetails = ({ handleStepChange, saveData }: FormStepProps) =>
       helperText="Select the billing frequency and enter the billing information"
       setStates={setStates}
       setPayload={setPayload}
-      identifier="payemntDetails"
+      identifier="paymentDetails"
       handleStepChange={handleStepChange}
       saveData={saveData}
       submitData={handleSubmit}
