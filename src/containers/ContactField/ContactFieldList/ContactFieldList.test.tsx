@@ -1,6 +1,6 @@
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router';
 import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
 
@@ -12,8 +12,8 @@ afterEach(() => {
   cleanup();
 });
 
-vi.mock('react-router-dom', async () => ({
-  ...((await vi.importActual<any>('react-router-dom')) as {}),
+vi.mock('react-router', async () => ({
+  ...((await vi.importActual<any>('react-router')) as {}),
   useParams: () => ({ id: '1' }),
 }));
 
