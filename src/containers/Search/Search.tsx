@@ -33,6 +33,7 @@ export interface SearchProps {
   setState?: any;
   searchId?: string | null;
   setSearchParam?: Function;
+  resetSearchQuery?: any;
 }
 
 const getPayload = (payload: any) => {
@@ -105,7 +106,7 @@ const queries = {
   deleteItemQuery: DELETE_SEARCH,
 };
 
-export const Search = ({ type, search, searchId, setSearchParam, ...props }: SearchProps) => {
+export const Search = ({ type, search, searchId, setSearchParam, resetSearchQuery, ...props }: SearchProps) => {
   const { searchParam } = props;
   const [shortcode, setShortcode] = useState('');
   const [label, setLabel] = useState('');
@@ -487,6 +488,8 @@ export const Search = ({ type, search, searchId, setSearchParam, ...props }: Sea
     if (setSearchParam) {
       setSearchParam({});
     }
+
+    resetSearchQuery();
   };
 
   return (

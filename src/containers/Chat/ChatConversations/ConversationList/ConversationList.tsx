@@ -29,6 +29,7 @@ import { getConversationForSearchMulti, getConversation } from './ConversationLi
 import styles from './ConversationList.module.css';
 import { GROUP_SEARCH_MULTI_QUERY, GROUP_SEARCH_QUERY } from 'graphql/queries/WaGroups';
 import { useLocation } from 'react-router-dom';
+import { cache } from 'config/apolloclient';
 
 interface ConversationListProps {
   searchVal: string;
@@ -260,8 +261,21 @@ export const ConversationList = ({
       // This is used for filtering the searches, when you click on it, so only call it
       // when user clicks and savedSearchCriteriaId is set.
       addLogs(`filtering the searches`, filterVariables());
+      console.log(cache.readQuery({ query: searchQuery }));
       getFilterConvos({
         variables: filterVariables(),
+      }).then(({ data }) => {
+        console.log(data);
+
+        if (searchParam?.dateFrom && searchParam?.dateTo) {
+          if (!data?.search?.length) return;
+
+          client.cache.writeQuery({
+            query: searchQuery,
+            variables: filterVariables(),
+            data, // new data object returned by getFilterConvos
+          });
+        }
       });
     }
   }, [searchVal, searchParam, savedSearchCriteria, phonenumber]);

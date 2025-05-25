@@ -144,7 +144,10 @@ html {
 
 .ShowNewMessages {
   composes: JumpToLatest;
-  padding: 0.5rem;
+  /* padding: 0.5rem; */
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  margin-top: 0px;
+  font-size: 0.8rem;
 }
-
-.ShowNewMessages span {}

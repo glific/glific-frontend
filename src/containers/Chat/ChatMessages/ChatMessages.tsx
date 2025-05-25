@@ -1,6 +1,6 @@
 import { useCallback, useState, useEffect } from 'react';
 import { useQuery, useMutation, useLazyQuery, useApolloClient } from '@apollo/client';
-import { CircularProgress, Container } from '@mui/material';
+import { CircularProgress, Container, LinearProgress } from '@mui/material';
 import dayjs from 'dayjs';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -40,6 +40,7 @@ import {
   updateGroupConversationsCache,
 } from 'services/GroupMessageService';
 import { GET_CONTACT_STATUS } from 'graphql/queries/Contact';
+import { DotLoader } from 'components/UI/DotLoader/DotLoader';
 
 export interface ChatMessagesProps {
   entityId?: number | string | null;
@@ -121,7 +122,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, searchParam }: C
     } else {
       setShowNewMessages(false);
     }
-  }, [searchParam]);
+  }, [searchParam, entityId]);
 
   const scrollToLatestMessage = () => {
     const container: any = document.querySelector('.messageContainer');
@@ -178,10 +179,12 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, searchParam }: C
     loading: conversationLoad,
     error: conversationError,
     data: allConversations,
+    networkStatus,
     fetchMore,
-  }: any = useQuery(searchQuery, {
+  } = useQuery(searchQuery, {
     variables: queryVariables,
     fetchPolicy: 'cache-only',
+    notifyOnNetworkStatusChange: true,
   });
 
   useEffect(() => {
@@ -777,8 +780,14 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, searchParam }: C
 
   const showCurrentMesssage = (
     <div onClick={showCurrentMessages} className={styles.ShowNewMessages}>
-      You are viewing older messages. Click here to jump to the latest messages.
-      <ExpandMoreIcon />
+      {networkStatus === 3 ? (
+        <DotLoader />
+      ) : (
+        <>
+          Load more
+          <ExpandMoreIcon />
+        </>
+      )}
     </div>
   );
 

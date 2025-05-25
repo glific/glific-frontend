@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Container, IconButton } from '@mui/material';
 import CancelOutlined from '@mui/icons-material/CancelOutlined';
-import { useApolloClient, useQuery } from '@apollo/client/react';
+import { useApolloClient, useLazyQuery, useQuery } from '@apollo/client/react';
 import { useTranslation } from 'react-i18next';
 
 import SearchBar from 'components/UI/SearchBar/SearchBar';
@@ -11,11 +11,13 @@ import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { Search } from 'containers/Search/Search';
 import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import { getUserRolePermissions } from 'context/role';
-import { SEARCH_OFFSET } from 'graphql/queries/Search';
+import { SEARCH_OFFSET, SEARCH_QUERY } from 'graphql/queries/Search';
 import ConversationList from './ConversationList/ConversationList';
 import styles from './ChatConversations.module.css';
 import Track from 'services/TrackService';
 import { useLocation } from 'react-router';
+import { GROUP_SEARCH_QUERY } from 'graphql/queries/WaGroups';
+import { SEARCH_QUERY_VARIABLES } from 'common/constants';
 
 export interface ChatConversationsProps {
   entityId?: number | string;
@@ -48,6 +50,11 @@ export const ChatConversations = ({
   const location = useLocation();
 
   let groups: boolean = location.pathname.includes('group');
+
+  const searchQuery: any = groups ? GROUP_SEARCH_QUERY : SEARCH_QUERY;
+
+  const [getFilterConvos] = useLazyQuery<any>(searchQuery);
+
   // restore multi-search after conversation click
   useEffect(() => {
     if (offset.data && offset.data.search) {
@@ -135,6 +142,12 @@ export const ChatConversations = ({
     handlerSavedSearchCriteria(data.savedSearch.args, data.savedSearch.id);
   };
 
+  const resetSearchQuery = (reset: any) => {
+    getFilterConvos({
+      variables: SEARCH_QUERY_VARIABLES,
+    });
+  };
+
   // create searches
   let dialogBox;
   if (dialog) {
@@ -158,6 +171,7 @@ export const ChatConversations = ({
           handleSave={isearchType ? undefined : saveHandler}
           searchId={isearchType ? undefined : savedSearchCriteriaId}
           setSearchParam={setSearchParam}
+          resetSearchQuery={resetSearchQuery}
         />
       </DialogBox>
     );
