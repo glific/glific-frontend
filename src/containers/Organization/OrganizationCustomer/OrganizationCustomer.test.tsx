@@ -8,9 +8,9 @@ import { MemoryRouter } from 'react-router';
 
 const mocks = [...organizationCustomerMock];
 
-vi.mock('react-router-dom', async () => {
+vi.mock('react-router', async () => {
   return {
-    ...(await vi.importActual<any>('react-router-dom')),
+    ...(await vi.importActual<any>('react-router')),
     useParams: () => ({ id: '1' }),
   };
 });

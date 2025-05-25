@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Paper, Tab, Tabs } from '@mui/material';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useParams, useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 
 import { GROUP_COLLECTION_SEARCH_QUERY_VARIABLES, GROUP_QUERY_VARIABLES } from 'common/constants';

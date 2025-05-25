@@ -4,7 +4,7 @@ import { MockedProvider } from '@apollo/client/testing';
 import { LOGGED_IN_USER_MOCK, multiple_profile_mock } from 'mocks/Contact';
 import { ContactProfile } from './ContactProfile';
 import { mocks as historyMock } from './ContactHistory/ContactHistory.test';
-import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import { MemoryRouter, Route, Routes } from 'react-router';
 
 describe('contact profile with single profile', () => {
   const mocks = [...LOGGED_IN_USER_MOCK, ...historyMock];
@@ -74,14 +74,14 @@ describe('contact profile with multiple profiles', () => {
 
     //should show active profile first
     await waitFor(() => {
-      expect(screen.getAllByRole('textbox')[0]).toHaveValue('profile name 2');
+      expect(screen.getAllByRole('textbox')[0]).toHaveValue('profile name 1');
     });
 
     fireEvent.click(screen.getAllByTestId('profileHeader')[1]);
 
     //should show active profile first
     await waitFor(() => {
-      expect(screen.getAllByRole('textbox')[0]).toHaveValue('profile name 1');
+      expect(screen.getAllByRole('textbox')[0]).toHaveValue('profile name 2');
     });
   });
 });

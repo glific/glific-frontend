@@ -1,7 +1,7 @@
 import { Typography } from '@mui/material';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router';
 import * as Yup from 'yup';
 
 import PollsIcon from 'assets/images/Polls.svg?react';

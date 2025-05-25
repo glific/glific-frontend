@@ -20,7 +20,7 @@ import {
 import { CircularProgress, Modal } from '@mui/material';
 import styles from './CollectionList.module.css';
 import { exportCsvFile } from 'common/utils';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router';
 import { collectionInfo } from 'common/HelpData';
 import { GROUP_SEARCH_QUERY } from 'graphql/queries/WaGroups';
 import { SEARCH_QUERY } from 'graphql/queries/Search';
