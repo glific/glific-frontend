@@ -144,7 +144,6 @@ html {
 
 .ShowNewMessages {
   composes: JumpToLatest;
-  /* padding: 0.5rem; */
   width: 50%;
   display: flex;
   justify-content: center;

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Container, IconButton } from '@mui/material';
 import CancelOutlined from '@mui/icons-material/CancelOutlined';
-import { useApolloClient, useLazyQuery, useQuery } from '@apollo/client/react';
+import { useApolloClient, useQuery } from '@apollo/client/react';
 import { useTranslation } from 'react-i18next';
 
 import SearchBar from 'components/UI/SearchBar/SearchBar';
@@ -11,12 +11,11 @@ import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { Search } from 'containers/Search/Search';
 import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import { getUserRolePermissions } from 'context/role';
-import { SEARCH_OFFSET, SEARCH_QUERY } from 'graphql/queries/Search';
+import { SEARCH_OFFSET } from 'graphql/queries/Search';
 import ConversationList from './ConversationList/ConversationList';
 import styles from './ChatConversations.module.css';
 import Track from 'services/TrackService';
 import { useLocation } from 'react-router';
-import { GROUP_SEARCH_QUERY } from 'graphql/queries/WaGroups';
 
 export interface ChatConversationsProps {
   entityId?: number | string;

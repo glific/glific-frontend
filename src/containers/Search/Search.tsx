@@ -494,7 +494,9 @@ export const Search = ({
     if (setSearchParam) {
       setSearchParam({});
     }
-    closeDialogBox();
+    if (closeDialogBox) {
+      closeDialogBox();
+    }
   };
 
   return (

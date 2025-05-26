@@ -276,15 +276,9 @@ export const ConversationList = ({
       searchData
     ) {
       const variables = getVariables(
-        {
-          limit: DEFAULT_ENTITY_LIMIT,
-        },
-        {
-          limit: DEFAULT_MESSAGE_LIMIT,
-        },
-        {
-          filter: {},
-        },
+        { limit: DEFAULT_ENTITY_LIMIT },
+        { limit: DEFAULT_MESSAGE_LIMIT },
+        { filter: {} },
         groups
       );
       getFilterConvos({

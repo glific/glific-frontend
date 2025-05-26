@@ -40,7 +40,7 @@ import {
   updateGroupConversationsCache,
 } from 'services/GroupMessageService';
 import { GET_CONTACT_STATUS } from 'graphql/queries/Contact';
-import { DotLoader } from 'components/UI/DotLoader/DotLoader';
+import DotLoader from 'components/UI/DotLoader/DotLoader';
 
 export interface ChatMessagesProps {
   entityId?: number | string | null;

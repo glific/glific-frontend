@@ -65,6 +65,5 @@
   margin-top: 1rem;
   display: flex;
   flex-direction: row-reverse;
-  justify-content: flex-end;
   justify-content: space-between;
 }
