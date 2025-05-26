@@ -47,10 +47,10 @@ export interface ChatMessagesProps {
   collectionId?: number | string | null;
   phoneId?: any;
   setPhonenumber?: any;
-  searchParam?: any;
+  appliedFilters?: any
 }
 
-export const ChatMessages = ({ entityId, collectionId, phoneId, searchParam }: ChatMessagesProps) => {
+export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters }: ChatMessagesProps) => {
   const urlString = new URL(window.location.href);
   const location = useLocation();
   const client = useApolloClient();
@@ -100,7 +100,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, searchParam }: C
   useEffect(() => {
     setTimeout(() => {
       const messageContainer: any = document.querySelector('.messageContainer');
-      if (messageContainer && (searchParam ? !searchParam.dateFrom && !searchParam.dateTo : true)) {
+      if (messageContainer && (appliedFilters ? !appliedFilters.dateFrom && !appliedFilters.dateTo : true)) {
         messageContainer.addEventListener('scroll', (event: any) => {
           const messageContainerTarget = event.target;
           if (
@@ -117,12 +117,12 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, searchParam }: C
   }, [setShowJumpToLatest, entityId]);
 
   useEffect(() => {
-    if (searchParam && searchParam.dateFrom && searchParam.dateTo) {
+    if (appliedFilters && appliedFilters.dateFrom && appliedFilters.dateTo) {
       setShowNewMessages(true);
     } else {
       setShowNewMessages(false);
     }
-  }, [searchParam, entityId]);
+  }, [appliedFilters, entityId]);
 
   const scrollToLatestMessage = () => {
     const container: any = document.querySelector('.messageContainer');

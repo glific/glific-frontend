@@ -17,26 +17,18 @@ import styles from './ChatConversations.module.css';
 import Track from 'services/TrackService';
 import { useLocation } from 'react-router';
 import { GROUP_SEARCH_QUERY } from 'graphql/queries/WaGroups';
-import { SEARCH_QUERY_VARIABLES } from 'common/constants';
 
 export interface ChatConversationsProps {
   entityId?: number | string;
   phonenumber?: any;
   filterComponent?: any;
-
-  searchParam?: any;
-  setSearchParam?: any;
+  setAppliedFilters?: any
 }
 
-export const ChatConversations = ({
-  entityId,
-  phonenumber,
-  filterComponent,
-  searchParam,
-  setSearchParam,
-}: ChatConversationsProps) => {
+export const ChatConversations = ({ entityId, phonenumber, setAppliedFilters, filterComponent }: ChatConversationsProps) => {
   // get the conversations stored from the cache
   const [searchVal, setSearchVal] = useState<any>();
+  const [searchParam, setSearchParam] = useState<any>({});
   const [selectedContactId, setSelectedContactId] = useState<any>(entityId);
   const [savedSearchCriteria, setSavedSearchCriteria] = useState<string>('');
   const [savedSearchCriteriaId, setSavedSearchCriteriaId] = useState(null);
@@ -51,9 +43,6 @@ export const ChatConversations = ({
 
   let groups: boolean = location.pathname.includes('group');
 
-  const searchQuery: any = groups ? GROUP_SEARCH_QUERY : SEARCH_QUERY;
-
-  const [getFilterConvos] = useLazyQuery<any>(searchQuery);
 
   // restore multi-search after conversation click
   useEffect(() => {
@@ -66,6 +55,12 @@ export const ChatConversations = ({
   useEffect(() => {
     setSelectedContactId(entityId?.toString());
   }, [entityId]);
+
+  useEffect(()=>{
+   if(setAppliedFilters){
+     setAppliedFilters(searchParam)
+   }
+  }, [searchParam])
 
   let timer: any = null;
 
@@ -246,6 +241,7 @@ export const ChatConversations = ({
           endAdornment={!groups}
           searchMode={enableSearchMode}
           iconFront
+          searchParam={searchParam}
         />
       </div>
       {filter}

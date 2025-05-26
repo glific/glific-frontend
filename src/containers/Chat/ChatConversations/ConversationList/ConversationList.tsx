@@ -337,6 +337,7 @@ export const ConversationList = ({
       selectedContactId,
       groups
     );
+
     return (
       <Fragment>
         {index === 0 ? header : null}

@@ -45,7 +45,7 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
   const location = useLocation();
   const params = useParams();
   const [value, setValue] = useState(tabs[0].link);
-  const [searchParam, setSearchParam] = useState<any>({});
+  const [appliedFilters, setAppliedFilters] = useState<any>({});
 
   let selectedContactId = params.contactId;
   let selectedCollectionId: any = params.collectionId;
@@ -136,8 +136,7 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
       listingContent = (
         <ChatConversations
           entityId={simulatorId > 0 ? simulatorId : selectedContactId}
-          searchParam={searchParam}
-          setSearchParam={setSearchParam}
+          setAppliedFilters={setAppliedFilters}
         />
       );
 
@@ -153,7 +152,7 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
           <ChatMessages
             entityId={simulatorId > 0 ? simulatorId : selectedContactId}
             collectionId={selectedCollectionId}
-            searchParam={searchParam}
+             appliedFilters={appliedFilters}
           />
         </div>
 
