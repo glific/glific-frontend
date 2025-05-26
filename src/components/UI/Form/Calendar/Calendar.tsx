@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { getIn } from 'formik';
+import { Dayjs } from 'dayjs';
 import styles from './Calendar.module.css';
 import { MONTH_DATE_FORMAT } from 'common/constants';
 
@@ -16,6 +17,12 @@ export interface CalendarProps {
   minDate?: any;
   className?: string;
 }
+const CalendarStyles = {
+  '.MuiPickersOutlinedInput-root': {
+    borderRadius: '12px',
+    borderWidth: '2px',
+  },
+};
 
 export const Calendar = ({
   format = MONTH_DATE_FORMAT,
@@ -32,7 +39,7 @@ export const Calendar = ({
   const dateValue = field.value ? field.value : null;
   const [open, setOpen] = useState(false);
 
-  const handleDateChange = (date: Date | null | string) => {
+  const handleDateChange = (date: Dayjs | null | string) => {
     if (date) {
       if (date.toString() !== 'Invalid Date') {
         setFieldValue(field.name, date);
@@ -58,6 +65,7 @@ export const Calendar = ({
             textField: {
               inputProps: {
                 className: styles.Input,
+                'data-testid': placeholder,
               },
               InputLabelProps: {
                 className: styles.Label,
@@ -68,6 +76,7 @@ export const Calendar = ({
             },
           }}
           onClose={() => setOpen(false)}
+          sx={CalendarStyles}
         />
       </div>
     </LocalizationProvider>

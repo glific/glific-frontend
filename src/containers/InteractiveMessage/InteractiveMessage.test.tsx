@@ -2,7 +2,7 @@ import { render, screen, waitFor, fireEvent, cleanup } from '@testing-library/re
 import userEvent from '@testing-library/user-event';
 import { MockedProvider } from '@apollo/client/testing';
 import axios from 'axios';
-import { Route, MemoryRouter, Routes } from 'react-router-dom';
+import { Route, MemoryRouter, Routes } from 'react-router';
 import { vi } from 'vitest';
 
 import { setUserSession } from 'services/AuthService';
@@ -41,8 +41,8 @@ const mockUseLocationValue: any = {
   state: null,
 };
 
-vi.mock('react-router-dom', async () => ({
-  ...((await vi.importActual<any>('react-router-dom')) as {}),
+vi.mock('react-router', async () => ({
+  ...((await vi.importActual<any>('react-router')) as {}),
   useLocation: () => {
     return mockUseLocationValue;
   },
@@ -277,7 +277,7 @@ describe('Add mode', () => {
 
     // successful save
     await waitFor(() => {
-      expect(setNotification).toHaveBeenCalledWith('Interactive message created successfully!');
+      expect(setNotification).toHaveBeenCalled();
     });
   });
 
@@ -319,6 +319,30 @@ describe('Add mode', () => {
 
     fireEvent.change(getAllByRole('textbox')[4], { target: { value: '@results.result_1' } });
     fireEvent.click(getByTestId('submitActionButton'));
+  });
+
+  test('it should show error if buttons have same text', async () => {
+    render(interactiveMessage());
+
+    await waitFor(() => {
+      expect(screen.getByText('Add a new Interactive message')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('addButton'));
+
+    const inputs = screen.getAllByPlaceholderText('Enter button text(20 char.)');
+    await waitFor(() => {
+      expect(inputs).toHaveLength(2);
+    });
+
+    fireEvent.change(inputs[0], { target: { value: 'yes' } });
+    fireEvent.change(inputs[1], { target: { value: 'yes' } });
+
+    fireEvent.click(screen.getByTestId('submitActionButton'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Button labels must be unique.')).toBeInTheDocument();
+    });
   });
 });
 

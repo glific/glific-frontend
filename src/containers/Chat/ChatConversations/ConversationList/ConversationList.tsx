@@ -28,8 +28,7 @@ import ChatConversation from '../ChatConversation/ChatConversation';
 import { getConversationForSearchMulti, getConversation } from './ConversationList.helper';
 import styles from './ConversationList.module.css';
 import { GROUP_SEARCH_MULTI_QUERY, GROUP_SEARCH_QUERY } from 'graphql/queries/WaGroups';
-import { useLocation } from 'react-router-dom';
-import { cache } from 'config/apolloclient';
+import { useLocation } from 'react-router';
 
 interface ConversationListProps {
   searchVal: string;
@@ -261,7 +260,7 @@ export const ConversationList = ({
       // This is used for filtering the searches, when you click on it, so only call it
       // when user clicks and savedSearchCriteriaId is set.
       addLogs(`filtering the searches`, filterVariables());
-      console.log(cache.readQuery({ query: searchQuery }));
+
       getFilterConvos({
         variables: filterVariables(),
       });

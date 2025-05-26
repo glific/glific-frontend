@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Paper, Tab, Tabs } from '@mui/material';
 import { useQuery } from '@apollo/client';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useParams, useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 
 import Simulator from 'components/simulator/Simulator';
