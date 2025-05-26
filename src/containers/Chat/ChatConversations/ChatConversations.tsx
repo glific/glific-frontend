@@ -22,10 +22,15 @@ export interface ChatConversationsProps {
   entityId?: number | string;
   phonenumber?: any;
   filterComponent?: any;
-  setAppliedFilters?: any
+  setAppliedFilters?: any;
 }
 
-export const ChatConversations = ({ entityId, phonenumber, setAppliedFilters, filterComponent }: ChatConversationsProps) => {
+export const ChatConversations = ({
+  entityId,
+  phonenumber,
+  setAppliedFilters,
+  filterComponent,
+}: ChatConversationsProps) => {
   // get the conversations stored from the cache
   const [searchVal, setSearchVal] = useState<any>();
   const [searchParam, setSearchParam] = useState<any>({});
@@ -43,7 +48,6 @@ export const ChatConversations = ({ entityId, phonenumber, setAppliedFilters, fi
 
   let groups: boolean = location.pathname.includes('group');
 
-
   // restore multi-search after conversation click
   useEffect(() => {
     if (offset.data && offset.data.search) {
@@ -56,11 +60,11 @@ export const ChatConversations = ({ entityId, phonenumber, setAppliedFilters, fi
     setSelectedContactId(entityId?.toString());
   }, [entityId]);
 
-  useEffect(()=>{
-   if(setAppliedFilters){
-     setAppliedFilters(searchParam)
-   }
-  }, [searchParam])
+  useEffect(() => {
+    if (setAppliedFilters) {
+      setAppliedFilters(searchParam);
+    }
+  }, [searchParam]);
 
   let timer: any = null;
 
@@ -161,6 +165,7 @@ export const ChatConversations = ({ entityId, phonenumber, setAppliedFilters, fi
           searchId={isearchType ? undefined : savedSearchCriteriaId}
           setSearchParam={setSearchParam}
           closeDialogBox={closeDialogBox}
+          chatFilters
         />
       </DialogBox>
     );

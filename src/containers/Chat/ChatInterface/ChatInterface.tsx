@@ -152,7 +152,7 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
           <ChatMessages
             entityId={simulatorId > 0 ? simulatorId : selectedContactId}
             collectionId={selectedCollectionId}
-             appliedFilters={appliedFilters}
+            appliedFilters={appliedFilters}
           />
         </div>
 

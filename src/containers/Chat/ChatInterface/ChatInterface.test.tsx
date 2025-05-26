@@ -1,5 +1,5 @@
 import { MemoryRouter } from 'react-router';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { describe, expect } from 'vitest';
 import { MockedProvider } from '@apollo/client/testing';
 import { InMemoryCache } from '@apollo/client';
@@ -9,13 +9,22 @@ import { SEARCH_QUERY } from 'graphql/queries/Search';
 import { setUserSession } from 'services/AuthService';
 
 import { getAttachmentPermissionMock } from 'mocks/Attachment';
-import { collectionCountQuery, markAsReadMock, savedSearchQuery, savedSearchStatusQuery } from 'mocks/Chat';
+import {
+  collectionCountQuery,
+  conversationMock,
+  markAsReadMock,
+  savedSearchQuery,
+  savedSearchStatusQuery,
+} from 'mocks/Chat';
 import { contactCollectionsQuery } from 'mocks/Contact';
 import { OrganizationStateMock } from 'mocks/Organization';
-import { collectionCountSubscription } from 'mocks/Search';
+import { collectionCountSubscription, searchQuery, searchWithDateFIlters } from 'mocks/Search';
 
 import ChatInterface from './ChatInterface';
 import { getWhatsAppManagedPhonesStatusMock } from 'mocks/StatusBar';
+import { getAllCollectionsQuery } from 'mocks/Collection';
+import { getUsersQuery } from 'mocks/User';
+import { getAllFlowLabelsQuery } from 'mocks/Flow';
 
 const mockedUsedNavigate = vi.fn();
 vi.mock('react-router', async () => ({
@@ -187,6 +196,10 @@ emptyCache.writeQuery({
   },
 });
 
+beforeEach(() => {
+  cleanup();
+});
+
 const emptyWrapper = (
   <MockedProvider cache={emptyCache} mocks={mocks}>
     <MemoryRouter>
@@ -201,6 +214,67 @@ describe('Chat interface for empty cache', () => {
 
     await waitFor(() => {
       expect(getByTestId('empty-result')).toBeInTheDocument();
+    });
+  });
+});
+
+describe('Chat interface with search', () => {
+  const cache = new InMemoryCache({ addTypename: false });
+  cache.writeQuery(searchQuery);
+  const MOCKS = [
+    ...mocks,
+    ...getAllCollectionsQuery,
+    getUsersQuery,
+    getAllFlowLabelsQuery,
+    markAsReadMock('2'),
+    searchWithDateFIlters,
+    conversationMock({ contactOpts: { limit: 25 }, messageOpts: { limit: 20 }, filter: {} }),
+  ];
+  const wrapper = (
+    <MockedProvider cache={cache} mocks={MOCKS}>
+      <MemoryRouter>
+        <ChatInterface />
+      </MemoryRouter>
+    </MockedProvider>
+  );
+
+  test('should show filtered messages after applying date range', async () => {
+    render(wrapper);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('beneficiaryName')).toHaveTextContent('Effie Cormier');
+    });
+
+    fireEvent.click(screen.getByTestId('advanced-search-icon'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Search conversations')).toBeInTheDocument();
+    });
+
+    const dateFrom = screen.queryByTestId('Date from');
+    const dateTo = screen.queryByTestId('Date to');
+
+    if (dateFrom && dateTo) {
+      fireEvent.change(dateFrom, { target: { value: '05/01/2025' } });
+      fireEvent.change(dateTo, { target: { value: '05/06/2025' } });
+    }
+
+    fireEvent.click(screen.getByTestId('submitActionButton'));
+
+    await waitFor(() => {
+      expect(mockedUsedNavigate).toHaveBeenCalled();
+    });
+
+    fireEvent.click(screen.getByTestId('advanced-search-icon'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Search conversations')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('additionalActionButton'));
+
+    await waitFor(() => {
+      expect(mockedUsedNavigate).toHaveBeenCalled();
     });
   });
 });

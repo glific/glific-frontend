@@ -263,10 +263,9 @@ export const ConversationList = ({
       addLogs(`filtering the searches`, filterVariables());
       getFilterConvos({
         variables: filterVariables(),
-        
-      }).then(({data})=>{
-        const entityId = data?.search[0]?.contact?.id || ""
-        navigate(`/chat/${entityId}`)        
+      }).then(({ data }) => {
+        const entityId = data?.search[0]?.contact?.id || '';
+        navigate(`/chat/${entityId}`);
       });
     } else if (
       searchParam &&
@@ -276,7 +275,6 @@ export const ConversationList = ({
       !phonenumber &&
       searchData
     ) {
-
       const variables = getVariables(
         {
           limit: DEFAULT_ENTITY_LIMIT,
@@ -292,9 +290,9 @@ export const ConversationList = ({
       getFilterConvos({
         variables,
         fetchPolicy: 'network-only',
-      }).then(({data})=>{
-        const entityId = data?.search[0]?.contact?.id || ""
-        navigate(`/chat/${entityId}`)        
+      }).then(({ data }) => {
+        const entityId = data?.search[0]?.contact?.id || '';
+        navigate(`/chat/${entityId}`);
       });
     }
   }, [searchVal, searchParam, savedSearchCriteria, phonenumber, searchParam]);

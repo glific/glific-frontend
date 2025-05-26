@@ -1,6 +1,6 @@
 import { useCallback, useState, useEffect } from 'react';
 import { useQuery, useMutation, useLazyQuery, useApolloClient } from '@apollo/client';
-import { CircularProgress, Container, LinearProgress } from '@mui/material';
+import { CircularProgress, Container } from '@mui/material';
 import dayjs from 'dayjs';
 import { Navigate, useLocation, useNavigate } from 'react-router';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -47,7 +47,7 @@ export interface ChatMessagesProps {
   collectionId?: number | string | null;
   phoneId?: any;
   setPhonenumber?: any;
-  appliedFilters?: any
+  appliedFilters?: any;
 }
 
 export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters }: ChatMessagesProps) => {
