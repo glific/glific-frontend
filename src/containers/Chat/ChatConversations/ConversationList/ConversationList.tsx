@@ -28,7 +28,7 @@ import ChatConversation from '../ChatConversation/ChatConversation';
 import { getConversationForSearchMulti, getConversation } from './ConversationList.helper';
 import styles from './ConversationList.module.css';
 import { GROUP_SEARCH_MULTI_QUERY, GROUP_SEARCH_QUERY } from 'graphql/queries/WaGroups';
-import { useLocation } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 
 interface ConversationListProps {
   searchVal: string;
@@ -67,6 +67,7 @@ export const ConversationList = ({
   const { t } = useTranslation();
   const location = useLocation();
   const hasSearchParams = searchParam ? Object.keys(searchParam).length !== 0 : false;
+  const navigate = useNavigate();
 
   let groups: boolean = location.pathname.includes('group');
 
@@ -260,9 +261,12 @@ export const ConversationList = ({
       // This is used for filtering the searches, when you click on it, so only call it
       // when user clicks and savedSearchCriteriaId is set.
       addLogs(`filtering the searches`, filterVariables());
-
       getFilterConvos({
         variables: filterVariables(),
+        
+      }).then(({data})=>{
+        const entityId = data?.search[0]?.contact?.id || ""
+        navigate(`/chat/${entityId}`)        
       });
     } else if (
       searchParam &&
@@ -272,6 +276,7 @@ export const ConversationList = ({
       !phonenumber &&
       searchData
     ) {
+
       const variables = getVariables(
         {
           limit: DEFAULT_ENTITY_LIMIT,
@@ -286,6 +291,10 @@ export const ConversationList = ({
       );
       getFilterConvos({
         variables,
+        fetchPolicy: 'network-only',
+      }).then(({data})=>{
+        const entityId = data?.search[0]?.contact?.id || ""
+        navigate(`/chat/${entityId}`)        
       });
     }
   }, [searchVal, searchParam, savedSearchCriteria, phonenumber, searchParam]);
