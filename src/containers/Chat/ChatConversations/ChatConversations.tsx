@@ -142,12 +142,6 @@ export const ChatConversations = ({
     handlerSavedSearchCriteria(data.savedSearch.args, data.savedSearch.id);
   };
 
-  const resetSearchQuery = (reset: any) => {
-    getFilterConvos({
-      variables: SEARCH_QUERY_VARIABLES,
-    });
-  };
-
   // create searches
   let dialogBox;
   if (dialog) {
@@ -171,7 +165,7 @@ export const ChatConversations = ({
           handleSave={isearchType ? undefined : saveHandler}
           searchId={isearchType ? undefined : savedSearchCriteriaId}
           setSearchParam={setSearchParam}
-          resetSearchQuery={resetSearchQuery}
+          closeDialogBox={closeDialogBox}
         />
       </DialogBox>
     );

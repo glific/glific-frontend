@@ -264,21 +264,32 @@ export const ConversationList = ({
       console.log(cache.readQuery({ query: searchQuery }));
       getFilterConvos({
         variables: filterVariables(),
-      }).then(({ data }) => {
-        console.log(data);
-
-        if (searchParam?.dateFrom && searchParam?.dateTo) {
-          if (!data?.search?.length) return;
-
-          client.cache.writeQuery({
-            query: searchQuery,
-            variables: filterVariables(),
-            data, // new data object returned by getFilterConvos
-          });
-        }
+      });
+    } else if (
+      searchParam &&
+      Object.keys(searchParam).length === 0 &&
+      !searchVal &&
+      !savedSearchCriteria &&
+      !phonenumber &&
+      searchData
+    ) {
+      const variables = getVariables(
+        {
+          limit: DEFAULT_ENTITY_LIMIT,
+        },
+        {
+          limit: DEFAULT_MESSAGE_LIMIT,
+        },
+        {
+          filter: {},
+        },
+        groups
+      );
+      getFilterConvos({
+        variables,
       });
     }
-  }, [searchVal, searchParam, savedSearchCriteria, phonenumber]);
+  }, [searchVal, searchParam, savedSearchCriteria, phonenumber, searchParam]);
 
   // Other cases
   if ((called && loading) || conversationLoading) return <Loading />;
