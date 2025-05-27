@@ -174,7 +174,15 @@ export const ConversationList = ({
         filter.includeUsers = params.includeUsers.map((obj: any) => obj.id);
       if (params.includeLabels && params.includeLabels.length > 0)
         filter.includeLabels = params.includeLabels.map((obj: any) => obj.id);
-      if (params.dateFrom) {
+      if (params.dateFrom && !params.dateTo) {
+        filter.dateRange = {
+          from: dayjs(params.dateFrom).format(ISO_DATE_FORMAT),
+        };
+      } else if (!params.dateFrom && params.dateTo) {
+        filter.dateRange = {
+          to: dayjs(params.dateTo).format(ISO_DATE_FORMAT),
+        };
+      } else if (params.dateFrom && params.dateTo) {
         filter.dateRange = {
           from: dayjs(params.dateFrom).format(ISO_DATE_FORMAT),
           to: dayjs(params.dateTo).format(ISO_DATE_FORMAT),

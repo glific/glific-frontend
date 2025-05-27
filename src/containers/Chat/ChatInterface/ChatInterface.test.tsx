@@ -218,7 +218,7 @@ describe('Chat interface for empty cache', () => {
   });
 });
 
-describe('Chat interface with search', () => {
+describe('Chat interface with filters', () => {
   const cache = new InMemoryCache({ addTypename: false });
   cache.writeQuery(searchQuery);
   const MOCKS = [
@@ -227,7 +227,9 @@ describe('Chat interface with search', () => {
     getUsersQuery,
     getAllFlowLabelsQuery,
     markAsReadMock('2'),
-    searchWithDateFIlters,
+    searchWithDateFIlters(true),
+    searchWithDateFIlters(false, true),
+    searchWithDateFIlters(true, true),
     conversationMock({ contactOpts: { limit: 25 }, messageOpts: { limit: 20 }, filter: {} }),
   ];
   const wrapper = (
@@ -238,7 +240,7 @@ describe('Chat interface with search', () => {
     </MockedProvider>
   );
 
-  test('should show filtered messages after applying date range', async () => {
+  test('should show filtered messages after applying `from` date filter', async () => {
     render(wrapper);
 
     await waitFor(() => {
@@ -254,7 +256,60 @@ describe('Chat interface with search', () => {
     const dateFrom = screen.queryByTestId('Date from');
     const dateTo = screen.queryByTestId('Date to');
 
-    if (dateFrom && dateTo) {
+    if (dateFrom) {
+      fireEvent.change(dateFrom, { target: { value: '05/01/2025' } });
+    }
+
+    fireEvent.click(screen.getByTestId('submitActionButton'));
+
+    await waitFor(() => {
+      expect(mockedUsedNavigate).toHaveBeenCalled();
+    });
+  });
+
+  test('should show filtered messages after applying `to` date filter', async () => {
+    render(wrapper);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('beneficiaryName')).toHaveTextContent('Effie Cormier');
+    });
+
+    fireEvent.click(screen.getByTestId('advanced-search-icon'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Search conversations')).toBeInTheDocument();
+    });
+
+    const dateTo = screen.queryByTestId('Date to');
+
+    if (dateTo) {
+      fireEvent.change(dateTo, { target: { value: '05/06/2025' } });
+    }
+
+    fireEvent.click(screen.getByTestId('submitActionButton'));
+
+    await waitFor(() => {
+      expect(mockedUsedNavigate).toHaveBeenCalled();
+    });
+  });
+
+  test('should show filtered messages after applying date range filter', async () => {
+    render(wrapper);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('beneficiaryName')).toHaveTextContent('Effie Cormier');
+    });
+
+    fireEvent.click(screen.getByTestId('advanced-search-icon'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Search conversations')).toBeInTheDocument();
+    });
+
+    const dateFrom = screen.queryByTestId('Date from');
+    const dateTo = screen.queryByTestId('Date to');
+
+    if (dateTo && dateFrom) {
       fireEvent.change(dateFrom, { target: { value: '05/01/2025' } });
       fireEvent.change(dateTo, { target: { value: '05/06/2025' } });
     }

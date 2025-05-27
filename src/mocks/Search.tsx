@@ -594,57 +594,68 @@ export const searchQuery = {
   },
 };
 
-export const searchWithDateFIlters = {
-  request: {
-    query: SEARCH_QUERY,
-    variables: {
-      contactOpts: { limit: 25 },
-      messageOpts: { limit: 20 },
-      filter: { dateRange: { from: '2025-05-01', to: '2025-05-06' } },
+export const searchWithDateFIlters = (from: boolean = false, to: boolean = false) => {
+  let filter = {};
+  if (from && !to) {
+    filter = { dateRange: { from: '2025-05-01' } };
+  } else if (!from && to) {
+    filter = { dateRange: { to: '2025-05-06' } };
+  } else if (from && to) {
+    filter = { dateRange: { from: '2025-05-01', to: '2025-05-06' } };
+  }
+
+  return {
+    request: {
+      query: SEARCH_QUERY,
+      variables: {
+        contactOpts: { limit: 25 },
+        messageOpts: { limit: 20 },
+        filter,
+      },
     },
-  },
-  result: {
-    data: {
-      search: [
-        {
-          __typename: 'Conversation',
-          contact: {
-            __typename: 'Contact',
-            bspStatus: 'SESSION_AND_HSM',
-            fields:
-              '{"name":{"value":"Onie Rohan","type":"string","label":"name","inserted_at":"2025-05-26T10:57:10.839210Z"},"gender":{"value":"Female","type":"string","label":"gender","inserted_at":"2025-05-26T10:57:10.839215Z"},"age":{"value":44,"type":"string","label":"age","inserted_at":"2025-05-26T10:57:10.839210Z"}}',
-            id: '18',
-            isOrgRead: true,
-            lastMessageAt: '2025-05-26T10:57:11Z',
-            maskedPhone: '589/******77',
-            name: 'Onie Rohan',
-            phone: '589/208-1577',
-            status: 'VALID',
+    result: {
+      data: {
+        search: [
+          {
+            __typename: 'Conversation',
+            contact: {
+              __typename: 'Contact',
+              bspStatus: 'SESSION_AND_HSM',
+              fields:
+                '{"name":{"value":"Onie Rohan","type":"string","label":"name","inserted_at":"2025-05-26T10:57:10.839210Z"},"gender":{"value":"Female","type":"string","label":"gender","inserted_at":"2025-05-26T10:57:10.839215Z"},"age":{"value":44,"type":"string","label":"age","inserted_at":"2025-05-26T10:57:10.839210Z"}}',
+              id: '18',
+              isOrgRead: true,
+              lastMessageAt: '2025-05-26T10:57:11Z',
+              maskedPhone: '589/******77',
+              name: 'Onie Rohan',
+              phone: '589/208-1577',
+              status: 'VALID',
+            },
+            group: null,
+            id: 'contact_18',
+            messages: messages(25, 2),
           },
-          group: null,
-          id: 'contact_18',
-          messages: messages(25, 2),
-        },
-        {
-          __typename: 'Conversation',
-          contact: {
-            __typename: 'Contact',
-            bspStatus: 'SESSION_AND_HSM',
-            fields:
-              '{"name":{"value":"Nat Reichert","type":"string","label":"name","inserted_at":"2025-05-26T10:57:10.839395Z"},"gender":{"value":"Male","type":"string","label":"gender","inserted_at":"2025-05-26T10:57:10.839396Z"},"age":{"value":25,"type":"string","label":"age","inserted_at":"2025-05-26T10:57:10.839396Z"}}',
-            id: '26',
-            isOrgRead: false,
-            lastMessageAt: '2025-05-26T10:57:11Z',
-            maskedPhone: '615-******82',
-            name: 'Nat Reichert',
-            phone: '615-561-1682',
-            status: 'VALID',
+          {
+            __typename: 'Conversation',
+            contact: {
+              __typename: 'Contact',
+              bspStatus: 'SESSION_AND_HSM',
+              fields:
+                '{"name":{"value":"Nat Reichert","type":"string","label":"name","inserted_at":"2025-05-26T10:57:10.839395Z"},"gender":{"value":"Male","type":"string","label":"gender","inserted_at":"2025-05-26T10:57:10.839396Z"},"age":{"value":25,"type":"string","label":"age","inserted_at":"2025-05-26T10:57:10.839396Z"}}',
+              id: '26',
+              isOrgRead: false,
+              lastMessageAt: '2025-05-26T10:57:11Z',
+              maskedPhone: '615-******82',
+              name: 'Nat Reichert',
+              phone: '615-561-1682',
+              status: 'VALID',
+            },
+            group: null,
+            id: 'contact_26',
+            messages: messages(25, 2),
           },
-          group: null,
-          id: 'contact_26',
-          messages: messages(25, 2),
-        },
-      ],
+        ],
+      },
     },
-  },
+  };
 };
