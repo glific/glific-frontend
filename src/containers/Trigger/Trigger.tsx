@@ -2,7 +2,7 @@ import { useState } from 'react';
 import * as Yup from 'yup';
 import { useMutation, useQuery } from '@apollo/client';
 import { CircularProgress, Typography } from '@mui/material';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import { useTranslation } from 'react-i18next';
@@ -350,6 +350,7 @@ export const Trigger = () => {
       name: 'startTime',
       disabled: isEditing,
       label: t('Time'),
+      placeholder: t('Start time'),
     },
     {
       component: AutoComplete,

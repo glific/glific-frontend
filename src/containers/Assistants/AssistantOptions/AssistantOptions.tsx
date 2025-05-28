@@ -129,6 +129,7 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
       });
     }
     setFiles(files.filter((fileItem) => fileItem.fileId !== file.fileId));
+    setNotification('File removed from assistant!', 'success');
   };
 
   const handleFileUpload = () => {

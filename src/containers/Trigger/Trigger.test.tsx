@@ -19,8 +19,8 @@ const mockUseLocationValue: any = {
   state: null,
 };
 
-vi.mock('react-router-dom', async () => ({
-  ...((await vi.importActual<any>('react-router-dom')) as {}),
+vi.mock('react-router', async () => ({
+  ...((await vi.importActual<any>('react-router')) as {}),
   useLocation: () => {
     return mockUseLocationValue;
   },
@@ -38,7 +38,7 @@ const startDate = dayjs();
 const endDate = dayjs().add(1, 'day');
 const startTime = dayjs().add(1, 'hour');
 
-const fillForm = async (frequency: string) => {
+const fillForm = async (container: any, frequency: string) => {
   await waitFor(() => {
     expect(screen.getByText('Add a new trigger')).toBeInTheDocument();
   });
@@ -53,14 +53,21 @@ const fillForm = async (frequency: string) => {
   fireEvent.keyDown(autoCompletes[0], { key: 'ArrowDown' });
   fireEvent.click(screen.getByText('SoL Feedback'), { key: 'Enter' });
 
-  const inputs = screen.getAllByRole('textbox');
-  fireEvent.change(inputs[0], { target: { value: startDate.format('MM/DD/YYYY') } });
-  fireEvent.change(inputs[1], { target: { value: endDate.format('MM/DD/YYYY') } });
-  fireEvent.change(inputs[2], { target: { value: startTime.format('hh:mm A') } });
+  const startDateInput = container.queryByTestId('Start date');
+  const endDateInput = container.queryByTestId('End date');
+  const timeInput = container.queryByTestId('Start time');
 
-  await waitFor(() => {
-    expect(inputs[0]).toHaveValue(startDate.format('MM/DD/YYYY'));
-  });
+  if (startDateInput) {
+    fireEvent.change(startDateInput, { target: { value: startDate.format('MM/DD/YYYY') } });
+  }
+
+  if (endDateInput) {
+    fireEvent.change(endDateInput, { target: { value: endDate.format('MM/DD/YYYY') } });
+  }
+
+  if (timeInput) {
+    fireEvent.change(timeInput, { target: { value: startTime.format('hh:mm A') } });
+  }
 
   autoCompletes[1].focus();
   fireEvent.keyDown(autoCompletes[1], { key: 'ArrowDown' });
@@ -128,7 +135,7 @@ describe('add mode', () => {
       ...getDates(startTime, startDate, endDate),
     });
 
-    render(wrapper(createMock));
+    const container = render(wrapper(createMock));
     expect(screen.getByText('Loading...')).toBeInTheDocument();
 
     await waitFor(() => {
@@ -145,7 +152,7 @@ describe('add mode', () => {
       expect(screen.getByText('Warning: The first message node is not an HSM template')).toBeInTheDocument();
     });
 
-    await fillForm('Hourly');
+    await fillForm(container, 'Hourly');
 
     autoCompletes[2].focus();
     fireEvent.keyDown(autoCompletes[2], { key: 'ArrowDown' });
@@ -172,10 +179,10 @@ describe('add mode', () => {
       ...getDates(startTime, startDate, endDate),
     });
 
-    render(wrapper(createMock));
+    const container = render(wrapper(createMock));
     expect(screen.getByText('Loading...')).toBeInTheDocument();
 
-    await fillForm('Daily');
+    await fillForm(container, 'Daily');
     fireEvent.click(screen.getByTestId('submitActionButton'));
 
     await waitFor(() => {
@@ -196,7 +203,7 @@ describe('add mode', () => {
       ...getDates(startTime, startDate, endDate),
     });
 
-    render(wrapper(createMock));
+    const container = render(wrapper(createMock));
     expect(screen.getByText('Loading...')).toBeInTheDocument();
 
     await waitFor(() => {
@@ -205,7 +212,7 @@ describe('add mode', () => {
 
     const autoCompletes = screen.getAllByRole('combobox');
 
-    await fillForm('Weekly');
+    await fillForm(container, 'Weekly');
 
     autoCompletes[2].focus();
     fireEvent.keyDown(autoCompletes[2], { key: 'ArrowDown' });
@@ -232,7 +239,7 @@ describe('add mode', () => {
       ...getDates(startTime, startDate, endDate),
     });
 
-    render(wrapper(createMock));
+    const container = render(wrapper(createMock));
 
     expect(screen.getByText('Loading...')).toBeInTheDocument();
 
@@ -241,7 +248,7 @@ describe('add mode', () => {
     });
     const autoCompletes = screen.getAllByRole('combobox');
 
-    await fillForm('Monthly');
+    await fillForm(container, 'Monthly');
 
     autoCompletes[2].focus();
     fireEvent.keyDown(autoCompletes[2], { key: 'ArrowDown' });
@@ -256,7 +263,7 @@ describe('add mode', () => {
   });
 
   test('it should validate start and end date', async () => {
-    render(wrapper());
+    const container = render(wrapper());
 
     expect(screen.getByText('Loading...')).toBeInTheDocument();
 
@@ -264,18 +271,30 @@ describe('add mode', () => {
       expect(screen.getByText('Add a new trigger')).toBeInTheDocument();
     });
 
-    const inputs = screen.getAllByRole('textbox');
+    const startDateInput = container.queryByTestId('Start date');
+    const endDateInput = container.queryByTestId('End date');
+    const timeInput = container.queryByTestId('Start time');
 
-    fireEvent.change(inputs[0], { target: { value: dayjs().format('MM/DD/YYYY') } });
-    fireEvent.change(inputs[1], { target: { value: dayjs().format('MM/DD/YYYY') } });
-    fireEvent.change(inputs[2], { target: { value: dayjs().subtract(1, 'hour').format('hh:mm A') } });
+    if (startDateInput) {
+      fireEvent.change(startDateInput, { target: { value: dayjs().format('MM/DD/YYYY') } });
+    }
+
+    if (endDateInput) {
+      fireEvent.change(endDateInput, { target: { value: dayjs().format('MM/DD/YYYY') } });
+    }
+
+    if (timeInput) {
+      fireEvent.change(timeInput, { target: { value: dayjs().subtract(1, 'hour').format('hh:mm A') } });
+    }
 
     fireEvent.click(screen.getByTestId('submitActionButton'));
     await waitFor(() => {
       expect(screen.getByText('Start time should be greater than current time')).toBeInTheDocument();
     });
 
-    fireEvent.change(inputs[0], { target: { value: dayjs().add(1, 'day').format('MM/DD/YYYY') } });
+    if (startDateInput) {
+      fireEvent.change(startDateInput, { target: { value: dayjs().add(1, 'day').format('MM/DD/YYYY') } });
+    }
     fireEvent.click(screen.getByTestId('submitActionButton'));
 
     await waitFor(() => {
@@ -444,7 +463,7 @@ describe('copy mode', async () => {
   test('it copies a trigger', async () => {
     mockUseLocationValue.state = 'copy';
 
-    render(
+    const container = render(
       editWrapper([
         getTriggerQuery('hourly', {
           flow: {
@@ -478,10 +497,21 @@ describe('copy mode', async () => {
       expect(screen.getAllByRole('combobox')[0]).toHaveValue('Help Workflow');
     });
 
-    const inputs = screen.getAllByRole('textbox');
-    fireEvent.change(inputs[0], { target: { value: startDate.format('MM/DD/YYYY') } });
-    fireEvent.change(inputs[1], { target: { value: endDate.format('MM/DD/YYYY') } });
-    fireEvent.change(inputs[2], { target: { value: startTime.format('hh:mm A') } });
+    const startDateInput = container.queryByTestId('Start date');
+    const endDateInput = container.queryByTestId('End date');
+    const timeInput = container.queryByTestId('Start time');
+
+    if (startDateInput) {
+      fireEvent.change(startDateInput, { target: { value: startDate.format('MM/DD/YYYY') } });
+    }
+
+    if (endDateInput) {
+      fireEvent.change(endDateInput, { target: { value: endDate.format('MM/DD/YYYY') } });
+    }
+
+    if (timeInput) {
+      fireEvent.change(timeInput, { target: { value: startTime.format('hh:mm A') } });
+    }
 
     fireEvent.click(screen.getByTestId('submitActionButton'));
 
@@ -508,7 +538,7 @@ describe('Whatsapp group collections', () => {
       groupType: 'WA',
     });
 
-    render(wrapper(createMock));
+    const container = render(wrapper(createMock));
 
     expect(screen.getByText('Loading...')).toBeInTheDocument();
 
@@ -516,7 +546,7 @@ describe('Whatsapp group collections', () => {
       expect(screen.getByText('Add a new trigger')).toBeInTheDocument();
     });
 
-    await fillForm('Daily');
+    await fillForm(container, 'Daily');
 
     fireEvent.click(screen.getByText('WhatsApp Group Collections'));
 

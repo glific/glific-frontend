@@ -15,7 +15,7 @@ import { getUsersQuery } from 'mocks/User';
 import { getOrganizationLanguagesQuery, getOrganizationQuery } from 'mocks/Organization';
 import { Collection } from './Collection';
 import { getRoleNamesMock } from 'containers/StaffManagement/StaffManagement.test.helper';
-import { BrowserRouter, MemoryRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, MemoryRouter, Routes, Route } from 'react-router';
 import { getSearchCollectionQuery } from 'mocks/Search';
 import * as Notification from 'common/notification';
 
@@ -49,8 +49,8 @@ const notificationSpy = vi.spyOn(Notification, 'setNotification');
 
 const user = userEvent.setup();
 const mockedUsedNavigate = vi.fn();
-vi.mock('react-router-dom', async () => ({
-  ...(await vi.importActual('react-router-dom')),
+vi.mock('react-router', async () => ({
+  ...(await vi.importActual('react-router')),
   useNavigate: () => mockedUsedNavigate,
 }));
 

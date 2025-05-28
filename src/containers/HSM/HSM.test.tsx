@@ -1,7 +1,7 @@
 import { render, waitFor, within, fireEvent, screen, cleanup } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import userEvent from '@testing-library/user-event';
-import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import { MemoryRouter, Route, Routes } from 'react-router';
 import { HSM } from './HSM';
 import { HSM_TEMPLATE_MOCKS, getHSMTemplateTypeMedia, getHSMTemplateTypeText } from 'mocks/Template';
 import { setNotification } from 'common/notification';
@@ -196,13 +196,19 @@ describe('Add mode', () => {
     fireEvent.click(screen.getByText('Add Variable'));
 
     await waitFor(() => {
-      expect(screen.getByText('Hi {{1}}')).toBeInTheDocument();
+      expect(screen.getAllByTestId('variable')).toHaveLength(1);
+    });
+
+    fireEvent.click(screen.getByText('Add Variable'));
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('variable')).toHaveLength(2);
     });
 
     fireEvent.click(screen.getAllByTestId('delete-variable')[0]);
 
     await waitFor(() => {
-      expect(screen.queryByPlaceholderText('Define value ')).not.toBeInTheDocument();
+      expect(screen.getAllByTestId('variable')).toHaveLength(1);
     });
   });
 

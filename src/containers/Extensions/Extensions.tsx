@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Dialog, DialogContent } from '@mui/material';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 
 import { CREATE_EXTENSION, DELETE_EXTENSION, UPDATE_EXTENSION } from 'graphql/mutations/Extensions';
 import { GET_ORGANIZATION_EXTENSION } from 'graphql/queries/Extensions';

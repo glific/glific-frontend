@@ -4,8 +4,7 @@ import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { DEFAULT_ENTITY_LIMIT, DEFAULT_MESSAGE_LIMIT } from 'common/constants';
 import { SEARCH_QUERY } from 'graphql/queries/Search';
 import ChatMessages from './ChatMessages';
-import { MemoryRouter, Route, Routes } from 'react-router';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { MemoryRouter, Route, Routes, BrowserRouter as Router } from 'react-router';
 import { createMediaMessageMock, getAttachmentPermissionMock } from 'mocks/Attachment';
 import { clearMessagesQuery, contactCollectionsQuery } from 'mocks/Contact';
 import { OrganizationStateMock } from 'mocks/Organization';
@@ -48,8 +47,8 @@ const mockIntersectionObserver = class {
 (window as any).IntersectionObserver = mockIntersectionObserver;
 
 const mockedUsedNavigate = vi.fn();
-vi.mock('react-router-dom', async () => ({
-  ...(await vi.importActual('react-router-dom')),
+vi.mock('react-router', async () => ({
+  ...(await vi.importActual('react-router')),
   useNavigate: () => mockedUsedNavigate,
 }));
 

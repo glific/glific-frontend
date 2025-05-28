@@ -1,12 +1,12 @@
 import { Suspense } from 'react';
 import { render, waitFor } from '@testing-library/react';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter } from 'react-router';
 import { MockedProvider } from '@apollo/client/testing';
 import { vi } from 'vitest';
 
 import { getOrganizationBSP, walletBalanceQuery, walletBalanceSubscription } from 'mocks/Organization';
 import { setUserSession } from 'services/AuthService';
-import { CONVERSATION_MOCKS } from 'mocks/Chat';
+import { CONVERSATION_MOCKS, markAsReadMock } from 'mocks/Chat';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import AuthenticatedRoute from './AuthenticatedRoute';
 import { getNotificationCountQuery } from 'mocks/Notifications';
@@ -19,6 +19,7 @@ const mocks = [
   ...CONVERSATION_MOCKS,
   getOrganizationBSP,
   getNotificationCountQuery,
+  markAsReadMock('2'),
 ];
 window.HTMLElement.prototype.scrollIntoView = function () {};
 describe('<AuthenticatedRoute />', () => {

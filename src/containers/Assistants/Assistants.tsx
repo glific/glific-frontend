@@ -13,7 +13,7 @@ import { CreateAssistant } from './CreateAssistant/CreateAssistant';
 import { List } from './ListItems/List';
 import styles from './Assistants.module.css';
 import { useNavigate, useParams } from 'react-router';
-import { setNotification } from 'common/notification';
+import { setErrorMessage, setNotification } from 'common/notification';
 
 export const Assistants = () => {
   const params = useParams();
@@ -35,6 +35,9 @@ export const Assistants = () => {
         setNotification(t('Assistant created successfully'), 'success');
         navigate(`/assistants/${createAssistant.assistant.id}`);
         setUpdateList(!updateList);
+      },
+      onError: (error) => {
+        setErrorMessage(error);
       },
     });
   };

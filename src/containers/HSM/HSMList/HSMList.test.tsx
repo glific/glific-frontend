@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router';
 import { MockedProvider } from '@apollo/client/testing';
 
 import { HSM_LIST, bulkApplyMutation, bulkApplyMutationWIthError } from 'mocks/Template';
@@ -74,7 +74,7 @@ vi.mock('common/notification', async (importOriginal) => {
 
 const mockedUsedNavigate = vi.fn();
 vi.mock('react-router', async () => ({
-  ...(await vi.importActual('react-router-dom')),
+  ...(await vi.importActual('react-router')),
   useNavigate: () => mockedUsedNavigate,
 }));
 

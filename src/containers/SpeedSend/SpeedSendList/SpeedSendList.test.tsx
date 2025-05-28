@@ -1,5 +1,5 @@
 import { render, waitFor, cleanup } from '@testing-library/react';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router';
 import { MockedProvider } from '@apollo/client/testing';
 
 import { SPEED_SEND_LIST } from 'mocks/Template';

@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { Popover, FormControlLabel, RadioGroup, Radio } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { useApolloClient, useMutation } from '@apollo/client';
 import dayjs from 'dayjs';
