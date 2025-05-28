@@ -245,15 +245,30 @@ export const Search = ({
       },
     };
 
-    if (props.searchParam.dateFrom && props.searchParam.dateFrom !== 'Invalid date') {
-      const dateRange = {
+    let dateRange = {};
+    if (props.searchParam.dateFrom && !props.searchParam.dateTo) {
+      dateRange = {
+        dateRange: {
+          from: dayjs(props.searchParam.dateFrom).format(ISO_DATE_FORMAT),
+          to: '',
+        },
+      };
+    } else if (!props.searchParam.dateFrom && props.searchParam.dateTo) {
+      dateRange = {
+        dateRange: {
+          to: dayjs(props.searchParam.dateTo).format(ISO_DATE_FORMAT),
+          from: '',
+        },
+      };
+    } else if (props.searchParam.dateTo && props.searchParam.dateFrom) {
+      dateRange = {
         dateRange: {
           to: dayjs(props.searchParam.dateTo).format(ISO_DATE_FORMAT),
           from: dayjs(props.searchParam.dateFrom).format(ISO_DATE_FORMAT),
         },
       };
-      args.filter = Object.assign(args.filter, dateRange);
     }
+    args.filter = Object.assign(args.filter, dateRange);
 
     if (props.searchParam.dateFromExpression) {
       const dateExpression = {
