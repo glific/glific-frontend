@@ -100,7 +100,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters }
   useEffect(() => {
     setTimeout(() => {
       const messageContainer: any = document.querySelector('.messageContainer');
-      if (messageContainer && (appliedFilters ? !appliedFilters.dateFrom && !appliedFilters.dateTo : true)) {
+      if (messageContainer && (appliedFilters ? !appliedFilters.dateFrom || !appliedFilters.dateTo : true)) {
         messageContainer.addEventListener('scroll', (event: any) => {
           const messageContainerTarget = event.target;
           if (
@@ -117,7 +117,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters }
   }, [setShowJumpToLatest, entityId]);
 
   useEffect(() => {
-    if (appliedFilters && appliedFilters.dateFrom && appliedFilters.dateTo) {
+    if (appliedFilters?.dateFrom || appliedFilters?.dateTo) {
       setShowNewMessages(true);
     } else {
       setShowNewMessages(false);

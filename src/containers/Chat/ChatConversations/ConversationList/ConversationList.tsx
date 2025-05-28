@@ -272,8 +272,10 @@ export const ConversationList = ({
       getFilterConvos({
         variables: filterVariables(),
       }).then(({ data }) => {
-        const entityId = data?.search[0]?.contact?.id || '';
-        navigate(`/chat/${entityId}`);
+        if (searchParam.dateFrom || searchParam.dateTo) {
+          const entityId = data?.search[0]?.contact?.id || '';
+          navigate(`/chat/${entityId}`);
+        }
       });
     } else if (
       searchParam &&
@@ -293,8 +295,10 @@ export const ConversationList = ({
         variables,
         fetchPolicy: 'network-only',
       }).then(({ data }) => {
-        const entityId = data?.search[0]?.contact?.id || '';
-        navigate(`/chat/${entityId}`);
+        if (searchParam.dateFrom || searchParam.dateTo) {
+          const entityId = data?.search[0]?.contact?.id || '';
+          navigate(`/chat/${entityId}`);
+        }
       });
     }
   }, [searchVal, searchParam, savedSearchCriteria, phonenumber, searchParam]);
