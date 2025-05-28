@@ -638,11 +638,6 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
-"@jsplumb/browser-ui@^6.2.10":
-  version "6.2.10"
-  resolved "https://registry.yarnpkg.com/@jsplumb/browser-ui/-/browser-ui-6.2.10.tgz#86b85ed42110563d2816e3712677cdbbbf33366f"
-  integrity sha512-trk++mK5q6hceJL79teemzcilJ+8DrZT/lMK0+B80AtHqZHr0YwMCf+so2JBb2Z/MDZ0fUEU9MbELY6OPhhs5g==
-
 "@lexical/clipboard@0.31.1":
   version "0.31.1"
   resolved "https://registry.yarnpkg.com/@lexical/clipboard/-/clipboard-0.31.1.tgz#ec847027e9c9aae8dcfeeb8230dcb3bec1b937d0"
@@ -968,18 +963,16 @@
     "@babel/runtime" "^7.27.1"
     "@mui/utils" "^7.0.2"
 
-"@nyaruka/temba-components@^0.121.7":
-  version "0.121.7"
-  resolved "https://registry.yarnpkg.com/@nyaruka/temba-components/-/temba-components-0.121.7.tgz#bdbdf3c5315bab66a0a012ede1c5f14675332307"
-  integrity sha512-7F5OQQZr3UGaLQCtEN1Vhpdoe2IJcagnRhab1LV44EDW4+bqRHcgn9JqG59K6nuabddDYTlIS48rGmVSyyhtLw==
+"@nyaruka/temba-components@^0.108.1":
+  version "0.108.7"
+  resolved "https://registry.yarnpkg.com/@nyaruka/temba-components/-/temba-components-0.108.7.tgz#f3f4187d21c3c6c346bf135ec94cb33f521fe472"
+  integrity sha512-2pbzXPWJ1vpjll5iqTTbbWaK/Q+xmK2UO/4bDoiYFOr87YTiuVOee471k/8L2V/OWzLa+vGNvB06sMuZUG1bTw==
   dependencies:
-    "@jsplumb/browser-ui" "^6.2.10"
     "@lit/localize" "^0.12.1"
     color-hash "^2.0.2"
     croppie "^2.6.5"
     geojson "^0.5.0"
     image-size "^1.1.1"
-    immer "10"
     leaflet "1.5.1"
     lit "3.1.2"
     lit-element "^4.0.4"
@@ -988,7 +981,6 @@
     remarkable "^2.0.1"
     serialize-javascript "^6.0.2"
     tiny-lru "^11.2.5"
-    zustand "^5.0.3"
 
 "@pkgjs/parseargs@^0.11.0":
   version "0.11.0"
@@ -3580,11 +3572,6 @@ immediate@~3.0.5:
   version "3.0.6"
   resolved "https://registry.yarnpkg.com/immediate/-/immediate-3.0.6.tgz#9db1dbd0faf8de6fbe0f5dd5e56bb606280de69b"
   integrity sha512-XXOFtyqDjNDAQxVfYxuF7g9Il/IbWmmlQg2MYKOH8ExIT1qg6xc4zyS3HaEEATgs1btfzxq15ciUiY7gjSXRGQ==
-
-immer@10:
-  version "10.1.1"
-  resolved "https://registry.yarnpkg.com/immer/-/immer-10.1.1.tgz#206f344ea372d8ea176891545ee53ccc062db7bc"
-  integrity sha512-s2MPrmjovJcoMaHtx6K11Ra7oD05NT97w1IC5zpMkT6Atjr7H8LjaDd81iIxUYpMKSRRNMJE703M1Fhr/TctHw==
 
 import-fresh@^3.2.1, import-fresh@^3.3.0:
   version "3.3.1"
@@ -6322,8 +6309,3 @@ zen-observable@0.8.15:
   version "0.8.15"
   resolved "https://registry.yarnpkg.com/zen-observable/-/zen-observable-0.8.15.tgz#96415c512d8e3ffd920afd3889604e30b9eaac15"
   integrity sha512-PQ2PC7R9rslx84ndNBZB/Dkv8V8fZEpk83RLgXtYd0fwUgEjseMn1Dgajh2x6S8QbZAFa9p2qVCEuYZNgve0dQ==
-
-zustand@^5.0.3:
-  version "5.0.4"
-  resolved "https://registry.yarnpkg.com/zustand/-/zustand-5.0.4.tgz#33af161f1e337854ccd8b711ef9e92545d6ae53f"
-  integrity sha512-39VFTN5InDtMd28ZhjLyuTnlytDr9HfwO512Ai4I8ZABCoyAj4F1+sr7sD1jP/+p7k77Iko0Pb5NhgBFDCX0kQ==
