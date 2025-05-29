@@ -27,7 +27,7 @@
     "@mui/material": "^7.1.0",
     "@mui/x-date-pickers": "^8.4.0",
     "@nyaruka/temba-components": "^0.121.7",
-    "@sentry/integrations": "^7.114.0",
+    "@sentry/integrations": "^7.120.3",
     "@sentry/react": "^9.19.0",
     "@sentry/vite-plugin": "^3.4.0",
     "@stripe/react-stripe-js": "^3.7.0",
