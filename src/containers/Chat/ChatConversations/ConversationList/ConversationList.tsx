@@ -28,7 +28,7 @@ import ChatConversation from '../ChatConversation/ChatConversation';
 import { getConversationForSearchMulti, getConversation } from './ConversationList.helper';
 import styles from './ConversationList.module.css';
 import { GROUP_SEARCH_MULTI_QUERY, GROUP_SEARCH_QUERY } from 'graphql/queries/WaGroups';
-import { useLocation } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 
 interface ConversationListProps {
   searchVal: string;
@@ -66,7 +66,8 @@ export const ConversationList = ({
   const scrollHeight = useQuery(SCROLL_HEIGHT);
   const { t } = useTranslation();
   const location = useLocation();
-  const hasSearchParams = Object.keys(searchParam).length !== 0;
+  const hasSearchParams = searchParam ? Object.keys(searchParam).length !== 0 : false;
+  const navigate = useNavigate();
 
   let groups: boolean = location.pathname.includes('group');
 
@@ -173,7 +174,15 @@ export const ConversationList = ({
         filter.includeUsers = params.includeUsers.map((obj: any) => obj.id);
       if (params.includeLabels && params.includeLabels.length > 0)
         filter.includeLabels = params.includeLabels.map((obj: any) => obj.id);
-      if (params.dateFrom) {
+      if (params.dateFrom && !params.dateTo) {
+        filter.dateRange = {
+          from: dayjs(params.dateFrom).format(ISO_DATE_FORMAT),
+        };
+      } else if (!params.dateFrom && params.dateTo) {
+        filter.dateRange = {
+          to: dayjs(params.dateTo).format(ISO_DATE_FORMAT),
+        };
+      } else if (params.dateFrom && params.dateTo) {
         filter.dateRange = {
           from: dayjs(params.dateFrom).format(ISO_DATE_FORMAT),
           to: dayjs(params.dateTo).format(ISO_DATE_FORMAT),
@@ -262,9 +271,37 @@ export const ConversationList = ({
       addLogs(`filtering the searches`, filterVariables());
       getFilterConvos({
         variables: filterVariables(),
+      }).then(({ data }) => {
+        if (searchParam.dateFrom || searchParam.dateTo) {
+          const entityId = data?.search[0]?.contact?.id || '';
+          navigate(`/chat/${entityId}`);
+        }
+      });
+    } else if (
+      searchParam &&
+      Object.keys(searchParam).length === 0 &&
+      !searchVal &&
+      !savedSearchCriteria &&
+      !phonenumber &&
+      searchData
+    ) {
+      const variables = getVariables(
+        { limit: DEFAULT_ENTITY_LIMIT },
+        { limit: DEFAULT_MESSAGE_LIMIT },
+        { filter: {} },
+        groups
+      );
+      getFilterConvos({
+        variables,
+        fetchPolicy: 'network-only',
+      }).then(({ data }) => {
+        if (searchParam.dateFrom || searchParam.dateTo) {
+          const entityId = data?.search[0]?.contact?.id || '';
+          navigate(`/chat/${entityId}`);
+        }
       });
     }
-  }, [searchVal, searchParam, savedSearchCriteria, phonenumber]);
+  }, [searchVal, searchParam, savedSearchCriteria, phonenumber, searchParam]);
 
   // Other cases
   if ((called && loading) || conversationLoading) return <Loading />;
@@ -304,6 +341,7 @@ export const ConversationList = ({
       selectedContactId,
       groups
     );
+
     return (
       <Fragment>
         {index === 0 ? header : null}

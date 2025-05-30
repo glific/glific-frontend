@@ -31,6 +31,9 @@ export interface SearchProps {
   searchParam?: any;
   setState?: any;
   searchId?: string | null;
+  setSearchParam?: Function;
+  closeDialogBox?: any;
+  chatFilters?: boolean;
 }
 
 const getPayload = (payload: any) => {
@@ -103,7 +106,15 @@ const queries = {
   deleteItemQuery: DELETE_SEARCH,
 };
 
-export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
+export const Search = ({
+  type,
+  search,
+  searchId,
+  setSearchParam,
+  closeDialogBox,
+  chatFilters = false,
+  ...props
+}: SearchProps) => {
   const { searchParam } = props;
   const [shortcode, setShortcode] = useState('');
   const [label, setLabel] = useState('');
@@ -127,6 +138,7 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
   };
 
   const dialogMessage = t("You won't be able to use this search again.");
+  const customStyles = type ? [styles.FormSearch] : [styles.Form];
 
   const states = {
     shortcode,
@@ -233,15 +245,30 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
       },
     };
 
-    if (props.searchParam.dateFrom && props.searchParam.dateFrom !== 'Invalid date') {
-      const dateRange = {
+    let dateRange = {};
+    if (props.searchParam.dateFrom && !props.searchParam.dateTo) {
+      dateRange = {
+        dateRange: {
+          from: dayjs(props.searchParam.dateFrom).format(ISO_DATE_FORMAT),
+          to: '',
+        },
+      };
+    } else if (!props.searchParam.dateFrom && props.searchParam.dateTo) {
+      dateRange = {
+        dateRange: {
+          to: dayjs(props.searchParam.dateTo).format(ISO_DATE_FORMAT),
+          from: '',
+        },
+      };
+    } else if (props.searchParam.dateTo && props.searchParam.dateFrom) {
+      dateRange = {
         dateRange: {
           to: dayjs(props.searchParam.dateTo).format(ISO_DATE_FORMAT),
           from: dayjs(props.searchParam.dateFrom).format(ISO_DATE_FORMAT),
         },
       };
-      args.filter = Object.assign(args.filter, dateRange);
     }
+    args.filter = Object.assign(args.filter, dateRange);
 
     if (props.searchParam.dateFromExpression) {
       const dateExpression = {
@@ -437,8 +464,8 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
   const saveHandler = (saveData: any) => {
     if (props.handleSave && saveData.updateSavedSearch) props.handleSave(saveData.updateSavedSearch);
   };
-  let dialog;
 
+  let dialog;
   if (infoDialog) {
     dialog = (
       <DialogBox
@@ -467,7 +494,25 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
     );
   }
 
-  const customStyles = type ? [styles.FormSearch] : [styles.Form];
+  const resetFilters = () => {
+    setShortcode('');
+    setLabel('');
+    setTerm('');
+    setIncludeGroups([]);
+    setIncludeUsers([]);
+    setIncludeLabels([]);
+    setdateFrom(null);
+    setdateTo(null);
+    setUseExpression(false);
+    setdateFromExpression('');
+    setdateToExpression('');
+    if (setSearchParam) {
+      setSearchParam({});
+    }
+    if (closeDialogBox) {
+      closeDialogBox();
+    }
+  };
 
   return (
     <>
@@ -496,6 +541,22 @@ export const Search = ({ type, search, searchId, ...props }: SearchProps) => {
         afterSave={saveHandler}
         helpData={searchInfo}
         backLinkButton="/search"
+        skipCancel={chatFilters}
+        buttonState={
+          chatFilters
+            ? {
+                styles: styles.Buttons,
+              }
+            : undefined
+        }
+        additionalAction={
+          chatFilters
+            ? {
+                label: 'Reset Filters',
+                action: resetFilters,
+              }
+            : undefined
+        }
       />
     </>
   );

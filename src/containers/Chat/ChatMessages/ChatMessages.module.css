@@ -73,11 +73,11 @@
   margin-right: 13px !important;
 }
 
-.Paper > ul > li:hover {
+.Paper>ul>li:hover {
   background-color: #edf6f2 !important;
 }
 
-.Paper > ul > li {
+.Paper>ul>li {
   color: #073f24;
 }
 
@@ -131,7 +131,7 @@ html {
   align-items: center;
 }
 
-.SessionTimer + div {
+.SessionTimer+div {
   text-align: right;
 }
 
@@ -140,4 +140,13 @@ html {
   font-size: 12px;
   font-weight: 400;
   margin-right: 5px;
+}
+
+.ShowNewMessages {
+  composes: JumpToLatest;
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  margin-top: 0px;
+  font-size: 0.8rem;
 }

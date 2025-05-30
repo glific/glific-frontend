@@ -23,7 +23,7 @@ import { getCollectionInfo } from 'mocks/Collection';
 import { userEvent } from '@testing-library/user-event';
 import { setNotification } from 'common/notification';
 import { waGroup, waGroupcollection } from 'mocks/Groups';
-import { getBlockedContactSearchQuery, getContactSearchQuery } from 'mocks/Search';
+import { getBlockedContactSearchQuery, getContactSearchQuery, messages, searchQuery } from 'mocks/Search';
 import { getWhatsAppManagedPhonesStatusMock } from 'mocks/StatusBar';
 import { TEMPLATE_MOCKS } from 'mocks/Template';
 
@@ -55,47 +55,6 @@ vi.mock('react-router', async () => ({
 beforeEach(() => {
   vi.clearAllMocks();
 });
-
-const messages = (limit: number, skip: number) =>
-  new Array(limit).fill(null).map((val: any, index: number) => ({
-    id: `${index + skip}`,
-    body: 'Hey there whats up?',
-    insertedAt: `2020-${index}-25T13:36:43Z`,
-    location: null,
-    messageNumber: index + skip + 4,
-    receiver: {
-      id: '1',
-    },
-    sender: {
-      id: '2',
-    },
-    type: 'TEXT',
-    media: null,
-    errors: '{}',
-    contextMessage:
-      index % 5 === 0
-        ? {
-            body: 'All good',
-            contextId: 1,
-            messageNumber: 10,
-            errors: '{}',
-            media: null,
-            type: 'TEXT',
-            insertedAt: '2021-04-26T06:13:03.832721Z',
-            location: null,
-            receiver: {
-              id: '1',
-            },
-            sender: {
-              id: '2',
-              name: 'User',
-            },
-          }
-        : null,
-    interactiveContent: '{}',
-    sendBy: 'test',
-    flowLabel: null,
-  }));
 
 const loadMoreQuery = (length: number, skip: number, filter: any) => ({
   request: {
@@ -131,35 +90,6 @@ const loadMoreQuery = (length: number, skip: number, filter: any) => ({
 });
 
 const cache = new InMemoryCache({ addTypename: false });
-export const searchQuery = {
-  query: SEARCH_QUERY,
-  variables: {
-    filter: {},
-    contactOpts: { limit: DEFAULT_ENTITY_LIMIT },
-    messageOpts: { limit: DEFAULT_MESSAGE_LIMIT },
-  },
-  data: {
-    search: [
-      {
-        id: 'contact_2',
-        group: null,
-        contact: {
-          id: '2',
-          name: null,
-          phone: '987654321',
-          maskedPhone: '98****321',
-          lastMessageAt: new Date(),
-          status: 'VALID',
-          fields:
-            '{"name":{"value":"Effie Cormier","type":"string","label":"name","inserted_at":"2024-08-12T04:40:25.098162Z"}}',
-          bspStatus: 'SESSION_AND_HSM',
-          isOrgRead: true,
-        },
-        messages: messages(20, 1),
-      },
-    ],
-  },
-};
 
 cache.writeQuery(searchQuery);
 
