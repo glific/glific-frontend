@@ -779,7 +779,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters }
   };
 
   const showCurrentMesssage = (
-    <div onClick={showCurrentMessages} className={styles.ShowNewMessages}>
+    <div data-testid="show-current-messages" onClick={showCurrentMessages} className={styles.ShowNewMessages}>
       {networkStatus === 3 ? (
         <DotLoader />
       ) : (

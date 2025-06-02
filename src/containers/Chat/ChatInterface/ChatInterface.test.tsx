@@ -320,6 +320,8 @@ describe('Chat interface with filters', () => {
       expect(mockedUsedNavigate).toHaveBeenCalled();
     });
 
+    fireEvent.click(screen.getByTestId('show-current-messages'));
+
     fireEvent.click(screen.getByTestId('advanced-search-icon'));
 
     await waitFor(() => {
