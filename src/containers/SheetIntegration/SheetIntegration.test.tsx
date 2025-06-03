@@ -15,7 +15,7 @@ const mocks = [
   getSearchSheetQuery,
   getSheetQuery,
   getSheetQuery,
-  deleteSheetQuery,
+  deleteSheetQuery({ sheetId: '3' }),
   createSheetQuery,
   getSheetCountQuery,
   updateSheetQuery,
