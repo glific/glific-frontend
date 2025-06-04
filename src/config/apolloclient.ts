@@ -144,6 +144,25 @@ const gqlClient = (navigate: any) => {
         authToken: getAuthSession('access_token'),
         userId: getUserSession('id'),
       },
+      retryAttempts: 5,
+      keepAlive: 30000,
+      shouldRetry: (error) => {
+        setLogs(`WebSocket retry attempt due to: ${error}`, 'info');
+        return true;
+      },
+      retryWait: async (retries) => {
+        const delay = Math.min(1000 * Math.pow(2, retries), 10000);
+        await new Promise((resolve) => setTimeout(resolve, delay));
+      },
+
+      on: {
+        closed: (event) => {
+          setLogs(`WebSocket closed: ${event}`, 'error');
+        },
+        error: (error) => {
+          setLogs(`WebSocket error: ${error}`, 'error');
+        },
+      },
     })
   );
 
