@@ -239,6 +239,8 @@ describe('Chat interface with filters', () => {
     searchWithDateFilters(true, true),
     conversationMock({ contactOpts: { limit: 25 }, messageOpts: { limit: 20 }, filter: {} }),
     loadMoreQuery(20, 20, { id: '2' }, { limit: 20, offset: 6 }),
+    loadMoreQuery(20, 20, { id: '2' }, { limit: 20, offset: 44 }),
+    loadMoreQuery(20, 20, { id: '2' }, { limit: 20, offset: 4 }),
   ];
   const wrapper = (
     <MockedProvider cache={cache} mocks={MOCKS}>
@@ -299,6 +301,8 @@ describe('Chat interface with filters', () => {
     await waitFor(() => {
       expect(mockedUsedNavigate).toHaveBeenCalled();
     });
+
+    fireEvent.click(screen.getByTestId('loadMoreMessages'));
   });
 
   test('should show filtered messages after applying date range filter', async () => {

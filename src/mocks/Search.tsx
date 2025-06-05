@@ -600,7 +600,7 @@ export const searchWithDateFilters = (from: boolean = false, to: boolean = false
     filter = { dateRange: { from: '2025-04-30' } };
   } else if (!from && to) {
     filter = { dateRange: { to: '2025-05-05' } };
-  } else if (from && to) {
+  } else {
     filter = { dateRange: { from: '2025-04-30', to: '2025-05-05' } };
   }
 
