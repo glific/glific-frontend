@@ -20,7 +20,7 @@ const App = () => {
   // by default, do not assign any value to assume login or logout
   // let's checkAuthStatusService allocate it on useEffect
   const [drawerOpen, setDrawerOpen] = useState(true);
-  const isAuthenticated = getAuthSession('accessToken') !== null;
+  const isAuthenticated = !!getAuthSession('accessToken');
 
   useEffect(() => {
     const checkAuth = async () => {
