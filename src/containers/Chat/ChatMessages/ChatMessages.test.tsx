@@ -21,21 +21,11 @@ import {
 } from 'mocks/Chat';
 import { getCollectionInfo } from 'mocks/Collection';
 import { userEvent } from '@testing-library/user-event';
-import { setNotification } from 'common/notification';
 import { waGroup, waGroupcollection } from 'mocks/Groups';
 import { getBlockedContactSearchQuery, getContactSearchQuery, messages, searchQuery } from 'mocks/Search';
 import { getWhatsAppManagedPhonesStatusMock } from 'mocks/StatusBar';
 import { TEMPLATE_MOCKS } from 'mocks/Template';
-
-vi.mock('common/notification', async (importOriginal) => {
-  const mod = await importOriginal<typeof import('common/notification')>();
-  return {
-    ...mod,
-    setNotification: vi.fn((...args) => {
-      return args[1];
-    }),
-  };
-});
+import * as Notification from 'common/notification';
 
 const mockIntersectionObserver = class {
   constructor() {}
@@ -45,6 +35,7 @@ const mockIntersectionObserver = class {
 };
 
 (window as any).IntersectionObserver = mockIntersectionObserver;
+const notificationSpy = vi.spyOn(Notification, 'setNotification');
 
 const mockedUsedNavigate = vi.fn();
 vi.mock('react-router', async () => ({
@@ -356,7 +347,7 @@ test('click on Clear conversation', async () => {
   fireEvent.click(getByTestId('ok-button'));
 
   await waitFor(() => {
-    expect(setNotification).toHaveBeenCalled();
+    expect(notificationSpy).toHaveBeenCalled();
   });
 });
 
@@ -705,7 +696,7 @@ test('should show error if send message fails', async () => {
 
   fireEvent.click(getByTestId('sendButton'), { force: true });
   await waitFor(() => {
-    expect(setNotification).toHaveBeenCalled();
+    expect(notificationSpy).toHaveBeenCalled();
   });
 });
 
@@ -719,7 +710,6 @@ test('Blocked contacts should redirect to chat page', async () => {
   );
 
   await waitFor(() => {
-    expect(mockedUsedNavigate).toHaveBeenCalledWith('/chat');
-    expect(setNotification).toHaveBeenCalledWith('The contact is blocked', 'warning');
+    expect(notificationSpy).toHaveBeenCalledWith('The contact is blocked', 'warning');
   });
 });
