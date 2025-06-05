@@ -847,11 +847,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters }
 
   const isSimulatorProp = groups ? false : isSimulator(conversationInfo.contact?.phone);
   const showCurrentMessages = () => {
-    if (conversationInfo && conversationInfo.messages && conversationInfo.messages[0]) {
-      const nextMessage = conversationInfo.messages[0].messageNumber + 1;
-      // loadMoreMessages(nextMessage);
-      loadMoreMessagesForDateRange('future');
-    }
+    loadMoreMessagesForDateRange('future');
   };
 
   const showCurrentMesssage = (
