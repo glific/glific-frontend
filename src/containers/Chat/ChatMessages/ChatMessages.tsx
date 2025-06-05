@@ -1,8 +1,8 @@
 import { useCallback, useState, useEffect } from 'react';
 import { useQuery, useMutation, useLazyQuery, useApolloClient } from '@apollo/client';
-import { CircularProgress, Container, LinearProgress } from '@mui/material';
+import { CircularProgress, Container } from '@mui/material';
 import dayjs from 'dayjs';
-import { Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { Navigate, useLocation, useNavigate } from 'react-router';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useTranslation } from 'react-i18next';
 
@@ -40,17 +40,17 @@ import {
   updateGroupConversationsCache,
 } from 'services/GroupMessageService';
 import { GET_CONTACT_STATUS } from 'graphql/queries/Contact';
-import { DotLoader } from 'components/UI/DotLoader/DotLoader';
+import DotLoader from 'components/UI/DotLoader/DotLoader';
 
 export interface ChatMessagesProps {
   entityId?: number | string | null;
   collectionId?: number | string | null;
   phoneId?: any;
   setPhonenumber?: any;
-  searchParam?: any;
+  appliedFilters?: any;
 }
 
-export const ChatMessages = ({ entityId, collectionId, phoneId, searchParam }: ChatMessagesProps) => {
+export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters }: ChatMessagesProps) => {
   const urlString = new URL(window.location.href);
   const location = useLocation();
   const client = useApolloClient();
@@ -100,7 +100,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, searchParam }: C
   useEffect(() => {
     setTimeout(() => {
       const messageContainer: any = document.querySelector('.messageContainer');
-      if (messageContainer && (searchParam ? !searchParam.dateFrom && !searchParam.dateTo : true)) {
+      if (messageContainer && (appliedFilters ? !appliedFilters.dateFrom || !appliedFilters.dateTo : true)) {
         messageContainer.addEventListener('scroll', (event: any) => {
           const messageContainerTarget = event.target;
           if (
@@ -117,12 +117,12 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, searchParam }: C
   }, [setShowJumpToLatest, entityId]);
 
   useEffect(() => {
-    if (searchParam && searchParam.dateFrom && searchParam.dateTo) {
+    if (appliedFilters?.dateFrom || appliedFilters?.dateTo) {
       setShowNewMessages(true);
     } else {
       setShowNewMessages(false);
     }
-  }, [searchParam, entityId]);
+  }, [appliedFilters, entityId]);
 
   const scrollToLatestMessage = () => {
     const container: any = document.querySelector('.messageContainer');
@@ -779,7 +779,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, searchParam }: C
   };
 
   const showCurrentMesssage = (
-    <div onClick={showCurrentMessages} className={styles.ShowNewMessages}>
+    <div data-testid="show-current-messages" onClick={showCurrentMessages} className={styles.ShowNewMessages}>
       {networkStatus === 3 ? (
         <DotLoader />
       ) : (

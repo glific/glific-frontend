@@ -1,4 +1,4 @@
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router';
 import { render, waitFor, fireEvent, cleanup, screen } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';

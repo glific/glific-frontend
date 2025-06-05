@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Container, IconButton } from '@mui/material';
 import CancelOutlined from '@mui/icons-material/CancelOutlined';
-import { useApolloClient, useLazyQuery, useQuery } from '@apollo/client/react';
+import { useApolloClient, useQuery } from '@apollo/client/react';
 import { useTranslation } from 'react-i18next';
 
 import SearchBar from 'components/UI/SearchBar/SearchBar';
@@ -11,32 +11,28 @@ import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { Search } from 'containers/Search/Search';
 import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import { getUserRolePermissions } from 'context/role';
-import { SEARCH_OFFSET, SEARCH_QUERY } from 'graphql/queries/Search';
+import { SEARCH_OFFSET } from 'graphql/queries/Search';
 import ConversationList from './ConversationList/ConversationList';
 import styles from './ChatConversations.module.css';
 import Track from 'services/TrackService';
 import { useLocation } from 'react-router';
-import { GROUP_SEARCH_QUERY } from 'graphql/queries/WaGroups';
-import { SEARCH_QUERY_VARIABLES } from 'common/constants';
 
 export interface ChatConversationsProps {
   entityId?: number | string;
   phonenumber?: any;
   filterComponent?: any;
-
-  searchParam?: any;
-  setSearchParam?: any;
+  setAppliedFilters?: any;
 }
 
 export const ChatConversations = ({
   entityId,
   phonenumber,
+  setAppliedFilters,
   filterComponent,
-  searchParam,
-  setSearchParam,
 }: ChatConversationsProps) => {
   // get the conversations stored from the cache
   const [searchVal, setSearchVal] = useState<any>();
+  const [searchParam, setSearchParam] = useState<any>({});
   const [selectedContactId, setSelectedContactId] = useState<any>(entityId);
   const [savedSearchCriteria, setSavedSearchCriteria] = useState<string>('');
   const [savedSearchCriteriaId, setSavedSearchCriteriaId] = useState(null);
@@ -51,10 +47,6 @@ export const ChatConversations = ({
 
   let groups: boolean = location.pathname.includes('group');
 
-  const searchQuery: any = groups ? GROUP_SEARCH_QUERY : SEARCH_QUERY;
-
-  const [getFilterConvos] = useLazyQuery<any>(searchQuery);
-
   // restore multi-search after conversation click
   useEffect(() => {
     if (offset.data && offset.data.search) {
@@ -66,6 +58,12 @@ export const ChatConversations = ({
   useEffect(() => {
     setSelectedContactId(entityId?.toString());
   }, [entityId]);
+
+  useEffect(() => {
+    if (setAppliedFilters) {
+      setAppliedFilters(searchParam);
+    }
+  }, [searchParam]);
 
   let timer: any = null;
 
@@ -142,12 +140,6 @@ export const ChatConversations = ({
     handlerSavedSearchCriteria(data.savedSearch.args, data.savedSearch.id);
   };
 
-  const resetSearchQuery = (reset: any) => {
-    getFilterConvos({
-      variables: SEARCH_QUERY_VARIABLES,
-    });
-  };
-
   // create searches
   let dialogBox;
   if (dialog) {
@@ -171,7 +163,8 @@ export const ChatConversations = ({
           handleSave={isearchType ? undefined : saveHandler}
           searchId={isearchType ? undefined : savedSearchCriteriaId}
           setSearchParam={setSearchParam}
-          resetSearchQuery={resetSearchQuery}
+          closeDialogBox={closeDialogBox}
+          chatFilters
         />
       </DialogBox>
     );
@@ -252,6 +245,7 @@ export const ChatConversations = ({
           endAdornment={!groups}
           searchMode={enableSearchMode}
           iconFront
+          searchParam={searchParam}
         />
       </div>
       {filter}

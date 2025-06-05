@@ -9,6 +9,7 @@ import {
 import { COLLECTION_COUNT_SUBSCRIPTION } from 'graphql/subscriptions/PeriodicInfo';
 import { MARK_AS_READ } from 'graphql/mutations/Chat';
 import { conversationQuery } from './Chat';
+import { DEFAULT_ENTITY_LIMIT, DEFAULT_MESSAGE_LIMIT } from 'common/constants';
 
 export const createSearchQuery = {
   request: {
@@ -520,4 +521,141 @@ export const getBlockedContactSearchQuery = {
       search: [],
     },
   },
+};
+
+export const messages = (limit: number, skip: number) =>
+  new Array(limit).fill(null).map((val: any, index: number) => ({
+    id: `${index + skip}`,
+    body: 'Hey there whats up?',
+    insertedAt: `2020-${index}-25T13:36:43Z`,
+    location: null,
+    messageNumber: index + skip + 4,
+    receiver: {
+      id: '1',
+    },
+    sender: {
+      id: '2',
+    },
+    type: 'TEXT',
+    media: null,
+    errors: '{}',
+    contextMessage:
+      index % 5 === 0
+        ? {
+            body: 'All good',
+            contextId: 1,
+            messageNumber: 10,
+            errors: '{}',
+            media: null,
+            type: 'TEXT',
+            insertedAt: '2021-04-26T06:13:03.832721Z',
+            location: null,
+            receiver: {
+              id: '1',
+            },
+            sender: {
+              id: '2',
+              name: 'User',
+            },
+          }
+        : null,
+    interactiveContent: '{}',
+    sendBy: 'test',
+    flowLabel: null,
+  }));
+
+export const searchQuery = {
+  query: SEARCH_QUERY,
+  variables: {
+    filter: {},
+    contactOpts: { limit: DEFAULT_ENTITY_LIMIT },
+    messageOpts: { limit: DEFAULT_MESSAGE_LIMIT },
+  },
+  data: {
+    search: [
+      {
+        id: 'contact_2',
+        group: null,
+        contact: {
+          id: '2',
+          name: null,
+          phone: '987654321',
+          maskedPhone: '98****321',
+          lastMessageAt: new Date(),
+          status: 'VALID',
+          fields:
+            '{"name":{"value":"Effie Cormier","type":"string","label":"name","inserted_at":"2024-08-12T04:40:25.098162Z"}}',
+          bspStatus: 'SESSION_AND_HSM',
+          isOrgRead: true,
+        },
+        messages: messages(20, 1),
+      },
+    ],
+  },
+};
+
+export const searchWithDateFIlters = (from: boolean = false, to: boolean = false) => {
+  let filter = {};
+  if (from && !to) {
+    filter = { dateRange: { from: '2025-05-01' } };
+  } else if (!from && to) {
+    filter = { dateRange: { to: '2025-05-06' } };
+  } else if (from && to) {
+    filter = { dateRange: { from: '2025-05-01', to: '2025-05-06' } };
+  }
+
+  return {
+    request: {
+      query: SEARCH_QUERY,
+      variables: {
+        contactOpts: { limit: 25 },
+        messageOpts: { limit: 20 },
+        filter,
+      },
+    },
+    result: {
+      data: {
+        search: [
+          {
+            __typename: 'Conversation',
+            contact: {
+              __typename: 'Contact',
+              bspStatus: 'SESSION_AND_HSM',
+              fields:
+                '{"name":{"value":"Onie Rohan","type":"string","label":"name","inserted_at":"2025-05-26T10:57:10.839210Z"},"gender":{"value":"Female","type":"string","label":"gender","inserted_at":"2025-05-26T10:57:10.839215Z"},"age":{"value":44,"type":"string","label":"age","inserted_at":"2025-05-26T10:57:10.839210Z"}}',
+              id: '18',
+              isOrgRead: true,
+              lastMessageAt: '2025-05-26T10:57:11Z',
+              maskedPhone: '589/******77',
+              name: 'Onie Rohan',
+              phone: '589/208-1577',
+              status: 'VALID',
+            },
+            group: null,
+            id: 'contact_18',
+            messages: messages(25, 2),
+          },
+          {
+            __typename: 'Conversation',
+            contact: {
+              __typename: 'Contact',
+              bspStatus: 'SESSION_AND_HSM',
+              fields:
+                '{"name":{"value":"Nat Reichert","type":"string","label":"name","inserted_at":"2025-05-26T10:57:10.839395Z"},"gender":{"value":"Male","type":"string","label":"gender","inserted_at":"2025-05-26T10:57:10.839396Z"},"age":{"value":25,"type":"string","label":"age","inserted_at":"2025-05-26T10:57:10.839396Z"}}',
+              id: '26',
+              isOrgRead: false,
+              lastMessageAt: '2025-05-26T10:57:11Z',
+              maskedPhone: '615-******82',
+              name: 'Nat Reichert',
+              phone: '615-561-1682',
+              status: 'VALID',
+            },
+            group: null,
+            id: 'contact_26',
+            messages: messages(25, 2),
+          },
+        ],
+      },
+    },
+  };
 };

@@ -22,7 +22,6 @@ import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { getObject } from 'common/utils';
 import styles from './Search.module.css';
 import { searchInfo } from 'common/HelpData';
-import { useLocation } from 'react-router';
 
 export interface SearchProps {
   type?: string;
@@ -33,7 +32,8 @@ export interface SearchProps {
   setState?: any;
   searchId?: string | null;
   setSearchParam?: Function;
-  resetSearchQuery?: any;
+  closeDialogBox?: any;
+  chatFilters?: boolean;
 }
 
 const getPayload = (payload: any) => {
@@ -106,7 +106,15 @@ const queries = {
   deleteItemQuery: DELETE_SEARCH,
 };
 
-export const Search = ({ type, search, searchId, setSearchParam, resetSearchQuery, ...props }: SearchProps) => {
+export const Search = ({
+  type,
+  search,
+  searchId,
+  setSearchParam,
+  closeDialogBox,
+  chatFilters = false,
+  ...props
+}: SearchProps) => {
   const { searchParam } = props;
   const [shortcode, setShortcode] = useState('');
   const [label, setLabel] = useState('');
@@ -123,8 +131,6 @@ export const Search = ({ type, search, searchId, setSearchParam, resetSearchQuer
   const [formFields, setFormFields] = useState<any>([]);
   const [button, setButton] = useState<string>('Save');
   const { t } = useTranslation();
-  const location = useLocation();
-  const chatFilters = location.pathname.includes('chat');
 
   const validation = {
     shortcode: Yup.string().required(t('Title is required.')).max(20, t('Title is too long.')),
@@ -239,15 +245,30 @@ export const Search = ({ type, search, searchId, setSearchParam, resetSearchQuer
       },
     };
 
-    if (props.searchParam.dateFrom && props.searchParam.dateFrom !== 'Invalid date') {
-      const dateRange = {
+    let dateRange = {};
+    if (props.searchParam.dateFrom && !props.searchParam.dateTo) {
+      dateRange = {
+        dateRange: {
+          from: dayjs(props.searchParam.dateFrom).format(ISO_DATE_FORMAT),
+          to: '',
+        },
+      };
+    } else if (!props.searchParam.dateFrom && props.searchParam.dateTo) {
+      dateRange = {
+        dateRange: {
+          to: dayjs(props.searchParam.dateTo).format(ISO_DATE_FORMAT),
+          from: '',
+        },
+      };
+    } else if (props.searchParam.dateTo && props.searchParam.dateFrom) {
+      dateRange = {
         dateRange: {
           to: dayjs(props.searchParam.dateTo).format(ISO_DATE_FORMAT),
           from: dayjs(props.searchParam.dateFrom).format(ISO_DATE_FORMAT),
         },
       };
-      args.filter = Object.assign(args.filter, dateRange);
     }
+    args.filter = Object.assign(args.filter, dateRange);
 
     if (props.searchParam.dateFromExpression) {
       const dateExpression = {
@@ -488,8 +509,9 @@ export const Search = ({ type, search, searchId, setSearchParam, resetSearchQuer
     if (setSearchParam) {
       setSearchParam({});
     }
-
-    resetSearchQuery();
+    if (closeDialogBox) {
+      closeDialogBox();
+    }
   };
 
   return (

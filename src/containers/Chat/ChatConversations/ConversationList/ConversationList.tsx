@@ -28,8 +28,7 @@ import ChatConversation from '../ChatConversation/ChatConversation';
 import { getConversationForSearchMulti, getConversation } from './ConversationList.helper';
 import styles from './ConversationList.module.css';
 import { GROUP_SEARCH_MULTI_QUERY, GROUP_SEARCH_QUERY } from 'graphql/queries/WaGroups';
-import { useLocation } from 'react-router-dom';
-import { cache } from 'config/apolloclient';
+import { useLocation, useNavigate } from 'react-router';
 
 interface ConversationListProps {
   searchVal: string;
@@ -68,6 +67,7 @@ export const ConversationList = ({
   const { t } = useTranslation();
   const location = useLocation();
   const hasSearchParams = searchParam ? Object.keys(searchParam).length !== 0 : false;
+  const navigate = useNavigate();
 
   let groups: boolean = location.pathname.includes('group');
 
@@ -174,7 +174,15 @@ export const ConversationList = ({
         filter.includeUsers = params.includeUsers.map((obj: any) => obj.id);
       if (params.includeLabels && params.includeLabels.length > 0)
         filter.includeLabels = params.includeLabels.map((obj: any) => obj.id);
-      if (params.dateFrom) {
+      if (params.dateFrom && !params.dateTo) {
+        filter.dateRange = {
+          from: dayjs(params.dateFrom).format(ISO_DATE_FORMAT),
+        };
+      } else if (!params.dateFrom && params.dateTo) {
+        filter.dateRange = {
+          to: dayjs(params.dateTo).format(ISO_DATE_FORMAT),
+        };
+      } else if (params.dateFrom && params.dateTo) {
         filter.dateRange = {
           from: dayjs(params.dateFrom).format(ISO_DATE_FORMAT),
           to: dayjs(params.dateTo).format(ISO_DATE_FORMAT),
@@ -261,24 +269,39 @@ export const ConversationList = ({
       // This is used for filtering the searches, when you click on it, so only call it
       // when user clicks and savedSearchCriteriaId is set.
       addLogs(`filtering the searches`, filterVariables());
-      console.log(cache.readQuery({ query: searchQuery }));
       getFilterConvos({
         variables: filterVariables(),
       }).then(({ data }) => {
-        console.log(data);
-
-        if (searchParam?.dateFrom && searchParam?.dateTo) {
-          if (!data?.search?.length) return;
-
-          client.cache.writeQuery({
-            query: searchQuery,
-            variables: filterVariables(),
-            data, // new data object returned by getFilterConvos
-          });
+        if (searchParam.dateFrom || searchParam.dateTo) {
+          const entityId = data?.search[0]?.contact?.id || '';
+          navigate(`/chat/${entityId}`);
+        }
+      });
+    } else if (
+      searchParam &&
+      Object.keys(searchParam).length === 0 &&
+      !searchVal &&
+      !savedSearchCriteria &&
+      !phonenumber &&
+      searchData
+    ) {
+      const variables = getVariables(
+        { limit: DEFAULT_ENTITY_LIMIT },
+        { limit: DEFAULT_MESSAGE_LIMIT },
+        { filter: {} },
+        groups
+      );
+      getFilterConvos({
+        variables,
+        fetchPolicy: 'network-only',
+      }).then(({ data }) => {
+        if (searchParam.dateFrom || searchParam.dateTo) {
+          const entityId = data?.search[0]?.contact?.id || '';
+          navigate(`/chat/${entityId}`);
         }
       });
     }
-  }, [searchVal, searchParam, savedSearchCriteria, phonenumber]);
+  }, [searchVal, searchParam, savedSearchCriteria, phonenumber, searchParam]);
 
   // Other cases
   if ((called && loading) || conversationLoading) return <Loading />;
@@ -318,6 +341,7 @@ export const ConversationList = ({
       selectedContactId,
       groups
     );
+
     return (
       <Fragment>
         {index === 0 ? header : null}

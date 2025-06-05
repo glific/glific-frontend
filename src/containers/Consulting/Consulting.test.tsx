@@ -1,5 +1,5 @@
 import { fireEvent, render, waitFor, cleanup, screen, within } from '@testing-library/react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router';
 import { MockedProvider } from '@apollo/client/testing';
 
 import { getConsultingHour, getOrganizationList, createConsultingHour, updateConsultingHour } from 'mocks/Consulting';
@@ -60,8 +60,8 @@ test('Render component correctly with empty form', async () => {
   await waitFor(() => {
     fireEvent.change(inputElements[0], { target: { value: 'Glific' } });
     fireEvent.change(inputElements[1], { target: { value: 'John Doe' } });
-    fireEvent.change(inputElements[3], { target: { value: 15 } });
-    fireEvent.change(inputElements[4], { target: { value: 'Glific Tean' } });
+    fireEvent.change(inputElements[2], { target: { value: 15 } });
+    fireEvent.change(inputElements[3], { target: { value: 'Glific Tean' } });
     fireEvent.click(radioButtons[0]);
   });
 
