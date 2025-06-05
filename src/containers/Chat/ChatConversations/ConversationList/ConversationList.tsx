@@ -176,16 +176,16 @@ export const ConversationList = ({
         filter.includeLabels = params.includeLabels.map((obj: any) => obj.id);
       if (params.dateFrom && !params.dateTo) {
         filter.dateRange = {
-          from: dayjs(params.dateFrom).format(ISO_DATE_FORMAT),
+          from: dayjs(params.dateFrom).utc().format(ISO_DATE_FORMAT),
         };
       } else if (!params.dateFrom && params.dateTo) {
         filter.dateRange = {
-          to: dayjs(params.dateTo).format(ISO_DATE_FORMAT),
+          to: dayjs(params.dateTo).utc().format(ISO_DATE_FORMAT),
         };
       } else if (params.dateFrom && params.dateTo) {
         filter.dateRange = {
-          from: dayjs(params.dateFrom).format(ISO_DATE_FORMAT),
-          to: dayjs(params.dateTo).format(ISO_DATE_FORMAT),
+          from: dayjs(params.dateFrom).utc().format(ISO_DATE_FORMAT),
+          to: dayjs(params.dateTo).utc().format(ISO_DATE_FORMAT),
         };
       }
     }

@@ -80,6 +80,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters }
   const [collectionVariables, setCollectionVariables] = useState<any>({});
   const [showNewMessages, setShowNewMessages] = useState<boolean>(false);
   const { t } = useTranslation();
+  const hasDateFilter = appliedFilters?.dateFrom || appliedFilters?.dateTo ? true : false;
   let dialogBox;
 
   let searchQuery = groups ? GROUP_SEARCH_QUERY : SEARCH_QUERY;
@@ -100,7 +101,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters }
   useEffect(() => {
     setTimeout(() => {
       const messageContainer: any = document.querySelector('.messageContainer');
-      if (messageContainer && (appliedFilters ? !appliedFilters.dateFrom || !appliedFilters.dateTo : true)) {
+      if (messageContainer && (appliedFilters ? hasDateFilter : true)) {
         messageContainer.addEventListener('scroll', (event: any) => {
           const messageContainerTarget = event.target;
           if (
@@ -117,7 +118,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters }
   }, [setShowJumpToLatest, entityId]);
 
   useEffect(() => {
-    if (appliedFilters?.dateFrom || appliedFilters?.dateTo) {
+    if (hasDateFilter) {
       setShowNewMessages(true);
     } else {
       setShowNewMessages(false);
@@ -542,8 +543,8 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters }
       const variables: any = getVariables(
         { limit: 1 },
         {
-          limit: conversationInfo.messages[0].messageNumber,
-          offset,
+          limit: DEFAULT_MESSAGE_LOADMORE_LIMIT,
+          offset: messageNumber,
         },
         { filter: { id: entityId?.toString() } },
         groups
@@ -608,8 +609,72 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters }
       .reverse();
   }
 
-  const loadMoreMessages = () => {
+  const canLoadMore = (direction = 'past') => {
+    if (!conversationInfo?.messages?.length) return false;
+
+    if (hasDateFilter) {
+      const messages = conversationInfo.messages;
+      const targetMessage = direction === 'past' ? messages[messages.length - 1] : messages[0];
+
+      if (direction === 'past') {
+        return targetMessage.messageNumber > 1;
+      } else {
+        return true;
+      }
+    }
+    return showLoadMore;
+  };
+
+  const loadMoreMessages = (direction?: 'past' | 'future') => {
+    if (hasDateFilter && direction) {
+      loadMoreMessagesForDateRange(direction);
+    } else {
+      loadMoreMessagesRegular();
+    }
+  };
+
+  const loadMoreMessagesForDateRange = (direction: 'past' | 'future' = 'past') => {
+    const messages = conversationInfo.messages;
+    const targetMessage = direction === 'past' ? messages[messages.length - 1] : messages[0];
+
+    const { messageNumber } = targetMessage;
+
+    const variables: any = getVariables(
+      { limit: 1 },
+      {
+        limit: DEFAULT_MESSAGE_LIMIT,
+        offset: direction === 'past' ? Math.max(1, messageNumber - DEFAULT_MESSAGE_LIMIT) : messageNumber + 1,
+      },
+      { filter: { id: entityId?.toString() } },
+
+      groups
+    );
+
+    fetchMore({
+      variables,
+      updateQuery: (prev: any, { fetchMoreResult }: any) =>
+        updateCacheQuery(prev, fetchMoreResult, entityId, collectionId, chatType, true, direction),
+    }).then((fetchMoreResult: any) => {
+      const conversationData = fetchMoreResult.data;
+
+      if (
+        (conversationData && conversationData.search.length === 0) ||
+        conversationData.search[0].messages.length === 0
+      ) {
+        if (direction === 'past') {
+          setShowLoadMore(false);
+        } else {
+          setShowNewMessages(false);
+        }
+      }
+
+      setScrollToMessageNumber(messageNumber);
+    });
+  };
+
+  const loadMoreMessagesRegular = () => {
     const { messageNumber } = conversationInfo.messages[conversationInfo.messages.length - 1];
+
     const variables: any = getVariables(
       { limit: 1 },
       {
@@ -625,20 +690,30 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters }
       variables.filter = { id: collectionId.toString(), searchGroup: true };
     }
 
+    executeLoadMore(variables, messageNumber);
+  };
+
+  const executeLoadMore = (variables: any, messageNumber: any, direction: any = 'past') => {
     addLogs(`load More Messages-${collectionId}`, variables);
 
     fetchMore({
       variables,
       updateQuery: (prev: any, { fetchMoreResult }: any) =>
-        updateCacheQuery(prev, fetchMoreResult, entityId, collectionId, chatType, true),
+        updateCacheQuery(prev, fetchMoreResult, entityId, collectionId, chatType, true, direction),
     }).then((fetchMoreResult: any) => {
       const conversationData = fetchMoreResult.data;
+
       if (
         (conversationData && conversationData.search.length === 0) ||
         conversationData.search[0].messages.length === 0
       ) {
-        setShowLoadMore(false);
+        if (direction === 'past') {
+          setShowLoadMore(false);
+        } else {
+          setShowNewMessages(false);
+        }
       }
+
       setScrollToMessageNumber(messageNumber);
     });
   };
@@ -658,15 +733,15 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters }
       (searchMessageNumber && searchMessageNumber > 19);
     chatMessages = (
       <>
-        {showLoadMore && (loadMoreOption || showNewMessages) && (
+        {canLoadMore() && loadMoreOption && (
           <div className={styles.LoadMore}>
             {conversationLoad ? (
               <CircularProgress data-testid="loading" className={styles.Loading} />
             ) : (
               <div
                 className={styles.LoadMoreButton}
-                onClick={loadMoreMessages}
-                onKeyDown={loadMoreMessages}
+                onClick={() => loadMoreMessages('past')}
+                onKeyDown={() => loadMoreMessages('past')}
                 aria-hidden="true"
                 data-testid="loadMoreMessages"
               >
@@ -774,7 +849,8 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters }
   const showCurrentMessages = () => {
     if (conversationInfo && conversationInfo.messages && conversationInfo.messages[0]) {
       const nextMessage = conversationInfo.messages[0].messageNumber + 1;
-      jumpToMessage(nextMessage);
+      // loadMoreMessages(nextMessage);
+      loadMoreMessagesForDateRange('future');
     }
   };
 
