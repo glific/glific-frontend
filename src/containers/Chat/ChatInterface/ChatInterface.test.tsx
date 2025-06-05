@@ -18,13 +18,20 @@ import {
 } from 'mocks/Chat';
 import { contactCollectionsQuery } from 'mocks/Contact';
 import { OrganizationStateMock } from 'mocks/Organization';
-import { collectionCountSubscription, searchQuery, searchWithDateFIlters } from 'mocks/Search';
+import { collectionCountSubscription, searchQuery, searchWithDateFilters } from 'mocks/Search';
 
 import ChatInterface from './ChatInterface';
 import { getWhatsAppManagedPhonesStatusMock } from 'mocks/StatusBar';
 import { getAllCollectionsQuery } from 'mocks/Collection';
 import { getUsersQuery } from 'mocks/User';
 import { getAllFlowLabelsQuery } from 'mocks/Flow';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+import { loadMoreQuery } from '../ChatMessages/ChatMessages.test';
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const mockedUsedNavigate = vi.fn();
 vi.mock('react-router', async () => ({
@@ -227,10 +234,11 @@ describe('Chat interface with filters', () => {
     getUsersQuery,
     getAllFlowLabelsQuery,
     markAsReadMock('2'),
-    searchWithDateFIlters(true),
-    searchWithDateFIlters(false, true),
-    searchWithDateFIlters(true, true),
+    searchWithDateFilters(true),
+    searchWithDateFilters(false, true),
+    searchWithDateFilters(true, true),
     conversationMock({ contactOpts: { limit: 25 }, messageOpts: { limit: 20 }, filter: {} }),
+    loadMoreQuery(20, 20, { id: '2' }, { limit: 20, offset: 6 }),
   ];
   const wrapper = (
     <MockedProvider cache={cache} mocks={MOCKS}>

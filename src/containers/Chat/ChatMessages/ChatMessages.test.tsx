@@ -56,13 +56,18 @@ beforeEach(() => {
   vi.clearAllMocks();
 });
 
-const loadMoreQuery = (length: number, skip: number, filter: any) => ({
+export const loadMoreQuery = (
+  length: number,
+  skip: number,
+  filter: any,
+  messageOpts: any = { limit: 22, offset: 1 }
+) => ({
   request: {
     query: SEARCH_QUERY,
     variables: {
       contactOpts: { limit: 1 },
       filter: filter,
-      messageOpts: { limit: 22, offset: 1 },
+      messageOpts,
     },
   },
   result: {
@@ -188,6 +193,7 @@ const mocks = [
   }),
   clearMessagesQuery,
   loadMoreQuery(20, 20, { id: '2' }),
+  loadMoreQuery(20, 20, { id: '2' }, { limit: 3, offset: 1 }),
   getCollectionInfo({ id: '2' }),
   getCollectionInfo({ id: '5' }),
   getCollectionInfo({ id: '300' }),

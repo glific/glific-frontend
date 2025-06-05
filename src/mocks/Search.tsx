@@ -594,14 +594,14 @@ export const searchQuery = {
   },
 };
 
-export const searchWithDateFIlters = (from: boolean = false, to: boolean = false) => {
+export const searchWithDateFilters = (from: boolean = false, to: boolean = false) => {
   let filter = {};
   if (from && !to) {
-    filter = { dateRange: { from: '2025-05-01' } };
+    filter = { dateRange: { from: '2025-04-30' } };
   } else if (!from && to) {
-    filter = { dateRange: { to: '2025-05-06' } };
+    filter = { dateRange: { to: '2025-05-05' } };
   } else if (from && to) {
-    filter = { dateRange: { from: '2025-05-01', to: '2025-05-06' } };
+    filter = { dateRange: { from: '2025-04-30', to: '2025-05-05' } };
   }
 
   return {
