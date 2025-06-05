@@ -8,7 +8,6 @@ import 'assets/fonts/fonts.css';
 import gqlClient from 'config/apolloclient';
 import { SideDrawerContext } from 'context/session';
 import ErrorHandler from 'containers/ErrorHandler/ErrorHandler';
-import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { getAuthSession, checkAuthStatusService } from 'services/AuthService';
 import { UnauthenticatedRoute } from 'routes/UnauthenticatedRoute/UnauthenticatedRoute';
 import { AuthenticatedRoute } from 'routes/AuthenticatedRoute/AuthenticatedRoute';
@@ -26,16 +25,10 @@ const App = () => {
     const checkAuth = async () => {
       const isAccessTokenPresent = getAuthSession('accessToken') !== null;
       const isTokenAlive = checkAuthStatusService();
-      let isSessionAlive = false;
-      if (!isAccessTokenPresent) {
-        // New user
-        isSessionAlive = false;
-      } else if (isTokenAlive) {
-        // Healthy Session
-        isSessionAlive = true;
-      } else {
-        // Expired Token
-        isSessionAlive = await checkSessionValidity();
+
+      // Only renew token if present but expired
+      if (isAccessTokenPresent && !isTokenAlive) {
+        await checkSessionValidity();
       }
     };
     checkAuth();
@@ -70,7 +63,7 @@ const App = () => {
   return (
     <ApolloProvider client={gqlClient(navigate)}>
       <ErrorHandler />
-      <SideDrawerContext.Provider value={sideDrawerValues}>{routes ? routes : <Loading />}</SideDrawerContext.Provider>
+      <SideDrawerContext.Provider value={sideDrawerValues}>{routes}</SideDrawerContext.Provider>
     </ApolloProvider>
   );
 };
