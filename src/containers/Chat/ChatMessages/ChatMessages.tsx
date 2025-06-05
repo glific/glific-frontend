@@ -543,8 +543,8 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters }
       const variables: any = getVariables(
         { limit: 1 },
         {
-          limit: DEFAULT_MESSAGE_LOADMORE_LIMIT,
-          offset: messageNumber,
+          limit: conversationInfo.messages[0].messageNumber,
+          offset,
         },
         { filter: { id: entityId?.toString() } },
         groups
@@ -554,13 +554,6 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters }
 
       fetchMore({
         variables,
-      }).then(({ data }: any) => {
-        if (data && data.search[0] && data.search[0].messages) {
-          const hasMessageNumber = data.search[0].messages.some((msg: any) => msg.messageNumber === messageNumber);
-          if (!hasMessageNumber) {
-            setShowNewMessages(false);
-          }
-        }
       });
 
       scrollToMessage(messageNumber);
