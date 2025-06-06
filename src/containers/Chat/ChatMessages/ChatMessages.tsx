@@ -80,7 +80,7 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters }
   const [collectionVariables, setCollectionVariables] = useState<any>({});
   const [showNewMessages, setShowNewMessages] = useState<boolean>(false);
   const { t } = useTranslation();
-  const hasDateFilter = appliedFilters?.dateFrom || appliedFilters?.dateTo ? true : false;
+  const hasDateFilter = !!(appliedFilters?.dateFrom || appliedFilters?.dateTo);
   let dialogBox;
 
   let searchQuery = groups ? GROUP_SEARCH_QUERY : SEARCH_QUERY;

@@ -1,5 +1,6 @@
-export const AdvancedSearchIcon = ({ isActive = false }: { isActive: boolean }) => {
-  const color = isActive ? '#119656' : '';
+export const AdvancedSearchIcon = ({ isActive = false }: { isActive?: boolean }) => {
+  const fillColor = isActive ? '#119656' : 'none';
+  const strokeColor = isActive ? 'none' : '#d9d9d9';
   return (
     <svg
       data-testid="advanced-search-icon"
@@ -8,8 +9,8 @@ export const AdvancedSearchIcon = ({ isActive = false }: { isActive: boolean }) 
       xmlns="http://www.w3.org/2000/svg"
       width="18"
       height="18"
-      fill={color || 'none'}
-      stroke={color ? 'none' : '#d9d9d9'}
+      fill={fillColor}
+      stroke={strokeColor}
       strokeWidth={2}
       viewBox="0 0 24 24"
     >
