@@ -55,7 +55,8 @@ export const updateCacheQuery = (
   entityId: any,
   collectionId: any,
   chatType: string,
-  updateMessage?: boolean
+  updateMessage?: boolean,
+  direction: 'past' | 'future' = 'past'
 ) => {
   const conversations = JSON.parse(JSON.stringify(cacheConversations));
   const conversationCopy = JSON.parse(JSON.stringify(fetchMoreResult));
@@ -72,7 +73,19 @@ export const updateCacheQuery = (
 
   const updateConversation = (conversationObj: any) => {
     if (updateMessage) {
-      conversationObj.messages = [...conversationObj.messages, ...conversationCopy.search[0].messages];
+      if (direction === 'past') {
+        // For past messages: append to end (older messages)
+        conversationObj.messages = [...conversationObj.messages, ...conversationCopy.search[0].messages];
+      } else if (direction === 'future') {
+        // For future messages: prepend to beginning (newer messages)
+        conversationObj.messages = [...conversationCopy.search[0].messages, ...conversationObj.messages];
+      }
+
+      const uniqueMessages = conversationObj.messages.filter(
+        (message: any, index: number, self: any[]) => index === self.findIndex((m: any) => m.id === message.id)
+      );
+
+      conversationObj.messages = uniqueMessages.sort((a: any, b: any) => b.id - a.id);
     }
     return conversationObj;
   };

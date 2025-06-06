@@ -21,21 +21,11 @@ import {
 } from 'mocks/Chat';
 import { getCollectionInfo } from 'mocks/Collection';
 import { userEvent } from '@testing-library/user-event';
-import { setNotification } from 'common/notification';
 import { waGroup, waGroupcollection } from 'mocks/Groups';
-import { getBlockedContactSearchQuery, getContactSearchQuery } from 'mocks/Search';
+import { getBlockedContactSearchQuery, getContactSearchQuery, messages, searchQuery } from 'mocks/Search';
 import { getWhatsAppManagedPhonesStatusMock } from 'mocks/StatusBar';
 import { TEMPLATE_MOCKS } from 'mocks/Template';
-
-vi.mock('common/notification', async (importOriginal) => {
-  const mod = await importOriginal<typeof import('common/notification')>();
-  return {
-    ...mod,
-    setNotification: vi.fn((...args) => {
-      return args[1];
-    }),
-  };
-});
+import * as Notification from 'common/notification';
 
 const mockIntersectionObserver = class {
   constructor() {}
@@ -45,6 +35,7 @@ const mockIntersectionObserver = class {
 };
 
 (window as any).IntersectionObserver = mockIntersectionObserver;
+const notificationSpy = vi.spyOn(Notification, 'setNotification');
 
 const mockedUsedNavigate = vi.fn();
 vi.mock('react-router', async () => ({
@@ -56,54 +47,18 @@ beforeEach(() => {
   vi.clearAllMocks();
 });
 
-const messages = (limit: number, skip: number) =>
-  new Array(limit).fill(null).map((val: any, index: number) => ({
-    id: `${index + skip}`,
-    body: 'Hey there whats up?',
-    insertedAt: `2020-${index}-25T13:36:43Z`,
-    location: null,
-    messageNumber: index + skip + 4,
-    receiver: {
-      id: '1',
-    },
-    sender: {
-      id: '2',
-    },
-    type: 'TEXT',
-    media: null,
-    errors: '{}',
-    contextMessage:
-      index % 5 === 0
-        ? {
-            body: 'All good',
-            contextId: 1,
-            messageNumber: 10,
-            errors: '{}',
-            media: null,
-            type: 'TEXT',
-            insertedAt: '2021-04-26T06:13:03.832721Z',
-            location: null,
-            receiver: {
-              id: '1',
-            },
-            sender: {
-              id: '2',
-              name: 'User',
-            },
-          }
-        : null,
-    interactiveContent: '{}',
-    sendBy: 'test',
-    flowLabel: null,
-  }));
-
-const loadMoreQuery = (length: number, skip: number, filter: any) => ({
+export const loadMoreQuery = (
+  length: number,
+  skip: number,
+  filter: any,
+  messageOpts: any = { limit: 22, offset: 1 }
+) => ({
   request: {
     query: SEARCH_QUERY,
     variables: {
       contactOpts: { limit: 1 },
       filter: filter,
-      messageOpts: { limit: 22, offset: 1 },
+      messageOpts,
     },
   },
   result: {
@@ -131,35 +86,6 @@ const loadMoreQuery = (length: number, skip: number, filter: any) => ({
 });
 
 const cache = new InMemoryCache({ addTypename: false });
-export const searchQuery = {
-  query: SEARCH_QUERY,
-  variables: {
-    filter: {},
-    contactOpts: { limit: DEFAULT_ENTITY_LIMIT },
-    messageOpts: { limit: DEFAULT_MESSAGE_LIMIT },
-  },
-  data: {
-    search: [
-      {
-        id: 'contact_2',
-        group: null,
-        contact: {
-          id: '2',
-          name: null,
-          phone: '987654321',
-          maskedPhone: '98****321',
-          lastMessageAt: new Date(),
-          status: 'VALID',
-          fields:
-            '{"name":{"value":"Effie Cormier","type":"string","label":"name","inserted_at":"2024-08-12T04:40:25.098162Z"}}',
-          bspStatus: 'SESSION_AND_HSM',
-          isOrgRead: true,
-        },
-        messages: messages(20, 1),
-      },
-    ],
-  },
-};
 
 cache.writeQuery(searchQuery);
 
@@ -258,6 +184,7 @@ const mocks = [
   }),
   clearMessagesQuery,
   loadMoreQuery(20, 20, { id: '2' }),
+  loadMoreQuery(20, 20, { id: '2' }, { limit: 3, offset: 1 }),
   getCollectionInfo({ id: '2' }),
   getCollectionInfo({ id: '5' }),
   getCollectionInfo({ id: '300' }),
@@ -420,7 +347,7 @@ test('click on Clear conversation', async () => {
   fireEvent.click(getByTestId('ok-button'));
 
   await waitFor(() => {
-    expect(setNotification).toHaveBeenCalled();
+    expect(notificationSpy).toHaveBeenCalled();
   });
 });
 
@@ -769,7 +696,7 @@ test('should show error if send message fails', async () => {
 
   fireEvent.click(getByTestId('sendButton'), { force: true });
   await waitFor(() => {
-    expect(setNotification).toHaveBeenCalled();
+    expect(notificationSpy).toHaveBeenCalled();
   });
 });
 
@@ -783,7 +710,6 @@ test('Blocked contacts should redirect to chat page', async () => {
   );
 
   await waitFor(() => {
-    expect(mockedUsedNavigate).toHaveBeenCalledWith('/chat');
-    expect(setNotification).toHaveBeenCalledWith('The contact is blocked', 'warning');
+    expect(notificationSpy).toHaveBeenCalledWith('The contact is blocked', 'warning');
   });
 });

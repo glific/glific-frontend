@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { InputBase, IconButton, InputAdornment } from '@mui/material';
+import { InputBase, IconButton, InputAdornment, Tooltip } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useTranslation } from 'react-i18next';
 
 import searchIcon from 'assets/images/icons/Search/Desktop.svg';
 import search from 'assets/images/icons/Search/Search.svg';
-import AdvancedSearch from 'assets/images/icons/AdvancedSearch.svg?react';
+import AdvancedSearch from 'assets/images/icons/AdvancedSearch';
 import styles from './SearchBar.module.css';
 import Track from 'services/TrackService';
 
@@ -19,6 +19,7 @@ export interface SearchBarProps {
   endAdornment?: any;
   searchMode: boolean;
   iconFront?: boolean;
+  searchParam?:any
 }
 
 export const SearchBar = ({
@@ -31,6 +32,7 @@ export const SearchBar = ({
   handleChange,
   className,
   iconFront = false,
+  searchParam
 }: SearchBarProps) => {
   const [localSearchValue, setLocalSearchValue] = useState(searchVal);
   const { t } = useTranslation();
@@ -66,17 +68,19 @@ export const SearchBar = ({
   if (endAdornment) {
     endAdornmentInput = (
       <InputAdornment position="end">
-        <IconButton
-          disableFocusRipple
-          aria-label="toggle password visibility"
-          onClick={(e: any) => {
-            Track('Advanced search');
-            handleClick(e, 'search', 'update');
-          }}
-          className={styles.FilterIcon}
-        >
-          <AdvancedSearch data-testid="advanced-search-icon" />
-        </IconButton>
+        <Tooltip title="Filter">
+          <IconButton
+            disableFocusRipple
+            aria-label="toggle password visibility"
+            onClick={(e: any) => {
+              Track('Advanced search');
+              handleClick(e, 'search', 'update');
+            }}
+            className={styles.FilterIcon}
+          >
+            <AdvancedSearch isActive={searchParam && Object.keys(searchParam).length !== 0 } />
+          </IconButton>
+        </Tooltip>
       </InputAdornment>
     );
   }

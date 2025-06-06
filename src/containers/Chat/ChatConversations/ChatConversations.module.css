@@ -81,6 +81,15 @@
   /* width: 50%; */
 }
 
-.DropDown > fieldset {
+.DropDown>fieldset {
   border: none !important;
+}
+
+.Content {
+  padding-top: 0px !important;
+}
+
+.Content h5 {
+  margin: 0.8rem 0 !important;
+  padding: 0 !important;
 }
