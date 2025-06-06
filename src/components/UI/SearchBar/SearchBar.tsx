@@ -78,7 +78,7 @@ export const SearchBar = ({
             }}
             className={styles.FilterIcon}
           >
-            <AdvancedSearch color={searchParam && Object.keys(searchParam).length !== 0 ? '#119656' : null} />
+            <AdvancedSearch isActive={searchParam && Object.keys(searchParam).length !== 0 } />
           </IconButton>
         </Tooltip>
       </InputAdornment>

@@ -1,4 +1,5 @@
-export const AdvancedSearchIcon = ({ color }: { color?: string | null }) => {
+export const AdvancedSearchIcon = ({ isActive = false }: { isActive: boolean }) => {
+  const color = isActive ? '#119656' : '';
   return (
     <svg
       data-testid="advanced-search-icon"

@@ -301,7 +301,7 @@ export const ConversationList = ({
         }
       });
     }
-  }, [searchVal, searchParam, savedSearchCriteria, phonenumber, searchParam]);
+  }, [searchVal, searchParam, savedSearchCriteria, phonenumber]);
 
   // Other cases
   if ((called && loading) || conversationLoading) return <Loading />;
@@ -482,6 +482,21 @@ export const ConversationList = ({
         }
       }
 
+      if (searchParam?.dateFrom && !searchParam?.dateTo) {
+        filter.dateRange = {
+          from: dayjs(searchParam.dateFrom).utc().format(ISO_DATE_FORMAT),
+        };
+      } else if (!searchParam?.dateFrom && searchParam?.dateTo) {
+        filter.dateRange = {
+          to: dayjs(searchParam.dateTo).utc().format(ISO_DATE_FORMAT),
+        };
+      } else if (searchParam?.dateFrom && searchParam?.dateTo) {
+        filter.dateRange = {
+          from: dayjs(searchParam.dateFrom).utc().format(ISO_DATE_FORMAT),
+          to: dayjs(searchParam.dateTo).utc().format(ISO_DATE_FORMAT),
+        };
+      }
+
       const conversationLoadMoreVariables: any = getVariables(
         {
           limit: DEFAULT_ENTITY_LOADMORE_LIMIT,
@@ -507,6 +522,9 @@ export const ConversationList = ({
             const variables: any = queryVariables;
             if (selectedCollectionId && searchVal) {
               variables.filter.groupLabel = searchVal;
+            }
+            if (filter.dateRange) {
+              variables.filter.dateRange = filter.dateRange;
             }
             // save the conversation and update cache
             if (groups) {
