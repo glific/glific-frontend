@@ -228,7 +228,7 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
           </Typography>
           <Button data-testid="addFiles" onClick={() => setShowUploadDialog(true)} variant="outlined">
             <AddIcon />
-            {t('Add Files')}
+            {t('Add/Remove Files')}
           </Button>
         </div>
         {data?.assistant.assistant.vectorStore && (
