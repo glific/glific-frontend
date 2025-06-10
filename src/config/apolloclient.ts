@@ -68,12 +68,12 @@ const gqlClient = (navigate: any) => {
       /* eslint-disable */
       console.warn('Your refresh token is invalid. Try to relogin');
       console.error(err);
-      // logged error in logflare
 
       setLogs('Token fetch error', 'error');
       setLogs(err.message, 'error');
       /* eslint-enable */
       // gracefully logout
+      navigate('/logout/user');
       return Logout;
     },
   });

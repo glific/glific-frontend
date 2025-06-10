@@ -28,7 +28,10 @@ const App = () => {
 
       // Only renew token if present but expired
       if (isAccessTokenPresent && !isTokenAlive) {
-        await checkSessionValidity();
+        const sessionValid = await checkSessionValidity();
+        if (!sessionValid) {
+          navigate('/logout/user');
+        }
       }
     };
     checkAuth();
