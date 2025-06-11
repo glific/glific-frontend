@@ -26,6 +26,7 @@ export interface DialogProps {
   additionalTitleStyles?: string | null;
   buttonOkLoading?: boolean;
   fullWidth?: boolean;
+  customStyles?: any;
 }
 
 export const DialogBox = ({
@@ -50,6 +51,7 @@ export const DialogBox = ({
   buttonMiddle,
   buttonOkLoading = false,
   fullWidth = false,
+  customStyles,
 }: DialogProps) => {
   let cancelButtonDisplay = null;
   if (!skipCancel) {
@@ -72,6 +74,10 @@ export const DialogBox = ({
   let contentStyle = styles.DialogContentLeft;
   if (contentAlign === 'center') {
     contentStyle = styles.DialogContentCenter;
+  }
+
+  if (customStyles && customStyles.content) {
+    contentStyle = [contentStyle, customStyles.content].join(' ');
   }
 
   let middleButtonDisplay;
