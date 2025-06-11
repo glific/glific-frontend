@@ -364,6 +364,7 @@ describe('Add mode', () => {
       expect(language).toHaveValue('English');
     });
 
+    fireEvent.click(screen.getByText('Add buttons'));
     const quickRepliesRadio = screen.getByRole('radio', { name: 'Quick replies' }) as HTMLInputElement;
     expect(quickRepliesRadio.checked).toBe(true);
 
