@@ -45,6 +45,7 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
   const location = useLocation();
   const params = useParams();
   const [value, setValue] = useState(tabs[0].link);
+  const [appliedFilters, setAppliedFilters] = useState<any>({});
 
   let selectedContactId = params.contactId;
   let selectedCollectionId: any = params.collectionId;
@@ -132,7 +133,12 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
     } else if (selectedContactId && !savedSearches) {
       // let's enable simulator only when contact tab is shown
 
-      listingContent = <ChatConversations entityId={simulatorId > 0 ? simulatorId : selectedContactId} />;
+      listingContent = (
+        <ChatConversations
+          entityId={simulatorId > 0 ? simulatorId : selectedContactId}
+          setAppliedFilters={setAppliedFilters}
+        />
+      );
 
       heading = 'Contacts';
     } else if (savedSearches) {
@@ -146,6 +152,7 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
           <ChatMessages
             entityId={simulatorId > 0 ? simulatorId : selectedContactId}
             collectionId={selectedCollectionId}
+            appliedFilters={appliedFilters}
           />
         </div>
 
