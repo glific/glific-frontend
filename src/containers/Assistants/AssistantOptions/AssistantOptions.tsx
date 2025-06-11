@@ -159,7 +159,7 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
     dialog = (
       <DialogBox
         open={showUploadDialog}
-        title={t('Add files to file search')}
+        title={t('Manage files to file search')}
         handleCancel={() => setShowUploadDialog(false)}
         buttonOk="Add"
         fullWidth
@@ -228,7 +228,7 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
           </Typography>
           <Button data-testid="addFiles" onClick={() => setShowUploadDialog(true)} variant="outlined">
             <AddIcon />
-            {t('Add/Remove Files')}
+            {t('Manage Files')}
           </Button>
         </div>
         {data?.assistant.assistant.vectorStore && (
