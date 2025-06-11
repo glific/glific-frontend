@@ -364,10 +364,10 @@ describe('Add mode', () => {
       expect(language).toHaveValue('English');
     });
 
-    const quickRepliesRadio = screen.getByLabelText('Quick replies') as HTMLInputElement;
+    const quickRepliesRadio = screen.getByRole('radio', { name: 'Quick replies' }) as HTMLInputElement;
     expect(quickRepliesRadio.checked).toBe(true);
 
-    const callToActionRadio = screen.getByLabelText('Call to actions') as HTMLInputElement;
+    const callToActionRadio = screen.getByRole('radio', { name: 'Call to actions' }) as HTMLInputElement;
     expect(callToActionRadio.checked).toBe(false);
   });
 });
