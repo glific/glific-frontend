@@ -118,7 +118,7 @@ test('it uploads files to assistant', async () => {
 
   fireEvent.click(screen.getByTestId('addFiles'));
   await waitFor(() => {
-    expect(screen.getByText('Manage files for file search')).toBeInTheDocument();
+    expect(screen.getByText('Manage files')).toBeInTheDocument();
   });
 
   const mockFile = new File(['file content'], 'testFile.txt', { type: 'text/plain' });
@@ -283,7 +283,7 @@ test('uploading multiple files and error messages', async () => {
 
   fireEvent.click(screen.getByTestId('addFiles'));
   await waitFor(() => {
-    expect(screen.getByText('Manage files for file search')).toBeInTheDocument();
+    expect(screen.getByText('Manage files')).toBeInTheDocument();
   });
   expect(screen.getAllByTestId('fileItem')).toHaveLength(1);
 
