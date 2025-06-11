@@ -159,7 +159,7 @@ export const AssistantOptions = ({ currentId, options, setOptions }: AssistantOp
     dialog = (
       <DialogBox
         open={showUploadDialog}
-        title={t('Manage files to file search')}
+        title={t('Manage files for file search')}
         handleCancel={() => setShowUploadDialog(false)}
         buttonOk="Add"
         fullWidth
