@@ -72,9 +72,9 @@ const gqlClient = (navigate: any) => {
       setLogs('Token fetch error', 'error');
       setLogs(err.message, 'error');
       /* eslint-enable */
+
       // gracefully logout
       navigate('/logout/user');
-      return Logout;
     },
   });
 
