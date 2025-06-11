@@ -18,7 +18,6 @@ import {
   checkAndRenewToken,
 } from 'services/AuthService';
 import { CONNECTION_RECONNECT_ATTEMPTS } from 'common/constants';
-import { Logout } from 'containers/Auth/Logout/Logout';
 import setLogs from './logs';
 import { GLIFIC_API_URL, SOCKET } from '.';
 import * as Sentry from '@sentry/react';
