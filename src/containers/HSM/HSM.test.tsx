@@ -355,4 +355,19 @@ describe('Add mode', () => {
       expect(screen.getAllByRole('combobox')[1]).toHaveValue('account_balance');
     });
   });
+
+  test('it shows quick replies as the default selected button type on first render', async () => {
+    render(template);
+
+    await waitFor(() => {
+      const language = screen.getAllByTestId('AutocompleteInput')[0].querySelector('input');
+      expect(language).toHaveValue('English');
+    });
+
+    const quickRepliesRadio = screen.getByLabelText('Quick replies') as HTMLInputElement;
+    expect(quickRepliesRadio.checked).toBe(true);
+
+    const callToActionRadio = screen.getByLabelText('Call to actions') as HTMLInputElement;
+    expect(callToActionRadio.checked).toBe(false);
+  });
 });
