@@ -74,7 +74,7 @@ export const HSM = () => {
   const [languageOptions, setLanguageOptions] = useState<any>([]);
   const [validatingURL, setValidatingURL] = useState<boolean>(false);
   const [isUrlValid, setIsUrlValid] = useState<any>();
-  const [templateType, setTemplateType] = useState<string | null>(CALL_TO_ACTION);
+  const [templateType, setTemplateType] = useState<string | null>(QUICK_REPLY);
   const [dynamicUrlParams, setDynamicUrlParams] = useState<any>({
     urlType: 'Static',
     sampleSuffix: '',
