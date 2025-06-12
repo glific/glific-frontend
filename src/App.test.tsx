@@ -136,10 +136,6 @@ describe('<App /> ', () => {
     await waitFor(() => {
       expect(renewAuthToken).toHaveBeenCalled();
     });
-
-    await waitFor(() => {
-      expect(screen.getByTestId('AuthContainer')).toBeInTheDocument();
-    });
   });
 
   it('it should call log error if api fails', async () => {

@@ -18,7 +18,6 @@ import {
   checkAndRenewToken,
 } from 'services/AuthService';
 import { CONNECTION_RECONNECT_ATTEMPTS } from 'common/constants';
-import { Logout } from 'containers/Auth/Logout/Logout';
 import setLogs from './logs';
 import { GLIFIC_API_URL, SOCKET } from '.';
 import * as Sentry from '@sentry/react';
@@ -68,13 +67,13 @@ const gqlClient = (navigate: any) => {
       /* eslint-disable */
       console.warn('Your refresh token is invalid. Try to relogin');
       console.error(err);
-      // logged error in logflare
 
       setLogs('Token fetch error', 'error');
       setLogs(err.message, 'error');
       /* eslint-enable */
+
       // gracefully logout
-      return Logout;
+      navigate('/logout/user');
     },
   });
 
