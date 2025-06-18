@@ -4038,10 +4038,15 @@ lexical-beautiful-mentions@^0.1.47:
   resolved "https://registry.yarnpkg.com/lexical-beautiful-mentions/-/lexical-beautiful-mentions-0.1.47.tgz#5775a347a42f033aae2ba1ffa28c7381d8d6c6a8"
   integrity sha512-egaA9mlmUCZ9sEdTj/GUga0CFlwbc1Rky8WEcZpyJqhvqGWOb4eIDgC82/8nCq+y+P0xq69BYF24yFEiocTn0g==
 
-lexical@0.31.1, lexical@^0.31.1:
+lexical@0.31.1:
   version "0.31.1"
   resolved "https://registry.yarnpkg.com/lexical/-/lexical-0.31.1.tgz#723443bf03372b84c2864eeff628276be377b7f0"
   integrity sha512-uS8yz3Soc+7h80OTXVhFSWflVJR6mqO7XoU8EXImDT1d8u8dVyitlCNs6kCz1HryTevcxHexHgGxf6kUg0IUgQ==
+
+lexical@^0.31.2:
+  version "0.31.2"
+  resolved "https://registry.yarnpkg.com/lexical/-/lexical-0.31.2.tgz#3353598deaf6033670a6597c5822efb0f976f149"
+  integrity sha512-1GRqzl/QAdtzqOoYXVfMFOkyiSQKIIPcazsgIs+WvsLL8UIcwP16WWeKUtamJgyvS84GN/tuMJsd1Iv+Qzw9WA==
 
 lie@3.1.1:
   version "3.1.1"
