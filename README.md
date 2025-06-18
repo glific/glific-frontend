@@ -1,90 +1,186 @@
 # Glific - Two Way Open Source Communication Platform
 
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
-![](https://github.com/glific/glific-frontend/workflows/Continuous%20Integration/badge.svg)
-[![Code coverage badge](https://img.shields.io/codecov/c/github/glific/glific-frontend/master.svg)](https://codecov.io/gh/glific/glific-frontend/branch/master)
+![CI](https://github.com/glific/glific-frontend/workflows/Continuous%20Integration/badge.svg)
+[![Code coverage](https://img.shields.io/codecov/c/github/glific/glific-frontend/master.svg)](https://codecov.io/gh/glific/glific-frontend/branch/master)
 ![GitHub issues](https://img.shields.io/github/issues-raw/glific/glific-frontend)
 [![Discord](https://img.shields.io/discord/717975833226248303.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/MVf2KF)
-[![Glific](https://img.shields.io/endpoint?url=https://dashboard.cypress.io/badge/detailed/ocex65/master&style=flat&logo=cypress)](https://dashboard.cypress.io/projects/ocex65/runs)
+[![Cypress](https://img.shields.io/endpoint?url=https://dashboard.cypress.io/badge/detailed/ocex65/master&style=flat&logo=cypress)](https://dashboard.cypress.io/projects/ocex65/runs)
 
-Frontend interface built using React.
+Glific is a two-way communication platform built for nonprofits. This is the frontend interface built using React.
 
-## Prerequisite
+---
 
-- Setup the backend application. You can find the instructions [here](https://github.com/glific/glific).
-- SSL is mandatory for both frontend and backend in development. You can find the instructions to generate ssl certificate [here](https://github.com/glific/glific#use-ssl-for-frontend-and-backend)
-- Configure below host in your `/etc/hosts`
-  `127.0.0.1 glific.test`
+## 📋 Table of Contents
 
-## Installation steps
+- [Clone Frontend Repo](#clone-frontend-repo)
+  - [Git commands to clone](#git-commands-to-clone)
+- [Pre-requisite](#pre-requisite)
+  - [Software Dependencies](#software-dependencies)
+    - [npm (via asdf)](#npm-via-asdf)
+    - [yarn (via npm)](#yarn-via-npm)
+  - [Glific Backend](#glific-backend)
+- [Installation](#installation)
+  - [Start backend server](#start-backend-server)
+  - [Start frontend server](#start-frontend-server)
+  - [Login credentials](#login-credentials)
+  - [Configure Gupshup settings](#configure-gupshup-settings)
+- [Available Scripts](#available-scripts)
+- [Docker Image for Production](#docker-image-for-production)
+- [Localization](#localization)
+- [Deploying Release on ECS with CD](#deploying-release-on-ecs-with-cd)
+- [Learn More](#learn-more)
 
-1. Create a new file `.env` in the project root directory and copy the contents from `.env.example`.
-2. Do not update the '.env' file unless you are absolutely sure of what you are doing. Keep the variables same.
-3. Run `yarn setup`
+---
 
-## Available Scripts
+## 🧬 Clone Frontend Repo
 
-In the project directory, you can run:
+### Git commands to clone
 
-### `yarn setup`
+```bash
+git clone https://github.com/glific/glific-frontend.git
+cd glific-frontend
+```
 
-Install the dependencies and required packages.
+---
 
-### `yarn dev`
+## 🛠 Pre-requisite
 
-Runs the app in the development mode.
+### Software Dependencies
 
-### `yarn test`
+#### npm (via asdf)
 
-Launches the test runner in the interactive watch mode.
+```bash
+asdf plugin-add nodejs
+asdf install nodejs latest
+asdf global nodejs latest
+```
 
-### `yarn test:coverage`
+#### yarn (via npm)
 
-Launches the test runner in the interactive watch mode and code coverage stats.
+```bash
+npm install --global yarn
+```
 
-### `yarn build`
+### Glific Backend
 
-Builds the app for production to the `build` folder.
-It correctly bundles React in production mode and optimizes the build for the best performance.
+You need to set up the backend service for Glific. Follow the instructions here:  
+🔗 https://github.com/glific/glific
 
-The build is minified and the filenames include the hashes.
+> 💡 Note: SSL is required in development for both frontend and backend. Follow the SSL setup instructions in the backend README.
 
-Your app is ready to be deployed!
+Also, add the following entry to your `/etc/hosts` file:
 
-## Docker image for production
+```
+127.0.0.1 glific.test
+```
+
+---
+
+## ⚙️ Installation
+
+1. Copy `.env.example` to `.env` in the project root:
+
+   ```bash
+   cp .env.example .env
+   ```
+
+2. **Do not modify `.env`** unless absolutely required.
+3. Install dependencies:
+
+   ```bash
+   yarn setup
+   ```
+
+---
+
+### Start backend server
+
+Ensure your Glific backend server is running and accessible.
+
+---
+
+### Start frontend server
+
+```bash
+yarn dev
+```
+
+Visit `https://glific.test:3000` to open the app.
+
+---
+
+### Login credentials
+
+Use the default test user credentials defined in the backend README or seeds.
+
+---
+
+### Configure Gupshup settings
+
+After logging in:
+
+1. Go to **Settings → Integration**.
+2. Enter your Gupshup credentials and App Name.
+3. Save the settings to auto-fetch your Gupshup App ID.
+
+---
+
+## 📜 Available Scripts
+
+```bash
+yarn setup               # Install dependencies
+yarn dev                 # Run app in development mode
+yarn test                # Run tests in watch mode
+yarn test:coverage       # Run tests with coverage
+yarn build               # Create optimized production build
+yarn extract-translations # Extract English strings for Lokalise
+```
+
+---
+
+## 🐳 Docker Image for Production
+
+To build a production Docker image:
 
 ```bash
 docker build \
 --build-arg VITE_GLIFIC_API_PORT=API-PORT \
---no-cache -t .
+--no-cache -t glific-frontend .
 ```
 
-## Localization
+Replace `API-PORT` with your backend API port number.
 
-Update translation base file (i.e. English)
+---
 
-```bash
-yarn extract-translations
-```
+## 🌐 Localization
 
-Once changed are pushed and merged into master it will be available in `lokalise.com` for translation.
+1. Extract base strings:
 
-After new strings are transalated. Use `Download >> Build only`. It will automatically create PR in this repo.
+   ```bash
+   yarn extract-translations
+   ```
 
-Note: Good to `Preview` before using `Build only`
+2. Once merged into `main`, strings will appear in [Lokalise](https://lokalise.com).
+3. Use `Download → Build only` in Lokalise to push translations.
+4. This will create a PR automatically in the frontend repo.
+5. It's recommended to **Preview** before building.
 
-## Deploying release on ECS with CD
+---
 
-1. If you are using AWS codebuild for CD, use buildspec.yml.sample file content for creating and pushing docker image.
-2. For using and alternative repository like docker hub, click the link to see how we can [build and push docker](https://github.com/marketplace/actions/build-and-push-docker-images) images to docker hub.
+## 🚀 Deploying Release on ECS with CD
 
-## Learn More
+- For AWS CodeBuild, use `buildspec.yml.sample` as your config file.
+- For Docker Hub and alternatives, use this GitHub Action:  
+  🔗 https://github.com/marketplace/actions/build-and-push-docker-images
 
-### Glific
+---
 
-- [Glific.org](https://glific.org/)
-- [One Pager](https://docs.google.com/document/d/1XYxNvIYzNyX2Ve99-HrmTC8utyBFaf_Y7NP1dFYxI9Q/edit?usp=sharing)
-- [Google Drive](https://drive.google.com/drive/folders/1aMQvS8xWRnIEtsIkRgLodhDAM-0hg0v1?usp=sharing)
-- [Product Features](https://docs.google.com/document/d/1uUWmvFkPXJ1xVMr2xaBYJztoItnqxBnfqABz5ad6Zl8/edit?usp=sharing)
-- [Blogs](https://chintugudiya.org/tag/glific/)
-- [Discord](https://discord.gg/scsrGUw)
+## 📚 Learn More
+
+- 🌐 [Glific.org](https://glific.org/)
+- 📄 [One Pager](https://docs.google.com/document/d/1XYxNvIYzNyX2Ve99-HrmTC8utyBFaf_Y7NP1dFYxI9Q/edit?usp=sharing)
+- 📁 [Google Drive](https://drive.google.com/drive/folders/1aMQvS8xWRnIEtsIkRgLodhDAM-0hg0v1?usp=sharing)
+- 📝 [Product Features](https://docs.google.com/document/d/1uUWmvFkPXJ1xVMr2xaBYJztoItnqxBnfqABz5ad6Zl8/edit?usp=sharing)
+- 📰 [Blogs](https://chintugudiya.org/tag/glific/)
+- 💬 [Discord](https://discord.gg/scsrGUw)
