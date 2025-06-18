@@ -4851,10 +4851,10 @@ react-resize-detector@^12.0.2:
   dependencies:
     lodash "^4.17.21"
 
-react-router@^7.6.0:
-  version "7.6.0"
-  resolved "https://registry.yarnpkg.com/react-router/-/react-router-7.6.0.tgz#e2d0872d7bea8df79465a8bba9a20c87c32ce995"
-  integrity sha512-GGufuHIVCJDbnIAXP3P9Sxzq3UUsddG3rrI3ut1q6m0FI6vxVBF3JoPQ38+W/blslLH4a5Yutp8drkEpXoddGQ==
+react-router@^7.6.1:
+  version "7.6.2"
+  resolved "https://registry.yarnpkg.com/react-router/-/react-router-7.6.2.tgz#9f48b343bead7d0a94e28342fc4f9ae29131520e"
+  integrity sha512-U7Nv3y+bMimgWjhlT5CRdzHPu2/KVmqPwKUCChW8en5P3znxUqwlYFlbmyj8Rgp1SF6zs5X4+77kBVknkg6a0w==
   dependencies:
     cookie "^1.0.1"
     set-cookie-parser "^2.6.0"
