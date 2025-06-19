@@ -21,22 +21,6 @@ const App = () => {
   const [drawerOpen, setDrawerOpen] = useState(true);
   const isAuthenticated = !!getAuthSession('accessToken');
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      const isAccessTokenPresent = getAuthSession('accessToken') !== null;
-      const isTokenAlive = checkAuthStatusService();
-
-      // Only renew token if present but expired
-      if (isAccessTokenPresent && !isTokenAlive) {
-        const sessionValid = await checkSessionValidity();
-        if (!sessionValid) {
-          navigate('/logout/user');
-        }
-      }
-    };
-    checkAuth();
-  }, []);
-
   const sideDrawerValues = useMemo(
     () => ({
       drawerOpen,

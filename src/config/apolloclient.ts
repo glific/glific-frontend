@@ -42,6 +42,8 @@ export const cache = new InMemoryCache({
 });
 
 const gqlClient = (navigate: any) => {
+  let isLoggingOut = false;
+
   const refreshTokenLink: any = new TokenRefreshLink({
     accessTokenField: 'access_token',
     isTokenValidOrUndefined: async () => checkAuthStatusService(),
@@ -63,6 +65,10 @@ const gqlClient = (navigate: any) => {
       return tokenResponse;
     },
     handleError: (err: Error) => {
+      // Prevent multiple logout attempts
+      if (isLoggingOut) return;
+      isLoggingOut = true;
+
       // full control over handling token fetch Error
       /* eslint-disable */
       console.warn('Your refresh token is invalid. Try to relogin');
@@ -71,9 +77,7 @@ const gqlClient = (navigate: any) => {
       setLogs('Token fetch error', 'error');
       setLogs(err.message, 'error');
       /* eslint-enable */
-
-      // gracefully logout
-      navigate('/logout/user');
+      navigate('/logout/session');
     },
   });
 
@@ -103,15 +107,14 @@ const gqlClient = (navigate: any) => {
       // @ts-ignore
       switch (networkError.statusCode) {
         case 401:
-          setLogs('401 detected. Attempting token renewal before logout.', 'info', true);
-
-          // check if token exists
-          checkAndRenewToken(navigate);
+          if (!isLoggingOut) {
+            setLogs('401 detected. TokenRefreshLink will handle this.', 'info', true);
+          } else {
+            navigate('/logout/user');
+          }
           break;
         default:
           // eslint-disable-next-line
-          Sentry.captureException(`[Network error]: ${networkError}`);
-          // logged error in logflare
           setLogs(`[Network error]: ${networkError}`, 'error');
       }
     }
@@ -119,7 +122,11 @@ const gqlClient = (navigate: any) => {
 
   const httpLink: any = createLink({ uri: GLIFIC_API_URL });
 
-  const retryIf = (error: any) => {
+  const retryIf = (error: any, op: any) => {
+    if (isLoggingOut) {
+      console.log('Skipping retry - logging out');
+      return false;
+    }
     const doNotRetryCodes = [500, 400, 401];
     return !!error && !doNotRetryCodes.includes(error.statusCode);
   };
