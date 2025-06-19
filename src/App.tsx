@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate, Route, Routes } from 'react-router';
 
 import { ApolloProvider } from '@apollo/client';
@@ -8,11 +8,10 @@ import 'assets/fonts/fonts.css';
 import gqlClient from 'config/apolloclient';
 import { SideDrawerContext } from 'context/session';
 import ErrorHandler from 'containers/ErrorHandler/ErrorHandler';
-import { getAuthSession, checkAuthStatusService } from 'services/AuthService';
+import { getAuthSession } from 'services/AuthService';
 import { UnauthenticatedRoute } from 'routes/UnauthenticatedRoute/UnauthenticatedRoute';
 import { AuthenticatedRoute } from 'routes/AuthenticatedRoute/AuthenticatedRoute';
 import { Logout } from 'containers/Auth/Logout/Logout';
-import { checkSessionValidity } from 'common/utils';
 
 const App = () => {
   const navigate = useNavigate();

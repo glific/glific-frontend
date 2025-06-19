@@ -15,7 +15,6 @@ import {
   getAuthSession,
   setAuthSession,
   getUserSession,
-  checkAndRenewToken,
 } from 'services/AuthService';
 import { CONNECTION_RECONNECT_ATTEMPTS } from 'common/constants';
 import setLogs from './logs';
