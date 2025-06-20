@@ -1,6 +1,6 @@
 {
   "name": "glific-frontend",
-  "version": "6.5.2",
+  "version": "6.5.3",
   "private": true,
   "type": "module",
   "license": {
@@ -26,7 +26,7 @@
     "@mui/icons-material": "^7.1.0",
     "@mui/material": "^7.1.0",
     "@mui/x-date-pickers": "^8.4.0",
-    "@nyaruka/temba-components": "^0.119.2",
+    "@nyaruka/temba-components": "^0.113.0",
     "@sentry/integrations": "^7.114.0",
     "@sentry/react": "^9.19.0",
     "@sentry/vite-plugin": "^3.4.0",
@@ -84,7 +84,7 @@
     "test:coverage": "vitest run --coverage"
   },
   "engines": {
-    "node": ">=16.15.0 <21"
+    "node": ">=20.0.0 <25"
   },
   "eslintConfig": {
     "extends": "react-app"
