@@ -121,7 +121,7 @@ const gqlClient = (navigate: any) => {
 
   const httpLink: any = createLink({ uri: GLIFIC_API_URL });
 
-  const retryIf = (error: any, op: any) => {
+  const retryIf = (error: any) => {
     if (isLoggingOut) {
       console.log('Skipping retry - logging out');
       return false;
