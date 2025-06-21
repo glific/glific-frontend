@@ -17,14 +17,14 @@
   width: 29px;
 }
 
-.Form > h5:nth-of-type(7) {
+.Form>h5:nth-of-type(7) {
   display: inline-block;
   margin-right: 173px;
   margin-top: 24px;
   margin-bottom: 15px;
 }
 
-.Form > div:nth-of-type(7) {
+.Form>div:nth-of-type(7) {
   display: inline;
   font-weight: 400;
 }
@@ -58,4 +58,12 @@
 .FormSearch {
   padding: 0px;
   width: 100%;
+
+}
+
+.Buttons {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
 }

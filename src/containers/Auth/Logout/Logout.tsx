@@ -6,7 +6,6 @@ import { useApolloClient } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 
 import { resetRolePermissions } from 'context/role';
-import { SessionContext } from 'context/session';
 import { clearAuthSession, clearUserSession, getAuthSession } from 'services/AuthService';
 import { USER_SESSION } from 'config';
 import { clearListSession } from 'services/ListService';
@@ -23,7 +22,6 @@ const divStyle: CSSProperties = {
 };
 
 export const Logout = () => {
-  const { setAuthenticated } = useContext(SessionContext);
   const client = useApolloClient();
   const { t } = useTranslation();
   const location = useLocation();
@@ -41,9 +39,6 @@ export const Logout = () => {
     userLogout();
     // clear local storage auth session
     clearAuthSession();
-
-    // update the context
-    setAuthenticated(false);
 
     // clear local storage user session
     clearUserSession();

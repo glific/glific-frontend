@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import axios from 'axios';
 import * as Yup from 'yup';
@@ -6,7 +6,6 @@ import { useLazyQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 
 import { USER_SESSION } from 'config';
-import { SessionContext } from 'context/session';
 import { PhoneInput } from 'components/UI/Form/PhoneInput/PhoneInput';
 import { Input } from 'components/UI/Form/Input/Input';
 import {
@@ -26,7 +25,6 @@ import { setErrorMessage } from 'common/notification';
 const notApprovedMsg = 'Your account is not approved yet. Please contact your organization admin.';
 
 export const Login = () => {
-  const { setAuthenticated } = useContext(SessionContext);
   const [authError, setAuthError] = useState('');
   const { i18n, t } = useTranslation();
   const location: any = useLocation();
@@ -61,9 +59,6 @@ export const Login = () => {
       if ((userAccessRoles.includes('None') && userAccessRoles.length === 1) || userAccessRoles.length === 0) {
         accessDenied();
       } else {
-        // needed to redirect after login
-        setAuthenticated(true);
-
         // role & access permissions
         setUserRolePermissions();
 
@@ -73,15 +68,13 @@ export const Login = () => {
         }
 
         const targetPath = location.state?.to || '/chat';
-        setTimeout(() => {
-          navigate(targetPath, { replace: true });
-        }, 500);
+        navigate(targetPath, { replace: true });
       }
     }
     if (userError) {
       accessDenied();
     }
-  }, [userData, userError, setAuthenticated, organizationServicesData]);
+  }, [userData, userError, organizationServicesData]);
 
   const formFields = [
     {
