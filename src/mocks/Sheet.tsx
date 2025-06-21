@@ -71,7 +71,7 @@ export const getSheetQuery = {
           sheetDataCount: 4,
           type: 'READ',
           autoSync: false,
-          lastSyncedAt: '2022-10-16T14:54:54Z',
+          lastSyncedAt: null,
           updatedAt: '2022-10-16T14:54:55.000000Z',
           url: 'https://glific.test:8080/sheet-integration/add',
         },
@@ -80,10 +80,10 @@ export const getSheetQuery = {
   },
 };
 
-export const deleteSheetQuery = {
+export const deleteSheetQuery = (variables: any) => ({
   request: {
     query: DELETE_SHEET,
-    variables: { sheetId: '3' },
+    variables,
   },
   result: {
     data: {
@@ -93,7 +93,7 @@ export const deleteSheetQuery = {
       },
     },
   },
-};
+});
 
 export const createSheetQuery = {
   request: {
