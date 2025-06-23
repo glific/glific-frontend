@@ -152,10 +152,7 @@ describe('Add mode', () => {
     fireEvent.click(screen.getByText('Add Variable'));
     fireEvent.click(screen.getByText('Add buttons'));
 
-    fireEvent.change(screen.getByPlaceholderText('Button Title'), { target: { value: 'Call me' } });
-    fireEvent.change(screen.getByPlaceholderText('Button Value'), {
-      target: { value: '9876543210' },
-    });
+    fireEvent.change(screen.getByPlaceholderText('Quick reply 1 title'), { target: { value: 'Call me' } });
 
     await waitFor(() => {
       expect(screen.getByText('Hi, How are you** {{1}}')).toBeInTheDocument();
@@ -354,5 +351,21 @@ describe('Add mode', () => {
     await waitFor(() => {
       expect(screen.getAllByRole('combobox')[1]).toHaveValue('account_balance');
     });
+  });
+
+  test('it shows quick replies as the default selected button type on first render', async () => {
+    render(template);
+
+    await waitFor(() => {
+      const language = screen.getAllByTestId('AutocompleteInput')[0].querySelector('input');
+      expect(language).toHaveValue('English');
+    });
+
+    fireEvent.click(screen.getByText('Add buttons'));
+    const quickRepliesRadio = screen.getByRole('radio', { name: 'Quick replies' }) as HTMLInputElement;
+    expect(quickRepliesRadio.checked).toBe(true);
+
+    const callToActionRadio = screen.getByRole('radio', { name: 'Call to actions' }) as HTMLInputElement;
+    expect(callToActionRadio.checked).toBe(false);
   });
 });
