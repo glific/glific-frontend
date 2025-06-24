@@ -10,7 +10,7 @@ export const Instructions = () => {
           <li>Ensure you have prior permission from the contacts to message them through the chatbot</li>
           <li>Ensure the first message being sent to the newly onboarded contacts is the opt-in message</li>
           <li>
-            All phone numbers should be in international format (e.g., <code>+91XXXXXXXXXX</code>). Numbers without a
+            All phone numbers should be in E164 format (e.g., <code>+91XXXXXXXXXX</code>). Numbers without a
             <code>+</code> prefix will be auto-corrected before validation.
           </li>
           <li>
