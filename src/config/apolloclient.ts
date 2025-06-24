@@ -93,7 +93,7 @@ const gqlClient = (navigate: any) => {
     };
   });
 
-  const errorLink = onError(({ graphQLErrors, networkError }) => {
+  const errorLink = onError(({ graphQLErrors, networkError, operation }) => {
     if (graphQLErrors)
       graphQLErrors.map(({ message, locations, path }) => {
         // eslint-disable-next-line
@@ -103,19 +103,8 @@ const gqlClient = (navigate: any) => {
       });
 
     if (networkError) {
-      // @ts-ignore
-      switch (networkError.statusCode) {
-        case 401:
-          if (!isLoggingOut) {
-            setLogs('401 detected. TokenRefreshLink will handle this.', 'info', true);
-          } else {
-            navigate('/logout/user');
-          }
-          break;
-        default:
-          // eslint-disable-next-line
-          setLogs(`[Network error]: ${networkError}`, 'error');
-      }
+      setLogs(`Network error: ${networkError} ${operation.variables}`, 'error');
+      navigate('/logout/session', { state: { to: window.location.pathname } });
     }
   });
 
