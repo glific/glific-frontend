@@ -129,6 +129,7 @@ export const getMultipleProfiles = {
           },
           name: 'profile name 1',
           type: 'Student',
+          is_default: true,
           is_active: true,
         },
         {
@@ -142,6 +143,7 @@ export const getMultipleProfiles = {
           },
           name: 'profile name 2',
           type: 'Parent',
+          is_default: false,
           is_active: true,
         },
         {
@@ -155,6 +157,7 @@ export const getMultipleProfiles = {
           },
           name: 'profile name 3',
           type: 'Parent',
+          is_default: false,
           is_active: false,
         },
       ],
