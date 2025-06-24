@@ -62,6 +62,7 @@ export const Logout = () => {
     // if user click on logout menu
     if (params.mode === 'user') {
       handleLogout();
+      navigate('/login', { replace: true, state: { to: location.state } });
     }
   }, []);
 
