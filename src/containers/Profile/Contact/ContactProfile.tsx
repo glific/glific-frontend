@@ -29,6 +29,10 @@ export const ContactProfile = () => {
     fetchPolicy: 'network-only',
   });
 
+
+  console.log('Profiles data:', profileData);
+
+
   useEffect(() => {
     if (data) {
       setSelectedProfileId(data.contact.contact.activeProfile?.id);
@@ -74,7 +78,7 @@ export const ContactProfile = () => {
 
   let profileHeaders: Array<{ id: string | undefined; name: string }> = [];
   if (profileData && profileData.profiles.length > 0 && activeProfile?.id) {
-    profileHeaders = profileData.profiles;
+    profileHeaders = profileData.profiles.filter((profile: any) => profile.is_active);
   } else {
     profileHeaders = [{ id: 'noProfile', name: contactDisplayName }];
   }
