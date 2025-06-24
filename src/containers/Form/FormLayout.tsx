@@ -50,8 +50,9 @@ export interface FormLayoutProps {
   additionalState?: any;
   button?: string;
   buttonState?: {
-    text: string;
-    status: boolean;
+    text?: string;
+    status?: boolean;
+    styles?: string;
   };
   type?: string;
   afterSave?: Function;
@@ -85,6 +86,7 @@ export interface FormLayoutProps {
     text?: string;
     status?: boolean;
   };
+  skipCancel?: boolean;
 }
 
 export const FormLayout = ({
@@ -116,7 +118,7 @@ export const FormLayout = ({
   advanceSearch,
   cancelAction,
   button = 'Save',
-  buttonState = { text: '', status: false },
+  buttonState = { text: '', status: false, styles: '' },
   type,
   afterSave,
   afterDelete,
@@ -138,6 +140,7 @@ export const FormLayout = ({
   partialPage = false,
   confirmationState,
   restrictButtonStatus,
+  skipCancel = false,
 }: FormLayoutProps) => {
   const [showDialog, setShowDialog] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
@@ -570,7 +573,7 @@ export const FormLayout = ({
               </Fragment>
             );
           })}
-          <div className={styles.Buttons}>
+          <div className={buttonState.styles ? buttonState.styles : styles.Buttons}>
             <Button
               variant="contained"
               color="primary"
@@ -605,9 +608,11 @@ export const FormLayout = ({
                 {additionalAction.label}
               </Button>
             ) : null}
-            <Button variant="outlined" color="secondary" onClick={cancelHandler} data-testid="cancelActionButton">
-              {t('Cancel')}
-            </Button>
+            {!skipCancel && (
+              <Button variant="outlined" color="secondary" onClick={cancelHandler} data-testid="cancelActionButton">
+                {t('Cancel')}
+              </Button>
+            )}
 
             {deleteButton}
           </div>
