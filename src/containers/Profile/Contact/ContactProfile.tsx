@@ -29,10 +29,6 @@ export const ContactProfile = () => {
     fetchPolicy: 'network-only',
   });
 
-
-  console.log('Profiles data:', profileData);
-
-
   useEffect(() => {
     if (data) {
       setSelectedProfileId(data.contact.contact.activeProfile?.id);

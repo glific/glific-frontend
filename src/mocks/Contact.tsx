@@ -129,6 +129,7 @@ export const getMultipleProfiles = {
           },
           name: 'profile name 1',
           type: 'Student',
+          is_active: true,
         },
         {
           __typename: 'Profile',
@@ -141,6 +142,20 @@ export const getMultipleProfiles = {
           },
           name: 'profile name 2',
           type: 'Parent',
+          is_active: true,
+        },
+        {
+          __typename: 'Profile',
+          fields:
+            '{"role":{"value":"Parent","type":"string","label":"role","inserted_at":"2024-09-08T12:15:55.625321Z"},"name":{"value":"profile name 3","type":"string","label":"Name","inserted_at":"2024-09-08T12:15:55.625321Z"}}',
+          id: '4',
+          language: {
+            __typename: 'Language',
+            id: '1',
+          },
+          name: 'profile name 3',
+          type: 'Parent',
+          is_active: false,
         },
       ],
     },
