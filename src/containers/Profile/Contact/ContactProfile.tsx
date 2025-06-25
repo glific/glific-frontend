@@ -25,9 +25,16 @@ export const ContactProfile = () => {
   const { loading, data } = useQuery(GET_CONTACT_DETAILS, { variables: { id: params.id } });
 
   const { loading: profileLoading, data: profileData } = useQuery(GET_CONTACT_PROFILES, {
-    variables: { filter: { contactId: params.id } },
+    variables: {
+      filter: {
+        contactId: params.id,
+        is_active: true
+      }
+    },
     fetchPolicy: 'network-only',
   });
+
+  console.log(profileData)
 
   useEffect(() => {
     if (data) {
@@ -74,7 +81,7 @@ export const ContactProfile = () => {
 
   let profileHeaders: Array<{ id: string | undefined; name: string }> = [];
   if (profileData && profileData.profiles.length > 0 && activeProfile?.id) {
-    profileHeaders = profileData.profiles.filter((profile: any) => profile.is_active);
+    profileHeaders = profileData.profiles;
   } else {
     profileHeaders = [{ id: 'noProfile', name: contactDisplayName }];
   }
