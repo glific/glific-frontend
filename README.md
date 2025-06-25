@@ -12,7 +12,7 @@ Glific is a two-way communication platform built for nonprofits. This is the fro
 ---
 
 ## 📋 Table of Contents
-- [Pre-requisite](#️️️️pre-requisite)
+- [Pre-requisite](#pre-requisite)
   - [Software Dependencies](#software-dependencies)
     - [npm (via asdf)](#npm-via-asdf)
     - [yarn (via npm)](#yarn-via-npm)
