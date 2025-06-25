@@ -114,7 +114,10 @@ export const getMultipleProfiles = {
   request: {
     query: GET_CONTACT_PROFILES,
     variables: {
-      filter: { contactId: '2' },
+      filter: {
+        contactId: '2',
+        is_active: true
+      },
     },
   },
   result: {
