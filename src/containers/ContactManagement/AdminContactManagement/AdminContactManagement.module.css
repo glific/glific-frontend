@@ -82,7 +82,7 @@
 }
 
 .Sample a {
-  margin-left: 50px;
+  margin-left: 5px;
   text-transform: uppercase;
   text-decoration: none;
   color: #119656;
@@ -110,4 +110,46 @@
 .Buttons button {
   border-radius: 8px;
   width: 30%;
+}
+
+.CustomUploadButton {
+  width: 60%;
+  min-height: 44px;
+  border: 2px dashed #119656;
+  border-radius: 8px;
+  background: #fff;
+  color: #119656;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  margin-bottom: 12px;
+  position: relative;
+  padding: 12px 0;
+  box-sizing: border-box;
+  text-transform: uppercase;
+  gap: 12px;
+}
+
+.CustomUploadButton:hover {
+  border-color: #0b7c43;
+  background: #f6fcf9;
+}
+
+.FilexxxIcon {
+  width: 32px;
+  height: 32px;
+  color: #119656;
+  margin-right: 8px;
+}
+
+.CustomUploadButton span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 12px;
 }

@@ -67,9 +67,9 @@ export const AdminContactManagement = ({ setShowStatus }: AdminContactManagement
           </a>
         </div>
         <div className={styles.UploadContainer}>
-          <label className={styles.UploadEnabled} htmlFor="uploadFile">
+          <label className={`${styles.UploadEnabled} ${styles.CustomUploadButton}`} htmlFor="uploadFile">
             <span>
-              <FileIcon className={styles.FileIcon} />
+              <FileIcon className={styles.FilexxxIcon} />
               {fileName !== '' ? (
                 <>
                   <span>{fileName}</span>
@@ -86,7 +86,6 @@ export const AdminContactManagement = ({ setShowStatus }: AdminContactManagement
               ) : (
                 'Select file'
               )}
-
               <input
                 type="file"
                 id="uploadFile"
