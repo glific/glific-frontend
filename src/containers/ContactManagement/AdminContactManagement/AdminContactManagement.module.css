@@ -7,6 +7,7 @@
   background-color: #fff;
   border-radius: 15px;
   padding: 1rem 2rem;
+  height: auto;
 }
 
 .Instructions {
@@ -50,17 +51,18 @@
 .Upload {
   display: flex;
   align-items: center;
-  position: relative;
-  width: 200px;
-  border: 2px solid #93a29b;
-  border-radius: 27px;
-  padding: 6px 0px;
-  cursor: pointer;
-  color: #93a29b;
+  justify-content: center;
+  width: 100%;
+  height: 70px; 
+  border: 2px dashed #119656; 
+  border-radius: 0; 
   background-color: #fff;
   font-weight: 500;
   font-size: 16px;
-  justify-content: center;
+  color: #119656;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  gap: 0.5rem;
 }
 
 .UploadEnabled {
@@ -82,7 +84,7 @@
 }
 
 .Sample a {
-  margin-left: 5px;
+  margin-left: 0px;
   text-transform: uppercase;
   text-decoration: none;
   color: #119656;
@@ -102,6 +104,7 @@
   color: #dd1f1f;
 }
 
+
 .CrossIcon {
   position: absolute;
   right: 12px;
@@ -110,46 +113,4 @@
 .Buttons button {
   border-radius: 8px;
   width: 30%;
-}
-
-.CustomUploadButton {
-  width: 60%;
-  min-height: 44px;
-  border: 2px dashed #119656;
-  border-radius: 8px;
-  background: #fff;
-  color: #119656;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: border-color 0.2s, background 0.2s;
-  margin-bottom: 12px;
-  position: relative;
-  padding: 12px 0;
-  box-sizing: border-box;
-  text-transform: uppercase;
-  gap: 12px;
-}
-
-.CustomUploadButton:hover {
-  border-color: #0b7c43;
-  background: #f6fcf9;
-}
-
-.FilexxxIcon {
-  width: 32px;
-  height: 32px;
-  color: #119656;
-  margin-right: 8px;
-}
-
-.CustomUploadButton span {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  gap: 12px;
 }
