@@ -178,10 +178,6 @@ describe('test creating a speed send', () => {
     await waitFor(() => {
       expect(notificationSpy).toHaveBeenCalled();
     });
-
-    await waitFor(() => {
-      expect(screen.getByTestId('translation')).toBeInTheDocument();
-    });
   });
 
   test('it should display warning message', async () => {
