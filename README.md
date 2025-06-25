@@ -117,13 +117,18 @@ Visit `https://glific.test:3000` to open the app.
 
 ---
 
-### Configure Gupshup settings
+### Configure Gupshup settings (Optional)
 
 After logging in:
+
+
+This step is required only if you're using Gupshup integration and have ISV credentials stored in the database.
 
 1. Go to **Settings → Integration**.
 2. Enter your Gupshup credentials and App Name.
 3. Save the settings to auto-fetch your Gupshup App ID.
+
+> 💡 Note: Auto-fetching the App ID will only work if valid ISV credentials are already present in the backend database.
 
 ---
 
