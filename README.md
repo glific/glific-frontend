@@ -12,23 +12,23 @@ Glific is a two-way communication platform built for nonprofits. This is the fro
 ---
 
 ## 📋 Table of Contents
-- [Pre-requisite](#-pre-requisite)
+- [Pre-requisite](#pre-requisite)
   - [Software Dependencies](#software-dependencies)
     - [npm (via asdf)](#npm-via-asdf)
     - [yarn (via npm)](#yarn-via-npm)
   - [Glific Backend](#glific-backend)
-- [Clone Frontend Repo](#-clone-frontend-repo)
+- [Clone Frontend Repo](#clone-frontend-repo)
   - [Git commands to clone](#git-commands-to-clone)
-- [Installation](#-installation)
+- [Installation](#installation)
   - [Start backend server](#start-backend-server)
   - [Start frontend server](#start-frontend-server)
   - [Login credentials](#login-credentials)
   - [Configure Gupshup settings](#configure-gupshup-settings)
-- [Available Scripts](#-available-scripts)
-- [Docker Image for Production](#-docker-image-for-production)
-- [Localization](#-localization)
-- [Deploying Release on ECS with CD](#-deploying-release-on-ecs-with-cd)
-- [Learn More](#-learn-more)
+- [Available Scripts](#available-scripts)
+- [Docker Image for Production](#docker-image-for-production)
+- [Localization](#localization)
+- [Deploying Release on ECS with CD](#deploying-release-on-ecs-with-cd)
+- [Learn More](#learn-more)
 
 ---
 
