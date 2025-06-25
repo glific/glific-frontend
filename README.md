@@ -12,14 +12,13 @@ Glific is a two-way communication platform built for nonprofits. This is the fro
 ---
 
 ## 📋 Table of Contents
-
-- [Clone Frontend Repo](#-clone-frontend-repo)
-  - [Git commands to clone](#git-commands-to-clone)
 - [Pre-requisite](#-pre-requisite)
   - [Software Dependencies](#software-dependencies)
     - [npm (via asdf)](#npm-via-asdf)
     - [yarn (via npm)](#yarn-via-npm)
   - [Glific Backend](#glific-backend)
+- [Clone Frontend Repo](#-clone-frontend-repo)
+  - [Git commands to clone](#git-commands-to-clone)
 - [Installation](#-installation)
   - [Start backend server](#start-backend-server)
   - [Start frontend server](#start-frontend-server)
@@ -30,17 +29,6 @@ Glific is a two-way communication platform built for nonprofits. This is the fro
 - [Localization](#-localization)
 - [Deploying Release on ECS with CD](#-deploying-release-on-ecs-with-cd)
 - [Learn More](#-learn-more)
-
----
-
-## Clone Frontend Repo
-
-### Git commands to clone
-
-```bash
-git clone https://github.com/glific/glific-frontend.git
-cd glific-frontend
-```
 
 ---
 
@@ -61,6 +49,17 @@ asdf global nodejs latest
 ```bash
 npm install --global yarn
 ```
+
+## Clone Frontend Repo
+
+### Git commands to clone
+
+```bash
+git clone https://github.com/glific/glific-frontend.git
+cd glific-frontend
+```
+
+---
 
 ### Glific Backend
 
@@ -112,7 +111,9 @@ Visit `https://glific.test:3000` to open the app.
 
 ### Login credentials
 
-Use the default test user credentials defined in the backend README or seeds.
+* Phone: 917834811114
+
+* Password: Secret1234!
 
 ---
 
