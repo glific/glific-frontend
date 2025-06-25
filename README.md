@@ -32,7 +32,7 @@ Glific is a two-way communication platform built for nonprofits. This is the fro
 
 ---
 
-## 🛠 Pre-requisite
+## Pre-requisite
 
 ### Software Dependencies
 
@@ -76,7 +76,7 @@ Also, add the following entry to your `/etc/hosts` file:
 
 ---
 
-## ⚙️ Installation
+## Installation
 
 1. Copy `.env.example` to `.env` in the project root:
 
@@ -127,7 +127,7 @@ After logging in:
 
 ---
 
-## 📜 Available Scripts
+## Available Scripts
 
 ```bash
 yarn setup               # Install dependencies
@@ -140,7 +140,7 @@ yarn extract-translations # Extract English strings for Lokalise
 
 ---
 
-## 🐳 Docker Image for Production
+## Docker Image for Production
 
 To build a production Docker image:
 
@@ -154,7 +154,7 @@ Replace `API-PORT` with your backend API port number.
 
 ---
 
-## 🌐 Localization
+## Localization
 
 1. Extract base strings:
 
@@ -169,7 +169,7 @@ Replace `API-PORT` with your backend API port number.
 
 ---
 
-## 🚀 Deploying Release on ECS with CD
+## Deploying Release on ECS with CD
 
 - For AWS CodeBuild, use `buildspec.yml.sample` as your config file.
 - For Docker Hub and alternatives, use this GitHub Action:  
@@ -177,7 +177,7 @@ Replace `API-PORT` with your backend API port number.
 
 ---
 
-## 📚 Learn More
+## Learn More
 
 - 🌐 [Glific.org](https://glific.org/)
 - 📄 [One Pager](https://docs.google.com/document/d/1XYxNvIYzNyX2Ve99-HrmTC8utyBFaf_Y7NP1dFYxI9Q/edit?usp=sharing)
