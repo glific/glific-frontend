@@ -23,7 +23,7 @@ Glific is a two-way communication platform built for nonprofits. This is the fro
   - [Start backend server](#start-backend-server)
   - [Start frontend server](#start-frontend-server)
   - [Login credentials](#login-credentials)
-  - [Configure Gupshup settings](#configure-gupshup-settings)
+  - [Configure Gupshup settings](#configure-gupshup-settings-optional)
 - [Available Scripts](#available-scripts)
 - [Docker Image for Production](#docker-image-for-production)
 - [Localization](#localization)
