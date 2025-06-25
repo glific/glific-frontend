@@ -280,8 +280,8 @@ export const templateMock = createTemplateMock({
   languageId: '1',
   example: 'Hi, How are you*_~~_* [User]',
   hasButtons: true,
-  buttons: '[{"type":"PHONE_NUMBER","text":"Call me","phone_number":"9876543210"}]',
-  buttonType: 'CALL_TO_ACTION',
+  buttons: '[{"type":"QUICK_REPLY","text":"Call me"}]',
+  buttonType: 'QUICK_REPLY',
 });
 
 export const quickReplyMock = createTemplateMock({
