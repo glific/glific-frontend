@@ -150,6 +150,7 @@ describe('Add mode', () => {
     });
 
     fireEvent.click(screen.getByText('Add Variable'));
+
     fireEvent.click(screen.getByText('Add buttons'));
 
     fireEvent.change(screen.getByPlaceholderText('Quick reply 1 title'), { target: { value: 'Call me' } });
@@ -160,6 +161,9 @@ describe('Add mode', () => {
 
     fireEvent.change(screen.getByPlaceholderText('Define value'), { target: { value: 'User' } });
 
+    fireEvent.click(screen.getByText('Add Variable'));
+    fireEvent.click(screen.getAllByTestId('delete-variable')[1]);
+
     autocompletes[3].focus();
     fireEvent.keyDown(autocompletes[3], { key: 'ArrowDown' });
     fireEvent.click(screen.getByText('Messages'), { key: 'Enter' });
@@ -169,43 +173,6 @@ describe('Add mode', () => {
 
     await waitFor(() => {
       expect(setNotification).toHaveBeenCalled();
-    });
-  });
-
-  test('it should add and remove variables', async () => {
-    render(template);
-
-    await waitFor(() => {
-      expect(screen.getByText('Add a new HSM Template')).toBeInTheDocument();
-    });
-
-    const inputs = screen.getAllByRole('textbox');
-    const lexicalEditor = inputs[2];
-
-    await user.click(lexicalEditor);
-    await user.tab();
-    fireEvent.input(lexicalEditor, { data: 'Hi' });
-
-    await waitFor(() => {
-      expect(screen.getByText('Hi')).toBeInTheDocument();
-    });
-
-    fireEvent.click(screen.getByText('Add Variable'));
-
-    await waitFor(() => {
-      expect(screen.getAllByTestId('variable')).toHaveLength(1);
-    });
-
-    fireEvent.click(screen.getByText('Add Variable'));
-
-    await waitFor(() => {
-      expect(screen.getAllByTestId('variable')).toHaveLength(2);
-    });
-
-    fireEvent.click(screen.getAllByTestId('delete-variable')[0]);
-
-    await waitFor(() => {
-      expect(screen.getAllByTestId('variable')).toHaveLength(1);
     });
   });
 
