@@ -323,9 +323,10 @@ export const HSM = () => {
   };
 
   const validateURL = (value: string) => {
-    if (value && type) {
+    const trimmedValue = value.trim();
+    if (trimmedValue && type) {
       setValidatingURL(true);
-      validateMedia(value, type.id, false).then((response: any) => {
+      validateMedia(trimmedValue, type.id, false).then((response: any) => {
         if (!response.data.is_valid) {
           setIsUrlValid(response.data.message);
         } else {
