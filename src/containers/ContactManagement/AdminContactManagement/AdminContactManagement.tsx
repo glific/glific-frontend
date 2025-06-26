@@ -84,7 +84,7 @@ export const AdminContactManagement = ({ setShowStatus }: AdminContactManagement
                   />
                 </>
               ) : (
-                'UPLOAD File'
+                'UPLOAD FILE'
               )}
 
               <input
