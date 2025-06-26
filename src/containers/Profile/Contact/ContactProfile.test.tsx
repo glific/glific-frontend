@@ -84,4 +84,22 @@ describe('contact profile with multiple profiles', () => {
       expect(screen.getAllByRole('textbox')[0]).toHaveValue('profile name 2');
     });
   });
+
+  test('should only show active profiles in profile list', async () => {
+    render(wrapper);
+
+    await waitFor(() => {
+      expect(screen.getByText('Contact Profile')).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      const profileHeaders = screen.getAllByTestId('profileHeader');
+
+      // Should render exactly 2 active profiles
+      expect(profileHeaders).toHaveLength(2);
+
+      expect(profileHeaders[0]).toHaveTextContent('profile name 1');
+      expect(profileHeaders[1]).toHaveTextContent('profile name 2');
+    });
+  });
 });
