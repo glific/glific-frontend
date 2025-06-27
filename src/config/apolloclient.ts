@@ -103,8 +103,13 @@ const gqlClient = (navigate: any) => {
       });
 
     if (networkError) {
-      //not logging user out on network errors
       setLogs(`Network error: ${networkError} ${operation.variables}`, 'error');
+      if (networkError.message.includes('Received status code 401') || networkError.message.includes('401')) {
+        if (!isLoggingOut) {
+          isLoggingOut = true;
+          navigate('/logout/session');
+        }
+      }
     }
   });
 
