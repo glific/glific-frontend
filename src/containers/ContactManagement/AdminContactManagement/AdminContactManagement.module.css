@@ -6,7 +6,7 @@
   max-height: 65%;
   background-color: #fff;
   border-radius: 15px;
-  padding: 1rem 2rem;
+  padding: 1.5rem 2rem;
   height: auto;
 }
 
@@ -26,36 +26,15 @@
   margin-top: 24px;
   margin-bottom: 36px;
 }
-.Upload input,
-.UploadDisabled input {
-  display: none;
-}
-
-.Uploaded {
-  cursor: unset;
-  border: 2px solid #073f24 !important;
-}
-.Uploaded span {
-  color: #073f24;
-}
-
-.UploadEnabled span {
-  display: flex;
-  align-items: center;
-}
-
-.UploadCrossIcon {
-  margin-left: 12px;
-}
 
 .Upload {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: 70px; 
-  border: 2px dashed #119656; 
-  border-radius: 0; 
+  height: 70px;
+  border: 1px dashed #119656;
+  border-radius: 0;
   background-color: #fff;
   font-weight: 500;
   font-size: 16px;
@@ -63,28 +42,25 @@
   cursor: pointer;
   transition: background-color 0.2s ease;
   gap: 0.5rem;
+  border-radius: 0.5rem;
 }
 
-.UploadEnabled {
-  composes: Upload;
+.Upload input {
+  display: none;
 }
 
-.UploadDisabled {
-  composes: Upload;
-  cursor: not-allowed;
+.FileInput {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
-.WaitUpload {
-  font-size: 14px;
-  margin-left: 16px;
-}
-
-.Fields {
-  margin-bottom: 16px;
+.UploadFile {
+  display: flex;
+  align-items: start;
 }
 
 .Sample a {
-  margin-left: 0px;
   text-transform: uppercase;
   text-decoration: none;
   color: #119656;
@@ -95,7 +71,9 @@
 }
 
 .Sample {
-  margin-bottom: 16px;
+  margin: 0.5rem 0;
+  display: flex;
+  justify-content: center;
 }
 
 .Error {
@@ -104,13 +82,27 @@
   color: #dd1f1f;
 }
 
-
-.CrossIcon {
-  position: absolute;
-  right: 12px;
-}
-
 .Buttons button {
   border-radius: 8px;
   width: 30%;
+}
+
+.Instructions h5 {
+  font-size: 0.875rem;
+  line-height: 1.5rem;
+  margin: 0;
+  color: #000;
+}
+
+.Instructions div {
+  margin: 1rem 0;
+}
+
+.Instructions ul {
+  padding-left: 1rem;
+  margin: 0;
+}
+
+.Instructions ul li {
+  font-size: 0.875rem;
 }

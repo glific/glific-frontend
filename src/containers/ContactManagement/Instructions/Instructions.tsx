@@ -23,12 +23,12 @@ export const Instructions = () => {
         <h5>Disclaimer</h5>
         <ul>
           <li>
-            Contacts who block a chatbot number lead to the reduction in quality rating of the chatbot by Meta. This
-            can reduce the limit of business-initiated conversations.
+            Contacts who block a chatbot number lead to the reduction in quality rating of the chatbot by Meta. This can
+            reduce the limit of business-initiated conversations.
           </li>
           <li>
-            Kindly plan to message a large number of new contacts in batches to avoid quality degradation or having
-            your chatbot blocked by Meta.
+            Kindly plan to message a large number of new contacts in batches to avoid quality degradation or having your
+            chatbot blocked by Meta.
           </li>
         </ul>
       </div>
