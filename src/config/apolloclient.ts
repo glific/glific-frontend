@@ -145,8 +145,13 @@ const gqlClient = (navigate: any) => {
       },
       retryAttempts: 5,
       keepAlive: 30000,
-      shouldRetry: (error) => {
-        setLogs(`WebSocket retry attempt due to: ${error}`, 'info');
+      shouldRetry: (error: any) => {
+        const errorMessage = error?.message || error?.toString() || `Unknown error ${error}`;
+        setLogs(`WebSocket retry attempt due to: ${errorMessage}`, 'info');
+
+        if (error?.message?.includes('401') || error?.message?.includes('Unauthorized')) {
+          return false;
+        }
         return true;
       },
       retryWait: async (retries) => {
@@ -155,8 +160,8 @@ const gqlClient = (navigate: any) => {
       },
 
       on: {
-        closed: (event) => {
-          setLogs(`WebSocket closed: ${event}`, 'error');
+        closed: (event: any) => {
+          setLogs(`WebSocket closed with code ${event.code} and reason: ${event.reason}`, 'error');
         },
         error: (error) => {
           setLogs(`WebSocket error: ${error}`, 'error');
