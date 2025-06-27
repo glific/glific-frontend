@@ -55,8 +55,7 @@ npm install --global yarn
 ### Git commands to clone
 
 ```bash
-git clone https://github.com/glific/glific-frontend.git
-cd glific-frontend
+git clone git@github.com:glific/glific-frontend.git
 ```
 
 ---
