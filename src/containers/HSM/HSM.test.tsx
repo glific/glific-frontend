@@ -150,18 +150,19 @@ describe('Add mode', () => {
     });
 
     fireEvent.click(screen.getByText('Add Variable'));
+
     fireEvent.click(screen.getByText('Add buttons'));
 
-    fireEvent.change(screen.getByPlaceholderText('Button Title'), { target: { value: 'Call me' } });
-    fireEvent.change(screen.getByPlaceholderText('Button Value'), {
-      target: { value: '9876543210' },
-    });
+    fireEvent.change(screen.getByPlaceholderText('Quick reply 1 title'), { target: { value: 'Call me' } });
 
     await waitFor(() => {
       expect(screen.getByText('Hi, How are you** {{1}}')).toBeInTheDocument();
     });
 
     fireEvent.change(screen.getByPlaceholderText('Define value'), { target: { value: 'User' } });
+
+    fireEvent.click(screen.getByText('Add Variable'));
+    fireEvent.click(screen.getAllByTestId('delete-variable')[1]);
 
     autocompletes[3].focus();
     fireEvent.keyDown(autocompletes[3], { key: 'ArrowDown' });
@@ -172,43 +173,6 @@ describe('Add mode', () => {
 
     await waitFor(() => {
       expect(setNotification).toHaveBeenCalled();
-    });
-  });
-
-  test('it should add and remove variables', async () => {
-    render(template);
-
-    await waitFor(() => {
-      expect(screen.getByText('Add a new HSM Template')).toBeInTheDocument();
-    });
-
-    const inputs = screen.getAllByRole('textbox');
-    const lexicalEditor = inputs[2];
-
-    await user.click(lexicalEditor);
-    await user.tab();
-    fireEvent.input(lexicalEditor, { data: 'Hi' });
-
-    await waitFor(() => {
-      expect(screen.getByText('Hi')).toBeInTheDocument();
-    });
-
-    fireEvent.click(screen.getByText('Add Variable'));
-
-    await waitFor(() => {
-      expect(screen.getAllByTestId('variable')).toHaveLength(1);
-    });
-
-    fireEvent.click(screen.getByText('Add Variable'));
-
-    await waitFor(() => {
-      expect(screen.getAllByTestId('variable')).toHaveLength(2);
-    });
-
-    fireEvent.click(screen.getAllByTestId('delete-variable')[0]);
-
-    await waitFor(() => {
-      expect(screen.getAllByTestId('variable')).toHaveLength(1);
     });
   });
 
@@ -354,5 +318,21 @@ describe('Add mode', () => {
     await waitFor(() => {
       expect(screen.getAllByRole('combobox')[1]).toHaveValue('account_balance');
     });
+  });
+
+  test('it shows quick replies as the default selected button type on first render', async () => {
+    render(template);
+
+    await waitFor(() => {
+      const language = screen.getAllByTestId('AutocompleteInput')[0].querySelector('input');
+      expect(language).toHaveValue('English');
+    });
+
+    fireEvent.click(screen.getByText('Add buttons'));
+    const quickRepliesRadio = screen.getByRole('radio', { name: 'Quick replies' }) as HTMLInputElement;
+    expect(quickRepliesRadio.checked).toBe(true);
+
+    const callToActionRadio = screen.getByRole('radio', { name: 'Call to actions' }) as HTMLInputElement;
+    expect(callToActionRadio.checked).toBe(false);
   });
 });

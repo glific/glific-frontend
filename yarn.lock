@@ -560,10 +560,10 @@
   resolved "https://registry.yarnpkg.com/@esbuild/win32-x64/-/win32-x64-0.25.4.tgz#0b17ec8a70b2385827d52314c1253160a0b9bacc"
   integrity sha512-nOT2vZNw6hJ+z43oP1SPea/G/6AbN6X+bGNhNuq8NtRHy4wsMhw765IKLNmnjek7GvjWBYQ8Q5VBoYTFg9y1UQ==
 
-"@glific/flow-editor@^1.26.3-26":
-  version "1.26.3-26"
-  resolved "https://registry.yarnpkg.com/@glific/flow-editor/-/flow-editor-1.26.3-26.tgz#102e175843049d722c2bc9237fc164e9c9845a8e"
-  integrity sha512-rtMAFeCyM1w2DFtcrq/+Im56ZozDD+iAu05dhXZWqR6F2EVGcsJIOCfJaad3iM49ftpijBYEBjUfgeYbxFOCXg==
+"@glific/flow-editor@^1.26.3-27":
+  version "1.26.3-27"
+  resolved "https://registry.yarnpkg.com/@glific/flow-editor/-/flow-editor-1.26.3-27.tgz#c6e58b266573747a620df8a93ed601b97c9b5002"
+  integrity sha512-7zTyuHCbywZVFrBNU+xJqwMmiLXz1PReItOW2eCDTQsrYa1EjY4lbRmsRYvjmkAmyiT9lMDn5vTB/INu5/qI6Q==
   dependencies:
     react "^16.8.6"
     react-dom "^16.8.6"
@@ -963,10 +963,10 @@
     "@babel/runtime" "^7.27.1"
     "@mui/utils" "^7.0.2"
 
-"@nyaruka/temba-components@^0.119.2":
-  version "0.119.2"
-  resolved "https://registry.yarnpkg.com/@nyaruka/temba-components/-/temba-components-0.119.2.tgz#be95eb4533a78b3fb6a13d60f55c2c722dacd7c4"
-  integrity sha512-MiuozkRyi3p+g/rjpuJxwTx42QVfbiL0Qek0/8zCXfUwZ4rxqpjXCmdpEvCFJamSf418GAX2YxzahCywklKRkQ==
+"@nyaruka/temba-components@^0.113.0":
+  version "0.113.0"
+  resolved "https://registry.yarnpkg.com/@nyaruka/temba-components/-/temba-components-0.113.0.tgz#e37db43737d39b5b72745f75cca8c2caad6dcc57"
+  integrity sha512-nCMMuMuaDM6w/H2EvezYVdMFEOMye6Iujd+1Yt5oVQO3BMdkA1w1xqwdduGYRyA8xRG1TgdLomRxbhcKFuAuew==
   dependencies:
     "@lit/localize" "^0.12.1"
     color-hash "^2.0.2"
