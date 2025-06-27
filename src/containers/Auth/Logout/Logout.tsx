@@ -51,10 +51,7 @@ export const Logout = () => {
 
     // clear apollo cache
     client.clearStore();
-  };
 
-  const logoutAndNavigate = () => {
-    handleLogout();
     navigate('/login', { replace: true, state: { to: location.state } });
   };
 
@@ -62,7 +59,6 @@ export const Logout = () => {
     // if user click on logout menu
     if (params.mode === 'user') {
       handleLogout();
-      navigate('/login', { replace: true, state: { to: location.state } });
     }
   }, []);
 
@@ -70,8 +66,8 @@ export const Logout = () => {
     <DialogBox
       title={t('Your session has expired!')}
       buttonOk={t('Login')}
-      handleOk={logoutAndNavigate}
-      handleCancel={logoutAndNavigate}
+      handleOk={handleLogout}
+      handleCancel={handleLogout}
       skipCancel
       alignButtons="center"
     >

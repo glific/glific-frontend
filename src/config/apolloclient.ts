@@ -103,8 +103,8 @@ const gqlClient = (navigate: any) => {
       });
 
     if (networkError) {
+      //not logging user out on network errors
       setLogs(`Network error: ${networkError} ${operation.variables}`, 'error');
-      navigate('/logout/session', { state: { to: window.location.pathname } });
     }
   });
 

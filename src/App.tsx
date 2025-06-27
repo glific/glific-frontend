@@ -15,8 +15,6 @@ import { Logout } from 'containers/Auth/Logout/Logout';
 
 const App = () => {
   const navigate = useNavigate();
-  // by default, do not assign any value to assume login or logout
-  // let's checkAuthStatusService allocate it on useEffect
   const [drawerOpen, setDrawerOpen] = useState(true);
   const isAuthenticated = !!getAuthSession('accessToken');
 
