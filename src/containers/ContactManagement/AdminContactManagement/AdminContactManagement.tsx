@@ -59,17 +59,17 @@ export const AdminContactManagement = ({ setShowStatus }: AdminContactManagement
       <div>
         <h2>Move contacts</h2>
 
-        <div className={styles.Instructions}>
+        <div className={styles.Instructions} style={{ fontSize: '14px' }}>
           You can move contacts to collections in bulk or update their contact information. Please create csv file that
-          exactly matches the sample. Here are the &nbsp;
+          exactly matches the sample. Here are the&nbsp;
           <a href={CONTACT_MANAGE_HELP_LINK} target="_blank" rel="noreferrer" className={styles.Link}>
-            detailed instructions.
+          detailed instructions.
           </a>
         </div>
         <div className={styles.UploadContainer}>
           <label className={styles.UploadEnabled} htmlFor="uploadFile">
             <span>
-              <FileIcon className={styles.FileIcon} />
+              <FileIcon className={styles.FilexxxIcon} />
               {fileName !== '' ? (
                 <>
                   <span>{fileName}</span>
@@ -84,7 +84,7 @@ export const AdminContactManagement = ({ setShowStatus }: AdminContactManagement
                   />
                 </>
               ) : (
-                'Select file'
+                'UPLOAD FILE'
               )}
 
               <input
