@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { setErrorMessage } from 'common/notification';
-import { checkSessionValidity } from 'common/utils';
 
 import { RENEW_TOKEN, VITE_GLIFIC_AUTHENTICATION_API } from 'config';
 import setLogs from 'config/logs';
@@ -308,17 +307,4 @@ export const checkOrgStatus = (status: any) => {
   }
 
   return true;
-};
-
-export const checkAndRenewToken = async (navigate: any) => {
-  const renewed = await checkSessionValidity();
-
-  if (renewed) {
-    setLogs('Token successfully renewed, skipping logout.', 'info');
-    return;
-  }
-
-  // If renewal fails, log out the user
-  setLogs(`Error 401: logging user out because invalid token`, 'error', true);
-  navigate('/logout/session');
 };
